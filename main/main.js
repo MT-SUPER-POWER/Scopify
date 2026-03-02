@@ -2,9 +2,15 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import serve from "electron-serve";
 import { join } from "path";
 import { fileURLToPath } from "url";
+import fs from "fs/promises";
 
 // const __filename = fileURLToPath(import.meta.url);
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const __logoIcon = join(__dirname, "../assets/icon.ico");
+
+if (fs.access(__logoIcon).catch(() => true)) {
+    console.warn("Warning: Icon file not found at", __logoIcon);
+}
 
 const appServe = app.isPackaged ? serve({
     directory: join(__dirname, "../out")
@@ -15,8 +21,15 @@ let mainWindow;
 const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: 1200,
-        height: 800,
-        frame: false,  // 隐藏原生标题栏
+        height: 900,
+        autoHideMenuBar: true,             // 自动隐藏菜单栏
+        icon: __logoIcon,                  // 设置应用图标
+        title: "Momo Music Player",        // 设置窗口标题
+        titleBarOverlay: {
+            color: 'rgba(0,0,0,0)',        // 完全透明
+            height: 35,
+            symbolColor: 'white'
+        },
         webPreferences: {
             preload: join(__dirname, "preload.js"),
             nodeIntegration: false,
@@ -43,27 +56,14 @@ const createWindow = () => {
         console.log("Page loaded successfully");
     });
 
-    // IPC 事件监听 - 窗口控制
-    ipcMain.on("window-minimize", () => {
+    // IPC 事件监听 - 更新标题栏颜色
+    ipcMain.on("update-titlebar-color", (event, color) => {
         if (mainWindow) {
-            mainWindow.minimize();
-        }
-    });
-
-    ipcMain.on("window-maximize", () => {
-        if (mainWindow) {
-            if (mainWindow.isMaximized()) {
-                mainWindow.unmaximize();
-            } else {
-                mainWindow.maximize();
-            }
-        }
-    });
-
-    ipcMain.on("window-close", () => {
-        if (mainWindow) {
-            // 直接销毁窗口以获得最快的响应速度
-            mainWindow.destroy();
+            mainWindow.setTitleBarOverlay({
+                color: 'rgba(0,0,0,0)',
+                height: 35,
+                symbolColor: color          // * 这里的颜色随着主题切换而切换，避免三控件标志看不见
+            });
         }
     });
 
