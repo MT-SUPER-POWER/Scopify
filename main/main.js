@@ -20,8 +20,10 @@ let mainWindow;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 900,
+        width: 1400,
+        height: 950,
+        minWidth: 800,
+        minHeight: 720,
         autoHideMenuBar: true,             // 自动隐藏菜单栏
         icon: __logoIcon,                  // 设置应用图标
         title: "Momo Music Player",        // 设置窗口标题
@@ -54,6 +56,22 @@ const createWindow = () => {
     // 页面加载完成后的日志
     mainWindow.webContents.on("did-finish-load", () => {
         console.log("Page loaded successfully");
+    });
+
+    // 禁用缩放快捷键（防止误触）
+    mainWindow.webContents.on("before-input-event", (event, input) => {
+        // 禁止 Ctrl/Cmd + 数字 0 (重置缩放)
+        if ((input.control || input.meta) && input.key === "0") {
+            event.preventDefault();
+        }
+        // 禁止 Ctrl/Cmd + = 和 Ctrl/Cmd + + (放大)
+        if ((input.control || input.meta) && (input.key === "=" || input.key === "+")) {
+            event.preventDefault();
+        }
+        // 禁止 Ctrl/Cmd + - (缩小)
+        if ((input.control || input.meta) && input.key === "-") {
+            event.preventDefault();
+        }
     });
 
     // IPC 事件监听 - 更新标题栏颜色
