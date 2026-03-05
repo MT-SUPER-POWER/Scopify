@@ -1,14 +1,18 @@
 import { Play } from "lucide-react";
 
-export const MockRouterContent = () => {
-  // 生成卡片背景色的帮助函数
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 18) return "Good Afternoon";
-    return "Good Evening";
-  };
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+// 生成卡片背景色的帮助函数
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good Morning";
+  if (hour < 18) return "Good Afternoon";
+  return "Good Evening";
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+export const MockRouterContent = () => {
   return (
     <div className="relative pb-24 font-sans">
       {/* 顶部彩色渐变背景 (Spotify 标志性设计) */}
@@ -82,11 +86,6 @@ export const MockRouterContent = () => {
             ))}
           </div>
         </section>
-
-
-        {/* TODO: 再丰富一些内容，不然没啥内容滑 */}
-
-
       </div>
     </div>
   );

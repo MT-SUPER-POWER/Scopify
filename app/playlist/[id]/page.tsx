@@ -138,7 +138,7 @@ export default function PlaylistPage() {
         {/* ==================== 动作栏 (Action Bar) ==================== */}
         <div className="flex items-center justify-between px-6 py-6">
           <div className="flex items-center gap-6">
-            <button className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all text-black rounded-full w-[56px] h-[56px] flex items-center justify-center shadow-lg">
+            <button className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg">
               <Play className="w-7 h-7 ml-1" fill="currentColor" />
             </button>
             {/* 截图新增：随机播放、下载、邀请、更多 */}
