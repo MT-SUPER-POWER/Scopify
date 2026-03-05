@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Search, ChevronLeft, ChevronRight, Bell, Users } from "lucide-react";
 
 const Header = ({ onOpenSearch }: { onOpenSearch?: () => void }) => {
+  // TODO: 加一个磨砂玻璃的背景，只有下拉的时候才可以看到，在最顶的时候看不到
   return (
     <div
       className={cn(
@@ -63,9 +64,7 @@ const Header = ({ onOpenSearch }: { onOpenSearch?: () => void }) => {
           {/* TODO: 拆分作为一个单独的 Mock 组件，只有用户没有上传自己头像的时候来用 */}
           {/* TODO: 加一个点击就出现的下拉菜单给用户头像 */}
           <div className="w-full h-full rounded-full bg-pink-600 flex items-center justify-center">
-            <button>
-              <span className="text-xs font-bold">M</span>
-            </button>
+            <span className="text-xs font-bold"> M </span>
           </div>
         </button>
       </div>

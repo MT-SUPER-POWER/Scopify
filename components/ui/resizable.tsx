@@ -21,9 +21,9 @@ function ResizablePanelGroup({
   )
 }
 
-function ResizablePanel({ ...props }: ResizablePrimitive.PanelProps) {
-  return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />
-}
+const ResizablePanel = ({ ...props }: ResizablePrimitive.PanelProps) => (
+  <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />
+)
 
 function ResizableHandle({
   withHandle,

@@ -148,8 +148,16 @@ body {
 @layer utilities {
   /* 自定义的滑动条 */
   .scrollbar-custom {
+    /* 让滚动条悬浮，不占用布局宽度 */
+    overflow: overlay;
+
     /* 基础滚动条宽度 */
     &::-webkit-scrollbar {
+      @apply w-0;
+    }
+
+    /* 悬浮时才显示滚动条 */
+    &:hover::-webkit-scrollbar {
       @apply w-3;
     }
 
