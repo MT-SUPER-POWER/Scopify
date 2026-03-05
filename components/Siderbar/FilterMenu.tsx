@@ -96,7 +96,7 @@ export function FilterMenu({
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-full" align="center" side="right">
+      <DropdownMenuContent className="w-full" align="start" side="right" sideOffset={14}>
         <DropdownMenuGroup>
           <DropdownMenuLabel className="dropdown-menu-label-momo mt-1">
             Filter

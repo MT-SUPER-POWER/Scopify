@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Bell, Users } from "lucide-react";
 import MockAvatar from "./MockAvatar";
+import { ProfileMenu } from "./ProfileMenu";
 
 /**
  * RightActions: Header 右侧操作区
@@ -23,7 +24,9 @@ const RightActions = () => (
       <Users className="w-5 h-5" />
     </button>
     {/* TODO: 加一个点击就出现的下拉菜单给用户头像 */}
-    <MockAvatar />
+    <ProfileMenu>
+      <MockAvatar />
+    </ProfileMenu>
   </div>
 );
 

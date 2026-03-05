@@ -30,10 +30,10 @@ export default function MainLayout({
     storage: typeof window !== "undefined" ? localStorage : undefined
   });
 
+  const panelRef = usePanelRef();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCollapsed, setIsPanelCollapsed] = useState(false);
   const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
-  const panelRef = usePanelRef();
 
   const panelAPI = useMemo(() => {
     return {
@@ -100,7 +100,7 @@ export default function MainLayout({
             <ResizablePanel>
               <div className="h-full bg-[#121212] rounded-lg relative flex flex-col overflow-hidden">
                 <Header onOpenSearch={() => setIsSearchOpen(true)} scrollContainer={scrollContainer} />
-                <ScrollArea className="flex-1 min-h-0 overflow-y-auto" ref={setScrollContainer}>
+                <ScrollArea className="flex-1 min-h-0 overflow-y-auto" viewportRef={setScrollContainer}>
                   {children}
                 </ScrollArea>
               </div>

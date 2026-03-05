@@ -9,7 +9,7 @@ import React, { useReducer } from "react";
 import { cn } from "@/lib/utils";
 import { LibraryItem } from "./LibraryItem";
 import { SiderBarMenu } from "./Siderbar/SiderbarMenu";
-import { FilterMenu } from "./Siderbar/FilterMenut";
+import { FilterMenu } from "./Siderbar/FilterMenu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

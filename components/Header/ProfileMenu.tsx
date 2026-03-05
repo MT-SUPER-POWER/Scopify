@@ -10,7 +10,7 @@ import {
 import { PanelLeftClose, Menu, PanelRightClose, Plus } from "lucide-react";
 import { IconDisc, IconPlaylist, IconUsers } from '@tabler/icons-react';
 
-export function ProfileMenu() {
+export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
   const iconList = {
     "ALL": <IconDisc className="w-5 h-5 mr-2" />,
@@ -24,12 +24,15 @@ export function ProfileMenu() {
 
   return (
     <DropdownMenu>
+
+      {/* TODO: 点击显示的功能和实际相关  */}
       <DropdownMenuTrigger asChild>
-        <button className="h-10 w-10 p-0 flex items-center justify-center shrink-0">
-          <Menu className="w-5 h-5" />
+        <button>
+          {children}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full" align="center" side="right">
+
+      <DropdownMenuContent className="w-full" align="end" side="bottom">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="dropdown-menu-label-momo mt-1">
             Filter
