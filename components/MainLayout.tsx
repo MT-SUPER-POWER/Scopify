@@ -62,7 +62,7 @@ export default function MainLayout({
     <LyricsProvider>
       {/* 上下结构 */}
       <div className={cn(
-        "w-full h-screen flex flex-col bg-black text-white font-sans",
+        "w-full h-dvh flex flex-col bg-black text-white font-sans",
         "overflow-hidden select-none p-2 gap-2"
       )}>
         <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />

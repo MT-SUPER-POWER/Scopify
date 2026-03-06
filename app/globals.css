@@ -11,6 +11,7 @@
 
   /* 自定义断点 */
   --breakpoint-momo_xl: 1060px;
+  --breakpoint-momo_bg: 940px;
 }
 
 :root {

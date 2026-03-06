@@ -42,7 +42,7 @@ function LyricModalHeader() {
 // 左侧信息区
 function LyricModalLeft({ isPlaying, setIsPlaying }: { isPlaying: boolean; setIsPlaying: (b: boolean) => void }) {
   return (
-    <div className="flex flex-col w-95 shrink-0 justify-center">
+    <div className="flex flex-col w-96 shrink-0 justify-center px-4">
       {/* 专辑封面 */}
       <div className="w-full aspect-square rounded-xl overflow-hidden shadow-2xl mb-10">
         <img
@@ -51,11 +51,21 @@ function LyricModalLeft({ isPlaying, setIsPlaying }: { isPlaying: boolean; setIs
           className="w-full h-full object-cover"
         />
       </div>
+
+      <ControlPanel isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+    </div>
+  );
+}
+
+function ControlPanel({ isPlaying, setIsPlaying }: { isPlaying: boolean; setIsPlaying: (b: boolean) => void }) {
+  return (
+    <>
       {/* 歌曲信息 (居中) */}
       <div className="text-center mb-8">
         <h1 className="text-[26px] font-bold mb-1.5 tracking-wide">富士山下</h1>
         <p className="text-[#A79C96] text-[15px] opacity-80">陈奕迅</p>
       </div>
+
       {/* 进度条 (上横条，下时间) */}
       <div className="mb-6 px-1">
         <div className="h-1.5 w-full bg-black/20 rounded-full cursor-pointer group mb-2">
@@ -66,6 +76,7 @@ function LyricModalLeft({ isPlaying, setIsPlaying }: { isPlaying: boolean; setIs
           <span>04:19</span>
         </div>
       </div>
+
       {/* 播放控制区 */}
       <div className="flex items-center justify-between mb-8 px-2">
         <button className="text-[#A79C96] hover:text-white transition-colors opacity-70 hover:opacity-100">
@@ -91,6 +102,7 @@ function LyricModalLeft({ isPlaying, setIsPlaying }: { isPlaying: boolean; setIs
           <Menu className="w-5 h-5" />
         </button>
       </div>
+
       {/* 音量条 */}
       <div className="flex items-center gap-3 px-3 opacity-70 hover:opacity-100 transition-opacity">
         <Volume2 className="w-4 h-4 text-white" />
@@ -98,7 +110,7 @@ function LyricModalLeft({ isPlaying, setIsPlaying }: { isPlaying: boolean; setIs
           <div className="h-full bg-white rounded-full w-[60%]"></div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -152,7 +164,7 @@ function LyricModalRight({ activeLineIndex, setActiveLineIndex, handleWheel }: {
                 {line}
               </p>
             </div>
-          )
+          );
         })}
       </motion.div>
     </div>
@@ -160,8 +172,6 @@ function LyricModalRight({ activeLineIndex, setActiveLineIndex, handleWheel }: {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-// TODO: 解决模态界面时候的响应式布局问题
 
 export const LyricsModal = () => {
   const { isLyricsOpen } = useLyrics();
@@ -212,10 +222,28 @@ export const LyricsModal = () => {
           className="fixed inset-0 z-50 flex items-center justify-center bg-[#372f28] text-white overflow-hidden"
         >
           <LyricModalHeader />
-          <div className="flex flex-row w-full max-w-300 h-[80vh] px-12 gap-35">
-            <LyricModalLeft isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
-            <LyricModalRight activeLineIndex={activeLineIndex} setActiveLineIndex={setActiveLineIndex} handleWheel={handleWheel} />
+
+          {/* 响应式布局：大屏横向展示，小屏纵向展示 */}
+          <div className="w-full h-[80vh] px-6 md:px-12 flex flex-col md:flex-row gap-8 md:gap-12 max-w-7xl mx-auto">
+
+            {/* 大屏显示封面+控制区，小屏只显示控制区（封面隐藏） */}
+            <div className="hidden momo_bg:flex w-96 shrink-0">
+              <LyricModalLeft isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+            </div>
+
+            {/* 歌词区 - 始终显示 */}
+            <LyricModalRight
+              activeLineIndex={activeLineIndex}
+              setActiveLineIndex={setActiveLineIndex}
+              handleWheel={handleWheel}
+            />
+
+            {/* 小屏模式：控制区显示在底部 */}
+            <div className="momo_bg:hidden w-full mt-auto px-24">
+              <ControlPanel isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+            </div>
           </div>
+
         </motion.div>
       )}
     </AnimatePresence>

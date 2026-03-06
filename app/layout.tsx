@@ -38,7 +38,6 @@ export default function RootLayout({
         className={cn(
           `${geistSans.variable} ${geistMono.variable}`,
           `antialiased h-screen w-screen overflow-hidden flex`,
-          `min-h-180 min-w-200`,
         )}
         suppressHydrationWarning
       >

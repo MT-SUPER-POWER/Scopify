@@ -81,6 +81,7 @@ make netease_undeploy # 卸载
 - <Header /> 部分左右箭头的跳转功能
 - 使用 electron-builder 打包成安装包
 - 实现 网页 build，electron 独立运行
+- 可以使用标题部分的间隔调整 Table 之间的大小
 
 ### 动画内容补充
 
