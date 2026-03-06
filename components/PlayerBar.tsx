@@ -19,7 +19,7 @@ import {
   MinimizeIcon,
 } from "lucide-react";
 import { useIsElectron, useFullScreenListener } from "@/lib/hooks/useElectronDetect";
-import { useLyrics } from "./LyricsContext";
+import { useLyrics } from "./LyricModal/LyricsContext";
 import { VolumeControl } from "@/components/VolumeControl";
 import { SmoothSlider } from "@/components/SmoothSlider";
 import { cn } from "@/lib/utils";

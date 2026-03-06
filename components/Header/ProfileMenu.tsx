@@ -3,62 +3,50 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PanelLeftClose, Menu, PanelRightClose, Plus } from "lucide-react";
-import { IconDisc, IconPlaylist, IconUsers } from '@tabler/icons-react';
+import {
+  FiUser,
+  FiDownload,
+  FiSettings,
+  FiLogOut,
+  FiCoffee,
+} from "react-icons/fi";
 
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
-
-  const iconList = {
-    "ALL": <IconDisc className="w-5 h-5 mr-2" />,
-    "PLAYLISTS": <IconPlaylist className="w-5 h-5 mr-2" />,
-    "ARTISTS": <IconUsers className="w-5 h-5 mr-2" />,
-
-    "CREATE PLAYLISTS": <Plus className="w-5 h-5 mr-2" />,
-    "ENLARGE": <PanelRightClose className="w-5 h-5 mr-2" />,
-    "COLLAPSE": <PanelLeftClose className="w-5 h-5 mr-2" />
-  }
+  const iconList: { label: string; icon: React.ReactNode }[] = [
+    { label: "Profile", icon: <FiUser className="mr-2 h-5 w-5" /> },
+    { label: "Download", icon: <FiDownload className="mr-2 h-5 w-5" /> },
+    { label: "Setting", icon: <FiSettings className="mr-2 h-5 w-5" /> },
+    { label: "Logout", icon: <FiLogOut className="mr-2 h-5 w-5" /> },
+    { label: "Buy Me A Coffee", icon: <FiCoffee className="mr-2 h-5 w-5" /> },
+  ];
 
   return (
     <DropdownMenu>
-
-      {/* TODO: 点击显示的功能和实际相关  */}
       <DropdownMenuTrigger asChild>
-        <button>
-          {children}
-        </button>
+        <button className="focus:outline-none focus:ring-0">{children}</button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-full" align="end" side="bottom">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="dropdown-menu-label-momo mt-1">
-            Filter
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {(["ALL", "PLAYLISTS", "ARTISTS"] as const).map((item) => (
-            <DropdownMenuItem key={item} onSelect={() => console.log(`Selected ${item}`)}>
-              {iconList[item]}
-              <span>{item}</span>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
-
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="dropdown-menu-label-momo mt-1">
-            PlayList
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {(["CREATE PLAYLISTS", "ENLARGE", "COLLAPSE"] as const).map((item) => (
-            <DropdownMenuItem key={item} onSelect={() => console.log(`Selected ${item}`)}>
-              {iconList[item]}
-              <span>{item}</span>
+      <DropdownMenuContent
+        className="w-68 max-w-[calc(100vw-2rem)] rounded-xl p-2"
+        align="end"
+        side="bottom"
+        sideOffset={8}
+      >
+        <DropdownMenuGroup className="space-y-1">
+          {iconList.map((item) => (
+            <DropdownMenuItem
+              key={item.label}
+              className="rounded-lg px-3 py-2 text-[15px]"
+              onSelect={() => console.log(`Selected ${item.label}`)}
+            >
+              {item.icon}
+              <span>{item.label}</span>
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
       </DropdownMenuContent>
-    </DropdownMenu >
-  )
+    </DropdownMenu>
+  );
 }

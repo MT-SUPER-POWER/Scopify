@@ -4,7 +4,7 @@
 
 import { useState, useRef } from "react";
 import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Menu, Volume2 } from "lucide-react";
-import { useLyrics } from "./LyricsContext";
+import { useLyrics } from "./LyricModal/LyricsContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -160,6 +160,9 @@ function LyricModalRight({ activeLineIndex, setActiveLineIndex, handleWheel }: {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// TODO: 解决模态界面时候的响应式布局问题
+
 export const LyricsModal = () => {
   const { isLyricsOpen } = useLyrics();
   const [isPlaying, setIsPlaying] = useState(false);

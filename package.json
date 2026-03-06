@@ -11,7 +11,9 @@
   "description": "Electron + NextJS Music Player Base on NetEase Music API",
   "scripts": {
     "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\"",
+    "web": "next dev",
     "build": "next build",
+    "start": "electron .",
     "pack": "electron-builder"
   },
   "dependencies": {
@@ -33,10 +35,10 @@
     "react-dom": "19.2.3",
     "react-icons": "^5.5.0",
     "react-resizable-panels": "^4",
-    "tailwind-merge": "^3.5.0",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "tailwind-merge": "^3.5.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

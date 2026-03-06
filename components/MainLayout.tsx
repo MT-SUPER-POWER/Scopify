@@ -6,7 +6,7 @@ import { PlayerBar } from "../components/PlayerBar";
 import { SearchModal } from "../components/SearchModal";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { LyricsModal } from "../components/LyricModal";
-import { LyricsProvider } from "../components/LyricsContext";
+import { LyricsProvider } from "./LyricModal/LyricsContext";
 import {
   ResizableHandle,
   ResizablePanel,

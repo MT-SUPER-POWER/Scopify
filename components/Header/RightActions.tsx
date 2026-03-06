@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import { Bell, Users } from "lucide-react";
 import MockAvatar from "./MockAvatar";
+import { Bell, Users } from "lucide-react";
 import { ProfileMenu } from "./ProfileMenu";
 
 /**
@@ -23,7 +23,6 @@ const RightActions = () => (
     <button className="flex items-center justify-center w-10 h-10 rounded-full bg-black/70 text-zinc-400 hover:text-white hover:scale-105 transition-transform">
       <Users className="w-5 h-5" />
     </button>
-    {/* TODO: 加一个点击就出现的下拉菜单给用户头像 */}
     <ProfileMenu>
       <MockAvatar />
     </ProfileMenu>

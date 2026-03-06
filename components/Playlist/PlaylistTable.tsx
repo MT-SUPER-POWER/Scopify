@@ -1,5 +1,6 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+import { IoAddCircleOutline } from "react-icons/io5";
 import {
   Table,
   TableBody,
@@ -8,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Clock, Play, Heart, MoreHorizontal, Trash } from "lucide-react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -19,8 +21,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import { Clock, Play, Heart, MoreHorizontal, Trash } from "lucide-react";
-import { IoAddCircleOutline } from "react-icons/io5";
+import { cn } from "@/lib/utils";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PROPS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -97,7 +98,10 @@ export default function PlaylistTable({ tracks }: PlaylistTableProps) {
   return (
     <Table className="w-full text-zinc-400">
       {/* 表头 */}
-      <TableHeader className="sticky top-0 z-10 bg-[#121212]/95 backdrop-blur-sm border-b border-white/75">
+      <TableHeader className={cn(
+        "sticky top-0 z-10 backdrop-blur-sm border-b border-white/75",
+        "bg-linear-to-b from-transparent to-[#121212]"
+      )}>
         <TableRow className="hover:bg-transparent border-none">
           <TableHead className="w-12 text-center">#</TableHead>
           <TableHead>Title</TableHead>
