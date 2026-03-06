@@ -165,7 +165,7 @@ export const PlayerBar = () => {
         <button
           onClick={() => toggleLyrics()}
           className={`hover:text-white transition-colors ${isLyricsOpen ? "text-[#1db954]" : ""}`}
-          title="歌词"
+          title="歌词"      // TODO: 制作 icon 浮动窗
         >
           <Mic2 className="w-5 h-5" />
         </button>

@@ -5,7 +5,7 @@ import { Sidebar } from "../components/Sidebar";
 import { PlayerBar } from "../components/PlayerBar";
 import { SearchModal } from "../components/SearchModal";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { LyricsModal } from "../components/LyricModal";
+import LyricsModal from "../components/LyricModal";
 import { LyricsProvider } from "./LyricModal/LyricsContext";
 import {
   ResizableHandle,
@@ -69,9 +69,13 @@ export default function MainLayout({
         <LyricsModal />
 
         {/* 左右结构 */}
-        <div className="flex-1 min-h-0 relative">
-          <ResizablePanelGroup orientation="horizontal"
-            defaultLayout={defaultLayout} onLayoutChanged={onLayoutChanged}>
+        <div className="flex-1 min-h-0 relative w-full">
+          <ResizablePanelGroup
+            orientation="horizontal"
+            defaultLayout={defaultLayout}
+            onLayoutChanged={onLayoutChanged}
+            className="w-full h-full"
+          >
             <ResizablePanel
               panelRef={panelRef}
               defaultSize="20%"
@@ -98,7 +102,7 @@ export default function MainLayout({
             />
 
             <ResizablePanel>
-              <div className="h-full bg-[#121212] rounded-lg relative flex flex-col overflow-hidden">
+              <div className="h-full w-full bg-[#121212] rounded-lg relative flex flex-col overflow-hidden">
                 <Header onOpenSearch={() => setIsSearchOpen(true)} scrollContainer={scrollContainer} />
                 <ScrollArea className="flex-1 min-h-0 overflow-y-auto" viewportRef={setScrollContainer}>
                   {children}
