@@ -23,6 +23,7 @@ const createLoginWindow = () => {
   const loginWindow = new BrowserWindow({
     width: 450,
     height: 600,
+    icon: __logoIcon,                  // 设置应用图标
     resizable: false,
     autoHideMenuBar: true,
     parent: mainWindow, // 设置父窗口
@@ -53,9 +54,9 @@ const createWindow = () => {
     minHeight: 720,
     autoHideMenuBar: true,             // 自动隐藏菜单栏
     icon: __logoIcon,                  // 设置应用图标
-    title: "Momo Music Player",        // 设置窗口标题
+    title: "scopify",        // 设置窗口标题
     titleBarOverlay: {
-      color: 'rgba(0,0,0,0)',        // 完全透明
+      color: 'rgba(0,0,0,0)',          // 完全透明
       height: 35,
       symbolColor: 'white'
     },
