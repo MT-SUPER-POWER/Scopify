@@ -6,6 +6,7 @@ import { Library } from "lucide-react"
 import playlist from "@/assets/data/playlist.json";
 import artist from "@/assets/data/artist.json";
 import React, { useReducer } from "react";
+import { useUiStore } from "@/store/module/ui";
 import { cn } from "@/lib/utils";
 import { LibraryItem } from "./LibraryItem";
 import { SiderBarMenu } from "./Siderbar/SiderbarMenu";
@@ -23,8 +24,8 @@ function reducer(_state: 0 | 1 | 2, action: { type: "ALL" | "PLAYLISTS" | "ARTIS
   }
 }
 
+// TODO: 使用 useUiStore 来简化这些操作
 interface SidebarProps {
-  isVeryNarrow?: boolean;   // 外部如果折叠了，里面就会传入 true
   panelAPI?: {
     collapse: () => void | undefined;
     expand: () => void | undefined;
@@ -33,10 +34,8 @@ interface SidebarProps {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MAIN UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export const Sidebar = React.memo(({
-  isVeryNarrow,
-  panelAPI
-}: SidebarProps) => {
+function SidebarImpl({ panelAPI }: SidebarProps) {
+  const isVeryNarrow = useUiStore(s => s.isCollapsed);
   const [filterState, filterDispatch] = useReducer(reducer, 0);
 
   return (
@@ -131,4 +130,6 @@ export const Sidebar = React.memo(({
       </ScrollArea>
     </div>
   );
-});
+}
+
+export const Sidebar = React.memo(SidebarImpl);

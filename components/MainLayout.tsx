@@ -7,6 +7,7 @@ import { Sidebar } from "../components/Sidebar";
 import { PlayerBar } from "../components/PlayerBar";
 import { SearchModal } from "../components/SearchModal";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useUiStore } from "@/store/module/ui";
 import dynamic from "next/dynamic";
 import { useHasHydrated } from "@/lib/hooks/useHydration";
 import {
@@ -52,12 +53,14 @@ function MainLayoutInner({
     groupId: "music-player-layout",
     storage: typeof window !== "undefined" ? localStorage : undefined
   });
-
   const panelRef = usePanelRef();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isCollapsed, setIsPanelCollapsed] = useState(false);
+  const isSearchOpen = useUiStore((s) => s.isSearchOpen);
+  const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
+  const isLyricsOpen = useUiStore((s) => s.isLyricsOpen);
+  const setIsLyricsOpen = useUiStore((s) => s.setIsLyricsOpen);
+  const toggleLyrics = useUiStore((s) => s.toggleLyrics);
+  const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
   const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
-  const [isLyricsOpen, setIsLyricsOpen] = useState(false);
 
   const panelAPI = useMemo(() => {
     return {
@@ -70,23 +73,22 @@ function MainLayoutInner({
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setIsSearchOpen((prev) => !prev);
+        setIsSearchOpen(!isSearchOpen);
       }
       if (e.key === "Escape" && isSearchOpen) {
         e.preventDefault();
         setIsSearchOpen(false);
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isSearchOpen]);
+  }, [isSearchOpen, setIsSearchOpen]);
 
   const lyricsCtx: LyricsContextType = {
     isLyricsOpen,
     openLyrics: () => setIsLyricsOpen(true),
     closeLyrics: () => setIsLyricsOpen(false),
-    toggleLyrics: () => setIsLyricsOpen(prev => !prev),
+    toggleLyrics,
   };
 
   return (
@@ -114,12 +116,12 @@ function MainLayoutInner({
               maxSize="40%"
               collapsible
               collapsedSize={80}
-              onResize={() => setIsPanelCollapsed(panelRef.current?.isCollapsed() ?? false)}
+              onResize={() => setIsCollapsed(panelRef.current?.isCollapsed() ?? false)}
               className={cn(
                 "bg-[#0f0f0f] rounded-lg overflow-hidden transition-all duration-300 ease-in-out",
               )}
             >
-              <Sidebar isVeryNarrow={isCollapsed} panelAPI={panelAPI} />
+              <Sidebar panelAPI={panelAPI} />
             </ResizablePanel>
 
             <ResizableHandle

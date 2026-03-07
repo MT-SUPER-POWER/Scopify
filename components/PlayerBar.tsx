@@ -19,11 +19,11 @@ import {
   MinimizeIcon,
 } from "lucide-react";
 import { useIsElectron, useFullScreenListener } from "@/lib/hooks/useElectronDetect";
-import { useLyrics } from "./MainLayout";
+import { useUiStore } from "@/store/module/ui";
 import { VolumeControl } from "@/components/VolumeControl";
 import { SmoothSlider } from "@/components/SmoothSlider";
 import { cn } from "@/lib/utils";
-import { usePlayerStore } from "@/store";
+import { usePlayerStore, useUserStore } from "@/store";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -57,14 +57,15 @@ const Minimize = (isElectron: boolean) => {
 
 export const PlayerBar = () => {
   const isElectron = useIsElectron();
-  const { isLyricsOpen, openLyrics, toggleLyrics } = useLyrics();
+  const isLyricsOpen = useUiStore(s => s.isLyricsOpen);
+  const toggleLyrics = useUiStore(s => s.toggleLyrics);
+  const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(30);
   const [isMaximized, setIsMaximized] = useState(false);
 
-  // TODO: 从 Zustand 获取音量状态
-  const volume = usePlayerStore((state) => state.volume);
-  const setVolume = usePlayerStore((state) => state.setVolume);
+  // const volume = usePlayerStore((state) => state.volume);
+  const volume = usePlayerStore.getState().volume;
 
   // 监听全屏状态变化（支持 Electron 和 Web 环境）
   useFullScreenListener((isFullScreen) => {
@@ -73,7 +74,8 @@ export const PlayerBar = () => {
 
   // 处理音量变化（可以连接到实际的音频播放器）
   const handleVolumeChange = (newVolume: number) => {
-    setVolume(newVolume);
+    // setVolume(newVolume);
+    usePlayerStore.getState().setVolume(newVolume);
     // TODO: 连接到实际的音频播放器
   };
 
