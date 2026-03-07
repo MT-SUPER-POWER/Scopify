@@ -6,9 +6,9 @@ import Header from "../components/Header";
 import { Sidebar } from "../components/Sidebar";
 import { PlayerBar } from "../components/PlayerBar";
 import { SearchModal } from "../components/SearchModal";
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import LyricsModal from "../components/LyricModal";
-import { LyricsProvider } from "./LyricModal/LyricsContext";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { useHasHydrated } from "@/lib/hooks/useHydration";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -17,25 +17,37 @@ import {
 import { usePanelRef, useDefaultLayout } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import MainLayoutSkeleton from "./MainLayout/Skeleton";
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LYRICS CONTEXT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface LyricsContextType {
+  isLyricsOpen: boolean;
+  openLyrics: () => void;
+  closeLyrics: () => void;
+  toggleLyrics: () => void;
+}
+
+const LyricsContext = createContext<LyricsContextType | undefined>(undefined);
+
+export const useLyrics = () => {
+  const ctx = useContext(LyricsContext);
+  if (!ctx) throw new Error("useLyrics must be used within a provider");
+  return ctx;
+};
+
+const LyricsModal = dynamic(() => import("../components/LyricModal"), { ssr: false });
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 /**
- * MainLayout: 播放器的壳子组件
- * 负责渲染 Sidebar, Header, PlayerBar 以及中间的内容区域
+ * MainLayout: 播放器的壳子组件 - 支持懒加载 + 骨架屏
  */
-export default function MainLayout({
+function MainLayoutInner({
   children,
 }: {
   children?: ReactNode;
 }) {
-
-  /**
-   * BUG: SSR Hydration: 由于服务器不知道浏览器的 localStorage 里的值，会导致首屏渲染报错。
-   * 服务器（Node.js）生成了第一版 HTML（此时没有 localStorage），
-   * 而客户端（浏览器）拿到 HTML 后发现 localStorage 里有值，于是想立即渲染第二版布局。
-   * React 发现两边对不上，就会跳出 Hydration failed 警告。
-   *
-   * FIX: 我们 SSR 直接就不做了，等客户端渲染吧，会有短暂的白屏，对 SEO 也不太友好
-   */
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
     storage: typeof window !== "undefined" ? localStorage : undefined
@@ -45,6 +57,7 @@ export default function MainLayout({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCollapsed, setIsPanelCollapsed] = useState(false);
   const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
+  const [isLyricsOpen, setIsLyricsOpen] = useState(false);
 
   const panelAPI = useMemo(() => {
     return {
@@ -69,8 +82,15 @@ export default function MainLayout({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isSearchOpen]);
 
+  const lyricsCtx: LyricsContextType = {
+    isLyricsOpen,
+    openLyrics: () => setIsLyricsOpen(true),
+    closeLyrics: () => setIsLyricsOpen(false),
+    toggleLyrics: () => setIsLyricsOpen(prev => !prev),
+  };
+
   return (
-    <LyricsProvider>
+    <LyricsContext.Provider value={lyricsCtx}>
       {/* 上下结构 */}
       <div className={cn(
         "w-full h-dvh flex flex-col bg-black text-white font-sans",
@@ -125,6 +145,20 @@ export default function MainLayout({
 
         <PlayerBar />
       </div>
-    </LyricsProvider >
+    </LyricsContext.Provider>
   );
+}
+
+export default function MainLayout({
+  children,
+}: {
+  children?: ReactNode;
+}) {
+  const isHydrated = useHasHydrated();
+
+  if (!isHydrated) {
+    return <MainLayoutSkeleton />;
+  }
+
+  return <MainLayoutInner>{children}</MainLayoutInner>;
 }

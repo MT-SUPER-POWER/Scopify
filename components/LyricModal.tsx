@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useLyrics } from "./LyricModal/LyricsContext";
+import { useLyrics } from "./MainLayout";
 import ControlPanel from "./Playlist/ControlPanel";
 
 

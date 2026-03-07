@@ -19,7 +19,7 @@ import {
   MinimizeIcon,
 } from "lucide-react";
 import { useIsElectron, useFullScreenListener } from "@/lib/hooks/useElectronDetect";
-import { useLyrics } from "./LyricModal/LyricsContext";
+import { useLyrics } from "./MainLayout";
 import { VolumeControl } from "@/components/VolumeControl";
 import { SmoothSlider } from "@/components/SmoothSlider";
 import { cn } from "@/lib/utils";
@@ -52,7 +52,6 @@ const Minimize = (isElectron: boolean) => {
   }
 };
 
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export const PlayerBar = () => {
@@ -61,7 +60,7 @@ export const PlayerBar = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(30);
   const [isMaximized, setIsMaximized] = useState(false);
-  const [volume, setVolume] = useState(70);
+  const [volume, setVolume] = useState(50); // TODO: 从 Zustand 获取音量状态
 
   // 监听全屏状态变化（支持 Electron 和 Web 环境）
   useFullScreenListener((isFullScreen) => {
@@ -70,7 +69,7 @@ export const PlayerBar = () => {
 
   // 处理音量变化（可以连接到实际的音频播放器）
   const handleVolumeChange = (newVolume: number) => {
-    // TODO: 连接到实际的音频播放器
+    // usePlayerStore.setVolume(newVolume); // TODO: 连接到实际的音频播放器
     setVolume(newVolume);
   };
 
