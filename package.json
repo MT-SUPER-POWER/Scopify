@@ -7,7 +7,7 @@
     "url": "https://github.com/MT-SUPER-POWER"
   },
   "type": "module",
-  "main": "main/main.js",
+  "main": "main/main.ts",
   "description": "Electron + NextJS Music Player Base on NetEase Music API",
   "scripts": {
     "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\"",

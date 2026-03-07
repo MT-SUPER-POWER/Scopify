@@ -79,7 +79,6 @@ make netease_undeploy # 卸载
 - ~~ react-resizable-panels SSR 水和错误修复 ~~
 - GPU 加速
 - playlist 优化，发现渲染这个需要的时间过分的长
-- 窗口最小化后，鼠标移动到 dock 栏上，缩略图中有播放相关的按钮
 
 ### 功能部分
 
@@ -88,7 +87,7 @@ make netease_undeploy # 卸载
 - 使用 electron-builder 打包成安装包
 - 实现网页 build，electron 独立运行
 - 可以使用标题部分的间隔调整 Table 之间的大小
-- 可以在 软件 预览界面使用 上一首、下一首、播放/暂停 功能
+- 任务栏缩略图工具栏
 - 托盘化
   - 关闭按钮显示，最小化或者关闭程序，而不是直接关闭
 

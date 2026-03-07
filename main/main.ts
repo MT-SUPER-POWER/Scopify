@@ -3,20 +3,24 @@ import serve from "electron-serve";
 import { join } from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
+import type { BrowserWindow as BrowserWindowType } from "electron";
 
 // const __filename = fileURLToPath(import.meta.url);
+
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const __logoIcon = join(__dirname, "../assets/icon.ico");
 
-if (fs.access(__logoIcon).catch(() => true)) {
+// 检查图标文件是否存在
+fs.access(__logoIcon).catch(() => {
   console.warn("Warning: Icon file not found at", __logoIcon);
-}
+});
 
-const appServe = app.isPackaged ? serve({
-  directory: join(__dirname, "../out")
-}) : null;
 
-let mainWindow;
+const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
+  ? serve({ directory: join(__dirname, "../out") })
+  : null;
+
+let mainWindow: BrowserWindowType | null = null;
 
 // NOTE: Electron 子窗口的创建
 const createLoginWindow = () => {
@@ -26,10 +30,10 @@ const createLoginWindow = () => {
     icon: __logoIcon,                  // 设置应用图标
     resizable: false,
     autoHideMenuBar: true,
-    parent: mainWindow, // 设置父窗口
+    parent: mainWindow ?? undefined, // 设置父窗口
     modal: true, // 可选：如果你希望它是模态的
     webPreferences: {
-      preload: join(__dirname, "preload.js"),
+      preload: join(__dirname, "preload.ts"),
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -61,15 +65,16 @@ const createWindow = () => {
       symbolColor: 'white'
     },
     webPreferences: {
-      preload: join(__dirname, "preload.js"),
+      preload: join(__dirname, "preload.ts"),
       nodeIntegration: false,
       contextIsolation: true,
     }
   });
 
+
   if (app.isPackaged) {
-    appServe(mainWindow).then(() => {
-      mainWindow.loadURL("app://-");
+    appServe && appServe(mainWindow).then(() => {
+      mainWindow?.loadURL("app://-");
     });
   } else {
     mainWindow.loadURL("http://localhost:3000");
@@ -77,7 +82,7 @@ const createWindow = () => {
     // mainWindow.webContents.openDevTools();
     mainWindow.webContents.on("did-fail-load", (e, code, desc) => {
       console.log("Did fail load:", code, desc);
-      mainWindow.webContents.reloadIgnoringCache();
+      mainWindow?.webContents.reloadIgnoringCache();
     });
   }
 
@@ -150,9 +155,29 @@ const createWindow = () => {
   });
 };
 
-app.on("ready", () => {
+/* app.on("ready", () => {
   console.log("App ready, creating window...");
   createWindow();
+}); */
+
+// TODO: GPU 加速
+
+
+// TODO: 托盘
+
+// 应用程序准备就绪时的处理
+app.whenReady().then(() => {
+  console.log("App ready, creating window...");
+
+  createWindow();
+
+  // Mac 的特殊处理
+  app.on("activate", () => {
+    if (mainWindow === null) {
+      createWindow();
+    }
+  });
+
 });
 
 app.on("window-all-closed", () => {
@@ -161,8 +186,4 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
+

@@ -17,6 +17,8 @@ type UserStore = {
   albumList: any[];
 
   handleLogout: () => Promise<void>;
+  setUser: (userData: UserData) => void;
+  setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -45,6 +47,9 @@ export const useUserStore = create<UserStore>()(
         clearLoginStatus();
         window.location.reload();   // 刷新
       },
+
+      setUser: (userData) => { set({ user: userData }) },
+      setLoginType: (loginType) => { set({ loginType }) },
     }),
     {
       name: 'user-storage',

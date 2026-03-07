@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useUserStore } from '@/store';
+import Router from 'next/router';
 
 type LoginMode = 'password' | 'sms' | 'qr';
 
@@ -120,11 +122,17 @@ export default function LoginPage() {
           setQrStatus('success');
           setQrStatusText('授权登录成功！');
           if (qrTimerRef.current) clearInterval(qrTimerRef.current);
-          // 保存 cookie 并获取登录状态
+          // NOTE: 保存 cookie 并获取登录状态
           const cookie = statusRes.data?.cookie || '';
           localStorage.setItem('cookie', cookie);
           const loginRes = await getLoginStatus(cookie);
           console.log('登录状态', loginRes.data);
+
+          // TODO: useUserStore 存储一些登录相关信息，跳转到主页
+          // 内容结构看 loginData.json
+          useUserStore.getState().setUser(loginRes.data?.profile || null);
+          useUserStore.getState().setLoginType('qr');
+          Router.replace('/');  // 登录成功后跳转到主页
         }
       }, 3000);
     } catch (error) {
