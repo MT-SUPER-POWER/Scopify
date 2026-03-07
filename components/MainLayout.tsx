@@ -1,5 +1,7 @@
 'use client';
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 import Header from "../components/Header";
 import { Sidebar } from "../components/Sidebar";
 import { PlayerBar } from "../components/PlayerBar";
@@ -25,6 +27,15 @@ export default function MainLayout({
 }: {
   children?: ReactNode;
 }) {
+
+  /**
+   * BUG: SSR Hydration: 由于服务器不知道浏览器的 localStorage 里的值，会导致首屏渲染报错。
+   * 服务器（Node.js）生成了第一版 HTML（此时没有 localStorage），
+   * 而客户端（浏览器）拿到 HTML 后发现 localStorage 里有值，于是想立即渲染第二版布局。
+   * React 发现两边对不上，就会跳出 Hydration failed 警告。
+   *
+   * FIX: 我们 SSR 直接就不做了，等客户端渲染吧，会有短暂的白屏，对 SEO 也不太友好
+   */
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
     storage: typeof window !== "undefined" ? localStorage : undefined
