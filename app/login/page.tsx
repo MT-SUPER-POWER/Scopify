@@ -163,7 +163,8 @@ export default function LoginPage() {
 
       {/* 2. 主体宽度适当收窄，贴合小窗口比例 */}
       <div className="w-full max-w-[320px]">
-        <Tabs defaultValue="password" onValueChange={(v) => setMode(v as LoginMode)} className="w-full">
+        {/* TODO: defaultValue 是否要考虑做成存储值 */}
+        <Tabs defaultValue="qr" onValueChange={(v) => setMode(v as LoginMode)} className="w-full">
 
           {/* 3. Tab 切换器：减小底部 margin，固定高度和内边距 */}
           <TabsList className="grid grid-cols-3 mb-4 bg-zinc-900/60 border border-white/5 rounded-xl h-10 p-1">

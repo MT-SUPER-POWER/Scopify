@@ -4,17 +4,16 @@
   "private": true,
   "author": {
     "name": "Momo",
-    "url": "https://github.com/MT-SUPER-POWER"
+    "email": "shuhengwen@gmail.com"
   },
+  "homepage": "https://github.com/MT-SUPER-POWER",
   "type": "module",
-  "main": "main/main.ts",
+  "main": "out/main.js",
   "description": "Electron + NextJS Music Player Base on NetEase Music API",
   "scripts": {
-    "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\"",
+    "dev": "bunx tsc -p tsconfig.electron.json && bunx tsx script/dev.ts",
     "web": "next dev",
-    "build": "next build",
-    "start": "electron .",
-    "pack": "electron-builder"
+    "build:web": "next build"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.8",

@@ -8,7 +8,8 @@ import type { BrowserWindow as BrowserWindowType } from "electron";
 // const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const __logoIcon = join(__dirname, "../assets/icon.ico");
+export const __logoIcon = join(__dirname, "../assets/icon.ico");
+export const __preloadScript = join(__dirname, "preload.ts");
 
 // 检查图标文件是否存在
 fs.access(__logoIcon).catch(() => {
@@ -33,7 +34,7 @@ const createLoginWindow = () => {
     parent: mainWindow ?? undefined, // 设置父窗口
     modal: true, // 可选：如果你希望它是模态的
     webPreferences: {
-      preload: join(__dirname, "preload.ts"),
+      preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,
     }

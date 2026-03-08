@@ -10,8 +10,11 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   noRetry?: boolean;
 }
 
-const baseURL = process.env.BACKEND_URL ?
-  process.env.BACKEND_URL : `http://192.168.3.8:31212`
+
+if (!process.env.BACKEND_URL) {
+  throw new Error('请在 .env 文件中配置 BACKEND_URL');
+}
+const baseURL = process.env.BACKEND_URL;
 
 const request = axios.create({
   baseURL,
@@ -27,8 +30,10 @@ const RETRY_DELAY = 500;
 // 请求拦截器
 request.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
-    config.baseURL = process.env.BACKEND_URL ?
-      process.env.BACKEND_URL : `http://192.168.3.8:31212`
+    if (!process.env.BACKEND_URL) {
+      throw new Error('请在 .env 文件中配置 BACKEND_URL');
+    }
+    config.baseURL = process.env.BACKEND_URL;
 
     // 只在retryCount未定义时初始化为0
     if (config.retryCount === undefined) {

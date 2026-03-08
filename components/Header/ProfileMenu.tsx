@@ -40,8 +40,8 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const isElectron = useIsElectron();
 
   const handleLoginClick = () => {
-    if (isElectron && window.electronAPI) {
-      window.electronAPI.openLoginWindow();
+    if (isElectron && (window as any).electronAPI) {
+      (window as any).electronAPI.openLoginWindow();
     } else {
       // Web 环境下仍然走页面跳转
       window.location.href = '/login';
