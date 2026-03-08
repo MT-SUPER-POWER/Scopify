@@ -2,10 +2,8 @@ import { clearLoginStatus } from "@/lib/web/auth";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-
 interface UserData {
   userId: number;       // uid 一定要存储下来
-  arUrl: string;        // 头像
   nickName: string;      // 昵称
   [key: string]: any;   // 其他用户信息字段，根据需要添加
 }
@@ -42,6 +40,7 @@ export const useUserStore = create<UserStore>()(
         // 清空 Store 存储的数据
         set({
           user: null,
+          cookie: '',
           loginType: null,
           searchValue: '',
           searchType: 0,

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import MockAvatar from "./MockAvatar";
+import MockAvatar from "./Avatar";
 import { Bell, Users } from "lucide-react";
 import { ProfileMenu } from "./ProfileMenu";
 

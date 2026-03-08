@@ -34,4 +34,3 @@ export function clearLoginStatus(): void {
   localStorage.removeItem('token');
   localStorage.removeItem('cookie');
 }
-

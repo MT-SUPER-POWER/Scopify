@@ -1,12 +1,10 @@
 "use client";
 
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Eye, EyeOff, Smartphone, Lock, QrCode, RefreshCw, X } from 'lucide-react';
-import { checkQR, createQR, getQRKey, getLoginStatus, loginByCellphone } from '@/lib/api/login';
+import { checkQR, createQR, getQRKey, loginByCellphone } from '@/lib/api/login';
 import { sendCaptcha } from '@/lib/web/auth';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,12 +17,12 @@ import Link from 'next/link';
 import { useIsElectron } from '@/lib/hooks/useElectronDetect';
 import { toast } from 'sonner';
 import { getUserAccount } from '@/lib/api/user';
-
+import { useLoginStatus } from '@/lib/hooks/useLoginStatus';
+import LoginSkeletonLoading from './loading';
 
 type LoginMode = 'password' | 'sms' | 'qr';
 
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Login ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
 export default function LoginPage() {
@@ -32,6 +30,10 @@ export default function LoginPage() {
   const [mode, setMode] = useState<LoginMode>('qr');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // 新增挂载状态，用于控制骨架屏
+  const [isMounted, setIsMounted] = useState(false);
+  const isLoggedIn = useLoginStatus();
 
   // --- 表单状态 ---
   const [phone, setPhone] = useState('');
@@ -182,14 +184,33 @@ export default function LoginPage() {
     }
   }, [pollQRStatus]);
 
+
+  // 组件挂载完毕
   useEffect(() => {
-    if (mode === 'qr') {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // 只有组件挂载完成且确认未登录时，才初始化二维码，避免后台无用请求
+    if (!isLoggedIn && mode === 'qr') {
       initQRLogin();
     }
     return () => {
       if (qrTimerRef.current) clearInterval(qrTimerRef.current);
     };
-  }, [mode, initQRLogin]);
+  }, [mode, initQRLogin, isLoggedIn]);
+
+  useEffect(() => {
+    if (isMounted && isLoggedIn) {
+      router.replace('/');
+    }
+  }, [isMounted, isLoggedIn, router]);
+
+  // NOTE: 手动实现 Suspend 效果
+  if (!isMounted || isLoggedIn) {
+    // 渲染阶段非常纯粹：如果还没挂载完，或者正在重定向中，就老老实实地返回一段骨架屏 UI，绝对不去操作 router
+    return <LoginSkeletonLoading />;
+  }
 
   return (
     <div className={cn("flex flex-col items-center justify-center bg-black text-white p-4 min-h-screen w-screen overflow-hidden",

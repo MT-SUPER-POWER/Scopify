@@ -24,7 +24,7 @@ function reducer(_state: 0 | 1 | 2, action: { type: "ALL" | "PLAYLISTS" | "ARTIS
   }
 }
 
-// TODO: 使用 useUiStore 来简化这些操作
+// TODO: 使用 useUiStore 减少 Props 传递
 interface SidebarProps {
   panelAPI?: {
     collapse: () => void | undefined;
