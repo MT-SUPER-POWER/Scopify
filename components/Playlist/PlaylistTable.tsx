@@ -95,7 +95,6 @@ function TrackRowContextMenu({ track, children }: TrackRowContextMenuProps) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function PlaylistTable({ tracks }: PlaylistTableProps) {
-  // TODO: 歌单响应式拖拽
   return (
     <Table className="w-full text-zinc-400">
       {/* 表头 */}

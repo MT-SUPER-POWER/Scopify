@@ -40,10 +40,11 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const isElectron = useIsElectron();
 
   const handleLoginClick = () => {
-    if (isElectron && (window as any).electronAPI) {
-      (window as any).electronAPI.openLoginWindow();
+    if (typeof window !== "undefined" && isElectron) {
+      // console.log("[ProfileMenu] electronAPI found, calling openLoginWindow");
+      window.electronAPI?.openLoginWindow();
     } else {
-      // Web 环境下仍然走页面跳转
+      // console.log("[ProfileMenu] electronAPI not found, redirecting to /login");
       window.location.href = '/login';
     }
   };
@@ -76,15 +77,12 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
         </DropdownMenuGroup>
 
         <DropdownMenuGroup className="space-y-1">
-          {/* TODO: 接入 useUserStore 来做状态管理切换 */}
           <DropdownMenuItem onSelect={handleLoginClick}>
             <FiLogIn className="mr-2 h-5 w-5" />
+            {/* TODO: 接入 useUserStore 来做状态管理切换 */}
             <span>Login</span>
           </DropdownMenuItem>
-          {/*
-            { label: "Login", icon: <FiLogIn className="mr-2 h-5 w-5" /> },
-            { label: "Logout", icon: <FiLogOut className="mr-2 h-5 w-5" /> },
-          */}
+
         </DropdownMenuGroup>
 
       </DropdownMenuContent>

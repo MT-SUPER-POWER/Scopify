@@ -26,11 +26,7 @@ export const openLoginWindow = async (mainWin: BrowserWindow) => {
     return;
   }
 
-  // TODO: 清除 Cookie
-  /*   await loginSession.clearStorageData({
-      storages: ['cookies', 'localstorage']
-    }); */
-
+  // NOTE: Electron 子窗口的创建
   loginWindow = new BrowserWindow({
     width: 450,
     height: 600,
@@ -52,6 +48,10 @@ export const openLoginWindow = async (mainWin: BrowserWindow) => {
   } else {
     loginWindow.loadURL("http://localhost:3000/login");
   }
+
+  loginWindow?.on("closed", () => {
+    loginWindow = null;
+  });
 };
 
 /**

@@ -11,7 +11,8 @@
   "main": "out/main.js",
   "description": "Electron + NextJS Music Player Base on NetEase Music API",
   "scripts": {
-    "dev": "bunx tsc -p tsconfig.electron.json && bunx tsx script/dev.ts",
+    "predev": "bunx tsc -p tsconfig.electron.json",
+    "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\"",
     "web": "next dev",
     "build:web": "next build"
   },

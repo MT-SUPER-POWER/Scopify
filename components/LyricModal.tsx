@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useLyrics } from "./MainLayout";
 import ControlPanel from "./Playlist/ControlPanel";
 
+// TODO: 使用 Apple-Music-like-lyric 重构
 
 const mockLyrics = [
   "如若你非我不嫁 彼此终必火化",

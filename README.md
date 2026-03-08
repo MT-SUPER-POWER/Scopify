@@ -13,6 +13,11 @@
 4. shadnCN UI: UI 组件库
 5. Makefile + k8s + Docker: 后端部署部分
 6. Axios: 后端通讯统一管理部分
+7. Zustand: 前端状态管理
+
+## 重要的三方库
+
+1. [Apple Music Like Lyric](https://github.com/Steve-xmh/applemusic-like-lyrics)
 
 ## 部署方法
 

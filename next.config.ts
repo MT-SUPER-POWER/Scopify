@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 方案 B：移除 output: "export"，改为由 next-electron-server 提供本地文件服务支持
+  // FIX：移除 output: "export"，改为由 next-electron-server 提供本地文件服务支持
   // output: "export",
   env: {
-    "BACKEND_URL": "http://192.168.3.10:31212"
+    "BACKEND_URL": "http://192.168.3.10:31212",
+    "AXIOS_TIMEOUT": "5000",
   },
   images: {
     unoptimized: true,

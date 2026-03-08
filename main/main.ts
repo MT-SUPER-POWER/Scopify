@@ -1,55 +1,38 @@
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 import { app, BrowserWindow, ipcMain } from "electron";
 import serve from "electron-serve";
 import { join } from "path";
-import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import type { BrowserWindow as BrowserWindowType } from "electron";
+import { initTray } from "./module/tray";
+import initializeLoginWindow from "./module/login";
 
-// const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
 export const __logoIcon = join(__dirname, "../assets/icon.ico");
-export const __preloadScript = join(__dirname, "preload.ts");
+
+/**
+ * FIXME: 打包导致的 typescript 类型问题，待更好的方案
+ * 虽然说我们目前的 preload 是用 ts 写的
+ * 但是打包之后都是 .js 文件，所以只能够找同目录的 .js 文件，这个是没办法的
+ */
+export const __preloadScript = join(__dirname, "preload.js");
 
 // 检查图标文件是否存在
 fs.access(__logoIcon).catch(() => {
   console.warn("Warning: Icon file not found at", __logoIcon);
 });
 
-
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
   ? serve({ directory: join(__dirname, "../out") })
   : null;
 
+const devPort = process.env.NEXT_PORT ?? "3000";
+const devBase = `http://localhost:${devPort}`;
+
 let mainWindow: BrowserWindowType | null = null;
 
-// NOTE: Electron 子窗口的创建
-const createLoginWindow = () => {
-  const loginWindow = new BrowserWindow({
-    width: 450,
-    height: 600,
-    icon: __logoIcon,                  // 设置应用图标
-    resizable: false,
-    autoHideMenuBar: true,
-    parent: mainWindow ?? undefined, // 设置父窗口
-    modal: true, // 可选：如果你希望它是模态的
-    webPreferences: {
-      preload: __preloadScript,
-      nodeIntegration: false,
-      contextIsolation: true,
-    }
-  });
 
-  if (app.isPackaged) {
-    loginWindow.loadURL("app://-/login");
-  } else {
-    loginWindow.loadURL("http://localhost:3000/login");
-  }
-};
-
-ipcMain.on("open-login-window", () => {
-  createLoginWindow();
-});
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
@@ -66,31 +49,25 @@ const createWindow = () => {
       symbolColor: 'white'
     },
     webPreferences: {
-      preload: join(__dirname, "preload.ts"),
+      preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,
     }
   });
-
 
   if (app.isPackaged) {
     appServe && appServe(mainWindow).then(() => {
       mainWindow?.loadURL("app://-");
     });
   } else {
-    mainWindow.loadURL("http://localhost:3000");
+    mainWindow.loadURL(devBase);
     // 注释掉 DevTools 以提升性能，需要时按 Ctrl+Shift+I 打开
     // mainWindow.webContents.openDevTools();
-    mainWindow.webContents.on("did-fail-load", (e, code, desc) => {
+    mainWindow.webContents.on("did-fail-load", (_e, code, desc) => {
       console.log("Did fail load:", code, desc);
       mainWindow?.webContents.reloadIgnoringCache();
     });
   }
-
-  // 页面加载完成后的日志
-  mainWindow.webContents.on("did-finish-load", () => {
-    console.log("Page loaded successfully");
-  });
 
   // 禁用缩放快捷键（防止误触）
   mainWindow.webContents.on("before-input-event", (event, input) => {
@@ -108,11 +85,10 @@ const createWindow = () => {
     }
   });
 
-
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ IPC Module ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   // IPC 事件监听 - 更新标题栏颜色
-  ipcMain.on("update-titlebar-color", (event, color) => {
+  ipcMain.on("update-titlebar-color", (_event, color) => {
     if (mainWindow) {
       mainWindow.setTitleBarOverlay({
         color: 'rgba(0,0,0,0)',
@@ -123,14 +99,14 @@ const createWindow = () => {
   });
 
   // IPC 事件监听 - 全屏化
-  ipcMain.on("window-enter-full-screen", (event) => {
+  ipcMain.on("window-enter-full-screen", () => {
     if (mainWindow) {
       mainWindow.setFullScreen(true);
     }
   });
 
   // IPC 事件监听 - 退出全屏
-  ipcMain.on("window-exit-full-screen", (event) => {
+  ipcMain.on("window-exit-full-screen", (_event) => {
     if (mainWindow) {
       mainWindow.setFullScreen(false);
     }
@@ -156,21 +132,17 @@ const createWindow = () => {
   });
 };
 
-/* app.on("ready", () => {
-  console.log("App ready, creating window...");
-  createWindow();
-}); */
-
 // TODO: GPU 加速
 
 
-// TODO: 托盘
 
 // 应用程序准备就绪时的处理
 app.whenReady().then(() => {
-  console.log("App ready, creating window...");
+  console.log("Scopify ready, creating window...");
 
   createWindow();
+  initTray();
+  initializeLoginWindow();
 
   // Mac 的特殊处理
   app.on("activate", () => {
@@ -178,7 +150,6 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
-
 });
 
 app.on("window-all-closed", () => {
@@ -186,5 +157,3 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
-

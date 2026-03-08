@@ -19,7 +19,10 @@ const electronAPI: ElectronAPI = {
   onFullScreenChanged: (callback) => {
     ipcRenderer.on("window-full-screen-changed", (event, data) => { callback(data.isFullScreen); });
   },
-  openLoginWindow: () => ipcRenderer.send("open-login-window"),
+  openLoginWindow: () => {
+    console.log("Render Thread send IPC to Main Thread");
+    ipcRenderer.send("open-login-window");
+  }
 };
 
 try {

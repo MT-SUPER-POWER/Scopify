@@ -18,7 +18,7 @@ const baseURL = process.env.BACKEND_URL;
 
 const request = axios.create({
   baseURL,
-  timeout: 15000,
+  timeout: process.env.AXIOS_TIMEOUT ? parseInt(process.env.AXIOS_TIMEOUT) : 5000,
   withCredentials: true
 });
 

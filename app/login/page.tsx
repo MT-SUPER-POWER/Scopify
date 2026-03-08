@@ -1,17 +1,18 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Eye, EyeOff, Smartphone, Lock, QrCode, RefreshCw } from 'lucide-react';
-
+import { Eye, EyeOff, Smartphone, Lock, QrCode, RefreshCw, X } from 'lucide-react';
 import { checkQR, createQR, getQRKey, getLoginStatus, loginByCellphone } from '@/lib/api/login';
 import { sendCaptcha } from '@/lib/web/auth';
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserStore } from '@/store';
 import Router from 'next/router';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { useIsElectron } from '@/lib/hooks/useElectronDetect';
 
 type LoginMode = 'password' | 'sms' | 'qr';
 
@@ -128,7 +129,6 @@ export default function LoginPage() {
           const loginRes = await getLoginStatus(cookie);
           console.log('登录状态', loginRes.data);
 
-          // TODO: useUserStore 存储一些登录相关信息，跳转到主页
           // 内容结构看 loginData.json
           useUserStore.getState().setUser(loginRes.data?.profile || null);
           useUserStore.getState().setLoginType('qr');
@@ -142,6 +142,7 @@ export default function LoginPage() {
     }
   }, []);
 
+  // BUG: 刚进入这个界面的时候，不会主动加载 QR 码，还得自己手动换页面再回来才会加载
   useEffect(() => {
     if (mode === 'qr') {
       initQRLogin();
@@ -152,7 +153,17 @@ export default function LoginPage() {
   }, [mode, initQRLogin]);
 
   return (
-    <div className="flex flex-col items-center justify-center bg-black text-white p-4 min-h-screen w-screen overflow-hidden">
+    <div className={cn("flex flex-col items-center justify-center bg-black text-white p-4 min-h-screen w-screen overflow-hidden",
+    )}>
+
+      {/* 右上角退出按钮，点击返回主页 */}
+      {useIsElectron() ? null : (
+        <button className='absolute top-5 right-6 p-1 rounded-full hover:bg-white/10 transition-colors' title="返回主页">
+          <Link href="/" className="flex items-center justify-center">
+            <X className="w-5 h-5 text-zinc-500 hover:text-white transition-colors" />
+          </Link>
+        </button>)}
+
       {/* 1. Logo 区域优化：缩小外边距和 Logo 尺寸，使其更紧凑 */}
       <div className="mb-6 flex flex-col items-center">
         <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-3 text-black font-black text-3xl shadow-2xl">
