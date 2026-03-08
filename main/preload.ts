@@ -7,6 +7,8 @@ interface ElectronAPI {
   exitFullScreen: () => void;
   onFullScreenChanged: (callback: (isFullScreen: boolean) => void) => void;
   openLoginWindow: () => void;
+  closeLoginWindow: () => void;
+  maniWindowReload: () => void;
 }
 
 // 写好了接口，记得在 types/electron.d.ts 中声明类型
@@ -19,10 +21,9 @@ const electronAPI: ElectronAPI = {
   onFullScreenChanged: (callback) => {
     ipcRenderer.on("window-full-screen-changed", (event, data) => { callback(data.isFullScreen); });
   },
-  openLoginWindow: () => {
-    console.log("Render Thread send IPC to Main Thread");
-    ipcRenderer.send("open-login-window");
-  }
+  openLoginWindow: () => { ipcRenderer.send("open-login-window"); },
+  closeLoginWindow: () => { ipcRenderer.send("close-login-window"); },
+  maniWindowReload: () => { ipcRenderer.send("main-window-reload"); }
 };
 
 try {

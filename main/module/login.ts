@@ -1,4 +1,3 @@
-import { join } from "path";
 import { __logoIcon, __preloadScript } from "../main";
 import fs from "fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
@@ -37,7 +36,7 @@ export const openLoginWindow = async (mainWin: BrowserWindow) => {
     parent: mainWin, // 设置父窗口
     modal: true, // 可选：如果你希望它是模态的
     webPreferences: {
-      preload: join(__dirname, "../preload.ts"),
+      preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -64,6 +63,11 @@ export function initializeLoginWindow() {
     if (mainWin) {
       openLoginWindow(mainWin);
     }
+  });
+
+  // TODO: 子窗口主动关闭，配合登录成功后自动关闭窗口的功能
+  ipcMain.on('close-login-window', () => {
+    loginWindow?.close();
   });
 }
 

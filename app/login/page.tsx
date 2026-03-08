@@ -145,6 +145,14 @@ export default function LoginPage() {
 
           useUserStore.getState().setUser(loginRes.data.profile); // 数据结构参考：apifox - /user/account
           useUserStore.getState().setLoginType('qr');
+
+          if (useIsElectron()) {
+            window.electronAPI?.closeLoginWindow();
+            router.replace('/');
+            window.electronAPI?.maniWindowReload();
+            toast.success("登录成功");
+            return;
+          }
           router.replace('/');
           toast.success("登录成功");
         }

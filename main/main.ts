@@ -112,6 +112,12 @@ const createWindow = () => {
     }
   });
 
+  // IPC 事件监听 - 刷新主窗口
+  ipcMain.on("main-window-reload", () => {
+    console.log("Received main-window-reload event, reloading main window...");
+    mainWindow?.reload();
+  })
+
   // 监听窗口进入全屏事件（包括 F11）
   mainWindow.on("enter-full-screen", () => {
     if (mainWindow && mainWindow.webContents) {
@@ -126,6 +132,7 @@ const createWindow = () => {
       mainWindow.webContents.send("window-full-screen-changed", { isFullScreen: false });
     }
   });
+
 
   mainWindow.on("closed", () => {
     mainWindow = null;

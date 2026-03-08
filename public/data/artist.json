@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "type": "artist",
+        "title": "Taylor Swift",
+        "subtitle": "Pop Singer • 12M Listeners",
+        "isRound": true,
+        "coverImg": "https://picsum.photos/seed/taylorswift/100/100"
+    },
+    {
+        "id": 2,
+        "type": "artist",
+        "title": "Ed Sheeran",
+        "subtitle": "Folk Singer • 8.5M Listeners",
+        "isRound": true,
+        "coverImg": "https://picsum.photos/seed/edsheeran/100/100"
+    },
+    {
+        "id": 3,
+        "type": "artist",
+        "title": "Billie Eilish",
+        "subtitle": "Alternative • 10M Listeners",
+        "isRound": true,
+        "coverImg": "https://picsum.photos/seed/billieeilish/100/100"
+    },
+    {
+        "id": 4,
+        "type": "artist",
+        "title": "Bruno Mars",
+        "subtitle": "R&B Singer • 9M Listeners",
+        "isRound": true,
+        "coverImg": "https://picsum.photos/seed/brunomars/100/100"
+    }
+]

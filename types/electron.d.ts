@@ -6,6 +6,8 @@ interface ElectronAPI {
   exitFullScreen: () => void;
   onFullScreenChanged: (callback: (isFullScreen: boolean) => void) => void;
   openLoginWindow: () => void;
+  closeLoginWindow: () => void;
+  maniWindowReload: () => void;
 }
 
 // 拓展全局 Window 对象，添加 electronAPI 属性
