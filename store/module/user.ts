@@ -2,14 +2,18 @@ import { clearLoginStatus } from "@/lib/web/auth";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+
 interface UserData {
-  userId: number;
-  [key: string]: any;
+  userId: number;       // uid 一定要存储下来
+  arUrl: string;        // 头像
+  nickName: string;      // 昵称
+  [key: string]: any;   // 其他用户信息字段，根据需要添加
 }
 
 type UserStore = {
   user: UserData | null;
   loginType: 'token' | 'cookie' | 'qr' | 'uid' | null;
+  cookie: string;
   searchValue: string;
   searchType: number;
   collectedAlbumIds: Set<number>;
@@ -19,6 +23,7 @@ type UserStore = {
   handleLogout: () => Promise<void>;
   setUser: (userData: UserData) => void;
   setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
+  setCookie: (cookie: string) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -26,6 +31,7 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       user: null,
       loginType: null,
+      cookie: '',
       searchValue: '',
       searchType: 0,
       collectedAlbumIds: new Set(),
@@ -47,9 +53,9 @@ export const useUserStore = create<UserStore>()(
         clearLoginStatus();
         window.location.reload();   // 刷新
       },
-
       setUser: (userData) => { set({ user: userData }) },
       setLoginType: (loginType) => { set({ loginType }) },
+      setCookie: (cookie) => { set({ cookie }) },
     }),
     {
       name: 'user-storage',
@@ -57,6 +63,7 @@ export const useUserStore = create<UserStore>()(
       partialize: (state) => ({
         user: state.user,
         loginType: state.loginType,
+        cookie: state.cookie,
       }),
     }
   )

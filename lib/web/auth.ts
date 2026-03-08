@@ -32,9 +32,6 @@ export function verifyCaptcha(phone: string, captcha: string | number, ctcode: s
  */
 export function clearLoginStatus(): void {
   localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  localStorage.removeItem('loginType');
-  localStorage.removeItem('uidLogin');
+  localStorage.removeItem('cookie');
 }
-
 

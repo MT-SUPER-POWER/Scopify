@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: [],
   // @ts-ignore - Next.js 15+ 移入顶层的配置
-  allowedDevOrigins: ["127.0.0.1", "localhost"],
+  allowedDevOrigins: ["127.0.0.1", "localhost", "192.168.3.10", "192.168.3.8"],
 };
 
 export default nextConfig;

@@ -17,6 +17,7 @@ const PLAYLIST_INFO = {
 
 import TRACK_LIST from "@/assets/data/playlist_123.json";
 
+// OPTIMIZE: 单页编译时间过长
 export default function PlaylistPage() {
   return (
     <div className="relative w-full min-h-full flex flex-col bg-[#121212]">
@@ -25,7 +26,7 @@ export default function PlaylistPage() {
       {/* 增加高度并调整透明度，形成沉浸感 */}
       <div
         className={cn(
-          "absolute top-0 left-0 right-0 h-[500px] bg-linear-to-b to-transparent z-0 pointer-events-none opacity-60",
+          "absolute top-0 left-0 right-0 h-125 bg-linear-to-b to-transparent z-0 pointer-events-none opacity-60",
           PLAYLIST_INFO.themeColor,
         )}
       />

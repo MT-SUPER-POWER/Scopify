@@ -1,5 +1,9 @@
 "use client";
 
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Eye, EyeOff, Smartphone, Lock, QrCode, RefreshCw, X } from 'lucide-react';
 import { checkQR, createQR, getQRKey, getLoginStatus, loginByCellphone } from '@/lib/api/login';
@@ -9,14 +13,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserStore } from '@/store';
-import Router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useIsElectron } from '@/lib/hooks/useElectronDetect';
+import { toast } from 'sonner';
+import { getUserAccount } from '@/lib/api/user';
+
 
 type LoginMode = 'password' | 'sms' | 'qr';
 
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Login ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
 export default function LoginPage() {
+  const router = useRouter();
   const [mode, setMode] = useState<LoginMode>('qr');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -80,39 +92,17 @@ export default function LoginPage() {
     return () => clearInterval(timer);
   }, [countdown]);
 
-  // 3. 二维码获取与轮询逻辑
-  const initQRLogin = useCallback(async () => {
-    if (qrTimerRef.current) {
-      clearInterval(qrTimerRef.current);
-      qrTimerRef.current = null;
-    }
-
-    try {
-      setQrImg('');
-      setQrStatus('loading');
-      setQrStatusText('正在加载二维码...');
-
-      // Step 1: 获取 unikey
-      const keyRes = await getQRKey();
-      const unikey = keyRes.data?.data?.unikey;
-      if (!unikey) throw new Error("获取 Key 失败");
-
-      // Step 2: 生成二维码（base64 图片）
-      const qrRes = await createQR(unikey);
-      const qrimg = qrRes.data?.data?.qrimg;
-      setQrImg(qrimg);
-      setQrStatus('waiting');
-      setQrStatusText('打开 App 扫一扫登录');
-
-      // Step 3: 轮询扫码状态
-      qrTimerRef.current = setInterval(async () => {
+  // 轮询二维码状态
+  const pollQRStatus = useCallback((unikey: string) => {
+    return setInterval(async () => {
+      try {
         const statusRes = await checkQR(unikey);
         const code = statusRes.data?.code;
 
         if (code === 800) {
           setQrStatus('expired');
           setQrStatusText('二维码已过期');
-          if (qrTimerRef.current) clearInterval(qrTimerRef.current);
+          clearInterval(qrTimerRef.current!);
         } else if (code === 801) {
           setQrStatus('waiting');
           setQrStatusText('打开 App 扫一扫登录');
@@ -120,29 +110,78 @@ export default function LoginPage() {
           setQrStatus('scanned');
           setQrStatusText('已扫码，请在手机上确认');
         } else if (code === 803) {
+
           setQrStatus('success');
           setQrStatusText('授权登录成功！');
-          if (qrTimerRef.current) clearInterval(qrTimerRef.current);
-          // NOTE: 保存 cookie 并获取登录状态
-          const cookie = statusRes.data?.cookie || '';
-          localStorage.setItem('cookie', cookie);
-          const loginRes = await getLoginStatus(cookie);
-          console.log('登录状态', loginRes.data);
+          clearInterval(qrTimerRef.current!);
 
-          // 内容结构看 loginData.json
-          useUserStore.getState().setUser(loginRes.data?.profile || null);
+          const cookie = statusRes.data?.cookie || '';
+
+          // 存储 cookie 到 Zustand
+          useUserStore.getState().setCookie(cookie);
+          // 兼容旧逻辑，也存一份到 localStorage
+          localStorage.setItem('cookie', cookie);
+
+          const loginRes = await getUserAccount();  // 校验我们拿到的 cookie 是不是有效的
+
+          // console.log("请求的用户信息", loginRes);
+
+          // NOTE: 这里虽然理论上不太可能出现，除非如果网易接口突然改了，导致登录状态异常，
+          if (loginRes.data?.code !== 200) {
+            setQrStatus('expired');
+            setQrStatusText('二维码已过期');
+            clearInterval(qrTimerRef.current!);
+            toast.error("登录状态异常，请重新登录");
+            return;
+          }
+
+          // Cookie 没用了，所以这个请求没法通过认证，即使请求能到，也没有数据的
+          if (loginRes.data?.account === null || loginRes.data?.profile === null) {
+            toast.error("登录状态异常，请重新登录");
+            return;
+          }
+
+          useUserStore.getState().setUser(loginRes.data.profile); // 数据结构参考：apifox - /user/account
           useUserStore.getState().setLoginType('qr');
-          Router.replace('/');  // 登录成功后跳转到主页
+          router.replace('/');
+          toast.success("登录成功");
         }
-      }, 3000);
+      } catch (error) {
+        // toast.error("轮询二维码状态失败");
+        console.error('轮询二维码状态失败', error);
+      }
+    }, 3000);
+  }, [router]);
+
+  // 初始化二维码
+  const initQRLogin = useCallback(async () => {
+    if (qrTimerRef.current) {
+      clearInterval(qrTimerRef.current);
+      qrTimerRef.current = null;
+    }
+    try {
+      setQrImg('');
+      setQrStatus('loading');
+      setQrStatusText('正在加载二维码...');
+
+      const keyRes = await getQRKey();
+      const unikey = keyRes.data?.data?.unikey;
+      if (!unikey) throw new Error("获取 Key 失败");
+
+      const qrRes = await createQR(unikey);
+      const qrimg = qrRes.data?.data?.qrimg;
+      setQrImg(qrimg);
+      setQrStatus('waiting');
+      setQrStatusText('打开 App 扫一扫登录');
+
+      qrTimerRef.current = pollQRStatus(unikey);
     } catch (error) {
-      console.error('二维码初始化失败', error);
       setQrStatus('expired');
       setQrStatusText('二维码加载失败');
+      console.error('二维码初始化失败', error);
     }
-  }, []);
+  }, [pollQRStatus]);
 
-  // BUG: 刚进入这个界面的时候，不会主动加载 QR 码，还得自己手动换页面再回来才会加载
   useEffect(() => {
     if (mode === 'qr') {
       initQRLogin();

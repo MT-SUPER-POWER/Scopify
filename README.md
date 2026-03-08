@@ -18,6 +18,14 @@
 ## 重要的三方库
 
 1. [Apple Music Like Lyric](https://github.com/Steve-xmh/applemusic-like-lyrics)
+2. [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels)
+3. [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)
+
+## 文档
+
+1. [Apple Music Like Lyric Doc](https://amll-dev.github.io/applemusic-like-lyrics/reference/react-full/typealiassongdata/)
+2. [Electron](https://www.electronjs.org/zh/docs/latest/api/app)
+3. [Netease Cloud Music API Doc](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
 
 ## 部署方法
 

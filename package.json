@@ -17,6 +17,9 @@
     "build:web": "next build"
   },
   "dependencies": {
+    "@applemusic-like-lyrics/core": "^0.2.0",
+    "@applemusic-like-lyrics/lyric": "^0.3.0",
+    "@applemusic-like-lyrics/react": "^0.2.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tabs": "^1.1.13",
@@ -40,6 +43,7 @@
     "react-dom": "19.2.3",
     "react-icons": "^5.5.0",
     "react-resizable-panels": "^4",
+    "sonner": "^2.0.7",
     "zustand": "^5.0.11"
   },
   "devDependencies": {

@@ -49,6 +49,10 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
     }
   };
 
+  // TODO: 退出登录处理
+  const handleLogoutClick = () => {
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

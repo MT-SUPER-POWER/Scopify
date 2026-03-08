@@ -10,9 +10,8 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   noRetry?: boolean;
 }
 
-
 if (!process.env.BACKEND_URL) {
-  throw new Error('请在 .env 文件中配置 BACKEND_URL');
+  throw new Error("请在 NEXT_CONFIG 文件中配置 BACKEND_URL");
 }
 const baseURL = process.env.BACKEND_URL;
 
@@ -22,16 +21,16 @@ const request = axios.create({
   withCredentials: true
 });
 
-// 最大重试次数
-const MAX_RETRIES = 1;
-// 重试延迟（毫秒）
-const RETRY_DELAY = 500;
+
+// TODO: AXIOS 参数转移到 NEXT_CONFIG 中配置
+const MAX_RETRIES = 1;    // 最大重试次数
+const RETRY_DELAY = 500;  // 重试延迟（毫秒）
 
 // 请求拦截器
 request.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
     if (!process.env.BACKEND_URL) {
-      throw new Error('请在 .env 文件中配置 BACKEND_URL');
+      throw new Error("请在 NEXT_CONFIG 文件中配置 BACKEND_URL");
     }
     config.baseURL = process.env.BACKEND_URL;
 
@@ -40,22 +39,35 @@ request.interceptors.request.use(
       config.retryCount = 0;
     }
 
-    // 在请求发送之前做一些处理
-    // 在get请求params中添加timestamp
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 在请求发送之前做一些处理 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    // 请求中附带额外信息
     config.params = {
       ...config.params,
       timestamp: Date.now(),
       device: useIsElectron() ? 'pc' : 'web'
     };
-    const token = localStorage.getItem('token');
-    if (token && config.method !== 'post') {
-      config.params.cookie = config.params.cookie !== undefined ? config.params.cookie : token;
-    } else if (token && config.method === 'post') {
-      config.data = {
-        ...config.data,
-        cookie: token
-      };
+
+    // 注意：假设你的 userStore 里存储 cookie 的字段叫 cookie，如果叫别的名字请对应修改
+    let _cookie = (useUserStore.getState() as any).cookie as string | undefined;
+
+    // 如果内存里没有，且处于浏览器环境，再去 localStorage 拿（做兜底）
+    if (!_cookie && typeof window !== 'undefined') {
+      _cookie = localStorage.getItem('cookie') || '';
     }
+
+    if (_cookie) {
+      if (config.method?.toLowerCase() === 'post') {
+        // POST 请求，放在请求体 (Body) 里
+        config.data = {
+          ...config.data,
+          cookie: _cookie
+        };
+      } else {
+        config.params.cookie = config.params.cookie || _cookie;
+      }
+    }
+
     if (useIsElectron()) {
       const proxyConfig = setData?.proxyConfig;
       if (proxyConfig?.enable && ['http', 'https'].includes(proxyConfig?.protocol)) {
