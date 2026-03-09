@@ -1,10 +1,15 @@
 export interface NeteasePlaylist {
-  id: number;           // playlist 的唯一 ID
+  id: number;
   name: string;
-  tags: string[];
+  createTime: number;
   coverImgUrl: string;
-  trackCount: number;     // 一共多少歌曲
+  description: string;
+  trackCount: number;
+  playCount: number;
+  privacy: 0 | 10; // 0: 公开, 10: 私密
   subscribed: boolean;
+  subscribedCount: number;
+  tags: string[];
   creator: {
     nickname: string;
     avatarUrl: string;

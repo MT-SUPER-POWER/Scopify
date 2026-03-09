@@ -41,10 +41,8 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
   const handleLoginClick = () => {
     if (typeof window !== "undefined" && isElectron) {
-      // console.log("[ProfileMenu] electronAPI found, calling openLoginWindow");
       window.electronAPI?.openLoginWindow();
     } else {
-      // console.log("[ProfileMenu] electronAPI not found, redirecting to /login");
       window.location.href = '/login';
     }
   };

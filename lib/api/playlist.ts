@@ -18,10 +18,6 @@ export function getUserPlaylist(uid: number, limit: number = 30, offset: number 
  * @param offset 偏移量，默认 0
  * @returns 歌曲列表数据
  */
-export function getPlaylistAllTracks({ id, limit, offset = 0, }: {
-  id: number | string;
-  limit?: number;
-  offset?: number;
-}) {
-  return request.get('/playlist/track/all', { params: { id, limit, offset, } });
+export function getPlaylistAllTracks(id: number | string, limit?: number, offset: number = 0) {
+  return request.get('/playlist/track/all', { params: { id, limit, offset } });
 }

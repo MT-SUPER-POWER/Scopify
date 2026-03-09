@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button"
 import { Plus, PanelLeftClose, Menu } from "lucide-react";
+import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 
 export function SiderBarMenu({
   panelAPI
@@ -36,14 +37,16 @@ export function SiderBarMenu({
         </DropdownMenuGroup>
 
         {/* Group -- Playlist Function */}
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="dropdown-menu-label-momo mt-1"> Playlist </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Plus className="w-5 h-5 mr-2" />
-            <span>Create playlist</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+        {useLoginStatus() && (
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="dropdown-menu-label-momo mt-1"> Playlist </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Plus className="w-5 h-5 mr-2" />
+              <span>Create playlist</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        )}
 
       </DropdownMenuContent>
     </DropdownMenu>

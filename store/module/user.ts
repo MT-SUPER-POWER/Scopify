@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { devtools } from "zustand-devtools";
 import { NeteasePlaylist } from "@/types/api/playlist";
+import { SongDetail } from "@/types/api/music";
 
 interface UserData {
   userId: number;
@@ -19,13 +20,14 @@ type UserStore = {
   searchType: number;
   collectedAlbumIds: Set<number>;
 
-  playlist: NeteasePlaylist[]; // 替换掉 any[]
-  albumList: any[]; // 如果有 album 的 json，也应该像上面一样写个 interface
+  playlist: NeteasePlaylist[];
+  albumList: SongDetail[];
 
   handleLogout: () => Promise<void>;
   setUser: (userData: UserData) => void;
   setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
   setCookie: (cookie: string) => void;
+  setAlbumList: (albumList: SongDetail[]) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -44,6 +46,7 @@ export const useUserStore = create<UserStore>()(
         setUser: (userData: UserData) => set({ user: userData }),
         setLoginType: (loginType) => set({ loginType }),
         setCookie: (cookie) => set({ cookie }),
+        setAlbumList: (albumList: SongDetail[]) => set({ albumList }),
         handleLogout: async () => {
           try {
             await logout();

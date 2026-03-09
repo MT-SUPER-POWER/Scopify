@@ -68,14 +68,13 @@ const Header = ({
       </div>
 
       {/* 搜索入口 */}
-      <div className="flex flex-row gap-2 items-center justify-center">
+      <div className="flex flex-row gap-2 items-center justify-center w-95 min-w-0">
 
-        <Link
-          href="/"
+        <Link href="/"
           className={cn(
-            "w-12 h-12 rounded-full flex items-center justify-center",
-            "text-zinc-400 hover:text-white bg-[#242424]",
-            "active:scale-95 transition-all duration-150" // 点击时缩小到95%，并带动画
+            "w-12 h-12 rounded-full flex items-center justify-center shrink-0",
+            "text-zinc-400 bg-[#242424]",
+            "active:scale-95 transition-all duration-150"
           )}
         >
           <Home className="w-6 h-6" />
@@ -85,15 +84,14 @@ const Header = ({
           onClick={onOpenSearch}
           className={cn(
             "flex items-center gap-2 bg-[#242424] hover:bg-[#2a2a2a] transition-colors rounded-full",
-            "px-4 py-3 flex-1 max-w-150 sm:max-w-100 md:max-w-125 group",
+            "px-4 py-3 flex-1 min-w-40 group",
             "cursor-pointer border border-transparent hover:border-zinc-700/50",
-            "min-w-30",
           )}
         >
 
-          <Search className="w-6 h-6 shrink-0 text-zinc-400 group-hover:text-white" />
+          <Search className="w-5 h-5 shrink-0 text-zinc-400" />
           {/* TODO: 接入网易搜索 API，切换为 shadcn 输入组件 */}
-          <span className="text-zinc-400 font-medium text-sm flex-1 text-left group-hover:text-white truncate">
+          <span className="text-zinc-400 font-medium text-sm flex-1 text-left truncate">
             What do you want to play?
           </span>
           <div className="flex items-center gap-1 shrink-0 text-zinc-400 border border-zinc-600 rounded px-1.5 py-0.5 text-[10px] font-bold">
