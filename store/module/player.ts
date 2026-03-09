@@ -36,4 +36,18 @@ export const usePlayerStore = create<PlayerStore>()(
   )
 );
 
-// 默认导出 zustand
+// NOTE: 监听跨窗口/标签页的 localStorage 变化并同步状态 (实现主窗口和小组件窗口等实时同步)
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (e) => {
+    if (e.key === "player-storage" && e.newValue) {
+      try {
+        const newState = JSON.parse(e.newValue);
+        if (newState && newState.state) {
+          usePlayerStore.setState(newState.state);
+        }
+      } catch (error) {
+        console.error("同步跨窗口 Zustand 状态失败", error);
+      }
+    }
+  });
+}

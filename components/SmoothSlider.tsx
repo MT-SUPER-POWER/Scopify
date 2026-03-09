@@ -36,7 +36,7 @@ export const SmoothSlider = ({
   value,
   onChange,
   orientation = "horizontal",
-  size = 150,
+  size = 150, // 默认固定尺寸，当传入外层 flex 时可通过设置 style/class 覆盖
   trackColor = "#4d4d4d",
   fillColor = "#ffffff",
   thumbColor = "#ffffff",
@@ -158,11 +158,11 @@ export const SmoothSlider = ({
 
   return (
     <div
-      className={`relative flex items-center select-none touch-none ${className}`}
+      className={`relative flex justify-center items-center select-none touch-none ${className}`}
       style={{
         ...(isVertical
-          ? { height: size, width: thumbSize, flexDirection: "column" }
-          : { width: size, height: thumbSize }),
+          ? { height: size !== undefined ? size : "100%", width: thumbSize, flexDirection: "column" }
+          : { width: "100%", height: thumbSize }),  // 水平模式直接沾满容器，由外层 className 控制 flex-1
       }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
@@ -170,7 +170,7 @@ export const SmoothSlider = ({
       {/* 滑轨 */}
       <div
         ref={trackRef}
-        className="relative rounded-full cursor-pointer"
+        className="relative rounded-full cursor-pointer w-full flex items-center justify-center"
         style={{
           backgroundColor: trackColor,
           ...(isVertical
@@ -204,7 +204,7 @@ export const SmoothSlider = ({
 
         {/* 滑块 */}
         <motion.div
-          className="absolute rounded-full shadow-md"
+          className="absolute rounded-full shadow-md z-10"
           style={{
             width: thumbSize,
             height: thumbSize,

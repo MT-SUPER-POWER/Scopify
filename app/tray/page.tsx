@@ -1,25 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Music, SkipBack, Play, SkipForward, Heart, Shuffle, Minus, MonitorPlay, MicVocal, Settings, Power, ChevronRight } from "lucide-react";
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+import { useEffect, useState } from "react";
+import { SkipBack, Play, SkipForward, Heart, Minus, MicVocal, Settings, Power } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // 引入 shadcn 组件
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent
-} from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SongTitle } from "@/components/Marquee";
-import { IoDiscOutline } from "react-icons/io5";
+import { VolumeControl } from "@/components/VolumeControl";
+
+// 引入自定义 Hook 和状态管理
+import { usePlayerStore } from "@/store";
+// import { useIsElectron } from "@/lib/hooks/useElectronDetect";
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function useIsElectron() {
   const [isElectron, setIsElectron] = useState<boolean | null>(null);
@@ -30,9 +28,15 @@ function useIsElectron() {
   return isElectron;
 }
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 export default function TrayPage() {
   const router = useRouter();
   const isElectron = useIsElectron();
+  const volume = usePlayerStore((state) => state.volume);
+  const handleVolumeChange = (newVolume: number) => {
+    usePlayerStore.getState().setVolume(newVolume);
+  };
 
   // 路由跳转副作用，必须放在所有 Hook 之前
   useEffect(() => {
@@ -85,6 +89,16 @@ export default function TrayPage() {
             <Heart className="w-6 h-6" />
           </button>
         </div>
+
+        <Separator className="my-1.5 bg-white/10" />
+
+        {/* 音量条区 */}
+        <VolumeControl
+          initialVolume={volume}
+          onChange={handleVolumeChange}
+          orientation="horizontal"
+          variant="inline"
+        />
 
         <Separator className="my-1.5 bg-white/10" />
 

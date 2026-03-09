@@ -30,8 +30,7 @@ import { usePlayerStore, useUserStore } from "@/store";
 // 最大化窗口
 const Maximized = (isElectron: boolean) => {
   if (isElectron) {
-    // Electron 环境：调用 Electron API 进入全屏
-    window.electronAPI?.enterFullScreen();
+    window.electronAPI?.enterFullScreen(); // Electron 环境：调用 Electron API 进入全屏
   } else {
     // Web 环境：调用浏览器全屏 API
     if (document.documentElement.requestFullscreen) {
@@ -43,8 +42,7 @@ const Maximized = (isElectron: boolean) => {
 // 最小化窗口
 const Minimize = (isElectron: boolean) => {
   if (isElectron) {
-    // Electron 环境：调用 Electron API 退出全屏
-    window.electronAPI?.exitFullScreen();
+    window.electronAPI?.exitFullScreen(); // Electron 环境：调用 Electron API 退出全屏
   } else {
     // Web 环境：退出浏览器全屏
     if (document.fullscreenElement) {
@@ -64,8 +62,8 @@ export const PlayerBar = () => {
   const [progress, setProgress] = useState(30);
   const [isMaximized, setIsMaximized] = useState(false);
 
-  // const volume = usePlayerStore((state) => state.volume);
-  const volume = usePlayerStore.getState().volume;
+  // NOTE: zustand 内联函数的写法，才会类似于 useState 更新
+  const volume = usePlayerStore((state) => state.volume); // ❌ 没有响应性: const volume = usePlayerStore.getState().volume;
 
   // 监听全屏状态变化（支持 Electron 和 Web 环境）
   useFullScreenListener((isFullScreen) => {
@@ -74,7 +72,6 @@ export const PlayerBar = () => {
 
   // 处理音量变化（可以连接到实际的音频播放器）
   const handleVolumeChange = (newVolume: number) => {
-    // setVolume(newVolume);
     usePlayerStore.getState().setVolume(newVolume);
     // TODO: 连接到实际的音频播放器
   };
