@@ -1,9 +1,3 @@
-/*
- * ----------------------------------
- *  左侧侧边栏 Filter 部分专门使用类型
- * ----------------------------------
- * ----------------------------------
- */
 
 export type FilterAction = { type: "ALL" | "CREATED" | "SUBSCRIBED" };
 // 0: ALL, 1: CREATED, 2: SUBSCRIBED
@@ -14,4 +8,9 @@ export interface SidebarProps {
     collapse: () => void | undefined;
     expand: () => void | undefined;
   };
+}
+
+export interface LibItemMenuProps {
+  children: React.ReactNode;
+  playlistID: number | string;
 }
