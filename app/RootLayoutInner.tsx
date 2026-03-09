@@ -5,7 +5,7 @@ import MainLayout from "../components/MainLayout";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTATNS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const noAuthPages = ['/login'];
+const noAuthPages = ['/login', '/tray'];
 
 export default function RootLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

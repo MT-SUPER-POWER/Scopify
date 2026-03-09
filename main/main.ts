@@ -5,13 +5,20 @@ import serve from "electron-serve";
 import { join } from "path";
 import fs from "fs/promises";
 import type { BrowserWindow as BrowserWindowType } from "electron";
+
+// module
 import { initTray } from "./module/tray";
 import initializeLoginWindow from "./module/login";
+import { initThumbarButtons } from "./module/thumbarButtons";
 
-export const __logoIcon = join(__dirname, "../assets/icon.ico");
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+export const __logoIcon = join(__dirname, "../public/icon.ico");
 
 /**
- * FIXME: 打包导致的 typescript 类型问题，待更好的方案
+  FIXME: 打包导致的 typescript 类型问题，待更好的方案
  * 虽然说我们目前的 preload 是用 ts 写的
  * 但是打包之后都是 .js 文件，所以只能够找同目录的 .js 文件，这个是没办法的
  */
@@ -133,23 +140,29 @@ const createWindow = () => {
     }
   });
 
-
+  // TODO: 关闭按钮显示，最小化或者关闭程序，而不是直接关闭
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
 };
 
 // TODO: GPU 加速
+//
 
 
+// TODO: 修改软件的进程名字 和 icon 图标
 
 // 应用程序准备就绪时的处理
 app.whenReady().then(() => {
   console.log("Scopify ready, creating window...");
 
   createWindow();
-  initTray();
-  initializeLoginWindow();
+
+  if (mainWindow) {
+    initTray(mainWindow);
+    initializeLoginWindow();
+    initThumbarButtons(mainWindow);
+  }
 
   // Mac 的特殊处理
   app.on("activate", () => {
