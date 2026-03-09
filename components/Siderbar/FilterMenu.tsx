@@ -13,10 +13,33 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { PanelLeftClose, Menu, PanelRightClose, Plus } from "lucide-react";
-import { IconDisc, IconPlaylist, IconUsers } from '@tabler/icons-react';
+import { PanelLeftClose, Menu, PanelRightClose, Plus, Bell } from "lucide-react";
+import { IconDisc, IconPlaylist } from '@tabler/icons-react';
 import { cn } from "@/lib/utils";
+import { FilterAction, FilterState } from "@/types/components/Siderbar";
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const stateToType: Record<FilterState, FilterAction["type"]> = {
+  0: "ALL",
+  1: "CREATED",
+  2: "SUBSCRIBED",
+};
+
+const iconList = {
+  "ALL": <IconDisc className="w-5 h-5 mr-2" />,
+  "CREATED": <IconPlaylist className="w-5 h-5 mr-2" />,
+  "SUBSCRIBED": <Bell className="w-5 h-5 mr-2" />,
+
+  "ENLARGE": <PanelRightClose className="w-5 h-5 mr-2" />,
+  "COLLAPSE": <PanelLeftClose className="w-5 h-5 mr-2" />,
+  "FAVORITES": <IconDisc className="w-5 h-5 mr-2 text-yellow-500" />,
+  "CREATE PLAYLISTS": <Plus className="w-5 h-5 mr-2" />
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -38,18 +61,18 @@ function handleMenuSelect(item: string, panelAPI?: {
 }
 
 function handleFilterSelect(
-  item: "ALL" | "PLAYLISTS" | "ARTISTS",
-  dispatch: React.ActionDispatch<[action: { type: "ALL" | "PLAYLISTS" | "ARTISTS"; }]>
+  item: FilterAction,
+  dispatch: React.ActionDispatch<[action: FilterAction]>
 ) {
-  switch (item) {
+  switch (item.type) {
     case "ALL":
       dispatch({ type: "ALL" });
       break;
-    case "PLAYLISTS":
-      dispatch({ type: "PLAYLISTS" });
+    case "CREATED":
+      dispatch({ type: "CREATED" });
       break;
-    case "ARTISTS":
-      dispatch({ type: "ARTISTS" });
+    case "SUBSCRIBED":
+      dispatch({ type: "SUBSCRIBED" });
       break;
   }
 }
@@ -65,22 +88,10 @@ export function FilterMenu({
     expand: () => void | undefined;
   };
   filterHook: {
-    state: 0 | 1 | 2;
-    dispatch: React.ActionDispatch<[action: {
-      type: "ALL" | "PLAYLISTS" | "ARTISTS";
-    }]>;
+    state: FilterState;
+    dispatch: React.ActionDispatch<[action: FilterAction]>;
   };
 }) {
-
-  const iconList = {
-    "ALL": <IconDisc className="w-5 h-5 mr-2" />,
-    "PLAYLISTS": <IconPlaylist className="w-5 h-5 mr-2" />,
-    "ARTISTS": <IconUsers className="w-5 h-5 mr-2" />,
-
-    "CREATE PLAYLISTS": <Plus className="w-5 h-5 mr-2" />,
-    "ENLARGE": <PanelRightClose className="w-5 h-5 mr-2" />,
-    "COLLAPSE": <PanelLeftClose className="w-5 h-5 mr-2" />
-  }
 
   return (
     <DropdownMenu>
@@ -102,12 +113,17 @@ export function FilterMenu({
             Filter
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {(["ALL", "PLAYLISTS", "ARTISTS"] as const).map((item) => (
-            <DropdownMenuItem key={item} onSelect={() => handleFilterSelect(item, filterHook.dispatch)}>
-              {iconList[item]}
-              <span>{item}</span>
-            </DropdownMenuItem>
-          ))}
+          <DropdownMenuRadioGroup
+            value={stateToType[filterHook.state]}
+            onValueChange={val => handleFilterSelect({ type: val as any }, filterHook.dispatch)}
+          >
+            {(["ALL", "CREATED", "SUBSCRIBED"] as const).map((item) => (
+              <DropdownMenuRadioItem key={item} value={item} className="focus:bg-white/10">
+                {iconList[item]}
+                <span>{item}</span>
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
         </DropdownMenuGroup>
 
         <DropdownMenuGroup>

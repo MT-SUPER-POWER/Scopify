@@ -37,9 +37,7 @@ export function SiderBarMenu({
 
         {/* Group -- Playlist Function */}
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="dropdown-menu-label-momo mt-1">
-            Playlist
-          </DropdownMenuLabel>
+          <DropdownMenuLabel className="dropdown-menu-label-momo mt-1"> Playlist </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Plus className="w-5 h-5 mr-2" />

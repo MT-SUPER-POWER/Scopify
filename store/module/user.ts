@@ -3,11 +3,12 @@ import { clearLoginStatus } from "@/lib/web/auth";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { devtools } from "zustand-devtools";
+import { NeteasePlaylist } from "@/types/api/playlist";
 
 interface UserData {
-  userId: number;       // uid 一定要存储下来
-  nickName: string;      // 昵称
-  [key: string]: any;   // 其他用户信息字段，根据需要添加
+  userId: number;
+  nickName: string;
+  [key: string]: any;
 }
 
 type UserStore = {
@@ -17,8 +18,9 @@ type UserStore = {
   searchValue: string;
   searchType: number;
   collectedAlbumIds: Set<number>;
-  playlist: any[];      // 歌单
-  albumList: any[];     // 歌单内部的曲子
+
+  playlist: NeteasePlaylist[]; // 替换掉 any[]
+  albumList: any[]; // 如果有 album 的 json，也应该像上面一样写个 interface
 
   handleLogout: () => Promise<void>;
   setUser: (userData: UserData) => void;
@@ -39,13 +41,15 @@ export const useUserStore = create<UserStore>()(
         playlist: [],
         albumList: [],
 
+        setUser: (userData: UserData) => set({ user: userData }),
+        setLoginType: (loginType) => set({ loginType }),
+        setCookie: (cookie) => set({ cookie }),
         handleLogout: async () => {
           try {
             await logout();
           } catch (error) {
             console.error('登出失败:', error);
           } finally {
-            // 清空 Store 存储的数据
             set({
               user: null,
               cookie: '',
@@ -56,13 +60,10 @@ export const useUserStore = create<UserStore>()(
               playlist: [],
               albumList: [],
             });
-            clearLoginStatus();   // 清空浏览器缓存
-            window.location.reload();   // 刷新
+            clearLoginStatus();
+            window.location.reload();
           }
         },
-        setUser: (userData: UserData) => set({ user: userData }),
-        setLoginType: (loginType) => set({ loginType }),
-        setCookie: (cookie) => set({ cookie }),
       }),
       {
         name: 'user-storage',
