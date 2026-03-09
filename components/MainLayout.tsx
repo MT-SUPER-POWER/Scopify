@@ -95,7 +95,7 @@ function MainLayoutInner({
     <LyricsContext.Provider value={lyricsCtx}>
       {/* 上下结构 */}
       <div className={cn(
-        "w-full h-dvh flex flex-col bg-black text-white font-sans",
+        "w-full h-full flex flex-col bg-black text-white font-sans",
         "overflow-hidden select-none p-2 gap-2"
       )}>
         <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
@@ -135,11 +135,23 @@ function MainLayoutInner({
             />
 
             <ResizablePanel>
-              <div className="h-full w-full bg-[#121212] rounded-lg relative flex flex-col overflow-hidden">
-                <Header onOpenSearch={() => setIsSearchOpen(true)} scrollContainer={scrollContainer} />
-                <ScrollArea className="flex-1 min-h-0 overflow-y-auto" viewportRef={setScrollContainer}>
+              <div className="h-full w-full bg-[#121212] rounded-lg relative overflow-hidden group/main">
+                <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
+                  <div className="pointer-events-auto">
+                    <Header onOpenSearch={() => setIsSearchOpen(true)} scrollContainer={scrollContainer} />
+                  </div>
+                </div>
+
+                <ScrollArea className="h-full w-full" viewportRef={setScrollContainer}>
                   {children}
                 </ScrollArea>
+
+                <SearchModal
+                  isOpen={isSearchOpen}
+                  onClose={() => setIsSearchOpen(false)}
+                />
+
+                <LyricsModal />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>

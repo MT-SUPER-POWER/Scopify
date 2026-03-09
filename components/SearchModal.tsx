@@ -1,14 +1,17 @@
+'use client';
+
 import { Search } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { ScrollArea } from "./ui/scroll-area";
+import { useRouter } from 'next/navigation';
 
-export const SearchModal = ({
-  isOpen,
-  onClose,
-}: {
+export const SearchModal = ({ isOpen, onClose, }: {
   isOpen: boolean;
   onClose: () => void;
 }) => {
+
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   // 当弹窗打开时，自动将焦点移动到输入框上
   useEffect(() => {
@@ -34,26 +37,28 @@ export const SearchModal = ({
             ref={inputRef}
             className="w-full bg-transparent border-none text-white px-4 py-2 focus:outline-none text-lg placeholder-zinc-500"
             placeholder="What do you want to listen to?"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                // 这里可以根据输入内容跳转到对应的页面
+                // 例如：window.location.href = `/search?query=${encodeURIComponent(e.currentTarget.value)}`;
+                // 或者调用一个回调函数处理搜索
+                console.log("Enter pressed, search:", e.currentTarget.value);
+                router.push(`/search?query=${encodeURIComponent(e.currentTarget.value)}`);
+              }
+            }}
           />
-          <div className="text-xs text-zinc-400 bg-zinc-800 px-2 py-1 rounded shadow-inner font-bold">
-            ESC
+          <div className="text-xs text-zinc-400 bg-zinc-800 px-2 py-1 rounded shadow-inner font-bold whitespace-nowrap">
+            Ctrl + K
           </div>
         </div>
 
         {/* Mock Search Results */}
-        <div
-          className="p-4 max-h-[50vh] overflow-y-auto
-            [&::-webkit-scrollbar]:w-2
-            [&::-webkit-scrollbar-track]:bg-transparent
-            [&::-webkit-scrollbar-thumb]:bg-transparent
-            hover:[&::-webkit-scrollbar-thumb]:bg-white/30
-            [&::-webkit-scrollbar-thumb]:rounded-full"
-        >
+        <ScrollArea className="p-4 max-h-[50vh] overflow-y-auto scrollbar-custom">
           <h3 className="text-zinc-400 text-sm font-bold mb-4">
             Recent searches
           </h3>
-          <div className="space-y-2">
-            {[1, 2, 3].map((item) => (
+          <div className="">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
               <div
                 key={item}
                 className="flex items-center justify-between p-2 hover:bg-[#1a1a1a] rounded-md cursor-pointer group transition-colors"
@@ -94,7 +99,7 @@ export const SearchModal = ({
               </div>
             ))}
           </div>
-        </div>
+        </ScrollArea>
       </div>
     </div>
   );

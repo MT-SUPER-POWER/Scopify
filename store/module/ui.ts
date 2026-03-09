@@ -22,18 +22,15 @@ export const useUiStore = create<UiStore>()(
       isLyricsOpen: typeof window !== 'undefined' && localStorage.getItem('isLyricsOpen')
         ? JSON.parse(localStorage.getItem('isLyricsOpen') as string)
         : false,
+
       setIsLyricsOpen: (open) => {
-        set({ isLyricsOpen: open });
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('isLyricsOpen', JSON.stringify(open));
-        }
+        set(() => ({ isLyricsOpen: open }));
       },
       toggleLyrics: () => {
-        const next = !get().isLyricsOpen;
-        set({ isLyricsOpen: next });
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('isLyricsOpen', JSON.stringify(next));
-        }
+        set((state) => {
+          const next = !state.isLyricsOpen;
+          return { isLyricsOpen: next };
+        });
       },
 
       isCollapsed: false,

@@ -6,6 +6,12 @@
     "name": "Momo",
     "email": "shuhengwen@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "TrimiTroll",
+      "email": "1740627301@qq.com"
+    }
+  ],
   "homepage": "https://github.com/MT-SUPER-POWER",
   "type": "module",
   "main": "out/main.js",
@@ -25,9 +31,11 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toast": "^1.2.15",
     "@tabler/icons-react": "^3.38.0",
+    "@types/colorthief": "^2.6.1",
     "axios": "^1.13.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "colorthief": "^3.3.1",
     "concurrently": "^9.2.1",
     "electron": "^40.6.1",
     "electron-builder": "^26.8.1",

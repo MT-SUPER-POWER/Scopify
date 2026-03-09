@@ -65,7 +65,6 @@ export function initializeLoginWindow() {
     }
   });
 
-  // TODO: 子窗口主动关闭，配合登录成功后自动关闭窗口的功能
   ipcMain.on('close-login-window', () => {
     loginWindow?.close();
   });

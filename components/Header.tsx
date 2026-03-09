@@ -41,7 +41,6 @@ const Header = ({
         "top-0 z-20",
       )}
     >
-      {/* NOTE: 磨砂玻璃背景层*/}
       <div
         className={cn(
           "absolute inset-0 bg-momo-grey/10 backdrop-blur-lg -z-10 transition-opacity duration-300 rounded-[10px]",

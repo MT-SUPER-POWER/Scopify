@@ -109,7 +109,6 @@ function Lyric({ activeLineIndex, setActiveLineIndex, handleWheel }: {
             <div
               key={index}
               ref={el => { lineRefs.current[index] = el; }}
-              // NOTE: 移动端 justify-center 居中，PC端 lg:justify-start 靠左
               className={cn(
                 "py-4 flex items-center justify-center lg:justify-start px-6 lg:px-0 lg:pr-4",
                 "px-8 lg:px-12"
