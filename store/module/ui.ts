@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { devtools } from "zustand-devtools";
 
 interface UiStore {
   isSearchOpen: boolean;
@@ -14,34 +15,28 @@ interface UiStore {
 }
 
 export const useUiStore = create<UiStore>()(
-  persist(
-    (set, get) => ({
-      isSearchOpen: false,
-      setIsSearchOpen: (open) => set({ isSearchOpen: open }),
+  devtools(
+    persist(
+      (set, get) => ({
+        isSearchOpen: false,
+        isCollapsed: false,
+        isLyricsOpen: typeof window !== 'undefined' && localStorage.getItem('isLyricsOpen')
+          ? JSON.parse(localStorage.getItem('isLyricsOpen') as string)
+          : false,
 
-      isLyricsOpen: typeof window !== 'undefined' && localStorage.getItem('isLyricsOpen')
-        ? JSON.parse(localStorage.getItem('isLyricsOpen') as string)
-        : false,
-
-      setIsLyricsOpen: (open) => {
-        set(() => ({ isLyricsOpen: open }));
-      },
-      toggleLyrics: () => {
-        set((state) => {
-          const next = !state.isLyricsOpen;
-          return { isLyricsOpen: next };
-        });
-      },
-
-      isCollapsed: false,
-      setIsCollapsed: (collapsed) => set({ isCollapsed: collapsed }),
-    }),
-    {
-      name: 'ui-storage',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        isLyricsOpen: state.isLyricsOpen,
+        setIsSearchOpen: (open) => set({ isSearchOpen: open }),
+        setIsLyricsOpen: (open) => { set(() => ({ isLyricsOpen: open })); },
+        toggleLyrics: () => set((state) => ({ isLyricsOpen: !state.isLyricsOpen })),
+        setIsCollapsed: (collapsed) => set({ isCollapsed: collapsed }),
       }),
-    }
+      {
+        name: 'ui-storage',
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          isLyricsOpen: state.isLyricsOpen,
+        }),
+      }
+    )
   )
 );
+
