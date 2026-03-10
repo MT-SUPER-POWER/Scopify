@@ -31,5 +31,3 @@ try {
 } catch (error) {
   console.error("[Preload] Error:", error);
 }
-
-export { electronAPI };

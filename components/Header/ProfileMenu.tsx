@@ -40,6 +40,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const isElectron = useIsElectron();
 
   const handleLoginClick = () => {
+    // DEBUG: 点击 login 不出现小窗口 - 调试点
+    console.log("Electron 环境:", isElectron);
+
     if (typeof window !== "undefined" && isElectron) {
       window.electronAPI?.openLoginWindow();
     } else {

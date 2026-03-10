@@ -24,7 +24,6 @@ type LoginMode = 'password' | 'sms' | 'qr';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<LoginMode>('qr');
@@ -157,7 +156,7 @@ export default function LoginPage() {
           toast.success("登录成功");
         }
       } catch (error) {
-        // toast.error("轮询二维码状态失败");
+        toast.error("轮询二维码状态失败");
         console.error('轮询二维码状态失败', error);
       }
     }, 3000);

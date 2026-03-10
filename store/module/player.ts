@@ -34,6 +34,8 @@ type PlayerStore = {
   playPrev: () => Promise<void>;
 };
 
+
+// TODO: 退出登录或者用户一退出之后的清理
 export const usePlayerStore = create<PlayerStore>()(
   devtools(
     persist(
@@ -96,6 +98,21 @@ export const usePlayerStore = create<PlayerStore>()(
           const prev = Math.max(0, queueIndex - 1);
           await playQueueIndex(prev);
         },
+
+        cleanCache: () => {
+          set({
+            volume: 100,
+            isPlaying: false,
+            currentSongDetail: null,
+            currentSongUrl: null,
+            currentTime: 0,
+            totalTime: 0,
+            repeatMode: "off",
+            isShuffle: false,
+            queue: [],
+            queueIndex: -1,
+          })
+        }
       }),
       {
         name: 'player-storage',

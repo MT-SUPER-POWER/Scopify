@@ -1,4 +1,4 @@
-import { __logoIcon, __preloadScript } from "../main";
+import { __logoIcon, __preloadScript } from "../constants.js";
 import fs from "fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
 
@@ -11,12 +11,11 @@ fs.access(__preloadScript).catch(() => {
   console.warn("Warning: Preload script file not found at", __preloadScript);
 });
 
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 let loginWindow: BrowserWindow | null = null; // 登录窗口实例
 
-export const openLoginWindow = async (mainWin: BrowserWindow) => {
+export const createLoginWindow = async (mainWin: BrowserWindow) => {
 
 
   // 如果登录窗口已存在，则聚焦并返回
@@ -42,11 +41,12 @@ export const openLoginWindow = async (mainWin: BrowserWindow) => {
     }
   });
 
-  if (app.isPackaged) {
-    loginWindow.loadURL("app://-/login.html");
-  } else {
-    loginWindow.loadURL("http://localhost:3000/login");
-  }
+  const devPort = process.env.NEXT_PORT ?? "3000";
+  const loginUrl = app.isPackaged
+    ? "app://-/login.html"
+    : `http://localhost:${devPort}/login`;
+
+  loginWindow.loadURL(loginUrl);
 
   loginWindow?.on("closed", () => {
     loginWindow = null;
@@ -56,13 +56,11 @@ export const openLoginWindow = async (mainWin: BrowserWindow) => {
 /**
  * 初始化登录窗口相关的IPC监听
  */
-export function initializeLoginWindow() {
+export function initializeLoginWindow(mainWindow: Electron.BrowserWindow) {
   ipcMain.on('open-login-window', (event) => {
-    // NOTE: 如何在进程中定位父窗口
-    const mainWin = BrowserWindow.fromWebContents(event.sender);
-    if (mainWin) {
-      openLoginWindow(mainWin);
-    }
+    createLoginWindow(mainWindow);
+    loginWindow?.show();
+    loginWindow?.focus();
   });
 
   ipcMain.on('close-login-window', () => {

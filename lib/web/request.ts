@@ -115,7 +115,7 @@ request.interceptors.response.use(
       !config.noRetry
     ) {
       config.retryCount++;
-      console.error(`请求重试第 ${config.retryCount} 次`);
+      console.warn(`请求重试第 ${config.retryCount} 次`);
 
       // 延迟重试
       await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
@@ -124,7 +124,7 @@ request.interceptors.response.use(
       return request(config);
     }
 
-    console.error(`重试${MAX_RETRIES}次后仍然失败`);
+    console.warn(`重试${MAX_RETRIES}次后仍然失败`);
     return Promise.reject(error);
   }
 );

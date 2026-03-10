@@ -15,7 +15,6 @@ import { VolumeControl } from "@/components/VolumeControl";
 
 // 引入自定义 Hook 和状态管理
 import { usePlayerStore } from "@/store";
-// import { useIsElectron } from "@/lib/hooks/useElectronDetect";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

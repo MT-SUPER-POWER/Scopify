@@ -1,6 +1,6 @@
 'use client';
 
-import { MockRouterContent } from "../components/MockRouterContent";
+import { MockRouterContent } from "@/components/MockRouterContent";
 
 export default function HomePage() {
   return <MockRouterContent />;

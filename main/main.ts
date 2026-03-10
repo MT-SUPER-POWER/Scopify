@@ -3,31 +3,15 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import serve from "electron-serve";
 import { join } from "path";
-import fs from "fs/promises";
 import type { BrowserWindow as BrowserWindowType } from "electron";
 
 // module
-import { initTray } from "./module/tray";
-import initializeLoginWindow from "./module/login";
-import { initThumbarButtons } from "./module/thumbarButtons";
-
+import initTray from "./module/tray.js";
+import initializeLoginWindow from "./module/login.js";
+import { initThumbarButtons } from "./module/thumbarButtons.js";
+import { __logoIcon, __preloadScript } from "./constants.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-
-export const __logoIcon = join(__dirname, "../resources/icon.ico");
-
-/**
-  FIXME: 打包导致的 typescript 类型问题，待更好的方案
- * 虽然说我们目前的 preload 是用 ts 写的
- * 但是打包之后都是 .js 文件，所以只能够找同目录的 .js 文件，这个是没办法的
- */
-export const __preloadScript = join(__dirname, "preload.js");
-
-// 检查图标文件是否存在
-fs.access(__logoIcon).catch(() => {
-  console.warn("Warning: Icon file not found at", __logoIcon);
-});
 
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
   ? serve({ directory: join(__dirname, "../renderer") })
@@ -37,7 +21,6 @@ const devPort = process.env.NEXT_PORT ?? "3000";
 const devBase = `http://localhost:${devPort}`;
 
 let mainWindow: BrowserWindowType | null = null;
-
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -49,7 +32,7 @@ const createWindow = () => {
     minHeight: 720,
     autoHideMenuBar: true,             // 自动隐藏菜单栏
     icon: __logoIcon,                  // 设置应用图标
-    title: "scopify",        // 设置窗口标题
+    title: "scopify",                  // 设置窗口标题
     titleBarOverlay: {
       color: 'rgba(0,0,0,0)',          // 完全透明
       height: 35,
@@ -147,7 +130,6 @@ const createWindow = () => {
 };
 
 // TODO: GPU 加速
-//
 
 
 // TODO: 修改软件的进程名字 和 icon 图标
@@ -160,7 +142,7 @@ app.whenReady().then(() => {
 
   if (mainWindow) {
     initTray(mainWindow);
-    initializeLoginWindow();
+    initializeLoginWindow(mainWindow);
     initThumbarButtons(mainWindow);
   }
 
@@ -176,4 +158,15 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
+});
+
+// 捕获未处理的异常，直接退出 Electron
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  app.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason);
+  app.exit(1);
 });

@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "../components/theme-provider";
-import RootLayoutInner from "./RootLayoutInner";
 import { Toaster } from "@/components/ui/sonner";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RESOURCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -48,8 +47,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <RootLayoutInner>{children}</RootLayoutInner>
-          <Toaster position="top-center" />
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

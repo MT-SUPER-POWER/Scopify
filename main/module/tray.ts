@@ -1,5 +1,5 @@
 import { app, Tray, BrowserWindow, screen } from 'electron';
-import { __logoIcon } from "../main";
+import { __logoIcon } from "../constants.js";
 
 const TRAY_WIDTH = 200;
 const TRAY_HEIGHT = 380;
@@ -9,7 +9,7 @@ const X_OFFSET = 15; // 水平偏移：离开一点 > 0
 const Y_OFFSET = 4;  // 垂直偏移：靠近一些 > 0
 
 let trayWindow: BrowserWindow | null = null;
-let lastBlurTime = 0; // 核心：记录最后一次失去焦点的时间
+let lastBlurTime = 0; // 记录最后一次失去焦点的时间
 
 function createTrayWindow(mainWindow: Electron.BrowserWindow) {
 
@@ -44,7 +44,7 @@ function createTrayWindow(mainWindow: Electron.BrowserWindow) {
   });
 }
 
-export function initTray(mainWindow: Electron.BrowserWindow) {
+function initTray(mainWindow: Electron.BrowserWindow) {
   const tray = new Tray(__logoIcon);
   tray.setToolTip('Scopify');
 
@@ -124,3 +124,5 @@ export function initTray(mainWindow: Electron.BrowserWindow) {
     }
   });
 }
+
+export default initTray;
