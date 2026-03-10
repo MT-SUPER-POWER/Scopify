@@ -43,7 +43,7 @@ export const openLoginWindow = async (mainWin: BrowserWindow) => {
   });
 
   if (app.isPackaged) {
-    loginWindow.loadURL("app://-/login");
+    loginWindow.loadURL("app://-/login.html");
   } else {
     loginWindow.loadURL("http://localhost:3000/login");
   }

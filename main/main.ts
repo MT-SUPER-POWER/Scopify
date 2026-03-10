@@ -15,7 +15,7 @@ import { initThumbarButtons } from "./module/thumbarButtons";
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
-export const __logoIcon = join(__dirname, "../public/icon.ico");
+export const __logoIcon = join(__dirname, "../resources/icon.ico");
 
 /**
   FIXME: 打包导致的 typescript 类型问题，待更好的方案

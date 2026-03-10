@@ -33,7 +33,7 @@ function createTrayWindow(mainWindow: Electron.BrowserWindow) {
 
   const devPort = process.env.NEXT_PORT ?? "3000";
   const trayUrl = app.isPackaged
-    ? `file://${__dirname}/../out/tray.html`
+    ? "app://-/tray.html"
     : `http://localhost:${devPort}/tray`;
 
   trayWindow.loadURL(trayUrl);

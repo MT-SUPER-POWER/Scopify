@@ -1,10 +1,10 @@
 import { nativeImage, BrowserWindow } from "electron";
 import path from "path";
 
-const next = nativeImage.createFromPath(path.join(__dirname, "../../public/pic/tray/next.png"));
-const pause = nativeImage.createFromPath(path.join(__dirname, "../../public/pic/tray/pause.png"));
-const prev = nativeImage.createFromPath(path.join(__dirname, "../../public/pic/tray/prev.png"));
-const play = nativeImage.createFromPath(path.join(__dirname, "../../public/pic/tray/play.png"));
+const next = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/next.png"));
+const pause = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/pause.png"));
+const prev = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/prev.png"));
+const play = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/play.png"));
 
 // 抽离更新逻辑，接收状态作为参数
 export function updateThumbarButtons(mainWindow: BrowserWindow, isPlaying: boolean) {
