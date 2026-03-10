@@ -25,6 +25,13 @@
     "build:electron": "next build && bunx tsc -p tsconfig.electron.json && electron-builder"
   },
   "dependencies": {
+    "electron-serve": "^3.0.1",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "electron": "^40.6.1",
+    "electron-builder": "^26.8.1",
+    "next": "16.1.6",
     "@applemusic-like-lyrics/core": "^0.2.0",
     "@applemusic-like-lyrics/lyric": "^0.3.0",
     "@applemusic-like-lyrics/react": "^0.2.0",
@@ -40,10 +47,8 @@
     "colorthief": "^3.3.1",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
-    "electron-serve": "^3.0.1",
     "lucide-react": "^0.577.0",
     "motion": "^12.34.4",
-    "next": "16.1.6",
     "next-electron-server": "^1.0.0",
     "next-themes": "^0.4.6",
     "radix-ui": "^1.4.3",
@@ -52,11 +57,6 @@
     "react-icons": "^5.5.0",
     "react-resizable-panels": "^4",
     "sonner": "^2.0.7",
-    "zustand": "^5.0.11"
-  },
-  "devDependencies": {
-    "electron": "^40.6.1",
-    "electron-builder": "^26.8.1",
     "zustand-devtools": "^1.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/bun": "latest",
