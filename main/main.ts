@@ -30,7 +30,7 @@ fs.access(__logoIcon).catch(() => {
 });
 
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
-  ? serve({ directory: join(__dirname, "../out") })
+  ? serve({ directory: join(__dirname, "../renderer") })
   : null;
 
 const devPort = process.env.NEXT_PORT ?? "3000";

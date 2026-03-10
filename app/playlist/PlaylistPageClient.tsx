@@ -5,7 +5,7 @@
 import { cn, getMainColorFromImage } from "@/lib/utils";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { Play, MoreHorizontal, Shuffle, ArrowDownCircle, List } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { useUserStore } from "@/store";
@@ -17,11 +17,13 @@ const colorCache = new Map<string, string>();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export default function PlaylistPage() {
+export default function PlaylistPageClient() {
 
-  const playlist = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const playlistId = searchParams.get("id");
+
   const playlistList = useUserStore((state) => state.playlist);
-  const playlistId = playlist.id;
+
   const playlistInfo = React.useMemo(
     () => playlistList.find(p => String(p.id) === playlistId),
     [playlistList, playlistId]
@@ -51,7 +53,6 @@ export default function PlaylistPage() {
       } else {
         getMainColorFromImage(playlistInfo.coverImgUrl)
           .then((color) => {
-            // console.log("从封面图提取的主色调:", color);
             if (color) {
               colorCache.set(playlistInfo.coverImgUrl, color);
               setThemeColor(color);
@@ -68,14 +69,17 @@ export default function PlaylistPage() {
 
   // 请求这个歌曲列表的专辑
   useEffect(() => {
-    // FIXME: 先请求所有的，如果很卡后续再优化
-    getPlaylistAllTracks(playlist.id).then((tracks) => {
-      useUserStore.getState().setAlbumList(tracks.data.songs)
-    }).catch((error) => {
-      console.error("获取歌曲列表失败:", error);
-      toast.error("获取歌曲列表失败，请稍后再试");
-    });
-  }, [playlist]);
+    if (playlistId) {
+      getPlaylistAllTracks(playlistId).then((tracks) => {
+        useUserStore.getState().setAlbumList(tracks.data.songs)
+      }).catch((error) => {
+        console.error("获取歌曲列表失败:", error);
+        toast.error("获取歌曲列表失败，请稍后再试");
+      });
+    }
+  }, [playlistId]);
+
+  if (!playlistId) return <div>Invalid Playlist ID</div>;
 
   return (
     <div className="relative w-full min-h-full flex flex-col bg-[#121212]">
@@ -139,13 +143,10 @@ export default function PlaylistPage() {
               <span className="font-bold group-hover:underline">{PLAYLIST_INFO.creator}</span>
             </div>
             <span className="opacity-60 hidden sm:inline">•</span>
-            {/* 创建时间 (你之前有数据但没渲染) */}
             <span className="opacity-80">{PLAYLIST_INFO.createTime} 创建</span>
             <span className="opacity-60">•</span>
-            {/* 收藏数格式化 (10000 -> 10,000) */}
             <span className="opacity-80">{Number(PLAYLIST_INFO.likes).toLocaleString()} 次收藏</span>
             <span className="opacity-60">•</span>
-            {/* 歌曲总数 */}
             <span className="opacity-80 font-medium">共 {PLAYLIST_INFO.totalSongs} 首歌</span>
           </div>
         </div>

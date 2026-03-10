@@ -19,7 +19,7 @@ export const LibraryItem = ({
   isCollapsed,
 }: LibraryItemProps) => {
 
-  const href = `/playlist/${id}`;
+  const href = `/playlist?id=${id}`;
 
   if (isCollapsed) {
     return (

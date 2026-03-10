@@ -1,0 +1,6 @@
+
+GPU_ACCELERATION = false
+
+# 0: 关闭窗口时退出应用
+# 1: 关闭默认最小化
+EXIT_ON_CLOSE_OR_HIDE = 0
