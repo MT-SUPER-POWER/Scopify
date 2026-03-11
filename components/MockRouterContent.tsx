@@ -16,6 +16,7 @@ export const MockRouterContent = () => {
   return (
     <div className="relative pb-24 font-sans">
       {/* 顶部彩色渐变背景 (Spotify 标志性设计) */}
+      {/* TODO: 彩色顶部渐变根据时间变化 */}
       <div className="absolute top-0 left-0 right-0 h-80 bg-linear-to-b from-indigo-900/80 via-[#121212]/80 to-[#121212] z-0 pointer-events-none" />
 
       <div className="relative z-10 p-6 pt-20 space-y-8">

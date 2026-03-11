@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import LibItemContextMenu from "./Siderbar/LibItemMenu";
+import LibItemContextMenu from "./LibItemMenu";
 
 // 定义组件真正需要的属性，与后端 API 结构解耦
 interface LibraryItemProps {

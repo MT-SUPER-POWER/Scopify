@@ -19,6 +19,7 @@ const colorCache = new Map<string, string>();
 
 export default function PlaylistPageClient() {
 
+  // NOTE: 静态页面拿到 query 参数的方式
   const searchParams = useSearchParams();
   const playlistId = searchParams.get("id");
 

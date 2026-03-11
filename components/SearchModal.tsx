@@ -2,8 +2,9 @@
 
 import { Search } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { ScrollArea } from "./ui/scroll-area";
-import { useRouter } from 'next/navigation';
+
 
 export const SearchModal = ({ isOpen, onClose, }: {
   isOpen: boolean;
@@ -11,7 +12,8 @@ export const SearchModal = ({ isOpen, onClose, }: {
 }) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+  const smartRouter = useSmartRouter();
+
 
   // 当弹窗打开时，自动将焦点移动到输入框上
   useEffect(() => {
@@ -40,10 +42,9 @@ export const SearchModal = ({ isOpen, onClose, }: {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 // 这里可以根据输入内容跳转到对应的页面
-                // 例如：window.location.href = `/search?query=${encodeURIComponent(e.currentTarget.value)}`;
                 // 或者调用一个回调函数处理搜索
                 console.log("Enter pressed, search:", e.currentTarget.value);
-                router.push(`/search?query=${encodeURIComponent(e.currentTarget.value)}`);
+                smartRouter.replace(`/search?query=${encodeURIComponent(e.currentTarget.value)}`);
               }
             }}
           />

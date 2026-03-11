@@ -3,7 +3,7 @@
 ## 简介
 
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，主要是为了练习前端 UI 和 Electron 的开发。
-后端的 API 部分我们直接使用了现成的开源项目，部署也比较简单，后续会考虑自己实现一个后端来对接网易云的接口。
+后端的 API 部分我们直接使用了现成的开源项目，部署也比较简单。
 
 ## 技术栈
 
@@ -33,11 +33,19 @@
 ### 前端的部署方法
 
 ```bash
+cd momo-music-player/
 bun i
-bun run dev
+
+cd backend/api-enhanced
+bun install  # 安装后端依赖
+
+bun run dev  # 开发模式：运行 next.js 和 electron
+bun run build:win # 打包 windows 可执行文件，生成在 dist 目录下
 ```
 
 ### 后端的部署方法
+
+#### 1. 自己部署后端
 
 > 这里使用 k8s 来部署，我们在 backend 文件中会给出对用的 svc 和 pod 文件，你照着大致修改就好
 >
@@ -60,11 +68,24 @@ make netease_status   # 查看状态
 make netease_undeploy # 卸载
 ```
 
+3. 记得修改 next.config.js 中的后端地址为你部署的地址
+
+#### 2. 使用现成的后端
+
+我们程序里面是打包了一个后端一起部署的，地址是 `localhost:3838`，如果你不想自己部署后端，可以直接使用这个地址
+
+> [!note]
+> 如果你是想要自己编译程序，且不想要打包一个后端本地运行
+>
+> 1. 修改 `electron-builder` 的配置文件，去掉 `extraResources` 中的后端相关配置
+> 2. 修改 `next.config.js` 中的后端地址为 `localhost:3838`
+
 ## 待做功能
 
 ### 样式部分
 
 - playlist 模式其内容超过了边界
+- Mock 界面参考网易主页进行修改
 
 ### 单页
 
@@ -78,20 +99,22 @@ make netease_undeploy # 卸载
 - zustand + persist 进行状态管理和持久化存储
   1. 共享的当前音乐播放时间
   2. 过滤曲库类型当前的选择
-
 - GPU 加速
 
 ### 功能部分
 
-- 可以使用标题部分的间隔调整 Table 之间的大小
-  - 实现函数的调用
 - 托盘化
   - 关闭按钮显示，最小化或者关闭程序，而不是直接关闭
   - 对接正在播放的音乐数据并展示出来
   - 对接托盘按钮的回调函数
-
 - github 发布更新客户端自动更新
+- 使用 next-electron-tsc 作为承接的中间组件
+- 右键歌单栏
+  - 查看歌单
+  - 删除歌单
+  - 编辑歌单信息
 
 ### 接口部分
 
 - 搜索框可以搜索内容
+  - 更具搜索内容跳转对应的查询

@@ -20,6 +20,8 @@ import { PanelLeftClose, Menu, PanelRightClose, Plus, Bell } from "lucide-react"
 import { IconDisc, IconPlaylist } from '@tabler/icons-react';
 import { cn } from "@/lib/utils";
 import { FilterAction, FilterState } from "@/types/components/Siderbar";
+import { use } from "react";
+import { useUiStore } from "@/store";
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -43,22 +45,7 @@ const iconList = {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function handleMenuSelect(item: string, panelAPI?: {
-  collapse: () => void | undefined;
-  expand: () => void | undefined;
-}) {
-  switch (item) {
-    case "ENLARGE":
-      panelAPI?.expand?.();
-      break;
-    case "COLLAPSE":
-      panelAPI?.collapse?.();
-      break;
-    default:
-      console.log(`Selected ${item}`)
-      break;
-  }
-}
+
 
 function handleFilterSelect(
   item: FilterAction,
@@ -80,18 +67,26 @@ function handleFilterSelect(
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export function FilterMenu({
-  panelAPI,
   filterHook
 }: {
-  panelAPI?: {
-    collapse: () => void | undefined;
-    expand: () => void | undefined;
-  };
   filterHook: {
     state: FilterState;
     dispatch: React.ActionDispatch<[action: FilterAction]>;
   };
 }) {
+
+  const setIsCollapsed = useUiStore(s => s.setIsCollapsed);
+
+  const handleMenuSelect = (item: string) => {
+    switch (item) {
+      case "ENLARGE":
+        setIsCollapsed(false);
+        break;
+      default:
+        console.log(`Selected ${item}`)
+        break;
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -132,7 +127,7 @@ export function FilterMenu({
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {(["CREATE PLAYLISTS", "ENLARGE"] as const).map((item) => (
-            <DropdownMenuItem key={item} onSelect={() => handleMenuSelect(item, panelAPI)}>
+            <DropdownMenuItem key={item} onSelect={() => handleMenuSelect(item)}>
               {iconList[item]}
               <span>{item}</span>
             </DropdownMenuItem>

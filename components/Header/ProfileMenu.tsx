@@ -16,19 +16,11 @@ import {
 } from "react-icons/fi";
 import { usePlayerStore, useUserStore } from '@/store';
 import Link from 'next/link';
+import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { useLoginStatus } from '@/lib/hooks/useLoginStatus';
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const ProfileCallback = (label: string) => {
-  switch (label) {
-    case "":
-
-    default:
-      console.log(`Selected ${label} -- 功能待开发`);
-  }
-};
 
 const iconList: { label: string; icon: React.ReactNode }[] = [
   { label: "Download", icon: <FiDownload className="mr-2 h-5 w-5" /> },
@@ -38,22 +30,37 @@ const iconList: { label: string; icon: React.ReactNode }[] = [
 
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const isElectron = useIsElectron();
+  const smartRouter = useSmartRouter();
 
   const handleLoginClick = () => {
-    // DEBUG: 点击 login 不出现小窗口 - 调试点
-    console.log("Electron 环境:", isElectron);
-
     if (typeof window !== "undefined" && isElectron) {
       window.electronAPI?.openLoginWindow();
     } else {
-      window.location.href = '/login';
+      smartRouter.replace('/login');
     }
-  };
+  }
 
   const handleLogoutClick = () => {
     useUserStore.getState().handleLogout();
     usePlayerStore.getState().cleanCache();
   }
+
+  const ProfileCallback = (label: string) => {
+    switch (label) {
+      case "Download":
+        // Handle download action
+        break;
+      case "Setting":
+        smartRouter.push('/setting');
+        break;
+      case "Buy Me A Coffee":
+        // Handle buy me a coffee action
+        break;
+      default:
+        console.log(`Selected ${label} -- 功能待开发`);
+    }
+  }
+
 
   return (
     <DropdownMenu>
@@ -83,7 +90,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
               <DropdownMenuItem
                 key={item.label}
                 className="rounded-lg px-3 py-2 text-[15px] -mt-1"
-                onSelect={() => console.log(`Selected ${item.label}`)}
+                onSelect={() => ProfileCallback(item.label)}
               >
                 {item.icon}
                 <span>{item.label}</span>

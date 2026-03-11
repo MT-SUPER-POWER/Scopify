@@ -21,3 +21,14 @@ export function getUserPlaylist(uid: number, limit: number = 30, offset: number 
 export function getPlaylistAllTracks(id: number | string, limit?: number, offset: number = 0) {
   return request.get('/playlist/track/all', { params: { id, limit, offset } });
 }
+
+/**
+ * 获取最近播放-歌曲
+ * @param limit 返回数量，默认为 10
+ * @returns 最近播放的歌曲列表数据
+ */
+export function getRecentSongs(limit: number = 10) {
+  return request.get('/record/recent/song', { params: { limit } });
+}
+
+

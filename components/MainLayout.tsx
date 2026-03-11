@@ -2,23 +2,33 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+
 import Header from "../components/Header";
 import { Sidebar } from "../components/Sidebar";
 import { PlayerBar } from "../components/PlayerBar";
 import { SearchModal } from "../components/SearchModal";
-import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
+
+// status store
 import { useUiStore } from "@/store/module/ui";
-import dynamic from "next/dynamic";
-import { useHasHydrated } from "@/lib/hooks/useHydration";
+
+
+// lib
+import { cn } from "@/lib/utils";
+import { usePanelRef, useDefaultLayout } from "react-resizable-panels";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ResizableHandle,
-  ResizablePanel,
   ResizablePanelGroup,
+  ResizablePanel,
 } from "@/components/ui/resizable";
-import { usePanelRef, useDefaultLayout } from "react-resizable-panels";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
+// self components
 import MainLayoutSkeleton from "./MainLayout/Skeleton";
+import LyricsModal from "../components/LyricModal";
+
+// hooks
+import { useHasHydrated } from "@/lib/hooks/useHydration";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LYRICS CONTEXT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -37,12 +47,10 @@ export const useLyrics = () => {
   return ctx;
 };
 
-const LyricsModal = dynamic(() => import("../components/LyricModal"), { ssr: false });
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 /**
- * MainLayout: 播放器的壳子组件 - 支持懒加载 + 骨架屏
+ * MainLayout: 播放器的子组件 - 支持懒加载 + 骨架屏
  */
 function MainLayoutInner({
   children,
@@ -61,13 +69,16 @@ function MainLayoutInner({
   const toggleLyrics = useUiStore((s) => s.toggleLyrics);
   const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
   const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
+  const isCollapsed = useUiStore(s => s.isCollapsed);
 
-  const panelAPI = useMemo(() => {
-    return {
-      collapse: () => panelRef.current?.collapse(),
-      expand: () => panelRef.current?.expand()
+  // 监听子组件的 collapse/expand 事件并同步状态
+  useEffect(() => {
+    if (isCollapsed) {
+      panelRef.current?.collapse();
+    } else {
+      panelRef.current?.expand();
     }
-  }, [panelRef]);
+  }, [isCollapsed]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -101,7 +112,10 @@ function MainLayoutInner({
         <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         <LyricsModal />
 
-        {/* 左右结构 */}
+        {/*
+        左右结构
+        TODO: dashboard 右侧响应式有问题
+         */}
         <div className="flex-1 min-h-0 relative w-full">
           <ResizablePanelGroup
             orientation="horizontal"
@@ -121,7 +135,7 @@ function MainLayoutInner({
                 "bg-[#0f0f0f] rounded-lg overflow-hidden transition-all duration-300 ease-in-out",
               )}
             >
-              <Sidebar panelAPI={panelAPI} />
+              <Sidebar />
             </ResizablePanel>
 
             <ResizableHandle

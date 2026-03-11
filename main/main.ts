@@ -11,7 +11,7 @@ import log from "electron-log";
 // NOTE: 配置日志自定义存储位置
 const logPath = app.isPackaged
   ? join(app.getPath("userData"), "logs/main.log")
-  : join(__dirname, "../logs/main.log");             // 开发态：当前项目根目录的 logs 文件夹中
+  : join(__dirname, "../logs/main.log");
 
 log.transports.file.resolvePathFn = () => logPath;
 log.transports.file.level = "info";

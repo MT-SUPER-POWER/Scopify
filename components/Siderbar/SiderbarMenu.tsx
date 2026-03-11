@@ -1,3 +1,10 @@
+/*
+ * ------------------------
+ * 边栏头顶区域部分的按钮
+ * ------------------------
+ */
+
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,15 +17,10 @@ import {
 import { Button } from "@/components/ui/button"
 import { Plus, PanelLeftClose, Menu } from "lucide-react";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import React from "react";
+import { useUiStore } from "@/store";
 
-export function SiderBarMenu({
-  panelAPI
-}: {
-  panelAPI?: {
-    collapse: () => void | undefined;
-    expand: () => void | undefined;
-  };
-}) {
+function _SiderBarMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,7 +32,7 @@ export function SiderBarMenu({
         <DropdownMenuGroup>
           <DropdownMenuLabel className="dropdown-menu-label-momo mt-1"> Sider Bar </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => panelAPI?.collapse?.()}>
+          <DropdownMenuItem onClick={() => useUiStore.getState().setIsCollapsed(true)}>
             <PanelLeftClose className="w-5 h-5 hover:scale-110 active:scale-95 transition-transform mr-2" />
             <span>Collapse</span>
           </DropdownMenuItem>
@@ -52,3 +54,5 @@ export function SiderBarMenu({
     </DropdownMenu>
   )
 }
+
+export const SiderBarMenu = React.memo(_SiderBarMenu);

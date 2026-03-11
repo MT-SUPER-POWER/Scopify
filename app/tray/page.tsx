@@ -3,18 +3,19 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { useEffect, useState } from "react";
-import { SkipBack, Play, SkipForward, Heart, Minus, MicVocal, Settings, Power } from "lucide-react";
-import { useRouter } from "next/navigation";
 
-// 引入 shadcn 组件
+
+// 引入 UI 组件
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SongTitle } from "@/components/Marquee";
 import { VolumeControl } from "@/components/VolumeControl";
+import { SkipBack, Play, SkipForward, Heart, Minus, MicVocal, Settings, Power } from "lucide-react";
 
 // 引入自定义 Hook 和状态管理
 import { usePlayerStore } from "@/store";
+import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -30,7 +31,9 @@ function useIsElectron() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function TrayPage() {
-  const router = useRouter();
+
+  // const router = useRouter();
+  const smartRouter = useSmartRouter();
   const isElectron = useIsElectron();
   const volume = usePlayerStore((state) => state.volume);
   const handleVolumeChange = (newVolume: number) => {
@@ -40,9 +43,9 @@ export default function TrayPage() {
   // 路由跳转副作用，必须放在所有 Hook 之前
   useEffect(() => {
     if (isElectron === false && typeof window !== "undefined") {
-      router.replace("/");
+      smartRouter.replace("/");
     }
-  }, [isElectron, router]);
+  }, [isElectron, smartRouter]);
 
   useEffect(() => {
     // 强制 body 透明，防止背景黑色
@@ -52,7 +55,6 @@ export default function TrayPage() {
     }
   }, []);
 
-  if (isElectron === null) return null;
   if (!isElectron) return null;
 
   // 提取公共样式

@@ -1,9 +1,8 @@
 ---
-name: 终端操作技能
+name: terminal-ops
 description: 使用终端操作的时候触发
 ---
 
--
 
 ## 终端操作须知
 

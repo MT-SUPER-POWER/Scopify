@@ -2,36 +2,29 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Library, RefreshCw, ListMusic, LogIn, Search } from "lucide-react"
+import { Library, RefreshCw, ListMusic, User } from "lucide-react"
 import React, { useEffect, useReducer, useState } from "react";
 import { useUiStore } from "@/store/module/ui";
 import { cn } from "@/lib/utils";
-import { LibraryItem } from "./LibraryItem";
+import { LibraryItem } from "./Siderbar/LibraryItem";
 import { SiderBarMenu } from "./Siderbar/SiderbarMenu";
 import { FilterMenu } from "./Siderbar/FilterMenu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getUserPlaylist } from "@/lib/api/playlist";
-import { useUserStore } from "@/store";
+import { usePlayerStore, useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { FilterAction, FilterState, SidebarProps } from "@/types/components/Siderbar";
+import { FilterAction, FilterState } from "@/types/components/Siderbar";
 import { useIsElectron } from "@/lib/hooks/useElectronDetect";
+import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const isElectron = useIsElectron();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const handleLoginClick = () => {
-  if (typeof window !== "undefined" && isElectron) {
-    window.electronAPI?.openLoginWindow();
-  } else {
-    window.location.href = '/login';
-  }
-};
 
 function reducer(_state: FilterState, action: FilterAction) {
   switch (action.type) {
@@ -68,6 +61,7 @@ function ActionCard({ title, subtitle, buttonText, onClick }: ActionCardProps) {
   );
 }
 
+// 歌单
 function SkeletonItem() {
   return (
     <div className="flex gap-3 items-center p-2 rounded-md animate-pulse">
@@ -82,13 +76,15 @@ function SkeletonItem() {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function SidebarImpl({ panelAPI }: SidebarProps) {
+function SidebarImpl() {
   const isVeryNarrow = useUiStore(s => s.isCollapsed);
   const [filterState, filterDispatch] = useReducer(reducer, 0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isUserLogin = useLoginStatus();
   const playlists = useUserStore(s => s.playlist);
+  const isElectron = useIsElectron();
+  const smartRouter = useSmartRouter();
 
   // 请求歌单列表
   const fetchPlaylist = async () => {
@@ -110,8 +106,22 @@ function SidebarImpl({ panelAPI }: SidebarProps) {
     }
   };
 
+  const handleLoginClick = () => {
+    if (typeof window !== "undefined" && isElectron) {
+      window.electronAPI?.openLoginWindow();
+    } else {
+      smartRouter.replace('/login');
+    }
+  }
+
+  // 如果用户登录的时候，会去拉一下歌曲，退出的时候把缓存给清空
   useEffect(() => {
-    fetchPlaylist();
+    if (isUserLogin) {
+      fetchPlaylist();
+    }
+    return () => {
+      usePlayerStore.getState().cleanCache();
+    };
   }, [isUserLogin]);
 
   return (
@@ -139,7 +149,7 @@ function SidebarImpl({ panelAPI }: SidebarProps) {
           </div>
           {!isVeryNarrow && (
             <div className="flex items-center shrink-0 text-zinc-400">
-              <SiderBarMenu panelAPI={panelAPI} />
+              <SiderBarMenu />
             </div>
           )}
         </div>
@@ -162,7 +172,7 @@ function SidebarImpl({ panelAPI }: SidebarProps) {
           </div>
         ) : (
           <div className="w-fit mx-auto -mt-2 flex items-center justify-center p-1 rounded-sm hover:bg-[#2a2a2a] transition-all text-zinc-400 hover:text-white">
-            <FilterMenu panelAPI={panelAPI} filterHook={{ state: filterState, dispatch: filterDispatch }} />
+            <FilterMenu filterHook={{ state: filterState, dispatch: filterDispatch }} />
           </div>
         )}
       </div>
@@ -179,13 +189,13 @@ function SidebarImpl({ panelAPI }: SidebarProps) {
           {isLoading ? (
             isVeryNarrow ? (
               <div className="flex flex-col gap-3 items-center mt-4">
-                {[1, 2, 3].map(i => (
+                {[1, 2, 3, 4, 5].map(i => (
                   <div key={i} className="w-10 h-10 bg-[#242424] rounded-md animate-pulse" />
                 ))}
               </div>
             ) : (
               <div className="flex flex-col gap-1 mt-1 px-1">
-                {[1, 2, 3].map(i => <SkeletonItem key={i} />)}
+                {[1, 2, 3, 4, 5].map(i => <SkeletonItem key={i} />)}
               </div>
             )
 
@@ -210,16 +220,21 @@ function SidebarImpl({ panelAPI }: SidebarProps) {
           ) : !isUserLogin ? (
             isVeryNarrow ? (
               <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
-                <button className="p-2 hover:bg-[#242424] hover:text-white rounded-md transition-colors" title="登录以查看歌单">
-                  <LogIn className="w-6 h-6" />
+                {/* DEBUG: 放置再最底部的位置，但是得参考上一层的 ScrollArea 的高度了 */}
+
+                <button className={cn("p-2 hover:bg-[#242424] hover:text-white rounded-md transition-all")}
+                  onClick={handleLoginClick}
+                  title="Login to view playlists"
+                >
+                  <User className="w-6 h-6" />
                 </button>
               </div>
             ) : (
               <div className="flex flex-col gap-3 py-2">
                 <ActionCard
-                  title="登录以查看你的歌单"
-                  subtitle="登录后即可访问你创建或收藏的所有歌单。"
-                  buttonText="登录"
+                  title="Login to view your playlists"
+                  subtitle="Login to view your playlists, including those you created and favorited."
+                  buttonText="Login"
                   onClick={() => { handleLoginClick() }}
                 />
               </div>
@@ -239,9 +254,9 @@ function SidebarImpl({ panelAPI }: SidebarProps) {
             ) : (
               <div className="flex flex-col gap-3 py-2">
                 <ActionCard
-                  title="你还暂时没有歌单"
-                  subtitle="可以创建歌单，或在网易云中收藏歌单后重新加载。"
-                  buttonText="重新加载"
+                  title="You don't have any playlists yet"
+                  subtitle="Create a playlist or favorite playlists on NetEase Music to see them here."
+                  buttonText="Reload"
                   onClick={fetchPlaylist}
                 />
               </div>
