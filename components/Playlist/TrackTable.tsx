@@ -1,6 +1,7 @@
+"use client";
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { IoAddCircleOutline } from "react-icons/io5";
 import {
   Table,
   TableBody,
@@ -9,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Clock, Play, Heart, Trash } from "lucide-react";
+import { Clock, Play, Heart, Trash, PlusCircle } from "lucide-react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -22,50 +23,49 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 import { cn, formatDate, formatDuration } from "@/lib/utils";
+import { usePlayerStore, useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { useUserStore } from '@store/index';
-import { usePlayerStore } from "@/store";
-import { SongDetail } from "@/types/api/music";
-
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function TrackRowContextMenu({ children, trackID, onPlay }: { children: React.ReactNode, trackID: number, onPlay: () => void }) {
-  const playlists = useUserStore((state) => state.playlist);
+  const playlists = useUserStore((state: any) => state.playlist);
 
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
         {children}
       </ContextMenuTrigger>
-      <ContextMenuContent className="w-48">
+      <ContextMenuContent className="w-48 bg-[#282828] text-white border-white/10">
         <ContextMenuGroup>
-          <ContextMenuItem onClick={onPlay}>
+          <ContextMenuItem onClick={onPlay} className="focus:bg-white/10 focus:text-white">
             <Play className="w-4 h-4 mr-2" />
             Play
           </ContextMenuItem>
-          <ContextMenuItem>
+          <ContextMenuItem className="focus:bg-white/10 focus:text-white">
             <Heart className="w-4 h-4 mr-2" />
             Add to Liked Songs
           </ContextMenuItem>
         </ContextMenuGroup>
-        <ContextMenuSeparator />
+        <ContextMenuSeparator className="bg-white/10" />
         <ContextMenuGroup>
           <ContextMenuSub>
-            <ContextMenuSubTrigger>
-              <IoAddCircleOutline className="w-4 h-4 mr-2" />
+            <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+              <PlusCircle className="w-4 h-4 mr-2" />
               Add to Playlist
             </ContextMenuSubTrigger>
-            <ContextMenuSubContent className="w-40">
-              {useLoginStatus() && (playlists.map(playlist => (
-                <ContextMenuItem key={playlist.id}>{playlist.name}</ContextMenuItem>
+            <ContextMenuSubContent className="w-40 bg-[#282828] text-white border-white/10">
+              {useLoginStatus() && (playlists.map((playlist: any) => (
+                <ContextMenuItem key={playlist.id} className="focus:bg-white/10 focus:text-white">
+                  {playlist.name}
+                </ContextMenuItem>
               )))}
             </ContextMenuSubContent>
           </ContextMenuSub>
         </ContextMenuGroup>
-        <ContextMenuSeparator />
+        <ContextMenuSeparator className="bg-white/10" />
         <ContextMenuGroup>
-          <ContextMenuItem variant="destructive">
+          <ContextMenuItem variant="destructive" className="focus:bg-red-500 focus:text-white">
             <Trash className="w-4 h-4 mr-2" />
             Remove from Playlist
           </ContextMenuItem>
@@ -78,9 +78,9 @@ function TrackRowContextMenu({ children, trackID, onPlay }: { children: React.Re
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function TracklistTable() {
-  const tracks = useUserStore((state) => state.albumList);
+  const tracks = useUserStore((state: any) => state.albumList);
   const { setQueue, playQueueIndex } = usePlayerStore.getState();
-  const currentSongDetail = usePlayerStore(s => s.currentSongDetail);
+  const currentSongDetail = usePlayerStore((s: any) => s.currentSongDetail);
 
   const handlePlay = (index: number) => {
     setQueue(tracks, index);
@@ -88,27 +88,29 @@ export default function TracklistTable() {
   };
 
   return (
-
-    <Table className="w-full text-zinc-400">
+    <Table className="w-full text-zinc-400 table-fixed">
       {/* 表头 */}
       <TableHeader className={cn(
-        "sticky top-0 z-10 backdrop-blur-sm border-b border-white/75",
-        "bg-linear-to-b from-transparent to-[#121212]"
+        "sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
+        "bg-linear-to-b from-transparent to-[#121212]/10"
       )}>
         <TableRow className="hover:bg-transparent border-none">
-          <TableHead className="w-12 text-center">#</TableHead>
-          <TableHead>Title</TableHead>
-          <TableHead className="hidden md:table-cell">Album</TableHead>
-          <TableHead className="hidden lg:table-cell">Date Published</TableHead>
-          <TableHead className="flex items-center">
-            <Clock className="w-4 h-4" />
+          <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
+          <TableHead className="text-zinc-400">Title</TableHead>
+          <TableHead className="hidden md:table-cell text-zinc-400">Album</TableHead>
+          <TableHead className="hidden lg:table-cell text-zinc-400">Date Published</TableHead>
+          {/* 修改点：增加 w-32 锁定尾列宽度，增加 pr-8 留出与屏幕边缘的距离 */}
+          <TableHead className="w-32 pr-8 text-zinc-400">
+            <div className="flex justify-end items-center">
+              <Clock className="w-4 h-4" />
+            </div>
           </TableHead>
         </TableRow>
       </TableHeader>
 
       {/* 表身 */}
       <TableBody>
-        {tracks.map((track, index) => {
+        {tracks.map((track: any, index: number) => {
           const isActive = currentSongDetail?.id === track.id;
           return (
             <TrackRowContextMenu key={track.id} trackID={track.id} onPlay={() => handlePlay(index)}>
@@ -136,31 +138,38 @@ export default function TracklistTable() {
                       <img src={track.al.picUrl} alt={track.al.name} className="w-full h-full object-cover rounded" />
                     </div>
                     <div className="flex flex-col truncate">
-                      <span className={cn(
-                        "text-base font-normal truncate group-hover:underline cursor-pointer",
-                        isActive ? "text-[#1ed760]" : "text-white"
-                      )}>
+                      <span
+                        title={track.name}
+                        className={cn(
+                          "text-base font-normal truncate group-hover:underline cursor-pointer",
+                          isActive ? "text-[#1ed760]" : "text-white"
+                        )}
+                      >
                         {track.name}
                       </span>
-                      <span className="text-zinc-400 text-sm hover:text-white hover:underline cursor-pointer truncate">
-                        {track.ar.map(artist => artist.name).join(", ")}
+                      <span
+                        title={track.ar.map((artist: any) => artist.name).join(", ")}
+                        className="text-zinc-400 text-sm hover:text-white hover:underline cursor-pointer truncate"
+                      >
+                        {track.ar.map((artist: any) => artist.name).join(", ")}
                       </span>
                     </div>
                   </div>
                 </TableCell>
                 {/* 专辑名 */}
                 <TableCell className="hidden md:table-cell truncate">
-                  <span className="hover:text-white hover:underline cursor-pointer">
+                  <span title={track.al.name} className="hover:text-white hover:underline cursor-pointer">
                     {track.al.name}
                   </span>
                 </TableCell>
                 {/* 发布时间 */}
                 <TableCell className="hidden lg:table-cell truncate">
-                  {formatDate(track.publishTime)}
+                  <span title={formatDate(track.publishTime)}>{formatDate(track.publishTime)}</span>
                 </TableCell>
-                <TableCell className="rounded-r-md">
-                  <div className="flex justify-end gap-4 items-center">
-                    <span>{formatDuration(track.dt)}</span>
+                {/* 修改点：同步增加 w-32 和 pr-8，确保与表头严格对齐 */}
+                <TableCell className="w-32 pr-8 rounded-r-md">
+                  <div className="flex justify-end items-center">
+                    <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
                   </div>
                 </TableCell>
               </TableRow>

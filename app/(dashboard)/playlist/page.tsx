@@ -11,6 +11,7 @@ import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { useUserStore } from "@/store";
 import { toast } from "sonner";
 import React from "react";
+import PlaylistLoading from "./loading";
 
 // 主色调缓存，避免重复计算
 const colorCache = new Map<string, string>();
@@ -19,7 +20,6 @@ const colorCache = new Map<string, string>();
 
 export default function PlaylistPage() {
 
-  // NOTE: 静态页面拿到 query 参数的方式
   const searchParams = useSearchParams();
   const playlistId = searchParams.get("id");
 
@@ -30,6 +30,7 @@ export default function PlaylistPage() {
     [playlistList, playlistId]
   );
   const [themeColor, setThemeColor] = useState<string>("from-[#88b325]");
+  const [isLoading, setIsLoading] = useState(false);
 
   const PLAYLIST_INFO = React.useMemo(() => {
     return {
@@ -71,11 +72,14 @@ export default function PlaylistPage() {
   // 请求这个歌曲列表的专辑
   useEffect(() => {
     if (playlistId) {
+      setIsLoading(true);
       getPlaylistAllTracks(playlistId).then((tracks) => {
-        useUserStore.getState().setAlbumList(tracks.data.songs)
+        useUserStore.getState().setAlbumList(tracks.data.songs);
       }).catch((error) => {
         console.error("获取歌曲列表失败:", error);
         toast.error("获取歌曲列表失败，请稍后再试");
+      }).finally(() => {
+        setIsLoading(false);
       });
     }
   }, [playlistId]);
@@ -106,7 +110,7 @@ export default function PlaylistPage() {
         </div>
 
         {/* 文本信息区 */}
-        <div className="flex flex-col gap-2 text-white overflow-hidden pb-1 mt-4 md:mt-0">
+        <div className="flex flex-col gap-2 text-white overflow-hidden pb-1 mt-4 md:mt-0 flex-1 min-w-0">
           {/* privacy +  Tag */}
           <div className="flex flex-row gap-2 flex-wrap items-center">
             <span className="text-sm font-bold drop-shadow-md hidden md:block">
@@ -128,7 +132,7 @@ export default function PlaylistPage() {
           </div>
 
           {/* 标题 */}
-          <h1 className="font-black tracking-tighter leading-tight line-clamp-2 wrap-break-word drop-shadow-lg mb-2 md:mb-4 text-[clamp(2.5rem,5vw,6rem)]">
+          <h1 className="font-black tracking-tighter leading-tight truncate drop-shadow-lg mb-2 md:mb-4 text-[clamp(1.8rem,3.5vw,3.5rem)]">
             {PLAYLIST_INFO.title}
           </h1>
 
@@ -172,8 +176,13 @@ export default function PlaylistPage() {
           </div>
         </div>
 
-        {/* 歌曲列表 */}
-        <div className="px-6 flex-1 pb-10"> <TracklistTable /> </div>
+        {/*
+        歌曲列表
+        OPTIMIZE: @tanstack/react-virtual 虚拟化处理大量歌曲时的性能问题
+         */}
+        <div className="px-6 flex-1 pb-10">
+          {isLoading ? <PlaylistLoading /> : <TracklistTable />}
+        </div>
       </div>
     </div>
   );

@@ -151,6 +151,7 @@ function MainLayoutInner({
             <ResizablePanel>
               <div className="h-full w-full bg-[#121212] rounded-lg relative overflow-hidden group/main">
                 <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
+                  {/* TODO: Header 滚动参考问题 */}
                   <div className="pointer-events-auto">
                     <Header onOpenSearch={() => setIsSearchOpen(true)} scrollContainer={scrollContainer} />
                   </div>

@@ -8,7 +8,8 @@ import { SongDetail } from "@/types/api/music";
 
 interface UserData {
   userId: number;
-  nickName: string;
+  nickname: string;
+  avatarUrl: string;
   [key: string]: any;
 }
 

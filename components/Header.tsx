@@ -3,15 +3,13 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { cn } from "@/lib/utils";
-import { Search, ChevronLeft, Home } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Home } from "lucide-react";
 import RightActions from "./Header/RightActions";
 import { useEffect, useState } from "react";
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import os from "node:os";
 import Link from "next/link";
-import { Input } from "./ui/input";
-import { searchDefault, searchHot } from "@/lib/api/search";
-import { search } from "@/backend/api-enhanced/interface";
+import { searchHot } from "@/lib/api/search";
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -40,7 +38,7 @@ const Header = ({
     return () => scrollContainer.removeEventListener("scroll", handleScroll);
   }, [scrollContainer]);
 
-  // 每隔 4s 更新一次搜索热词
+  // 每隔 10s 更新一次搜索热词
   useEffect(() => {
     let interval: NodeJS.Timeout;
     let isActive = true; // 退出标志位，防止组件卸载后还在强行更新状态
@@ -55,7 +53,7 @@ const Header = ({
         const hotList = res.data?.result.hots || [];
         if (hotList.length === 0) return;
 
-        console.log("搜索建议获取成功", hotList);
+        // console.log("搜索建议获取成功", hotList);
 
         let currentIndex = 0;
         // 先立刻显示第一个词，避免前 4 秒是空白的
@@ -63,9 +61,9 @@ const Header = ({
 
         // 2. 开启定时器，每次只更新一个词
         interval = setInterval(() => {
-          currentIndex = (currentIndex + 1) % hotList.length; // 利用取模实现循环：0, 1, 2... 0, 1, 2
+          currentIndex = (currentIndex + 1) % hotList.length; // 利用取模实现循环
           setSearchKeyword(hotList[currentIndex].first);
-        }, 7000);
+        }, 10000);
 
       } catch (error) {
         if (isActive) {
@@ -106,6 +104,12 @@ const Header = ({
               "w-10 h-10 rounded-full bg-black/70 flex items-center justify-center text-zinc-400 hover:text-white"
             )}>
             <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button onClick={() => smartRouter.forward()}
+            className={cn(
+              "w-10 h-10 rounded-full bg-black/70 flex items-center justify-center text-zinc-400 hover:text-white"
+            )}>
+            <ChevronRight className="w-6 h-6" />
           </button>
         </div>
       </div>

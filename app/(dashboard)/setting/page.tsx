@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, User } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
-// 1. Spotify 风格的 Toggle 开关
+//  Spotify 风格的 Toggle 开关
 const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => {
   return (
     <button
@@ -47,7 +47,8 @@ const SettingRow = ({
   </div>
 );
 
-// --- 主页面组件 ---
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 const SettingsPage = () => {
   // 模拟一些表单状态
@@ -65,31 +66,24 @@ const SettingsPage = () => {
   const selectClass =
     "bg-transparent border border-[#727272] text-white py-2 pl-4 pr-10 rounded text-sm font-medium cursor-pointer hover:border-white transition-colors appearance-none outline-none focus:ring-1 focus:ring-white";
 
+  // console.log("nickname", useUserStore.getState().user?.nickname);
+
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-6 font-sans">
-      {/* 限制最大宽度，居中显示，背景色为 Spotify 经典的深灰 */}
-      <div className="w-full max-w-6xl bg-[#121212] rounded-lg shadow-2xl p-10 md:p-14 text-[#b3b3b3] flex flex-col min-h-[80vh]">
+    <>
+      < div className="w-full bg-[#121212] rounded-lg shadow-2xl p-10 md:p-14 text-[#b3b3b3] flex flex-col min-h-[80vh]" >
 
         {/* 顶部导航与用户信息 */}
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between items-center mb-10 mt-4.5">
           <h1 className="text-white text-4xl md:text-5xl font-black tracking-tight">Settings</h1>
-
-          <button className="flex items-center gap-2 bg-black/70 hover:bg-[#282828] p-1 pr-4 rounded-full transition-colors cursor-pointer group">
-            <div className="w-8 h-8 rounded-full bg-[#535353] flex items-center justify-center overflow-hidden">
-              <User className="w-5 h-5 text-[#b3b3b3] group-hover:text-white transition-colors" />
-            </div>
-            <span className="text-white text-sm font-bold">Alex_MusicFan</span>
-            <ChevronDown className="w-4 h-4 text-white ml-1" />
-          </button>
-        </div>
+        </div >
 
         {/* 核心双列布局区 */}
-        <div className="grow grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10 items-start">
+        < div className="grow grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10 items-start" >
 
           {/* 左列：音频与播放 */}
-          <div className="flex flex-col gap-10">
+          < div className="flex flex-col gap-10" >
             {/* Audio Quality 区块 */}
-            <section>
+            <section >
               <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
                 Audio Quality
               </h3>
@@ -126,10 +120,10 @@ const SettingsPage = () => {
                   </div>
                 }
               />
-            </section>
+            </section >
 
             {/* Playback 区块 */}
-            <section>
+            <section  >
               <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
                 Playback
               </h3>
@@ -179,13 +173,13 @@ const SettingsPage = () => {
                 sublabel="Set the same volume level for all songs."
                 control={<Toggle enabled={normalize} onChange={() => setNormalize(!normalize)} />}
               />
-            </section>
-          </div>
+            </section >
+          </div >
 
           {/* 右列：显示、社交与存储 */}
-          <div className="flex flex-col gap-10">
+          < div className="flex flex-col gap-10" >
             {/* Display 区块 */}
-            <section>
+            <section  >
               <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
                 Display
               </h3>
@@ -199,7 +193,7 @@ const SettingsPage = () => {
                 sublabel="Turn this off if the app is slow or lagging."
                 control={<Toggle enabled={hardwareAccel} onChange={() => setHardwareAccel(!hardwareAccel)} />}
               />
-            </section>
+            </section >
 
             {/* Social 区块 */}
             <section>
@@ -215,7 +209,7 @@ const SettingsPage = () => {
                 sublabel="Let your friends see what you're playing."
                 control={<Toggle enabled={shareActivity} onChange={() => setShareActivity(!shareActivity)} />}
               />
-            </section>
+            </section >
 
             {/* Storage 区块 */}
             <section>
@@ -240,12 +234,12 @@ const SettingsPage = () => {
                   </button>
                 }
               />
-            </section>
-          </div>
+            </section >
+          </div >
 
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </>
   );
 };
 

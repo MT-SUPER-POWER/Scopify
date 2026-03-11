@@ -41,6 +41,8 @@ export default function SearchResultsPage() {
   const [activeCategory, setActiveCategory] = useState("全部");
   const [playingId, setPlayingId] = useState<string | null>(null);
 
+  // TODO: 获取用户搜索用的 query 数据
+
   const togglePlay = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setPlayingId(playingId === id ? null : id);

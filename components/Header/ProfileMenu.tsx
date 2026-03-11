@@ -78,7 +78,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
           {useLoginStatus() && (
             <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
               {/* TODO: 制作 Profile 页面 */}
-              <Link href={"#"}>
+              <Link href={"/profile"}>
                 <FiUser className="mr-2 h-5 w-5" />
                 <span>Profile</span>
               </Link>

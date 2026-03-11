@@ -1,7 +1,7 @@
 'use client';
 
-import { Search } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { CornerDownLeft, Search } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { ScrollArea } from "./ui/scroll-area";
 
@@ -13,11 +13,22 @@ export const SearchModal = ({ isOpen, onClose, }: {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const smartRouter = useSmartRouter();
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearch = useCallback(() => {
+    const query = searchValue.trim();
+    if (query) {
+      console.log("Searching for:", query);
+      smartRouter.replace(`/search?query=${encodeURIComponent(query)}`);
+      onClose();
+    }
+  }, [searchValue, smartRouter, onClose]);
 
 
   // 当弹窗打开时，自动将焦点移动到输入框上
   useEffect(() => {
     if (isOpen) {
+      setSearchValue(""); // 打开时清空
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   }, [isOpen]);
@@ -37,20 +48,23 @@ export const SearchModal = ({ isOpen, onClose, }: {
           <Search className="w-6 h-6 text-zinc-400" />
           <input
             ref={inputRef}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             className="w-full bg-transparent border-none text-white px-4 py-2 focus:outline-none text-lg placeholder-zinc-500"
             placeholder="What do you want to listen to?"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                // 这里可以根据输入内容跳转到对应的页面
-                // 或者调用一个回调函数处理搜索
-                console.log("Enter pressed, search:", e.currentTarget.value);
-                smartRouter.replace(`/search?query=${encodeURIComponent(e.currentTarget.value)}`);
+                handleSearch();
               }
             }}
           />
-          <div className="text-xs text-zinc-400 bg-zinc-800 px-2 py-1 rounded shadow-inner font-bold whitespace-nowrap">
-            Ctrl + K
-          </div>
+          <button
+            onClick={handleSearch}
+            disabled={!searchValue.trim()}
+            className="text-xs border-white/10 border text-zinc-400 hover:bg-white/10 bg-zinc-800 px-2 py-1.5 shadow-inner font-bold whitespace-nowrap rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <CornerDownLeft className="text-zinc-400 w-6 h-4 inline-block mr-1" />
+          </button>
         </div>
 
         {/* Mock Search Results */}

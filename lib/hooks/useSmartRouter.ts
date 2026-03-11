@@ -47,6 +47,10 @@ export function useSmartRouter() {
     window.history.back();
   }, []);
 
+  const electronForward = useCallback(() => {
+    window.history.forward();
+  }, []);
+
   // Web 环境下的路由跳转
   const webPush = useCallback((url: string, query?: QueryParams) => {
     nextRouter.push(buildUrlWithQuery(url, query));
@@ -60,11 +64,16 @@ export function useSmartRouter() {
     nextRouter.back();
   }, [nextRouter]);
 
+  const webForward = useCallback(() => {
+    nextRouter.forward();
+  }, [nextRouter]);
+
   const isElectronEnv = useIsElectron();
 
   return {
     push: isElectronEnv ? electronPush : webPush,
     replace: isElectronEnv ? electronReplace : webReplace,
     back: isElectronEnv ? electronBack : webBack,
+    forward: isElectronEnv ? electronForward : webForward,
   };
 }
