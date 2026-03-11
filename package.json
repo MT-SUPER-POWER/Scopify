@@ -17,7 +17,7 @@
   "main": "out/main.cjs",
   "description": "Electron + NextJS Music Player Base on NetEase Music API",
   "scripts": {
-  "predev": "bunx tsc -p tsconfig.electron.json && node ./script/rename-electron-out.cjs",
+    "predev": "bunx tsc -p tsconfig.electron.json && node ./script/rename-electron-out.cjs",
     "predev:backend": "cd backend/api-enhanced && bun install",
     "dev:backend": "cross-env PORT=3838 node backend/api-enhanced/app.js",
     "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\" ",
@@ -26,6 +26,8 @@
     "build:win": "next build && bunx tsc -p tsconfig.electron.json && node ./script/rename-electron-out.cjs && electron-builder -- win"
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "electron-log": "^5.4.3",
     "electron-serve": "^3.0.1",
     "zustand": "^5.0.11"
   },
@@ -83,13 +85,27 @@
     "directories": {
       "output": "dist"
     },
-    "files": [
-      "out/**/*",
-      "renderer/**/*",
-      "public/**/*",
-      "resources/**/*",
-      "package.json"
+    "extraResources": [
+      {
+        "from": "backend/api-enhanced",
+        "to": "backend/api-enhanced",
+        "filter": [
+          "**/*",
+          "!test",
+          "!*.log",
+          "!.github",
+          "!.husky"
+        ]
+      },
+      {
+        "from": "backend/api-enhanced/node_modules",
+        "to": "backend/api-enhanced/node_modules",
+        "filter": [
+          "**/*"
+        ]
+      }
     ],
+    "files": ["out/**/*", "renderer/**/*", "public/**/*", "resources/**/*", "package.json"],
     "win": {
       "target": "dir",
       "icon": "resources/icon.ico",

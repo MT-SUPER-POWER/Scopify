@@ -32,8 +32,8 @@ type PlayerStore = {
   playQueueIndex: (index: number) => Promise<void>;
   playNext: () => Promise<void>;
   playPrev: () => Promise<void>;
+  cleanCache: () => void;
 };
-
 
 // TODO: 退出登录或者用户一退出之后的清理
 export const usePlayerStore = create<PlayerStore>()(

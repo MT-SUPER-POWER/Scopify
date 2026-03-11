@@ -14,7 +14,7 @@ import {
   FiCoffee,
   FiLogIn,
 } from "react-icons/fi";
-import { useUserStore } from '@/store';
+import { usePlayerStore, useUserStore } from '@/store';
 import Link from 'next/link';
 import { useLoginStatus } from '@/lib/hooks/useLoginStatus';
 
@@ -52,6 +52,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
   const handleLogoutClick = () => {
     useUserStore.getState().handleLogout();
+    usePlayerStore.getState().cleanCache();
   }
 
   return (

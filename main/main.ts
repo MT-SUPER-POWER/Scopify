@@ -2,25 +2,116 @@
 
 import { app, BrowserWindow, ipcMain } from "electron";
 import serve from "electron-serve";
-import { join } from "path";
+import { dirname, join } from "path";
+import { spawn, ChildProcess } from "child_process";
+import fs from "fs";
 import type { BrowserWindow as BrowserWindowType } from "electron";
+import log from "electron-log";
+
+// NOTE: 配置日志自定义存储位置
+const logPath = app.isPackaged
+  ? join(app.getPath("userData"), "logs/main.log")
+  : join(__dirname, "../logs/main.log");             // 开发态：当前项目根目录的 logs 文件夹中
+
+log.transports.file.resolvePathFn = () => logPath;
+log.transports.file.level = "info";
+
+log.info("App starting...");
+log.info("[logger] logging to:", logPath);
 
 // module
 import initTray from "./module/tray.js";
 import initializeLoginWindow from "./module/login.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
 import { __logoIcon, __preloadScript } from "./constants.js";
+import { getFinalConfig } from "./config.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+// NOTE: electron-serve 结合 next.js
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
   ? serve({ directory: join(__dirname, "../renderer") })
   : null;
 
-const devPort = process.env.NEXT_PORT ?? "3000";
-const devBase = `http://localhost:${devPort}`;
+// 初始化配置
+const appConfig = getFinalConfig();
 
+const devPort = appConfig.frontend.devPort;
+const devBase = `http://localhost:${devPort}`;
 let mainWindow: BrowserWindowType | null = null;
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKEND  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+let backendProcess: ChildProcess | null = null;
+let backendUrl = process.env.BACKEND_URL;
+
+function resolveBackendPath() {
+  if (!app.isPackaged) {
+    return join(__dirname, "..", "backend", "api-enhanced");
+  }
+  return join(process.resourcesPath, "backend", "api-enhanced");
+}
+
+function ensureBackendUrl() {
+  if (backendUrl) return backendUrl;
+  backendUrl = `http://${appConfig.backend.host}:${appConfig.backend.port}`;
+  return backendUrl;
+}
+
+function startManagedBackend() {
+  // 如果配置禁用或已指定外部后端则不启动
+  if (!appConfig.backend.autoStart || process.env.BACKEND_URL) {
+    log.info("[backend] use external or disabled:", process.env.BACKEND_URL ?? "disabled");
+    backendUrl = process.env.BACKEND_URL;
+    return;
+  }
+
+  const backendDir = resolveBackendPath();
+  const entry = join(backendDir, "app.js");
+
+  log.info("[backend] checking path:", backendDir);
+  log.info("[backend] checking entry:", entry);
+
+  if (!fs.existsSync(entry)) {
+    log.error("[backend] entry not found:", entry);
+    return;
+  }
+
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    PORT: `${appConfig.backend.port}`,
+    NODE_ENV: "production",
+    ELECTRON_RUN_AS_NODE: "1",
+  };
+
+  log.info(`[backend] starting ${entry} on PORT ${env.PORT}`);
+  backendProcess = spawn(process.execPath, [entry], {
+    cwd: backendDir,
+    env,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+
+  log.info(`[backend] Process initialized with PID: ${backendProcess.pid}`);
+
+  backendProcess!.stdout?.on("data", (d) => log.info("[backend:stdout]", d.toString().trim()));
+  backendProcess!.stderr?.on("data", (d) => log.error("[backend:stderr]", d.toString().trim()));
+  backendProcess!.on("exit", (code) => {
+    log.error("[backend:exit]", `exited with code ${code}`);
+  });
+  backendProcess!.on("error", (err) => {
+    log.error("[backend:error]", err.message);
+  });
+
+  backendUrl = ensureBackendUrl();
+}
+
+function stopManagedBackend() {
+  if (backendProcess && !backendProcess.killed) {
+    backendProcess.kill();
+    backendProcess = null;
+  }
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -51,8 +142,9 @@ const createWindow = () => {
     });
   } else {
     mainWindow.loadURL(devBase);
-    // 注释掉 DevTools 以提升性能，需要时按 Ctrl+Shift+I 打开
-    // mainWindow.webContents.openDevTools();
+    if (appConfig.app.devTools) {
+      mainWindow.webContents.openDevTools();
+    }
     mainWindow.webContents.on("did-fail-load", (_e, code, desc) => {
       console.log("Did fail load:", code, desc);
       mainWindow?.webContents.reloadIgnoringCache();
@@ -129,14 +221,24 @@ const createWindow = () => {
   });
 };
 
-// TODO: GPU 加速
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HARDWARE ACCELERATION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+if (!appConfig.app.gpuAcceleration) {
+  app.disableHardwareAcceleration();
+  console.warn("[app] Hardware acceleration disabled based on config.");
+}
 
-// TODO: 修改软件的进程名字 和 icon 图标
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIFECYCLE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// 应用程序准备就绪时的处理
 app.whenReady().then(() => {
   console.log("Scopify ready, creating window...");
+
+  startManagedBackend();
+
+  ipcMain.handle("backend:get-url", async () => ensureBackendUrl());
+  ipcMain.on("backend:get-url-sync", (event) => {
+    event.returnValue = ensureBackendUrl();
+  });
 
   createWindow();
 
@@ -146,7 +248,6 @@ app.whenReady().then(() => {
     initThumbarButtons(mainWindow);
   }
 
-  // Mac 的特殊处理
   app.on("activate", () => {
     if (mainWindow === null) {
       createWindow();
@@ -160,7 +261,10 @@ app.on("window-all-closed", () => {
   }
 });
 
-// 捕获未处理的异常，直接退出 Electron
+app.on("before-quit", () => {
+  stopManagedBackend();
+});
+
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
   app.exit(1);

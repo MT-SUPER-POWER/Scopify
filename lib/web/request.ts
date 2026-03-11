@@ -1,6 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useIsElectron } from '@/lib/hooks/useElectronDetect';
-import { useUserStore } from '@/store';
+import { usePlayerStore, useUserStore } from '@/store';
 
 let setData: any = null;
 
@@ -10,29 +10,34 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   noRetry?: boolean;
 }
 
-if (!process.env.BACKEND_URL) {
-  throw new Error("请在 NEXT_CONFIG 文件中配置 BACKEND_URL");
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// 运行时优先取 preload 注入的后端地址（Electron 静态导出场景）
+const baseURL = process.env.BACKEND_URL || "http://127.0.0.1:3838";
+const MAX_RETRIES = Number(process.env.MAX_RETRIES) || 1;    // 最大重试次数
+const RETRY_DELAY = Number(process.env.RETRY_DELAY) || 500;  // 重试延迟（毫秒）
+const AXIOS_TIMEOUT = Number(process.env.AXIOS_TIMEOUT) || 5000; // 最大请求时间（毫秒）
+const NO_RETRY_URLS = ['暂时没有'];
+
+if (!baseURL) {
+  throw new Error("请在 NEXT_CONFIG 或 Electron 运行时提供 BACKEND_URL");
 }
-const baseURL = process.env.BACKEND_URL;
 
 const request = axios.create({
   baseURL,
-  timeout: process.env.AXIOS_TIMEOUT ? parseInt(process.env.AXIOS_TIMEOUT) : 5000,
+  timeout: AXIOS_TIMEOUT,
   withCredentials: true
 });
 
-
-// TODO: AXIOS 参数转移到 NEXT_CONFIG 中配置
-const MAX_RETRIES = 1;    // 最大重试次数
-const RETRY_DELAY = 500;  // 重试延迟（毫秒）
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INTERCEPTOR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // 请求拦截器
 request.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
-    if (!process.env.BACKEND_URL) {
-      throw new Error("请在 NEXT_CONFIG 文件中配置 BACKEND_URL");
+    if (!baseURL) {
+      throw new Error("请在 NEXT_CONFIG 或 Electron 运行时提供 BACKEND_URL");
     }
-    config.baseURL = process.env.BACKEND_URL;
+    config.baseURL = baseURL;
 
     // 只在retryCount未定义时初始化为0
     if (config.retryCount === undefined) {
@@ -86,8 +91,6 @@ request.interceptors.request.use(
   }
 );
 
-const NO_RETRY_URLS = ['暂时没有'];
-
 // 响应拦截器
 request.interceptors.response.use(
   (response) => {
@@ -103,6 +106,7 @@ request.interceptors.response.use(
     // 处理 301 状态码
     if (error.response?.status === 301 && config.params.noLogin !== true) {
       useUserStore.getState().handleLogout();
+      usePlayerStore.getState().cleanCache();
       console.log(`301 状态码，清除登录信息后重试第 ${config.retryCount} 次`);
       config.retryCount = 3;
     }

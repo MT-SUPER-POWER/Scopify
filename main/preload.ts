@@ -23,7 +23,7 @@ const electronAPI: ElectronAPI = {
   },
   openLoginWindow: () => { ipcRenderer.send("open-login-window"); },
   closeLoginWindow: () => { ipcRenderer.send("close-login-window"); },
-  maniWindowReload: () => { ipcRenderer.send("main-window-reload"); }
+  maniWindowReload: () => { ipcRenderer.send("main-window-reload"); },
 };
 
 try {
