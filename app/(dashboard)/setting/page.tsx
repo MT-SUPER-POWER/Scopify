@@ -1,10 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { AppConfig } from "@/types/config";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { isElectronEnv } from "@/lib/utils";
 
-//  Spotify 风格的 Toggle 开关
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// Spotify 风格的 Toggle 开关
 const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => {
+  const router = useSmartRouter();
+  const isElectron = isElectronEnv();
+
+
+  useEffect(() => {
+    if (isElectron) {
+      router.replace("/");
+    }
+  }, [isElectron]);
+
+
   return (
     <button
       type="button"
@@ -26,7 +42,17 @@ const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: () => void 
   );
 };
 
-// 2. 统一的配置行布局组件
+// 简单的输入框组件
+const SettingInput = ({ value, onChange, type = "text" }: { value: string | number, onChange: (v: string) => void, type?: string }) => (
+  <input
+    type={type}
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    className="bg-transparent border border-[#727272] text-white py-1.5 px-3 rounded text-sm font-medium outline-none focus:border-white transition-colors w-28 text-right focus:ring-1 focus:ring-white"
+  />
+);
+
+// 统一的配置行布局组件
 const SettingRow = ({
   label,
   sublabel,
@@ -49,197 +75,258 @@ const SettingRow = ({
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-
 const SettingsPage = () => {
-  // 模拟一些表单状态
-  const [autoAdjust, setAutoAdjust] = useState(true);
-  const [crossfade, setCrossfade] = useState(true);
-  const [crossfadeTime, setCrossfadeTime] = useState(5);
-  const [gapless, setGapless] = useState(true);
-  const [normalize, setNormalize] = useState(true);
-  const [showLyrics, setShowLyrics] = useState(false);
-  const [hardwareAccel, setHardwareAccel] = useState(true);
-  const [publicPlaylist, setPublicPlaylist] = useState(true);
-  const [shareActivity, setShareActivity] = useState(false);
+  const isElectron = isElectronEnv();
+  const router = useSmartRouter();
+
+  useEffect(() => {
+    if (!isElectron) {
+      router.replace("/");
+    }
+  }, [isElectron]);
+
+  // 核心配置状态
+  const [config, setConfig] = useState<AppConfig | null>(null);
 
   // 公共的下拉框样式
   const selectClass =
     "bg-transparent border border-[#727272] text-white py-2 pl-4 pr-10 rounded text-sm font-medium cursor-pointer hover:border-white transition-colors appearance-none outline-none focus:ring-1 focus:ring-white";
 
-  // console.log("nickname", useUserStore.getState().user?.nickname);
+  // 1. 初始化加载配置
+  // TODO: 前端和配置文件做交互的地方
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.electronAPI) {
+        console.log("[Settings] 正在从主进程请求初始配置...");
+        window.electronAPI.getAppConfig().then((cfg: AppConfig) => {
+          console.log("[Settings] 初始配置加载成功:", cfg);
+          setConfig(cfg);
+        }).catch(err => {
+          console.error("[Settings] 加载主进程配置失败，回退到 Web 默认配置:", err);
+        });
+      } else {
+        console.log("[Settings] 非 Electron 环境，加载 Web 注入的配置...");
+      }
+    }
+  }, []);
+
+  // 2. 统一更新处理器
+  const handleUpdateConfig = async <S extends keyof AppConfig, K extends keyof AppConfig[S]>(
+    section: S,
+    key: K,
+    value: AppConfig[S][K]
+  ) => {
+    if (!config || typeof window === "undefined" || !window.electronAPI) return;
+
+    console.log(`[Settings] 触发修改 -> [${section}.${String(key)}]:`, value);
+
+    // 乐观更新 UI 状态
+    const newConfig = {
+      ...config,
+      [section]: {
+        ...config[section],
+        [key]: value
+      }
+    };
+    setConfig(newConfig);
+
+    // 构造 payload 发送给 Electron IPC
+    const updatePayload = {
+      [section]: {
+        [key]: value
+      }
+    };
+
+    try {
+      const updatedConfig = await window.electronAPI.updateAppConfig(updatePayload);
+      console.log("[Settings] 主进程 TOML 写入成功，返回最新配置:", updatedConfig);
+    } catch (error) {
+      console.error("[Settings] TOML 配置写入失败:", error);
+    }
+  };
+
+  // 如果配置还没加载出来，显示骨架或直接 null（可以根据需要换成 Loading 组件）
+  if (!config) {
+    return (
+      <div className="w-full bg-[#121212] rounded-lg shadow-2xl p-10 md:p-14 text-[#b3b3b3] flex flex-col min-h-[80vh] items-center justify-center">
+        <span className="text-white animate-pulse">Loading settings...</span>
+      </div>
+    );
+  }
 
   return (
-    <>
-      < div className="w-full bg-[#121212] rounded-lg shadow-2xl p-10 md:p-14 text-[#b3b3b3] flex flex-col min-h-[80vh]" >
+    <div className="w-full bg-[#121212] rounded-lg shadow-2xl p-10 md:p-14 text-[#b3b3b3] flex flex-col min-h-[80vh]">
 
-        {/* 顶部导航与用户信息 */}
-        <div className="flex justify-between items-center mb-10 mt-4.5">
-          <h1 className="text-white text-4xl md:text-5xl font-black tracking-tight">Settings</h1>
-        </div >
+      {/* 顶部导航 */}
+      <div className="flex justify-between items-center mb-10 mt-4.5">
+        <h1 className="text-white text-4xl md:text-5xl font-black tracking-tight">Settings</h1>
+      </div>
 
-        {/* 核心双列布局区 */}
-        < div className="grow grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10 items-start" >
+      {/* 核心双列布局区 */}
+      <div className="grow grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10 items-start">
 
-          {/* 左列：音频与播放 */}
-          < div className="flex flex-col gap-10" >
-            {/* Audio Quality 区块 */}
-            <section >
-              <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
-                Audio Quality
-              </h3>
+        {/* ===================== 左列 ===================== */}
+        <div className="flex flex-col gap-10">
 
-              <SettingRow
-                label="Streaming quality"
-                control={
-                  <div className="relative">
-                    <select className={selectClass} defaultValue="Very High">
-                      <option className="bg-[#282828]">Low</option>
-                      <option className="bg-[#282828]">Normal</option>
-                      <option className="bg-[#282828]">High</option>
-                      <option className="bg-[#282828]">Very High</option>
-                    </select>
-                    <ChevronDown className="w-4 h-4 text-white absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  </div>
-                }
-              />
-              <SettingRow
-                label="Auto-adjust quality"
-                sublabel="Recommended. Adjusts quality based on your bandwidth."
-                control={<Toggle enabled={autoAdjust} onChange={() => setAutoAdjust(!autoAdjust)} />}
-              />
-              <SettingRow
-                label="Download quality"
-                control={
-                  <div className="relative">
-                    <select className={selectClass} defaultValue="High">
-                      <option className="bg-[#282828]">Normal</option>
-                      <option className="bg-[#282828]">High</option>
-                      <option className="bg-[#282828]">Very High</option>
-                    </select>
-                    <ChevronDown className="w-4 h-4 text-white absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  </div>
-                }
-              />
-            </section >
+          {/* App / Display 区块 */}
+          <section>
+            <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
+              Application & Display
+            </h3>
 
-            {/* Playback 区块 */}
-            <section  >
-              <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
-                Playback
-              </h3>
+            <SettingRow
+              label="Hardware Acceleration"
+              sublabel="Turn this off if the app is slow or lagging. Requires restart."
+              control={
+                <Toggle
+                  enabled={config.app.gpuAcceleration}
+                  onChange={() => handleUpdateConfig("app", "gpuAcceleration", !config.app.gpuAcceleration)}
+                />
+              }
+            />
 
-              {/* 包含 Slider 的特殊复合行 */}
-              <div className="mb-6 w-full">
-                <div className="flex justify-between items-center mb-3">
-                  <div className="flex flex-col gap-1 max-w-[75%]">
-                    <span className="text-white text-base font-medium">Crossfade songs</span>
-                    <span className="text-[#a7a7a7] text-sm leading-relaxed">Allows a smooth transition between tracks in a playlist.</span>
-                  </div>
-                  <Toggle enabled={crossfade} onChange={() => setCrossfade(!crossfade)} />
+            <SettingRow
+              label="Developer Tools"
+              sublabel="Enable developer mode for debugging."
+              control={
+                <Toggle
+                  enabled={config.app.devTools}
+                  onChange={() => handleUpdateConfig("app", "devTools", !config.app.devTools)}
+                />
+              }
+            />
+
+            <SettingRow
+              label="Window Close Action"
+              sublabel="What should happen when you click the close button?"
+              control={
+                <div className="relative">
+                  <select
+                    className={selectClass}
+                    value={config.app.closeAction}
+                    onChange={(e) => handleUpdateConfig("app", "closeAction", Number(e.target.value) as 0 | 1 | 2)}
+                  >
+                    <option value={0} className="bg-[#282828]">Minimize to Tray</option>
+                    <option value={1} className="bg-[#282828]">Exit Application</option>
+                    <option value={2} className="bg-[#282828]">Ask Every Time</option>
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-white absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
+              }
+            />
+          </section>
 
-                {/* 原生 range input 模拟 Spotify Slider */}
-                <div className="flex items-center gap-4 w-full mt-4">
-                  <span className="text-xs text-[#a7a7a7] w-4 text-right">0s</span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="12"
-                    value={crossfadeTime}
-                    disabled={!crossfade}
-                    onChange={(e) => setCrossfadeTime(Number(e.target.value))}
-                    className={`
-                      w-full h-1.5 rounded-full appearance-none outline-none cursor-pointer
-                      ${crossfade ? "bg-[#535353] hover:bg-[#1ed760]" : "bg-[#282828] cursor-not-allowed"}
-                    `}
-                    style={{
-                      // 利用 CSS 变量动态控制已填充的颜色进度
-                      background: crossfade
-                        ? `linear-gradient(to right, currentColor ${crossfadeTime / 12 * 100}%, #535353 ${crossfadeTime / 12 * 100}%)`
-                        : "",
-                      color: "#fff" // 此处 currentColor 用于响应 hover，原生实现略复杂，这里做视觉简化
-                    }}
-                  />
-                  <span className="text-xs text-[#a7a7a7] w-6">12s</span>
+          {/* Logging 区块 */}
+          <section>
+            <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
+              Logging & Diagnostics
+            </h3>
+
+            <SettingRow
+              label="Log Level"
+              control={
+                <div className="relative">
+                  <select
+                    className={selectClass}
+                    value={config.logging.level}
+                    onChange={(e) => handleUpdateConfig("logging", "level", e.target.value as "debug" | "info" | "warn" | "error")}
+                  >
+                    <option value="debug" className="bg-[#282828]">Debug</option>
+                    <option value="info" className="bg-[#282828]">Info</option>
+                    <option value="warn" className="bg-[#282828]">Warn</option>
+                    <option value="error" className="bg-[#282828]">Error</option>
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-white absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
-              </div>
+              }
+            />
 
-              <SettingRow
-                label="Gapless playback"
-                control={<Toggle enabled={gapless} onChange={() => setGapless(!gapless)} />}
-              />
-              <SettingRow
-                label="Normalize volume"
-                sublabel="Set the same volume level for all songs."
-                control={<Toggle enabled={normalize} onChange={() => setNormalize(!normalize)} />}
-              />
-            </section >
-          </div >
+            <SettingRow
+              label="Enable File Logging"
+              sublabel="Write logs to persistent files on disk."
+              control={
+                <Toggle
+                  enabled={config.logging.enableFile}
+                  onChange={() => handleUpdateConfig("logging", "enableFile", !config.logging.enableFile)}
+                />
+              }
+            />
+          </section>
+        </div>
 
-          {/* 右列：显示、社交与存储 */}
-          < div className="flex flex-col gap-10" >
-            {/* Display 区块 */}
-            <section  >
-              <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
-                Display
-              </h3>
-              <SettingRow
-                label="Show desktop lyrics"
-                sublabel="Display floating lyrics on your desktop screen."
-                control={<Toggle enabled={showLyrics} onChange={() => setShowLyrics(!showLyrics)} />}
-              />
-              <SettingRow
-                label="Hardware acceleration"
-                sublabel="Turn this off if the app is slow or lagging."
-                control={<Toggle enabled={hardwareAccel} onChange={() => setHardwareAccel(!hardwareAccel)} />}
-              />
-            </section >
+        {/* ===================== 右列 ===================== */}
+        <div className="flex flex-col gap-10">
 
-            {/* Social 区块 */}
-            <section>
-              <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
-                Social
-              </h3>
-              <SettingRow
-                label="Make my new playlists public"
-                control={<Toggle enabled={publicPlaylist} onChange={() => setPublicPlaylist(!publicPlaylist)} />}
-              />
-              <SettingRow
-                label="Share my listening activity"
-                sublabel="Let your friends see what you're playing."
-                control={<Toggle enabled={shareActivity} onChange={() => setShareActivity(!shareActivity)} />}
-              />
-            </section >
+          {/* Backend 区块 */}
+          <section>
+            <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
+              Backend Service
+            </h3>
 
-            {/* Storage 区块 */}
-            <section>
-              <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
-                Storage
-              </h3>
-              <SettingRow
-                isColumn
-                label="Offline storage location"
-                control={
-                  <div className="w-full bg-[#282828] p-3 rounded text-[#a7a7a7] font-mono text-sm border border-transparent hover:border-[#535353] transition-colors cursor-text">
-                    C:\Users\Alex\AppData\Local\MusicApp\Storage
-                  </div>
-                }
-              />
-              <SettingRow
-                label="Clear cache"
-                sublabel="Frees up space. Your downloads won't be removed."
-                control={
-                  <button className="bg-transparent border border-[#727272] text-white py-2 px-6 rounded-full text-sm font-bold tracking-wide hover:border-white hover:scale-105 transition-all active:scale-95">
-                    Clear cache (3.2 GB)
-                  </button>
-                }
-              />
-            </section >
-          </div >
+            <SettingRow
+              label="Auto Start Backend"
+              sublabel="Automatically start the managed Go-Zero backend server."
+              control={
+                <Toggle
+                  enabled={config.backend.autoStart}
+                  onChange={() => handleUpdateConfig("backend", "autoStart", !config.backend.autoStart)}
+                />
+              }
+            />
 
-        </div >
-      </div >
-    </>
+            <SettingRow
+              label="Backend Host"
+              control={
+                <SettingInput
+                  value={config.backend.host}
+                  onChange={(v) => handleUpdateConfig("backend", "host", v)}
+                />
+              }
+            />
+
+            <SettingRow
+              label="Backend Port"
+              control={
+                <SettingInput
+                  type="number"
+                  value={config.backend.port}
+                  onChange={(v) => handleUpdateConfig("backend", "port", Number(v))}
+                />
+              }
+            />
+          </section>
+
+          {/* Frontend 区块 */}
+          <section>
+            <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
+              Frontend Service
+            </h3>
+
+            <SettingRow
+              label="Frontend Host"
+              control={
+                <SettingInput
+                  value={config.frontend.host}
+                  onChange={(v) => handleUpdateConfig("frontend", "host", v)}
+                />
+              }
+            />
+
+            <SettingRow
+              label="Development Port"
+              control={
+                <SettingInput
+                  type="number"
+                  value={config.frontend.devPort}
+                  onChange={(v) => handleUpdateConfig("frontend", "devPort", Number(v))}
+                />
+              }
+            />
+          </section>
+        </div>
+
+      </div>
+    </div>
   );
 };
 

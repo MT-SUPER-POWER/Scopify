@@ -29,6 +29,7 @@ import LyricsModal from "../components/LyricModal";
 
 // hooks
 import { useHasHydrated } from "@/lib/hooks/useHydration";
+import AppCloseDialog from "./AppCloseDialog";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LYRICS CONTEXT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -111,6 +112,7 @@ function MainLayoutInner({
       )}>
         <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         <LyricsModal />
+        <AppCloseDialog />
 
         {/*
         左右结构

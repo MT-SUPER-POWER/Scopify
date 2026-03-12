@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * 检测当前是否运行在 Electron 环境
- * 在 Electron 中，window.electronAPI 会被暴露
- * 在 Web 中，window.electronAPI 为 undefined
+ * 使用 useState 确保在客户端挂载后能正确反映 window.electronAPI 的状态，避免 水合(hydration) 导致的不一致。
  */
 export const useIsElectron = (): boolean => {
-  if (typeof window === "undefined") {
-    return false; // SSR 环境
-  }
-  return window.electronAPI !== undefined;
+  const [isElectron, setIsElectron] = useState(false);
+
+  useEffect(() => {
+    setIsElectron(window.electronAPI !== undefined);
+  }, []);
+
+  return isElectron;
 };
 
 /**

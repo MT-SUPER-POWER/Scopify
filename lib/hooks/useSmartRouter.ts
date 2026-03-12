@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
-import { useIsElectron } from './useElectronDetect';
 
 // 定义查询参数的类型，支持基础类型和对象
 type QueryParams = Record<string, string | number | boolean | object | null | undefined>;
@@ -28,52 +27,37 @@ const buildUrlWithQuery = (url: string, query?: QueryParams) => {
 
 /**
  * 智能路由 hook，根据环境自动切换路由实现。
+ *
+ * FIXME: 方案 A：在 Electron 中也优先使用 Next.js 原生路由 (nextRouter.push/replace)。
+ * 这样可以确保 App Router 的布局架构和状态保持一致。
+ * 只有在路由完全失效或有特殊需求时，才考虑回退到 Hash 模式。
  */
 export function useSmartRouter() {
   const nextRouter = useNextRouter();
 
-  // Electron 环境下的路由跳转
-  const electronPush = useCallback((url: string, query?: QueryParams) => {
-    const finalUrl = buildUrlWithQuery(url, query);
-    window.location.hash = finalUrl.startsWith('#') ? finalUrl : `#${finalUrl}`;
-  }, []);
-
-  const electronReplace = useCallback((url: string, query?: QueryParams) => {
-    const finalUrl = buildUrlWithQuery(url, query);
-    window.location.replace(`#${finalUrl.replace(/^#/, '')}`);
-  }, []);
-
-  const electronBack = useCallback(() => {
-    window.history.back();
-  }, []);
-
-  const electronForward = useCallback(() => {
-    window.history.forward();
-  }, []);
-
-  // Web 环境下的路由跳转
-  const webPush = useCallback((url: string, query?: QueryParams) => {
+  // 原生的跳转实现（Web/Electron 通用）
+  const push = useCallback((url: string, query?: QueryParams) => {
     nextRouter.push(buildUrlWithQuery(url, query));
   }, [nextRouter]);
 
-  const webReplace = useCallback((url: string, query?: QueryParams) => {
+  const replace = useCallback((url: string, query?: QueryParams) => {
     nextRouter.replace(buildUrlWithQuery(url, query));
   }, [nextRouter]);
 
-  const webBack = useCallback(() => {
+  const back = useCallback(() => {
     nextRouter.back();
   }, [nextRouter]);
 
-  const webForward = useCallback(() => {
+  const forward = useCallback(() => {
     nextRouter.forward();
   }, [nextRouter]);
 
-  const isElectronEnv = useIsElectron();
-
   return {
-    push: isElectronEnv ? electronPush : webPush,
-    replace: isElectronEnv ? electronReplace : webReplace,
-    back: isElectronEnv ? electronBack : webBack,
-    forward: isElectronEnv ? electronForward : webForward,
+    push,
+    replace,
+    back,
+    forward,
+    // 同时也保留原始 nextRouter 供备用
+    native: nextRouter
   };
 }

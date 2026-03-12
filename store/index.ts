@@ -7,5 +7,5 @@ import { useUiStore } from './module/ui';
 export {
   usePlayerStore,
   useUserStore,
-  useUiStore
+  useUiStore,
 }

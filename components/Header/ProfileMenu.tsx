@@ -24,7 +24,7 @@ import { useLoginStatus } from '@/lib/hooks/useLoginStatus';
 
 const iconList: { label: string; icon: React.ReactNode }[] = [
   { label: "Download", icon: <FiDownload className="mr-2 h-5 w-5" /> },
-  { label: "Setting", icon: <FiSettings className="mr-2 h-5 w-5" /> },
+  // { label: "Setting", icon: <FiSettings className="mr-2 h-5 w-5" /> },
   { label: "Buy Me A Coffee", icon: <FiCoffee className="mr-2 h-5 w-5" /> },
 ];
 
@@ -47,20 +47,13 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
   const ProfileCallback = (label: string) => {
     switch (label) {
-      case "Download":
-        // Handle download action
-        break;
-      case "Setting":
-        smartRouter.push('/setting');
-        break;
       case "Buy Me A Coffee":
-        // Handle buy me a coffee action
+        smartRouter.push('/me');
         break;
       default:
         console.log(`Selected ${label} -- 功能待开发`);
     }
   }
-
 
   return (
     <DropdownMenu>
@@ -77,7 +70,6 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
         <DropdownMenuGroup className="space-y-1">
           {useLoginStatus() && (
             <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
-              {/* TODO: 制作 Profile 页面 */}
               <Link href={"/profile"}>
                 <FiUser className="mr-2 h-5 w-5" />
                 <span>Profile</span>
@@ -89,13 +81,20 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             item.label === "Download" && useIsElectron() ? null : (
               <DropdownMenuItem
                 key={item.label}
-                className="rounded-lg px-3 py-2 text-[15px] -mt-1"
+                className="rounded-lg px-3 py-2 text-[15px]"
                 onSelect={() => ProfileCallback(item.label)}
               >
                 {item.icon}
                 <span>{item.label}</span>
               </DropdownMenuItem>
             )
+          )}
+
+          {useIsElectron() && (
+            <DropdownMenuItem onSelect={() => smartRouter.push('/setting')} className="rounded-lg px-3 py-2 text-[15px]">
+              <FiSettings className="mr-2 h-5 w-5" />
+              <span>Setting</span>
+            </DropdownMenuItem>
           )}
 
           {/* 登录/登出 放在最后 */}

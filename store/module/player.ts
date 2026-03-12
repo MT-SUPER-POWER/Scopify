@@ -35,7 +35,6 @@ type PlayerStore = {
   cleanCache: () => void;
 };
 
-// TODO: 退出登录或者用户一退出之后的清理
 export const usePlayerStore = create<PlayerStore>()(
   devtools(
     persist(

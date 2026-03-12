@@ -103,14 +103,6 @@ export default function TrayPage() {
 
         <Separator className="my-1.5 bg-white/10" />
 
-        {/* 其他普通菜单项 */}
-        <Button variant="ghost" className={menuItemClass}>
-          <Minus className={iconClass} />
-          最小化
-        </Button>
-
-        <Separator className="my-1.5 bg-white/10" />
-
         <Button variant="ghost" className={menuItemClass}>
           <MicVocal className={iconClass} />
           打开桌面歌词
@@ -125,12 +117,16 @@ export default function TrayPage() {
 
         <Separator className="my-1.5 bg-white/10" />
 
-        <Button variant="ghost" className={menuItemClass}>
+        <Button variant="ghost" className={menuItemClass} onClick={() => window.electronAPI?.minimizeApp()}>
+          <Power className={iconClass} />
+          <span>最小化</span>
+        </Button>
+
+        <Button variant="ghost" className={menuItemClass} onClick={() => window.electronAPI?.exitApp()}>
           <Power className={iconClass} />
           <span>退出</span>
         </Button>
       </ScrollArea>
-
     </div>
   );
 }
