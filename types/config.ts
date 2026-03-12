@@ -18,7 +18,6 @@ export interface AppConfig {
   };
   logging: {
     level: "debug" | "info" | "warn" | "error";
-    enableFile: boolean;
     format?: string;
     keepDays: number;
   };

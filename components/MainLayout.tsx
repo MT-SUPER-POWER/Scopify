@@ -27,9 +27,9 @@ import {
 import MainLayoutSkeleton from "./MainLayout/Skeleton";
 import LyricsModal from "../components/LyricModal";
 
-// hooks
 import { useHasHydrated } from "@/lib/hooks/useHydration";
 import AppCloseDialog from "./AppCloseDialog";
+import { useRouter } from "next/navigation";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LYRICS CONTEXT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -58,6 +58,17 @@ function MainLayoutInner({
 }: {
   children?: ReactNode;
 }) {
+  const router = useRouter();
+
+  // 监听来自 Electron 主进程的导航请求
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.electronAPI?.onNavigate) {
+      window.electronAPI.onNavigate((path) => {
+        router.push(path);
+      });
+    }
+  }, [router]);
+
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
     storage: typeof window !== "undefined" ? localStorage : undefined
@@ -114,10 +125,7 @@ function MainLayoutInner({
         <LyricsModal />
         <AppCloseDialog />
 
-        {/*
-        左右结构
-        TODO: dashboard 右侧响应式有问题
-         */}
+        {/* 左右结构 */}
         <div className="flex-1 min-h-0 relative w-full">
           <ResizablePanelGroup
             orientation="horizontal"

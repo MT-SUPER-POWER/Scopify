@@ -19,6 +19,14 @@ const electronAPI: ElectronAPI = {
   // TODO: 前端页面接入 config 配置和获取的接口
   getAppConfig: () => ipcRenderer.invoke("get-app-config"),
   updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
+  navigateTo: (path: string) => ipcRenderer.send("navigate-main-window", path),
+  // window.addEventListener("message", callback)
+  onNavigate: (callback: (path: string) => void) => {
+    ipcRenderer.on("navigate-to", (_event, path) => callback(path));
+  },
+  saveConfigRelunch: () => {
+    // 暂未实现
+  },
 };
 
 try {

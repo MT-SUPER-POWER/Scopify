@@ -13,9 +13,11 @@ export interface ElectronAPI {
   exitApp: () => void;
   minimizeApp: () => void;
   sendAppCloseAction: (action: "minimize" | "exit") => void;
-  // TODO: 配合 yaml
   getAppConfig: () => Promise<AppConfig>;
   updateAppConfig: (config: DeepPartial<AppConfig>) => Promise<AppConfig>;
+  navigateTo: (path: string) => void;
+  onNavigate: (callback: (path: string) => void) => void;
+  saveConfigRelunch: () => void;
 }
 
 // 拓展全局 Window 对象，添加 electronAPI 属性

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Play } from "lucide-react";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -6,18 +7,37 @@ import { Play } from "lucide-react";
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour < 12) return "Good Morning";
-  if (hour < 18) return "Good Afternoon";
-  return "Good Evening";
+  if (hour < 18) return "Good Afternoon"
+  if (hour < 21) return "Good Evening";
+  return "Good Night";
+};
+
+const getTimeOfDayGradient = () => {
+  const hour = new Date().getHours();
+  // 清晨 6-12: 暖橙晨光
+  if (hour >= 6 && hour < 12) return "from-amber-400/80 via-[#121212]/80 to-[#121212]";
+  // 下午 12-18: 明亮天蓝
+  if (hour >= 12 && hour < 18) return "from-sky-500/80 via-[#121212]/80 to-[#121212]";
+  // 黄昏 18-21: 橙紫暮色
+  if (hour >= 18 && hour < 21) return "from-orange-500/80 via-[#121212]/80 to-[#121212]";
+  // 深夜 21-6: 深邃暗夜
+  return "from-slate-800/80 via-[#121212]/80 to-[#121212]";
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export const MockRouterContent = () => {
+  // console.log(`[MockRouterContent] \n Rendered at ${new Date().getHours()} \n getTimeofDayGradient us ${getTimeOfDayGradient()}`);
+
   return (
     <div className="relative pb-24 font-sans">
       {/* 顶部彩色渐变背景 (Spotify 标志性设计) */}
-      {/* TODO: 彩色顶部渐变根据时间变化 */}
-      <div className="absolute top-0 left-0 right-0 h-80 bg-linear-to-b from-indigo-900/80 via-[#121212]/80 to-[#121212] z-0 pointer-events-none" />
+      <div className={cn(
+        "absolute top-0 left-0 right-0 h-80 bg-linear-to-b",
+        // "bg-linear-to-b from-indigo-900/80 via-[#121212]/80 to-[#121212]",
+        getTimeOfDayGradient(),
+        "z-0 pointer-events-none")}
+      />
 
       <div className="relative z-10 p-6 pt-20 space-y-8">
         {/* 欢迎语与快速访问区块 */}

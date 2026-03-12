@@ -26,6 +26,7 @@ const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPacka
 const devPort = appConfig.frontend.devPort;
 const devBase = `http://localhost:${devPort}`;
 let mainWindow: BrowserWindowType | null = null;
+let isQuitting = false;
 
 logger.info("--------------------------------------------------");
 logger.info("Fronted Base URL is", devBase);
@@ -101,10 +102,18 @@ const createWindow = () => {
   });
 
   mainWindow.on("close", (e: any) => {
+    // 用 tray 触发的 quit 会引发 "before-quit" 事件，这种关闭，不会在这里阻止关闭
+    if (isQuitting) return;
+
     e.preventDefault(); // 阻止默认的关闭行为
     if (mainWindow && mainWindow.webContents) {
       mainWindow.webContents.send("app-close-confirm");
     }
+  });
+
+  // tray 触发的 quit 在上面跳脱之后，在这里真正的关闭窗口
+  mainWindow.on("closed", () => {
+    mainWindow = null;
   });
 }
 
@@ -147,6 +156,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("before-quit", () => {
+  isQuitting = true;
   stopManagedBackend();
 });
 

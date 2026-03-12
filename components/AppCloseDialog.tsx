@@ -11,9 +11,6 @@ export default function AppCloseDialog() {
 
     // 监听主进程发送的关闭确认信号
     const handleCloseConfirm = () => {
-      // TODO: 检查本地存储是否有记住的选择，切换到查询 toml 文件
-      // 但是要不然写一个程序，在程序启动的时候，把这些配置读取到 zustand
-      // zustand 写入到本地的 toml 文件
       const savedAction = localStorage.getItem("app-close-action");
       if (savedAction === "minimize" || savedAction === "exit") {
         window.electronAPI?.sendAppCloseAction(savedAction);

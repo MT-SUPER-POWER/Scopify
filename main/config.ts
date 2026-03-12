@@ -7,16 +7,19 @@ import fs from 'fs';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PATHS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const __appConfigDefaultPath = join(__dirname, "../config/app.config.default.yml");
-const __appConfigPath = join(__dirname, "../config/app.config.yml");
+const __appConfigDefaultPath = join(__dirname, "../../config/app.config.default.yml");
+const __appConfigPath = join(__dirname, "../../config/app.config.yml");
 
 /**
  * @returns AppConfig
  */
 export function loadAppConfig(): AppConfig {
+  if (!fs.existsSync(__appConfigPath)) {
+    return loadDefaultAppConfig();
+  }
   const raw = fs.readFileSync(__appConfigPath, "utf-8");
   const config = yaml.load(raw) as AppConfig;
-  return config;
+  return { ...loadDefaultAppConfig(), ...config };
 }
 
 export function loadDefaultAppConfig(): AppConfig {
@@ -25,7 +28,8 @@ export function loadDefaultAppConfig(): AppConfig {
   return config;
 }
 
-export function saveAppConfig(newConfig: AppConfig) {
+export function saveAppConfig(newConfig: AppConfig): AppConfig {
   const yamlString = yaml.dump(newConfig);
   fs.writeFileSync(__appConfigPath, yamlString, "utf-8");
+  return newConfig;
 }

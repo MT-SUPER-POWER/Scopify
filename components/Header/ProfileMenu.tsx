@@ -18,7 +18,7 @@ import { usePlayerStore, useUserStore } from '@/store';
 import Link from 'next/link';
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { useLoginStatus } from '@/lib/hooks/useLoginStatus';
-
+import { isElectronEnv } from "@/lib/utils";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -29,7 +29,7 @@ const iconList: { label: string; icon: React.ReactNode }[] = [
 ];
 
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
-  const isElectron = useIsElectron();
+  const isElectron = isElectronEnv();
   const smartRouter = useSmartRouter();
 
   const handleLoginClick = () => {
@@ -68,12 +68,22 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
         sideOffset={8}
       >
         <DropdownMenuGroup className="space-y-1">
+
+          {/* 简介 */}
           {useLoginStatus() && (
             <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
               <Link href={"/profile"}>
                 <FiUser className="mr-2 h-5 w-5" />
                 <span>Profile</span>
               </Link>
+            </DropdownMenuItem>
+          )}
+
+          {/* 设置 */}
+          {isElectron && (
+            <DropdownMenuItem onSelect={() => smartRouter.push('/setting')} className="rounded-lg px-3 py-2 text-[15px]">
+              <FiSettings className="mr-2 h-5 w-5" />
+              <span>Setting</span>
             </DropdownMenuItem>
           )}
 
@@ -88,13 +98,6 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 <span>{item.label}</span>
               </DropdownMenuItem>
             )
-          )}
-
-          {useIsElectron() && (
-            <DropdownMenuItem onSelect={() => smartRouter.push('/setting')} className="rounded-lg px-3 py-2 text-[15px]">
-              <FiSettings className="mr-2 h-5 w-5" />
-              <span>Setting</span>
-            </DropdownMenuItem>
           )}
 
           {/* 登录/登出 放在最后 */}

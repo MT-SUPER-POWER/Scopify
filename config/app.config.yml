@@ -1,9 +1,9 @@
-﻿app:
+app:
   gpuAcceleration: true
   devTools: false
-  closeAction: 2
+  closeAction: 1
 backend:
-  port: 4000
+  port: 3232
   host: 127.0.0.1
   autoStart: true
 frontend:
@@ -11,9 +11,8 @@ frontend:
   host: 127.0.0.1
 logging:
   level: info
-  enableFile: false
-  format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}"
-  keepDays: 30
+  format: '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}'
+  keepDays: 25
 network:
   timeout: 5000
   max_retries: 1
