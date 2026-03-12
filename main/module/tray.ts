@@ -1,22 +1,21 @@
 import { app, Tray, BrowserWindow, screen } from 'electron';
-import { __logoIcon } from "../constants.js";
+import { __logoIcon, __preloadScript } from "../constants.js";
 
 const TRAY_WIDTH = 200;
 const TRAY_HEIGHT = 380;
+const X_OFFSET = 15;
+const Y_OFFSET = 4;
 
-// 提取偏移常量，方便后续微调 UI
-const X_OFFSET = 15; // 水平偏移：离开一点 > 0
-const Y_OFFSET = 4;  // 垂直偏移：靠近一些 > 0
-
+// 提升到模块作用域，防止被垃圾回收
 let trayWindow: BrowserWindow | null = null;
-let lastBlurTime = 0; // 记录最后一次失去焦点的时间
+let tray: Tray | null = null;
+let lastBlurTime = 0;
 
-function createTrayWindow(mainWindow: Electron.BrowserWindow) {
-
+function createTrayWindow() {
+  // 移除 parent: mainWindow，让托盘菜单独立存在，不依赖主窗口的生死
   trayWindow = new BrowserWindow({
     width: TRAY_WIDTH,
     height: TRAY_HEIGHT,
-    parent: mainWindow,
     show: false,
     frame: false,
     fullscreenable: false,
@@ -26,6 +25,7 @@ function createTrayWindow(mainWindow: Electron.BrowserWindow) {
     skipTaskbar: true,
     backgroundColor: '#00000000',
     webPreferences: {
+      preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -39,88 +39,87 @@ function createTrayWindow(mainWindow: Electron.BrowserWindow) {
   trayWindow.loadURL(trayUrl);
 
   trayWindow.on('blur', () => {
-    lastBlurTime = Date.now(); // 记录隐藏瞬间的时间
+    lastBlurTime = Date.now();
     trayWindow?.hide();
+  });
+
+  // 核心修复：窗口被销毁时，将外部变量置空释放内存
+  trayWindow.on('closed', () => {
+    trayWindow = null;
   });
 }
 
 function initTray(mainWindow: Electron.BrowserWindow) {
-  const tray = new Tray(__logoIcon);
+  // 如果已经初始化过，不要重复创建
+  if (tray) return;
+
+  tray = new Tray(__logoIcon);
   tray.setToolTip('Scopify');
 
-  createTrayWindow(mainWindow);
+  createTrayWindow();
 
   tray.on('right-click', (_event, trayBounds) => {
-    if (!trayWindow) return;
+    // 如果窗口被销毁了（比如主动调用了 close），重新创建一个
+    if (!trayWindow) {
+      createTrayWindow();
+    }
 
+    // 下面都是你原来的逻辑，唯一需要注意的是 trayWindow 此时一定是非 null 的 (加 ! 断言)
     const timeSinceLastBlur = Date.now() - lastBlurTime;
 
-    // FIX: 修复闪烁和连点问题
-    // 如果窗口是可见的，或者距离上一次因为 blur 隐藏的时间小于 100ms
-    // 说明这是用来“关闭”菜单的点击，直接忽略展开逻辑
-    if (trayWindow.isVisible() || timeSinceLastBlur < 100) {
-      trayWindow.hide();
+    if (trayWindow!.isVisible() || timeSinceLastBlur < 100) {
+      trayWindow!.hide();
       return;
     }
 
-    const windowBounds = trayWindow.getBounds();
+    const windowBounds = trayWindow!.getBounds();
     const currentDisplay = screen.getDisplayNearestPoint(trayBounds);
     const workArea = currentDisplay.workArea;
     const maxRight = workArea.x + workArea.width;
 
-    // 水平坐标计算 (加入 X_OFFSET 向两边散开)
     let x = Math.round(trayBounds.x) + X_OFFSET;
-
-    // 碰撞检测：如果向右展开会撞到屏幕右侧边缘
     if (x + windowBounds.width > maxRight) {
-      // 改变策略（靠左）：向左展开，并加上负向的偏移量使其远离
       x = Math.round(trayBounds.x + trayBounds.width - windowBounds.width) - X_OFFSET;
     }
+    if (x < workArea.x) x = workArea.x + 10;
 
-    // 终极兜底：防止向左展开后撞到左侧边界
-    if (x < workArea.x) {
-      x = workArea.x + 10;
-    }
-
-    // 垂直坐标计算 (加入 Y_OFFSET 使其更贴近任务栏)
     let y;
     if (trayBounds.y > currentDisplay.bounds.height / 2) {
-      // 任务栏在底部
       y = trayBounds.y - windowBounds.height - Y_OFFSET;
     } else {
-      // 任务栏在顶部
       y = trayBounds.y + trayBounds.height + Y_OFFSET;
     }
-
-    // 垂直兜底
     if (y < workArea.y) y = workArea.y + 10;
     if (y + windowBounds.height > workArea.y + workArea.height) {
       y = workArea.y + workArea.height - windowBounds.height - 10;
     }
 
-    // --- 防闪烁核心逻辑 ---
-    // 先把窗口变为完全透明
-    trayWindow.setOpacity(0);
+    trayWindow!.setOpacity(0);
+    trayWindow!.setPosition(x, y, false);
+    trayWindow!.show();
 
-    // 设定位置并显示 (show 内部自带 focus 能力)
-    trayWindow.setPosition(x, y, false);
-    trayWindow.show();
-
-    // 延迟一帧，给渲染多一点时间
     setTimeout(() => {
-      if (trayWindow && trayWindow.isVisible()) {
+      if (trayWindow && !trayWindow.isDestroyed() && trayWindow.isVisible()) {
         trayWindow.setOpacity(1);
       }
     }, 20);
   });
 
   tray.on('double-click', () => {
-    if (mainWindow) {
+    if (mainWindow && !mainWindow.isDestroyed()) {
       if (mainWindow.isVisible()) {
         mainWindow.focus();
       } else {
         mainWindow.show();
       }
+    }
+  });
+
+  // 妥善清理 Tray，避免退出时系统托盘留下残影
+  app.on('before-quit', () => {
+    if (tray) {
+      tray.destroy();
+      tray = null;
     }
   });
 }

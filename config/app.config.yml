@@ -1,0 +1,20 @@
+﻿app:
+  gpuAcceleration: true
+  devTools: false
+  closeAction: 2
+backend:
+  port: 4000
+  host: 127.0.0.1
+  autoStart: true
+frontend:
+  devPort: 3000
+  host: 127.0.0.1
+logging:
+  level: info
+  enableFile: false
+  format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}"
+  keepDays: 30
+network:
+  timeout: 5000
+  max_retries: 1
+  retry_delay: 500

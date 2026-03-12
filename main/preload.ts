@@ -1,18 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { ElectronAPI } from "@/types/electron";
 
-interface ElectronAPI {
-  on: (channel: string, callback: (...args: unknown[]) => void) => void;
-  send: (channel: string, args?: unknown) => void;
-  enterFullScreen: () => void;
-  exitFullScreen: () => void;
-  onFullScreenChanged: (callback: (isFullScreen: boolean) => void) => void;
-  openLoginWindow: () => void;
-  closeLoginWindow: () => void;
-  maniWindowReload: () => void;
-}
-
-// 写好了接口，记得在 types/electron.d.ts 中声明类型
-// 不然 ts 文件不知道函数类型会报错
+// NOTE: 写好了接口，记得在 types/electron.d.ts 中声明类型
 const electronAPI: ElectronAPI = {
   on: (channel, callback) => { ipcRenderer.on(channel, callback); },
   send: (channel, args) => { ipcRenderer.send(channel, args); },
@@ -24,6 +13,12 @@ const electronAPI: ElectronAPI = {
   openLoginWindow: () => { ipcRenderer.send("open-login-window"); },
   closeLoginWindow: () => { ipcRenderer.send("close-login-window"); },
   maniWindowReload: () => { ipcRenderer.send("main-window-reload"); },
+  exitApp: () => { ipcRenderer.send("exit-app"); },
+  minimizeApp: () => { ipcRenderer.send("minimize-to-tray"); },
+  sendAppCloseAction: (action: "minimize" | "exit") => { ipcRenderer.send("app-close-action", action); },
+  // TODO: 前端页面接入 config 配置和获取的接口
+  getAppConfig: () => ipcRenderer.invoke("get-app-config"),
+  updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
 };
 
 try {

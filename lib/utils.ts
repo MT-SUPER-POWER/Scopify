@@ -81,3 +81,8 @@ export const formatDate = (timestamp: number) => {
     day: "2-digit",
   });
 };
+
+// 判断是否为 Electron 环境
+export function isElectronEnv(): boolean {
+  return typeof window !== "undefined" && !!window.electronAPI;
+}

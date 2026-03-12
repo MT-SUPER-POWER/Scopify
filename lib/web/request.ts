@@ -1,6 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
-import { useIsElectron } from '@/lib/hooks/useElectronDetect';
 import { usePlayerStore, useUserStore } from '@/store';
+import { appConfig, logger } from './env';
 
 let setData: any = null;
 
@@ -13,11 +13,15 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // 运行时优先取 preload 注入的后端地址（Electron 静态导出场景）
-const baseURL = process.env.BACKEND_URL || "http://127.0.0.1:3838";
-const MAX_RETRIES = Number(process.env.MAX_RETRIES) || 1;    // 最大重试次数
-const RETRY_DELAY = Number(process.env.RETRY_DELAY) || 500;  // 重试延迟（毫秒）
-const AXIOS_TIMEOUT = Number(process.env.AXIOS_TIMEOUT) || 5000; // 最大请求时间（毫秒）
+const baseURL = `http://${appConfig.backend.host}:${appConfig.backend.port}`;
+const MAX_RETRIES = appConfig.network.max_retries;
+const RETRY_DELAY = appConfig.network.retry_delay;
+const AXIOS_TIMEOUT = appConfig.network.timeout;
 const NO_RETRY_URLS = ['暂时没有'];
+
+logger.info("--------------------------------------------------");
+logger.info("Next.js Request Base URL is", baseURL);
+logger.info("--------------------------------------------------");
 
 if (!baseURL) {
   throw new Error("请在 NEXT_CONFIG 或 Electron 运行时提供 BACKEND_URL");
@@ -28,6 +32,9 @@ const request = axios.create({
   timeout: AXIOS_TIMEOUT,
   withCredentials: true
 });
+
+// 判断是否为 Electron 环境
+const isElectron = typeof window !== "undefined" && !!window.electronAPI;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INTERCEPTOR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -50,7 +57,7 @@ request.interceptors.request.use(
     config.params = {
       ...config.params,
       timestamp: Date.now(),
-      device: useIsElectron() ? 'pc' : 'web'
+      device: isElectron ? 'pc' : 'web'
     };
 
     // 注意：假设你的 userStore 里存储 cookie 的字段叫 cookie，如果叫别的名字请对应修改
@@ -73,7 +80,7 @@ request.interceptors.request.use(
       }
     }
 
-    if (useIsElectron()) {
+    if (isElectron) {
       const proxyConfig = setData?.proxyConfig;
       if (proxyConfig?.enable && ['http', 'https'].includes(proxyConfig?.protocol)) {
         config.params.proxy = `${proxyConfig.protocol}://${proxyConfig.host}:${proxyConfig.port}`;
@@ -97,7 +104,7 @@ request.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.error('error', error);
+    logger.error('error', error);
     const config = error.config as CustomAxiosRequestConfig;
 
     // 如果没有配置，直接返回错误
@@ -107,7 +114,7 @@ request.interceptors.response.use(
     if (error.response?.status === 301 && config.params.noLogin !== true) {
       useUserStore.getState().handleLogout();
       usePlayerStore.getState().cleanCache();
-      console.log(`301 状态码，清除登录信息后重试第 ${config.retryCount} 次`);
+      logger.info(`301 状态码，清除登录信息后重试第 ${config.retryCount} 次`);
       config.retryCount = 3;
     }
 
@@ -119,7 +126,7 @@ request.interceptors.response.use(
       !config.noRetry
     ) {
       config.retryCount++;
-      console.warn(`请求重试第 ${config.retryCount} 次`);
+      logger.warn(`请求重试第 ${config.retryCount} 次`);
 
       // 延迟重试
       await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
@@ -128,7 +135,7 @@ request.interceptors.response.use(
       return request(config);
     }
 
-    console.warn(`重试${MAX_RETRIES}次后仍然失败`);
+    logger.warn(`重试${MAX_RETRIES}次后仍然失败`);
     return Promise.reject(error);
   }
 );

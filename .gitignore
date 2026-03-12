@@ -23,7 +23,6 @@
 /build
 /logs/
 **/*.log
-/backend/api-enhanced
 
 # misc
 .DS_Store
