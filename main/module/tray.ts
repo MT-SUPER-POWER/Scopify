@@ -7,7 +7,7 @@ const X_OFFSET = 15;
 const Y_OFFSET = 4;
 
 // 提升到模块作用域，防止被垃圾回收
-let trayWindow: BrowserWindow | null = null;
+export let trayWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let lastBlurTime = 0;
 

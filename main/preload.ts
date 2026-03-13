@@ -16,7 +16,6 @@ const electronAPI: ElectronAPI = {
   exitApp: () => { ipcRenderer.send("exit-app"); },
   minimizeApp: () => { ipcRenderer.send("minimize-to-tray"); },
   sendAppCloseAction: (action: "minimize" | "exit") => { ipcRenderer.send("app-close-action", action); },
-  // TODO: 前端页面接入 config 配置和获取的接口
   getAppConfig: () => ipcRenderer.invoke("get-app-config"),
   updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
   navigateTo: (path: string) => ipcRenderer.send("navigate-main-window", path),

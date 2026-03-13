@@ -19,7 +19,7 @@
   "scripts": {
     "predev": "bunx swc main -d out --out-file-extension js && node script/build-electron.cjs",
     "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\" ",
-    "backend": "cross-env PORT=3838 node backend/api-enhanced/app.js",
+    "backend": "node backend/api-enhanced/app.js",
     "web": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"next dev\" \"bun run backend\" ",
     "build:web": "next build",
     "build:win": "next build && bunx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- win"
@@ -33,6 +33,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toast": "^1.2.15",
     "@tabler/icons-react": "^3.38.0",
+    "@tanstack/react-virtual": "^3.13.22",
     "axios": "^1.13.6",
     "colorthief": "^3.3.1",
     "electron-log": "^5.4.3",
