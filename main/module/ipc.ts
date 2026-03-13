@@ -2,8 +2,19 @@ import { ipcMain, app, BrowserWindow } from "electron";
 import { loadAppConfig, saveAppConfig } from "../config.js";
 import { ensureBackendUrl } from "./backend.js";
 import { logger } from "../constants.js";
+import { Tray } from "electron/main";
+import { Minimize } from 'lucide-react';
+import { trayWindow } from "./tray.js";
+import { updateThumbarButtons } from "./thumbarButtons.js";
 
 export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PLAYER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ipcMain.on("player-state-changed", (_event, { isPlaying }: { isPlaying: boolean }) => {
+    if (mainWindow) {
+      updateThumbarButtons(mainWindow, isPlaying);
+    }
+  });
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKEND ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -85,6 +96,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
 
   // minimizeApp: () => void;
   ipcMain.on("minimize-to-tray", () => {
-    app.hide();
+    mainWindow?.hide();
+    trayWindow?.hide();
   });
 }

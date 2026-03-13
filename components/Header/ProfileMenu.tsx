@@ -24,7 +24,6 @@ import { isElectronEnv } from "@/lib/utils";
 
 const iconList: { label: string; icon: React.ReactNode }[] = [
   { label: "Download", icon: <FiDownload className="mr-2 h-5 w-5" /> },
-  // { label: "Setting", icon: <FiSettings className="mr-2 h-5 w-5" /> },
   { label: "Buy Me A Coffee", icon: <FiCoffee className="mr-2 h-5 w-5" /> },
 ];
 

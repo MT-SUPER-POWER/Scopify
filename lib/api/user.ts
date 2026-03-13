@@ -20,6 +20,14 @@ export function getUserRecord(uid: number, type: number = 0) {
   } as any);
 }
 
+// 获取用户历史评论
+export function getUserComments(uid: number) {
+  return request.get('/user/comment/history', {
+    params: { uid, },
+    noRetry: true
+  } as any);
+}
+
 // 最近播放-歌曲
 // /record/recent/song
 export function getRecentSongs(limit: number = 100) {

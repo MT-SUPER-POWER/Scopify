@@ -23,7 +23,6 @@ export const appConfig: AppConfig = {
   },
   logging: {
     level: (process.env.APP_CFG_LOG_LEVEL as AppConfig["logging"]["level"]) || "info",
-    enableFile: false,
     keepDays: 7,
   },
   network: {

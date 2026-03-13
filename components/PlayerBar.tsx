@@ -1,6 +1,7 @@
 "use client";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 // TODO: 空格快捷键开启和暂停歌曲的播放
 
 import { useEffect, useRef, useState } from "react";
@@ -20,12 +21,14 @@ import {
   Expand,
   MinimizeIcon,
 } from "lucide-react";
+import { FaRegCommentDots } from "react-icons/fa6";
 import { useIsElectron, useFullScreenListener } from "@/lib/hooks/useElectronDetect";
 import { useUiStore } from "@/store/module/ui";
 import { VolumeControl } from "@/components/VolumeControl";
 import { SmoothSlider } from "@/components/SmoothSlider";
 import { cn, formatDuration } from "@/lib/utils";
-import { usePlayerStore } from "@/store";
+import { usePlayerStore, useUserStore } from "@/store";
+import Link from "next/link";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -57,9 +60,7 @@ export const PlayerBar = () => {
   const toggleLyrics = useUiStore(s => s.toggleLyrics);
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const [isMaximized, setIsMaximized] = useState(false);
-
   const audioRef = useRef<HTMLAudioElement>(null);
-
   const volume = usePlayerStore(s => s.volume);
   const isPlaying = usePlayerStore(s => s.isPlaying);
   const currentSong = usePlayerStore(s => s.currentSongDetail);
@@ -74,6 +75,11 @@ export const PlayerBar = () => {
   const toggleShuffle = usePlayerStore(s => s.toggleShuffle);
   const playNext = usePlayerStore(s => s.playNext);
   const playPrev = usePlayerStore(s => s.playPrev);
+  const likelist = useUserStore((s) => s.likeListIDs);
+  const isLiked = likelist.includes(currentSong?.id ?? -1);
+
+  // console.log("当前歌曲 ID:", currentSong?.id, "是否在喜欢列表中:", isLiked);
+  // console.log("喜欢列表:", likelist);
 
   // 当 url 变化时加载新歌
   useEffect(() => {
@@ -93,7 +99,12 @@ export const PlayerBar = () => {
     } else {
       audio.pause();
     }
-  }, [isPlaying]);
+
+    // 同步状态到 Electron 主进程，用于更新任务栏按钮
+    if (isElectron && window.electronAPI?.send) {
+      window.electronAPI.send("player-state-changed", { isPlaying });
+    }
+  }, [isPlaying, isElectron, currentSongUrl]);
 
   // 同步音量
   useEffect(() => {
@@ -109,8 +120,10 @@ export const PlayerBar = () => {
     setCurrentTime(newTime * 1000);
   };
 
+  // 播放条被占百分比
   const progressPercent = totalTime > 0 ? (currentTime / totalTime) * 100 : 0;
 
+  // 切换播放模式
   const cycleRepeat = () => {
     const modes = ["off", "all", "one"] as const;
     const next = modes[(modes.indexOf(repeatMode) + 1) % modes.length];
@@ -121,9 +134,35 @@ export const PlayerBar = () => {
     setIsMaximized(isFullScreen);
   });
 
+  // 监听来自 Electron 主进程的任务栏控制（Thumbnail Toolbar）
+  useEffect(() => {
+    if (!isElectron || !window.electronAPI?.on) return;
+
+    window.electronAPI.on("control-audio", (event: any, action: any) => {
+      console.log("[PlayerBar] Received control-audio action:", action);
+      switch (action) {
+        case "play":
+          setIsPlaying(true);
+          break;
+        case "pause":
+          setIsPlaying(false);
+          break;
+        case "prev":
+          playPrev();
+          break;
+        case "next":
+          playNext();
+          break;
+      }
+    });
+
+    return () => {
+    };
+  }, [isElectron, setIsPlaying, playPrev, playNext]);
+
   return (
     <>
-      {/* 隐藏的 audio 元素，负责实际播放 */}
+      {/* 播放 */}
       <audio
         ref={audioRef}
         onTimeUpdate={() => {
@@ -169,7 +208,20 @@ export const PlayerBar = () => {
               {currentSong?.ar.map(a => a.name).join(", ") ?? "—"}
             </span>
           </div>
-          <Heart className="w-5 h-5 text-[#b3b3b3] hover:text-white cursor-pointer ml-1" />
+          {/* TODO: 喜欢和评论 */}
+          <button title="Like">
+            <Heart className={cn(
+              "w-5 h-5 text-[#b3b3b3] hover:text-white cursor-pointer ml-1",
+              `${isLiked && "fill-[#1ed760] text-[#1ed760]"}`
+            )} />
+          </button>
+          <Link
+            href={currentSong?.id ? `/comment?songId=${currentSong.id}` : "#"}
+            title="Comment"
+            onClick={(e) => !currentSong?.id && e.preventDefault()}
+          >
+            <FaRegCommentDots className="w-5 h-5 text-[#b3b3b3] hover:text-white cursor-pointer ml-1" />
+          </Link>
         </div>
 
         {/* Center: Controls */}
@@ -241,19 +293,23 @@ export const PlayerBar = () => {
           <button
             onClick={() => toggleLyrics()}
             className={`hover:text-white transition-colors ${isLyricsOpen ? "text-[#1db954]" : ""}`}
-            title="歌词"
+            title="Lyrics"
           >
             <Mic2 className="w-5 h-5" />
           </button>
-          <button className="hover:text-white transition-colors">
+
+          {/* TODO: 查看播放列表功能 */}
+          <button className="hover:text-white transition-colors" title="List">
             <ListMusic className="w-5 h-5" />
           </button>
-          <button className="hover:text-white transition-colors">
+
+          <button className="hover:text-white transition-colors" title="Connect to Devices">
             <MonitorSpeaker className="w-5 h-5" />
           </button>
 
           <VolumeControl initialVolume={volume} onChange={(v) => usePlayerStore.getState().setVolume(v)} />
 
+          {/* 全屏 */}
           <button
             onClick={() => {
               isMaximized ? Minimize(isElectron) : Maximized(isElectron);

@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SongTitle } from "@/components/Marquee";
 import { VolumeControl } from "@/components/VolumeControl";
-import { SkipBack, Play, SkipForward, Heart, Minus, MicVocal, Settings, Power } from "lucide-react";
+import { SkipBack, Play, SkipForward, Heart, Minus, MicVocal, Settings, Power, Minimize } from "lucide-react";
 
 // 引入自定义 Hook 和状态管理
 import { usePlayerStore } from "@/store";
@@ -110,7 +110,11 @@ export default function TrayPage() {
 
         <Separator className="my-1.5 bg-white/10" />
 
-        <Button variant="ghost" className={`${menuItemClass}`}>
+        <Button
+          variant="ghost"
+          className={`${menuItemClass}`}
+          onClick={() => window.electronAPI?.navigateTo("/setting")}
+        >
           <Settings className={iconClass} />
           <span>设置</span>
         </Button>
@@ -118,7 +122,7 @@ export default function TrayPage() {
         <Separator className="my-1.5 bg-white/10" />
 
         <Button variant="ghost" className={menuItemClass} onClick={() => window.electronAPI?.minimizeApp()}>
-          <Power className={iconClass} />
+          <Minimize className={iconClass} />
           <span>最小化</span>
         </Button>
 

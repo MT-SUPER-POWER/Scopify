@@ -31,4 +31,16 @@ export function getRecentSongs(limit: number = 10) {
   return request.get('/record/recent/song', { params: { limit } });
 }
 
+/**
+ * 获取所有用户信息的歌曲的 ID
+ */
+export function getUserLikeLists(uid: number | string) {
+  return request.get('/likelist', { params: { uid } });
+}
 
+/**
+ * 喜欢和取消喜欢
+ */
+export function likeSong(id: number | string, like: boolean) {
+  return request.get('/like', { params: { id, like } });
+}
