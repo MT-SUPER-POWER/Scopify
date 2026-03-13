@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Loading</title>
+  <style>
+    /* 基础重置，适合无边框窗口 */
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      /* 移除深色背景，实现真正的全透明 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      /* 允许拖拽窗口，Electron 特有属性 */
+      -webkit-app-region: drag;
+      user-select: none;
+    }
+
+    /* 光盘外层容器 */
+    .cd-container {
+      position: relative;
+      width: 260px;
+      /* 放大光盘尺寸 */
+      height: 260px;
+      margin-bottom: 40px;
+      /* 拉开与文字的间距 */
+      /* 关键：CSS 旋转动画 */
+      animation: spin 3s linear infinite;
+      /* 核心技术：用径向渐变遮罩把光盘中心“真正掏空”，露出后面的桌面壁纸 */
+      /* 新增：外圈（130px外）也设为透明，彻底切断边缘，解决 Chromium 阴影渲染产生的丑陋正方形黑块 */
+      -webkit-mask-image: radial-gradient(circle at center, transparent 14px, black 15px, black 129px, transparent 130px);
+      mask-image: radial-gradient(circle at center, transparent 14px, black 15px, black 129px, transparent 130px);
+      /* 用 filter 替代 box-shadow，这样连镂空的孔洞边缘也能产生正确的物理投影 */
+      filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
+    }
+
+    /* 光盘主体（黑胶底色） */
+    .cd-disc {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #0a0a0c;
+      box-shadow: inset 0 0 0 2px #222;
+      /* 移除了外阴影，交给外层的 filter 处理 */
+    }
+
+    /* 黑胶表面的沟槽纹理 */
+    .cd-tracks {
+      position: absolute;
+      inset: 4px;
+      /* 留出一点外边缘 */
+      border-radius: 50%;
+      /* 使用密集的 1~2px 颜色交替，模拟物理刻录沟槽 */
+      background: repeating-radial-gradient(#111 0px,
+          #111 1px,
+          #222 2px,
+          #111 3px);
+    }
+
+    /* 模拟黑胶经典的“领结”状物理反光 */
+    .cd-tracks::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(transparent 10deg,
+          rgba(255, 255, 255, 0.12) 45deg,
+          transparent 80deg,
+          transparent 190deg,
+          rgba(255, 255, 255, 0.12) 225deg,
+          transparent 260deg);
+    }
+
+    /* 唱片中心的贴纸 (Label) - 黑胶通常比较大 */
+    .cd-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      /* 按比例放大贴纸 */
+      height: 100px;
+      border-radius: 50%;
+      background: #cc0000;
+      /* 经典纯正的黑胶大红色 */
+      border: 3px solid #0a0a0c;
+      /* 内阴影模拟纸张内圈留白，调整宽度适配大尺寸 */
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.3), 0 0 10px rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 移除了原本的 .cd-hole 样式，因为外层的 mask-image 已经把所有图层的中心切空了 */
+
+    /* 加载文字底色 */
+    .loading-text {
+      position: relative;
+      color: #444;
+      /* 底色变暗，增加视觉层次感 */
+      font-size: 18px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+      margin-left: 41px
+    }
+
+    /* 使用伪元素叠加一层高亮文字，实现从左到右的填充感 */
+    .loading-text::after {
+      content: attr(data-text);
+      /* 动态读取 html 中的 data-text 属性，工程常用解耦法 */
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #f0f0f0;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 0%;
+      animation: sweep 2s ease-in-out infinite;
+      /* 给顶层文字增加发光感 */
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.4), 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    /* 旋转动画关键帧 */
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* 文字从左到右填充动画 */
+    @keyframes sweep {
+      0% {
+        width: 0%;
+      }
+
+      100% {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="cd-container">
+    <div class="cd-disc"></div>
+    <div class="cd-tracks"></div>
+    <div class="cd-label">
+      <!-- 删除了原来的透明孔洞 div，因为已经用遮罩实现了物理镂空 -->
+    </div>
+  </div>
+
+  <!-- 增加 data-text 属性供 CSS 伪元素读取 -->
+  <div class="loading-text" data-text="Starting ...">Starting ...</div>
+
+</body>
+
+</html>

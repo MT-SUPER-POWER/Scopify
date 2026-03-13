@@ -1,20 +1,21 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { app, BrowserWindow } from "electron";
-import serve from "electron-serve";
 import { join } from "path";
+import serve from "electron-serve";
+import { app, BrowserWindow } from "electron";
 import type { BrowserWindow as BrowserWindowType } from "electron";
 
-// module
 import initTray from "./module/tray.js";
 import initializeLoginWindow from "./module/login.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
-import { __logoIcon, __preloadScript, appConfig, cleanOldLogs, logger } from "./constants.js";
+
 import { registerIpcHandlers } from "./module/ipc.js";
 import { startManagedBackend, stopManagedBackend } from "./module/backend.js";
-import { log } from "console";
+import { __logoIcon, __preloadScript, appConfig, cleanOldLogs, logger, __splashHtmlPath, __splashHtmlDesc } from "./constants.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+let splashWindow: BrowserWindowType | null = null;
 
 // NOTE: electron-serve 结合 next.js
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
@@ -22,11 +23,10 @@ const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPacka
   : null;
 
 // 初始化配置
-
 const devPort = appConfig.frontend.devPort;
 const devBase = `http://localhost:${devPort}`;
 let mainWindow: BrowserWindowType | null = null;
-let isQuitting = false;
+let isQuitting = false;     // 真正的退出标志
 
 logger.info("--------------------------------------------------");
 logger.info("Fronted Base URL is", devBase);
@@ -35,6 +35,29 @@ logger.info("--------------------------------------------------");
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const createWindow = () => {
+
+  // 1. 创建启动界面窗口（无边框，不可拉伸）
+  splashWindow = new BrowserWindow({
+    width: 700,
+    height: 700,
+    transparent: true, // 允许透明背景
+    frame: false,      // 无系统边框
+    alwaysOnTop: true, // 保持在最前
+    icon: __logoIcon,  // 设置应用图标
+    resizable: false,
+    show: true,
+    movable: false,
+    skipTaskbar: true,        // 不在任务栏显示
+    ...(process.platform === "win32" && { type: "splash" }),           // splash - Windows 专属，系统级启动画面，不受 Win+D 影响
+  });
+
+  splashWindow.loadFile(__splashHtmlPath);
+  splashWindow.center();
+  splashWindow.focus();
+
+  logger.info("[SPLASH] splashWindow loaded", __splashHtmlDesc);
+
+  // 创建主窗口（隐藏，等主页面 ready 再显示）
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -43,6 +66,7 @@ const createWindow = () => {
     autoHideMenuBar: true,             // 自动隐藏菜单栏
     icon: __logoIcon,                  // 设置应用图标
     title: "scopify",                  // 设置窗口标题
+    show: false,                       // 关键：初始不显示，防止闪烁
     titleBarOverlay: {
       color: 'rgba(0,0,0,0)',          // 完全透明
       height: 35,
@@ -54,6 +78,21 @@ const createWindow = () => {
       contextIsolation: true,
     }
   });
+
+  // splash 画面显示后自动关闭并显示主窗口
+  setTimeout(() => {
+    if (splashWindow) {
+      splashWindow.destroy();
+      splashWindow = null;
+      logger.info("[SPLASH] splashWindow destroyed after 4s, mainWindow shown");
+    }
+
+    mainWindow?.show();
+    mainWindow?.focus();
+
+  }, 4000);
+
+  // BUG FIX: 主窗口 show: false，彻底无闪烁
 
   if (app.isPackaged) {
     appServe && appServe(mainWindow).then(() => {

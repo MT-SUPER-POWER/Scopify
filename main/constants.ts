@@ -1,7 +1,12 @@
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPLASH ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 启动页 HTML 路径和内容统一管理
+export const __splashHtmlPath = join(__dirname, "../../resources/splash.html");
+export const __splashHtmlDesc = "[SPLASH] Electron 启动页: " + __splashHtmlPath;
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { join } from "path";
-import { app } from "electron";
+import path, { join } from "path";
+import { app, nativeImage } from "electron";
 import log from "electron-log";
 import { loadAppConfig } from "./config.js";
 import fs from 'fs';
@@ -13,6 +18,11 @@ const __preloadScript = join(__dirname, "../main/preload.js");
 const __appConfigPath = join(__dirname, "../../config/app.config.yml");
 const __appConfigDefaultPath = join(__dirname, "../../config/app.config.default.yml");
 const appConfig = loadAppConfig();
+
+export const next = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/next.png"));
+export const pause = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/pause.png"));
+export const prev = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/prev.png"));
+export const play = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/play.png"));
 
 // utils
 const configStr = JSON.stringify(appConfig, null, 2)
@@ -96,6 +106,7 @@ log.info(`
   Default:        ${__appConfigDefaultPath}
   App Config:     ${configStr}
   Backend Entry:  ${__backendEntry}
+  Splash HTML:    ${__splashHtmlPath}
   --------------------------------------------------
 `);
 
