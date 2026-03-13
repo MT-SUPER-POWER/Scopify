@@ -18,6 +18,7 @@ type PlayerStore = {
   queue: SongDetail[];       // 当前播放队列
   queueIndex: number;        // 当前队列位置
 
+
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
   setCurrentTime: (time: number) => void;
@@ -32,6 +33,7 @@ type PlayerStore = {
   playQueueIndex: (index: number) => Promise<void>;
   playNext: () => Promise<void>;
   playPrev: () => Promise<void>;
+  playRandom: () => Promise<void>;
   cleanCache: () => void;
 };
 
@@ -96,6 +98,13 @@ export const usePlayerStore = create<PlayerStore>()(
           const { queueIndex, playQueueIndex } = get();
           const prev = Math.max(0, queueIndex - 1);
           await playQueueIndex(prev);
+        },
+
+        playRandom: async () => {
+          const { queue, playQueueIndex } = get();
+          if (!queue.length) return;
+          const randomIndex = Math.floor(Math.random() * queue.length);
+          await playQueueIndex(randomIndex);
         },
 
         cleanCache: () => {

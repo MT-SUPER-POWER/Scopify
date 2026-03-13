@@ -20,7 +20,7 @@ type UserStore = {
   searchValue: string;
   searchType: number;
   collectedAlbumIds: Set<number>;
-
+  likeListIDs: number[];
   playlist: NeteasePlaylist[];
   albumList: SongDetail[];
 
@@ -29,6 +29,7 @@ type UserStore = {
   setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
   setCookie: (cookie: string) => void;
   setAlbumList: (albumList: SongDetail[]) => void;
+  setLikeListIDs: (ids: number[]) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -43,11 +44,13 @@ export const useUserStore = create<UserStore>()(
         collectedAlbumIds: new Set(),
         playlist: [],
         albumList: [],
+        likeListIDs: [],
 
         setUser: (userData: UserData) => set({ user: userData }),
         setLoginType: (loginType) => set({ loginType }),
         setCookie: (cookie) => set({ cookie }),
         setAlbumList: (albumList: SongDetail[]) => set({ albumList }),
+        setLikeListIDs: (ids) => set({ likeListIDs: ids }),
         handleLogout: async () => {
           try {
             await logout();
