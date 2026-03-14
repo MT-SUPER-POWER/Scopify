@@ -85,11 +85,9 @@ const createWindow = () => {
       splashWindow = null;
       logger.info("[SPLASH] splashWindow destroyed after 4s, mainWindow shown");
     }
-
     mainWindow?.show();
     mainWindow?.focus();
-
-  }, 4000);
+  }, 3000);
 
   // BUG FIX: 主窗口 show: false，彻底无闪烁
 
