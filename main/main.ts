@@ -36,7 +36,7 @@ logger.info("--------------------------------------------------");
 
 const createWindow = () => {
 
-  // 1. 创建启动界面窗口（无边框，不可拉伸）
+  // 创建启动界面窗口
   splashWindow = new BrowserWindow({
     width: 700,
     height: 700,
@@ -47,8 +47,7 @@ const createWindow = () => {
     resizable: false,
     show: true,
     movable: false,
-    skipTaskbar: true,        // 不在任务栏显示
-    ...(process.platform === "win32" && { type: "splash" }),           // splash - Windows 专属，系统级启动画面，不受 Win+D 影响
+    type: "toolbar",   // 引导动画
   });
 
   splashWindow.loadFile(__splashHtmlPath);

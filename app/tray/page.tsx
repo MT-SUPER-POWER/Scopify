@@ -11,10 +11,10 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SongTitle } from "@/components/Marquee";
 import { VolumeControl } from "@/components/VolumeControl";
-import { SkipBack, Play, SkipForward, Heart, Minus, MicVocal, Settings, Power, Minimize } from "lucide-react";
+import { SkipBack, Play, SkipForward, Heart, MicVocal, Settings, Power, Minimize } from "lucide-react";
 
 // 引入自定义 Hook 和状态管理
-import { usePlayerStore } from "@/store";
+import { usePlayerStore, useUserStore } from "@/store";
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -35,7 +35,25 @@ export default function TrayPage() {
   // const router = useRouter();
   const smartRouter = useSmartRouter();
   const isElectron = useIsElectron();
+  // 播放器核心状态
   const volume = usePlayerStore((state) => state.volume);
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const playNext = usePlayerStore((state) => state.playNext);
+  const playPrev = usePlayerStore((state) => state.playPrev);
+  const togglePlay = () => usePlayerStore.getState().setIsPlaying(!usePlayerStore.getState().isPlaying);
+  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  // 喜欢逻辑（应从 useUserStore 获取）
+  const likeList = useUserStore((state) => state.likeListIDs) || [];
+  const setLikeListIDs = useUserStore.getState().setLikeListIDs;
+  const isLiked = currentSong && likeList.includes(currentSong.id);
+  const toggleLike = () => {
+    if (!currentSong) return;
+    if (isLiked) {
+      setLikeListIDs(likeList.filter((id: number) => id !== currentSong.id));
+    } else {
+      setLikeListIDs([...likeList, currentSong.id]);
+    }
+  };
   const handleVolumeChange = (newVolume: number) => {
     usePlayerStore.getState().setVolume(newVolume);
   };
@@ -47,8 +65,8 @@ export default function TrayPage() {
     }
   }, [isElectron, smartRouter]);
 
+  // 强制 body 透明，防止背景黑色
   useEffect(() => {
-    // 强制 body 透明，防止背景黑色
     if (typeof document !== 'undefined') {
       document.body.style.backgroundColor = 'transparent';
       document.documentElement.style.backgroundColor = 'transparent';
@@ -66,9 +84,8 @@ export default function TrayPage() {
     <div className="w-full h-full bg-[#222226] text-white flex flex-col font-sans select-none overflow-hidden rounded-xl border border-white/10 shadow-2xl p-2 gap-1 text-[13px] font-medium animate-in fade-in zoom-in-95 duration-200">
 
       {/* 头部：当前歌曲 - 固定 */}
-
-      {/* TODO: 动态接入正在播放的歌曲 */}
-      <SongTitle title="Cold Cold Man - FITZ and The Tantrums" />
+      <SongTitle title={`${usePlayerStore.getState().currentSongDetail?.name || "未知歌曲"} -
+        ${usePlayerStore.getState().currentSongDetail?.ar?.[0]?.name || "未知艺术家"}`} />
 
       <Separator className="my-1.5 bg-white/10" />
 
@@ -77,17 +94,37 @@ export default function TrayPage() {
 
         {/* 播放控制区 - 固定 */}
         <div className="flex items-center justify-between px-4 py-1 shrink-0">
-          <button className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all">
+          <button
+            className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+            onClick={playPrev}
+            title="Previous"
+          >
             <SkipBack className="w-5 h-5 fill-current" />
           </button>
-          <button className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all">
-            <Play className="w-6 h-6 fill-current" />
+          <button
+            className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+            onClick={togglePlay}
+            title={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? (
+              <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
+            ) : (
+              <Play className="w-6 h-6 fill-current" />
+            )}
           </button>
-          <button className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all">
+          <button
+            className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+            onClick={playNext}
+            title="Next"
+          >
             <SkipForward className="w-5 h-5 fill-current" />
           </button>
-          <button className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all">
-            <Heart className="w-6 h-6" />
+          <button
+            className={`p-1.5 rounded-full transition-all ${isLiked ? "text-[#1ed760]" : "text-zinc-400 hover:text-white hover:bg-white/10"}`}
+            onClick={toggleLike}
+            title={isLiked ? "Unlike" : "Like"}
+          >
+            <Heart className={`w-6 h-6 ${isLiked ? "fill-[#1ed760]" : ""}`} />
           </button>
         </div>
 
@@ -110,6 +147,7 @@ export default function TrayPage() {
 
         <Separator className="my-1.5 bg-white/10" />
 
+        {/* 主窗口跳转设置页面 */}
         <Button
           variant="ghost"
           className={`${menuItemClass}`}
@@ -121,6 +159,7 @@ export default function TrayPage() {
 
         <Separator className="my-1.5 bg-white/10" />
 
+        {/* 最小化和退出 */}
         <Button variant="ghost" className={menuItemClass} onClick={() => window.electronAPI?.minimizeApp()}>
           <Minimize className={iconClass} />
           <span>最小化</span>
