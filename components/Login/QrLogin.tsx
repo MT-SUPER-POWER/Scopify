@@ -73,7 +73,11 @@ export function QrLogin() {
             setQrStatusText('授权登录成功！');
 
             // 处理登录成功逻辑
-            const cookie = statusRes.data?.cookie || '';
+            const rawCookie = statusRes.data?.cookie || '';
+            // DEBUG: 优化 cookie 存储：提取 MUSIC_U 片段，减小体积并符合网易云 API 规范
+            const musicUMatch = rawCookie.match(/MUSIC_U=[^;]+/);
+            const cookie = musicUMatch ? musicUMatch[0] : rawCookie;
+
             useUserStore.getState().setCookie(cookie);
             localStorage.setItem('cookie', cookie);
 

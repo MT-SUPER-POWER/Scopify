@@ -48,7 +48,12 @@ export const useUserStore = create<UserStore>()(
 
         setUser: (userData: UserData) => set({ user: userData }),
         setLoginType: (loginType) => set({ loginType }),
-        setCookie: (cookie) => set({ cookie }),
+        setCookie: (cookie) => {
+          // 统一清洗逻辑：只保留核心的 MUSIC_U 字段，过滤掉冗余的 Path, Expires, Max-Age 等
+          const musicUMatch = cookie.match(/MUSIC_U=([^;]+)/);
+          const cleanCookie = musicUMatch ? `MUSIC_U=${musicUMatch[1]}` : cookie;
+          set({ cookie: cleanCookie });
+        },
         setAlbumList: (albumList: SongDetail[]) => set({ albumList }),
         setLikeListIDs: (ids) => set({ likeListIDs: ids }),
         handleLogout: async () => {

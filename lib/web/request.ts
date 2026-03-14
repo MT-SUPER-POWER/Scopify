@@ -69,14 +69,15 @@ request.interceptors.request.use(
     }
 
     if (_cookie) {
-      if (config.method?.toLowerCase() === 'post') {
-        // POST 请求，放在请求体 (Body) 里
-        config.data = {
-          ...config.data,
-          cookie: _cookie
-        };
-      } else {
-        config.params.cookie = config.params.cookie || _cookie;
+      // 1. 放入 HTTP 请求头 (Standard way)
+      config.headers.set('Cookie', _cookie);
+
+      // 2. 移除 Params 和 Body 中的 cookie 参数，避免冗余和潜在的格式冲突
+      // 如果后端支持 Header 识别，则不需要在 URL 或 Body 中重复传输
+      if (config.method?.toLowerCase() === 'post' && config.data?.cookie) {
+        delete config.data.cookie;
+      } else if (config.params?.cookie) {
+        delete config.params.cookie;
       }
     }
 
@@ -104,7 +105,31 @@ request.interceptors.response.use(
     return response;
   },
   async (error) => {
-    logger.error('error', error);
+    // 提取网易云 API 返回的详细错误信息
+    const responseData = error.response?.data;
+    const apiMsg = responseData?.msg || responseData?.message || error.message;
+    const statusCode = error.response?.status || error.code || "UNKNOWN";
+
+    // 格式化错误输出，确保在浏览器控制台能直接看到清晰的逻辑错误
+    const logPrefix = `[API ${statusCode}]`;
+    if (responseData) {
+      logger.error(`${logPrefix} ${apiMsg}`, {
+        url: error.config?.url,
+        method: error.config?.method,
+        status: statusCode,
+        data: responseData
+      });
+
+      // 如果有具体的提示信息，通过 toast 展示给用户，避免用户不知道为什么操作失败
+      if (apiMsg && typeof window !== 'undefined') {
+        const { toast } = await import('sonner');
+        // DEBUG: 这里所有的网易返回的错误都会在这里用 toast 展示
+        toast.error(`操作失败: ${apiMsg}`);
+      }
+    } else {
+      logger.error(`${logPrefix} Network or Server Error`, error);
+    }
+
     const config = error.config as CustomAxiosRequestConfig;
 
     // 如果没有配置，直接返回错误
