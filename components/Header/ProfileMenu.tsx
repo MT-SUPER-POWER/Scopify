@@ -24,7 +24,7 @@ import { isElectronEnv } from "@/lib/utils";
 
 const iconList: { label: string; icon: React.ReactNode }[] = [
   { label: "Download", icon: <FiDownload className="mr-2 h-5 w-5" /> },
-  { label: "Buy Me A Coffee", icon: <FiCoffee className="mr-2 h-5 w-5" /> },
+  { label: "About Me", icon: <FiCoffee className="mr-2 h-5 w-5" /> },
 ];
 
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
@@ -102,13 +102,13 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
           {/* 登录/登出 放在最后 */}
           {useLoginStatus() ? (
             <DropdownMenuItem onSelect={handleLogoutClick} className="rounded-lg px-3 py-2 text-[15px]">
-              <FiLogOut className="mr-2 h-5 w-5" />
-              <span>Logout</span>
+              <FiLogOut className="text-[#fe4144] mr-2 h-5 w-5" />
+              <span className='text-[#fe4144]'>Logout</span>
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem onSelect={handleLoginClick} className="rounded-lg px-3 py-2 text-[15px]">
-              <FiLogIn className="mr-2 h-5 w-5" />
-              <span>Login</span>
+              <FiLogIn className="text-[#34a450] mr-2 h-5 w-5" />
+              <span className='text-[#34a450]'>Login</span>
             </DropdownMenuItem>
           )}
         </DropdownMenuGroup>
