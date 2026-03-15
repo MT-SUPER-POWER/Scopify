@@ -89,8 +89,6 @@ const createWindow = () => {
     mainWindow?.focus();
   }, 3000);
 
-  // BUG FIX: 主窗口 show: false，彻底无闪烁
-
   if (app.isPackaged) {
     appServe && appServe(mainWindow).then(() => {
       mainWindow?.loadURL("app://-");

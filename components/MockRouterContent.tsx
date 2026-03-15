@@ -15,11 +15,11 @@ const getGreeting = () => {
 const getTimeOfDayGradient = () => {
   const hour = new Date().getHours();
   // 清晨 6-12: 暖橙晨光
-  if (hour >= 6 && hour < 12) return "from-amber-400/80 via-[#121212]/80 to-[#121212]";
+  if (hour >= 6 && hour < 12) return "from-amber-300/60 via-[#121212]/80 to-[#121212]";
   // 下午 12-18: 明亮天蓝
-  if (hour >= 12 && hour < 18) return "from-sky-500/80 via-[#121212]/80 to-[#121212]";
+  if (hour >= 12 && hour < 18) return "from-sky-500/62 via-[#121212]/80 to-[#121212]";
   // 黄昏 18-21: 橙紫暮色
-  if (hour >= 18 && hour < 21) return "from-orange-500/80 via-[#121212]/80 to-[#121212]";
+  if (hour >= 18 && hour < 21) return "from-orange-500/60 via-[#121212]/80 to-[#121212]";
   // 深夜 21-6: 深邃暗夜
   return "from-slate-800/80 via-[#121212]/80 to-[#121212]";
 };

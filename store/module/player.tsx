@@ -1,10 +1,13 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { devtools } from "zustand-devtools";
-import { SongDetail } from "@/types/api/music";
-import { greySongUrlMatch } from "@/lib/api/music";
+import { NeteaseLyric, SongDetail } from "@/types/api/music";
+import { getLyric, greySongUrlMatch } from "@/lib/api/music";
+import { toast } from "sonner";
 
 export type RepeatMode = "off" | "all" | "one";
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ STORE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 type PlayerStore = {
   volume: number;
@@ -17,6 +20,7 @@ type PlayerStore = {
   isShuffle: boolean;
   queue: SongDetail[];       // 当前播放队列
   queueIndex: number;        // 当前队列位置
+  lyric: NeteaseLyric | null;
 
 
   setVolume: (v: number) => void;
@@ -26,6 +30,7 @@ type PlayerStore = {
   setRepeatMode: (mode: RepeatMode) => void;
   toggleShuffle: () => void;
   setQueue: (songs: SongDetail[], startIndex?: number) => void;
+  setLyric: (lyric: NeteaseLyric | null) => void;
 
   // 核心：播放指定歌曲（自动拉取 url）
   playTrack: (song: SongDetail) => Promise<void>;
@@ -51,6 +56,7 @@ export const usePlayerStore = create<PlayerStore>()(
         isShuffle: false,
         queue: [],
         queueIndex: -1,
+        lyric: null,
 
         setVolume: (v) => set({ volume: v }),
         setIsPlaying: (v) => set({ isPlaying: v }),
@@ -59,15 +65,33 @@ export const usePlayerStore = create<PlayerStore>()(
         setRepeatMode: (mode) => set({ repeatMode: mode }),
         toggleShuffle: () => set((s) => ({ isShuffle: !s.isShuffle })),
         setQueue: (songs, startIndex = 0) => set({ queue: songs, queueIndex: startIndex }),
+        setLyric: (lyric) => set({ lyric }),
 
         playTrack: async (song) => {
           set({ currentSongDetail: song, currentSongUrl: null, isPlaying: false, currentTime: 0 });
           try {
-            const res = await greySongUrlMatch(song.id);
-            const url = res.data ?? res.proxyUrl;
-            set({ currentSongUrl: url, isPlaying: true, totalTime: song.dt });
+            Promise.all([
+              greySongUrlMatch(song.id),
+              getLyric(song.id)
+            ]).then(([urlRes, lyricRes]) => {
+
+              // DEBUG: 获取歌曲信息和歌词内容
+              console.log("获取歌曲播放歌词成功:", lyricRes.data);
+
+              const url = urlRes.data ?? urlRes.proxyUrl;
+              set({ currentSongUrl: url, isPlaying: true, totalTime: song.dt, lyric: lyricRes.data });
+
+              // Deprecated: 使用外部辅助函数显示播放通知（因为太丑了）
+              // showSongPlayToast(song);
+
+            }).catch((e) => {
+              console.error("获取歌曲播放地址或歌词失败:", e);
+              toast.error("获取歌曲播放地址或歌词失败");
+              set({ currentSongUrl: null, isPlaying: false, lyric: null });
+            });
           } catch (e) {
             console.error("获取歌曲播放地址失败:", e);
+            toast.error("获取歌曲播放地址失败");
           }
         },
 

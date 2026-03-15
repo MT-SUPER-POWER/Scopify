@@ -43,9 +43,9 @@ import {
   AlertDialogOverlay,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { motion } from "motion/react";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 
 function ConfirmDialogShandCN({
   open, title, content, onConfirm, onCancel,
@@ -61,9 +61,8 @@ function ConfirmDialogShandCN({
 }) {
   return (
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
-      {/*
-      BUG: 这个遮罩层，因为和 table 出现在一起，然后会有一个报错
-           后期遮罩层移动到高一点解决吧，如果打包没错，就临时用
+      {/* BUG: 这个遮罩层，因为和 table 出现在一起，然后会有一个报错
+          后期遮罩层移动到高一点解决吧，如果打包没错，就临时用
     */}
       <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
 
@@ -102,9 +101,9 @@ function ConfirmDialogShandCN({
 }
 
 function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
-  children: React.ReactNode,
-  trackID: number,
-  onPlay: () => void
+  children: React.ReactNode;
+  trackID: number;
+  onPlay: () => void;
   currentPlaylistId?: number | string;
 }) {
 
@@ -151,6 +150,7 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
       />
 
       <ContextMenu>
+
         <ContextMenuTrigger asChild>
           {children}
         </ContextMenuTrigger>
@@ -159,17 +159,25 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
           <ContextMenuGroup>
 
             {/* 播放或暂停歌曲 */}
-            {usePlayerStore.getState().isPlaying ? (
-              <ContextMenuItem onClick={onPlay} className="focus:bg-white/10 focus:text-white">
-                <Pause className="w-4 h-4 mr-2" />
-                Pause
-              </ContextMenuItem>
-            ) : (
-              <ContextMenuItem onClick={onPlay} className="focus:bg-white/10 focus:text-white">
-                <Play className="w-4 h-4 mr-2" />
-                Play
-              </ContextMenuItem>
-            )}
+            {(() => {
+              const playerState = usePlayerStore.getState();
+              const isCurrent = playerState.currentSongDetail?.id === trackID;
+              if (isCurrent && playerState.isPlaying) {
+                return (
+                  <ContextMenuItem onClick={onPlay} className="focus:bg-white/10 focus:text-white">
+                    <Pause className="w-4 h-4 mr-2" />
+                    Pause
+                  </ContextMenuItem>
+                );
+              } else {
+                return (
+                  <ContextMenuItem onClick={onPlay} className="focus:bg-white/10 focus:text-white">
+                    <Play className="w-4 h-4 mr-2" />
+                    Play
+                  </ContextMenuItem>
+                );
+              }
+            })()}
 
             {/* 歌曲喜欢或者不喜欢处理 */}
             <ContextMenuItem
@@ -209,7 +217,7 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
                 Add to Playlist
               </ContextMenuSubTrigger>
 
-              <ContextMenuSubContent className="w-40 bg-[#282828] text-white border-white/10">
+              <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
                 {useLoginStatus() && (filteredPlaylists.map((playlist: NeteasePlaylist) => (
                   <ContextMenuItem
                     onClick={async () => {
@@ -220,7 +228,9 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
                         toast.error("添加到歌单失败");
                       }
                     }}
-                    key={playlist.id} className="focus:bg-white/10 focus:text-white">
+                    key={playlist.id} className="focus:bg-white/10 focus:text-white"
+                  >
+                    <img src={playlist.coverImgUrl} alt="cover" className="w-7 h-7 rounded-sm mr-2" />
                     {playlist.name}
                   </ContextMenuItem>
                 )))}
@@ -257,6 +267,7 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
                 Copy Link
               </button>
             </ContextMenuItem>
+
           </ContextMenuGroup>
 
           <ContextMenuSeparator className="bg-white/10" />
@@ -277,6 +288,60 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
 
       </ContextMenu>
     </>
+  );
+}
+
+function TrackIndexCell({ index, isActive, isPlaying, onPlay, setIsPlaying }: {
+  index: number;
+  isActive: boolean;
+  isPlaying: boolean;
+  onPlay: () => void;
+  setIsPlaying: (v: boolean) => void;
+}) {
+  return (
+    <div className="relative w-4 h-4 mx-auto flex items-center justify-center">
+      <span className={cn(
+        "text-zinc-400 font-normal group-hover:hidden",
+        isActive && "hidden"
+      )}>
+        {index + 1}
+      </span>
+
+      {/* 频谱：只在 isActive && isPlaying 时显示，hover 时隐藏 */}
+      {isActive && isPlaying && (
+        <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
+          {[0, 0.2, 0.4].map((delay, i) => (
+            <motion.div
+              key={i}
+              className="w-0.5 bg-[#1ed760] rounded-full"
+              animate={{ scaleY: [0.4, 1, 0.4] }}
+              transition={{ duration: 0.8, repeat: Infinity, delay, ease: "easeInOut" }}
+              style={{ height: "100%", originY: 1 }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* 暂停图标：isActive && 未播放时显示，hover 时隐藏 */}
+      {isActive && !isPlaying && (
+        <Play className="w-4 h-4 text-[#1ed760] fill-current group-hover:hidden" />
+      )}
+
+      {/* hover 时覆盖显示 */}
+      <div className="hidden group-hover:flex items-center justify-center">
+        {isActive && isPlaying ? (
+          <Pause
+            className="w-4 h-4 text-[#1ed760] fill-current cursor-pointer"
+            onClick={() => setIsPlaying(false)}
+          />
+        ) : (
+          <Play
+            className="w-4 h-4 text-white fill-current cursor-pointer"
+            onClick={onPlay}
+          />
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -368,41 +433,16 @@ export default function TracklistTable({ searchQuery }: {
 
                   {/* 索引 */}
                   <TableCell className="text-center font-medium rounded-l-md">
-                    <div className="relative w-4 h-4 mx-auto flex items-center justify-center">
-                      <span className={cn(
-                        "text-zinc-400 font-normal group-hover:hidden",
-                        isActive && "hidden"
-                      )}>
-                        {index + 1}
-                      </span>
-                      {isActive && (
-                        isPlaying ? (
-                          <div className="flex gap-0.5 items-end h-3 group-hover:hidden">
-                            <div className="w-0.5 bg-[#1ed760] animate-bar-1 rounded-sm" />
-                            <div className="w-0.5 bg-[#1ed760] animate-bar-2 rounded-sm" />
-                            <div className="w-0.5 bg-[#1ed760] animate-bar-3 rounded-sm" />
-                          </div>
-                        ) : (
-                          <Play className="w-4 h-4 text-[#1ed760] fill-current group-hover:hidden" />
-                        )
-                      )}
-                      <div className="hidden group-hover:flex items-center justify-center">
-                        {isActive && isPlaying ? (
-                          <Pause
-                            className="w-4 h-4 text-[#1ed760] fill-current cursor-pointer"
-                            onClick={() => setIsPlaying(false)}
-                          />
-                        ) : (
-                          <Play
-                            className="w-4 h-4 text-white fill-current cursor-pointer"
-                            onClick={() => handlePlay(index)}
-                          />
-                        )}
-                      </div>
-                    </div>
+                    <TrackIndexCell
+                      index={index}
+                      isActive={isActive}
+                      isPlaying={isPlaying}
+                      onPlay={() => handlePlay(index)}
+                      setIsPlaying={setIsPlaying}
+                    />
                   </TableCell>
 
-                  {/* 歌曲名 */}
+                  {/* 歌曲名称 */}
                   <TableCell>
                     <div className="flex items-center gap-3 overflow-hidden">
                       <div className="w-10 h-10 shrink-0 bg-zinc-800 rounded">

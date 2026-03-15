@@ -11,6 +11,7 @@ export function getUserPlaylist(uid: number, limit: number = 30, offset: number 
   return request.get('/user/playlist', { params: { uid, limit, offset } });
 }
 
+
 /**
  * 获取歌单所有歌曲
  * @param id 歌单 id
@@ -22,6 +23,7 @@ export function getPlaylistAllTracks(id: number | string, limit?: number, offset
   return request.get('/playlist/track/all', { params: { id, limit, offset } });
 }
 
+
 /**
  * 获取最近播放-歌曲
  * @param limit 返回数量，默认为 10
@@ -31,6 +33,7 @@ export function getRecentSongs(limit: number = 10) {
   return request.get('/record/recent/song', { params: { limit } });
 }
 
+
 /**
  * 获取所有用户信息的歌曲的 ID
  */
@@ -38,9 +41,68 @@ export function getUserLikeLists(uid: number | string) {
   return request.get('/likelist', { params: { uid } });
 }
 
+
 /**
  * 喜欢和取消喜欢
  */
 export function likeSong(id: number | string, like: boolean) {
   return request.get('/like', { params: { id, like } });
+}
+
+
+/**
+ *
+ * @param name
+ * @param privacy 默认为为公开 10 为私密 0 为普通歌单
+ * @returns
+ */
+export function createPlaylist(name: string, privacy: string = '0') {
+  return request.get('/playlist/create', { params: { name, privacy } });
+}
+
+
+/**
+ *
+ * @param id 被删除的歌单 id
+ * @returns
+ */
+export function delPlaylist(id: number | string) {
+  return request.get('/playlist/delete', { params: { id } });
+}
+
+
+// 收藏/取消收藏歌单 (t: 1收藏, 2取消)
+export function subscribePlaylist(t: 1 | 2, id: number | string) {
+  return request.get(`/playlist/subscribe`, {
+    params: { t, id }
+  });
+}
+
+
+/**
+ * 更新歌单封面
+ * @param id 歌单 id
+ * @param imgFile 图片文件对象
+ * @param imgSize 图片尺寸, 默认为 300
+ */
+export function updatePlaylist(id: number | string, name: string, desc?: string) {
+  return request.get('/playlist/update', {
+    params: { id, name, desc }
+  });
+}
+
+/**
+ * 更新歌单封面
+ * @param id 歌单 id
+ * @param imgFile 图片文件对象
+ * @param imgSize 图片尺寸, 默认为 300
+ */
+export function updatePlaylistCover(id: number | string, imgFile: File, imgSize: number = 300) {
+  const formData = new FormData();
+  formData.append('imgFile', imgFile);
+  return request.post(`/playlist/cover/update?id=${id}&imgSize=${imgSize}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }

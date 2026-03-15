@@ -2,14 +2,14 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { getMainColorFromImage } from "@/lib/utils";
+import { cn, getMainColorFromImage } from "@/lib/utils";
 import TracklistTable from "@/components/Playlist/TrackTable";
-import { Search, X } from "lucide-react";
+import { Pause, Search, X } from "lucide-react";
 import { Play, MoreHorizontal, Shuffle, ArrowDownCircle, List } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { getPlaylistAllTracks, getUserLikeLists } from "@/lib/api/playlist";
-import { useUserStore } from "@/store";
+import { usePlayerStore, useUserStore } from "@/store";
 import { toast } from "sonner";
 import React from "react";
 import PlaylistLoading from "./loading";
@@ -30,7 +30,7 @@ export default function PlaylistPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // 【优化点 1】: 必须使用 useCallback 缓存函数，否则每次父组件重渲染都会生成新函数，
+  // 必须使用 useCallback 缓存函数，否则每次父组件重渲染都会生成新函数，
   // 导致子组件的 React.memo 完全失效。
   const handleSearchOpen = useCallback(() => {
     setSearchOpen(true);
@@ -59,10 +59,10 @@ export default function PlaylistPage() {
       privacy: playlistInfo?.privacy === 0 ? "Public Playlist" : playlistInfo?.privacy === 10 ? "Private Playlist" : "Unknown Privacy",
       tags: playlistInfo?.tags ?? [],
       title: playlistInfo?.name ?? "Unknown",
-      cover: playlistInfo?.coverImgUrl ?? "/default-cover.png",
+      cover: playlistInfo?.coverImgUrl ?? "http://p1.music.126.net/TejtjOPxrSfHcUwT6hT73A==/109951168975571761.jpg",
       createTime: playlistInfo?.createTime ? new Date(playlistInfo.createTime).toLocaleDateString() : "Unknown Date",
       creator: playlistInfo?.creator.nickname ?? "Unknown User",
-      creatorAvatar: playlistInfo?.creator.avatarUrl ?? "/default-avatar.png",
+      creatorAvatar: playlistInfo?.creator.avatarUrl ?? "https://p4.music.126.net/D9NeJsmZ4C81zNdsFKgI7Q==/109951170297494630.jpg",
       likes: playlistInfo?.subscribedCount ?? 0,
       totalSongs: playlistInfo?.trackCount ?? 0,
     };
@@ -90,7 +90,7 @@ export default function PlaylistPage() {
     }
   }, [playlistInfo?.coverImgUrl]);
 
-  // 请求这个歌曲列表的专辑
+  // 请求这个歌曲列表的歌曲信息和喜欢
   useEffect(() => {
     if (!playlistId) return;
 
@@ -175,10 +175,24 @@ export default function PlaylistPage() {
         {/* 动作栏 + 搜索控制区 */}
         <div className="flex items-center justify-between px-6 py-6">
           <div className="flex items-center gap-6">
-            <button className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg">
-              <Play className="w-5 h-5 ml-1" fill="currentColor" />
+            <button onClick={() => usePlayerStore.getState().setIsPlaying(!usePlayerStore.getState().isPlaying)}
+              disabled={!usePlayerStore(s => s.currentSongDetail)}
+              className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+              {
+                usePlayerStore(s => s.isPlaying) ?
+                  <Pause className="w-5 h-5 ml-1" fill="currentColor" /> :
+                  <Play className="w-5 h-5 ml-1" fill="currentColor" />
+              }
             </button>
-            <Shuffle className="w-8 h-8 text-[#1ed760] cursor-pointer" />
+            {/* 和 UI 状态同步 */}
+            {usePlayerStore(s => s.isShuffle) ?
+              (
+                <div className="relative inline-flex items-center justify-center cursor-pointer">
+                  <Shuffle className={cn("w-8 h-8 text-[#1ed760] cursor-pointer")} />
+                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#1ed760] rounded-full" />
+                </div>
+              ) :
+              <Shuffle className="w-8 h-8 text-zinc-400 cursor-pointer" />}
             <ArrowDownCircle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
             <MoreHorizontal className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
           </div>
@@ -211,7 +225,7 @@ export default function PlaylistPage() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.15, ease: "easeInOut" }}
+                  transition={{ duration: 0.05, ease: "linear" }}
                   onClick={handleSearchOpen}
                 >
                   <Search className="w-4 h-4 text-zinc-400 hover:text-white transition-colors cursor-pointer" />

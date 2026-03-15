@@ -30,6 +30,7 @@ type UserStore = {
   setCookie: (cookie: string) => void;
   setAlbumList: (albumList: SongDetail[]) => void;
   setLikeListIDs: (ids: number[]) => void;
+  setPlayList: (playlists: NeteasePlaylist[]) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -56,6 +57,7 @@ export const useUserStore = create<UserStore>()(
         },
         setAlbumList: (albumList: SongDetail[]) => set({ albumList }),
         setLikeListIDs: (ids) => set({ likeListIDs: ids }),
+        setPlayList: (playlists) => set({ playlist: playlists }),
         handleLogout: async () => {
           try {
             await logout();
