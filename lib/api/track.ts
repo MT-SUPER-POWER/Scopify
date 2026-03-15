@@ -1,24 +1,6 @@
 // 歌曲评论接口
 import request from '../web/request';
 
-export interface MusicCommentParams {
-  id: number | string;
-  limit?: number;
-  offset?: number;
-  before?: number;
-}
-
-export async function getMusicComments(params: MusicCommentParams) {
-  return request.get('/comment/music', {
-    params: {
-      id: params.id,
-      limit: params.limit,
-      offset: params.offset,
-      before: params.before,
-    },
-  });
-}
-
 export async function getSongDetail(ids: number | string) {
   return request.get('/song/detail', {
     params: {
@@ -26,7 +8,6 @@ export async function getSongDetail(ids: number | string) {
     }
   });
 }
-
 
 /**
  *

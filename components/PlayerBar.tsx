@@ -208,7 +208,6 @@ export const PlayerBar = () => {
               {currentSong?.ar.map(a => a.name).join(", ") ?? "—"}
             </span>
           </div>
-          {/* TODO: 喜欢和评论 */}
           <button title="Like">
             <Heart className={cn(
               "w-5 h-5 text-[#b3b3b3] hover:text-white cursor-pointer ml-1",

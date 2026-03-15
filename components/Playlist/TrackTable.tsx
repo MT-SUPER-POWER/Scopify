@@ -10,7 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Clock, Play, Heart, Trash, PlusCircle, Pause } from "lucide-react";
+import { Clock, Play, Heart, Trash, PlusCircle, Pause, Link2 } from "lucide-react";
+import { LikeButton } from "@/components/ui/LikeButton";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -46,21 +47,23 @@ import {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
-function ConfirmDialogShandCN({ open, title, content, onConfirm, onCancel,
-  confirmText = "确认", cancelText = "取消" }: {
-    open: boolean;
-    title: string;
-    content: string;
-    onConfirm: () => void | Promise<void>;
-    onCancel: () => void;
-    confirmText?: string;
-    cancelText?: string;
-  }) {
+function ConfirmDialogShandCN({
+  open, title, content, onConfirm, onCancel,
+  confirmText = "确认", cancelText = "取消"
+}: {
+  open: boolean;
+  title: string;
+  content: string;
+  onConfirm: () => void | Promise<void>;
+  onCancel: () => void;
+  confirmText?: string;
+  cancelText?: string;
+}) {
   return (
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
-    {/*
+      {/*
       BUG: 这个遮罩层，因为和 table 出现在一起，然后会有一个报错
-      后期遮罩层移动到高一点解决吧，如果打包没错，就临时用
+           后期遮罩层移动到高一点解决吧，如果打包没错，就临时用
     */}
       <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
 
@@ -198,11 +201,11 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
           <ContextMenuSeparator className="bg-white/10" />
 
           <ContextMenuGroup>
-            <ContextMenuSub>
 
-              <ContextMenuSubTrigger onClick={() => { }}
-                className="focus:bg-white/10 focus:text-white">
-                <PlusCircle className="w-4 h-4 mr-2" />
+            {/* 添加到歌单 */}
+            <ContextMenuSub>
+              <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+                <PlusCircle className="w-4 h-4 mr-4" />
                 Add to Playlist
               </ContextMenuSubTrigger>
 
@@ -222,7 +225,6 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
                   </ContextMenuItem>
                 )))}
               </ContextMenuSubContent>
-
             </ContextMenuSub>
 
             {/* 去评论区 */}
@@ -234,6 +236,26 @@ function TrackRowContextMenu({ children, trackID, onPlay, currentPlaylistId }: {
                 <FaRegCommentDots className="w-4 h-4 mr-2" />
                 Comments
               </Link>
+            </ContextMenuItem>
+
+            {/* 复制连接 */}
+            <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
+              <button
+                onClick={() => {
+                  const href = `https://music.163.com/#/song?id=${trackID}`;
+                  // NOTE: electron 调用剪贴板
+                  navigator.clipboard.writeText(href)
+                    .then(() => {
+                      toast.success("链接已复制到剪贴板");
+                    })
+                    .catch(() => {
+                      toast.error("复制链接失败");
+                    });
+                }}
+                className="w-full h-full block focus:bg-white/10 focus:text-white">
+                <Link2 className="w-4 h-4 mr-2" />
+                Copy Link
+              </button>
             </ContextMenuItem>
           </ContextMenuGroup>
 
@@ -275,7 +297,7 @@ export default function TracklistTable({ searchQuery }: {
   const isPlaying = usePlayerStore((s: any) => s.isPlaying);
   const playlistID = useSearchParams().get("id");
 
-  // OPTIMIZE: 搜索功能：如果 searchQuery 为空，则直接返回原始 tracks，避免不必要的 filter 运算；否则进行过滤。
+  // 搜索功能：如果 searchQuery 为空，则直接返回原始 tracks，避免不必要的 filter 运算；否则进行过滤。
   const filteredTracks = useMemo(() => {
     if (!searchQuery?.trim()) return tracks;
     const q = searchQuery.toLowerCase();
@@ -420,9 +442,11 @@ export default function TracklistTable({ searchQuery }: {
 
                   {/* 喜欢 */}
                   <TableCell className="hidden lg:table-cell truncate">
-                    <button
-                      title="Like"
-                      onClick={() => {
+                    {/* BUG: 看不到点赞效果，很卡 */}
+                    <LikeButton
+                      liked={isLiked}
+                      likedCount={track.popularity || 0}
+                      onLike={() => {
                         const nextLiked = !isLiked;
                         likeSong(track.id, nextLiked)
                           .then(() => {
@@ -445,16 +469,7 @@ export default function TracklistTable({ searchQuery }: {
                             toast.error("操作失败，请稍后再试");
                           });
                       }}
-                    >
-                      <Heart
-                        className={cn(
-                          "w-5 h-5 cursor-pointer ml-1 transition-colors",
-                          isLiked
-                            ? "fill-[#1ed760] text-[#1ed760]"
-                            : "text-[#b3b3b3] hover:text-white"
-                        )}
-                      />
-                    </button>
+                    />
                   </TableCell>
 
                   {/* 播放所需时间 */}

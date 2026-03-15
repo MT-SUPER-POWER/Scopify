@@ -1,21 +1,32 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Heart, Share2, MoreHorizontal, Hash, AtSign, Smile, Loader2 } from 'lucide-react';
-import { getMusicComments, getSongDetail } from '@/lib/api/track';
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
+import { getSongDetail } from '@/lib/api/track';
 import { useSearchParams } from 'next/navigation';
 import { NeteaseComment } from '@/types/api/music';
+import { getMusicComments } from '@/lib/api/comment';
+import { CommentItem } from '@/components/Comment/CommentItem';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { CommentInputBox } from '@/components/Comment/CommentInputBox';
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const LIMIT = 20;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function CommentPage() {
 
-  const [inputText, setInputText] = useState('');
   // 歌曲相关信息
   const searchParams = useSearchParams();
+  const observerTarget = useRef<HTMLDivElement>(null);
   const songId = searchParams.get("SongId") || searchParams.get("songId");
   const [songInfo, setSongInfo] = useState<any>(null);
   const [albumCover, setAlbumCover] = useState("https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000&auto=format&fit=crop");
+  const [replyTarget, setReplyTarget] = useState<NeteaseComment | null>(null); // 回复的目标评论
 
   // 分页与数据状态
   const [hotComments, setHotComments] = useState<NeteaseComment[]>([]);
@@ -25,8 +36,7 @@ export default function CommentPage() {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const LIMIT = 20;
-  const observerTarget = useRef<HTMLDivElement>(null);
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   // 数据获取逻辑
   const fetchComments = useCallback(async (currentOffset: number) => {
@@ -35,13 +45,13 @@ export default function CommentPage() {
 
     try {
       const res = await getMusicComments({ id: songId!, limit: LIMIT, offset: currentOffset });
-
       if (currentOffset === 0 && res.data?.hotComments) {
         setHotComments(res.data.hotComments);
       }
 
       setComments(prev => {
         const fetchedComments = res.data?.comments || [];
+        // console.log("Fetched comments:", fetchedComments);
         return currentOffset === 0 ? fetchedComments : [...prev, ...fetchedComments];
       });
       setTotal(res.data?.total || 0);
@@ -57,8 +67,7 @@ export default function CommentPage() {
     }
   }, [songId, hasMore, isLoading]); // 添加 songId 依赖，防止 ID 变化时不更新数据
 
-
-  // TODO: 歌曲信息获取，完善歌曲信息区域
+  // 歌曲信息获取，完善歌曲信息区域
   const fetchSongDetails = useCallback(async () => {
     if (!songId) return;
     try {
@@ -75,15 +84,108 @@ export default function CommentPage() {
     }
   }, [songId]);
 
+
+  const toggleLike = (id: number, isHot: boolean) => {
+    // 评论点赞/取消点赞接口对接
+    const targetSet = isHot ? setHotComments : setComments;
+    targetSet(prev => prev.map(c => {
+      if (c.commentId === id) {
+        const nextLiked = !c.liked;
+        // 本地先更新，接口成功后再同步
+        return {
+          ...c,
+          liked: nextLiked,
+          likedCount: nextLiked ? c.likedCount + 1 : Math.max(0, c.likedCount - 1)
+        };
+      }
+      return c;
+    }));
+
+    // 异步接口调用
+    import('@/lib/api/comment').then(({ toggleLikeComments }) => {
+      // type=0 歌曲，t=1点赞/0取消，cid=id
+      const commentList = isHot ? hotComments : comments;
+      const comment = commentList.find(c => c.commentId === id);
+      if (!comment || !songId) return;
+      const t = comment.liked ? 0 : 1;
+      toggleLikeComments(songId, id, t, 0)
+        .then(() => {
+          toast.success(t === 1 ? "已点赞" : "已取消点赞");
+        })
+        .catch((err) => {
+          toast.error("操作失败，请稍后再试");
+          console.error("Failed to toggle like", err);
+        });
+    });
+  };
+
+  const deleteComment = (id: number) => {
+    // console.log(`Deleting comment ${id}`);
+    import('@/lib/api/comment').then(({ delComments }) => {
+      delComments(songId!, id)
+        .then(() => {
+          // 删除本地评论
+          setComments(prev => prev.filter(c => c.commentId !== id));
+          setHotComments(prev => prev.filter(c => c.commentId !== id));
+          toast.success("评论已删除");
+        })
+        .catch((err) => {
+          console.error("Failed to delete comment", err);
+          // toast.error("评论删除失败，请稍后再试");
+        });
+    });
+  };
+
+  const replyComment = (id: number) => {
+    const allComments = [...hotComments, ...comments];
+    const target = allComments.find(c => c.commentId === id);
+    if (target) {
+      setReplyTarget(target);
+      const inputArea = document.querySelector('textarea');
+      inputArea?.focus();
+    }
+  };
+
+  const handleSubmitText = async (text: string) => {
+    if (!songId || !text.trim() || text.length > 140) return false;
+
+    try {
+      if (replyTarget) {
+        // 回复模式 (使用 replyComments 接口)
+        const { replyComments } = await import('@/lib/api/comment');
+        await replyComments(songId, replyTarget.commentId, text);
+        toast.success("回复成功");
+      } else {
+        // 普通发布模式 (使用 addMusicComments 接口)
+        const { addMusicComments } = await import('@/lib/api/comment');
+        await addMusicComments(songId, text);
+        toast.success("发布成功");
+      }
+
+      setReplyTarget(null);
+
+      // 延迟刷新
+      setTimeout(() => {
+        setOffset(0);
+        setHasMore(true);
+        fetchComments(0);
+      }, 500);
+      return true;
+    } catch (err) {
+      console.error("Failed to submit comment", err);
+      return false;
+    }
+  };
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Effect ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
   // 初始加载
   useEffect(() => {
     fetchComments(0);
     fetchSongDetails();
   }, []);
 
-  // ==========================================
-  // 3. NOTE: 触底加载逻辑 (IntersectionObserver)
-  // ==========================================
+  // NOTE: 触底加载逻辑
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -101,75 +203,8 @@ export default function CommentPage() {
     return () => observer.disconnect();
   }, [fetchComments, hasMore, isLoading, offset]);
 
-  // 点赞模拟功能
-  const toggleLike = (id: number, isHot: boolean) => {
-    const targetSet = isHot ? setHotComments : setComments;
-    targetSet(prev => prev.map(c => {
-      if (c.commentId === id) {
-        return { ...c, liked: !c.liked, likedCount: c.liked ? c.likedCount - 1 : c.likedCount + 1 };
-      }
-      return c;
-    }));
-  };
-
-  // ==========================================
-  // 4. 渲染单一评论项的组件 (代码复用)
-  // ==========================================
-  const CommentItem = ({ comment, isHot = false }: { comment: NeteaseComment, isHot?: boolean }) => (
-    <div className="flex gap-4 group">
-      <img
-        src={comment.user.avatarUrl}
-        alt={comment.user.nickname}
-        className="w-10 h-10 rounded-full bg-neutral-800 object-cover mt-1 shrink-0 cursor-pointer"
-      />
-      <div className="flex-1 pb-6 border-b border-white/5 group-last:border-0">
-        <div className="flex items-baseline gap-2 mb-1">
-          <span className="font-bold text-sm hover:underline cursor-pointer">{comment.user.nickname}</span>
-          <span className="text-xs text-[#B3B3B3]">{comment.timeStr}</span>
-        </div>
-        <p className="text-sm text-white/90 leading-relaxed whitespace-pre-wrap">
-          {comment.content}
-        </p>
-
-        {/* 回复引用区块 */}
-        {comment.beReplied && comment.beReplied.length > 0 && (
-          <div className="mt-3 pl-3 border-l-2 border-[#1DB954] bg-white/5 p-2 rounded-r-md">
-            <span className="text-xs text-[#1DB954] font-bold mr-2">@{comment.beReplied[0].user.nickname}</span>
-            <span className="text-xs text-[#B3B3B3] line-clamp-2">{comment.beReplied[0].content}</span>
-          </div>
-        )}
-
-        {/* 操作栏 */}
-        <div className="flex items-center justify-between mt-3">
-          <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button className="text-xs font-semibold text-[#B3B3B3] hover:text-white transition-colors">
-              回复
-            </button>
-          </div>
-
-          <div className="flex items-center gap-6 text-[#B3B3B3]">
-            <button className="flex items-center gap-1.5 hover:text-white transition-colors group/btn">
-              <span className="text-xs hidden group-hover/btn:block">分享</span>
-              <Share2 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => toggleLike(comment.commentId, isHot)}
-              className={`flex items-center gap-1.5 transition-colors ${comment.liked ? 'text-[#1DB954]' : 'hover:text-white'}`}
-            >
-              <span className="text-xs">{comment.likedCount > 0 ? comment.likedCount.toLocaleString() : ''}</span>
-              <Heart className={`w-4 h-4 ${comment.liked ? 'fill-[#1DB954]' : ''}`} />
-            </button>
-            <button className="hover:text-white transition-colors">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="relative w-full h-full overflow-hidden bg-black text-white font-sans selection:bg-[#1DB954] selection:text-white">
+    <div className="relative w-full h-full overflow-hidden bg-black text-white font-sans">
       {/* 沉浸式背景 */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40 blur-3xl scale-110"
@@ -202,60 +237,59 @@ export default function CommentPage() {
           </div>
 
           {/* 评论输入区 */}
-          <div className="mb-12">
+          <div className="mb-8">
             <div className="flex justify-between items-end mb-4">
-              <h2 className="text-xl font-bold">全部评论 <span className="text-sm font-normal text-[#B3B3B3]">{total > 0 ? total.toLocaleString() : ''}</span></h2>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 focus-within:border-white/30 focus-within:bg-white/10 transition-all">
-              <textarea
-                rows={3}
-                placeholder="说点什么吧"
-                className="w-full bg-transparent text-white placeholder-[#B3B3B3] resize-none outline-none text-sm leading-relaxed"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-              />
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10">
-                <div className="flex gap-4 text-[#B3B3B3]">
-                  <Hash className="w-5 h-5 hover:text-white cursor-pointer" />
-                  <AtSign className="w-5 h-5 hover:text-white cursor-pointer" />
-                  <Smile className="w-5 h-5 hover:text-white cursor-pointer" />
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-xs text-[#B3B3B3]">{inputText.length}/1000</span>
-                  <button
-                    className="bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold text-sm px-6 py-2 rounded-full scale-100 hover:scale-105 transition-all disabled:opacity-50"
-                    disabled={inputText.length === 0}
-                  >
-                    发布
-                  </button>
-                </div>
-              </div>
+              <h2 className="text-xl font-bold">
+                All Comments
+                <span className="ml-1 text-sm font-normal text-[#B3B3B3]">
+                  {total > 0 ? total.toLocaleString() : ''}
+                </span>
+              </h2>
             </div>
           </div>
 
-          {/* 精彩评论区 (如果有的话) */}
+          {/* 独立提取的输入框 */}
+          <CommentInputBox
+            replyTarget={replyTarget}
+            onCancelReply={() => setReplyTarget(null)}
+            onSubmit={handleSubmitText}
+          />
+
+          {/* 热评 */}
           {hotComments.length > 0 && (
             <div className="mb-10">
-              <h3 className="text-lg font-bold mb-6 border-b border-white/10 pb-2">精彩评论</h3>
+              <h3 className="text-lg font-bold mb-6 border-b border-white/10 pb-2">Hot Comments</h3>
               <div className="space-y-6">
                 {hotComments.map((comment) => (
-                  <CommentItem key={`hot-${comment.commentId}`} comment={comment} isHot={true} />
+                  <CommentItem
+                    key={`hot-${comment.commentId}`}
+                    comment={comment}
+                    isHot={true}
+                    onLike={toggleLike}
+                    onDelete={deleteComment}
+                    onReply={replyComment}
+                  />
                 ))}
               </div>
-            </div>
-          )}
+            </div>)}
 
           {/* 最新评论区 */}
           <div>
-            <h3 className="text-lg font-bold mb-6 border-b border-white/10 pb-2">最新评论</h3>
+            <h3 className="text-lg font-bold mb-6 border-b border-white/10 pb-2">Latest Comments</h3>
             <div className="space-y-6">
               {comments && comments.length > 0 ? (
                 comments.map((comment) => (
-                  <CommentItem key={`latest-${comment.commentId}`} comment={comment} isHot={false} />
+                  <CommentItem
+                    key={`latest-${comment.commentId}`}
+                    comment={comment}
+                    isHot={false}
+                    onLike={toggleLike}
+                    onDelete={deleteComment}
+                    onReply={replyComment}
+                  />
                 ))
               ) : !isLoading ? (
-                <div className="text-center py-20 text-[#B3B3B3]">暂无评论，快来抢沙发吧~</div>
+                <div className="text-center py-20 text-[#B3B3B3]">No comments yet, be the first to comment!</div>
               ) : null}
             </div>
           </div>

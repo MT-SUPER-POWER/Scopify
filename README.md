@@ -58,7 +58,7 @@ bun run build:win # 打包 windows 可执行文件，生成在 dist 目录下
 ```bash
 git clone https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced
 cd api-enhanced
-docker build -t netease-api:v1.0.0 ./
+docker build -t netease-api:[版本号自己想吧] ./
 ```
 
 2. 使用 `Makefile` 部署到 k3s
@@ -90,7 +90,6 @@ make netease_undeploy # 卸载
 ### 单页
 
 - 个人信息页面
-- 设置页面
   - 配合 toml 文件实现管理
 - 歌曲搜索页
 - 歌曲搜索的 modal 页放置最近存储的 10 首歌曲
@@ -100,16 +99,10 @@ make netease_undeploy # 卸载
 - zustand + persist 进行状态管理和持久化存储
   1. 共享的当前音乐播放时间
   2. 过滤曲库类型当前的选择
-- GPU 加速
 
 ### 功能部分
 
-- 托盘化
-  - 关闭按钮显示，最小化或者关闭程序，而不是直接关闭
-  - 对接正在播放的音乐数据并展示出来
-  - 对接托盘按钮的回调函数
 - github 发布更新客户端自动更新
-- 使用 next-electron-tsc 作为承接的中间组件
 - 右键歌单栏
   - 查看歌单
   - 删除歌单
