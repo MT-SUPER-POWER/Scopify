@@ -1,17 +1,22 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Heart } from "lucide-react";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 interface LikeButtonProps {
   liked: boolean;
   likedCount: number;
   onLike: () => void;
+  iconClassName?: string;
 }
 
-export const LikeButton: React.FC<LikeButtonProps> = ({ liked, likedCount, onLike }) => (
+export const LikeButton: React.FC<LikeButtonProps> = ({ liked, likedCount, onLike, iconClassName }) => (
   <motion.button
     onClick={onLike}
-    className={`flex items-center gap-1.5 transition-colors ${liked ? "text-[#1DB954]" : "text-zinc-500 hover:text-white"}`}
+    className={cn(
+      "flex items-center gap-1.5 transition-colors text-zinc-500 hover:text-white",
+      liked && "text-[#1DB954]"
+    )}
     whileTap={{ scale: 0.85 }}
   >
     <AnimatePresence mode="popLayout">
@@ -38,7 +43,11 @@ export const LikeButton: React.FC<LikeButtonProps> = ({ liked, likedCount, onLik
         transition={{ duration: 0.45, ease: "easeOut" }}
       >
         <Heart
-          className={`w-4 h-4 transition-all duration-200 ${liked ? "fill-[#1DB954]" : ""}`}
+          className={cn(
+            "w-4 h-4 transition-all duration-200",
+            liked && "fill-[#1DB954]",
+            iconClassName
+          )}
         />
       </motion.div>
       {liked && (

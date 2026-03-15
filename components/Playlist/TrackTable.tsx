@@ -333,9 +333,9 @@ export default function TracklistTable({ searchQuery }: {
           <TableHead className="text-zinc-400">Title</TableHead>
           <TableHead className="hidden md:table-cell text-zinc-400">Album</TableHead>
           <TableHead className="hidden lg:table-cell text-zinc-400">Date Published</TableHead>
-          <TableHead className="hidden lg:table-cell text-zinc-400">Like</TableHead>
-          <TableHead className="w-32 pr-8 text-zinc-400">
-            <div className="flex justify-end items-center">
+          <TableHead className="hidden lg:table-cell text-zinc-400 text-center w-20">Like</TableHead>
+          <TableHead className="w-32 text-zinc-400">
+            <div className="flex items-center w-full h-full justify-center">
               <Clock className="w-4 h-4" />
             </div>
           </TableHead>
@@ -441,40 +441,43 @@ export default function TracklistTable({ searchQuery }: {
                   </TableCell>
 
                   {/* 喜欢 */}
-                  <TableCell className="hidden lg:table-cell truncate">
-                    {/* BUG: 看不到点赞效果，很卡 */}
-                    <LikeButton
-                      liked={isLiked}
-                      likedCount={track.popularity || 0}
-                      onLike={() => {
-                        const nextLiked = !isLiked;
-                        likeSong(track.id, nextLiked)
-                          .then(() => {
-                            const store = useUserStore.getState();
-                            if (nextLiked) {
-                              store.setLikeListIDs([...store.likeListIDs, track.id]);
-                            } else {
-                              store.setLikeListIDs(store.likeListIDs.filter((id) => id !== track.id));
-                              const isLikePlaylist = store.albumList.every(
-                                (t: any) => store.likeListIDs.includes(t.id)
-                              );
-                              if (isLikePlaylist) {
-                                store.setAlbumList(store.albumList.filter((t: any) => t.id !== track.id));
+                  <TableCell className="hidden lg:table-cell truncate w-20">
+                    <div className="w-full h-full flex justify-center">
+                      {/* BUG: 看不到点赞效果，很卡 */}
+                      <LikeButton
+                        liked={isLiked}
+                        likedCount={track.popularity || 0}
+                        onLike={() => {
+                          const nextLiked = !isLiked;
+                          likeSong(track.id, nextLiked)
+                            .then(() => {
+                              const store = useUserStore.getState();
+                              if (nextLiked) {
+                                store.setLikeListIDs([...store.likeListIDs, track.id]);
+                              } else {
+                                store.setLikeListIDs(store.likeListIDs.filter((id) => id !== track.id));
+                                const isLikePlaylist = store.albumList.every(
+                                  (t: any) => store.likeListIDs.includes(t.id)
+                                );
+                                if (isLikePlaylist) {
+                                  store.setAlbumList(store.albumList.filter((t: any) => t.id !== track.id));
+                                }
                               }
-                            }
-                            toast.success(nextLiked ? "已添加到喜欢" : "已取消喜欢");
-                          })
-                          .catch((err) => {
-                            console.error("Failed to update like status:", err);
-                            toast.error("操作失败，请稍后再试");
-                          });
-                      }}
-                    />
+                              toast.success(nextLiked ? "已添加到喜欢" : "已取消喜欢");
+                            })
+                            .catch((err) => {
+                              console.error("Failed to update like status:", err);
+                              toast.error("操作失败，请稍后再试");
+                            });
+                        }}
+                        iconClassName="w-4.5 h-4.5"
+                      />
+                    </div>
                   </TableCell>
 
                   {/* 播放所需时间 */}
-                  <TableCell className="w-32 pr-8 rounded-r-md">
-                    <div className="flex justify-end items-center">
+                  <TableCell className="w-32 rounded-r-md align-middle">
+                    <div className="flex justify-center items-center">
                       <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
                     </div>
                   </TableCell>
