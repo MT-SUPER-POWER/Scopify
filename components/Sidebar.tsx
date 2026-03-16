@@ -11,7 +11,7 @@ import { SiderBarMenu } from "./Siderbar/SiderbarMenu";
 import { FilterMenu } from "./Siderbar/FilterMenu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getUserPlaylist } from "@/lib/api/playlist";
-import { usePlayerStore, useUserStore } from "@/store";
+import { useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { FilterAction, FilterState } from "@/types/components/Siderbar";
 import { useIsElectron } from "@/lib/hooks/useElectronDetect";
@@ -86,10 +86,19 @@ function SidebarImpl() {
   const isElectron = useIsElectron();
   const smartRouter = useSmartRouter();
 
+
+  // DEBUG: 输出登录状态，帮助排查登录状态异常问题
+  // console.log('[Sidebar] 用户登录状态:', isUserLogin);
+
   // 请求歌单列表
   const fetchPlaylist = async () => {
     if (!isUserLogin) return;
+
     const uid = useUserStore.getState().user?.userId;
+
+    // DEBUG: 当前登录用的 ID
+    console.log('[Sidebar] 当前用户 ID:', uid);
+
     setIsLoading(true);
     setError(null);
     try {
