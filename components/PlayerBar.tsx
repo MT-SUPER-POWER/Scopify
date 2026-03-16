@@ -33,7 +33,7 @@ import Link from "next/link";
 
 const PlayerProgressBar = ({ audioRef }: { audioRef: React.RefObject<HTMLAudioElement | null> }) => {
   const currentTime = useTimeStore(s => s.currentTime);
-  const totalTime = usePlayerStore(s => s.totalTime);
+  const totalTime = useTimeStore(s => s.totalTime);
   const setCurrentTime = useTimeStore(s => s.setCurrentTime);
 
   const handleSeek = (value: number) => {
@@ -104,8 +104,6 @@ export const PlayerBar = () => {
   const repeatMode = usePlayerStore(s => s.repeatMode);
   const isShuffle = usePlayerStore(s => s.isShuffle);
   const setIsPlaying = usePlayerStore(s => s.setIsPlaying);
-  const setCurrentTime = useTimeStore(s => s.setCurrentTime);
-  const setTotalTime = usePlayerStore(s => s.setTotalTime);
   const setRepeatMode = usePlayerStore(s => s.setRepeatMode);
   const toggleShuffle = usePlayerStore(s => s.toggleShuffle);
   const playNext = usePlayerStore(s => s.playNext);
@@ -135,6 +133,9 @@ export const PlayerBar = () => {
       audio.src = currentSongUrl;
       audio.load();
     }
+
+    // 🚀 核心优化：刷新后静默恢复歌词
+    usePlayerStore.getState().fetchCurrentLyric();
 
     const restoreProgress = () => {
       // 如果已经恢复过，或者进度原本就是 0（新歌），则标记为已处理并返回
@@ -219,14 +220,14 @@ export const PlayerBar = () => {
       const newTimeMs = e.detail;
       if (audioRef.current) {
         audioRef.current.currentTime = newTimeMs / 1000;
-        setCurrentTime(newTimeMs);
+        useTimeStore.getState().setCurrentTime(newTimeMs);
       }
     };
     window.addEventListener('player-seek', handleSeekEvent as EventListener);
     return () => {
       window.removeEventListener('player-seek', handleSeekEvent as EventListener);
     };
-  }, [setCurrentTime]);
+  }, []);
 
   // NOTE: 快捷键支持: 空格(播放/暂停), Ctrl+Left(上一首), Ctrl+Right(下一首)
   useEffect(() => {
@@ -292,13 +293,14 @@ export const PlayerBar = () => {
           if (audioRef.current) {
             // 只有当播放器真的在播放时，才同步进度
             if (!audioRef.current.paused) {
-              setCurrentTime(audioRef.current.currentTime * 1000);
+              // 🚀 核心优化 4：直接用 getState().setCurrentTime 写入独立 Store，彻底切断主 Store 和持久化中间件的重绘
+              useTimeStore.getState().setCurrentTime(audioRef.current.currentTime * 1000);
             }
           }
         }}
         onDurationChange={() => {
           if (audioRef.current && audioRef.current.duration > 0) {
-            setTotalTime(audioRef.current.duration * 1000);
+            useTimeStore.getState().setTotalTime(audioRef.current.duration * 1000);
           }
         }}
         onEnded={() => playNext()}

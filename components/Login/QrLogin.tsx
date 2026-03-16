@@ -83,7 +83,7 @@ export function QrLogin() {
 
             const loginRes = await getUserAccount();
             // DEBUG: QR 登录接口返回的数据，帮助排查登录状态异常问题
-            // console.log('[二维码登录] getUserAccount 返回:', loginRes.data);
+            console.log('[二维码登录] getUserAccount 返回:', loginRes.data);
 
             if (loginRes.data?.code !== 200) {
               setQrStatus('expired');
@@ -96,7 +96,11 @@ export function QrLogin() {
             useUserStore.getState().setLoginType('qr');
             toast.success("登录成功");
 
+
             if (isElectron) {
+              // DEBUG: Electron 环境确认
+              console.log('[二维码登录] 运行在 Electron 环境，正在尝试关闭登录窗口并刷新主窗口');
+
               window.electronAPI?.closeLoginWindow();
               smartRouter.replace('/');
               window.electronAPI?.maniWindowReload();

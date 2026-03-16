@@ -24,7 +24,7 @@ export const QueuePopover = () => {
           <ListMusic className="w-5 h-5" />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-[400px] p-0 bg-zinc-900 border-zinc-800 text-zinc-100 shadow-2xl">
+      <PopoverContent align="end" className="w-100 p-0 bg-zinc-900 border-zinc-800 text-zinc-100 shadow-2xl">
         <div className="p-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/50 backdrop-blur-sm sticky top-0 z-10">
           <div>
             <h3 className="font-bold text-lg">当前队列</h3>
@@ -32,7 +32,7 @@ export const QueuePopover = () => {
           </div>
         </div>
 
-        <ScrollArea className="h-[500px]">
+        <ScrollArea className="h-125">
           <div className="p-2 space-y-1">
             {queue.length === 0 ? (
               <div className="py-20 text-center text-zinc-500 text-sm">
@@ -52,7 +52,7 @@ export const QueuePopover = () => {
                     )}
                   >
                     {/* 左侧：索引与封面 */}
-                    <div className="flex items-center gap-3 flex-shrink-0 pr-1">
+                    <div className="flex items-center gap-3 shrink-0 pr-1">
                       <span className={cn(
                         "text-[10px] w-4 text-center tabular-nums",
                         isActive ? "text-[#1ed760]" : "text-zinc-500"
@@ -60,7 +60,7 @@ export const QueuePopover = () => {
                         {(index + 1).toString().padStart(2, '0')}
                       </span>
 
-                      <div className="relative w-10 h-10 flex-shrink-0 flex items-center justify-center overflow-hidden rounded group/cover">
+                      <div className="relative w-10 h-10 shrink-0 flex items-center justify-center overflow-hidden rounded group/cover">
                         {/* 封面图片 */}
                         <img
                           src={song.al.picUrl}
@@ -75,11 +75,11 @@ export const QueuePopover = () => {
                         <div className="absolute inset-0 flex items-center justify-center">
                           {isActive ? (
                             isPlaying ? (
-                              <div className="flex items-end gap-[2px] h-3">
+                              <div className="flex items-end gap-0.5 h-3">
                                 <motion.div
                                   animate={{ height: [4, 12, 4] }}
                                   transition={{ repeat: Infinity, duration: 0.6, ease: "easeInOut" }}
-                                  className="w-[3px] bg-[#1ed760]"
+                                  className="w-0.75 bg-[#1ed760]"
                                 />
                                 <motion.div
                                   animate={{ height: [4, 12, 4] }}

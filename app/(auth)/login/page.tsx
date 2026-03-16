@@ -85,9 +85,7 @@ function LoginPageContent() {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
-      smartRouter.replace('/');
-    }
+    if (isLoggedIn) smartRouter.replace('/');
   }, [isLoggedIn, smartRouter]);
 
   if (isLoggedIn) {
