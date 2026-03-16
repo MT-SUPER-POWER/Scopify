@@ -1,41 +1,54 @@
+"use client";
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
 import { devtools } from "zustand-devtools";
 import { NeteaseLyric, SongDetail } from "@/types/api/music";
 import { getLyric, greySongUrlMatch } from "@/lib/api/music";
 import { toast } from "sonner";
+import { useTimeStore } from "./time";
 
 export type RepeatMode = "off" | "all" | "one";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ STORE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// 🚀 核心优化 1：自定义异步 Storage，将耗时的硬盘同步推迟到主线程绘制（Paint）之后
+const asyncDebouncedStorage: StateStorage = {
+  getItem: (name) => localStorage.getItem(name),
+  setItem: (name, value) => {
+    // 使用 setTimeout 宏任务，彻底解决点击下一首/播放时，localStorage 阻塞造成的严重 INP 问题
+    // 这让浏览器的 UI 反馈可以瞬间完成，而后在后台悄悄写入缓存
+    setTimeout(() => {
+      localStorage.setItem(name, value);
+    }, 0);
+  },
+  removeItem: (name) => localStorage.removeItem(name),
+};
 
 type PlayerStore = {
   volume: number;
   isPlaying: boolean;
   currentSongDetail: SongDetail | null;
   currentSongUrl: string | null;
-  currentTime: number;
   totalTime: number;
   repeatMode: RepeatMode;
   isShuffle: boolean;
-  queue: SongDetail[];       // 当前播放队列
-  queueIndex: number;        // 当前队列位置
+  queue: SongDetail[];
+  queueIndex: number;
   lyric: NeteaseLyric | null;
 
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
-  setCurrentTime: (time: number) => void;
   setTotalTime: (time: number) => void;
   setRepeatMode: (mode: RepeatMode) => void;
   toggleShuffle: () => void;
   setQueue: (songs: SongDetail[], startIndex?: number) => void;
   setLyric: (lyric: NeteaseLyric | null) => void;
 
-  // 核心：播放指定歌曲（自动拉取 url）
+  fetchCurrentLyric: () => Promise<void>; // 补充歌词静默恢复函数
   playTrack: (song: SongDetail) => Promise<void>;
-  // 从队列里播放指定 index
   playQueueIndex: (index: number) => Promise<void>;
   playNext: () => Promise<void>;
   playPrev: () => Promise<void>;
@@ -51,7 +64,6 @@ export const usePlayerStore = create<PlayerStore>()(
         isPlaying: false,
         currentSongDetail: null,
         currentSongUrl: null,
-        currentTime: 0,
         totalTime: 0,
         repeatMode: "off",
         isShuffle: false,
@@ -61,30 +73,45 @@ export const usePlayerStore = create<PlayerStore>()(
 
         setVolume: (v) => set({ volume: v }),
         setIsPlaying: (v) => set({ isPlaying: v }),
-        setCurrentTime: (time) => { set({ currentTime: time }); },
         setTotalTime: (time) => set({ totalTime: time }),
         setRepeatMode: (mode) => set({ repeatMode: mode }),
         toggleShuffle: () => set((s) => ({ isShuffle: !s.isShuffle })),
         setQueue: (songs, startIndex = 0) => set({ queue: songs, queueIndex: startIndex }),
         setLyric: (lyric) => set({ lyric }),
 
+        fetchCurrentLyric: async () => {
+          const { currentSongDetail, lyric } = get();
+          if (!currentSongDetail || lyric) return;
+          try {
+            const lyricRes = await getLyric(currentSongDetail.id);
+            set({ lyric: lyricRes.data });
+          } catch (e) {
+            console.error("静默恢复歌词失败:", e);
+          }
+        },
+
         playTrack: async (song) => {
-          set({ currentSongDetail: song, currentSongUrl: null, isPlaying: false, currentTime: 0 });
+          // 🚀 核心优化 2：合并碎片化的 Set 状态更新，把三次序列化缩减为一次
+          set({
+            currentSongDetail: song,
+            currentSongUrl: null,
+            isPlaying: false,
+            lyric: null // 切歌时提前清空旧歌词
+          });
+          useTimeStore.getState().setCurrentTime(0);
+
           try {
             Promise.all([
               greySongUrlMatch(song.id),
               getLyric(song.id)
             ]).then(([urlRes, lyricRes]) => {
-
-              // DEBUG: 获取歌曲信息和歌词内容
-              // console.log("获取歌曲播放歌词成功:", lyricRes.data);
-
               const url = urlRes.data ?? urlRes.proxyUrl;
-              set({ currentSongUrl: url, isPlaying: true, totalTime: song.dt, lyric: lyricRes.data });
-
-              // Deprecated: 使用外部辅助函数显示播放通知（因为太丑了）
-              // showSongPlayToast(song);
-
+              set({
+                currentSongUrl: url,
+                isPlaying: true,
+                totalTime: song.dt,
+                lyric: lyricRes.data
+              });
             }).catch((e) => {
               console.error("获取歌曲播放地址或歌词失败:", e);
               toast.error("获取歌曲播放地址或歌词失败");
@@ -99,7 +126,8 @@ export const usePlayerStore = create<PlayerStore>()(
         playQueueIndex: async (index) => {
           const { queue, playTrack } = get();
           if (index < 0 || index >= queue.length) return;
-          set({ queueIndex: index, currentTime: 0 }); // 清空进度
+          // 移除了重复的 currentTime: 0 操作，交给 playTrack 统一处理，减少渲染
+          set({ queueIndex: index });
           await playTrack(queue[index]);
         },
 
@@ -121,7 +149,6 @@ export const usePlayerStore = create<PlayerStore>()(
 
         playPrev: async () => {
           const { queueIndex, playQueueIndex } = get();
-          set({ currentTime: 0 }); // 清空进度
           const prev = Math.max(0, queueIndex - 1);
           await playQueueIndex(prev);
         },
@@ -129,7 +156,6 @@ export const usePlayerStore = create<PlayerStore>()(
         playRandom: async () => {
           const { queue, playQueueIndex } = get();
           if (!queue.length) return;
-          set({ currentTime: 0 }); // 清空进度
           const randomIndex = Math.floor(Math.random() * queue.length);
           await playQueueIndex(randomIndex);
         },
@@ -140,45 +166,41 @@ export const usePlayerStore = create<PlayerStore>()(
             isPlaying: false,
             currentSongDetail: null,
             currentSongUrl: null,
-            currentTime: 0,
             totalTime: 0,
             repeatMode: "off",
             isShuffle: false,
             queue: [],
             queueIndex: -1,
-          })
+            lyric: null
+          });
+          useTimeStore.getState().setCurrentTime(0);
         }
       }),
       {
         name: 'player-storage',
-        storage: createJSONStorage(() => localStorage),
+        // 注入我们写好的宏任务防抖 Storage
+        storage: createJSONStorage(() => asyncDebouncedStorage),
         partialize: (state) => ({
           volume: state.volume,
           currentSongDetail: state.currentSongDetail,
           currentSongUrl: state.currentSongUrl,
-          queue: state.queue,
+          // 🚀 核心优化 3：拦截超大数组，如果播放列表达到上千首，严格限制持久化的数量，防止 JSON.stringify 榨干 CPU
+          queue: state.queue.length > 500 ? state.queue.slice(0, 500) : state.queue,
           queueIndex: state.queueIndex,
           repeatMode: state.repeatMode,
           isShuffle: state.isShuffle,
-          lyric: state.lyric
+          // 🚨 极其重要：此配置中不包含 state.lyric，保证歌词只在内存中读写！
         }),
       }
     )
   )
 );
 
-// NOTE: 监听跨窗口/标签页的 localStorage 变化并同步状态 (实现主窗口和小组件窗口等实时同步)
 if (typeof window !== "undefined") {
   window.addEventListener("storage", (e) => {
-    if (e.key === "player-storage" && e.newValue) {
-      try {
-        const newState = JSON.parse(e.newValue);
-        if (newState && newState.state) {
-          usePlayerStore.setState(newState.state);
-        }
-      } catch (error) {
-        console.error("同步跨窗口 Zustand 状态失败", error);
-      }
+    if (e.key === "player-storage") {
+      // 🚀 OPTIMIZE: 使用官方 rehydrate 杜绝多窗口事件造成的死循环写入
+      usePlayerStore.persist.rehydrate();
     }
   });
 }

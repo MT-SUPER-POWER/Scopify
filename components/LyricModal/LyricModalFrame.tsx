@@ -21,6 +21,7 @@ import "@applemusic-like-lyrics/core/style.css";
 // 恢复使用标准的路径别名
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
+import { useTimeStore } from "@/store/module/time";
 import { SmoothSlider } from "@/components/SmoothSlider";
 
 // 动态导入 AMLL 内部组件 (禁用 SSR)
@@ -123,6 +124,7 @@ const ModalBackground = ({ coverUrl }: { coverUrl: string }) => {
           renderScale={0.35} // 依然保留性能甜点值
           fps={30}
           flowSpeed={1.5}
+          staticMode={true}   // 画完第一帧唯美的流体渐变后，彻底冻结 WebGL 的实时渲染
         />
       </div>
     </WebGLFallbackBoundary>
@@ -131,7 +133,7 @@ const ModalBackground = ({ coverUrl }: { coverUrl: string }) => {
 
 // OPTIMIZE: 隔离高频更新的进度条
 const PlayerProgress = () => {
-  const currentTime = usePlayerStore((s) => s.currentTime);
+  const currentTime = useTimeStore((s) => s.currentTime);
   const totalTime = usePlayerStore((s) => s.totalTime);
 
   const progressPercent = totalTime > 0 ? (currentTime / totalTime) * 100 : 0;
@@ -215,7 +217,7 @@ const PlayerControls = () => {
 // 歌词渲染器
 const AppleMusicLyricRenderer = () => {
   // OPTIMIZE: 只取自己需要的数据
-  const currentTime = usePlayerStore((s) => s.currentTime);
+  const currentTime = useTimeStore((s) => s.currentTime);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const lyric = usePlayerStore((s) => s.lyric);
 

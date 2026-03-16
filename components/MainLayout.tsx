@@ -1,8 +1,11 @@
+
+
+
 'use client';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, useRef, useCallback } from "react";
 
 import Header from "../components/Header";
 import { Sidebar } from "../components/Sidebar";
@@ -11,7 +14,6 @@ import { SearchModal } from "../components/SearchModal";
 
 // status store
 import { useUiStore } from "@/store/module/ui";
-
 
 // lib
 import { cn } from "@/lib/utils";
@@ -33,9 +35,7 @@ import { useRouter } from "next/navigation";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-/**
- * MainLayout: 播放器的子组件 - 支持懒加载 + 骨架屏
- */
+
 function MainLayoutInner({
   children,
 }: {
@@ -52,10 +52,20 @@ function MainLayoutInner({
     }
   }, [router]);
 
-  const { defaultLayout, onLayoutChanged } = useDefaultLayout({
+  const { defaultLayout, onLayoutChanged: originalOnLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
     storage: typeof window !== "undefined" ? localStorage : undefined
   });
+
+  // 防抖 onLayoutChanged，避免拖拽时高频写 localStorage
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  // Layout 类型是 { [id: string]: number }
+  const debouncedLayoutChanged = useCallback((layout: { [id: string]: number }) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      originalOnLayoutChanged(layout);
+    }, 300);
+  }, [originalOnLayoutChanged]);
   const panelRef = usePanelRef();
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
@@ -101,7 +111,7 @@ function MainLayoutInner({
         <ResizablePanelGroup
           orientation="horizontal"
           defaultLayout={defaultLayout}
-          onLayoutChanged={onLayoutChanged}
+          onLayoutChanged={debouncedLayoutChanged}
           className="w-full h-full"
         >
           <ResizablePanel
@@ -113,7 +123,7 @@ function MainLayoutInner({
             collapsedSize={80}
             onResize={() => setIsCollapsed(panelRef.current?.isCollapsed() ?? false)}
             className={cn(
-              "bg-[#0f0f0f] rounded-lg overflow-hidden transition-all duration-300 ease-in-out",
+              "bg-[#0f0f0f] rounded-lg overflow-hidden",
             )}
           >
             <Sidebar />
@@ -157,6 +167,9 @@ function MainLayoutInner({
   );
 }
 
+/**
+ * MainLayout: 播放器的子组件 - 支持懒加载 + 骨架屏
+ */
 export default function MainLayout({
   children,
 }: {

@@ -133,7 +133,7 @@ function SidebarImpl() {
   return (
     <div
       className={cn(
-        "flex flex-col h-full w-full transition-all duration-300 ease-linear",
+        "flex flex-col h-full w-full",
         !isVeryNarrow && "bg-momo-dark",
         isVeryNarrow ? "gap-3" : "gap-[6.5px]",
       )}

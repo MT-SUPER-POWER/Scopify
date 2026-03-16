@@ -26,14 +26,15 @@ import { SmoothSlider } from "@/components/SmoothSlider";
 import { QueuePopover } from "@/components/QueuePopover";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
+import { useTimeStore } from "@/store/module/time";
 import Link from "next/link";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const PlayerProgressBar = ({ audioRef }: { audioRef: React.RefObject<HTMLAudioElement | null> }) => {
-  const currentTime = usePlayerStore(s => s.currentTime);
+  const currentTime = useTimeStore(s => s.currentTime);
   const totalTime = usePlayerStore(s => s.totalTime);
-  const setCurrentTime = usePlayerStore(s => s.setCurrentTime);
+  const setCurrentTime = useTimeStore(s => s.setCurrentTime);
 
   const handleSeek = (value: number) => {
     const newTime = (value / 100) * (totalTime / 1000);
@@ -103,7 +104,7 @@ export const PlayerBar = () => {
   const repeatMode = usePlayerStore(s => s.repeatMode);
   const isShuffle = usePlayerStore(s => s.isShuffle);
   const setIsPlaying = usePlayerStore(s => s.setIsPlaying);
-  const setCurrentTime = usePlayerStore(s => s.setCurrentTime);
+  const setCurrentTime = useTimeStore(s => s.setCurrentTime);
   const setTotalTime = usePlayerStore(s => s.setTotalTime);
   const setRepeatMode = usePlayerStore(s => s.setRepeatMode);
   const toggleShuffle = usePlayerStore(s => s.toggleShuffle);
@@ -116,9 +117,8 @@ export const PlayerBar = () => {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentSongUrl) return;
-    const snapshot = usePlayerStore.getState();
-    const persistedTime = snapshot.currentTime;
-    const shouldAutoPlay = snapshot.isPlaying;
+    const persistedTime = useTimeStore.getState().currentTime;
+    const shouldAutoPlay = usePlayerStore.getState().isPlaying;
     const currentSongId = currentSong?.id ?? null;
     const isSongSwitched =
       lastSongIdRef.current !== null &&
