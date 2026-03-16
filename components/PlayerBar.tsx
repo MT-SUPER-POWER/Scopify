@@ -30,6 +30,40 @@ import Link from "next/link";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+const PlayerProgressBar = ({ audioRef }: { audioRef: React.RefObject<HTMLAudioElement | null> }) => {
+  const currentTime = usePlayerStore(s => s.currentTime);
+  const totalTime = usePlayerStore(s => s.totalTime);
+  const setCurrentTime = usePlayerStore(s => s.setCurrentTime);
+
+  const handleSeek = (value: number) => {
+    const newTime = (value / 100) * (totalTime / 1000);
+    if (audioRef.current) audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime * 1000);
+  };
+
+  const progressPercent = totalTime > 0 ? (currentTime / totalTime) * 100 : 0;
+
+  return (
+    <div className="flex items-center gap-2 w-full max-w-150">
+      <span className="text-[11px] text-[#b3b3b3] w-10 text-right tabular-nums tracking-widest font-normal">
+        {formatDuration(currentTime)}
+      </span>
+      <SmoothSlider
+        value={progressPercent}
+        onChange={handleSeek}
+        orientation="horizontal"
+        className="flex-1"
+        trackThickness={4}
+        thumbSize={12}
+        thumbOnHover={true}
+      />
+      <span className="text-[11px] text-[#b3b3b3] w-10 tabular-nums tracking-widest font-normal">
+        {formatDuration(totalTime)}
+      </span>
+    </div>
+  );
+};
+
 const Maximized = (isElectron: boolean) => {
   if (isElectron) {
     window.electronAPI?.enterFullScreen();
@@ -66,8 +100,6 @@ export const PlayerBar = () => {
   const isPlaying = usePlayerStore(s => s.isPlaying);
   const currentSong = usePlayerStore(s => s.currentSongDetail);
   const currentSongUrl = usePlayerStore(s => s.currentSongUrl);
-  const currentTime = usePlayerStore(s => s.currentTime);
-  const totalTime = usePlayerStore(s => s.totalTime);
   const repeatMode = usePlayerStore(s => s.repeatMode);
   const isShuffle = usePlayerStore(s => s.isShuffle);
   const setIsPlaying = usePlayerStore(s => s.setIsPlaying);
@@ -77,8 +109,8 @@ export const PlayerBar = () => {
   const toggleShuffle = usePlayerStore(s => s.toggleShuffle);
   const playNext = usePlayerStore(s => s.playNext);
   const playPrev = usePlayerStore(s => s.playPrev);
-  const likelist = useUserStore((s) => s.likeListIDs);
-  const isLiked = likelist.includes(currentSong?.id ?? -1);
+  const likelist = useUserStore((s) => s.likeListIDs) || [];
+  const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
 
   // 当 url 变化时加载新歌
   useEffect(() => {
@@ -174,16 +206,6 @@ export const PlayerBar = () => {
     }
   }, [volume]);
 
-  // 进度拖拽
-  const handleSeek = (value: number) => {
-    const newTime = (value / 100) * (totalTime / 1000);
-    if (audioRef.current) audioRef.current.currentTime = newTime;
-    setCurrentTime(newTime * 1000);
-  };
-
-  // 播放条被占百分比
-  const progressPercent = totalTime > 0 ? (currentTime / totalTime) * 100 : 0;
-
   // 切换播放模式
   const cycleRepeat = () => {
     const modes = ["off", "all", "one"] as const;
@@ -206,7 +228,7 @@ export const PlayerBar = () => {
     };
   }, [setCurrentTime]);
 
-  // 快捷键支持: 空格(播放/暂停), Ctrl+Left(上一首), Ctrl+Right(下一首)
+  // NOTE: 快捷键支持: 空格(播放/暂停), Ctrl+Left(上一首), Ctrl+Right(下一首)
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // 如果是在输入框中，不触发快捷键
@@ -267,11 +289,12 @@ export const PlayerBar = () => {
       <audio
         ref={audioRef}
         onTimeUpdate={() => {
-          if (audioRef.current && !hasRestoredProgressRef.current && currentTime > 0) {
-            // 如果还没恢复进度，不要让 0 反向同步回 store
-            return;
+          if (audioRef.current) {
+            // 只有当播放器真的在播放时，才同步进度
+            if (!audioRef.current.paused) {
+              setCurrentTime(audioRef.current.currentTime * 1000);
+            }
           }
-          if (audioRef.current) setCurrentTime(audioRef.current.currentTime * 1000);
         }}
         onDurationChange={() => {
           if (audioRef.current && audioRef.current.duration > 0) {
@@ -306,7 +329,7 @@ export const PlayerBar = () => {
       )}>
 
         {/* Left: Song Info */}
-        <div className="flex items-center gap-3.5flex-3">
+        <div className="flex items-center gap-3.5 flex-3">
           <div className="w-14 h-14 rounded-md overflow-hidden relative group cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-zinc-800">
             {currentSong?.al.picUrl && (
               <img
@@ -403,23 +426,7 @@ export const PlayerBar = () => {
           </div>
 
           {/* Progress Bar */}
-          <div className="flex items-center gap-2 w-full max-w-150">
-            <span className="text-[11px] text-[#b3b3b3] w-10 text-right tabular-nums tracking-widest font-normal">
-              {formatDuration(currentTime)}
-            </span>
-            <SmoothSlider
-              value={progressPercent}
-              onChange={handleSeek}
-              orientation="horizontal"
-              className="flex-1"
-              trackThickness={4}
-              thumbSize={12}
-              thumbOnHover={true}
-            />
-            <span className="text-[11px] text-[#b3b3b3] w-10 tabular-nums tracking-widest font-normal">
-              {formatDuration(totalTime)}
-            </span>
-          </div>
+          <PlayerProgressBar audioRef={audioRef} />
         </div>
 
         {/* Right: Extra Controls */}

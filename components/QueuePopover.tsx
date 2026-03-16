@@ -12,7 +12,10 @@ import { cn, formatDuration } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 export const QueuePopover = () => {
-  const { queue, queueIndex, playQueueIndex, isPlaying } = usePlayerStore();
+  const queue = usePlayerStore(state => state.queue);
+  const queueIndex = usePlayerStore(state => state.queueIndex);
+  const playQueueIndex = usePlayerStore(state => state.playQueueIndex);
+  const isPlaying = usePlayerStore(state => state.isPlaying);
 
   return (
     <Popover>

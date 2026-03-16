@@ -61,9 +61,6 @@ function ConfirmDialogShandCN({
 }) {
   return (
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
-      {/* BUG: 这个遮罩层，因为和 table 出现在一起，然后会有一个报错
-          后期遮罩层移动到高一点解决吧，如果打包没错，就临时用
-    */}
       <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
 
       <AlertDialogContent className={cn(
