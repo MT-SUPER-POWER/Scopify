@@ -20,9 +20,7 @@ export const useUiStore = create<UiStore>()(
       (set, get) => ({
         isSearchOpen: false,
         isCollapsed: false,
-        isLyricsOpen: typeof window !== 'undefined' && localStorage.getItem('isLyricsOpen')
-          ? JSON.parse(localStorage.getItem('isLyricsOpen') as string)
-          : false,
+        isLyricsOpen: false,
 
         setIsSearchOpen: (open) => set({ isSearchOpen: open }),
         setIsLyricsOpen: (open) => { set(() => ({ isLyricsOpen: open })); },

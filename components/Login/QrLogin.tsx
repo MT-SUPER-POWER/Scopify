@@ -39,12 +39,12 @@ export function QrLogin() {
         setQrStatusText('正在加载二维码...');
 
         // 1. 获取 Key
-        const keyRes = await getQRKey();
+        const keyRes = await getQRKey({ ua: 'pc' });
         const unikey = keyRes.data?.data?.unikey;
         if (!unikey || !isActive) return;
 
         // 2. 生成二维码
-        const qrRes = await createQR(unikey);
+        const qrRes = await createQR(unikey, { ua: 'pc' });
         if (!isActive) return;
 
         setQrImg(qrRes.data?.data?.qrimg);
@@ -53,7 +53,7 @@ export function QrLogin() {
 
         // 3. 开启同步风格的轮询 (代替 setInterval)
         while (isActive) {
-          const statusRes = await checkQR(unikey);
+          const statusRes = await checkQR(unikey, { ua: 'pc' });
           if (!isActive) break; // 如果请求期间组件卸载或刷新，立刻跳出
 
           const code = statusRes.data?.code;
@@ -74,7 +74,7 @@ export function QrLogin() {
 
             // 处理登录成功逻辑
             const rawCookie = statusRes.data?.cookie || '';
-            // DEBUG: 优化 cookie 存储：提取 MUSIC_U 片段，减小体积并符合网易云 API 规范
+            // NOTE: 优化 cookie 存储：提取 MUSIC_U 片段，减小体积并符合网易云 API 规范
             const musicUMatch = rawCookie.match(/MUSIC_U=[^;]+/);
             const cookie = musicUMatch ? musicUMatch[0] : rawCookie;
 
@@ -82,7 +82,10 @@ export function QrLogin() {
             localStorage.setItem('cookie', cookie);
 
             const loginRes = await getUserAccount();
-            if (loginRes.data?.code !== 200 || !loginRes.data?.profile) {
+            // DEBUG: QR 登录接口返回的数据，帮助排查登录状态异常问题
+            // console.log('[二维码登录] getUserAccount 返回:', loginRes.data);
+
+            if (loginRes.data?.code !== 200) {
               setQrStatus('expired');
               setQrStatusText('登录状态异常');
               toast.error("登录状态异常，请重新登录");

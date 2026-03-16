@@ -114,14 +114,11 @@ function SidebarImpl() {
     }
   }
 
-  // 如果用户登录的时候，会去拉一下歌曲，退出的时候把缓存给清空
+  // 如果用户登录的时候，会去拉一下歌曲
   useEffect(() => {
     if (isUserLogin) {
       fetchPlaylist();
     }
-    return () => {
-      usePlayerStore.getState().cleanCache();
-    };
   }, [isUserLogin]);
 
   return (
@@ -220,8 +217,6 @@ function SidebarImpl() {
           ) : !isUserLogin ? (
             isVeryNarrow ? (
               <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
-                {/* DEBUG: 放置再最底部的位置，但是得参考上一层的 ScrollArea 的高度了 */}
-
                 <button className={cn("p-2 hover:bg-[#242424] hover:text-white rounded-md transition-all")}
                   onClick={handleLoginClick}
                   title="Login to view playlists"
@@ -267,7 +262,7 @@ function SidebarImpl() {
               {/* 渲染创建的歌单 (subscribed: false) */}
               {(filterState === 0 || filterState === 1) &&
                 playlists
-                  .filter(item => !item.subscribed)
+                  .filter(item => item && !item.subscribed)
                   .map((item) => (
                     <LibraryItem
                       key={item.id}
@@ -282,7 +277,7 @@ function SidebarImpl() {
               {/* 渲染收藏的歌单 (subscribed: true) */}
               {(filterState === 0 || filterState === 2) &&
                 playlists
-                  .filter(item => item.subscribed)
+                  .filter(item => item && item.subscribed)
                   .map((item) => (
                     <LibraryItem
                       key={item.id}

@@ -1,3 +1,5 @@
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { devtools } from "zustand-devtools";
@@ -21,7 +23,6 @@ type PlayerStore = {
   queue: SongDetail[];       // 当前播放队列
   queueIndex: number;        // 当前队列位置
   lyric: NeteaseLyric | null;
-
 
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
@@ -60,7 +61,7 @@ export const usePlayerStore = create<PlayerStore>()(
 
         setVolume: (v) => set({ volume: v }),
         setIsPlaying: (v) => set({ isPlaying: v }),
-        setCurrentTime: (time) => set({ currentTime: time }),
+        setCurrentTime: (time) => { set({ currentTime: time }); },
         setTotalTime: (time) => set({ totalTime: time }),
         setRepeatMode: (mode) => set({ repeatMode: mode }),
         toggleShuffle: () => set((s) => ({ isShuffle: !s.isShuffle })),
@@ -76,7 +77,7 @@ export const usePlayerStore = create<PlayerStore>()(
             ]).then(([urlRes, lyricRes]) => {
 
               // DEBUG: 获取歌曲信息和歌词内容
-              console.log("获取歌曲播放歌词成功:", lyricRes.data);
+              // console.log("获取歌曲播放歌词成功:", lyricRes.data);
 
               const url = urlRes.data ?? urlRes.proxyUrl;
               set({ currentSongUrl: url, isPlaying: true, totalTime: song.dt, lyric: lyricRes.data });
@@ -98,7 +99,7 @@ export const usePlayerStore = create<PlayerStore>()(
         playQueueIndex: async (index) => {
           const { queue, playTrack } = get();
           if (index < 0 || index >= queue.length) return;
-          set({ queueIndex: index });
+          set({ queueIndex: index, currentTime: 0 }); // 清空进度
           await playTrack(queue[index]);
         },
 
@@ -120,6 +121,7 @@ export const usePlayerStore = create<PlayerStore>()(
 
         playPrev: async () => {
           const { queueIndex, playQueueIndex } = get();
+          set({ currentTime: 0 }); // 清空进度
           const prev = Math.max(0, queueIndex - 1);
           await playQueueIndex(prev);
         },
@@ -127,6 +129,7 @@ export const usePlayerStore = create<PlayerStore>()(
         playRandom: async () => {
           const { queue, playQueueIndex } = get();
           if (!queue.length) return;
+          set({ currentTime: 0 }); // 清空进度
           const randomIndex = Math.floor(Math.random() * queue.length);
           await playQueueIndex(randomIndex);
         },
@@ -149,7 +152,16 @@ export const usePlayerStore = create<PlayerStore>()(
       {
         name: 'player-storage',
         storage: createJSONStorage(() => localStorage),
-        partialize: (state) => ({ volume: state.volume, currentSongDetail: state.currentSongDetail }),
+        partialize: (state) => ({
+          volume: state.volume,
+          currentSongDetail: state.currentSongDetail,
+          currentSongUrl: state.currentSongUrl,
+          queue: state.queue,
+          queueIndex: state.queueIndex,
+          repeatMode: state.repeatMode,
+          isShuffle: state.isShuffle,
+          lyric: state.lyric
+        }),
       }
     )
   )

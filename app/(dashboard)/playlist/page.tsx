@@ -95,7 +95,6 @@ export default function PlaylistPage() {
     if (!playlistId) return;
 
     setIsLoading(true);
-
     const uid = useUserStore.getState().user?.userId;
 
     Promise.all([
@@ -104,7 +103,9 @@ export default function PlaylistPage() {
     ])
       .then(([tracks, likeLists]) => {
         useUserStore.getState().setAlbumList(tracks.data.songs);
-        useUserStore.getState().setLikeListIDs(likeLists.data.ids); // Set<number>
+        // DEBUG: 获取喜欢歌单的位置
+        // console.log("get like list ids: ", likeLists.data.ids);
+        useUserStore.getState().setLikeListIDs(likeLists.data.ids);
       })
       .catch((error) => {
         console.error("请求失败:", error);

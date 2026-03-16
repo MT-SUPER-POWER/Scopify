@@ -16,3 +16,8 @@ export async function greySongUrlMatch(
     const response = await request.get<SongUrlMatchResponse>('/song/url/match', { params });
     return response.data;
 }
+
+
+export async function getLyric(id: number | string) {
+    return request.get("/lyric/new", { params: { id: id } });
+}

@@ -11,7 +11,10 @@ import { initThumbarButtons } from "./module/thumbarButtons.js";
 
 import { registerIpcHandlers } from "./module/ipc.js";
 import { startManagedBackend, stopManagedBackend } from "./module/backend.js";
-import { __logoIcon, __preloadScript, appConfig, cleanOldLogs, logger, __splashHtmlPath, __splashHtmlDesc } from "./constants.js";
+import {
+  __logoIcon, __preloadScript, appConfig,
+  cleanOldLogs, logger, __splashHtmlPath, __splashHtmlDesc
+} from "./constants.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -27,6 +30,18 @@ const devPort = appConfig.frontend.devPort;
 const devBase = `http://localhost:${devPort}`;
 let mainWindow: BrowserWindowType | null = null;
 let isQuitting = false;     // 真正的退出标志
+
+// 显式启用硬件加速和 WebGL 相关标志
+app.commandLine.appendSwitch("ignore-gpu-blacklist");
+app.commandLine.appendSwitch("enable-webgl");
+app.commandLine.appendSwitch("enable-webgl2");
+app.commandLine.appendSwitch("enable-accelerated-mjpeg-decoder");
+app.commandLine.appendSwitch("enable-accelerated-video-decode");
+app.commandLine.appendSwitch("enable-gpu-rasterization");
+app.commandLine.appendSwitch("enable-native-gpu-memory-buffers");
+
+// 针对 EXT_color_buffer_float 可能需要的草案扩展
+app.commandLine.appendSwitch("enable-webgl-draft-extensions");
 
 logger.info("--------------------------------------------------");
 logger.info("Fronted Base URL is", devBase);
@@ -75,6 +90,8 @@ const createWindow = () => {
       preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,
+      webgl: true,
+      offscreen: false,
     }
   });
 

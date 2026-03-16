@@ -104,20 +104,16 @@ request.interceptors.response.use(
   async (response) => {
     // 兼容网易云 API 的业务逻辑错误
     const resData = response.data;
-    if (resData && resData.code && resData.code !== 200) {
-      const errorMsg = resData.msg || resData.message || '业务错误';
-      const bizError = new Error(errorMsg) as any;
-      bizError.response = response;
-      bizError.config = response.config;
-      bizError.code = resData.code;
-
-      // 直接在这里弹出业务错误，因为抛出异常不会进入当前拦截器的 onError 中
-      if (typeof window !== 'undefined') {
-        const { toast } = await import('sonner');
-        toast.error(errorMsg);
-      }
-
-      return Promise.reject(bizError); // 抛成异常让具体的 catch 处能够终止后续逻辑
+    // 所有响应都直接输出到 console 并返回，不拦截任何业务错误
+    if (resData && resData.code) {
+      console.log('[业务响应]', {
+        code: resData.code,
+        msg: resData.msg,
+        message: resData.message,
+        data: resData,
+        response,
+        config: response.config
+      });
     }
     return response;
   },

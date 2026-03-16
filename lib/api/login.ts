@@ -30,22 +30,22 @@ export function getLoginStatus(cookie = '') {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 二维码登录 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // 创建二维码key
-export function getQRKey() {
+export function getQRKey(extraParams: Record<string, any> = {}) {
   return request.get('/login/qr/key', {
-    params: { timestamp: Date.now() }
+    params: { timestamp: Date.now(), ...extraParams }
   });
 }
 
 // 创建二维码（qrimg=true 直接返回 base64 图片）
-export function createQR(key: string) {
+export function createQR(key: string, extraParams: Record<string, any> = {}) {
   return request.get('/login/qr/create', {
-    params: { key, qrimg: true }
+    params: { key, qrimg: true, ...extraParams }
   });
 }
 
 // 获取二维码扫码状态
-export function checkQR(key: string) {
+export function checkQR(key: string, extraParams: Record<string, any> = {}) {
   return request.get('/login/qr/check', {
-    params: { key }
+    params: { key, ...extraParams }
   });
 }

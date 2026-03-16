@@ -73,6 +73,8 @@ export const useUserStore = create<UserStore>()(
               collectedAlbumIds: new Set(),
               playlist: [],
               albumList: [],
+              // FIX: 登出时也清空喜欢列表
+              likeListIDs: [],
             });
             clearLoginStatus();
             window.location.reload();
@@ -86,6 +88,9 @@ export const useUserStore = create<UserStore>()(
           user: state.user,
           loginType: state.loginType,
           cookie: state.cookie,
+          // FIXME: 持久化 likeListIDs，刷新后不再丢失喜欢列表
+          // OPTIMIZE: 后续可以做成除非有点击喜欢不然不变动，减少 localStorage 写入次数
+          likeListIDs: state.likeListIDs,
         }),
       }
     )

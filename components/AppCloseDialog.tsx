@@ -19,7 +19,6 @@ export default function AppCloseDialog() {
       setIsOpen(true);
     };
 
-    // NOTE: electronAPI.on 建议在 preload 中支持移除监听，或者这里确保只绑定一次
     window.electronAPI.on("app-close-confirm", handleCloseConfirm);
   }, []);
 
