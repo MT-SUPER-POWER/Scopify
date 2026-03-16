@@ -39,12 +39,12 @@ export function QrLogin() {
         setQrStatusText('正在加载二维码...');
 
         // 1. 获取 Key
-        const keyRes = await getQRKey({ ua: 'pc' });
+        const keyRes = await getQRKey();
         const unikey = keyRes.data?.data?.unikey;
         if (!unikey || !isActive) return;
 
         // 2. 生成二维码
-        const qrRes = await createQR(unikey, { ua: 'pc' });
+        const qrRes = await createQR(unikey);
         if (!isActive) return;
 
         setQrImg(qrRes.data?.data?.qrimg);
@@ -53,7 +53,7 @@ export function QrLogin() {
 
         // 3. 开启同步风格的轮询 (代替 setInterval)
         while (isActive) {
-          const statusRes = await checkQR(unikey, { ua: 'pc' });
+          const statusRes = await checkQR(unikey);
           if (!isActive) break; // 如果请求期间组件卸载或刷新，立刻跳出
 
           const code = statusRes.data?.code;
@@ -96,14 +96,12 @@ export function QrLogin() {
             useUserStore.getState().setLoginType('qr');
             toast.success("登录成功");
 
-
             if (isElectron) {
               // DEBUG: Electron 环境确认
               console.log('[二维码登录] 运行在 Electron 环境，正在尝试关闭登录窗口并刷新主窗口');
-
               window.electronAPI?.closeLoginWindow();
               smartRouter.replace('/');
-              window.electronAPI?.maniWindowReload();
+              // window.electronAPI?.maniWindowReload();
             } else {
               smartRouter.replace('/');
             }

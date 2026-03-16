@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { devtools } from "zustand-devtools";
 
 interface UiStore {
   isSearchOpen: boolean;
@@ -15,26 +14,24 @@ interface UiStore {
 }
 
 export const useUiStore = create<UiStore>()(
-  devtools(
-    persist(
-      (set, get) => ({
-        isSearchOpen: false,
-        isCollapsed: false,
-        isLyricsOpen: false,
+  persist(
+    (set, get) => ({
+      isSearchOpen: false,
+      isCollapsed: false,
+      isLyricsOpen: false,
 
-        setIsSearchOpen: (open) => set({ isSearchOpen: open }),
-        setIsLyricsOpen: (open) => { set(() => ({ isLyricsOpen: open })); },
-        toggleLyrics: () => set((state) => ({ isLyricsOpen: !state.isLyricsOpen })),
-        setIsCollapsed: (collapsed) => set({ isCollapsed: collapsed }),
+      setIsSearchOpen: (open) => set({ isSearchOpen: open }),
+      setIsLyricsOpen: (open) => { set(() => ({ isLyricsOpen: open })); },
+      toggleLyrics: () => set((state) => ({ isLyricsOpen: !state.isLyricsOpen })),
+      setIsCollapsed: (collapsed) => set({ isCollapsed: collapsed }),
+    }),
+    {
+      name: 'ui-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        isLyricsOpen: state.isLyricsOpen,
       }),
-      {
-        name: 'ui-storage',
-        storage: createJSONStorage(() => localStorage),
-        partialize: (state) => ({
-          isLyricsOpen: state.isLyricsOpen,
-        }),
-      }
-    )
+    }
   )
 );
 

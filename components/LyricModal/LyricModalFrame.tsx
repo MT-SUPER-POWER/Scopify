@@ -110,7 +110,7 @@ const ModalBackground = ({ coverUrl }: { coverUrl: string }) => {
           playing={isPlaying}
           hasLyric={true}
           renderScale={0.35}
-          staticMode={true} // 保持静态模式，极大幅度省电
+          staticMode={true} // 保持静态模式，极大幅度节省性能
         />
       </div>
     </WebGLFallbackBoundary>

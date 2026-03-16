@@ -57,7 +57,7 @@ request.interceptors.request.use(
     config.params = {
       ...config.params,
       timestamp: Date.now(),
-      device: isElectron ? 'pc' : 'web'
+      ...(isElectron ? { device: 'pc' } : { ua: 'web' })
     };
 
     // 注意：假设你的 userStore 里存储 cookie 的字段叫 cookie，如果叫别的名字请对应修改

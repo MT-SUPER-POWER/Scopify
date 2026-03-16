@@ -103,7 +103,7 @@ function MainLayoutInner({
       "overflow-hidden p-2 gap-2"
     )}>
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-      <LyricsModal />
+      {/* <LyricsModal /> */}
       <AppCloseDialog />
 
       {/* 左右结构 */}

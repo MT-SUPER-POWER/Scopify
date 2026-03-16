@@ -2,7 +2,6 @@ import { logout } from "@/lib/api/login";
 import { clearLoginStatus } from "@/lib/web/auth";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { devtools } from "zustand-devtools";
 import { NeteasePlaylist } from "@/types/api/playlist";
 import { SongDetail } from "@/types/api/music";
 
@@ -34,7 +33,6 @@ type UserStore = {
 }
 
 export const useUserStore = create<UserStore>()(
-  devtools(
     persist(
       (set) => ({
         user: null,
@@ -94,5 +92,4 @@ export const useUserStore = create<UserStore>()(
         }),
       }
     )
-  )
 );
