@@ -8,15 +8,14 @@ export const __splashHtmlDesc = "[SPLASH] Electron 启动页: " + __splashHtmlPa
 import path, { join } from "path";
 import { app, nativeImage } from "electron";
 import log from "electron-log";
-import { loadAppConfig } from "./config.js";
+import { appConfigDefaultPath, appConfigPath, loadAppConfig } from "./config.js";
 import fs from 'fs';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RESOURCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const __logoIcon = join(__dirname, "../../resources/icon.ico");
 const __preloadScript = join(__dirname, "../main/preload.js");
-const __appConfigPath = join(__dirname, "../../config/app.config.yml");
-const __appConfigDefaultPath = join(__dirname, "../../config/app.config.default.yml");
+const __rendererDir = join(__dirname, "../../renderer");
 const appConfig = loadAppConfig();
 
 export const next = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/next.png"));
@@ -70,7 +69,9 @@ export function cleanOldLogs() {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKEND ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const __backendDir = join(__dirname, "../../backend/api-enhanced");
+const __backendDir = app.isPackaged ?
+  join(process.resourcesPath, "/backend/api-enhanced") :
+  join(__dirname, "../../backend/api-enhanced");
 const __backendEntry = join(__backendDir, "app.js");
 
 // NOTE: 通过环境变量传递后端配置，确保子进程能够正确读取到这些配置项
@@ -78,6 +79,7 @@ const __backendEnv = {
   ...process.env,
   PORT: `${appConfig.backend.port}`,
   HOST: appConfig.backend.host,
+  APP_CONFIG_PATH: appConfigPath,
   NODE_ENV: "production",
   ELECTRON_RUN_AS_NODE: "1",
 };
@@ -102,11 +104,12 @@ log.info(`
   Preload:        ${__preloadScript}
   Packaged:       ${app.isPackaged}
   User Data:      ${app.getPath("userData")}
-  Config Path:    ${__appConfigPath}
-  Default:        ${__appConfigDefaultPath}
+  Config Path:    ${appConfigPath}
+  Default:        ${appConfigDefaultPath}
   App Config:     ${configStr}
   Backend Entry:  ${__backendEntry}
   Splash HTML:    ${__splashHtmlPath}
+  Renderer Dir:   ${__rendererDir}
   --------------------------------------------------
 `);
 
@@ -114,8 +117,8 @@ export {
   log as logger,
   __logoIcon,
   __preloadScript,
-  __appConfigPath as __appConfig,
-  __appConfigDefaultPath,
+  appConfigPath as __appConfig,
+  appConfigDefaultPath as __appConfigDefaultPath,
   __backendDir,
   __backendEntry,
   __backendEnv,

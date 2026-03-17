@@ -33,10 +33,13 @@ function createTrayWindow() {
 
   const devPort = process.env.NEXT_PORT ?? "3000";
   const trayUrl = app.isPackaged
-    ? "app://-/tray.html"
+    ? "app://-/tray/"
     : `http://localhost:${devPort}/tray`;
 
   trayWindow.loadURL(trayUrl);
+  trayWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
+    console.error("[tray] did-fail-load", { code, desc, validatedURL });
+  });
 
   trayWindow.on('blur', () => {
     lastBlurTime = Date.now();

@@ -43,10 +43,13 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
 
   const devPort = process.env.NEXT_PORT ?? "3000";
   const loginUrl = app.isPackaged
-    ? "app://-/login.html"
+    ? "app://-/login/"
     : `http://localhost:${devPort}/login`;
 
   loginWindow.loadURL(loginUrl);
+  loginWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
+    console.error("[login] did-fail-load", { code, desc, validatedURL });
+  });
 
   loginWindow?.on("closed", () => {
     loginWindow = null;
@@ -64,6 +67,8 @@ export function initializeLoginWindow(mainWindow: Electron.BrowserWindow) {
   });
 
   ipcMain.on('close-login-window', () => {
+    // DEBUG: 确认收到关闭窗口的 IPC 消息
+    console.log('[Main] Received close-login-window IPC message');
     loginWindow?.close();
   });
 }

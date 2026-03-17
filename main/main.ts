@@ -22,7 +22,7 @@ let splashWindow: BrowserWindowType | null = null;
 
 // NOTE: electron-serve 结合 next.js
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
-  ? serve({ directory: join(__dirname, "../renderer") })
+  ? serve({ directory: join(__dirname, "../../renderer") })
   : null;
 
 // 初始化配置
@@ -30,18 +30,6 @@ const devPort = appConfig.frontend.devPort;
 const devBase = `http://localhost:${devPort}`;
 let mainWindow: BrowserWindowType | null = null;
 let isQuitting = false;     // 真正的退出标志
-
-// 显式启用硬件加速和 WebGL 相关标志
-app.commandLine.appendSwitch("ignore-gpu-blacklist");
-app.commandLine.appendSwitch("enable-webgl");
-app.commandLine.appendSwitch("enable-webgl2");
-app.commandLine.appendSwitch("enable-accelerated-mjpeg-decoder");
-app.commandLine.appendSwitch("enable-accelerated-video-decode");
-app.commandLine.appendSwitch("enable-gpu-rasterization");
-app.commandLine.appendSwitch("enable-native-gpu-memory-buffers");
-
-// 针对 EXT_color_buffer_float 可能需要的草案扩展
-app.commandLine.appendSwitch("enable-webgl-draft-extensions");
 
 logger.info("--------------------------------------------------");
 logger.info("Fronted Base URL is", devBase);
@@ -100,16 +88,25 @@ const createWindow = () => {
     if (splashWindow) {
       splashWindow.destroy();
       splashWindow = null;
-      logger.info("[SPLASH] splashWindow destroyed after 4s, mainWindow shown");
     }
+    mainWindow?.setAlwaysOnTop(true);
     mainWindow?.show();
     mainWindow?.focus();
+    mainWindow?.setAlwaysOnTop(false);
   }, 3000);
 
   if (app.isPackaged) {
-    appServe && appServe(mainWindow).then(() => {
-      mainWindow?.loadURL("app://-");
-    });
+    if (!appServe) {
+      logger.error("[renderer] appServe is not initialized in packaged mode.");
+    } else {
+      appServe(mainWindow).catch((err) => {
+        logger.error("[renderer] Failed to load packaged renderer via app:// protocol:", err);
+        const fallbackIndex = join(__dirname, "../../renderer/index.html");
+        mainWindow?.loadFile(fallbackIndex).catch((fallbackErr) => {
+          logger.error("[renderer] Fallback loadFile also failed:", fallbackErr);
+        });
+      });
+    }
   } else {
     mainWindow.loadURL(devBase);
     if (appConfig.app.devTools) {

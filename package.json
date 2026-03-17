@@ -17,12 +17,13 @@
   "main": "out/main/main.js",
   "description": "Electron + Next.js Music Player Base on NetEase Music API",
   "scripts": {
-    "predev": "bunx swc main -d out --out-file-extension js && node script/build-electron.cjs",
+    "predev": "npx swc main -d out --out-file-extension js && node script/build-electron.cjs",
     "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\" ",
     "backend": "node backend/api-enhanced/app.js",
-    "web": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"next dev\" \"bun run backend\" ",
+    "web": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"next dev\" \"npm run backend\" ",
     "build:web": "next build",
-    "build:win": "next build && bunx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- win"
+    "build:win": "next build && npx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- win",
+    "afterbuild:win": "hello"
   },
   "dependencies": {
     "@applemusic-like-lyrics/core": "^0.2.0",
@@ -99,6 +100,13 @@
     },
     "extraResources": [
       {
+        "from": "config",
+        "to": "config",
+        "filter": [
+          "**/*.yml"
+        ]
+      },
+      {
         "from": "backend/api-enhanced",
         "to": "backend/api-enhanced",
         "filter": [
@@ -122,8 +130,7 @@
       "renderer/**/*",
       "public/**/*",
       "resources/**/*",
-      "package.json",
-      "config/**/*"
+      "package.json"
     ],
     "win": {
       "target": "dir",

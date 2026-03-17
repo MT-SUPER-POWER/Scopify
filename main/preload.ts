@@ -12,7 +12,7 @@ const electronAPI: ElectronAPI = {
   },
   openLoginWindow: () => { ipcRenderer.send("open-login-window"); },
   closeLoginWindow: () => { ipcRenderer.send("close-login-window"); },
-  maniWindowReload: () => { ipcRenderer.send("main-window-reload"); },
+  mainWindowReload: () => { ipcRenderer.send("main-window-reload"); },
   exitApp: () => { ipcRenderer.send("exit-app"); },
   minimizeApp: () => { ipcRenderer.send("minimize-to-tray"); },
   sendAppCloseAction: (action: "minimize" | "exit") => { ipcRenderer.send("app-close-action", action); },

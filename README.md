@@ -38,6 +38,7 @@ cd momo-music-player/
 bun i
 
 cd backend/api-enhanced
+git clone https://github.com/MT-SUPER-POWER/api-enhanced
 bun install  # 安装后端依赖
 
 bun run dev  # 开发模式：运行 next.js 和 electron
@@ -80,6 +81,13 @@ make netease_undeploy # 卸载
 >
 > 1. 修改 `electron-builder` 的配置文件，去掉 `extraResources` 中的后端相关配置
 > 2. 修改 `next.config.js` 中的后端地址为 `你部署端口的 ip 地址`，k8s 文件给你写好了，你按需修改就行
+
+## 如何自己打包程序
+
+> [!note] 直接运行 `npm run build:win` 就会自动打包程序，生成在 dist 目录下，是一个 dir 解压的结果，如果有需要自己修改 `package.json` 中的 build:build:target: nsis 就可以打包成 exe 文件了
+> 程序的运行日志在这个位置: C:\Users\[YourUserName]\AppData\Roaming\scopify\logs
+
+如果程序没有正常运行，请检查 logs 里面的日志
 
 ## 待做功能
 
