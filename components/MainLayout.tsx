@@ -99,7 +99,7 @@ function MainLayoutInner({
 
   return (
     <div className={cn(
-      "w-full h-full flex flex-col bg-black text-white font-sans",
+      "flex-1 flex-col bg-black text-white font-sans",
       "overflow-hidden p-2 gap-2"
     )}>
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />

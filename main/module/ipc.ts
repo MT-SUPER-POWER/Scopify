@@ -1,9 +1,9 @@
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACAKGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 import { ipcMain, app, BrowserWindow, session } from "electron";
 import { loadAppConfig, saveAppConfig } from "../config.js";
 import { ensureBackendUrl } from "./backend.js";
 import { appConfig, logger } from "../constants.js";
-import { Tray } from "electron/main";
-import { Minimize } from 'lucide-react';
 import { trayWindow } from "./tray.js";
 import { updateThumbarButtons } from "./thumbarButtons.js";
 import { loginWindow } from "./login.js";
@@ -42,16 +42,12 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     return saveAppConfig(newConfig);
   });
 
-
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ OTHER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
   ipcMain.on("login-success", () => {
     logger.info("[IPC] 登录成功，准备关闭登录窗口并打开主窗口");
     loginWindow?.close();
-    mainWindow?.webContents.send("show-login-toast");
     mainWindow?.reload();
   });
-
 
   // IPC 事件监听 - 更新标题栏颜色
   ipcMain.on("update-titlebar-color", (_event, color) => {
@@ -134,5 +130,4 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
       throw err;
     }
   });
-
 }

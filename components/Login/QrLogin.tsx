@@ -41,12 +41,12 @@ export function QrLogin() {
         setQrStatusText('正在加载二维码...');
 
         // 1. 获取 Key
-        const keyRes = await getQRKey({ platform: "web" });
+        const keyRes = await getQRKey();
         const unikey = keyRes.data?.data?.unikey;
         if (!unikey || !isActive) return;
 
         // 2. 生成二维码
-        const qrRes = await createQR(unikey, { platform: "web" });
+        const qrRes = await createQR(unikey);
         if (!isActive) return;
 
         setQrImg(qrRes.data?.data?.qrimg);
@@ -109,7 +109,6 @@ export function QrLogin() {
 
             // 通知主线程登录成功
             if (IS_ELECTRON) {
-              await delay(800);
               window.electronAPI?.loginSuccess?.();
             } else {
               smartRouter.replace('/');

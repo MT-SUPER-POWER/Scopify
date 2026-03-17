@@ -82,7 +82,24 @@ export const formatDate = (timestamp: number) => {
   });
 };
 
-// 判断是否为 Electron 环境
-export function isElectronEnv(): boolean {
-  return typeof window !== "undefined" && !!window.electronAPI;
-}
+export const isElectron = (): boolean => {
+  // 方法1：检查 userAgent
+  if (typeof navigator !== 'undefined' && navigator.userAgent.includes('Electron')) {
+    return true;
+  }
+  // 方法2：检查 preload 注入的 API
+  if (typeof window !== 'undefined' && window.electronAPI) {
+    return true;
+  }
+  // 方法3：检查 process
+  if (typeof process !== 'undefined' && process.versions?.electron) {
+    return true;
+  }
+  return false;
+};
+
+export const isWeb = (): boolean => !isElectron();
+
+// 也可以做成常量，避免重复调用
+export const IS_ELECTRON = isElectron();
+export const IS_WEB = !IS_ELECTRON;

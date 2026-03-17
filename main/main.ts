@@ -93,7 +93,7 @@ const createWindow = () => {
     mainWindow?.show();
     mainWindow?.focus();
     mainWindow?.setAlwaysOnTop(false);
-  }, 3000);
+  }, 4500);
 
   if (app.isPackaged) {
     if (!appServe) {

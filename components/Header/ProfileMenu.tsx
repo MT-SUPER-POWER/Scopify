@@ -1,4 +1,3 @@
-import { useIsElectron } from '@/lib/hooks/useElectronDetect';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,7 +87,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
           )}
 
           {iconList.map((item) =>
-            item.label === "Download" && useIsElectron() ? null : (
+            item.label === "Download" && IS_ELECTRON ? null : (
               <DropdownMenuItem
                 key={item.label}
                 className="rounded-lg px-3 py-2 text-[15px]"

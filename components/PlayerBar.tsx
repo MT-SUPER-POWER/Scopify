@@ -19,12 +19,12 @@ import {
   MinimizeIcon,
 } from "lucide-react";
 import { FaRegCommentDots } from "react-icons/fa6";
-import { useIsElectron, useFullScreenListener } from "@/lib/hooks/useElectronDetect";
+import { useFullScreenListener } from "@/lib/hooks/useElectronDetect";
 import { useUiStore } from "@/store/module/ui";
 import { VolumeControl } from "@/components/VolumeControl";
 import { SmoothSlider } from "@/components/SmoothSlider";
 import { QueuePopover } from "@/components/QueuePopover";
-import { cn, formatDuration } from "@/lib/utils";
+import { cn, formatDuration, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useTimeStore } from "@/store/module/time";
 import Link from "next/link";
@@ -88,7 +88,7 @@ const Minimize = (isElectron: boolean) => {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export const PlayerBar = () => {
-  const isElectron = useIsElectron();
+  const isElectron = IS_ELECTRON;
   const isLyricsOpen = useUiStore(s => s.isLyricsOpen);
   const toggleLyrics = useUiStore(s => s.toggleLyrics);
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
@@ -282,18 +282,17 @@ export const PlayerBar = () => {
   }, [isElectron, setIsPlaying, playPrev, playNext]);
 
   return (
-    <>
-      {/*
-      播放
-      BUG: 播放响应特别慢，不是说上下首切换的慢，而是播放和暂停响应特别慢
-      */}
+    <div className={cn(
+      "h-17 lg:h-20 bg-black w-full flex px-2 items-center justify-between z-20",
+      "transition-all ease-linear duration-300"
+    )}>
+      {/* 播放 */}
       <audio
+        className="hidden"
         ref={audioRef}
         onTimeUpdate={() => {
           if (audioRef.current) {
-            // 只有当播放器真的在播放时，才同步进度
             if (!audioRef.current.paused) {
-              // 🚀 核心优化 4：直接用 getState().setCurrentTime 写入独立 Store，彻底切断主 Store 和持久化中间件的重绘
               useTimeStore.getState().setCurrentTime(audioRef.current.currentTime * 1000);
             }
           }
@@ -308,9 +307,7 @@ export const PlayerBar = () => {
           const audio = audioRef.current;
           if (audio && !hasRestoredProgressRef.current) {
             const restoreSeconds = restoreTargetMsRef.current / 1000;
-
             if (restoreSeconds > 0) {
-              // 确保 duration 已加载
               if (Number.isFinite(audio.duration) && audio.duration > 0) {
                 audio.currentTime = Math.min(restoreSeconds, audio.duration);
               } else {
@@ -333,13 +330,7 @@ export const PlayerBar = () => {
         {/* Left: Song Info */}
         <div className="flex items-center gap-3.5 flex-3">
           <div className="w-14 h-14 rounded-md overflow-hidden relative group cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-zinc-800">
-            {currentSong?.al.picUrl && (
-              <img
-                src={currentSong.al.picUrl}
-                alt={currentSong.al.name}
-                className="w-full h-full object-cover"
-              />
-            )}
+            {currentSong?.al.picUrl && (<img src={currentSong.al.picUrl} alt={currentSong.al.name} className="w-full h-full object-cover" />)}
             <div
               onClick={openLyrics}
               className={cn(
@@ -465,7 +456,7 @@ export const PlayerBar = () => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

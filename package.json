@@ -123,6 +123,13 @@
         "filter": [
           "**/*"
         ]
+      },
+      {
+        "from": "resources",
+        "to": "resources",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "files": [

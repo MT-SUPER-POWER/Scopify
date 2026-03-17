@@ -2,7 +2,6 @@ import axios, { InternalAxiosRequestConfig } from 'axios';
 import { usePlayerStore, useUserStore } from '@/store';
 import { appConfig, logger } from './env';
 
-let setData: any = null;
 
 // 扩展请求配置接口
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -13,14 +12,15 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // 运行时优先取 preload 注入的后端地址（Electron 静态导出场景）
-const baseURL = `http://${appConfig.backend.host}:${appConfig.backend.port}`;
+const INITIAL_BASE_URL = `http://${appConfig.backend.host}:${appConfig.backend.port}`;
+let baseURL = INITIAL_BASE_URL;
 const MAX_RETRIES = appConfig.network.max_retries;
 const RETRY_DELAY = appConfig.network.retry_delay;
 const AXIOS_TIMEOUT = appConfig.network.timeout;
 const NO_RETRY_URLS = ['暂时没有'];
 
 logger.info("--------------------------------------------------");
-logger.info("Next.js Request Base URL is", baseURL);
+logger.info("Next.js Request Backend URL is", baseURL);
 logger.info("--------------------------------------------------");
 
 if (!baseURL) {
@@ -32,6 +32,23 @@ const request = axios.create({
   timeout: AXIOS_TIMEOUT,
   withCredentials: true
 });
+
+// 在 Electron 环境：优先使用 preload/runtime 注入的配置覆盖构建时的值
+if (typeof window !== 'undefined' && (window as any).electronAPI?.getAppConfig) {
+  (async () => {
+    try {
+      const runtimeCfg = await (window as any).electronAPI.getAppConfig();
+      const runtimeURL = `http://${runtimeCfg.backend.host}:${runtimeCfg.backend.port}`;
+      if (runtimeURL && runtimeURL !== baseURL) {
+        baseURL = runtimeURL;
+        request.defaults.baseURL = baseURL;
+        logger.info('Overrode Request Backend URL from Electron runtime:', baseURL);
+      }
+    } catch (e) {
+      logger.warn('Failed to read runtime appConfig from Electron preload', e);
+    }
+  })();
+}
 
 // 判断是否为 Electron 环境
 const isElectron = typeof window !== "undefined" && !!window.electronAPI;
@@ -57,40 +74,8 @@ request.interceptors.request.use(
     config.params = {
       ...config.params,
       timestamp: Date.now(),
-      ...(isElectron ? { device: 'pc' } : { ua: 'web' })
+      ...(isElectron ? { device: 'pc' } : { platform: 'web' })
     };
-
-    // 注意：假设你的 userStore 里存储 cookie 的字段叫 cookie，如果叫别的名字请对应修改
-    let _cookie = (useUserStore.getState() as any).cookie as string | undefined;
-
-    // 如果内存里没有，且处于浏览器环境，再去 localStorage 拿（做兜底）
-    if (!_cookie && typeof window !== 'undefined') {
-      _cookie = localStorage.getItem('cookie') || '';
-    }
-
-    if (_cookie) {
-      // 1. 放入 HTTP 请求头 (Standard way)
-      config.headers.set('Cookie', _cookie);
-
-      // 2. 移除 Params 和 Body 中的 cookie 参数，避免冗余和潜在的格式冲突
-      // 如果后端支持 Header 识别，则不需要在 URL 或 Body 中重复传输
-      if (config.method?.toLowerCase() === 'post' && config.data?.cookie) {
-        delete config.data.cookie;
-      } else if (config.params?.cookie) {
-        delete config.params.cookie;
-      }
-    }
-
-    if (isElectron) {
-      const proxyConfig = setData?.proxyConfig;
-      if (proxyConfig?.enable && ['http', 'https'].includes(proxyConfig?.protocol)) {
-        config.params.proxy = `${proxyConfig.protocol}://${proxyConfig.host}:${proxyConfig.port}`;
-      }
-      if (setData?.enableRealIP && setData?.realIP) {
-        config.params.realIP = setData.realIP;
-      }
-    }
-
     return config;
   },
   (error) => {
@@ -105,16 +90,16 @@ request.interceptors.response.use(
     // 兼容网易云 API 的业务逻辑错误
     const resData = response.data;
     // 所有响应都直接输出到 console 并返回，不拦截任何业务错误
-    if (resData && resData.code) {
-      console.log('[业务响应]', {
-        code: resData.code,
-        msg: resData.msg,
-        message: resData.message,
-        data: resData,
-        response,
-        config: response.config
-      });
-    }
+    /*     if (resData && resData.code) {
+          console.log('[业务响应]', {
+            code: resData.code,
+            msg: resData.msg,
+            message: resData.message,
+            data: resData,
+            response,
+            config: response.config
+          });
+        } */
     return response;
   },
   async (error) => {

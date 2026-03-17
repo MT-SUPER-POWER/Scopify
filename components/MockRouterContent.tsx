@@ -3,39 +3,47 @@ import { Play } from "lucide-react";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// 生成卡片背景色的帮助函数
-const getGreeting = () => {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good Morning";
-  if (hour < 18) return "Good Afternoon"
-  if (hour < 21) return "Good Evening";
-  return "Good Night";
-};
+type TimeTheme = {
+  start: number
+  end: number
+  greeting: string
+  gradient: string
+}
 
-const getTimeOfDayGradient = () => {
-  const hour = new Date().getHours();
-  // 清晨 6-12: 暖橙晨光
-  if (hour >= 6 && hour < 12) return "from-amber-300/60 via-[#121212]/80 to-[#121212]";
-  // 下午 12-18: 明亮天蓝
-  if (hour >= 12 && hour < 18) return "from-sky-500/62 via-[#121212]/80 to-[#121212]";
-  // 黄昏 18-21: 橙紫暮色
-  if (hour >= 18 && hour < 21) return "from-orange-500/60 via-[#121212]/80 to-[#121212]";
-  // 深夜 21-6: 深邃暗夜
-  return "from-slate-800/80 via-[#121212]/80 to-[#121212]";
-};
+const TIME_THEME_MAP: TimeTheme[] = [
+  { start: 0, end: 5, greeting: "Good Night", gradient: "from-indigo-950/90 via-[#121212]/80 to-[#121212]" },
+  { start: 5, end: 7, greeting: "Good Morning", gradient: "from-rose-300/60 via-orange-200/40 to-[#121212]" },
+  { start: 7, end: 10, greeting: "Good Morning", gradient: "from-sky-300/60 via-[#121212]/80 to-[#121212]" },
+  { start: 10, end: 14, greeting: "Good Afternoon", gradient: "from-sky-500/65 via-[#121212]/80 to-[#121212]" },
+  { start: 14, end: 17, greeting: "Good Afternoon", gradient: "from-cyan-400/60 via-[#121212]/80 to-[#121212]" },
+  { start: 17, end: 19, greeting: "Good Evening", gradient: "from-orange-400/60 via-purple-500/40 to-[#121212]" },
+  { start: 19, end: 22, greeting: "Good Evening", gradient: "from-violet-900/80 via-[#121212]/85 to-[#121212]" },
+  { start: 22, end: 24, greeting: "Good Night", gradient: "from-slate-900/90 via-[#121212]/85 to-[#121212]" },
+];
+
+export const getTimeTheme = () => {
+  const hour = new Date().getHours()
+
+  const theme =
+    TIME_THEME_MAP.find(t => hour >= t.start && hour < t.end) ??
+    TIME_THEME_MAP[0]
+
+  return {
+    greeting: theme.greeting,
+    gradient: theme.gradient,
+  }
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export const MockRouterContent = () => {
-  // console.log(`[MockRouterContent] \n Rendered at ${new Date().getHours()} \n getTimeofDayGradient us ${getTimeOfDayGradient()}`);
 
   return (
     <div className="relative pb-24 font-sans">
       {/* 顶部彩色渐变背景 (Spotify 标志性设计) */}
       <div className={cn(
         "absolute top-0 left-0 right-0 h-80 bg-linear-to-b",
-        // "bg-linear-to-b from-indigo-900/80 via-[#121212]/80 to-[#121212]",
-        getTimeOfDayGradient(),
+        getTimeTheme().gradient,
         "z-0 pointer-events-none")}
       />
 
@@ -43,7 +51,7 @@ export const MockRouterContent = () => {
         {/* 欢迎语与快速访问区块 */}
         <section>
           <h1 className="text-3xl font-bold text-white mb-6 tracking-tight">
-            {getGreeting()}
+            {getTimeTheme().greeting}
           </h1>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
             {[1, 2, 3, 4, 5, 6].map((item) => (

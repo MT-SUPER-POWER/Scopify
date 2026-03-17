@@ -101,3 +101,37 @@ interface UserPoint {
   status: number;
   blockBalance: number;
 }
+
+
+export interface NeteaseUser {
+  userId: number;
+  nickname: string;
+  avatarUrl: string;
+  signature: string;
+}
+
+
+/**
+ * 清洗用户基础信息数据
+ * @param raw 原始 API 返回的用户对象 (通常是 res.profile 或 res.creator)
+ */
+export const pruneUser = (raw: any): NeteaseUser => {
+  // 1. 极简的空值防御
+  if (!raw) {
+    return {
+      userId: 0,
+      nickname: "未知用户",
+      avatarUrl: "",
+      signature: "",
+    };
+  }
+
+  return {
+    // 兼容处理：网易云接口中有时叫 userId，有时叫 id
+    userId: raw.userId || raw.id || 0,
+    nickname: raw.nickname || "未知用户",
+    avatarUrl: raw.avatarUrl || "",
+    // 个性签名经常为空，使用空字符串兜底防止渲染报错
+    signature: raw.signature || "",
+  };
+};

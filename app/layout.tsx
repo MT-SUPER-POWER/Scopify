@@ -37,7 +37,7 @@ export default function RootLayout({
       <body
         className={cn(
           `${geistSans.variable} ${geistMono.variable}`,
-          `antialiased h-screen w-screen overflow-hidden flex`,
+          "antialiased overflow-hidden flex fixed inset-0",
           "selection:bg-[#1db954] selection:text-white"
         )}
         suppressHydrationWarning

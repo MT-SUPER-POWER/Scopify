@@ -1,10 +1,10 @@
-import { __logoIcon, __preloadScript } from "../constants.js";
+import { __logoIcon, __preloadScript, __logoIconPath } from "../constants.js";
 import fs from "fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
 
 // 检查图标文件是否存在
-fs.access(__logoIcon).catch(() => {
-  console.warn("Warning: Icon file not found at", __logoIcon);
+fs.access(__logoIconPath).catch(() => {
+  console.warn("Warning: Icon file not found at", __logoIconPath);
 });
 
 fs.access(__preloadScript).catch(() => {
@@ -67,7 +67,6 @@ export function initializeLoginWindow(mainWindow: Electron.BrowserWindow) {
   });
 
   ipcMain.on('close-login-window', () => {
-    // DEBUG: 确认收到关闭窗口的 IPC 消息
     console.log('[Main] Received close-login-window IPC message');
     loginWindow?.close();
   });

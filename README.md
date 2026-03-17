@@ -109,6 +109,7 @@ make netease_undeploy # 卸载
 - github 发布更新客户端自动更新
 - 音量条可以通过鼠标滚动来调整音量
 - 编辑歌单的部分还要做一个 Tag 选择
+- 即便我设置 config 中的 devTools，程序仍然打得开，这个不行
 
 ### 接口部分
 

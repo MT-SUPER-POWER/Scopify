@@ -1,15 +1,11 @@
-// store/module/player.tsx 完整替换
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-// 🚨 核心优化：彻底干掉 devtools，它是导致播放高频卡顿的元凶之一
 import { NeteaseLyric, SongDetail } from "@/types/api/music";
 import { getLyric, greySongUrlMatch } from "@/lib/api/music";
 import { toast } from "sonner";
 
 export type RepeatMode = "off" | "all" | "one";
 
-// 🚀 核心优化 1：建立独立的超轻量时间 Store
-// 专门用来承受每秒 4 次的 <audio> 轰炸，绝对不加 persist 和 devtools
 interface TimeStore {
   currentTime: number;
   totalTime: number;
@@ -24,7 +20,6 @@ export const useTimeStore = create<TimeStore>((set) => ({
   setTotalTime: (time) => set({ totalTime: time }),
 }));
 
-// 🚀 核心优化 2：主 Store 剔除时间相关的字段
 type PlayerStore = {
   volume: number;
   isPlaying: boolean;
@@ -160,14 +155,17 @@ export const usePlayerStore = create<PlayerStore>()(
     {
       name: 'player-storage',
       storage: createJSONStorage(() => localStorage),
+      // 只持久化 PlayerStore 类型声明的字段，防止多余属性被存储
       partialize: (state) => ({
         volume: state.volume,
+        isPlaying: state.isPlaying,
         currentSongDetail: state.currentSongDetail,
         currentSongUrl: state.currentSongUrl,
-        queue: state.queue,
-        queueIndex: state.queueIndex,
         repeatMode: state.repeatMode,
         isShuffle: state.isShuffle,
+        queue: state.queue,
+        queueIndex: state.queueIndex,
+        lyric: state.lyric,
       }),
     }
   )

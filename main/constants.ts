@@ -5,7 +5,7 @@ export const __splashHtmlDesc = "[SPLASH] Electron 启动页: " + __splashHtmlPa
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import path, { join } from "path";
+import { join } from "path";
 import { app, nativeImage } from "electron";
 import log from "electron-log";
 import { appConfigDefaultPath, appConfigPath, loadAppConfig } from "./config.js";
@@ -13,15 +13,27 @@ import fs from 'fs';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RESOURCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const __logoIcon = join(__dirname, "../../resources/icon.ico");
-const __preloadScript = join(__dirname, "../main/preload.js");
+export const __logoIconPath = app.isPackaged ?
+  join(process.resourcesPath, "resources/icon.ico") :
+  join(__dirname, "../../resources/icon.ico");
+
+export const __logoIcon = nativeImage.createFromPath(__logoIconPath);
+
+if (__logoIcon.isEmpty()) {
+  log.error(`[Resource] Failed to load logo icon from: ${__logoIconPath}`);
+}
+export const __preloadScript = join(__dirname, "../main/preload.js");
 const __rendererDir = join(__dirname, "../../renderer");
 const appConfig = loadAppConfig();
 
-export const next = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/next.png"));
-export const pause = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/pause.png"));
-export const prev = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/prev.png"));
-export const play = nativeImage.createFromPath(path.join(__dirname, "../../resources/pic/tray/play.png"));
+const __picDir = app.isPackaged ?
+  join(process.resourcesPath, "resources/pic") :
+  join(__dirname, "../../resources/pic");
+
+export const next = nativeImage.createFromPath(join(__picDir, "tray/next.png"));
+export const pause = nativeImage.createFromPath(join(__picDir, "tray/pause.png"));
+export const prev = nativeImage.createFromPath(join(__picDir, "tray/prev.png"));
+export const play = nativeImage.createFromPath(join(__picDir, "tray/play.png"));
 
 // utils
 const configStr = JSON.stringify(appConfig, null, 2)
@@ -115,8 +127,6 @@ log.info(`
 
 export {
   log as logger,
-  __logoIcon,
-  __preloadScript,
   appConfigPath as __appConfig,
   appConfigDefaultPath as __appConfigDefaultPath,
   __backendDir,

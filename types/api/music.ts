@@ -1,3 +1,5 @@
+import { NeteaseUser } from "./user";
+
 export interface SongDetail {
   id: number;
   name: string;
@@ -12,11 +14,48 @@ export interface SongDetail {
 }
 
 
-interface NeteaseUser {
-  userId: number;
-  nickname: string;
-  avatarUrl: string;
-}
+/**
+ * 清洗歌曲详情数据
+ * @param raw 原始 API 返回的歌曲对象
+ */
+export const pruneSongDetail = (raw: any): SongDetail => {
+  // 1. 如果传入空数据，直接返回一个类型安全的空结构兜底
+  if (!raw) {
+    return {
+      id: 0,
+      name: "未知歌曲",
+      dt: 0,
+      ar: [],
+      al: { id: 0, name: "", picUrl: "" },
+      publishTime: 0,
+    };
+  }
+
+  return {
+    id: raw.id || 0,
+    name: raw.name || "未知歌曲",
+    dt: raw.dt || 0,
+
+    // 2. 确保 ar 一定是数组，且内部的对象属性绝对安全
+    ar: Array.isArray(raw.ar)
+      ? raw.ar.map((artist: any) => ({
+        id: artist?.id || 0,
+        name: artist?.name || "未知歌手",
+      }))
+      : [],
+
+    // 3. 使用可选链 (?.) 防止 raw.al 为 null 时取属性崩溃
+    al: {
+      id: raw.al?.id || 0,
+      name: raw.al?.name || "未知专辑",
+      // 兼容网易云有时叫 picUrl 有时叫 coverUrl 的历史遗留问题
+      picUrl: raw.al?.picUrl || raw.al?.coverUrl || "",
+    },
+
+    publishTime: raw.publishTime || 0,
+  };
+};
+
 
 interface NeteaseReply {
   user: NeteaseUser;
