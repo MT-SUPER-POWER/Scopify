@@ -1,4 +1,5 @@
 import request from "@/lib/web/request";
+import { useUserStore } from "@/store";
 
 export interface LoginInfo {
   isLoggedIn: boolean;
@@ -33,4 +34,5 @@ export function verifyCaptcha(phone: string, captcha: string | number, ctcode: s
 export function clearLoginStatus(): void {
   localStorage.removeItem('token');
   localStorage.removeItem('cookie');
+  useUserStore.getState().setUserId("");
 }

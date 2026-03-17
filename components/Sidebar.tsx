@@ -5,16 +5,15 @@
 import { Library, RefreshCw, ListMusic, User } from "lucide-react"
 import React, { useEffect, useReducer, useState } from "react";
 import { useUiStore } from "@/store/module/ui";
-import { cn } from "@/lib/utils";
+import { cn, IS_ELECTRON } from "@/lib/utils";
 import { LibraryItem } from "./Siderbar/LibraryItem";
 import { SiderBarMenu } from "./Siderbar/SiderbarMenu";
 import { FilterMenu } from "./Siderbar/FilterMenu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getUserPlaylist } from "@/lib/api/playlist";
+import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
 import { useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { FilterAction, FilterState } from "@/types/components/Siderbar";
-import { useIsElectron } from "@/lib/hooks/useElectronDetect";
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from "sonner";
 import { Button } from "./ui/button";
@@ -83,9 +82,8 @@ function SidebarImpl() {
   const [error, setError] = useState<string | null>(null);
   const isUserLogin = useLoginStatus();
   const playlists = useUserStore(s => s.playlist);
-  const isElectron = useIsElectron();
+  const isElectron = IS_ELECTRON;
   const smartRouter = useSmartRouter();
-
 
   // DEBUG: 输出登录状态，帮助排查登录状态异常问题
   // console.log('[Sidebar] 用户登录状态:', isUserLogin);
@@ -97,37 +95,34 @@ function SidebarImpl() {
     const uid = useUserStore.getState().user?.userId;
 
     // DEBUG: 当前登录用的 ID
-    console.log('[Sidebar] 当前用户 ID:', uid);
+    // console.log('[Sidebar] 当前用户 ID:', uid);
 
     setIsLoading(true);
     setError(null);
-    try {
-      const userPlaylistRes = await getUserPlaylist(uid!);
-      if (userPlaylistRes.data.code === 200) {
-        useUserStore.setState({ playlist: userPlaylistRes.data.playlist });
-      }
-    } catch (e) {
-      console.error("获取歌单失败", e);
+
+    Promise.all([
+      getUserPlaylist(uid!),
+      getUserLikeLists(uid!)
+    ]).then(([userPlaylistRes, likeListRes]) => {
+      useUserStore.getState().setPlayList(userPlaylistRes.data.playlist);
+      useUserStore.getState().setLikeListIDs(likeListRes.data.ids)
+    }).catch((e) => {
+      console.error("获取歌单或喜欢列表失败", e);
       setError(e instanceof Error ? e.message : "获取歌单失败");
       toast.error("获取歌单失败，请稍后再试");
-    } finally {
+    }).finally(() => {
       setIsLoading(false);
-    }
+    });
   };
 
   const handleLoginClick = () => {
-    if (typeof window !== "undefined" && isElectron) {
-      window.electronAPI?.openLoginWindow();
-    } else {
-      smartRouter.replace('/login');
-    }
+    if (typeof window !== "undefined" && isElectron) window.electronAPI?.openLoginWindow();
+    else smartRouter.replace('/login');
   }
 
   // 如果用户登录的时候，会去拉一下歌曲
   useEffect(() => {
-    if (isUserLogin) {
-      fetchPlaylist();
-    }
+    if (isUserLogin) fetchPlaylist();
   }, [isUserLogin]);
 
   return (
@@ -191,7 +186,7 @@ function SidebarImpl() {
       )}>
         <div className={cn("space-y-1", isVeryNarrow ? "pb-2" : "py-4")}>
 
-          {/* ── 1. 加载中：骨架屏 ── */}
+          {/* ── 加载中：骨架屏 ── */}
           {isLoading ? (
             isVeryNarrow ? (
               <div className="flex flex-col gap-3 items-center mt-4">
@@ -204,8 +199,6 @@ function SidebarImpl() {
                 {[1, 2, 3, 4, 5].map(i => <SkeletonItem key={i} />)}
               </div>
             )
-
-            /* ── 2. 网络请求失败 ── */
           ) : error ? (
             isVeryNarrow ? (
               <div className="flex flex-col items-center gap-2 mt-4 text-zinc-500">
@@ -221,8 +214,6 @@ function SidebarImpl() {
                 />
               </div>
             )
-
-            /* ── 3. 未登录 ── */
           ) : !isUserLogin ? (
             isVeryNarrow ? (
               <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
@@ -243,7 +234,7 @@ function SidebarImpl() {
                 />
               </div>
             )
-            /* ── 3. 已登录但歌单为空 ── */
+            /* ── 已登录但歌单为空 ── */
           ) : playlists.length === 0 ? (
             isVeryNarrow ? (
               <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
@@ -266,7 +257,7 @@ function SidebarImpl() {
               </div>
             )
           ) : (
-            /* ── 4. 已登录且有数据：正常渲染 ── */
+            /* ── 已登录且有数据：正常渲染 ── */
             <>
               {/* 渲染创建的歌单 (subscribed: false) */}
               {(filterState === 0 || filterState === 1) &&

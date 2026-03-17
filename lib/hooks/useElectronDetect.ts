@@ -1,20 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-/**
- * 检测当前是否运行在 Electron 环境
- * 使用 useState 确保在客户端挂载后能正确反映 window.electronAPI 的状态，避免 水合(hydration) 导致的不一致。
- */
-export const useIsElectron = (): boolean => {
-  const [isElectron, setIsElectron] = useState(false);
-
-  useEffect(() => {
-    setIsElectron(window.electronAPI !== undefined);
-  }, []);
-
-  return isElectron;
-};
+import { useEffect } from "react";
+import { IS_ELECTRON } from '../utils';
 
 /**
  * 获取 Electron API（如果在 Electron 环境中）
@@ -32,7 +19,7 @@ export const useElectronAPI = () => {
  * @param callback 全屏状态改变时的回调函数 (isFullScreen: boolean) => void
  */
 export const useFullScreenListener = (callback: (isFullScreen: boolean) => void) => {
-  const isElectron = useIsElectron();
+  const isElectron = IS_ELECTRON;
 
   useEffect(() => {
     if (isElectron) {

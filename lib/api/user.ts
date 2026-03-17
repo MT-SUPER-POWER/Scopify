@@ -67,10 +67,9 @@ export function getUserFollowers(uid: number, limit: number = 30, offset: number
 }
 
 // 获取用户账号信息
-export const getUserAccount = () => {
-  return request<any>({
-    url: '/user/account',
-    method: 'get'
+export const getUserAccount = (cookie?: string) => {
+  return request.get("/user/account", {
+    params: { cookie: cookie }
   });
 };
 

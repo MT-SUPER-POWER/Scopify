@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { isElectronEnv } from "@/lib/utils";
+import { IS_ELECTRON } from "@/lib/utils";
 import {
   SaveChangesButton,
   SaveConfirmModal,
@@ -19,7 +19,7 @@ import { useSettingsState } from "./useSettingsState";
 
 const SettingsPage = () => {
   const router = useSmartRouter();
-  const isElectron = isElectronEnv();
+  const isElectron = IS_ELECTRON;
   const {
     config,
     hasChanges,

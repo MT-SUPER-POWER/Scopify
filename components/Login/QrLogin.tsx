@@ -3,14 +3,15 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { useState, useEffect } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, UserRoundSearch } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { checkQR, createQR, getQRKey } from '@/lib/api/login';
 import { useUserStore } from '@/store';
 import { getUserAccount } from '@/lib/api/user';
-import { useIsElectron } from '@/lib/hooks/useElectronDetect';
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from 'sonner';
+import { IS_ELECTRON } from '@/lib/utils';
+// import { saveMusicCookie } from '@/app/actions/cookie';
 
 export type QrStatus = 'loading' | 'waiting' | 'scanned' | 'expired' | 'success';
 
@@ -19,7 +20,6 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export function QrLogin() {
   const smartRouter = useSmartRouter();
-  const isElectron = useIsElectron();
 
   const [qrImg, setQrImg] = useState('');
   const [qrStatus, setQrStatus] = useState<QrStatus>('loading');
@@ -27,6 +27,8 @@ export function QrLogin() {
 
   // 强制刷新触发器，用于用户手动点击刷新
   const [refreshKey, setRefreshKey] = useState(0);
+
+  console.log("Is Electron Environment:", IS_ELECTRON);
 
   useEffect(() => {
     // 标志位：组件是否存活 / 当前流程是否有效
@@ -39,12 +41,12 @@ export function QrLogin() {
         setQrStatusText('正在加载二维码...');
 
         // 1. 获取 Key
-        const keyRes = await getQRKey();
+        const keyRes = await getQRKey({ platform: "web" });
         const unikey = keyRes.data?.data?.unikey;
         if (!unikey || !isActive) return;
 
         // 2. 生成二维码
-        const qrRes = await createQR(unikey);
+        const qrRes = await createQR(unikey, { platform: "web" });
         if (!isActive) return;
 
         setQrImg(qrRes.data?.data?.qrimg);
@@ -72,16 +74,22 @@ export function QrLogin() {
             setQrStatus('success');
             setQrStatusText('授权登录成功！');
 
-            // 处理登录成功逻辑
+            // NOTE: 登录时 cookie 存储的位置
             const rawCookie = statusRes.data?.cookie || '';
-            // NOTE: 优化 cookie 存储：提取 MUSIC_U 片段，减小体积并符合网易云 API 规范
-            const musicUMatch = rawCookie.match(/MUSIC_U=[^;]+/);
-            const cookie = musicUMatch ? musicUMatch[0] : rawCookie;
 
-            useUserStore.getState().setCookie(cookie);
-            localStorage.setItem('cookie', cookie);
+            // 1. 调用主进程注入 Cookie (Electron 环境)
+            if (IS_ELECTRON && window.electronAPI?.setCookie) {
+              await window.electronAPI.setCookie(rawCookie);
+            } else if (typeof document !== 'undefined') {
+              // Web 环境：写入 document.cookie
+              const musicUMatch = rawCookie.match(/MUSIC_U=([^;]+)/);
+              const musicUValue = musicUMatch ? musicUMatch[1] : '';
+              document.cookie = `MUSIC_U=${musicUValue}; path=/; max-age=${60 * 60 * 24 * 30}`;
+            }
 
+            // 强制带上 cookie 发起用户信息请求
             const loginRes = await getUserAccount();
+
             // DEBUG: QR 登录接口返回的数据，帮助排查登录状态异常问题
             console.log('[二维码登录] getUserAccount 返回:', loginRes.data);
 
@@ -92,25 +100,27 @@ export function QrLogin() {
               break;
             }
 
-            useUserStore.getState().setUser(loginRes.data.profile);
+            // NOTE: 接口返回的 profile 数据不是很稳定，为了解决这个问题，我们走 id 再请求后续的数据
+            useUserStore.getState().setUserId(loginRes.data?.account?.id || '');    // 兜底的
+            useUserStore.getState().setUser(loginRes.data?.profile || {});
+
             useUserStore.getState().setLoginType('qr');
             toast.success("登录成功");
 
-            if (isElectron) {
-              // DEBUG: Electron 环境确认
-              console.log('[二维码登录] 运行在 Electron 环境，正在尝试关闭登录窗口并刷新主窗口');
-              window.electronAPI?.closeLoginWindow();
-              smartRouter.replace('/');
-              // window.electronAPI?.maniWindowReload();
+            // 通知主线程登录成功
+            if (IS_ELECTRON) {
+              await delay(800);
+              window.electronAPI?.loginSuccess?.();
             } else {
               smartRouter.replace('/');
             }
-            break; // 登录成功，跳出循环
+            break;
           }
 
           // 核心：当前请求处理完后，死等 3 秒再进入下一次循环
           await delay(3000);
         }
+
       } catch (error) {
         if (isActive) {
           console.error('二维码流程异常', error);
@@ -122,9 +132,9 @@ export function QrLogin() {
 
     startLoginFlow();
 
-    // 清理函数：只要重新渲染或组件销毁，立刻把 isActive 置为 false
-    // 这会截断任何正在进行中的 while 循环和异步请求后的赋值
     return () => {
+      // 清理函数：只要重新渲染或组件销毁，立刻把 isActive 置为 false
+      // 这会截断任何正在进行中的 while 循环和异步请求后的赋值
       isActive = false;
     };
   }, [refreshKey]); // 只有 refreshKey 改变时才重新执行整个流程

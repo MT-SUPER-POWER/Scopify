@@ -15,7 +15,6 @@ import React from "react";
 import PlaylistLoading from "./loading";
 import { motion, AnimatePresence } from "framer-motion";
 
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // 主色调缓存，避免重复计算
@@ -95,17 +94,10 @@ export default function PlaylistPage() {
     if (!playlistId) return;
 
     setIsLoading(true);
-    const uid = useUserStore.getState().user?.userId;
 
-    Promise.all([
-      getPlaylistAllTracks(playlistId),
-      getUserLikeLists(uid!),
-    ])
-      .then(([tracks, likeLists]) => {
+    getPlaylistAllTracks(playlistId)
+      .then((tracks) => {
         useUserStore.getState().setAlbumList(tracks.data.songs);
-        // DEBUG: 获取喜欢歌单的位置
-        // console.log("get like list ids: ", likeLists.data.ids);
-        useUserStore.getState().setLikeListIDs(likeLists.data.ids);
       })
       .catch((error) => {
         console.error("请求失败:", error);
@@ -158,7 +150,10 @@ export default function PlaylistPage() {
           </h1>
           <div className="flex flex-wrap items-center gap-1.5 text-sm text-white/90 drop-shadow-md">
             <div className="flex items-center gap-1.5 group cursor-pointer mr-1">
-              <img src={PLAYLIST_INFO.creatorAvatar} alt={PLAYLIST_INFO.creator} className="w-6 h-6 rounded-full object-cover" />
+              {PLAYLIST_INFO.creatorAvatar !== ""
+                ? (<img src={PLAYLIST_INFO.creatorAvatar} alt={PLAYLIST_INFO.creator} className="w-6 h-6 rounded-full object-cover" />)
+                : (<div className="w-6 h-6 rounded-full bg-zinc-500 flex items-center justify-center text-xs text-white"> M </div>)
+              }
               <span className="font-bold group-hover:underline">{PLAYLIST_INFO.creator}</span>
             </div>
             <span className="opacity-60 hidden sm:inline">•</span>

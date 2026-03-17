@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { SmoothSlider } from "./SmoothSlider";
 
@@ -22,9 +22,21 @@ export const VolumeControl = ({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // 🚨 新增：用于存储防抖定时器的引用
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     setVolume(initialVolume);
   }, [initialVolume]);
+
+  // 🚨 新增：组件卸载时清理定时器，防止内存泄漏
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
@@ -38,17 +50,33 @@ export const VolumeControl = ({
     }
   };
 
-  const handleVolumeChange = (newVolume: number) => {
+  const handleVolumeChange = useCallback((newVolume: number) => {
+    // 1. 本地 UI 状态必须【同步更新】，保证滑块跟随手指，丝滑不卡顿
     setVolume(newVolume);
     if (newVolume > 0 && isMuted) {
       setMuted(false);
     }
-    onChange?.(newVolume);
-  };
+
+    // 2. 外部的 onChange 回调进行【防抖处理】，防止频繁触发 Store 或 API 写入
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      onChange?.(newVolume);
+    }, 300); // 延迟 300 毫秒，拖拽停止后才执行
+  }, [isMuted, onChange]);
 
   const handleMuteToggle = () => {
-    setMuted(!isMuted);
-    onChange?.(isMuted ? volume : 0);
+    const nextMuted = !isMuted;
+    setMuted(nextMuted);
+
+    // 静音属于点击动作，通常需要立即响应。
+    // 这里清空之前的滑动防抖，防止冲突，直接触发 onChange
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    onChange?.(nextMuted ? 0 : volume);
   };
 
   // 点击外部关闭 (仅针对弹窗模式生效)

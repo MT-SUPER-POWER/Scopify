@@ -1,11 +1,12 @@
-import { ipcMain, app, BrowserWindow } from "electron";
+import { ipcMain, app, BrowserWindow, session } from "electron";
 import { loadAppConfig, saveAppConfig } from "../config.js";
 import { ensureBackendUrl } from "./backend.js";
-import { logger } from "../constants.js";
+import { appConfig, logger } from "../constants.js";
 import { Tray } from "electron/main";
 import { Minimize } from 'lucide-react';
 import { trayWindow } from "./tray.js";
 import { updateThumbarButtons } from "./thumbarButtons.js";
+import { loginWindow } from "./login.js";
 
 export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
 
@@ -43,6 +44,13 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
 
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ OTHER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ipcMain.on("login-success", () => {
+    logger.info("[IPC] 登录成功，准备关闭登录窗口并打开主窗口");
+    loginWindow?.close();
+    mainWindow?.webContents.send("show-login-toast");
+    mainWindow?.reload();
+  });
 
 
   // IPC 事件监听 - 更新标题栏颜色
@@ -99,4 +107,32 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     mainWindow?.hide();
     trayWindow?.hide();
   });
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COOKIE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ipcMain.handle("set-music-cookie", async (_event, cookieStr: string) => {
+    try {
+      const musicUMatch = cookieStr.match(/MUSIC_U=([^;]+)/);
+      const value = musicUMatch ? musicUMatch[1] : cookieStr;
+
+      // 修正：Electron 设置域名为 IP 的 Cookie 时，url 必须包含协议前缀，且不能带端口，更不能有 $ 符号
+      const url = `http://${appConfig.backend.host}`;
+
+      // 存储到默认 session，供渲染进程后续请求使用
+      await session.defaultSession.cookies.set({
+        url: url,
+        name: 'MUSIC_U',
+        value: value,
+        path: '/',
+        sameSite: 'no_restriction', // ← 对应 SameSite=None
+        expirationDate: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 60) // 60天
+      });
+      logger.info('[IPC] set-music-cookie success');
+      return true;
+    } catch (err) {
+      logger.error('[IPC] set-music-cookie failed', err);
+      throw err;
+    }
+  });
+
 }

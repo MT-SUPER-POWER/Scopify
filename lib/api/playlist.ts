@@ -35,7 +35,7 @@ export function getRecentSongs(limit: number = 10) {
 
 
 /**
- * 获取所有用户信息的歌曲的 ID
+ * 获取用户喜欢的歌曲列表
  */
 export function getUserLikeLists(uid: number | string) {
   return request.get('/likelist', { params: { uid } });

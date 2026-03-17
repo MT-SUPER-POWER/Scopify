@@ -10,6 +10,7 @@ import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import os from "node:os";
 import Link from "next/link";
 import { searchHot } from "@/lib/api/search";
+import { toast } from "sonner";
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -64,10 +65,11 @@ const Header = ({
           currentIndex = (currentIndex + 1) % hotList.length; // 利用取模实现循环
           setSearchKeyword(hotList[currentIndex].first);
         }, 10000);
-
       } catch (error) {
+        setSearchKeyword("Network Error");
         if (isActive) {
           console.error("获取搜索建议失败", error);
+          toast.error("获取搜索建议失败，请检查网络配置");
         }
       }
     };

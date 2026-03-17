@@ -18,7 +18,7 @@ import { usePlayerStore, useUserStore } from '@/store';
 import Link from 'next/link';
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { useLoginStatus } from '@/lib/hooks/useLoginStatus';
-import { isElectronEnv } from "@/lib/utils";
+import { IS_ELECTRON } from "@/lib/utils";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -28,7 +28,7 @@ const iconList: { label: string; icon: React.ReactNode }[] = [
 ];
 
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
-  const isElectron = isElectronEnv();
+  const isElectron = IS_ELECTRON;
   const smartRouter = useSmartRouter();
 
   const handleLoginClick = () => {
@@ -42,11 +42,12 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const handleLogoutClick = () => {
     useUserStore.getState().handleLogout();
     usePlayerStore.getState().cleanCache();
+    smartRouter.replace('/');
   }
 
   const ProfileCallback = (label: string) => {
     switch (label) {
-      case "Buy Me A Coffee":
+      case "About Me":
         smartRouter.push('/me');
         break;
       default:

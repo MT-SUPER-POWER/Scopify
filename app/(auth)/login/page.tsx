@@ -9,9 +9,8 @@ import { loginByCellphone } from '@/lib/api/login';
 import { sendCaptcha } from '@/lib/web/auth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { cn } from '@/lib/utils';
+import { cn, IS_ELECTRON } from '@/lib/utils';
 import Link from 'next/link';
-import { useIsElectron } from '@/lib/hooks/useElectronDetect';
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from 'sonner';
 import { useLoginStatus } from '@/lib/hooks/useLoginStatus';
@@ -49,7 +48,7 @@ function LoginPageContent() {
   const [isLoading, setIsLoading] = useState(false);
 
   const isLoggedIn = useLoginStatus();
-  const isElectron = useIsElectron();
+  const isElectron = IS_ELECTRON;
 
   // 1. 处理密码或验证码提交
   const handleSubmit = async (phone: string, extra: string) => {
@@ -61,9 +60,7 @@ function LoginPageContent() {
       } else if (mode === 'sms') {
         res = await loginByCellphone({ phone, captcha: extra });
       }
-
       console.log('登录响应', res);
-      // 这里可以补充登录成功后的逻辑，设置 userStore 等
     } catch (error) {
       console.error(error);
       toast.error("登录失败，请检查账号密码");

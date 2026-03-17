@@ -4,6 +4,7 @@ import { ElectronAPI } from "@/types/electron";
 // NOTE: 写好了接口，记得在 types/electron.d.ts 中声明类型
 const electronAPI: ElectronAPI = {
   on: (channel, callback) => { ipcRenderer.on(channel, callback); },
+  off: (channel) => { ipcRenderer.removeAllListeners(channel); },
   send: (channel, args) => { ipcRenderer.send(channel, args); },
   enterFullScreen: () => ipcRenderer.send("window-enter-full-screen"),
   exitFullScreen: () => ipcRenderer.send("window-exit-full-screen"),
@@ -18,14 +19,13 @@ const electronAPI: ElectronAPI = {
   sendAppCloseAction: (action: "minimize" | "exit") => { ipcRenderer.send("app-close-action", action); },
   getAppConfig: () => ipcRenderer.invoke("get-app-config"),
   updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
+  setCookie: (cookieStr: string) => ipcRenderer.invoke("set-music-cookie", cookieStr),
   navigateTo: (path: string) => ipcRenderer.send("navigate-main-window", path),
   // window.addEventListener("message", callback)
   onNavigate: (callback: (path: string) => void) => {
     ipcRenderer.on("navigate-to", (_event, path) => callback(path));
   },
-  saveConfigRelunch: () => {
-    // 暂未实现
-  },
+  loginSuccess: () => ipcRenderer.send("login-success"),
 };
 
 try {

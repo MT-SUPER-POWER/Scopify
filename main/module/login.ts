@@ -13,7 +13,7 @@ fs.access(__preloadScript).catch(() => {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-let loginWindow: BrowserWindow | null = null; // 登录窗口实例
+export let loginWindow: BrowserWindow | null = null; // 登录窗口实例
 
 export const createLoginWindow = async (mainWin: BrowserWindow) => {
 
