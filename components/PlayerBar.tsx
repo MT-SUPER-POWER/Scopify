@@ -284,7 +284,7 @@ export const PlayerBar = () => {
   return (
     <div className={cn(
       "h-17 lg:h-20 bg-black w-full flex px-2 items-center justify-between z-20",
-      "transition-all ease-linear duration-300"
+      "transition-all ease-linear duration-300",
     )}>
       {/* 播放 */}
       <audio

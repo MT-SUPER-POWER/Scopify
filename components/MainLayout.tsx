@@ -100,14 +100,17 @@ function MainLayoutInner({
   return (
     <div className={cn(
       "flex-1 flex-col bg-black text-white font-sans",
-      "overflow-hidden p-2 gap-2"
+      "overflow-hidden p-2 gap-2",
+      "flex h-screen"
     )}>
+
+      {/* 模态注册 */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       {/* <LyricsModal /> */}
       <AppCloseDialog />
 
       {/* 左右结构 */}
-      <div className="flex-1 min-h-0 relative w-full">
+      <main className="flex-1 min-h-0 relative w-full">
         <ResizablePanelGroup
           orientation="horizontal"
           defaultLayout={defaultLayout}
@@ -160,9 +163,11 @@ function MainLayoutInner({
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
-      </div>
+      </main>
 
-      <PlayerBar />
+      <footer>
+        <PlayerBar />
+      </footer>
     </div>
   );
 }
