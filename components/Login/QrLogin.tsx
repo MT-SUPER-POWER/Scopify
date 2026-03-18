@@ -28,7 +28,7 @@ export function QrLogin() {
   // 强制刷新触发器，用于用户手动点击刷新
   const [refreshKey, setRefreshKey] = useState(0);
 
-  console.log("Is Electron Environment:", IS_ELECTRON);
+  // console.log("Is Electron Environment:", IS_ELECTRON);
 
   useEffect(() => {
     // 标志位：组件是否存活 / 当前流程是否有效
@@ -76,6 +76,7 @@ export function QrLogin() {
 
             // NOTE: 登录时 cookie 存储的位置
             const rawCookie = statusRes.data?.cookie || '';
+            localStorage.setItem('music_cookie', rawCookie); // 先存一份到 localStorage，兜底用
 
             // 1. 调用主进程注入 Cookie (Electron 环境)
             if (IS_ELECTRON && window.electronAPI?.setCookie) {
@@ -108,11 +109,8 @@ export function QrLogin() {
             toast.success("登录成功");
 
             // 通知主线程登录成功
-            if (IS_ELECTRON) {
-              window.electronAPI?.loginSuccess?.();
-            } else {
-              smartRouter.replace('/');
-            }
+            if (IS_ELECTRON) window.electronAPI?.loginSuccess?.();
+            else smartRouter.replace('/');
             break;
           }
 

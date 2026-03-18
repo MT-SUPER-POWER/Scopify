@@ -32,7 +32,6 @@ export function verifyCaptcha(phone: string, captcha: string | number, ctcode: s
  * 清除登录状态
  */
 export function clearLoginStatus(): void {
-  localStorage.removeItem('token');
-  localStorage.removeItem('cookie');
+  localStorage.removeItem('music_cookie');
   useUserStore.getState().setUserId("");
 }

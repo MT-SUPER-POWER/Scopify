@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { NeteaseLyric, SongDetail } from "@/types/api/music";
+import { NeteaseLyric, pruneNeteaseLyric, SongDetail } from "@/types/api/music";
 import { getLyric, greySongUrlMatch } from "@/lib/api/music";
 import { toast } from "sonner";
 
@@ -34,10 +34,10 @@ type PlayerStore = {
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
   setRepeatMode: (mode: RepeatMode) => void;
-  toggleShuffle: () => void;
   setQueue: (songs: SongDetail[], startIndex?: number) => void;
   setLyric: (lyric: NeteaseLyric | null) => void;
 
+  toggleShuffle: () => void;
   fetchCurrentLyric: () => Promise<void>;
   playTrack: (song: SongDetail) => Promise<void>;
   playQueueIndex: (index: number) => Promise<void>;
@@ -64,9 +64,10 @@ export const usePlayerStore = create<PlayerStore>()(
       setVolume: (v) => set({ volume: v }),
       setIsPlaying: (v) => set({ isPlaying: v }),
       setRepeatMode: (mode) => set({ repeatMode: mode }),
-      toggleShuffle: () => set((s) => ({ isShuffle: !s.isShuffle })),
       setQueue: (songs, startIndex = 0) => set({ queue: songs, queueIndex: startIndex }),
-      setLyric: (lyric) => set({ lyric }),
+      setLyric: (lyric) => set({ lyric: pruneNeteaseLyric(lyric) }),
+
+      toggleShuffle: () => set((s) => ({ isShuffle: !s.isShuffle })),
 
       fetchCurrentLyric: async () => {
         const { currentSongDetail, lyric } = get();
