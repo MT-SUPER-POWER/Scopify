@@ -1,7 +1,7 @@
 'use client';
 
-import { MockRouterContent } from "@/components/MockRouterContent";
+import HomePageComponent from "@/components/HomePage";
 
-export default function HomePage() {
-  return <MockRouterContent />;
+export default function HomePageLayout() {
+  return <HomePageComponent />;
 }

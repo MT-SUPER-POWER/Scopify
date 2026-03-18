@@ -37,3 +37,25 @@ export const prunePlaylist = (raw: any): NeteasePlaylist => {
     },
   };
 };
+
+export interface RecommendPlaylist {
+  id: number;
+  name: string;
+  picUrl: string;
+  playCount: number;
+  trackCount: number;
+  copywriter: string;   //  推荐理由文案
+}
+
+export const pruneRecommendPlaylist = (raw: any): RecommendPlaylist => {
+  if (!raw) return {} as RecommendPlaylist;
+
+  return {
+    id: raw.id,
+    name: raw.name || "",
+    picUrl: raw.picUrl || "",
+    playCount: raw.playCount || 0,
+    trackCount: raw.trackCount || 0,
+    copywriter: raw.copywriter || ""
+  };
+};

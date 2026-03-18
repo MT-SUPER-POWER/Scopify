@@ -9,12 +9,12 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import React, { useState } from "react";
+import React from "react";
 import { LibItemMenuProps } from "@/types/components/Siderbar";
 import { toast } from "sonner";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { usePlayerStore, useUserStore } from "@/store";
-import { delPlaylist, getPlaylistAllTracks, getUserLikeLists, subscribePlaylist, updatePlaylist, updatePlaylistCover } from "@/lib/api/playlist";
+import { delPlaylist, getPlaylistAllTracks, getUserLikeLists, updatePlaylist, updatePlaylistCover } from "@/lib/api/playlist";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { UpdatePlaylistDialog } from "../Playlist/PlaylistForm";
@@ -199,7 +199,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
               try {
                 const uid = useUserStore.getState().user?.userId;
                 const [tracksRes, likeListsRes] = await Promise.all([
-                  getPlaylistAllTracks(playlistID),
+                  getPlaylistAllTracks({ id: playlistID }),
                   getUserLikeLists(uid!),
                 ]);
 

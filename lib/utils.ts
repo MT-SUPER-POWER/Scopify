@@ -103,3 +103,10 @@ export const isWeb = (): boolean => !isElectron();
 // 也可以做成常量，避免重复调用
 export const IS_ELECTRON = isElectron();
 export const IS_WEB = !IS_ELECTRON;
+
+
+export const formatPlayCount = (count: number) => {
+  if (count > 100000) return `${Math.floor(count / 10000)}万`;
+  if (count > 10000) return `${(count / 10000).toFixed(1)}万`;
+  return count.toString();
+};

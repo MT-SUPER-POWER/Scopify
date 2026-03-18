@@ -17,10 +17,11 @@ export function getUserPlaylist(uid: number, limit: number = 30, offset: number 
  * @param id 歌单 id
  * @param limit 限制获取歌曲的数量，默认值为当前歌单的歌曲数量
  * @param offset 偏移量，默认 0
+ * @param cookie 请求推荐歌单数据的时候，目前只有这个完整才能拿到数据
  * @returns 歌曲列表数据
  */
-export function getPlaylistAllTracks(id: number | string, limit?: number, offset: number = 0) {
-  return request.get('/playlist/track/all', { params: { id, limit, offset } });
+export function getPlaylistAllTracks({ id, limit, offset, cookie }: { id: number | string, limit?: number, offset?: number, cookie?: string }) {
+  return request.get('/playlist/track/all', { params: { id, limit, offset, cookie: cookie } });
 }
 
 
@@ -105,4 +106,18 @@ export function updatePlaylistCover(id: number | string, imgFile: File, imgSize:
       'Content-Type': 'multipart/form-data'
     }
   });
+}
+
+export function getPersonalizePlaylists(limit?: number) {
+  if (limit === undefined || limit > 30) limit = 15;
+  return request.get('/personalized', { params: { limit } });
+}
+
+export function getPlaylsitDetail({id, cookie}: { id: number | string, cookie?: string }) {
+  return request.get('/playlist/detail', { params: { id, cookie: cookie } });
+}
+
+export function getRecommendedPlaylists() {
+  const cookie = localStorage.getItem('music_cookie') || '';
+  return request.get('/recommend/resource', { params: { cookie } });
 }

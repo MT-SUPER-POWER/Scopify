@@ -20,3 +20,14 @@ export async function updatePlaylistTrack(op: "add" | "del", pid: number | strin
     params: { op: op, pid: pid, tracks: tracks },
   });
 }
+
+/**
+ * 获取推荐歌曲
+ */
+export function getRecommendedSongs() {
+  return request.get('/recommend/songs', {
+    params: {
+      cookie: localStorage.getItem("music_cookie") || ""
+    }
+  })
+}

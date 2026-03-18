@@ -19,6 +19,8 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 
 
+import { CollapsibleLibraryGroup } from "./Siderbar/CollapsibleLibraryGroup";
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
@@ -124,6 +126,20 @@ function SidebarImpl() {
   useEffect(() => {
     if (isUserLogin) fetchPlaylist();
   }, [isUserLogin]);
+
+  const createdPlaylists = playlists.filter(item => item && !item.subscribed);
+  const subscribedPlaylists = playlists.filter(item => item && item.subscribed);
+
+  const renderPlaylistItems = (items: typeof playlists) => items.map((item) => (
+    <LibraryItem
+      key={item.id}
+      id={item.id}
+      title={item.name}
+      subtitle={!item.subscribed ? "Playlist • You" : `Playlist • ${item.creator?.nickname || '未知用户'}`}
+      coverImg={`${item.coverImgUrl}?param=100y100`}
+      isCollapsed={isVeryNarrow}
+    />
+  ));
 
   return (
     <div
@@ -261,33 +277,23 @@ function SidebarImpl() {
             <>
               {/* 渲染创建的歌单 (subscribed: false) */}
               {(filterState === 0 || filterState === 1) &&
-                playlists
-                  .filter(item => item && !item.subscribed)
-                  .map((item) => (
-                    <LibraryItem
-                      key={item.id}
-                      id={item.id}
-                      title={item.name}
-                      subtitle="Playlist • You"
-                      coverImg={`${item.coverImgUrl}?param=100y100`}
-                      isCollapsed={isVeryNarrow}
-                    />
-                  ))}
+                (isVeryNarrow ? (
+                  renderPlaylistItems(createdPlaylists)
+                ) : (
+                  <CollapsibleLibraryGroup title="Created Playlists" defaultOpen={true}>
+                    {renderPlaylistItems(createdPlaylists)}
+                  </CollapsibleLibraryGroup>
+                ))}
 
               {/* 渲染收藏的歌单 (subscribed: true) */}
               {(filterState === 0 || filterState === 2) &&
-                playlists
-                  .filter(item => item && item.subscribed)
-                  .map((item) => (
-                    <LibraryItem
-                      key={item.id}
-                      id={item.id}
-                      title={item.name}
-                      subtitle={`Playlist • ${item.creator?.nickname || '未知用户'}`}
-                      coverImg={`${item.coverImgUrl}?param=100y100`}
-                      isCollapsed={isVeryNarrow}
-                    />
-                  ))}
+                (isVeryNarrow ? (
+                  renderPlaylistItems(subscribedPlaylists)
+                ) : (
+                  <CollapsibleLibraryGroup title="Subscribed Playlists" defaultOpen={true}>
+                    {renderPlaylistItems(subscribedPlaylists)}
+                  </CollapsibleLibraryGroup>
+                ))}
             </>
           )}
 
