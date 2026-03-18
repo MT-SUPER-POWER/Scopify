@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { NeteaseUserAlbum } from '../types/api/release';
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { getUserAlbumSublist } from "@/lib/api/release";
+import { getUserDetail, getUserAccount } from "@/lib/api/user";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -25,13 +26,14 @@ type TimeTheme = {
   gradient: string;
 };
 
+// 色卡
 const TIME_THEME_MAP: TimeTheme[] = [
   { start: 0, end: 5, greeting: "Good Night", gradient: "from-indigo-950/90 via-[#121212]/80 to-[#121212] h-80" },
   { start: 5, end: 7, greeting: "Good Morning", gradient: "from-rose-300/45 via-orange-200/30 to-[#121212] h-30" },
   { start: 7, end: 10, greeting: "Good Morning", gradient: "from-sky-300/60 via-[#121212]/80 to-[#121212] h-80" },
   { start: 10, end: 14, greeting: "Good Afternoon", gradient: "from-sky-500/65 via-[#121212]/80 to-[#121212] h-80" },
   { start: 14, end: 17, greeting: "Good Afternoon", gradient: "from-cyan-400/60 via-[#121212]/80 to-[#121212] h-80" },
-  { start: 17, end: 19, greeting: "Good Evening", gradient: "from-orange-400/60 via-purple-500/40 to-[#121212] h-80" },
+  { start: 17, end: 19, greeting: "Good Evening", gradient: "from-orange-400/45 via-purple-500/30 to-[#121212] h-40" },
   { start: 19, end: 22, greeting: "Good Evening", gradient: "from-violet-900/80 via-[#121212]/85 to-[#121212] h-80" },
   { start: 22, end: 24, greeting: "Good Night", gradient: "from-slate-900/90 via-[#121212]/85 to-[#121212] h-80" },
 ];
@@ -143,7 +145,9 @@ const HomePageComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const smartRouter = useSmartRouter();
   const isLogin = useLoginStatus();
-  const userName = useUserStore(s => s.user?.nickname);
+  const user = useUserStore(s => s.user);
+  const userName = user?.nickname;
+  const userId = user?.userId;
   const [collectedAlbum, setCollectedAlbum] = useState([] as NeteaseUserAlbum[]);
   const [dateInfo, setDateInfo] = useState({
     dayOfWeek: '星期三', // 默认占位符
@@ -161,12 +165,31 @@ const HomePageComponent = () => {
 
     const fetchHomeData = async () => {
       setIsLoading(true);
-      Promise.all([
+
+      // 如果登录了但 store 里没用户信息，先同步拉取一次账号信息
+      if (isLogin && (!user || !user.nickname || !userId)) {
+        try {
+          const cookie = localStorage.getItem('music_cookie') || '';
+          const accountRes = await getUserAccount(cookie);
+          if (accountRes.data?.profile) {
+            useUserStore.getState().setUser(accountRes.data.profile);
+            useUserStore.getState().setUserId(accountRes.data.account?.id || "");
+          }
+        } catch (err) {
+          console.error("同步用户信息失败:", err);
+        }
+      }
+
+      const requests: any[] = [
         getPersonalizePlaylists(),
         getRecommendedPlaylists(),
         getHotArtists(),
-        getUserAlbumSublist()
-      ]).then(([personalRes, recommendRes, artistsRes, albumsRes]) => {
+      ];
+
+      if (isLogin) requests.push(getUserAlbumSublist());
+
+      Promise.all(requests).then((results) => {
+        const [personalRes, recommendRes, artistsRes, albumsRes] = results;
 
         const shuffled = [...recommendRes.data.recommend]
           .map((item, index) => ({ item, index }))
@@ -177,9 +200,8 @@ const HomePageComponent = () => {
 
         setPlaylists(Array.isArray(personalRes.data.result) ? personalRes.data.result : []);
         setBannerPlaylist(Array.isArray(recommendRes.data.recommend) ? shuffled : []);
-        // console.log("UserAlbumData: ", albumsRes.data);
-        setCollectedAlbum(Array.isArray(albumsRes.data.data) ? albumsRes.data.data : []);
         setSuggestedArtists(Array.isArray(artistsRes.data.artists) ? artistsRes.data.artists : []);
+        setCollectedAlbum(Array.isArray(albumsRes?.data.data) ? albumsRes.data.data : []);
 
       }).catch((error) => {
         console.error("获取首页数据失败:", error);
@@ -187,8 +209,9 @@ const HomePageComponent = () => {
         setIsLoading(false);
       });
     }
+
     fetchHomeData();
-  }, []);
+  }, [isLogin]); // 依赖项加上 isLogin
 
   return (
     <div className="relative pb-24 font-sans">
@@ -366,8 +389,7 @@ const HomePageComponent = () => {
         </section>
 
         {/* 新增区块 2: 最新发行 (常规方形卡片，副标题弱化) */}
-
-        {isLogin && (
+        {isLogin && collectedAlbum.length > 0 && (
           <section>
             <CollapsibleHomeSection
               title={

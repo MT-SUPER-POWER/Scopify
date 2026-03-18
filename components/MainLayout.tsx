@@ -5,7 +5,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { ReactNode, useEffect, useState, useRef, useCallback } from "react";
+import { ReactNode, useEffect, useRef, useCallback } from "react";
 
 import Header from "../components/Header";
 import { Sidebar } from "../components/Sidebar";
@@ -70,7 +70,8 @@ function MainLayoutInner({
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
   const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
-  const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
+  const scrollContainer = useUiStore((s) => s.scrollContainer);
+  const setScrollContainer = useUiStore((s) => s.setScrollContainer);
   const isCollapsed = useUiStore(s => s.isCollapsed);
 
   // 监听子组件的 collapse/expand 事件并同步状态
@@ -150,6 +151,7 @@ function MainLayoutInner({
                 </div>
               </div>
 
+              {/* OPTIMIZE: 滚动区元素全局绑定共享 */}
               <ScrollArea className="h-full w-full" viewportRef={setScrollContainer}>
                 {children}
               </ScrollArea>

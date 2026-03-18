@@ -203,7 +203,8 @@ export const PlayerBar = () => {
   // 同步音量
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
+      // 确保输出值严格限制在 0.0 到 1.0 之间
+      audioRef.current.volume = Math.max(0, Math.min(1, volume / 100));
     }
   }, [volume]);
 

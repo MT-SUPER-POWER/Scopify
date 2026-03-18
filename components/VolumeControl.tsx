@@ -9,6 +9,7 @@ interface VolumeControlProps {
   onChange?: (volume: number) => void;
   orientation?: "vertical" | "horizontal";
   variant?: "popup" | "inline"; // 控制显示形态
+  className?: string;
 }
 
 export const VolumeControl = ({
@@ -16,27 +17,15 @@ export const VolumeControl = ({
   onChange,
   orientation = "vertical",
   variant = "popup",
+  className = ""
 }: VolumeControlProps) => {
   const [volume, setVolume] = useState(initialVolume);
   const [isMuted, setMuted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 🚨 新增：用于存储防抖定时器的引用
+  // 用于存储防抖定时器的引用
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    setVolume(initialVolume);
-  }, [initialVolume]);
-
-  // 🚨 新增：组件卸载时清理定时器，防止内存泄漏
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
 
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
@@ -51,21 +40,43 @@ export const VolumeControl = ({
   };
 
   const handleVolumeChange = useCallback((newVolume: number) => {
-    // 1. 本地 UI 状态必须【同步更新】，保证滑块跟随手指，丝滑不卡顿
-    setVolume(newVolume);
-    if (newVolume > 0 && isMuted) {
+    // 1. 数据清洗：向下传递和本地状态都使用整数
+    const roundedVolume = Math.round(newVolume);
+
+    setVolume(roundedVolume);
+    if (roundedVolume > 0 && isMuted) {
       setMuted(false);
     }
 
-    // 2. 外部的 onChange 回调进行【防抖处理】，防止频繁触发 Store 或 API 写入
+    // 2. 防抖处理
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
 
     debounceTimerRef.current = setTimeout(() => {
-      onChange?.(newVolume);
-    }, 300); // 延迟 300 毫秒，拖拽停止后才执行
+      onChange?.(roundedVolume);
+    }, 300);
   }, [isMuted, onChange]);
+
+  // 监听滚轮事件来控制音量
+  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    // 阻止事件冒泡，防止在调节音量时触发外层容器的滚动
+    e.stopPropagation();
+
+    // 设定每次滚动的步长，5% 是比较常见的工程标准
+    const step = 5;
+
+    // deltaY < 0 表示向上滚动（放大音量），> 0 表示向下滚动（减小音量）
+    const delta = e.deltaY < 0 ? step : -step;
+
+    // 计算新音量并限制在 0-100 之间
+    const newVolume = Math.max(0, Math.min(100, volume + delta));
+
+    if (newVolume !== volume) {
+      handleVolumeChange(newVolume);
+    }
+  }, [volume, handleVolumeChange]);
+
 
   const handleMuteToggle = () => {
     const nextMuted = !isMuted;
@@ -76,7 +87,7 @@ export const VolumeControl = ({
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
-    onChange?.(nextMuted ? 0 : volume);
+    onChange?.(nextMuted ? 0 : Math.round(volume));
   };
 
   // 点击外部关闭 (仅针对弹窗模式生效)
@@ -96,10 +107,24 @@ export const VolumeControl = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [variant]);
 
+  useEffect(() => {
+    setVolume(initialVolume);
+  }, [initialVolume]);
+
+  // 组件卸载时清理定时器，防止内存泄漏
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
   // 🟢 形态 1：常驻内联模式 (推荐在 Tray 中使用)
   if (variant === "inline") {
     return (
-      <div className="flex items-center w-full gap-3 px-4 py-2 hover:bg-white/5 transition-colors rounded-md min-w-0">
+      <div onWheel={handleWheel}
+        className="flex items-center w-full gap-3 px-4 py-2 hover:bg-white/5 transition-colors rounded-md min-w-0">
         <button
           onClick={handleMuteToggle}
           className="text-[#b3b3b3] hover:text-white transition-colors shrink-0"
@@ -117,7 +142,7 @@ export const VolumeControl = ({
           />
         </div>
         <span className="text-xs text-[#b3b3b3] font-medium tabular-nums w-8 text-right shrink-0">
-          {isMuted ? 0 : volume}%
+          {isMuted ? 0 : Math.round(volume)}%
         </span>
       </div>
     );
@@ -127,7 +152,8 @@ export const VolumeControl = ({
   return (
     <div
       ref={containerRef}
-      className="relative flex items-center justify-center"
+      onWheel={handleWheel}
+      className={`relative flex items-center justify-center ${className}`}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
@@ -151,8 +177,8 @@ export const VolumeControl = ({
                 thumbSize={14}
                 thumbOnHover={false}
               />
-              <span className="text-xs text-white font-medium tabular-nums">
-                {isMuted ? 0 : volume}%
+              <span className="text-xs text-white font-medium tabular-nums w-[4ch] inline-block text-center">
+                {isMuted ? 0 : Math.round(volume)}%
               </span>
             </div>
           </div>

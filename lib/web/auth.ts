@@ -33,5 +33,6 @@ export function verifyCaptcha(phone: string, captcha: string | number, ctcode: s
  */
 export function clearLoginStatus(): void {
   localStorage.removeItem('music_cookie');
+  localStorage.removeItem('user_id');
   useUserStore.getState().setUserId("");
 }

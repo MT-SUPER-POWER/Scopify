@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import React, { ReactNode, useMemo, useEffect, Component } from "react";
+import React, { ReactNode, useMemo, useEffect, useRef, useState, Component } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronDown,
@@ -191,10 +191,25 @@ const PlayerControls = () => {
 };
 
 const AppleMusicLyricRenderer = () => {
-  // 🚨 改用纯净时间 Store
-  const currentTime = useTimeStore((s) => s.currentTime);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const lyric = usePlayerStore((s) => s.lyric);
+
+  // 节流到 100ms 更新一次，避免每帧触发 React 重渲染
+  const [currentTimeMs, setCurrentTimeMs] = useState(0);
+  const lastUpdateRef = useRef(0);
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    const tick = (now: number) => {
+      if (now - lastUpdateRef.current >= 100) {
+        lastUpdateRef.current = now;
+        setCurrentTimeMs(Math.floor(useTimeStore.getState().currentTime));
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
   const yrcText = lyric?.yrc?.lyric?.trim() || "";
   const lrcText = lyric?.lrc?.lyric?.trim() || "";
@@ -240,8 +255,6 @@ const AppleMusicLyricRenderer = () => {
       return [];
     }
   }, [yrcText, lrcText]);
-
-  const currentTimeMs = Math.floor((currentTime || 0));
 
   return (
     <div

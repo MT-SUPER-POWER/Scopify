@@ -8,7 +8,8 @@ export const getUserAlbumSublist = (params?: { limit?: number; offset?: number }
     method: 'get',
     params: {
       limit: params?.limit || 25,
-      offset: params?.offset || 0
+      offset: params?.offset || 0,
+      cookie: localStorage.getItem("music_cookie") || ""
     }
   });
 };

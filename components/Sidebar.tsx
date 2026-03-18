@@ -127,6 +127,14 @@ function SidebarImpl() {
     if (isUserLogin) fetchPlaylist();
   }, [isUserLogin]);
 
+  // 监视 userId 变化，只有 userId 有效时才拉取
+  const userId = useUserStore(s => s.user?.userId);
+  useEffect(() => {
+    if (isUserLogin && userId && userId !== 0) {
+      fetchPlaylist();
+    }
+  }, [isUserLogin, userId]);
+
   const createdPlaylists = playlists.filter(item => item && !item.subscribed);
   const subscribedPlaylists = playlists.filter(item => item && item.subscribed);
 

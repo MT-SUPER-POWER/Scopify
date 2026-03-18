@@ -28,8 +28,6 @@ export function QrLogin() {
   // 强制刷新触发器，用于用户手动点击刷新
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // console.log("Is Electron Environment:", IS_ELECTRON);
-
   useEffect(() => {
     // 标志位：组件是否存活 / 当前流程是否有效
     let isActive = true;
@@ -102,7 +100,11 @@ export function QrLogin() {
             }
 
             // NOTE: 接口返回的 profile 数据不是很稳定，为了解决这个问题，我们走 id 再请求后续的数据
-            useUserStore.getState().setUserId(loginRes.data?.account?.id || '');    // 兜底的
+            const userId = loginRes.data?.account?.id || '';
+            useUserStore.getState().setUserId(userId);    // 兜底的
+            localStorage.setItem('user_id', String(userId)); // 存储 userId 到 localStorage 保底
+
+            console.log('[二维码登录] 用户: ', loginRes.data?.profile);
             useUserStore.getState().setUser(loginRes.data?.profile || {});
 
             useUserStore.getState().setLoginType('qr');

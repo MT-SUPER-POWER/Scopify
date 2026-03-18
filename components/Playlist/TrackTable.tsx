@@ -44,6 +44,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { motion } from "motion/react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useUiStore } from "@/store/module/ui";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -177,9 +179,7 @@ const TrackRow = memo(function TrackRow({
   isActive,
   isPlaying,
   isLiked,
-  playlistID,
   onPlay,
-  onRequestDelete,
   setIsPlaying,
   onContextMenu,
 }: TrackRowProps) {
@@ -204,10 +204,10 @@ const TrackRow = memo(function TrackRow({
       </TableCell>
 
       {/* 歌曲名称 */}
-      <TableCell>
-        <div className="flex items-center gap-3 overflow-hidden">
+      <TableCell className="min-w-0 max-w-0">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 shrink-0 bg-zinc-800 rounded">
-            <img src={track.al.picUrl} alt={track.al.name} className="w-full h-full object-cover rounded" />
+            <img src={track.al.picUrl} alt={track.al.name} loading="lazy" className="w-full h-full object-cover rounded" />
           </div>
           <div className="flex flex-col truncate">
             <span
@@ -230,8 +230,8 @@ const TrackRow = memo(function TrackRow({
       </TableCell>
 
       {/* 专辑名称 */}
-      <TableCell className="hidden md:table-cell truncate">
-        <span title={track.al.name} className="hover:text-white hover:underline cursor-pointer">
+      <TableCell className="hidden md:table-cell max-w-0">
+        <span title={track.al.name} className="hover:text-white hover:underline cursor-pointer block truncate">
           {track.al.name}
         </span>
       </TableCell>
@@ -354,6 +354,18 @@ export default function TracklistTable({ searchQuery }: {
     );
   }, [tracks, searchQuery]);
 
+  const scrollContainer = useUiStore((s) => s.scrollContainer);
+
+  // OPTIMIZE: 虚拟列表优化页面
+  const virtualizer = useVirtualizer({
+    count: filteredTracks.length,
+    getScrollElement: () => scrollContainer,      // 拿到全部绑定的 ScrollArea 元素
+    estimateSize: () => 56,
+    overscan: 10,       // DEBUG: 虚拟列表上下缓冲控制区域
+  });
+
+  const virtualItems = virtualizer.getVirtualItems();
+
   // FIX: useCallback 稳定引用，避免每次 TracklistTable render 时 TrackRow 收到新函数引用导致 memo 失效
   const handlePlay = useCallback((index: number) => {
     const track = filteredTracks[index];
@@ -378,7 +390,6 @@ export default function TracklistTable({ searchQuery }: {
       handlePlay(tracks.findIndex((t: any) => t.id === contextMenuTrack.id));
     }
   }, [contextMenuTrack, filteredTracks, handlePlay, tracks]);
-
 
   const handleRequestDelete = useCallback((playlistId: number | string, trackId: number) => {
     setPendingDelete({ playlistId, trackId });
@@ -424,7 +435,7 @@ export default function TracklistTable({ searchQuery }: {
       <ContextMenu>
         <ContextMenuTrigger asChild>
           <div className="w-full">
-            <Table className="w-full text-zinc-400 table-fixed">
+            <Table className="w-full text-zinc-400">
               {/* 表头 */}
               <TableHeader className={cn(
                 "sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
@@ -453,26 +464,40 @@ export default function TracklistTable({ searchQuery }: {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredTracks.map((track: any, index: number) => {
-                    const isActive = currentSongDetail?.id === track.id;
-                    // O(1) Set 查找替代 O(n) includes
-                    const isLiked = likeSet.has(track.id);
-                    return (
-                      <TrackRow
-                        key={track.id}
-                        track={track}
-                        index={index}
-                        isActive={isActive}
-                        isPlaying={isPlaying}
-                        isLiked={isLiked}
-                        playlistID={playlistID}
-                        onPlay={() => handlePlay(index)}
-                        onRequestDelete={handleRequestDelete}
-                        setIsPlaying={setIsPlaying}
-                        onContextMenu={setContextMenuTrack}
-                      />
-                    );
-                  })
+                  <>
+                    {/* 顶部占位 */}
+                    {virtualItems.length > 0 && virtualItems[0].start > 0 && (
+                      <tr style={{ height: virtualItems[0].start }}><td /></tr>
+                    )}
+
+                    {virtualItems.map((virtualRow) => {
+                      const track = filteredTracks[virtualRow.index];
+                      const isActive = currentSongDetail?.id === track.id;
+                      const isLiked = likeSet.has(track.id);
+                      return (
+                        <TrackRow
+                          key={track.id}
+                          track={track}
+                          index={virtualRow.index}
+                          isActive={isActive}
+                          isPlaying={isPlaying}
+                          isLiked={isLiked}
+                          playlistID={playlistID}
+                          onPlay={() => handlePlay(virtualRow.index)}
+                          onRequestDelete={handleRequestDelete}
+                          setIsPlaying={setIsPlaying}
+                          onContextMenu={setContextMenuTrack}
+                        />
+                      );
+                    })}
+
+                    {/* 底部占位 */}
+                    {virtualItems.length > 0 && (() => {
+                      const last = virtualItems[virtualItems.length - 1];
+                      const paddingBottom = virtualizer.getTotalSize() - last.end;
+                      return paddingBottom > 0 ? <tr style={{ height: paddingBottom }}><td /></tr> : null;
+                    })()}
+                  </>
                 )}
               </TableBody>
             </Table>

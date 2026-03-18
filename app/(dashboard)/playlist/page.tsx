@@ -18,8 +18,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const colorCache = new Map<string, string>();
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENT: 日历封面 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+// 日历封面
 const DailyCalendarCover = () => {
   const [dateInfo, setDateInfo] = useState({ dayOfWeek: '星期三', dateNum: 18 });
 
@@ -61,6 +62,11 @@ export default function PlaylistPage() {
     setSearchQuery("");
   }, []);
 
+  const clearAlbumList = useUserStore((s: any) => s.clearAlbumList);
+  useEffect(() => {
+    return () => { clearAlbumList(); };
+  }, []);
+
   const searchParams = useSearchParams();
   const playlistId = searchParams.get("id");
   const isRecommend = searchParams.get("isRecommend") === "true";
@@ -70,7 +76,6 @@ export default function PlaylistPage() {
   const [themeColor, setThemeColor] = useState<string>("from-[#88b325]");
   const [isLoading, setIsLoading] = useState(false);
 
-  // 【工程化改造】：统一适配层 (Adapter)
   // 屏蔽掉不同数据源(每日推荐 vs 普通歌单)带来的字段差异
   const PLAYLIST_INFO = useMemo(() => {
     if (isDailyRecommend) {
@@ -179,7 +184,7 @@ export default function PlaylistPage() {
   if (!playlistId && !isDailyRecommend) return <div className="p-8 text-white">Invalid Playlist URL</div>;
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col bg-[#121212] font-sans">
+    <div key={playlistId ?? "daily"} className="relative w-full min-h-screen flex flex-col bg-[#121212] font-sans">
       {/* 顶部背景渐变 */}
       <div
         className="absolute top-0 left-0 right-0 h-100 md:h-125 z-0 pointer-events-none opacity-60"
@@ -189,65 +194,70 @@ export default function PlaylistPage() {
       />
 
       {/* Header 歌单信息 */}
-      <div className="relative z-10 flex flex-col md:flex-row items-start md:items-end gap-6 px-6 pt-24 pb-6">
+      <div className="relative z-10 flex flex-col md:flex-row items-start gap-6 px-6 pt-24 pb-6">
 
-        {/* ========================================== */}
-        {/* 封面：根据类型判断渲染图片还是日历组件         */}
-        {/* ========================================== */}
-        <div className="w-48 h-48 lg:w-56 lg:h-56 shrink-0 transition-transform duration-300 hover:scale-[1.02]">
+        {/* 左侧：固定大小的封面 */}
+        <div className="w-48 h-48 lg:w-56 lg:h-56 shrink-0 transition-transform duration-300 hover:scale-[1.02]
+            shadow-[0_8px_40px_rgba(0,0,0,0.5)] rounded-md overflow-hidden bg-black/20">
           {isDailyRecommend ? (
             <DailyCalendarCover />
           ) : (
             <img
               src={PLAYLIST_INFO.cover!}
               alt={PLAYLIST_INFO.title}
-              className="w-full h-full object-cover rounded-sm shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
+              className="w-full h-full object-cover"
             />
           )}
         </div>
 
-        <div className="flex flex-col gap-2 text-white overflow-hidden pb-1 mt-4 md:mt-0 flex-1 min-w-0">
-          <div className="flex flex-row gap-2 flex-wrap items-center">
-            <span className="text-sm font-bold drop-shadow-md hidden md:block uppercase tracking-wider">
+        {/* 右侧：信息区，自上而下自然排布 */}
+        <div className="flex flex-col flex-1 min-w-0 text-white pt-1 md:pt-2">
+
+          {/* 1. 标签区：自然占据顶部空间 */}
+          <div className="flex flex-row gap-2 flex-wrap items-center mb-3 md:mb-4">
+            <span className="text-sm drop-shadow-md uppercase tracking-wider bg-white/10 px-3 py-1 rounded-sm">
               {PLAYLIST_INFO.privacy}
             </span>
-            {PLAYLIST_INFO.tags && PLAYLIST_INFO.tags.length > 0 ? (
-              PLAYLIST_INFO.tags.map((t: string, idx: number) => (
-                <span key={idx} className="text-[12px] font-medium drop-shadow-md hidden md:inline-block px-3 py-1 bg-white/10 rounded-md hover:bg-white/20 transition-colors">
-                  {t}
-                </span>
-              ))
-            ) : (
-              <span className="text-xs text-zinc-500 hidden md:block"></span>
-            )}
+            {PLAYLIST_INFO.tags?.map((t: string, idx: number) => (
+              <span key={idx} className="text-[12px] font-medium drop-shadow-md px-3 py-1 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
+                {t}
+              </span>
+            ))}
           </div>
-          <h1 className="font-black tracking-tighter leading-tight truncate drop-shadow-lg mb-2 md:mb-4 text-[clamp(2.5rem,5vw,5rem)]">
+
+          {/* 2. 标题区：放弃过于激进的 clamp，使用稳定字号 + 紧凑行高 + 3行截断 */}
+          <h1
+            className="m-0 font-black tracking-tighter leading-[1.1] drop-shadow-lg mb-4 md:mb-6 wrap-break-word text-4xl md:text-5xl lg:text-6xl line-clamp-3"
+            title={PLAYLIST_INFO.title}
+          >
             {PLAYLIST_INFO.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-1.5 text-sm text-white/90 drop-shadow-md">
 
-            {/* 每日推荐隐藏创建者头像部分 */}
+          {/* 3. 元数据区：跟随标题自然往下顺延 */}
+          <div className="flex flex-wrap items-center gap-2.5 text-sm text-white/80 drop-shadow-md">
             {!PLAYLIST_INFO.isSpecial && (
               <>
-                <div className="flex items-center gap-1.5 group cursor-pointer mr-1">
-                  {PLAYLIST_INFO.creatorAvatar !== ""
-                    ? (<img src={PLAYLIST_INFO.creatorAvatar} alt={PLAYLIST_INFO.creator} className="w-6 h-6 rounded-full object-cover" />)
-                    : (<div className="w-6 h-6 rounded-full bg-zinc-500 flex items-center justify-center text-xs text-white"> M </div>)
-                  }
-                  <span className="font-bold group-hover:underline">{PLAYLIST_INFO.creator}</span>
+                <div className="flex items-center gap-2 group cursor-pointer mr-1 text-white">
+                  {PLAYLIST_INFO.creatorAvatar ? (
+                    <img src={PLAYLIST_INFO.creatorAvatar} alt={PLAYLIST_INFO.creator} className="w-7 h-7 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-zinc-600 flex items-center justify-center text-xs font-bold"> M </div>
+                  )}
+                  <span className="font-bold group-hover:underline text-[15px]">{PLAYLIST_INFO.creator}</span>
                 </div>
                 <span className="opacity-60 hidden sm:inline">•</span>
-                <span className="opacity-80">{PLAYLIST_INFO.createTime} 创建</span>
+                <span>{PLAYLIST_INFO.createTime} 创建</span>
                 <span className="opacity-60">•</span>
-                <span className="opacity-80">{Number(PLAYLIST_INFO.likes).toLocaleString()} 次收藏</span>
+                <span>{Number(PLAYLIST_INFO.likes).toLocaleString()} 次收藏</span>
                 <span className="opacity-60">•</span>
               </>
             )}
-
-            <span className="opacity-80 font-medium">共 {PLAYLIST_INFO.totalSongs} 首歌</span>
+            <span className="font-medium text-white">共 {PLAYLIST_INFO.totalSongs} 首歌</span>
           </div>
+
         </div>
       </div>
+
 
       {/* 过渡遮罩层 */}
       <div className="flex-1 relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] to-[#121212] via-20%">
@@ -322,7 +332,7 @@ export default function PlaylistPage() {
           </div>
         </div>
 
-        <div className="px-6 flex-1 pb-10">
+        <div className="px-6 flex-1 pb-10 min-w-0 overflow-hidden">
           {isLoading ? <PlaylistLoading /> : (
             <TracklistTable
               searchOpen={searchOpen}

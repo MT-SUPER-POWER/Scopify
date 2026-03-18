@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { motion, useSpring, useTransform } from "motion/react";
+import { motion } from "framer-motion";
 
 interface SmoothSliderProps {
   /** 当前值 0-100 */
@@ -43,7 +43,7 @@ export const SmoothSlider = ({
   orientation = "horizontal",
   size = 150,
   trackColor = "#4d4d4d",
-  bufferedColor = "rgba(255, 255, 255, 0.3)", // 默认半透明白色
+  bufferedColor = "rgba(255, 255, 255, 0.3)",
   fillColor = "#ffffff",
   thumbColor = "#ffffff",
   hoverFillColor = "#1db954",
@@ -59,21 +59,9 @@ export const SmoothSlider = ({
 
   const isVertical = orientation === "vertical";
 
-  // 播放进度弹簧动画
-  const springValue = useSpring(value, { stiffness: 300, damping: 30 });
-  // 缓冲进度弹簧动画（保持视觉一致性）
-  const springBuffered = useSpring(bufferedValue, { stiffness: 300, damping: 30 });
-
-  useEffect(() => {
-    springValue.set(value);
-  }, [value, springValue]);
-
-  useEffect(() => {
-    springBuffered.set(bufferedValue);
-  }, [bufferedValue, springBuffered]);
-
-  const fillPercent = useTransform(springValue, [0, 100], ["0%", "100%"]);
-  const bufferedPercent = useTransform(springBuffered, [0, 100], ["0%", "100%"]);
+  // 优化 1：保留小数精度，防止歌曲进度条产生“跳帧”的顿挫感
+  const fillPercent = `${value}%`;
+  const bufferedPercent = `${bufferedValue}%`;
 
   const calculateValue = useCallback(
     (clientX: number, clientY: number) => {
@@ -87,7 +75,8 @@ export const SmoothSlider = ({
         percent = ((clientX - rect.left) / rect.width) * 100;
       }
 
-      const clampedValue = Math.max(0, Math.min(100, Math.round(percent)));
+      // 优化 2：移除 Math.round()，保留精度，让拖拽和进度反馈更丝滑
+      const clampedValue = Math.max(0, Math.min(100, percent));
       onChange(clampedValue);
     },
     [isVertical, onChange]
@@ -158,7 +147,6 @@ export const SmoothSlider = ({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* 滑轨底色 */}
       <div
         ref={trackRef}
         className="relative rounded-full cursor-pointer w-full flex items-center justify-center overflow-hidden"
@@ -171,40 +159,46 @@ export const SmoothSlider = ({
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       >
-        {/* 缓冲进度层 (新增) */}
-        <motion.div
+        <div
           className="absolute rounded-full"
           style={{
             backgroundColor: bufferedColor,
+            transition: "width 0.25s linear, height 0.25s linear",
             ...(isVertical
               ? { width: "100%", height: bufferedPercent, bottom: 0, left: 0 }
               : { height: "100%", width: bufferedPercent, top: 0, left: 0 }),
           }}
         />
 
-        {/* 播放进度层 */}
-        <motion.div
+        <div
           className="absolute rounded-full"
           style={{
             backgroundColor: currentFillColor,
+            transition: isDragging ? "none" : "width 0.25s linear, height 0.25s linear, background-color 0.2s",
             ...(isVertical
               ? { width: "100%", height: fillPercent, bottom: 0, left: 0 }
               : { height: "100%", width: fillPercent, top: 0, left: 0 }),
-            transition: isDragging ? "none" : "background-color 0.2s",
           }}
         />
       </div>
 
-      {/* 滑块 (移出 overflow-hidden 容器以防止被裁切) */}
+      {/* 修复：移除 transform，改用 calc 减去半径来实现严格的几何居中 */}
       <motion.div
         className="absolute rounded-full shadow-md z-10 pointer-events-none"
         style={{
           width: thumbSize,
           height: thumbSize,
           backgroundColor: thumbColor,
+          transition: isDragging ? "none" : "left 0.25s linear, bottom 0.25s linear",
           ...(isVertical
-            ? { left: "50%", x: "-50%", bottom: fillPercent, y: "50%" }
-            : { top: "50%", y: "-50%", left: fillPercent, x: "-50%" }),
+            ? {
+              left: `calc(50% - ${thumbSize / 2}px)`,
+              bottom: `calc(${fillPercent} - ${thumbSize / 2}px)`
+            }
+            : {
+              top: `calc(50% - ${thumbSize / 2}px)`,
+              left: `calc(${fillPercent} - ${thumbSize / 2}px)`
+            }),
         }}
         initial={{ scale: 0, opacity: 0 }}
         animate={{

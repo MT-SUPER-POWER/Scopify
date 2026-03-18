@@ -21,6 +21,7 @@ type UserStore = {
   setUser: (userData: any) => void;
   setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
   setAlbumList: (albumList: any[]) => void;
+  clearAlbumList: () => void;
   setLikeListIDs: (ids: number[]) => void;
   setPlayList: (playlists: NeteasePlaylist[]) => void;
   setUserId: (userId: number | string) => void;
@@ -48,6 +49,7 @@ export const useUserStore = create<UserStore>()(
         const cleanAlbumList = albumList.map(pruneSongDetail);
         set({ albumList: cleanAlbumList });
       },
+      clearAlbumList: () => set({ albumList: [] }),
       setLikeListIDs: (ids: number[]) => set({ likeListIDs: ids }),
       setPlayList: (rawPlaylists: any[]) => {
         const cleanPlaylists = rawPlaylists.map(prunePlaylist);
