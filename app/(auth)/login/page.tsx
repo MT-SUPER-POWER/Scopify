@@ -9,7 +9,7 @@ import { loginByCellphone } from '@/lib/api/login';
 import { sendCaptcha } from '@/lib/web/auth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { cn, IS_ELECTRON } from '@/lib/utils';
+import { cn, IS_WEB } from '@/lib/utils';
 import Link from 'next/link';
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from 'sonner';
@@ -48,7 +48,7 @@ function LoginPageContent() {
   const [isLoading, setIsLoading] = useState(false);
 
   const isLoggedIn = useLoginStatus();
-  const isElectron = IS_ELECTRON;
+  const [isMounted, setIsMounted] = useState(false);
 
   // 1. 处理密码或验证码提交
   const handleSubmit = async (phone: string, extra: string) => {
@@ -85,16 +85,24 @@ function LoginPageContent() {
     if (isLoggedIn) smartRouter.replace('/');
   }, [isLoggedIn, smartRouter]);
 
+  useEffect(() => {
+    // 组件挂载后标记为 true
+    setIsMounted(true);
+    if (isLoggedIn) smartRouter.replace('/');
+  }, [isLoggedIn, smartRouter]);
+
   if (isLoggedIn) {
     return <LoginSkeletonLoading />;
   }
+
+  const showExitButton = isMounted && IS_WEB;
 
   return (
     <div className={cn("flex flex-col items-center justify-center bg-black text-white p-4 min-h-screen w-screen overflow-hidden",
     )}>
 
       {/* 右上角退出按钮，点击返回主页 */}
-      {isElectron ? null : (
+      {showExitButton && (
         <button className='absolute top-5 right-6 p-1 rounded-full hover:bg-white/10 transition-colors' title="返回主页">
           <Link href="/" className="flex items-center justify-center">
             <X className="w-5 h-5 text-zinc-500 hover:text-white transition-colors" />
