@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const selectClass =
@@ -32,19 +32,23 @@ export function SettingInput({
   onChange,
   type = "text",
   className = "w-28",
+  disabled = false,
 }: {
   value: string | number;
   onChange: (value: string) => void;
   type?: string;
   className?: string;
+  disabled?: boolean;
 }) {
   return (
     <input
       type={type}
       value={value}
       onChange={(event) => onChange(event.target.value)}
+      disabled={disabled}
       className={cn(
         "bg-transparent border border-[#727272] text-white py-1.5 px-3 rounded text-sm font-medium outline-none focus:border-white transition-colors text-right focus:ring-1 focus:ring-white",
+        disabled && "opacity-40 cursor-not-allowed",
         className
       )}
     />
@@ -56,16 +60,26 @@ export function SettingRow({
   sublabel,
   control,
   isColumn = false,
+  requiresRestart = false,
 }: {
   label: React.ReactNode;
   sublabel?: string;
   control: React.ReactNode;
   isColumn?: boolean;
+  requiresRestart?: boolean;
 }) {
   return (
     <div className={cn("mb-6 w-full flex", isColumn ? "flex-col items-start gap-3" : "justify-between items-center")}>
       <div className={cn("flex flex-col gap-1", !isColumn && "max-w-[75%]")}>
-        <span className="text-white text-base font-medium">{label}</span>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-white text-base font-medium">{label}</span>
+          {requiresRestart && (
+            <span className="inline-flex items-center gap-1 text-xs text-[#f59e0b] border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-1.5 py-0.5 rounded font-medium">
+              <RotateCcw className="w-2.5 h-2.5" />
+              重启生效
+            </span>
+          )}
+        </div>
         {sublabel ? <span className="text-[#a7a7a7] text-sm leading-relaxed">{sublabel}</span> : null}
       </div>
       {control}
@@ -88,14 +102,21 @@ export function SettingSelect({
   value,
   onChange,
   children,
+  disabled = false,
 }: {
   value: string | number;
   onChange: (value: string) => void;
   children: React.ReactNode;
+  disabled?: boolean;
 }) {
   return (
-    <div className="relative">
-      <select className={selectClass} value={value} onChange={(event) => onChange(event.target.value)}>
+    <div className={cn("relative", disabled && "opacity-40 cursor-not-allowed")}>
+      <select
+        className={cn(selectClass, disabled && "pointer-events-none")}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        disabled={disabled}
+      >
         {children}
       </select>
       <ChevronDown className="w-4 h-4 text-white absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -134,15 +155,23 @@ export function SaveConfirmModal({
   isSaving,
   onClose,
   onConfirm,
+  requiresRestart = false,
+  isWeb = false,
 }: {
   open: boolean;
   isSaving: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  requiresRestart?: boolean;
+  isWeb?: boolean;
 }) {
-  if (!open) {
-    return null;
-  }
+  if (!open) return null;
+
+  const subtitle = isWeb
+    ? "网络设置将在页面刷新后完全生效，其余设置立即生效。"
+    : requiresRestart
+    ? '标记"重启生效"的配置需要重启应用程序才能完全生效，其余配置立即生效。'
+    : "是否确认保存？修改将立即生效。";
 
   return (
     <div
@@ -155,9 +184,7 @@ export function SaveConfirmModal({
       >
         <div className="space-y-2 mb-8">
           <h2 className="text-2xl font-bold text-white tracking-tight">保存修改</h2>
-          <p className="text-[#b3b3b3] text-sm">
-            部分配置可能需要重启应用程序才能完全生效。是否确认保存？
-          </p>
+          <p className="text-[#b3b3b3] text-sm">{subtitle}</p>
         </div>
 
         <div className="flex flex-col gap-4 w-full">

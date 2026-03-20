@@ -25,5 +25,6 @@ export interface AppConfig {
     timeout: number;
     max_retries: number;
     retry_delay: number;
+    randomCNIP: boolean;
   };
 }
