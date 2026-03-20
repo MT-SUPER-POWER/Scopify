@@ -27,7 +27,7 @@ export const showSongPlayToast = (song: SongDetail) => {
         </span>
       </div>
 
-      {/* 右侧：Spotify 标志性的绿色跳动频谱动画 */}
+      {/* NOTE:Spotify 标志性的绿色跳动频谱动画 */}
       <div className="flex items-end gap-0.5 h-3 shrink-0">
         {[0, 0.2, 0.4].map((delay, i) => (
           <motion.div
@@ -44,6 +44,7 @@ export const showSongPlayToast = (song: SongDetail) => {
           />
         ))}
       </div>
+
     </div>
   ), {
     duration: 3000,

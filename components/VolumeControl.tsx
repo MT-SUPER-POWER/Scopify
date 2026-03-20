@@ -159,7 +159,7 @@ export const VolumeControl = ({
     >
       <button
         onClick={handleMuteToggle}
-        className="text-[#b3b3b3] hover:text-white transition-colors p-1"
+        className="text-[#b3b3b3] hover:text-white transition-colors"
       >
         {getVolumeIcon()}
       </button>

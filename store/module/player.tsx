@@ -3,22 +3,10 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { NeteaseLyric, pruneNeteaseLyric, SongDetail } from "@/types/api/music";
 import { getLyric, greySongUrlMatch } from "@/lib/api/music";
 import { toast } from "sonner";
+import { useTimeStore } from "@/store/module/time";
 
 export type RepeatMode = "off" | "all" | "one";
 
-interface TimeStore {
-  currentTime: number;
-  totalTime: number;
-  setCurrentTime: (time: number) => void;
-  setTotalTime: (time: number) => void;
-}
-
-export const useTimeStore = create<TimeStore>((set) => ({
-  currentTime: 0,
-  totalTime: 0,
-  setCurrentTime: (time) => set({ currentTime: time }),
-  setTotalTime: (time) => set({ totalTime: time }),
-}));
 
 type PlayerStore = {
   volume: number;

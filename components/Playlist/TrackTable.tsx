@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Clock, Play, Heart, Trash, PlusCircle, Pause, Link2 } from "lucide-react";
+import { Clock, Play, Heart, Trash, PlusCircle, Pause, Link2, ListPlus, GripVertical } from "lucide-react";
 import { LikeButton } from "@/components/ui/LikeButton";
 import {
   ContextMenu,
@@ -28,7 +28,7 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { likeSong } from "@/lib/api/playlist";
 import { toast } from "sonner";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { useSearchParams } from "next/navigation";
 import { NeteasePlaylist } from "@/types/api/playlist";
@@ -98,7 +98,6 @@ function ConfirmDialogShandCN({
     </AlertDialog>
   );
 }
-
 
 // FIX: ConfirmDialog 提升到列表层，TrackRowContextMenu 只接收回调，不再自己挂载 Dialog
 // (Deleted TrackRowContextMenu and moved logic to TracklistTable)
@@ -297,6 +296,51 @@ const TrackRow = memo(function TrackRow({
   prev.index === next.index
 );
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const MIN_COL = 60;
+
+function makeResizeHandler(
+  leftRef: React.RefObject<number>,
+  setLeft: (w: number) => void,
+  rightRef: React.RefObject<number>,
+  setRight: (w: number) => void,
+  leftMin = MIN_COL,
+  rightMin = MIN_COL,
+) {
+  return (e: React.MouseEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startLeft = leftRef.current;
+    const startRight = rightRef.current;
+    const total = startLeft + startRight;
+
+    const onMove = (ev: MouseEvent) => {
+      const delta = ev.clientX - startX;
+      const nextLeft = Math.min(Math.max(leftMin, startLeft + delta), total - rightMin);
+      setLeft(nextLeft);
+      setRight(total - nextLeft);
+    };
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+}
+
+function ResizeHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void }) {
+  return (
+    <span
+      onMouseDown={onMouseDown}
+      className="absolute right-0 top-1/2 -translate-y-1/2 h-4 w-3 flex items-center justify-center cursor-col-resize opacity-0 group-hover/head:opacity-100 transition-opacity select-none"
+    >
+      <GripVertical className="w-3 h-3 text-zinc-500" />
+    </span>
+  );
+}
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function TracklistTable({ searchQuery }: {
@@ -307,6 +351,18 @@ export default function TracklistTable({ searchQuery }: {
   onSearchClose?: () => void;
   inputRef?: React.RefObject<HTMLInputElement | null>;
 }) {
+  const [colTitle, setColTitleState] = useState(300);
+  const [colAlbum, setColAlbumState] = useState(200);
+  const [colDate, setColDateState] = useState(140);
+  const [colLike, setColLikeState] = useState(80);
+  const colTitleRef = useRef(300);
+  const colAlbumRef = useRef(200);
+  const colDateRef = useRef(140);
+  const colLikeRef = useRef(80);
+  const setColTitle = (w: number) => { colTitleRef.current = w; setColTitleState(w); };
+  const setColAlbum = (w: number) => { colAlbumRef.current = w; setColAlbumState(w); };
+  const setColDate = (w: number) => { colDateRef.current = w; setColDateState(w); };
+  const setColLike = (w: number) => { colLikeRef.current = w; setColLikeState(w); };
   const tracks = useUserStore((state: any) => state.albumList);
   const likelist = useUserStore((s) => s.likeListIDs);
 
@@ -435,7 +491,7 @@ export default function TracklistTable({ searchQuery }: {
       <ContextMenu>
         <ContextMenuTrigger asChild>
           <div className="w-full">
-            <Table className="w-full text-zinc-400">
+            <Table className="w-full text-zinc-400 table-fixed">
               {/* 表头 */}
               <TableHeader className={cn(
                 "sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
@@ -443,10 +499,21 @@ export default function TracklistTable({ searchQuery }: {
               )}>
                 <TableRow className="hover:bg-transparent border-none">
                   <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
-                  <TableHead className="text-zinc-400">Title</TableHead>
-                  <TableHead className="hidden md:table-cell text-zinc-400">Album</TableHead>
-                  <TableHead className="hidden lg:table-cell text-zinc-400">Date Published</TableHead>
-                  <TableHead className="hidden lg:table-cell text-zinc-400 text-center w-20">Like</TableHead>
+                  <TableHead className="text-zinc-400 relative group/head" style={{ width: colTitle, minWidth: 60 }}>
+                    Title
+                    <ResizeHandle onMouseDown={makeResizeHandler(colTitleRef, setColTitle, colAlbumRef, setColAlbum, 60, 64)} />
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell text-zinc-400 relative group/head" style={{ width: colAlbum, minWidth: 64 }}>
+                    Album
+                    <ResizeHandle onMouseDown={makeResizeHandler(colAlbumRef, setColAlbum, colDateRef, setColDate, 64, 120)} />
+                  </TableHead>
+                  <TableHead className="hidden lg:table-cell text-zinc-400 relative group/head" style={{ width: colDate, minWidth: 120 }}>
+                    Date Published
+                    <ResizeHandle onMouseDown={makeResizeHandler(colDateRef, setColDate, colLikeRef, setColLike, 120, 44)} />
+                  </TableHead>
+                  <TableHead className="hidden lg:table-cell text-zinc-400 text-center relative group/head" style={{ width: colLike, minWidth: 44 }}>
+                    Like
+                  </TableHead>
                   <TableHead className="w-32 text-zinc-400">
                     <div className="flex items-center w-full h-full justify-center">
                       <Clock className="w-4 h-4" />
@@ -516,6 +583,26 @@ export default function TracklistTable({ searchQuery }: {
                 ) : (
                   <><Play className="w-4 h-4 mr-2" />Play</>
                 )}
+              </ContextMenuItem>
+
+              {/* 添加到队列 */}
+              <ContextMenuItem
+                className="focus:bg-white/10 focus:text-white"
+                onClick={() => {
+                  const state = usePlayerStore.getState();
+                  const track = contextMenuTrack;
+                  if (!track) return;
+                  const alreadyInQueue = state.queue.some((t) => t.id === track.id);
+                  if (alreadyInQueue) {
+                    toast.info("歌曲已在队列中");
+                    return;
+                  }
+                  state.setQueue([...state.queue, track], state.queueIndex);
+                  toast.success("已添加到播放队列");
+                }}
+              >
+                <ListPlus className="w-4 h-4 mr-2" />
+                Add to queue
               </ContextMenuItem>
 
               {/* 歌曲喜欢或者不喜欢处理 */}
