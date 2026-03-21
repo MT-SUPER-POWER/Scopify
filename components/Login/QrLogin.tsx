@@ -7,7 +7,7 @@ import { RefreshCw, UserRoundSearch } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { checkQR, createQR, getQRKey } from '@/lib/api/login';
 import { useUserStore } from '@/store';
-import { getUserAccount } from '@/lib/api/user';
+import { getUserAccount, getUserDetail } from '@/lib/api/user';
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from 'sonner';
 import { IS_ELECTRON } from '@/lib/utils';
@@ -104,8 +104,13 @@ export function QrLogin() {
             useUserStore.getState().setUserId(userId);    // 兜底的
             localStorage.setItem('user_id', String(userId)); // 存储 userId 到 localStorage 保底
 
-            console.log('[二维码登录] 用户: ', loginRes.data?.profile);
-            useUserStore.getState().setUser(loginRes.data?.profile || {});
+            await getUserDetail(userId).then(detailRes => {
+              const detailData = detailRes.data?.profile || {};
+              useUserStore.getState().setUser({
+                id: userId,
+                ...detailData
+              });
+            });
 
             useUserStore.getState().setLoginType('qr');
             toast.success("登录成功");

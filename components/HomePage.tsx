@@ -2,20 +2,23 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { cn, formatPlayCount } from "@/lib/utils";
-import { Play, ChevronRight } from "lucide-react";
-import { getPersonalizePlaylists, getRecommendedPlaylists } from "@/lib/api/playlist";
-import { getHotArtists } from "@/lib/api/arist";
+import { Play, Pause, ChevronRight, Loader2 } from "lucide-react";
+import { getPersonalizePlaylists, getRecommendedPlaylists, getPlaylistAllTracks } from "@/lib/api/playlist";
+import { getHotArtists } from "@/lib/api/artist";
+import { getAlbumDetail } from "@/lib/api/album";
 import { RecommendPlaylist } from "@/types/api/playlist";
+import { pruneSongDetail, SongDetail } from "@/types/api/music";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useUserStore } from "@/store";
+import { useUserStore, usePlayerStore } from "@/store";
 import { motion, AnimatePresence } from "framer-motion";
 import { NeteaseUserAlbum } from '../types/api/release';
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { getUserAlbumSublist } from "@/lib/api/release";
+import { getUserAlbumSublist } from "@/lib/api/album";
 import { getUserDetail, getUserAccount } from "@/lib/api/user";
+import { toast } from "sonner";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -143,16 +146,55 @@ const HomePageComponent = () => {
   const [bannerPlaylist, setBannerPlaylist] = useState<any[]>([]);
   const [suggestedArtists, setSuggestedArtists] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingPlayId, setLoadingPlayId] = useState<string | null>(null);
   const smartRouter = useSmartRouter();
   const isLogin = useLoginStatus();
   const user = useUserStore(s => s.user);
   const userName = user?.nickname;
   const userId = user?.userId;
   const [collectedAlbum, setCollectedAlbum] = useState([] as NeteaseUserAlbum[]);
-  const [dateInfo, setDateInfo] = useState({
-    dayOfWeek: '星期三', // 默认占位符
-    dateNum: 18
-  });
+  const [dateInfo, setDateInfo] = useState({ dayOfWeek: '星期三', dateNum: 18 });
+
+  const { setQueue, playQueueIndex } = usePlayerStore();
+
+  // ── 播放歌单 ──
+  const handlePlayPlaylist = useCallback(async (id: number | string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const key = `playlist-${id}`;
+    if (loadingPlayId === key) return;
+    setLoadingPlayId(key);
+    try {
+      const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") || "" : "";
+      const res = await getPlaylistAllTracks({ id, cookie });
+      const tracks: SongDetail[] = (res.data?.songs || []).map(pruneSongDetail);
+      if (!tracks.length) { toast.error("歌单为空"); return; }
+      setQueue(tracks, 0);
+      await playQueueIndex(0);
+    } catch {
+      toast.error("加载歌单失败");
+    } finally {
+      setLoadingPlayId(null);
+    }
+  }, [loadingPlayId, setQueue, playQueueIndex]);
+
+  // ── 播放专辑 ──
+  const handlePlayAlbum = useCallback(async (id: number | string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const key = `album-${id}`;
+    if (loadingPlayId === key) return;
+    setLoadingPlayId(key);
+    try {
+      const res = await getAlbumDetail(id);
+      const tracks: SongDetail[] = (res.data?.songs || []).map(pruneSongDetail);
+      if (!tracks.length) { toast.error("专辑为空"); return; }
+      setQueue(tracks, 0);
+      await playQueueIndex(0);
+    } catch {
+      toast.error("加载专辑失败");
+    } finally {
+      setLoadingPlayId(null);
+    }
+  }, [loadingPlayId, setQueue, playQueueIndex]);
 
   useEffect(() => {
     // 组件挂载后，获取真实的本地时间
@@ -169,9 +211,11 @@ const HomePageComponent = () => {
       // 如果登录了但 store 里没用户信息，先同步拉取一次账号信息
       if (isLogin && (!user || !user.nickname || !userId)) {
         try {
-          const cookie = localStorage.getItem('music_cookie') || '';
-          const accountRes = await getUserAccount(cookie);
+          const cookie = localStorage.getItem('user_id') || '';
+          const accountRes = await getUserDetail(cookie);
           if (accountRes.data?.profile) {
+            console.log("同步用户信息到 store:", accountRes.data.profile);
+
             useUserStore.getState().setUser(accountRes.data.profile);
             useUserStore.getState().setUserId(accountRes.data.account?.id || "");
           }
@@ -266,7 +310,7 @@ const HomePageComponent = () => {
                   Daily Recommendations
                 </span>
 
-                {/* 悬浮播放按钮 */}
+                {/* 悬浮播放按钮 — 每日推荐导航到专属页面 */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -280,6 +324,7 @@ const HomePageComponent = () => {
               {bannerPlaylist.map((item) => (
                 <div
                   key={item.id}
+                  onClick={() => smartRouter.push(`/playlist/?id=${item.id}&isRecommend=true`)}
                   className="flex items-center h-16 bg-white/10 hover:bg-white/20 transition-colors rounded-md overflow-hidden group cursor-pointer relative pr-4"
                 >
                   <img
@@ -292,9 +337,14 @@ const HomePageComponent = () => {
                   </span>
 
                   {/* 悬浮播放按钮 */}
-                  <button onClick={() => smartRouter.push(`/playlist/?id=${item.id}&isRecommend=true`)}
-                    className="absolute right-4 w-10 h-10 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-20 hover:scale-105 hover:bg-[#1fdf64]">
-                    <Play className="w-5 h-5 fill-current ml-1" />
+                  <button
+                    onClick={(e) => handlePlayPlaylist(item.id, e)}
+                    disabled={loadingPlayId === `playlist-${item.id}`}
+                    className="absolute right-4 w-10 h-10 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-20 hover:scale-105 hover:bg-[#1fdf64] disabled:opacity-80"
+                  >
+                    {loadingPlayId === `playlist-${item.id}`
+                      ? <Loader2 className="w-4 h-4 animate-spin" />
+                      : <Play className="w-5 h-5 fill-current ml-1" />}
                   </button>
                 </div>
               ))}
@@ -321,6 +371,7 @@ const HomePageComponent = () => {
                 {playlists.map((playlist) => (
                   <div
                     key={playlist.id}
+                    onClick={() => smartRouter.push(`/playlist/?id=${playlist.id}&isRecommend=true`)}
                     className="bg-[#181818] hover:bg-[#282828] transition-colors p-4 rounded-lg cursor-pointer group"
                   >
                     <div className="relative mb-4 pb-[100%]">
@@ -329,12 +380,16 @@ const HomePageComponent = () => {
                         alt={playlist.name}
                         className="absolute inset-0 w-full h-full object-cover rounded-md shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
                       />
-                      <button onClick={() => { smartRouter.push(`/playlist/?id=${playlist.id}&isRecommend=true`) }}
-                        className="absolute bottom-2 right-2 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#1fdf64]">
-                        <Play className="w-6 h-6 fill-current ml-1" />
+                      <button
+                        onClick={(e) => handlePlayPlaylist(playlist.id, e)}
+                        disabled={loadingPlayId === `playlist-${playlist.id}`}
+                        className="absolute bottom-2 right-2 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#1fdf64] disabled:opacity-80"
+                      >
+                        {loadingPlayId === `playlist-${playlist.id}`
+                          ? <Loader2 className="w-5 h-5 animate-spin" />
+                          : <Play className="w-6 h-6 fill-current ml-1" />}
                       </button>
                     </div>
-                    {/* 添加 line-clamp 防止标题过长撑破卡片 */}
                     <h3 className="text-white font-bold truncate mb-1" title={playlist.name}>
                       {playlist.name}
                     </h3>
@@ -363,6 +418,7 @@ const HomePageComponent = () => {
                 <div
                   key={artist.id}
                   className="bg-[#181818] hover:bg-[#282828] transition-colors p-4 rounded-lg cursor-pointer group flex flex-col items-center text-center"
+                  onClick={(e) => { e.stopPropagation(); smartRouter.push(`/artist?id=${artist.id}`); }}
                 >
                   {/* 圆形图片容器 */}
                   <div className="relative mb-4 w-full aspect-square">
@@ -371,9 +427,9 @@ const HomePageComponent = () => {
                       alt={artist.name}
                       className="absolute inset-0 w-full h-full object-cover rounded-full shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
                     />
-                    {/* 歌手卡片的播放按钮通常在右下角悬浮 */}
+                    {/* 歌手卡片的播放按钮 — 跳转歌手页 */}
                     <button
-                      onClick={() => smartRouter.push(`/arist?id=${artist.id}`)}
+
                       className="absolute bottom-1 right-1 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#1fdf64]"
                     >
                       <Play className="w-6 h-6 fill-current ml-1" />
@@ -403,6 +459,7 @@ const HomePageComponent = () => {
                 {collectedAlbum.map((item: NeteaseUserAlbum) => (
                   <div
                     key={`new-${item.id}`}
+                    onClick={() => smartRouter.push(`/album?id=${item.id}`)}
                     className="bg-[#181818] hover:bg-[#282828] transition-colors p-4 rounded-lg cursor-pointer group"
                   >
                     <div className="relative mb-4 pb-[100%]">
@@ -411,8 +468,14 @@ const HomePageComponent = () => {
                         alt="New Release"
                         className="absolute inset-0 w-full h-full object-cover rounded-md shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
                       />
-                      <button className="absolute bottom-2 right-2 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#1fdf64]">
-                        <Play className="w-6 h-6 fill-current ml-1" />
+                      <button
+                        onClick={(e) => handlePlayAlbum(item.id, e)}
+                        disabled={loadingPlayId === `album-${item.id}`}
+                        className="absolute bottom-2 right-2 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#1fdf64] disabled:opacity-80"
+                      >
+                        {loadingPlayId === `album-${item.id}`
+                          ? <Loader2 className="w-5 h-5 animate-spin" />
+                          : <Play className="w-6 h-6 fill-current ml-1" />}
                       </button>
                     </div>
                     <h3 className="text-white font-bold truncate mb-1">

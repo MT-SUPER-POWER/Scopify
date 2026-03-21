@@ -4,7 +4,6 @@
 
 import { Library, RefreshCw, ListMusic, User } from "lucide-react"
 import React, { useEffect, useReducer, useState } from "react";
-import { useUiStore } from "@/store/module/ui";
 import { cn, IS_ELECTRON } from "@/lib/utils";
 import { LibraryItem } from "./Siderbar/LibraryItem";
 import { SiderBarMenu } from "./Siderbar/SiderbarMenu";
@@ -17,12 +16,17 @@ import { FilterAction, FilterState } from "@/types/components/Siderbar";
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-
-
 import { CollapsibleLibraryGroup } from "./Siderbar/CollapsibleLibraryGroup";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+
+interface ActionCardProps {
+  title: string;
+  subtitle: string;
+  buttonText: string;
+  onClick: () => void;
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -38,12 +42,6 @@ function reducer(_state: FilterState, action: FilterAction) {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SUB COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-interface ActionCardProps {
-  title: string;
-  subtitle: string;
-  buttonText: string;
-  onClick: () => void;
-}
 
 function ActionCard({ title, subtitle, buttonText, onClick }: ActionCardProps) {
   return (
@@ -78,11 +76,23 @@ function SkeletonItem() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function SidebarImpl() {
-  const isVeryNarrow = useUiStore(s => s.isCollapsed);
+  const [isVeryNarrow, setIsVeryNarrow] = useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setIsVeryNarrow(entry.contentRect.width <= 90);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   const [filterState, filterDispatch] = useReducer(reducer, 0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isUserLogin = useLoginStatus();
+  const userName = useUserStore(s => s.user?.nickname);
   const playlists = useUserStore(s => s.playlist);
   const isElectron = IS_ELECTRON;
   const smartRouter = useSmartRouter();
@@ -135,8 +145,8 @@ function SidebarImpl() {
     }
   }, [isUserLogin, userId]);
 
-  const createdPlaylists = playlists.filter(item => item && !item.subscribed);
-  const subscribedPlaylists = playlists.filter(item => item && item.subscribed);
+  const createdPlaylists = playlists.filter(item => item && item.creator.nickname === userName);
+  const subscribedPlaylists = playlists.filter(item => item && item.creator.nickname !== userName);
 
   const renderPlaylistItems = (items: typeof playlists) => items.map((item) => (
     <LibraryItem
@@ -151,6 +161,7 @@ function SidebarImpl() {
 
   return (
     <div
+      ref={containerRef}
       className={cn(
         "flex flex-col h-full w-full",
         !isVeryNarrow && "bg-momo-dark",
@@ -165,13 +176,16 @@ function SidebarImpl() {
           "group/header flex items-center py-4 px-3 text-zinc-400 shrink-0",
           isVeryNarrow ? "justify-center" : "justify-between"
         )}>
-          <div className={cn(
-            "flex items-center hover:text-white cursor-pointer transition-colors",
-            "font-semibold overflow-hidden gap-2"
-          )}>
+          <button
+            title="Scopify"
+            onClick={() => smartRouter.push("/")}
+            className={cn(
+              "flex items-center hover:text-white cursor-pointer transition-colors",
+              "font-semibold overflow-hidden gap-2"
+            )}>
             <Library className={cn("w-7 h-7 transition-transform shrink-0", isVeryNarrow && "w-8 h-8")} />
             {!isVeryNarrow && <span className="truncate min-w-0">Your Library</span>}
-          </div>
+          </button>
           {!isVeryNarrow && (
             <div className="flex items-center shrink-0 text-zinc-400">
               <SiderBarMenu />
