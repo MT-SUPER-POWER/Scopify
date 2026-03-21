@@ -17,6 +17,13 @@ import { motion, AnimatePresence } from "framer-motion";
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const colorCache = new Map<string, string>();
+const COLOR_CACHE_LIMIT = 10;
+function setColorCache(key: string, value: string) {
+  if (colorCache.size >= COLOR_CACHE_LIMIT) {
+    colorCache.delete(colorCache.keys().next().value!);
+  }
+  colorCache.set(key, value);
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -72,6 +79,10 @@ export default function PlaylistPage() {
   const isRecommend = searchParams.get("isRecommend") === "true";
   const isDailyRecommend = searchParams.get("isDailyRecommend") === "true";
 
+  const isPlaying = usePlayerStore((s: any) => s.isPlaying);
+  const isShuffle = usePlayerStore((s: any) => s.isShuffle);
+  const currentSongDetail = usePlayerStore((s: any) => s.currentSongDetail);
+
   const [playlistDetail, setPlaylistDetail] = useState<any>(null);
   const [themeColor, setThemeColor] = useState<string>("from-[#88b325]");
   const [isLoading, setIsLoading] = useState(false);
@@ -100,7 +111,7 @@ export default function PlaylistPage() {
       privacy: playlistDetail?.privacy === 0 ? "Public Playlist" : playlistDetail?.privacy === 10 ? "Private Playlist" : "Unknown Privacy",
       tags: playlistDetail?.tags ?? [],
       title: playlistDetail?.name ?? "Unknown",
-      cover: playlistDetail?.coverImgUrl ?? "https://pixabay.com/images/download/clker-free-vector-images-turntable-309662_1920.png",
+      cover: playlistDetail?.coverImgUrl ?? `https://picsum.photos/300/300?random=${Math.random()}`,
       createTime: playlistDetail?.createTime ? new Date(playlistDetail.createTime).toLocaleDateString() : "Unknown Date",
       creator: playlistDetail?.creator?.nickname ?? "Unknown User",
       creatorAvatar: playlistDetail?.creator?.avatarUrl ?? "",
@@ -124,7 +135,7 @@ export default function PlaylistPage() {
         getMainColorFromImage(playlistDetail.coverImgUrl)
           .then((color) => {
             if (color) {
-              colorCache.set(playlistDetail.coverImgUrl, color);
+              setColorCache(playlistDetail.coverImgUrl, color);
               setThemeColor(color);
             } else {
               setThemeColor("#88b325");
@@ -227,7 +238,8 @@ export default function PlaylistPage() {
 
           {/* 2. 标题区：放弃过于激进的 clamp，使用稳定字号 + 紧凑行高 + 3行截断 */}
           <h1
-            className="m-0 font-black tracking-tighter leading-[1.1] drop-shadow-lg mb-4 md:mb-6 wrap-break-word text-4xl md:text-5xl lg:text-6xl line-clamp-3"
+            className="m-0 font-black tracking-tighter leading-[1.1] drop-shadow-lg mb-4 md:mb-6
+            wrap-break-word text-4xl md:text-5xl lg:text-6xl line-clamp-3"
             title={PLAYLIST_INFO.title}
           >
             {PLAYLIST_INFO.title}
@@ -264,27 +276,32 @@ export default function PlaylistPage() {
         {/* 动作栏 + 搜索控制区 */}
         <div className="flex items-center justify-between px-6 py-6">
           <div className="flex items-center gap-6">
-            <button onClick={() => {
-              const state = usePlayerStore.getState();
-              state.setIsPlaying(!state.isPlaying);
-            }}
-              disabled={!usePlayerStore((s: any) => s.currentSongDetail)}
+            <button
+              onClick={() => {
+                const state = usePlayerStore.getState();
+                const songs = useUserStore.getState().albumList;
+                if (!songs.length) return;
+                // 如果当前队列不是本页歌曲，替换队列并从头播放；否则切换播放/暂停
+                const isCurrentQueue = state.queue.length === songs.length && state.queue[0]?.id === songs[0]?.id;
+                if (isCurrentQueue) {
+                  state.setIsPlaying(!state.isPlaying);
+                } else {
+                  state.setQueue(songs, 0);
+                  state.playQueueIndex(0);
+                }
+              }}
+              disabled={!currentSongDetail && !useUserStore.getState().albumList.length}
               className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
-              {
-                usePlayerStore((s: any) => s.isPlaying) ?
-                  <Pause className="w-6 h-6 ml-0.5 fill-current" /> :
-                  <Play className="w-6 h-6 ml-1.5 fill-current" />
-              }
+              {isPlaying ? <Pause className="w-6 h-6 ml-0.5 fill-current" /> : <Play className="w-6 h-6 ml-1.5 fill-current" />}
             </button>
-            {/* 和 UI 状态同步 */}
-            {usePlayerStore((s: any) => s.isShuffle) ?
-              (
-                <div className="relative inline-flex items-center justify-center cursor-pointer">
-                  <Shuffle className={cn("w-8 h-8 text-[#1ed760] cursor-pointer")} />
-                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#1ed760] rounded-full" />
-                </div>
-              ) :
-              <Shuffle className="w-8 h-8 text-zinc-400 cursor-pointer" />}
+            {isShuffle ? (
+              <div className="relative inline-flex items-center justify-center cursor-pointer">
+                <Shuffle className={cn("w-8 h-8 text-[#1ed760] cursor-pointer")} />
+                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#1ed760] rounded-full" />
+              </div>
+            ) : (
+              <Shuffle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
+            )}
             <ArrowDownCircle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
             <MoreHorizontal className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
           </div>

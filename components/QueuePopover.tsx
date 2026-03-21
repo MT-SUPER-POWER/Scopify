@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useRef, memo, useCallback, useState } from "react";
+import React, { useRef, memo, useCallback, useState, useEffect } from "react";
 import { ListMusic, Play } from "lucide-react";
 import { motion } from "framer-motion";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { ScrollArea } from "./ui/scroll-area";
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件解耦 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -137,47 +138,58 @@ const QueueList = () => {
   });
 
   const handlePlay = useCallback((index: number) => {
+    if (isPlaying === true && index === queueIndex) {
+      playQueueIndex(-1);
+    }
     playQueueIndex(index);
-  }, [playQueueIndex]);
+  }, [playQueueIndex, queueIndex, isPlaying]);
+
+  // NOTE: 点击页面定位到播放的位置
+  useEffect(() => {
+    if (queueIndex < 0) return;
+    virtualizer.scrollToIndex(queueIndex, { align: "center", behavior: "smooth" });
+  }, [queueIndex, virtualizer]);
 
   return (
-    <div
-      ref={parentRef}
-      className="h-125 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent"
+    <ScrollArea
+      viewportRef={parentRef} // NOTE: 使用 ScrollArea 用这个 viewportRef 来替代直接操作 DOM 的 ref
+      className="h-125 w-full"
     >
-      {queue.length === 0 ? (
-        <div className="py-20 text-center text-zinc-500 text-sm">
-          队列是空的
-        </div>
-      ) : (
-        <div
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {virtualizer.getVirtualItems().map((virtualRow) => {
-            const index = virtualRow.index;
-            const song = queue[index];
-            const isActive = index === queueIndex;
+      <div className="p-2">
+        {queue.length === 0 ? (
+          <div className="py-16 flex flex-col items-center justify-center text-zinc-500">
+            <ListMusic className="w-10 h-10 opacity-60" />
+          </div>
+        ) : (
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: "100%",
+              position: "relative",
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualRow) => {
+              const index = virtualRow.index;
+              const song = queue[index];
+              const isActive = index === queueIndex;
 
-            return (
-              <QueueItem
-                key={virtualRow.key}
-                song={song}
-                index={index}
-                isActive={isActive}
-                isPlaying={isPlaying}
-                virtualStart={virtualRow.start}
-                virtualSize={virtualRow.size}
-                onPlay={handlePlay}
-              />
-            );
-          })}
-        </div>
-      )}
-    </div>
+              return (
+                <QueueItem
+                  key={virtualRow.key}
+                  song={song}
+                  index={index}
+                  isActive={isActive}
+                  isPlaying={isPlaying}
+                  virtualStart={virtualRow.start}
+                  virtualSize={virtualRow.size}
+                  onPlay={handlePlay}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </ScrollArea>
   );
 };
 
@@ -189,18 +201,19 @@ export const QueuePopover = () => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="text-zinc-400 hover:text-white transition-colors p-3" title="Play Queue">
+        <button className="text-zinc-400 hover:text-white transition-colors flex items-center justify-center" title="Play Queue">
           <ListMusic className="w-5 h-5" />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-96 p-0 bg-[#181818] border border-white/10 text-zinc-100 shadow-2xl">
+      <PopoverContent
+        align="end" className="w-96 bg-[#181818] border border-white/10 text-zinc-100 shadow-2xl">
         <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#181818]/90 backdrop-blur-sm sticky top-0 z-10">
           <div>
             <h3 className="font-bold text-lg">当前队列</h3>
             <p className="text-xs text-zinc-400">共 {queue.length} 首歌曲</p>
           </div>
         </div>
-        {open && <QueueList />}
+        <QueueList />
       </PopoverContent>
     </Popover>
   );
