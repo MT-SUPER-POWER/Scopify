@@ -1,6 +1,7 @@
 "use client";
 
-import { Monitor } from "lucide-react";
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 import { IS_ELECTRON } from "@/lib/utils";
 import {
   SaveChangesButton,
@@ -38,17 +39,6 @@ const SettingsPage = () => {
       <div className="flex justify-between items-center mb-10 mt-4.5">
         <h1 className="text-white text-4xl md:text-5xl font-black tracking-tight">Settings</h1>
       </div>
-
-      {/* Web 模式提示 */}
-      {!IS_ELECTRON && (
-        <div className="flex items-start gap-3 mb-8 p-4 bg-[#1a1a2e] border border-[#3a3a5c] rounded-lg">
-          <Monitor className="w-4 h-4 text-[#a78bfa] mt-0.5 shrink-0" />
-          <p className="text-sm text-[#a7a7a7]">
-            <span className="text-white font-medium">Web 模式</span>
-            {" — "}部分设置（应用窗口、后端服务等）仅在桌面端可用。网络设置将保存到本地浏览器，页面刷新后生效。
-          </p>
-        </div>
-      )}
 
       <div className="flex flex-col">
         <div className="grow grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10 items-start pb-20">
@@ -212,29 +202,32 @@ const SettingsPage = () => {
                 />
               </SettingSection>
 
-              <SettingSection title="Frontend Service">
-                <SettingRow
-                  label="Frontend Host"
-                  requiresRestart
-                  control={
-                    <SettingInput
-                      value={config.frontend.host}
-                      onChange={(v) => handleLocalChange("frontend", "host", v)}
-                    />
-                  }
-                />
-                <SettingRow
-                  label="Development Port"
-                  requiresRestart
-                  control={
-                    <SettingInput
-                      type="number"
-                      value={config.frontend.devPort}
-                      onChange={(v) => handleLocalChange("frontend", "devPort", Number(v))}
-                    />
-                  }
-                />
-              </SettingSection>
+              {/* 仅开发环境可见，打包后隐藏 */}
+              {process.env.NODE_ENV !== "production" && (
+                <SettingSection title="Frontend Service">
+                  <SettingRow
+                    label="Frontend Host"
+                    requiresRestart
+                    control={
+                      <SettingInput
+                        value={config.frontend.host}
+                        onChange={(v) => handleLocalChange("frontend", "host", v)}
+                      />
+                    }
+                  />
+                  <SettingRow
+                    label="Development Port"
+                    requiresRestart
+                    control={
+                      <SettingInput
+                        type="number"
+                        value={config.frontend.devPort}
+                        onChange={(v) => handleLocalChange("frontend", "devPort", Number(v))}
+                      />
+                    }
+                  />
+                </SettingSection>
+              )}
             </div>
           )}
         </div>

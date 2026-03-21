@@ -1,6 +1,6 @@
 {
-  "name": "Scopify",
-  "version": "0.1.0",
+  "name": "scopify",
+  "version": "1.0.1",
   "private": true,
   "author": {
     "name": "Momo",
@@ -140,7 +140,10 @@
       "package.json"
     ],
     "win": {
-      "target": "dir",
+      "target": [
+        "nsis",
+        "dir"
+      ],
       "icon": "resources/icon.ico",
       "requestedExecutionLevel": "asInvoker",
       "verifyUpdateCodeSignature": false

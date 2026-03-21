@@ -167,11 +167,17 @@ export function SaveConfirmModal({
 }) {
   if (!open) return null;
 
+  /*   const subtitle = isWeb
+      ? "网络设置将在页面刷新后完全生效，其余设置立即生效。"
+      : requiresRestart
+      ? '标记"重启生效"的配置需要重启应用程序才能完全生效，其余配置立即生效。'
+      : "是否确认保存？修改将立即生效。"; */
+
   const subtitle = isWeb
-    ? "网络设置将在页面刷新后完全生效，其余设置立即生效。"
+    ? "Network settings will take full effect after refreshing the page, while other settings will take effect immediately."
     : requiresRestart
-    ? '标记"重启生效"的配置需要重启应用程序才能完全生效，其余配置立即生效。'
-    : "是否确认保存？修改将立即生效。";
+      ? 'Settings marked with "Restart Required" will take full effect after restarting the application, while other settings will take effect immediately.'
+      : "Confirm saving changes? All changes will take effect immediately.";
 
   return (
     <div

@@ -2,6 +2,7 @@ import { AppConfig } from "@/types/config";
 
 // Electron `preload.js` 暴露给前端的 API 类型声明
 export interface ElectronAPI {
+    relaunchApp: () => void;
   on: (channel: string, callback: (...args: unknown[]) => void) => void;
   // ? callback 参数保留，以后开发可能用的上
   off: (channel: string, callback?: (...args: unknown[]) => void) => void;

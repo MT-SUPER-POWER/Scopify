@@ -109,6 +109,7 @@ const createWindow = () => {
     }
   } else {
     mainWindow.loadURL(devBase);
+    // 仅当允许时自动打开 DevTools
     if (appConfig.app.devTools) {
       mainWindow.webContents.openDevTools();
     }
@@ -118,7 +119,7 @@ const createWindow = () => {
     });
   }
 
-  // 禁用缩放快捷键（防止误触）
+  // 禁用缩放快捷键和 DevTools 快捷键（防止误触和限制开发者工具）
   mainWindow.webContents.on("before-input-event", (event, input) => {
     // 禁止 Ctrl/Cmd + 数字 0 (重置缩放)
     if ((input.control || input.meta) && input.key === "0") {
@@ -130,6 +131,16 @@ const createWindow = () => {
     }
     // 禁止 Ctrl/Cmd + - (缩小)
     if ((input.control || input.meta) && input.key === "-") {
+      event.preventDefault();
+    }
+
+    // 限制 DevTools 快捷键（F12、Ctrl+Shift+I、Cmd+Opt+I）
+    const isDevToolsKey = (
+      input.key === "F12" ||
+      ((input.control || input.meta) && input.shift && input.key.toUpperCase() === "I") ||
+      ((process.platform === "darwin") && input.meta && input.alt && input.key.toUpperCase() === "I")
+    );
+    if (isDevToolsKey && !appConfig.app.devTools) {
       event.preventDefault();
     }
   });
@@ -149,7 +160,7 @@ const createWindow = () => {
     }
   });
 
-  mainWindow.on("close", (e: any) => {
+  mainWindow.on("close", (e: Electron.Event) => {
     // 用 tray 触发的 quit 会引发 "before-quit" 事件，这种关闭，不会在这里阻止关闭
     if (isQuitting) return;
 

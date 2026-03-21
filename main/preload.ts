@@ -3,6 +3,7 @@ import { ElectronAPI } from "@/types/electron";
 
 // NOTE: 写好了接口，记得在 types/electron.d.ts 中声明类型
 const electronAPI: ElectronAPI = {
+    relaunchApp: () => { ipcRenderer.send("relaunch-app"); },
   on: (channel, callback) => { ipcRenderer.on(channel, callback); },
   off: (channel) => { ipcRenderer.removeAllListeners(channel); },
   send: (channel, args) => { ipcRenderer.send(channel, args); },

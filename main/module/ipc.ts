@@ -10,6 +10,14 @@ import { loginWindow } from "./login.js";
 
 export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
 
+  // 监听重启应用请求
+  ipcMain.on("relaunch-app", () => {
+    logger.info("[IPC] 收到重启应用请求，准备 relaunch");
+
+    app.relaunch();
+    app.quit(); // 使用 quit() 而不是 exit(0)，为了触发 before-quit 去清理后端进程
+  });
+
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PLAYER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ipcMain.on("player-state-changed", (_event, { isPlaying }: { isPlaying: boolean }) => {
     if (mainWindow) {
@@ -66,7 +74,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     }
   });
 
-  ipcMain.on("window-exit-full-screen", (_event) => {
+  ipcMain.on("window-exit-full-screen", () => {
     if (mainWindow) {
       mainWindow.setFullScreen(false);
     }

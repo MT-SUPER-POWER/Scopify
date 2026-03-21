@@ -14,7 +14,6 @@
 5. Makefile + k8s + Docker: 后端部署部分
 6. Axios: 后端通讯统一管理部分
 7. Zustand: 前端状态管理
-8. TODO: Zod 来作为数据类型来声明 `type` --> 下一次升级，或者下一个项目来做了
 
 ## 重要的三方库
 
@@ -38,6 +37,7 @@ cd momo-music-player/
 bun i
 
 cd backend/api-enhanced
+# 一定要拉这个分支，这个一定要拉 主要分支，fix/compatible_main 是 原 api-enhance 给项目做兼容用的
 git clone https://github.com/MT-SUPER-POWER/api-enhanced
 bun install  # 安装后端依赖
 
@@ -101,7 +101,10 @@ make netease_undeploy # 卸载
 
 ### 优化部分
 
-- AMLL 太吃性能，占用特别的大
+- AMLL 太吃性能，资源占用特别高
+- 窗口刚启动就播放动画，因为资源没加载好，然后这个动画就会卡顿
+- 打包文件特别大一个
+- Zod 来作为数据类型来声明 `type`
 
 ### 功能部分
 

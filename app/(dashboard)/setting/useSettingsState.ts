@@ -133,6 +133,11 @@ export function useSettingsState() {
       setConfig(nextConfig);
       setIsModalOpen(false);
       syncCloseActionPreference(nextConfig.app.closeAction);
+
+      // 如果需要重启，自动重启应用
+      if (checkRequiresRestart(nextConfig, originalConfig!)) {
+        window.electronAPI.relaunchApp();
+      }
     } catch (error) {
       console.error("[Settings] 配置写入失败:", error);
     } finally {
