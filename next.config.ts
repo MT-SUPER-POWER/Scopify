@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
     APP_CFG_NET_TIMEOUT: String(cfg.network.timeout),
     APP_CFG_NET_MAX_RETRIES: String(cfg.network.max_retries),
     APP_CFG_NET_RETRY_DELAY: String(cfg.network.retry_delay),
+    APP_CFG_NET_RANDOM_CNIP: String(cfg.network.randomCNIP),
     APP_CFG_LOG_LEVEL: cfg.logging.level,
   },
   // @ts-ignore - Next.js 15+ 移入顶层的配置
