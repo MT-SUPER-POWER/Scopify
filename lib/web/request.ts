@@ -1,12 +1,30 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { usePlayerStore, useUserStore } from '@/store';
 import { appConfig, logger } from './env';
-
+import { WEB_NETWORK_SETTINGS_KEY } from '@/app/(dashboard)/setting/useSettingsState';
 
 // 扩展请求配置接口
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   retryCount?: number;
   noRetry?: boolean;
+  randomCNIP?: boolean; // 这个参数可以开机随机的中国 IP，但是不开好像没啥限制就是了
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ NETWORK CONFIG ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/**
+ * 获取当前生效的网络配置。
+ * Web 模式下从 localStorage 读取用户覆盖值（通过 Settings 页面设置）；
+ * Electron 模式下直接使用构建时注入的 appConfig。
+ */
+function getNetworkConfig() {
+  const base = appConfig.network;
+  if (typeof window === 'undefined' || (window as any).electronAPI) return base;
+  try {
+    const stored = localStorage.getItem(WEB_NETWORK_SETTINGS_KEY);
+    if (stored) return { ...base, ...JSON.parse(stored) };
+  } catch { /* ignore */ }
+  return base;
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -14,9 +32,6 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 // 运行时优先取 preload 注入的后端地址（Electron 静态导出场景）
 const INITIAL_BASE_URL = `http://${appConfig.backend.host}:${appConfig.backend.port}`;
 let baseURL = INITIAL_BASE_URL;
-const MAX_RETRIES = appConfig.network.max_retries;
-const RETRY_DELAY = appConfig.network.retry_delay;
-const AXIOS_TIMEOUT = appConfig.network.timeout;
 const NO_RETRY_URLS = ['暂时没有'];
 
 logger.info("--------------------------------------------------");
@@ -29,7 +44,7 @@ if (!baseURL) {
 
 const request = axios.create({
   baseURL,
-  timeout: AXIOS_TIMEOUT,
+  timeout: getNetworkConfig().timeout,
   withCredentials: true
 });
 
@@ -62,6 +77,9 @@ request.interceptors.request.use(
       throw new Error("请在 NEXT_CONFIG 或 Electron 运行时提供 BACKEND_URL");
     }
     config.baseURL = baseURL;
+    // 动态读取网络配置（Web 模式下支持 localStorage 覆盖）
+    const networkCfg = getNetworkConfig();
+    config.timeout = networkCfg.timeout;
 
     // 只在retryCount未定义时初始化为0
     if (config.retryCount === undefined) {
@@ -74,7 +92,8 @@ request.interceptors.request.use(
     config.params = {
       ...config.params,
       timestamp: Date.now(),
-      ...(isElectron ? { device: 'pc' } : { platform: 'web' })
+      ...(isElectron ? { os: 'pc' } : { platform: 'web' }),
+      randomCNIP: networkCfg.randomCNIP,
     };
     return config;
   },
@@ -88,9 +107,10 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   async (response) => {
     // 兼容网易云 API 的业务逻辑错误
-    const resData = response.data;
     // 所有响应都直接输出到 console 并返回，不拦截任何业务错误
-    /*     if (resData && resData.code) {
+    /*
+    const resData = response.data;
+    if (resData && resData.code) {
           console.log('[业务响应]', {
             code: resData.code,
             msg: resData.msg,
@@ -142,9 +162,10 @@ request.interceptors.response.use(
     }
 
     // 检查是否还可以重试
+    const { max_retries, retry_delay } = getNetworkConfig();
     if (
       config.retryCount !== undefined &&
-      config.retryCount < MAX_RETRIES &&
+      config.retryCount < max_retries &&
       !NO_RETRY_URLS.includes(config.url as string) &&
       !config.noRetry
     ) {
@@ -152,13 +173,13 @@ request.interceptors.response.use(
       logger.warn(`请求重试第 ${config.retryCount} 次`);
 
       // 延迟重试
-      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+      await new Promise((resolve) => setTimeout(resolve, retry_delay));
 
       // 重新发起请求
       return request(config);
     }
 
-    logger.warn(`重试${MAX_RETRIES}次后仍然失败`);
+    logger.warn(`重试${max_retries}次后仍然失败`);
     return Promise.reject(error);
   }
 );

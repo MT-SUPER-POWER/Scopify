@@ -2,7 +2,7 @@ import type { IUserDetail, IUserFollow } from '@/types/api/user';
 import request from '../web/request';
 
 // /user/detail
-export function getUserDetail(uid: number) {
+export function getUserDetail(uid: number | string) {
   return request.get('/user/detail', { params: { uid } });
 }
 
@@ -12,7 +12,6 @@ export function getUserPlaylist(uid: number, limit: number = 30, offset: number 
 }
 
 // 播放历史
-// /user/record?uid=32953014&type=1
 export function getUserRecord(uid: number, type: number = 0) {
   return request.get('/user/record', {
     params: { uid, type },
@@ -29,8 +28,7 @@ export function getUserComments(uid: number) {
 }
 
 // 最近播放-歌曲
-// /record/recent/song
-export function getRecentSongs(limit: number = 100) {
+export function getRecentSongs(limit: number = 10) {
   return request.get('/record/recent/song', {
     params: { limit },
     noRetry: true
@@ -38,8 +36,7 @@ export function getRecentSongs(limit: number = 100) {
 }
 
 // 最近播放-歌单
-// /record/recent/playlist
-export function getRecentPlaylists(limit: number = 100) {
+export function getRecentPlaylists(limit: number = 10) {
   return request.get('/record/recent/playlist', {
     params: { limit },
     noRetry: true
@@ -47,7 +44,6 @@ export function getRecentPlaylists(limit: number = 100) {
 }
 
 // 最近播放-专辑
-// /record/recent/album
 export function getRecentAlbums(limit: number = 100) {
   return request.get('/record/recent/album', {
     params: { limit },
@@ -56,7 +52,6 @@ export function getRecentAlbums(limit: number = 100) {
 }
 
 // 获取用户关注列表
-// /user/follows?uid=32953014
 export function getUserFollows(uid: number, limit: number = 30, offset: number = 0) {
   return request.get('/user/follows', { params: { uid, limit, offset } });
 }

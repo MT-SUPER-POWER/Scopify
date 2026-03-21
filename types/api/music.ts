@@ -48,8 +48,7 @@ export const pruneSongDetail = (raw: any): SongDetail => {
     al: {
       id: raw.al?.id || 0,
       name: raw.al?.name || "未知专辑",
-      // 兼容网易云有时叫 picUrl 有时叫 coverUrl 的历史遗留问题
-      picUrl: raw.al?.picUrl || raw.al?.coverUrl || "",
+      picUrl: raw.al?.picUrl || raw.al?.blurPicUrl || raw.al?.coverUrl || "",
     },
 
     publishTime: raw.publishTime || 0,

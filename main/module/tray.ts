@@ -28,6 +28,7 @@ function createTrayWindow() {
       preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,
+      devTools: false, // 生产环境禁用开发者工具
     }
   });
 

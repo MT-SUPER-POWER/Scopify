@@ -13,3 +13,13 @@ export const getUserAlbumSublist = (params?: { limit?: number; offset?: number }
     }
   });
 };
+
+
+// 获取专辑详情
+export const getAlbumDetail = (id: number | string) => {
+  return request.get("/album", {
+    params: {
+      id,
+    }
+  })
+}
