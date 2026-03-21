@@ -76,7 +76,7 @@ export function SettingRow({
           {requiresRestart && (
             <span className="inline-flex items-center gap-1 text-xs text-[#f59e0b] border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-1.5 py-0.5 rounded font-medium">
               <RotateCcw className="w-2.5 h-2.5" />
-              重启生效
+              Restart Required
             </span>
           )}
         </div>
@@ -144,7 +144,7 @@ export function SaveChangesButton({ visible, onClick }: { visible: boolean; onCl
         onClick={onClick}
         className="flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-base bg-[#1ed760] text-black hover:bg-[#1fdf64] hover:scale-105 active:scale-100 shadow-[0_8px_24px_rgba(30,215,96,0.3)] transition-all cursor-pointer"
       >
-        保存修改
+        Save Changes
       </button>
     </div>
   );
@@ -183,7 +183,7 @@ export function SaveConfirmModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="space-y-2 mb-8">
-          <h2 className="text-2xl font-bold text-white tracking-tight">保存修改</h2>
+          <h2 className="text-2xl font-bold text-white tracking-tight">Confirm Changes</h2>
           <p className="text-[#b3b3b3] text-sm">{subtitle}</p>
         </div>
 
@@ -194,14 +194,14 @@ export function SaveConfirmModal({
             className="flex flex-col items-center justify-center w-full py-3.5 rounded-full bg-[#1ed760] hover:bg-[#1fdf64] hover:scale-105 transition-all active:scale-100 disabled:opacity-50 disabled:hover:scale-100"
           >
             <span className="text-black font-bold text-base">
-              {isSaving ? "保存中..." : "确认保存"}
+              {isSaving ? "Saving..." : "Confirm"}
             </span>
           </button>
           <button
             onClick={onClose}
             className="flex flex-col items-center justify-center w-full py-3.5 rounded-full bg-transparent border border-[#727272] hover:border-white hover:scale-105 transition-all active:scale-100"
           >
-            <span className="text-white font-bold text-base">取消</span>
+            <span className="text-white font-bold text-base">Cancel</span>
           </button>
         </div>
       </div>
