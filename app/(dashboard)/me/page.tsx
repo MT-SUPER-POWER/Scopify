@@ -3,7 +3,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { useState } from 'react';
-import { Play, Clock } from 'lucide-react';
+import { Play } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -12,7 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import logoIcon from "@/resources/icon.ico";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -108,6 +107,13 @@ const PROFILE_DATA = {
       desc: "基于 Rust 的 NES 模拟器",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Nintendo-Famicom-Disk-System.jpg/250px-Nintendo-Famicom-Disk-System.jpg",
       url: "https://github.com/MT-SUPER-POWER/nes_emulator"
+    },
+    {
+      id: 4,
+      title: "NeteaseCloud API",
+      desc: "网易云后台 API",
+      img: "https://cdnb.artstation.com/p/assets/images/images/059/230/111/large/wg-sketch1675772121021.jpg?1675923493",
+      url: "https://github.com/MT-SUPER-POWER/api-enhanced"
     },
   ],
 };

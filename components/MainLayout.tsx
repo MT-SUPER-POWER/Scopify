@@ -1,6 +1,3 @@
-
-
-
 'use client';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -17,7 +14,7 @@ import { useUiStore } from "@/store/module/ui";
 
 // lib
 import { cn } from "@/lib/utils";
-import { usePanelRef, useDefaultLayout } from "react-resizable-panels";
+import { useDefaultLayout } from "react-resizable-panels";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ResizableHandle,
@@ -31,7 +28,8 @@ import LyricsModal from "../components/LyricModal";
 
 import { useHasHydrated } from "@/lib/hooks/useHydration";
 import AppCloseDialog from "./AppCloseDialog";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { useSearchStore } from "@/store/module/search";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -42,6 +40,15 @@ function MainLayoutInner({
   children?: ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const clearSearchQuery = useSearchStore((s) => s.clearQuery);
+
+  // 监听路由变化，如果回到首页则清空搜索词
+  useEffect(() => {
+    if (pathname === "/") {
+      clearSearchQuery();
+    }
+  }, [pathname, clearSearchQuery]);
 
   // 监听来自 Electron 主进程的导航请求
   useEffect(() => {
@@ -54,7 +61,6 @@ function MainLayoutInner({
 
   const { defaultLayout, onLayoutChanged: originalOnLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
-    storage: typeof window !== "undefined" ? localStorage : undefined
   });
 
   // 防抖 onLayoutChanged，避免拖拽时高频写 localStorage
@@ -66,22 +72,11 @@ function MainLayoutInner({
       originalOnLayoutChanged(layout);
     }, 300);
   }, [originalOnLayoutChanged]);
-  const panelRef = usePanelRef();
+
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
-  const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
   const scrollContainer = useUiStore((s) => s.scrollContainer);
   const setScrollContainer = useUiStore((s) => s.setScrollContainer);
-  const isCollapsed = useUiStore(s => s.isCollapsed);
-
-  // 监听子组件的 collapse/expand 事件并同步状态
-  useEffect(() => {
-    if (isCollapsed) {
-      panelRef.current?.collapse();
-    } else {
-      panelRef.current?.expand();
-    }
-  }, [isCollapsed]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -107,8 +102,8 @@ function MainLayoutInner({
 
       {/* 模态注册 */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-      {/* <LyricsModal /> */}
       <AppCloseDialog />
+      <LyricsModal />
 
       {/* 左右结构 */}
       <main className="flex-1 min-h-0 relative w-full">
@@ -119,16 +114,12 @@ function MainLayoutInner({
           className="w-full h-full"
         >
           <ResizablePanel
-            panelRef={panelRef}
             defaultSize="20%"
             minSize="15%"
             maxSize="40%"
             collapsible
             collapsedSize={80}
-            onResize={() => setIsCollapsed(panelRef.current?.isCollapsed() ?? false)}
-            className={cn(
-              "bg-[#0f0f0f] rounded-lg overflow-hidden",
-            )}
+            className={cn("bg-[#0f0f0f] rounded-lg overflow-hidden",)}
           >
             <Sidebar />
           </ResizablePanel>
@@ -151,17 +142,11 @@ function MainLayoutInner({
                 </div>
               </div>
 
-              {/* OPTIMIZE: 滚动区元素全局绑定共享 */}
+              {/* DEBUG: 滚动区元素全局绑定共享 */}
               <ScrollArea className="h-full w-full" viewportRef={setScrollContainer}>
                 {children}
               </ScrollArea>
 
-              <SearchModal
-                isOpen={isSearchOpen}
-                onClose={() => setIsSearchOpen(false)}
-              />
-
-              <LyricsModal />
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

@@ -3,6 +3,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -12,6 +13,8 @@ import {
   FiLogOut,
   FiCoffee,
   FiLogIn,
+  FiBell,
+  FiUsers,
 } from "react-icons/fi";
 import { usePlayerStore, useUserStore } from '@/store';
 import Link from 'next/link';
@@ -68,6 +71,17 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
       >
         <DropdownMenuGroup className="space-y-1">
 
+          {/* 小屏才显示的 Bell / Friends */}
+          <DropdownMenuItem className="rounded-lg px-3 py-2 text-[15px] md:hidden">
+            <FiBell className="mr-2 h-5 w-5" />
+            <span>Notifications</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="rounded-lg px-3 py-2 text-[15px] md:hidden">
+            <FiUsers className="mr-2 h-5 w-5" />
+            <span>Friends</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator className="md:hidden" />
+
           {/* 简介 */}
           {useLoginStatus() && (
             <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
@@ -79,12 +93,10 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
           )}
 
           {/* 设置 */}
-          {isElectron && (
-            <DropdownMenuItem onSelect={() => smartRouter.push('/setting')} className="rounded-lg px-3 py-2 text-[15px]">
-              <FiSettings className="mr-2 h-5 w-5" />
-              <span>Setting</span>
-            </DropdownMenuItem>
-          )}
+          <DropdownMenuItem onSelect={() => smartRouter.push('/setting')} className="rounded-lg px-3 py-2 text-[15px]">
+            <FiSettings className="mr-2 h-5 w-5" />
+            <span>Setting</span>
+          </DropdownMenuItem>
 
           {iconList.map((item) =>
             item.label === "Download" && IS_ELECTRON ? null : (

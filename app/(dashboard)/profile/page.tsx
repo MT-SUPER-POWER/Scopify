@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from 'react';
-import { Play, MoreHorizontal, Clock, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Play, Pause, MoreHorizontal, Loader2, Clock, Heart } from 'lucide-react';
 import { useUserStore } from '@/store/module/user';
+import { usePlayerStore } from '@/store';
 import { TbSettings } from "react-icons/tb";
+import { getRecentSongs, getRecentPlaylists } from '@/lib/api/user';
+import { pruneSongDetail, SongDetail } from '@/types/api/music';
+import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
+import { getMainColorFromImage } from '@/lib/utils';
 import {
   Popover,
   PopoverContent,
@@ -17,198 +22,304 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-// TODO: 个人主页数据从后端接口获取
-const PROFILE_DATA = {
-  name: useUserStore.getState().user?.nickname || "Your Name",
-  type: "Person Profile",
-  bio: "业余计算机爱好者 / 专注于后端、前端与底层开发。热爱开源，喜欢用代码解决实际问题。平时会研究 Linux 内核、分布式系统架构，偶尔也会折腾一些有趣的小工具。相信技术能改变世界，也相信好的代码是一种艺术。",
-  avatar: useUserStore.getState().user?.avatarUrl || "https://picsum.photos/seed/profile/400/400",
-  coverColor: "from-[#535353]",
-  stats: {
-    publicRepos: 42,
-    followers: 1024,
-    following: 128,
-  },
-  topSkills: [
-    { id: 1, name: "Go / go-zero", type: "Backend Server", img: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original-wordmark.svg", album: "Contributions Development", proficiency: "1,420,034", duration: "3:45", active: true },
-    { id: 2, name: "React / Next.js", type: "Frontend Framework", img: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", album: "Modern Web Engineering", proficiency: "982,102", duration: "2:30", active: false },
-    { id: 3, name: "C / C++", type: "Linux Kernel & System", img: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg", album: "Low-level & Kernel Development", proficiency: "754,291", duration: "4:15", active: false },
-    { id: 4, name: "Python", type: "Scripts & Automation", img: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", album: "Automation Toolkit", proficiency: "532,110", duration: "1:50", active: false },
-    { id: 5, name: "Rust", type: "Learning & Systems", img: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg", album: "Systems Programming Exploration", proficiency: "120,405", duration: "2:10", active: false },
-  ],
-  projects: [
-    { id: 1, title: "Go-Zero Microservice", desc: "High concurrency backend", img: "https://picsum.photos/seed/go/200/200" },
-    { id: 2, title: "Next.js Dashboard", desc: "Fullstack web application", img: "https://picsum.photos/seed/react/200/200" },
-    { id: 3, title: "Linux Kernel Module", desc: "Custom driver development", img: "https://picsum.photos/seed/c/200/200" },
-    { id: 4, title: "Rust CLI Tool", desc: "Blazing fast terminal utility", img: "https://picsum.photos/seed/rust/200/200" },
-    { id: 5, title: "Python Scraper", desc: "Automated data collection", img: "https://picsum.photos/seed/py/200/200" },
-  ],
-};
-
-function CollapsibleBio({ text }: { text: string }) {
-  const BIO_MAX_LENGTH = 30;
-  const isLong = text.length > BIO_MAX_LENGTH;
-  const shortText = isLong ? text.slice(0, BIO_MAX_LENGTH) + "..." : text;
-
-  return (
-    <div className="mb-3 max-w-md flex items-center gap-2">
-      {/* 文字单行截断，flex-1 保证不撑开布局 */}
-      <span className="text-gray-400 text-xs md:text-sm tracking-wide truncate">
-        {shortText}
-      </span>
-
-      {/* 详情按钮独立在文字外，不影响截断 */}
-      {isLong && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <button className="shrink-0 inline-flex items-center gap-0.5 text-white font-semibold text-xs hover:underline focus:outline-none">
-              详情 <ChevronDown size={12} />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-72 bg-[#282828] border border-white/10 text-white shadow-2xl rounded-xl p-4"
-            side="bottom"
-            align="center"
-          >
-            <p className="text-xs text-gray-500 mb-2 font-semibold uppercase tracking-wider">Signature</p>
-            <p className="text-sm text-gray-300 leading-relaxed">{text}</p>
-          </PopoverContent>
-        </Popover>
-      )}
-    </div>
-  );
-}
+import { toast } from 'sonner';
+import { motion } from 'motion/react';
+import { cn, formatDuration } from '@/lib/utils';
 
 export default function ProfilePage() {
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const router = useSmartRouter();
+  const user = useUserStore((state) => state.user);
+
+  const { setQueue, playTrack, currentSongDetail, isPlaying } = usePlayerStore();
+
+  const [recentSongs, setRecentSongs] = useState<SongDetail[]>([]);
+  const [recentPlaylists, setRecentPlaylists] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hoveredTrackIndex, setHoveredTrackIndex] = useState<number | null>(null);
+
+  // 与 playlist page 完全一致：从头像提取主色做渐变背景
+  const [themeColor, setThemeColor] = useState<string>("#535353");
+
+  useEffect(() => {
+    if (user?.avatarUrl) {
+      getMainColorFromImage(user.avatarUrl)
+        .then((color) => { if (color) setThemeColor(color); })
+        .catch(() => { });
+    }
+  }, [user?.avatarUrl]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    Promise.allSettled([
+      getRecentSongs(10),
+      getRecentPlaylists(10)
+    ]).then(([songsRes, playlistsRes]) => {
+      if (songsRes.status === 'fulfilled') {
+        const rawSongs = songsRes.value.data?.data?.list || [];
+        setRecentSongs(rawSongs.slice(0, 10).map((item: any) => pruneSongDetail(item.data)));
+      } else {
+        toast.error("加载最近播放歌曲失败");
+      }
+
+      if (playlistsRes.status === 'fulfilled') {
+        const rawPlaylists = playlistsRes.value.data?.data?.list || [];
+        setRecentPlaylists(rawPlaylists.slice(0, 10).map((item: any) => item.data));
+      } else {
+        toast.error("加载最近播放歌单失败");
+      }
+    }).finally(() => {
+      setIsLoading(false);
+    });
+  }, []);
+
+  const handlePlaySong = (index: number) => {
+    if (recentSongs.length === 0) return;
+    const song = recentSongs[index];
+    if (currentSongDetail?.id === song.id) {
+      usePlayerStore.getState().setIsPlaying(!isPlaying);
+      return;
+    }
+    setQueue(recentSongs, index);
+    playTrack(song);
+  };
+
+  const isTrackPlaying = (id: number) => currentSongDetail?.id === id;
+
+  if (isLoading) {
+    return (
+      <div className="h-full bg-[#121212] flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1DB954]" />
+      </div>
+    );
+  }
 
   return (
-    <>
-      <main className="flex-1 overflow-y-auto bg-[#121212]">
+    <div className="relative w-full min-h-screen flex flex-col bg-[#121212] font-sans text-white pb-24">
 
-        {/* 顶部 Hero 区域 */}
-        <div className={`bg-linear-to-b ${PROFILE_DATA.coverColor} to-[#121212] pt-20 pb-6 px-6 md:px-8 flex flex-col md:flex-row items-center md:items-end gap-6`}>
+      {/* 顶部背景渐变 — 与 playlist page 完全相同的写法 */}
+      <div
+        className="absolute top-0 left-0 right-0 h-100 md:h-125 z-0 pointer-events-none opacity-60"
+        style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
+      />
+
+      {/* Hero Header — 对齐 playlist page 的 flex-col md:flex-row + pt-24 pb-6 px-6 */}
+      <div className="relative z-10 flex flex-col md:flex-row items-start gap-6 px-6 pt-24 pb-6">
+
+        {/* 左侧：头像，尺寸 / 阴影 / hover 与封面保持一致，仅保留圆形作为 profile 区分 */}
+        <div className="w-48 h-48 lg:w-56 lg:h-56 shrink-0 transition-transform duration-300 hover:scale-[1.02]
+            shadow-[0_8px_40px_rgba(0,0,0,0.5)] rounded-full overflow-hidden bg-black/20">
           <img
-            src={PROFILE_DATA.avatar}
+            src={user?.avatarUrl || "https://picsum.photos/seed/profile/400/400"}
             alt="Profile"
-            className="w-48 h-48 rounded-full shadow-2xl object-cover"
+            className="w-full h-full object-cover"
           />
-          <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <span className="text-sm font-semibold tracking-wider uppercase mb-2">
-              {PROFILE_DATA.type}
+        </div>
+
+        {/* 右侧：信息区，结构与 playlist page 右侧完全一致 */}
+        <div className="flex flex-col flex-1 min-w-0 text-white pt-1 md:pt-2">
+
+          {/* 1. 标签区 */}
+          <div className="flex flex-row gap-2 flex-wrap items-center mb-3 md:mb-4">
+            <span className="text-sm drop-shadow-md uppercase tracking-wider bg-white/10 px-3 py-1 rounded-sm">
+              Profile
             </span>
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter">
-              {PROFILE_DATA.name}
-            </h1>
-
-            {/* Bio 折叠区域 */}
-            <CollapsibleBio text={PROFILE_DATA.bio} />
-
-            <div className="flex items-center gap-2 text-sm font-semibold text-gray-200">
-              <span>{PROFILE_DATA.stats.publicRepos} Public Repos</span>
-              <span className="w-1 h-1 rounded-full bg-white" />
-              <span>{PROFILE_DATA.stats.followers} Followers</span>
-              <span className="w-1 h-1 rounded-full bg-white" />
-              <span>{PROFILE_DATA.stats.following} Following</span>
-            </div>
           </div>
+
+          {/* 2. 标题区 */}
+          <h1
+            className="m-0 font-black tracking-tighter leading-[1.1] drop-shadow-lg mb-4 md:mb-6
+            wrap-break-word text-4xl md:text-5xl lg:text-6xl line-clamp-3"
+            title={user?.nickname}
+          >
+            {user?.nickname || "Your Name"}
+          </h1>
+
+          {/* 3. 元数据区 */}
+          <div className="flex flex-wrap items-center gap-2.5 text-sm text-white/80 drop-shadow-md">
+            <span>
+              <span className="text-white font-semibold">{user?.followeds?.toLocaleString() ?? 0}</span>
+              {' '}Followers
+            </span>
+            <span className="opacity-60">•</span>
+            <span>
+              <span className="text-white font-semibold">{user?.follows?.toLocaleString() ?? 0}</span>
+              {' '}Following
+            </span>
+            {recentPlaylists.length > 0 && (
+              <>
+                <span className="opacity-60">•</span>
+                <span className="font-medium text-white"> {recentPlaylists.length} Recent Playlists</span>
+              </>
+            )}
+          </div>
+
         </div>
+      </div>
 
-        {/* 悬浮操作栏 */}
-        <div className="px-6 md:px-8 py-4 flex items-center gap-4 z-10">
-          <button className="w-14 h-14 rounded-full flex items-center justify-center hover:scale-115 transition shadow-lg">
-            <TbSettings size={32} className='text-gray-400 hover:text-white cursor-pointer' />
-          </button>
-          <MoreHorizontal size={32} className="text-gray-400 hover:text-white cursor-pointer" />
-        </div>
+      {/* 过渡遮罩 + 内容区 — 与 playlist page 完全一致 */}
+      <div className="flex-1 relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] to-[#121212] via-20%">
 
-        {/* 热门技能列表 */}
-        <div className="px-6 md:px-8 mt-4">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-white/10 hover:bg-transparent">
-                <TableHead className="w-10 text-center text-[#b3b3b3]">#</TableHead>
-                <TableHead className="text-[#b3b3b3]">标题</TableHead>
-                <TableHead className="hidden md:table-cell text-[#b3b3b3]">专辑</TableHead>
-                <TableHead className="text-right text-[#b3b3b3]">
-                  <Clock size={16} className="ml-auto" />
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {PROFILE_DATA.topSkills.map((skill, index) => (
-                <TableRow
-                  key={skill.id}
-                  onMouseEnter={() => setHoveredRow(skill.id)}
-                  onMouseLeave={() => setHoveredRow(null)}
-                  className="border-none group hover:bg-white/10 transition-colors cursor-default"
-                >
-                  {/* 序号 / 播放 */}
-                  <TableCell className="w-10 text-center text-[#b3b3b3]">
-                    {hoveredRow === skill.id ? (
-                      <Play size={16} fill="white" className="mx-auto cursor-pointer text-white" />
-                    ) : (
-                      <span>{index + 1}</span>
-                    )}
-                  </TableCell>
-
-                  {/* 封面 + 标题 + 副标题 */}
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={skill.img}
-                        alt={skill.name}
-                        className="w-10 h-10 rounded shadow-sm object-contain bg-white/5 p-px shrink-0"
-                      />
-                      <div className="flex flex-col overflow-hidden">
-                        <span className="font-medium text-base text-white truncate cursor-pointer hover:underline">
-                          {skill.name}
-                        </span>
-                        <span className="text-sm text-[#b3b3b3] truncate group-hover:text-white transition-colors cursor-pointer hover:underline">
-                          {skill.type}
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
-
-                  {/* 专辑 */}
-                  <TableCell className="hidden md:table-cell text-sm text-[#b3b3b3] group-hover:text-white transition-colors cursor-pointer hover:underline truncate max-w-62.5">
-                    {skill.album}
-                  </TableCell>
-
-                  {/* 时长 */}
-                  <TableCell className="text-right text-sm text-[#b3b3b3] font-medium">
-                    {skill.duration}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* 项目卡片列表 */}
-        <div className="px-6 md:px-8 mt-10 mb-20">
-          <h2 className="text-2xl font-bold mb-6 hover:underline cursor-pointer">Projects & Repositories</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {PROFILE_DATA.projects.map(project => (
-              <div key={project.id} className="bg-[#181818] p-4 rounded-md hover:bg-[#282828] transition duration-300 group cursor-pointer">
-                <div className="relative w-full aspect-square mb-4 shadow-lg rounded-md overflow-hidden">
-                  <img src={project.img} alt={project.title} className="w-full h-full object-cover" />
-                  <div className="absolute bottom-2 right-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                    <button className="w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#1fdf64]">
-                      <Play size={24} fill="black" stroke="black" className="ml-1" />
-                    </button>
-                  </div>
-                </div>
-                <h3 className="font-bold text-white truncate mb-1">{project.title}</h3>
-                <p className="text-sm text-gray-400 line-clamp-2">{project.desc}</p>
+        {/* Action Bar */}
+        <div className="flex items-center px-6 py-6 gap-6">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="text-gray-400 hover:text-white transition-colors">
+                <TbSettings className="w-8 h-8" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 bg-[#282828] border-none text-white p-2">
+              <div className="flex flex-col text-sm font-medium">
+                <button className="text-left px-3 py-2 hover:bg-white/10 rounded-sm">Edit Profile</button>
+                <button className="text-left px-3 py-2 hover:bg-white/10 rounded-sm">Copy Link</button>
               </div>
-            ))}
-          </div>
+            </PopoverContent>
+          </Popover>
+          <button className="text-gray-400 hover:text-white transition-colors">
+            <MoreHorizontal className="w-8 h-8" />
+          </button>
         </div>
 
-      </main>
-    </>
+        {/* 最近播放 - 歌曲 */}
+        <div className="px-6 mt-4">
+          <h2 className="text-2xl font-bold mb-6 hover:underline cursor-pointer">Recent Songs</h2>
+          {recentSongs.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-b border-white/10 hover:bg-transparent text-gray-400 text-sm h-10">
+                  <TableHead className="w-12 text-center font-normal">#</TableHead>
+                  <TableHead className="font-normal">Title</TableHead>
+                  <TableHead className="hidden md:table-cell font-normal">Album</TableHead>
+                  <TableHead className="text-right pr-8 font-normal">
+                    <Clock className="w-4 h-4 inline-block" />
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {recentSongs.map((song, index) => (
+                  <TableRow
+                    key={`${song.id}-${index}`}
+                    className="group cursor-pointer hover:bg-white/10 border-none transition-colors h-14"
+                    onMouseEnter={() => setHoveredTrackIndex(index)}
+                    onMouseLeave={() => setHoveredTrackIndex(null)}
+                    onDoubleClick={() => handlePlaySong(index)}
+                  >
+                    <TableCell className="w-12 text-center rounded-l-md text-gray-400">
+                      {hoveredTrackIndex === index ? (
+                        <button
+                          onClick={() => handlePlaySong(index)}
+                          className="flex items-center justify-center w-full h-full text-white"
+                        >
+                          {isTrackPlaying(song.id)
+                            ? <Pause className="w-4 h-4 fill-white" />
+                            : <Play className="w-4 h-4 fill-white" />}
+                        </button>
+                      ) : isTrackPlaying(song.id) ? (
+                        <span className="text-[#1DB954] font-bold mx-auto flex items-center justify-center">
+                          {isPlaying ? (
+                            <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
+                              {[0, 0.2, 0.4].map((delay, i) => (
+                                <motion.div
+                                  key={i}
+                                  className="w-0.5 bg-[#1ed760] rounded-full"
+                                  animate={{ scaleY: [0.4, 1, 0.4] }}
+                                  transition={{ duration: 0.8, repeat: Infinity, delay, ease: "easeInOut" }}
+                                  style={{ height: "100%", originY: 1 }}
+                                />
+                              ))}
+                            </div>
+                          ) : (
+                            <Play className="w-4 h-4 fill-[#1DB954]" />
+                          )}
+                        </span>
+                      ) : (
+                        <span>{index + 1}</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={song.al.picUrl ? `${song.al.picUrl}?param=50y50` : user?.avatarUrl}
+                          alt={song.name}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                        <div className="flex flex-col justify-center max-w-50 sm:max-w-xs md:max-w-md">
+                          <span className={cn(`truncate text-base ${isTrackPlaying(song.id) && 'text-[#1DB954]'}`)}>
+                            {song.name}
+                          </span>
+                          <span className="truncate text-sm text-gray-400 hover:underline">
+                            {song.ar.map(a => a.name).join(', ')}
+                          </span>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell text-gray-400 text-sm hover:underline truncate max-w-37.5">
+                      {song.al.name}
+                    </TableCell>
+                    <TableCell className="text-right text-gray-400 rounded-r-md pr-8 tabular-nums text-sm">
+                      <div className="flex items-center justify-end gap-4">
+                        <button className="opacity-0 group-hover:opacity-100 hover:text-white transition-opacity">
+                          <Heart className="w-4 h-4" />
+                        </button>
+                        <span>{formatDuration(song.dt)}</span>
+                        <button className="opacity-0 group-hover:opacity-100 hover:text-white transition-opacity">
+                          <MoreHorizontal className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className="text-gray-400 text-sm py-4">No playback history available</div>
+          )}
+        </div>
+
+        {/* 最近播放 - 歌单 */}
+        <div className="px-6 mt-10 mb-20">
+          <h2 className="text-2xl font-bold mb-6 hover:underline cursor-pointer">Recent Playlists</h2>
+          {recentPlaylists.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              {recentPlaylists.map((playlist, index) => (
+                <div
+                  key={`${playlist.id}-${index}`}
+                  className="bg-[#181818] p-4 rounded-md hover:bg-[#282828] transition duration-300 group cursor-pointer"
+                  onClick={() => router.push(`/playlist?id=${playlist.id}`)}
+                >
+                  <div className="relative w-full aspect-square mb-4 shadow-lg rounded-md overflow-hidden">
+                    <img
+                      src={playlist.coverImgUrl ? `${playlist.coverImgUrl}?param=300y300` : ''}
+                      alt={playlist.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute bottom-2 right-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                      <button
+                        className="w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/playlist?id=${playlist.id}`);
+                        }}
+                      >
+                        <Play size={24} fill="black" stroke="black" className="ml-1" />
+                      </button>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-white truncate mb-1" title={playlist.name}>
+                    {playlist.name}
+                  </h3>
+                  <p className="text-sm text-gray-400 truncate">
+                    {playlist.creator?.nickname || '未知'}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-gray-400 text-sm">暂无歌单记录</div>
+          )}
+        </div>
+
+      </div>
+    </div>
   );
 }

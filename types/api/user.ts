@@ -102,14 +102,14 @@ interface UserPoint {
   blockBalance: number;
 }
 
-
 export interface NeteaseUser {
   userId: number;
   nickname: string;
   avatarUrl: string;
   signature: string;
+  followeds: number;
+  follows: number;
 }
-
 
 /**
  * 清洗用户基础信息数据
@@ -123,6 +123,8 @@ export const pruneUser = (raw: any): NeteaseUser => {
       nickname: "未知用户",
       avatarUrl: "",
       signature: "",
+      followeds: 0,
+      follows: 0,
     };
   }
 
@@ -133,5 +135,7 @@ export const pruneUser = (raw: any): NeteaseUser => {
     avatarUrl: raw.avatarUrl || "",
     // 个性签名经常为空，使用空字符串兜底防止渲染报错
     signature: raw.signature || "",
+    followeds: raw.followeds || 0,
+    follows: raw.follows || 0,
   };
 };
