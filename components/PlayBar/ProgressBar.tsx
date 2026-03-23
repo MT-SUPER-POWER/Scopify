@@ -66,7 +66,7 @@ export const PlayerProgressBar = memo(() => {
   const bufferedPercent = totalTime > 0 ? (bufferedTime / totalTime) * 100 : 0;
 
   return (
-    <div className="flex items-center gap-2 w-full max-w-[500px]">
+    <div className="flex items-center gap-2 w-full">
       <span className="text-[11px] text-[#b3b3b3] w-10 text-right tabular-nums tracking-widest font-normal shrink-0">
         {formatDuration(localTime)}
       </span>
