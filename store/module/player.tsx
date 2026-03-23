@@ -72,7 +72,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
       playTrack: async (song) => {
         // 切歌时，重置独立时间 Store
-        useTimeStore.getState().setCurrentTime(0);
+        // useTimeStore.getState().setCurrentTime(0);
         set({ currentSongDetail: song, currentSongUrl: null, isPlaying: false });
         Promise.all([
           greySongUrlMatch(song.id),
@@ -94,7 +94,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const { queue, playTrack } = get();
         if (index < 0 || index >= queue.length) return;
         set({ queueIndex: index });
-        useTimeStore.getState().setCurrentTime(0); // 清空进度
+        // useTimeStore.getState().setCurrentTime(0); // 清空进度
         await playTrack(queue[index]);
       },
       playNext: async () => {
@@ -115,7 +115,7 @@ export const usePlayerStore = create<PlayerStore>()(
 
       playPrev: async () => {
         const { queueIndex, playQueueIndex } = get();
-        useTimeStore.getState().setCurrentTime(0);
+        // useTimeStore.getState().setCurrentTime(0);
         const prev = Math.max(0, queueIndex - 1);
         await playQueueIndex(prev);
       },
@@ -123,13 +123,13 @@ export const usePlayerStore = create<PlayerStore>()(
       playRandom: async () => {
         const { queue, playQueueIndex } = get();
         if (!queue.length) return;
-        useTimeStore.getState().setCurrentTime(0);
+        // useTimeStore.getState().setCurrentTime(0);
         const randomIndex = Math.floor(Math.random() * queue.length);
         await playQueueIndex(randomIndex);
       },
 
       cleanCache: () => {
-        useTimeStore.getState().setCurrentTime(0);
+        // useTimeStore.getState().setCurrentTime(0);
         useTimeStore.getState().setTotalTime(0);
         set({
           volume: 100, isPlaying: false, currentSongDetail: null, currentSongUrl: null,

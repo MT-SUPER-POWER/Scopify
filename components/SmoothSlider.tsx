@@ -1,38 +1,22 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { motion } from "framer-motion";
 
 interface SmoothSliderProps {
-  /** 当前值 0-100 */
-  value: number;
-  /** 缓冲值 0-100 */
-  bufferedValue?: number;
-  /** 值改变时的回调 */
+  value: number; // 0-100
+  bufferedValue?: number; // 0-100
   onChange: (value: number) => void;
-  /** 方向：水平或垂直 */
   orientation?: "horizontal" | "vertical";
-  /** 自定义高度（垂直模式）或宽度（水平模式） */
-  size?: number;
-  /** 滑轨颜色 */
+  size?: number | string;
   trackColor?: string;
-  /** 缓冲颜色 */
   bufferedColor?: string;
-  /** 填充颜色 */
   fillColor?: string;
-  /** 滑块颜色 */
   thumbColor?: string;
-  /** hover 时填充颜色 */
   hoverFillColor?: string;
-  /** 是否显示滑块 */
   showThumb?: boolean;
-  /** 只在 hover 时显示滑块 */
   thumbOnHover?: boolean;
-  /** 滑轨粗细 */
   trackThickness?: number;
-  /** 滑块大小 */
   thumbSize?: number;
-  /** 自定义类名 */
   className?: string;
 }
 
@@ -41,7 +25,7 @@ export const SmoothSlider = ({
   bufferedValue = 0,
   onChange,
   orientation = "horizontal",
-  size = 150,
+  size = "100%",
   trackColor = "#4d4d4d",
   bufferedColor = "rgba(255, 255, 255, 0.3)",
   fillColor = "#ffffff",
@@ -59,9 +43,10 @@ export const SmoothSlider = ({
 
   const isVertical = orientation === "vertical";
 
-  // 优化 1：保留小数精度，防止歌曲进度条产生“跳帧”的顿挫感
-  const fillPercent = `${value}%`;
-  const bufferedPercent = `${bufferedValue}%`;
+  // 1. 将 0-100 的百分比转换为 0.0 - 1.0 的小数，供 GPU 的 transform: scale 使用
+  const scaleValue = Math.max(0, Math.min(100, value)) / 100;
+  const scaleBuffered = Math.max(0, Math.min(100, bufferedValue)) / 100;
+
 
   const calculateValue = useCallback(
     (clientX: number, clientY: number) => {
@@ -75,46 +60,32 @@ export const SmoothSlider = ({
         percent = ((clientX - rect.left) / rect.width) * 100;
       }
 
-      // 优化 2：移除 Math.round()，保留精度，让拖拽和进度反馈更丝滑
-      const clampedValue = Math.max(0, Math.min(100, percent));
-      onChange(clampedValue);
+      onChange(Math.max(0, Math.min(100, percent)));
     },
     [isVertical, onChange]
   );
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      setIsDragging(true);
-      calculateValue(e.clientX, e.clientY);
-    },
-    [calculateValue]
-  );
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    setIsDragging(true);
+    calculateValue(e.clientX, e.clientY);
+  }, [calculateValue]);
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isDragging) return;
-      calculateValue(e.clientX, e.clientY);
-    },
-    [isDragging, calculateValue]
-  );
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging) return;
+    calculateValue(e.clientX, e.clientY);
+  }, [isDragging, calculateValue]);
 
   const handleMouseUp = useCallback(() => setIsDragging(false), []);
 
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      setIsDragging(true);
-      calculateValue(e.touches[0].clientX, e.touches[0].clientY);
-    },
-    [calculateValue]
-  );
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    setIsDragging(true);
+    calculateValue(e.touches[0].clientX, e.touches[0].clientY);
+  }, [calculateValue]);
 
-  const handleTouchMove = useCallback(
-    (e: TouchEvent) => {
-      if (!isDragging || e.touches.length === 0) return;
-      calculateValue(e.touches[0].clientX, e.touches[0].clientY);
-    },
-    [isDragging, calculateValue]
-  );
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (!isDragging || e.touches.length === 0) return;
+    calculateValue(e.touches[0].clientX, e.touches[0].clientY);
+  }, [isDragging, calculateValue]);
 
   const handleTouchEnd = useCallback(() => setIsDragging(false), []);
 
@@ -141,8 +112,8 @@ export const SmoothSlider = ({
       className={`relative flex justify-center items-center select-none touch-none ${className}`}
       style={{
         ...(isVertical
-          ? { height: size !== undefined ? size : "100%", width: thumbSize, flexDirection: "column" }
-          : { width: "100%", height: thumbSize }),
+          ? { height: size, width: thumbSize, flexDirection: "column" }
+          : { width: size, height: thumbSize }),
       }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
@@ -159,53 +130,55 @@ export const SmoothSlider = ({
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       >
+        {/* 缓冲层：使用 transform: scale 替代 width/height，触发 GPU 加速 */}
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full pointer-events-none will-change-transform"
           style={{
             backgroundColor: bufferedColor,
-            transition: "width 0.25s linear, height 0.25s linear",
+            transformOrigin: isVertical ? "bottom center" : "left center",
+            transition: "transform 0.25s linear", // 缓冲进度更新慢，可以保留 transition
             ...(isVertical
-              ? { width: "100%", height: bufferedPercent, bottom: 0, left: 0 }
-              : { height: "100%", width: bufferedPercent, top: 0, left: 0 }),
+              ? { width: "100%", height: "100%", bottom: 0, left: 0, transform: `scaleY(${scaleBuffered})` }
+              : { height: "100%", width: "100%", top: 0, left: 0, transform: `scaleX(${scaleBuffered})` }),
           }}
         />
 
+        {/* 进度层：去除高频 transition 打架问题，使用 transform */}
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full pointer-events-none will-change-transform"
           style={{
             backgroundColor: currentFillColor,
-            transition: isDragging ? "none" : "width 0.25s linear, height 0.25s linear, background-color 0.2s",
+            transformOrigin: isVertical ? "bottom center" : "left center",
+            transition: isDragging ? "none" : "background-color 0.2s", // ⚠️ 彻底砍掉 transform/width 的过渡动画
             ...(isVertical
-              ? { width: "100%", height: fillPercent, bottom: 0, left: 0 }
-              : { height: "100%", width: fillPercent, top: 0, left: 0 }),
+              ? { width: "100%", height: "100%", bottom: 0, left: 0, transform: `scaleY(${scaleValue})` }
+              : { height: "100%", width: "100%", top: 0, left: 0, transform: `scaleX(${scaleValue})` }),
           }}
         />
       </div>
 
-      {/* 修复：移除 transform，改用 calc 减去半径来实现严格的几何居中 */}
-      <motion.div
+      {/* 滑块：移除 motion.div，使用纯 CSS 缩放动画，位置同样砍掉高频 transition */}
+      <div
         className="absolute rounded-full shadow-md z-10 pointer-events-none"
         style={{
           width: thumbSize,
           height: thumbSize,
           backgroundColor: thumbColor,
-          transition: isDragging ? "none" : "left 0.25s linear, bottom 0.25s linear",
+          // 仅对透明度和大小进行动画过渡，位置变化紧跟数据流，不做补间
+          transition: "opacity 0.2s, transform 0.2s",
+          opacity: isThumbVisible ? 1 : 0,
           ...(isVertical
             ? {
               left: `calc(50% - ${thumbSize / 2}px)`,
-              bottom: `calc(${fillPercent} - ${thumbSize / 2}px)`
+              bottom: `calc(${value}% - ${thumbSize / 2}px)`,
+              transform: isThumbVisible ? "scale(1)" : "scale(0)",
             }
             : {
               top: `calc(50% - ${thumbSize / 2}px)`,
-              left: `calc(${fillPercent} - ${thumbSize / 2}px)`
+              left: `calc(${value}% - ${thumbSize / 2}px)`,
+              transform: isThumbVisible ? "scale(1)" : "scale(0)",
             }),
         }}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{
-          scale: isThumbVisible ? 1 : 0,
-          opacity: isThumbVisible ? 1 : 0,
-        }}
-        transition={{ type: "spring", stiffness: 400, damping: 25 }}
       />
     </div>
   );
