@@ -11,6 +11,9 @@ import { getMusicComments } from '@/lib/api/comment';
 import { CommentItem } from '@/components/Comment/CommentItem';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { CommentInputBox } from '@/components/Comment/CommentInputBox';
+import Image from 'next/image';
+import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
+import { IS_ELECTRON } from '@/lib/utils';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -36,7 +39,14 @@ export default function CommentPage() {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Router
+  const smartRouter = useSmartRouter();
+
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  const routerClick = (url: string) => {
+    smartRouter.push(url);
+  }
 
   // 数据获取逻辑
   const fetchComments = useCallback(async (currentOffset: number) => {
@@ -218,18 +228,18 @@ export default function CommentPage() {
 
           {/* 头部：歌曲信息 */}
           <div className="flex items-center gap-10 mb-12">
-            <img src={albumCover} alt="Cover" className="w-42 h-42 rounded-md shadow-2xl transition-all duration-700" />
+            <Image width={168} height={168} src={albumCover} alt="Cover" className="w-42 h-42 rounded-md shadow-2xl transition-all duration-700" />
             <div>
-              <span className="px-2 py-1 text-xs font-bold bg-white/10 text-white rounded mb-3 inline-block">单曲</span>
+              <span className="px-2 py-1 text-xs font-bold bg-white/10 text-white rounded mb-3 inline-block">Track</span>
               <h1 className="text-4xl font-extrabold tracking-tight mb-2">
-                {songInfo?.name || "加载中..."}
+                {songInfo?.name || "Loading..."}
               </h1>
               <div className="text-sm text-[#B3B3B3] flex items-center gap-2">
-                <span>专辑: <span className="text-white hover:underline cursor-pointer">
+                <span>Album: <span className="text-white hover:underline cursor-pointer">
                   {songInfo?.al?.name || "..."}
                 </span></span>
                 <span>•</span>
-                <span>歌手: <span className="text-white hover:underline cursor-pointer">
+                <span>Artists: <span className="text-white hover:underline cursor-pointer">
                   {songInfo?.ar?.map((a: any) => a.name).join(" / ") || "..."}
                 </span></span>
               </div>
@@ -268,6 +278,7 @@ export default function CommentPage() {
                     onLike={toggleLike}
                     onDelete={deleteComment}
                     onReply={replyComment}
+                    onRouterClick={routerClick}
                   />
                 ))}
               </div>
@@ -286,6 +297,7 @@ export default function CommentPage() {
                     onLike={toggleLike}
                     onDelete={deleteComment}
                     onReply={replyComment}
+                    onRouterClick={routerClick}
                   />
                 ))
               ) : !isLoading ? (
@@ -299,9 +311,9 @@ export default function CommentPage() {
             {isLoading ? (
               <Loader2 className="w-6 h-6 text-[#1DB954] animate-spin" />
             ) : hasMore ? (
-              <span className="text-[#B3B3B3] text-sm">向下滚动加载更多...</span>
+              <span className="text-[#B3B3B3] text-sm">Scroll down to load more...</span>
             ) : (
-              <span className="text-[#B3B3B3] text-sm">已经到底啦</span>
+              <span className="text-[#B3B3B3] text-sm">Already at the bottom!</span>
             )}
           </div>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MoreHorizontal, Trash2, Flag } from 'lucide-react';
+import { MoreHorizontal, Trash2, Flag, Link } from 'lucide-react';
 import { LikeButton } from '@/components/ui/LikeButton';
 import { renderEmojiContent } from './renderEmojiContent';
 import { NeteaseComment } from '@/types/api/music';
@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Image from 'next/image';
 
 interface CommentItemProps {
   comment: NeteaseComment;
@@ -18,16 +19,18 @@ interface CommentItemProps {
   onDelete?: (id: number) => void;
   onReply?: (id: number) => void;
   onReport?: (id: number) => void;
+  onRouterClick?: (url: string) => void;
 }
 
 export const CommentItem: React.FC<CommentItemProps> = (
   {
     comment, isHot = false,
-    onLike, onDelete, onReply, onReport
+    onLike, onDelete, onReply, onReport, onRouterClick
   }) => (
 
   <div className="flex gap-4 group">
-    <img
+    <Image
+      width={40} height={40}
       src={comment.user.avatarUrl}
       alt={comment.user.nickname}
       className="w-10 h-10 rounded-full bg-neutral-800 object-cover mt-1 shrink-0 cursor-pointer"
@@ -35,10 +38,12 @@ export const CommentItem: React.FC<CommentItemProps> = (
     <div className="flex-1 pb-6 border-b border-white/5 group-last:border-0">
       <div className="flex items-baseline gap-2 mb-1">
         {/* 加入 select-text 允许选中用户名 */}
-        <span className="font-bold text-sm hover:underline cursor-pointer select-text">
-          {comment.user.nickname}
-        </span>
-        <span className="text-xs text-[#B3B3B3]">{comment.timeStr}</span>
+        <button onClick={() => onRouterClick && onRouterClick(`/profile?userId=${comment.user.userId}`)} >
+          <span className="font-bold text-sm hover:underline cursor-pointer select-text">
+            {comment.user.nickname}
+          </span>
+          <span className="text-xs text-[#B3B3B3]">{comment.timeStr}</span>
+        </button>
       </div>
 
       {/* 加入 select-text 和 cursor-text 允许鼠标正常选中和复制评论内容 */}
@@ -50,12 +55,12 @@ export const CommentItem: React.FC<CommentItemProps> = (
       {comment.beReplied && comment.beReplied.length > 0 && (
         <div className="mt-4 flex flex-col gap-1.5 border-l-[3px] border-[#1DB954] bg-[#1a1a1a] px-4 py-3 rounded-r-lg">
           <span className="text-sm font-bold text-[#1DB954] select-text">
-            @{comment.beReplied[0].user?.nickname || '未知用户'}
+            @{comment.beReplied[0].user?.nickname || 'Unknown User'}
           </span>
 
           {(!comment.beReplied[0].content || comment.beReplied[0].content.includes('该评论已删除')) ? (
             <span className="text-sm text-white/40 select-text">
-              该评论已被删除
+              This comment has been deleted.
             </span>
           ) : (
             <span className="text-sm text-[#B3B3B3] line-clamp-3 select-text cursor-text">

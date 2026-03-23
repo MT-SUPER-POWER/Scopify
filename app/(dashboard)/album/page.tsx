@@ -8,10 +8,11 @@ import { useSearchParams } from "next/navigation";
 import { getAlbumDetail } from "@/lib/api/album"; // 假设你在这个路径下有获取专辑的 API
 import { usePlayerStore, useUserStore } from "@/store";
 import { toast } from "sonner";
-import PlaylistLoading from "@/app/(dashboard)/playlist/loading"; // 复用你的 Loading 骨架屏
+import PlaylistLoading from "@/app/(dashboard)/playlist/loading";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Play, Pause, MoreHorizontal, Shuffle, ArrowDownCircle, List, Search, X, Disc3 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -39,8 +40,8 @@ export default function AlbumPage() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Player store selectors (extract to consts to keep hook order stable)
-  const isPlaying = usePlayerStore((s: any) => s.isPlaying);
-  const isShuffle = usePlayerStore((s: any) => s.isShuffle);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const isShuffle = usePlayerStore((s) => s.isShuffle);
   const searchParams = useSearchParams();
   const albumId = searchParams.get("id");
 
@@ -62,10 +63,10 @@ export default function AlbumPage() {
     setSearchQuery("");
   }, []);
 
-  const clearAlbumList = useUserStore((s: any) => s.clearAlbumList);
+  const clearAlbumList = useUserStore((s) => s.clearAlbumList);
   useEffect(() => {
     return () => { clearAlbumList(); };
-  }, []);
+  }, [clearAlbumList]);
 
   const togglePlay = useCallback(() => {
     const state = usePlayerStore.getState();
@@ -146,7 +147,7 @@ export default function AlbumPage() {
         // console.log("专辑详情和歌曲列表获取成功:", songs_with_album_pic);
         useUserStore.getState().setAlbumList(songs_with_album_pic || []);
       })
-      .catch((error: any) => {
+      .catch((error) => {
         console.error("请求专辑失败:", error);
         setIsError(true);
         toast.error("获取专辑详情失败");
@@ -157,7 +158,7 @@ export default function AlbumPage() {
   if (!albumId) return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center bg-[#121212] text-zinc-400 gap-4">
       <Disc3 className="w-16 h-16 opacity-30" />
-      <span className="text-lg font-medium tracking-wider">未提供专辑 ID</span>
+      <span className="text-lg font-medium tracking-wider">Unknown Album ID</span>
     </div>
   );
 
@@ -170,7 +171,7 @@ export default function AlbumPage() {
   if (isError || (!isLoading && !albumDetail)) return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center bg-[#121212] text-zinc-400 gap-4">
       <Disc3 className="w-16 h-16 opacity-30" />
-      <span className="text-lg font-medium tracking-wider">获取专辑信息失败或专辑不存在</span>
+      <span className="text-lg font-medium tracking-wider">The requested album could not be found or is unavailable</span>
     </div>
   );
 
@@ -190,7 +191,8 @@ export default function AlbumPage() {
         {/* 左侧：固定大小的封面 */}
         <div className="w-48 h-48 lg:w-56 lg:h-56 shrink-0 transition-transform duration-300 hover:scale-[1.02]
             shadow-[0_8px_40px_rgba(0,0,0,0.5)] rounded-md overflow-hidden bg-black/20">
-          <img
+          <Image
+            width={200} height={200}
             src={ALBUM_INFO?.cover || "https://pixabay.com/images/download/clker-free-vector-images-turntable-309662_1920.png"}
             alt={ALBUM_INFO?.title || "Album Cover"}
             className="w-full h-full object-cover"
@@ -231,7 +233,7 @@ export default function AlbumPage() {
           <div className="flex flex-wrap items-center gap-2.5 text-sm text-white/80 drop-shadow-md">
             <div className="flex items-center gap-2 group cursor-pointer mr-1 text-white">
               {ALBUM_INFO?.artistAvatar ? (
-                <img src={ALBUM_INFO.artistAvatar} alt={ALBUM_INFO.artistName} className="w-7 h-7 rounded-full object-cover" />
+                <Image width={49} height={49} src={ALBUM_INFO.artistAvatar} alt={ALBUM_INFO.artistName} className="w-7 h-7 rounded-full object-cover" />
               ) : (
                 <div className="w-7 h-7 rounded-full bg-zinc-600 flex items-center justify-center text-xs font-bold">
                   {ALBUM_INFO?.artistName?.charAt(0) || "A"}
@@ -255,7 +257,7 @@ export default function AlbumPage() {
             <button
               onClick={togglePlay}
               className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all
-               text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
+              text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
             >
               {isPlaying ?
                 <Pause className="w-6 h-6 ml-0.5 fill-current" /> :

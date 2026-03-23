@@ -4,6 +4,7 @@ import React from "react";
 import { Play, Pause, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Album } from "@/app/(dashboard)/search/page";
+import Image from "next/image";
 
 export function AlbumCard({
   album,
@@ -24,10 +25,11 @@ export function AlbumCard({
       onClick={onClick}
     >
       <div className="w-full aspect-square mb-4 shadow-lg overflow-hidden rounded-md bg-zinc-800">
-        <img
+        <Image
           src={album.picUrl || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=300&auto=format&fit=crop"}
           alt={album.name}
           className="w-full h-full object-cover"
+          width={300} height={300}
         />
       </div>
       <h4 className="text-base font-bold truncate mb-1">{album.name}</h4>

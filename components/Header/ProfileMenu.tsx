@@ -32,6 +32,7 @@ const iconList: { label: string; icon: React.ReactNode }[] = [
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const isElectron = IS_ELECTRON;
   const smartRouter = useSmartRouter();
+  const userId = useUserStore((state) => state.user?.userId);
 
   const handleLoginClick = () => {
     if (typeof window !== "undefined" && isElectron) {
@@ -85,7 +86,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
           {/* 简介 */}
           {useLoginStatus() && (
             <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
-              <Link href={"/profile"}>
+              <Link href={`/profile?userId=${userId}`}>
                 <FiUser className="mr-2 h-5 w-5" />
                 <span>Profile</span>
               </Link>

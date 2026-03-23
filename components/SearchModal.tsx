@@ -2,62 +2,12 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import { CornerDownLeft, Search, X } from "lucide-react";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useSearchStore } from "@/store/module/search";
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { cn } from "@/lib/utils";
 import { searchSuggest } from "@/lib/api/search";
-import { ScrollArea } from "./ui/scroll-area";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TYPES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-interface HighLightSegment {
-  text: string;
-  highLighted: boolean;
-}
-
-interface SuggestItem {
-  keyword: string;
-  highLightInfo: string;
-  tag: string | null;
-  tagUrl: string | null;
-  skinType: string | null;
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HIGHLIGHT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-function HighlightText({ raw }: { raw: string }) {
-  let segments: HighLightSegment[] = [];
-  try { segments = JSON.parse(raw); } catch { return <span>{raw}</span>; }
-  return (
-    <>
-      {segments.map((seg, i) =>
-        seg.highLighted
-          ? <span key={i} className="text-white font-semibold">{seg.text}</span>
-          : <span key={i} className="text-zinc-300">{seg.text}</span>
-      )}
-    </>
-  );
-}
-
-function SuggestTag({ item }: { item: SuggestItem }) {
-  if (item.tagUrl) {
-    return <img src={item.tagUrl} alt={item.tag ?? ""} className="h-4 object-contain shrink-0" />;
-  }
-  if (item.tag) {
-    return (
-      <span className={cn(
-        "text-[10px] font-semibold px-1.5 py-0.5 rounded-full shrink-0",
-        item.skinType === "colorPrimary1"
-          ? "text-[#1ed760] border border-[#1ed760]/40 bg-[#1ed760]/10"
-          : "text-zinc-400 border border-zinc-600"
-      )}>
-        {item.tag}
-      </span>
-    );
-  }
-  return null;
-}
+import { HighlightText, SuggestItem, SuggestTag } from "./SearchContents/SearchHelper";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MODAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -90,7 +40,11 @@ export const SearchModal = ({
   const hasContent = showRecent || showSuggests || loading || showEmpty;
 
   // 获取当前可见的项
-  const items = showRecent ? recentList : showSuggests ? suggests.map(s => s.keyword) : [];
+  const items = useMemo(() => {
+    if (showRecent) return recentList;
+    if (showSuggests) return suggests.map(s => s.keyword);
+    return [];
+  }, [showRecent, recentList, showSuggests, suggests]);
 
   const handleSearch = useCallback((query: string) => {
     const trimmed = query.trim();
@@ -111,7 +65,7 @@ export const SearchModal = ({
     } else {
       setIsSearching(false);
     }
-  }, [isOpen]);
+  }, [isOpen, persistedQuery, setIsSearching]);
 
   // 防抖同步到全局
   useEffect(() => {
@@ -157,12 +111,7 @@ export const SearchModal = ({
       e.preventDefault();
       if (selectedIndex >= 0 && selectedIndex < items.length) {
         const selected = items[selectedIndex];
-        if (typeof selected === 'string') {
-          handleSearch(selected);
-        } else {
-          // 如果是 SuggestItem 对象 (虽然这里统一成了 string，但以防万一)
-          handleSearch((selected as any).keyword || localValue);
-        }
+        handleSearch(selected);
       } else {
         handleSearch(localValue);
       }
@@ -182,11 +131,37 @@ export const SearchModal = ({
 
   const handleSelect = useCallback((keyword: string) => {
     setLocalValue(keyword);
-    setGlobalQuery(keyword);
+    // setGlobalQuery(keyword);
     setTimeout(() => inputRef.current?.focus(), 0);
-  }, [setGlobalQuery]);
+  }, []);
 
-  // (Removed previous double declaration of showRecent, etc. from here)
+  // ─────────────────────────────────────────────────────────────────
+  // 核心：自定义单击/双击判定拦截器
+  // ─────────────────────────────────────────────────────────────────
+  const clickTimeoutRef = useRef<number | null>(null);
+
+  const handleItemClick = useCallback((keyword: string) => {
+    if (clickTimeoutRef.current) {
+      // 250ms 内触发了第二次点击 -> 判定为【双击】，直接搜索跳转
+      window.clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
+      handleSearch(keyword);
+    } else {
+      // 第一次点击 -> 开启 250ms 定时器
+      clickTimeoutRef.current = window.setTimeout(() => {
+        // 超时未触发第二次点击 -> 判定为【单击】，填入输入框
+        handleSelect(keyword);
+        clickTimeoutRef.current = null;
+      }, 250);
+    }
+  }, [handleSearch, handleSelect]);
+
+  // 组件卸载时清理定时器，防止内存泄漏
+  useEffect(() => {
+    return () => {
+      if (clickTimeoutRef.current) window.clearTimeout(clickTimeoutRef.current);
+    };
+  }, []);
 
   return (
     <AnimatePresence>
@@ -294,7 +269,7 @@ export const SearchModal = ({
                           initial={{ opacity: 0, x: -8 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.03 }}
-                          onClick={() => handleSelect(item)}
+                          onClick={() => handleItemClick(item)}
                           className={cn(
                             "group/item flex items-center justify-between gap-3 px-5 py-2.5",
                             "hover:bg-white/6 cursor-pointer transition-colors",
@@ -348,7 +323,7 @@ export const SearchModal = ({
                           initial={{ opacity: 0, x: -8 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.025 }}
-                          onClick={() => handleSelect(item.keyword)}
+                          onClick={() => handleItemClick(item.keyword)}
                           className={cn(
                             "flex items-center justify-between gap-3 px-5 py-2.5",
                             "hover:bg-white/6 cursor-pointer transition-colors",

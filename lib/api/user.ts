@@ -35,6 +35,21 @@ export function getRecentSongs(limit: number = 10) {
   } as any);
 }
 
+// 最近播放-歌曲
+/**
+ *
+ * @param uid user id
+ * @param type 0: 所有时间，1：最近一周
+ * @param limit number of songs to return, default 10
+ * @returns
+ */
+export function getRecentSongsByID(uid: number, type = 1, limit: number = 10) {
+  return request.get('/user/record', {
+    params: { uid, type, limit },
+    noRetry: true
+  } as any);
+}
+
 // 最近播放-歌单
 export function getRecentPlaylists(limit: number = 10) {
   return request.get('/record/recent/playlist', {

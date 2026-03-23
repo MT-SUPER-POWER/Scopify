@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { cn, formatPlayCount } from "@/lib/utils";
-import { Play, Pause, ChevronRight, Loader2 } from "lucide-react";
+import { Play, ChevronRight, Loader2 } from "lucide-react";
 import { getPersonalizePlaylists, getRecommendedPlaylists, getPlaylistAllTracks } from "@/lib/api/playlist";
 import { getHotArtists } from "@/lib/api/artist";
 import { getAlbumDetail } from "@/lib/api/album";
@@ -17,8 +17,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { NeteaseUserAlbum } from '../types/api/release';
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { getUserAlbumSublist } from "@/lib/api/album";
-import { getUserDetail, getUserAccount } from "@/lib/api/user";
+import { getUserDetail } from "@/lib/api/user";
 import { toast } from "sonner";
+import Image from "next/image";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -152,7 +153,8 @@ const HomePageComponent = () => {
   const user = useUserStore(s => s.user);
   const userName = user?.nickname;
   const userId = user?.userId;
-  const [collectedAlbum, setCollectedAlbum] = useState([] as NeteaseUserAlbum[]);
+  const collectedAlbum = useUserStore(s => s.collectedAlbum);
+  const setCollectedAlbum = useUserStore(s => s.setCollectedAlbum);
   const [dateInfo, setDateInfo] = useState({ dayOfWeek: '星期三', dateNum: 18 });
 
   const { setQueue, playQueueIndex } = usePlayerStore();
@@ -170,11 +172,9 @@ const HomePageComponent = () => {
       if (!tracks.length) { toast.error("歌单为空"); return; }
       setQueue(tracks, 0);
       await playQueueIndex(0);
-    } catch {
-      toast.error("加载歌单失败");
-    } finally {
-      setLoadingPlayId(null);
     }
+    catch { toast.error("加载歌单失败"); }
+    finally { setLoadingPlayId(null); }
   }, [loadingPlayId, setQueue, playQueueIndex]);
 
   // ── 播放专辑 ──
@@ -185,7 +185,16 @@ const HomePageComponent = () => {
     setLoadingPlayId(key);
     try {
       const res = await getAlbumDetail(id);
-      const tracks: SongDetail[] = (res.data?.songs || []).map(pruneSongDetail);
+      const tracks: SongDetail[] = (res.data?.songs || []).map((song: SongDetail) =>
+        pruneSongDetail({
+          ...song,      // 展开原来的 song 属性
+          al: {
+            ...song.al, // 展开原来的 song.al 属性
+            // 核心在这里：覆盖或添加 picUrl 字段
+            picUrl: song.al?.picUrl || res.data?.album?.picUrl || res.data?.album?.blurPicUrl
+          }
+        })
+      );
       if (!tracks.length) { toast.error("专辑为空"); return; }
       setQueue(tracks, 0);
       await playQueueIndex(0);
@@ -255,7 +264,7 @@ const HomePageComponent = () => {
     }
 
     fetchHomeData();
-  }, [isLogin]); // 依赖项加上 isLogin
+  }, [isLogin, user, userId]);
 
   return (
     <div className="relative pb-24 font-sans">
@@ -375,7 +384,8 @@ const HomePageComponent = () => {
                     className="bg-[#181818] hover:bg-[#282828] transition-colors p-4 rounded-lg cursor-pointer group"
                   >
                     <div className="relative mb-4 pb-[100%]">
-                      <img
+                      <Image
+                        width={300} height={300}
                         src={`${playlist.picUrl}?param=300y300`}
                         alt={playlist.name}
                         className="absolute inset-0 w-full h-full object-cover rounded-md shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
@@ -422,18 +432,12 @@ const HomePageComponent = () => {
                 >
                   {/* 圆形图片容器 */}
                   <div className="relative mb-4 w-full aspect-square">
-                    <img
+                    <Image
+                      width={200} height={200}
                       src={`${artist.picUrl}?param=200y200`}
                       alt={artist.name}
                       className="absolute inset-0 w-full h-full object-cover rounded-full shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
                     />
-                    {/* 歌手卡片的播放按钮 — 跳转歌手页 */}
-                    <button
-
-                      className="absolute bottom-1 right-1 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#1fdf64]"
-                    >
-                      <Play className="w-6 h-6 fill-current ml-1" />
-                    </button>
                   </div>
                   <h3 className="text-white font-bold truncate w-full mb-1">
                     {artist.name}
@@ -463,15 +467,19 @@ const HomePageComponent = () => {
                     className="bg-[#181818] hover:bg-[#282828] transition-colors p-4 rounded-lg cursor-pointer group"
                   >
                     <div className="relative mb-4 pb-[100%]">
-                      <img
+                      <Image
                         src={item.picUrl}
                         alt="New Release"
+                        width={300} height={300}
                         className="absolute inset-0 w-full h-full object-cover rounded-md shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+                        onClick={() => smartRouter.push(`/album?id=${item.id}`)}
                       />
                       <button
                         onClick={(e) => handlePlayAlbum(item.id, e)}
                         disabled={loadingPlayId === `album-${item.id}`}
-                        className="absolute bottom-2 right-2 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#1fdf64] disabled:opacity-80"
+                        className="absolute bottom-2 right-2 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black s
+                        hadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300
+                        hover:scale-105 hover:bg-[#1fdf64] disabled:opacity-80"
                       >
                         {loadingPlayId === `album-${item.id}`
                           ? <Loader2 className="w-5 h-5 animate-spin" />

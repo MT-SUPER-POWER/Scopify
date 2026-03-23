@@ -7,12 +7,15 @@ import { pruneSongDetail, RawSongDetail, SongDetail } from "@/types/api/music";
 import { NeteaseUser, pruneUser } from "@/types/api/user";
 
 
+import { NeteaseUserAlbum } from "@/types/api/release";
+
 type UserStore = {
   user: NeteaseUser | null;
   loginType: 'token' | 'cookie' | 'qr' | 'uid' | null;
   searchValue: string;
   searchType: number;
   collectedAlbumIds: Set<number>;
+  collectedAlbum: NeteaseUserAlbum[];
   likeListIDs: number[];
   playlist: NeteasePlaylist[];
   albumList: SongDetail[];
@@ -22,6 +25,8 @@ type UserStore = {
   setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
   setAlbumList: (albumList: RawSongDetail[]) => void;
   clearAlbumList: () => void;
+  setCollectedAlbum: (albums: NeteaseUserAlbum[]) => void;
+  clearCollectedAlbum: () => void;
   setLikeListIDs: (ids: number[]) => void;
   setPlayList: (playlists: NeteasePlaylist[]) => void;
   setUserId: (userId: number | string) => void;
@@ -36,9 +41,13 @@ export const useUserStore = create<UserStore>()(
       searchValue: '',
       searchType: 0,
       collectedAlbumIds: new Set(),
+
       playlist: [],
       albumList: [],
       likeListIDs: [],
+      collectedAlbum: [],
+  setCollectedAlbum: (albums: NeteaseUserAlbum[]) => set({ collectedAlbum: albums }),
+  clearCollectedAlbum: () => set({ collectedAlbum: [] }),
 
       setUser: (userData: NeteaseUser) => set({ user: pruneUser(userData) }),
       setUserId: (userId: number | string) => {

@@ -59,6 +59,11 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
         </button>
 
         <ArrowDownCircle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
+        {/* TODO: 实现更多选项
+            1. 根据是歌单还是每日推荐 / 专辑 做区分
+            2. 歌单：更新歌单封面、编辑歌单信息、分享歌单
+            3. 专辑：分享专辑、收藏/取消收藏专辑
+         */}
         <MoreHorizontal className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
       </div>
 

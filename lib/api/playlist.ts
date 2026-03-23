@@ -11,6 +11,16 @@ export function getUserPlaylist(uid: number, limit: number = 30, offset: number 
   return request.get('/user/playlist', { params: { uid, limit, offset } });
 }
 
+/**
+ * 传入用户 id, 可以获取用户创建的歌单
+ * @param uid 用户 id
+ * @param limit 返回数量 , 默认为 30
+ * @param offset 偏移数量，用于分页 , 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
+ * @returns
+ */
+export function getUserPlaylistByID(uid: number, limit: number = 30, offset: number = 0) {
+  return request.get('/user/playlist/create', { params: { uid, limit, offset } });
+}
 
 /**
  * 获取歌单所有歌曲
@@ -113,7 +123,7 @@ export function getPersonalizePlaylists(limit?: number) {
   return request.get('/personalized', { params: { limit } });
 }
 
-export function getPlaylsitDetail({id, cookie}: { id: number | string, cookie?: string }) {
+export function getPlaylsitDetail({ id, cookie }: { id: number | string, cookie?: string }) {
   return request.get('/playlist/detail', { params: { id, cookie: cookie } });
 }
 
