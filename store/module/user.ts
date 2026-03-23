@@ -3,7 +3,7 @@ import { clearLoginStatus } from "@/lib/web/auth";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { NeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
-import { pruneSongDetail, SongDetail } from "@/types/api/music";
+import { pruneSongDetail, RawSongDetail, SongDetail } from "@/types/api/music";
 import { NeteaseUser, pruneUser } from "@/types/api/user";
 
 
@@ -18,9 +18,9 @@ type UserStore = {
   albumList: SongDetail[];
 
   handleLogout: () => Promise<void>;
-  setUser: (userData: any) => void;
+  setUser: (userData: NeteaseUser) => void;
   setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
-  setAlbumList: (albumList: any[]) => void;
+  setAlbumList: (albumList: RawSongDetail[]) => void;
   clearAlbumList: () => void;
   setLikeListIDs: (ids: number[]) => void;
   setPlayList: (playlists: NeteasePlaylist[]) => void;
@@ -40,18 +40,18 @@ export const useUserStore = create<UserStore>()(
       albumList: [],
       likeListIDs: [],
 
-      setUser: (userData: any) => set({ user: pruneUser(userData) }),
-      setUserId: (userId) => {
+      setUser: (userData: NeteaseUser) => set({ user: pruneUser(userData) }),
+      setUserId: (userId: number | string) => {
         set({ user: { ...useUserStore.getState().user, id: userId } as NeteaseUser });
       },
-      setLoginType: (loginType) => set({ loginType }),
-      setAlbumList: (albumList: any[]) => {
+      setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => set({ loginType }),
+      setAlbumList: (albumList: RawSongDetail[]) => {
         const cleanAlbumList = albumList.map(pruneSongDetail);
         set({ albumList: cleanAlbumList });
       },
       clearAlbumList: () => set({ albumList: [] }),
       setLikeListIDs: (ids: number[]) => set({ likeListIDs: ids }),
-      setPlayList: (rawPlaylists: any[]) => {
+      setPlayList: (rawPlaylists: NeteasePlaylist[]) => {
         const cleanPlaylists = rawPlaylists.map(prunePlaylist);
         set({ playlist: cleanPlaylists });
       },

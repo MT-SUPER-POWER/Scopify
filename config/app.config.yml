@@ -1,6 +1,6 @@
 app:
   gpuAcceleration: true
-  devTools: false
+  devTools: true
   closeAction: 2
 backend:
   port: 5252

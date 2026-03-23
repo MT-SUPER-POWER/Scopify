@@ -101,6 +101,7 @@ function initTray(mainWindow: Electron.BrowserWindow) {
     trayWindow!.setOpacity(0);
     trayWindow!.setPosition(x, y, false);
     trayWindow!.show();
+    trayWindow!.focus();    // 防止被 win 的托盘菜单栏盖住
 
     setTimeout(() => {
       if (trayWindow && !trayWindow.isDestroyed() && trayWindow.isVisible()) {

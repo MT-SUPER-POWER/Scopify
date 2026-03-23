@@ -22,7 +22,7 @@
 # production
 /build
 /logs/
-**/*.log
+/log/*.log
 
 # misc
 .DS_Store

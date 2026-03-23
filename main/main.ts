@@ -119,7 +119,7 @@ const createWindow = () => {
     });
   }
 
-  // 禁用缩放快捷键和 DevTools 快捷键（防止误触和限制开发者工具）
+  // NOTE: 快捷键拦截位置
   mainWindow.webContents.on("before-input-event", (event, input) => {
     // 禁止 Ctrl/Cmd + 数字 0 (重置缩放)
     if ((input.control || input.meta) && input.key === "0") {

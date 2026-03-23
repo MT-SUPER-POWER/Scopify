@@ -18,11 +18,13 @@ type PlayerStore = {
   queue: SongDetail[];
   queueIndex: number;
   lyric: NeteaseLyric | null;
+  playlistId: number | string | null;     // 从哪一个列表播放的，null 代表没有特定列表
+  setShuffle: (v: boolean) => void;
 
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
   setRepeatMode: (mode: RepeatMode) => void;
-  setQueue: (songs: SongDetail[], startIndex?: number) => void;
+  setQueue: (songs: SongDetail[], startIndex?: number, playlistId?: number | string | null) => void;
   setLyric: (lyric: NeteaseLyric | null) => void;
 
   toggleShuffle: () => void;
@@ -48,15 +50,16 @@ export const usePlayerStore = create<PlayerStore>()(
       queue: [],
       queueIndex: -1,
       lyric: null,
+      playlistId: null,
 
       setVolume: (v) => set({ volume: v }),
       setIsPlaying: (v) => set({ isPlaying: v }),
       setRepeatMode: (mode) => set({ repeatMode: mode }),
-      setQueue: (songs, startIndex = 0) => set({ queue: songs, queueIndex: startIndex }),
+      setQueue: (songs, startIndex = 0, playlistId = null) => set({ queue: songs, queueIndex: startIndex, playlistId }),
       setLyric: (lyric) => set({ lyric: pruneNeteaseLyric(lyric) }),
+      setShuffle: (v) => set({ isShuffle: v }),
 
       toggleShuffle: () => set((s) => ({ isShuffle: !s.isShuffle })),
-
       fetchCurrentLyric: async () => {
         const { currentSongDetail, lyric } = get();
         if (!currentSongDetail || lyric) return;
@@ -67,32 +70,26 @@ export const usePlayerStore = create<PlayerStore>()(
           console.error("静默恢复歌词失败:", e);
         }
       },
-
       playTrack: async (song) => {
         // 切歌时，重置独立时间 Store
         useTimeStore.getState().setCurrentTime(0);
-
         set({ currentSongDetail: song, currentSongUrl: null, isPlaying: false });
-        try {
-          Promise.all([
-            greySongUrlMatch(song.id),
-            getLyric(song.id)
-          ]).then(([urlRes, lyricRes]) => {
-            const url = urlRes.data ?? urlRes.proxyUrl;
+        Promise.all([
+          greySongUrlMatch(song.id),
+          getLyric(song.id)
+        ]).then(([urlRes, lyricRes]) => {
+          const url = urlRes.data ?? urlRes.proxyUrl;
 
-            // 写入新的总时长到独立 Store
-            useTimeStore.getState().setTotalTime(song.dt ?? 0);
+          // 写入新的总时长到独立 Store
+          useTimeStore.getState().setTotalTime(song.dt ?? 0);
 
-            set({ currentSongUrl: url, isPlaying: true, lyric: lyricRes.data });
-          }).catch((e) => {
-            toast.error("获取歌曲播放地址或歌词失败");
-            set({ currentSongUrl: null, isPlaying: false, lyric: null });
-          });
-        } catch (e) {
-          toast.error("获取歌曲播放地址失败");
-        }
+          set({ currentSongUrl: url, isPlaying: true, lyric: lyricRes.data });
+        }).catch((e) => {
+          toast.error("获取歌曲播放地址或歌词失败");
+          console.error("获取歌曲播放地址或歌词失败", e);
+          set({ currentSongUrl: null, isPlaying: false, lyric: null });
+        });
       },
-
       playQueueIndex: async (index) => {
         const { queue, playTrack } = get();
         if (index < 0 || index >= queue.length) return;
@@ -100,7 +97,6 @@ export const usePlayerStore = create<PlayerStore>()(
         useTimeStore.getState().setCurrentTime(0); // 清空进度
         await playTrack(queue[index]);
       },
-
       playNext: async () => {
         const { queue, queueIndex, repeatMode, isShuffle, playQueueIndex } = get();
         if (!queue.length) return;
@@ -137,7 +133,7 @@ export const usePlayerStore = create<PlayerStore>()(
         useTimeStore.getState().setTotalTime(0);
         set({
           volume: 100, isPlaying: false, currentSongDetail: null, currentSongUrl: null,
-          repeatMode: "off", isShuffle: false, queue: [], queueIndex: -1, lyric: null
+          repeatMode: "off", isShuffle: false, queue: [], queueIndex: -1, lyric: null, playlistId: null
         });
       }
     }),
@@ -155,6 +151,7 @@ export const usePlayerStore = create<PlayerStore>()(
         queue: state.queue,
         queueIndex: state.queueIndex,
         lyric: state.lyric,
+        playlistId: state.playlistId,
       }),
     }
   )

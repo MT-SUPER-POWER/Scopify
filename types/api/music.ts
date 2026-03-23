@@ -13,12 +13,15 @@ export interface SongDetail {
   publishTime: number;
 }
 
+export interface RawSongDetail extends SongDetail {
+  [key: string]: unknown; // 允许包含任意其他属性
+}
 
 /**
  * 清洗歌曲详情数据
  * @param raw 原始 API 返回的歌曲对象
  */
-export const pruneSongDetail = (raw: any): SongDetail => {
+export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
   // 1. 如果传入空数据，直接返回一个类型安全的空结构兜底
   if (!raw) {
     return {
