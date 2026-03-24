@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence } from "framer-motion";
 import { useUiStore } from "@/store/module/ui";
 import { LyricModalContent } from "./LyricModal/LyricModalContent";
 
@@ -9,8 +8,8 @@ export default function LyricsModal() {
   const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
 
   return (
-    <AnimatePresence>
+    <div>
       {isLyricsOpen && <LyricModalContent onClose={closeLyrics} />}
-    </AnimatePresence>
+    </div>
   );
 }

@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
 import { User } from "lucide-react";
-import { Artist } from "@/app/(dashboard)/search/page";
+import { Artist } from "@/app/(dashboard)/search/_types";
 
 export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () => void }) {
   return (

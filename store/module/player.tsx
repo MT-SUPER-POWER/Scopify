@@ -7,7 +7,6 @@ import { useTimeStore } from "@/store/module/time";
 
 export type RepeatMode = "off" | "all" | "one";
 
-
 type PlayerStore = {
   volume: number;
   isPlaying: boolean;
@@ -28,6 +27,7 @@ type PlayerStore = {
   setLyric: (lyric: NeteaseLyric | null) => void;
 
   toggleShuffle: () => void;
+  togglePlaying: () => void;
   fetchCurrentLyric: () => Promise<void>;
   playTrack: (song: SongDetail) => Promise<void>;
   playQueueIndex: (index: number) => Promise<void>;
@@ -59,6 +59,11 @@ export const usePlayerStore = create<PlayerStore>()(
       setLyric: (lyric) => set({ lyric: pruneNeteaseLyric(lyric) }),
       setShuffle: (v) => set({ isShuffle: v }),
 
+      togglePlaying: () => set((state) => {
+        // 只有在当前有播放链接的情况下，才允许切换播放状态
+        if (!state.currentSongUrl) return state;
+        return { isPlaying: !state.isPlaying };
+      }),
       toggleShuffle: () => set((s) => ({ isShuffle: !s.isShuffle })),
       fetchCurrentLyric: async () => {
         const { currentSongDetail, lyric } = get();
@@ -72,7 +77,8 @@ export const usePlayerStore = create<PlayerStore>()(
       },
       playTrack: async (song) => {
         // 切歌时，重置独立时间 Store
-        // useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setBufferedTime(0);
         set({ currentSongDetail: song, currentSongUrl: null, isPlaying: false });
         Promise.all([
           greySongUrlMatch(song.id),
@@ -94,7 +100,8 @@ export const usePlayerStore = create<PlayerStore>()(
         const { queue, playTrack } = get();
         if (index < 0 || index >= queue.length) return;
         set({ queueIndex: index });
-        // useTimeStore.getState().setCurrentTime(0); // 清空进度
+        useTimeStore.getState().setCurrentTime(0); // 清空进度
+        useTimeStore.getState().setBufferedTime(0);
         await playTrack(queue[index]);
       },
       playNext: async () => {
@@ -112,24 +119,23 @@ export const usePlayerStore = create<PlayerStore>()(
         if (next >= 0) await playQueueIndex(next);
         else set({ isPlaying: false });
       },
-
       playPrev: async () => {
         const { queueIndex, playQueueIndex } = get();
-        // useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setBufferedTime(0);
         const prev = Math.max(0, queueIndex - 1);
         await playQueueIndex(prev);
       },
-
       playRandom: async () => {
         const { queue, playQueueIndex } = get();
         if (!queue.length) return;
-        // useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setBufferedTime(0);
         const randomIndex = Math.floor(Math.random() * queue.length);
         await playQueueIndex(randomIndex);
       },
-
       cleanCache: () => {
-        // useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setCurrentTime(0);
         useTimeStore.getState().setTotalTime(0);
         set({
           volume: 100, isPlaying: false, currentSongDetail: null, currentSongUrl: null,
@@ -143,7 +149,7 @@ export const usePlayerStore = create<PlayerStore>()(
       // 只持久化 PlayerStore 类型声明的字段，防止多余属性被存储
       partialize: (state) => ({
         volume: state.volume,
-        isPlaying: state.isPlaying,
+        // isPlaying: state.isPlaying,
         currentSongDetail: state.currentSongDetail,
         currentSongUrl: state.currentSongUrl,
         repeatMode: state.repeatMode,

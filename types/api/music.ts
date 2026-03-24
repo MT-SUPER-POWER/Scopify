@@ -9,6 +9,8 @@ export interface SongDetail {
     id: number;
     name: string;
     picUrl: string;
+    blurPicUrl?: string;
+    coverUrl?: string;
   }; // 专辑
   publishTime: number;
 }
@@ -26,10 +28,10 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
   if (!raw) {
     return {
       id: 0,
-      name: "未知歌曲",
+      name: "Unknown Song",
       dt: 0,
       ar: [],
-      al: { id: 0, name: "", picUrl: "" },
+      al: { id: 0, name: "", picUrl: "", blurPicUrl: "", coverUrl: "" },
       publishTime: 0,
     };
   }
@@ -43,15 +45,17 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
     ar: Array.isArray(raw.ar)
       ? raw.ar.map((artist: any) => ({
         id: artist?.id || 0,
-        name: artist?.name || "未知歌手",
+        name: artist?.name || "Unknown Artist",
       }))
       : [],
 
     // 3. 使用可选链 (?.) 防止 raw.al 为 null 时取属性崩溃
     al: {
       id: raw.al?.id || 0,
-      name: raw.al?.name || "未知专辑",
+      name: raw.al?.name || "Unknown Album",
       picUrl: raw.al?.picUrl || raw.al?.blurPicUrl || raw.al?.coverUrl || "",
+      blurPicUrl: raw.al?.blurPicUrl,
+      coverUrl: raw.al?.coverUrl,
     },
 
     publishTime: raw.publishTime || 0,

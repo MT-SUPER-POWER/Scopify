@@ -9,6 +9,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { usePlaylist } from "@/components/Playlist/hook/usePlaylistData";
 import PlaylistHeader from "@components/Playlist/Header";
 import PlaylistActions from "@/components/Playlist/ActionStation";
+import PlaylistHeaderSkeleton from "./_components/HeaderSkeleton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -23,6 +24,8 @@ export default function PlaylistPage() {
   const { playlistId, isDailyRecommend, isLoading, playlistInfo, themeColor } = usePlaylist();
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // console.log("Test Render or not from PlaylistPage");
 
   const handleSearchOpen = useCallback(() => {
     setSearchOpen(true);
@@ -47,9 +50,7 @@ export default function PlaylistPage() {
       {/* 顶部背景渐变 */}
       <div
         className="absolute top-0 left-0 right-0 h-100 md:h-125 z-0 pointer-events-none opacity-60"
-        style={{
-          background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)`
-        }}
+        style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
       />
 
       {/* 头部组件：传递 info 进去渲染 */}
@@ -59,16 +60,19 @@ export default function PlaylistPage() {
       <div className="flex-1 relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] to-[#121212] via-20%">
 
         {/* 抽象出的交互操作栏 */}
-        <PlaylistActions
-          playlistId={playlistId}
-          isDaily={isDailyRecommend}
-          searchOpen={searchOpen}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onSearchOpen={handleSearchOpen}
-          onSearchClose={handleSearchClose}
-          inputRef={inputRef}
-        />
+        {isLoading ? <PlaylistHeaderSkeleton />
+          : (
+            <PlaylistActions
+              playlistId={playlistId}
+              isDaily={isDailyRecommend}
+              searchOpen={searchOpen}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              onSearchOpen={handleSearchOpen}
+              onSearchClose={handleSearchClose}
+              inputRef={inputRef}
+            />
+          )}
 
         {/* 歌曲列表 */}
         <div className="px-6 flex-1 pb-10 min-w-0 overflow-hidden">

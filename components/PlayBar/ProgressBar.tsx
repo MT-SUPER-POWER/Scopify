@@ -1,64 +1,37 @@
-import React, { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { formatDuration } from "@/lib/utils";
 import { SmoothSlider } from "@/components/SmoothSlider";
+import { useTimeStore } from "@/store/module/time";
 
 export const PlayerProgressBar = memo(() => {
-  // 彻底告别 Zustand，所有时间数据全部变成组件内部的私有状态
-  const [localTime, setLocalTime] = useState(0);
-  const [totalTime, setTotalTime] = useState(0);
-  const [bufferedTime, setBufferedTime] = useState(0);
+  // 1. 低频数据：直接从 Zustand 读，因为它本来就不怎么变
+  const totalTime = useTimeStore(s => s.totalTime);
+  const bufferedTime = useTimeStore(s => s.bufferedTime);
 
-
-  // 用于记录上一次更新视图的时间戳
+  // 2. 高频数据：完全使用本地 State，初始值取一下 Store 里的记忆点
+  const [localTime, setLocalTime] = useState(() => useTimeStore.getState().currentTime);
   const lastUpdateRef = useRef(0);
 
-  // NOTE: 播放条防止频繁更新导致的性能问题，核心是节流控制，每 500 毫秒最多只更新一次视图
   useEffect(() => {
+    // 3. 只接收高频的播放时间广播，局部刷新 UI
     const onTime = (e: Event) => {
       const now = Date.now();
-      if (now - lastUpdateRef.current >= 500) {
+      if (now - lastUpdateRef.current >= 800) {
         setLocalTime((e as CustomEvent<number>).detail);
         lastUpdateRef.current = now;
       }
     };
 
-    const onDuration = (e: Event) => setTotalTime((e as CustomEvent<number>).detail);
-    const onBuffer = (e: Event) => setBufferedTime((e as CustomEvent<number>).detail);
-
     window.addEventListener("player-time", onTime);
-    window.addEventListener("player-duration", onDuration);
-    window.addEventListener("player-buffer", onBuffer);
-
-    return () => {
-      window.removeEventListener("player-time", onTime);
-      window.removeEventListener("player-duration", onDuration);
-      window.removeEventListener("player-buffer", onBuffer);
-    };
+    return () => window.removeEventListener("player-time", onTime);
   }, []);
 
-  useEffect(() => {
-    // 建立独立的信号接收器
-    const onTime = (e: Event) => setLocalTime((e as CustomEvent<number>).detail);
-    const onDuration = (e: Event) => setTotalTime((e as CustomEvent<number>).detail);
-    const onBuffer = (e: Event) => setBufferedTime((e as CustomEvent<number>).detail);
-
-    window.addEventListener("player-time", onTime);
-    window.addEventListener("player-duration", onDuration);
-    window.addEventListener("player-buffer", onBuffer);
-
-    return () => {
-      window.removeEventListener("player-time", onTime);
-      window.removeEventListener("player-duration", onDuration);
-      window.removeEventListener("player-buffer", onBuffer);
-    };
-  }, []);
-
-  // 用户拖拽进度条
+  // 4. 用户拖拽进度条
   const handleSeek = (value: number) => {
     const newTimeMs = (value / 100) * totalTime;
-    setLocalTime(newTimeMs); // 优先让滑块自己动过去，防止拖拽闪烁
+    setLocalTime(newTimeMs); // 优先让本地滑块跟手
 
-    // 发送原生指令，通知 PlayerBar 里的 audio 进行实际跳转
+    // 发送跳转指令给 PlayerBar
     window.dispatchEvent(new CustomEvent("player-seek", { detail: newTimeMs }));
   };
 

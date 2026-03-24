@@ -4,7 +4,7 @@ import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { getAlbumDetail } from "@/lib/api/album";
 import { pruneSongDetail, SongDetail } from "@/types/api/music";
 import { usePlayerStore } from "@/store";
-import type { Song, Album, Playlist } from "../page";
+import type { Song, Album, Playlist } from "../_types";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

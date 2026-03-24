@@ -226,3 +226,55 @@ img,
   -webkit-user-drag: none;
   -webkit-touch-callout: none;
 }
+
+@keyframes eq-play {
+  0%,
+  100% {
+    /* translateZ 欺骗 GPU 加速 */
+    transform: scaleY(0.4) translateZ(0);
+  }
+  50% {
+    transform: scaleY(1) translateZ(0);
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes modalSlideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-modal-enter {
+  animation: modalSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+}
+.animate-modal-exit {
+  animation: modalSlideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.animate-view-enter {
+  animation: viewFadeIn 0.2s ease-out forwards;
+}

@@ -2,7 +2,7 @@
 
 import { Component, ReactNode } from "react";
 import dynamic from "next/dynamic";
-import { usePlayerStore } from "@/store";
+import { usePlayerStore, useUiStore } from "@/store";
 
 const BackgroundRender = dynamic(
   () => import("@applemusic-like-lyrics/react").then((mod) => mod.BackgroundRender),
@@ -32,12 +32,12 @@ class WebGLFallbackBoundary extends Component<
 const CSSFallbackBackground = ({ coverUrl }: { coverUrl: string }) => (
   <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#0a0a0a]">
     <div
-      className="absolute inset-0 opacity-60 transition-all duration-1000 ease-in-out"
+      className="absolute inset-0 opacity-50 transition-all duration-1000 ease-in-out"
       style={{
         backgroundImage: `url(${coverUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        filter: "blur(80px) saturate(150%) brightness(0.8)",
+        filter: "blur(80px) saturate(200%) brightness(0.6)",
         transform: "scale(1.5) translateZ(0)",
       }}
     />
@@ -45,20 +45,21 @@ const CSSFallbackBackground = ({ coverUrl }: { coverUrl: string }) => (
 );
 
 export const ModalBackground = ({ coverUrl }: { coverUrl: string }) => {
-  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const isLyricOpen = useUiStore(s => s.isLyricsOpen);
   if (!coverUrl) return null;
   return (
     <WebGLFallbackBoundary fallback={<CSSFallbackBackground coverUrl={coverUrl} />}>
+      {/* 降低了一点明亮度，让 Spotify 风格的白色文字和控件更加突出 */}
       <div
-        className="absolute inset-0 z-0 scale-[1.2] pointer-events-none transition-opacity duration-1000"
-        style={{ filter: "blur(16px)" }}
+        className="absolute inset-0 z-0 scale-[1.2] pointer-events-none transition-opacity duration-1000 opacity-90"
+        style={{ filter: "blur(24px) brightness(0.7)" }}
       >
         <BackgroundRender
           album={coverUrl}
-          playing={isPlaying}
+          playing={isLyricOpen}
           hasLyric={true}
           renderScale={0.35}
-          staticMode={true}
+          staticMode={false}
         />
       </div>
     </WebGLFallbackBoundary>
