@@ -8,8 +8,6 @@ export const PlayerProgressBar = memo(() => {
   const totalTime = useTimeStore(s => s.totalTime);
   const bufferedTime = useTimeStore(s => s.bufferedTime);
 
-  // console.log("PlayerProgressBar render", { bufferedTime });
-
   // 2. 高频数据：完全使用本地 State，初始值取一下 Store 里的记忆点
   const [localTime, setLocalTime] = useState(() => useTimeStore.getState().currentTime);
   const lastUpdateRef = useRef(0);

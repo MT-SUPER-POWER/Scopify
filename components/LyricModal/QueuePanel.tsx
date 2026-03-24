@@ -1,13 +1,11 @@
 "use client";
 
-import { memo, useEffect, useRef, useLayoutEffect, useState, useCallback } from "react";
+import { memo, useEffect, useRef, useLayoutEffect, useState, CSSProperties } from "react";
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { usePlayerStore } from "@/store";
 import Image from "next/image";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const QueueRow = memo(
   ({
@@ -15,46 +13,61 @@ const QueueRow = memo(
     index,
     isCurrent,
     onPlay,
+    style,
   }: {
     song: any;
     index: number;
     isCurrent: boolean;
     onPlay: (index: number) => void;
+    style?: CSSProperties;
   }) => (
     <button
       onClick={() => onPlay(index)}
+      style={style} // 直接接收并应用 absolute 样式，省去外层包裹的 div
       className={cn(
-        "w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-left transition-all duration-300",
-        // 当前播放项增加玻璃高光和阴影，未播放项增加 hover 底色
-        isCurrent ? "bg-white/15 shadow-sm ring-1 ring-white/10 scale-[1.02]" : "hover:bg-white/10"
+        "w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-left transition-all duration-300 group border",
+        isCurrent
+          ? "bg-white/10 border-white/20 shadow-lg backdrop-blur-md"
+          : "bg-transparent border-transparent hover:bg-white/5 hover:border-white/10"
       )}
     >
-      <div className="w-10 h-10 shrink-0 rounded-lg overflow-hidden bg-white/10 shadow-inner">
+      <div className="relative w-12 h-12 shrink-0 rounded-xl overflow-hidden shadow-sm border border-white/10">
         {song.al?.picUrl && (
           <Image
-            width={40} height={40}
+            width={48}
+            height={48}
             src={`${song.al.picUrl}?param=64y64`}
             alt=""
-            className="w-full h-full object-cover"
+            className={cn(
+              "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105",
+              isCurrent ? "opacity-80" : "opacity-100"
+            )}
           />
         )}
+        {isCurrent && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+            <Play className="w-5 h-5 text-white fill-current" />
+          </div>
+        )}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className={cn("text-[15px] truncate", isCurrent ? "text-[#1ed760] font-bold" : "text-white/90 font-medium")}>
+      <div className="flex-1 min-w-0 flex flex-col justify-center">
+        <p
+          className={cn(
+            "text-[16px] truncate tracking-wide transition-colors",
+            isCurrent ? "text-white font-semibold" : "text-white/90 font-medium"
+          )}
+        >
           {song.name}
         </p>
-        <p className="text-[13px] text-white/50 mt-0.5 truncate">
+        <p className="text-[13px] text-white/50 mt-0.5 truncate font-light">
           {song.ar?.map((a: any) => a.name).join(", ")}
         </p>
       </div>
-      {isCurrent && <Play className="w-4 h-4 text-[#1ed760] fill-current shrink-0" />}
     </button>
   )
 );
 
 QueueRow.displayName = "QueueRow";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MAIN UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export const QueuePanel = () => {
   const queue = usePlayerStore((s) => s.queue);
@@ -64,29 +77,18 @@ export const QueuePanel = () => {
   const listRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: queue.length,
     getScrollElement: () => listRef.current,
-    estimateSize: () => 64, // 稍微增大了行高以适配更圆润的 UI
+    estimateSize: () => 72, // 调整了 Row 的 padding，高度预估稍微调大
     overscan: 5,
   });
 
-  // keep a ref so memoized children don't receive unstable functions
   const virtualizerRef = useRef(virtualizer);
   useEffect(() => {
     virtualizerRef.current = virtualizer;
   }, [virtualizer]);
-
-  // stable proxy to call methods from memoized children
-  const scrollToIndex = useCallback(
-    (index: number, opts?: any) => {
-      virtualizerRef.current?.scrollToIndex(index, opts);
-    },
-    []
-  );
-
-  // expose plain data (safe to pass to memoized children)
-  const virtualItems = virtualizer.getVirtualItems?.() ?? [];
 
   useEffect(() => {
     if (queueIndex < 0) return;
@@ -114,18 +116,18 @@ export const QueuePanel = () => {
   }
 
   return (
-    // 🔥 苹果风格：透镜式玻璃面板容器
-    <div className="w-full max-w-xl h-full mx-auto flex flex-col bg-white/5 backdrop-blur-[60px] rounded-[2.5rem] border border-white/10 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5)] overflow-hidden">
+    // 苹果高质感毛玻璃核心：高斯模糊 + 饱和度提升 + 微弱的白边 + 更大的圆角
+    <div className="w-full max-w-xl h-full mx-auto flex flex-col bg-black/30 backdrop-blur-[80px] backdrop-saturate-150 border border-white/8 shadow-2xl rounded-[32px] overflow-hidden relative">
+      {/* 可选：添加极微弱的噪点遮罩增加真实玻璃物理质感 (需要你有一张噪点图或者用 CSS 滤镜，这里用 CSS 模拟) */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-overlay bg-noise" />
 
-      {/* 顶部标题栏 */}
-      <div className="px-8 py-6 border-b border-white/5 shrink-0">
-        <h3 className="text-2xl font-bold text-white tracking-wide">待播清单</h3>
+      <div className="px-6 py-6 shrink-0 relative z-10">
+        <h3 className="text-xl font-bold text-white tracking-tight">播放队列</h3>
       </div>
 
-      {/* 滚动区 */}
       <div
         ref={listRef}
-        className="flex-1 w-full overflow-y-auto scrollbar-custom p-4"
+        className="flex-1 w-full overflow-y-auto scrollbar-custom px-3 pb-4 relative z-10"
       >
         {isReady ? (
           <div
@@ -135,8 +137,13 @@ export const QueuePanel = () => {
             {virtualizer.getVirtualItems().map((virtualRow: any) => {
               const song = queue[virtualRow.index];
               return (
-                <div
+                <QueueRow
                   key={`${song.id}-${virtualRow.index}`}
+                  song={song}
+                  index={virtualRow.index}
+                  isCurrent={virtualRow.index === queueIndex}
+                  onPlay={playQueueIndex}
+                  // 将定位样式直接传入组件
                   style={{
                     position: "absolute",
                     top: 0,
@@ -144,16 +151,9 @@ export const QueuePanel = () => {
                     width: "100%",
                     height: `${virtualRow.size}px`,
                     transform: `translateY(${virtualRow.start}px)`,
-                    paddingBottom: "8px" // 增加项之间的间隙
+                    paddingBottom: "4px", // 给列表项之间留点缝隙，避免挤在一起
                   }}
-                >
-                  <QueueRow
-                    song={song}
-                    index={virtualRow.index}
-                    isCurrent={virtualRow.index === queueIndex}
-                    onPlay={playQueueIndex}
-                  />
-                </div>
+                />
               );
             })}
           </div>
