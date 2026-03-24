@@ -12,12 +12,14 @@ import { VolumeControl } from "@/components/VolumeControl";
 import { QueuePopover } from "@/components/QueuePopover";
 import { cn, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
+import { useTimeStore } from "@/store/module/time";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { PlayerProgressBar } from './PlayBar/ProgressBar';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 const Maximized = (isElectron: boolean) => {
   if (isElectron) window.electronAPI?.enterFullScreen();
   else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
@@ -29,14 +31,18 @@ const Minimize = (isElectron: boolean) => {
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 export const PlayerBar = () => {
   const isElectron = IS_ELECTRON;
   const isLyricsOpen = useUiStore(s => s.isLyricsOpen);
   const toggleLyrics = useUiStore(s => s.toggleLyrics);
-  const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const [isMaximized, setIsMaximized] = useState(false);
+  const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
 
+  // DOM 引用与节流/状态标记
   const audioRef = useRef<HTMLAudioElement>(null);
+  const lastStoreWriteRef = useRef(0);
+  const hasRestoredProgressRef = useRef(false); // 必须声明：标记是否已经恢复过进度
 
   // Zustand Stores
   const volume = usePlayerStore(s => s.volume);
@@ -60,13 +66,14 @@ export const PlayerBar = () => {
     setRepeatMode(next);
   };
 
-  // 1. 负责加载音频 URL
+  // 1. 负责加载音频 URL & 重置恢复标记
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentSongUrl) return;
 
     if (audio.src !== currentSongUrl) {
       audio.src = currentSongUrl;
+      hasRestoredProgressRef.current = false; // ⚠️ 核心：切歌时必须重置保险栓
       audio.load();
     }
     usePlayerStore.getState().fetchCurrentLyric();
@@ -76,6 +83,7 @@ export const PlayerBar = () => {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentSongUrl) return;
+
     if (isPlaying) {
       audio.play().catch((err) => {
         console.warn("Play interrupted or not allowed:", err);
@@ -93,67 +101,90 @@ export const PlayerBar = () => {
     }
   }, [volume]);
 
-  // 4. 和 ProgressBar 进行事件通信
+  // 4. 监听进度条的跳转 (Seek) 指令
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    // 广播当前播放时间（毫秒）
-    const onTimeUpdate = () => {
-      window.dispatchEvent(new CustomEvent("player-time", { detail: audio.currentTime * 1000 }));
-    };
-
-    // 广播总时长（毫秒）
-    const onDurationChange = () => {
-      if (isFinite(audio.duration)) {
-        window.dispatchEvent(new CustomEvent("player-duration", { detail: audio.duration * 1000 }));
-      }
-    };
-
-    // 广播缓冲进度（毫秒）
-    const onProgress = () => {
-      if (audio.buffered.length > 0) {
-        window.dispatchEvent(
-          new CustomEvent("player-buffer", { detail: audio.buffered.end(audio.buffered.length - 1) * 1000 })
-        );
-      }
-    };
-
-    // 接收 ProgressBar 的 seek 指令
     const onSeek = (e: Event) => {
-      audio.currentTime = (e as CustomEvent<number>).detail / 1000;
+      const newTimeMs = (e as CustomEvent<number>).detail;
+      if (audioRef.current) {
+        audioRef.current.currentTime = newTimeMs / 1000;
+      }
+      // 手动跳转时，立刻把时间存入 Store 以便持久化
+      useTimeStore.getState().setCurrentTime(newTimeMs);
     };
 
-    audio.addEventListener("timeupdate", onTimeUpdate);
-    audio.addEventListener("durationchange", onDurationChange);
-    audio.addEventListener("progress", onProgress);
     window.addEventListener("player-seek", onSeek);
-
-    return () => {
-      audio.removeEventListener("timeupdate", onTimeUpdate);
-      audio.removeEventListener("durationchange", onDurationChange);
-      audio.removeEventListener("progress", onProgress);
-      window.removeEventListener("player-seek", onSeek);
-    };
+    return () => window.removeEventListener("player-seek", onSeek);
   }, []);
-
 
   return (
     <div className={cn(
       "h-17 lg:h-20 bg-black w-full flex px-2 items-center justify-between z-20",
       "transition-all ease-linear duration-300",
     )}>
+      {/* NOTE: 所有的原生音频事件绑定在这里 */}
       <audio
         className="hidden"
         ref={audioRef}
         onEnded={() => playNext()}
+        onDurationChange={(e) => {
+          const duration = e.currentTarget.duration;
+          if (isFinite(duration) && duration > 0) {
+            window.dispatchEvent(new CustomEvent("player-duration", { detail: duration * 1000 }));
+            useTimeStore.getState().setTotalTime(duration * 1000);
+          }
+        }}
+        onProgress={(e) => {
+          const audio = e.currentTarget;
+          if (audio.buffered.length > 0) {
+            // 获取最新缓冲段的结束时间
+            const bufferedEnd = audio.buffered.end(audio.buffered.length - 1);
+            // console.log("Buffered end:", "write time");
+            useTimeStore.getState().setBufferedTime(bufferedEnd * 1000);
+          }
+        }}
+        onTimeUpdate={(e) => {
+          const audio = e.currentTarget;
+          if (audio.paused) return;
+
+          const currentTimeMs = audio.currentTime * 1000;
+          const now = Date.now();
+
+          // A. 每秒多次：广播给进度条组件（完全脱离 React 渲染树）
+          window.dispatchEvent(new CustomEvent("player-time", { detail: currentTimeMs }));
+
+          // B. 每 3 秒一次：写入 Zustand 做持久化备份
+          if (now - lastStoreWriteRef.current > 3000) {
+            useTimeStore.getState().setCurrentTime(currentTimeMs);
+            lastStoreWriteRef.current = now;
+          }
+        }}
+        onCanPlay={(e) => {
+          const audio = e.currentTarget;
+
+          // 如果这首歌还没恢复过进度，则进行跳转
+          if (!hasRestoredProgressRef.current) {
+            const persistedTime = useTimeStore.getState().currentTime;
+
+            if (persistedTime > 0) {
+              const restoreSeconds = persistedTime / 1000;
+              if (Number.isFinite(audio.duration) && audio.duration > 0) {
+                audio.currentTime = Math.min(restoreSeconds, audio.duration - 1);
+              } else {
+                audio.currentTime = restoreSeconds;
+              }
+            }
+            // 恢复完毕，拉上保险栓，防止后续因为网络缓冲等原因重复触发
+            hasRestoredProgressRef.current = true;
+          }
+
+          if (isPlaying) audio.play().catch(console.error);
+        }}
       />
 
       <div className="h-17 lg:h-20 bg-black w-full flex px-4 items-center justify-between z-20 transition-all ease-linear duration-300">
 
         {/* ================= Left: Song Info ================= */}
         <div className="flex items-center gap-3 lg:gap-4 min-w-0 flex-1 lg:flex-3">
-          {/* 封面 */}
           <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-md overflow-hidden relative group cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-zinc-800 shrink-0">
             {currentSong?.al.picUrl && (
               <Image
@@ -171,7 +202,6 @@ export const PlayerBar = () => {
             </div>
           </div>
 
-          {/* 歌曲信息 */}
           <div className="flex flex-col justify-center min-w-0 flex-1 max-w-25 lg:max-w-35">
             {currentSong ? (
               <>
@@ -190,7 +220,6 @@ export const PlayerBar = () => {
             )}
           </div>
 
-          {/* Like and Comment */}
           <div className="hidden sm:flex items-center gap-3">
             <button title="Like">
               <Heart className={cn("w-4 h-4 lg:w-5 lg:h-5 text-[#b3b3b3] hover:text-white cursor-pointer", isLiked && "fill-[#1ed760] text-[#1ed760]")} />
@@ -258,7 +287,7 @@ export const PlayerBar = () => {
 
           <VolumeControl initialVolume={volume} onChange={(v) => usePlayerStore.getState().setVolume(v)} />
 
-          <button onClick={() => { isMaximized ? Minimize(isElectron) : Maximized(isElectron); setIsMaximized(!isMaximized); }} className="hidden sm:block hover:text-white transition-colors">
+          <button onClick={() => { if (isMaximized) { Minimize(isElectron); } else { Maximized(isElectron); } setIsMaximized(!isMaximized); }} className="hidden sm:block hover:text-white transition-colors">
             {isMaximized ? <MinimizeIcon className="w-4 h-4 lg:w-5 lg:h-5" /> : <Expand className="w-4 h-4 lg:w-5 lg:h-5" />}
           </button>
         </div>

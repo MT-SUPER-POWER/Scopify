@@ -3,7 +3,7 @@
 import React from "react";
 import { Play, Pause, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Playlist } from "@/app/(dashboard)/search/page";
+import { Playlist } from "@/app/(dashboard)/search/_types";
 
 /** 格式化播放量 (例如 123456 -> 123.5K) */
 function formatCount(count: number): string {
@@ -54,8 +54,8 @@ export function PlaylistCard({
         {isLoading
           ? <Loader2 className="w-5 h-5 animate-spin" />
           : isPlaying
-          ? <Pause className="w-6 h-6 fill-current" />
-          : <Play className="w-6 h-6 fill-current ml-1" />}
+            ? <Pause className="w-6 h-6 fill-current" />
+            : <Play className="w-6 h-6 fill-current ml-1" />}
       </button>
     </div>
   );

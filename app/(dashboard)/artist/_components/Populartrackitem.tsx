@@ -124,11 +124,14 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
     try {
       await likeSong(track.id as number, next);
       const store = useUserStore.getState();
-      const cur = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
-      store.setLikeListIDs(next ? [...cur, track.id] : cur.filter((id: number) => id !== track.id));
-      toast.success(next ? "已添加到喜欢" : "已取消喜欢");
+      // 规范化为 number[] 再更新
+      const cur = Array.isArray(store.likeListIDs) ? store.likeListIDs.map((id) => Number(id)) : [];
+      const idNum = Number(track.id);
+      const nextList: number[] = next ? [...cur, idNum] : cur.filter((id) => id !== idNum);
+      store.setLikeListIDs(nextList);
+      toast.success(next ? "Add to liked songs" : "Removed from liked songs");
     } catch {
-      toast.error("操作失败，请稍后再试");
+      toast.error("Operation failed. Please try again later.");
     }
   }, [track.id]);
 
@@ -136,11 +139,11 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
     const state = usePlayerStore.getState();
     const detail = queue[index] || pruneSongDetail(track.raw);
     if (state.queue.some((t) => t.id === track.id)) {
-      toast.info("歌曲已在队列中");
+      toast.info("Song is already in the queue");
       return;
     }
     state.setQueue([...state.queue, detail], state.queueIndex);
-    toast.success("已添加到播放队列");
+    toast.success("Added to playback queue");
   }, [queue, index, track]);
 
   const fallbackImg = artist.avatar || artist.headerImageUrl;
@@ -237,9 +240,9 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
                   onClick={async () => {
                     try {
                       await updatePlaylistTrack("add", p.id, track.id as number);
-                      toast.success("已成功添加到歌单");
+                      toast.success("Added to playlist");
                     } catch {
-                      toast.error("添加到歌单失败");
+                      toast.error("Failed to add to playlist");
                     }
                   }}
                   className="focus:bg-white/10 focus:text-white"
@@ -263,8 +266,8 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
               onClick={() => {
                 navigator.clipboard
                   .writeText(`https://music.163.com/#/song?id=${track.id}`)
-                  .then(() => toast.success("链接已复制到剪贴板"))
-                  .catch(() => toast.error("复制链接失败"));
+                  .then(() => toast.success("Link copied to clipboard"))
+                  .catch(() => toast.error("Failed to copy link"));
               }}
               className="w-full h-full block"
             >

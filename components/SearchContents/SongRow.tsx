@@ -3,7 +3,7 @@
 import React from "react";
 import { Play, Pause, Heart, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Song } from "@/app/(dashboard)/search/page";
+import { Song } from "@/app/(dashboard)/search/_types";
 
 /** ms → mm:ss */
 function formatDuration(ms: number): string {

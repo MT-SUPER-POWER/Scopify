@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { searchSongs, searchPlaylists, searchAlbums, searchArtists } from "@/lib/api/search";
-import type { Song, Album, Playlist, Artist } from "../page";
+import type { Song, Album, Playlist, Artist } from "../_types";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

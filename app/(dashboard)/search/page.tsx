@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { usePlayerStore } from "@/store";
 
 import { Category } from "./_types";
 import { useSearchData } from "./_hooks/useSearchData";
