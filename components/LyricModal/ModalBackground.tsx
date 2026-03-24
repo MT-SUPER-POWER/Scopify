@@ -58,7 +58,7 @@ export const ModalBackground = ({ coverUrl }: { coverUrl: string }) => {
           playing={isPlaying}
           hasLyric={true}
           renderScale={0.35}
-          staticMode={true}
+          staticMode={false}
         />
       </div>
     </WebGLFallbackBoundary>

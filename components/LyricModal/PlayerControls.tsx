@@ -1,33 +1,8 @@
 "use client";
 
-import { Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle } from "lucide-react";
-import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useTimeStore } from "@/store/module/time";
-import { SmoothSlider } from "@/components/SmoothSlider";
-
-export const PlayerProgress = () => {
-  const currentTime = useTimeStore((s) => s.currentTime);
-  const totalTime = useTimeStore((s) => s.totalTime);
-  const bufferedTime = useTimeStore((s) => s.bufferedTime);
-  const bufferedPercent = totalTime > 0 ? (bufferedTime / (totalTime / 1000)) * 100 : 0;
-  const progressPercent = totalTime > 0 ? (currentTime / totalTime) * 100 : 0;
-
-  const handleSeek = (value: number) => {
-    const newTimeMs = (value / 100) * totalTime;
-    window.dispatchEvent(new CustomEvent("player-seek", { detail: newTimeMs }));
-  };
-
-  return (
-    <div className="mt-6 flex flex-col gap-2 w-full">
-      <SmoothSlider value={progressPercent} bufferedValue={bufferedPercent} onChange={handleSeek} className="w-full" />
-      <div className="flex items-center justify-between text-xs font-medium text-[#b3b3b3] tabular-nums">
-        <span>{formatDuration(currentTime)}</span>
-        <span>{formatDuration(totalTime)}</span>
-      </div>
-    </div>
-  );
-};
+import { cn } from "@/lib/utils";
+import { Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle } from "lucide-react";
 
 export const PlayerControls = () => {
   const isPlaying = usePlayerStore((s) => s.isPlaying);

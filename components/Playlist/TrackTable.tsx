@@ -11,7 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Clock, Play, Heart, Trash, PlusCircle, Pause, Link2, ListPlus, GripVertical } from "lucide-react";
-import { LikeButton } from "@/components/ui/LikeButton";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -23,288 +22,23 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import { cn, formatDate, formatDuration } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { likeSong } from "@/lib/api/playlist";
 import { toast } from "sonner";
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { useSearchParams } from "next/navigation";
 import { NeteasePlaylist } from "@/types/api/playlist";
 import Link from "next/link";
 import { FaRegCommentDots } from "react-icons/fa6";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { motion } from "motion/react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useUiStore } from "@/store/module/ui";
 import Image from "next/image";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-function ConfirmDialogShandCN({
-  open, title, content, onConfirm, onCancel,
-  confirmText = "确认", cancelText = "取消"
-}: {
-  open: boolean;
-  title: string;
-  content: string;
-  onConfirm: () => void | Promise<void>;
-  onCancel: () => void;
-  confirmText?: string;
-  cancelText?: string;
-}) {
-  return (
-    <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
-      <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
-
-      <AlertDialogContent className={cn(
-        "bg-[#282828] border-none shadow-2xl rounded-xl w-96 p-8",
-        "flex flex-col",
-      )}>
-        {/* text-center 覆盖 shadcn AlertDialogHeader 默认的 text-left */}
-        <AlertDialogHeader className="space-y-2 mb-8 w-full">
-          <AlertDialogTitle className="w-full text-2xl font-bold text-white tracking-tight text-center">
-            {title}
-          </AlertDialogTitle>
-          <AlertDialogDescription className="text-[#b3b3b3] text-sm">
-            {content}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-
-        {/* sm:flex-col 覆盖 shadcn Footer 默认在宽屏变 flex-row 的行为 */}
-        <AlertDialogFooter className="flex flex-col gap-4 w-full sm:flex-col">
-          <button
-            onClick={onConfirm}
-            className="w-full py-3.5 rounded-full bg-[#1ed760] hover:bg-[#1fdf64] text-black font-bold text-base transition-all"
-          >
-            {confirmText}
-          </button>
-          <button
-            onClick={onCancel}
-            className="w-full py-3.5 rounded-full bg-transparent border border-[#727272] hover:border-white text-white font-bold text-base transition-all"
-          >
-            {cancelText}
-          </button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
-
-// FIX: ConfirmDialog 提升到列表层，TrackRowContextMenu 只接收回调，不再自己挂载 Dialog
-// (Deleted TrackRowContextMenu and moved logic to TracklistTable)
-
-function TrackIndexCell({ index, isActive, isPlaying, onPlay, setIsPlaying }: {
-  index: number;
-  isActive: boolean;
-  isPlaying: boolean;
-  onPlay: () => void;
-  setIsPlaying: (v: boolean) => void;
-}) {
-  return (
-    <div className="relative w-4 h-4 mx-auto flex items-center justify-center">
-      <span className={cn(
-        "text-zinc-400 font-normal group-hover:hidden",
-        isActive && "hidden"
-      )}>
-        {index + 1}
-      </span>
-
-      {/* 频谱：只在 isActive && isPlaying 时显示，hover 时隐藏 */}
-      {isActive && isPlaying && (
-        <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
-          {[0, 0.2, 0.4].map((delay, i) => (
-            <motion.div
-              key={i}
-              className="w-0.5 bg-[#1ed760] rounded-full"
-              animate={{ scaleY: [0.4, 1, 0.4] }}
-              transition={{ duration: 0.8, repeat: Infinity, delay, ease: "easeInOut" }}
-              style={{ height: "100%", originY: 1 }}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* 暂停图标：isActive && 未播放时显示，hover 时隐藏 */}
-      {isActive && !isPlaying && (
-        <Play className="w-4 h-4 text-[#1ed760] fill-current group-hover:hidden" />
-      )}
-
-      {/* hover 时覆盖显示 */}
-      <div className="hidden group-hover:flex items-center justify-center">
-        {isActive && isPlaying ? (
-          <Pause
-            className="w-4 h-4 text-[#1ed760] fill-current cursor-pointer"
-            onClick={() => setIsPlaying(false)}
-          />
-        ) : (
-          <Play
-            className="w-4 h-4 text-white fill-current cursor-pointer"
-            onClick={onPlay}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TRACK ROW ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-interface TrackRowProps {
-  track: any;
-  index: number;
-  isActive: boolean;
-  isPlaying: boolean;
-  isLiked: boolean;
-  playlistID: string | null;
-  onPlay: () => void;
-  onRequestDelete: (playlistId: number | string, trackId: number) => void;
-  setIsPlaying: (v: boolean) => void;
-  onContextMenu: (track: any) => void;
-  hideDateColumn?: boolean;
-  hideLikeColumn?: boolean;
-}
-
-const TrackRow = memo(function TrackRow({
-  track,
-  index,
-  isActive,
-  isPlaying,
-  isLiked,
-  onPlay,
-  setIsPlaying,
-  onContextMenu,
-  hideDateColumn,
-  hideLikeColumn
-}: TrackRowProps) {
-  return (
-    <TableRow
-      className={cn(
-        "group hover:bg-white/10 border-none transition-colors cursor-default",
-        isActive && "text-[#1ed760]"
-      )}
-      onDoubleClick={onPlay}
-      onContextMenu={() => onContextMenu(track)}
-    >
-      {/* 索引 */}
-      <TableCell className="text-center font-medium rounded-l-md">
-        <TrackIndexCell
-          index={index}
-          isActive={isActive}
-          isPlaying={isPlaying}
-          onPlay={onPlay}
-          setIsPlaying={setIsPlaying}
-        />
-      </TableCell>
-
-      {/* 歌曲名称 */}
-      <TableCell className="min-w-0 max-w-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 shrink-0 bg-zinc-800 rounded">
-            <img src={track.al.picUrl} alt={track.al.name} loading="lazy" className="w-full h-full object-cover rounded" />
-          </div>
-          <div className="flex flex-col truncate">
-            <span
-              title={track.name}
-              className={cn(
-                "text-base font-normal truncate group-hover:underline cursor-pointer",
-                isActive ? "text-[#1ed760]" : "text-white"
-              )}
-            >
-              {track.name}
-            </span>
-            <span
-              title={track.ar.map((artist: any) => artist.name).join(", ")}
-              className="text-zinc-400 text-sm hover:text-white hover:underline cursor-pointer truncate"
-            >
-              {track.ar.map((artist: any) => artist.name).join(", ")}
-            </span>
-          </div>
-        </div>
-      </TableCell>
-
-      {/* 专辑名称 */}
-      <TableCell className="hidden md:table-cell max-w-0">
-        <span title={track.al.name} className="hover:text-white hover:underline cursor-pointer block truncate">
-          {track.al.name}
-        </span>
-      </TableCell>
-
-      {/* 发布日期 */}
-      {!hideDateColumn && (
-        <TableCell className="hidden lg:table-cell truncate">
-          <span title={formatDate(track.publishTime)}>{formatDate(track.publishTime)}</span>
-        </TableCell>
-      )}
-
-      {/* 喜欢 */}
-      {!hideLikeColumn && (
-        <TableCell className="hidden lg:table-cell truncate w-20">
-          <div className="w-full h-full flex justify-center">
-            <LikeButton
-              liked={isLiked}
-              likedCount={track.popularity || 0}
-              onLike={() => {
-                const nextLiked = !isLiked;
-                likeSong(track.id, nextLiked)
-                  .then(() => {
-                    const store = useUserStore.getState();
-                    const currentLikes = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
-                    if (nextLiked) {
-                      store.setLikeListIDs([...currentLikes, track.id]);
-                    } else {
-                      const newLikeIDs = currentLikes.filter((id: number) => id !== track.id);
-                      store.setLikeListIDs(newLikeIDs);
-
-                      // 只有当前歌单是「喜欢的歌曲」歌单时才需要移除该曲目
-                      const newLikeSet = new Set(newLikeIDs);
-                      const isLikePlaylist = store.albumList.every(
-                        (t: any) => newLikeSet.has(t.id) || t.id === track.id
-                      );
-                      if (isLikePlaylist) {
-                        store.setAlbumList(store.albumList.filter((t: any) => t.id !== track.id));
-                      }
-                    }
-                    toast.success(nextLiked ? "已添加到喜欢" : "已取消喜欢");
-                  })
-                  .catch((err) => {
-                    console.error("Failed to update like status:", err);
-                    toast.error("操作失败，请稍后再试");
-                  });
-              }}
-              iconClassName="w-4.5 h-4.5"
-            />
-          </div>
-        </TableCell>
-      )}
-
-      {/* 播放所需时间 */}
-      <TableCell className="w-32 rounded-r-md align-middle">
-        <div className="flex justify-center items-center">
-          <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
-        </div>
-      </TableCell>
-
-    </TableRow>
-  );
-}, (prev, next) =>
-  // 精致 compare，确保 isLiked 变化时能重渲染
-  prev.isActive === next.isActive &&
-  prev.isPlaying === next.isPlaying &&
-  prev.isLiked === next.isLiked &&
-  prev.index === next.index &&
-  prev.hideDateColumn === next.hideDateColumn &&
-  prev.hideLikeColumn === next.hideLikeColumn
-);
+import { ConfirmDialogShandCN } from './TableConfirmDialog';
+import { TrackRow } from './TrackRow';
+import { RawSongDetail } from "@/types/api/music";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -392,17 +126,17 @@ export default function TracklistTable({
   const setColLike = (w: number) => { colLikeRef.current = w; setColLikeState(w); };
 
   // FIX: 支持由上级注入的数据
-  const storeTracks = useUserStore((state: any) => state.albumList);
+  const storeTracks = useUserStore((state) => state.albumList);
   const tracks = externalTracks || storeTracks;
 
   const likelist = useUserStore((s) => s.likeListIDs);
 
   // FIX: actions 通过 hook 获取，而非 getState()
-  const setQueue = usePlayerStore((s: any) => s.setQueue);
-  const playQueueIndex = usePlayerStore((s: any) => s.playQueueIndex);
-  const setIsPlaying = usePlayerStore((s: any) => s.setIsPlaying);
-  const currentSongDetail = usePlayerStore((s: any) => s.currentSongDetail);
-  const isPlaying = usePlayerStore((s: any) => s.isPlaying);
+  const setQueue = usePlayerStore((s) => s.setQueue);
+  const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
+  const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
+  const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
 
   const playlistID = useSearchParams().get("id");
 
@@ -422,7 +156,7 @@ export default function TracklistTable({
     [playlists, playlistID]
   );
 
-  // FIX: likeSet 用 Set 替代数组，.has() 是 O(1)，避免每行 O(n) 的 includes 查找
+  // likeSet 用 Set 替代数组，.has() 是 O(1)，避免每行 O(n) 的 includes 查找
   const likeSet = useMemo(() => {
     if (Array.isArray(likelist)) {
       return new Set(likelist);
@@ -488,7 +222,7 @@ export default function TracklistTable({
       await updatePlaylistTrack("del", pendingDelete.playlistId, pendingDelete.trackId);
       const store = useUserStore.getState();
       store.setAlbumList(
-        store.albumList.filter((t: any) => t.id !== pendingDelete.trackId)
+        store.albumList.filter((t: any) => t.id !== pendingDelete.trackId) as RawSongDetail[]
       );
       toast.success("已从歌单移除");
     } catch (err) {
@@ -510,10 +244,10 @@ export default function TracklistTable({
     <>
       <ConfirmDialogShandCN
         open={!!pendingDelete}
-        title="确认移除"
-        content="确定要将此歌曲从歌单移除吗？此操作不可撤销。"
-        confirmText="确认移除"
-        cancelText="取消"
+        title="Confirm Deletion"
+        content="Are you sure you want to remove this track from the playlist?"
+        confirmText="Confirm"
+        cancelText="Cancel"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
       />

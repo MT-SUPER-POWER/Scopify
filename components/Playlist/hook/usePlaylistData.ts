@@ -69,14 +69,14 @@ export function usePlaylist() {
 
           // 在异步回调中 setState，Lint 不会报同步更新错误
           setRawDetail({ name: "每日推荐", trackCount: dailySongs.length, tracks: dailySongs });
-          useUserStore.getState().setAlbumList(dailySongs as SongDetail[]);
+          useUserStore.getState().setAlbumList(dailySongs);
         } else {
           const res: any = await getPlaylsitDetail({ id: playlistId as string, cookie: isRecommend ? cookie : undefined });
           const playlist = res.data.playlist;
           if (ignore) return;
 
           setRawDetail(playlist);
-          useUserStore.getState().setAlbumList(playlist.tracks as SongDetail[] || []);
+          useUserStore.getState().setAlbumList(playlist.tracks || []);
         }
       } catch (err) {
         if (ignore) return;

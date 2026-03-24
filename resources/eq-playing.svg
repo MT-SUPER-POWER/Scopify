@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" width="14" height="14">
+  <style>
+    .eq { fill: #1ed760; transform-origin: bottom; animation: bounce 0.8s ease-in-out infinite; }
+    .eq-1 { animation-delay: 0s; }
+    .eq-2 { animation-delay: 0.2s; }
+    .eq-3 { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1); }
+    }
+  </style>
+  <rect class="eq eq-1" x="1.5" y="2" width="3" height="12" rx="1" />
+  <rect class="eq eq-2" x="5.5" y="2" width="3" height="12" rx="1" />
+  <rect class="eq eq-3" x="9.5" y="2" width="3" height="12" rx="1" />
+</svg>

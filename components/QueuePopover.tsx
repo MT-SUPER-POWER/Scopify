@@ -2,12 +2,13 @@
 
 import React, { useRef, memo, useCallback, useState, useEffect } from "react";
 import { ListMusic, Play } from "lucide-react";
-import { motion } from "framer-motion";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
+import Image from "next/image";
+import SPOTIFYANIME from "@/resources/eq-playing.svg";
 
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件解耦 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -60,27 +61,25 @@ const QueueItem = memo(function QueueItem({
           </span>
 
           <div className="relative w-10 h-10 shrink-0 flex items-center justify-center overflow-hidden rounded group/cover">
-            <img
+            <Image
               src={song.al.picUrl}
               alt={song.name}
               className={cn(
                 "w-full h-full object-cover transition-opacity",
                 isActive ? "opacity-40" : "group-hover/cover:opacity-40"
               )}
+              fill
             />
             <div className="absolute inset-0 flex items-center justify-center">
               {isActive ? (
                 isPlaying ? (
-                  <div className="flex items-end gap-0.5 h-3">
-                    {[0, 0.1, 0.2].map((delay, i) => (
-                      <motion.div
-                        key={i}
-                        animate={{ height: [4, 12, 4] }}
-                        transition={{ repeat: Infinity, duration: 0.6 + i * 0.1, ease: "easeInOut", delay }}
-                        className="w-0.75 bg-[#1ed760]"
-                      />
-                    ))}
-                  </div>
+                  <Image
+                    src={SPOTIFYANIME}
+                    alt="Playing"
+                    width={14}
+                    height={14}
+                    unoptimized
+                  />
                 ) : (
                   <Play className="w-4 h-4 text-[#1ed760] fill-current" />
                 )
@@ -123,10 +122,10 @@ const QueueItem = memo(function QueueItem({
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 列表组件（Popover 打开后才挂载）━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const QueueList = () => {
-  const queue = usePlayerStore((state: any) => state.queue);
-  const queueIndex = usePlayerStore((state: any) => state.queueIndex);
-  const playQueueIndex = usePlayerStore((state: any) => state.playQueueIndex);
-  const isPlaying = usePlayerStore((state: any) => state.isPlaying);
+  const queue = usePlayerStore((state) => state.queue);
+  const queueIndex = usePlayerStore((state) => state.queueIndex);
+  const playQueueIndex = usePlayerStore((state) => state.playQueueIndex);
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
 
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -209,8 +208,8 @@ export const QueuePopover = () => {
         align="end" className="w-96 bg-[#181818] border border-white/10 text-zinc-100 shadow-2xl">
         <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#181818]/90 backdrop-blur-sm sticky top-0 z-10">
           <div>
-            <h3 className="font-bold text-lg">当前队列</h3>
-            <p className="text-xs text-zinc-400">共 {queue.length} 首歌曲</p>
+            <h3 className="font-bold text-lg">Current Queue</h3>
+            <p className="text-xs text-zinc-400">Total Song: {queue.length}</p>
           </div>
         </div>
         <QueueList />

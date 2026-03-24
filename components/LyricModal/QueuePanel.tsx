@@ -1,11 +1,11 @@
 "use client";
 
-import { memo, useEffect, useRef, useLayoutEffect, useState } from "react";
+import { memo, useEffect, useRef, useLayoutEffect, useState, useCallback } from "react";
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { usePlayerStore } from "@/store";
 import { useVirtualizer } from "@tanstack/react-virtual";
-
+import { usePlayerStore } from "@/store";
+import Image from "next/image";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -24,13 +24,15 @@ const QueueRow = memo(
     <button
       onClick={() => onPlay(index)}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-colors",
-        isCurrent ? "bg-white/15" : "hover:bg-white/8"
+        "w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-left transition-all duration-300",
+        // 当前播放项增加玻璃高光和阴影，未播放项增加 hover 底色
+        isCurrent ? "bg-white/15 shadow-sm ring-1 ring-white/10 scale-[1.02]" : "hover:bg-white/10"
       )}
     >
-      <div className="w-8 h-8 shrink-0 rounded-md overflow-hidden bg-white/10">
+      <div className="w-10 h-10 shrink-0 rounded-lg overflow-hidden bg-white/10 shadow-inner">
         {song.al?.picUrl && (
-          <img
+          <Image
+            width={40} height={40}
             src={`${song.al.picUrl}?param=64y64`}
             alt=""
             className="w-full h-full object-cover"
@@ -38,14 +40,14 @@ const QueueRow = memo(
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className={cn("text-sm truncate", isCurrent ? "text-[#1ed760] font-semibold" : "text-white")}>
+        <p className={cn("text-[15px] truncate", isCurrent ? "text-[#1ed760] font-bold" : "text-white/90 font-medium")}>
           {song.name}
         </p>
-        <p className="text-xs text-[#b3b3b3] truncate">
+        <p className="text-[13px] text-white/50 mt-0.5 truncate">
           {song.ar?.map((a: any) => a.name).join(", ")}
         </p>
       </div>
-      {isCurrent && <Play className="w-3.5 h-3.5 text-[#1ed760] fill-current shrink-0" />}
+      {isCurrent && <Play className="w-4 h-4 text-[#1ed760] fill-current shrink-0" />}
     </button>
   )
 );
@@ -65,23 +67,36 @@ export const QueuePanel = () => {
   const virtualizer = useVirtualizer({
     count: queue.length,
     getScrollElement: () => listRef.current,
-    estimateSize: () => 56,
+    estimateSize: () => 64, // 稍微增大了行高以适配更圆润的 UI
     overscan: 5,
   });
 
+  // keep a ref so memoized children don't receive unstable functions
+  const virtualizerRef = useRef(virtualizer);
+  useEffect(() => {
+    virtualizerRef.current = virtualizer;
+  }, [virtualizer]);
+
+  // stable proxy to call methods from memoized children
+  const scrollToIndex = useCallback(
+    (index: number, opts?: any) => {
+      virtualizerRef.current?.scrollToIndex(index, opts);
+    },
+    []
+  );
+
+  // expose plain data (safe to pass to memoized children)
+  const virtualItems = virtualizer.getVirtualItems?.() ?? [];
+
   useEffect(() => {
     if (queueIndex < 0) return;
-    // ✅ 用 virtualizer 自带的方法，而不是直接操作 DOM
     virtualizer.scrollToIndex(queueIndex, { align: "center", behavior: "smooth" });
-  }, [queueIndex]);
+  }, [queueIndex, virtualizer]);
 
-  // Ensure we don't render virtual items until the scroll container has a measured height.
-  // If the container has no height (auto), virtualization will treat it as unbounded
-  // and may render all items. Use a ResizeObserver to detect when the container size is known.
   useLayoutEffect(() => {
     const el = listRef.current;
     if (!el) return;
-    if (el.clientHeight > 0) setIsReady(true);
+    if (el.clientHeight > 0) Promise.resolve().then(() => setIsReady(true));
     const ro = new ResizeObserver((entries) => {
       const h = entries[0]?.contentRect?.height ?? 0;
       if (h > 0) setIsReady(true);
@@ -99,45 +114,51 @@ export const QueuePanel = () => {
   }
 
   return (
-    // 外层：负责滚动
-    <div
-      ref={listRef}
-      className="w-full h-full overflow-y-auto scrollbar-custom"
-    >
-      {/* 如果容器尚未测量出高度，先不要渲染虚拟项，避免渲染全部元素 */}
-      {isReady ? (
-        <div
-          style={{ height: virtualizer.getTotalSize(), position: "relative" }}
-          className="px-2 py-2"
-        >
-          {virtualizer.getVirtualItems().map((virtualRow) => {
-            const song = queue[virtualRow.index];
-            return (
-              // ✅ 用 transform 绝对定位每一项
-              <div
-                key={`${song.id}-${virtualRow.index}`}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: `${virtualRow.size}px`,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                <QueueRow
-                  song={song}
-                  index={virtualRow.index}
-                  isCurrent={virtualRow.index === queueIndex}
-                  onPlay={playQueueIndex}
-                />
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="px-2 py-2" />
-      )}
+    // 🔥 苹果风格：透镜式玻璃面板容器
+    <div className="w-full max-w-xl h-full mx-auto flex flex-col bg-white/5 backdrop-blur-[60px] rounded-[2.5rem] border border-white/10 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5)] overflow-hidden">
+
+      {/* 顶部标题栏 */}
+      <div className="px-8 py-6 border-b border-white/5 shrink-0">
+        <h3 className="text-2xl font-bold text-white tracking-wide">待播清单</h3>
+      </div>
+
+      {/* 滚动区 */}
+      <div
+        ref={listRef}
+        className="flex-1 w-full overflow-y-auto scrollbar-custom p-4"
+      >
+        {isReady ? (
+          <div
+            style={{ height: virtualizer.getTotalSize(), position: "relative" }}
+            className="w-full"
+          >
+            {virtualizer.getVirtualItems().map((virtualRow: any) => {
+              const song = queue[virtualRow.index];
+              return (
+                <div
+                  key={`${song.id}-${virtualRow.index}`}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: `${virtualRow.size}px`,
+                    transform: `translateY(${virtualRow.start}px)`,
+                    paddingBottom: "8px" // 增加项之间的间隙
+                  }}
+                >
+                  <QueueRow
+                    song={song}
+                    index={virtualRow.index}
+                    isCurrent={virtualRow.index === queueIndex}
+                    onPlay={playQueueIndex}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 };
