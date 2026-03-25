@@ -21,11 +21,10 @@ jobs:
         run: |
           python -c "
           import os, re
-          # 获取触发工作流的 tag 名称 (如 v1.0.2)
           tag = os.environ.get('GITHUB_REF_NAME', '')
 
           try:
-              with open('doc/CHANGE.log', 'r', encoding='utf-8') as f:
+              with open('doc/CHANGE.MD', 'r', encoding='utf-8') as f:
                   content = f.read()
 
               # 精准匹配当前 tag 标题到下一个标题之间的内容
@@ -57,7 +56,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: "npm"
 
       - name: Install Dependencies
