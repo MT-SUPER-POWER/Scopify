@@ -152,6 +152,13 @@ make netease_undeploy # 卸载
 </details>
 
 <details>
+<summary> 用户页面 </summary>
+
+![用户页面](/doc/img/profile.png)
+
+</details>
+
+<details>
 <summary> 评论页面 </summary>
 
 ![发现页面](/doc/img/comment.png)

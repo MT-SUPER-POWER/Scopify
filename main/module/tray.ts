@@ -1,7 +1,7 @@
 import { app, Tray, BrowserWindow, screen } from 'electron';
 import { __logoIcon, __preloadScript } from "../constants.js";
 
-const TRAY_WIDTH = 200;
+const TRAY_WIDTH = 240;
 const TRAY_HEIGHT = 380;
 const X_OFFSET = 15;
 const Y_OFFSET = 4;

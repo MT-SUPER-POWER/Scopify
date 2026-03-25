@@ -50,6 +50,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
   const ProfileCallback = (label: string) => {
     switch (label) {
+      case "Download":
+        window.location.replace('https://github.com/MT-SUPER-POWER/Scopify/releases');
+        break;
       case "About Me":
         smartRouter.push('/me');
         break;

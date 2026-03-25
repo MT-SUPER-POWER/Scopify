@@ -13,9 +13,8 @@ import { PublicPlaylistGrid } from './_components/Publicplaylistgrid';
 import { UserActionBar } from './_components/Useractionbar';
 
 
-
 export default function UserProfilePage() {
-  const uid = useSearchParams().get("id");
+  const uid = useSearchParams().get("userId");
   const router = useSmartRouter();
   const [playlistsOpen, setPlaylistsOpen] = useState(false);
 

@@ -13,7 +13,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { CommentInputBox } from '@/components/Comment/CommentInputBox';
 import Image from 'next/image';
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
-import { IS_ELECTRON } from '@/lib/utils';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
