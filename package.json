@@ -23,7 +23,7 @@
     "backend": "node backend/api-enhanced/app.js",
     "web": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"next dev\" \"npm run backend\" ",
     "build:web": "next build",
-    "build:win": "next build && npx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- win",
+    "build:win": "next build && npx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- win"
   },
   "dependencies": {
     "@applemusic-like-lyrics/core": "^0.2.0",
