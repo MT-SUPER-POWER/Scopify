@@ -1,11 +1,30 @@
-# README
+<div align="center">
+<img alt="logo" height="100" width="100" src="doc/img/icon.ico" />
+<h2> Scopify </h2>
+<p> 一个仿 Spotify UI 的音乐播放器 </p>
+
+[后端 API](https://vdoonnridu.apifox.cn/) | [发行版](https://github.com/MT-SUPER-POWER/Scopify/releases) | [版本日志](https://github.com/MT-SUPER-POWER/Scopify/doc/CHANGE.log)
+
+<br/>
+
+[![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers)
+[![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases)
+[![license](https://img.shields.io/github/license/mt-super-power/scopify)](https://github.com/mt-super-power/scopify/blob/master/license)
+[![Issues](https://img.shields.io/github/issues/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/issues)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MT-SUPER-POWER/Scopify)
+
+</div>
 
 ## 简介
 
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，主要是为了练习前端 UI 和 Electron 的开发。
 后端的 API 部分我们直接使用了现成的开源项目，部署也比较简单。
 
-## 技术栈
+- 本项目主要技术链为 [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [ShadCN UI](https://ui.shadcn.com/) + [Electron](https://www.electronjs.org/zh/docs/latest/)
+- Node.js 版本要求：>= 20，包管理器：bun >= 1.3.7
+- 支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配
+
+## 技术栈总览
 
 1. Next.js + React: 前端框架
 2. Electron: 桌面应用框架
@@ -15,34 +34,36 @@
 6. Axios: 后端通讯统一管理部分
 7. Zustand: 前端状态管理
 
-## 重要的三方库
+### 重要的三方库
+
+> 特别感谢以下项目的开源：
 
 1. [Apple Music Like Lyric](https://github.com/Steve-xmh/applemusic-like-lyrics)
-2. [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels)
-3. [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)
+2. [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)
 
-## 文档
+### 参考文档
 
 1. [Apple Music Like Lyric Doc](https://amll-dev.github.io/applemusic-like-lyrics/reference/react-full/typealiassongdata/)
-2. [Electron](https://www.electronjs.org/zh/docs/latest/api/app)
+2. [Electron Doc](https://www.electronjs.org/zh/docs/latest/api/app)
 3. [Netease Cloud Music API Doc](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
-4. [Electron Builder](https://github.com/QDMarkMan/CodeBlog/blob/master/Electron/electron-builder%E6%89%93%E5%8C%85%E8%AF%A6%E8%A7%A3.md)
+4. [Electron Builder Help Doc - Not Official](https://github.com/QDMarkMan/CodeBlog/blob/master/Electron/electron-builder%E6%89%93%E5%8C%85%E8%AF%A6%E8%A7%A3.md)
 
 ## 部署方法
 
 ### 前端的部署方法
 
 ```bash
-cd momo-music-player/
-bun i
+# 安装前端
+git clone https://github.com/MT-SUPER-POWER/Scopify.git
+cd Scopify
+bun install
 
+# 安装后端
 cd backend/api-enhanced
-# 一定要拉这个分支，这个一定要拉 主要分支，fix/compatible_main 是 原 api-enhance 给项目做兼容用的
 git clone https://github.com/MT-SUPER-POWER/api-enhanced
-bun install  # 安装后端依赖
+bun install
 
 bun run dev  # 开发模式：运行 next.js 和 electron
-bun run build:win # 打包 windows 可执行文件，生成在 dist 目录下
 ```
 
 ### 后端的部署方法
@@ -52,13 +73,16 @@ bun run build:win # 打包 windows 可执行文件，生成在 dist 目录下
 > 这里使用 k8s 来部署，我们在 backend 文件中会给出对用的 svc 和 pod 文件，你照着大致修改就好
 >
 > 我们使用的是这个[仓库](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced)以及对应的[API 文档](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
-> 记得自己打包 image，如果有 `url.parse()` 出现的报错暂且不理会就好
 
 1. 下载项目，进入项目打包 image
+
+   > [!note]
+   > 打包 image 的过程中，如果有 `url.parse()` 出现的报错暂且不理会就好
 
 ```bash
 git clone https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced
 cd api-enhanced
+
 docker build -t netease-api:[版本号自己想吧] ./
 ```
 
@@ -70,53 +94,111 @@ make netease_status   # 查看状态
 make netease_undeploy # 卸载
 ```
 
-3. 记得修改 next.config.js 中的后端地址为你部署的地址
+3. 记得修改 `config/app.config.yml` 中的后端地址为你部署的地址，`autoStart` 设置为 `false`，因为我们已经自己部署了后端了
+
+4. `electron-builder` 的配置文件，去掉 `extraResources` 中的后端相关配置
 
 #### 2. 使用现成的后端
 
-我们程序里面是打包了一个后端一起部署的，地址是 `localhost:3838`，如果你不想自己部署后端，可以直接使用这个地址
+> [!important]
+> 推荐使用这个方法，毕竟部署后端还是比较麻烦的。加上本人还没有测试过分离部署的功能。可能意外比较多
+
+我们程序里面是打包了一个后端一起部署的，默认地址地址是 `localhost:5252`，如果你不需要自己部署后端，在 `config/app.config.yml` 吧 `autoStart` 设置为 `true` 就好。
+
+### 本地部署
+
+直接运行 `npm run build:win` 就会自动打包程序，生成在 `dist` 是直接可运行的版本。
+如果有想打包成有安装引导的版本，还请自己修改 `package.json` 中的 build:build:target: nsis 就可以打包成 exe 文件了。
+程序的运行日志在这个位置: `C:\Users\[YourUserName]\AppData\Roaming\scopify\logs`。
 
 > [!note]
-> 如果你是想要自己编译程序，且不想要打包一个后端本地运行
->
-> 1. 修改 `electron-builder` 的配置文件，去掉 `extraResources` 中的后端相关配置
-> 2. 修改 `next.config.js` 中的后端地址为 `你部署端口的 ip 地址`，k8s 文件给你写好了，你按需修改就行
+> 如果程序没有正常运行，请检查 logs 里面的日志里面的基础配置部分的输出，还有后端是否运行正常，如果简单排查还是有问题，可以把日志发到 issue 里面来，我会尽快回复的。
 
-## 如何自己打包程序
+## 功能
 
-> [!note] 直接运行 `npm run build:win` 就会自动打包程序，生成在 dist 目录下，是一个 dir 解压的结果，如果有需要自己修改 `package.json` 中的 build:build:target: nsis 就可以打包成 exe 文件了
-> 程序的运行日志在这个位置: C:\Users\[YourUserName]\AppData\Roaming\scopify\logs
+- ✨ 支持扫码登录
+- ~~📱 支持手机号登录~~
+- 🎨 封面主题色自适应，支持全站着色
+- ➕ 新建歌单及歌单编辑
+- ❤️ 收藏 / 取消收藏歌单
+- 💬 支持评论区
+- 🎧 支持滚动歌词
+- 🎶 音乐频谱显示
+- 📱 网页界面的移动端基础适配
 
-如果程序没有正常运行，请检查 logs 里面的日志
+## 单页展示
+
+> 还有很多细节要打磨，目前只是初定设计，如果你有任何特别好的想法，请务必提 issue 或者 PR 来告诉我。(**如果你还懂点美术，爹！妈！帮帮孩子吧**)。
+
+<details>
+<summary> 主页面 </summary>
+
+![主页面](/doc/img/main.png)
+
+</details>
+
+<details>
+<summary> 播放歌曲模态界面 </summary>
+
+![播放页面](/doc/img/lyricModal.png)
+
+</details>
+
+<details>
+<summary> 歌单页面 </summary>
+
+![发现页面](/doc/img/Playlist.png)
+
+</details>
+
+<details>
+<summary> 评论页面 </summary>
+
+![发现页面](/doc/img/comment.png)
+
+</details>
+
+<details>
+<summary> 搜索模态界面 </summary>
+
+![搜索页面](/doc/img/SearchModal.png)
+
+</details>
+
+<details>
+<summary> 一般搜索效果 </summary>
+
+![搜索页面](/doc/img/SearchWithBar.png)
+
+</details>
+
+<details>
+<summary> 搜索结果页面</summary>
+
+![搜索页面](/doc/img/SearchResult.png)
+
+</details>
 
 ## TODO
 
-- 多加一个艺术家侧边 LibItem
+- 侧边栏中多添加一个作者相关的功能区
 - 收藏 / 取消收藏专辑
 - 每日推荐的不喜欢功能
-
-### 样式部分
-
-- 缩放控制整体界面
-
-### 单页
-
-### 优化部分
-
-- AMLL 太吃性能，资源占用特别高
 - 窗口刚启动就播放动画，因为资源没加载好，然后这个动画就会卡顿
-- 打包文件特别大一个
+- 本地打包打包后端一起导致特别大，看后期能否编译一个二进制文件一次解决问题
 - 随机模式不应该做成那种纯粹的随机数上下首，而是应该做成一个随机的歌单，先把所有歌曲打乱顺序，然后按照这个顺序来播放，直到打完一轮再重新打乱
-- Zod 来作为数据类型来声明 `type`
-- 替换所有的 重复性 motion.div 动画效果，减少 CPU 占用问题
+- 使用过多的 `any` 了，数据类型需要重新梳理一下
 - 模态界面时候功能太少了
-  1. 音量键
-
-### 功能部分
-
-- github 发布更新客户端自动更新
+  1. 全屏模式按钮
+  2. 音量控制
+- 歌词模态界面是否要共享一个 playbar 部分呢，然后纯粹静态的时候隐藏呢
+- 模态界面特别的别扭，感觉全靠背景和歌词撑着
+- 拉去 github 的 release 自动更新客户端版本
 - 编辑歌单的部分还要做一个 Tag 选择
+- 用户个人信息的编辑
 - i18n 国际化
-- 蓝牙对接附近设备
+- 开发蓝牙基础功能，为后续功能适配铺一些路
 
-### 接口部分
+## 开源许可
+
+- 本项目基于 [MIT](https://www.gnu.org/licenses/mit-license.html) 许可进行开源
