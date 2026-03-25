@@ -24,7 +24,6 @@
     "web": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"next dev\" \"npm run backend\" ",
     "build:web": "next build",
     "build:win": "next build && npx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- win",
-    "afterbuild:win": "hello"
   },
   "dependencies": {
     "@applemusic-like-lyrics/core": "^0.2.0",
@@ -96,6 +95,7 @@
   "build": {
     "appId": "com.momo.scopify",
     "productName": "Scopify",
+    "artifactName": "${productName}.Setup.v${version}x64.${ext}",
     "directories": {
       "output": "dist"
     },

@@ -1,0 +1,79 @@
+name: Build and Release (Windows)
+
+on:
+  push:
+    tags:
+      - "v*" # 推送 v 开头的 tag 时触发 (例如 v1.0.2)
+
+permissions:
+  contents: write # 赋予创建 Release 和上传附件的权限
+
+jobs:
+  # 阶段一：提取日志并创建 Release
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Extract Changelog
+        id: extract
+        run: |
+          python -c "
+          import os, re
+          # 获取触发工作流的 tag 名称 (如 v1.0.2)
+          tag = os.environ.get('GITHUB_REF_NAME', '')
+
+          try:
+              with open('doc/CHANGE.log', 'r', encoding='utf-8') as f:
+                  content = f.read()
+
+              # 精准匹配当前 tag 标题到下一个标题之间的内容
+              pattern = rf'^# {tag}\n(.*?)(?=\n# v|\Z)'
+              match = re.search(pattern, content, re.MULTILINE | re.DOTALL)
+              notes = match.group(1).strip() if match else '未找到此版本的更新日志'
+          except Exception as e:
+              notes = f'提取日志失败: {e}'
+
+          with open('release_notes.txt', 'w', encoding='utf-8') as f:
+              f.write(notes)
+          "
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.txt
+          draft: false
+          prerelease: false
+
+  # 阶段二：Windows 环境构建并上传
+  build-win:
+    needs: create-release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # 拆解 package.json 中的 build:win 脚本，分步执行以确保可靠性
+      - name: Build Next.js
+        run: npm run build:web
+
+      - name: Compile Main Process
+        run: |
+          npx swc main -d out --out-file-extension js
+          node script/build-electron.cjs
+
+      # 自动寻找上一步创建的 Release 并挂载 Windows 安装包
+      - name: Build & Publish Electron
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win --publish always
