@@ -149,7 +149,6 @@ export const usePlayerStore = create<PlayerStore>()(
       // 只持久化 PlayerStore 类型声明的字段，防止多余属性被存储
       partialize: (state) => ({
         volume: state.volume,
-        // isPlaying: state.isPlaying,
         currentSongDetail: state.currentSongDetail,
         currentSongUrl: state.currentSongUrl,
         repeatMode: state.repeatMode,

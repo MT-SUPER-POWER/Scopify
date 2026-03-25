@@ -2,10 +2,11 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
-  ChevronLeft, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle,
+  Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle,
   Mic2, MonitorSpeaker, Heart, Expand, MinimizeIcon,
+  ChevronDown, ChevronUp,
 } from "lucide-react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { useUiStore } from "@/store/module/ui";
@@ -13,7 +14,6 @@ import { VolumeControl } from "@/components/VolumeControl";
 import { QueuePopover } from "@/components/QueuePopover";
 import { cn, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useTimeStore } from "@/store/module/time";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
@@ -33,23 +33,29 @@ const Minimize = (isElectron: boolean) => {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export const PlayerBar = () => {
+export const PlayerBar = ({
+  className,
+  onCloseLyricModal,
+  style,
+  bgClass,
+}: {
+  className?: string;
+  onCloseLyricModal?: () => void;
+  style?: React.CSSProperties;
+  bgClass?: string;
+}
+) => {
   const isElectron = IS_ELECTRON;
   const isLyricsOpen = useUiStore(s => s.isLyricsOpen);
   const toggleLyrics = useUiStore(s => s.toggleLyrics);
   const [isMaximized, setIsMaximized] = useState(false);
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
-
-  // DOM 引用与节流/状态标记
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const lastStoreWriteRef = useRef(0);
-  const hasRestoredProgressRef = useRef(false); // 必须声明：标记是否已经恢复过进度
+  const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
 
   // Zustand Stores
   const volume = usePlayerStore(s => s.volume);
   const isPlaying = usePlayerStore(s => s.isPlaying);
   const currentSong = usePlayerStore(s => s.currentSongDetail);
-  const currentSongUrl = usePlayerStore(s => s.currentSongUrl);
   const repeatMode = usePlayerStore(s => s.repeatMode);
   const isShuffle = usePlayerStore(s => s.isShuffle);
   const setIsPlaying = usePlayerStore(s => s.setIsPlaying);
@@ -57,8 +63,10 @@ export const PlayerBar = () => {
   const toggleShuffle = usePlayerStore(s => s.toggleShuffle);
   const playNext = usePlayerStore(s => s.playNext);
   const playPrev = usePlayerStore(s => s.playPrev);
+
   const likelist = useUserStore((s) => s.likeListIDs) || [];
   const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
+  const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
 
   // 切换播放模式
   const cycleRepeat = () => {
@@ -67,122 +75,16 @@ export const PlayerBar = () => {
     setRepeatMode(next);
   };
 
-  // 1. 负责加载音频 URL & 重置恢复标记
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !currentSongUrl) return;
-
-    if (audio.src !== currentSongUrl) {
-      audio.src = currentSongUrl;
-      hasRestoredProgressRef.current = false; // ⚠️ 核心：切歌时必须重置保险栓
-      audio.load();
-    }
-    usePlayerStore.getState().fetchCurrentLyric();
-  }, [currentSongUrl]);
-
-  // 2. 负责触发播放/暂停
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !currentSongUrl) return;
-
-    if (isPlaying) {
-      audio.play().catch((err) => {
-        console.warn("Play interrupted or not allowed:", err);
-        setIsPlaying(false);
-      });
-    } else {
-      audio.pause();
-    }
-  }, [isPlaying, currentSongUrl, setIsPlaying]);
-
-  // 3. 负责同步音量
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = Math.max(0, Math.min(1, volume / 100));
-    }
-  }, [volume]);
-
-  // 4. 监听进度条的跳转 (Seek) 指令
-  useEffect(() => {
-    const onSeek = (e: Event) => {
-      const newTimeMs = (e as CustomEvent<number>).detail;
-      if (audioRef.current) {
-        audioRef.current.currentTime = newTimeMs / 1000;
-      }
-      // 手动跳转时，立刻把时间存入 Store 以便持久化
-      useTimeStore.getState().setCurrentTime(newTimeMs);
-    };
-
-    window.addEventListener("player-seek", onSeek);
-    return () => window.removeEventListener("player-seek", onSeek);
-  }, []);
-
   return (
-    <div className={cn(
-      "h-17 lg:h-20 bg-black w-full flex px-2 items-center justify-between z-20",
-      "transition-all ease-linear duration-300",
-    )}>
-      {/* NOTE: 所有的原生音频事件绑定在这里 */}
-      <audio
-        className="hidden"
-        ref={audioRef}
-        onEnded={() => playNext()}
-        onDurationChange={(e) => {
-          const duration = e.currentTarget.duration;
-          if (isFinite(duration) && duration > 0) {
-            window.dispatchEvent(new CustomEvent("player-duration", { detail: duration * 1000 }));
-            useTimeStore.getState().setTotalTime(duration * 1000);
-          }
-        }}
-        onProgress={(e) => {
-          const audio = e.currentTarget;
-          if (audio.buffered.length > 0) {
-            // 获取最新缓冲段的结束时间
-            const bufferedEnd = audio.buffered.end(audio.buffered.length - 1);
-            // console.log("Buffered end:", "write time");
-            useTimeStore.getState().setBufferedTime(bufferedEnd * 1000);
-          }
-        }}
-        onTimeUpdate={(e) => {
-          const audio = e.currentTarget;
-          if (audio.paused) return;
-
-          const currentTimeMs = audio.currentTime * 1000;
-          const now = Date.now();
-
-          // A. 每秒多次：广播给进度条组件（完全脱离 React 渲染树）
-          window.dispatchEvent(new CustomEvent("player-time", { detail: currentTimeMs }));
-
-          // B. 每 3 秒一次：写入 Zustand 做持久化备份
-          if (now - lastStoreWriteRef.current > 3000) {
-            useTimeStore.getState().setCurrentTime(currentTimeMs);
-            lastStoreWriteRef.current = now;
-          }
-        }}
-        onCanPlay={(e) => {
-          const audio = e.currentTarget;
-
-          // 如果这首歌还没恢复过进度，则进行跳转
-          if (!hasRestoredProgressRef.current) {
-            const persistedTime = useTimeStore.getState().currentTime;
-
-            if (persistedTime > 0) {
-              const restoreSeconds = persistedTime / 1000;
-              if (Number.isFinite(audio.duration) && audio.duration > 0) {
-                audio.currentTime = Math.min(restoreSeconds, audio.duration - 1);
-              } else {
-                audio.currentTime = restoreSeconds;
-              }
-            }
-            // 恢复完毕，拉上保险栓，防止后续因为网络缓冲等原因重复触发
-            hasRestoredProgressRef.current = true;
-          }
-
-          if (isPlaying) audio.play().catch(console.error);
-        }}
-      />
-
-      <div className="h-17 lg:h-20 bg-black w-full flex px-4 items-center justify-between z-20 transition-all ease-linear duration-300">
+    <div
+      className={cn(
+        "h-17 lg:h-20 w-full flex items-center justify-between z-20 transition-all ease-linear duration-300",
+        bgClass || "bg-black",
+        className
+      )}
+      style={style}
+    >
+      <div className="h-17 lg:h-20 w-full flex px-4 items-center justify-between z-20 transition-all ease-linear duration-300">
 
         {/* ================= Left: Song Info ================= */}
         <div className="flex items-center gap-3 lg:gap-4 min-w-0 flex-1 lg:flex-3">
@@ -199,7 +101,19 @@ export const PlayerBar = () => {
             <div
               onClick={openLyrics}
               className="absolute top-[25%] left-[25%] opacity-0 group-hover:opacity-100 bg-black/70 rounded-full p-1 transition-opacity backdrop-blur-sm hover:scale-105 hover:bg-black/80 flex items-center justify-center">
-              <ChevronLeft className="w-5 h-5 rotate-90 text-white" />
+              {isLyricOpen ? (
+                <button onClick={(e) => {
+                  e.stopPropagation();
+                  if (onCloseLyricModal) onCloseLyricModal();
+                  else closeLyrics();
+                }} >
+                  <ChevronDown className="w-5 h-5 text-white" />
+                </button>
+              ) : (
+                <button onClick={(e) => { e.stopPropagation(); openLyrics(); }} >
+                  <ChevronUp className="w-5 h-5 text-white" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -246,7 +160,8 @@ export const PlayerBar = () => {
             <button
               onClick={() => setIsPlaying(!isPlaying)}
               disabled={!currentSong}
-              className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center rounded-full bg-white text-black hover:scale-105 transition-all hover:bg-gray-200 active:scale-95 disabled:opacity-40"
+              className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center rounded-full bg-white
+              text-black hover:scale-105 transition-all hover:bg-gray-200 active:scale-95 disabled:opacity-40"
             >
               {isPlaying ? <Pause className="w-4 h-4 lg:w-5 lg:h-5 fill-current" /> : <Play className="w-4 h-4 lg:w-5 lg:h-5 fill-current" />}
             </button>
@@ -274,7 +189,14 @@ export const PlayerBar = () => {
 
           <div className="hidden md:block">
             <AnimatePresence>
-              <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.25, ease: "easeOut" }}>
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="z-2000"
+                style={{ position: 'relative' }}
+              >
                 <QueuePopover />
               </motion.div>
             </AnimatePresence>
@@ -288,7 +210,8 @@ export const PlayerBar = () => {
 
           <VolumeControl initialVolume={volume} onChange={(v) => usePlayerStore.getState().setVolume(v)} />
 
-          <button onClick={() => { if (isMaximized) { Minimize(isElectron); } else { Maximized(isElectron); } setIsMaximized(!isMaximized); }} className="hidden sm:block hover:text-white transition-colors">
+          <button onClick={() => { if (isMaximized) { Minimize(isElectron); } else { Maximized(isElectron); } setIsMaximized(!isMaximized); }}
+            className="hidden sm:block hover:text-white transition-colors">
             {isMaximized ? <MinimizeIcon className="w-4 h-4 lg:w-5 lg:h-5" /> : <Expand className="w-4 h-4 lg:w-5 lg:h-5" />}
           </button>
         </div>
@@ -296,4 +219,4 @@ export const PlayerBar = () => {
       </div>
     </div>
   );
-};
+}

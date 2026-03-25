@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect, useState, useRef, useCallback } from "react";
+import { useMemo, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { parseLrc, parseYrc } from "@applemusic-like-lyrics/lyric";
 import "@applemusic-like-lyrics/core/style.css";
@@ -69,16 +69,13 @@ export const LyricRenderer = () => {
   // Lyric Ref
   const lyricRef = useRef<any>(null);
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 用户交互状态机 (Auto Sync vs Manual Scroll)
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  const [isScrolling, setIsScrolling] = useState(false); // 控制 UI 悬浮按钮的显隐
+  // const [isScrolling, setIsScrolling] = useState(false); // 控制 UI 悬浮按钮的显隐
   const isScrollingRef = useRef(false); // 高性能逻辑锁，用于 60fps 渲染循环中判断
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // 【核心修复1】将最新时间用 useRef 保存，打破 useEffect 的闭包陷阱
-  const latestTimeMsRef = useRef(0);
-  const lastPushedTimeRef = useRef(-1);
+  const latestTimeMsRef = useRef(currentTimeMs);
+  const lastPushedTimeRef = useRef(currentTimeMs);
 
   // 【新增】用于处理平滑跳转的保护期和帧间差
   const ignorePlayerTimeUntilRef = useRef(0);
@@ -94,15 +91,15 @@ export const LyricRenderer = () => {
   // 触发手动回溯模式（用户滚轮或滑动时触发）
   const handleUserInteraction = useCallback(() => {
     isScrollingRef.current = true;
-    setIsScrolling(true);
+    // setIsScrolling(true);
 
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
 
-    // 停止交互 3 秒后，自动恢复歌词对齐
+    // 停止交互 2 秒后，自动恢复歌词对齐
     scrollTimeoutRef.current = setTimeout(() => {
       isScrollingRef.current = false;
-      setIsScrolling(false);
-    }, 3000);
+      // setIsScrolling(false);
+    }, 2000);
   }, []);
 
   useEffect(() => {
@@ -150,12 +147,13 @@ export const LyricRenderer = () => {
     };
   }, [setCurrentTimeMs]);
 
-  const yrcText = lyric?.yrc?.lyric?.trim() || "";
+  // const yrcText = lyric?.yrc?.lyric?.trim() || "";
   const lrcText = lyric?.lrc?.lyric?.trim() || "";
 
   const parsedLyricLines = useMemo(() => {
     try {
-      const parsed = yrcText ? parseYrc(yrcText) : lrcText ? parseLrc(lrcText) : [];
+      // const parsed = yrcText ? parseYrc(yrcText) : lrcText ? parseLrc(lrcText) : [];
+      const parsed = lrcText ? parseLrc(lrcText) : [];
       return parsed.map((line: any, i: number, arr: any[]) => {
         const lineStart = line.words[0]?.startTime ?? 0;
         const nextLineStart = arr[i + 1]?.words[0]?.startTime;
@@ -193,7 +191,8 @@ export const LyricRenderer = () => {
       console.error("Failed to parse lyrics:", error);
       return [];
     }
-  }, [yrcText, lrcText]);
+    // }, [yrcText, lrcText]);
+  }, [lrcText]);
 
   return (
     <div

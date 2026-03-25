@@ -1,5 +1,3 @@
-
-
 # v1.0.0
 
 > 第一个发行版本，适配一个音乐播放软件的基本功能，后台依赖网易云
@@ -35,3 +33,14 @@
 # v1.0.2-alpha
 
 > 这个测试的分支，主要用于检查 workflow 工作流是否正确
+
+# v1.0.3
+
+> 修改 Layout 布局样式，在模态页面有静态和动态模式。静态模式（用户不移动）就是只有封面和歌词。动态页面（用户移动）就是有封面、歌词和播放条等组件显示出来
+
+- LyricModal 增加了静态和动态两种模式
+- LyricModal 改变了新的布局模式，复用了 PlayerBar 组件
+- 把 Audio 组件从 PlayBar 解耦了出来，放在比较高的层级，独立了出来，和 Zustand 通信
+- 修复了 LyricRender 界面刷线不保存当前听歌进度的问题
+  - 因为 latestTimeMsRef 初始为 0，且挂载时间比 audio player-time 更新 currentTime 早，所以第一次出现的时候时间一定是 0
+  - 如果在 LyricRender 进行了刷新，那么 latestTimeMsRef 就会被重置为 0，最后被存入 Zustand 的时间也是 0，于是听歌进度就丢失了

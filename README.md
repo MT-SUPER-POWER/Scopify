@@ -138,9 +138,16 @@ make netease_undeploy # 卸载
 </details>
 
 <details>
-<summary> 播放歌曲模态界面 </summary>
+<summary> 播放歌曲模态界面 - 动态 </summary>
 
-![播放页面](/doc/img/lyricModal.png)
+![播放页面](/doc/img/DynamicEffect.png)
+
+</details>
+
+<details>
+<summary> 播放歌曲模态界面 - 静态 </summary>
+
+![播放页面](/doc/img/StaticEffect.png)
 
 </details>
 
@@ -195,11 +202,6 @@ make netease_undeploy # 卸载
 - 本地打包打包后端一起导致特别大，看后期能否编译一个二进制文件一次解决问题
 - 随机模式不应该做成那种纯粹的随机数上下首，而是应该做成一个随机的歌单，先把所有歌曲打乱顺序，然后按照这个顺序来播放，直到打完一轮再重新打乱
 - 使用过多的 `any` 了，数据类型需要重新梳理一下
-- 模态界面时候功能太少了
-  1. 全屏模式按钮
-  2. 音量控制
-- 歌词模态界面是否要共享一个 playbar 部分呢，然后纯粹静态的时候隐藏呢
-- 模态界面特别的别扭，感觉全靠背景和歌词撑着
 - 拉去 github 的 release 自动更新客户端版本
 - 编辑歌单的部分还要做一个 Tag 选择
 - 用户个人信息的编辑
