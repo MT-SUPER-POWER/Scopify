@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle,
   Mic2, MonitorSpeaker, Heart, Expand, MinimizeIcon,
@@ -18,6 +18,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { PlayerProgressBar } from './PlayBar/ProgressBar';
+import { Skeleton } from "./ui/skeleton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -51,6 +52,24 @@ export const PlayerBar = ({
   const [isMaximized, setIsMaximized] = useState(false);
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
+
+  // 检测 F11 浏览器全屏（非 requestFullscreen）
+  useEffect(() => {
+    const checkFullScreen = () => {
+      // 通过窗口尺寸和屏幕尺寸判断是否全屏
+      const isBrowserFullScreen = window.innerHeight === screen.height &&
+        window.innerWidth === screen.width && !document.fullscreenElement;
+      setIsMaximized(!!document.fullscreenElement || isBrowserFullScreen);
+    };
+    window.addEventListener("resize", checkFullScreen);
+    document.addEventListener("fullscreenchange", checkFullScreen);
+    checkFullScreen();
+    return () => {
+      window.removeEventListener("resize", checkFullScreen);
+      document.removeEventListener("fullscreenchange", checkFullScreen);
+    };
+  }, []);
+
 
   // Zustand Stores
   const volume = usePlayerStore(s => s.volume);
@@ -89,7 +108,7 @@ export const PlayerBar = ({
         {/* ================= Left: Song Info ================= */}
         <div className="flex items-center gap-3 lg:gap-4 min-w-0 flex-1 lg:flex-3">
           <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-md overflow-hidden relative group cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-zinc-800 shrink-0">
-            {currentSong?.al.picUrl && (
+            {currentSong?.al?.picUrl ? (
               <Image
                 width={96} height={96}
                 src={currentSong.al.picUrl}
@@ -97,6 +116,8 @@ export const PlayerBar = ({
                 className="w-full h-full object-cover"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
               />
+            ) : (
+              <Skeleton className="w-full h-full" />
             )}
             <div
               onClick={openLyrics}
@@ -124,7 +145,7 @@ export const PlayerBar = ({
                   {currentSong.name}
                 </span>
                 <span className="text-[11px] text-[#b3b3b3] hover:underline hover:text-white cursor-pointer truncate mt-0.5 font-normal">
-                  {currentSong.ar.map(a => a.name).join(", ")}
+                  {currentSong?.ar?.map(a => a.name).join(", ")}
                 </span>
               </>
             ) : (
@@ -183,10 +204,13 @@ export const PlayerBar = ({
 
         {/* ================= Right: Extra Controls ================= */}
         <div className="flex items-center justify-end gap-2 lg:gap-3 flex-1 lg:flex-3 text-[#b3b3b3]">
+
+          {/* 歌词模态界面 */}
           <button onClick={() => toggleLyrics()} className={`hover:text-white transition-colors ${isLyricsOpen ? "text-[#1db954]" : ""}`}>
             <Mic2 className="w-4 h-4 lg:w-5 lg:h-5" />
           </button>
 
+          {/* 播放列表模态界面 */}
           <div className="hidden md:block">
             <AnimatePresence>
               <motion.div
@@ -202,14 +226,17 @@ export const PlayerBar = ({
             </AnimatePresence>
           </div>
 
+          {/* TODO: 蓝牙 */}
           <div className="hidden lg:block">
             <button className="hover:text-white transition-colors flex items-center justify-center">
               <MonitorSpeaker className="w-4 h-4 lg:w-5 lg:h-5" />
             </button>
           </div>
 
+          {/* 音量控制 */}
           <VolumeControl initialVolume={volume} onChange={(v) => usePlayerStore.getState().setVolume(v)} />
 
+          {/* 最大化/最小化按钮 */}
           <button onClick={() => { if (isMaximized) { Minimize(isElectron); } else { Maximized(isElectron); } setIsMaximized(!isMaximized); }}
             className="hidden sm:block hover:text-white transition-colors">
             {isMaximized ? <MinimizeIcon className="w-4 h-4 lg:w-5 lg:h-5" /> : <Expand className="w-4 h-4 lg:w-5 lg:h-5" />}

@@ -7,6 +7,15 @@ import { useTimeStore } from "@/store/module/time";
 
 export type RepeatMode = "off" | "all" | "one";
 
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 type PlayerStore = {
   volume: number;
   isPlaying: boolean;
@@ -14,30 +23,38 @@ type PlayerStore = {
   currentSongUrl: string | null;
   repeatMode: RepeatMode;
   isShuffle: boolean;
+
+  // 原始队列（用户添加的顺序）
+  originalQueue: SongDetail[];
+  // 当前播放的队列（可能是洗牌的，也可能是原始的）- 保持原名兼容现有代码
   queue: SongDetail[];
+
   queueIndex: number;
+  historyStack: number[];
+  historyIndex: number;
+
   lyric: NeteaseLyric | null;
-  playlistId: number | string | null;     // 从哪一个列表播放的，null 代表没有特定列表
-  setShuffle: (v: boolean) => void;
+  playlistId: number | string | null;
 
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
   setRepeatMode: (mode: RepeatMode) => void;
   setQueue: (songs: SongDetail[], startIndex?: number, playlistId?: number | string | null) => void;
   setLyric: (lyric: NeteaseLyric | null) => void;
+  setShuffle: (v: boolean) => void;
 
+  playFromSong: (song: SongDetail, allSongs: SongDetail[], playlistId?: number | string | null) => Promise<void>;
   toggleShuffle: () => void;
   togglePlaying: () => void;
   fetchCurrentLyric: () => Promise<void>;
   playTrack: (song: SongDetail) => Promise<void>;
-  playQueueIndex: (index: number) => Promise<void>;
+  playQueueIndex: (index: number, addToHistory?: boolean) => Promise<void>;
   playNext: () => Promise<void>;
   playPrev: () => Promise<void>;
-  playRandom: () => Promise<void>;
+  reshuffleQueue: () => void;
   cleanCache: () => void;
 };
 
-// 去掉了 devtools，降低运行时的性能损耗
 export const usePlayerStore = create<PlayerStore>()(
   persist(
     (set, get) => ({
@@ -47,24 +64,110 @@ export const usePlayerStore = create<PlayerStore>()(
       currentSongUrl: null,
       repeatMode: "off",
       isShuffle: false,
-      queue: [],
+      originalQueue: [],
+      queue: [], // 保持原名，兼容现有代码
       queueIndex: -1,
+      historyStack: [],
+      historyIndex: -1,
       lyric: null,
       playlistId: null,
 
       setVolume: (v) => set({ volume: v }),
       setIsPlaying: (v) => set({ isPlaying: v }),
       setRepeatMode: (mode) => set({ repeatMode: mode }),
-      setQueue: (songs, startIndex = 0, playlistId = null) => set({ queue: songs, queueIndex: startIndex, playlistId }),
+      setQueue: (songs, startIndex = 0, playlistId = null) => {
+        const { isShuffle } = get();
+        const queue = isShuffle ? shuffleArray(songs) : [...songs];
+
+        set({
+          originalQueue: songs,
+          queue, // 保持原名
+          queueIndex: startIndex,
+          playlistId,
+          historyStack: [startIndex],
+          historyIndex: 0,
+        });
+      },
       setLyric: (lyric) => set({ lyric: pruneNeteaseLyric(lyric) }),
       setShuffle: (v) => set({ isShuffle: v }),
 
+      playFromSong: async (song, allSongs, playlistId = null) => {
+        const { isShuffle } = get();
+
+        // 更新原始队列
+        const songIndex = allSongs.findIndex(s => s.id === song.id);
+
+        if (isShuffle) {
+          // 随机模式：生成新队列，点击的歌放在第一位
+          const remainingSongs = allSongs.filter(s => s.id !== song.id);
+          const newQueue = [song, ...shuffleArray(remainingSongs)];
+
+          set({
+            originalQueue: allSongs,
+            queue: newQueue,
+            queueIndex: 0,
+            historyStack: [0],
+            historyIndex: 0,
+            playlistId,
+          });
+
+          await get().playTrack(song);
+        } else {
+          // 顺序模式：正常设置队列，从点击的位置开始
+          set({
+            originalQueue: allSongs,
+            queue: [...allSongs],
+            queueIndex: songIndex,
+            historyStack: [songIndex],
+            historyIndex: 0,
+            playlistId,
+          });
+
+          await get().playTrack(song);
+        }
+      },
+
       togglePlaying: () => set((state) => {
-        // 只有在当前有播放链接的情况下，才允许切换播放状态
         if (!state.currentSongUrl) return state;
         return { isPlaying: !state.isPlaying };
       }),
-      toggleShuffle: () => set((s) => ({ isShuffle: !s.isShuffle })),
+
+      toggleShuffle: () => {
+        const { isShuffle, originalQueue, queueIndex, queue } = get();
+        const newShuffleState = !isShuffle;
+
+        if (newShuffleState) {
+          // 开启随机
+          const currentSong = queue[queueIndex];
+          const remainingSongs = originalQueue.filter(s => s.id !== currentSong?.id);
+          const newQueue = currentSong
+            ? [currentSong, ...shuffleArray(remainingSongs)]
+            : shuffleArray(originalQueue);
+
+          set({
+            isShuffle: true,
+            queue: newQueue, // 保持原名
+            queueIndex: 0,
+            historyStack: [0],
+            historyIndex: 0,
+          });
+        } else {
+          // 关闭随机，从当前歌曲位置继续顺序播放
+          const currentSong = queue[queueIndex];
+          const newIndex = currentSong
+            ? originalQueue.findIndex(s => s.id === currentSong.id)
+            : 0;
+
+          set({
+            isShuffle: false,
+            queue: [...originalQueue], // 保持原名
+            queueIndex: Math.max(0, newIndex),
+            historyStack: [Math.max(0, newIndex)],
+            historyIndex: 0,
+          });
+        }
+      },
+
       fetchCurrentLyric: async () => {
         const { currentSongDetail, lyric } = get();
         if (!currentSongDetail || lyric) return;
@@ -75,20 +178,18 @@ export const usePlayerStore = create<PlayerStore>()(
           console.error("静默恢复歌词失败:", e);
         }
       },
+
       playTrack: async (song) => {
-        // 切歌时，重置独立时间 Store
         useTimeStore.getState().setCurrentTime(0);
         useTimeStore.getState().setBufferedTime(0);
         set({ currentSongDetail: song, currentSongUrl: null, isPlaying: false });
+
         Promise.all([
           greySongUrlMatch(song.id),
           getLyric(song.id)
         ]).then(([urlRes, lyricRes]) => {
           const url = urlRes.data ?? urlRes.proxyUrl;
-
-          // 写入新的总时长到独立 Store
           useTimeStore.getState().setTotalTime(song.dt ?? 0);
-
           set({ currentSongUrl: url, isPlaying: true, lyric: lyricRes.data });
         }).catch((e) => {
           toast.error("获取歌曲播放地址或歌词失败");
@@ -96,65 +197,140 @@ export const usePlayerStore = create<PlayerStore>()(
           set({ currentSongUrl: null, isPlaying: false, lyric: null });
         });
       },
-      playQueueIndex: async (index) => {
-        const { queue, playTrack } = get();
+
+      playQueueIndex: async (index, addToHistory = true) => {
+        const { queue, historyStack, historyIndex } = get();
         if (index < 0 || index >= queue.length) return;
-        set({ queueIndex: index });
-        useTimeStore.getState().setCurrentTime(0); // 清空进度
-        useTimeStore.getState().setBufferedTime(0);
-        await playTrack(queue[index]);
-      },
-      playNext: async () => {
-        const { queue, queueIndex, repeatMode, isShuffle, playQueueIndex } = get();
-        if (!queue.length) return;
-        let next: number;
-        if (isShuffle) {
-          next = Math.floor(Math.random() * queue.length);
-        } else if (repeatMode === "one") {
-          next = queueIndex;
-        } else {
-          next = queueIndex + 1;
-          if (next >= queue.length) next = repeatMode === "all" ? 0 : -1;
+
+        let newHistoryStack = [...historyStack];
+        let newHistoryIndex = historyIndex;
+
+        if (addToHistory) {
+          if (historyIndex < historyStack.length - 1) {
+            newHistoryStack = newHistoryStack.slice(0, historyIndex + 1);
+          }
+          newHistoryStack.push(index);
+          newHistoryIndex = newHistoryStack.length - 1;
         }
-        if (next >= 0) await playQueueIndex(next);
-        else set({ isPlaying: false });
+
+        set({
+          queueIndex: index,
+          historyStack: newHistoryStack,
+          historyIndex: newHistoryIndex,
+        });
+
+        await get().playTrack(queue[index]);
       },
-      playPrev: async () => {
-        const { queueIndex, playQueueIndex } = get();
-        useTimeStore.getState().setCurrentTime(0);
-        useTimeStore.getState().setBufferedTime(0);
-        const prev = Math.max(0, queueIndex - 1);
-        await playQueueIndex(prev);
-      },
-      playRandom: async () => {
-        const { queue, playQueueIndex } = get();
+
+      playNext: async () => {
+        const {
+          queue,
+          queueIndex,
+          repeatMode,
+          historyStack,
+          historyIndex,
+          reshuffleQueue
+        } = get();
+
         if (!queue.length) return;
-        useTimeStore.getState().setCurrentTime(0);
-        useTimeStore.getState().setBufferedTime(0);
-        const randomIndex = Math.floor(Math.random() * queue.length);
-        await playQueueIndex(randomIndex);
+
+        // 历史前进
+        if (historyIndex < historyStack.length - 1) {
+          const nextIndex = historyStack[historyIndex + 1];
+          set({ historyIndex: historyIndex + 1, queueIndex: nextIndex });
+          await get().playTrack(queue[nextIndex]);
+          return;
+        }
+
+        let nextIndex = queueIndex + 1;
+
+        if (nextIndex >= queue.length) {
+          if (repeatMode === "all") {
+            reshuffleQueue();
+            nextIndex = 0;
+          } else if (repeatMode === "one") {
+            nextIndex = queueIndex;
+          } else {
+            set({ isPlaying: false });
+            return;
+          }
+        }
+
+        await get().playQueueIndex(nextIndex);
       },
+
+      playPrev: async () => {
+        const { historyIndex, historyStack, queue } = get();
+
+        if (historyIndex > 0) {
+          const prevIndex = historyStack[historyIndex - 1];
+          set({
+            historyIndex: historyIndex - 1,
+            queueIndex: prevIndex
+          });
+          await get().playTrack(queue[prevIndex]);
+          return;
+        }
+
+        if (queue.length > 0) {
+          const prevIndex = queue.length - 1;
+          set({ queueIndex: prevIndex });
+          await get().playTrack(queue[prevIndex]);
+        }
+      },
+
+      reshuffleQueue: () => {
+        const { originalQueue, isShuffle, currentSongDetail } = get();
+        if (!isShuffle || originalQueue.length === 0) return;
+
+        const currentSong = currentSongDetail;
+        const remainingSongs = originalQueue.filter(s => s.id !== currentSong?.id);
+        const newQueue = currentSong
+          ? [currentSong, ...shuffleArray(remainingSongs)]
+          : shuffleArray(originalQueue);
+
+        set({
+          queue: newQueue, // 保持原名
+          queueIndex: 0,
+          historyStack: [0],
+          historyIndex: 0,
+        });
+      },
+
       cleanCache: () => {
         useTimeStore.getState().setCurrentTime(0);
         useTimeStore.getState().setTotalTime(0);
         set({
-          volume: 100, isPlaying: false, currentSongDetail: null, currentSongUrl: null,
-          repeatMode: "off", isShuffle: false, queue: [], queueIndex: -1, lyric: null, playlistId: null
+          volume: 100,
+          isPlaying: false,
+          currentSongDetail: null,
+          currentSongUrl: null,
+          repeatMode: "off",
+          isShuffle: false,
+          originalQueue: [],
+          queue: [], // 保持原名
+          queueIndex: -1,
+          historyStack: [],
+          historyIndex: -1,
+          lyric: null,
+          playlistId: null,
         });
       }
     }),
     {
       name: 'player-storage',
       storage: createJSONStorage(() => localStorage),
-      // 只持久化 PlayerStore 类型声明的字段，防止多余属性被存储
       partialize: (state) => ({
         volume: state.volume,
         currentSongDetail: state.currentSongDetail,
         currentSongUrl: state.currentSongUrl,
         repeatMode: state.repeatMode,
         isShuffle: state.isShuffle,
-        queue: state.queue,
+        originalQueue: state.originalQueue,
+        queue: state.queue, // 保持原名
         queueIndex: state.queueIndex,
+        historyStack: state.historyStack,
+        historyIndex: state.historyIndex,
         lyric: state.lyric,
         playlistId: state.playlistId,
       }),
@@ -162,7 +338,7 @@ export const usePlayerStore = create<PlayerStore>()(
   )
 );
 
-// 跨窗口同步保持原样
+// 跨窗口同步
 if (typeof window !== "undefined") {
   window.addEventListener("storage", (e) => {
     if (e.key === "player-storage" && e.newValue) {

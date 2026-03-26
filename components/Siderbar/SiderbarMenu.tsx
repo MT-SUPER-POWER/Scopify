@@ -55,12 +55,11 @@ function handleDeletePlaylist(playlistId: string | number, playlistName: string)
   });
 }
 
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPOENNT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function ConfirmDialogShandCN({
   open, title, content, onConfirm, onCancel,
-  confirmText = "确认", cancelText = "取消"
+  confirmText = "Confirm", cancelText = "Cancel"
 }: {
   open: boolean;
   title: string;
@@ -109,7 +108,7 @@ function ConfirmDialogShandCN({
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function _SiderBarMenu() {
+function SiderBarMenu() {
   const userPlaylists = useUserStore((s) => s.playlist);
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [pendingDelete, setPendingDelete] = React.useState<{ id: number | string; name: string } | null>(null);
@@ -130,10 +129,10 @@ function _SiderBarMenu() {
     <>
       <ConfirmDialogShandCN
         open={confirmOpen}
-        title="确认删除歌单"
-        content={`确定要删除歌单 "${pendingDelete?.name}" 吗？此操作无法撤销。`}
-        confirmText="确认删除"
-        cancelText="取消"
+        title="Confirm Delete Playlist"
+        content={`Are you sure you want to delete the playlist "${pendingDelete?.name}"? This action cannot be undone.`}
+        confirmText="Confirm"
+        cancelText="Cancel"
         onConfirm={handleConfirmDelete}
         onCancel={() => setConfirmOpen(false)}
       />
@@ -195,4 +194,4 @@ function _SiderBarMenu() {
   );
 }
 
-export const SiderBarMenu = React.memo(_SiderBarMenu);
+export const SiderBarMenuMemo = React.memo(SiderBarMenu);

@@ -1,12 +1,15 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Play, Pause } from "lucide-react";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { cn, formatDate, formatDuration } from "@/lib/utils";
 import Image from "next/image";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
+import { likeSong } from "@/lib/api/playlist";
+import { useUserStore } from "@/store";
+import { toast } from "sonner";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件: 序号与播放状态 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -25,7 +28,6 @@ function TrackIndexCell({ index, isActive, isPlaying, onPlay, setIsPlaying }: {
 
       {isActive && isPlaying && (
         <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
-          {/* 这里可以直接用原生 img，为了防止 Next.js 对小图做无意义的优化，可以关掉 unoptimized */}
           <Image
             src={SPOTIFYANIME}
             alt="Playing"
@@ -36,12 +38,10 @@ function TrackIndexCell({ index, isActive, isPlaying, onPlay, setIsPlaying }: {
         </div>
       )}
 
-      {/* 暂停状态图标 */}
       {isActive && !isPlaying && (
         <Play className="w-4 h-4 text-[#1ed760] fill-current group-hover:hidden" />
       )}
 
-      {/* Hover 交互控制 */}
       <div className="hidden group-hover:flex items-center justify-center">
         {isActive && isPlaying ? (
           <Pause
@@ -51,7 +51,7 @@ function TrackIndexCell({ index, isActive, isPlaying, onPlay, setIsPlaying }: {
         ) : (
           <Play
             className="w-4 h-4 text-white fill-current cursor-pointer"
-            onClick={onPlay}
+            onClick={() => onPlay()}
           />
         )}
       </div>
@@ -68,25 +68,51 @@ export interface TrackRowProps {
   isPlaying: boolean;
   isLiked: boolean;
   playlistID: string | null;
-  onPlay: () => void;
+  onPlay: (track: any) => void;
   onRequestDelete: (playlistId: number | string, trackId: number) => void;
   setIsPlaying: (v: boolean) => void;
   onContextMenu: (track: any) => void;
   hideDateColumn?: boolean;
   hideLikeColumn?: boolean;
+  onLikeToggle?: (trackID: number | string) => void;
 }
 
 export const TrackRow = memo(function TrackRow({
-  track, index, isActive, isPlaying, isLiked, onPlay, setIsPlaying, onContextMenu, hideDateColumn, hideLikeColumn
+  track, index, isActive, isPlaying, isLiked,
+  hideDateColumn, hideLikeColumn,
+  onPlay, setIsPlaying, onContextMenu,
 }: TrackRowProps) {
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  const handleLike = useCallback(async (nextLiked: boolean) => {
+    try {
+      await likeSong(track.id, nextLiked);
+      const store = useUserStore.getState() as any;
+      const current = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
+
+      // 1. 本地乐观更新
+      store.setLikeListIDs(nextLiked ? [...current, track.id] : current.filter((id: number) => id !== track.id));
+      toast.success(nextLiked ? "Added to your Liked Songs" : "Removed from your Liked Songs");
+
+      // 2. 触发全局 Sidebar 更新（解决封面等不同步的问题）
+      if (store.triggerLibraryUpdate) {
+        store.triggerLibraryUpdate();
+      }
+
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
+    }
+  }, [track]);
+
   return (
     <TableRow
       className={cn("group hover:bg-white/10 border-none transition-colors cursor-default", isActive && "text-[#1ed760]")}
-      onDoubleClick={onPlay}
+      onDoubleClick={() => onPlay(track)}
       onContextMenu={() => onContextMenu(track)}
     >
       <TableCell className="text-center font-medium rounded-l-md">
-        <TrackIndexCell index={index} isActive={isActive} isPlaying={isPlaying} onPlay={onPlay} setIsPlaying={setIsPlaying} />
+        <TrackIndexCell index={index} isActive={isActive} isPlaying={isPlaying} onPlay={() => onPlay(track)} setIsPlaying={setIsPlaying} />
       </TableCell>
 
       <TableCell className="min-w-0 max-w-0">
@@ -118,11 +144,12 @@ export const TrackRow = memo(function TrackRow({
       {!hideLikeColumn && (
         <TableCell className="hidden lg:table-cell truncate w-20">
           <div className="w-full h-full flex justify-center">
-            {/* ... 原本的 LikeButton 逻辑保持不变 ... */}
             <LikeButton
               liked={isLiked}
               likedCount={track.popularity || 0}
-              onLike={() => { /* ...原本逻辑... */ }}
+              onLike={() => {
+                handleLike(!isLiked);
+              }}
               iconClassName="w-4.5 h-4.5"
             />
           </div>
@@ -137,7 +164,6 @@ export const TrackRow = memo(function TrackRow({
     </TableRow>
   );
 }, (prev, next) =>
-  // 修复了之前遗漏的 track.id 比对问题
   prev.track.id === next.track.id &&
   prev.isActive === next.isActive &&
   prev.isPlaying === next.isPlaying &&

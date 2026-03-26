@@ -119,7 +119,7 @@ const createWindow = () => {
     });
   }
 
-  // NOTE: 快捷键拦截位置
+  // NOTE: Electron 快捷键拦截位置
   mainWindow.webContents.on("before-input-event", (event, input) => {
     // 禁止 Ctrl/Cmd + 数字 0 (重置缩放)
     if ((input.control || input.meta) && input.key === "0") {

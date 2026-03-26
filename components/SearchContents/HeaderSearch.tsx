@@ -227,7 +227,8 @@ export default function HeaderSearch() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.02 }}
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => handleItemClick(item)}
+                    // onClick={() => handleItemClick(item)}
+                    onClick={() => handleSearch(item)}
                     className="group/item flex items-center justify-between gap-3 px-5 py-3
                       hover:bg-white/5 cursor-pointer transition-colors"
                   >
@@ -270,7 +271,8 @@ export default function HeaderSearch() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.02 }}
                     onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => handleItemClick(item.keyword)}
+                    // onClick={() => handleItemClick(item.keyword)}
+                    onClick={() => handleSearch(item.keyword)}
                     className="flex items-center justify-between gap-3 px-5 py-3
                       hover:bg-white/5 cursor-pointer transition-colors"
                   >

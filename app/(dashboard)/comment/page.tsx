@@ -3,11 +3,11 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X, MessageCircle, Send } from 'lucide-react';
 import { getSongDetail } from '@/lib/api/track';
 import { useSearchParams } from 'next/navigation';
 import { NeteaseComment } from '@/types/api/music';
-import { getMusicComments } from '@/lib/api/comment';
+import { getMusicComments, toggleLikeComments } from '@/lib/api/comment';
 import { CommentItem } from '@/components/Comment/CommentItem';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { CommentInputBox } from '@/components/Comment/CommentInputBox';
@@ -28,7 +28,7 @@ export default function CommentPage() {
   const songId = searchParams.get("SongId") || searchParams.get("songId");
   const [songInfo, setSongInfo] = useState<any>(null);
   const [albumCover, setAlbumCover] = useState("https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000&auto=format&fit=crop");
-  const [replyTarget, setReplyTarget] = useState<NeteaseComment | null>(null); // 回复的目标评论
+  const [replyTarget, setReplyTarget] = useState<NeteaseComment | null>(null);
 
   // 分页与数据状态
   const [hotComments, setHotComments] = useState<NeteaseComment[]>([]);
@@ -37,6 +37,11 @@ export default function CommentPage() {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
+  // 🎯 输入面板状态
+  const [isInputOpen, setIsInputOpen] = useState(false);
+  const inputPanelRef = useRef<HTMLDivElement>(null);
+  const toggleBtnRef = useRef<HTMLButtonElement>(null);
 
   // Router
   const smartRouter = useSmartRouter();
@@ -56,11 +61,10 @@ export default function CommentPage() {
       const res = await getMusicComments({ id: songId!, limit: LIMIT, offset: currentOffset });
       if (currentOffset === 0 && res.data?.hotComments) {
         setHotComments(res.data.hotComments);
+        // console.log("Fetched hot comments:", res.data.hotComments); // Debug log
       }
-
       setComments(prev => {
         const fetchedComments = res.data?.comments || [];
-        // console.log("Fetched comments:", fetchedComments);
         return currentOffset === 0 ? fetchedComments : [...prev, ...fetchedComments];
       });
       setTotal(res.data?.total || 0);
@@ -69,14 +73,14 @@ export default function CommentPage() {
     } catch (error) {
       console.error("Failed to fetch comments", error);
       if (currentOffset === 0) {
-        setComments([]); // 出错且是首页时，设为空数组防止 undefined 引起 map 报错
+        setComments([]);
       }
     } finally {
       setIsLoading(false);
     }
-  }, [songId, hasMore, isLoading]); // 添加 songId 依赖，防止 ID 变化时不更新数据
+  }, [songId, hasMore, isLoading]);
 
-  // 歌曲信息获取，完善歌曲信息区域
+  // 歌曲信息获取
   const fetchSongDetails = useCallback(async () => {
     if (!songId) return;
     try {
@@ -93,14 +97,11 @@ export default function CommentPage() {
     }
   }, [songId]);
 
-
-  const toggleLike = (id: number, isHot: boolean) => {
-    // 评论点赞/取消点赞接口对接
+  const toggleLike = async (id: number, isHot: boolean) => {
     const targetSet = isHot ? setHotComments : setComments;
     targetSet(prev => prev.map(c => {
       if (c.commentId === id) {
         const nextLiked = !c.liked;
-        // 本地先更新，接口成功后再同步
         return {
           ...c,
           liked: nextLiked,
@@ -110,37 +111,32 @@ export default function CommentPage() {
       return c;
     }));
 
-    // 异步接口调用
-    import('@/lib/api/comment').then(({ toggleLikeComments }) => {
-      // type=0 歌曲，t=1点赞/0取消，cid=id
-      const commentList = isHot ? hotComments : comments;
-      const comment = commentList.find(c => c.commentId === id);
-      if (!comment || !songId) return;
-      const t = comment.liked ? 0 : 1;
-      toggleLikeComments(songId, id, t, 0)
-        .then(() => {
-          toast.success(t === 1 ? "已点赞" : "已取消点赞");
-        })
-        .catch((err) => {
-          toast.error("操作失败，请稍后再试");
-          console.error("Failed to toggle like", err);
-        });
-    });
+    const commentList = isHot ? hotComments : comments;
+    const comment = commentList.find(c => c.commentId === id);
+
+    if (!comment || !songId) return;
+    const t = comment.liked ? 0 : 1;
+    try {
+      const res = await toggleLikeComments(songId, id, t, 0);
+      // console.log("Like toggle response:", res); // Debug log
+      toast.success(t === 1 ? "已点赞" : "已取消点赞");
+    } catch (err: any) {
+      toast.error(`请求失败: ${err.data?.msg || '未知错误'}`);
+      console.error("Failed to toggle like", err);
+    }
   };
 
   const deleteComment = (id: number) => {
-    // console.log(`Deleting comment ${id}`);
     import('@/lib/api/comment').then(({ delComments }) => {
       delComments(songId!, id)
         .then(() => {
-          // 删除本地评论
           setComments(prev => prev.filter(c => c.commentId !== id));
           setHotComments(prev => prev.filter(c => c.commentId !== id));
           toast.success("评论已删除");
         })
         .catch((err) => {
+          toast.error(`请求失败: ${err.data?.msg || '未知错误'}`);
           console.error("Failed to delete comment", err);
-          // toast.error("评论删除失败，请稍后再试");
         });
     });
   };
@@ -150,8 +146,7 @@ export default function CommentPage() {
     const target = allComments.find(c => c.commentId === id);
     if (target) {
       setReplyTarget(target);
-      const inputArea = document.querySelector('textarea');
-      inputArea?.focus();
+      setIsInputOpen(true);
     }
   };
 
@@ -160,41 +155,60 @@ export default function CommentPage() {
 
     try {
       if (replyTarget) {
-        // 回复模式 (使用 replyComments 接口)
         const { replyComments } = await import('@/lib/api/comment');
         await replyComments(songId, replyTarget.commentId, text);
         toast.success("回复成功");
       } else {
-        // 普通发布模式 (使用 addMusicComments 接口)
         const { addMusicComments } = await import('@/lib/api/comment');
         await addMusicComments(songId, text);
         toast.success("发布成功");
       }
 
       setReplyTarget(null);
+      setIsInputOpen(false);
 
-      // 延迟刷新
       setTimeout(() => {
         setOffset(0);
         setHasMore(true);
         fetchComments(0);
       }, 500);
       return true;
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(`请求失败: ${err.data?.msg || '未知错误'}`);
       console.error("Failed to submit comment", err);
       return false;
     }
   };
 
+  // 🎯 点击外部关闭面板
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+
+      const isInsidePanel = inputPanelRef.current?.contains(target);
+      const isInsideToggleBtn = toggleBtnRef.current?.contains(target);
+      // Shadcn 弹窗会被注入到 data-radix-popper-content-wrapper 容器里
+      const isInsidePopover = (target as Element).closest?.('[data-radix-popper-content-wrapper]');
+
+      // 如果点击既不在面板里，也不在开关按钮上，也不在表情弹窗里，才关闭
+      if (!isInsidePanel && !isInsideToggleBtn && !isInsidePopover) {
+        setIsInputOpen(false);
+      }
+    };
+
+    if (isInputOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isInputOpen]);
+
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Effect ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  // 初始加载
   useEffect(() => {
     fetchComments(0);
     fetchSongDetails();
   }, []);
 
-  // NOTE: 触底加载逻辑
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -202,7 +216,7 @@ export default function CommentPage() {
           fetchComments(offset);
         }
       },
-      { threshold: 0.1 } // 目标元素露出 10% 时触发
+      { threshold: 0.1 }
     );
 
     if (observerTarget.current) {
@@ -216,20 +230,28 @@ export default function CommentPage() {
     <div className="relative w-full h-full overflow-hidden bg-black text-white font-sans">
       {/* 沉浸式背景 */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-40 blur-3xl scale-110"
+        className="absolute inset-0 bg-cover bg-center opacity-40 blur-3xl scale-110 pointer-events-none"
         style={{ backgroundImage: `url(${albumCover})` }}
       />
-      <div className="absolute inset-0 bg-linear-to-b from-black/60 to-[#121212]/95" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/60 to-[#121212]/95 pointer-events-none" />
 
-      {/* 滚动内容区 */}
+      {/* 主内容区 */}
       <div className="relative z-10 h-full overflow-y-auto scrollbar-hide mt-12">
         <div className="max-w-4xl mx-auto px-8 py-12">
 
           {/* 头部：歌曲信息 */}
           <div className="flex items-center gap-10 mb-12">
-            <Image width={168} height={168} src={albumCover} alt="Cover" className="w-42 h-42 rounded-md shadow-2xl transition-all duration-700" />
+            <Image
+              width={168}
+              height={168}
+              src={albumCover}
+              alt="Cover"
+              className="w-42 h-42 rounded-md shadow-2xl transition-all duration-700"
+            />
             <div>
-              <span className="px-2 py-1 text-xs font-bold bg-white/10 text-white rounded mb-3 inline-block">Track</span>
+              <span className="px-2 py-1 text-xs font-bold bg-white/10 text-white rounded mb-3 inline-block">
+                Track
+              </span>
               <h1 className="text-4xl font-extrabold tracking-tight mb-2">
                 {songInfo?.name || "Loading..."}
               </h1>
@@ -245,7 +267,7 @@ export default function CommentPage() {
             </div>
           </div>
 
-          {/* 评论输入区 */}
+          {/* 评论标题 */}
           <div className="mb-8">
             <div className="flex justify-between items-end mb-4">
               <h2 className="text-xl font-bold">
@@ -257,17 +279,12 @@ export default function CommentPage() {
             </div>
           </div>
 
-          {/* 独立提取的输入框 */}
-          <CommentInputBox
-            replyTarget={replyTarget}
-            onCancelReply={() => setReplyTarget(null)}
-            onSubmit={handleSubmitText}
-          />
-
           {/* 热评 */}
           {hotComments.length > 0 && (
             <div className="mb-10">
-              <h3 className="text-lg font-bold mb-6 border-b border-white/10 pb-2">Hot Comments</h3>
+              <h3 className="text-lg font-bold mb-6 border-b border-white/10 pb-2">
+                Hot Comments
+              </h3>
               <div className="space-y-6">
                 {hotComments.map((comment) => (
                   <CommentItem
@@ -281,11 +298,14 @@ export default function CommentPage() {
                   />
                 ))}
               </div>
-            </div>)}
+            </div>
+          )}
 
           {/* 最新评论区 */}
           <div>
-            <h3 className="text-lg font-bold mb-6 border-b border-white/10 pb-2">Latest Comments</h3>
+            <h3 className="text-lg font-bold mb-6 border-b border-white/10 pb-2">
+              Latest Comments
+            </h3>
             <div className="space-y-6">
               {comments && comments.length > 0 ? (
                 comments.map((comment) => (
@@ -300,7 +320,9 @@ export default function CommentPage() {
                   />
                 ))
               ) : !isLoading ? (
-                <div className="text-center py-20 text-[#B3B3B3]">No comments yet, be the first to comment!</div>
+                <div className="text-center py-20 text-[#B3B3B3]">
+                  No comments yet, be the first to comment!
+                </div>
               ) : null}
             </div>
           </div>
@@ -318,6 +340,87 @@ export default function CommentPage() {
 
         </div>
       </div>
+
+      {/* 🎯 右下角悬浮评论按钮 */}
+      <button
+        ref={toggleBtnRef}
+        onClick={() => setIsInputOpen(prev => !prev)}
+        className="fixed bottom-28 right-6 z-40 flex items-center gap-2 px-3 py-3
+        bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 group"
+      >
+        <MessageCircle className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+      </button>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━ 🎯 顶部向下弹出非阻断面板 (强行对齐，不遮挡操作) ━━━━━━━━━━━━━━━━━━━━ */}
+
+      <div
+        className={`fixed inset-x-0 top-0 z-50 flex justify-center pointer-events-none transition-transform duration-300 ease-out
+          ${isInputOpen ? 'translate-y-0' : '-translate-y-full'
+          }`}
+      >
+        {/* 面板主体 */}
+        <div
+          ref={inputPanelRef}
+          className="w-full max-w-4xl bg-[#1a1a1a]/95 backdrop-blur-xl border-x border-b border-white/10 rounded-b-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative pointer-events-auto"
+        >
+          {/* 增加了 pt-12 或者 pt-16 提供顶部安全呼吸区，解决拥挤太靠上的问题 */}
+          <div className="px-6 pt-8 md:pt-9">
+            {/* 面板头部 */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <h3 className="text-lg font-bold">
+                  {replyTarget ? 'Reply Comment' : 'Add Comment'}
+                </h3>
+                {replyTarget && (
+                  <span className="text-sm text-[#1DB954]">
+                    @{replyTarget.user?.nickname}
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  setIsInputOpen(false);
+                  setReplyTarget(null);
+                }}
+                className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                title="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* 回复提示 */}
+            {replyTarget && (
+              <div className="mb-4 p-3 bg-white/5 rounded-lg flex items-start gap-3">
+                <div className="flex-1 text-sm">
+                  <span className="text-[#B3B3B3]">Replying to: </span>
+                  <span className="text-white line-clamp-2">{replyTarget.content}</span>
+                </div>
+                <button
+                  onClick={() => setReplyTarget(null)}
+                  className="text-[#B3B3B3] hover:text-white shrink-0"
+                  title="Cancel Reply"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            {/* 输入框 */}
+            <CommentInputBox
+              replyTarget={replyTarget}
+              onCancelReply={() => setReplyTarget(null)}
+              onSubmit={handleSubmitText}
+            />
+          </div>
+
+          {/* 底部装饰条 */}
+          <div className="flex justify-center pb-3 pt-1">
+            <div className="w-12 h-1 bg-white/20 rounded-full" />
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

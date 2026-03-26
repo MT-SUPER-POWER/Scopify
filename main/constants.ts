@@ -43,8 +43,6 @@ const configStr = JSON.stringify(appConfig, null, 2)
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LOGGER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// NOTE: 配置日志
-
 const logsDir = app.isPackaged
   ? join(app.getPath("userData"), "logs")
   : join(process.cwd(), "logs");

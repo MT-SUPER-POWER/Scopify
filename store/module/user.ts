@@ -14,6 +14,7 @@ type UserStore = {
   loginType: 'token' | 'cookie' | 'qr' | 'uid' | null;
   searchValue: string;
   searchType: number;
+  libraryUpdateTrigger: number;
   collectedAlbumIds: Set<number>;
   collectedAlbum: NeteaseUserAlbum[];
   likeListIDs: number[];
@@ -23,13 +24,14 @@ type UserStore = {
   handleLogout: () => Promise<void>;
   setUser: (userData: NeteaseUser) => void;
   setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
-  setAlbumList: (albumList: RawSongDetail[]) => void;
+  setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => void;
   clearAlbumList: () => void;
   setCollectedAlbum: (albums: NeteaseUserAlbum[]) => void;
   clearCollectedAlbum: () => void;
   setLikeListIDs: (ids: number[]) => void;
   setPlayList: (playlists: NeteasePlaylist[]) => void;
   setUserId: (userId: number | string) => void;
+  triggerLibraryUpdate: () => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -41,20 +43,22 @@ export const useUserStore = create<UserStore>()(
       searchValue: '',
       searchType: 0,
       collectedAlbumIds: new Set(),
+      libraryUpdateTrigger: 0,
 
       playlist: [],
       albumList: [],
       likeListIDs: [],
       collectedAlbum: [],
-  setCollectedAlbum: (albums: NeteaseUserAlbum[]) => set({ collectedAlbum: albums }),
-  clearCollectedAlbum: () => set({ collectedAlbum: [] }),
+      setCollectedAlbum: (albums: NeteaseUserAlbum[]) => set({ collectedAlbum: albums }),
+      clearCollectedAlbum: () => set({ collectedAlbum: [] }),
 
+      triggerLibraryUpdate: () => set((state) => ({ libraryUpdateTrigger: state.libraryUpdateTrigger + 1 })),
       setUser: (userData: NeteaseUser) => set({ user: pruneUser(userData) }),
       setUserId: (userId: number | string) => {
         set({ user: { ...useUserStore.getState().user, id: userId } as NeteaseUser });
       },
       setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => set({ loginType }),
-      setAlbumList: (albumList: RawSongDetail[]) => {
+      setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => {
         const cleanAlbumList = albumList.map(pruneSongDetail);
         set({ albumList: cleanAlbumList });
       },

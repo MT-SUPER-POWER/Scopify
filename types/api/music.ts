@@ -21,9 +21,10 @@ export interface RawSongDetail extends SongDetail {
 
 /**
  * 清洗歌曲详情数据
+ * 兼容标准格式 (ar/al) 和后端异常格式 (artists/album)
  * @param raw 原始 API 返回的歌曲对象
  */
-export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
+export const pruneSongDetail = (raw: any): SongDetail => {
   // 1. 如果传入空数据，直接返回一个类型安全的空结构兜底
   if (!raw) {
     return {
@@ -36,32 +37,38 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
     };
   }
 
+  // 2. 处理歌手字段：优先用 ar，没有就用 artists
+  const artistList = raw.ar || raw.artists || [];
+
+  // 3. 处理专辑字段：优先用 al，没有就用 album
+  const albumData = raw.al || raw.album || {};
+
   return {
     id: raw.id || 0,
     name: raw.name || "未知歌曲",
-    dt: raw.dt || 0,
+    dt: raw.dt || raw.duration || 0, // 有的接口用 duration
 
-    // 2. 确保 ar 一定是数组，且内部的对象属性绝对安全
-    ar: Array.isArray(raw.ar)
-      ? raw.ar.map((artist: any) => ({
+    // 4. 确保 ar 一定是数组，兼容两种字段名
+    ar: Array.isArray(artistList)
+      ? artistList.map((artist: any) => ({
         id: artist?.id || 0,
         name: artist?.name || "Unknown Artist",
       }))
       : [],
 
-    // 3. 使用可选链 (?.) 防止 raw.al 为 null 时取属性崩溃
+    // 5. 处理专辑，兼容两种字段名和各种图片字段
     al: {
-      id: raw.al?.id || 0,
-      name: raw.al?.name || "Unknown Album",
-      picUrl: raw.al?.picUrl || raw.al?.blurPicUrl || raw.al?.coverUrl || "",
-      blurPicUrl: raw.al?.blurPicUrl,
-      coverUrl: raw.al?.coverUrl,
+      id: albumData?.id || 0,
+      name: albumData?.name || "Unknown Album",
+      // 图片优先级：picUrl > blurPicUrl > pic > 空
+      picUrl: albumData?.picUrl || albumData?.blurPicUrl || albumData?.pic || "",
+      blurPicUrl: albumData?.blurPicUrl,
+      coverUrl: albumData?.coverUrl,
     },
 
-    publishTime: raw.publishTime || 0,
+    publishTime: raw.publishTime || albumData?.publishTime || 0,
   };
 };
-
 
 interface NeteaseReply {
   user: NeteaseUser;

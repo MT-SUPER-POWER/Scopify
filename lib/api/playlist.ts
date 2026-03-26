@@ -127,7 +127,14 @@ export function getPlaylsitDetail({ id, cookie }: { id: number | string, cookie?
   return request.get('/playlist/detail', { params: { id, cookie: cookie } });
 }
 
+// 获取每日推荐歌单
 export function getRecommendedPlaylists() {
   const cookie = localStorage.getItem('music_cookie') || '';
   return request.get('/recommend/resource', { params: { cookie } });
+}
+
+// 不喜欢某一首每日推荐
+export function dislikeDailyRecommend(id: number | string) {
+  const cookie = localStorage.getItem('music_cookie') || '';
+  return request.get('/recommend/songs/dislike', { params: { id, cookie } });
 }

@@ -5,7 +5,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 interface SmoothSliderProps {
   value: number; // 0-100
   bufferedValue?: number; // 0-100
-  onChange: (value: number) => void;
+  onChange: (value: number, isCommit: boolean) => void;
   orientation?: "horizontal" | "vertical";
   size?: number | string;
   trackColor?: string;
@@ -43,7 +43,7 @@ export const SmoothSlider = ({
 
   const isVertical = orientation === "vertical";
 
-  // 1. 将 0-100 的百分比转换为 0.0 - 1.0 的小数，供 GPU 的 transform: scale 使用
+  // 将 0-100 的百分比转换为 0.0 - 1.0 的小数
   const scaleValue = Math.max(0, Math.min(100, value)) / 100;
   const scaleBuffered = Math.max(0, Math.min(100, bufferedValue)) / 100;
 
@@ -60,7 +60,7 @@ export const SmoothSlider = ({
         percent = ((clientX - rect.left) / rect.width) * 100;
       }
 
-      onChange(Math.max(0, Math.min(100, percent)));
+      onChange(Math.max(0, Math.min(100, percent)), false);
     },
     [isVertical, onChange]
   );
@@ -75,7 +75,13 @@ export const SmoothSlider = ({
     calculateValue(e.clientX, e.clientY);
   }, [isDragging, calculateValue]);
 
-  const handleMouseUp = useCallback(() => setIsDragging(false), []);
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+    if (trackRef.current) {
+      // 取最后一次鼠标位置
+      onChange(Math.max(0, Math.min(100, value)), true);
+    }
+  }, [onChange, value]);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     setIsDragging(true);
@@ -87,7 +93,10 @@ export const SmoothSlider = ({
     calculateValue(e.touches[0].clientX, e.touches[0].clientY);
   }, [isDragging, calculateValue]);
 
-  const handleTouchEnd = useCallback(() => setIsDragging(false), []);
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+    onChange(Math.max(0, Math.min(100, value)), true);
+  }, [onChange, value]);
 
   useEffect(() => {
     if (isDragging) {
@@ -157,14 +166,13 @@ export const SmoothSlider = ({
         />
       </div>
 
-      {/* 滑块：移除 motion.div，使用纯 CSS 缩放动画，位置同样砍掉高频 transition */}
+      {/* 滑块：可拖动，体验与轨道一致 */}
       <div
-        className="absolute rounded-full shadow-md z-10 pointer-events-none"
+        className="absolute rounded-full shadow-md z-10 cursor-pointer"
         style={{
           width: thumbSize,
           height: thumbSize,
           backgroundColor: thumbColor,
-          // 仅对透明度和大小进行动画过渡，位置变化紧跟数据流，不做补间
           transition: "opacity 0.2s, transform 0.2s",
           opacity: isThumbVisible ? 1 : 0,
           ...(isVertical
@@ -179,6 +187,8 @@ export const SmoothSlider = ({
               transform: isThumbVisible ? "scale(1)" : "scale(0)",
             }),
         }}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
       />
     </div>
   );

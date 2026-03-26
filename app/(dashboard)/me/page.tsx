@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Image from 'next/image';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -129,13 +130,15 @@ export default function MePage() {
 
         {/* 顶部 Hero 区域 */}
         <div className={`bg-linear-to-b ${PROFILE_DATA.coverColor} to-[#121212] pt-20 pb-6 px-6 md:px-8 flex flex-col md:flex-row items-center md:items-end gap-6`}>
-          <img
+          <Image
+            fill
             src={PROFILE_DATA.avatar}
             alt="Profile"
             className="w-48 h-48 rounded-full shadow-2xl object-cover"
           />
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <span className="text-sm font-semibold tracking-wider uppercase mb-2">
+            {/* 标签 */}
+            <span className="text-[12px] font-semibold drop-shadow-md px-3 py-1 bg-white/10 rounded-full">
               {PROFILE_DATA.type}
             </span>
             <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter">
@@ -186,10 +189,12 @@ export default function MePage() {
 
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <img
+                      <Image
                         src={skill.img}
                         alt={skill.name}
                         className="w-10 h-10 rounded shadow-sm object-contain bg-white/5 p-px shrink-0"
+                        width={40}
+                        height={40}
                       />
                       <div className="flex flex-col overflow-hidden">
                         <span className="font-medium text-base text-white truncate cursor-pointer hover:underline">
@@ -251,9 +256,11 @@ export default function MePage() {
 
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <img
+                      <Image
                         src={skill.img}
                         alt={skill.name}
+                        width={40}
+                        height={40}
                         className="w-10 h-10 rounded shadow-sm object-contain bg-white/5 p-px shrink-0"
                       />
                       <div className="flex flex-col overflow-hidden">
@@ -288,7 +295,7 @@ export default function MePage() {
             {PROFILE_DATA.projects.map(project => (
               <div key={project.id} className="bg-[#181818] p-4 rounded-md hover:bg-[#282828] transition duration-300 group cursor-pointer">
                 <div className="relative w-full aspect-square mb-4 shadow-lg rounded-md overflow-hidden">
-                  <img src={project.img} alt={project.title} className="w-full h-full object-cover" />
+                  <Image src={project.img} alt={project.title} width={100} height={100} className="w-full h-full object-cover" />
                   <div className="absolute bottom-2 right-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                     <button className="w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#1fdf64]">
                       <Play size={24} fill="black" stroke="black" className="ml-1" />

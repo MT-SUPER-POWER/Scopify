@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, memo, useCallback, useState, useEffect } from "react";
-import { ListMusic, Play } from "lucide-react";
+import { ListMusic, Play, LocateFixed } from "lucide-react"; // 添加定位图标
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
@@ -10,8 +10,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import Image from "next/image";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件解耦 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件保持不变 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 interface QueueItemProps {
   song: any;
   index: number;
@@ -22,7 +21,6 @@ interface QueueItemProps {
   onPlay: (index: number) => void;
 }
 
-// 使用 memo 阻断不必要的重渲染
 const QueueItem = memo(function QueueItem({
   song,
   index,
@@ -33,25 +31,19 @@ const QueueItem = memo(function QueueItem({
   onPlay
 }: QueueItemProps) {
   return (
-    <div
+    <div className="absolute top-0 left-0 w-full pb-2"
       style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
         height: `${virtualSize}px`,
         transform: `translateY(${virtualStart}px)`,
-        paddingBottom: "4px",
       }}
     >
       <div
         onClick={() => onPlay(index)}
         className={cn(
-          "group flex items-center gap-3 p-2 rounded-md cursor-pointer transition-all h-full",
+          "group flex items-center gap-3 p-4 rounded-md cursor-pointer transition-all h-full",
           isActive ? "bg-white/10" : "hover:bg-white/5"
         )}
       >
-        {/* 左侧：索引与封面 */}
         <div className="flex items-center gap-3 shrink-0 pr-1">
           <span className={cn(
             "text-[10px] w-4 text-center tabular-nums",
@@ -90,7 +82,6 @@ const QueueItem = memo(function QueueItem({
           </div>
         </div>
 
-        {/* 中间：歌曲信息 */}
         <div className="flex-1 min-w-0">
           <div className={cn(
             "text-sm truncate font-medium",
@@ -103,7 +94,6 @@ const QueueItem = memo(function QueueItem({
           </div>
         </div>
 
-        {/* 右侧：时长 */}
         <div className="text-xs text-zinc-500 tabular-nums pr-1">
           {formatDuration(song.dt)}
         </div>
@@ -111,7 +101,6 @@ const QueueItem = memo(function QueueItem({
     </div>
   );
 }, (prev, next) => {
-  // 仅在关键状态发生变化时重新渲染该行
   return (
     prev.isActive === next.isActive &&
     prev.isPlaying === next.isPlaying &&
@@ -120,14 +109,16 @@ const QueueItem = memo(function QueueItem({
   );
 });
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 列表组件（Popover 打开后才挂载）━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const QueueList = () => {
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 列表组件 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const QueueList = ({ isOpen }: { isOpen: boolean }) => {
   const queue = usePlayerStore((state) => state.queue);
   const queueIndex = usePlayerStore((state) => state.queueIndex);
   const playQueueIndex = usePlayerStore((state) => state.playQueueIndex);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
 
   const parentRef = useRef<HTMLDivElement>(null);
+  // 用 ref 记录是否已经执行过初始滚动
+  const hasScrolledOnOpen = useRef(false);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
@@ -139,20 +130,37 @@ const QueueList = () => {
 
   const handlePlay = useCallback((index: number) => {
     if (isPlaying === true && index === queueIndex) {
-      playQueueIndex(-1);
+      usePlayerStore.setState({ isPlaying: false });
     }
     playQueueIndex(index);
   }, [playQueueIndex, queueIndex, isPlaying]);
 
-  // NOTE: 点击页面定位到播放的位置
-  useEffect(() => {
+  // 手动定位到当前播放歌曲
+  const scrollToCurrent = useCallback(() => {
     if (queueIndex < 0) return;
     virtualizer.scrollToIndex(queueIndex, { align: "center", behavior: "smooth" });
   }, [queueIndex, virtualizer]);
 
+  // 只在首次打开 Popover 时滚动到当前播放位置
+  useEffect(() => {
+    if (isOpen && !hasScrolledOnOpen.current && queueIndex >= 0) {
+      // 使用 requestAnimationFrame 确保 DOM 已准备好
+      requestAnimationFrame(() => {
+        virtualizer.scrollToIndex(queueIndex, { align: "center", behavior: "auto" });
+        hasScrolledOnOpen.current = true;
+      });
+    }
+
+    // 关闭时重置标记，这样下次打开还是会定位到当前歌曲
+    // 如果你希望完全记住位置，删除下面这行
+    if (!isOpen) {
+      hasScrolledOnOpen.current = false;
+    }
+  }, [isOpen, queueIndex, virtualizer]);
+
   return (
     <ScrollArea
-      viewportRef={parentRef} // NOTE: 使用 ScrollArea 用这个 viewportRef 来替代直接操作 DOM 的 ref
+      viewportRef={parentRef}
       className="h-125 w-full"
     >
       <div className="p-2">
@@ -196,7 +204,24 @@ const QueueList = () => {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 export const QueuePopover = () => {
   const queue = usePlayerStore((state: any) => state.queue);
+  const queueIndex = usePlayerStore((state: any) => state.queueIndex);
   const [open, setOpen] = useState(false);
+
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const virtualizer = useVirtualizer({
+    count: queue.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 70,
+    overscan: 5,
+  });
+
+  // 手动定位到当前播放歌曲（通过 ref 调用子组件方法）
+  const scrollToCurrent = useCallback(() => {
+    if (queueIndex < 0) return;
+    virtualizer.scrollToIndex(queueIndex, { align: "center", behavior: "smooth" });
+  }, [queueIndex, virtualizer]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -206,14 +231,22 @@ export const QueuePopover = () => {
         </button>
       </PopoverTrigger>
       <PopoverContent
-        align="end" className="w-96 bg-[#181818] border border-white/10 text-zinc-100 shadow-2xl">
+        align="end" className="w-96 bg-[#181818] border border-white/10 text-zinc-100 shadow-2xl p-0">
         <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#181818]/90 backdrop-blur-sm sticky top-0 z-10">
           <div>
             <h3 className="font-bold text-lg">Current Queue</h3>
             <p className="text-xs text-zinc-400">Total Song: {queue.length}</p>
           </div>
+          {/* 添加定位按钮 */}
+          <button
+            onClick={scrollToCurrent}
+            className="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
+            title="定位到当前播放"
+          >
+            <LocateFixed className="w-4 h-4" />
+          </button>
         </div>
-        <QueueList />
+        <QueueList isOpen={open} />
       </PopoverContent>
     </Popover>
   );

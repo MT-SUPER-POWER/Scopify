@@ -99,7 +99,7 @@ export function QrLogin() {
               break;
             }
 
-            // NOTE: 接口返回的 profile 数据不是很稳定，为了解决这个问题，我们走 id 再请求后续的数据
+            // 接口返回的 profile 数据不是很稳定，为了解决这个问题，我们走 id 再请求后续的数据
             const userId = loginRes.data?.account?.id || '';
             useUserStore.getState().setUserId(userId);    // 兜底的
             localStorage.setItem('user_id', String(userId)); // 存储 userId 到 localStorage 保底

@@ -24,7 +24,6 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
     return;
   }
 
-  // NOTE: Electron 子窗口的创建
   loginWindow = new BrowserWindow({
     width: 450,
     height: 600,

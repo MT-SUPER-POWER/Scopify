@@ -21,6 +21,7 @@ export const VolumeControl = ({
 }: VolumeControlProps) => {
   const [volume, setVolume] = useState(initialVolume);
   const [isMuted, setMuted] = useState(false);
+  const prevVolumeRef = useRef<number>(initialVolume);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -87,7 +88,16 @@ export const VolumeControl = ({
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
-    onChange?.(nextMuted ? 0 : Math.round(volume));
+    if (nextMuted) {
+      // 记录静音前的音量
+      prevVolumeRef.current = volume > 0 ? volume : (prevVolumeRef.current || initialVolume);
+      onChange?.(0);
+    } else {
+      // 恢复静音前的音量
+      const restoreVolume = prevVolumeRef.current > 0 ? prevVolumeRef.current : initialVolume;
+      setVolume(restoreVolume);
+      onChange?.(restoreVolume);
+    }
   };
 
   // 点击外部关闭 (仅针对弹窗模式生效)
@@ -124,7 +134,7 @@ export const VolumeControl = ({
   if (variant === "inline") {
     return (
       <div onWheel={handleWheel}
-        className="flex items-center w-full gap-3 px-4 py-2 hover:bg-white/5 transition-colors rounded-md min-w-0">
+        className="flex items-center w-full gap-3 px-4 py-2 hover:bg-white/5 transition-colors rounded-md min-w-0 select-none">
         <button
           onClick={handleMuteToggle}
           className="text-[#b3b3b3] hover:text-white transition-colors shrink-0"
@@ -153,7 +163,7 @@ export const VolumeControl = ({
     <div
       ref={containerRef}
       onWheel={handleWheel}
-      className={`relative flex items-center justify-center ${className}`}
+      className={`relative flex items-center justify-center select-none ${className}`}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
@@ -167,14 +177,14 @@ export const VolumeControl = ({
       {isOpen && (
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 pb-2 z-50">
           <div className="bg-zinc-900 rounded-lg p-3 shadow-xl border border-zinc-700">
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2 mt-2">
               <SmoothSlider
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
                 orientation={orientation}
-                size={100}
-                trackThickness={6}
-                thumbSize={14}
+                size={120}
+                trackThickness={5}
+                thumbSize={10}
                 thumbOnHover={false}
               />
               <span className="text-xs text-white font-medium tabular-nums w-[4ch] inline-block text-center">

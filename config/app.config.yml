@@ -11,7 +11,7 @@ frontend:
   host: 127.0.0.1
 logging:
   level: info
-  format: '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}'
+  format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}"
   keepDays: 25
 network:
   timeout: 5000

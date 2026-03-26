@@ -137,6 +137,7 @@ export const SearchModal = ({
 
   // ─────────────────────────────────────────────────────────────────
   // 核心：自定义单击/双击判定拦截器
+  // 发现双击跳转有点反直觉，就还是单机跳转好了
   // ─────────────────────────────────────────────────────────────────
   const clickTimeoutRef = useRef<number | null>(null);
 
@@ -269,7 +270,8 @@ export const SearchModal = ({
                           initial={{ opacity: 0, x: -8 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.03 }}
-                          onClick={() => handleItemClick(item)}
+                          // onClick={() => handleItemClick(item)}
+                          onClick={() => handleSearch(item)}
                           className={cn(
                             "group/item flex items-center justify-between gap-3 px-5 py-2.5",
                             "hover:bg-white/6 cursor-pointer transition-colors",
@@ -323,7 +325,8 @@ export const SearchModal = ({
                           initial={{ opacity: 0, x: -8 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.025 }}
-                          onClick={() => handleItemClick(item.keyword)}
+                          // onClick={() => handleItemClick(item.keyword)}
+                          onClick={() => handleSearch(item.keyword)}
                           className={cn(
                             "flex items-center justify-between gap-3 px-5 py-2.5",
                             "hover:bg-white/6 cursor-pointer transition-colors",

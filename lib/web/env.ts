@@ -29,9 +29,11 @@ export const appConfig: AppConfig = {
     timeout: Number(process.env.APP_CFG_NET_TIMEOUT || 5000),
     max_retries: Number(process.env.APP_CFG_NET_MAX_RETRIES || 1),
     retry_delay: Number(process.env.APP_CFG_NET_RETRY_DELAY || 500),
-    randomCNIP: Boolean(process.env.APP_CFG_NET_RANDOM_CNIP || false),
+    randomCNIP: String(process.env.APP_CFG_NET_RANDOM_CNIP || "false"),
   },
 };
+
+// console.log("Loaded appConfig in web/env:", appConfig);
 
 // ── 轻量 logger（renderer 侧直接用 console）───────────────────────────────────
 export const logger = {

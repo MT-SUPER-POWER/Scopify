@@ -10,7 +10,8 @@ export const PlayerProgressBar = memo(() => {
 
   // 2. 高频数据：完全使用本地 State，初始值取一下 Store 里的记忆点
   const [localTime, setLocalTime] = useState(() => useTimeStore.getState().currentTime);
-  const lastUpdateRef = useRef(0);
+
+  const lastUpdateRef = useRef(0);  // 节流
 
   useEffect(() => {
     // 3. 只接收高频的播放时间广播，局部刷新 UI
@@ -27,12 +28,13 @@ export const PlayerProgressBar = memo(() => {
   }, []);
 
   // 4. 用户拖拽进度条
-  const handleSeek = (value: number) => {
+  const handleSeek = (value: number, isCommit: boolean) => {
     const newTimeMs = (value / 100) * totalTime;
     setLocalTime(newTimeMs); // 优先让本地滑块跟手
 
-    // 发送跳转指令给 PlayerBar
-    window.dispatchEvent(new CustomEvent("player-seek", { detail: newTimeMs }));
+    if (isCommit) {
+      window.dispatchEvent(new CustomEvent("player-seek", { detail: newTimeMs }));
+    }
   };
 
   const progressPercent = totalTime > 0 ? (localTime / totalTime) * 100 : 0;

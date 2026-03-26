@@ -8,12 +8,14 @@ export interface MusicCommentParams {
 }
 
 export async function getMusicComments(params: MusicCommentParams) {
+  const cookie = localStorage.getItem('music_cookie') || '';
   return request.get('/comment/music', {
     params: {
       id: params.id,
       limit: params.limit,
       offset: params.offset,
       before: params.before,
+      cookie: cookie
     },
   });
 }
@@ -68,7 +70,8 @@ export function replyComments(songId: string | number, commentId: string | numbe
  * @param type 资源类型 0歌曲 1mv 2专辑 3歌单 4电台 5视频
  */
 export function toggleLikeComments(id: string | number, cid: string | number, t: 1 | 0, type: number) {
+  const cookie = localStorage.getItem('music_cookie') || '';
   return request.get('/comment/like', {
-    params: { id, cid, t, type }
+    params: { id, cid, t, type, cookie }
   });
 }

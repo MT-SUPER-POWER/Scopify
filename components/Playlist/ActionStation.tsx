@@ -21,7 +21,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
 
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const isShuffle = usePlayerStore((s) => s.isShuffle);
-  const setShuffle = usePlayerStore((s) => s.setShuffle);
+  const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
   const albumList = useUserStore((s) => s.albumList);
@@ -48,12 +48,18 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
         <button
           onClick={handlePlayToggle}
           disabled={!currentSongDetail && !albumList.length}
-          className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all
+          text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg
+          disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {showPause ? <Pause className="w-6 h-6 ml-0.5 fill-current" /> : <Play className="w-6 h-6 ml-1.5 fill-current" />}
+          {
+            showPause ?
+              <Pause className="w-6 h-6 ml-0.5 fill-current" /> :
+              <Play className="w-6 h-6 ml-1.5 fill-current" />
+          }
         </button>
 
-        <button onClick={() => setShuffle(!isShuffle)} className="relative inline-flex items-center justify-center cursor-pointer">
+        <button onClick={toggleShuffle} className="relative inline-flex items-center justify-center cursor-pointer">
           <Shuffle className={cn("w-8 h-8 transition-colors", isShuffle ? "text-[#1ed760]" : "text-zinc-400 hover:text-white")} />
           {isShuffle && <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#1ed760] rounded-full" />}
         </button>

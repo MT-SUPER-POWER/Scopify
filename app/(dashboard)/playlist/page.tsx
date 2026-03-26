@@ -5,7 +5,7 @@
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { useUserStore } from "@/store";
 import PlaylistLoading from "./loading";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { usePlaylist } from "@/components/Playlist/hook/usePlaylistData";
 import PlaylistHeader from "@components/Playlist/Header";
 import PlaylistActions from "@/components/Playlist/ActionStation";
@@ -23,9 +23,28 @@ export default function PlaylistPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { playlistId, isDailyRecommend, isLoading, playlistInfo, themeColor } = usePlaylist();
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 引入全局的 albumList 作为真相之源 (Single Source of Truth)
+  const albumList = useUserStore((s) => s.albumList);
 
-  // console.log("Test Render or not from PlaylistPage");
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DERIVED STATE (派生状态) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // 动态计算 Header 的信息，确保封面和歌曲数量与下方表格时刻保持绝对同步
+  const dynamicPlaylistInfo = useMemo(() => {
+    if (!playlistInfo) return null;
+
+    // 如果仍在网络加载中，直接使用原有信息，避免闪烁
+    if (isLoading) return playlistInfo;
+
+    return {
+      ...playlistInfo,
+      // 歌曲总数实时跟随当前的 albumList 长度
+      totalSongs: albumList ? albumList.length : playlistInfo.totalSongs,
+      // 封面实时跟随第一首歌的封面（网易云默认逻辑）。如果列表被删空了，保留原有封面
+      cover: (albumList && albumList.length > 0) ? albumList[0].al?.picUrl : playlistInfo.cover,
+    };
+  }, [playlistInfo, albumList, isLoading]);
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   const handleSearchOpen = useCallback(() => {
     setSearchOpen(true);
@@ -53,8 +72,8 @@ export default function PlaylistPage() {
         style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
       />
 
-      {/* 头部组件：传递 info 进去渲染 */}
-      {playlistInfo && <PlaylistHeader info={playlistInfo} isDaily={isDailyRecommend} />}
+      {/* 头部组件：传入动态派生的 dynamicPlaylistInfo 进去渲染 */}
+      {dynamicPlaylistInfo && <PlaylistHeader info={dynamicPlaylistInfo} isDaily={isDailyRecommend} />}
 
       {/* 过渡遮罩层 */}
       <div className="flex-1 relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] to-[#121212] via-20%">

@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Clock, Play, Heart, Trash, PlusCircle, Pause, Link2, ListPlus, GripVertical } from "lucide-react";
+import { Clock, Play, Heart, Trash, PlusCircle, Pause, Link2, ListPlus, GripVertical, Ban } from "lucide-react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -25,9 +25,9 @@ import {
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { likeSong } from "@/lib/api/playlist";
+import { dislikeDailyRecommend, likeSong } from "@/lib/api/playlist";
 import { toast } from "sonner";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { use, useCallback, useMemo, useRef, useState } from "react";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { useSearchParams } from "next/navigation";
 import { NeteasePlaylist } from "@/types/api/playlist";
@@ -38,7 +38,7 @@ import { useUiStore } from "@/store/module/ui";
 import Image from "next/image";
 import { ConfirmDialogShandCN } from './TableConfirmDialog';
 import { TrackRow } from './TrackRow';
-import { RawSongDetail } from "@/types/api/music";
+import { pruneSongDetail, RawSongDetail, SongDetail } from "@/types/api/music";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -95,12 +95,11 @@ interface TracklistTableProps {
   onSearchClose?: () => void;
   inputRef?: React.RefObject<HTMLInputElement | null>;
 
-  // 新增的高复用配置项
-  tracks?: any[];                  // 如果传入数据，就使用传入的，否则从 store 中拉取 albumList
-  disableVirtualization?: boolean; // 数据量少的情况可以关闭虚拟滚动，减小开销
-  hideDateColumn?: boolean;        // 隐藏发布时间列
-  hideLikeColumn?: boolean;        // 隐藏喜欢按钮列
-  readonly?: boolean;              // 隐藏上下文菜单的一些如 "删除" 的破坏性操作
+  tracks?: any[];
+  disableVirtualization?: boolean;
+  hideDateColumn?: boolean;
+  hideLikeColumn?: boolean;
+  readonly?: boolean;
 }
 
 export default function TracklistTable({
@@ -125,46 +124,34 @@ export default function TracklistTable({
   const setColDate = (w: number) => { colDateRef.current = w; setColDateState(w); };
   const setColLike = (w: number) => { colLikeRef.current = w; setColLikeState(w); };
 
-  // FIX: 支持由上级注入的数据
+  const isLogin = useLoginStatus();
+  const playlistID = useSearchParams().get("id");
+  const isDailyRecommend = useSearchParams().get("isDailyRecommend") === "true";
+  const [pendingDelete, setPendingDelete] = useState<null | { playlistId: number | string; trackId: number }>(null);
+
   const storeTracks = useUserStore((state) => state.albumList);
   const tracks = externalTracks || storeTracks;
-
   const likelist = useUserStore((s) => s.likeListIDs);
 
-  // FIX: actions 通过 hook 获取，而非 getState()
-  const setQueue = usePlayerStore((s) => s.setQueue);
-  const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
+  const playFromSong = usePlayerStore((s) => s.playFromSong);
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
 
-  const playlistID = useSearchParams().get("id");
-
-  // FIX: ConfirmDialog 提升到列表层，只挂一个实例，不再每行各挂一个
-  const [pendingDelete, setPendingDelete] = useState<null | { playlistId: number | string; trackId: number }>(null);
-
-  // Context Menu State
   const [contextMenuTrack, setContextMenuTrack] = useState<any | null>(null);
 
-  // --- Logic for Context Menu ---
-  const isLoggedIn = useLoginStatus();
   const playlists: NeteasePlaylist[] = useUserStore((state: any) => state.playlist);
 
-  // Filter out current playlist for "Add to playlist"
   const filteredPlaylists = useMemo(
     () => playlists.filter((p: NeteasePlaylist) => String(p.id) !== String(playlistID)),
     [playlists, playlistID]
   );
 
-  // likeSet 用 Set 替代数组，.has() 是 O(1)，避免每行 O(n) 的 includes 查找
   const likeSet = useMemo(() => {
-    if (Array.isArray(likelist)) {
-      return new Set(likelist);
-    }
+    if (Array.isArray(likelist)) return new Set(likelist);
     return new Set<number>();
   }, [likelist]);
 
-  // 搜索功能：如果 searchQuery 为空，则直接返回原始 tracks，避免不必要的 filter 运算；否则进行过滤。
   const filteredTracks = useMemo(() => {
     if (!searchQuery?.trim()) return tracks;
     const q = searchQuery.toLowerCase();
@@ -175,70 +162,78 @@ export default function TracklistTable({
     );
   }, [tracks, searchQuery]);
 
+  const isContextTrackCurrent = contextMenuTrack && currentSongDetail?.id === contextMenuTrack.id;
+  const isContextTrackLiked = contextMenuTrack ? likeSet.has(contextMenuTrack.id) : false;
   const scrollContainer = useUiStore((s) => s.scrollContainer);
 
-  // OPTIMIZE: 虚拟列表优化页面
   const virtualizer = useVirtualizer({
     count: filteredTracks.length,
-    getScrollElement: () => scrollContainer,      // 拿到全部绑定的 ScrollArea 元素
+    getScrollElement: () => scrollContainer,
     estimateSize: () => 56,
-    overscan: 10,       // DEBUG: 虚拟列表上下缓冲控制区域
+    overscan: 15,
   });
 
   const virtualItems = virtualizer.getVirtualItems();
 
-  // FIX: useCallback 稳定引用，避免每次 TracklistTable render 时 TrackRow 收到新函数引用导致 memo 失效
-  const handlePlay = useCallback((index: number) => {
-    const track = filteredTracks[index];
-    const originalIndex = tracks.findIndex((t: any) => t.id === track.id);
+  const handlePlay = useCallback((track: any) => {
     const isCurrent = currentSongDetail?.id === track.id;
-    if (isCurrent) {
-      setIsPlaying(!isPlaying);
-    } else {
-      setQueue(tracks, originalIndex);
-      playQueueIndex(originalIndex);
-    }
-  }, [filteredTracks, tracks, currentSongDetail, isPlaying, setIsPlaying, setQueue, playQueueIndex]);
+    if (isCurrent) setIsPlaying(!isPlaying);
+    else playFromSong(track, tracks);
+  }, [tracks, currentSongDetail, isPlaying, setIsPlaying, playFromSong]);
 
-  // Helper for playing context menu track
   const handlePlayContextTrack = useCallback(() => {
     if (!contextMenuTrack) return;
-    const index = filteredTracks.findIndex((t: any) => t.id === contextMenuTrack.id);
-    if (index !== -1) {
-      handlePlay(index);
-    } else {
-      // Fallback if not in current view (unlikely)
-      handlePlay(tracks.findIndex((t: any) => t.id === contextMenuTrack.id));
-    }
-  }, [contextMenuTrack, filteredTracks, handlePlay, tracks]);
+    handlePlay(contextMenuTrack);
+  }, [contextMenuTrack, handlePlay]);
 
   const handleRequestDelete = useCallback((playlistId: number | string, trackId: number) => {
     setPendingDelete({ playlistId, trackId });
   }, []);
 
+  const albumList = useUserStore((s) => s.albumList);
+  const setAlbumList = useUserStore((s) => s.setAlbumList);
+
   const handleConfirmDelete = useCallback(async () => {
     if (!pendingDelete) return;
     try {
       await updatePlaylistTrack("del", pendingDelete.playlistId, pendingDelete.trackId);
-      const store = useUserStore.getState();
-      store.setAlbumList(
-        store.albumList.filter((t: any) => t.id !== pendingDelete.trackId) as RawSongDetail[]
-      );
+
+      // 1. 乐观更新：立刻从视图移出
+      setAlbumList(albumList.filter((t: any) => t.id !== pendingDelete.trackId) as RawSongDetail[]);
       toast.success("已从歌单移除");
+
+      // 2. 触发全局刷新（这会告诉 Sidebar 在后台悄悄拉取最新歌单封面等元信息）
+      const store = useUserStore.getState() as any;
+      if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
+
     } catch (err) {
       toast.error("从歌单移除失败");
     } finally {
       setPendingDelete(null);
     }
-  }, [pendingDelete]);
+  }, [albumList, pendingDelete, setAlbumList]);
 
   const handleCancelDelete = useCallback(() => {
     setPendingDelete(null);
   }, []);
 
-  // Derived state for Context Menu
-  const isContextTrackCurrent = contextMenuTrack && currentSongDetail?.id === contextMenuTrack.id;
-  const isContextTrackLiked = contextMenuTrack ? likeSet.has(contextMenuTrack.id) : false;
+  const handleDislikeDailyRecommend = useCallback(async (trackId: number | string) => {
+    try {
+      const dislikeRes = await dislikeDailyRecommend(trackId);
+      const replaceSong = pruneSongDetail(dislikeRes.data?.data) || null;
+
+      const updateAlbumList = albumList.map((t: any) =>
+        t.id === trackId ? replaceSong : t
+      ) as SongDetail[];
+
+      setAlbumList(updateAlbumList);
+      usePlayerStore.getState().playNext();
+
+      toast.success("已标记为不喜欢");
+    } catch (err) {
+      console.error("Failed to dislike daily recommend", err);
+    }
+  }, [albumList, setAlbumList]);
 
   return (
     <>
@@ -256,47 +251,30 @@ export default function TracklistTable({
         <ContextMenuTrigger asChild>
           <div className="w-full">
             <Table className="w-full text-zinc-400 table-fixed">
-              {/* 表头 */}
-              <TableHeader className={cn(
-                "sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
-                "bg-linear-to-b from-transparent to-[#121212]/10"
-              )}>
+              {/* 表头部分省略具体实现细节与原版一致... */}
+              <TableHeader className={cn("sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]", "bg-linear-to-b from-transparent to-[#121212]/10")}>
                 <TableRow className="hover:bg-transparent border-none">
                   <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
-
                   <TableHead className="text-zinc-400 relative group/head" style={{ width: colTitle, minWidth: 60 }}>
-                    Title
-                    <ResizeHandle onMouseDown={makeResizeHandler(colTitleRef, setColTitle, colAlbumRef, setColAlbum, 60, 64)} />
+                    Title<ResizeHandle onMouseDown={makeResizeHandler(colTitleRef, setColTitle, colAlbumRef, setColAlbum, 60, 64)} />
                   </TableHead>
-
                   <TableHead className="hidden md:table-cell text-zinc-400 relative group/head" style={{ width: colAlbum, minWidth: 64 }}>
-                    Album
-                    {/* 若后面无列可拖拽则取消缩放支持 */}
-                    {!hideDateColumn && <ResizeHandle onMouseDown={makeResizeHandler(colAlbumRef, setColAlbum, colDateRef, setColDate, 64, 120)} />}
+                    Album{!hideDateColumn && <ResizeHandle onMouseDown={makeResizeHandler(colAlbumRef, setColAlbum, colDateRef, setColDate, 64, 120)} />}
                   </TableHead>
-
                   {!hideDateColumn && (
                     <TableHead className="hidden lg:table-cell text-zinc-400 relative group/head" style={{ width: colDate, minWidth: 120 }}>
-                      Date Published
-                      {!hideLikeColumn && <ResizeHandle onMouseDown={makeResizeHandler(colDateRef, setColDate, colLikeRef, setColLike, 120, 44)} />}
+                      Date Published{!hideLikeColumn && <ResizeHandle onMouseDown={makeResizeHandler(colDateRef, setColDate, colLikeRef, setColLike, 120, 44)} />}
                     </TableHead>
                   )}
-
                   {!hideLikeColumn && (
-                    <TableHead className="hidden lg:table-cell text-zinc-400 text-center relative group/head" style={{ width: colLike, minWidth: 44 }}>
-                      Like
-                    </TableHead>
+                    <TableHead className="hidden lg:table-cell text-zinc-400 text-center relative group/head" style={{ width: colLike, minWidth: 44 }}>Like</TableHead>
                   )}
-
                   <TableHead className="w-32 text-zinc-400">
-                    <div className="flex items-center w-full h-full justify-center">
-                      <Clock className="w-4 h-4" />
-                    </div>
+                    <div className="flex items-center w-full h-full justify-center"><Clock className="w-4 h-4" /></div>
                   </TableHead>
                 </TableRow>
               </TableHeader>
 
-              {/* 表身 */}
               <TableBody>
                 {filteredTracks.length === 0 ? (
                   <TableRow className="hover:bg-transparent border-none">
@@ -307,60 +285,38 @@ export default function TracklistTable({
                 ) : (
                   <>
                     {disableVirtualization ? (
-                      // 针对少量数据或无法绑定正确滚动域的情况，直接完整渲染（不需要虚拟化）
                       filteredTracks.map((track, index) => {
                         const isActive = currentSongDetail?.id === track.id;
                         const isLiked = likeSet.has(track.id);
                         return (
                           <TrackRow
-                            key={track.id}
-                            track={track}
-                            index={index}
-                            isActive={isActive}
-                            isPlaying={isPlaying}
-                            isLiked={isLiked}
-                            playlistID={playlistID}
-                            onPlay={() => handlePlay(index)}
-                            onRequestDelete={handleRequestDelete}
-                            setIsPlaying={setIsPlaying}
-                            onContextMenu={setContextMenuTrack}
-                            hideDateColumn={hideDateColumn}
-                            hideLikeColumn={hideLikeColumn}
+                            key={track.id} track={track} index={index}
+                            isActive={isActive} isPlaying={isPlaying} isLiked={isLiked}
+                            playlistID={playlistID} onPlay={handlePlay} onRequestDelete={handleRequestDelete}
+                            setIsPlaying={setIsPlaying} onContextMenu={setContextMenuTrack}
+                            hideDateColumn={hideDateColumn} hideLikeColumn={hideLikeColumn}
                           />
                         );
                       })
                     ) : (
-                      // 开启虚拟列表的高性能长列表渲染方案
                       <>
-                        {/* 顶部占位 */}
                         {virtualItems.length > 0 && virtualItems[0].start > 0 && (
                           <tr style={{ height: virtualItems[0].start }}><td /></tr>
                         )}
-
                         {virtualItems.map((virtualRow) => {
                           const track = filteredTracks[virtualRow.index];
                           const isActive = currentSongDetail?.id === track.id;
                           const isLiked = likeSet.has(track.id);
                           return (
                             <TrackRow
-                              key={track.id}
-                              track={track}
-                              index={virtualRow.index}
-                              isActive={isActive}
-                              isPlaying={isPlaying}
-                              isLiked={isLiked}
-                              playlistID={playlistID}
-                              onPlay={() => handlePlay(virtualRow.index)}
-                              onRequestDelete={handleRequestDelete}
-                              setIsPlaying={setIsPlaying}
-                              onContextMenu={setContextMenuTrack}
-                              hideDateColumn={hideDateColumn}
-                              hideLikeColumn={hideLikeColumn}
+                              key={track.id} track={track} index={virtualRow.index}
+                              isActive={isActive} isPlaying={isPlaying} isLiked={isLiked}
+                              playlistID={playlistID} onPlay={handlePlay} onRequestDelete={handleRequestDelete}
+                              setIsPlaying={setIsPlaying} onContextMenu={setContextMenuTrack}
+                              hideDateColumn={hideDateColumn} hideLikeColumn={hideLikeColumn}
                             />
                           );
                         })}
-
-                        {/* 底部占位 */}
                         {virtualItems.length > 0 && (() => {
                           const last = virtualItems[virtualItems.length - 1];
                           const paddingBottom = virtualizer.getTotalSize() - last.end;
@@ -377,145 +333,135 @@ export default function TracklistTable({
 
         {contextMenuTrack && (
           <ContextMenuContent className="w-48 bg-[#282828] text-white border-white/10">
-
             <ContextMenuGroup>
-
-              {/* 播放/暂停 */}
               <ContextMenuItem onClick={handlePlayContextTrack} className="focus:bg-white/10 focus:text-white">
-                {isContextTrackCurrent && isPlaying ? (
-                  <><Pause className="w-4 h-4 mr-2" />Pause</>
-                ) : (
-                  <><Play className="w-4 h-4 mr-2" />Play</>
-                )}
+                {isContextTrackCurrent && isPlaying ? <><Pause className="w-4 h-4 mr-2" />Pause</> : <><Play className="w-4 h-4 mr-2" />Play</>}
               </ContextMenuItem>
 
-              {/* 添加到队列 */}
-              <ContextMenuItem
-                className="focus:bg-white/10 focus:text-white"
-                onClick={() => {
-                  const state = usePlayerStore.getState();
-                  const track = contextMenuTrack;
-                  if (!track) return;
-                  const alreadyInQueue = state.queue.some((t) => t.id === track.id);
-                  if (alreadyInQueue) {
-                    toast.info("歌曲已在队列中");
-                    return;
-                  }
-                  state.setQueue([...state.queue, track], state.queueIndex);
-                  toast.success("已添加到播放队列");
-                }}
-              >
-                <ListPlus className="w-4 h-4 mr-2" />
-                Add to queue
-              </ContextMenuItem>
+              {isLogin && (
+                <>
+                  <ContextMenuItem
+                    className="focus:bg-white/10 focus:text-white"
+                    onClick={() => {
+                      const state = usePlayerStore.getState();
+                      const track = contextMenuTrack;
+                      if (!track) return;
+                      const alreadyInQueue = state.queue.some((t) => t.id === track.id);
+                      if (alreadyInQueue) {
+                        toast.info("歌曲已在队列中");
+                        return;
+                      }
+                      state.setQueue([...state.queue, track], state.queueIndex);
+                      toast.success("已添加到播放队列");
+                    }}
+                  >
+                    <ListPlus className="w-4 h-4 mr-2" />Add to queue
+                  </ContextMenuItem>
 
-              {/* 歌曲喜欢或者不喜欢处理 */}
-              <ContextMenuItem
-                className="focus:bg-white/10 focus:text-white"
-                onClick={async (e) => {
-                  e.stopPropagation();
-                  // Optimistic update logic
-                  const nextLiked = !isContextTrackLiked;
-                  const trackID = contextMenuTrack.id;
-                  try {
-                    await likeSong(trackID, nextLiked);
-                    const store = useUserStore.getState();
-                    const currentLikes = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
-                    if (nextLiked) {
-                      store.setLikeListIDs([...currentLikes, trackID]);
-                    } else {
-                      store.setLikeListIDs(currentLikes.filter((id: number) => id !== trackID));
-                    }
-                    toast.success(nextLiked ? "已添加到喜欢" : "已取消喜欢");
-                  } catch (err) {
-                    toast.error("操作失败，请稍后再试");
-                  }
-                }}
-              >
-                <Heart className="w-4 h-4 mr-2" />
-                {isContextTrackLiked ? "Remove from Liked Songs" : "Add to Liked Songs"}
-              </ContextMenuItem>
+                  <ContextMenuItem
+                    className="focus:bg-white/10 focus:text-white"
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      const nextLiked = !isContextTrackLiked;
+                      const trackID = contextMenuTrack.id;
+                      try {
+                        await likeSong(trackID, nextLiked);
 
+                        // 1. 本地状态更新
+                        const store = useUserStore.getState() as any;
+                        const currentLikes = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
+                        if (nextLiked) store.setLikeListIDs([...currentLikes, trackID]);
+                        else store.setLikeListIDs(currentLikes.filter((id: number) => id !== trackID));
+                        toast.success(nextLiked ? "已添加到喜欢" : "已取消喜欢");
+
+                        // 2. 发送信号让 Sidebar 更新
+                        if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
+                      } catch (err) {
+                        toast.error("操作失败，请稍后再试");
+                      }
+                    }}
+                  >
+                    <Heart className="w-4 h-4 mr-2" />{isContextTrackLiked ? "Remove from Liked Songs" : "Add to Liked Songs"}
+                  </ContextMenuItem>
+                </>
+              )}
             </ContextMenuGroup>
 
             <ContextMenuSeparator className="bg-white/10" />
 
             <ContextMenuGroup>
+              {isLogin && (
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+                    <PlusCircle className="w-4 h-4 mr-4" />Add to Playlist
+                  </ContextMenuSubTrigger>
+                  <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
+                    {filteredPlaylists.map((playlist: NeteasePlaylist) => (
+                      <ContextMenuItem
+                        onClick={async () => {
+                          try {
+                            await updatePlaylistTrack("add", playlist.id, contextMenuTrack.id);
+                            toast.success("已成功添加到歌单");
+                            // 添加同样可以触发全局刷新
+                            const store = useUserStore.getState() as any;
+                            if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
+                          } catch (err) {
+                            toast.error("添加到歌单失败");
+                          }
+                        }}
+                        key={playlist.id} className="focus:bg-white/10 focus:text-white"
+                      >
+                        <Image width={28} height={28} src={playlist.coverImgUrl} alt="cover" className="w-7 h-7 rounded-sm mr-2" />
+                        {playlist.name}
+                      </ContextMenuItem>
+                    ))}
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+              )}
 
-              {/* 添加到歌单 */}
-              <ContextMenuSub>
-                <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                  <PlusCircle className="w-4 h-4 mr-4" />
-                  Add to Playlist
-                </ContextMenuSubTrigger>
-
-                <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
-                  {isLoggedIn && filteredPlaylists.map((playlist: NeteasePlaylist) => (
-                    <ContextMenuItem
-                      onClick={async () => {
-                        try {
-                          await updatePlaylistTrack("add", playlist.id, contextMenuTrack.id);
-                          toast.success("已成功添加到歌单");
-                        } catch (err) {
-                          toast.error("添加到歌单失败");
-                        }
-                      }}
-                      key={playlist.id} className="focus:bg-white/10 focus:text-white"
-                    >
-                      <Image width={28} height={28} src={playlist.coverImgUrl} alt="cover" className="w-7 h-7 rounded-sm mr-2" />
-                      {playlist.name}
-                    </ContextMenuItem>
-                  ))}
-                </ContextMenuSubContent>
-              </ContextMenuSub>
-
-              {/* 去评论区 */}
               <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
-                <Link
-                  href={contextMenuTrack.id ? `/comment/?songId=${contextMenuTrack.id}` : "#"}
-                  onClick={(e) => !contextMenuTrack.id && e.preventDefault()}
-                  className="w-full h-full block focus:bg-white/10 focus:text-white">
-                  <FaRegCommentDots className="w-4 h-4 mr-2" />
-                  Comments
+                <Link href={contextMenuTrack.id ? `/comment/?songId=${contextMenuTrack.id}` : "#"} className="w-full h-full block focus:bg-white/10 focus:text-white">
+                  <FaRegCommentDots className="w-4 h-4 mr-2" />Comments
                 </Link>
               </ContextMenuItem>
 
-              {/* 复制连接 */}
               <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
                 <button
                   onClick={() => {
                     const href = `https://music.163.com/#/song?id=${contextMenuTrack.id}`;
-                    navigator.clipboard.writeText(href)
-                      .then(() => {
-                        toast.success("链接已复制到剪贴板");
-                      })
-                      .catch(() => {
-                        toast.error("复制链接失败");
-                      });
+                    navigator.clipboard.writeText(href).then(() => toast.success("已复制")).catch(() => toast.error("失败"));
                   }}
                   className="w-full h-full block focus:bg-white/10 focus:text-white">
-                  <Link2 className="w-4 h-4 mr-2" />
-                  Copy Link
+                  <Link2 className="w-4 h-4 mr-2" />Copy Link
                 </button>
               </ContextMenuItem>
-
             </ContextMenuGroup>
 
-            {/* 仅在非只读模式下显示移除选项 */}
-            {!readonly && (
+            {isLogin && !readonly && !isDailyRecommend && (
               <>
                 <ContextMenuSeparator className="bg-white/10" />
                 <ContextMenuGroup>
                   <ContextMenuItem
                     onClick={() => handleRequestDelete(playlistID!, contextMenuTrack.id)}
                     variant="destructive" className="focus:bg-red-500 focus:text-white">
-                    <Trash className="w-4 h-4 mr-2" />
-                    Remove from current playlist
+                    <Trash className="w-4 h-4 mr-2" />Remove from current playlist
                   </ContextMenuItem>
                 </ContextMenuGroup>
               </>
             )}
 
+            {isDailyRecommend && isLogin && (
+              <>
+                <ContextMenuSeparator className="bg-white/10" />
+                <ContextMenuGroup>
+                  <ContextMenuItem
+                    onClick={() => handleDislikeDailyRecommend(contextMenuTrack.id)}
+                    variant="destructive" className="focus:bg-red-500 focus:text-white">
+                    <Ban className="w-4 h-4 mr-2" />Recommend less
+                  </ContextMenuItem>
+                </ContextMenuGroup>
+              </>
+            )}
           </ContextMenuContent>
         )}
       </ContextMenu>

@@ -13,7 +13,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ NETWORK CONFIG ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 /**
- * 获取当前生效的网络配置。
+ * 获取当前生效的网络配置.
  * Web 模式下从 localStorage 读取用户覆盖值（通过 Settings 页面设置）；
  * Electron 模式下直接使用构建时注入的 appConfig。
  */
@@ -105,21 +105,19 @@ request.interceptors.request.use(
 
 // 响应拦截器
 request.interceptors.response.use(
-  async (response) => {
-    // 兼容网易云 API 的业务逻辑错误
-    // 所有响应都直接输出到 console 并返回，不拦截任何业务错误
-    /*
+  (response) => {
     const resData = response.data;
-    if (resData && resData.code) {
-          console.log('[业务响应]', {
-            code: resData.code,
-            msg: resData.msg,
-            message: resData.message,
-            data: resData,
-            response,
-            config: response.config
-          });
-        } */
+    // 只拦截明确的全局业务错误
+    if (resData && [250].includes(resData.code)) {
+      // 这里可以扩展更多需要全局拦截的 code
+      return Promise.reject({
+        ...response,
+        isBusinessError: true,
+        businessMsg: resData.msg || resData.message,
+        businessCode: resData.code,
+      });
+    }
+    // 其它 code（如 800、801、802）直接返回，由业务层处理
     return response;
   },
   async (error) => {

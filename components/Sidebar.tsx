@@ -6,7 +6,7 @@ import { Library, RefreshCw, ListMusic, User } from "lucide-react"
 import React, { useEffect, useReducer, useState } from "react";
 import { cn, IS_ELECTRON } from "@/lib/utils";
 import { LibraryItem } from "./Siderbar/LibraryItem";
-import { SiderBarMenu } from "./Siderbar/SiderbarMenu";
+import { SiderBarMenuMemo } from "./Siderbar/SiderbarMenu";
 import { FilterMenu } from "./Siderbar/FilterMenu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
@@ -17,9 +17,9 @@ import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { CollapsibleLibraryGroup } from "./Siderbar/CollapsibleLibraryGroup";
+import { FaCompactDisc, FaDiscord } from "react-icons/fa6";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 
 interface ActionCardProps {
   title: string;
@@ -29,7 +29,6 @@ interface ActionCardProps {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 
 function reducer(_state: FilterState, action: FilterAction) {
   switch (action.type) {
@@ -41,7 +40,6 @@ function reducer(_state: FilterState, action: FilterAction) {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SUB COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 
 function ActionCard({ title, subtitle, buttonText, onClick }: ActionCardProps) {
   return (
@@ -60,7 +58,6 @@ function ActionCard({ title, subtitle, buttonText, onClick }: ActionCardProps) {
   );
 }
 
-// 歌单
 function SkeletonItem() {
   return (
     <div className="flex gap-3 items-center p-2 rounded-md animate-pulse">
@@ -88,6 +85,7 @@ function SidebarImpl() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
   const [filterState, filterDispatch] = useReducer(reducer, 0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -97,19 +95,18 @@ function SidebarImpl() {
   const isElectron = IS_ELECTRON;
   const smartRouter = useSmartRouter();
 
-  // DEBUG: 输出登录状态，帮助排查登录状态异常问题
-  // console.log('[Sidebar] 用户登录状态:', isUserLogin);
+  // 订阅触发器，当其他组件（如TrackTable）修改了数据并触发此状态时，Sidebar可以静默重拉
+  const libraryUpdateTrigger = useUserStore(s => s.libraryUpdateTrigger);
 
-  // 请求歌单列表
-  const fetchPlaylist = async () => {
+  const fetchPlaylist = async (isSilent = false) => {
     if (!isUserLogin) return;
 
     const uid = useUserStore.getState().user?.userId;
 
-    // DEBUG: 当前登录用的 ID
-    // console.log('[Sidebar] 当前用户 ID:', uid);
-
-    setIsLoading(true);
+    // 如果是静默更新（比如删歌触发的），我们就不显示 Loading 骨架屏，避免 UI 闪烁
+    if (!isSilent) {
+      setIsLoading(true);
+    }
     setError(null);
 
     Promise.all([
@@ -120,10 +117,15 @@ function SidebarImpl() {
       useUserStore.getState().setLikeListIDs(likeListRes.data.ids)
     }).catch((e) => {
       console.error("获取歌单或喜欢列表失败", e);
-      setError(e instanceof Error ? e.message : "获取歌单失败");
-      toast.error("获取歌单失败，请稍后再试");
+      // 静默更新失败可以不报强弹窗，只影响初始加载
+      if (!isSilent) {
+        setError(e instanceof Error ? e.message : "获取歌单失败");
+        toast.error("获取歌单失败，请稍后再试");
+      }
     }).finally(() => {
-      setIsLoading(false);
+      if (!isSilent) {
+        setIsLoading(false);
+      }
     });
   };
 
@@ -132,18 +134,14 @@ function SidebarImpl() {
     else smartRouter.replace('/login');
   }
 
-  // 如果用户登录的时候，会去拉一下歌曲
-  useEffect(() => {
-    if (isUserLogin) fetchPlaylist();
-  }, [isUserLogin]);
-
-  // 监视 userId 变化，只有 userId 有效时才拉取
+  // 依赖监听：不仅监听登录状态，还监听 libraryUpdateTrigger
   const userId = useUserStore(s => s.user?.userId);
   useEffect(() => {
     if (isUserLogin && userId && userId !== 0) {
-      fetchPlaylist();
+      // 如果 trigger > 0 说明是人为触发的更新，启用静默模式(true)
+      fetchPlaylist(libraryUpdateTrigger > 0);
     }
-  }, [isUserLogin, userId]);
+  }, [isUserLogin, userId, libraryUpdateTrigger]); // 增加了 trigger 依赖
 
   const createdPlaylists = playlists.filter(item => item && item.creator.nickname === userName);
   const subscribedPlaylists = playlists.filter(item => item && item.creator.nickname !== userName);
@@ -168,7 +166,6 @@ function SidebarImpl() {
         isVeryNarrow ? "gap-3" : "gap-[6.5px]",
       )}
     >
-
       {/* 头部区域 */}
       <div className={cn("bg-[#121212] rounded-md", "flex flex-col gap-1")}>
         {/* Header 区 */}
@@ -181,14 +178,14 @@ function SidebarImpl() {
             onClick={() => smartRouter.push("/")}
             className={cn(
               "flex items-center hover:text-white cursor-pointer transition-colors",
-              "font-semibold overflow-hidden gap-2"
+              "font-semibold overflow-hidden gap-3"
             )}>
-            <Library className={cn("w-7 h-7 transition-transform shrink-0", isVeryNarrow && "w-8 h-8")} />
-            {!isVeryNarrow && <span className="truncate min-w-0">Your Library</span>}
+            <FaCompactDisc className={cn("w-6 h-6 transition-transform shrink-0", isVeryNarrow && "w-8 h-8")} />
+            {!isVeryNarrow && <span className="truncate min-w-0 text-[15px]">Scopify</span>}
           </button>
           {!isVeryNarrow && (
             <div className="flex items-center shrink-0 text-zinc-400">
-              <SiderBarMenu />
+              <SiderBarMenuMemo />
             </div>
           )}
         </div>
@@ -248,7 +245,7 @@ function SidebarImpl() {
                   title="加载歌单失败"
                   subtitle={error}
                   buttonText="重试"
-                  onClick={fetchPlaylist}
+                  onClick={() => fetchPlaylist(false)}
                 />
               </div>
             )
@@ -277,7 +274,7 @@ function SidebarImpl() {
             isVeryNarrow ? (
               <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
                 <button
-                  onClick={fetchPlaylist}
+                  onClick={() => fetchPlaylist(false)}
                   className="p-2 hover:bg-[#242424] hover:text-white rounded-md transition-colors"
                   title="重新加载"
                 >
@@ -290,7 +287,7 @@ function SidebarImpl() {
                   title="You don't have any playlists yet"
                   subtitle="Create a playlist or favorite playlists on NetEase Music to see them here."
                   buttonText="Reload"
-                  onClick={fetchPlaylist}
+                  onClick={() => fetchPlaylist(false)}
                 />
               </div>
             )

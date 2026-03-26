@@ -123,8 +123,8 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem onSelect={handleLoginClick} className="rounded-lg px-3 py-2 text-[15px]">
-              <FiLogIn className="text-[#34a450] mr-2 h-5 w-5" />
-              <span className='text-[#34a450]'>Login</span>
+              <FiLogIn className="mr-2 h-5 w-5" />
+              <span>Login</span>
             </DropdownMenuItem>
           )}
         </DropdownMenuGroup>

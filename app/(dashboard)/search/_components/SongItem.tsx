@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/context-menu";
 
 import { Song } from "../_types";
+import Image from "next/image";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -113,10 +114,10 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
   const playTrack = usePlayerStore((s) => s.playTrack);
   const likeListIDs = useUserStore((s) => s.likeListIDs);
   const playlists = useUserStore((s) => s.playlist);
-  const isLoggedIn = useLoginStatus();
 
   // ── derived ──
   const isActive = currentSongDetail?.id === song.id;
+  const isLogin = useLoginStatus();
   const isLiked = useMemo(
     () => Array.isArray(likeListIDs) && likeListIDs.includes(song.id),
     [likeListIDs, song.id]
@@ -152,8 +153,9 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
         nextLiked ? [...current, song.id] : current.filter((id: number) => id !== song.id)
       );
       toast.success(nextLiked ? "已添加到喜欢" : "已取消喜欢");
-    } catch {
-      toast.error("操作失败，请稍后再试");
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
+      // toast.error("操作失败，请稍后再试");
     }
   }, [song.id]);
 
@@ -170,6 +172,7 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
   const coverSrc = song.album.picUrl || song.artists[0]?.picUrl || "";
   const artistNames = song.artists.map((a) => a.name).join(", ") || "未知歌手";
 
+
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
@@ -182,7 +185,7 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
           onDoubleClick={handleRowDoubleClick}
         >
           {/* 序号 / 播放控件 */}
-          <div className="w-6 flex-shrink-0 flex justify-center">
+          <div className="w-6 shrink-0 flex justify-center">
             <SongIndexCell
               index={index}
               isActive={isActive}
@@ -194,7 +197,8 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
 
           {/* 封面 */}
           <div className="w-10 h-10 shrink-0 rounded bg-zinc-800 overflow-hidden">
-            <img
+            <Image
+              width={40} height={40}
               src={coverSrc}
               alt={song.album.name}
               loading="lazy"
@@ -253,51 +257,61 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
             }
           </ContextMenuItem>
 
-          <ContextMenuItem
-            onClick={handleAddToQueue}
-            className="focus:bg-white/10 focus:text-white"
-          >
-            <ListPlus className="w-4 h-4 mr-2" />
-            Add to queue
-          </ContextMenuItem>
+          {/* 添加到播放队列中 */}
+          {isLogin && (
+            <ContextMenuItem
+              onClick={handleAddToQueue}
+              className="focus:bg-white/10 focus:text-white"
+            >
+              <ListPlus className="w-4 h-4 mr-2" />
+              Add to queue
+            </ContextMenuItem>
+          )}
 
-          <ContextMenuItem
-            onClick={() => handleLike(!isLiked)}
-            className="focus:bg-white/10 focus:text-white"
-          >
-            <Heart className="w-4 h-4 mr-2" />
-            {isLiked ? "Remove from Liked Songs" : "Add to Liked Songs"}
-          </ContextMenuItem>
+          {/* 取消喜欢或者喜欢 */}
+          {isLogin && (
+            <ContextMenuItem
+              onClick={() => handleLike(!isLiked)}
+              className="focus:bg-white/10 focus:text-white"
+            >
+              <Heart className="w-4 h-4 mr-2" />
+              {isLiked ? "Remove from Liked Songs" : "Add to Liked Songs"}
+            </ContextMenuItem>
+          )}
         </ContextMenuGroup>
 
         <ContextMenuSeparator className="bg-white/10" />
 
         <ContextMenuGroup>
-          <ContextMenuSub>
-            <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-              <PlusCircle className="w-4 h-4 mr-4" />
-              Add to Playlist
-            </ContextMenuSubTrigger>
-            <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
-              {isLoggedIn && playlists.map((playlist) => (
-                <ContextMenuItem
-                  key={playlist.id}
-                  onClick={async () => {
-                    try {
-                      await updatePlaylistTrack("add", playlist.id, song.id);
-                      toast.success("已成功添加到歌单");
-                    } catch {
-                      toast.error("添加到歌单失败");
-                    }
-                  }}
-                  className="focus:bg-white/10 focus:text-white"
-                >
-                  <img src={playlist.coverImgUrl} alt="cover" className="w-7 h-7 rounded-sm mr-2" />
-                  {playlist.name}
-                </ContextMenuItem>
-              ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
+
+          {/* 添加到播放列表 */}
+          {isLogin && (
+            <ContextMenuSub>
+              <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+                <PlusCircle className="w-4 h-4 mr-4" />
+                Add to Playlist
+              </ContextMenuSubTrigger>
+              <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
+                {playlists.map((playlist) => (
+                  <ContextMenuItem
+                    key={playlist.id}
+                    onClick={async () => {
+                      try {
+                        await updatePlaylistTrack("add", playlist.id, song.id);
+                        toast.success("已成功添加到歌单");
+                      } catch {
+                        toast.error("添加到歌单失败");
+                      }
+                    }}
+                    className="focus:bg-white/10 focus:text-white"
+                  >
+                    <Image width={28} height={28} src={playlist.coverImgUrl} alt="cover" className="w-7 h-7 rounded-sm mr-2" />
+                    {playlist.name}
+                  </ContextMenuItem>
+                ))}
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          )}
 
           <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
             <Link href={`/comment/?songId=${song.id}`} className="w-full h-full block">
@@ -326,7 +340,7 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
     </ContextMenu>
   );
 },
-  // 精准 compare：只有这几个维度变化才重渲染
+  // 只有这几个维度变化才重渲染
   (prev, next) =>
     prev.song.id === next.song.id &&
     prev.index === next.index &&

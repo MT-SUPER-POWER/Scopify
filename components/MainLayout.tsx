@@ -2,10 +2,9 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, use, useEffect, useRef } from "react";
 
 import Header from "../components/Header";
-import { Sidebar } from "../components/Sidebar";
 import { PlayerBar } from "../components/PlayerBar";
 import { SearchModal } from "../components/SearchModal";
 
@@ -32,7 +31,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useSearchStore } from "@/store/module/search";
 import { useTimeStore } from "@/store/module/time";
 import { usePlayerStore } from "@/store/module/player";
-import { useUserStore } from "@/store/module/user";
+import { Sidebar } from "./Sidebar";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -57,7 +56,6 @@ function MainLayoutInner({
   const currentSongUrl = usePlayerStore(s => s.currentSongUrl);
   const setIsPlaying = usePlayerStore(s => s.setIsPlaying);
   const playNext = usePlayerStore(s => s.playNext);
-
 
   // 1. 负责加载音频 URL & 重置恢复标记
   useEffect(() => {
@@ -213,6 +211,7 @@ function MainLayoutInner({
       <footer>
         {/* NOTE: 所有的原生音频事件绑定在这里 */}
         <audio
+          preload="auto"
           className="hidden"
           ref={audioRef}
           // 下一曲了
@@ -252,6 +251,7 @@ function MainLayoutInner({
               lastStoreWriteRef.current = now;
             }
           }}
+
           // 重新恢复歌曲到存储的位置
           onCanPlay={(e) => {
             const audio = e.currentTarget;
@@ -267,6 +267,10 @@ function MainLayoutInner({
                 } else {
                   audio.currentTime = restoreSeconds;
                 }
+              } else {
+                // 如果 persistedTime 为 0，说明是切歌，强制 currentTime 归零并写入 store
+                audio.currentTime = 0;
+                useTimeStore.getState().setCurrentTime(0);
               }
               // 恢复完毕，拉上保险栓，防止后续因为网络缓冲等原因重复触发
               hasRestoredProgressRef.current = true;

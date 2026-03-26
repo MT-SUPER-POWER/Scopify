@@ -1,5 +1,3 @@
-// NOTE: 如何拆分一个组件的 HOOKS 部分
-
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { getPlaylsitDetail } from "@/lib/api/playlist";
@@ -7,8 +5,7 @@ import { getRecommendedSongs } from "@/lib/api/track";
 import { useUserStore } from "@/store";
 import { toast } from "sonner";
 import { getMainColorFromImage } from "@/lib/utils";
-import { PlaylistInfo } from "@app-types/playlist";
-import { SongDetail } from "@/types/api/music";
+import { PlaylistInfo } from "@/types/playlist";
 
 // 颜色缓存机制 (全局共享)
 const colorCache = new Map<string, string>();
@@ -28,32 +25,25 @@ export function usePlaylist() {
   const playlistId = searchParams.get("id");
   const isRecommend = searchParams.get("isRecommend") === "true";
   const isDailyRecommend = searchParams.get("isDailyRecommend") === "true";
-
   const [rawDetail, setRawDetail] = useState<any>(null);
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 官方推荐做法：渲染期更新与派生状态 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1. 渲染期状态更新 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  // 生成当前请求的唯一标识
   const currentReqKey = isDailyRecommend ? "daily" : playlistId;
   const [prevReqKey, setPrevReqKey] = useState<string | null>(null);
 
-  // 【核心 1：渲染期状态更新】
-  // 当路由变化，currentReqKey 改变时，直接在渲染阶段清空旧数据。
-  // 这会告诉 React 丢弃本次渲染，立即用新状态重绘，避免了放入 useEffect 导致的级联渲染。
   if (currentReqKey !== prevReqKey) {
     setPrevReqKey(currentReqKey);
-    setRawDetail(null); // 立刻丢弃旧歌单数据
+    setRawDetail(null); // 仅在切换歌单时清空数据（触发 Skeleton 骨架屏）
   }
 
-  // 【核心 2：派生状态】
-  // 只要我们需要请求数据 (currentReqKey 存在)，并且当前还没拿到数据，就是 Loading。
-  // 彻底干掉独立的 isLoading 状态和 setIsLoading 同步调用。
+  // isLoading 派生状态：如果是相同歌单的静默刷新（rawDetail 不为空），不会触发 true，从而避免骨架屏闪烁
   const isLoading = Boolean(currentReqKey) && !rawDetail;
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2. 核心数据获取 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+  const libraryUpdateTrigger = useUserStore((s) => s.libraryUpdateTrigger);
 
-  // 1. 数据请求逻辑
   useEffect(() => {
     if (!currentReqKey) return;
 
@@ -64,33 +54,32 @@ export function usePlaylist() {
       try {
         if (isDailyRecommend) {
           const res: any = await getRecommendedSongs();
-          const dailySongs = res.data?.data?.dailySongs || [];
           if (ignore) return;
-
-          // 在异步回调中 setState，Lint 不会报同步更新错误
+          const dailySongs = res.data?.data?.dailySongs || [];
           setRawDetail({ name: "每日推荐", trackCount: dailySongs.length, tracks: dailySongs });
           useUserStore.getState().setAlbumList(dailySongs);
         } else {
           const res: any = await getPlaylsitDetail({ id: playlistId as string, cookie: isRecommend ? cookie : undefined });
-          const playlist = res.data.playlist;
           if (ignore) return;
-
+          const playlist = res.data.playlist;
           setRawDetail(playlist);
           useUserStore.getState().setAlbumList(playlist.tracks || []);
         }
       } catch (err) {
         if (ignore) return;
         console.error(err);
-        toast.error(isDailyRecommend ? "获取每日推荐失败" : "获取歌单详情失败");
+        toast.error(isDailyRecommend ? "Failed to fetch daily recommendations" : "Failed to fetch playlist details");
       }
     };
 
     fetchMusicData();
 
     return () => { ignore = true; };
-  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend]);
+    // 无论是 URL 变了，还是由于你点击了取消喜欢导致 Trigger 变了，都会执行这个 Effect 进行拉取
+  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend, libraryUpdateTrigger]);
 
-  // 2. 数据格式化逻辑 (将杂乱的 API 返回抹平为统一的 PlaylistInfo)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3. 数据派生与格式化 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (!rawDetail) return null;
 
@@ -123,21 +112,19 @@ export function usePlaylist() {
     };
   }, [rawDetail, isDailyRecommend]);
 
-  // 3. 颜色提取逻辑
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4. 颜色提取逻辑 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  // 同步部分：缓存命中直接算出来，不走 effect，彻底消除级联渲染警告
   const cachedColor = useMemo(() => {
     const cacheKey = isDailyRecommend ? "daily" : playlistInfo?.cover;
     if (!cacheKey) return null;
     return colorCache.get(cacheKey) ?? null;
   }, [isDailyRecommend, playlistInfo?.cover]);
 
-  // 异步部分：只有缓存未命中时才需要 fetch
   const [fetchedColor, setFetchedColor] = useState<string | null>(null);
 
   useEffect(() => {
     const cacheKey = isDailyRecommend ? "daily" : playlistInfo?.cover;
-    if (!cacheKey || colorCache.has(cacheKey)) return; // 缓存命中直接跳过
+    if (!cacheKey || colorCache.has(cacheKey)) return;
 
     getMainColorFromImage(cacheKey).then((color) => {
       if (color) {
@@ -147,7 +134,6 @@ export function usePlaylist() {
     });
   }, [isDailyRecommend, playlistInfo?.cover]);
 
-  // 合并：优先用缓存色，其次是异步色，最后兜底
   const themeColor = cachedColor ?? fetchedColor ?? "#88b325";
 
   return {

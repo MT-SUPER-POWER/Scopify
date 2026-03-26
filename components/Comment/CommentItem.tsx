@@ -22,11 +22,10 @@ interface CommentItemProps {
   onRouterClick?: (url: string) => void;
 }
 
-export const CommentItem: React.FC<CommentItemProps> = (
-  {
-    comment, isHot = false,
-    onLike, onDelete, onReply, onReport, onRouterClick
-  }) => (
+export const CommentItem: React.FC<CommentItemProps> = ({
+  comment, isHot = false,
+  onLike, onDelete, onReply, onReport, onRouterClick
+}) => (
 
   <div className="flex gap-4 group">
     <Image
