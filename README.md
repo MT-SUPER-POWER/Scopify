@@ -56,14 +56,14 @@
 # 安装前端
 git clone https://github.com/MT-SUPER-POWER/Scopify.git
 cd Scopify
-bun install
+npm install
 
 # 安装后端
 cd backend/api-enhanced
 git clone https://github.com/MT-SUPER-POWER/api-enhanced
-bun install
+npm install
 
-bun run dev  # 开发模式：运行 next.js 和 electron
+npm run dev  # 开发模式：运行 next.js 和 electron
 ```
 
 ### 后端的部署方法
@@ -102,6 +102,12 @@ make netease_undeploy # 卸载
 
 > [!important]
 > 推荐使用这个方法，毕竟部署后端还是比较麻烦的。加上本人还没有测试过分离部署的功能。可能意外比较多
+
+```bash
+git submodule update --init --recursive
+cd backend/api-enhanced
+npm install
+```
 
 我们程序里面是打包了一个后端一起部署的，默认地址地址是 `localhost:5252`，如果你不需要自己部署后端，在 `config/app.config.yml` 吧 `autoStart` 设置为 `true` 就好。
 
@@ -207,7 +213,6 @@ make netease_undeploy # 卸载
 - 按照日期展示每日推荐
 - 点击歌手做跳转到歌手页面
 - 播放的一些 web 快捷键适配
-- 没有登录限制评论
 
 ## 版本号规则
 

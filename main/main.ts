@@ -13,7 +13,9 @@ import { registerIpcHandlers } from "./module/ipc.js";
 import { startManagedBackend, stopManagedBackend } from "./module/backend.js";
 import {
   __logoIcon, __preloadScript, appConfig,
-  cleanOldLogs, logger, __splashHtmlPath, __splashHtmlDesc
+  cleanOldLogs, logger, __splashHtmlPath, __splashHtmlDesc,
+  __logoIconMac,
+  __logoIconMacPath
 } from "./constants.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -187,13 +189,19 @@ app.whenReady().then(() => {
 
   try {
     createWindow();
+
+    // console.log("Logo Mac Path:", __logoIconMacPath);
+    if (process.platform === "darwin") {
+      app.dock?.setIcon(__logoIconMacPath);
+    }
+
   } catch (err) {
     logger.error("Failed to create main window:", err);
   }
 
   if (mainWindow) {
     registerIpcHandlers(mainWindow);
-    initTray(mainWindow);
+    if (process.platform !== "darwin") { initTray(mainWindow); }
     initializeLoginWindow(mainWindow);
     initThumbarButtons(mainWindow);
   }

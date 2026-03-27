@@ -17,11 +17,21 @@ export const __logoIconPath = app.isPackaged ?
   join(process.resourcesPath, "resources/icon.ico") :
   join(__dirname, "../../resources/icon.ico");
 
+export const __logoIconMacPath = app.isPackaged ?
+  join(process.resourcesPath, "resources/icon.icns") :
+  join(__dirname, "../../resources/icon.icns");
+
 export const __logoIcon = nativeImage.createFromPath(__logoIconPath);
+export const __logoIconMac = nativeImage.createFromPath(__logoIconMacPath);
 
 if (__logoIcon.isEmpty()) {
   log.error(`[Resource] Failed to load logo icon from: ${__logoIconPath}`);
 }
+
+if (__logoIconMac.isEmpty()) {
+  log.error(`[Resource] Failed to load Mac logo icon from: ${__logoIconMacPath}`);
+}
+
 export const __preloadScript = join(__dirname, "../main/preload.js");
 const __rendererDir = join(__dirname, "../../renderer");
 const appConfig = loadAppConfig();

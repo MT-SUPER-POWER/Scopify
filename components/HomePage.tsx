@@ -367,7 +367,7 @@ const HomePageComponent = () => {
           <CollapsibleHomeSection
             title={
               <h2 className="text-2xl font-bold text-white hover:underline tracking-tight">
-                Made For {userName}
+                Made For {userName ?? "You"}
               </h2>
             }
             collapsedHeight="280px" // 推荐区块 1行左右的高度 (包含图片、标题和 padding)

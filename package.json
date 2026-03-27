@@ -19,11 +19,12 @@
   "scripts": {
     "predev": "npx swc main -d out --out-file-extension js && node script/build-electron.cjs",
     "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\" ",
-    "start": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"bunx serve renderer -p 3000\" \"bun run backend\"",
-    "backend": "node backend/api-enhanced/app.js",
-    "web": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"next dev\" \"npm run backend\" ",
+    "start": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"bunx serve renderer -p 4545\" \"bun run backend\"",
+    "backend": "bun run backend/api-enhanced/app.js",
+    "web": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"next dev\" \"bun run backend\" ",
     "build:web": "next build",
-    "build:win": "next build && npx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- win"
+    "build:win": "next build && npx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- win",
+    "build:mac": "next build && npx swc main -d out --out-file-extension js && node script/build-electron.cjs && electron-builder -- mac"
   },
   "dependencies": {
     "@applemusic-like-lyrics/core": "^0.2.0",
@@ -148,6 +149,15 @@
       "icon": "resources/icon.ico",
       "requestedExecutionLevel": "asInvoker",
       "verifyUpdateCodeSignature": false
+    },
+    "mac": {
+      "target": [
+        "zip"
+      ],
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.music",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
     },
     "nsis": {
       "oneClick": false,

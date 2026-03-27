@@ -14,6 +14,7 @@ import {
   Toggle,
 } from "./settings-ui";
 import { useSettingsState } from "./useSettingsState";
+import { Select } from "@/components/ui/select";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -154,12 +155,15 @@ const SettingsPage = () => {
               />
               <SettingRow
                 label="Use Random CN IPs"
-                sublabel="Append a random Chinese IP to bypass geo-restrictions."
+                sublabel="Select IP source for bypassing geo-restrictions."
                 control={
-                  <Toggle
-                    enabled={config.network.randomCNIP}
-                    onChange={() => handleLocalChange("network", "randomCNIP", !config.network.randomCNIP)}
-                  />
+                  <Select
+                    value={config.network.randomCNIP}
+                    onValueChange={(value: string) => handleLocalChange("network", "randomCNIP", value)}
+                  >
+                    <option value="false">Disabled</option>
+                    <option value="true">Random CN IP</option>
+                  </Select>
                 }
               />
             </SettingSection>
