@@ -13,6 +13,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { CommentInputBox } from '@/components/Comment/CommentInputBox';
 import Image from 'next/image';
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
+import { useLoginStatus } from '@/lib/hooks/useLoginStatus';
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -42,6 +43,7 @@ export default function CommentPage() {
   const [isInputOpen, setIsInputOpen] = useState(false);
   const inputPanelRef = useRef<HTMLDivElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
+  const isLogin = useLoginStatus();
 
   // Router
   const smartRouter = useSmartRouter();
@@ -117,7 +119,7 @@ export default function CommentPage() {
     if (!comment || !songId) return;
     const t = comment.liked ? 0 : 1;
     try {
-      const res = await toggleLikeComments(songId, id, t, 0);
+      await toggleLikeComments(songId, id, t, 0);
       // console.log("Like toggle response:", res); // Debug log
       toast.success(t === 1 ? "已点赞" : "已取消点赞");
     } catch (err: any) {
@@ -152,6 +154,10 @@ export default function CommentPage() {
 
   const handleSubmitText = async (text: string) => {
     if (!songId || !text.trim() || text.length > 140) return false;
+    if (!isLogin) {
+      toast.error("Please log in to comment");
+      return false;
+    }
 
     try {
       if (replyTarget) {
