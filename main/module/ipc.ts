@@ -19,6 +19,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
   });
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PLAYER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
   ipcMain.on("player-state-changed", (_event, { isPlaying }: { isPlaying: boolean }) => {
     if (mainWindow) {
       updateThumbarButtons(mainWindow, isPlaying);

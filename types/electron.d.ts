@@ -2,7 +2,7 @@ import { AppConfig } from "@/types/config";
 
 // Electron `preload.js` 暴露给前端的 API 类型声明
 export interface ElectronAPI {
-    relaunchApp: () => void;
+  relaunchApp: () => void;
   on: (channel: string, callback: (...args: unknown[]) => void) => void;
   // ? callback 参数保留，以后开发可能用的上
   off: (channel: string, callback?: (...args: unknown[]) => void) => void;
@@ -22,6 +22,7 @@ export interface ElectronAPI {
   navigateTo: (path: string) => void;
   onNavigate: (callback: (path: string) => void) => void;
   loginSuccess: () => void;
+  onControlAudio: (callback: (action: 'toggle-play' | 'next' | 'prev') => void) => void;
 }
 
 // 拓展全局 Window 对象，添加 electronAPI 属性

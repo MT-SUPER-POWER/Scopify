@@ -33,12 +33,16 @@ export const appConfig: AppConfig = {
   },
 };
 
-// console.log("Loaded appConfig in web/env:", appConfig);
-
 // ── 轻量 logger（renderer 侧直接用 console）───────────────────────────────────
 export const logger = {
   info: (...args: unknown[]) => console.info("[renderer]", ...args),
   warn: (...args: unknown[]) => console.warn("[renderer]", ...args),
-  error: (...args: unknown[]) => console.error("[renderer]", ...args),
+  error: (...args: unknown[]) => {
+    if (args[0] instanceof Error) {
+      throw args[0];
+    } else {
+      throw new Error(args.map(String).join(" "));
+    }
+  },
   debug: (...args: unknown[]) => console.debug("[renderer]", ...args),
 };

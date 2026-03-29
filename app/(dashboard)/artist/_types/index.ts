@@ -4,8 +4,15 @@ export interface Track {
   id: string | number;
   title: string;
   durationMs: number;
-  coverUrl: string;
-  raw?: any;
+  ar: Array<{ id: string | number; name: string }>;
+  al: {
+    blurPicUrl?: string;
+    coverUrl?: string;
+    picUrl: string;
+  }
+  publishTime?: number;
+  dt: number;
+  raw?: unknown;
 }
 
 export interface Album {

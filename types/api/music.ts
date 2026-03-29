@@ -13,6 +13,9 @@ export interface SongDetail {
     coverUrl?: string;
   }; // 专辑
   publishTime: number;
+  pc?: {
+    privateCloud?: unknown;
+  }
 }
 
 export interface RawSongDetail extends SongDetail {
@@ -65,8 +68,8 @@ export const pruneSongDetail = (raw: any): SongDetail => {
       blurPicUrl: albumData?.blurPicUrl,
       coverUrl: albumData?.coverUrl,
     },
-
     publishTime: raw.publishTime || albumData?.publishTime || 0,
+    pc: raw.pc || {},
   };
 };
 

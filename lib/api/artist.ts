@@ -70,10 +70,10 @@ export function getFansCnt(id: number | string) {
 }
 
 /**
- * 获取歌手热门歌曲（返回 artist + hotSongs）
+ * 获取歌手热门歌曲
  */
 export function getArtistTopSongs(id: number | string) {
-  return request.get('/artists', {
+  return request.get('/v1/artist/songs', {
     params: { id }
   });
 }

@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle,
   Mic2, MonitorSpeaker, Heart, Expand, MinimizeIcon,
@@ -19,6 +19,9 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { PlayerProgressBar } from './PlayBar/ProgressBar';
 import { Skeleton } from "./ui/skeleton";
+import { toast } from "sonner";
+import { likeSong } from "@/lib/api/playlist";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -52,6 +55,7 @@ export const PlayerBar = ({
   const [isMaximized, setIsMaximized] = useState(false);
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
+  const smartRouter = useSmartRouter();
 
   // 检测 F11 浏览器全屏（非 requestFullscreen）
   useEffect(() => {
@@ -94,6 +98,21 @@ export const PlayerBar = ({
     setRepeatMode(next);
   };
 
+  const toggleLike = useCallback(async (next: boolean) => {
+    try {
+      await likeSong(currentSong?.id as number, next);
+      useUserStore.getState().libraryUpdateTrigger += 1;  // 触发喜欢列表更新
+      const store = useUserStore.getState();
+      const cur = Array.isArray(store.likeListIDs) ? store.likeListIDs.map((id) => Number(id)) : [];
+      const idNum = Number(currentSong?.id);
+      const nextList: number[] = next ? [...cur, idNum] : cur.filter((id) => id !== idNum);
+      store.setLikeListIDs(nextList);
+      toast.success(next ? "Added to Likes" : "Removed from Likes");
+    } catch (error) {
+      console.log("Error toggling like status:", error);
+    }
+  }, [currentSong]);
+
   return (
     <div
       className={cn(
@@ -110,8 +129,8 @@ export const PlayerBar = ({
           <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-md overflow-hidden relative group cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-zinc-800 shrink-0">
             {currentSong?.al?.picUrl ? (
               <Image
-                width={96} height={96}
-                src={currentSong.al.picUrl}
+                width={56} height={56}
+                src={currentSong.al.picUrl || currentSong.al.coverUrl || ""}
                 alt={currentSong.al.name}
                 className="w-full h-full object-cover"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
@@ -141,11 +160,31 @@ export const PlayerBar = ({
           <div className="flex flex-col justify-center min-w-0 flex-1 max-w-25 lg:max-w-35">
             {currentSong ? (
               <>
-                <span className="text-sm text-white hover:underline cursor-pointer truncate font-medium">
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onCloseLyricModal) onCloseLyricModal();
+                    else closeLyrics();
+                  }}
+                  className="text-sm text-white hover:underline cursor-pointer truncate font-medium">
                   {currentSong.name}
                 </span>
-                <span className="text-[11px] text-[#b3b3b3] hover:underline hover:text-white cursor-pointer truncate mt-0.5 font-normal">
-                  {currentSong?.ar?.map(a => a.name).join(", ")}
+                <span className="text-[11px] text-[#b3b3b3] mt-0.5 font-normal truncate cursor-pointer">
+                  {currentSong?.ar?.slice(0, 2).map((a, idx, arr) => (
+                    <span
+                      key={a.id}
+                      onClick={e => {
+                        e.stopPropagation();
+                        if (useUiStore.getState().isLyricsOpen) onCloseLyricModal?.();
+                        smartRouter.push(`/artist?id=${a.id}`);
+                      }}
+                      title={`/artist?id=${a.id}`}
+                      className="hover:underline hover:text-white"
+                      style={{ display: "inline" }}
+                    >
+                      {a.name}{idx < arr.length - 1 ? ', ' : ''}
+                    </span>
+                  ))}
                 </span>
               </>
             ) : (
@@ -157,7 +196,9 @@ export const PlayerBar = ({
           </div>
 
           <div className="hidden sm:flex items-center gap-3">
-            <button title="Like">
+            <button title="Like"
+              onClick={() => toggleLike(!isLiked)}
+            >
               <Heart className={cn("w-4 h-4 lg:w-5 lg:h-5 text-[#b3b3b3] hover:text-white cursor-pointer", isLiked && "fill-[#1ed760] text-[#1ed760]")} />
             </button>
             <Link href={currentSong?.id ? `/comment?songId=${currentSong.id}` : "#"} onClick={(e) => !currentSong?.id && e.preventDefault()}>

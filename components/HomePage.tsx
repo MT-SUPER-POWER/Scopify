@@ -385,6 +385,7 @@ const HomePageComponent = () => {
                   >
                     <div className="relative mb-4 pb-[100%]">
                       <Image
+                        loading="eager"
                         width={300} height={300}
                         src={`${playlist.picUrl}?param=300y300`}
                         alt={playlist.name}

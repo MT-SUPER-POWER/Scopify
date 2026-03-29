@@ -27,11 +27,12 @@ export function getUserPlaylistByID(uid: number, limit: number = 30, offset: num
  * @param id 歌单 id
  * @param limit 限制获取歌曲的数量，默认值为当前歌单的歌曲数量
  * @param offset 偏移量，默认 0
- * @param cookie 请求推荐歌单数据的时候，目前只有这个完整才能拿到数据
+ * @param cookie 请求推荐歌单数据的时候
  * @returns 歌曲列表数据
  */
 export function getPlaylistAllTracks({ id, limit, offset, cookie }: { id: number | string, limit?: number, offset?: number, cookie?: string }) {
-  return request.get('/playlist/track/all', { params: { id, limit, offset, cookie: cookie } });
+  // DEBUG: 后期如果拿不到数据，在这里试试看带上 cookie
+  return request.get('/playlist/track/all', { params: { id, limit, offset } });
 }
 
 

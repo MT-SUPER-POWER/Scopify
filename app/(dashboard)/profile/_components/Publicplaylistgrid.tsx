@@ -8,6 +8,8 @@ interface Props {
 }
 
 export function PublicPlaylistGrid({ playlists, onClickPlaylist }: Props) {
+  console.log("Public playlists:", playlists);
+
   if (playlists.length === 0) {
     return <div className="text-gray-400 text-sm">No public playlists</div>;
   }

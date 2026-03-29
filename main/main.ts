@@ -1,8 +1,10 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { join } from "path";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
 import serve from "electron-serve";
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, dialog } from "electron";
 import type { BrowserWindow as BrowserWindowType } from "electron";
 
 import initTray from "./module/tray.js";
@@ -13,12 +15,17 @@ import { registerIpcHandlers } from "./module/ipc.js";
 import { startManagedBackend, stopManagedBackend } from "./module/backend.js";
 import {
   __logoIcon, __preloadScript, appConfig,
-  cleanOldLogs, logger, __splashHtmlPath, __splashHtmlDesc,
-  __logoIconMac,
+  cleanOldLogs, logger,
+  __splashHtmlPath,
   __logoIconMacPath
 } from "./constants.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// ━━━━━━━━━━━━━━━━ ESM 路径兼容 ━━━━━━━━━━━━━━━━
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 let splashWindow: BrowserWindowType | null = null;
 
@@ -36,6 +43,9 @@ let isQuitting = false;     // 真正的退出标志
 logger.info("--------------------------------------------------");
 logger.info("Fronted Base URL is", devBase);
 logger.info("--------------------------------------------------");
+
+// 请求单实例锁
+const gotTheLock = app.requestSingleInstanceLock();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -59,8 +69,6 @@ const createWindow = () => {
   splashWindow.center();
   splashWindow.focus();
 
-  logger.info("[SPLASH] splashWindow loaded", __splashHtmlDesc);
-
   // 创建主窗口（隐藏，等主页面 ready 再显示）
   mainWindow = new BrowserWindow({
     width: 1400,
@@ -69,7 +77,7 @@ const createWindow = () => {
     minHeight: 720,
     autoHideMenuBar: true,             // 自动隐藏菜单栏
     icon: __logoIcon,                  // 设置应用图标
-    title: "scopify",                  // 设置窗口标题
+    title: "Scopify",                  // 设置窗口标题
     show: false,                       // 关键：初始不显示，防止闪烁
     titleBarOverlay: {
       color: 'rgba(0,0,0,0)',          // 完全透明
@@ -95,6 +103,10 @@ const createWindow = () => {
     mainWindow?.show();
     mainWindow?.focus();
     mainWindow?.setAlwaysOnTop(false);
+
+    if (process.platform === "win32") {
+      initThumbarButtons(mainWindow!);
+    }
   }, 4500);
 
   if (app.isPackaged) {
@@ -178,62 +190,92 @@ const createWindow = () => {
   });
 }
 
+// 提取依赖窗口实例的模块初始化逻辑，防止 Mac 重新激活时模块失效
+const setupWindowModules = (win: BrowserWindowType) => {
+  registerIpcHandlers(win);
+  if (process.platform !== "darwin") {
+    initTray(win);
+
+  }
+  initializeLoginWindow(win);
+};
+
 if (!appConfig.app.gpuAcceleration) {
   app.disableHardwareAcceleration();
   logger.warn("[app] Hardware acceleration disabled based on config.");
 }
 
-app.whenReady().then(() => {
-  logger.info("Scopify ready, creating window...");
-  startManagedBackend();
-
-  try {
-    createWindow();
-
-    // console.log("Logo Mac Path:", __logoIconMacPath);
-    if (process.platform === "darwin") {
-      app.dock?.setIcon(__logoIconMacPath);
-    }
-
-  } catch (err) {
-    logger.error("Failed to create main window:", err);
-  }
-
-  if (mainWindow) {
-    registerIpcHandlers(mainWindow);
-    if (process.platform !== "darwin") { initTray(mainWindow); }
-    initializeLoginWindow(mainWindow);
-    initThumbarButtons(mainWindow);
-  }
-
-  // 定时清理日志
-  cleanOldLogs();
-
-  app.on("activate", () => {
-    if (mainWindow === null) {
-      createWindow();
+if (!gotTheLock) {
+  // 如果没拿到锁，说明已经有一个实例在运行了，直接退出当前这个多余的进程
+  logger.warn("Another instance is already running. Quitting this one...");
+  app.quit();
+} else {
+  // 当用户尝试打开第二个实例时触发
+  app.on('second-instance', () => {
+    // 唤醒已经存在的那个主窗口
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
     }
   });
-});
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
+  app.whenReady().then(() => {
+    logger.info("Scopify ready, creating window...");
+    startManagedBackend();
 
-app.on("before-quit", () => {
-  isQuitting = true;
-  stopManagedBackend();
-});
+    try {
+      createWindow();
 
-// 对于线程意外崩溃或未捕获的异常，记录日志并退出
-process.on("uncaughtException", (err) => {
-  logger.error("Uncaught Exception:", err);
-  app.exit(1);
-});
+      if (process.platform === "darwin") {
+        app.dock?.setIcon(__logoIconMacPath);
+      }
 
-process.on("unhandledRejection", (reason) => {
-  logger.error("Unhandled Rejection:", reason);
-  app.exit(1);
-});
+    } catch (err) {
+      logger.error("Failed to create main window:", err);
+    }
+
+    // 第一次启动，绑定模块
+    if (mainWindow) {
+      setupWindowModules(mainWindow);
+    }
+
+    // 定时清理日志
+    cleanOldLogs();
+
+    app.on("activate", () => {
+      if (mainWindow === null) {
+        createWindow();
+        // Mac 重新激活生成新窗口时，重新绑定模块
+        if (mainWindow) {
+          setupWindowModules(mainWindow);
+        }
+      }
+    });
+  });
+
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+      app.quit();
+    }
+  });
+
+  app.on("before-quit", () => {
+    isQuitting = true;
+    stopManagedBackend();
+  });
+
+  // 对于线程意外崩溃或未捕获的异常，记录日志并退出
+  process.on("uncaughtException", (err) => {
+    logger.error("Uncaught Exception:", err);
+    dialog.showErrorBox("发生未捕获的异常", `应用遇到了一个未处理的错误，应用将退出。\n\n错误信息:\n${err.message}`);
+    stopManagedBackend(); // 强制清理后端进程
+    app.exit(1);
+  });
+
+  process.on("unhandledRejection", (reason) => {
+    logger.error("Unhandled Rejection:", reason);
+    dialog.showErrorBox("发生未处理的 Promise 拒绝", `应用遇到了一个未处理的 Promise 错误，应用将退出。\n\n错误信息:\n${reason}`);
+    stopManagedBackend(); // 强制清理后端进程
+    app.exit(1);
+  });
+}

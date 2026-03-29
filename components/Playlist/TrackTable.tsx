@@ -27,7 +27,7 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { dislikeDailyRecommend, likeSong } from "@/lib/api/playlist";
 import { toast } from "sonner";
-import { use, useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { useSearchParams } from "next/navigation";
 import { NeteasePlaylist } from "@/types/api/playlist";
@@ -95,7 +95,7 @@ interface TracklistTableProps {
   onSearchClose?: () => void;
   inputRef?: React.RefObject<HTMLInputElement | null>;
 
-  tracks?: any[];
+  tracks?: SongDetail[];
   disableVirtualization?: boolean;
   hideDateColumn?: boolean;
   hideLikeColumn?: boolean;
@@ -138,9 +138,9 @@ export default function TracklistTable({
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
 
-  const [contextMenuTrack, setContextMenuTrack] = useState<any | null>(null);
+  const [contextMenuTrack, setContextMenuTrack] = useState<SongDetail | null>(null);
 
-  const playlists: NeteasePlaylist[] = useUserStore((state: any) => state.playlist);
+  const playlists: NeteasePlaylist[] = useUserStore((state) => state.playlist);
 
   const filteredPlaylists = useMemo(
     () => playlists.filter((p: NeteasePlaylist) => String(p.id) !== String(playlistID)),
@@ -155,9 +155,9 @@ export default function TracklistTable({
   const filteredTracks = useMemo(() => {
     if (!searchQuery?.trim()) return tracks;
     const q = searchQuery.toLowerCase();
-    return tracks.filter((track: any) =>
+    return tracks.filter((track) =>
       (track.name?.toLowerCase?.() || "").includes(q) ||
-      (Array.isArray(track.ar) && track.ar.some((a: any) => (a?.name?.toLowerCase?.() || "").includes(q))) ||
+      (Array.isArray(track.ar) && track.ar.some((a) => (a?.name?.toLowerCase?.() || "").includes(q))) ||
       (track.al?.name?.toLowerCase?.() || "").includes(q)
     );
   }, [tracks, searchQuery]);
@@ -175,7 +175,7 @@ export default function TracklistTable({
 
   const virtualItems = virtualizer.getVirtualItems();
 
-  const handlePlay = useCallback((track: any) => {
+  const handlePlay = useCallback((track: SongDetail) => {
     const isCurrent = currentSongDetail?.id === track.id;
     if (isCurrent) setIsPlaying(!isPlaying);
     else playFromSong(track, tracks);
@@ -199,11 +199,11 @@ export default function TracklistTable({
       await updatePlaylistTrack("del", pendingDelete.playlistId, pendingDelete.trackId);
 
       // 1. 乐观更新：立刻从视图移出
-      setAlbumList(albumList.filter((t: any) => t.id !== pendingDelete.trackId) as RawSongDetail[]);
+      setAlbumList(albumList.filter((t) => t.id !== pendingDelete.trackId) as RawSongDetail[]);
       toast.success("已从歌单移除");
 
       // 2. 触发全局刷新（这会告诉 Sidebar 在后台悄悄拉取最新歌单封面等元信息）
-      const store = useUserStore.getState() as any;
+      const store = useUserStore.getState();
       if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
 
     } catch (err) {
@@ -222,7 +222,7 @@ export default function TracklistTable({
       const dislikeRes = await dislikeDailyRecommend(trackId);
       const replaceSong = pruneSongDetail(dislikeRes.data?.data) || null;
 
-      const updateAlbumList = albumList.map((t: any) =>
+      const updateAlbumList = albumList.map((t) =>
         t.id === trackId ? replaceSong : t
       ) as SongDetail[];
 
@@ -251,7 +251,6 @@ export default function TracklistTable({
         <ContextMenuTrigger asChild>
           <div className="w-full">
             <Table className="w-full text-zinc-400 table-fixed">
-              {/* 表头部分省略具体实现细节与原版一致... */}
               <TableHeader className={cn("sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]", "bg-linear-to-b from-transparent to-[#121212]/10")}>
                 <TableRow className="hover:bg-transparent border-none">
                   <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
@@ -331,6 +330,8 @@ export default function TracklistTable({
           </div>
         </ContextMenuTrigger>
 
+
+        {/* 上下文菜单 */}
         {contextMenuTrack && (
           <ContextMenuContent className="w-48 bg-[#282828] text-white border-white/10">
             <ContextMenuGroup>
@@ -464,6 +465,7 @@ export default function TracklistTable({
             )}
           </ContextMenuContent>
         )}
+
       </ContextMenu>
     </>
   );

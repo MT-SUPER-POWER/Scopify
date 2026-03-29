@@ -1,13 +1,12 @@
 "use client";
 
+import Link from "next/link";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { memo, useCallback, useMemo, useState } from "react";
 import { Play, Pause, Heart, ListPlus, PlusCircle, Link2 } from "lucide-react";
-import { motion } from "motion/react";
-import Link from "next/link";
 import { FaRegCommentDots } from "react-icons/fa6";
-import { toast } from "sonner";
-
-import { cn } from "@/lib/utils";
+import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
@@ -26,8 +25,8 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-
-import { Track, ArtistInfo, formatDuration } from "../_types";
+import { ArtistInfo, formatDuration } from "../_types";
+import Image from "next/image";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INDEX CELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -51,15 +50,13 @@ function TrackIndexCell({ index, isActive, isPlaying, onPlay, onPause }: {
       {/* 播放中：频谱动画 */}
       {isActive && isPlaying && (
         <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
-          {[0, 0.2, 0.4].map((delay, i) => (
-            <motion.div
-              key={i}
-              className="w-0.5 bg-[#1DB954] rounded-full"
-              animate={{ scaleY: [0.4, 1, 0.4] }}
-              transition={{ duration: 0.8, repeat: Infinity, delay, ease: "easeInOut" }}
-              style={{ height: "100%", originY: 1 }}
-            />
-          ))}
+          <Image
+            src={SPOTIFYANIME}
+            alt="Playing"
+            width={14}
+            height={14}
+            unoptimized
+          />
         </div>
       )}
 
@@ -81,14 +78,13 @@ function TrackIndexCell({ index, isActive, isPlaying, onPlay, onPause }: {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TRACK ITEM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 interface Props {
-  track: Track;
+  track: SongDetail;
   index: number;
-  /** 完整队列，用于 setQueue */
   queue: SongDetail[];
   artist: ArtistInfo;
 }
 
-export const PopularTrackItem = memo(function PopularTrackItem({ track, index, queue, artist }: Props) {
+export const PopularTrackItem = memo(function PopularTrackItem({ track, index, queue }: Props) {
   // ── store ──
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
@@ -96,7 +92,7 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
   const setQueue = usePlayerStore((s) => s.setQueue);
   const playTrack = usePlayerStore((s) => s.playTrack);
   const likeListIDs = useUserStore((s) => s.likeListIDs);
-  const playlists = useUserStore((s: any) => s.playlist) as NeteasePlaylist[];
+  const playlists = useUserStore((s) => s.playlist) as NeteasePlaylist[];
   const isLoggedIn = useLoginStatus();
 
   // ── derived ──
@@ -112,6 +108,7 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
     if (isActive) { setIsPlaying(true); return; }
     if (queue.length > 0) setQueue(queue, index);
     playTrack(queue[index] || pruneSongDetail(track.raw));
+    console.log("Playing track:", track.title, "with cover", track.coverUrl);
   }, [isActive, queue, index, track, setIsPlaying, setQueue, playTrack]);
 
   const handlePause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
@@ -137,6 +134,7 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
 
   const handleAddToQueue = useCallback(() => {
     const state = usePlayerStore.getState();
+    console.log("track info", track);
     const detail = queue[index] || pruneSongDetail(track.raw);
     if (state.queue.some((t) => t.id === track.id)) {
       toast.info("Song is already in the queue");
@@ -146,7 +144,8 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
     toast.success("Added to playback queue");
   }, [queue, index, track]);
 
-  const fallbackImg = artist.avatar || artist.headerImageUrl;
+
+  // console.log("Track Data:", track);
 
   return (
     <ContextMenu>
@@ -170,17 +169,17 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
               onPlay={handlePlay}
               onPause={handlePause}
             />
-            <img
-              src={track.coverUrl || fallbackImg}
-              alt={track.title}
+            <Image
+              width={40} height={40}
+              src={track.al.picUrl || track.al.coverUrl || ""}
+              alt={track.name}
               className="w-10 h-10 object-cover rounded shrink-0"
-              onError={(e) => { (e.currentTarget as HTMLImageElement).src = fallbackImg; }}
             />
             <span className={cn(
               "font-medium truncate max-w-50 md:max-w-xs",
               isActive ? "text-[#1DB954]" : "text-white"
             )}>
-              {track.title}
+              {track.name}
             </span>
           </div>
 
@@ -194,11 +193,11 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
                 liked={isLiked}
                 likedCount={0}
                 onLike={() => handleLike(!isLiked)}
-                iconClassName="w-4 h-4"
+                iconClassName="w-4.5 h-4.5"
               />
             </div>
             <span className="w-10 text-right tabular-nums">
-              {formatDuration(track.durationMs)}
+              {formatDuration(track.dt)}
             </span>
           </div>
         </div>
@@ -247,7 +246,7 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
                   }}
                   className="focus:bg-white/10 focus:text-white"
                 >
-                  <img src={p.coverImgUrl} alt="cover" className="w-7 h-7 rounded-sm mr-2" />
+                  <Image width={28} height={28} src={p.coverImgUrl} alt="cover" className="w-7 h-7 rounded-sm mr-2" />
                   {p.name}
                 </ContextMenuItem>
               ))}

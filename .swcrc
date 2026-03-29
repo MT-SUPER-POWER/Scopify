@@ -2,21 +2,14 @@
   "jsc": {
     "parser": {
       "syntax": "typescript",
-      "tsx": false,
       "decorators": true,
       "dynamicImport": true
     },
-    "target": "es2020",
-    "keepClassNames": true,
-    "baseUrl": ".",
-    "paths": {}
+    "target": "es2022",
+    "keepClassNames": true
   },
   "module": {
-    "type": "commonjs",
-    "strict": true,
-    "strictMode": true,
-    "lazy": false,
-    "noInterop": false
-  },
-  "sourceMaps": true
+    "type": "es6",
+    "strict": true
+  }
 }

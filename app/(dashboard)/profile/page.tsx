@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, ChevronDown } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import TracklistTable from "@/components/Playlist/TrackTable";
@@ -16,7 +16,7 @@ import { UserActionBar } from './_components/Useractionbar';
 export default function UserProfilePage() {
   const uid = useSearchParams().get("userId");
   const router = useSmartRouter();
-  const [playlistsOpen, setPlaylistsOpen] = useState(false);
+  const [playlistsOpen, setPlaylistsOpen] = useState(true);
 
   const {
     userInfo, playlists,
@@ -25,7 +25,7 @@ export default function UserProfilePage() {
   } = useUserData(uid);
 
   if (!uid)
-    return <div className="p-8 text-white h-screen bg-[#121212]">Invalid User ID</div>;
+    return <div className="p-8 text-white h-full bg-[#121212]">Invalid User ID</div>;
 
   if (isLoading || !userInfo)
     return (
@@ -87,7 +87,7 @@ export default function UserProfilePage() {
             className="flex items-center gap-2 mb-6 group"
           >
             <h2 className="text-2xl font-bold group-hover:underline">Public Playlists</h2>
-            <ChevronDown
+            <ChevronUp
               className={cn(
                 "w-5 h-5 text-zinc-400 transition-transform duration-200",
                 playlistsOpen && "rotate-180"

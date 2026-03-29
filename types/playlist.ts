@@ -6,6 +6,7 @@ export interface PlaylistInfo {
     cover: string | null;
     createTime: string;
     creator: string;
+    creatorID?: number | string | null;
     creatorAvatar: string;
     likes: number | string;
     totalSongs: number;

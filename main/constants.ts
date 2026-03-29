@@ -1,11 +1,23 @@
+import { fileURLToPath } from "node:url";
+import path, { dirname, join } from "node:path";
+
+// ━━━━━━━━━━━━━━━━ ESM 路径兼容 ━━━━━━━━━━━━━━━━
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPLASH ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 // 启动页 HTML 路径和内容统一管理
-export const __splashHtmlPath = join(__dirname, "../../resources/splash.html");
+export const __splashHtmlPath = app.isPackaged ?
+  join(process.resourcesPath, "resources/splash.html") :
+  join(__dirname, "../../resources/splash.html");
+
 export const __splashHtmlDesc = "[SPLASH] Electron 启动页: " + __splashHtmlPath;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { join } from "path";
 import { app, nativeImage } from "electron";
 import log from "electron-log";
 import { appConfigDefaultPath, appConfigPath, loadAppConfig } from "./config.js";
@@ -44,6 +56,19 @@ export const next = nativeImage.createFromPath(join(__picDir, "tray/next.png"));
 export const pause = nativeImage.createFromPath(join(__picDir, "tray/pause.png"));
 export const prev = nativeImage.createFromPath(join(__picDir, "tray/prev.png"));
 export const play = nativeImage.createFromPath(join(__picDir, "tray/play.png"));
+
+if (next.isEmpty()) {
+  log.error(`[Thumbar] Failed to load next icon: ${join(__picDir, "tray/next.png")}`);
+}
+if (pause.isEmpty()) {
+  log.error(`[Thumbar] Failed to load pause icon: ${join(__picDir, "tray/pause.png")}`);
+}
+if (prev.isEmpty()) {
+  log.error(`[Thumbar] Failed to load prev icon: ${join(__picDir, "tray/prev.png")}`);
+}
+if (play.isEmpty()) {
+  log.error(`[Thumbar] Failed to load play icon: ${join(__picDir, "tray/play.png")}`);
+}
 
 // utils
 const configStr = JSON.stringify(appConfig, null, 2)
@@ -90,7 +115,7 @@ export function cleanOldLogs() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKEND ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const __backendDir = app.isPackaged ?
-  join(process.resourcesPath, "/backend/api-enhanced") :
+  join(process.resourcesPath, "/backend") :
   join(__dirname, "../../backend/api-enhanced");
 const __backendEntry = join(__backendDir, "app.js");
 
@@ -133,6 +158,7 @@ log.info(`
   Backend Entry:  ${__backendEntry}
   Splash HTML:    ${__splashHtmlPath}
   Renderer Dir:   ${__rendererDir}
+  PIC DIR:        ${__picDir}
   --------------------------------------------------
 `);
 

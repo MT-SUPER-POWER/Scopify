@@ -1,38 +1,33 @@
 import { BrowserWindow } from "electron";
-import { prev, pause, next, play } from "../constants";
+import { prev, pause, next, play } from "../constants.js";
 
-// 抽离更新逻辑，接收状态作为参数
 export function updateThumbarButtons(mainWindow: BrowserWindow, isPlaying: boolean) {
-  // 必须每次传入完整的数组
   mainWindow.setThumbarButtons([
     {
       tooltip: 'Play Previous',
       icon: prev,
       click() {
-        console.log('Previous clicked');
         mainWindow.webContents.send('control-audio', 'prev');
       }
     },
     {
-      tooltip: isPlaying ? 'Pause' : 'Play', // 语义化提示
-      icon: isPlaying ? pause : play,       // 动态切换图标
+      tooltip: isPlaying ? 'Pause' : 'Play',
+      icon: isPlaying ? pause : play,
       click() {
-        // 通知渲染进程（你的 React/NextJS 前端）执行实际的暂停/播放
-        mainWindow.webContents.send('control-audio', isPlaying ? 'pause' : 'play');
+        // 不要传具体的播放/暂停状态，防止由于 IPC 延迟导致状态两边对不上账
+        mainWindow.webContents.send('control-audio', 'toggle-play');
       }
     },
     {
       tooltip: 'Play Next',
       icon: next,
       click() {
-        console.log('Next clicked');
         mainWindow.webContents.send('control-audio', 'next');
       }
     },
   ]);
 }
 
-// 初始化调用
 export function initThumbarButtons(mainWindow: BrowserWindow) {
   updateThumbarButtons(mainWindow, false);
 }

@@ -39,8 +39,9 @@ export default function PlaylistPage() {
       ...playlistInfo,
       // 歌曲总数实时跟随当前的 albumList 长度
       totalSongs: albumList ? albumList.length : playlistInfo.totalSongs,
-      // 封面实时跟随第一首歌的封面（网易云默认逻辑）。如果列表被删空了，保留原有封面
-      cover: (albumList && albumList.length > 0) ? albumList[0].al?.picUrl : playlistInfo.cover,
+      // DEBUG: 如果未来更新歌单内容，封面没有发生变化，到这里看看
+      // 特别是没有默认封面的那种
+      cover: playlistInfo.cover,
     };
   }, [playlistInfo, albumList, isLoading]);
 
@@ -106,7 +107,6 @@ export default function PlaylistPage() {
             />
           )}
         </div>
-
       </div>
     </div>
   );

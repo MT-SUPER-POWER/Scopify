@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Play, Pause } from "lucide-react";
 import { LikeButton } from "@/components/ui/LikeButton";
@@ -10,6 +10,8 @@ import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { likeSong } from "@/lib/api/playlist";
 import { useUserStore } from "@/store";
 import { toast } from "sonner";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { SongDetail } from "@/types/api/music";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件: 序号与播放状态 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -28,6 +30,7 @@ function TrackIndexCell({ index, isActive, isPlaying, onPlay, setIsPlaying }: {
 
       {isActive && isPlaying && (
         <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
+          {/* NOTE: Spotify 频谱动画组件 */}
           <Image
             src={SPOTIFYANIME}
             alt="Playing"
@@ -62,16 +65,16 @@ function TrackIndexCell({ index, isActive, isPlaying, onPlay, setIsPlaying }: {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件: 单行数据 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export interface TrackRowProps {
-  track: any;
+  track: SongDetail;
   index: number;
   isActive: boolean;
   isPlaying: boolean;
   isLiked: boolean;
   playlistID: string | null;
-  onPlay: (track: any) => void;
+  onPlay: (track: SongDetail) => void;
   onRequestDelete: (playlistId: number | string, trackId: number) => void;
   setIsPlaying: (v: boolean) => void;
-  onContextMenu: (track: any) => void;
+  onContextMenu: (track: SongDetail) => void;
   hideDateColumn?: boolean;
   hideLikeColumn?: boolean;
   onLikeToggle?: (trackID: number | string) => void;
@@ -88,7 +91,7 @@ export const TrackRow = memo(function TrackRow({
   const handleLike = useCallback(async (nextLiked: boolean) => {
     try {
       await likeSong(track.id, nextLiked);
-      const store = useUserStore.getState() as any;
+      const store = useUserStore.getState();
       const current = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
 
       // 1. 本地乐观更新
@@ -104,7 +107,7 @@ export const TrackRow = memo(function TrackRow({
       console.error("Failed to toggle like:", error);
     }
   }, [track]);
-
+  const smartRouter = useSmartRouter();
   return (
     <TableRow
       className={cn("group hover:bg-white/10 border-none transition-colors cursor-default", isActive && "text-[#1ed760]")}
@@ -124,15 +127,32 @@ export const TrackRow = memo(function TrackRow({
             <span title={track.name} className={cn("text-base font-normal truncate group-hover:underline cursor-pointer", isActive ? "text-[#1ed760]" : "text-white")}>
               {track.name}
             </span>
-            <span title={track.ar.map((a: any) => a.name).join(", ")} className="text-zinc-400 text-sm hover:text-white hover:underline cursor-pointer truncate">
-              {track.ar.map((a: any) => a.name).join(", ")}
+            <span className="text-zinc-400 text-sm mt-0.5 font-normal truncate cursor-pointer">
+              {track.ar.slice(0, 2).map((a, idx, arr) => (
+                <span
+                  key={a.id}
+                  onClick={e => {
+                    e.stopPropagation();
+                    smartRouter.push(`/artist?id=${a.id}`);
+                  }}
+                  title={`/artist?id=${a.id}`}
+                  className="hover:underline hover:text-white"
+                  style={{ display: "inline" }}
+                >
+                  {a.name}{idx < arr.length - 1 ? ', ' : ''}
+                </span>
+              ))}
             </span>
           </div>
         </div>
       </TableCell>
 
       <TableCell className="hidden md:table-cell max-w-0">
-        <span title={track.al.name} className="hover:text-white hover:underline cursor-pointer block truncate">{track.al.name}</span>
+        <span title={track.al.name} className="hover:text-white hover:underline cursor-pointer block truncate">
+          <button onClick={() => { smartRouter.push(`/album?id=${track.al.id}`); }}>
+            {track.al.name}
+          </button>
+        </span>
       </TableCell>
 
       {!hideDateColumn && (
@@ -146,7 +166,6 @@ export const TrackRow = memo(function TrackRow({
           <div className="w-full h-full flex justify-center">
             <LikeButton
               liked={isLiked}
-              likedCount={track.popularity || 0}
               onLike={() => {
                 handleLike(!isLiked);
               }}

@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { PlaylistInfo } from "@/types/playlist";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 
 // 日历封面直接内聚在用到它的地方即可
 const DailyCalendarCover = () => {
@@ -17,7 +18,7 @@ const DailyCalendarCover = () => {
       <div className="h-[22%] bg-linear-to-b from-[#e34242] to-[#c42b2b] flex items-center justify-center border-b border-black/10">
         <span className="text-white text-lg md:text-xl font-medium tracking-widest">{dayOfWeek}</span>
       </div>
-      <div className="flex-1 relative flex items-center justify-center bg-linear-to-b from-momo-light from-[45%] to-[#e6e6e6] to-[45%]">
+      <div className="flex-1 relative flex items-center justify-center bg-linear-to-b from-momo-light from-45% to-[#e6e6e6] to-45%">
         <div className="absolute top-[45%] left-0 w-full h-0.5 bg-black/5 shadow-[0_1px_1px_rgba(255,255,255,0.8)] -translate-y-1/2" />
         <span className="text-7xl md:text-8xl font-black text-[#2a2a2a] font-sans z-10 tracking-tighter -mt-3">{dateNum}</span>
       </div>
@@ -31,6 +32,11 @@ interface PlaylistHeaderProps {
 }
 
 const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
+  // DEBUG: Playlist Header
+  console.log("PlaylistHeader received props:", { info, isDaily });
+
+  const smartRouter = useSmartRouter();
+
   return (
     <div className="relative z-10 flex flex-col md:flex-row items-start gap-6 px-6 pt-24 pb-6">
       {/* 封面区 */}
@@ -38,7 +44,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         {isDaily || !info.cover ? (
           <DailyCalendarCover />
         ) : (
-          <Image width={300} height={300} src={info.cover} alt={info.title} className="w-full h-full object-cover" />
+          <Image width={400} height={400} src={info.cover} alt={info.title} className="w-full h-full object-cover" />
         )}
       </div>
 
@@ -68,7 +74,13 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
                 ) : (
                   <div className="w-7 h-7 rounded-full bg-zinc-600 flex items-center justify-center text-xs font-bold"> M </div>
                 )}
-                <span className="font-bold group-hover:underline text-[15px]">{info.creator}</span>
+                <span className="font-bold group-hover:underline text-[15px]">
+                  <button onClick={() => {
+                    if (info.creatorID !== null) { smartRouter.push(`/profile?userId=${info.creatorID}`); }
+                  }}>
+                    {info.creator}
+                  </button>
+                </span>
               </div>
               <span className="opacity-60 hidden sm:inline">•</span>
               <span>{info.createTime} 创建</span>

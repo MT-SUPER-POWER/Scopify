@@ -252,6 +252,7 @@ export const usePlayerStore = create<PlayerStore>()(
             nextIndex = queueIndex;
           } else {
             set({ isPlaying: false });
+            toast.success("You've reached the end of the queue");
             return;
           }
         }
@@ -337,19 +338,3 @@ export const usePlayerStore = create<PlayerStore>()(
     }
   )
 );
-
-// 跨窗口同步
-if (typeof window !== "undefined") {
-  window.addEventListener("storage", (e) => {
-    if (e.key === "player-storage" && e.newValue) {
-      try {
-        const newState = JSON.parse(e.newValue);
-        if (newState && newState.state) {
-          usePlayerStore.setState(newState.state);
-        }
-      } catch (error) {
-        console.error("同步跨窗口 Zustand 状态失败", error);
-      }
-    }
-  });
-}

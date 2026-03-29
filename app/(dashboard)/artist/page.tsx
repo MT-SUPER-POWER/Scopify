@@ -3,7 +3,6 @@
 import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-
 import { useArtistData } from "./_hooks/useArtistData";
 import { useArtistPlay } from "./_hooks/useArtistPlay";
 import { ArtistHero } from './_components/Artisthero';
@@ -19,6 +18,8 @@ export default function ArtistPage() {
 
   const { artist, popularTracks, hotTracksQueue, discography, isLoading } = useArtistData(artistId);
   const { isPlayingArtist, loadingAlbumId, handlePlayArtist, handlePlayAlbum } = useArtistPlay(hotTracksQueue);
+
+  // console.log("Artist Data:", { artist, popularTracks, hotTracksQueue });
 
   if (!artistId)
     return <div className="p-8 text-white h-screen bg-[#121212]">Invalid Artist ID</div>;

@@ -5,9 +5,8 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { NeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
 import { pruneSongDetail, RawSongDetail, SongDetail } from "@/types/api/music";
 import { NeteaseUser, pruneUser } from "@/types/api/user";
-
-
 import { NeteaseUserAlbum } from "@/types/api/release";
+import { IS_ELECTRON } from "@/lib/utils";
 
 type UserStore = {
   user: NeteaseUser | null;
@@ -99,3 +98,18 @@ export const useUserStore = create<UserStore>()(
     }
   )
 );
+
+if (IS_ELECTRON) {
+  window.addEventListener("storage", (e) => {
+    if (e.key === "user-storage" && e.newValue) {
+      try {
+        const newState = JSON.parse(e.newValue);
+        if (newState && newState.state) {
+          useUserStore.setState(newState.state);
+        }
+      } catch (error) {
+        console.error("同步跨窗口 UserStore 状态失败", error);
+      }
+    }
+  });
+}

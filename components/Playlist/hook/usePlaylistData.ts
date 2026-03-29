@@ -62,6 +62,7 @@ export function usePlaylist() {
           const res: any = await getPlaylsitDetail({ id: playlistId as string, cookie: isRecommend ? cookie : undefined });
           if (ignore) return;
           const playlist = res.data.playlist;
+          // console.log("Playlist Info:", res.data);
           setRawDetail(playlist);
           useUserStore.getState().setAlbumList(playlist.tracks || []);
         }
@@ -83,6 +84,8 @@ export function usePlaylist() {
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (!rawDetail) return null;
 
+    console.log("Deriving playlistInfo from rawDetail:", rawDetail);
+
     if (isDailyRecommend) {
       return {
         isSpecial: true,
@@ -92,6 +95,7 @@ export function usePlaylist() {
         cover: null,
         createTime: new Date().toLocaleDateString(),
         creator: "Spotify",
+        creatorID: null,
         creatorAvatar: "",
         likes: "-",
         totalSongs: rawDetail.trackCount ?? 0,
@@ -103,9 +107,10 @@ export function usePlaylist() {
       privacy: rawDetail.privacy === 0 ? "Public Playlist" : rawDetail.privacy === 10 ? "Private Playlist" : "Unknown Privacy",
       tags: rawDetail.tags ?? [],
       title: rawDetail.name ?? "Unknown",
-      cover: rawDetail.coverImgUrl ?? `https://picsum.photos/300/300?random=123`,
+      cover: rawDetail.coverImgUrl ?? `https://picsum.photos/400/400?random=123`,
       createTime: rawDetail.createTime ? new Date(rawDetail.createTime).toLocaleDateString() : "Unknown Date",
       creator: rawDetail.creator?.nickname ?? "Unknown User",
+      creatorID: rawDetail.creator?.userId ?? null,
       creatorAvatar: rawDetail.creator?.avatarUrl ?? "",
       likes: rawDetail.subscribedCount ?? 0,
       totalSongs: rawDetail.trackCount ?? 0,

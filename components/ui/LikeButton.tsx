@@ -1,16 +1,16 @@
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { Heart } from "lucide-react";
 import React from "react";
 import { cn } from "@/lib/utils";
 
 interface LikeButtonProps {
   liked: boolean;
-  likedCount: number;
+  likedCount?: number;
   onLike: () => void;
   iconClassName?: string;
 }
 
-export const LikeButton: React.FC<LikeButtonProps> = ({ liked, likedCount, onLike, iconClassName }) => (
+export const LikeButton: React.FC<LikeButtonProps> = ({ liked, onLike, iconClassName }) => (
   <motion.button
     onClick={onLike}
     className={cn(
@@ -19,20 +19,6 @@ export const LikeButton: React.FC<LikeButtonProps> = ({ liked, likedCount, onLik
     )}
     whileTap={{ scale: 0.85 }}
   >
-    <AnimatePresence mode="popLayout">
-      {likedCount > 0 && (
-        <motion.span
-          key={likedCount}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.2 }}
-          className="text-xs tabular-nums"
-        >
-          {likedCount.toLocaleString()}
-        </motion.span>
-      )}
-    </AnimatePresence>
     <div className="relative">
       <motion.div
         animate={

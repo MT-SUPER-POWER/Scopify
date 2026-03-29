@@ -8,7 +8,6 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
-
 import { cn, formatDuration } from "@/lib/utils";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { usePlayerStore, useUserStore } from "@/store";
@@ -227,7 +226,7 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
           </div>
 
           {/* Like 按钮 */}
-          <div className="flex-shrink-0 hidden sm:flex items-center">
+          <div className="shrink-0 hidden sm:flex items-center">
             <LikeButton
               liked={isLiked}
               likedCount={0}
@@ -237,7 +236,7 @@ export const SongItem = memo(function SongItem({ song, index, songs }: SongItemP
           </div>
 
           {/* 时长 */}
-          <div className="flex-shrink-0 w-12 text-right text-zinc-400 text-sm">
+          <div className="shrink-0 w-12 text-right text-zinc-400 text-sm">
             {formatDuration(song.duration)}
           </div>
         </div>
