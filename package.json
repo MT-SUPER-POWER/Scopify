@@ -15,7 +15,10 @@
   "workspaces": [
     "backend/api-enhanced"
   ],
-  "homepage": "https://github.com/MT-SUPER-POWER",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MT-SUPER-POWER/Scopify.git"
+  },
   "type": "module",
   "main": "out/main/main.js",
   "description": "Electron + Next.js Music Player Base on NetEase Music API",
@@ -103,6 +106,9 @@
   "build": {
     "appId": "com.momo.scopify",
     "productName": "Scopify",
+    "publish": [
+      "github"
+    ],
     "artifactName": "${productName}.Setup.v${version}.${platform}.${arch}.${ext}",
     "directories": {
       "output": "dist"
@@ -142,8 +148,7 @@
     ],
     "win": {
       "target": [
-        "nsis",
-        "zip"
+        "nsis"
       ],
       "icon": "resources/icon.ico",
       "requestedExecutionLevel": "asInvoker"
