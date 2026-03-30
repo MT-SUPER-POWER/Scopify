@@ -1,0 +1,80 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*" # 推送 v 开头的 tag 时触发 (例如 v1.0.2)
+
+permissions:
+  contents: write # 赋予创建 Release 和上传附件的权限
+
+jobs:
+  # 阶段一：提取日志并创建 Release
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        # 这里只需要主仓库的 CHANGE.MD，不需要拉取子模块代码，保持默认即可
+
+      # 使用抽离出的独立脚本提取更新日志
+      - name: Extract Changelog
+        run: python script/extract-changelog.py
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.txt
+          draft: false
+          prerelease: false
+
+  # 阶段二：使用 Matrix 策略跨平台构建并上传
+  build-app:
+    needs: create-release
+    strategy:
+      fail-fast: false # 禁用 fail-fast，防止一个平台失败导致全盘取消，便于排查兼容性问题
+      matrix:
+        os: [windows-latest, macos-latest]
+        include:
+          - os: windows-latest
+            build_target: --win
+          - os: macos-latest
+            build_target: --mac
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive # 编译阶段必须在这里拉取子模块代码
+
+      # 保留 Node.js 基础环境供 electron-builder 底层调用，但移除会导致报错的 cache: "npm"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # 配置 Bun 环境
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # 统一使用 Bun 安装依赖（配合 package.json 的 workspaces 自动安装前后端依赖）
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Build Backend
+        run: bun run build:backend
+
+      - name: Build Next.js
+        run: bun run build:web
+
+      - name: Compile Main Process
+        run: |
+          bunx swc main -d out --out-file-extension js --ignore main/preload.ts
+          bun run script/build-electron.ts
+
+      - name: Build & Publish Electron
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bunx electron-builder ${{ matrix.build_target }} --publish always

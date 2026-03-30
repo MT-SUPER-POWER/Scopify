@@ -107,8 +107,8 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
   const handlePlay = useCallback(() => {
     if (isActive) { setIsPlaying(true); return; }
     if (queue.length > 0) setQueue(queue, index);
-    playTrack(queue[index] || pruneSongDetail(track.raw));
-    console.log("Playing track:", track.title, "with cover", track.coverUrl);
+    playTrack(queue[index] || pruneSongDetail(track));
+    console.log("Playing track:", track.al.name, "with cover", track.al.picUrl);
   }, [isActive, queue, index, track, setIsPlaying, setQueue, playTrack]);
 
   const handlePause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
@@ -135,7 +135,7 @@ export const PopularTrackItem = memo(function PopularTrackItem({ track, index, q
   const handleAddToQueue = useCallback(() => {
     const state = usePlayerStore.getState();
     console.log("track info", track);
-    const detail = queue[index] || pruneSongDetail(track.raw);
+    const detail = queue[index] || pruneSongDetail(track);
     if (state.queue.some((t) => t.id === track.id)) {
       toast.info("Song is already in the queue");
       return;

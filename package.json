@@ -12,6 +12,9 @@
       "email": "1740627301@qq.com"
     }
   ],
+  "workspaces": [
+    "backend/api-enhanced"
+  ],
   "homepage": "https://github.com/MT-SUPER-POWER",
   "type": "module",
   "main": "out/main/main.js",
@@ -24,9 +27,9 @@
     "web": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"next dev\" \"bun run backend\"",
     "build:backend": "bun build backend/api-enhanced/app.js --target=node --outfile=out/backend/app.js",
     "build:web": "next build",
-    "predev": "npx swc main -d out --out-file-extension js --ignore main/preload.ts && bun script/build-electron.ts",
-    "build:win": "npm run build:backend && npm run build:web && npx swc main -d out --out-file-extension js --ignore main/preload.ts && bun script/build-electron.ts && electron-builder -- win",
-    "build:mac": "npm run build:backend && npm run build:web && npx swc main -d out --out-file-extension js --ignore main/preload.ts && bun script/build-electron.ts && electron-builder -- mac"
+    "predev": "bun script/build-electron.ts",
+    "build:win": "bun run build:backend && bun run build:web && bun script/build-electron.ts && electron-builder -- win",
+    "build:mac": "bun run build:backend && bun run build:web && bun script/build-electron.ts && electron-builder -- mac"
   },
   "dependencies": {
     "axios": "^1.13.6",
@@ -35,6 +38,12 @@
     "js-yaml": "^4.1.1"
   },
   "devDependencies": {
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toast": "^1.2.15",
+    "framer-motion": "^12.38.0",
     "@applemusic-like-lyrics/core": "^0.2.0",
     "@applemusic-like-lyrics/lyric": "^0.3.0",
     "@applemusic-like-lyrics/react": "^0.2.0",
@@ -45,10 +54,6 @@
     "@pixi/filter-bulge-pinch": "^5.1.1",
     "@pixi/filter-color-matrix": "^7.4.3",
     "@pixi/sprite": "^7.4.3",
-    "@radix-ui/react-label": "^2.1.8",
-    "@radix-ui/react-slot": "^1.2.4",
-    "@radix-ui/react-tabs": "^1.1.13",
-    "@radix-ui/react-toast": "^1.2.15",
     "@swc/cli": "^0.8.0",
     "@swc/core": "^1.15.18",
     "@tabler/icons-react": "^3.38.0",
@@ -137,14 +142,16 @@
     ],
     "win": {
       "target": [
-        "dir"
+        "nsis",
+        "zip"
       ],
       "icon": "resources/icon.ico",
       "requestedExecutionLevel": "asInvoker"
     },
     "mac": {
       "target": [
-        "dir"
+        "zip",
+        "dmg"
       ],
       "icon": "resources/icon.icns",
       "category": "public.app-category.music",
