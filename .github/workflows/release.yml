@@ -1,0 +1,78 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*" # 例如 v1.0.4
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        include:
+          - os: windows-latest
+            build_target: --win
+          - os: macos-latest
+            build_target: --mac
+
+    steps:
+      # 🟢 拉代码
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # 🟢 Node 24（避免未来炸）
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # 🟢 Bun
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # 🟢 安装依赖
+      - name: Install Dependencies
+        run: bun install
+
+      # 🟢 提取 changelog（输出 release_notes.md）
+      - name: Extract Changelog
+        run: python script/extract-changelog.py
+
+      # 🟢 构建
+      - name: Build Backend
+        run: bun run build:backend
+
+      - name: Build Next.js
+        run: bun run build:web
+
+      - name: Compile Main Process
+        run: |
+          bunx swc main -d out --out-file-extension js --ignore main/preload.ts
+          bun run script/build-electron.ts
+
+      # 🟢 核心：构建 + 自动创建 release + 上传 assets
+      - name: Build & Publish Electron
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bunx electron-builder ${{ matrix.build_target }} --publish always
+
+      # 🟢 只执行一次：写入 changelog
+      - name: Update Release Notes
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit ${{ github.ref_name }} \
+            --notes-file release_notes.md
