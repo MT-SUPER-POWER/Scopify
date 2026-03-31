@@ -3,7 +3,7 @@
 <h2> Scopify </h2>
 <p> 一个仿 Spotify UI 的音乐播放器 </p>
 
-[后端 API](https://vdoonnridu.apifox.cn/) | [发行版](https://github.com/MT-SUPER-POWER/Scopify/releases) | [版本日志](https://github.com/MT-SUPER-POWER/Scopify/doc/CHANGE.log)
+[后端 API](https://vdoonnridu.apifox.cn/) | [发行版](https://github.com/MT-SUPER-POWER/Scopify/releases) | [版本日志](https://github.com/MT-SUPER-POWER/Scopify/blob/master/doc/CHANGE.MD)
 
 <br/>
 
@@ -50,20 +50,21 @@
 
 ## 部署方法
 
+> [!note]
+> 等待后续有时间，我会直接做一个 img 直接部署我们的业务，目前虽然比较繁琐，但是还是这么来吧
+
 ### 前端的部署方法
 
 ```bash
 # 安装前端
 git clone https://github.com/MT-SUPER-POWER/Scopify.git
 cd Scopify
-npm install
 
-# 安装后端
-cd backend/api-enhanced
-git clone https://github.com/MT-SUPER-POWER/api-enhanced
-npm install
+git submodule update --init --cursive
+bun install
 
-npm run dev  # 开发模式：运行 next.js 和 electron
+bun run web  # 开发模式：纯粹网页端
+bun run dev  # 开发模式：运行 next.js 和 electron
 ```
 
 ### 后端的部署方法
@@ -76,8 +77,8 @@ npm run dev  # 开发模式：运行 next.js 和 electron
 
 1. 下载项目，进入项目打包 image
 
-   > [!note]
-   > 打包 image 的过程中，如果有 `url.parse()` 出现的报错暂且不理会就好
+> [!note]
+> 打包 image 的过程中，如果有 `url.parse()` 出现的报错暂且不理会就好
 
 ```bash
 git clone https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced
@@ -94,9 +95,14 @@ make netease_status   # 查看状态
 make netease_undeploy # 卸载
 ```
 
-3. 记得修改 `config/app.config.yml` 中的后端地址为你部署的地址，`autoStart` 设置为 `false`，因为我们已经自己部署了后端了
+3. 你也可以直接 vercel 部署
 
-4. `electron-builder` 的配置文件，去掉 `extraResources` 中的后端相关配置
+打开我们的 `fix/compatible` 分支，然后把这个分支直接拷贝到 vercel 上面，你就可以拿到一个 vercel 的服务端了，只要你注册好账号，默认端口就是 3000，如果需要改动配置，可以修改 `.env` 文件
+
+
+4. 记得修改 `config/app.config.yml` 中的后端地址为你部署的地址，`autoStart` 设置为 `false`。
+
+5. 如果你还需要打包自己的客户端，`electron-builder` 的配置文件，去掉 `extraResources` 中的关于 `api-enhanced` 的后端相关配置。
 
 #### 2. 使用现成的后端
 
@@ -109,7 +115,7 @@ cd backend/api-enhanced
 npm install
 ```
 
-我们程序里面是打包了一个后端一起部署的，默认地址地址是 `localhost:5252`，如果你不需要自己部署后端，在 `config/app.config.yml` 吧 `autoStart` 设置为 `true` 就好。
+我们程序里面是打包了一个后端一起部署的，默认地址地址是 `localhost:5252`，如果你没有自己部署后端的需求。请保持 `config/app.config.yml` 的 `autoStart` 设置为 `true` 。
 
 ### 本地部署
 
@@ -217,7 +223,7 @@ npm install
 
 ## 版本号规则
 
-> 版本号的发布规则 `x,y,z`
+> 版本号的发布规则 `x.y.z`
 
 - `x`: 重大更新，可能包含不兼容的 API 修改
 - `y`: 次要更新，添加了新功能，但保持向后兼容
