@@ -17,8 +17,8 @@
 
 ## 简介
 
-这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，主要是为了练习前端 UI 和 Electron 的开发。
-后端的 API 部分我们直接使用了现成的开源项目，部署也比较简单。
+这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
+
 
 - 本项目主要技术链为 [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [ShadCN UI](https://ui.shadcn.com/) + [Electron](https://www.electronjs.org/zh/docs/latest/)
 - Node.js 版本要求：>= 20，包管理器：bun >= 1.3.7
