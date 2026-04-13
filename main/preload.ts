@@ -1,11 +1,18 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { ElectronAPI } from "@/types/electron";
+import type { BackendStartupStatus } from "@/types/backend";
 
 // NOTE: 写好了接口，记得在 types/electron.d.ts 中声明类型
 const electronAPI: ElectronAPI = {
   relaunchApp: () => { ipcRenderer.send("relaunch-app"); },
   on: (channel, callback) => { ipcRenderer.on(channel, callback); },
-  off: (channel) => { ipcRenderer.removeAllListeners(channel); },
+  off: (channel, callback) => {
+    if (callback) {
+      ipcRenderer.removeListener(channel, callback as (...args: any[]) => void);
+      return;
+    }
+    ipcRenderer.removeAllListeners(channel);
+  },
   send: (channel, args) => { ipcRenderer.send(channel, args); },
   enterFullScreen: () => ipcRenderer.send("window-enter-full-screen"),
   exitFullScreen: () => ipcRenderer.send("window-exit-full-screen"),
@@ -20,6 +27,7 @@ const electronAPI: ElectronAPI = {
   sendAppCloseAction: (action: "minimize" | "exit") => { ipcRenderer.send("app-close-action", action); },
   getAppConfig: () => ipcRenderer.invoke("get-app-config"),
   updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
+  getBackendStatus: () => ipcRenderer.invoke("backend:get-status"),
   setCookie: (cookieStr: string) => ipcRenderer.invoke("set-music-cookie", cookieStr),
   navigateTo: (path: string) => ipcRenderer.send("navigate-main-window", path),
   // window.addEventListener("message", callback)
@@ -29,6 +37,11 @@ const electronAPI: ElectronAPI = {
   loginSuccess: () => ipcRenderer.send("login-success"),
   onControlAudio: (callback) => {
     ipcRenderer.on('control-audio', (_event, action) => { callback(action); });
+  },
+  onBackendStatusChanged: (callback) => {
+    ipcRenderer.on("backend-status-changed", (_event, status: BackendStartupStatus) => {
+      callback(status);
+    });
   },
 };
 

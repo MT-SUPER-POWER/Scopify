@@ -19,7 +19,6 @@
 
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
 
-
 - 本项目主要技术链为 [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [ShadCN UI](https://ui.shadcn.com/) + [Electron](https://www.electronjs.org/zh/docs/latest/)
 - Node.js 版本要求：>= 20，包管理器：bun >= 1.3.7
 - 支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配
@@ -98,7 +97,6 @@ make netease_undeploy # 卸载
 3. 你也可以直接 vercel 部署
 
 打开我们的 `fix/compatible` 分支，然后把这个分支直接拷贝到 vercel 上面，你就可以拿到一个 vercel 的服务端了，只要你注册好账号，默认端口就是 3000，如果需要改动配置，可以修改 `.env` 文件
-
 
 4. 记得修改 `config/app.config.yml` 中的后端地址为你部署的地址，`autoStart` 设置为 `false`。
 
@@ -220,6 +218,9 @@ npm install
 - 播放的一些 web 快捷键适配
 - 歌手页面的做一个全部歌曲折叠展示，就 10 首有点少了
 - 专辑页面的内容去抓网易的接口，防止封面数据定死的问题
+- Electron 代理可选功能
+- 如果是没有联网导致的请求失败，我们多做一个刷新按钮，提示用户刷新页面
+- 封面的播放接口，没有效果
 
 ## 版本号规则
 

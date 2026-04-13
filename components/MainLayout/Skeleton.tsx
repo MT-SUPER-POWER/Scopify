@@ -1,14 +1,25 @@
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 
+interface MainLayoutSkeletonProps {
+  title?: string;
+  description?: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}
+
 /**
- *
- * @returns 播放器骨架屏组件
+ * Loading shell for the desktop layout.
  */
-export default function MainLayoutSkeleton() {
+export default function MainLayoutSkeleton({
+  title = "Loading Scopify",
+  description = "Preparing your workspace...",
+  actionLabel,
+  onAction,
+}: MainLayoutSkeletonProps) {
   return (
     <div className={cn(
-      "w-full h-dvh flex flex-col bg-black text-white font-sans",
+      "relative w-full h-dvh flex flex-col bg-black text-white font-sans",
       "overflow-hidden select-none p-2 gap-2"
     )}>
       <motion.div
@@ -33,6 +44,21 @@ export default function MainLayoutSkeleton() {
         animate={{ opacity: [0.5, 0.8, 0.5] }}
         transition={{ duration: 2, repeat: Infinity }}
       />
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
+        <div className="pointer-events-auto w-full max-w-md rounded-2xl border border-white/10 bg-black/70 p-6 text-center shadow-2xl backdrop-blur-xl">
+          <div className="text-lg font-semibold text-white">{title}</div>
+          <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p>
+          {actionLabel && onAction ? (
+            <button
+              type="button"
+              onClick={onAction}
+              className="mt-5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-black transition hover:bg-zinc-200"
+            >
+              {actionLabel}
+            </button>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }

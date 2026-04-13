@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { ReactNode, use, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 
 import Header from "../components/Header";
 import { PlayerBar } from "../components/PlayerBar";
@@ -26,6 +26,7 @@ import MainLayoutSkeleton from "./MainLayout/Skeleton";
 import LyricsModal from "../components/LyricModal";
 
 import { useHasHydrated } from "@/lib/hooks/useHydration";
+import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import AppCloseDialog from "./AppCloseDialog";
 import { useRouter, usePathname } from "next/navigation";
 import { useSearchStore } from "@/store/module/search";
@@ -295,9 +296,30 @@ export default function MainLayout({
   children?: ReactNode;
 }) {
   const isHydrated = useHasHydrated();
+  const backendStartup = useBackendStartup();
 
   if (!isHydrated) {
     return <MainLayoutSkeleton />;
+  }
+
+  if (backendStartup.state === "starting") {
+    return (
+      <MainLayoutSkeleton
+        title="正在启动本地服务"
+        description="Scopify 正在等待 Electron 后端就绪，准备完成后会自动进入。"
+      />
+    );
+  }
+
+  if (backendStartup.state === "failed") {
+    return (
+      <MainLayoutSkeleton
+        title="本地服务启动失败"
+        description={backendStartup.message || "后端未能按预期启动，请重新启动应用后再试。"}
+        actionLabel="重新启动应用"
+        onAction={() => window.electronAPI?.relaunchApp()}
+      />
+    );
   }
 
   return <MainLayoutInner>{children}</MainLayoutInner>;

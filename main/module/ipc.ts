@@ -2,7 +2,7 @@
 
 import { ipcMain, app, BrowserWindow, session } from "electron";
 import { loadAppConfig, saveAppConfig } from "../config.js";
-import { ensureBackendUrl } from "./backend.js";
+import { ensureBackendUrl, getBackendStartupStatus } from "./backend.js";
 import { appConfig, logger } from "../constants.js";
 import { trayWindow } from "./tray.js";
 import { updateThumbarButtons } from "./thumbarButtons.js";
@@ -30,6 +30,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
 
   // 提供一个 IPC 接口，让前端可以获取后端 URL
   ipcMain.handle("backend:get-url", async () => ensureBackendUrl());
+  ipcMain.handle("backend:get-status", async () => getBackendStartupStatus());
 
   // 提供一个同步 IPC 接口，供需要在渲染进程同步获取后端 URL 的场景使用
   ipcMain.on("backend:get-url-sync", (event) => {

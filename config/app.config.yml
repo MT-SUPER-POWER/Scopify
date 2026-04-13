@@ -7,7 +7,7 @@ backend:
   host: 127.0.0.1
   autoStart: true
 frontend:
-  devPort: 3000
+  devPort: 1515
   host: 127.0.0.1
 logging:
   level: info
@@ -16,5 +16,5 @@ logging:
 network:
   timeout: 5000
   max_retries: 5
-  retry_delay: 500
+  retry_delay: 1000
   randomCNIP: false

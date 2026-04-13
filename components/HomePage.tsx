@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { cn, formatPlayCount } from "@/lib/utils";
-import { Play, ChevronRight, Loader2 } from "lucide-react";
+import { Play, ChevronRight, Loader2, RefreshCw } from "lucide-react";
 import { getPersonalizePlaylists, getRecommendedPlaylists, getPlaylistAllTracks } from "@/lib/api/playlist";
 import { getHotArtists } from "@/lib/api/artist";
 import { getAlbumDetail } from "@/lib/api/album";
@@ -156,6 +156,7 @@ const HomePageComponent = () => {
   const collectedAlbum = useUserStore(s => s.collectedAlbum);
   const setCollectedAlbum = useUserStore(s => s.setCollectedAlbum);
   const [dateInfo, setDateInfo] = useState({ dayOfWeek: '星期三', dateNum: 18 });
+  const [hasError, setHasError] = useState(false);
 
   const { setQueue, playQueueIndex } = usePlayerStore();
 
@@ -213,58 +214,63 @@ const HomePageComponent = () => {
       dayOfWeek: days[today.getDay()],
       dateNum: today.getDate()
     });
+  }, []);
 
-    const fetchHomeData = async () => {
-      setIsLoading(true);
+  const fetchHomeData = useCallback(async () => {
+    setIsLoading(true);
+    setHasError(false);
 
-      // 如果登录了但 store 里没用户信息，先同步拉取一次账号信息
-      if (isLogin && (!user || !user.nickname || !userId)) {
-        try {
-          const cookie = localStorage.getItem('user_id') || '';
-          const accountRes = await getUserDetail(cookie);
-          if (accountRes.data?.profile) {
-            console.log("同步用户信息到 store:", accountRes.data.profile);
+    // 如果登录了但 store 里没用户信息，先同步拉取一次账号信息
+    if (isLogin && (!user || !user.nickname || !userId)) {
+      try {
+        const cookie = localStorage.getItem('user_id') || '';
+        const accountRes = await getUserDetail(cookie);
+        if (accountRes.data?.profile) {
+          console.log("同步用户信息到 store:", accountRes.data.profile);
 
-            useUserStore.getState().setUser(accountRes.data.profile);
-            useUserStore.getState().setUserId(accountRes.data.account?.id || "");
-          }
-        } catch (err) {
-          console.error("同步用户信息失败:", err);
+          useUserStore.getState().setUser(accountRes.data.profile);
+          useUserStore.getState().setUserId(accountRes.data.account?.id || "");
         }
+      } catch (err) {
+        console.error("同步用户信息失败:", err);
       }
-
-      const requests: any[] = [
-        getPersonalizePlaylists(),
-        getRecommendedPlaylists(),
-        getHotArtists(),
-      ];
-
-      if (isLogin) requests.push(getUserAlbumSublist());
-
-      Promise.all(requests).then((results) => {
-        const [personalRes, recommendRes, artistsRes, albumsRes] = results;
-
-        const shuffled = [...recommendRes.data.recommend]
-          .map((item, index) => ({ item, index }))
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 8)
-          .sort((a, b) => a.index - b.index)
-          .map(({ item }) => item);
-
-        setPlaylists(Array.isArray(personalRes.data.result) ? personalRes.data.result : []);
-        setBannerPlaylist(Array.isArray(recommendRes.data.recommend) ? shuffled : []);
-        setSuggestedArtists(Array.isArray(artistsRes.data.artists) ? artistsRes.data.artists : []);
-        setCollectedAlbum(Array.isArray(albumsRes?.data.data) ? albumsRes.data.data : []);
-
-      }).catch((error) => {
-        console.error("获取首页数据失败:", error);
-      }).finally(() => {
-        setIsLoading(false);
-      });
     }
 
+    const requests: any[] = [
+      getPersonalizePlaylists(),
+      getRecommendedPlaylists(),
+      getHotArtists(),
+    ];
+
+    if (isLogin) requests.push(getUserAlbumSublist());
+
+    Promise.all(requests).then((results) => {
+      const [personalRes, recommendRes, artistsRes, albumsRes] = results;
+
+      const shuffled = [...recommendRes.data.recommend]
+        .map((item, index) => ({ item, index }))
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 8)
+        .sort((a, b) => a.index - b.index)
+        .map(({ item }) => item);
+
+      setPlaylists(Array.isArray(personalRes.data.result) ? personalRes.data.result : []);
+      setBannerPlaylist(Array.isArray(recommendRes.data.recommend) ? shuffled : []);
+      setSuggestedArtists(Array.isArray(artistsRes.data.artists) ? artistsRes.data.artists : []);
+      setCollectedAlbum(Array.isArray(albumsRes?.data.data) ? albumsRes.data.data : []);
+
+    }).catch((error) => {
+      console.error("获取首页数据失败:", error);
+      setHasError(true);
+      toast.error("获取首页数据失败");
+    }).finally(() => {
+      setIsLoading(false);
+    });
+  }, [isLogin, setCollectedAlbum, user, userId]);
+
+  useEffect(() => {
     fetchHomeData();
-  }, [isLogin, user, userId]);
+  }, [fetchHomeData]);
 
   return (
     <div className="relative pb-24 font-sans">
@@ -282,9 +288,21 @@ const HomePageComponent = () => {
         <section>
           <CollapsibleHomeSection
             title={
-              <h1 className="text-3xl font-bold text-white tracking-tight leading-none mb-2">
-                {getTimeTheme().greeting}
-              </h1>
+              <div className="flex items-center gap-4">
+                <h1 className="text-3xl font-bold text-white tracking-tight leading-none">
+                  {getTimeTheme().greeting}
+                </h1>
+                {(hasError || !isLoading) && (
+                  <button
+                    onClick={() => fetchHomeData()}
+                    disabled={isLoading}
+                    className="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-all disabled:opacity-50"
+                    title="刷新首页资料"
+                  >
+                    <RefreshCw className={cn("w-5 h-5", isLoading && "animate-spin")} />
+                  </button>
+                )}
+              </div>
             }
             collapsedHeight="160px" // Banner 2行的高度 (每行约 64px + gap)
           >
@@ -336,7 +354,8 @@ const HomePageComponent = () => {
                   onClick={() => smartRouter.push(`/playlist/?id=${item.id}&isRecommend=true`)}
                   className="flex items-center h-16 bg-white/10 hover:bg-white/20 transition-colors rounded-md overflow-hidden group cursor-pointer relative pr-4"
                 >
-                  <img
+                  <Image
+                    width={64} height={64}
                     src={item.picUrl}
                     alt="cover"
                     className="h-16 w-16 object-cover shadow-[4px_0_10px_rgba(0,0,0,0.3)] z-10"

@@ -1,5 +1,3 @@
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -10,79 +8,108 @@ import type { BrowserWindow as BrowserWindowType } from "electron";
 import initTray from "./module/tray.js";
 import initializeLoginWindow from "./module/login.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
-
 import { registerIpcHandlers } from "./module/ipc.js";
-import { startManagedBackend, stopManagedBackend } from "./module/backend.js";
+import { getBackendStartupStatus, startManagedBackend, stopManagedBackend } from "./module/backend.js";
 import {
-  __logoIcon, __preloadScript, appConfig,
-  cleanOldLogs, logger,
+  __logoIcon,
+  __logoIconMacPath,
+  __preloadScript,
   __splashHtmlPath,
-  __logoIconMacPath
+  appConfig,
+  cleanOldLogs,
+  logger,
 } from "./constants.js";
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-// ━━━━━━━━━━━━━━━━ ESM 路径兼容 ━━━━━━━━━━━━━━━━
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 let splashWindow: BrowserWindowType | null = null;
+let mainWindow: BrowserWindowType | null = null;
+let mainWindowLoaded = false;
+let mainWindowReleased = false;
+let isQuitting = false;
 
-// NOTE: electron-serve 结合 next.js
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
   ? serve({ directory: join(__dirname, "../../renderer") })
   : null;
 
-// 初始化配置
 const devPort = appConfig.frontend.devPort;
 const devBase = `http://localhost:${devPort}`;
-let mainWindow: BrowserWindowType | null = null;
-let isQuitting = false;     // 真正的退出标志
+const gotTheLock = app.requestSingleInstanceLock();
 
 logger.info("--------------------------------------------------");
 logger.info("Fronted Base URL is", devBase);
 logger.info("--------------------------------------------------");
 
-// 请求单实例锁
-const gotTheLock = app.requestSingleInstanceLock();
+function destroySplashWindow() {
+  if (splashWindow && !splashWindow.isDestroyed()) {
+    splashWindow.destroy();
+  }
+  splashWindow = null;
+}
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function revealMainWindow() {
+  if (!mainWindow || mainWindowReleased || mainWindow.isDestroyed()) return;
 
-const createWindow = () => {
+  mainWindowReleased = true;
+  destroySplashWindow();
 
-  // 创建启动界面窗口
+  mainWindow.setAlwaysOnTop(true);
+  mainWindow.show();
+  mainWindow.focus();
+  mainWindow.setAlwaysOnTop(false);
+
+  if (process.platform === "win32") {
+    initThumbarButtons(mainWindow);
+  }
+}
+
+function sendBackendStatusToRenderer() {
+  if (!mainWindow || !mainWindowLoaded || mainWindow.isDestroyed()) return;
+  mainWindow.webContents.send("backend-status-changed", getBackendStartupStatus());
+}
+
+function maybeRevealMainWindow() {
+  const backendStatus = getBackendStartupStatus();
+  if (!mainWindow || !mainWindowLoaded || mainWindowReleased) return;
+  if (backendStatus.state === "starting") return;
+  revealMainWindow();
+}
+
+function createWindow() {
+  mainWindowLoaded = false;
+  mainWindowReleased = false;
+
   splashWindow = new BrowserWindow({
     width: 700,
     height: 700,
-    transparent: true, // 允许透明背景
-    frame: false,      // 无系统边框
-    alwaysOnTop: true, // 保持在最前
-    icon: __logoIcon,  // 设置应用图标
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true,
+    icon: __logoIcon,
     resizable: false,
     show: true,
     movable: false,
-    type: "toolbar",   // 引导动画
+    type: "toolbar",
   });
 
   splashWindow.loadFile(__splashHtmlPath);
   splashWindow.center();
   splashWindow.focus();
 
-  // 创建主窗口（隐藏，等主页面 ready 再显示）
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     minWidth: 840,
     minHeight: 720,
-    autoHideMenuBar: true,             // 自动隐藏菜单栏
-    icon: __logoIcon,                  // 设置应用图标
-    title: "Scopify",                  // 设置窗口标题
-    show: false,                       // 关键：初始不显示，防止闪烁
+    autoHideMenuBar: true,
+    icon: __logoIcon,
+    title: "Scopify",
+    show: false,
     titleBarOverlay: {
-      color: 'rgba(0,0,0,0)',          // 完全透明
+      color: "rgba(0,0,0,0)",
       height: 35,
-      symbolColor: 'white'
+      symbolColor: "white",
     },
     webPreferences: {
       preload: __preloadScript,
@@ -90,24 +117,15 @@ const createWindow = () => {
       contextIsolation: true,
       webgl: true,
       offscreen: false,
-    }
+    },
   });
 
-  // splash 画面显示后自动关闭并显示主窗口
-  setTimeout(() => {
-    if (splashWindow) {
-      splashWindow.destroy();
-      splashWindow = null;
-    }
-    mainWindow?.setAlwaysOnTop(true);
-    mainWindow?.show();
-    mainWindow?.focus();
-    mainWindow?.setAlwaysOnTop(false);
-
-    if (process.platform === "win32") {
-      initThumbarButtons(mainWindow!);
-    }
-  }, 4500);
+  // Only reveal the main window after both renderer and backend are ready.
+  mainWindow.webContents.once("did-finish-load", () => {
+    mainWindowLoaded = true;
+    sendBackendStatusToRenderer();
+    maybeRevealMainWindow();
+  });
 
   if (app.isPackaged) {
     if (!appServe) {
@@ -123,82 +141,72 @@ const createWindow = () => {
     }
   } else {
     mainWindow.loadURL(devBase);
-    // 仅当允许时自动打开 DevTools
+
     if (appConfig.app.devTools) {
       mainWindow.webContents.openDevTools();
     }
+
     mainWindow.webContents.on("did-fail-load", (_e, code, desc) => {
       logger.error("Did fail load:", code, desc);
       mainWindow?.webContents.reloadIgnoringCache();
     });
   }
 
-  // NOTE: Electron 快捷键拦截位置
   mainWindow.webContents.on("before-input-event", (event, input) => {
-    // 禁止 Ctrl/Cmd + 数字 0 (重置缩放)
     if ((input.control || input.meta) && input.key === "0") {
       event.preventDefault();
     }
-    // 禁止 Ctrl/Cmd + = 和 Ctrl/Cmd + + (放大)
+
     if ((input.control || input.meta) && (input.key === "=" || input.key === "+")) {
       event.preventDefault();
     }
-    // 禁止 Ctrl/Cmd + - (缩小)
+
     if ((input.control || input.meta) && input.key === "-") {
       event.preventDefault();
     }
 
-    // 限制 DevTools 快捷键（F12、Ctrl+Shift+I、Cmd+Opt+I）
     const isDevToolsKey = (
       input.key === "F12" ||
       ((input.control || input.meta) && input.shift && input.key.toUpperCase() === "I") ||
-      ((process.platform === "darwin") && input.meta && input.alt && input.key.toUpperCase() === "I")
+      (process.platform === "darwin" && input.meta && input.alt && input.key.toUpperCase() === "I")
     );
+
     if (isDevToolsKey && !appConfig.app.devTools) {
       event.preventDefault();
     }
   });
 
-  // 监听窗口进入全屏事件（包括 F11）
   mainWindow.on("enter-full-screen", () => {
-    if (mainWindow && mainWindow.webContents) {
-      // NOTE: 主线程通过 webContents 来通知 preload
-      mainWindow.webContents.send("window-full-screen-changed", { isFullScreen: true });
-    }
+    mainWindow?.webContents.send("window-full-screen-changed", { isFullScreen: true });
   });
 
-  // 监听窗口退出全屏事件（包括 F11）
   mainWindow.on("leave-full-screen", () => {
-    if (mainWindow && mainWindow.webContents) {
-      mainWindow.webContents.send("window-full-screen-changed", { isFullScreen: false });
-    }
+    mainWindow?.webContents.send("window-full-screen-changed", { isFullScreen: false });
   });
 
   mainWindow.on("close", (e: Electron.Event) => {
-    // 用 tray 触发的 quit 会引发 "before-quit" 事件，这种关闭，不会在这里阻止关闭
     if (isQuitting) return;
 
-    e.preventDefault(); // 阻止默认的关闭行为
-    if (mainWindow && mainWindow.webContents) {
-      mainWindow.webContents.send("app-close-confirm");
-    }
+    e.preventDefault();
+    mainWindow?.webContents.send("app-close-confirm");
   });
 
-  // tray 触发的 quit 在上面跳脱之后，在这里真正的关闭窗口
   mainWindow.on("closed", () => {
+    mainWindowLoaded = false;
+    mainWindowReleased = false;
     mainWindow = null;
   });
 }
 
-// 提取依赖窗口实例的模块初始化逻辑，防止 Mac 重新激活时模块失效
-const setupWindowModules = (win: BrowserWindowType) => {
+function setupWindowModules(win: BrowserWindowType) {
   registerIpcHandlers(win);
+
   if (process.platform !== "darwin") {
     initTray(win);
-
   }
+
   initializeLoginWindow(win);
-};
+}
 
 if (!appConfig.app.gpuAcceleration) {
   app.disableHardwareAcceleration();
@@ -206,22 +214,30 @@ if (!appConfig.app.gpuAcceleration) {
 }
 
 if (!gotTheLock) {
-  // 如果没拿到锁，说明已经有一个实例在运行了，直接退出当前这个多余的进程
   logger.warn("Another instance is already running. Quitting this one...");
   app.quit();
 } else {
-  // 当用户尝试打开第二个实例时触发
-  app.on('second-instance', () => {
-    // 唤醒已经存在的那个主窗口
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-    }
+  app.on("second-instance", () => {
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
   });
 
   app.whenReady().then(() => {
     logger.info("Scopify ready, creating window...");
-    startManagedBackend();
+
+    const backendStartup = startManagedBackend();
+    backendStartup
+      .then(() => {
+        logger.info("[startup] Backend is ready, releasing splash screen.");
+        sendBackendStatusToRenderer();
+        maybeRevealMainWindow();
+      })
+      .catch((err) => {
+        logger.error("[startup] Backend startup failed, showing renderer fallback.", err);
+        sendBackendStatusToRenderer();
+        maybeRevealMainWindow();
+      });
 
     try {
       createWindow();
@@ -229,26 +245,21 @@ if (!gotTheLock) {
       if (process.platform === "darwin") {
         app.dock?.setIcon(__logoIconMacPath);
       }
-
     } catch (err) {
       logger.error("Failed to create main window:", err);
     }
 
-    // 第一次启动，绑定模块
     if (mainWindow) {
       setupWindowModules(mainWindow);
     }
 
-    // 定时清理日志
     cleanOldLogs();
 
     app.on("activate", () => {
-      if (mainWindow === null) {
-        createWindow();
-        // Mac 重新激活生成新窗口时，重新绑定模块
-        if (mainWindow) {
-          setupWindowModules(mainWindow);
-        }
+      if (mainWindow !== null) return;
+      createWindow();
+      if (mainWindow) {
+        setupWindowModules(mainWindow);
       }
     });
   });
@@ -264,18 +275,23 @@ if (!gotTheLock) {
     stopManagedBackend();
   });
 
-  // 对于线程意外崩溃或未捕获的异常，记录日志并退出
   process.on("uncaughtException", (err) => {
     logger.error("Uncaught Exception:", err);
-    dialog.showErrorBox("发生未捕获的异常", `应用遇到了一个未处理的错误，应用将退出。\n\n错误信息:\n${err.message}`);
-    stopManagedBackend(); // 强制清理后端进程
+    dialog.showErrorBox(
+      "发生未捕获的异常",
+      `应用遇到了一个未处理的错误，应用将退出。\n\n错误信息:\n${err.message}`,
+    );
+    stopManagedBackend();
     app.exit(1);
   });
 
   process.on("unhandledRejection", (reason) => {
     logger.error("Unhandled Rejection:", reason);
-    dialog.showErrorBox("发生未处理的 Promise 拒绝", `应用遇到了一个未处理的 Promise 错误，应用将退出。\n\n错误信息:\n${reason}`);
-    stopManagedBackend(); // 强制清理后端进程
+    dialog.showErrorBox(
+      "发生未处理的 Promise 拒绝",
+      `应用遇到了一个未处理的 Promise 错误，应用将退出。\n\n错误信息:\n${reason}`,
+    );
+    stopManagedBackend();
     app.exit(1);
   });
 }

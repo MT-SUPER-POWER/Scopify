@@ -1,5 +1,7 @@
 "use client";
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 import { memo, useCallback } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Play, Pause } from "lucide-react";

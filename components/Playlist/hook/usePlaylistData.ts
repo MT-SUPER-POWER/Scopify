@@ -84,7 +84,7 @@ export function usePlaylist() {
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (!rawDetail) return null;
 
-    console.log("Deriving playlistInfo from rawDetail:", rawDetail);
+    // console.log("Deriving playlistInfo from rawDetail:", rawDetail);
 
     if (isDailyRecommend) {
       return {

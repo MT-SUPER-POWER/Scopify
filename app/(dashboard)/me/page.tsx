@@ -129,9 +129,10 @@ export default function MePage() {
       <main className="flex-1 overflow-y-auto bg-[#121212]">
 
         {/* 顶部 Hero 区域 */}
-        <div className={`bg-linear-to-b ${PROFILE_DATA.coverColor} to-[#121212] pt-20 pb-6 px-6 md:px-8 flex flex-col md:flex-row items-center md:items-end gap-6`}>
+        <div className={`bg-linear-to-b ${PROFILE_DATA.coverColor} to-[#121212] pt-20 pb-6 px-6 md:px-8 flex flex-col md:flex-row
+        items-center md:items-end gap-6`}>
           <Image
-            fill
+            width={192} height={192}
             src={PROFILE_DATA.avatar}
             alt="Profile"
             className="w-48 h-48 rounded-full shadow-2xl object-cover"
@@ -286,7 +287,6 @@ export default function MePage() {
             </TableBody>
           </Table>
         </div>
-
 
         {/* 项目卡片列表 */}
         <div className="px-6 md:px-8 mt-10 mb-20">

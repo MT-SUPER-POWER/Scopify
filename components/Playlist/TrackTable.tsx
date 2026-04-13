@@ -178,8 +178,8 @@ export default function TracklistTable({
   const handlePlay = useCallback((track: SongDetail) => {
     const isCurrent = currentSongDetail?.id === track.id;
     if (isCurrent) setIsPlaying(!isPlaying);
-    else playFromSong(track, tracks);
-  }, [tracks, currentSongDetail, isPlaying, setIsPlaying, playFromSong]);
+    else playFromSong(track, tracks, playlistID);
+  }, [tracks, currentSongDetail, isPlaying, setIsPlaying, playFromSong, playlistID]);
 
   const handlePlayContextTrack = useCallback(() => {
     if (!contextMenuTrack) return;

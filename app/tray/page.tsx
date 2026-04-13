@@ -16,7 +16,6 @@ import { SkipBack, Play, SkipForward, Heart, MicVocal, Settings, Power, Minimize
 import { usePlayerStore, useUserStore } from "@/store";
 import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { IS_ELECTRON } from "@/lib/utils";
-import { likeSong } from "@/lib/api/playlist";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

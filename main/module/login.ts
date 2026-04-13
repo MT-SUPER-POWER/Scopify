@@ -1,4 +1,4 @@
-import { __logoIcon, __preloadScript, __logoIconPath } from "../constants.js";
+import { __logoIcon, __preloadScript, __logoIconPath, appConfig } from "../constants.js";
 import fs from "fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
 
@@ -40,7 +40,7 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
     }
   });
 
-  const devPort = process.env.NEXT_PORT ?? "3000";
+  const devPort = appConfig.frontend.devPort || 3000;
   const loginUrl = app.isPackaged
     ? "app://-/login/"
     : `http://localhost:${devPort}/login`;

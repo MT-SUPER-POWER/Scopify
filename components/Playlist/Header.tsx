@@ -33,7 +33,7 @@ interface PlaylistHeaderProps {
 
 const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
   // DEBUG: Playlist Header
-  console.log("PlaylistHeader received props:", { info, isDaily });
+  // console.log("PlaylistHeader received props:", { info, isDaily });
 
   const smartRouter = useSmartRouter();
 

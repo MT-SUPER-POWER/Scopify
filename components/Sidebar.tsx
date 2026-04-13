@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Library, RefreshCw, ListMusic, User } from "lucide-react"
+import { RefreshCw, ListMusic, User } from "lucide-react"
 import React, { useEffect, useReducer, useState } from "react";
 import { cn, IS_ELECTRON } from "@/lib/utils";
 import { LibraryItem } from "./Siderbar/LibraryItem";
@@ -17,7 +17,9 @@ import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { CollapsibleLibraryGroup } from "./Siderbar/CollapsibleLibraryGroup";
-import { FaCompactDisc, FaDiscord } from "react-icons/fa6";
+import { FaCompactDisc } from "react-icons/fa6";
+import { waitForBackend } from "@/lib/web/waitForBackend";
+import { appConfig } from "@/lib/web/env";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -108,6 +110,15 @@ function SidebarImpl() {
       setIsLoading(true);
     }
     setError(null);
+
+    // 检查后端是否已就绪（仅在非静默且是首次加载时可能需要）
+    const port = appConfig.backend.port || 5252;
+    const host = appConfig.backend.host || '127.0.0.1';
+    const backendReady = await waitForBackend(`http://${host}:${port}`, 10000);
+
+    if (!backendReady) {
+      console.warn("后端服务未能在超时时间内就绪，尝试继续请求...");
+    }
 
     Promise.all([
       getUserPlaylist(uid!),
