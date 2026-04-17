@@ -1,47 +1,34 @@
-'use client';
+"use client";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { ReactNode, useEffect, useRef } from "react";
-
-import Header from "../components/Header";
-import { PlayerBar } from "../components/PlayerBar";
-import { SearchModal } from "../components/SearchModal";
-
-// status store
-import { useUiStore } from "@/store/module/ui";
-
+import { usePathname, useRouter } from "next/navigation";
+import { type ReactNode, useEffect, useRef } from "react";
+import { useDefaultLayout } from "react-resizable-panels";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
+import { useHasHydrated } from "@/lib/hooks/useHydration";
 // lib
 import { cn } from "@/lib/utils";
-import { useDefaultLayout } from "react-resizable-panels";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  ResizableHandle,
-  ResizablePanelGroup,
-  ResizablePanel,
-} from "@/components/ui/resizable";
-
-// self components
-import MainLayoutSkeleton from "./MainLayout/Skeleton";
-import LyricsModal from "../components/LyricModal";
-
-import { useHasHydrated } from "@/lib/hooks/useHydration";
-import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
-import AppCloseDialog from "./AppCloseDialog";
-import { useRouter, usePathname } from "next/navigation";
+import { usePlayerStore } from "@/store/module/player";
+import { useI18n } from "@/store/module/i18n";
 import { useSearchStore } from "@/store/module/search";
 import { useTimeStore } from "@/store/module/time";
-import { usePlayerStore } from "@/store/module/player";
+// status store
+import { useUiStore } from "@/store/module/ui";
+import Header from "../components/Header";
+import LyricsModal from "../components/LyricModal";
+import { PlayerBar } from "../components/PlayerBar";
+import { SearchModal } from "../components/SearchModal";
+import AppCloseDialog from "./AppCloseDialog";
+// self components
+import MainLayoutSkeleton from "./MainLayout/Skeleton";
 import { Sidebar } from "./Sidebar";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-
-function MainLayoutInner({
-  children,
-}: {
-  children?: ReactNode;
-}) {
+function MainLayoutInner({ children }: { children?: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -52,20 +39,37 @@ function MainLayoutInner({
 
   // Zustand Stores
   const clearSearchQuery = useSearchStore((s) => s.clearQuery);
-  const volume = usePlayerStore(s => s.volume);
-  const isPlaying = usePlayerStore(s => s.isPlaying);
-  const currentSongUrl = usePlayerStore(s => s.currentSongUrl);
-  const setIsPlaying = usePlayerStore(s => s.setIsPlaying);
-  const playNext = usePlayerStore(s => s.playNext);
+  const volume = usePlayerStore((s) => s.volume);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const currentSongUrl = usePlayerStore((s) => s.currentSongUrl);
+  const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
+  const playNext = usePlayerStore((s) => s.playNext);
 
   // 1. 负责加载音频 URL & 重置恢复标记
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || !currentSongUrl) return;
+    if (!audio) return;
+
+    if (!currentSongUrl) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.removeAttribute("src");
+      audio.load();
+
+      hasRestoredProgressRef.current = false;
+      lastStoreWriteRef.current = 0;
+
+      useTimeStore.getState().setCurrentTime(0);
+      useTimeStore.getState().setBufferedTime(0);
+      useTimeStore.getState().setTotalTime(0);
+      window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
+      return;
+    }
 
     if (audio.src !== currentSongUrl) {
       audio.src = currentSongUrl;
       hasRestoredProgressRef.current = false; // ⚠️ 核心：切歌时必须重置保险栓
+      window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
       audio.load();
     }
     usePlayerStore.getState().fetchCurrentLyric();
@@ -108,7 +112,6 @@ function MainLayoutInner({
     return () => window.removeEventListener("player-seek", onSeek);
   }, []);
 
-
   // 监听路由变化，如果回到首页则清空搜索词
   useEffect(() => {
     if (pathname === "/") {
@@ -128,7 +131,6 @@ function MainLayoutInner({
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
   });
-
 
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
@@ -151,12 +153,13 @@ function MainLayoutInner({
   }, [isSearchOpen, setIsSearchOpen]);
 
   return (
-    <div className={cn(
-      "flex-1 flex-col bg-black text-white font-sans",
-      "overflow-hidden p-2 gap-2",
-      "flex h-screen"
-    )}>
-
+    <div
+      className={cn(
+        "flex-1 flex-col bg-black text-white font-sans",
+        "overflow-hidden p-2 gap-2",
+        "flex h-screen",
+      )}
+    >
       {/* 模态注册 */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <AppCloseDialog />
@@ -176,7 +179,7 @@ function MainLayoutInner({
             maxSize="40%"
             collapsible
             collapsedSize={80}
-            className={cn("bg-[#0f0f0f] rounded-lg overflow-hidden",)}
+            className={cn("bg-[#0f0f0f] rounded-lg overflow-hidden")}
           >
             <Sidebar />
           </ResizablePanel>
@@ -187,7 +190,7 @@ function MainLayoutInner({
               "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
               "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
               "hover:after:bg-white/10",
-              "data-[resize-handle-state=drag]:after:bg-white/30"
+              "data-[resize-handle-state=drag]:after:bg-white/30",
             )}
           />
 
@@ -195,7 +198,10 @@ function MainLayoutInner({
             <div className="h-full w-full bg-[#121212] rounded-lg relative overflow-hidden group/main">
               <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
                 <div className="pointer-events-auto">
-                  <Header onOpenSearch={() => setIsSearchOpen(true)} scrollContainer={scrollContainer} />
+                  <Header
+                    onOpenSearch={() => setIsSearchOpen(true)}
+                    scrollContainer={scrollContainer}
+                  />
                 </div>
               </div>
 
@@ -203,7 +209,6 @@ function MainLayoutInner({
               <ScrollArea className="h-full w-full" viewportRef={setScrollContainer}>
                 {children}
               </ScrollArea>
-
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
@@ -220,7 +225,7 @@ function MainLayoutInner({
           // 切歌存新的时间
           onDurationChange={(e) => {
             const duration = e.currentTarget.duration;
-            if (isFinite(duration) && duration > 0) {
+            if (Number.isFinite(duration) && duration > 0) {
               window.dispatchEvent(new CustomEvent("player-duration", { detail: duration * 1000 }));
               useTimeStore.getState().setTotalTime(duration * 1000);
             }
@@ -252,7 +257,6 @@ function MainLayoutInner({
               lastStoreWriteRef.current = now;
             }
           }}
-
           // 重新恢复歌曲到存储的位置
           onCanPlay={(e) => {
             const audio = e.currentTarget;
@@ -290,11 +294,8 @@ function MainLayoutInner({
 /**
  * MainLayout: 播放器的子组件 - 支持懒加载 + 骨架屏
  */
-export default function MainLayout({
-  children,
-}: {
-  children?: ReactNode;
-}) {
+export default function MainLayout({ children }: { children?: ReactNode }) {
+  const { t } = useI18n();
   const isHydrated = useHasHydrated();
   const backendStartup = useBackendStartup();
 
@@ -305,8 +306,8 @@ export default function MainLayout({
   if (backendStartup.state === "starting") {
     return (
       <MainLayoutSkeleton
-        title="正在启动本地服务"
-        description="Scopify 正在等待 Electron 后端就绪，准备完成后会自动进入。"
+        title={t("layout.startingTitle")}
+        description={t("layout.startingDescription")}
       />
     );
   }
@@ -314,9 +315,9 @@ export default function MainLayout({
   if (backendStartup.state === "failed") {
     return (
       <MainLayoutSkeleton
-        title="本地服务启动失败"
-        description={backendStartup.message || "后端未能按预期启动，请重新启动应用后再试。"}
-        actionLabel="重新启动应用"
+        title={t("layout.failedTitle")}
+        description={backendStartup.message || t("layout.failedDescription")}
+        actionLabel={t("layout.restartApp")}
         onAction={() => window.electronAPI?.relaunchApp()}
       />
     );

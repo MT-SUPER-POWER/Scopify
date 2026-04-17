@@ -44,7 +44,7 @@ export interface RecommendPlaylist {
   picUrl: string;
   playCount: number;
   trackCount: number;
-  copywriter: string;   //  推荐理由文案
+  copywriter: string; //  推荐理由文案
 }
 
 export const pruneRecommendPlaylist = (raw: any): RecommendPlaylist => {
@@ -56,6 +56,6 @@ export const pruneRecommendPlaylist = (raw: any): RecommendPlaylist => {
     picUrl: raw.picUrl || "",
     playCount: raw.playCount || 0,
     trackCount: raw.trackCount || 0,
-    copywriter: raw.copywriter || ""
+    copywriter: raw.copywriter || "",
   };
 };

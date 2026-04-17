@@ -7,9 +7,5 @@ export default function LyricsModal() {
   const isLyricsOpen = useUiStore((s) => s.isLyricsOpen);
   const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
 
-  return (
-    <div>
-      {isLyricsOpen && <LyricModalContent onClose={closeLyrics} />}
-    </div>
-  );
+  return <div>{isLyricsOpen && <LyricModalContent onClose={closeLyrics} />}</div>;
 }

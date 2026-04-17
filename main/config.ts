@@ -1,52 +1,54 @@
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-import { AppConfig } from "@/types/config";
-import * as yaml from "js-yaml";
-import { join } from "path";
-import fs from 'fs';
+import fs from "node:fs";
+import { join } from "node:path";
 import { app } from "electron";
+import * as yaml from "js-yaml";
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PATHS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+import {
+  type AppConfig,
+  DEFAULT_APP_CONFIG,
+  normalizeAppConfig,
+  type PartialAppConfig,
+} from "../types/config.js";
 
-const __resourceConfigDir = app.isPackaged
+const resourceConfigDir = app.isPackaged
   ? join(process.resourcesPath, "config")
   : join(process.cwd(), "config");
 
-const __appConfigPath = join(__resourceConfigDir, "app.config.yml");
-const __appConfigDefaultPath = join(__resourceConfigDir, "app.config.default.yml");
+const appConfigPathValue = join(resourceConfigDir, "app.config.yml");
+const appConfigDefaultPathValue = join(resourceConfigDir, "app.config.default.yml");
 
-export const appConfigPath = __appConfigPath;
-export const appConfigDefaultPath = __appConfigDefaultPath;
+export const appConfigPath = appConfigPathValue;
+export const appConfigDefaultPath = appConfigDefaultPathValue;
 
 function ensureConfigFile() {
-  if (fs.existsSync(__appConfigPath)) return;
-  fs.mkdirSync(__resourceConfigDir, { recursive: true });
-  if (fs.existsSync(__appConfigDefaultPath)) {
-    fs.copyFileSync(__appConfigDefaultPath, __appConfigPath);
+  if (fs.existsSync(appConfigPathValue)) return;
+  fs.mkdirSync(resourceConfigDir, { recursive: true });
+  if (fs.existsSync(appConfigDefaultPathValue)) {
+    fs.copyFileSync(appConfigDefaultPathValue, appConfigPathValue);
   }
 }
 
-/**
- * @returns AppConfig
- */
-export function loadAppConfig(): AppConfig {
-  ensureConfigFile();
-  if (!fs.existsSync(__appConfigPath)) return loadDefaultAppConfig();
-
-  const raw = fs.readFileSync(__appConfigPath, "utf-8");
-  const config = yaml.load(raw) as AppConfig;
-  return { ...loadDefaultAppConfig(), ...config };
+function readYamlConfig(filePath: string): PartialAppConfig | null {
+  if (!fs.existsSync(filePath)) return null;
+  const raw = fs.readFileSync(filePath, "utf-8");
+  return (yaml.load(raw) as PartialAppConfig | null) ?? null;
 }
 
 export function loadDefaultAppConfig(): AppConfig {
-  const raw = fs.readFileSync(__appConfigDefaultPath, "utf-8");
-  const config = yaml.load(raw) as AppConfig;
-  return config;
+  const defaultConfig = readYamlConfig(appConfigDefaultPathValue);
+  return normalizeAppConfig(defaultConfig ?? DEFAULT_APP_CONFIG);
+}
+
+export function loadAppConfig(): AppConfig {
+  ensureConfigFile();
+  const config = readYamlConfig(appConfigPathValue);
+  return normalizeAppConfig(config ?? loadDefaultAppConfig());
 }
 
 export function saveAppConfig(newConfig: AppConfig): AppConfig {
   ensureConfigFile();
-  const yamlString = yaml.dump(newConfig);
-  fs.writeFileSync(__appConfigPath, yamlString, "utf-8");
-  return newConfig;
+  const normalizedConfig = normalizeAppConfig(newConfig);
+  const yamlString = yaml.dump(normalizedConfig, { noRefs: true });
+  fs.writeFileSync(appConfigPathValue, yamlString, "utf-8");
+  return normalizedConfig;
 }

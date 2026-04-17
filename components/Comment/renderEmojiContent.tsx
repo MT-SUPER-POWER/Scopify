@@ -1,7 +1,8 @@
-import React from "react";
+import type React from "react";
 
 // 读取 emoji.json 并生成映射
 import emojiMapRaw from "@/resources/emoji.json";
+
 const emojiMap: Record<string, string> = emojiMapRaw;
 
 /**
@@ -32,7 +33,7 @@ export function renderEmojiContent(content: string) {
           alt={emojiName}
           className="inline-block w-6 h-6 align-middle mx-0.5"
           style={{ verticalAlign: "middle" }}
-        />
+        />,
       );
     } else {
       // 未匹配到表情，原样输出

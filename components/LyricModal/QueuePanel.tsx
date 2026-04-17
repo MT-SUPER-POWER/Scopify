@@ -1,11 +1,12 @@
 "use client";
 
-import { memo, useEffect, useRef, useLayoutEffect, useState, CSSProperties } from "react";
-import { Play } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { usePlayerStore } from "@/store";
+import { Play } from "lucide-react";
 import Image from "next/image";
+import { type CSSProperties, memo, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
+import { usePlayerStore } from "@/store";
+import { useI18n } from "@/store/module/i18n";
 
 const QueueRow = memo(
   ({
@@ -28,7 +29,7 @@ const QueueRow = memo(
         "w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-left transition-all duration-300 group border",
         isCurrent
           ? "bg-white/10 border-white/20 shadow-lg backdrop-blur-md"
-          : "bg-transparent border-transparent hover:bg-white/5 hover:border-white/10"
+          : "bg-transparent border-transparent hover:bg-white/5 hover:border-white/10",
       )}
     >
       <div className="relative w-12 h-12 shrink-0 rounded-xl overflow-hidden shadow-sm border border-white/10">
@@ -40,7 +41,7 @@ const QueueRow = memo(
             alt=""
             className={cn(
               "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105",
-              isCurrent ? "opacity-80" : "opacity-100"
+              isCurrent ? "opacity-80" : "opacity-100",
             )}
           />
         )}
@@ -54,7 +55,7 @@ const QueueRow = memo(
         <p
           className={cn(
             "text-[16px] truncate tracking-wide transition-colors",
-            isCurrent ? "text-white font-semibold" : "text-white/90 font-medium"
+            isCurrent ? "text-white font-semibold" : "text-white/90 font-medium",
           )}
         >
           {song.name}
@@ -64,12 +65,13 @@ const QueueRow = memo(
         </p>
       </div>
     </button>
-  )
+  ),
 );
 
 QueueRow.displayName = "QueueRow";
 
 export const QueuePanel = () => {
+  const { t } = useI18n();
   const queue = usePlayerStore((s) => s.queue);
   const queueIndex = usePlayerStore((s) => s.queueIndex);
   const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
@@ -110,7 +112,7 @@ export const QueuePanel = () => {
   if (!queue.length) {
     return (
       <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">
-        队列为空
+        {t("queue.empty")}
       </div>
     );
   }
@@ -122,7 +124,7 @@ export const QueuePanel = () => {
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-overlay bg-noise" />
 
       <div className="px-6 py-6 shrink-0 relative z-10">
-        <h3 className="text-xl font-bold text-white tracking-tight">播放队列</h3>
+        <h3 className="text-xl font-bold text-white tracking-tight">{t("queue.title")}</h3>
       </div>
 
       <div

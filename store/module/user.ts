@@ -1,16 +1,16 @@
-import { logout } from "@/lib/api/login";
-import { clearLoginStatus } from "@/lib/web/auth";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import { NeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
-import { pruneSongDetail, RawSongDetail, SongDetail } from "@/types/api/music";
-import { NeteaseUser, pruneUser } from "@/types/api/user";
-import { NeteaseUserAlbum } from "@/types/api/release";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { logout } from "@/lib/api/login";
 import { IS_ELECTRON } from "@/lib/utils";
+import { clearLoginStatus } from "@/lib/web/auth";
+import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
+import { type NeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
+import type { NeteaseUserAlbum } from "@/types/api/release";
+import { type NeteaseUser, pruneUser } from "@/types/api/user";
 
 type UserStore = {
   user: NeteaseUser | null;
-  loginType: 'token' | 'cookie' | 'qr' | 'uid' | null;
+  loginType: "token" | "cookie" | "qr" | "uid" | null;
   searchValue: string;
   searchType: number;
   libraryUpdateTrigger: number;
@@ -22,7 +22,7 @@ type UserStore = {
 
   handleLogout: () => Promise<void>;
   setUser: (userData: NeteaseUser) => void;
-  setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => void;
+  setLoginType: (loginType: "token" | "cookie" | "qr" | "uid" | null) => void;
   setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => void;
   clearAlbumList: () => void;
   setCollectedAlbum: (albums: NeteaseUserAlbum[]) => void;
@@ -31,15 +31,15 @@ type UserStore = {
   setPlayList: (playlists: NeteasePlaylist[]) => void;
   setUserId: (userId: number | string) => void;
   triggerLibraryUpdate: () => void;
-}
+};
 
 export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,
       loginType: null,
-      cookie: '',
-      searchValue: '',
+      cookie: "",
+      searchValue: "",
       searchType: 0,
       collectedAlbumIds: new Set(),
       libraryUpdateTrigger: 0,
@@ -51,12 +51,13 @@ export const useUserStore = create<UserStore>()(
       setCollectedAlbum: (albums: NeteaseUserAlbum[]) => set({ collectedAlbum: albums }),
       clearCollectedAlbum: () => set({ collectedAlbum: [] }),
 
-      triggerLibraryUpdate: () => set((state) => ({ libraryUpdateTrigger: state.libraryUpdateTrigger + 1 })),
+      triggerLibraryUpdate: () =>
+        set((state) => ({ libraryUpdateTrigger: state.libraryUpdateTrigger + 1 })),
       setUser: (userData: NeteaseUser) => set({ user: pruneUser(userData) }),
       setUserId: (userId: number | string) => {
         set({ user: { ...useUserStore.getState().user, id: userId } as NeteaseUser });
       },
-      setLoginType: (loginType: 'token' | 'cookie' | 'qr' | 'uid' | null) => set({ loginType }),
+      setLoginType: (loginType: "token" | "cookie" | "qr" | "uid" | null) => set({ loginType }),
       setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => {
         const cleanAlbumList = albumList.map(pruneSongDetail);
         set({ albumList: cleanAlbumList });
@@ -68,14 +69,15 @@ export const useUserStore = create<UserStore>()(
         set({ playlist: cleanPlaylists });
       },
       handleLogout: async () => {
-        try { await logout(); }
-        catch (error) {
-          console.error('登出失败:', error);
+        try {
+          await logout();
+        } catch (error) {
+          console.error("登出失败:", error);
         } finally {
           set({
             user: null,
             loginType: null,
-            searchValue: '',
+            searchValue: "",
             searchType: 0,
             collectedAlbumIds: new Set(),
             playlist: [],
@@ -88,15 +90,15 @@ export const useUserStore = create<UserStore>()(
       },
     }),
     {
-      name: 'user-storage',
+      name: "user-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
         loginType: state.loginType,
         likeListIDs: state.likeListIDs,
       }),
-    }
-  )
+    },
+  ),
 );
 
 if (IS_ELECTRON) {
@@ -104,7 +106,7 @@ if (IS_ELECTRON) {
     if (e.key === "user-storage" && e.newValue) {
       try {
         const newState = JSON.parse(e.newValue);
-        if (newState && newState.state) {
+        if (newState?.state) {
           useUserStore.setState(newState.state);
         }
       } catch (error) {

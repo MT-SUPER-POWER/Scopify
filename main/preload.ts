@@ -1,11 +1,15 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { ElectronAPI } from "@/types/electron";
 import type { BackendStartupStatus } from "@/types/backend";
+import type { ElectronAPI } from "@/types/electron";
 
 // NOTE: 写好了接口，记得在 types/electron.d.ts 中声明类型
 const electronAPI: ElectronAPI = {
-  relaunchApp: () => { ipcRenderer.send("relaunch-app"); },
-  on: (channel, callback) => { ipcRenderer.on(channel, callback); },
+  relaunchApp: () => {
+    ipcRenderer.send("relaunch-app");
+  },
+  on: (channel, callback) => {
+    ipcRenderer.on(channel, callback);
+  },
   off: (channel, callback) => {
     if (callback) {
       ipcRenderer.removeListener(channel, callback as (...args: any[]) => void);
@@ -13,18 +17,34 @@ const electronAPI: ElectronAPI = {
     }
     ipcRenderer.removeAllListeners(channel);
   },
-  send: (channel, args) => { ipcRenderer.send(channel, args); },
+  send: (channel, args) => {
+    ipcRenderer.send(channel, args);
+  },
   enterFullScreen: () => ipcRenderer.send("window-enter-full-screen"),
   exitFullScreen: () => ipcRenderer.send("window-exit-full-screen"),
   onFullScreenChanged: (callback) => {
-    ipcRenderer.on("window-full-screen-changed", (event, data) => { callback(data.isFullScreen); });
+    ipcRenderer.on("window-full-screen-changed", (_event, data) => {
+      callback(data.isFullScreen);
+    });
   },
-  openLoginWindow: () => { ipcRenderer.send("open-login-window"); },
-  closeLoginWindow: () => { ipcRenderer.send("close-login-window"); },
-  mainWindowReload: () => { ipcRenderer.send("main-window-reload"); },
-  exitApp: () => { ipcRenderer.send("exit-app"); },
-  minimizeApp: () => { ipcRenderer.send("minimize-to-tray"); },
-  sendAppCloseAction: (action: "minimize" | "exit") => { ipcRenderer.send("app-close-action", action); },
+  openLoginWindow: () => {
+    ipcRenderer.send("open-login-window");
+  },
+  closeLoginWindow: () => {
+    ipcRenderer.send("close-login-window");
+  },
+  mainWindowReload: () => {
+    ipcRenderer.send("main-window-reload");
+  },
+  exitApp: () => {
+    ipcRenderer.send("exit-app");
+  },
+  minimizeApp: () => {
+    ipcRenderer.send("minimize-to-tray");
+  },
+  sendAppCloseAction: (action: "minimize" | "exit") => {
+    ipcRenderer.send("app-close-action", action);
+  },
   getAppConfig: () => ipcRenderer.invoke("get-app-config"),
   updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
   getBackendStatus: () => ipcRenderer.invoke("backend:get-status"),
@@ -36,7 +56,9 @@ const electronAPI: ElectronAPI = {
   },
   loginSuccess: () => ipcRenderer.send("login-success"),
   onControlAudio: (callback) => {
-    ipcRenderer.on('control-audio', (_event, action) => { callback(action); });
+    ipcRenderer.on("control-audio", (_event, action) => {
+      callback(action);
+    });
   },
   onBackendStatusChanged: (callback) => {
     ipcRenderer.on("backend-status-changed", (_event, status: BackendStartupStatus) => {

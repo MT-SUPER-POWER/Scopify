@@ -1,15 +1,15 @@
 {
-    "jsc": {
-        "parser": {
-            "syntax": "typescript",
-            "decorators": true,
-            "dynamicImport": true
-        },
-        "target": "es2022",
-        "keepClassNames": true
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true,
+      "dynamicImport": true
     },
-    "module": {
-        "type": "commonjs",
-        "strict": true
-    }
+    "target": "es2022",
+    "keepClassNames": true
+  },
+  "module": {
+    "type": "commonjs",
+    "strict": true
+  }
 }

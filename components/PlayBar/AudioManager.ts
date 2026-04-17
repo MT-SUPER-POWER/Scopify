@@ -8,7 +8,7 @@ class AudioManager {
   private hasRestoredProgress = false;
   private initialized = false;
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): AudioManager {
     if (!AudioManager.instance) {
@@ -60,7 +60,7 @@ class AudioManager {
 
       if (state.isPlaying !== prevIsPlaying) {
         prevIsPlaying = state.isPlaying;
-        if (this.audio && this.audio.src) {
+        if (this.audio?.src) {
           if (state.isPlaying) {
             this.audio.play().catch((err) => {
               console.warn("Play interrupted or not allowed:", err);
@@ -91,7 +91,7 @@ class AudioManager {
     // ✨ 修正 1：loadedmetadata 现在只做一件事，就是安全的拿总时长
     this.audio.addEventListener("loadedmetadata", () => {
       const audio = this.audio!;
-      if (isFinite(audio.duration) && audio.duration > 0) {
+      if (Number.isFinite(audio.duration) && audio.duration > 0) {
         window.dispatchEvent(new CustomEvent("player-duration", { detail: audio.duration * 1000 }));
         useTimeStore.getState().setTotalTime(audio.duration * 1000);
       }
@@ -129,7 +129,7 @@ class AudioManager {
         const persistedTime = useTimeStore.getState().currentTime;
         if (persistedTime > 0) {
           const restoreSeconds = persistedTime / 1000;
-          if (isFinite(audio.duration) && audio.duration > 0) {
+          if (Number.isFinite(audio.duration) && audio.duration > 0) {
             audio.currentTime = Math.min(restoreSeconds, audio.duration - 1);
           } else {
             audio.currentTime = restoreSeconds;

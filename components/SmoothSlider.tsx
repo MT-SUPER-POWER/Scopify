@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface SmoothSliderProps {
   value: number; // 0-100
@@ -47,7 +47,6 @@ export const SmoothSlider = ({
   const scaleValue = Math.max(0, Math.min(100, value)) / 100;
   const scaleBuffered = Math.max(0, Math.min(100, bufferedValue)) / 100;
 
-
   const calculateValue = useCallback(
     (clientX: number, clientY: number) => {
       if (!trackRef.current) return;
@@ -62,18 +61,24 @@ export const SmoothSlider = ({
 
       onChange(Math.max(0, Math.min(100, percent)), false);
     },
-    [isVertical, onChange]
+    [isVertical, onChange],
   );
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsDragging(true);
-    calculateValue(e.clientX, e.clientY);
-  }, [calculateValue]);
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      setIsDragging(true);
+      calculateValue(e.clientX, e.clientY);
+    },
+    [calculateValue],
+  );
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging) return;
-    calculateValue(e.clientX, e.clientY);
-  }, [isDragging, calculateValue]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDragging) return;
+      calculateValue(e.clientX, e.clientY);
+    },
+    [isDragging, calculateValue],
+  );
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
@@ -83,15 +88,21 @@ export const SmoothSlider = ({
     }
   }, [onChange, value]);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    setIsDragging(true);
-    calculateValue(e.touches[0].clientX, e.touches[0].clientY);
-  }, [calculateValue]);
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      setIsDragging(true);
+      calculateValue(e.touches[0].clientX, e.touches[0].clientY);
+    },
+    [calculateValue],
+  );
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!isDragging || e.touches.length === 0) return;
-    calculateValue(e.touches[0].clientX, e.touches[0].clientY);
-  }, [isDragging, calculateValue]);
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!isDragging || e.touches.length === 0) return;
+      calculateValue(e.touches[0].clientX, e.touches[0].clientY);
+    },
+    [isDragging, calculateValue],
+  );
 
   const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
@@ -147,8 +158,20 @@ export const SmoothSlider = ({
             transformOrigin: isVertical ? "bottom center" : "left center",
             transition: "transform 0.25s linear", // 缓冲进度更新慢，可以保留 transition
             ...(isVertical
-              ? { width: "100%", height: "100%", bottom: 0, left: 0, transform: `scaleY(${scaleBuffered})` }
-              : { height: "100%", width: "100%", top: 0, left: 0, transform: `scaleX(${scaleBuffered})` }),
+              ? {
+                  width: "100%",
+                  height: "100%",
+                  bottom: 0,
+                  left: 0,
+                  transform: `scaleY(${scaleBuffered})`,
+                }
+              : {
+                  height: "100%",
+                  width: "100%",
+                  top: 0,
+                  left: 0,
+                  transform: `scaleX(${scaleBuffered})`,
+                }),
           }}
         />
 
@@ -160,8 +183,20 @@ export const SmoothSlider = ({
             transformOrigin: isVertical ? "bottom center" : "left center",
             transition: isDragging ? "none" : "background-color 0.2s", // ⚠️ 彻底砍掉 transform/width 的过渡动画
             ...(isVertical
-              ? { width: "100%", height: "100%", bottom: 0, left: 0, transform: `scaleY(${scaleValue})` }
-              : { height: "100%", width: "100%", top: 0, left: 0, transform: `scaleX(${scaleValue})` }),
+              ? {
+                  width: "100%",
+                  height: "100%",
+                  bottom: 0,
+                  left: 0,
+                  transform: `scaleY(${scaleValue})`,
+                }
+              : {
+                  height: "100%",
+                  width: "100%",
+                  top: 0,
+                  left: 0,
+                  transform: `scaleX(${scaleValue})`,
+                }),
           }}
         />
       </div>
@@ -177,15 +212,15 @@ export const SmoothSlider = ({
           opacity: isThumbVisible ? 1 : 0,
           ...(isVertical
             ? {
-              left: `calc(50% - ${thumbSize / 2}px)`,
-              bottom: `calc(${value}% - ${thumbSize / 2}px)`,
-              transform: isThumbVisible ? "scale(1)" : "scale(0)",
-            }
+                left: `calc(50% - ${thumbSize / 2}px)`,
+                bottom: `calc(${value}% - ${thumbSize / 2}px)`,
+                transform: isThumbVisible ? "scale(1)" : "scale(0)",
+              }
             : {
-              top: `calc(50% - ${thumbSize / 2}px)`,
-              left: `calc(${value}% - ${thumbSize / 2}px)`,
-              transform: isThumbVisible ? "scale(1)" : "scale(0)",
-            }),
+                top: `calc(50% - ${thumbSize / 2}px)`,
+                left: `calc(${value}% - ${thumbSize / 2}px)`,
+                transform: isThumbVisible ? "scale(1)" : "scale(0)",
+              }),
         }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}

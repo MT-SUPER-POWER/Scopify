@@ -3,7 +3,7 @@ import { useUserStore } from "@/store";
 
 export interface LoginInfo {
   isLoggedIn: boolean;
-  loginType: 'token' | 'cookie' | 'qr' | 'uid' | null;
+  loginType: "token" | "cookie" | "qr" | "uid" | null;
   hasToken: boolean;
   hasUser: boolean;
   user: any;
@@ -15,7 +15,7 @@ export interface LoginInfo {
  * @param ctcode 国家区号，默认86
  */
 export function sendCaptcha(phone: string, ctcode: string | number = 86) {
-  return request.get('/captcha/sent', { params: { phone, ctcode } });
+  return request.get("/captcha/sent", { params: { phone, ctcode } });
 }
 
 /**
@@ -24,15 +24,19 @@ export function sendCaptcha(phone: string, ctcode: string | number = 86) {
  * @param captcha 验证码
  * @param ctcode 国家区号，默认86
  */
-export function verifyCaptcha(phone: string, captcha: string | number, ctcode: string | number = 86) {
-  return request.get('/captcha/verify', { params: { phone, captcha, ctcode } });
+export function verifyCaptcha(
+  phone: string,
+  captcha: string | number,
+  ctcode: string | number = 86,
+) {
+  return request.get("/captcha/verify", { params: { phone, captcha, ctcode } });
 }
 
 /**
  * 清除登录状态
  */
 export function clearLoginStatus(): void {
-  localStorage.removeItem('music_cookie');
-  localStorage.removeItem('user_id');
+  localStorage.removeItem("music_cookie");
+  localStorage.removeItem("user_id");
   useUserStore.getState().setUserId("");
 }

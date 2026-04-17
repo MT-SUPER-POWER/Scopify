@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { IoMusicalNotesOutline } from "react-icons/io5";
 
 export function SongTitle({ title }: { title: string }) {
@@ -7,7 +7,6 @@ export function SongTitle({ title }: { title: string }) {
   const textRef = useRef<HTMLSpanElement>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [offset, setOffset] = useState(0);
-
 
   // 获取文字的长度和被包含的容器大小，两个做差就是要滚动的 offset
   useEffect(() => {
@@ -27,7 +26,7 @@ export function SongTitle({ title }: { title: string }) {
     checkOverflow();
     window.addEventListener("resize", checkOverflow);
     return () => window.removeEventListener("resize", checkOverflow);
-  }, [title]);
+  }, []);
 
   return (
     <div className="group flex items-center justify-center gap-2 p-2.5 text-zinc-300 hover:bg-white/5 rounded-md cursor-pointer transition-colors overflow-hidden">
@@ -43,24 +42,27 @@ export function SongTitle({ title }: { title: string }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             className="inline-block whitespace-nowrap absolute left-0"
-            whileHover={isOverflowing ? {
-              x: [-0, -offset],
-              transition: {
-                x: {
-                  delay: 0.5,
-                  duration: offset / 30 + 1, // 根据长度动态计算速度
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "easeInOut"
-                }
-              }
-            } : {}}
+            whileHover={
+              isOverflowing
+                ? {
+                    x: [-0, -offset],
+                    transition: {
+                      x: {
+                        delay: 0.5,
+                        duration: offset / 30 + 1, // 根据长度动态计算速度
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut",
+                      },
+                    },
+                  }
+                : {}
+            }
           >
             {title}
           </motion.span>
         </AnimatePresence>
       </div>
-
     </div>
   );
 }

@@ -12,7 +12,7 @@ export interface Album {
   id: string;
   title: string;
   releaseYear: number;
-  type: 'Album' | 'Single' | 'EP';
+  type: "Album" | "Single" | "EP";
   coverUrl: string;
 }
 
@@ -32,22 +32,21 @@ export interface ArtistPageData {
   discography: Album[];
 }
 
-
 /**
  * 获取歌手详情
  */
 export function getRecommendedSongs(id: number | string) {
-  return request.get('/artists/detail', {
-    params: { id }
-  })
+  return request.get("/artists/detail", {
+    params: { id },
+  });
 }
 
 /**
  * 获取热门歌手列表
  */
 export function getHotArtists(limit: number = 10) {
-  return request.get('/top/artists', {
-    params: { limit }
+  return request.get("/top/artists", {
+    params: { limit },
   });
 }
 
@@ -55,8 +54,8 @@ export function getHotArtists(limit: number = 10) {
  * 获取歌手详情（含 briefDesc、cover 等）
  */
 export function getAritstDetail(id: number | string) {
-  return request.get('/artist/detail', {
-    params: { id }
+  return request.get("/artist/detail", {
+    params: { id },
   });
 }
 
@@ -64,8 +63,8 @@ export function getAritstDetail(id: number | string) {
  * 获取歌手粉丝数
  */
 export function getFansCnt(id: number | string) {
-  return request.get('/artist/follow/count', {
-    params: { id }
+  return request.get("/artist/follow/count", {
+    params: { id },
   });
 }
 
@@ -73,8 +72,8 @@ export function getFansCnt(id: number | string) {
  * 获取歌手热门歌曲
  */
 export function getArtistTopSongs(id: number | string) {
-  return request.get('/v1/artist/songs', {
-    params: { id }
+  return request.get("/v1/artist/songs", {
+    params: { id },
   });
 }
 
@@ -85,8 +84,8 @@ export function getArtistTopSongs(id: number | string) {
  * @param offset 分页偏移
  */
 export function getArtistAlbums(id: number | string, limit = 10, offset = 0) {
-  return request.get('/artist/album', {
-    params: { id, limit, offset }
+  return request.get("/artist/album", {
+    params: { id, limit, offset },
   });
 }
 
@@ -94,7 +93,7 @@ export function getArtistAlbums(id: number | string, limit = 10, offset = 0) {
  * 获取歌手 MV 列表
  */
 export function getArtistMVs(id: number | string) {
-  return request.get('/artist/mv', {
-    params: { id }
+  return request.get("/artist/mv", {
+    params: { id },
   });
 }

@@ -1,9 +1,8 @@
-import fs from "fs";
-import { test, expect } from "bun:test";
+import { expect, test } from "bun:test";
+import fs from "node:fs";
+import path from "node:path/win32";
 import * as yaml from "js-yaml";
-import path from "path/win32";
-import { AppConfig } from "@/types/config";
-
+import type { AppConfig } from "@/types/config";
 
 test("Yaml read from file", () => {
   // 同步读取

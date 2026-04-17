@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 
 const MIN_COL = 60;
 
@@ -6,7 +6,12 @@ export function useColumnResize() {
   const [widths, setWidths] = useState({ title: 300, album: 200, date: 140, like: 80 });
   const refs = useRef(widths);
 
-  const makeHandler = (leftKey: keyof typeof widths, rightKey: keyof typeof widths, leftMin = MIN_COL, rightMin = MIN_COL) => {
+  const makeHandler = (
+    leftKey: keyof typeof widths,
+    rightKey: keyof typeof widths,
+    leftMin = MIN_COL,
+    rightMin = MIN_COL,
+  ) => {
     return (e: React.MouseEvent) => {
       e.preventDefault();
       const startX = e.clientX;

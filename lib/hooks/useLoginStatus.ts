@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useUserStore } from "@/store";
-import { useState, useEffect } from "react";
 
 export function useLoginStatus(): boolean {
   const isStoreLogin = useUserStore((state) => !!state.user?.userId);
@@ -9,7 +9,7 @@ export function useLoginStatus(): boolean {
 
   useEffect(() => {
     // useEffect 只会在客户端浏览器执行
-    const storage = localStorage.getItem('user_id');
+    const storage = localStorage.getItem("user_id");
     setIsLogin(isStoreLogin || !!storage);
   }, [isStoreLogin]);
 

@@ -1,20 +1,21 @@
 "use client";
 
-import { useMemo, useEffect, useRef, useCallback } from "react";
+import { parseLrc } from "@applemusic-like-lyrics/lyric";
 import dynamic from "next/dynamic";
-import { parseLrc, parseYrc } from "@applemusic-like-lyrics/lyric";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import "@applemusic-like-lyrics/core/style.css";
 import { usePlayerStore } from "@/store";
 import { useTimeStore } from "@/store/module/time"; // 引入你刚才提到的 time store
 
 const LyricPlayer = dynamic(
   () => import("@applemusic-like-lyrics/react").then((mod) => mod.LyricPlayer),
-  { ssr: false }
+  { ssr: false },
 );
 
 export const LyricRenderer = () => {
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const lyric = usePlayerStore((s) => s.lyric);
+  const _currentSongId = usePlayerStore((s) => s.currentSongDetail?.id);
 
   // 换用 Zustand 管理时间
   const currentTimeMs = useTimeStore((s) => s.currentTime);
@@ -24,7 +25,7 @@ export const LyricRenderer = () => {
   const handleClickLyricLine = (event: any) => {
     const targetTime = event?.line?.lyricLine?.startTime;
 
-    if (targetTime !== undefined && isFinite(targetTime)) {
+    if (targetTime !== undefined && Number.isFinite(targetTime)) {
       // 1. 告知 Audio 去更新当前时间和跳转位置一致
       window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
 
@@ -51,7 +52,9 @@ export const LyricRenderer = () => {
             player.scrollToIndex = Math.min(...player.bufferedLines);
           } else {
             // 如果 hotLines 为空，手动去全量数组里查第一个大于等于目标时间的行
-            const foundIndex = player.processedLines.findIndex((line: any) => line.startTime >= targetTime);
+            const foundIndex = player.processedLines.findIndex(
+              (line: any) => line.startTime >= targetTime,
+            );
             player.scrollToIndex = foundIndex === -1 ? player.processedLines.length : foundIndex;
           }
 
@@ -61,11 +64,11 @@ export const LyricRenderer = () => {
         }
       }
     }
-  }
+  };
 
   /**
- * FIXME: 这是一个临时的修补方案，用于解决使用 lyric 点击跳转位置不正确的情况，等待 AMLL 后续版本修复后可以删除。
- */
+   * FIXME: 这是一个临时的修补方案，用于解决使用 lyric 点击跳转位置不正确的情况，等待 AMLL 后续版本修复后可以删除。
+   */
   // Lyric Ref
   const lyricRef = useRef<any>(null);
 
@@ -87,6 +90,11 @@ export const LyricRenderer = () => {
     isPlayingRef.current = isPlaying;
   }, [isPlaying]);
 
+  useEffect(() => {
+    latestTimeMsRef.current = 0;
+    lastPushedTimeRef.current = 0;
+    ignorePlayerTimeUntilRef.current = 0;
+  }, []);
 
   // 触发手动回溯模式（用户滚轮或滑动时触发）
   const handleUserInteraction = useCallback(() => {
@@ -158,9 +166,9 @@ export const LyricRenderer = () => {
         const lineStart = line.words[0]?.startTime ?? 0;
         const nextLineStart = arr[i + 1]?.words[0]?.startTime;
         const lineEnd =
-          nextLineStart !== undefined && isFinite(nextLineStart)
+          nextLineStart !== undefined && Number.isFinite(nextLineStart)
             ? nextLineStart
-            : isFinite(line.endTime)
+            : Number.isFinite(line.endTime)
               ? line.endTime
               : lineStart + 5000;
 
@@ -169,18 +177,20 @@ export const LyricRenderer = () => {
             const wordStart = w.startTime ?? lineStart;
             const nextWordStart = warr[wi + 1]?.startTime;
             let wordEnd =
-              nextWordStart !== undefined && isFinite(nextWordStart) ? nextWordStart : lineEnd;
-            if (!isFinite(wordEnd)) wordEnd = wordStart + 500;
+              nextWordStart !== undefined && Number.isFinite(nextWordStart)
+                ? nextWordStart
+                : lineEnd;
+            if (!Number.isFinite(wordEnd)) wordEnd = wordStart + 500;
             return {
               word: w.word,
-              startTime: isFinite(wordStart) ? wordStart : 0,
+              startTime: Number.isFinite(wordStart) ? wordStart : 0,
               endTime: wordEnd,
               romanWord: "",
               obscene: false,
             };
           }),
-          startTime: isFinite(lineStart) ? lineStart : 0,
-          endTime: isFinite(lineEnd) ? lineEnd : lineStart + 5000,
+          startTime: Number.isFinite(lineStart) ? lineStart : 0,
+          endTime: Number.isFinite(lineEnd) ? lineEnd : lineStart + 5000,
           translatedLyric: "",
           romanLyric: "",
           isBG: false,

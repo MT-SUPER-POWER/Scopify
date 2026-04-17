@@ -1,13 +1,13 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { Clock, Search, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { searchDefault, searchSuggest } from "@/lib/api/search";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { cn } from "@/lib/utils";
 import { useSearchStore } from "@/store/module/search";
-import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Search, X, Clock } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
-import { HighlightText, SuggestItem, SuggestTag } from "./SearchHelper";
+import { HighlightText, type SuggestItem, SuggestTag } from "./SearchHelper";
 
 const NAV_BTN = "bg-black/50 hover:bg-black/70";
 const GLASS = cn(
@@ -59,14 +59,20 @@ export default function HeaderSearch() {
 
   // 请求搜索建议
   useEffect(() => {
-    if (!localValue.trim()) { setSuggests([]); return; }
+    if (!localValue.trim()) {
+      setSuggests([]);
+      return;
+    }
     setLoading(true);
     const t = setTimeout(async () => {
       try {
         const res = await searchSuggest(localValue.trim());
         setSuggests(res.data?.data?.suggests ?? []);
-      } catch { setSuggests([]); }
-      finally { setLoading(false); }
+      } catch {
+        setSuggests([]);
+      } finally {
+        setLoading(false);
+      }
     }, 200);
     return () => clearTimeout(t);
   }, [localValue]);
@@ -83,13 +89,21 @@ export default function HeaderSearch() {
         let idx = 0;
         if (!localValue && !isSearching) setStorePlaceholder(kws[0]);
         const iv = setInterval(() => {
-          if (!localValue && !isSearching) { idx = (idx + 1) % kws.length; setStorePlaceholder(kws[idx]); }
+          if (!localValue && !isSearching) {
+            idx = (idx + 1) % kws.length;
+            setStorePlaceholder(kws[idx]);
+          }
         }, 10000);
         intervalRef.current = iv as unknown as number;
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error(e);
+      }
     };
     fetchHot();
-    return () => { isActive = false; if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => {
+      isActive = false;
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [localValue, isSearching, setStorePlaceholder]);
 
   // 点击外部关闭下拉框
@@ -104,36 +118,45 @@ export default function HeaderSearch() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const handleSearch = useCallback((keyword?: string) => {
-    const trimmed = (keyword ?? localValue).trim();
-    const query = trimmed || placeholder;
-    if (!query) return;
-    if (trimmed) addRecent(trimmed);
-    setOpen(false);
-    setFocused(false);
-    inputRef.current?.blur();
-    smartRouter.replace(`/search?keywords=${encodeURIComponent(query)}`);
-  }, [localValue, placeholder, addRecent, smartRouter]);
+  const handleSearch = useCallback(
+    (keyword?: string) => {
+      const trimmed = (keyword ?? localValue).trim();
+      const query = trimmed || placeholder;
+      if (!query) return;
+      if (trimmed) addRecent(trimmed);
+      setOpen(false);
+      setFocused(false);
+      inputRef.current?.blur();
+      smartRouter.replace(`/search?keywords=${encodeURIComponent(query)}`);
+    },
+    [localValue, placeholder, addRecent, smartRouter],
+  );
 
-  const handleSelect = useCallback((keyword: string) => {
-    setLocalValue(keyword);
-    setGlobalQuery(keyword);
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, [setGlobalQuery]);
+  const handleSelect = useCallback(
+    (keyword: string) => {
+      setLocalValue(keyword);
+      setGlobalQuery(keyword);
+      setTimeout(() => inputRef.current?.focus(), 0);
+    },
+    [setGlobalQuery],
+  );
 
   // 单双击拦截器
-  const handleItemClick = useCallback((keyword: string) => {
-    if (clickTimeoutRef.current) {
-      window.clearTimeout(clickTimeoutRef.current);
-      clickTimeoutRef.current = null;
-      handleSearch(keyword);
-    } else {
-      clickTimeoutRef.current = window.setTimeout(() => {
-        handleSelect(keyword);
+  const _handleItemClick = useCallback(
+    (keyword: string) => {
+      if (clickTimeoutRef.current) {
+        window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
-      }, 250);
-    }
-  }, [handleSearch, handleSelect]);
+        handleSearch(keyword);
+      } else {
+        clickTimeoutRef.current = window.setTimeout(() => {
+          handleSelect(keyword);
+          clickTimeoutRef.current = null;
+        }, 250);
+      }
+    },
+    [handleSearch, handleSelect],
+  );
 
   const showRecent = !localValue && recentList.length > 0;
   const showSuggests = !!localValue && suggests.length > 0;
@@ -143,22 +166,31 @@ export default function HeaderSearch() {
   return (
     <div ref={wrapperRef} className="relative flex-1">
       {/* ── 搜索输入框 ── */}
-      <div className={cn(
-        "group flex items-center gap-3 px-5 transition-all duration-200 relative h-11",
-        !focused && !dropdownVisible && `${NAV_BTN} rounded-full border border-transparent`,
-        (focused || dropdownVisible) && GLASS,
-        dropdownVisible ? "rounded-t-2xl rounded-b-none border-b-white/3" : (focused && "rounded-full"),
-      )}>
-        <Search className={cn(
-          "w-4 h-4 shrink-0 transition-colors",
-          focused ? "text-zinc-400" : "text-zinc-500 group-hover:text-zinc-400"
-        )} />
+      <div
+        className={cn(
+          "group flex items-center gap-3 px-5 transition-all duration-200 relative h-11",
+          !focused && !dropdownVisible && `${NAV_BTN} rounded-full border border-transparent`,
+          (focused || dropdownVisible) && GLASS,
+          dropdownVisible
+            ? "rounded-t-2xl rounded-b-none border-b-white/3"
+            : focused && "rounded-full",
+        )}
+      >
+        <Search
+          className={cn(
+            "w-4 h-4 shrink-0 transition-colors",
+            focused ? "text-zinc-400" : "text-zinc-500 group-hover:text-zinc-400",
+          )}
+        />
 
         <input
           ref={inputRef}
           value={localValue}
           onChange={(e) => setLocalValue(e.target.value)}
-          onFocus={() => { setFocused(true); setOpen(true); }}
+          onFocus={() => {
+            setFocused(true);
+            setOpen(true);
+          }}
           onBlur={() => {
             setTimeout(() => {
               if (!wrapperRef.current?.contains(document.activeElement)) setFocused(false);
@@ -169,21 +201,30 @@ export default function HeaderSearch() {
           placeholder={placeholder}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch();
-            if (e.key === "Escape") { setOpen(false); setFocused(false); inputRef.current?.blur(); }
+            if (e.key === "Escape") {
+              setOpen(false);
+              setFocused(false);
+              inputRef.current?.blur();
+            }
           }}
         />
 
         {localValue ? (
           <button
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => { setLocalValue(""); setSuggests([]); }}
+            onClick={() => {
+              setLocalValue("");
+              setSuggests([]);
+            }}
             className="p-1 hover:bg-white/10 rounded-full transition-colors shrink-0"
           >
             <X className="w-3.5 h-3.5 text-zinc-500 hover:text-white" />
           </button>
         ) : (
-          <div className="hidden lg:flex items-center gap-1 shrink-0 text-zinc-600
-            border border-zinc-700/60 rounded-md px-1.5 py-0.5 text-[10px] font-bold bg-white/3">
+          <div
+            className="hidden lg:flex items-center gap-1 shrink-0 text-zinc-600
+            border border-zinc-700/60 rounded-md px-1.5 py-0.5 text-[10px] font-bold bg-white/3"
+          >
             <span>{isMac ? "⌘" : "Ctrl"}</span>
             <span>K</span>
           </div>
@@ -238,7 +279,10 @@ export default function HeaderSearch() {
                     </div>
                     <button
                       onMouseDown={(e) => e.stopPropagation()}
-                      onClick={(e) => { e.stopPropagation(); removeRecent(item); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeRecent(item);
+                      }}
                       className="opacity-0 group-hover/item:opacity-100 p-1.5 rounded-full
                         hover:bg-white/10 transition-all shrink-0"
                     >
@@ -290,7 +334,9 @@ export default function HeaderSearch() {
 
             {/* 空状态 */}
             {showEmpty && (
-              <div className="py-6 text-center text-sm text-zinc-600">No relevant content found</div>
+              <div className="py-6 text-center text-sm text-zinc-600">
+                No relevant content found
+              </div>
             )}
           </motion.div>
         )}

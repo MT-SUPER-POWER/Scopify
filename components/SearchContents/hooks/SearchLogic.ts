@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { useSearchStore } from "@/store/module/search";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
-import { SuggestItem } from "../SearchHelper";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSearchStore } from "@/store/module/search";
+import type { SuggestItem } from "../SearchHelper";
 
 interface UseSearchLogicProps {
   inputRef: React.RefObject<HTMLInputElement | null>;
   onClose?: () => void; // 触发搜索或按 Esc 时的回调（关闭弹窗或下拉）
-  isActive?: boolean;   // 组件是否处于激活状态 (例如 Modal isOpen)
+  isActive?: boolean; // 组件是否处于激活状态 (例如 Modal isOpen)
 }
 
 export function useSearchLogic({ inputRef, onClose, isActive = true }: UseSearchLogicProps) {
@@ -78,36 +78,45 @@ export function useSearchLogic({ inputRef, onClose, isActive = true }: UseSearch
   // ─────────────────────────────────────────────────────────────────
   // 2. 行为拦截与处理 (单击/双击)
   // ─────────────────────────────────────────────────────────────────
-  const handleSearch = useCallback((keyword?: string) => {
-    const trimmed = (keyword ?? localValue).trim();
-    const query = trimmed || placeholder;
-    if (!query) return;
-    if (trimmed) addRecent(trimmed);
+  const handleSearch = useCallback(
+    (keyword?: string) => {
+      const trimmed = (keyword ?? localValue).trim();
+      const query = trimmed || placeholder;
+      if (!query) return;
+      if (trimmed) addRecent(trimmed);
 
-    inputRef.current?.blur();
-    smartRouter.replace(`/search?keywords=${encodeURIComponent(query)}`);
-    onClose?.();
-  }, [localValue, placeholder, addRecent, smartRouter, onClose, inputRef]);
+      inputRef.current?.blur();
+      smartRouter.replace(`/search?keywords=${encodeURIComponent(query)}`);
+      onClose?.();
+    },
+    [localValue, placeholder, addRecent, smartRouter, onClose, inputRef],
+  );
 
-  const handleSelect = useCallback((keyword: string) => {
-    setLocalValue(keyword);
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, [inputRef]);
+  const handleSelect = useCallback(
+    (keyword: string) => {
+      setLocalValue(keyword);
+      setTimeout(() => inputRef.current?.focus(), 0);
+    },
+    [inputRef],
+  );
 
   const clickTimeoutRef = useRef<number | null>(null);
 
-  const handleItemClick = useCallback((keyword: string) => {
-    if (clickTimeoutRef.current) {
-      window.clearTimeout(clickTimeoutRef.current);
-      clickTimeoutRef.current = null;
-      handleSearch(keyword);
-    } else {
-      clickTimeoutRef.current = window.setTimeout(() => {
-        handleSelect(keyword);
+  const handleItemClick = useCallback(
+    (keyword: string) => {
+      if (clickTimeoutRef.current) {
+        window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
-      }, 250);
-    }
-  }, [handleSearch, handleSelect]);
+        handleSearch(keyword);
+      } else {
+        clickTimeoutRef.current = window.setTimeout(() => {
+          handleSelect(keyword);
+          clickTimeoutRef.current = null;
+        }, 250);
+      }
+    },
+    [handleSearch, handleSelect],
+  );
 
   useEffect(() => {
     return () => {
@@ -118,36 +127,47 @@ export function useSearchLogic({ inputRef, onClose, isActive = true }: UseSearch
   // ─────────────────────────────────────────────────────────────────
   // 3. 键盘导航
   // ─────────────────────────────────────────────────────────────────
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (!isActive) return;
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!isActive) return;
 
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setSelectedIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (selectedIndex >= 0 && selectedIndex < items.length) {
-        handleSearch(items[selectedIndex]);
-      } else {
-        handleSearch(localValue);
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (selectedIndex >= 0 && selectedIndex < items.length) {
+          handleSearch(items[selectedIndex]);
+        } else {
+          handleSearch(localValue);
+        }
+      } else if (e.key === "Escape") {
+        onClose?.();
       }
-    } else if (e.key === "Escape") {
-      onClose?.();
-    }
-  }, [isActive, items, selectedIndex, handleSearch, localValue, onClose]);
+    },
+    [isActive, items, selectedIndex, handleSearch, localValue, onClose],
+  );
 
   // 开放给 UI 层的状态和方法
   return {
-    localValue, setLocalValue,
-    suggests, setSuggests,
+    localValue,
+    setLocalValue,
+    suggests,
+    setSuggests,
     loading,
     selectedIndex,
     placeholder,
-    recentList, removeRecent,
-    showRecent, showSuggests, showEmpty, hasContent,
-    handleSearch, handleItemClick, handleKeyDown,
+    recentList,
+    removeRecent,
+    showRecent,
+    showSuggests,
+    showEmpty,
+    hasContent,
+    handleSearch,
+    handleItemClick,
+    handleKeyDown,
   };
 }

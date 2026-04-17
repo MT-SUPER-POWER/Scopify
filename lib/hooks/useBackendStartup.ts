@@ -31,7 +31,8 @@ export function useBackendStartup() {
 
     let cancelled = false;
 
-    window.electronAPI.getBackendStatus()
+    window.electronAPI
+      .getBackendStatus()
       .then((nextStatus) => {
         if (!cancelled) {
           setStatus(nextStatus);

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 /**
  * 等待后端服务就绪
@@ -6,7 +6,11 @@ import axios from 'axios';
  * @param timeout 最大等待时间 (ms)
  * @param interval 检查间隔 (ms)
  */
-export async function waitForBackend(url: string, timeout: number = 10000, interval: number = 500): Promise<boolean> {
+export async function waitForBackend(
+  url: string,
+  timeout: number = 10000,
+  interval: number = 500,
+): Promise<boolean> {
   const startTime = Date.now();
   while (Date.now() - startTime < timeout) {
     try {
@@ -16,11 +20,11 @@ export async function waitForBackend(url: string, timeout: number = 10000, inter
       return true;
     } catch (e: any) {
       // 如果是 ECONNREFUSED 说明还没起来，如果是其他错误说明响应了
-      if (e.code !== 'ECONNREFUSED' && e.code !== 'ETIMEDOUT') {
+      if (e.code !== "ECONNREFUSED" && e.code !== "ETIMEDOUT") {
         return true;
       }
     }
-    await new Promise(resolve => setTimeout(resolve, interval));
+    await new Promise((resolve) => setTimeout(resolve, interval));
   }
   return false;
 }

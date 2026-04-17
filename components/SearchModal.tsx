@@ -1,24 +1,20 @@
-'use client';
+"use client";
 
-import { motion, AnimatePresence } from "motion/react";
 import { CornerDownLeft, Search, X } from "lucide-react";
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { useSearchStore } from "@/store/module/search";
-import { useSmartRouter } from '@/lib/hooks/useSmartRouter';
-import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "motion/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
-import { HighlightText, SuggestItem, SuggestTag } from "./SearchContents/SearchHelper";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { cn } from "@/lib/utils";
+import { useSearchStore } from "@/store/module/search";
+import { useI18n } from "@/store/module/i18n";
+import { HighlightText, type SuggestItem, SuggestTag } from "./SearchContents/SearchHelper";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MODAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export const SearchModal = ({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) => {
+export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const smartRouter = useSmartRouter();
+  const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const setGlobalQuery = useSearchStore((s) => s.setQuery);
@@ -42,18 +38,21 @@ export const SearchModal = ({
   // 获取当前可见的项
   const items = useMemo(() => {
     if (showRecent) return recentList;
-    if (showSuggests) return suggests.map(s => s.keyword);
+    if (showSuggests) return suggests.map((s) => s.keyword);
     return [];
   }, [showRecent, recentList, showSuggests, suggests]);
 
-  const handleSearch = useCallback((query: string) => {
-    const trimmed = query.trim();
-    if (!trimmed) return;
-    setGlobalQuery(trimmed);
-    addRecent(trimmed);
-    smartRouter.replace(`/search?keywords=${encodeURIComponent(trimmed)}`);
-    onClose();
-  }, [smartRouter, onClose, setGlobalQuery, addRecent]);
+  const handleSearch = useCallback(
+    (query: string) => {
+      const trimmed = query.trim();
+      if (!trimmed) return;
+      setGlobalQuery(trimmed);
+      addRecent(trimmed);
+      smartRouter.replace(`/search?keywords=${encodeURIComponent(trimmed)}`);
+      onClose();
+    },
+    [smartRouter, onClose, setGlobalQuery, addRecent],
+  );
 
   // 打开时聚焦 + 通知 store
   useEffect(() => {
@@ -98,27 +97,30 @@ export const SearchModal = ({
   }, [localValue]);
 
   // 键盘导航处理
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (!isOpen) return;
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!isOpen) return;
 
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setSelectedIndex(prev => (prev < items.length - 1 ? prev + 1 : 0));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setSelectedIndex(prev => (prev > 0 ? prev - 1 : items.length - 1));
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (selectedIndex >= 0 && selectedIndex < items.length) {
-        const selected = items[selectedIndex];
-        handleSearch(selected);
-      } else {
-        handleSearch(localValue);
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (selectedIndex >= 0 && selectedIndex < items.length) {
+          const selected = items[selectedIndex];
+          handleSearch(selected);
+        } else {
+          handleSearch(localValue);
+        }
+      } else if (e.key === "Escape") {
+        onClose();
       }
-    } else if (e.key === "Escape") {
-      onClose();
-    }
-  }, [isOpen, items, selectedIndex, handleSearch, localValue, onClose]);
+    },
+    [isOpen, items, selectedIndex, handleSearch, localValue, onClose],
+  );
 
   // Esc 关闭 (保持原有的全局监听以防 input 没聚焦时也没法关)
   useEffect(() => {
@@ -141,21 +143,24 @@ export const SearchModal = ({
   // ─────────────────────────────────────────────────────────────────
   const clickTimeoutRef = useRef<number | null>(null);
 
-  const handleItemClick = useCallback((keyword: string) => {
-    if (clickTimeoutRef.current) {
-      // 250ms 内触发了第二次点击 -> 判定为【双击】，直接搜索跳转
-      window.clearTimeout(clickTimeoutRef.current);
-      clickTimeoutRef.current = null;
-      handleSearch(keyword);
-    } else {
-      // 第一次点击 -> 开启 250ms 定时器
-      clickTimeoutRef.current = window.setTimeout(() => {
-        // 超时未触发第二次点击 -> 判定为【单击】，填入输入框
-        handleSelect(keyword);
+  const _handleItemClick = useCallback(
+    (keyword: string) => {
+      if (clickTimeoutRef.current) {
+        // 250ms 内触发了第二次点击 -> 判定为【双击】，直接搜索跳转
+        window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
-      }, 250);
-    }
-  }, [handleSearch, handleSelect]);
+        handleSearch(keyword);
+      } else {
+        // 第一次点击 -> 开启 250ms 定时器
+        clickTimeoutRef.current = window.setTimeout(() => {
+          // 超时未触发第二次点击 -> 判定为【单击】，填入输入框
+          handleSelect(keyword);
+          clickTimeoutRef.current = null;
+        }, 250);
+      }
+    },
+    [handleSearch, handleSelect],
+  );
 
   // 组件卸载时清理定时器，防止内存泄漏
   useEffect(() => {
@@ -189,14 +194,15 @@ export const SearchModal = ({
             className="fixed left-1/2 top-[14vh] z-50 w-full max-w-2xl -translate-x-1/2 px-4 no-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={cn(
-              // 亚克力玻璃感核心：半透明背景 + 强模糊 + 微亮边框
-              "rounded-2xl overflow-hidden",
-              "bg-white/[0.07] backdrop-blur-2xl",
-              "border border-white/12",
-              "shadow-[0_32px_64px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.1)]",
-            )}>
-
+            <div
+              className={cn(
+                // 亚克力玻璃感核心：半透明背景 + 强模糊 + 微亮边框
+                "rounded-2xl overflow-hidden",
+                "bg-white/[0.07] backdrop-blur-2xl",
+                "border border-white/12",
+                "shadow-[0_32px_64px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.1)]",
+              )}
+            >
               {/* ── 输入行 ── */}
               <div className="flex items-center gap-3 px-5 py-4">
                 <Search className="w-5 h-5 text-zinc-400 shrink-0" />
@@ -208,7 +214,7 @@ export const SearchModal = ({
                   className={cn(
                     "flex-1 bg-transparent border-none outline-none",
                     "text-white text-base font-medium placeholder:text-zinc-500",
-                    "caret-[#1ed760]"
+                    "caret-[#1ed760]",
                   )}
                   onKeyDown={handleKeyDown}
                 />
@@ -218,7 +224,10 @@ export const SearchModal = ({
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    onClick={() => { setLocalValue(""); setSuggests([]); }}
+                    onClick={() => {
+                      setLocalValue("");
+                      setSuggests([]);
+                    }}
                     className="p-1.5 hover:bg-white/10 rounded-full transition-colors shrink-0"
                   >
                     <X className="w-3.5 h-3.5 text-zinc-400" />
@@ -234,7 +243,7 @@ export const SearchModal = ({
                     "text-[11px] font-semibold text-zinc-400",
                     "border border-white/10 bg-white/5",
                     "hover:bg-white/10 hover:text-white transition-all",
-                    "disabled:opacity-30 disabled:cursor-not-allowed"
+                    "disabled:opacity-30 disabled:cursor-not-allowed",
                   )}
                 >
                   <CornerDownLeft className="w-3.5 h-3.5" />
@@ -242,26 +251,23 @@ export const SearchModal = ({
               </div>
 
               {/* ── 分割线（有内容时才显示）── */}
-              {hasContent && (
-                <div className="h-px bg-white/8 mx-5" />
-              )}
+              {hasContent && <div className="h-px bg-white/8 mx-5" />}
 
               {/* ── 内容区 ── */}
               {hasContent && (
                 <div className="max-h-[52vh] overflow-y-auto no-scrollbar py-2">
-
                   {/* 最近搜索 */}
                   {showRecent && (
                     <div>
                       <div className="flex items-center justify-between px-5 py-2">
-                        <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
-                          Recent Searches
+                          <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                          {t("search.modal.recentSearches")}
                         </span>
                         <button
                           onClick={() => useSearchStore.getState().clearRecent()}
                           className="text-[11px] text-zinc-500 hover:text-white transition-colors"
                         >
-                          Clear All
+                          {t("common.action.clearAll")}
                         </button>
                       </div>
                       {recentList.slice(0, 8).map((item, i) => (
@@ -275,25 +281,34 @@ export const SearchModal = ({
                           className={cn(
                             "group/item flex items-center justify-between gap-3 px-5 py-2.5",
                             "hover:bg-white/6 cursor-pointer transition-colors",
-                            selectedIndex === i && "bg-white/10"
+                            selectedIndex === i && "bg-white/10",
                           )}
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             {/* 首字母头像 */}
-                            <div className="w-9 h-9 rounded-full bg-white/8 border border-white/10
-                              flex items-center justify-center shrink-0">
+                            <div
+                              className="w-9 h-9 rounded-full bg-white/8 border border-white/10
+                              flex items-center justify-center shrink-0"
+                            >
                               <span className="text-sm font-semibold text-zinc-300">
                                 {item.charAt(0).toUpperCase()}
                               </span>
                             </div>
                             <div className="flex flex-col min-w-0">
-                              <span className="text-sm text-white font-medium truncate">{item}</span>
-                              <span className="text-[11px] text-zinc-500">Recent Search</span>
+                              <span className="text-sm text-white font-medium truncate">
+                                {item}
+                              </span>
+                              <span className="text-[11px] text-zinc-500">
+                                {t("search.modal.recentSearch")}
+                              </span>
                             </div>
                           </div>
                           <button
                             onMouseDown={(e) => e.stopPropagation()}
-                            onClick={(e) => { e.stopPropagation(); removeRecent(item); }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeRecent(item);
+                            }}
                             className="opacity-0 group-hover/item:opacity-100 p-1.5 rounded-full
                               hover:bg-white/10 transition-all shrink-0"
                           >
@@ -316,7 +331,7 @@ export const SearchModal = ({
                     <div>
                       <div className="px-5 py-2">
                         <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
-                          Related Suggestions
+                          {t("search.modal.relatedSuggestions")}
                         </span>
                       </div>
                       {suggests.map((item, i) => (
@@ -330,7 +345,7 @@ export const SearchModal = ({
                           className={cn(
                             "flex items-center justify-between gap-3 px-5 py-2.5",
                             "hover:bg-white/6 cursor-pointer transition-colors",
-                            selectedIndex === i && "bg-white/10"
+                            selectedIndex === i && "bg-white/10",
                           )}
                         >
                           <div className="flex items-center gap-3 min-w-0">
@@ -348,7 +363,7 @@ export const SearchModal = ({
                   {/* 无结果 */}
                   {showEmpty && (
                     <div className="py-8 text-center text-sm text-zinc-500">
-                      没有找到相关内容
+                      {t("search.modal.noResults")}
                     </div>
                   )}
                 </div>
@@ -357,16 +372,22 @@ export const SearchModal = ({
               {/* ── 底部提示栏 ── */}
               <div className="flex items-center gap-4 px-5 py-3 border-t border-white/6">
                 <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">↑↓</kbd>
-                  <span>Select</span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">
+                    ↑↓
+                  </kbd>
+                  <span>{t("common.action.select")}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">↵</kbd>
-                  <span>Search</span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">
+                    ↵
+                  </kbd>
+                  <span>{t("common.action.search")}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">Ctrl + K</kbd>
-                  <span>Close</span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">
+                    Ctrl + K
+                  </kbd>
+                  <span>{t("common.action.close")}</span>
                 </div>
               </div>
             </div>

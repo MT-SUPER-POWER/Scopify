@@ -1,4 +1,4 @@
-import { UseBoundStore, StoreApi } from 'zustand';
+import type { StoreApi, UseBoundStore } from "zustand";
 
 export function setupStoreSync<T>(store: UseBoundStore<StoreApi<T>>, channelName: string) {
   if (typeof window === "undefined") return;

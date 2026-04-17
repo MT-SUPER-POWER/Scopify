@@ -1,6 +1,6 @@
-import { __logoIcon, __preloadScript, __logoIconPath, appConfig } from "../constants.js";
-import fs from "fs/promises";
+import fs from "node:fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
+import { __logoIcon, __logoIconPath, __preloadScript, appConfig } from "../constants.js";
 
 // 检查图标文件是否存在
 fs.access(__logoIconPath).catch(() => {
@@ -16,8 +16,6 @@ fs.access(__preloadScript).catch(() => {
 export let loginWindow: BrowserWindow | null = null; // 登录窗口实例
 
 export const createLoginWindow = async (mainWin: BrowserWindow) => {
-
-
   // 如果登录窗口已存在，则聚焦并返回
   if (loginWindow && !loginWindow.isDestroyed()) {
     loginWindow.focus();
@@ -27,7 +25,7 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
   loginWindow = new BrowserWindow({
     width: 450,
     height: 600,
-    icon: __logoIcon,                  // 设置应用图标
+    icon: __logoIcon, // 设置应用图标
     resizable: false,
     title: "Login - Scopify",
     autoHideMenuBar: true,
@@ -37,13 +35,11 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
       preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,
-    }
+    },
   });
 
   const devPort = appConfig.frontend.devPort || 3000;
-  const loginUrl = app.isPackaged
-    ? "app://-/login/"
-    : `http://localhost:${devPort}/login`;
+  const loginUrl = app.isPackaged ? "app://-/login/" : `http://localhost:${devPort}/login`;
 
   loginWindow.loadURL(loginUrl);
   loginWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
@@ -59,14 +55,14 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
  * 初始化登录窗口相关的IPC监听
  */
 export function initializeLoginWindow(mainWindow: Electron.BrowserWindow) {
-  ipcMain.on('open-login-window', (event) => {
+  ipcMain.on("open-login-window", (_event) => {
     createLoginWindow(mainWindow);
     loginWindow?.show();
     loginWindow?.focus();
   });
 
-  ipcMain.on('close-login-window', () => {
-    console.log('[Main] Received close-login-window IPC message');
+  ipcMain.on("close-login-window", () => {
+    console.log("[Main] Received close-login-window IPC message");
     loginWindow?.close();
   });
 }

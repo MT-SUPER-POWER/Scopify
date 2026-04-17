@@ -1,15 +1,8 @@
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-
-import serve from "electron-serve";
-import { app, BrowserWindow, dialog } from "electron";
+import { fileURLToPath } from "node:url";
 import type { BrowserWindow as BrowserWindowType } from "electron";
-
-import initTray from "./module/tray.js";
-import initializeLoginWindow from "./module/login.js";
-import { initThumbarButtons } from "./module/thumbarButtons.js";
-import { registerIpcHandlers } from "./module/ipc.js";
-import { getBackendStartupStatus, startManagedBackend, stopManagedBackend } from "./module/backend.js";
+import { app, BrowserWindow, dialog } from "electron";
+import serve from "electron-serve";
 import {
   __logoIcon,
   __logoIconMacPath,
@@ -19,6 +12,16 @@ import {
   cleanOldLogs,
   logger,
 } from "./constants.js";
+import {
+  getBackendStartupStatus,
+  startManagedBackend,
+  stopManagedBackend,
+} from "./module/backend.js";
+import { registerIpcHandlers } from "./module/ipc.js";
+import initializeLoginWindow from "./module/login.js";
+import { applyElectronProxy } from "./module/proxy.js";
+import { initThumbarButtons } from "./module/thumbarButtons.js";
+import initTray from "./module/tray.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -165,11 +168,10 @@ function createWindow() {
       event.preventDefault();
     }
 
-    const isDevToolsKey = (
+    const isDevToolsKey =
       input.key === "F12" ||
       ((input.control || input.meta) && input.shift && input.key.toUpperCase() === "I") ||
-      (process.platform === "darwin" && input.meta && input.alt && input.key.toUpperCase() === "I")
-    );
+      (process.platform === "darwin" && input.meta && input.alt && input.key.toUpperCase() === "I");
 
     if (isDevToolsKey && !appConfig.app.devTools) {
       event.preventDefault();
@@ -223,8 +225,12 @@ if (!gotTheLock) {
     mainWindow.focus();
   });
 
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     logger.info("Scopify ready, creating window...");
+
+    await applyElectronProxy(appConfig).catch((error) => {
+      logger.error("[proxy] failed to apply startup proxy config:", error);
+    });
 
     const backendStartup = startManagedBackend();
     backendStartup

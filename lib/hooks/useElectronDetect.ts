@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { IS_ELECTRON } from '../utils';
+import { IS_ELECTRON } from "../utils";
 
 /**
  * 获取 Electron API（如果在 Electron 环境中）
@@ -27,8 +27,7 @@ export const useFullScreenListener = (callback: (isFullScreen: boolean) => void)
       if (window.electronAPI?.onFullScreenChanged) {
         window.electronAPI.onFullScreenChanged((isFullScreen: boolean) => callback(isFullScreen));
       }
-    }
-    else {
+    } else {
       // Web 环境：监听浏览器的 fullscreenchange 事件
       const handleFullScreenChange = () => {
         const isFullScreen = !!document.fullscreenElement;
@@ -42,5 +41,5 @@ export const useFullScreenListener = (callback: (isFullScreen: boolean) => void)
         document.removeEventListener("fullscreenchange", handleFullScreenChange);
       };
     }
-  }, [isElectron, callback]);
+  }, [callback]);
 };

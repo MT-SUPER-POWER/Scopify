@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface SearchStore {
   query: string;
@@ -49,9 +49,13 @@ export const useSearchStore = create<SearchStore>()(
     {
       name: "search-storage",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ query: state.query, recent: state.recent, placeholder: state.placeholder }),
-    }
-  )
+      partialize: (state) => ({
+        query: state.query,
+        recent: state.recent,
+        placeholder: state.placeholder,
+      }),
+    },
+  ),
 );
 
 export default useSearchStore;

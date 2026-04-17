@@ -8,7 +8,7 @@ import request from "../web/request";
  * @returns
  */
 export function getUserPlaylist(uid: number, limit: number = 30, offset: number = 0) {
-  return request.get('/user/playlist', { params: { uid, limit, offset } });
+  return request.get("/user/playlist", { params: { uid, limit, offset } });
 }
 
 /**
@@ -19,7 +19,7 @@ export function getUserPlaylist(uid: number, limit: number = 30, offset: number 
  * @returns
  */
 export function getUserPlaylistByID(uid: number, limit: number = 30, offset: number = 0) {
-  return request.get('/user/playlist/create', { params: { uid, limit, offset } });
+  return request.get("/user/playlist/create", { params: { uid, limit, offset } });
 }
 
 /**
@@ -30,11 +30,20 @@ export function getUserPlaylistByID(uid: number, limit: number = 30, offset: num
  * @param cookie 请求推荐歌单数据的时候
  * @returns 歌曲列表数据
  */
-export function getPlaylistAllTracks({ id, limit, offset, cookie }: { id: number | string, limit?: number, offset?: number, cookie?: string }) {
+export function getPlaylistAllTracks({
+  id,
+  limit,
+  offset,
+  cookie,
+}: {
+  id: number | string;
+  limit?: number;
+  offset?: number;
+  cookie?: string;
+}) {
   // DEBUG: 后期如果拿不到数据，在这里试试看带上 cookie
-  return request.get('/playlist/track/all', { params: { id, limit, offset } });
+  return request.get("/playlist/track/all", { params: { id, limit, offset } });
 }
-
 
 /**
  * 获取最近播放-歌曲
@@ -42,25 +51,22 @@ export function getPlaylistAllTracks({ id, limit, offset, cookie }: { id: number
  * @returns 最近播放的歌曲列表数据
  */
 export function getRecentSongs(limit: number = 10) {
-  return request.get('/record/recent/song', { params: { limit } });
+  return request.get("/record/recent/song", { params: { limit } });
 }
-
 
 /**
  * 获取用户喜欢的歌曲列表
  */
 export function getUserLikeLists(uid: number | string) {
-  return request.get('/likelist', { params: { uid } });
+  return request.get("/likelist", { params: { uid } });
 }
-
 
 /**
  * 喜欢和取消喜欢
  */
 export function likeSong(id: number | string, like: boolean) {
-  return request.get('/like', { params: { id, like } });
+  return request.get("/like", { params: { id, like } });
 }
-
 
 /**
  *
@@ -68,10 +74,9 @@ export function likeSong(id: number | string, like: boolean) {
  * @param privacy 默认为为公开 10 为私密 0 为普通歌单
  * @returns
  */
-export function createPlaylist(name: string, privacy: string = '0') {
-  return request.get('/playlist/create', { params: { name, privacy } });
+export function createPlaylist(name: string, privacy: string = "0") {
+  return request.get("/playlist/create", { params: { name, privacy } });
 }
-
 
 /**
  *
@@ -79,17 +84,15 @@ export function createPlaylist(name: string, privacy: string = '0') {
  * @returns
  */
 export function delPlaylist(id: number | string) {
-  return request.get('/playlist/delete', { params: { id } });
+  return request.get("/playlist/delete", { params: { id } });
 }
-
 
 // 收藏/取消收藏歌单 (t: 1收藏, 2取消)
 export function subscribePlaylist(t: 1 | 2, id: number | string) {
   return request.get(`/playlist/subscribe`, {
-    params: { t, id }
+    params: { t, id },
   });
 }
-
 
 /**
  * 更新歌单封面
@@ -98,8 +101,8 @@ export function subscribePlaylist(t: 1 | 2, id: number | string) {
  * @param imgSize 图片尺寸, 默认为 300
  */
 export function updatePlaylist(id: number | string, name: string, desc?: string) {
-  return request.get('/playlist/update', {
-    params: { id, name, desc }
+  return request.get("/playlist/update", {
+    params: { id, name, desc },
   });
 }
 
@@ -111,31 +114,31 @@ export function updatePlaylist(id: number | string, name: string, desc?: string)
  */
 export function updatePlaylistCover(id: number | string, imgFile: File, imgSize: number = 300) {
   const formData = new FormData();
-  formData.append('imgFile', imgFile);
+  formData.append("imgFile", imgFile);
   return request.post(`/playlist/cover/update?id=${id}&imgSize=${imgSize}`, formData, {
     headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 }
 
 export function getPersonalizePlaylists(limit?: number) {
   if (limit === undefined || limit > 30) limit = 15;
-  return request.get('/personalized', { params: { limit } });
+  return request.get("/personalized", { params: { limit } });
 }
 
-export function getPlaylsitDetail({ id, cookie }: { id: number | string, cookie?: string }) {
-  return request.get('/playlist/detail', { params: { id, cookie: cookie } });
+export function getPlaylsitDetail({ id, cookie }: { id: number | string; cookie?: string }) {
+  return request.get("/playlist/detail", { params: { id, cookie: cookie } });
 }
 
 // 获取每日推荐歌单
 export function getRecommendedPlaylists() {
-  const cookie = localStorage.getItem('music_cookie') || '';
-  return request.get('/recommend/resource', { params: { cookie } });
+  const cookie = localStorage.getItem("music_cookie") || "";
+  return request.get("/recommend/resource", { params: { cookie } });
 }
 
 // 不喜欢某一首每日推荐
 export function dislikeDailyRecommend(id: number | string) {
-  const cookie = localStorage.getItem('music_cookie') || '';
-  return request.get('/recommend/songs/dislike', { params: { id, cookie } });
+  const cookie = localStorage.getItem("music_cookie") || "";
+  return request.get("/recommend/songs/dislike", { params: { id, cookie } });
 }

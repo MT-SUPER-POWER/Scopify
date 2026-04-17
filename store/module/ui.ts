@@ -26,18 +26,19 @@ export const useUiStore = create<UiStore>()(
       scrollContainer: null,
 
       setIsSearchOpen: (open) => set({ isSearchOpen: open }),
-      setIsLyricsOpen: (open) => { set(() => ({ isLyricsOpen: open })); },
+      setIsLyricsOpen: (open) => {
+        set(() => ({ isLyricsOpen: open }));
+      },
       toggleLyrics: () => set((state) => ({ isLyricsOpen: !state.isLyricsOpen })),
       setIsCollapsed: (collapsed) => set({ isCollapsed: collapsed }),
       setScrollContainer: (el) => set({ scrollContainer: el }),
     }),
     {
-      name: 'ui-storage',
+      name: "ui-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         isLyricsOpen: state.isLyricsOpen,
       }),
-    }
-  )
+    },
+  ),
 );
-

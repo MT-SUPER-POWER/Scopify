@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
-import { useRouter as useNextRouter } from 'next/navigation';
+import { useRouter as useNextRouter } from "next/navigation";
+import { useCallback } from "react";
 
 // 定义查询参数的类型，支持基础类型和对象
 type QueryParams = Record<string, string | number | boolean | object | null | undefined>;
@@ -11,14 +11,14 @@ const buildUrlWithQuery = (url: string, query?: QueryParams) => {
   if (!query || Object.keys(query).length === 0) return url;
 
   // 分离原有的 path 和可能已经存在的 query
-  const [path, existingQuery] = url.split('?');
-  const params = new URLSearchParams(existingQuery || '');
+  const [path, existingQuery] = url.split("?");
+  const params = new URLSearchParams(existingQuery || "");
 
   Object.entries(query).forEach(([key, value]) => {
     if (value === undefined || value === null) return;
 
     // 如果是对象或数组，使用 JSON 序列化；其他类型直接转为字符串
-    const strValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
+    const strValue = typeof value === "object" ? JSON.stringify(value) : String(value);
     params.set(key, strValue);
   });
 
@@ -36,13 +36,19 @@ export function useSmartRouter() {
   const nextRouter = useNextRouter();
 
   // 原生的跳转实现（Web/Electron 通用）
-  const push = useCallback((url: string, query?: QueryParams) => {
-    nextRouter.push(buildUrlWithQuery(url, query));
-  }, [nextRouter]);
+  const push = useCallback(
+    (url: string, query?: QueryParams) => {
+      nextRouter.push(buildUrlWithQuery(url, query));
+    },
+    [nextRouter],
+  );
 
-  const replace = useCallback((url: string, query?: QueryParams) => {
-    nextRouter.replace(buildUrlWithQuery(url, query));
-  }, [nextRouter]);
+  const replace = useCallback(
+    (url: string, query?: QueryParams) => {
+      nextRouter.replace(buildUrlWithQuery(url, query));
+    },
+    [nextRouter],
+  );
 
   const back = useCallback(() => {
     nextRouter.back();
@@ -58,6 +64,6 @@ export function useSmartRouter() {
     back,
     forward,
     // 同时也保留原始 nextRouter 供备用
-    native: nextRouter
+    native: nextRouter,
   };
 }

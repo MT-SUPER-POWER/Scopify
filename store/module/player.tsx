@@ -1,9 +1,11 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import { NeteaseLyric, pruneNeteaseLyric, SongDetail } from "@/types/api/music";
-import { getLyric, greySongUrlMatch } from "@/lib/api/music";
 import { toast } from "sonner";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { getLyric, greySongUrlMatch } from "@/lib/api/music";
+import { translate } from "@/lib/i18n";
+import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
+import { type NeteaseLyric, pruneNeteaseLyric, type SongDetail } from "@/types/api/music";
 
 export type RepeatMode = "off" | "all" | "one";
 
@@ -43,7 +45,11 @@ type PlayerStore = {
   setLyric: (lyric: NeteaseLyric | null) => void;
   setShuffle: (v: boolean) => void;
 
-  playFromSong: (song: SongDetail, allSongs: SongDetail[], playlistId?: number | string | null) => Promise<void>;
+  playFromSong: (
+    song: SongDetail,
+    allSongs: SongDetail[],
+    playlistId?: number | string | null,
+  ) => Promise<void>;
   toggleShuffle: () => void;
   togglePlaying: () => void;
   fetchCurrentLyric: () => Promise<void>;
@@ -95,11 +101,11 @@ export const usePlayerStore = create<PlayerStore>()(
         const { isShuffle } = get();
 
         // 更新原始队列
-        const songIndex = allSongs.findIndex(s => s.id === song.id);
+        const songIndex = allSongs.findIndex((s) => s.id === song.id);
 
         if (isShuffle) {
           // 随机模式：生成新队列，点击的歌放在第一位
-          const remainingSongs = allSongs.filter(s => s.id !== song.id);
+          const remainingSongs = allSongs.filter((s) => s.id !== song.id);
           const newQueue = [song, ...shuffleArray(remainingSongs)];
 
           set({
@@ -127,10 +133,11 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       },
 
-      togglePlaying: () => set((state) => {
-        if (!state.currentSongUrl) return state;
-        return { isPlaying: !state.isPlaying };
-      }),
+      togglePlaying: () =>
+        set((state) => {
+          if (!state.currentSongUrl) return state;
+          return { isPlaying: !state.isPlaying };
+        }),
 
       toggleShuffle: () => {
         const { isShuffle, originalQueue, queueIndex, queue } = get();
@@ -139,7 +146,7 @@ export const usePlayerStore = create<PlayerStore>()(
         if (newShuffleState) {
           // 开启随机
           const currentSong = queue[queueIndex];
-          const remainingSongs = originalQueue.filter(s => s.id !== currentSong?.id);
+          const remainingSongs = originalQueue.filter((s) => s.id !== currentSong?.id);
           const newQueue = currentSong
             ? [currentSong, ...shuffleArray(remainingSongs)]
             : shuffleArray(originalQueue);
@@ -155,7 +162,7 @@ export const usePlayerStore = create<PlayerStore>()(
           // 关闭随机，从当前歌曲位置继续顺序播放
           const currentSong = queue[queueIndex];
           const newIndex = currentSong
-            ? originalQueue.findIndex(s => s.id === currentSong.id)
+            ? originalQueue.findIndex((s) => s.id === currentSong.id)
             : 0;
 
           set({
@@ -184,18 +191,17 @@ export const usePlayerStore = create<PlayerStore>()(
         useTimeStore.getState().setBufferedTime(0);
         set({ currentSongDetail: song, currentSongUrl: null, isPlaying: false });
 
-        Promise.all([
-          greySongUrlMatch(song.id),
-          getLyric(song.id)
-        ]).then(([urlRes, lyricRes]) => {
-          const url = urlRes.data ?? urlRes.proxyUrl;
-          useTimeStore.getState().setTotalTime(song.dt ?? 0);
-          set({ currentSongUrl: url, isPlaying: true, lyric: lyricRes.data });
-        }).catch((e) => {
-          toast.error("获取歌曲播放地址或歌词失败");
-          console.error("获取歌曲播放地址或歌词失败", e);
-          set({ currentSongUrl: null, isPlaying: false, lyric: null });
-        });
+        Promise.all([greySongUrlMatch(song.id), getLyric(song.id)])
+          .then(([urlRes, lyricRes]) => {
+            const url = urlRes.data ?? urlRes.proxyUrl;
+            useTimeStore.getState().setTotalTime(song.dt ?? 0);
+            set({ currentSongUrl: url, isPlaying: true, lyric: lyricRes.data });
+          })
+          .catch((e) => {
+            toast.error(translate(useI18nStore.getState().locale, "common.message.playbackLoadFailed"));
+            console.error("获取歌曲播放地址或歌词失败", e);
+            set({ currentSongUrl: null, isPlaying: false, lyric: null });
+          });
       },
 
       playQueueIndex: async (index, addToHistory = true) => {
@@ -223,14 +229,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playNext: async () => {
-        const {
-          queue,
-          queueIndex,
-          repeatMode,
-          historyStack,
-          historyIndex,
-          reshuffleQueue
-        } = get();
+        const { queue, queueIndex, repeatMode, historyStack, historyIndex, reshuffleQueue } = get();
 
         if (!queue.length) return;
 
@@ -252,7 +251,7 @@ export const usePlayerStore = create<PlayerStore>()(
             nextIndex = queueIndex;
           } else {
             set({ isPlaying: false });
-            toast.success("You've reached the end of the queue");
+            toast.success(translate(useI18nStore.getState().locale, "common.message.endOfQueue"));
             return;
           }
         }
@@ -267,7 +266,7 @@ export const usePlayerStore = create<PlayerStore>()(
           const prevIndex = historyStack[historyIndex - 1];
           set({
             historyIndex: historyIndex - 1,
-            queueIndex: prevIndex
+            queueIndex: prevIndex,
           });
           await get().playTrack(queue[prevIndex]);
           return;
@@ -285,7 +284,7 @@ export const usePlayerStore = create<PlayerStore>()(
         if (!isShuffle || originalQueue.length === 0) return;
 
         const currentSong = currentSongDetail;
-        const remainingSongs = originalQueue.filter(s => s.id !== currentSong?.id);
+        const remainingSongs = originalQueue.filter((s) => s.id !== currentSong?.id);
         const newQueue = currentSong
           ? [currentSong, ...shuffleArray(remainingSongs)]
           : shuffleArray(originalQueue);
@@ -316,10 +315,10 @@ export const usePlayerStore = create<PlayerStore>()(
           lyric: null,
           playlistId: null,
         });
-      }
+      },
     }),
     {
-      name: 'player-storage',
+      name: "player-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         volume: state.volume,
@@ -335,6 +334,6 @@ export const usePlayerStore = create<PlayerStore>()(
         lyric: state.lyric,
         playlistId: state.playlistId,
       }),
-    }
-  )
+    },
+  ),
 );

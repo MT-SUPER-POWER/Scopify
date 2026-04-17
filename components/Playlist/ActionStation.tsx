@@ -1,9 +1,19 @@
 "use client";
 
-import { Play, Pause, MoreHorizontal, Shuffle, ArrowDownCircle, List, Search, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowDownCircle,
+  List,
+  MoreHorizontal,
+  Pause,
+  Play,
+  Search,
+  Shuffle,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
+import { useI18n } from "@/store/module/i18n";
 
 interface PlaylistActionsProps {
   playlistId: string | null;
@@ -17,7 +27,17 @@ interface PlaylistActionsProps {
 }
 
 export default function PlaylistActions(props: PlaylistActionsProps) {
-  const { playlistId, isDaily, searchOpen, searchQuery, onSearchChange, onSearchOpen, onSearchClose, inputRef } = props;
+  const { t } = useI18n();
+  const {
+    playlistId,
+    isDaily,
+    searchOpen,
+    searchQuery,
+    onSearchChange,
+    onSearchOpen,
+    onSearchClose,
+    inputRef,
+  } = props;
 
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const isShuffle = usePlayerStore((s) => s.isShuffle);
@@ -52,16 +72,26 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
           text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg
           disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {
-            showPause ?
-              <Pause className="w-6 h-6 ml-0.5 fill-current" /> :
-              <Play className="w-6 h-6 ml-1.5 fill-current" />
-          }
+          {showPause ? (
+            <Pause className="w-6 h-6 ml-0.5 fill-current" />
+          ) : (
+            <Play className="w-6 h-6 ml-1.5 fill-current" />
+          )}
         </button>
 
-        <button onClick={toggleShuffle} className="relative inline-flex items-center justify-center cursor-pointer">
-          <Shuffle className={cn("w-8 h-8 transition-colors", isShuffle ? "text-[#1ed760]" : "text-zinc-400 hover:text-white")} />
-          {isShuffle && <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#1ed760] rounded-full" />}
+        <button
+          onClick={toggleShuffle}
+          className="relative inline-flex items-center justify-center cursor-pointer"
+        >
+          <Shuffle
+            className={cn(
+              "w-8 h-8 transition-colors",
+              isShuffle ? "text-[#1ed760]" : "text-zinc-400 hover:text-white",
+            )}
+          />
+          {isShuffle && (
+            <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#1ed760] rounded-full" />
+          )}
         </button>
 
         <ArrowDownCircle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
@@ -88,8 +118,8 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               <input
                 ref={inputRef}
                 value={searchQuery}
-                onChange={e => onSearchChange(e.target.value)}
-                placeholder="Search..."
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder={t("playlist.actions.searchPlaceholder")}
                 className="bg-transparent text-white text-xs outline-none w-full placeholder:text-zinc-500"
               />
               <button onClick={onSearchClose}>
@@ -111,7 +141,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
         </AnimatePresence>
 
         <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white cursor-pointer transition-colors font-medium">
-          <span>List</span>
+          <span>{t("playlist.actions.listLabel")}</span>
           <List className="w-5 h-5" />
         </div>
       </div>

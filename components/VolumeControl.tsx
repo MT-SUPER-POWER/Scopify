@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SmoothSlider } from "./SmoothSlider";
 
 interface VolumeControlProps {
@@ -17,7 +17,7 @@ export const VolumeControl = ({
   onChange,
   orientation = "vertical",
   variant = "popup",
-  className = ""
+  className = "",
 }: VolumeControlProps) => {
   const [volume, setVolume] = useState(initialVolume);
   const [isMuted, setMuted] = useState(false);
@@ -40,44 +40,49 @@ export const VolumeControl = ({
     }
   };
 
-  const handleVolumeChange = useCallback((newVolume: number) => {
-    // 1. 数据清洗：向下传递和本地状态都使用整数
-    const roundedVolume = Math.round(newVolume);
+  const handleVolumeChange = useCallback(
+    (newVolume: number) => {
+      // 1. 数据清洗：向下传递和本地状态都使用整数
+      const roundedVolume = Math.round(newVolume);
 
-    setVolume(roundedVolume);
-    if (roundedVolume > 0 && isMuted) {
-      setMuted(false);
-    }
+      setVolume(roundedVolume);
+      if (roundedVolume > 0 && isMuted) {
+        setMuted(false);
+      }
 
-    // 2. 防抖处理
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
+      // 2. 防抖处理
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
 
-    debounceTimerRef.current = setTimeout(() => {
-      onChange?.(roundedVolume);
-    }, 300);
-  }, [isMuted, onChange]);
+      debounceTimerRef.current = setTimeout(() => {
+        onChange?.(roundedVolume);
+      }, 300);
+    },
+    [isMuted, onChange],
+  );
 
   // 监听滚轮事件来控制音量
-  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    // 阻止事件冒泡，防止在调节音量时触发外层容器的滚动
-    e.stopPropagation();
+  const handleWheel = useCallback(
+    (e: React.WheelEvent<HTMLDivElement>) => {
+      // 阻止事件冒泡，防止在调节音量时触发外层容器的滚动
+      e.stopPropagation();
 
-    // 设定每次滚动的步长，5% 是比较常见的工程标准
-    const step = 5;
+      // 设定每次滚动的步长，5% 是比较常见的工程标准
+      const step = 5;
 
-    // deltaY < 0 表示向上滚动（放大音量），> 0 表示向下滚动（减小音量）
-    const delta = e.deltaY < 0 ? step : -step;
+      // deltaY < 0 表示向上滚动（放大音量），> 0 表示向下滚动（减小音量）
+      const delta = e.deltaY < 0 ? step : -step;
 
-    // 计算新音量并限制在 0-100 之间
-    const newVolume = Math.max(0, Math.min(100, volume + delta));
+      // 计算新音量并限制在 0-100 之间
+      const newVolume = Math.max(0, Math.min(100, volume + delta));
 
-    if (newVolume !== volume) {
-      handleVolumeChange(newVolume);
-    }
-  }, [volume, handleVolumeChange]);
-
+      if (newVolume !== volume) {
+        handleVolumeChange(newVolume);
+      }
+    },
+    [volume, handleVolumeChange],
+  );
 
   const handleMuteToggle = () => {
     const nextMuted = !isMuted;
@@ -90,7 +95,7 @@ export const VolumeControl = ({
     }
     if (nextMuted) {
       // 记录静音前的音量
-      prevVolumeRef.current = volume > 0 ? volume : (prevVolumeRef.current || initialVolume);
+      prevVolumeRef.current = volume > 0 ? volume : prevVolumeRef.current || initialVolume;
       onChange?.(0);
     } else {
       // 恢复静音前的音量
@@ -105,10 +110,7 @@ export const VolumeControl = ({
     if (variant !== "popup") return;
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -133,8 +135,10 @@ export const VolumeControl = ({
   // 🟢 形态 1：常驻内联模式 (推荐在 Tray 中使用)
   if (variant === "inline") {
     return (
-      <div onWheel={handleWheel}
-        className="flex items-center w-full gap-3 px-4 py-2 hover:bg-white/5 transition-colors rounded-md min-w-0 select-none">
+      <div
+        onWheel={handleWheel}
+        className="flex items-center w-full gap-3 px-4 py-2 hover:bg-white/5 transition-colors rounded-md min-w-0 select-none"
+      >
         <button
           onClick={handleMuteToggle}
           className="text-[#b3b3b3] hover:text-white transition-colors shrink-0"

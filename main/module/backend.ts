@@ -1,8 +1,8 @@
+import { type ChildProcess, spawn } from "node:child_process";
+import fs from "node:fs";
 import axios from "axios";
-import { spawn, ChildProcess } from "child_process";
-import fs from "fs";
 import type { BackendStartupStatus } from "@/types/backend";
-import { logger, __backendDir, __backendEntry, __backendEnv, appConfig } from "../constants.js";
+import { __backendDir, __backendEntry, __backendEnv, appConfig, logger } from "../constants.js";
 
 let backendProcess: ChildProcess | null = null;
 let backendUrl: string | undefined = process.env.BACKEND_URL;
@@ -98,7 +98,9 @@ export function startManagedBackend() {
         throw new Error(`[backend] entry not found: ${__backendEntry}`);
       }
 
-      logger.info(`[backend] starting ${__backendEntry} on ${__backendEnv.HOST}:${__backendEnv.PORT}`);
+      logger.info(
+        `[backend] starting ${__backendEntry} on ${__backendEnv.HOST}:${__backendEnv.PORT}`,
+      );
       backendProcess = spawn(process.execPath, [__backendEntry], {
         cwd: __backendDir,
         env: __backendEnv as NodeJS.ProcessEnv,
@@ -108,8 +110,12 @@ export function startManagedBackend() {
 
       logger.info(`[backend] Process initialized with PID: ${backendProcess.pid}`);
 
-      backendProcess.stdout?.on("data", (d) => logger.info("[backend:stdout]", d.toString().trim()));
-      backendProcess.stderr?.on("data", (d) => logger.error("[backend:stderr]", d.toString().trim()));
+      backendProcess.stdout?.on("data", (d) =>
+        logger.info("[backend:stdout]", d.toString().trim()),
+      );
+      backendProcess.stderr?.on("data", (d) =>
+        logger.error("[backend:stderr]", d.toString().trim()),
+      );
       backendProcess.on("exit", (code) => {
         logger.error("[backend:exit]", `exited with code ${code}`);
       });
@@ -148,4 +154,4 @@ export function stopManagedBackend() {
   }
 }
 
-export { backendUrl, backendProcess };
+export { backendProcess, backendUrl };

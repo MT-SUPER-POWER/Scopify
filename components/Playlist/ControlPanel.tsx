@@ -1,13 +1,14 @@
+import { Menu, Pause, Play, Repeat, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Play, Pause, SkipBack, SkipForward, Repeat, Menu, Volume2 } from "lucide-react";
 
-const COVER_URL = "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=600&auto=format&fit=crop";
+const COVER_URL =
+  "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=600&auto=format&fit=crop";
 
 // 控制面板 (PC & Mobile 适配)
 export default function ControlPanel({
   isPlaying,
   setIsPlaying,
-  isDesktop = false
+  isDesktop = false,
 }: {
   isPlaying: boolean;
   setIsPlaying: (b: boolean) => void;
@@ -15,10 +16,14 @@ export default function ControlPanel({
 }) {
   return (
     <div className="w-full max-w-md mx-auto relative z-10">
-      <div className={cn(
-        "flex items-center gap-4 mb-6",
-        isDesktop ? "justify-center text-center" : "justify-start text-left lg:justify-center lg:text-center"
-      )}>
+      <div
+        className={cn(
+          "flex items-center gap-4 mb-6",
+          isDesktop
+            ? "justify-center text-center"
+            : "justify-start text-left lg:justify-center lg:text-center",
+        )}
+      >
         {!isDesktop && (
           <img
             src={COVER_URL}
@@ -26,8 +31,15 @@ export default function ControlPanel({
             className="w-12 h-12 lg:hidden rounded-md object-cover shadow-md ring-1 ring-white/10"
           />
         )}
-        <div className={cn("flex flex-col", isDesktop ? "items-center" : "items-start lg:items-center")}>
-          <h1 className="text-xl lg:text-[26px] font-bold mb-1 tracking-wide text-white drop-shadow-sm">富士山下</h1>
+        <div
+          className={cn(
+            "flex flex-col",
+            isDesktop ? "items-center" : "items-start lg:items-center",
+          )}
+        >
+          <h1 className="text-xl lg:text-[26px] font-bold mb-1 tracking-wide text-white drop-shadow-sm">
+            富士山下
+          </h1>
           <p className="text-white/60 text-sm lg:text-[15px]">陈奕迅</p>
         </div>
       </div>
@@ -68,10 +80,12 @@ export default function ControlPanel({
         </button>
       </div>
 
-      <div className={cn(
-        "items-center gap-3 px-3 text-white/50 hover:text-white transition-colors",
-        isDesktop ? "flex" : "hidden lg:flex"
-      )}>
+      <div
+        className={cn(
+          "items-center gap-3 px-3 text-white/50 hover:text-white transition-colors",
+          isDesktop ? "flex" : "hidden lg:flex",
+        )}
+      >
         <Volume2 className="w-4 h-4" />
         <div className="h-1.5 w-full bg-white/20 rounded-full cursor-pointer">
           <div className="h-full bg-white/80 rounded-full w-[60%]"></div>

@@ -1,26 +1,32 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
-import { PlaylistInfo } from "@/types/playlist";
+import React from "react";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import type { PlaylistInfo } from "@/types/playlist";
 
 // 日历封面直接内聚在用到它的地方即可
 const DailyCalendarCover = () => {
   const today = new Date();
-  const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+  const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
   const dayOfWeek = days[today.getDay()];
   const dateNum = today.getDate();
 
   return (
-    <div className="w-full h-full shadow-[4px_0_10px_rgba(0,0,0,0.3)] z-10 shrink-0 flex flex-col rounded-md overflow-hidden
-    bg-white select-none">
+    <div
+      className="w-full h-full shadow-[4px_0_10px_rgba(0,0,0,0.3)] z-10 shrink-0 flex flex-col rounded-md overflow-hidden
+    bg-white select-none"
+    >
       <div className="h-[22%] bg-linear-to-b from-[#e34242] to-[#c42b2b] flex items-center justify-center border-b border-black/10">
-        <span className="text-white text-lg md:text-xl font-medium tracking-widest">{dayOfWeek}</span>
+        <span className="text-white text-lg md:text-xl font-medium tracking-widest">
+          {dayOfWeek}
+        </span>
       </div>
       <div className="flex-1 relative flex items-center justify-center bg-linear-to-b from-momo-light from-45% to-[#e6e6e6] to-45%">
         <div className="absolute top-[45%] left-0 w-full h-0.5 bg-black/5 shadow-[0_1px_1px_rgba(255,255,255,0.8)] -translate-y-1/2" />
-        <span className="text-7xl md:text-8xl font-black text-[#2a2a2a] font-sans z-10 tracking-tighter -mt-3">{dateNum}</span>
+        <span className="text-7xl md:text-8xl font-black text-[#2a2a2a] font-sans z-10 tracking-tighter -mt-3">
+          {dateNum}
+        </span>
       </div>
     </div>
   );
@@ -44,7 +50,13 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         {isDaily || !info.cover ? (
           <DailyCalendarCover />
         ) : (
-          <Image width={400} height={400} src={info.cover} alt={info.title} className="w-full h-full object-cover" />
+          <Image
+            width={400}
+            height={400}
+            src={info.cover}
+            alt={info.title}
+            className="w-full h-full object-cover"
+          />
         )}
       </div>
 
@@ -55,13 +67,19 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
             {info.privacy}
           </span>
           {info.tags?.map((t, idx) => (
-            <span key={idx} className="text-[12px] font-medium drop-shadow-md px-3 py-1 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
+            <span
+              key={idx}
+              className="text-[12px] font-medium drop-shadow-md px-3 py-1 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+            >
               {t}
             </span>
           ))}
         </div>
 
-        <h1 className="m-0 font-black tracking-tighter leading-[1.1] drop-shadow-lg mb-4 md:mb-6 wrap-break-word text-4xl md:text-5xl lg:text-6xl line-clamp-3" title={info.title}>
+        <h1
+          className="m-0 font-black tracking-tighter leading-[1.1] drop-shadow-lg mb-4 md:mb-6 wrap-break-word text-4xl md:text-5xl lg:text-6xl line-clamp-3"
+          title={info.title}
+        >
           {info.title}
         </h1>
 
@@ -70,14 +88,27 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
             <>
               <div className="flex items-center gap-2 group cursor-pointer mr-1 text-white">
                 {info.creatorAvatar ? (
-                  <Image src={info.creatorAvatar} alt={info.creator} width={28} height={28} className="w-7 h-7 rounded-full object-cover" />
+                  <Image
+                    src={info.creatorAvatar}
+                    alt={info.creator}
+                    width={28}
+                    height={28}
+                    className="w-7 h-7 rounded-full object-cover"
+                  />
                 ) : (
-                  <div className="w-7 h-7 rounded-full bg-zinc-600 flex items-center justify-center text-xs font-bold"> M </div>
+                  <div className="w-7 h-7 rounded-full bg-zinc-600 flex items-center justify-center text-xs font-bold">
+                    {" "}
+                    M{" "}
+                  </div>
                 )}
                 <span className="font-bold group-hover:underline text-[15px]">
-                  <button onClick={() => {
-                    if (info.creatorID !== null) { smartRouter.push(`/profile?userId=${info.creatorID}`); }
-                  }}>
+                  <button
+                    onClick={() => {
+                      if (info.creatorID !== null) {
+                        smartRouter.push(`/profile?userId=${info.creatorID}`);
+                      }
+                    }}
+                  >
                     {info.creator}
                   </button>
                 </span>

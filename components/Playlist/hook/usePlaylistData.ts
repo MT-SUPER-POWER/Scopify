@@ -1,11 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import { useI18n } from "@/store/module/i18n";
 import { getPlaylsitDetail } from "@/lib/api/playlist";
 import { getRecommendedSongs } from "@/lib/api/track";
-import { useUserStore } from "@/store";
-import { toast } from "sonner";
 import { getMainColorFromImage } from "@/lib/utils";
-import { PlaylistInfo } from "@/types/playlist";
+import { useUserStore } from "@/store";
+import type { PlaylistInfo } from "@/types/playlist";
 
 // 颜色缓存机制 (全局共享)
 const colorCache = new Map<string, string>();
@@ -21,6 +22,7 @@ function setColorCache(key: string, value: string) {
 }
 
 export function usePlaylist() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const playlistId = searchParams.get("id");
   const isRecommend = searchParams.get("isRecommend") === "true";
@@ -42,13 +44,13 @@ export function usePlaylist() {
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2. 核心数据获取 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  const libraryUpdateTrigger = useUserStore((s) => s.libraryUpdateTrigger);
+  const _libraryUpdateTrigger = useUserStore((s) => s.libraryUpdateTrigger);
 
   useEffect(() => {
     if (!currentReqKey) return;
 
     let ignore = false;
-    const cookie = typeof window !== 'undefined' ? localStorage.getItem("music_cookie") || "" : "";
+    const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") || "" : "";
 
     const fetchMusicData = async () => {
       try {
@@ -56,10 +58,17 @@ export function usePlaylist() {
           const res: any = await getRecommendedSongs();
           if (ignore) return;
           const dailySongs = res.data?.data?.dailySongs || [];
-          setRawDetail({ name: "每日推荐", trackCount: dailySongs.length, tracks: dailySongs });
+          setRawDetail({
+            name: t("playlist.meta.dailyTitle"),
+            trackCount: dailySongs.length,
+            tracks: dailySongs,
+          });
           useUserStore.getState().setAlbumList(dailySongs);
         } else {
-          const res: any = await getPlaylsitDetail({ id: playlistId as string, cookie: isRecommend ? cookie : undefined });
+          const res: any = await getPlaylsitDetail({
+            id: playlistId as string,
+            cookie: isRecommend ? cookie : undefined,
+          });
           if (ignore) return;
           const playlist = res.data.playlist;
           // console.log("Playlist Info:", res.data);
@@ -69,15 +78,21 @@ export function usePlaylist() {
       } catch (err) {
         if (ignore) return;
         console.error(err);
-        toast.error(isDailyRecommend ? "Failed to fetch daily recommendations" : "Failed to fetch playlist details");
+        toast.error(
+          isDailyRecommend
+            ? t("home.toast.loadFailed")
+            : t("sidebar.toast.fetchFailed"),
+        );
       }
     };
 
     fetchMusicData();
 
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
     // 无论是 URL 变了，还是由于你点击了取消喜欢导致 Trigger 变了，都会执行这个 Effect 进行拉取
-  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend, libraryUpdateTrigger]);
+  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3. 数据派生与格式化 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -89,12 +104,12 @@ export function usePlaylist() {
     if (isDailyRecommend) {
       return {
         isSpecial: true,
-        privacy: "Made For You",
-        tags: ["Daily", "Recommendation"],
-        title: "每日推荐",
+        privacy: t("playlist.meta.madeForYou"),
+        tags: [t("playlist.meta.dailyTag"), t("playlist.meta.recommendationTag")],
+        title: t("playlist.meta.dailyTitle"),
         cover: null,
         createTime: new Date().toLocaleDateString(),
-        creator: "Spotify",
+        creator: t("playlist.meta.spotify"),
         creatorID: null,
         creatorAvatar: "",
         likes: "-",
@@ -104,12 +119,19 @@ export function usePlaylist() {
 
     return {
       isSpecial: false,
-      privacy: rawDetail.privacy === 0 ? "Public Playlist" : rawDetail.privacy === 10 ? "Private Playlist" : "Unknown Privacy",
+      privacy:
+        rawDetail.privacy === 0
+          ? t("playlist.meta.public")
+          : rawDetail.privacy === 10
+            ? t("playlist.meta.private")
+            : t("playlist.meta.unknownPrivacy"),
       tags: rawDetail.tags ?? [],
-      title: rawDetail.name ?? "Unknown",
+      title: rawDetail.name ?? t("playlist.meta.unknown"),
       cover: rawDetail.coverImgUrl ?? `https://picsum.photos/400/400?random=123`,
-      createTime: rawDetail.createTime ? new Date(rawDetail.createTime).toLocaleDateString() : "Unknown Date",
-      creator: rawDetail.creator?.nickname ?? "Unknown User",
+      createTime: rawDetail.createTime
+        ? new Date(rawDetail.createTime).toLocaleDateString()
+        : t("playlist.meta.unknownDate"),
+      creator: rawDetail.creator?.nickname ?? t("common.meta.unknownUser"),
       creatorID: rawDetail.creator?.userId ?? null,
       creatorAvatar: rawDetail.creator?.avatarUrl ?? "",
       likes: rawDetail.subscribedCount ?? 0,

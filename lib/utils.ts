@@ -1,6 +1,6 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from "clsx";
 import { getColorSync } from "colorthief";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,12 +25,17 @@ export function getMainColorFromImage(imageUrl: string): Promise<string> {
       try {
         const color = getColorSync(img);
         let rgb: number[] | undefined;
-        if (color && typeof (color as any).css === "function" && Array.isArray((color as any).rgb)) {
+        if (
+          color &&
+          typeof (color as any).css === "function" &&
+          Array.isArray((color as any).rgb)
+        ) {
           rgb = (color as any).rgb;
         } else if (Array.isArray(color)) {
           rgb = color;
         } else if (
-          color && typeof color === "object" &&
+          color &&
+          typeof color === "object" &&
           typeof (color as any)._r === "number" &&
           typeof (color as any)._g === "number" &&
           typeof (color as any)._b === "number"
@@ -39,7 +44,7 @@ export function getMainColorFromImage(imageUrl: string): Promise<string> {
         }
         if (rgb && rgb.length === 3) {
           // 转 #RRGGBB
-          const hex = `#${rgb.map(x => x.toString(16).padStart(2, "0")).join("")}`;
+          const hex = `#${rgb.map((x) => x.toString(16).padStart(2, "0")).join("")}`;
           resolve(hex);
         } else {
           console.error("提取结果格式异常:", color);
@@ -84,15 +89,15 @@ export const formatDate = (timestamp: number) => {
 
 export const isElectron = (): boolean => {
   // 方法1：检查 userAgent
-  if (typeof navigator !== 'undefined' && navigator.userAgent.includes('Electron')) {
+  if (typeof navigator !== "undefined" && navigator.userAgent.includes("Electron")) {
     return true;
   }
   // 方法2：检查 preload 注入的 API
-  if (typeof window !== 'undefined' && window.electronAPI) {
+  if (typeof window !== "undefined" && window.electronAPI) {
     return true;
   }
   // 方法3：检查 process
-  if (typeof process !== 'undefined' && process.versions?.electron) {
+  if (typeof process !== "undefined" && process.versions?.electron) {
     return true;
   }
   return false;
@@ -104,10 +109,8 @@ export const isWeb = (): boolean => !isElectron();
 export const IS_ELECTRON = isElectron();
 export const IS_WEB = !IS_ELECTRON;
 
-
 export const formatPlayCount = (count: number) => {
   if (count > 100000) return `${Math.floor(count / 10000)}万`;
   if (count > 10000) return `${(count / 10000).toFixed(1)}万`;
   return count.toString();
 };
-

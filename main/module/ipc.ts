@@ -1,24 +1,18 @@
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACAKGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-import { ipcMain, app, BrowserWindow, session } from "electron";
+import { app, type BrowserWindow, ipcMain, session } from "electron";
 import { loadAppConfig, saveAppConfig } from "../config.js";
-import { ensureBackendUrl, getBackendStartupStatus } from "./backend.js";
 import { appConfig, logger } from "../constants.js";
-import { trayWindow } from "./tray.js";
-import { updateThumbarButtons } from "./thumbarButtons.js";
+import { ensureBackendUrl, getBackendStartupStatus } from "./backend.js";
 import { loginWindow } from "./login.js";
+import { applyElectronProxy } from "./proxy.js";
+import { updateThumbarButtons } from "./thumbarButtons.js";
+import { trayWindow } from "./tray.js";
 
 export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
-
-  // 监听重启应用请求
   ipcMain.on("relaunch-app", () => {
-    logger.info("[IPC] 收到重启应用请求，准备 relaunch");
-
+    logger.info("[IPC] relaunch requested");
     app.relaunch();
-    app.quit(); // 使用 quit() 而不是 exit(0)，为了触发 before-quit 去清理后端进程
+    app.quit();
   });
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PLAYER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   ipcMain.on("player-state-changed", (_event, { isPlaying }: { isPlaying: boolean }) => {
     if (mainWindow) {
@@ -26,60 +20,48 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     }
   });
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKEND ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  // 提供一个 IPC 接口，让前端可以获取后端 URL
   ipcMain.handle("backend:get-url", async () => ensureBackendUrl());
   ipcMain.handle("backend:get-status", async () => getBackendStartupStatus());
-
-  // 提供一个同步 IPC 接口，供需要在渲染进程同步获取后端 URL 的场景使用
   ipcMain.on("backend:get-url-sync", (event) => {
     event.returnValue = ensureBackendUrl();
   });
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONFIG ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  // 监听获取配置请求
   ipcMain.handle("get-app-config", () => {
     const config = loadAppConfig();
-    logger.info("\n[IPC] 前端请求获取配置:", config);
+    logger.info("[IPC] get-app-config", config);
     return config;
   });
 
-  // 监听更新配置请求
-  ipcMain.handle("update-app-config", (_event, newConfig) => {
-    logger.info("\n[IPC] 接收到前端配置更新请求:", newConfig);
-    return saveAppConfig(newConfig);
+  ipcMain.handle("update-app-config", async (_event, newConfig) => {
+    logger.info("[IPC] update-app-config", newConfig);
+    const savedConfig = saveAppConfig(newConfig);
+    await applyElectronProxy(savedConfig).catch((error) => {
+      logger.error("[IPC] failed to apply proxy after config update:", error);
+    });
+    return savedConfig;
   });
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ OTHER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ipcMain.on("login-success", () => {
-    logger.info("[IPC] 登录成功，准备关闭登录窗口并打开主窗口");
+    logger.info("[IPC] login success");
     loginWindow?.close();
     mainWindow?.reload();
   });
 
-  // IPC 事件监听 - 更新标题栏颜色
   ipcMain.on("update-titlebar-color", (_event, color) => {
-    if (mainWindow) {
-      mainWindow.setTitleBarOverlay({
-        color: 'rgba(0,0,0,0)',
-        height: 35,
-        symbolColor: color
-      });
-    }
+    if (!mainWindow) return;
+    mainWindow.setTitleBarOverlay({
+      color: "rgba(0,0,0,0)",
+      height: 35,
+      symbolColor: color,
+    });
   });
 
   ipcMain.on("window-enter-full-screen", () => {
-    if (mainWindow) {
-      mainWindow.setFullScreen(true);
-    }
+    mainWindow?.setFullScreen(true);
   });
 
   ipcMain.on("window-exit-full-screen", () => {
-    if (mainWindow) {
-      mainWindow.setFullScreen(false);
-    }
+    mainWindow?.setFullScreen(false);
   });
 
   ipcMain.on("main-window-reload", () => {
@@ -87,19 +69,19 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
   });
 
   ipcMain.on("navigate-main-window", (_event, path) => {
-    if (mainWindow) {
-      mainWindow.show();
-      mainWindow.focus();
-      mainWindow.webContents.send("navigate-to", path);
-    }
+    if (!mainWindow) return;
+    mainWindow.show();
+    mainWindow.focus();
+    mainWindow.webContents.send("navigate-to", path);
   });
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ APP CLOSE AND MINIMIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   ipcMain.on("app-close-action", (_event, action) => {
     if (action === "minimize") {
       mainWindow?.hide();
-    } else if (action === "exit") {
+      return;
+    }
+
+    if (action === "exit") {
       app.quit();
     }
   });
@@ -108,36 +90,31 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     app.quit();
   });
 
-  // minimizeApp: () => void;
   ipcMain.on("minimize-to-tray", () => {
     mainWindow?.hide();
     trayWindow?.hide();
   });
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COOKIE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
   ipcMain.handle("set-music-cookie", async (_event, cookieStr: string) => {
     try {
       const musicUMatch = cookieStr.match(/MUSIC_U=([^;]+)/);
       const value = musicUMatch ? musicUMatch[1] : cookieStr;
-
-      // 修正：Electron 设置域名为 IP 的 Cookie 时，url 必须包含协议前缀，且不能带端口，更不能有 $ 符号
       const url = `http://${appConfig.backend.host}`;
 
-      // 存储到默认 session，供渲染进程后续请求使用
       await session.defaultSession.cookies.set({
-        url: url,
-        name: 'MUSIC_U',
-        value: value,
-        path: '/',
-        sameSite: 'no_restriction', // ← 对应 SameSite=None
-        expirationDate: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 60) // 60天
+        url,
+        name: "MUSIC_U",
+        value,
+        path: "/",
+        sameSite: "no_restriction",
+        expirationDate: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 60,
       });
-      logger.info('[IPC] set-music-cookie success');
+
+      logger.info("[IPC] set-music-cookie success");
       return true;
-    } catch (err) {
-      logger.error('[IPC] set-music-cookie failed', err);
-      throw err;
+    } catch (error) {
+      logger.error("[IPC] set-music-cookie failed", error);
+      throw error;
     }
   });
 }

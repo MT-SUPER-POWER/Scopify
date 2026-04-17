@@ -1,11 +1,12 @@
 ﻿// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import "./globals.css";
-import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "../components/theme-provider";
+import { I18nProvider } from "@/components/i18n-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
+import { ThemeProvider } from "../components/theme-provider";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RESOURCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -33,12 +34,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <body
         className={cn(
           `${geistSans.variable} ${geistMono.variable}`,
           "antialiased overflow-hidden flex fixed inset-0",
-          "selection:bg-[#1db954] selection:text-white"
+          "selection:bg-[#1db954] selection:text-white",
         )}
         suppressHydrationWarning
       >
@@ -48,8 +49,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster position="top-center" duration={3000} />
+          <I18nProvider>
+            {children}
+            <Toaster position="top-center" duration={3000} />
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

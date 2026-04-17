@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/store/module/i18n";
 
 interface PasswordLoginFormProps {
   isLoading: boolean;
@@ -12,9 +14,10 @@ interface PasswordLoginFormProps {
 }
 
 export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProps) {
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useI18n();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,25 +29,29 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="phone" className="text-xs text-zinc-300">手机号码</Label>
+        <Label htmlFor="phone" className="text-xs text-zinc-300">
+          {t("login.form.phoneLabel")}
+        </Label>
         <Input
           id="phone"
           type="text"
           value={phone}
-          onChange={e => setPhone(e.target.value)}
-          placeholder="请输入手机号"
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder={t("login.form.phonePlaceholder")}
           className="bg-black/50 border-white/10 h-10 text-sm"
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="password" className="text-xs text-zinc-300">密码</Label>
+        <Label htmlFor="password" className="text-xs text-zinc-300">
+          {t("login.form.passwordLabel")}
+        </Label>
         <div className="relative group">
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
             value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="请输入密码"
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={t("login.form.passwordPlaceholder")}
             className="bg-black/50 border-white/10 h-10 pr-10 text-sm"
           />
           <button
@@ -61,7 +68,7 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
         disabled={isLoading}
         className="w-full bg-[#1db954] hover:bg-[#1ed760] text-black font-bold h-10 rounded-full transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 mt-2"
       >
-        {isLoading ? '登录中...' : '登录'}
+        {isLoading ? t("login.form.passwordSubmitting") : t("login.form.passwordSubmit")}
       </Button>
     </form>
   );

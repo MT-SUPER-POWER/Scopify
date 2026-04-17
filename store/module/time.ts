@@ -1,6 +1,6 @@
 // store/module/time.ts
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface TimeStore {
   currentTime: number;
@@ -22,11 +22,11 @@ export const useTimeStore = create<TimeStore>()(
       setBufferedTime: (time) => set({ bufferedTime: time }),
     }),
     {
-      name: 'player-time-storage',
+      name: "player-time-storage",
       partialize: (state) => ({
         currentTime: state.currentTime,
         totalTime: state.totalTime,
       }),
-    }
-  )
+    },
+  ),
 );

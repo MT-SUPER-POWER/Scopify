@@ -1,17 +1,17 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { formatDuration } from "@/lib/utils";
 import { SmoothSlider } from "@/components/SmoothSlider";
+import { formatDuration } from "@/lib/utils";
 import { useTimeStore } from "@/store/module/time";
 
 export const PlayerProgressBar = memo(() => {
   // 1. 低频数据：直接从 Zustand 读，因为它本来就不怎么变
-  const totalTime = useTimeStore(s => s.totalTime);
-  const bufferedTime = useTimeStore(s => s.bufferedTime);
+  const totalTime = useTimeStore((s) => s.totalTime);
+  const bufferedTime = useTimeStore((s) => s.bufferedTime);
 
   // 2. 高频数据：完全使用本地 State，初始值取一下 Store 里的记忆点
   const [localTime, setLocalTime] = useState(() => useTimeStore.getState().currentTime);
 
-  const lastUpdateRef = useRef(0);  // 节流
+  const lastUpdateRef = useRef(0); // 节流
 
   useEffect(() => {
     // 3. 只接收高频的播放时间广播，局部刷新 UI

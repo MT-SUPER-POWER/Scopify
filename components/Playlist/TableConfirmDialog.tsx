@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -8,11 +7,16 @@ import {
   AlertDialogOverlay,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
+import { cn } from "@/lib/utils";
 
 export function ConfirmDialogShandCN({
-  open, title, content, onConfirm, onCancel,
-  confirmText = "确认", cancelText = "取消"
+  open,
+  title,
+  content,
+  onConfirm,
+  onCancel,
+  confirmText = "确认",
+  cancelText = "取消",
 }: {
   open: boolean;
   title: string;
@@ -26,10 +30,9 @@ export function ConfirmDialogShandCN({
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
       <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
 
-      <AlertDialogContent className={cn(
-        "bg-[#282828] border-none shadow-2xl rounded-xl w-96 p-8",
-        "flex flex-col",
-      )}>
+      <AlertDialogContent
+        className={cn("bg-[#282828] border-none shadow-2xl rounded-xl w-96 p-8", "flex flex-col")}
+      >
         {/* text-center 覆盖 shadcn AlertDialogHeader 默认的 text-left */}
         <AlertDialogHeader className="space-y-2 mb-8 w-full">
           <AlertDialogTitle className="w-full text-2xl font-bold text-white tracking-tight text-center">

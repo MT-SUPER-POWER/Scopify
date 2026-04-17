@@ -1,12 +1,12 @@
 "use client";
 
-import { Component, ReactNode } from "react";
 import dynamic from "next/dynamic";
-import { usePlayerStore, useUiStore } from "@/store";
+import { Component, type ReactNode } from "react";
+import { useUiStore } from "@/store";
 
 const BackgroundRender = dynamic(
   () => import("@applemusic-like-lyrics/react").then((mod) => mod.BackgroundRender),
-  { ssr: false }
+  { ssr: false },
 );
 
 class WebGLFallbackBoundary extends Component<
@@ -45,7 +45,7 @@ const CSSFallbackBackground = ({ coverUrl }: { coverUrl: string }) => (
 );
 
 export const ModalBackground = ({ coverUrl }: { coverUrl: string }) => {
-  const isLyricOpen = useUiStore(s => s.isLyricsOpen);
+  const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   if (!coverUrl) return null;
   return (
     <WebGLFallbackBoundary fallback={<CSSFallbackBackground coverUrl={coverUrl} />}>

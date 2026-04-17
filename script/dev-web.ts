@@ -1,7 +1,7 @@
-import { readFileSync, existsSync } from "fs";
-import { join } from "path";
+import { spawn } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import yaml from "js-yaml";
-import { spawn } from "child_process";
 
 const configPath = join(process.cwd(), "config", "app.config.yml");
 const defaultPath = join(process.cwd(), "config", "app.config.default.yml");

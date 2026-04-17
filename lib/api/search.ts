@@ -8,7 +8,7 @@ export function searchDefault() {
   return request.get("/v1/search/default/keyword/pc", {
     params: {
       cookie: localStorage.getItem("music_cookie") || "",
-    }
+    },
   });
 }
 
@@ -28,60 +28,49 @@ export function searchSuggest(keyword: string) {
       keyword: keyword,
       cookie: localStorage.getItem("music_cookie") || "",
     },
-  })
+  });
 }
 
-
-
-
-export function searchSongs(
-  keyword: string, limit = 15, offset = 0
-) {
+export function searchSongs(keyword: string, limit = 15, offset = 0) {
   return request.get("/v1/search/song/pc", {
     params: {
       keyword: keyword,
       limit: limit,
       offset: offset,
       needCorrect: true,
-    }
+    },
   });
 }
 
-export function searchPlaylists(
-  s: string, limit = 15, offset = 0
-) {
+export function searchPlaylists(s: string, limit = 15, offset = 0) {
   return request.get("/v1/search/playlist/pc", {
     params: {
       s: s,
       limit: limit,
       offset: offset,
       needCorrect: true,
-    }
+    },
   });
 }
 
-export function searchAlbums(
-  s: string, limit = 15, offset = 0
-) {
+export function searchAlbums(s: string, limit = 15, offset = 0) {
   return request.get("/v1/search/album/pc", {
     params: {
       s: s,
       limit: limit,
       offset: offset,
       needCorrect: true,
-    }
+    },
   });
 }
 
-export function searchArtists(
-  s: string, limit = 15, offset = 0
-) {
+export function searchArtists(s: string, limit = 15, offset = 0) {
   return request.get("/v1/search/artist/pc", {
     params: {
       s: s,
       limit: limit,
       offset: offset,
       needCorrect: true,
-    }
+    },
   });
 }

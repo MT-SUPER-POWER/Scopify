@@ -1,13 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
 import { Image as ImageIcon } from "lucide-react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertDialog,
   AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogFooter,
+  AlertDialogHeader,
   AlertDialogOverlay,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useI18n } from "@/store/module/i18n";
 
 // 定义表单数据结构
 export interface PlaylistFormData {
@@ -30,6 +32,7 @@ export function UpdatePlaylistDialog({
   onConfirm,
   onCancel,
 }: UpdatePlaylistDialogProps) {
+  const { t } = useI18n();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   // const [tags, setTags] = useState<string[]>([]); // 简化处理，实际可能需要下拉多选组件
@@ -73,7 +76,7 @@ export function UpdatePlaylistDialog({
       <AlertDialogContent className="bg-[#282828]/95 border border-white/10 shadow-2xl rounded-xl w-150 max-w-[90vw] p-6 flex flex-col pointer-events-auto">
         <AlertDialogHeader className="mb-4">
           <AlertDialogTitle className="text-xl font-bold text-white tracking-tight text-left">
-            Edit Playlist Information
+            {t("playlist.form.editTitle")}
           </AlertDialogTitle>
         </AlertDialogHeader>
 
@@ -86,7 +89,7 @@ export function UpdatePlaylistDialog({
                 value={name}
                 maxLength={40}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Add a name for your playlist"
+                placeholder={t("playlist.form.namePlaceholder")}
                 className="w-full bg-white/10 text-white placeholder:text-[#b3b3b3] px-3 py-2 rounded-md outline-none focus:ring-1 focus:ring-white/30 transition-all text-sm"
               />
               <span className="absolute right-2 top-2 text-xs text-[#b3b3b3]">
@@ -100,7 +103,7 @@ export function UpdatePlaylistDialog({
                 value={description}
                 maxLength={300}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Add a description for your playlist"
+                placeholder={t("playlist.form.descriptionPlaceholder")}
                 rows={4}
                 className="w-full bg-white/10 text-white placeholder:text-[#b3b3b3] px-3 py-2 rounded-md outline-none focus:ring-1 focus:ring-white/30 transition-all text-sm resize-none"
               />
@@ -117,7 +120,11 @@ export function UpdatePlaylistDialog({
               onClick={() => fileInputRef.current?.click()}
             >
               {coverUrl ? (
-                <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
+                <img
+                  src={coverUrl}
+                  alt={t("playlist.form.coverAlt")}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <ImageIcon className="w-12 h-12 text-[#b3b3b3]" />
               )}
@@ -125,7 +132,9 @@ export function UpdatePlaylistDialog({
               {/* 悬浮遮罩 */}
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity">
                 <ImageIcon className="w-8 h-8 text-white mb-2" />
-                <span className="text-white text-sm font-medium">Replace Image</span>
+                <span className="text-white text-sm font-medium">
+                  {t("playlist.form.replaceImage")}
+                </span>
               </div>
             </div>
             {/* 隐藏的文件输入框 */}
@@ -145,14 +154,14 @@ export function UpdatePlaylistDialog({
             onClick={onCancel}
             className="px-6 py-2 rounded-full bg-transparent border border-[#727272] hover:border-white text-white font-bold text-sm transition-all"
           >
-            Cancel
+            {t("common.action.cancel")}
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading || !name.trim()}
             className="px-6 py-2 rounded-full bg-[#1ed760] disabled:opacity-50 hover:bg-[#1fdf64] text-black font-bold text-sm transition-all"
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? t("common.action.saving") : t("common.action.save")}
           </button>
         </AlertDialogFooter>
       </AlertDialogContent>

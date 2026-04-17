@@ -1,20 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRef } from "react";
-import { Maximize, Minimize, ChevronDown } from "lucide-react";
+import { ChevronDown, Maximize, Minimize } from "lucide-react";
+import { motion } from "motion/react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { FaCompactDisc, FaUser } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { ModalBackground } from "./ModalBackground";
+import { useI18n } from "@/store/module/i18n";
+import { PlayerBar } from "../PlayerBar";
 import { LyricRenderer } from "./LyricRenderer";
-import Image from "next/image";
-import { PlayerBar } from '../PlayerBar';
-import { motion } from "motion/react";
-import { FaCompactDisc, FaUser } from "react-icons/fa6";
+import { ModalBackground } from "./ModalBackground";
 
-export const LyricModalContent = ({ onClose }: {
-  onClose?: () => void;
-}) => {
+export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
+  const { t } = useI18n();
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const coverUrl = currentSongDetail?.al?.picUrl || "";
 
@@ -25,8 +24,10 @@ export const LyricModalContent = ({ onClose }: {
   useEffect(() => {
     const checkFullScreen = () => {
       // 通过窗口尺寸和屏幕尺寸判断是否全屏
-      const isBrowserFullScreen = window.innerHeight === screen.height &&
-        window.innerWidth === screen.width && !document.fullscreenElement;
+      const isBrowserFullScreen =
+        window.innerHeight === screen.height &&
+        window.innerWidth === screen.width &&
+        !document.fullscreenElement;
       setIsFullscreen(!!document.fullscreenElement || isBrowserFullScreen);
     };
     window.addEventListener("resize", checkFullScreen);
@@ -40,7 +41,9 @@ export const LyricModalContent = ({ onClose }: {
 
   const handleClose = () => {
     setIsClosing(true);
-    setTimeout(() => { onClose?.(); }, 300);
+    setTimeout(() => {
+      onClose?.();
+    }, 300);
   };
 
   // 自动隐藏头部和底部
@@ -94,14 +97,13 @@ export const LyricModalContent = ({ onClose }: {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  }, [handleClose]);
 
   return (
     <div
       className={cn(
         "fixed inset-0 z-100 flex flex-col text-white h-dvh overflow-hidden bg-black",
-        isClosing ? "animate-modal-exit" : "animate-modal-enter"
+        isClosing ? "animate-modal-exit" : "animate-modal-enter",
       )}
     >
       <ModalBackground coverUrl={coverUrl} />
@@ -129,9 +131,10 @@ export const LyricModalContent = ({ onClose }: {
       </motion.div>
 
       {/* 主要内容区域 */}
-      <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 px-6 lg:px-16 py-20
-        max-w-7xl mx-auto w-full relative z-10">
-
+      <div
+        className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 px-6 lg:px-16 py-20
+        max-w-7xl mx-auto w-full relative z-10"
+      >
         {/* 左侧：封面和歌曲信息 */}
         <div className="flex flex-col items-center lg:items-start gap-6 w-full lg:w-[40%] max-w-md">
           {/* 封面 */}
@@ -142,7 +145,7 @@ export const LyricModalContent = ({ onClose }: {
                 <Image
                   fill
                   src={coverUrl}
-                  alt="Cover"
+                  alt={t("album.coverAlt")}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   draggable={false}
                   priority
@@ -158,20 +161,21 @@ export const LyricModalContent = ({ onClose }: {
           {/* 歌曲信息 */}
           <div className="flex flex-col items-center lg:items-start gap-2 w-full px-2">
             <h1 className="text-2xl lg:text-3xl font-bold text-white text-center lg:text-left leading-tight line-clamp-2">
-              {currentSongDetail?.name || "Unknown Song"}
+              {currentSongDetail?.name || t("common.meta.unknownSong")}
             </h1>
 
             <div className="flex flex-col gap-1.5 text-white/60 text-sm lg:text-base">
               <div className="flex items-center gap-2 justify-center lg:justify-start">
                 <FaUser className="w-4 h-4 shrink-0" />
                 <span className="truncate max-w-70">
-                  {currentSongDetail?.ar?.map((a: any) => a.name).join(", ") || "Unknown Artist"}
+                  {currentSongDetail?.ar?.map((a: any) => a.name).join(", ") ||
+                    t("common.meta.unknownArtist")}
                 </span>
               </div>
               <div className="flex items-center gap-2 justify-center lg:justify-start">
                 <FaCompactDisc className="w-4 h-4 shrink-0" />
                 <span className="truncate max-w-70">
-                  {currentSongDetail?.al?.name || "Unknown Album"}
+                  {currentSongDetail?.al?.name || t("common.meta.unknownAlbum")}
                 </span>
               </div>
             </div>
@@ -190,10 +194,7 @@ export const LyricModalContent = ({ onClose }: {
       </div>
 
       {/* 底部播放控制 */}
-      <motion.div
-        animate={{ opacity: isBarVisible ? 0.7 : 0 }}
-        transition={{ duration: 0.3 }}
-      >
+      <motion.div animate={{ opacity: isBarVisible ? 0.7 : 0 }} transition={{ duration: 0.3 }}>
         <PlayerBar
           className="bg-transparent"
           bgClass="bg-transparent"

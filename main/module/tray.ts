@@ -1,4 +1,4 @@
-import { app, Tray, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, Tray } from "electron";
 import { __logoIcon, __preloadScript } from "../constants.js";
 
 const TRAY_WIDTH = 240;
@@ -23,32 +23,30 @@ function createTrayWindow() {
     alwaysOnTop: true,
     resizable: false,
     skipTaskbar: true,
-    backgroundColor: '#00000000',
+    backgroundColor: "#00000000",
     webPreferences: {
       preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,
       devTools: false, // 生产环境禁用开发者工具
-    }
+    },
   });
 
   const devPort = process.env.NEXT_PORT ?? "3000";
-  const trayUrl = app.isPackaged
-    ? "app://-/tray/"
-    : `http://localhost:${devPort}/tray`;
+  const trayUrl = app.isPackaged ? "app://-/tray/" : `http://localhost:${devPort}/tray`;
 
   trayWindow.loadURL(trayUrl);
   trayWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
     console.error("[tray] did-fail-load", { code, desc, validatedURL });
   });
 
-  trayWindow.on('blur', () => {
+  trayWindow.on("blur", () => {
     lastBlurTime = Date.now();
     trayWindow?.hide();
   });
 
   // 核心修复：窗口被销毁时，将外部变量置空释放内存
-  trayWindow.on('closed', () => {
+  trayWindow.on("closed", () => {
     trayWindow = null;
   });
 }
@@ -58,11 +56,11 @@ function initTray(mainWindow: Electron.BrowserWindow) {
   if (tray) return;
 
   tray = new Tray(__logoIcon);
-  tray.setToolTip('Scopify');
+  tray.setToolTip("Scopify");
 
   createTrayWindow();
 
-  tray.on('right-click', (_event, trayBounds) => {
+  tray.on("right-click", (_event, trayBounds) => {
     // 如果窗口被销毁了（比如主动调用了 close），重新创建一个
     if (!trayWindow) {
       createTrayWindow();
@@ -71,12 +69,17 @@ function initTray(mainWindow: Electron.BrowserWindow) {
     // 下面都是你原来的逻辑，唯一需要注意的是 trayWindow 此时一定是非 null 的 (加 ! 断言)
     const timeSinceLastBlur = Date.now() - lastBlurTime;
 
-    if (trayWindow!.isVisible() || timeSinceLastBlur < 100) {
-      trayWindow!.hide();
+    if (trayWindow?.isVisible() || timeSinceLastBlur < 100) {
+      trayWindow?.hide();
       return;
     }
 
-    const windowBounds = trayWindow!.getBounds();
+    const currentTrayWindow = trayWindow;
+    if (!currentTrayWindow || currentTrayWindow.isDestroyed()) {
+      return;
+    }
+
+    const windowBounds = currentTrayWindow.getBounds();
     const currentDisplay = screen.getDisplayNearestPoint(trayBounds);
     const workArea = currentDisplay.workArea;
     const maxRight = workArea.x + workArea.width;
@@ -87,7 +90,7 @@ function initTray(mainWindow: Electron.BrowserWindow) {
     }
     if (x < workArea.x) x = workArea.x + 10;
 
-    let y;
+    let y: number;
     if (trayBounds.y > currentDisplay.bounds.height / 2) {
       y = trayBounds.y - windowBounds.height - Y_OFFSET;
     } else {
@@ -98,19 +101,19 @@ function initTray(mainWindow: Electron.BrowserWindow) {
       y = workArea.y + workArea.height - windowBounds.height - 10;
     }
 
-    trayWindow!.setOpacity(0);
-    trayWindow!.setPosition(x, y, false);
-    trayWindow!.show();
-    trayWindow!.focus();    // 防止被 win 的托盘菜单栏盖住
+    currentTrayWindow.setOpacity(0);
+    currentTrayWindow.setPosition(x, y, false);
+    currentTrayWindow.show();
+    currentTrayWindow.focus(); // 防止被 win 的托盘菜单栏盖住
 
     setTimeout(() => {
-      if (trayWindow && !trayWindow.isDestroyed() && trayWindow.isVisible()) {
-        trayWindow.setOpacity(1);
+      if (currentTrayWindow && !currentTrayWindow.isDestroyed() && currentTrayWindow.isVisible()) {
+        currentTrayWindow.setOpacity(1);
       }
     }, 20);
   });
 
-  tray.on('double-click', () => {
+  tray.on("double-click", () => {
     if (mainWindow && !mainWindow.isDestroyed()) {
       if (mainWindow.isVisible()) {
         mainWindow.focus();
@@ -121,7 +124,7 @@ function initTray(mainWindow: Electron.BrowserWindow) {
   });
 
   // 妥善清理 Tray，避免退出时系统托盘留下残影
-  app.on('before-quit', () => {
+  app.on("before-quit", () => {
     if (tray) {
       tray.destroy();
       tray = null;

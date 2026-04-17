@@ -1,23 +1,22 @@
 import request from "../web/request";
 
 export interface SongUrlMatchResponse {
-    code: number;
-    data: string;
-    proxyUrl: string;
+  code: number;
+  data: string;
+  proxyUrl: string;
 }
 
 export async function greySongUrlMatch(
-    id: number | string,
-    source?: string
+  id: number | string,
+  source?: string,
 ): Promise<SongUrlMatchResponse> {
-    const params: Record<string, any> = { id };
-    if (source) params.source = source;
+  const params: Record<string, any> = { id };
+  if (source) params.source = source;
 
-    const response = await request.get<SongUrlMatchResponse>('/song/url/match', { params });
-    return response.data;
+  const response = await request.get<SongUrlMatchResponse>("/song/url/match", { params });
+  return response.data;
 }
 
-
 export async function getLyric(id: number | string) {
-    return request.get("/lyric/new", { params: { id: id } });
+  return request.get("/lyric/new", { params: { id: id } });
 }

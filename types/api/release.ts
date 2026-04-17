@@ -1,4 +1,3 @@
-
 export interface NeteaseUserAlbum {
   subTime: number; // 收藏时间戳
   picUrl: string; // 专辑封面URL
@@ -13,6 +12,6 @@ export const pruneNeteaseUserAlbum = (album: NeteaseUserAlbum) => {
     picUrl: album.picUrl,
     name: album.name,
     size: album.size,
-    id: album.id
+    id: album.id,
   };
 };
