@@ -38,8 +38,9 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
     },
   });
 
+  const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
   const devPort = appConfig.frontend.devPort || 3000;
-  const loginUrl = app.isPackaged ? "app://-/login/" : `http://localhost:${devPort}/login`;
+  const loginUrl = useStaticRenderer ? "app://-/login/" : `http://localhost:${devPort}/login`;
 
   loginWindow.loadURL(loginUrl);
   loginWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {

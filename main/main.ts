@@ -12,27 +12,23 @@ import {
   cleanOldLogs,
   logger,
 } from "./constants.js";
-import {
-  getBackendStartupStatus,
-  startManagedBackend,
-  stopManagedBackend,
-} from "./module/backend.js";
 import { registerIpcHandlers } from "./module/ipc.js";
 import initializeLoginWindow from "./module/login.js";
 import { applyElectronProxy } from "./module/proxy.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
 import initTray from "./module/tray.js";
+import { checkForUpdates, initializeUpdater } from "./module/updater.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 let splashWindow: BrowserWindowType | null = null;
 let mainWindow: BrowserWindowType | null = null;
-let mainWindowLoaded = false;
 let mainWindowReleased = false;
 let isQuitting = false;
 
-const appServe: ((win: BrowserWindowType) => Promise<void>) | null = app.isPackaged
+const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
+const appServe: ((win: BrowserWindowType) => Promise<void>) | null = useStaticRenderer
   ? serve({ directory: join(__dirname, "../../renderer") })
   : null;
 
@@ -67,20 +63,7 @@ function revealMainWindow() {
   }
 }
 
-function sendBackendStatusToRenderer() {
-  if (!mainWindow || !mainWindowLoaded || mainWindow.isDestroyed()) return;
-  mainWindow.webContents.send("backend-status-changed", getBackendStartupStatus());
-}
-
-function maybeRevealMainWindow() {
-  const backendStatus = getBackendStartupStatus();
-  if (!mainWindow || !mainWindowLoaded || mainWindowReleased) return;
-  if (backendStatus.state === "starting") return;
-  revealMainWindow();
-}
-
 function createWindow() {
-  mainWindowLoaded = false;
   mainWindowReleased = false;
 
   splashWindow = new BrowserWindow({
@@ -123,19 +106,16 @@ function createWindow() {
     },
   });
 
-  // Only reveal the main window after both renderer and backend are ready.
   mainWindow.webContents.once("did-finish-load", () => {
-    mainWindowLoaded = true;
-    sendBackendStatusToRenderer();
-    maybeRevealMainWindow();
+    revealMainWindow();
   });
 
-  if (app.isPackaged) {
+  if (useStaticRenderer) {
     if (!appServe) {
-      logger.error("[renderer] appServe is not initialized in packaged mode.");
+      logger.error("[renderer] appServe is not initialized in static renderer mode.");
     } else {
       appServe(mainWindow).catch((err) => {
-        logger.error("[renderer] Failed to load packaged renderer via app:// protocol:", err);
+        logger.error("[renderer] Failed to load static renderer via app:// protocol:", err);
         const fallbackIndex = join(__dirname, "../../renderer/index.html");
         mainWindow?.loadFile(fallbackIndex).catch((fallbackErr) => {
           logger.error("[renderer] Fallback loadFile also failed:", fallbackErr);
@@ -194,7 +174,6 @@ function createWindow() {
   });
 
   mainWindow.on("closed", () => {
-    mainWindowLoaded = false;
     mainWindowReleased = false;
     mainWindow = null;
   });
@@ -202,6 +181,7 @@ function createWindow() {
 
 function setupWindowModules(win: BrowserWindowType) {
   registerIpcHandlers(win);
+  initializeUpdater(win);
 
   if (process.platform !== "darwin") {
     initTray(win);
@@ -232,19 +212,6 @@ if (!gotTheLock) {
       logger.error("[proxy] failed to apply startup proxy config:", error);
     });
 
-    const backendStartup = startManagedBackend();
-    backendStartup
-      .then(() => {
-        logger.info("[startup] Backend is ready, releasing splash screen.");
-        sendBackendStatusToRenderer();
-        maybeRevealMainWindow();
-      })
-      .catch((err) => {
-        logger.error("[startup] Backend startup failed, showing renderer fallback.", err);
-        sendBackendStatusToRenderer();
-        maybeRevealMainWindow();
-      });
-
     try {
       createWindow();
 
@@ -257,6 +224,11 @@ if (!gotTheLock) {
 
     if (mainWindow) {
       setupWindowModules(mainWindow);
+      setTimeout(() => {
+        checkForUpdates().catch((error) => {
+          logger.warn("[updater] startup check failed:", error);
+        });
+      }, 5000);
     }
 
     cleanOldLogs();
@@ -278,7 +250,6 @@ if (!gotTheLock) {
 
   app.on("before-quit", () => {
     isQuitting = true;
-    stopManagedBackend();
   });
 
   process.on("uncaughtException", (err) => {
@@ -287,7 +258,6 @@ if (!gotTheLock) {
       "发生未捕获的异常",
       `应用遇到了一个未处理的错误，应用将退出。\n\n错误信息:\n${err.message}`,
     );
-    stopManagedBackend();
     app.exit(1);
   });
 
@@ -297,7 +267,6 @@ if (!gotTheLock) {
       "发生未处理的 Promise 拒绝",
       `应用遇到了一个未处理的 Promise 错误，应用将退出。\n\n错误信息:\n${reason}`,
     );
-    stopManagedBackend();
     app.exit(1);
   });
 }

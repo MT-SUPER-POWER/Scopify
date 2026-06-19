@@ -49,6 +49,36 @@
 
 ## 部署方法
 
+### Desktop and Backend Deployment
+
+The desktop app no longer bundles or starts the backend service. Deploy the backend independently,
+then point `config/app.config.yml` at the backend host and port:
+
+```yaml
+backend:
+  host: 127.0.0.1
+  port: 3838
+```
+
+The client automatically requests `http://host:port`.
+
+For a local or private backend deployment, use Docker Compose directly:
+
+```bash
+docker compose up -d
+```
+
+You can override the exposed backend port through `.env`:
+
+```env
+BACKEND_PORT=3838
+```
+
+No npm scripts are added for Docker Compose; run Compose commands directly.
+
+Tagged releases publish desktop installers to GitHub Releases. The desktop app checks stable GitHub
+Releases for updates and can download an update package before prompting for restart.
+
 > [!note]
 > 等待后续有时间，我会直接做一个 img 直接部署我们的业务，目前虽然比较繁琐，但是还是这么来吧
 

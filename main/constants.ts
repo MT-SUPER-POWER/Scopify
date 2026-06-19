@@ -112,23 +112,6 @@ export function cleanOldLogs() {
   });
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKEND ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const __backendDir = app.isPackaged
-  ? join(process.resourcesPath, "/backend")
-  : join(__dirname, "../../backend/api-enhanced");
-const __backendEntry = join(__backendDir, "app.js");
-
-// NOTE: 通过环境变量传递后端配置，确保子进程能够正确读取到这些配置项
-const __backendEnv = {
-  ...process.env,
-  PORT: `${appConfig.backend.port}`,
-  HOST: appConfig.backend.host,
-  APP_CONFIG_PATH: appConfigPath,
-  NODE_ENV: "production",
-  ELECTRON_RUN_AS_NODE: "1",
-};
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LOG ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 log.info(`\x1b[32m
@@ -154,7 +137,6 @@ log.info(`
   Config Path:    ${appConfigPath}
   Default:        ${appConfigDefaultPath}
   App Config:     ${configStr}
-  Backend Entry:  ${__backendEntry}
   Splash HTML:    ${__splashHtmlPath}
   Renderer Dir:   ${__rendererDir}
   PIC DIR:        ${__picDir}
@@ -162,9 +144,6 @@ log.info(`
 `);
 
 export {
-  __backendDir,
-  __backendEntry,
-  __backendEnv,
   appConfig,
   appConfigDefaultPath as __appConfigDefaultPath,
   appConfigPath as __appConfig,

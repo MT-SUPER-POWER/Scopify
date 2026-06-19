@@ -32,8 +32,9 @@ function createTrayWindow() {
     },
   });
 
+  const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
   const devPort = process.env.NEXT_PORT ?? "3000";
-  const trayUrl = app.isPackaged ? "app://-/tray/" : `http://localhost:${devPort}/tray`;
+  const trayUrl = useStaticRenderer ? "app://-/tray/" : `http://localhost:${devPort}/tray`;
 
   trayWindow.loadURL(trayUrl);
   trayWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {

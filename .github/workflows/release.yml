@@ -50,16 +50,11 @@ jobs:
         run: python script/extract-changelog.py
 
       # 🟢 构建
-      - name: Build Backend
-        run: bun run build:backend
-
       - name: Build Next.js
         run: bun run build:web
 
-      - name: Compile Main Process
-        run: |
-          bunx swc main -d out --out-file-extension js --ignore main/preload.ts
-          bun run script/build-electron.ts
+      - name: Build Electron Runtime
+        run: bun run build:electron
 
       # 🟢 核心：构建 + 自动创建 release + 上传 assets
       - name: Build & Publish Electron
