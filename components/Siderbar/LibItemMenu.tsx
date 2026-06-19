@@ -27,9 +27,10 @@ import {
   updatePlaylist,
   updatePlaylistCover,
 } from "@/lib/api/playlist";
-import { translate } from "@/lib/i18n";
 import { getUserPlaylist } from "@/lib/api/user";
+import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n, useI18nStore } from "@/store/module/i18n";
@@ -46,6 +47,7 @@ function handleDeletePlaylist(playlistId: string | number, playlistName: string)
       const userStore = useUserStore.getState();
       const updatedPlaylists = userStore.playlist.filter((p) => p.id !== playlistId);
       userStore.setPlayList(updatedPlaylists);
+      void clearPageCache();
       toast.success(translate(locale, "sidebar.menu.deleteSuccess", { name: playlistName }));
     } else {
       console.error("删除歌单失败:", res.data.message);
@@ -80,6 +82,7 @@ function handleUpdatePlaylist(
             }
           });
           toast.success(translate(locale, "sidebar.lib.updateSuccess", { name }));
+          void clearPageCache();
         }
       } else {
         const errorRes = results.find((res) => res.data.code !== 200);
@@ -217,9 +220,13 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
               onClick={async () => {
                 try {
                   const uid = useUserStore.getState().user?.userId;
+                  if (!uid) {
+                    toast.error(t("common.action.login"));
+                    return;
+                  }
                   const [tracksRes, likeListsRes] = await Promise.all([
                     getPlaylistAllTracks({ id: playlistID }),
-                    getUserLikeLists(uid!),
+                    getUserLikeLists(uid),
                   ]);
 
                   const tracks = tracksRes.data?.songs || [];

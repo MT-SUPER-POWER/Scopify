@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { clearPageCache } from "@/lib/cache/pageCache";
 import { translate } from "@/lib/i18n";
 import { IS_ELECTRON } from "@/lib/utils";
 import { appConfig } from "@/lib/web/env";
@@ -13,10 +14,7 @@ export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
 function checkRequiresRestart(current: AppConfig, original: AppConfig): boolean {
   return (
     current.app.gpuAcceleration !== original.app.gpuAcceleration ||
-    current.app.devTools !== original.app.devTools ||
-    current.backend.host !== original.backend.host ||
-    current.backend.port !== original.backend.port ||
-    current.backend.autoStart !== original.backend.autoStart
+    current.app.devTools !== original.app.devTools
   );
 }
 
@@ -74,6 +72,7 @@ export function useSettingsState() {
   const [originalConfig, setOriginalConfig] = useState<AppConfig | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isClearingCache, setIsClearingCache] = useState(false);
   const _locale = useI18nStore((state) => state.locale);
   const setLocale = useI18nStore((state) => state.setLocale);
 
@@ -168,6 +167,21 @@ export function useSettingsState() {
     }
   };
 
+  const handleClearCache = async () => {
+    if (!config) return;
+
+    setIsClearingCache(true);
+    try {
+      await clearPageCache();
+      toast.success(translate(config.app.locale, "settings.cache.clearSuccess"));
+    } catch (error) {
+      console.error("[Settings] failed to clear cache:", error);
+      toast.error(translate(config.app.locale, "settings.cache.clearFailed"));
+    } finally {
+      setIsClearingCache(false);
+    }
+  };
+
   const hasChanges = Boolean(
     config && originalConfig && JSON.stringify(config) !== JSON.stringify(originalConfig),
   );
@@ -180,9 +194,11 @@ export function useSettingsState() {
     hasChanges,
     isModalOpen,
     isSaving,
+    isClearingCache,
     requiresRestart,
     setIsModalOpen,
     handleLocalChange,
     handleConfirmSave,
+    handleClearCache,
   };
 }

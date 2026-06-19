@@ -20,6 +20,7 @@ import {
 import { LikeButton } from "@/components/ui/LikeButton";
 import { likeSong } from "@/lib/api/playlist";
 import { updatePlaylistTrack } from "@/lib/api/track";
+import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
@@ -142,12 +143,13 @@ export const PopularTrackItem = memo(
           const idNum = Number(track.id);
           const nextList: number[] = next ? [...cur, idNum] : cur.filter((id) => id !== idNum);
           store.setLikeListIDs(nextList);
+          void clearPageCache();
           toast.success(next ? t("artist.track.likedAdded") : t("artist.track.likedRemoved"));
         } catch {
           toast.error(t("artist.track.operationFailed"));
         }
       },
-      [track.id],
+      [track.id, t],
     );
 
     const handleAddToQueue = useCallback(() => {
@@ -160,7 +162,7 @@ export const PopularTrackItem = memo(
       }
       state.setQueue([...state.queue, detail], state.queueIndex);
       toast.success(t("artist.track.queueAdded"));
-    }, [queue, index, track]);
+    }, [queue, index, track, t]);
 
     // console.log("Track Data:", track);
 
@@ -271,6 +273,7 @@ export const PopularTrackItem = memo(
                       onClick={async () => {
                         try {
                           await updatePlaylistTrack("add", p.id, track.id as number);
+                          void clearPageCache();
                           toast.success(t("artist.track.addToPlaylistSuccess"));
                         } catch {
                           toast.error(t("artist.track.addToPlaylistFailed"));
@@ -300,6 +303,7 @@ export const PopularTrackItem = memo(
 
             <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
               <button
+                type="button"
                 onClick={() => {
                   navigator.clipboard
                     .writeText(`https://music.163.com/#/song?id=${track.id}`)

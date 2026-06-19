@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { QueuePopover } from "@/components/QueuePopover";
 import { VolumeControl } from "@/components/VolumeControl";
 import { likeSong } from "@/lib/api/playlist";
+import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
@@ -123,12 +124,13 @@ export const PlayerBar = ({
         const idNum = Number(currentSong?.id);
         const nextList: number[] = next ? [...cur, idNum] : cur.filter((id) => id !== idNum);
         store.setLikeListIDs(nextList);
+        void clearPageCache();
         toast.success(next ? t("playlist.table.likedAdded") : t("playlist.table.likedRemoved"));
       } catch (error) {
         console.log("Error toggling like status:", error);
       }
     },
-    [currentSong],
+    [currentSong, t],
   );
 
   return (
@@ -164,6 +166,7 @@ export const PlayerBar = ({
             >
               {isLyricOpen ? (
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (onCloseLyricModal) onCloseLyricModal();
@@ -174,6 +177,7 @@ export const PlayerBar = ({
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     openLyrics();
@@ -226,7 +230,11 @@ export const PlayerBar = ({
           </div>
 
           <div className="hidden sm:flex items-center gap-3">
-            <button title={isLiked ? t("common.action.unlike") : t("common.action.like")} onClick={() => toggleLike(!isLiked)}>
+            <button
+              type="button"
+              title={isLiked ? t("common.action.unlike") : t("common.action.like")}
+              onClick={() => toggleLike(!isLiked)}
+            >
               <Heart
                 className={cn(
                   "w-4 h-4 lg:w-5 lg:h-5 text-[#b3b3b3] hover:text-white cursor-pointer",
@@ -247,6 +255,7 @@ export const PlayerBar = ({
         <div className="flex flex-col items-center justify-center flex-2 lg:flex-4 gap-1.5 min-w-0">
           <div className="flex items-center gap-4 lg:gap-5 mt-1">
             <button
+              type="button"
               onClick={toggleShuffle}
               className={cn(
                 "hidden sm:block transition-colors relative",
@@ -258,12 +267,14 @@ export const PlayerBar = ({
               <Shuffle className="w-4 h-4 lg:w-5 lg:h-5" />
             </button>
             <button
+              type="button"
               onClick={() => playPrev()}
               className="text-[#b3b3b3] hover:text-white transition-colors"
             >
               <SkipBack className="w-4 h-4 lg:w-5 lg:h-5 fill-current" />
             </button>
             <button
+              type="button"
               onClick={() => setIsPlaying(!isPlaying)}
               disabled={!currentSong}
               className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center rounded-full bg-white
@@ -276,12 +287,14 @@ export const PlayerBar = ({
               )}
             </button>
             <button
+              type="button"
               onClick={() => playNext()}
               className="text-[#b3b3b3] hover:text-white transition-colors"
             >
               <SkipForward className="w-4 h-4 lg:w-5 lg:h-5 fill-current" />
             </button>
             <button
+              type="button"
               onClick={cycleRepeat}
               className={cn(
                 "hidden sm:block transition-colors relative",
@@ -307,6 +320,7 @@ export const PlayerBar = ({
         <div className="flex items-center justify-end gap-2 lg:gap-3 flex-1 lg:flex-3 text-[#b3b3b3]">
           {/* 歌词模态界面 */}
           <button
+            type="button"
             onClick={() => toggleLyrics()}
             className={`hover:text-white transition-colors ${isLyricsOpen ? "text-[#1db954]" : ""}`}
           >
@@ -331,7 +345,10 @@ export const PlayerBar = ({
 
           {/* TODO: 蓝牙 */}
           <div className="hidden lg:block">
-            <button className="hover:text-white transition-colors flex items-center justify-center">
+            <button
+              type="button"
+              className="hover:text-white transition-colors flex items-center justify-center"
+            >
               <MonitorSpeaker className="w-4 h-4 lg:w-5 lg:h-5" />
             </button>
           </div>
@@ -344,6 +361,7 @@ export const PlayerBar = ({
 
           {/* 最大化/最小化按钮 */}
           <button
+            type="button"
             onClick={() => {
               if (isMaximized) {
                 Minimize(isElectron);

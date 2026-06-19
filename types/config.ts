@@ -17,7 +17,6 @@ export interface AppConfig {
   backend: {
     port: number;
     host: string;
-    autoStart: boolean;
   };
   frontend: {
     devPort: number;
@@ -36,6 +35,13 @@ export interface AppConfig {
     proxyMode: ElectronProxyMode;
     proxyUrl: string;
   };
+  cache: {
+    enabled: boolean;
+    dir: string;
+    maxSizeMB: number;
+    pageTtlMinutes: number;
+    searchTtlMinutes: number;
+  };
 }
 
 export type PartialAppConfig = {
@@ -52,7 +58,6 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   backend: {
     port: 3838,
     host: "127.0.0.1",
-    autoStart: true,
   },
   frontend: {
     devPort: 3000,
@@ -71,6 +76,13 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
     proxyMode: "system",
     proxyUrl: "",
   },
+  cache: {
+    enabled: true,
+    dir: "",
+    maxSizeMB: 256,
+    pageTtlMinutes: 360,
+    searchTtlMinutes: 30,
+  },
 };
 
 export function isAppLocale(value: unknown): value is AppLocale {
@@ -86,6 +98,31 @@ function normalizeRandomCNIP(value: unknown): string {
   return "false";
 }
 
+function normalizeBackendHost(value: unknown): string {
+  return typeof value === "string" && value.trim() ? value.trim() : DEFAULT_APP_CONFIG.backend.host;
+}
+
+function normalizeBackendPort(value: unknown): number {
+  const port = Number(value);
+  return Number.isFinite(port) && port > 0 ? port : DEFAULT_APP_CONFIG.backend.port;
+}
+
+function normalizeBoolean(value: unknown, fallback: boolean): boolean {
+  if (typeof value === "boolean") return value;
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return fallback;
+}
+
+function normalizePositiveNumber(value: unknown, fallback: number): number {
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) && numberValue > 0 ? numberValue : fallback;
+}
+
+function normalizeCacheDir(value: unknown): string {
+  return typeof value === "string" ? value.trim() : DEFAULT_APP_CONFIG.cache.dir;
+}
+
 export function normalizeAppConfig(input?: PartialAppConfig | null): AppConfig {
   const locale = input?.app?.locale;
   const proxyMode = input?.network?.proxyMode;
@@ -98,8 +135,8 @@ export function normalizeAppConfig(input?: PartialAppConfig | null): AppConfig {
       locale: isAppLocale(locale) ? locale : DEFAULT_APP_CONFIG.app.locale,
     },
     backend: {
-      ...DEFAULT_APP_CONFIG.backend,
-      ...input?.backend,
+      host: normalizeBackendHost(input?.backend?.host),
+      port: normalizeBackendPort(input?.backend?.port),
     },
     frontend: {
       ...DEFAULT_APP_CONFIG.frontend,
@@ -116,6 +153,22 @@ export function normalizeAppConfig(input?: PartialAppConfig | null): AppConfig {
       proxyMode: isElectronProxyMode(proxyMode) ? proxyMode : DEFAULT_APP_CONFIG.network.proxyMode,
       proxyUrl:
         typeof proxyUrl === "string" ? proxyUrl.trim() : DEFAULT_APP_CONFIG.network.proxyUrl,
+    },
+    cache: {
+      enabled: normalizeBoolean(input?.cache?.enabled, DEFAULT_APP_CONFIG.cache.enabled),
+      dir: normalizeCacheDir(input?.cache?.dir),
+      maxSizeMB: normalizePositiveNumber(
+        input?.cache?.maxSizeMB,
+        DEFAULT_APP_CONFIG.cache.maxSizeMB,
+      ),
+      pageTtlMinutes: normalizePositiveNumber(
+        input?.cache?.pageTtlMinutes,
+        DEFAULT_APP_CONFIG.cache.pageTtlMinutes,
+      ),
+      searchTtlMinutes: normalizePositiveNumber(
+        input?.cache?.searchTtlMinutes,
+        DEFAULT_APP_CONFIG.cache.searchTtlMinutes,
+      ),
     },
   };
 }

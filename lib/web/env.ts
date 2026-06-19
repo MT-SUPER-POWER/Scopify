@@ -42,6 +42,9 @@ export const appConfig: AppConfig = {
       DEFAULT_APP_CONFIG.network.proxyMode,
     proxyUrl: String(process.env.APP_CFG_NET_PROXY_URL || DEFAULT_APP_CONFIG.network.proxyUrl),
   },
+  cache: {
+    ...DEFAULT_APP_CONFIG.cache,
+  },
 };
 
 export const logger = {

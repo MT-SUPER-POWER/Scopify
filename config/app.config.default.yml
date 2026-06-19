@@ -6,7 +6,6 @@ app:
 backend:
   port: 3838
   host: 127.0.0.1
-  autoStart: true
 frontend:
   devPort: 3000
   host: 127.0.0.1
@@ -21,3 +20,9 @@ network:
   randomCNIP: false
   proxyMode: system
   proxyUrl: ""
+cache:
+  enabled: true
+  dir: ""
+  maxSizeMB: 256
+  pageTtlMinutes: 360
+  searchTtlMinutes: 30

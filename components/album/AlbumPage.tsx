@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable"; // 复用你的歌曲列表组件
 import { getAlbumDetail } from "@/lib/api/album"; // 假设你在这个路径下有获取专辑的 API
+import { createPageCacheKey, getPageCache, pageTtlMs, setPageCache } from "@/lib/cache/pageCache";
 import { cn, getMainColorFromImage } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
@@ -29,6 +30,11 @@ import { useI18n } from "@/store/module/i18n";
 
 const colorCache = new Map<string, string>();
 const COLOR_CACHE_LIMIT = 10;
+
+interface AlbumCachePayload {
+  albumDetail: any;
+  tracks: any[];
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -120,7 +126,7 @@ export default function AlbumPage() {
       totalSongs: album.size ?? 0,
       description: album.description ?? "",
     };
-  }, [albumDetail]);
+  }, [albumDetail, t]);
 
   // 主色调逻辑提取
   useEffect(() => {
@@ -147,15 +153,27 @@ export default function AlbumPage() {
   useEffect(() => {
     if (!albumId) return;
 
+    let ignore = false;
+    const cacheKey = createPageCacheKey("album", [albumId]);
     setIsLoading(true);
     setIsError(false);
+
+    getPageCache<AlbumCachePayload>(cacheKey).then((cached) => {
+      if (ignore || !cached) return;
+      setAlbumDetail(cached.albumDetail);
+      useUserStore.getState().setAlbumList(cached.tracks || []);
+      setIsLoading(false);
+    });
+
     getAlbumDetail(albumId as string)
-      .then((res: any) => {
+      .then(async (res: any) => {
+        if (ignore) return;
         if (!res.data.album || !res.data.songs) {
           setIsError(true);
           return;
         }
         setAlbumDetail(res.data);
+        const cover = res.data.album?.picUrl || res.data.album?.blurPicUrl;
 
         // 拿到的歌曲数据是没有专属歌曲页面的，所以在专辑页面我们把专辑封面图直接放在歌曲数据里，方便后续 TrackTable 组件调用显示
         const songs_with_album_pic = res.data.songs.map((song: any) => {
@@ -163,20 +181,35 @@ export default function AlbumPage() {
             ...song,
             al: {
               ...song.al,
-              picUrl: ALBUM_INFO?.cover,
+              picUrl: cover,
             },
           };
         });
         // console.log("专辑详情和歌曲列表获取成功:", songs_with_album_pic);
         useUserStore.getState().setAlbumList(songs_with_album_pic || []);
+        await setPageCache(
+          cacheKey,
+          {
+            albumDetail: res.data,
+            tracks: songs_with_album_pic || [],
+          },
+          pageTtlMs(),
+        );
       })
       .catch((error) => {
+        if (ignore) return;
         console.error("请求专辑失败:", error);
         setIsError(true);
         toast.error(t("album.toast.fetchFailed"));
       })
-      .finally(() => setIsLoading(false));
-  }, [albumId, ALBUM_INFO?.cover]);
+      .finally(() => {
+        if (!ignore) setIsLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [albumId, t]);
 
   if (!albumId)
     return (

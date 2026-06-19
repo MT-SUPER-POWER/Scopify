@@ -23,6 +23,7 @@ import {
 import { LikeButton } from "@/components/ui/LikeButton";
 import { likeSong } from "@/lib/api/playlist";
 import { updatePlaylistTrack } from "@/lib/api/track";
+import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
@@ -71,9 +72,9 @@ function SongIndexCell({
       {/* 播放中：频谱动画 */}
       {isActive && isPlaying && (
         <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
-          {[0, 0.2, 0.4].map((delay, i) => (
+          {[0, 0.2, 0.4].map((delay) => (
             <motion.div
-              key={i}
+              key={delay}
               className="w-0.5 bg-[#1ed760] rounded-full"
               animate={{ scaleY: [0.4, 1, 0.4] }}
               transition={{ duration: 0.8, repeat: Infinity, delay, ease: "easeInOut" }}
@@ -159,6 +160,7 @@ export const SongItem = memo(
           store.setLikeListIDs(
             nextLiked ? [...current, song.id] : current.filter((id: number) => id !== song.id),
           );
+          void clearPageCache();
           toast.success(
             nextLiked ? t("playlist.table.likedAdded") : t("playlist.table.likedRemoved"),
           );
@@ -167,7 +169,7 @@ export const SongItem = memo(
           // toast.error("操作失败，请稍后再试");
         }
       },
-      [song.id],
+      [song.id, t],
     );
 
     const handleAddToQueue = useCallback(() => {
@@ -178,10 +180,11 @@ export const SongItem = memo(
       }
       state.setQueue([...state.queue, songToSongDetail(song)], state.queueIndex);
       toast.success(t("playlist.table.queueAdded"));
-    }, [song]);
+    }, [song, t]);
 
     const coverSrc = song.album.picUrl || song.artists[0]?.picUrl || "";
-    const artistNames = song.artists.map((a) => a.name).join(", ") || t("search.song.unknownArtist");
+    const artistNames =
+      song.artists.map((a) => a.name).join(", ") || t("search.song.unknownArtist");
 
     return (
       <ContextMenu>
@@ -316,6 +319,7 @@ export const SongItem = memo(
                       onClick={async () => {
                         try {
                           await updatePlaylistTrack("add", playlist.id, song.id);
+                          void clearPageCache();
                           toast.success(t("playlist.table.addToPlaylistSuccess"));
                         } catch {
                           toast.error(t("playlist.table.addToPlaylistFailed"));
@@ -346,6 +350,7 @@ export const SongItem = memo(
 
             <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
               <button
+                type="button"
                 onClick={() => {
                   navigator.clipboard
                     .writeText(`https://music.163.com/#/song?id=${song.id}`)

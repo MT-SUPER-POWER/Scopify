@@ -1,10 +1,10 @@
 "use client";
 
+import { useSettingsState } from "@/hooks/settings/useSettingsState";
 import { languageLabelKeys } from "@/lib/i18n";
 import { IS_ELECTRON } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { APP_LOCALES, type AppConfig, type AppLocale } from "@/types/config";
-import { useSettingsState } from "@/hooks/settings/useSettingsState";
 import {
   SaveChangesButton,
   SaveConfirmModal,
@@ -27,6 +27,8 @@ const SettingsPage = () => {
     setIsModalOpen,
     handleLocalChange,
     handleConfirmSave,
+    handleClearCache,
+    isClearingCache,
   } = useSettingsState();
 
   if (!config) {
@@ -256,41 +258,88 @@ const SettingsPage = () => {
                 />
               </SettingSection>
 
-              <SettingSection title={t("settings.section.backend")}>
-                <SettingRow
-                  label={t("settings.autoStartBackend.label")}
-                  requiresRestart
-                  control={
-                    <Toggle
-                      enabled={config.backend.autoStart}
-                      onChange={() =>
-                        handleLocalChange("backend", "autoStart", !config.backend.autoStart)
-                      }
-                    />
-                  }
-                />
-                <SettingRow
-                  label={t("settings.backendHost.label")}
-                  requiresRestart
-                  control={
-                    <SettingInput
-                      value={config.backend.host}
-                      onChange={(value) => handleLocalChange("backend", "host", value)}
-                    />
-                  }
-                />
-                <SettingRow
-                  label={t("settings.backendPort.label")}
-                  requiresRestart
-                  control={
-                    <SettingInput
-                      type="number"
-                      value={config.backend.port}
-                      onChange={(value) => handleLocalChange("backend", "port", Number(value))}
-                    />
-                  }
-                />
-              </SettingSection>
+              {IS_ELECTRON ? (
+                <SettingSection title={t("settings.section.cache")}>
+                  <SettingRow
+                    label={t("settings.cache.enabled.label")}
+                    sublabel={t("settings.cache.enabled.sublabel")}
+                    control={
+                      <Toggle
+                        enabled={config.cache.enabled}
+                        onChange={() =>
+                          handleLocalChange("cache", "enabled", !config.cache.enabled)
+                        }
+                      />
+                    }
+                  />
+                  <SettingRow
+                    label={t("settings.cache.dir.label")}
+                    sublabel={t("settings.cache.dir.sublabel")}
+                    isColumn
+                    control={
+                      <SettingInput
+                        value={config.cache.dir}
+                        onChange={(value) => handleLocalChange("cache", "dir", value)}
+                        className="w-full text-left"
+                        placeholder={t("settings.cache.dir.placeholder")}
+                      />
+                    }
+                  />
+                  <SettingRow
+                    label={t("settings.cache.maxSize.label")}
+                    sublabel={t("settings.cache.maxSize.sublabel")}
+                    control={
+                      <SettingInput
+                        type="number"
+                        value={config.cache.maxSizeMB}
+                        onChange={(value) => handleLocalChange("cache", "maxSizeMB", Number(value))}
+                      />
+                    }
+                  />
+                  <SettingRow
+                    label={t("settings.cache.pageTtl.label")}
+                    sublabel={t("settings.cache.pageTtl.sublabel")}
+                    control={
+                      <SettingInput
+                        type="number"
+                        value={config.cache.pageTtlMinutes}
+                        onChange={(value) =>
+                          handleLocalChange("cache", "pageTtlMinutes", Number(value))
+                        }
+                      />
+                    }
+                  />
+                  <SettingRow
+                    label={t("settings.cache.searchTtl.label")}
+                    sublabel={t("settings.cache.searchTtl.sublabel")}
+                    control={
+                      <SettingInput
+                        type="number"
+                        value={config.cache.searchTtlMinutes}
+                        onChange={(value) =>
+                          handleLocalChange("cache", "searchTtlMinutes", Number(value))
+                        }
+                      />
+                    }
+                  />
+                  <SettingRow
+                    label={t("settings.cache.clear.label")}
+                    sublabel={t("settings.cache.clear.sublabel")}
+                    control={
+                      <button
+                        type="button"
+                        onClick={handleClearCache}
+                        disabled={isClearingCache}
+                        className="px-4 py-2 rounded bg-white text-black text-sm font-bold hover:bg-white/90 disabled:opacity-50"
+                      >
+                        {isClearingCache
+                          ? t("settings.cache.clear.clearing")
+                          : t("settings.cache.clear.button")}
+                      </button>
+                    }
+                  />
+                </SettingSection>
+              ) : null}
 
               {process.env.NODE_ENV !== "production" ? (
                 <SettingSection title={t("settings.section.frontend")}>

@@ -1,13 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { translate } from "@/lib/i18n";
 import { searchAlbums, searchArtists, searchPlaylists, searchSongs } from "@/lib/api/search";
+import { createPageCacheKey, getPageCache, searchTtlMs, setPageCache } from "@/lib/cache/pageCache";
+import { translate } from "@/lib/i18n";
 import { useI18nStore } from "@/store/module/i18n";
 import type { Album, Artist, Playlist, Song } from "@/types/search";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 type Category = "All" | "Songs" | "Artists" | "Playlists" | "Albums";
+
+interface SearchCachePayload {
+  songs: Song[];
+  albums: Album[];
+  playlists: Playlist[];
+  artists: Artist[];
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -59,6 +67,15 @@ export function useSearchData(keywords: string, activeCategory: Category) {
   const fetchAllData = useCallback(async () => {
     if (!keywords.trim()) return;
     setLoading(true);
+    const cacheKey = createPageCacheKey("search", [keywords.trim(), "All"]);
+    const cached = await getPageCache<SearchCachePayload>(cacheKey);
+    if (cached) {
+      setSongs(cached.songs);
+      setAlbums(cached.albums);
+      setPlaylists(cached.playlists);
+      setArtists(cached.artists);
+      setLoading(false);
+    }
     try {
       const [songsRes, albumsRes, playlistsRes, artistsRes] = await Promise.allSettled([
         searchSongs(keywords, 4),
@@ -67,17 +84,30 @@ export function useSearchData(keywords: string, activeCategory: Category) {
         searchArtists(keywords, 6),
       ]);
 
-      setSongs(
+      const nextSongs =
         songsRes.status === "fulfilled" && songsRes.value.data?.data?.resources
           ? songsRes.value.data.data.resources.map(mapResourceToSong)
-          : [],
-      );
-      setAlbums(albumsRes.status === "fulfilled" ? albumsRes.value.data?.result?.albums || [] : []);
-      setPlaylists(
-        playlistsRes.status === "fulfilled" ? playlistsRes.value.data?.result?.playlists || [] : [],
-      );
-      setArtists(
-        artistsRes.status === "fulfilled" ? artistsRes.value.data?.result?.artists || [] : [],
+          : [];
+      const nextAlbums =
+        albumsRes.status === "fulfilled" ? albumsRes.value.data?.result?.albums || [] : [];
+      const nextPlaylists =
+        playlistsRes.status === "fulfilled" ? playlistsRes.value.data?.result?.playlists || [] : [];
+      const nextArtists =
+        artistsRes.status === "fulfilled" ? artistsRes.value.data?.result?.artists || [] : [];
+
+      setSongs(nextSongs);
+      setAlbums(nextAlbums);
+      setPlaylists(nextPlaylists);
+      setArtists(nextArtists);
+      await setPageCache(
+        cacheKey,
+        {
+          songs: nextSongs,
+          albums: nextAlbums,
+          playlists: nextPlaylists,
+          artists: nextArtists,
+        },
+        searchTtlMs(),
       );
     } catch (err) {
       console.error("Fetch all data error:", err);
@@ -91,29 +121,57 @@ export function useSearchData(keywords: string, activeCategory: Category) {
     async (category: Category) => {
       if (!keywords.trim()) return;
       setLoading(true);
+      const cacheKey = createPageCacheKey("search", [keywords.trim(), category]);
+      const cached = await getPageCache<SearchCachePayload>(cacheKey);
+      if (cached) {
+        setSongs(cached.songs);
+        setAlbums(cached.albums);
+        setPlaylists(cached.playlists);
+        setArtists(cached.artists);
+        setLoading(false);
+      }
       try {
+        let nextSongs: Song[] = [];
+        let nextAlbums: Album[] = [];
+        let nextPlaylists: Playlist[] = [];
+        let nextArtists: Artist[] = [];
+
         switch (category) {
           case "Songs": {
             const res = await searchSongs(keywords, 30);
-            setSongs((res.data?.data?.resources || []).map(mapResourceToSong));
+            nextSongs = (res.data?.data?.resources || []).map(mapResourceToSong);
+            setSongs(nextSongs);
             break;
           }
           case "Albums": {
             const res = await searchAlbums(keywords, 20);
-            setAlbums(res.data?.result?.albums || []);
+            nextAlbums = res.data?.result?.albums || [];
+            setAlbums(nextAlbums);
             break;
           }
           case "Playlists": {
             const res = await searchPlaylists(keywords, 20);
-            setPlaylists(res.data?.result?.playlists || []);
+            nextPlaylists = res.data?.result?.playlists || [];
+            setPlaylists(nextPlaylists);
             break;
           }
           case "Artists": {
             const res = await searchArtists(keywords, 20);
-            setArtists(res.data?.result?.artists || []);
+            nextArtists = res.data?.result?.artists || [];
+            setArtists(nextArtists);
             break;
           }
         }
+        await setPageCache(
+          cacheKey,
+          {
+            songs: nextSongs,
+            albums: nextAlbums,
+            playlists: nextPlaylists,
+            artists: nextArtists,
+          },
+          searchTtlMs(),
+        );
       } catch (err) {
         console.error(`Fetch ${category} error:`, err);
         const locale = useI18nStore.getState().locale;

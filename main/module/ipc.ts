@@ -1,11 +1,27 @@
+import { join } from "node:path";
 import { app, type BrowserWindow, ipcMain, session } from "electron";
 import { loadAppConfig, saveAppConfig } from "../config.js";
-import { appConfig, logger } from "../constants.js";
+import { logger } from "../constants.js";
 import { ensureBackendUrl, getBackendStartupStatus } from "./backend.js";
 import { loginWindow } from "./login.js";
+import { createPageCacheStore } from "./pageCache.js";
 import { applyElectronProxy } from "./proxy.js";
 import { updateThumbarButtons } from "./thumbarButtons.js";
 import { trayWindow } from "./tray.js";
+import {
+  checkForUpdates,
+  downloadUpdate,
+  getUpdateState,
+  quitAndInstallUpdate,
+} from "./updater.js";
+
+function createConfiguredPageCacheStore() {
+  const config = loadAppConfig();
+  return createPageCacheStore({
+    config: config.cache,
+    defaultDir: join(app.getPath("userData"), "cache", "music-pages"),
+  });
+}
 
 export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
   ipcMain.on("relaunch-app", () => {
@@ -26,6 +42,11 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     event.returnValue = ensureBackendUrl();
   });
 
+  ipcMain.handle("updater:get-status", () => getUpdateState());
+  ipcMain.handle("updater:check", () => checkForUpdates());
+  ipcMain.handle("updater:download", () => downloadUpdate());
+  ipcMain.on("updater:quit-and-install", () => quitAndInstallUpdate());
+
   ipcMain.handle("get-app-config", () => {
     const config = loadAppConfig();
     logger.info("[IPC] get-app-config", config);
@@ -39,6 +60,30 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
       logger.error("[IPC] failed to apply proxy after config update:", error);
     });
     return savedConfig;
+  });
+
+  ipcMain.handle("cache:get", (_event, key: string) => {
+    return createConfiguredPageCacheStore().get(key);
+  });
+
+  ipcMain.handle("cache:set", (_event, key: string, value: unknown, ttlMs: number) => {
+    createConfiguredPageCacheStore().set(key, value, ttlMs);
+    return true;
+  });
+
+  ipcMain.handle("cache:delete", (_event, key: string) => {
+    createConfiguredPageCacheStore().delete(key);
+    return true;
+  });
+
+  ipcMain.handle("cache:clear", () => {
+    const store = createConfiguredPageCacheStore();
+    store.clear();
+    return store.getStats();
+  });
+
+  ipcMain.handle("cache:get-stats", () => {
+    return createConfiguredPageCacheStore().getStats();
   });
 
   ipcMain.on("login-success", () => {
@@ -99,7 +144,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     try {
       const musicUMatch = cookieStr.match(/MUSIC_U=([^;]+)/);
       const value = musicUMatch ? musicUMatch[1] : cookieStr;
-      const url = `http://${appConfig.backend.host}`;
+      const url = new URL(ensureBackendUrl()).origin;
 
       await session.defaultSession.cookies.set({
         url,

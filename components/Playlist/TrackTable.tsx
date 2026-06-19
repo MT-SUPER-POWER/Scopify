@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/table";
 import { dislikeDailyRecommend, likeSong } from "@/lib/api/playlist";
 import { updatePlaylistTrack } from "@/lib/api/track";
+import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
@@ -225,9 +226,12 @@ export default function TracklistTable({
     handlePlay(contextMenuTrack);
   }, [contextMenuTrack, handlePlay]);
 
-  const handleRequestDelete = useCallback((playlistId: string | number | undefined, trackId: number) => {
-    setPendingDelete({ playlistId, trackId });
-  }, []);
+  const handleRequestDelete = useCallback(
+    (playlistId: string | number | undefined, trackId: number) => {
+      setPendingDelete({ playlistId, trackId });
+    },
+    [],
+  );
 
   const albumList = useUserStore((s) => s.albumList);
   const setAlbumList = useUserStore((s) => s.setAlbumList);
@@ -244,12 +248,13 @@ export default function TracklistTable({
       // 2. 触发全局刷新（这会告诉 Sidebar 在后台悄悄拉取最新歌单封面等元信息）
       const store = useUserStore.getState();
       if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
+      void clearPageCache();
     } catch (_err) {
       toast.error(t("playlist.table.removeFailed"));
     } finally {
       setPendingDelete(null);
     }
-  }, [albumList, pendingDelete, setAlbumList]);
+  }, [albumList, pendingDelete, setAlbumList, t]);
 
   const handleCancelDelete = useCallback(() => {
     setPendingDelete(null);
@@ -267,13 +272,14 @@ export default function TracklistTable({
 
         setAlbumList(updateAlbumList);
         usePlayerStore.getState().playNext();
+        void clearPageCache();
 
         toast.success(t("playlist.table.dislikeSuccess"));
       } catch (err) {
         console.error("Failed to dislike daily recommend", err);
       }
     },
-    [albumList, setAlbumList],
+    [albumList, setAlbumList, t],
   );
 
   return (
@@ -375,7 +381,7 @@ export default function TracklistTable({
                   <TableRow className="hover:bg-transparent border-none">
                     <TableCell colSpan={6} className="text-center text-zinc-500 py-10">
                       {hasSearchQuery ? (
-                        <>{t("playlist.table.searchNoResults", { query: searchQuery ?? "" })}</>
+                        t("playlist.table.searchNoResults", { query: searchQuery ?? "" })
                       ) : onEmptyAction && emptyActionLabel ? (
                         <div className="flex flex-col items-center gap-3">
                           <span>{t("playlist.table.noFetchedData")}</span>
@@ -521,6 +527,7 @@ export default function TracklistTable({
                         if (nextLiked) store.setLikeListIDs([...currentLikes, trackID]);
                         else
                           store.setLikeListIDs(currentLikes.filter((id: number) => id !== trackID));
+                        void clearPageCache();
                         toast.success(
                           nextLiked
                             ? t("playlist.table.likedAdded")
@@ -559,6 +566,7 @@ export default function TracklistTable({
                           try {
                             await updatePlaylistTrack("add", playlist.id, contextMenuTrack.id);
                             toast.success(t("playlist.table.addToPlaylistSuccess"));
+                            void clearPageCache();
                             // 添加同样可以触发全局刷新
                             const store = useUserStore.getState() as any;
                             if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
@@ -616,7 +624,9 @@ export default function TracklistTable({
                 <ContextMenuSeparator className="bg-white/10" />
                 <ContextMenuGroup>
                   <ContextMenuItem
-                    onClick={() => handleRequestDelete(playlistID ?? undefined, contextMenuTrack.id)}
+                    onClick={() =>
+                      handleRequestDelete(playlistID ?? undefined, contextMenuTrack.id)
+                    }
                     variant="destructive"
                     className="focus:bg-red-500 focus:text-white"
                   >

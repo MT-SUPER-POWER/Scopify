@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { createPlaylist, delPlaylist } from "@/lib/api/playlist";
+import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -43,6 +44,7 @@ function handleCreatePlaylist(playlistName: string, privacy: "0" | "10"): void {
       const newPlaylist = res.data.playlist;
       const userStore = useUserStore.getState();
       userStore.setPlayList([...userStore.playlist, newPlaylist]);
+      void clearPageCache();
       toast.success(translate(locale, "sidebar.menu.createSuccess", { name: playlistName }));
     } else {
       console.error("创建歌单失败:", res.data.message);
@@ -59,6 +61,7 @@ function handleDeletePlaylist(playlistId: string | number, playlistName: string)
       const userStore = useUserStore.getState();
       const updatedPlaylists = userStore.playlist.filter((p) => p.id !== playlistId);
       userStore.setPlayList(updatedPlaylists);
+      void clearPageCache();
       toast.success(translate(locale, "sidebar.menu.deleteSuccess", { name: playlistName }));
     } else {
       console.error("删除歌单失败:", res.data.message);

@@ -47,7 +47,16 @@ const electronAPI: ElectronAPI = {
   },
   getAppConfig: () => ipcRenderer.invoke("get-app-config"),
   updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
+  getPageCache: (key) => ipcRenderer.invoke("cache:get", key),
+  setPageCache: (key, value, ttlMs) => ipcRenderer.invoke("cache:set", key, value, ttlMs),
+  deletePageCache: (key) => ipcRenderer.invoke("cache:delete", key),
+  clearPageCache: () => ipcRenderer.invoke("cache:clear"),
+  getPageCacheStats: () => ipcRenderer.invoke("cache:get-stats"),
   getBackendStatus: () => ipcRenderer.invoke("backend:get-status"),
+  getUpdateStatus: () => ipcRenderer.invoke("updater:get-status"),
+  checkForUpdates: () => ipcRenderer.invoke("updater:check"),
+  downloadUpdate: () => ipcRenderer.invoke("updater:download"),
+  quitAndInstallUpdate: () => ipcRenderer.send("updater:quit-and-install"),
   setCookie: (cookieStr: string) => ipcRenderer.invoke("set-music-cookie", cookieStr),
   navigateTo: (path: string) => ipcRenderer.send("navigate-main-window", path),
   // window.addEventListener("message", callback)
@@ -62,6 +71,11 @@ const electronAPI: ElectronAPI = {
   },
   onBackendStatusChanged: (callback) => {
     ipcRenderer.on("backend-status-changed", (_event, status: BackendStartupStatus) => {
+      callback(status);
+    });
+  },
+  onUpdateStatusChanged: (callback) => {
+    ipcRenderer.on("updater:status-changed", (_event, status) => {
       callback(status);
     });
   },

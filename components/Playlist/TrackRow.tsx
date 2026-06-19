@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { likeSong } from "@/lib/api/playlist";
+import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatDate, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
@@ -118,6 +119,7 @@ export const TrackRow = memo(
           store.setLikeListIDs(
             nextLiked ? [...current, track.id] : current.filter((id: number) => id !== track.id),
           );
+          void clearPageCache();
           toast.success(
             nextLiked ? t("playlist.track.likedAdded") : t("playlist.track.likedRemoved"),
           );
@@ -130,7 +132,7 @@ export const TrackRow = memo(
           console.error("Failed to toggle like:", error);
         }
       },
-      [track],
+      [track, t],
     );
     const smartRouter = useSmartRouter();
     return (

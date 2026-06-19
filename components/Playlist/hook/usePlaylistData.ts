@@ -1,11 +1,18 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { useI18n } from "@/store/module/i18n";
 import { getPlaylsitDetail } from "@/lib/api/playlist";
 import { getRecommendedSongs } from "@/lib/api/track";
+import {
+  createPageCacheKey,
+  dailyTtlMs,
+  getPageCache,
+  pageTtlMs,
+  setPageCache,
+} from "@/lib/cache/pageCache";
 import { getMainColorFromImage } from "@/lib/utils";
 import { useUserStore } from "@/store";
+import { useI18n } from "@/store/module/i18n";
 import type { PlaylistInfo } from "@/types/playlist";
 
 // 颜色缓存机制 (全局共享)
@@ -14,9 +21,17 @@ colorCache.set("daily", "#c42b2b");
 colorCache.set("default", "#88b325");
 const COLOR_CACHE_LIMIT = 15;
 
+interface PlaylistCachePayload {
+  rawDetail: any;
+  tracks: any[];
+}
+
 function setColorCache(key: string, value: string) {
   if (colorCache.size >= COLOR_CACHE_LIMIT) {
-    colorCache.delete(colorCache.keys().next().value!);
+    const firstKey = colorCache.keys().next().value;
+    if (firstKey !== undefined) {
+      colorCache.delete(firstKey);
+    }
   }
   colorCache.set(key, value);
 }
@@ -51,6 +66,15 @@ export function usePlaylist() {
 
     let ignore = false;
     const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") || "" : "";
+    const cacheKey = isDailyRecommend
+      ? createPageCacheKey("daily", [new Date().toISOString().slice(0, 10)])
+      : createPageCacheKey("playlist", [playlistId, isRecommend]);
+
+    getPageCache<PlaylistCachePayload>(cacheKey).then((cached) => {
+      if (ignore || !cached) return;
+      setRawDetail(cached.rawDetail);
+      useUserStore.getState().setAlbumList(cached.tracks || []);
+    });
 
     const fetchMusicData = async () => {
       try {
@@ -58,12 +82,14 @@ export function usePlaylist() {
           const res: any = await getRecommendedSongs();
           if (ignore) return;
           const dailySongs = res.data?.data?.dailySongs || [];
-          setRawDetail({
+          const nextDetail = {
             name: t("playlist.meta.dailyTitle"),
             trackCount: dailySongs.length,
             tracks: dailySongs,
-          });
+          };
+          setRawDetail(nextDetail);
           useUserStore.getState().setAlbumList(dailySongs);
+          await setPageCache(cacheKey, { rawDetail: nextDetail, tracks: dailySongs }, dailyTtlMs());
         } else {
           const res: any = await getPlaylsitDetail({
             id: playlistId as string,
@@ -74,15 +100,16 @@ export function usePlaylist() {
           // console.log("Playlist Info:", res.data);
           setRawDetail(playlist);
           useUserStore.getState().setAlbumList(playlist.tracks || []);
+          await setPageCache(
+            cacheKey,
+            { rawDetail: playlist, tracks: playlist.tracks || [] },
+            pageTtlMs(),
+          );
         }
       } catch (err) {
         if (ignore) return;
         console.error(err);
-        toast.error(
-          isDailyRecommend
-            ? t("home.toast.loadFailed")
-            : t("sidebar.toast.fetchFailed"),
-        );
+        toast.error(isDailyRecommend ? t("home.toast.loadFailed") : t("sidebar.toast.fetchFailed"));
       }
     };
 
@@ -92,7 +119,7 @@ export function usePlaylist() {
       ignore = true;
     };
     // 无论是 URL 变了，还是由于你点击了取消喜欢导致 Trigger 变了，都会执行这个 Effect 进行拉取
-  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend]);
+  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend, t]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3. 数据派生与格式化 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -137,7 +164,7 @@ export function usePlaylist() {
       likes: rawDetail.subscribedCount ?? 0,
       totalSongs: rawDetail.trackCount ?? 0,
     };
-  }, [rawDetail, isDailyRecommend]);
+  }, [rawDetail, isDailyRecommend, t]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4. 颜色提取逻辑 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
