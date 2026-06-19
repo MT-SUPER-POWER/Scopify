@@ -1,10 +1,11 @@
 "use client";
 
+import { useCallback } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { type TranslationKey, type TranslationParams, translate } from "@/lib/i18n";
-import type { TranslateFn } from "@/types/i18n.generated";
 import { type AppLocale, DEFAULT_APP_CONFIG } from "@/types/config";
+import type { TranslateFn } from "@/types/i18n.generated";
 
 interface I18nStore {
   locale: AppLocale;
@@ -34,8 +35,11 @@ export const useI18nStore = create<I18nStore>()(
 export function useI18n() {
   const locale = useI18nStore((state) => state.locale);
   const setLocale = useI18nStore((state) => state.setLocale);
-  const t = ((key: TranslationKey, params?: TranslationParams) =>
-    translate(locale, key, params)) as TranslateFn;
+  const t = useCallback(
+    ((key: TranslationKey, params?: TranslationParams) =>
+      translate(locale, key, params)) as TranslateFn,
+    [locale],
+  );
 
   return {
     locale,
