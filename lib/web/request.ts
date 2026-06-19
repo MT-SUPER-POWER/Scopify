@@ -11,7 +11,11 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   randomCNIP?: boolean;
 }
 
-const INITIAL_BASE_URL = `http://${appConfig.backend.host}:${appConfig.backend.port}`;
+function buildBackendBaseUrl(config: Pick<AppConfig, "backend">) {
+  return `http://${config.backend.host}:${config.backend.port}`;
+}
+
+const INITIAL_BASE_URL = buildBackendBaseUrl(appConfig);
 const NO_RETRY_URLS: string[] = [];
 
 let baseURL = INITIAL_BASE_URL;
@@ -23,7 +27,7 @@ function isElectronRuntime() {
 
 function applyRuntimeConfig(config: Pick<AppConfig, "backend" | "network">) {
   runtimeNetworkConfig = { ...config.network };
-  baseURL = `http://${config.backend.host}:${config.backend.port}`;
+  baseURL = buildBackendBaseUrl(config);
   request.defaults.baseURL = baseURL;
 }
 

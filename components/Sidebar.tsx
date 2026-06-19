@@ -107,12 +107,13 @@ function SidebarImpl() {
   // 订阅触发器，当其他组件（如TrackTable）修改了数据并触发此状态时，Sidebar可以静默重拉
   const libraryUpdateTrigger = useUserStore((s) => s.libraryUpdateTrigger);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchPlaylist intentionally reads store snapshots to avoid refetch loops.
   const fetchPlaylist = React.useCallback(
     async (isSilent = false) => {
       if (!isUserLogin) return;
 
       const uid = useUserStore.getState().user?.userId;
+      if (!uid) return;
 
       // 如果是静默更新（比如删歌触发的），我们就不显示 Loading 骨架屏，避免 UI 闪烁
       if (!isSilent) {
@@ -121,15 +122,16 @@ function SidebarImpl() {
       setError(null);
 
       // 检查后端是否已就绪（仅在非静默且是首次加载时可能需要）
-      const port = appConfig.backend.port || 5252;
-      const host = appConfig.backend.host || "127.0.0.1";
-      const backendReady = await waitForBackend(`http://${host}:${port}`, 10000);
+      const backendReady = await waitForBackend(
+        `http://${appConfig.backend.host}:${appConfig.backend.port}`,
+        10000,
+      );
 
       if (!backendReady) {
         console.warn("后端服务未能在超时时间内就绪，尝试继续请求...");
       }
 
-      Promise.all([getUserPlaylist(uid!), getUserLikeLists(uid!)])
+      Promise.all([getUserPlaylist(uid), getUserLikeLists(uid)])
         .then(([userPlaylistRes, likeListRes]) => {
           useUserStore.getState().setPlayList(userPlaylistRes.data.playlist);
           useUserStore.getState().setLikeListIDs(likeListRes.data.ids);
@@ -184,7 +186,9 @@ function SidebarImpl() {
         subtitle={
           !item.subscribed
             ? t("sidebar.playlist.byCreator", { name: userName || t("sidebar.playlist.you") })
-            : t("sidebar.playlist.byCreator", { name: item.creator?.nickname || t("common.meta.unknownUser") })
+            : t("sidebar.playlist.byCreator", {
+                name: item.creator?.nickname || t("common.meta.unknownUser"),
+              })
         }
         coverImg={`${item.coverImgUrl}?param=100y100`}
         isCollapsed={isVeryNarrow}

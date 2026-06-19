@@ -17,11 +17,12 @@ function loadConfig() {
 }
 
 const config = loadConfig();
-const port = config.frontend?.devPort || 3232;
+const port = Number(process.env.FRONTEND_PORT || config.frontend?.devPort || 3232);
+const host = process.env.FRONTEND_HOST || config.frontend?.host || "127.0.0.1";
 
-console.log(`Starting Next.js on port ${port}...`);
+console.log(`Starting Next.js on ${host}:${port}...`);
 
-const nextDev = spawn("bunx", ["next", "dev", "-p", port.toString()], {
+const nextDev = spawn("bunx", ["next", "dev", "-H", host, "-p", port.toString()], {
   stdio: "inherit",
   shell: true,
 });

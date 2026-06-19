@@ -339,7 +339,6 @@ export interface TranslateFn {
    * zh-TW: 後端服務
    * en-US: Backend Service
    */
-  (key: "settings.section.backend", params?: TranslationParams): string;
   /**
    * zh-CN: 前端服务
    * zh-TW: 前端服務
@@ -561,19 +560,16 @@ export interface TranslateFn {
    * zh-TW: 自動啟動後端
    * en-US: Auto Start Backend
    */
-  (key: "settings.autoStartBackend.label", params?: TranslationParams): string;
   /**
    * zh-CN: 后端主机
    * zh-TW: 後端主機
    * en-US: Backend Host
    */
-  (key: "settings.backendHost.label", params?: TranslationParams): string;
   /**
    * zh-CN: 后端端口
    * zh-TW: 後端連接埠
    * en-US: Backend Port
    */
-  (key: "settings.backendPort.label", params?: TranslationParams): string;
   /**
    * zh-CN: 前端主机
    * zh-TW: 前端主機
