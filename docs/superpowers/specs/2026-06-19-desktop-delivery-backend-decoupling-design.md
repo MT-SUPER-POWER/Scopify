@@ -14,13 +14,13 @@ This design covers one implementation scope:
 - Add a standard Electron updater flow backed by GitHub Releases.
 - Remove the bundled/managed backend from the desktop app.
 - Provide `docker-compose.yml` as a backend deployment template.
-- Keep backend endpoint configuration in yml, not in the user-facing settings page.
+- Keep backend host and port configuration in yml, not in the user-facing settings page.
 
 ## Goals
 
 - Desktop builds should have clear frontend, Electron runtime, and backend deployment boundaries.
 - The desktop installer must not contain or start the backend service.
-- The backend endpoint must remain configurable for local, LAN, public, HTTPS, and reverse-proxy deployments.
+- The backend host and port must remain configurable for local, LAN, and public deployments.
 - The build and release pipeline should use conventional Electron tooling.
 - The update flow should download and install updates from stable GitHub Releases.
 - The existing Next.js renderer and business pages should stay in place.
@@ -40,7 +40,7 @@ The target architecture has three separate pipelines:
 1. Frontend pipeline
    - Next.js remains the renderer framework.
    - `next build` continues to export static assets into `renderer/`.
-   - Renderer code uses a single configured backend base URL for API calls.
+   - Renderer code derives a single backend base URL from the configured backend host and port.
 
 2. Electron runtime pipeline
    - `electron-vite` builds `main` and `preload`.
@@ -50,44 +50,43 @@ The target architecture has three separate pipelines:
 3. Backend deployment pipeline
    - The backend is an independent service.
    - `docker-compose.yml` provides a local/private deployment template.
-   - The desktop app connects to the configured backend over HTTP(S).
+   - The desktop app connects to the configured backend over HTTP.
 
 Runtime relationship:
 
 ```text
 Next.js static renderer / Electron desktop shell
         |
-        | HTTP(S), configured by backend.baseUrl
+        | HTTP, configured by backend.host and backend.port
         v
 Independent backend service
 ```
 
 ## Configuration Model
 
-Backend configuration moves to one canonical field:
-
-```yaml
-backend:
-  baseUrl: "http://127.0.0.1:3838"
-```
-
-`baseUrl` is a deployment setting, not a user preference. It supports:
-
-- Local development: `http://127.0.0.1:3838`
-- LAN deployment: `http://192.168.1.10:3838`
-- Public deployment: `https://api.example.com`
-- Reverse proxy with path: `https://example.com/netease-api`
-
-The old configuration shape is no longer the official model:
+Backend configuration keeps host and port as the canonical deployment fields:
 
 ```yaml
 backend:
   host: 127.0.0.1
   port: 3838
-  autoStart: true
 ```
 
-For compatibility, `normalizeAppConfig` should accept old `host` and `port` values and synthesize `baseUrl` when `baseUrl` is missing. `autoStart` should be ignored by the new runtime. Default config files and saved config should only emit `backend.baseUrl`.
+`host` and `port` are deployment settings, not user preferences. Runtime code should derive the request origin by adding the HTTP scheme automatically:
+
+```text
+http://${backend.host}:${backend.port}
+```
+
+This keeps local, LAN, and public deployments configurable without exposing backend controls in the settings UI:
+
+- Local development: `host: 127.0.0.1`, `port: 3838`
+- LAN deployment: `host: 192.168.1.10`, `port: 3838`
+- Public host with explicit port: `host: api.example.com`, `port: 3838`
+
+The old `backend.autoStart` field is no longer part of the official model. For compatibility, `normalizeAppConfig` should accept existing yml files that still contain `autoStart`, but the new runtime should ignore it. Default config files and saved config should only emit `backend.host` and `backend.port`.
+
+If a future deployment requires HTTPS or a reverse-proxy path, that should be handled as a separate configuration extension instead of preserving backend process management in the desktop client.
 
 The settings page should remove the backend service section. Language, window behavior, logging, proxy, and other client preferences remain in the existing config/settings model.
 
@@ -106,7 +105,8 @@ These variables belong to the deployment layer. The client still points to the d
 
 ```yaml
 backend:
-  baseUrl: "http://127.0.0.1:3838"
+  host: 127.0.0.1
+  port: 3838
 ```
 
 No `compose:up` or `compose:down` scripts should be added to `package.json`; developers and deployers can run Docker Compose directly.
@@ -119,11 +119,11 @@ Remove backend process management from the Electron app:
 - Remove child-process spawning of `out/backend/app.js`.
 - Remove backend readiness as a splash-screen gate.
 - Remove backend shutdown from `before-quit` and fatal error handlers.
-- Keep a thin backend endpoint helper only if IPC still needs to expose the configured backend URL.
+- Keep a thin backend endpoint helper only if IPC still needs to expose the derived backend URL.
 
 The main window should reveal after the renderer loads. If the configured backend is unavailable, the renderer should surface request failures through existing API error handling instead of Electron blocking startup.
 
-Cookie logic that currently derives a URL from backend host should use `backend.baseUrl` and parse its origin.
+Cookie logic that currently derives a URL from backend host should use the same derived `http://${backend.host}:${backend.port}` origin.
 
 ## Build System
 
@@ -225,9 +225,9 @@ Exact names can follow existing preload conventions.
 
 Verification should cover:
 
-- Config normalization accepts new `backend.baseUrl`.
-- Old `backend.host` and `backend.port` synthesize `baseUrl`.
-- Request base URL uses `backend.baseUrl`.
+- Config normalization accepts `backend.host` and `backend.port`.
+- Old `backend.autoStart` is tolerated but ignored.
+- Request base URL is derived as `http://${backend.host}:${backend.port}`.
 - Electron build output is generated by `electron-vite`.
 - Desktop package no longer contains backend artifacts.
 - `docker compose config` validates the backend compose file.
@@ -238,15 +238,14 @@ Verification should cover:
 
 Existing users with old yml config should not be broken immediately. On load:
 
-1. If `backend.baseUrl` exists, use it.
-2. If missing, synthesize it from old `backend.host` and `backend.port`.
-3. Ignore `backend.autoStart`.
-4. When config is saved, write only `backend.baseUrl`.
+1. Read `backend.host` and `backend.port`.
+2. Ignore `backend.autoStart`.
+3. When config is saved, write only `backend.host` and `backend.port`.
 
 Documentation should explain:
 
 - The desktop app no longer bundles the backend.
 - Deploy the backend separately.
 - Use Docker Compose for local/private backend startup.
-- Set `backend.baseUrl` in yml to the backend endpoint.
+- Set `backend.host` and `backend.port` in yml to the backend endpoint.
 - GitHub Releases provide desktop downloads and update metadata.
