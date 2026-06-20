@@ -33,6 +33,13 @@
 6. Axios: 后端通讯统一管理部分
 7. Zustand: 前端状态管理
 
+### 代码结构
+
+新建或修改代码前，请先阅读：
+
+- **[AGENTS.md](./AGENTS.md)** — 项目结构规范（跨 AI 工具通用，不依赖 Cursor）
+- **[docs/structure.md](./docs/structure.md)** — 面向贡献者的结构说明与迁移进度
+
 ### 重要的三方库
 
 > 特别感谢以下项目的开源：

@@ -1,10 +1,12 @@
 # 类型、Hooks、常量的归属判断
 
+> Scopify 细则见根目录 [AGENTS.md](../../../AGENTS.md)。API 类型放 `types/api/`，`lib/api/` 禁止定义 interface。
+
 ## `/types` — 类型定义
 
 ### 规则
-- 所有 `interface` 和 `type` 定义**必须**放在 `/types/<领域>.ts`
-- **禁止**在 page.tsx、组件文件、hook 文件内定义类型（props 类型除外）
+- 所有 `interface` 和 `type` 定义**必须**放在 `/types/<领域>.ts` 或 `/types/api/<领域>.ts`
+- **禁止**在 page.tsx、**lib/api/**、hook 文件内定义类型（简单 props 类型除外）
 - 按业务领域拆文件，不要把所有类型堆进 `types/index.ts`
 
 ### 文件划分示例

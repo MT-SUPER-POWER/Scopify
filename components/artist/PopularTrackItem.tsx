@@ -22,13 +22,13 @@ import { likeSong } from "@/lib/api/playlist";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { cn } from "@/lib/utils";
+import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import type { NeteasePlaylist } from "@/types/api/playlist";
-import { type ArtistInfo, formatDuration } from "@/types/artist";
+import type { ArtistInfo } from "@/types/artist";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INDEX CELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

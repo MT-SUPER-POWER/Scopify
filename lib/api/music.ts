@@ -1,10 +1,5 @@
+import type { SongUrlMatchResponse } from "@/types/api/music";
 import request from "../web/request";
-
-export interface SongUrlMatchResponse {
-  code: number;
-  data: string;
-  proxyUrl: string;
-}
 
 export async function greySongUrlMatch(
   id: number | string,

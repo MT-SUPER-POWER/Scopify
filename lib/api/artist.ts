@@ -1,36 +1,5 @@
+import type { FollowedArtistsResponse } from "@/types/api/artist";
 import request from "../web/request";
-
-export interface Track {
-  id: string;
-  title: string;
-  playCount: number;
-  durationMs: number;
-  coverUrl: string;
-}
-
-export interface Album {
-  id: string;
-  title: string;
-  releaseYear: number;
-  type: "Album" | "Single" | "EP";
-  coverUrl: string;
-}
-
-export interface Artist {
-  id: string;
-  name: string;
-  isVerified: boolean;
-  monthlyListeners: number;
-  headerImageUrl: string;
-  avatarUrl: string;
-  bio: string;
-}
-
-export interface ArtistPageData {
-  artist: Artist;
-  popularTracks: Track[];
-  discography: Album[];
-}
 
 /**
  * 获取歌手详情
@@ -95,5 +64,14 @@ export function getArtistAlbums(id: number | string, limit = 10, offset = 0) {
 export function getArtistMVs(id: number | string) {
   return request.get("/artist/mv", {
     params: { id },
+  });
+}
+
+/**
+ * 获取已关注歌手列表
+ */
+export function getFollowedArtists(limit = 20, offset = 0) {
+  return request.get<FollowedArtistsResponse>("/artist/sublist", {
+    params: { limit, offset },
   });
 }

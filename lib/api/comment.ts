@@ -1,11 +1,5 @@
+import type { MusicCommentParams } from "@/types/api/comment";
 import request from "../web/request";
-
-export interface MusicCommentParams {
-  id: number | string;
-  limit?: number;
-  offset?: number;
-  before?: number;
-}
 
 export async function getMusicComments(params: MusicCommentParams) {
   const cookie = localStorage.getItem("music_cookie") || "";

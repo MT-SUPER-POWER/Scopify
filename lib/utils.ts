@@ -76,6 +76,11 @@ export const formatDuration = (ms: number) => {
 };
 
 /**
+ * 数字千分位格式化
+ */
+export const formatNumber = (num: number) => new Intl.NumberFormat("en-US").format(num);
+
+/**
  * 时间戳转日期格式
  */
 export const formatDate = (timestamp: number) => {

@@ -1,10 +1,12 @@
 ---
 name: nextjs-project-structure
 description: 约束 Next.js App Router 项目的全局代码结构规范。当用户要求创建页面、组件、hooks、类型定义、工具函数、状态管理、常量配置时触发。强制所有代码归入正确的全局目录（/components、/types、/hooks、/lib、/constants、/stores），禁止在 page.tsx 中内联逻辑、禁止使用 _components 局部目录、禁止类型散落在各路由文件内。适用于任何涉及新建或修改 .tsx/.ts 文件的任务。
-allowed-tools: Bash(npx biome check .), Bash(npx biome check --write .), Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_modules), Bash(wc -l)
+allowed-tools: Bash(bun run check), Bash(bun run lint), Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_modules), Bash(wc -l)
 ---
 
 # Next.js 项目结构规范
+
+> **Scopify 项目以仓库根目录 [AGENTS.md](../../AGENTS.md) 为唯一规范来源。** 本 skill 提供通用细则；与 AGENTS.md 冲突时以 AGENTS.md 为准（如 `store/` 非 `stores/`，`types/api/` 分层等）。规范写在 markdown 中，**不使用 `.cursor/rules/`**。
 
 ## 核心原则
 
