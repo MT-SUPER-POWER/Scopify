@@ -19,7 +19,9 @@ services:
     environment:
       FRONTEND_HOST: 0.0.0.0
       FRONTEND_PORT: ${FRONTEND_PORT:-3000}
-      NODE_ENV: development
+      APP_CFG_BACKEND_HOST: ${BACKEND_PUBLIC_HOST:-127.0.0.1}
+      APP_CFG_BACKEND_PORT: ${BACKEND_PUBLIC_PORT:-${BACKEND_PORT:-3838}}
+      NEXT_TELEMETRY_DISABLED: "1"
       SCOPIFY_SKIP_ELECTRON_INSTALL: "1"
     ports:
       - "${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}"
@@ -27,7 +29,7 @@ services:
       - .:/app
       - scopify-node-modules:/app/node_modules
       - scopify-bun-cache:/root/.bun/install/cache
-    command: sh -lc "bun install && bun run dev:web"
+    command: sh -lc "bun install && bun run build:web && bunx serve renderer -l tcp://0.0.0.0:${FRONTEND_PORT:-3000}"
     depends_on:
       - backend
     restart: unless-stopped
