@@ -1,3 +1,7 @@
+import type {
+  PlaylistHighQualityTagsResponse,
+  UpdatePlaylistParams,
+} from "@/types/api/playlistTags";
 import request from "../web/request";
 
 /**
@@ -100,9 +104,34 @@ export function subscribePlaylist(t: 1 | 2, id: number | string) {
  * @param imgFile 图片文件对象
  * @param imgSize 图片尺寸, 默认为 300
  */
-export function updatePlaylist(id: number | string, name: string, desc?: string) {
+export function updatePlaylist(
+  idOrParams: number | string | UpdatePlaylistParams,
+  name?: string,
+  desc?: string,
+  tags?: string[],
+) {
+  const params =
+    typeof idOrParams === "object"
+      ? idOrParams
+      : {
+          id: idOrParams,
+          name: name ?? "",
+          desc,
+          tags,
+        };
+
   return request.get("/playlist/update", {
-    params: { id, name, desc },
+    params: { ...params, tags: params.tags?.join(";") },
+  });
+}
+
+export function getPlaylistHighQualityTags() {
+  return request.get<PlaylistHighQualityTagsResponse>("/playlist/highquality/tags");
+}
+
+export function updatePlaylistTags(id: number | string, tags: string[]) {
+  return request.get("/playlist/tags/update", {
+    params: { id, tags: tags.join(";") },
   });
 }
 

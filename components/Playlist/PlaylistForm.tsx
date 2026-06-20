@@ -1,6 +1,7 @@
 import { Image as ImageIcon } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { PlaylistTagSelector } from "@/components/Playlist/PlaylistTagSelector";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -35,7 +36,7 @@ export function UpdatePlaylistDialog({
   const { t } = useI18n();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  // const [tags, setTags] = useState<string[]>([]); // 简化处理，实际可能需要下拉多选组件
+  const [tags, setTags] = useState<string[]>([]);
   const [coverUrl, setCoverUrl] = useState<string>("");
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,7 @@ export function UpdatePlaylistDialog({
     if (open) {
       setName(initialData?.name || "");
       setDescription(initialData?.desc || "");
-      // setTags(initialData?.tags || []);
+      setTags(initialData?.tags || []);
       setCoverUrl(initialData?.coverUrl || "");
       setCoverFile(null);
       setLoading(false);
@@ -65,7 +66,7 @@ export function UpdatePlaylistDialog({
 
   const handleSubmit = async () => {
     setLoading(true);
-    await onConfirm({ name, desc: description, coverFile });
+    await onConfirm({ name, desc: description, tags, coverFile });
     setLoading(false);
   };
 
@@ -111,6 +112,8 @@ export function UpdatePlaylistDialog({
                 {description.length}/300
               </span>
             </div>
+
+            <PlaylistTagSelector value={tags} maxSelected={3} onChange={setTags} />
           </div>
 
           {/* 右侧封面区 */}
@@ -151,12 +154,14 @@ export function UpdatePlaylistDialog({
         {/* 底部按钮区 */}
         <AlertDialogFooter className="mt-8 flex gap-3 sm:justify-end w-full">
           <button
+            type="button"
             onClick={onCancel}
             className="px-6 py-2 rounded-full bg-transparent border border-[#727272] hover:border-white text-white font-bold text-sm transition-all"
           >
             {t("common.action.cancel")}
           </button>
           <button
+            type="button"
             onClick={handleSubmit}
             disabled={loading || !name.trim()}
             className="px-6 py-2 rounded-full bg-[#1ed760] disabled:opacity-50 hover:bg-[#1fdf64] text-black font-bold text-sm transition-all"
