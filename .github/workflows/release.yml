@@ -26,8 +26,6 @@ jobs:
       # 🟢 拉代码
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       # 🟢 Node 24（避免未来炸）
       - name: Setup Node.js

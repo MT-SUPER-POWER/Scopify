@@ -12,9 +12,6 @@
       "email": "1740627301@qq.com"
     }
   ],
-  "workspaces": [
-    "backend/api-enhanced"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/MT-SUPER-POWER/Scopify.git"

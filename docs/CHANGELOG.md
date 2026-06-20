@@ -76,5 +76,6 @@
 - 桌面客户端与后端解耦，客户端安装包不再内置或自动启动后端
 - 修复未登录状态下推荐页接口触发 301 后反复进入加载弹窗的问题
 - 修复登录状态判断缺少 cookie 导致首页推荐接口反复请求的问题
-- 修复 Docker Web 部署无法正确访问前端与后端的问题，补充 Web + Backend 的 Compose 部署配置
+- 修复 Docker Web 部署无法正确访问前端与后端的问题，调整为 Web 独立 Compose 部署并通过配置连接外部后端
 - 更新部署文档，将发布日志迁移到 `docs/CHANGELOG.md`
+- 前端与客户端构建不再依赖 `backend/api-enhanced` submodule，Release workflow 不再拉取后端子模块

@@ -49,19 +49,17 @@
 
 ## 部署方法
 
-Scopify 现在把桌面客户端、Web 前端和后端拆开部署。桌面客户端不再内置或自动启动后端；Web 和桌面客户端都需要访问一个独立运行的 NetEase API 后端。
+Scopify 现在把桌面客户端、Web 前端和后端拆开部署。前端构建不依赖后端源码，也不需要拉取 `backend/api-enhanced` submodule；Web 和桌面客户端只需要能访问一个独立运行的 NetEase API 后端。
 
-### 1. Docker Compose 部署 Web + Backend
+### 1. Docker Compose 部署 Web
 
-推荐用于本机、局域网或私有服务器部署。根目录的 `docker-compose.yml` 会启动两个服务：
+推荐用于本机、局域网或私有服务器部署 Web 前端。根目录的 `docker-compose.yml` 只启动 Web 服务：
 
 - Web: `http://127.0.0.1:3000`
-- Backend: `http://127.0.0.1:3838`
 
 ```bash
 git clone https://github.com/MT-SUPER-POWER/Scopify.git
 cd Scopify
-git submodule update --init --recursive
 docker compose up -d --build
 ```
 
@@ -70,14 +68,12 @@ docker compose up -d --build
 ```bash
 docker compose ps
 docker compose logs -f web
-docker compose logs -f backend
 ```
 
-可以在根目录创建 `.env` 覆盖端口和浏览器可访问的后端地址：
+可以在根目录创建 `.env` 覆盖 Web 端口和浏览器可访问的后端地址：
 
 ```env
 FRONTEND_PORT=3000
-BACKEND_PORT=3838
 BACKEND_PUBLIC_HOST=127.0.0.1
 BACKEND_PUBLIC_PORT=3838
 ```
@@ -98,26 +94,32 @@ backend:
 
 如果后端部署在远程服务器，把 `host` 改成服务器 IP 或域名。客户端会请求 `http://host:port`。
 
-### 3. 仅部署 Backend
+### 3. 后端部署
 
-如果只需要 API 后端，可以单独构建 `backend/api-enhanced`：
+后端可以独立部署，不需要和前端在同一个仓库 checkout 中构建。你可以使用已有的 NetEase API Enhanced 服务，只要保证 Web 或客户端能访问到它。
+
+如果需要从本仓库的后端子模块构建，再单独拉取 submodule：
 
 ```bash
-git submodule update --init --recursive
+git submodule update --init --recursive backend/api-enhanced
 cd backend/api-enhanced
 docker build -t scopify-backend .
 docker run -d --name scopify-backend -p 3838:3838 -e HOST=0.0.0.0 -e PORT=3838 scopify-backend
 ```
-
-更推荐直接使用根目录 `docker compose up -d --build`，它会同时处理 Web 和 Backend 的默认配置。
 
 ### 4. 本地开发
 
 ```bash
 bun install
 bun run dev:web      # Next.js 开发服务
-bun run dev:backend  # 本地后端服务
 bun run dev          # Electron 开发模式
+```
+
+如果需要同时调试后端，先拉取后端子模块，然后再运行后端开发脚本：
+
+```bash
+git submodule update --init --recursive backend/api-enhanced
+bun run dev:backend
 ```
 
 `dev:web` 是开发服务；生产 Web 部署请使用 Docker Compose，或 `bun run build:web` 后静态服务 `renderer` 目录。
@@ -134,9 +136,9 @@ docker compose up -d --build
 并访问：
 
 - `http://127.0.0.1:3000`
-- `http://127.0.0.1:3838`
+- 你配置的后端地址，例如 `http://127.0.0.1:3838`
 
-GitHub Actions 会在推送 `v*` tag 时构建安装包，并从 `docs/CHANGELOG.md` 中提取同名版本标题作为 Release Notes。发布 `v1.0.5` 前请确保存在：
+GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不再 checkout submodule，并从 `docs/CHANGELOG.md` 中提取同名版本标题作为 Release Notes。发布 `v1.0.5` 前请确保存在：
 
 ```md
 # v1.0.5

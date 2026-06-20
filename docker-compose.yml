@@ -1,17 +1,4 @@
 services:
-  backend:
-    container_name: ${BACKEND_CONTAINER_NAME:-scopify-netease-api}
-    build:
-      context: ./backend/api-enhanced
-      dockerfile: Dockerfile
-    environment:
-      HOST: ${BACKEND_HOST:-0.0.0.0}
-      PORT: ${BACKEND_PORT:-3838}
-      NODE_ENV: production
-    ports:
-      - "${BACKEND_PORT:-3838}:${BACKEND_PORT:-3838}"
-    restart: unless-stopped
-
   web:
     container_name: ${FRONTEND_CONTAINER_NAME:-scopify-web}
     image: oven/bun:1.2
@@ -20,7 +7,7 @@ services:
       FRONTEND_HOST: 0.0.0.0
       FRONTEND_PORT: ${FRONTEND_PORT:-3000}
       APP_CFG_BACKEND_HOST: ${BACKEND_PUBLIC_HOST:-127.0.0.1}
-      APP_CFG_BACKEND_PORT: ${BACKEND_PUBLIC_PORT:-${BACKEND_PORT:-3838}}
+      APP_CFG_BACKEND_PORT: ${BACKEND_PUBLIC_PORT:-3838}
       NEXT_TELEMETRY_DISABLED: "1"
       SCOPIFY_SKIP_ELECTRON_INSTALL: "1"
     ports:
@@ -30,8 +17,6 @@ services:
       - scopify-node-modules:/app/node_modules
       - scopify-bun-cache:/root/.bun/install/cache
     command: sh -lc "bun install && bun run build:web && bunx serve renderer -l tcp://0.0.0.0:${FRONTEND_PORT:-3000}"
-    depends_on:
-      - backend
     restart: unless-stopped
 
 volumes:
