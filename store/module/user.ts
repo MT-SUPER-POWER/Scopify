@@ -21,6 +21,7 @@ type UserStore = {
   albumList: SongDetail[];
 
   handleLogout: () => Promise<void>;
+  clearSession: () => void;
   setUser: (userData: NeteaseUser) => void;
   setLoginType: (loginType: "token" | "cookie" | "qr" | "uid" | null) => void;
   setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => void;
@@ -68,23 +69,26 @@ export const useUserStore = create<UserStore>()(
         const cleanPlaylists = rawPlaylists.map(prunePlaylist);
         set({ playlist: cleanPlaylists });
       },
+      clearSession: () => {
+        set({
+          user: null,
+          loginType: null,
+          searchValue: "",
+          searchType: 0,
+          collectedAlbumIds: new Set(),
+          playlist: [],
+          albumList: [],
+          likeListIDs: [],
+        });
+        clearLoginStatus();
+      },
       handleLogout: async () => {
         try {
           await logout();
         } catch (error) {
           console.error("登出失败:", error);
         } finally {
-          set({
-            user: null,
-            loginType: null,
-            searchValue: "",
-            searchType: 0,
-            collectedAlbumIds: new Set(),
-            playlist: [],
-            albumList: [],
-            likeListIDs: [],
-          });
-          clearLoginStatus();
+          useUserStore.getState().clearSession();
           window.location.reload();
         }
       },

@@ -161,7 +161,7 @@ request.interceptors.response.use(
       error.response?.status === 301 &&
       (config.params as { noLogin?: boolean } | undefined)?.noLogin !== true
     ) {
-      useUserStore.getState().handleLogout();
+      useUserStore.getState().clearSession();
       usePlayerStore.getState().cleanCache();
       config.retryCount = 3;
     }

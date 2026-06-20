@@ -31,10 +31,10 @@ type TimeTheme = {
   start: number;
   end: number;
   greetingKey:
-  | "home.greeting.night"
-  | "home.greeting.morning"
-  | "home.greeting.afternoon"
-  | "home.greeting.evening";
+    | "home.greeting.night"
+    | "home.greeting.morning"
+    | "home.greeting.afternoon"
+    | "home.greeting.evening";
   gradient: string;
 };
 
@@ -294,7 +294,11 @@ const HomePageComponent = () => {
       }
     }
 
-    const requests: any[] = [getPersonalizePlaylists(), getRecommendedPlaylists(), getHotArtists()];
+    const requests: any[] = [
+      getPersonalizePlaylists(),
+      isLogin ? getRecommendedPlaylists() : { data: { recommend: [] } },
+      getHotArtists(),
+    ];
 
     if (isLogin) requests.push(getUserAlbumSublist());
 
