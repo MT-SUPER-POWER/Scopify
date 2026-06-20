@@ -221,7 +221,13 @@ export function getFollowedArtists(limit = 20, offset = 0) {
 - `components/**` 内约 40+ 处 inline interface → 按上表逐步迁入 `types/components/`
 - `components/Playlist/hook/`、`components/SearchContents/hooks/` → 迁到 `hooks/`
 
-#### 已完成迁移
+## 已重构页面
+
+- `app/(dashboard)/artist/page.tsx` ✅ 直接组装子组件（ArtistHero、ActionBar、PopularTracks、DiscographyGrid）
+- `app/(dashboard)/playlist/page.tsx` ✅ 直接组装子组件（PlaylistHeader、PlaylistActions、TracklistTable）
+- `app/(dashboard)/profile/page.tsx` ✅ 直接组装子组件（UserHero、UserActionBar、TracklistTable、PublicPlaylistGrid）
+- `app/(dashboard)/search/page.tsx` ✅ 直接组装子组件（CategoryTabs、AllView、SongsView、GridCategoryView）
+- 其余路由（album、comment、me、setting、login、home）因组件体积较大，保留转发，已添加 metadata
 
 - `lib/api/*.ts` 类型 → `types/api/`（artist、music、comment）
 - `types/artist.ts` 内 `formatNumber`/`formatDuration` → `lib/utils.ts`
