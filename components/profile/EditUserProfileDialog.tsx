@@ -1,6 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/store/module/i18n";
 import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
 import type { NeteaseUser } from "@/types/api/user";
@@ -43,52 +53,63 @@ export function EditUserProfileDialog({
         <div className="mt-5 flex flex-col gap-4">
           <label className="flex flex-col gap-2 text-xs font-semibold text-zinc-400">
             {t("profile.edit.nickname")}
-            <input
+            <Input
               value={nickname}
               maxLength={30}
               onChange={(event) => setNickname(event.target.value)}
-              className="rounded-md bg-white/10 px-3 py-2 text-sm text-white outline-none focus:ring-1 focus:ring-white/30"
+              className="bg-white/10 text-white placeholder:text-zinc-500 focus-visible:ring-white/30"
             />
           </label>
           <label className="flex flex-col gap-2 text-xs font-semibold text-zinc-400">
             {t("profile.edit.signature")}
-            <textarea
+            <Textarea
               value={signature}
               maxLength={300}
               rows={4}
               onChange={(event) => setSignature(event.target.value)}
-              className="resize-none rounded-md bg-white/10 px-3 py-2 text-sm text-white outline-none focus:ring-1 focus:ring-white/30"
+              className="resize-none bg-white/10 text-white placeholder:text-zinc-500 focus-visible:ring-white/30"
             />
           </label>
           <label className="flex flex-col gap-2 text-xs font-semibold text-zinc-400">
             {t("profile.edit.gender")}
-            <select
-              value={gender}
-              onChange={(event) => setGender(Number(event.target.value) as 0 | 1 | 2)}
-              className="rounded-md bg-white/10 px-3 py-2 text-sm text-white outline-none focus:ring-1 focus:ring-white/30"
+            <Select
+              value={String(gender)}
+              onValueChange={(val) => setGender(Number(val) as 0 | 1 | 2)}
             >
-              <option value={0}>{t("profile.edit.genderPrivate")}</option>
-              <option value={1}>{t("profile.edit.genderMale")}</option>
-              <option value={2}>{t("profile.edit.genderFemale")}</option>
-            </select>
+              <SelectTrigger className="bg-white/10 text-white focus-visible:ring-white/30">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="border-white/10 bg-[#282828] text-white">
+                <SelectItem value="0" className="focus:bg-white/10 focus:text-white">
+                  {t("profile.edit.genderPrivate")}
+                </SelectItem>
+                <SelectItem value="1" className="focus:bg-white/10 focus:text-white">
+                  {t("profile.edit.genderMale")}
+                </SelectItem>
+                <SelectItem value="2" className="focus:bg-white/10 focus:text-white">
+                  {t("profile.edit.genderFemale")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </label>
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={onCancel}
-            className="rounded-full border border-white/20 px-5 py-2 text-sm font-bold text-white hover:border-white"
+            className="rounded-full border-white/20 text-white hover:border-white hover:text-white"
           >
             {t("common.action.cancel")}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             disabled={saving || !nickname.trim()}
             onClick={() => onConfirm({ nickname: nickname.trim(), signature, gender })}
-            className="rounded-full bg-[#1ed760] px-5 py-2 text-sm font-bold text-black hover:bg-[#3be477] disabled:opacity-50"
+            className="rounded-full bg-[#1ed760] text-black hover:bg-[#3be477] disabled:opacity-50"
           >
             {saving ? t("common.action.saving") : t("common.action.save")}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
