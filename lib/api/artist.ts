@@ -75,3 +75,14 @@ export function getFollowedArtists(limit = 20, offset = 0) {
     params: { limit, offset },
   });
 }
+
+/**
+ * 收藏/取消收藏歌手
+ * @param id 歌手 id
+ * @param sub true=收藏, false=取消收藏
+ */
+export function subscribeArtist(id: number | string, sub: boolean) {
+  return request.get("/artist/sub", {
+    params: { id, t: sub ? 1 : 0 },
+  });
+}
