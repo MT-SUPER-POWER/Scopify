@@ -64,7 +64,7 @@ class AudioManager {
           if (state.isPlaying) {
             this.audio.play().catch((err) => {
               console.warn("Play interrupted or not allowed:", err);
-              usePlayerStore.getState().setIsPlaying(false);
+              void usePlayerStore.getState().handlePlaybackFailure("audio");
             });
           } else {
             this.audio.pause();
@@ -143,7 +143,7 @@ class AudioManager {
       if (usePlayerStore.getState().isPlaying) {
         audio.play().catch((err) => {
           console.warn("Auto-play blocked or interrupted:", err);
-          usePlayerStore.getState().setIsPlaying(false);
+          void usePlayerStore.getState().handlePlaybackFailure("audio");
         });
       }
     });

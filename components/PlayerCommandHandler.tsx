@@ -7,6 +7,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePlaybackShortcuts } from "@/hooks/player/usePlaybackShortcuts";
 import { IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 
@@ -21,6 +22,8 @@ const getSafeState = (state: any) => {
 };
 
 export function PlayerCommandHandler() {
+  usePlaybackShortcuts();
+
   useEffect(() => {
     if (!IS_ELECTRON || typeof window === "undefined") return;
 
