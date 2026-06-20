@@ -1,9 +1,9 @@
-<div align="center">
-<img alt="logo" height="100" width="100" src="doc/img/icon.ico" />
+﻿<div align="center">
+<img alt="logo" height="100" width="100" src="docs/img/icon.ico" />
 <h2> Scopify </h2>
 <p> 一个仿 Spotify UI 的音乐播放器 </p>
 
-[后端 API](https://vdoonnridu.apifox.cn/) | [发行版](https://github.com/MT-SUPER-POWER/Scopify/releases) | [版本日志](https://github.com/MT-SUPER-POWER/Scopify/blob/master/doc/CHANGE.MD)
+[后端 API](https://vdoonnridu.apifox.cn/) | [发行版](https://github.com/MT-SUPER-POWER/Scopify/releases) | [版本日志](https://github.com/MT-SUPER-POWER/Scopify/blob/master/docs/CHANGELOG.md)
 
 <br/>
 
@@ -49,10 +49,46 @@
 
 ## 部署方法
 
-### Desktop and Backend Deployment
+Scopify 现在把桌面客户端、Web 前端和后端拆开部署。桌面客户端不再内置或自动启动后端；Web 和桌面客户端都需要访问一个独立运行的 NetEase API 后端。
 
-The desktop app no longer bundles or starts the backend service. Deploy the backend independently,
-then point `config/app.config.yml` at the backend host and port:
+### 1. Docker Compose 部署 Web + Backend
+
+推荐用于本机、局域网或私有服务器部署。根目录的 `docker-compose.yml` 会启动两个服务：
+
+- Web: `http://127.0.0.1:3000`
+- Backend: `http://127.0.0.1:3838`
+
+```bash
+git clone https://github.com/MT-SUPER-POWER/Scopify.git
+cd Scopify
+git submodule update --init --recursive
+docker compose up -d --build
+```
+
+查看状态和日志：
+
+```bash
+docker compose ps
+docker compose logs -f web
+docker compose logs -f backend
+```
+
+可以在根目录创建 `.env` 覆盖端口和浏览器可访问的后端地址：
+
+```env
+FRONTEND_PORT=3000
+BACKEND_PORT=3838
+BACKEND_PUBLIC_HOST=127.0.0.1
+BACKEND_PUBLIC_PORT=3838
+```
+
+`BACKEND_PUBLIC_HOST` 是浏览器访问后端时使用的地址。如果 Web 部署在服务器上并给其他设备访问，请改成服务器 IP 或域名，而不是 `127.0.0.1`。
+
+Docker Web 会先执行 `bun run build:web`，再静态服务 `renderer` 目录；它不是 `next dev`。不同端口对应不同浏览器 localStorage，换到 Docker 的 `3000` 端口后需要重新登录。
+
+### 2. 桌面客户端连接独立后端
+
+Release 安装包只包含桌面客户端，不再内置或自动启动后端。使用前请先部署 backend，然后在 `config/app.config.yml` 中配置后端地址：
 
 ```yaml
 backend:
@@ -60,99 +96,51 @@ backend:
   port: 3838
 ```
 
-The client automatically requests `http://host:port`.
+如果后端部署在远程服务器，把 `host` 改成服务器 IP 或域名。客户端会请求 `http://host:port`。
 
-For a local or private backend deployment, use Docker Compose directly:
+### 3. 仅部署 Backend
 
-```bash
-docker compose up -d
-```
-
-You can override the exposed backend port through `.env`:
-
-```env
-BACKEND_PORT=3838
-```
-
-No npm scripts are added for Docker Compose; run Compose commands directly.
-
-Tagged releases publish desktop installers to GitHub Releases. The desktop app checks stable GitHub
-Releases for updates and can download an update package before prompting for restart.
-
-> [!note]
-> 等待后续有时间，我会直接做一个 img 直接部署我们的业务，目前虽然比较繁琐，但是还是这么来吧
-
-### 前端的部署方法
-
-```bash
-# 安装前端
-git clone https://github.com/MT-SUPER-POWER/Scopify.git
-cd Scopify
-
-git submodule update --init --cursive
-bun install
-
-bun run web  # 开发模式：纯粹网页端
-bun run dev  # 开发模式：运行 next.js 和 electron
-```
-
-### 后端的部署方法
-
-#### 1. 自己部署后端
-
-> 这里使用 k8s 来部署，我们在 backend 文件中会给出对用的 svc 和 pod 文件，你照着大致修改就好
->
-> 我们使用的是这个[仓库](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced)以及对应的[API 文档](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
-
-1. 下载项目，进入项目打包 image
-
-> [!note]
-> 打包 image 的过程中，如果有 `url.parse()` 出现的报错暂且不理会就好
-
-```bash
-git clone https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced
-cd api-enhanced
-
-docker build -t netease-api:[版本号自己想吧] ./
-```
-
-2. 使用 `Makefile` 部署到 k3s
-
-```bash
-make netease_deploy   # 部署
-make netease_status   # 查看状态
-make netease_undeploy # 卸载
-```
-
-3. 你也可以直接 vercel 部署
-
-打开我们的 `fix/compatible` 分支，然后把这个分支直接拷贝到 vercel 上面，你就可以拿到一个 vercel 的服务端了，只要你注册好账号，默认端口就是 3000，如果需要改动配置，可以修改 `.env` 文件
-
-4. 记得修改 `config/app.config.yml` 中的后端地址为你部署的地址，`autoStart` 设置为 `false`。
-
-5. 如果你还需要打包自己的客户端，`electron-builder` 的配置文件，去掉 `extraResources` 中的关于 `api-enhanced` 的后端相关配置。
-
-#### 2. 使用现成的后端
-
-> [!important]
-> 推荐使用这个方法，毕竟部署后端还是比较麻烦的。加上本人还没有测试过分离部署的功能。可能意外比较多
+如果只需要 API 后端，可以单独构建 `backend/api-enhanced`：
 
 ```bash
 git submodule update --init --recursive
 cd backend/api-enhanced
-npm install
+docker build -t scopify-backend .
+docker run -d --name scopify-backend -p 3838:3838 -e HOST=0.0.0.0 -e PORT=3838 scopify-backend
 ```
 
-我们程序里面是打包了一个后端一起部署的，默认地址地址是 `localhost:5252`，如果你没有自己部署后端的需求。请保持 `config/app.config.yml` 的 `autoStart` 设置为 `true` 。
+更推荐直接使用根目录 `docker compose up -d --build`，它会同时处理 Web 和 Backend 的默认配置。
 
-### 本地部署
+### 4. 本地开发
 
-直接运行 `npm run build:win` 就会自动打包程序，生成在 `dist` 是直接可运行的版本。
-如果有想打包成有安装引导的版本，还请自己修改 `package.json` 中的 build:build:target: nsis 就可以打包成 exe 文件了。
-程序的运行日志在这个位置: `C:\Users\[YourUserName]\AppData\Roaming\scopify\logs`。
+```bash
+bun install
+bun run dev:web      # Next.js 开发服务
+bun run dev:backend  # 本地后端服务
+bun run dev          # Electron 开发模式
+```
 
-> [!note]
-> 如果程序没有正常运行，请检查 logs 里面的日志里面的基础配置部分的输出，还有后端是否运行正常，如果简单排查还是有问题，可以把日志发到 issue 里面来，我会尽快回复的。
+`dev:web` 是开发服务；生产 Web 部署请使用 Docker Compose，或 `bun run build:web` 后静态服务 `renderer` 目录。
+
+### 5. Release 检查清单
+
+发布 tag 前建议确认：
+
+```bash
+docker compose config --quiet
+docker compose up -d --build
+```
+
+并访问：
+
+- `http://127.0.0.1:3000`
+- `http://127.0.0.1:3838`
+
+GitHub Actions 会在推送 `v*` tag 时构建安装包，并从 `docs/CHANGELOG.md` 中提取同名版本标题作为 Release Notes。发布 `v1.0.5` 前请确保存在：
+
+```md
+# v1.0.5
+```
 
 ## 功能
 
@@ -171,63 +159,63 @@ npm install
 <details>
 <summary> 主页面 </summary>
 
-![主页面](/doc/img/main.png)
+![主页面](/docs/img/main.png)
 
 </details>
 
 <details>
 <summary> 播放歌曲模态界面 - 动态 </summary>
 
-![播放页面](/doc/img/DynamicEffect.png)
+![播放页面](/docs/img/DynamicEffect.png)
 
 </details>
 
 <details>
 <summary> 播放歌曲模态界面 - 静态 </summary>
 
-![播放页面](/doc/img/StaticEffect.png)
+![播放页面](/docs/img/StaticEffect.png)
 
 </details>
 
 <details>
 <summary> 歌单页面 </summary>
 
-![发现页面](/doc/img/Playlist.png)
+![发现页面](/docs/img/Playlist.png)
 
 </details>
 
 <details>
 <summary> 用户页面 </summary>
 
-![用户页面](/doc/img/profile.png)
+![用户页面](/docs/img/profile.png)
 
 </details>
 
 <details>
 <summary> 评论页面 </summary>
 
-![发现页面](/doc/img/comment.png)
+![发现页面](/docs/img/comment.png)
 
 </details>
 
 <details>
 <summary> 搜索模态界面 </summary>
 
-![搜索页面](/doc/img/SearchModal.png)
+![搜索页面](/docs/img/SearchModal.png)
 
 </details>
 
 <details>
 <summary> 一般搜索效果 </summary>
 
-![搜索页面](/doc/img/SearchWithBar.png)
+![搜索页面](/docs/img/SearchWithBar.png)
 
 </details>
 
 <details>
 <summary> 搜索结果页面</summary>
 
-![搜索页面](/doc/img/SearchResult.png)
+![搜索页面](/docs/img/SearchResult.png)
 
 </details>
 
@@ -264,3 +252,4 @@ npm install
 ## 开源许可
 
 - 本项目基于 [MIT](https://www.gnu.org/licenses/mit-license.html) 许可进行开源
+

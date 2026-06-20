@@ -2,6 +2,8 @@ import os
 import re
 import sys
 
+CHANGELOG_PATH = 'docs/CHANGELOG.md'
+
 # ✅ 强制 stdout UTF-8（解决 Windows CI 炸）
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -12,7 +14,7 @@ def main():
         print("Warning: GITHUB_REF_NAME is empty")
 
     try:
-        with open('doc/CHANGE.MD', 'r', encoding='utf-8') as f:
+        with open(CHANGELOG_PATH, 'r', encoding='utf-8') as f:
             content = f.read()
 
         # ✅ 兼容 ## / # + Windows 换行
@@ -26,7 +28,7 @@ def main():
             notes = f'No changelog found for {tag}'
 
     except FileNotFoundError:
-        notes = 'ERROR: doc/CHANGE.MD not found'
+        notes = f'ERROR: {CHANGELOG_PATH} not found'
     except Exception as e:
         notes = f'ERROR: {e}'
 
