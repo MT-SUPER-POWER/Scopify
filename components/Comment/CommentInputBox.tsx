@@ -225,7 +225,8 @@ export function CommentInputBox({
                     <Image
                       src={url as string}
                       alt={name}
-                      width={20} height={20}
+                      width={20}
+                      height={20}
                       className="w-5 h-5 object-contain pointer-events-none select-none"
                     />
                   </button>
