@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowDownCircle,
   Disc3,
+  Heart,
   List,
   MoreHorizontal,
   Pause,
@@ -20,9 +21,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable"; // 复用你的歌曲列表组件
-import { getAlbumDetail } from "@/lib/api/album"; // 假设你在这个路径下有获取专辑的 API
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { getAlbumDetail, subscribeAlbum } from "@/lib/api/album"; // 假设你在这个路径下有获取专辑的 API
 import { createPageCacheKey, getPageCache, pageTtlMs, setPageCache } from "@/lib/cache/pageCache";
+import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, getMainColorFromImage } from "@/lib/utils";
+import { classifyNetworkError } from "@/lib/web/networkError";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
@@ -52,6 +57,8 @@ function setColorCache(key: string, value: string) {
 
 export default function AlbumPage() {
   const { t } = useI18n();
+  const smartRouter = useSmartRouter();
+  const requireLoginAction = useRequireLoginAction();
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   // 搜索控制区状态
@@ -70,6 +77,8 @@ export default function AlbumPage() {
   const [themeColor, setThemeColor] = useState<string>("from-[#88b325]");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [isTogglingAlbumSubscribe, setIsTogglingAlbumSubscribe] = useState(false);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -84,6 +93,9 @@ export default function AlbumPage() {
   }, []);
 
   const clearAlbumList = useUserStore((s) => s.clearAlbumList);
+  const collectedAlbumIds = useUserStore((s) => s.collectedAlbumIds);
+  const setCollectedAlbumId = useUserStore((s) => s.setCollectedAlbumId);
+  const isAlbumCollected = albumId ? collectedAlbumIds.has(Number(albumId)) : false;
   useEffect(() => {
     return () => {
       clearAlbumList();
@@ -121,6 +133,7 @@ export default function AlbumPage() {
       cover: album.picUrl ?? `https://picsum.photos/300/300?random=${Math.random()}`,
       releaseYear: releaseYear,
       artistName: artist?.name ?? t("album.meta.unknownArtist"),
+      artistId: artist?.id,
       artistAvatar: artist?.picUrl || artist?.img1v1Url || "",
       company: album.company ?? "",
       totalSongs: album.size ?? 0,
@@ -152,6 +165,7 @@ export default function AlbumPage() {
   // 拉取数据逻辑
   useEffect(() => {
     if (!albumId) return;
+    void reloadKey;
 
     let ignore = false;
     const cacheKey = createPageCacheKey("album", [albumId]);
@@ -200,6 +214,9 @@ export default function AlbumPage() {
         if (ignore) return;
         console.error("请求专辑失败:", error);
         setIsError(true);
+        if (classifyNetworkError(error).retryable) {
+          toast.error(t("network.toast.unavailable"), { id: "network-unavailable" });
+        }
         toast.error(t("album.toast.fetchFailed"));
       })
       .finally(() => {
@@ -209,7 +226,29 @@ export default function AlbumPage() {
     return () => {
       ignore = true;
     };
-  }, [albumId, t]);
+  }, [albumId, reloadKey, t]);
+
+  const handleToggleAlbumSubscribe = useCallback(async () => {
+    if (!albumId) return;
+    await requireLoginAction("album-subscribe", async () => {
+      const numericAlbumId = Number(albumId);
+      const nextCollected = !isAlbumCollected;
+      setIsTogglingAlbumSubscribe(true);
+      setCollectedAlbumId(numericAlbumId, nextCollected);
+      try {
+        await subscribeAlbum(albumId, nextCollected);
+        toast.success(
+          nextCollected ? t("album.toast.subscribeSuccess") : t("album.toast.unsubscribeSuccess"),
+        );
+      } catch (error) {
+        console.error("Failed to toggle album subscribe:", error);
+        setCollectedAlbumId(numericAlbumId, !nextCollected);
+        toast.error(t("album.toast.subscribeFailed"));
+      } finally {
+        setIsTogglingAlbumSubscribe(false);
+      }
+    });
+  }, [albumId, isAlbumCollected, requireLoginAction, setCollectedAlbumId, t]);
 
   if (!albumId)
     return (
@@ -228,9 +267,16 @@ export default function AlbumPage() {
 
   if (isError || (!isLoading && !albumDetail))
     return (
-      <div className="w-full min-h-screen flex flex-col items-center justify-center bg-[#121212] text-zinc-400 gap-4">
-        <Disc3 className="w-16 h-16 opacity-30" />
-        <span className="text-lg font-medium tracking-wider">{t("album.empty.unavailable")}</span>
+      <div className="w-full min-h-screen bg-[#121212] px-6 py-24">
+        <div className="mb-6 opacity-70">
+          <PlaylistLoading />
+        </div>
+        <NetworkRetryState
+          title={t("network.offline.title")}
+          subtitle={t("album.empty.unavailable")}
+          actionLabel={t("network.action.refresh")}
+          onRetry={() => setReloadKey((key) => key + 1)}
+        />
       </div>
     );
 
@@ -297,7 +343,13 @@ export default function AlbumPage() {
 
           {/* 4. 元数据区：与 playlist 统一风格 */}
           <div className="flex flex-wrap items-center gap-2.5 text-sm text-white/80 drop-shadow-md">
-            <div className="flex items-center gap-2 group cursor-pointer mr-1 text-white">
+            <button
+              type="button"
+              className="flex items-center gap-2 group cursor-pointer mr-1 text-white"
+              onClick={() => {
+                if (ALBUM_INFO?.artistId) smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
+              }}
+            >
               {ALBUM_INFO?.artistAvatar ? (
                 <Image
                   width={49}
@@ -314,7 +366,7 @@ export default function AlbumPage() {
               <span className="font-bold group-hover:underline text-[15px]">
                 {ALBUM_INFO?.artistName}
               </span>
-            </div>
+            </button>
             <span className="opacity-60 hidden sm:inline">•</span>
             <span>{ALBUM_INFO?.releaseYear}</span>
             <span className="opacity-60">•</span>
@@ -353,6 +405,17 @@ export default function AlbumPage() {
             )}
 
             <ArrowDownCircle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
+            <button
+              type="button"
+              disabled={isTogglingAlbumSubscribe}
+              onClick={() => void handleToggleAlbumSubscribe()}
+              title={isAlbumCollected ? t("album.action.unsubscribe") : t("album.action.subscribe")}
+              className="text-zinc-400 transition-colors hover:text-white disabled:opacity-50"
+            >
+              <Heart
+                className={cn("w-8 h-8", isAlbumCollected && "fill-[#1ed760] text-[#1ed760]")}
+              />
+            </button>
             <MoreHorizontal className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
           </div>
 
