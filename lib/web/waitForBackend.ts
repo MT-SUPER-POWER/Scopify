@@ -28,3 +28,22 @@ export async function waitForBackend(
   }
   return false;
 }
+
+/**
+ * 快速检查后端是否可达（不做重试）。
+ * @param url 后端地址
+ * @param timeout 单次请求超时 (ms)
+ */
+export async function pingBackend(url: string, timeout: number = 3000): Promise<boolean> {
+  try {
+    await axios.get(url, { timeout });
+    return true;
+  } catch (error: unknown) {
+    const code = (error as { code?: string } | undefined)?.code;
+    if (code && code !== "ECONNREFUSED" && code !== "ETIMEDOUT" && code !== "ENOTFOUND") {
+      // 任何非网络层错误（如 404、500）都视为后端有响应
+      return true;
+    }
+    return false;
+  }
+}
