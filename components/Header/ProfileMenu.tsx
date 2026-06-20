@@ -69,7 +69,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button type="button" className="focus:outline-none focus:ring-0">{children}</button>
+        <button type="button" className="focus:outline-none focus:ring-0">
+          {children}
+        </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -117,7 +119,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 onSelect={() => ProfileCallback(item.id)}
               >
                 {item.icon}
-                <span>{item.id === "download" ? t("profile.menu.download") : t("profile.menu.aboutMe")}</span>
+                <span>
+                  {item.id === "download" ? t("profile.menu.download") : t("profile.menu.aboutMe")}
+                </span>
               </DropdownMenuItem>
             ),
           )}

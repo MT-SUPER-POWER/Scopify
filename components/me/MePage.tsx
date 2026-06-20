@@ -336,7 +336,10 @@ export default function MePage() {
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute bottom-2 right-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  <button type="button" className="w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#1fdf64]">
+                  <button
+                    type="button"
+                    className="w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
+                  >
                     <Play size={24} fill="black" stroke="black" className="ml-1" />
                   </button>
                 </div>
