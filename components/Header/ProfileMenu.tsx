@@ -75,7 +75,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className="w-68 max-w-[calc(100vw-2rem)] rounded-xl p-2"
+        className="w-68 max-w-[calc(100vw-2rem)] rounded-xl p-2 bg-[#282828] text-white border-white/10"
         align="end"
         side="bottom"
         sideOffset={8}
