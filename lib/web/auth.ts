@@ -1,5 +1,4 @@
 import request from "@/lib/web/request";
-import { useUserStore } from "@/store";
 
 export interface LoginInfo {
   isLoggedIn: boolean;
@@ -38,5 +37,4 @@ export function verifyCaptcha(
 export function clearLoginStatus(): void {
   localStorage.removeItem("music_cookie");
   localStorage.removeItem("user_id");
-  useUserStore.getState().setUserId("");
 }

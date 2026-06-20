@@ -9,8 +9,9 @@ export function useLoginStatus(): boolean {
 
   useEffect(() => {
     // useEffect 只会在客户端浏览器执行
-    const storage = localStorage.getItem("user_id");
-    setIsLogin(isStoreLogin || !!storage);
+    const storageUserId = localStorage.getItem("user_id");
+    const cookie = localStorage.getItem("music_cookie");
+    setIsLogin(Boolean(cookie && (isStoreLogin || storageUserId)));
   }, [isStoreLogin]);
 
   return isLogin;
