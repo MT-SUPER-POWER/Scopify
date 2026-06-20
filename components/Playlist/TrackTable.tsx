@@ -15,6 +15,7 @@ import {
   PlusCircle,
   RefreshCw,
   Trash,
+  User,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -600,6 +601,40 @@ export default function TracklistTable({
                   {t("contextMenu.comments")}
                 </Link>
               </ContextMenuItem>
+
+              {/* View Artist */}
+              {contextMenuTrack.ar.length > 0 && (
+                contextMenuTrack.ar.length === 1 ? (
+                  <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
+                    <Link
+                      href={`/artist?id=${contextMenuTrack.ar[0].id}`}
+                      className="w-full h-full block focus:bg-white/10 focus:text-white"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      {t("contextMenu.goToArtist")}
+                    </Link>
+                  </ContextMenuItem>
+                ) : (
+                  <ContextMenuSub>
+                    <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+                      <User className="w-4 h-4 mr-4" />
+                      {t("contextMenu.goToArtist")}
+                    </ContextMenuSubTrigger>
+                    <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
+                      {contextMenuTrack.ar.map((artist) => (
+                        <ContextMenuItem key={artist.id} asChild className="focus:bg-white/10 focus:text-white">
+                          <Link
+                            href={`/artist?id=${artist.id}`}
+                            className="w-full h-full block"
+                          >
+                            {artist.name}
+                          </Link>
+                        </ContextMenuItem>
+                      ))}
+                    </ContextMenuSubContent>
+                  </ContextMenuSub>
+                )
+              )}
 
               <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
                 <button
