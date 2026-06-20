@@ -36,7 +36,9 @@ export interface ArtistInfo {
 export interface FollowedArtist {
   id: number;
   name: string;
-  avatarUrl: string;
+  avatarUrl?: string;
+  picUrl?: string;
+  img1v1Url?: string;
 }
 
 export interface ArtistCachePayload {

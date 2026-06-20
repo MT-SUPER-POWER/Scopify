@@ -29,6 +29,7 @@ import {
 } from "@/lib/api/playlist";
 import { getUserPlaylist } from "@/lib/api/user";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -60,10 +61,11 @@ function handleUpdatePlaylist(
   id: number | string,
   name: string,
   desc?: string,
+  tags?: string[],
   coverFile?: File | null,
 ): void {
   const locale = useI18nStore.getState().locale;
-  const updateTasks = [updatePlaylist(id, name, desc)];
+  const updateTasks = [updatePlaylist({ id, name, desc, tags })];
 
   if (coverFile) {
     updateTasks.push(updatePlaylistCover(id, coverFile));
@@ -158,6 +160,7 @@ function ConfirmDialogShandCN({
 function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
   const smartRouter = useSmartRouter();
   const { t } = useI18n();
+  const requireLoginAction = useRequireLoginAction();
 
   const userPlaylists = useUserStore((s) => s.playlist);
   const playlistInfo = userPlaylists.find((p) => String(p.id) === String(playlistID));
@@ -174,9 +177,10 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
     id: number | string,
     name: string,
     desc?: string,
+    tags?: string[],
     coverFile?: File | null,
   ) => {
-    handleUpdatePlaylist(id, name, desc, coverFile);
+    handleUpdatePlaylist(id, name, desc, tags, coverFile);
     setUpdateFormOpen(false);
   };
 
@@ -198,7 +202,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
         open={updateFormOpen}
         initialData={playlistInfo}
         onConfirm={async (data) => {
-          handleConfirmUpdate(playlistID, data.name, data.desc, data.coverFile);
+          handleConfirmUpdate(playlistID, data.name, data.desc, data.tags, data.coverFile);
         }}
         onCancel={() => setUpdateFormOpen(false)}
       />
@@ -218,42 +222,41 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
             </ContextMenuItem>
             <ContextMenuItem
               onClick={async () => {
-                try {
-                  const uid = useUserStore.getState().user?.userId;
-                  if (!uid) {
-                    toast.error(t("common.action.login"));
-                    return;
-                  }
-                  const [tracksRes, likeListsRes] = await Promise.all([
-                    getPlaylistAllTracks({ id: playlistID }),
-                    getUserLikeLists(uid),
-                  ]);
+                await requireLoginAction("library", async () => {
+                  try {
+                    const uid = useUserStore.getState().user?.userId;
+                    if (!uid) return;
+                    const [tracksRes, likeListsRes] = await Promise.all([
+                      getPlaylistAllTracks({ id: playlistID }),
+                      getUserLikeLists(uid),
+                    ]);
 
-                  const tracks = tracksRes.data?.songs || [];
+                    const tracks = tracksRes.data?.songs || [];
 
-                  if (tracks.length > 0) {
-                    const userStore = useUserStore.getState();
-                    const playerStore = usePlayerStore.getState();
+                    if (tracks.length > 0) {
+                      const userStore = useUserStore.getState();
+                      const playerStore = usePlayerStore.getState();
 
-                    // 1. 同步全量歌曲和喜欢列表到 UserStore (保持和 PlaylistPage 一致的联动)
-                    userStore.setAlbumList(tracks);
-                    if (likeListsRes?.data?.ids) {
-                      userStore.setLikeListIDs(likeListsRes.data.ids);
+                      // 1. 同步全量歌曲和喜欢列表到 UserStore (保持和 PlaylistPage 一致的联动)
+                      userStore.setAlbumList(tracks);
+                      if (likeListsRes?.data?.ids) {
+                        userStore.setLikeListIDs(likeListsRes.data.ids);
+                      }
+
+                      // 2. 设置播放队列并播放第一首
+                      playerStore.setQueue(tracks, 0);
+                      await playerStore.playQueueIndex(0);
+
+                      // 3. 跳转播放页面
+                      smartRouter.push(`/playlist/?id=${playlistID}`);
+                    } else {
+                      toast.error(t("sidebar.lib.noTracks"), { id: "play-playlist" });
                     }
-
-                    // 2. 设置播放队列并播放第一首
-                    playerStore.setQueue(tracks, 0);
-                    await playerStore.playQueueIndex(0);
-
-                    // 3. 跳转播放页面
-                    smartRouter.push(`/playlist/?id=${playlistID}`);
-                  } else {
-                    toast.error(t("sidebar.lib.noTracks"), { id: "play-playlist" });
+                  } catch (error) {
+                    console.error("Failed to play playlist:", error);
+                    toast.error(t("sidebar.lib.fetchTracksFailed"), { id: "play-playlist" });
                   }
-                } catch (error) {
-                  console.error("Failed to play playlist:", error);
-                  toast.error(t("sidebar.lib.fetchTracksFailed"), { id: "play-playlist" });
-                }
+                });
               }}
             >
               <Play className="w-4 h-4 mr-2" />
@@ -283,7 +286,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
           <ContextMenuGroup>
             <ContextMenuItem
               onClick={() => {
-                setUpdateFormOpen(true);
+                void requireLoginAction("playlist-edit", () => setUpdateFormOpen(true));
               }}
             >
               <Edit className="w-4 h-4 mr-2" />

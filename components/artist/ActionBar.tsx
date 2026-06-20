@@ -35,9 +35,7 @@ export function ActionBar({ isPlayingArtist, disabled, onPlayArtist }: Props) {
         {isFollowing ? t("artist.action.following") : t("artist.action.follow")}
       </button>
 
-      <button
-        type="button"
-        className="text-gray-400 hover:text-white transition-colors">
+      <button type="button" className="text-gray-400 hover:text-white transition-colors">
         <MoreHorizontal className="w-8 h-8" />
       </button>
     </div>

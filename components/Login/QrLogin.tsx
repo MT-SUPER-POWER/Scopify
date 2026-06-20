@@ -3,7 +3,8 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { RefreshCw } from "lucide-react";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { checkQR, createQR, getQRKey } from "@/lib/api/login";
@@ -16,12 +17,22 @@ import { useI18n } from "@/store/module/i18n";
 
 export type QrStatus = "loading" | "waiting" | "scanned" | "expired" | "success";
 
+interface QrLoginProps {
+  onSuccess?: () => void;
+}
+
 // 封装一个 Promise 版的 delay 函数
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export function QrLogin() {
+export function QrLogin({ onSuccess }: QrLoginProps) {
   const smartRouter = useSmartRouter();
   const { t } = useI18n();
+
+  // ref 避免 smartRouter 每次渲染新引用导致 useEffect 反复执行
+  const routerRef = useRef(smartRouter);
+  routerRef.current = smartRouter;
+  const onSuccessRef = useRef(onSuccess);
+  onSuccessRef.current = onSuccess;
 
   const [qrImg, setQrImg] = useState("");
   const [qrStatus, setQrStatus] = useState<QrStatus>("loading");
@@ -119,7 +130,8 @@ export function QrLogin() {
 
             // 通知主线程登录成功
             if (IS_ELECTRON) window.electronAPI?.loginSuccess?.();
-            else smartRouter.replace("/");
+            else if (onSuccessRef.current) onSuccessRef.current();
+            else routerRef.current.replace("/");
             break;
           }
 
@@ -142,13 +154,19 @@ export function QrLogin() {
       // 这会截断任何正在进行中的 while 循环和异步请求后的赋值
       isActive = false;
     };
-  }, [smartRouter.replace]); // 只有 refreshKey 改变时才重新执行整个流程
+  }, [t]); // 通过 ref 获取最新 router 和 onSuccess，避免对象引用变化导致循环重渲染
 
   return (
     <div className="flex flex-col items-center justify-center space-y-4 pt-2">
       <div className="relative p-3 bg-white rounded-xl shadow-lg transition-transform hover:scale-105">
         {qrImg ? (
-          <img src={qrImg} alt={t("login.qr.alt")} className="w-40 h-40 block" />
+          <Image
+            src={qrImg}
+            alt={t("login.qr.alt")}
+            className="w-40 h-40 block"
+            width={160}
+            height={160}
+          />
         ) : (
           <div className="w-40 h-40 flex items-center justify-center text-zinc-400 text-sm animate-pulse">
             {t("login.qr.generating")}
