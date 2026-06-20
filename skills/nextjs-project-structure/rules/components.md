@@ -68,7 +68,6 @@ components/ui/Button.tsx
 1. 识别文件中可以独立的 JSX 区块
 2. 每块提取为同目录下的独立文件
 3. 在父组件中 import 使用
-4. 运行 Biome 确认无报错
 
 ```tsx
 // 拆分前：components/doc/DocPage.tsx（220 行，过长）
