@@ -6,15 +6,19 @@ import { clearPageCache } from "@/lib/cache/pageCache";
 import { translate } from "@/lib/i18n";
 import { IS_ELECTRON } from "@/lib/utils";
 import { appConfig } from "@/lib/web/env";
+import { pingBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
 import type { AppConfig } from "@/types/config";
 
 export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
+export const WEB_BACKEND_SETTINGS_KEY = "momo-web-backend-settings";
 
 function checkRequiresRestart(current: AppConfig, original: AppConfig): boolean {
   return (
     current.app.gpuAcceleration !== original.app.gpuAcceleration ||
-    current.app.devTools !== original.app.devTools
+    current.app.devTools !== original.app.devTools ||
+    current.backend.host !== original.backend.host ||
+    current.backend.port !== original.backend.port
   );
 }
 
@@ -29,8 +33,23 @@ function loadWebNetworkOverride(): Partial<AppConfig["network"]> | null {
   }
 }
 
+function loadWebBackendOverride(): AppConfig["backend"] | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const stored = localStorage.getItem(WEB_BACKEND_SETTINGS_KEY);
+    if (!stored) return null;
+    const parsed = JSON.parse(stored) as Partial<AppConfig["backend"]>;
+    if (typeof parsed?.host !== "string" || typeof parsed?.port !== "number") return null;
+    return { host: parsed.host, port: parsed.port };
+  } catch {
+    return null;
+  }
+}
+
 function buildWebConfig(): AppConfig {
   const networkOverride = loadWebNetworkOverride();
+  const backendOverride = loadWebBackendOverride();
   const locale = useI18nStore.getState().locale;
 
   return {
@@ -39,11 +58,29 @@ function buildWebConfig(): AppConfig {
       ...appConfig.app,
       locale,
     },
+    backend: {
+      ...appConfig.backend,
+      ...(backendOverride ?? {}),
+    },
     network: {
       ...appConfig.network,
       ...networkOverride,
     },
   };
+}
+
+function validateBackendConfig(locale: AppConfig["app"]["locale"], backend: AppConfig["backend"]) {
+  if (!backend.host.trim()) {
+    toast.error(translate(locale, "settings.backendHost.required"));
+    return false;
+  }
+
+  if (!Number.isFinite(backend.port) || backend.port < 1 || backend.port > 65535) {
+    toast.error(translate(locale, "settings.backendPort.invalid"));
+    return false;
+  }
+
+  return true;
 }
 
 function syncCloseActionPreference(closeAction: AppConfig["app"]["closeAction"]) {
@@ -131,17 +168,32 @@ export function useSettingsState() {
       return;
     }
 
+    if (!validateBackendConfig(config.app.locale, config.backend)) {
+      return;
+    }
+
     setIsSaving(true);
 
     try {
       if (!IS_ELECTRON) {
         localStorage.setItem(WEB_NETWORK_SETTINGS_KEY, JSON.stringify(config.network));
+        localStorage.setItem(WEB_BACKEND_SETTINGS_KEY, JSON.stringify(config.backend));
         setLocale(config.app.locale);
         emitAppConfigUpdated(config);
         setOriginalConfig(config);
         setConfig(config);
         setIsModalOpen(false);
         toast.success(translate(config.app.locale, "settings.saveSuccess"));
+
+        // 异步检查后端是否可达
+        const backendUrl = `http://${config.backend.host}:${config.backend.port}`;
+        const reachable = await pingBackend(backendUrl);
+        if (!reachable) {
+          toast.warning(
+            translate(config.app.locale, "settings.backendUnreachable", { url: backendUrl }),
+            { duration: 8000 },
+          );
+        }
         return;
       }
 

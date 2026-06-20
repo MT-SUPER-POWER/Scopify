@@ -5,6 +5,7 @@ import { languageLabelKeys } from "@/lib/i18n";
 import { IS_ELECTRON } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { APP_LOCALES, type AppConfig, type AppLocale } from "@/types/config";
+import { AppUpdaterSection } from "./AppUpdaterSection";
 import {
   SaveChangesButton,
   SaveConfirmModal,
@@ -114,6 +115,33 @@ const SettingsPage = () => {
                   />
                 </>
               ) : null}
+            </SettingSection>
+
+            <SettingSection title={t("settings.section.backend")}>
+              <SettingRow
+                label={t("settings.backendHost.label")}
+                sublabel={t("settings.backendHost.sublabel")}
+                control={
+                  <SettingInput
+                    value={config.backend.host}
+                    onChange={(value) => handleLocalChange("backend", "host", value)}
+                    className="w-64"
+                    placeholder={t("settings.backendHost.placeholder")}
+                  />
+                }
+              />
+              <SettingRow
+                label={t("settings.backendPort.label")}
+                sublabel={t("settings.backendPort.sublabel")}
+                control={
+                  <SettingInput
+                    type="number"
+                    value={config.backend.port}
+                    onChange={(value) => handleLocalChange("backend", "port", Number(value) || 0)}
+                    className="w-28"
+                  />
+                }
+              />
             </SettingSection>
 
             <SettingSection title={t("settings.section.network")}>
@@ -257,6 +285,8 @@ const SettingsPage = () => {
                   }
                 />
               </SettingSection>
+
+              <AppUpdaterSection />
 
               {IS_ELECTRON ? (
                 <SettingSection title={t("settings.section.cache")}>
