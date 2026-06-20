@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Heart, Link2, ListPlus, Pause, Play, PlusCircle } from "lucide-react";
+import { Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,6 +28,7 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import type { SongDetail } from "@/types/api/music";
 import type { Song } from "@/types/search";
 
@@ -183,8 +184,6 @@ export const SongItem = memo(
     }, [song, t]);
 
     const coverSrc = song.album.picUrl || song.artists[0]?.picUrl || "";
-    const artistNames =
-      song.artists.map((a) => a.name).join(", ") || t("search.song.unknownArtist");
 
     return (
       <ContextMenu>
@@ -234,12 +233,10 @@ export const SongItem = memo(
               >
                 {song.name}
               </span>
-              <span
-                title={artistNames}
-                className="text-zinc-400 text-xs truncate hover:text-white hover:underline cursor-pointer"
-              >
-                {artistNames}
-              </span>
+              <ArtistInlineLinks
+                artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
+                className="text-zinc-400 text-xs truncate cursor-pointer"
+              />
             </div>
 
             {/* Like 按钮 */}
@@ -363,6 +360,37 @@ export const SongItem = memo(
                 {t("contextMenu.copyLink")}
               </button>
             </ContextMenuItem>
+
+            {/* View Artist */}
+            {song.artists.length > 0 && (
+              song.artists.length === 1 ? (
+                <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
+                  <Link href={`/artist?id=${song.artists[0].id}`} className="w-full h-full block">
+                    <User className="w-4 h-4 mr-2" />
+                    {t("contextMenu.goToArtist")}
+                  </Link>
+                </ContextMenuItem>
+              ) : (
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+                    <User className="w-4 h-4 mr-4" />
+                    {t("contextMenu.goToArtist")}
+                  </ContextMenuSubTrigger>
+                  <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
+                    {song.artists.map((artist) => (
+                      <ContextMenuItem key={artist.id} asChild className="focus:bg-white/10 focus:text-white">
+                        <Link
+                          href={`/artist?id=${artist.id}`}
+                          className="w-full h-full block"
+                        >
+                          {artist.name}
+                        </Link>
+                      </ContextMenuItem>
+                    ))}
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+              )
+            )}
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>
