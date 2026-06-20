@@ -296,6 +296,7 @@ const HomePageComponent = () => {
 
     const requests: any[] = [
       getPersonalizePlaylists(),
+      // FIXME: 这个接口现在是必须登录的了，但是这里有一个有意思的问题，就是如果不用空数据的话，这里会死循环的不断请求
       isLogin ? getRecommendedPlaylists() : { data: { recommend: [] } },
       getHotArtists(),
     ];
