@@ -3,9 +3,8 @@
 import { Pause, Play } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";
-
-import { useI18n } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store";
+import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
 import type { Song } from "@/types/search";
 

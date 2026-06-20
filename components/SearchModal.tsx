@@ -6,8 +6,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
-import { useSearchStore } from "@/store/module/search";
 import { useI18n } from "@/store/module/i18n";
+import { useSearchStore } from "@/store/module/search";
 import { HighlightText, type SuggestItem, SuggestTag } from "./SearchContents/SearchHelper";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MODAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -260,7 +260,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   {showRecent && (
                     <div>
                       <div className="flex items-center justify-between px-5 py-2">
-                          <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                        <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
                           {t("search.modal.recentSearches")}
                         </span>
                         <button

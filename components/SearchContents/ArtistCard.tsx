@@ -1,8 +1,8 @@
 "use client";
 
 import { User } from "lucide-react";
-import type { Artist } from "@/types/search";
 import { useI18n } from "@/store/module/i18n";
+import type { Artist } from "@/types/search";
 
 export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () => void }) {
   const { t } = useI18n();
@@ -24,7 +24,9 @@ export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () =
         )}
       </div>
       <h4 className="text-base font-bold truncate w-full mb-1">{artist.name}</h4>
-      <p className="text-sm text-zinc-400 truncate w-full mt-1">{t("search.section.artistLabel")}</p>
+      <p className="text-sm text-zinc-400 truncate w-full mt-1">
+        {t("search.section.artistLabel")}
+      </p>
     </div>
   );
 }

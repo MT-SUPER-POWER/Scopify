@@ -3,9 +3,9 @@
 import { Loader2, Pause, Play } from "lucide-react";
 import Image from "next/image";
 import type React from "react";
-import type { Album } from "@/types/search";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
+import type { Album } from "@/types/search";
 
 export function AlbumCard({
   album,
@@ -41,7 +41,8 @@ export function AlbumCard({
       </div>
       <h4 className="text-base font-bold truncate mb-1">{album.name}</h4>
       <p className="text-sm text-zinc-400 truncate mt-1">
-        {new Date(album.publishTime).getFullYear()} • {album.artist?.name || t("common.meta.unknownArtist")}
+        {new Date(album.publishTime).getFullYear()} •{" "}
+        {album.artist?.name || t("common.meta.unknownArtist")}
       </p>
 
       <button

@@ -250,7 +250,9 @@ export const QueuePopover = () => {
         <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#181818]/90 backdrop-blur-sm sticky top-0 z-10">
           <div>
             <h3 className="font-bold text-lg">{t("queue.title")}</h3>
-            <p className="text-xs text-zinc-400">{t("queue.totalSongs", { count: queue.length })}</p>
+            <p className="text-xs text-zinc-400">
+              {t("queue.totalSongs", { count: queue.length })}
+            </p>
           </div>
           {/* 添加定位按钮 */}
           <button

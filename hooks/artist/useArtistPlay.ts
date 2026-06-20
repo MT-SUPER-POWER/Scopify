@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import { translate } from "@/lib/i18n";
 import { getAlbumDetail } from "@/lib/api/album";
+import { translate } from "@/lib/i18n";
 import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
