@@ -15,6 +15,7 @@ import { renderEmojiContent } from "./renderEmojiContent";
 export const CommentItem: React.FC<CommentItemProps> = ({
   comment,
   isHot = false,
+  currentUserId,
   onLike,
   onDelete,
   onReply,
@@ -22,6 +23,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
   onRouterClick,
 }) => {
   const { t } = useI18n();
+  const isOwnComment = String(comment.user.userId) === String(currentUserId ?? "");
 
   return (
     <div className="flex gap-4 group">
@@ -98,20 +100,23 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                 align="end"
                 className="w-32 bg-[#282828] border-white/10 text-white"
               >
-                <DropdownMenuItem
-                  onClick={() => onReport?.(comment.commentId)}
-                  className="bg-[#282828] hover:bg-black-500/80 cursor-pointer"
-                >
-                  <Flag className="w-4 h-4 mr-2" />
-                  {t("comments.item.report")}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => onDelete?.(comment.commentId)}
-                  className="text-red-500 focus:text-red-500 focus:bg-red-500/10 cursor-pointer"
-                >
-                  <Trash2 className="text-red-500 focus:text-red-500 w-4 h-4 mr-2" />
-                  {t("comments.item.delete")}
-                </DropdownMenuItem>
+                {isOwnComment ? (
+                  <DropdownMenuItem
+                    onClick={() => onDelete?.(comment.commentId)}
+                    className="text-red-500 focus:text-red-500 focus:bg-red-500/10 cursor-pointer"
+                  >
+                    <Trash2 className="text-red-500 focus:text-red-500 w-4 h-4 mr-2" />
+                    {t("comments.item.delete")}
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    onClick={() => onReport?.(comment.commentId)}
+                    className="bg-[#282828] hover:bg-black-500/80 cursor-pointer"
+                  >
+                    <Flag className="w-4 h-4 mr-2" />
+                    {t("comments.item.report")}
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -3,6 +3,7 @@ import type { NeteaseComment } from "@/types/api/music";
 export interface CommentItemProps {
   comment: NeteaseComment;
   isHot?: boolean;
+  currentUserId?: number | string | null;
   onLike?: (id: number, isHot: boolean) => void;
   onDelete?: (id: number) => void;
   onReply?: (id: number) => void;

@@ -8,11 +8,13 @@ import PlaylistHeader from "@/components/Playlist/Header";
 import { useCommentData } from "@/hooks/comment/useCommentData";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
 export default function CommentPage() {
   const { t } = useI18n();
   const isLogin = useLoginStatus();
+  const currentUserId = useUserStore((state) => state.user?.userId ?? null);
   const smartRouter = useSmartRouter();
   const observerTarget = useRef<HTMLDivElement>(null);
   const inputPanelRef = useRef<HTMLDivElement>(null);
@@ -108,6 +110,7 @@ export default function CommentPage() {
                     key={`hot-${comment.commentId}`}
                     comment={comment}
                     isHot
+                    currentUserId={currentUserId}
                     onLike={handleLike}
                     onDelete={handleDelete}
                     onReply={handleReply}
@@ -131,6 +134,7 @@ export default function CommentPage() {
                   <CommentItem
                     key={`latest-${comment.commentId}`}
                     comment={comment}
+                    currentUserId={currentUserId}
                     onLike={handleLike}
                     onDelete={handleDelete}
                     onReply={handleReply}
