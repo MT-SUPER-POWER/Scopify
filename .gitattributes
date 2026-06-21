@@ -1,0 +1,35 @@
+* text=auto
+
+# Keep source and config files stable across Windows/macOS/Linux.
+.gitattributes text eol=lf
+*.cjs text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.jsx text eol=lf
+*.md text eol=lf
+*.mjs text eol=lf
+*.scss text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.txt text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Windows command scripts should keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets.
+*.avif binary
+*.gif binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.mp3 binary
+*.mp4 binary
+*.png binary
+*.webp binary
+*.woff binary
+*.woff2 binary
