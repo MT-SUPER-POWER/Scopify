@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getLyric, greySongUrlMatch } from "@/lib/api/music";
+import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { useI18nStore } from "@/store/module/i18n";
@@ -243,6 +244,11 @@ export const usePlayerStore = create<PlayerStore>()(
           currentSongUrl: null,
           isPlaying: false,
           ...(shouldResetFailureCount ? { playbackFailureCount: 0 } : {}),
+        });
+
+        void enrichSongStatsById(song.id, {
+          likedCount: song.likedCount,
+          commentCount: song.commentCount,
         });
 
         try {

@@ -119,3 +119,11 @@ export const formatPlayCount = (count: number) => {
   if (count > 10000) return `${(count / 10000).toFixed(1)}万`;
   return count.toString();
 };
+
+/** 网易云风格紧凑计数：999+、10w+ */
+export const formatCompactCount = (count: number) => {
+  if (count >= 100000) return `${Math.floor(count / 10000)}w+`;
+  if (count >= 10000) return `${Math.round(count / 1000) / 10}w+`.replace(".0w+", "w+");
+  if (count > 999) return "999+";
+  return count.toString();
+};

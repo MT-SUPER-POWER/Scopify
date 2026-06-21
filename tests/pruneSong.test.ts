@@ -20,6 +20,8 @@ const answ = {
     coverUrl: undefined,
   }, // 专辑
   publishTime: 1762963200000,
+  alia: [],
+  pc: {},
 };
 
 test("pruneSongDetail Deal with dislike recommendation data", () => {

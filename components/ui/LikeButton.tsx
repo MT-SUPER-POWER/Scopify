@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 
 interface LikeButtonProps {
   liked: boolean;
-  likedCount?: number;
   onLike: () => void;
   iconClassName?: string;
 }
@@ -14,7 +13,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({ liked, onLike, iconClass
   <motion.button
     onClick={onLike}
     className={cn(
-      "flex items-center gap-1.5 transition-colors text-zinc-500 hover:text-white",
+      "relative flex items-center gap-1.5 transition-colors text-zinc-500 hover:text-white",
       liked && "text-[#1DB954]",
     )}
     whileTap={{ scale: 0.85 }}

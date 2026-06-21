@@ -27,6 +27,7 @@ type UserStore = {
   setUser: (userData: NeteaseUser) => void;
   setLoginType: (loginType: "token" | "cookie" | "qr" | "uid" | null) => void;
   setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => void;
+  mergeSongStats: (songId: number, stats: { likedCount?: number; commentCount?: number }) => void;
   clearAlbumList: () => void;
   setCollectedAlbum: (albums: NeteaseUserAlbum[]) => void;
   setCollectedAlbumId: (albumId: number, collected: boolean) => void;
@@ -82,6 +83,12 @@ export const useUserStore = create<UserStore>()(
         const cleanAlbumList = albumList.map(pruneSongDetail);
         set({ albumList: cleanAlbumList });
       },
+      mergeSongStats: (songId, stats) =>
+        set((state) => ({
+          albumList: state.albumList.map((song) =>
+            song.id === songId ? { ...song, ...stats } : song,
+          ),
+        })),
       clearAlbumList: () => set({ albumList: [] }),
       setLikeListIDs: (ids: number[]) => set({ likeListIDs: ids }),
       setPlayList: (rawPlaylists: NeteasePlaylist[]) => {

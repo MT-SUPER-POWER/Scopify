@@ -6,7 +6,6 @@ import {
   ChevronDown,
   ChevronUp,
   Expand,
-  Heart,
   Mic2,
   MinimizeIcon,
   MonitorSpeaker,
@@ -22,14 +21,16 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { FaRegCommentDots } from "react-icons/fa6";
+// 引入更圆润的 Phosphor Icons 图标
+import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi";
 import { toast } from "sonner";
 import { QueuePopover } from "@/components/QueuePopover";
 import { VolumeControl } from "@/components/VolumeControl";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { cn, IS_ELECTRON } from "@/lib/utils";
+import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
+import { cn, formatCompactCount, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
@@ -47,6 +48,57 @@ const Minimize = (isElectron: boolean) => {
   if (isElectron) window.electronAPI?.exitFullScreen();
   else if (document.fullscreenElement) document.exitFullscreen();
 };
+
+/** 图标右上角数字（PlayerBar 专用） */
+function PlayerBarStatAction({
+  count,
+  countClassName,
+  onClick,
+  href,
+  title,
+  children,
+}: {
+  count?: number;
+  countClassName?: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
+  href?: string;
+  title?: string;
+  children: React.ReactNode;
+}) {
+  const body = (
+    <div className="relative inline-flex shrink-0 transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
+      {children}
+      {count != null && count > 0 ? (
+        <span
+          className={cn(
+            "absolute top-[-2px] left-[11px] lg:left-[13px]",
+            "text-[10px] font-medium leading-none tabular-nums whitespace-nowrap pointer-events-none",
+            "px-[3px] py-px rounded-[4px] bg-black",
+            countClassName,
+          )}
+        >
+          {formatCompactCount(count)}
+        </span>
+      ) : null}
+    </div>
+  );
+
+  const className = "group shrink-0 py-1 pr-2 cursor-pointer hover:opacity-90 transition-opacity";
+
+  if (href) {
+    return (
+      <Link href={href} title={title} onClick={onClick} className={className}>
+        {body}
+      </Link>
+    );
+  }
+
+  return (
+    <button type="button" title={title} onClick={onClick} className={className}>
+      {body}
+    </button>
+  );
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -105,6 +157,14 @@ export const PlayerBar = ({
   const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
 
+  useEffect(() => {
+    if (!currentSong?.id) return;
+    void enrichSongStatsById(currentSong.id, {
+      likedCount: currentSong.likedCount,
+      commentCount: currentSong.commentCount,
+    });
+  }, [currentSong?.id, currentSong?.likedCount, currentSong?.commentCount]);
+
   // 切换播放模式
   const cycleRepeat = () => {
     const modes = ["off", "all", "one"] as const;
@@ -145,6 +205,7 @@ export const PlayerBar = ({
       <div className="h-17 lg:h-20 w-full flex px-4 items-center justify-between z-20 transition-all ease-linear duration-300">
         {/* ================= Left: Song Info ================= */}
         <div className="flex items-center gap-3 lg:gap-4 min-w-0 flex-1 lg:flex-3">
+          {/* 专辑封面 */}
           <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-md overflow-hidden relative group cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-zinc-800 shrink-0">
             {currentSong?.al?.picUrl ? (
               <Image
@@ -189,6 +250,7 @@ export const PlayerBar = ({
             </div>
           </div>
 
+          {/* 歌曲的名字和歌手 */}
           <div className="flex flex-col justify-center min-w-0 flex-1 max-w-25 lg:max-w-35">
             {currentSong ? (
               <>
@@ -229,25 +291,32 @@ export const PlayerBar = ({
             )}
           </div>
 
-          <div className="hidden sm:flex items-center gap-3">
-            <button
-              type="button"
+          {/* 点赞和评论 */}
+          <div className="hidden sm:flex items-center gap-4 lg:gap-5 shrink-0">
+            <PlayerBarStatAction
+              count={currentSong?.likedCount}
+              countClassName={isLiked ? "text-[#1ed760]" : "text-zinc-300"}
               title={isLiked ? t("common.action.unlike") : t("common.action.like")}
               onClick={() => toggleLike(!isLiked)}
             >
-              <Heart
-                className={cn(
-                  "w-4 h-4 lg:w-5 lg:h-5 text-[#b3b3b3] hover:text-white cursor-pointer",
-                  isLiked && "fill-[#1ed760] text-[#1ed760]",
-                )}
-              />
-            </button>
-            <Link
+              {isLiked ? (
+                <PiHeartFill className="w-5 h-5 lg:w-[22px] lg:h-[22px] text-[#1ed760]" />
+              ) : (
+                <PiHeartBold className="w-5 h-5 lg:w-[22px] lg:h-[22px] text-zinc-400 group-hover:text-white transition-colors" />
+              )}
+            </PlayerBarStatAction>
+
+            <PlayerBarStatAction
+              count={currentSong?.commentCount}
+              countClassName="text-zinc-300 group-hover:text-white transition-colors"
               href={currentSong?.id ? `/comment?songId=${currentSong.id}` : "#"}
-              onClick={(e) => !currentSong?.id && e.preventDefault()}
+              title={t("contextMenu.comments")}
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                if (!currentSong?.id) e.preventDefault();
+              }}
             >
-              <FaRegCommentDots className="w-4 h-4 lg:w-5 lg:h-5 text-[#b3b3b3] hover:text-white cursor-pointer ml-1" />
-            </Link>
+              <PiChatCircleDotsBold className="w-5 h-5 lg:w-[22px] lg:h-[22px] text-zinc-400 group-hover:text-white transition-colors" />
+            </PlayerBarStatAction>
           </div>
         </div>
 

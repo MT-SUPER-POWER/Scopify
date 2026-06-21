@@ -7,6 +7,7 @@ import Image from "next/image";
 import { memo, useCallback } from "react";
 import { toast } from "sonner";
 import { LikeButton } from "@/components/ui/LikeButton";
+import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
@@ -166,16 +167,15 @@ export const TrackRow = memo(
                 className="w-full h-full object-cover rounded"
               />
             </div>
-            <div className="flex flex-col truncate">
-              <span
-                title={track.name}
+            <div className="flex flex-col truncate min-w-0">
+              <SongTitleWithAlia
+                name={track.name}
+                alia={track.alia}
                 className={cn(
-                  "text-base font-normal truncate group-hover:underline cursor-pointer",
+                  "text-base font-normal group-hover:underline cursor-pointer",
                   isActive ? "text-[#1ed760]" : "text-white",
                 )}
-              >
-                {track.name}
-              </span>
+              />
               <span className="text-zinc-400 text-sm mt-0.5 font-normal truncate cursor-pointer">
                 {track.ar.slice(0, 2).map((a, idx, arr) => (
                   <span
@@ -248,5 +248,6 @@ export const TrackRow = memo(
     prev.isLiked === next.isLiked &&
     prev.index === next.index &&
     prev.hideDateColumn === next.hideDateColumn &&
-    prev.hideLikeColumn === next.hideLikeColumn,
+    prev.hideLikeColumn === next.hideLikeColumn &&
+    prev.track.alia?.join() === next.track.alia?.join(),
 );

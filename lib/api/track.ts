@@ -1,4 +1,5 @@
 // 歌曲评论接口
+import type { SongRedCountResponse } from "@/types/api/music";
 import request from "../web/request";
 
 export async function getSongDetail(ids: number | string) {
@@ -6,6 +7,13 @@ export async function getSongDetail(ids: number | string) {
     params: {
       ids,
     },
+  });
+}
+
+/** 歌曲红心（喜欢）数量 */
+export function getSongRedCount(id: number | string) {
+  return request.get<SongRedCountResponse>("/song/red/count", {
+    params: { id },
   });
 }
 

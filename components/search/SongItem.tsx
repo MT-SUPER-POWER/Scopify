@@ -243,7 +243,6 @@ export const SongItem = memo(
             <div className="shrink-0 hidden sm:flex items-center">
               <LikeButton
                 liked={isLiked}
-                likedCount={0}
                 onLike={() => handleLike(!isLiked)}
                 iconClassName="w-4 h-4"
               />

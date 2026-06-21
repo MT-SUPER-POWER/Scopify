@@ -210,7 +210,6 @@ export const PopularTrackItem = memo(
               <div className={cn("transition-opacity", hovered ? "opacity-100" : "opacity-0")}>
                 <LikeButton
                   liked={isLiked}
-                  likedCount={0}
                   onLike={() => handleLike(!isLiked)}
                   iconClassName="w-4.5 h-4.5"
                 />

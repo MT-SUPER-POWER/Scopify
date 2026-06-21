@@ -6,6 +6,24 @@ export interface SongUrlMatchResponse {
   proxyUrl: string;
 }
 
+export interface SongStats {
+  likedCount?: number;
+  commentCount?: number;
+}
+
+export interface SongRedCountResponse {
+  code: number;
+  data?: {
+    count?: number;
+    likedCount?: number;
+  };
+}
+
+export interface SongCommentTotalResponse {
+  code: number;
+  total?: number;
+}
+
 export interface SongDetail {
   id: number;
   name: string;
@@ -19,6 +37,9 @@ export interface SongDetail {
     coverUrl?: string;
   }; // 专辑
   publishTime: number;
+  alia?: string[];
+  likedCount?: number;
+  commentCount?: number;
   pc?: {
     privateCloud?: unknown;
   };
@@ -43,6 +64,7 @@ export const pruneSongDetail = (raw: any): SongDetail => {
       ar: [],
       al: { id: 0, name: "", picUrl: "", blurPicUrl: "", coverUrl: "" },
       publishTime: 0,
+      alia: [],
     };
   }
 
@@ -51,6 +73,9 @@ export const pruneSongDetail = (raw: any): SongDetail => {
 
   // 3. 处理专辑字段：优先用 al，没有就用 album
   const albumData = raw.al || raw.album || {};
+
+  const likedCount = raw.likedCount ?? raw.info?.likedCount ?? raw.redCount;
+  const commentCount = raw.commentCount ?? raw.info?.commentThread?.commentCount;
 
   return {
     id: raw.id || 0,
@@ -75,6 +100,9 @@ export const pruneSongDetail = (raw: any): SongDetail => {
       coverUrl: albumData?.coverUrl,
     },
     publishTime: raw.publishTime || albumData?.publishTime || 0,
+    alia: Array.isArray(raw.alia) ? raw.alia.filter(Boolean) : [],
+    ...(typeof likedCount === "number" && likedCount >= 0 ? { likedCount } : {}),
+    ...(typeof commentCount === "number" && commentCount >= 0 ? { commentCount } : {}),
     pc: raw.pc || {},
   };
 };

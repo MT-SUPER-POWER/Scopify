@@ -46,7 +46,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
       <div className="flex-1 pb-6 border-b border-white/5 group-last:border-0">
         <div className="flex items-baseline gap-2 mb-1">
           {/* 加入 select-text 允许选中用户名 */}
-          <button onClick={() => onRouterClick?.(`/profile?userId=${comment.user.userId}`)}>
+          <button type="button" onClick={() => onRouterClick?.(`/profile?userId=${comment.user.userId}`)}>
             <span className="font-bold text-sm hover:underline cursor-pointer select-text">
               {comment.user.nickname}
             </span>
@@ -83,6 +83,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         <div className="flex items-center justify-between mt-3">
           <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
+              type="button"
               onClick={() => onReply?.(comment.commentId)}
               className="text-xs font-semibold text-[#B3B3B3] hover:text-white transition-colors"
             >
@@ -91,16 +92,15 @@ export const CommentItem: React.FC<CommentItemProps> = ({
           </div>
 
           <div className="flex items-center gap-6 text-[#B3B3B3]">
-            <LikeButton
-              liked={comment.liked}
-              likedCount={comment.likedCount}
-              onLike={() => onLike?.(comment.commentId, isHot)}
-            />
+            <LikeButton liked={comment.liked} onLike={() => onLike?.(comment.commentId, isHot)} />
 
             {/* shadcn DropdownMenu 多选组件 */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="hover:text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#1DB954] rounded">
+                <button
+                  type="button"
+                  className="hover:text-white transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#1DB954] rounded"
+                >
                   <MoreHorizontal className="w-4 h-4" />
                 </button>
               </DropdownMenuTrigger>
