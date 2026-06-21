@@ -3,7 +3,7 @@
 import { ChevronDown, Maximize, Minimize } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaCompactDisc, FaUser } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
@@ -39,12 +39,12 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
     };
   }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       onClose?.();
     }, 300);
-  };
+  }, [onClose]);
 
   // 自动隐藏头部和底部
   const [isBarVisible, setIsBarVisible] = useState(true);
@@ -96,7 +96,6 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
       window.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleClose]);
 
   return (
@@ -115,6 +114,7 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
         className="absolute top-0 left-0 right-0 z-50 flex justify-end p-4 gap-3"
       >
         <button
+          type="button"
           onClick={toggleFullscreen}
           className="p-2.5 rounded-full backdrop-blur-md text-white/70 hover:text-white
           hover:bg-black/40 transition-all duration-200"
@@ -122,6 +122,7 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
           {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
         </button>
         <button
+          type="button"
           onClick={handleClose}
           className="p-2.5 rounded-full backdrop-blur-md text-white/70 hover:text-white
           hover:bg-black/40 transition-all duration-200"
@@ -199,6 +200,7 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
           className="bg-transparent"
           bgClass="bg-transparent"
           onCloseLyricModal={handleClose}
+          variant="lyric-modal"
         />
       </motion.div>
     </div>

@@ -106,11 +106,13 @@ export const PlayerBar = ({
   onCloseLyricModal,
   style,
   bgClass,
+  variant = "default",
 }: {
   className?: string;
   onCloseLyricModal?: () => void;
   style?: React.CSSProperties;
   bgClass?: string;
+  variant?: "default" | "lyric-modal";
 }) => {
   const { t } = useI18n();
   const isElectron = IS_ELECTRON;
@@ -155,6 +157,7 @@ export const PlayerBar = ({
   const likelist = useUserStore((s) => s.likeListIDs) || [];
   const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
+  const isLyricModalBar = variant === "lyric-modal";
 
   useEffect(() => {
     if (!currentSong?.id) return;
@@ -201,9 +204,21 @@ export const PlayerBar = ({
       )}
       style={style}
     >
-      <div className="h-17 lg:h-20 w-full flex px-4 items-center justify-between z-20 transition-all ease-linear duration-300">
+      <div
+        className={cn(
+          "h-17 lg:h-20 w-full px-4 items-center z-20 transition-all ease-linear duration-300",
+          isLyricModalBar
+            ? "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4"
+            : "flex justify-between",
+        )}
+      >
         {/* ================= Left: Song Info ================= */}
-        <div className="flex items-center gap-3 lg:gap-4 min-w-0 flex-1 lg:flex-3">
+        <div
+          className={cn(
+            "flex items-center gap-3 lg:gap-4 min-w-0",
+            isLyricModalBar ? "justify-start" : "flex-1 lg:flex-3",
+          )}
+        >
           {/* 专辑封面 */}
           <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-md overflow-hidden relative group cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-zinc-800 shrink-0">
             {currentSong?.al?.picUrl ? (
@@ -250,7 +265,12 @@ export const PlayerBar = ({
           </div>
 
           {/* 歌曲的名字和歌手 */}
-          <div className="flex flex-col justify-center min-w-0 flex-1 max-w-25 lg:max-w-35">
+          <div
+            className={cn(
+              "flex flex-col justify-center min-w-0 flex-1",
+              isLyricModalBar ? "max-w-[min(26vw,280px)]" : "max-w-25 lg:max-w-35",
+            )}
+          >
             {currentSong ? (
               <>
                 <span
@@ -291,7 +311,12 @@ export const PlayerBar = ({
           </div>
 
           {/* 点赞和评论 */}
-          <div className="hidden sm:flex items-center gap-4 lg:gap-5 shrink-0">
+          <div
+            className={cn(
+              "hidden sm:flex items-center gap-4 lg:gap-5 shrink-0",
+              isLyricModalBar && "hidden",
+            )}
+          >
             <PlayerBarStatAction
               count={currentSong?.likedCount}
               countClassName={isLiked ? "text-[#1ed760]" : "text-zinc-300"}
@@ -320,7 +345,12 @@ export const PlayerBar = ({
         </div>
 
         {/* ================= Center: Controls ================= */}
-        <div className="flex flex-col items-center justify-center flex-2 lg:flex-4 gap-1.5 min-w-0">
+        <div
+          className={cn(
+            "flex flex-col items-center justify-center gap-1.5 min-w-0",
+            isLyricModalBar ? "w-[clamp(280px,40vw,560px)]" : "flex-2 lg:flex-4",
+          )}
+        >
           <div className="flex items-center gap-4 lg:gap-5 mt-1">
             <button
               type="button"
@@ -385,7 +415,12 @@ export const PlayerBar = ({
         </div>
 
         {/* ================= Right: Extra Controls ================= */}
-        <div className="flex items-center justify-end gap-2 lg:gap-3 flex-1 lg:flex-3 text-[#b3b3b3]">
+        <div
+          className={cn(
+            "flex items-center justify-end gap-2 lg:gap-3 text-[#b3b3b3]",
+            isLyricModalBar ? "min-w-0" : "flex-1 lg:flex-3",
+          )}
+        >
           {/* 歌词模态界面 */}
           <button
             type="button"
