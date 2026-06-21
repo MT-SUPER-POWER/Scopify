@@ -265,7 +265,9 @@ function SidebarImpl() {
       </div>
     );
 
-  const renderFollowedArtistsSection = (options: { showEmptyState?: boolean; flat?: boolean } = {}) => {
+  const renderFollowedArtistsSection = (
+    options: { showEmptyState?: boolean; flat?: boolean } = {},
+  ) => {
     const { showEmptyState = false, flat = false } = options;
 
     if (artistsLoading) {

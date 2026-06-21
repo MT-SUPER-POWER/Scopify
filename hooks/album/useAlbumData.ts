@@ -53,7 +53,11 @@ export function useAlbumData() {
   const setCollectedAlbumId = useUserStore((s) => s.setCollectedAlbumId);
   const isAlbumCollected = albumId ? collectedAlbumIds.has(Number(albumId)) : false;
 
-  useEffect(() => { return () => { clearAlbumList(); }; }, [clearAlbumList]);
+  useEffect(() => {
+    return () => {
+      clearAlbumList();
+    };
+  }, [clearAlbumList]);
 
   const ALBUM_INFO: AlbumInfo | null = useMemo(() => {
     if (!albumDetail) return null;
@@ -64,7 +68,9 @@ export function useAlbumData() {
       subType: album.subType,
       title: album.name ?? t("album.meta.unknownAlbum"),
       cover: album.picUrl ?? "",
-      releaseYear: album.publishTime ? new Date(album.publishTime).toISOString().slice(0, 10) : t("album.meta.unknownYear"),
+      releaseYear: album.publishTime
+        ? new Date(album.publishTime).toISOString().slice(0, 10)
+        : t("album.meta.unknownYear"),
       artistName: artist?.name ?? t("album.meta.unknownArtist"),
       artistId: artist?.id,
       artistAvatar: artist?.picUrl || artist?.img1v1Url || "",
@@ -78,10 +84,18 @@ export function useAlbumData() {
   useEffect(() => {
     if (ALBUM_INFO?.cover) {
       const cached = colorCache.get(ALBUM_INFO.cover);
-      if (cached) { setThemeColor(cached); return; }
+      if (cached) {
+        setThemeColor(cached);
+        return;
+      }
       import("@/lib/utils").then(({ getMainColorFromImage }) => {
         getMainColorFromImage(ALBUM_INFO.cover)
-          .then((color: string) => { if (color) { setColorCache(ALBUM_INFO.cover, color); setThemeColor(color); } })
+          .then((color: string) => {
+            if (color) {
+              setColorCache(ALBUM_INFO.cover, color);
+              setThemeColor(color);
+            }
+          })
           .catch(() => setThemeColor("#88b325"));
       });
     }
@@ -92,7 +106,8 @@ export function useAlbumData() {
     if (!albumId) return;
     let ignore = false;
     const cacheKey = createPageCacheKey("album", [albumId]);
-    setIsLoading(true); setIsError(false);
+    setIsLoading(true);
+    setIsError(false);
 
     getPageCache<{ albumDetail: any; tracks: any[] }>(cacheKey).then((cached) => {
       if (ignore || !cached) return;
@@ -101,32 +116,54 @@ export function useAlbumData() {
       setIsLoading(false);
     });
 
-    getAlbumDetail(albumId).then(async (res: any) => {
-      if (ignore) return;
-      if (!res.data.album || !res.data.songs) { setIsError(true); return; }
-      setAlbumDetail(res.data);
-      const cover = res.data.album?.picUrl || res.data.album?.blurPicUrl;
-      const songs_with_album_pic = res.data.songs.map((song: any) => ({ ...song, al: { ...song.al, picUrl: cover } }));
-      useUserStore.getState().setAlbumList(songs_with_album_pic || []);
-      await setPageCache(cacheKey, { albumDetail: res.data, tracks: songs_with_album_pic || [] }, pageTtlMs());
-    }).catch((error) => {
-      if (ignore) return;
-      console.error("请求专辑失败:", error);
-      setIsError(true);
-      if (classifyNetworkError(error).retryable) toast.error(t("network.toast.unavailable"), { id: "network-unavailable" });
-      toast.error(t("album.toast.fetchFailed"));
-    }).finally(() => { if (!ignore) setIsLoading(false); });
+    getAlbumDetail(albumId)
+      .then(async (res: any) => {
+        if (ignore) return;
+        if (!res.data.album || !res.data.songs) {
+          setIsError(true);
+          return;
+        }
+        setAlbumDetail(res.data);
+        const cover = res.data.album?.picUrl || res.data.album?.blurPicUrl;
+        const songs_with_album_pic = res.data.songs.map((song: any) => ({
+          ...song,
+          al: { ...song.al, picUrl: cover },
+        }));
+        useUserStore.getState().setAlbumList(songs_with_album_pic || []);
+        await setPageCache(
+          cacheKey,
+          { albumDetail: res.data, tracks: songs_with_album_pic || [] },
+          pageTtlMs(),
+        );
+      })
+      .catch((error) => {
+        if (ignore) return;
+        console.error("请求专辑失败:", error);
+        setIsError(true);
+        if (classifyNetworkError(error).retryable)
+          toast.error(t("network.toast.unavailable"), { id: "network-unavailable" });
+        toast.error(t("album.toast.fetchFailed"));
+      })
+      .finally(() => {
+        if (!ignore) setIsLoading(false);
+      });
 
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
   }, [albumId, reloadKey, t]);
 
   const togglePlay = useCallback(() => {
     const state = usePlayerStore.getState();
     const songs = useUserStore.getState().albumList;
     if (!songs.length) return;
-    const isCurrentQueue = state.queue.length === songs.length && state.queue[0]?.id === songs[0]?.id;
+    const isCurrentQueue =
+      state.queue.length === songs.length && state.queue[0]?.id === songs[0]?.id;
     if (isCurrentQueue) state.setIsPlaying(!state.isPlaying);
-    else { state.setQueue(songs, 0); state.playQueueIndex(0); }
+    else {
+      state.setQueue(songs, 0);
+      state.playQueueIndex(0);
+    }
   }, []);
 
   const handleToggleAlbumSubscribe = useCallback(async () => {
@@ -138,17 +175,31 @@ export function useAlbumData() {
       setCollectedAlbumId(numericAlbumId, nextCollected);
       try {
         await subscribeAlbum(albumId, nextCollected);
-        toast.success(nextCollected ? t("album.toast.subscribeSuccess") : t("album.toast.unsubscribeSuccess"));
+        toast.success(
+          nextCollected ? t("album.toast.subscribeSuccess") : t("album.toast.unsubscribeSuccess"),
+        );
       } catch {
         setCollectedAlbumId(numericAlbumId, !nextCollected);
         toast.error(t("album.toast.subscribeFailed"));
-      } finally { setIsTogglingAlbumSubscribe(false); }
+      } finally {
+        setIsTogglingAlbumSubscribe(false);
+      }
     });
   }, [albumId, isAlbumCollected, requireLoginAction, setCollectedAlbumId, t]);
 
   return {
-    albumId, ALBUM_INFO, themeColor, isLoading, isError, reloadKey, setReloadKey,
-    isPlaying, isShuffle, isAlbumCollected, isTogglingAlbumSubscribe,
-    togglePlay, handleToggleAlbumSubscribe,
+    albumId,
+    ALBUM_INFO,
+    themeColor,
+    isLoading,
+    isError,
+    reloadKey,
+    setReloadKey,
+    isPlaying,
+    isShuffle,
+    isAlbumCollected,
+    isTogglingAlbumSubscribe,
+    togglePlay,
+    handleToggleAlbumSubscribe,
   };
 }

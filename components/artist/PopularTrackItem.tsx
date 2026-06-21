@@ -317,8 +317,8 @@ export const PopularTrackItem = memo(
             </ContextMenuItem>
 
             {/* View Artist */}
-            {track.ar.length > 0 && (
-              track.ar.length === 1 ? (
+            {track.ar.length > 0 &&
+              (track.ar.length === 1 ? (
                 <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
                   <Link href={`/artist?id=${track.ar[0].id}`} className="w-full h-full block">
                     <User className="w-4 h-4 mr-2" />
@@ -333,19 +333,19 @@ export const PopularTrackItem = memo(
                   </ContextMenuSubTrigger>
                   <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
                     {track.ar.map((artist) => (
-                      <ContextMenuItem key={artist.id} asChild className="focus:bg-white/10 focus:text-white">
-                        <Link
-                          href={`/artist?id=${artist.id}`}
-                          className="w-full h-full block"
-                        >
+                      <ContextMenuItem
+                        key={artist.id}
+                        asChild
+                        className="focus:bg-white/10 focus:text-white"
+                      >
+                        <Link href={`/artist?id=${artist.id}`} className="w-full h-full block">
                           {artist.name}
                         </Link>
                       </ContextMenuItem>
                     ))}
                   </ContextMenuSubContent>
                 </ContextMenuSub>
-              )
-            )}
+              ))}
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>

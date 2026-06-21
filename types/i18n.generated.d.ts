@@ -2081,9 +2081,9 @@ export interface TranslateFn {
    */
   (key: "comments.page.replyComment", params?: TranslationParams): string;
   /**
-   * zh-CN: 回复给: 
-   * zh-TW: 回覆給: 
-   * en-US: Replying to: 
+   * zh-CN: 回复给:
+   * zh-TW: 回覆給:
+   * en-US: Replying to:
    */
   (key: "comments.page.replyingTo", params?: TranslationParams): string;
   /**
@@ -2748,4 +2748,3 @@ export interface TranslateFn {
   (key: "tray.exit", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }
-

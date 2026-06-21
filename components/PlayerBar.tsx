@@ -72,7 +72,7 @@ function PlayerBarStatAction({
         <span
           className={cn(
             "text-[10px] font-medium leading-none tabular-nums whitespace-nowrap pointer-events-none",
-            "shadow-none drop-shadow-none [text-shadow:none]",
+            "shadow-none drop-shadow-none text-shadow-none",
             countClassName,
           )}
         >

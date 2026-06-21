@@ -22,17 +22,16 @@ function parseCommentTotal(
   return typeof total === "number" && total >= 0 ? total : undefined;
 }
 
-export function songNeedsStatsEnrichment(song: Pick<SongDetail, "id" | "likedCount" | "commentCount">) {
+export function songNeedsStatsEnrichment(
+  song: Pick<SongDetail, "id" | "likedCount" | "commentCount">,
+) {
   const cached = statsCache.get(song.id);
   const hasLiked = song.likedCount != null || cached?.likedCount != null;
   const hasComment = song.commentCount != null || cached?.commentCount != null;
   return !hasLiked || !hasComment;
 }
 
-export async function fetchSongStats(
-  songId: number,
-  existing?: SongStats,
-): Promise<SongStats> {
+export async function fetchSongStats(songId: number, existing?: SongStats): Promise<SongStats> {
   const cached = statsCache.get(songId);
   const needsLiked = existing?.likedCount == null && cached?.likedCount == null;
   const needsComment = existing?.commentCount == null && cached?.commentCount == null;
@@ -118,7 +117,8 @@ export function enrichSongsStats(
 
 /** 单首歌曲补全（播放时按需触发） */
 export async function enrichSongStatsById(songId: number, existing?: SongStats) {
-  if (!songNeedsStatsEnrichment({ id: songId, ...existing })) return existing ?? statsCache.get(songId);
+  if (!songNeedsStatsEnrichment({ id: songId, ...existing }))
+    return existing ?? statsCache.get(songId);
 
   const stats = await fetchSongStats(songId, existing);
   propagateSongStats(songId, stats);

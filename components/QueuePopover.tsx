@@ -101,7 +101,10 @@ const QueueItem = memo(
             </div>
             <div className="text-xs text-zinc-400 truncate mt-0.5">
               <ArtistInlineLinks
-                artists={song.ar.map((a: { id: number; name: string }) => ({ id: a.id, name: a.name }))}
+                artists={song.ar.map((a: { id: number; name: string }) => ({
+                  id: a.id,
+                  name: a.name,
+                }))}
               />
             </div>
           </div>

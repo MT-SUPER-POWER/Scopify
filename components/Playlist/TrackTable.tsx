@@ -603,8 +603,8 @@ export default function TracklistTable({
               </ContextMenuItem>
 
               {/* View Artist */}
-              {contextMenuTrack.ar.length > 0 && (
-                contextMenuTrack.ar.length === 1 ? (
+              {contextMenuTrack.ar.length > 0 &&
+                (contextMenuTrack.ar.length === 1 ? (
                   <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
                     <Link
                       href={`/artist?id=${contextMenuTrack.ar[0].id}`}
@@ -622,19 +622,19 @@ export default function TracklistTable({
                     </ContextMenuSubTrigger>
                     <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
                       {contextMenuTrack.ar.map((artist) => (
-                        <ContextMenuItem key={artist.id} asChild className="focus:bg-white/10 focus:text-white">
-                          <Link
-                            href={`/artist?id=${artist.id}`}
-                            className="w-full h-full block"
-                          >
+                        <ContextMenuItem
+                          key={artist.id}
+                          asChild
+                          className="focus:bg-white/10 focus:text-white"
+                        >
+                          <Link href={`/artist?id=${artist.id}`} className="w-full h-full block">
                             {artist.name}
                           </Link>
                         </ContextMenuItem>
                       ))}
                     </ContextMenuSubContent>
                   </ContextMenuSub>
-                )
-              )}
+                ))}
 
               <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
                 <button

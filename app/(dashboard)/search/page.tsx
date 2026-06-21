@@ -19,23 +19,39 @@ export default function SearchPage() {
   const { loading, songs, albums, playlists, artists } = useSearchData(keywords, activeCategory);
   const { loadingPlayId, handlePlayPlaylist, handlePlayAlbum } = usePlayActions();
 
-  const isGridCategory = (["Albums", "Playlists", "Artists"] as Category[]).includes(activeCategory);
+  const isGridCategory = (["Albums", "Playlists", "Artists"] as Category[]).includes(
+    activeCategory,
+  );
 
   return (
     <div className="w-full min-h-screen bg-[#121212] text-white p-6 overflow-y-auto pt-22">
       <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
       {loading && <LoadingSkeleton />}
       {!loading && activeCategory === "All" && (
-        <AllView songs={songs} albums={albums} playlists={playlists} artists={artists}
-          loadingPlayId={loadingPlayId} onPlayAlbum={handlePlayAlbum}
-          onPlayPlaylist={handlePlayPlaylist} onSeeAll={setActiveCategory} onNavigate={router.push} />
+        <AllView
+          songs={songs}
+          albums={albums}
+          playlists={playlists}
+          artists={artists}
+          loadingPlayId={loadingPlayId}
+          onPlayAlbum={handlePlayAlbum}
+          onPlayPlaylist={handlePlayPlaylist}
+          onSeeAll={setActiveCategory}
+          onNavigate={router.push}
+        />
       )}
       {!loading && activeCategory === "Songs" && <SongsView songs={songs} />}
       {!loading && isGridCategory && (
-        <GridCategoryView activeCategory={activeCategory as "Albums" | "Playlists" | "Artists"}
-          albums={albums} playlists={playlists} artists={artists}
-          loadingPlayId={loadingPlayId} onPlayAlbum={handlePlayAlbum}
-          onPlayPlaylist={handlePlayPlaylist} onNavigate={router.push} />
+        <GridCategoryView
+          activeCategory={activeCategory as "Albums" | "Playlists" | "Artists"}
+          albums={albums}
+          playlists={playlists}
+          artists={artists}
+          loadingPlayId={loadingPlayId}
+          onPlayAlbum={handlePlayAlbum}
+          onPlayPlaylist={handlePlayPlaylist}
+          onNavigate={router.push}
+        />
       )}
     </div>
   );

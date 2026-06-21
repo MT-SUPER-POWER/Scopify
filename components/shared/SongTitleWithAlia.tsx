@@ -7,7 +7,12 @@ interface SongTitleWithAliaProps {
   aliaClassName?: string;
 }
 
-export function SongTitleWithAlia({ name, alia, className, aliaClassName }: SongTitleWithAliaProps) {
+export function SongTitleWithAlia({
+  name,
+  alia,
+  className,
+  aliaClassName,
+}: SongTitleWithAliaProps) {
   const aliaText = alia?.filter(Boolean).join(" ") ?? "";
 
   return (
