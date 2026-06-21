@@ -66,13 +66,12 @@ function PlayerBarStatAction({
   children: React.ReactNode;
 }) {
   const body = (
-    <div className="relative inline-flex shrink-0 transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
+    <div className="inline-flex shrink-0 items-center gap-1 transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
       {children}
       {count != null && count > 0 ? (
         <span
           className={cn(
-            "absolute top-[-2px] left-[11px] lg:left-[13px]",
-            "text-[10px] font-semibold leading-none tabular-nums whitespace-nowrap pointer-events-none",
+            "text-[10px] font-medium leading-none tabular-nums whitespace-nowrap pointer-events-none",
             "shadow-none drop-shadow-none [text-shadow:none]",
             countClassName,
           )}
