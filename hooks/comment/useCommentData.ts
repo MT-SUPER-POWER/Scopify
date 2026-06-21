@@ -12,7 +12,7 @@ import { getSongDetail } from "@/lib/api/track";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
 import type { NeteaseComment, SongComment, SongDetail } from "@/types/api/music";
-import type { PlaylistInfo } from "@/types/playlist";
+import type { CommentHeaderArtist } from "@/types/components/comment";
 
 const LIMIT = 20;
 const FALLBACK_COVER =
@@ -189,35 +189,30 @@ export function useCommentData() {
     [fetchComments, isLogin, replyTarget, songId, t],
   );
 
-  const commentHeaderInfo = useMemo<PlaylistInfo>(() => {
-    const artists = songInfo?.ar
-      ?.map((artist) => artist.name)
-      .filter(Boolean)
-      .join(" / ");
-    const primaryArtist = songInfo?.ar?.[0];
+  const commentHeaderInfo = useMemo(() => {
     const albumName = songInfo?.al?.name;
+    const artists: CommentHeaderArtist[] = (songInfo?.ar || []).map((artist) => {
+      const avatarCandidate = artist as typeof artist & {
+        picUrl?: string;
+        img1v1Url?: string;
+        avatarUrl?: string;
+      };
+
+      return {
+        id: artist.id,
+        name: artist.name,
+        avatarUrl:
+          avatarCandidate.picUrl || avatarCandidate.img1v1Url || avatarCandidate.avatarUrl || "",
+      };
+    });
 
     return {
-      isSpecial: false,
-      privacy: t("comments.page.trackTag"),
-      tags: albumName ? [albumName] : [],
       title: songInfo?.name || t("comments.page.loadingTrack"),
-      cover: albumCover,
-      createTime: albumName || "",
-      creator: artists || t("common.meta.unknownUser"),
-      creatorID: primaryArtist?.id ?? null,
-      creatorHref: primaryArtist?.id ? `/artist?id=${primaryArtist.id}` : undefined,
-      creatorAvatar: "",
-      likes: total,
-      totalSongs: 1,
-      createTimeLabel: albumName ? `${t("common.label.album")}: ${albumName}` : "",
-      likesLabel:
-        total > 0
-          ? `${t("comments.page.allComments")}: ${total.toLocaleString()}`
-          : t("comments.page.allComments"),
-      totalSongsLabel: t("comments.page.trackTag"),
+      albumName,
+      artists,
+      total,
     };
-  }, [albumCover, songInfo, t, total]);
+  }, [songInfo, t, total]);
 
   return {
     songId,

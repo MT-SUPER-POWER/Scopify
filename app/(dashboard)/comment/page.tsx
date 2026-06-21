@@ -2,9 +2,9 @@
 
 import { Loader2, MessageCircle, X } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { CommentHeader } from "@/components/Comment/CommentHeader";
 import { CommentInputBox } from "@/components/Comment/CommentInputBox";
 import { CommentItem } from "@/components/Comment/CommentItem";
-import PlaylistHeader from "@/components/Playlist/Header";
 import { useCommentData } from "@/hooks/comment/useCommentData";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -91,7 +91,14 @@ export default function CommentPage() {
         }}
       />
 
-      <PlaylistHeader info={commentHeaderInfo} isDaily={false} />
+      <CommentHeader
+        coverUrl={albumCover}
+        title={commentHeaderInfo.title}
+        albumName={commentHeaderInfo.albumName}
+        artists={commentHeaderInfo.artists}
+        total={commentHeaderInfo.total}
+        onArtistClick={(artistId) => smartRouter.push(`/artist?id=${artistId}`)}
+      />
 
       <div className="relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] to-[#121212] via-20%">
         <div className="max-w-4xl w-full mx-auto px-6 py-6">
