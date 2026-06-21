@@ -228,9 +228,10 @@ export function getFollowedArtists(limit = 20, offset = 0) {
 - `app/(dashboard)/playlist/page.tsx` ✅ 直接组装 PlaylistHeader、PlaylistActions、TracklistTable
 - `app/(dashboard)/profile/page.tsx` ✅ 直接组装 UserHero、UserActionBar、PublicPlaylistGrid（含 EditUserProfileDialog）
 - `app/(dashboard)/search/page.tsx` ✅ 直接组装 CategoryTabs、AllView、SongsView、GridCategoryView
+- `app/(dashboard)/page.tsx` ✅ 直接组装 CollapsibleSection、GridCard，使用 useHomeData hook
 - `app/(dashboard)/album/page.tsx` ✅ 使用 useAlbumData hook，组装 AlbumHeader、AlbumActions、TracklistTable
 - `app/(dashboard)/comment/page.tsx` ✅ 使用 useCommentData hook，组装 CommentItem
-- 其余路由（me、setting、login、home）数据逻辑待提取 hooks，page 仍为转发模式
+- 其余路由（me、setting、login）数据逻辑待提取 hooks，page 仍为转发模式
 
 - `lib/api/*.ts` 类型 → `types/api/`（artist、music、comment）
 - `types/artist.ts` 内 `formatNumber`/`formatDuration` → `lib/utils.ts`
