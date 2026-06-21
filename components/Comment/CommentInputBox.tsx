@@ -7,19 +7,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import emojiData from "@/resources/emoji.json";
 import { useI18n } from "@/store/module/i18n";
-import type { NeteaseComment } from "@/types/api/music";
+import type { CommentInputBoxProps } from "@/types/components/comment";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export function CommentInputBox({
-  replyTarget,
-  onCancelReply,
-  onSubmit,
-}: {
-  replyTarget: NeteaseComment | null;
-  onCancelReply: () => void;
-  onSubmit: (text: string) => Promise<boolean>;
-}) {
+export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: CommentInputBoxProps) {
   const { t } = useI18n();
   const [inputText, setInputText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

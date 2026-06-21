@@ -5,7 +5,6 @@ import React from "react";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import type { PlaylistInfo } from "@/types/playlist";
 
-// 日历封面直接内聚在用到它的地方即可
 const DailyCalendarCover = () => {
   const today = new Date();
   const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
@@ -38,14 +37,20 @@ interface PlaylistHeaderProps {
 }
 
 const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
-  // DEBUG: Playlist Header
-  // console.log("PlaylistHeader received props:", { info, isDaily });
-
   const smartRouter = useSmartRouter();
+
+  const handleCreatorClick = () => {
+    if (info.creatorHref) {
+      smartRouter.push(info.creatorHref);
+      return;
+    }
+    if (info.creatorID !== null) {
+      smartRouter.push(`/profile?userId=${info.creatorID}`);
+    }
+  };
 
   return (
     <div className="relative z-10 flex flex-col md:flex-row items-start gap-6 px-6 pt-24 pb-6">
-      {/* 封面区 */}
       <div className="w-48 h-48 lg:w-56 lg:h-56 shrink-0 transition-transform duration-300 hover:scale-[1.02] shadow-[0_8px_40px_rgba(0,0,0,0.5)] rounded-md overflow-hidden bg-black/20">
         {isDaily || !info.cover ? (
           <DailyCalendarCover />
@@ -60,18 +65,17 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         )}
       </div>
 
-      {/* 信息区 */}
       <div className="flex flex-col flex-1 min-w-0 text-white pt-1 md:pt-2">
         <div className="flex flex-row gap-2 flex-wrap items-center mb-3 md:mb-4">
           <span className="text-sm drop-shadow-md uppercase tracking-wider bg-white/10 px-3 py-1 rounded-sm">
             {info.privacy}
           </span>
-          {info.tags?.map((t, idx) => (
+          {info.tags?.map((tag) => (
             <span
-              key={idx}
+              key={tag}
               className="text-[12px] font-medium drop-shadow-md px-3 py-1 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
             >
-              {t}
+              {tag}
             </span>
           ))}
         </div>
@@ -97,35 +101,29 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
                   />
                 ) : (
                   <div className="w-7 h-7 rounded-full bg-zinc-600 flex items-center justify-center text-xs font-bold">
-                    {" "}
-                    M{" "}
+                    M
                   </div>
                 )}
                 <span className="font-bold group-hover:underline text-[15px]">
-                  <button
-                    onClick={() => {
-                      if (info.creatorID !== null) {
-                        smartRouter.push(`/profile?userId=${info.creatorID}`);
-                      }
-                    }}
-                  >
+                  <button type="button" onClick={handleCreatorClick}>
                     {info.creator}
                   </button>
                 </span>
               </div>
               <span className="opacity-60 hidden sm:inline">•</span>
-              <span>{info.createTime} 创建</span>
+              <span>{info.createTimeLabel ?? `${info.createTime} 创建`}</span>
               <span className="opacity-60">•</span>
-              <span>{info.likes.toLocaleString()} 次收藏</span>
+              <span>{info.likesLabel ?? `${info.likes.toLocaleString()} 次收藏`}</span>
               <span className="opacity-60">•</span>
             </>
           )}
-          <span className="font-medium text-white">共 {info.totalSongs} 首歌</span>
+          <span className="font-medium text-white">
+            {info.totalSongsLabel ?? `共 ${info.totalSongs} 首歌`}
+          </span>
         </div>
       </div>
     </div>
   );
 };
 
-// 使用 React.memo 包裹，只有当 info 引用发生变化时才重绘
 export default React.memo(PlaylistHeader);

@@ -5,11 +5,17 @@ import { cn } from "@/lib/utils";
 
 interface LikeButtonProps {
   liked: boolean;
+  likedCount?: number;
   onLike: () => void;
   iconClassName?: string;
 }
 
-export const LikeButton: React.FC<LikeButtonProps> = ({ liked, onLike, iconClassName }) => (
+export const LikeButton: React.FC<LikeButtonProps> = ({
+  liked,
+  likedCount,
+  onLike,
+  iconClassName,
+}) => (
   <motion.button
     onClick={onLike}
     className={cn(
@@ -48,5 +54,8 @@ export const LikeButton: React.FC<LikeButtonProps> = ({ liked, onLike, iconClass
           />
         ))}
     </div>
+    {typeof likedCount === "number" && likedCount > 0 && (
+      <span className="text-xs tabular-nums">{likedCount.toLocaleString()}</span>
+    )}
   </motion.button>
 );

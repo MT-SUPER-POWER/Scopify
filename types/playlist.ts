@@ -10,4 +10,8 @@ export interface PlaylistInfo {
   creatorAvatar: string;
   likes: number | string;
   totalSongs: number;
+  creatorHref?: string;
+  createTimeLabel?: string;
+  likesLabel?: string;
+  totalSongsLabel?: string;
 }
