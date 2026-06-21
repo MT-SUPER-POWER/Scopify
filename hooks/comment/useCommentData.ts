@@ -1,6 +1,7 @@
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { getAritstDetail } from "@/lib/api/artist";
 import {
   addMusicComments,
   delComments,
@@ -17,6 +18,26 @@ import type { CommentHeaderArtist } from "@/types/components/comment";
 const LIMIT = 20;
 const FALLBACK_COVER =
   "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000&auto=format&fit=crop";
+const artistAvatarCache = new Map<string, string>();
+
+type ArtistAvatarSource = {
+  avatar?: string;
+  avatarUrl?: string;
+  cover?: string;
+  img1v1Url?: string;
+  picUrl?: string;
+};
+
+function getArtistAvatar(source: ArtistAvatarSource | undefined) {
+  return (
+    source?.avatar ||
+    source?.avatarUrl ||
+    source?.img1v1Url ||
+    source?.picUrl ||
+    source?.cover ||
+    ""
+  );
+}
 
 export function useCommentData() {
   const { t } = useI18n();
@@ -30,6 +51,7 @@ export function useCommentData() {
   const [hotComments, setHotComments] = useState<NeteaseComment[]>([]);
   const [comments, setComments] = useState<NeteaseComment[]>([]);
   const [total, setTotal] = useState(0);
+  const [artistAvatars, setArtistAvatars] = useState<Record<string, string>>({});
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +115,61 @@ export function useCommentData() {
       })
       .finally(() => setIsLoading(false));
   }, [songId, t, updateCommentPage]);
+
+  useEffect(() => {
+    const artists = songInfo?.ar || [];
+    if (artists.length === 0) {
+      setArtistAvatars({});
+      return;
+    }
+
+    let ignore = false;
+    const nextAvatars: Record<string, string> = {};
+    const missingArtistIds: Array<number | string> = [];
+
+    for (const artist of artists) {
+      const artistId = String(artist.id);
+      const existingAvatar = getArtistAvatar(artist as ArtistAvatarSource);
+      const cachedAvatar = artistAvatarCache.get(artistId);
+
+      if (existingAvatar) {
+        artistAvatarCache.set(artistId, existingAvatar);
+        nextAvatars[artistId] = existingAvatar;
+      } else if (cachedAvatar) {
+        nextAvatars[artistId] = cachedAvatar;
+      } else {
+        missingArtistIds.push(artist.id);
+      }
+    }
+
+    setArtistAvatars(nextAvatars);
+    if (missingArtistIds.length === 0) return;
+
+    Promise.allSettled(
+      missingArtistIds.map(async (artistId) => {
+        const res = await getAritstDetail(artistId);
+        const avatar = getArtistAvatar(res?.data?.data?.artist as ArtistAvatarSource | undefined);
+        return { artistId: String(artistId), avatar };
+      }),
+    ).then((results) => {
+      if (ignore) return;
+
+      const fetchedAvatars: Record<string, string> = {};
+      for (const result of results) {
+        if (result.status !== "fulfilled" || !result.value.avatar) continue;
+        artistAvatarCache.set(result.value.artistId, result.value.avatar);
+        fetchedAvatars[result.value.artistId] = result.value.avatar;
+      }
+
+      if (Object.keys(fetchedAvatars).length > 0) {
+        setArtistAvatars((prev) => ({ ...prev, ...fetchedAvatars }));
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, [songInfo]);
 
   const loadMore = useCallback(async () => {
     if (!songId || !hasMore || isLoading) return;
@@ -201,8 +278,7 @@ export function useCommentData() {
       return {
         id: artist.id,
         name: artist.name,
-        avatarUrl:
-          avatarCandidate.picUrl || avatarCandidate.img1v1Url || avatarCandidate.avatarUrl || "",
+        avatarUrl: getArtistAvatar(avatarCandidate) || artistAvatars[String(artist.id)] || "",
       };
     });
 
@@ -212,7 +288,7 @@ export function useCommentData() {
       artists,
       total,
     };
-  }, [songInfo, t, total]);
+  }, [artistAvatars, songInfo, t, total]);
 
   return {
     songId,
