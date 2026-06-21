@@ -299,6 +299,18 @@ export interface TranslateFn {
    */
   (key: "common.message.playbackLoadFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 当前歌曲播放失败，已为你切到下一首
+   * zh-TW: 目前歌曲播放失敗，已為你切到下一首
+   * en-US: This song failed to play, so Scopify skipped to the next one
+   */
+  (key: "common.message.playbackAutoSkipped", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连续多首歌曲播放失败，可能是网络或播放源异常，请稍后重试
+   * zh-TW: 連續多首歌曲播放失敗，可能是網路或播放源異常，請稍後再試
+   * en-US: Several songs failed to play. The network or playback source may be unavailable.
+   */
+  (key: "common.message.playbackConsecutiveFailed", params?: TranslationParams): string;
+  /**
    * zh-CN: 链接已复制到剪贴板
    * zh-TW: 連結已複製到剪貼簿
    * en-US: Link copied to clipboard
@@ -335,16 +347,23 @@ export interface TranslateFn {
    */
   (key: "settings.section.network", params?: TranslationParams): string;
   /**
-   * zh-CN: 后端服务
-   * zh-TW: 後端服務
-   * en-US: Backend Service
-   */
-  /**
    * zh-CN: 前端服务
    * zh-TW: 前端服務
    * en-US: Frontend Service
    */
   (key: "settings.section.frontend", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存
+   * zh-TW: 快取
+   * en-US: Cache
+   */
+  (key: "settings.section.cache", params?: TranslationParams): string;
+  /**
+   * zh-CN: 客户端更新
+   * zh-TW: 客戶端更新
+   * en-US: Client Updates
+   */
+  (key: "settings.section.updater", params?: TranslationParams): string;
   /**
    * zh-CN: 界面语言
    * zh-TW: 介面語言
@@ -556,21 +575,6 @@ export interface TranslateFn {
    */
   (key: "settings.proxyUrl.required", params?: TranslationParams): string;
   /**
-   * zh-CN: 自动启动后端
-   * zh-TW: 自動啟動後端
-   * en-US: Auto Start Backend
-   */
-  /**
-   * zh-CN: 后端主机
-   * zh-TW: 後端主機
-   * en-US: Backend Host
-   */
-  /**
-   * zh-CN: 后端端口
-   * zh-TW: 後端連接埠
-   * en-US: Backend Port
-   */
-  /**
    * zh-CN: 前端主机
    * zh-TW: 前端主機
    * en-US: Frontend Host
@@ -582,6 +586,66 @@ export interface TranslateFn {
    * en-US: Development Port
    */
   (key: "settings.frontendPort.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端服务
+   * zh-TW: 後端服務
+   * en-US: Backend Service
+   */
+  (key: "settings.section.backend", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端主机
+   * zh-TW: 後端主機
+   * en-US: Backend Host
+   */
+  (key: "settings.backendHost.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端 API 所在的主机地址。修改后保存即生效，无需重启应用。
+   * zh-TW: 後端 API 所在的主機位址。修改後儲存即生效，無需重啟應用。
+   * en-US: Host where the backend API runs. Changes take effect immediately after saving, no restart required.
+   */
+  (key: "settings.backendHost.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 例如 127.0.0.1 或 192.168.1.10
+   * zh-TW: 例如 127.0.0.1 或 192.168.1.10
+   * en-US: e.g. 127.0.0.1 or 192.168.1.10
+   */
+  (key: "settings.backendHost.placeholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端主机不能为空
+   * zh-TW: 後端主機不能為空
+   * en-US: Backend host cannot be empty
+   */
+  (key: "settings.backendHost.required", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端端口
+   * zh-TW: 後端埠
+   * en-US: Backend Port
+   */
+  (key: "settings.backendPort.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端 API 监听的端口。修改后保存即生效，无需重启应用。
+   * zh-TW: 後端 API 監聽的埠。修改後儲存即生效，無需重啟應用。
+   * en-US: Port on which the backend API listens. Changes take effect immediately after saving, no restart required.
+   */
+  (key: "settings.backendPort.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端端口必须为 1-65535 之间的整数
+   * zh-TW: 後端埠必須為 1-65535 之間的整數
+   * en-US: Backend port must be an integer between 1 and 65535
+   */
+  (key: "settings.backendPort.invalid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端地址无效：{{message}}
+   * zh-TW: 後端位址無效：{{message}}
+   * en-US: Invalid backend URL: {{message}}
+   */
+  (key: "settings.backendInvalid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端服务无法访问（地址 {{url}}），请确认后端已启动或修改为主机和端口后再试
+   * zh-TW: 後端服務無法存取（位址 {{url}}），請確認後端已啟動或修改為主機與埠後再試
+   * en-US: Backend service is unreachable at {{url}}. Make sure the backend is running or update the host and port.
+   */
+  (key: "settings.backendUnreachable", params?: TranslationParams): string;
   /**
    * zh-CN: 正在加载设置...
    * zh-TW: 正在載入設定...
@@ -654,6 +718,162 @@ export interface TranslateFn {
    * en-US: Failed to save settings
    */
   (key: "settings.saveFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新状态
+   * zh-TW: 更新狀態
+   * en-US: Update Status
+   */
+  (key: "settings.updater.status", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检查 GitHub Release 中的最新客户端版本。
+   * zh-TW: 檢查 GitHub Release 中的最新客戶端版本。
+   * en-US: Check GitHub Releases for the latest client version.
+   */
+  (key: "settings.updater.statusHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 版本 {{version}}
+   * zh-TW: 版本 {{version}}
+   * en-US: Version {{version}}
+   */
+  (key: "settings.updater.version", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新消息
+   * zh-TW: 更新訊息
+   * en-US: Update Message
+   */
+  (key: "settings.updater.message", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新操作
+   * zh-TW: 更新操作
+   * en-US: Update Action
+   */
+  (key: "settings.updater.action", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检查更新
+   * zh-TW: 檢查更新
+   * en-US: Check for Updates
+   */
+  (key: "settings.updater.check", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检查中...
+   * zh-TW: 檢查中...
+   * en-US: Checking...
+   */
+  (key: "settings.updater.checking", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下载更新
+   * zh-TW: 下載更新
+   * en-US: Download Update
+   */
+  (key: "settings.updater.download", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启安装
+   * zh-TW: 重啟安裝
+   * en-US: Restart and Install
+   */
+  (key: "settings.updater.install", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用页面缓存
+   * zh-TW: 啟用頁面快取
+   * en-US: Enable Page Cache
+   */
+  (key: "settings.cache.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存歌单、专辑、歌手和搜索页面，加快再次打开速度。
+   * zh-TW: 快取歌單、專輯、歌手和搜尋頁面，加快再次開啟速度。
+   * en-US: Cache playlist, album, artist, and search pages so they reopen faster.
+   */
+  (key: "settings.cache.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存目录
+   * zh-TW: 快取目錄
+   * en-US: Cache Directory
+   */
+  (key: "settings.cache.dir.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 留空时使用系统默认应用数据目录。
+   * zh-TW: 留空時使用系統預設應用資料目錄。
+   * en-US: Leave empty to use the default app data directory.
+   */
+  (key: "settings.cache.dir.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认缓存目录
+   * zh-TW: 預設快取目錄
+   * en-US: Default cache directory
+   */
+  (key: "settings.cache.dir.placeholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最大缓存 (MB)
+   * zh-TW: 最大快取 (MB)
+   * en-US: Max Cache (MB)
+   */
+  (key: "settings.cache.maxSize.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 超过上限时会优先清理较旧的缓存文件。
+   * zh-TW: 超過上限時會優先清理較舊的快取檔案。
+   * en-US: Older cache files are removed first when the limit is reached.
+   */
+  (key: "settings.cache.maxSize.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 页面缓存时间 (分钟)
+   * zh-TW: 頁面快取時間 (分鐘)
+   * en-US: Page Cache Time (minutes)
+   */
+  (key: "settings.cache.pageTtl.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单、专辑和歌手页面的缓存有效期。
+   * zh-TW: 歌單、專輯和歌手頁面的快取有效期。
+   * en-US: Validity for playlist, album, and artist page cache.
+   */
+  (key: "settings.cache.pageTtl.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索缓存时间 (分钟)
+   * zh-TW: 搜尋快取時間 (分鐘)
+   * en-US: Search Cache Time (minutes)
+   */
+  (key: "settings.cache.searchTtl.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索结果变化更快，因此建议保持较短。
+   * zh-TW: 搜尋結果變化更快，因此建議保持較短。
+   * en-US: Search changes faster, so a shorter cache time is recommended.
+   */
+  (key: "settings.cache.searchTtl.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清理缓存
+   * zh-TW: 清理快取
+   * en-US: Clear Cache
+   */
+  (key: "settings.cache.clear.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除已保存的页面和歌曲缓存。
+   * zh-TW: 刪除已儲存的頁面和歌曲快取。
+   * en-US: Delete saved page and song cache.
+   */
+  (key: "settings.cache.clear.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清理
+   * zh-TW: 清理
+   * en-US: Clear
+   */
+  (key: "settings.cache.clear.button", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清理中...
+   * zh-TW: 清理中...
+   * en-US: Clearing...
+   */
+  (key: "settings.cache.clear.clearing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存已清理
+   * zh-TW: 快取已清理
+   * en-US: Cache cleared
+   */
+  (key: "settings.cache.clearSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清理缓存失败
+   * zh-TW: 清理快取失敗
+   * en-US: Failed to clear cache
+   */
+  (key: "settings.cache.clearFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 关闭 Scopify
    * zh-TW: 關閉 Scopify
@@ -786,6 +1006,12 @@ export interface TranslateFn {
    * en-US: Recommend less
    */
   (key: "contextMenu.recommendLess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看歌手
+   * zh-TW: 查看歌手
+   * en-US: View Artist
+   */
+  (key: "contextMenu.goToArtist", params?: TranslationParams): string;
   /**
    * zh-CN: 查看
    * zh-TW: 查看
@@ -1009,6 +1235,96 @@ export interface TranslateFn {
    */
   (key: "login.qr.toast.success", params?: TranslationParams): string;
   /**
+   * zh-CN: 请先登录后使用该功能
+   * zh-TW: 請先登入後使用此功能
+   * en-US: Please log in to use this feature
+   */
+  (key: "login.required.toast", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后收藏专辑
+   * zh-TW: 登入後收藏專輯
+   * en-US: Log in to save albums
+   */
+  (key: "login.required.albumSubscribe.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏后可以在你的音乐库中继续收听。
+   * zh-TW: 收藏後可以在你的音樂庫中繼續收聽。
+   * en-US: Saved albums stay available in your library.
+   */
+  (key: "login.required.albumSubscribe.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后编辑歌单
+   * zh-TW: 登入後編輯歌單
+   * en-US: Log in to edit playlists
+   */
+  (key: "login.required.playlistEdit.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单信息会同步到你的网易云音乐账号。
+   * zh-TW: 歌單資訊會同步到你的網易雲音樂帳號。
+   * en-US: Playlist changes sync to your NetEase Cloud Music account.
+   */
+  (key: "login.required.playlistEdit.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后编辑个人信息
+   * zh-TW: 登入後編輯個人資訊
+   * en-US: Log in to edit your profile
+   */
+  (key: "login.required.profileEdit.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后即可更新头像、昵称和签名。
+   * zh-TW: 登入後即可更新頭像、暱稱和簽名。
+   * en-US: Update your avatar, nickname, and signature after logging in.
+   */
+  (key: "login.required.profileEdit.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后参与评论
+   * zh-TW: 登入後參與評論
+   * en-US: Log in to join comments
+   */
+  (key: "login.required.comment.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后可以发布、回复和点赞评论。
+   * zh-TW: 登入後可以發布、回覆和按讚評論。
+   * en-US: Post, reply, and like comments after logging in.
+   */
+  (key: "login.required.comment.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后添加到歌单
+   * zh-TW: 登入後加入歌單
+   * en-US: Log in to add to playlists
+   */
+  (key: "login.required.addToPlaylist.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择你的歌单并保存这首歌。
+   * zh-TW: 選擇你的歌單並儲存這首歌。
+   * en-US: Choose one of your playlists and save this song.
+   */
+  (key: "login.required.addToPlaylist.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后访问音乐库
+   * zh-TW: 登入後存取音樂庫
+   * en-US: Log in to access your library
+   */
+  (key: "login.required.library.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后可以查看收藏、歌单和最近播放。
+   * zh-TW: 登入後可以查看收藏、歌單和最近播放。
+   * en-US: View saved music, playlists, and recent plays after logging in.
+   */
+  (key: "login.required.library.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后查看关注歌手
+   * zh-TW: 登入後查看關注歌手
+   * en-US: Log in to view followed artists
+   */
+  (key: "login.required.followedArtists.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后会展示你关注的歌手动态。
+   * zh-TW: 登入後會展示你關注的歌手動態。
+   * en-US: Your followed artists appear here after logging in.
+   */
+  (key: "login.required.followedArtists.subtitle", params?: TranslationParams): string;
+  /**
    * zh-CN: 筛选
    * zh-TW: 篩選
    * en-US: Filter
@@ -1038,6 +1354,12 @@ export interface TranslateFn {
    * en-US: Subscribed
    */
   (key: "sidebar.filter.subscribed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌手
+   * zh-TW: 歌手
+   * en-US: Artists
+   */
+  (key: "sidebar.filter.artists", params?: TranslationParams): string;
   /**
    * zh-CN: 创建歌单
    * zh-TW: 建立歌單
@@ -1093,6 +1415,30 @@ export interface TranslateFn {
    */
   (key: "sidebar.group.subscribed", params?: TranslationParams): string;
   /**
+   * zh-CN: 关注的歌手
+   * zh-TW: 關注的歌手
+   * en-US: Followed Artists
+   */
+  (key: "sidebar.artist.followed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载关注歌手失败
+   * zh-TW: 載入關注歌手失敗
+   * en-US: Failed to load followed artists
+   */
+  (key: "sidebar.artist.fetchFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 你还没有关注任何歌手
+   * zh-TW: 你還沒有關注任何歌手
+   * en-US: You haven't followed any artists yet
+   */
+  (key: "sidebar.artist.emptyTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在歌手页关注歌手后，这里就会显示。
+   * zh-TW: 在歌手頁關注歌手後，這裡就會顯示。
+   * en-US: Follow artists on their profile pages to see them here.
+   */
+  (key: "sidebar.artist.emptySubtitle", params?: TranslationParams): string;
+  /**
    * zh-CN: 歌单 · 你
    * zh-TW: 歌單 · 你
    * en-US: Playlist • You
@@ -1116,6 +1462,12 @@ export interface TranslateFn {
    * en-US: Failed to load playlists. Please try again later.
    */
   (key: "sidebar.toast.fetchFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端服务尚未就绪，正在尝试继续加载…
+   * zh-TW: 後端服務尚未就緒，正在嘗試繼續載入…
+   * en-US: The backend is not ready yet. Continuing to load in the background…
+   */
+  (key: "sidebar.toast.backendNotReady", params?: TranslationParams): string;
   /**
    * zh-CN: 侧边栏
    * zh-TW: 側邊欄
@@ -1266,6 +1618,18 @@ export interface TranslateFn {
    * en-US: Playlist Cover
    */
   (key: "playlist.form.coverAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单标签
+   * zh-TW: 歌單標籤
+   * en-US: Playlist tags
+   */
+  (key: "playlist.form.tagsLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新加载标签
+   * zh-TW: 重新載入標籤
+   * en-US: Reload tags
+   */
+  (key: "playlist.form.tagsRetry", params?: TranslationParams): string;
   /**
    * zh-CN: 确认删除
    * zh-TW: 確認刪除
@@ -1717,9 +2081,9 @@ export interface TranslateFn {
    */
   (key: "comments.page.replyComment", params?: TranslationParams): string;
   /**
-   * zh-CN: 回复给:
-   * zh-TW: 回覆給:
-   * en-US: Replying to:
+   * zh-CN: 回复给: 
+   * zh-TW: 回覆給: 
+   * en-US: Replying to: 
    */
   (key: "comments.page.replyingTo", params?: TranslationParams): string;
   /**
@@ -1891,11 +2255,95 @@ export interface TranslateFn {
    */
   (key: "profile.toast.loadUserPlaylistsFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 个人信息已更新
+   * zh-TW: 個人資訊已更新
+   * en-US: Profile updated
+   */
+  (key: "profile.toast.updateSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新个人信息失败
+   * zh-TW: 更新個人資訊失敗
+   * en-US: Failed to update profile
+   */
+  (key: "profile.toast.updateFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑个人信息
+   * zh-TW: 編輯個人資訊
+   * en-US: Edit Profile
+   */
+  (key: "profile.edit.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 昵称
+   * zh-TW: 暱稱
+   * en-US: Nickname
+   */
+  (key: "profile.edit.nickname", params?: TranslationParams): string;
+  /**
+   * zh-CN: 签名
+   * zh-TW: 簽名
+   * en-US: Signature
+   */
+  (key: "profile.edit.signature", params?: TranslationParams): string;
+  /**
+   * zh-CN: 性别
+   * zh-TW: 性別
+   * en-US: Gender
+   */
+  (key: "profile.edit.gender", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保密
+   * zh-TW: 保密
+   * en-US: Private
+   */
+  (key: "profile.edit.genderPrivate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 男
+   * zh-TW: 男
+   * en-US: Male
+   */
+  (key: "profile.edit.genderMale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 女
+   * zh-TW: 女
+   * en-US: Female
+   */
+  (key: "profile.edit.genderFemale", params?: TranslationParams): string;
+  /**
    * zh-CN: 获取专辑详情失败
    * zh-TW: 取得專輯詳情失敗
    * en-US: Failed to load album details
    */
   (key: "album.toast.fetchFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已收藏专辑
+   * zh-TW: 已收藏專輯
+   * en-US: Album saved
+   */
+  (key: "album.toast.subscribeSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消收藏专辑
+   * zh-TW: 已取消收藏專輯
+   * en-US: Album removed from saved albums
+   */
+  (key: "album.toast.unsubscribeSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑收藏操作失败
+   * zh-TW: 專輯收藏操作失敗
+   * en-US: Failed to update album collection
+   */
+  (key: "album.toast.subscribeFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏专辑
+   * zh-TW: 收藏專輯
+   * en-US: Save album
+   */
+  (key: "album.action.subscribe", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏专辑
+   * zh-TW: 取消收藏專輯
+   * en-US: Unsave album
+   */
+  (key: "album.action.unsubscribe", params?: TranslationParams): string;
   /**
    * zh-CN: 未知专辑 ID
    * zh-TW: 未知專輯 ID
@@ -2028,6 +2476,12 @@ export interface TranslateFn {
    * en-US: Following
    */
   (key: "artist.action.following", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消关注
+   * zh-TW: 取消關注
+   * en-US: Unfollow
+   */
+  (key: "artist.action.unfollow", params?: TranslationParams): string;
   /**
    * zh-CN: 加载歌手数据失败
    * zh-TW: 載入歌手資料失敗
@@ -2203,6 +2657,36 @@ export interface TranslateFn {
    */
   (key: "home.toast.loadFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 当前网络异常
+   * zh-TW: 目前網路異常
+   * en-US: Network unavailable
+   */
+  (key: "network.offline.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请检查网络连接后刷新页面。
+   * zh-TW: 請檢查網路連線後重新整理頁面。
+   * en-US: Check your connection and refresh the page.
+   */
+  (key: "network.offline.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新
+   * zh-TW: 重新整理
+   * en-US: Refresh
+   */
+  (key: "network.action.refresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网络诊断
+   * zh-TW: 網路診斷
+   * en-US: Network diagnostics
+   */
+  (key: "network.action.diagnose", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前网络异常，请检查网络连接
+   * zh-TW: 目前網路異常，請檢查網路連線
+   * en-US: Network unavailable. Please check your connection.
+   */
+  (key: "network.toast.unavailable", params?: TranslationParams): string;
+  /**
    * zh-CN: 上一首
    * zh-TW: 上一首
    * en-US: Previous
@@ -2264,3 +2748,4 @@ export interface TranslateFn {
   (key: "tray.exit", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }
+

@@ -12,7 +12,7 @@ export function ArtistInlineLinks({ artists, className }: ArtistInlineLinksProps
     <span className={className}>
       {artists.map((artist, index) => {
         const hasLink = artist.id !== undefined && artist.id !== null;
-        const key = artist.id ?? `${artist.name}-${artists.length}`;
+        const key = `${artist.name}-${index}`;
         return (
           <span key={key}>
             <button

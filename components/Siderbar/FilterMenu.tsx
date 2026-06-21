@@ -6,7 +6,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { IconDisc, IconPlaylist } from "@tabler/icons-react";
-import { Bell, Menu, PanelLeftClose, PanelRightClose, Plus } from "lucide-react";
+import { Bell, Menu, PanelLeftClose, PanelRightClose, Plus, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,12 +29,14 @@ const stateToType: Record<FilterState, FilterAction["type"]> = {
   0: "ALL",
   1: "CREATED",
   2: "SUBSCRIBED",
+  3: "ARTISTS",
 };
 
 const iconList = {
   ALL: <IconDisc className="w-5 h-5 mr-2" />,
   CREATED: <IconPlaylist className="w-5 h-5 mr-2" />,
   SUBSCRIBED: <Bell className="w-5 h-5 mr-2" />,
+  ARTISTS: <User className="w-5 h-5 mr-2" />,
 
   ENLARGE: <PanelRightClose className="w-5 h-5 mr-2" />,
   COLLAPSE: <PanelLeftClose className="w-5 h-5 mr-2" />,
@@ -58,6 +60,9 @@ function handleFilterSelect(
     case "SUBSCRIBED":
       dispatch({ type: "SUBSCRIBED" });
       break;
+    case "ARTISTS":
+      dispatch({ type: "ARTISTS" });
+      break;
   }
 }
 
@@ -77,6 +82,7 @@ export function FilterMenu({
     ALL: t("sidebar.filter.all"),
     CREATED: t("sidebar.filter.created"),
     SUBSCRIBED: t("sidebar.filter.subscribed"),
+    ARTISTS: t("sidebar.filter.artists"),
     ENLARGE: t("sidebar.filter.expand"),
     "CREATE PLAYLISTS": t("sidebar.filter.createPlaylists"),
   } as const;
@@ -98,6 +104,7 @@ export function FilterMenu({
       <DropdownMenuTrigger asChild>
         {/* 增加了 focus:outline-none 和 focus-visible:ring-0 去除焦点白框 */}
         <button
+          type="button"
           className={cn(
             "h-10 w-10 p-0 flex items-center justify-center shrink-0",
             "focus:outline-none focus-visible:ring-0 focus-visible:outline-none",
@@ -117,7 +124,7 @@ export function FilterMenu({
             value={stateToType[filterHook.state]}
             onValueChange={(val) => handleFilterSelect({ type: val as any }, filterHook.dispatch)}
           >
-            {(["ALL", "CREATED", "SUBSCRIBED"] as const).map((item) => (
+            {(["ALL", "CREATED", "SUBSCRIBED", "ARTISTS"] as const).map((item) => (
               <DropdownMenuRadioItem key={item} value={item} className="focus:bg-white/10">
                 {iconList[item]}
                 <span>{labelMap[item]}</span>

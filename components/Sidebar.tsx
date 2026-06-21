@@ -44,6 +44,8 @@ function reducer(_state: FilterState, action: FilterAction) {
       return 1;
     case "SUBSCRIBED":
       return 2;
+    case "ARTISTS":
+      return 3;
     default:
       throw new Error();
   }
@@ -132,6 +134,7 @@ function SidebarImpl() {
 
       if (!backendReady) {
         console.warn("后端服务未能在超时时间内就绪，尝试继续请求...");
+        toast.warning(t("sidebar.toast.backendNotReady"));
       }
 
       Promise.all([getUserPlaylist(uid), getUserLikeLists(uid)])
@@ -247,10 +250,78 @@ function SidebarImpl() {
       </button>
     ));
 
+  const renderArtistsLoading = () =>
+    isVeryNarrow ? (
+      <div className="flex flex-col items-center gap-3">
+        {[1, 2, 3, 4].map((item) => (
+          <div key={item} className="h-10 w-10 animate-pulse rounded-full bg-[#242424]" />
+        ))}
+      </div>
+    ) : (
+      <div className="flex flex-col gap-1 px-1">
+        {[1, 2, 3, 4].map((item) => (
+          <SkeletonItem key={item} />
+        ))}
+      </div>
+    );
+
+  const renderFollowedArtistsSection = (options: { showEmptyState?: boolean; flat?: boolean } = {}) => {
+    const { showEmptyState = false, flat = false } = options;
+
+    if (artistsLoading) {
+      return renderArtistsLoading();
+    }
+
+    if (artistsError) {
+      return isVeryNarrow ? (
+        <div className="flex flex-col items-center gap-2 mt-4 text-zinc-500">
+          <RefreshCw className="w-6 h-6" />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3 py-2">
+          <ActionCard
+            title={t("sidebar.artist.fetchFailed")}
+            subtitle={artistsError}
+            buttonText={t("common.action.retry")}
+            onClick={() => void fetchFollowedArtists()}
+          />
+        </div>
+      );
+    }
+
+    if (followedArtists.length === 0) {
+      if (!showEmptyState) return null;
+
+      return isVeryNarrow ? (
+        <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
+          <User className="w-6 h-6" />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3 py-2">
+          <ActionCard
+            title={t("sidebar.artist.emptyTitle")}
+            subtitle={t("sidebar.artist.emptySubtitle")}
+            buttonText={t("common.action.reload")}
+            onClick={() => void fetchFollowedArtists()}
+          />
+        </div>
+      );
+    }
+
+    return isVeryNarrow || flat ? (
+      renderArtistItems(followedArtists)
+    ) : (
+      <CollapsibleLibraryGroup title={t("sidebar.artist.followed")} defaultOpen>
+        {renderArtistItems(followedArtists)}
+      </CollapsibleLibraryGroup>
+    );
+  };
+
   const filterLabelMap = {
     ALL: t("sidebar.filter.all"),
     CREATED: t("sidebar.filter.created"),
     SUBSCRIBED: t("sidebar.filter.subscribed"),
+    ARTISTS: t("sidebar.filter.artists"),
   } as const;
 
   return (
@@ -295,7 +366,7 @@ function SidebarImpl() {
         {/* 过滤区 */}
         {!isVeryNarrow ? (
           <div className="flex gap-2 px-4 mb-2 overflow-x-auto shrink-0 scrollbar-custom-h">
-            {(["ALL", "CREATED", "SUBSCRIBED"] as const).map((type, idx) => (
+            {(["ALL", "CREATED", "SUBSCRIBED", "ARTISTS"] as const).map((type, idx) => (
               <Button
                 key={type}
                 onClick={() => filterDispatch({ type })}
@@ -326,8 +397,37 @@ function SidebarImpl() {
         )}
       >
         <div className={cn("space-y-1", isVeryNarrow ? "pb-2" : "py-4")}>
-          {/* ── 加载中：骨架屏 ── */}
-          {isLoading ? (
+          {/* ── 歌手筛选：独立视图 ── */}
+          {filterState === 3 ? (
+            !isUserLogin ? (
+              isVeryNarrow ? (
+                <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
+                  <button
+                    type="button"
+                    className={cn(
+                      "p-2 hover:bg-[#242424] hover:text-white rounded-md transition-all",
+                    )}
+                    onClick={handleLoginClick}
+                    title={t("login.required.followedArtists.title")}
+                  >
+                    <User className="w-6 h-6" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3 py-2">
+                  <ActionCard
+                    title={t("login.required.followedArtists.title")}
+                    subtitle={t("login.required.followedArtists.subtitle")}
+                    buttonText={t("common.action.login")}
+                    onClick={handleLoginClick}
+                  />
+                </div>
+              )
+            ) : (
+              renderFollowedArtistsSection({ showEmptyState: true, flat: true })
+            )
+          ) : isLoading ? (
+            /* ── 加载中：骨架屏 ── */
             isVeryNarrow ? (
               <div className="flex flex-col gap-3 items-center mt-4">
                 {[1, 2, 3, 4, 5].map((i) => (
@@ -428,43 +528,7 @@ function SidebarImpl() {
                   </CollapsibleLibraryGroup>
                 ))}
 
-              {filterState === 0 &&
-                (artistsLoading ? (
-                  isVeryNarrow ? (
-                    <div className="flex flex-col items-center gap-3">
-                      {[1, 2, 3].map((item) => (
-                        <div
-                          key={item}
-                          className="h-10 w-10 animate-pulse rounded-full bg-[#242424]"
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <CollapsibleLibraryGroup title={t("sidebar.artist.followed")} defaultOpen>
-                      <SkeletonItem />
-                      <SkeletonItem />
-                    </CollapsibleLibraryGroup>
-                  )
-                ) : artistsError ? (
-                  !isVeryNarrow && (
-                    <CollapsibleLibraryGroup title={t("sidebar.artist.followed")} defaultOpen>
-                      <ActionCard
-                        title={t("sidebar.artist.fetchFailed")}
-                        subtitle={artistsError}
-                        buttonText={t("common.action.retry")}
-                        onClick={() => void fetchFollowedArtists()}
-                      />
-                    </CollapsibleLibraryGroup>
-                  )
-                ) : followedArtists.length > 0 ? (
-                  isVeryNarrow ? (
-                    renderArtistItems(followedArtists)
-                  ) : (
-                    <CollapsibleLibraryGroup title={t("sidebar.artist.followed")} defaultOpen>
-                      {renderArtistItems(followedArtists)}
-                    </CollapsibleLibraryGroup>
-                  )
-                ) : null)}
+              {filterState === 0 && renderFollowedArtistsSection()}
             </>
           )}
         </div>
