@@ -99,16 +99,28 @@ Scopify/
 |---|---|
 | ✅ **在 page / layout 里组装** | 按路由拼 JSX：引多个 section 组件、读 `searchParams`、做 SSR 预取 |
 | ✅ **layout 承担公共壳** | 如 `(dashboard)/layout.tsx` 包 `MainLayout` + 全局 handler，子路由只关心内容区 |
-| ✅ **复杂块下沉到 `components/`** | 可复用 UI、重 client 逻辑、跨路由共享的模块 |
-| ❌ **无意义的单组件转发** | 若 page 只有 `return <UserProfilePage />` 且无任何路由职责，应把内容写进 page，或评估是否该组件就是 page |
-| ❌ **盲目拆空** | 不为拆而拆；简单页面留在 page 里完全合理 |
+| ✅ **数据 + 业务逻辑提取到 hooks/** | `useUserData`、`useAlbumData`、`useCommentData` 等 hooks 统一放在 `hooks/<领域>/` |
+| ✅ **复杂 UI 块下沉到 `components/`** | 可复用 UI、重 client 逻辑、跨路由共享的模块 |
+| ❌ **无意义的单组件转发** | page 不是 `return <XxxPage />` 的空壳，必须直接 import 多个组件/hooks 做组装 |
 | ❌ **在 `app/` 写类型 / 业务 hook / API 封装** | 类型 → `types/`；逻辑 → `hooks/` / `lib/` |
+
+#### 组件拆分规则（替代行数拆分）
+
+**不是按行数拆分，而是按组件职责拆分。** 判断依据：
+
+1. **该 JSX 块是否有独立的结构意义？** — `AlbumHeader`、`PlaylistActions`、`UserHero` 有明确业务含义，就是组件
+2. **能否独立复用或测试？** — 能抽离的 UI + 交互单元就抽
+3. **page = 组装点** — page 从 `components/` 和 `hooks/` 引子模块做拼装，不充当单体大组件
+
+例：
+- ✅ `AlbumHeader`、`AlbumActions`、`TracklistTable` 各是独立组件 → page 组装
+- ✅ `useAlbumData` 负责全部数据 + 状态逻辑 → page 只消费返回值
+- ❌ 一个 500 行的 `AlbumPage` 组件被 page 无脑转发
 
 #### 何时用 page，何时用 layout
 
 - **layout.tsx**：多路由共享的外壳（侧栏、PlayBar、Provider 等）
-- **page.tsx**：该 URL 独有的结构与数据入口
-- 两者都可以 import `@/components/...` 做组装；**不强制**每个路由再套一个同名大组件
+- **page.tsx**：该 URL 独有的结构与数据入口，从 `components/` 和 `hooks/` 引入子模块做组装
 
 #### 合规示例
 
@@ -145,23 +157,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 ```
 
 ```tsx
-// ⚠️ 仅当该组件已是稳定、可测试的页面模块且 page 还有 metadata/SSR 时才可接受
-// 不要作为默认模板机械复制
-import UserProfilePage from "@/components/profile/UserProfilePage";
-export default function Page() {
-  return <UserProfilePage />;
-}
-```
-
-```tsx
 // ❌ 禁止：page 里堆业务与类型
 interface User { id: string; name: string }  // → types/
 const NAV = [ ...20 items ]                  // → constants/
 function fetchUser() { ... }                 // → lib/api/ 或 hooks/
 function Sidebar() { ... }                   // → components/
 ```
-
-**软限制：** 单文件 **> 150 行** 再考虑拆分；路由文件不设「必须 < 80 行」的硬指标。
 
 ---
 ### 2. 类型定义 — 最重要的规范
@@ -223,11 +224,13 @@ export function getFollowedArtists(limit = 20, offset = 0) {
 
 ## 已重构页面
 
-- `app/(dashboard)/artist/page.tsx` ✅ 直接组装子组件（ArtistHero、ActionBar、PopularTracks、DiscographyGrid）
-- `app/(dashboard)/playlist/page.tsx` ✅ 直接组装子组件（PlaylistHeader、PlaylistActions、TracklistTable）
-- `app/(dashboard)/profile/page.tsx` ✅ 直接组装子组件（UserHero、UserActionBar、TracklistTable、PublicPlaylistGrid）
-- `app/(dashboard)/search/page.tsx` ✅ 直接组装子组件（CategoryTabs、AllView、SongsView、GridCategoryView）
-- 其余路由（album、comment、me、setting、login、home）因组件体积较大，保留转发，已添加 metadata
+- `app/(dashboard)/artist/page.tsx` ✅ 直接组装 ArtistHero、ActionBar、PopularTracks、DiscographyGrid
+- `app/(dashboard)/playlist/page.tsx` ✅ 直接组装 PlaylistHeader、PlaylistActions、TracklistTable
+- `app/(dashboard)/profile/page.tsx` ✅ 直接组装 UserHero、UserActionBar、PublicPlaylistGrid（含 EditUserProfileDialog）
+- `app/(dashboard)/search/page.tsx` ✅ 直接组装 CategoryTabs、AllView、SongsView、GridCategoryView
+- `app/(dashboard)/album/page.tsx` ✅ 使用 useAlbumData hook，组装 AlbumHeader、AlbumActions、TracklistTable
+- `app/(dashboard)/comment/page.tsx` ✅ 使用 useCommentData hook，组装 CommentItem
+- 其余路由（me、setting、login、home）数据逻辑待提取 hooks，page 仍为转发模式
 
 - `lib/api/*.ts` 类型 → `types/api/`（artist、music、comment）
 - `types/artist.ts` 内 `formatNumber`/`formatDuration` → `lib/utils.ts`
