@@ -1,53 +1,74 @@
-# page.tsx 职责边界
+# page.tsx / layout.tsx 职责边界
+
+> Scopify 细则见根目录 [AGENTS.md](../../../AGENTS.md)。**路由层适度组装，禁止无意义的单组件转发。**
+
+## 定位
+
+`app/` 的价值是 **Next.js 路由能力**（URL、layout 嵌套、loading、metadata、Server Component 数据预取），不是为了多包一层 `return <Xxx />`。
+
+- **layout.tsx**：多路由共享外壳（侧栏、PlayBar、Provider）
+- **page.tsx**：该 URL 独有的页面结构与数据入口
+- 两者都可以 import `@/components/*` 做 JSX 组装
 
 ## 允许写的内容
 
 | 允许 | 示例 |
 |------|------|
-| import 组件 | `import { DocSidebar } from '@/components/doc/DocSidebar'` |
-| import 类型（仅用于 props） | `import type { DocPageProps } from '@/types/doc'` |
-| 调用数据获取函数 | `const data = await getDocData(params.slug)` |
-| JSX 骨架拼装 | `<div><Sidebar /><Content data={data} /></div>` |
-| Next.js 特有导出 | `export const metadata`, `export async function generateStaticParams` |
+| import 多个 section 组件并拼装 | `<Hero /><List /><Sidebar />` |
+| 读取 `params` / `searchParams` | `const id = params.id` |
+| 调用封装好的数据获取 | `const data = await getAlbum(id)` |
+| Next.js 特有导出 | `metadata`、`generateStaticParams` |
+| 路由级 loading / error 分支 | `if (isLoading) return <Skeleton />` |
 
 ## 禁止写的内容
 
-| 禁止 | 原因 | 应该放在哪 |
-|------|------|----------|
-| `type` / `interface` 定义 | 类型应集中管理 | `/types/<领域>.ts` |
-| 数组字面量（> 3 项） | 静态数据应集中管理 | `/constants/<名称>.ts` |
-| 业务逻辑函数 | 应可复用和测试 | `/lib/` 或 `/hooks/` |
-| 第 2 个及以上组件定义 | 组件应单独文件 | `/components/<领域>/` |
-| `useState` / `useEffect` | page.tsx 应为 Server Component | 提取为 Client 组件 |
-| 直接 `fetch()` 调用 | 数据获取应封装 | `/lib/` 中封装后调用 |
+| 禁止 | 应该放在哪 |
+|------|----------|
+| `type` / `interface` 定义 | `/types/<领域>.ts` |
+| 大段静态数据数组 | `/constants/` |
+| 可复用的业务函数、API 封装 | `/lib/`、`/hooks/` |
+| 可复用的 UI 子组件定义 | `/components/<领域>/` |
+| 无路由职责的单组件转发 | 内容直接写进 page，或下沉/上浮到合适层级 |
 
-## 行数限制
+## 行数
 
-- **硬限制：< 80 行**
-- 超过 80 行必须检查：是否有可以提取到组件的 JSX 片段，或可以移到 lib 的逻辑
+- **不设「必须 < 80 行」硬限制**
+- 单文件 **> 150 行** 再评估：是否有块可提取到 `components/` 或 `hooks/`
+- 不为拆而拆；简单页面留在 page 里完全合理
 
 ## 合规示例
 
 ```tsx
-// app/doc/[slug]/page.tsx ✅
-import { DocLayout } from '@/components/doc/DocLayout'
-import { DocContent } from '@/components/doc/DocContent'
-import { DocToc } from '@/components/doc/DocToc'
-import { getDocBySlug, getAllDocSlugs } from '@/lib/doc'
-import type { DocPageProps } from '@/types/doc'
+// app/(dashboard)/profile/page.tsx ✅ — page 承担组装
+import { ProfileHero } from "@/components/profile/UserHero";
+import { PublicPlaylistGrid } from "@/components/profile/PublicPlaylistGrid";
 
-export async function generateStaticParams() {
-  return getAllDocSlugs().map(slug => ({ slug }))
-}
-
-export default async function DocPage({ params }: DocPageProps) {
-  const doc = await getDocBySlug(params.slug)
-
+export default function ProfilePage() {
   return (
-    <DocLayout>
-      <DocToc headings={doc.headings} />
-      <DocContent doc={doc} />
-    </DocLayout>
-  )
+    <div className="space-y-8">
+      <ProfileHero />
+      <PublicPlaylistGrid />
+    </div>
+  );
+}
+```
+
+```tsx
+// app/(dashboard)/layout.tsx ✅ — layout 承担公共壳
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <MainLayout>
+      <PlayerCommandHandler />
+      {children}
+    </MainLayout>
+  );
+}
+```
+
+```tsx
+// ⚠️ 仅在有 metadata/SSR 等路由职责时可接受，勿作为默认模板
+import UserProfilePage from "@/components/profile/UserProfilePage";
+export default function Page() {
+  return <UserProfilePage />;
 }
 ```

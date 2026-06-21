@@ -5,14 +5,7 @@ import { createPageCacheKey, getPageCache, pageTtlMs, setPageCache } from "@/lib
 import { translate } from "@/lib/i18n";
 import { useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
-import type { Album, ArtistInfo } from "@/types/artist";
-
-interface ArtistCachePayload {
-  artist: ArtistInfo | null;
-  popularTracks: SongDetail[];
-  hotTracksQueue: SongDetail[];
-  discography: Album[];
-}
+import type { Album, ArtistCachePayload, ArtistInfo } from "@/types/artist";
 
 export function useArtistData(artistId: string | null) {
   const [artist, setArtist] = useState<ArtistInfo | null>(null);

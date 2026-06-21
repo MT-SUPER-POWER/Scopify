@@ -11,8 +11,8 @@ import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import { useHasHydrated } from "@/lib/hooks/useHydration";
 // lib
 import { cn } from "@/lib/utils";
-import { usePlayerStore } from "@/store/module/player";
 import { useI18n } from "@/store/module/i18n";
+import { usePlayerStore } from "@/store/module/player";
 import { useSearchStore } from "@/store/module/search";
 import { useTimeStore } from "@/store/module/time";
 // status store

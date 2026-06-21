@@ -2,8 +2,9 @@
 
 import { Heart, MoreHorizontal, Pause, Play } from "lucide-react";
 import type React from "react";
-import type { Song } from "@/types/search";
+import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { cn } from "@/lib/utils";
+import type { Song } from "@/types/search";
 
 /** ms → mm:ss */
 function formatDuration(ms: number): string {
@@ -45,6 +46,7 @@ export function SongRow({
             )}
           >
             <button
+              type="button"
               onClick={onTogglePlay}
               className="text-white hover:scale-110 transition-transform"
             >
@@ -67,7 +69,7 @@ export function SongRow({
             {song.name}
           </span>
           <span className="text-sm text-zinc-400 group-hover:text-white transition-colors truncate">
-            {song.artists?.map((a) => a.name).join(", ") || "Unknown Artist"}
+            <ArtistInlineLinks artists={song.artists ?? []} />
           </span>
         </div>
       </div>

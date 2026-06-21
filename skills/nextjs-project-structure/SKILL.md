@@ -1,17 +1,18 @@
 ---
 name: nextjs-project-structure
-description: 约束 Next.js App Router 项目的全局代码结构规范。当用户要求创建页面、组件、hooks、类型定义、工具函数、状态管理、常量配置时触发。强制所有代码归入正确的全局目录（/components、/types、/hooks、/lib、/constants、/stores），禁止在 page.tsx 中内联逻辑、禁止使用 _components 局部目录、禁止类型散落在各路由文件内。适用于任何涉及新建或修改 .tsx/.ts 文件的任务。
-allowed-tools: Bash(npx biome check .), Bash(npx biome check --write .), Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_modules), Bash(wc -l)
+description: 约束 Next.js App Router 项目的全局代码结构规范。当用户要求创建页面、组件、hooks、类型定义、工具函数、状态管理、常量配置时触发。强制类型/hooks/组件归全局目录；路由层（page/layout）适度组装，禁止无意义空壳转发与 _components 局部目录。适用于任何涉及新建或修改 .tsx/.ts 文件的任务。
+allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_modules), Bash(wc -l)
 ---
 
 # Next.js 项目结构规范
 
+> **Scopify 项目以仓库根目录 [AGENTS.md](../../AGENTS.md) 为唯一规范来源。** 本 skill 提供通用细则；与 AGENTS.md 冲突时以 AGENTS.md 为准（如 `store/` 非 `stores/`，`types/api/` 分层等）。规范写在 markdown 中，**不使用 `.cursor/rules/`**。
+
 ## 核心原则
 
 1. **全局优先**：类型、hooks、组件、工具函数一律放全局目录，不允许散落在路由文件夹内
-2. **page.tsx 只做组装**：只负责调用组件拼装布局，不写类型、不写逻辑、不写数据
+2. **路由层适度组装**：`page` / `layout` 负责 URL 入口与 JSX 拼装；复杂块进 `components/`，但禁止无意义的 `return <Xxx />` 空壳转发
 3. **按领域分类**：全局目录内部再按业务领域建子目录，不允许所有文件平铺在一层
-4. **Biome 收尾**：每次新增代码后运行检查，交付前无报错
 
 ---
 
@@ -62,10 +63,10 @@ project-root/
 
 ## 关键规则
 
-### page.tsx → [rules/page.md](./rules/page.md)
-- 只允许：import 组件、调用数据获取、JSX 骨架拼装、Next.js 特有导出
-- **禁止**：定义 type/interface、写业务函数、内联数据数组、定义超过 1 个组件
-- 行数硬限制：**< 80 行**
+### page / layout → [rules/page.md](./rules/page.md)
+- 允许：import 组件拼装、读 params、SSR 数据预取、Next.js 导出
+- 禁止：定义 type/interface、API/hook 封装、无路由职责的单组件转发
+- 行数：**> 150 行** 再考虑拆分，不设 80 行硬限制
 
 ### 组件归类 → [rules/components.md](./rules/components.md)
 - **禁止使用** `_components/` 局部目录，所有组件进 `/components/<领域>/`
@@ -76,10 +77,6 @@ project-root/
 - 所有 `type` / `interface` 定义进 `/types/<领域>.ts`，不允许写在 page.tsx 或组件文件内
 - 所有 custom hook 进 `/hooks/`，不允许写在组件文件内部
 - 静态数据超过 **10 条** 进 `/constants/`
-
-### Biome 检查 → [rules/biome.md](./rules/biome.md)
-- 新建或修改文件后必须运行 `npx biome check`
-- 不允许遗留 `severity: error` 的条目交付
 
 ---
 
@@ -104,7 +101,15 @@ export default async function DocPage({ params }: DocPageProps) {
 ```
 
 ```tsx
-// ❌ 禁止——类型、数据、多组件全部塞进 page.tsx
+// ⚠️ 无路由职责的空壳转发——不要作为默认模板
+import DocPage from '@/components/doc/DocPage'
+export default function Page() {
+  return <DocPage />
+}
+```
+
+```tsx
+// ❌ 禁止——类型、数据、多组件定义全部塞进 page.tsx
 type NavItem = { id: string; title: string }
 const NAV_ITEMS: NavItem[] = [...]
 
@@ -142,8 +147,7 @@ export const DOC_NAV = [
 2. **找到正确目录**：对照上方目录结构确认放在哪个全局目录的哪个子目录
 3. **检查子目录是否存在**：没有就先建目录
 4. **写代码**
-5. **运行 Biome**：`npx biome check --write .` 自动修复格式，再 `npx biome check .` 确认无 error
-6. **更新 page.tsx**：只 import，不写逻辑
+5. **路由层组装**：在 page/layout 拼 JSX；类型与逻辑仍归 `types/`、`hooks/`、`lib/`
 
 ## 快速参考
 
@@ -153,10 +157,6 @@ find . -maxdepth 2 -type d | grep -v node_modules | grep -v .git | sort
 
 # 找出超过 150 行的组件（需要拆分的候选）
 find components -name "*.tsx" | xargs wc -l | sort -rn | head -20
-
-# Biome 检查 + 自动修复
-npx biome check --write .
-npx biome check .
 ```
 
 ## 详细参考
@@ -164,4 +164,3 @@ npx biome check .
 - [rules/page.md](./rules/page.md) — page.tsx 职责边界与禁止事项
 - [rules/components.md](./rules/components.md) — 组件分类与拆分规则
 - [rules/types-hooks.md](./rules/types-hooks.md) — 类型、hooks、常量的归属判断
-- [rules/biome.md](./rules/biome.md) — Biome 检查流程与常见报错修复

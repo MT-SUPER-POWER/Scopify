@@ -69,11 +69,13 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button type="button" className="focus:outline-none focus:ring-0">{children}</button>
+        <button type="button" className="focus:outline-none focus:ring-0">
+          {children}
+        </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className="w-68 max-w-[calc(100vw-2rem)] rounded-xl p-2"
+        className="w-68 max-w-[calc(100vw-2rem)] rounded-xl p-2 bg-[#282828] text-white border-white/10"
         align="end"
         side="bottom"
         sideOffset={8}
@@ -117,7 +119,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 onSelect={() => ProfileCallback(item.id)}
               >
                 {item.icon}
-                <span>{item.id === "download" ? t("profile.menu.download") : t("profile.menu.aboutMe")}</span>
+                <span>
+                  {item.id === "download" ? t("profile.menu.download") : t("profile.menu.aboutMe")}
+                </span>
               </DropdownMenuItem>
             ),
           )}

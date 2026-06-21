@@ -39,6 +39,7 @@ export default function ArtistPage() {
 
       <div className="w-full max-w-7xl mx-auto bg-linear-to-b from-black/20 to-[#121212]">
         <ActionBar
+          artistId={artist.id}
           isPlayingArtist={isPlayingArtist}
           disabled={hotTracksQueue.length === 0}
           onPlayArtist={handlePlayArtist}

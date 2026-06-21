@@ -1,4 +1,4 @@
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TYPES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+import type { SongDetail } from "@/types/api/music";
 
 export interface Track {
   id: string | number;
@@ -33,13 +33,17 @@ export interface ArtistInfo {
   bio: string;
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+export interface FollowedArtist {
+  id: number;
+  name: string;
+  avatarUrl?: string;
+  picUrl?: string;
+  img1v1Url?: string;
+}
 
-export const formatNumber = (num: number) => new Intl.NumberFormat("en-US").format(num);
-
-export const formatDuration = (ms: number) => {
-  if (!ms) return "0:00";
-  const minutes = Math.floor(ms / 60000);
-  const seconds = ((ms % 60000) / 1000).toFixed(0);
-  return `${minutes}:${Number(seconds) < 10 ? "0" : ""}${seconds}`;
-};
+export interface ArtistCachePayload {
+  artist: ArtistInfo | null;
+  popularTracks: SongDetail[];
+  hotTracksQueue: SongDetail[];
+  discography: Album[];
+}

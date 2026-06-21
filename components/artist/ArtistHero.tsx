@@ -1,6 +1,7 @@
 import { BadgeCheck } from "lucide-react";
-import { type ArtistInfo, formatNumber } from "@/types/artist";
+import { formatNumber } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
+import type { ArtistInfo } from "@/types/artist";
 
 interface Props {
   artist: ArtistInfo;

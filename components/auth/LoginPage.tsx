@@ -4,13 +4,15 @@
 
 import { Lock, QrCode, Smartphone, X } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import type React from "react";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
+import LoginSkeletonLoading from "@/components/auth/LoginSkeletonLoading";
 import { PasswordLoginForm } from "@/components/Login/PasswordLoginForm";
 import { QrLogin } from "@/components/Login/QrLogin";
 import { SmsLoginForm } from "@/components/Login/SmsLoginForm";
-import LoginSkeletonLoading from "@/components/auth/LoginSkeletonLoading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { loginByCellphone } from "@/lib/api/login";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
@@ -18,6 +20,7 @@ import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, IS_WEB } from "@/lib/utils";
 import { sendCaptcha } from "@/lib/web/auth";
 import { useI18n } from "@/store/module/i18n";
+import type { LoginRequiredReason } from "@/types/auth";
 import type { LoginMode } from "@/types/login";
 
 let hydrationReady = false;
@@ -43,12 +46,18 @@ function HydrationGate({ children }: { children: React.ReactNode }) {
 
 function LoginPageContent() {
   const smartRouter = useSmartRouter();
+  const searchParams = useSearchParams();
   const { t } = useI18n();
   const [mode, setMode] = useState<LoginMode>("qr");
   const [isLoading, setIsLoading] = useState(false);
 
   const isLoggedIn = useLoginStatus();
   const [isMounted, setIsMounted] = useState(false);
+  const redirectTarget = useMemo(() => searchParams.get("redirect") || "/", [searchParams]);
+  const reason = searchParams.get("reason") as LoginRequiredReason | null;
+  const finishLogin = useCallback(() => {
+    smartRouter.replace(redirectTarget.startsWith("/") ? redirectTarget : "/");
+  }, [redirectTarget, smartRouter]);
 
   // 1. 处理密码或验证码提交
   const handleSubmit = async (phone: string, extra: string) => {
@@ -82,14 +91,14 @@ function LoginPageContent() {
   };
 
   useEffect(() => {
-    if (isLoggedIn) smartRouter.replace("/");
-  }, [isLoggedIn, smartRouter]);
+    if (isLoggedIn) finishLogin();
+  }, [finishLogin, isLoggedIn]);
 
   useEffect(() => {
     // 组件挂载后标记为 true
     setIsMounted(true);
-    if (isLoggedIn) smartRouter.replace("/");
-  }, [isLoggedIn, smartRouter]);
+    if (isLoggedIn) finishLogin();
+  }, [finishLogin, isLoggedIn]);
 
   if (isLoggedIn) {
     return <LoginSkeletonLoading />;
@@ -126,6 +135,11 @@ function LoginPageContent() {
 
       {/* 2. 主体宽度 */}
       <div className="w-full max-w-[320px]">
+        {reason && (
+          <div className="mb-4">
+            <LoginRequiredPrompt reason={reason} compact />
+          </div>
+        )}
         <Tabs value={mode} onValueChange={(v) => setMode(v as LoginMode)} className="w-full">
           {/* 3. Tab 切换器 */}
           <TabsList className="grid grid-cols-3 mb-4 bg-zinc-900/60 border border-white/5 rounded-xl h-10 p-1">
@@ -173,7 +187,7 @@ function LoginPageContent() {
             </TabsContent>
 
             <TabsContent value="qr" className="mt-0 outline-none">
-              <QrLogin />
+              <QrLogin onSuccess={finishLogin} />
             </TabsContent>
           </div>
         </Tabs>

@@ -7,6 +7,7 @@ import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/ap
 import { type NeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
 import type { NeteaseUserAlbum } from "@/types/api/release";
 import { type NeteaseUser, pruneUser } from "@/types/api/user";
+import type { FollowedArtist } from "@/types/artist";
 
 type UserStore = {
   user: NeteaseUser | null;
@@ -18,6 +19,7 @@ type UserStore = {
   collectedAlbum: NeteaseUserAlbum[];
   likeListIDs: number[];
   playlist: NeteasePlaylist[];
+  followedArtists: FollowedArtist[];
   albumList: SongDetail[];
 
   handleLogout: () => Promise<void>;
@@ -27,9 +29,11 @@ type UserStore = {
   setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => void;
   clearAlbumList: () => void;
   setCollectedAlbum: (albums: NeteaseUserAlbum[]) => void;
+  setCollectedAlbumId: (albumId: number, collected: boolean) => void;
   clearCollectedAlbum: () => void;
   setLikeListIDs: (ids: number[]) => void;
   setPlayList: (playlists: NeteasePlaylist[]) => void;
+  setFollowedArtists: (artists: FollowedArtist[]) => void;
   setUserId: (userId: number | string) => void;
   triggerLibraryUpdate: () => void;
 };
@@ -46,11 +50,26 @@ export const useUserStore = create<UserStore>()(
       libraryUpdateTrigger: 0,
 
       playlist: [],
+      followedArtists: [],
       albumList: [],
       likeListIDs: [],
       collectedAlbum: [],
-      setCollectedAlbum: (albums: NeteaseUserAlbum[]) => set({ collectedAlbum: albums }),
-      clearCollectedAlbum: () => set({ collectedAlbum: [] }),
+      setCollectedAlbum: (albums: NeteaseUserAlbum[]) =>
+        set({
+          collectedAlbum: albums,
+          collectedAlbumIds: new Set(albums.map((album) => album.id)),
+        }),
+      setCollectedAlbumId: (albumId: number, collected: boolean) =>
+        set((state) => {
+          const nextIds = new Set(state.collectedAlbumIds);
+          if (collected) {
+            nextIds.add(albumId);
+          } else {
+            nextIds.delete(albumId);
+          }
+          return { collectedAlbumIds: nextIds };
+        }),
+      clearCollectedAlbum: () => set({ collectedAlbum: [], collectedAlbumIds: new Set() }),
 
       triggerLibraryUpdate: () =>
         set((state) => ({ libraryUpdateTrigger: state.libraryUpdateTrigger + 1 })),
@@ -69,6 +88,7 @@ export const useUserStore = create<UserStore>()(
         const cleanPlaylists = rawPlaylists.map(prunePlaylist);
         set({ playlist: cleanPlaylists });
       },
+      setFollowedArtists: (artists: FollowedArtist[]) => set({ followedArtists: artists }),
       clearSession: () => {
         set({
           user: null,
@@ -77,6 +97,7 @@ export const useUserStore = create<UserStore>()(
           searchType: 0,
           collectedAlbumIds: new Set(),
           playlist: [],
+          followedArtists: [],
           albumList: [],
           likeListIDs: [],
         });

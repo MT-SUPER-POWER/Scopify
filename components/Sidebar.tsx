@@ -3,18 +3,21 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { ListMusic, RefreshCw, User } from "lucide-react";
+import Image from "next/image";
 import React, { useEffect, useReducer, useState } from "react";
 import { FaCompactDisc } from "react-icons/fa6";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getFollowedArtists } from "@/lib/api/artist";
 import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, IS_ELECTRON } from "@/lib/utils";
-import { appConfig } from "@/lib/web/env";
+import { getBackendBaseUrl } from "@/lib/web/request";
 import { waitForBackend } from "@/lib/web/waitForBackend";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import type { FollowedArtist } from "@/types/artist";
 import type { FilterAction, FilterState } from "@/types/components/Siderbar";
 import { CollapsibleLibraryGroup } from "./Siderbar/CollapsibleLibraryGroup";
 import { FilterMenu } from "./Siderbar/FilterMenu";
@@ -97,10 +100,13 @@ function SidebarImpl() {
 
   const [filterState, filterDispatch] = useReducer(reducer, 0);
   const [isLoading, setIsLoading] = useState(false);
+  const [artistsLoading, setArtistsLoading] = useState(false);
+  const [artistsError, setArtistsError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const isUserLogin = useLoginStatus();
   const userName = useUserStore((s) => s.user?.nickname);
   const playlists = useUserStore((s) => s.playlist);
+  const followedArtists = useUserStore((s) => s.followedArtists);
   const isElectron = IS_ELECTRON;
   const smartRouter = useSmartRouter();
 
@@ -122,10 +128,7 @@ function SidebarImpl() {
       setError(null);
 
       // 检查后端是否已就绪（仅在非静默且是首次加载时可能需要）
-      const backendReady = await waitForBackend(
-        `http://${appConfig.backend.host}:${appConfig.backend.port}`,
-        10000,
-      );
+      const backendReady = await waitForBackend(getBackendBaseUrl(), 10000);
 
       if (!backendReady) {
         console.warn("后端服务未能在超时时间内就绪，尝试继续请求...");
@@ -153,6 +156,27 @@ function SidebarImpl() {
     [isUserLogin],
   );
 
+  const fetchFollowedArtists = React.useCallback(async () => {
+    if (!isUserLogin) return;
+    setArtistsLoading(true);
+    setArtistsError(null);
+    try {
+      const res = await getFollowedArtists(12);
+      const rawArtists = Array.isArray(res.data.data) ? res.data.data : [];
+      const artists: FollowedArtist[] = rawArtists.map((artist) => ({
+        id: artist.id,
+        name: artist.name,
+        avatarUrl: artist.avatarUrl || artist.picUrl || artist.img1v1Url,
+      }));
+      useUserStore.getState().setFollowedArtists(artists);
+    } catch (error) {
+      console.error("Failed to load followed artists:", error);
+      setArtistsError(t("sidebar.artist.fetchFailed"));
+    } finally {
+      setArtistsLoading(false);
+    }
+  }, [isUserLogin, t]);
+
   const handleLoginClick = () => {
     if (typeof window !== "undefined" && isElectron) window.electronAPI?.openLoginWindow();
     else smartRouter.replace("/login");
@@ -164,12 +188,14 @@ function SidebarImpl() {
     if (isUserLogin && userId && userId !== 0) {
       // 如果 trigger > 0 说明是人为触发的更新，启用静默模式(true)
       fetchPlaylist(libraryUpdateTrigger > 0);
+      void fetchFollowedArtists();
     }
   }, [
     isUserLogin,
     userId,
     libraryUpdateTrigger, // 如果 trigger > 0 说明是人为触发的更新，启用静默模式(true)
     fetchPlaylist,
+    fetchFollowedArtists,
   ]); // 增加了 trigger 依赖
 
   const createdPlaylists = playlists.filter((item) => item && item.creator.nickname === userName);
@@ -193,6 +219,32 @@ function SidebarImpl() {
         coverImg={`${item.coverImgUrl}?param=100y100`}
         isCollapsed={isVeryNarrow}
       />
+    ));
+
+  const renderArtistItems = (items: FollowedArtist[]) =>
+    items.map((artist) => (
+      <button
+        key={artist.id}
+        type="button"
+        onClick={() => smartRouter.push(`/artist?id=${artist.id}`)}
+        className={cn(
+          "group flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-white/10",
+          isVeryNarrow && "justify-center",
+        )}
+      >
+        <Image
+          width={40}
+          height={40}
+          src={`${artist.avatarUrl}?param=100y100`}
+          alt={artist.name}
+          className="h-10 w-10 shrink-0 rounded-full bg-[#242424] object-cover"
+        />
+        {!isVeryNarrow && (
+          <span className="min-w-0 truncate text-sm font-medium text-zinc-200 group-hover:text-white">
+            {artist.name}
+          </span>
+        )}
+      </button>
     ));
 
   const filterLabelMap = {
@@ -375,6 +427,44 @@ function SidebarImpl() {
                     {renderPlaylistItems(subscribedPlaylists)}
                   </CollapsibleLibraryGroup>
                 ))}
+
+              {filterState === 0 &&
+                (artistsLoading ? (
+                  isVeryNarrow ? (
+                    <div className="flex flex-col items-center gap-3">
+                      {[1, 2, 3].map((item) => (
+                        <div
+                          key={item}
+                          className="h-10 w-10 animate-pulse rounded-full bg-[#242424]"
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <CollapsibleLibraryGroup title={t("sidebar.artist.followed")} defaultOpen>
+                      <SkeletonItem />
+                      <SkeletonItem />
+                    </CollapsibleLibraryGroup>
+                  )
+                ) : artistsError ? (
+                  !isVeryNarrow && (
+                    <CollapsibleLibraryGroup title={t("sidebar.artist.followed")} defaultOpen>
+                      <ActionCard
+                        title={t("sidebar.artist.fetchFailed")}
+                        subtitle={artistsError}
+                        buttonText={t("common.action.retry")}
+                        onClick={() => void fetchFollowedArtists()}
+                      />
+                    </CollapsibleLibraryGroup>
+                  )
+                ) : followedArtists.length > 0 ? (
+                  isVeryNarrow ? (
+                    renderArtistItems(followedArtists)
+                  ) : (
+                    <CollapsibleLibraryGroup title={t("sidebar.artist.followed")} defaultOpen>
+                      {renderArtistItems(followedArtists)}
+                    </CollapsibleLibraryGroup>
+                  )
+                ) : null)}
             </>
           )}
         </div>

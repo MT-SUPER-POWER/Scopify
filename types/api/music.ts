@@ -1,5 +1,11 @@
 import type { NeteaseUser } from "./user";
 
+export interface SongUrlMatchResponse {
+  code: number;
+  data: string;
+  proxyUrl: string;
+}
+
 export interface SongDetail {
   id: number;
   name: string;

@@ -1,3 +1,7 @@
+import type {
+  UpdateUserProfilePayload,
+  UpdateUserProfileResponse,
+} from "@/types/api/profileUpdate";
 import type { IUserDetail, IUserFollow } from "@/types/api/user";
 import request from "../web/request";
 
@@ -114,5 +118,11 @@ export const getUserPlaylists = (params: { uid: string | number }) => {
     url: "/user/playlist",
     method: "get",
     params,
+  });
+};
+
+export const updateUserProfile = (payload: UpdateUserProfilePayload) => {
+  return request.get<UpdateUserProfileResponse>("/user/update", {
+    params: payload,
   });
 };

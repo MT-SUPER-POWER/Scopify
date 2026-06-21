@@ -1,6 +1,9 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 
-import { WEB_NETWORK_SETTINGS_KEY } from "@/hooks/settings/useSettingsState";
+import {
+  WEB_BACKEND_SETTINGS_KEY,
+  WEB_NETWORK_SETTINGS_KEY,
+} from "@/hooks/settings/useSettingsState";
 import { usePlayerStore, useUserStore } from "@/store";
 import type { AppConfig } from "@/types/config";
 import { appConfig, logger } from "./env";
@@ -15,11 +18,36 @@ function buildBackendBaseUrl(config: Pick<AppConfig, "backend">) {
   return `http://${config.backend.host}:${config.backend.port}`;
 }
 
-const INITIAL_BASE_URL = buildBackendBaseUrl(appConfig);
+function loadInitialBackendConfig(): AppConfig["backend"] {
+  if (typeof window === "undefined") {
+    return appConfig.backend;
+  }
+
+  try {
+    const stored = localStorage.getItem(WEB_BACKEND_SETTINGS_KEY);
+    if (!stored) return appConfig.backend;
+    const parsed = JSON.parse(stored) as Partial<AppConfig["backend"]>;
+    if (typeof parsed?.host === "string" && typeof parsed?.port === "number") {
+      return { host: parsed.host, port: parsed.port };
+    }
+  } catch {
+    // Ignore malformed local cache.
+  }
+
+  return appConfig.backend;
+}
+
+const INITIAL_BACKEND_CONFIG = loadInitialBackendConfig();
+const INITIAL_BASE_URL = buildBackendBaseUrl({ backend: INITIAL_BACKEND_CONFIG });
 const NO_RETRY_URLS: string[] = [];
 
 let baseURL = INITIAL_BASE_URL;
 let runtimeNetworkConfig: AppConfig["network"] = { ...appConfig.network };
+let runtimeBackendConfig: AppConfig["backend"] = { ...INITIAL_BACKEND_CONFIG };
+
+export function getBackendBaseUrl() {
+  return buildBackendBaseUrl({ backend: runtimeBackendConfig });
+}
 
 function isElectronRuntime() {
   return typeof window !== "undefined" && !!window.electronAPI;
@@ -27,7 +55,8 @@ function isElectronRuntime() {
 
 function applyRuntimeConfig(config: Pick<AppConfig, "backend" | "network">) {
   runtimeNetworkConfig = { ...config.network };
-  baseURL = buildBackendBaseUrl(config);
+  runtimeBackendConfig = { ...config.backend };
+  baseURL = buildBackendBaseUrl({ backend: runtimeBackendConfig });
   request.defaults.baseURL = baseURL;
 }
 

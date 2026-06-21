@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Link2, ListPlus, Pause, Play, PlusCircle } from "lucide-react";
+import { Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -22,13 +22,13 @@ import { likeSong } from "@/lib/api/playlist";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { cn } from "@/lib/utils";
+import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import type { NeteasePlaylist } from "@/types/api/playlist";
-import { type ArtistInfo, formatDuration } from "@/types/artist";
+import type { ArtistInfo } from "@/types/artist";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INDEX CELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -316,6 +316,37 @@ export const PopularTrackItem = memo(
                 {t("contextMenu.copyLink")}
               </button>
             </ContextMenuItem>
+
+            {/* View Artist */}
+            {track.ar.length > 0 && (
+              track.ar.length === 1 ? (
+                <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
+                  <Link href={`/artist?id=${track.ar[0].id}`} className="w-full h-full block">
+                    <User className="w-4 h-4 mr-2" />
+                    {t("contextMenu.goToArtist")}
+                  </Link>
+                </ContextMenuItem>
+              ) : (
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+                    <User className="w-4 h-4 mr-4" />
+                    {t("contextMenu.goToArtist")}
+                  </ContextMenuSubTrigger>
+                  <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
+                    {track.ar.map((artist) => (
+                      <ContextMenuItem key={artist.id} asChild className="focus:bg-white/10 focus:text-white">
+                        <Link
+                          href={`/artist?id=${artist.id}`}
+                          className="w-full h-full block"
+                        >
+                          {artist.name}
+                        </Link>
+                      </ContextMenuItem>
+                    ))}
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+              )
+            )}
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>

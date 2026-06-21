@@ -3,9 +3,9 @@
 import { Pause, Play } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";
-
-import { useI18n } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store";
+import { useI18n } from "@/store/module/i18n";
+import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import type { SongDetail } from "@/types/api/music";
 import type { Song } from "@/types/search";
 
@@ -71,9 +71,16 @@ export function BestMatchCard({ song, songs }: Props) {
           </div>
           <h3 className="text-3xl font-bold mb-1 truncate">{song.name}</h3>
           <div className="flex items-center gap-2 text-sm text-zinc-400">
-            <span className="text-white hover:underline font-medium">
-              {song.artists?.map((a) => a.name).join(", ") || t("search.song.unknownArtist")}
-            </span>
+            {song.artists && song.artists.length > 0 ? (
+              <ArtistInlineLinks
+                artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
+                className="text-white font-medium"
+              />
+            ) : (
+              <span className="text-white hover:underline font-medium">
+                {t("search.song.unknownArtist")}
+              </span>
+            )}
             <span className="px-2 py-0.5 bg-black/50 rounded-full text-[11px] font-bold tracking-wide uppercase">
               {t("search.section.songs")}
             </span>

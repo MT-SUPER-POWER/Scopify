@@ -3,11 +3,19 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getLyric, greySongUrlMatch } from "@/lib/api/music";
 import { translate } from "@/lib/i18n";
+import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
 import { type NeteaseLyric, pruneNeteaseLyric, type SongDetail } from "@/types/api/music";
 
 export type RepeatMode = "off" | "all" | "one";
+export type PlaybackFailureSource = "url" | "audio";
+
+interface PlayTrackOptions {
+  resetFailureCount?: boolean;
+}
+
+interface PlayQueueIndexOptions extends PlayTrackOptions {}
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -37,6 +45,7 @@ type PlayerStore = {
 
   lyric: NeteaseLyric | null;
   playlistId: number | string | null;
+  playbackFailureCount: number;
 
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
@@ -53,8 +62,13 @@ type PlayerStore = {
   toggleShuffle: () => void;
   togglePlaying: () => void;
   fetchCurrentLyric: () => Promise<void>;
-  playTrack: (song: SongDetail) => Promise<void>;
-  playQueueIndex: (index: number, addToHistory?: boolean) => Promise<void>;
+  handlePlaybackFailure: (source: PlaybackFailureSource) => Promise<void>;
+  playTrack: (song: SongDetail, options?: PlayTrackOptions) => Promise<void>;
+  playQueueIndex: (
+    index: number,
+    addToHistory?: boolean,
+    options?: PlayQueueIndexOptions,
+  ) => Promise<void>;
   playNext: () => Promise<void>;
   playPrev: () => Promise<void>;
   reshuffleQueue: () => void;
@@ -77,6 +91,7 @@ export const usePlayerStore = create<PlayerStore>()(
       historyIndex: -1,
       lyric: null,
       playlistId: null,
+      playbackFailureCount: 0,
 
       setVolume: (v) => set({ volume: v }),
       setIsPlaying: (v) => set({ isPlaying: v }),
@@ -186,25 +201,75 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       },
 
-      playTrack: async (song) => {
-        useTimeStore.getState().setCurrentTime(0);
-        useTimeStore.getState().setBufferedTime(0);
-        set({ currentSongDetail: song, currentSongUrl: null, isPlaying: false });
+      handlePlaybackFailure: async (source) => {
+        const { queue, queueIndex, playbackFailureCount } = get();
+        const hasNextTrack = queueIndex >= 0 && queueIndex < queue.length - 1;
+        const action = getPlaybackFailureAction(playbackFailureCount, hasNextTrack);
+        const locale = useI18nStore.getState().locale;
 
-        Promise.all([greySongUrlMatch(song.id), getLyric(song.id)])
-          .then(([urlRes, lyricRes]) => {
-            const url = urlRes.data ?? urlRes.proxyUrl;
-            useTimeStore.getState().setTotalTime(song.dt ?? 0);
-            set({ currentSongUrl: url, isPlaying: true, lyric: lyricRes.data });
-          })
-          .catch((e) => {
-            toast.error(translate(useI18nStore.getState().locale, "common.message.playbackLoadFailed"));
-            console.error("获取歌曲播放地址或歌词失败", e);
-            set({ currentSongUrl: null, isPlaying: false, lyric: null });
+        console.warn("Playback failed:", {
+          source,
+          queueIndex,
+          playbackFailureCount,
+          action: action.type,
+        });
+
+        if (action.type === "skip") {
+          set({ playbackFailureCount: action.nextFailureCount });
+          toast.info(translate(locale, "common.message.playbackAutoSkipped"), {
+            id: "playback-auto-skipped",
           });
+          await get().playQueueIndex(queueIndex + 1, true, { resetFailureCount: false });
+          return;
+        }
+
+        set({
+          currentSongUrl: null,
+          isPlaying: false,
+          lyric: null,
+          playbackFailureCount: action.nextFailureCount,
+        });
+        toast.error(translate(locale, "common.message.playbackConsecutiveFailed"), {
+          id: "playback-consecutive-failed",
+        });
       },
 
-      playQueueIndex: async (index, addToHistory = true) => {
+      playTrack: async (song, options = {}) => {
+        const shouldResetFailureCount = options.resetFailureCount ?? true;
+        useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setBufferedTime(0);
+        set({
+          currentSongDetail: song,
+          currentSongUrl: null,
+          isPlaying: false,
+          ...(shouldResetFailureCount ? { playbackFailureCount: 0 } : {}),
+        });
+
+        try {
+          const [urlRes, lyricRes] = await Promise.all([
+            greySongUrlMatch(song.id),
+            getLyric(song.id),
+          ]);
+          const url = urlRes.data ?? urlRes.proxyUrl;
+
+          if (!url) {
+            throw new Error("Playback URL is empty");
+          }
+
+          useTimeStore.getState().setTotalTime(song.dt ?? 0);
+          set({
+            currentSongUrl: url,
+            isPlaying: true,
+            lyric: lyricRes.data,
+            playbackFailureCount: 0,
+          });
+        } catch (e) {
+          console.error("获取歌曲播放地址或歌词失败", e);
+          await get().handlePlaybackFailure("url");
+        }
+      },
+
+      playQueueIndex: async (index, addToHistory = true, options = {}) => {
         const { queue, historyStack, historyIndex } = get();
         if (index < 0 || index >= queue.length) return;
 
@@ -225,7 +290,7 @@ export const usePlayerStore = create<PlayerStore>()(
           historyIndex: newHistoryIndex,
         });
 
-        await get().playTrack(queue[index]);
+        await get().playTrack(queue[index], options);
       },
 
       playNext: async () => {
@@ -314,6 +379,7 @@ export const usePlayerStore = create<PlayerStore>()(
           historyIndex: -1,
           lyric: null,
           playlistId: null,
+          playbackFailureCount: 0,
         });
       },
     }),

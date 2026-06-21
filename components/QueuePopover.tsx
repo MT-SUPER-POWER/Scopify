@@ -8,6 +8,7 @@ import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
 
@@ -99,7 +100,9 @@ const QueueItem = memo(
               {song.name}
             </div>
             <div className="text-xs text-zinc-400 truncate mt-0.5">
-              {song.ar.map((a: any) => a.name).join(", ")}
+              <ArtistInlineLinks
+                artists={song.ar.map((a: { id: number; name: string }) => ({ id: a.id, name: a.name }))}
+              />
             </div>
           </div>
 
@@ -250,7 +253,9 @@ export const QueuePopover = () => {
         <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#181818]/90 backdrop-blur-sm sticky top-0 z-10">
           <div>
             <h3 className="font-bold text-lg">{t("queue.title")}</h3>
-            <p className="text-xs text-zinc-400">{t("queue.totalSongs", { count: queue.length })}</p>
+            <p className="text-xs text-zinc-400">
+              {t("queue.totalSongs", { count: queue.length })}
+            </p>
           </div>
           {/* 添加定位按钮 */}
           <button
