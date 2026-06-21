@@ -133,13 +133,14 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
 
       {/* 主要内容区域 */}
       <div
-        className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 px-6 lg:px-16 py-20
-        max-w-7xl mx-auto w-full relative z-10"
+        className="flex-1 min-h-0 overflow-hidden flex flex-col lg:flex-row items-center justify-center
+        gap-4 lg:gap-[clamp(2rem,5vw,4rem)] px-4 sm:px-6 lg:px-14 pt-16 pb-3 lg:pt-14 lg:pb-4
+        max-w-[min(100rem,100vw)] mx-auto w-full relative z-10"
       >
         {/* 左侧：封面和歌曲信息 */}
-        <div className="flex flex-col items-center lg:items-start gap-6 w-full lg:w-[40%] max-w-md">
+        <div className="flex flex-col items-center lg:items-start justify-center gap-3 lg:gap-4 w-full lg:w-[38%] min-h-0">
           {/* 封面 */}
-          <div className="relative w-full aspect-square max-w-[320px] lg:max-w-100 group">
+          <div className="relative aspect-square w-[min(68vw,42dvh,320px)] lg:w-[min(30vw,52dvh,380px)] shrink-0 group">
             <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity" />
             <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] ring-1 ring-white/10">
               {coverUrl ? (
@@ -160,22 +161,22 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
           </div>
 
           {/* 歌曲信息 */}
-          <div className="flex flex-col items-center lg:items-start gap-2 w-full px-2">
-            <h1 className="text-2xl lg:text-3xl font-bold text-white text-center lg:text-left leading-tight line-clamp-2">
+          <div className="flex flex-col items-center lg:items-start gap-2 w-full max-w-[min(68vw,42dvh,320px)] lg:max-w-[min(30vw,52dvh,380px)] px-2 shrink-0">
+            <h1 className="text-xl lg:text-[clamp(1.35rem,2.1vw,1.875rem)] font-bold text-white text-center lg:text-left leading-tight line-clamp-2">
               {currentSongDetail?.name || t("common.meta.unknownSong")}
             </h1>
 
-            <div className="flex flex-col gap-1.5 text-white/60 text-sm lg:text-base">
+            <div className="flex flex-col gap-1.5 text-white/60 text-sm lg:text-[clamp(0.8rem,1vw,1rem)]">
               <div className="flex items-center gap-2 justify-center lg:justify-start">
                 <FaUser className="w-4 h-4 shrink-0" />
-                <span className="truncate max-w-70">
+                <span className="truncate max-w-full">
                   {currentSongDetail?.ar?.map((a: any) => a.name).join(", ") ||
                     t("common.meta.unknownArtist")}
                 </span>
               </div>
               <div className="flex items-center gap-2 justify-center lg:justify-start">
                 <FaCompactDisc className="w-4 h-4 shrink-0" />
-                <span className="truncate max-w-70">
+                <span className="truncate max-w-full">
                   {currentSongDetail?.al?.name || t("common.meta.unknownAlbum")}
                 </span>
               </div>
@@ -184,10 +185,10 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
         </div>
 
         {/* 右侧：歌词区域 */}
-        <div className="flex-1 w-full lg:w-[55%] h-[50vh] lg:h-[70vh] flex flex-col">
+        <div className="flex-1 w-full lg:w-[56%] h-[min(38dvh,18rem)] lg:h-full min-h-0 flex flex-col">
           <div className="relative flex-1 rounded-3xl backdrop-blur-sm overflow-hidden">
             {/* 歌词渲染器 */}
-            <div className="absolute inset-0 p-6 lg:p-8">
+            <div className="absolute inset-0 p-4 lg:p-8">
               <LyricRenderer />
             </div>
           </div>
@@ -195,7 +196,11 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
       </div>
 
       {/* 底部播放控制 */}
-      <motion.div animate={{ opacity: isBarVisible ? 0.7 : 0 }} transition={{ duration: 0.3 }}>
+      <motion.div
+        animate={{ opacity: isBarVisible ? 0.7 : 0 }}
+        transition={{ duration: 0.3 }}
+        className="relative z-20 shrink-0"
+      >
         <PlayerBar
           className="bg-transparent"
           bgClass="bg-transparent"
