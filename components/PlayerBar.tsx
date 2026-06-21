@@ -73,7 +73,7 @@ function PlayerBarStatAction({
           className={cn(
             "absolute top-[-2px] left-[11px] lg:left-[13px]",
             "text-[10px] font-medium leading-none tabular-nums whitespace-nowrap pointer-events-none",
-            "px-[3px] py-px rounded-[4px] bg-black",
+            "px-[3px] py-px rounded-[4px] shadow-none drop-shadow-none [text-shadow:none]",
             countClassName,
           )}
         >
@@ -295,7 +295,12 @@ export const PlayerBar = ({
           <div className="hidden sm:flex items-center gap-4 lg:gap-5 shrink-0">
             <PlayerBarStatAction
               count={currentSong?.likedCount}
-              countClassName={isLiked ? "text-[#1ed760]" : "text-zinc-300"}
+              countClassName={cn(
+                isLyricsOpen
+                  ? "bg-white/10 ring-1 ring-white/15 backdrop-blur-sm"
+                  : "bg-black/55 ring-1 ring-white/10",
+                isLiked ? "text-[#1ed760]" : "text-zinc-300",
+              )}
               title={isLiked ? t("common.action.unlike") : t("common.action.like")}
               onClick={() => toggleLike(!isLiked)}
             >
@@ -308,7 +313,12 @@ export const PlayerBar = ({
 
             <PlayerBarStatAction
               count={currentSong?.commentCount}
-              countClassName="text-zinc-300 group-hover:text-white transition-colors"
+              countClassName={cn(
+                isLyricsOpen
+                  ? "bg-white/10 ring-1 ring-white/15 backdrop-blur-sm"
+                  : "bg-black/55 ring-1 ring-white/10",
+                "text-zinc-300 group-hover:text-white transition-colors",
+              )}
               href={currentSong?.id ? `/comment?songId=${currentSong.id}` : "#"}
               title={t("contextMenu.comments")}
               onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
