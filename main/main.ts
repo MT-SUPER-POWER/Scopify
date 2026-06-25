@@ -1,3 +1,5 @@
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIBRARY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { BrowserWindow as BrowserWindowType } from "electron";
@@ -19,6 +21,8 @@ import { initThumbarButtons } from "./module/thumbarButtons.js";
 import initTray from "./module/tray.js";
 import { checkForUpdates, initializeUpdater } from "./module/updater.js";
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ VARIABLES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -39,6 +43,8 @@ const gotTheLock = app.requestSingleInstanceLock();
 logger.info("--------------------------------------------------");
 logger.info("Fronted Base URL is", devBase);
 logger.info("--------------------------------------------------");
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function destroySplashWindow() {
   if (splashWindow && !splashWindow.isDestroyed()) {

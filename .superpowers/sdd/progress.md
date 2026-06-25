@@ -1,7 +1,0 @@
-Task 1: complete (commits d152ff7, i18n keys added)
-Task 2: complete (commits 06bc991, profile dropdown background fix)
-Task 3: complete (commits 7a6cf4b, TrackTable context menu)
-Task 4: complete (commits e7f981e, SongItem context menu + clickable names)
-Task 5: complete (commits 66cb9f9, PopularTrackItem context menu)
-Task 6: complete (commits 5ccfab9, QueuePopover clickable names)
-Task 7: complete (commits 9a288a7, BestMatchCard clickable names)
