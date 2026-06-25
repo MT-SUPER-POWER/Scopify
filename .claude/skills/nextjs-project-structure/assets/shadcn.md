@@ -1,0 +1,68 @@
+---
+title: Components
+description: Here you can find all the components available in the library. We are working on adding more components.
+---
+
+- [Accordion](https://ui.shadcn.com/docs/components/accordion): A vertically stacked set of interactive headings that each reveal a section of content.
+- [Alert](https://ui.shadcn.com/docs/components/alert): Displays a callout for user attention.
+- [Alert Dialog](https://ui.shadcn.com/docs/components/alert-dialog): A modal dialog that interrupts the user with important content and expects a response.
+- [Aspect Ratio](https://ui.shadcn.com/docs/components/aspect-ratio): Displays content within a desired ratio.
+- [Avatar](https://ui.shadcn.com/docs/components/avatar): An image element with a fallback for representing the user.
+- [Badge](https://ui.shadcn.com/docs/components/badge): Displays a badge or a component that looks like a badge.
+- [Breadcrumb](https://ui.shadcn.com/docs/components/breadcrumb): Displays the path to the current resource using a hierarchy of links.
+- [Button](https://ui.shadcn.com/docs/components/button): Displays a button or a component that looks like a button.
+- [Button Group](https://ui.shadcn.com/docs/components/button-group): A container that groups related buttons together with consistent styling.
+- [Calendar](https://ui.shadcn.com/docs/components/calendar): A calendar component that allows users to select a date or a range of dates.
+- [Card](https://ui.shadcn.com/docs/components/card): Displays a card with header, content, and footer.
+- [Carousel](https://ui.shadcn.com/docs/components/carousel): A carousel with motion and swipe built using Embla.
+- [Chart](https://ui.shadcn.com/docs/components/chart): Beautiful charts. Built using Recharts. Copy and paste into your apps.
+- [Checkbox](https://ui.shadcn.com/docs/components/checkbox): A control that allows the user to toggle between checked and not checked.
+- [Collapsible](https://ui.shadcn.com/docs/components/collapsible): An interactive component which expands/collapses a panel.
+- [Combobox](https://ui.shadcn.com/docs/components/combobox): Autocomplete input with a list of suggestions.
+- [Command](https://ui.shadcn.com/docs/components/command): Command menu for search and quick actions.
+- [Context Menu](https://ui.shadcn.com/docs/components/context-menu): Displays a menu of actions triggered by a right click.
+- [Data Table](https://ui.shadcn.com/docs/components/data-table): Powerful table and datagrids built using TanStack Table.
+- [Date Picker](https://ui.shadcn.com/docs/components/date-picker): A date picker component with range and presets.
+- [Dialog](https://ui.shadcn.com/docs/components/dialog): A window overlaid on either the primary window or another dialog window, rendering the content underneath inert.
+- [Direction](https://ui.shadcn.com/docs/components/direction): A provider component that sets the text direction for your application.
+- [Drawer](https://ui.shadcn.com/docs/components/drawer): A drawer component for React.
+- [Dropdown Menu](https://ui.shadcn.com/docs/components/dropdown-menu): Displays a menu to the user — such as a set of actions or functions — triggered by a button.
+- [Empty](https://ui.shadcn.com/docs/components/empty): Use the Empty component to display an empty state.
+- [Field](https://ui.shadcn.com/docs/components/field): Combine labels, controls, and help text to compose accessible form fields and grouped inputs.
+- [Hover Card](https://ui.shadcn.com/docs/components/hover-card): For sighted users to preview content available behind a link.
+- [Input](https://ui.shadcn.com/docs/components/input): A text input component for forms and user data entry with built-in styling and accessibility features.
+- [Input Group](https://ui.shadcn.com/docs/components/input-group): Add addons, buttons, and helper content to inputs.
+- [Input OTP](https://ui.shadcn.com/docs/components/input-otp): Accessible one-time password component with copy-paste functionality.
+- [Item](https://ui.shadcn.com/docs/components/item): A versatile component for displaying content with media, title, description, and actions.
+- [Kbd](https://ui.shadcn.com/docs/components/kbd): Used to display textual user input from keyboard.
+- [Label](https://ui.shadcn.com/docs/components/label): Renders an accessible label associated with controls.
+- [Menubar](https://ui.shadcn.com/docs/components/menubar): A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands.
+- [Native Select](https://ui.shadcn.com/docs/components/native-select): A styled native HTML select element with consistent design system integration.
+- [Navigation Menu](https://ui.shadcn.com/docs/components/navigation-menu): A collection of links for navigating websites.
+- [Pagination](https://ui.shadcn.com/docs/components/pagination): Pagination with page navigation, next and previous links.
+- [Popover](https://ui.shadcn.com/docs/components/popover): Displays rich content in a portal, triggered by a button.
+- [Progress](https://ui.shadcn.com/docs/components/progress): Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.
+- [Radio Group](https://ui.shadcn.com/docs/components/radio-group): A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time.
+- [Resizable](https://ui.shadcn.com/docs/components/resizable): Accessible resizable panel groups and layouts with keyboard support.
+- [Scroll Area](https://ui.shadcn.com/docs/components/scroll-area): Augments native scroll functionality for custom, cross-browser styling.
+- [Select](https://ui.shadcn.com/docs/components/select): Displays a list of options for the user to pick from—triggered by a button.
+- [Separator](https://ui.shadcn.com/docs/components/separator): Visually or semantically separates content.
+- [Sheet](https://ui.shadcn.com/docs/components/sheet): Extends the Dialog component to display content that complements the main content of the screen.
+- [Sidebar](https://ui.shadcn.com/docs/components/sidebar): A composable, themeable and customizable sidebar component.
+- [Skeleton](https://ui.shadcn.com/docs/components/skeleton): Use to show a placeholder while content is loading.
+- [Slider](https://ui.shadcn.com/docs/components/slider): An input where the user selects a value from within a given range.
+- [Sonner](https://ui.shadcn.com/docs/components/sonner): An opinionated toast component for React.
+- [Spinner](https://ui.shadcn.com/docs/components/spinner): An indicator that can be used to show a loading state.
+- [Switch](https://ui.shadcn.com/docs/components/switch): A control that allows the user to toggle between checked and not checked.
+- [Table](https://ui.shadcn.com/docs/components/table): A responsive table component.
+- [Tabs](https://ui.shadcn.com/docs/components/tabs): A set of layered sections of content—known as tab panels—that are displayed one at a time.
+- [Textarea](https://ui.shadcn.com/docs/components/textarea): Displays a form textarea or a component that looks like a textarea.
+- [Toast](https://ui.shadcn.com/docs/components/toast): A succinct message that is displayed temporarily.
+- [Toggle](https://ui.shadcn.com/docs/components/toggle): A two-state button that can be either on or off.
+- [Toggle Group](https://ui.shadcn.com/docs/components/toggle-group): A set of two-state buttons that can be toggled on or off.
+- [Tooltip](https://ui.shadcn.com/docs/components/tooltip): A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.
+- [Typography](https://ui.shadcn.com/docs/components/typography): Styles for headings, paragraphs, lists, etc.
+
+---
+
+Can't find what you need? Try the [registry directory](/docs/directory) for community-maintained components.

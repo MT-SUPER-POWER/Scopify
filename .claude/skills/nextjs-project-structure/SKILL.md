@@ -1,0 +1,166 @@
+---
+name: nextjs-project-structure
+description: 约束 Next.js App Router 项目的全局代码结构规范。当用户要求创建页面、组件、hooks、类型定义、工具函数、状态管理、常量配置时触发。强制类型/hooks/组件归全局目录；路由层（page/layout）适度组装，禁止无意义空壳转发与 _components 局部目录。适用于任何涉及新建或修改 .tsx/.ts 文件的任务。
+allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_modules), Bash(wc -l)
+---
+
+# Next.js 项目结构规范
+
+> **Scopify 项目以仓库根目录 [AGENTS.md](../../../AGENTS.md) 为唯一规范来源。** 本 skill 提供通用细则；与 AGENTS.md 冲突时以 AGENTS.md 为准（如 `store/` 非 `stores/`，`types/api/` 分层等）。规范写在 markdown 中，**不使用 `.cursor/rules/`**。
+
+## 核心原则
+
+1. **全局优先**：类型、hooks、组件、工具函数一律放全局目录，不允许散落在路由文件夹内
+2. **路由层适度组装**：`page` / `layout` 负责 URL 入口与 JSX 拼装；复杂块进 `components/`，但禁止无意义的 `return <Xxx />` 空壳转发
+3. **按领域分类**：全局目录内部再按业务领域建子目录，不允许所有文件平铺在一层
+
+---
+
+## 标准项目目录案例
+
+```
+project-root/
+├── app/                          # 仅放路由文件
+│   ├── (marketing)/
+│   │   └── page.tsx              # 只做组装
+│   ├── doc/
+│   │   ├── page.tsx
+│   │   └── layout.tsx
+│   └── layout.tsx
+│
+├── components/                   # 所有组件，按领域分子目录
+│   ├── ui/                       # ShadCN 通用组件（Button, Badge, Input...）
+│   ├── layout/                   # 布局组件（Header, Footer, Sidebar...）
+│   ├── doc/                      # 文档页专用组件
+│   ├── marketing/                # 营销页专用组件
+│   └── shared/                   # 跨领域共享组件
+│
+├── types/                        # 所有类型定义，按领域分文件
+│   ├── doc.ts
+│   ├── user.ts
+│   └── api.ts
+│
+├── hooks/                        # 所有 custom hooks
+│   ├── useAuth.ts
+│   ├── useDoc.ts
+│   └── useSearch.ts
+│
+├── lib/                          # 工具函数、第三方封装
+│   ├── utils.ts
+│   ├── fetcher.ts
+│   └── mdx.ts
+│
+├── constants/                    # 静态配置、枚举值、导航数据等
+│   ├── nav.ts
+│   └── config.ts
+│
+└── stores/                       # 状态管理（zustand / jotai 等）
+    ├── userStore.ts
+    └── docStore.ts
+```
+
+---
+
+## 关键规则
+
+### page / layout → [rules/page.md](./rules/page.md)
+- 允许：import 组件拼装、读 params、SSR 数据预取、Next.js 导出
+- 禁止：定义 type/interface、API/hook 封装、无路由职责的单组件转发
+- 行数：**> 150 行** 再考虑拆分，不设 80 行硬限制
+
+### 组件归类 → [rules/components.md](./rules/components.md)
+- **禁止使用** `_components/` 局部目录，所有组件进 `/components/<领域>/`
+- `/components` 内部必须按业务领域建子目录，禁止所有组件平铺在根层
+- 单个组件文件超过 **150 行** 必须拆分
+
+### 类型与 hooks → [rules/types-hooks.md](./rules/types-hooks.md)
+- 所有 `type` / `interface` 定义进 `/types/<领域>.ts`，不允许写在 page.tsx 或组件文件内
+- 所有 custom hook 进 `/hooks/`，不允许写在组件文件内部
+- 静态数据超过 **10 条** 进 `/constants/`
+
+---
+
+## 代码模式示例
+
+```tsx
+// ✅ 正确的 page.tsx
+import { DocSidebar } from '@/components/doc/DocSidebar'
+import { DocContent } from '@/components/doc/DocContent'
+import { getDocData } from '@/lib/doc'
+import type { DocPageProps } from '@/types/doc'
+
+export default async function DocPage({ params }: DocPageProps) {
+  const data = await getDocData(params.slug)
+  return (
+    <div className="flex">
+      <DocSidebar />
+      <DocContent data={data} />
+    </div>
+  )
+}
+```
+
+```tsx
+// ⚠️ 无路由职责的空壳转发——不要作为默认模板
+import DocPage from '@/components/doc/DocPage'
+export default function Page() {
+  return <DocPage />
+}
+```
+
+```tsx
+// ❌ 禁止——类型、数据、多组件定义全部塞进 page.tsx
+type NavItem = { id: string; title: string }
+const NAV_ITEMS: NavItem[] = [...]
+
+function Sidebar() { ... }
+function Content() { ... }
+
+export default function DocPage() { ... }
+```
+
+```ts
+// ✅ 类型放 /types/doc.ts
+export interface DocPageProps {
+  params: { slug: string }
+}
+export interface DocItem {
+  id: string
+  title: string
+  content: string
+}
+```
+
+```ts
+// ✅ 静态数据放 /constants/nav.ts
+export const DOC_NAV = [
+  { id: 'intro', title: '介绍', href: '/doc/intro' },
+  // ...
+] as const
+```
+
+---
+
+## 新建文件工作流
+
+1. **判断归属**：这个文件是组件？类型？hook？工具函数？常量？
+2. **找到正确目录**：对照上方目录结构确认放在哪个全局目录的哪个子目录
+3. **检查子目录是否存在**：没有就先建目录
+4. **写代码**
+5. **路由层组装**：在 page/layout 拼 JSX；类型与逻辑仍归 `types/`、`hooks/`、`lib/`
+
+## 快速参考
+
+```bash
+# 查看当前项目全局目录结构（2 层）
+find . -maxdepth 2 -type d | grep -v node_modules | grep -v .git | sort
+
+# 找出超过 150 行的组件（需要拆分的候选）
+find components -name "*.tsx" | xargs wc -l | sort -rn | head -20
+```
+
+## 详细参考
+
+- [rules/page.md](./rules/page.md) — page.tsx 职责边界与禁止事项
+- [rules/components.md](./rules/components.md) — 组件分类与拆分规则
+- [rules/types-hooks.md](./rules/types-hooks.md) — 类型、hooks、常量的归属判断
