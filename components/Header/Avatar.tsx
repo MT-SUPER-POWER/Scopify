@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
 
@@ -11,8 +12,8 @@ const MockAvatar = () => {
   return (
     <div className="flex items-center justify-center w-10 h-10 rounded-full bg-black/70 text-white hover:scale-105 transition-transform border-[3px] border-black/70 hover:border-zinc-700">
       <div className="w-full h-full rounded-full bg-pink-600 flex items-center justify-center overflow-hidden">
-        {isLogged && imgSrc !== "" ? (
-          <img src={imgSrc} className="w-full h-full" />
+        {isLogged && imgSrc !== "" && imgSrc !== undefined ? (
+          <Image src={imgSrc} alt="avatar" className="w-full h-full" width={40} height={40} />
         ) : (
           <span className="text-xs font-bold"> M </span>
         )}
