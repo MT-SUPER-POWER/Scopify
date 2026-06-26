@@ -66,13 +66,19 @@ function PlayerBarStatAction({
   children: React.ReactNode;
 }) {
   const body = (
-    <div className="inline-flex shrink-0 items-center gap-1 transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
-      {children}
+    <div className="relative inline-flex shrink-0 items-center justify-center transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
+      {/* 修复点 1：把 children（图标）显式包裹并设为 z-0，强制将其压在底层 */}
+      <div className="relative z-0 flex items-center justify-center">{children}</div>
+
       {count != null && count > 0 ? (
         <span
           className={cn(
-            "text-[10px] font-medium leading-none tabular-nums whitespace-nowrap pointer-events-none",
-            "shadow-none drop-shadow-none text-shadow-none",
+            // 修复点 2：将无效的 z-80 改为标准的 z-10
+            "absolute top-0 right-0 z-10 translate-x-[63%] -translate-y-1/3",
+            // 修复点 3：加上 transform-gpu 开启 3D 硬件加速，彻底解决 scale 动画和毛玻璃冲突的 Bug
+            "transform-gpu",
+            "flex min-w-[16px] items-center justify-center px-1 py-px rounded-full bg-[#9f9faa]/20 backdrop-blur-md border border-white/10 text-white shadow-sm",
+            "text-[9px] font-bold text-white leading-none tabular-nums whitespace-nowrap pointer-events-none",
             countClassName,
           )}
         >
@@ -98,7 +104,6 @@ function PlayerBarStatAction({
     </button>
   );
 }
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export const PlayerBar = ({
