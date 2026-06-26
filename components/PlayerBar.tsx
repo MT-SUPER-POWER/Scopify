@@ -50,6 +50,7 @@ const Minimize = (isElectron: boolean) => {
 };
 
 /** 图标右上角数字（PlayerBar 专用） */
+// BUG: hover 时，数字会被下面的 ICON 盖住（好像是因为毛玻璃的 BUG 导致的计算渲染问题）
 function PlayerBarStatAction({
   count,
   countClassName,
