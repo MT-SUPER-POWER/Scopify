@@ -28,6 +28,7 @@
     "electron:install": "bun script/ensure-electron.ts",
     "postinstall": "bun run electron:install",
     "dev": "bun run electron:install && bun run build:web && cross-env ELECTRON_RENDERER_MODE=static bunx electron-vite dev",
+    "dev:fast": "cross-env ELECTRON_RENDERER_MODE=static bunx electron-vite dev",
     "start": "bunx serve renderer -p 4545",
     "dev:backend": "bun run backend/api-enhanced/app.js",
     "dev:web": "bun run script/dev-web.ts",
