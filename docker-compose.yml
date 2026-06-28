@@ -1,5 +1,5 @@
 services:
-  web:
+  frontend:
     container_name: ${FRONTEND_CONTAINER_NAME:-scopify-web}
     image: oven/bun:1.2
     working_dir: /app
@@ -17,6 +17,20 @@ services:
       - scopify-node-modules:/app/node_modules
       - scopify-bun-cache:/root/.bun/install/cache
     command: sh -lc "bun install && bun run build:web && bunx serve renderer -l tcp://0.0.0.0:${FRONTEND_PORT:-3000}"
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  backend:
+    container_name: ${BACKEND_CONTAINER_NAME:-scopify-netease-api}
+    build:
+      context: ./backend/api-enhanced
+      dockerfile: Dockerfile
+    ports:
+      - "${BACKEND_PORT:-3838}:${BACKEND_PORT:-3838}"
+    environment:
+      PORT: ${BACKEND_PORT:-3838}
+      HOST: 0.0.0.0
     restart: unless-stopped
 
 volumes:
