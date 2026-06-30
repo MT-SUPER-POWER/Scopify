@@ -20,6 +20,8 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    networks:
+      - scopify-network
 
   backend:
     container_name: ${BACKEND_CONTAINER_NAME:-scopify-netease-api}
@@ -31,8 +33,15 @@ services:
     environment:
       PORT: ${BACKEND_PORT:-3838}
       HOST: 0.0.0.0
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN}
     restart: unless-stopped
+    networks:
+      - scopify-network
 
 volumes:
   scopify-node-modules:
   scopify-bun-cache:
+
+networks:
+  scopify-network:
+    driver: bridge

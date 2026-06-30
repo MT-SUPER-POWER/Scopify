@@ -12,11 +12,12 @@ export async function waitForBackend(
   interval: number = 500,
 ): Promise<boolean> {
   const startTime = Date.now();
+  const pingUrl = url.endsWith("/") ? `${url}inner/version` : `${url}/inner/version`;
   while (Date.now() - startTime < timeout) {
     try {
-      // 这里的 url 可能是 http://127.0.0.1:5252
-      // 我们请求根路径，如果返回 200 (哪怕是 404，只要是后端响应的) 就认为就绪了
-      await axios.get(url, { timeout: interval });
+      // 避免请求根路径 / 导致 CORS 报错（后端在根路径下不返回 Access-Control-Allow-Origin）
+      // 请求一个有效的 API 路径 /inner/version，会经过后端 CORS 中间件处理并返回 200
+      await axios.get(pingUrl, { timeout: interval });
       return true;
     } catch (e: any) {
       // 如果是 ECONNREFUSED 说明还没起来，如果是其他错误说明响应了
@@ -35,8 +36,9 @@ export async function waitForBackend(
  * @param timeout 单次请求超时 (ms)
  */
 export async function pingBackend(url: string, timeout: number = 3000): Promise<boolean> {
+  const pingUrl = url.endsWith("/") ? `${url}inner/version` : `${url}/inner/version`;
   try {
-    await axios.get(url, { timeout });
+    await axios.get(pingUrl, { timeout });
     return true;
   } catch (error: unknown) {
     const code = (error as { code?: string } | undefined)?.code;
