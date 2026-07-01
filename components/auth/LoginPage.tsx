@@ -22,6 +22,8 @@ import { sendCaptcha } from "@/lib/web/auth";
 import { useI18n } from "@/store/module/i18n";
 import type { LoginRequiredReason } from "@/types/auth";
 import type { LoginMode } from "@/types/login";
+import Image from "next/image";
+import logo from "@/resources/icon_source.png"
 
 let hydrationReady = false;
 let hydrationPromise: Promise<void> | null = null;
@@ -127,8 +129,8 @@ function LoginPageContent() {
 
       {/* 1. Logo 区域优化 */}
       <div className="mb-6 flex flex-col items-center">
-        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-3 text-black font-black text-3xl shadow-2xl">
-          S
+        <div className="w-14 h-14 rounded-2xl bg-transparent flex items-center justify-center mb-3 text-black font-black text-3xl shadow-2xl">
+          <Image src={logo.src} width={50} height={50} alt="Logo" />
         </div>
         <p className="text-zinc-500 text-xs font-medium">{t("login.page.tagline")}</p>
       </div>
