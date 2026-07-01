@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
-import { __logoIcon, __logoIconPath, __preloadScript, appConfig } from "../constants.js";
+import { __iconIcoPath, __iconWindow, __preloadScript, appConfig } from "../constants.js";
 
 // 检查图标文件是否存在
-fs.access(__logoIconPath).catch(() => {
-  console.warn("Warning: Icon file not found at", __logoIconPath);
+fs.access(__iconIcoPath).catch(() => {
+  console.warn("Warning: Icon file not found at", __iconIcoPath);
 });
 
 fs.access(__preloadScript).catch(() => {
@@ -25,7 +25,7 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
   loginWindow = new BrowserWindow({
     width: 450,
     height: 600,
-    icon: __logoIcon, // 设置应用图标
+    icon: __iconWindow, // 设置应用图标
     resizable: false,
     title: "Login - Scopify",
     autoHideMenuBar: true,

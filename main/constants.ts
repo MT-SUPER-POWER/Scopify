@@ -23,30 +23,51 @@ import { app, nativeImage } from "electron";
 import log from "electron-log";
 import { appConfigDefaultPath, appConfigPath, loadAppConfig } from "./config.js";
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RESOURCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ICON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export const __logoIconPath = app.isPackaged
+// ─── 文件路径（按格式区分底层资源）───
+export const __iconIcoPath = app.isPackaged
   ? join(process.resourcesPath, "resources/icon.ico")
   : join(__dirname, "../../resources/icon.ico");
 
-export const __logoIconMacPath = app.isPackaged
+export const __iconIcnsPath = app.isPackaged
   ? join(process.resourcesPath, "resources/icon.icns")
   : join(__dirname, "../../resources/icon.icns");
 
-export const __logoIconPngPath = app.isPackaged
-  ? join(process.resourcesPath, "resources/icon_source_1024.png")
-  : join(__dirname, "../../resources/icon_source_1024.png");
+const __iconsetDir = app.isPackaged
+  ? join(process.resourcesPath, "resources/icon.iconset")
+  : join(__dirname, "../../resources/icon.iconset");
 
-export const __logoIcon = nativeImage.createFromPath(__logoIconPath);
-export const __logoIconMac = nativeImage.createFromPath(__logoIconMacPath);
-export const __logoIconPng = nativeImage.createFromPath(__logoIconPngPath);
+// ─── 底层 NativeImage（内部使用，不直接导出）───
+const _nativeIco = nativeImage.createFromPath(__iconIcoPath);
 
-if (__logoIcon.isEmpty()) {
-  log.error(`[Resource] Failed to load logo icon from: ${__logoIconPath}`);
+/** macOS 窗口图标用 128×128 PNG（.icns 不被 Electron 运行时支持）*/
+const _nativeWindowMac = nativeImage.createFromPath(join(__iconsetDir, "icon_128x128.png"));
+
+/** macOS Dock 图标用 512×512 PNG（旧方案已验证可用）*/
+const _nativeDockMac = nativeImage.createFromPath(join(__iconsetDir, "icon_512x512.png"));
+
+// ─── 按用途导出（消费方只关心用途，不关心格式）───
+
+/** 窗口图标：macOS 用 128×128 PNG，其他平台用 .ico */
+export const __iconWindow = process.platform === "darwin" ? _nativeWindowMac : _nativeIco;
+
+/** macOS 程序坞（Dock）图标 */
+export const __iconDock = _nativeDockMac;
+
+/** 系统托盘图标（Windows 任务栏通知区域） */
+export const __iconTray = _nativeIco;
+
+if (_nativeIco.isEmpty()) {
+  log.error(`[Resource] Failed to load ico icon from: ${__iconIcoPath}`);
 }
 
-if (__logoIconMac.isEmpty()) {
-  log.error(`[Resource] Failed to load Mac logo icon from: ${__logoIconMacPath}`);
+if (_nativeWindowMac.isEmpty()) {
+  log.error(`[Resource] Failed to load macOS window icon from: ${join(__iconsetDir, "icon_128x128.png")}`);
+}
+
+if (_nativeDockMac.isEmpty()) {
+  log.error(`[Resource] Failed to load macOS dock icon from: ${join(__iconsetDir, "icon_512x512.png")}`);
 }
 
 export const __preloadScript = join(__dirname, "../main/preload.js");

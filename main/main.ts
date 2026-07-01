@@ -6,8 +6,8 @@ import type { BrowserWindow as BrowserWindowType } from "electron";
 import { app, BrowserWindow, dialog } from "electron";
 import serve from "electron-serve";
 import {
-  __logoIcon,
-  __logoIconPng,
+  __iconWindow,
+  __iconDock,
   __preloadScript,
   __splashHtmlPath,
   appConfig,
@@ -78,7 +78,7 @@ function createWindow() {
     transparent: true,
     frame: false,
     alwaysOnTop: true,
-    icon: __logoIcon,
+    icon: __iconWindow,
     resizable: false,
     show: true,
     movable: false,
@@ -95,7 +95,7 @@ function createWindow() {
     minWidth: 840,
     minHeight: 720,
     autoHideMenuBar: true,
-    icon: __logoIcon,
+    icon: __iconWindow,
     title: "Scopify",
     show: false,
     titleBarOverlay: {
@@ -230,7 +230,7 @@ if (!gotTheLock) {
 
     if (process.platform === "darwin") {
       try {
-        app.dock?.setIcon(__logoIconPng);
+        app.dock?.setIcon(__iconDock);
       } catch (err) {
         logger.error("Failed to set Mac dock icon:", err);
       }
