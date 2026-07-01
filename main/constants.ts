@@ -33,8 +33,13 @@ export const __logoIconMacPath = app.isPackaged
   ? join(process.resourcesPath, "resources/icon.icns")
   : join(__dirname, "../../resources/icon.icns");
 
+export const __logoIconPngPath = app.isPackaged
+  ? join(process.resourcesPath, "resources/icon_source_1024.png")
+  : join(__dirname, "../../resources/icon_source_1024.png");
+
 export const __logoIcon = nativeImage.createFromPath(__logoIconPath);
 export const __logoIconMac = nativeImage.createFromPath(__logoIconMacPath);
+export const __logoIconPng = nativeImage.createFromPath(__logoIconPngPath);
 
 if (__logoIcon.isEmpty()) {
   log.error(`[Resource] Failed to load logo icon from: ${__logoIconPath}`);

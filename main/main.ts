@@ -7,7 +7,7 @@ import { app, BrowserWindow, dialog } from "electron";
 import serve from "electron-serve";
 import {
   __logoIcon,
-  __logoIconMacPath,
+  __logoIconPng,
   __preloadScript,
   __splashHtmlPath,
   appConfig,
@@ -225,7 +225,7 @@ if (!gotTheLock) {
 
     if (process.platform === "darwin") {
       try {
-        app.dock?.setIcon(__logoIconMacPath);
+        app.dock?.setIcon(__logoIconPng);
       } catch (err) {
         logger.error("Failed to set Mac dock icon:", err);
       }
