@@ -12,8 +12,8 @@ function loadConfig() {
     const raw = readFileSync(existsSync(configPath) ? configPath : defaultPath, "utf-8");
     return yaml.load(raw) as any;
   } catch (e) {
-    console.error("Failed to load config, using default port 3232", e);
-    return { frontend: { devPort: 3232 } };
+    console.error("Failed to load config, using default port 3000", e);
+    return { frontend: { devPort: 3000 } };
   }
 }
 
@@ -65,7 +65,7 @@ async function clearStaleNextDevLock(host: string, port: number) {
 
 async function main() {
   const config = loadConfig();
-  const port = Number(process.env.FRONTEND_PORT || config.frontend?.devPort || 3232);
+  const port = Number(process.env.FRONTEND_PORT || config.frontend?.devPort || 3000);
   const host = process.env.FRONTEND_HOST || config.frontend?.host || "127.0.0.1";
 
   await clearStaleNextDevLock(host, port);

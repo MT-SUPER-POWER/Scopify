@@ -114,6 +114,9 @@ function createWindow() {
 
   mainWindow.webContents.once("did-finish-load", () => {
     revealMainWindow();
+    if (appConfig.app.devTools) {
+      mainWindow?.webContents.openDevTools();
+    }
   });
 
   if (useStaticRenderer) {
@@ -130,10 +133,6 @@ function createWindow() {
     }
   } else {
     mainWindow.loadURL(devBase);
-
-    if (appConfig.app.devTools) {
-      mainWindow.webContents.openDevTools();
-    }
 
     mainWindow.webContents.on("did-fail-load", (_e, code, desc) => {
       logger.error("Did fail load:", code, desc);
@@ -220,12 +219,16 @@ if (!gotTheLock) {
 
     try {
       createWindow();
-
-      if (process.platform === "darwin") {
-        app.dock?.setIcon(__logoIconMacPath);
-      }
     } catch (err) {
       logger.error("Failed to create main window:", err);
+    }
+
+    if (process.platform === "darwin") {
+      try {
+        app.dock?.setIcon(__logoIconMacPath);
+      } catch (err) {
+        logger.error("Failed to set Mac dock icon:", err);
+      }
     }
 
     if (mainWindow) {
