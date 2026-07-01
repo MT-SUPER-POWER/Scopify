@@ -154,11 +154,16 @@ function createWindow() {
     }
 
     const isDevToolsKey =
-      input.key === "F12" ||
-      ((input.control || input.meta) && input.shift && input.key.toUpperCase() === "I") ||
-      (process.platform === "darwin" && input.meta && input.alt && input.key.toUpperCase() === "I");
+      input.code === "F12" ||
+      ((input.control || input.meta) && input.shift && input.code === "KeyI") ||
+      (process.platform === "darwin" && input.meta && input.alt && input.code === "KeyI");
 
-    if (isDevToolsKey && !appConfig.app.devTools) {
+    if (isDevToolsKey) {
+      if (appConfig.app.devTools) {
+        if (input.type === "keyDown") {
+          mainWindow?.webContents.toggleDevTools();
+        }
+      }
       event.preventDefault();
     }
   });

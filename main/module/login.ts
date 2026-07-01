@@ -30,7 +30,7 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
     title: "Login - Scopify",
     autoHideMenuBar: true,
     parent: mainWin, // 设置父窗口
-    modal: true, // 可选：如果你希望它是模态的
+    modal: process.platform !== "darwin", // macOS 下设为 false 避免变成无边框的 sheet
     webPreferences: {
       preload: __preloadScript,
       nodeIntegration: false,
@@ -43,6 +43,27 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
   const loginUrl = useStaticRenderer ? "app://-/login/" : `http://localhost:${devPort}/login`;
 
   loginWindow.loadURL(loginUrl);
+
+  if (appConfig.app.devTools) {
+    loginWindow.webContents.openDevTools({ mode: "detach" });
+  }
+
+  loginWindow.webContents.on("before-input-event", (event, input) => {
+    const isDevToolsKey =
+      input.code === "F12" ||
+      ((input.control || input.meta) && input.shift && input.code === "KeyI") ||
+      (process.platform === "darwin" && input.meta && input.alt && input.code === "KeyI");
+
+    if (isDevToolsKey) {
+      if (appConfig.app.devTools) {
+        if (input.type === "keyDown") {
+          loginWindow?.webContents.toggleDevTools();
+        }
+      }
+      event.preventDefault();
+    }
+  });
+
   loginWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
     console.error("[login] did-fail-load", { code, desc, validatedURL });
   });
