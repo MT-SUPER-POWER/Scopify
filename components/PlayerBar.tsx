@@ -5,17 +5,21 @@
 import {
   ChevronDown,
   ChevronUp,
+  CircleDot,
   Expand,
   Mic2,
   MinimizeIcon,
   MonitorSpeaker,
   Pause,
   Play,
+  Radio,
+  RadioReceiver,
   Repeat,
   Repeat1,
   Shuffle,
   SkipBack,
   SkipForward,
+  Sparkles,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
@@ -35,6 +39,15 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
 import { PlayerProgressBar } from "./PlayBar/ProgressBar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { Skeleton } from "./ui/skeleton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -105,6 +118,39 @@ function PlayerBarStatAction({
     </button>
   );
 }
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ QUALITY OPTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const QUALITY_OPTIONS = [
+  {
+    value: "spatial" as const,
+    icon: Sparkles,
+    label: "高清臻音",
+    sublabel: "96kHz/24bit",
+    description: "高频细节还原与清晰沉浸感",
+  },
+  {
+    value: "lossless" as const,
+    icon: Radio,
+    label: "无损 (SQ)",
+    sublabel: "最高48kHz/16bit",
+    description: "高保真无损音质",
+  },
+  {
+    value: "high" as const,
+    icon: RadioReceiver,
+    label: "极高 (HQ)",
+    sublabel: "最高320kbps",
+    description: "近CD音质的细节体验",
+  },
+  {
+    value: "standard" as const,
+    icon: CircleDot,
+    label: "标准",
+    sublabel: "128kbps",
+    description: "标准音质",
+  },
+];
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export const PlayerBar = ({
@@ -164,6 +210,8 @@ export const PlayerBar = ({
   const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricModalBar = variant === "lyric-modal";
+  const musicQuality = usePlayerStore((s) => s.musicQuality);
+  const setMusicQuality = usePlayerStore((s) => s.setMusicQuality);
 
   useEffect(() => {
     if (!currentSong?.id) return;
@@ -435,6 +483,55 @@ export const PlayerBar = ({
           >
             <Mic2 className="w-4 h-4 lg:w-5 lg:h-5" />
           </button>
+
+          {/* 音质选择 */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="hover:text-white transition-colors flex items-center justify-center"
+                title={t("playbar.quality")}
+              >
+                <Radio className="w-4 h-4 lg:w-5 lg:h-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="bg-[#282828] border-white/10 text-white p-2 w-64 rounded-xl"
+              side="top"
+              align="end"
+              sideOffset={8}
+            >
+              <DropdownMenuLabel className="text-xs text-zinc-400 px-2 py-1 font-normal">
+                {t("playbar.qualityTitle")}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuRadioGroup
+                value={musicQuality}
+                onValueChange={(v) => setMusicQuality(v as any)}
+              >
+                {QUALITY_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  return (
+                    <DropdownMenuRadioItem
+                      key={opt.value}
+                      value={opt.value}
+                      className="rounded-lg px-3 py-2.5 text-[15px] focus:bg-white/10 focus:text-white"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Icon className="w-5 h-5 shrink-0 text-zinc-300" />
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium text-white truncate">{opt.label}</div>
+                          <div className="text-[11px] text-zinc-400 truncate mt-0.5">
+                            {opt.sublabel} · {opt.description}
+                          </div>
+                        </div>
+                      </div>
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* 播放列表模态界面 */}
           <div className="hidden md:block">
