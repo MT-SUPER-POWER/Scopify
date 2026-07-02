@@ -1,15 +1,16 @@
 import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { getLyric, greySongUrlMatch } from "@/lib/api/music";
-import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
+import { getLyric, getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
+import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
 import { type NeteaseLyric, pruneNeteaseLyric, type SongDetail } from "@/types/api/music";
 
 export type RepeatMode = "off" | "all" | "one";
+export type MusicQuality = "spatial" | "lossless" | "high" | "standard";
 export type PlaybackFailureSource = "url" | "audio";
 
 interface PlayTrackOptions {
@@ -47,6 +48,8 @@ type PlayerStore = {
   lyric: NeteaseLyric | null;
   playlistId: number | string | null;
   playbackFailureCount: number;
+  musicQuality: MusicQuality;
+  setMusicQuality: (quality: MusicQuality) => void;
 
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
@@ -93,6 +96,8 @@ export const usePlayerStore = create<PlayerStore>()(
       lyric: null,
       playlistId: null,
       playbackFailureCount: 0,
+      musicQuality: "high",
+      setMusicQuality: (quality) => set({ musicQuality: quality }),
 
       setVolume: (v) => set({ volume: v }),
       setIsPlaying: (v) => set({ isPlaying: v }),
@@ -252,11 +257,14 @@ export const usePlayerStore = create<PlayerStore>()(
         });
 
         try {
+          const { musicQuality } = get();
+          const level = UI_QUALITY_TO_LEVEL[musicQuality] || "exhigh";
+
           const [urlRes, lyricRes] = await Promise.all([
-            greySongUrlMatch(song.id),
+            getSongUrlWithQuality(song.id, level),
             getLyric(song.id),
           ]);
-          const url = urlRes.data ?? urlRes.proxyUrl;
+          const url = urlRes.data;
 
           if (!url) {
             throw new Error("Playback URL is empty");
@@ -405,6 +413,7 @@ export const usePlayerStore = create<PlayerStore>()(
         historyIndex: state.historyIndex,
         lyric: state.lyric,
         playlistId: state.playlistId,
+        musicQuality: state.musicQuality,
       }),
     },
   ),
