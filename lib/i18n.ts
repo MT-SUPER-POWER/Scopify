@@ -375,6 +375,7 @@ const zhCN = {
   "profile.menu.settings": "设置",
   "profile.menu.download": "下载",
   "profile.menu.aboutMe": "关于我",
+  "profile.menu.vipSign": "网易乐签",
   "profile.page.invalidUserId": "无效的用户 ID",
   "profile.page.recentSongs": "最近播放歌曲",
   "profile.page.noRecentSongs": "暂无播放记录",
@@ -394,6 +395,13 @@ const zhCN = {
   "profile.edit.genderPrivate": "保密",
   "profile.edit.genderMale": "男",
   "profile.edit.genderFemale": "女",
+  "vipSign.title": "签到",
+  "vipSign.alreadySigned": "今天已签到",
+  "vipSign.notMember": "非黑胶会员无法签到",
+  "vipSign.consecutiveDays": "连续签到 {{days}} 天",
+  "vipSign.recommendedSong": "今日推荐",
+  "vipSign.success": "签到成功",
+  "vipSign.failed": "签到失败: {{message}}",
   "album.toast.fetchFailed": "获取专辑详情失败",
   "album.toast.subscribeSuccess": "已收藏专辑",
   "album.toast.unsubscribeSuccess": "已取消收藏专辑",
@@ -467,6 +475,8 @@ const zhCN = {
   "tray.settings": "设置",
   "tray.minimize": "最小化",
   "tray.exit": "退出",
+  "playbar.quality": "音质选择",
+  "playbar.qualityTitle": "音质级别",
 } as const;
 
 const zhTW: TranslationCatalog = {
@@ -839,6 +849,7 @@ const zhTW: TranslationCatalog = {
   "profile.menu.settings": "設定",
   "profile.menu.download": "下載",
   "profile.menu.aboutMe": "關於我",
+  "profile.menu.vipSign": "網易樂簽",
   "profile.page.invalidUserId": "無效的使用者 ID",
   "profile.page.recentSongs": "最近播放歌曲",
   "profile.page.noRecentSongs": "暫無播放紀錄",
@@ -858,6 +869,13 @@ const zhTW: TranslationCatalog = {
   "profile.edit.genderPrivate": "保密",
   "profile.edit.genderMale": "男",
   "profile.edit.genderFemale": "女",
+  "vipSign.title": "簽到",
+  "vipSign.alreadySigned": "今天已簽到",
+  "vipSign.notMember": "非黑膠會員無法簽到",
+  "vipSign.consecutiveDays": "連續簽到 {{days}} 天",
+  "vipSign.recommendedSong": "今日推薦",
+  "vipSign.success": "簽到成功",
+  "vipSign.failed": "簽到失敗: {{message}}",
   "album.toast.fetchFailed": "取得專輯詳情失敗",
   "album.toast.subscribeSuccess": "已收藏專輯",
   "album.toast.unsubscribeSuccess": "已取消收藏專輯",
@@ -931,6 +949,8 @@ const zhTW: TranslationCatalog = {
   "tray.settings": "設定",
   "tray.minimize": "最小化",
   "tray.exit": "退出",
+  "playbar.quality": "音質選擇",
+  "playbar.qualityTitle": "音質級別",
 };
 
 const enUS: TranslationCatalog = {
@@ -1322,6 +1342,7 @@ const enUS: TranslationCatalog = {
   "profile.menu.settings": "Settings",
   "profile.menu.download": "Download",
   "profile.menu.aboutMe": "About Me",
+  "profile.menu.vipSign": "VIP Check-in",
   "profile.page.invalidUserId": "Invalid User ID",
   "profile.page.recentSongs": "Recent Songs",
   "profile.page.noRecentSongs": "No playback history available",
@@ -1341,6 +1362,13 @@ const enUS: TranslationCatalog = {
   "profile.edit.genderPrivate": "Private",
   "profile.edit.genderMale": "Male",
   "profile.edit.genderFemale": "Female",
+  "vipSign.title": "Check-in",
+  "vipSign.alreadySigned": "Already checked in today",
+  "vipSign.notMember": "VIP membership required",
+  "vipSign.consecutiveDays": "{{days}} consecutive days",
+  "vipSign.recommendedSong": "Today's Pick",
+  "vipSign.success": "Check-in successful!",
+  "vipSign.failed": "Check-in failed: {{message}}",
   "album.toast.fetchFailed": "Failed to load album details",
   "album.toast.subscribeSuccess": "Album saved",
   "album.toast.unsubscribeSuccess": "Album removed from saved albums",
@@ -1414,6 +1442,8 @@ const enUS: TranslationCatalog = {
   "tray.settings": "Settings",
   "tray.minimize": "Minimize",
   "tray.exit": "Exit",
+  "playbar.quality": "Audio Quality",
+  "playbar.qualityTitle": "Quality Level",
 };
 
 export const messages = {
