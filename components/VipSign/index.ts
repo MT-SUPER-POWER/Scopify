@@ -1,0 +1,1 @@
+export { VipSignModal } from "./VipSignModal";
