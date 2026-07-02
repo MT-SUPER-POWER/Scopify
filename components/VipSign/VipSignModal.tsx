@@ -48,10 +48,12 @@ function monthName(d: Date) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function calcConsecutiveDays(records: VipSignRecord[]): number {
-  // records 按 timeStr 升序排列，找到从今天往回连续 today: true 的记录
+  // 从 today: true 的记录往前统计 recordId > 0 的连续天数
+  const todayIdx = records.findIndex((r) => r.today);
+  if (todayIdx === -1) return 0;
   let count = 0;
-  for (let i = records.length - 1; i >= 0; i--) {
-    if (records[i].today) {
+  for (let i = todayIdx; i >= 0; i--) {
+    if (records[i].recordId > 0) {
       count++;
     } else {
       break;
