@@ -215,7 +215,78 @@ PlayerBar.tsx
                               后续请求歌曲 URL 时传入 quality 参数
 ```
 
-### 2.2 State 管理 — `store/module/player.tsx`
+### 2.2 API 层 — `lib/api/music.ts`
+
+新增以下接口方法与类型定义：
+
+```typescript
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 音质相关 API
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/** 音质等级 (对应 /song/url/v1 的 level 参数) */
+export type MusicQualityLevel =
+  | "standard"   // 标准 128kbps
+  | "higher"     // 较高 192kbps
+  | "exhigh"     // 极高 320kbps
+  | "lossless"   // 无损
+  | "hires"      // Hi-Res (96kHz/24bit)
+  | "jyeffect"   // 高清环绕声
+  | "sky"        // 沉浸环绕声
+  | "dolby"      // 杜比全景声
+  | "jymaster";  // 超清母带
+
+/** UI 音质选项 -> API level 参数映射 */
+export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
+  standard: "standard",
+  high: "exhigh",
+  lossless: "lossless",
+  spatial: "hires",
+};
+
+/** 获取歌曲各个音质的文件信息 */
+export async function getSongMusicDetail(id: number | string) {
+  return request.get("/song/music/detail", { params: { id } });
+  // 返回: { br, size, vd, sr }
+}
+
+/** 获取音乐 URL - 新版 (支持音质等级) */
+export async function getSongUrlV1(
+  id: number | string,
+  level: MusicQualityLevel = "exhigh",
+  unblock: boolean = true,
+) {
+  return request.get("/song/url/v1", { params: { id, level, unblock } });
+}
+
+/** 音乐是否可用 */
+export async function checkMusicAvailable(id: number | string, br?: number) {
+  return request.get("/check/music", { params: { id, ...(br ? { br } : {}) } });
+}
+
+/**
+ * 带音质选择的歌曲 URL 获取
+ * 先尝试 /song/url/v1 (新音质接口)，失败后降级到 /song/url/match (灰色歌曲解灰)
+ */
+export async function getSongUrlWithQuality(
+  id: number | string,
+  level: MusicQualityLevel = "exhigh",
+) {
+  try {
+    const res = await getSongUrlV1(id, level);
+    const item = res.data?.data?.[0];
+    if (item?.url) {
+      return { data: item.url, level, source: "url-v1" };
+    }
+    throw new Error("No URL returned from v1");
+  } catch {
+    const fallback = await greySongUrlMatch(id);
+    return { data: fallback.data ?? fallback.proxyUrl, level, source: "url-match" };
+  }
+}
+```
+
+### 2.3 State 管理 — `store/module/player.tsx`
 
 新增字段：
 ```typescript
@@ -227,6 +298,8 @@ setMusicQuality: (quality: MusicQuality) => void;
 ```
 
 初始化值：`"high"`（极高HQ），持久化到 localStorage。
+
+同时修改 `playTrack` 方法，从 store 读取 `musicQuality` 并调用 `getSongUrlWithQuality` 替代原有 `greySongUrlMatch`。
 
 ### 2.3 UI 实现
 
@@ -305,26 +378,23 @@ const QUALITY_OPTIONS = [
 </DropdownMenu>
 ```
 
-### 2.4 与播放的集成
+### 2.5 与播放的集成
 
-在后续请求歌曲 URL 时（`lib/api/music.ts` 的 `greySongUrlMatch`），需要传入 quality 参数：
+在 `store/module/player.tsx` 的 `playTrack` 方法中，根据当前 `musicQuality` 映射出 API level，然后调用 `getSongUrlWithQuality`：
 
 ```typescript
-export async function greySongUrlMatch(
-  id: number | string,
-  source?: string,
-  quality?: MusicQuality,
-): Promise<SongUrlMatchResponse> {
-  const params: Record<string, any> = { id };
-  if (source) params.source = source;
-  if (quality) params.quality = quality;
-  // ...
-}
+// playTrack 内部
+const { musicQuality } = get();
+const level = UI_QUALITY_TO_LEVEL[musicQuality] || "exhigh";
+
+const [urlRes, lyricRes] = await Promise.all([
+  getSongUrlWithQuality(song.id, level),
+  getLyric(song.id),
+]);
+const url = urlRes.data;
 ```
 
-以及 player store 中的 `playTrack` 方法需要从 store 读取 `musicQuality` 并传入。
-
-### 2.5 i18n 新增
+### 2.6 i18n 新增
 
 zh-CN:
 ```
@@ -345,7 +415,8 @@ zh-CN:
 | `components/VipSign/SignCard.tsx` | 新建 | 签到卡片内部组件 |
 | `components/PlayerBar.tsx` | 修改 | 新增音质选择按钮 + DropdownMenu |
 | `store/module/player.tsx` | 修改 | 新增 `musicQuality` 字段 |
-| `lib/api/music.ts` | 修改 | `greySongUrlMatch` 新增 quality 参数 |
+| `lib/api/music.ts` | 修改 | 新增音质类型、`getSongMusicDetail`、`getSongUrlV1`、`checkMusicAvailable`、`getSongUrlWithQuality` 方法 |
+| `store/module/player.tsx` | 修改 | 新增 `musicQuality` 字段；`playTrack` 改用 `getSongUrlWithQuality` 获取 URL |
 | `lib/i18n.ts` | 修改 | 新增 i18n 翻译键 |
 
 ---
