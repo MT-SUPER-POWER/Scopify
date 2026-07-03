@@ -98,7 +98,6 @@ export const usePlayerStore = create<PlayerStore>()(
       playbackFailureCount: 0,
       musicQuality: "high",
       setMusicQuality: (quality) => set({ musicQuality: quality }),
-
       setVolume: (v) => set({ volume: v }),
       setIsPlaying: (v) => set({ isPlaying: v }),
       setRepeatMode: (mode) => set({ repeatMode: mode }),

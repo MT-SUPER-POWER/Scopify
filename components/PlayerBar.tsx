@@ -40,6 +40,9 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
 import { PlayerProgressBar } from "./PlayBar/ProgressBar";
+import { audioManager } from "@/components/PlayBar/AudioManager";
+import { getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
+import { useTimeStore } from "@/store/module/time";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -221,6 +224,31 @@ export const PlayerBar = ({
   const isLyricModalBar = variant === "lyric-modal";
   const musicQuality = usePlayerStore((s) => s.musicQuality);
   const setMusicQuality = usePlayerStore((s) => s.setMusicQuality);
+
+  // 查找当前选中的音质选项，如果找不到就提供一个兜底
+  const currentOption = QUALITY_OPTIONS.find((opt) => opt.value === musicQuality);
+  const CurrentIcon = currentOption ? currentOption.icon : Radio;
+
+  const handleQualityChange = async (quality: any) => {
+    setMusicQuality(quality);
+    if (currentSong?.id) {
+      try {
+        // 同步当前的精确进度到 timeStore
+        if (audioManager.audio) {
+          useTimeStore.getState().setCurrentTime(audioManager.audio.currentTime * 1000);
+        }
+
+        // 获取新音质的链接
+        const level = UI_QUALITY_TO_LEVEL[quality] || "exhigh";
+        const urlRes = await getSongUrlWithQuality(currentSong.id, level);
+        if (urlRes.data) {
+          usePlayerStore.setState({ currentSongUrl: urlRes.data });
+        }
+      } catch (err) {
+        console.error("切换音质重载播放链接失败", err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (!currentSong?.id) return;
@@ -501,7 +529,7 @@ export const PlayerBar = ({
                 className="hover:text-white transition-colors flex items-center justify-center"
                 title={t("playbar.quality")}
               >
-                <Radio className="w-4 h-4 lg:w-5 lg:h-5" />
+                <CurrentIcon className="w-4 h-4 lg:w-5 lg:h-5" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -516,7 +544,7 @@ export const PlayerBar = ({
               <DropdownMenuSeparator className="bg-white/10" />
               <DropdownMenuRadioGroup
                 value={musicQuality}
-                onValueChange={(v) => setMusicQuality(v as any)}
+                onValueChange={(v) => handleQualityChange(v as any)}
               >
                 {QUALITY_OPTIONS.map((opt) => {
                   const Icon = opt.icon;
