@@ -6,7 +6,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": {
         "noUnusedVariables": "warn"
       },
@@ -17,6 +17,7 @@
         "noExplicitAny": "off"
       },
       "a11y": {
+        "useMediaCaption": "off",
         "noStaticElementInteractions": "off",
         "useKeyWithClickEvents": "off"
       }

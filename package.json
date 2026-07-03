@@ -20,6 +20,7 @@
   "main": "out/main/main.js",
   "description": "Electron + Next.js Music Player Base on NetEase Music API",
   "scripts": {
+    "prepare": "husky",
     "lint": "biome lint .",
     "format": "biome format . --write",
     "check": "biome check --write .",
@@ -79,6 +80,8 @@
     "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",
     "framer-motion": "^12.40.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
     "jss": "^10.10.0",
     "jss-preset-default": "^10.10.0",
     "lucide-react": "^0.577.0",
@@ -163,6 +166,11 @@
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": true
     }
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc,css}": [
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+    ]
   },
   "trustedDependencies": [
     "electron",

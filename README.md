@@ -32,6 +32,7 @@
 5. Makefile + k8s + Docker: 后端部署部分
 6. Axios: 后端通讯统一管理部分
 7. Zustand: 前端状态管理
+8. Biome + Husky: 代码格式化约束 + Git 提交规范
 
 ### 代码结构
 
