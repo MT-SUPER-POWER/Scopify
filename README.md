@@ -229,6 +229,13 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 </details>
 
+<details>
+<summary> 网易乐签页面 </summary>
+
+![网易乐签页面](/docs/img/VipSign.png)
+
+</details>
+
 ## TODO
 
 - 收藏 / 取消收藏专辑

@@ -2345,6 +2345,48 @@ export interface TranslateFn {
    */
   (key: "vipSign.failed", params?: TranslationParams): string;
   /**
+   * zh-CN: 本月累计打卡
+   * zh-TW: 本月累計打卡
+   * en-US: Monthly Check-ins
+   */
+  (key: "vipSign.monthlyCheckIn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 天
+   * zh-TW: 天
+   * en-US: Days
+   */
+  (key: "vipSign.days", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云音乐APP扫码去会员中心
+   * zh-TW: 雲音樂APP掃碼去會員中心
+   * en-US: Scan with Cloud Music App to VIP Center
+   */
+  (key: "vipSign.qrGuide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 会员每日打卡得成长值
+   * zh-TW: 會員每日打卡得成長值
+   * en-US: Check in daily for membership growth value
+   */
+  (key: "vipSign.qrHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 月
+   * zh-TW: 月
+   * en-US: M
+   */
+  (key: "vipSign.month", params?: TranslationParams): string;
+  /**
+   * zh-CN: 日
+   * zh-TW: 日
+   * en-US: D
+   */
+  (key: "vipSign.day", params?: TranslationParams): string;
+  /**
+   * zh-CN: - 来自 @{{nickname}} 的评论
+   * zh-TW: - 來自 @{{nickname}} 的評論
+   * en-US: - comment by @{{nickname}}
+   */
+  (key: "vipSign.commentFrom", params?: TranslationParams): string;
+  /**
    * zh-CN: 获取专辑详情失败
    * zh-TW: 取得專輯詳情失敗
    * en-US: Failed to load album details
