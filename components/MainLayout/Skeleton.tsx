@@ -2,11 +2,10 @@
 
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
 
 interface MainLayoutSkeletonProps {
-  title?: string;
-  description?: string;
+  title: string;
+  description: string;
   actionLabel?: string;
   onAction?: () => void;
 }
@@ -20,8 +19,6 @@ export default function MainLayoutSkeleton({
   actionLabel,
   onAction,
 }: MainLayoutSkeletonProps) {
-  const { t } = useI18n();
-
   return (
     <div
       className={cn(
@@ -53,12 +50,8 @@ export default function MainLayoutSkeleton({
       />
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
         <div className="pointer-events-auto w-full max-w-md rounded-2xl border border-white/10 bg-black/70 p-6 text-center shadow-2xl backdrop-blur-xl">
-          <div className="text-lg font-semibold text-white">
-            {title ?? t("layout.loadingTitle")}
-          </div>
-          <p className="mt-2 text-sm leading-6 text-zinc-400">
-            {description ?? t("layout.loadingDescription")}
-          </p>
+          <div className="text-lg font-semibold text-white">{title}</div>
+          <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p>
           {actionLabel && onAction ? (
             <button
               type="button"

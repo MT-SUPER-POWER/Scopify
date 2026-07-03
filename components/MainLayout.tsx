@@ -8,7 +8,6 @@ import { useDefaultLayout } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
-import { useHasHydrated } from "@/lib/hooks/useHydration";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -296,12 +295,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
  */
 export default function MainLayout({ children }: { children?: ReactNode }) {
   const { t } = useI18n();
-  const isHydrated = useHasHydrated();
   const backendStartup = useBackendStartup();
-
-  if (!isHydrated) {
-    return <MainLayoutSkeleton />;
-  }
 
   if (backendStartup.state === "starting") {
     return (

@@ -6,8 +6,8 @@ import type { BrowserWindow as BrowserWindowType } from "electron";
 import { app, BrowserWindow, dialog } from "electron";
 import serve from "electron-serve";
 import {
-  __iconWindow,
   __iconDock,
+  __iconWindow,
   __preloadScript,
   __splashHtmlPath,
   appConfig,

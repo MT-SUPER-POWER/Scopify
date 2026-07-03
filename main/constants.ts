@@ -63,11 +63,15 @@ if (_nativeIco.isEmpty()) {
 }
 
 if (_nativeWindowMac.isEmpty()) {
-  log.error(`[Resource] Failed to load macOS window icon from: ${join(__iconsetDir, "icon_128x128.png")}`);
+  log.error(
+    `[Resource] Failed to load macOS window icon from: ${join(__iconsetDir, "icon_128x128.png")}`,
+  );
 }
 
 if (_nativeDockMac.isEmpty()) {
-  log.error(`[Resource] Failed to load macOS dock icon from: ${join(__iconsetDir, "icon_512x512.png")}`);
+  log.error(
+    `[Resource] Failed to load macOS dock icon from: ${join(__iconsetDir, "icon_512x512.png")}`,
+  );
 }
 
 export const __preloadScript = join(__dirname, "../main/preload.js");

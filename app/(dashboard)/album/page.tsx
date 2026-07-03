@@ -1,10 +1,10 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
-import TracklistTable from "@/components/Playlist/TrackTable";
 import { AlbumActions } from "@/components/album/AlbumActions";
 import { AlbumHeader } from "@/components/album/AlbumHeader";
+import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
+import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";

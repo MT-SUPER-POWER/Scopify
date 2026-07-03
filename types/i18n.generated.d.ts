@@ -905,18 +905,6 @@ export interface TranslateFn {
    */
   (key: "appClose.remember", params?: TranslationParams): string;
   /**
-   * zh-CN: 正在加载 Scopify
-   * zh-TW: 正在載入 Scopify
-   * en-US: Loading Scopify
-   */
-  (key: "layout.loadingTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 正在准备你的工作区...
-   * zh-TW: 正在準備你的工作區...
-   * en-US: Preparing your workspace...
-   */
-  (key: "layout.loadingDescription", params?: TranslationParams): string;
-  /**
    * zh-CN: 正在启动本地服务
    * zh-TW: 正在啟動本地服務
    * en-US: Starting Local Service
@@ -2081,9 +2069,9 @@ export interface TranslateFn {
    */
   (key: "comments.page.replyComment", params?: TranslationParams): string;
   /**
-   * zh-CN: 回复给:
-   * zh-TW: 回覆給:
-   * en-US: Replying to:
+   * zh-CN: 回复给: 
+   * zh-TW: 回覆給: 
+   * en-US: Replying to: 
    */
   (key: "comments.page.replyingTo", params?: TranslationParams): string;
   /**
@@ -2880,3 +2868,4 @@ export interface TranslateFn {
   (key: "playbar.quality.standard.description", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }
+

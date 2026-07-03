@@ -22,15 +22,15 @@ export async function getLyric(id: number | string) {
 
 /** 音质等级 (对应 /song/url/v1 的 level 参数) */
 export type MusicQualityLevel =
-  | "standard"   // 标准 128kbps
-  | "higher"     // 较高 192kbps
-  | "exhigh"     // 极高 320kbps
-  | "lossless"   // 无损
-  | "hires"      // Hi-Res
-  | "jyeffect"   // 高清环绕声
-  | "sky"        // 沉浸环绕声
-  | "dolby"      // 杜比全景声
-  | "jymaster";  // 超清母带
+  | "standard" // 标准 128kbps
+  | "higher" // 较高 192kbps
+  | "exhigh" // 极高 320kbps
+  | "lossless" // 无损
+  | "hires" // Hi-Res
+  | "jyeffect" // 高清环绕声
+  | "sky" // 沉浸环绕声
+  | "dolby" // 杜比全景声
+  | "jymaster"; // 超清母带
 
 /** UI 音质选项 -> API level 参数映射 */
 export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
@@ -42,10 +42,10 @@ export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
 
 /** 歌曲各音质文件信息 */
 export interface SongMusicDetailItem {
-  br: number;       // 比特率 Bit Rate
-  size: number;     // 文件大小
-  vd: number;       // Volume Delta
-  sr: number;       // 采样率 Sample Rate
+  br: number; // 比特率 Bit Rate
+  size: number; // 文件大小
+  vd: number; // Volume Delta
+  sr: number; // 采样率 Sample Rate
 }
 
 export interface SongMusicDetailResponse {
