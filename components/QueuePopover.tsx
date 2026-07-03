@@ -4,11 +4,11 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { ListMusic, LocateFixed, Play } from "lucide-react"; // 添加定位图标
 import Image from "next/image";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
 

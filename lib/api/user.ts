@@ -126,3 +126,25 @@ export const updateUserProfile = (payload: UpdateUserProfilePayload) => {
     params: payload,
   });
 };
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 网易乐签
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+import type { VipSignInfoResponse, VipSignResponse } from "@/types/api/vipSign";
+
+/** 网易乐签 - VIP签到 POST /vip/sign */
+export function vipSign(cookie?: string) {
+  return request.post<VipSignResponse>("/vip/sign", {}, {
+    params: { cookie },
+    noRetry: true,
+  } as any);
+}
+
+/** 网易乐签 - 签到信息 GET /vip/sign/info */
+export function vipSignInfo(cookie?: string) {
+  return request.get<VipSignInfoResponse>("/vip/sign/info", {
+    params: { cookie },
+    noRetry: true,
+  } as any);
+}

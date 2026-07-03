@@ -5,17 +5,21 @@
 import {
   ChevronDown,
   ChevronUp,
+  CircleDot,
   Expand,
   Mic2,
   MinimizeIcon,
   MonitorSpeaker,
   Pause,
   Play,
+  Radio,
+  RadioReceiver,
   Repeat,
   Repeat1,
   Shuffle,
   SkipBack,
   SkipForward,
+  Sparkles,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
@@ -29,12 +33,22 @@ import { VolumeControl } from "@/components/VolumeControl";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import type { TranslationKey } from "@/lib/i18n";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
 import { PlayerProgressBar } from "./PlayBar/ProgressBar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { Skeleton } from "./ui/skeleton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -105,6 +119,47 @@ function PlayerBarStatAction({
     </button>
   );
 }
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ QUALITY OPTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+type QualityOptionKey = "spatial" | "lossless" | "high" | "standard";
+
+const QUALITY_OPTIONS: Array<{
+  value: QualityOptionKey;
+  icon: typeof Sparkles;
+  labelKey: TranslationKey;
+  sublabelKey: TranslationKey;
+  descriptionKey: TranslationKey;
+}> = [
+  {
+    value: "spatial",
+    icon: Sparkles,
+    labelKey: "playbar.quality.spatial.label",
+    sublabelKey: "playbar.quality.spatial.sublabel",
+    descriptionKey: "playbar.quality.spatial.description",
+  },
+  {
+    value: "lossless",
+    icon: Radio,
+    labelKey: "playbar.quality.lossless.label",
+    sublabelKey: "playbar.quality.lossless.sublabel",
+    descriptionKey: "playbar.quality.lossless.description",
+  },
+  {
+    value: "high",
+    icon: RadioReceiver,
+    labelKey: "playbar.quality.high.label",
+    sublabelKey: "playbar.quality.high.sublabel",
+    descriptionKey: "playbar.quality.high.description",
+  },
+  {
+    value: "standard",
+    icon: CircleDot,
+    labelKey: "playbar.quality.standard.label",
+    sublabelKey: "playbar.quality.standard.sublabel",
+    descriptionKey: "playbar.quality.standard.description",
+  },
+];
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export const PlayerBar = ({
@@ -164,6 +219,8 @@ export const PlayerBar = ({
   const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricModalBar = variant === "lyric-modal";
+  const musicQuality = usePlayerStore((s) => s.musicQuality);
+  const setMusicQuality = usePlayerStore((s) => s.setMusicQuality);
 
   useEffect(() => {
     if (!currentSong?.id) return;
@@ -435,6 +492,57 @@ export const PlayerBar = ({
           >
             <Mic2 className="w-4 h-4 lg:w-5 lg:h-5" />
           </button>
+
+          {/* 音质选择 */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="hover:text-white transition-colors flex items-center justify-center"
+                title={t("playbar.quality")}
+              >
+                <Radio className="w-4 h-4 lg:w-5 lg:h-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="bg-[#282828] border-white/10 text-white p-2 w-64 rounded-xl"
+              side="top"
+              align="end"
+              sideOffset={8}
+            >
+              <DropdownMenuLabel className="text-xs text-zinc-400 px-2 py-1 font-normal">
+                {t("playbar.qualityTitle")}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuRadioGroup
+                value={musicQuality}
+                onValueChange={(v) => setMusicQuality(v as any)}
+              >
+                {QUALITY_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  return (
+                    <DropdownMenuRadioItem
+                      key={opt.value}
+                      value={opt.value}
+                      className="rounded-lg px-3 py-2.5 text-[15px] focus:bg-white/10 focus:text-white"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Icon className="w-5 h-5 shrink-0 text-zinc-300" />
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium text-white truncate">
+                            {t(opt.labelKey)}
+                          </div>
+                          <div className="text-[11px] text-zinc-400 truncate mt-0.5">
+                            {t(opt.sublabelKey)} · {t(opt.descriptionKey)}
+                          </div>
+                        </div>
+                      </div>
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* 播放列表模态界面 */}
           <div className="hidden md:block">

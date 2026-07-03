@@ -1,5 +1,5 @@
 import { app, BrowserWindow, screen, Tray } from "electron";
-import { __logoIcon, __preloadScript } from "../constants.js";
+import { __iconTray, __preloadScript } from "../constants.js";
 
 const TRAY_WIDTH = 240;
 const TRAY_HEIGHT = 380;
@@ -56,7 +56,7 @@ function initTray(mainWindow: Electron.BrowserWindow) {
   // 如果已经初始化过，不要重复创建
   if (tray) return;
 
-  tray = new Tray(__logoIcon);
+  tray = new Tray(__iconTray);
   tray.setToolTip("Scopify");
 
   createTrayWindow();

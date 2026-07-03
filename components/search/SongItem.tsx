@@ -9,6 +9,7 @@ import Link from "next/link";
 import { memo, useCallback, useMemo } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
+import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -28,7 +29,6 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import type { SongDetail } from "@/types/api/music";
 import type { Song } from "@/types/search";
 

@@ -3,6 +3,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { Lock, QrCode, Smartphone, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type React from "react";
@@ -19,11 +20,10 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, IS_WEB } from "@/lib/utils";
 import { sendCaptcha } from "@/lib/web/auth";
+import logo from "@/resources/icon_source.png";
 import { useI18n } from "@/store/module/i18n";
 import type { LoginRequiredReason } from "@/types/auth";
 import type { LoginMode } from "@/types/login";
-import Image from "next/image";
-import logo from "@/resources/icon_source.png"
 
 let hydrationReady = false;
 let hydrationPromise: Promise<void> | null = null;

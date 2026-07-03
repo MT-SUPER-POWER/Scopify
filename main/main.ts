@@ -6,8 +6,8 @@ import type { BrowserWindow as BrowserWindowType } from "electron";
 import { app, BrowserWindow, dialog } from "electron";
 import serve from "electron-serve";
 import {
-  __logoIcon,
-  __logoIconPng,
+  __iconDock,
+  __iconWindow,
   __preloadScript,
   __splashHtmlPath,
   appConfig,
@@ -78,7 +78,7 @@ function createWindow() {
     transparent: true,
     frame: false,
     alwaysOnTop: true,
-    icon: __logoIcon,
+    icon: __iconWindow,
     resizable: false,
     show: true,
     movable: false,
@@ -95,7 +95,7 @@ function createWindow() {
     minWidth: 840,
     minHeight: 720,
     autoHideMenuBar: true,
-    icon: __logoIcon,
+    icon: __iconWindow,
     title: "Scopify",
     show: false,
     titleBarOverlay: {
@@ -154,11 +154,16 @@ function createWindow() {
     }
 
     const isDevToolsKey =
-      input.key === "F12" ||
-      ((input.control || input.meta) && input.shift && input.key.toUpperCase() === "I") ||
-      (process.platform === "darwin" && input.meta && input.alt && input.key.toUpperCase() === "I");
+      input.code === "F12" ||
+      ((input.control || input.meta) && input.shift && input.code === "KeyI") ||
+      (process.platform === "darwin" && input.meta && input.alt && input.code === "KeyI");
 
-    if (isDevToolsKey && !appConfig.app.devTools) {
+    if (isDevToolsKey) {
+      if (appConfig.app.devTools) {
+        if (input.type === "keyDown") {
+          mainWindow?.webContents.toggleDevTools();
+        }
+      }
       event.preventDefault();
     }
   });
@@ -225,7 +230,7 @@ if (!gotTheLock) {
 
     if (process.platform === "darwin") {
       try {
-        app.dock?.setIcon(__logoIconPng);
+        app.dock?.setIcon(__iconDock);
       } catch (err) {
         logger.error("Failed to set Mac dock icon:", err);
       }
