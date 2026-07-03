@@ -55,7 +55,10 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
       const signData = res.data;
       if (signData.code === 200) {
         const info = await vipSignInfo(cookie ?? undefined);
-        setSignRecords(info.data.data ?? []);
+        // 后端返回的响应体形如 { code, data: VipSignRecord[], message }，
+        // 因此 axios 的 res.data 已是响应体本身，签到记录位于 res.data.data
+        const records = info.data?.data ?? [];
+        setSignRecords(records);
         setSignModalOpen(true);
       } else {
         toast.error(signData.message || t("vipSign.failed", { message: "" }));

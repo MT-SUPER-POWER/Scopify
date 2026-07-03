@@ -477,6 +477,18 @@ const zhCN = {
   "tray.exit": "退出",
   "playbar.quality": "音质选择",
   "playbar.qualityTitle": "音质级别",
+  "playbar.quality.spatial.label": "高清臻音",
+  "playbar.quality.spatial.sublabel": "96kHz/24bit",
+  "playbar.quality.spatial.description": "高频细节还原与清晰沉浸感",
+  "playbar.quality.lossless.label": "无损 (SQ)",
+  "playbar.quality.lossless.sublabel": "最高48kHz/16bit",
+  "playbar.quality.lossless.description": "高保真无损音质",
+  "playbar.quality.high.label": "极高 (HQ)",
+  "playbar.quality.high.sublabel": "最高320kbps",
+  "playbar.quality.high.description": "近CD音质的细节体验",
+  "playbar.quality.standard.label": "标准",
+  "playbar.quality.standard.sublabel": "128kbps",
+  "playbar.quality.standard.description": "标准音质",
 } as const;
 
 const zhTW: TranslationCatalog = {
@@ -951,6 +963,18 @@ const zhTW: TranslationCatalog = {
   "tray.exit": "退出",
   "playbar.quality": "音質選擇",
   "playbar.qualityTitle": "音質級別",
+  "playbar.quality.spatial.label": "高清臻音",
+  "playbar.quality.spatial.sublabel": "96kHz/24bit",
+  "playbar.quality.spatial.description": "高頻細節還原與清晰沉浸感",
+  "playbar.quality.lossless.label": "無損 (SQ)",
+  "playbar.quality.lossless.sublabel": "最高48kHz/16bit",
+  "playbar.quality.lossless.description": "高保真無損音質",
+  "playbar.quality.high.label": "極高 (HQ)",
+  "playbar.quality.high.sublabel": "最高320kbps",
+  "playbar.quality.high.description": "近CD音質的細節體驗",
+  "playbar.quality.standard.label": "標準",
+  "playbar.quality.standard.sublabel": "128kbps",
+  "playbar.quality.standard.description": "標準音質",
 };
 
 const enUS: TranslationCatalog = {
@@ -1444,6 +1468,18 @@ const enUS: TranslationCatalog = {
   "tray.exit": "Exit",
   "playbar.quality": "Audio Quality",
   "playbar.qualityTitle": "Quality Level",
+  "playbar.quality.spatial.label": "Hi-Res",
+  "playbar.quality.spatial.sublabel": "96kHz/24bit",
+  "playbar.quality.spatial.description": "Restores high-frequency detail and clarity",
+  "playbar.quality.lossless.label": "Lossless (SQ)",
+  "playbar.quality.lossless.sublabel": "Up to 48kHz/16bit",
+  "playbar.quality.lossless.description": "High-fidelity lossless audio",
+  "playbar.quality.high.label": "High (HQ)",
+  "playbar.quality.high.sublabel": "Up to 320kbps",
+  "playbar.quality.high.description": "Detail close to CD quality",
+  "playbar.quality.standard.label": "Standard",
+  "playbar.quality.standard.sublabel": "128kbps",
+  "playbar.quality.standard.description": "Standard audio quality",
 };
 
 export const messages = {

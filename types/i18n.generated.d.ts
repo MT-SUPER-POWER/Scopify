@@ -2195,6 +2195,12 @@ export interface TranslateFn {
    */
   (key: "profile.menu.aboutMe", params?: TranslationParams): string;
   /**
+   * zh-CN: 网易乐签
+   * zh-TW: 網易樂簽
+   * en-US: VIP Check-in
+   */
+  (key: "profile.menu.vipSign", params?: TranslationParams): string;
+  /**
    * zh-CN: 无效的用户 ID
    * zh-TW: 無效的使用者 ID
    * en-US: Invalid User ID
@@ -2308,6 +2314,48 @@ export interface TranslateFn {
    * en-US: Female
    */
   (key: "profile.edit.genderFemale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 签到
+   * zh-TW: 簽到
+   * en-US: Check-in
+   */
+  (key: "vipSign.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今天已签到
+   * zh-TW: 今天已簽到
+   * en-US: Already checked in today
+   */
+  (key: "vipSign.alreadySigned", params?: TranslationParams): string;
+  /**
+   * zh-CN: 非黑胶会员无法签到
+   * zh-TW: 非黑膠會員無法簽到
+   * en-US: VIP membership required
+   */
+  (key: "vipSign.notMember", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连续签到 {{days}} 天
+   * zh-TW: 連續簽到 {{days}} 天
+   * en-US: {{days}} consecutive days
+   */
+  (key: "vipSign.consecutiveDays", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今日推荐
+   * zh-TW: 今日推薦
+   * en-US: Today's Pick
+   */
+  (key: "vipSign.recommendedSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 签到成功
+   * zh-TW: 簽到成功
+   * en-US: Check-in successful!
+   */
+  (key: "vipSign.success", params?: TranslationParams): string;
+  /**
+   * zh-CN: 签到失败: {{message}}
+   * zh-TW: 簽到失敗: {{message}}
+   * en-US: Check-in failed: {{message}}
+   */
+  (key: "vipSign.failed", params?: TranslationParams): string;
   /**
    * zh-CN: 获取专辑详情失败
    * zh-TW: 取得專輯詳情失敗
@@ -2746,5 +2794,89 @@ export interface TranslateFn {
    * en-US: Exit
    */
   (key: "tray.exit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音质选择
+   * zh-TW: 音質選擇
+   * en-US: Audio Quality
+   */
+  (key: "playbar.quality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音质级别
+   * zh-TW: 音質級別
+   * en-US: Quality Level
+   */
+  (key: "playbar.qualityTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高清臻音
+   * zh-TW: 高清臻音
+   * en-US: Hi-Res
+   */
+  (key: "playbar.quality.spatial.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 96kHz/24bit
+   * zh-TW: 96kHz/24bit
+   * en-US: 96kHz/24bit
+   */
+  (key: "playbar.quality.spatial.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高频细节还原与清晰沉浸感
+   * zh-TW: 高頻細節還原與清晰沉浸感
+   * en-US: Restores high-frequency detail and clarity
+   */
+  (key: "playbar.quality.spatial.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无损 (SQ)
+   * zh-TW: 無損 (SQ)
+   * en-US: Lossless (SQ)
+   */
+  (key: "playbar.quality.lossless.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最高48kHz/16bit
+   * zh-TW: 最高48kHz/16bit
+   * en-US: Up to 48kHz/16bit
+   */
+  (key: "playbar.quality.lossless.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高保真无损音质
+   * zh-TW: 高保真無損音質
+   * en-US: High-fidelity lossless audio
+   */
+  (key: "playbar.quality.lossless.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 极高 (HQ)
+   * zh-TW: 極高 (HQ)
+   * en-US: High (HQ)
+   */
+  (key: "playbar.quality.high.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最高320kbps
+   * zh-TW: 最高320kbps
+   * en-US: Up to 320kbps
+   */
+  (key: "playbar.quality.high.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 近CD音质的细节体验
+   * zh-TW: 近CD音質的細節體驗
+   * en-US: Detail close to CD quality
+   */
+  (key: "playbar.quality.high.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 标准
+   * zh-TW: 標準
+   * en-US: Standard
+   */
+  (key: "playbar.quality.standard.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 128kbps
+   * zh-TW: 128kbps
+   * en-US: 128kbps
+   */
+  (key: "playbar.quality.standard.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 标准音质
+   * zh-TW: 標準音質
+   * en-US: Standard audio quality
+   */
+  (key: "playbar.quality.standard.description", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }

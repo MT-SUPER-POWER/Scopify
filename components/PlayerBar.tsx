@@ -33,6 +33,7 @@ import { VolumeControl } from "@/components/VolumeControl";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import type { TranslationKey } from "@/lib/i18n";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
@@ -120,34 +121,42 @@ function PlayerBarStatAction({
 }
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ QUALITY OPTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const QUALITY_OPTIONS = [
+type QualityOptionKey = "spatial" | "lossless" | "high" | "standard";
+
+const QUALITY_OPTIONS: Array<{
+  value: QualityOptionKey;
+  icon: typeof Sparkles;
+  labelKey: TranslationKey;
+  sublabelKey: TranslationKey;
+  descriptionKey: TranslationKey;
+}> = [
   {
-    value: "spatial" as const,
+    value: "spatial",
     icon: Sparkles,
-    label: "高清臻音",
-    sublabel: "96kHz/24bit",
-    description: "高频细节还原与清晰沉浸感",
+    labelKey: "playbar.quality.spatial.label",
+    sublabelKey: "playbar.quality.spatial.sublabel",
+    descriptionKey: "playbar.quality.spatial.description",
   },
   {
-    value: "lossless" as const,
+    value: "lossless",
     icon: Radio,
-    label: "无损 (SQ)",
-    sublabel: "最高48kHz/16bit",
-    description: "高保真无损音质",
+    labelKey: "playbar.quality.lossless.label",
+    sublabelKey: "playbar.quality.lossless.sublabel",
+    descriptionKey: "playbar.quality.lossless.description",
   },
   {
-    value: "high" as const,
+    value: "high",
     icon: RadioReceiver,
-    label: "极高 (HQ)",
-    sublabel: "最高320kbps",
-    description: "近CD音质的细节体验",
+    labelKey: "playbar.quality.high.label",
+    sublabelKey: "playbar.quality.high.sublabel",
+    descriptionKey: "playbar.quality.high.description",
   },
   {
-    value: "standard" as const,
+    value: "standard",
     icon: CircleDot,
-    label: "标准",
-    sublabel: "128kbps",
-    description: "标准音质",
+    labelKey: "playbar.quality.standard.label",
+    sublabelKey: "playbar.quality.standard.sublabel",
+    descriptionKey: "playbar.quality.standard.description",
   },
 ];
 
@@ -520,9 +529,11 @@ export const PlayerBar = ({
                       <div className="flex items-center gap-3 min-w-0">
                         <Icon className="w-5 h-5 shrink-0 text-zinc-300" />
                         <div className="min-w-0">
-                          <div className="text-sm font-medium text-white truncate">{opt.label}</div>
+                          <div className="text-sm font-medium text-white truncate">
+                            {t(opt.labelKey)}
+                          </div>
                           <div className="text-[11px] text-zinc-400 truncate mt-0.5">
-                            {opt.sublabel} · {opt.description}
+                            {t(opt.sublabelKey)} · {t(opt.descriptionKey)}
                           </div>
                         </div>
                       </div>

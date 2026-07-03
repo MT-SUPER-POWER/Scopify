@@ -6,8 +6,9 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FiCalendar } from "react-icons/fi";
-import { PiHeart, PiPlayCircleFill } from "react-icons/pi";
+import { PiChatCircleDotsBold, PiPlayCircleFill } from "react-icons/pi";
 import { getMusicComments } from "@/lib/api/comment";
+import { getSongDetail } from "@/lib/api/track";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { VipSignRecord } from "@/types/api/vipSign";
@@ -106,11 +107,14 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
   }, [todaySongId]);
 
   // 播放当前歌曲
-  const handlePlay = useCallback(() => {
+  const handlePlay = useCallback(async () => {
     if (!todaySongId) return;
     const store = usePlayerStore.getState();
     // 如果当前队列没有这首歌，创建一个只包含此歌曲的队列
-    store.playFromSong({ id: todaySongId } as any, [{ id: todaySongId }] as any);
+    const songRes = await getSongDetail(todaySongId);
+    const song = songRes?.data?.songs?.[0];
+    if (!song) return;
+    store.playFromSong(song, [song]);
     onClose();
   }, [todaySongId, onClose]);
 
@@ -240,7 +244,7 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                         }
                       }}
                     >
-                      <PiHeart className="w-5 h-5" />
+                      <PiChatCircleDotsBold className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
