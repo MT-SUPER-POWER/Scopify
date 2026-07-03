@@ -3,7 +3,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDefaultLayout } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -35,6 +35,11 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const lastStoreWriteRef = useRef(0);
   const hasRestoredProgressRef = useRef(false); // 必须声明：标记是否已经恢复过进度
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Zustand Stores
   const clearSearchQuery = useSearchStore((s) => s.clearQuery);
@@ -129,6 +134,10 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
+    storage: typeof window !== "undefined" ? window.localStorage : {
+      getItem: () => null,
+      setItem: () => {},
+    },
   });
 
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
@@ -166,35 +175,58 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
       {/* 左右结构 */}
       <main className="flex-1 min-h-0 relative w-full">
-        <ResizablePanelGroup
-          orientation="horizontal"
-          defaultLayout={defaultLayout}
-          onLayoutChanged={onLayoutChanged}
-          className="w-full h-full"
-        >
-          <ResizablePanel
-            defaultSize="20%"
-            minSize="15%"
-            maxSize="40%"
-            collapsible
-            collapsedSize={80}
-            className={cn("bg-[#0f0f0f] rounded-lg overflow-hidden")}
+        {isMounted ?
+          <ResizablePanelGroup
+            orientation="horizontal"
+            defaultLayout={defaultLayout}
+            onLayoutChanged={onLayoutChanged}
+            className="w-full h-full"
           >
-            <Sidebar />
-          </ResizablePanel>
+            <ResizablePanel
+              defaultSize="20%"
+              minSize="15%"
+              maxSize="40%"
+              collapsible
+              collapsedSize={80}
+              className={cn("bg-[#0f0f0f] rounded-lg overflow-hidden")}
+            >
+              <Sidebar />
+            </ResizablePanel>
 
-          <ResizableHandle
-            className={cn(
-              "w-2 bg-transparent relative flex items-center justify-center transition-colors",
-              "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-              "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
-              "hover:after:bg-white/10",
-              "data-[resize-handle-state=drag]:after:bg-white/30",
-            )}
-          />
+            <ResizableHandle
+              className={cn(
+                "w-2 bg-transparent relative flex items-center justify-center transition-colors",
+                "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+                "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
+                "hover:after:bg-white/10",
+                "data-[resize-handle-state=drag]:after:bg-white/30",
+              )}
+            />
 
-          <ResizablePanel>
-            <div className="h-full w-full bg-[#121212] rounded-lg relative overflow-hidden group/main">
+            <ResizablePanel>
+              <div className="h-full w-full bg-[#121212] rounded-lg relative overflow-hidden group/main">
+                <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
+                  <div className="pointer-events-auto">
+                    <Header
+                      onOpenSearch={() => setIsSearchOpen(true)}
+                      scrollContainer={scrollContainer}
+                    />
+                  </div>
+                </div>
+
+                {/* DEBUG: 滚动区元素全局绑定共享 */}
+                <ScrollArea className="h-full w-full" viewportRef={setScrollContainer}>
+                  {children}
+                </ScrollArea>
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+         : 
+          <div className="flex w-full h-full gap-2">
+            <div className="w-[20%] bg-[#0f0f0f] rounded-lg overflow-hidden">
+              <Sidebar />
+            </div>
+            <div className="flex-1 bg-[#121212] rounded-lg relative overflow-hidden group/main">
               <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
                 <div className="pointer-events-auto">
                   <Header
@@ -203,14 +235,12 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
                   />
                 </div>
               </div>
-
-              {/* DEBUG: 滚动区元素全局绑定共享 */}
               <ScrollArea className="h-full w-full" viewportRef={setScrollContainer}>
                 {children}
               </ScrollArea>
             </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+          </div>
+        }
       </main>
 
       <footer>
