@@ -1,30 +1,41 @@
 import { appConfig } from "@/lib/web/env";
 
-const WEB_CACHE_PREFIX = "scopify-page-cache:";
+const WEB_CACHE_KEY = "scopify-page-cache-store";
+const OLD_WEB_CACHE_PREFIX = "scopify-page-cache:";
+const MAX_WEB_CACHE_ENTRIES = 50;
 const MINUTE = 60 * 1000;
 
 interface WebCacheEntry<T> {
+  accessedAt: number;
   expiresAt: number;
   value: T;
 }
 
-export type PageCacheNamespace = "playlist" | "album" | "artist" | "search" | "daily";
+type WebCacheStore = Record<string, WebCacheEntry<unknown>>;
+
+let _cleanedUpOldCache = false;
+
+export type PageCacheNamespace = "album" | "artist" | "daily" | "playlist" | "search";
+
+export async function clearPageCache() {
+  if (typeof window !== "undefined" && window.electronAPI?.clearPageCache) {
+    return window.electronAPI.clearPageCache();
+  }
+
+  if (typeof window !== "undefined") {
+    localStorage.removeItem(WEB_CACHE_KEY);
+  }
+
+  return { dir: "localStorage", entryCount: 0, sizeBytes: 0 };
+}
 
 export function createPageCacheKey(
   namespace: PageCacheNamespace,
-  parts: Array<string | number | boolean | null | undefined>,
+  parts: (boolean | null | number | string | undefined)[],
 ) {
   return [namespace, ...parts.filter((part) => part !== null && part !== undefined)]
     .map((part) => encodeURIComponent(String(part)))
     .join(":");
-}
-
-export function pageTtlMs(minutes = appConfig.cache.pageTtlMinutes) {
-  return minutes * MINUTE;
-}
-
-export function searchTtlMs(minutes = appConfig.cache.searchTtlMinutes) {
-  return minutes * MINUTE;
 }
 
 export function dailyTtlMs(now = new Date()) {
@@ -33,45 +44,48 @@ export function dailyTtlMs(now = new Date()) {
   return Math.max(tomorrow.getTime() - now.getTime(), MINUTE);
 }
 
-function readWebCache<T>(key: string): T | null {
-  if (typeof window === "undefined") return null;
+export async function deletePageCache(key: string) {
+  if (typeof window !== "undefined" && window.electronAPI?.deletePageCache) {
+    await window.electronAPI.deletePageCache(key);
+    return;
+  }
 
-  try {
-    const raw = localStorage.getItem(`${WEB_CACHE_PREFIX}${key}`);
-    if (!raw) return null;
-
-    const entry = JSON.parse(raw) as WebCacheEntry<T>;
-    if (entry.expiresAt <= Date.now()) {
-      localStorage.removeItem(`${WEB_CACHE_PREFIX}${key}`);
-      return null;
+  if (typeof window !== "undefined") {
+    const store = getWebCacheStore();
+    let modified = false;
+    for (const k of Object.keys(store)) {
+      if (k === key || k.startsWith(`${key}:`)) {
+        delete store[k];
+        modified = true;
+      }
     }
-
-    return entry.value;
-  } catch {
-    return null;
+    if (modified) saveWebCacheStore(store);
   }
 }
 
-function writeWebCache<T>(key: string, value: T, ttlMs: number) {
-  if (typeof window === "undefined") return;
-
-  try {
-    const entry: WebCacheEntry<T> = {
-      expiresAt: Date.now() + ttlMs,
-      value,
-    };
-    localStorage.setItem(`${WEB_CACHE_PREFIX}${key}`, JSON.stringify(entry));
-  } catch {
-    // Best-effort web fallback. Electron uses the durable file cache.
-  }
-}
-
-export async function getPageCache<T = unknown>(key: string): Promise<T | null> {
+export async function getPageCache<T = unknown>(key: string): Promise<null | T> {
   if (typeof window !== "undefined" && window.electronAPI?.getPageCache) {
     return window.electronAPI.getPageCache<T>(key);
   }
 
   return readWebCache<T>(key);
+}
+
+export async function invalidateMusicPageCache(kind?: PageCacheNamespace) {
+  if (!kind) {
+    await clearPageCache();
+    return;
+  }
+
+  await deletePageCache(kind);
+}
+
+export function pageTtlMs(minutes = appConfig.cache.pageTtlMinutes) {
+  return minutes * MINUTE;
+}
+
+export function searchTtlMs(minutes = appConfig.cache.searchTtlMinutes) {
+  return minutes * MINUTE;
 }
 
 export async function setPageCache<T = unknown>(key: string, value: T, ttlMs: number) {
@@ -83,38 +97,72 @@ export async function setPageCache<T = unknown>(key: string, value: T, ttlMs: nu
   writeWebCache(key, value, ttlMs);
 }
 
-export async function deletePageCache(key: string) {
-  if (typeof window !== "undefined" && window.electronAPI?.deletePageCache) {
-    await window.electronAPI.deletePageCache(key);
-    return;
-  }
+function getWebCacheStore(): WebCacheStore {
+  if (typeof window === "undefined") return {};
+  try {
+    if (!_cleanedUpOldCache) {
+      _cleanedUpOldCache = true;
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith(OLD_WEB_CACHE_PREFIX)) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach((key) => localStorage.removeItem(key));
+    }
 
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(`${WEB_CACHE_PREFIX}${key}`);
+    const raw = localStorage.getItem(WEB_CACHE_KEY);
+    return raw ? (JSON.parse(raw) as WebCacheStore) : {};
+  } catch {
+    return {};
   }
 }
 
-export async function clearPageCache() {
-  if (typeof window !== "undefined" && window.electronAPI?.clearPageCache) {
-    return window.electronAPI.clearPageCache();
+function readWebCache<T>(key: string): null | T {
+  if (typeof window === "undefined") return null;
+
+  const store = getWebCacheStore();
+  const entry = store[key] as undefined | WebCacheEntry<T>;
+
+  if (!entry) return null;
+
+  if (entry.expiresAt <= Date.now()) {
+    delete store[key];
+    saveWebCacheStore(store);
+    return null;
   }
 
-  if (typeof window !== "undefined") {
-    Object.keys(localStorage)
-      .filter((key) => key.startsWith(WEB_CACHE_PREFIX))
-      .forEach((key) => {
-        localStorage.removeItem(key);
-      });
-  }
+  entry.accessedAt = Date.now();
+  saveWebCacheStore(store);
 
-  return { dir: "localStorage", entryCount: 0, sizeBytes: 0 };
+  return entry.value;
 }
 
-export async function invalidateMusicPageCache(kind?: PageCacheNamespace) {
-  if (!kind) {
-    await clearPageCache();
-    return;
+function saveWebCacheStore(store: WebCacheStore) {
+  if (typeof window === "undefined") return;
+  try {
+    const keys = Object.keys(store);
+    if (keys.length > MAX_WEB_CACHE_ENTRIES) {
+      const sorted = keys.sort((a, b) => store[b].accessedAt - store[a].accessedAt);
+      for (let i = MAX_WEB_CACHE_ENTRIES; i < sorted.length; i++) {
+        delete store[sorted[i]];
+      }
+    }
+    localStorage.setItem(WEB_CACHE_KEY, JSON.stringify(store));
+  } catch {
+    // Best-effort web fallback. Electron uses the durable file cache.
   }
+}
 
-  await deletePageCache(kind);
+function writeWebCache<T>(key: string, value: T, ttlMs: number) {
+  if (typeof window === "undefined") return;
+
+  const store = getWebCacheStore();
+  store[key] = {
+    accessedAt: Date.now(),
+    expiresAt: Date.now() + ttlMs,
+    value,
+  };
+  saveWebCacheStore(store);
 }
