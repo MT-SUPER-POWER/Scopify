@@ -14,8 +14,8 @@ export function SongsPanel({ songs, limit, onViewAll }: Props) {
   const displayed = limit ? songs.slice(0, limit) : songs;
 
   return (
-    <div className="xl:w-[60%] flex flex-col">
-      <div className="flex items-end justify-between mb-4">
+    <div className="flex flex-col xl:w-[60%]">
+      <div className="mb-4 flex items-end justify-between">
         <h2 className="text-2xl font-bold tracking-tight">{t("search.section.songs")}</h2>
         {onViewAll && songs.length > (limit ?? 0) && (
           <button
@@ -31,7 +31,7 @@ export function SongsPanel({ songs, limit, onViewAll }: Props) {
           <SongItem key={song.id} song={song} index={i} songs={songs} />
         ))}
         {songs.length === 0 && (
-          <p className="text-zinc-500 text-sm py-4">{t("search.section.noSongResults")}</p>
+          <p className="py-4 text-sm text-zinc-500">{t("search.section.noSongResults")}</p>
         )}
       </div>
     </div>

@@ -8,6 +8,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
+
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -66,9 +67,9 @@ function ResizeHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => v
   return (
     <span
       onMouseDown={onMouseDown}
-      className="absolute right-0 top-1/2 -translate-y-1/2 h-4 w-3 flex items-center justify-center cursor-col-resize opacity-0 group-hover/head:opacity-100 transition-opacity select-none"
+      className="absolute top-1/2 right-0 flex h-4 w-3 -translate-y-1/2 cursor-col-resize items-center justify-center opacity-0 transition-opacity select-none group-hover/head:opacity-100"
     >
-      <GripVertical className="w-3 h-3 text-zinc-500" />
+      <GripVertical className="h-3 w-3 text-zinc-500" />
     </span>
   );
 }
@@ -313,17 +314,17 @@ export default function TracklistTable({
       />
 
       <div className="w-full">
-        <Table className="w-full text-zinc-400 table-fixed">
+        <Table className="w-full table-fixed text-zinc-400">
           <TableHeader
             className={cn(
-              "sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
+              "sticky top-0 z-10 drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)] backdrop-blur-sm",
               "bg-linear-to-b from-transparent to-[#121212]/10",
             )}
           >
-            <TableRow className="hover:bg-transparent border-none">
+            <TableRow className="border-none hover:bg-transparent">
               <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
               <TableHead
-                className="text-zinc-400 relative group/head hover:text-white cursor-pointer select-none transition-colors"
+                className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
                 style={{ width: colTitle, minWidth: 60 }}
                 onClick={() => handleSort("title")}
               >
@@ -331,9 +332,9 @@ export default function TracklistTable({
                   {t("playlist.table.columnTitle")}
                   {sortField === "title" &&
                     (sortDirection === "asc" ? (
-                      <ChevronUp className="w-4 h-4" />
+                      <ChevronUp className="h-4 w-4" />
                     ) : (
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown className="h-4 w-4" />
                     ))}
                 </div>
                 <ResizeHandle
@@ -348,7 +349,7 @@ export default function TracklistTable({
                 />
               </TableHead>
               <TableHead
-                className="hidden md:table-cell text-zinc-400 relative group/head hover:text-white cursor-pointer select-none transition-colors"
+                className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white md:table-cell"
                 style={{ width: colAlbum, minWidth: 64 }}
                 onClick={() => handleSort("album")}
               >
@@ -356,9 +357,9 @@ export default function TracklistTable({
                   {t("playlist.table.columnAlbum")}
                   {sortField === "album" &&
                     (sortDirection === "asc" ? (
-                      <ChevronUp className="w-4 h-4" />
+                      <ChevronUp className="h-4 w-4" />
                     ) : (
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown className="h-4 w-4" />
                     ))}
                 </div>
                 {!hideDateColumn && (
@@ -376,7 +377,7 @@ export default function TracklistTable({
               </TableHead>
               {!hideDateColumn && (
                 <TableHead
-                  className="hidden lg:table-cell text-zinc-400 relative group/head hover:text-white cursor-pointer select-none transition-colors"
+                  className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white lg:table-cell"
                   style={{ width: colDate, minWidth: 120 }}
                   onClick={() => handleSort("date")}
                 >
@@ -384,9 +385,9 @@ export default function TracklistTable({
                     {t("playlist.table.columnPublished")}
                     {sortField === "date" &&
                       (sortDirection === "asc" ? (
-                        <ChevronUp className="w-4 h-4" />
+                        <ChevronUp className="h-4 w-4" />
                       ) : (
-                        <ChevronDown className="w-4 h-4" />
+                        <ChevronDown className="h-4 w-4" />
                       ))}
                   </div>
                   {!hideLikeColumn && (
@@ -405,24 +406,24 @@ export default function TracklistTable({
               )}
               {!hideLikeColumn && (
                 <TableHead
-                  className="hidden lg:table-cell text-zinc-400 relative group/head hover:text-white cursor-pointer select-none transition-colors"
+                  className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white lg:table-cell"
                   style={{ width: colLike, minWidth: 44 }}
                   onClick={() => handleSort("like")}
                 >
-                  <div className="flex items-center gap-1 justify-center">
+                  <div className="flex items-center justify-center gap-1">
                     {t("playlist.table.columnLike")}
                     {sortField === "like" &&
                       (sortDirection === "asc" ? (
-                        <ChevronUp className="w-4 h-4" />
+                        <ChevronUp className="h-4 w-4" />
                       ) : (
-                        <ChevronDown className="w-4 h-4" />
+                        <ChevronDown className="h-4 w-4" />
                       ))}
                   </div>
                 </TableHead>
               )}
               <TableHead className="w-32 text-zinc-400">
-                <div className="flex items-center w-full h-full justify-center">
-                  <Clock className="w-4 h-4" />
+                <div className="flex h-full w-full items-center justify-center">
+                  <Clock className="h-4 w-4" />
                 </div>
               </TableHead>
             </TableRow>
@@ -430,8 +431,8 @@ export default function TracklistTable({
 
           <TableBody>
             {sortedTracks.length === 0 ? (
-              <TableRow className="hover:bg-transparent border-none">
-                <TableCell colSpan={6} className="text-center text-zinc-500 py-10">
+              <TableRow className="border-none hover:bg-transparent">
+                <TableCell colSpan={6} className="py-10 text-center text-zinc-500">
                   {hasSearchQuery ? (
                     t("playlist.table.searchNoResults", {
                       query: searchQuery ?? "",
@@ -445,7 +446,7 @@ export default function TracklistTable({
                         onClick={onEmptyAction}
                         className="bg-white text-black hover:bg-white/90"
                       >
-                        <RefreshCw className="w-4 h-4" />
+                        <RefreshCw className="h-4 w-4" />
                         {emptyActionLabel}
                       </Button>
                     </div>
@@ -516,7 +517,6 @@ export default function TracklistTable({
                       onDislikeDailyRecommend={() => handleDislikeDailyRecommend(track.id)}
                     >
                       <TrackRow
-                        ref={virtualizer.measureElement}
                         data-index={virtualRow.index}
                         track={track}
                         index={virtualRow.index}

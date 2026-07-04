@@ -11,6 +11,7 @@
 **Spec:** `docs/superpowers/specs/2026-07-04-biome-to-eslint-prettier.md`
 
 ## Global Constraints
+
 - 所有规则需覆盖原 Biome 已有的 recommended + 自定义规则
 - 提交前必须通过 lint-staged 自动 fix 格式
 - 忽略 `backend/api-enhanced` 目录
@@ -34,6 +35,7 @@ cd D:\Github\Scopify
 bun ls | findstr eslint
 bun ls | findstr prettier
 ```
+
 Expected: 看到所有包名在输出中
 
 ---
@@ -66,14 +68,7 @@ import prettierPlugin from "eslint-plugin-prettier";
 export default tseslint.config(
   // --- Global ignore ---
   {
-    ignores: [
-      "backend/api-enhanced",
-      "node_modules",
-      "dist",
-      ".next",
-      "out",
-      "renderer",
-    ],
+    ignores: ["backend/api-enhanced", "node_modules", "dist", ".next", "out", "renderer"],
   },
 
   // --- Base: ESLint recommended ---
@@ -245,6 +240,7 @@ export default tseslint.config(
 cd D:\Github\Scopify
 bunx eslint --print-config eslint.config.mjs > $null
 ```
+
 Expected: 无报错
 
 ---
@@ -273,12 +269,15 @@ Expected: 无报错
 - [ ] **Step 1: 修改 scripts**
 
 将：
+
 ```json
 "lint": "biome lint .",
 "format": "biome format . --write",
 "check": "biome check --write .",
 ```
+
 改为：
+
 ```json
 "lint": "eslint .",
 "format": "prettier --write .",
@@ -288,6 +287,7 @@ Expected: 无报错
 - [ ] **Step 2: 修改 lint-staged**
 
 将：
+
 ```json
 "lint-staged": {
   "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc,css}": [
@@ -296,7 +296,9 @@ Expected: 无报错
   ]
 }
 ```
+
 改为：
+
 ```json
 "lint-staged": {
   "*.{js,ts,cjs,mjs,jsx,tsx}": [
@@ -334,6 +336,7 @@ cd D:\Github\Scopify
 bun ls | findstr biome
 bun ls | findstr biomejs
 ```
+
 Expected: 无输出（已移除）
 
 ---
@@ -346,11 +349,13 @@ Expected: 无输出（已移除）
 cd D:\Github\Scopify
 bun run lint
 ```
+
 Expected: 无 error（warn 可以接受），或输出清晰的问题列表
 
 - [ ] **Step 2: 修复 lint 错误**（如有必要，逐步修复）
 
 如果 ESLint 报错，按顺序处理：
+
 1. `perfectionist/sort-imports` 错误 → `eslint --fix` 自动修复
 2. `unused-imports` 错误 → `eslint --fix` 自动修复
 3. `prettier/prettier` 格式错误 → `eslint --fix` 自动修复
@@ -373,6 +378,7 @@ bun run lint
 cd D:\Github\Scopify
 bunx tsc --noEmit
 ```
+
 Expected: 无类型错误
 
 - [ ] **Step 5: 运行 Prettier 全量格式化确保一致性**

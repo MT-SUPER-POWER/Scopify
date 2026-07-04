@@ -133,7 +133,7 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
 
           {/* Card Container */}
           <motion.div
-            className="relative w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl bg-[#121212] border border-white/10"
+            className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-[#121212] shadow-2xl"
             initial={{ scale: 0.95, y: 15 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 15 }}
@@ -142,7 +142,7 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
             {/* Background Theme Gradient System */}
             <div
               className={cn(
-                "absolute top-0 left-0 right-0 bg-linear-to-b opacity-50 z-0 pointer-events-none",
+                "pointer-events-none absolute top-0 right-0 left-0 z-0 bg-linear-to-b opacity-50",
                 theme.gradient,
                 "h-full",
               )}
@@ -152,52 +152,52 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-6 right-6 z-20 p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
+              className="absolute top-6 right-6 z-20 rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
             >
-              <X className="w-5 h-5" />
+              <X className="h-5 w-5" />
             </button>
 
             {/* Content Area */}
-            <div className="relative z-10 p-8 flex flex-col gap-6 text-white select-none">
+            <div className="relative z-10 flex flex-col gap-6 p-8 text-white select-none">
               {/* Header: Date */}
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black">{formattedDate.mm}</span>
-                <span className="text-xs text-zinc-500 font-medium">{t("vipSign.month")}</span>
-                <span className="text-zinc-600 px-1 font-light">/</span>
+                <span className="text-xs font-medium text-zinc-500">{t("vipSign.month")}</span>
+                <span className="px-1 font-light text-zinc-600">/</span>
                 <span className="text-2xl font-black">{formattedDate.dd}</span>
-                <span className="text-xs text-zinc-500 font-medium">{t("vipSign.day")}</span>
+                <span className="text-xs font-medium text-zinc-500">{t("vipSign.day")}</span>
               </div>
 
               {/* Main Body */}
-              <div className="flex flex-col md:flex-row gap-6 w-full items-stretch min-h-40">
+              <div className="flex min-h-40 w-full flex-col items-stretch gap-6 md:flex-row">
                 {/* Left: Song details + Quote */}
-                <div className="flex-1 min-w-0 flex flex-col justify-between">
+                <div className="flex min-w-0 flex-1 flex-col justify-between">
                   <div>
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="text-2xl font-black text-white tracking-tight">
+                    <div className="flex flex-wrap items-baseline gap-2">
+                      <span className="text-2xl font-black tracking-tight text-white">
                         {songInfo?.name ?? t("vipSign.recommendedSong")}
                       </span>
                       {songInfo?.artist && (
-                        <span className="text-xs text-zinc-400 font-medium">
+                        <span className="text-xs font-medium text-zinc-400">
                           - {songInfo.artist}
                         </span>
                       )}
                     </div>
                     {/* Line Divider */}
-                    <div className="w-full border-t border-white/10 my-3" />
+                    <div className="my-3 w-full border-t border-white/10" />
                   </div>
 
                   {/* Comment Quote */}
-                  <div className="relative pl-6 py-2 flex-1 flex flex-col justify-center">
-                    <span className="absolute left-0 top-0 text-5xl font-serif text-white/10 select-none leading-none">
+                  <div className="relative flex flex-1 flex-col justify-center py-2 pl-6">
+                    <span className="absolute top-0 left-0 font-serif text-5xl leading-none text-white/10 select-none">
                       “
                     </span>
                     {hotComment ? (
                       <div className="flex flex-col gap-1.5">
-                        <p className="text-sm text-zinc-200 font-medium leading-relaxed italic line-clamp-3">
+                        <p className="line-clamp-3 text-sm leading-relaxed font-medium text-zinc-200 italic">
                           {hotComment.content}
                         </p>
-                        <span className="text-[10px] text-zinc-500 self-end">
+                        <span className="self-end text-[10px] text-zinc-500">
                           {t("vipSign.commentFrom", { nickname: hotComment.nickname })}
                         </span>
                       </div>
@@ -210,19 +210,19 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                 </div>
 
                 {/* Right: Album Cover with buttons */}
-                <div className="shrink-0 flex items-center justify-center">
-                  <div className="relative w-40 h-40 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group/cover bg-zinc-900">
+                <div className="flex shrink-0 items-center justify-center">
+                  <div className="group/cover relative h-40 w-40 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
                     {todayCover ? (
                       <Image
                         width={160}
                         height={160}
                         src={todayCover}
                         alt=""
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover/cover:scale-105"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover/cover:scale-105"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-zinc-700">
-                        <X className="w-10 h-10" />
+                      <div className="flex h-full w-full items-center justify-center text-zinc-700">
+                        <X className="h-10 w-10" />
                       </div>
                     )}
 
@@ -230,10 +230,10 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                       <button
                         type="button"
                         onClick={handlePlay}
-                        className="absolute bottom-3 right-3 w-10 h-10 bg-[#1ed760] rounded-full flex items-center justify-center text-black opacity-0 translate-y-3 group-hover/cover:opacity-100 group-hover/cover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#3be477] shadow-xl cursor-pointer"
+                        className="absolute right-3 bottom-3 flex h-10 w-10 translate-y-3 cursor-pointer items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
                         title={t("contextMenu.play")}
                       >
-                        <Play className="w-5 h-5 fill-current ml-0.5" />
+                        <Play className="ml-0.5 h-5 w-5 fill-current" />
                       </button>
                     )}
                   </div>
@@ -241,42 +241,42 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
               </div>
 
               {/* Dotted Divider */}
-              <div className="w-full h-0.5 my-2 bg-[repeating-linear-gradient(to_right,rgba(255,255,255,0.2)_0,rgba(255,255,255,0.2)_2px,transparent_2px,transparent_10px)]" />
+              <div className="my-2 h-0.5 w-full bg-[repeating-linear-gradient(to_right,rgba(255,255,255,0.2)_0,rgba(255,255,255,0.2)_2px,transparent_2px,transparent_10px)]" />
 
               {/* Footer Section */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-between items-center w-full">
+              <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
                 {/* Monthly signed */}
                 <div className="text-left">
-                  <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider mb-1">
+                  <div className="mb-1 text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
                     {t("vipSign.monthlyCheckIn")}
                   </div>
-                  <div className="text-2xl font-black text-white flex items-baseline">
+                  <div className="flex items-baseline text-2xl font-black text-white">
                     {consecutiveDays}
-                    <span className="text-xs text-zinc-400 font-normal ml-0.5">
+                    <span className="ml-0.5 text-xs font-normal text-zinc-400">
                       {t("vipSign.days")}
                     </span>
                   </div>
                 </div>
 
-                <div className="h-8 w-px bg-white/10 hidden sm:block" />
+                <div className="hidden h-8 w-px bg-white/10 sm:block" />
 
                 {/* QR Code */}
-                <div className="flex items-center gap-3 bg-white/5 border border-white/5 rounded-2xl p-2.5 max-w-60">
+                <div className="flex max-w-60 items-center gap-3 rounded-2xl border border-white/5 bg-white/5 p-2.5">
                   <div className="flex flex-col text-left">
-                    <span className="text-[10px] text-zinc-500 font-medium">
+                    <span className="text-[10px] font-medium text-zinc-500">
                       {t("vipSign.qrGuide")}
                     </span>
-                    <span className="text-xs font-semibold text-rose-500 mt-0.5">
+                    <span className="mt-0.5 text-xs font-semibold text-rose-500">
                       {t("vipSign.qrHint")}
                     </span>
                   </div>
-                  <div className="w-10 h-10 bg-white rounded-lg p-0.5 overflow-hidden flex items-center justify-center shrink-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-0.5">
                     <Image
                       width={40}
                       height={40}
                       src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://music.163.com/m/header"
                       alt="QR Code"
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                 </div>

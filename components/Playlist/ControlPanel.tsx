@@ -15,10 +15,10 @@ export default function ControlPanel({
   isDesktop?: boolean;
 }) {
   return (
-    <div className="w-full max-w-md mx-auto relative z-10">
+    <div className="relative z-10 mx-auto w-full max-w-md">
       <div
         className={cn(
-          "flex items-center gap-4 mb-6",
+          "mb-6 flex items-center gap-4",
           isDesktop
             ? "justify-center text-center"
             : "justify-start text-left lg:justify-center lg:text-center",
@@ -28,7 +28,7 @@ export default function ControlPanel({
           <img
             src={COVER_URL}
             alt="cover"
-            className="w-12 h-12 lg:hidden rounded-md object-cover shadow-md ring-1 ring-white/10"
+            className="h-12 w-12 rounded-md object-cover shadow-md ring-1 ring-white/10 lg:hidden"
           />
         )}
         <div
@@ -37,58 +37,58 @@ export default function ControlPanel({
             isDesktop ? "items-center" : "items-start lg:items-center",
           )}
         >
-          <h1 className="text-xl lg:text-[26px] font-bold mb-1 tracking-wide text-white drop-shadow-sm">
+          <h1 className="mb-1 text-xl font-bold tracking-wide text-white drop-shadow-sm lg:text-[26px]">
             富士山下
           </h1>
-          <p className="text-white/60 text-sm lg:text-[15px]">陈奕迅</p>
+          <p className="text-sm text-white/60 lg:text-[15px]">陈奕迅</p>
         </div>
       </div>
 
       <div className="mb-6 px-1">
-        <div className="h-1.5 w-full bg-white/20 rounded-full cursor-pointer group mb-2 relative">
-          <div className="absolute left-0 top-0 h-full bg-white rounded-full w-[30%]"></div>
-          <div className="absolute left-[30%] top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm -ml-1.5"></div>
+        <div className="group relative mb-2 h-1.5 w-full cursor-pointer rounded-full bg-white/20">
+          <div className="absolute top-0 left-0 h-full w-[30%] rounded-full bg-white"></div>
+          <div className="absolute top-1/2 left-[30%] -ml-1.5 h-3 w-3 -translate-y-1/2 rounded-full bg-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100"></div>
         </div>
-        <div className="flex justify-between text-[11px] text-white/50 font-medium tabular-nums">
+        <div className="flex justify-between text-[11px] font-medium text-white/50 tabular-nums">
           <span>01:16</span>
           <span>04:19</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-6 lg:mb-8 px-2">
-        <button className="text-white/50 hover:text-white transition-colors">
-          <Repeat className="w-5 h-5 lg:w-5 lg:h-5" />
+      <div className="mb-6 flex items-center justify-between px-2 lg:mb-8">
+        <button className="text-white/50 transition-colors hover:text-white">
+          <Repeat className="h-5 w-5 lg:h-5 lg:w-5" />
         </button>
-        <button className="text-white/90 hover:text-white transition-opacity active:scale-95">
-          <SkipBack className="w-8 h-8 lg:w-9 lg:h-9 fill-current" />
+        <button className="text-white/90 transition-opacity hover:text-white active:scale-95">
+          <SkipBack className="h-8 w-8 fill-current lg:h-9 lg:w-9" />
         </button>
         <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="w-14 h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-full bg-white text-black hover:scale-105 active:scale-95 transition-all shadow-lg"
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black shadow-lg transition-all hover:scale-105 active:scale-95 lg:h-16 lg:w-16"
         >
           {isPlaying ? (
-            <Pause className="w-6 h-6 lg:w-7 lg:h-7 fill-current" />
+            <Pause className="h-6 w-6 fill-current lg:h-7 lg:w-7" />
           ) : (
-            <Play className="w-6 h-6 lg:w-7 lg:h-7 fill-current ml-1" />
+            <Play className="ml-1 h-6 w-6 fill-current lg:h-7 lg:w-7" />
           )}
         </button>
-        <button className="text-white/90 hover:text-white transition-opacity active:scale-95">
-          <SkipForward className="w-8 h-8 lg:w-9 lg:h-9 fill-current" />
+        <button className="text-white/90 transition-opacity hover:text-white active:scale-95">
+          <SkipForward className="h-8 w-8 fill-current lg:h-9 lg:w-9" />
         </button>
-        <button className="text-white/50 hover:text-white transition-colors">
-          <Menu className="w-5 h-5 lg:w-5 lg:h-5" />
+        <button className="text-white/50 transition-colors hover:text-white">
+          <Menu className="h-5 w-5 lg:h-5 lg:w-5" />
         </button>
       </div>
 
       <div
         className={cn(
-          "items-center gap-3 px-3 text-white/50 hover:text-white transition-colors",
+          "items-center gap-3 px-3 text-white/50 transition-colors hover:text-white",
           isDesktop ? "flex" : "hidden lg:flex",
         )}
       >
-        <Volume2 className="w-4 h-4" />
-        <div className="h-1.5 w-full bg-white/20 rounded-full cursor-pointer">
-          <div className="h-full bg-white/80 rounded-full w-[60%]"></div>
+        <Volume2 className="h-4 w-4" />
+        <div className="h-1.5 w-full cursor-pointer rounded-full bg-white/20">
+          <div className="h-full w-[60%] rounded-full bg-white/80"></div>
         </div>
       </div>
     </div>

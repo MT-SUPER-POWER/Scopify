@@ -78,8 +78,7 @@ export const formatDuration = (ms: number) => {
 /**
  * 数字千分位格式化
  */
-export const formatNumber = (num: number) =>
-  new Intl.NumberFormat("en-US").format(num);
+export const formatNumber = (num: number) => new Intl.NumberFormat("en-US").format(num);
 
 /**
  * 时间戳转日期格式
@@ -95,10 +94,7 @@ export const formatDate = (timestamp: number) => {
 
 export const isElectron = (): boolean => {
   // 方法1：检查 userAgent
-  if (
-    typeof navigator !== "undefined" &&
-    navigator.userAgent.includes("Electron")
-  ) {
+  if (typeof navigator !== "undefined" && navigator.userAgent.includes("Electron")) {
     return true;
   }
   // 方法2：检查 preload 注入的 API
@@ -135,8 +131,7 @@ export const formatPlayCount = (count: number) => {
 /** 网易云风格紧凑计数：999+、10w+ */
 export const formatCompactCount = (count: number) => {
   if (count >= 100000) return `${Math.floor(count / 10000)}w+`;
-  if (count >= 10000)
-    return `${Math.round(count / 1000) / 10}w+`.replace(".0w+", "w+");
+  if (count >= 10000) return `${Math.round(count / 1000) / 10}w+`.replace(".0w+", "w+");
   if (count > 999) return "999+";
   return count.toString();
 };

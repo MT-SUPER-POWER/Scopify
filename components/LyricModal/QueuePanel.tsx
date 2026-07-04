@@ -26,13 +26,13 @@ const QueueRow = memo(
       onClick={() => onPlay(index)}
       style={style} // 直接接收并应用 absolute 样式，省去外层包裹的 div
       className={cn(
-        "w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-left transition-all duration-300 group border",
+        "group flex w-full items-center gap-4 rounded-2xl border px-4 py-3 text-left transition-all duration-300",
         isCurrent
-          ? "bg-white/10 border-white/20 shadow-lg backdrop-blur-md"
-          : "bg-transparent border-transparent hover:bg-white/5 hover:border-white/10",
+          ? "border-white/20 bg-white/10 shadow-lg backdrop-blur-md"
+          : "border-transparent bg-transparent hover:border-white/10 hover:bg-white/5",
       )}
     >
-      <div className="relative w-12 h-12 shrink-0 rounded-xl overflow-hidden shadow-sm border border-white/10">
+      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-white/10 shadow-sm">
         {song.al?.picUrl && (
           <Image
             width={48}
@@ -40,27 +40,27 @@ const QueueRow = memo(
             src={`${song.al.picUrl}?param=64y64`}
             alt=""
             className={cn(
-              "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105",
+              "h-full w-full object-cover transition-transform duration-500 group-hover:scale-105",
               isCurrent ? "opacity-80" : "opacity-100",
             )}
           />
         )}
         {isCurrent && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-            <Play className="w-5 h-5 text-white fill-current" />
+            <Play className="h-5 w-5 fill-current text-white" />
           </div>
         )}
       </div>
-      <div className="flex-1 min-w-0 flex flex-col justify-center">
+      <div className="flex min-w-0 flex-1 flex-col justify-center">
         <p
           className={cn(
-            "text-[16px] truncate tracking-wide transition-colors",
-            isCurrent ? "text-white font-semibold" : "text-white/90 font-medium",
+            "truncate text-[16px] tracking-wide transition-colors",
+            isCurrent ? "font-semibold text-white" : "font-medium text-white/90",
           )}
         >
           {song.name}
         </p>
-        <p className="text-[13px] text-white/50 mt-0.5 truncate font-light">
+        <p className="mt-0.5 truncate text-[13px] font-light text-white/50">
           {song.ar?.map((a: any) => a.name).join(", ")}
         </p>
       </div>
@@ -111,7 +111,7 @@ export const QueuePanel = () => {
 
   if (!queue.length) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">
+      <div className="flex h-full w-full items-center justify-center text-sm text-white/40">
         {t("queue.empty")}
       </div>
     );
@@ -119,17 +119,17 @@ export const QueuePanel = () => {
 
   return (
     // 苹果高质感毛玻璃核心：高斯模糊 + 饱和度提升 + 微弱的白边 + 更大的圆角
-    <div className="w-full max-w-xl h-full mx-auto flex flex-col bg-black/30 backdrop-blur-[80px] backdrop-saturate-150 border border-white/8 shadow-2xl rounded-[32px] overflow-hidden relative">
+    <div className="relative mx-auto flex h-full w-full max-w-xl flex-col overflow-hidden rounded-[32px] border border-white/8 bg-black/30 shadow-2xl backdrop-blur-[80px] backdrop-saturate-150">
       {/* 可选：添加极微弱的噪点遮罩增加真实玻璃物理质感 (需要你有一张噪点图或者用 CSS 滤镜，这里用 CSS 模拟) */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-overlay bg-noise" />
+      <div className="bg-noise pointer-events-none absolute inset-0 opacity-[0.02] mix-blend-overlay" />
 
-      <div className="px-6 py-6 shrink-0 relative z-10">
-        <h3 className="text-xl font-bold text-white tracking-tight">{t("queue.title")}</h3>
+      <div className="relative z-10 shrink-0 px-6 py-6">
+        <h3 className="text-xl font-bold tracking-tight text-white">{t("queue.title")}</h3>
       </div>
 
       <div
         ref={listRef}
-        className="flex-1 w-full overflow-y-auto scrollbar-custom px-3 pb-4 relative z-10"
+        className="scrollbar-custom relative z-10 w-full flex-1 overflow-y-auto px-3 pb-4"
       >
         {isReady ? (
           <div

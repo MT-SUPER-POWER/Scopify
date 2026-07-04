@@ -30,7 +30,7 @@ class WebGLFallbackBoundary extends Component<
 }
 
 const CSSFallbackBackground = ({ coverUrl }: { coverUrl: string }) => (
-  <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#0a0a0a]">
+  <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#0a0a0a]">
     <div
       className="absolute inset-0 opacity-50 transition-all duration-1000 ease-in-out"
       style={{
@@ -51,7 +51,7 @@ export const ModalBackground = ({ coverUrl }: { coverUrl: string }) => {
     <WebGLFallbackBoundary fallback={<CSSFallbackBackground coverUrl={coverUrl} />}>
       {/* 降低了一点明亮度，让 Spotify 风格的白色文字和控件更加突出 */}
       <div
-        className="absolute inset-0 z-0 scale-[1.2] pointer-events-none transition-opacity duration-1000 opacity-90"
+        className="pointer-events-none absolute inset-0 z-0 scale-[1.2] opacity-90 transition-opacity duration-1000"
         style={{ filter: "blur(24px) brightness(0.7)" }}
       >
         <BackgroundRender

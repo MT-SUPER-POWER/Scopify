@@ -101,7 +101,7 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-100 flex flex-col text-white h-dvh overflow-hidden bg-black",
+        "fixed inset-0 z-100 flex h-dvh flex-col overflow-hidden bg-black text-white",
         isClosing ? "animate-modal-exit" : "animate-modal-enter",
       )}
     >
@@ -111,72 +111,66 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
       <motion.div
         animate={{ opacity: isBarVisible ? 1 : 0 }}
         transition={{ duration: 0.3 }}
-        className="absolute top-0 left-0 right-0 z-50 flex justify-end p-4 gap-3"
+        className="absolute top-0 right-0 left-0 z-50 flex justify-end gap-3 p-4"
       >
         <button
           type="button"
           onClick={toggleFullscreen}
-          className="p-2.5 rounded-full backdrop-blur-md text-white/70 hover:text-white
-          hover:bg-black/40 transition-all duration-200"
+          className="rounded-full p-2.5 text-white/70 backdrop-blur-md transition-all duration-200 hover:bg-black/40 hover:text-white"
         >
-          {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+          {isFullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
         </button>
         <button
           type="button"
           onClick={handleClose}
-          className="p-2.5 rounded-full backdrop-blur-md text-white/70 hover:text-white
-          hover:bg-black/40 transition-all duration-200"
+          className="rounded-full p-2.5 text-white/70 backdrop-blur-md transition-all duration-200 hover:bg-black/40 hover:text-white"
         >
-          <ChevronDown className="w-5 h-5" />
+          <ChevronDown className="h-5 w-5" />
         </button>
       </motion.div>
 
       {/* 主要内容区域 */}
-      <div
-        className="flex-1 min-h-0 overflow-hidden flex flex-col lg:flex-row items-center justify-center
-        gap-4 lg:gap-[clamp(2rem,5vw,4rem)] px-4 sm:px-6 lg:px-14 pt-16 pb-3 lg:pt-14 lg:pb-4
-        max-w-[min(100rem,100vw)] mx-auto w-full relative z-10"
-      >
+      <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-[min(100rem,100vw)] flex-1 flex-col items-center justify-center gap-4 overflow-hidden px-4 pt-16 pb-3 sm:px-6 lg:flex-row lg:gap-[clamp(2rem,5vw,4rem)] lg:px-14 lg:pt-14 lg:pb-4">
         {/* 左侧：封面和歌曲信息 */}
-        <div className="flex flex-col items-center lg:items-start justify-center gap-3 lg:gap-4 w-full lg:w-[38%] min-h-0">
+        <div className="flex min-h-0 w-full flex-col items-center justify-center gap-3 lg:w-[38%] lg:items-start lg:gap-4">
           {/* 封面 */}
-          <div className="relative aspect-square w-[min(68vw,42dvh,320px)] lg:w-[min(30vw,52dvh,380px)] shrink-0 group">
-            <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity" />
-            <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] ring-1 ring-white/10">
+          <div className="group relative aspect-square w-[min(68vw,42dvh,320px)] shrink-0 lg:w-[min(30vw,52dvh,380px)]">
+            <div className="absolute inset-0 rounded-3xl bg-linear-to-br from-white/10 to-transparent opacity-50 blur-xl transition-opacity group-hover:opacity-70" />
+            <div className="relative h-full w-full overflow-hidden rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.6)] ring-1 ring-white/10">
               {coverUrl ? (
                 <Image
                   fill
                   src={coverUrl}
                   alt={t("album.coverAlt")}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   draggable={false}
                   priority
                 />
               ) : (
-                <div className="w-full h-full bg-zinc-800/50 flex items-center justify-center">
-                  <FaCompactDisc className="w-20 h-20 text-white/20" />
+                <div className="flex h-full w-full items-center justify-center bg-zinc-800/50">
+                  <FaCompactDisc className="h-20 w-20 text-white/20" />
                 </div>
               )}
             </div>
           </div>
 
           {/* 歌曲信息 */}
-          <div className="flex flex-col items-center lg:items-start gap-2 w-full max-w-[min(68vw,42dvh,320px)] lg:max-w-[min(30vw,52dvh,380px)] px-2 shrink-0">
-            <h1 className="text-xl lg:text-[clamp(1.35rem,2.1vw,1.875rem)] font-bold text-white text-center lg:text-left leading-tight line-clamp-2">
+          <div className="flex w-full max-w-[min(68vw,42dvh,320px)] shrink-0 flex-col items-center gap-2 px-2 lg:max-w-[min(30vw,52dvh,380px)] lg:items-start">
+            <h1 className="line-clamp-2 text-center text-xl leading-tight font-bold text-white lg:text-left lg:text-[clamp(1.35rem,2.1vw,1.875rem)]">
               {currentSongDetail?.name || t("common.meta.unknownSong")}
             </h1>
 
-            <div className="flex flex-col gap-1.5 text-white/60 text-sm lg:text-[clamp(0.8rem,1vw,1rem)]">
-              <div className="flex items-center gap-2 justify-center lg:justify-start">
-                <FaUser className="w-4 h-4 shrink-0" />
-                <span className="truncate max-w-full">
+            <div className="flex flex-col gap-1.5 text-sm text-white/60 lg:text-[clamp(0.8rem,1vw,1rem)]">
+              <div className="flex items-center justify-center gap-2 lg:justify-start">
+                <FaUser className="h-4 w-4 shrink-0" />
+                <span className="max-w-full truncate">
                   {currentSongDetail?.ar?.map((a: any) => a.name).join(", ") ||
                     t("common.meta.unknownArtist")}
                 </span>
               </div>
-              <div className="flex items-center gap-2 justify-center lg:justify-start">
-                <FaCompactDisc className="w-4 h-4 shrink-0" />
-                <span className="truncate max-w-full">
+              <div className="flex items-center justify-center gap-2 lg:justify-start">
+                <FaCompactDisc className="h-4 w-4 shrink-0" />
+                <span className="max-w-full truncate">
                   {currentSongDetail?.al?.name || t("common.meta.unknownAlbum")}
                 </span>
               </div>
@@ -185,8 +179,8 @@ export const LyricModalContent = ({ onClose }: { onClose?: () => void }) => {
         </div>
 
         {/* 右侧：歌词区域 */}
-        <div className="flex-1 w-full lg:w-[56%] h-[min(38dvh,18rem)] lg:h-full min-h-0 flex flex-col">
-          <div className="relative flex-1 rounded-3xl backdrop-blur-sm overflow-hidden">
+        <div className="flex h-[min(38dvh,18rem)] min-h-0 w-full flex-1 flex-col lg:h-full lg:w-[56%]">
+          <div className="relative flex-1 overflow-hidden rounded-3xl backdrop-blur-sm">
             {/* 歌词渲染器 */}
             <div className="absolute inset-0 p-4 lg:p-8">
               <LyricRenderer />

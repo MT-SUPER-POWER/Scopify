@@ -52,8 +52,8 @@ export function SettingInput({
       disabled={disabled}
       placeholder={placeholder}
       className={cn(
-        "bg-transparent border border-[#727272] text-white py-1.5 px-3 rounded text-sm font-medium outline-none focus:border-white transition-colors text-right focus:ring-1 focus:ring-white placeholder:text-[#727272]",
-        disabled && "opacity-40 cursor-not-allowed",
+        "rounded border border-[#727272] bg-transparent px-3 py-1.5 text-right text-sm font-medium text-white transition-colors outline-none placeholder:text-[#727272] focus:border-white focus:ring-1 focus:ring-white",
+        disabled && "cursor-not-allowed opacity-40",
         className,
       )}
     />
@@ -78,22 +78,22 @@ export function SettingRow({
   return (
     <div
       className={cn(
-        "mb-6 w-full flex",
-        isColumn ? "flex-col items-start gap-3" : "justify-between items-center",
+        "mb-6 flex w-full",
+        isColumn ? "flex-col items-start gap-3" : "items-center justify-between",
       )}
     >
       <div className={cn("flex flex-col gap-1", !isColumn && "max-w-[75%]")}>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-white text-base font-medium">{label}</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-base font-medium text-white">{label}</span>
           {requiresRestart ? (
-            <span className="inline-flex items-center gap-1 text-xs text-[#f59e0b] border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-1.5 py-0.5 rounded font-medium">
-              <RotateCcw className="w-2.5 h-2.5" />
+            <span className="inline-flex items-center gap-1 rounded border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-1.5 py-0.5 text-xs font-medium text-[#f59e0b]">
+              <RotateCcw className="h-2.5 w-2.5" />
               {t("settings.restartRequired")}
             </span>
           ) : null}
         </div>
         {sublabel ? (
-          <span className="text-[#a7a7a7] text-sm leading-relaxed">{sublabel}</span>
+          <span className="text-sm leading-relaxed text-[#a7a7a7]">{sublabel}</span>
         ) : null}
       </div>
       {control}
@@ -104,7 +104,7 @@ export function SettingRow({
 export function SettingSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h3 className="text-xs font-bold text-white uppercase tracking-widest border-b border-[#282828] pb-2 mb-6">
+      <h3 className="mb-6 border-b border-[#282828] pb-2 text-xs font-bold tracking-widest text-white uppercase">
         {title}
       </h3>
       {children}
@@ -124,7 +124,7 @@ export function SettingSelect({
   disabled?: boolean;
 }) {
   return (
-    <div className={cn("relative", disabled && "opacity-40 cursor-not-allowed")}>
+    <div className={cn("relative", disabled && "cursor-not-allowed opacity-40")}>
       <select
         className={cn(selectClass, disabled && "pointer-events-none")}
         value={value}
@@ -133,30 +133,30 @@ export function SettingSelect({
       >
         {children}
       </select>
-      <ChevronDown className="w-4 h-4 text-white absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+      <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-white" />
     </div>
   );
 }
 
 export function SettingsLoadingState() {
   return (
-    <div className="w-full bg-[#121212] rounded-lg p-10 md:p-14 text-[#b3b3b3] flex flex-col min-h-[80vh] relative animate-in fade-in duration-500">
+    <div className="animate-in fade-in relative flex min-h-[80vh] w-full flex-col rounded-lg bg-[#121212] p-10 text-[#b3b3b3] duration-500 md:p-14">
       {/* 标题骨架 */}
-      <div className="flex justify-between items-center mb-10 mt-4.5">
+      <div className="mt-4.5 mb-10 flex items-center justify-between">
         <Skeleton className="h-12 w-32 bg-white/10" />
       </div>
 
-      <div className="grow grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10 items-start pb-20">
+      <div className="grid grow grid-cols-1 items-start gap-x-16 gap-y-10 pb-20 lg:grid-cols-2">
         {/* 左侧栏骨架 */}
         <div className="flex flex-col gap-10">
           <div>
-            <div className="border-b border-[#282828] pb-2 mb-6">
+            <div className="mb-6 border-b border-[#282828] pb-2">
               <Skeleton className="h-4 w-28 bg-white/10" />
             </div>
             <div className="space-y-6">
               {[1, 2, 3].map((id) => (
-                <div key={id} className="flex justify-between items-center">
-                  <div className="space-y-1.5 flex-1 max-w-[70%]">
+                <div key={id} className="flex items-center justify-between">
+                  <div className="max-w-[70%] flex-1 space-y-1.5">
                     <Skeleton className="h-5 w-40 bg-white/10" />
                     <Skeleton className="h-3 w-64 bg-white/10" />
                   </div>
@@ -167,13 +167,13 @@ export function SettingsLoadingState() {
           </div>
 
           <div>
-            <div className="border-b border-[#282828] pb-2 mb-6">
+            <div className="mb-6 border-b border-[#282828] pb-2">
               <Skeleton className="h-4 w-32 bg-white/10" />
             </div>
             <div className="space-y-6">
               {[1, 2].map((id) => (
-                <div key={id} className="flex justify-between items-center">
-                  <div className="space-y-1.5 flex-1 max-w-[70%]">
+                <div key={id} className="flex items-center justify-between">
+                  <div className="max-w-[70%] flex-1 space-y-1.5">
                     <Skeleton className="h-5 w-32 bg-white/10" />
                     <Skeleton className="h-3 w-48 bg-white/10" />
                   </div>
@@ -187,13 +187,13 @@ export function SettingsLoadingState() {
         {/* 右侧栏骨架 */}
         <div className="flex flex-col gap-10">
           <div>
-            <div className="border-b border-[#282828] pb-2 mb-6">
+            <div className="mb-6 border-b border-[#282828] pb-2">
               <Skeleton className="h-4 w-24 bg-white/10" />
             </div>
             <div className="space-y-6">
               {[1, 2].map((id) => (
-                <div key={id} className="flex justify-between items-center">
-                  <div className="space-y-1.5 flex-1 max-w-[70%]">
+                <div key={id} className="flex items-center justify-between">
+                  <div className="max-w-[70%] flex-1 space-y-1.5">
                     <Skeleton className="h-5 w-44 bg-white/10" />
                     <Skeleton className="h-3 w-56 bg-white/10" />
                   </div>
@@ -204,13 +204,13 @@ export function SettingsLoadingState() {
           </div>
 
           <div>
-            <div className="border-b border-[#282828] pb-2 mb-6">
+            <div className="mb-6 border-b border-[#282828] pb-2">
               <Skeleton className="h-4 w-28 bg-white/10" />
             </div>
             <div className="space-y-6">
               {[1, 2].map((id) => (
-                <div key={id} className="flex justify-between items-center">
-                  <div className="space-y-1.5 flex-1 max-w-[70%]">
+                <div key={id} className="flex items-center justify-between">
+                  <div className="max-w-[70%] flex-1 space-y-1.5">
                     <Skeleton className="h-5 w-36 bg-white/10" />
                     <Skeleton className="h-3 w-52 bg-white/10" />
                   </div>
@@ -231,14 +231,14 @@ export function SaveChangesButton({ visible, onClick }: { visible: boolean; onCl
   return (
     <div
       className={cn(
-        "fixed bottom-28 left-1/2 -translate-x-1/2 z-50 transition-all duration-300",
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none",
+        "fixed bottom-28 left-1/2 z-50 -translate-x-1/2 transition-all duration-300",
+        visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
       )}
     >
       <button
         type="button"
         onClick={onClick}
-        className="flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-base bg-[#1ed760] text-black hover:bg-[#1fdf64] hover:scale-105 active:scale-100 shadow-[0_8px_24px_rgba(30,215,96,0.3)] transition-all cursor-pointer"
+        className="flex cursor-pointer items-center gap-2 rounded-full bg-[#1ed760] px-8 py-3.5 text-base font-bold text-black shadow-[0_8px_24px_rgba(30,215,96,0.3)] transition-all hover:scale-105 hover:bg-[#1fdf64] active:scale-100"
       >
         {t("settings.save")}
       </button>
@@ -273,37 +273,37 @@ export function SaveConfirmModal({
 
   return (
     <div
-      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="animate-in fade-in fixed inset-0 z-9999 flex items-center justify-center bg-black/80 backdrop-blur-sm duration-200"
       onClick={onClose}
     >
       <div
-        className="bg-[#282828] w-100 rounded-xl shadow-2xl p-8 flex flex-col items-center text-center relative"
+        className="relative flex w-100 flex-col items-center rounded-xl bg-[#282828] p-8 text-center shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="space-y-2 mb-8">
-          <h2 className="text-2xl font-bold text-white tracking-tight">
+        <div className="mb-8 space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-white">
             {t("settings.confirm.title")}
           </h2>
-          <p className="text-[#b3b3b3] text-sm">{subtitle}</p>
+          <p className="text-sm text-[#b3b3b3]">{subtitle}</p>
         </div>
 
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex w-full flex-col gap-4">
           <button
             type="button"
             onClick={onConfirm}
             disabled={isSaving}
-            className="flex flex-col items-center justify-center w-full py-3.5 rounded-full bg-[#1ed760] hover:bg-[#1fdf64] hover:scale-105 transition-all active:scale-100 disabled:opacity-50 disabled:hover:scale-100"
+            className="flex w-full flex-col items-center justify-center rounded-full bg-[#1ed760] py-3.5 transition-all hover:scale-105 hover:bg-[#1fdf64] active:scale-100 disabled:opacity-50 disabled:hover:scale-100"
           >
-            <span className="text-black font-bold text-base">
+            <span className="text-base font-bold text-black">
               {isSaving ? `${t("settings.confirm.confirm")}...` : t("settings.confirm.confirm")}
             </span>
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="flex flex-col items-center justify-center w-full py-3.5 rounded-full bg-transparent border border-[#727272] hover:border-white hover:scale-105 transition-all active:scale-100"
+            className="flex w-full flex-col items-center justify-center rounded-full border border-[#727272] bg-transparent py-3.5 transition-all hover:scale-105 hover:border-white active:scale-100"
           >
-            <span className="text-white font-bold text-base">{t("settings.confirm.cancel")}</span>
+            <span className="text-base font-bold text-white">{t("settings.confirm.cancel")}</span>
           </button>
         </div>
       </div>

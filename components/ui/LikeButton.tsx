@@ -19,7 +19,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
   <motion.button
     onClick={onLike}
     className={cn(
-      "relative flex items-center gap-1.5 transition-colors text-zinc-500 hover:text-white",
+      "relative flex items-center gap-1.5 text-zinc-500 transition-colors hover:text-white",
       liked && "text-[#1DB954]",
     )}
     whileTap={{ scale: 0.85 }}
@@ -31,7 +31,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
       >
         <Heart
           className={cn(
-            "w-4 h-4 transition-all duration-200",
+            "h-4 w-4 transition-all duration-200",
             liked && "fill-[#1DB954]",
             iconClassName,
           )}
@@ -49,7 +49,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
               scale: 0,
             }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="absolute top-1/2 left-1/2 w-1 h-1 rounded-full bg-[#1DB954] pointer-events-none"
+            className="pointer-events-none absolute top-1/2 left-1/2 h-1 w-1 rounded-full bg-[#1DB954]"
             style={{ translateX: "-50%", translateY: "-50%" }}
           />
         ))}

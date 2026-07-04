@@ -23,25 +23,25 @@ export function AlbumActions({
       <button
         type="button"
         onClick={onPlay}
-        className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477]"
       >
         {isPlaying ? (
-          <Pause className="w-6 h-6 ml-0.5 fill-current" />
+          <Pause className="ml-0.5 h-6 w-6 fill-current" />
         ) : (
-          <Play className="w-6 h-6 ml-1.5 fill-current" />
+          <Play className="ml-1.5 h-6 w-6 fill-current" />
         )}
       </button>
-      <Shuffle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
-      <ArrowDownCircle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
+      <Shuffle className="h-8 w-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
+      <ArrowDownCircle className="h-8 w-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
       <button
         type="button"
         disabled={isTogglingAlbumSubscribe}
         onClick={onToggleSubscribe}
         className="text-zinc-400 transition-colors hover:text-white disabled:opacity-50"
       >
-        <Heart className={cn("w-8 h-8", isAlbumCollected && "fill-[#1ed760] text-[#1ed760]")} />
+        <Heart className={cn("h-8 w-8", isAlbumCollected && "fill-[#1ed760] text-[#1ed760]")} />
       </button>
-      <MoreHorizontal className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
+      <MoreHorizontal className="h-8 w-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
     </div>
   );
 }

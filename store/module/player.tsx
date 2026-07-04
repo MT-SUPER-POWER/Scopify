@@ -1,11 +1,7 @@
 import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import {
-  getLyric,
-  getSongUrlWithQuality,
-  UI_QUALITY_TO_LEVEL,
-} from "@/lib/api/music";
+import { getLyric, getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
 import {
   getCachedLyric,
   getCachedPlayUrl,
@@ -17,11 +13,7 @@ import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
-import {
-  type NeteaseLyric,
-  pruneNeteaseLyric,
-  type SongDetail,
-} from "@/types/api/music";
+import { type NeteaseLyric, pruneNeteaseLyric, type SongDetail } from "@/types/api/music";
 
 export type RepeatMode = "off" | "all" | "one";
 export type MusicQuality = "spatial" | "lossless" | "high" | "standard";
@@ -68,11 +60,7 @@ type PlayerStore = {
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
   setRepeatMode: (mode: RepeatMode) => void;
-  setQueue: (
-    songs: SongDetail[],
-    startIndex?: number,
-    playlistId?: number | string | null,
-  ) => void;
+  setQueue: (songs: SongDetail[], startIndex?: number, playlistId?: number | string | null) => void;
   setLyric: (lyric: NeteaseLyric | null) => void;
   setShuffle: (v: boolean) => void;
 
@@ -184,9 +172,7 @@ export const usePlayerStore = create<PlayerStore>()(
         if (newShuffleState) {
           // 开启随机
           const currentSong = queue[queueIndex];
-          const remainingSongs = originalQueue.filter(
-            (s) => s.id !== currentSong?.id,
-          );
+          const remainingSongs = originalQueue.filter((s) => s.id !== currentSong?.id);
           const newQueue = currentSong
             ? [currentSong, ...shuffleArray(remainingSongs)]
             : shuffleArray(originalQueue);
@@ -229,10 +215,7 @@ export const usePlayerStore = create<PlayerStore>()(
       handlePlaybackFailure: async (source) => {
         const { queue, queueIndex, playbackFailureCount } = get();
         const hasNextTrack = queueIndex >= 0 && queueIndex < queue.length - 1;
-        const action = getPlaybackFailureAction(
-          playbackFailureCount,
-          hasNextTrack,
-        );
+        const action = getPlaybackFailureAction(playbackFailureCount, hasNextTrack);
         const locale = useI18nStore.getState().locale;
 
         console.warn("Playback failed:", {
@@ -259,12 +242,9 @@ export const usePlayerStore = create<PlayerStore>()(
           lyric: null,
           playbackFailureCount: action.nextFailureCount,
         });
-        toast.error(
-          translate(locale, "common.message.playbackConsecutiveFailed"),
-          {
-            id: "playback-consecutive-failed",
-          },
-        );
+        toast.error(translate(locale, "common.message.playbackConsecutiveFailed"), {
+          id: "playback-consecutive-failed",
+        });
       },
 
       playTrack: async (song, options = {}) => {
@@ -343,9 +323,7 @@ export const usePlayerStore = create<PlayerStore>()(
           console.log("[Cache] WRITE: URL + lyric for song", song.id);
           await Promise.all([
             setCachedPlayUrl(song.id, musicQuality, url),
-            lyricRes.data
-              ? setCachedLyric(song.id, lyricRes.data)
-              : Promise.resolve(),
+            lyricRes.data ? setCachedLyric(song.id, lyricRes.data) : Promise.resolve(),
           ]);
           const lyricData2 = lyricRes.data;
 
@@ -387,14 +365,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playNext: async () => {
-        const {
-          queue,
-          queueIndex,
-          repeatMode,
-          historyStack,
-          historyIndex,
-          reshuffleQueue,
-        } = get();
+        const { queue, queueIndex, repeatMode, historyStack, historyIndex, reshuffleQueue } = get();
 
         if (!queue.length) return;
 
@@ -416,12 +387,7 @@ export const usePlayerStore = create<PlayerStore>()(
             nextIndex = queueIndex;
           } else {
             set({ isPlaying: false });
-            toast.success(
-              translate(
-                useI18nStore.getState().locale,
-                "common.message.endOfQueue",
-              ),
-            );
+            toast.success(translate(useI18nStore.getState().locale, "common.message.endOfQueue"));
             return;
           }
         }
@@ -454,9 +420,7 @@ export const usePlayerStore = create<PlayerStore>()(
         if (!isShuffle || originalQueue.length === 0) return;
 
         const currentSong = currentSongDetail;
-        const remainingSongs = originalQueue.filter(
-          (s) => s.id !== currentSong?.id,
-        );
+        const remainingSongs = originalQueue.filter((s) => s.id !== currentSong?.id);
         const newQueue = currentSong
           ? [currentSong, ...shuffleArray(remainingSongs)]
           : shuffleArray(originalQueue);

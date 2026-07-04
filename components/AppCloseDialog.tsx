@@ -42,39 +42,39 @@ export default function AppCloseDialog() {
 
   return (
     <div
-      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="animate-in fade-in fixed inset-0 z-9999 flex items-center justify-center bg-black/80 backdrop-blur-sm duration-200"
       onClick={() => setIsOpen(false)}
     >
       <div
-        className="bg-[#282828] w-100 rounded-xl shadow-2xl p-8 flex flex-col items-center text-center relative"
+        className="relative flex w-100 flex-col items-center rounded-xl bg-[#282828] p-8 text-center shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="space-y-2 mb-8">
-          <h2 className="text-2xl font-bold text-white tracking-tight">{t("appClose.title")}</h2>
-          <p className="text-[#b3b3b3] text-sm">{t("appClose.subtitle")}</p>
+        <div className="mb-8 space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-white">{t("appClose.title")}</h2>
+          <p className="text-sm text-[#b3b3b3]">{t("appClose.subtitle")}</p>
         </div>
 
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex w-full flex-col gap-4">
           <button
             onClick={() => handleAction("minimize")}
-            className="flex flex-col items-center justify-center w-full py-3.5 rounded-full bg-[#1ed760] hover:bg-[#1fdf64] hover:scale-105 transition-all active:scale-100"
+            className="flex w-full flex-col items-center justify-center rounded-full bg-[#1ed760] py-3.5 transition-all hover:scale-105 hover:bg-[#1fdf64] active:scale-100"
           >
-            <span className="text-black font-bold text-base">{t("appClose.minimize")}</span>
+            <span className="text-base font-bold text-black">{t("appClose.minimize")}</span>
           </button>
           <button
             onClick={() => handleAction("exit")}
-            className="flex flex-col items-center justify-center w-full py-3.5 rounded-full bg-transparent border border-[#727272] hover:border-white hover:scale-105 transition-all active:scale-100"
+            className="flex w-full flex-col items-center justify-center rounded-full border border-[#727272] bg-transparent py-3.5 transition-all hover:scale-105 hover:border-white active:scale-100"
           >
-            <span className="text-white font-bold text-base">{t("appClose.exit")}</span>
+            <span className="text-base font-bold text-white">{t("appClose.exit")}</span>
           </button>
         </div>
 
         <div
-          className="flex items-center gap-3 mt-8 mb-2 cursor-pointer select-none group"
+          className="group mt-8 mb-2 flex cursor-pointer items-center gap-3 select-none"
           onClick={() => setRemember((current) => !current)}
         >
           <div
-            className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${remember ? "bg-[#1ed760] border-[#1ed760]" : "border-[#727272] group-hover:border-white"}`}
+            className={`flex h-4 w-4 items-center justify-center rounded-sm border transition-colors ${remember ? "border-[#1ed760] bg-[#1ed760]" : "border-[#727272] group-hover:border-white"}`}
           >
             {remember ? (
               <svg
@@ -91,7 +91,7 @@ export default function AppCloseDialog() {
               </svg>
             ) : null}
           </div>
-          <span className="text-[#b3b3b3] group-hover:text-white text-sm transition-colors">
+          <span className="text-sm text-[#b3b3b3] transition-colors group-hover:text-white">
             {t("appClose.remember")}
           </span>
         </div>

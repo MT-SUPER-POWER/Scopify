@@ -32,12 +32,12 @@ export function GridCard({
     <div
       key={id}
       onClick={onClick}
-      className="group cursor-pointer rounded-md overflow-hidden bg-[#181818] hover:bg-[#282828] transition-colors p-4"
+      className="group cursor-pointer overflow-hidden rounded-md bg-[#181818] p-4 transition-colors hover:bg-[#282828]"
     >
       <div className="relative mb-4">
         <div
           className={cn(
-            "w-full aspect-square rounded-md overflow-hidden bg-zinc-800 shadow-lg",
+            "aspect-square w-full overflow-hidden rounded-md bg-zinc-800 shadow-lg",
             isArtist && "rounded-full",
           )}
         >
@@ -46,38 +46,27 @@ export function GridCard({
             height={200}
             src={coverUrl || ""}
             alt={name}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
         {onPlay && (
           <button
             type="button"
             onClick={onPlay}
-            className="absolute bottom-2 right-2 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black
-              opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#3be477] shadow-xl"
+            className="absolute right-2 bottom-2 flex h-12 w-12 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
           >
-            <Play
-              className={cn(
-                "w-6 h-6 fill-current ml-0.5",
-                isLoading && "animate-pulse",
-              )}
-            />
+            <Play className={cn("ml-0.5 h-6 w-6 fill-current", isLoading && "animate-pulse")} />
           </button>
         )}
-      </div>
-      <h3 className="text-white text-sm font-bold truncate">{name}</h3>
-      <div className="flex flex-row items-center text-xs text-zinc-400 mt-1">
         {playCount !== undefined && (
-          // TODO: 适配 i18n
-          <span className="shrink-0">{formatPlayCount(playCount)}次播放</span>
+          <div className="pointer-events-none absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[11px] text-white opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-300 select-none group-hover:opacity-100">
+            <Play className="h-2.5 w-2.5 fill-current text-white" />
+            <span>{formatPlayCount(playCount)}次播放</span>
+          </div>
         )}
-
-        {playCount !== undefined && subtitle && (
-          <div className="w-1 h-1 rounded-full bg-zinc-500 mx-2 shrink-0" />
-        )}
-
-        {subtitle && <span className="line-clamp-2">{subtitle}</span>}
       </div>
+      <h3 className="truncate text-sm font-bold text-white">{name}</h3>
+      {subtitle && <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{subtitle}</p>}
     </div>
   );
 }

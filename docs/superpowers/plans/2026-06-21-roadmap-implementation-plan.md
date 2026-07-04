@@ -33,6 +33,7 @@ Expected: no new `any`, `Record<string, any>`, or `as any`. Use `unknown` plus n
 ### Task 1.1: Network Error Classifier
 
 **Files:**
+
 - Create: `types/network.ts`
 - Create: `lib/web/networkError.ts`
 - Modify: `lib/web/request.ts`
@@ -53,6 +54,7 @@ export interface ClassifiedNetworkError {
 - [ ] **Step 2: Implement classifier**
 
 Rules:
+
 - `navigator.onLine === false` -> `offline`
 - axios `code === "ECONNABORTED"` -> `timeout`
 - axios `code === "ERR_NETWORK"` or missing `response` -> `network`
@@ -62,6 +64,7 @@ Rules:
 - [ ] **Step 3: Add i18n copy**
 
 Keys:
+
 - `network.offline.title`
 - `network.offline.subtitle`
 - `network.action.refresh`
@@ -81,6 +84,7 @@ Expected: no type or lint errors from new files.
 ### Task 1.2: Skeleton-Preserving Retry UI
 
 **Files:**
+
 - Create: `types/components/network.ts`
 - Create: `components/shared/NetworkRetryState.tsx`
 - Create: `components/shared/NetworkToastBridge.tsx`
@@ -131,6 +135,7 @@ Manual expected with network disabled: home, playlist, album, artist, search, co
 ### Task 2.1: Shared Login Prompt And Redirect
 
 **Files:**
+
 - Create: `types/auth.ts`
 - Create: `components/auth/LoginRequiredPrompt.tsx`
 - Create: `lib/hooks/useRequireLoginAction.ts`
@@ -159,6 +164,7 @@ export interface LoginRequiredPromptProps {
 - [ ] **Step 2: Implement login action hook**
 
 Behavior:
+
 - If logged in, run the requested action.
 - If not logged in and Electron, open login window.
 - If not logged in and Web, route to `/login?redirect=<encoded-current-url>&reason=<reason>`.
@@ -182,6 +188,7 @@ Manual expected: unauthenticated user understands which feature needs login and 
 ### Task 3.1: Playlist Tag API And Types
 
 **Files:**
+
 - Create: `types/api/playlistTags.ts`
 - Modify: `lib/api/playlist.ts`
 
@@ -222,6 +229,7 @@ export function updatePlaylistTags(id: number | string, tags: string[]) {
 ### Task 3.2: Playlist Tag Selector UI
 
 **Files:**
+
 - Create: `types/components/playlist.ts`
 - Create: `components/Playlist/PlaylistTagSelector.tsx`
 - Modify: `components/Playlist/PlaylistForm.tsx`
@@ -257,6 +265,7 @@ Manual expected: tags save through `/playlist/update` or `/playlist/tags/update`
 ### Task 4.1: Playback Failure Fallback
 
 **Files:**
+
 - Modify: `types/api/music.ts`
 - Modify: `store/module/player.tsx`
 - Modify: `components/PlayBar/AudioManager.ts`
@@ -290,6 +299,7 @@ Manual expected: one failed song skips; two failed songs stop with one warning.
 ### Task 4.2: Shared Cover Play Hook
 
 **Files:**
+
 - Create: `types/player.ts`
 - Create: `hooks/player/useCoverPlayAction.ts`
 - Modify: `components/HomePage.tsx`
@@ -321,6 +331,7 @@ Manual expected: cover play works and does not trigger navigation.
 ### Task 5.1: Album Subscribe / Unsubscribe
 
 **Files:**
+
 - Create: `types/api/album.ts`
 - Modify: `lib/api/album.ts`
 - Modify: `store/module/user.ts`
@@ -353,6 +364,7 @@ Update collected album state immediately, rollback on failure.
 ### Task 5.2: Artist Links Everywhere
 
 **Files:**
+
 - Create: `types/components/artist.ts`
 - Create: `components/shared/ArtistInlineLinks.tsx`
 - Modify: `components/Playlist/TrackRow.tsx`
@@ -376,6 +388,7 @@ Use shared component and stop propagation on click.
 ### Task 5.3: Sidebar Followed Artists
 
 **Files:**
+
 - Modify: `types/artist.ts`
 - Modify: `lib/api/artist.ts`
 - Modify: `store/module/user.ts`
@@ -403,6 +416,7 @@ Artist fetch failure should render a compact retry state only inside the artist 
 ### Task 6.1: Desktop Update UI
 
 **Files:**
+
 - Create: `types/updater.ts`
 - Create: `hooks/settings/useAppUpdater.ts`
 - Modify: `components/settings/SettingsPage.tsx`
@@ -419,6 +433,7 @@ Show status, progress, check/download/install button.
 ### Task 6.2: User Profile Editing
 
 **Files:**
+
 - Create: `types/api/profileUpdate.ts`
 - Create: `components/profile/EditUserProfileDialog.tsx`
 - Modify: `lib/api/user.ts`
@@ -446,6 +461,7 @@ Use `useRequireLoginAction("profile-edit")`.
 ### Task 6.3: Artist Expand/Collapse And Web Shortcuts
 
 **Files:**
+
 - Modify: `components/artist/PopularTracks.tsx`
 - Create: `hooks/player/usePlaybackShortcuts.ts`
 - Modify: `components/PlayerCommandHandler.tsx`
@@ -481,4 +497,3 @@ Ignore input, textarea, select, and contenteditable.
 - Daily recommendation date-based cache is already implemented.
 - Existing `any` cleanup is intentionally deferred; new work must be typed from the start.
 - Backend package-size work continues under `docs/superpowers/plans/2026-06-19-desktop-delivery-backend-decoupling.md`.
-

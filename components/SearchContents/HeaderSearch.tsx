@@ -168,7 +168,7 @@ export default function HeaderSearch() {
       {/* ── 搜索输入框 ── */}
       <div
         className={cn(
-          "group flex items-center gap-3 px-5 transition-all duration-200 relative h-11",
+          "group relative flex h-11 items-center gap-3 px-5 transition-all duration-200",
           !focused && !dropdownVisible && `${NAV_BTN} rounded-full border border-transparent`,
           (focused || dropdownVisible) && GLASS,
           dropdownVisible
@@ -178,7 +178,7 @@ export default function HeaderSearch() {
       >
         <Search
           className={cn(
-            "w-4 h-4 shrink-0 transition-colors",
+            "h-4 w-4 shrink-0 transition-colors",
             focused ? "text-zinc-400" : "text-zinc-500 group-hover:text-zinc-400",
           )}
         />
@@ -196,8 +196,7 @@ export default function HeaderSearch() {
               if (!wrapperRef.current?.contains(document.activeElement)) setFocused(false);
             }, 100);
           }}
-          className="flex-1 bg-transparent border-none text-white text-sm font-medium
-            outline-none placeholder:text-zinc-600 transition-all caret-[#1ed760]"
+          className="flex-1 border-none bg-transparent text-sm font-medium text-white caret-[#1ed760] transition-all outline-none placeholder:text-zinc-600"
           placeholder={placeholder}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch();
@@ -216,15 +215,12 @@ export default function HeaderSearch() {
               setLocalValue("");
               setSuggests([]);
             }}
-            className="p-1 hover:bg-white/10 rounded-full transition-colors shrink-0"
+            className="shrink-0 rounded-full p-1 transition-colors hover:bg-white/10"
           >
-            <X className="w-3.5 h-3.5 text-zinc-500 hover:text-white" />
+            <X className="h-3.5 w-3.5 text-zinc-500 hover:text-white" />
           </button>
         ) : (
-          <div
-            className="hidden lg:flex items-center gap-1 shrink-0 text-zinc-600
-            border border-zinc-700/60 rounded-md px-1.5 py-0.5 text-[10px] font-bold bg-white/3"
-          >
+          <div className="hidden shrink-0 items-center gap-1 rounded-md border border-zinc-700/60 bg-white/3 px-1.5 py-0.5 text-[10px] font-bold text-zinc-600 lg:flex">
             <span>{isMac ? "⌘" : "Ctrl"}</span>
             <span>K</span>
           </div>
@@ -241,7 +237,7 @@ export default function HeaderSearch() {
             transition={{ duration: 0.14, ease: [0.16, 1, 0.3, 1] }}
             style={{ transformOrigin: "top" }}
             className={cn(
-              "absolute top-full left-0 right-0 z-50 overflow-hidden",
+              "absolute top-full right-0 left-0 z-50 overflow-hidden",
               GLASS,
               "rounded-t-none rounded-b-2xl border-t-0 pt-2",
             )}
@@ -249,14 +245,14 @@ export default function HeaderSearch() {
             {/* 最近搜索 */}
             {showRecent && (
               <>
-                <div className="flex items-center justify-between px-5 pb-1 pt-2">
-                  <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-widest mb-1">
+                <div className="flex items-center justify-between px-5 pt-2 pb-1">
+                  <span className="mb-1 text-[11px] font-semibold tracking-widest text-zinc-500 uppercase">
                     Recent Searches
                   </span>
                   <button
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => useSearchStore.getState().clearRecent()}
-                    className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+                    className="text-xs text-zinc-500 transition-colors hover:text-zinc-300"
                   >
                     Clear All
                   </button>
@@ -270,12 +266,11 @@ export default function HeaderSearch() {
                     onMouseDown={(e) => e.preventDefault()}
                     // onClick={() => handleItemClick(item)}
                     onClick={() => handleSearch(item)}
-                    className="group/item flex items-center justify-between gap-3 px-5 py-3
-                      hover:bg-white/5 cursor-pointer transition-colors"
+                    className="group/item flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-white/5"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Clock className="w-4 h-4 text-zinc-500 shrink-0" />
-                      <span className="text-[15px] text-zinc-300 truncate">{item}</span>
+                    <div className="flex min-w-0 items-center gap-3">
+                      <Clock className="h-4 w-4 shrink-0 text-zinc-500" />
+                      <span className="truncate text-[15px] text-zinc-300">{item}</span>
                     </div>
                     <button
                       onMouseDown={(e) => e.stopPropagation()}
@@ -283,10 +278,9 @@ export default function HeaderSearch() {
                         e.stopPropagation();
                         removeRecent(item);
                       }}
-                      className="opacity-0 group-hover/item:opacity-100 p-1.5 rounded-full
-                        hover:bg-white/10 transition-all shrink-0"
+                      className="shrink-0 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-white/10"
                     >
-                      <X className="w-3.5 h-3.5 text-zinc-500 hover:text-white" />
+                      <X className="h-3.5 w-3.5 text-zinc-500 hover:text-white" />
                     </button>
                   </motion.div>
                 ))}
@@ -296,7 +290,7 @@ export default function HeaderSearch() {
             {/* 加载状态 */}
             {loading && (
               <div className="flex items-center justify-center py-6">
-                <div className="w-4 h-4 border-2 border-zinc-700 border-t-zinc-400 rounded-full animate-spin" />
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-700 border-t-zinc-400" />
               </div>
             )}
 
@@ -304,7 +298,7 @@ export default function HeaderSearch() {
             {showSuggests && (
               <>
                 <div className="px-5 pb-1">
-                  <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">
+                  <span className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
                     Related Searches
                   </span>
                 </div>
@@ -317,12 +311,11 @@ export default function HeaderSearch() {
                     onMouseDown={(e) => e.preventDefault()}
                     // onClick={() => handleItemClick(item.keyword)}
                     onClick={() => handleSearch(item.keyword)}
-                    className="flex items-center justify-between gap-3 px-5 py-3
-                      hover:bg-white/5 cursor-pointer transition-colors"
+                    className="flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-white/5"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Search className="w-4 h-4 text-zinc-500 shrink-0" />
-                      <span className="text-base truncate">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <Search className="h-4 w-4 shrink-0 text-zinc-500" />
+                      <span className="truncate text-base">
                         <HighlightText raw={item.highLightInfo} />
                       </span>
                     </div>

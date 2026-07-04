@@ -93,31 +93,31 @@ function ConfirmDialogShandCN({
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
       <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
       <AlertDialogContent
-        className={cn("bg-[#282828] border-none shadow-2xl rounded-xl w-96 p-8", "flex flex-col")}
+        className={cn("w-96 rounded-xl border-none bg-[#282828] p-8 shadow-2xl", "flex flex-col")}
       >
         {/* text-center 覆盖 shadcn AlertDialogHeader 默认的 text-left */}
-        <AlertDialogHeader className="space-y-2 mb-8 w-full">
-          <AlertDialogTitle className="w-full text-2xl font-bold text-white tracking-tight text-center">
+        <AlertDialogHeader className="mb-8 w-full space-y-2">
+          <AlertDialogTitle className="w-full text-center text-2xl font-bold tracking-tight text-white">
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-[#b3b3b3] text-sm">
+          <AlertDialogDescription className="text-sm text-[#b3b3b3]">
             {content}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         {/* sm:flex-col 覆盖 shadcn Footer 默认在宽屏变 flex-row 的行为 */}
-        <AlertDialogFooter className="flex flex-col gap-4 w-full sm:flex-col">
+        <AlertDialogFooter className="flex w-full flex-col gap-4 sm:flex-col">
           <button
             type="button"
             onClick={onConfirm}
-            className="w-full py-3.5 rounded-full bg-[#1ed760] hover:bg-[#1fdf64] text-black font-bold text-base transition-all"
+            className="w-full rounded-full bg-[#1ed760] py-3.5 text-base font-bold text-black transition-all hover:bg-[#1fdf64]"
           >
             {confirmText}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="w-full py-3.5 rounded-full bg-transparent border border-[#727272] hover:border-white text-white font-bold text-base transition-all"
+            className="w-full rounded-full border border-[#727272] bg-transparent py-3.5 text-base font-bold text-white transition-all hover:border-white"
           >
             {cancelText}
           </button>
@@ -167,7 +167,7 @@ function SiderBarMenu() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost">
             {" "}
-            <Menu className="w-7 h-7" />{" "}
+            <Menu className="h-7 w-7" />{" "}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-40" align="start">
@@ -178,7 +178,7 @@ function SiderBarMenu() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => useUiStore.getState().setIsCollapsed(true)}>
-              <PanelLeftClose className="w-5 h-5 hover:scale-110 active:scale-95 transition-transform mr-2" />
+              <PanelLeftClose className="mr-2 h-5 w-5 transition-transform hover:scale-110 active:scale-95" />
               <span>{t("sidebar.menu.collapse")}</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
@@ -194,13 +194,13 @@ function SiderBarMenu() {
               <DropdownMenuItem
                 onClick={() => handleCreatePlaylist(t("sidebar.lib.untitledPlaylist"), "0")}
               >
-                <Plus className="w-5 h-5 mr-2" />
+                <Plus className="mr-2 h-5 w-5" />
                 <span>{t("sidebar.menu.createPlaylist")}</span>
               </DropdownMenuItem>
 
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <Trash2 className="w-5 h-5 mr-2 text-red-500/80" />
+                  <Trash2 className="mr-2 h-5 w-5 text-red-500/80" />
                   <span className="text-red-500/80">{t("sidebar.menu.deletePlaylist")}</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
@@ -217,7 +217,7 @@ function SiderBarMenu() {
                         height={24}
                         src={playlist.coverImgUrl}
                         alt={t("playlist.form.coverAlt")}
-                        className="w-6 h-6 rounded-sm mr-2"
+                        className="mr-2 h-6 w-6 rounded-sm"
                       />
                       <span>{playlist.name}</span>
                     </DropdownMenuItem>

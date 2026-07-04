@@ -23,7 +23,7 @@ function ScrollArea({
       <ScrollAreaPrimitive.Viewport
         ref={viewportRef} // 利用 ref 把整个组件的状态暴露给 --> scrollContainer
         data-slot="scroll-area-viewport"
-        className="size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
+        className="focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1"
       >
         {children}
       </ScrollAreaPrimitive.Viewport>
@@ -43,7 +43,7 @@ function ScrollBar({
       data-slot="scroll-area-scrollbar"
       orientation={orientation}
       className={cn(
-        "flex touch-none p-px transition-colors select-none z-50",
+        "z-50 flex touch-none p-px transition-colors select-none",
         orientation === "vertical" && "h-full w-2.5 border-l border-l-transparent",
         orientation === "horizontal" && "h-2.5 flex-col border-t border-t-transparent",
         className,
@@ -52,7 +52,7 @@ function ScrollBar({
     >
       <ScrollAreaPrimitive.ScrollAreaThumb
         data-slot="scroll-area-thumb"
-        className="relative flex-1 rounded-full bg-white/20 hover:bg-white/40 transition-colors"
+        className="relative flex-1 rounded-full bg-white/20 transition-colors hover:bg-white/40"
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
   );

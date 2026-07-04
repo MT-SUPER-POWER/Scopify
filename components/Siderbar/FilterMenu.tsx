@@ -33,15 +33,15 @@ const stateToType: Record<FilterState, FilterAction["type"]> = {
 };
 
 const iconList = {
-  ALL: <IconDisc className="w-5 h-5 mr-2" />,
-  CREATED: <IconPlaylist className="w-5 h-5 mr-2" />,
-  SUBSCRIBED: <Bell className="w-5 h-5 mr-2" />,
-  ARTISTS: <User className="w-5 h-5 mr-2" />,
+  ALL: <IconDisc className="mr-2 h-5 w-5" />,
+  CREATED: <IconPlaylist className="mr-2 h-5 w-5" />,
+  SUBSCRIBED: <Bell className="mr-2 h-5 w-5" />,
+  ARTISTS: <User className="mr-2 h-5 w-5" />,
 
-  ENLARGE: <PanelRightClose className="w-5 h-5 mr-2" />,
-  COLLAPSE: <PanelLeftClose className="w-5 h-5 mr-2" />,
-  FAVORITES: <IconDisc className="w-5 h-5 mr-2 text-yellow-500" />,
-  "CREATE PLAYLISTS": <Plus className="w-5 h-5 mr-2" />,
+  ENLARGE: <PanelRightClose className="mr-2 h-5 w-5" />,
+  COLLAPSE: <PanelLeftClose className="mr-2 h-5 w-5" />,
+  FAVORITES: <IconDisc className="mr-2 h-5 w-5 text-yellow-500" />,
+  "CREATE PLAYLISTS": <Plus className="mr-2 h-5 w-5" />,
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -106,11 +106,11 @@ export function FilterMenu({
         <button
           type="button"
           className={cn(
-            "h-10 w-10 p-0 flex items-center justify-center shrink-0",
+            "flex h-10 w-10 shrink-0 items-center justify-center p-0",
             "focus:outline-none focus-visible:ring-0 focus-visible:outline-none",
           )}
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="h-5 w-5" />
         </button>
       </DropdownMenuTrigger>
 

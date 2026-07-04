@@ -39,31 +39,31 @@ export function CommentHeader({
   const remainingArtistCount = Math.max(0, artists.length - visibleArtists.length);
 
   return (
-    <div className="relative z-10 flex flex-col md:flex-row items-start gap-6 px-6 pt-24 pb-6">
-      <div className="w-48 h-48 lg:w-56 lg:h-56 shrink-0 transition-transform duration-300 hover:scale-[1.02] shadow-[0_8px_40px_rgba(0,0,0,0.5)] rounded-md overflow-hidden bg-black/20">
+    <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
+      <div className="h-48 w-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.02] lg:h-56 lg:w-56">
         <Image
           width={400}
           height={400}
           src={coverUrl}
           alt={title}
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
         />
       </div>
 
-      <div className="flex flex-col flex-1 min-w-0 text-white pt-1 md:pt-2">
-        <div className="flex flex-row gap-2 flex-wrap items-center mb-3 md:mb-4">
-          <span className="text-sm drop-shadow-md uppercase tracking-wider bg-white/10 px-3 py-1 rounded-sm">
+      <div className="flex min-w-0 flex-1 flex-col pt-1 text-white md:pt-2">
+        <div className="mb-3 flex flex-row flex-wrap items-center gap-2 md:mb-4">
+          <span className="rounded-sm bg-white/10 px-3 py-1 text-sm tracking-wider uppercase drop-shadow-md">
             {t("comments.page.trackTag")}
           </span>
           {albumName && (
-            <span className="text-[12px] font-medium drop-shadow-md px-3 py-1 bg-white/10 rounded-full">
+            <span className="rounded-full bg-white/10 px-3 py-1 text-[12px] font-medium drop-shadow-md">
               {albumName}
             </span>
           )}
         </div>
 
         <h1
-          className="m-0 font-black tracking-tighter leading-[1.1] drop-shadow-lg mb-4 md:mb-6 wrap-break-word text-4xl md:text-5xl lg:text-6xl line-clamp-3"
+          className="m-0 mb-4 line-clamp-3 text-4xl leading-[1.1] font-black tracking-tighter wrap-break-word drop-shadow-lg md:mb-6 md:text-5xl lg:text-6xl"
           title={title}
         >
           {title}
@@ -72,7 +72,7 @@ export function CommentHeader({
         <div className="flex flex-wrap items-center gap-2.5 text-sm text-white/80 drop-shadow-md">
           {artists.length > 0 && (
             <>
-              <div className="flex items-center gap-3 mr-1 text-white">
+              <div className="mr-1 flex items-center gap-3 text-white">
                 <div className="flex -space-x-2">
                   {visibleArtists.map((artist) => (
                     <button
@@ -80,7 +80,7 @@ export function CommentHeader({
                       type="button"
                       onClick={() => onArtistClick(artist.id)}
                       title={artist.name}
-                      className="rounded-full transition-transform hover:z-10 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1DB954]"
+                      className="rounded-full transition-transform hover:z-10 hover:scale-110 focus-visible:ring-2 focus-visible:ring-[#1DB954] focus-visible:outline-none"
                     >
                       <ArtistAvatar artist={artist} />
                     </button>
@@ -98,7 +98,7 @@ export function CommentHeader({
                       <button
                         type="button"
                         onClick={() => onArtistClick(artist.id)}
-                        className="font-bold text-[15px] text-white hover:underline"
+                        className="text-[15px] font-bold text-white hover:underline"
                       >
                         {artist.name}
                       </button>
@@ -106,7 +106,7 @@ export function CommentHeader({
                   ))}
                 </div>
               </div>
-              <span className="opacity-60 hidden sm:inline">•</span>
+              <span className="hidden opacity-60 sm:inline">•</span>
             </>
           )}
           <span>

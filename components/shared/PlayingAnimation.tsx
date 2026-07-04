@@ -16,7 +16,7 @@ export const PlayingAnimation = React.memo(function PlayingAnimation({
   const { t } = useI18n();
 
   return (
-    <div className={cn("flex items-end gap-0.5 shrink-0", className)}>
+    <div className={cn("flex shrink-0 items-end gap-0.5", className)}>
       <Image
         src={SPOTIFYANIME}
         alt={t("common.status.playing")}

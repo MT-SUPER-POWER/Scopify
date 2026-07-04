@@ -30,13 +30,13 @@ export const VolumeControl = ({
 
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
-      return <VolumeOff className="w-5 h-5" />;
+      return <VolumeOff className="h-5 w-5" />;
     } else if (volume < 33) {
-      return <Volume className="w-5 h-5" />;
+      return <Volume className="h-5 w-5" />;
     } else if (volume < 66) {
-      return <Volume1 className="w-5 h-5" />;
+      return <Volume1 className="h-5 w-5" />;
     } else {
-      return <Volume2 className="w-5 h-5" />;
+      return <Volume2 className="h-5 w-5" />;
     }
   };
 
@@ -137,15 +137,15 @@ export const VolumeControl = ({
     return (
       <div
         onWheel={handleWheel}
-        className="flex items-center w-full gap-3 px-4 py-2 hover:bg-white/5 transition-colors rounded-md min-w-0 select-none"
+        className="flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none hover:bg-white/5"
       >
         <button
           onClick={handleMuteToggle}
-          className="text-[#b3b3b3] hover:text-white transition-colors shrink-0"
+          className="shrink-0 text-[#b3b3b3] transition-colors hover:text-white"
         >
           {getVolumeIcon()}
         </button>
-        <div className="flex-1 flex items-center min-w-12.5">
+        <div className="flex min-w-12.5 flex-1 items-center">
           <SmoothSlider
             value={isMuted ? 0 : volume}
             onChange={handleVolumeChange}
@@ -155,7 +155,7 @@ export const VolumeControl = ({
             thumbOnHover={true}
           />
         </div>
-        <span className="text-xs text-[#b3b3b3] font-medium tabular-nums w-8 text-right shrink-0">
+        <span className="w-8 shrink-0 text-right text-xs font-medium text-[#b3b3b3] tabular-nums">
           {isMuted ? 0 : Math.round(volume)}%
         </span>
       </div>
@@ -173,15 +173,15 @@ export const VolumeControl = ({
     >
       <button
         onClick={handleMuteToggle}
-        className="text-[#b3b3b3] hover:text-white transition-colors"
+        className="text-[#b3b3b3] transition-colors hover:text-white"
       >
         {getVolumeIcon()}
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 pb-2 z-50">
-          <div className="bg-zinc-900 rounded-lg p-3 shadow-xl border border-zinc-700">
-            <div className="flex flex-col items-center gap-2 mt-2">
+        <div className="absolute bottom-full left-1/2 z-50 -translate-x-1/2 pb-2">
+          <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 shadow-xl">
+            <div className="mt-2 flex flex-col items-center gap-2">
               <SmoothSlider
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
@@ -191,7 +191,7 @@ export const VolumeControl = ({
                 thumbSize={10}
                 thumbOnHover={false}
               />
-              <span className="text-xs text-white font-medium tabular-nums w-[4ch] inline-block text-center">
+              <span className="inline-block w-[4ch] text-center text-xs font-medium text-white tabular-nums">
                 {isMuted ? 0 : Math.round(volume)}%
               </span>
             </div>

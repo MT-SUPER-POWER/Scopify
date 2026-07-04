@@ -111,28 +111,28 @@ function LoginPageContent() {
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center bg-black text-white p-4 min-h-screen w-screen overflow-hidden",
+        "flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-black p-4 text-white",
       )}
     >
       {/* 右上角退出按钮，点击返回主页 */}
       {showExitButton && (
         <button
           type="button"
-          className="absolute top-5 right-6 p-1 rounded-full hover:bg-white/10 transition-colors"
+          className="absolute top-5 right-6 rounded-full p-1 transition-colors hover:bg-white/10"
           title={t("login.page.backHomeTitle")}
         >
           <Link href="/" className="flex items-center justify-center">
-            <X className="w-5 h-5 text-zinc-500 hover:text-white transition-colors" />
+            <X className="h-5 w-5 text-zinc-500 transition-colors hover:text-white" />
           </Link>
         </button>
       )}
 
       {/* 1. Logo 区域优化 */}
       <div className="mb-6 flex flex-col items-center">
-        <div className="w-14 h-14 rounded-2xl bg-transparent flex items-center justify-center mb-3 text-black font-black text-3xl shadow-2xl">
+        <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black text-black shadow-2xl">
           <Image src={logo.src} width={50} height={50} alt="Logo" />
         </div>
-        <p className="text-zinc-500 text-xs font-medium">{t("login.page.tagline")}</p>
+        <p className="text-xs font-medium text-zinc-500">{t("login.page.tagline")}</p>
       </div>
 
       {/* 2. 主体宽度 */}
@@ -144,35 +144,35 @@ function LoginPageContent() {
         )}
         <Tabs value={mode} onValueChange={(v) => setMode(v as LoginMode)} className="w-full">
           {/* 3. Tab 切换器 */}
-          <TabsList className="grid grid-cols-3 mb-4 bg-zinc-900/60 border border-white/5 rounded-xl h-10 p-1">
+          <TabsList className="mb-4 grid h-10 grid-cols-3 rounded-xl border border-white/5 bg-zinc-900/60 p-1">
             <TabsTrigger
               value="qr"
               title={t("login.mode.qr")}
-              className="text-xs data-[state=active]:bg-zinc-800 rounded-lg"
+              className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
             >
-              <QrCode className="w-3.5 h-3.5 mr-1" />
+              <QrCode className="mr-1 h-3.5 w-3.5" />
               {t("login.mode.qr")}
             </TabsTrigger>
             <TabsTrigger
               value="password"
               title={t("login.mode.password")}
-              className="text-xs data-[state=active]:bg-zinc-800 rounded-lg"
+              className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
             >
-              <Lock className="w-3.5 h-3.5 mr-1" />
+              <Lock className="mr-1 h-3.5 w-3.5" />
               {t("login.mode.password")}
             </TabsTrigger>
             <TabsTrigger
               value="sms"
               title={t("login.mode.sms")}
-              className="text-xs data-[state=active]:bg-zinc-800 rounded-lg"
+              className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
             >
-              <Smartphone className="w-3.5 h-3.5 mr-1" />
+              <Smartphone className="mr-1 h-3.5 w-3.5" />
               {t("login.mode.sms")}
             </TabsTrigger>
           </TabsList>
 
           {/* 4. 表单容器 */}
-          <div className="bg-zinc-900/30 p-5 rounded-2xl border border-white/5 backdrop-blur-xl shadow-2xl">
+          <div className="rounded-2xl border border-white/5 bg-zinc-900/30 p-5 shadow-2xl backdrop-blur-xl">
             <TabsContent value="password" className="mt-0 outline-none">
               <PasswordLoginForm
                 isLoading={isLoading}
@@ -195,7 +195,7 @@ function LoginPageContent() {
         </Tabs>
 
         {/* 底部文案 */}
-        <p className="mt-6 text-center text-[12px] text-zinc-600 font-medium">
+        <p className="mt-6 text-center text-[12px] font-medium text-zinc-600">
           {t("login.page.qrOnlyNotice")}
         </p>
       </div>

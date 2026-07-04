@@ -70,8 +70,8 @@ export const PlayerProgressBar = memo(() => {
   const bufferedPercent = totalTime > 0 ? (bufferedTime / totalTime) * 100 : 0;
 
   return (
-    <div className="flex items-center gap-2 w-full">
-      <span className="text-[11px] text-[#b3b3b3] w-10 text-right tabular-nums tracking-widest font-normal shrink-0">
+    <div className="flex w-full items-center gap-2">
+      <span className="w-10 shrink-0 text-right text-[11px] font-normal tracking-widest text-[#b3b3b3] tabular-nums">
         {formatDuration(localTime)}
       </span>
 
@@ -86,7 +86,7 @@ export const PlayerProgressBar = memo(() => {
         thumbOnHover={true}
       />
 
-      <span className="text-[11px] text-[#b3b3b3] w-10 tabular-nums tracking-widest font-normal shrink-0">
+      <span className="w-10 shrink-0 text-[11px] font-normal tracking-widest text-[#b3b3b3] tabular-nums">
         {formatDuration(totalTime)}
       </span>
     </div>

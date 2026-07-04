@@ -24,7 +24,7 @@ export default function SearchPage() {
   );
 
   return (
-    <div className="w-full min-h-screen bg-[#121212] text-white p-6 overflow-y-auto pt-22">
+    <div className="min-h-screen w-full overflow-y-auto bg-[#121212] p-6 pt-22 text-white">
       <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
       {loading && <LoadingSkeleton />}
       {!loading && activeCategory === "All" && (

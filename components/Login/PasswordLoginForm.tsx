@@ -38,35 +38,35 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder={t("login.form.phonePlaceholder")}
-          className="bg-black/50 border-white/10 h-10 text-sm"
+          className="h-10 border-white/10 bg-black/50 text-sm"
         />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="password" className="text-xs text-zinc-300">
           {t("login.form.passwordLabel")}
         </Label>
-        <div className="relative group">
+        <div className="group relative">
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t("login.form.passwordPlaceholder")}
-            className="bg-black/50 border-white/10 h-10 pr-10 text-sm"
+            className="h-10 border-white/10 bg-black/50 pr-10 text-sm"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors outline-none"
+            className="absolute top-1/2 right-3 -translate-y-1/2 text-zinc-500 transition-colors outline-none hover:text-white"
           >
-            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
       </div>
       <Button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-[#1db954] hover:bg-[#1ed760] text-black font-bold h-10 rounded-full transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 mt-2"
+        className="mt-2 h-10 w-full rounded-full bg-[#1db954] font-bold text-black transition-all hover:scale-[1.02] hover:bg-[#1ed760] active:scale-95 disabled:opacity-50"
       >
         {isLoading ? t("login.form.passwordSubmitting") : t("login.form.passwordSubmit")}
       </Button>

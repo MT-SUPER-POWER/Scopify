@@ -30,21 +30,21 @@ export default function AlbumPage() {
 
   if (!albumId)
     return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-[#121212] text-zinc-400">
+      <div className="flex min-h-screen w-full items-center justify-center bg-[#121212] text-zinc-400">
         <span className="text-lg font-medium">{t("album.empty.invalidId")}</span>
       </div>
     );
 
   if (isLoading && !ALBUM_INFO)
     return (
-      <div className="w-full min-h-screen bg-[#121212] px-6 py-24">
+      <div className="min-h-screen w-full bg-[#121212] px-6 py-24">
         <PlaylistLoading />
       </div>
     );
 
   if (isError || (!isLoading && !ALBUM_INFO))
     return (
-      <div className="w-full min-h-screen bg-[#121212] px-6 py-24">
+      <div className="min-h-screen w-full bg-[#121212] px-6 py-24">
         <div className="mb-6 opacity-70">
           <PlaylistLoading />
         </div>
@@ -60,10 +60,10 @@ export default function AlbumPage() {
   return (
     <div
       key={albumId}
-      className="relative w-full min-h-screen flex flex-col bg-[#121212] font-sans"
+      className="relative flex min-h-screen w-full flex-col bg-[#121212] font-sans"
     >
       <div
-        className="absolute top-0 left-0 right-0 h-100 md:h-125 z-0 pointer-events-none opacity-60 transition-colors duration-700"
+        className="pointer-events-none absolute top-0 right-0 left-0 z-0 h-100 opacity-60 transition-colors duration-700 md:h-125"
         style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
       />
       <AlbumHeader
@@ -73,7 +73,7 @@ export default function AlbumPage() {
           if (ALBUM_INFO?.artistId) smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
         }}
       />
-      <div className="flex-1 relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] to-[#121212] via-20%">
+      <div className="relative z-10 flex flex-1 flex-col bg-linear-to-b from-black/20 via-[#121212] via-20% to-[#121212]">
         <AlbumActions
           isPlaying={isPlaying}
           isAlbumCollected={isAlbumCollected}
@@ -81,7 +81,7 @@ export default function AlbumPage() {
           onPlay={togglePlay}
           onToggleSubscribe={handleToggleAlbumSubscribe}
         />
-        <div className="px-6 flex-1 pb-10 min-w-0">
+        <div className="min-w-0 flex-1 px-6 pb-10">
           <TracklistTable disableVirtualization hideDateColumn hideLikeColumn readonly />
         </div>
       </div>

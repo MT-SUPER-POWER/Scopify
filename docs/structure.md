@@ -39,11 +39,11 @@ Path alias：`@/` → 根目录，`@/types/…`、`@/lib/…`、`@/components/�
 
 ## 类型放哪里
 
-| 类型 | 路径 | 示例 |
-|------|------|------|
-| API 响应/请求 | `types/api/<领域>.ts` | `FollowedArtistsResponse` |
-| 业务实体 | `types/<领域>.ts` | `ArtistInfo`、`FollowedArtist` |
-| 组件 Props（复杂/复用） | `types/components/<领域>.ts` | `ArtistInlineLinksProps` |
+| 类型                    | 路径                         | 示例                           |
+| ----------------------- | ---------------------------- | ------------------------------ |
+| API 响应/请求           | `types/api/<领域>.ts`        | `FollowedArtistsResponse`      |
+| 业务实体                | `types/<领域>.ts`            | `ArtistInfo`、`FollowedArtist` |
+| 组件 Props（复杂/复用） | `types/components/<领域>.ts` | `ArtistInlineLinksProps`       |
 
 **禁止**在以下位置定义类型：
 
@@ -57,10 +57,10 @@ Path alias：`@/` → 根目录，`@/types/…`、`@/lib/…`、`@/components/�
 
 ## Hooks 放哪里
 
-| 场景 | 目录 |
-|------|------|
-| 页面数据与交互 | `hooks/<领域>/` |
-| 登录态、路由、Electron 等 | `lib/hooks/` |
+| 场景                      | 目录            |
+| ------------------------- | --------------- |
+| 页面数据与交互            | `hooks/<领域>/` |
+| 登录态、路由、Electron 等 | `lib/hooks/`    |
 
 不要在 `components/` 下新建 `hook/` 目录（历史遗留除外，改动时迁出）。
 

@@ -129,7 +129,7 @@ export const SmoothSlider = ({
 
   return (
     <div
-      className={`relative flex justify-center items-center select-none touch-none ${className}`}
+      className={`relative flex touch-none items-center justify-center select-none ${className}`}
       style={{
         ...(isVertical
           ? { height: size, width: thumbSize, flexDirection: "column" }
@@ -140,7 +140,7 @@ export const SmoothSlider = ({
     >
       <div
         ref={trackRef}
-        className="relative rounded-full cursor-pointer w-full flex items-center justify-center overflow-hidden"
+        className="relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full"
         style={{
           backgroundColor: trackColor,
           ...(isVertical
@@ -152,7 +152,7 @@ export const SmoothSlider = ({
       >
         {/* 缓冲层：使用 transform: scale 替代 width/height，触发 GPU 加速 */}
         <div
-          className="absolute rounded-full pointer-events-none will-change-transform"
+          className="pointer-events-none absolute rounded-full will-change-transform"
           style={{
             backgroundColor: bufferedColor,
             transformOrigin: isVertical ? "bottom center" : "left center",
@@ -177,7 +177,7 @@ export const SmoothSlider = ({
 
         {/* 进度层：去除高频 transition 打架问题，使用 transform */}
         <div
-          className="absolute rounded-full pointer-events-none will-change-transform"
+          className="pointer-events-none absolute rounded-full will-change-transform"
           style={{
             backgroundColor: currentFillColor,
             transformOrigin: isVertical ? "bottom center" : "left center",
@@ -203,7 +203,7 @@ export const SmoothSlider = ({
 
       {/* 滑块：可拖动，体验与轨道一致 */}
       <div
-        className="absolute rounded-full shadow-md z-10 cursor-pointer"
+        className="absolute z-10 cursor-pointer rounded-full shadow-md"
         style={{
           width: thumbSize,
           height: thumbSize,

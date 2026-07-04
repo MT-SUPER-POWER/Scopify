@@ -68,16 +68,14 @@ export function useUserData(uid: string | null) {
           setPlaylists(
             raw
               .filter((p: any) => p.userId === Number(uid))
-              .map(
-                (p: any): UserPlaylist => ({
-                  id: p.id,
-                  name: p.name,
-                  coverImgUrl: p.coverImgUrl || "",
-                  trackCount: p.trackCount ?? 0,
-                  playCount: p.playCount ?? 0,
-                  creator: p.creator,
-                }),
-              ),
+              .map((p: any): UserPlaylist => ({
+                id: p.id,
+                name: p.name,
+                coverImgUrl: p.coverImgUrl || "",
+                trackCount: p.trackCount ?? 0,
+                playCount: p.playCount ?? 0,
+                creator: p.creator,
+              })),
           );
         } else {
           toast.error(

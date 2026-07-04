@@ -62,21 +62,21 @@ function SongIndexCell({
   onPause: () => void;
 }) {
   return (
-    <div className="relative w-4 h-4 flex items-center justify-center">
+    <div className="relative flex h-4 w-4 items-center justify-center">
       {/* 默认：序号 */}
       <span
-        className={cn("text-zinc-400 text-sm font-normal group-hover:hidden", isActive && "hidden")}
+        className={cn("text-sm font-normal text-zinc-400 group-hover:hidden", isActive && "hidden")}
       >
         {index + 1}
       </span>
 
       {/* 播放中：频谱动画 */}
       {isActive && isPlaying && (
-        <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
+        <div className="flex h-3 shrink-0 items-end gap-0.5 group-hover:hidden">
           {[0, 0.2, 0.4].map((delay) => (
             <motion.div
               key={delay}
-              className="w-0.5 bg-[#1ed760] rounded-full"
+              className="w-0.5 rounded-full bg-[#1ed760]"
               animate={{ scaleY: [0.4, 1, 0.4] }}
               transition={{ duration: 0.8, repeat: Infinity, delay, ease: "easeInOut" }}
               style={{ height: "100%", originY: 1 }}
@@ -87,15 +87,15 @@ function SongIndexCell({
 
       {/* 暂停中：静态绿色播放图标 */}
       {isActive && !isPlaying && (
-        <Play className="w-4 h-4 text-[#1ed760] fill-current group-hover:hidden" />
+        <Play className="h-4 w-4 fill-current text-[#1ed760] group-hover:hidden" />
       )}
 
       {/* Hover 覆盖：播放 / 暂停按钮 */}
-      <div className="hidden group-hover:flex items-center justify-center">
+      <div className="hidden items-center justify-center group-hover:flex">
         {isActive && isPlaying ? (
-          <Pause className="w-4 h-4 text-[#1ed760] fill-current cursor-pointer" onClick={onPause} />
+          <Pause className="h-4 w-4 cursor-pointer fill-current text-[#1ed760]" onClick={onPause} />
         ) : (
-          <Play className="w-4 h-4 text-white fill-current cursor-pointer" onClick={onPlay} />
+          <Play className="h-4 w-4 cursor-pointer fill-current text-white" onClick={onPlay} />
         )}
       </div>
     </div>
@@ -190,14 +190,14 @@ export const SongItem = memo(
         <ContextMenuTrigger asChild>
           <div
             className={cn(
-              "group flex items-center gap-3 px-3 py-2 rounded-md",
-              "hover:bg-white/10 transition-colors cursor-default select-none",
+              "group flex items-center gap-3 rounded-md px-3 py-2",
+              "cursor-default transition-colors select-none hover:bg-white/10",
               isActive && "text-[#1ed760]",
             )}
             onDoubleClick={handleRowDoubleClick}
           >
             {/* 序号 / 播放控件 */}
-            <div className="w-6 shrink-0 flex justify-center">
+            <div className="flex w-6 shrink-0 justify-center">
               <SongIndexCell
                 index={index}
                 isActive={isActive}
@@ -208,14 +208,14 @@ export const SongItem = memo(
             </div>
 
             {/* 封面 */}
-            <div className="w-10 h-10 shrink-0 rounded bg-zinc-800 overflow-hidden">
+            <div className="h-10 w-10 shrink-0 overflow-hidden rounded bg-zinc-800">
               <Image
                 width={40}
                 height={40}
                 src={coverSrc}
                 alt={song.album.name}
                 loading="lazy"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src = "";
                 }}
@@ -223,11 +223,11 @@ export const SongItem = memo(
             </div>
 
             {/* 歌名 + 歌手 */}
-            <div className="flex flex-col min-w-0 flex-1">
+            <div className="flex min-w-0 flex-1 flex-col">
               <span
                 title={song.name}
                 className={cn(
-                  "text-sm font-normal truncate",
+                  "truncate text-sm font-normal",
                   isActive ? "text-[#1ed760]" : "text-white",
                 )}
               >
@@ -235,12 +235,12 @@ export const SongItem = memo(
               </span>
               <ArtistInlineLinks
                 artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
-                className="text-zinc-400 text-xs truncate cursor-pointer"
+                className="cursor-pointer truncate text-xs text-zinc-400"
               />
             </div>
 
             {/* Like 按钮 */}
-            <div className="shrink-0 hidden sm:flex items-center">
+            <div className="hidden shrink-0 items-center sm:flex">
               <LikeButton
                 liked={isLiked}
                 onLike={() => handleLike(!isLiked)}
@@ -249,14 +249,14 @@ export const SongItem = memo(
             </div>
 
             {/* 时长 */}
-            <div className="shrink-0 w-12 text-right text-zinc-400 text-sm">
+            <div className="w-12 shrink-0 text-right text-sm text-zinc-400">
               {formatDuration(song.duration)}
             </div>
           </div>
         </ContextMenuTrigger>
 
         {/* ── Context Menu ── */}
-        <ContextMenuContent className="w-52 bg-[#282828] text-white border-white/10">
+        <ContextMenuContent className="w-52 border-white/10 bg-[#282828] text-white">
           <ContextMenuGroup>
             <ContextMenuItem
               onClick={handleRowDoubleClick}
@@ -264,12 +264,12 @@ export const SongItem = memo(
             >
               {isActive && isPlaying ? (
                 <>
-                  <Pause className="w-4 h-4 mr-2" />
+                  <Pause className="mr-2 h-4 w-4" />
                   {t("contextMenu.pause")}
                 </>
               ) : (
                 <>
-                  <Play className="w-4 h-4 mr-2" />
+                  <Play className="mr-2 h-4 w-4" />
                   {t("contextMenu.play")}
                 </>
               )}
@@ -281,7 +281,7 @@ export const SongItem = memo(
                 onClick={handleAddToQueue}
                 className="focus:bg-white/10 focus:text-white"
               >
-                <ListPlus className="w-4 h-4 mr-2" />
+                <ListPlus className="mr-2 h-4 w-4" />
                 {t("contextMenu.addToQueue")}
               </ContextMenuItem>
             )}
@@ -292,7 +292,7 @@ export const SongItem = memo(
                 onClick={() => handleLike(!isLiked)}
                 className="focus:bg-white/10 focus:text-white"
               >
-                <Heart className="w-4 h-4 mr-2" />
+                <Heart className="mr-2 h-4 w-4" />
                 {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
               </ContextMenuItem>
             )}
@@ -305,10 +305,10 @@ export const SongItem = memo(
             {isLogin && (
               <ContextMenuSub>
                 <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                  <PlusCircle className="w-4 h-4 mr-4" />
+                  <PlusCircle className="mr-4 h-4 w-4" />
                   {t("contextMenu.addToPlaylist")}
                 </ContextMenuSubTrigger>
-                <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
+                <ContextMenuSubContent className="border-white/10 bg-[#282828] text-white">
                   {playlists.map((playlist) => (
                     <ContextMenuItem
                       key={playlist.id}
@@ -328,7 +328,7 @@ export const SongItem = memo(
                         height={28}
                         src={playlist.coverImgUrl}
                         alt={t("playlist.form.coverAlt")}
-                        className="w-7 h-7 rounded-sm mr-2"
+                        className="mr-2 h-7 w-7 rounded-sm"
                       />
                       {playlist.name}
                     </ContextMenuItem>
@@ -338,8 +338,8 @@ export const SongItem = memo(
             )}
 
             <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
-              <Link href={`/comment/?songId=${song.id}`} className="w-full h-full block">
-                <FaRegCommentDots className="w-4 h-4 mr-2" />
+              <Link href={`/comment/?songId=${song.id}`} className="block h-full w-full">
+                <FaRegCommentDots className="mr-2 h-4 w-4" />
                 {t("contextMenu.comments")}
               </Link>
             </ContextMenuItem>
@@ -353,9 +353,9 @@ export const SongItem = memo(
                     .then(() => toast.success(t("common.message.linkCopied")))
                     .catch(() => toast.error(t("common.message.copyFailed")));
                 }}
-                className="w-full h-full block"
+                className="block h-full w-full"
               >
-                <Link2 className="w-4 h-4 mr-2" />
+                <Link2 className="mr-2 h-4 w-4" />
                 {t("contextMenu.copyLink")}
               </button>
             </ContextMenuItem>
@@ -364,25 +364,25 @@ export const SongItem = memo(
             {song.artists.length > 0 &&
               (song.artists.length === 1 ? (
                 <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
-                  <Link href={`/artist?id=${song.artists[0].id}`} className="w-full h-full block">
-                    <User className="w-4 h-4 mr-2" />
+                  <Link href={`/artist?id=${song.artists[0].id}`} className="block h-full w-full">
+                    <User className="mr-2 h-4 w-4" />
                     {t("contextMenu.goToArtist")}
                   </Link>
                 </ContextMenuItem>
               ) : (
                 <ContextMenuSub>
                   <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                    <User className="w-4 h-4 mr-4" />
+                    <User className="mr-4 h-4 w-4" />
                     {t("contextMenu.goToArtist")}
                   </ContextMenuSubTrigger>
-                  <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
+                  <ContextMenuSubContent className="border-white/10 bg-[#282828] text-white">
                     {song.artists.map((artist) => (
                       <ContextMenuItem
                         key={artist.id}
                         asChild
                         className="focus:bg-white/10 focus:text-white"
                       >
-                        <Link href={`/artist?id=${artist.id}`} className="w-full h-full block">
+                        <Link href={`/artist?id=${artist.id}`} className="block h-full w-full">
                           {artist.name}
                         </Link>
                       </ContextMenuItem>

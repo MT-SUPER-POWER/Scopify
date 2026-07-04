@@ -35,6 +35,7 @@
 ## Task 1: Add Build Dependencies and Script Skeleton
 
 **Files:**
+
 - Modify: `package.json`
 - Modify: `bun.lock`
 
@@ -105,6 +106,7 @@ Expected: scripts show `build:electron`, `build:win`, and `build:mac` without `b
 ## Task 2: Configure electron-vite for Main and Preload
 
 **Files:**
+
 - Create: `electron.vite.config.ts`
 - Modify: `package.json`
 
@@ -187,6 +189,7 @@ Expected: `out/main/main.js` and `out/main/preload.js` are generated. If config 
 ## Task 3: Remove Managed Backend Lifecycle from Electron
 
 **Files:**
+
 - Modify: `main/module/backend.ts`
 - Modify: `main/main.ts`
 - Modify: `main/constants.ts`
@@ -262,6 +265,7 @@ Expected: no references remain to removed backend process exports.
 ## Task 4: Normalize Backend Config as host and port Only
 
 **Files:**
+
 - Modify: `types/config.ts`
 - Modify: `config/app.config.default.yml`
 - Modify: `config/app.config.yml`
@@ -277,7 +281,7 @@ In `types/config.ts`, change `AppConfig["backend"]` to:
 backend: {
   port: number;
   host: string;
-};
+}
 ```
 
 Keep `PartialAppConfig` as-is so old yml containing `autoStart` can still be parsed without runtime failure.
@@ -364,6 +368,7 @@ Expected: existing yaml/config tests pass. If the test asserts `autoStart`, upda
 ## Task 5: Remove Backend Controls from Settings
 
 **Files:**
+
 - Modify: `hooks/settings/useSettingsState.ts`
 - Modify: `components/settings/SettingsPage.tsx`
 - Modify: `lib/i18n.ts`
@@ -427,10 +432,10 @@ Do not replace it with user-facing backend controls.
 In `lib/i18n.ts`, remove these unused keys for every locale block:
 
 ```ts
-"settings.section.backend"
-"settings.autoStartBackend.label"
-"settings.backendHost.label"
-"settings.backendPort.label"
+"settings.section.backend";
+"settings.autoStartBackend.label";
+"settings.backendHost.label";
+"settings.backendPort.label";
 ```
 
 If removing keys causes generated type drift, run:
@@ -454,6 +459,7 @@ Expected: no unused imports or formatting errors remain.
 ## Task 6: Add Independent Backend Docker Compose
 
 **Files:**
+
 - Modify: `docker-compose.yml`
 - Create: `.env.example`
 - Modify: `.gitignore` if `.env.example` is ignored accidentally
@@ -503,6 +509,7 @@ Expected: Docker Compose resolves the service without yaml errors. If Docker is 
 ## Task 7: Add Updater Module and IPC
 
 **Files:**
+
 - Create: `main/module/updater.ts`
 - Modify: `main/module/ipc.ts`
 - Modify: `main/preload.ts`
@@ -519,13 +526,7 @@ import { autoUpdater } from "electron-updater";
 import { logger } from "../constants.js";
 
 export type UpdateStatus =
-  | "idle"
-  | "checking"
-  | "available"
-  | "not-available"
-  | "downloading"
-  | "downloaded"
-  | "error";
+  "idle" | "checking" | "available" | "not-available" | "downloading" | "downloaded" | "error";
 
 export interface UpdateState {
   status: UpdateStatus;
@@ -616,13 +617,7 @@ In `types/electron.d.ts`, import `UpdateState` as a type or duplicate the stable
 
 ```ts
 export type UpdateStatus =
-  | "idle"
-  | "checking"
-  | "available"
-  | "not-available"
-  | "downloading"
-  | "downloaded"
-  | "error";
+  "idle" | "checking" | "available" | "not-available" | "downloading" | "downloaded" | "error";
 
 export interface UpdateState {
   status: UpdateStatus;
@@ -670,6 +665,7 @@ Expected: updater APIs are typed in preload and renderer globals.
 ## Task 8: Update Release Workflow
 
 **Files:**
+
 - Modify: `.github/workflows/release.yml`
 
 - [ ] **Step 1: Remove backend build step**
@@ -705,6 +701,7 @@ Expected: formatting check passes or reports only existing style differences. If
 ## Task 9: Update Documentation
 
 **Files:**
+
 - Modify: `README.md`
 
 - [ ] **Step 1: Replace bundled backend language**
@@ -748,6 +745,7 @@ Tagged releases publish desktop installers to GitHub Releases. The desktop app c
 ## Task 10: Final Verification
 
 **Files:**
+
 - All touched files
 
 - [ ] **Step 1: Run static checks**

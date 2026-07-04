@@ -27,7 +27,7 @@ export function CollapsibleSection({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-4">
-      <div className="flex items-center justify-between group/section">
+      <div className="group/section flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="cursor-pointer">{title}</div>
         </div>
@@ -36,12 +36,12 @@ export function CollapsibleSection({
           <CollapsibleTrigger asChild>
             <button
               type="button"
-              className="text-sm text-zinc-400 font-bold hover:text-white hover:underline cursor-pointer transition-colors flex items-center gap-1 outline-none"
+              className="flex cursor-pointer items-center gap-1 text-sm font-bold text-zinc-400 transition-colors outline-none hover:text-white hover:underline"
             >
               {isOpen ? t("common.action.showLess") : t("common.action.showAll")}
               <ChevronRight
                 className={cn(
-                  "w-4 h-4 transition-transform duration-200",
+                  "h-4 w-4 transition-transform duration-200",
                   isOpen ? "-rotate-90" : "rotate-90",
                 )}
               />
@@ -63,7 +63,7 @@ export function CollapsibleSection({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-[#121212] via-[#121212]/80 to-transparent pointer-events-none z-10"
+                className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 h-12 bg-linear-to-t from-[#121212] via-[#121212]/80 to-transparent"
               />
             )}
           </AnimatePresence>

@@ -3,17 +3,11 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { Pause, Play } from "lucide-react";
-import Image from "next/image";
 import { forwardRef, memo, useCallback } from "react";
 import { toast } from "sonner";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
-import { motion } from "framer-motion";
-import { LikeButton } from "@/components/ui/LikeButton";
 import { TableCell, TableRow } from "@/components/ui/table";
-
-const MotionTableRow = motion.create(TableRow as any) as any;
-
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -21,6 +15,7 @@ import { cn, formatDate, formatDuration } from "@/lib/utils";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
+import { LikeButton } from "../ui/LikeButton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件: 序号与播放状态 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -40,26 +35,26 @@ function TrackIndexCell({
   const { t } = useI18n();
 
   return (
-    <div className="relative w-4 h-4 mx-auto flex items-center justify-center group/cell">
-      <span className={cn("text-zinc-400 font-normal group-hover:hidden", isActive && "hidden")}>
+    <div className="group/cell relative mx-auto flex h-4 w-4 items-center justify-center">
+      <span className={cn("font-normal text-zinc-400 group-hover:hidden", isActive && "hidden")}>
         {index + 1}
       </span>
 
       {isActive && isPlaying && <PlayingAnimation className="h-3 group-hover:hidden" />}
 
       {isActive && !isPlaying && (
-        <Play className="w-4 h-4 text-[#1ed760] fill-current group-hover:hidden" />
+        <Play className="h-4 w-4 fill-current text-[#1ed760] group-hover:hidden" />
       )}
 
-      <div className="hidden group-hover:flex items-center justify-center">
+      <div className="hidden items-center justify-center group-hover:flex">
         {isActive && isPlaying ? (
           <Pause
-            className="w-4 h-4 text-[#1ed760] fill-current cursor-pointer"
+            className="h-4 w-4 cursor-pointer fill-current text-[#1ed760]"
             onClick={() => setIsPlaying(false)}
           />
         ) : (
           <Play
-            className="w-4 h-4 text-white fill-current cursor-pointer"
+            className="h-4 w-4 cursor-pointer fill-current text-white"
             onClick={() => onPlay()}
           />
         )}
@@ -136,24 +131,17 @@ export const TrackRow = memo(
     );
     const smartRouter = useSmartRouter();
     return (
-      <MotionTableRow
+      <TableRow
         ref={ref}
         className={cn(
-          "group hover:bg-white/10 border-none transition-colors cursor-default",
+          "group cursor-default border-none transition-colors hover:bg-white/10",
           isActive && "text-[#1ed760]",
           className,
         )}
         onDoubleClick={() => onPlay(track)}
-        initial={{ opacity: 0, y: 50, rotateX: 15 }}
-        animate={{ opacity: 1, y: 0, rotateX: 0 }}
-        transition={{
-          duration: 0.4,
-          ease: "easeOut",
-          delay: (index % 10) * 0.05,
-        }}
         {...props}
       >
-        <TableCell className="text-center font-medium rounded-l-md">
+        <TableCell className="rounded-l-md text-center font-medium">
           <TrackIndexCell
             index={index}
             isActive={isActive}
@@ -163,28 +151,28 @@ export const TrackRow = memo(
           />
         </TableCell>
 
-        <TableCell className="min-w-0 max-w-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 shrink-0 bg-zinc-800 rounded">
-              <Image
+        <TableCell className="max-w-0 min-w-0">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="h-10 w-10 shrink-0 rounded bg-zinc-800">
+              <img
                 width={40}
                 height={40}
                 src={track.al.picUrl}
                 alt={track.al.name}
                 loading="lazy"
-                className="w-full h-full object-cover rounded"
+                className="h-full w-full rounded object-cover"
               />
             </div>
-            <div className="flex flex-col truncate min-w-0">
+            <div className="flex min-w-0 flex-col truncate">
               <SongTitleWithAlia
                 name={track.name}
                 alia={track.alia}
                 className={cn(
-                  "text-base font-normal group-hover:underline cursor-pointer",
+                  "cursor-pointer text-base font-normal group-hover:underline",
                   isActive ? "text-[#1ed760]" : "text-white",
                 )}
               />
-              <span className="text-zinc-400 text-sm mt-0.5 font-normal truncate cursor-pointer">
+              <span className="mt-0.5 cursor-pointer truncate text-sm font-normal text-zinc-400">
                 {track.ar.slice(0, 2).map((a, idx, arr) => (
                   <span
                     key={`${a.id}-${idx}`}
@@ -193,7 +181,7 @@ export const TrackRow = memo(
                       smartRouter.push(`/artist?id=${a.id}`);
                     }}
                     title={`/artist?id=${a.id}`}
-                    className="hover:underline hover:text-white"
+                    className="hover:text-white hover:underline"
                     style={{ display: "inline" }}
                   >
                     {a.name}
@@ -205,10 +193,10 @@ export const TrackRow = memo(
           </div>
         </TableCell>
 
-        <TableCell className="hidden md:table-cell max-w-0">
+        <TableCell className="hidden max-w-0 md:table-cell">
           <span
             title={track.al.name}
-            className="hover:text-white hover:underline cursor-pointer block truncate"
+            className="block cursor-pointer truncate hover:text-white hover:underline"
           >
             <button
               type="button"
@@ -222,14 +210,14 @@ export const TrackRow = memo(
         </TableCell>
 
         {!hideDateColumn && (
-          <TableCell className="hidden lg:table-cell truncate">
+          <TableCell className="hidden truncate lg:table-cell">
             <span title={formatDate(track.publishTime)}>{formatDate(track.publishTime)}</span>
           </TableCell>
         )}
 
         {!hideLikeColumn && (
-          <TableCell className="hidden lg:table-cell truncate w-20">
-            <div className="w-full h-full flex justify-center">
+          <TableCell className="hidden w-20 truncate lg:table-cell">
+            <div className="flex h-full w-full justify-center">
               <LikeButton
                 liked={isLiked}
                 onLike={() => {
@@ -242,11 +230,11 @@ export const TrackRow = memo(
         )}
 
         <TableCell className="w-32 rounded-r-md align-middle">
-          <div className="flex justify-center items-center">
+          <div className="flex items-center justify-center">
             <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
           </div>
         </TableCell>
-      </MotionTableRow>
+      </TableRow>
     );
   }),
   (prev: TrackRowProps, next: TrackRowProps) =>

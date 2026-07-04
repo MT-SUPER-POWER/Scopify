@@ -167,8 +167,8 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   return (
     <div
       className={cn(
-        "flex-1 flex-col bg-black text-white font-sans",
-        "overflow-hidden p-2 gap-2",
+        "flex-1 flex-col bg-black font-sans text-white",
+        "gap-2 overflow-hidden p-2",
         "flex h-screen",
       )}
     >
@@ -178,13 +178,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       <LyricsModal />
 
       {/* 左右结构 */}
-      <main className="flex-1 min-h-0 relative w-full">
+      <main className="relative min-h-0 w-full flex-1">
         {isMounted ? (
           <ResizablePanelGroup
             orientation="horizontal"
             defaultLayout={defaultLayout}
             onLayoutChanged={onLayoutChanged}
-            className="w-full h-full"
+            className="h-full w-full"
           >
             <ResizablePanel
               defaultSize="20%"
@@ -192,15 +192,15 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               maxSize="40%"
               collapsible
               collapsedSize={80}
-              className={cn("bg-[#0f0f0f] rounded-lg overflow-hidden")}
+              className={cn("overflow-hidden rounded-lg bg-[#0f0f0f]")}
             >
               <Sidebar />
             </ResizablePanel>
 
             <ResizableHandle
               className={cn(
-                "w-2 bg-transparent relative flex items-center justify-center transition-colors",
-                "focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+                "relative flex w-2 items-center justify-center bg-transparent transition-colors",
+                "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
                 "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
                 "hover:after:bg-white/10",
                 "data-[resize-handle-state=drag]:after:bg-white/30",
@@ -208,8 +208,8 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             />
 
             <ResizablePanel>
-              <div className="h-full w-full bg-[#121212] rounded-lg relative overflow-hidden group/main">
-                <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
+              <div className="group/main relative h-full w-full overflow-hidden rounded-lg bg-[#121212]">
+                <div className="pointer-events-none absolute top-0 right-0 left-0 z-20">
                   <div className="pointer-events-auto">
                     <Header
                       onOpenSearch={() => setIsSearchOpen(true)}
@@ -226,12 +226,12 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : (
-          <div className="flex w-full h-full gap-2">
-            <div className="w-[20%] bg-[#0f0f0f] rounded-lg overflow-hidden">
+          <div className="flex h-full w-full gap-2">
+            <div className="w-[20%] overflow-hidden rounded-lg bg-[#0f0f0f]">
               <Sidebar />
             </div>
-            <div className="flex-1 bg-[#121212] rounded-lg relative overflow-hidden group/main">
-              <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none">
+            <div className="group/main relative flex-1 overflow-hidden rounded-lg bg-[#121212]">
+              <div className="pointer-events-none absolute top-0 right-0 left-0 z-20">
                 <div className="pointer-events-auto">
                   <Header
                     onOpenSearch={() => setIsSearchOpen(true)}

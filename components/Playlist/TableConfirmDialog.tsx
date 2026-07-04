@@ -31,31 +31,31 @@ export function ConfirmDialogShandCN({
       <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
 
       <AlertDialogContent
-        className={cn("bg-[#282828] border-none shadow-2xl rounded-xl w-96 p-8", "flex flex-col")}
+        className={cn("w-96 rounded-xl border-none bg-[#282828] p-8 shadow-2xl", "flex flex-col")}
       >
         {/* text-center 覆盖 shadcn AlertDialogHeader 默认的 text-left */}
-        <AlertDialogHeader className="space-y-2 mb-8 w-full">
-          <AlertDialogTitle className="w-full text-2xl font-bold text-white tracking-tight text-center">
+        <AlertDialogHeader className="mb-8 w-full space-y-2">
+          <AlertDialogTitle className="w-full text-center text-2xl font-bold tracking-tight text-white">
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-[#b3b3b3] text-sm">
+          <AlertDialogDescription className="text-sm text-[#b3b3b3]">
             {content}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         {/* sm:flex-col 覆盖 shadcn Footer 默认在宽屏变 flex-row 的行为 */}
-        <AlertDialogFooter className="flex flex-col gap-4 w-full sm:flex-col">
+        <AlertDialogFooter className="flex w-full flex-col gap-4 sm:flex-col">
           <button
             type="button"
             onClick={onConfirm}
-            className="w-full py-3.5 rounded-full bg-[#1ed760] hover:bg-[#1fdf64] text-black font-bold text-base transition-all"
+            className="w-full rounded-full bg-[#1ed760] py-3.5 text-base font-bold text-black transition-all hover:bg-[#1fdf64]"
           >
             {confirmText}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="w-full py-3.5 rounded-full bg-transparent border border-[#727272] hover:border-white text-white font-bold text-base transition-all"
+            className="w-full rounded-full border border-[#727272] bg-transparent py-3.5 text-base font-bold text-white transition-all hover:border-white"
           >
             {cancelText}
           </button>

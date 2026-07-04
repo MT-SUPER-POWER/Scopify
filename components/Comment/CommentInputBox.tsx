@@ -117,17 +117,17 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
     <div
       className={cn(
         "relative z-50 transition-all",
-        "backdrop-blur-xl border border-white/10 rounded-xl p-4 bg-[#121212]/40",
+        "rounded-xl border border-white/10 bg-[#121212]/40 p-4 backdrop-blur-xl",
         "focus-within:border-white/30 focus-within:bg-[#202020]/80",
       )}
     >
       {replyTarget && (
-        <div className="flex items-center justify-between px-3 py-1.5 rounded-md mb-2 text-sm text-[#1DB954]">
+        <div className="mb-2 flex items-center justify-between rounded-md px-3 py-1.5 text-sm text-[#1DB954]">
           <span>{t("comments.input.replyTo", { name: replyTarget.user.nickname })}</span>
           <button
             type="button"
             onClick={onCancelReply}
-            className="text-zinc-500 hover:text-white transition-colors"
+            className="text-zinc-500 transition-colors hover:text-white"
           >
             {t("comments.input.cancel")}
           </button>
@@ -136,7 +136,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
 
       <div className="relative mb-2">
         {(!inputText || inputText.length === 0) && (
-          <div className="absolute top-0 left-0 text-zinc-500 pointer-events-none text-sm select-none">
+          <div className="pointer-events-none absolute top-0 left-0 text-sm text-zinc-500 select-none">
             {replyTarget
               ? t("comments.input.replyPlaceholder")
               : t("comments.input.publishPlaceholder")}
@@ -155,11 +155,11 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
             const text = e.clipboardData.getData("text/plain");
             document.execCommand("insertText", false, text);
           }}
-          className="w-full min-h-15 max-h-37.5 overflow-y-auto outline-none text-sm text-white break-words whitespace-pre-wrap leading-relaxed py-0.5"
+          className="max-h-37.5 min-h-15 w-full overflow-y-auto py-0.5 text-sm leading-relaxed break-words whitespace-pre-wrap text-white outline-none"
         />
       </div>
 
-      <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10">
+      <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2">
         <div className="flex gap-4 text-[#B3B3B3]">
           <button
             type="button"
@@ -169,7 +169,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
               handleInput();
             }}
           >
-            <Hash className="w-5 h-5 hover:text-white cursor-pointer transition-colors" />
+            <Hash className="h-5 w-5 cursor-pointer transition-colors hover:text-white" />
           </button>
           <button
             type="button"
@@ -179,24 +179,24 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
               handleInput();
             }}
           >
-            <AtSign className="w-5 h-5 hover:text-white cursor-pointer transition-colors" />
+            <AtSign className="h-5 w-5 cursor-pointer transition-colors hover:text-white" />
           </button>
 
           <Popover>
             <PopoverTrigger asChild>
               <button type="button">
-                <Smile className="w-5 h-5 hover:text-white cursor-pointer transition-colors" />
+                <Smile className="h-5 w-5 cursor-pointer transition-colors hover:text-white" />
               </button>
             </PopoverTrigger>
             <PopoverContent
               side="bottom"
               align="start"
               sideOffset={10}
-              className="emoji-popover w-80 bg-[#1c1c1c] border border-white/10 p-3 shadow-2xl z-[100]"
+              className="emoji-popover z-[100] w-80 border border-white/10 bg-[#1c1c1c] p-3 shadow-2xl"
               onOpenAutoFocus={(e) => e.preventDefault()}
               onCloseAutoFocus={(e) => e.preventDefault()}
             >
-              <div className="grid grid-cols-8 gap-2 overflow-y-auto max-h-[220px] scrollbar-hide">
+              <div className="scrollbar-hide grid max-h-[220px] grid-cols-8 gap-2 overflow-y-auto">
                 {Object.entries(emojiData).map(([name, url]) => (
                   <button
                     key={name}
@@ -212,14 +212,14 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
                       handleEmojiClick(name, url as string);
                     }}
                     title={name}
-                    className="hover:bg-white/10 p-1.5 rounded flex items-center justify-center transition-colors hover:scale-110 active:scale-95"
+                    className="flex items-center justify-center rounded p-1.5 transition-colors hover:scale-110 hover:bg-white/10 active:scale-95"
                   >
                     <Image
                       src={url as string}
                       alt={name}
                       width={20}
                       height={20}
-                      className="w-5 h-5 object-contain pointer-events-none select-none"
+                      className="pointer-events-none h-5 w-5 object-contain select-none"
                     />
                   </button>
                 ))}
@@ -232,11 +232,11 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
           <button
             type="button"
             onClick={handleSubmit}
-            className="flex items-center justify-center bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold text-sm px-6 py-2 rounded-full scale-100 hover:scale-105 transition-all disabled:opacity-50 min-w-18"
+            className="flex min-w-18 scale-100 items-center justify-center rounded-full bg-[#1DB954] px-6 py-2 text-sm font-bold text-black transition-all hover:scale-105 hover:bg-[#1ed760] disabled:opacity-50"
             disabled={!inputText.trim() || inputText.length > 140 || isSubmitting}
           >
             {isSubmitting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : replyTarget ? (
               t("common.action.reply")
             ) : (

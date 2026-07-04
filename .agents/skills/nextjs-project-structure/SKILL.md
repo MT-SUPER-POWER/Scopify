@@ -64,16 +64,19 @@ project-root/
 ## 关键规则
 
 ### page / layout → [rules/page.md](./rules/page.md)
+
 - 允许：import 组件拼装、读 params、SSR 数据预取、Next.js 导出
 - 禁止：定义 type/interface、API/hook 封装、无路由职责的单组件转发
 - 行数：**> 150 行** 再考虑拆分，不设 80 行硬限制
 
 ### 组件归类 → [rules/components.md](./rules/components.md)
+
 - **禁止使用** `_components/` 局部目录，所有组件进 `/components/<领域>/`
 - `/components` 内部必须按业务领域建子目录，禁止所有组件平铺在根层
 - 单个组件文件超过 **150 行** 必须拆分
 
 ### 类型与 hooks → [rules/types-hooks.md](./rules/types-hooks.md)
+
 - 所有 `type` / `interface` 定义进 `/types/<领域>.ts`，不允许写在 page.tsx 或组件文件内
 - 所有 custom hook 进 `/hooks/`，不允许写在组件文件内部
 - 静态数据超过 **10 条** 进 `/constants/`
@@ -84,27 +87,27 @@ project-root/
 
 ```tsx
 // ✅ 正确的 page.tsx
-import { DocSidebar } from '@/components/doc/DocSidebar'
-import { DocContent } from '@/components/doc/DocContent'
-import { getDocData } from '@/lib/doc'
-import type { DocPageProps } from '@/types/doc'
+import { DocSidebar } from "@/components/doc/DocSidebar";
+import { DocContent } from "@/components/doc/DocContent";
+import { getDocData } from "@/lib/doc";
+import type { DocPageProps } from "@/types/doc";
 
 export default async function DocPage({ params }: DocPageProps) {
-  const data = await getDocData(params.slug)
+  const data = await getDocData(params.slug);
   return (
     <div className="flex">
       <DocSidebar />
       <DocContent data={data} />
     </div>
-  )
+  );
 }
 ```
 
 ```tsx
 // ⚠️ 无路由职责的空壳转发——不要作为默认模板
-import DocPage from '@/components/doc/DocPage'
+import DocPage from "@/components/doc/DocPage";
 export default function Page() {
-  return <DocPage />
+  return <DocPage />;
 }
 ```
 
@@ -122,21 +125,21 @@ export default function DocPage() { ... }
 ```ts
 // ✅ 类型放 /types/doc.ts
 export interface DocPageProps {
-  params: { slug: string }
+  params: { slug: string };
 }
 export interface DocItem {
-  id: string
-  title: string
-  content: string
+  id: string;
+  title: string;
+  content: string;
 }
 ```
 
 ```ts
 // ✅ 静态数据放 /constants/nav.ts
 export const DOC_NAV = [
-  { id: 'intro', title: '介绍', href: '/doc/intro' },
+  { id: "intro", title: "介绍", href: "/doc/intro" },
   // ...
-] as const
+] as const;
 ```
 
 ---

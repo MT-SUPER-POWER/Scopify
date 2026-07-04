@@ -31,7 +31,7 @@ export function HighlightText({ raw }: { raw: string }) {
     <>
       {segments.map((seg, i) =>
         seg.highLighted ? (
-          <span key={i} className="text-white font-semibold">
+          <span key={i} className="font-semibold text-white">
             {seg.text}
           </span>
         ) : (
@@ -52,7 +52,7 @@ export function SuggestTag({ item }: { item: SuggestItem }) {
         height={16}
         src={item.tagUrl}
         alt={item.tag ?? ""}
-        className="h-4 object-contain shrink-0"
+        className="h-4 shrink-0 object-contain"
       />
     );
   }
@@ -60,10 +60,10 @@ export function SuggestTag({ item }: { item: SuggestItem }) {
     return (
       <span
         className={cn(
-          "text-[10px] sm:text-[11px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full shrink-0",
+          "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold sm:px-2 sm:text-[11px]",
           item.skinType === "colorPrimary1"
-            ? "text-[#1ed760] border border-[#1ed760]/40 bg-[#1ed760]/10"
-            : "text-zinc-400 border border-zinc-600",
+            ? "border border-[#1ed760]/40 bg-[#1ed760]/10 text-[#1ed760]"
+            : "border border-zinc-600 text-zinc-400",
         )}
       >
         {item.tag}

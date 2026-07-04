@@ -163,27 +163,26 @@ export default function MePage() {
     <main className="flex-1 overflow-y-auto bg-[#121212]">
       {/* 顶部 Hero 区域 */}
       <div
-        className={`bg-linear-to-b ${PROFILE_DATA.coverColor} to-[#121212] pt-20 pb-6 px-6 md:px-8 flex flex-col md:flex-row
-        items-center md:items-end gap-6`}
+        className={`bg-linear-to-b ${PROFILE_DATA.coverColor} flex flex-col items-center gap-6 to-[#121212] px-6 pt-20 pb-6 md:flex-row md:items-end md:px-8`}
       >
         <Image
           width={192}
           height={192}
           src={PROFILE_DATA.avatar}
           alt="Profile"
-          className="w-48 h-48 rounded-full shadow-2xl object-cover"
+          className="h-48 w-48 rounded-full object-cover shadow-2xl"
         />
-        <div className="flex flex-col items-center md:items-start text-center md:text-left">
+        <div className="flex flex-col items-center text-center md:items-start md:text-left">
           {/* 标签 */}
-          <span className="text-[12px] font-semibold drop-shadow-md px-3 py-1 bg-white/10 rounded-full">
+          <span className="rounded-full bg-white/10 px-3 py-1 text-[12px] font-semibold drop-shadow-md">
             {PROFILE_DATA.type}
           </span>
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter">
+          <h1 className="mb-4 text-5xl font-extrabold tracking-tighter md:text-7xl">
             {PROFILE_DATA.name}
           </h1>
           {/* 个人简介部分 */}
           <div className="max-w-175">
-            <span className="text-[#b3a47a] text-sm">{PROFILE_DATA.bio}</span>
+            <span className="text-sm text-[#b3a47a]">{PROFILE_DATA.bio}</span>
           </div>
         </div>
       </div>
@@ -191,16 +190,16 @@ export default function MePage() {
       <div className="h-10" />
 
       {/* 主技术栈 */}
-      <div className="px-6 md:px-8 mt-4">
-        <h2 className="text-3xl font-bold mb-6 hover:underline cursor-pointer">语言 & 框架</h2>
+      <div className="mt-4 px-6 md:px-8">
+        <h2 className="mb-6 cursor-pointer text-3xl font-bold hover:underline">语言 & 框架</h2>
         <Table>
           <TableHeader>
             <TableRow className="border-white/10 hover:bg-transparent">
               <TableHead className="w-10 text-center text-[#b3b3b3]">#</TableHead>
               <TableHead className="text-[#b3b3b3]">
-                <div className="w-full flex items-center">技术栈</div>
+                <div className="flex w-full items-center">技术栈</div>
               </TableHead>
-              <TableHead className="hidden md:table-cell text-[#b3b3b3]">方向</TableHead>
+              <TableHead className="hidden text-[#b3b3b3] md:table-cell">方向</TableHead>
               <TableHead className="text-[#b3b3b3]"> 熟练度 </TableHead>
             </TableRow>
           </TableHeader>
@@ -210,7 +209,7 @@ export default function MePage() {
                 key={skill.id}
                 onMouseEnter={() => setHoveredRow(skill.id)}
                 onMouseLeave={() => setHoveredRow(null)}
-                className="border-none group hover:bg-white/10 transition-colors cursor-default"
+                className="group cursor-default border-none transition-colors hover:bg-white/10"
               >
                 <TableCell className="w-10 text-center text-[#b3b3b3]">
                   {hoveredRow === skill.id ? (
@@ -225,26 +224,26 @@ export default function MePage() {
                     <Image
                       src={skill.img}
                       alt={skill.name}
-                      className="w-10 h-10 rounded shadow-sm object-contain bg-white/5 p-px shrink-0"
+                      className="h-10 w-10 shrink-0 rounded bg-white/5 object-contain p-px shadow-sm"
                       width={40}
                       height={40}
                     />
                     <div className="flex flex-col overflow-hidden">
-                      <span className="font-medium text-base text-white truncate cursor-pointer hover:underline">
+                      <span className="cursor-pointer truncate text-base font-medium text-white hover:underline">
                         {skill.name}
                       </span>
-                      <span className="text-sm text-[#b3b3b3] truncate group-hover:text-white transition-colors cursor-pointer hover:underline">
+                      <span className="cursor-pointer truncate text-sm text-[#b3b3b3] transition-colors group-hover:text-white hover:underline">
                         {skill.category}
                       </span>
                     </div>
                   </div>
                 </TableCell>
 
-                <TableCell className="hidden md:table-cell text-sm text-[#b3b3b3] group-hover:text-white transition-colors cursor-pointer hover:underline truncate max-w-62.5">
+                <TableCell className="hidden max-w-62.5 cursor-pointer truncate text-sm text-[#b3b3b3] transition-colors group-hover:text-white hover:underline md:table-cell">
                   {skill.field}
                 </TableCell>
 
-                <TableCell className="text-sm text-[#b3b3b3] font-medium">
+                <TableCell className="text-sm font-medium text-[#b3b3b3]">
                   {skill.proficiency}
                 </TableCell>
               </TableRow>
@@ -256,16 +255,16 @@ export default function MePage() {
       <div className="h-14" />
 
       {/* 辅技术栈 */}
-      <div className="px-6 md:px-8 mt-4">
-        <h2 className="text-3xl font-bold mb-6 hover:underline cursor-pointer">开发工具</h2>
+      <div className="mt-4 px-6 md:px-8">
+        <h2 className="mb-6 cursor-pointer text-3xl font-bold hover:underline">开发工具</h2>
         <Table>
           <TableHeader>
             <TableRow className="border-white/10 hover:bg-transparent">
               <TableHead className="w-10 text-center text-[#b3b3b3]">#</TableHead>
               <TableHead className="text-[#b3b3b3]">
-                <div className="w-full flex items-center">工具</div>
+                <div className="flex w-full items-center">工具</div>
               </TableHead>
-              <TableHead className="hidden md:table-cell text-[#b3b3b3]">方向</TableHead>
+              <TableHead className="hidden text-[#b3b3b3] md:table-cell">方向</TableHead>
               <TableHead className="text-[#b3b3b3]"> 熟练度 </TableHead>
             </TableRow>
           </TableHeader>
@@ -275,7 +274,7 @@ export default function MePage() {
                 key={skill.id}
                 onMouseEnter={() => setHoveredRow(skill.id)}
                 onMouseLeave={() => setHoveredRow(null)}
-                className="border-none group hover:bg-white/10 transition-colors cursor-default"
+                className="group cursor-default border-none transition-colors hover:bg-white/10"
               >
                 <TableCell className="w-10 text-center text-[#b3b3b3]">
                   {hoveredRow === skill.id ? (
@@ -292,24 +291,24 @@ export default function MePage() {
                       alt={skill.name}
                       width={40}
                       height={40}
-                      className="w-10 h-10 rounded shadow-sm object-contain bg-white/5 p-px shrink-0"
+                      className="h-10 w-10 shrink-0 rounded bg-white/5 object-contain p-px shadow-sm"
                     />
                     <div className="flex flex-col overflow-hidden">
-                      <span className="font-medium text-base text-white truncate cursor-pointer hover:underline">
+                      <span className="cursor-pointer truncate text-base font-medium text-white hover:underline">
                         {skill.name}
                       </span>
-                      <span className="text-sm text-[#b3b3b3] truncate group-hover:text-white transition-colors cursor-pointer hover:underline">
+                      <span className="cursor-pointer truncate text-sm text-[#b3b3b3] transition-colors group-hover:text-white hover:underline">
                         {skill.category}
                       </span>
                     </div>
                   </div>
                 </TableCell>
 
-                <TableCell className="hidden md:table-cell text-sm text-[#b3b3b3] group-hover:text-white transition-colors cursor-pointer hover:underline truncate max-w-62.5">
+                <TableCell className="hidden max-w-62.5 cursor-pointer truncate text-sm text-[#b3b3b3] transition-colors group-hover:text-white hover:underline md:table-cell">
                   {skill.field}
                 </TableCell>
 
-                <TableCell className="text-sm text-[#b3b3b3] font-medium">
+                <TableCell className="text-sm font-medium text-[#b3b3b3]">
                   {skill.proficiency}
                 </TableCell>
               </TableRow>
@@ -319,33 +318,33 @@ export default function MePage() {
       </div>
 
       {/* 项目卡片列表 */}
-      <div className="px-6 md:px-8 mt-10 mb-20">
-        <h2 className="text-3xl font-bold mb-6 hover:underline cursor-pointer">项目 & 仓库</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+      <div className="mt-10 mb-20 px-6 md:px-8">
+        <h2 className="mb-6 cursor-pointer text-3xl font-bold hover:underline">项目 & 仓库</h2>
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {PROFILE_DATA.projects.map((project) => (
             <div
               key={project.id}
-              className="bg-[#181818] p-4 rounded-md hover:bg-[#282828] transition duration-300 group cursor-pointer"
+              className="group cursor-pointer rounded-md bg-[#181818] p-4 transition duration-300 hover:bg-[#282828]"
             >
-              <div className="relative w-full aspect-square mb-4 shadow-lg rounded-md overflow-hidden">
+              <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md shadow-lg">
                 <Image
                   src={project.img}
                   alt={project.title}
                   width={100}
                   height={100}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
-                <div className="absolute bottom-2 right-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                <div className="absolute right-2 bottom-2 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                   <button
                     type="button"
-                    className="w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1ed760] shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
                   >
                     <Play size={24} fill="black" stroke="black" className="ml-1" />
                   </button>
                 </div>
               </div>
-              <h3 className="font-bold text-white truncate mb-1">{project.title}</h3>
-              <p className="text-sm text-gray-400 line-clamp-2">{project.desc}</p>
+              <h3 className="mb-1 truncate font-bold text-white">{project.title}</h3>
+              <p className="line-clamp-2 text-sm text-gray-400">{project.desc}</p>
             </div>
           ))}
         </div>

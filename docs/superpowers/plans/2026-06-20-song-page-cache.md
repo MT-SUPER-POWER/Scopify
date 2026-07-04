@@ -13,6 +13,7 @@
 ### Task 1: Cache Config And Core Store
 
 **Files:**
+
 - Modify: `types/config.ts`
 - Modify: `config/app.config.default.yml`
 - Modify: `config/app.config.yml`
@@ -29,6 +30,7 @@
 ### Task 2: IPC And Renderer Cache Client
 
 **Files:**
+
 - Modify: `main/module/ipc.ts`
 - Modify: `main/preload.ts`
 - Modify: `types/electron.d.ts`
@@ -41,6 +43,7 @@
 ### Task 3: Settings UI For Cache Location And Clear
 
 **Files:**
+
 - Modify: `components/settings/SettingsPage.tsx`
 - Modify: `hooks/settings/useSettingsState.ts`
 - Modify: `lib/i18n.ts`
@@ -52,6 +55,7 @@
 ### Task 4: Page Hook Integration
 
 **Files:**
+
 - Modify: `components/Playlist/hook/usePlaylistData.ts`
 - Modify: `components/album/AlbumPage.tsx`
 - Modify: `hooks/artist/useArtistData.ts`
@@ -65,6 +69,7 @@
 ### Task 5: Invalidation And Verification
 
 **Files:**
+
 - Modify targeted action handlers that mutate playlist/song state.
 
 - [ ] Clear related cache keys after playlist edits, track deletion, like toggles, and daily recommendation dislike.

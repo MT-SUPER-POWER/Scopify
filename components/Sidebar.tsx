@@ -55,15 +55,15 @@ function reducer(_state: FilterState, action: FilterAction) {
 
 function ActionCard({ title, subtitle, buttonText, onClick }: ActionCardProps) {
   return (
-    <div className="bg-[#242424] rounded-lg p-4 flex flex-col items-start gap-4">
+    <div className="flex flex-col items-start gap-4 rounded-lg bg-[#242424] p-4">
       <div className="flex flex-col gap-1.5">
-        <span className="text-white font-bold text-[15px]">{title}</span>
-        <span className="text-zinc-400 text-[13px]">{subtitle}</span>
+        <span className="text-[15px] font-bold text-white">{title}</span>
+        <span className="text-[13px] text-zinc-400">{subtitle}</span>
       </div>
       <button
         type="button"
         onClick={onClick}
-        className="bg-white text-black font-bold text-[13px] px-4 py-1.5 rounded-full hover:scale-105 hover:bg-gray-100 transition-all"
+        className="rounded-full bg-white px-4 py-1.5 text-[13px] font-bold text-black transition-all hover:scale-105 hover:bg-gray-100"
       >
         {buttonText}
       </button>
@@ -73,11 +73,11 @@ function ActionCard({ title, subtitle, buttonText, onClick }: ActionCardProps) {
 
 function SkeletonItem() {
   return (
-    <div className="flex gap-3 items-center p-2 rounded-md animate-pulse">
-      <div className="w-12 h-12 bg-[#242424] rounded-md shrink-0" />
-      <div className="flex flex-col gap-2 flex-1">
-        <div className="h-3 bg-[#242424] rounded-full w-3/4" />
-        <div className="h-2 bg-[#242424] rounded-full w-1/2" />
+    <div className="flex animate-pulse items-center gap-3 rounded-md p-2">
+      <div className="h-12 w-12 shrink-0 rounded-md bg-[#242424]" />
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="h-3 w-3/4 rounded-full bg-[#242424]" />
+        <div className="h-2 w-1/2 rounded-full bg-[#242424]" />
       </div>
     </div>
   );
@@ -276,8 +276,8 @@ function SidebarImpl() {
 
     if (artistsError) {
       return isVeryNarrow ? (
-        <div className="flex flex-col items-center gap-2 mt-4 text-zinc-500">
-          <RefreshCw className="w-6 h-6" />
+        <div className="mt-4 flex flex-col items-center gap-2 text-zinc-500">
+          <RefreshCw className="h-6 w-6" />
         </div>
       ) : (
         <div className="flex flex-col gap-3 py-2">
@@ -295,8 +295,8 @@ function SidebarImpl() {
       if (!showEmptyState) return null;
 
       return isVeryNarrow ? (
-        <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
-          <User className="w-6 h-6" />
+        <div className="mt-4 flex flex-col items-center gap-4 text-zinc-500">
+          <User className="h-6 w-6" />
         </div>
       ) : (
         <div className="flex flex-col gap-3 py-2">
@@ -330,17 +330,17 @@ function SidebarImpl() {
     <div
       ref={containerRef}
       className={cn(
-        "flex flex-col h-full w-full",
+        "flex h-full w-full flex-col",
         !isVeryNarrow && "bg-momo-dark",
         isVeryNarrow ? "gap-3" : "gap-[6.5px]",
       )}
     >
       {/* 头部区域 */}
-      <div className={cn("bg-[#121212] rounded-md", "flex flex-col gap-1")}>
+      <div className={cn("rounded-md bg-[#121212]", "flex flex-col gap-1")}>
         {/* Header 区 */}
         <div
           className={cn(
-            "group/header flex items-center py-4 px-3 text-zinc-400 shrink-0",
+            "group/header flex shrink-0 items-center px-3 py-4 text-zinc-400",
             isVeryNarrow ? "justify-center" : "justify-between",
           )}
         >
@@ -349,17 +349,17 @@ function SidebarImpl() {
             title="Scopify"
             onClick={() => smartRouter.push("/")}
             className={cn(
-              "flex items-center hover:text-white cursor-pointer transition-colors",
-              "font-semibold overflow-hidden gap-3",
+              "flex cursor-pointer items-center transition-colors hover:text-white",
+              "gap-3 overflow-hidden font-semibold",
             )}
           >
             <FaCompactDisc
-              className={cn("w-6 h-6 transition-transform shrink-0", isVeryNarrow && "w-8 h-8")}
+              className={cn("h-6 w-6 shrink-0 transition-transform", isVeryNarrow && "h-8 w-8")}
             />
-            {!isVeryNarrow && <span className="truncate min-w-0 text-[15px]">Scopify</span>}
+            {!isVeryNarrow && <span className="min-w-0 truncate text-[15px]">Scopify</span>}
           </button>
           {!isVeryNarrow && (
-            <div className="flex items-center shrink-0 text-zinc-400">
+            <div className="flex shrink-0 items-center text-zinc-400">
               <SiderBarMenuMemo />
             </div>
           )}
@@ -367,13 +367,13 @@ function SidebarImpl() {
 
         {/* 过滤区 */}
         {!isVeryNarrow ? (
-          <div className="flex gap-2 px-4 mb-2 overflow-x-auto shrink-0 scrollbar-custom-h">
+          <div className="scrollbar-custom-h mb-2 flex shrink-0 gap-2 overflow-x-auto px-4">
             {(["ALL", "CREATED", "SUBSCRIBED", "ARTISTS"] as const).map((type, idx) => (
               <Button
                 key={type}
                 onClick={() => filterDispatch({ type })}
                 className={cn(
-                  "rounded-full px-4 py-1.5 text-xs font-bold transition-all flex justify-center shrink-0",
+                  "flex shrink-0 justify-center rounded-full px-4 py-1.5 text-xs font-bold transition-all",
                   filterState === idx
                     ? "bg-white text-black"
                     : "bg-[#242424] text-white hover:bg-[#2a2a2a]",
@@ -384,7 +384,7 @@ function SidebarImpl() {
             ))}
           </div>
         ) : (
-          <div className="w-fit mx-auto -mt-2 flex items-center justify-center p-1 rounded-sm hover:bg-[#2a2a2a] transition-all text-zinc-400 hover:text-white">
+          <div className="mx-auto -mt-2 flex w-fit items-center justify-center rounded-sm p-1 text-zinc-400 transition-all hover:bg-[#2a2a2a] hover:text-white">
             <FilterMenu filterHook={{ state: filterState, dispatch: filterDispatch }} />
           </div>
         )}
@@ -393,9 +393,9 @@ function SidebarImpl() {
       {/* 曲库渲染区 */}
       <ScrollArea
         className={cn(
-          "flex-1 w-full scrollbar-custom",
+          "scrollbar-custom w-full flex-1",
           isVeryNarrow ? "px-0" : "px-2",
-          "bg-[#121212] rounded-md",
+          "rounded-md bg-[#121212]",
         )}
       >
         <div className={cn("space-y-1", isVeryNarrow ? "pb-2" : "py-4")}>
@@ -403,16 +403,16 @@ function SidebarImpl() {
           {filterState === 3 ? (
             !isUserLogin ? (
               isVeryNarrow ? (
-                <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
+                <div className="mt-4 flex flex-col items-center gap-4 text-zinc-500">
                   <button
                     type="button"
                     className={cn(
-                      "p-2 hover:bg-[#242424] hover:text-white rounded-md transition-all",
+                      "rounded-md p-2 transition-all hover:bg-[#242424] hover:text-white",
                     )}
                     onClick={handleLoginClick}
                     title={t("login.required.followedArtists.title")}
                   >
-                    <User className="w-6 h-6" />
+                    <User className="h-6 w-6" />
                   </button>
                 </div>
               ) : (
@@ -431,13 +431,13 @@ function SidebarImpl() {
           ) : isLoading ? (
             /* ── 加载中：骨架屏 ── */
             isVeryNarrow ? (
-              <div className="flex flex-col gap-3 items-center mt-4">
+              <div className="mt-4 flex flex-col items-center gap-3">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="w-10 h-10 bg-[#242424] rounded-md animate-pulse" />
+                  <div key={i} className="h-10 w-10 animate-pulse rounded-md bg-[#242424]" />
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col gap-1 mt-1 px-1">
+              <div className="mt-1 flex flex-col gap-1 px-1">
                 {[1, 2, 3, 4, 5].map((i) => (
                   <SkeletonItem key={i} />
                 ))}
@@ -445,8 +445,8 @@ function SidebarImpl() {
             )
           ) : error ? (
             isVeryNarrow ? (
-              <div className="flex flex-col items-center gap-2 mt-4 text-zinc-500">
-                <RefreshCw className="w-6 h-6" />
+              <div className="mt-4 flex flex-col items-center gap-2 text-zinc-500">
+                <RefreshCw className="h-6 w-6" />
               </div>
             ) : (
               <div className="flex flex-col gap-3 py-2">
@@ -460,16 +460,16 @@ function SidebarImpl() {
             )
           ) : !isUserLogin ? (
             isVeryNarrow ? (
-              <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
+              <div className="mt-4 flex flex-col items-center gap-4 text-zinc-500">
                 <button
                   type="button"
                   className={cn(
-                    "p-2 hover:bg-[#242424] hover:text-white rounded-md transition-all",
+                    "rounded-md p-2 transition-all hover:bg-[#242424] hover:text-white",
                   )}
                   onClick={handleLoginClick}
                   title={t("sidebar.card.loginTitle")}
                 >
-                  <User className="w-6 h-6" />
+                  <User className="h-6 w-6" />
                 </button>
               </div>
             ) : (
@@ -484,17 +484,17 @@ function SidebarImpl() {
                 />
               </div>
             )
-            /* ── 已登录但歌单为空 ── */
-          ) : playlists.length === 0 ? (
+          ) : /* ── 已登录但歌单为空 ── */
+          playlists.length === 0 ? (
             isVeryNarrow ? (
-              <div className="flex flex-col items-center gap-4 mt-4 text-zinc-500">
+              <div className="mt-4 flex flex-col items-center gap-4 text-zinc-500">
                 <button
                   type="button"
                   onClick={() => fetchPlaylist(false)}
-                  className="p-2 hover:bg-[#242424] hover:text-white rounded-md transition-colors"
+                  className="rounded-md p-2 transition-colors hover:bg-[#242424] hover:text-white"
                   title={t("common.action.reload")}
                 >
-                  <ListMusic className="w-6 h-6" />
+                  <ListMusic className="h-6 w-6" />
                 </button>
               </div>
             ) : (

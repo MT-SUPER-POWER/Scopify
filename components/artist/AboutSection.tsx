@@ -11,17 +11,17 @@ export function AboutSection({ artist }: Props) {
 
   return (
     <div className="xl:w-80">
-      <h2 className="text-2xl font-bold mb-4">{t("artist.about.title")}</h2>
-      <div className="group relative rounded-xl overflow-hidden cursor-pointer bg-white/5 hover:bg-white/10 transition-colors">
+      <h2 className="mb-4 text-2xl font-bold">{t("artist.about.title")}</h2>
+      <div className="group relative cursor-pointer overflow-hidden rounded-xl bg-white/5 transition-colors hover:bg-white/10">
         <div
           className="h-64 w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
           style={{ backgroundImage: `url(${artist.avatar})` }}
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-5">
-          <p className="font-bold mb-2">
+        <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/90 via-black/40 to-transparent p-5">
+          <p className="mb-2 font-bold">
             {t("artist.about.monthlyListeners", { count: formatNumber(artist.listeners) })}
           </p>
-          <p className="text-sm text-gray-300 line-clamp-3 leading-relaxed">{artist.bio}</p>
+          <p className="line-clamp-3 text-sm leading-relaxed text-gray-300">{artist.bio}</p>
         </div>
       </div>
     </div>

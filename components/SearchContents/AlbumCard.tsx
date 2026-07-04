@@ -24,23 +24,23 @@ export function AlbumCard({
 
   return (
     <div
-      className="bg-[#181818] hover:bg-[#282828] active:bg-[#202020] transition-colors p-4 rounded-xl cursor-pointer group relative"
+      className="group relative cursor-pointer rounded-xl bg-[#181818] p-4 transition-colors hover:bg-[#282828] active:bg-[#202020]"
       onClick={onClick}
     >
-      <div className="w-full aspect-square mb-4 shadow-lg overflow-hidden rounded-md bg-zinc-800">
+      <div className="mb-4 aspect-square w-full overflow-hidden rounded-md bg-zinc-800 shadow-lg">
         <Image
           src={
             album.picUrl ||
             "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=300&auto=format&fit=crop"
           }
           alt={album.name}
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
           width={300}
           height={300}
         />
       </div>
-      <h4 className="text-base font-bold truncate mb-1">{album.name}</h4>
-      <p className="text-sm text-zinc-400 truncate mt-1">
+      <h4 className="mb-1 truncate text-base font-bold">{album.name}</h4>
+      <p className="mt-1 truncate text-sm text-zinc-400">
         {new Date(album.publishTime).getFullYear()} •{" "}
         {album.artist?.name || t("common.meta.unknownArtist")}
       </p>
@@ -52,18 +52,18 @@ export function AlbumCard({
         }}
         disabled={isLoading}
         className={cn(
-          "absolute bottom-20 right-6 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black transition-all duration-300 hover:scale-105 hover:bg-[#3be477] shadow-[0_8px_8px_rgba(0,0,0,0.3)] z-10 disabled:opacity-80 disabled:hover:scale-100",
+          "absolute right-6 bottom-20 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-[0_8px_8px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105 hover:bg-[#3be477] disabled:opacity-80 disabled:hover:scale-100",
           isPlaying || isLoading
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0",
+            ? "translate-y-0 opacity-100"
+            : "translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",
         )}
       >
         {isLoading ? (
-          <Loader2 className="w-5 h-5 animate-spin" />
+          <Loader2 className="h-5 w-5 animate-spin" />
         ) : isPlaying ? (
-          <Pause className="w-6 h-6 fill-current" />
+          <Pause className="h-6 w-6 fill-current" />
         ) : (
-          <Play className="w-6 h-6 fill-current ml-1" />
+          <Play className="ml-1 h-6 w-6 fill-current" />
         )}
       </button>
     </div>

@@ -2,13 +2,7 @@ import type { BackendStartupStatus } from "@/types/backend";
 import type { AppConfig } from "@/types/config";
 
 export type UpdateStatus =
-  | "idle"
-  | "checking"
-  | "available"
-  | "not-available"
-  | "downloading"
-  | "downloaded"
-  | "error";
+  "idle" | "checking" | "available" | "not-available" | "downloading" | "downloaded" | "error";
 
 export interface UpdateState {
   status: UpdateStatus;

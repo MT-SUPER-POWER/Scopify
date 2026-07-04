@@ -191,13 +191,13 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.97 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed left-1/2 top-[14vh] z-50 w-full max-w-2xl -translate-x-1/2 px-4 no-scrollbar"
+            className="no-scrollbar fixed top-[14vh] left-1/2 z-50 w-full max-w-2xl -translate-x-1/2 px-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div
               className={cn(
                 // 亚克力玻璃感核心：半透明背景 + 强模糊 + 微亮边框
-                "rounded-2xl overflow-hidden",
+                "overflow-hidden rounded-2xl",
                 "bg-white/[0.07] backdrop-blur-2xl",
                 "border border-white/12",
                 "shadow-[0_32px_64px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.1)]",
@@ -205,15 +205,15 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             >
               {/* ── 输入行 ── */}
               <div className="flex items-center gap-3 px-5 py-4">
-                <Search className="w-5 h-5 text-zinc-400 shrink-0" />
+                <Search className="h-5 w-5 shrink-0 text-zinc-400" />
                 <input
                   ref={inputRef}
                   value={localValue}
                   onChange={(e) => setLocalValue(e.target.value)}
                   placeholder={placeholder}
                   className={cn(
-                    "flex-1 bg-transparent border-none outline-none",
-                    "text-white text-base font-medium placeholder:text-zinc-500",
+                    "flex-1 border-none bg-transparent outline-none",
+                    "text-base font-medium text-white placeholder:text-zinc-500",
                     "caret-[#1ed760]",
                   )}
                   onKeyDown={handleKeyDown}
@@ -228,9 +228,9 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                       setLocalValue("");
                       setSuggests([]);
                     }}
-                    className="p-1.5 hover:bg-white/10 rounded-full transition-colors shrink-0"
+                    className="shrink-0 rounded-full p-1.5 transition-colors hover:bg-white/10"
                   >
-                    <X className="w-3.5 h-3.5 text-zinc-400" />
+                    <X className="h-3.5 w-3.5 text-zinc-400" />
                   </motion.button>
                 )}
 
@@ -239,33 +239,33 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   onClick={() => handleSearch(localValue)}
                   disabled={!localValue.trim()}
                   className={cn(
-                    "flex items-center gap-1 px-2.5 py-1.5 rounded-lg shrink-0",
+                    "flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5",
                     "text-[11px] font-semibold text-zinc-400",
                     "border border-white/10 bg-white/5",
-                    "hover:bg-white/10 hover:text-white transition-all",
-                    "disabled:opacity-30 disabled:cursor-not-allowed",
+                    "transition-all hover:bg-white/10 hover:text-white",
+                    "disabled:cursor-not-allowed disabled:opacity-30",
                   )}
                 >
-                  <CornerDownLeft className="w-3.5 h-3.5" />
+                  <CornerDownLeft className="h-3.5 w-3.5" />
                 </button>
               </div>
 
               {/* ── 分割线（有内容时才显示）── */}
-              {hasContent && <div className="h-px bg-white/8 mx-5" />}
+              {hasContent && <div className="mx-5 h-px bg-white/8" />}
 
               {/* ── 内容区 ── */}
               {hasContent && (
-                <div className="max-h-[52vh] overflow-y-auto no-scrollbar py-2">
+                <div className="no-scrollbar max-h-[52vh] overflow-y-auto py-2">
                   {/* 最近搜索 */}
                   {showRecent && (
                     <div>
                       <div className="flex items-center justify-between px-5 py-2">
-                        <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                        <span className="text-[11px] font-semibold tracking-wider text-zinc-500 uppercase">
                           {t("search.modal.recentSearches")}
                         </span>
                         <button
                           onClick={() => useSearchStore.getState().clearRecent()}
-                          className="text-[11px] text-zinc-500 hover:text-white transition-colors"
+                          className="text-[11px] text-zinc-500 transition-colors hover:text-white"
                         >
                           {t("common.action.clearAll")}
                         </button>
@@ -280,22 +280,19 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           onClick={() => handleSearch(item)}
                           className={cn(
                             "group/item flex items-center justify-between gap-3 px-5 py-2.5",
-                            "hover:bg-white/6 cursor-pointer transition-colors",
+                            "cursor-pointer transition-colors hover:bg-white/6",
                             selectedIndex === i && "bg-white/10",
                           )}
                         >
-                          <div className="flex items-center gap-3 min-w-0">
+                          <div className="flex min-w-0 items-center gap-3">
                             {/* 首字母头像 */}
-                            <div
-                              className="w-9 h-9 rounded-full bg-white/8 border border-white/10
-                              flex items-center justify-center shrink-0"
-                            >
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/8">
                               <span className="text-sm font-semibold text-zinc-300">
                                 {item.charAt(0).toUpperCase()}
                               </span>
                             </div>
-                            <div className="flex flex-col min-w-0">
-                              <span className="text-sm text-white font-medium truncate">
+                            <div className="flex min-w-0 flex-col">
+                              <span className="truncate text-sm font-medium text-white">
                                 {item}
                               </span>
                               <span className="text-[11px] text-zinc-500">
@@ -309,10 +306,9 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                               e.stopPropagation();
                               removeRecent(item);
                             }}
-                            className="opacity-0 group-hover/item:opacity-100 p-1.5 rounded-full
-                              hover:bg-white/10 transition-all shrink-0"
+                            className="shrink-0 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-white/10"
                           >
-                            <X className="w-3 h-3 text-zinc-500 hover:text-white" />
+                            <X className="h-3 w-3 text-zinc-500 hover:text-white" />
                           </button>
                         </motion.div>
                       ))}
@@ -322,7 +318,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   {/* 加载中 */}
                   {loading && (
                     <div className="flex items-center justify-center py-6">
-                      <div className="w-4 h-4 border-2 border-zinc-600 border-t-white rounded-full animate-spin" />
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-600 border-t-white" />
                     </div>
                   )}
 
@@ -330,7 +326,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   {showSuggests && (
                     <div>
                       <div className="px-5 py-2">
-                        <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                        <span className="text-[11px] font-semibold tracking-wider text-zinc-500 uppercase">
                           {t("search.modal.relatedSuggestions")}
                         </span>
                       </div>
@@ -344,13 +340,13 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           onClick={() => handleSearch(item.keyword)}
                           className={cn(
                             "flex items-center justify-between gap-3 px-5 py-2.5",
-                            "hover:bg-white/6 cursor-pointer transition-colors",
+                            "cursor-pointer transition-colors hover:bg-white/6",
                             selectedIndex === i && "bg-white/10",
                           )}
                         >
-                          <div className="flex items-center gap-3 min-w-0">
-                            <Search className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
-                            <span className="text-sm truncate">
+                          <div className="flex min-w-0 items-center gap-3">
+                            <Search className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
+                            <span className="truncate text-sm">
                               <HighlightText raw={item.highLightInfo} />
                             </span>
                           </div>
@@ -370,21 +366,21 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
               )}
 
               {/* ── 底部提示栏 ── */}
-              <div className="flex items-center gap-4 px-5 py-3 border-t border-white/6">
+              <div className="flex items-center gap-4 border-t border-white/6 px-5 py-3">
                 <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">
+                  <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono">
                     ↑↓
                   </kbd>
                   <span>{t("common.action.select")}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">
+                  <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono">
                     ↵
                   </kbd>
                   <span>{t("common.action.search")}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono">
+                  <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono">
                     Ctrl + K
                   </kbd>
                   <span>{t("common.action.close")}</span>

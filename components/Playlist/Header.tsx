@@ -12,18 +12,15 @@ const DailyCalendarCover = () => {
   const dateNum = today.getDate();
 
   return (
-    <div
-      className="w-full h-full shadow-[4px_0_10px_rgba(0,0,0,0.3)] z-10 shrink-0 flex flex-col rounded-md overflow-hidden
-    bg-white select-none"
-    >
-      <div className="h-[22%] bg-linear-to-b from-[#e34242] to-[#c42b2b] flex items-center justify-center border-b border-black/10">
-        <span className="text-white text-lg md:text-xl font-medium tracking-widest">
+    <div className="z-10 flex h-full w-full shrink-0 flex-col overflow-hidden rounded-md bg-white shadow-[4px_0_10px_rgba(0,0,0,0.3)] select-none">
+      <div className="flex h-[22%] items-center justify-center border-b border-black/10 bg-linear-to-b from-[#e34242] to-[#c42b2b]">
+        <span className="text-lg font-medium tracking-widest text-white md:text-xl">
           {dayOfWeek}
         </span>
       </div>
-      <div className="flex-1 relative flex items-center justify-center bg-linear-to-b from-momo-light from-45% to-[#e6e6e6] to-45%">
-        <div className="absolute top-[45%] left-0 w-full h-0.5 bg-black/5 shadow-[0_1px_1px_rgba(255,255,255,0.8)] -translate-y-1/2" />
-        <span className="text-7xl md:text-8xl font-black text-[#2a2a2a] font-sans z-10 tracking-tighter -mt-3">
+      <div className="from-momo-light relative flex flex-1 items-center justify-center bg-linear-to-b from-45% to-[#e6e6e6] to-45%">
+        <div className="absolute top-[45%] left-0 h-0.5 w-full -translate-y-1/2 bg-black/5 shadow-[0_1px_1px_rgba(255,255,255,0.8)]" />
+        <span className="z-10 -mt-3 font-sans text-7xl font-black tracking-tighter text-[#2a2a2a] md:text-8xl">
           {dateNum}
         </span>
       </div>
@@ -50,8 +47,8 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
   };
 
   return (
-    <div className="relative z-10 flex flex-col md:flex-row items-start gap-6 px-6 pt-24 pb-6">
-      <div className="w-48 h-48 lg:w-56 lg:h-56 shrink-0 transition-transform duration-300 hover:scale-[1.02] shadow-[0_8px_40px_rgba(0,0,0,0.5)] rounded-md overflow-hidden bg-black/20">
+    <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
+      <div className="h-48 w-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.02] lg:h-56 lg:w-56">
         {isDaily || !info.cover ? (
           <DailyCalendarCover />
         ) : (
@@ -60,20 +57,20 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
             height={400}
             src={info.cover}
             alt={info.title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         )}
       </div>
 
-      <div className="flex flex-col flex-1 min-w-0 text-white pt-1 md:pt-2">
-        <div className="flex flex-row gap-2 flex-wrap items-center mb-3 md:mb-4">
-          <span className="text-sm drop-shadow-md uppercase tracking-wider bg-white/10 px-3 py-1 rounded-sm">
+      <div className="flex min-w-0 flex-1 flex-col pt-1 text-white md:pt-2">
+        <div className="mb-3 flex flex-row flex-wrap items-center gap-2 md:mb-4">
+          <span className="rounded-sm bg-white/10 px-3 py-1 text-sm tracking-wider uppercase drop-shadow-md">
             {info.privacy}
           </span>
           {info.tags?.map((tag) => (
             <span
               key={tag}
-              className="text-[12px] font-medium drop-shadow-md px-3 py-1 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+              className="rounded-full bg-white/10 px-3 py-1 text-[12px] font-medium drop-shadow-md transition-colors hover:bg-white/20"
             >
               {tag}
             </span>
@@ -81,7 +78,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         </div>
 
         <h1
-          className="m-0 font-black tracking-tighter leading-[1.1] drop-shadow-lg mb-4 md:mb-6 wrap-break-word text-4xl md:text-5xl lg:text-6xl line-clamp-3"
+          className="m-0 mb-4 line-clamp-3 text-4xl leading-[1.1] font-black tracking-tighter wrap-break-word drop-shadow-lg md:mb-6 md:text-5xl lg:text-6xl"
           title={info.title}
         >
           {info.title}
@@ -90,27 +87,27 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         <div className="flex flex-wrap items-center gap-2.5 text-sm text-white/80 drop-shadow-md">
           {!info.isSpecial && (
             <>
-              <div className="flex items-center gap-2 group cursor-pointer mr-1 text-white">
+              <div className="group mr-1 flex cursor-pointer items-center gap-2 text-white">
                 {info.creatorAvatar ? (
                   <Image
                     src={info.creatorAvatar}
                     alt={info.creator}
                     width={28}
                     height={28}
-                    className="w-7 h-7 rounded-full object-cover"
+                    className="h-7 w-7 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-7 h-7 rounded-full bg-zinc-600 flex items-center justify-center text-xs font-bold">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-600 text-xs font-bold">
                     M
                   </div>
                 )}
-                <span className="font-bold group-hover:underline text-[15px]">
+                <span className="text-[15px] font-bold group-hover:underline">
                   <button type="button" onClick={handleCreatorClick}>
                     {info.creator}
                   </button>
                 </span>
               </div>
-              <span className="opacity-60 hidden sm:inline">•</span>
+              <span className="hidden opacity-60 sm:inline">•</span>
               <span>{info.createTimeLabel ?? `${info.createTime} 创建`}</span>
               <span className="opacity-60">•</span>
               <span>{info.likesLabel ?? `${info.likes.toLocaleString()} 次收藏`}</span>

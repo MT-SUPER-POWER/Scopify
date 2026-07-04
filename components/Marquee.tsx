@@ -29,11 +29,11 @@ export function SongTitle({ title }: { title: string }) {
   }, []);
 
   return (
-    <div className="group flex items-center justify-center gap-2 p-2.5 text-zinc-300 hover:bg-white/5 rounded-md cursor-pointer transition-colors overflow-hidden">
-      <IoMusicalNotesOutline className="w-4 h-4 shrink-0" />
+    <div className="group flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md p-2.5 text-zinc-300 transition-colors hover:bg-white/5">
+      <IoMusicalNotesOutline className="h-4 w-4 shrink-0" />
 
       {/* 限制宽度的容器 */}
-      <div ref={containerRef} className="flex-1 overflow-hidden whitespace-nowrap relative h-5">
+      <div ref={containerRef} className="relative h-5 flex-1 overflow-hidden whitespace-nowrap">
         <AnimatePresence mode="wait">
           <motion.span
             key={title}
@@ -41,7 +41,7 @@ export function SongTitle({ title }: { title: string }) {
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-            className="inline-block whitespace-nowrap absolute left-0"
+            className="absolute left-0 inline-block whitespace-nowrap"
             whileHover={
               isOverflowing
                 ? {

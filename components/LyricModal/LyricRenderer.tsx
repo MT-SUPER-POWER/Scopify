@@ -206,7 +206,7 @@ export const LyricRenderer = () => {
 
   return (
     <div
-      className="w-full h-full relative overflow-hidden group"
+      className="group relative h-full w-full overflow-hidden"
       // 捕获用户的滑动意图，接管滚动
       onWheel={handleUserInteraction}
       onTouchMove={handleUserInteraction}
@@ -218,13 +218,13 @@ export const LyricRenderer = () => {
       }}
     >
       {false ? (
-        <div className="w-full h-full flex items-center justify-center text-white/60 text-lg lg:text-xl font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+        <div className="flex h-full w-full items-center justify-center text-lg font-medium text-white/60 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] lg:text-xl">
           No Lyric available :(
         </div>
       ) : (
         <LyricPlayer
           ref={lyricRef} // 绑定实例指针
-          className="w-full h-full font-bold"
+          className="h-full w-full font-bold"
           lyricLines={parsedLyricLines}
           currentTime={currentTimeMs}
           playing={isPlaying}

@@ -16,16 +16,15 @@ components/
 
 在创建新组件前，先检查 [shadcn/ui 组件库](../assets/shadcn.md) 是否已有现成组件可用，避免重复造轮子。
 
-
 ### 各子目录判断标准
 
-| 目录 | 放什么 | 判断问题 |
-|------|--------|---------|
-| `ui/` | Button, Badge, Input, Modal, Tooltip... | 是否完全无业务逻辑，只接受通用 props？ |
-| `layout/` | Header, Footer, Sidebar, Container, PageWrapper | 是否负责页面整体骨架？ |
-| `doc/` | DocContent, DocSidebar, DocToc, CodeBlock, Callout | 是否只在文档类页面使用？ |
-| `marketing/` | Hero, PricingCard, FeatureGrid, CTA | 是否只在营销/落地页使用？ |
-| `shared/` | SearchBar, UserAvatar, LoadingSpinner | 是否跨多个业务领域使用？ |
+| 目录         | 放什么                                             | 判断问题                               |
+| ------------ | -------------------------------------------------- | -------------------------------------- |
+| `ui/`        | Button, Badge, Input, Modal, Tooltip...            | 是否完全无业务逻辑，只接受通用 props？ |
+| `layout/`    | Header, Footer, Sidebar, Container, PageWrapper    | 是否负责页面整体骨架？                 |
+| `doc/`       | DocContent, DocSidebar, DocToc, CodeBlock, Callout | 是否只在文档类页面使用？               |
+| `marketing/` | Hero, PricingCard, FeatureGrid, CTA                | 是否只在营销/落地页使用？              |
+| `shared/`    | SearchBar, UserAvatar, LoadingSpinner              | 是否跨多个业务领域使用？               |
 
 ### 新领域的处理
 
@@ -59,6 +58,7 @@ components/ui/Button.tsx
 ## 组件文件拆分
 
 ### 触发条件
+
 - 单文件超过 **150 行** → 必须拆分
 - 一个文件内有多个组件定义 → 每个组件独立文件
 - JSX 中有可识别的独立区块（header、body、footer）→ 各自提取
@@ -74,11 +74,11 @@ components/ui/Button.tsx
 export function DocPage() {
   return (
     <div>
-      <header>...</header>       // ← 可提取
-      <aside>...</aside>         // ← 可提取
-      <article>...</article>     // ← 可提取
+      <header>...</header> // ← 可提取
+      <aside>...</aside> // ← 可提取
+      <article>...</article> // ← 可提取
     </div>
-  )
+  );
 }
 
 // 拆分后：

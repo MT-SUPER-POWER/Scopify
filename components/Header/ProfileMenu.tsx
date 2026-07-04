@@ -154,13 +154,13 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
     <>
       <DropdownMenu onOpenChange={handleOpenChange}>
         <DropdownMenuTrigger asChild>
-          <button type="button" className="focus:outline-none focus:ring-0">
+          <button type="button" className="focus:ring-0 focus:outline-none">
             {children}
           </button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className="w-68 max-w-[calc(100vw-2rem)] rounded-xl p-2 bg-[#282828] text-white border-white/10"
+          className="w-68 max-w-[calc(100vw-2rem)] rounded-xl border-white/10 bg-[#282828] p-2 text-white"
           align="end"
           side="bottom"
           sideOffset={8}
@@ -190,7 +190,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             {/* 网易乐签 */}
             {isLoggedIn && (
               <DropdownMenuItem className="rounded-lg px-3 py-2 text-[15px]">
-                <div className="flex flex-row w-full justify-between items-center">
+                <div className="flex w-full flex-row items-center justify-between">
                   <div className="flex flex-row items-center">
                     <FiCalendar className="mr-2 h-5 w-5" />
                     <span>{t("profile.menu.vipSign")}</span>
@@ -200,10 +200,10 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                     type="button"
                     onClick={handleVipSign}
                     disabled={isSignLoading}
-                    className={`min-w-[4rem] px-3 h-7 rounded-full text-base font-bold transition-all disabled:opacity-70 ${
+                    className={`h-7 min-w-16 rounded-full px-3 text-base font-bold transition-all disabled:opacity-70 ${
                       hasSignedInToday
-                        ? "bg-transparent border border-zinc-600 text-zinc-300 hover:text-white hover:border-zinc-400"
-                        : "bg-[#1ed760] text-black hover:bg-[#1fdf64] hover:scale-105"
+                        ? "border border-zinc-600 bg-transparent text-zinc-300 hover:border-zinc-400 hover:text-white"
+                        : "bg-[#1ed760] text-black hover:scale-105 hover:bg-[#1fdf64]"
                     }`}
                   >
                     {isSignLoading
@@ -248,7 +248,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 onSelect={handleLogoutClick}
                 className="rounded-lg px-3 py-2 text-[15px]"
               >
-                <FiLogOut className="text-[#fe4144] mr-2 h-5 w-5" />
+                <FiLogOut className="mr-2 h-5 w-5 text-[#fe4144]" />
                 <span className="text-[#fe4144]">{t("common.action.logout")}</span>
               </DropdownMenuItem>
             ) : (

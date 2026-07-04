@@ -32,9 +32,9 @@
 
 ```ts
 const [localTime, setLocalTime] = useState(() => {
-  if (typeof window === 'undefined') return 0;
+  if (typeof window === "undefined") return 0;
   try {
-    const raw = localStorage.getItem('player-time-storage');
+    const raw = localStorage.getItem("player-time-storage");
     if (!raw) return 0;
     const parsed = JSON.parse(raw);
     return parsed.state?.currentTime ?? 0;
@@ -77,21 +77,21 @@ onCanPlay={(e) => {
 
 #### 2.2.1 Cache Key 设计
 
-| 数据 | Key 格式 | TTL |
-|------|----------|-----|
+| 数据     | Key 格式                                | TTL    |
+| -------- | --------------------------------------- | ------ |
 | 播放 URL | `playback-cache:url:{songId}:{quality}` | 30 min |
-| 歌词 | `playback-cache:lyric:{songId}` | 24 h |
+| 歌词     | `playback-cache:lyric:{songId}`         | 24 h   |
 
 #### 2.2.2 API
 
 ```ts
-export function getCachedPlayUrl(songId: number, quality: string): string | null
-export function setCachedPlayUrl(songId: number, quality: string, url: string): void
+export function getCachedPlayUrl(songId: number, quality: string): string | null;
+export function setCachedPlayUrl(songId: number, quality: string, url: string): void;
 
-export function getCachedLyric(songId: number): NeteaseLyric | null
-export function setCachedLyric(songId: number, lyric: NeteaseLyric): void
+export function getCachedLyric(songId: number): NeteaseLyric | null;
+export function setCachedLyric(songId: number, lyric: NeteaseLyric): void;
 
-export function clearPlaybackCache(songId?: number): void
+export function clearPlaybackCache(songId?: number): void;
 // 无参时清空所有播放缓存
 ```
 
@@ -127,7 +127,7 @@ if (cachedUrl) {
 
 ```ts
 const handleQualityChange = async (quality: MusicQuality) => {
-  if (musicQuality === quality) return;              // 同品质跳过
+  if (musicQuality === quality) return; // 同品质跳过
   setMusicQuality(quality);
   if (currentSong?.id) {
     await usePlayerStore.getState().playTrack(currentSong);
@@ -139,13 +139,13 @@ const handleQualityChange = async (quality: MusicQuality) => {
 
 ## 3. Files Changed
 
-| File | Action |
-|------|--------|
-| `lib/cache/playbackCache.ts` | **New** — 播放缓存层 |
-| `components/PlayBar/ProgressBar.tsx` | Edit — 修复初始值 + 水合同步 |
-| `components/MainLayout.tsx` | Edit — onCanPlay 添加 player-time dispatch |
-| `store/module/player.tsx` | Edit — playTrack 接入缓存 |
-| `components/PlayerBar.tsx` | Edit — handleQualityChange 简化为调用 playTrack |
+| File                                 | Action                                          |
+| ------------------------------------ | ----------------------------------------------- |
+| `lib/cache/playbackCache.ts`         | **New** — 播放缓存层                            |
+| `components/PlayBar/ProgressBar.tsx` | Edit — 修复初始值 + 水合同步                    |
+| `components/MainLayout.tsx`          | Edit — onCanPlay 添加 player-time dispatch      |
+| `store/module/player.tsx`            | Edit — playTrack 接入缓存                       |
+| `components/PlayerBar.tsx`           | Edit — handleQualityChange 简化为调用 playTrack |
 
 ---
 

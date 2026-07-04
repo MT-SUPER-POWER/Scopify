@@ -57,17 +57,17 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
   }, [artistId, isFollowing, isLoggedIn, t]);
 
   return (
-    <div className="p-6 md:p-8 flex items-center gap-6">
+    <div className="flex items-center gap-6 p-6 md:p-8">
       <button
         type="button"
         onClick={onPlayArtist}
         disabled={disabled}
-        className="w-14 h-14 bg-[#1DB954] rounded-full flex items-center justify-center hover:scale-105 hover:bg-[#1ed760] transition-all shadow-lg shadow-black/40 disabled:opacity-50"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1DB954] shadow-lg shadow-black/40 transition-all hover:scale-105 hover:bg-[#1ed760] disabled:opacity-50"
       >
         {isPlayingArtist ? (
-          <Pause className="w-6 h-6 text-black fill-black" />
+          <Pause className="h-6 w-6 fill-black text-black" />
         ) : (
-          <Play className="w-6 h-6 text-black fill-black ml-1" />
+          <Play className="ml-1 h-6 w-6 fill-black text-black" />
         )}
       </button>
 
@@ -75,16 +75,11 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         type="button"
         disabled={loading}
         onClick={handleToggleFollow}
-        className={`
-          px-4 py-1.5 rounded-full border text-sm font-bold uppercase tracking-widest
-          hover:scale-105 transition-all disabled:opacity-50 w-24
-          group
-          ${
-            isFollowing
-              ? "border-white text-white hover:border-red-400 hover:text-red-400"
-              : "border-gray-400 text-white hover:border-white"
-          }
-        `}
+        className={`group w-24 rounded-full border px-4 py-1.5 text-sm font-bold tracking-widest uppercase transition-all hover:scale-105 disabled:opacity-50 ${
+          isFollowing
+            ? "border-white text-white hover:border-red-400 hover:text-red-400"
+            : "border-gray-400 text-white hover:border-white"
+        } `}
       >
         <span className="group-hover:hidden">
           {loading
@@ -102,8 +97,8 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         </span>
       </button>
 
-      <button type="button" className="text-gray-400 hover:text-white transition-colors">
-        <MoreHorizontal className="w-8 h-8" />
+      <button type="button" className="text-gray-400 transition-colors hover:text-white">
+        <MoreHorizontal className="h-8 w-8" />
       </button>
     </div>
   );

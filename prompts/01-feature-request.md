@@ -33,7 +33,9 @@
 ## 参考与设计（可选）
 <!-- 设计稿链接 / 类似页面 / UI 参考 -->
 
----template-end---
+---
+
+template-end---
 ```
 
 ---
@@ -41,10 +43,13 @@
 ## 📌 填写示例
 
 ### 背景与动机
+
 歌手页目前只有基本信息，用户想看热门歌曲必须去搜索，体验割裂。希望直接在该歌手页面展示 Top 50 热门歌曲。
 
 ### 功能描述
+
 在歌手页的英雄区下方新增「热门歌曲」区块，展示该歌手的 Top 50 曲目列表，支持：
+
 - 显示序号、封面、歌名、专辑、播放时长
 - 点击行直接播放
 - 点击「播放全部」一键播放 Top 50
@@ -52,12 +57,14 @@
 - 加载中显示 Skeleton
 
 ### 技术范围
+
 - 前端：`components/artist/PopularTracks.tsx`（新增）、`app/(dashboard)/artist/page.tsx`（组装）
 - 类型：`types/api/artist.ts`（`ArtistTopSongsResponse`）、`types/components/artist.ts`（`PopularTracksProps`）
 - API：`lib/api/artist.ts`（新增 `getArtistTopSongs` 函数）
 - Hook：`hooks/artist/useArtistTopSongs.ts`（新增，封装数据请求与状态）
 
 ### 验收标准
+
 - [x] Top 50 列表正常展示，包含序号、封面、歌名、专辑、时长
 - [x] 点击行调用播放器播放该曲目
 - [x] 「播放全部」触发播放队列
@@ -66,8 +73,10 @@
 - [x] 布局在移动端适配
 
 ### 前置依赖
+
 - 需要后端 `artist/songs` 接口（有，文档见 `backend/api-enhanced/AGENTS.md`）
 - 不依赖其他进行中的 PR
 
 ### 参考与设计
+
 参考 Spotify 歌手页的「热门歌曲」区块布局

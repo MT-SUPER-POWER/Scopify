@@ -9,9 +9,7 @@ import request from "../web/request";
 
 // 获取 cookie 的辅助函数
 const getCookie = () => {
-  return typeof window !== "undefined"
-    ? localStorage.getItem("music_cookie") || ""
-    : "";
+  return typeof window !== "undefined" ? localStorage.getItem("music_cookie") || "" : "";
 };
 
 export async function greySongUrlMatch(
@@ -63,10 +61,7 @@ export async function getSongMusicDetail(id: number | string) {
  * @param id   音乐 id（可多个，用逗号隔开）
  * @param level 播放音质等级
  */
-export async function getSongUrlV1(
-  id: number | string,
-  level: MusicQualityLevel = "exhigh",
-) {
+export async function getSongUrlV1(id: number | string, level: MusicQualityLevel = "exhigh") {
   const cookie = getCookie();
   return request.get<SongUrlV1Response>("/song/url/v1", {
     params: { id, level, ...(cookie ? { cookie } : {}) },

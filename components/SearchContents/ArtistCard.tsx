@@ -9,22 +9,22 @@ export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () =
 
   return (
     <div
-      className="bg-[#181818] hover:bg-[#282828] active:bg-[#202020] transition-colors p-4 rounded-xl cursor-pointer group flex flex-col items-center text-center"
+      className="group flex cursor-pointer flex-col items-center rounded-xl bg-[#181818] p-4 text-center transition-colors hover:bg-[#282828] active:bg-[#202020]"
       onClick={onClick}
     >
-      <div className="w-full aspect-square mb-4 shadow-lg overflow-hidden rounded-full bg-zinc-800 flex items-center justify-center">
+      <div className="mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-full bg-zinc-800 shadow-lg">
         {artist.picUrl || artist.img1v1Url ? (
           <img
             src={artist.picUrl || artist.img1v1Url}
             alt={artist.name}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         ) : (
-          <User className="w-12 h-12 text-zinc-500" />
+          <User className="h-12 w-12 text-zinc-500" />
         )}
       </div>
-      <h4 className="text-base font-bold truncate w-full mb-1">{artist.name}</h4>
-      <p className="text-sm text-zinc-400 truncate w-full mt-1">
+      <h4 className="mb-1 w-full truncate text-base font-bold">{artist.name}</h4>
+      <p className="mt-1 w-full truncate text-sm text-zinc-400">
         {t("search.section.artistLabel")}
       </p>
     </div>

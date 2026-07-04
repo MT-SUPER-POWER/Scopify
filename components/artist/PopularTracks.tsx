@@ -19,7 +19,7 @@ export function PopularTracks({ tracks, queue, artist }: Props) {
 
   return (
     <div className="flex-1">
-      <h2 className="text-2xl font-bold mb-4">{t("artist.popular.title")}</h2>
+      <h2 className="mb-4 text-2xl font-bold">{t("artist.popular.title")}</h2>
       {tracks.length > 0 ? (
         <div className="flex flex-col">
           {visibleTracks.map((track, i) => (
@@ -42,7 +42,7 @@ export function PopularTracks({ tracks, queue, artist }: Props) {
           )}
         </div>
       ) : (
-        <div className="text-zinc-500 text-sm py-4">{t("artist.popular.noTracks")}</div>
+        <div className="py-4 text-sm text-zinc-500">{t("artist.popular.noTracks")}</div>
       )}
     </div>
   );

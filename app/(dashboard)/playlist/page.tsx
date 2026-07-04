@@ -55,16 +55,16 @@ export default function PlaylistPage() {
   return (
     <div
       key={playlistId ?? "daily"}
-      className="relative w-full min-h-screen flex flex-col bg-[#121212] font-sans"
+      className="relative flex min-h-screen w-full flex-col bg-[#121212] font-sans"
     >
       <div
-        className="absolute top-0 left-0 right-0 h-100 md:h-125 z-0 pointer-events-none opacity-60"
+        className="pointer-events-none absolute top-0 right-0 left-0 z-0 h-100 opacity-60 md:h-125"
         style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
       />
       {dynamicPlaylistInfo && (
         <PlaylistHeader info={dynamicPlaylistInfo} isDaily={isDailyRecommend} />
       )}
-      <div className="flex-1 relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] to-[#121212] via-20%">
+      <div className="relative z-10 flex flex-1 flex-col bg-linear-to-b from-black/20 via-[#121212] via-20% to-[#121212]">
         {isLoading ? (
           <PlaylistHeaderSkeleton />
         ) : (
@@ -79,7 +79,7 @@ export default function PlaylistPage() {
             inputRef={inputRef}
           />
         )}
-        <div className="px-6 flex-1 pb-10 min-w-0 overflow-hidden">
+        <div className="min-w-0 flex-1 overflow-hidden px-6 pb-10">
           {isLoading ? (
             <PlaylistLoading />
           ) : (

@@ -10,29 +10,29 @@ const RightActions = () => (
     <button
       type="button"
       className={cn(
-        "px-4 h-10 rounded-full",
-        "bg-white text-black hover:scale-105 transition-all",
-        "hidden xl:flex items-center gap-2",
+        "h-10 rounded-full px-4",
+        "bg-white text-black transition-all hover:scale-105",
+        "hidden items-center gap-2 xl:flex",
         "text-sm font-bold",
       )}
       onClick={() => window.open("https://github.com/MT-SUPER-POWER/scopify")}
     >
-      <Github className="w-5 h-5" />
+      <Github className="h-5 w-5" />
       <span>Github</span>
     </button>
 
     <button
       type="button"
-      className={cn("hidden md:flex items-center justify-center w-10 h-10 rounded-full", NAV_BTN)}
+      className={cn("hidden h-10 w-10 items-center justify-center rounded-full md:flex", NAV_BTN)}
     >
-      <Bell className="w-4.5 h-4.5" />
+      <Bell className="h-4.5 w-4.5" />
     </button>
 
     <button
       type="button"
-      className={cn("hidden md:flex items-center justify-center w-10 h-10 rounded-full", NAV_BTN)}
+      className={cn("hidden h-10 w-10 items-center justify-center rounded-full md:flex", NAV_BTN)}
     >
-      <Users className="w-4.5 h-4.5" />
+      <Users className="h-4.5 w-4.5" />
     </button>
 
     <ProfileMenu>

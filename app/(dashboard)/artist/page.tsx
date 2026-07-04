@@ -22,20 +22,20 @@ export default function ArtistPage() {
     useArtistPlay(hotTracksQueue);
 
   if (!artistId)
-    return <div className="p-8 text-white h-screen bg-[#121212]">{t("artist.page.invalidId")}</div>;
+    return <div className="h-screen bg-[#121212] p-8 text-white">{t("artist.page.invalidId")}</div>;
 
   if (isLoading || !artist)
     return (
-      <div className="p-8 text-white h-screen bg-[#121212] flex justify-center items-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#1DB954]" />
+      <div className="flex h-screen items-center justify-center bg-[#121212] p-8 text-white">
+        <Loader2 className="h-8 w-8 animate-spin text-[#1DB954]" />
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white font-sans overflow-x-hidden pb-24">
+    <div className="min-h-screen overflow-x-hidden bg-[#121212] pb-24 font-sans text-white">
       <ArtistHero artist={artist} />
 
-      <div className="w-full max-w-7xl mx-auto bg-linear-to-b from-black/20 to-[#121212]">
+      <div className="mx-auto w-full max-w-7xl bg-linear-to-b from-black/20 to-[#121212]">
         <ActionBar
           artistId={artist.id}
           isPlayingArtist={isPlayingArtist}
@@ -43,7 +43,7 @@ export default function ArtistPage() {
           onPlayArtist={handlePlayArtist}
         />
 
-        <div className="px-6 md:px-8 flex flex-col xl:flex-row gap-12">
+        <div className="flex flex-col gap-12 px-6 md:px-8 xl:flex-row">
           <PopularTracks tracks={popularTracks} queue={hotTracksQueue} artist={artist} />
           <AboutSection artist={artist} />
         </div>

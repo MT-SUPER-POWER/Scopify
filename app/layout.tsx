@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <body
         className={cn(
-          "antialiased overflow-hidden flex fixed inset-0",
+          "fixed inset-0 flex overflow-hidden antialiased",
           "selection:bg-[#1db954] selection:text-white",
         )}
         suppressHydrationWarning

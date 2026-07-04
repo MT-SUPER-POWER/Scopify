@@ -6,9 +6,9 @@ export function SectionHeader({ title, onSeeAll }: { title: string; onSeeAll: ()
   const { t } = useI18n();
 
   return (
-    <div className="flex items-end justify-between mb-4">
+    <div className="mb-4 flex items-end justify-between">
       <h2
-        className="text-2xl font-bold tracking-tight hover:underline cursor-pointer"
+        className="cursor-pointer text-2xl font-bold tracking-tight hover:underline"
         onClick={onSeeAll}
       >
         {title}

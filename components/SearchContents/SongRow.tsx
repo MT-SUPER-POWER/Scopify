@@ -33,53 +33,53 @@ export function SongRow({
 
   return (
     <div
-      className="group flex items-center justify-between p-2.5 hover:bg-white/10 active:bg-white/5 rounded-md transition-colors cursor-pointer"
+      className="group flex cursor-pointer items-center justify-between rounded-md p-2.5 transition-colors hover:bg-white/10 active:bg-white/5"
       onClick={onRowClick}
     >
-      <div className="flex items-center gap-4 min-w-0">
-        <div className="relative w-11 h-11 shrink-0 bg-zinc-800 rounded">
-          <img src={imageUrl} alt={song.name} className="w-full h-full object-cover rounded" />
+      <div className="flex min-w-0 items-center gap-4">
+        <div className="relative h-11 w-11 shrink-0 rounded bg-zinc-800">
+          <img src={imageUrl} alt={song.name} className="h-full w-full rounded object-cover" />
           <div
             className={cn(
-              "absolute inset-0 bg-black/50 flex items-center justify-center rounded transition-opacity",
+              "absolute inset-0 flex items-center justify-center rounded bg-black/50 transition-opacity",
               isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100",
             )}
           >
             <button
               type="button"
               onClick={onTogglePlay}
-              className="text-white hover:scale-110 transition-transform"
+              className="text-white transition-transform hover:scale-110"
             >
               {isPlaying ? (
-                <Pause className="w-5 h-5 fill-current" />
+                <Pause className="h-5 w-5 fill-current" />
               ) : (
-                <Play className="w-5 h-5 fill-current ml-0.5" />
+                <Play className="ml-0.5 h-5 w-5 fill-current" />
               )}
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col min-w-0">
+        <div className="flex min-w-0 flex-col">
           <span
             className={cn(
-              "text-base truncate font-medium",
+              "truncate text-base font-medium",
               isPlaying ? "text-[#1ed760]" : "text-white",
             )}
           >
             {song.name}
           </span>
-          <span className="text-sm text-zinc-400 group-hover:text-white transition-colors truncate">
+          <span className="truncate text-sm text-zinc-400 transition-colors group-hover:text-white">
             <ArtistInlineLinks artists={song.artists ?? []} />
           </span>
         </div>
       </div>
 
-      <div className="flex items-center gap-6 text-zinc-400 shrink-0 ml-4">
-        <Heart className="w-4 h-4 opacity-0 group-hover:opacity-100 hover:text-white transition-all cursor-pointer hover:scale-110" />
-        <span className="text-sm font-medium w-12 text-right tabular-nums">
+      <div className="ml-4 flex shrink-0 items-center gap-6 text-zinc-400">
+        <Heart className="h-4 w-4 cursor-pointer opacity-0 transition-all group-hover:opacity-100 hover:scale-110 hover:text-white" />
+        <span className="w-12 text-right text-sm font-medium tabular-nums">
           {formatDuration(song.duration)}
         </span>
-        <MoreHorizontal className="w-5 h-5 opacity-0 group-hover:opacity-100 hover:text-white transition-all cursor-pointer" />
+        <MoreHorizontal className="h-5 w-5 cursor-pointer opacity-0 transition-all group-hover:opacity-100 hover:text-white" />
       </div>
     </div>
   );

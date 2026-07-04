@@ -5,16 +5,16 @@ import { motion } from "motion/react";
 // 提取骨架屏组件，保持代码整洁
 const LoginSkeletonLoading = () => {
   return (
-    <div className="flex flex-col items-center justify-center bg-black p-4 min-h-screen w-screen overflow-hidden">
+    <div className="flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-black p-4">
       {/* Logo 骨架 */}
       <div className="mb-6 flex flex-col items-center">
         <motion.div
-          className="w-14 h-14 bg-zinc-800 rounded-2xl mb-3"
+          className="mb-3 h-14 w-14 rounded-2xl bg-zinc-800"
           animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
         />
         <motion.div
-          className="w-24 h-3 bg-zinc-800/80 rounded-full"
+          className="h-3 w-24 rounded-full bg-zinc-800/80"
           animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.1 }}
         />
@@ -23,27 +23,27 @@ const LoginSkeletonLoading = () => {
       <div className="w-full max-w-[320px]">
         {/* Tabs 切换器骨架 */}
         <motion.div
-          className="w-full h-10 bg-zinc-900 rounded-xl mb-4"
+          className="mb-4 h-10 w-full rounded-xl bg-zinc-900"
           animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.2 }}
         />
 
         {/* 主体表单/二维码容器骨架 */}
         <motion.div
-          className="w-full h-75 bg-zinc-900/40 border border-white/5 rounded-2xl p-5 flex flex-col items-center justify-center space-y-4"
+          className="flex h-75 w-full flex-col items-center justify-center space-y-4 rounded-2xl border border-white/5 bg-zinc-900/40 p-5"
           animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.3 }}
         >
           {/* 模拟中间的二维码区域 */}
-          <motion.div className="w-40 h-40 bg-zinc-800/80 rounded-xl" />
-          <motion.div className="w-32 h-4 bg-zinc-800/80 rounded-full mt-2" />
-          <motion.div className="w-40 h-3 bg-zinc-800/60 rounded-full" />
+          <motion.div className="h-40 w-40 rounded-xl bg-zinc-800/80" />
+          <motion.div className="mt-2 h-4 w-32 rounded-full bg-zinc-800/80" />
+          <motion.div className="h-3 w-40 rounded-full bg-zinc-800/60" />
         </motion.div>
 
         {/* 底部文案骨架 */}
         <div className="mt-6 flex justify-center">
           <motion.div
-            className="w-48 h-3 bg-zinc-800/60 rounded-full"
+            className="h-3 w-48 rounded-full bg-zinc-800/60"
             animate={{ opacity: [0.3, 0.7, 0.3] }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.4 }}
           />

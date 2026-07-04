@@ -11,7 +11,7 @@ export function SongsView({ songs }: Props) {
 
   return (
     <div className="pb-10">
-      <h2 className="text-2xl font-bold mb-6 tracking-tight">{t("search.section.searchSongs")}</h2>
+      <h2 className="mb-6 text-2xl font-bold tracking-tight">{t("search.section.searchSongs")}</h2>
       <SongsPanel songs={songs} />
     </div>
   );

@@ -50,38 +50,38 @@ export function BestMatchCard({ song, songs }: Props) {
   }, [song, songs, isActive, isPlaying, setIsPlaying, setQueue, playTrack]);
 
   return (
-    <div className="xl:w-[40%] flex flex-col">
-      <h2 className="text-2xl font-bold mb-4 tracking-tight">{t("search.section.bestMatch")}</h2>
+    <div className="flex flex-col xl:w-[40%]">
+      <h2 className="mb-4 text-2xl font-bold tracking-tight">{t("search.section.bestMatch")}</h2>
       {song ? (
         <div
-          className="relative group bg-[#181818] hover:bg-[#282828] transition-colors rounded-xl p-6 flex-1 cursor-pointer flex flex-col justify-end min-h-55"
+          className="group relative flex min-h-55 flex-1 cursor-pointer flex-col justify-end rounded-xl bg-[#181818] p-6 transition-colors hover:bg-[#282828]"
           onClick={handlePlay}
         >
-          <div className="w-24 h-24 mb-5 shadow-2xl rounded-md overflow-hidden bg-zinc-800">
+          <div className="mb-5 h-24 w-24 overflow-hidden rounded-md bg-zinc-800 shadow-2xl">
             <Image
               width={96}
               height={96}
               src={song.album?.picUrl || song.artists[0]?.picUrl || ""}
               alt={song.name}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = FALLBACK_IMG;
               }}
             />
           </div>
-          <h3 className="text-3xl font-bold mb-1 truncate">{song.name}</h3>
+          <h3 className="mb-1 truncate text-3xl font-bold">{song.name}</h3>
           <div className="flex items-center gap-2 text-sm text-zinc-400">
             {song.artists && song.artists.length > 0 ? (
               <ArtistInlineLinks
                 artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
-                className="text-white font-medium"
+                className="font-medium text-white"
               />
             ) : (
-              <span className="text-white hover:underline font-medium">
+              <span className="font-medium text-white hover:underline">
                 {t("search.song.unknownArtist")}
               </span>
             )}
-            <span className="px-2 py-0.5 bg-black/50 rounded-full text-[11px] font-bold tracking-wide uppercase">
+            <span className="rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase">
               {t("search.section.songs")}
             </span>
           </div>
@@ -90,17 +90,17 @@ export function BestMatchCard({ song, songs }: Props) {
               e.stopPropagation();
               handlePlay();
             }}
-            className="absolute bottom-6 right-6 w-14 h-14 bg-[#1ed760] rounded-full flex items-center justify-center text-black opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#3be477] shadow-xl"
+            className="absolute right-6 bottom-6 flex h-14 w-14 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
           >
             {isActive && isPlaying ? (
-              <Pause className="w-7 h-7 fill-current" />
+              <Pause className="h-7 w-7 fill-current" />
             ) : (
-              <Play className="w-7 h-7 fill-current ml-1" />
+              <Play className="ml-1 h-7 w-7 fill-current" />
             )}
           </button>
         </div>
       ) : (
-        <div className="bg-[#181818] rounded-xl p-5 flex-1 flex items-center justify-center text-zinc-500 text-sm">
+        <div className="flex flex-1 items-center justify-center rounded-xl bg-[#181818] p-5 text-sm text-zinc-500">
           {t("search.section.noMatchingResults")}
         </div>
       )}

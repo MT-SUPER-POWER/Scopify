@@ -29,54 +29,54 @@ export default function Header({
   return (
     <div
       className={cn(
-        "h-16 w-full flex items-center justify-between px-4 lg:px-6 shrink-0 absolute gap-3",
+        "absolute flex h-16 w-full shrink-0 items-center justify-between gap-3 px-4 lg:px-6",
         "top-0 z-20",
       )}
     >
       {/* 滚动时的背景遮罩 */}
       <div
         className={cn(
-          "absolute inset-0 bg-momo-grey/10 backdrop-blur-lg -z-10 transition-opacity duration-300 rounded-[10px]",
-          isAtTop ? "opacity-0" : "opacity-100 border-b border-white/5",
+          "bg-momo-grey/10 absolute inset-0 -z-10 rounded-[10px] backdrop-blur-lg transition-opacity duration-300",
+          isAtTop ? "opacity-0" : "border-b border-white/5 opacity-100",
         )}
       />
 
       {/* 左侧导航箭头 */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex shrink-0 items-center gap-2">
         <button
           onClick={() => smartRouter.back()}
           className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center",
-            "text-zinc-500 hover:text-white transition-all",
+            "flex h-10 w-10 items-center justify-center rounded-full",
+            "text-zinc-500 transition-all hover:text-white",
             NAV_BTN,
           )}
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           onClick={() => smartRouter.forward()}
           className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center",
-            "text-zinc-500 hover:text-white transition-all",
+            "flex h-10 w-10 items-center justify-center rounded-full",
+            "text-zinc-500 transition-all hover:text-white",
             NAV_BTN,
           )}
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="h-5 w-5" />
         </button>
       </div>
 
       {/* 中间搜索区域 */}
-      <div className="flex flex-row gap-2 items-center justify-center flex-1 mx-2 md:mx-4 max-w-100">
+      <div className="mx-2 flex max-w-100 flex-1 flex-row items-center justify-center gap-2 md:mx-4">
         <Link
           href="/"
           className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
-            "text-zinc-500 hover:text-white transition-all active:scale-95",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+            "text-zinc-500 transition-all hover:text-white active:scale-95",
             NAV_BTN,
             "hidden md:flex",
           )}
         >
-          <Home className="w-4.5 h-4.5" />
+          <Home className="h-4.5 w-4.5" />
         </Link>
 
         <HeaderSearch />

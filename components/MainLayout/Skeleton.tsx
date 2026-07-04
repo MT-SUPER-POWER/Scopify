@@ -23,29 +23,29 @@ export default function MainLayoutSkeleton({
   return (
     <div
       className={cn(
-        "relative w-full h-dvh flex flex-col bg-black text-white font-sans",
-        "overflow-hidden select-none p-2 gap-2",
+        "relative flex h-dvh w-full flex-col bg-black font-sans text-white",
+        "gap-2 overflow-hidden p-2 select-none",
       )}
     >
       <motion.div
-        className="h-16 bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900 rounded-lg"
+        className="h-16 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
         animate={{ opacity: [0.5, 0.8, 0.5] }}
         transition={{ duration: 2, repeat: Infinity }}
       />
-      <div className="flex-1 flex gap-2 min-h-0">
+      <div className="flex min-h-0 flex-1 gap-2">
         <motion.div
-          className="w-1/5 bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900 rounded-lg"
+          className="w-1/5 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
           animate={{ opacity: [0.5, 0.8, 0.5] }}
           transition={{ duration: 2, repeat: Infinity }}
         />
         <motion.div
-          className="flex-1 bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900 rounded-lg"
+          className="flex-1 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
           animate={{ opacity: [0.5, 0.8, 0.5] }}
           transition={{ duration: 2, repeat: Infinity }}
         />
       </div>
       <motion.div
-        className="h-20 bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900 rounded-lg"
+        className="h-20 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
         animate={{ opacity: [0.5, 0.8, 0.5] }}
         transition={{ duration: 2, repeat: Infinity }}
       />

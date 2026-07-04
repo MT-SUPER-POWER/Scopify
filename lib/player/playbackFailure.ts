@@ -1,8 +1,7 @@
 export const MAX_AUTO_SKIP_FAILURES = 2;
 
 export type PlaybackFailureAction =
-  | { type: "skip"; nextFailureCount: number }
-  | { type: "stop"; nextFailureCount: 0 };
+  { type: "skip"; nextFailureCount: number } | { type: "stop"; nextFailureCount: 0 };
 
 export function getPlaybackFailureAction(
   failureCount: number,

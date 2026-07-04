@@ -20,26 +20,28 @@
 
 ## 文件结构
 
-| 文件 | 角色 | 责任 |
-|------|------|------|
-| `types/api/vipSign.ts` | 新建 | VipSignRecord 等类型定义 |
-| `lib/api/user.ts` | 修改 | 新增 `vipSign`、`vipSignInfo` 方法 |
-| `store/module/player.tsx` | 修改 | 新增 `musicQuality` / `setMusicQuality`；`playTrack` 集成音质 |
-| `components/Header/ProfileMenu.tsx` | 修改 | 新增"网易乐签"菜单项 + 处理函数 |
-| `components/VipSign/VipSignModal.tsx` | 新建 | 签到卡片 Modal（Dialog 容器） |
-| `components/VipSign/index.ts` | 新建 | barrel export |
-| `components/PlayerBar.tsx` | 修改 | 新增音质 DropdownMenu |
-| `lib/i18n.ts` | 修改 | 新增两个功能所需的翻译键 |
+| 文件                                  | 角色 | 责任                                                          |
+| ------------------------------------- | ---- | ------------------------------------------------------------- |
+| `types/api/vipSign.ts`                | 新建 | VipSignRecord 等类型定义                                      |
+| `lib/api/user.ts`                     | 修改 | 新增 `vipSign`、`vipSignInfo` 方法                            |
+| `store/module/player.tsx`             | 修改 | 新增 `musicQuality` / `setMusicQuality`；`playTrack` 集成音质 |
+| `components/Header/ProfileMenu.tsx`   | 修改 | 新增"网易乐签"菜单项 + 处理函数                               |
+| `components/VipSign/VipSignModal.tsx` | 新建 | 签到卡片 Modal（Dialog 容器）                                 |
+| `components/VipSign/index.ts`         | 新建 | barrel export                                                 |
+| `components/PlayerBar.tsx`            | 修改 | 新增音质 DropdownMenu                                         |
+| `lib/i18n.ts`                         | 修改 | 新增两个功能所需的翻译键                                      |
 
 ---
 
 ### Task 1: VIP 签到类型定义 + API 方法
 
 **Files:**
+
 - Create: `types/api/vipSign.ts`
 - Modify: `lib/api/user.ts`
 
 **Interfaces:**
+
 - Produces: `VipSignRecord`, `VipSignInfoResponse`, `VipSignResponse` 类型；`vipSign(cookie?)`, `vipSignInfo(cookie?)` 方法
 
 - [ ] **Step 1: 创建类型文件 `types/api/vipSign.ts`**
@@ -49,7 +51,7 @@ export interface VipSignRecord {
   recordId: number;
   userId: number;
   time: number;
-  timeStr: string;   // "2026-07-01"
+  timeStr: string; // "2026-07-01"
   songId: number;
   songCover: string | null;
   score: number;
@@ -76,10 +78,7 @@ export interface VipSignResponse {
 // 网易乐签
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import type {
-  VipSignInfoResponse,
-  VipSignResponse,
-} from "@/types/api/vipSign";
+import type { VipSignInfoResponse, VipSignResponse } from "@/types/api/vipSign";
 
 /** 网易乐签 - VIP签到 POST /vip/sign */
 export function vipSign(cookie?: string) {
@@ -104,6 +103,7 @@ Run: `bun run check` (biome lint)
 Expected: no errors
 
 Commit:
+
 ```bash
 git add types/api/vipSign.ts lib/api/user.ts
 git commit -m "feat(vip-sign): add types and API methods for NetEase VIP check-in
@@ -116,9 +116,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ### Task 2: i18n 翻译键
 
 **Files:**
+
 - Modify: `lib/i18n.ts`
 
 **Interfaces:**
+
 - Produces: 两个功能所需的翻译键
 
 - [ ] **Step 1: 在 `lib/i18n.ts` 的 `profile.menu.aboutMe` 行后新增 VIP 签到翻译键**
@@ -194,6 +196,7 @@ Run: `bun run check` (biome lint / type check)
 Expected: no errors
 
 Commit:
+
 ```bash
 git add lib/i18n.ts
 git commit -m "feat(i18n): add VIP sign and audio quality translation keys
@@ -206,9 +209,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ### Task 3: ProfileMenu 新增"网易乐签"菜单项
 
 **Files:**
+
 - Modify: `components/Header/ProfileMenu.tsx`
 
 **Interfaces:**
+
 - Consumes: `vipSign(cookie?)`, `vipSignInfo(cookie?)` from `lib/api/user`
 - Consumes: `VipSignRecord` from `types/api/vipSign`
 - Consumes: `t("profile.menu.vipSign")` from i18n
@@ -234,7 +239,7 @@ const [signModalOpen, setSignModalOpen] = useState(false);
 const [signRecords, setSignRecords] = useState<VipSignRecord[]>([]);
 
 const handleVipSign = async () => {
-  const cookie = typeof window !== 'undefined' ? localStorage.getItem("music_cookie") : null;
+  const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") : null;
   try {
     const res = await vipSign(cookie ?? undefined);
     const signData = res.data;
@@ -269,10 +274,7 @@ import { toast } from "sonner";
 在 `{isLoggedIn && ...}` 区块中（`FiUser` 菜单项之后），添加：
 
 ```tsx
-<DropdownMenuItem
-  onSelect={handleVipSign}
-  className="rounded-lg px-3 py-2 text-[15px]"
->
+<DropdownMenuItem onSelect={handleVipSign} className="rounded-lg px-3 py-2 text-[15px]">
   <FiCalendar className="mr-2 h-5 w-5" />
   <span>{t("profile.menu.vipSign")}</span>
 </DropdownMenuItem>
@@ -283,13 +285,15 @@ import { toast } from "sonner";
 在 `</DropdownMenuContent></DropdownMenu>` 之后添加：
 
 ```tsx
-{signModalOpen && (
-  <VipSignModal
-    open={signModalOpen}
-    onClose={() => setSignModalOpen(false)}
-    signRecords={signRecords}
-  />
-)}
+{
+  signModalOpen && (
+    <VipSignModal
+      open={signModalOpen}
+      onClose={() => setSignModalOpen(false)}
+      signRecords={signRecords}
+    />
+  );
+}
 ```
 
 - [ ] **Step 5: 添加 VipSignModal import**
@@ -314,10 +318,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ### Task 4: VipSignModal 签到卡片组件
 
 **Files:**
+
 - Create: `components/VipSign/VipSignModal.tsx`
 - Create: `components/VipSign/index.ts`
 
 **Interfaces:**
+
 - Consumes: `VipSignRecord` from `types/api/vipSign`
 - Consumes: `getMusicComments({ id, limit })` from `lib/api/comment`
 - Consumes: `usePlayerStore` from `@/store`
@@ -369,7 +375,9 @@ function formatDate(timeStr: string, locale: string) {
 }
 
 function monthName(d: Date) {
-  return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()];
+  return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
+    d.getMonth()
+  ];
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -446,7 +454,9 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
           });
         }
       })
-      .catch(() => { /* 静默失败，不影响卡片展示 */ });
+      .catch(() => {
+        /* 静默失败，不影响卡片展示 */
+      });
   }, [todaySongId]);
 
   // 播放当前歌曲
@@ -454,10 +464,7 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
     if (!todaySongId) return;
     const store = usePlayerStore.getState();
     // 如果当前队列没有这首歌，创建一个只包含此歌曲的队列
-    store.playFromSong(
-      { id: todaySongId } as any,
-      [{ id: todaySongId }] as any,
-    );
+    store.playFromSong({ id: todaySongId } as any, [{ id: todaySongId }] as any);
     onClose();
   }, [todaySongId, onClose]);
 
@@ -476,7 +483,7 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
 
           {/* Card */}
           <motion.div
-            className="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl bg-[#1a1a1a]"
+            className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-[#1a1a1a] shadow-2xl"
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
@@ -484,9 +491,18 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
           >
             {/* Background Layer */}
             {todayCover ? (
-              <div className="absolute inset-0 z-0 pointer-events-none">
-                <div className="absolute inset-0 opacity-60 scale-[1.2]" style={{ filter: "blur(24px) brightness(0.6)" }}>
-                  <BackgroundRender album={todayCover} playing={false} hasLyric={false} renderScale={0.35} staticMode />
+              <div className="pointer-events-none absolute inset-0 z-0">
+                <div
+                  className="absolute inset-0 scale-[1.2] opacity-60"
+                  style={{ filter: "blur(24px) brightness(0.6)" }}
+                >
+                  <BackgroundRender
+                    album={todayCover}
+                    playing={false}
+                    hasLyric={false}
+                    renderScale={0.35}
+                    staticMode
+                  />
                 </div>
                 <div className="absolute inset-0 bg-black/20" />
               </div>
@@ -498,13 +514,13 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-3 right-3 z-20 p-2 rounded-full bg-black/30 text-white/70 hover:text-white hover:bg-black/50 transition-all"
+              className="absolute top-3 right-3 z-20 rounded-full bg-black/30 p-2 text-white/70 transition-all hover:bg-black/50 hover:text-white"
             >
-              <X className="w-4 h-4" />
+              <X className="h-4 w-4" />
             </button>
 
             {/* Content */}
-            <div className="relative z-10 p-8 text-white flex flex-col items-center gap-5">
+            <div className="relative z-10 flex flex-col items-center gap-5 p-8 text-white">
               {/* Date */}
               <div className="text-center">
                 <div className="text-2xl font-bold tracking-tight">
@@ -512,44 +528,50 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                     ? formatDate(signRecords.find((r) => r.today)?.timeStr ?? "", locale)
                     : formatDate(new Date().toISOString().slice(0, 10), locale)}
                 </div>
-                <div className="mt-1 h-px w-16 mx-auto bg-white/20" />
+                <div className="mx-auto mt-1 h-px w-16 bg-white/20" />
               </div>
 
               {/* Today's Song Title */}
               <div className="text-center">
-                <div className="text-xs uppercase tracking-widest text-white/50 mb-1">
+                <div className="mb-1 text-xs tracking-widest text-white/50 uppercase">
                   {t("vipSign.recommendedSong")}
                 </div>
               </div>
 
               {/* Main: Quote + Cover */}
-              <div className="flex gap-4 w-full items-stretch">
+              <div className="flex w-full items-stretch gap-4">
                 {/* Left: Hot Comment Quote */}
-                <div className="flex-1 min-w-0 bg-white/5 backdrop-blur-sm rounded-xl p-4 flex flex-col justify-center">
+                <div className="flex min-w-0 flex-1 flex-col justify-center rounded-xl bg-white/5 p-4 backdrop-blur-sm">
                   {hotComment ? (
                     <>
-                      <div className="text-sm italic text-white/80 leading-relaxed line-clamp-4">
+                      <div className="line-clamp-4 text-sm leading-relaxed text-white/80 italic">
                         &ldquo;{hotComment.content}&rdquo;
                       </div>
-                      <div className="mt-2 text-xs text-white/40 text-right">
+                      <div className="mt-2 text-right text-xs text-white/40">
                         &mdash; {hotComment.nickname}
                       </div>
                     </>
                   ) : (
-                    <div className="text-xs text-white/30 text-center">
+                    <div className="text-center text-xs text-white/30">
                       {t("common.status.loading")}
                     </div>
                   )}
                 </div>
 
                 {/* Right: Song Cover + Actions */}
-                <div className="shrink-0 flex flex-col items-center gap-2">
-                  <div className="w-24 h-24 rounded-xl overflow-hidden shadow-lg bg-black/30 ring-1 ring-white/10">
+                <div className="flex shrink-0 flex-col items-center gap-2">
+                  <div className="h-24 w-24 overflow-hidden rounded-xl bg-black/30 shadow-lg ring-1 ring-white/10">
                     {todayCover ? (
-                      <Image width={96} height={96} src={todayCover} alt="" className="w-full h-full object-cover" />
+                      <Image
+                        width={96}
+                        height={96}
+                        src={todayCover}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white/20">
-                        <FiCalendar className="w-8 h-8" />
+                      <div className="flex h-full w-full items-center justify-center text-white/20">
+                        <FiCalendar className="h-8 w-8" />
                       </div>
                     )}
                   </div>
@@ -557,14 +579,14 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                     <button
                       type="button"
                       onClick={handlePlay}
-                      className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
+                      className="rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
                       title={t("contextMenu.play")}
                     >
-                      <PiPlayCircleFill className="w-5 h-5" />
+                      <PiPlayCircleFill className="h-5 w-5" />
                     </button>
                     <button
                       type="button"
-                      className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
+                      className="rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
                       title={t("contextMenu.comments")}
                       onClick={() => {
                         if (todaySongId) {
@@ -572,18 +594,16 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                         }
                       }}
                     >
-                      <PiHeart className="w-5 h-5" />
+                      <PiHeart className="h-5 w-5" />
                     </button>
                   </div>
                 </div>
               </div>
 
               {/* Consecutive Days */}
-              <div className="flex items-center gap-2 text-sm text-white/70 bg-white/5 rounded-full px-4 py-1.5">
-                <FiCalendar className="w-4 h-4" />
-                <span>
-                  {t("vipSign.consecutiveDays", { days: consecutiveDays })}
-                </span>
+              <div className="flex items-center gap-2 rounded-full bg-white/5 px-4 py-1.5 text-sm text-white/70">
+                <FiCalendar className="h-4 w-4" />
+                <span>{t("vipSign.consecutiveDays", { days: consecutiveDays })}</span>
               </div>
             </div>
           </motion.div>
@@ -614,9 +634,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ### Task 5: PlayerStore 音质状态
 
 **Files:**
+
 - Modify: `store/module/player.tsx`
 
 **Interfaces:**
+
 - Consumes: `MusicQuality`, `UI_QUALITY_TO_LEVEL`, `getSongUrlWithQuality` from `lib/api/music`
 - Produces: `musicQuality: MusicQuality`, `setMusicQuality(q)`, `playTrack` 集成音质
 
@@ -659,10 +681,7 @@ setMusicQuality: (quality) => set({ musicQuality: quality }),
 找到 `playTrack` 方法中以下代码段：
 
 ```typescript
-const [urlRes, lyricRes] = await Promise.all([
-  greySongUrlMatch(song.id),
-  getLyric(song.id),
-]);
+const [urlRes, lyricRes] = await Promise.all([greySongUrlMatch(song.id), getLyric(song.id)]);
 const url = urlRes.data ?? urlRes.proxyUrl;
 ```
 
@@ -701,9 +720,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ### Task 6: PlayBar 音质选择器 UI
 
 **Files:**
+
 - Modify: `components/PlayerBar.tsx`
 
 **Interfaces:**
+
 - Consumes: `musicQuality`, `setMusicQuality` from `usePlayerStore`
 - Consumes: `t("playbar.quality")`, `t("playbar.qualityTitle")` from i18n
 
@@ -798,31 +819,30 @@ const QUALITY_OPTIONS = [
 在 `Mic2`（歌词）按钮与 `<div className="hidden md:block">`（队列）之间添加：
 
 ```tsx
-{/* 音质选择 */}
+{
+  /* 音质选择 */
+}
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
     <button
       type="button"
-      className="hover:text-white transition-colors flex items-center justify-center"
+      className="flex items-center justify-center transition-colors hover:text-white"
       title={t("playbar.quality")}
     >
-      <Radio className="w-4 h-4 lg:w-5 lg:h-5" />
+      <Radio className="h-4 w-4 lg:h-5 lg:w-5" />
     </button>
   </DropdownMenuTrigger>
   <DropdownMenuContent
-    className="bg-[#282828] border-white/10 text-white p-2 w-64 rounded-xl"
+    className="w-64 rounded-xl border-white/10 bg-[#282828] p-2 text-white"
     side="top"
     align="end"
     sideOffset={8}
   >
-    <DropdownMenuLabel className="text-xs text-zinc-400 px-2 py-1 font-normal">
+    <DropdownMenuLabel className="px-2 py-1 text-xs font-normal text-zinc-400">
       {t("playbar.qualityTitle")}
     </DropdownMenuLabel>
     <DropdownMenuSeparator className="bg-white/10" />
-    <DropdownMenuRadioGroup
-      value={musicQuality}
-      onValueChange={(v) => setMusicQuality(v as any)}
-    >
+    <DropdownMenuRadioGroup value={musicQuality} onValueChange={(v) => setMusicQuality(v as any)}>
       {QUALITY_OPTIONS.map((opt) => {
         const Icon = opt.icon;
         return (
@@ -831,13 +851,11 @@ const QUALITY_OPTIONS = [
             value={opt.value}
             className="rounded-lg px-3 py-2.5 text-[15px] focus:bg-white/10 focus:text-white"
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <Icon className="w-5 h-5 shrink-0 text-zinc-300" />
+            <div className="flex min-w-0 items-center gap-3">
+              <Icon className="h-5 w-5 shrink-0 text-zinc-300" />
               <div className="min-w-0">
-                <div className="text-sm font-medium text-white truncate">
-                  {opt.label}
-                </div>
-                <div className="text-[11px] text-zinc-400 truncate mt-0.5">
+                <div className="truncate text-sm font-medium text-white">{opt.label}</div>
+                <div className="mt-0.5 truncate text-[11px] text-zinc-400">
                   {opt.sublabel} · {opt.description}
                 </div>
               </div>
@@ -847,7 +865,7 @@ const QUALITY_OPTIONS = [
       })}
     </DropdownMenuRadioGroup>
   </DropdownMenuContent>
-</DropdownMenu>
+</DropdownMenu>;
 ```
 
 - [ ] **Step 5: Verify and commit**

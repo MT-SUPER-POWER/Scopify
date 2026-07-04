@@ -52,7 +52,7 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder={t("login.form.phonePlaceholder")}
-          className="bg-black/50 border-white/10 h-10 text-sm"
+          className="h-10 border-white/10 bg-black/50 text-sm"
         />
       </div>
       <div className="space-y-1.5">
@@ -66,14 +66,14 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
             value={captcha}
             onChange={(e) => setCaptcha(e.target.value)}
             placeholder={t("login.form.captchaPlaceholder")}
-            className="bg-black/50 border-white/10 h-10 text-sm"
+            className="h-10 border-white/10 bg-black/50 text-sm"
           />
           <Button
             type="button"
             variant="outline"
             onClick={handleSendCaptcha}
             disabled={countdown > 0}
-            className="shrink-0 border-white/10 text-white hover:bg-white/5 font-bold h-10 px-3 rounded-md transition-colors text-xs disabled:opacity-50"
+            className="h-10 shrink-0 rounded-md border-white/10 px-3 text-xs font-bold text-white transition-colors hover:bg-white/5 disabled:opacity-50"
           >
             {countdown > 0 ? `${countdown}s` : t("login.form.getCaptcha")}
           </Button>
@@ -82,7 +82,7 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
       <Button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-[#1db954] hover:bg-[#1ed760] text-black font-bold h-10 rounded-full transition-all hover:scale-[1.02] active:scale-95 mt-2"
+        className="mt-2 h-10 w-full rounded-full bg-[#1db954] font-bold text-black transition-all hover:scale-[1.02] hover:bg-[#1ed760] active:scale-95"
       >
         {isLoading ? t("login.form.verifying") : t("login.form.verifyAndLogin")}
       </Button>

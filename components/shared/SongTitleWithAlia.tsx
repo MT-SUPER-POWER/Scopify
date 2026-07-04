@@ -19,7 +19,7 @@ export function SongTitleWithAlia({
     <span className={cn("truncate", className)} title={aliaText ? `${name} (${aliaText})` : name}>
       <span>{name}</span>
       {aliaText ? (
-        <span className={cn("text-zinc-500 font-normal", aliaClassName)}>{` (${aliaText})`}</span>
+        <span className={cn("font-normal text-zinc-500", aliaClassName)}>{` (${aliaText})`}</span>
       ) : null}
     </span>
   );

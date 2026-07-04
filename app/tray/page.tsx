@@ -97,7 +97,7 @@ export default function TrayPage() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-full h-full" />;
+    return <div className="h-full w-full" />;
   }
 
   if (!isElectron) return null;
@@ -109,7 +109,7 @@ export default function TrayPage() {
     "w-full justify-start px-3 py-5 text-zinc-300 hover:text-white hover:bg-white/10 rounded-md font-normal transition-colors h-9";
 
   return (
-    <div className="w-full h-full bg-[#222226] text-white flex flex-col font-sans select-none overflow-hidden rounded-xl border border-white/10 shadow-2xl p-2 gap-1 text-[13px] font-medium animate-in fade-in zoom-in-95 duration-200">
+    <div className="animate-in fade-in zoom-in-95 flex h-full w-full flex-col gap-1 overflow-hidden rounded-xl border border-white/10 bg-[#222226] p-2 font-sans text-[13px] font-medium text-white shadow-2xl duration-200 select-none">
       {/* 头部：当前歌曲 - 固定 */}
       <SongTitle
         title={`${currentSong?.name || t("common.meta.unknownSong")} -
@@ -119,43 +119,43 @@ export default function TrayPage() {
       <Separator className="my-1.5 bg-white/10" />
 
       {/* 可滚动区域 */}
-      <ScrollArea className="flex-1 overflow-y-auto overflow-x-hidden pr-1">
+      <ScrollArea className="flex-1 overflow-x-hidden overflow-y-auto pr-1">
         {/* 播放控制区 - 固定 */}
-        <div className="flex items-center justify-between px-4 py-1 shrink-0">
+        <div className="flex shrink-0 items-center justify-between px-4 py-1">
           <button
-            className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+            className="rounded-full p-1.5 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
             onClick={playPrev}
             title={t("tray.previous")}
           >
-            <SkipBack className="w-5 h-5 fill-current" />
+            <SkipBack className="h-5 w-5 fill-current" />
           </button>
 
           <button
-            className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+            className="rounded-full p-2 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
             onClick={togglePlay}
             title={isPlaying ? t("tray.pause") : t("tray.play")}
           >
             {/* 修复：这里正确判断并显示 Pause 或 Play 图标 */}
             {isPlaying ? (
-              <Pause className="w-6 h-6 fill-current" />
+              <Pause className="h-6 w-6 fill-current" />
             ) : (
-              <Play className="w-6 h-6 fill-current" />
+              <Play className="h-6 w-6 fill-current" />
             )}
           </button>
 
           <button
-            className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+            className="rounded-full p-1.5 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
             onClick={playNext}
             title={t("tray.next")}
           >
-            <SkipForward className="w-5 h-5 fill-current" />
+            <SkipForward className="h-5 w-5 fill-current" />
           </button>
           <button
-            className={`p-1.5 rounded-full transition-all ${isLiked ? "text-[#1ed760]" : "text-zinc-400 hover:text-white hover:bg-white/10"}`}
+            className={`rounded-full p-1.5 transition-all ${isLiked ? "text-[#1ed760]" : "text-zinc-400 hover:bg-white/10 hover:text-white"}`}
             onClick={() => toggleLike(!isLiked)}
             title={isLiked ? t("tray.unlike") : t("tray.like")}
           >
-            <Heart className={`w-6 h-6 ${isLiked ? "fill-[#1ed760]" : ""}`} />
+            <Heart className={`h-6 w-6 ${isLiked ? "fill-[#1ed760]" : ""}`} />
           </button>
         </div>
 

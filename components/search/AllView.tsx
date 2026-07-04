@@ -36,7 +36,7 @@ export function AllView({
   return (
     <>
       {/* 顶部两栏：最佳匹配 + 歌曲 */}
-      <div className="flex flex-col xl:flex-row gap-6 mb-10">
+      <div className="mb-10 flex flex-col gap-6 xl:flex-row">
         <BestMatchCard song={topSong} songs={songs} />
         <SongsPanel songs={songs} limit={4} onViewAll={() => onSeeAll("Songs")} />
       </div>
@@ -45,7 +45,7 @@ export function AllView({
       {artists.length > 0 && (
         <div className="mb-10">
           <SectionHeader title={t("search.section.artists")} onSeeAll={() => onSeeAll("Artists")} />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {artists.slice(0, 6).map((artist) => (
               <ArtistCard
                 key={artist.id}
@@ -61,7 +61,7 @@ export function AllView({
       {albums.length > 0 && (
         <div className="mb-10">
           <SectionHeader title={t("search.section.albums")} onSeeAll={() => onSeeAll("Albums")} />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {albums.slice(0, 6).map((album) => (
               <AlbumCard
                 key={album.id}
@@ -83,7 +83,7 @@ export function AllView({
             title={t("search.section.playlists")}
             onSeeAll={() => onSeeAll("Playlists")}
           />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {playlists.slice(0, 6).map((playlist) => (
               <PlaylistCard
                 key={playlist.id}

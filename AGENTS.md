@@ -8,10 +8,10 @@ Scopify 是 **Next.js App Router + Electron + Zustand** 的网易云音乐客户
 
 ## Quick Start
 
-| 项 | 值 |
-|---|---|
+| 项       | 值                  |
+| -------- | ------------------- |
 | 包管理器 | **bun**（>= 1.3.7） |
-| Node | >= 20 |
+| Node     | >= 20               |
 
 ```bash
 bun install
@@ -76,12 +76,12 @@ Scopify/
 
 ### Path Aliases（tsconfig）
 
-| Alias | 路径 |
-|---|---|
-| `@/*` | 项目根 |
+| Alias           | 路径             |
+| --------------- | ---------------- |
+| `@/*`           | 项目根           |
 | `@components/*` | `./components/*` |
-| `@store/*` | `./store/*` |
-| `@app-types/*` | `./types/*` |
+| `@store/*`      | `./store/*`      |
+| `@app-types/*`  | `./types/*`      |
 
 优先使用 `@/types/...`、`@/lib/...`、`@/components/...`。
 
@@ -95,14 +95,14 @@ Scopify/
 
 #### 原则
 
-| 做法 | 说明 |
-|---|---|
-| ✅ **在 page / layout 里组装** | 按路由拼 JSX：引多个 section 组件、读 `searchParams`、做 SSR 预取 |
-| ✅ **layout 承担公共壳** | 如 `(dashboard)/layout.tsx` 包 `MainLayout` + 全局 handler，子路由只关心内容区 |
-| ✅ **数据 + 业务逻辑提取到 hooks/** | `useUserData`、`useAlbumData`、`useCommentData` 等 hooks 统一放在 `hooks/<领域>/` |
-| ✅ **复杂 UI 块下沉到 `components/`** | 可复用 UI、重 client 逻辑、跨路由共享的模块 |
-| ❌ **无意义的单组件转发** | page 不是 `return <XxxPage />` 的空壳，必须直接 import 多个组件/hooks 做组装 |
-| ❌ **在 `app/` 写类型 / 业务 hook / API 封装** | 类型 → `types/`；逻辑 → `hooks/` / `lib/` |
+| 做法                                           | 说明                                                                              |
+| ---------------------------------------------- | --------------------------------------------------------------------------------- |
+| ✅ **在 page / layout 里组装**                 | 按路由拼 JSX：引多个 section 组件、读 `searchParams`、做 SSR 预取                 |
+| ✅ **layout 承担公共壳**                       | 如 `(dashboard)/layout.tsx` 包 `MainLayout` + 全局 handler，子路由只关心内容区    |
+| ✅ **数据 + 业务逻辑提取到 hooks/**            | `useUserData`、`useAlbumData`、`useCommentData` 等 hooks 统一放在 `hooks/<领域>/` |
+| ✅ **复杂 UI 块下沉到 `components/`**          | 可复用 UI、重 client 逻辑、跨路由共享的模块                                       |
+| ❌ **无意义的单组件转发**                      | page 不是 `return <XxxPage />` 的空壳，必须直接 import 多个组件/hooks 做组装      |
+| ❌ **在 `app/` 写类型 / 业务 hook / API 封装** | 类型 → `types/`；逻辑 → `hooks/` / `lib/`                                         |
 
 #### 组件拆分规则（替代行数拆分）
 
@@ -113,6 +113,7 @@ Scopify/
 3. **page = 组装点** — page 从 `components/` 和 `hooks/` 引子模块做拼装，不充当单体大组件
 
 例：
+
 - ✅ `AlbumHeader`、`AlbumActions`、`TracklistTable` 各是独立组件 → page 组装
 - ✅ `useAlbumData` 负责全部数据 + 状态逻辑 → page 只消费返回值
 - ❌ 一个 500 行的 `AlbumPage` 组件被 page 无脑转发
@@ -165,16 +166,17 @@ function Sidebar() { ... }                   // → components/
 ```
 
 ---
+
 ### 2. 类型定义 — 最重要的规范
 
 #### 放哪里
 
-| 类型性质 | 目标路径 | 示例 |
-|---|---|---|
-| 后端 API 响应/请求体 | `types/api/<领域>.ts` | `AlbumSubscribeResponse`、`FollowedArtistsResponse` |
-| 业务实体（跨组件/API 复用） | `types/<领域>.ts` | `ArtistInfo`、`FollowedArtist`、`Track` |
-| 组件 Props（复杂或多文件复用） | `types/components/<领域>.ts` | `ArtistInlineLinksProps` |
-| 全局/网络/认证等横切类型 | `types/<name>.ts` | `types/auth.ts`、`types/network.ts` |
+| 类型性质                       | 目标路径                     | 示例                                                |
+| ------------------------------ | ---------------------------- | --------------------------------------------------- |
+| 后端 API 响应/请求体           | `types/api/<领域>.ts`        | `AlbumSubscribeResponse`、`FollowedArtistsResponse` |
+| 业务实体（跨组件/API 复用）    | `types/<领域>.ts`            | `ArtistInfo`、`FollowedArtist`、`Track`             |
+| 组件 Props（复杂或多文件复用） | `types/components/<领域>.ts` | `ArtistInlineLinksProps`                            |
+| 全局/网络/认证等横切类型       | `types/<name>.ts`            | `types/auth.ts`、`types/network.ts`                 |
 
 #### 禁止 inline 的位置
 
@@ -241,11 +243,11 @@ export function getFollowedArtists(limit = 20, offset = 0) {
 
 ## 文档入口
 
-| 文件 | 读者 | 说明 |
-|---|---|---|
-| [AGENTS.md](./AGENTS.md) | AI Agent + 贡献者 | **结构规范唯一来源**（跨 Cursor / Claude / Codex 等） |
-| [docs/structure.md](./docs/structure.md) | 人类贡献者 | 精简版说明与迁移 checklist |
-| [backend/api-enhanced/AGENTS.md](./backend/api-enhanced/AGENTS.md) | 后端 | NetEase API 服务 |
+| 文件                                                               | 读者              | 说明                                                  |
+| ------------------------------------------------------------------ | ----------------- | ----------------------------------------------------- |
+| [AGENTS.md](./AGENTS.md)                                           | AI Agent + 贡献者 | **结构规范唯一来源**（跨 Cursor / Claude / Codex 等） |
+| [docs/structure.md](./docs/structure.md)                           | 人类贡献者        | 精简版说明与迁移 checklist                            |
+| [backend/api-enhanced/AGENTS.md](./backend/api-enhanced/AGENTS.md) | 后端              | NetEase API 服务                                      |
 
 **不使用 `.cursor/rules/`** — 规范写在仓库内 markdown，避免绑定单一 IDE。
 
@@ -253,10 +255,10 @@ export function getFollowedArtists(limit = 20, offset = 0) {
 
 ### 3. Hooks 归属
 
-| 场景 | 目录 |
-|---|---|
-| 业务页数据/交互（歌手、搜索、播放器…） | `hooks/<领域>/use*.ts` |
-| 基础设施（登录态、路由、Electron、音量） | `lib/hooks/use*.ts` |
+| 场景                                     | 目录                   |
+| ---------------------------------------- | ---------------------- |
+| 业务页数据/交互（歌手、搜索、播放器…）   | `hooks/<领域>/use*.ts` |
+| 基础设施（登录态、路由、Electron、音量） | `lib/hooks/use*.ts`    |
 
 **禁止** 在 `components/` 下新建 `hook/` 或 `hooks/` 目录（历史遗留如 `components/Playlist/hook/` 存在，新代码不要效仿；改动时迁到 `hooks/`）。
 
@@ -275,14 +277,14 @@ export function getFollowedArtists(limit = 20, offset = 0) {
 
 ### 5. 其他目录
 
-| 目录 | 用途 |
-|---|---|
-| `lib/api/` | Axios 封装，纯函数，无类型定义 |
-| `lib/web/` | `request.ts`、环境变量、网络重试 |
-| `store/module/` | Zustand slice，类型从 `@/types` import |
-| `constants/` | 静态列表、枚举、配置常量 |
-| `main/` | Electron 主进程；IPC 见 `main/README.md` |
-| `tests/` | 单元测试；有意义的行为才写测试 |
+| 目录            | 用途                                     |
+| --------------- | ---------------------------------------- |
+| `lib/api/`      | Axios 封装，纯函数，无类型定义           |
+| `lib/web/`      | `request.ts`、环境变量、网络重试         |
+| `store/module/` | Zustand slice，类型从 `@/types` import   |
+| `constants/`    | 静态列表、枚举、配置常量                 |
+| `main/`         | Electron 主进程；IPC 见 `main/README.md` |
+| `tests/`        | 单元测试；有意义的行为才写测试           |
 
 ---
 

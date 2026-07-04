@@ -89,8 +89,8 @@ function PlayerBarStatAction({
             "absolute top-0 right-0 z-10 translate-x-[63%] -translate-y-1/3",
             // 修复点 3：加上 transform-gpu 开启 3D 硬件加速，彻底解决 scale 动画和毛玻璃冲突的 Bug
             "transform-gpu",
-            "flex min-w-[16px] items-center justify-center px-1 py-px rounded-full bg-[#9f9faa]/20 backdrop-blur-md border border-white/10 text-white shadow-sm",
-            "text-[9px] font-bold text-white leading-none tabular-nums whitespace-nowrap pointer-events-none",
+            "flex min-w-[16px] items-center justify-center rounded-full border border-white/10 bg-[#9f9faa]/20 px-1 py-px text-white shadow-sm backdrop-blur-md",
+            "pointer-events-none text-[9px] leading-none font-bold whitespace-nowrap text-white tabular-nums",
             countClassName,
           )}
         >
@@ -230,7 +230,7 @@ export const PlayerBar = ({
   return (
     <div
       className={cn(
-        "h-17 lg:h-20 w-full flex items-center justify-between z-20 transition-all ease-linear duration-300",
+        "z-20 flex h-17 w-full items-center justify-between transition-all duration-300 ease-linear lg:h-20",
         bgClass || "bg-black",
         className,
       )}
@@ -238,7 +238,7 @@ export const PlayerBar = ({
     >
       <div
         className={cn(
-          "h-17 lg:h-20 w-full px-4 items-center z-20 transition-all ease-linear duration-300",
+          "z-20 h-17 w-full items-center px-4 transition-all duration-300 ease-linear lg:h-20",
           isLyricModalBar
             ? "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4"
             : "flex justify-between",
@@ -247,29 +247,29 @@ export const PlayerBar = ({
         {/* ================= Left: Song Info ================= */}
         <div
           className={cn(
-            "flex items-center gap-3 lg:gap-4 min-w-0",
+            "flex min-w-0 items-center gap-3 lg:gap-4",
             isLyricModalBar ? "justify-start" : "flex-1 lg:flex-3",
           )}
         >
           {/* 专辑封面 */}
-          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-md overflow-hidden relative group cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.5)] bg-zinc-800 shrink-0">
+          <div className="group relative h-12 w-12 shrink-0 cursor-pointer overflow-hidden rounded-md bg-zinc-800 shadow-[0_4px_12px_rgba(0,0,0,0.5)] lg:h-14 lg:w-14">
             {currentSong?.al?.picUrl ? (
               <Image
                 width={56}
                 height={56}
                 src={currentSong.al.picUrl || currentSong.al.coverUrl || ""}
                 alt={currentSong.al.name}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).style.display = "none";
                 }}
               />
             ) : (
-              <Skeleton className="w-full h-full" />
+              <Skeleton className="h-full w-full" />
             )}
             <div
               onClick={openLyrics}
-              className="absolute top-[25%] left-[25%] opacity-0 group-hover:opacity-100 bg-black/70 rounded-full p-1 transition-opacity backdrop-blur-sm hover:scale-105 hover:bg-black/80 flex items-center justify-center"
+              className="absolute top-[25%] left-[25%] flex items-center justify-center rounded-full bg-black/70 p-1 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:scale-105 hover:bg-black/80"
             >
               {isLyricOpen ? (
                 <button
@@ -280,7 +280,7 @@ export const PlayerBar = ({
                     else closeLyrics();
                   }}
                 >
-                  <ChevronDown className="w-5 h-5 text-white" />
+                  <ChevronDown className="h-5 w-5 text-white" />
                 </button>
               ) : (
                 <button
@@ -290,7 +290,7 @@ export const PlayerBar = ({
                     openLyrics();
                   }}
                 >
-                  <ChevronUp className="w-5 h-5 text-white" />
+                  <ChevronUp className="h-5 w-5 text-white" />
                 </button>
               )}
             </div>
@@ -299,7 +299,7 @@ export const PlayerBar = ({
           {/* 歌曲的名字和歌手 */}
           <div
             className={cn(
-              "flex flex-col justify-center min-w-0",
+              "flex min-w-0 flex-col justify-center",
               isLyricModalBar
                 ? "max-w-[min(26vw,280px)]"
                 : "max-w-[120px] sm:max-w-[160px] lg:max-w-[240px]",
@@ -313,11 +313,11 @@ export const PlayerBar = ({
                     if (onCloseLyricModal) onCloseLyricModal();
                     else closeLyrics();
                   }}
-                  className="text-sm text-white hover:underline cursor-pointer truncate font-medium"
+                  className="cursor-pointer truncate text-sm font-medium text-white hover:underline"
                 >
                   {currentSong.name}
                 </span>
-                <span className="text-[11px] text-[#b3b3b3] mt-0.5 font-normal truncate cursor-pointer">
+                <span className="mt-0.5 cursor-pointer truncate text-[11px] font-normal text-[#b3b3b3]">
                   {currentSong?.ar?.slice(0, 2).map((a, idx, arr) => (
                     <span
                       key={a.id}
@@ -327,7 +327,7 @@ export const PlayerBar = ({
                         smartRouter.push(`/artist?id=${a.id}`);
                       }}
                       title={`/artist?id=${a.id}`}
-                      className="hover:underline hover:text-white"
+                      className="hover:text-white hover:underline"
                       style={{ display: "inline" }}
                     >
                       {a.name}
@@ -347,7 +347,7 @@ export const PlayerBar = ({
           {/* 点赞和评论 */}
           <div
             className={cn(
-              "hidden sm:flex items-center gap-4 lg:gap-5 shrink-0",
+              "hidden shrink-0 items-center gap-4 sm:flex lg:gap-5",
               isLyricModalBar && "hidden",
             )}
           >
@@ -358,9 +358,9 @@ export const PlayerBar = ({
               onClick={() => toggleLike(!isLiked)}
             >
               {isLiked ? (
-                <PiHeartFill className="w-5 h-5 lg:w-[22px] lg:h-[22px] text-[#1ed760]" />
+                <PiHeartFill className="h-5 w-5 text-[#1ed760] lg:h-[22px] lg:w-[22px]" />
               ) : (
-                <PiHeartBold className="w-5 h-5 lg:w-[22px] lg:h-[22px] text-zinc-400 group-hover:text-white transition-colors" />
+                <PiHeartBold className="h-5 w-5 text-zinc-400 transition-colors group-hover:text-white lg:h-[22px] lg:w-[22px]" />
               )}
             </PlayerBarStatAction>
 
@@ -373,7 +373,7 @@ export const PlayerBar = ({
                 if (!currentSong?.id) e.preventDefault();
               }}
             >
-              <PiChatCircleDotsBold className="w-5 h-5 lg:w-[22px] lg:h-[22px] text-zinc-400 group-hover:text-white transition-colors" />
+              <PiChatCircleDotsBold className="h-5 w-5 text-zinc-400 transition-colors group-hover:text-white lg:h-[22px] lg:w-[22px]" />
             </PlayerBarStatAction>
           </div>
         </div>
@@ -381,69 +381,68 @@ export const PlayerBar = ({
         {/* ================= Center: Controls ================= */}
         <div
           className={cn(
-            "flex flex-col items-center justify-center gap-1.5 min-w-0",
+            "flex min-w-0 flex-col items-center justify-center gap-1.5",
             isLyricModalBar ? "w-[clamp(280px,40vw,560px)]" : "flex-2 lg:flex-4",
           )}
         >
-          <div className="flex items-center gap-4 lg:gap-5 mt-1">
+          <div className="mt-1 flex items-center gap-4 lg:gap-5">
             <button
               type="button"
               onClick={toggleShuffle}
               className={cn(
-                "hidden sm:block transition-colors relative",
+                "relative hidden transition-colors sm:block",
                 isShuffle ? "text-[#1ed760]" : "text-[#b3b3b3] hover:text-white",
-                "after:content-[''] after:absolute after:-bottom-1.5 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-[#1ed760] after:rounded-full",
+                "after:absolute after:-bottom-1.5 after:left-1/2 after:h-1 after:w-1 after:-translate-x-1/2 after:rounded-full after:bg-[#1ed760] after:content-['']",
                 isShuffle ? "after:opacity-100" : "after:opacity-0",
               )}
             >
-              <Shuffle className="w-4 h-4 lg:w-5 lg:h-5" />
+              <Shuffle className="h-4 w-4 lg:h-5 lg:w-5" />
             </button>
             <button
               type="button"
               onClick={() => playPrev()}
-              className="text-[#b3b3b3] hover:text-white transition-colors"
+              className="text-[#b3b3b3] transition-colors hover:text-white"
             >
-              <SkipBack className="w-4 h-4 lg:w-5 lg:h-5 fill-current" />
+              <SkipBack className="h-4 w-4 fill-current lg:h-5 lg:w-5" />
             </button>
             <button
               type="button"
               onClick={() => setIsPlaying(!isPlaying)}
               disabled={!currentSong}
-              className="w-9 h-9 lg:w-10 lg:h-10 flex items-center justify-center rounded-full bg-white
-              text-black hover:scale-105 transition-all hover:bg-gray-200 active:scale-95 disabled:opacity-40"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-all hover:scale-105 hover:bg-gray-200 active:scale-95 disabled:opacity-40 lg:h-10 lg:w-10"
             >
               {isPlaying ? (
-                <Pause className="w-4 h-4 lg:w-5 lg:h-5 fill-current" />
+                <Pause className="h-4 w-4 fill-current lg:h-5 lg:w-5" />
               ) : (
-                <Play className="w-4 h-4 lg:w-5 lg:h-5 fill-current" />
+                <Play className="h-4 w-4 fill-current lg:h-5 lg:w-5" />
               )}
             </button>
             <button
               type="button"
               onClick={() => playNext()}
-              className="text-[#b3b3b3] hover:text-white transition-colors"
+              className="text-[#b3b3b3] transition-colors hover:text-white"
             >
-              <SkipForward className="w-4 h-4 lg:w-5 lg:h-5 fill-current" />
+              <SkipForward className="h-4 w-4 fill-current lg:h-5 lg:w-5" />
             </button>
             <button
               type="button"
               onClick={cycleRepeat}
               className={cn(
-                "hidden sm:block transition-colors relative",
+                "relative hidden transition-colors sm:block",
                 repeatMode !== "off" ? "text-[#1ed760]" : "text-[#b3b3b3] hover:text-white",
-                "after:content-[''] after:absolute after:-bottom-1.5 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-[#1ed760] after:rounded-full",
+                "after:absolute after:-bottom-1.5 after:left-1/2 after:h-1 after:w-1 after:-translate-x-1/2 after:rounded-full after:bg-[#1ed760] after:content-['']",
                 repeatMode !== "off" ? "after:opacity-100" : "after:opacity-0",
               )}
             >
               {repeatMode === "one" ? (
-                <Repeat1 className="w-4 h-4 lg:w-5 lg:h-5" />
+                <Repeat1 className="h-4 w-4 lg:h-5 lg:w-5" />
               ) : (
-                <Repeat className="w-4 h-4 lg:w-5 lg:h-5" />
+                <Repeat className="h-4 w-4 lg:h-5 lg:w-5" />
               )}
             </button>
           </div>
 
-          <div className="hidden sm:flex w-full h-4">
+          <div className="hidden h-4 w-full sm:flex">
             <PlayerProgressBar />
           </div>
         </div>
@@ -451,7 +450,7 @@ export const PlayerBar = ({
         {/* ================= Right: Extra Controls ================= */}
         <div
           className={cn(
-            "flex items-center justify-end gap-2 lg:gap-3 text-[#b3b3b3]",
+            "flex items-center justify-end gap-2 text-[#b3b3b3] lg:gap-3",
             isLyricModalBar ? "min-w-0" : "flex-1 lg:flex-3",
           )}
         >
@@ -459,9 +458,9 @@ export const PlayerBar = ({
           <button
             type="button"
             onClick={() => toggleLyrics()}
-            className={`hover:text-white transition-colors ${isLyricsOpen ? "text-[#1db954]" : ""}`}
+            className={`transition-colors hover:text-white ${isLyricsOpen ? "text-[#1db954]" : ""}`}
           >
-            <Mic2 className="w-4 h-4 lg:w-5 lg:h-5" />
+            <Mic2 className="h-4 w-4 lg:h-5 lg:w-5" />
           </button>
 
           {/* 音质选择 */}
@@ -469,19 +468,19 @@ export const PlayerBar = ({
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="hover:text-white transition-colors flex items-center justify-center"
+                className="flex items-center justify-center transition-colors hover:text-white"
                 title={t("playbar.quality")}
               >
-                <CurrentIcon className="w-4 h-4 lg:w-5 lg:h-5" />
+                <CurrentIcon className="h-4 w-4 lg:h-5 lg:w-5" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="bg-[#282828] border-white/10 text-white p-2 w-64 rounded-xl"
+              className="w-64 rounded-xl border-white/10 bg-[#282828] p-2 text-white"
               side="top"
               align="end"
               sideOffset={8}
             >
-              <DropdownMenuLabel className="text-xs text-zinc-400 px-2 py-1 font-normal">
+              <DropdownMenuLabel className="px-2 py-1 text-xs font-normal text-zinc-400">
                 {t("playbar.qualityTitle")}
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-white/10" />
@@ -497,13 +496,13 @@ export const PlayerBar = ({
                       value={opt.value}
                       className="rounded-lg px-3 py-2.5 text-[15px] focus:bg-white/10 focus:text-white"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <Icon className="w-5 h-5 shrink-0 text-zinc-300" />
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Icon className="h-5 w-5 shrink-0 text-zinc-300" />
                         <div className="min-w-0">
-                          <div className="text-sm font-medium text-white truncate">
+                          <div className="truncate text-sm font-medium text-white">
                             {t(opt.labelKey)}
                           </div>
-                          <div className="text-[11px] text-zinc-400 truncate mt-0.5">
+                          <div className="mt-0.5 truncate text-[11px] text-zinc-400">
                             {t(opt.sublabelKey)} · {t(opt.descriptionKey)}
                           </div>
                         </div>
@@ -535,9 +534,9 @@ export const PlayerBar = ({
           <div className="hidden lg:block">
             <button
               type="button"
-              className="hover:text-white transition-colors flex items-center justify-center"
+              className="flex items-center justify-center transition-colors hover:text-white"
             >
-              <MonitorSpeaker className="w-4 h-4 lg:w-5 lg:h-5" />
+              <MonitorSpeaker className="h-4 w-4 lg:h-5 lg:w-5" />
             </button>
           </div>
 
@@ -558,12 +557,12 @@ export const PlayerBar = ({
               }
               setIsMaximized(!isMaximized);
             }}
-            className="hidden sm:block hover:text-white transition-colors"
+            className="hidden transition-colors hover:text-white sm:block"
           >
             {isMaximized ? (
-              <MinimizeIcon className="w-4 h-4 lg:w-5 lg:h-5" />
+              <MinimizeIcon className="h-4 w-4 lg:h-5 lg:w-5" />
             ) : (
-              <Expand className="w-4 h-4 lg:w-5 lg:h-5" />
+              <Expand className="h-4 w-4 lg:h-5 lg:w-5" />
             )}
           </button>
         </div>

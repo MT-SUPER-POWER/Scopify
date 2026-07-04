@@ -33,8 +33,8 @@ export function GridCategoryView({
 
   return (
     <div className="pb-10">
-      <h2 className="text-2xl font-bold mb-6 tracking-tight">Search {activeCategory}</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+      <h2 className="mb-6 text-2xl font-bold tracking-tight">Search {activeCategory}</h2>
+      <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {activeCategory === "Albums" &&
           albums.map((album) => (
             <AlbumCard
@@ -67,7 +67,7 @@ export function GridCategoryView({
           ))}
       </div>
       {isEmpty && (
-        <p className="text-zinc-500 text-sm py-8 text-center">No {activeCategory} results found</p>
+        <p className="py-8 text-center text-sm text-zinc-500">No {activeCategory} results found</p>
       )}
     </div>
   );

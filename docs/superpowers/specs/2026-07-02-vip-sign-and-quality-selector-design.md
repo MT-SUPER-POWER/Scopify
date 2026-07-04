@@ -3,6 +3,7 @@
 ## 概述
 
 本文档定义两个功能的实现规格：
+
 1. **网易乐签 (VIP Sign)** — 在 ProfileMenu 中添加网易云黑胶会员签到功能，签到后展示卡片式签到结果
 2. **音质选择器 (Quality Selector)** — 在 PlayBar 中添加音质级别选择下拉菜单
 
@@ -56,6 +57,7 @@ export function vipSignInfo(cookie?: string) {
 ### 1.3 后端路由
 
 后端已有对应模块：
+
 - `backend/api-enhanced/module/(vip)/vip_sign.js` → `/vip/sign`
 - `backend/api-enhanced/module/(vip)/vip_sign_info.js` → `/vip/sign/info`
 
@@ -66,28 +68,28 @@ export function vipSignInfo(cookie?: string) {
 在 `{isLoggedIn && ...}` 区块内，"个人信息"菜单项后面新增一个菜单项：
 
 ```tsx
-{isLoggedIn && (
-  <>
-    <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
-      <Link href={`/profile?userId=${userId}`}>
-        <FiUser className="mr-2 h-5 w-5" />
-        <span>{t("profile.menu.profile")}</span>
-      </Link>
-    </DropdownMenuItem>
+{
+  isLoggedIn && (
+    <>
+      <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
+        <Link href={`/profile?userId=${userId}`}>
+          <FiUser className="mr-2 h-5 w-5" />
+          <span>{t("profile.menu.profile")}</span>
+        </Link>
+      </DropdownMenuItem>
 
-    {/* NEW: 网易乐签 */}
-    <DropdownMenuItem
-      onSelect={handleVipSign}
-      className="rounded-lg px-3 py-2 text-[15px]"
-    >
-      <FiCalendar className="mr-2 h-5 w-5" />
-      <span>{t("profile.menu.vipSign")}</span>
-    </DropdownMenuItem>
-  </>
-)}
+      {/* NEW: 网易乐签 */}
+      <DropdownMenuItem onSelect={handleVipSign} className="rounded-lg px-3 py-2 text-[15px]">
+        <FiCalendar className="mr-2 h-5 w-5" />
+        <span>{t("profile.menu.vipSign")}</span>
+      </DropdownMenuItem>
+    </>
+  );
+}
 ```
 
 **点击行为** `handleVipSign`：
+
 1. 从 localStorage 获取 cookie
 2. 请求 `vipSign(cookie)`
 3. 若失败 → Toast 展示错误信息（非会员 / 其他错误）
@@ -99,6 +101,7 @@ export function vipSignInfo(cookie?: string) {
 **位置**: `components/VipSign/VipSignModal.tsx`
 
 **接口**:
+
 ```typescript
 interface VipSignModalProps {
   open: boolean;
@@ -138,6 +141,7 @@ interface VipSignModalProps {
 ```
 
 **功能点**:
+
 1. **日期显示** — 从 `timeStr` 字段获取当日日期，格式化为 "YYYY年MM月DD日 周X"
 2. **连续签到天数** — 从 `signInfo` 数组向前统计连续 `today: true` 的记录数
 3. **背景效果** — 使用 `@applemusic-like-lyrics/react` 的 `BackgroundRender`，以当日推荐歌曲的 `songCover` 为图片源，复用歌词 Modal 的毛玻璃 + WebGL 效果
@@ -157,7 +161,7 @@ export interface VipSignRecord {
   recordId: number;
   userId: number;
   time: number;
-  timeStr: string;   // "2026-07-01"
+  timeStr: string; // "2026-07-01"
   songId: number;
   songCover: string | null;
   score: number;
@@ -180,6 +184,7 @@ export interface VipSignResponse {
 ### 1.5 i18n 新增
 
 zh-CN:
+
 ```
 "profile.menu.vipSign": "网易乐签"
 "vipSign.title": "签到"
@@ -226,15 +231,15 @@ PlayerBar.tsx
 
 /** 音质等级 (对应 /song/url/v1 的 level 参数) */
 export type MusicQualityLevel =
-  | "standard"   // 标准 128kbps
-  | "higher"     // 较高 192kbps
-  | "exhigh"     // 极高 320kbps
-  | "lossless"   // 无损
-  | "hires"      // Hi-Res (96kHz/24bit)
-  | "jyeffect"   // 高清环绕声
-  | "sky"        // 沉浸环绕声
-  | "dolby"      // 杜比全景声
-  | "jymaster";  // 超清母带
+  | "standard" // 标准 128kbps
+  | "higher" // 较高 192kbps
+  | "exhigh" // 极高 320kbps
+  | "lossless" // 无损
+  | "hires" // Hi-Res (96kHz/24bit)
+  | "jyeffect" // 高清环绕声
+  | "sky" // 沉浸环绕声
+  | "dolby" // 杜比全景声
+  | "jymaster"; // 超清母带
 
 /** UI 音质选项 -> API level 参数映射 */
 export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
@@ -289,6 +294,7 @@ export async function getSongUrlWithQuality(
 ### 2.3 State 管理 — `store/module/player.tsx`
 
 新增字段：
+
 ```typescript
 type MusicQuality = "spatial" | "lossless" | "high" | "standard";
 
@@ -306,33 +312,34 @@ setMusicQuality: (quality: MusicQuality) => void;
 **位置**: `PlayerBar.tsx` 右侧按钮区，在 Mic2（歌词）按钮之后，QueuePopover 之前。
 
 **代码结构**:
+
 ```tsx
 // 音质选项配置
 const QUALITY_OPTIONS = [
   {
     value: "spatial",
-    icon: Sparkles,       // lucide-react
+    icon: Sparkles, // lucide-react
     label: "高清臻音",
     sublabel: "96kHz/24bit",
     description: "高频细节还原与清晰沉浸感",
   },
   {
     value: "lossless",
-    icon: Radio,          // lucide-react
+    icon: Radio, // lucide-react
     label: "无损 (SQ)",
     sublabel: "最高48kHz/16bit",
     description: "高保真无损音质",
   },
   {
     value: "high",
-    icon: RadioReceiver,  // lucide-react
+    icon: RadioReceiver, // lucide-react
     label: "极高 (HQ)",
     sublabel: "最高320kbps",
     description: "近CD音质的细节体验",
   },
   {
     value: "standard",
-    icon: CircleDot,      // lucide-react
+    icon: CircleDot, // lucide-react
     label: "标准",
     sublabel: "128kbps",
     description: "标准音质",
@@ -341,15 +348,24 @@ const QUALITY_OPTIONS = [
 ```
 
 **渲染**:
+
 ```tsx
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <button type="button" className="hover:text-white transition-colors" title={t("playbar.quality")}>
-      <Radio className="w-4 h-4 lg:w-5 lg:h-5" />
+    <button
+      type="button"
+      className="transition-colors hover:text-white"
+      title={t("playbar.quality")}
+    >
+      <Radio className="h-4 w-4 lg:h-5 lg:w-5" />
     </button>
   </DropdownMenuTrigger>
-  <DropdownMenuContent className="bg-[#282828] border-white/10 text-white p-2 w-64" side="top" align="end">
-    <DropdownMenuLabel className="text-xs text-zinc-400 px-2 py-1">
+  <DropdownMenuContent
+    className="w-64 border-white/10 bg-[#282828] p-2 text-white"
+    side="top"
+    align="end"
+  >
+    <DropdownMenuLabel className="px-2 py-1 text-xs text-zinc-400">
       {t("playbar.qualityTitle")}
     </DropdownMenuLabel>
     <DropdownMenuSeparator className="bg-white/10" />
@@ -360,13 +376,11 @@ const QUALITY_OPTIONS = [
           value={opt.value}
           className="rounded-lg px-3 py-2.5 text-[15px] focus:bg-white/10"
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <opt.icon className="w-5 h-5 shrink-0 text-zinc-300" />
+          <div className="flex min-w-0 items-center gap-3">
+            <opt.icon className="h-5 w-5 shrink-0 text-zinc-300" />
             <div className="min-w-0">
-              <div className="text-sm font-medium text-white truncate">
-                {opt.label}
-              </div>
-              <div className="text-[11px] text-zinc-400 truncate mt-0.5">
+              <div className="truncate text-sm font-medium text-white">{opt.label}</div>
+              <div className="mt-0.5 truncate text-[11px] text-zinc-400">
                 {opt.sublabel} · {opt.description}
               </div>
             </div>
@@ -397,6 +411,7 @@ const url = urlRes.data;
 ### 2.6 i18n 新增
 
 zh-CN:
+
 ```
 "playbar.quality": "音质选择"
 "playbar.qualityTitle": "音质级别"
@@ -406,18 +421,18 @@ zh-CN:
 
 ## 3. 文件变更清单
 
-| 文件 | 变更类型 | 说明 |
-|------|----------|------|
-| `lib/api/user.ts` | 修改 | 新增 `vipSign`、`vipSignInfo` 方法 |
-| `types/api/vipSign.ts` | 新建 | VipSignRecord 类型定义 |
-| `components/Header/ProfileMenu.tsx` | 修改 | 新增"网易乐签"菜单项 |
-| `components/VipSign/VipSignModal.tsx` | 新建 | 签到卡片 Modal |
-| `components/VipSign/SignCard.tsx` | 新建 | 签到卡片内部组件 |
-| `components/PlayerBar.tsx` | 修改 | 新增音质选择按钮 + DropdownMenu |
-| `store/module/player.tsx` | 修改 | 新增 `musicQuality` 字段 |
-| `lib/api/music.ts` | 修改 | 新增音质类型、`getSongMusicDetail`、`getSongUrlV1`、`checkMusicAvailable`、`getSongUrlWithQuality` 方法 |
-| `store/module/player.tsx` | 修改 | 新增 `musicQuality` 字段；`playTrack` 改用 `getSongUrlWithQuality` 获取 URL |
-| `lib/i18n.ts` | 修改 | 新增 i18n 翻译键 |
+| 文件                                  | 变更类型 | 说明                                                                                                    |
+| ------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `lib/api/user.ts`                     | 修改     | 新增 `vipSign`、`vipSignInfo` 方法                                                                      |
+| `types/api/vipSign.ts`                | 新建     | VipSignRecord 类型定义                                                                                  |
+| `components/Header/ProfileMenu.tsx`   | 修改     | 新增"网易乐签"菜单项                                                                                    |
+| `components/VipSign/VipSignModal.tsx` | 新建     | 签到卡片 Modal                                                                                          |
+| `components/VipSign/SignCard.tsx`     | 新建     | 签到卡片内部组件                                                                                        |
+| `components/PlayerBar.tsx`            | 修改     | 新增音质选择按钮 + DropdownMenu                                                                         |
+| `store/module/player.tsx`             | 修改     | 新增 `musicQuality` 字段                                                                                |
+| `lib/api/music.ts`                    | 修改     | 新增音质类型、`getSongMusicDetail`、`getSongUrlV1`、`checkMusicAvailable`、`getSongUrlWithQuality` 方法 |
+| `store/module/player.tsx`             | 修改     | 新增 `musicQuality` 字段；`playTrack` 改用 `getSongUrlWithQuality` 获取 URL                             |
+| `lib/i18n.ts`                         | 修改     | 新增 i18n 翻译键                                                                                        |
 
 ---
 

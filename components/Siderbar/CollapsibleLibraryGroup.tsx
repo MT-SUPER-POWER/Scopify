@@ -22,9 +22,9 @@ export function CollapsibleLibraryGroup({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-1">
       <CollapsibleTrigger asChild>
-        <button className="flex items-center w-full px-2 py-1 cursor-pointer hover:text-white text-zinc-400 transition-colors group outline-none select-none">
+        <button className="group flex w-full cursor-pointer items-center px-2 py-1 text-zinc-400 transition-colors outline-none select-none hover:text-white">
           <div className={cn("mr-1 transition-transform duration-200", isOpen && "rotate-90")}>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="h-4 w-4" />
           </div>
           <span className="text-xs font-bold opacity-80">{title}</span>
         </button>

@@ -42,15 +42,15 @@ const SettingsPage = () => {
   const isCustomProxy = config.network.proxyMode === "custom";
 
   return (
-    <div className="w-full bg-[#121212] rounded-lg shadow-2xl p-10 md:p-14 text-[#b3b3b3] flex flex-col min-h-[80vh] relative">
-      <div className="flex justify-between items-center mb-10 mt-4.5">
-        <h1 className="text-white text-4xl md:text-5xl font-black tracking-tight">
+    <div className="relative flex min-h-[80vh] w-full flex-col rounded-lg bg-[#121212] p-10 text-[#b3b3b3] shadow-2xl md:p-14">
+      <div className="mt-4.5 mb-10 flex items-center justify-between">
+        <h1 className="text-4xl font-black tracking-tight text-white md:text-5xl">
           {t("settings.title")}
         </h1>
       </div>
 
       <div className="flex flex-col">
-        <div className="grow grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10 items-start pb-20">
+        <div className="grid grow grid-cols-1 items-start gap-x-16 gap-y-10 pb-20 lg:grid-cols-2">
           <div className="flex flex-col gap-10">
             <SettingSection title={t("settings.section.application")}>
               <SettingRow
@@ -254,7 +254,7 @@ const SettingsPage = () => {
                     : undefined
                 }
                 control={
-                  <span className="text-white text-sm font-medium">
+                  <span className="text-sm font-medium text-white">
                     {playbackCacheStats != null
                       ? t("settings.playbackCache.countValue", {
                           count: playbackCacheStats.entryCount,
@@ -270,7 +270,7 @@ const SettingsPage = () => {
                     type="button"
                     onClick={handleClearPlaybackCache}
                     disabled={isClearingPlaybackCache}
-                    className="px-4 py-2 rounded bg-white text-black text-sm font-bold hover:bg-white/90 disabled:opacity-50"
+                    className="rounded bg-white px-4 py-2 text-sm font-bold text-black hover:bg-white/90 disabled:opacity-50"
                   >
                     {isClearingPlaybackCache
                       ? t("settings.playbackCache.clearing")
@@ -399,7 +399,7 @@ const SettingsPage = () => {
                         type="button"
                         onClick={handleClearCache}
                         disabled={isClearingCache}
-                        className="px-4 py-2 rounded bg-white text-black text-sm font-bold hover:bg-white/90 disabled:opacity-50"
+                        className="rounded bg-white px-4 py-2 text-sm font-bold text-black hover:bg-white/90 disabled:opacity-50"
                       >
                         {isClearingCache
                           ? t("settings.cache.clear.clearing")

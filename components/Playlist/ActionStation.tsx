@@ -68,39 +68,37 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
         <button
           onClick={handlePlayToggle}
           disabled={!currentSongDetail && !albumList.length}
-          className="bg-[#1ed760] hover:bg-[#3be477] hover:scale-105 transition-all
-          text-black rounded-full w-14 h-14 flex items-center justify-center shadow-lg
-          disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {showPause ? (
-            <Pause className="w-6 h-6 ml-0.5 fill-current" />
+            <Pause className="ml-0.5 h-6 w-6 fill-current" />
           ) : (
-            <Play className="w-6 h-6 ml-1.5 fill-current" />
+            <Play className="ml-1.5 h-6 w-6 fill-current" />
           )}
         </button>
 
         <button
           onClick={toggleShuffle}
-          className="relative inline-flex items-center justify-center cursor-pointer"
+          className="relative inline-flex cursor-pointer items-center justify-center"
         >
           <Shuffle
             className={cn(
-              "w-8 h-8 transition-colors",
+              "h-8 w-8 transition-colors",
               isShuffle ? "text-[#1ed760]" : "text-zinc-400 hover:text-white",
             )}
           />
           {isShuffle && (
-            <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#1ed760] rounded-full" />
+            <span className="absolute -bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#1ed760]" />
           )}
         </button>
 
-        <ArrowDownCircle className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
+        <ArrowDownCircle className="h-8 w-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
         {/* TODO: 实现更多选项
             1. 根据是歌单还是每日推荐 / 专辑 做区分
             2. 歌单：更新歌单封面、编辑歌单信息、分享歌单
             3. 专辑：分享专辑、收藏/取消收藏专辑
          */}
-        <MoreHorizontal className="w-8 h-8 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
+        <MoreHorizontal className="h-8 w-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
       </div>
 
       <div className="flex items-center gap-4">
@@ -112,18 +110,18 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               animate={{ width: 160, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1 overflow-hidden"
+              className="flex items-center gap-1 overflow-hidden rounded-full bg-white/10 px-2 py-1"
             >
-              <Search className="w-4 h-4 text-zinc-400 shrink-0" />
+              <Search className="h-4 w-4 shrink-0 text-zinc-400" />
               <input
                 ref={inputRef}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={t("playlist.actions.searchPlaceholder")}
-                className="bg-transparent text-white text-xs outline-none w-full placeholder:text-zinc-500"
+                className="w-full bg-transparent text-xs text-white outline-none placeholder:text-zinc-500"
               />
               <button onClick={onSearchClose}>
-                <X className="w-3 h-3 text-zinc-400 hover:text-white shrink-0" />
+                <X className="h-3 w-3 shrink-0 text-zinc-400 hover:text-white" />
               </button>
             </motion.div>
           ) : (
@@ -135,14 +133,14 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               transition={{ duration: 0.05, ease: "linear" }}
               onClick={onSearchOpen}
             >
-              <Search className="w-4 h-4 text-zinc-400 hover:text-white transition-colors cursor-pointer" />
+              <Search className="h-4 w-4 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
             </motion.button>
           )}
         </AnimatePresence>
 
-        <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white cursor-pointer transition-colors font-medium">
+        <div className="flex cursor-pointer items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-white">
           <span>{t("playlist.actions.listLabel")}</span>
-          <List className="w-5 h-5" />
+          <List className="h-5 w-5" />
         </div>
       </div>
     </div>
