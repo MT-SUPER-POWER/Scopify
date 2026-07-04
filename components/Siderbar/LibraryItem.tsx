@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { usePlayerStore } from "@/store";
 import LibItemContextMenu from "./LibItemMenu";
 
 // 定义组件真正需要的属性，与后端 API 结构解耦
@@ -14,6 +16,10 @@ interface LibraryItemProps {
 
 export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: LibraryItemProps) => {
   const href = `/playlist?id=${id}`;
+  const storePlaylistId = usePlayerStore((s) => s.playlistId);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
+
+  const isCurrentPlaylist = String(storePlaylistId) === String(id);
 
   if (isCollapsed) {
     return (
@@ -23,7 +29,7 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
           title={title}
           className="flex items-center justify-center w-full h-14 hover:bg-[#1a1a1a] rounded-md transition-colors cursor-pointer active:scale-95 group"
         >
-          <div className="w-12 h-12 rounded-md overflow-hidden shadow-lg transition-transform group-hover:scale-110">
+          <div className="relative w-12 h-12 rounded-md overflow-hidden shadow-lg transition-transform group-hover:scale-110">
             <Image
               width={48}
               height={48}
@@ -31,6 +37,11 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
               alt={title}
               className="w-full h-full object-cover"
             />
+            {isCurrentPlaylist && isPlaying && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <PlayingAnimation size={16} />
+              </div>
+            )}
           </div>
         </Link>
       </LibItemContextMenu>
@@ -44,7 +55,7 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
         title={title}
         className="flex items-center gap-3 p-2 hover:bg-[#1a1a1a] rounded-md cursor-pointer transition-colors group"
       >
-        <div className="w-12 h-12 rounded-md shrink-0 overflow-hidden shadow-md transition-transform group-hover:scale-105">
+        <div className="relative w-12 h-12 rounded-md shrink-0 overflow-hidden shadow-md transition-transform group-hover:scale-105">
           <Image
             width={48}
             height={48}
@@ -52,6 +63,11 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
             alt={title}
             className="w-full h-full object-cover"
           />
+          {isCurrentPlaylist && isPlaying && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <PlayingAnimation size={16} />
+            </div>
+          )}
         </div>
         <div className="flex flex-col flex-1 min-w-0">
           <span className="text-white truncate text-base font-normal group-hover:text-white">

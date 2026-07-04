@@ -42,6 +42,7 @@
     "electron-log": "^5.4.4",
     "electron-serve": "^3.0.1",
     "electron-updater": "^6.8.9",
+    "idb-keyval": "^6.2.6",
     "js-yaml": "^4.2.0"
   },
   "devDependencies": {
@@ -169,6 +170,7 @@
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc,css}": [
+      "biome format . --write",
       "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   },

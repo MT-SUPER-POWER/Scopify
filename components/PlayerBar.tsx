@@ -299,8 +299,10 @@ export const PlayerBar = ({
           {/* 歌曲的名字和歌手 */}
           <div
             className={cn(
-              "flex flex-col justify-center min-w-0 flex-1",
-              isLyricModalBar ? "max-w-[min(26vw,280px)]" : "max-w-25 lg:max-w-35",
+              "flex flex-col justify-center min-w-0",
+              isLyricModalBar
+                ? "max-w-[min(26vw,280px)]"
+                : "max-w-[120px] sm:max-w-[160px] lg:max-w-[240px]",
             )}
           >
             {currentSong ? (

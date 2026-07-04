@@ -49,8 +49,8 @@ export function HomePageSkeleton() {
         </div>
         {/* Banner 网格模拟 */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <BannerItemSkeleton key={i} />
+          {[1, 2, 3, 4, 5, 6].map((id) => (
+            <BannerItemSkeleton key={id} />
           ))}
         </div>
       </section>
@@ -59,8 +59,8 @@ export function HomePageSkeleton() {
       <section className="space-y-4 mt-8">
         <Skeleton className="h-8 w-64 bg-white/10" />
         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <GridCardSkeleton key={i} />
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => (
+            <GridCardSkeleton key={id} />
           ))}
         </div>
       </section>
@@ -69,8 +69,8 @@ export function HomePageSkeleton() {
       <section className="space-y-4 mt-8">
         <Skeleton className="h-8 w-32 bg-white/10" />
         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <GridCardSkeleton key={i} isArtist />
+          {[1, 2, 3, 4, 5].map((id) => (
+            <GridCardSkeleton key={id} isArtist />
           ))}
         </div>
       </section>

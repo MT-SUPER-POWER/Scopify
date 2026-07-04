@@ -2,7 +2,7 @@
 
 import { ChevronDown, RotateCcw } from "lucide-react";
 import type React from "react";
-
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 
@@ -139,11 +139,88 @@ export function SettingSelect({
 }
 
 export function SettingsLoadingState() {
-  const { t } = useI18n();
-
   return (
-    <div className="w-full bg-[#121212] rounded-lg min-h-[80vh] flex items-center justify-center">
-      <span className="text-white animate-pulse text-3xl">{t("settings.loading")}</span>
+    <div className="w-full bg-[#121212] rounded-lg p-10 md:p-14 text-[#b3b3b3] flex flex-col min-h-[80vh] relative animate-in fade-in duration-500">
+      {/* 标题骨架 */}
+      <div className="flex justify-between items-center mb-10 mt-4.5">
+        <Skeleton className="h-12 w-32 bg-white/10" />
+      </div>
+
+      <div className="grow grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-10 items-start pb-20">
+        {/* 左侧栏骨架 */}
+        <div className="flex flex-col gap-10">
+          <div>
+            <div className="border-b border-[#282828] pb-2 mb-6">
+              <Skeleton className="h-4 w-28 bg-white/10" />
+            </div>
+            <div className="space-y-6">
+              {[1, 2, 3].map((id) => (
+                <div key={id} className="flex justify-between items-center">
+                  <div className="space-y-1.5 flex-1 max-w-[70%]">
+                    <Skeleton className="h-5 w-40 bg-white/10" />
+                    <Skeleton className="h-3 w-64 bg-white/10" />
+                  </div>
+                  <Skeleton className="h-6 w-11 rounded-full bg-white/10" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="border-b border-[#282828] pb-2 mb-6">
+              <Skeleton className="h-4 w-32 bg-white/10" />
+            </div>
+            <div className="space-y-6">
+              {[1, 2].map((id) => (
+                <div key={id} className="flex justify-between items-center">
+                  <div className="space-y-1.5 flex-1 max-w-[70%]">
+                    <Skeleton className="h-5 w-32 bg-white/10" />
+                    <Skeleton className="h-3 w-48 bg-white/10" />
+                  </div>
+                  <Skeleton className="h-8 w-24 bg-white/10" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 右侧栏骨架 */}
+        <div className="flex flex-col gap-10">
+          <div>
+            <div className="border-b border-[#282828] pb-2 mb-6">
+              <Skeleton className="h-4 w-24 bg-white/10" />
+            </div>
+            <div className="space-y-6">
+              {[1, 2].map((id) => (
+                <div key={id} className="flex justify-between items-center">
+                  <div className="space-y-1.5 flex-1 max-w-[70%]">
+                    <Skeleton className="h-5 w-44 bg-white/10" />
+                    <Skeleton className="h-3 w-56 bg-white/10" />
+                  </div>
+                  <Skeleton className="h-8 w-28 bg-white/10" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="border-b border-[#282828] pb-2 mb-6">
+              <Skeleton className="h-4 w-28 bg-white/10" />
+            </div>
+            <div className="space-y-6">
+              {[1, 2].map((id) => (
+                <div key={id} className="flex justify-between items-center">
+                  <div className="space-y-1.5 flex-1 max-w-[70%]">
+                    <Skeleton className="h-5 w-36 bg-white/10" />
+                    <Skeleton className="h-3 w-52 bg-white/10" />
+                  </div>
+                  <Skeleton className="h-8 w-20 bg-white/10" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -4,8 +4,9 @@
 
 import { Pause, Play } from "lucide-react";
 import Image from "next/image";
-import { memo, useCallback } from "react";
+import { forwardRef, memo, useCallback } from "react";
 import { toast } from "sonner";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -13,7 +14,6 @@ import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatDate, formatDuration } from "@/lib/utils";
-import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
@@ -41,18 +41,7 @@ function TrackIndexCell({
         {index + 1}
       </span>
 
-      {isActive && isPlaying && (
-        <div className="flex items-end gap-0.5 h-3 shrink-0 group-hover:hidden">
-          {/* NOTE: Spotify 频谱动画组件 */}
-          <Image
-            src={SPOTIFYANIME}
-            alt={t("common.status.playing")}
-            width={14}
-            height={14}
-            unoptimized
-          />
-        </div>
-      )}
+      {isActive && isPlaying && <PlayingAnimation className="h-3 group-hover:hidden" />}
 
       {isActive && !isPlaying && (
         <Play className="w-4 h-4 text-[#1ed760] fill-current group-hover:hidden" />
@@ -77,7 +66,7 @@ function TrackIndexCell({
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件: 单行数据 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export interface TrackRowProps {
+export interface TrackRowProps extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "onPlay"> {
   track: SongDetail;
   index: number;
   isActive: boolean;
@@ -87,25 +76,31 @@ export interface TrackRowProps {
   onPlay: (track: SongDetail) => void;
   onRequestDelete: (playlistId: number | string | undefined, trackId: number) => void;
   setIsPlaying: (v: boolean) => void;
-  onContextMenu: (track: SongDetail) => void;
   hideDateColumn?: boolean;
   hideLikeColumn?: boolean;
   onLikeToggle?: (trackID: number | string) => void;
 }
 
 export const TrackRow = memo(
-  function TrackRow({
-    track,
-    index,
-    isActive,
-    isPlaying,
-    isLiked,
-    hideDateColumn,
-    hideLikeColumn,
-    onPlay,
-    setIsPlaying,
-    onContextMenu,
-  }: TrackRowProps) {
+  forwardRef<HTMLTableRowElement, TrackRowProps>(function TrackRow(
+    {
+      track,
+      index,
+      isActive,
+      isPlaying,
+      isLiked,
+      hideDateColumn,
+      hideLikeColumn,
+      onPlay,
+      setIsPlaying,
+      playlistID,
+      onRequestDelete,
+      onLikeToggle,
+      className,
+      ...props
+    },
+    ref,
+  ) {
     const { t } = useI18n();
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -138,12 +133,14 @@ export const TrackRow = memo(
     const smartRouter = useSmartRouter();
     return (
       <TableRow
+        ref={ref}
         className={cn(
           "group hover:bg-white/10 border-none transition-colors cursor-default",
           isActive && "text-[#1ed760]",
+          className,
         )}
         onDoubleClick={() => onPlay(track)}
-        onContextMenu={() => onContextMenu(track)}
+        {...props}
       >
         <TableCell className="text-center font-medium rounded-l-md">
           <TrackIndexCell
@@ -240,8 +237,8 @@ export const TrackRow = memo(
         </TableCell>
       </TableRow>
     );
-  },
-  (prev, next) =>
+  }),
+  (prev: TrackRowProps, next: TrackRowProps) =>
     prev.track.id === next.track.id &&
     prev.isActive === next.isActive &&
     prev.isPlaying === next.isPlaying &&

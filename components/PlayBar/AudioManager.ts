@@ -120,6 +120,15 @@ class AudioManager {
       }
     });
 
+    // ✨ 暂停时立即保存当前位置，避免 3 秒节流窗口内的进度丢失
+    this.audio.addEventListener("pause", () => {
+      const audio = this.audio!;
+      if (audio.currentTime > 0) {
+        useTimeStore.getState().setCurrentTime(audio.currentTime * 1000);
+        this.lastStoreWrite = Date.now();
+      }
+    });
+
     // ✨ 修正 2：将恢复进度的逻辑挪到 canplay。这里有实际的数据，跳转才能生效。
     this.audio.addEventListener("canplay", () => {
       const audio = this.audio!;
@@ -134,6 +143,8 @@ class AudioManager {
           } else {
             audio.currentTime = restoreSeconds;
           }
+          // ✨ 主动广播，让进度条 UI 立即跳到恢复位置（无需用户点击播放）
+          window.dispatchEvent(new CustomEvent("player-time", { detail: persistedTime }));
         }
         // 拉上保险栓，防止后续因为网络缓冲等原因重复触发拉回
         this.hasRestoredProgress = true;
@@ -156,6 +167,14 @@ class AudioManager {
         this.audio.currentTime = newTimeMs / 1000;
       }
       useTimeStore.getState().setCurrentTime(newTimeMs);
+    });
+
+    // ✨ 刷新/关闭页面时立即保存当前播放位置（覆盖播放中直接刷新的场景）
+    window.addEventListener("beforeunload", () => {
+      const audio = this.audio;
+      if (audio && !audio.paused && audio.currentTime > 0) {
+        useTimeStore.getState().setCurrentTime(audio.currentTime * 1000);
+      }
     });
   }
 }

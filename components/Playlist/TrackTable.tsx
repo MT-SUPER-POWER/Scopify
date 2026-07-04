@@ -3,38 +3,12 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { useVirtualizer } from "@tanstack/react-virtual";
-import {
-  Ban,
-  Clock,
-  GripVertical,
-  Heart,
-  Link2,
-  ListPlus,
-  Pause,
-  Play,
-  PlusCircle,
-  RefreshCw,
-  Trash,
-  User,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { ChevronDown, ChevronUp, Clock, GripVertical, RefreshCw } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
+import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { Button } from "@/components/ui/button";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuGroup,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
 import {
   Table,
   TableBody,
@@ -43,16 +17,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dislikeDailyRecommend, likeSong } from "@/lib/api/playlist";
+import { dislikeDailyRecommend } from "@/lib/api/playlist";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
-import type { NeteasePlaylist } from "@/types/api/playlist";
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
 import { TrackRow } from "./TrackRow";
 
@@ -120,6 +92,9 @@ interface TracklistTableProps {
   onEmptyAction?: () => void;
 }
 
+type SortField = "title" | "album" | "date" | "like" | null;
+type SortDirection = "asc" | "desc";
+
 export default function TracklistTable({
   searchQuery,
   tracks: externalTracks,
@@ -130,6 +105,8 @@ export default function TracklistTable({
   emptyActionLabel,
   onEmptyAction,
 }: TracklistTableProps) {
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [colTitle, setColTitleState] = useState(300);
   const [colAlbum, setColAlbumState] = useState(200);
   const [colDate, setColDateState] = useState(140);
@@ -155,10 +132,22 @@ export default function TracklistTable({
     setColLikeState(w);
   };
 
-  const isLogin = useLoginStatus();
   const { t } = useI18n();
   const playlistID = useSearchParams().get("id");
   const isDailyRecommend = useSearchParams().get("isDailyRecommend") === "true";
+  const pathname = usePathname();
+  const storePlaylistId = usePlayerStore((s) => s.playlistId);
+
+  const currentPageId = useMemo(() => {
+    const isPlaylistOrAlbum = pathname.includes("/playlist") || pathname.includes("/album");
+    if (!isPlaylistOrAlbum) return null;
+    return playlistID ?? (isDailyRecommend ? "daily" : null);
+  }, [pathname, playlistID, isDailyRecommend]);
+
+  const isCurrentQueue = useMemo(() => {
+    if (currentPageId === null) return true;
+    return storePlaylistId === currentPageId;
+  }, [currentPageId, storePlaylistId]);
   const [pendingDelete, setPendingDelete] = useState<null | {
     playlistId: number | string | undefined;
     trackId: number;
@@ -172,15 +161,6 @@ export default function TracklistTable({
   const playFromSong = usePlayerStore((s) => s.playFromSong);
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
-
-  const [contextMenuTrack, setContextMenuTrack] = useState<SongDetail | null>(null);
-
-  const playlists: NeteasePlaylist[] = useUserStore((state) => state.playlist);
-
-  const filteredPlaylists = useMemo(
-    () => playlists.filter((p: NeteasePlaylist) => String(p.id) !== String(playlistID)),
-    [playlists, playlistID],
-  );
 
   const likeSet = useMemo(() => {
     if (Array.isArray(likelist)) return new Set(likelist);
@@ -200,12 +180,42 @@ export default function TracklistTable({
   }, [tracks, searchQuery]);
   const hasSearchQuery = Boolean(searchQuery?.trim());
 
-  const isContextTrackCurrent = contextMenuTrack && currentSongDetail?.id === contextMenuTrack.id;
-  const isContextTrackLiked = contextMenuTrack ? likeSet.has(contextMenuTrack.id) : false;
+  const sortedTracks = useMemo(() => {
+    if (!sortField) return filteredTracks;
+    return [...filteredTracks].sort((a, b) => {
+      let val = 0;
+      if (sortField === "title") {
+        val = (a.name || "").localeCompare(b.name || "");
+      } else if (sortField === "album") {
+        val = (a.al?.name || "").localeCompare(b.al?.name || "");
+      } else if (sortField === "date") {
+        val = (a.publishTime || 0) - (b.publishTime || 0);
+      } else if (sortField === "like") {
+        const aLiked = likeSet.has(a.id) ? 1 : 0;
+        const bLiked = likeSet.has(b.id) ? 1 : 0;
+        val = aLiked - bLiked;
+      }
+      return sortDirection === "asc" ? val : -val;
+    });
+  }, [filteredTracks, sortField, sortDirection, likeSet]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      if (sortDirection === "asc") setSortDirection("desc");
+      else {
+        setSortField(null);
+        setSortDirection("desc");
+      }
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
   const scrollContainer = useUiStore((s) => s.scrollContainer);
 
   const virtualizer = useVirtualizer({
-    count: filteredTracks.length,
+    count: sortedTracks.length,
     getScrollElement: () => scrollContainer,
     estimateSize: () => 56,
     overscan: 15,
@@ -215,17 +225,24 @@ export default function TracklistTable({
 
   const handlePlay = useCallback(
     (track: SongDetail) => {
-      const isCurrent = currentSongDetail?.id === track.id;
+      const isCurrent = currentSongDetail?.id === track.id && isCurrentQueue;
       if (isCurrent) setIsPlaying(!isPlaying);
-      else playFromSong(track, tracks, playlistID);
+      else {
+        const playSourceId = isDailyRecommend ? "daily" : playlistID || null;
+        playFromSong(track, tracks, playSourceId);
+      }
     },
-    [tracks, currentSongDetail, isPlaying, setIsPlaying, playFromSong, playlistID],
+    [
+      tracks,
+      currentSongDetail,
+      isPlaying,
+      setIsPlaying,
+      playFromSong,
+      playlistID,
+      isDailyRecommend,
+      isCurrentQueue,
+    ],
   );
-
-  const handlePlayContextTrack = useCallback(() => {
-    if (!contextMenuTrack) return;
-    handlePlay(contextMenuTrack);
-  }, [contextMenuTrack, handlePlay]);
 
   const handleRequestDelete = useCallback(
     (playlistId: string | number | undefined, trackId: number) => {
@@ -295,121 +312,214 @@ export default function TracklistTable({
         onCancel={handleCancelDelete}
       />
 
-      <ContextMenu>
-        <ContextMenuTrigger asChild>
-          <div className="w-full">
-            <Table className="w-full text-zinc-400 table-fixed">
-              <TableHeader
-                className={cn(
-                  "sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
-                  "bg-linear-to-b from-transparent to-[#121212]/10",
-                )}
+      <div className="w-full">
+        <Table className="w-full text-zinc-400 table-fixed">
+          <TableHeader
+            className={cn(
+              "sticky top-0 z-10 backdrop-blur-sm drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
+              "bg-linear-to-b from-transparent to-[#121212]/10",
+            )}
+          >
+            <TableRow className="hover:bg-transparent border-none">
+              <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
+              <TableHead
+                className="text-zinc-400 relative group/head hover:text-white cursor-pointer select-none transition-colors"
+                style={{ width: colTitle, minWidth: 60 }}
+                onClick={() => handleSort("title")}
               >
-                <TableRow className="hover:bg-transparent border-none">
-                  <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
-                  <TableHead
-                    className="text-zinc-400 relative group/head"
-                    style={{ width: colTitle, minWidth: 60 }}
-                  >
-                    {t("playlist.table.columnTitle")}
+                <div className="flex items-center gap-1">
+                  {t("playlist.table.columnTitle")}
+                  {sortField === "title" &&
+                    (sortDirection === "asc" ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    ))}
+                </div>
+                <ResizeHandle
+                  onMouseDown={makeResizeHandler(
+                    colTitleRef,
+                    setColTitle,
+                    colAlbumRef,
+                    setColAlbum,
+                    60,
+                    64,
+                  )}
+                />
+              </TableHead>
+              <TableHead
+                className="hidden md:table-cell text-zinc-400 relative group/head hover:text-white cursor-pointer select-none transition-colors"
+                style={{ width: colAlbum, minWidth: 64 }}
+                onClick={() => handleSort("album")}
+              >
+                <div className="flex items-center gap-1">
+                  {t("playlist.table.columnAlbum")}
+                  {sortField === "album" &&
+                    (sortDirection === "asc" ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    ))}
+                </div>
+                {!hideDateColumn && (
+                  <ResizeHandle
+                    onMouseDown={makeResizeHandler(
+                      colAlbumRef,
+                      setColAlbum,
+                      colDateRef,
+                      setColDate,
+                      64,
+                      120,
+                    )}
+                  />
+                )}
+              </TableHead>
+              {!hideDateColumn && (
+                <TableHead
+                  className="hidden lg:table-cell text-zinc-400 relative group/head hover:text-white cursor-pointer select-none transition-colors"
+                  style={{ width: colDate, minWidth: 120 }}
+                  onClick={() => handleSort("date")}
+                >
+                  <div className="flex items-center gap-1">
+                    {t("playlist.table.columnPublished")}
+                    {sortField === "date" &&
+                      (sortDirection === "asc" ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      ))}
+                  </div>
+                  {!hideLikeColumn && (
                     <ResizeHandle
                       onMouseDown={makeResizeHandler(
-                        colTitleRef,
-                        setColTitle,
-                        colAlbumRef,
-                        setColAlbum,
-                        60,
-                        64,
+                        colDateRef,
+                        setColDate,
+                        colLikeRef,
+                        setColLike,
+                        120,
+                        44,
                       )}
                     />
-                  </TableHead>
-                  <TableHead
-                    className="hidden md:table-cell text-zinc-400 relative group/head"
-                    style={{ width: colAlbum, minWidth: 64 }}
-                  >
-                    {t("playlist.table.columnAlbum")}
-                    {!hideDateColumn && (
-                      <ResizeHandle
-                        onMouseDown={makeResizeHandler(
-                          colAlbumRef,
-                          setColAlbum,
-                          colDateRef,
-                          setColDate,
-                          64,
-                          120,
-                        )}
-                      />
-                    )}
-                  </TableHead>
-                  {!hideDateColumn && (
-                    <TableHead
-                      className="hidden lg:table-cell text-zinc-400 relative group/head"
-                      style={{ width: colDate, minWidth: 120 }}
-                    >
-                      {t("playlist.table.columnPublished")}
-                      {!hideLikeColumn && (
-                        <ResizeHandle
-                          onMouseDown={makeResizeHandler(
-                            colDateRef,
-                            setColDate,
-                            colLikeRef,
-                            setColLike,
-                            120,
-                            44,
-                          )}
-                        />
-                      )}
-                    </TableHead>
                   )}
-                  {!hideLikeColumn && (
-                    <TableHead
-                      className="hidden lg:table-cell text-zinc-400 text-center relative group/head"
-                      style={{ width: colLike, minWidth: 44 }}
-                    >
-                      {t("playlist.table.columnLike")}
-                    </TableHead>
-                  )}
-                  <TableHead className="w-32 text-zinc-400">
-                    <div className="flex items-center w-full h-full justify-center">
-                      <Clock className="w-4 h-4" />
-                    </div>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {filteredTracks.length === 0 ? (
-                  <TableRow className="hover:bg-transparent border-none">
-                    <TableCell colSpan={6} className="text-center text-zinc-500 py-10">
-                      {hasSearchQuery ? (
-                        t("playlist.table.searchNoResults", { query: searchQuery ?? "" })
-                      ) : onEmptyAction && emptyActionLabel ? (
-                        <div className="flex flex-col items-center gap-3">
-                          <span>{t("playlist.table.noFetchedData")}</span>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={onEmptyAction}
-                            className="bg-white text-black hover:bg-white/90"
-                          >
-                            <RefreshCw className="w-4 h-4" />
-                            {emptyActionLabel}
-                          </Button>
-                        </div>
+                </TableHead>
+              )}
+              {!hideLikeColumn && (
+                <TableHead
+                  className="hidden lg:table-cell text-zinc-400 relative group/head hover:text-white cursor-pointer select-none transition-colors"
+                  style={{ width: colLike, minWidth: 44 }}
+                  onClick={() => handleSort("like")}
+                >
+                  <div className="flex items-center gap-1 justify-center">
+                    {t("playlist.table.columnLike")}
+                    {sortField === "like" &&
+                      (sortDirection === "asc" ? (
+                        <ChevronUp className="w-4 h-4" />
                       ) : (
-                        <span>{t("playlist.table.noSongs")}</span>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ) : disableVirtualization ? (
-                  filteredTracks.map((track, index) => {
-                    const isActive = currentSongDetail?.id === track.id;
-                    const isLiked = likeSet.has(track.id);
-                    return (
+                        <ChevronDown className="w-4 h-4" />
+                      ))}
+                  </div>
+                </TableHead>
+              )}
+              <TableHead className="w-32 text-zinc-400">
+                <div className="flex items-center w-full h-full justify-center">
+                  <Clock className="w-4 h-4" />
+                </div>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {sortedTracks.length === 0 ? (
+              <TableRow className="hover:bg-transparent border-none">
+                <TableCell colSpan={6} className="text-center text-zinc-500 py-10">
+                  {hasSearchQuery ? (
+                    t("playlist.table.searchNoResults", {
+                      query: searchQuery ?? "",
+                    })
+                  ) : onEmptyAction && emptyActionLabel ? (
+                    <div className="flex flex-col items-center gap-3">
+                      <span>{t("playlist.table.noFetchedData")}</span>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={onEmptyAction}
+                        className="bg-white text-black hover:bg-white/90"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                        {emptyActionLabel}
+                      </Button>
+                    </div>
+                  ) : (
+                    <span>{t("playlist.table.noSongs")}</span>
+                  )}
+                </TableCell>
+              </TableRow>
+            ) : disableVirtualization ? (
+              sortedTracks.map((track, index) => {
+                const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
+                const isLiked = likeSet.has(track.id);
+                return (
+                  <SongContextMenu
+                    key={track.id}
+                    song={track}
+                    isActive={isActive}
+                    isPlaying={isPlaying}
+                    onPlay={() => handlePlay(track)}
+                    playlistID={playlistID}
+                    isDailyRecommend={isDailyRecommend}
+                    readonly={readonly}
+                    onRemoveFromPlaylist={() =>
+                      handleRequestDelete(playlistID ?? undefined, track.id)
+                    }
+                    onDislikeDailyRecommend={() => handleDislikeDailyRecommend(track.id)}
+                  >
+                    <TrackRow
+                      track={track}
+                      index={index}
+                      isActive={isActive}
+                      isPlaying={isPlaying}
+                      isLiked={isLiked}
+                      playlistID={playlistID}
+                      onPlay={handlePlay}
+                      onRequestDelete={handleRequestDelete}
+                      setIsPlaying={setIsPlaying}
+                      hideDateColumn={hideDateColumn}
+                      hideLikeColumn={hideLikeColumn}
+                    />
+                  </SongContextMenu>
+                );
+              })
+            ) : (
+              <>
+                {virtualItems.length > 0 && virtualItems[0].start > 0 && (
+                  <tr style={{ height: `${virtualItems[0].start}px` }}>
+                    <td colSpan={6} aria-hidden />
+                  </tr>
+                )}
+                {virtualItems.map((virtualRow) => {
+                  const track = sortedTracks[virtualRow.index];
+                  const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
+                  const isLiked = likeSet.has(track.id);
+                  return (
+                    <SongContextMenu
+                      key={track.id}
+                      song={track}
+                      isActive={isActive}
+                      isPlaying={isPlaying}
+                      onPlay={() => handlePlay(track)}
+                      playlistID={playlistID}
+                      isDailyRecommend={isDailyRecommend}
+                      readonly={readonly}
+                      onRemoveFromPlaylist={() =>
+                        handleRequestDelete(playlistID ?? undefined, track.id)
+                      }
+                      onDislikeDailyRecommend={() => handleDislikeDailyRecommend(track.id)}
+                    >
                       <TrackRow
-                        key={track.id}
+                        ref={virtualizer.measureElement}
+                        data-index={virtualRow.index}
                         track={track}
-                        index={index}
+                        index={virtualRow.index}
                         isActive={isActive}
                         isPlaying={isPlaying}
                         isLiked={isLiked}
@@ -417,279 +527,27 @@ export default function TracklistTable({
                         onPlay={handlePlay}
                         onRequestDelete={handleRequestDelete}
                         setIsPlaying={setIsPlaying}
-                        onContextMenu={setContextMenuTrack}
                         hideDateColumn={hideDateColumn}
                         hideLikeColumn={hideLikeColumn}
                       />
-                    );
-                  })
-                ) : (
-                  <>
-                    {virtualItems.length > 0 && virtualItems[0].start > 0 && (
-                      <tr style={{ height: virtualItems[0].start }}>
-                        <td />
+                    </SongContextMenu>
+                  );
+                })}
+                {virtualItems.length > 0 &&
+                  (() => {
+                    const last = virtualItems[virtualItems.length - 1];
+                    const paddingBottom = virtualizer.getTotalSize() - last.end;
+                    return paddingBottom > 0 ? (
+                      <tr style={{ height: `${paddingBottom}px` }}>
+                        <td colSpan={6} aria-hidden />
                       </tr>
-                    )}
-                    {virtualItems.map((virtualRow) => {
-                      const track = filteredTracks[virtualRow.index];
-                      const isActive = currentSongDetail?.id === track.id;
-                      const isLiked = likeSet.has(track.id);
-                      return (
-                        <TrackRow
-                          key={track.id}
-                          track={track}
-                          index={virtualRow.index}
-                          isActive={isActive}
-                          isPlaying={isPlaying}
-                          isLiked={isLiked}
-                          playlistID={playlistID}
-                          onPlay={handlePlay}
-                          onRequestDelete={handleRequestDelete}
-                          setIsPlaying={setIsPlaying}
-                          onContextMenu={setContextMenuTrack}
-                          hideDateColumn={hideDateColumn}
-                          hideLikeColumn={hideLikeColumn}
-                        />
-                      );
-                    })}
-                    {virtualItems.length > 0 &&
-                      (() => {
-                        const last = virtualItems[virtualItems.length - 1];
-                        const paddingBottom = virtualizer.getTotalSize() - last.end;
-                        return paddingBottom > 0 ? (
-                          <tr style={{ height: paddingBottom }}>
-                            <td />
-                          </tr>
-                        ) : null;
-                      })()}
-                  </>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </ContextMenuTrigger>
-
-        {/* 上下文菜单 */}
-        {contextMenuTrack && (
-          <ContextMenuContent className="w-48 bg-[#282828] text-white border-white/10">
-            <ContextMenuGroup>
-              <ContextMenuItem
-                onClick={handlePlayContextTrack}
-                className="focus:bg-white/10 focus:text-white"
-              >
-                {isContextTrackCurrent && isPlaying ? (
-                  <>
-                    <Pause className="w-4 h-4 mr-2" />
-                    {t("contextMenu.pause")}
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-4 h-4 mr-2" />
-                    {t("contextMenu.play")}
-                  </>
-                )}
-              </ContextMenuItem>
-
-              {isLogin && (
-                <>
-                  <ContextMenuItem
-                    className="focus:bg-white/10 focus:text-white"
-                    onClick={() => {
-                      const state = usePlayerStore.getState();
-                      const track = contextMenuTrack;
-                      if (!track) return;
-                      const alreadyInQueue = state.queue.some((t) => t.id === track.id);
-                      if (alreadyInQueue) {
-                        toast.info(t("playlist.table.queueExists"));
-                        return;
-                      }
-                      state.setQueue([...state.queue, track], state.queueIndex);
-                      toast.success(t("playlist.table.queueAdded"));
-                    }}
-                  >
-                    <ListPlus className="w-4 h-4 mr-2" />
-                    {t("contextMenu.addToQueue")}
-                  </ContextMenuItem>
-
-                  <ContextMenuItem
-                    className="focus:bg-white/10 focus:text-white"
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      const nextLiked = !isContextTrackLiked;
-                      const trackID = contextMenuTrack.id;
-                      try {
-                        await likeSong(trackID, nextLiked);
-
-                        // 1. 本地状态更新
-                        const store = useUserStore.getState() as any;
-                        const currentLikes = Array.isArray(store.likeListIDs)
-                          ? store.likeListIDs
-                          : [];
-                        if (nextLiked) store.setLikeListIDs([...currentLikes, trackID]);
-                        else
-                          store.setLikeListIDs(currentLikes.filter((id: number) => id !== trackID));
-                        void clearPageCache();
-                        toast.success(
-                          nextLiked
-                            ? t("playlist.table.likedAdded")
-                            : t("playlist.table.likedRemoved"),
-                        );
-
-                        // 2. 发送信号让 Sidebar 更新
-                        if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
-                      } catch (_err) {
-                        toast.error(t("playlist.table.operationFailed"));
-                      }
-                    }}
-                  >
-                    <Heart className="w-4 h-4 mr-2" />
-                    {isContextTrackLiked
-                      ? t("contextMenu.removeFromLiked")
-                      : t("contextMenu.addToLiked")}
-                  </ContextMenuItem>
-                </>
-              )}
-            </ContextMenuGroup>
-
-            <ContextMenuSeparator className="bg-white/10" />
-
-            <ContextMenuGroup>
-              {isLogin && (
-                <ContextMenuSub>
-                  <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                    <PlusCircle className="w-4 h-4 mr-4" />
-                    {t("contextMenu.addToPlaylist")}
-                  </ContextMenuSubTrigger>
-                  <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
-                    {filteredPlaylists.map((playlist: NeteasePlaylist) => (
-                      <ContextMenuItem
-                        onClick={async () => {
-                          try {
-                            await updatePlaylistTrack("add", playlist.id, contextMenuTrack.id);
-                            toast.success(t("playlist.table.addToPlaylistSuccess"));
-                            void clearPageCache();
-                            // 添加同样可以触发全局刷新
-                            const store = useUserStore.getState() as any;
-                            if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
-                          } catch (_err) {
-                            toast.error(t("playlist.table.addToPlaylistFailed"));
-                          }
-                        }}
-                        key={playlist.id}
-                        className="focus:bg-white/10 focus:text-white"
-                      >
-                        <Image
-                          width={28}
-                          height={28}
-                          src={playlist.coverImgUrl}
-                          alt={t("playlist.form.coverAlt")}
-                          className="w-7 h-7 rounded-sm mr-2"
-                        />
-                        {playlist.name}
-                      </ContextMenuItem>
-                    ))}
-                  </ContextMenuSubContent>
-                </ContextMenuSub>
-              )}
-
-              <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
-                <Link
-                  href={contextMenuTrack.id ? `/comment/?songId=${contextMenuTrack.id}` : "#"}
-                  className="w-full h-full block focus:bg-white/10 focus:text-white"
-                >
-                  <FaRegCommentDots className="w-4 h-4 mr-2" />
-                  {t("contextMenu.comments")}
-                </Link>
-              </ContextMenuItem>
-
-              {/* View Artist */}
-              {contextMenuTrack.ar.length > 0 &&
-                (contextMenuTrack.ar.length === 1 ? (
-                  <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
-                    <Link
-                      href={`/artist?id=${contextMenuTrack.ar[0].id}`}
-                      className="w-full h-full block focus:bg-white/10 focus:text-white"
-                    >
-                      <User className="w-4 h-4 mr-2" />
-                      {t("contextMenu.goToArtist")}
-                    </Link>
-                  </ContextMenuItem>
-                ) : (
-                  <ContextMenuSub>
-                    <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                      <User className="w-4 h-4 mr-4" />
-                      {t("contextMenu.goToArtist")}
-                    </ContextMenuSubTrigger>
-                    <ContextMenuSubContent className="bg-[#282828] text-white border-white/10">
-                      {contextMenuTrack.ar.map((artist) => (
-                        <ContextMenuItem
-                          key={artist.id}
-                          asChild
-                          className="focus:bg-white/10 focus:text-white"
-                        >
-                          <Link href={`/artist?id=${artist.id}`} className="w-full h-full block">
-                            {artist.name}
-                          </Link>
-                        </ContextMenuItem>
-                      ))}
-                    </ContextMenuSubContent>
-                  </ContextMenuSub>
-                ))}
-
-              <ContextMenuItem asChild className="w-40 bg-[#282828] text-white border-white/10">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const href = `https://music.163.com/#/song?id=${contextMenuTrack.id}`;
-                    navigator.clipboard
-                      .writeText(href)
-                      .then(() => toast.success(t("playlist.table.copySuccess")))
-                      .catch(() => toast.error(t("playlist.table.copyFailed")));
-                  }}
-                  className="w-full h-full block focus:bg-white/10 focus:text-white"
-                >
-                  <Link2 className="w-4 h-4 mr-2" />
-                  {t("contextMenu.copyLink")}
-                </button>
-              </ContextMenuItem>
-            </ContextMenuGroup>
-
-            {isLogin && !readonly && !isDailyRecommend && (
-              <>
-                <ContextMenuSeparator className="bg-white/10" />
-                <ContextMenuGroup>
-                  <ContextMenuItem
-                    onClick={() =>
-                      handleRequestDelete(playlistID ?? undefined, contextMenuTrack.id)
-                    }
-                    variant="destructive"
-                    className="focus:bg-red-500 focus:text-white"
-                  >
-                    <Trash className="w-4 h-4 mr-2" />
-                    {t("contextMenu.removeFromPlaylist")}
-                  </ContextMenuItem>
-                </ContextMenuGroup>
+                    ) : null;
+                  })()}
               </>
             )}
-
-            {isDailyRecommend && isLogin && (
-              <>
-                <ContextMenuSeparator className="bg-white/10" />
-                <ContextMenuGroup>
-                  <ContextMenuItem
-                    onClick={() => handleDislikeDailyRecommend(contextMenuTrack.id)}
-                    variant="destructive"
-                    className="focus:bg-red-500 focus:text-white"
-                  >
-                    <Ban className="w-4 h-4 mr-2" />
-                    {t("contextMenu.recommendLess")}
-                  </ContextMenuItem>
-                </ContextMenuGroup>
-              </>
-            )}
-          </ContextMenuContent>
-        )}
-      </ContextMenu>
+          </TableBody>
+        </Table>
+      </div>
     </>
   );
 }

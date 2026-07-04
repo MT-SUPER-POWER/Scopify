@@ -4,7 +4,9 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { ListMusic, LocateFixed, Play } from "lucide-react"; // 添加定位图标
 import Image from "next/image";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
+import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore } from "@/store";
@@ -21,6 +23,7 @@ interface QueueItemProps {
   virtualStart: number;
   virtualSize: number;
   onPlay: (index: number) => void;
+  onRemove: (index: number) => void;
 }
 
 const QueueItem = memo(
@@ -32,6 +35,7 @@ const QueueItem = memo(
     virtualStart,
     virtualSize,
     onPlay,
+    onRemove,
   }: QueueItemProps) {
     const { t } = useI18n();
 
@@ -43,74 +47,82 @@ const QueueItem = memo(
           transform: `translateY(${virtualStart}px)`,
         }}
       >
-        <div
-          onClick={() => onPlay(index)}
-          className={cn(
-            "group flex items-center gap-3 p-4 rounded-md cursor-pointer transition-all h-full",
-            isActive ? "bg-white/10" : "hover:bg-white/5",
-          )}
+        <SongContextMenu
+          song={song}
+          isActive={isActive}
+          isPlaying={isPlaying}
+          onPlay={() => onPlay(index)}
+          onRemoveFromQueue={() => onRemove(index)}
         >
-          <div className="flex items-center gap-3 shrink-0 pr-1">
-            <span
-              className={cn(
-                "text-[10px] w-4 text-center tabular-nums",
-                isActive ? "text-[#1ed760]" : "text-zinc-500",
-              )}
-            >
-              {(index + 1).toString().padStart(2, "0")}
-            </span>
-
-            <div className="relative w-10 h-10 shrink-0 flex items-center justify-center overflow-hidden rounded group/cover">
-              <Image
-                src={song.al.picUrl}
-                alt={song.name}
+          <div
+            onClick={() => onPlay(index)}
+            className={cn(
+              "group flex items-center gap-3 p-4 rounded-md cursor-pointer transition-all h-full",
+              isActive ? "bg-white/10" : "hover:bg-white/5",
+            )}
+          >
+            <div className="flex items-center gap-3 shrink-0 pr-1">
+              <span
                 className={cn(
-                  "w-full h-full object-cover transition-opacity",
-                  isActive ? "opacity-40" : "group-hover/cover:opacity-40",
+                  "text-[10px] w-4 text-center tabular-nums",
+                  isActive ? "text-[#1ed760]" : "text-zinc-500",
                 )}
-                fill
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                {isActive ? (
-                  isPlaying ? (
-                    <Image
-                      src={SPOTIFYANIME}
-                      alt={t("common.status.playing")}
-                      width={14}
-                      height={14}
-                      unoptimized
-                    />
+              >
+                {(index + 1).toString().padStart(2, "0")}
+              </span>
+
+              <div className="relative w-10 h-10 shrink-0 flex items-center justify-center overflow-hidden rounded group/cover">
+                <Image
+                  src={song.al.picUrl}
+                  alt={song.name}
+                  className={cn(
+                    "w-full h-full object-cover transition-opacity",
+                    isActive ? "opacity-40" : "group-hover/cover:opacity-40",
+                  )}
+                  fill
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {isActive ? (
+                    isPlaying ? (
+                      <Image
+                        src={SPOTIFYANIME}
+                        alt={t("common.status.playing")}
+                        width={14}
+                        height={14}
+                        unoptimized
+                      />
+                    ) : (
+                      <Play className="w-4 h-4 text-[#1ed760] fill-current" />
+                    )
                   ) : (
-                    <Play className="w-4 h-4 text-[#1ed760] fill-current" />
-                  )
-                ) : (
-                  <Play className="w-4 h-4 text-white fill-current opacity-0 group-hover/cover:opacity-100 transition-opacity" />
-                )}
+                    <Play className="w-4 h-4 text-white fill-current opacity-0 group-hover/cover:opacity-100 transition-opacity" />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex-1 min-w-0">
-            <div
-              className={cn(
-                "text-sm truncate font-medium",
-                isActive ? "text-[#1ed760]" : "text-white",
-              )}
-            >
-              {song.name}
+            <div className="flex-1 min-w-0">
+              <div
+                className={cn(
+                  "text-sm truncate font-medium",
+                  isActive ? "text-[#1ed760]" : "text-white",
+                )}
+              >
+                {song.name}
+              </div>
+              <div className="text-xs text-zinc-400 truncate mt-0.5">
+                <ArtistInlineLinks
+                  artists={song.ar.map((a: { id: number; name: string }) => ({
+                    id: a.id,
+                    name: a.name,
+                  }))}
+                />
+              </div>
             </div>
-            <div className="text-xs text-zinc-400 truncate mt-0.5">
-              <ArtistInlineLinks
-                artists={song.ar.map((a: { id: number; name: string }) => ({
-                  id: a.id,
-                  name: a.name,
-                }))}
-              />
-            </div>
-          </div>
 
-          <div className="text-xs text-zinc-500 tabular-nums pr-1">{formatDuration(song.dt)}</div>
-        </div>
+            <div className="text-xs text-zinc-500 tabular-nums pr-1">{formatDuration(song.dt)}</div>
+          </div>
+        </SongContextMenu>
       </div>
     );
   },
@@ -126,6 +138,7 @@ const QueueItem = memo(
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 列表组件 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const QueueList = ({ isOpen }: { isOpen: boolean }) => {
+  const { t } = useI18n();
   const queue = usePlayerStore((state) => state.queue);
   const queueIndex = usePlayerStore((state) => state.queueIndex);
   const playQueueIndex = usePlayerStore((state) => state.playQueueIndex);
@@ -151,6 +164,45 @@ const QueueList = ({ isOpen }: { isOpen: boolean }) => {
       playQueueIndex(index);
     },
     [playQueueIndex, queueIndex, isPlaying],
+  );
+
+  const handleRemove = useCallback(
+    (indexToRemove: number) => {
+      const state = usePlayerStore.getState();
+      const newQueue = state.queue.filter((_, i) => i !== indexToRemove);
+
+      let nextIndex = state.queueIndex;
+      if (indexToRemove < state.queueIndex) {
+        nextIndex = state.queueIndex - 1;
+      } else if (indexToRemove === state.queueIndex) {
+        if (newQueue.length === 0) {
+          nextIndex = -1;
+          usePlayerStore.setState({
+            isPlaying: false,
+            currentSongUrl: null,
+            currentSongDetail: null,
+          });
+        } else {
+          nextIndex = Math.min(indexToRemove, newQueue.length - 1);
+        }
+      }
+
+      const songToRemove = state.queue[indexToRemove];
+      if (!songToRemove) return;
+      const newOriginal = state.originalQueue.filter((s) => s.id !== songToRemove.id);
+
+      usePlayerStore.setState({
+        queue: newQueue,
+        originalQueue: newOriginal,
+        queueIndex: nextIndex,
+      });
+
+      if (indexToRemove === state.queueIndex && newQueue.length > 0) {
+        state.playQueueIndex(nextIndex);
+      }
+      toast.success(t("contextMenu.removeFromQueue"));
+    },
+    [t],
   );
 
   // 手动定位到当前播放歌曲
@@ -206,6 +258,7 @@ const QueueList = ({ isOpen }: { isOpen: boolean }) => {
                   virtualStart={virtualRow.start}
                   virtualSize={virtualRow.size}
                   onPlay={handlePlay}
+                  onRemove={handleRemove}
                 />
               );
             })}
@@ -243,6 +296,7 @@ export const QueuePopover = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
+          type="button"
           className="text-zinc-400 hover:text-white transition-colors flex items-center justify-center"
           title={t("queue.triggerTitle")}
         >
@@ -262,6 +316,7 @@ export const QueuePopover = () => {
           </div>
           {/* 添加定位按钮 */}
           <button
+            type="button"
             onClick={scrollToCurrent}
             className="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
             title={t("queue.locateCurrent")}

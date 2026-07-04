@@ -47,25 +47,85 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
   const [signModalOpen, setSignModalOpen] = useState(false);
   const [signRecords, setSignRecords] = useState<VipSignRecord[]>([]);
+  const [hasFetchedSign, setHasFetchedSign] = useState(false);
+  const [hasSignedInToday, setHasSignedInToday] = useState(false);
+  const [isSignLoading, setIsSignLoading] = useState(false);
 
-  const handleVipSign = async () => {
-    const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") : null;
+  const fetchSignInfo = async () => {
+    if (!isLoggedIn) return;
     try {
+      setIsSignLoading(true);
+      const cookie =
+        typeof window !== "undefined"
+          ? localStorage.getItem("music_cookie")
+          : null;
+      const info = await vipSignInfo(cookie ?? undefined);
+      const records = info.data?.data ?? [];
+      const signedToday = records.some((r) => r.today);
+      setHasSignedInToday(signedToday);
+      setSignRecords(records);
+      setHasFetchedSign(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSignLoading(false);
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (open && isLoggedIn && !hasFetchedSign) {
+      fetchSignInfo();
+    }
+  };
+
+  const handleVipSign = async (e: React.MouseEvent) => {
+    // 阻止冒泡，避免触发 DropdownMenuItem 的默认行为（如果需要自行控制）
+    // 但 Radix DropdownMenuItem 点击内部 button 也会自动关闭 menu，这通常是我们想要的，所以可以不阻止
+    if (isSignLoading) return;
+
+    if (hasSignedInToday) {
+      setSignModalOpen(true);
+      return;
+    }
+
+    const cookie =
+      typeof window !== "undefined"
+        ? localStorage.getItem("music_cookie")
+        : null;
+    try {
+      setIsSignLoading(true);
       const res = await vipSign(cookie ?? undefined);
       const signData = res.data;
-      if (signData.code === 200) {
+
+      // 无论成功还是重复签到，都重新拉取一次月签记录并弹窗
+      if (signData.code === 200 || signData.code === -2) {
         const info = await vipSignInfo(cookie ?? undefined);
-        // 后端返回的响应体形如 { code, data: VipSignRecord[], message }，
-        // 因此 axios 的 res.data 已是响应体本身，签到记录位于 res.data.data
         const records = info.data?.data ?? [];
         setSignRecords(records);
+        setHasSignedInToday(records.some((r) => r.today));
         setSignModalOpen(true);
+        if (signData.code === 200) {
+          toast.success(t("vipSign.success", { message: "签到成功" }));
+        }
       } else {
         toast.error(signData.message || t("vipSign.failed", { message: "" }));
       }
     } catch (err: any) {
       const msg = err?.businessMsg || err?.message || "";
-      toast.error(t("vipSign.failed", { message: msg }));
+      if (msg.includes("已经") || msg.includes("重复")) {
+        // 如果错误信息提示已经签到，也拉取记录并展示
+        const info = await vipSignInfo(cookie ?? undefined).catch(() => null);
+        if (info) {
+          const records = info.data?.data ?? [];
+          setSignRecords(records);
+          setHasSignedInToday(true);
+          setSignModalOpen(true);
+        }
+      } else {
+        toast.error(t("vipSign.failed", { message: msg }));
+      }
+    } finally {
+      setIsSignLoading(false);
     }
   };
 
@@ -86,7 +146,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const ProfileCallback = (id: "download" | "about") => {
     switch (id) {
       case "download":
-        window.location.replace("https://github.com/MT-SUPER-POWER/Scopify/releases");
+        window.location.replace(
+          "https://github.com/MT-SUPER-POWER/Scopify/releases",
+        );
         break;
       case "about":
         smartRouter.push("/me");
@@ -98,7 +160,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu onOpenChange={handleOpenChange}>
         <DropdownMenuTrigger asChild>
           <button type="button" className="focus:outline-none focus:ring-0">
             {children}
@@ -125,7 +187,10 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
             {/* 简介 */}
             {isLoggedIn && (
-              <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
+              <DropdownMenuItem
+                asChild
+                className="rounded-lg px-3 py-2 text-[15px]"
+              >
                 <Link href={`/profile?userId=${userId}`}>
                   <FiUser className="mr-2 h-5 w-5" />
                   <span>{t("profile.menu.profile")}</span>
@@ -135,12 +200,30 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
             {/* 网易乐签 */}
             {isLoggedIn && (
-              <DropdownMenuItem
-                onSelect={handleVipSign}
-                className="rounded-lg px-3 py-2 text-[15px]"
-              >
-                <FiCalendar className="mr-2 h-5 w-5" />
-                <span>{t("profile.menu.vipSign")}</span>
+              <DropdownMenuItem className="rounded-lg px-3 py-2 text-[15px]">
+                <div className="flex flex-row w-full justify-between items-center">
+                  <div className="flex flex-row items-center">
+                    <FiCalendar className="mr-2 h-5 w-5" />
+                    <span>{t("profile.menu.vipSign")}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleVipSign}
+                    disabled={isSignLoading}
+                    className={`min-w-[4rem] px-3 h-7 rounded-full text-base font-bold transition-all disabled:opacity-70 ${
+                      hasSignedInToday
+                        ? "bg-transparent border border-zinc-600 text-zinc-300 hover:text-white hover:border-zinc-400"
+                        : "bg-[#1ed760] text-black hover:bg-[#1fdf64] hover:scale-105"
+                    }`}
+                  >
+                    {isSignLoading
+                      ? "..."
+                      : hasSignedInToday
+                        ? t("profile.menu.viewMonthlySign")
+                        : t("profile.menu.signIn")}
+                  </button>
+                </div>
               </DropdownMenuItem>
             )}
 
@@ -177,7 +260,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 className="rounded-lg px-3 py-2 text-[15px]"
               >
                 <FiLogOut className="text-[#fe4144] mr-2 h-5 w-5" />
-                <span className="text-[#fe4144]">{t("common.action.logout")}</span>
+                <span className="text-[#fe4144]">
+                  {t("common.action.logout")}
+                </span>
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem

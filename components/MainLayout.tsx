@@ -8,6 +8,7 @@ import { useDefaultLayout } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
+import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -332,6 +333,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 export default function MainLayout({ children }: { children?: ReactNode }) {
   const { t } = useI18n();
   const backendStartup = useBackendStartup();
+  const isHydrated = useStoreHydration();
 
   if (backendStartup.state === "starting") {
     return (
@@ -351,6 +353,11 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
         onAction={() => window.electronAPI?.relaunchApp()}
       />
     );
+  }
+
+  // Store 正在从 localStorage 进行异步水合时，显示静默骨架屏，避免闪烁未登录 UI
+  if (!isHydrated) {
+    return <MainLayoutSkeleton />;
   }
 
   return <MainLayoutInner>{children}</MainLayoutInner>;

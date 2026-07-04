@@ -46,12 +46,14 @@ export function ConfirmDialogShandCN({
         {/* sm:flex-col 覆盖 shadcn Footer 默认在宽屏变 flex-row 的行为 */}
         <AlertDialogFooter className="flex flex-col gap-4 w-full sm:flex-col">
           <button
+            type="button"
             onClick={onConfirm}
             className="w-full py-3.5 rounded-full bg-[#1ed760] hover:bg-[#1fdf64] text-black font-bold text-base transition-all"
           >
             {confirmText}
           </button>
           <button
+            type="button"
             onClick={onCancel}
             className="w-full py-3.5 rounded-full bg-transparent border border-[#727272] hover:border-white text-white font-bold text-base transition-all"
           >
