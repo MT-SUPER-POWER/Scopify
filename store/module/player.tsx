@@ -275,6 +275,7 @@ export const usePlayerStore = create<PlayerStore>()(
             // URL 缓存命中
             if (cachedLyric) {
               // 歌词也命中 → 完全短路，无需 API 请求
+              console.log("[Cache] HIT: URL + lyric for song", song.id);
               useTimeStore.getState().setTotalTime(song.dt ?? 0);
               set({
                 currentSongUrl: cachedUrl,
@@ -285,6 +286,7 @@ export const usePlayerStore = create<PlayerStore>()(
               return;
             }
             // 仅 URL 命中 → 设置 URL，只请求歌词
+            console.log("[Cache] PARTIAL: URL hit (", musicQuality, "), lyric miss for song", song.id);
             set({ currentSongUrl: cachedUrl });
             const lyricRes = await getLyric(song.id);
             const lyricData = lyricRes.data;
@@ -299,6 +301,7 @@ export const usePlayerStore = create<PlayerStore>()(
           }
 
           // ── 2. Cache miss → fetch both ─────────────────────────────────
+          console.log("[Cache] MISS: fetching URL + lyric for song", song.id);
           const [urlRes, lyricRes] = await Promise.all([
             getSongUrlWithQuality(song.id, level),
             getLyric(song.id),
@@ -310,6 +313,7 @@ export const usePlayerStore = create<PlayerStore>()(
           }
 
           // 写入缓存
+          console.log("[Cache] WRITE: URL + lyric for song", song.id);
           await Promise.all([
             setCachedPlayUrl(song.id, musicQuality, url),
             lyricRes.data ? setCachedLyric(song.id, lyricRes.data) : Promise.resolve(),
