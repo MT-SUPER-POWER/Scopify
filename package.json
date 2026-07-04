@@ -180,7 +180,6 @@
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs,jsx,tsx}": [
-      "eslint --fix",
       "prettier --write"
     ],
     "*.{json,jsonc,css,md,yml}": [
