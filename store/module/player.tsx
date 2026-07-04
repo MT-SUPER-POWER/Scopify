@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getLyric, getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
+import { getCachedPlayUrl, getCachedLyric, setCachedPlayUrl, setCachedLyric } from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
@@ -259,6 +260,38 @@ export const usePlayerStore = create<PlayerStore>()(
           const { musicQuality } = get();
           const level = UI_QUALITY_TO_LEVEL[musicQuality] || "exhigh";
 
+          // ── 1. Try cache ────────────────────────────────────────────────
+          const cachedUrl = getCachedPlayUrl(song.id, musicQuality);
+          const cachedLyric = getCachedLyric(song.id);
+
+          if (cachedUrl) {
+            // URL 缓存命中
+            if (cachedLyric) {
+              // 歌词也命中 → 完全短路，无需 API 请求
+              useTimeStore.getState().setTotalTime(song.dt ?? 0);
+              set({
+                currentSongUrl: cachedUrl,
+                isPlaying: true,
+                lyric: cachedLyric,
+                playbackFailureCount: 0,
+              });
+              return;
+            }
+            // 仅 URL 命中 → 设置 URL，只请求歌词
+            set({ currentSongUrl: cachedUrl });
+            const lyricRes = await getLyric(song.id);
+            const lyricData = lyricRes.data;
+            if (lyricData) setCachedLyric(song.id, lyricData);
+            useTimeStore.getState().setTotalTime(song.dt ?? 0);
+            set({
+              isPlaying: true,
+              lyric: lyricData ?? null,
+              playbackFailureCount: 0,
+            });
+            return;
+          }
+
+          // ── 2. Cache miss → fetch both ─────────────────────────────────
           const [urlRes, lyricRes] = await Promise.all([
             getSongUrlWithQuality(song.id, level),
             getLyric(song.id),
@@ -269,11 +302,16 @@ export const usePlayerStore = create<PlayerStore>()(
             throw new Error("Playback URL is empty");
           }
 
+          // 写入缓存
+          setCachedPlayUrl(song.id, musicQuality, url);
+          const lyricData2 = lyricRes.data;
+          if (lyricData2) setCachedLyric(song.id, lyricData2);
+
           useTimeStore.getState().setTotalTime(song.dt ?? 0);
           set({
             currentSongUrl: url,
             isPlaying: true,
-            lyric: lyricRes.data,
+            lyric: lyricData2 ?? null,
             playbackFailureCount: 0,
           });
         } catch (e) {
