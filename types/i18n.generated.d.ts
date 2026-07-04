@@ -875,6 +875,48 @@ export interface TranslateFn {
    */
   (key: "settings.cache.clearFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放缓存
+   * zh-TW: 播放快取
+   * en-US: Playback Cache
+   */
+  (key: "settings.playbackCache.section", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已缓存歌曲
+   * zh-TW: 已快取歌曲
+   * en-US: Cached Songs
+   */
+  (key: "settings.playbackCache.count", params?: TranslationParams): string;
+  /**
+   * zh-CN: {count} 首
+   * zh-TW: {count} 首
+   * en-US: {count} songs
+   */
+  (key: "settings.playbackCache.countValue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除缓存
+   * zh-TW: 清除快取
+   * en-US: Clear Cache
+   */
+  (key: "settings.playbackCache.clearButton", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除中...
+   * zh-TW: 清除中...
+   * en-US: Clearing...
+   */
+  (key: "settings.playbackCache.clearing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放缓存已清除
+   * zh-TW: 播放快取已清除
+   * en-US: Playback cache cleared
+   */
+  (key: "settings.playbackCache.clearSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除播放缓存失败
+   * zh-TW: 清除播放快取失敗
+   * en-US: Failed to clear playback cache
+   */
+  (key: "settings.playbackCache.clearFailed", params?: TranslationParams): string;
+  /**
    * zh-CN: 关闭 Scopify
    * zh-TW: 關閉 Scopify
    * en-US: Close Scopify
@@ -988,6 +1030,12 @@ export interface TranslateFn {
    * en-US: Remove from current playlist
    */
   (key: "contextMenu.removeFromPlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从播放队列中移除
+   * zh-TW: 從播放佇列中移除
+   * en-US: Remove from queue
+   */
+  (key: "contextMenu.removeFromQueue", params?: TranslationParams): string;
   /**
    * zh-CN: 减少推荐
    * zh-TW: 減少推薦
@@ -2159,11 +2207,23 @@ export interface TranslateFn {
    */
   (key: "profile.menu.friends", params?: TranslationParams): string;
   /**
-   * zh-CN: 个人主页
-   * zh-TW: 個人主頁
-   * en-US: Profile
+   * zh-CN: 网易乐签
+   * zh-TW: 網易樂簽
+   * en-US: Daily Sign-in
    */
-  (key: "profile.menu.profile", params?: TranslationParams): string;
+  (key: "profile.menu.vipSign", params?: TranslationParams): string;
+  /**
+   * zh-CN: 签到
+   * zh-TW: 簽到
+   * en-US: Sign In
+   */
+  (key: "profile.menu.signIn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看月签
+   * zh-TW: 查看月簽
+   * en-US: Monthly Sign-in
+   */
+  (key: "profile.menu.viewMonthlySign", params?: TranslationParams): string;
   /**
    * zh-CN: 设置
    * zh-TW: 設定
@@ -2182,12 +2242,6 @@ export interface TranslateFn {
    * en-US: About Me
    */
   (key: "profile.menu.aboutMe", params?: TranslationParams): string;
-  /**
-   * zh-CN: 网易乐签
-   * zh-TW: 網易樂簽
-   * en-US: VIP Check-in
-   */
-  (key: "profile.menu.vipSign", params?: TranslationParams): string;
   /**
    * zh-CN: 无效的用户 ID
    * zh-TW: 無效的使用者 ID
@@ -2908,23 +2962,5 @@ export interface TranslateFn {
    * en-US: Standard audio quality
    */
   (key: "playbar.quality.standard.description", params?: TranslationParams): string;
-  /**
-   * zh-CN: 网易乐签
-   * zh-TW: 網易樂簽
-   * en-US: Daily Sign-in
-   */
-  (key: "profile.menu.vipSign", params?: TranslationParams): string;
-  /**
-   * zh-CN: 签到
-   * zh-TW: 簽到
-   * en-US: Sign In
-   */
-  (key: "profile.menu.signIn", params?: TranslationParams): string;
-  /**
-   * zh-CN: 查看月签
-   * zh-TW: 查看月簽
-   * en-US: Monthly Sign-in
-   */
-  (key: "profile.menu.viewMonthlySign", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }
