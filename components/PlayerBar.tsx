@@ -25,11 +25,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { toast } from "sonner";
-import { audioManager } from "@/components/PlayBar/AudioManager";
 import { QueuePopover } from "@/components/QueuePopover";
 import { VolumeControl } from "@/components/VolumeControl";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
-import { getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -37,7 +35,6 @@ import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { useTimeStore } from "@/store/module/time";
 import { useUiStore } from "@/store/module/ui";
 import type { QualityOptionKey } from "@/types/playerBar";
 import {
@@ -187,23 +184,10 @@ export const PlayerBar = ({
   const CurrentIcon = currentOption ? currentOption.icon : Radio;
 
   const handleQualityChange = async (quality: any) => {
-    setMusicQuality(quality);
+    if (musicQuality === quality) return; // 同品质跳过
     if (currentSong?.id) {
-      try {
-        // 同步当前的精确进度到 timeStore
-        if (audioManager.audio) {
-          useTimeStore.getState().setCurrentTime(audioManager.audio.currentTime * 1000);
-        }
-
-        // 获取新音质的链接
-        const level = UI_QUALITY_TO_LEVEL[quality] || "exhigh";
-        const urlRes = await getSongUrlWithQuality(currentSong.id, level);
-        if (urlRes.data) {
-          usePlayerStore.setState({ currentSongUrl: urlRes.data });
-        }
-      } catch (err) {
-        console.error("切换音质重载播放链接失败", err);
-      }
+      setMusicQuality(quality);
+      await usePlayerStore.getState().playTrack(currentSong);
     }
   };
 
