@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { clearPlaybackCache, getPlaybackCacheStats } from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
 import { IS_ELECTRON } from "@/lib/utils";
 import { appConfig } from "@/lib/web/env";
@@ -110,6 +111,11 @@ export function useSettingsState() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isClearingCache, setIsClearingCache] = useState(false);
+  const [isClearingPlaybackCache, setIsClearingPlaybackCache] = useState(false);
+  const [playbackCacheStats, setPlaybackCacheStats] = useState<{
+    entryCount: number;
+    cacheDir: string | null;
+  } | null>(null);
   const _locale = useI18nStore((state) => state.locale);
   const setLocale = useI18nStore((state) => state.setLocale);
 
@@ -140,6 +146,13 @@ export function useSettingsState() {
     return () => {
       isMounted = false;
     };
+  }, []);
+
+  // 加载播放缓存统计
+  useEffect(() => {
+    getPlaybackCacheStats()
+      .then(setPlaybackCacheStats)
+      .catch(() => {});
   }, []);
 
   const handleLocalChange = <S extends keyof AppConfig, K extends keyof AppConfig[S]>(
@@ -234,6 +247,22 @@ export function useSettingsState() {
     }
   };
 
+  const handleClearPlaybackCache = async () => {
+    if (!config) return;
+
+    setIsClearingPlaybackCache(true);
+    try {
+      const result = await clearPlaybackCache();
+      setPlaybackCacheStats({ entryCount: 0, cacheDir: playbackCacheStats?.cacheDir ?? null });
+      toast.success(translate(config.app.locale, "settings.playbackCache.clearSuccess"));
+    } catch (error) {
+      console.error("[Settings] failed to clear playback cache:", error);
+      toast.error(translate(config.app.locale, "settings.playbackCache.clearFailed"));
+    } finally {
+      setIsClearingPlaybackCache(false);
+    }
+  };
+
   const hasChanges = Boolean(
     config && originalConfig && JSON.stringify(config) !== JSON.stringify(originalConfig),
   );
@@ -252,5 +281,8 @@ export function useSettingsState() {
     handleLocalChange,
     handleConfirmSave,
     handleClearCache,
+    isClearingPlaybackCache,
+    playbackCacheStats,
+    handleClearPlaybackCache,
   };
 }

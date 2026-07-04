@@ -30,6 +30,9 @@ const SettingsPage = () => {
     handleConfirmSave,
     handleClearCache,
     isClearingCache,
+    isClearingPlaybackCache,
+    playbackCacheStats,
+    handleClearPlaybackCache,
   } = useSettingsState();
 
   if (!config) {
@@ -239,6 +242,42 @@ const SettingsPage = () => {
                   />
                 </>
               ) : null}
+            </SettingSection>
+
+            {/* 播放缓存（Web + Electron 通用） */}
+            <SettingSection title={t("settings.playbackCache.section")}>
+              <SettingRow
+                label={t("settings.playbackCache.count")}
+                sublabel={
+                  IS_ELECTRON && playbackCacheStats?.cacheDir
+                    ? playbackCacheStats.cacheDir
+                    : undefined
+                }
+                control={
+                  <span className="text-white text-sm font-medium">
+                    {playbackCacheStats != null
+                      ? t("settings.playbackCache.countValue", {
+                          count: playbackCacheStats.entryCount,
+                        })
+                      : "-"}
+                  </span>
+                }
+              />
+              <SettingRow
+                label={t("settings.playbackCache.clearButton")}
+                control={
+                  <button
+                    type="button"
+                    onClick={handleClearPlaybackCache}
+                    disabled={isClearingPlaybackCache}
+                    className="px-4 py-2 rounded bg-white text-black text-sm font-bold hover:bg-white/90 disabled:opacity-50"
+                  >
+                    {isClearingPlaybackCache
+                      ? t("settings.playbackCache.clearing")
+                      : t("settings.playbackCache.clearButton")}
+                  </button>
+                }
+              />
             </SettingSection>
           </div>
 
