@@ -126,3 +126,60 @@
   - 复用 `ArtistInlineLinks` 组件统一歌手链接样式
 
 # v1.0.7
+
+## 新增功能
+
+- 播放缓存系统：LRU + IndexedDB + Electron IPC 双后端，断网恢复播放进度、URL/歌词缓存
+- 网易乐签功能：签到卡片、连续天数统计、名言展示
+- 音质选择器：PlayerBar 四档音质切换（标准/高清/无损/Hi-Res）
+- 评论区重做：独立 Header、艺术家头像、操作权限控制、点赞数气泡
+- Home 首页龙骨动画骨架屏
+- 侧边栏歌手筛选
+- 设置页播放缓存管理
+
+## 性能优化
+
+- 队列 Popover 虚拟滚动重写（@tanstack/react-virtual），流畅滑动
+- Playlist 页面滚动丝滑优化
+- LRU 页面内容缓存减少重复渲染
+- 音质切换复用播放器缓存，避免重复请求
+
+## 修复
+
+- 歌词弹窗响应式布局、控制栏居中
+- PlayerBar 音质切换图标不同步
+
+## 新增功能
+
+- 播放缓存系统：LRU + IndexedDB + Electron IPC 双后端，断网恢复播放进度、URL/歌词缓存
+- 网易乐签功能：签到卡片、连续天数统计、名言展示
+- 音质选择器：PlayerBar 四档音质切换（标准/高清/无损/Hi-Res）
+- 评论区重做：独立 Header、艺术家头像、操作权限控制、点赞数气泡
+- Home 首页龙骨动画骨架屏
+- 侧边栏歌手筛选
+- 设置页播放缓存管理
+
+## 性能优化
+
+- 队列 Popover 虚拟滚动重写（@tanstack/react-virtual），流畅滑动
+- Playlist 页面滚动丝滑优化
+- LRU 页面内容缓存减少重复渲染
+- 音质切换复用播放器缓存，避免重复请求
+
+## 修复
+
+- 歌词弹窗响应式布局、控制栏居中
+- PlayerBar 音质切换图标不同步
+- SSR 水合错误（ResizablePanel localStorage 读取、playbar progress）
+- Electron DevTools 打开、Mac 图标、登录窗口UI
+- CORS 跨域、Web/客户端端口兜底
+- i18n 重复key清理
+
+## 工程化
+
+- Husky + lint-staged 代码提交约束
+- Prettier 格式化统一（替换 Biome）
+- ESLint 配置迁移
+- Claude Skills 适配
+- 文档完善（部署、架构、Changelog）
+- 评论区 Badge 阴影去除、内联布局优化
