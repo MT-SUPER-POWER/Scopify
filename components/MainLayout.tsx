@@ -134,10 +134,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
-    storage: typeof window !== "undefined" ? window.localStorage : {
-      getItem: () => null,
-      setItem: () => {},
-    },
+    storage:
+      typeof window !== "undefined"
+        ? window.localStorage
+        : {
+            getItem: () => null,
+            setItem: () => {},
+          },
   });
 
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
@@ -175,7 +178,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
       {/* 左右结构 */}
       <main className="flex-1 min-h-0 relative w-full">
-        {isMounted ?
+        {isMounted ? (
           <ResizablePanelGroup
             orientation="horizontal"
             defaultLayout={defaultLayout}
@@ -221,7 +224,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
-         : 
+        ) : (
           <div className="flex w-full h-full gap-2">
             <div className="w-[20%] bg-[#0f0f0f] rounded-lg overflow-hidden">
               <Sidebar />
@@ -240,7 +243,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               </ScrollArea>
             </div>
           </div>
-        }
+        )}
       </main>
 
       <footer>
@@ -301,10 +304,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
                 } else {
                   audio.currentTime = restoreSeconds;
                 }
+                // 🔁 广播恢复后的进度给 ProgressBar（无需等用户点播放）
+                window.dispatchEvent(new CustomEvent("player-time", { detail: persistedTime }));
               } else {
                 // 如果 persistedTime 为 0，说明是切歌，强制 currentTime 归零并写入 store
                 audio.currentTime = 0;
                 useTimeStore.getState().setCurrentTime(0);
+                window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
               }
               // 恢复完毕，拉上保险栓，防止后续因为网络缓冲等原因重复触发
               hasRestoredProgressRef.current = true;
