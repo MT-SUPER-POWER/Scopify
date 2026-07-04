@@ -2,7 +2,12 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getLyric, getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
-import { getCachedPlayUrl, getCachedLyric, setCachedPlayUrl, setCachedLyric } from "@/lib/cache/playbackCache";
+import {
+  getCachedLyric,
+  getCachedPlayUrl,
+  setCachedLyric,
+  setCachedPlayUrl,
+} from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
@@ -261,8 +266,10 @@ export const usePlayerStore = create<PlayerStore>()(
           const level = UI_QUALITY_TO_LEVEL[musicQuality] || "exhigh";
 
           // ── 1. Try cache ────────────────────────────────────────────────
-          const cachedUrl = getCachedPlayUrl(song.id, musicQuality);
-          const cachedLyric = getCachedLyric(song.id);
+          const [cachedUrl, cachedLyric] = await Promise.all([
+            getCachedPlayUrl(song.id, musicQuality),
+            getCachedLyric(song.id),
+          ]);
 
           if (cachedUrl) {
             // URL 缓存命中
@@ -281,7 +288,7 @@ export const usePlayerStore = create<PlayerStore>()(
             set({ currentSongUrl: cachedUrl });
             const lyricRes = await getLyric(song.id);
             const lyricData = lyricRes.data;
-            if (lyricData) setCachedLyric(song.id, lyricData);
+            if (lyricData) await setCachedLyric(song.id, lyricData);
             useTimeStore.getState().setTotalTime(song.dt ?? 0);
             set({
               isPlaying: true,
@@ -303,9 +310,11 @@ export const usePlayerStore = create<PlayerStore>()(
           }
 
           // 写入缓存
-          setCachedPlayUrl(song.id, musicQuality, url);
+          await Promise.all([
+            setCachedPlayUrl(song.id, musicQuality, url),
+            lyricRes.data ? setCachedLyric(song.id, lyricRes.data) : Promise.resolve(),
+          ]);
           const lyricData2 = lyricRes.data;
-          if (lyricData2) setCachedLyric(song.id, lyricData2);
 
           useTimeStore.getState().setTotalTime(song.dt ?? 0);
           set({
