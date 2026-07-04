@@ -56,15 +56,28 @@ export function GridCard({
             className="absolute bottom-2 right-2 w-12 h-12 bg-[#1ed760] rounded-full flex items-center justify-center text-black
               opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 hover:bg-[#3be477] shadow-xl"
           >
-            <Play className={cn("w-6 h-6 fill-current ml-0.5", isLoading && "animate-pulse")} />
+            <Play
+              className={cn(
+                "w-6 h-6 fill-current ml-0.5",
+                isLoading && "animate-pulse",
+              )}
+            />
           </button>
         )}
       </div>
       <h3 className="text-white text-sm font-bold truncate">{name}</h3>
-      {subtitle && <p className="text-zinc-400 text-xs mt-1 line-clamp-2">{subtitle}</p>}
-      {playCount !== undefined && (
-        <p className="text-zinc-400 text-xs mt-1">{formatPlayCount(playCount)} 次播放</p>
-      )}
+      <div className="flex flex-row items-center text-xs text-zinc-400 mt-1">
+        {playCount !== undefined && (
+          // TODO: 适配 i18n
+          <span className="shrink-0">{formatPlayCount(playCount)}次播放</span>
+        )}
+
+        {playCount !== undefined && subtitle && (
+          <div className="w-1 h-1 rounded-full bg-zinc-500 mx-2 shrink-0" />
+        )}
+
+        {subtitle && <span className="line-clamp-2">{subtitle}</span>}
+      </div>
     </div>
   );
 }
