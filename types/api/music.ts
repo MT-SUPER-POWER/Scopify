@@ -169,3 +169,59 @@ export function pruneNeteaseLyric(raw: any): NeteaseLyric {
     yrc: raw.yrc?.lyric || "",
   };
 }
+
+/** 音质等级 (对应 /song/url/v1 的 level 参数) */
+export type MusicQualityLevel =
+  | "standard" // 标准 128kbps
+  | "higher" // 较高 192kbps
+  | "exhigh" // 极高 320kbps
+  | "lossless" // 无损
+  | "hires" // Hi-Res
+  | "jyeffect" // 高清环绕声
+  | "sky" // 沉浸环绕声
+  | "dolby" // 杜比全景声
+  | "jymaster"; // 超清母带
+
+/** 歌曲各音质文件信息 */
+export interface SongMusicDetailItem {
+  br: number; // 比特率 Bit Rate
+  size: number; // 文件大小
+  vd: number; // Volume Delta
+  sr: number; // 采样率 Sample Rate
+}
+
+export interface SongMusicDetailResponse {
+  code: number;
+  data: Record<string, SongMusicDetailItem>;
+}
+
+export interface SongUrlV1Item {
+  id: number;
+  url: string;
+  br: number;
+  size: number;
+  md5: string;
+  code: number;
+  expi: number;
+  type: string;
+  gain: number;
+  fee: number;
+  uf: null | any;
+  payed: number;
+  flag: number;
+  canExtend: boolean;
+  freeTrialInfo: null | any;
+  level: string;
+  encodeType: string;
+  time: number;
+}
+
+export interface SongUrlV1Response {
+  code: number;
+  data: SongUrlV1Item[];
+}
+
+export interface CheckMusicResponse {
+  success: boolean;
+  message: string;
+}

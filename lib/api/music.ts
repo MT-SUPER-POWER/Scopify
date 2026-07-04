@@ -1,5 +1,18 @@
-import type { SongUrlMatchResponse } from "@/types/api/music";
+import type {
+  SongUrlMatchResponse,
+  MusicQualityLevel,
+  SongMusicDetailResponse,
+  SongUrlV1Response,
+  CheckMusicResponse,
+} from "@/types/api/music";
 import request from "../web/request";
+
+// 获取 cookie 的辅助函数
+const getCookie = () => {
+  return typeof window !== "undefined"
+    ? localStorage.getItem("music_cookie") || ""
+    : "";
+};
 
 export async function greySongUrlMatch(
   id: number | string,
@@ -7,8 +20,12 @@ export async function greySongUrlMatch(
 ): Promise<SongUrlMatchResponse> {
   const params: Record<string, any> = { id };
   if (source) params.source = source;
+  const cookie = getCookie();
+  if (cookie) params.cookie = cookie;
 
-  const response = await request.get<SongUrlMatchResponse>("/song/url/match", { params });
+  const response = await request.get<SongUrlMatchResponse>("/song/url/match", {
+    params,
+  });
   return response.data;
 }
 
@@ -20,18 +37,6 @@ export async function getLyric(id: number | string) {
 // 音质相关 API
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-/** 音质等级 (对应 /song/url/v1 的 level 参数) */
-export type MusicQualityLevel =
-  | "standard" // 标准 128kbps
-  | "higher" // 较高 192kbps
-  | "exhigh" // 极高 320kbps
-  | "lossless" // 无损
-  | "hires" // Hi-Res
-  | "jyeffect" // 高清环绕声
-  | "sky" // 沉浸环绕声
-  | "dolby" // 杜比全景声
-  | "jymaster"; // 超清母带
-
 /** UI 音质选项 -> API level 参数映射 */
 export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
   standard: "standard",
@@ -40,58 +45,15 @@ export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
   spatial: "hires",
 };
 
-/** 歌曲各音质文件信息 */
-export interface SongMusicDetailItem {
-  br: number; // 比特率 Bit Rate
-  size: number; // 文件大小
-  vd: number; // Volume Delta
-  sr: number; // 采样率 Sample Rate
-}
-
-export interface SongMusicDetailResponse {
-  code: number;
-  data: Record<string, SongMusicDetailItem>;
-}
-
-export interface SongUrlV1Item {
-  id: number;
-  url: string;
-  br: number;
-  size: number;
-  md5: string;
-  code: number;
-  expi: number;
-  type: string;
-  gain: number;
-  fee: number;
-  uf: null | any;
-  payed: number;
-  flag: number;
-  canExtend: boolean;
-  freeTrialInfo: null | any;
-  level: string;
-  encodeType: string;
-  time: number;
-}
-
-export interface SongUrlV1Response {
-  code: number;
-  data: SongUrlV1Item[];
-}
-
-export interface CheckMusicResponse {
-  success: boolean;
-  message: string;
-}
-
 /**
  * 获取歌曲各个音质的文件信息
  * 与获取歌曲详情接口相比，多出高清环绕声、沉浸环绕声、超清母带等音质的信息
  * GET /song/music/detail?id={id}
  */
 export async function getSongMusicDetail(id: number | string) {
+  const cookie = getCookie();
   return request.get<SongMusicDetailResponse>("/song/music/detail", {
-    params: { id },
+    params: { id, ...(cookie ? { cookie } : {}) },
   });
 }
 
@@ -100,15 +62,14 @@ export async function getSongMusicDetail(id: number | string) {
  * GET /song/url/v1?id={id}&level={level}
  * @param id   音乐 id（可多个，用逗号隔开）
  * @param level 播放音质等级
- * @param unblock 是否使用歌曲解锁
  */
 export async function getSongUrlV1(
   id: number | string,
   level: MusicQualityLevel = "exhigh",
-  unblock: boolean = true,
 ) {
+  const cookie = getCookie();
   return request.get<SongUrlV1Response>("/song/url/v1", {
-    params: { id, level, unblock },
+    params: { id, level, ...(cookie ? { cookie } : {}) },
   });
 }
 
@@ -117,8 +78,9 @@ export async function getSongUrlV1(
  * GET /check/music?id={id}&br={br}
  */
 export async function checkMusicAvailable(id: number | string, br?: number) {
+  const cookie = getCookie();
   return request.get<CheckMusicResponse>("/check/music", {
-    params: { id, ...(br ? { br } : {}) },
+    params: { id, ...(br ? { br } : {}), ...(cookie ? { cookie } : {}) },
   });
 }
 
@@ -140,6 +102,10 @@ export async function getSongUrlWithQuality(
   } catch {
     // 降级到灰色歌曲链接
     const fallback = await greySongUrlMatch(id);
-    return { data: fallback.data ?? fallback.proxyUrl, level, source: "url-match" as const };
+    return {
+      data: fallback.data ?? fallback.proxyUrl,
+      level,
+      source: "url-match" as const,
+    };
   }
 }

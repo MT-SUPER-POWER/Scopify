@@ -55,6 +55,13 @@ export default tseslint.config(
 
   // --- Tailwind CSS ---
   tailwindcssPlugin.configs.recommended,
+  {
+    settings: {
+      tailwindcss: {
+        cssConfigPath: "app/globals.css",
+      },
+    },
+  },
 
   // --- Perfectionist (自然排序，自动处理 imports/exports) ---
   perfectionistPlugin.configs["recommended-natural"],

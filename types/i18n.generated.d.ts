@@ -2201,15 +2201,21 @@ export interface TranslateFn {
    */
   (key: "profile.menu.notifications", params?: TranslationParams): string;
   /**
-   * zh-CN: 朋友
-   * zh-TW: 朋友
+   * zh-CN: 好友
+   * zh-TW: 好友
    * en-US: Friends
    */
   (key: "profile.menu.friends", params?: TranslationParams): string;
   /**
+   * zh-CN: 个人主页
+   * zh-TW: 個人主頁
+   * en-US: Profile
+   */
+  (key: "profile.menu.profile", params?: TranslationParams): string;
+  /**
    * zh-CN: 网易乐签
    * zh-TW: 網易樂簽
-   * en-US: Daily Sign-in
+   * en-US: VIP Sign In
    */
   (key: "profile.menu.vipSign", params?: TranslationParams): string;
   /**
@@ -2231,9 +2237,9 @@ export interface TranslateFn {
    */
   (key: "profile.menu.settings", params?: TranslationParams): string;
   /**
-   * zh-CN: 下载
-   * zh-TW: 下載
-   * en-US: Download
+   * zh-CN: 下载桌面端
+   * zh-TW: 下載桌面端
+   * en-US: Download Client
    */
   (key: "profile.menu.download", params?: TranslationParams): string;
   /**
@@ -2741,9 +2747,9 @@ export interface TranslateFn {
    */
   (key: "home.loadingRecommendations", params?: TranslationParams): string;
   /**
-   * zh-CN: {{plays}} 播放 • 共 {{count}} 首
-   * zh-TW: {{plays}} 播放 • 共 {{count}} 首
-   * en-US: {{plays}} plays • {{count}} songs
+   * zh-CN: 共 {{count}} 首
+   * zh-TW: 共 {{count}} 首
+   * en-US: {{count}} songs
    */
   (key: "home.playlistSummary", params?: TranslationParams): string;
   /**
