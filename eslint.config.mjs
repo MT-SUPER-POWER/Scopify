@@ -1,15 +1,13 @@
 // @ts-check
 
 import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
+import eslintConfigPrettier from "eslint-config-prettier";
+import perfectionistPlugin from "eslint-plugin-perfectionist";
+import prettierPlugin from "eslint-plugin-prettier";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import tailwindcssPlugin from "eslint-plugin-tailwindcss";
-import importPlugin from "eslint-plugin-import";
-import unusedImportsPlugin from "eslint-plugin-unused-imports";
-import sonarjsPlugin from "eslint-plugin-sonarjs";
-import perfectionistPlugin from "eslint-plugin-perfectionist";
-import prettierPlugin from "eslint-plugin-prettier";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   // --- Global ignore ---
@@ -35,7 +33,7 @@ export default tseslint.config(
     },
   },
 
-  // --- React ---
+  // --- React & React Hooks ---
   {
     ...reactPlugin.configs.flat.recommended,
     settings: {
@@ -45,146 +43,50 @@ export default tseslint.config(
     },
   },
   reactPlugin.configs.flat["jsx-runtime"],
-
-  // --- React Hooks ---
   {
     plugins: {
       "react-hooks": reactHooksPlugin,
     },
     rules: {
-      "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/rules-of-hooks": "error",
     },
   },
 
   // --- Tailwind CSS ---
-  {
-    plugins: {
-      tailwindcss: tailwindcssPlugin,
-    },
-    rules: {
-      "tailwindcss/classnames-order": "warn",
-      "tailwindcss/enforces-negative-arbitrary-values": "warn",
-      "tailwindcss/enforces-shorthand": "warn",
-      "tailwindcss/no-contradicting-classname": "error",
-    },
-  },
+  tailwindcssPlugin.configs.recommended,
 
-  // --- Import ---
-  {
-    plugins: {
-      import: importPlugin,
-    },
-    rules: {
-      "import/first": "error",
-      "import/no-duplicates": "error",
-      "import/newline-after-import": "error",
-    },
-  },
+  // --- Perfectionist (自然排序，自动处理 imports/exports) ---
+  perfectionistPlugin.configs["recommended-natural"],
 
-  // --- Unused Imports (替代 biome noUnusedVariables) ---
-  {
-    plugins: {
-      "unused-imports": unusedImportsPlugin,
-    },
-    rules: {
-      "unused-imports/no-unused-imports": "error",
-      "unused-imports/no-unused-vars": [
-        "warn",
-        {
-          vars: "all",
-          varsIgnorePattern: "^_",
-          args: "after-used",
-          argsIgnorePattern: "^_",
-        },
-      ],
-    },
-  },
-
-  // --- SonarJS (代码质量) ---
-  {
-    ...sonarjsPlugin.configs.recommended,
-    rules: {
-      "sonarjs/todo-tag": "off",
-    },
-  },
-
-  // --- Perfectionist (替代 biome organizeImports) ---
-  {
-    rules: {
-      "perfectionist/sort-imports": [
-        "error",
-        {
-          type: "natural",
-          order: "asc",
-          groups: [
-            ["react", "react-dom"],
-            ["^next", "^@?next"],
-            "^@?\\w",
-            "^@(/.*)$",
-            "^\\.\\.?",
-            "^.+\\u0000$",
-          ],
-          newlinesBetween: "always",
-          internalPattern: "^@(/.*)$",
-        },
-      ],
-      "perfectionist/sort-named-imports": [
-        "error",
-        {
-          type: "natural",
-          order: "asc",
-        },
-      ],
-    },
-  },
-
-  // --- Biome 兼容规则映射 ---
-  {
-    rules: {
-      // biome noNonNullAssertion → warn
-      "@typescript-eslint/no-non-null-assertion": "warn",
-      // biome noExplicitAny → off
-      "@typescript-eslint/no-explicit-any": "off",
-      // biome style: no unused variables → 由 unused-imports 覆盖
-      "@typescript-eslint/no-unused-vars": "off", // 由 unused-imports 接管
-    },
-  },
-
-  // --- Prettier (跑在 ESLint --fix 中) ---
+  // --- Prettier (跑在 ESLint --fix 中，使用 .prettierrc 控制) ---
   {
     plugins: {
       prettier: prettierPlugin,
     },
     rules: {
-      "prettier/prettier": [
-        "error",
-        {
-          tabWidth: 2,
-          printWidth: 100,
-          semi: true,
-          singleQuote: false,
-          trailingComma: "all",
-        },
-        {
-          usePrettierrc: false,
-        },
-      ],
+      "prettier/prettier": "error",
     },
   },
 
-  // --- 项目特定覆盖 ---
+  // --- 项目特定规则覆盖与后处理 ---
   {
     files: ["**/*.ts", "**/*.tsx"],
     rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-non-null-assertion": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+      // 避免 perfectionist 对 JSX props 的排序与 prettier-plugin-tailwindcss 冲突
+      "perfectionist/sort-jsx-props": "off",
       "react/prop-types": "off", // TypeScript handles prop types
     },
   },
 
-  // --- 后处理 ---
-  {
-    rules: {
-      "perfectionist/sort-jsx-props": "off", // 由 prettier-plugin-tailwindcss 处理 class 排序
-    },
-  },
+  eslintConfigPrettier,
 );

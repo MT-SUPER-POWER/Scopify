@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 <img alt="logo" height="100" width="100" src="docs/img/icon.ico" />
 <h2> Scopify </h2>
 <p> 一个仿 Spotify UI 的音乐播放器 </p>
@@ -32,7 +32,8 @@
 5. Makefile + k8s + Docker: 后端部署部分
 6. Axios: 后端通讯统一管理部分
 7. Zustand: 前端状态管理
-8. Biome + Husky: 代码格式化约束 + Git 提交规范
+8. Eslint + Prettier + Husky: 代码格式化约束 + Git 提交规范
+9. Framer-Motion: 动画框架
 
 ### 代码结构
 
@@ -241,7 +242,6 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 - 收藏 / 取消收藏专辑
 - 使用过多的 `any` 了，数据类型需要重新梳理一下
 - 拉去 github 的 release 自动更新客户端版本
-- 如果是没有联网导致的请求失败，我们多做一个刷新按钮，提示用户刷新页面
 
 - [ ] 做一个快捷键注册表，简历一个注册表的专用的界面，用于管理快捷键
   - [ ] 播放和暂停
@@ -253,19 +253,12 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
   - [ ] 打开/关闭模态音乐界面
 - [ ] 编辑歌单的部分还要做一个 Tag 的编辑功能
 - [ ] 按照日期展示每日推荐
-- [ ] 歌单的排序功能是排序功能只是一个占位符，后续补充排序的功能
-  - [ ] 按照发布时间排序
-  - [ ] 按照是否喜欢排序
-  - [ ] 升序和降序
-- [ ] 歌曲的评论数据和喜欢的数量可以在播放的时候对应的 playbar 的 Icon 的右上角显示
 - [ ] 系统消息机制的完善
 - [ ] 用户个人信息的编辑
   - [ ] 昵称检测 API(`/nickname/check`) 接入，提前告知用户是否可以修改为该昵称
 - [ ] 好友功能的完善
   - [ ] Followers 和 Followings 的 Modal 展示
 - [ ] 桌面歌词
-- [ ] 播放队列的鼠标右键菜单栏效果复用
-- [ ] 歌手关注/取消关注
 
 ## 版本号规则
 
