@@ -8,12 +8,41 @@ export const PlayerProgressBar = memo(() => {
   const totalTime = useTimeStore((s) => s.totalTime);
   const bufferedTime = useTimeStore((s) => s.bufferedTime);
 
-  // 2. 高频数据：完全使用本地 State，初始值取一下 Store 里的记忆点
-  const [localTime, setLocalTime] = useState(() => useTimeStore.getState().currentTime);
+  // 2. 高频数据：完全使用本地 State，初始值从 localStorage 直读（绕过 Zustand 异步水合）
+  const [localTime, setLocalTime] = useState(() => {
+    if (typeof window === "undefined") return 0;
+    try {
+      const raw = localStorage.getItem("player-time-storage");
+      if (!raw) return 0;
+      const parsed = JSON.parse(raw);
+      return parsed.state?.currentTime ?? 0;
+    } catch {
+      return 0;
+    }
+  });
 
   const lastUpdateRef = useRef(0); // 节流
+  const hydrationSyncedRef = useRef(false);
+
+  // ── Zustand async hydration sync ──────────────────────────────────────────
+  // ProgressBar mount 时 Zustand persist 可能还没完成异步水合，导致
+  // storeCurrentTime 为 0。订阅 store 值，首次非零更新时同步到 localTime。
+  const storeCurrentTime = useTimeStore((s) => s.currentTime);
 
   useEffect(() => {
+    if (!hydrationSyncedRef.current && storeCurrentTime > 0) {
+      setLocalTime(storeCurrentTime);
+      hydrationSyncedRef.current = true;
+    }
+  }, [storeCurrentTime]);
+
+  useEffect(() => {
+    // 客户端挂载后同步持久化的播放位置（SSR 阶段 localStorage 不可用，初始值为 0）
+    const persisted = useTimeStore.getState().currentTime;
+    if (persisted > 0) {
+      setLocalTime(persisted);
+    }
+
     // 3. 只接收高频的播放时间广播，局部刷新 UI
     const onTime = (e: Event) => {
       const now = Date.now();
