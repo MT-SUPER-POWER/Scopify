@@ -21,6 +21,9 @@ export const PlayerProgressBar = memo(() => {
     }
   });
 
+  // 3. isMounted 防止 SSR 水合不匹配：水合期间始终显示 0:00（服务端产物）
+  const [isMounted, setIsMounted] = useState(false);
+
   const lastUpdateRef = useRef(0); // 节流
   const hydrationSyncedRef = useRef(false);
 
@@ -36,14 +39,13 @@ export const PlayerProgressBar = memo(() => {
     }
   }, [storeCurrentTime]);
 
+  // ── 客户端挂载后 ───────────────────────────────────────────────────────
+  // 1) 标记已挂载，让 UI 改用真实的 localTime（而非水合期的 0）
+  // 2) 监听高频的播放时间广播
   useEffect(() => {
-    // 客户端挂载后同步持久化的播放位置（SSR 阶段 localStorage 不可用，初始值为 0）
-    const persisted = useTimeStore.getState().currentTime;
-    if (persisted > 0) {
-      setLocalTime(persisted);
-    }
+    setIsMounted(true);
 
-    // 3. 只接收高频的播放时间广播，局部刷新 UI
+    // 只接收高频的播放时间广播，局部刷新 UI
     const onTime = (e: Event) => {
       const now = Date.now();
       if (now - lastUpdateRef.current >= 800) {
@@ -66,13 +68,15 @@ export const PlayerProgressBar = memo(() => {
     }
   };
 
-  const progressPercent = totalTime > 0 ? (localTime / totalTime) * 100 : 0;
+  // 水合期间：显示 0:00 以匹配服务端 HTML；水合完成后：显示真实进度
+  const displayTime = isMounted ? localTime : 0;
+  const progressPercent = totalTime > 0 ? (displayTime / totalTime) * 100 : 0;
   const bufferedPercent = totalTime > 0 ? (bufferedTime / totalTime) * 100 : 0;
 
   return (
     <div className="flex items-center gap-2 w-full">
       <span className="text-[11px] text-[#b3b3b3] w-10 text-right tabular-nums tracking-widest font-normal shrink-0">
-        {formatDuration(localTime)}
+        {formatDuration(displayTime)}
       </span>
 
       <SmoothSlider
