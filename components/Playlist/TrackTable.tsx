@@ -7,8 +7,10 @@ import { ChevronDown, ChevronUp, Clock, GripVertical, RefreshCw } from "lucide-r
 import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { SongContextMenu } from "@/components/shared/SongContextMenu";
 
+import type { TracklistTableProps } from "@/types/components/playlist";
+
+import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -18,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useSmoothPlaylistScroll } from "@/hooks/playlist/useSmoothPlaylistScroll";
 import { dislikeDailyRecommend } from "@/lib/api/playlist";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
@@ -25,7 +28,8 @@ import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
-import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
 import { TrackRow } from "./TrackRow";
 
@@ -33,78 +37,20 @@ import { TrackRow } from "./TrackRow";
 
 const MIN_COL = 60;
 
-function makeResizeHandler(
-  leftRef: React.RefObject<number>,
-  setLeft: (w: number) => void,
-  rightRef: React.RefObject<number>,
-  setRight: (w: number) => void,
-  leftMin = MIN_COL,
-  rightMin = MIN_COL,
-) {
-  return (e: React.MouseEvent) => {
-    e.preventDefault();
-    const startX = e.clientX;
-    const startLeft = leftRef.current;
-    const startRight = rightRef.current;
-    const total = startLeft + startRight;
-
-    const onMove = (ev: MouseEvent) => {
-      const delta = ev.clientX - startX;
-      const nextLeft = Math.min(Math.max(leftMin, startLeft + delta), total - rightMin);
-      setLeft(nextLeft);
-      setRight(total - nextLeft);
-    };
-    const onUp = () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-  };
-}
-
-function ResizeHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void }) {
-  return (
-    <span
-      onMouseDown={onMouseDown}
-      className="absolute top-1/2 right-0 flex h-4 w-3 -translate-y-1/2 cursor-col-resize items-center justify-center opacity-0 transition-opacity select-none group-hover/head:opacity-100"
-    >
-      <GripVertical className="h-3 w-3 text-zinc-500" />
-    </span>
-  );
-}
+type SortDirection = "asc" | "desc";
+type SortField = "album" | "date" | "like" | "title" | null;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-interface TracklistTableProps {
-  searchOpen?: boolean;
-  searchQuery?: string;
-  onSearchChange?: (v: string) => void;
-  onSearchOpen?: () => void;
-  onSearchClose?: () => void;
-  inputRef?: React.RefObject<HTMLInputElement | null>;
-
-  tracks?: SongDetail[];
-  disableVirtualization?: boolean;
-  hideDateColumn?: boolean;
-  hideLikeColumn?: boolean;
-  readonly?: boolean;
-  emptyActionLabel?: string;
-  onEmptyAction?: () => void;
-}
-
-type SortField = "title" | "album" | "date" | "like" | null;
-type SortDirection = "asc" | "desc";
-
 export default function TracklistTable({
-  searchQuery,
-  tracks: externalTracks,
   disableVirtualization = false,
+  emptyActionLabel,
   hideDateColumn = false,
   hideLikeColumn = false,
-  readonly = false,
-  emptyActionLabel,
   onEmptyAction,
+  readonly = false,
+  searchQuery,
+  tracks: externalTracks,
 }: TracklistTableProps) {
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -155,7 +101,7 @@ export default function TracklistTable({
   }>(null);
 
   const storeTracks = useUserStore((state) => state.albumList);
-  const tracks = externalTracks || storeTracks;
+  const tracks = externalTracks ?? storeTracks;
   const likelist = useUserStore((s) => s.likeListIDs);
 
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
@@ -214,23 +160,26 @@ export default function TracklistTable({
   };
 
   const scrollContainer = useUiStore((s) => s.scrollContainer);
+  useSmoothPlaylistScroll(scrollContainer, !disableVirtualization);
 
   const virtualizer = useVirtualizer({
     count: sortedTracks.length,
-    getScrollElement: () => scrollContainer,
     estimateSize: () => 56,
-    overscan: 15,
+    getScrollElement: () => scrollContainer,
+    isScrollingResetDelay: 160,
+    overscan: 7,
   });
 
   const virtualItems = virtualizer.getVirtualItems();
+  const isVirtualScrolling = virtualizer.isScrolling;
 
   const handlePlay = useCallback(
     (track: SongDetail) => {
       const isCurrent = currentSongDetail?.id === track.id && isCurrentQueue;
       if (isCurrent) setIsPlaying(!isPlaying);
       else {
-        const playSourceId = isDailyRecommend ? "daily" : playlistID || null;
-        playFromSong(track, tracks, playSourceId);
+        const playSourceId = isDailyRecommend ? "daily" : (playlistID ?? null);
+        void playFromSong(track, tracks, playSourceId);
       }
     },
     [
@@ -246,7 +195,7 @@ export default function TracklistTable({
   );
 
   const handleRequestDelete = useCallback(
-    (playlistId: string | number | undefined, trackId: number) => {
+    (playlistId: number | string | undefined, trackId: number) => {
       setPendingDelete({ playlistId, trackId });
     },
     [],
@@ -256,12 +205,12 @@ export default function TracklistTable({
   const setAlbumList = useUserStore((s) => s.setAlbumList);
 
   const handleConfirmDelete = useCallback(async () => {
-    if (!pendingDelete || pendingDelete.playlistId === undefined) return;
+    if (pendingDelete?.playlistId === undefined) return;
     try {
       await updatePlaylistTrack("del", pendingDelete.playlistId, pendingDelete.trackId);
 
       // 1. 乐观更新：立刻从视图移出
-      setAlbumList(albumList.filter((t) => t.id !== pendingDelete.trackId) as RawSongDetail[]);
+      setAlbumList(albumList.filter((t) => t.id !== pendingDelete.trackId));
       toast.success(t("playlist.table.removeSuccess"));
 
       // 2. 触发全局刷新（这会告诉 Sidebar 在后台悄悄拉取最新歌单封面等元信息）
@@ -270,6 +219,7 @@ export default function TracklistTable({
       void clearPageCache();
     } catch (_err) {
       toast.error(t("playlist.table.removeFailed"));
+      console.log("delete failed", _err);
     } finally {
       setPendingDelete(null);
     }
@@ -285,12 +235,10 @@ export default function TracklistTable({
         const dislikeRes = await dislikeDailyRecommend(trackId);
         const replaceSong = pruneSongDetail(dislikeRes.data?.data) || null;
 
-        const updateAlbumList = albumList.map((t) =>
-          t.id === trackId ? replaceSong : t,
-        ) as SongDetail[];
+        const updateAlbumList = albumList.map((t) => (t.id === trackId ? replaceSong : t));
 
         setAlbumList(updateAlbumList);
-        usePlayerStore.getState().playNext();
+        void usePlayerStore.getState().playNext();
         void clearPageCache();
 
         toast.success(t("playlist.table.dislikeSuccess"));
@@ -317,7 +265,10 @@ export default function TracklistTable({
         <Table className="w-full table-fixed text-zinc-400">
           <TableHeader
             className={cn(
-              "sticky top-0 z-10 drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)] backdrop-blur-sm",
+              "sticky top-0 z-10",
+              isVirtualScrolling
+                ? "shadow-none"
+                : "drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)] backdrop-blur-sm",
               "bg-linear-to-b from-transparent to-[#121212]/10",
             )}
           >
@@ -325,16 +276,16 @@ export default function TracklistTable({
               <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
               <TableHead
                 className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                style={{ width: colTitle, minWidth: 60 }}
+                style={{ minWidth: 60, width: colTitle }}
                 onClick={() => handleSort("title")}
               >
                 <div className="flex items-center gap-1">
                   {t("playlist.table.columnTitle")}
                   {sortField === "title" &&
                     (sortDirection === "asc" ? (
-                      <ChevronUp className="h-4 w-4" />
+                      <ChevronUp className="size-4" />
                     ) : (
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="size-4" />
                     ))}
                 </div>
                 <ResizeHandle
@@ -350,16 +301,16 @@ export default function TracklistTable({
               </TableHead>
               <TableHead
                 className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white md:table-cell"
-                style={{ width: colAlbum, minWidth: 64 }}
+                style={{ minWidth: 64, width: colAlbum }}
                 onClick={() => handleSort("album")}
               >
                 <div className="flex items-center gap-1">
                   {t("playlist.table.columnAlbum")}
                   {sortField === "album" &&
                     (sortDirection === "asc" ? (
-                      <ChevronUp className="h-4 w-4" />
+                      <ChevronUp className="size-4" />
                     ) : (
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="size-4" />
                     ))}
                 </div>
                 {!hideDateColumn && (
@@ -378,16 +329,16 @@ export default function TracklistTable({
               {!hideDateColumn && (
                 <TableHead
                   className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white lg:table-cell"
-                  style={{ width: colDate, minWidth: 120 }}
+                  style={{ minWidth: 120, width: colDate }}
                   onClick={() => handleSort("date")}
                 >
                   <div className="flex items-center gap-1">
                     {t("playlist.table.columnPublished")}
                     {sortField === "date" &&
                       (sortDirection === "asc" ? (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUp className="size-4" />
                       ) : (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDown className="size-4" />
                       ))}
                   </div>
                   {!hideLikeColumn && (
@@ -407,23 +358,23 @@ export default function TracklistTable({
               {!hideLikeColumn && (
                 <TableHead
                   className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white lg:table-cell"
-                  style={{ width: colLike, minWidth: 44 }}
+                  style={{ minWidth: 44, width: colLike }}
                   onClick={() => handleSort("like")}
                 >
                   <div className="flex items-center justify-center gap-1">
                     {t("playlist.table.columnLike")}
                     {sortField === "like" &&
                       (sortDirection === "asc" ? (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUp className="size-4" />
                       ) : (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDown className="size-4" />
                       ))}
                   </div>
                 </TableHead>
               )}
               <TableHead className="w-32 text-zinc-400">
-                <div className="flex h-full w-full items-center justify-center">
-                  <Clock className="h-4 w-4" />
+                <div className="flex size-full items-center justify-center">
+                  <Clock className="size-4" />
                 </div>
               </TableHead>
             </TableRow>
@@ -446,7 +397,7 @@ export default function TracklistTable({
                         onClick={onEmptyAction}
                         className="bg-white text-black hover:bg-white/90"
                       >
-                        <RefreshCw className="h-4 w-4" />
+                        <RefreshCw className="size-4" />
                         {emptyActionLabel}
                       </Button>
                     </div>
@@ -472,7 +423,7 @@ export default function TracklistTable({
                     onRemoveFromPlaylist={() =>
                       handleRequestDelete(playlistID ?? undefined, track.id)
                     }
-                    onDislikeDailyRecommend={() => handleDislikeDailyRecommend(track.id)}
+                    onDislikeDailyRecommend={() => void handleDislikeDailyRecommend(track.id)}
                   >
                     <TrackRow
                       track={track}
@@ -501,6 +452,27 @@ export default function TracklistTable({
                   const track = sortedTracks[virtualRow.index];
                   const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
                   const isLiked = likeSet.has(track.id);
+                  const row = (
+                    <TrackRow
+                      key={`${track.id}-${virtualRow.index}`}
+                      data-index={virtualRow.index}
+                      track={track}
+                      index={virtualRow.index}
+                      isActive={isActive}
+                      isPlaying={isPlaying}
+                      isLiked={isLiked}
+                      playlistID={playlistID}
+                      onPlay={handlePlay}
+                      onRequestDelete={handleRequestDelete}
+                      setIsPlaying={setIsPlaying}
+                      hideDateColumn={hideDateColumn}
+                      hideLikeColumn={hideLikeColumn}
+                      isScrolling={isVirtualScrolling}
+                    />
+                  );
+
+                  if (isVirtualScrolling) return row;
+
                   return (
                     <SongContextMenu
                       key={`${track.id}-${virtualRow.index}`}
@@ -514,22 +486,9 @@ export default function TracklistTable({
                       onRemoveFromPlaylist={() =>
                         handleRequestDelete(playlistID ?? undefined, track.id)
                       }
-                      onDislikeDailyRecommend={() => handleDislikeDailyRecommend(track.id)}
+                      onDislikeDailyRecommend={() => void handleDislikeDailyRecommend(track.id)}
                     >
-                      <TrackRow
-                        data-index={virtualRow.index}
-                        track={track}
-                        index={virtualRow.index}
-                        isActive={isActive}
-                        isPlaying={isPlaying}
-                        isLiked={isLiked}
-                        playlistID={playlistID}
-                        onPlay={handlePlay}
-                        onRequestDelete={handleRequestDelete}
-                        setIsPlaying={setIsPlaying}
-                        hideDateColumn={hideDateColumn}
-                        hideLikeColumn={hideLikeColumn}
-                      />
+                      {row}
                     </SongContextMenu>
                   );
                 })}
@@ -549,5 +508,45 @@ export default function TracklistTable({
         </Table>
       </div>
     </>
+  );
+}
+function makeResizeHandler(
+  leftRef: React.RefObject<number>,
+  setLeft: (w: number) => void,
+  rightRef: React.RefObject<number>,
+  setRight: (w: number) => void,
+  leftMin = MIN_COL,
+  rightMin = MIN_COL,
+) {
+  return (e: React.MouseEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startLeft = leftRef.current;
+    const startRight = rightRef.current;
+    const total = startLeft + startRight;
+
+    const onMove = (ev: MouseEvent) => {
+      const delta = ev.clientX - startX;
+      const nextLeft = Math.min(Math.max(leftMin, startLeft + delta), total - rightMin);
+      setLeft(nextLeft);
+      setRight(total - nextLeft);
+    };
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+}
+
+function ResizeHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void }) {
+  return (
+    <span
+      onMouseDown={onMouseDown}
+      className="absolute top-1/2 right-0 flex h-4 w-3 -translate-y-1/2 cursor-col-resize items-center justify-center opacity-0 transition-opacity select-none group-hover/head:opacity-100"
+    >
+      <GripVertical className="size-3 text-zinc-500" />
+    </span>
   );
 }

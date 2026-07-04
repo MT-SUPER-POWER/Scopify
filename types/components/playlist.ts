@@ -1,5 +1,41 @@
+import type { HTMLAttributes, RefObject } from "react";
+
+import type { SongDetail } from "@/types/api/music";
+
 export interface PlaylistTagSelectorProps {
-  value: string[];
   maxSelected: number;
   onChange: (tags: string[]) => void;
+  value: string[];
+}
+
+export interface TracklistTableProps {
+  disableVirtualization?: boolean;
+  emptyActionLabel?: string;
+  hideDateColumn?: boolean;
+  hideLikeColumn?: boolean;
+  inputRef?: RefObject<HTMLInputElement | null>;
+  onEmptyAction?: () => void;
+  onSearchChange?: (v: string) => void;
+  onSearchClose?: () => void;
+  onSearchOpen?: () => void;
+  readonly?: boolean;
+  searchOpen?: boolean;
+  searchQuery?: string;
+  tracks?: SongDetail[];
+}
+
+export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>, "onPlay"> {
+  hideDateColumn?: boolean;
+  hideLikeColumn?: boolean;
+  index: number;
+  isActive: boolean;
+  isLiked: boolean;
+  isPlaying: boolean;
+  isScrolling?: boolean;
+  onLikeToggle?: (trackID: number | string) => void;
+  onPlay: (track: SongDetail) => void;
+  onRequestDelete: (playlistId: number | string | undefined, trackId: number) => void;
+  playlistID: null | string;
+  setIsPlaying: (v: boolean) => void;
+  track: SongDetail;
 }

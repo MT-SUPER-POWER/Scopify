@@ -6,6 +6,9 @@ import Link from "next/link";
 import { memo, useCallback, useMemo, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
+
+import type { ArtistInfo } from "@/types/artist";
+
 import {
   ContextMenu,
   ContextMenuContent,
@@ -27,23 +30,30 @@ import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
-import type { NeteasePlaylist } from "@/types/api/playlist";
-import type { ArtistInfo } from "@/types/artist";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INDEX CELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface Props {
+  artist: ArtistInfo;
+  index: number;
+  queue: SongDetail[];
+  track: SongDetail;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TRACK ITEM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function TrackIndexCell({
   index,
   isActive,
   isPlaying,
-  onPlay,
   onPause,
+  onPlay,
 }: {
   index: number;
   isActive: boolean;
   isPlaying: boolean;
-  onPlay: () => void;
   onPause: () => void;
+  onPlay: () => void;
 }) {
   const { t } = useI18n();
 
@@ -69,32 +79,23 @@ function TrackIndexCell({
 
       {/* 暂停中：静态绿色 Play */}
       {isActive && !isPlaying && (
-        <Play className="h-4 w-4 fill-current text-[#1DB954] group-hover:hidden" />
+        <Play className="size-4 fill-current text-[#1DB954] group-hover:hidden" />
       )}
 
       {/* Hover 覆盖 */}
       <div className="hidden items-center justify-center group-hover:flex">
         {isActive && isPlaying ? (
-          <Pause className="h-4 w-4 cursor-pointer fill-white text-white" onClick={onPause} />
+          <Pause className="size-4 cursor-pointer fill-white text-white" onClick={onPause} />
         ) : (
-          <Play className="h-4 w-4 cursor-pointer fill-white text-white" onClick={onPlay} />
+          <Play className="size-4 cursor-pointer fill-white text-white" onClick={onPlay} />
         )}
       </div>
     </div>
   );
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TRACK ITEM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-interface Props {
-  track: SongDetail;
-  index: number;
-  queue: SongDetail[];
-  artist: ArtistInfo;
-}
-
 export const PopularTrackItem = memo(
-  function PopularTrackItem({ track, index, queue }: Props) {
+  function PopularTrackItem({ index, queue, track }: Props) {
     const { t } = useI18n();
     // ── store ──
     const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
@@ -103,13 +104,13 @@ export const PopularTrackItem = memo(
     const setQueue = usePlayerStore((s) => s.setQueue);
     const playTrack = usePlayerStore((s) => s.playTrack);
     const likeListIDs = useUserStore((s) => s.likeListIDs);
-    const playlists = useUserStore((s) => s.playlist) as NeteasePlaylist[];
+    const playlists = useUserStore((s) => s.playlist);
     const isLoggedIn = useLoginStatus();
 
     // ── derived ──
     const isActive = currentSongDetail?.id === track.id;
     const isLiked = useMemo(
-      () => Array.isArray(likeListIDs) && likeListIDs.includes(track.id as number),
+      () => Array.isArray(likeListIDs) && likeListIDs.includes(track.id),
       [likeListIDs, track.id],
     );
     const [hovered, setHovered] = useState(false);
@@ -121,20 +122,24 @@ export const PopularTrackItem = memo(
         return;
       }
       if (queue.length > 0) setQueue(queue, index);
-      playTrack(queue[index] || pruneSongDetail(track));
+      void playTrack(queue[index] || pruneSongDetail(track));
       console.log("Playing track:", track.al.name, "with cover", track.al.picUrl);
     }, [isActive, queue, index, track, setIsPlaying, setQueue, playTrack]);
 
     const handlePause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
 
     const handleRowClick = useCallback(() => {
-      isActive ? setIsPlaying(!isPlaying) : handlePlay();
-    }, [isActive, isPlaying, handlePlay, setIsPlaying]);
+      if (isActive) {
+        setIsPlaying(!isPlaying);
+      } else {
+        handlePlay();
+      }
+    }, [isActive, isPlaying, setIsPlaying, handlePlay]);
 
     const handleLike = useCallback(
       async (next: boolean) => {
         try {
-          await likeSong(track.id as number, next);
+          await likeSong(track.id, next);
           const store = useUserStore.getState();
           // 规范化为 number[] 再更新
           const cur = Array.isArray(store.likeListIDs)
@@ -191,9 +196,9 @@ export const PopularTrackItem = memo(
               <Image
                 width={40}
                 height={40}
-                src={track.al.picUrl || track.al.coverUrl || ""}
+                src={(track.al.picUrl || track.al.coverUrl) ?? ""}
                 alt={track.name}
-                className="h-10 w-10 shrink-0 rounded object-cover"
+                className="size-10 shrink-0 rounded object-cover"
               />
               <span
                 className={cn(
@@ -210,8 +215,10 @@ export const PopularTrackItem = memo(
               <div className={cn("transition-opacity", hovered ? "opacity-100" : "opacity-0")}>
                 <LikeButton
                   liked={isLiked}
-                  onLike={() => handleLike(!isLiked)}
-                  iconClassName="w-4.5 h-4.5"
+                  onLike={() => {
+                    void handleLike(!isLiked);
+                  }}
+                  iconClassName="size-4.5"
                 />
               </div>
               <span className="w-10 text-right tabular-nums">{formatDuration(track.dt)}</span>
@@ -228,12 +235,12 @@ export const PopularTrackItem = memo(
             >
               {isActive && isPlaying ? (
                 <>
-                  <Pause className="mr-2 h-4 w-4" />
+                  <Pause className="mr-2 size-4" />
                   {t("contextMenu.pause")}
                 </>
               ) : (
                 <>
-                  <Play className="mr-2 h-4 w-4" />
+                  <Play className="mr-2 size-4" />
                   {t("contextMenu.play")}
                 </>
               )}
@@ -243,15 +250,15 @@ export const PopularTrackItem = memo(
               onClick={handleAddToQueue}
               className="focus:bg-white/10 focus:text-white"
             >
-              <ListPlus className="mr-2 h-4 w-4" />
+              <ListPlus className="mr-2 size-4" />
               {t("contextMenu.addToQueue")}
             </ContextMenuItem>
 
             <ContextMenuItem
-              onClick={() => handleLike(!isLiked)}
+              onClick={() => void handleLike(!isLiked)}
               className="focus:bg-white/10 focus:text-white"
             >
-              <Heart className="mr-2 h-4 w-4" />
+              <Heart className="mr-2 size-4" />
               {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
             </ContextMenuItem>
           </ContextMenuGroup>
@@ -261,7 +268,7 @@ export const PopularTrackItem = memo(
           <ContextMenuGroup>
             <ContextMenuSub>
               <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                <PlusCircle className="mr-4 h-4 w-4" />
+                <PlusCircle className="mr-4 size-4" />
                 {t("contextMenu.addToPlaylist")}
               </ContextMenuSubTrigger>
               <ContextMenuSubContent className="border-white/10 bg-[#282828] text-white">
@@ -269,14 +276,16 @@ export const PopularTrackItem = memo(
                   playlists.map((p) => (
                     <ContextMenuItem
                       key={p.id}
-                      onClick={async () => {
-                        try {
-                          await updatePlaylistTrack("add", p.id, track.id as number);
-                          void clearPageCache();
-                          toast.success(t("artist.track.addToPlaylistSuccess"));
-                        } catch {
-                          toast.error(t("artist.track.addToPlaylistFailed"));
-                        }
+                      onClick={() => {
+                        void (async () => {
+                          try {
+                            await updatePlaylistTrack("add", p.id, track.id);
+                            void clearPageCache();
+                            toast.success(t("artist.track.addToPlaylistSuccess"));
+                          } catch {
+                            toast.error(t("artist.track.addToPlaylistFailed"));
+                          }
+                        })();
                       }}
                       className="focus:bg-white/10 focus:text-white"
                     >
@@ -285,7 +294,7 @@ export const PopularTrackItem = memo(
                         height={28}
                         src={p.coverImgUrl}
                         alt={t("playlist.form.coverAlt")}
-                        className="mr-2 h-7 w-7 rounded-sm"
+                        className="mr-2 size-7 rounded-sm"
                       />
                       {p.name}
                     </ContextMenuItem>
@@ -294,8 +303,8 @@ export const PopularTrackItem = memo(
             </ContextMenuSub>
 
             <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
-              <Link href={`/comment/?songId=${track.id}`} className="block h-full w-full">
-                <FaRegCommentDots className="mr-2 h-4 w-4" />
+              <Link href={`/comment/?songId=${track.id}`} className="block size-full">
+                <FaRegCommentDots className="mr-2 size-4" />
                 {t("contextMenu.comments")}
               </Link>
             </ContextMenuItem>
@@ -309,9 +318,9 @@ export const PopularTrackItem = memo(
                     .then(() => toast.success(t("artist.track.copySuccess")))
                     .catch(() => toast.error(t("artist.track.copyFailed")));
                 }}
-                className="block h-full w-full"
+                className="block size-full"
               >
-                <Link2 className="mr-2 h-4 w-4" />
+                <Link2 className="mr-2 size-4" />
                 {t("contextMenu.copyLink")}
               </button>
             </ContextMenuItem>
@@ -320,15 +329,15 @@ export const PopularTrackItem = memo(
             {track.ar.length > 0 &&
               (track.ar.length === 1 ? (
                 <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
-                  <Link href={`/artist?id=${track.ar[0].id}`} className="block h-full w-full">
-                    <User className="mr-2 h-4 w-4" />
+                  <Link href={`/artist?id=${track.ar[0].id}`} className="block size-full">
+                    <User className="mr-2 size-4" />
                     {t("contextMenu.goToArtist")}
                   </Link>
                 </ContextMenuItem>
               ) : (
                 <ContextMenuSub>
                   <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                    <User className="mr-4 h-4 w-4" />
+                    <User className="mr-4 size-4" />
                     {t("contextMenu.goToArtist")}
                   </ContextMenuSubTrigger>
                   <ContextMenuSubContent className="border-white/10 bg-[#282828] text-white">
@@ -338,7 +347,7 @@ export const PopularTrackItem = memo(
                         asChild
                         className="focus:bg-white/10 focus:text-white"
                       >
-                        <Link href={`/artist?id=${artist.id}`} className="block h-full w-full">
+                        <Link href={`/artist?id=${artist.id}`} className="block size-full">
                           {artist.name}
                         </Link>
                       </ContextMenuItem>

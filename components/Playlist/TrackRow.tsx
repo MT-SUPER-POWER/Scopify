@@ -5,6 +5,9 @@
 import { Pause, Play } from "lucide-react";
 import { forwardRef, memo, useCallback } from "react";
 import { toast } from "sonner";
+
+import type { TrackRowProps } from "@/types/components/playlist";
+
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -14,7 +17,7 @@ import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatDate, formatDuration } from "@/lib/utils";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
+
 import { LikeButton } from "../ui/LikeButton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件: 序号与播放状态 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -32,10 +35,8 @@ function TrackIndexCell({
   onPlay: () => void;
   setIsPlaying: (v: boolean) => void;
 }) {
-  const { t } = useI18n();
-
   return (
-    <div className="group/cell relative mx-auto flex h-4 w-4 items-center justify-center">
+    <div className="group/cell relative mx-auto flex size-4 items-center justify-center">
       <span className={cn("font-normal text-zinc-400 group-hover:hidden", isActive && "hidden")}>
         {index + 1}
       </span>
@@ -43,18 +44,18 @@ function TrackIndexCell({
       {isActive && isPlaying && <PlayingAnimation className="h-3 group-hover:hidden" />}
 
       {isActive && !isPlaying && (
-        <Play className="h-4 w-4 fill-current text-[#1ed760] group-hover:hidden" />
+        <Play className="size-4 fill-current text-[#1ed760] group-hover:hidden" />
       )}
 
       <div className="hidden items-center justify-center group-hover:flex">
         {isActive && isPlaying ? (
           <Pause
-            className="h-4 w-4 cursor-pointer fill-current text-[#1ed760]"
+            className="size-4 cursor-pointer fill-current text-[#1ed760]"
             onClick={() => setIsPlaying(false)}
           />
         ) : (
           <Play
-            className="h-4 w-4 cursor-pointer fill-current text-white"
+            className="size-4 cursor-pointer fill-current text-white"
             onClick={() => onPlay()}
           />
         )}
@@ -65,37 +66,26 @@ function TrackIndexCell({
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件: 单行数据 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export interface TrackRowProps extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "onPlay"> {
-  track: SongDetail;
-  index: number;
-  isActive: boolean;
-  isPlaying: boolean;
-  isLiked: boolean;
-  playlistID: string | null;
-  onPlay: (track: SongDetail) => void;
-  onRequestDelete: (playlistId: number | string | undefined, trackId: number) => void;
-  setIsPlaying: (v: boolean) => void;
-  hideDateColumn?: boolean;
-  hideLikeColumn?: boolean;
-  onLikeToggle?: (trackID: number | string) => void;
-}
-
 export const TrackRow = memo(
   forwardRef<HTMLTableRowElement, TrackRowProps>(function TrackRow(
     {
-      track,
-      index,
-      isActive,
-      isPlaying,
-      isLiked,
+      className,
       hideDateColumn,
       hideLikeColumn,
-      onPlay,
-      setIsPlaying,
-      playlistID,
-      onRequestDelete,
+      index,
+      isActive,
+      isLiked,
+      isPlaying,
+      isScrolling = false,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onLikeToggle,
-      className,
+      onPlay,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      onRequestDelete,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      playlistID,
+      setIsPlaying,
+      track,
       ...props
     },
     ref,
@@ -134,7 +124,8 @@ export const TrackRow = memo(
       <TableRow
         ref={ref}
         className={cn(
-          "group cursor-default border-none transition-colors hover:bg-white/10",
+          "group cursor-default border-none hover:bg-white/10",
+          isScrolling ? "**:transition-none" : "transition-colors",
           isActive && "text-[#1ed760]",
           className,
         )}
@@ -153,14 +144,15 @@ export const TrackRow = memo(
 
         <TableCell className="max-w-0 min-w-0">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="h-10 w-10 shrink-0 rounded bg-zinc-800">
+            <div className="size-10 shrink-0 rounded bg-zinc-800">
               <img
                 width={40}
                 height={40}
                 src={track.al.picUrl}
                 alt={track.al.name}
+                decoding="async"
                 loading="lazy"
-                className="h-full w-full rounded object-cover"
+                className="size-full rounded object-cover"
               />
             </div>
             <div className="flex min-w-0 flex-col truncate">
@@ -217,11 +209,12 @@ export const TrackRow = memo(
 
         {!hideLikeColumn && (
           <TableCell className="hidden w-20 truncate lg:table-cell">
-            <div className="flex h-full w-full justify-center">
+            <div className="flex size-full justify-center">
               <LikeButton
                 liked={isLiked}
+                disabled={isScrolling}
                 onLike={() => {
-                  handleLike(!isLiked);
+                  void handleLike(!isLiked);
                 }}
                 iconClassName="w-4.5 h-4.5"
               />
@@ -245,5 +238,6 @@ export const TrackRow = memo(
     prev.index === next.index &&
     prev.hideDateColumn === next.hideDateColumn &&
     prev.hideLikeColumn === next.hideLikeColumn &&
+    prev.isScrolling === next.isScrolling &&
     prev.track.alia?.join() === next.track.alia?.join(),
 );
