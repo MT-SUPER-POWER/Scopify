@@ -2,10 +2,10 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+import { PlayerProgressBar } from "@components/PlayBar/ProgressBar";
 import {
   ChevronDown,
   ChevronUp,
-  CircleDot,
   Expand,
   Mic2,
   MinimizeIcon,
@@ -13,36 +13,33 @@ import {
   Pause,
   Play,
   Radio,
-  RadioReceiver,
   Repeat,
   Repeat1,
   Shuffle,
   SkipBack,
   SkipForward,
-  Sparkles,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-// 引入更圆润的 Phosphor Icons 图标
-import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi";
+import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { toast } from "sonner";
+import { audioManager } from "@/components/PlayBar/AudioManager";
 import { QueuePopover } from "@/components/QueuePopover";
 import { VolumeControl } from "@/components/VolumeControl";
+import { QUALITY_OPTIONS } from "@/constants/playerBar";
+import { getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import type { TranslationKey } from "@/lib/i18n";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount, IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { useUiStore } from "@/store/module/ui";
-import { PlayerProgressBar } from "./PlayBar/ProgressBar";
-import { audioManager } from "@/components/PlayBar/AudioManager";
-import { getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
 import { useTimeStore } from "@/store/module/time";
+import { useUiStore } from "@/store/module/ui";
+import type { QualityOptionKey } from "@/types/playerBar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -122,46 +119,6 @@ function PlayerBarStatAction({
     </button>
   );
 }
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ QUALITY OPTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-type QualityOptionKey = "spatial" | "lossless" | "high" | "standard";
-
-const QUALITY_OPTIONS: Array<{
-  value: QualityOptionKey;
-  icon: typeof Sparkles;
-  labelKey: TranslationKey;
-  sublabelKey: TranslationKey;
-  descriptionKey: TranslationKey;
-}> = [
-  {
-    value: "spatial",
-    icon: Sparkles,
-    labelKey: "playbar.quality.spatial.label",
-    sublabelKey: "playbar.quality.spatial.sublabel",
-    descriptionKey: "playbar.quality.spatial.description",
-  },
-  {
-    value: "lossless",
-    icon: Radio,
-    labelKey: "playbar.quality.lossless.label",
-    sublabelKey: "playbar.quality.lossless.sublabel",
-    descriptionKey: "playbar.quality.lossless.description",
-  },
-  {
-    value: "high",
-    icon: RadioReceiver,
-    labelKey: "playbar.quality.high.label",
-    sublabelKey: "playbar.quality.high.sublabel",
-    descriptionKey: "playbar.quality.high.description",
-  },
-  {
-    value: "standard",
-    icon: CircleDot,
-    labelKey: "playbar.quality.standard.label",
-    sublabelKey: "playbar.quality.standard.sublabel",
-    descriptionKey: "playbar.quality.standard.description",
-  },
-];
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
