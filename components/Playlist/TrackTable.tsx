@@ -460,7 +460,7 @@ export default function TracklistTable({
                 const isLiked = likeSet.has(track.id);
                 return (
                   <SongContextMenu
-                    key={track.id}
+                    key={`${track.id}-${index}`}
                     song={track}
                     isActive={isActive}
                     isPlaying={isPlaying}
@@ -502,7 +502,7 @@ export default function TracklistTable({
                   const isLiked = likeSet.has(track.id);
                   return (
                     <SongContextMenu
-                      key={track.id}
+                      key={`${track.id}-${virtualRow.index}`}
                       song={track}
                       isActive={isActive}
                       isPlaying={isPlaying}

@@ -8,8 +8,12 @@ import { forwardRef, memo, useCallback } from "react";
 import { toast } from "sonner";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
+import { motion } from "framer-motion";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { TableCell, TableRow } from "@/components/ui/table";
+
+const MotionTableRow = motion.create(TableRow as any) as any;
+
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -132,7 +136,7 @@ export const TrackRow = memo(
     );
     const smartRouter = useSmartRouter();
     return (
-      <TableRow
+      <MotionTableRow
         ref={ref}
         className={cn(
           "group hover:bg-white/10 border-none transition-colors cursor-default",
@@ -140,6 +144,13 @@ export const TrackRow = memo(
           className,
         )}
         onDoubleClick={() => onPlay(track)}
+        initial={{ opacity: 0, y: 50, rotateX: 15 }}
+        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+        transition={{
+          duration: 0.4,
+          ease: "easeOut",
+          delay: (index % 10) * 0.05,
+        }}
         {...props}
       >
         <TableCell className="text-center font-medium rounded-l-md">
@@ -176,7 +187,7 @@ export const TrackRow = memo(
               <span className="text-zinc-400 text-sm mt-0.5 font-normal truncate cursor-pointer">
                 {track.ar.slice(0, 2).map((a, idx, arr) => (
                   <span
-                    key={a.id}
+                    key={`${a.id}-${idx}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       smartRouter.push(`/artist?id=${a.id}`);
@@ -235,7 +246,7 @@ export const TrackRow = memo(
             <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
           </div>
         </TableCell>
-      </TableRow>
+      </MotionTableRow>
     );
   }),
   (prev: TrackRowProps, next: TrackRowProps) =>

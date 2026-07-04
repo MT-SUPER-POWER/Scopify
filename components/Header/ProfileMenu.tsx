@@ -55,10 +55,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
     if (!isLoggedIn) return;
     try {
       setIsSignLoading(true);
-      const cookie =
-        typeof window !== "undefined"
-          ? localStorage.getItem("music_cookie")
-          : null;
+      const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") : null;
       const info = await vipSignInfo(cookie ?? undefined);
       const records = info.data?.data ?? [];
       const signedToday = records.some((r) => r.today);
@@ -88,10 +85,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
       return;
     }
 
-    const cookie =
-      typeof window !== "undefined"
-        ? localStorage.getItem("music_cookie")
-        : null;
+    const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") : null;
     try {
       setIsSignLoading(true);
       const res = await vipSign(cookie ?? undefined);
@@ -146,9 +140,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const ProfileCallback = (id: "download" | "about") => {
     switch (id) {
       case "download":
-        window.location.replace(
-          "https://github.com/MT-SUPER-POWER/Scopify/releases",
-        );
+        window.location.replace("https://github.com/MT-SUPER-POWER/Scopify/releases");
         break;
       case "about":
         smartRouter.push("/me");
@@ -187,10 +179,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
             {/* 简介 */}
             {isLoggedIn && (
-              <DropdownMenuItem
-                asChild
-                className="rounded-lg px-3 py-2 text-[15px]"
-              >
+              <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
                 <Link href={`/profile?userId=${userId}`}>
                   <FiUser className="mr-2 h-5 w-5" />
                   <span>{t("profile.menu.profile")}</span>
@@ -260,9 +249,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 className="rounded-lg px-3 py-2 text-[15px]"
               >
                 <FiLogOut className="text-[#fe4144] mr-2 h-5 w-5" />
-                <span className="text-[#fe4144]">
-                  {t("common.action.logout")}
-                </span>
+                <span className="text-[#fe4144]">{t("common.action.logout")}</span>
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem
