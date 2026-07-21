@@ -1,11 +1,17 @@
 {
   "version": 1,
   "skills": {
-    "caveman-commit": {
-      "source": "juliusbrussee/caveman",
+    "playwright-best-practices": {
+      "source": "currents-dev/playwright-best-practices-skill",
       "sourceType": "github",
-      "skillPath": "skills/caveman-commit/SKILL.md",
-      "computedHash": "f028652defd5fdeddcce2994083cb1a7b201ee827bba8e2495546ee159fca3de"
+      "skillPath": "playwright-best-practices/SKILL.md",
+      "computedHash": "88623575c97314e115f0e361a7d942e31d3b7a4e8925832257e1ad33f52096e4"
+    },
+    "playwright-cli": {
+      "source": "microsoft/playwright-cli",
+      "sourceType": "github",
+      "skillPath": "skills/playwright-cli/SKILL.md",
+      "computedHash": "438b922468b7bb2ab5ce4a0f318fc65db93337f0df03908a5476effbae9487e6"
     }
   }
 }

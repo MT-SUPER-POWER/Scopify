@@ -259,6 +259,7 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
   - [ ] 昵称检测 API(`/nickname/check`) 接入，提前告知用户是否可以修改为该昵称
 - [ ] 好友功能的完善
   - [ ] Followers 和 Followings 的 Modal 展示
+- [ ] 属于 VIP 的歌曲，加区分的 LOGO
 
 ### 提案
 

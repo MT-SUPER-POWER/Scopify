@@ -1,0 +1,12 @@
+{
+  "name": "git-conventions",
+  "description": "Enforce Conventional Commits with structured body, pre-commit checks, and safe git defaults for any project",
+  "version": "1.0.0",
+  "author": {
+    "name": "MT-SUPER-POWER"
+  },
+  "homepage": "https://github.com/MT-SUPER-POWER/mt-super-power-marketplace",
+  "repository": "https://github.com/MT-SUPER-POWER/mt-super-power-marketplace",
+  "license": "MIT",
+  "keywords": ["git", "conventions", "commits", "conventional-commits", "code-quality"]
+}
