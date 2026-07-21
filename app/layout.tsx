@@ -2,17 +2,20 @@
 
 import "./globals.css";
 import type { Metadata } from "next";
+
 import { I18nProvider } from "@/components/i18n-provider";
+import { QueryProvider } from "@/components/shared/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
+
 import { ThemeProvider } from "../components/theme-provider";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RESOURCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // FOR BETTER SEO
 export const metadata: Metadata = {
-  title: "Scopify",
   description: "Music Player React Project",
+  title: "Scopify",
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -38,7 +41,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <I18nProvider>
-            {children}
+            <QueryProvider>{children}</QueryProvider>
             <Toaster position="top-center" duration={3000} />
           </I18nProvider>
         </ThemeProvider>

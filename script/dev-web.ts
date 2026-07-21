@@ -46,7 +46,8 @@ function isPortOpen(host: string, port: number, timeoutMs = 300) {
 }
 
 async function clearStaleNextDevLock(host: string, port: number) {
-  const lockPath = join(process.cwd(), "renderer", "dev", "lock");
+  const distDir = process.env.NEXT_DIST_DIR || "renderer";
+  const lockPath = join(process.cwd(), distDir, "dev", "lock");
   if (!existsSync(lockPath)) {
     return;
   }

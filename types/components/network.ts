@@ -1,7 +1,8 @@
 export interface NetworkRetryStateProps {
-  title: string;
-  subtitle: string;
-  onRetry: () => void;
   actionLabel?: string;
   compact?: boolean;
+  isRetrying?: boolean;
+  onRetry: () => void;
+  subtitle: string;
+  title: string;
 }

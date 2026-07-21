@@ -1,16 +1,21 @@
-import request from "@/lib/web/request";
-import type { AlbumSubscribeResponse } from "@/types/api/album";
+import type {
+  AlbumDetailResponse,
+  AlbumSublistParams,
+  AlbumSubscribeResponse,
+} from "@/types/api/album";
+
+import request, { requestData } from "@/lib/web/request";
 
 // 获取已收藏专辑列表
-export const getUserAlbumSublist = (params?: { limit?: number; offset?: number }) => {
+export const getUserAlbumSublist = (params?: AlbumSublistParams) => {
   return request({
-    url: "/album/sublist",
     method: "get",
     params: {
-      limit: params?.limit || 25,
-      offset: params?.offset || 0,
       cookie: localStorage.getItem("music_cookie") || "",
+      limit: params?.limit ?? 25,
+      offset: params?.offset ?? 0,
     },
+    url: "/album/sublist",
   });
 };
 
@@ -23,11 +28,22 @@ export const getAlbumDetail = (id: number | string) => {
   });
 };
 
-export const subscribeAlbum = (id: number | string, subscribe: boolean) => {
-  return request.get<AlbumSubscribeResponse>("/album/sub", {
+export function getAlbumDetailData(id: number | string, signal?: AbortSignal) {
+  return requestData<AlbumDetailResponse>({
+    method: "get",
+    params: { id },
+    signal,
+    url: "/album",
+  });
+}
+
+export function subscribeAlbum(id: number | string, subscribe: boolean) {
+  return requestData<AlbumSubscribeResponse>({
+    method: "get",
     params: {
       id,
       t: subscribe ? 1 : 0,
     },
+    url: "/album/sub",
   });
-};
+}

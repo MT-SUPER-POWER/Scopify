@@ -1,6 +1,5 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import { AlbumActions } from "@/components/album/AlbumActions";
 import { AlbumHeader } from "@/components/album/AlbumHeader";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
@@ -14,18 +13,20 @@ export default function AlbumPage() {
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
   const {
-    albumId,
     ALBUM_INFO,
-    themeColor,
-    isLoading,
-    isError,
-    reloadKey,
-    setReloadKey,
-    isPlaying,
-    isAlbumCollected,
-    isTogglingAlbumSubscribe,
-    togglePlay,
+    albumId,
+    handleRefresh,
     handleToggleAlbumSubscribe,
+    isAlbumCollected,
+    isError,
+    isLoading,
+    isPlaying,
+    isRefetchError,
+    isRefreshing,
+    isTogglingAlbumSubscribe,
+    themeColor,
+    togglePlay,
+    tracks,
   } = useAlbumData();
 
   if (!albumId)
@@ -42,7 +43,7 @@ export default function AlbumPage() {
       </div>
     );
 
-  if (isError || (!isLoading && !ALBUM_INFO))
+  if ((isError && !ALBUM_INFO) || (!isLoading && !ALBUM_INFO))
     return (
       <div className="min-h-screen w-full bg-[#121212] px-6 py-24">
         <div className="mb-6 opacity-70">
@@ -52,10 +53,12 @@ export default function AlbumPage() {
           title={t("network.offline.title")}
           subtitle={t("album.empty.unavailable")}
           actionLabel={t("network.action.refresh")}
-          onRetry={() => setReloadKey((k) => k + 1)}
+          onRetry={() => void handleRefresh()}
         />
       </div>
     );
+
+  if (!ALBUM_INFO) return null;
 
   return (
     <div
@@ -63,26 +66,43 @@ export default function AlbumPage() {
       className="relative flex min-h-screen w-full flex-col bg-[#121212] font-sans"
     >
       <div
-        className="pointer-events-none absolute top-0 right-0 left-0 z-0 h-100 opacity-60 transition-colors duration-700 md:h-125"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 transition-colors duration-700 md:h-125"
         style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
       />
       <AlbumHeader
-        info={ALBUM_INFO!}
-        themeColor={themeColor}
+        info={ALBUM_INFO}
         onArtistClick={() => {
-          if (ALBUM_INFO?.artistId) smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
+          if (ALBUM_INFO.artistId) void smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
         }}
       />
+      {isRefetchError && (
+        <div className="relative z-10 px-6">
+          <NetworkRetryState
+            compact
+            title={t("album.status.updateFailed")}
+            subtitle={t("album.status.updateFailedDescription")}
+            actionLabel={t("network.action.refresh")}
+            isRetrying={isRefreshing}
+            onRetry={() => void handleRefresh()}
+          />
+        </div>
+      )}
       <div className="relative z-10 flex flex-1 flex-col bg-linear-to-b from-black/20 via-[#121212] via-20% to-[#121212]">
         <AlbumActions
           isPlaying={isPlaying}
           isAlbumCollected={isAlbumCollected}
           isTogglingAlbumSubscribe={isTogglingAlbumSubscribe}
           onPlay={togglePlay}
-          onToggleSubscribe={handleToggleAlbumSubscribe}
+          onToggleSubscribe={() => void handleToggleAlbumSubscribe()}
         />
         <div className="min-w-0 flex-1 px-6 pb-10">
-          <TracklistTable disableVirtualization hideDateColumn hideLikeColumn readonly />
+          <TracklistTable
+            disableVirtualization
+            hideDateColumn
+            hideLikeColumn
+            readonly
+            tracks={tracks}
+          />
         </div>
       </div>
     </div>

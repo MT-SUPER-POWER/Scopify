@@ -29,7 +29,7 @@ const frontendDevPort = envNumber(
 
 const nextConfig: NextConfig = {
   output: "export",
-  distDir: "renderer",
+  distDir: process.env.NEXT_DIST_DIR || "renderer",
   trailingSlash: true,
   images: { unoptimized: true },
   serverExternalPackages: [],

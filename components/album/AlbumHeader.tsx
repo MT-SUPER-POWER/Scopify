@@ -1,37 +1,26 @@
-import {
-  ArrowDownCircle,
-  Heart,
-  List,
-  MoreHorizontal,
-  Pause,
-  Play,
-  Search,
-  Shuffle,
-  X,
-} from "lucide-react";
 import Image from "next/image";
-import type { AlbumInfo } from "@/hooks/album/useAlbumData";
-import { formatDuration } from "@/lib/utils";
+
+import type { AlbumInfo } from "@/types/album";
+
 import { useI18n } from "@/store/module/i18n";
 
 interface AlbumHeaderProps {
   info: AlbumInfo;
-  themeColor: string;
   onArtistClick: () => void;
 }
 
-export function AlbumHeader({ info, themeColor, onArtistClick }: AlbumHeaderProps) {
+export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
   const { t } = useI18n();
 
   return (
     <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
-      <div className="h-48 w-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.02] lg:h-56 lg:w-56">
+      <div className="size-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.02] lg:size-56">
         <Image
           width={200}
           height={200}
           src={info.cover || ""}
           alt={info.title}
-          className="h-full w-full object-cover"
+          className="size-full object-cover"
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col pt-1 text-white md:pt-2">
@@ -68,10 +57,10 @@ export function AlbumHeader({ info, themeColor, onArtistClick }: AlbumHeaderProp
                 height={28}
                 src={info.artistAvatar}
                 alt={info.artistName}
-                className="h-7 w-7 rounded-full object-cover"
+                className="size-7 rounded-full object-cover"
               />
             ) : (
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-600 text-xs font-bold">
+              <div className="flex size-7 items-center justify-center rounded-full bg-zinc-600 text-xs font-bold">
                 {info.artistName?.charAt(0) || "A"}
               </div>
             )}

@@ -2453,6 +2453,12 @@ export interface TranslateFn {
    */
   (key: "album.toast.fetchFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 暂时无法刷新专辑，请检查网络后重试
+   * zh-TW: 暫時無法重新整理專輯，請檢查網路後再試
+   * en-US: Couldn't refresh this album. Check your connection and try again.
+   */
+  (key: "album.toast.refreshFailed", params?: TranslationParams): string;
+  /**
    * zh-CN: 已收藏专辑
    * zh-TW: 已收藏專輯
    * en-US: Album saved
@@ -2494,6 +2500,18 @@ export interface TranslateFn {
    * en-US: The requested album could not be found or is unavailable
    */
   (key: "album.empty.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内容暂未更新
+   * zh-TW: 內容暫未更新
+   * en-US: Content wasn't updated
+   */
+  (key: "album.status.updateFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请检查网络后重试
+   * zh-TW: 請檢查網路後再試
+   * en-US: Check your connection and try again.
+   */
+  (key: "album.status.updateFailedDescription", params?: TranslationParams): string;
   /**
    * zh-CN: 未知年份
    * zh-TW: 未知年份

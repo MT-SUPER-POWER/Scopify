@@ -12,12 +12,15 @@
 
 # testing
 /coverage
+/playwright-report/
+/test-results/
 
 # next.js
 /.next/
 /out/
 /dist/
 /renderer/
+/renderer-e2e/
 
 # production
 /build
@@ -33,6 +36,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+.codex-*.log
 
 # env files (can opt-in for committing if needed)
 .env

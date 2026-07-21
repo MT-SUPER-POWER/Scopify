@@ -40,7 +40,7 @@ test("page cache returns a fresh value written to disk", () => {
 
   store.set("playlist:42", { songs: [1, 2, 3] }, 60_000);
 
-  expect(store.get("playlist:42")).toEqual({ songs: [1, 2, 3] });
+  expect(store.get<{ songs: number[] }>("playlist:42")).toEqual({ songs: [1, 2, 3] });
 });
 
 test("page cache removes expired values", () => {

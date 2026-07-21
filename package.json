@@ -29,6 +29,7 @@
     "dev": "bun run build:web && cross-env ELECTRON_RENDERER_MODE=static bunx electron-vite dev",
     "dev:fast": "cross-env ELECTRON_RENDERER_MODE=static bunx electron-vite dev",
     "start": "bunx serve renderer -p 3000",
+    "test:e2e": "playwright test",
     "dev:backend": "bun run backend/api-enhanced/app.js",
     "dev:web": "bun run script/dev-web.ts",
     "dev:full": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"bun run dev:web\" \"bun run dev:backend\"",
@@ -38,6 +39,8 @@
     "build:mac": "bun run build:web && bun run build:electron && electron-builder -- mac"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.3",
+    "@tanstack/react-query-persist-client": "^5.101.3",
     "axios": "^1.18.0",
     "electron-log": "^5.4.4",
     "electron-serve": "^3.0.1",
@@ -57,6 +60,7 @@
     "@pixi/filter-bulge-pinch": "^5.1.1",
     "@pixi/filter-color-matrix": "^7.4.3",
     "@pixi/sprite": "^7.4.3",
+    "@playwright/test": "^1.61.1",
     "@radix-ui/react-collapsible": "^1.1.14",
     "@radix-ui/react-label": "^2.1.10",
     "@radix-ui/react-slot": "^1.3.0",

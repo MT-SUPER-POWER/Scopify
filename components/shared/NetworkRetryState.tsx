@@ -1,14 +1,16 @@
 "use client";
 
 import { RefreshCw, WifiOff } from "lucide-react";
+
 import type { NetworkRetryStateProps } from "@/types/components/network";
 
 export function NetworkRetryState({
-  title,
-  subtitle,
-  onRetry,
   actionLabel,
   compact,
+  isRetrying = false,
+  onRetry,
+  subtitle,
+  title,
 }: NetworkRetryStateProps) {
   return (
     <div
@@ -21,7 +23,7 @@ export function NetworkRetryState({
       <div
         className={compact ? "flex min-w-0 items-center gap-3" : "flex flex-col items-center gap-2"}
       >
-        <WifiOff className={compact ? "h-5 w-5 shrink-0 text-red-300" : "h-9 w-9 text-red-300"} />
+        <WifiOff className={compact ? "size-5 shrink-0 text-red-300" : "size-9 text-red-300"} />
         <div className={compact ? "min-w-0" : ""}>
           <p className="text-sm font-semibold text-white">{title}</p>
           <p className="mt-1 text-xs text-zinc-400">{subtitle}</p>
@@ -30,9 +32,10 @@ export function NetworkRetryState({
       <button
         type="button"
         onClick={onRetry}
-        className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#ff3b5c] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#ff5270]"
+        disabled={isRetrying}
+        className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#ff3b5c] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#ff5270] disabled:cursor-wait disabled:opacity-70"
       >
-        <RefreshCw className="h-3.5 w-3.5" />
+        <RefreshCw className={`size-3.5 ${isRetrying ? "animate-spin" : ""}`} />
         {actionLabel}
       </button>
     </div>
