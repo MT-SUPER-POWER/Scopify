@@ -3,6 +3,8 @@ export type { MusicCommentParams } from "./comment";
 export type {
   NeteaseComment,
   NeteaseLyric,
+  NeteaseLyricBranch,
+  NeteaseLyricUser,
   RawSongDetail,
   SongComment,
   SongDetail,

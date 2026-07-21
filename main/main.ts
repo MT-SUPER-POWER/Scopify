@@ -15,6 +15,7 @@ import {
   logger,
 } from "./constants.js";
 import { registerIpcHandlers } from "./module/ipc.js";
+import { initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
 import initializeLoginWindow from "./module/login.js";
 import { applyElectronProxy } from "./module/proxy.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
@@ -191,6 +192,9 @@ function createWindow() {
 
 function setupWindowModules(win: BrowserWindowType) {
   registerIpcHandlers(win);
+  initializeDesktopLyricCompanion(win, {
+    rendererBaseUrl: useStaticRenderer ? "app://-/" : devBase,
+  });
   initializeUpdater(win);
 
   if (process.platform !== "darwin") {

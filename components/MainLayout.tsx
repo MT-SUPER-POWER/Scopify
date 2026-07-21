@@ -9,6 +9,9 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
+import { useAudioVisualizer } from "@/hooks/player/useAudioVisualizer";
+import { useDesktopLyricPublisher } from "@/hooks/player/useDesktopLyricPublisher";
+import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -18,7 +21,7 @@ import { useTimeStore } from "@/store/module/time";
 // status store
 import { useUiStore } from "@/store/module/ui";
 import Header from "../components/Header";
-import LyricsModal from "../components/LyricModal";
+import { LyricStageMount } from "../components/lyrics/LyricStageMount";
 import { PlayerBar } from "../components/PlayerBar";
 import { SearchModal } from "../components/SearchModal";
 import AppCloseDialog from "./AppCloseDialog";
@@ -37,6 +40,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const lastStoreWriteRef = useRef(0);
   const hasRestoredProgressRef = useRef(false); // 必须声明：标记是否已经恢复过进度
   const [isMounted, setIsMounted] = useState(false);
+
+  useAudioVisualizer(audioRef);
+  useDesktopLyricPublisher();
 
   useEffect(() => {
     setIsMounted(true);
@@ -133,6 +139,33 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     }
   }, [router]);
 
+  useEffect(() => {
+    const unsubscribe = window.electronAPI?.onDesktopLyricCommand((command) => {
+      switch (command.type) {
+        case "next":
+          void usePlayerStore.getState().playNext();
+          break;
+        case "previous":
+          void usePlayerStore.getState().playPrev();
+          break;
+        case "seek":
+          window.dispatchEvent(new CustomEvent("player-seek", { detail: command.positionMs }));
+          break;
+        case "toggle-like":
+          void toggleCurrentSongLike().catch((error) => {
+            console.warn("[desktop-lyric] failed to toggle like", error);
+          });
+          break;
+        case "toggle-play":
+          usePlayerStore.getState().togglePlaying();
+          break;
+        default:
+          window.dispatchEvent(new CustomEvent("desktop-lyric:stage-command", { detail: command }));
+      }
+    });
+    return unsubscribe;
+  }, []);
+
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     groupId: "music-player-layout",
     storage:
@@ -175,7 +208,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       {/* 模态注册 */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <AppCloseDialog />
-      <LyricsModal />
+      <LyricStageMount />
 
       {/* 左右结构 */}
       <main className="relative min-h-0 w-full flex-1">
@@ -251,6 +284,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
         {/* NOTE: 所有的原生音频事件绑定在这里 */}
         <audio
           preload="auto"
+          crossOrigin="anonymous"
           className="hidden"
           ref={audioRef}
           // 下一曲了

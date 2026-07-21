@@ -121,16 +121,16 @@ function PlayerBarStatAction({
 
 export const PlayerBar = ({
   className,
-  onCloseLyricModal,
+  onCloseLyricStage,
   style,
   bgClass,
   variant = "default",
 }: {
   className?: string;
-  onCloseLyricModal?: () => void;
+  onCloseLyricStage?: () => void;
   style?: React.CSSProperties;
   bgClass?: string;
-  variant?: "default" | "lyric-modal";
+  variant?: "default" | "lyric-stage";
 }) => {
   const { t } = useI18n();
   const isElectron = IS_ELECTRON;
@@ -175,7 +175,7 @@ export const PlayerBar = ({
   const likelist = useUserStore((s) => s.likeListIDs) || [];
   const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
-  const isLyricModalBar = variant === "lyric-modal";
+  const isLyricStageBar = variant === "lyric-stage";
   const musicQuality = usePlayerStore((s) => s.musicQuality);
   const setMusicQuality = usePlayerStore((s) => s.setMusicQuality);
 
@@ -239,7 +239,7 @@ export const PlayerBar = ({
       <div
         className={cn(
           "z-20 h-17 w-full items-center px-4 transition-all duration-300 ease-linear lg:h-20",
-          isLyricModalBar
+          isLyricStageBar
             ? "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4"
             : "flex justify-between",
         )}
@@ -248,7 +248,7 @@ export const PlayerBar = ({
         <div
           className={cn(
             "flex min-w-0 items-center gap-3 lg:gap-4",
-            isLyricModalBar ? "justify-start" : "flex-1 lg:flex-3",
+            isLyricStageBar ? "justify-start" : "flex-1 lg:flex-3",
           )}
         >
           {/* 专辑封面 */}
@@ -276,7 +276,7 @@ export const PlayerBar = ({
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (onCloseLyricModal) onCloseLyricModal();
+                    if (onCloseLyricStage) onCloseLyricStage();
                     else closeLyrics();
                   }}
                 >
@@ -300,7 +300,7 @@ export const PlayerBar = ({
           <div
             className={cn(
               "flex min-w-0 flex-col justify-center",
-              isLyricModalBar
+              isLyricStageBar
                 ? "max-w-[min(26vw,280px)]"
                 : "max-w-[120px] sm:max-w-[160px] lg:max-w-[240px]",
             )}
@@ -310,7 +310,7 @@ export const PlayerBar = ({
                 <span
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (onCloseLyricModal) onCloseLyricModal();
+                    if (onCloseLyricStage) onCloseLyricStage();
                     else closeLyrics();
                   }}
                   className="cursor-pointer truncate text-sm font-medium text-white hover:underline"
@@ -323,7 +323,7 @@ export const PlayerBar = ({
                       key={a.id}
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (useUiStore.getState().isLyricsOpen) onCloseLyricModal?.();
+                        if (useUiStore.getState().isLyricsOpen) onCloseLyricStage?.();
                         smartRouter.push(`/artist?id=${a.id}`);
                       }}
                       title={`/artist?id=${a.id}`}
@@ -348,7 +348,7 @@ export const PlayerBar = ({
           <div
             className={cn(
               "hidden shrink-0 items-center gap-4 sm:flex lg:gap-5",
-              isLyricModalBar && "hidden",
+              isLyricStageBar && "hidden",
             )}
           >
             <PlayerBarStatAction
@@ -382,7 +382,7 @@ export const PlayerBar = ({
         <div
           className={cn(
             "flex min-w-0 flex-col items-center justify-center gap-1.5",
-            isLyricModalBar ? "w-[clamp(280px,40vw,560px)]" : "flex-2 lg:flex-4",
+            isLyricStageBar ? "w-[clamp(280px,40vw,560px)]" : "flex-2 lg:flex-4",
           )}
         >
           <div className="mt-1 flex items-center gap-4 lg:gap-5">
@@ -451,13 +451,15 @@ export const PlayerBar = ({
         <div
           className={cn(
             "flex items-center justify-end gap-2 text-[#b3b3b3] lg:gap-3",
-            isLyricModalBar ? "min-w-0" : "flex-1 lg:flex-3",
+            isLyricStageBar ? "min-w-0" : "flex-1 lg:flex-3",
           )}
         >
-          {/* 歌词模态界面 */}
+          {/* Lyric Stage */}
           <button
             type="button"
             onClick={() => toggleLyrics()}
+            title="Lyrics"
+            aria-label="Lyrics"
             className={`transition-colors hover:text-white ${isLyricsOpen ? "text-[#1db954]" : ""}`}
           >
             <Mic2 className="h-4 w-4 lg:h-5 lg:w-5" />

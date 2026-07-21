@@ -4,6 +4,7 @@ import type {
   SongMusicDetailResponse,
   SongUrlV1Response,
   CheckMusicResponse,
+  NeteaseLyric,
 } from "@/types/api/music";
 import request from "../web/request";
 
@@ -28,7 +29,7 @@ export async function greySongUrlMatch(
 }
 
 export async function getLyric(id: number | string) {
-  return request.get("/lyric/new", { params: { id: id } });
+  return request.get<NeteaseLyric>("/lyric/new", { params: { id } });
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

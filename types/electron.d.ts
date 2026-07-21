@@ -1,5 +1,13 @@
 import type { BackendStartupStatus } from "@/types/backend";
 import type { AppConfig } from "@/types/config";
+import type {
+  DesktopLyricCommand,
+  DesktopLyricPreferences,
+  DesktopLyricPreferencesUpdate,
+  DesktopLyricSnapshot,
+  DesktopLyricSnapshotInput,
+  DesktopLyricSnapshotUpdate,
+} from "@/types/desktopLyric";
 
 export type UpdateStatus =
   "idle" | "checking" | "available" | "not-available" | "downloading" | "downloaded" | "error";
@@ -50,6 +58,26 @@ export interface ElectronAPI {
   onControlAudio: (callback: (action: "toggle-play" | "next" | "prev") => void) => void;
   onBackendStatusChanged: (callback: (status: BackendStartupStatus) => void) => void;
   onUpdateStatusChanged: (callback: (status: UpdateState) => void) => void;
+  openDesktopLyric: () => Promise<boolean>;
+  toggleDesktopLyric: () => Promise<boolean>;
+  closeDesktopLyric: () => Promise<boolean>;
+  getDesktopLyricSnapshot: () => Promise<DesktopLyricSnapshot | null>;
+  publishDesktopLyricSnapshot: (
+    snapshot: DesktopLyricSnapshotInput,
+  ) => Promise<DesktopLyricSnapshot | null>;
+  updateDesktopLyricSnapshot: (
+    update: DesktopLyricSnapshotUpdate,
+  ) => Promise<DesktopLyricSnapshot | null>;
+  getDesktopLyricPreferences: () => Promise<DesktopLyricPreferences | null>;
+  updateDesktopLyricPreferences: (
+    update: DesktopLyricPreferencesUpdate,
+  ) => Promise<DesktopLyricPreferences | null>;
+  sendDesktopLyricCommand: (command: DesktopLyricCommand) => void;
+  onDesktopLyricSnapshot: (callback: (snapshot: DesktopLyricSnapshot) => void) => () => void;
+  onDesktopLyricPreferences: (
+    callback: (preferences: DesktopLyricPreferences) => void,
+  ) => () => void;
+  onDesktopLyricCommand: (callback: (command: DesktopLyricCommand) => void) => () => void;
 }
 
 declare global {

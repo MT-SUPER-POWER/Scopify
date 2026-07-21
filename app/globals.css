@@ -227,6 +227,11 @@ img,
   -webkit-touch-callout: none;
 }
 
+.desktop-lyrics-html,
+.desktop-lyrics-body {
+  background: transparent !important;
+}
+
 @keyframes eq-play {
   0%,
   100% {

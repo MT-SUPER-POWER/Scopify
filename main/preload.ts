@@ -1,5 +1,13 @@
 import { contextBridge, ipcRenderer } from "electron";
 import type { BackendStartupStatus } from "@/types/backend";
+import type {
+  DesktopLyricCommand,
+  DesktopLyricPreferences,
+  DesktopLyricPreferencesUpdate,
+  DesktopLyricSnapshot,
+  DesktopLyricSnapshotInput,
+  DesktopLyricSnapshotUpdate,
+} from "@/types/desktopLyric";
 import type { ElectronAPI } from "@/types/electron";
 
 // NOTE: 写好了接口，记得在 types/electron.d.ts 中声明类型
@@ -78,6 +86,40 @@ const electronAPI: ElectronAPI = {
     ipcRenderer.on("updater:status-changed", (_event, status) => {
       callback(status);
     });
+  },
+  openDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:open"),
+  toggleDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:toggle"),
+  closeDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:close"),
+  getDesktopLyricSnapshot: () => ipcRenderer.invoke("desktop-lyric:get-snapshot"),
+  publishDesktopLyricSnapshot: (snapshot: DesktopLyricSnapshotInput) =>
+    ipcRenderer.invoke("desktop-lyric:publish-snapshot", snapshot),
+  updateDesktopLyricSnapshot: (update: DesktopLyricSnapshotUpdate) =>
+    ipcRenderer.invoke("desktop-lyric:update-snapshot", update),
+  getDesktopLyricPreferences: () => ipcRenderer.invoke("desktop-lyric:get-preferences"),
+  updateDesktopLyricPreferences: (update: DesktopLyricPreferencesUpdate) =>
+    ipcRenderer.invoke("desktop-lyric:update-preferences", update),
+  sendDesktopLyricCommand: (command: DesktopLyricCommand) =>
+    ipcRenderer.send("desktop-lyric:command", command),
+  onDesktopLyricSnapshot: (callback: (snapshot: DesktopLyricSnapshot) => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, snapshot: DesktopLyricSnapshot) => {
+      callback(snapshot);
+    };
+    ipcRenderer.on("desktop-lyric:snapshot", listener);
+    return () => ipcRenderer.removeListener("desktop-lyric:snapshot", listener);
+  },
+  onDesktopLyricPreferences: (callback: (preferences: DesktopLyricPreferences) => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, preferences: DesktopLyricPreferences) => {
+      callback(preferences);
+    };
+    ipcRenderer.on("desktop-lyric:preferences", listener);
+    return () => ipcRenderer.removeListener("desktop-lyric:preferences", listener);
+  },
+  onDesktopLyricCommand: (callback: (command: DesktopLyricCommand) => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, command: DesktopLyricCommand) => {
+      callback(command);
+    };
+    ipcRenderer.on("desktop-lyric:command", listener);
+    return () => ipcRenderer.removeListener("desktop-lyric:command", listener);
   },
 };
 

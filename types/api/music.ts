@@ -131,43 +131,56 @@ export interface SongComment {
   comments: NeteaseComment[];
 }
 
-// 歌词行格式
-interface LyricLine {
+/** A lyric variant returned by NetEase's `/lyric/new` endpoint. */
+export interface NeteaseLyricBranch {
   version: number;
-  lyric: string;
+  lyric: string | null;
+  pureMusic?: boolean;
+  [key: string]: unknown;
 }
 
-// 用户信息（歌词贡献者）
-interface LyricUser {
+/** A NetEase user credited for a lyric or its translation. */
+export interface NeteaseLyricUser {
   id: number;
   status: number;
   demand: number;
   userid: number;
   nickname: string;
   uptime: number;
+  [key: string]: unknown;
 }
 
-// 歌词 API 响应
+/**
+ * Raw response from NetEase's `/lyric/new` endpoint.
+ *
+ * Keep this object intact in state and cache. New fields are occasionally
+ * introduced by the upstream API, so the index signature intentionally
+ * preserves them until a presentation adapter chooses to consume them.
+ */
 export interface NeteaseLyric {
   sgc?: boolean; // 歌词是否由系统自动生成（非人工上传）
   sfy?: boolean; // 歌词是否与歌曲匹配/适配
   qfy?: boolean; // 歌词质量是否达标
-  transUser?: LyricUser; // 翻译者
-  lyricUser?: LyricUser; // 原词作者
-  lrc?: LyricLine; // 原文歌词（LRC 格式）
-  klyric?: LyricLine; // 逐字歌词（卡拉OK）
-  tlyric?: LyricLine; // 翻译歌词
-  romalrc?: LyricLine; // 罗马音歌词
-  yrc?: LyricLine; // 逐字原文歌词（YRC 格式）
-  ytlrc?: LyricLine; // 逐字翻译歌词
-  yromalrc?: LyricLine; // 逐字罗马音歌词
+  pureMusic?: boolean;
+  transUser?: NeteaseLyricUser; // 翻译者
+  lyricUser?: NeteaseLyricUser; // 原词作者
+  lrc?: NeteaseLyricBranch; // 原文歌词（LRC 格式）
+  klyric?: NeteaseLyricBranch; // 逐字歌词（卡拉OK）
+  tlyric?: NeteaseLyricBranch; // 翻译歌词
+  romalrc?: NeteaseLyricBranch; // 罗马音歌词
+  yrc?: NeteaseLyricBranch; // 逐字原文歌词（YRC 格式）
+  ytlrc?: NeteaseLyricBranch; // 逐字翻译歌词
+  yromalrc?: NeteaseLyricBranch; // 逐字罗马音歌词
+  code: number;
+  [key: string]: unknown;
 }
 
-export function pruneNeteaseLyric(raw: any): NeteaseLyric {
-  return {
-    lrc: raw.lrc?.lyric || "",
-    yrc: raw.yrc?.lyric || "",
-  };
+/**
+ * @deprecated The player now stores raw lyric responses losslessly. Retained
+ * for callers during the migration from the old LRC/YRC-only shape.
+ */
+export function pruneNeteaseLyric(raw: NeteaseLyric | null): NeteaseLyric | null {
+  return raw;
 }
 
 /** 音质等级 (对应 /song/url/v1 的 level 参数) */

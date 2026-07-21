@@ -46,12 +46,12 @@
 
 > 特别感谢以下项目的开源：
 
-1. [Apple Music Like Lyric](https://github.com/Steve-xmh/applemusic-like-lyrics)
+1. [Folia](https://github.com/chthollyphile/folia-major/tree/4f050885630183c04f7eda946300f6f96988ae0f) — Lyric Stage and desktop-lyric presentation source snapshot (AGPL-3.0)
 2. [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)
 
 ### 参考文档
 
-1. [Apple Music Like Lyric Doc](https://amll-dev.github.io/applemusic-like-lyrics/reference/react-full/typealiassongdata/)
+1. [Folia Source Snapshot](https://github.com/chthollyphile/folia-major/tree/4f050885630183c04f7eda946300f6f96988ae0f)
 2. [Electron Doc](https://www.electronjs.org/zh/docs/latest/api/app)
 3. [Netease Cloud Music API Doc](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
 4. [Electron Builder Help Doc - Not Official](https://github.com/QDMarkMan/CodeBlog/blob/master/Electron/electron-builder%E6%89%93%E5%8C%85%E8%AF%A6%E8%A7%A3.md)
@@ -160,7 +160,8 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 - 新建歌单及歌单编辑
 - 收藏 / 取消收藏歌单
 - 支持评论区
-- 支持滚动歌词
+- Folia 风格 Lyric Stage：YRC 优先的逐字歌词、翻译/罗马音和九种可持久化的视觉模式
+- Electron 桌面歌词：透明无边框窗口、当前/下一句、逐字高亮、播放/切歌/收藏与窗口偏好
 - 音乐频谱显示
 
 ## 单页展示
@@ -258,7 +259,10 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
   - [ ] 昵称检测 API(`/nickname/check`) 接入，提前告知用户是否可以修改为该昵称
 - [ ] 好友功能的完善
   - [ ] Followers 和 Followings 的 Modal 展示
-- [ ] 桌面歌词
+
+### 提案
+
+- [ ] 可选的 AI 歌曲主题生成：用户配置 Gemini 或 OpenAI-compatible API Key，根据歌曲歌词和封面生成视觉参数。该能力不属于当前 Folia 歌词舞台迁移范围。
 
 ## 版本号规则
 
@@ -270,4 +274,4 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 ## 开源许可
 
-- 本项目基于 [MIT](https://www.gnu.org/licenses/mit-license.html) 许可进行开源
+- 本项目基于 [GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.html) 许可进行开源
