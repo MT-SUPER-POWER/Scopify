@@ -1,4 +1,5 @@
-import { Bell, Github, Users } from "lucide-react";
+import { Bell, Users } from "lucide-react";
+import { FaGithub } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import MockAvatar from "./Avatar";
 import { ProfileMenu } from "./ProfileMenu";
@@ -17,7 +18,7 @@ const RightActions = () => (
       )}
       onClick={() => window.open("https://github.com/MT-SUPER-POWER/scopify")}
     >
-      <Github className="h-5 w-5" />
+      <FaGithub className="h-5 w-5" />
       <span>Github</span>
     </button>
 

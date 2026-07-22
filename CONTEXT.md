@@ -13,8 +13,20 @@ Scopify code copied from or adapted from Folia under AGPL-3.0. It retains Folia'
 _Avoid_: independent implementation, runtime dependency
 
 **Folia Source Snapshot**:
-The immutable Folia source revision from which Scopify adapts lyric-presentation code. The selected snapshot is `4f050885630183c04f7eda946300f6f96988ae0f`.
+The immutable Folia source revision from which Scopify vendors lyric-presentation code. The selected snapshot is `0a3d0980ae81002b291617c819b308a2e6207b14`.
 _Avoid_: floating main branch, untracked copy
+
+**Folia Playback Stage**:
+The complete source-preserved single-page playback presentation from the Folia Source Snapshot: its shared renderer, shell and subtitle overlay; all nine Visualizer Modes; all six backgrounds; floating controls, progress bar and lyric timeline; chrome auto-hide; visual settings; built-in assets; and responsive animation runtime.
+_Avoid_: Folia-style screen, starter visualizers, simplified renderer
+
+**Scopify Host Adapter**:
+The Scopify-owned boundary that supplies the Folia Playback Stage with normalized lyrics, MotionValue clocks, audio bands, track metadata, themes, persisted settings, and playback commands while leaving NetEase session, audio, queue, cache, and playback ownership in Scopify.
+_Avoid_: second player, Folia fork logic, vendored integration state
+
+**Interface Gap**:
+A Folia Playback Stage input, action, or local resource capability that the Scopify Host Adapter cannot yet provide. An Interface Gap is recorded explicitly and the affected capability remains unavailable until implemented; it never authorizes a simplified visualizer or substitute UI.
+_Avoid_: deferred visualizer, acceptable approximation, silent fallback
 
 **Lyric Presentation Subsystem**:
 The Scopify renderer and Electron modules that parse, time, and present lyrics, including immersive and desktop-lyric surfaces. It consumes Playback State and Remote Music Data without owning either.
@@ -37,7 +49,7 @@ The ordered catalogue of Visualizer Modes and their optional settings panels. It
 _Avoid_: switch statement, hard-coded mode list
 
 **Lyric Stage**:
-A browser-compatible full-screen host for a selected Visualizer Mode. It is available in both Scopify's Web and Electron runtimes and is opened from Scopify's existing lyrics action.
+A browser-compatible full-screen Scopify surface that mounts the complete Folia Playback Stage through the Scopify Host Adapter. It is available in both Scopify's Web and Electron runtimes and is opened from Scopify's existing lyrics action.
 _Avoid_: desktop window, player
 
 **Legacy Lyric Modal**:
@@ -45,7 +57,7 @@ The former Scopify full-screen LRC surface. It is replaced by the Lyric Stage an
 _Avoid_: Lyric Stage, supported lyric renderer
 
 **Folia Visualizer Suite**:
-The complete set of Visualizer Modes registered by Folia at the selected source revision, together with their settings panels and rendering dependencies. Scopify ships the suite as one lyric-presentation capability rather than a limited starter subset.
+The complete set of Visualizer Modes registered by Folia at the selected source revision, together with their settings panels and rendering dependencies. It is one part of the Folia Playback Stage and ships as a single capability rather than a limited starter subset.
 _Avoid_: starter modes, optional later work
 
 **Raw NetEase Lyric**:

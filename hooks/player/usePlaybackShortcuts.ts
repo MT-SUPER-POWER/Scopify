@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { usePlayerStore } from "@/store";
+import { useTimeStore } from "@/store/module/time";
+import { useUiStore } from "@/store/module/ui";
 
 function isEditableTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
@@ -24,13 +26,29 @@ export function usePlaybackShortcuts() {
         event.preventDefault();
         player.togglePlaying();
       } else if (event.code === "ArrowRight") {
-        player.playNext();
+        if (useUiStore.getState().isLyricsOpen && !event.ctrlKey && !event.metaKey) {
+          event.preventDefault();
+          seekRelative(5_000);
+        } else {
+          player.playNext();
+        }
       } else if (event.code === "ArrowLeft") {
-        player.playPrev();
+        if (useUiStore.getState().isLyricsOpen && !event.ctrlKey && !event.metaKey) {
+          event.preventDefault();
+          seekRelative(-5_000);
+        } else {
+          player.playPrev();
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+}
+
+function seekRelative(offsetMs: number) {
+  const { currentTime, totalTime } = useTimeStore.getState();
+  const nextTime = Math.min(totalTime, Math.max(0, currentTime + offsetMs));
+  window.dispatchEvent(new CustomEvent("player-seek", { detail: nextTime }));
 }

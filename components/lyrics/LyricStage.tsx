@@ -1,87 +1,242 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { I18nextProvider } from "react-i18next";
 
-import type { DesktopLyricCommand } from "@/types/desktopLyric";
-import type { LyricVisualizerFrame } from "@/types/lyrics";
-
-import { useLyricAudioBands } from "@/hooks/player/useLyricAudioBands";
-import { useLyricStageData } from "@/hooks/player/useLyricStageData";
+import FloatingPlayerControls from "@/components/lyrics/folia/src/components/FloatingPlayerControls";
+import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
+import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/presentation/buildAppStyle";
+import foliaI18n from "@/components/lyrics/folia/src/i18n/config";
+import { PlayerState, type Theme } from "@/components/lyrics/folia/src/types";
+import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
+import { useFoliaStageAssets } from "@/hooks/player/useFoliaStageAssets";
+import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
+import { useI18nStore } from "@/store/module/i18n";
+import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
+import type { DesktopLyricCommand } from "@/types/desktopLyric";
 
-import { LyricStageChrome } from "./LyricStageChrome";
-import { LyricStageLyrics } from "./LyricStageLyrics";
-import { lyricVisualizerRegistry } from "./visualizers/registry";
+import { FoliaStageSettings } from "./FoliaStageSettings";
 
-/** Folia-derived replacement for the retired AMLL lyric presentation runtime. */
+const MIDNIGHT_THEME: Theme = {
+  accentColor: "#f4f4f5",
+  animationIntensity: "normal",
+  backgroundColor: "#09090b",
+  fontStyle: "sans",
+  name: "Midnight Default",
+  primaryColor: "#f4f4f5",
+  secondaryColor: "#71717a",
+};
+
+const DAYLIGHT_THEME: Theme = {
+  accentColor: "#ea580c",
+  animationIntensity: "normal",
+  backgroundColor: "#f5f5f4",
+  fontStyle: "sans",
+  name: "Daylight Default",
+  primaryColor: "#1c1917",
+  secondaryColor: "#44403c",
+};
+
+const keepAutoHideEnabled = () => {};
+
+/** Scopify host for Folia's pinned playback-stage presentation runtime. */
 export function LyricStage({ onClose }: { onClose: () => void }) {
   const [isBorderVisible, setIsBorderVisible] = useState(false);
-  const [isChromeVisible, setIsChromeVisible] = useState(true);
+  const [isPlayerChromeHidden, setIsPlayerChromeHidden] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTransparent, setIsTransparent] = useState(false);
-  const audioBands = useLyricAudioBands();
-  const { activeLineIndex, currentTimeMs, isPlaying, lyrics } = useLyricStageData();
-  const { fontScale, mode, showRomanization, showTranslation } = useLyricStageStore();
-  const Visualizer = lyricVisualizerRegistry[mode];
+  const assets = useFoliaStageAssets();
+  const bridge = useFoliaPlaybackBridge();
+  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
+  const repeatMode = usePlayerStore((state) => state.repeatMode);
+  const locale = useI18nStore((state) => state.locale);
+  const settings = useLyricStageStore();
+  const theme = useMemo<Theme>(
+    () => ({
+      ...MIDNIGHT_THEME,
+      fontFamily: settings.fontFamily ?? undefined,
+      fontFamilyStack: [],
+      fontStyle: settings.fontStyle,
+    }),
+    [settings.fontFamily, settings.fontStyle],
+  );
+  const subtitleTheme = useMemo<Theme>(
+    () =>
+      settings.subtitleFontInheritsLyrics
+        ? theme
+        : {
+            ...theme,
+            fontFamily: settings.subtitleFontFamily ?? undefined,
+            fontFamilyStack: settings.subtitleFontFallbackFamilies,
+            fontStyle: settings.subtitleFontStyle,
+          },
+    [settings, theme],
+  );
+  const appStyle = useMemo(
+    () =>
+      buildAppStyle({
+        bgMode: "default",
+        daylightTheme: DAYLIGHT_THEME,
+        defaultTheme: MIDNIGHT_THEME,
+        isDaylight: false,
+        theme,
+        transparentBackground: isTransparent,
+      }),
+    [isTransparent, theme],
+  );
+
+  const { cyclePlayerChromeVisibilityMode, setPlayerChromeVisibilityMode } =
+    usePlayerChromeAutoHide({
+      autoHidePlayerChrome: true,
+      initialPlayerChromeHidden: false,
+      setAutoHidePlayerChromePreference: keepAutoHideEnabled,
+      setIsPlayerChromeHidden,
+    });
+
+  useEffect(() => {
+    void foliaI18n.changeLanguage(locale === "en-US" ? "en" : "zh-CN");
+  }, [locale]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
+      if (event.key.toLowerCase() === "h") {
+        event.preventDefault();
+        cyclePlayerChromeVisibilityMode();
+      }
+      if (event.key.toLowerCase() === "p") {
+        event.preventDefault();
+        setIsSettingsOpen((open) => !open);
+      }
     };
     const onDesktopCommand = (event: Event) => {
       const command = (event as CustomEvent<DesktopLyricCommand>).detail;
       if (!command) return;
       if (command.type === "set-stage-transparent") setIsTransparent(command.enabled);
       if (command.type === "set-stage-border-visible") setIsBorderVisible(command.visible);
-      if (command.type === "set-stage-controls-visible") setIsChromeVisible(command.visible);
+      if (command.type === "set-stage-controls-visible") {
+        setPlayerChromeVisibilityMode(command.visible ? "always-visible" : "always-hidden");
+      }
     };
-    window.addEventListener("keydown", onKeyDown);
     window.addEventListener("desktop-lyric:stage-command", onDesktopCommand);
+    window.addEventListener("keydown", onKeyDown);
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("desktop-lyric:stage-command", onDesktopCommand);
+      window.removeEventListener("keydown", onKeyDown);
     };
-  }, [onClose]);
+  }, [cyclePlayerChromeVisibilityMode, onClose, setPlayerChromeVisibilityMode]);
 
-  const frame: LyricVisualizerFrame = {
-    activeLineIndex,
-    audioBands,
-    currentTimeMs,
-    isPlaying,
-    lyrics,
-  };
+  const coverUrl = currentSong?.al.picUrl ?? null;
+  const songArtist = currentSong?.ar.map((artist) => artist.name).join(", ") ?? null;
+  const playerState = bridge.isPlaying ? PlayerState.PLAYING : PlayerState.PAUSED;
 
   return (
-    <section
-      className={
-        isBorderVisible
-          ? "fixed inset-0 z-100 overflow-hidden border border-white/30 text-white"
-          : "fixed inset-0 z-100 overflow-hidden text-white"
-      }
-      aria-label="Lyrics"
-    >
-      <div className={isTransparent ? "opacity-0" : undefined}>
-        <Visualizer frame={frame} />
-        <div className="pointer-events-none absolute inset-0 bg-black/35" />
-      </div>
-      {isChromeVisible ? <LyricStageChrome onClose={onClose} /> : null}
-      <main className="relative z-10 mx-auto flex size-full max-w-5xl items-center px-6 py-20 sm:px-12">
-        {lyrics?.isPureMusic ? (
-          <p className="w-full text-center text-2xl font-semibold text-white/75">Pure music</p>
-        ) : lyrics?.lines.length ? (
-          <LyricStageLyrics
-            activeLineIndex={activeLineIndex}
-            currentTimeMs={currentTimeMs}
-            fontScale={fontScale}
-            lines={lyrics.lines}
-            showRomanization={showRomanization}
-            showTranslation={showTranslation}
+    <I18nextProvider i18n={foliaI18n}>
+      <section
+        aria-label="Lyrics"
+        style={appStyle}
+        className={`fixed inset-0 z-100 overflow-hidden text-white ${
+          isTransparent ? "bg-transparent" : "bg-[#09090b]"
+        } ${isBorderVisible ? "border border-white/30" : ""}`}
+      >
+        <div className="absolute inset-0">
+          <VisualizerRenderer
+            mode={settings.mode}
+            currentTime={bridge.lyricCurrentTime}
+            currentLineIndex={bridge.currentLineIndex}
+            lines={bridge.lines}
+            theme={theme}
+            subtitleTheme={subtitleTheme}
+            isDaylight={false}
+            audioPower={bridge.audioPower}
+            audioBands={bridge.audioBands}
+            showText={!isSettingsOpen}
+            songTitle={currentSong?.name ?? null}
+            songArtist={songArtist}
+            songAlbum={currentSong?.al.name ?? null}
+            coverUrl={coverUrl}
+            seed={currentSong?.id ?? `geometry-${settings.mode}`}
+            staticMode={false}
+            backgroundStaticMode={false}
+            visualizerOpacity={settings.visualizerOpacity}
+            background={{
+              ...settings.background,
+              customImage: assets.monetBackgroundImage,
+              transparent: isTransparent && !isSettingsOpen,
+              common: {
+                ...settings.background.common,
+                disableGeometricBackground:
+                  settings.background.common?.disableGeometricBackground || isSettingsOpen,
+              },
+            }}
+            lyricsFontScale={settings.fontScale}
+            subtitleOverlayOpacity={settings.subtitleOverlayOpacity}
+            subtitleOverlayBackground={settings.subtitleOverlayBackground}
+            isPlayerChromeHidden={isPlayerChromeHidden}
+            hideTranslationSubtitle={settings.hideTranslationSubtitle}
+            showSubtitleTranslation={settings.showSubtitleTranslation}
+            paused={!bridge.isPlaying}
+            onBack={onClose}
+            cappellaCustomAvatarImages={assets.cappellaCustomAvatarImages}
+            cappellaCustomEmojiImages={assets.cappellaCustomEmojiImages}
+            monetPortraitImage={assets.monetPortraitImage}
+            onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
+            visualizerTunings={settings.tunings}
+            onCladdaghTuningChange={(patch) => settings.patchTuning("claddagh", patch)}
+            onMonetTuningChange={(patch) => settings.patchTuning("monet", patch)}
           />
-        ) : (
-          <p className="w-full text-center text-2xl font-semibold text-white/65">
-            No lyrics available
-          </p>
-        )}
-      </main>
-    </section>
+        </div>
+
+        <FloatingPlayerControls
+          currentSong={currentSong ? { name: currentSong.name } : null}
+          playerState={playerState}
+          currentTime={bridge.currentTime}
+          lyricCurrentTime={bridge.lyricCurrentTime}
+          duration={bridge.durationSeconds}
+          loopMode={repeatMode}
+          currentView="player"
+          audioSrc={currentSongUrl}
+          canTogglePlay={Boolean(currentSongUrl)}
+          lyrics={bridge.lyrics}
+          onSeek={seekToSeconds}
+          onTogglePlay={() => usePlayerStore.getState().togglePlaying()}
+          onToggleLoop={cycleRepeatMode}
+          onNavigateToPlayer={() => {}}
+          primaryColor={theme.primaryColor}
+          secondaryColor={theme.secondaryColor}
+          theme={theme}
+          isDaylight={false}
+          isHidden={isPlayerChromeHidden}
+          controlsDisabled={!currentSongUrl}
+        />
+
+        <FoliaStageSettings
+          assets={assets}
+          isChromeHidden={isPlayerChromeHidden}
+          isOpen={isSettingsOpen}
+          onOpenChange={setIsSettingsOpen}
+          theme={theme}
+        />
+      </section>
+    </I18nextProvider>
   );
+}
+
+function seekToAndResume(timeSeconds: number) {
+  seekToSeconds(Math.max(0, timeSeconds));
+  const player = usePlayerStore.getState();
+  if (!player.isPlaying) player.togglePlaying();
+}
+
+function cycleRepeatMode() {
+  const player = usePlayerStore.getState();
+  const nextMode =
+    player.repeatMode === "off" ? "all" : player.repeatMode === "all" ? "one" : "off";
+  player.setRepeatMode(nextMode);
+}
+
+function seekToSeconds(timeSeconds: number) {
+  window.dispatchEvent(new CustomEvent("player-seek", { detail: timeSeconds * 1_000 }));
 }

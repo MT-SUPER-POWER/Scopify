@@ -60,6 +60,9 @@ type PlayerStore = {
   setVolume: (v: number) => void;
   setIsPlaying: (v: boolean) => void;
   setRepeatMode: (mode: RepeatMode) => void;
+  moveQueueItem: (fromIndex: number, toIndex: number) => void;
+  moveQueueItemToNext: (index: number) => void;
+  removeQueueItem: (index: number) => void;
   setQueue: (songs: SongDetail[], startIndex?: number, playlistId?: number | string | null) => void;
   setLyric: (lyric: NeteaseLyric | null) => void;
   setShuffle: (v: boolean) => void;
@@ -107,6 +110,73 @@ export const usePlayerStore = create<PlayerStore>()(
       setVolume: (v) => set({ volume: v }),
       setIsPlaying: (v) => set({ isPlaying: v }),
       setRepeatMode: (mode) => set({ repeatMode: mode }),
+      moveQueueItem: (fromIndex, toIndex) => {
+        const { currentSongDetail, queue } = get();
+        if (
+          fromIndex < 0 ||
+          fromIndex >= queue.length ||
+          toIndex < 0 ||
+          toIndex >= queue.length ||
+          fromIndex === toIndex
+        ) {
+          return;
+        }
+        const reordered = [...queue];
+        const [item] = reordered.splice(fromIndex, 1);
+        reordered.splice(toIndex, 0, item);
+        const nextCurrentIndex = currentSongDetail
+          ? reordered.findIndex(
+              (song) => song === currentSongDetail || song.id === currentSongDetail.id,
+            )
+          : -1;
+        set({
+          historyIndex: nextCurrentIndex >= 0 ? 0 : -1,
+          historyStack: nextCurrentIndex >= 0 ? [nextCurrentIndex] : [],
+          originalQueue: [...reordered],
+          queue: reordered,
+          queueIndex: nextCurrentIndex,
+        });
+      },
+      moveQueueItemToNext: (index) => {
+        const { queue, queueIndex } = get();
+        if (index < 0 || index >= queue.length || index === queueIndex) return;
+        const insertAfterCurrent = index < queueIndex ? queueIndex : queueIndex + 1;
+        get().moveQueueItem(index, Math.min(queue.length - 1, insertAfterCurrent));
+      },
+      removeQueueItem: (index) => {
+        const { currentSongDetail, queue, queueIndex } = get();
+        if (index < 0 || index >= queue.length) return;
+        const nextQueue = queue.filter((_, itemIndex) => itemIndex !== index);
+        if (nextQueue.length === 0) {
+          set({
+            currentSongDetail: null,
+            currentSongUrl: null,
+            historyIndex: -1,
+            historyStack: [],
+            isPlaying: false,
+            lyric: null,
+            originalQueue: [],
+            queue: [],
+            queueIndex: -1,
+          });
+          return;
+        }
+
+        const removedCurrent = index === queueIndex || queue[index]?.id === currentSongDetail?.id;
+        const nextCurrentIndex = removedCurrent
+          ? Math.min(index, nextQueue.length - 1)
+          : index < queueIndex
+            ? queueIndex - 1
+            : queueIndex;
+        set({
+          historyIndex: 0,
+          historyStack: [nextCurrentIndex],
+          originalQueue: [...nextQueue],
+          queue: nextQueue,
+          queueIndex: nextCurrentIndex,
+        });
+        if (removedCurrent) void get().playTrack(nextQueue[nextCurrentIndex]);
+      },
       setQueue: (songs, startIndex = 0, playlistId = null) => {
         const { isShuffle } = get();
         const queue = isShuffle ? shuffleArray(songs) : [...songs];

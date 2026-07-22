@@ -4,23 +4,13 @@ import { type MutableRefObject, useEffect, useRef } from "react";
 
 import type { LyricAudioBands } from "@/types/lyrics";
 
-const EMPTY_BANDS: LyricAudioBands = {
-  bass: 0,
-  lowMid: 0,
-  mid: 0,
-  power: 0,
-  spectrum: [],
-  treble: 0,
-  vocal: 0,
-};
-
 interface AudioContextWindow extends Window {
   webkitAudioContext?: typeof AudioContext;
 }
 
 /**
- * Folia-inspired media analyser bridge. It retains Scopify's audio element
- * and broadcasts normalized bands for every renderer in the current window.
+ * Folia media analyser bridge. It retains Scopify's audio element and
+ * broadcasts the upstream frequency bands for the playback stage.
  */
 export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement | null>) {
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -53,7 +43,8 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
         mediaSourceRef.current = source;
         if (!analyser) {
           analyser = context.createAnalyser();
-          analyser.fftSize = 256;
+          analyser.fftSize = 2048;
+          analyser.smoothingTimeConstant = 0.6;
           source.connect(analyser);
           analyser.connect(context.destination);
           analyserRef.current = analyser;
@@ -71,7 +62,16 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
 
     const tick = () => {
       if (!analyser || audio.paused) {
-        broadcast(EMPTY_BANDS);
+        const breath = (Math.sin(Date.now() / 2_000) + 1) * 20;
+        broadcast({
+          bass: breath,
+          lowMid: breath,
+          mid: breath,
+          power: breath,
+          spectrum: [],
+          treble: breath,
+          vocal: breath,
+        });
       } else {
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
         analyser.getByteFrequencyData(frequencyData);
