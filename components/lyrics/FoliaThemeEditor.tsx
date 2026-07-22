@@ -59,7 +59,7 @@ export function FoliaThemeEditor({
         theme={previewTheme}
       />
 
-      <div className="min-h-0 space-y-3 overflow-y-auto pr-1">
+      <div className="visualizer-overlay-scrollbar min-h-0 space-y-3 overflow-y-auto pr-1">
         <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-3">
           <div className="mb-3 flex items-center justify-between gap-3">
             <label className="min-w-0 flex-1 space-y-1">

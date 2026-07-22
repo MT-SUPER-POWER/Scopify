@@ -141,6 +141,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     subtitleOverlayBackground: false,
     subtitleOverlayOpacity: 0.6,
     themeId: "monochrome",
+    themeRecentIds: [],
     themes: createBuiltinFoliaStageThemes(),
     themeVariant: "dark",
     tunings: {
@@ -173,6 +174,11 @@ export function normalizeFoliaStageSettings(
   if (!normalized.themes.some((theme) => theme.id === normalized.themeId)) {
     normalized.themeId = normalized.themes[0].id;
   }
+  normalized.themeRecentIds = normalized.themeRecentIds
+    .filter((id) => id !== normalized.themeId)
+    .filter((id, index, ids) => ids.indexOf(id) === index)
+    .filter((id) => normalized.themes.some((theme) => theme.id === id))
+    .slice(0, 4);
 
   const items = normalized.background.url?.items ?? [];
   const selectedId = normalized.background.url?.selectedId ?? null;
@@ -211,6 +217,14 @@ function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string):
     return (
       Array.isArray(candidate)
         ? candidate.filter((value): value is string => typeof value === "string")
+        : schema
+    ) as T;
+  }
+
+  if (path === "themeRecentIds") {
+    return (
+      Array.isArray(candidate)
+        ? candidate.filter((value): value is string => typeof value === "string").slice(0, 4)
         : schema
     ) as T;
   }

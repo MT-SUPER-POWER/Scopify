@@ -25,6 +25,8 @@ Scopify is also distributed under AGPL-3.0.
 - Browser-only chrome preference reads are guarded during Next.js server rendering.
 - Folia's visualizer overlay scrollbar rules live in Scopify's global stylesheet
   because Next.js owns global CSS loading.
+- Scrollable Folia settings and timeline panes use that shared overlay class so
+  the pinned 6px translucent scrollbar also works in the host shell.
 - The preview-only native-blur warning no longer reads Folia's application-wide
   settings store. Renderer and settings behavior is otherwise unchanged.
 - The common Visual Settings panel accepts an optional host theme-control slot;

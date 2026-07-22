@@ -56,8 +56,12 @@ export const useLyricStageStore = create<FoliaStageStore>()(
         set((state) => {
           const remainingThemes = state.themes.filter((theme) => theme.id !== id);
           const themes = remainingThemes.length ? remainingThemes : createBuiltinFoliaStageThemes();
+          const themeId = state.themeId === id ? themes[0].id : state.themeId;
           return {
-            themeId: state.themeId === id ? themes[0].id : state.themeId,
+            themeId,
+            themeRecentIds: state.themeRecentIds
+              .filter((recentId) => recentId !== id && recentId !== themeId)
+              .slice(0, 4),
             themes,
           };
         }),
@@ -145,7 +149,21 @@ export const useLyricStageStore = create<FoliaStageStore>()(
         })),
       setBackgroundMode: (mode) => set((state) => ({ background: { ...state.background, mode } })),
       setThemeId: (id) =>
-        set((state) => (state.themes.some((theme) => theme.id === id) ? { themeId: id } : state)),
+        set((state) =>
+          state.themes.some((theme) => theme.id === id)
+            ? state.themeId === id
+              ? state
+              : {
+                  themeId: id,
+                  themeRecentIds: [
+                    state.themeId,
+                    ...state.themeRecentIds.filter(
+                      (recentId) => recentId !== id && recentId !== state.themeId,
+                    ),
+                  ].slice(0, 4),
+                }
+            : state,
+        ),
       setThemeVariant: (themeVariant) => set({ themeVariant }),
       restoreBuiltinThemes: () =>
         set((state) => ({
@@ -185,7 +203,7 @@ export const useLyricStageStore = create<FoliaStageStore>()(
       migrate: (persisted) => normalizeFoliaStageSettings(persisted),
       partialize: selectFoliaStageSettings,
       storage: createJSONStorage(() => localStorage),
-      version: 3,
+      version: 4,
     },
   ),
 );

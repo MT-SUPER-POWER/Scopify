@@ -166,6 +166,8 @@
   .visualizer-overlay-scrollbar {
     --scrollbar-thumb-color: rgb(255 255 255 / 18%);
     --scrollbar-thumb-hover-color: rgb(255 255 255 / 30%);
+    scrollbar-color: var(--scrollbar-thumb-color) transparent;
+    scrollbar-width: thin;
   }
 
   .visualizer-overlay-scrollbar::-webkit-scrollbar {

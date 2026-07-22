@@ -29,6 +29,14 @@ export interface FoliaThemeColors {
   secondaryColor: string;
 }
 
+export interface FoliaQuickEffectPickerPosition {
+  left: number;
+  maxHeight: number;
+  opensUpward: boolean;
+  top: number;
+  width: number;
+}
+
 export interface FoliaStageTheme {
   dark: FoliaThemeColors;
   id: string;
@@ -52,6 +60,7 @@ export interface FoliaStageSettings {
   subtitleOverlayBackground: boolean;
   subtitleOverlayOpacity: number;
   themeId: string;
+  themeRecentIds: string[];
   themes: FoliaStageTheme[];
   themeVariant: FoliaThemeVariant;
   tunings: VisualizerTuningBundle;

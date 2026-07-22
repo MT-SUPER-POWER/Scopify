@@ -1,7 +1,9 @@
 import type { Theme } from "@/components/lyrics/folia/src/types";
+import type { RefObject } from "react";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
 import type {
   FoliaPlaybackBridge,
+  FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,
   FoliaStageTheme,
   FoliaThemeVariant,
@@ -90,4 +92,13 @@ export interface FoliaQuickEffectPickerProps<Value extends string> {
   options: FoliaQuickEffectPickerOption<Value>[];
   primaryColor: string;
   value: Value;
+}
+
+export interface FoliaQuickEffectPickerMenuProps<
+  Value extends string,
+> extends FoliaQuickEffectPickerProps<Value> {
+  isOpen: boolean;
+  menuPosition: FoliaQuickEffectPickerPosition;
+  menuRef: RefObject<HTMLDivElement | null>;
+  onClose: () => void;
 }

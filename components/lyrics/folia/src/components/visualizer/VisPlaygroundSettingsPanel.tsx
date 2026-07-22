@@ -426,7 +426,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
         isDaylight={isDaylight}
       />
 
-      <div className="custom-scrollbar flex-1 space-y-4 overflow-y-auto pr-1">
+      <div className="visualizer-overlay-scrollbar flex-1 space-y-4 overflow-y-auto pr-1">
         {activeSection === "common" && (
           <div
             className="space-y-4 rounded-[24px] border p-4"

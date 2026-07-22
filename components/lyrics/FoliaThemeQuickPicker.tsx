@@ -1,19 +1,34 @@
 "use client";
 
 import { Moon, Palette, Sun } from "lucide-react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaThemeQuickPickerProps } from "@/types/components/lyrics";
 
 export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQuickPickerProps) {
   const { t } = useTranslation();
   const themeId = useLyricStageStore((state) => state.themeId);
+  const themeRecentIds = useLyricStageStore((state) => state.themeRecentIds);
   const themes = useLyricStageStore((state) => state.themes);
   const themeVariant = useLyricStageStore((state) => state.themeVariant);
   const setThemeId = useLyricStageStore((state) => state.setThemeId);
   const setThemeVariant = useLyricStageStore((state) => state.setThemeVariant);
   const isDaylight = themeVariant === "light";
+  const quickThemes = useMemo(() => {
+    const selectedTheme = themes.find((item) => item.id === themeId);
+    const recentThemes = themeRecentIds
+      .map((id) => themes.find((item) => item.id === id))
+      .filter((item): item is (typeof themes)[number] => Boolean(item));
+    const fallbackThemes = themes.filter((item) => item.id !== themeId);
+
+    return [selectedTheme, ...recentThemes, ...fallbackThemes]
+      .filter((item): item is (typeof themes)[number] => Boolean(item))
+      .filter((item, index, items) => items.findIndex(({ id }) => id === item.id) === index)
+      .slice(0, 5);
+  }, [themeId, themeRecentIds, themes]);
 
   return (
     <section className="space-y-2.5">
@@ -32,7 +47,7 @@ export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQ
         </button>
       </div>
 
-      <div className="flex min-w-0 items-center gap-2">
+      <div className="flex min-w-0 items-center gap-1.5 overflow-hidden">
         <div
           className={`flex shrink-0 rounded-lg p-0.5 ${isDaylight ? "bg-black/5" : "bg-black/20"}`}
         >
@@ -49,7 +64,7 @@ export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQ
               aria-label={String(t(label))}
               aria-pressed={themeVariant === variant}
               onClick={() => setThemeVariant(variant)}
-              className={`flex size-7 items-center justify-center rounded-md transition-all ${
+              className={`flex size-6 items-center justify-center rounded-md transition-all ${
                 themeVariant === variant
                   ? isDaylight
                     ? "bg-white shadow-sm"
@@ -58,15 +73,14 @@ export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQ
               }`}
               style={{ color: theme.primaryColor }}
             >
-              <Icon size={13} />
+              <Icon size={12} />
             </button>
           ))}
         </div>
 
-        <div className="flex min-w-0 flex-1 [scrollbar-width:none] gap-1.5 overflow-x-auto pb-0.5">
-          {themes.map((item) => {
+        <div className="grid min-w-0 flex-1 grid-cols-5 justify-items-center gap-1 overflow-hidden">
+          {quickThemes.map((item) => {
             const isActive = item.id === themeId;
-            const colors = item[themeVariant];
             return (
               <button
                 key={item.id}
@@ -75,17 +89,12 @@ export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQ
                 aria-label={item.name}
                 aria-pressed={isActive}
                 onClick={() => setThemeId(item.id)}
-                className="flex size-8 shrink-0 items-center justify-center rounded-full border transition-transform hover:scale-105"
+                className="flex size-7 shrink-0 items-center justify-center rounded-full border-2 transition-transform hover:scale-105"
                 style={{
-                  background: `linear-gradient(135deg, ${item.light.accentColor} 0 48%, ${item.dark.accentColor} 52% 100%)`,
-                  borderColor: isActive ? colors.primaryColor : `${colors.primaryColor}30`,
-                  boxShadow: isActive ? `0 0 0 2px ${colors.accentColor}` : undefined,
+                  borderColor: isActive ? item[themeVariant].primaryColor : "transparent",
                 }}
               >
-                <span
-                  className="size-2 rounded-full"
-                  style={{ backgroundColor: colors.backgroundColor }}
-                />
+                <FoliaThemeRecord theme={item} />
               </button>
             );
           })}

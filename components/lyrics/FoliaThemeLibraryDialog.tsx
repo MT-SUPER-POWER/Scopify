@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, Palette } from "lucide-react";
+import { ChevronDown, Palette } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -48,7 +48,7 @@ export function FoliaThemeLibraryDialog({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onMouseDown={onClose}
+          onPointerDown={onClose}
           className="fixed inset-0 z-[150] p-3 backdrop-blur-xl sm:p-5"
           style={{ backgroundColor: overlayBackground }}
         >
@@ -56,11 +56,11 @@ export function FoliaThemeLibraryDialog({
             role="dialog"
             aria-modal="true"
             aria-label={String(t("options.themeLibrary"))}
-            initial={{ opacity: 0, scale: 0.98, y: 18 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.98, y: 18 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            onMouseDown={(event) => event.stopPropagation()}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.24, ease: "easeOut" }}
+            onPointerDown={(event) => event.stopPropagation()}
             className={`mx-auto flex h-full max-w-7xl flex-col overflow-hidden rounded-[32px] border shadow-[0_24px_80px_rgba(0,0,0,0.28)] ${surfaceClass}`}
           >
             <header className="flex shrink-0 items-center gap-3 border-b border-white/10 p-4 sm:px-6">
@@ -71,7 +71,7 @@ export function FoliaThemeLibraryDialog({
                 className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:bg-white/10"
                 style={{ color: theme.primaryColor }}
               >
-                <ChevronLeft size={18} />
+                <ChevronDown size={18} />
               </button>
               <Palette size={18} style={{ color: theme.accentColor }} />
               <div className="min-w-0">

@@ -3,6 +3,7 @@
 import { Plus, RotateCcw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { createFoliaStageTheme } from "@/lib/lyrics/foliaTheme";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaThemeLibraryListProps } from "@/types/components/lyrics";
@@ -61,7 +62,7 @@ export function FoliaThemeLibraryList({
         </div>
       </div>
 
-      <div className="min-h-0 space-y-1.5 overflow-y-auto pr-1">
+      <div className="visualizer-overlay-scrollbar min-h-0 space-y-1.5 overflow-y-auto pr-1">
         {themes.map((theme) => {
           const isSelected = theme.id === selectedThemeId;
           return (
@@ -75,12 +76,7 @@ export function FoliaThemeLibraryList({
                 borderColor: isSelected ? theme.dark.accentColor : "rgba(255,255,255,0.08)",
               }}
             >
-              <span
-                className="size-9 shrink-0 rounded-xl border border-black/10"
-                style={{
-                  background: `linear-gradient(135deg, ${theme.light.backgroundColor} 0 48%, ${theme.dark.backgroundColor} 52% 100%)`,
-                }}
-              />
+              <FoliaThemeRecord size="library" theme={theme} />
               <span className="min-w-0 flex-1 truncate text-sm font-medium">{theme.name}</span>
               <span className="flex shrink-0 gap-1">
                 <i
