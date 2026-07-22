@@ -19,7 +19,7 @@ import type {
 import type { LyricVisualizerMode } from "@/types/lyrics";
 
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
-export type FoliaPanelTab = "controls" | "queue" | "visualizer";
+export type FoliaPanelTab = "controls" | "lyrics" | "queue";
 
 export interface FoliaStageSettings {
   background: VisualizerBackgroundConfig;

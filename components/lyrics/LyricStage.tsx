@@ -38,7 +38,7 @@ const DAYLIGHT_THEME: Theme = {
   secondaryColor: "#44403c",
 };
 
-const keepAutoHideEnabled = () => {};
+const keepAutoHideEnabled = () => undefined;
 
 /** Scopify host for Folia's pinned playback-stage presentation runtime. */
 export function LyricStage({ onClose }: { onClose: () => void }) {
@@ -152,7 +152,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
             isDaylight={false}
             audioPower={bridge.audioPower}
             audioBands={bridge.audioBands}
-            showText={!isSettingsOpen}
+            showText
             songTitle={currentSong?.name ?? null}
             songArtist={songArtist}
             songAlbum={currentSong?.al.name ?? null}
@@ -164,11 +164,10 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
             background={{
               ...settings.background,
               customImage: assets.monetBackgroundImage,
-              transparent: isTransparent && !isSettingsOpen,
+              transparent: isTransparent,
               common: {
                 ...settings.background.common,
-                disableGeometricBackground:
-                  settings.background.common?.disableGeometricBackground || isSettingsOpen,
+                disableGeometricBackground: settings.background.common?.disableGeometricBackground,
               },
             }}
             lyricsFontScale={settings.fontScale}
@@ -203,7 +202,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
           onSeek={seekToSeconds}
           onTogglePlay={() => usePlayerStore.getState().togglePlaying()}
           onToggleLoop={cycleRepeatMode}
-          onNavigateToPlayer={() => {}}
+          onNavigateToPlayer={() => undefined}
           primaryColor={theme.primaryColor}
           secondaryColor={theme.secondaryColor}
           theme={theme}
@@ -214,6 +213,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
 
         <FoliaStageSettings
           assets={assets}
+          bridge={bridge}
           isChromeHidden={isPlayerChromeHidden}
           isOpen={isSettingsOpen}
           onOpenChange={setIsSettingsOpen}
