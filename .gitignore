@@ -56,3 +56,5 @@ doc/README-TEMPLATE.md
 .codex/
 .claude/
 
+# playwright
+.playwright/

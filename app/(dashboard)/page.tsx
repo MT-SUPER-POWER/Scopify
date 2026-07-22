@@ -35,7 +35,7 @@ export default function HomePage() {
       {/* 背景渐变始终保留 */}
       <div
         className={cn(
-          "absolute top-0 right-0 left-0 h-full bg-linear-to-b",
+          "absolute inset-x-0 top-0 h-full bg-linear-to-b",
           getTimeTheme().gradient,
           "pointer-events-none z-0",
         )}
@@ -62,7 +62,7 @@ export default function HomePage() {
                       className="rounded-full p-2 text-zinc-400 transition-all hover:bg-white/10 hover:text-white disabled:opacity-50"
                       title={t("home.refreshTitle")}
                     >
-                      <RefreshCw className={cn("h-5 w-5", isLoading && "animate-spin")} />
+                      <RefreshCw className={cn("size-5", isLoading && "animate-spin")} />
                     </button>
                   )}
                 </div>
@@ -74,7 +74,7 @@ export default function HomePage() {
                   onClick={() => smartRouter.push("/playlist/?isDailyRecommend=true")}
                   className="group relative flex h-16 cursor-pointer items-center overflow-hidden rounded-md bg-white/10 pr-4 transition-colors hover:bg-white/20"
                 >
-                  <div className="z-10 flex h-16 w-16 shrink-0 flex-col overflow-hidden rounded-l-md bg-white shadow-[2px_0_8px_rgba(0,0,0,0.4)] select-none">
+                  <div className="z-10 flex size-16 shrink-0 flex-col overflow-hidden rounded-l-md bg-white shadow-[2px_0_8px_rgba(0,0,0,0.4)] select-none">
                     <div className="flex h-5.5 items-center justify-center border-b border-black/10 bg-linear-to-b from-[#e34242] to-[#c42b2b]">
                       <span className="text-[10px] font-medium tracking-[0.15em] text-white">
                         {dateInfo.dayOfWeek}
@@ -96,9 +96,9 @@ export default function HomePage() {
                       e.stopPropagation();
                       smartRouter.push("/playlist/?isDailyRecommend=true");
                     }}
-                    className="absolute right-4 z-20 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1fdf64]"
+                    className="absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1fdf64]"
                   >
-                    <Play className="ml-1 h-5 w-5 fill-current" />
+                    <Play className="ml-1 size-5 fill-current" />
                   </button>
                 </div>
 
@@ -113,19 +113,19 @@ export default function HomePage() {
                       height={64}
                       src={item.picUrl}
                       alt={t("playlist.form.coverAlt")}
-                      className="z-10 h-16 w-16 object-cover shadow-[4px_0_10px_rgba(0,0,0,0.3)]"
+                      className="z-10 size-16 object-cover shadow-[4px_0_10px_rgba(0,0,0,0.3)]"
                     />
                     <span className="ml-4 truncate text-sm font-bold text-white">{item.name}</span>
                     <button
                       type="button"
                       onClick={(e) => handlePlayPlaylist(item.id, e)}
                       disabled={loadingPlayId === `playlist-${item.id}`}
-                      className="absolute right-4 z-20 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1fdf64] disabled:opacity-80"
+                      className="absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1fdf64] disabled:opacity-80"
                     >
                       {loadingPlayId === `playlist-${item.id}` ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="size-4 animate-spin" />
                       ) : (
-                        <Play className="ml-1 h-5 w-5 fill-current" />
+                        <Play className="ml-1 size-5 fill-current" />
                       )}
                     </button>
                   </div>

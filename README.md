@@ -182,7 +182,7 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 ## 单页展示
 
-> 还有很多细节要打磨，目前只是初定设计，如果你有任何特别好的想法，请务必提 issue 或者 PR 来告诉我。(**如果你还懂点美术，爹！妈！帮帮孩子吧**)。
+> 还有很多细节要打磨，目前只是初定设计，如果你有任何特别好的想法，请务必提 issue 或者 PR 来告诉我。
 
 <details>
 <summary> 主页面 </summary>
@@ -281,7 +281,8 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 ### 提案
 
 - [ ] 可选的 AI 歌曲主题生成：用户配置 Gemini 或 OpenAI-compatible API Key，根据歌曲歌词和封面生成视觉参数。该能力不属于当前 Folia 歌词舞台迁移范围。
-- [ ] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
+- [x] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
+- [ ] 本地音乐库管理
 
 ## 版本号规则
 

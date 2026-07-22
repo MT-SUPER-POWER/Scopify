@@ -2,7 +2,6 @@
 
 import eslint from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
-import perfectionistPlugin from "eslint-plugin-perfectionist";
 import prettierPlugin from "eslint-plugin-prettier";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
@@ -62,9 +61,6 @@ export default tseslint.config(
       },
     },
   },
-
-  // --- Perfectionist (自然排序，自动处理 imports/exports) ---
-  perfectionistPlugin.configs["recommended-natural"],
 
   // --- Prettier (跑在 ESLint --fix 中，使用 .prettierrc 控制) ---
   {
