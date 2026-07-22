@@ -202,7 +202,6 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
 
         <FoliaStageSettings
           assets={assets}
-          bridge={bridge}
           isChromeHidden={isPlayerChromeHidden}
           isOpen={isSettingsOpen}
           onOpenChange={setIsSettingsOpen}

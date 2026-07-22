@@ -1183,6 +1183,10 @@ export default {
     lyricFilterRegex: "Filter Lirik Regex",
     lyricFilterRegexDesc:
       "Konfigurasikan aturan filter baris demi baris untuk teks lirik yang diurai.",
+    lyricTimelineOffset: "Offset Garis Waktu",
+    lyricTimelineOffsetHint:
+      "Sementara untuk sesi pemutaran ini. Nilai positif membuat lirik lebih lambat.",
+    resetLyricTimelineOffset: "Reset offset garis waktu",
     noDescription: "Tidak ada deskripsi tersedia",
   },
   releaseNotes: {
@@ -1348,10 +1352,6 @@ export default {
     replayGainAlbum: "ReplayGain: Mode Album",
     replayGainUnavailable: "ReplayGain tidak terdeteksi",
     lyricsSource: "Lirik",
-    lyricTimelineOffset: "Offset Garis Waktu",
-    lyricTimelineOffsetHint:
-      "Sementara untuk sesi pemutaran ini. Nilai positif membuat lirik lebih lambat.",
-    resetLyricTimelineOffset: "Reset offset garis waktu",
     coverSource: "Sampul",
     metadataSource: "Metadata",
     kugouNoCover: "Kugou tidak menyediakan sampul, jadi sampul lokal akan dipertahankan.",

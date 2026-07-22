@@ -1283,6 +1283,10 @@ export default {
       "Connects to ws://localhost:9863/api/ws/lyric. Start the now-playing service first.",
     lyricFilterRegex: "Lyric Filter Regex",
     lyricFilterRegexDesc: "Configure line-by-line filtering rules for the parsed lyrics text.",
+    lyricTimelineOffset: "Timeline Offset",
+    lyricTimelineOffsetHint:
+      "Temporary for this playback session. Positive values make lyrics later.",
+    resetLyricTimelineOffset: "Reset timeline offset",
     copyStageAddress: "Copy Address",
     stageAddressCopied: "Copied",
     visualizerMode: "Mode",
@@ -1452,10 +1456,6 @@ export default {
     replayGainAlbum: "Album",
     replayGainUnavailable: "No ReplayGain detected",
     lyricsSource: "Lyrics",
-    lyricTimelineOffset: "Timeline Offset",
-    lyricTimelineOffsetHint:
-      "Temporary for this playback session. Positive values make lyrics later.",
-    resetLyricTimelineOffset: "Reset timeline offset",
     coverSource: "Cover",
     metadataSource: "Metadata",
     kugouNoCover: "Kugou does not provide cover art, so local cover art will be kept.",

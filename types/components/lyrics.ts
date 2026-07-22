@@ -2,7 +2,6 @@ import type { Theme } from "@/components/lyrics/folia/src/types";
 import type { RefObject } from "react";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
 import type {
-  FoliaPlaybackBridge,
   FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,
   FoliaStageTheme,
@@ -22,7 +21,6 @@ export interface FoliaLyricsControlsProps {
 
 export interface FoliaStageSettingsProps {
   assets: FoliaStageAssets;
-  bridge: FoliaPlaybackBridge;
   isChromeHidden: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,14 +30,12 @@ export interface FoliaStageSettingsProps {
 export interface FoliaSettingsPreviewProps {
   activeSection: FoliaStageEditSection;
   assets: FoliaStageAssets;
-  bridge: FoliaPlaybackBridge;
   onSectionChange: (section: FoliaStageEditSection) => void;
   theme: Theme;
 }
 
 export interface FoliaVisualSettingsDialogProps {
   assets: FoliaStageAssets;
-  bridge: FoliaPlaybackBridge;
   isOpen: boolean;
   onClose: () => void;
   onOpenFontPicker: (target: "lyrics" | "subtitle") => void;
@@ -57,14 +53,12 @@ export interface FoliaThemeColorEditorProps {
 
 export interface FoliaThemeEditorProps {
   assets: FoliaStageAssets;
-  bridge: FoliaPlaybackBridge;
   onSelectTheme: (id: string) => void;
   selectedTheme: FoliaStageTheme;
 }
 
 export interface FoliaThemeLibraryDialogProps {
   assets: FoliaStageAssets;
-  bridge: FoliaPlaybackBridge;
   isOpen: boolean;
   onClose: () => void;
   theme: Theme;

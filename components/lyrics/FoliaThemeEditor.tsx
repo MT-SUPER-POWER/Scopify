@@ -12,12 +12,7 @@ import { useLyricStageStore } from "@/store/module/lyrics";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import type { FoliaThemeEditorProps } from "@/types/components/lyrics";
 
-export function FoliaThemeEditor({
-  assets,
-  bridge,
-  onSelectTheme,
-  selectedTheme,
-}: FoliaThemeEditorProps) {
+export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: FoliaThemeEditorProps) {
   const { t } = useTranslation();
   const fontFamily = useLyricStageStore((state) => state.fontFamily);
   const fontStyle = useLyricStageStore((state) => state.fontStyle);
@@ -54,7 +49,6 @@ export function FoliaThemeEditor({
       <FoliaSettingsPreview
         activeSection="common"
         assets={assets}
-        bridge={bridge}
         onSectionChange={() => undefined}
         theme={previewTheme}
       />

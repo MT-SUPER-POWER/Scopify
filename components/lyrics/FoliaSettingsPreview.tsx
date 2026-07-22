@@ -6,21 +6,19 @@ import { useTranslation } from "react-i18next";
 import VisPlaygroundPreviewHotspots from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundPreviewHotspots";
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
 import { getVisualizerModeLabel } from "@/components/lyrics/folia/src/components/visualizer/registry";
+import { useFoliaSettingsPreview } from "@/hooks/lyrics/useFoliaSettingsPreview";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import { usePlayerStore } from "@/store/module/player";
 import type { FoliaSettingsPreviewProps } from "@/types/components/lyrics";
 
 export function FoliaSettingsPreview({
   activeSection,
   assets,
-  bridge,
   onSectionChange,
   theme,
 }: FoliaSettingsPreviewProps) {
   const { t } = useTranslation();
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const preview = useFoliaSettingsPreview();
   const settings = useLyricStageStore();
-  const songArtist = currentSong?.ar.map((artist) => artist.name).join(", ") ?? null;
   const isDaylight = theme.name === "snow";
   const modeLabel = getVisualizerModeLabel(settings.mode, (key) => String(t(key)));
 
@@ -46,20 +44,20 @@ export function FoliaSettingsPreview({
       <div className="absolute inset-0">
         <VisualizerRenderer
           mode={settings.mode}
-          currentTime={bridge.lyricCurrentTime}
-          currentLineIndex={bridge.currentLineIndex}
-          lines={bridge.lines}
+          currentTime={preview.lyricCurrentTime}
+          currentLineIndex={preview.currentLineIndex}
+          lines={preview.lines}
           theme={theme}
           subtitleTheme={theme}
           isDaylight={isDaylight}
-          audioPower={bridge.audioPower}
-          audioBands={bridge.audioBands}
+          audioPower={preview.audioPower}
+          audioBands={preview.audioBands}
           showText
-          songTitle={currentSong?.name ?? null}
-          songArtist={songArtist}
-          songAlbum={currentSong?.al.name ?? null}
-          coverUrl={currentSong?.al.picUrl ?? null}
-          seed={currentSong?.id ?? `settings-preview-${settings.mode}`}
+          songTitle={preview.title}
+          songArtist={preview.artist}
+          songAlbum={preview.album}
+          coverUrl={preview.coverUrl}
+          seed={preview.seed}
           staticMode={false}
           backgroundStaticMode={false}
           visualizerOpacity={settings.visualizerOpacity}
@@ -77,7 +75,7 @@ export function FoliaSettingsPreview({
           isPlayerChromeHidden
           hideTranslationSubtitle={settings.hideTranslationSubtitle}
           showSubtitleTranslation={settings.showSubtitleTranslation}
-          paused={!bridge.isPlaying}
+          paused={false}
           cappellaCustomAvatarImages={assets.cappellaCustomAvatarImages}
           cappellaCustomEmojiImages={assets.cappellaCustomEmojiImages}
           monetPortraitImage={assets.monetPortraitImage}

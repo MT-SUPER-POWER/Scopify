@@ -13,7 +13,6 @@ import type { FoliaVisualSettingsDialogProps } from "@/types/components/lyrics";
 
 export function FoliaVisualSettingsDialog({
   assets,
-  bridge,
   isOpen,
   onClose,
   onOpenFontPicker,
@@ -97,7 +96,6 @@ export function FoliaVisualSettingsDialog({
               <FoliaSettingsPreview
                 activeSection={section}
                 assets={assets}
-                bridge={bridge}
                 onSectionChange={onSectionChange}
                 theme={theme}
               />

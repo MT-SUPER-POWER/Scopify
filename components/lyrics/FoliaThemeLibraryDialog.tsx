@@ -13,7 +13,6 @@ import type { FoliaThemeLibraryDialogProps } from "@/types/components/lyrics";
 
 export function FoliaThemeLibraryDialog({
   assets,
-  bridge,
   isOpen,
   onClose,
   theme,
@@ -94,7 +93,6 @@ export function FoliaThemeLibraryDialog({
               />
               <FoliaThemeEditor
                 assets={assets}
-                bridge={bridge}
                 onSelectTheme={setSelectedThemeId}
                 selectedTheme={selectedTheme}
               />

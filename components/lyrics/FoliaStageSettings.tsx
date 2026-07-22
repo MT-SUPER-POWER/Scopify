@@ -17,7 +17,6 @@ import type { FoliaPanelTab, FoliaStageEditSection } from "@/types/foliaStage";
 
 export function FoliaStageSettings({
   assets,
-  bridge,
   isChromeHidden,
   isOpen,
   onOpenChange,
@@ -146,7 +145,6 @@ export function FoliaStageSettings({
 
       <FoliaVisualSettingsDialog
         assets={assets}
-        bridge={bridge}
         isOpen={isVisualSettingsOpen}
         onClose={() => setIsVisualSettingsOpen(false)}
         onOpenFontPicker={setFontPickerTarget}
@@ -158,7 +156,6 @@ export function FoliaStageSettings({
 
       <FoliaThemeLibraryDialog
         assets={assets}
-        bridge={bridge}
         isOpen={isThemeLibraryOpen}
         onClose={() => setIsThemeLibraryOpen(false)}
         theme={theme}
