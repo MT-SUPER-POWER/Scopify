@@ -11,7 +11,10 @@ export function FoliaSettingsPreview({ assets, bridge, theme }: FoliaSettingsPre
   const songArtist = currentSong?.ar.map((artist) => artist.name).join(", ") ?? null;
 
   return (
-    <div className="relative h-full min-h-64 overflow-hidden bg-[#09090b]">
+    <div
+      className="relative h-full min-h-64 overflow-hidden"
+      style={{ backgroundColor: theme.backgroundColor }}
+    >
       <VisualizerRenderer
         mode={settings.mode}
         currentTime={bridge.lyricCurrentTime}

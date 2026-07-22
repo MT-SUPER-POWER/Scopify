@@ -36,6 +36,7 @@ export interface FoliaStageSettings {
   subtitleFontStyle: Theme["fontStyle"];
   subtitleOverlayBackground: boolean;
   subtitleOverlayOpacity: number;
+  themePresetId: string;
   tunings: VisualizerTuningBundle;
   visualizerOpacity: number;
 }

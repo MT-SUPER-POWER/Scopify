@@ -136,7 +136,7 @@ export const useLyricStageStore = create<FoliaStageStore>()(
       migrate: (persisted) => normalizeFoliaStageSettings(persisted),
       partialize: selectFoliaStageSettings,
       storage: createJSONStorage(() => localStorage),
-      version: 1,
+      version: 2,
     },
   ),
 );

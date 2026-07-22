@@ -12,6 +12,7 @@ import {
   DEFAULT_PARTITA_TUNING,
   DEFAULT_TILT_TUNING,
 } from "@/components/lyrics/folia/src/types";
+import { DEFAULT_THEME_PRESET_ID } from "@/components/lyrics/folia/src/components/visualizer/themePresets";
 import type { FoliaStageSettings } from "@/types/foliaStage";
 
 const NUMERIC_RANGES = {
@@ -95,6 +96,7 @@ const STRING_ENUMS = {
     "tilt",
   ],
   subtitleFontStyle: ["sans", "serif", "mono"],
+  themePresetId: ["midnight", "snow", "ocean", "forest", "rose", "lavender", "amber", "dusk"],
   "tunings.cappella.avatarSource": ["cover", "builtin", "color", "custom"],
   "tunings.cappella.emojiPackSource": ["builtin", "custom"],
   "tunings.diorama.geometryVisibility.mode": ["clouds", "corridor"],
@@ -133,6 +135,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     subtitleFontStyle: "sans",
     subtitleOverlayBackground: false,
     subtitleOverlayOpacity: 0.6,
+    themePresetId: "midnight",
     tunings: {
       cadenza: structuredClone(DEFAULT_CADENZA_TUNING),
       cappella: structuredClone(DEFAULT_CAPPELLA_TUNING),

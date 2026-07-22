@@ -9,6 +9,7 @@ import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/pres
 import foliaI18n from "@/components/lyrics/folia/src/i18n/config";
 import { PlayerState, type Theme } from "@/components/lyrics/folia/src/types";
 import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
+import { getThemePresetById } from "@/components/lyrics/folia/src/components/visualizer/themePresets";
 import { useFoliaStageAssets } from "@/hooks/player/useFoliaStageAssets";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useI18nStore } from "@/store/module/i18n";
@@ -17,26 +18,6 @@ import { useLyricStageStore } from "@/store/module/lyrics";
 import type { DesktopLyricCommand } from "@/types/desktopLyric";
 
 import { FoliaStageSettings } from "./FoliaStageSettings";
-
-const MIDNIGHT_THEME: Theme = {
-  accentColor: "#f4f4f5",
-  animationIntensity: "normal",
-  backgroundColor: "#09090b",
-  fontStyle: "sans",
-  name: "Midnight Default",
-  primaryColor: "#f4f4f5",
-  secondaryColor: "#71717a",
-};
-
-const DAYLIGHT_THEME: Theme = {
-  accentColor: "#ea580c",
-  animationIntensity: "normal",
-  backgroundColor: "#f5f5f4",
-  fontStyle: "sans",
-  name: "Daylight Default",
-  primaryColor: "#1c1917",
-  secondaryColor: "#44403c",
-};
 
 const keepAutoHideEnabled = () => undefined;
 
@@ -53,14 +34,17 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const repeatMode = usePlayerStore((state) => state.repeatMode);
   const locale = useI18nStore((state) => state.locale);
   const settings = useLyricStageStore();
+  const preset = getThemePresetById(settings.themePresetId);
   const theme = useMemo<Theme>(
     () => ({
-      ...MIDNIGHT_THEME,
+      ...preset.colors,
+      animationIntensity: "normal",
+      fontStyle: settings.fontStyle,
       fontFamily: settings.fontFamily ?? undefined,
       fontFamilyStack: [],
-      fontStyle: settings.fontStyle,
+      name: preset.id,
     }),
-    [settings.fontFamily, settings.fontStyle],
+    [preset, settings.fontFamily, settings.fontStyle],
   );
   const subtitleTheme = useMemo<Theme>(
     () =>
@@ -78,8 +62,8 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
     () =>
       buildAppStyle({
         bgMode: "default",
-        daylightTheme: DAYLIGHT_THEME,
-        defaultTheme: MIDNIGHT_THEME,
+        daylightTheme: theme,
+        defaultTheme: theme,
         isDaylight: false,
         theme,
         transparentBackground: isTransparent,
@@ -136,10 +120,13 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
     <I18nextProvider i18n={foliaI18n}>
       <section
         aria-label="Lyrics"
-        style={appStyle}
         className={`fixed inset-0 z-100 overflow-hidden text-white ${
-          isTransparent ? "bg-transparent" : "bg-[#09090b]"
+          isTransparent ? "bg-transparent" : ""
         } ${isBorderVisible ? "border border-white/30" : ""}`}
+        style={{
+          ...appStyle,
+          backgroundColor: isTransparent ? "transparent" : theme.backgroundColor,
+        }}
       >
         <div className="absolute inset-0">
           <VisualizerRenderer

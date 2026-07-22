@@ -42,7 +42,7 @@ export function useFoliaStageSettingsPanel(
 ) {
   const { t } = useTranslation();
   const settings = useLyricStageStore();
-  const isDaylight = theme.name === "Daylight Default";
+  const isDaylight = theme.name === "snow";
   const translate = (key: string) => String(t(key));
   const builtinFontOptions = useMemo(
     () => [
@@ -209,6 +209,7 @@ export function useFoliaStageSettingsPanel(
     },
     onVisualizerOpacityChange: (visualizerOpacity: number) =>
       settings.patchSettings({ visualizerOpacity: Math.min(1, Math.max(0.1, visualizerOpacity)) }),
+    onThemePresetChange: (themePresetId: string) => settings.patchSettings({ themePresetId }),
     partitaTuning: settings.tunings.partita ?? DEFAULT_PARTITA_TUNING,
     rangeInputClass,
     showSubtitleTranslation: settings.showSubtitleTranslation,
@@ -221,6 +222,7 @@ export function useFoliaStageSettingsPanel(
     subtitleOverlayOpacity: settings.subtitleOverlayOpacity,
     t: translate,
     theme,
+    themePresetId: settings.themePresetId,
     tiltTuning: settings.tunings.tilt ?? DEFAULT_TILT_TUNING,
     visualizerEntry,
     visualizerMode: settings.mode,

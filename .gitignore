@@ -51,3 +51,8 @@ doc/README-TEMPLATE.md
 
 # superpowers
 .superpowers/
+
+# Agent
+.codex/
+.claude/
+
