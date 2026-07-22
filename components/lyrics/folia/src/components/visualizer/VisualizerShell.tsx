@@ -1,7 +1,7 @@
 import React, { forwardRef, useState } from "react";
 import { motion, MotionValue } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { AudioBands, Theme } from "../../types";
 import { resolveThemeFontStack } from "../../utils/fontStacks";
 import { type VisualizerSharedProps } from "./definition";
@@ -103,7 +103,7 @@ const VisualizerShell = forwardRef<HTMLDivElement, VisualizerShellProps>(
             className="pointer-events-auto absolute top-6 left-6 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-black/20 text-white/60 backdrop-blur-md transition-colors hover:bg-white/10"
             style={{ pointerEvents: isBackButtonVisible ? "auto" : "none" }}
           >
-            <ChevronLeft size={20} />
+            <ChevronDown size={20} />
           </motion.button>
         )}
 
