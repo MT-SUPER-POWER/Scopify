@@ -52,6 +52,14 @@ _Avoid_: switch statement, hard-coded mode list
 A browser-compatible full-screen Scopify surface that mounts the complete Folia Playback Stage through the Scopify Host Adapter. It is available in both Scopify's Web and Electron runtimes and is opened from Scopify's existing lyrics action.
 _Avoid_: desktop window, player
 
+**Lyric Stage Theme Library**:
+The persisted collection of named, JSON-serializable Dual Themes available only to the Lyric Stage. It is renderer state owned by Zustand; it does not change Scopify's application-wide appearance.
+_Avoid_: application theme, Folia runtime registry
+
+**Dual Theme**:
+One Lyric Stage theme with matched light and dark color variants. The Visual Settings brightness tabs select the active variant of the selected theme.
+_Avoid_: two unrelated themes, application dark-mode setting
+
 **Legacy Lyric Modal**:
 The former Scopify full-screen LRC surface. It is replaced by the Lyric Stage and has no active runtime path after the migration.
 _Avoid_: Lyric Stage, supported lyric renderer

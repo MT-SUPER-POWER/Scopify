@@ -145,6 +145,7 @@ interface VisPlaygroundSettingsPanelProps {
   onSliderCommit?: () => void;
   themePresetId?: string;
   onThemePresetChange?: (id: string) => void;
+  themeControl?: React.ReactNode;
 }
 
 const SECTION_OPTIONS: VisPlaygroundEditSection[] = [
@@ -386,6 +387,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
     onSliderCommit,
     themePresetId,
     onThemePresetChange,
+    themeControl,
   } = props;
 
   const modeOptions = useMemo(
@@ -449,49 +451,51 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               />
             </div>
 
-            <div className="space-y-2.5">
-              <div
-                className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
-                style={{ color: theme.secondaryColor }}
-              >
-                {t("options.themePresets")}
+            {themeControl ?? (
+              <div className="space-y-2.5">
+                <div
+                  className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
+                  style={{ color: theme.secondaryColor }}
+                >
+                  {t("options.themePresets")}
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {THEME_PRESETS.map((preset) => {
+                    const isActive = themePresetId === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => onThemePresetChange?.(preset.id)}
+                        className="flex flex-col items-center gap-1.5 rounded-xl border p-2 transition-all"
+                        style={{
+                          ...getAccentOptionStyle(isActive, theme, isDaylight),
+                          color: theme.primaryColor,
+                        }}
+                      >
+                        <div className="flex gap-0.5">
+                          {[
+                            preset.colors.backgroundColor,
+                            preset.colors.primaryColor,
+                            preset.colors.accentColor,
+                            preset.colors.secondaryColor,
+                          ].map((c, i) => (
+                            <div
+                              key={i}
+                              className="h-2.5 w-2.5 rounded-full border border-black/10"
+                              style={{ backgroundColor: c }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[10px] leading-tight font-medium opacity-80">
+                          {t(preset.labelKey)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="grid grid-cols-4 gap-2">
-                {THEME_PRESETS.map((preset) => {
-                  const isActive = themePresetId === preset.id;
-                  return (
-                    <button
-                      key={preset.id}
-                      type="button"
-                      onClick={() => onThemePresetChange?.(preset.id)}
-                      className="flex flex-col items-center gap-1.5 rounded-xl border p-2 transition-all"
-                      style={{
-                        ...getAccentOptionStyle(isActive, theme, isDaylight),
-                        color: theme.primaryColor,
-                      }}
-                    >
-                      <div className="flex gap-0.5">
-                        {[
-                          preset.colors.backgroundColor,
-                          preset.colors.primaryColor,
-                          preset.colors.accentColor,
-                          preset.colors.secondaryColor,
-                        ].map((c, i) => (
-                          <div
-                            key={i}
-                            className="h-2.5 w-2.5 rounded-full border border-black/10"
-                            style={{ backgroundColor: c }}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-[10px] leading-tight font-medium opacity-80">
-                        {t(preset.labelKey)}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            )}
 
             <PresetGroup
               label={t("options.fontFamily")}

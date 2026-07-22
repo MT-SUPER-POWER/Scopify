@@ -12,7 +12,12 @@ import {
   DEFAULT_PARTITA_TUNING,
   DEFAULT_TILT_TUNING,
 } from "@/components/lyrics/folia/src/types";
-import { DEFAULT_THEME_PRESET_ID } from "@/components/lyrics/folia/src/components/visualizer/themePresets";
+import {
+  createBuiltinFoliaStageThemes,
+  createFoliaStageTheme,
+  getFoliaStageTheme,
+  normalizeFoliaStageThemes,
+} from "@/lib/lyrics/foliaTheme";
 import type { FoliaStageSettings } from "@/types/foliaStage";
 
 const NUMERIC_RANGES = {
@@ -96,7 +101,7 @@ const STRING_ENUMS = {
     "tilt",
   ],
   subtitleFontStyle: ["sans", "serif", "mono"],
-  themePresetId: ["midnight", "snow", "ocean", "forest", "rose", "lavender", "amber", "dusk"],
+  themeVariant: ["dark", "light"],
   "tunings.cappella.avatarSource": ["cover", "builtin", "color", "custom"],
   "tunings.cappella.emojiPackSource": ["builtin", "custom"],
   "tunings.diorama.geometryVisibility.mode": ["clouds", "corridor"],
@@ -135,7 +140,9 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     subtitleFontStyle: "sans",
     subtitleOverlayBackground: false,
     subtitleOverlayOpacity: 0.6,
-    themePresetId: "midnight",
+    themeId: "monochrome",
+    themes: createBuiltinFoliaStageThemes(),
+    themeVariant: "dark",
     tunings: {
       cadenza: structuredClone(DEFAULT_CADENZA_TUNING),
       cappella: structuredClone(DEFAULT_CAPPELLA_TUNING),
@@ -157,7 +164,15 @@ export function normalizeFoliaStageSettings(
 ): FoliaStageSettings {
   const defaults = createDefaultFoliaStageSettings();
   const normalizedFallback = fallback ? normalizeAgainstSchema(fallback, defaults, "") : defaults;
-  const normalized = normalizeAgainstSchema(withLegacyAliases(candidate), normalizedFallback, "");
+  const normalized = normalizeAgainstSchema(
+    withThemeLibraryMigration(withLegacyAliases(candidate)),
+    normalizedFallback,
+    "",
+  );
+  normalized.themes = normalizeFoliaStageThemes(normalized.themes);
+  if (!normalized.themes.some((theme) => theme.id === normalized.themeId)) {
+    normalized.themeId = normalized.themes[0].id;
+  }
 
   const items = normalized.background.url?.items ?? [];
   const selectedId = normalized.background.url?.selectedId ?? null;
@@ -260,6 +275,49 @@ function withLegacyAliases(candidate: unknown): unknown {
   if (candidate.showSubtitleTranslation !== undefined) return candidate;
   if (typeof candidate.showTranslation !== "boolean") return candidate;
   return { ...candidate, showSubtitleTranslation: candidate.showTranslation };
+}
+
+function withThemeLibraryMigration(candidate: unknown): unknown {
+  if (!isRecord(candidate) || Array.isArray(candidate.themes)) return candidate;
+
+  const legacyPresetId =
+    typeof candidate.themePresetId === "string" ? candidate.themePresetId : "midnight";
+  const themes = createBuiltinFoliaStageThemes();
+  const isCustomTheme = legacyPresetId === "custom";
+
+  if (isCustomTheme && isRecord(candidate.customThemeColors)) {
+    const legacyTheme = createFoliaStageTheme("自定义主题");
+    legacyTheme.dark = {
+      accentColor:
+        typeof candidate.customThemeColors.accentColor === "string"
+          ? candidate.customThemeColors.accentColor
+          : legacyTheme.dark.accentColor,
+      backgroundColor:
+        typeof candidate.customThemeColors.backgroundColor === "string"
+          ? candidate.customThemeColors.backgroundColor
+          : legacyTheme.dark.backgroundColor,
+      primaryColor:
+        typeof candidate.customThemeColors.primaryColor === "string"
+          ? candidate.customThemeColors.primaryColor
+          : legacyTheme.dark.primaryColor,
+      secondaryColor:
+        typeof candidate.customThemeColors.secondaryColor === "string"
+          ? candidate.customThemeColors.secondaryColor
+          : legacyTheme.dark.secondaryColor,
+    };
+    themes.push(legacyTheme);
+    return { ...candidate, themeId: legacyTheme.id, themeVariant: "dark", themes };
+  }
+
+  const themeId =
+    legacyPresetId === "midnight" || legacyPresetId === "snow" ? "monochrome" : legacyPresetId;
+  const theme = getFoliaStageTheme(themes, themeId);
+  return {
+    ...candidate,
+    themeId: theme.id,
+    themeVariant: legacyPresetId === "snow" ? "light" : "dark",
+    themes,
+  };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

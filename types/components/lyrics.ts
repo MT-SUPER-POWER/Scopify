@@ -1,6 +1,11 @@
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
-import type { FoliaPlaybackBridge, FoliaStageEditSection } from "@/types/foliaStage";
+import type {
+  FoliaPlaybackBridge,
+  FoliaStageEditSection,
+  FoliaStageTheme,
+  FoliaThemeVariant,
+} from "@/types/foliaStage";
 
 export interface FoliaQuickEffectPickerOption<Value extends string> {
   label: string;
@@ -9,6 +14,7 @@ export interface FoliaQuickEffectPickerOption<Value extends string> {
 
 export interface FoliaLyricsControlsProps {
   onOpenSettings: (section: FoliaStageEditSection) => void;
+  onOpenThemeLibrary: () => void;
   theme: Theme;
 }
 
@@ -22,8 +28,10 @@ export interface FoliaStageSettingsProps {
 }
 
 export interface FoliaSettingsPreviewProps {
+  activeSection: FoliaStageEditSection;
   assets: FoliaStageAssets;
   bridge: FoliaPlaybackBridge;
+  onSectionChange: (section: FoliaStageEditSection) => void;
   theme: Theme;
 }
 
@@ -33,8 +41,45 @@ export interface FoliaVisualSettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenFontPicker: (target: "lyrics" | "subtitle") => void;
+  onOpenThemeLibrary: () => void;
   onSectionChange: (section: FoliaStageEditSection) => void;
   section: FoliaStageEditSection;
+  theme: Theme;
+}
+
+export interface FoliaThemeColorEditorProps {
+  onDraftChange: (theme: FoliaStageTheme) => void;
+  theme: FoliaStageTheme;
+  variant: FoliaThemeVariant;
+}
+
+export interface FoliaThemeEditorProps {
+  assets: FoliaStageAssets;
+  bridge: FoliaPlaybackBridge;
+  onSelectTheme: (id: string) => void;
+  selectedTheme: FoliaStageTheme;
+}
+
+export interface FoliaThemeLibraryDialogProps {
+  assets: FoliaStageAssets;
+  bridge: FoliaPlaybackBridge;
+  isOpen: boolean;
+  onClose: () => void;
+  theme: Theme;
+}
+
+export interface FoliaThemeLibraryListProps {
+  onSelectTheme: (id: string) => void;
+  selectedThemeId: string;
+}
+
+export interface FoliaThemeJsonTransferProps {
+  onSelectTheme: (id: string) => void;
+  theme: FoliaStageTheme;
+}
+
+export interface FoliaThemeQuickPickerProps {
+  onOpenThemeLibrary: () => void;
   theme: Theme;
 }
 

@@ -20,6 +20,21 @@ import type { LyricVisualizerMode } from "@/types/lyrics";
 
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
 export type FoliaPanelTab = "controls" | "lyrics" | "queue";
+export type FoliaThemeVariant = "dark" | "light";
+
+export interface FoliaThemeColors {
+  accentColor: string;
+  backgroundColor: string;
+  primaryColor: string;
+  secondaryColor: string;
+}
+
+export interface FoliaStageTheme {
+  dark: FoliaThemeColors;
+  id: string;
+  light: FoliaThemeColors;
+  name: string;
+}
 
 export interface FoliaStageSettings {
   background: VisualizerBackgroundConfig;
@@ -36,7 +51,9 @@ export interface FoliaStageSettings {
   subtitleFontStyle: Theme["fontStyle"];
   subtitleOverlayBackground: boolean;
   subtitleOverlayOpacity: number;
-  themePresetId: string;
+  themeId: string;
+  themes: FoliaStageTheme[];
+  themeVariant: FoliaThemeVariant;
   tunings: VisualizerTuningBundle;
   visualizerOpacity: number;
 }
@@ -55,11 +72,18 @@ export interface FoliaStageStore extends FoliaStageSettings {
   ) => void;
   replaceSettings: (settings: FoliaStageSettings) => void;
   resetAll: () => void;
+  resetTheme: (id: string) => void;
   resetBackgroundTuning: (mode: VisualizerBackgroundMode) => void;
   resetTuning: (mode: VisualizerTuningMode) => void;
   selectUrlBackground: (id: null | string) => void;
   setBackgroundMode: (mode: VisualizerBackgroundMode) => void;
+  setThemeId: (id: string) => void;
+  setThemeVariant: (variant: FoliaThemeVariant) => void;
+  restoreBuiltinThemes: () => void;
+  addTheme: (theme: FoliaStageTheme) => void;
+  deleteTheme: (id: string) => void;
   updateUrlBackground: (id: string, patch: Partial<Omit<UrlBackgroundItem, "id">>) => void;
+  updateTheme: (theme: FoliaStageTheme) => void;
 }
 
 export interface FoliaPlaybackBridge {

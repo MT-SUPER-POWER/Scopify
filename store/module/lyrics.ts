@@ -11,6 +11,12 @@ import {
   normalizeFoliaStageSettings,
   selectFoliaStageSettings,
 } from "@/lib/lyrics/foliaStageSettings";
+import {
+  createBuiltinFoliaStageThemes,
+  getBuiltinFoliaStageTheme,
+  isBuiltinFoliaStageTheme,
+  normalizeFoliaStageTheme,
+} from "@/lib/lyrics/foliaTheme";
 import type { FoliaStageSettings, FoliaStageStore } from "@/types/foliaStage";
 
 const tuningDefaults = createDefaultFoliaStageSettings().tunings;
@@ -29,6 +35,11 @@ export const useLyricStageStore = create<FoliaStageStore>()(
             },
           },
         })),
+      addTheme: (theme) =>
+        set((state) => {
+          if (state.themes.some((item) => item.id === theme.id)) return state;
+          return { themes: [...state.themes, normalizeFoliaStageTheme(theme)] };
+        }),
       deleteUrlBackground: (id) =>
         set((state) => ({
           background: {
@@ -41,6 +52,15 @@ export const useLyricStageStore = create<FoliaStageStore>()(
             },
           },
         })),
+      deleteTheme: (id) =>
+        set((state) => {
+          const remainingThemes = state.themes.filter((theme) => theme.id !== id);
+          const themes = remainingThemes.length ? remainingThemes : createBuiltinFoliaStageThemes();
+          return {
+            themeId: state.themeId === id ? themes[0].id : state.themeId,
+            themes,
+          };
+        }),
       patchBackgroundCommon: (patch) =>
         set((state) => ({
           background: {
@@ -97,6 +117,16 @@ export const useLyricStageStore = create<FoliaStageStore>()(
         })),
       replaceSettings: (settings) => set(normalizeFoliaStageSettings(settings)),
       resetAll: () => set(createDefaultFoliaStageSettings()),
+      resetTheme: (id) =>
+        set((state) => {
+          const builtinTheme = getBuiltinFoliaStageTheme(id);
+          if (!builtinTheme) return state;
+          return {
+            themes: state.themes.some((theme) => theme.id === id)
+              ? state.themes.map((theme) => (theme.id === id ? builtinTheme : theme))
+              : [...state.themes, builtinTheme],
+          };
+        }),
       resetBackgroundTuning: (mode) => {
         if (mode === "monet") get().patchMonetBackground(DEFAULT_MONET_BACKGROUND_TUNING);
         if (mode === "nomand") get().patchNomandBackground(DEFAULT_NOMAND_BACKGROUND_TUNING);
@@ -114,6 +144,16 @@ export const useLyricStageStore = create<FoliaStageStore>()(
           },
         })),
       setBackgroundMode: (mode) => set((state) => ({ background: { ...state.background, mode } })),
+      setThemeId: (id) =>
+        set((state) => (state.themes.some((theme) => theme.id === id) ? { themeId: id } : state)),
+      setThemeVariant: (themeVariant) => set({ themeVariant }),
+      restoreBuiltinThemes: () =>
+        set((state) => ({
+          themes: [
+            ...createBuiltinFoliaStageThemes(),
+            ...state.themes.filter((theme) => !isBuiltinFoliaStageTheme(theme.id)),
+          ],
+        })),
       updateUrlBackground: (id, patch) =>
         set((state) => ({
           background: {
@@ -126,6 +166,15 @@ export const useLyricStageStore = create<FoliaStageStore>()(
             },
           },
         })),
+      updateTheme: (theme) =>
+        set((state) => {
+          const currentTheme = state.themes.find((item) => item.id === theme.id);
+          if (!currentTheme) return state;
+          const nextTheme = normalizeFoliaStageTheme(theme, currentTheme);
+          return {
+            themes: state.themes.map((item) => (item.id === nextTheme.id ? nextTheme : item)),
+          };
+        }),
     }),
     {
       name: "lyric-stage-storage",
@@ -136,7 +185,7 @@ export const useLyricStageStore = create<FoliaStageStore>()(
       migrate: (persisted) => normalizeFoliaStageSettings(persisted),
       partialize: selectFoliaStageSettings,
       storage: createJSONStorage(() => localStorage),
-      version: 2,
+      version: 3,
     },
   ),
 );

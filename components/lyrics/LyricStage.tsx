@@ -9,9 +9,9 @@ import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/pres
 import foliaI18n from "@/components/lyrics/folia/src/i18n/config";
 import { PlayerState, type Theme } from "@/components/lyrics/folia/src/types";
 import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
-import { getThemePresetById } from "@/components/lyrics/folia/src/components/visualizer/themePresets";
 import { useFoliaStageAssets } from "@/hooks/player/useFoliaStageAssets";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
+import { getFoliaStageTheme, getFoliaThemeColors } from "@/lib/lyrics/foliaTheme";
 import { useI18nStore } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
@@ -34,17 +34,19 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const repeatMode = usePlayerStore((state) => state.repeatMode);
   const locale = useI18nStore((state) => state.locale);
   const settings = useLyricStageStore();
-  const preset = getThemePresetById(settings.themePresetId);
+  const activeStageTheme = getFoliaStageTheme(settings.themes, settings.themeId);
+  const activeThemeColors = getFoliaThemeColors(activeStageTheme, settings.themeVariant);
+  const isDaylight = settings.themeVariant === "light";
   const theme = useMemo<Theme>(
     () => ({
-      ...preset.colors,
+      ...activeThemeColors,
       animationIntensity: "normal",
       fontStyle: settings.fontStyle,
       fontFamily: settings.fontFamily ?? undefined,
       fontFamilyStack: [],
-      name: preset.id,
+      name: isDaylight ? "snow" : settings.themeId,
     }),
-    [preset, settings.fontFamily, settings.fontStyle],
+    [activeThemeColors, isDaylight, settings.fontFamily, settings.fontStyle, settings.themeId],
   );
   const subtitleTheme = useMemo<Theme>(
     () =>
@@ -64,11 +66,11 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
         bgMode: "default",
         daylightTheme: theme,
         defaultTheme: theme,
-        isDaylight: false,
+        isDaylight,
         theme,
         transparentBackground: isTransparent,
       }),
-    [isTransparent, theme],
+    [isDaylight, isTransparent, theme],
   );
 
   const { cyclePlayerChromeVisibilityMode, setPlayerChromeVisibilityMode } =
@@ -136,7 +138,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
             lines={bridge.lines}
             theme={theme}
             subtitleTheme={subtitleTheme}
-            isDaylight={false}
+            isDaylight={isDaylight}
             audioPower={bridge.audioPower}
             audioBands={bridge.audioBands}
             showText
@@ -193,7 +195,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
           primaryColor={theme.primaryColor}
           secondaryColor={theme.secondaryColor}
           theme={theme}
-          isDaylight={false}
+          isDaylight={isDaylight}
           isHidden={isPlayerChromeHidden}
           controlsDisabled={!currentSongUrl}
         />

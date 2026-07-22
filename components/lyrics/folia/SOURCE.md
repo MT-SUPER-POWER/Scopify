@@ -27,6 +27,10 @@ Scopify is also distributed under AGPL-3.0.
   because Next.js owns global CSS loading.
 - The preview-only native-blur warning no longer reads Folia's application-wide
   settings store. Renderer and settings behavior is otherwise unchanged.
+- The common Visual Settings panel accepts an optional host theme-control slot;
+  Scopify supplies its Lyric Stage Theme Library there while preserving Folia's
+  original preset control as the fallback.
+- Locale dictionaries include host labels for the Lyric Stage-only Theme Library.
 - Scopify supplies lyrics, playback time, audio bands, metadata, and transport
   callbacks through a separate adapter outside this directory.
 

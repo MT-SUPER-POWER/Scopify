@@ -9,6 +9,7 @@ import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
 import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
 import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
 import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
+import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
 import { FoliaVisualSettingsDialog } from "@/components/lyrics/FoliaVisualSettingsDialog";
 import { usePlayerStore } from "@/store/module/player";
 import type { FoliaStageSettingsProps } from "@/types/components/lyrics";
@@ -24,10 +25,12 @@ export function FoliaStageSettings({
 }: FoliaStageSettingsProps) {
   const { t } = useTranslation();
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const isDaylight = theme.name === "snow";
   const [activeSection, setActiveSection] = useState<FoliaStageEditSection>("common");
   const [activeTab, setActiveTab] = useState<FoliaPanelTab>("controls");
   const [fontPickerTarget, setFontPickerTarget] = useState<"lyrics" | "subtitle" | null>(null);
   const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
+  const [isThemeLibraryOpen, setIsThemeLibraryOpen] = useState(false);
 
   const openVisualSettings = (section: FoliaStageEditSection) => {
     setActiveSection(section);
@@ -43,25 +46,37 @@ export function FoliaStageSettings({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.24, ease: "easeOut" }}
-            className="fixed right-4 bottom-8 z-70 flex max-h-[calc(100dvh-6rem)] w-80 max-w-[calc(100vw-2rem)] flex-col overflow-y-auto rounded-3xl bg-black/55 p-5 text-white shadow-2xl backdrop-blur-3xl md:right-8"
+            className={`fixed right-4 bottom-8 z-70 flex max-h-[calc(100dvh-6rem)] w-80 max-w-[calc(100vw-2rem)] flex-col overflow-y-auto rounded-3xl p-5 shadow-2xl backdrop-blur-3xl md:right-8 ${
+              isDaylight ? "bg-white/60 text-zinc-900" : "bg-black/55 text-white"
+            }`}
           >
-            <div className="relative mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-white/5 shadow-lg">
+            <div
+              className={`relative mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl shadow-lg ${
+                isDaylight ? "bg-black/[0.03]" : "bg-white/5"
+              }`}
+            >
               {currentSong?.al.picUrl ? (
                 <img src={currentSong.al.picUrl} alt="" className="size-full object-cover" />
               ) : (
-                <Disc size={40} className="text-white/20" />
+                <Disc size={40} className={isDaylight ? "text-black/20" : "text-white/20"} />
               )}
               <button
                 type="button"
                 title={String(t("ui.close"))}
                 onClick={() => onOpenChange(false)}
-                className="absolute top-3 right-3 flex size-11 items-center justify-center rounded-full border border-white/15 bg-black/25 text-white/90 backdrop-blur-md hover:bg-black/40"
+                className={`absolute top-3 right-3 flex size-11 items-center justify-center rounded-full border backdrop-blur-md ${
+                  isDaylight
+                    ? "border-black/10 bg-white/70 text-zinc-700 hover:bg-white"
+                    : "border-white/15 bg-black/25 text-white/90 hover:bg-black/40"
+                }`}
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div className="mb-4 flex rounded-xl bg-black/20 p-1">
+            <div
+              className={`mb-4 flex rounded-xl p-1 ${isDaylight ? "bg-black/5" : "bg-black/20"}`}
+            >
               {(
                 [
                   ["controls", SlidersHorizontal, "panel.controls"],
@@ -74,7 +89,14 @@ export function FoliaStageSettings({
                   type="button"
                   title={String(t(label))}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex flex-1 items-center justify-center rounded-lg py-2 transition-all ${activeTab === tab ? "bg-white/20 shadow-sm" : "opacity-40 hover:opacity-100"}`}
+                  className={`flex flex-1 items-center justify-center rounded-lg py-2 transition-all ${
+                    activeTab === tab
+                      ? isDaylight
+                        ? "bg-black/10 shadow-sm"
+                        : "bg-white/20 shadow-sm"
+                      : "opacity-40 hover:opacity-100"
+                  }`}
+                  style={{ color: theme.primaryColor }}
                 >
                   <Icon size={16} />
                 </button>
@@ -82,10 +104,14 @@ export function FoliaStageSettings({
             </div>
 
             <div className="min-h-0 flex-1">
-              {activeTab === "controls" ? <FoliaPanelControls /> : null}
+              {activeTab === "controls" ? <FoliaPanelControls theme={theme} /> : null}
               {activeTab === "queue" ? <FoliaPanelQueue /> : null}
               {activeTab === "lyrics" ? (
-                <FoliaLyricsControls theme={theme} onOpenSettings={openVisualSettings} />
+                <FoliaLyricsControls
+                  theme={theme}
+                  onOpenSettings={openVisualSettings}
+                  onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
+                />
               ) : null}
             </div>
           </motion.aside>
@@ -106,8 +132,17 @@ export function FoliaStageSettings({
         isOpen={isVisualSettingsOpen}
         onClose={() => setIsVisualSettingsOpen(false)}
         onOpenFontPicker={setFontPickerTarget}
+        onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
         onSectionChange={setActiveSection}
         section={activeSection}
+        theme={theme}
+      />
+
+      <FoliaThemeLibraryDialog
+        assets={assets}
+        bridge={bridge}
+        isOpen={isThemeLibraryOpen}
+        onClose={() => setIsThemeLibraryOpen(false)}
         theme={theme}
       />
 

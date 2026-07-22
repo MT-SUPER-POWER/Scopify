@@ -1,9 +1,11 @@
 "use client";
 
-import { Volume2, Settings2, Shuffle, Heart, Plus, ChevronRight } from "lucide-react";
+import { Settings2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { FoliaQuickEffectPicker } from "@/components/lyrics/FoliaQuickEffectPicker";
+import { FoliaThemeQuickPicker } from "@/components/lyrics/FoliaThemeQuickPicker";
+import { FoliaVolumeControl } from "@/components/lyrics/FoliaVolumeControl";
 import {
   getVisualizerBackgroundModeLabel,
   VISUALIZER_BACKGROUND_REGISTRY,
@@ -12,8 +14,6 @@ import {
   getVisualizerModeLabel,
   VISUALIZER_REGISTRY,
 } from "@/components/lyrics/folia/src/components/visualizer/registry";
-import { THEME_PRESETS } from "@/components/lyrics/folia/src/components/visualizer/themePresets";
-import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import type { FoliaLyricsControlsProps } from "@/types/components/lyrics";
 import type { LyricVisualizerMode } from "@/types/lyrics";
@@ -32,20 +32,15 @@ function isLyricVisualizerMode(mode: string): mode is LyricVisualizerMode {
   );
 }
 
-const QUICK_MODE_ICONS = [
-  { mode: "classic", Icon: Shuffle },
-  { mode: "monet", Icon: Heart },
-  { mode: "fume", Icon: Plus },
-] as const;
-
-export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsControlsProps) {
+export function FoliaLyricsControls({
+  onOpenSettings,
+  onOpenThemeLibrary,
+  theme,
+}: FoliaLyricsControlsProps) {
   const { t } = useTranslation();
   const model = useFoliaPanelControls();
   const isDaylight = theme.name === "snow";
   const translate = (key: string) => String(t(key));
-
-  const currentPreset = THEME_PRESETS.find((p) => p.id === theme.name) ?? THEME_PRESETS[0];
-  const themeLabel = translate(`options.${currentPreset.labelKey}`);
 
   const visualizerOptions = VISUALIZER_REGISTRY.flatMap((entry) =>
     isLyricVisualizerMode(entry.mode)
@@ -62,65 +57,16 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
     value: entry.mode,
   }));
 
-  const handlePresetChange = (presetId: string) => {
-    model.setThemePreset(presetId);
-  };
-
   return (
     <div className="space-y-3">
-      {/* Quick Mode Buttons */}
-      <section className="flex items-center gap-2">
-        {QUICK_MODE_ICONS.map(({ mode, Icon }) => {
-          const isActive = model.visualizerMode === mode;
-          return (
-            <button
-              key={mode}
-              type="button"
-              title={getVisualizerModeLabel(mode, (key) => String(t(key)))}
-              onClick={() => model.setVisualizerMode(mode as LyricVisualizerMode)}
-              className="flex size-10 items-center justify-center rounded-2xl transition-all"
-              style={{
-                backgroundColor: isActive
-                  ? "rgba(255,255,255,0.2)"
-                  : colorWithAlpha(theme.backgroundColor, 0.3),
-                color: isActive ? theme.primaryColor : theme.secondaryColor,
-              }}
-            >
-              <Icon size={18} />
-            </button>
-          );
-        })}
-      </section>
+      <FoliaVolumeControl
+        onChange={model.setVolume}
+        onToggleMute={model.toggleMute}
+        theme={theme}
+        volume={model.volume}
+      />
 
-      {/* Volume */}
-      <section className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={model.toggleMute}
-          className="shrink-0 opacity-60 transition-opacity hover:opacity-100"
-          style={{ color: theme.primaryColor }}
-        >
-          <Volume2 size={16} />
-        </button>
-        <div className="min-w-0 flex-1">
-          <div
-            className="flex items-center justify-between text-xs"
-            style={{ color: theme.secondaryColor }}
-          >
-            <span>{translate("options.volume")}</span>
-            <span className="font-mono opacity-60">{model.volume}%</span>
-          </div>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={model.volume}
-            onChange={(event) => model.setVolume(parseInt(event.target.value))}
-            className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/10 [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125"
-          />
-        </div>
-      </section>
+      <FoliaThemeQuickPicker onOpenThemeLibrary={onOpenThemeLibrary} theme={theme} />
 
       {/* Lyrics Style */}
       <section className="flex items-center justify-between gap-3">
@@ -172,67 +118,6 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
             <Settings2 size={14} />
           </button>
         </span>
-      </section>
-
-      {/* Theme Mode Selector */}
-      <section className="space-y-2 pt-2">
-        <div
-          className="flex items-center gap-1 rounded-full p-1"
-          style={{ backgroundColor: colorWithAlpha(theme.backgroundColor, 0.3) }}
-        >
-          {[
-            {
-              id: "midnight",
-              label: translate("options.themePresetsDefault").split(" / ")[0] || "默认",
-            },
-            { id: "ai", label: "AI Theme", disabled: true },
-            { id: "custom", label: translate("options.customTheme"), disabled: true },
-          ].map((btn) => {
-            const isActive = btn.id === "midnight" && currentPreset.id !== "snow";
-            return (
-              <button
-                key={btn.id}
-                type="button"
-                disabled={btn.disabled}
-                onClick={() => {
-                  if (!btn.disabled) handlePresetChange(btn.id);
-                }}
-                className="flex-1 rounded-full px-3 py-1.5 text-xs font-medium transition-all disabled:cursor-not-allowed"
-                style={{
-                  color: theme.primaryColor,
-                  backgroundColor: isActive ? "rgba(255,255,255,0.12)" : "transparent",
-                  opacity: btn.disabled ? 0.4 : isActive ? 1 : 0.7,
-                }}
-              >
-                {btn.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Current Theme Name */}
-        <div className="flex items-center gap-1.5 px-1">
-          <span className="text-xs" style={{ color: theme.secondaryColor }}>
-            {currentPreset.id === "snow"
-              ? "☀️"
-              : currentPreset.id === "midnight"
-                ? "🌙"
-                : currentPreset.id === "ocean"
-                  ? "🌊"
-                  : currentPreset.id === "forest"
-                    ? "🌿"
-                    : currentPreset.id === "rose"
-                      ? "🌹"
-                      : currentPreset.id === "lavender"
-                        ? "💜"
-                        : currentPreset.id === "amber"
-                          ? "🟠"
-                          : "🌆"}
-          </span>
-          <span className="text-xs font-medium opacity-70" style={{ color: theme.primaryColor }}>
-            {themeLabel}
-          </span>
-        </div>
       </section>
     </div>
   );

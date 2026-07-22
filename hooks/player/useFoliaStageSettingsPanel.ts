@@ -1,10 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  DEFAULT_CADENZA_TUNING,
   DEFAULT_CAPPELLA_TUNING,
   DEFAULT_CLASSIC_TUNING,
   DEFAULT_CLADDAGH_TUNING,
@@ -20,7 +19,6 @@ import {
   getVisualizerRegistryEntry,
   hasVisualizerMode,
 } from "@/components/lyrics/folia/src/components/visualizer/registry";
-import type { VisualizerTuningMode } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
 import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
@@ -43,14 +41,14 @@ export function useFoliaStageSettingsPanel(
   const { t } = useTranslation();
   const settings = useLyricStageStore();
   const isDaylight = theme.name === "snow";
-  const translate = (key: string) => String(t(key));
+  const translate = useCallback((key: string) => String(t(key)), [t]);
   const builtinFontOptions = useMemo(
     () => [
       { label: translate("options.fontSans"), value: "sans" as const },
       { label: translate("options.fontSerif"), value: "serif" as const },
       { label: translate("options.fontMono"), value: "mono" as const },
     ],
-    [t],
+    [translate],
   );
   const fontStyleOptions = useMemo(
     () => [
@@ -60,7 +58,7 @@ export function useFoliaStageSettingsPanel(
         value: "custom" as const,
       },
     ],
-    [assets.lyricsCustomFont?.label, builtinFontOptions, t],
+    [assets.lyricsCustomFont?.label, builtinFontOptions, translate],
   );
   const visualizerEntry = getVisualizerRegistryEntry(settings.mode);
   const backgroundActions = useMemo<VisualizerBackgroundActions>(
@@ -110,7 +108,7 @@ export function useFoliaStageSettingsPanel(
       : "bg-white/10 [&::-webkit-slider-thumb]:bg-white [&::-moz-range-thumb]:bg-white",
   ].join(" ");
   const resetCurrentTuning = () => {
-    const mode = settings.mode as VisualizerTuningMode;
+    const mode = settings.mode;
     settings.resetTuning(mode);
   };
 
@@ -209,7 +207,6 @@ export function useFoliaStageSettingsPanel(
     },
     onVisualizerOpacityChange: (visualizerOpacity: number) =>
       settings.patchSettings({ visualizerOpacity: Math.min(1, Math.max(0.1, visualizerOpacity)) }),
-    onThemePresetChange: (themePresetId: string) => settings.patchSettings({ themePresetId }),
     partitaTuning: settings.tunings.partita ?? DEFAULT_PARTITA_TUNING,
     rangeInputClass,
     showSubtitleTranslation: settings.showSubtitleTranslation,
@@ -222,7 +219,6 @@ export function useFoliaStageSettingsPanel(
     subtitleOverlayOpacity: settings.subtitleOverlayOpacity,
     t: translate,
     theme,
-    themePresetId: settings.themePresetId,
     tiltTuning: settings.tunings.tilt ?? DEFAULT_TILT_TUNING,
     visualizerEntry,
     visualizerMode: settings.mode,

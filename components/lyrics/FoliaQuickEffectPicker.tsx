@@ -41,7 +41,7 @@ export function FoliaQuickEffectPicker<Value extends string>({
             ? "bg-white shadow-sm hover:bg-white/90"
             : "bg-white/20 shadow-sm hover:bg-white/30"
         }`}
-        style={isOpen ? { color: primaryColor } : undefined}
+        style={{ color: primaryColor }}
         aria-label={ariaLabel}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
