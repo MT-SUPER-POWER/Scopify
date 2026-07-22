@@ -1,6 +1,6 @@
 "use client";
 
-import { Volume2, Settings2, Shuffle, Heart, Plus } from "lucide-react";
+import { Volume2, Settings2, Shuffle, Heart, Plus, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { FoliaQuickEffectPicker } from "@/components/lyrics/FoliaQuickEffectPicker";
@@ -42,8 +42,10 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
   const { t } = useTranslation();
   const model = useFoliaPanelControls();
   const isDaylight = theme.name === "snow";
+  const translate = (key: string) => String(t(key));
 
   const currentPreset = THEME_PRESETS.find((p) => p.id === theme.name) ?? THEME_PRESETS[0];
+  const themeLabel = translate(`options.${currentPreset.labelKey}`);
 
   const visualizerOptions = VISUALIZER_REGISTRY.flatMap((entry) =>
     isLyricVisualizerMode(entry.mode)
@@ -59,6 +61,10 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
     label: getVisualizerBackgroundModeLabel(entry.mode, (key) => String(t(key))),
     value: entry.mode,
   }));
+
+  const handlePresetChange = (presetId: string) => {
+    model.setThemePreset(presetId);
+  };
 
   return (
     <div className="space-y-3">
@@ -101,7 +107,7 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
             className="flex items-center justify-between text-xs"
             style={{ color: theme.secondaryColor }}
           >
-            <span>{t("options.volume") ?? "音量"}</span>
+            <span>{translate("options.volume")}</span>
             <span className="font-mono opacity-60">{model.volume}%</span>
           </div>
           <input
@@ -118,20 +124,9 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
 
       {/* Lyrics Style */}
       <section className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => onOpenSettings("visualizer")}
-            className="rounded-md p-1 opacity-55 transition-opacity hover:bg-white/10 hover:opacity-100"
-            style={{ color: theme.primaryColor }}
-            title={String(t("options.openLyricsStyleSettings"))}
-          >
-            <Settings2 size={14} />
-          </button>
-          <span className="text-xs font-medium opacity-60" style={{ color: theme.secondaryColor }}>
-            {t("options.lyricsRenderer")}
-          </span>
-        </div>
+        <span className="text-xs font-medium opacity-60" style={{ color: theme.secondaryColor }}>
+          {translate("options.lyricsRenderer")}
+        </span>
         <span className="flex shrink-0 items-center gap-1">
           <FoliaQuickEffectPicker
             ariaLabel={String(t("options.lyricsRenderer"))}
@@ -141,25 +136,23 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
             primaryColor={theme.primaryColor}
             value={model.visualizerMode}
           />
+          <button
+            type="button"
+            onClick={() => onOpenSettings("visualizer")}
+            className="rounded-md p-1 opacity-55 transition-opacity hover:bg-white/10 hover:opacity-100"
+            style={{ color: theme.primaryColor }}
+            title={String(t("options.openLyricsStyleSettings"))}
+          >
+            <Settings2 size={14} />
+          </button>
         </span>
       </section>
 
       {/* Background */}
       <section className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => onOpenSettings("background")}
-            className="rounded-md p-1 opacity-55 transition-opacity hover:bg-white/10 hover:opacity-100"
-            style={{ color: theme.primaryColor }}
-            title={String(t("options.previewBackgroundSettings"))}
-          >
-            <Settings2 size={14} />
-          </button>
-          <span className="text-xs font-medium opacity-60" style={{ color: theme.secondaryColor }}>
-            {t("ui.background")}
-          </span>
-        </div>
+        <span className="text-xs font-medium opacity-60" style={{ color: theme.secondaryColor }}>
+          {translate("ui.background")}
+        </span>
         <span className="flex shrink-0 items-center gap-1">
           <FoliaQuickEffectPicker
             ariaLabel={String(t("options.visualizerBackgroundMode"))}
@@ -169,6 +162,15 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
             primaryColor={theme.primaryColor}
             value={model.visualizerBackgroundMode}
           />
+          <button
+            type="button"
+            onClick={() => onOpenSettings("background")}
+            className="rounded-md p-1 opacity-55 transition-opacity hover:bg-white/10 hover:opacity-100"
+            style={{ color: theme.primaryColor }}
+            title={String(t("options.previewBackgroundSettings"))}
+          >
+            <Settings2 size={14} />
+          </button>
         </span>
       </section>
 
@@ -178,39 +180,57 @@ export function FoliaLyricsControls({ onOpenSettings, theme }: FoliaLyricsContro
           className="flex items-center gap-1 rounded-full p-1"
           style={{ backgroundColor: colorWithAlpha(theme.backgroundColor, 0.3) }}
         >
-          <button
-            type="button"
-            className="flex-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
-            style={{
-              color: theme.primaryColor,
-              backgroundColor: "rgba(255,255,255,0.12)",
-            }}
-          >
-            {t("options.themePresetsDefault") ?? "默认"}
-          </button>
-          <button
-            type="button"
-            className="flex-1 rounded-full px-3 py-1.5 text-xs font-medium opacity-40 transition-colors hover:opacity-60"
-            style={{ color: theme.primaryColor }}
-          >
-            AI{t("options.themePresetsDefault") === "墨染 / 素白" ? "主题" : "Theme"}
-          </button>
-          <button
-            type="button"
-            className="flex-1 rounded-full px-3 py-1.5 text-xs font-medium opacity-40 transition-colors hover:opacity-60"
-            style={{ color: theme.primaryColor }}
-          >
-            {t("options.customTheme") ?? "自定义"}
-          </button>
+          {[
+            {
+              id: "midnight",
+              label: translate("options.themePresetsDefault").split(" / ")[0] || "默认",
+            },
+            { id: "ai", label: "AI Theme", disabled: true },
+            { id: "custom", label: translate("options.customTheme"), disabled: true },
+          ].map((btn) => {
+            const isActive = btn.id === "midnight" && currentPreset.id !== "snow";
+            return (
+              <button
+                key={btn.id}
+                type="button"
+                disabled={btn.disabled}
+                onClick={() => {
+                  if (!btn.disabled) handlePresetChange(btn.id);
+                }}
+                className="flex-1 rounded-full px-3 py-1.5 text-xs font-medium transition-all disabled:cursor-not-allowed"
+                style={{
+                  color: theme.primaryColor,
+                  backgroundColor: isActive ? "rgba(255,255,255,0.12)" : "transparent",
+                  opacity: btn.disabled ? 0.4 : isActive ? 1 : 0.7,
+                }}
+              >
+                {btn.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Current Theme Name */}
         <div className="flex items-center gap-1.5 px-1">
-          <span className="text-xs opacity-55" style={{ color: theme.secondaryColor }}>
-            {currentPreset.id === "snow" ? "☀️" : currentPreset.id === "midnight" ? "🌙" : "🎨"}
+          <span className="text-xs" style={{ color: theme.secondaryColor }}>
+            {currentPreset.id === "snow"
+              ? "☀️"
+              : currentPreset.id === "midnight"
+                ? "🌙"
+                : currentPreset.id === "ocean"
+                  ? "🌊"
+                  : currentPreset.id === "forest"
+                    ? "🌿"
+                    : currentPreset.id === "rose"
+                      ? "🌹"
+                      : currentPreset.id === "lavender"
+                        ? "💜"
+                        : currentPreset.id === "amber"
+                          ? "🟠"
+                          : "🌆"}
           </span>
           <span className="text-xs font-medium opacity-70" style={{ color: theme.primaryColor }}>
-            {t(currentPreset.labelKey)}
+            {themeLabel}
           </span>
         </div>
       </section>

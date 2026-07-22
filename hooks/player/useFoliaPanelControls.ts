@@ -119,6 +119,8 @@ export function useFoliaPanelControls() {
         overlayEnabled: !(lyricStage.background.nomand?.tuning?.overlayEnabled ?? true),
       });
     },
+    setThemePreset: (presetId: string) =>
+      useLyricStageStore.getState().patchSettings({ themePresetId: presetId }),
     useCoverColorBg,
     visualizerBackgroundMode,
     visualizerMode,

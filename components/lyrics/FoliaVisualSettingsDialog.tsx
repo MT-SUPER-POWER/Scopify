@@ -103,7 +103,7 @@ export function FoliaVisualSettingsDialog({
 
             <div className="grid min-h-0 flex-1 grid-rows-[minmax(14rem,34dvh)_minmax(0,1fr)] lg:grid-cols-[minmax(20rem,0.8fr)_minmax(24rem,1fr)] lg:grid-rows-1">
               <FoliaSettingsPreview assets={assets} bridge={bridge} theme={theme} />
-              <div className="min-h-0 overflow-hidden border-t border-white/10 p-4 lg:border-t-0 lg:border-l lg:p-5">
+              <div className="min-h-0 overflow-y-auto border-t border-white/10 p-4 lg:border-t-0 lg:border-l lg:p-5">
                 <VisPlaygroundSettingsPanel {...panelProps} />
               </div>
             </div>
