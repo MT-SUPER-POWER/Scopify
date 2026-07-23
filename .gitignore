@@ -12,7 +12,6 @@
 
 # testing
 /coverage
-/playwright-report/
 /test-results/
 
 # next.js
@@ -54,7 +53,12 @@ doc/README-TEMPLATE.md
 
 # Agent
 .codex/
+.cursor
+.codegraph/
 .claude/
+.agents/
+.gemini/
+.opencode/
 
 # playwright
 .playwright/
