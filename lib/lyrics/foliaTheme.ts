@@ -119,6 +119,22 @@ const BUILTIN_STAGE_THEMES: readonly FoliaStageTheme[] = [
     },
     name: "暮色",
   },
+  {
+    dark: {
+      accentColor: "#fc8875",
+      backgroundColor: "#442524",
+      primaryColor: "#f8fafc",
+      secondaryColor: "#fcc3b6",
+    },
+    id: "sky",
+    light: {
+      accentColor: "#1d4ed8",
+      backgroundColor: "#fee9e4",
+      primaryColor: "#111827",
+      secondaryColor: "#475569",
+    },
+    name: "天空",
+  },
 ];
 
 const BUILTIN_THEME_IDS = new Set(BUILTIN_STAGE_THEMES.map((theme) => theme.id));
