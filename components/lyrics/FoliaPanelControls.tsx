@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { FoliaAudioQualityControl } from "@/components/lyrics/FoliaAudioQualityControl";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import { FoliaVisualizerControls } from "@/components/lyrics/FoliaVisualizerControls";
@@ -113,6 +114,8 @@ export function FoliaPanelControls({
           />
         </span>
       </label>
+
+      <FoliaAudioQualityControl theme={theme} />
 
       <FoliaVisualizerControls
         onOpenSettings={onOpenSettings}
