@@ -2,7 +2,7 @@
 
 import { Check, Moon, RotateCcw, Sun, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaThemeColorEditor } from "@/components/lyrics/FoliaThemeColorEditor";
@@ -16,7 +16,7 @@ import type { FoliaThemeEditorProps } from "@/types/components/lyrics";
 type EditorTab = "edit" | "import-export";
 
 export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: FoliaThemeEditorProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const fontFamily = useLyricStageStore((state) => state.fontFamily);
   const fontStyle = useLyricStageStore((state) => state.fontStyle);
   const themeVariant = useLyricStageStore((state) => state.themeVariant);
@@ -49,8 +49,8 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
   };
 
   const TAB_ITEMS: { key: EditorTab; label: string }[] = [
-    { key: "edit", label: t("options.themeEdit") },
-    { key: "import-export", label: t("options.themeImportExport") },
+    { key: "edit", label: t("folia.options.themeEdit") },
+    { key: "import-export", label: t("folia.options.themeImportExport") },
   ];
 
   return (
@@ -102,7 +102,7 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
               <div className="mb-3 flex items-center justify-between gap-3">
                 <label className="min-w-0 flex-1 space-y-1">
                   <span className="text-[10px] font-semibold tracking-[0.2em] uppercase opacity-50">
-                    {t("options.themeName")}
+                    {t("folia.options.themeName")}
                   </span>
                   <input
                     value={draftTheme.name}
@@ -112,7 +112,7 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
                 </label>
                 <button
                   type="button"
-                  title={String(t("options.deleteTheme"))}
+                  title={String(t("folia.options.deleteTheme"))}
                   onClick={deleteSelectedTheme}
                   className="flex size-9 shrink-0 items-center justify-center rounded-xl text-rose-400 transition hover:bg-rose-500/10"
                 >
@@ -126,8 +126,8 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
               >
                 {(
                   [
-                    ["light", Sun, "options.lightTheme"],
-                    ["dark", Moon, "options.darkTheme"],
+                    ["light", Sun, "folia.options.lightTheme"],
+                    ["dark", Moon, "folia.options.darkTheme"],
                   ] as const
                 ).map(([variant, Icon, label]) => {
                   const active = themeVariant === variant;
@@ -179,7 +179,7 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
                 }}
               >
                 <RotateCcw size={14} />
-                {t("options.resetTheme")}
+                {t("folia.options.resetTheme")}
               </button>
               <button
                 type="button"
@@ -192,7 +192,7 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
                 }}
               >
                 <Check size={14} />
-                {t("ui.save")}
+                {t("folia.ui.save")}
               </button>
             </div>
           </>

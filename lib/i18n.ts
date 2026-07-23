@@ -1,8 +1,10 @@
 import type { AppLocale } from "@/types/config";
+import { foliaMessages } from "@/constants/i18n/folia";
 
 export type TranslationParams = Record<string, string | number>;
 type BaseTranslationCatalog = typeof zhCN;
-export type TranslationKey = keyof BaseTranslationCatalog;
+type CoreTranslationCatalog = Record<keyof BaseTranslationCatalog, string>;
+export type TranslationKey = keyof BaseTranslationCatalog | keyof (typeof foliaMessages)["zh-CN"];
 type TranslationCatalog = Record<TranslationKey, string>;
 
 const zhCN = {
@@ -562,12 +564,10 @@ const zhCN = {
   "desktopLyrics.playPause": "播放或暂停",
   "desktopLyrics.next": "下一首",
   "desktopLyrics.like": "喜欢",
-  "floatingControls.viewTimeline": "查看歌词时间轴",
-  "cappella.emojiAlt": "表情",
   "login.logoAlt": "Logo",
 } as const;
 
-const zhTW: TranslationCatalog = {
+const zhTW: CoreTranslationCatalog = {
   "common.language.simplifiedChinese": "简体中文",
   "common.language.traditionalChinese": "繁體中文",
   "common.language.english": "English",
@@ -1124,12 +1124,10 @@ const zhTW: TranslationCatalog = {
   "desktopLyrics.playPause": "播放或暫停",
   "desktopLyrics.next": "下一首",
   "desktopLyrics.like": "喜歡",
-  "floatingControls.viewTimeline": "查看歌詞時間軸",
-  "cappella.emojiAlt": "表情",
   "login.logoAlt": "Logo",
 };
 
-const enUS: TranslationCatalog = {
+const enUS: CoreTranslationCatalog = {
   "common.language.simplifiedChinese": "Simplified Chinese",
   "common.language.traditionalChinese": "Traditional Chinese",
   "common.language.english": "English",
@@ -1705,15 +1703,13 @@ const enUS: TranslationCatalog = {
   "desktopLyrics.playPause": "Play or pause",
   "desktopLyrics.next": "Next",
   "desktopLyrics.like": "Like",
-  "floatingControls.viewTimeline": "View Lyrics Timeline",
-  "cappella.emojiAlt": "Emoji",
   "login.logoAlt": "Logo",
 };
 
 export const messages = {
-  "zh-CN": zhCN,
-  "zh-TW": zhTW,
-  "en-US": enUS,
+  "zh-CN": { ...zhCN, ...foliaMessages["zh-CN"] },
+  "zh-TW": { ...zhTW, ...foliaMessages["zh-TW"] },
+  "en-US": { ...enUS, ...foliaMessages["en-US"] },
 } satisfies Record<AppLocale, TranslationCatalog>;
 
 export const languageLabelKeys: Record<AppLocale, TranslationKey> = {

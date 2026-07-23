@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Palette } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeEditor } from "@/components/lyrics/FoliaThemeEditor";
 import { FoliaThemeLibraryList } from "@/components/lyrics/FoliaThemeLibraryList";
@@ -17,7 +17,7 @@ export function FoliaThemeLibraryDialog({
   onClose,
   theme,
 }: FoliaThemeLibraryDialogProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const themeId = useLyricStageStore((state) => state.themeId);
   const themes = useLyricStageStore((state) => state.themes);
   const [selectedThemeId, setSelectedThemeId] = useState(themeId);
@@ -54,7 +54,7 @@ export function FoliaThemeLibraryDialog({
           <motion.section
             role="dialog"
             aria-modal="true"
-            aria-label={String(t("options.themeLibrary"))}
+            aria-label={String(t("folia.options.themeLibrary"))}
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}
@@ -65,7 +65,7 @@ export function FoliaThemeLibraryDialog({
             <header className="flex shrink-0 items-center gap-3 border-b border-white/10 p-4 sm:px-6">
               <button
                 type="button"
-                title={String(t("ui.close"))}
+                title={String(t("folia.ui.close"))}
                 onClick={onClose}
                 className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:bg-white/10"
                 style={{ color: theme.primaryColor }}
@@ -78,10 +78,10 @@ export function FoliaThemeLibraryDialog({
                   className="truncate text-lg font-semibold"
                   style={{ color: theme.primaryColor }}
                 >
-                  {t("options.themeLibrary")}
+                  {t("folia.options.themeLibrary")}
                 </h2>
                 <p className="text-xs opacity-55" style={{ color: theme.secondaryColor }}>
-                  {t("options.themeLibraryDesc")}
+                  {t("folia.options.themeLibraryDesc")}
                 </p>
               </div>
             </header>

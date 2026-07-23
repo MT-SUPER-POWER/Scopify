@@ -2,7 +2,7 @@
 
 import { Plus, RotateCcw } from "lucide-react";
 import { useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { createFoliaStageTheme } from "@/lib/lyrics/foliaTheme";
@@ -13,7 +13,7 @@ export function FoliaThemeLibraryList({
   onSelectTheme,
   selectedThemeId,
 }: FoliaThemeLibraryListProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const restoreBuiltinThemes = useLyricStageStore((state) => state.restoreBuiltinThemes);
   const addTheme = useLyricStageStore((state) => state.addTheme);
   const updateTheme = useLyricStageStore((state) => state.updateTheme);
@@ -30,7 +30,7 @@ export function FoliaThemeLibraryList({
 
   const createTheme = () => {
     const seed = themes.find((theme) => theme.id === selectedThemeId) ?? themes[0];
-    const theme = createFoliaStageTheme(String(t("options.customTheme")), seed);
+    const theme = createFoliaStageTheme(String(t("folia.options.customTheme")), seed);
     addTheme(theme);
     selectTheme(theme.id);
     // 新建后自动进入编辑模式
@@ -66,11 +66,11 @@ export function FoliaThemeLibraryList({
   return (
     <aside className="flex min-h-0 flex-col rounded-[24px] border border-white/10 bg-white/[0.045] p-3">
       <div className="mb-3 flex items-center justify-between gap-2">
-        <span className="text-sm font-semibold">{t("options.themeLibrary")}</span>
+        <span className="text-sm font-semibold">{t("folia.options.themeLibrary")}</span>
         <div className="flex items-center gap-1">
           <button
             type="button"
-            title={String(t("options.restoreBuiltinThemes"))}
+            title={String(t("folia.options.restoreBuiltinThemes"))}
             onClick={restoreThemes}
             className="flex size-8 items-center justify-center rounded-lg opacity-60 transition hover:bg-white/10 hover:opacity-100"
           >
@@ -78,7 +78,7 @@ export function FoliaThemeLibraryList({
           </button>
           <button
             type="button"
-            title={String(t("options.createTheme"))}
+            title={String(t("folia.options.createTheme"))}
             onClick={createTheme}
             className="flex size-8 items-center justify-center rounded-lg bg-white/10 transition hover:bg-white/20"
           >
@@ -129,7 +129,9 @@ export function FoliaThemeLibraryList({
                     {theme.name}
                   </span>
                   {isSelected && (
-                    <span className="block text-[10px] opacity-50">{t("ui.currentTheme")}</span>
+                    <span className="block text-[10px] opacity-50">
+                      {t("folia.ui.currentTheme")}
+                    </span>
                   )}
                 </div>
               )}

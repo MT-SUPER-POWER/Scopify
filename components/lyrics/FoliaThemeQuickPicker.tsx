@@ -2,14 +2,14 @@
 
 import { Moon, Palette, Sun } from "lucide-react";
 import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaThemeQuickPickerProps } from "@/types/components/lyrics";
 
 export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQuickPickerProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const themeId = useLyricStageStore((state) => state.themeId);
   const themeRecentIds = useLyricStageStore((state) => state.themeRecentIds);
   const themes = useLyricStageStore((state) => state.themes);
@@ -34,11 +34,11 @@ export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQ
     <section className="space-y-2.5">
       <div className="flex items-center justify-between gap-3">
         <span className="text-xs font-medium opacity-60" style={{ color: theme.secondaryColor }}>
-          {t("options.themePresets")}
+          {t("folia.options.themePresets")}
         </span>
         <button
           type="button"
-          title={String(t("options.openThemePark"))}
+          title={String(t("folia.options.openThemePark"))}
           onClick={onOpenThemeLibrary}
           className="rounded-md p-1 opacity-55 transition-all hover:bg-white/10 hover:opacity-100"
           style={{ color: theme.primaryColor }}
@@ -53,8 +53,8 @@ export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQ
         >
           {(
             [
-              ["light", Sun, "options.lightTheme"],
-              ["dark", Moon, "options.darkTheme"],
+              ["light", Sun, "folia.options.lightTheme"],
+              ["dark", Moon, "folia.options.darkTheme"],
             ] as const
           ).map(([variant, Icon, label]) => (
             <button

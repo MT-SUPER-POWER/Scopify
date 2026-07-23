@@ -1,7 +1,7 @@
 "use client";
 
 import { Volume1, Volume2, VolumeX } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import type { Theme } from "@/components/lyrics/folia/src/types";
 
@@ -19,7 +19,7 @@ export function FoliaVolumeControl({
   theme,
   volume,
 }: FoliaVolumeControlProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const isDaylight = theme.name === "snow";
   const VolumeIcon = volume === 0 ? VolumeX : volume < 50 ? Volume1 : Volume2;
 
@@ -30,7 +30,7 @@ export function FoliaVolumeControl({
           className="text-[10px] font-bold tracking-widest uppercase opacity-40"
           style={{ color: theme.primaryColor }}
         >
-          {t("ui.volume")}
+          {t("folia.ui.volume")}
         </span>
         <span className="text-[10px] font-bold opacity-60" style={{ color: theme.primaryColor }}>
           {Math.round(volume)}%
@@ -41,8 +41,8 @@ export function FoliaVolumeControl({
       >
         <button
           type="button"
-          title={String(t("ui.mute"))}
-          aria-label={String(t("ui.mute"))}
+          title={String(t("folia.ui.mute"))}
+          aria-label={String(t("folia.ui.mute"))}
           onClick={onToggleMute}
           className="opacity-40 transition-opacity hover:opacity-100"
           style={{ color: theme.primaryColor }}

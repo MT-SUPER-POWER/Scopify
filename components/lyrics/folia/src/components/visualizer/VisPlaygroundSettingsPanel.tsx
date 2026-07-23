@@ -71,7 +71,7 @@ interface ToggleRowProps {
 interface VisPlaygroundSettingsPanelProps {
   activeSection: VisPlaygroundEditSection;
   onSectionChange: (section: VisPlaygroundEditSection) => void;
-  t: (key: string) => string;
+  t: import("@/types/i18n.generated").TranslateFn;
   isDaylight: boolean;
   theme: Theme;
   visualizerMode: VisualizerMode;
@@ -154,11 +154,14 @@ const SECTION_OPTIONS: VisPlaygroundEditSection[] = [
   "subtitle",
 ];
 
-const getSectionLabel = (section: VisPlaygroundEditSection, t: (key: string) => string) => {
-  if (section === "common") return t("options.previewCommonSettings");
-  if (section === "background") return t("options.previewBackgroundSettings");
-  if (section === "subtitle") return t("options.previewSubtitleSettings");
-  return t("options.previewVisualizerSettings");
+const getSectionLabel = (
+  section: VisPlaygroundEditSection,
+  t: import("@/types/i18n.generated").TranslateFn,
+) => {
+  if (section === "common") return t("folia.options.previewCommonSettings");
+  if (section === "background") return t("folia.options.previewBackgroundSettings");
+  if (section === "subtitle") return t("folia.options.previewSubtitleSettings");
+  return t("folia.options.previewVisualizerSettings");
 };
 
 const getAccentOptionStyle = (
@@ -437,14 +440,14 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
                 <div className="text-sm font-medium" style={{ color: theme.primaryColor }}>
-                  {t("options.previewCommonSettings")}
+                  {t("folia.options.previewCommonSettings")}
                 </div>
                 <div className="text-xs opacity-70" style={{ color: theme.secondaryColor }}>
-                  {t("options.previewCommonSettingsDesc")}
+                  {t("folia.options.previewCommonSettingsDesc")}
                 </div>
               </div>
               <ResetSectionButton
-                label={t("ui.default")}
+                label={t("folia.ui.default")}
                 onClick={onResetCommonSettings}
                 theme={theme}
               />
@@ -456,7 +459,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                   className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
                   style={{ color: theme.secondaryColor }}
                 >
-                  {t("options.themePresets")}
+                  {t("folia.options.themePresets")}
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {THEME_PRESETS.map((preset) => {
@@ -497,7 +500,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             )}
 
             <PresetGroup
-              label={t("options.fontFamily")}
+              label={t("folia.options.fontFamily")}
               value={fontStyleValue}
               options={fontStyleOptions}
               onChange={onFontStyleChange}
@@ -507,7 +510,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             />
 
             <PresetGroup
-              label={t("options.fontSize")}
+              label={t("folia.options.fontSize")}
               value={fontScale}
               options={fontScaleOptions}
               onChange={onFontScaleChange}
@@ -520,7 +523,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                 className="flex items-center justify-between text-sm"
                 style={{ color: theme.primaryColor }}
               >
-                <span>{t("options.fontSize")}</span>
+                <span>{t("folia.options.fontSize")}</span>
                 <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
                   {Math.round(fontScale * 100)}%
                 </span>
@@ -543,7 +546,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                 className="flex items-center justify-between text-sm"
                 style={{ color: theme.primaryColor }}
               >
-                <span>{t("options.visualizerOpacity")}</span>
+                <span>{t("folia.options.visualizerOpacity")}</span>
                 <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
                   {Math.round(visualizerOpacity * 100)}%
                 </span>
@@ -568,7 +571,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             {enablePlayerPageNativeBlur && (
               <div className="flex items-center gap-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-xs text-amber-500 dark:text-amber-400">
                 <AlertTriangle size={16} className="shrink-0 text-amber-500" />
-                <span>{t("options.nativeBlurBackgroundNotice")}</span>
+                <span>{t("folia.options.nativeBlurBackgroundNotice")}</span>
               </div>
             )}
             <div
@@ -581,14 +584,14 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">
                   <div className="text-sm font-medium" style={{ color: theme.primaryColor }}>
-                    {t("options.previewBackgroundSettings")}
+                    {t("folia.options.previewBackgroundSettings")}
                   </div>
                   <div className="text-xs opacity-70" style={{ color: theme.secondaryColor }}>
-                    {t("options.previewBackgroundSettingsDesc")}
+                    {t("folia.options.previewBackgroundSettingsDesc")}
                   </div>
                 </div>
                 <ResetSectionButton
-                  label={t("ui.default")}
+                  label={t("folia.ui.default")}
                   onClick={
                     backgroundEntry.resetSettings
                       ? () => backgroundEntry.resetSettings?.(backgroundActions)
@@ -599,7 +602,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               </div>
 
               <PresetGroup
-                label={t("options.visualizerBackgroundMode")}
+                label={t("folia.options.visualizerBackgroundMode")}
                 value={resolvedBackgroundMode}
                 options={backgroundModeOptions}
                 onChange={(mode) => backgroundActions?.onModeChange?.(mode)}
@@ -634,21 +637,21 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">
                   <div className="text-sm font-medium" style={{ color: theme.primaryColor }}>
-                    {t("options.lyricsRenderer")}
+                    {t("folia.options.lyricsRenderer")}
                   </div>
                   <div className="text-xs opacity-70" style={{ color: theme.secondaryColor }}>
-                    {t("options.lyricsRendererDesc")}
+                    {t("folia.options.lyricsRendererDesc")}
                   </div>
                 </div>
                 <ResetSectionButton
-                  label={t("ui.default")}
+                  label={t("folia.ui.default")}
                   onClick={visualizerEntry.resetSettings ? onResetVisualizerTuning : undefined}
                   theme={theme}
                 />
               </div>
 
               <PresetGroup
-                label={t("options.visualizerMode")}
+                label={t("folia.options.visualizerMode")}
                 value={visualizerMode}
                 options={modeOptions}
                 onChange={(mode) => onVisualizerModeChange?.(mode)}
@@ -711,22 +714,22 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
                 <div className="text-sm font-medium" style={{ color: theme.primaryColor }}>
-                  {t("options.previewSubtitleSettings")}
+                  {t("folia.options.previewSubtitleSettings")}
                 </div>
                 <div className="text-xs opacity-70" style={{ color: theme.secondaryColor }}>
-                  {t("options.previewSubtitleSettingsDesc")}
+                  {t("folia.options.previewSubtitleSettingsDesc")}
                 </div>
               </div>
               <ResetSectionButton
-                label={t("ui.default")}
+                label={t("folia.ui.default")}
                 onClick={onResetSubtitleSettings}
                 theme={theme}
               />
             </div>
 
             <ToggleRow
-              label={t("options.hidePlayerTranslationSubtitle")}
-              description={t("options.hidePlayerTranslationSubtitleDesc")}
+              label={t("folia.options.hidePlayerTranslationSubtitle")}
+              description={t("folia.options.hidePlayerTranslationSubtitleDesc")}
               checked={hideTranslationSubtitle}
               onChange={onToggleHideTranslationSubtitle}
               theme={theme}
@@ -734,8 +737,8 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             />
 
             <ToggleRow
-              label={t("options.showSubtitleTranslation")}
-              description={t("options.showSubtitleTranslationDesc")}
+              label={t("folia.options.showSubtitleTranslation")}
+              description={t("folia.options.showSubtitleTranslationDesc")}
               checked={showSubtitleTranslation}
               onChange={onToggleShowSubtitleTranslation}
               theme={theme}
@@ -743,8 +746,8 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             />
 
             <ToggleRow
-              label={t("options.subtitleOverlayBackground")}
-              description={t("options.subtitleOverlayBackgroundDesc")}
+              label={t("folia.options.subtitleOverlayBackground")}
+              description={t("folia.options.subtitleOverlayBackgroundDesc")}
               checked={subtitleOverlayBackground}
               onChange={onToggleSubtitleOverlayBackground}
               theme={theme}
@@ -752,8 +755,8 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             />
 
             <ToggleRow
-              label={t("options.subtitleFontInheritsLyrics")}
-              description={t("options.subtitleFontInheritsLyricsDesc")}
+              label={t("folia.options.subtitleFontInheritsLyrics")}
+              description={t("folia.options.subtitleFontInheritsLyricsDesc")}
               checked={subtitleFontInheritsLyrics}
               onChange={onSubtitleFontInheritsLyricsChange}
               theme={theme}
@@ -763,7 +766,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
             {!subtitleFontInheritsLyrics && (
               <div className="space-y-4">
                 <PresetGroup
-                  label={t("options.subtitleFontFamily")}
+                  label={t("folia.options.subtitleFontFamily")}
                   value={subtitleFontFamily ? "custom" : subtitleFontStyle}
                   options={subtitleFontStyleOptions}
                   onChange={(next) => {
@@ -785,7 +788,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                 className="flex items-center justify-between text-sm"
                 style={{ color: theme.primaryColor }}
               >
-                <span>{t("options.subtitleOverlayOpacity")}</span>
+                <span>{t("folia.options.subtitleOverlayOpacity")}</span>
                 <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
                   {Math.round(subtitleOverlayOpacity * 100)}%
                 </span>

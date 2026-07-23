@@ -1,7 +1,7 @@
 "use client";
 
 import { FileInput, Upload } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import { FoliaThemeJsonImportPreview } from "@/components/lyrics/FoliaThemeJsonImportPreview";
@@ -24,7 +24,7 @@ export function FoliaThemeJsonImport({
   themeName,
   validation,
 }: FoliaThemeJsonImportProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const isReady = validation === "valid";
   const surfaceStyle = {
     backgroundColor: colorWithAlpha(colors.backgroundColor, 0.42),
@@ -34,7 +34,7 @@ export function FoliaThemeJsonImport({
   return (
     <section className="space-y-3 rounded-2xl border p-3" style={surfaceStyle}>
       <span className="text-[10px] font-semibold tracking-[0.2em] uppercase opacity-50">
-        {t("options.import")}
+        {t("folia.options.import")}
       </span>
 
       <div
@@ -53,11 +53,11 @@ export function FoliaThemeJsonImport({
         }}
       >
         <textarea
-          aria-label={String(t("options.pasteJsonOrDropFile"))}
+          aria-label={String(t("folia.options.pasteJsonOrDropFile"))}
           value={json}
           onChange={(event) => onJsonChange(event.target.value)}
           onClick={(event) => event.stopPropagation()}
-          placeholder={String(t("options.pasteJsonOrDropFile"))}
+          placeholder={String(t("folia.options.pasteJsonOrDropFile"))}
           className="min-h-28 w-full resize-none bg-transparent p-1 font-mono text-[11px] leading-relaxed outline-none placeholder:opacity-35"
           style={{ color: colors.primaryColor }}
           spellCheck={false}
@@ -101,7 +101,7 @@ export function FoliaThemeJsonImport({
         }}
       >
         <FileInput size={14} />
-        {t("options.importThemeJson")}
+        {t("folia.options.importThemeJson")}
       </button>
     </section>
   );

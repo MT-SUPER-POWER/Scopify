@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import VisPlaygroundPreviewHotspots from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundPreviewHotspots";
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
@@ -16,11 +16,11 @@ export function FoliaSettingsPreview({
   onSectionChange,
   theme,
 }: FoliaSettingsPreviewProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const preview = useFoliaSettingsPreview();
   const settings = useLyricStageStore();
   const isDaylight = theme.name === "snow";
-  const modeLabel = getVisualizerModeLabel(settings.mode, (key) => String(t(key)));
+  const modeLabel = getVisualizerModeLabel(settings.mode, t);
 
   return (
     <div
@@ -32,7 +32,7 @@ export function FoliaSettingsPreview({
         style={{ color: "rgba(255,255,255,0.78)" }}
       >
         <Sparkles size={13} />
-        <span>{t("ui.livePreview")}</span>
+        <span>{t("folia.ui.livePreview")}</span>
       </div>
       <div
         className="absolute top-4 right-4 z-40 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs backdrop-blur-md"
@@ -90,9 +90,9 @@ export function FoliaSettingsPreview({
         onSectionChange={onSectionChange}
         theme={theme}
         labels={{
-          background: String(t("options.previewBackgroundHotspot")),
-          subtitle: String(t("options.previewSubtitleHotspot")),
-          visualizer: String(t("options.previewVisualizerHotspot")),
+          background: String(t("folia.options.previewBackgroundHotspot")),
+          subtitle: String(t("folia.options.previewSubtitleHotspot")),
+          visualizer: String(t("folia.options.previewVisualizerHotspot")),
         }}
       />
     </div>

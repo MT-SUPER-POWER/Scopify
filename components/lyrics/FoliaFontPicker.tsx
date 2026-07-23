@@ -2,7 +2,7 @@
 
 import { Search, Upload, X } from "lucide-react";
 import { useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { useFoliaFontPicker } from "@/hooks/player/useFoliaFontPicker";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
@@ -14,7 +14,7 @@ interface FoliaFontPickerProps {
 }
 
 export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const model = useFoliaFontPicker(target, assets, onClose);
 
@@ -28,12 +28,10 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
         onClick={(event) => event.stopPropagation()}
       >
         <header className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-semibold">
-            {t("options.customFont", { defaultValue: "Custom Font" })}
-          </h2>
+          <h2 className="text-sm font-semibold">{t("folia.options.customFont")}</h2>
           <button
             type="button"
-            title={String(t("ui.close"))}
+            title={String(t("folia.ui.close"))}
             onClick={onClose}
             className="rounded-full p-2 opacity-60 hover:bg-white/10 hover:opacity-100"
           >
@@ -47,7 +45,7 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
             type="search"
             value={model.query}
             onChange={(event) => model.setQuery(event.currentTarget.value)}
-            placeholder={String(t("options.searchFonts", { defaultValue: "Search fonts" }))}
+            placeholder={String(t("folia.options.searchFonts"))}
             className="h-10 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-white/35"
           />
         </div>
@@ -55,17 +53,13 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
         <div className="visualizer-overlay-scrollbar min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
           {!model.supportsSystemFonts ? (
             <p className="px-3 py-8 text-center text-xs opacity-50">
-              {t("options.systemFontUnsupported", {
-                defaultValue: "System font access is unavailable in this browser.",
-              })}
+              {t("folia.options.systemFontUnsupported")}
             </p>
           ) : model.isLoading ? (
-            <p className="px-3 py-8 text-center text-xs opacity-50">
-              {t("ui.loading", { defaultValue: "Loading" })}
-            </p>
+            <p className="px-3 py-8 text-center text-xs opacity-50">{t("folia.ui.loading")}</p>
           ) : model.filteredFonts.length === 0 ? (
             <p className="px-3 py-8 text-center text-xs opacity-50">
-              {t("options.systemFontEmpty", { defaultValue: "No matching fonts." })}
+              {t("folia.options.systemFontEmpty")}
             </p>
           ) : (
             model.filteredFonts.map((font) => (
@@ -91,7 +85,7 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
           className="mt-4 flex h-10 items-center justify-center gap-2 rounded-xl bg-white text-sm font-medium text-black hover:bg-white/90"
         >
           <Upload size={16} />
-          {t("options.uploadFont", { defaultValue: "Upload font" })}
+          {t("folia.options.uploadFont")}
         </button>
         <input
           ref={inputRef}

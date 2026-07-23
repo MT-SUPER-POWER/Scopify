@@ -3317,22 +3317,9721 @@ export interface TranslateFn {
    */
   (key: "desktopLyrics.like", params?: TranslationParams): string;
   /**
-   * zh-CN: 查看歌词时间轴
-   * zh-TW: 查看歌詞時間軸
-   * en-US: View Lyrics Timeline
-   */
-  (key: "floatingControls.viewTimeline", params?: TranslationParams): string;
-  /**
-   * zh-CN: 表情
-   * zh-TW: 表情
-   * en-US: Emoji
-   */
-  (key: "cappella.emojiAlt", params?: TranslationParams): string;
-  /**
    * zh-CN: Logo
    * zh-TW: Logo
    * en-US: Logo
    */
   (key: "login.logoAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加封面色彩
+   * zh-TW: 添加封面色彩
+   * en-US: Cover color added
+   */
+  (key: "folia.notifications.coverColorAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用默认色彩
+   * zh-TW: 使用默認色彩
+   * en-US: Using default color
+   */
+  (key: "folia.notifications.coverColorDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静态模式已开启
+   * zh-TW: 靜態模式已開啟
+   * en-US: Static mode enabled
+   */
+  (key: "folia.notifications.staticModeOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静态模式已关闭
+   * zh-TW: 靜態模式已關閉
+   * en-US: Static mode disabled
+   */
+  (key: "folia.notifications.staticModeOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主页动态背景已关闭
+   * zh-TW: 主頁動態背景已關閉
+   * en-US: Home dynamic background disabled
+   */
+  (key: "folia.notifications.homeBgDisabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主页动态背景已开启
+   * zh-TW: 主頁動態背景已開啟
+   * en-US: Home dynamic background enabled
+   */
+  (key: "folia.notifications.homeBgEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多歌词源已开启
+   * zh-TW: 更多歌詞源已開啟
+   * en-US: Alternative lyric sources enabled
+   */
+  (key: "folia.notifications.altLyricsOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多歌词源已关闭
+   * zh-TW: 更多歌詞源已關閉
+   * en-US: Alternative lyric sources disabled
+   */
+  (key: "folia.notifications.altLyricsOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动使用最佳歌词已开启
+   * zh-TW: 自動使用最佳歌詞已開啟
+   * en-US: Auto-use best lyrics enabled
+   */
+  (key: "folia.notifications.autoBestLyricOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动使用最佳歌词已关闭
+   * zh-TW: 自動使用最佳歌詞已關閉
+   * en-US: Auto-use best lyrics disabled
+   */
+  (key: "folia.notifications.autoBestLyricOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先匹配歌词源已切换为{{source}}
+   * zh-TW: 優先匹配歌詞源已切換為{{source}}
+   * en-US: Preferred lyric source switched to {{source}}
+   */
+  (key: "folia.notifications.lyricSourceChanged", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页底部控制条已隐藏
+   * zh-TW: 播放頁底部控制條已隱藏
+   * en-US: Player bottom control bar hidden
+   */
+  (key: "folia.notifications.progressBarHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页底部控制条已显示
+   * zh-TW: 播放頁底部控制條已顯示
+   * en-US: Player bottom control bar shown
+   */
+  (key: "folia.notifications.progressBarShown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 底部字幕层已隐藏
+   * zh-TW: 底部字幕層已隱藏
+   * en-US: Bottom subtitle overlay hidden
+   */
+  (key: "folia.notifications.subtitleHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 底部字幕层已显示
+   * zh-TW: 底部字幕層已顯示
+   * en-US: Bottom subtitle overlay shown
+   */
+  (key: "folia.notifications.subtitleShown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕翻译已显示
+   * zh-TW: 字幕翻譯已顯示
+   * en-US: Subtitle translation shown
+   */
+  (key: "folia.notifications.translationShown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕翻译已隐藏
+   * zh-TW: 字幕翻譯已隱藏
+   * en-US: Subtitle translation hidden
+   */
+  (key: "folia.notifications.translationHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页右侧按钮已隐藏
+   * zh-TW: 播放頁右側按鈕已隱藏
+   * en-US: Player right-side button hidden
+   */
+  (key: "folia.notifications.rightBtnHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页右侧按钮已显示
+   * zh-TW: 播放頁右側按鈕已顯示
+   * en-US: Player right-side button shown
+   */
+  (key: "folia.notifications.rightBtnShown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页透明背景已开启
+   * zh-TW: 播放頁透明背景已開啟
+   * en-US: Transparent player background enabled
+   */
+  (key: "folia.notifications.transparentBgOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页透明背景已关闭
+   * zh-TW: 播放頁透明背景已關閉
+   * en-US: Transparent player background disabled
+   */
+  (key: "folia.notifications.transparentBgOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页暗角效果已关闭
+   * zh-TW: 播放頁暗角效果已關閉
+   * en-US: Vignette effect disabled
+   */
+  (key: "folia.notifications.vignetteOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页暗角效果已开启
+   * zh-TW: 播放頁暗角效果已開啟
+   * en-US: Vignette effect enabled
+   */
+  (key: "folia.notifications.vignetteOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通用几何背景已隐藏
+   * zh-TW: 通用幾何背景已隱藏
+   * en-US: Common geometric background hidden
+   */
+  (key: "folia.notifications.geometricBgHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通用几何背景已显示
+   * zh-TW: 通用幾何背景已顯示
+   * en-US: Common geometric background shown
+   */
+  (key: "folia.notifications.geometricBgShown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最小化将隐藏到托盘
+   * zh-TW: 最小化將隱藏到托盤
+   * en-US: Minimize will hide to tray
+   */
+  (key: "folia.notifications.minimizeToTray", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最小化将保留在任务栏
+   * zh-TW: 最小化將保留在任務欄
+   * en-US: Minimize will stay in taskbar
+   */
+  (key: "folia.notifications.minimizeToTaskbar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语音输入时暂停已开启
+   * zh-TW: 語音輸入時暫停已開啟
+   * en-US: Pause on voice input enabled
+   */
+  (key: "folia.notifications.voiceInputPauseOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语音输入时暂停已关闭
+   * zh-TW: 語音輸入時暫停已關閉
+   * en-US: Pause on voice input disabled
+   */
+  (key: "folia.notifications.voiceInputPauseOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主窗口任务栏图标已隐藏
+   * zh-TW: 主窗口任務欄圖標已隱藏
+   * en-US: Main window taskbar icon hidden
+   */
+  (key: "folia.notifications.taskbarHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主窗口任务栏图标已恢复
+   * zh-TW: 主窗口任務欄圖標已恢復
+   * en-US: Main window taskbar icon restored
+   */
+  (key: "folia.notifications.taskbarRestored", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动后将直接进入播放页
+   * zh-TW: 啟動後將直接進入播放頁
+   * en-US: Launch directly to player page
+   */
+  (key: "folia.notifications.openPlayerOnLaunch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动后将默认进入首页
+   * zh-TW: 啟動後將默認進入首頁
+   * en-US: Launch to home page by default
+   */
+  (key: "folia.notifications.openHomeOnLaunch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已切换到{{mode}}歌词
+   * zh-TW: 已切換到{{mode}}歌詞
+   * en-US: Switched to {{mode}} visualizer
+   */
+  (key: "folia.notifications.visualizerSwitched", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流光参数已重置
+   * zh-TW: 流光參數已重置
+   * en-US: Classic tuning reset
+   */
+  (key: "folia.notifications.classicReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 心象参数已重置
+   * zh-TW: 心象參數已重置
+   * en-US: Mindscape tuning reset
+   */
+  (key: "folia.notifications.cadenzaReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云阶参数已重置
+   * zh-TW: 雲階參數已重置
+   * en-US: Partita tuning reset
+   */
+  (key: "folia.notifications.partitaReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浮名参数已重置
+   * zh-TW: 浮名參數已重置
+   * en-US: Fume tuning reset
+   */
+  (key: "folia.notifications.fumeReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回环参数已重置
+   * zh-TW: 迴環參數已重置
+   * en-US: Claddagh tuning reset
+   */
+  (key: "folia.notifications.claddaghReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 群唱参数已重置
+   * zh-TW: 群唱參數已重置
+   * en-US: Cappella tuning reset
+   */
+  (key: "folia.notifications.cappellaReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 倾诉参数已重置
+   * zh-TW: 傾訴參數已重置
+   * en-US: Tilt tuning reset
+   */
+  (key: "folia.notifications.tiltReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莫奈背景参数已重置
+   * zh-TW: 莫奈背景參數已重置
+   * en-US: Monet background tuning reset
+   */
+  (key: "folia.notifications.monetBgReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 漫游背景参数已重置
+   * zh-TW: 漫遊背景參數已重置
+   * en-US: Nomand background tuning reset
+   */
+  (key: "folia.notifications.nomandBgReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐现背景参数已重置
+   * zh-TW: 隱現背景參數已重置
+   * en-US: Latent background tuning reset
+   */
+  (key: "folia.notifications.latentBgReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莫奈参数已重置
+   * zh-TW: 莫奈參數已重置
+   * en-US: Monet tuning reset
+   */
+  (key: "folia.notifications.monetReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请先上传自定义表情包
+   * zh-TW: 請先上傳自定義表情包
+   * en-US: Please upload a custom emoji pack first
+   */
+  (key: "folia.notifications.uploadEmojiFirst", params?: TranslationParams): string;
+  /**
+   * zh-CN: Monet 背景图已更新
+   * zh-TW: Monet 背景圖已更新
+   * en-US: Monet background image updated
+   */
+  (key: "folia.notifications.monetBgUpdated", params?: TranslationParams): string;
+  /**
+   * zh-CN: Monet 背景图已清空
+   * zh-TW: Monet 背景圖已清空
+   * en-US: Monet background image cleared
+   */
+  (key: "folia.notifications.monetBgCleared", params?: TranslationParams): string;
+  /**
+   * zh-CN: Monet 肖像图已更新
+   * zh-TW: Monet 肖像圖已更新
+   * en-US: Monet portrait image updated
+   */
+  (key: "folia.notifications.monetPortraitUpdated", params?: TranslationParams): string;
+  /**
+   * zh-CN: Monet 肖像图已清空
+   * zh-TW: Monet 肖像圖已清空
+   * en-US: Monet portrait image cleared
+   */
+  (key: "folia.notifications.monetPortraitCleared", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已新增 {{added}} 张群唱表情包，当前共 {{total}} 张
+   * zh-TW: 已新增 {{added}} 張群唱表情包，當前共 {{total}} 張
+   * en-US: Added {{added}} emoji(s), total {{total}}
+   */
+  (key: "folia.notifications.emojiPackAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义群唱表情包已清空
+   * zh-TW: 自定義群唱表情包已清空
+   * en-US: Custom emoji pack cleared
+   */
+  (key: "folia.notifications.emojiPackCleared", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已新增 {{added}} 张自定义头像，当前共 {{total}} 张
+   * zh-TW: 已新增 {{added}} 張自定義頭像，當前共 {{total}} 張
+   * en-US: Added {{added}} avatar(s), total {{total}}
+   */
+  (key: "folia.notifications.avatarAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义头像已清空
+   * zh-TW: 自定義頭像已清空
+   * en-US: Custom avatar cleared
+   */
+  (key: "folia.notifications.avatarCleared", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已启用上传字体：{{fontName}}
+   * zh-TW: 已啟用上傳字體：{{fontName}}
+   * en-US: Uploaded font enabled: {{fontName}}
+   */
+  (key: "folia.notifications.fontEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传字体失败。
+   * zh-TW: 上傳字體失敗。
+   * en-US: Font upload failed
+   */
+  (key: "folia.notifications.fontUploadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传字体不可用，已恢复内置字体
+   * zh-TW: 上傳字體不可用，已恢復內置字體
+   * en-US: Uploaded font unavailable, restored built-in font
+   */
+  (key: "folia.notifications.uploadedFontUnavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载上传字体失败，已恢复内置字体
+   * zh-TW: 加載上傳字體失敗，已恢復內置字體
+   * en-US: Failed to load uploaded font, restored built-in font
+   */
+  (key: "folia.notifications.uploadedFontLoadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 界面语言已切换
+   * zh-TW: 界面語言已切換
+   * en-US: Interface language switched
+   */
+  (key: "folia.notifications.langSwitched", params?: TranslationParams): string;
+  /**
+   * zh-CN: 界面语言已切换为跟随系统
+   * zh-TW: 界面語言已切換為跟隨系統
+   * en-US: Interface language switched to follow system
+   */
+  (key: "folia.notifications.langFollowSystem", params?: TranslationParams): string;
+  /**
+   * zh-CN: 界面语言已切换为 {{language}}
+   * zh-TW: 界面語言已切換為 {{language}}
+   * en-US: Interface language switched to {{language}}
+   */
+  (key: "folia.notifications.langManual", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已显示面板关闭按钮
+   * zh-TW: 已顯示面板關閉按鈕
+   * en-US: Panel close button shown
+   */
+  (key: "folia.notifications.panelCloseBtnShown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已隐藏面板关闭按钮
+   * zh-TW: 已隱藏面板關閉按鈕
+   * en-US: Panel close button hidden
+   */
+  (key: "folia.notifications.panelCloseBtnHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页左上角返回按钮将始终显示
+   * zh-TW: 播放頁左上角返回按鈕將始終顯示
+   * en-US: Player back button will remain visible
+   */
+  (key: "folia.notifications.playerBackButtonAlwaysShown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页左上角返回按钮将悬停显示
+   * zh-TW: 播放頁左上角返回按鈕將懸停顯示
+   * en-US: Player back button will reveal on hover
+   */
+  (key: "folia.notifications.playerBackButtonAutoHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主窗口标题栏控制按钮将始终显示
+   * zh-TW: 主窗口標題欄控制按鈕將始終顯示
+   * en-US: Main window control buttons will remain visible
+   */
+  (key: "folia.notifications.mainWindowTitlebarAlwaysShown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主窗口标题栏控制按钮将悬停显示
+   * zh-TW: 主窗口標題欄控制按鈕將懸停顯示
+   * en-US: Main window control buttons will reveal on hover
+   */
+  (key: "folia.notifications.mainWindowTitlebarAutoHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 舞台模式已启用
+   * zh-TW: 舞臺模式已啟用
+   * en-US: Stage mode enabled
+   */
+  (key: "folia.notifications.stageModeOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 舞台模式已关闭
+   * zh-TW: 舞臺模式已關閉
+   * en-US: Stage mode disabled
+   */
+  (key: "folia.notifications.stageModeOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入队列将插到下一首
+   * zh-TW: 加入隊列將插到下一首
+   * en-US: Queue insert to play next
+   */
+  (key: "folia.notifications.queueInsertNext", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入队列将追加到末尾
+   * zh-TW: 加入隊列將追加到末尾
+   * en-US: Queue append to end
+   */
+  (key: "folia.notifications.queueAppend", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首页布局已切换为万象
+   * zh-TW: 首頁佈局已切換為萬象
+   * en-US: Home layout switched to Vast Desktop
+   */
+  (key: "folia.notifications.homeLayoutGrid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首页布局已切换为经典
+   * zh-TW: 首頁佈局已切換為經典
+   * en-US: Home layout switched to Classic
+   */
+  (key: "folia.notifications.homeLayoutCarousel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 卡片样式已切换为纯图片封面
+   * zh-TW: 卡片樣式已切換為純圖片封面
+   * en-US: Card style switched to cover image only
+   */
+  (key: "folia.notifications.cardStyleImage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 卡片样式已切换为拍立得卡片
+   * zh-TW: 卡片樣式已切換為拍立得卡片
+   * en-US: Card style switched to Polaroid card
+   */
+  (key: "folia.notifications.cardStyleCard", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请选择图片文件。
+   * zh-TW: 請選擇圖片文件。
+   * en-US: Please select an image file
+   */
+  (key: "folia.notifications.selectImageFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅支持 png、jpg、jpeg、gif、webp、svg 图片。
+   * zh-TW: 僅支持 png、jpg、jpeg、gif、webp、svg 圖片。
+   * en-US: Only png, jpg, jpeg, gif, webp, svg images are supported
+   */
+  (key: "folia.notifications.unsupportedImageFormat", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已应用默认主题: {{themeName}}
+   * zh-TW: 已應用默認主題: {{themeName}}
+   * en-US: Applied default theme: {{themeName}}
+   */
+  (key: "folia.notifications.appliedDefaultTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已保存并应用自定义主题: {{themeName}}
+   * zh-TW: 已保存並應用自定義主題: {{themeName}}
+   * en-US: Saved and applied custom theme: {{themeName}}
+   */
+  (key: "folia.notifications.savedCustomTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已应用自定义主题: {{themeName}}
+   * zh-TW: 已應用自定義主題: {{themeName}}
+   * en-US: Applied custom theme: {{themeName}}
+   */
+  (key: "folia.notifications.appliedCustomTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已开启优先使用自定义主题
+   * zh-TW: 已開啟優先使用自定義主題
+   * en-US: Prioritize custom theme enabled
+   */
+  (key: "folia.notifications.customThemePreferredOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已关闭优先使用自定义主题
+   * zh-TW: 已關閉優先使用自定義主題
+   * en-US: Prioritize custom theme disabled
+   */
+  (key: "folia.notifications.customThemePreferredOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已开启主题自动切换
+   * zh-TW: 已開啟主題自動切換
+   * en-US: Auto-switch theme enabled
+   */
+  (key: "folia.notifications.autoSwitchThemeOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已关闭主题自动切换
+   * zh-TW: 已關閉主題自動切換
+   * en-US: Auto-switch theme disabled
+   */
+  (key: "folia.notifications.autoSwitchThemeOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已开启播放歌曲主题自动生成
+   * zh-TW: 已開啟播放歌曲主題自動生成
+   * en-US: Auto-generate theme for playing songs enabled
+   */
+  (key: "folia.notifications.autoGenerateThemeOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已关闭播放歌曲主题自动生成
+   * zh-TW: 已關閉播放歌曲主題自動生成
+   * en-US: Auto-generate theme for playing songs disabled
+   */
+  (key: "folia.notifications.autoGenerateThemeOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: AI 主题已更新，自定义主题仍为首选
+   * zh-TW: AI 主題已更新，自定義主題仍為首選
+   * en-US: AI theme updated, custom theme is still preferred
+   */
+  (key: "folia.notifications.aiThemeUpdatedCustomPreferred", params?: TranslationParams): string;
+  /**
+   * zh-CN: AI 主题已生成，但当前仍优先使用自定义主题
+   * zh-TW: AI 主題已生成，但當前仍優先使用自定義主題
+   * en-US: AI theme generated, but custom theme is still preferred
+   */
+  (key: "folia.notifications.aiThemeGeneratedCustomPreferred", params?: TranslationParams): string;
+  /**
+   * zh-CN: UI 将始终隐藏
+   * zh-TW: UI 將始終隱藏
+   * en-US: UI will remain hidden
+   */
+  (key: "folia.status.playerChromeAlwaysHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: UI 将始终显示
+   * zh-TW: UI 將始終顯示
+   * en-US: UI will remain visible
+   */
+  (key: "folia.status.playerChromeAlwaysVisible", params?: TranslationParams): string;
+  /**
+   * zh-CN: UI 将自动隐藏
+   * zh-TW: UI 將自動隱藏
+   * en-US: UI will auto-hide
+   */
+  (key: "folia.status.playerChromeAutoHide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 会话已恢复
+   * zh-TW: 會話已恢復
+   * en-US: Session restored
+   */
+  (key: "folia.status.sessionRestored", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已加载默认音乐
+   * zh-TW: 已加載默認音樂
+   * en-US: Loaded default demo
+   */
+  (key: "folia.status.loadedDefaultDemo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已加载: {{fileName}}
+   * zh-TW: 已加載: {{fileName}}
+   * en-US: Loaded: {{fileName}}
+   */
+  (key: "folia.status.loadedFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在搜索 "{{query}}"...
+   * zh-TW: 正在搜索 "{{query}}"...
+   * en-US: Searching for "{{query}}"...
+   */
+  (key: "folia.status.searching", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到歌曲。
+   * zh-TW: 未找到歌曲。
+   * en-US: No songs found.
+   */
+  (key: "folia.status.noSongsFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 找到多个匹配项。
+   * zh-TW: 找到多個匹配項。
+   * en-US: Multiple matches found.
+   */
+  (key: "folia.status.multipleMatches", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已匹配: {{songName}}
+   * zh-TW: 已匹配: {{songName}}
+   * en-US: Matched: {{songName}}
+   */
+  (key: "folia.status.matched", params?: TranslationParams): string;
+  /**
+   * zh-CN: 少女祈祷中...
+   * zh-TW: 少女祈禱中...
+   * en-US: Downloading lyrics...
+   */
+  (key: "folia.status.downloadingLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词已加载！
+   * zh-TW: 歌詞已加載！
+   * en-US: Lyrics loaded!
+   */
+  (key: "folia.status.lyricsLoaded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词加载失败: {{error}}
+   * zh-TW: 歌詞加載失敗: {{error}}
+   * en-US: Lyrics failed: {{error}}
+   */
+  (key: "folia.status.lyricsFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在匹配最佳歌词...
+   * zh-TW: 正在匹配最佳歌詞...
+   * en-US: Matching the best lyrics...
+   */
+  (key: "folia.status.matchingBestLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已匹配最佳歌词
+   * zh-TW: 已匹配最佳歌詞
+   * en-US: Matched best lyrics
+   */
+  (key: "folia.status.bestLyricsMatched", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配成功
+   * zh-TW: 匹配成功
+   * en-US: Match successful
+   */
+  (key: "folia.status.matchSuccessful", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有找到合适的最佳歌词
+   * zh-TW: 沒有找到合適的最佳歌詞
+   * en-US: No suitable best lyrics found
+   */
+  (key: "folia.status.bestLyricsNotFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纯音乐，无需匹配歌词
+   * zh-TW: 純音樂，無需匹配歌詞
+   * en-US: NetEase marks this track as pure music, so lyrics matching is not needed
+   */
+  (key: "folia.status.bestLyricsPureMusic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配最佳歌词失败
+   * zh-TW: 匹配最佳歌詞失敗
+   * en-US: Failed to match best lyrics
+   */
+  (key: "folia.status.bestLyricsMatchFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前没有正在播放的歌曲
+   * zh-TW: 當前沒有正在播放的歌曲
+   * en-US: No song is playing
+   */
+  (key: "folia.status.noSongPlaying", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请输入歌曲ID或导入文件
+   * zh-TW: 請輸入歌曲ID或導入文件
+   * en-US: Enter Song ID or Import File
+   */
+  (key: "folia.status.enterSongId", params?: TranslationParams): string;
+  /**
+   * zh-CN: API基础URL未配置。
+   * zh-TW: API基礎URL未配置。
+   * en-US: API Base URL not configured.
+   */
+  (key: "folia.status.apiNotConfigured", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网易云接口启动失败，部分在线功能不可用
+   * zh-TW: 網易雲接口啟動失敗，部分在線功能不可用
+   * en-US: NetEase API failed to start. Some online features are unavailable.
+   */
+  (key: "folia.status.neteaseApiStartupFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索错误。
+   * zh-TW: 搜索錯誤。
+   * en-US: Search error.
+   */
+  (key: "folia.status.searchError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 少女祈祷中...
+   * zh-TW: 少女祈禱中...
+   * en-US: AI is dreaming up a theme...
+   */
+  (key: "folia.status.generatingTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已应用主题: {{themeName}}
+   * zh-TW: 已應用主題: {{themeName}}
+   * en-US: Applied theme: {{themeName}}
+   */
+  (key: "folia.status.themeApplied", params?: TranslationParams): string;
+  /**
+   * zh-CN: AI 主题已更新: {{themeName}}
+   * zh-TW: AI 主題已更新: {{themeName}}
+   * en-US: AI theme updated: {{themeName}}
+   */
+  (key: "folia.status.aiThemeUpdated", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题生成失败。
+   * zh-TW: 主題生成失敗。
+   * en-US: Theme generation failed.
+   */
+  (key: "folia.status.themeGenerationFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请在设置中配置你的 AI API 密钥
+   * zh-TW: 請在設置中配置你的 AI API 密鑰
+   * en-US: Please configure your AI API Key in Settings
+   */
+  (key: "folia.status.missingApiKey", params?: TranslationParams): string;
+  /**
+   * zh-CN: AI功能未配置，使用内置主题
+   * zh-TW: AI功能未配置，使用內置主題
+   * en-US: AI is not configured, using a built-in theme
+   */
+  (key: "folia.status.aiFallbackThemeUsed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放出错
+   * zh-TW: 播放出錯
+   * en-US: Playback Error
+   */
+  (key: "folia.status.playbackError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在获取歌曲链接...
+   * zh-TW: 正在獲取歌曲鏈接...
+   * en-US: Loading song URL...
+   */
+  (key: "folia.status.loadingSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存已清除
+   * zh-TW: 緩存已清除
+   * en-US: Cache cleared
+   */
+  (key: "folia.status.cacheCleared", params?: TranslationParams): string;
+  /**
+   * zh-CN: 数据同步成功
+   * zh-TW: 數據同步成功
+   * en-US: Data synced successfully
+   */
+  (key: "folia.status.dataSynced", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步失败
+   * zh-TW: 同步失敗
+   * en-US: Sync failed
+   */
+  (key: "folia.status.syncFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录状态已失效，请重新登录
+   * zh-TW: 登錄狀態已失效，請重新登錄
+   * en-US: Login expired. Please sign in again
+   */
+  (key: "folia.status.loginExpired", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已退出登录
+   * zh-TW: 已退出登錄
+   * en-US: Logged out
+   */
+  (key: "folia.status.loggedOut", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击播放开始
+   * zh-TW: 點擊播放開始
+   * en-US: Click play to start
+   */
+  (key: "folia.status.clickToPlay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加到喜欢的音乐
+   * zh-TW: 已添加到喜歡的音樂
+   * en-US: Added to Liked Songs
+   */
+  (key: "folia.status.liked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加失败
+   * zh-TW: 添加失敗
+   * en-US: Failed to like song
+   */
+  (key: "folia.status.likeFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消喜欢
+   * zh-TW: 已取消喜歡
+   * en-US: Removed from Liked
+   */
+  (key: "folia.status.unliked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单已更新
+   * zh-TW: 歌單已更新
+   * en-US: Playlist updated
+   */
+  (key: "folia.status.playlistUpdated", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲已下架
+   * zh-TW: 歌曲已下架
+   * en-US: Song has been taken down
+   */
+  (key: "folia.status.songUnavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲已下架，正在跳过
+   * zh-TW: 歌曲已下架，正在跳過
+   * en-US: Song has been taken down, skipping
+   */
+  (key: "folia.status.songUnavailableSkipping", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲已下架，{{seconds}} 秒后自动跳过
+   * zh-TW: 歌曲已下架，{{seconds}} 秒後自動跳過
+   * en-US: Song has been taken down. Auto-skipping in {{seconds}}s
+   */
+  (key: "folia.status.songUnavailablePrompt", params?: TranslationParams): string;
+  /**
+   * zh-CN: (empty)
+   * zh-TW: (empty)
+   * en-US: Alternate version available
+   */
+  (key: "folia.status.songUnavailableAlternativeTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前歌曲已下架，{{typeDesc}}。是否改为播放其他版本？
+   * zh-TW: 當前歌曲已下架，{{typeDesc}}。是否改為播放其他版本？
+   * en-US: "{{song}}" is unavailable. {{typeDesc}}. Play an alternate version instead?
+   */
+  (key: "folia.status.songUnavailableAlternativeDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 存在可播放的其他版本
+   * zh-TW: 存在可播放的其他版本
+   * en-US: Another version can be played
+   */
+  (key: "folia.status.songUnavailableAlternativeDefaultType", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放其他版本
+   * zh-TW: 播放其他版本
+   * en-US: Play alternate
+   */
+  (key: "folia.status.playAlternativeVersion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放出错，{{seconds}} 秒后自动跳过
+   * zh-TW: 播放出錯，{{seconds}} 秒後自動跳過
+   * en-US: Playback failed. Auto-skipping in {{seconds}}s
+   */
+  (key: "folia.status.playbackErrorPrompt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跳过
+   * zh-TW: 跳過
+   * en-US: Skip
+   */
+  (key: "folia.status.skipUnavailableAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "folia.status.cancel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等待连接
+   * zh-TW: 等待連接
+   * en-US: Waiting for external Stage input
+   */
+  (key: "folia.status.stageWaiting", params?: TranslationParams): string;
+  /**
+   * zh-CN: Stage 模式下不支持这个操作
+   * zh-TW: Stage 模式下不支持這個操作
+   * en-US: This action is unavailable in Stage mode
+   */
+  (key: "folia.status.stageActionUnavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 列表中没有可播放的歌曲
+   * zh-TW: 列表中沒有可播放的歌曲
+   * en-US: No playable songs in this list
+   */
+  (key: "folia.status.noPlayableSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已下架
+   * zh-TW: 已下架
+   * en-US: Unavailable
+   */
+  (key: "folia.status.songUnavailableTag", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放队列已打乱
+   * zh-TW: 播放隊列已打亂
+   * en-US: Queue shuffled
+   */
+  (key: "folia.status.queueShuffled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加到播放队列
+   * zh-TW: 已添加到播放隊列
+   * en-US: Added to queue
+   */
+  (key: "folia.status.queueUpdated", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已复制歌曲信息
+   * zh-TW: 已複製歌曲信息
+   * en-US: Copied song info
+   */
+  (key: "folia.status.copiedSongInfo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已复制
+   * zh-TW: 已複製
+   * en-US: Copied
+   */
+  (key: "folia.status.copied", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加至下一首播放
+   * zh-TW: 已添加至下一首播放
+   * en-US: Added to play next
+   */
+  (key: "folia.status.added_to_next_play", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加到播放队列
+   * zh-TW: 已添加到播放隊列
+   * en-US: Added to play queue
+   */
+  (key: "folia.status.added_to_play_queue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在匹配歌词和封面...
+   * zh-TW: 正在匹配歌詞和封面...
+   * en-US: Matching lyrics and cover...
+   */
+  (key: "folia.status.matchingLyricsAndCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上次播放的本地歌曲已不在曲库中
+   * zh-TW: 上次播放的本地歌曲已不在曲庫中
+   * en-US: The previously played local song is no longer in the library
+   */
+  (key: "folia.status.localSongNotInLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地歌曲文件需要重新授权访问，请从本地音乐列表重新选择播放
+   * zh-TW: 本地歌曲文件需要重新授權訪問，請從本地音樂列表重新選擇播放
+   * en-US: The local song file needs to be re-authorized. Please select it again from the local music list.
+   */
+  (key: "folia.status.localFileReauthorize", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法播放本地文件（文件可能已移动或权限丢失）
+   * zh-TW: 無法播放本地文件（文件可能已移動或權限丟失）
+   * en-US: Cannot play local file (file may have been moved or permissions lost)
+   */
+  (key: "folia.status.localFilePlaybackError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法访问文件，请重新导入文件夹
+   * zh-TW: 無法訪問文件，請重新導入文件夾
+   * en-US: Cannot access file. Please re-import the folder
+   */
+  (key: "folia.status.localFileAccessError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等待本地 Now Playing 服务输入
+   * zh-TW: 等待本地 Now Playing 服務輸入
+   * en-US: Waiting for local Now Playing input
+   */
+  (key: "folia.status.waitingNowPlayingInput", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地音乐已加载
+   * zh-TW: 本地音樂已加載
+   * en-US: Local music loaded
+   */
+  (key: "folia.status.localMusicLoaded", params?: TranslationParams): string;
+  /**
+   * zh-CN: Navidrome 歌曲已加载
+   * zh-TW: Navidrome 歌曲已加載
+   * en-US: Navidrome song loaded
+   */
+  (key: "folia.status.navidromeSongLoaded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放失败
+   * zh-TW: 播放失敗
+   * en-US: Playback failed
+   */
+  (key: "folia.status.playbackFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词来源已切换
+   * zh-TW: 歌詞來源已切換
+   * en-US: Lyrics source switched
+   */
+  (key: "folia.status.lyricsSourceSwitched", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已清除手动匹配/上传的歌词
+   * zh-TW: 已清除手動匹配/上傳的歌詞
+   * en-US: Cleared manually matched/uploaded lyrics
+   */
+  (key: "folia.status.clearedManualLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除失败
+   * zh-TW: 清除失敗
+   * en-US: Clear failed
+   */
+  (key: "folia.status.clearFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: Stage 模式下不支持收藏操作
+   * zh-TW: Stage 模式下不支持收藏操作
+   * en-US: This action is unavailable in Stage mode
+   */
+  (key: "folia.status.stageLikeUnavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已插入到下一首
+   * zh-TW: 已插入到下一首
+   * en-US: Inserted to play next
+   */
+  (key: "folia.status.insertedToNext", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已连接
+   * zh-TW: 已連接
+   * en-US: Connected
+   */
+  (key: "folia.status.connected", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接中
+   * zh-TW: 連接中
+   * en-US: Connecting
+   */
+  (key: "folia.status.connecting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接失败
+   * zh-TW: 連接失敗
+   * en-US: Disconnected
+   */
+  (key: "folia.status.disconnected", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已开启每首歌随机歌词动画
+   * zh-TW: 已開啟每首歌隨機歌詞動畫
+   * en-US: Random lyric animation for every song enabled
+   */
+  (key: "folia.status.randomVisualizerModePerSongOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已关闭每首歌随机歌词动画
+   * zh-TW: 已關閉每首歌隨機歌詞動畫
+   * en-US: Random lyric animation for every song disabled
+   */
+  (key: "folia.status.randomVisualizerModePerSongOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入命令或搜索内容...
+   * zh-TW: 輸入命令或搜索內容...
+   * en-US: Type a command or search...
+   */
+  (key: "folia.commandPalette.placeholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看全部命令
+   * zh-TW: 查看全部命令
+   * en-US: Show all commands
+   */
+  (key: "folia.commandPalette.showAllCommands", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部命令
+   * zh-TW: 全部命令
+   * en-US: All commands
+   */
+  (key: "folia.commandPalette.allCommands", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回搜索
+   * zh-TW: 返回搜索
+   * en-US: Back to search
+   */
+  (key: "folia.commandPalette.backToSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随便输入试试，这里有很多命令可以使用
+   * zh-TW: 隨便輸入試試，這裡有很多命令可以使用
+   * en-US: Type anything — there are plenty of commands to try
+   */
+  (key: "folia.commandPalette.idlePlaceholders.0", params?: TranslationParams): string;
+  /**
+   * zh-CN: 试着输入歌词动画名称、设置或想执行的操作
+   * zh-TW: 試著輸入歌詞動畫名稱、設置或想執行的操作
+   * en-US: Try searching for a song, setting, or action
+   */
+  (key: "folia.commandPalette.idlePlaceholders.1", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不知道从哪里开始？直接输入你想做的事
+   * zh-TW: 不知道從哪裡開始？直接輸入你想做的事
+   * en-US: Not sure where to start? Just type what you want
+   */
+  (key: "folia.commandPalette.idlePlaceholders.2", params?: TranslationParams): string;
+  /**
+   * zh-CN: 英文，汉字，拼音，都可以
+   * zh-TW: 英文，漢字，拼音，都可以
+   * en-US: Explore freely — commands, navigation, and playback are all here
+   */
+  (key: "folia.commandPalette.idlePlaceholders.3", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入一个功能或命令试试看
+   * zh-TW: 輸入一個功能或命令試試看
+   * en-US: Give it a try: type a feature or command
+   */
+  (key: "folia.commandPalette.idlePlaceholders.4", params?: TranslationParams): string;
+  /**
+   * zh-CN: 命令台
+   * zh-TW: 命令臺
+   * en-US: Command
+   */
+  (key: "folia.commandPalette.destination", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭命令台
+   * zh-TW: 關閉命令臺
+   * en-US: Close command palette
+   */
+  (key: "folia.commandPalette.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有匹配的命令
+   * zh-TW: 沒有匹配的命令
+   * en-US: No matching command
+   */
+  (key: "folia.commandPalette.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步服务尚未开启，请先在存储设置中完成配置并启用同步。
+   * zh-TW: 同步服務尚未開啟，請先在存儲設置中完成配置並啟用同步。
+   * en-US: Sync is not enabled. Configure and enable it in Storage settings first.
+   */
+  (key: "folia.commandPalette.syncNotConfigured", params?: TranslationParams): string;
+  /**
+   * zh-CN: 执行
+   * zh-TW: 執行
+   * en-US: Run
+   */
+  (key: "folia.commandPalette.run", params?: TranslationParams): string;
+  /**
+   * zh-CN: 识别结果
+   * zh-TW: 識別結果
+   * en-US: Recognized
+   */
+  (key: "folia.commandPalette.recognized", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索{{source}}歌曲：{{query}}
+   * zh-TW: 搜索{{source}}歌曲：{{query}}
+   * en-US: Search {{source}} songs: {{query}}
+   */
+  (key: "folia.commandPalette.previewSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索当前队列：{{query}}
+   * zh-TW: 搜索當前隊列：{{query}}
+   * en-US: Search current queue: {{query}}
+   */
+  (key: "folia.commandPalette.previewQueueSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入歌名、歌手、专辑或队列序号
+   * zh-TW: 輸入歌名、歌手、專輯或隊列序號
+   * en-US: Type a song name, artist, album, or queue index
+   */
+  (key: "folia.commandPalette.previewQueueSearchEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 队列 #{{index}}
+   * zh-TW: 隊列 #{{index}}
+   * en-US: Queue #{{index}}
+   */
+  (key: "folia.commandPalette.queueIndex", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前来源
+   * zh-TW: 當前來源
+   * en-US: current source
+   */
+  (key: "folia.commandPalette.sourceCurrent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地音乐
+   * zh-TW: 本地音樂
+   * en-US: local library
+   */
+  (key: "folia.commandPalette.sourceLocal", params?: TranslationParams): string;
+  /**
+   * zh-CN: Navidrome
+   * zh-TW: Navidrome
+   * en-US: Navidrome
+   */
+  (key: "folia.commandPalette.sourceNavidrome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网易云
+   * zh-TW: 網易雲
+   * en-US: NetEase Cloud Music
+   */
+  (key: "folia.commandPalette.sourceNetease", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索
+   * zh-TW: 搜索
+   * en-US: Search
+   */
+  (key: "folia.commandPalette.groupSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设置
+   * zh-TW: 設置
+   * en-US: Settings
+   */
+  (key: "folia.commandPalette.groupSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导航
+   * zh-TW: 導航
+   * en-US: Navigate
+   */
+  (key: "folia.commandPalette.groupNavigation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 面板
+   * zh-TW: 面板
+   * en-US: Panel
+   */
+  (key: "folia.commandPalette.groupPanel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Playback
+   */
+  (key: "folia.commandPalette.groupPlayback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 可视化
+   * zh-TW: 可視化
+   * en-US: Visualizer
+   */
+  (key: "folia.commandPalette.groupVisualizer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 命令
+   * zh-TW: 命令
+   * en-US: Command
+   */
+  (key: "folia.commandPalette.groupOther", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌曲
+   * zh-TW: 搜索歌曲
+   * en-US: Search songs
+   */
+  (key: "folia.commandPalette.commands.search-current.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在当前来源搜索歌曲
+   * zh-TW: 在當前來源搜索歌曲
+   * en-US: Search songs in the current source
+   */
+  (
+    key: "folia.commandPalette.commands.search-current.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 搜索本地歌曲
+   * zh-TW: 搜索本地歌曲
+   * en-US: Search local songs
+   */
+  (key: "folia.commandPalette.commands.search-local.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索本地音乐库
+   * zh-TW: 搜索本地音樂庫
+   * en-US: Search local library
+   */
+  (
+    key: "folia.commandPalette.commands.search-local.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 搜索 Navidrome
+   * zh-TW: 搜索 Navidrome
+   * en-US: Search Navidrome songs
+   */
+  (key: "folia.commandPalette.commands.search-navidrome.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索 Navidrome 音乐库
+   * zh-TW: 搜索 Navidrome 音樂庫
+   * en-US: Search Navidrome library
+   */
+  (
+    key: "folia.commandPalette.commands.search-navidrome.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 搜索网易云
+   * zh-TW: 搜索網易雲
+   * en-US: Search NetEase songs
+   */
+  (key: "folia.commandPalette.commands.search-netease.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索网易云音乐
+   * zh-TW: 搜索網易雲音樂
+   * en-US: Search NetEase Cloud Music
+   */
+  (
+    key: "folia.commandPalette.commands.search-netease.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 队列
+   * zh-TW: 隊列
+   * en-US: Queue
+   */
+  (key: "folia.commandPalette.commands.queue.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索当前播放队列
+   * zh-TW: 搜索當前播放隊列
+   * en-US: Search the current play queue
+   */
+  (key: "folia.commandPalette.commands.queue.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开帮助
+   * zh-TW: 打開幫助
+   * en-US: Open Help
+   */
+  (key: "folia.commandPalette.commands.settings-help.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开帮助和快捷键
+   * zh-TW: 打開幫助和快捷鍵
+   * en-US: Open help and shortcuts
+   */
+  (
+    key: "folia.commandPalette.commands.settings-help.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开用户指引
+   * zh-TW: 打開用戶指引
+   * en-US: Show User Guide
+   */
+  (key: "folia.commandPalette.commands.show-user-guide.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看应用使用指南
+   * zh-TW: 查看應用使用指南
+   * en-US: Open the user guide tutorial
+   */
+  (
+    key: "folia.commandPalette.commands.show-user-guide.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开选项
+   * zh-TW: 打開選項
+   * en-US: Open Options
+   */
+  (key: "folia.commandPalette.commands.settings-options.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开设置中心
+   * zh-TW: 打開設置中心
+   * en-US: Open the options center
+   */
+  (
+    key: "folia.commandPalette.commands.settings-options.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 外观设置
+   * zh-TW: 外觀設置
+   * en-US: Appearance settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-appearance.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开视觉和外观设置
+   * zh-TW: 打開視覺和外觀設置
+   * en-US: Open visual and appearance settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-appearance.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 通用设置
+   * zh-TW: 通用設置
+   * en-US: General settings
+   */
+  (key: "folia.commandPalette.commands.settings-general.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开全局应用偏好
+   * zh-TW: 打開全局應用偏好
+   * en-US: Open general app preferences
+   */
+  (
+    key: "folia.commandPalette.commands.settings-general.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 播放设置
+   * zh-TW: 播放設置
+   * en-US: Playback settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-playback.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开播放行为设置
+   * zh-TW: 打開播放行為設置
+   * en-US: Open playback behavior settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-playback.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 集成设置
+   * zh-TW: 集成設置
+   * en-US: Integration settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-integration.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开 Stage、Now Playing 和 Navidrome 设置
+   * zh-TW: 打開 Stage、Now Playing 和 Navidrome 設置
+   * en-US: Open Stage, Now Playing, and Navidrome settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-integration.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: Discord 播放状态
+   * zh-TW: Discord 播放狀態
+   * en-US: Discord playback status
+   */
+  (
+    key: "folia.commandPalette.commands.settings-discord-presence.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开 Discord Rich Presence 设置
+   * zh-TW: 打開 Discord Rich Presence 設置
+   * en-US: Open Discord Rich Presence settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-discord-presence.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: OBS 浏览器源
+   * zh-TW: OBS 瀏覽器源
+   * en-US: OBS browser source
+   */
+  (
+    key: "folia.commandPalette.commands.settings-obs-browser-source.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开 OBS 浏览器源设置
+   * zh-TW: 打開 OBS 瀏覽器源設置
+   * en-US: Open OBS browser source settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-obs-browser-source.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 存储设置
+   * zh-TW: 存儲設置
+   * en-US: Storage settings
+   */
+  (key: "folia.commandPalette.commands.settings-storage.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开缓存和存储设置
+   * zh-TW: 打開緩存和存儲設置
+   * en-US: Open cache and storage settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-storage.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 同步服务设置
+   * zh-TW: 同步服務設置
+   * en-US: Sync server settings
+   */
+  (key: "folia.commandPalette.commands.settings-r2-sync.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开同步服务设置
+   * zh-TW: 打開同步服務設置
+   * en-US: Open sync server settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-r2-sync.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 立即同步
+   * zh-TW: 立即同步
+   * en-US: Sync now
+   */
+  (key: "folia.commandPalette.commands.sync-now.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步 AI 主题
+   * zh-TW: 同步 AI 主題
+   * en-US: Sync AI themes
+   */
+  (key: "folia.commandPalette.commands.sync-now.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面端设置
+   * zh-TW: 桌面端設置
+   * en-US: Desktop settings
+   */
+  (key: "folia.commandPalette.commands.settings-desktop.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开桌面应用设置
+   * zh-TW: 打開桌面應用設置
+   * en-US: Open desktop app settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-desktop.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 语音输入时暂停
+   * zh-TW: 語音輸入時暫停
+   * en-US: Voice input pause
+   */
+  (
+    key: "folia.commandPalette.commands.desktop-toggle-voice-input-pause.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换语音输入时自动暂停播放
+   * zh-TW: 切換語音輸入時自動暫停播放
+   * en-US: Toggle pausing playback during voice input
+   */
+  (
+    key: "folia.commandPalette.commands.desktop-toggle-voice-input-pause.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 实验设置
+   * zh-TW: 實驗設置
+   * en-US: Lab settings
+   */
+  (key: "folia.commandPalette.commands.settings-lab.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开实验功能设置
+   * zh-TW: 打開實驗功能設置
+   * en-US: Open experimental settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-lab.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 每首歌随机歌词动画
+   * zh-TW: 每首歌隨機歌詞動畫
+   * en-US: Random visualizer for every song
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-toggle-random-per-song.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 歌曲切换时随机使用一种歌词动画模式
+   * zh-TW: 歌曲切換時隨機使用一種歌詞動畫模式
+   * en-US: Toggle a random lyric animation mode whenever the song changes
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-toggle-random-per-song.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 可视化设置
+   * zh-TW: 可視化設置
+   * en-US: Visualizer settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-visualizer.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开歌词动画实验台
+   * zh-TW: 打開歌詞動畫實驗臺
+   * en-US: Open lyrics animation workbench
+   */
+  (
+    key: "folia.commandPalette.commands.settings-visualizer.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 配色
+   * zh-TW: 配色
+   * en-US: Color
+   */
+  (
+    key: "folia.commandPalette.commands.settings-theme-park.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开主题编辑器
+   * zh-TW: 打開主題編輯器
+   * en-US: Open theme editor
+   */
+  (
+    key: "folia.commandPalette.commands.settings-theme-park.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 歌词过滤
+   * zh-TW: 歌詞過濾
+   * en-US: Lyric filter
+   */
+  (
+    key: "folia.commandPalette.commands.settings-lyric-filter.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开歌词过滤设置
+   * zh-TW: 打開歌詞過濾設置
+   * en-US: Open lyric filter settings
+   */
+  (
+    key: "folia.commandPalette.commands.settings-lyric-filter.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 回到首页
+   * zh-TW: 回到首頁
+   * en-US: Go home
+   */
+  (key: "folia.commandPalette.commands.navigate-home.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回首页视图
+   * zh-TW: 返回首頁視圖
+   * en-US: Return to home view
+   */
+  (
+    key: "folia.commandPalette.commands.navigate-home.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 回到播放器
+   * zh-TW: 回到播放器
+   * en-US: Go player
+   */
+  (key: "folia.commandPalette.commands.navigate-player.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回播放器视图
+   * zh-TW: 返回播放器視圖
+   * en-US: Return to player view
+   */
+  (
+    key: "folia.commandPalette.commands.navigate-player.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 全屏
+   * zh-TW: 全屏
+   * en-US: Fullscreen
+   */
+  (
+    key: "folia.commandPalette.commands.browser-fullscreen.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换浏览器全屏
+   * zh-TW: 切換瀏覽器全屏
+   * en-US: Toggle browser fullscreen
+   */
+  (
+    key: "folia.commandPalette.commands.browser-fullscreen.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开歌单
+   * zh-TW: 打開歌單
+   * en-US: Open playlists
+   */
+  (key: "folia.commandPalette.commands.home-playlist.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开歌单首页 tab
+   * zh-TW: 打開歌單首頁 tab
+   * en-US: Open playlist home tab
+   */
+  (
+    key: "folia.commandPalette.commands.home-playlist.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开本地音乐
+   * zh-TW: 打開本地音樂
+   * en-US: Open local music
+   */
+  (key: "folia.commandPalette.commands.home-local.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开本地音乐 tab
+   * zh-TW: 打開本地音樂 tab
+   * en-US: Open local music tab
+   */
+  (key: "folia.commandPalette.commands.home-local.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开专辑
+   * zh-TW: 打開專輯
+   * en-US: Open albums
+   */
+  (key: "folia.commandPalette.commands.home-albums.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开专辑 tab
+   * zh-TW: 打開專輯 tab
+   * en-US: Open albums tab
+   */
+  (
+    key: "folia.commandPalette.commands.home-albums.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开 Navidrome
+   * zh-TW: 打開 Navidrome
+   * en-US: Open Navidrome
+   */
+  (key: "folia.commandPalette.commands.home-navidrome.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开 Navidrome tab
+   * zh-TW: 打開 Navidrome tab
+   * en-US: Open Navidrome tab
+   */
+  (
+    key: "folia.commandPalette.commands.home-navidrome.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开电台
+   * zh-TW: 打開電臺
+   * en-US: Open radio
+   */
+  (key: "folia.commandPalette.commands.home-radio.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开电台 tab
+   * zh-TW: 打開電臺 tab
+   * en-US: Open radio tab
+   */
+  (key: "folia.commandPalette.commands.home-radio.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 面板：封面
+   * zh-TW: 面板：封面
+   * en-US: Panel: cover
+   */
+  (key: "folia.commandPalette.commands.panel-cover.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开封面面板 tab
+   * zh-TW: 打開封面面板 tab
+   * en-US: Open the cover panel tab
+   */
+  (
+    key: "folia.commandPalette.commands.panel-cover.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 面板：控制
+   * zh-TW: 面板：控制
+   * en-US: Panel: controls
+   */
+  (key: "folia.commandPalette.commands.panel-controls.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开控制面板 tab
+   * zh-TW: 打開控制面板 tab
+   * en-US: Open the controls panel tab
+   */
+  (
+    key: "folia.commandPalette.commands.panel-controls.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 面板：队列
+   * zh-TW: 面板：隊列
+   * en-US: Panel: queue
+   */
+  (key: "folia.commandPalette.commands.panel-queue.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开队列面板 tab
+   * zh-TW: 打開隊列面板 tab
+   * en-US: Open the queue panel tab
+   */
+  (
+    key: "folia.commandPalette.commands.panel-queue.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 面板：账号
+   * zh-TW: 面板：賬號
+   * en-US: Panel: account
+   */
+  (key: "folia.commandPalette.commands.panel-account.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开账号面板 tab
+   * zh-TW: 打開賬號面板 tab
+   * en-US: Open the account panel tab
+   */
+  (
+    key: "folia.commandPalette.commands.panel-account.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 面板：本地
+   * zh-TW: 面板：本地
+   * en-US: Panel: local
+   */
+  (key: "folia.commandPalette.commands.panel-local.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开本地面板 tab
+   * zh-TW: 打開本地面板 tab
+   * en-US: Open the local panel tab
+   */
+  (
+    key: "folia.commandPalette.commands.panel-local.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 面板：Navidrome
+   * zh-TW: 面板：Navidrome
+   * en-US: Panel: Navidrome
+   */
+  (key: "folia.commandPalette.commands.panel-navi.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开 Navidrome 面板 tab
+   * zh-TW: 打開 Navidrome 面板 tab
+   * en-US: Open the Navidrome panel tab
+   */
+  (key: "folia.commandPalette.commands.panel-navi.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 面板：歌词
+   * zh-TW: 面板：歌詞
+   * en-US: Panel: lyrics
+   */
+  (
+    key: "folia.commandPalette.commands.panel-onlineLyrics.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开在线歌词面板 tab
+   * zh-TW: 打開在線歌詞面板 tab
+   * en-US: Open the online lyrics panel tab
+   */
+  (
+    key: "folia.commandPalette.commands.panel-onlineLyrics.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "folia.commandPalette.commands.playback-play.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停时开始播放
+   * zh-TW: 暫停時開始播放
+   * en-US: Start playback when paused
+   */
+  (
+    key: "folia.commandPalette.commands.playback-play.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 暂停
+   * zh-TW: 暫停
+   * en-US: Pause
+   */
+  (key: "folia.commandPalette.commands.playback-pause.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停当前播放
+   * zh-TW: 暫停當前播放
+   * en-US: Pause current playback
+   */
+  (
+    key: "folia.commandPalette.commands.playback-pause.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next track
+   */
+  (key: "folia.commandPalette.commands.playback-next.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放下一首
+   * zh-TW: 播放下一首
+   * en-US: Play the next track
+   */
+  (
+    key: "folia.commandPalette.commands.playback-next.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous track
+   */
+  (key: "folia.commandPalette.commands.playback-prev.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放上一首
+   * zh-TW: 播放上一首
+   * en-US: Play the previous track
+   */
+  (
+    key: "folia.commandPalette.commands.playback-prev.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换循环
+   * zh-TW: 切換循環
+   * en-US: Toggle loop
+   */
+  (key: "folia.commandPalette.commands.playback-loop.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换循环模式
+   * zh-TW: 切換循環模式
+   * en-US: Change loop mode
+   */
+  (
+    key: "folia.commandPalette.commands.playback-loop.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打乱队列
+   * zh-TW: 打亂隊列
+   * en-US: Shuffle queue
+   */
+  (key: "folia.commandPalette.commands.playback-shuffle.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打乱当前播放队列
+   * zh-TW: 打亂當前播放隊列
+   * en-US: Shuffle current play queue
+   */
+  (
+    key: "folia.commandPalette.commands.playback-shuffle.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 生成 AI 主题
+   * zh-TW: 生成 AI 主題
+   * en-US: Generate AI theme
+   */
+  (
+    key: "folia.commandPalette.commands.theme-generate-current.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 为当前歌曲生成 AI 主题
+   * zh-TW: 為當前歌曲生成 AI 主題
+   * en-US: Generate an AI theme for the current song
+   */
+  (
+    key: "folia.commandPalette.commands.theme-generate-current.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 快速主题编辑器
+   * zh-TW: 快速主題編輯器
+   * en-US: Quick theme editor
+   */
+  (
+    key: "folia.commandPalette.commands.theme-quick-editor.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 快速编辑当前歌曲的 AI 主题
+   * zh-TW: 快速編輯當前歌曲的 AI 主題
+   * en-US: Quickly edit AI theme for the current song
+   */
+  (
+    key: "folia.commandPalette.commands.theme-quick-editor.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 匹配最佳歌词
+   * zh-TW: 匹配最佳歌詞
+   * en-US: Match best lyrics
+   */
+  (
+    key: "folia.commandPalette.commands.playback-auto-match-best-lyric.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 为当前歌曲运行自动最佳歌词匹配
+   * zh-TW: 為當前歌曲運行自動最佳歌詞匹配
+   * en-US: Run automatic best lyric matching for the current song
+   */
+  (
+    key: "folia.commandPalette.commands.playback-auto-match-best-lyric.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 可视化：流光
+   * zh-TW: 可視化：流光
+   * en-US: Visualizer: Luminous
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-classic.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到经典可视化
+   * zh-TW: 切換到經典可視化
+   * en-US: Switch to classic visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-classic.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 可视化：心象
+   * zh-TW: 可視化：心象
+   * en-US: Visualizer: Mindscape
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-cadenza.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到心象可视化
+   * zh-TW: 切換到心象可視化
+   * en-US: Switch to cadenza visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-cadenza.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 可视化：云阶
+   * zh-TW: 可視化：雲階
+   * en-US: Visualizer: Partita
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-partita.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到云阶可视化
+   * zh-TW: 切換到雲階可視化
+   * en-US: Switch to partita visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-partita.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 可视化：浮名
+   * zh-TW: 可視化：浮名
+   * en-US: Visualizer: Fume
+   */
+  (key: "folia.commandPalette.commands.visualizer-fume.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换到浮名可视化
+   * zh-TW: 切換到浮名可視化
+   * en-US: Switch to fume visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-fume.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 可视化：群唱
+   * zh-TW: 可視化：群唱
+   * en-US: Visualizer: Cappella
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-cappella.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到群唱可视化
+   * zh-TW: 切換到群唱可視化
+   * en-US: Switch to cappella visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-cappella.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 可视化：倾诉
+   * zh-TW: 可視化：傾訴
+   * en-US: Visualizer: Tilt
+   */
+  (key: "folia.commandPalette.commands.visualizer-tilt.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换到倾诉可视化
+   * zh-TW: 切換到傾訴可視化
+   * en-US: Switch to tilt visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-tilt.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 可视化：回环
+   * zh-TW: 可視化：迴環
+   * en-US: Visualizer: Claddagh
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-claddagh.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到回环可视化
+   * zh-TW: 切換到迴環可視化
+   * en-US: Switch to Claddagh visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-claddagh.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到可视化：莫奈
+   * zh-TW: 切換到可視化：莫奈
+   * en-US: Visualizer: Monet
+   */
+  (key: "folia.commandPalette.commands.visualizer-monet.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换到莫奈可视化
+   * zh-TW: 切換到莫奈可視化
+   * en-US: Switch to Monet visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-monet.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到可视化：镜台
+   * zh-TW: 切換到可視化：鏡臺
+   * en-US: Visualizer: Diorama
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-diorama.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到镜台可视化
+   * zh-TW: 切換到鏡臺可視化
+   * en-US: Switch to Diorama visualizer
+   */
+  (
+    key: "folia.commandPalette.commands.visualizer-diorama.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换遥控窗口
+   * zh-TW: 切換遙控窗口
+   * en-US: Toggle remote control window
+   */
+  (
+    key: "folia.commandPalette.commands.desktop-toggle-remote-control.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 打开或关闭遥控窗口
+   * zh-TW: 打開或關閉遙控窗口
+   * en-US: Open or close the remote control window
+   */
+  (
+    key: "folia.commandPalette.commands.desktop-toggle-remote-control.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换主窗口置顶
+   * zh-TW: 切換主窗口置頂
+   * en-US: Toggle main window always on top
+   */
+  (
+    key: "folia.commandPalette.commands.desktop-toggle-main-window-always-on-top.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 置顶或取消置顶主窗口
+   * zh-TW: 置頂或取消置頂主窗口
+   * en-US: Pin or unpin the main window above other windows
+   */
+  (
+    key: "folia.commandPalette.commands.desktop-toggle-main-window-always-on-top.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到 莫奈: 全屏叠色
+   * zh-TW: 背景切換到 莫奈: 全屏疊色
+   * en-US: Background: Monet Full Screen Overlay
+   */
+  (
+    key: "folia.commandPalette.commands.background-monet-full-overlay.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换背景到莫奈全屏叠色
+   * zh-TW: 切換背景到莫奈全屏疊色
+   * en-US: Switch background to Monet full screen overlay layout
+   */
+  (
+    key: "folia.commandPalette.commands.background-monet-full-overlay.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到 莫奈: 半屏渐变
+   * zh-TW: 背景切換到 莫奈: 半屏漸變
+   * en-US: Background: Monet Half Screen Gradient
+   */
+  (
+    key: "folia.commandPalette.commands.background-monet-half-gradient.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换背景到莫奈半屏渐变
+   * zh-TW: 切換背景到莫奈半屏漸變
+   * en-US: Switch background to Monet half screen gradient layout
+   */
+  (
+    key: "folia.commandPalette.commands.background-monet-half-gradient.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到 通用
+   * zh-TW: 背景切換到 通用
+   * en-US: Background: Common
+   */
+  (
+    key: "folia.commandPalette.commands.background-common.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换背景到通用
+   * zh-TW: 切換背景到通用
+   * en-US: Switch background to general layout
+   */
+  (
+    key: "folia.commandPalette.commands.background-common.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到漫游
+   * zh-TW: 背景切換到漫遊
+   * en-US: Background: Nomand
+   */
+  (
+    key: "folia.commandPalette.commands.background-nomand.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到使用主题配色的像素画背景
+   * zh-TW: 切換到使用主題配色的像素畫背景
+   * en-US: Switch background to theme-colored image dithering
+   */
+  (
+    key: "folia.commandPalette.commands.background-nomand.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到隐现
+   * zh-TW: 背景切換到隱現
+   * en-US: Background: Latent
+   */
+  (
+    key: "folia.commandPalette.commands.background-latent.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换到封面取色与音频响应的双着色器背景
+   * zh-TW: 切換到封面取色與音頻響應的雙著色器背景
+   * en-US: Switch background to cover-colored audio-reactive shaders
+   */
+  (
+    key: "folia.commandPalette.commands.background-latent.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到隐现：像素
+   * zh-TW: 背景切換到隱現：像素
+   * en-US: Latent: Pixel
+   */
+  (
+    key: "folia.commandPalette.commands.background-latent-dithering.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 仅显示 隐现 像素层
+   * zh-TW: 僅顯示 隱現 像素層
+   * en-US: Show only the Dithering layer
+   */
+  (
+    key: "folia.commandPalette.commands.background-latent-dithering.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到隐现：流体
+   * zh-TW: 背景切換到隱現：流體
+   * en-US: Latent: Fluid
+   */
+  (
+    key: "folia.commandPalette.commands.background-latent-mesh.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 仅显示 隐现 流体层
+   * zh-TW: 僅顯示 隱現 流體層
+   * en-US: Show only the MeshGradient layer
+   */
+  (
+    key: "folia.commandPalette.commands.background-latent-mesh.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到隐现：混合
+   * zh-TW: 背景切換到隱現：混合
+   * en-US: Latent: Mixed
+   */
+  (
+    key: "folia.commandPalette.commands.background-latent-both.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 同时显示 隐现 像素与流体层
+   * zh-TW: 同時顯示 隱現 像素與流體層
+   * en-US: Show both shader layers
+   */
+  (
+    key: "folia.commandPalette.commands.background-latent-both.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换到 嵌入背景
+   * zh-TW: 背景切換到 嵌入背景
+   * en-US: Background: Embedded Background
+   */
+  (key: "folia.commandPalette.commands.background-url.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换背景到嵌入网页模式
+   * zh-TW: 切換背景到嵌入網頁模式
+   * en-US: Switch background to embedded webpage mode
+   */
+  (
+    key: "folia.commandPalette.commands.background-url.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 背景切换：空
+   * zh-TW: 背景切換：空
+   * en-US: Background: Sora
+   */
+  (key: "folia.commandPalette.commands.background-sora.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 将背景切换到星空 (Sora)
+   * zh-TW: 將背景切換到星空 (Sora)
+   * en-US: Switch the background to Sora
+   */
+  (
+    key: "folia.commandPalette.commands.background-sora.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 透明化
+   * zh-TW: 透明化
+   * en-US: Toggle transparency
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-transparent.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换播放器背景透明度
+   * zh-TW: 切換播放器背景透明度
+   * en-US: Toggle transparent player background
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-transparent.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换明暗
+   * zh-TW: 切換明暗
+   * en-US: Toggle light/dark
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-daylight.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换主题日夜模式
+   * zh-TW: 切換主題日夜模式
+   * en-US: Toggle theme daylight/midnight mode
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-daylight.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 始终显示播放页返回按钮
+   * zh-TW: 始終顯示播放頁返回按鈕
+   * en-US: Always show player back button
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-player-back-button.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换播放页左上角返回按钮的常驻显示
+   * zh-TW: 切換播放頁左上角返回按鈕的常駐顯示
+   * en-US: Toggle whether the player page back button stays visible
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-player-back-button.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 始终显示标题栏控制按钮
+   * zh-TW: 始終顯示標題欄控制按鈕
+   * en-US: Always show window control buttons
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-main-window-titlebar.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换主窗口标题栏控制按钮的常驻显示
+   * zh-TW: 切換主窗口標題欄控制按鈕的常駐顯示
+   * en-US: Toggle whether the main window control buttons stay visible
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-main-window-titlebar.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换底部字幕层
+   * zh-TW: 切換底部字幕層
+   * en-US: Toggle bottom subtitle overlay
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-bottom-subtitle-overlay.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 显示或隐藏整个底部字幕层
+   * zh-TW: 顯示或隱藏整個底部字幕層
+   * en-US: Show or hide the whole bottom subtitle overlay
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-bottom-subtitle-overlay.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换字幕翻译
+   * zh-TW: 切換字幕翻譯
+   * en-US: Toggle subtitle translation
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-subtitle-translation.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 显示或隐藏歌词动画中的翻译文本
+   * zh-TW: 顯示或隱藏歌詞動畫中的翻譯文本
+   * en-US: Show or hide translation text in visualizer subtitles
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-subtitle-translation.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换字幕背景
+   * zh-TW: 切換字幕背景
+   * en-US: Toggle subtitle background
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-subtitle-background.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 显示或隐藏提升字幕可读性的背景
+   * zh-TW: 顯示或隱藏提升字幕可讀性的背景
+   * en-US: Show or hide the readability background behind visualizer subtitles
+   */
+  (
+    key: "folia.commandPalette.commands.settings-toggle-subtitle-background.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 跟随系统语言
+   * zh-TW: 跟隨系統語言
+   * en-US: Follow system language
+   */
+  (
+    key: "folia.commandPalette.commands.settings-language-system.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 使用浏览器或系统语言
+   * zh-TW: 使用瀏覽器或系統語言
+   * en-US: Use the browser or system language
+   */
+  (
+    key: "folia.commandPalette.commands.settings-language-system.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换为中文
+   * zh-TW: 切換為中文
+   * en-US: Switch language to Chinese
+   */
+  (
+    key: "folia.commandPalette.commands.settings-language-zh-CN.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 界面使用简体中文
+   * zh-TW: 界面使用簡體中文
+   * en-US: Use Simplified Chinese in the interface
+   */
+  (
+    key: "folia.commandPalette.commands.settings-language-zh-CN.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换为英文
+   * zh-TW: 切換為英文
+   * en-US: Switch language to English
+   */
+  (
+    key: "folia.commandPalette.commands.settings-language-en.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 界面使用 English
+   * zh-TW: 界面使用 English
+   * en-US: Use English in the interface
+   */
+  (
+    key: "folia.commandPalette.commands.settings-language-en.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 切换为印尼语
+   * zh-TW: 切換為印尼語
+   * en-US: Switch language to Indonesian
+   */
+  (
+    key: "folia.commandPalette.commands.settings-language-in.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 界面使用 Bahasa Indonesia
+   * zh-TW: 界面使用 Bahasa Indonesia
+   * en-US: Use Bahasa Indonesia in the interface
+   */
+  (
+    key: "folia.commandPalette.commands.settings-language-in.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 无音轨
+   * zh-TW: 無音軌
+   * en-US: No Track
+   */
+  (key: "folia.ui.noTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 循环开启
+   * zh-TW: 循環開啟
+   * en-US: Looping On
+   */
+  (key: "folia.ui.loopingOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 循环关闭
+   * zh-TW: 循環關閉
+   * en-US: Loop Off
+   */
+  (key: "folia.ui.loopOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换背景
+   * zh-TW: 切換背景
+   * en-US: Toggle Background
+   */
+  (key: "folia.ui.toggleBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入文件
+   * zh-TW: 導入文件
+   * en-US: Import File
+   */
+  (key: "folia.ui.importFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更换文件
+   * zh-TW: 更換文件
+   * en-US: Change File
+   */
+  (key: "folia.ui.changeFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无可用歌词
+   * zh-TW: 無可用歌詞
+   * en-US: No lyrics available
+   */
+  (key: "folia.ui.noLyricsAvailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 生成AI主题
+   * zh-TW: 生成AI主題
+   * en-US: Generate AI Theme
+   */
+  (key: "folia.ui.generateAITheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配置
+   * zh-TW: 配置
+   * en-US: Library & Config
+   */
+  (key: "folia.ui.libraryConfig", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已同步
+   * zh-TW: 已同步
+   * en-US: Synced
+   */
+  (key: "folia.ui.synced", params?: TranslationParams): string;
+  /**
+   * zh-CN: 来源
+   * zh-TW: 來源
+   * en-US: Source
+   */
+  (key: "folia.ui.source", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词匹配 / 搜索
+   * zh-TW: 歌詞匹配 / 搜索
+   * en-US: Lyrics Match / Search
+   */
+  (key: "folia.ui.lyricsMatchSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲ID或名称
+   * zh-TW: 歌曲ID或名稱
+   * en-US: Song ID or Name
+   */
+  (key: "folia.ui.songIdOrName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按文件名查找 →
+   * zh-TW: 按文件名查找 →
+   * en-US: Find by filename →
+   */
+  (key: "folia.ui.findByFilename", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索中...
+   * zh-TW: 搜索中...
+   * en-US: Searching...
+   */
+  (key: "folia.ui.searching", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动画强度
+   * zh-TW: 動畫強度
+   * en-US: Animation Intensity
+   */
+  (key: "folia.ui.animationIntensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开视觉设置
+   * zh-TW: 打開視覺設置
+   * en-US: Open Visualizer Settings
+   */
+  (key: "folia.ui.openVisualizerSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词样式
+   * zh-TW: 歌詞樣式
+   * en-US: Lyrics Style
+   */
+  (key: "folia.ui.animationMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词动画
+   * zh-TW: 歌詞動畫
+   * en-US: Lyrics Animation
+   */
+  (key: "folia.ui.visualizer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词动画实验台
+   * zh-TW: 歌詞動畫實驗臺
+   * en-US: Lyrics Animation Lab
+   */
+  (key: "folia.ui.visualizerWorkbench", params?: TranslationParams): string;
+  /**
+   * zh-CN: 临时工作台
+   * zh-TW: 臨時工作臺
+   * en-US: Temporary Workbench
+   */
+  (key: "folia.ui.visualizerTemporary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 模式
+   * zh-TW: 模式
+   * en-US: Mode
+   */
+  (key: "folia.ui.visualizerMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流光
+   * zh-TW: 流光
+   * en-US: Luminous
+   */
+  (key: "folia.ui.visualizerClassic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 心象
+   * zh-TW: 心象
+   * en-US: Mindscape
+   */
+  (key: "folia.ui.visualizerCadenze", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云阶
+   * zh-TW: 雲階
+   * en-US: Partita
+   */
+  (key: "folia.ui.visualizerPartita", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浮名
+   * zh-TW: 浮名
+   * en-US: Fume
+   */
+  (key: "folia.ui.visualizerFume", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莫奈
+   * zh-TW: 莫奈
+   * en-US: Monet
+   */
+  (key: "folia.ui.visualizerMonet", params?: TranslationParams): string;
+  /**
+   * zh-CN: 群唱
+   * zh-TW: 群唱
+   * en-US: Cappella
+   */
+  (key: "folia.ui.visualizerCappella", params?: TranslationParams): string;
+  /**
+   * zh-CN: 倾诉
+   * zh-TW: 傾訴
+   * en-US: Tilt
+   */
+  (key: "folia.ui.visualizerTilt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回环
+   * zh-TW: 迴環
+   * en-US: Claddagh
+   */
+  (key: "folia.ui.visualizerCladdagh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜台
+   * zh-TW: 鏡臺
+   * en-US: Diorama
+   */
+  (key: "folia.ui.visualizerDiorama", params?: TranslationParams): string;
+  /**
+   * zh-CN: 心象参数
+   * zh-TW: 心象參數
+   * en-US: Mindscape Tuning
+   */
+  (key: "folia.ui.cadenzeTuning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置歌词动画参数
+   * zh-TW: 重置歌詞動畫參數
+   * en-US: Reset Lyrics Animation Tuning
+   */
+  (key: "folia.ui.resetVisualizerTuning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 实时预览
+   * zh-TW: 實時預覽
+   * en-US: Live preview
+   */
+  (key: "folia.ui.livePreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅心象
+   * zh-TW: 僅心象
+   * en-US: Mindscape only
+   */
+  (key: "folia.ui.cadenzeOnly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景
+   * zh-TW: 背景
+   * en-US: Background
+   */
+  (key: "folia.ui.background", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认
+   * zh-TW: 默認
+   * en-US: Default
+   */
+  (key: "folia.ui.default", params?: TranslationParams): string;
+  /**
+   * zh-CN: AI主题
+   * zh-TW: AI主題
+   * en-US: AI Theme
+   */
+  (key: "folia.ui.aiTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 生成AI视觉效果
+   * zh-TW: 生成AI視覺效果
+   * en-US: Generate AI Visuals
+   */
+  (key: "folia.ui.generateAIVisuals", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在生成主题...
+   * zh-TW: 正在生成主題...
+   * en-US: Generating Theme...
+   */
+  (key: "folia.ui.generatingTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置
+   * zh-TW: 重置
+   * en-US: Reset to Default Theme
+   */
+  (key: "folia.ui.resetToDefaultTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择音轨
+   * zh-TW: 選擇音軌
+   * en-US: Select Track
+   */
+  (key: "folia.ui.selectTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 找到 {{count}} 个匹配项
+   * zh-TW: 找到 {{count}} 個匹配項
+   * en-US: Found {{count}} matches
+   */
+  (key: "folia.ui.foundMatches", params?: TranslationParams): string;
+  /**
+   * zh-CN: (empty)
+   * zh-TW: (empty)
+   * en-US: (empty)
+   */
+  (key: "folia.ui.waitingForMusic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选项
+   * zh-TW: 選項
+   * en-US: Options
+   */
+  (key: "folia.ui.options", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单信息
+   * zh-TW: 歌單信息
+   * en-US: Info
+   */
+  (key: "folia.ui.info", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "folia.ui.play", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停
+   * zh-TW: 暫停
+   * en-US: Pause
+   */
+  (key: "folia.ui.pause", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Close
+   */
+  (key: "folia.ui.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音量
+   * zh-TW: 音量
+   * en-US: Volume
+   */
+  (key: "folia.ui.volume", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字体比例
+   * zh-TW: 字體比例
+   * en-US: Font Scale
+   */
+  (key: "folia.ui.cadenze.fontScale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 行宽
+   * zh-TW: 行寬
+   * en-US: Line Width
+   */
+  (key: "folia.ui.cadenze.widthRatio", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动势
+   * zh-TW: 動勢
+   * en-US: Motion
+   */
+  (key: "folia.ui.cadenze.motionAmount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 辉光
+   * zh-TW: 輝光
+   * en-US: Glow
+   */
+  (key: "folia.ui.cadenze.glowIntensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回主页
+   * zh-TW: 返回主頁
+   * en-US: Back to Home
+   */
+  (key: "folia.ui.backToHome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "folia.ui.cancel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 应用
+   * zh-TW: 應用
+   * en-US: Apply
+   */
+  (key: "folia.ui.apply", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Retry
+   */
+  (key: "folia.ui.retry", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存
+   * zh-TW: 保存
+   * en-US: Save
+   */
+  (key: "folia.ui.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前主题
+   * zh-TW: 當前主題
+   * en-US: Current Theme
+   */
+  (key: "folia.ui.currentTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面
+   * zh-TW: 封面
+   * en-US: Cover
+   */
+  (key: "folia.panel.cover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制
+   * zh-TW: 控制
+   * en-US: Controls
+   */
+  (key: "folia.panel.controls", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词动画
+   * zh-TW: 歌詞動畫
+   * en-US: Lyrics Animation
+   */
+  (key: "folia.panel.visualizer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放列表
+   * zh-TW: 播放列表
+   * en-US: Playlist
+   */
+  (key: "folia.panel.playlist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 账户
+   * zh-TW: 賬戶
+   * en-US: Account
+   */
+  (key: "folia.panel.account", params?: TranslationParams): string;
+  /**
+   * zh-CN: 存储
+   * zh-TW: 存儲
+   * en-US: Storage
+   */
+  (key: "folia.account.storage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除缓存
+   * zh-TW: 清除緩存
+   * en-US: Clear Cache
+   */
+  (key: "folia.account.clearCache", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步数据
+   * zh-TW: 同步數據
+   * en-US: Sync Data
+   */
+  (key: "folia.account.syncData", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步中...
+   * zh-TW: 同步中...
+   * en-US: Syncing...
+   */
+  (key: "folia.account.syncing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出登录
+   * zh-TW: 退出登錄
+   * en-US: Logout
+   */
+  (key: "folia.account.logout", params?: TranslationParams): string;
+  /**
+   * zh-CN: 游客模式
+   * zh-TW: 遊客模式
+   * en-US: Guest Mode
+   */
+  (key: "folia.account.guestMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 去主页登录
+   * zh-TW: 去主頁登錄
+   * en-US: Login on Home
+   */
+  (key: "folia.account.loginOnHome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认音质
+   * zh-TW: 默認音質
+   * en-US: Default Quality
+   */
+  (key: "folia.account.audioQuality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 极高
+   * zh-TW: 極高
+   * en-US: Very High
+   */
+  (key: "folia.account.qualityExhigh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无损
+   * zh-TW: 無損
+   * en-US: Lossless
+   */
+  (key: "folia.account.qualityLossless", params?: TranslationParams): string;
+  /**
+   * zh-CN: Hi-Res
+   * zh-TW: Hi-Res
+   * en-US: Hi-Res
+   */
+  (key: "folia.account.qualityHires", params?: TranslationParams): string;
+  /**
+   * zh-CN: VIP 专属
+   * zh-TW: VIP 專屬
+   * en-US: VIP Only
+   */
+  (key: "folia.account.vipOnly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首歌曲
+   * zh-TW: 首歌曲
+   * en-US: Tracks
+   */
+  (key: "folia.playlist.tracks", params?: TranslationParams): string;
+  /**
+   * zh-CN: 次播放
+   * zh-TW: 次播放
+   * en-US: Plays
+   */
+  (key: "folia.playlist.plays", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放全部
+   * zh-TW: 播放全部
+   * en-US: Play All
+   */
+  (key: "folia.playlist.playAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放{{count}}首
+   * zh-TW: 播放{{count}}首
+   * en-US: Play {{count}} songs
+   */
+  (key: "folia.playlist.playFilteredTracks", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入{{count}}首到播放队列
+   * zh-TW: 加入{{count}}首到播放隊列
+   * en-US: Add {{count}} songs to queue
+   */
+  (key: "folia.playlist.addFilteredTracksToQueue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载更多
+   * zh-TW: 加載更多
+   * en-US: Load More
+   */
+  (key: "folia.playlist.loadMore", params?: TranslationParams): string;
+  /**
+   * zh-CN: 标题
+   * zh-TW: 標題
+   * en-US: Title
+   */
+  (key: "folia.playlist.headerTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时长
+   * zh-TW: 時長
+   * en-US: Time
+   */
+  (key: "folia.playlist.headerTime", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载中
+   * zh-TW: 加載中
+   * en-US: Loading
+   */
+  (key: "folia.playlist.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌曲...
+   * zh-TW: 搜索歌曲...
+   * en-US: Search songs...
+   */
+  (key: "folia.search.placeholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网易云
+   * zh-TW: 網易雲
+   * en-US: NetEase
+   */
+  (key: "folia.search.sourceNetease", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地
+   * zh-TW: 本地
+   * en-US: Local
+   */
+  (key: "folia.search.sourceLocal", params?: TranslationParams): string;
+  /**
+   * zh-CN: Navidrome
+   * zh-TW: Navidrome
+   * en-US: Navidrome
+   */
+  (key: "folia.search.sourceNavidrome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放歌曲
+   * zh-TW: 播放歌曲
+   * en-US: Play track
+   */
+  (key: "folia.search.playTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索失败，请重试。
+   * zh-TW: 搜索失敗，請重試。
+   * en-US: Search failed. Please try again.
+   */
+  (key: "folia.search.error", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Retry
+   */
+  (key: "folia.search.retry", params?: TranslationParams): string;
+  /**
+   * zh-CN: 欢迎使用 Folia
+   * zh-TW: 歡迎使用 Folia
+   * en-US: Welcome to Folia
+   */
+  (key: "folia.home.welcome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录网易云音乐以访问您的歌单。
+   * zh-TW: 登錄網易雲音樂以訪問您的歌單。
+   * en-US: Login with Netease Cloud Music to access your playlists.
+   */
+  (key: "folia.home.loginPrompt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 二维码登录
+   * zh-TW: 二維碼登錄
+   * en-US: Login via QR Code
+   */
+  (key: "folia.home.loginBtn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 您的歌单
+   * zh-TW: 您的歌單
+   * en-US: Your Playlists
+   */
+  (key: "folia.home.yourPlaylists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索音乐...
+   * zh-TW: 搜索音樂...
+   * en-US: Search for music...
+   */
+  (key: "folia.home.searchPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首
+   * zh-TW: 首
+   * en-US: songs
+   */
+  (key: "folia.home.songs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用网易云APP扫码
+   * zh-TW: 使用網易雲APP掃碼
+   * en-US: Scan with Netease App
+   */
+  (key: "folia.home.loginTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开网易云音乐APP > 发现 > 扫一扫
+   * zh-TW: 打開網易雲音樂APP > 發現 > 掃一掃
+   * en-US: Open Netease Music App > Discover > Scan QR
+   */
+  (key: "folia.home.loginNote", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载二维码...
+   * zh-TW: 加載二維碼...
+   * en-US: Loading QR...
+   */
+  (key: "folia.home.loadingQr", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请扫描二维码
+   * zh-TW: 請掃描二維碼
+   * en-US: Please scan the QR code
+   */
+  (key: "folia.home.scanQr", params?: TranslationParams): string;
+  /**
+   * zh-CN: 二维码已过期，请刷新。
+   * zh-TW: 二維碼已過期，請刷新。
+   * en-US: QR Code expired. Refresh to try again.
+   */
+  (key: "folia.home.qrExpired", params?: TranslationParams): string;
+  /**
+   * zh-CN: 扫描成功！请在手机上确认。
+   * zh-TW: 掃描成功！請在手機上確認。
+   * en-US: Scanned! Confirm on your phone.
+   */
+  (key: "folia.home.qrScanned", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录成功！
+   * zh-TW: 登錄成功！
+   * en-US: Login Successful!
+   */
+  (key: "folia.home.loginSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录错误
+   * zh-TW: 登錄錯誤
+   * en-US: Login Error
+   */
+  (key: "folia.home.loginError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出登录
+   * zh-TW: 退出登錄
+   * en-US: Logout
+   */
+  (key: "folia.home.logout", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回播放器
+   * zh-TW: 返回播放器
+   * en-US: Back to Player
+   */
+  (key: "folia.home.backToPlayer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回主页
+   * zh-TW: 返回主頁
+   * en-US: Return to Home
+   */
+  (key: "folia.home.backToHome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放全部
+   * zh-TW: 播放全部
+   * en-US: Play All
+   */
+  (key: "folia.home.playAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载更多
+   * zh-TW: 加載更多
+   * en-US: Load More
+   */
+  (key: "folia.home.loadMore", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载中...
+   * zh-TW: 加載中...
+   * en-US: Loading...
+   */
+  (key: "folia.home.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索在线歌曲...
+   * zh-TW: 搜索在線歌曲...
+   * en-US: SEARCH DATABASE...
+   */
+  (key: "folia.home.searchDatabase", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索本地歌曲...
+   * zh-TW: 搜索本地歌曲...
+   * en-US: Search local songs...
+   */
+  (key: "folia.home.searchLocal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索navidrome...
+   * zh-TW: 搜索navidrome...
+   * en-US: Search navidrome
+   */
+  (key: "folia.home.searchNavidrome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 过滤歌曲...
+   * zh-TW: 過濾歌曲...
+   * en-US: Filter songs...
+   */
+  (key: "folia.home.gridSearchPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有匹配的歌曲
+   * zh-TW: 沒有匹配的歌曲
+   * en-US: No matching songs
+   */
+  (key: "folia.home.gridSearchNoResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录
+   * zh-TW: 登錄
+   * en-US: Login
+   */
+  (key: "folia.home.login", params?: TranslationParams): string;
+  /**
+   * zh-CN: 欢迎回来
+   * zh-TW: 歡迎回來
+   * en-US: Welcome Back
+   */
+  (key: "folia.home.welcomeBack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 先搜几首喜欢的歌试试看
+   * zh-TW: 先搜幾首喜歡的歌試試看
+   * en-US: Try searching a few songs first
+   */
+  (key: "folia.home.guestTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录网易云，访问您的歌单、收藏专辑和电台。\n部分歌曲未登录仅能试听30s。
+   * zh-TW: 登錄網易雲，訪問您的歌單、收藏專輯和電臺。\n部分歌曲未登錄僅能試聽30s。
+   * en-US: Sign in with Netease to access your playlists, saved albums, and radio.
+   */
+  (key: "folia.home.guestPrompt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请登录以访问您的音乐库
+   * zh-TW: 請登錄以訪問您的音樂庫
+   * en-US: Please login to access your library
+   */
+  (key: "folia.home.pleaseLogin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接网易云账户
+   * zh-TW: 連接網易雲賬戶
+   * en-US: Connect Netease Account
+   */
+  (key: "folia.home.connectAccount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载音乐库...
+   * zh-TW: 加載音樂庫...
+   * en-US: Loading Library...
+   */
+  (key: "folia.home.loadingLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索结果：
+   * zh-TW: 搜索結果：
+   * en-US: Results for
+   */
+  (key: "folia.home.resultsFor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到相关结果
+   * zh-TW: 未找到相關結果
+   * en-US: No results found.
+   */
+  (key: "folia.home.noResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlists
+   */
+  (key: "folia.home.playlists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云盘
+   * zh-TW: 雲盤
+   * en-US: Cloud
+   */
+  (key: "folia.home.cloud", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Albums
+   */
+  (key: "folia.home.albums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部
+   * zh-TW: 全部
+   * en-US: All
+   */
+  (key: "folia.home.allAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时下流行
+   * zh-TW: 時下流行
+   * en-US: Popular
+   */
+  (key: "folia.home.popular", params?: TranslationParams): string;
+  /**
+   * zh-CN: 电台
+   * zh-TW: 電臺
+   * en-US: Radio
+   */
+  (key: "folia.home.radio", params?: TranslationParams): string;
+  /**
+   * zh-CN: 私人FM
+   * zh-TW: 私人FM
+   * en-US: Personal FM
+   */
+  (key: "folia.home.personalFm", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每日推荐
+   * zh-TW: 每日推薦
+   * en-US: Daily Recommendations
+   */
+  (key: "folia.home.dailyRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 为你定制的每日歌曲
+   * zh-TW: 為你定製的每日歌曲
+   * en-US: A daily mix made for you
+   */
+  (key: "folia.home.dailyRecommendationsDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每天根据你的音乐偏好更新
+   * zh-TW: 每天根據你的音樂偏好更新
+   * en-US: Updated every day based on your listening taste
+   */
+  (key: "folia.home.dailyRecommendationsSummary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 管理推荐
+   * zh-TW: 管理推薦
+   * en-US: Manage recommendations
+   */
+  (key: "folia.home.manageRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完成管理
+   * zh-TW: 完成管理
+   * en-US: Finish managing
+   */
+  (key: "folia.home.finishManagingRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 日推日期
+   * zh-TW: 日推日期
+   * en-US: Recommendation date
+   */
+  (key: "folia.home.recommendationDate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今天
+   * zh-TW: 今天
+   * en-US: Today
+   */
+  (key: "folia.home.todayRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新今日日推
+   * zh-TW: 刷新今日日推
+   * en-US: Refresh today's recommendations
+   */
+  (key: "folia.home.refreshRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今日暂无更多推荐
+   * zh-TW: 今日暫無更多推薦
+   * en-US: No more recommendations are available today
+   */
+  (key: "folia.home.noMoreDailyRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时无法更换这首推荐，请稍后重试
+   * zh-TW: 暫時無法更換這首推薦，請稍後重試
+   * en-US: This recommendation could not be replaced. Please try again later.
+   */
+  (key: "folia.home.dislikeRecommendationFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 舞台
+   * zh-TW: 舞臺
+   * en-US: Stage
+   */
+  (key: "folia.home.stage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 平静
+   * zh-TW: 平靜
+   * en-US: calm
+   */
+  (key: "folia.animation.calm", params?: TranslationParams): string;
+  /**
+   * zh-CN: 标准
+   * zh-TW: 標準
+   * en-US: normal
+   */
+  (key: "folia.animation.normal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 混乱
+   * zh-TW: 混亂
+   * en-US: chaotic
+   */
+  (key: "folia.animation.chaotic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 帮助
+   * zh-TW: 幫助
+   * en-US: Help
+   */
+  (key: "folia.help.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导航
+   * zh-TW: 導航
+   * en-US: Navigation
+   */
+  (key: "folia.help.navigation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换歌单
+   * zh-TW: 切換歌單
+   * en-US: Switch Playlist
+   */
+  (key: "folia.help.switchPlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 滚动 / 滑动
+   * zh-TW: 滾動 / 滑動
+   * en-US: Scroll / Swipe
+   */
+  (key: "folia.help.scrollSwipe", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择歌单
+   * zh-TW: 選擇歌單
+   * en-US: Select Playlist
+   */
+  (key: "folia.help.selectPlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击 / 轻触中间
+   * zh-TW: 點擊 / 輕觸中間
+   * en-US: Click / Tap Center
+   */
+  (key: "folia.help.clickTapCenter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 键盘快捷键
+   * zh-TW: 鍵盤快捷鍵
+   * en-US: Keyboard Shortcuts
+   */
+  (key: "folia.help.keyboardShortcuts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换歌单
+   * zh-TW: 切換歌單
+   * en-US: Navigate Playlists
+   */
+  (key: "folia.help.navigatePlaylists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放 / 暂停
+   * zh-TW: 播放 / 暫停
+   * en-US: Play / Pause
+   */
+  (key: "folia.help.playPause", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页面控制
+   * zh-TW: 播放頁面控制
+   * en-US: Player Page Controls
+   */
+  (key: "folia.help.playerControls", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous Track
+   */
+  (key: "folia.help.previousTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next Track
+   */
+  (key: "folia.help.nextTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快进 5 秒
+   * zh-TW: 快進 5 秒
+   * en-US: Seek Forward 5s
+   */
+  (key: "folia.help.seekForward", params?: TranslationParams): string;
+  /**
+   * zh-CN: 倒退 5 秒
+   * zh-TW: 倒退 5 秒
+   * en-US: Seek Backward 5s
+   */
+  (key: "folia.help.seekBackward", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏进度条和右下角按钮
+   * zh-TW: 隱藏進度條和右下角按鈕
+   * en-US: Hide progress bar and lower-right button
+   */
+  (key: "folia.help.hidePlayerChrome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换右侧面板
+   * zh-TW: 切換右側面板
+   * en-US: Toggle right panel
+   */
+  (key: "folia.help.toggleRightPanel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开命令面板
+   * zh-TW: 打開命令面板
+   * en-US: Open command palette
+   */
+  (key: "folia.help.openCommandPalette", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全屏
+   * zh-TW: 全屏
+   * en-US: Fullscreen
+   */
+  (key: "folia.help.browserFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: Project:
+   * zh-TW: Project:
+   * en-US: Project:
+   */
+  (key: "folia.help.madeBy", params?: TranslationParams): string;
+  /**
+   * zh-CN: 版本
+   * zh-TW: 版本
+   * en-US: version
+   */
+  (key: "folia.help.version", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网易云音乐
+   * zh-TW: 網易雲音樂
+   * en-US: NetEase Cloud Music
+   */
+  (key: "folia.lyricProvider.netease", params?: TranslationParams): string;
+  /**
+   * zh-CN: QQ 音乐
+   * zh-TW: QQ 音樂
+   * en-US: QQ Music
+   */
+  (key: "folia.lyricProvider.qq", params?: TranslationParams): string;
+  /**
+   * zh-CN: 酷狗音乐
+   * zh-TW: 酷狗音樂
+   * en-US: Kugou Music
+   */
+  (key: "folia.lyricProvider.kugou", params?: TranslationParams): string;
+  /**
+   * zh-CN: AMLLDB
+   * zh-TW: AMLLDB
+   * en-US: AMLLDB
+   */
+  (key: "folia.lyricProvider.amll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词过滤正则
+   * zh-TW: 歌詞過濾正則
+   * en-US: Lyric Filter Regex
+   */
+  (key: "folia.lyricFilter.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览当前歌曲：{{title}}
+   * zh-TW: 預覽當前歌曲：{{title}}
+   * en-US: Preview current song: {{title}}
+   */
+  (key: "folia.lyricFilter.previewCurrentSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览当前播放歌曲的歌词过滤效果
+   * zh-TW: 預覽當前播放歌曲的歌詞過濾效果
+   * en-US: Preview lyric filter for the current song
+   */
+  (key: "folia.lyricFilter.previewFallback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清空
+   * zh-TW: 清空
+   * en-US: Clear
+   */
+  (key: "folia.lyricFilter.clear", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存
+   * zh-TW: 保存
+   * en-US: Save
+   */
+  (key: "folia.lyricFilter.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存中...
+   * zh-TW: 保存中...
+   * en-US: Saving...
+   */
+  (key: "folia.lyricFilter.saving", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览
+   * zh-TW: 預覽
+   * en-US: Preview
+   */
+  (key: "folia.lyricFilter.preview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已过滤 {{removed}} / 总计 {{total}}
+   * zh-TW: 已過濾 {{removed}} / 總計 {{total}}
+   * en-US: Filtered {{removed}} / {{total}} total
+   */
+  (key: "folia.lyricFilter.filteredCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前没有可预览的歌词
+   * zh-TW: 當前沒有可預覽的歌詞
+   * en-US: No lyrics available for preview
+   */
+  (key: "folia.lyricFilter.noLyricsToPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前没有可预览的歌词内容
+   * zh-TW: 當前沒有可預覽的歌詞內容
+   * en-US: No lyrics content to preview
+   */
+  (key: "folia.lyricFilter.emptyContent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启过滤
+   * zh-TW: 開啟過濾
+   * en-US: Enable Filter
+   */
+  (key: "folia.lyricFilter.enableFilter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正则表达式
+   * zh-TW: 正則表達式
+   * en-US: Regular Expression
+   */
+  (key: "folia.lyricFilter.regexPattern", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按整首歌的正文歌词逐行匹配，命中后删除整行。
+   * zh-TW: 按整首歌的正文歌詞逐行匹配，命中後刪除整行。
+   * en-US: Match each line of the lyrics text against the pattern and remove matched lines.
+   */
+  (key: "folia.lyricFilter.regexDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入正则表达式
+   * zh-TW: 輸入正則表達式
+   * en-US: Enter a regular expression
+   */
+  (key: "folia.lyricFilter.inputPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 示例：
+   * zh-TW: 示例：
+   * en-US: Example:
+   */
+  (key: "folia.lyricFilter.example", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正则无效：{{error}}
+   * zh-TW: 正則無效：{{error}}
+   * en-US: Invalid regex: {{error}}
+   */
+  (key: "folia.lyricFilter.invalidRegex", params?: TranslationParams): string;
+  /**
+   * zh-CN: ReplayGain 已关闭
+   * zh-TW: ReplayGain 已關閉
+   * en-US: ReplayGain Off
+   */
+  (key: "folia.replayGain.off", params?: TranslationParams): string;
+  /**
+   * zh-CN: ReplayGain: 单曲模式
+   * zh-TW: ReplayGain: 單曲模式
+   * en-US: ReplayGain: Track Mode
+   */
+  (key: "folia.replayGain.track", params?: TranslationParams): string;
+  /**
+   * zh-CN: ReplayGain: 专辑模式
+   * zh-TW: ReplayGain: 專輯模式
+   * en-US: ReplayGain: Album Mode
+   */
+  (key: "folia.replayGain.album", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词匹配优先级
+   * zh-TW: 歌詞匹配優先級
+   * en-US: Lyric match priority
+   */
+  (key: "folia.settings.lyricMatchPriority", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在多个歌词源都存在高置信度匹配时，优先选择该歌词源的结果。
+   * zh-TW: 在多個歌詞源都存在高置信度匹配時，優先選擇該歌詞源的結果。
+   * en-US: When multiple lyric sources have high-confidence matches, prefer this source first.
+   */
+  (key: "folia.settings.lyricMatchPriorityDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存详情
+   * zh-TW: 緩存詳情
+   * en-US: Cache Details
+   */
+  (key: "folia.options.cacheDetails", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通用设置
+   * zh-TW: 通用設置
+   * en-US: General settings
+   */
+  (key: "folia.options.generalSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 界面语言等全局应用偏好。
+   * zh-TW: 界面語言等全局應用偏好。
+   * en-US: Interface language and other app-wide preferences.
+   */
+  (key: "folia.options.generalSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题、歌词渲染模式、样式入口和背景透明度。
+   * zh-TW: 主題、歌詞渲染模式、樣式入口和背景透明度。
+   * en-US: Themes, lyric rendering modes, style entry points, and background opacity.
+   */
+  (key: "folia.options.visualSettingsCardDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题、歌词渲染和背景外观。
+   * zh-TW: 主題、歌詞渲染和背景外觀。
+   * en-US: Themes, lyric rendering, and background appearance.
+   */
+  (key: "folia.options.visualSettingsPanelDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放控制
+   * zh-TW: 播放控制
+   * en-US: Playback settings
+   */
+  (key: "folia.options.playbackSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放行为，歌词来源，音频。
+   * zh-TW: 播放行為，歌詞來源，音頻。
+   * en-US: Playback behavior, lyric sources, and audio.
+   */
+  (key: "folia.options.playbackSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放行为，歌词来源，音频输出等设置。
+   * zh-TW: 播放行為，歌詞來源，音頻輸出等設置。
+   * en-US: Playback behavior, lyric sources, audio output, and related settings.
+   */
+  (key: "folia.options.playbackSettingsPanelDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接与集成
+   * zh-TW: 連接與集成
+   * en-US: Integration settings
+   */
+  (key: "folia.options.integrationSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 外部程序接入设置。
+   * zh-TW: 外部程序接入設置。
+   * en-US: Connections for external apps and services.
+   */
+  (key: "folia.options.integrationSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 存储与同步
+   * zh-TW: 存儲與同步
+   * en-US: Storage settings
+   */
+  (key: "folia.options.storageSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存占用、清理、主题云同步。
+   * zh-TW: 緩存佔用、清理、主題雲同步。
+   * en-US: Cache usage, cleanup, media cache, and cache directory.
+   */
+  (key: "folia.options.storageSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存占用、清理、主题云同步。
+   * zh-TW: 緩存佔用、清理、主題雲同步。
+   * en-US: Cache usage, cleanup, and media cache behavior.
+   */
+  (key: "folia.options.storageSettingsPanelDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面端设置
+   * zh-TW: 桌面端設置
+   * en-US: Desktop settings
+   */
+  (key: "folia.options.desktopSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新检查、自动更新和桌面端 AI 配置。
+   * zh-TW: 更新檢查、自動更新和桌面端 AI 配置。
+   * en-US: Update checks, auto-update, and desktop AI configuration.
+   */
+  (key: "folia.options.desktopSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面窗口行为、更新检查、自动更新和 AI 配置。
+   * zh-TW: 桌面窗口行為、更新檢查、自動更新和 AI 配置。
+   * en-US: Desktop window behavior, update checks, auto-update, and AI configuration.
+   */
+  (key: "folia.options.desktopSettingsPanelDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语言
+   * zh-TW: 語言
+   * en-US: Language
+   */
+  (key: "folia.options.languageSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 界面语言
+   * zh-TW: 界面語言
+   * en-US: Interface language
+   */
+  (key: "folia.options.appLanguage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手动指定 Folia 的界面语言
+   * zh-TW: 手動指定 Folia 的界面語言
+   * en-US: Manually set Folia's interface language, or switch back to following the system.
+   */
+  (key: "folia.options.appLanguageDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跟随系统
+   * zh-TW: 跟隨系統
+   * en-US: Follow system
+   */
+  (key: "folia.options.appLanguageSystem", params?: TranslationParams): string;
+  /**
+   * zh-CN: 简体中文
+   * zh-TW: 簡體中文
+   * en-US: Simplified Chinese
+   */
+  (key: "folia.options.appLanguageZhCN", params?: TranslationParams): string;
+  /**
+   * zh-CN: English
+   * zh-TW: English
+   * en-US: English
+   */
+  (key: "folia.options.appLanguageEnUS", params?: TranslationParams): string;
+  /**
+   * zh-CN: Indonesian
+   * zh-TW: Indonesian
+   * en-US: Indonesian
+   */
+  (key: "folia.options.appLanguageInID", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跟随浏览器或系统语言。当前生效：{{language}}
+   * zh-TW: 跟隨瀏覽器或系統語言。當前生效：{{language}}
+   * en-US: Follow the browser or system language. Current: {{language}}
+   */
+  (key: "folia.options.appLanguageSystemHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单数据
+   * zh-TW: 歌單數據
+   * en-US: Playlist Data
+   */
+  (key: "folia.options.playlistData", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "folia.options.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面
+   * zh-TW: 封面
+   * en-US: Covers
+   */
+  (key: "folia.options.covers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 媒体文件
+   * zh-TW: 媒體文件
+   * en-US: Media Files
+   */
+  (key: "folia.options.mediaFiles", params?: TranslationParams): string;
+  /**
+   * zh-CN: 媒体缓存
+   * zh-TW: 媒體緩存
+   * en-US: Media Cache
+   */
+  (key: "folia.options.mediaCache", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存歌曲
+   * zh-TW: 緩存歌曲
+   * en-US: Cache Songs
+   */
+  (key: "folia.options.enableMediaCache", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放后缓存音频以便离线收听。
+   * zh-TW: 播放後緩存音頻以便離線收聽。
+   * en-US: Cache audio after playback for offline listening.
+   */
+  (key: "folia.options.enableMediaCacheDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已缓存歌曲
+   * zh-TW: 已緩存歌曲
+   * en-US: Cached Songs
+   */
+  (key: "folia.options.cachedSongsCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存目录
+   * zh-TW: 緩存目錄
+   * en-US: Cache Directory
+   */
+  (key: "folia.options.cacheDirectory", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择媒体文件的缓存位置。
+   * zh-TW: 選擇媒體文件的緩存位置。
+   * en-US: Choose where large desktop cache files should be stored.
+   */
+  (key: "folia.options.cacheDirectoryDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前使用默认缓存目录。
+   * zh-TW: 當前使用默認緩存目錄。
+   * en-US: Using the default cache location.
+   */
+  (key: "folia.options.cacheDirectoryDefaultHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前使用自定义缓存目录。
+   * zh-TW: 當前使用自定義緩存目錄。
+   * en-US: Using a custom cache location.
+   */
+  (key: "folia.options.cacheDirectoryCustomHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择文件夹
+   * zh-TW: 選擇文件夾
+   * en-US: Choose Folder
+   */
+  (key: "folia.options.chooseCacheDirectory", params?: TranslationParams): string;
+  /**
+   * zh-CN: 恢复默认目录
+   * zh-TW: 恢復默認目錄
+   * en-US: Use Default Folder
+   */
+  (key: "folia.options.resetCacheDirectory", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面版音频缓存现在会存到这里；歌词、封面和其他浏览器侧缓存仍然保存在应用数据目录。
+   * zh-TW: 桌面版音頻緩存現在會存到這裡；歌詞、封面和其他瀏覽器側緩存仍然保存在應用數據目錄。
+   * en-US: Electron now stores audio cache files in this directory. Lyrics, covers, and other browser-side caches still use the app data directory.
+   */
+  (key: "folia.options.cacheDirectoryPendingDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步服务
+   * zh-TW: 同步服務
+   * en-US: Sync Server
+   */
+  (key: "folia.options.r2Sync", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用同步服务
+   * zh-TW: 啟用同步服務
+   * en-US: Enable sync server
+   */
+  (key: "folia.options.r2SyncEnable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通过你自己的 Cloudflare D1 Worker 或自托管同步服务同步外观设置与 AI 主题。
+   * zh-TW: 通過你自己的 Cloudflare D1 Worker 或自託管同步服務同步外觀設置與 AI 主題。
+   * en-US: Sync appearance settings and AI themes through your own Cloudflare D1 Worker or self-hosted sync service.
+   */
+  (key: "folia.options.r2SyncEnableDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: Sync Server 地址
+   * zh-TW: Sync Server 地址
+   * en-US: Sync Server URL
+   */
+  (key: "folia.options.r2SyncWorkerUrl", params?: TranslationParams): string;
+  /**
+   * zh-CN: Bearer Token
+   * zh-TW: Bearer Token
+   * en-US: Bearer Token
+   */
+  (key: "folia.options.r2SyncToken", params?: TranslationParams): string;
+  /**
+   * zh-CN: Worker 中的 SYNC_TOKEN
+   * zh-TW: Worker 中的 SYNC_TOKEN
+   * en-US: Worker SYNC_TOKEN
+   */
+  (key: "folia.options.r2SyncTokenPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存
+   * zh-TW: 保存
+   * en-US: Save
+   */
+  (key: "folia.options.r2SyncSave", params?: TranslationParams): string;
+  /**
+   * zh-CN: 测试
+   * zh-TW: 測試
+   * en-US: Test
+   */
+  (key: "folia.options.r2SyncTest", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步 AI 主题
+   * zh-TW: 同步 AI 主題
+   * en-US: Sync AI Themes
+   */
+  (key: "folia.options.r2SyncNow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步视觉设置
+   * zh-TW: 同步視覺設置
+   * en-US: Sync visual settings
+   */
+  (key: "folia.options.syncVisualSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导出 zip
+   * zh-TW: 導出 zip
+   * en-US: Export zip
+   */
+  (key: "folia.options.r2SyncExportLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入 zip
+   * zh-TW: 導入 zip
+   * en-US: Import zip
+   */
+  (key: "folia.options.r2SyncImportLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入这个同步库并覆盖本地同步缓存吗？如果已启用同步服务，导入内容也会推送到你的服务端。
+   * zh-TW: 導入這個同步庫並覆蓋本地同步緩存嗎？如果已啟用同步服務，導入內容也會推送到你的服務端。
+   * en-US: Import this sync library and overwrite the local sync cache? If sync is enabled, the imported library will also be pushed to your sync server.
+   */
+  (key: "folia.options.r2SyncImportConfirm", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上次同步
+   * zh-TW: 上次同步
+   * en-US: Last sync
+   */
+  (key: "folia.options.r2SyncLastSync", params?: TranslationParams): string;
+  /**
+   * zh-CN: 尚未同步
+   * zh-TW: 尚未同步
+   * en-US: Not synced yet
+   */
+  (key: "folia.options.r2SyncStatusIdle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 同步失败
+   * zh-TW: 同步失敗
+   * en-US: Sync failed
+   */
+  (key: "folia.options.r2SyncStatusError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新检查
+   * zh-TW: 更新檢查
+   * en-US: Update Check
+   */
+  (key: "folia.options.updateCheck", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已关闭
+   * zh-TW: 已關閉
+   * en-US: Disabled
+   */
+  (key: "folia.options.updateCheckDisabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检查中
+   * zh-TW: 檢查中
+   * en-US: Checking
+   */
+  (key: "folia.options.updateChecking", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现
+   * zh-TW: 發現
+   * en-US: Found
+   */
+  (key: "folia.options.updateAvailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已是最新
+   * zh-TW: 已是最新
+   * en-US: Up to date
+   */
+  (key: "folia.options.updateLatest", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检查失败
+   * zh-TW: 檢查失敗
+   * en-US: Check failed
+   */
+  (key: "folia.options.updateCheckFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不可用
+   * zh-TW: 不可用
+   * en-US: Unavailable
+   */
+  (key: "folia.options.updateUnsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用更新检查
+   * zh-TW: 啟用更新檢查
+   * en-US: Enable Update Check
+   */
+  (key: "folia.options.enableUpdateCheck", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动时检查是否有新版本发布。
+   * zh-TW: 啟動時檢查是否有新版本發佈。
+   * en-US: Check GitHub releases through the system proxy when the desktop app starts.
+   */
+  (key: "folia.options.enableUpdateCheckDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用自动更新
+   * zh-TW: 啟用自動更新
+   * en-US: Enable Auto Update
+   */
+  (key: "folia.options.enableAutoUpdate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现新版本后自动下载更新。
+   * zh-TW: 發現新版本後自動下載更新。
+   * en-US: Automatically download updates after a new version is found.
+   */
+  (key: "folia.options.enableAutoUpdateDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新通道
+   * zh-TW: 更新通道
+   * en-US: Update Channel
+   */
+  (key: "folia.options.updateChannel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择此桌面端应用跟随的发布通道。
+   * zh-TW: 選擇此桌面端應用跟隨的發佈通道。
+   * en-US: Choose which release lane this desktop app follows.
+   */
+  (key: "folia.options.updateChannelDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: Realeco · 正式版
+   * zh-TW: Realeco · 正式版
+   * en-US: Realeco · Stable
+   */
+  (key: "folia.options.updateChannelRealeco", params?: TranslationParams): string;
+  /**
+   * zh-CN: Limo · Nightly
+   * zh-TW: Limo · Nightly
+   * en-US: Limo · Nightly
+   */
+  (key: "folia.options.updateChannelLimo", params?: TranslationParams): string;
+  /**
+   * zh-CN: Cielo · Canary
+   * zh-TW: Cielo · Canary
+   * en-US: Cielo · Canary
+   */
+  (key: "folia.options.updateChannelCielo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内部构建
+   * zh-TW: 內部構建
+   * en-US: Internal
+   */
+  (key: "folia.options.updateChannelInternal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前系统不支持自动更新。
+   * zh-TW: 當前系統不支持自動更新。
+   * en-US: Automatic updates are unavailable on the current system.
+   */
+  (key: "folia.options.updateUnsupportedSystem", params?: TranslationParams): string;
+  /**
+   * zh-CN: 此内部构建不支持自动更新。
+   * zh-TW: 此內部構建不支持自動更新。
+   * en-US: Automatic updates are unavailable for this internal build.
+   */
+  (key: "folia.options.updateUnsupportedChannel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动更新需要能够访问 GitHub；网络不稳定时可能无法下载更新。
+   * zh-TW: 自動更新需要能夠訪問 GitHub；網絡不穩定時可能無法下載更新。
+   * en-US: Auto update needs access to GitHub; if the network is unstable, keep a system proxy enabled.
+   */
+  (key: "folia.options.autoUpdateGithubNotice", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开发布页
+   * zh-TW: 打開發布頁
+   * en-US: Open Release Page
+   */
+  (key: "folia.options.openReleasePage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 国内下载
+   * zh-TW: 國內下載
+   * en-US: CN Download
+   */
+  (key: "folia.options.downloadChina", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下载更新
+   * zh-TW: 下載更新
+   * en-US: Download Update
+   */
+  (key: "folia.options.downloadUpdate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启安装
+   * zh-TW: 重啟安裝
+   * en-US: Restart to Install
+   */
+  (key: "folia.options.restartToInstallUpdate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静态模式
+   * zh-TW: 靜態模式
+   * en-US: Static Mode
+   */
+  (key: "folia.options.staticMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静态模式
+   * zh-TW: 靜態模式
+   * en-US: Static Mode
+   */
+  (key: "folia.options.enableStaticMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 禁用几何背景以节省资源。
+   * zh-TW: 禁用幾何背景以節省資源。
+   * en-US: Only disable geometric backgrounds.
+   */
+  (key: "folia.options.enableStaticModeDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不会影响歌词文本效果或渲染。
+   * zh-TW: 不會影響歌詞文本效果或渲染。
+   * en-US: Does not affect lyric text effects or rendering.
+   */
+  (key: "folia.options.enableStaticModeDescSub", params?: TranslationParams): string;
+  /**
+   * zh-CN: 实验室
+   * zh-TW: 實驗室
+   * en-US: Lab Settings
+   */
+  (key: "folia.options.labSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高级自定义功能
+   * zh-TW: 高級自定義功能
+   * en-US: Open a separate page for experimental playback and panel behavior settings.
+   */
+  (key: "folia.options.labSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 性能与背景
+   * zh-TW: 性能與背景
+   * en-US: Performance & Background
+   */
+  (key: "folia.options.labPerformanceSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整动画开销和主页背景表现。
+   * zh-TW: 調整動畫開銷和主頁背景表現。
+   * en-US: Controls for animation workload and the home background.
+   */
+  (key: "folia.options.labPerformanceSectionDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页界面
+   * zh-TW: 播放頁界面
+   * en-US: Player Page UI
+   */
+  (key: "folia.options.labPlayerUiSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整播放页上的可见元素和快捷入口。
+   * zh-TW: 調整播放頁上的可見元素和快捷入口。
+   * en-US: Visibility and quick-access controls for the player page.
+   */
+  (key: "folia.options.labPlayerUiSectionDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 窗口与工具
+   * zh-TW: 窗口與工具
+   * en-US: Window & Tools
+   */
+  (key: "folia.options.labWindowAndToolsSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整桌面窗口行为与高级工具。
+   * zh-TW: 調整桌面窗口行為與高級工具。
+   * en-US: Desktop window behavior and advanced utilities.
+   */
+  (key: "folia.options.labWindowAndToolsSectionDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭主页动态背景
+   * zh-TW: 關閉主頁動態背景
+   * en-US: Disable Home Dynamic Background
+   */
+  (key: "folia.options.disableHomeDynamicBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭后主页不再继续播放背景动画，可降低 GPU 占用。
+   * zh-TW: 關閉後主頁不再繼續播放背景動畫，可降低 GPU 佔用。
+   * en-US: When enabled, the home page stops background animation to reduce GPU usage.
+   */
+  (key: "folia.options.disableHomeDynamicBackgroundDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认情况下允许动态背景。
+   * zh-TW: 默認情況下允許動態背景。
+   * en-US: Off by default, so dynamic background remains enabled unless you turn this on.
+   */
+  (key: "folia.options.disableHomeDynamicBackgroundWarning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多歌词源
+   * zh-TW: 更多歌詞源
+   * en-US: More Lyric Sources
+   */
+  (key: "folia.options.enableAlternativeLyricSources", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用备选歌词源（AMLLDB、QQ音乐、酷狗音乐）
+   * zh-TW: 啟用備選歌詞源（AMLLDB、QQ音樂、酷狗音樂）
+   * en-US: Display alternative lyric sources (AMLLDB, QQ Music, Kugou Music) in the lyric matching panel, supporting TTML/QRC/KRC lyrics.
+   */
+  (key: "folia.options.enableAlternativeLyricSourcesDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动使用最佳歌词
+   * zh-TW: 自動使用最佳歌詞
+   * en-US: Auto Use Best Lyric
+   */
+  (key: "folia.options.autoUseBestLyric", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动检索网易云、AMLLDB、QQ 和酷狗歌词，若存在完美匹配的逐字歌词则自动优先采用。
+   * zh-TW: 自動檢索網易雲、AMLLDB、QQ 和酷狗歌詞，若存在完美匹配的逐字歌詞則自動優先採用。
+   * en-US: Automatically search NetEase, AMLLDB, QQ, and Kugou lyrics, prioritizing word-by-word lyrics with perfect timing matches.
+   */
+  (key: "folia.options.autoUseBestLyricDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词匹配优先级
+   * zh-TW: 歌詞匹配優先級
+   * en-US: Lyric match priority
+   */
+  (key: "folia.options.lyricMatchPriority", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在多个歌词源都存在匹配度满足要求的歌词时，优先选择该歌词源的结果。
+   * zh-TW: 在多個歌詞源都存在匹配度滿足要求的歌詞時，優先選擇該歌詞源的結果。
+   * en-US: When multiple lyric sources have high-confidence matches, prefer this source first.
+   */
+  (key: "folia.options.lyricMatchPriorityDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏播放页 UI
+   * zh-TW: 隱藏播放頁 UI
+   * en-US: Hide Player UI
+   */
+  (key: "folia.options.labHidePlayerUi", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅对播放页生效。可分别隐藏底部控制条、底部字幕和右侧按钮；隐藏右侧按钮后仍可使用 P 键打开或关闭右侧面板。
+   * zh-TW: 僅對播放頁生效。可分別隱藏底部控制條、底部字幕和右側按鈕；隱藏右側按鈕後仍可使用 P 鍵打開或關閉右側面板。
+   * en-US: Only applies on the player page. You can hide the bottom control bar, bottom subtitle, and right-side button separately. After hiding the right-side button, you can still use P to open or close the right panel.
+   */
+  (key: "folia.options.labHidePlayerUiDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 始终显示播放页左上角返回按钮
+   * zh-TW: 始終顯示播放頁左上角返回按鈕
+   * en-US: Always Show Player Back Button
+   */
+  (key: "folia.options.alwaysShowPlayerBackButton", params?: TranslationParams): string;
+  /**
+   * zh-CN: 让播放页左上角的返回按钮保持显示。
+   * zh-TW: 讓播放頁左上角的返回按鈕保持顯示。
+   * en-US: Keep the back button in the top-left corner of the player page visible.
+   */
+  (key: "folia.options.alwaysShowPlayerBackButtonDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 始终显示标题栏控制按钮
+   * zh-TW: 始終顯示標題欄控制按鈕
+   * en-US: Always Show Window Control Buttons
+   */
+  (key: "folia.options.alwaysShowMainWindowTitlebar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 让最小化、最大化和关闭按钮保持显示，不显示整条标题栏。
+   * zh-TW: 讓最小化、最大化和關閉按鈕保持顯示，不顯示整條標題欄。
+   * en-US: Keep the minimize, maximize, and close buttons visible without showing the titlebar strip.
+   */
+  (key: "folia.options.alwaysShowMainWindowTitlebarDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏底部控制条
+   * zh-TW: 隱藏底部控制條
+   * en-US: Hide player bottom control bar
+   */
+  (key: "folia.options.hidePlayerProgressBar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏底部字幕层
+   * zh-TW: 隱藏底部字幕層
+   * en-US: Hide bottom subtitle overlay
+   */
+  (key: "folia.options.hidePlayerTranslationSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不影响使用独立字幕的动画模式。
+   * zh-TW: 不影響使用獨立字幕的動畫模式。
+   * en-US: Does not affect visualizer modes that render standalone subtitles.
+   */
+  (key: "folia.options.hidePlayerTranslationSubtitleDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏右侧按钮
+   * zh-TW: 隱藏右側按鈕
+   * en-US: Hide player right-side button
+   */
+  (key: "folia.options.hidePlayerRightPanelButton", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页透明背景
+   * zh-TW: 播放頁透明背景
+   * en-US: Transparent player background
+   */
+  (key: "folia.options.transparentPlayerBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅对播放页生效。开启后会切换到透明窗口模式，适合 OBS 浏览器源或抠像叠加场景。
+   * zh-TW: 僅對播放頁生效。開啟後會切換到透明窗口模式，適合 OBS 瀏覽器源或摳像疊加場景。
+   * en-US: Only applies on the player page. When enabled, Folia switches to transparent window mode for OBS browser sources or chroma key overlays.
+   */
+  (key: "folia.options.transparentPlayerBackgroundDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启播放页原生毛玻璃背景
+   * zh-TW: 開啟播放頁原生毛玻璃背景
+   * en-US: Enable Player Page Native Blur
+   */
+  (key: "folia.options.enablePlayerPageNativeBlur", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启后，播放页的主题、图片、Monet 等背景将不再显示，并由系统原生毛玻璃替代。仅在非透明模式和桌面端生效；系统原生效果会消耗更多性能，并可能在移动窗口时产生卡顿。
+   * zh-TW: 開啟後，播放頁的主題、圖片、Monet 等背景將不再顯示，並由系統原生毛玻璃替代。僅在非透明模式和桌面端生效；系統原生效果會消耗更多性能，並可能在移動窗口時產生卡頓。
+   * en-US: When enabled, theme, image, Monet, and other player backgrounds are hidden and replaced by the system native blur. Applies only in non-transparent mode on desktop; the native effect uses more resources and may lag while moving the window.
+   */
+  (key: "folia.options.enablePlayerPageNativeBlurDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 系统毛玻璃效果
+   * zh-TW: 系統毛玻璃效果
+   * en-US: System glass effect
+   */
+  (key: "folia.options.nativeBlurConfirmTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启后，窗口会变为系统毛玻璃效果的半透明背景，Folia 的各种背景将不再显示。如果系统不支持，则会显示为白色不透明背景。
+   * zh-TW: 開啟後，窗口會變為系統毛玻璃效果的半透明背景，Folia 的各種背景將不再顯示。如果系統不支持，則會顯示為白色不透明背景。
+   * en-US: This changes the window to a translucent background using the system glass effect. Folia backgrounds will not be shown.
+   */
+  (key: "folia.options.nativeBlurConfirmDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我明白，这会让背景调整无效
+   * zh-TW: 我明白，這會讓背景調整無效
+   * en-US: I understand
+   */
+  (key: "folia.options.nativeBlurConfirmAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前已开启原生毛玻璃背景，背景设置无效
+   * zh-TW: 當前已開啟原生毛玻璃背景，背景設置無效
+   * en-US: Native glassmorphism blur is enabled; lyrics animation background settings are currently overridden.
+   */
+  (key: "folia.options.nativeBlurBackgroundNotice", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动隐藏控制栏
+   * zh-TW: 自動隱藏控制欄
+   * en-US: Auto-hide player controls
+   */
+  (key: "folia.options.autoHidePlayerChrome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启后，自动隐藏播放页的进度条和右侧按钮。
+   * zh-TW: 開啟後，自動隱藏播放頁的進度條和右側按鈕。
+   * en-US: When enabled, the player progress bar and right side buttons will automatically hide when the mouse leaves the window for more than 3 seconds.
+   */
+  (key: "folia.options.autoHidePlayerChromeDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 禁用暗角
+   * zh-TW: 禁用暗角
+   * en-US: Disable vignette
+   */
+  (key: "folia.options.disableVisualizerVignette", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭几何背景自带的边缘暗角，建议配合透明背景使用。
+   * zh-TW: 關閉幾何背景自帶的邊緣暗角，建議配合透明背景使用。
+   * en-US: Only removes the geometric background edge vignette. Transparent background and geometric shapes stay separate.
+   */
+  (key: "folia.options.disableVisualizerVignetteDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏通用几何背景
+   * zh-TW: 隱藏通用幾何背景
+   * en-US: Hide common geometric background
+   */
+  (key: "folia.options.disableVisualizerGeometricBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏播放页的通用几何背景图形。
+   * zh-TW: 隱藏播放頁的通用幾何背景圖形。
+   * en-US: Hide the shared geometric background shapes on the player page.
+   */
+  (
+    key: "folia.options.disableVisualizerGeometricBackgroundDesc",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 桌面窗口行为
+   * zh-TW: 桌面窗口行為
+   * en-US: Desktop tray behavior
+   */
+  (key: "folia.options.desktopTrayBehavior", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅桌面端生效。可控制最小化到托盘、隐藏任务栏图标，以及启动时是否直接进入播放页。
+   * zh-TW: 僅桌面端生效。可控制最小化到托盤、隱藏任務欄圖標，以及啟動時是否直接進入播放頁。
+   * en-US: Desktop only. Control minimize-to-tray and whether launch opens directly on the player page.
+   */
+  (key: "folia.options.desktopTrayBehaviorDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最小化到托盘
+   * zh-TW: 最小化到托盤
+   * en-US: Minimize to tray
+   */
+  (key: "folia.options.minimizeToTray", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏任务栏图标
+   * zh-TW: 隱藏任務欄圖標
+   * en-US: Hide taskbar icon
+   */
+  (key: "folia.options.hideTaskbarIcon", params?: TranslationParams): string;
+  /**
+   * zh-CN: 即使主窗口仍然打开，也不在任务栏中显示应用入口。开启后主要通过系统托盘找回窗口。
+   * zh-TW: 即使主窗口仍然打開，也不在任務欄中顯示應用入口。開啟後主要通過系統托盤找回窗口。
+   * en-US: Hide the app from the taskbar even while the main window is still open. The tray icon remains the primary way to get back to it.
+   */
+  (key: "folia.options.hideTaskbarIconDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏 Remote Control 任务栏图标
+   * zh-TW: 隱藏 Remote Control 任務欄圖標
+   * en-US: Hide Remote Control taskbar icon
+   */
+  (key: "folia.options.hideRemoteControlTaskbarIcon", params?: TranslationParams): string;
+  /**
+   * zh-CN: Remote Control 窗口打开时不在系统任务栏显示图标。
+   * zh-TW: Remote Control 窗口打開時不在系統任務欄顯示圖標。
+   * en-US: Hide the Remote Control window from the taskbar while it is open.
+   */
+  (key: "folia.options.hideRemoteControlTaskbarIconDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动后直接进入播放页
+   * zh-TW: 啟動後直接進入播放頁
+   * en-US: Open player on launch
+   */
+  (key: "folia.options.openPlayerOnLaunch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语音输入
+   * zh-TW: 語音輸入
+   * en-US: Voice input
+   */
+  (key: "folia.options.voiceInputSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语音输入时暂停播放
+   * zh-TW: 語音輸入時暫停播放
+   * en-US: Pause playback during voice input
+   */
+  (key: "folia.options.voiceInputPause", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检测到系统语音输入（如 Win+H 语音键入、输入法语音转文字）或其他应用占用麦克风时自动暂停播放，结束后自动恢复。仅 Windows 桌面端生效。
+   * zh-TW: 檢測到系統語音輸入（如 Win+H 語音鍵入、輸入法語音轉文字）或其他應用佔用麥克風時自動暫停播放，結束後自動恢復。僅 Windows 桌面端生效。
+   * en-US: Automatically pause playback while system voice input (Win+H voice typing, IME speech-to-text) or another app uses the microphone, and resume afterwards. Windows desktop only.
+   */
+  (key: "folia.options.voiceInputPauseDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示信息卡片关闭按钮
+   * zh-TW: 顯示信息卡片關閉按鈕
+   * en-US: Show panel close button
+   */
+  (key: "folia.options.showOpenPanelCloseButton", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲信息卡片打开后，显示右下角浮动关闭按钮。
+   * zh-TW: 歌曲信息卡片打開後，顯示右下角浮動關閉按鈕。
+   * en-US: Keep the floating close button visible after the song info card opens.
+   */
+  (key: "folia.options.showOpenPanelCloseButtonDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 移动端可能仍然更需要这个按钮。
+   * zh-TW: 移動端可能仍然更需要這個按鈕。
+   * en-US: Turn this off for cleaner screen recordings. Mobile users may still prefer leaving it on.
+   */
+  (key: "folia.options.showOpenPanelCloseButtonDescSub", params?: TranslationParams): string;
+  /**
+   * zh-CN: 舞台模式
+   * zh-TW: 舞臺模式
+   * en-US: Stage Mode
+   */
+  (key: "folia.options.stageMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用舞台模式
+   * zh-TW: 啟用舞臺模式
+   * en-US: Enable Stage Mode
+   */
+  (key: "folia.options.enableStageMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: API 已开启
+   * zh-TW: API 已開啟
+   * en-US: Expose a desktop-local Stage API for external programs to push lyrics, media, or song requests.
+   */
+  (key: "folia.options.enableStageModeDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: Stage API 已开启，可供外部程序推送歌词、媒体或点歌。
+   * zh-TW: Stage API 已開啟，可供外部程序推送歌詞、媒體或點歌。
+   * en-US: The local Stage API is ready for lyrics, media, and song requests.
+   */
+  (key: "folia.options.enableStageModeDescEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用后会开放本地 Stage API，供外部程序推送歌词、媒体或点歌。
+   * zh-TW: 啟用後會開放本地 Stage API，供外部程序推送歌詞、媒體或點歌。
+   * en-US: Enable the local Stage API so external tools can push lyrics, media, and song requests.
+   */
+  (key: "folia.options.enableStageModeDescDisabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启后会暴露本机 HTTP 接口，供 Stage 客户端读取当前播放和歌词状态。
+   * zh-TW: 開啟後會暴露本機 HTTP 接口，供 Stage 客戶端讀取當前播放和歌詞狀態。
+   * en-US: Exposes a local HTTP endpoint so Stage clients can read the current playback and lyric state.
+   */
+  (key: "folia.options.enableStageModeDescElectron", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用 Now Playing
+   * zh-TW: 啟用 Now Playing
+   * en-US: Enable Now Playing
+   */
+  (key: "folia.options.enableNowPlaying", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启后首页显示舞台入口，并通过本机 localhost 连接 now-playing 服务。
+   * zh-TW: 開啟後首頁顯示舞臺入口，並通過本機 localhost 連接 now-playing 服務。
+   * en-US: When enabled, the home page shows a Stage entry point and connects via localhost to the now-playing service.
+   */
+  (key: "folia.options.enableNowPlayingDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 固定连接 ws://localhost:9863/api/ws/lyric，请先在本机启动 now-playing 服务。
+   * zh-TW: 固定連接 ws://localhost:9863/api/ws/lyric，請先在本機啟動 now-playing 服務。
+   * en-US: Connects to ws://localhost:9863/api/ws/lyric. Start the now-playing service on your machine first.
+   */
+  (key: "folia.options.nowPlayingFixedConnectionDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: Stage 地址
+   * zh-TW: Stage 地址
+   * en-US: Stage Address
+   */
+  (key: "folia.options.stageAddress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制地址
+   * zh-TW: 複製地址
+   * en-US: Copy Address
+   */
+  (key: "folia.options.copyStageAddress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已复制
+   * zh-TW: 已複製
+   * en-US: Copied
+   */
+  (key: "folia.options.stageAddressCopied", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前会话
+   * zh-TW: 當前會話
+   * en-US: Current Session
+   */
+  (key: "folia.options.stageSession", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已就绪
+   * zh-TW: 已就緒
+   * en-US: Session ready
+   */
+  (key: "folia.options.stageSessionReady", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等待外部输入
+   * zh-TW: 等待外部輸入
+   * en-US: Waiting for external input
+   */
+  (key: "folia.options.stageSessionEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: Bearer Token
+   * zh-TW: Bearer Token
+   * en-US: Bearer Token
+   */
+  (key: "folia.options.stageToken", params?: TranslationParams): string;
+  /**
+   * zh-CN: 尚未生成
+   * zh-TW: 尚未生成
+   * en-US: Not generated
+   */
+  (key: "folia.options.stageTokenMissing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制 Token
+   * zh-TW: 複製 Token
+   * en-US: Copy Token
+   */
+  (key: "folia.options.copyStageToken", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新生成 Token
+   * zh-TW: 重新生成 Token
+   * en-US: Regenerate Token
+   */
+  (key: "folia.options.regenerateStageToken", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新生成中...
+   * zh-TW: 重新生成中...
+   * en-US: Regenerating...
+   */
+  (key: "folia.options.stageTokenRegenerating", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清空 Stage 输入
+   * zh-TW: 清空 Stage 輸入
+   * en-US: Clear Stage Input
+   */
+  (key: "folia.options.clearStageSession", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清空中...
+   * zh-TW: 清空中...
+   * en-US: Clearing...
+   */
+  (key: "folia.options.stageClearing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未能连接到 ws://localhost:9863/api/ws/lyric，请确认 now-playing 服务已在本机运行
+   * zh-TW: 未能連接到 ws://localhost:9863/api/ws/lyric，請確認 now-playing 服務已在本機運行
+   * en-US: Could not connect to ws://localhost:9863/api/ws/lyric. Please make sure the now-playing service is running.
+   */
+  (key: "folia.options.stageConnectionError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请在本机启动 now-playing 服务，并确保播放器正在播放
+   * zh-TW: 請在本機啟動 now-playing 服務，並確保播放器正在播放
+   * en-US: Please start the now-playing service on this machine and ensure the player is playing.
+   */
+  (key: "folia.options.stageNotRunning", params?: TranslationParams): string;
+  /**
+   * zh-CN: Discord 播放状态
+   * zh-TW: Discord 播放狀態
+   * en-US: Discord Rich Presence
+   */
+  (key: "folia.options.discordRichPresence", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用 Discord 播放状态
+   * zh-TW: 啟用 Discord 播放狀態
+   * en-US: Enable Discord playback status
+   */
+  (key: "folia.options.enableDiscordRichPresence", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在 Discord 桌面端展示 Folia 当前播放歌曲。
+   * zh-TW: 在 Discord 桌面端展示 Folia 當前播放歌曲。
+   * en-US: Show the current Folia track in Discord desktop. Folia connects with its built-in application identity.
+   */
+  (key: "folia.options.discordRichPresenceDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未启用
+   * zh-TW: 未啟用
+   * en-US: Disabled
+   */
+  (key: "folia.options.discordPresenceDisabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已连接
+   * zh-TW: 已連接
+   * en-US: Connected
+   */
+  (key: "folia.options.discordPresenceConnected", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未连接
+   * zh-TW: 未連接
+   * en-US: Disconnected
+   */
+  (key: "folia.options.discordPresenceDisconnected", params?: TranslationParams): string;
+  /**
+   * zh-CN: OBS 浏览器源
+   * zh-TW: OBS 瀏覽器源
+   * en-US: OBS Browser Source
+   */
+  (key: "folia.options.obsBrowserSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用 OBS 浏览器源
+   * zh-TW: 啟用 OBS 瀏覽器源
+   * en-US: Enable OBS browser source
+   */
+  (key: "folia.options.enableObsBrowserSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在 OBS 中渲染完整歌词动画且不播放音频。连接后主窗口会停止渲染重动画。
+   * zh-TW: 在 OBS 中渲染完整歌詞動畫且不播放音頻。連接後主窗口會停止渲染重動畫。
+   * en-US: Render the full lyrics animation in OBS without audio. When connected, the main window stops rendering the heavy visualizer.
+   */
+  (key: "folia.options.obsBrowserSourceDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: OBS 地址
+   * zh-TW: OBS 地址
+   * en-US: OBS URL
+   */
+  (key: "folia.options.obsBrowserSourceAddress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制 OBS 地址
+   * zh-TW: 複製 OBS 地址
+   * en-US: Copy OBS URL
+   */
+  (key: "folia.options.copyObsBrowserSourceAddress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新生成 Token
+   * zh-TW: 重新生成 Token
+   * en-US: Regenerate Token
+   */
+  (key: "folia.options.regenerateObsBrowserSourceToken", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接数
+   * zh-TW: 連接數
+   * en-US: Clients
+   */
+  (key: "folia.options.obsBrowserSourceClients", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视觉设置
+   * zh-TW: 視覺設置
+   * en-US: Visual Settings
+   */
+  (key: "folia.options.visualSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词动画
+   * zh-TW: 歌詞動畫
+   * en-US: Lyrics Animation
+   */
+  (key: "folia.options.lyricsRenderer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择播放页使用的歌词动画模式。
+   * zh-TW: 選擇播放頁使用的歌詞動畫模式。
+   * en-US: Choose the lyrics animation mode used on the playback page.
+   */
+  (key: "folia.options.lyricsRendererDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词动画样式
+   * zh-TW: 歌詞動畫樣式
+   * en-US: Lyrics Animation Adjust
+   */
+  (key: "folia.options.lyricsAnimationAdjust", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词样式
+   * zh-TW: 歌詞樣式
+   * en-US: Lyrics Style
+   */
+  (key: "folia.options.lyricsStyleSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字体、字号和当前渲染器附加参数
+   * zh-TW: 字體、字號和當前渲染器附加參數
+   * en-US: Typography plus renderer-specific tuning.
+   */
+  (key: "folia.options.lyricsStyleSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开歌词样式设置
+   * zh-TW: 打開歌詞樣式設置
+   * en-US: Open lyrics style settings
+   */
+  (key: "folia.options.openLyricsStyleSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景
+   * zh-TW: 背景
+   * en-US: Background
+   */
+  (key: "folia.options.previewBackgroundSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景设置
+   * zh-TW: 背景設置
+   * en-US: Background Settings
+   */
+  (key: "folia.options.previewBackgroundHotspot", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整播放页背景层、透明窗口和几何氛围。
+   * zh-TW: 調整播放頁背景層、透明窗口和幾何氛圍。
+   * en-US: Adjust player background layers, cover color, and ambient geometry.
+   */
+  (key: "folia.options.previewBackgroundSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景类型
+   * zh-TW: 背景類型
+   * en-US: Background Type
+   */
+  (key: "folia.options.visualizerBackgroundMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通用
+   * zh-TW: 通用
+   * en-US: Common
+   */
+  (key: "folia.options.visualizerBackgroundModeCommon", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莫奈
+   * zh-TW: 莫奈
+   * en-US: Monet
+   */
+  (key: "folia.options.visualizerBackgroundModeMonet", params?: TranslationParams): string;
+  /**
+   * zh-CN: 漫游
+   * zh-TW: 漫遊
+   * en-US: Nomand
+   */
+  (key: "folia.options.visualizerBackgroundModeNomand", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐现
+   * zh-TW: 隱現
+   * en-US: Latent
+   */
+  (key: "folia.options.visualizerBackgroundModeLatent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 嵌入
+   * zh-TW: 嵌入
+   * en-US: Embed
+   */
+  (key: "folia.options.visualizerBackgroundModeUrl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 空
+   * zh-TW: 空
+   * en-US: Sora
+   */
+  (key: "folia.options.visualizerBackgroundModeSora", params?: TranslationParams): string;
+  /**
+   * zh-CN: 嵌入背景
+   * zh-TW: 嵌入背景
+   * en-US: Embedded Background
+   */
+  (key: "folia.options.urlBackgroundSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 将网页显示为播放页背景。注意：部分网站禁止被嵌入其他页面中显示，可能无法正常加载。
+   * zh-TW: 將網頁顯示為播放頁背景。注意：部分網站禁止被嵌入其他頁面中顯示，可能無法正常加載。
+   * en-US: Display a webpage as the player background. Note: some websites block being embedded in an iframe and may not display.
+   */
+  (key: "folia.options.urlBackgroundSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 备注（方便查看）
+   * zh-TW: 備註（方便查看）
+   * en-US: Note (for easy identification)
+   */
+  (key: "folia.options.urlBackgroundNotePlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加 URL
+   * zh-TW: 添加 URL
+   * en-US: Add URL
+   */
+  (key: "folia.options.urlBackgroundAdd", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无 URL，点击上方按钮添加
+   * zh-TW: 暫無 URL，點擊上方按鈕添加
+   * en-US: No URLs yet, click the button above to add one
+   */
+  (key: "folia.options.urlBackgroundEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面背景
+   * zh-TW: 封面背景
+   * en-US: Cover Background
+   */
+  (key: "folia.options.previewCoverBackgroundSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 将歌曲封面色彩叠加到背景中。
+   * zh-TW: 將歌曲封面色彩疊加到背景中。
+   * en-US: Blend the current song cover colors into the background.
+   */
+  (key: "folia.options.previewCoverBackgroundSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 叠层透明度
+   * zh-TW: 疊層透明度
+   * en-US: Overlay Opacity
+   */
+  (key: "folia.options.previewCoverBackgroundOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用当前歌曲封面生成歌词动画背景色彩。
+   * zh-TW: 使用當前歌曲封面生成歌詞動畫背景色彩。
+   * en-US: Use the current song cover to generate the lyrics animation background color.
+   */
+  (key: "folia.options.coverColorBackgroundDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词动画
+   * zh-TW: 歌詞動畫
+   * en-US: Lyrics Animation
+   */
+  (key: "folia.options.previewVisualizerSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词动画设置
+   * zh-TW: 歌詞動畫設置
+   * en-US: Lyrics Animation Settings
+   */
+  (key: "folia.options.previewVisualizerHotspot", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕
+   * zh-TW: 字幕
+   * en-US: Subtitle
+   */
+  (key: "folia.options.previewSubtitleSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕设置
+   * zh-TW: 字幕設置
+   * en-US: Subtitle Settings
+   */
+  (key: "folia.options.previewSubtitleHotspot", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整底部译文和下一句提示的显示方式。
+   * zh-TW: 調整底部譯文和下一句提示的顯示方式。
+   * en-US: Adjust the bottom subtitle layer, translation text, and upcoming-line overlay.
+   */
+  (key: "folia.options.previewSubtitleSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕透明度
+   * zh-TW: 字幕透明度
+   * en-US: Subtitle Opacity
+   */
+  (key: "folia.options.subtitleOverlayOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕背景
+   * zh-TW: 字幕背景
+   * en-US: Subtitle Background
+   */
+  (key: "folia.options.subtitleOverlayBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 为底部字幕添加主题自适应的半透明背景，提高复杂画面中的可读性。
+   * zh-TW: 為底部字幕添加主題自適應的半透明背景，提高複雜畫面中的可讀性。
+   * en-US: Add a theme-aware translucent background to improve readability over busy visuals.
+   */
+  (key: "folia.options.subtitleOverlayBackgroundDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示翻译
+   * zh-TW: 顯示翻譯
+   * en-US: Show Translation
+   */
+  (key: "folia.options.showSubtitleTranslation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示歌词翻译
+   * zh-TW: 顯示歌詞翻譯
+   * en-US: Controls translation text in Monet and the bottom subtitle overlay.
+   */
+  (key: "folia.options.showSubtitleTranslationDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流光参数
+   * zh-TW: 流光參數
+   * en-US: Classic Tuning
+   */
+  (key: "folia.options.classicSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制逐字旋转和整行呼吸浮动范围。
+   * zh-TW: 控制逐字旋轉和整行呼吸浮動範圍。
+   * en-US: Control per-word rotation and whole-line breathing float range.
+   */
+  (key: "folia.options.classicSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 逐字旋转
+   * zh-TW: 逐字旋轉
+   * en-US: Per-word Rotation
+   */
+  (key: "folia.options.classicWordRotation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用
+   * zh-TW: 啟用
+   * en-US: Enable
+   */
+  (key: "folia.options.classicWordRotationOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Disable
+   */
+  (key: "folia.options.classicWordRotationOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 呼吸浮动范围
+   * zh-TW: 呼吸浮動範圍
+   * en-US: Breathing Float Range
+   */
+  (key: "folia.options.classicBreathingFloatMultiplier", params?: TranslationParams): string;
+  /**
+   * zh-CN: 排版模式
+   * zh-TW: 排版模式
+   * en-US: Layout Mode
+   */
+  (key: "folia.options.classicLegacyLayout", params?: TranslationParams): string;
+  /**
+   * zh-CN: 旧版
+   * zh-TW: 舊版
+   * en-US: Legacy
+   */
+  (key: "folia.options.classicLegacyLayoutOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自适应
+   * zh-TW: 自適應
+   * en-US: Adaptive
+   */
+  (key: "folia.options.classicLegacyLayoutOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 单词间距
+   * zh-TW: 單詞間距
+   * en-US: Word Spacing
+   */
+  (key: "folia.options.classicWordSpacing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云阶参数
+   * zh-TW: 雲階參數
+   * en-US: Partita Tuning
+   */
+  (key: "folia.options.partitaSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制引导线显示和分块横向错位范围。
+   * zh-TW: 控制引導線顯示和分塊橫向錯位範圍。
+   * en-US: Control guide line visibility and horizontal chunk stagger range.
+   */
+  (key: "folia.options.partitaSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 引导线
+   * zh-TW: 引導線
+   * en-US: Guide Lines
+   */
+  (key: "folia.options.partitaGuideLines", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示
+   * zh-TW: 顯示
+   * en-US: Show
+   */
+  (key: "folia.options.partitaGuideLinesOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏
+   * zh-TW: 隱藏
+   * en-US: Hide
+   */
+  (key: "folia.options.partitaGuideLinesOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语义排列
+   * zh-TW: 語義排列
+   * en-US: CJK Semantic Layout
+   */
+  (key: "folia.options.partitaSemanticLayout", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用
+   * zh-TW: 啟用
+   * en-US: Enable
+   */
+  (key: "folia.options.partitaSemanticLayoutOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Disable
+   */
+  (key: "folia.options.partitaSemanticLayoutOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 错位最小值
+   * zh-TW: 錯位最小值
+   * en-US: Stagger Min
+   */
+  (key: "folia.options.partitaStaggerMin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 错位最大值
+   * zh-TW: 錯位最大值
+   * en-US: Stagger Max
+   */
+  (key: "folia.options.partitaStaggerMax", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浮名参数
+   * zh-TW: 浮名參數
+   * en-US: Fume Tuning
+   */
+  (key: "folia.options.fumeSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制打印方块、镜头节奏、追焦方式、辉光和大标题比例。
+   * zh-TW: 控制打印方塊、鏡頭節奏、追焦方式、輝光和大標題比例。
+   * en-US: Tune print-stamp visibility, camera pacing, tracking style, glow, and hero scale.
+   */
+  (key: "folia.options.fumeSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏打印方块
+   * zh-TW: 隱藏打印方塊
+   * en-US: Hide Print Stamp
+   */
+  (key: "folia.options.fumeHidePrintSymbols", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通用几何图形
+   * zh-TW: 通用幾何圖形
+   * en-US: Geometric Shapes
+   */
+  (key: "folia.options.fumeGeometricBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 世界背景物体透明度
+   * zh-TW: 世界背景物體透明度
+   * en-US: World Background Object Opacity
+   */
+  (key: "folia.options.fumeBackgroundObjectOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字停留比例
+   * zh-TW: 文字停留比例
+   * en-US: Text Hold Ratio
+   */
+  (key: "folia.options.fumeTextHoldRatio", params?: TranslationParams): string;
+  /**
+   * zh-CN: 摄影机移动速度
+   * zh-TW: 攝影機移動速度
+   * en-US: Camera Speed
+   */
+  (key: "folia.options.fumeCameraSpeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 摄影机追焦方式
+   * zh-TW: 攝影機追焦方式
+   * en-US: Camera Tracking
+   */
+  (key: "folia.options.fumeCameraTrackingMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 定格
+   * zh-TW: 定格
+   * en-US: Stepped
+   */
+  (key: "folia.options.fumeCameraTrackingStepped", params?: TranslationParams): string;
+  /**
+   * zh-CN: 平滑
+   * zh-TW: 平滑
+   * en-US: Smooth
+   */
+  (key: "folia.options.fumeCameraTrackingSmooth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前句辉光强度
+   * zh-TW: 當前句輝光強度
+   * en-US: Active Glow
+   */
+  (key: "folia.options.fumeGlowIntensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 大标题比例
+   * zh-TW: 大標題比例
+   * en-US: Hero Scale
+   */
+  (key: "folia.options.fumeHeroScale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 群唱参数
+   * zh-TW: 群唱參數
+   * en-US: Chorus Tuning
+   */
+  (key: "folia.options.cappellaSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制头像来源、表情包显示、自定义来源和预览缩略图。
+   * zh-TW: 控制頭像來源、表情包顯示、自定義來源和預覽縮略圖。
+   * en-US: Control avatar source, emoji visibility, source, and custom preview slots.
+   */
+  (key: "folia.options.cappellaSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 头像来源
+   * zh-TW: 頭像來源
+   * en-US: Avatar source
+   */
+  (key: "folia.options.cappellaAvatarSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面
+   * zh-TW: 封面
+   * en-US: Cover
+   */
+  (key: "folia.options.cappellaAvatarSourceCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内置头像
+   * zh-TW: 內置頭像
+   * en-US: Built-in avatar
+   */
+  (key: "folia.options.cappellaAvatarSourceBuiltin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 色块
+   * zh-TW: 色塊
+   * en-US: Color block
+   */
+  (key: "folia.options.cappellaAvatarSourceColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自定義
+   * en-US: Custom
+   */
+  (key: "folia.options.cappellaAvatarSourceCustom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义头像预览
+   * zh-TW: 自定義頭像預覽
+   * en-US: Custom avatar preview
+   */
+  (key: "folia.options.cappellaAvatarPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有自定义头像，上传后可切换到自定义来源。
+   * zh-TW: 還沒有自定義頭像，上傳後可切換到自定義來源。
+   * en-US: Upload a custom avatar before switching to custom source.
+   */
+  (key: "folia.options.cappellaAvatarUploadHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入中...
+   * zh-TW: 導入中...
+   * en-US: Importing...
+   */
+  (key: "folia.options.cappellaAvatarUploading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传自定义头像
+   * zh-TW: 上傳自定義頭像
+   * en-US: Upload custom avatar
+   */
+  (key: "folia.options.cappellaAvatarUpload", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清空自定义头像
+   * zh-TW: 清空自定義頭像
+   * en-US: Clear custom avatar
+   */
+  (key: "folia.options.cappellaAvatarClear", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义头像已更新。
+   * zh-TW: 自定義頭像已更新。
+   * en-US: Custom avatar updated.
+   */
+  (key: "folia.options.cappellaAvatarImportSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入失败。
+   * zh-TW: 導入失敗。
+   * en-US: Import failed.
+   */
+  (key: "folia.options.cappellaAvatarImportFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义头像已清空。
+   * zh-TW: 自定義頭像已清空。
+   * en-US: Custom avatar cleared.
+   */
+  (key: "folia.options.cappellaAvatarCleared", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示表情包
+   * zh-TW: 顯示錶情包
+   * en-US: Show emoji pack
+   */
+  (key: "folia.options.cappellaShowEmoMessages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 表情包来源
+   * zh-TW: 表情包來源
+   * en-US: Emoji source
+   */
+  (key: "folia.options.cappellaEmojiSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内置
+   * zh-TW: 內置
+   * en-US: Built-in
+   */
+  (key: "folia.options.cappellaEmojiSourceBuiltin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自定義
+   * en-US: Custom
+   */
+  (key: "folia.options.cappellaEmojiSourceCustom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义表情预览
+   * zh-TW: 自定義表情預覽
+   * en-US: Custom emoji preview
+   */
+  (key: "folia.options.cappellaEmojiPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 空槽位
+   * zh-TW: 空槽位
+   * en-US: Empty slot
+   */
+  (key: "folia.options.cappellaEmojiEmptySlot", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已上传
+   * zh-TW: 已上傳
+   * en-US: Uploaded
+   */
+  (key: "folia.options.cappellaEmojiCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有自定义表情包，上传后才能切换到自定义。
+   * zh-TW: 還沒有自定義表情包，上傳後才能切換到自定義。
+   * en-US: Upload a custom pack before switching to custom.
+   */
+  (key: "folia.options.cappellaEmojiUploadHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入中...
+   * zh-TW: 導入中...
+   * en-US: Importing...
+   */
+  (key: "folia.options.cappellaEmojiUploading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传自定义表情包
+   * zh-TW: 上傳自定義表情包
+   * en-US: Upload custom emoji pack
+   */
+  (key: "folia.options.cappellaEmojiUpload", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清空自定义表情包
+   * zh-TW: 清空自定義表情包
+   * en-US: Clear custom emoji pack
+   */
+  (key: "folia.options.cappellaEmojiClear", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义表情包已更新。
+   * zh-TW: 自定義表情包已更新。
+   * en-US: Custom emoji pack updated.
+   */
+  (key: "folia.options.cappellaEmojiImportSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入失败。
+   * zh-TW: 導入失敗。
+   * en-US: Import failed.
+   */
+  (key: "folia.options.cappellaEmojiImportFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义表情包已清空。
+   * zh-TW: 自定義表情包已清空。
+   * en-US: Custom emoji pack cleared.
+   */
+  (key: "folia.options.cappellaEmojiCleared", params?: TranslationParams): string;
+  /**
+   * zh-CN: 倾诉参数
+   * zh-TW: 傾訴參數
+   * en-US: Tilt Settings
+   */
+  (key: "folia.options.tiltSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制歌词分行概率和斜体强调样式的出现频率。
+   * zh-TW: 控制歌詞分行概率和斜體強調樣式的出現頻率。
+   * en-US: Control line split probability and italic emphasis style frequency.
+   */
+  (key: "folia.options.tiltSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 分行概率
+   * zh-TW: 分行概率
+   * en-US: Split Probability
+   */
+  (key: "folia.options.tiltSplitProbability", params?: TranslationParams): string;
+  /**
+   * zh-CN: 斜体强调概率
+   * zh-TW: 斜體強調概率
+   * en-US: Italic Emphasis Probability
+   */
+  (key: "folia.options.tiltStyleProbability", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配色方案
+   * zh-TW: 配色方案
+   * en-US: Color Scheme
+   */
+  (key: "folia.options.tiltColorScheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 双色1
+   * zh-TW: 雙色1
+   * en-US: Dual 1
+   */
+  (key: "folia.options.tiltColorSchemeDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 双色2
+   * zh-TW: 雙色2
+   * en-US: Dual 2
+   */
+  (key: "folia.options.tiltColorSchemeSwap", params?: TranslationParams): string;
+  /**
+   * zh-CN: 单色1
+   * zh-TW: 單色1
+   * en-US: Single 1
+   */
+  (key: "folia.options.tiltColorSchemeAccentAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 单色2
+   * zh-TW: 單色2
+   * en-US: Single 2
+   */
+  (key: "folia.options.tiltColorSchemePrimaryAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回环参数
+   * zh-TW: 迴環參數
+   * en-US: Claddagh Settings
+   */
+  (key: "folia.options.claddaghSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整歌词大小对比率、轨道半径及倾斜度。
+   * zh-TW: 調整歌詞大小對比率、軌道半徑及傾斜度。
+   * en-US: Control active lyric scale ratio, ellipse radius, and orbit tilt degree.
+   */
+  (key: "folia.options.claddaghSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主歌词放大倍率
+   * zh-TW: 主歌詞放大倍率
+   * en-US: Active Lyric Scale Ratio
+   */
+  (key: "folia.options.claddaghFocusScaleRatio", params?: TranslationParams): string;
+  /**
+   * zh-CN: 轨道半径
+   * zh-TW: 軌道半徑
+   * en-US: Orbit Radius Scale
+   */
+  (key: "folia.options.claddaghRadiusScale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 轨道倾斜度
+   * zh-TW: 軌道傾斜度
+   * en-US: Orbit Tilt Degree
+   */
+  (key: "folia.options.claddaghEllipseTiltDeg", params?: TranslationParams): string;
+  /**
+   * zh-CN: 中间轴线
+   * zh-TW: 中間軸線
+   * en-US: Center Axis Line
+   */
+  (key: "folia.options.claddaghShowAxisLine", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字符间距
+   * zh-TW: 字符間距
+   * en-US: Letter Spacing
+   */
+  (key: "folia.options.claddaghLetterSpacingOffset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜台参数
+   * zh-TW: 鏡臺參數
+   * en-US: Diorama Settings
+   */
+  (key: "folia.options.dioramaSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜头速度
+   * zh-TW: 鏡頭速度
+   * en-US: Camera Speed
+   */
+  (key: "folia.options.dioramaCameraSpeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 运动幅度
+   * zh-TW: 運動幅度
+   * en-US: Motion Amount
+   */
+  (key: "folia.options.dioramaMotionAmount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云音频响应
+   * zh-TW: 點雲音頻響應
+   * en-US: Particle Audio Response
+   */
+  (key: "folia.options.dioramaAudioReactivity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 普通辉光跟唱
+   * zh-TW: 普通輝光跟唱
+   * en-US: Sung Glow
+   */
+  (key: "folia.options.dioramaGlowEffect", params?: TranslationParams): string;
+  /**
+   * zh-CN: 灵魂出窍跟唱
+   * zh-TW: 靈魂出竅跟唱
+   * en-US: Soul Drift
+   */
+  (key: "folia.options.dioramaSoulEffect", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前字出窍
+   * zh-TW: 當前字出竅
+   * en-US: Current-Word Soul-Out
+   */
+  (key: "folia.options.dioramaSoulActiveEffect", params?: TranslationParams): string;
+  /**
+   * zh-CN: 渐变跟唱
+   * zh-TW: 漸變跟唱
+   * en-US: Progress Gradient
+   */
+  (key: "folia.options.dioramaGradientEffect", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关键字着色
+   * zh-TW: 關鍵字著色
+   * en-US: Keyword Coloring
+   */
+  (key: "folia.options.dioramaKeywordColoring", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启
+   * zh-TW: 開啟
+   * en-US: On
+   */
+  (key: "folia.options.dioramaEffectOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Off
+   */
+  (key: "folia.options.dioramaEffectOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 强度
+   * zh-TW: 強度
+   * en-US: Strength
+   */
+  (key: "folia.options.dioramaEffectStrength", params?: TranslationParams): string;
+  /**
+   * zh-CN: 弱
+   * zh-TW: 弱
+   * en-US: Low
+   */
+  (key: "folia.options.dioramaStrengthLow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 中
+   * zh-TW: 中
+   * en-US: Medium
+   */
+  (key: "folia.options.dioramaStrengthMid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 强
+   * zh-TW: 強
+   * en-US: High
+   */
+  (key: "folia.options.dioramaStrengthHigh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自定義
+   * en-US: Custom
+   */
+  (key: "folia.options.dioramaStrengthCustom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义强度
+   * zh-TW: 自定義強度
+   * en-US: Custom Strength
+   */
+  (key: "folia.options.dioramaCustomStrength", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云几何
+   * zh-TW: 點雲幾何
+   * en-US: Particle Geometry
+   */
+  (key: "folia.options.dioramaGeometry", params?: TranslationParams): string;
+  /**
+   * zh-CN: 几何形态
+   * zh-TW: 幾何形態
+   * en-US: Geometry Style
+   */
+  (key: "folia.options.dioramaGeometryMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云
+   * zh-TW: 點雲
+   * en-US: Point Clouds
+   */
+  (key: "folia.options.dioramaGeometryModeClouds", params?: TranslationParams): string;
+  /**
+   * zh-CN: 长廊
+   * zh-TW: 長廊
+   * en-US: Corridor
+   */
+  (key: "folia.options.dioramaGeometryModeCorridor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云立方体
+   * zh-TW: 點雲立方體
+   * en-US: Particle Cubes
+   */
+  (key: "folia.options.dioramaGeometryStrands", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云圆柱体
+   * zh-TW: 點雲圓柱體
+   * en-US: Particle Cylinders
+   */
+  (key: "folia.options.dioramaGeometryBlobs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 三角晶体
+   * zh-TW: 三角晶體
+   * en-US: Triangular Crystals
+   */
+  (key: "folia.options.dioramaGeometryRibbons", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云圆环
+   * zh-TW: 點雲圓環
+   * en-US: Particle Rings
+   */
+  (key: "folia.options.dioramaGeometryRings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云密度
+   * zh-TW: 點雲密度
+   * en-US: Point Cloud Density
+   */
+  (key: "folia.options.dioramaParticleDensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云整体体积
+   * zh-TW: 點雲整體體積
+   * en-US: Cloud Volume
+   */
+  (key: "folia.options.dioramaParticleScale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点云整体辉光
+   * zh-TW: 點雲整體輝光
+   * en-US: Cloud Aura
+   */
+  (key: "folia.options.dioramaParticleGlow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 辉光强度
+   * zh-TW: 輝光強度
+   * en-US: Aura Strength
+   */
+  (key: "folia.options.dioramaParticleGlowIntensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景粒子
+   * zh-TW: 背景粒子
+   * en-US: Background Particles
+   */
+  (key: "folia.options.dioramaShowParticles", params?: TranslationParams): string;
+  /**
+   * zh-CN: 粒子密度
+   * zh-TW: 粒子密度
+   * en-US: Particle Density
+   */
+  (key: "folia.options.dioramaBackgroundParticleDensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 圆周密度
+   * zh-TW: 圓周密度
+   * en-US: Ring Density
+   */
+  (key: "folia.options.dioramaMoteCircumference", params?: TranslationParams): string;
+  /**
+   * zh-CN: 径向密度
+   * zh-TW: 徑向密度
+   * en-US: Radial Density
+   */
+  (key: "folia.options.dioramaMoteRadial", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义字体
+   * zh-TW: 自定義字體
+   * en-US: Custom Font
+   */
+  (key: "folia.options.customFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字体
+   * zh-TW: 字體
+   * en-US: Font Family
+   */
+  (key: "folia.options.fontFamily", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字号
+   * zh-TW: 字號
+   * en-US: Font Size
+   */
+  (key: "folia.options.fontSize", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览
+   * zh-TW: 預覽
+   * en-US: Preview
+   */
+  (key: "folia.options.fontPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义字体
+   * zh-TW: 自定義字體
+   * en-US: Custom Font
+   */
+  (key: "folia.options.systemFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: (empty)
+   * zh-TW: (empty)
+   * en-US: (empty)
+   */
+  (key: "folia.options.systemFontDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已启用
+   * zh-TW: 已啟用
+   * en-US: Active
+   */
+  (key: "folia.options.systemFontActive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未启用
+   * zh-TW: 未啟用
+   * en-US: Inactive
+   */
+  (key: "folia.options.systemFontInactive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前浏览器不支持系统字体访问。
+   * zh-TW: 目前瀏覽器不支援存取系統字型。
+   * en-US: System font access is unavailable in this browser.
+   */
+  (key: "folia.options.systemFontUnsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有读取到可用字体。
+   * zh-TW: 沒有讀取到可用字體。
+   * en-US: No fonts were returned.
+   */
+  (key: "folia.options.systemFontEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 读取本机字体失败，请检查权限。
+   * zh-TW: 讀取本機字體失敗，請檢查權限。
+   * en-US: Reading local fonts failed. Check permissions.
+   */
+  (key: "folia.options.systemFontPermissionDenied", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有找到匹配字体。
+   * zh-TW: 沒有找到匹配字體。
+   * en-US: No matching fonts were found.
+   */
+  (key: "folia.options.systemFontNoResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择自定义字体
+   * zh-TW: 選擇自定義字體
+   * en-US: Choose Custom Font
+   */
+  (key: "folia.options.chooseSystemFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从当前系统已安装字体中选择一个字体。
+   * zh-TW: 從當前系統已安裝字體中選擇一個字體。
+   * en-US: Pick a font family from the fonts installed on this machine.
+   */
+  (key: "folia.options.chooseSystemFontDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索字体
+   * zh-TW: 搜索字體
+   * en-US: Search fonts
+   */
+  (key: "folia.options.searchSystemFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在读取系统字体...
+   * zh-TW: 正在讀取系統字體...
+   * en-US: Loading system fonts...
+   */
+  (key: "folia.options.loadingSystemFonts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 恢复内置字体
+   * zh-TW: 恢復內置字體
+   * en-US: Use Built-in Font
+   */
+  (key: "folia.options.clearSystemFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前字体
+   * zh-TW: 當前字體
+   * en-US: Current Font
+   */
+  (key: "folia.options.currentFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传自定义字体
+   * zh-TW: 上傳自定義字體
+   * en-US: Upload Custom Font
+   */
+  (key: "folia.options.uploadCustomFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前移动浏览器无法读取系统字体，可上传 woff2、woff、ttf 或 otf 字体文件。
+   * zh-TW: 當前移動瀏覽器無法讀取系統字體，可上傳 woff2、woff、ttf 或 otf 字體文件。
+   * en-US: This mobile browser cannot read system fonts. Upload a woff2, woff, ttf, or otf font file.
+   */
+  (key: "folia.options.uploadCustomFontDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传中...
+   * zh-TW: 上傳中...
+   * en-US: Uploading...
+   */
+  (key: "folia.options.uploadingCustomFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传字体失败。
+   * zh-TW: 上傳字體失敗。
+   * en-US: Failed to upload font.
+   */
+  (key: "folia.options.uploadFontFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无衬线
+   * zh-TW: 無襯線
+   * en-US: Sans
+   */
+  (key: "folia.options.fontSans", params?: TranslationParams): string;
+  /**
+   * zh-CN: 衬线
+   * zh-TW: 襯線
+   * en-US: Serif
+   */
+  (key: "folia.options.fontSerif", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等宽
+   * zh-TW: 等寬
+   * en-US: Mono
+   */
+  (key: "folia.options.fontMono", params?: TranslationParams): string;
+  /**
+   * zh-CN: 备用字体
+   * zh-TW: 備用字體
+   * en-US: Fallback Fonts
+   */
+  (key: "folia.options.fontFallbackFamilies", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未设置备用字体
+   * zh-TW: 未設置備用字體
+   * en-US: No fallback fonts set
+   */
+  (key: "folia.options.fontFallbackEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: Songti SC, SimSun, serif
+   * zh-TW: Songti SC, SimSun, serif
+   * en-US: Songti SC, SimSun, serif
+   */
+  (key: "folia.options.fontFallbackFamiliesPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕继承歌词字体
+   * zh-TW: 字幕繼承歌詞字體
+   * en-US: Subtitle Uses Lyrics Font
+   */
+  (key: "folia.options.subtitleFontInheritsLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭后可为字幕单独设置字体。
+   * zh-TW: 關閉後可為字幕單獨設置字體。
+   * en-US: Turn off to set a separate subtitle font.
+   */
+  (key: "folia.options.subtitleFontInheritsLyricsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕字体
+   * zh-TW: 字幕字體
+   * en-US: Subtitle Font
+   */
+  (key: "folia.options.subtitleFontFamily", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕主字体
+   * zh-TW: 字幕主字體
+   * en-US: Subtitle Primary Font
+   */
+  (key: "folia.options.subtitlePrimaryFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: Microsoft YaHei
+   * zh-TW: Microsoft YaHei
+   * en-US: Microsoft YaHei
+   */
+  (key: "folia.options.subtitlePrimaryFontPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕备用字体
+   * zh-TW: 字幕備用字體
+   * en-US: Subtitle Fallback Fonts
+   */
+  (key: "folia.options.subtitleFontFallbackFamilies", params?: TranslationParams): string;
+  /**
+   * zh-CN: PingFang SC, sans-serif
+   * zh-TW: PingFang SC, sans-serif
+   * en-US: PingFang SC, sans-serif
+   */
+  (
+    key: "folia.options.subtitleFontFallbackFamiliesPlaceholder",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 通用
+   * zh-TW: 通用
+   * en-US: Common
+   */
+  (key: "folia.options.previewCommonSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 统一调整字体、字号等全局设置。
+   * zh-TW: 統一調整字體、字號等全局設置。
+   * en-US: Adjust the shared font, size, and opacity for the whole lyrics animation layer.
+   */
+  (key: "folia.options.previewCommonSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 风会记住你唱过的每一句话
+   * zh-TW: 風會記住你唱過的每一句話
+   * en-US: The wind remembers every line you sang.
+   */
+  (key: "folia.options.previewOriginal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 译文会优先尝试当前字体，并使用更稳定的中日韩字体回退。
+   * zh-TW: 譯文會優先嚐試當前字體，並使用更穩定的中日韓字體回退。
+   * en-US: Translations try the current font first, then use a safer CJK-friendly fallback stack.
+   */
+  (key: "folia.options.previewTranslation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景透明度
+   * zh-TW: 背景透明度
+   * en-US: Background Opacity
+   */
+  (key: "folia.options.backgroundOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整体透明度
+   * zh-TW: 整體透明度
+   * en-US: Lyrics Animation Opacity
+   */
+  (key: "folia.options.visualizerOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 实验性动画帧率限制
+   * zh-TW: 實驗性動畫幀率限制
+   * en-US: Experimental Animation FPS Limit
+   */
+  (key: "folia.options.visualizerFrameRate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 限制 requestAnimationFrame 驱动的动画帧率，可能导致意外问题，请谨慎使用。
+   * zh-TW: 限制 requestAnimationFrame 驅動的動畫幀率，可能導致意外問題，請謹慎使用。
+   * en-US: Experimental setting. When enabled, it limits requestAnimationFrame-driven animation and may cause unexpected issues in animation, measurement, or third-party motion code.
+   */
+  (key: "folia.options.visualizerFrameRateDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 限制档位
+   * zh-TW: 限制檔位
+   * en-US: Limit
+   */
+  (key: "folia.options.visualizerFrameRateValue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配色主题预设
+   * zh-TW: 配色主題預設
+   * en-US: Theme Presets
+   */
+  (key: "folia.options.themePresets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 墨染 / 素白
+   * zh-TW: 墨染 / 素白
+   * en-US: Default
+   */
+  (key: "folia.options.themePresetsDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 墨染
+   * zh-TW: 墨染
+   * en-US: Midnight
+   */
+  (key: "folia.options.preset.midnight", params?: TranslationParams): string;
+  /**
+   * zh-CN: 素白
+   * zh-TW: 素白
+   * en-US: Snow
+   */
+  (key: "folia.options.preset.snow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 深海
+   * zh-TW: 深海
+   * en-US: Ocean
+   */
+  (key: "folia.options.preset.ocean", params?: TranslationParams): string;
+  /**
+   * zh-CN: 翡翠
+   * zh-TW: 翡翠
+   * en-US: Forest
+   */
+  (key: "folia.options.preset.forest", params?: TranslationParams): string;
+  /**
+   * zh-CN: 玫瑰
+   * zh-TW: 玫瑰
+   * en-US: Rose
+   */
+  (key: "folia.options.preset.rose", params?: TranslationParams): string;
+  /**
+   * zh-CN: 薰衣
+   * zh-TW: 薰衣
+   * en-US: Lavender
+   */
+  (key: "folia.options.preset.lavender", params?: TranslationParams): string;
+  /**
+   * zh-CN: 琥珀
+   * zh-TW: 琥珀
+   * en-US: Amber
+   */
+  (key: "folia.options.preset.amber", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暮色
+   * zh-TW: 暮色
+   * en-US: Dusk
+   */
+  (key: "folia.options.preset.dusk", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开 Theme Park
+   * zh-TW: 打開 Theme Park
+   * en-US: Open Theme Park
+   */
+  (key: "folia.options.openThemePark", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义配色主题。
+   * zh-TW: 自定義配色主題。
+   * en-US: Customize color themes.
+   */
+  (key: "folia.options.themeParkDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题库
+   * zh-TW: 主題庫
+   * en-US: Theme Library
+   */
+  (key: "folia.options.themeLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 管理歌词舞台专属的亮色与暗色主题。
+   * zh-TW: 管理歌詞舞臺專屬的亮色與暗色主題。
+   * en-US: Manage light and dark themes for the Lyric Stage only.
+   */
+  (key: "folia.options.themeLibraryDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新建主题
+   * zh-TW: 新建主題
+   * en-US: Create Theme
+   */
+  (key: "folia.options.createTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除主题
+   * zh-TW: 刪除主題
+   * en-US: Delete Theme
+   */
+  (key: "folia.options.deleteTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置此主题
+   * zh-TW: 重置此主題
+   * en-US: Reset Theme
+   */
+  (key: "folia.options.resetTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 恢复内置主题
+   * zh-TW: 恢復內置主題
+   * en-US: Restore Built-in Themes
+   */
+  (key: "folia.options.restoreBuiltinThemes", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入主题
+   * zh-TW: 導入主題
+   * en-US: Import Theme
+   */
+  (key: "folia.options.importThemeJson", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题名称
+   * zh-TW: 主題名稱
+   * en-US: Theme Name
+   */
+  (key: "folia.options.themeName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手动导入 AI 主题
+   * zh-TW: 手動導入 AI 主題
+   * en-US: Manual Import AI Theme
+   */
+  (key: "folia.options.manualImportAiTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快速编辑 AI 主题
+   * zh-TW: 快速編輯 AI 主題
+   * en-US: Quick Edit AI Theme
+   */
+  (key: "folia.options.aiThemeQuickEditTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整当前歌曲 AI 主题的亮色 / 暗色配色。
+   * zh-TW: 調整當前歌曲 AI 主題的亮色 / 暗色配色。
+   * en-US: Tune the current song AI theme colors.
+   */
+  (key: "folia.options.aiThemeQuickEditDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快速编辑自定义主题
+   * zh-TW: 快速編輯自定義主題
+   * en-US: Quick Edit Custom Theme
+   */
+  (key: "folia.options.customThemeQuickEditTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整当前自定义主题的亮色 / 暗色配色。
+   * zh-TW: 調整當前自定義主題的亮色 / 暗色配色。
+   * en-US: Tune your custom theme colors.
+   */
+  (key: "folia.options.customThemeQuickEditDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景
+   * zh-TW: 背景
+   * en-US: Background
+   */
+  (key: "folia.options.aiThemeQuickEditBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主文本
+   * zh-TW: 主文本
+   * en-US: Primary
+   */
+  (key: "folia.options.aiThemeQuickEditPrimary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 强调色
+   * zh-TW: 強調色
+   * en-US: Accent
+   */
+  (key: "folia.options.aiThemeQuickEditAccent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 辅助色
+   * zh-TW: 輔助色
+   * en-US: Secondary
+   */
+  (key: "folia.options.aiThemeQuickEditSecondary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 推荐色
+   * zh-TW: 推薦色
+   * en-US: Recommended colors
+   */
+  (key: "folia.options.aiThemeQuickEditRecommendedColors", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存 AI 主题
+   * zh-TW: 保存 AI 主題
+   * en-US: Save AI Theme
+   */
+  (key: "folia.options.aiThemeQuickEditSave", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存自定义主题
+   * zh-TW: 保存自定義主題
+   * en-US: Save Custom Theme
+   */
+  (key: "folia.options.customThemeQuickEditSave", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制 JSON
+   * zh-TW: 複製 JSON
+   * en-US: Copy JSON
+   */
+  (key: "folia.options.copyThemeJson", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无效的 JSON 格式
+   * zh-TW: 無效的 JSON 格式
+   * en-US: Invalid JSON format
+   */
+  (key: "folia.options.invalidJsonFormat", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在此粘贴 JSON...
+   * zh-TW: 在此粘貼 JSON...
+   * en-US: Paste JSON here...
+   */
+  (key: "folia.options.pasteJsonHere", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑
+   * zh-TW: 編輯
+   * en-US: Edit
+   */
+  (key: "folia.options.themeEdit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入导出
+   * zh-TW: 導入導出
+   * en-US: Import & Export
+   */
+  (key: "folia.options.themeImportExport", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导出
+   * zh-TW: 導出
+   * en-US: Export
+   */
+  (key: "folia.options.export", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入
+   * zh-TW: 導入
+   * en-US: Import
+   */
+  (key: "folia.options.import", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下载文件
+   * zh-TW: 下載文件
+   * en-US: Download
+   */
+  (key: "folia.options.downloadThemeJson", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制失败
+   * zh-TW: 複製失敗
+   * en-US: Copy failed
+   */
+  (key: "folia.options.copyFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 粘贴 JSON 或拖入文件
+   * zh-TW: 粘貼 JSON 或拖入文件
+   * en-US: Paste JSON or drop file here
+   */
+  (key: "folia.options.pasteJsonOrDropFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览
+   * zh-TW: 預覽
+   * en-US: Preview
+   */
+  (key: "folia.options.preview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题名称
+   * zh-TW: 主題名稱
+   * en-US: Theme Name
+   */
+  (key: "folia.options.importThemeName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入方式
+   * zh-TW: 導入方式
+   * en-US: Import Mode
+   */
+  (key: "folia.options.importMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 覆盖「{{name}}」
+   * zh-TW: 覆蓋「{{name}}」
+   * en-US: Overwrite "{{name}}"
+   */
+  (key: "folia.options.importOverwrite", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新建主题
+   * zh-TW: 新建主題
+   * en-US: Create New Theme
+   */
+  (key: "folia.options.importAsNew", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已覆盖主题: {{name}}
+   * zh-TW: 已覆蓋主題: {{name}}
+   * en-US: Theme overwritten: {{name}}
+   */
+  (key: "folia.options.themeOverwritten", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已导入主题: {{name}}
+   * zh-TW: 已導入主題: {{name}}
+   * en-US: Theme imported: {{name}}
+   */
+  (key: "folia.options.themeImported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放设备
+   * zh-TW: 播放設備
+   * en-US: Playback Device
+   */
+  (key: "folia.options.audioOutputSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前播放声卡
+   * zh-TW: 當前播放聲卡
+   * en-US: Current Output Device
+   */
+  (key: "folia.options.audioOutputDevice", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换当前播放器的音频输出设备。在支持 setSinkId 时可使用。
+   * zh-TW: 切換當前播放器的音頻輸出設備。在支持 setSinkId 時可使用。
+   * en-US: Switch the audio output used by the current player. Electron desktop is the primary target, and browser environments also work when setSinkId is available.
+   */
+  (key: "folia.options.audioOutputDeviceDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新
+   * zh-TW: 刷新
+   * en-US: Refresh
+   */
+  (key: "folia.options.audioOutputRefresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前环境不支持切换播放设备。
+   * zh-TW: 當前環境不支持切換播放設備。
+   * en-US: This environment does not support switching audio output devices.
+   */
+  (key: "folia.options.audioOutputUnsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 读取播放设备失败。
+   * zh-TW: 讀取播放設備失敗。
+   * en-US: Failed to load audio output devices.
+   */
+  (key: "folia.options.audioOutputLoadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换播放设备失败。
+   * zh-TW: 切換播放設備失敗。
+   * en-US: Failed to switch the audio output device.
+   */
+  (key: "folia.options.audioOutputSelectFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放设备
+   * zh-TW: 播放設備
+   * en-US: Output Device
+   */
+  (key: "folia.options.audioOutputUnnamed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 系统默认
+   * zh-TW: 系統默認
+   * en-US: System Default
+   */
+  (key: "folia.options.audioOutputDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: (empty)
+   * zh-TW: (empty)
+   * en-US: Follow the operating system's current default output device.
+   */
+  (key: "folia.options.audioOutputDefaultDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在读取播放设备...
+   * zh-TW: 正在讀取播放設備...
+   * en-US: Loading output devices...
+   */
+  (key: "folia.options.audioOutputLoading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在切换播放设备...
+   * zh-TW: 正在切換播放設備...
+   * en-US: Switching output device...
+   */
+  (key: "folia.options.audioOutputSelecting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有检测到可切换的播放设备。
+   * zh-TW: 沒有檢測到可切換的播放設備。
+   * en-US: No switchable output devices were detected.
+   */
+  (key: "folia.options.audioOutputEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存自定义主题
+   * zh-TW: 保存自定義主題
+   * en-US: Save Custom Theme
+   */
+  (key: "folia.options.saveCustomTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存并应用
+   * zh-TW: 保存並應用
+   * en-US: Save and Apply Custom Theme
+   */
+  (key: "folia.options.saveAndApplyCustomTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先使用自定义主题
+   * zh-TW: 優先使用自定義主題
+   * en-US: Prefer Custom Theme
+   */
+  (key: "folia.options.preferCustomTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启后会关闭歌曲主题自动切换。
+   * zh-TW: 開啟後會關閉歌曲主題自動切換。
+   * en-US: When enabled, song theme auto switching will be turned off.
+   */
+  (key: "folia.options.preferCustomThemeDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题自动切换
+   * zh-TW: 主題自動切換
+   * en-US: Auto Switch Theme
+   */
+  (key: "folia.options.autoSwitchSongTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当切换到的歌曲曾经生成过 AI 主题的时候，自动应用 AI 主题。
+   * zh-TW: 當切換到的歌曲曾經生成過 AI 主題的時候，自動應用 AI 主題。
+   * en-US: Automatically apply cached AI themes. This is mutually exclusive with preferring custom themes.
+   */
+  (key: "folia.options.autoSwitchSongThemeDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动为播放歌曲进行主题生成
+   * zh-TW: 自動為播放歌曲進行主題生成
+   * en-US: Auto-generate themes for playing songs
+   */
+  (key: "folia.options.autoGenerateSongTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当播放歌曲没有缓存 AI 主题时，自动调用AI并应用（会产生较高token费用！）
+   * zh-TW: 當播放歌曲沒有緩存 AI 主題時，自動調用AI並應用（會產生較高token費用！）
+   * en-US: When a playing song has no cached AI theme, generate and apply one automatically.
+   */
+  (key: "folia.options.autoGenerateSongThemeDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新首选自定义主题
+   * zh-TW: 更新首選自定義主題
+   * en-US: Update Preferred Custom Theme
+   */
+  (key: "folia.options.updatePreferredCustomTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 亮色主题
+   * zh-TW: 亮色主題
+   * en-US: Light Theme
+   */
+  (key: "folia.options.lightTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暗色主题
+   * zh-TW: 暗色主題
+   * en-US: Dark Theme
+   */
+  (key: "folia.options.darkTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择喜欢的颜色。
+   * zh-TW: 選擇喜歡的顏色。
+   * en-US: Only color fields are editable here. Icons and emotion words are excluded.
+   */
+  (key: "folia.options.themeParkPickerDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自定義
+   * en-US: Custom
+   */
+  (key: "folia.options.customTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部清空
+   * zh-TW: 全部清空
+   * en-US: Clear All
+   */
+  (key: "folia.options.clearAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确定要清空所有缓存吗？
+   * zh-TW: 確定要清空所有緩存嗎？
+   * en-US: Are you sure you want to clear all cache?
+   */
+  (key: "folia.options.confirmClearAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: AI主题设置
+   * zh-TW: AI主題設置
+   * en-US: AI Theme Settings
+   */
+  (key: "folia.options.electronSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: AI 供应商
+   * zh-TW: AI 供應商
+   * en-US: AI Provider
+   */
+  (key: "folia.options.aiProvider", params?: TranslationParams): string;
+  /**
+   * zh-CN: 为AI使用系统代理
+   * zh-TW: 為AI使用系統代理
+   * en-US: Use System Proxy for AI
+   */
+  (key: "folia.options.useSystemProxyAI", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅将AI相关的网络请求通过系统代理路由。
+   * zh-TW: 僅將AI相關的網絡請求通過系統代理路由。
+   * en-US: Route strictly AI requests through system proxy.
+   */
+  (key: "folia.options.useSystemProxyAIDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: Gemini 密钥
+   * zh-TW: Gemini 密鑰
+   * en-US: Gemini API Key
+   */
+  (key: "folia.options.geminiApiKey", params?: TranslationParams): string;
+  /**
+   * zh-CN: 密钥
+   * zh-TW: 密鑰
+   * en-US: OpenAI API Key
+   */
+  (key: "folia.options.openaiApiKey", params?: TranslationParams): string;
+  /**
+   * zh-CN: OpenAI 接口链接
+   * zh-TW: OpenAI 接口鏈接
+   * en-US: OpenAI API URL
+   */
+  (key: "folia.options.openaiApiUrl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 模型
+   * zh-TW: 模型
+   * en-US: OpenAI Model
+   */
+  (key: "folia.options.openaiApiModel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 例如 gpt-4o、gpt-4.1-mini、deepseek-v4-flash。
+   * zh-TW: 例如 gpt-4o、gpt-4.1-mini、deepseek-v4-flash。
+   * en-US: Required by many OpenAI-compatible providers. Examples: gpt-4o, gpt-4.1-mini, deepseek-v4-flash.
+   */
+  (key: "folia.options.openaiApiModelDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 温度
+   * zh-TW: 溫度
+   * en-US: Temperature
+   */
+  (key: "folia.options.openaiApiTemperature", params?: TranslationParams): string;
+  /**
+   * zh-CN: 范围为 0–2；留空时使用默认值 0.7。
+   * zh-TW: 範圍為 0–2；留空時使用默認值 0.7。
+   * en-US: Range: 0–2. Defaults to 0.7 when left blank.
+   */
+  (key: "folia.options.openaiApiTemperatureDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网易云 API 服务本地运行中
+   * zh-TW: 網易雲 API 服務本地運行中
+   * en-US: Netease API backend runs locally.
+   */
+  (key: "folia.options.geminiApiKeyDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存
+   * zh-TW: 保存
+   * en-US: Save
+   */
+  (key: "folia.options.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动画模式
+   * zh-TW: 動畫模式
+   * en-US: Mode
+   */
+  (key: "folia.options.visualizerMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单卡片样式
+   * zh-TW: 歌單卡片樣式
+   * en-US: 3D Grid Card Style
+   */
+  (key: "folia.options.grid3dCardStyle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择首页歌单卡片样式：纯图片封面或经典的拍立得文本卡片。
+   * zh-TW: 選擇首頁歌單卡片樣式：純圖片封面或經典的拍立得文本卡片。
+   * en-US: Choose the appearance of each card in the 3D grid: cover image only or classic Polaroid text cards.
+   */
+  (key: "folia.options.grid3dCardStyleDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纯图片封面
+   * zh-TW: 純圖片封面
+   * en-US: Cover Image Only
+   */
+  (key: "folia.options.grid3dCardStyleImage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拍立得卡片
+   * zh-TW: 拍立得卡片
+   * en-US: Polaroid Card
+   */
+  (key: "folia.options.grid3dCardStyleCard", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莫奈参数
+   * zh-TW: 莫奈參數
+   * en-US: Monet Tuning
+   */
+  (key: "folia.options.monetSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制关键字、右侧肖像和底部频谱样式。
+   * zh-TW: 控制關鍵字、右側肖像和底部頻譜樣式。
+   * en-US: Control keyword coloring, right portrait, and bottom audio rail for Monet.
+   */
+  (key: "folia.options.monetSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莫奈背景
+   * zh-TW: 莫奈背景
+   * en-US: Monet Background
+   */
+  (key: "folia.options.monetBackgroundSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整莫奈背景图片来源、布局和后处理。
+   * zh-TW: 調整莫奈背景圖片來源、佈局和後處理。
+   * en-US: Adjust the Monet background image source, layout, and treatment.
+   */
+  (key: "folia.options.monetBackgroundSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景来源
+   * zh-TW: 背景來源
+   * en-US: Background Source
+   */
+  (key: "folia.options.monetBackgroundSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面
+   * zh-TW: 封面
+   * en-US: Cover-derived
+   */
+  (key: "folia.options.monetBackgroundSourceCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义图片
+   * zh-TW: 自定義圖片
+   * en-US: Uploaded Image
+   */
+  (key: "folia.options.monetBackgroundSourceUploaded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传背景图
+   * zh-TW: 上傳背景圖
+   * en-US: Upload Background
+   */
+  (key: "folia.options.monetUploadBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清空背景图
+   * zh-TW: 清空背景圖
+   * en-US: Clear Background
+   */
+  (key: "folia.options.monetClearBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 漫游背景
+   * zh-TW: 漫遊背景
+   * en-US: Nomand Background
+   */
+  (key: "folia.options.nomandBackgroundSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用当前明暗主题配色，将歌曲封面或自定义图片转换为像素画。
+   * zh-TW: 使用當前明暗主題配色，將歌曲封面或自定義圖片轉換為像素畫。
+   * en-US: Dither the current cover or uploaded image with colors from the active light/dark theme.
+   */
+  (key: "folia.options.nomandBackgroundSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 图片来源
+   * zh-TW: 圖片來源
+   * en-US: Image Source
+   */
+  (key: "folia.options.nomandBackgroundSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 像素画图案
+   * zh-TW: 像素畫圖案
+   * en-US: Dithering Pattern
+   */
+  (key: "folia.options.nomandBackgroundDitheringType", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网点尺寸
+   * zh-TW: 網點尺寸
+   * en-US: Grid Size
+   */
+  (key: "folia.options.nomandBackgroundSize", params?: TranslationParams): string;
+  /**
+   * zh-CN: 色阶数量
+   * zh-TW: 色階數量
+   * en-US: Color Steps
+   */
+  (key: "folia.options.nomandBackgroundColorSteps", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保留图片原色
+   * zh-TW: 保留圖片原色
+   * en-US: Keep Original Image Colors
+   */
+  (key: "folia.options.nomandBackgroundOriginalColors", params?: TranslationParams): string;
+  /**
+   * zh-CN: 反转图片明度
+   * zh-TW: 反轉圖片明度
+   * en-US: Invert Image Luminance
+   */
+  (key: "folia.options.nomandBackgroundInverted", params?: TranslationParams): string;
+  /**
+   * zh-CN: 可读性叠色
+   * zh-TW: 可讀性疊色
+   * en-US: Readability Overlay
+   */
+  (key: "folia.options.nomandBackgroundOverlay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在像素画前叠加当前主题背景色，提升歌词可读性。
+   * zh-TW: 在像素畫前疊加當前主題背景色，提升歌詞可讀性。
+   * en-US: Layer the active theme background color over the dithered image to improve lyric readability.
+   */
+  (key: "folia.options.nomandBackgroundOverlayDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 叠色透明度
+   * zh-TW: 疊色透明度
+   * en-US: Overlay Opacity
+   */
+  (key: "folia.options.nomandBackgroundOverlayOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐现背景
+   * zh-TW: 隱現背景
+   * en-US: Latent Background
+   */
+  (key: "folia.options.latentBackgroundSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 叠加封面取色的像素与流体着色器，并使用大范围音频速度响应。
+   * zh-TW: 疊加封面取色的像素與流體著色器，並使用大範圍音頻速度響應。
+   * en-US: Blend cover-colored pixel and fluid shaders with wide-range audio-driven speed.
+   */
+  (key: "folia.options.latentBackgroundSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 颜色来源
+   * zh-TW: 顏色來源
+   * en-US: Color Source
+   */
+  (key: "folia.options.latentColorSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面与主题
+   * zh-TW: 封面與主題
+   * en-US: Cover + Theme
+   */
+  (key: "folia.options.latentColorSourceCoverTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅封面取色
+   * zh-TW: 僅封面取色
+   * en-US: Cover Only
+   */
+  (key: "folia.options.latentColorSourceCoverOnly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 增强节拍响应
+   * zh-TW: 增強節拍響應
+   * en-US: Enhanced Beat Response
+   */
+  (key: "folia.options.latentEnhancedBeatResponse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 让像素和流体速度在宽频能量上升沿产生更明显的节拍脉冲。
+   * zh-TW: 讓像素和流體速度在寬頻能量上升沿產生更明顯的節拍脈衝。
+   * en-US: Accent broadband energy rises with stronger speed pulses in both pixel and fluid layers.
+   */
+  (key: "folia.options.latentEnhancedBeatResponseDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示图层
+   * zh-TW: 顯示圖層
+   * en-US: Visible Layers
+   */
+  (key: "folia.options.latentDisplayMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 像素
+   * zh-TW: 像素
+   * en-US: Pixel
+   */
+  (key: "folia.options.latentDisplayDithering", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流体
+   * zh-TW: 流體
+   * en-US: Fluid
+   */
+  (key: "folia.options.latentDisplayMesh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 混合
+   * zh-TW: 混合
+   * en-US: Mixed
+   */
+  (key: "folia.options.latentDisplayBoth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅在播放页启用动态效果
+   * zh-TW: 僅在播放頁啟用動態效果
+   * en-US: Animate Only on Player Page
+   */
+  (key: "folia.options.latentDynamicOnlyInPlayer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在主页保持隐现背景静止，以降低 GPU 资源占用。
+   * zh-TW: 在主頁保持隱現背景靜止，以降低 GPU 資源佔用。
+   * en-US: Keep Latent static on the home page to reduce GPU usage.
+   */
+  (key: "folia.options.latentDynamicOnlyInPlayerDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 像素背景
+   * zh-TW: 像素背景
+   * en-US: Pixel
+   */
+  (key: "folia.options.latentDitheringGroup", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流体背景
+   * zh-TW: 流體背景
+   * en-US: Fluid
+   */
+  (key: "folia.options.latentMeshGroup", params?: TranslationParams): string;
+  /**
+   * zh-CN: 基础速度
+   * zh-TW: 基礎速度
+   * en-US: Base Speed
+   */
+  (key: "folia.options.latentBaseSpeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频响应最大速度
+   * zh-TW: 音頻響應最大速度
+   * en-US: Audio Peak Speed
+   */
+  (key: "folia.options.latentAudioSpeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 像素尺寸
+   * zh-TW: 像素尺寸
+   * en-US: Pixel Size
+   */
+  (key: "folia.options.latentDitheringSize", params?: TranslationParams): string;
+  /**
+   * zh-CN: 像素层透明度
+   * zh-TW: 像素層透明度
+   * en-US: Pixel Layer Opacity
+   */
+  (key: "folia.options.latentDitheringOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流体扭曲
+   * zh-TW: 流體扭曲
+   * en-US: Fluid Distortion
+   */
+  (key: "folia.options.latentMeshDistortion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流体旋涡
+   * zh-TW: 流體旋渦
+   * en-US: Fluid Swirl
+   */
+  (key: "folia.options.latentMeshSwirl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景图片上传成功
+   * zh-TW: 背景圖片上傳成功
+   * en-US: Background image uploaded
+   */
+  (key: "folia.options.nomandBackgroundUploadSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景图片上传失败
+   * zh-TW: 背景圖片上傳失敗
+   * en-US: Failed to upload background image
+   */
+  (key: "folia.options.nomandBackgroundUploadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关键字着色
+   * zh-TW: 關鍵字著色
+   * en-US: Keyword Coloring
+   */
+  (key: "folia.options.monetKeywordColoring", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用
+   * zh-TW: 啟用
+   * en-US: Enable
+   */
+  (key: "folia.options.monetKeywordColoringOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Disable
+   */
+  (key: "folia.options.monetKeywordColoringOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 布局模式
+   * zh-TW: 佈局模式
+   * en-US: Layout Mode
+   */
+  (key: "folia.options.monetBackgroundLayout", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全屏叠色
+   * zh-TW: 全屏疊色
+   * en-US: Full Overlay
+   */
+  (key: "folia.options.monetLayoutFullOverlay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 半屏渐变
+   * zh-TW: 半屏漸變
+   * en-US: Half Pane
+   */
+  (key: "folia.options.monetLayoutHalfPane", params?: TranslationParams): string;
+  /**
+   * zh-CN: 图片水平偏移
+   * zh-TW: 圖片水平偏移
+   * en-US: Image Horizontal Offset
+   */
+  (key: "folia.options.monetHalfPaneOffsetX", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景图片后处理
+   * zh-TW: 背景圖片後處理
+   * en-US: Background Image Treatment
+   */
+  (key: "folia.options.monetBackgroundPostProcessing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景模糊
+   * zh-TW: 背景模糊
+   * en-US: Background Blur
+   */
+  (key: "folia.options.monetBackgroundBlur", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题叠色强度
+   * zh-TW: 主題疊色強度
+   * en-US: Overlay Strength
+   */
+  (key: "folia.options.monetBackgroundOverlayOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 去色
+   * zh-TW: 去色
+   * en-US: Desaturate
+   */
+  (key: "folia.options.monetBackgroundGrayscale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 饱和度
+   * zh-TW: 飽和度
+   * en-US: Saturation
+   */
+  (key: "folia.options.monetBackgroundSaturation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 水洗重着色
+   * zh-TW: 水洗重著色
+   * en-US: Washed Recolor
+   */
+  (key: "folia.options.monetBackgroundWash", params?: TranslationParams): string;
+  /**
+   * zh-CN: 水洗色彩
+   * zh-TW: 水洗色彩
+   * en-US: Wash Color
+   */
+  (key: "folia.options.monetBackgroundWashColorMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题色
+   * zh-TW: 主題色
+   * en-US: Theme Color
+   */
+  (key: "folia.options.monetBackgroundWashTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自定義
+   * en-US: Custom
+   */
+  (key: "folia.options.monetBackgroundWashCustom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义水洗色
+   * zh-TW: 自定義水洗色
+   * en-US: Custom Wash Color
+   */
+  (key: "folia.options.monetBackgroundWashCustomColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 右侧肖像来源
+   * zh-TW: 右側肖像來源
+   * en-US: Right Portrait Source
+   */
+  (key: "folia.options.monetPortraitSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面
+   * zh-TW: 封面
+   * en-US: Cover
+   */
+  (key: "folia.options.monetPortraitSourceCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义图片
+   * zh-TW: 自定義圖片
+   * en-US: Custom Image
+   */
+  (key: "folia.options.monetPortraitSourceCustom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面形状
+   * zh-TW: 封面形狀
+   * en-US: Cover Shape
+   */
+  (key: "folia.options.monetPortraitStyle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 长方形
+   * zh-TW: 長方形
+   * en-US: Rectangular
+   */
+  (key: "folia.options.monetPortraitStyleRectangular", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正方形
+   * zh-TW: 正方形
+   * en-US: Square
+   */
+  (key: "folia.options.monetPortraitStyleSquare", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖拽调整按钮
+   * zh-TW: 拖拽調整按鈕
+   * en-US: Drag Hanger
+   */
+  (key: "folia.options.monetPortraitDragHanger", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示
+   * zh-TW: 顯示
+   * en-US: Show
+   */
+  (key: "folia.options.monetPortraitDragHangerShow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏
+   * zh-TW: 隱藏
+   * en-US: Hide
+   */
+  (key: "folia.options.monetPortraitDragHangerHide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传肖像图
+   * zh-TW: 上傳肖像圖
+   * en-US: Upload Portrait
+   */
+  (key: "folia.options.monetUploadPortrait", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清空肖像图
+   * zh-TW: 清空肖像圖
+   * en-US: Clear Portrait
+   */
+  (key: "folia.options.monetClearPortrait", params?: TranslationParams): string;
+  /**
+   * zh-CN: 频谱样式
+   * zh-TW: 頻譜樣式
+   * en-US: Audio Style
+   */
+  (key: "folia.options.monetAudioStyle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 柱状
+   * zh-TW: 柱狀
+   * en-US: Bars
+   */
+  (key: "folia.options.monetAudioStyleBar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 线条
+   * zh-TW: 線條
+   * en-US: Line
+   */
+  (key: "folia.options.monetAudioStyleLine", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字体缩放
+   * zh-TW: 字體縮放
+   * en-US: Font Size Scale
+   */
+  (key: "folia.options.monetFontScale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示歌曲描述
+   * zh-TW: 顯示歌曲描述
+   * en-US: Show Song Description
+   */
+  (key: "folia.options.monetShowDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景来源
+   * zh-TW: 背景來源
+   * en-US: Background Source
+   */
+  (key: "folia.options.monetGroupBackgroundSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 布局与对齐
+   * zh-TW: 佈局與對齊
+   * en-US: Layout & Position
+   */
+  (key: "folia.options.monetGroupLayoutPosition", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视觉增强与滤镜
+   * zh-TW: 視覺增強與濾鏡
+   * en-US: Filters & Post-processing
+   */
+  (key: "folia.options.monetGroupFiltersPostProcessing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 叠色与水洗
+   * zh-TW: 疊色與水洗
+   * en-US: Color Tint & Wash
+   */
+  (key: "folia.options.monetGroupColorTintWash", params?: TranslationParams): string;
+  /**
+   * zh-CN: 备份与导入
+   * zh-TW: 備份與導入
+   * en-US: Backup & Import
+   */
+  (key: "folia.options.importExportTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通过标准 JSON 或 folia-theme 文本导入/导出配色主题与歌词动画设置。
+   * zh-TW: 通過標準 JSON 或 folia-theme 文本導入/導出配色主題與歌詞動畫設置。
+   * en-US: Import or export custom themes and visual settings using standard JSON or Folia-specific shortcodes.
+   */
+  (key: "folia.options.importExportDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在此处粘贴配置码、标准 JSON，或一条 OBS 链接...
+   * zh-TW: 在此處粘貼配置碼、標準 JSON，或一條 OBS 鏈接...
+   * en-US: Paste a config code, JSON, or an OBS URL here...
+   */
+  (key: "folia.options.importPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入配置
+   * zh-TW: 導入配置
+   * en-US: Import Config
+   */
+  (key: "folia.options.importBtn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制配置码
+   * zh-TW: 複製配置碼
+   * en-US: Copy Current Config
+   */
+  (key: "folia.options.exportBtn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制 JSON
+   * zh-TW: 複製 JSON
+   * en-US: Copy JSON
+   */
+  (key: "folia.options.copyJson", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制 OBS 静态链接
+   * zh-TW: 複製 OBS 靜態鏈接
+   * en-US: Copy Static OBS URL
+   */
+  (key: "folia.options.copyObsUrl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已复制（含自定义字体）；系统未安装字体时将自动回退默认。
+   * zh-TW: 已複製（含自定義字體）；系統未安裝字體時將自動回退默認。
+   * en-US: Copied (includes a custom font); It will fall back to default if not installed on the system.
+   */
+  (key: "folia.options.obsUrlCustomFontHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配置导入成功！
+   * zh-TW: 配置導入成功！
+   * en-US: Configuration imported successfully!
+   */
+  (key: "folia.options.importSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配置导入失败，请检查格式是否正确。
+   * zh-TW: 配置導入失敗，請檢查格式是否正確。
+   * en-US: Import failed, please check the format.
+   */
+  (key: "folia.options.importFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导出时包含的主题
+   * zh-TW: 導出時包含的主題
+   * en-US: Include Theme in Export
+   */
+  (key: "folia.options.exportThemeLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: AI 主题
+   * zh-TW: AI 主題
+   * en-US: AI Theme
+   */
+  (key: "folia.options.exportAiTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义主题
+   * zh-TW: 自定義主題
+   * en-US: Custom Theme
+   */
+  (key: "folia.options.exportCustomTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不包含主题
+   * zh-TW: 不包含主題
+   * en-US: No Theme
+   */
+  (key: "folia.options.exportNoTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏专辑
+   * zh-TW: 收藏專輯
+   * en-US: Subscribe Album
+   */
+  (key: "folia.options.subscribeAlbum", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏歌单
+   * zh-TW: 收藏歌單
+   * en-US: Subscribe Playlist
+   */
+  (key: "folia.options.subscribePlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏专辑
+   * zh-TW: 取消收藏專輯
+   * en-US: Unsubscribe Album
+   */
+  (key: "folia.options.unsubscribeAlbum", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏歌单
+   * zh-TW: 取消收藏歌單
+   * en-US: Unsubscribe Playlist
+   */
+  (key: "folia.options.unsubscribePlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 扫描中
+   * zh-TW: 掃描中
+   * en-US: Scanning
+   */
+  (key: "folia.options.scanning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在扫描媒体库
+   * zh-TW: 正在掃描媒體庫
+   * en-US: Scanning media library
+   */
+  (key: "folia.options.scanningMediaLib", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在后台提取元数据与封面，媒体库较大时会持续一段时间。
+   * zh-TW: 正在後臺提取元數據與封面，媒體庫較大時會持續一段時間。
+   * en-US: Extracting metadata and covers... This may take a while for large libraries.
+   */
+  (key: "folia.options.scanProgressDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 进度
+   * zh-TW: 進度
+   * en-US: Progress
+   */
+  (key: "folia.options.scanProgress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在扫描 {{folderName}}
+   * zh-TW: 正在掃描 {{folderName}}
+   * en-US: Scanning {{folderName}}
+   */
+  (key: "folia.options.scanningFolder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词过滤规则已更新
+   * zh-TW: 歌詞過濾規則已更新
+   * en-US: Lyric filter rule updated
+   */
+  (key: "folia.options.lyricFilterUpdated", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放队列
+   * zh-TW: 播放隊列
+   * en-US: Play Queue
+   */
+  (key: "folia.options.queueSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入队列的默认位置
+   * zh-TW: 加入隊列的默認位置
+   * en-US: Default position when adding to queue
+   */
+  (key: "folia.options.queueDefaultBehavior", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入播放队列按钮的默认行为。
+   * zh-TW: 加入播放隊列按鈕的默認行為。
+   * en-US: Default behavior when adding a song to the queue.
+   */
+  (key: "folia.options.queueDefaultBehaviorDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 追加到末尾
+   * zh-TW: 追加到末尾
+   * en-US: Append to end
+   */
+  (key: "folia.options.queueAppendLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入到播放队列的末尾。
+   * zh-TW: 加入到播放隊列的末尾。
+   * en-US: Add to the end of the play queue.
+   */
+  (key: "folia.options.queueAppendDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 追加到下一首
+   * zh-TW: 追加到下一首
+   * en-US: Append to next
+   */
+  (key: "folia.options.queueNextLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入当前播放歌曲后面。
+   * zh-TW: 加入當前播放歌曲後面。
+   * en-US: Add after the currently playing song.
+   */
+  (key: "folia.options.queueNextDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现新版本 v{{version}}
+   * zh-TW: 發現新版本 v{{version}}
+   * en-US: New version found v{{version}}
+   */
+  (key: "folia.options.newVersionFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在下载({{percent}}%)
+   * zh-TW: 正在下載({{percent}}%)
+   * en-US: Downloading ({{percent}}%)
+   */
+  (key: "folia.options.downloadingProgress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网盘下载
+   * zh-TW: 網盤下載
+   * en-US: CN Download
+   */
+  (key: "folia.options.chinaDownload", params?: TranslationParams): string;
+  /**
+   * zh-CN: 前往Github下载页
+   * zh-TW: 前往Github下載頁
+   * en-US: Go to GitHub release page
+   */
+  (key: "folia.options.goToGithubRelease", params?: TranslationParams): string;
+  /**
+   * zh-CN: 提示：下载需直连 GitHub (可能较慢)，国内环境推荐使用【网盘下载】。
+   * zh-TW: 提示：下載需直連 GitHub (可能較慢)，國內環境推薦使用【網盤下載】。
+   * en-US: Note: Download requires direct GitHub connection (may be slow in China). Use CN download instead.
+   */
+  (key: "folia.options.chinaDownloadHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击复制版本信息
+   * zh-TW: 點擊複製版本信息
+   * en-US: Click to copy version info
+   */
+  (key: "folia.options.versionCopiedHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已复制
+   * zh-TW: 已複製
+   * en-US: Copied
+   */
+  (key: "folia.options.versionCopiedToast", params?: TranslationParams): string;
+  /**
+   * zh-CN: Stage 已连接
+   * zh-TW: Stage 已連接
+   * en-US: Stage connected
+   */
+  (key: "folia.options.stageConnected", params?: TranslationParams): string;
+  /**
+   * zh-CN: Now Playing 已连接
+   * zh-TW: Now Playing 已連接
+   * en-US: Now Playing connected
+   */
+  (key: "folia.options.nowPlayingConnectedStatus", params?: TranslationParams): string;
+  /**
+   * zh-CN: Now Playing 未连接
+   * zh-TW: Now Playing 未連接
+   * en-US: Now Playing not connected
+   */
+  (key: "folia.options.nowPlayingDisconnectedStatus", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接状态：{{status}}
+   * zh-TW: 連接狀態：{{status}}
+   * en-US: Connection status: {{status}}
+   */
+  (key: "folia.options.nowPlayingStatusLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 固定连接 ws://localhost:9863/api/ws/lyric，请先在本机启动 now-playing 服务。
+   * zh-TW: 固定連接 ws://localhost:9863/api/ws/lyric，請先在本機啟動 now-playing 服務。
+   * en-US: Connects to ws://localhost:9863/api/ws/lyric. Start the now-playing service first.
+   */
+  (key: "folia.options.nowPlayingStatusHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词过滤正则
+   * zh-TW: 歌詞過濾正則
+   * en-US: Lyric Filter Regex
+   */
+  (key: "folia.options.lyricFilterRegex", params?: TranslationParams): string;
+  /**
+   * zh-CN: 为歌词解析后的完整文本列表配置逐行过滤规则。
+   * zh-TW: 為歌詞解析後的完整文本列表配置逐行過濾規則。
+   * en-US: Configure line-by-line filtering rules for the parsed lyrics text.
+   */
+  (key: "folia.options.lyricFilterRegexDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时间轴偏移
+   * zh-TW: 時間軸偏移
+   * en-US: Timeline Offset
+   */
+  (key: "folia.options.lyricTimelineOffset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅本次播放临时生效。正数让歌词更晚出现。
+   * zh-TW: 僅本次播放臨時生效。正數讓歌詞更晚出現。
+   * en-US: Temporary for this playback session. Positive values make lyrics later.
+   */
+  (key: "folia.options.lyricTimelineOffsetHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置时间轴偏移
+   * zh-TW: 重置時間軸偏移
+   * en-US: Reset timeline offset
+   */
+  (key: "folia.options.resetLyricTimelineOffset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无详细介绍
+   * zh-TW: 暫無詳細介紹
+   * en-US: No description available
+   */
+  (key: "folia.options.noDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 以下是 0.5.27 版本的新功能与改进
+   * zh-TW: 以下是 0.5.27 版本的新功能與改進
+   * en-US: Here are the new features and improvements in version 0.5.27.
+   */
+  (key: "folia.releaseNotes.v0_5_27.intro", params?: TranslationParams): string;
+  /**
+   * zh-CN: Diorama「镜台」3D 歌词模式
+   * zh-TW: Diorama「鏡臺」3D 歌詞模式
+   * en-US: Diorama 3D Lyrics Mode
+   */
+  (key: "folia.releaseNotes.v0_5_27.diorama.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词化作空间中的 3D 文字，镜头沿路径逐句飞行，并支持跟唱辉光、粒子与主题联动。
+   * zh-TW: 歌詞化作空間中的 3D 文字，鏡頭沿路徑逐句飛行，並支持跟唱輝光、粒子與主題聯動。
+   * en-US: Lyrics become 3D text in space as the camera flies from line to line, with sing-along glow, particles, and theme-aware visuals.
+   */
+  (key: "folia.releaseNotes.v0_5_27.diorama.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时间轴偏移保存
+   * zh-TW: 時間軸偏移保存
+   * en-US: Saved Timeline Offsets
+   */
+  (key: "folia.releaseNotes.v0_5_27.lyricOffsetMemory.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手动调整的歌词时间轴偏移会按歌曲保存，再次播放同一首歌时自动恢复。
+   * zh-TW: 手動調整的歌詞時間軸偏移會按歌曲保存，再次播放同一首歌時自動恢復。
+   * en-US: Manual lyric timeline adjustments are saved per song and restored automatically the next time it plays.
+   */
+  (
+    key: "folia.releaseNotes.v0_5_27.lyricOffsetMemory.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 海报墙搜索与手势
+   * zh-TW: 海報牆搜索與手勢
+   * en-US: Poster-Wall Search and Gestures
+   */
+  (key: "folia.releaseNotes.v0_5_27.posterWallSearch.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 各海报墙页面现在支持列表搜索，也可以直接输入文字或使用搜索手势快速打开搜索。
+   * zh-TW: 各海報牆頁面現在支持列表搜索，也可以直接輸入文字或使用搜索手勢快速打開搜索。
+   * en-US: Poster-wall pages now support list search, direct typing, and a search gesture for quickly opening search.
+   */
+  (
+    key: "folia.releaseNotes.v0_5_27.posterWallSearch.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 以下是 0.6.0 版本的新功能与改进
+   * zh-TW: 以下是 0.6.0 版本的新功能與改進
+   * en-US: Here are the new features and improvements in version 0.6.0.
+   */
+  (key: "folia.releaseNotes.v0_6_0.intro", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地曲库 2.0
+   * zh-TW: 本地曲庫 2.0
+   * en-US: Local Library 2.0
+   */
+  (key: "folia.releaseNotes.v0_6_0.localLibraryV2.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地音乐库全面更新，支持多文件夹、专辑与艺术家跳转、元数据整理和在线匹配。
+   * zh-TW: 本地音樂庫全面更新，支持多文件夾、專輯與藝術家跳轉、元數據整理和在線匹配。
+   * en-US: The local music library now uses a progressive poster-wall workflow for folders, albums, artists, and playlists, with stronger import, rescan, and cover-cache handling.
+   */
+  (key: "folia.releaseNotes.v0_6_0.localLibraryV2.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 艺术家与专辑实体编辑
+   * zh-TW: 藝術家與專輯實體編輯
+   * en-US: Artist and Album Entity Editing
+   */
+  (key: "folia.releaseNotes.v0_6_0.entityEditing.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 可以修改展示名称、搜索并合并重复实体，或选择歌曲拆分到新的或已有的艺术家与专辑。
+   * zh-TW: 可以修改展示名稱、搜索併合並重復實體，或選擇歌曲拆分到新的或已有的藝術家與專輯。
+   * en-US: Rename displayed identities, search and merge duplicates, or move selected songs into new or existing artist and album entities.
+   */
+  (key: "folia.releaseNotes.v0_6_0.entityEditing.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 统一搜索与队列
+   * zh-TW: 統一搜索與隊列
+   * en-US: Unified Search and Navigation
+   */
+  (key: "folia.releaseNotes.v0_6_0.unifiedSearch.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索功能支持网易云、本地库、Navidrome多来源; 支持构建混合了在线歌曲与本地歌曲的播放队列。
+   * zh-TW: 搜索功能支持網易雲、本地庫、Navidrome多來源; 支持構建混合了在線歌曲與本地歌曲的播放隊列。
+   * en-US: The search workspace covers NetEase, local, Navidrome, and the current queue, while navigation history, map view, and detail links make browsing more continuous.
+   */
+  (key: "folia.releaseNotes.v0_6_0.unifiedSearch.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 海报墙增强
+   * zh-TW: 海報牆增強
+   * en-US: Smarter Metadata Matching
+   */
+  (key: "folia.releaseNotes.v0_6_0.metadataMatching.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 海报墙现在支持基于搜索来筛选歌曲并加入队列，优化了卡片加载动画
+   * zh-TW: 海報牆現在支持基於搜索來篩選歌曲並加入隊列，優化了卡片加載動畫
+   * en-US: Local songs now have duration-assisted matching, batch metadata and cover organization, manual online matching, and reliable recovery of original local information.
+   */
+  (
+    key: "folia.releaseNotes.v0_6_0.metadataMatching.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 每日推荐
+   * zh-TW: 每日推薦
+   * en-US: Daily Recommendations and Playlist Editing
+   */
+  (key: "folia.releaseNotes.v0_6_0.dailyRecommendations.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 现在可以浏览网易云日推歌曲。
+   * zh-TW: 現在可以瀏覽網易雲日推歌曲。
+   * en-US: NetEase daily recommendations can be browsed, managed, and queued directly, and playlist editing now has smoother interaction feedback.
+   */
+  (
+    key: "folia.releaseNotes.v0_6_0.dailyRecommendations.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 全新可视化背景系统
+   * zh-TW: 全新可視化背景系統
+   * en-US: New Visualizer Background System
+   */
+  (
+    key: "folia.releaseNotes.v0_6_0.visualizerBackgrounds.title",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 新增隐现与漫游背景，支持静态模式、字幕可读性背景、颜色来源和节拍响应，并统一了背景设置与命令。
+   * zh-TW: 新增隱現與漫遊背景，支持靜態模式、字幕可讀性背景、顏色來源和節拍響應，並統一了背景設置與命令。
+   * en-US: Latent and Nomand backgrounds add static mode, subtitle readability overlays, configurable color sources, beat response, and unified background settings and commands.
+   */
+  (
+    key: "folia.releaseNotes.v0_6_0.visualizerBackgrounds.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 镜台点云重构
+   * zh-TW: 鏡臺點雲重構
+   * en-US: Diorama Particle Rework
+   */
+  (key: "folia.releaseNotes.v0_6_0.dioramaRework.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜台加入涟漪驱动的点云与长廊双模式、更多粒子形态、关键字着色和可调的粒子密度与辉光。
+   * zh-TW: 鏡臺加入漣漪驅動的點雲與長廊雙模式、更多粒子形態、關鍵字著色和可調的粒子密度與輝光。
+   * en-US: Diorama now offers ripple-driven point-cloud and corridor modes, more particle shapes, keyword coloring, and controls for density and glow.
+   */
+  (key: "folia.releaseNotes.v0_6_0.dioramaRework.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 以下是 0.6.1 版本的新功能与改进
+   * zh-TW: 以下是 0.6.1 版本的新功能與改進
+   * en-US: Here are the new features and improvements in version 0.6.1.
+   */
+  (key: "folia.releaseNotes.v0_6_1.intro", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设置页面重构
+   * zh-TW: 設置頁面重構
+   * en-US: Redesigned Settings Page
+   */
+  (key: "folia.releaseNotes.v0_6_1.settingsRework.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全新重构的设置页面，结构更清晰、分类更合理，提供更舒适易用的配置体验。
+   * zh-TW: 全新重構的設置頁面，結構更清晰、分類更合理，提供更舒適易用的配置體驗。
+   * en-US: A completely redesigned settings interface with cleaner structure, logical grouping, and improved usability.
+   */
+  (key: "folia.releaseNotes.v0_6_1.settingsRework.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 界面元素自动隐藏
+   * zh-TW: 界面元素自動隱藏
+   * en-US: Auto-Hide Controls
+   */
+  (key: "folia.releaseNotes.v0_6_1.autoHideChrome.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 可自由调整是否在静止时自动隐藏顶部标题栏与播放页返回按键。
+   * zh-TW: 可自由調整是否在靜止時自動隱藏頂部標題欄與播放頁返回按鍵。
+   * en-US: Optionally toggle auto-hiding for the top titlebar and player return button when idle.
+   */
+  (key: "folia.releaseNotes.v0_6_1.autoHideChrome.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语音输入自动暂停
+   * zh-TW: 語音輸入自動暫停
+   * en-US: Voice Input Auto-Pause
+   */
+  (key: "folia.releaseNotes.v0_6_1.voiceInputPause.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: Windows 环境下支持在触发系统语音输入时自动暂停播放，可在实验室设置中开启。
+   * zh-TW: Windows 環境下支持在觸發系統語音輸入時自動暫停播放，可在實驗室設置中開啟。
+   * en-US: Automatically pause playback when using Windows voice typing, available in Lab Settings.
+   */
+  (
+    key: "folia.releaseNotes.v0_6_1.voiceInputPause.description",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: OBS 静态链接分享
+   * zh-TW: OBS 靜態鏈接分享
+   * en-US: OBS Static Link Sharing
+   */
+  (key: "folia.releaseNotes.v0_6_1.obsStaticLink.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: Web 版本支持导出与分享 OBS 静态串流链接，方便推流工具直接引用。
+   * zh-TW: Web 版本支持導出與分享 OBS 靜態串流鏈接，方便推流工具直接引用。
+   * en-US: Web version now supports generating and sharing static OBS overlay links for streaming setups.
+   */
+  (key: "folia.releaseNotes.v0_6_1.obsStaticLink.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前没有可录制的播放内容。
+   * zh-TW: 當前沒有可錄製的播放內容。
+   * en-US: No recordable playback content.
+   */
+  (key: "folia.export.noRecordableContent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前运行环境不支持窗口录制。
+   * zh-TW: 當前運行環境不支持窗口錄製。
+   * en-US: Window recording is not supported in this environment.
+   */
+  (key: "folia.export.windowRecordingUnsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前系统不支持可用的视频导出编码。
+   * zh-TW: 當前系統不支持可用的視頻導出編碼。
+   * en-US: No available video export codec on this system.
+   */
+  (key: "folia.export.noExportCodec", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法将主播放器窗口调整到导出分辨率。
+   * zh-TW: 無法將主播放器窗口調整到導出分辨率。
+   * en-US: Failed to resize the player window to export resolution.
+   */
+  (key: "folia.export.windowResizeFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 录制已取消。
+   * zh-TW: 錄製已取消。
+   * en-US: Recording cancelled.
+   */
+  (key: "folia.export.recordingCancelled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 录制器发生未知错误。
+   * zh-TW: 錄製器發生未知錯誤。
+   * en-US: Recorder encountered an unknown error.
+   */
+  (key: "folia.export.recorderUnknownError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知歌手
+   * zh-TW: 未知歌手
+   * en-US: Unknown Artist
+   */
+  (key: "folia.player.unknownArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知专辑
+   * zh-TW: 未知專輯
+   * en-US: Unknown Album
+   */
+  (key: "folia.player.unknownAlbum", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文件夹
+   * zh-TW: 文件夾
+   * en-US: Folders & Playlists
+   */
+  (key: "folia.localMusic.foldersAndPlaylists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Albums
+   */
+  (key: "folia.localMusic.albums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 艺术家
+   * zh-TW: 藝術家
+   * en-US: Artists
+   */
+  (key: "folia.localMusic.artists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlists
+   */
+  (key: "folia.localMusic.customPlaylists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我喜欢的音乐
+   * zh-TW: 我喜歡的音樂
+   * en-US: Liked Songs
+   */
+  (key: "folia.localMusic.favoritePlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知专辑
+   * zh-TW: 未知專輯
+   * en-US: Unknown Album
+   */
+  (key: "folia.localMusic.unknownAlbum", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知艺术家
+   * zh-TW: 未知藝術家
+   * en-US: Unknown Artist
+   */
+  (key: "folia.localMusic.unknownArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地
+   * zh-TW: 本地
+   * en-US: Folder
+   */
+  (key: "folia.localMusic.folder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部歌曲
+   * zh-TW: 全部歌曲
+   * en-US: All Songs
+   */
+  (key: "folia.localMusic.allSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入文件夹
+   * zh-TW: 導入文件夾
+   * en-US: Import Folder
+   */
+  (key: "folia.localMusic.importFolder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入中...
+   * zh-TW: 導入中...
+   * en-US: Importing...
+   */
+  (key: "folia.localMusic.importing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无本地音乐
+   * zh-TW: 暫無本地音樂
+   * en-US: No local music imported yet
+   */
+  (key: "folia.localMusic.noLocalMusic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到文件夹
+   * zh-TW: 未找到文件夾
+   * en-US: No folders found
+   */
+  (key: "folia.localMusic.noFoldersFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到专辑
+   * zh-TW: 未找到專輯
+   * en-US: No albums found
+   */
+  (key: "folia.localMusic.noAlbumsFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换到专辑视图
+   * zh-TW: 切換到專輯視圖
+   * en-US: Switch to Albums
+   */
+  (key: "folia.localMusic.switchToAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换到文件夹视图
+   * zh-TW: 切換到文件夾視圖
+   * en-US: Switch to Folders
+   */
+  (key: "folia.localMusic.switchToFolders", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新导入
+   * zh-TW: 重新導入
+   * en-US: Re-import
+   */
+  (key: "folia.localMusic.reimport", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新加载
+   * zh-TW: 重新加載
+   * en-US: Reload
+   */
+  (key: "folia.localMusic.reload", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除
+   * zh-TW: 刪除
+   * en-US: Delete
+   */
+  (key: "folia.localMusic.delete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从库中删除
+   * zh-TW: 從庫中刪除
+   * en-US: Delete from Library
+   */
+  (key: "folia.localMusic.deleteFromLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "folia.localMusic.cancel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确认匹配
+   * zh-TW: 確認匹配
+   * en-US: Confirm Match
+   */
+  (key: "folia.localMusic.confirmMatch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配中...
+   * zh-TW: 匹配中...
+   * en-US: Matching...
+   */
+  (key: "folia.localMusic.matching", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌曲...
+   * zh-TW: 搜索歌曲...
+   * en-US: Search for song...
+   */
+  (key: "folia.localMusic.searchForSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索
+   * zh-TW: 搜索
+   * en-US: Search
+   */
+  (key: "folia.localMusic.search", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索中...
+   * zh-TW: 搜索中...
+   * en-US: Searching...
+   */
+  (key: "folia.localMusic.searching", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到结果，请尝试不同的关键词。
+   * zh-TW: 未找到結果，請嘗試不同的關鍵詞。
+   * en-US: No results found. Try a different search query.
+   */
+  (key: "folia.localMusic.noResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配歌词
+   * zh-TW: 匹配歌詞
+   * en-US: Match Data
+   */
+  (key: "folia.localMusic.matchLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索并选择正确的歌曲以匹配：
+   * zh-TW: 搜索並選擇正確的歌曲以匹配：
+   * en-US: Search and select the correct song for:
+   */
+  (key: "folia.localMusic.matchLyricsDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除文件夹？
+   * zh-TW: 刪除文件夾？
+   * en-US: Delete Folder?
+   */
+  (key: "folia.localMusic.deleteFolderTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 您即将从库中移除 "{{folderName}}"。
+   * zh-TW: 您即將從庫中移除 "{{folderName}}"。
+   * en-US: You are about to remove "{{folderName}}" from your library.
+   */
+  (key: "folia.localMusic.deleteFolderMessage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这将从您的库中移除包含嵌套子目录在内的共 {{count}} 首歌曲。
+   * zh-TW: 這將從您的庫中移除包含嵌套子目錄在內的共 {{count}} 首歌曲。
+   * en-US: This will remove a total of {{count}} song(s) from your library, including nested subfolders.
+   */
+  (key: "folia.localMusic.deleteFolderCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 注意：这只会从库中移除歌曲，不会影响您的磁盘文件。
+   * zh-TW: 注意：這隻會從庫中移除歌曲，不會影響您的磁盤文件。
+   * en-US: Note: This will only remove songs from your library. Your files on disk will not be affected.
+   */
+  (key: "folia.localMusic.deleteFolderNote", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前浏览器不支持文件夹导入
+   * zh-TW: 當前瀏覽器不支持文件夾導入
+   * en-US: Folder import not supported in this browser or cancelled
+   */
+  (key: "folia.localMusic.importNotSupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新同步文件夹失败，请重试。
+   * zh-TW: 重新同步文件夾失敗，請重試。
+   * en-US: Failed to resync folder. Please try again.
+   */
+  (key: "folia.localMusic.resyncFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除文件夹失败，请重试。
+   * zh-TW: 刪除文件夾失敗，請重試。
+   * en-US: Failed to delete folder. Please try again.
+   */
+  (key: "folia.localMusic.deleteFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配状态
+   * zh-TW: 匹配狀態
+   * en-US: Match Status
+   */
+  (key: "folia.localMusic.matchStatus", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先使用在线歌词
+   * zh-TW: 優先使用在線歌詞
+   * en-US: Prefer Online
+   */
+  (key: "folia.localMusic.preferOnline", params?: TranslationParams): string;
+  /**
+   * zh-CN: 强制回退服务器歌词
+   * zh-TW: 強制回退服務器歌詞
+   * en-US: Force Server
+   */
+  (key: "folia.localMusic.forceServer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不使用在线匹配
+   * zh-TW: 不使用在線匹配
+   * en-US: Skip Online Match
+   */
+  (key: "folia.localMusic.skipOnlineMatch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存...
+   * zh-TW: 保存...
+   * en-US: Saving...
+   */
+  (key: "folia.localMusic.saving", params?: TranslationParams): string;
+  /**
+   * zh-CN: 获取歌词失败
+   * zh-TW: 獲取歌詞失敗
+   * en-US: Failed to fetch lyrics for selected song
+   */
+  (key: "folia.localMusic.matchFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无可用歌词
+   * zh-TW: 無可用歌詞
+   * en-US: No lyrics available
+   */
+  (key: "folia.localMusic.noLyricsAvailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不使用在线数据
+   * zh-TW: 不使用在線數據
+   * en-US: Don't use online metadata
+   */
+  (key: "folia.localMusic.dontUseOnlineMetadata", params?: TranslationParams): string;
+  /**
+   * zh-CN: 非本地歌曲
+   * zh-TW: 非本地歌曲
+   * en-US: Not a local song
+   */
+  (key: "folia.localMusic.notALocalSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文件信息
+   * zh-TW: 文件信息
+   * en-US: File Info
+   */
+  (key: "folia.localMusic.fileInfo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文件名
+   * zh-TW: 文件名
+   * en-US: Filename
+   */
+  (key: "folia.localMusic.filename", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时长匹配
+   * zh-TW: 時長匹配
+   * en-US: Duration match
+   */
+  (key: "folia.localMusic.durationMatched", params?: TranslationParams): string;
+  /**
+   * zh-CN: 大小
+   * zh-TW: 大小
+   * en-US: Size
+   */
+  (key: "folia.localMusic.size", params?: TranslationParams): string;
+  /**
+   * zh-CN: 路径
+   * zh-TW: 路徑
+   * en-US: Path
+   */
+  (key: "folia.localMusic.path", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "folia.localMusic.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在线匹配
+   * zh-TW: 在線匹配
+   * en-US: Match Online
+   */
+  (key: "folia.localMusic.matchOnline", params?: TranslationParams): string;
+  /**
+   * zh-CN: 原文
+   * zh-TW: 原文
+   * en-US: Original
+   */
+  (key: "folia.localMusic.original", params?: TranslationParams): string;
+  /**
+   * zh-CN: 译文
+   * zh-TW: 譯文
+   * en-US: Translation
+   */
+  (key: "folia.localMusic.translation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地
+   * zh-TW: 本地
+   * en-US: Local
+   */
+  (key: "folia.localMusic.statusLocal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内嵌
+   * zh-TW: 內嵌
+   * en-US: Embedded
+   */
+  (key: "folia.localMusic.statusEmbedded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在线
+   * zh-TW: 在線
+   * en-US: Online
+   */
+  (key: "folia.localMusic.statusOnline", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入
+   * zh-TW: 導入
+   * en-US: Imported
+   */
+  (key: "folia.localMusic.statusImported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无
+   * zh-TW: 無
+   * en-US: None
+   */
+  (key: "folia.localMusic.statusNone", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择 LRC 文件
+   * zh-TW: 選擇 LRC 文件
+   * en-US: Select LRC File
+   */
+  (key: "folia.localMusic.selectLrcFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入歌词文件
+   * zh-TW: 導入歌詞文件
+   * en-US: Import Lyrics File
+   */
+  (key: "folia.localMusic.importLyricsFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入文件
+   * zh-TW: 導入文件
+   * en-US: Imported File
+   */
+  (key: "folia.localMusic.importedLyricsFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择译文 LRC
+   * zh-TW: 選擇譯文 LRC
+   * en-US: Select Translation LRC
+   */
+  (key: "folia.localMusic.selectTranslationLrc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Off
+   */
+  (key: "folia.localMusic.replayGainOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 单曲
+   * zh-TW: 單曲
+   * en-US: Track
+   */
+  (key: "folia.localMusic.replayGainTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Album
+   */
+  (key: "folia.localMusic.replayGainAlbum", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未检测到 ReplayGain
+   * zh-TW: 未檢測到 ReplayGain
+   * en-US: No ReplayGain detected
+   */
+  (key: "folia.localMusic.replayGainUnavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "folia.localMusic.lyricsSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面
+   * zh-TW: 封面
+   * en-US: Cover
+   */
+  (key: "folia.localMusic.coverSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 元数据
+   * zh-TW: 元數據
+   * en-US: Metadata
+   */
+  (key: "folia.localMusic.metadataSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 酷狗音乐暂不提供封面，选择封面时会保留本地封面。
+   * zh-TW: 酷狗音樂暫不提供封面，選擇封面時會保留本地封面。
+   * en-US: Kugou does not provide cover art, so local cover art will be kept.
+   */
+  (key: "folia.localMusic.kugouNoCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌手
+   * zh-TW: 歌手
+   * en-US: Artist
+   */
+  (key: "folia.localMusic.artistLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Album
+   */
+  (key: "folia.localMusic.albumLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请在左侧选择一首歌曲
+   * zh-TW: 請在左側選擇一首歌曲
+   * en-US: Select a song on the left
+   */
+  (key: "folia.localMusic.noSelection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词预览
+   * zh-TW: 歌詞預覽
+   * en-US: Lyric Preview
+   */
+  (key: "folia.localMusic.lyricPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击预览歌词
+   * zh-TW: 點擊預覽歌詞
+   * en-US: Click to Preview
+   */
+  (key: "folia.localMusic.clickToPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 逐字
+   * zh-TW: 逐字
+   * en-US: Word-by-word
+   */
+  (key: "folia.localMusic.wordByWord", params?: TranslationParams): string;
+  /**
+   * zh-CN: 含翻译
+   * zh-TW: 含翻譯
+   * en-US: Translation Available
+   */
+  (key: "folia.localMusic.hasTranslation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载歌词中...
+   * zh-TW: 加載歌詞中...
+   * en-US: Loading lyrics...
+   */
+  (key: "folia.localMusic.loadingLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存
+   * zh-TW: 保存
+   * en-US: Save
+   */
+  (key: "folia.localMusic.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 需要恢复本地音乐访问权限
+   * zh-TW: 需要恢復本地音樂訪問權限
+   * en-US: Restore Folder Access
+   */
+  (key: "folia.localMusic.permissionNeeded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击恢复
+   * zh-TW: 點擊恢復
+   * en-US: Restore
+   */
+  (key: "folia.localMusic.grantPermission", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择封面图片
+   * zh-TW: 選擇封面圖片
+   * en-US: Choose Cover Image
+   */
+  (key: "folia.localMusic.chooseCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加到歌单
+   * zh-TW: 添加到歌單
+   * en-US: Add to Playlist
+   */
+  (key: "folia.localMusic.addToPlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存为歌单
+   * zh-TW: 保存為歌單
+   * en-US: Save as Playlist
+   */
+  (key: "folia.localMusic.saveQueueAsPlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新建歌单
+   * zh-TW: 新建歌單
+   * en-US: Create Playlist
+   */
+  (key: "folia.localMusic.createPlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入歌单名称
+   * zh-TW: 輸入歌單名稱
+   * en-US: Enter playlist name
+   */
+  (key: "folia.localMusic.enterPlaylistName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到艺术家
+   * zh-TW: 未找到藝術家
+   * en-US: No artists found
+   */
+  (key: "folia.localMusic.noArtistsFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有歌单
+   * zh-TW: 還沒有歌單
+   * en-US: No playlists yet
+   */
+  (key: "folia.localMusic.noPlaylistsFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑歌单
+   * zh-TW: 編輯歌單
+   * en-US: Edit Playlist
+   */
+  (key: "folia.localMusic.editPlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完成编辑
+   * zh-TW: 完成編輯
+   * en-US: Finish Editing
+   */
+  (key: "folia.localMusic.finishEditing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除歌单
+   * zh-TW: 刪除歌單
+   * en-US: Delete Playlist
+   */
+  (key: "folia.localMusic.deletePlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{kind}}信息
+   * zh-TW: {{kind}}信息
+   * en-US: {{kind}} Info
+   */
+  (key: "folia.localMusic.entityInfo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 展示名称
+   * zh-TW: 展示名稱
+   * en-US: Display Name
+   */
+  (key: "folia.localMusic.entityDisplayName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 合并{{kind}}
+   * zh-TW: 合併{{kind}}
+   * en-US: Merge {{kind}}
+   */
+  (key: "folia.localMusic.mergeEntity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拆分{{kind}}
+   * zh-TW: 拆分{{kind}}
+   * en-US: Split {{kind}}
+   */
+  (key: "folia.localMusic.splitEntity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择{{kind}}
+   * zh-TW: 選擇{{kind}}
+   * en-US: Select: {{kind}}
+   */
+  (key: "folia.localMusic.selectEntity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新{{kind}}名称
+   * zh-TW: 新{{kind}}名稱
+   * en-US: New {{kind}} name
+   */
+  (key: "folia.localMusic.newEntityName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑展示身份、合并重复{{kind}}，或将选中的歌曲拆分到新建/已有{{kind}}。
+   * zh-TW: 編輯展示身份、合併重複{{kind}}，或將選中的歌曲拆分到新建/已有{{kind}}。
+   * en-US: Edit the displayed identity, merge duplicates, or move selected songs into a new or existing {{kind}}.
+   */
+  (key: "folia.localMusic.entityEditorHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入希望显示给用户的名称，或采用从歌曲元数据整理出的提示。
+   * zh-TW: 輸入希望顯示給用戶的名稱，或採用從歌曲元數據整理出的提示。
+   * en-US: Type the name listeners should see, or use a suggestion extracted from song metadata.
+   */
+  (key: "folia.localMusic.entityNameHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 元数据提示
+   * zh-TW: 元數據提示
+   * en-US: Metadata suggestions
+   */
+  (key: "folia.localMusic.metadataSuggestions", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入名称查找重复{{kind}}；选中项会合并到当前{{kind}}。
+   * zh-TW: 輸入名稱查找重複{{kind}}；選中項會合併到當前{{kind}}。
+   * en-US: Type a name to find duplicates for {{kind}}. The selection will be merged into the current one.
+   */
+  (key: "folia.localMusic.entityMergeHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入名称搜索{{kind}}...
+   * zh-TW: 輸入名稱搜索{{kind}}...
+   * en-US: Search {{kind}} names...
+   */
+  (key: "folia.localMusic.searchEntity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有匹配的{{kind}}
+   * zh-TW: 沒有匹配的{{kind}}
+   * en-US: No {{kind}} matches
+   */
+  (key: "folia.localMusic.noEntityMatches", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从右侧选择歌曲，然后添加新建或已有{{kind}}作为目标；歌手可添加多个目标。
+   * zh-TW: 從右側選擇歌曲，然後添加新建或已有{{kind}}作為目標；歌手可添加多個目標。
+   * en-US: Choose songs on the right, then add a new or existing {{kind}} destination. Artists support multiple destinations.
+   */
+  (key: "folia.localMusic.entitySplitHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新建或选择{{kind}}并拆分
+   * zh-TW: 新建或選擇{{kind}}並拆分
+   * en-US: Create or select {{kind}}
+   */
+  (key: "folia.localMusic.splitEntityEditorTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重命名或合并{{kind}}
+   * zh-TW: 重命名或合併{{kind}}
+   * en-US: Rename or merge {{kind}}
+   */
+  (key: "folia.localMusic.editEntityTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入新名称或搜索已有{{kind}}...
+   * zh-TW: 輸入新名稱或搜索已有{{kind}}...
+   * en-US: Enter a new name or search existing {{kind}}...
+   */
+  (key: "folia.localMusic.newOrExistingEntity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择作为拆分目标
+   * zh-TW: 選擇作為拆分目標
+   * en-US: Select as destination
+   */
+  (key: "folia.localMusic.selectAsSplitTarget", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择以进行合并
+   * zh-TW: 選擇以進行合併
+   * en-US: Select to merge
+   */
+  (key: "folia.localMusic.selectForMerge", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换合并方向
+   * zh-TW: 切換合併方向
+   * en-US: Switch merge direction
+   */
+  (key: "folia.localMusic.switchMergeDirection", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 首歌曲将移入
+   * zh-TW: {{count}} 首歌曲將移入
+   * en-US: {{count}} songs will move to
+   */
+  (key: "folia.localMusic.moveMembersPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 将 {{count}} 首歌曲移入“{{name}}”
+   * zh-TW: 將 {{count}} 首歌曲移入“{{name}}”
+   * en-US: Move {{count}} songs to “{{name}}”
+   */
+  (key: "folia.localMusic.moveSelectedToExistingAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确认重命名
+   * zh-TW: 確認重命名
+   * en-US: Confirm rename
+   */
+  (key: "folia.localMusic.confirmRename", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确认合并入“{{name}}”
+   * zh-TW: 確認合併入“{{name}}”
+   * en-US: Merge into “{{name}}”
+   */
+  (key: "folia.localMusic.confirmMergeInto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索成员歌曲...
+   * zh-TW: 搜索成員歌曲...
+   * en-US: Search member songs...
+   */
+  (key: "folia.localMusic.searchEntitySongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有匹配的歌曲
+   * zh-TW: 沒有匹配的歌曲
+   * en-US: No matching songs
+   */
+  (key: "folia.localMusic.noEntitySongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已选择 {{count}} 首歌曲
+   * zh-TW: 已選擇 {{count}} 首歌曲
+   * en-US: {{count}} songs selected
+   */
+  (key: "folia.localMusic.selectedSongCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 首成员歌曲
+   * zh-TW: {{count}} 首成員歌曲
+   * en-US: {{count}} member songs
+   */
+  (key: "folia.localMusic.entityMemberCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 展示名称已保存
+   * zh-TW: 展示名稱已保存
+   * en-US: Display name saved
+   */
+  (key: "folia.localMusic.entitySaved", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{kind}}已合并
+   * zh-TW: {{kind}}已合併
+   * en-US: {{kind}} merged
+   */
+  (key: "folia.localMusic.entityMerged", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新{{kind}}已创建
+   * zh-TW: 新{{kind}}已創建
+   * en-US: New {{kind}} created
+   */
+  (key: "folia.localMusic.entitySplitDone", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲已移入已有{{kind}}
+   * zh-TW: 歌曲已移入已有{{kind}}
+   * en-US: Songs moved to existing {{kind}}
+   */
+  (key: "folia.localMusic.entityMembersMoved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 操作失败，请重试。
+   * zh-TW: 操作失敗，請重試。
+   * en-US: Operation failed. Please try again.
+   */
+  (key: "folia.localMusic.entityOperationFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 合并到此{{kind}}
+   * zh-TW: 合併到此{{kind}}
+   * en-US: Merge into this {{kind}}
+   */
+  (key: "folia.localMusic.mergeIntoCurrent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拆分成员歌曲
+   * zh-TW: 拆分成員歌曲
+   * en-US: Split member songs
+   */
+  (key: "folia.localMusic.chooseSongsToSplit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回名称编辑
+   * zh-TW: 返回名稱編輯
+   * en-US: Back to name editing
+   */
+  (key: "folia.localMusic.backToEntityEditing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从 {{count}} 首歌曲创建{{kind}}
+   * zh-TW: 從 {{count}} 首歌曲創建{{kind}}
+   * en-US: Create {{kind}} from {{count}} songs
+   */
+  (key: "folia.localMusic.splitSelectedAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加歌手目标
+   * zh-TW: 添加歌手目標
+   * en-US: Add artist destination
+   */
+  (key: "folia.localMusic.addArtistSplitTarget", params?: TranslationParams): string;
+  /**
+   * zh-CN: 目标歌手（{{count}}）
+   * zh-TW: 目標歌手（{{count}}）
+   * en-US: Destination artists ({{count}})
+   */
+  (key: "folia.localMusic.artistSplitTargets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 移除歌手“{{name}}”
+   * zh-TW: 移除歌手“{{name}}”
+   * en-US: Remove artist “{{name}}”
+   */
+  (key: "folia.localMusic.removeArtistSplitTarget", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌手关联方式
+   * zh-TW: 歌手關聯方式
+   * en-US: Artist assignment mode
+   */
+  (key: "folia.localMusic.artistAssignmentMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 替换全部歌手
+   * zh-TW: 替換全部歌手
+   * en-US: Replace all artists
+   */
+  (key: "folia.localMusic.replaceAllArtists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 移除歌曲当前的全部歌手，只保留以下目标
+   * zh-TW: 移除歌曲當前的全部歌手，只保留以下目標
+   * en-US: Remove every current artist and keep only these destinations
+   */
+  (key: "folia.localMusic.replaceAllArtistsHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 追加歌手
+   * zh-TW: 追加歌手
+   * en-US: Append artists
+   */
+  (key: "folia.localMusic.appendArtists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保留歌曲当前的全部歌手，并追加以下目标
+   * zh-TW: 保留歌曲當前的全部歌手，並追加以下目標
+   * en-US: Keep every current artist and add these destinations
+   */
+  (key: "folia.localMusic.appendArtistsHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 将 {{songCount}} 首歌曲关联到 {{artistCount}} 位歌手
+   * zh-TW: 將 {{songCount}} 首歌曲關聯到 {{artistCount}} 位歌手
+   * en-US: Link {{songCount}} songs to {{artistCount}} artists
+   */
+  (key: "folia.localMusic.splitSelectedToArtistsAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已追加所选歌手
+   * zh-TW: 已追加所選歌手
+   * en-US: Selected artists appended
+   */
+  (key: "folia.localMusic.artistsAppended", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已替换所选歌曲的全部歌手
+   * zh-TW: 已替換所選歌曲的全部歌手
+   * en-US: All artists replaced for the selected songs
+   */
+  (key: "folia.localMusic.artistsReplaced", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整理歌曲信息
+   * zh-TW: 整理歌曲信息
+   * en-US: Organize Song Info
+   */
+  (key: "folia.localMusic.organizeSongInfo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 为此文件夹内 {{count}} 首歌曲匹配元数据与封面。
+   * zh-TW: 為此文件夾內 {{count}} 首歌曲匹配元數據與封面。
+   * en-US: Match metadata and covers for {{count}} songs in this folder.
+   */
+  (key: "folia.localMusic.folderSongInfoHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 批量自动匹配
+   * zh-TW: 批量自動匹配
+   * en-US: Batch automatic match
+   */
+  (key: "folia.localMusic.batchMetadataMatch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动在线匹配元数据与封面，可能存在误差
+   * zh-TW: 自動在線匹配元數據與封面，可能存在誤差
+   * en-US: Automatically match online metadata and covers. May not be accurate for all songs.
+   */
+  (key: "folia.localMusic.batchMetadataMatchHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "folia.localMusic.cancelMatch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配 {{count}} 首歌曲
+   * zh-TW: 匹配 {{count}} 首歌曲
+   * en-US: Match {{count}} songs
+   */
+  (key: "folia.localMusic.startAutoMatch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全选
+   * zh-TW: 全選
+   * en-US: Select all
+   */
+  (key: "folia.localMusic.selectAllSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消全选
+   * zh-TW: 取消全選
+   * en-US: Deselect all
+   */
+  (key: "folia.localMusic.deselectAllSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在匹配歌曲信息...
+   * zh-TW: 正在匹配歌曲信息...
+   * en-US: Matching song info...
+   */
+  (key: "folia.localMusic.matchingMetadata", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配成功
+   * zh-TW: 匹配成功
+   * en-US: Matched
+   */
+  (key: "folia.localMusic.autoMatchStatus.matched", params?: TranslationParams): string;
+  /**
+   * zh-CN: 元数据已匹配，封面缓存失败
+   * zh-TW: 元數據已匹配，封面緩存失敗
+   * en-US: Metadata matched; cover cache failed
+   */
+  (
+    key: "folia.localMusic.autoMatchStatus.matched-cover-failed",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 没有合适候选
+   * zh-TW: 沒有合適候選
+   * en-US: No suitable candidate
+   */
+  (key: "folia.localMusic.autoMatchStatus.no-match", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已跳过
+   * zh-TW: 已跳過
+   * en-US: Skipped
+   */
+  (key: "folia.localMusic.autoMatchStatus.skipped", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配失败
+   * zh-TW: 匹配失敗
+   * en-US: Match failed
+   */
+  (key: "folia.localMusic.autoMatchStatus.failed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这会替换手动编辑或拆分得到的实体关系，是否继续？
+   * zh-TW: 這會替換手動編輯或拆分得到的實體關係，是否繼續？
+   * en-US: This will replace a manually edited or split relationship. Continue?
+   */
+  (key: "folia.localMusic.replaceProtectedEntityConfirm", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手动在线匹配
+   * zh-TW: 手動在線匹配
+   * en-US: Manual Online Match
+   */
+  (key: "folia.localMusic.manualMetadataMatch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网易云
+   * zh-TW: 網易雲
+   * en-US: NetEase
+   */
+  (key: "folia.localMusic.neteaseSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: QQ 音乐
+   * zh-TW: QQ 音樂
+   * en-US: QQ Music
+   */
+  (key: "folia.localMusic.qqSource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入检索文字并搜索当前来源
+   * zh-TW: 輸入檢索文字並搜索當前來源
+   * en-US: Enter a query and search the selected source
+   */
+  (key: "folia.localMusic.enterMetadataSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前歌曲信息
+   * zh-TW: 當前歌曲信息
+   * en-US: Current song info
+   */
+  (key: "folia.localMusic.currentSongInfo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 应用后预览
+   * zh-TW: 應用後預覽
+   * en-US: Preview after applying
+   */
+  (key: "folia.localMusic.matchResultPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用在线元数据
+   * zh-TW: 使用在線元數據
+   * en-US: Use online metadata
+   */
+  (key: "folia.localMusic.useOnlineMetadataResult", params?: TranslationParams): string;
+  /**
+   * zh-CN: 标题、艺术家与专辑将作为一组共同应用
+   * zh-TW: 標題、藝術家與專輯將作為一組共同應用
+   * en-US: Title, artist, and album are applied together
+   */
+  (key: "folia.localMusic.metadataBundleHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用在线封面
+   * zh-TW: 使用在線封面
+   * en-US: Use online cover
+   */
+  (key: "folia.localMusic.useOnlineCoverResult", params?: TranslationParams): string;
+  /**
+   * zh-CN: 此结果没有封面
+   * zh-TW: 此結果沒有封面
+   * en-US: This result has no cover
+   */
+  (key: "folia.localMusic.candidateHasNoCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存选择
+   * zh-TW: 保存選擇
+   * en-US: Save selection
+   */
+  (key: "folia.localMusic.applyMetadataMatch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地信息
+   * zh-TW: 本地信息
+   * en-US: Local info
+   */
+  (key: "folia.localMusic.localInfoBadge", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地信息 · 自动匹配时跳过
+   * zh-TW: 本地信息 · 自動匹配時跳過
+   * en-US: Local info · skipped by automatic matching
+   */
+  (key: "folia.localMusic.localInfoAutoMatchSkipped", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已跳过 {{count}} 首本地信息歌曲
+   * zh-TW: 已跳過 {{count}} 首本地信息歌曲
+   * en-US: {{count}} using local info skipped
+   */
+  (key: "folia.localMusic.localInfoSkippedCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用本地信息（{{count}}）
+   * zh-TW: 使用本地信息（{{count}}）
+   * en-US: Use local info ({{count}})
+   */
+  (key: "folia.localMusic.useLocalInfoForSelected", params?: TranslationParams): string;
+  /**
+   * zh-CN: 元数据已保存，但封面缓存失败；在线地址可用时仍会继续显示封面。
+   * zh-TW: 元數據已保存，但封面緩存失敗；在線地址可用時仍會繼續顯示封面。
+   * en-US: Metadata was saved, but the cover could not be cached. The online URL will still be used when available.
+   */
+  (key: "folia.localMusic.coverCacheFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词未应用，其他选择已保存。
+   * zh-TW: 歌詞未應用，其他選擇已保存。
+   * en-US: Lyrics were not applied; the other selections were saved.
+   */
+  (key: "folia.localMusic.lyricsNotAppliedOtherSaved", params?: TranslationParams): string;
+  /**
+   * zh-CN: Navi
+   * zh-TW: Navi
+   * en-US: Navi
+   */
+  (key: "folia.navidrome.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接Navidrome (实验性)
+   * zh-TW: 連接Navidrome (實驗性)
+   * en-US: Connect Navidrome (Experimental)
+   */
+  (key: "folia.navidrome.enable", params?: TranslationParams): string;
+  /**
+   * zh-CN: Navidrome 设置
+   * zh-TW: Navidrome 設置
+   * en-US: Navidrome Settings
+   */
+  (key: "folia.navidrome.settings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 服务器地址
+   * zh-TW: 服務器地址
+   * en-US: Server URL
+   */
+  (key: "folia.navidrome.serverUrl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 例如: http://localhost:4533
+   * zh-TW: 例如: http://localhost:4533
+   * en-US: e.g., http://localhost:4533
+   */
+  (key: "folia.navidrome.serverUrlPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 用户名
+   * zh-TW: 用戶名
+   * en-US: Username
+   */
+  (key: "folia.navidrome.username", params?: TranslationParams): string;
+  /**
+   * zh-CN: 密码
+   * zh-TW: 密碼
+   * en-US: Password
+   */
+  (key: "folia.navidrome.password", params?: TranslationParams): string;
+  /**
+   * zh-CN: 测试连接
+   * zh-TW: 測試連接
+   * en-US: Test Connection
+   */
+  (key: "folia.navidrome.testConnection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接中...
+   * zh-TW: 連接中...
+   * en-US: Connecting...
+   */
+  (key: "folia.navidrome.testing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接成功
+   * zh-TW: 連接成功
+   * en-US: Connection successful
+   */
+  (key: "folia.navidrome.connectionSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接失败
+   * zh-TW: 連接失敗
+   * en-US: Connection failed
+   */
+  (key: "folia.navidrome.connectionFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: Navidrome 尚未配置
+   * zh-TW: Navidrome 尚未配置
+   * en-US: Navidrome not configured
+   */
+  (key: "folia.navidrome.notConfigured", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请在帮助/选项中配置服务器
+   * zh-TW: 請在幫助/選項中配置服務器
+   * en-US: Please configure the server in Help/Options
+   */
+  (key: "folia.navidrome.configureInSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 前往设置
+   * zh-TW: 前往設置
+   * en-US: Go to Settings
+   */
+  (key: "folia.navidrome.goToSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Albums
+   */
+  (key: "folia.navidrome.albums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 艺术家
+   * zh-TW: 藝術家
+   * en-US: Artists
+   */
+  (key: "folia.navidrome.artists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲
+   * zh-TW: 歌曲
+   * en-US: Songs
+   */
+  (key: "folia.navidrome.songs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近播放
+   * zh-TW: 最近播放
+   * en-US: Recently Played
+   */
+  (key: "folia.navidrome.recents", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部
+   * zh-TW: 全部
+   * en-US: All
+   */
+  (key: "folia.navidrome.allAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最新
+   * zh-TW: 最新
+   * en-US: New
+   */
+  (key: "folia.navidrome.recentlyAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到专辑
+   * zh-TW: 未找到專輯
+   * en-US: No albums found
+   */
+  (key: "folia.navidrome.noAlbumsFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到歌单
+   * zh-TW: 未找到歌單
+   * en-US: No playlists found
+   */
+  (key: "folia.navidrome.noPlaylistsFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到艺术家
+   * zh-TW: 未找到藝術家
+   * en-US: No artists found
+   */
+  (key: "folia.navidrome.noArtistsFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到歌曲
+   * zh-TW: 未找到歌曲
+   * en-US: No songs found
+   */
+  (key: "folia.navidrome.noSongsFound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随机音乐
+   * zh-TW: 隨機音樂
+   * en-US: Random
+   */
+  (key: "folia.navidrome.random", params?: TranslationParams): string;
+  /**
+   * zh-CN: 即时随机播放列表
+   * zh-TW: 即時隨機播放列表
+   * en-US: Instant random mix
+   */
+  (key: "folia.navidrome.randomDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏
+   * zh-TW: 收藏
+   * en-US: Favorites
+   */
+  (key: "folia.navidrome.favorites", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已标星歌曲
+   * zh-TW: 已標星歌曲
+   * en-US: Starred songs
+   */
+  (key: "folia.navidrome.favoritesDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入播放队列
+   * zh-TW: 加入播放隊列
+   * en-US: Add to Queue
+   */
+  (key: "folia.navidrome.addToQueue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新建歌单
+   * zh-TW: 新建歌單
+   * en-US: Create Playlist
+   */
+  (key: "folia.navidrome.createPlaylist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在匹配歌词...
+   * zh-TW: 正在匹配歌詞...
+   * en-US: Matching lyrics...
+   */
+  (key: "folia.navidrome.fetchingLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词来自网易云音乐
+   * zh-TW: 歌詞來自網易雲音樂
+   * en-US: Lyrics from Netease
+   */
+  (key: "folia.navidrome.lyricsFromNetease", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存设置
+   * zh-TW: 保存設置
+   * en-US: Save Settings
+   */
+  (key: "folia.navidrome.saveSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除设置
+   * zh-TW: 清除設置
+   * en-US: Clear Settings
+   */
+  (key: "folia.navidrome.clearSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 服务器信息
+   * zh-TW: 服務器信息
+   * en-US: Server Profile
+   */
+  (key: "folia.navidrome.serverProfile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 服务器
+   * zh-TW: 服務器
+   * en-US: Server
+   */
+  (key: "folia.navidrome.server", params?: TranslationParams): string;
+  /**
+   * zh-CN: 用户
+   * zh-TW: 用戶
+   * en-US: User
+   */
+  (key: "folia.navidrome.user", params?: TranslationParams): string;
+  /**
+   * zh-CN: OpenSubsonic
+   * zh-TW: OpenSubsonic
+   * en-US: OpenSubsonic
+   */
+  (key: "folia.navidrome.openSubsonic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已启用
+   * zh-TW: 已啟用
+   * en-US: Enabled
+   */
+  (key: "folia.navidrome.enabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不可用
+   * zh-TW: 不可用
+   * en-US: Not available
+   */
+  (key: "folia.navidrome.notAvailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐库
+   * zh-TW: 音樂庫
+   * en-US: Libraries
+   */
+  (key: "folia.navidrome.musicFolders", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知服务器
+   * zh-TW: 未知服務器
+   * en-US: Unknown server
+   */
+  (key: "folia.navidrome.serverProfileUnavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云盘
+   * zh-TW: 雲盤
+   * en-US: Cloud Drive
+   */
+  (key: "folia.navidrome.cloudDrive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网易云音乐云盘
+   * zh-TW: 網易雲音樂雲盤
+   * en-US: NetEase Cloud Music Drive
+   */
+  (key: "folia.navidrome.cloudDriveDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: Now Playing 正由外部播放器控制，Folia 只负责展示歌词和视觉效果。
+   * zh-TW: Now Playing 正由外部播放器控制，Folia 只負責展示歌詞和視覺效果。
+   * en-US: Now Playing is being controlled by an external player. Folia is only responsible for displaying lyrics and visual effects.
+   */
+  (key: "folia.unifiedPanel.nowPlayingStageDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: Stage 现在是本地单项输入模式。外部可以推送一份完整歌词对象或一段媒体，播放与展示仍由 Folia 自己控制。
+   * zh-TW: Stage 現在是本地單項輸入模式。外部可以推送一份完整歌詞對象或一段媒體，播放與展示仍由 Folia 自己控制。
+   * en-US: Stage is in local single-input mode. External devices can push lyrics or media, but playback and display are controlled by Folia itself.
+   */
+  (key: "folia.unifiedPanel.stageLocalInputDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地歌手: {{artistName}}
+   * zh-TW: 本地歌手: {{artistName}}
+   * en-US: Local Artist: {{artistName}}
+   */
+  (key: "folia.artistGrid.localArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时下流行 / POPULAR
+   * zh-TW: 時下流行 / POPULAR
+   * en-US: Popular / POPULAR
+   */
+  (key: "folia.artistGrid.popularSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌手专辑 / ALBUMS
+   * zh-TW: 歌手專輯 / ALBUMS
+   * en-US: Albums / ALBUMS
+   */
+  (key: "folia.artistGrid.artistAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索专辑...
+   * zh-TW: 搜索專輯...
+   * en-US: Search albums...
+   */
+  (key: "folia.artistGrid.searchAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看专辑
+   * zh-TW: 查看專輯
+   * en-US: View albums
+   */
+  (key: "folia.artistGrid.viewAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在连接 Folia
+   * zh-TW: 正在連接 Folia
+   * en-US: Connecting to Folia
+   */
+  (key: "folia.obs.connecting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等待 Folia 播放
+   * zh-TW: 等待 Folia 播放
+   * en-US: Waiting for Folia playback
+   */
+  (key: "folia.obs.waitingForPlayback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从队列中删除
+   * zh-TW: 從隊列中刪除
+   * en-US: Remove from queue
+   */
+  (key: "folia.queue.remove", params?: TranslationParams): string;
+  /**
+   * zh-CN: 移到队尾
+   * zh-TW: 移到隊尾
+   * en-US: Move to end
+   */
+  (key: "folia.queue.moveToEnd", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首播放
+   * zh-TW: 下一首播放
+   * en-US: Play next
+   */
+  (key: "folia.queue.playNext", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放列表为空
+   * zh-TW: 播放列表為空
+   * en-US: Queue is empty
+   */
+  (key: "folia.queue.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放队列
+   * zh-TW: 播放隊列
+   * en-US: Play Queue
+   */
+  (key: "folia.queue.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打乱队列
+   * zh-TW: 打亂隊列
+   * en-US: Shuffle Queue
+   */
+  (key: "folia.queue.shuffle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换到深色模式
+   * zh-TW: 切換到深色模式
+   * en-US: Switch to Dark Mode
+   */
+  (key: "folia.theme.switchToDark", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换到浅色模式
+   * zh-TW: 切換到淺色模式
+   * en-US: Switch to Light Mode
+   */
+  (key: "folia.theme.switchToLight", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加封面色彩
+   * zh-TW: 添加封面色彩
+   * en-US: Add Cover Color
+   */
+  (key: "folia.theme.addCoverColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用默认色彩
+   * zh-TW: 使用默認色彩
+   * en-US: Use Default Color
+   */
+  (key: "folia.theme.useDefaultColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景
+   * zh-TW: 背景
+   * en-US: Background
+   */
+  (key: "folia.theme.bgColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 页面主背景与大面积氛围色
+   * zh-TW: 頁面主背景與大面積氛圍色
+   * en-US: Page main background and ambient color
+   */
+  (key: "folia.theme.bgColorDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主文本
+   * zh-TW: 主文本
+   * en-US: Primary Text
+   */
+  (key: "folia.theme.primaryColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主文本与歌词颜色
+   * zh-TW: 主文本與歌詞顏色
+   * en-US: Primary text and lyric color
+   */
+  (key: "folia.theme.primaryColorDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 强调色
+   * zh-TW: 強調色
+   * en-US: Accent
+   */
+  (key: "folia.theme.accentColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高亮、按钮与歌词发光颜色
+   * zh-TW: 高亮、按鈕與歌詞發光顏色
+   * en-US: Highlight, button, and lyric glow color
+   */
+  (key: "folia.theme.accentColorDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 辅助色
+   * zh-TW: 輔助色
+   * en-US: Secondary
+   */
+  (key: "folia.theme.secondaryColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 辅助文本与几何背景颜色
+   * zh-TW: 輔助文本與幾何背景顏色
+   * en-US: Secondary text and geometric background color
+   */
+  (key: "folia.theme.secondaryColorDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑中
+   * zh-TW: 編輯中
+   * en-US: Editing
+   */
+  (key: "folia.theme.editingBadge", params?: TranslationParams): string;
+  /**
+   * zh-CN: 午夜墨染
+   * zh-TW: 午夜墨染
+   * en-US: Midnight Default
+   */
+  (key: "folia.theme.midnightDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 日光素白
+   * zh-TW: 日光素白
+   * en-US: Daylight Default
+   */
+  (key: "folia.theme.daylightDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时间线
+   * zh-TW: 時間線
+   * en-US: Timeline
+   */
+  (key: "folia.timeline.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无歌词
+   * zh-TW: 無歌詞
+   * en-US: No lyrics
+   */
+  (key: "folia.timeline.noLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 欢迎使用 Folia
+   * zh-TW: 歡迎使用 Folia
+   * en-US: Welcome to Folia
+   */
+  (key: "folia.userGuide.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这里有一些提示，希望能帮到你。
+   * zh-TW: 這裡有一些提示，希望能幫到你。
+   * en-US: Here are some tips to help you navigate.
+   */
+  (key: "folia.userGuide.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 命令面板
+   * zh-TW: 命令面板
+   * en-US: Command Palette
+   */
+  (key: "folia.userGuide.commandPalette.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在播放页面按下 S键 即可打开命令面板，快速访问功能与设置。
+   * zh-TW: 在播放頁面按下 S鍵 即可打開命令面板，快速訪問功能與設置。
+   * en-US: Press the "s" key on the playback page to open the Command Palette and access commands quickly.
+   */
+  (key: "folia.userGuide.commandPalette.desc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全局搜索
+   * zh-TW: 全局搜索
+   * en-US: Instant Search
+   */
+  (key: "folia.userGuide.typeToSearch.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在任意歌曲海报墙中按下任意字母或数字键，即可直接开始搜索当前列表。
+   * zh-TW: 在任意歌曲海報牆中按下任意字母或數字鍵，即可直接開始搜索當前列表。
+   * en-US: Press any key in a song list to instantly start searching.
+   */
+  (key: "folia.userGuide.typeToSearch.desc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从海报墙开始
+   * zh-TW: 從海報牆開始
+   * en-US: Start from a poster wall
+   */
+  (key: "folia.userGuide.posterSearch.entryTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当歌曲海报墙处于当前视图时，直接输入字母、数字或中文字符即可搜索当前列表。
+   * zh-TW: 當歌曲海報牆處於當前視圖時，直接輸入字母、數字或中文字符即可搜索當前列表。
+   * en-US: When a song poster wall is focused, type letters, numbers, or Chinese characters to search the current list.
+   */
+  (key: "folia.userGuide.posterSearch.entryDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭搜索
+   * zh-TW: 關閉搜索
+   * en-US: Close search
+   */
+  (key: "folia.userGuide.posterSearch.escapeTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按下 Esc 可以关闭海报墙搜索面板。
+   * zh-TW: 按下 Esc 可以關閉海報牆搜索面板。
+   * en-US: Press Esc to close the poster-wall search panel.
+   */
+  (key: "folia.userGuide.posterSearch.escapeDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配色主题
+   * zh-TW: 配色主題
+   * en-US: Color themes
+   */
+  (key: "folia.userGuide.theme.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 可以手动定制亮色 / 暗色配色，也可以根据当前歌曲生成 AI 主题。
+   * zh-TW: 可以手動定製亮色 / 暗色配色，也可以根據當前歌曲生成 AI 主題。
+   * en-US: Customize Folia with your own light and dark color themes, or generate an AI theme from the current song.
+   */
+  (key: "folia.userGuide.theme.desc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从视觉设置或命令面板打开 Theme Park，编辑并保存自定义亮色与暗色配色。
+   * zh-TW: 從視覺設置或命令面板打開 Theme Park，編輯並保存自定義亮色與暗色配色。
+   * en-US: Open Theme Park from visual settings or the command palette to edit and save custom light and dark colors.
+   */
+  (key: "folia.userGuide.theme.customDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配置 AI 主题设置后，Folia 可以根据歌曲生成配色，并可自动应用已缓存的歌曲主题。
+   * zh-TW: 配置 AI 主題設置後，Folia 可以根據歌曲生成配色，並可自動應用已緩存的歌曲主題。
+   * en-US: When AI theme settings are configured, Folia can create song-aware colors and optionally auto-apply cached song themes.
+   */
+  (key: "folia.userGuide.theme.aiDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击穿透恢复
+   * zh-TW: 點擊穿透恢復
+   * en-US: Click-through recovery
+   */
+  (key: "folia.userGuide.clickThrough.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启点击穿透后，如果窗口控件被隐藏或不方便触达，可以通过系统托盘图标切换点击穿透。
+   * zh-TW: 開啟點擊穿透後，如果窗口控件被隱藏或不方便觸達，可以通過系統托盤圖標切換點擊穿透。
+   * en-US: When click-through is enabled, you can use the system tray icon to switch it if the window controls are hidden or hard to reach.
+   */
+  (key: "folia.userGuide.clickThrough.desc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用托盘图标
+   * zh-TW: 使用托盤圖標
+   * en-US: Use the tray icon
+   */
+  (key: "folia.userGuide.clickThrough.trayTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 右键点击 Folia 的系统托盘图标，在菜单中选择点击穿透选项，即可开启或关闭。
+   * zh-TW: 右鍵點擊 Folia 的系統托盤圖標，在菜單中選擇點擊穿透選項，即可開啟或關閉。
+   * en-US: Right-click the Folia system tray icon, then choose the click-through option to turn it on or off.
+   */
+  (key: "folia.userGuide.clickThrough.trayDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用锁定按钮
+   * zh-TW: 使用鎖定按鈕
+   * en-US: Use the lock button
+   */
+  (key: "folia.userGuide.clickThrough.lockTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 也可以把鼠标移到顶部标题栏热点，唤出锁定按钮后点击关闭点击穿透。
+   * zh-TW: 也可以把鼠標移到頂部標題欄熱點，喚出鎖定按鈕後點擊關閉點擊穿透。
+   * en-US: You can also move to the top titlebar hotspot to reveal the lock button, then click it to turn click-through off.
+   */
+  (key: "folia.userGuide.clickThrough.lockDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我知道了
+   * zh-TW: 我知道了
+   * en-US: Got it
+   */
+  (key: "folia.userGuide.gotIt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用指南
+   * zh-TW: 使用指南
+   * en-US: Show User Guide
+   */
+  (key: "folia.userGuide.showGuide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用提示
+   * zh-TW: 使用提示
+   * en-US: Usage tips
+   */
+  (key: "folia.userGuide.tips", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一页
+   * zh-TW: 下一頁
+   * en-US: Next
+   */
+  (key: "folia.userGuide.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回
+   * zh-TW: 返回
+   * en-US: Back
+   */
+  (key: "folia.userGuide.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: 命令与快捷键
+   * zh-TW: 命令與快捷鍵
+   * en-US: Commands & Shortcuts
+   */
+  (key: "folia.userGuide.page2Title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在播放页面可以使用如下快捷操作
+   * zh-TW: 在播放頁面可以使用如下快捷操作
+   * en-US: Master shortcuts for the best experience.
+   */
+  (key: "folia.userGuide.page2Subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页快捷键
+   * zh-TW: 播放頁快捷鍵
+   * en-US: Player shortcuts
+   */
+  (key: "folia.userGuide.shortcutsPageTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页面可用的键盘操作
+   * zh-TW: 播放頁面可用的鍵盤操作
+   * en-US: Keyboard controls available on the player page.
+   */
+  (key: "folia.userGuide.shortcutsPageSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 命令面板
+   * zh-TW: 命令面板
+   * en-US: Command palette
+   */
+  (key: "folia.userGuide.commandsPageTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放页快捷键
+   * zh-TW: 播放頁快捷鍵
+   * en-US: Shortcuts
+   */
+  (key: "folia.userGuide.shortcuts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部命令
+   * zh-TW: 全部命令
+   * en-US: All Commands
+   */
+  (key: "folia.userGuide.commands", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入任意命令的拼音、汉字或英文均可快速触发。
+   * zh-TW: 輸入任意命令的拼音、漢字或英文均可快速觸發。
+   * en-US: You can trigger commands by typing English, Chinese characters, or Pinyin.
+   */
+  (key: "folia.userGuide.commandsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 准备就绪
+   * zh-TW: 準備就緒
+   * en-US: Ready to Go
+   */
+  (key: "folia.userGuide.ready.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 尽情享受您的音乐之旅。
+   * zh-TW: 盡情享受您的音樂之旅。
+   * en-US: Enjoy your music journey with Folia.
+   */
+  (key: "folia.userGuide.ready.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认背景
+   * zh-TW: 默認背景
+   * en-US: Default Background
+   */
+  (key: "folia.remote.backgroundDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面色彩
+   * zh-TW: 封面色彩
+   * en-US: Cover Colors
+   */
+  (key: "folia.remote.backgroundCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 透明背景
+   * zh-TW: 透明背景
+   * en-US: Transparent
+   */
+  (key: "folia.remote.backgroundTransparent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 固定到最前
+   * zh-TW: 固定到最前
+   * en-US: Pin to Front
+   */
+  (key: "folia.remote.pinToFront", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消置顶
+   * zh-TW: 取消置頂
+   * en-US: Unpin
+   */
+  (key: "folia.remote.unpin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏
+   * zh-TW: 收藏
+   * en-US: Like
+   */
+  (key: "folia.remote.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏
+   * zh-TW: 取消收藏
+   * en-US: Unlike
+   */
+  (key: "folia.remote.unlike", params?: TranslationParams): string;
+  /**
+   * zh-CN: 常规
+   * zh-TW: 常規
+   * en-US: Standard
+   */
+  (key: "folia.remote.standard", params?: TranslationParams): string;
+  /**
+   * zh-CN: 透明
+   * zh-TW: 透明
+   * en-US: Transparent
+   */
+  (key: "folia.remote.transparent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示 UI
+   * zh-TW: 顯示 UI
+   * en-US: Show UI
+   */
+  (key: "folia.remote.showUI", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏 UI
+   * zh-TW: 隱藏 UI
+   * en-US: Hide UI
+   */
+  (key: "folia.remote.hideUI", params?: TranslationParams): string;
+  /**
+   * zh-CN: UI：始终隐藏
+   * zh-TW: UI：始終隱藏
+   * en-US: UI: Always Hidden
+   */
+  (key: "folia.remote.uiAlwaysHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: UI：始终显示
+   * zh-TW: UI：始終顯示
+   * en-US: UI: Always Visible
+   */
+  (key: "folia.remote.uiAlwaysVisible", params?: TranslationParams): string;
+  /**
+   * zh-CN: UI：自动隐藏
+   * zh-TW: UI：自動隱藏
+   * en-US: UI: Auto-hide
+   */
+  (key: "folia.remote.uiAutoHide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Close
+   */
+  (key: "folia.remote.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回
+   * zh-TW: 返回
+   * en-US: Back
+   */
+  (key: "folia.remote.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示边框
+   * zh-TW: 顯示邊框
+   * en-US: Show Border
+   */
+  (key: "folia.remote.showBorder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏边框
+   * zh-TW: 隱藏邊框
+   * en-US: Hide Border
+   */
+  (key: "folia.remote.hideBorder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭点击穿透
+   * zh-TW: 關閉點擊穿透
+   * en-US: Disable Click-Through
+   */
+  (key: "folia.remote.disableClickThrough", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击穿透
+   * zh-TW: 點擊穿透
+   * en-US: Click-Through
+   */
+  (key: "folia.remote.enableClickThrough", params?: TranslationParams): string;
+  /**
+   * zh-CN: 穿透
+   * zh-TW: 穿透
+   * en-US: Through
+   */
+  (key: "folia.remote.through", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消主窗口置顶
+   * zh-TW: 取消主窗口置頂
+   * en-US: Unpin Main Window
+   */
+  (key: "folia.remote.unpinMainWindow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 置顶主窗口
+   * zh-TW: 置頂主窗口
+   * en-US: Pin Main Window
+   */
+  (key: "folia.remote.pinMainWindow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 置顶
+   * zh-TW: 置頂
+   * en-US: Pin
+   */
+  (key: "folia.remote.pin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择导出预设
+   * zh-TW: 選擇導出預設
+   * en-US: Select Export Preset
+   */
+  (key: "folia.remote.presetSelectorTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预设 {{index}}
+   * zh-TW: 預設 {{index}}
+   * en-US: Preset {{index}}
+   */
+  (key: "folia.remote.preset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 竖屏
+   * zh-TW: 豎屏
+   * en-US: Portrait
+   */
+  (key: "folia.remote.portrait", params?: TranslationParams): string;
+  /**
+   * zh-CN: 横屏
+   * zh-TW: 橫屏
+   * en-US: Landscape
+   */
+  (key: "folia.remote.landscape", params?: TranslationParams): string;
+  /**
+   * zh-CN: 方屏
+   * zh-TW: 方屏
+   * en-US: Square
+   */
+  (key: "folia.remote.square", params?: TranslationParams): string;
+  /**
+   * zh-CN: 超宽屏
+   * zh-TW: 超寬屏
+   * en-US: Ultrawide
+   */
+  (key: "folia.remote.ultrawide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义预设 {{index}}
+   * zh-TW: 自定義預設 {{index}}
+   * en-US: Custom Preset {{index}}
+   */
+  (key: "folia.remote.customPreset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 宽度 (px)
+   * zh-TW: 寬度 (px)
+   * en-US: Width (px)
+   */
+  (key: "folia.remote.widthPx", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高度 (px)
+   * zh-TW: 高度 (px)
+   * en-US: Height (px)
+   */
+  (key: "folia.remote.heightPx", params?: TranslationParams): string;
+  /**
+   * zh-CN: 比例:
+   * zh-TW: 比例:
+   * en-US: Aspect:
+   */
+  (key: "folia.remote.aspectRatio", params?: TranslationParams): string;
+  /**
+   * zh-CN: 限制范围 {{min}}–{{max}} px
+   * zh-TW: 限制範圍 {{min}}–{{max}} px
+   * en-US: Range {{min}}–{{max}} px
+   */
+  (key: "folia.remote.rangeHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 偶数有更好的编码兼容性
+   * zh-TW: 偶數有更好的編碼兼容性
+   * en-US: Even values have better encoding compatibility
+   */
+  (key: "folia.remote.encodingHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无详细介绍
+   * zh-TW: 暫無詳細介紹
+   * en-US: No description available
+   */
+  (key: "folia.remote.noDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请选择
+   * zh-TW: 請選擇
+   * en-US: Select...
+   */
+  (key: "folia.remote.selectPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存至预设 {{index}}
+   * zh-TW: 保存至預設 {{index}}
+   * en-US: Save to Preset {{index}}
+   */
+  (key: "folia.remote.saveToPreset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整首歌
+   * zh-TW: 整首歌
+   * en-US: Full Song
+   */
+  (key: "folia.remote.exportFullSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从此
+   * zh-TW: 從此
+   * en-US: From Here
+   */
+  (key: "folia.remote.exportFromHere", params?: TranslationParams): string;
+  /**
+   * zh-CN: 即将开始录制 ({{countdown}}s)...
+   * zh-TW: 即將開始錄製 ({{countdown}}s)...
+   * en-US: Starting recording ({{countdown}}s)...
+   */
+  (key: "folia.remote.recordingCountdown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在准备录制环境...
+   * zh-TW: 正在準備錄製環境...
+   * en-US: Preparing recording environment...
+   */
+  (key: "folia.remote.preparingEnvironment", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视频录制中 ({{progress}}%)
+   * zh-TW: 視頻錄製中 ({{progress}}%)
+   * en-US: Recording ({{progress}}%)
+   */
+  (key: "folia.remote.recordingProgress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在保存视频...
+   * zh-TW: 正在保存視頻...
+   * en-US: Saving video...
+   */
+  (key: "folia.remote.savingVideo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 停止并保存
+   * zh-TW: 停止並保存
+   * en-US: Stop & Save
+   */
+  (key: "folia.remote.stopAndSave", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "folia.remote.cancel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开始录制
+   * zh-TW: 開始錄製
+   * en-US: Start Recording
+   */
+  (key: "folia.remote.startRecording", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已保存
+   * zh-TW: 已保存
+   * en-US: Saved
+   */
+  (key: "folia.remote.saved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 出错
+   * zh-TW: 出錯
+   * en-US: Error
+   */
+  (key: "folia.remote.error", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存中
+   * zh-TW: 保存中
+   * en-US: Saving...
+   */
+  (key: "folia.remote.saving", params?: TranslationParams): string;
+  /**
+   * zh-CN: 准备中
+   * zh-TW: 準備中
+   * en-US: Preparing
+   */
+  (key: "folia.remote.preparing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无歌词
+   * zh-TW: 無歌詞
+   * en-US: No Lyrics
+   */
+  (key: "folia.remote.noLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous
+   */
+  (key: "folia.remote.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next
+   */
+  (key: "folia.remote.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "folia.remote.play", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停
+   * zh-TW: 暫停
+   * en-US: Pause
+   */
+  (key: "folia.remote.pause", params?: TranslationParams): string;
+  /**
+   * zh-CN: 透明控制
+   * zh-TW: 透明控制
+   * en-US: Transparent controls
+   */
+  (key: "folia.remote.transparentControls", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视频导出
+   * zh-TW: 視頻導出
+   * en-US: Video export
+   */
+  (key: "folia.remote.videoExport", params?: TranslationParams): string;
+  /**
+   * zh-CN: 遇到问题？
+   * zh-TW: 遇到問題？
+   * en-US: Need help?
+   */
+  (key: "folia.aiHelp.openButton", params?: TranslationParams): string;
+  /**
+   * zh-CN: 遇到问题？
+   * zh-TW: 遇到問題？
+   * en-US: Need help?
+   */
+  (key: "folia.aiHelp.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 建议先查阅 Folia 文档。如果问题仍未解决，再复制下方提示词询问 AI。
+   * zh-TW: 建議先查閱 Folia 文檔。如果問題仍未解決，再複製下方提示詞詢問 AI。
+   * en-US: Check the Folia documentation first. If the issue remains unresolved, copy the prompt below and ask an AI model for help.
+   */
+  (key: "folia.aiHelp.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 先查看 Folia 文档
+   * zh-TW: 先查看 Folia 文檔
+   * en-US: Read the Folia documentation
+   */
+  (key: "folia.aiHelp.docsTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看使用说明、功能配置和常见问题排查指南。
+   * zh-TW: 查看使用說明、功能配置和常見問題排查指南。
+   * en-US: Find usage instructions, configuration details, and troubleshooting guidance.
+   */
+  (key: "folia.aiHelp.docsDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开文档
+   * zh-TW: 打開文檔
+   * en-US: Open docs
+   */
+  (key: "folia.aiHelp.openDocs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仍未解决？询问 AI
+   * zh-TW: 仍未解決？詢問 AI
+   * en-US: Still need help? Ask AI
+   */
+  (key: "folia.aiHelp.askAiTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 先描述你的具体问题，再粘贴这段提示词，让 AI 结合 Folia 文档和源码协助排查。
+   * zh-TW: 先描述你的具體問題，再粘貼這段提示詞，讓 AI 結合 Folia 文檔和源碼協助排查。
+   * en-US: Describe your issue, then paste this prompt so the AI can use Folia documentation and source code as context.
+   */
+  (key: "folia.aiHelp.askAiDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 用法：打开AI聊天软件，先描述你的具体问题，然后把这段提示词粘贴到问题后面一起发送(需要使用具有联网搜索能力的模型）。
+   * zh-TW: 用法：打開AI聊天軟件，先描述你的具體問題，然後把這段提示詞粘貼到問題後面一起發送(需要使用具有聯網搜索能力的模型）。
+   * en-US: How to use it: open the official site for the model you use, describe your specific problem first, then paste this prompt below your question and send both together.
+   */
+  (key: "folia.aiHelp.usageHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制提示词
+   * zh-TW: 複製提示詞
+   * en-US: Copy prompt
+   */
+  (key: "folia.aiHelp.copyPrompt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 1. 复制 AI 提示词
+   * zh-TW: 1. 複製 AI 提示詞
+   * en-US: 1. Copy AI Prompt
+   */
+  (key: "folia.aiHelp.copyPromptTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 将提示词复制并粘贴到任意大模型对话中，生成主题 JSON 数据。
+   * zh-TW: 將提示詞複製並粘貼到任意大模型對話中，生成主題 JSON 數據。
+   * en-US: Copy the prompt and paste it into any AI model to generate your theme.
+   */
+  (key: "folia.aiHelp.copyPromptDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 2. 粘贴并导入 JSON
+   * zh-TW: 2. 粘貼並導入 JSON
+   * en-US: 2. Paste JSON Result
+   */
+  (key: "folia.aiHelp.importJsonTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我正在使用 GitHub 上的 folia-major 音乐播放器，遇到了一个问题，需要你协助排查。\n\nFolia 使用指南：{{guideUrl}}\nFolia 源码仓库：{{repoUrl}}\n\n请把这些资料作为上下文，结合我接下来描述的问题，帮我判断可能原因并给出处理步骤。如果信息不足，请先询问我需要补充什么，不要直接做不确定的假设。
+   * zh-TW: 我正在使用 GitHub 上的 folia-major 音樂播放器，遇到了一個問題，需要你協助排查。\n\nFolia 使用指南：{{guideUrl}}\nFolia 源碼倉庫：{{repoUrl}}\n\n請把這些資料作為上下文，結合我接下來描述的問題，幫我判斷可能原因並給出處理步驟。如果信息不足，請先詢問我需要補充什麼，不要直接做不確定的假設。
+   * en-US: I am using the folia-major music player on GitHub and need help with a problem.\n\nFolia Guide: {{guideUrl}}\nFolia repository: {{repoUrl}}\n\nPlease use these references as context, then help me understand and solve the problem I describe next. If any information is missing, ask what I should provide before making uncertain assumptions.
+   */
+  (key: "folia.aiHelp.prompt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索字体
+   * zh-TW: 搜尋字型
+   * en-US: Search fonts
+   */
+  (key: "folia.options.searchFonts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载中
+   * zh-TW: 載入中
+   * en-US: Loading
+   */
+  (key: "folia.ui.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传字体
+   * zh-TW: 上傳字型
+   * en-US: Upload font
+   */
+  (key: "folia.options.uploadFont", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置
+   * zh-TW: 重設
+   * en-US: Reset
+   */
+  (key: "folia.common.reset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动画强度
+   * zh-TW: 動畫強度
+   * en-US: Animation intensity
+   */
+  (key: "folia.options.animationIntensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢
+   * zh-TW: 喜歡
+   * en-US: Like
+   */
+  (key: "folia.ui.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 循环模式
+   * zh-TW: 循環模式
+   * en-US: Loop Mode
+   */
+  (key: "folia.ui.loopMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静音
+   * zh-TW: 靜音
+   * en-US: Mute
+   */
+  (key: "folia.ui.mute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next
+   */
+  (key: "folia.ui.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous
+   */
+  (key: "folia.ui.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看歌词时间轴
+   * zh-TW: 查看歌詞時間軸
+   * en-US: View Lyrics Timeline
+   */
+  (key: "folia.floatingControls.viewTimeline", params?: TranslationParams): string;
+  /**
+   * zh-CN: 表情
+   * zh-TW: 表情
+   * en-US: Emoji
+   */
+  (key: "folia.cappella.emojiAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 午夜
+   * zh-TW: 午夜
+   * en-US: Midnight
+   */
+  (key: "folia.preset.midnight", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雪白
+   * zh-TW: 雪白
+   * en-US: Snow
+   */
+  (key: "folia.preset.snow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 海洋
+   * zh-TW: 海洋
+   * en-US: Ocean
+   */
+  (key: "folia.preset.ocean", params?: TranslationParams): string;
+  /**
+   * zh-CN: 森林
+   * zh-TW: 森林
+   * en-US: Forest
+   */
+  (key: "folia.preset.forest", params?: TranslationParams): string;
+  /**
+   * zh-CN: 玫瑰
+   * zh-TW: 玫瑰
+   * en-US: Rose
+   */
+  (key: "folia.preset.rose", params?: TranslationParams): string;
+  /**
+   * zh-CN: 薰衣草
+   * zh-TW: 薰衣草
+   * en-US: Lavender
+   */
+  (key: "folia.preset.lavender", params?: TranslationParams): string;
+  /**
+   * zh-CN: 琥珀
+   * zh-TW: 琥珀
+   * en-US: Amber
+   */
+  (key: "folia.preset.amber", params?: TranslationParams): string;
+  /**
+   * zh-CN: 黄昏
+   * zh-TW: 黃昏
+   * en-US: Dusk
+   */
+  (key: "folia.preset.dusk", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }

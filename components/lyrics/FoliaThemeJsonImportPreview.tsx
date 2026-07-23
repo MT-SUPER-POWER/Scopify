@@ -1,17 +1,17 @@
 "use client";
 
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import type { FoliaThemeColors } from "@/types/foliaStage";
 import type { FoliaThemeJsonImportPreviewProps } from "@/types/components/lyrics";
 
 const COLOR_FIELDS = [
-  ["backgroundColor", "options.aiThemeQuickEditBackground"],
-  ["primaryColor", "options.aiThemeQuickEditPrimary"],
-  ["accentColor", "options.aiThemeQuickEditAccent"],
-  ["secondaryColor", "options.aiThemeQuickEditSecondary"],
+  ["backgroundColor", "folia.options.aiThemeQuickEditBackground"],
+  ["primaryColor", "folia.options.aiThemeQuickEditPrimary"],
+  ["accentColor", "folia.options.aiThemeQuickEditAccent"],
+  ["secondaryColor", "folia.options.aiThemeQuickEditSecondary"],
 ] as const satisfies readonly [keyof FoliaThemeColors, string][];
 
 export function FoliaThemeJsonImportPreview({
@@ -22,7 +22,7 @@ export function FoliaThemeJsonImportPreview({
   themeName,
   validation,
 }: FoliaThemeJsonImportPreviewProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const isReady = validation === "valid";
 
   return (
@@ -38,7 +38,7 @@ export function FoliaThemeJsonImportPreview({
         >
           <CheckCircle2 size={14} style={{ color: colors.accentColor }} />
           <span className="min-w-0 truncate">
-            {t("options.importThemeName")}: {themeName}
+            {t("folia.options.importThemeName")}: {themeName}
           </span>
         </div>
       ) : null}
@@ -53,7 +53,7 @@ export function FoliaThemeJsonImportPreview({
           }}
         >
           <AlertCircle size={14} />
-          {t("options.invalidJsonFormat")}
+          {t("folia.options.invalidJsonFormat")}
         </div>
       ) : null}
 
@@ -114,8 +114,8 @@ export function FoliaThemeJsonImportPreview({
                 }}
               >
                 {mode === "new"
-                  ? t("options.importAsNew")
-                  : t("options.importOverwrite", { name: currentThemeName })}
+                  ? t("folia.options.importAsNew")
+                  : t("folia.options.importOverwrite", { name: currentThemeName })}
               </button>
             );
           })}

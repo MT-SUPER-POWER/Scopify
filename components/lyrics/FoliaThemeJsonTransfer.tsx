@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeJsonExport } from "@/components/lyrics/FoliaThemeJsonExport";
 import { FoliaThemeJsonImport } from "@/components/lyrics/FoliaThemeJsonImport";
@@ -14,7 +14,7 @@ import type {
 } from "@/types/components/lyrics";
 
 export function FoliaThemeJsonTransfer({ onSelectTheme, theme }: FoliaThemeJsonTransferProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const addTheme = useLyricStageStore((state) => state.addTheme);
   const updateTheme = useLyricStageStore((state) => state.updateTheme);
   const setThemeId = useLyricStageStore((state) => state.setThemeId);
@@ -41,9 +41,9 @@ export function FoliaThemeJsonTransfer({ onSelectTheme, theme }: FoliaThemeJsonT
   const copyTheme = async () => {
     try {
       await navigator.clipboard.writeText(themeJson);
-      setMessage(String(t("options.copyThemeJson")));
+      setMessage(String(t("folia.options.copyThemeJson")));
     } catch {
-      setMessage(String(t("options.copyFailed")));
+      setMessage(String(t("folia.options.copyFailed")));
     }
   };
 
@@ -55,23 +55,23 @@ export function FoliaThemeJsonTransfer({ onSelectTheme, theme }: FoliaThemeJsonT
     link.download = `${theme.name || "theme"}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    setMessage(String(t("options.downloadThemeJson")));
+    setMessage(String(t("folia.options.downloadThemeJson")));
   };
 
   const importTheme = () => {
     if (!parsedTheme) {
-      setMessage(String(t("options.invalidJsonFormat")));
+      setMessage(String(t("folia.options.invalidJsonFormat")));
       return;
     }
 
     if (importMode === "overwrite") {
       updateTheme({ ...parsedTheme, id: theme.id });
-      setMessage(String(t("options.themeOverwritten", { name: theme.name })));
+      setMessage(String(t("folia.options.themeOverwritten", { name: theme.name })));
     } else {
       addTheme(parsedTheme);
       setThemeId(parsedTheme.id);
       onSelectTheme(parsedTheme.id);
-      setMessage(String(t("options.themeImported", { name: parsedTheme.name })));
+      setMessage(String(t("folia.options.themeImported", { name: parsedTheme.name })));
     }
     setJson("");
   };
@@ -81,7 +81,7 @@ export function FoliaThemeJsonTransfer({ onSelectTheme, theme }: FoliaThemeJsonT
       const file = files?.[0];
       if (!file) return;
       if (!file.name.toLowerCase().endsWith(".json")) {
-        setMessage(String(t("options.invalidJsonFormat")));
+        setMessage(String(t("folia.options.invalidJsonFormat")));
         return;
       }
       const reader = new FileReader();

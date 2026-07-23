@@ -2,16 +2,16 @@
 
 import { HexColorPicker } from "react-colorful";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import type { FoliaThemeColorEditorProps } from "@/types/components/lyrics";
 import type { FoliaThemeColors } from "@/types/foliaStage";
 
 const COLOR_FIELDS = [
-  ["backgroundColor", "options.aiThemeQuickEditBackground"],
-  ["primaryColor", "options.aiThemeQuickEditPrimary"],
-  ["accentColor", "options.aiThemeQuickEditAccent"],
-  ["secondaryColor", "options.aiThemeQuickEditSecondary"],
+  ["backgroundColor", "folia.options.aiThemeQuickEditBackground"],
+  ["primaryColor", "folia.options.aiThemeQuickEditPrimary"],
+  ["accentColor", "folia.options.aiThemeQuickEditAccent"],
+  ["secondaryColor", "folia.options.aiThemeQuickEditSecondary"],
 ] as const satisfies readonly [keyof FoliaThemeColors, string][];
 
 export function FoliaThemeColorEditor({
@@ -19,9 +19,10 @@ export function FoliaThemeColorEditor({
   theme,
   variant,
 }: FoliaThemeColorEditorProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const [activeKey, setActiveKey] = useState<keyof FoliaThemeColors>("accentColor");
   const colors = theme[variant];
+  const activeLabel = COLOR_FIELDS.find(([key]) => key === activeKey)?.[1];
 
   const updateColor = (key: keyof FoliaThemeColors, value: string) => {
     onDraftChange({
@@ -66,9 +67,7 @@ export function FoliaThemeColorEditor({
 
       <div className="space-y-3 rounded-[22px] border border-white/10 bg-black/10 p-3">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-sm font-medium">
-            {t(COLOR_FIELDS.find(([key]) => key === activeKey)?.[1] ?? "")}
-          </span>
+          <span className="text-sm font-medium">{activeLabel ? t(activeLabel) : null}</span>
           <span
             className="rounded-full px-2.5 py-1 font-mono text-[11px]"
             style={{ backgroundColor: colors[activeKey], color: colors.backgroundColor }}

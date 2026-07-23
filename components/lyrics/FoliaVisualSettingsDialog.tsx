@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaThemeQuickPicker } from "@/components/lyrics/FoliaThemeQuickPicker";
@@ -21,7 +21,7 @@ export function FoliaVisualSettingsDialog({
   section,
   theme,
 }: FoliaVisualSettingsDialogProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const panelProps = useFoliaStageSettingsPanel(
     section,
     onSectionChange,
@@ -61,7 +61,7 @@ export function FoliaVisualSettingsDialog({
           <motion.section
             role="dialog"
             aria-modal="true"
-            aria-label={String(t("options.visualSettings"))}
+            aria-label={String(t("folia.options.visualSettings"))}
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}
@@ -73,8 +73,8 @@ export function FoliaVisualSettingsDialog({
               <div className="flex min-w-0 items-center gap-3">
                 <button
                   type="button"
-                  title={String(t("ui.close"))}
-                  aria-label={String(t("ui.close"))}
+                  title={String(t("folia.ui.close"))}
+                  aria-label={String(t("folia.ui.close"))}
                   onClick={onClose}
                   className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-colors hover:bg-white/10"
                   style={{ color: theme.primaryColor }}
@@ -86,7 +86,7 @@ export function FoliaVisualSettingsDialog({
                     className="truncate text-lg font-semibold sm:text-xl"
                     style={{ color: theme.primaryColor }}
                   >
-                    {t("options.lyricsStyleSettings")}
+                    {t("folia.options.lyricsStyleSettings")}
                   </div>
                 </div>
               </div>

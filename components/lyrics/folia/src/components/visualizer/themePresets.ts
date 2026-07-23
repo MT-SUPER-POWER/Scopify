@@ -1,18 +1,19 @@
 import type { Theme } from "../../types";
+import type { TranslationKey } from "@/lib/i18n";
 
 // src/components/visualizer/themePresets.ts
 // Built-in color theme presets for the visualizer stage.
 
 export interface ThemePreset {
   id: string;
-  labelKey: string;
+  labelKey: TranslationKey;
   colors: Pick<Theme, "backgroundColor" | "primaryColor" | "accentColor" | "secondaryColor">;
 }
 
 export const THEME_PRESETS: ThemePreset[] = [
   {
     id: "midnight",
-    labelKey: "preset.midnight",
+    labelKey: "folia.preset.midnight",
     colors: {
       accentColor: "#f4f4f5",
       backgroundColor: "#09090b",
@@ -22,7 +23,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: "snow",
-    labelKey: "preset.snow",
+    labelKey: "folia.preset.snow",
     colors: {
       accentColor: "#ea580c",
       backgroundColor: "#f5f5f4",
@@ -32,7 +33,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: "ocean",
-    labelKey: "preset.ocean",
+    labelKey: "folia.preset.ocean",
     colors: {
       accentColor: "#38bdf8",
       backgroundColor: "#0a1628",
@@ -42,7 +43,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: "forest",
-    labelKey: "preset.forest",
+    labelKey: "folia.preset.forest",
     colors: {
       accentColor: "#22c55e",
       backgroundColor: "#052e16",
@@ -52,7 +53,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: "rose",
-    labelKey: "preset.rose",
+    labelKey: "folia.preset.rose",
     colors: {
       accentColor: "#f472b6",
       backgroundColor: "#1c0a13",
@@ -62,7 +63,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: "lavender",
-    labelKey: "preset.lavender",
+    labelKey: "folia.preset.lavender",
     colors: {
       accentColor: "#a78bfa",
       backgroundColor: "#1a0f2e",
@@ -72,7 +73,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: "amber",
-    labelKey: "preset.amber",
+    labelKey: "folia.preset.amber",
     colors: {
       accentColor: "#f59e0b",
       backgroundColor: "#1c1407",
@@ -82,7 +83,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: "dusk",
-    labelKey: "preset.dusk",
+    labelKey: "folia.preset.dusk",
     colors: {
       accentColor: "#818cf8",
       backgroundColor: "#1e1b2e",
