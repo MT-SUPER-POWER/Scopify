@@ -49,7 +49,7 @@ The ordered catalogue of Visualizer Modes and their optional settings panels. It
 _Avoid_: switch statement, hard-coded mode list
 
 **Lyric Stage**:
-A browser-compatible full-screen Scopify surface that mounts the complete Folia Playback Stage through the Scopify Host Adapter. It is available in both Scopify's Web and Electron runtimes and is opened from Scopify's existing lyrics action.
+A browser-compatible full-screen Scopify surface that mounts the complete Folia Playback Stage through the Scopify Host Adapter. It is available in both Scopify's Web and Electron runtimes and is opened from Scopify's existing lyrics action or an In-Window Shortcut.
 _Avoid_: desktop window, player
 
 **Lyric Stage Theme Library**:
@@ -75,6 +75,82 @@ _Avoid_: clipped lyric, LRC-only lyric
 **AI Lyric Theme**:
 An optional user-configured generator that derives visual parameters from a song's lyrics and cover. It is not required for the Lyric Stage or Folia Visualizer Suite.
 _Avoid_: default theme, required visualizer feature
+
+**In-Window Shortcut**:
+A configurable key combination processed by the Scopify renderer only while its main window has focus. It coordinates playback or navigation without registering an operating-system global shortcut.
+_Avoid_: global shortcut, system hotkey
+
+**Shortcut Registry**:
+A user-configurable catalogue that maps each named Scopify command to a built-in key combination and an optional user override. It makes bindings visible, editable, and resettable from one interface.
+_Avoid_: global shortcut registry, scattered key listeners
+
+**Primary Modifier**:
+The platform-appropriate primary modifier used by an In-Window Shortcut: `Ctrl` on Windows and Linux, and `Cmd` on macOS.
+_Avoid_: Windows-only Ctrl, macOS-only Cmd
+
+**Shortcut Conflict**:
+The invalid state in which two Scopify commands have the same effective In-Window Shortcut. A Shortcut Registry rejects the new binding and retains the existing one.
+_Avoid_: command priority, last binding wins
+
+**Text Entry Context**:
+A focused text input, text area, or editable content surface. In this context, only the search shortcut may run; playback and modal shortcuts are inactive, while the shortcut recorder captures keys for editing a binding.
+_Avoid_: global keyboard block, normal page focus
+
+**Sidebar Toggle Command**:
+The shortcut command that switches the main navigation sidebar between expanded and collapsed states. Its built-in In-Window Shortcut is `Primary Modifier + B`.
+_Avoid_: browser bookmark shortcut, window resize
+
+**Shortcut Management Surface**:
+The dedicated settings interface for browsing, editing, detecting conflicts in, and resetting Shortcut Registry bindings. It is distinct from a transient keyboard-help display.
+_Avoid_: static shortcut documentation, command palette
+
+**Command Palette**:
+A searchable transient interface for finding and executing named Scopify commands without navigating to their UI. It complements, but does not replace, the Shortcut Management Surface.
+_Avoid_: shortcut registry, settings page
+
+**Keyboard Help Panel**:
+A read-only, transient display of commonly used In-Window Shortcuts. It helps discovery without providing binding-editing controls.
+_Avoid_: shortcut management surface, command palette
+
+**Shortcut Runtime Parity**:
+The rule that the Shortcut Registry exposes the same commands, defaults, conflict rules, and interactions in Scopify's Web and Electron runtimes.
+_Avoid_: Electron-only key bindings, runtime-specific shortcut catalogues
+
+**Shortcut Override**:
+A device-scoped user replacement for a command's built-in In-Window Shortcut. It persists in the current browser or Electron installation and is independent of the signed-in music account.
+_Avoid_: account preference, synced profile setting
+
+**Shortcut Combination**:
+One simultaneous key press composed of zero or more modifiers and one primary key. The initial Shortcut Registry does not support ordered multi-key sequences.
+_Avoid_: key chord sequence, multi-step shortcut
+
+**Shortcut Binding Rule**:
+A Shortcut Override requires at least one modifier. The only bare-key exceptions are the built-in `Space` playback toggle and the fixed `Esc` exit behavior for the Lyric Stage.
+_Avoid_: bare letter binding, bare navigation-key binding
+
+**Shortcut Volume Step**:
+The amount by which an In-Window Shortcut changes playback volume: five percentage points, clamped to the inclusive range from zero to one hundred percent.
+_Avoid_: arbitrary volume delta, unclamped volume change
+
+**Mute Restore Level**:
+The last non-zero playback volume saved when a user mutes audio. Repeating the mute command restores exactly that value rather than a fixed volume.
+_Avoid_: default-volume restore, always restore to one hundred percent
+
+**Keyboard Invocation**:
+The keyboard-triggered invocation of an existing Scopify UI action. It reuses that action's availability checks, state transitions, and user feedback instead of creating shortcut-specific behavior.
+_Avoid_: parallel shortcut business logic, shortcut-only feedback
+
+**Fullscreen Command**:
+A registered command that enters or exits the host runtime's application fullscreen mode. Its built-in In-Window Shortcut is `Primary Modifier + Shift + F`, rather than the browser-reserved `F11`.
+_Avoid_: native F11 behavior, window-only fullscreen
+
+**Settings Tab**:
+A top-level category in the Settings surface that presents a focused subset of configuration while preserving the existing two-column setting layout within its content.
+_Avoid_: a separate settings route, an ungrouped long-form settings page
+
+**Shortcut Settings Tab**:
+The Settings Tab containing the Shortcut Management Surface. It gives the Shortcut Registry a focused editing workspace while remaining part of Settings.
+_Avoid_: standalone shortcut route, keyboard-help panel
 
 ## State Ownership
 

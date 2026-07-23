@@ -22,7 +22,7 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { toast } from "sonner";
 import { QueuePopover } from "@/components/QueuePopover";
@@ -32,8 +32,9 @@ import { useMusicQuality } from "@/hooks/player/useMusicQuality";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
-import { cn, formatCompactCount, IS_ELECTRON } from "@/lib/utils";
+import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
@@ -50,16 +51,6 @@ import {
 import { Skeleton } from "./ui/skeleton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const Maximized = (isElectron: boolean) => {
-  if (isElectron) window.electronAPI?.enterFullScreen();
-  else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-};
-
-const Minimize = (isElectron: boolean) => {
-  if (isElectron) window.electronAPI?.exitFullScreen();
-  else if (document.fullscreenElement) document.exitFullscreen();
-};
 
 /** 图标右上角数字（PlayerBar 专用） */
 // BUG: hover 时，数字会被下面的 ICON 盖住（好像是因为毛玻璃的 BUG 导致的计算渲染问题）
@@ -134,32 +125,12 @@ export const PlayerBar = ({
   variant?: "default" | "lyric-stage";
 }) => {
   const { t } = useI18n();
-  const isElectron = IS_ELECTRON;
   const isLyricsOpen = useUiStore((s) => s.isLyricsOpen);
   const toggleLyrics = useUiStore((s) => s.toggleLyrics);
-  const [isMaximized, setIsMaximized] = useState(false);
+  const isFullscreen = useUiStore((s) => s.isFullscreen);
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
   const smartRouter = useSmartRouter();
-
-  // 检测 F11 浏览器全屏（非 requestFullscreen）
-  useEffect(() => {
-    const checkFullScreen = () => {
-      // 通过窗口尺寸和屏幕尺寸判断是否全屏
-      const isBrowserFullScreen =
-        window.innerHeight === screen.height &&
-        window.innerWidth === screen.width &&
-        !document.fullscreenElement;
-      setIsMaximized(!!document.fullscreenElement || isBrowserFullScreen);
-    };
-    window.addEventListener("resize", checkFullScreen);
-    document.addEventListener("fullscreenchange", checkFullScreen);
-    checkFullScreen();
-    return () => {
-      window.removeEventListener("resize", checkFullScreen);
-      document.removeEventListener("fullscreenchange", checkFullScreen);
-    };
-  }, []);
 
   // Zustand Stores
   const volume = usePlayerStore((s) => s.volume);
@@ -200,14 +171,17 @@ export const PlayerBar = ({
 
   const toggleLike = useCallback(
     async (next: boolean) => {
+      const songId = currentSong?.id;
+      if (!songId) return;
+
       try {
-        await likeSong(currentSong?.id!, next);
+        await likeSong(songId, next);
         useUserStore.getState().libraryUpdateTrigger += 1; // 触发喜欢列表更新
         const store = useUserStore.getState();
         const cur = Array.isArray(store.likeListIDs)
           ? store.likeListIDs.map((id) => Number(id))
           : [];
-        const idNum = Number(currentSong?.id);
+        const idNum = Number(songId);
         const nextList: number[] = next ? [...cur, idNum] : cur.filter((id) => id !== idNum);
         store.setLikeListIDs(nextList);
         void clearPageCache();
@@ -345,7 +319,7 @@ export const PlayerBar = ({
               count={currentSong?.likedCount}
               countClassName={isLiked ? "text-[#1ed760]" : "text-zinc-300"}
               title={isLiked ? t("common.action.unlike") : t("common.action.like")}
-              onClick={() => toggleLike(!isLiked)}
+              onClick={() => void toggleLike(!isLiked)}
             >
               {isLiked ? (
                 <PiHeartFill className="size-5 text-[#1ed760] lg:size-5.5" />
@@ -390,7 +364,7 @@ export const PlayerBar = ({
             </button>
             <button
               type="button"
-              onClick={() => playPrev()}
+              onClick={() => void playPrev()}
               className="text-[#b3b3b3] transition-colors hover:text-white"
             >
               <SkipBack className="size-4 fill-current lg:size-5" />
@@ -409,7 +383,7 @@ export const PlayerBar = ({
             </button>
             <button
               type="button"
-              onClick={() => playNext()}
+              onClick={() => void playNext()}
               className="text-[#b3b3b3] transition-colors hover:text-white"
             >
               <SkipForward className="size-4 fill-current lg:size-5" />
@@ -541,17 +515,10 @@ export const PlayerBar = ({
           {/* 最大化/最小化按钮 */}
           <button
             type="button"
-            onClick={() => {
-              if (isMaximized) {
-                Minimize(isElectron);
-              } else {
-                Maximized(isElectron);
-              }
-              setIsMaximized(!isMaximized);
-            }}
+            onClick={() => void toggleApplicationFullscreen()}
             className="hidden transition-colors hover:text-white sm:block"
           >
-            {isMaximized ? (
+            {isFullscreen ? (
               <MinimizeIcon className="size-4 lg:size-5" />
             ) : (
               <Expand className="size-4 lg:size-5" />

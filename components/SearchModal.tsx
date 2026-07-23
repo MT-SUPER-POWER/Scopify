@@ -125,7 +125,9 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   // Esc 关闭 (保持原有的全局监听以防 input 没聚焦时也没法关)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key !== "Escape") return;
+      e.stopPropagation();
+      onClose();
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);

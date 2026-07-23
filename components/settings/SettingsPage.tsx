@@ -1,455 +1,97 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ShortcutSettings } from "@/components/shortcuts/ShortcutSettings";
+import { SETTINGS_TABS } from "@/constants/settings";
 import { useSettingsState } from "@/hooks/settings/useSettingsState";
-import { languageLabelKeys } from "@/lib/i18n";
+import { parseSettingsTab } from "@/lib/settings/tabs";
 import { IS_ELECTRON } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import { APP_LOCALES, type AppConfig, type AppLocale } from "@/types/config";
-import { AppUpdaterSection } from "./AppUpdaterSection";
-import {
-  SaveChangesButton,
-  SaveConfirmModal,
-  SettingInput,
-  SettingRow,
-  SettingSection,
-  SettingSelect,
-  SettingsLoadingState,
-  Toggle,
-} from "./SettingsUI";
+import type { SettingsTabId } from "@/types/settings";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { DesktopSettingsTab } from "./DesktopSettingsTab";
+import { GeneralSettingsTab } from "./GeneralSettingsTab";
+import { NetworkSettingsTab } from "./NetworkSettingsTab";
+import { SaveChangesButton, SaveConfirmModal, SettingsLoadingState } from "./SettingsUI";
+import { StorageSettingsTab } from "./StorageSettingsTab";
 
 const SettingsPage = () => {
   const { t } = useI18n();
-  const {
-    config,
-    hasChanges,
-    isModalOpen,
-    isSaving,
-    requiresRestart,
-    setIsModalOpen,
-    handleLocalChange,
-    handleConfirmSave,
-    handleClearCache,
-    isClearingCache,
-    isClearingPlaybackCache,
-    playbackCacheStats,
-    handleClearPlaybackCache,
-  } = useSettingsState();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const queryTab = parseSettingsTab(searchParams.get("tab") ?? undefined);
+  const [activeTab, setActiveTab] = useState(queryTab);
+  const settings = useSettingsState();
 
-  if (!config) {
-    return <SettingsLoadingState />;
-  }
+  useEffect(() => setActiveTab(queryTab), [queryTab]);
 
-  const isCustomProxy = config.network.proxyMode === "custom";
+  if (!settings.config) return <SettingsLoadingState />;
+
+  const handleTabChange = (tab: string) => {
+    const nextTab = tab as SettingsTabId;
+    setActiveTab(nextTab);
+    router.replace(`${pathname}?tab=${nextTab}`, { scroll: false });
+  };
 
   return (
-    <div className="relative flex min-h-[80vh] w-full flex-col rounded-lg bg-[#121212] p-10 text-[#b3b3b3] shadow-2xl md:p-14">
-      <div className="mt-4.5 mb-10 flex items-center justify-between">
-        <h1 className="text-4xl font-black tracking-tight text-white md:text-5xl">
+    <div className="relative flex min-h-[80vh] w-full flex-col rounded-lg bg-[#121212] p-6 text-[#b3b3b3] shadow-2xl md:p-10">
+      <div className="mt-4 mb-8 flex items-center justify-between">
+        <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl">
           {t("settings.title")}
         </h1>
       </div>
-
-      <div className="flex flex-col">
-        <div className="grid grow grid-cols-1 items-start gap-x-16 gap-y-10 pb-20 lg:grid-cols-2">
-          <div className="flex flex-col gap-10">
-            <SettingSection title={t("settings.section.application")}>
-              <SettingRow
-                label={t("settings.language.label")}
-                sublabel={t("settings.language.sublabel")}
-                control={
-                  <SettingSelect
-                    value={config.app.locale}
-                    onChange={(value) => handleLocalChange("app", "locale", value as AppLocale)}
-                  >
-                    {APP_LOCALES.map((locale) => (
-                      <option key={locale} value={locale} className="bg-[#282828]">
-                        {t(languageLabelKeys[locale])}
-                      </option>
-                    ))}
-                  </SettingSelect>
-                }
-              />
-
-              {IS_ELECTRON ? (
-                <>
-                  <SettingRow
-                    label={t("settings.gpu.label")}
-                    sublabel={t("settings.gpu.sublabel")}
-                    requiresRestart
-                    control={
-                      <Toggle
-                        enabled={config.app.gpuAcceleration}
-                        onChange={() =>
-                          handleLocalChange("app", "gpuAcceleration", !config.app.gpuAcceleration)
-                        }
-                      />
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.devTools.label")}
-                    requiresRestart
-                    control={
-                      <Toggle
-                        enabled={config.app.devTools}
-                        onChange={() => handleLocalChange("app", "devTools", !config.app.devTools)}
-                      />
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.windowClose.label")}
-                    control={
-                      <SettingSelect
-                        value={config.app.closeAction}
-                        onChange={(value) =>
-                          handleLocalChange("app", "closeAction", Number(value) as 0 | 1 | 2)
-                        }
-                      >
-                        <option value={0} className="bg-[#282828]">
-                          {t("settings.windowClose.minimize")}
-                        </option>
-                        <option value={1} className="bg-[#282828]">
-                          {t("settings.windowClose.exit")}
-                        </option>
-                        <option value={2} className="bg-[#282828]">
-                          {t("settings.windowClose.ask")}
-                        </option>
-                      </SettingSelect>
-                    }
-                  />
-                </>
-              ) : null}
-            </SettingSection>
-
-            <SettingSection title={t("settings.section.backend")}>
-              <SettingRow
-                label={t("settings.backendHost.label")}
-                sublabel={t("settings.backendHost.sublabel")}
-                control={
-                  <SettingInput
-                    value={config.backend.host}
-                    onChange={(value) => handleLocalChange("backend", "host", value)}
-                    className="w-64"
-                    placeholder={t("settings.backendHost.placeholder")}
-                  />
-                }
-              />
-              <SettingRow
-                label={t("settings.backendPort.label")}
-                sublabel={t("settings.backendPort.sublabel")}
-                control={
-                  <SettingInput
-                    type="number"
-                    value={config.backend.port}
-                    onChange={(value) => handleLocalChange("backend", "port", Number(value) || 0)}
-                    className="w-28"
-                  />
-                }
-              />
-            </SettingSection>
-
-            <SettingSection title={t("settings.section.network")}>
-              <SettingRow
-                label={t("settings.timeout.label")}
-                sublabel={t("settings.timeout.sublabel")}
-                control={
-                  <SettingInput
-                    type="number"
-                    value={config.network.timeout}
-                    onChange={(value) => handleLocalChange("network", "timeout", Number(value))}
-                  />
-                }
-              />
-              <SettingRow
-                label={t("settings.maxRetries.label")}
-                sublabel={t("settings.maxRetries.sublabel")}
-                control={
-                  <SettingInput
-                    type="number"
-                    value={config.network.max_retries}
-                    onChange={(value) => handleLocalChange("network", "max_retries", Number(value))}
-                  />
-                }
-              />
-              <SettingRow
-                label={t("settings.retryDelay.label")}
-                sublabel={t("settings.retryDelay.sublabel")}
-                control={
-                  <SettingInput
-                    type="number"
-                    value={config.network.retry_delay}
-                    onChange={(value) => handleLocalChange("network", "retry_delay", Number(value))}
-                  />
-                }
-              />
-              <SettingRow
-                label={t("settings.randomCNIP.label")}
-                sublabel={t("settings.randomCNIP.sublabel")}
-                control={
-                  <SettingSelect
-                    value={config.network.randomCNIP}
-                    onChange={(value) => handleLocalChange("network", "randomCNIP", value)}
-                  >
-                    <option value="false" className="bg-[#282828]">
-                      {t("settings.randomCNIP.disabled")}
-                    </option>
-                    <option value="true" className="bg-[#282828]">
-                      {t("settings.randomCNIP.enabled")}
-                    </option>
-                  </SettingSelect>
-                }
-              />
-
-              {IS_ELECTRON ? (
-                <>
-                  <SettingRow
-                    label={t("settings.proxyMode.label")}
-                    sublabel={t("settings.proxyMode.sublabel")}
-                    control={
-                      <SettingSelect
-                        value={config.network.proxyMode}
-                        onChange={(value) =>
-                          handleLocalChange(
-                            "network",
-                            "proxyMode",
-                            value as AppConfig["network"]["proxyMode"],
-                          )
-                        }
-                      >
-                        <option value="system" className="bg-[#282828]">
-                          {t("settings.proxyMode.system")}
-                        </option>
-                        <option value="direct" className="bg-[#282828]">
-                          {t("settings.proxyMode.direct")}
-                        </option>
-                        <option value="custom" className="bg-[#282828]">
-                          {t("settings.proxyMode.custom")}
-                        </option>
-                      </SettingSelect>
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.proxyUrl.label")}
-                    sublabel={t("settings.proxyUrl.sublabel")}
-                    control={
-                      <SettingInput
-                        value={config.network.proxyUrl}
-                        onChange={(value) => handleLocalChange("network", "proxyUrl", value)}
-                        className="w-64"
-                        placeholder={t("settings.proxyUrl.placeholder")}
-                        disabled={!isCustomProxy}
-                      />
-                    }
-                  />
-                </>
-              ) : null}
-            </SettingSection>
-
-            {/* 播放缓存（Web + Electron 通用） */}
-            <SettingSection title={t("settings.playbackCache.section")}>
-              <SettingRow
-                label={t("settings.playbackCache.count")}
-                sublabel={
-                  IS_ELECTRON && playbackCacheStats?.cacheDir
-                    ? playbackCacheStats.cacheDir
-                    : undefined
-                }
-                control={
-                  <span className="text-sm font-medium text-white">
-                    {playbackCacheStats != null
-                      ? t("settings.playbackCache.countValue", {
-                          count: playbackCacheStats.entryCount,
-                        })
-                      : "-"}
-                  </span>
-                }
-              />
-              <SettingRow
-                label={t("settings.playbackCache.clearButton")}
-                control={
-                  <button
-                    type="button"
-                    onClick={handleClearPlaybackCache}
-                    disabled={isClearingPlaybackCache}
-                    className="rounded bg-white px-4 py-2 text-sm font-bold text-black hover:bg-white/90 disabled:opacity-50"
-                  >
-                    {isClearingPlaybackCache
-                      ? t("settings.playbackCache.clearing")
-                      : t("settings.playbackCache.clearButton")}
-                  </button>
-                }
-              />
-            </SettingSection>
-          </div>
-
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="flex min-h-0 flex-1 flex-col"
+      >
+        <TabsList className="h-auto justify-start gap-1 overflow-x-auto bg-[#0f0f0f] p-1">
+          {SETTINGS_TABS.filter((tab) => tab.id !== "desktop" || IS_ELECTRON).map((tab) => (
+            <TabsTrigger key={tab.id} value={tab.id} className="shrink-0 px-4 py-2">
+              {t(tab.labelKey)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <div className="min-h-0 flex-1 py-8 pb-20">
+          <TabsContent value="general">
+            <GeneralSettingsTab config={settings.config} onChange={settings.handleLocalChange} />
+          </TabsContent>
+          <TabsContent value="network">
+            <NetworkSettingsTab config={settings.config} onChange={settings.handleLocalChange} />
+          </TabsContent>
+          <TabsContent value="storage">
+            <StorageSettingsTab
+              config={settings.config}
+              onChange={settings.handleLocalChange}
+              playbackCacheStats={settings.playbackCacheStats}
+              isClearingPlaybackCache={settings.isClearingPlaybackCache}
+              onClearPlaybackCache={settings.handleClearPlaybackCache}
+              isClearingCache={settings.isClearingCache}
+              onClearCache={settings.handleClearCache}
+            />
+          </TabsContent>
           {IS_ELECTRON ? (
-            <div className="flex flex-col gap-10">
-              <SettingSection title={t("settings.section.logging")}>
-                <SettingRow
-                  label={t("settings.logLevel.label")}
-                  control={
-                    <SettingSelect
-                      value={config.logging.level}
-                      onChange={(value) =>
-                        handleLocalChange(
-                          "logging",
-                          "level",
-                          value as AppConfig["logging"]["level"],
-                        )
-                      }
-                    >
-                      <option value="debug" className="bg-[#282828]">
-                        {t("settings.logLevel.debug")}
-                      </option>
-                      <option value="info" className="bg-[#282828]">
-                        {t("settings.logLevel.info")}
-                      </option>
-                      <option value="warn" className="bg-[#282828]">
-                        {t("settings.logLevel.warn")}
-                      </option>
-                      <option value="error" className="bg-[#282828]">
-                        {t("settings.logLevel.error")}
-                      </option>
-                    </SettingSelect>
-                  }
-                />
-                <SettingRow
-                  label={t("settings.keepDays.label")}
-                  sublabel={t("settings.keepDays.sublabel")}
-                  control={
-                    <SettingInput
-                      type="number"
-                      value={config.logging.keepDays}
-                      onChange={(value) => handleLocalChange("logging", "keepDays", Number(value))}
-                    />
-                  }
-                />
-              </SettingSection>
-
-              <AppUpdaterSection />
-
-              {IS_ELECTRON ? (
-                <SettingSection title={t("settings.section.cache")}>
-                  <SettingRow
-                    label={t("settings.cache.enabled.label")}
-                    sublabel={t("settings.cache.enabled.sublabel")}
-                    control={
-                      <Toggle
-                        enabled={config.cache.enabled}
-                        onChange={() =>
-                          handleLocalChange("cache", "enabled", !config.cache.enabled)
-                        }
-                      />
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.cache.dir.label")}
-                    sublabel={t("settings.cache.dir.sublabel")}
-                    isColumn
-                    control={
-                      <SettingInput
-                        value={config.cache.dir}
-                        onChange={(value) => handleLocalChange("cache", "dir", value)}
-                        className="w-full text-left"
-                        placeholder={t("settings.cache.dir.placeholder")}
-                      />
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.cache.maxSize.label")}
-                    sublabel={t("settings.cache.maxSize.sublabel")}
-                    control={
-                      <SettingInput
-                        type="number"
-                        value={config.cache.maxSizeMB}
-                        onChange={(value) => handleLocalChange("cache", "maxSizeMB", Number(value))}
-                      />
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.cache.pageTtl.label")}
-                    sublabel={t("settings.cache.pageTtl.sublabel")}
-                    control={
-                      <SettingInput
-                        type="number"
-                        value={config.cache.pageTtlMinutes}
-                        onChange={(value) =>
-                          handleLocalChange("cache", "pageTtlMinutes", Number(value))
-                        }
-                      />
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.cache.searchTtl.label")}
-                    sublabel={t("settings.cache.searchTtl.sublabel")}
-                    control={
-                      <SettingInput
-                        type="number"
-                        value={config.cache.searchTtlMinutes}
-                        onChange={(value) =>
-                          handleLocalChange("cache", "searchTtlMinutes", Number(value))
-                        }
-                      />
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.cache.clear.label")}
-                    sublabel={t("settings.cache.clear.sublabel")}
-                    control={
-                      <button
-                        type="button"
-                        onClick={handleClearCache}
-                        disabled={isClearingCache}
-                        className="rounded bg-white px-4 py-2 text-sm font-bold text-black hover:bg-white/90 disabled:opacity-50"
-                      >
-                        {isClearingCache
-                          ? t("settings.cache.clear.clearing")
-                          : t("settings.cache.clear.button")}
-                      </button>
-                    }
-                  />
-                </SettingSection>
-              ) : null}
-
-              {process.env.NODE_ENV !== "production" ? (
-                <SettingSection title={t("settings.section.frontend")}>
-                  <SettingRow
-                    label={t("settings.frontendHost.label")}
-                    requiresRestart
-                    control={
-                      <SettingInput
-                        value={config.frontend.host}
-                        onChange={(value) => handleLocalChange("frontend", "host", value)}
-                      />
-                    }
-                  />
-                  <SettingRow
-                    label={t("settings.frontendPort.label")}
-                    requiresRestart
-                    control={
-                      <SettingInput
-                        type="number"
-                        value={config.frontend.devPort}
-                        onChange={(value) =>
-                          handleLocalChange("frontend", "devPort", Number(value))
-                        }
-                      />
-                    }
-                  />
-                </SettingSection>
-              ) : null}
-            </div>
+            <TabsContent value="desktop">
+              <DesktopSettingsTab config={settings.config} onChange={settings.handleLocalChange} />
+            </TabsContent>
           ) : null}
+          <TabsContent value="shortcuts">
+            <ShortcutSettings />
+          </TabsContent>
         </div>
-
-        <SaveChangesButton visible={hasChanges} onClick={() => setIsModalOpen(true)} />
-      </div>
-
+      </Tabs>
+      <SaveChangesButton
+        visible={settings.hasChanges}
+        onClick={() => settings.setIsModalOpen(true)}
+      />
       <SaveConfirmModal
-        open={isModalOpen}
-        isSaving={isSaving}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmSave}
-        requiresRestart={requiresRestart}
+        open={settings.isModalOpen}
+        isSaving={settings.isSaving}
+        onClose={() => settings.setIsModalOpen(false)}
+        onConfirm={() => void settings.handleConfirmSave()}
+        requiresRestart={settings.requiresRestart}
         isWeb={!IS_ELECTRON}
       />
     </div>

@@ -4,7 +4,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { useDefaultLayout } from "react-resizable-panels";
+import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
@@ -12,6 +12,8 @@ import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { useAudioVisualizer } from "@/hooks/player/useAudioVisualizer";
 import { useDesktopLyricPublisher } from "@/hooks/player/useDesktopLyricPublisher";
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
+import { CommandPalette } from "@/components/shortcuts/CommandPalette";
+import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -37,6 +39,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
   // DOM 引用与节流/状态标记
   const audioRef = useRef<HTMLAudioElement>(null);
+  const sidebarPanelRef = usePanelRef();
   const lastStoreWriteRef = useRef(0);
   const hasRestoredProgressRef = useRef(false); // 必须声明：标记是否已经恢复过进度
   const [isMounted, setIsMounted] = useState(false);
@@ -55,6 +58,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const currentSongUrl = usePlayerStore((s) => s.currentSongUrl);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const playNext = usePlayerStore((s) => s.playNext);
+  const isCollapsed = useUiStore((s) => s.isCollapsed);
+  const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
+  const setIsFullscreen = useUiStore((s) => s.setIsFullscreen);
 
   // 1. 负责加载音频 URL & 重置恢复标记
   useEffect(() => {
@@ -83,7 +89,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
       audio.load();
     }
-    usePlayerStore.getState().fetchCurrentLyric();
+    void usePlayerStore.getState().fetchCurrentLyric();
   }, [currentSongUrl]);
 
   // 2. 负责触发播放/暂停
@@ -173,7 +179,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
         ? window.localStorage
         : {
             getItem: () => null,
-            setItem: () => {},
+            setItem: (_key: string, _value: string) => undefined,
           },
   });
 
@@ -183,19 +189,22 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const setScrollContainer = useUiStore((s) => s.setScrollContainer);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setIsSearchOpen(!isSearchOpen);
-      }
-      if (e.key === "Escape" && isSearchOpen) {
-        e.preventDefault();
-        setIsSearchOpen(false);
-      }
+    const syncFullscreen = () => setIsFullscreen(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", syncFullscreen);
+    window.electronAPI?.onFullScreenChanged(setIsFullscreen);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", syncFullscreen);
+      window.electronAPI?.off("window-full-screen-changed");
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isSearchOpen, setIsSearchOpen]);
+  }, [setIsFullscreen]);
+
+  useEffect(() => {
+    const panel = sidebarPanelRef.current;
+    if (!panel) return;
+    if (isCollapsed) panel.collapse();
+    else panel.expand();
+  }, [isCollapsed, isMounted, sidebarPanelRef]);
 
   return (
     <div
@@ -207,6 +216,8 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     >
       {/* 模态注册 */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <CommandPalette />
+      <KeyboardShortcutHelp />
       <AppCloseDialog />
       <LyricStageMount />
 
@@ -220,11 +231,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             className="h-full w-full"
           >
             <ResizablePanel
+              panelRef={sidebarPanelRef}
               defaultSize="20%"
               minSize="15%"
               maxSize="40%"
               collapsible
               collapsedSize={80}
+              onResize={() => setIsCollapsed(sidebarPanelRef.current?.isCollapsed() ?? false)}
               className={cn("overflow-hidden rounded-lg bg-[#0f0f0f]")}
             >
               <Sidebar />
@@ -288,7 +301,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           className="hidden"
           ref={audioRef}
           // 下一曲了
-          onEnded={() => playNext()}
+          onEnded={() => void playNext()}
           // 切歌存新的时间
           onDurationChange={(e) => {
             const duration = e.currentTarget.duration;
@@ -382,7 +395,7 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
     return (
       <MainLayoutSkeleton
         title={t("layout.failedTitle")}
-        description={backendStartup.message || t("layout.failedDescription")}
+        description={backendStartup.message ?? t("layout.failedDescription")}
         actionLabel={t("layout.restartApp")}
         onAction={() => window.electronAPI?.relaunchApp()}
       />

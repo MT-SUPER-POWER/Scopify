@@ -1,0 +1,25 @@
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import type { ShortcutStoreState } from "@/types/shortcuts";
+
+export const useShortcutStore = create<ShortcutStoreState>()(
+  persist(
+    (set) => ({
+      overrides: {},
+      setOverride: (commandId, binding) =>
+        set((state) => ({
+          overrides: { ...state.overrides, [commandId]: binding },
+        })),
+      resetOverride: (commandId) =>
+        set((state) => {
+          const { [commandId]: _removed, ...overrides } = state.overrides;
+          return { overrides };
+        }),
+      resetAllOverrides: () => set({ overrides: {} }),
+    }),
+    {
+      name: "shortcut-storage",
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);

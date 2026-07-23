@@ -3,7 +3,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ListMusic, LocateFixed, Play } from "lucide-react"; // 添加定位图标
 import Image from "next/image";
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
@@ -12,6 +12,7 @@ import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import { useUiStore } from "@/store/module/ui";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
 
@@ -292,7 +293,8 @@ export const QueuePopover = () => {
   const { t } = useI18n();
   const queue = usePlayerStore((state: any) => state.queue);
   const queueIndex = usePlayerStore((state: any) => state.queueIndex);
-  const [open, setOpen] = useState(false);
+  const open = useUiStore((state) => state.isQueueOpen);
+  const setOpen = useUiStore((state) => state.setIsQueueOpen);
 
   const parentRef = useRef<HTMLDivElement>(null);
 
