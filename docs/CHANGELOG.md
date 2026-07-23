@@ -183,3 +183,9 @@
 - Claude Skills 适配
 - 文档完善（部署、架构、Changelog）
 - 评论区 Badge 阴影去除、内联布局优化
+
+# v1.1.0
+
+- LyricModal 重做，改为 Folia 的动态歌词效果
+- Lyric 多做了一个 Theme 库管理部分
+- CI/CD 后端优化，实现上流的拉去最新的代码作 PR

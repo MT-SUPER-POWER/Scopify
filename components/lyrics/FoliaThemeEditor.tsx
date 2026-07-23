@@ -98,7 +98,7 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
         {/* ── 编辑 Tab ──────────────────────────── */}
         {editorTab === "edit" && (
           <>
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.045] p-3">
+            <div className="rounded-[24px] border border-white/10 bg-white/4.5 p-3">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <label className="min-w-0 flex-1 space-y-1">
                   <span className="text-[10px] font-semibold tracking-[0.2em] uppercase opacity-50">

@@ -1,5 +1,5 @@
 import type { Theme } from "@/components/lyrics/folia/src/types";
-import type { RefObject } from "react";
+import type { ChangeEvent, DragEvent, RefObject } from "react";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
 import type { LyricDisplayLine, LyricMatchCandidate } from "@/types/lyrics";
 import type { SongDetail } from "@/types/api/music";
@@ -7,6 +7,7 @@ import type {
   FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,
   FoliaStageTheme,
+  FoliaThemeColors,
   FoliaThemeVariant,
 } from "@/types/foliaStage";
 
@@ -112,6 +113,44 @@ export interface FoliaThemeLibraryListProps {
 export interface FoliaThemeJsonTransferProps {
   onSelectTheme: (id: string) => void;
   theme: FoliaStageTheme;
+}
+
+export type FoliaThemeImportMode = "new" | "overwrite";
+
+export type FoliaThemeJsonValidation = "empty" | "invalid" | "valid";
+
+export interface FoliaThemeJsonExportProps {
+  colors: FoliaThemeColors;
+  json: string;
+  onCopy: () => void;
+  onDownload: () => void;
+}
+
+export interface FoliaThemeJsonImportProps {
+  colors: FoliaThemeColors;
+  currentThemeName: string;
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  importMode: FoliaThemeImportMode;
+  isDragOver: boolean;
+  json: string;
+  onDragLeave: () => void;
+  onDragOver: (event: DragEvent<HTMLDivElement>) => void;
+  onDrop: (event: DragEvent<HTMLDivElement>) => void;
+  onFileSelect: (event: ChangeEvent<HTMLInputElement>) => void;
+  onImport: () => void;
+  onImportModeChange: (mode: FoliaThemeImportMode) => void;
+  onJsonChange: (json: string) => void;
+  themeName: string | null;
+  validation: FoliaThemeJsonValidation;
+}
+
+export interface FoliaThemeJsonImportPreviewProps {
+  colors: FoliaThemeColors;
+  currentThemeName: string;
+  importMode: FoliaThemeImportMode;
+  onImportModeChange: (mode: FoliaThemeImportMode) => void;
+  themeName: string | null;
+  validation: FoliaThemeJsonValidation;
 }
 
 export interface FoliaThemeQuickPickerProps {
