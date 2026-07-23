@@ -1,7 +1,13 @@
 import { expect, test } from "bun:test";
 
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
-import { type NeteaseLyric, pruneNeteaseLyric } from "@/types/api/music";
+import {
+  buildLyricMatchQuery,
+  getLyricMatchScore,
+  hasUsableNeteaseLyric,
+  mapSongSearchResourceToLyricMatchCandidate,
+} from "@/lib/lyrics/match";
+import { type NeteaseLyric, pruneNeteaseLyric, type SongDetail } from "@/types/api/music";
 
 test("adapts YRC words and aligns YRC translation and romanization", () => {
   const lyric: NeteaseLyric = {
@@ -76,4 +82,44 @@ test("falls back to LRC and keeps the complete raw response", () => {
   expect(result.raw).toBe(lyric);
   expect(result.raw.futureField).toEqual({ preserved: true });
   expect(pruneNeteaseLyric(lyric)).toBe(lyric);
+});
+
+test("maps and ranks NetEase lyric-match candidates from song search results", () => {
+  const song: SongDetail = {
+    al: { id: 3, name: "Album", picUrl: "" },
+    ar: [{ id: 2, name: "Artist" }],
+    dt: 180_000,
+    id: 1,
+    name: "A Song",
+    publishTime: 0,
+  };
+  const candidate = mapSongSearchResourceToLyricMatchCandidate({
+    baseInfo: {
+      simpleSongData: {
+        al: { id: 3, name: "Album", picUrl: "https://image.test/cover.png" },
+        ar: [{ id: 2, name: "Artist" }],
+        dt: 181_500,
+        id: 9,
+        name: "A Song",
+      },
+    },
+  });
+
+  expect(buildLyricMatchQuery(song)).toBe("A Song Artist");
+  expect(candidate).toEqual({
+    albumName: "Album",
+    artistNames: ["Artist"],
+    coverUrl: "https://image.test/cover.png",
+    durationMs: 181_500,
+    id: 9,
+    name: "A Song",
+  });
+  expect(candidate && getLyricMatchScore(song, candidate)).toBe(100);
+});
+
+test("accepts only lyrics with a usable primary timing source", () => {
+  expect(hasUsableNeteaseLyric({ code: 200, lrc: { lyric: "[00:01.00]line", version: 1 } })).toBe(
+    true,
+  );
+  expect(hasUsableNeteaseLyric({ code: 200, yrc: { lyric: "  ", version: 1 } })).toBe(false);
 });

@@ -7,7 +7,6 @@ import {
   Repeat,
   Repeat1,
   RepeatOff,
-  RotateCcw,
   Shuffle,
   SkipBack,
   SkipForward,
@@ -19,8 +18,20 @@ import { useTranslation } from "react-i18next";
 
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import type { Theme } from "@/components/lyrics/folia/src/types";
+import { FoliaVisualizerControls } from "@/components/lyrics/FoliaVisualizerControls";
+import type { FoliaStageEditSection } from "@/types/foliaStage";
 
-export function FoliaPanelControls({ theme }: { theme: Theme }) {
+interface FoliaPanelControlsProps {
+  onOpenSettings: (section: FoliaStageEditSection) => void;
+  onOpenThemeLibrary: () => void;
+  theme: Theme;
+}
+
+export function FoliaPanelControls({
+  onOpenSettings,
+  onOpenThemeLibrary,
+  theme,
+}: FoliaPanelControlsProps) {
   const { t } = useTranslation();
   const model = useFoliaPanelControls();
   const isDaylight = theme.name === "snow";
@@ -103,36 +114,11 @@ export function FoliaPanelControls({ theme }: { theme: Theme }) {
         </span>
       </label>
 
-      <label
-        className={`block space-y-2 border-t pt-4 ${isDaylight ? "border-black/5" : "border-white/5"}`}
-      >
-        <span className="flex items-center justify-between text-[10px] font-bold tracking-widest uppercase opacity-55">
-          <span>{t("options.lyricTimelineOffset")}</span>
-          <span>{(model.lyricOffsetMs / 1_000).toFixed(1)}s</span>
-        </span>
-        <span
-          className={`flex items-center gap-3 rounded-xl p-2 ${isDaylight ? "bg-black/5" : "bg-black/20"}`}
-        >
-          <input
-            type="range"
-            min="-5000"
-            max="5000"
-            step="100"
-            value={model.lyricOffsetMs}
-            onChange={(event) => model.setLyricOffsetMs(Number(event.currentTarget.value))}
-            className={`h-1 flex-1 cursor-pointer appearance-none rounded-full ${isDaylight ? "bg-black/10" : "bg-white/10"}`}
-            style={{ accentColor: theme.accentColor }}
-          />
-          <button
-            type="button"
-            title={String(t("ui.default"))}
-            onClick={() => model.setLyricOffsetMs(0)}
-            className="opacity-50 hover:opacity-100"
-          >
-            <RotateCcw size={15} />
-          </button>
-        </span>
-      </label>
+      <FoliaVisualizerControls
+        onOpenSettings={onOpenSettings}
+        onOpenThemeLibrary={onOpenThemeLibrary}
+        theme={theme}
+      />
     </div>
   );
 }

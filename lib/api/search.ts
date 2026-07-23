@@ -1,4 +1,5 @@
 import request from "../web/request";
+import type { SongSearchResponse } from "@/types/api/search";
 
 /**
  * 搜索建议
@@ -32,7 +33,7 @@ export function searchSuggest(keyword: string) {
 }
 
 export function searchSongs(keyword: string, limit = 15, offset = 0) {
-  return request.get("/v1/search/song/pc", {
+  return request.get<SongSearchResponse>("/v1/search/song/pc", {
     params: {
       keyword: keyword,
       limit: limit,

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
+import { FoliaAudioQualityControl } from "@/components/lyrics/FoliaAudioQualityControl";
 import { FoliaThemeQuickPicker } from "@/components/lyrics/FoliaThemeQuickPicker";
 import VisPlaygroundSettingsPanel from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundSettingsPanel";
 import { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
@@ -99,12 +100,15 @@ export function FoliaVisualSettingsDialog({
                 onSectionChange={onSectionChange}
                 theme={theme}
               />
-              <VisPlaygroundSettingsPanel
-                {...panelProps}
-                themeControl={
-                  <FoliaThemeQuickPicker onOpenThemeLibrary={onOpenThemeLibrary} theme={theme} />
-                }
-              />
+              <div className="visualizer-overlay-scrollbar min-h-0 space-y-4 overflow-y-auto pr-1">
+                <FoliaAudioQualityControl theme={theme} />
+                <VisPlaygroundSettingsPanel
+                  {...panelProps}
+                  themeControl={
+                    <FoliaThemeQuickPicker onOpenThemeLibrary={onOpenThemeLibrary} theme={theme} />
+                  }
+                />
+              </div>
             </div>
           </motion.section>
         </motion.div>

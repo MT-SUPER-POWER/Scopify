@@ -5,6 +5,9 @@ import { getLyric, getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/
 import {
   getCachedLyric,
   getCachedPlayUrl,
+  getImportedLyricOverride,
+  getLyricMatchOverride,
+  getLyricSourceSelection,
   setCachedLyric,
   setCachedPlayUrl,
 } from "@/lib/cache/playbackCache";
@@ -13,17 +16,10 @@ import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
-import { type NeteaseLyric, pruneNeteaseLyric, type SongDetail } from "@/types/api/music";
+import { pruneNeteaseLyric, type NeteaseLyric } from "@/types/api/music";
+import type { PlayerStore } from "@/types/player";
 
-export type RepeatMode = "off" | "all" | "one";
-export type MusicQuality = "spatial" | "lossless" | "high" | "standard";
-export type PlaybackFailureSource = "url" | "audio";
-
-interface PlayTrackOptions {
-  resetFailureCount?: boolean;
-}
-
-interface PlayQueueIndexOptions extends PlayTrackOptions {}
+export type { MusicQuality, PlaybackFailureSource, RepeatMode } from "@/types/player";
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -34,59 +30,16 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-type PlayerStore = {
-  volume: number;
-  isPlaying: boolean;
-  currentSongDetail: SongDetail | null;
-  currentSongUrl: string | null;
-  repeatMode: RepeatMode;
-  isShuffle: boolean;
+async function getStoredLyricSource(songId: number): Promise<NeteaseLyric | null> {
+  const [source, importedLyric, matchedLyric] = await Promise.all([
+    getLyricSourceSelection(songId),
+    getImportedLyricOverride(songId),
+    getLyricMatchOverride(songId),
+  ]);
 
-  // 原始队列（用户添加的顺序）
-  originalQueue: SongDetail[];
-  // 当前播放的队列（可能是洗牌的，也可能是原始的）- 保持原名兼容现有代码
-  queue: SongDetail[];
-
-  queueIndex: number;
-  historyStack: number[];
-  historyIndex: number;
-
-  lyric: NeteaseLyric | null;
-  playlistId: number | string | null;
-  playbackFailureCount: number;
-  musicQuality: MusicQuality;
-  setMusicQuality: (quality: MusicQuality) => void;
-
-  setVolume: (v: number) => void;
-  setIsPlaying: (v: boolean) => void;
-  setRepeatMode: (mode: RepeatMode) => void;
-  moveQueueItem: (fromIndex: number, toIndex: number) => void;
-  moveQueueItemToNext: (index: number) => void;
-  removeQueueItem: (index: number) => void;
-  setQueue: (songs: SongDetail[], startIndex?: number, playlistId?: number | string | null) => void;
-  setLyric: (lyric: NeteaseLyric | null) => void;
-  setShuffle: (v: boolean) => void;
-
-  playFromSong: (
-    song: SongDetail,
-    allSongs: SongDetail[],
-    playlistId?: number | string | null,
-  ) => Promise<void>;
-  toggleShuffle: () => void;
-  togglePlaying: () => void;
-  fetchCurrentLyric: () => Promise<void>;
-  handlePlaybackFailure: (source: PlaybackFailureSource) => Promise<void>;
-  playTrack: (song: SongDetail, options?: PlayTrackOptions) => Promise<void>;
-  playQueueIndex: (
-    index: number,
-    addToHistory?: boolean,
-    options?: PlayQueueIndexOptions,
-  ) => Promise<void>;
-  playNext: () => Promise<void>;
-  playPrev: () => Promise<void>;
-  reshuffleQueue: () => void;
-  cleanCache: () => void;
-};
+  if (source === "imported" && importedLyric) return importedLyric.lyric;
+  return matchedLyric?.lyric ?? null;
+}
 
 export const usePlayerStore = create<PlayerStore>()(
   persist(
@@ -275,7 +228,10 @@ export const usePlayerStore = create<PlayerStore>()(
         const { currentSongDetail, lyric } = get();
         if (!currentSongDetail || lyric) return;
         try {
-          const lyricRes = await getLyric(currentSongDetail.id);
+          const storedLyric = await getStoredLyricSource(currentSongDetail.id);
+          const lyricRes = storedLyric
+            ? { data: storedLyric }
+            : await getLyric(currentSongDetail.id);
           set({ lyric: lyricRes.data });
         } catch (e) {
           console.error("静默恢复歌词失败:", e);
@@ -338,21 +294,23 @@ export const usePlayerStore = create<PlayerStore>()(
           const level = UI_QUALITY_TO_LEVEL[musicQuality] || "exhigh";
 
           // ── 1. Try cache ────────────────────────────────────────────────
-          const [cachedUrl, cachedLyric] = await Promise.all([
+          const [cachedUrl, cachedLyric, storedLyric] = await Promise.all([
             getCachedPlayUrl(song.id, musicQuality),
             getCachedLyric(song.id),
+            getStoredLyricSource(song.id),
           ]);
+          const matchedLyric = storedLyric ?? cachedLyric;
 
           if (cachedUrl) {
             // URL 缓存命中
-            if (cachedLyric) {
+            if (matchedLyric) {
               // 歌词也命中 → 完全短路，无需 API 请求
               console.log("[Cache] HIT: URL + lyric for song", song.id);
               useTimeStore.getState().setTotalTime(song.dt ?? 0);
               set({
                 currentSongUrl: cachedUrl,
                 isPlaying: true,
-                lyric: cachedLyric,
+                lyric: matchedLyric,
                 playbackFailureCount: 0,
               });
               return;
@@ -381,7 +339,7 @@ export const usePlayerStore = create<PlayerStore>()(
           console.log("[Cache] MISS: fetching URL + lyric for song", song.id);
           const [urlRes, lyricRes] = await Promise.all([
             getSongUrlWithQuality(song.id, level),
-            getLyric(song.id),
+            storedLyric ? Promise.resolve({ data: storedLyric }) : getLyric(song.id),
           ]);
           const url = urlRes.data;
 
@@ -393,7 +351,9 @@ export const usePlayerStore = create<PlayerStore>()(
           console.log("[Cache] WRITE: URL + lyric for song", song.id);
           await Promise.all([
             setCachedPlayUrl(song.id, musicQuality, url),
-            lyricRes.data ? setCachedLyric(song.id, lyricRes.data) : Promise.resolve(),
+            lyricRes.data && !storedLyric
+              ? setCachedLyric(song.id, lyricRes.data)
+              : Promise.resolve(),
           ]);
           const lyricData2 = lyricRes.data;
 

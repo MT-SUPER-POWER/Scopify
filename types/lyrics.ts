@@ -1,5 +1,32 @@
 import type { NeteaseLyric } from "@/types/api/music";
 
+/** A NetEase song selected as the source for another track's lyrics. */
+export interface LyricMatchCandidate {
+  albumName: string;
+  artistNames: string[];
+  coverUrl: string | null;
+  durationMs: number;
+  id: number;
+  name: string;
+}
+
+/** Persisted manual lyric selection for a song. */
+export interface LyricMatchOverride {
+  candidate: LyricMatchCandidate;
+  lyric: NeteaseLyric;
+  matchedAt: number;
+}
+
+/** A locally imported lyric file kept alongside, rather than replacing, the online source. */
+export interface ImportedLyricOverride {
+  fileName: string;
+  importedAt: number;
+  lyric: NeteaseLyric;
+}
+
+/** The active source selected in the Folia-compatible lyrics tab. */
+export type LyricSourceSelection = "imported" | "online";
+
 /** Normalized FFT-derived values, using Folia's 0-255 scale. */
 export interface LyricAudioBands {
   bass: number;

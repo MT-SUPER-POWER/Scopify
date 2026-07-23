@@ -1,6 +1,8 @@
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import type { RefObject } from "react";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
+import type { LyricDisplayLine, LyricMatchCandidate } from "@/types/lyrics";
+import type { SongDetail } from "@/types/api/music";
 import type {
   FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,
@@ -14,8 +16,46 @@ export interface FoliaQuickEffectPickerOption<Value extends string> {
 }
 
 export interface FoliaLyricsControlsProps {
-  onOpenSettings: (section: FoliaStageEditSection) => void;
-  onOpenThemeLibrary: () => void;
+  onOpenLyricMatch: () => void;
+  theme: Theme;
+}
+
+export interface FoliaLyricMatchDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  theme: Theme;
+}
+
+export interface FoliaLyricMatchResultsProps {
+  candidates: LyricMatchCandidate[];
+  isDaylight: boolean;
+  isLoading: boolean;
+  onSelect: (id: number) => void;
+  selectedId: number | null;
+  song: SongDetail | null;
+  theme: Theme;
+}
+
+export interface FoliaLyricMatchSearchProps {
+  candidates: LyricMatchCandidate[];
+  isDaylight: boolean;
+  isLoading: boolean;
+  onSearch: (query: string) => Promise<void>;
+  onSelect: (id: number) => void;
+  query: string;
+  selectedId: number | null;
+  setQuery: (query: string) => void;
+  song: SongDetail | null;
+  theme: Theme;
+}
+
+export interface FoliaLyricMatchPreviewProps {
+  candidate: LyricMatchCandidate | null;
+  isDaylight: boolean;
+  isLoading: boolean;
+  isPureMusic: boolean;
+  previewLines: LyricDisplayLine[];
+  song: SongDetail | null;
   theme: Theme;
 }
 

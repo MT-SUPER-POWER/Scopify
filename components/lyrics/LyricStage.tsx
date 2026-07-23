@@ -82,7 +82,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
     });
 
   useEffect(() => {
-    void foliaI18n.changeLanguage(locale === "en-US" ? "en" : "zh-CN");
+    void foliaI18n.changeLanguage(locale);
   }, [locale]);
 
   useEffect(() => {

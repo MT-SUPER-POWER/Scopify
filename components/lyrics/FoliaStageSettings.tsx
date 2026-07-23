@@ -9,6 +9,7 @@ import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
 import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
 import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
 import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
+import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
 import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
 import { FoliaVisualSettingsDialog } from "@/components/lyrics/FoliaVisualSettingsDialog";
 import { usePlayerStore } from "@/store/module/player";
@@ -28,6 +29,7 @@ export function FoliaStageSettings({
   const [activeSection, setActiveSection] = useState<FoliaStageEditSection>("common");
   const [activeTab, setActiveTab] = useState<FoliaPanelTab>("controls");
   const [fontPickerTarget, setFontPickerTarget] = useState<"lyrics" | "subtitle" | null>(null);
+  const [isLyricMatchOpen, setIsLyricMatchOpen] = useState(false);
   const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
   const [isThemeLibraryOpen, setIsThemeLibraryOpen] = useState(false);
 
@@ -120,13 +122,18 @@ export function FoliaStageSettings({
               </div>
 
               <div className="min-h-0 flex-1">
-                {activeTab === "controls" ? <FoliaPanelControls theme={theme} /> : null}
+                {activeTab === "controls" ? (
+                  <FoliaPanelControls
+                    onOpenSettings={openVisualSettings}
+                    onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
+                    theme={theme}
+                  />
+                ) : null}
                 {activeTab === "queue" ? <FoliaPanelQueue /> : null}
                 {activeTab === "lyrics" ? (
                   <FoliaLyricsControls
+                    onOpenLyricMatch={() => setIsLyricMatchOpen(true)}
                     theme={theme}
-                    onOpenSettings={openVisualSettings}
-                    onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
                   />
                 ) : null}
               </div>
@@ -154,6 +161,12 @@ export function FoliaStageSettings({
         theme={theme}
       />
 
+      <FoliaLyricMatchDialog
+        isOpen={isLyricMatchOpen}
+        onClose={() => setIsLyricMatchOpen(false)}
+        theme={theme}
+      />
+
       <FoliaThemeLibraryDialog
         assets={assets}
         isOpen={isThemeLibraryOpen}
@@ -164,7 +177,7 @@ export function FoliaStageSettings({
       {!isOpen && !isChromeHidden ? (
         <motion.button
           type="button"
-          title="Visualizer settings"
+          title={String(t("options.visualSettings"))}
           initial={{ opacity: 0, x: 20, y: 12, scale: 0.92 }}
           animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
           onClick={() => onOpenChange(true)}
