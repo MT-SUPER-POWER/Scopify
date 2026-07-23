@@ -1,5 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { format, resolveConfig } from "prettier";
 import { messages, type TranslationKey } from "../lib/i18n";
 
 const locales = ["zh-CN", "zh-TW", "en-US"] as const;
@@ -30,6 +31,12 @@ lines.push("  (key: TranslationKey, params?: TranslationParams): string;");
 lines.push("}");
 
 const outputPath = resolve(process.cwd(), "types", "i18n.generated.d.ts");
-writeFileSync(outputPath, `${lines.join("\n")}\n`, "utf8");
+const prettierConfig = await resolveConfig(outputPath);
+const output = await format(`${lines.join("\n")}\n`, {
+  ...prettierConfig,
+  filepath: outputPath,
+});
+
+writeFileSync(outputPath, output, "utf8");
 
 console.log(`Generated ${outputPath}`);
