@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus, RotateCcw } from "lucide-react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
@@ -15,8 +16,12 @@ export function FoliaThemeLibraryList({
   const { t } = useTranslation();
   const restoreBuiltinThemes = useLyricStageStore((state) => state.restoreBuiltinThemes);
   const addTheme = useLyricStageStore((state) => state.addTheme);
+  const updateTheme = useLyricStageStore((state) => state.updateTheme);
   const setThemeId = useLyricStageStore((state) => state.setThemeId);
   const themes = useLyricStageStore((state) => state.themes);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const selectTheme = (id: string) => {
     setThemeId(id);
@@ -28,6 +33,26 @@ export function FoliaThemeLibraryList({
     const theme = createFoliaStageTheme(String(t("options.customTheme")), seed);
     addTheme(theme);
     selectTheme(theme.id);
+    // 新建后自动进入编辑模式
+    startEditing(theme.id, theme.name);
+  };
+
+  const startEditing = (id: string, name: string) => {
+    setEditingId(id);
+    setEditValue(name);
+    // 等 DOM 更新后聚焦
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
+  const commitEdit = (id: string) => {
+    const trimmed = editValue.trim();
+    if (trimmed) {
+      const theme = themes.find((item) => item.id === id);
+      if (theme) {
+        updateTheme({ ...theme, name: trimmed });
+      }
+    }
+    setEditingId(null);
   };
 
   const restoreThemes = () => {
@@ -65,6 +90,7 @@ export function FoliaThemeLibraryList({
       <div className="visualizer-overlay-scrollbar min-h-0 space-y-1.5 overflow-y-auto pr-1">
         {themes.map((theme) => {
           const isSelected = theme.id === selectedThemeId;
+          const isEditing = theme.id === editingId;
           return (
             <button
               key={theme.id}
@@ -77,7 +103,36 @@ export function FoliaThemeLibraryList({
               }}
             >
               <FoliaThemeRecord size="library" theme={theme} />
-              <span className="min-w-0 flex-1 truncate text-sm font-medium">{theme.name}</span>
+              {isEditing ? (
+                <input
+                  ref={inputRef}
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onBlur={() => commitEdit(theme.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") commitEdit(theme.id);
+                    if (e.key === "Escape") setEditingId(null);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="min-w-0 flex-1 truncate border-b border-white/30 bg-transparent text-sm font-medium outline-none"
+                  style={{ color: theme.dark.primaryColor }}
+                />
+              ) : (
+                <div className="min-w-0 flex-1">
+                  <span
+                    className="block truncate text-sm font-medium"
+                    onDoubleClick={(e) => {
+                      e.stopPropagation();
+                      startEditing(theme.id, theme.name);
+                    }}
+                  >
+                    {theme.name}
+                  </span>
+                  {isSelected && (
+                    <span className="block text-[10px] opacity-50">{t("ui.currentTheme")}</span>
+                  )}
+                </div>
+              )}
               <span className="flex shrink-0 gap-1">
                 <i
                   className="size-2 rounded-full"

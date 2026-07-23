@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { QueuePopover } from "@/components/QueuePopover";
 import { VolumeControl } from "@/components/VolumeControl";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
+import { useMusicQuality } from "@/hooks/player/useMusicQuality";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -176,20 +177,11 @@ export const PlayerBar = ({
   const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricStageBar = variant === "lyric-stage";
-  const musicQuality = usePlayerStore((s) => s.musicQuality);
-  const setMusicQuality = usePlayerStore((s) => s.setMusicQuality);
+  const { changeMusicQuality, musicQuality } = useMusicQuality();
 
   // 查找当前选中的音质选项，如果找不到就提供一个兜底
   const currentOption = QUALITY_OPTIONS.find((opt) => opt.value === musicQuality);
   const CurrentIcon = currentOption ? currentOption.icon : Radio;
-
-  const handleQualityChange = async (quality: any) => {
-    if (musicQuality === quality) return; // 同品质跳过
-    if (currentSong?.id) {
-      setMusicQuality(quality);
-      await usePlayerStore.getState().playTrack(currentSong);
-    }
-  };
 
   useEffect(() => {
     if (!currentSong?.id) return;
@@ -456,8 +448,8 @@ export const PlayerBar = ({
           <button
             type="button"
             onClick={() => toggleLyrics()}
-            title="Lyrics"
-            aria-label="Lyrics"
+            title={t("playerBar.lyrics")}
+            aria-label={t("playerBar.lyrics")}
             className={`transition-colors hover:text-white ${isLyricsOpen ? "text-[#1db954]" : ""}`}
           >
             <Mic2 className="size-4 lg:size-5" />
@@ -486,7 +478,7 @@ export const PlayerBar = ({
               <DropdownMenuSeparator className="bg-white/10" />
               <DropdownMenuRadioGroup
                 value={musicQuality}
-                onValueChange={(v) => handleQualityChange(v as any)}
+                onValueChange={(v) => void changeMusicQuality(v as QualityOptionKey)}
               >
                 {QUALITY_OPTIONS.map((opt) => {
                   const Icon = opt.icon;

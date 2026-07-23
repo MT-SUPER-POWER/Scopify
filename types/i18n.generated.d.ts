@@ -2986,5 +2986,353 @@ export interface TranslateFn {
    * en-US: Standard audio quality
    */
   (key: "playbar.quality.standard.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配歌词
+   * zh-TW: 比對歌詞
+   * en-US: Match Lyrics
+   */
+  (key: "lyrics.match.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网易云音乐
+   * zh-TW: 網易雲音樂
+   * en-US: NetEase Cloud Music
+   */
+  (key: "lyrics.match.sourceNetease", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纯音乐，
+   * zh-TW: 純音樂，
+   * en-US: Instrumental,
+   */
+  (key: "lyrics.match.pureMusic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无需匹配歌词
+   * zh-TW: 無需比對歌詞
+   * en-US: no lyrics need to be matched
+   */
+  (key: "lyrics.match.pureMusicHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配歌词
+   * zh-TW: 比對歌詞
+   * en-US: Match Lyrics
+   */
+  (key: "lyrics.match.open", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索
+   * zh-TW: 搜尋
+   * en-US: Search
+   */
+  (key: "lyrics.match.search", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌曲或歌手
+   * zh-TW: 搜尋歌曲或歌手
+   * en-US: Search songs or artists
+   */
+  (key: "lyrics.match.searchPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前没有正在播放的歌曲
+   * zh-TW: 目前沒有正在播放的歌曲
+   * en-US: No song is playing
+   */
+  (key: "lyrics.match.noSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未找到可匹配的歌曲
+   * zh-TW: 找不到可比對的歌曲
+   * en-US: No matching songs found
+   */
+  (key: "lyrics.match.noResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择一首歌曲以预览歌词
+   * zh-TW: 選擇一首歌曲以預覽歌詞
+   * en-US: Select a song to preview its lyrics
+   */
+  (key: "lyrics.match.selectCandidate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在加载歌词预览...
+   * zh-TW: 正在載入歌詞預覽...
+   * en-US: Loading lyric preview...
+   */
+  (key: "lyrics.match.loadingPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选歌曲没有可预览的歌词
+   * zh-TW: 所選歌曲沒有可預覽的歌詞
+   * en-US: The selected song has no lyrics to preview
+   */
+  (key: "lyrics.match.noPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用所选歌词
+   * zh-TW: 使用所選歌詞
+   * en-US: Use Selected Lyrics
+   */
+  (key: "lyrics.match.apply", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还原原歌词
+   * zh-TW: 還原原歌詞
+   * en-US: Restore Original Lyrics
+   */
+  (key: "lyrics.match.restore", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已使用所选歌词
+   * zh-TW: 已使用所選歌詞
+   * en-US: Selected lyrics applied
+   */
+  (key: "lyrics.match.saved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已还原原歌词
+   * zh-TW: 已還原原歌詞
+   * en-US: Original lyrics restored
+   */
+  (key: "lyrics.match.restored", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌词候选失败
+   * zh-TW: 搜尋歌詞候選失敗
+   * en-US: Could not search lyric candidates
+   */
+  (key: "lyrics.match.searchFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选歌曲没有可用歌词
+   * zh-TW: 所選歌曲沒有可用歌詞
+   * en-US: The selected song has no usable lyrics
+   */
+  (key: "lyrics.match.noLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 应用所选歌词失败
+   * zh-TW: 套用所選歌詞失敗
+   * en-US: Could not apply the selected lyrics
+   */
+  (key: "lyrics.match.applyFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还原原歌词失败
+   * zh-TW: 還原原歌詞失敗
+   * en-US: Could not restore the original lyrics
+   */
+  (key: "lyrics.match.restoreFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "lyrics.tab.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词来源
+   * zh-TW: 歌詞來源
+   * en-US: Lyrics source
+   */
+  (key: "lyrics.tab.source", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入歌词文件
+   * zh-TW: 匯入歌詞檔案
+   * en-US: Import lyric file
+   */
+  (key: "lyrics.tab.import", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除歌词覆盖
+   * zh-TW: 清除歌詞覆寫
+   * en-US: Clear lyric overrides
+   */
+  (key: "lyrics.tab.clear", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时间轴偏移
+   * zh-TW: 時間軸偏移
+   * en-US: Timeline offset
+   */
+  (key: "lyrics.tab.offset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置歌词时间轴偏移
+   * zh-TW: 重設歌詞時間軸偏移
+   * en-US: Reset lyric timeline offset
+   */
+  (key: "lyrics.tab.resetOffset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未识别到可用的时间轴歌词
+   * zh-TW: 未辨識到可用的時間軸歌詞
+   * en-US: No timed lyrics were found in this file
+   */
+  (key: "lyrics.tab.importInvalid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词文件已导入
+   * zh-TW: 歌詞檔案已匯入
+   * en-US: Lyric file imported
+   */
+  (key: "lyrics.tab.imported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入歌词文件失败
+   * zh-TW: 匯入歌詞檔案失敗
+   * en-US: Could not import the lyric file
+   */
+  (key: "lyrics.tab.importFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换歌词来源失败
+   * zh-TW: 切換歌詞來源失敗
+   * en-US: Could not change the lyrics source
+   */
+  (key: "lyrics.tab.sourceChangeFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已还原在线歌词
+   * zh-TW: 已還原線上歌詞
+   * en-US: Online lyrics restored
+   */
+  (key: "lyrics.tab.cleared", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还原在线歌词失败
+   * zh-TW: 還原線上歌詞失敗
+   * en-US: Could not restore online lyrics
+   */
+  (key: "lyrics.tab.clearFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Close
+   */
+  (key: "ui.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存
+   * zh-TW: 儲存
+   * en-US: Save
+   */
+  (key: "ui.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认
+   * zh-TW: 預設
+   * en-US: Default
+   */
+  (key: "ui.default", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载中...
+   * zh-TW: 載入中...
+   * en-US: Loading...
+   */
+  (key: "ui.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous
+   */
+  (key: "ui.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next
+   */
+  (key: "ui.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 循环模式
+   * zh-TW: 循環模式
+   * en-US: Loop Mode
+   */
+  (key: "ui.loopMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢
+   * zh-TW: 喜歡
+   * en-US: Like
+   */
+  (key: "ui.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音量
+   * zh-TW: 音量
+   * en-US: Volume
+   */
+  (key: "ui.volume", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静音
+   * zh-TW: 靜音
+   * en-US: Mute
+   */
+  (key: "ui.mute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 实时预览
+   * zh-TW: 即時預覽
+   * en-US: Live Preview
+   */
+  (key: "ui.livePreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回主页
+   * zh-TW: 返回首頁
+   * en-US: Back to Home
+   */
+  (key: "ui.backToHome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前主题
+   * zh-TW: 目前主題
+   * en-US: Current Theme
+   */
+  (key: "ui.currentTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "playerBar.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 二维码
+   * zh-TW: QR Code
+   * en-US: QR Code
+   */
+  (key: "vipSign.qrAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 头像
+   * zh-TW: 頭像
+   * en-US: Avatar
+   */
+  (key: "profile.avatarAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 置顶显示
+   * zh-TW: 置頂顯示
+   * en-US: Keep on top
+   */
+  (key: "desktopLyrics.keepOnTop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 鼠标穿透
+   * zh-TW: 滑鼠穿透
+   * en-US: Click through
+   */
+  (key: "desktopLyrics.clickThrough", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭桌面歌词
+   * zh-TW: 關閉桌面歌詞
+   * en-US: Close desktop lyrics
+   */
+  (key: "desktopLyrics.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous
+   */
+  (key: "desktopLyrics.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放或暂停
+   * zh-TW: 播放或暫停
+   * en-US: Play or pause
+   */
+  (key: "desktopLyrics.playPause", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next
+   */
+  (key: "desktopLyrics.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢
+   * zh-TW: 喜歡
+   * en-US: Like
+   */
+  (key: "desktopLyrics.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看歌词时间轴
+   * zh-TW: 查看歌詞時間軸
+   * en-US: View Lyrics Timeline
+   */
+  (key: "floatingControls.viewTimeline", params?: TranslationParams): string;
+  /**
+   * zh-CN: 表情
+   * zh-TW: 表情
+   * en-US: Emoji
+   */
+  (key: "cappella.emojiAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: Logo
+   * zh-TW: Logo
+   * en-US: Logo
+   */
+  (key: "login.logoAlt", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }

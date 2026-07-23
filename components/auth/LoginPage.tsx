@@ -130,7 +130,7 @@ function LoginPageContent() {
       {/* 1. Logo 区域优化 */}
       <div className="mb-6 flex flex-col items-center">
         <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black text-black shadow-2xl">
-          <Image src={logo.src} width={50} height={50} alt="Logo" />
+          <Image src={logo.src} width={50} height={50} alt={t("login.logoAlt")} />
         </div>
         <p className="text-xs font-medium text-zinc-500">{t("login.page.tagline")}</p>
       </div>

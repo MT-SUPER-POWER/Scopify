@@ -227,7 +227,7 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
                       width={40}
                       height={40}
                       src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://music.163.com/m/header"
-                      alt="QR Code"
+                      alt={t("vipSign.qrAlt")}
                       className="h-full w-full object-cover"
                     />
                   </div>
