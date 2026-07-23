@@ -2,18 +2,16 @@
 
 import { motion } from "framer-motion";
 import { RotateCcw, Search, Upload } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
-import { FoliaLyricMatchPanel } from "@/components/lyrics/FoliaLyricMatchPanel";
 import { FoliaLyricTimelineOffsetControl } from "@/components/lyrics/FoliaLyricTimelineOffsetControl";
 import { useOnlineLyricsTab } from "@/hooks/lyrics/useOnlineLyricsTab";
 import { useI18n } from "@/store/module/i18n";
 import type { FoliaLyricsControlsProps } from "@/types/components/lyrics";
 
-export function FoliaLyricsControls({ theme }: FoliaLyricsControlsProps) {
+export function FoliaLyricsControls({ onOpenLyricMatch, theme }: FoliaLyricsControlsProps) {
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isMatching, setIsMatching] = useState(false);
   const model = useOnlineLyricsTab();
   const isDaylight = theme.name === "snow";
   const activeTabBg = isDaylight ? "bg-blue-500/15 text-blue-600" : "bg-blue-500/20 text-blue-300";
@@ -33,10 +31,6 @@ export function FoliaLyricsControls({ theme }: FoliaLyricsControlsProps) {
       ? [{ key: "imported" as const, label: model.importedLyric.fileName }]
       : []),
   ];
-
-  if (isMatching) {
-    return <FoliaLyricMatchPanel onBack={() => setIsMatching(false)} theme={theme} />;
-  }
 
   return (
     <motion.div
@@ -84,7 +78,7 @@ export function FoliaLyricsControls({ theme }: FoliaLyricsControlsProps) {
             />
             <button
               className={`rounded-md p-1 opacity-40 transition-all hover:opacity-100 ${isDaylight ? "hover:bg-black/5" : "hover:bg-white/5"}`}
-              onClick={() => setIsMatching(true)}
+              onClick={onOpenLyricMatch}
               title={t("lyrics.match.open")}
               type="button"
             >

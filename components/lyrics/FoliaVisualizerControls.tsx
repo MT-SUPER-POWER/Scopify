@@ -60,7 +60,7 @@ export function FoliaVisualizerControls({
   }));
 
   return (
-    <div className="space-y-3 border-t border-white/5 pt-4">
+    <div className="space-y-3 border-t border-white/5">
       <FoliaThemeQuickPicker onOpenThemeLibrary={onOpenThemeLibrary} theme={theme} />
 
       <section className="flex items-center justify-between gap-3">

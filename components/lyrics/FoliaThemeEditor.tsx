@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaThemeColorEditor } from "@/components/lyrics/FoliaThemeColorEditor";
 import { FoliaThemeJsonTransfer } from "@/components/lyrics/FoliaThemeJsonTransfer";
+import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import { getFoliaThemeColors, isBuiltinFoliaStageTheme } from "@/lib/lyrics/foliaTheme";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { Theme } from "@/components/lyrics/folia/src/types";
@@ -63,19 +64,35 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
 
       <div className="visualizer-overlay-scrollbar min-h-0 space-y-3 overflow-y-auto pr-1">
         {/* Tabs 切换 - 顶部 */}
-        <div className="flex rounded-xl bg-black/15 p-1">
-          {TAB_ITEMS.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setEditorTab(tab.key)}
-              className={`flex flex-1 items-center justify-center rounded-lg py-2 text-xs font-medium transition ${
-                editorTab === tab.key ? "bg-white/15 shadow-sm" : "opacity-50 hover:opacity-100"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div
+          className="flex rounded-xl p-1"
+          style={{ backgroundColor: colorWithAlpha(activeColors.backgroundColor, 0.5) }}
+        >
+          {TAB_ITEMS.map((tab) => {
+            const active = editorTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setEditorTab(tab.key)}
+                className="flex flex-1 items-center justify-center rounded-lg border py-2 text-xs font-medium transition-all"
+                style={{
+                  borderColor: active
+                    ? colorWithAlpha(activeColors.accentColor, 0.5)
+                    : "transparent",
+                  backgroundColor: active
+                    ? colorWithAlpha(activeColors.accentColor, 0.15)
+                    : "transparent",
+                  color: active ? activeColors.primaryColor : `${activeColors.secondaryColor}99`,
+                  boxShadow: active
+                    ? `inset 0 0 0 1px ${colorWithAlpha(activeColors.accentColor, 0.2)}`
+                    : "none",
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* ── 编辑 Tab ──────────────────────────── */}
@@ -103,27 +120,43 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
                 </button>
               </div>
 
-              <div className="flex rounded-xl bg-black/15 p-1">
+              <div
+                className="flex rounded-xl p-1"
+                style={{ backgroundColor: colorWithAlpha(activeColors.backgroundColor, 0.5) }}
+              >
                 {(
                   [
                     ["light", Sun, "options.lightTheme"],
                     ["dark", Moon, "options.darkTheme"],
                   ] as const
-                ).map(([variant, Icon, label]) => (
-                  <button
-                    key={variant}
-                    type="button"
-                    onClick={() => setThemeVariant(variant)}
-                    className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-xs transition ${
-                      themeVariant === variant
-                        ? "bg-white/15 shadow-sm"
-                        : "opacity-50 hover:opacity-100"
-                    }`}
-                  >
-                    <Icon size={14} />
-                    {t(label)}
-                  </button>
-                ))}
+                ).map(([variant, Icon, label]) => {
+                  const active = themeVariant === variant;
+                  return (
+                    <button
+                      key={variant}
+                      type="button"
+                      onClick={() => setThemeVariant(variant)}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-lg border py-2 text-xs transition-all"
+                      style={{
+                        borderColor: active
+                          ? colorWithAlpha(activeColors.accentColor, 0.5)
+                          : "transparent",
+                        backgroundColor: active
+                          ? colorWithAlpha(activeColors.accentColor, 0.15)
+                          : "transparent",
+                        color: active
+                          ? activeColors.primaryColor
+                          : `${activeColors.secondaryColor}99`,
+                        boxShadow: active
+                          ? `inset 0 0 0 1px ${colorWithAlpha(activeColors.accentColor, 0.2)}`
+                          : "none",
+                      }}
+                    >
+                      <Icon size={14} />
+                      {t(label)}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -139,7 +172,11 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
                 onClick={() =>
                   isBuiltin ? resetTheme(selectedTheme.id) : setDraftTheme(selectedTheme)
                 }
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-xs transition hover:bg-white/10"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-current/20 px-3 py-2.5 text-xs transition hover:brightness-95"
+                style={{
+                  backgroundColor: colorWithAlpha(activeColors.secondaryColor, 0.1),
+                  color: activeColors.secondaryColor,
+                }}
               >
                 <RotateCcw size={14} />
                 {t("options.resetTheme")}
@@ -147,10 +184,11 @@ export function FoliaThemeEditor({ assets, onSelectTheme, selectedTheme }: Folia
               <button
                 type="button"
                 onClick={() => updateTheme(draftTheme)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-xs font-semibold shadow-sm"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-current/20 px-3 py-2.5 text-xs font-semibold shadow-sm transition hover:brightness-110"
                 style={{
                   backgroundColor: activeColors.accentColor,
                   color: activeColors.backgroundColor,
+                  borderColor: colorWithAlpha(activeColors.accentColor, 0.3),
                 }}
               >
                 <Check size={14} />

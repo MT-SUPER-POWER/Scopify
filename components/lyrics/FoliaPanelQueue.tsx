@@ -11,7 +11,7 @@ export function FoliaPanelQueue() {
   const queue = usePlayerStore((state) => state.queue);
 
   return (
-    <div className="flex max-h-[320px] flex-col select-none">
+    <div className="flex max-h-80 flex-col select-none">
       <div className="flex shrink-0 items-center justify-between px-2 pb-2">
         <span className="text-xs font-medium opacity-60">
           {t("queue.title")} ({queue.length})
@@ -35,7 +35,7 @@ export function FoliaPanelQueue() {
             <div
               key={`${song.id}-${index}`}
               onClick={() => void usePlayerStore.getState().playQueueIndex(index)}
-              className={`group flex w-full cursor-pointer items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors ${
+              className={`group flex w-full cursor-pointer items-center gap-3 rounded-lg p-2 text-left transition-colors ${
                 currentSong?.id === song.id ? "bg-white/20" : "hover:bg-white/5"
               }`}
             >

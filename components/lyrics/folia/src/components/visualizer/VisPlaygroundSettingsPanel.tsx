@@ -24,7 +24,6 @@ import {
   type VisualizerMode,
 } from "../../types";
 import { colorWithAlpha } from "./colorMix";
-import FontFallbackStackControl from "./FontFallbackStackControl";
 import {
   VISUALIZER_REGISTRY,
   getVisualizerModeLabel,
