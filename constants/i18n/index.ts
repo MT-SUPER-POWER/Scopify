@@ -22,6 +22,7 @@ import { uiMessages } from "./ui";
 import { playerBarMessages } from "./playerBar";
 import { desktopLyricsMessages } from "./desktopLyrics";
 import { foliaMessages } from "./folia";
+import { shortcutsMessages } from "./shortcuts";
 
 export const messages = {
   "zh-CN": {
@@ -49,6 +50,7 @@ export const messages = {
     ...playerBarMessages["zh-CN"],
     ...desktopLyricsMessages["zh-CN"],
     ...foliaMessages["zh-CN"],
+    ...shortcutsMessages["zh-CN"],
   },
   "zh-TW": {
     ...commonMessages["zh-TW"],
@@ -75,6 +77,7 @@ export const messages = {
     ...playerBarMessages["zh-TW"],
     ...desktopLyricsMessages["zh-TW"],
     ...foliaMessages["zh-TW"],
+    ...shortcutsMessages["zh-TW"],
   },
   "en-US": {
     ...commonMessages["en-US"],
@@ -101,5 +104,6 @@ export const messages = {
     ...playerBarMessages["en-US"],
     ...desktopLyricsMessages["en-US"],
     ...foliaMessages["en-US"],
+    ...shortcutsMessages["en-US"],
   },
 } as const;

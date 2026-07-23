@@ -342,7 +342,7 @@ export interface TranslateFn {
   (key: "settings.tab.network", params?: TranslationParams): string;
   /**
    * zh-CN: 存储
-   * zh-TW: 儲存
+   * zh-TW: 儲存空間
    * en-US: Storage
    */
   (key: "settings.tab.storage", params?: TranslationParams): string;
@@ -358,186 +358,6 @@ export interface TranslateFn {
    * en-US: Shortcuts
    */
   (key: "settings.tab.shortcuts", params?: TranslationParams): string;
-  /**
-   * zh-CN: 键盘快捷键
-   * zh-TW: 鍵盤快速鍵
-   * en-US: Keyboard Shortcuts
-   */
-  (key: "shortcuts.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 快捷键在 Scopify 窗口聚焦时生效。
-   * zh-TW: 快速鍵會在 Scopify 視窗聚焦時生效。
-   * en-US: Shortcuts work while the Scopify window is focused.
-   */
-  (key: "shortcuts.subtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 搜索命令
-   * zh-TW: 搜尋命令
-   * en-US: Search commands
-   */
-  (key: "shortcuts.searchPlaceholder", params?: TranslationParams): string;
-  /**
-   * zh-CN: 恢复全部默认值
-   * zh-TW: 還原所有預設值
-   * en-US: Restore all defaults
-   */
-  (key: "shortcuts.resetAll", params?: TranslationParams): string;
-  /**
-   * zh-CN: 播放控制
-   * zh-TW: 播放控制
-   * en-US: Playback
-   */
-  (key: "shortcuts.group.playback", params?: TranslationParams): string;
-  /**
-   * zh-CN: 界面
-   * zh-TW: 介面
-   * en-US: Interface
-   */
-  (key: "shortcuts.group.interface", params?: TranslationParams): string;
-  /**
-   * zh-CN: 快捷键
-   * zh-TW: 快速鍵
-   * en-US: Shortcuts
-   */
-  (key: "shortcuts.group.shortcuts", params?: TranslationParams): string;
-  /**
-   * zh-CN: 未分配
-   * zh-TW: 未指派
-   * en-US: Unassigned
-   */
-  (key: "shortcuts.unassigned", params?: TranslationParams): string;
-  /**
-   * zh-CN: 按下组合键
-   * zh-TW: 按下組合鍵
-   * en-US: Press a key combination
-   */
-  (key: "shortcuts.recording", params?: TranslationParams): string;
-  /**
-   * zh-CN: 请使用包含修饰键的组合键
-   * zh-TW: 請使用包含修飾鍵的組合鍵
-   * en-US: Use a combination with a modifier key
-   */
-  (key: "shortcuts.invalidBinding", params?: TranslationParams): string;
-  /**
-   * zh-CN: 与“{{command}}”冲突
-   * zh-TW: 與「{{command}}」衝突
-   * en-US: Conflicts with "{{command}}"
-   */
-  (key: "shortcuts.conflict", params?: TranslationParams): string;
-  /**
-   * zh-CN: 禁用快捷键
-   * zh-TW: 停用快速鍵
-   * en-US: Disable shortcut
-   */
-  (key: "shortcuts.disable", params?: TranslationParams): string;
-  /**
-   * zh-CN: 恢复默认快捷键
-   * zh-TW: 還原預設快速鍵
-   * en-US: Restore default shortcut
-   */
-  (key: "shortcuts.reset", params?: TranslationParams): string;
-  /**
-   * zh-CN: 播放/暂停
-   * zh-TW: 播放/暫停
-   * en-US: Play/Pause
-   */
-  (key: "shortcuts.command.togglePlayback", params?: TranslationParams): string;
-  /**
-   * zh-CN: 上一首
-   * zh-TW: 上一首
-   * en-US: Previous Track
-   */
-  (key: "shortcuts.command.previousTrack", params?: TranslationParams): string;
-  /**
-   * zh-CN: 下一首
-   * zh-TW: 下一首
-   * en-US: Next Track
-   */
-  (key: "shortcuts.command.nextTrack", params?: TranslationParams): string;
-  /**
-   * zh-CN: 增大音量
-   * zh-TW: 提高音量
-   * en-US: Increase Volume
-   */
-  (key: "shortcuts.command.increaseVolume", params?: TranslationParams): string;
-  /**
-   * zh-CN: 减小音量
-   * zh-TW: 降低音量
-   * en-US: Decrease Volume
-   */
-  (key: "shortcuts.command.decreaseVolume", params?: TranslationParams): string;
-  /**
-   * zh-CN: 静音/恢复音量
-   * zh-TW: 靜音/恢復音量
-   * en-US: Mute/Restore Volume
-   */
-  (key: "shortcuts.command.toggleMute", params?: TranslationParams): string;
-  /**
-   * zh-CN: 打开搜索
-   * zh-TW: 開啟搜尋
-   * en-US: Open Search
-   */
-  (key: "shortcuts.command.openSearch", params?: TranslationParams): string;
-  /**
-   * zh-CN: 打开/关闭 Lyric Stage
-   * zh-TW: 開啟/關閉 Lyric Stage
-   * en-US: Toggle Lyric Stage
-   */
-  (key: "shortcuts.command.toggleLyricStage", params?: TranslationParams): string;
-  /**
-   * zh-CN: 切换侧边栏
-   * zh-TW: 切換側邊欄
-   * en-US: Toggle Sidebar
-   */
-  (key: "shortcuts.command.toggleSidebar", params?: TranslationParams): string;
-  /**
-   * zh-CN: 打开/关闭播放队列
-   * zh-TW: 開啟/關閉播放佇列
-   * en-US: Toggle Play Queue
-   */
-  (key: "shortcuts.command.toggleQueue", params?: TranslationParams): string;
-  /**
-   * zh-CN: 切换全屏
-   * zh-TW: 切換全螢幕
-   * en-US: Toggle Fullscreen
-   */
-  (key: "shortcuts.command.toggleFullscreen", params?: TranslationParams): string;
-  /**
-   * zh-CN: 打开快捷键管理
-   * zh-TW: 開啟快速鍵管理
-   * en-US: Open Shortcut Management
-   */
-  (key: "shortcuts.command.openSettings", params?: TranslationParams): string;
-  /**
-   * zh-CN: 显示快捷键帮助
-   * zh-TW: 顯示快速鍵說明
-   * en-US: Show Shortcut Help
-   */
-  (key: "shortcuts.command.showHelp", params?: TranslationParams): string;
-  /**
-   * zh-CN: 打开命令面板
-   * zh-TW: 開啟命令面板
-   * en-US: Open Command Palette
-   */
-  (key: "shortcuts.command.openCommandPalette", params?: TranslationParams): string;
-  /**
-   * zh-CN: 快捷键帮助
-   * zh-TW: 快速鍵說明
-   * en-US: Keyboard Shortcut Help
-   */
-  (key: "shortcuts.help.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 搜索命令
-   * zh-TW: 搜尋命令
-   * en-US: Search commands
-   */
-  (key: "shortcuts.commandPalette.placeholder", params?: TranslationParams): string;
-  /**
-   * zh-CN: 没有匹配的命令
-   * zh-TW: 沒有相符的命令
-   * en-US: No matching commands
-   */
-  (key: "shortcuts.commandPalette.empty", params?: TranslationParams): string;
   /**
    * zh-CN: 应用与显示
    * zh-TW: 應用與顯示
@@ -13243,5 +13063,185 @@ export interface TranslateFn {
    * en-US: I am using the folia-major music player on GitHub and need help with a problem.\n\nFolia Guide: {{guideUrl}}\nFolia repository: {{repoUrl}}\n\nPlease use these references as context, then help me understand and solve the problem I describe next. If any information is missing, ask what I should provide before making uncertain assumptions.
    */
   (key: "folia.aiHelp.prompt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 键盘快捷键
+   * zh-TW: 鍵盤快速鍵
+   * en-US: Keyboard Shortcuts
+   */
+  (key: "shortcuts.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快捷键在 Scopify 窗口聚焦时生效。
+   * zh-TW: 快速鍵會在 Scopify 視窗聚焦時生效。
+   * en-US: Shortcuts are active while the Scopify window is focused.
+   */
+  (key: "shortcuts.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索命令
+   * zh-TW: 搜尋命令
+   * en-US: Search commands
+   */
+  (key: "shortcuts.searchPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 恢复全部默认值
+   * zh-TW: 還原所有預設值
+   * en-US: Restore All Defaults
+   */
+  (key: "shortcuts.resetAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放控制
+   * zh-TW: 播放控制
+   * en-US: Playback
+   */
+  (key: "shortcuts.group.playback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 界面
+   * zh-TW: 介面
+   * en-US: Interface
+   */
+  (key: "shortcuts.group.interface", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快捷键
+   * zh-TW: 快速鍵
+   * en-US: Shortcuts
+   */
+  (key: "shortcuts.group.shortcuts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未分配
+   * zh-TW: 未指派
+   * en-US: Unassigned
+   */
+  (key: "shortcuts.unassigned", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按下组合键
+   * zh-TW: 按下組合鍵
+   * en-US: Press a key combination
+   */
+  (key: "shortcuts.recording", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请使用包含修饰键的组合键
+   * zh-TW: 請使用包含修飾鍵的組合鍵
+   * en-US: Use a key combination with a modifier
+   */
+  (key: "shortcuts.invalidBinding", params?: TranslationParams): string;
+  /**
+   * zh-CN: 与“{{command}}”冲突
+   * zh-TW: 與「{{command}}」衝突
+   * en-US: Conflicts with “{{command}}”
+   */
+  (key: "shortcuts.conflict", params?: TranslationParams): string;
+  /**
+   * zh-CN: 禁用快捷键
+   * zh-TW: 停用快速鍵
+   * en-US: Disable shortcut
+   */
+  (key: "shortcuts.disable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 恢复默认快捷键
+   * zh-TW: 還原預設快速鍵
+   * en-US: Restore default shortcut
+   */
+  (key: "shortcuts.reset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放/暂停
+   * zh-TW: 播放/暫停
+   * en-US: Play/Pause
+   */
+  (key: "shortcuts.command.togglePlayback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous Track
+   */
+  (key: "shortcuts.command.previousTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next Track
+   */
+  (key: "shortcuts.command.nextTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 增大音量
+   * zh-TW: 提高音量
+   * en-US: Increase Volume
+   */
+  (key: "shortcuts.command.increaseVolume", params?: TranslationParams): string;
+  /**
+   * zh-CN: 减小音量
+   * zh-TW: 降低音量
+   * en-US: Decrease Volume
+   */
+  (key: "shortcuts.command.decreaseVolume", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静音/恢复音量
+   * zh-TW: 靜音/還原音量
+   * en-US: Mute/Restore Volume
+   */
+  (key: "shortcuts.command.toggleMute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开搜索
+   * zh-TW: 開啟搜尋
+   * en-US: Open Search
+   */
+  (key: "shortcuts.command.openSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭 Lyric Stage
+   * zh-TW: 開啟/關閉 Lyric Stage
+   * en-US: Open/Close Lyric Stage
+   */
+  (key: "shortcuts.command.toggleLyricStage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换侧边栏
+   * zh-TW: 切換側邊欄
+   * en-US: Toggle Sidebar
+   */
+  (key: "shortcuts.command.toggleSidebar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭播放队列
+   * zh-TW: 開啟/關閉播放佇列
+   * en-US: Open/Close Queue
+   */
+  (key: "shortcuts.command.toggleQueue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换全屏
+   * zh-TW: 切換全螢幕
+   * en-US: Toggle Fullscreen
+   */
+  (key: "shortcuts.command.toggleFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开快捷键管理
+   * zh-TW: 開啟快速鍵管理
+   * en-US: Open Shortcut Settings
+   */
+  (key: "shortcuts.command.openSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示快捷键帮助
+   * zh-TW: 顯示快速鍵說明
+   * en-US: Show Shortcut Help
+   */
+  (key: "shortcuts.command.showHelp", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开命令面板
+   * zh-TW: 開啟命令面板
+   * en-US: Open Command Palette
+   */
+  (key: "shortcuts.command.openCommandPalette", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快捷键帮助
+   * zh-TW: 快速鍵說明
+   * en-US: Keyboard Shortcut Help
+   */
+  (key: "shortcuts.help.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索命令
+   * zh-TW: 搜尋命令
+   * en-US: Search commands
+   */
+  (key: "shortcuts.commandPalette.placeholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有匹配的命令
+   * zh-TW: 沒有相符的命令
+   * en-US: No matching commands
+   */
+  (key: "shortcuts.commandPalette.empty", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }

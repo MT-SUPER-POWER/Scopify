@@ -3,6 +3,11 @@ import { defineMessages } from "./define";
 export const settingsMessages = defineMessages(
   {
     "settings.title": "设置",
+    "settings.tab.general": "常规",
+    "settings.tab.network": "网络",
+    "settings.tab.storage": "存储",
+    "settings.tab.desktop": "桌面端",
+    "settings.tab.shortcuts": "快捷键",
     "settings.section.application": "应用与显示",
     "settings.section.logging": "日志与诊断",
     "settings.section.network": "网络",
@@ -107,6 +112,11 @@ export const settingsMessages = defineMessages(
   },
   {
     "settings.title": "設定",
+    "settings.tab.general": "一般",
+    "settings.tab.network": "網路",
+    "settings.tab.storage": "儲存空間",
+    "settings.tab.desktop": "桌面版",
+    "settings.tab.shortcuts": "快速鍵",
     "settings.section.application": "應用與顯示",
     "settings.section.logging": "日誌與診斷",
     "settings.section.network": "網路",
@@ -211,6 +221,11 @@ export const settingsMessages = defineMessages(
   },
   {
     "settings.title": "Settings",
+    "settings.tab.general": "General",
+    "settings.tab.network": "Network",
+    "settings.tab.storage": "Storage",
+    "settings.tab.desktop": "Desktop",
+    "settings.tab.shortcuts": "Shortcuts",
     "settings.section.application": "Application & Display",
     "settings.section.logging": "Logging & Diagnostics",
     "settings.section.network": "Network",
