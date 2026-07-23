@@ -81,6 +81,13 @@ project-root/
 - 所有 custom hook 进 `/hooks/`，不允许写在组件文件内部
 - 静态数据超过 **10 条** 进 `/constants/`
 
+### API、类型与数据获取层 → [rules/api-layer.md](./rules/api-layer.md)
+
+- **三层架构**：`lib/api/` (请求封装) → `types/api/` (类型定义) → `hooks/` (TanStack Query)
+- `lib/api/` 只负责发请求，不包含业务逻辑
+- `types/api/` 定义所有请求/响应类型
+- `hooks/` 使用 TanStack Query 管理缓存、状态、副作用
+
 ---
 
 ## 代码模式示例

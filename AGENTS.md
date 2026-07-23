@@ -54,12 +54,14 @@ Scopify/
 │   ├── player/
 │   ├── search/
 │   ├── settings/
-│   └── profile/
+│   ├── profile/
+│   └── vipSign/            # ★ TanStack Query 封装（缓存 + 状态管理）
 │
 ├── lib/                    # 工具、API 客户端、基础设施
 │   ├── api/                # 后端 API 调用函数（★ 禁止在此定义 interface）
 │   ├── hooks/              # 跨域/基础设施 hooks（路由、登录态、Electron 检测…）
 │   ├── web/                # request、env、网络错误处理
+│   ├── query/              # TanStack Query 配置（QueryClient、persister）
 │   ├── player/
 │   ├── cache/
 │   └── utils.ts
@@ -266,7 +268,51 @@ export function getFollowedArtists(limit = 20, offset = 0) {
 
 ---
 
-### 4. 组件
+### 4. API、类型与数据获取三层架构
+
+**推荐的数据流架构**：
+
+```
+lib/api/        → 薄封装层：纯函数，只负责发请求
+types/api/      → 类型层：定义请求/响应的 TypeScript 接口
+hooks/          → 数据管理层：TanStack Query 封装，处理缓存/状态/副作用
+```
+
+**职责边界**：
+
+| 层级         | 职责                     | 包含状态？ | 包含 UI 逻辑？ |
+| ------------ | ------------------------ | ---------- | -------------- |
+| `lib/api/`   | HTTP 请求封装            | ❌         | ❌             |
+| `types/api/` | 类型定义                 | ❌         | ❌             |
+| `hooks/`     | 数据获取、缓存、状态同步 | ✅         | ❌             |
+
+**数据流示意图**：
+
+```
+Component (ProfileMenu)
+    ↓ 调用 useVipSign()
+Hook (hooks/vipSign/useVipSign)
+    ↓ useQuery / useMutation
+API (lib/api/user.ts)
+    ↓ vipSign() / vipSignInfo()
+Request (lib/web/request)
+```
+
+**何时使用 TanStack Query**：
+
+| 场景                      | 使用 Query？ | 原因                 |
+| ------------------------- | ------------ | -------------------- |
+| 需要缓存的数据            | ✅           | 避免重复请求         |
+| 跨组件共享数据            | ✅           | 单一数据源           |
+| 需要自动刷新              | ✅           | refetchOnWindowFocus |
+| 加载/错误状态管理         | ✅           | 内置 isLoading/error |
+| 高频本地操作（播放/音量） | ❌           | Zustand 更合适       |
+
+详细规范见 [skills/nextjs-project-structure/rules/api-layer.md](./skills/nextjs-project-structure/rules/api-layer.md)。
+
+---
+
+### 5. 组件
 
 - 全部放在 `components/<领域>/`，**禁止** `app/` 下的 `_components/`
 - `components/ui/` 为 shadcn 生成物，按 upstream 结构维护
@@ -275,7 +321,7 @@ export function getFollowedArtists(limit = 20, offset = 0) {
 
 ---
 
-### 5. 其他目录
+### 6. 其他目录
 
 | 目录            | 用途                                     |
 | --------------- | ---------------------------------------- |

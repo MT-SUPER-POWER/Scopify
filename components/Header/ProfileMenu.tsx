@@ -1,7 +1,6 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import Link from "next/link";
-import { useState } from "react";
 import {
   FiBell,
   FiCalendar,
@@ -13,7 +12,6 @@ import {
   FiUser,
   FiUsers,
 } from "react-icons/fi";
-import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,19 +21,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { VipSignModal } from "@/components/VipSign/VipSignModal";
-import { vipSign, vipSignInfo } from "@/lib/api/user";
+import { useVipSign } from "@/hooks/vipSign/useVipSign";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { IS_ELECTRON } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignRecord } from "@/types/api/vipSign";
+import { useState } from "react";
+import type { VipSignDetail } from "@/types/api/vipSign";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const iconList: { id: "download" | "about"; icon: React.ReactNode }[] = [
-  { id: "download", icon: <FiDownload className="mr-2 h-5 w-5" /> },
-  { id: "about", icon: <FiCoffee className="mr-2 h-5 w-5" /> },
+  { id: "download", icon: <FiDownload className="mr-2 h-5 w-5 shrink-0" /> },
+  { id: "about", icon: <FiCoffee className="mr-2 h-5 w-5 shrink-0" /> },
 ];
 
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
@@ -46,81 +45,40 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const isLoggedIn = useLoginStatus();
 
   const [signModalOpen, setSignModalOpen] = useState(false);
-  const [signRecords, setSignRecords] = useState<VipSignRecord[]>([]);
-  const [hasFetchedSign, setHasFetchedSign] = useState(false);
-  const [hasSignedInToday, setHasSignedInToday] = useState(false);
-  const [isSignLoading, setIsSignLoading] = useState(false);
+  const [modalTodayRecord, setModalTodayRecord] = useState<VipSignDetail | undefined>(undefined);
 
-  const fetchSignInfo = async () => {
-    if (!isLoggedIn) return;
-    try {
-      setIsSignLoading(true);
-      const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") : null;
-      const info = await vipSignInfo(cookie ?? undefined);
-      const records = info.data?.data ?? [];
-      const signedToday = records.some((r) => r.today);
-      setHasSignedInToday(signedToday);
-      setSignRecords(records);
-      setHasFetchedSign(true);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSignLoading(false);
-    }
-  };
+  const {
+    hasSignedToday,
+    isLoading: isSignLoading,
+    doSign,
+    isSigning,
+    fetchTodayRecord,
+  } = useVipSign();
 
-  const handleOpenChange = (open: boolean) => {
-    if (open && isLoggedIn && !hasFetchedSign) {
-      fetchSignInfo();
-    }
-  };
-
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 点击"签到"或"查看月签"统一走 POST /vip/sign 拿 Modal 数据
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const handleVipSign = async (e: React.MouseEvent) => {
-    // 阻止冒泡，避免触发 DropdownMenuItem 的默认行为（如果需要自行控制）
-    // 但 Radix DropdownMenuItem 点击内部 button 也会自动关闭 menu，这通常是我们想要的，所以可以不阻止
-    if (isSignLoading) return;
+    e.stopPropagation();
+    if (isSignLoading || isSigning) return;
 
-    if (hasSignedInToday) {
-      setSignModalOpen(true);
-      return;
+    let record: VipSignDetail | undefined;
+
+    if (hasSignedToday) {
+      // 已签到 → 直接调 /vip/sign 拿今日详情
+      record = await fetchTodayRecord();
+    } else {
+      // 未签到 → 执行签到，从返回值里拿 checkinDetail.data
+      const result = await doSign();
+      record = result.checkinDetail?.data;
+      // 兜底：如果签到返回里没有 checkinDetail，再单独请求一次
+      if (!record) {
+        record = await fetchTodayRecord();
+      }
     }
 
-    const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") : null;
-    try {
-      setIsSignLoading(true);
-      const res = await vipSign(cookie ?? undefined);
-      const signData = res.data;
-
-      // 无论成功还是重复签到，都重新拉取一次月签记录并弹窗
-      if (signData.code === 200 || signData.code === -2) {
-        const info = await vipSignInfo(cookie ?? undefined);
-        const records = info.data?.data ?? [];
-        setSignRecords(records);
-        setHasSignedInToday(records.some((r) => r.today));
-        setSignModalOpen(true);
-        if (signData.code === 200) {
-          toast.success(t("vipSign.success", { message: "签到成功" }));
-        }
-      } else {
-        toast.error(signData.message || t("vipSign.failed", { message: "" }));
-      }
-    } catch (err: any) {
-      const msg = err?.businessMsg || err?.message || "";
-      if (msg.includes("已经") || msg.includes("重复")) {
-        // 如果错误信息提示已经签到，也拉取记录并展示
-        const info = await vipSignInfo(cookie ?? undefined).catch(() => null);
-        if (info) {
-          const records = info.data?.data ?? [];
-          setSignRecords(records);
-          setHasSignedInToday(true);
-          setSignModalOpen(true);
-        }
-      } else {
-        toast.error(t("vipSign.failed", { message: msg }));
-      }
-    } finally {
-      setIsSignLoading(false);
-    }
+    setModalTodayRecord(record);
+    setSignModalOpen(true);
   };
 
   const handleLoginClick = () => {
@@ -152,7 +110,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
   return (
     <>
-      <DropdownMenu onOpenChange={handleOpenChange}>
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button type="button" className="focus:ring-0 focus:outline-none">
             {children}
@@ -160,68 +118,66 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className="w-68 max-w-[calc(100vw-2rem)] rounded-xl border-white/10 bg-[#282828] p-2 text-white"
+          className="w-64 max-w-[calc(100vw-2rem)] rounded-xl border-white/10 bg-[#282828] p-2 text-white"
           align="end"
           side="bottom"
           sideOffset={8}
         >
-          <DropdownMenuGroup className="space-y-1">
+          <DropdownMenuGroup className="space-y-0.5">
             {/* 小屏才显示的 Bell / Friends */}
-            <DropdownMenuItem className="rounded-lg px-3 py-2 text-[15px] md:hidden">
-              <FiBell className="mr-2 h-5 w-5" />
+            <DropdownMenuItem className="rounded-lg px-3 py-2.5 text-[15px] md:hidden">
+              <FiBell className="mr-3 h-5 w-5 shrink-0" />
               <span>{t("profile.menu.notifications")}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="rounded-lg px-3 py-2 text-[15px] md:hidden">
-              <FiUsers className="mr-2 h-5 w-5" />
+            <DropdownMenuItem className="rounded-lg px-3 py-2.5 text-[15px] md:hidden">
+              <FiUsers className="mr-3 h-5 w-5 shrink-0" />
               <span>{t("profile.menu.friends")}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="md:hidden" />
 
             {/* 简介 */}
             {isLoggedIn && (
-              <DropdownMenuItem asChild className="rounded-lg px-3 py-2 text-[15px]">
+              <DropdownMenuItem asChild className="rounded-lg px-3 py-2.5 text-[15px]">
                 <Link href={`/profile?userId=${userId}`}>
-                  <FiUser className="mr-2 h-5 w-5" />
-                  <span>{t("profile.menu.profile")}</span>
+                  <FiUser className="mr-3 h-5 w-5 shrink-0" />
+                  <span className="flex-1">{t("profile.menu.profile")}</span>
                 </Link>
               </DropdownMenuItem>
             )}
 
             {/* 网易乐签 */}
             {isLoggedIn && (
-              <DropdownMenuItem className="rounded-lg px-3 py-2 text-[15px]">
-                <div className="flex w-full flex-row items-center justify-between">
-                  <div className="flex flex-row items-center">
-                    <FiCalendar className="mr-2 h-5 w-5" />
-                    <span>{t("profile.menu.vipSign")}</span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleVipSign}
-                    disabled={isSignLoading}
-                    className={`h-7 min-w-16 rounded-full px-3 text-base font-bold transition-all disabled:opacity-70 ${
-                      hasSignedInToday
-                        ? "border border-zinc-600 bg-transparent text-zinc-300 hover:border-zinc-400 hover:text-white"
-                        : "bg-[#1ed760] text-black hover:scale-105 hover:bg-[#1fdf64]"
-                    }`}
-                  >
-                    {isSignLoading
-                      ? "..."
-                      : hasSignedInToday
-                        ? t("profile.menu.viewMonthlySign")
-                        : t("profile.menu.signIn")}
-                  </button>
-                </div>
+              <DropdownMenuItem
+                className="rounded-lg px-3 py-2.5 text-[15px]"
+                onSelect={(e) => e.preventDefault()}
+              >
+                <FiCalendar className="mr-3 h-5 w-5 shrink-0" />
+                <span className="flex-1">{t("profile.menu.vipSign")}</span>
+                <button
+                  type="button"
+                  onClick={handleVipSign}
+                  disabled={isSignLoading || isSigning}
+                  className={`ml-2 h-7 min-w-[72px] shrink-0 rounded-full px-3 text-[13px] font-semibold transition-all disabled:opacity-60 ${
+                    hasSignedToday
+                      ? "border border-zinc-600 bg-transparent text-zinc-300 hover:border-zinc-400 hover:text-white"
+                      : "bg-[#1ed760] text-black hover:scale-105 hover:bg-[#1fdf64]"
+                  }`}
+                >
+                  {isSignLoading || isSigning
+                    ? "..."
+                    : hasSignedToday
+                      ? t("profile.menu.viewMonthlySign")
+                      : t("profile.menu.signIn")}
+                </button>
               </DropdownMenuItem>
             )}
 
             {/* 设置 */}
             <DropdownMenuItem
               onSelect={() => smartRouter.push("/setting")}
-              className="rounded-lg px-3 py-2 text-[15px]"
+              className="rounded-lg px-3 py-2.5 text-[15px]"
             >
-              <FiSettings className="mr-2 h-5 w-5" />
+              <FiSettings className="mr-3 h-5 w-5 shrink-0" />
               <span>{t("profile.menu.settings")}</span>
             </DropdownMenuItem>
 
@@ -229,7 +185,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
               item.id === "download" && IS_ELECTRON ? null : (
                 <DropdownMenuItem
                   key={item.id}
-                  className="rounded-lg px-3 py-2 text-[15px]"
+                  className="rounded-lg px-3 py-2.5 text-[15px]"
                   onSelect={() => ProfileCallback(item.id)}
                 >
                   {item.icon}
@@ -246,28 +202,29 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             {isLoggedIn ? (
               <DropdownMenuItem
                 onSelect={handleLogoutClick}
-                className="rounded-lg px-3 py-2 text-[15px]"
+                className="rounded-lg px-3 py-2.5 text-[15px]"
               >
-                <FiLogOut className="mr-2 h-5 w-5 text-[#fe4144]" />
+                <FiLogOut className="mr-3 h-5 w-5 shrink-0 text-[#fe4144]" />
                 <span className="text-[#fe4144]">{t("common.action.logout")}</span>
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem
                 onSelect={handleLoginClick}
-                className="rounded-lg px-3 py-2 text-[15px]"
+                className="rounded-lg px-3 py-2.5 text-[15px]"
               >
-                <FiLogIn className="mr-2 h-5 w-5" />
+                <FiLogIn className="mr-3 h-5 w-5 shrink-0" />
                 <span>{t("common.action.login")}</span>
               </DropdownMenuItem>
             )}
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
+
       {signModalOpen && (
         <VipSignModal
           open={signModalOpen}
           onClose={() => setSignModalOpen(false)}
-          signRecords={signRecords}
+          todayRecord={modalTodayRecord}
         />
       )}
     </>

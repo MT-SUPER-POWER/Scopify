@@ -3,32 +3,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Play, X } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { getTimeTheme } from "@/hooks/home/useHomeData";
-import { getMusicComments } from "@/lib/api/comment";
 import { getSongDetail } from "@/lib/api/track";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignRecord } from "@/types/api/vipSign";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 连续签到天数计算
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-function calcConsecutiveDays(records: VipSignRecord[]): number {
-  const todayIdx = records.findIndex((r) => r.today);
-  if (todayIdx === -1) return 0;
-  let count = 0;
-  for (let i = todayIdx; i >= 0; i--) {
-    if (records[i].recordId > 0) {
-      count++;
-    } else {
-      break;
-    }
-  }
-  return count;
-}
+import type { VipSignDetail } from "@/types/api/vipSign";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Props
@@ -37,86 +18,55 @@ function calcConsecutiveDays(records: VipSignRecord[]): number {
 interface VipSignModalProps {
   open: boolean;
   onClose: () => void;
-  signRecords: VipSignRecord[];
+  /** POST /vip/sign 返回的 checkinDetail.data，包含所有展示数据 */
+  todayRecord: VipSignDetail | undefined;
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Component
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) {
+export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) {
   const { t } = useI18n();
 
-  // 找到今天的记录（today: true）
-  const todayRecord = useMemo(() => signRecords.find((r) => r.today), [signRecords]);
-  const todaySongId = todayRecord?.songId;
-  const todayCover = todayRecord?.songCover ?? "";
-  const consecutiveDays = useMemo(() => calcConsecutiveDays(signRecords), [signRecords]);
-
-  // 热门评论
-  const [hotComment, setHotComment] = useState<{ content: string; nickname: string } | null>(null);
-  // 歌曲信息
-  const [songInfo, setSongInfo] = useState<{ name: string; artist: string } | null>(null);
+  // 从 POST /vip/sign 的 checkinDetail.data 中提取所有展示数据
+  const songInfo = todayRecord?.songInfo;
+  const songId = songInfo?.songId;
+  const songCover = songInfo?.cover ?? "";
+  const wishWords = todayRecord?.wishWords;
+  const wishUserNickname = todayRecord?.wishUserNickname;
+  const consecutiveDays = todayRecord?.monthCheckInTotalDay ?? 0;
 
   // 获取时间渐变主题
   const theme = useMemo(() => getTimeTheme(), []);
 
   // 格式化日期：07月 / 04日
   const formattedDate = useMemo(() => {
-    const targetStr = todayRecord?.timeStr ?? new Date().toISOString().slice(0, 10);
-    const dateObj = new Date(targetStr);
-    const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
-    const dd = String(dateObj.getDate()).padStart(2, "0");
-    return { mm, dd };
+    const timestamp = todayRecord?.time;
+    if (!timestamp) {
+      const now = new Date();
+      return {
+        mm: String(now.getMonth() + 1).padStart(2, "0"),
+        dd: String(now.getDate()).padStart(2, "0"),
+      };
+    }
+    const dateObj = new Date(timestamp);
+    return {
+      mm: String(dateObj.getMonth() + 1).padStart(2, "0"),
+      dd: String(dateObj.getDate()).padStart(2, "0"),
+    };
   }, [todayRecord]);
-
-  // 1. 获取歌曲详情 (名字与歌手)
-  useEffect(() => {
-    if (!todaySongId) return;
-    getSongDetail(todaySongId)
-      .then((res) => {
-        const song = res?.data?.songs?.[0];
-        if (song) {
-          const artistName = song.ar?.map((a: any) => a.name).join("/") ?? "";
-          setSongInfo({
-            name: song.name,
-            artist: artistName,
-          });
-        }
-      })
-      .catch(() => {
-        /* 静默失败 */
-      });
-  }, [todaySongId]);
-
-  // 2. 获取歌曲热评
-  useEffect(() => {
-    if (!todaySongId) return;
-    getMusicComments({ id: todaySongId, limit: 1 })
-      .then((res) => {
-        const hot = res.data?.hotComments?.[0];
-        if (hot) {
-          setHotComment({
-            content: hot.content,
-            nickname: hot.user?.nickname ?? "",
-          });
-        }
-      })
-      .catch(() => {
-        /* 静默失败 */
-      });
-  }, [todaySongId]);
 
   // 播放当前歌曲
   const handlePlay = useCallback(async () => {
-    if (!todaySongId) return;
+    if (!songId) return;
     const store = usePlayerStore.getState();
-    const songRes = await getSongDetail(todaySongId);
+    const songRes = await getSongDetail(songId);
     const song = songRes?.data?.songs?.[0];
     if (!song) return;
     store.playFromSong(song, [song]);
     onClose();
-  }, [todaySongId, onClose]);
+  }, [songId, onClose]);
 
   return (
     <AnimatePresence>
@@ -170,16 +120,16 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
 
               {/* Main Body */}
               <div className="flex min-h-40 w-full flex-col items-stretch gap-6 md:flex-row">
-                {/* Left: Song details + Quote */}
+                {/* Left: Song details + Wish Words */}
                 <div className="flex min-w-0 flex-1 flex-col justify-between">
                   <div>
                     <div className="flex flex-wrap items-baseline gap-2">
                       <span className="text-2xl font-black tracking-tight text-white">
-                        {songInfo?.name ?? t("vipSign.recommendedSong")}
+                        {songInfo?.songName ?? t("vipSign.recommendedSong")}
                       </span>
-                      {songInfo?.artist && (
+                      {songInfo?.artistName && (
                         <span className="text-xs font-medium text-zinc-400">
-                          - {songInfo.artist}
+                          - {songInfo.artistName}
                         </span>
                       )}
                     </div>
@@ -187,23 +137,25 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                     <div className="my-3 w-full border-t border-white/10" />
                   </div>
 
-                  {/* Comment Quote */}
+                  {/* Wish Words Quote */}
                   <div className="relative flex flex-1 flex-col justify-center py-2 pl-6">
                     <span className="absolute top-0 left-0 font-serif text-5xl leading-none text-white/10 select-none">
-                      “
+                      "
                     </span>
-                    {hotComment ? (
+                    {wishWords ? (
                       <div className="flex flex-col gap-1.5">
                         <p className="line-clamp-3 text-sm leading-relaxed font-medium text-zinc-200 italic">
-                          {hotComment.content}
+                          {wishWords}
                         </p>
-                        <span className="self-end text-[10px] text-zinc-500">
-                          {t("vipSign.commentFrom", { nickname: hotComment.nickname })}
-                        </span>
+                        {wishUserNickname && (
+                          <span className="self-end text-[10px] text-zinc-500">
+                            {t("vipSign.commentFrom", { nickname: wishUserNickname })}
+                          </span>
+                        )}
                       </div>
                     ) : (
                       <div className="text-xs text-zinc-500 italic">
-                        {t("common.status.loading")}
+                        {t("vipSign.recommendedSong")}
                       </div>
                     )}
                   </div>
@@ -212,12 +164,12 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                 {/* Right: Album Cover with buttons */}
                 <div className="flex shrink-0 items-center justify-center">
                   <div className="group/cover relative h-40 w-40 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
-                    {todayCover ? (
+                    {songCover ? (
                       <Image
                         width={160}
                         height={160}
-                        src={todayCover}
-                        alt=""
+                        src={songCover}
+                        alt={songInfo?.songName ?? ""}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover/cover:scale-105"
                       />
                     ) : (
@@ -226,7 +178,7 @@ export function VipSignModal({ open, onClose, signRecords }: VipSignModalProps) 
                       </div>
                     )}
 
-                    {todaySongId && (
+                    {songId && (
                       <button
                         type="button"
                         onClick={handlePlay}

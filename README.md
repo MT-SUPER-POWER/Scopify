@@ -29,8 +29,8 @@
 2. Electron: 桌面应用框架
 3. Tailwind CSS: CSS 框架
 4. shadnCN UI: UI 组件库
-5. Makefile + k8s + Docker: 后端部署部分
-6. Axios: 后端通讯统一管理部分
+5. Docker: 部署部分
+6. Axios + TanStack Query: 后端通讯统一管理部分
 7. Zustand: 前端状态管理
 8. Eslint + Prettier + Husky: 代码格式化约束 + Git 提交规范
 9. Framer-Motion: 动画框架
@@ -192,20 +192,6 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 </details>
 
 <details>
-<summary> 播放歌曲模态界面 - 动态 </summary>
-
-![播放页面](/docs/img/DynamicEffect.png)
-
-</details>
-
-<details>
-<summary> 播放歌曲模态界面 - 静态 </summary>
-
-![播放页面](/docs/img/StaticEffect.png)
-
-</details>
-
-<details>
 <summary> 歌单页面 </summary>
 
 ![发现页面](/docs/img/Playlist.png)
@@ -254,12 +240,26 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 </details>
 
+<details>
+<summary> 歌词界面 </summary>
+
+![歌词界面](/docs/img/DynamicEffect.png)
+
+![歌词设置界面](/docs/img/StaticEffect.png)
+
+![歌词界面主题效果](/docs/img/StaticEffect.png)
+
+</details>
+
 ## TODO
 
 - 收藏 / 取消收藏专辑
 - 使用过多的 `any` 了，数据类型需要重新梳理一下
 - 拉去 github 的 release 自动更新客户端版本
 
+- [ ] 手机短信可以登陆了，把界面功能补充上，记得补充不同国家收集区域号
+- [ ] 云盘功能
+- [ ] 设备管理区域
 - [ ] 做一个快捷键注册表，简历一个注册表的专用的界面，用于管理快捷键
   - [ ] 播放和暂停
   - [ ] 上一首
@@ -276,12 +276,20 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 - [ ] 好友功能的完善
   - [ ] Followers 和 Followings 的 Modal 展示
 - [ ] 属于 VIP 的歌曲，加区分的 LOGO
-- [ ] 迁移`Folia`的匹配歌词功能
+- [ ] `Folia` 优点：
+  - [ ] 迁移`Folia`的匹配歌词功能
+  - [ ] `Folia` i18n 功能迁移和我们的设计同步
+  - [ ] 给 VisualSetting 界面补充音质切换界面
+- [ ] TanStack Query 功能补全
+- [x] 乐签功能修正，完善 profile 布局的问题
+- [ ] 日志系统不完善的问题
+  - [ ] web Debug 的时候，nextjs 的报错输入之类的不显示到终端，也不记录到我们的日志文件，这个有点头疼
+  - [ ] 各类网络请求的错误的详细错误结果都是 console.log 也不走到我们的日志记录文件
 
 ### 提案
 
 - [ ] 可选的 AI 歌曲主题生成：用户配置 Gemini 或 OpenAI-compatible API Key，根据歌曲歌词和封面生成视觉参数。该能力不属于当前 Folia 歌词舞台迁移范围。
-- [x] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
+- [ ] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
 - [ ] 本地音乐库管理
 
 ## 版本号规则
