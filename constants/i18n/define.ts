@@ -1,4 +1,4 @@
-export function defineFoliaMessages<const T extends Record<string, string>>(
+export function defineMessages<const T extends Record<string, string>>(
   zhCN: T,
   zhTW: Record<keyof T, string>,
   enUS: Record<keyof T, string>,

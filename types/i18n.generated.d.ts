@@ -1361,6 +1361,12 @@ export interface TranslateFn {
    */
   (key: "login.required.followedArtists.subtitle", params?: TranslationParams): string;
   /**
+   * zh-CN: Logo
+   * zh-TW: Logo
+   * en-US: Logo
+   */
+  (key: "login.logoAlt", params?: TranslationParams): string;
+  /**
    * zh-CN: 筛选
    * zh-TW: 篩選
    * en-US: Filter
@@ -2363,6 +2369,12 @@ export interface TranslateFn {
    */
   (key: "profile.edit.genderFemale", params?: TranslationParams): string;
   /**
+   * zh-CN: 头像
+   * zh-TW: 頭像
+   * en-US: Avatar
+   */
+  (key: "profile.avatarAlt", params?: TranslationParams): string;
+  /**
    * zh-CN: 签到
    * zh-TW: 簽到
    * en-US: Check-in
@@ -2446,6 +2458,12 @@ export interface TranslateFn {
    * en-US: - comment by @{{nickname}}
    */
   (key: "vipSign.commentFrom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 二维码
+   * zh-TW: QR Code
+   * en-US: QR Code
+   */
+  (key: "vipSign.qrAlt", params?: TranslationParams): string;
   /**
    * zh-CN: 获取专辑详情失败
    * zh-TW: 取得專輯詳情失敗
@@ -3263,18 +3281,6 @@ export interface TranslateFn {
    */
   (key: "playerBar.lyrics", params?: TranslationParams): string;
   /**
-   * zh-CN: 二维码
-   * zh-TW: QR Code
-   * en-US: QR Code
-   */
-  (key: "vipSign.qrAlt", params?: TranslationParams): string;
-  /**
-   * zh-CN: 头像
-   * zh-TW: 頭像
-   * en-US: Avatar
-   */
-  (key: "profile.avatarAlt", params?: TranslationParams): string;
-  /**
    * zh-CN: 置顶显示
    * zh-TW: 置頂顯示
    * en-US: Keep on top
@@ -3316,12 +3322,6 @@ export interface TranslateFn {
    * en-US: Like
    */
   (key: "desktopLyrics.like", params?: TranslationParams): string;
-  /**
-   * zh-CN: Logo
-   * zh-TW: Logo
-   * en-US: Logo
-   */
-  (key: "login.logoAlt", params?: TranslationParams): string;
   /**
    * zh-CN: 添加封面色彩
    * zh-TW: 添加封面色彩
