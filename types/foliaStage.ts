@@ -45,6 +45,7 @@ export interface FoliaStageTheme {
 }
 
 export interface FoliaStageSettings {
+  animationIntensity: Theme["animationIntensity"];
   background: VisualizerBackgroundConfig;
   fontFamily: string | null;
   fontScale: number;

@@ -40,13 +40,20 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const theme = useMemo<Theme>(
     () => ({
       ...activeThemeColors,
-      animationIntensity: "normal",
+      animationIntensity: settings.animationIntensity,
       fontStyle: settings.fontStyle,
       fontFamily: settings.fontFamily ?? undefined,
       fontFamilyStack: [],
       name: isDaylight ? "snow" : settings.themeId,
     }),
-    [activeThemeColors, isDaylight, settings.fontFamily, settings.fontStyle, settings.themeId],
+    [
+      activeThemeColors,
+      isDaylight,
+      settings.animationIntensity,
+      settings.fontFamily,
+      settings.fontStyle,
+      settings.themeId,
+    ],
   );
   const subtitleTheme = useMemo<Theme>(
     () =>

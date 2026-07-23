@@ -3,6 +3,8 @@
 import { Settings2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { FoliaAnimationIntensityControl } from "@/components/lyrics/FoliaAnimationIntensityControl";
+import { FoliaBackgroundQuickControl } from "@/components/lyrics/FoliaBackgroundQuickControl";
 import { FoliaQuickEffectPicker } from "@/components/lyrics/FoliaQuickEffectPicker";
 import { FoliaThemeQuickPicker } from "@/components/lyrics/FoliaThemeQuickPicker";
 import {
@@ -74,6 +76,7 @@ export function FoliaVisualizerControls({
             primaryColor={theme.primaryColor}
             value={model.visualizerMode}
           />
+          <FoliaAnimationIntensityControl isDaylight={isDaylight} theme={theme} />
           <button
             className="rounded-md p-1 opacity-55 transition-opacity hover:bg-white/10 hover:opacity-100"
             onClick={() => onOpenSettings("visualizer")}
@@ -99,6 +102,7 @@ export function FoliaVisualizerControls({
             primaryColor={theme.primaryColor}
             value={model.visualizerBackgroundMode}
           />
+          <FoliaBackgroundQuickControl isDaylight={isDaylight} theme={theme} />
           <button
             className="rounded-md p-1 opacity-55 transition-opacity hover:bg-white/10 hover:opacity-100"
             onClick={() => onOpenSettings("background")}

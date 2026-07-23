@@ -80,6 +80,7 @@ const NUMERIC_RANGES = {
 } as const satisfies Record<string, readonly [number, number]>;
 
 const STRING_ENUMS = {
+  animationIntensity: ["calm", "normal", "chaotic"],
   "background.latent.tuning.colorSource": ["cover-theme", "cover-only"],
   "background.latent.tuning.displayMode": ["dithering", "mesh", "both"],
   "background.mode": ["common", "monet", "nomand", "latent", "url", "sora"],
@@ -114,6 +115,7 @@ const STRING_ENUMS = {
 
 export function createDefaultFoliaStageSettings(): FoliaStageSettings {
   return {
+    animationIntensity: "normal",
     background: {
       common: {
         disableGeometricBackground: false,

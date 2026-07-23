@@ -16,6 +16,7 @@ import { useUserStore } from "@/store/module/user";
 import type { LyricVisualizerMode } from "@/types/lyrics";
 
 export function useFoliaPanelControls() {
+  const animationIntensity = useLyricStageStore((state) => state.animationIntensity);
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const isShuffle = usePlayerStore((state) => state.isShuffle);
@@ -53,6 +54,15 @@ export function useFoliaPanelControls() {
   }, []);
 
   return {
+    animationIntensity,
+    cycleAnimationIntensity: () => {
+      const lyricStage = useLyricStageStore.getState();
+      const intensityLevels = ["calm", "normal", "chaotic"] as const;
+      const currentIndex = intensityLevels.indexOf(lyricStage.animationIntensity);
+      lyricStage.patchSettings({
+        animationIntensity: intensityLevels[(currentIndex + 1) % intensityLevels.length],
+      });
+    },
     currentSong,
     isLiked,
     isPlaying,
