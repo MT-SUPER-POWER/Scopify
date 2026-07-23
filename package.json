@@ -50,11 +50,8 @@
     "electron-serve": "^3.0.1",
     "electron-updater": "^6.8.9",
     "idb-keyval": "^6.3.0",
-    "i18next": "^26.3.6",
-    "i18next-browser-languagedetector": "^8.2.1",
     "js-yaml": "^4.3.0",
     "react-colorful": "^5.8.0",
-    "react-i18next": "^17.0.11",
     "three": "^0.185.1",
     "twgl.js": "^7.0.0"
   },

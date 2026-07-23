@@ -1,73 +1,69 @@
-import type { VisualizerBackgroundMode } from '../../../types';
+import type { VisualizerBackgroundMode } from "../../../types";
 import type {
-    VisualizerBackgroundEntryModule,
-    VisualizerBackgroundRegistryEntry,
-} from './definition';
-import commonEntry from './common/entry';
-import latentEntry from './latent/entry';
-import monetEntry from './monet/entry';
-import nomandEntry from './nomand/entry';
-import soraEntry from './sora/entry';
-import urlEntry from './url/entry';
+  VisualizerBackgroundEntryModule,
+  VisualizerBackgroundRegistryEntry,
+} from "./definition";
+import commonEntry from "./common/entry";
+import latentEntry from "./latent/entry";
+import monetEntry from "./monet/entry";
+import nomandEntry from "./nomand/entry";
+import soraEntry from "./sora/entry";
+import urlEntry from "./url/entry";
 
 // src/components/visualizer/backgrounds/registry.tsx
 // Discovers shell-level background modes from their local entry modules.
 
 // Next.js host adapter: this is the exact entry set discovered by Folia's Vite glob at the pinned SHA.
 const backgroundEntryModules: Record<string, VisualizerBackgroundEntryModule> = {
-    './common/entry.tsx': { default: commonEntry },
-    './latent/entry.tsx': { default: latentEntry },
-    './monet/entry.tsx': { default: monetEntry },
-    './nomand/entry.tsx': { default: nomandEntry },
-    './sora/entry.tsx': { default: soraEntry },
-    './url/entry.tsx': { default: urlEntry },
+  "./common/entry.tsx": { default: commonEntry },
+  "./latent/entry.tsx": { default: latentEntry },
+  "./monet/entry.tsx": { default: monetEntry },
+  "./nomand/entry.tsx": { default: nomandEntry },
+  "./sora/entry.tsx": { default: soraEntry },
+  "./url/entry.tsx": { default: urlEntry },
 };
 
 const buildBackgroundRegistry = (modules: Record<string, VisualizerBackgroundEntryModule>) => {
-    const entries = Object.entries(modules).map(([path, module]) => {
-        if (!module.default) {
-            throw new Error(`[VisualizerBackgroundRegistry] Missing default export in ${path}`);
-        }
-        return module.default;
-    });
-    const byMode: Partial<Record<string, VisualizerBackgroundRegistryEntry>> = {};
+  const entries = Object.entries(modules).map(([path, module]) => {
+    if (!module.default) {
+      throw new Error(`[VisualizerBackgroundRegistry] Missing default export in ${path}`);
+    }
+    return module.default;
+  });
+  const byMode: Partial<Record<string, VisualizerBackgroundRegistryEntry>> = {};
 
-    entries.forEach(entry => {
-        if (byMode[entry.mode]) {
-            throw new Error(`[VisualizerBackgroundRegistry] Duplicate background mode "${entry.mode}"`);
-        }
-        byMode[entry.mode] = entry;
-    });
+  entries.forEach((entry) => {
+    if (byMode[entry.mode]) {
+      throw new Error(`[VisualizerBackgroundRegistry] Duplicate background mode "${entry.mode}"`);
+    }
+    byMode[entry.mode] = entry;
+  });
 
-    return {
-        entries: [...entries].sort((left, right) => left.order - right.order),
-        byMode,
-    };
+  return {
+    entries: [...entries].sort((left, right) => left.order - right.order),
+    byMode,
+  };
 };
 
-const {
-    entries: VISUALIZER_BACKGROUND_REGISTRY,
-    byMode: VISUALIZER_BACKGROUND_REGISTRY_BY_MODE,
-} = buildBackgroundRegistry(backgroundEntryModules);
+const { entries: VISUALIZER_BACKGROUND_REGISTRY, byMode: VISUALIZER_BACKGROUND_REGISTRY_BY_MODE } =
+  buildBackgroundRegistry(backgroundEntryModules);
 
 export { VISUALIZER_BACKGROUND_REGISTRY };
 
-export const DEFAULT_VISUALIZER_BACKGROUND_MODE: VisualizerBackgroundMode = 'latent';
+export const DEFAULT_VISUALIZER_BACKGROUND_MODE: VisualizerBackgroundMode = "latent";
 
-export const hasVisualizerBackgroundMode = (mode: unknown): mode is VisualizerBackgroundMode => (
-    typeof mode === 'string' && Boolean(VISUALIZER_BACKGROUND_REGISTRY_BY_MODE[mode])
-);
+export const hasVisualizerBackgroundMode = (mode: unknown): mode is VisualizerBackgroundMode =>
+  typeof mode === "string" && Boolean(VISUALIZER_BACKGROUND_REGISTRY_BY_MODE[mode]);
 
-export const getVisualizerBackgroundRegistryEntry = (mode: VisualizerBackgroundMode) => (
-    VISUALIZER_BACKGROUND_REGISTRY_BY_MODE[mode]
-    ?? VISUALIZER_BACKGROUND_REGISTRY_BY_MODE[DEFAULT_VISUALIZER_BACKGROUND_MODE]!
-);
+export const getVisualizerBackgroundRegistryEntry = (mode: VisualizerBackgroundMode) =>
+  VISUALIZER_BACKGROUND_REGISTRY_BY_MODE[mode] ??
+  VISUALIZER_BACKGROUND_REGISTRY_BY_MODE[DEFAULT_VISUALIZER_BACKGROUND_MODE]!;
 
 export const getVisualizerBackgroundModeLabel = (
-    mode: VisualizerBackgroundMode,
-    t: (key: string) => string,
+  mode: VisualizerBackgroundMode,
+  t: import("@/types/i18n.generated").TranslateFn,
 ) => {
-    const entry = getVisualizerBackgroundRegistryEntry(mode);
-    const translated = t(entry.labelKey);
-    return !translated || translated === entry.labelKey ? entry.labelFallback : translated;
+  const entry = getVisualizerBackgroundRegistryEntry(mode);
+  const translated = t(entry.labelKey);
+  return !translated || translated === entry.labelKey ? entry.labelFallback : translated;
 };

@@ -14,7 +14,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaAudioQualityControl } from "@/components/lyrics/FoliaAudioQualityControl";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
@@ -33,7 +33,7 @@ export function FoliaPanelControls({
   onOpenThemeLibrary,
   theme,
 }: FoliaPanelControlsProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const model = useFoliaPanelControls();
   const isDaylight = theme.name === "snow";
   const RepeatIcon =
@@ -43,11 +43,11 @@ export function FoliaPanelControls({
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-3">
-        <IconButton theme={theme} title={String(t("ui.previous"))} onClick={model.playPrev}>
+        <IconButton theme={theme} title={String(t("folia.ui.previous"))} onClick={model.playPrev}>
           <SkipBack size={20} />
         </IconButton>
         <IconButton
-          title={String(t(model.isPlaying ? "ui.pause" : "ui.play"))}
+          title={String(t(model.isPlaying ? "folia.ui.pause" : "folia.ui.play"))}
           onClick={model.togglePlay}
           theme={theme}
         >
@@ -57,19 +57,23 @@ export function FoliaPanelControls({
             <Play size={20} fill="currentColor" />
           )}
         </IconButton>
-        <IconButton theme={theme} title={String(t("ui.next"))} onClick={model.playNext}>
+        <IconButton theme={theme} title={String(t("folia.ui.next"))} onClick={model.playNext}>
           <SkipForward size={20} />
         </IconButton>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <IconButton theme={theme} title={String(t("ui.loopMode"))} onClick={model.toggleRepeat}>
+        <IconButton
+          theme={theme}
+          title={String(t("folia.ui.loopMode"))}
+          onClick={model.toggleRepeat}
+        >
           <RepeatIcon size={20} />
         </IconButton>
         <IconButton
           active={model.isLiked}
           theme={theme}
-          title={String(t("ui.like"))}
+          title={String(t("folia.ui.like"))}
           onClick={model.toggleLike}
         >
           <Heart size={20} fill={model.isLiked ? "currentColor" : "none"} />
@@ -77,7 +81,7 @@ export function FoliaPanelControls({
         <IconButton
           active={model.isShuffle}
           theme={theme}
-          title={String(t("queue.shuffle"))}
+          title={String(t("folia.queue.shuffle"))}
           onClick={model.toggleShuffle}
         >
           <Shuffle size={20} />
@@ -88,7 +92,7 @@ export function FoliaPanelControls({
         className={`block space-y-2 border-t pt-4 ${isDaylight ? "border-black/5" : "border-white/5"}`}
       >
         <span className="flex items-center justify-between text-[10px] font-bold tracking-widest uppercase opacity-55">
-          <span>{t("ui.volume")}</span>
+          <span>{t("folia.ui.volume")}</span>
           <span>{Math.round(model.volume)}%</span>
         </span>
         <span
@@ -96,7 +100,7 @@ export function FoliaPanelControls({
         >
           <button
             type="button"
-            title={String(t("ui.mute"))}
+            title={String(t("folia.ui.mute"))}
             onClick={model.toggleMute}
             className="opacity-50 hover:opacity-100"
           >

@@ -125,15 +125,15 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
   };
   const wordRotationOptions: PresetOption<boolean>[] = useMemo(
     () => [
-      { value: true, label: t("options.classicWordRotationOn") },
-      { value: false, label: t("options.classicWordRotationOff") },
+      { value: true, label: t("folia.options.classicWordRotationOn") },
+      { value: false, label: t("folia.options.classicWordRotationOff") },
     ],
     [t],
   );
   const legacyLayoutOptions: PresetOption<boolean>[] = useMemo(
     () => [
-      { value: false, label: t("options.classicLegacyLayoutOff") },
-      { value: true, label: t("options.classicLegacyLayoutOn") },
+      { value: false, label: t("folia.options.classicLegacyLayoutOff") },
+      { value: true, label: t("folia.options.classicLegacyLayoutOn") },
     ],
     [t],
   );
@@ -145,15 +145,15 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-          {t("options.classicSettings")}
+          {t("folia.options.classicSettings")}
         </div>
         <div className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
-          {t("options.classicSettingsDesc")}
+          {t("folia.options.classicSettingsDesc")}
         </div>
       </div>
 
       <PresetGroup
-        label={t("options.classicWordRotation")}
+        label={t("folia.options.classicWordRotation")}
         value={resolvedClassicTuning.enableWordRotation}
         options={wordRotationOptions}
         onChange={(enabled) => onClassicTuningChange?.({ enableWordRotation: enabled })}
@@ -162,7 +162,7 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       />
 
       <PresetGroup
-        label={t("options.classicLegacyLayout")}
+        label={t("folia.options.classicLegacyLayout")}
         value={resolvedClassicTuning.useLegacyLayout || false}
         options={legacyLayoutOptions}
         onChange={(enabled) => onClassicTuningChange?.({ useLegacyLayout: enabled })}
@@ -175,7 +175,7 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.classicBreathingFloatMultiplier")}</span>
+          <span>{t("folia.options.classicBreathingFloatMultiplier")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedClassicTuning.breathingFloatMultiplier.toFixed(2)}x
           </span>
@@ -201,7 +201,7 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
             className="flex items-center justify-between text-sm"
             style={{ color: "var(--text-primary)" }}
           >
-            <span>{t("options.classicWordSpacing")}</span>
+            <span>{t("folia.options.classicWordSpacing")}</span>
             <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
               {resolvedClassicTuning.wordSpacing.toFixed(2)}x
             </span>
@@ -246,15 +246,15 @@ export const PartitaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
   };
   const guideLineOptions: PresetOption<boolean>[] = useMemo(
     () => [
-      { value: true, label: t("options.partitaGuideLinesOn") },
-      { value: false, label: t("options.partitaGuideLinesOff") },
+      { value: true, label: t("folia.options.partitaGuideLinesOn") },
+      { value: false, label: t("folia.options.partitaGuideLinesOff") },
     ],
     [t],
   );
   const semanticLayoutOptions: PresetOption<boolean>[] = useMemo(
     () => [
-      { value: true, label: t("options.partitaSemanticLayoutOn") },
-      { value: false, label: t("options.partitaSemanticLayoutOff") },
+      { value: true, label: t("folia.options.partitaSemanticLayoutOn") },
+      { value: false, label: t("folia.options.partitaSemanticLayoutOff") },
     ],
     [t],
   );
@@ -280,15 +280,15 @@ export const PartitaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-          {t("options.partitaSettings")}
+          {t("folia.options.partitaSettings")}
         </div>
         <div className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
-          {t("options.partitaSettingsDesc")}
+          {t("folia.options.partitaSettingsDesc")}
         </div>
       </div>
 
       <PresetGroup
-        label={t("options.partitaGuideLines")}
+        label={t("folia.options.partitaGuideLines")}
         value={resolvedPartitaTuning.showGuideLines}
         options={guideLineOptions}
         onChange={(enabled) => onPartitaTuningChange?.({ showGuideLines: enabled })}
@@ -297,7 +297,7 @@ export const PartitaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       />
 
       <PresetGroup
-        label={t("options.partitaSemanticLayout")}
+        label={t("folia.options.partitaSemanticLayout")}
         value={resolvedPartitaTuning.useSemanticLayout}
         options={semanticLayoutOptions}
         onChange={(enabled) => onPartitaTuningChange?.({ useSemanticLayout: enabled })}
@@ -310,7 +310,7 @@ export const PartitaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.partitaStaggerMin")}</span>
+          <span>{t("folia.options.partitaStaggerMin")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedPartitaTuning.staggerMin}px
           </span>
@@ -333,7 +333,7 @@ export const PartitaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.partitaStaggerMax")}</span>
+          <span>{t("folia.options.partitaStaggerMax")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedPartitaTuning.staggerMax}px
           </span>
@@ -391,15 +391,15 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
   };
   const visibilityOptions: PresetOption<boolean>[] = useMemo(
     () => [
-      { value: false, label: t("options.partitaGuideLinesOn") },
-      { value: true, label: t("options.partitaGuideLinesOff") },
+      { value: false, label: t("folia.options.partitaGuideLinesOn") },
+      { value: true, label: t("folia.options.partitaGuideLinesOff") },
     ],
     [t],
   );
   const fumeCameraTrackingOptions: PresetOption<FumeTuning["cameraTrackingMode"]>[] = useMemo(
     () => [
-      { value: "stepped", label: t("options.fumeCameraTrackingStepped") },
-      { value: "smooth", label: t("options.fumeCameraTrackingSmooth") },
+      { value: "stepped", label: t("folia.options.fumeCameraTrackingStepped") },
+      { value: "smooth", label: t("folia.options.fumeCameraTrackingSmooth") },
     ],
     [t],
   );
@@ -414,15 +414,15 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-          {t("options.fumeSettings")}
+          {t("folia.options.fumeSettings")}
         </div>
         <div className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
-          {t("options.fumeSettingsDesc")}
+          {t("folia.options.fumeSettingsDesc")}
         </div>
       </div>
 
       <PresetGroup
-        label={t("options.fumeHidePrintSymbols")}
+        label={t("folia.options.fumeHidePrintSymbols")}
         value={resolvedFumeTuning.hidePrintSymbols}
         options={visibilityOptions}
         onChange={(next) => handleFumeTuningChange({ hidePrintSymbols: next })}
@@ -431,7 +431,7 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       />
 
       <PresetGroup
-        label={t("options.fumeGeometricBackground")}
+        label={t("folia.options.fumeGeometricBackground")}
         value={resolvedFumeTuning.disableGeometricBackground}
         options={visibilityOptions}
         onChange={(next) => handleFumeTuningChange({ disableGeometricBackground: next })}
@@ -444,7 +444,7 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.fumeBackgroundObjectOpacity")}</span>
+          <span>{t("folia.options.fumeBackgroundObjectOpacity")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {Math.round(resolvedFumeTuning.backgroundObjectOpacity * 100)}%
           </span>
@@ -469,7 +469,7 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.fumeTextHoldRatio")}</span>
+          <span>{t("folia.options.fumeTextHoldRatio")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {Math.round(resolvedFumeTuning.textHoldRatio * 100)}%
           </span>
@@ -494,7 +494,7 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.fumeCameraSpeed")}</span>
+          <span>{t("folia.options.fumeCameraSpeed")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedFumeTuning.cameraSpeed.toFixed(2)}x
           </span>
@@ -515,7 +515,7 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       </div>
 
       <PresetGroup
-        label={t("options.fumeCameraTrackingMode")}
+        label={t("folia.options.fumeCameraTrackingMode")}
         value={resolvedFumeTuning.cameraTrackingMode}
         options={fumeCameraTrackingOptions}
         onChange={(next) => handleFumeTuningChange({ cameraTrackingMode: next })}
@@ -528,7 +528,7 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.fumeGlowIntensity")}</span>
+          <span>{t("folia.options.fumeGlowIntensity")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedFumeTuning.glowIntensity.toFixed(2)}x
           </span>
@@ -553,7 +553,7 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.fumeHeroScale")}</span>
+          <span>{t("folia.options.fumeHeroScale")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedFumeTuning.heroScale.toFixed(2)}x
           </span>
@@ -619,17 +619,17 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
   const resolvedTuning = resolveCappellaTuning(cappellaTuning, hasCappellaCustomEmojiPack);
   const emojiSourceOptions: PresetOption<CappellaTuning["emojiPackSource"]>[] = useMemo(
     () => [
-      { value: "builtin", label: t("options.cappellaEmojiSourceBuiltin") },
-      { value: "custom", label: t("options.cappellaEmojiSourceCustom") },
+      { value: "builtin", label: t("folia.options.cappellaEmojiSourceBuiltin") },
+      { value: "custom", label: t("folia.options.cappellaEmojiSourceCustom") },
     ],
     [t],
   );
   const avatarSourceOptions: PresetOption<CappellaTuning["avatarSource"]>[] = useMemo(
     () => [
-      { value: "cover", label: t("options.cappellaAvatarSourceCover") },
-      { value: "builtin", label: t("options.cappellaAvatarSourceBuiltin") },
-      { value: "color", label: t("options.cappellaAvatarSourceColor") },
-      { value: "custom", label: t("options.cappellaAvatarSourceCustom") },
+      { value: "cover", label: t("folia.options.cappellaAvatarSourceCover") },
+      { value: "builtin", label: t("folia.options.cappellaAvatarSourceBuiltin") },
+      { value: "color", label: t("folia.options.cappellaAvatarSourceColor") },
+      { value: "custom", label: t("folia.options.cappellaAvatarSourceCustom") },
     ],
     [t],
   );
@@ -651,9 +651,9 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     try {
       const result = await onImportCappellaCustomEmojiPack(files);
       if (result.ok) {
-        setFeedback(t("options.cappellaEmojiImportSuccess"));
+        setFeedback(t("folia.options.cappellaEmojiImportSuccess"));
       } else {
-        setFeedback(result.error || t("options.cappellaEmojiImportFailed"));
+        setFeedback(result.error || t("folia.options.cappellaEmojiImportFailed"));
       }
     } finally {
       setIsImporting(false);
@@ -667,7 +667,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
     setFeedback(null);
     await onClearCappellaCustomEmojiPack();
-    setFeedback(t("options.cappellaEmojiCleared"));
+    setFeedback(t("folia.options.cappellaEmojiCleared"));
   };
 
   const handleAvatarImportClick = () => {
@@ -687,9 +687,9 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     try {
       const result = await onImportCappellaCustomAvatar(files);
       if (result.ok) {
-        setFeedback(t("options.cappellaAvatarImportSuccess"));
+        setFeedback(t("folia.options.cappellaAvatarImportSuccess"));
       } else {
-        setFeedback(result.error || t("options.cappellaAvatarImportFailed"));
+        setFeedback(result.error || t("folia.options.cappellaAvatarImportFailed"));
       }
     } finally {
       setIsImportingAvatar(false);
@@ -703,7 +703,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
     setFeedback(null);
     await onClearCappellaCustomAvatar();
-    setFeedback(t("options.cappellaAvatarCleared"));
+    setFeedback(t("folia.options.cappellaAvatarCleared"));
   };
 
   const avatarPreviewSlots =
@@ -722,19 +722,19 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-          {t("options.cappellaSettings")}
+          {t("folia.options.cappellaSettings")}
         </div>
         <div className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
-          {t("options.cappellaSettingsDesc")}
+          {t("folia.options.cappellaSettingsDesc")}
         </div>
       </div>
 
       <PresetGroup
-        label={t("options.cappellaShowEmoMessages")}
+        label={t("folia.options.cappellaShowEmoMessages")}
         value={resolvedTuning.showEmoMessages}
         options={[
-          { value: true, label: t("options.partitaGuideLinesOn") },
-          { value: false, label: t("options.partitaGuideLinesOff") },
+          { value: true, label: t("folia.options.partitaGuideLinesOn") },
+          { value: false, label: t("folia.options.partitaGuideLinesOff") },
         ]}
         onChange={(next) => onCappellaTuningChange?.({ showEmoMessages: next })}
         isDaylight={isDaylight}
@@ -746,7 +746,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
           style={{ color: theme.secondaryColor }}
         >
-          {t("options.cappellaAvatarSource")}
+          {t("folia.options.cappellaAvatarSource")}
         </div>
         <div className="flex flex-wrap gap-2">
           {avatarSourceOptions.map((option) => {
@@ -783,7 +783,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
           style={{ color: "var(--text-secondary)" }}
         >
-          {t("options.cappellaAvatarPreview")}
+          {t("folia.options.cappellaAvatarPreview")}
         </div>
         <div className="grid grid-cols-5 gap-2">
           {avatarPreviewSlots.map((image, index) => (
@@ -795,7 +795,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
                 backgroundColor: isDaylight ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.04)",
                 color: "var(--text-secondary)",
               }}
-              title={image?.name ?? t("options.cappellaEmojiEmptySlot")}
+              title={image?.name ?? t("folia.options.cappellaEmojiEmptySlot")}
             >
               {image ? (
                 <img
@@ -811,8 +811,8 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         </div>
         <div className="text-xs opacity-60" style={{ color: "var(--text-secondary)" }}>
           {hasCappellaCustomAvatar
-            ? `${t("options.cappellaEmojiCount")} ${cappellaCustomAvatarImages.length}`
-            : t("options.cappellaAvatarUploadHint")}
+            ? `${t("folia.options.cappellaEmojiCount")} ${cappellaCustomAvatarImages.length}`
+            : t("folia.options.cappellaAvatarUploadHint")}
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -828,8 +828,8 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
             }}
           >
             {isImportingAvatar
-              ? t("options.cappellaAvatarUploading")
-              : t("options.cappellaAvatarUpload")}
+              ? t("folia.options.cappellaAvatarUploading")
+              : t("folia.options.cappellaAvatarUpload")}
           </button>
           <button
             type="button"
@@ -844,7 +844,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
               backgroundColor: isDaylight ? "rgba(255,255,255,0.56)" : "rgba(255,255,255,0.04)",
             }}
           >
-            {t("options.cappellaAvatarClear")}
+            {t("folia.options.cappellaAvatarClear")}
           </button>
         </div>
 
@@ -863,7 +863,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
           style={{ color: "var(--text-secondary)" }}
         >
-          {t("options.cappellaEmojiSource")}
+          {t("folia.options.cappellaEmojiSource")}
         </div>
         <div className="flex flex-wrap gap-2">
           {emojiSourceOptions.map((option) => {
@@ -900,7 +900,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
           style={{ color: "var(--text-secondary)" }}
         >
-          {t("options.cappellaEmojiPreview")}
+          {t("folia.options.cappellaEmojiPreview")}
         </div>
         <div className="grid grid-cols-5 gap-2">
           {previewSlots.map((image, index) => (
@@ -912,7 +912,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
                 backgroundColor: isDaylight ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.04)",
                 color: "var(--text-secondary)",
               }}
-              title={image?.name ?? t("options.cappellaEmojiEmptySlot")}
+              title={image?.name ?? t("folia.options.cappellaEmojiEmptySlot")}
             >
               {image ? (
                 <img src={image.url} alt={image.name} className="h-full w-full object-contain" />
@@ -924,8 +924,8 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         </div>
         <div className="text-xs opacity-60" style={{ color: "var(--text-secondary)" }}>
           {hasCappellaCustomEmojiPack
-            ? `${t("options.cappellaEmojiCount")} ${cappellaCustomEmojiCount}`
-            : t("options.cappellaEmojiUploadHint")}
+            ? `${t("folia.options.cappellaEmojiCount")} ${cappellaCustomEmojiCount}`
+            : t("folia.options.cappellaEmojiUploadHint")}
         </div>
       </div>
 
@@ -941,7 +941,9 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
             backgroundColor: isDaylight ? "rgba(255,255,255,0.56)" : "rgba(255,255,255,0.04)",
           }}
         >
-          {isImporting ? t("options.cappellaEmojiUploading") : t("options.cappellaEmojiUpload")}
+          {isImporting
+            ? t("folia.options.cappellaEmojiUploading")
+            : t("folia.options.cappellaEmojiUpload")}
         </button>
         <button
           type="button"
@@ -954,7 +956,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
             backgroundColor: isDaylight ? "rgba(255,255,255,0.56)" : "rgba(255,255,255,0.04)",
           }}
         >
-          {t("options.cappellaEmojiClear")}
+          {t("folia.options.cappellaEmojiClear")}
         </button>
       </div>
 
@@ -1001,10 +1003,10 @@ export const TiltSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   const colorSchemeOptions: PresetOption<TiltColorScheme>[] = useMemo(
     () => [
-      { label: t("options.tiltColorSchemeDefault"), value: "default" },
-      { label: t("options.tiltColorSchemeSwap"), value: "swap" },
-      { label: t("options.tiltColorSchemeAccentAll"), value: "accentAll" },
-      { label: t("options.tiltColorSchemePrimaryAll"), value: "primaryAll" },
+      { label: t("folia.options.tiltColorSchemeDefault"), value: "default" },
+      { label: t("folia.options.tiltColorSchemeSwap"), value: "swap" },
+      { label: t("folia.options.tiltColorSchemeAccentAll"), value: "accentAll" },
+      { label: t("folia.options.tiltColorSchemePrimaryAll"), value: "primaryAll" },
     ],
     [t],
   );
@@ -1020,15 +1022,15 @@ export const TiltSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-          {t("options.tiltSettings")}
+          {t("folia.options.tiltSettings")}
         </div>
         <div className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
-          {t("options.tiltSettingsDesc")}
+          {t("folia.options.tiltSettingsDesc")}
         </div>
       </div>
 
       <PresetGroup<TiltColorScheme>
-        label={t("options.tiltColorScheme")}
+        label={t("folia.options.tiltColorScheme")}
         value={resolvedTuning.colorScheme}
         options={colorSchemeOptions}
         onChange={(next) => handleTiltTuningChange({ colorScheme: next })}
@@ -1041,7 +1043,7 @@ export const TiltSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.tiltSplitProbability")}</span>
+          <span>{t("folia.options.tiltSplitProbability")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {Math.round(resolvedTuning.splitProbability * 100)}%
           </span>
@@ -1066,7 +1068,7 @@ export const TiltSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.tiltStyleProbability")}</span>
+          <span>{t("folia.options.tiltStyleProbability")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {Math.round(resolvedTuning.tiltStyleProbability * 100)}%
           </span>
@@ -1182,7 +1184,7 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     >
       <div>
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-          {t("options.dioramaSettings") || "镜台参数"}
+          {t("folia.options.dioramaSettings") || "镜台参数"}
         </div>
       </div>
 
@@ -1191,7 +1193,7 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.dioramaCameraSpeed") || "镜头速度"}</span>
+          <span>{t("folia.options.dioramaCameraSpeed") || "镜头速度"}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedTuning.cameraSpeed.toFixed(2)}x
           </span>
@@ -1216,7 +1218,7 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.dioramaMotionAmount") || "运动幅度"}</span>
+          <span>{t("folia.options.dioramaMotionAmount") || "运动幅度"}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedTuning.motionAmount.toFixed(2)}x
           </span>
@@ -1241,7 +1243,7 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.dioramaAudioReactivity") || "点云音频响应"}</span>
+          <span>{t("folia.options.dioramaAudioReactivity") || "点云音频响应"}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {Math.round(resolvedTuning.audioReactivity * 100)}%
           </span>
@@ -1265,7 +1267,7 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
                 tiers (slider only under 自定义). Their rendering paths are fully separate in
                 DioramaScene, so enabling one never stands in for another. */}
       <DioramaEffectSettings
-        label={t("options.dioramaGlowEffect") || "普通辉光跟唱"}
+        label={t("folia.options.dioramaGlowEffect") || "普通辉光跟唱"}
         enabled={resolvedTuning.glowEnabled}
         intensity={resolvedTuning.glowIntensity}
         onEnabledChange={(next) => handleDioramaTuningChange({ glowEnabled: next })}
@@ -1280,13 +1282,13 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       {/* 灵魂出窍跟唱, with 当前字漂移 as its nested child (same underlying effect, scoped to the word
                 being sung) rendered inside its expanded panel - not a standalone effect in the list. */}
       <DioramaEffectSettings
-        label={t("options.dioramaSoulEffect") || "灵魂出窍跟唱"}
+        label={t("folia.options.dioramaSoulEffect") || "灵魂出窍跟唱"}
         enabled={resolvedTuning.soulEnabled}
         intensity={resolvedTuning.soulIntensity}
         onEnabledChange={(next) => handleDioramaTuningChange({ soulEnabled: next })}
         onIntensityChange={(next) => handleDioramaTuningChange({ soulIntensity: next })}
         subEffect={{
-          label: t("options.dioramaSoulActiveEffect") || "当前字出窍",
+          label: t("folia.options.dioramaSoulActiveEffect") || "当前字出窍",
           enabled: resolvedTuning.soulActiveEnabled,
           onEnabledChange: (next) => handleDioramaTuningChange({ soulActiveEnabled: next }),
         }}
@@ -1298,7 +1300,7 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         onSliderCommit={onSliderCommit}
       />
       <DioramaEffectSettings
-        label={t("options.dioramaGradientEffect") || "渐变跟唱"}
+        label={t("folia.options.dioramaGradientEffect") || "渐变跟唱"}
         enabled={resolvedTuning.gradientEnabled}
         intensity={resolvedTuning.gradientIntensity}
         onEnabledChange={(next) => handleDioramaTuningChange({ gradientEnabled: next })}
@@ -1322,11 +1324,11 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         }}
       >
         <span className="min-w-0 text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-          {t("options.dioramaKeywordColoring") || "关键字着色"}
+          {t("folia.options.dioramaKeywordColoring") || "关键字着色"}
         </span>
         <DioramaSettingsToggle
           checked={resolvedTuning.keywordColoringEnabled}
-          label={t("options.dioramaKeywordColoring") || "关键字着色"}
+          label={t("folia.options.dioramaKeywordColoring") || "关键字着色"}
           onChange={(next) => handleDioramaTuningChange({ keywordColoringEnabled: next })}
           theme={theme}
           isDaylight={isDaylight}
@@ -1357,7 +1359,7 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       />
 
       <DioramaBackgroundParticleSettings
-        label={t("options.dioramaShowParticles") || "背景粒子"}
+        label={t("folia.options.dioramaShowParticles") || "背景粒子"}
         enabled={resolvedTuning.showParticles}
         circumference={resolvedTuning.backgroundParticleCircumference}
         radial={resolvedTuning.backgroundParticleRadial}
@@ -1410,8 +1412,8 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   const axisLineOptions: PresetOption<boolean>[] = useMemo(
     () => [
-      { value: true, label: t("options.partitaGuideLinesOn") || "显示" },
-      { value: false, label: t("options.partitaGuideLinesOff") || "隐藏" },
+      { value: true, label: t("folia.options.partitaGuideLinesOn") || "显示" },
+      { value: false, label: t("folia.options.partitaGuideLinesOff") || "隐藏" },
     ],
     [t],
   );
@@ -1423,10 +1425,10 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-          {t("options.claddaghSettings")}
+          {t("folia.options.claddaghSettings")}
         </div>
         <div className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
-          {t("options.claddaghSettingsDesc")}
+          {t("folia.options.claddaghSettingsDesc")}
         </div>
       </div>
 
@@ -1435,7 +1437,7 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.claddaghFocusScaleRatio")}</span>
+          <span>{t("folia.options.claddaghFocusScaleRatio")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {(resolvedTuning.focusScaleRatio + 1.0).toFixed(2)}x
           </span>
@@ -1460,7 +1462,7 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.claddaghRadiusScale")}</span>
+          <span>{t("folia.options.claddaghRadiusScale")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedTuning.radiusScale.toFixed(2)}x
           </span>
@@ -1485,7 +1487,7 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.claddaghEllipseTiltDeg")}</span>
+          <span>{t("folia.options.claddaghEllipseTiltDeg")}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedTuning.ellipseTiltDeg}°
           </span>
@@ -1506,7 +1508,7 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       </div>
 
       <PresetGroup
-        label={t("options.claddaghShowAxisLine") || "中间轴线"}
+        label={t("folia.options.claddaghShowAxisLine") || "中间轴线"}
         value={resolvedTuning.showAxisLine}
         options={axisLineOptions}
         onChange={(next) => onCladdaghTuningChange?.({ showAxisLine: next })}
@@ -1519,7 +1521,7 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className="flex items-center justify-between text-sm"
           style={{ color: "var(--text-primary)" }}
         >
-          <span>{t("options.claddaghLetterSpacingOffset") || "字符间距"}</span>
+          <span>{t("folia.options.claddaghLetterSpacingOffset") || "字符间距"}</span>
           <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
             {resolvedTuning.letterSpacingOffset > 0 ? "+" : ""}
             {resolvedTuning.letterSpacingOffset.toFixed(1)}px

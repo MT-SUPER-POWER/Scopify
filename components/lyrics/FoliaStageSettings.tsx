@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Captions, Disc, ListMusic, Settings2, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
 import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
@@ -23,7 +23,7 @@ export function FoliaStageSettings({
   onOpenChange,
   theme,
 }: FoliaStageSettingsProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const isDaylight = theme.name === "snow";
   const [activeSection, setActiveSection] = useState<FoliaStageEditSection>("common");
@@ -51,7 +51,7 @@ export function FoliaStageSettings({
           >
             <button
               type="button"
-              aria-label={String(t("ui.close"))}
+              aria-label={String(t("folia.ui.close"))}
               onClick={() => onOpenChange(false)}
               className="pointer-events-auto absolute inset-0 cursor-default"
             />
@@ -80,7 +80,7 @@ export function FoliaStageSettings({
                 )}
                 <button
                   type="button"
-                  title={String(t("ui.close"))}
+                  title={String(t("folia.ui.close"))}
                   onClick={() => onOpenChange(false)}
                   className={`absolute top-3 right-3 flex size-11 items-center justify-center rounded-full border backdrop-blur-md ${
                     isDaylight
@@ -97,9 +97,9 @@ export function FoliaStageSettings({
               >
                 {(
                   [
-                    ["controls", SlidersHorizontal, "panel.controls"],
-                    ["queue", ListMusic, "queue.title"],
-                    ["lyrics", Captions, "options.lyricsRenderer"],
+                    ["controls", SlidersHorizontal, "folia.panel.controls"],
+                    ["queue", ListMusic, "folia.queue.title"],
+                    ["lyrics", Captions, "folia.options.lyricsRenderer"],
                   ] as const
                 ).map(([tab, Icon, label]) => (
                   <button
@@ -177,7 +177,7 @@ export function FoliaStageSettings({
       {!isOpen && !isChromeHidden ? (
         <motion.button
           type="button"
-          title={String(t("options.visualSettings"))}
+          title={String(t("folia.options.visualSettings"))}
           initial={{ opacity: 0, x: 20, y: 12, scale: 0.92 }}
           animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
           onClick={() => onOpenChange(true)}

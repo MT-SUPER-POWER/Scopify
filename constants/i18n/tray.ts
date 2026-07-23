@@ -1,0 +1,40 @@
+import { defineMessages } from "./define";
+
+export const trayMessages = defineMessages(
+  {
+    "tray.previous": "上一首",
+    "tray.next": "下一首",
+    "tray.play": "播放",
+    "tray.pause": "暂停",
+    "tray.like": "喜欢",
+    "tray.unlike": "取消喜欢",
+    "tray.openDesktopLyrics": "打开桌面歌词",
+    "tray.settings": "设置",
+    "tray.minimize": "最小化",
+    "tray.exit": "退出",
+  },
+  {
+    "tray.previous": "上一首",
+    "tray.next": "下一首",
+    "tray.play": "播放",
+    "tray.pause": "暫停",
+    "tray.like": "喜歡",
+    "tray.unlike": "取消喜歡",
+    "tray.openDesktopLyrics": "打開桌面歌詞",
+    "tray.settings": "設定",
+    "tray.minimize": "最小化",
+    "tray.exit": "退出",
+  },
+  {
+    "tray.previous": "Previous",
+    "tray.next": "Next",
+    "tray.play": "Play",
+    "tray.pause": "Pause",
+    "tray.like": "Like",
+    "tray.unlike": "Unlike",
+    "tray.openDesktopLyrics": "Open Desktop Lyrics",
+    "tray.settings": "Settings",
+    "tray.minimize": "Minimize",
+    "tray.exit": "Exit",
+  },
+);

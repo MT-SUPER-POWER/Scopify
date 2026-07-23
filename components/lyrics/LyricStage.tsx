@@ -1,18 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { I18nextProvider } from "react-i18next";
 
 import FloatingPlayerControls from "@/components/lyrics/folia/src/components/FloatingPlayerControls";
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
 import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/presentation/buildAppStyle";
-import foliaI18n from "@/components/lyrics/folia/src/i18n/config";
 import { PlayerState, type Theme } from "@/components/lyrics/folia/src/types";
 import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
 import { useFoliaStageAssets } from "@/hooks/player/useFoliaStageAssets";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { getFoliaStageTheme, getFoliaThemeColors } from "@/lib/lyrics/foliaTheme";
-import { useI18nStore } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { DesktopLyricCommand } from "@/types/desktopLyric";
@@ -32,7 +29,6 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
-  const locale = useI18nStore((state) => state.locale);
   const settings = useLyricStageStore();
   const activeStageTheme = getFoliaStageTheme(settings.themes, settings.themeId);
   const activeThemeColors = getFoliaThemeColors(activeStageTheme, settings.themeVariant);
@@ -89,10 +85,6 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
     });
 
   useEffect(() => {
-    void foliaI18n.changeLanguage(locale);
-  }, [locale]);
-
-  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
       if (event.key.toLowerCase() === "h") {
@@ -126,96 +118,94 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const playerState = bridge.isPlaying ? PlayerState.PLAYING : PlayerState.PAUSED;
 
   return (
-    <I18nextProvider i18n={foliaI18n}>
-      <section
-        aria-label="Lyrics"
-        className={`fixed inset-0 z-100 overflow-hidden text-white ${
-          isTransparent ? "bg-transparent" : ""
-        } ${isBorderVisible ? "border border-white/30" : ""}`}
-        style={{
-          ...appStyle,
-          backgroundColor: isTransparent ? "transparent" : theme.backgroundColor,
-        }}
-      >
-        <div className="absolute inset-0">
-          <VisualizerRenderer
-            mode={settings.mode}
-            currentTime={bridge.lyricCurrentTime}
-            currentLineIndex={bridge.currentLineIndex}
-            lines={bridge.lines}
-            theme={theme}
-            subtitleTheme={subtitleTheme}
-            isDaylight={isDaylight}
-            audioPower={bridge.audioPower}
-            audioBands={bridge.audioBands}
-            showText
-            songTitle={currentSong?.name ?? null}
-            songArtist={songArtist}
-            songAlbum={currentSong?.al.name ?? null}
-            coverUrl={coverUrl}
-            seed={currentSong?.id ?? `geometry-${settings.mode}`}
-            staticMode={false}
-            backgroundStaticMode={false}
-            visualizerOpacity={settings.visualizerOpacity}
-            background={{
-              ...settings.background,
-              customImage: assets.monetBackgroundImage,
-              transparent: isTransparent,
-              common: {
-                ...settings.background.common,
-                disableGeometricBackground: settings.background.common?.disableGeometricBackground,
-              },
-            }}
-            lyricsFontScale={settings.fontScale}
-            subtitleOverlayOpacity={settings.subtitleOverlayOpacity}
-            subtitleOverlayBackground={settings.subtitleOverlayBackground}
-            isPlayerChromeHidden={isPlayerChromeHidden}
-            hideTranslationSubtitle={settings.hideTranslationSubtitle}
-            showSubtitleTranslation={settings.showSubtitleTranslation}
-            paused={!bridge.isPlaying}
-            onBack={onClose}
-            cappellaCustomAvatarImages={assets.cappellaCustomAvatarImages}
-            cappellaCustomEmojiImages={assets.cappellaCustomEmojiImages}
-            monetPortraitImage={assets.monetPortraitImage}
-            onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
-            visualizerTunings={settings.tunings}
-            onCladdaghTuningChange={(patch) => settings.patchTuning("claddagh", patch)}
-            onMonetTuningChange={(patch) => settings.patchTuning("monet", patch)}
-          />
-        </div>
-
-        <FloatingPlayerControls
-          currentSong={currentSong ? { name: currentSong.name } : null}
-          playerState={playerState}
-          currentTime={bridge.currentTime}
-          lyricCurrentTime={bridge.lyricCurrentTime}
-          duration={bridge.durationSeconds}
-          loopMode={repeatMode}
-          currentView="player"
-          audioSrc={currentSongUrl}
-          canTogglePlay={Boolean(currentSongUrl)}
-          lyrics={bridge.lyrics}
-          onSeek={seekToSeconds}
-          onTogglePlay={() => usePlayerStore.getState().togglePlaying()}
-          onToggleLoop={cycleRepeatMode}
-          onNavigateToPlayer={() => undefined}
-          primaryColor={theme.primaryColor}
-          secondaryColor={theme.secondaryColor}
+    <section
+      aria-label="Lyrics"
+      className={`fixed inset-0 z-100 overflow-hidden text-white ${
+        isTransparent ? "bg-transparent" : ""
+      } ${isBorderVisible ? "border border-white/30" : ""}`}
+      style={{
+        ...appStyle,
+        backgroundColor: isTransparent ? "transparent" : theme.backgroundColor,
+      }}
+    >
+      <div className="absolute inset-0">
+        <VisualizerRenderer
+          mode={settings.mode}
+          currentTime={bridge.lyricCurrentTime}
+          currentLineIndex={bridge.currentLineIndex}
+          lines={bridge.lines}
           theme={theme}
+          subtitleTheme={subtitleTheme}
           isDaylight={isDaylight}
-          isHidden={isPlayerChromeHidden}
-          controlsDisabled={!currentSongUrl}
+          audioPower={bridge.audioPower}
+          audioBands={bridge.audioBands}
+          showText
+          songTitle={currentSong?.name ?? null}
+          songArtist={songArtist}
+          songAlbum={currentSong?.al.name ?? null}
+          coverUrl={coverUrl}
+          seed={currentSong?.id ?? `geometry-${settings.mode}`}
+          staticMode={false}
+          backgroundStaticMode={false}
+          visualizerOpacity={settings.visualizerOpacity}
+          background={{
+            ...settings.background,
+            customImage: assets.monetBackgroundImage,
+            transparent: isTransparent,
+            common: {
+              ...settings.background.common,
+              disableGeometricBackground: settings.background.common?.disableGeometricBackground,
+            },
+          }}
+          lyricsFontScale={settings.fontScale}
+          subtitleOverlayOpacity={settings.subtitleOverlayOpacity}
+          subtitleOverlayBackground={settings.subtitleOverlayBackground}
+          isPlayerChromeHidden={isPlayerChromeHidden}
+          hideTranslationSubtitle={settings.hideTranslationSubtitle}
+          showSubtitleTranslation={settings.showSubtitleTranslation}
+          paused={!bridge.isPlaying}
+          onBack={onClose}
+          cappellaCustomAvatarImages={assets.cappellaCustomAvatarImages}
+          cappellaCustomEmojiImages={assets.cappellaCustomEmojiImages}
+          monetPortraitImage={assets.monetPortraitImage}
+          onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
+          visualizerTunings={settings.tunings}
+          onCladdaghTuningChange={(patch) => settings.patchTuning("claddagh", patch)}
+          onMonetTuningChange={(patch) => settings.patchTuning("monet", patch)}
         />
+      </div>
 
-        <FoliaStageSettings
-          assets={assets}
-          isChromeHidden={isPlayerChromeHidden}
-          isOpen={isSettingsOpen}
-          onOpenChange={setIsSettingsOpen}
-          theme={theme}
-        />
-      </section>
-    </I18nextProvider>
+      <FloatingPlayerControls
+        currentSong={currentSong ? { name: currentSong.name } : null}
+        playerState={playerState}
+        currentTime={bridge.currentTime}
+        lyricCurrentTime={bridge.lyricCurrentTime}
+        duration={bridge.durationSeconds}
+        loopMode={repeatMode}
+        currentView="player"
+        audioSrc={currentSongUrl}
+        canTogglePlay={Boolean(currentSongUrl)}
+        lyrics={bridge.lyrics}
+        onSeek={seekToSeconds}
+        onTogglePlay={() => usePlayerStore.getState().togglePlaying()}
+        onToggleLoop={cycleRepeatMode}
+        onNavigateToPlayer={() => undefined}
+        primaryColor={theme.primaryColor}
+        secondaryColor={theme.secondaryColor}
+        theme={theme}
+        isDaylight={isDaylight}
+        isHidden={isPlayerChromeHidden}
+        controlsDisabled={!currentSongUrl}
+      />
+
+      <FoliaStageSettings
+        assets={assets}
+        isChromeHidden={isPlayerChromeHidden}
+        isOpen={isSettingsOpen}
+        onOpenChange={setIsSettingsOpen}
+        theme={theme}
+      />
+    </section>
   );
 }
 

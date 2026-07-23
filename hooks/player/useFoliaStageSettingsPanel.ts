@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { useMemo } from "react";
 
 import {
   DEFAULT_CAPPELLA_TUNING,
@@ -21,6 +20,7 @@ import {
 } from "@/components/lyrics/folia/src/components/visualizer/registry";
 import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import { useLyricStageStore } from "@/store/module/lyrics";
+import { useI18n } from "@/store/module/i18n";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
 import type { FoliaStageEditSection } from "@/types/foliaStage";
 
@@ -38,27 +38,26 @@ export function useFoliaStageSettingsPanel(
   assets: FoliaStageAssets,
   onOpenFontPicker: (target: "lyrics" | "subtitle") => void,
 ) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const settings = useLyricStageStore();
   const isDaylight = theme.name === "snow";
-  const translate = useCallback((key: string) => String(t(key)), [t]);
   const builtinFontOptions = useMemo(
     () => [
-      { label: translate("options.fontSans"), value: "sans" as const },
-      { label: translate("options.fontSerif"), value: "serif" as const },
-      { label: translate("options.fontMono"), value: "mono" as const },
+      { label: t("folia.options.fontSans"), value: "sans" as const },
+      { label: t("folia.options.fontSerif"), value: "serif" as const },
+      { label: t("folia.options.fontMono"), value: "mono" as const },
     ],
-    [translate],
+    [t],
   );
   const fontStyleOptions = useMemo(
     () => [
       ...builtinFontOptions,
       {
-        label: assets.lyricsCustomFont?.label ?? translate("options.customFont"),
+        label: assets.lyricsCustomFont?.label ?? t("folia.options.customFont"),
         value: "custom" as const,
       },
     ],
-    [assets.lyricsCustomFont?.label, builtinFontOptions, translate],
+    [assets.lyricsCustomFont?.label, builtinFontOptions, t],
   );
   const visualizerEntry = getVisualizerRegistryEntry(settings.mode);
   const backgroundActions = useMemo<VisualizerBackgroundActions>(
@@ -217,7 +216,7 @@ export function useFoliaStageSettingsPanel(
     subtitleFontStyleOptions: fontStyleOptions,
     subtitleOverlayBackground: settings.subtitleOverlayBackground,
     subtitleOverlayOpacity: settings.subtitleOverlayOpacity,
-    t: translate,
+    t,
     theme,
     tiltTuning: settings.tunings.tilt ?? DEFAULT_TILT_TUNING,
     visualizerEntry,

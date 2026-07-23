@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from "react";
 import { motion, MotionValue } from "framer-motion";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 import { ChevronDown } from "lucide-react";
 import { AudioBands, Theme } from "../../types";
 import { resolveThemeFontStack } from "../../utils/fontStacks";
@@ -39,7 +39,7 @@ const VisualizerShell = forwardRef<HTMLDivElement, VisualizerShellProps>(
     { theme, audioPower, audioBands, sharedProps, visualizerOpacity = 1, children, className = "" },
     ref,
   ) => {
-    const { t } = useTranslation();
+    const { t } = useI18n();
     const [showBackButton, setShowBackButton] = useState(false);
     const resolvedCoverUrl = sharedProps?.coverUrl;
     const resolvedIsDaylight = sharedProps?.isDaylight ?? false;
@@ -88,7 +88,7 @@ const VisualizerShell = forwardRef<HTMLDivElement, VisualizerShellProps>(
         {resolvedOnBack && (
           <motion.button
             type="button"
-            aria-label={t("ui.backToHome")}
+            aria-label={t("folia.ui.backToHome")}
             initial={false}
             animate={{
               opacity: isBackButtonVisible ? 1 : 0,

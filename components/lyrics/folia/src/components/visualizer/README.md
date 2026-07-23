@@ -506,7 +506,7 @@ visualizer 在这种情况下应当直接补完成当前句剩余的 pass / trai
 
 ```tsx
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useI18n } from '@/store/module/i18n';
 import { getLineRenderEndTime } from '../../../utils/lyrics/renderHints';
 import { type VisualizerSharedProps } from '../definition';
 import { useVisualizerRuntime } from '../runtime';
@@ -529,7 +529,7 @@ const VisualizerFoo: React.FC<VisualizerFooProps> = (props) => {
         hideTranslationSubtitle = false,
         showSubtitleTranslation = true,
     } = props;
-    const { t } = useTranslation();
+    const { t } = useI18n();
     const { activeLine, recentCompletedLine, nextLines } = useVisualizerRuntime({
         currentTime,
         currentLineIndex,
@@ -694,12 +694,10 @@ resetSettings: props => {
 
 #### 文案文件
 
-至少同步：
-
-- `src/i18n/locales/zh-CN.ts`
-- `src/i18n/locales/en.ts`
-
-任何新增到 UI 上的用户可见文本都必须准备 i18n key 并写入这两个文件，包括模式名、设置项、tooltip、按钮、空态和 toast。`labelFallback` 只能作为 registry 兜底，不能替代正式字典项。
+所有 Folia 文案使用项目的 `useI18n`，键必须以 `folia.` 开头，并同步写入
+`constants/i18n/folia.ts` 的 `zh-CN`、`zh-TW` 和 `en-US` 三套平铺字典。包括模式名、
+设置项、tooltip、按钮、空态和 toast。`labelFallback` 只能作为 registry 兜底，不能替代
+正式字典项。
 
 常见文案包括：
 
@@ -772,7 +770,7 @@ resetSettings: props => {
 - 是否支持 `showText = false`
 - 是否正确使用 `lyricsFontScale`
 - 是否没有用 `useState` / store / reducer 每帧保存当前精确时间
-- 是否所有新增 UI 文案都已经写入中英文 i18n 字典
+- 是否所有新增 Folia UI 文案都已写入三语 `folia.*` i18n 字典
 - 是否所有新增颜色都从当前 light / dark theme 动态派生
 - 是否在 `staticMode` 下关闭重背景动画
 - 是否已经创建 `<mode>/entry.tsx` 并由 registry 自动发现

@@ -1,7 +1,7 @@
 "use client";
 
 import { Clipboard, Download } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import type { FoliaThemeJsonExportProps } from "@/types/components/lyrics";
@@ -12,7 +12,7 @@ export function FoliaThemeJsonExport({
   onCopy,
   onDownload,
 }: FoliaThemeJsonExportProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const surfaceStyle = {
     backgroundColor: colorWithAlpha(colors.backgroundColor, 0.42),
     borderColor: colorWithAlpha(colors.primaryColor, 0.12),
@@ -21,7 +21,7 @@ export function FoliaThemeJsonExport({
   return (
     <section className="space-y-3 rounded-2xl border p-3" style={surfaceStyle}>
       <span className="text-[10px] font-semibold tracking-[0.2em] uppercase opacity-50">
-        {t("options.export")}
+        {t("folia.options.export")}
       </span>
 
       <div
@@ -48,7 +48,7 @@ export function FoliaThemeJsonExport({
           }}
         >
           <Clipboard size={13} />
-          {t("options.copyThemeJson")}
+          {t("folia.options.copyThemeJson")}
         </button>
         <button
           type="button"
@@ -60,7 +60,7 @@ export function FoliaThemeJsonExport({
           }}
         >
           <Download size={13} />
-          {t("options.downloadThemeJson")}
+          {t("folia.options.downloadThemeJson")}
         </button>
       </div>
     </section>

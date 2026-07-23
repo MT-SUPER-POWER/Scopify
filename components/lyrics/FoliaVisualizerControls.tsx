@@ -1,7 +1,7 @@
 "use client";
 
 import { Settings2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/store/module/i18n";
 
 import { FoliaAnimationIntensityControl } from "@/components/lyrics/FoliaAnimationIntensityControl";
 import { FoliaBackgroundQuickControl } from "@/components/lyrics/FoliaBackgroundQuickControl";
@@ -45,17 +45,16 @@ export function FoliaVisualizerControls({
   onOpenThemeLibrary,
   theme,
 }: FoliaVisualizerControlsProps) {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const model = useFoliaPanelControls();
   const isDaylight = theme.name === "snow";
-  const translate = (key: string) => String(t(key));
   const visualizerOptions = VISUALIZER_REGISTRY.flatMap((entry) =>
     isLyricVisualizerMode(entry.mode)
-      ? [{ label: getVisualizerModeLabel(entry.mode, translate), value: entry.mode }]
+      ? [{ label: getVisualizerModeLabel(entry.mode, t), value: entry.mode }]
       : [],
   );
   const backgroundOptions = VISUALIZER_BACKGROUND_REGISTRY.map((entry) => ({
-    label: getVisualizerBackgroundModeLabel(entry.mode, translate),
+    label: getVisualizerBackgroundModeLabel(entry.mode, t),
     value: entry.mode,
   }));
 
@@ -65,11 +64,11 @@ export function FoliaVisualizerControls({
 
       <section className="flex items-center justify-between gap-3">
         <span className="text-xs font-medium opacity-60" style={{ color: theme.secondaryColor }}>
-          {translate("options.lyricsRenderer")}
+          {t("folia.options.lyricsRenderer")}
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <FoliaQuickEffectPicker
-            ariaLabel={translate("options.lyricsRenderer")}
+            ariaLabel={t("folia.options.lyricsRenderer")}
             isDaylight={isDaylight}
             onChange={model.setVisualizerMode}
             options={visualizerOptions}
@@ -81,7 +80,7 @@ export function FoliaVisualizerControls({
             className="rounded-md p-1 opacity-55 transition-opacity hover:bg-white/10 hover:opacity-100"
             onClick={() => onOpenSettings("visualizer")}
             style={{ color: theme.primaryColor }}
-            title={translate("options.openLyricsStyleSettings")}
+            title={t("folia.options.openLyricsStyleSettings")}
             type="button"
           >
             <Settings2 size={14} />
@@ -91,11 +90,11 @@ export function FoliaVisualizerControls({
 
       <section className="flex items-center justify-between gap-3">
         <span className="text-xs font-medium opacity-60" style={{ color: theme.secondaryColor }}>
-          {translate("ui.background")}
+          {t("folia.ui.background")}
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <FoliaQuickEffectPicker
-            ariaLabel={translate("options.visualizerBackgroundMode")}
+            ariaLabel={t("folia.options.visualizerBackgroundMode")}
             isDaylight={isDaylight}
             onChange={model.setVisualizerBackgroundMode}
             options={backgroundOptions}
@@ -107,7 +106,7 @@ export function FoliaVisualizerControls({
             className="rounded-md p-1 opacity-55 transition-opacity hover:bg-white/10 hover:opacity-100"
             onClick={() => onOpenSettings("background")}
             style={{ color: theme.primaryColor }}
-            title={translate("options.previewBackgroundSettings")}
+            title={t("folia.options.previewBackgroundSettings")}
             type="button"
           >
             <Settings2 size={14} />
