@@ -16,13 +16,11 @@ export interface FoliaQuickEffectPickerOption<Value extends string> {
 }
 
 export interface FoliaLyricsControlsProps {
-  onOpenLyricMatch: () => void;
   theme: Theme;
 }
 
-export interface FoliaLyricMatchDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
+export interface FoliaLyricMatchPanelProps {
+  onBack: () => void;
   theme: Theme;
 }
 

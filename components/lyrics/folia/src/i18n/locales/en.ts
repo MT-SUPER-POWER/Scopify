@@ -485,6 +485,8 @@ export default {
     cancel: "Cancel",
     apply: "Apply",
     retry: "Retry",
+    save: "Save",
+    currentTheme: "Current Theme",
   },
   panel: {
     cover: "Cover",

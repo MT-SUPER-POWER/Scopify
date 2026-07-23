@@ -9,7 +9,6 @@ import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
 import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
 import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
 import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
-import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
 import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
 import { FoliaVisualSettingsDialog } from "@/components/lyrics/FoliaVisualSettingsDialog";
 import { usePlayerStore } from "@/store/module/player";
@@ -29,7 +28,6 @@ export function FoliaStageSettings({
   const [activeSection, setActiveSection] = useState<FoliaStageEditSection>("common");
   const [activeTab, setActiveTab] = useState<FoliaPanelTab>("controls");
   const [fontPickerTarget, setFontPickerTarget] = useState<"lyrics" | "subtitle" | null>(null);
-  const [isLyricMatchOpen, setIsLyricMatchOpen] = useState(false);
   const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
   const [isThemeLibraryOpen, setIsThemeLibraryOpen] = useState(false);
 
@@ -131,10 +129,7 @@ export function FoliaStageSettings({
                 ) : null}
                 {activeTab === "queue" ? <FoliaPanelQueue /> : null}
                 {activeTab === "lyrics" ? (
-                  <FoliaLyricsControls
-                    onOpenLyricMatch={() => setIsLyricMatchOpen(true)}
-                    theme={theme}
-                  />
+                  <FoliaLyricsControls theme={theme} />
                 ) : null}
               </div>
             </aside>
@@ -158,12 +153,6 @@ export function FoliaStageSettings({
         onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
         onSectionChange={setActiveSection}
         section={activeSection}
-        theme={theme}
-      />
-
-      <FoliaLyricMatchDialog
-        isOpen={isLyricMatchOpen}
-        onClose={() => setIsLyricMatchOpen(false)}
         theme={theme}
       />
 

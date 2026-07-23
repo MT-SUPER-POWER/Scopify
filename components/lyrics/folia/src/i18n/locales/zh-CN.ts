@@ -406,6 +406,8 @@ export default {
     cancel: "取消",
     apply: "应用",
     retry: "重试",
+    save: "保存",
+    currentTheme: "当前主题",
   },
   panel: {
     cover: "封面",

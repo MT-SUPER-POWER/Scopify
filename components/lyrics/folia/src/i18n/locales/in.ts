@@ -470,6 +470,8 @@ export default {
     backToHome: "Kembali ke Beranda",
     cancel: "Batal",
     apply: "Terapkan",
+    save: "Simpan",
+    currentTheme: "Tema Saat Ini",
   },
   panel: {
     cover: "Sampul",
