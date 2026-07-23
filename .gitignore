@@ -60,8 +60,5 @@ doc/README-TEMPLATE.md
 .gemini/
 .opencode/
 
-# playwright
-.playwright/
-
 # codegraph
 .codegraph/
