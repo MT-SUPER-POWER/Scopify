@@ -1,4 +1,5 @@
 <div align="center">
+
 <img alt="logo" height="100" width="100" src="docs/img/icon.ico" />
 <h2> Scopify </h2>
 <p> 一个仿 Spotify UI 的音乐播放器 </p>
@@ -39,19 +40,19 @@
 
 新建或修改代码前，请先阅读：
 
-- **[AGENTS.md](./AGENTS.md)** — 项目结构规范（跨 AI 工具通用，不依赖 Cursor）
+- **[AGENTS.md](./AGENTS.md)** — 项目结构规范
 - **[docs/structure.md](./docs/structure.md)** — 面向贡献者的结构说明与迁移进度
 
 ### 重要的三方库
 
 > 特别感谢以下项目的开源：
 
-1. [Folia](https://github.com/chthollyphile/folia-major/tree/0a3d0980ae81002b291617c819b308a2e6207b14) — complete Playback Stage and desktop-lyric presentation source snapshot (AGPL-3.0)
+1. [Folia](https://github.com/chthollyphile/folia-major/tree/main) — complete Playback Stage and desktop-lyric presentation source snapshot (AGPL-3.0)
 2. [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)
 
 ### 参考文档
 
-1. [Folia Source Snapshot](https://github.com/chthollyphile/folia-major/tree/0a3d0980ae81002b291617c819b308a2e6207b14)
+1. [Folia Source Snapshot](https://github.com/chthollyphile/folia-major/tree/main)
 2. [Electron Doc](https://www.electronjs.org/zh/docs/latest/api/app)
 3. [Netease Cloud Music API Doc](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
 4. [Electron Builder Help Doc - Not Official](https://github.com/QDMarkMan/CodeBlog/blob/master/Electron/electron-builder%E6%89%93%E5%8C%85%E8%AF%A6%E8%A7%A3.md)
@@ -168,17 +169,17 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 固定快照中的舞台源码与功能范围保持完整。下表同时保留已关闭项作为迁移记录；只有标记为“未实现”或“部分实现”的项目仍是 Interface Gap。接口缺口不会被简化 visualizer 或替代 UI 掩盖。
 
-| 责任边界             | 能力                              | 状态               | Scopify 当前实现                                                                                                                                                | 后续接口                                                                                                    |
-| -------------------- | --------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 后端接口             | 完整结构化歌词                    | 未实现             | `/lyric/new` 原始响应已无损保留，但当前 adapter 主要消费 YRC/LRC、行级翻译和罗马音，尚未提供 syllable、background vocal、agent、song part、chorus 等 Folia 字段 | Docker 联调后完善 `NeteaseLyric` 精确类型，并定义输出 Folia 完整 `LyricData` 的 `LyricsPresentationPayload` |
-| 后端接口             | 多格式、多来源歌词匹配            | 未实现             | 当前播放主链只请求 NetEase 歌词；Folia 的 TTML/QRC/KRC/VTT、QQ/Kugou/AMLL 匹配尚未接入                                                                          | 增加 `LyricsMatchCandidate[]` 查询和选定候选的 `LyricsResolveResult`；该项仍按下方提案推进                  |
-| Scopify Host Adapter | 播放、收藏、队列与歌词偏移        | 已实现，非接口缺口 | Controls 已接入 previous/play/next、repeat、like、shuffle、volume 和 lyric offset；Queue 可查看、切歌和 shuffle；独立 `lyricCurrentTime` 已应用持久化 offset    | 继续由 Scopify store/API 保持单一播放所有权，不新增第二套播放器状态                                         |
-| Scopify Host Adapter | 歌词署名与丰富行信息              | 未实现             | timed credits 已能解析，但 adapter 尚未透传全部 credits、source/language 和 Folia `Line` metadata                                                               | 扩展 `LyricsPresentationPayload` 和 host adapter，保留完整 metadata                                         |
-| Scopify Host Adapter | 歌曲视觉主题                      | 未实现             | 封面和歌曲元数据已存在，Stage 暂用固定主题，尚未提供 light/dark、`wordColors`、`lyricsIcons` 和 animation intensity                                             | 定义 `SongVisualTheme`，优先接封面取色和本地主题；AI 主题仍是可选提案，不阻塞舞台迁移                       |
-| Scopify Host Adapter | 外部 Stage 输入                   | 未实现             | 当前 Stage 只消费正在播放的 NetEase 歌曲                                                                                                                        | 后续以 `StagePresentationSession` 接入 embedded/local/now-playing/stage-api 来源，不改变当前播放所有权      |
-| 本地能力             | Cappella/Monet 图片资产与上传字体 | 已实现，非接口缺口 | IndexedDB 已持久化 Cappella emoji/avatar、Monet background/portrait 和上传字体；设置面板已接 upload/clear，字体通过 FontFace 恢复，object URL 会清理            | 保持当前视觉资产与字体资产边界                                                                              |
-| 本地能力             | 系统字体选择                      | 已实现，非接口缺口 | 已接入受权限与能力检测保护的 Local Font Access system font picker，并保留 woff2/woff/ttf/otf 上传字体 fallback                                                  | 继续在不支持 Local Font Access 的浏览器中使用上传字体路径                                                   |
-| 本地能力             | 完整视觉配置包导入导出            | 部分实现           | 已支持版本化校验后的 JSON 设置导入导出，但 JSON 不含 IndexedDB 中的图片/字体 Blob，也未覆盖 Folia shortcode                                                     | 增加 asset bundle export/import、asset manifest 与 shortcode codec，使视觉配置可跨设备完整迁移              |
+| 责任边界 | 能力 | 状态 | Scopify 当前实现 | 后续接口 |
+| --------- | ------- | ------ | -------------------- | -------- |
+| 后端接口 | 完整结构化歌词 | 未实现 | `/lyric/new` 原始响应已无损保留，但当前 adapter 主要消费 YRC/LRC、行级翻译和罗马音，尚未提供 syllable、background vocal、agent、song part、chorus 等 Folia 字段 | Docker 联调后完善 `NeteaseLyric` 精确类型，并定义输出 Folia 完整 `LyricData` 的 `LyricsPresentationPayload` |
+| 后端接口 | 多格式、多来源歌词匹配 | 未实现 | 当前播放主链只请求 NetEase 歌词；Folia 的 TTML/QRC/KRC/VTT、QQ/Kugou/AMLL 匹配尚未接入 | 增加 `LyricsMatchCandidate[]` 查询和选定候选的 `LyricsResolveResult`；该项仍按下方提案推进 |
+| Scopify Host Adapter | 播放、收藏、队列与歌词偏移 | 已实现，非接口缺口 | Controls 已接入 previous/play/next、repeat、like、shuffle、volume 和 lyric offset；Queue 可查看、切歌和 shuffle；独立 `lyricCurrentTime` 已应用持久化 offset | 继续由 Scopify store/API 保持单一播放所有权，不新增第二套播放器状态 |
+| Scopify Host Adapter | 歌词署名与丰富行信息 | 未实现 | timed credits 已能解析，但 adapter 尚未透传全部 credits、source/language 和 Folia `Line` metadata | 扩展 `LyricsPresentationPayload` 和 host adapter，保留完整 metadata |
+| Scopify Host Adapter | 歌曲视觉主题 | 未实现 | 封面和歌曲元数据已存在，Stage 暂用固定主题，尚未提供 light/dark、`wordColors`、`lyricsIcons` 和 animation intensity | 定义 `SongVisualTheme`，优先接封面取色和本地主题；AI 主题仍是可选提案，不阻塞舞台迁移 |
+| Scopify Host Adapter | 外部 Stage 输入 | 未实现 | 当前 Stage 只消费正在播放的 NetEase 歌曲 | 后续以 `StagePresentationSession` 接入 embedded/local/now-playing/stage-api 来源，不改变当前播放所有权 |
+| 本地能力 | Cappella/Monet 图片资产与上传字体 | 已实现，非接口缺口 | IndexedDB 已持久化 Cappella emoji/avatar、Monet background/portrait 和上传字体；设置面板已接 upload/clear，字体通过 FontFace 恢复，object URL 会清理 | 保持当前视觉资产与字体资产边界 |
+| 本地能力 | 系统字体选择 | 已实现，非接口缺口 | 已接入受权限与能力检测保护的 Local Font Access system font picker，并保留 woff2/woff/ttf/otf 上传字体 fallback | 继续在不支持 Local Font Access 的浏览器中使用上传字体路径 |
+| 本地能力 | 完整视觉配置包导入导出 | 部分实现 | 已支持版本化校验后的 JSON 设置导入导出，但 JSON 不含 IndexedDB 中的图片/字体 Blob，也未覆盖 Folia shortcode | 增加 asset bundle export/import、asset manifest 与 shortcode codec，使视觉配置可跨设备完整迁移 |
 
 ## 单页展示
 
@@ -240,14 +241,22 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 </details>
 
+<br/>
+
+<!-- TODO: 带补充歌词界面相关的图片 -->
+
+> [!note]
+>
+> 更多的歌词动态效果可以查看这个项目：[GitHub - Folia](https://github.com/chthollyphile/folia-major/tree/main)
+
 <details>
 <summary> 歌词界面 </summary>
 
-![歌词界面](/docs/img/DynamicEffect.png)
+![歌词动态效果](/docs/img/lyricDynamic.png)
 
-![歌词设置界面](/docs/img/StaticEffect.png)
+![歌词效果控制界面](/docs/img/lyricPanelController.png)
 
-![歌词界面主题效果](/docs/img/StaticEffect.png)
+![歌词界面主题编辑页面](/docs/img/StaticEffect.png)
 
 </details>
 
@@ -256,7 +265,6 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 - 收藏 / 取消收藏专辑
 - 使用过多的 `any` 了，数据类型需要重新梳理一下
 - 拉去 github 的 release 自动更新客户端版本
-- [ ] 接入 QQ、AMLLDB、酷狗等多源歌词匹配
 
 - [ ] 手机短信可以登陆了，把界面功能补充上，记得补充不同国家收集区域号
 - [ ] 云盘功能
@@ -278,20 +286,22 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
   - [ ] Followers 和 Followings 的 Modal 展示
 - [ ] 属于 VIP 的歌曲，加区分的 LOGO
 - [ ] `Folia` 优点：
-  - [ ] 迁移`Folia`的匹配歌词功能
+  - [x] 迁移`Folia`的匹配歌词功能
   - [ ] `Folia` i18n 功能迁移和我们的设计同步
-  - [ ] 给 VisualSetting 界面补充音质切换界面
+  - [x] 给 VisualSetting 界面补充音质切换界面
 - [ ] TanStack Query 功能补全
 - [x] 乐签功能修正，完善 profile 布局的问题
 - [ ] 日志系统不完善的问题
   - [ ] web Debug 的时候，nextjs 的报错输入之类的不显示到终端，也不记录到我们的日志文件，这个有点头疼
   - [ ] 各类网络请求的错误的详细错误结果都是 console.log 也不走到我们的日志记录文件
+- [ ] 对正在播放的歌曲再次播放的话，可以重新请求（解决有些的时候的 bug 问题）
 
 ### 提案
 
 - [ ] 可选的 AI 歌曲主题生成：用户配置 Gemini 或 OpenAI-compatible API Key，根据歌曲歌词和封面生成视觉参数。该能力不属于当前 Folia 歌词舞台迁移范围。
 - [ ] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
 - [ ] 本地音乐库管理
+- [ ] 接入 QQ、AMLLDB、酷狗等多源歌词匹配
 
 ## 版本号规则
 

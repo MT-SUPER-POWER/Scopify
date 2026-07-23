@@ -58,3 +58,6 @@ doc/README-TEMPLATE.md
 
 # playwright
 .playwright/
+
+# codegraph
+.codegraph/

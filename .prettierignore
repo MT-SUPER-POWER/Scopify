@@ -1,7 +1,8 @@
-out
-dist
+out/
+dist/
 pnpm-lock.yaml
 LICENSE.md
 tsconfig.json
 tsconfig.*.json
 backend/api-enhanced
+*.md
