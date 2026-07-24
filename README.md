@@ -256,17 +256,26 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 ![歌词效果控制界面](/docs/img/lyricPanelController.png)
 
-![歌词界面主题编辑页面](/docs/img/StaticEffect.png)
+![歌词样式编辑页面](/docs/img/lyricStyleEditor.png)
+
+![主题编辑页面](/docs/img/visualThemEditor.png)
 
 </details>
 
 ## TODO
 
-- [ ] 使用过多的 `any` 了，是時候還債了
-- [ ] TanStack Query 功能补全
+- [ ] 使用过多的 `any` 了，是時候還債了   // TODO: P0
+- [ ] 日志系统不完善的问题               // TODO: P0
+  - [ ] web Debug 的时候，nextjs 的报错输入之类的不显示到终端，也不记录到我们的日志文件，这个有点头疼
+  - [ ] 各类网络请求的错误的详细错误结果都是 console.log 也不走到我们的日志记录文件
+- [ ] TanStack Query 功能补全          // TODO: P1
+
 - [ ] 收藏 / 取消收藏专辑
+- [ ] 音质切换的选中效果做的很差
+- [ ] 搜索结果界面没有宽度限制，内容超出可视范围之外没有滚动区域
+- [ ] 如果上一个页面有滚动区域，返回到上一个页面要从头开始滑动（不合理）
 - [ ] 拉去 github 的 release 自动更新客户端版本
-- [ ] 手机短信可以登陆了，把界面功能补充上，记得补充不同国家收集区域号    // NOTE: 但是測試的時候失敗了
+- [ ] 手机短信可以登陆了，把界面功能补充上，记得补充不同国家收集区域号    // FIXME: 后端测试的时候发现接口有问题
 - [ ] 云盘功能
 - [ ] 设备管理区域
 - [ ] 编辑歌单的部分还要做一个 Tag 的编辑功能
@@ -277,9 +286,6 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 - [ ] 好友功能的完善
   - [ ] Followers 和 Followings 的 Modal 展示
 - [ ] 属于 VIP 的歌曲，加区分的 LOGO
-- [ ] 日志系统不完善的问题
-  - [ ] web Debug 的时候，nextjs 的报错输入之类的不显示到终端，也不记录到我们的日志文件，这个有点头疼
-  - [ ] 各类网络请求的错误的详细错误结果都是 console.log 也不走到我们的日志记录文件
 - [ ] 对正在播放的歌曲再次播放的话，可以重新请求（解决有些的时候的 bug 问题）
 
 ### 提案
