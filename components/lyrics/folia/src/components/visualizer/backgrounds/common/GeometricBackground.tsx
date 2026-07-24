@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
-import { AnimatePresence, motion, MotionValue, useSpring, useTransform } from 'framer-motion';
-import * as LucideIcons from 'lucide-react';
-import { AudioBands, Theme } from '../../../../types';
+import React, { useMemo } from "react";
+import { AnimatePresence, motion, MotionValue, useSpring, useTransform } from "framer-motion";
+import * as LucideIcons from "lucide-react";
+import { AudioBands, Theme } from "../../../../types";
 
 // src/components/visualizer/backgrounds/common/GeometricBackground.tsx
 
@@ -15,8 +15,8 @@ interface GeometricBackgroundProps {
   paused?: boolean;
 }
 
-type ShapeType = 'circle' | 'square' | 'triangle' | 'cross' | 'icon';
-type ScaleKey = 'bass' | 'lowMid' | 'mid' | 'vocal' | 'treble' | 'default';
+type ShapeType = "circle" | "square" | "triangle" | "cross" | "icon";
+type ScaleKey = "bass" | "lowMid" | "mid" | "vocal" | "treble" | "default";
 
 interface BackgroundShape {
   id: number;
@@ -45,35 +45,35 @@ interface BackgroundParticle {
 
 const getShapeScaleKey = (shape: BackgroundShape): ScaleKey => {
   switch (shape.type) {
-    case 'circle':
-      return 'bass';
-    case 'square':
-      return 'lowMid';
-    case 'triangle':
-      return 'mid';
-    case 'cross':
-      return 'treble';
-    case 'icon':
-      return 'vocal';
+    case "circle":
+      return "bass";
+    case "square":
+      return "lowMid";
+    case "triangle":
+      return "mid";
+    case "cross":
+      return "treble";
+    case "icon":
+      return "vocal";
     default:
-      return 'default';
+      return "default";
   }
 };
 
 const getShapeClipPath = (shapeType: ShapeType) => {
-  if (shapeType === 'triangle') {
-    return 'polygon(50% 0%, 0% 100%, 100% 100%)';
+  if (shapeType === "triangle") {
+    return "polygon(50% 0%, 0% 100%, 100% 100%)";
   }
 
-  if (shapeType === 'cross') {
-    return 'polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%)';
+  if (shapeType === "cross") {
+    return "polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%)";
   }
 
-  return 'none';
+  return "none";
 };
 
 const getShapeBaseStyle = (shape: BackgroundShape, theme: Theme) => {
-  const isCircleOrSquare = shape.type === 'circle' || shape.type === 'square';
+  const isCircleOrSquare = shape.type === "circle" || shape.type === "square";
   const useStroke = isCircleOrSquare && !shape.filled;
 
   return {
@@ -81,22 +81,21 @@ const getShapeBaseStyle = (shape: BackgroundShape, theme: Theme) => {
     top: `${shape.initialY}%`,
     width: shape.size,
     height: shape.size,
-    border: useStroke ? `1px solid ${theme.secondaryColor}` : 'none',
-    backgroundColor: !useStroke ? theme.secondaryColor : 'transparent',
-    borderRadius: shape.type === 'circle' ? '50%' : '0%',
+    border: useStroke ? `1px solid ${theme.secondaryColor}` : "none",
+    backgroundColor: !useStroke ? theme.secondaryColor : "transparent",
+    borderRadius: shape.type === "circle" ? "50%" : "0%",
     opacity: shape.opacity,
     clipPath: getShapeClipPath(shape.type),
   };
 };
 
-const VignetteOverlay: React.FC<{ disabled?: boolean }> = ({ disabled = false }) => (
+const VignetteOverlay: React.FC<{ disabled?: boolean }> = ({ disabled = false }) =>
   disabled ? null : (
     <div
-      className="absolute inset-0 pointer-events-none"
-      style={{ background: 'radial-gradient(circle, transparent 40%, rgba(0,0,0,0.6) 100%)' }}
+      className="pointer-events-none absolute inset-0"
+      style={{ background: "radial-gradient(circle, transparent 40%, rgba(0,0,0,0.6) 100%)" }}
     />
-  )
-);
+  );
 
 const StaticGeometricScene: React.FC<{
   theme: Theme;
@@ -109,8 +108,9 @@ const StaticGeometricScene: React.FC<{
     {!hideShapes && (
       <>
         {shapes.map((shape) => {
-          if (shape.type === 'icon' && shape.iconName) {
-            const IconComponent = LucideIcons[shape.iconName as keyof typeof LucideIcons] as LucideIcons.LucideIcon | undefined;
+          if (shape.type === "icon" && shape.iconName) {
+            const IconComponent = LucideIcons[shape.iconName as keyof typeof LucideIcons] as
+              LucideIcons.LucideIcon | undefined;
 
             if (IconComponent) {
               return (
@@ -177,7 +177,10 @@ const AnimatedGeometricScene: React.FC<{
 }> = ({ theme, audioPower, audioBands, shapes, particles, hideShapes, disableVignette }) => {
   const useBandScale = (value: MotionValue<number> | undefined) => {
     const source = value || audioPower;
-    const spring = useSpring(source, { stiffness: 300, damping: 30 }) as unknown as MotionValue<number>;
+    const spring = useSpring(source, {
+      stiffness: 300,
+      damping: 30,
+    }) as unknown as MotionValue<number>;
     return useTransform(spring, [10, 200], [0.95, 1.45]);
   };
 
@@ -195,8 +198,9 @@ const AnimatedGeometricScene: React.FC<{
       {!hideShapes && (
         <>
           {shapes.map((shape) => {
-            if (shape.type === 'icon' && shape.iconName) {
-              const IconComponent = LucideIcons[shape.iconName as keyof typeof LucideIcons] as LucideIcons.LucideIcon | undefined;
+            if (shape.type === "icon" && shape.iconName) {
+              const IconComponent = LucideIcons[shape.iconName as keyof typeof LucideIcons] as
+                LucideIcons.LucideIcon | undefined;
 
               if (IconComponent) {
                 return (
@@ -220,12 +224,12 @@ const AnimatedGeometricScene: React.FC<{
                     transition={{
                       duration: shape.duration,
                       repeat: Infinity,
-                      ease: 'linear',
+                      ease: "linear",
                       delay: shape.delay,
                       opacity: {
                         duration: shape.duration * 0.5,
                         repeat: Infinity,
-                        ease: 'easeInOut',
+                        ease: "easeInOut",
                         delay: shape.delay,
                       },
                     }}
@@ -252,7 +256,7 @@ const AnimatedGeometricScene: React.FC<{
                 transition={{
                   duration: shape.duration,
                   repeat: Infinity,
-                  ease: 'linear',
+                  ease: "linear",
                   delay: shape.delay,
                 }}
               />
@@ -278,7 +282,7 @@ const AnimatedGeometricScene: React.FC<{
               transition={{
                 duration: particle.duration,
                 repeat: Infinity,
-                ease: 'linear',
+                ease: "linear",
                 delay: particle.delay,
               }}
             />
@@ -300,35 +304,43 @@ const GeometricLayer: React.FC<GeometricBackgroundProps> = ({
   disableVignette = false,
   paused = false,
 }) => {
-  const shapes = useMemo<BackgroundShape[]>(() => {
-    const shapeTypes: Array<Exclude<ShapeType, 'icon'>> = ['circle', 'square', 'triangle', 'cross'];
-    const availableIcons = theme.lyricsIcons || [];
+  const shapes = useMemo<BackgroundShape[]>(
+    () => {
+      const shapeTypes: Array<Exclude<ShapeType, "icon">> = [
+        "circle",
+        "square",
+        "triangle",
+        "cross",
+      ];
+      const availableIcons = theme.lyricsIcons || [];
 
-    let iconCount = 0;
-    return Array.from({ length: 15 }).map((_, index) => {
-      const wantIcon = availableIcons.length > 0 && Math.random() > 0.7;
-      const useIcon = wantIcon && iconCount < 6;
-      if (useIcon) {
-        iconCount += 1;
-      }
+      let iconCount = 0;
+      return Array.from({ length: 15 }).map((_, index) => {
+        const wantIcon = availableIcons.length > 0 && Math.random() > 0.7;
+        const useIcon = wantIcon && iconCount < 6;
+        if (useIcon) {
+          iconCount += 1;
+        }
 
-      const iconName = useIcon ? availableIcons[Math.floor(Math.random() * availableIcons.length)] : null;
+        const iconName = useIcon
+          ? availableIcons[Math.floor(Math.random() * availableIcons.length)]
+          : null;
 
-      return {
-        id: index,
+        return {
+          id: index,
           type: useIcon ? "icon" : shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
-        iconName,
-        initialX: Math.random() * 100,
-        initialY: Math.random() * 100,
-        size: 40 + Math.random() * 100,
-        duration: useIcon ? 20 + Math.random() * 20 : 30 + Math.random() * 30,
-        delay: Math.random() * 5,
-        opacity: 0.11 + Math.random() * 0.08,
-        reverse: Math.random() > 0.5,
-        filled: Math.random() < 0.3,
-        initialRotation: Math.random() * 360,
-      };
-    });
+          iconName,
+          initialX: Math.random() * 100,
+          initialY: Math.random() * 100,
+          size: 40 + Math.random() * 100,
+          duration: useIcon ? 20 + Math.random() * 20 : 30 + Math.random() * 30,
+          delay: Math.random() * 5,
+          opacity: 0.11 + Math.random() * 0.08,
+          reverse: Math.random() > 0.5,
+          filled: Math.random() < 0.3,
+          initialRotation: Math.random() * 360,
+        };
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [theme.lyricsIcons, seed],
@@ -336,14 +348,14 @@ const GeometricLayer: React.FC<GeometricBackgroundProps> = ({
 
   const particles = useMemo<BackgroundParticle[]>(
     () =>
-    Array.from({ length: 20 }).map((_, index) => ({
-      id: index,
-      size: Math.random() * 4 + 1,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      opacity: Math.random() * 0.3,
-      duration: 15 + Math.random() * 20,
-      delay: Math.random() * 10,
+      Array.from({ length: 20 }).map((_, index) => ({
+        id: index,
+        size: Math.random() * 4 + 1,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        opacity: Math.random() * 0.3,
+        duration: 15 + Math.random() * 20,
+        delay: Math.random() * 10,
       })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [seed],
@@ -355,7 +367,7 @@ const GeometricLayer: React.FC<GeometricBackgroundProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.6, ease: 'easeInOut' }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
     >
       {paused ? (
         <StaticGeometricScene
@@ -384,60 +396,60 @@ const GeometricBackground: React.FC<GeometricBackgroundProps> = React.memo(
   function GeometricBackground(props) {
     const layerKey = String(props.seed ?? "default");
 
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Do NOT use initial={false} on AnimatePresence here.
-          initial={false} propagates via context to ALL nested motion components,
-          causing keyframe animations with repeat:Infinity to never be dispatched
-          on mount. Removing it allows the container to fade in (0.6s) and all
-          child keyframe animations to start normally on every mount. */}
-      <AnimatePresence mode="sync">
-        <GeometricLayer key={layerKey} {...props} />
-      </AnimatePresence>
-    </div>
-  );
+    return (
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* Do NOT use initial={false} on AnimatePresence here.
+            initial={false} propagates via context to ALL nested motion components,
+            causing keyframe animations with repeat:Infinity to never be dispatched
+            on mount. Removing it allows the container to fade in (0.6s) and all
+            child keyframe animations to start normally on every mount. */}
+        <AnimatePresence mode="sync">
+          <GeometricLayer key={layerKey} {...props} />
+        </AnimatePresence>
+      </div>
+    );
   },
   (prevProps, nextProps) => {
-  if (prevProps.seed !== nextProps.seed) return false;
-  if (prevProps.audioPower !== nextProps.audioPower) return false;
-  if (prevProps.hideShapes !== nextProps.hideShapes) return false;
-  if (prevProps.disableVignette !== nextProps.disableVignette) return false;
-  if (prevProps.paused !== nextProps.paused) return false;
+    if (prevProps.seed !== nextProps.seed) return false;
+    if (prevProps.audioPower !== nextProps.audioPower) return false;
+    if (prevProps.hideShapes !== nextProps.hideShapes) return false;
+    if (prevProps.disableVignette !== nextProps.disableVignette) return false;
+    if (prevProps.paused !== nextProps.paused) return false;
 
-  const previousBands = prevProps.audioBands;
-  const nextBands = nextProps.audioBands;
+    const previousBands = prevProps.audioBands;
+    const nextBands = nextProps.audioBands;
 
-  if (!previousBands !== !nextBands) return false;
+    if (!previousBands !== !nextBands) return false;
 
-  let bandsEqual = true;
-  if (previousBands && nextBands) {
-    bandsEqual =
-      previousBands.bass === nextBands.bass &&
-      previousBands.lowMid === nextBands.lowMid &&
-      previousBands.mid === nextBands.mid &&
-      previousBands.vocal === nextBands.vocal &&
-      previousBands.treble === nextBands.treble;
-  }
-  if (!bandsEqual) return false;
+    let bandsEqual = true;
+    if (previousBands && nextBands) {
+      bandsEqual =
+        previousBands.bass === nextBands.bass &&
+        previousBands.lowMid === nextBands.lowMid &&
+        previousBands.mid === nextBands.mid &&
+        previousBands.vocal === nextBands.vocal &&
+        previousBands.treble === nextBands.treble;
+    }
+    if (!bandsEqual) return false;
 
-  const previousTheme = prevProps.theme;
-  const nextTheme = nextProps.theme;
+    const previousTheme = prevProps.theme;
+    const nextTheme = nextProps.theme;
 
-  const colorsEqual =
-    previousTheme.backgroundColor === nextTheme.backgroundColor &&
-    previousTheme.primaryColor === nextTheme.primaryColor &&
-    previousTheme.secondaryColor === nextTheme.secondaryColor &&
-    previousTheme.accentColor === nextTheme.accentColor;
+    const colorsEqual =
+      previousTheme.backgroundColor === nextTheme.backgroundColor &&
+      previousTheme.primaryColor === nextTheme.primaryColor &&
+      previousTheme.secondaryColor === nextTheme.secondaryColor &&
+      previousTheme.accentColor === nextTheme.accentColor;
 
-  const iconsEqual = Boolean(
-    previousTheme.lyricsIcons === nextTheme.lyricsIcons ||
-    (previousTheme.lyricsIcons?.length === nextTheme.lyricsIcons?.length &&
+    const iconsEqual = Boolean(
+      previousTheme.lyricsIcons === nextTheme.lyricsIcons ||
+      (previousTheme.lyricsIcons?.length === nextTheme.lyricsIcons?.length &&
         previousTheme.lyricsIcons?.every(
           (value, index) => value === nextTheme.lyricsIcons?.[index],
         )),
-  );
+    );
 
-  return colorsEqual && iconsEqual;
+    return colorsEqual && iconsEqual;
   },
 );
 

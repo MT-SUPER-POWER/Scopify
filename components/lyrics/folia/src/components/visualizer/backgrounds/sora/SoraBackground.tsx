@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import * as twgl from 'twgl.js';
-import { Theme } from '../../../../types';
-import { parseColorChannels } from '../../colorMix';
+import React, { useEffect, useRef } from "react";
+import * as twgl from "twgl.js";
+import { Theme } from "../../../../types";
+import { parseColorChannels } from "../../colorMix";
 
 // src/components/visualizer/backgrounds/sora/SoraBackground.tsx
 // SoraBackground component is a shader-based space starfield background.
@@ -91,14 +91,15 @@ const SoraBackground: React.FC<SoraBackgroundProps> = ({ theme, isDaylight, paus
   const animationRef = useRef<number | null>(null);
   const timeRef = useRef<number>(0);
 
-  const primaryColorChannels = parseColorChannels(theme.primaryColor) || 
+  const primaryColorChannels =
+    parseColorChannels(theme.primaryColor) ||
     (isDaylight ? { r: 0, g: 0, b: 0 } : { r: 255, g: 255, b: 255 });
   const particleColor = [
     primaryColorChannels.r / 255,
     primaryColorChannels.g / 255,
     primaryColorChannels.b / 255,
   ];
-  
+
   const accentColorChannels = parseColorChannels(theme.accentColor) || primaryColorChannels;
   const particleAccentColor = [
     accentColorChannels.r / 255,
@@ -129,15 +130,15 @@ const SoraBackground: React.FC<SoraBackgroundProps> = ({ theme, isDaylight, paus
       console.error("SoraBackground twgl program error:", err);
     });
     if (!programInfo) return;
-    
+
     // Create an array of particle indices
     const indices = new Float32Array(PARTICLE_COUNT);
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       indices[i] = i;
     }
-    
+
     const arrays = {
-      a_index: { numComponents: 1, data: indices }
+      a_index: { numComponents: 1, data: indices },
     };
     const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 
@@ -172,7 +173,7 @@ const SoraBackground: React.FC<SoraBackgroundProps> = ({ theme, isDaylight, paus
       gl.useProgram(programInfo.program);
       twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
       twgl.setUniforms(programInfo, uniforms);
-      
+
       twgl.drawBufferInfo(gl, bufferInfo, gl.POINTS);
 
       animationRef.current = requestAnimationFrame(render);
@@ -186,7 +187,7 @@ const SoraBackground: React.FC<SoraBackgroundProps> = ({ theme, isDaylight, paus
       }
       gl.deleteProgram(programInfo.program);
       if (bufferInfo.attribs && bufferInfo.attribs.a_index && bufferInfo.attribs.a_index.buffer) {
-          gl.deleteBuffer(bufferInfo.attribs.a_index.buffer);
+        gl.deleteBuffer(bufferInfo.attribs.a_index.buffer);
       }
     };
   }, []);
@@ -194,12 +195,12 @@ const SoraBackground: React.FC<SoraBackgroundProps> = ({ theme, isDaylight, paus
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full block pointer-events-none"
+      className="pointer-events-none absolute inset-0 block size-full"
       style={{
-        width: '100%',
-        height: '100%',
-        willChange: 'transform',
-        transform: 'translateZ(0)',
+        width: "100%",
+        height: "100%",
+        willChange: "transform",
+        transform: "translateZ(0)",
       }}
     />
   );

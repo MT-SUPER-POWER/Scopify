@@ -801,7 +801,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
                 <img
                   src={image.url}
                   alt={image.name}
-                  className="h-full w-full rounded-full object-cover"
+                  className="size-full rounded-full object-cover"
                 />
               ) : (
                 <span className="opacity-45">{index + 1}</span>
@@ -915,7 +915,7 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
               title={image?.name ?? t("folia.options.cappellaEmojiEmptySlot")}
             >
               {image ? (
-                <img src={image.url} alt={image.name} className="h-full w-full object-contain" />
+                <img src={image.url} alt={image.name} className="size-full object-contain" />
               ) : (
                 <span className="opacity-45">{index + 1}</span>
               )}

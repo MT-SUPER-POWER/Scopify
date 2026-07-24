@@ -159,7 +159,7 @@ const NomandBackgroundSettingsCard: React.FC<NomandBackgroundSettingsCardProps> 
               key={type}
               type="button"
               onClick={() => onTuningChange?.({ ditheringType: type })}
-              className="rounded-xl border px-2 py-2 text-xs"
+              className="rounded-xl border p-2 text-xs"
               style={{
                 borderColor: tuning.ditheringType === type ? theme.accentColor : borderColor,
                 backgroundColor: tuning.ditheringType === type ? selectedBg : "transparent",

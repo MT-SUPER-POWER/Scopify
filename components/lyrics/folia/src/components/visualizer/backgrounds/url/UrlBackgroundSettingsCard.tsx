@@ -155,7 +155,7 @@ const UrlBackgroundSettingsCard: React.FC<UrlBackgroundSettingsCardProps> = ({
                     <button
                       type="button"
                       onClick={resetDraft}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border transition-colors hover:bg-white/10"
+                      className="flex size-8 items-center justify-center rounded-full border transition-colors hover:bg-white/10"
                       style={{ borderColor, color: theme.secondaryColor }}
                     >
                       <X size={14} />
@@ -164,7 +164,7 @@ const UrlBackgroundSettingsCard: React.FC<UrlBackgroundSettingsCardProps> = ({
                       type="button"
                       onClick={handleSaveEdit}
                       disabled={!draftUrl.trim()}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border transition-colors hover:bg-white/10 disabled:opacity-40"
+                      className="flex size-8 items-center justify-center rounded-full border transition-colors hover:bg-white/10 disabled:opacity-40"
                       style={{ borderColor: theme.accentColor, color: theme.accentColor }}
                     >
                       <Check size={14} />
@@ -195,7 +195,7 @@ const UrlBackgroundSettingsCard: React.FC<UrlBackgroundSettingsCardProps> = ({
                     <button
                       type="button"
                       onClick={() => handleStartEdit(item)}
-                      className="flex h-7 w-7 items-center justify-center rounded-full border transition-colors hover:bg-white/10"
+                      className="flex size-7 items-center justify-center rounded-full border transition-colors hover:bg-white/10"
                       style={{ borderColor, color: theme.secondaryColor }}
                     >
                       <Pencil size={12} />
@@ -203,7 +203,7 @@ const UrlBackgroundSettingsCard: React.FC<UrlBackgroundSettingsCardProps> = ({
                     <button
                       type="button"
                       onClick={() => handleDelete(item.id)}
-                      className="flex h-7 w-7 items-center justify-center rounded-full border transition-colors hover:bg-red-500/10"
+                      className="flex size-7 items-center justify-center rounded-full border transition-colors hover:bg-red-500/10"
                       style={{ borderColor, color: theme.secondaryColor }}
                     >
                       <Trash2 size={12} />
@@ -251,7 +251,7 @@ const UrlBackgroundSettingsCard: React.FC<UrlBackgroundSettingsCardProps> = ({
             <button
               type="button"
               onClick={resetDraft}
-              className="flex h-8 w-8 items-center justify-center rounded-full border transition-colors hover:bg-white/10"
+              className="flex size-8 items-center justify-center rounded-full border transition-colors hover:bg-white/10"
               style={{ borderColor, color: theme.secondaryColor }}
             >
               <X size={14} />
@@ -260,7 +260,7 @@ const UrlBackgroundSettingsCard: React.FC<UrlBackgroundSettingsCardProps> = ({
               type="button"
               onClick={handleAdd}
               disabled={!draftUrl.trim()}
-              className="flex h-8 w-8 items-center justify-center rounded-full border transition-colors hover:bg-white/10 disabled:opacity-40"
+              className="flex size-8 items-center justify-center rounded-full border transition-colors hover:bg-white/10 disabled:opacity-40"
               style={{ borderColor: theme.accentColor, color: theme.accentColor }}
             >
               <Check size={14} />

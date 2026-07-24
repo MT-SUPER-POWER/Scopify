@@ -77,13 +77,13 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
     : "bg-black/20 border border-white/5 hover:bg-black/30";
   const trackColor = isDaylight ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.1)";
   // Button bg logic
-  const buttonBg = isDaylight
+  const _buttonBg = isDaylight
     ? { backgroundColor: primaryColor, color: "var(--bg-color)" }
     : { backgroundColor: primaryColor, color: "var(--bg-color)" }; // Keep primary for play button, looks good
 
   // Other buttons hover
-  const iconBtnExpandedClass = isDaylight ? "hover:bg-black/5" : "bg-white/20"; // Wait, loop button has logic
-  const iconBtnClass = isDaylight
+  const _iconBtnExpandedClass = isDaylight ? "hover:bg-black/5" : "bg-white/20"; // Wait, loop button has logic
+  const _iconBtnClass = isDaylight
     ? "hover:bg-black/5 text-black/60"
     : "hover:bg-white/10 opacity-40 hover:opacity-100";
 
@@ -299,7 +299,7 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
           onTogglePlay();
         }}
         disabled={!canTogglePlay || controlsDisabled}
-        className={`col-start-2 row-start-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-none bg-(--text-primary) text-black shadow-lg transition-transform sm:col-start-1 sm:row-span-2 sm:row-start-1 ${controlsDisabled ? "cursor-not-allowed opacity-45" : "hover:scale-105"}`}
+        className={`col-start-2 row-start-2 flex size-12 shrink-0 items-center justify-center rounded-full border-none bg-(--text-primary) text-black shadow-lg transition-transform sm:col-start-1 sm:row-span-2 sm:row-start-1 ${controlsDisabled ? "cursor-not-allowed opacity-45" : "hover:scale-105"}`}
         style={{ backgroundColor: primaryColor, color: "var(--bg-color)" }}
       >
         {playerState === PlayerState.PLAYING ? (
@@ -320,11 +320,11 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
           style={{ color: primaryColor }}
         >
           {loopMode === "off" ? (
-            <RepeatOff size={20} className="sm:h-[18px] sm:w-[18px]" />
+            <RepeatOff size={20} className="sm:size-4.5" />
           ) : loopMode === "one" ? (
-            <Repeat1 size={20} className="sm:h-[18px] sm:w-[18px]" />
+            <Repeat1 size={20} className="sm:size-4.5" />
           ) : (
-            <Repeat size={20} className="sm:h-[18px] sm:w-[18px]" />
+            <Repeat size={20} className="sm:size-4.5" />
           )}
         </button>
 
@@ -338,7 +338,7 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
           style={{ color: primaryColor }}
           title={t("folia.floatingControls.viewTimeline")}
         >
-          <ChartBar size={20} className="sm:h-[18px] sm:w-[18px]" />
+          <ChartBar size={20} className="sm:size-4.5" />
         </button>
       </div>
 

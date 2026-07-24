@@ -200,7 +200,7 @@ const LyricsTimelineModal: React.FC<LyricsTimelineModalProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           data-folia-keyboard-window="true"
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-md"
           onClick={onClose}
         >
           <motion.div
@@ -211,7 +211,7 @@ const LyricsTimelineModal: React.FC<LyricsTimelineModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="mb-8 flex flex-shrink-0 items-center justify-between">
+            <div className="mb-8 flex shrink-0 items-center justify-between">
               <h2 className={`text-2xl font-bold ${headerText}`}>{t("folia.timeline.title")}</h2>
               <button
                 onClick={onClose}
@@ -236,7 +236,7 @@ const LyricsTimelineModal: React.FC<LyricsTimelineModalProps> = ({
                 <div className="relative py-8">
                   {/* Vertical Center Line - left aligned on mobile */}
                   <div
-                    className="absolute top-0 bottom-0 left-1/2 w-[2px] -translate-x-1/2 max-md:left-[6px] max-md:translate-x-0"
+                    className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 max-md:left-1.5 max-md:translate-x-0"
                     style={{ backgroundColor: secondaryColor, opacity: 0.3 }}
                   />
 
@@ -293,14 +293,14 @@ const LyricsTimelineModal: React.FC<LyricsTimelineModalProps> = ({
                         </div>
 
                         {/* Center Dot - left aligned on mobile */}
-                        <div className="z-10 flex-shrink-0 max-md:absolute max-md:left-0">
+                        <div className="z-10 shrink-0 max-md:absolute max-md:left-0">
                           <motion.div
                             animate={{
                               scale: isActive ? 1.5 : 1,
                               backgroundColor: isActive ? accentColor : secondaryColor,
                             }}
                             transition={{ duration: 0.3 }}
-                            className={`h-3 w-3 rounded-full ${disabledCursorClass}`}
+                            className={`size-3 rounded-full ${disabledCursorClass}`}
                             style={{
                               boxShadow: isActive ? `0 0 20px ${accentColor}` : "none",
                             }}

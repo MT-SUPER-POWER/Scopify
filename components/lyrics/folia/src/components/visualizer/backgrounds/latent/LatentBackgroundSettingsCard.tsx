@@ -126,7 +126,7 @@ const LatentBackgroundSettingsCard: React.FC<LatentBackgroundSettingsCardProps> 
               key={value}
               type="button"
               onClick={() => onTuningChange?.({ displayMode: value })}
-              className="rounded-xl border px-2 py-2 text-xs"
+              className="rounded-xl border p-2 text-xs"
               style={{
                 borderColor: tuning.displayMode === value ? theme.accentColor : borderColor,
                 backgroundColor: tuning.displayMode === value ? selectedBg : "transparent",
@@ -149,7 +149,7 @@ const LatentBackgroundSettingsCard: React.FC<LatentBackgroundSettingsCardProps> 
               key={value}
               type="button"
               onClick={() => onTuningChange?.({ colorSource: value })}
-              className="rounded-xl border px-2 py-2 text-xs"
+              className="rounded-xl border p-2 text-xs"
               style={{
                 borderColor: tuning.colorSource === value ? theme.accentColor : borderColor,
                 backgroundColor: tuning.colorSource === value ? selectedBg : "transparent",

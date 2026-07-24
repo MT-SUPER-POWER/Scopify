@@ -237,7 +237,7 @@ const ToggleRow: React.FC<ToggleRowProps> = ({
         {label}
       </div>
       {description && (
-        <div className="max-w-[320px] text-xs opacity-70" style={{ color: theme.secondaryColor }}>
+        <div className="max-w-80 text-xs opacity-70" style={{ color: theme.secondaryColor }}>
           {description}
         </div>
       )}
@@ -255,7 +255,7 @@ const ToggleRow: React.FC<ToggleRowProps> = ({
       }}
     >
       <div
-        className={`h-4 w-4 rounded-full shadow-sm transition-transform ${checked ? "translate-x-6" : "translate-x-0"}`}
+        className={`size-4 rounded-full shadow-sm transition-transform ${checked ? "translate-x-6" : "translate-x-0"}`}
         style={{ backgroundColor: theme.backgroundColor }}
       />
     </button>
@@ -484,7 +484,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                           ].map((c, i) => (
                             <div
                               key={i}
-                              className="h-2.5 w-2.5 rounded-full border border-black/10"
+                              className="size-2.5 rounded-full border border-black/10"
                               style={{ backgroundColor: c }}
                             />
                           ))}
@@ -569,7 +569,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
         {activeSection === "background" && (
           <>
             {enablePlayerPageNativeBlur && (
-              <div className="flex items-center gap-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-xs text-amber-500 dark:text-amber-400">
+              <div className="flex items-center gap-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-xs text-amber-600 dark:text-amber-400">
                 <AlertTriangle size={16} className="shrink-0 text-amber-500" />
                 <span>{t("folia.options.nativeBlurBackgroundNotice")}</span>
               </div>
