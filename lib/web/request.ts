@@ -1,6 +1,6 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 
-import type { AppConfig } from "@/types/config";
+import { networkConfigOverrideSchema, type AppConfig } from "@/types/config";
 import type { ScopifyRequestConfig } from "@/types/network";
 
 import {
@@ -11,6 +11,7 @@ import { notifyExpiredMusicSession } from "@/lib/query/session";
 
 import { ApiError, toApiError } from "./apiError";
 import { appConfig, logger } from "./env";
+import { reportFailure } from "./errorTracking";
 
 function buildBackendBaseUrl(config: Pick<AppConfig, "backend">) {
   return `http://${config.backend.host}:${config.backend.port}`;
@@ -34,7 +35,6 @@ function loadInitialBackendConfig(): AppConfig["backend"] {
 }
 
 const INITIAL_BACKEND_CONFIG = loadInitialBackendConfig();
-const NO_RETRY_URLS: string[] = [];
 
 let baseURL = buildBackendBaseUrl({ backend: INITIAL_BACKEND_CONFIG });
 let runtimeNetworkConfig: AppConfig["network"] = { ...appConfig.network };
@@ -85,40 +85,29 @@ function parseJsonObject(value: string): Record<string, unknown> {
 }
 
 function parseStoredNetworkConfig(value: string): Partial<AppConfig["network"]> {
-  const parsed = parseJsonObject(value);
-  return {
-    ...(typeof parsed.max_retries === "number" ? { max_retries: parsed.max_retries } : {}),
-    ...(typeof parsed.proxyMode === "string" ? { proxyMode: parsed.proxyMode } : {}),
-    ...(typeof parsed.proxyUrl === "string" ? { proxyUrl: parsed.proxyUrl } : {}),
-    ...(typeof parsed.randomCNIP === "string" ? { randomCNIP: parsed.randomCNIP } : {}),
-    ...(typeof parsed.retry_delay === "number" ? { retry_delay: parsed.retry_delay } : {}),
-    ...(typeof parsed.timeout === "number" ? { timeout: parsed.timeout } : {}),
-  } as Partial<AppConfig["network"]>;
+  return networkConfigOverrideSchema.safeParse(parseJsonObject(value)).data ?? {};
 }
 
-async function reportLegacyRequestError(error: ApiError) {
-  if (error.data) {
-    console.error(`[API ${error.status ?? "UNKNOWN"}] ${error.message}`, {
-      data: error.data,
-      method: error.config?.method,
-      status: error.status,
-      url: error.config?.url,
-    });
+function reportRequestError(error: ApiError) {
+  reportFailure({
+    context: {
+      ...(error.config?.method ? { method: error.config.method } : {}),
+      ...(error.config?.errorContext ? { requestContext: error.config.errorContext } : {}),
+      ...(error.status === undefined ? {} : { status: error.status }),
+      ...(error.config?.url ? { url: error.config.url } : {}),
+    },
+    error,
+    event: "transport.request_failed",
+    message: `API request failed: ${error.message}`,
+    source: "transport",
+  });
+}
 
-    if (typeof window !== "undefined") {
-      const { translate } = await import("@/lib/i18n");
-      const { useI18nStore } = await import("@/store/module/i18n");
-      const { toast } = await import("sonner");
-      toast.error(
-        translate(useI18nStore.getState().locale, "common.message.operationFailedWithReason", {
-          message: error.message,
-        }),
-      );
-    }
-    return;
-  }
-
-  console.error(`[API ${error.status ?? "UNKNOWN"}] Network or Server Error`, error);
+function createRequestTraceId() {
+  return (
+    globalThis.crypto?.randomUUID?.() ??
+    `request-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  );
 }
 
 const request = axios.create({
@@ -158,7 +147,7 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRe
   const networkConfig = getNetworkConfig();
   config.baseURL = baseURL;
   config.timeout = networkConfig.timeout;
-  config.retryCount ??= 0;
+  config.traceId ??= createRequestTraceId();
   const requestParams = isRecord(config.params) ? config.params : {};
   config.params = {
     ...requestParams,
@@ -175,10 +164,16 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRe
 
 request.interceptors.response.use((response) => {
   const responseData = response.data as null | { code?: unknown; message?: unknown; msg?: unknown };
-  if (responseData?.code === 250) {
+  const config = response.config as ScopifyRequestConfig;
+  const hasUnexpectedBusinessCode =
+    typeof responseData?.code === "number" &&
+    config.expectedBusinessCodes !== undefined &&
+    !config.expectedBusinessCodes.includes(responseData.code);
+
+  if (responseData?.code === 250 || hasUnexpectedBusinessCode) {
     return Promise.reject(
       new ApiError({
-        config: response.config as ScopifyRequestConfig,
+        config,
         data: response.data,
         kind: "business",
         message:
@@ -193,44 +188,25 @@ request.interceptors.response.use((response) => {
   return response;
 });
 
-request.interceptors.response.use(undefined, async (error: unknown) => {
+request.interceptors.response.use(undefined, (error: unknown) => {
   const apiError = toApiError(error);
   const config = apiError.config;
 
   if (apiError.kind === "unauthenticated" && !isNoLoginRequest(config)) {
-    if (config) config.noRetry = true;
     notifyExpiredMusicSession();
   }
 
-  if (!config?.suppressErrorToast) {
-    await reportLegacyRequestError(apiError);
-  }
-
-  const { max_retries, retry_delay } = getNetworkConfig();
-  const shouldRetry =
-    config?.retryCount !== undefined &&
-    config.retryCount < max_retries &&
-    !NO_RETRY_URLS.includes(config.url ?? "") &&
-    !config.noRetry;
-
-  if (shouldRetry) {
-    config.retryCount = (config.retryCount ?? 0) + 1;
-    logger.warn(`Request retrying: ${config.retryCount}/${max_retries}`);
-    await new Promise((resolve) => setTimeout(resolve, retry_delay));
-    return request(config);
-  }
-
+  reportRequestError(apiError);
   return Promise.reject(apiError);
 });
 
 export async function requestData<T>(config: ScopifyRequestConfig): Promise<T> {
-  const queryRequestConfig: ScopifyRequestConfig = {
-    ...config,
-    noRetry: true,
-    suppressErrorToast: true,
-  };
-  const response = await request.request<T>(queryRequestConfig);
+  const response = await request.request<T>(config);
   return response.data;
+}
+
+export function requestConfig<D = unknown>(config: ScopifyRequestConfig<D>) {
+  return config;
 }
 
 export default request;

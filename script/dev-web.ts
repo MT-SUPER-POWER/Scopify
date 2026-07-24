@@ -4,13 +4,20 @@ import net from "node:net";
 import { join } from "node:path";
 import yaml from "js-yaml";
 
+interface DevWebConfig {
+  frontend?: {
+    devPort?: number;
+    host?: string;
+  };
+}
+
 const configPath = join(process.cwd(), "config", "app.config.yml");
 const defaultPath = join(process.cwd(), "config", "app.config.default.yml");
 
 function loadConfig() {
   try {
     const raw = readFileSync(existsSync(configPath) ? configPath : defaultPath, "utf-8");
-    return yaml.load(raw) as any;
+    return yaml.load(raw) as DevWebConfig;
   } catch (e) {
     console.error("Failed to load config, using default port 3000", e);
     return { frontend: { devPort: 3000 } };
@@ -68,8 +75,20 @@ async function main() {
   const config = loadConfig();
   const port = Number(process.env.FRONTEND_PORT || config.frontend?.devPort || 3000);
   const host = process.env.FRONTEND_HOST || config.frontend?.host || "127.0.0.1";
+  const logRelayHost = process.env.APP_CFG_DEBUG_LOG_RELAY_HOST || "127.0.0.1";
+  const logRelayPort = Number(process.env.APP_CFG_DEBUG_LOG_RELAY_PORT || port + 1);
 
   await clearStaleNextDevLock(host, port);
+
+  console.log(`Starting renderer log relay on ${logRelayHost}:${logRelayPort}...`);
+  const logRelay = spawn(
+    "bun",
+    ["script/dev-log-relay.ts", "--host", logRelayHost, "--port", logRelayPort.toString()],
+    {
+      stdio: "inherit",
+      shell: true,
+    },
+  );
 
   console.log(`Starting Next.js on ${host}:${port}...`);
 
@@ -79,7 +98,15 @@ async function main() {
   });
 
   nextDev.on("close", (code) => {
+    logRelay.kill();
     process.exit(code || 0);
+  });
+
+  logRelay.on("close", (code) => {
+    if (code === 0 || code === null) return;
+    console.error(`Renderer log relay exited unexpectedly with code ${code}.`);
+    nextDev.kill();
+    process.exit(code);
   });
 }
 

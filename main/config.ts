@@ -3,12 +3,7 @@ import { join } from "node:path";
 import { app } from "electron";
 import * as yaml from "js-yaml";
 
-import {
-  type AppConfig,
-  DEFAULT_APP_CONFIG,
-  normalizeAppConfig,
-  type PartialAppConfig,
-} from "../types/config.js";
+import { type AppConfig, DEFAULT_APP_CONFIG, normalizeAppConfig } from "../types/config.js";
 
 const resourceConfigDir = app.isPackaged
   ? join(process.resourcesPath, "config")
@@ -28,10 +23,10 @@ function ensureConfigFile() {
   }
 }
 
-function readYamlConfig(filePath: string): PartialAppConfig | null {
+function readYamlConfig(filePath: string): unknown {
   if (!fs.existsSync(filePath)) return null;
   const raw = fs.readFileSync(filePath, "utf-8");
-  return (yaml.load(raw) as PartialAppConfig | null) ?? null;
+  return yaml.load(raw) ?? null;
 }
 
 export function loadDefaultAppConfig(): AppConfig {

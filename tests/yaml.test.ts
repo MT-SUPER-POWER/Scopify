@@ -2,13 +2,12 @@ import { expect, test } from "bun:test";
 import fs from "node:fs";
 import path from "node:path/win32";
 import * as yaml from "js-yaml";
-import type { PartialAppConfig } from "@/types/config";
-import { normalizeAppConfig } from "@/types/config";
+import { networkConfigOverrideSchema, normalizeAppConfig } from "@/types/config";
 
 test("app config yml keeps backend host and port", () => {
   const configFilePath = path.resolve(__dirname, "../config/app.config.yml");
   const raw = fs.readFileSync(configFilePath, "utf-8");
-  const config = normalizeAppConfig(yaml.load(raw) as PartialAppConfig);
+  const config = normalizeAppConfig(yaml.load(raw));
 
   expect(config.app.gpuAcceleration).toBe(true);
   expect(config.backend.host).toBe("127.0.0.1");
@@ -27,7 +26,7 @@ test("normalizing legacy backend config ignores autoStart", () => {
       host: "10.0.0.20",
       port: 4545,
       autoStart: true,
-    } as PartialAppConfig["backend"] & { autoStart: boolean },
+    },
   });
 
   expect(config.backend.host).toBe("10.0.0.20");
@@ -43,7 +42,7 @@ test("normalizing cache config clamps invalid values", () => {
       maxSizeMB: -1,
       pageTtlMinutes: 0,
       searchTtlMinutes: Number.NaN,
-    } as unknown as PartialAppConfig["cache"],
+    },
   });
 
   expect(config.cache.enabled).toBe(false);
@@ -51,4 +50,44 @@ test("normalizing cache config clamps invalid values", () => {
   expect(config.cache.maxSizeMB).toBe(256);
   expect(config.cache.pageTtlMinutes).toBe(360);
   expect(config.cache.searchTtlMinutes).toBe(30);
+});
+
+test("normalizing legacy and malformed config falls back per field", () => {
+  const config = normalizeAppConfig({
+    app: { locale: "unsupported" },
+    network: {
+      max_retries: 5,
+      proxyMode: "unsupported",
+      randomCNIP: true,
+      retry_delay: 1000,
+      timeout: "9000",
+    },
+  });
+
+  expect(config.app.locale).toBe("zh-CN");
+  expect(config.network.timeout).toBe(9000);
+  expect(config.network.randomCNIP).toBe("true");
+  expect(config.network.proxyMode).toBe("system");
+  expect("max_retries" in config.network).toBe(false);
+  expect("retry_delay" in config.network).toBe(false);
+});
+
+test("network overrides retain valid values and discard invalid or legacy fields", () => {
+  const result = networkConfigOverrideSchema.safeParse({
+    max_retries: 5,
+    proxyMode: "unsupported",
+    proxyUrl: "  http://127.0.0.1:7890  ",
+    randomCNIP: true,
+    retry_delay: 1000,
+    timeout: "9000",
+  });
+
+  expect(result.success).toBe(true);
+  if (!result.success) return;
+
+  expect(result.data).toEqual({
+    proxyUrl: "http://127.0.0.1:7890",
+    randomCNIP: "true",
+    timeout: 9000,
+  });
 });

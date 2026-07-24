@@ -20,7 +20,7 @@ const electronAPI: ElectronAPI = {
   },
   off: (channel, callback) => {
     if (callback) {
-      ipcRenderer.removeListener(channel, callback as (...args: any[]) => void);
+      ipcRenderer.removeListener(channel, callback);
       return;
     }
     ipcRenderer.removeAllListeners(channel);
@@ -55,6 +55,7 @@ const electronAPI: ElectronAPI = {
   },
   getAppConfig: () => ipcRenderer.invoke("get-app-config"),
   updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
+  writeLog: (event) => ipcRenderer.invoke("logger:write", event),
   getPageCache: (key) => ipcRenderer.invoke("cache:get", key),
   setPageCache: (key, value, ttlMs) => ipcRenderer.invoke("cache:set", key, value, ttlMs),
   deletePageCache: (key) => ipcRenderer.invoke("cache:delete", key),

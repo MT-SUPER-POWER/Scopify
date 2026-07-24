@@ -1,5 +1,6 @@
 import type { BackendStartupStatus } from "@/types/backend";
 import type { AppConfig } from "@/types/config";
+import type { RendererLogEvent } from "@/types/logging";
 import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
@@ -41,6 +42,7 @@ export interface ElectronAPI {
   sendAppCloseAction: (action: "minimize" | "exit") => void;
   getAppConfig: () => Promise<AppConfig>;
   updateAppConfig: (config: AppConfig) => Promise<AppConfig>;
+  writeLog: (event: RendererLogEvent) => Promise<boolean>;
   getPageCache: <T = unknown>(key: string) => Promise<T | null>;
   setPageCache: <T = unknown>(key: string, value: T, ttlMs: number) => Promise<boolean>;
   deletePageCache: (key: string) => Promise<boolean>;

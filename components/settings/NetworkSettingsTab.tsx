@@ -56,34 +56,14 @@ export function NetworkSettingsTab({ config, onChange }: NetworkSettingsTabProps
           }
         />
         <SettingRow
-          label={t("settings.maxRetries.label")}
-          sublabel={t("settings.maxRetries.sublabel")}
-          control={
-            <SettingInput
-              type="number"
-              value={config.network.max_retries}
-              onChange={(value) => onChange("network", "max_retries", Number(value))}
-            />
-          }
-        />
-        <SettingRow
-          label={t("settings.retryDelay.label")}
-          sublabel={t("settings.retryDelay.sublabel")}
-          control={
-            <SettingInput
-              type="number"
-              value={config.network.retry_delay}
-              onChange={(value) => onChange("network", "retry_delay", Number(value))}
-            />
-          }
-        />
-        <SettingRow
           label={t("settings.randomCNIP.label")}
           sublabel={t("settings.randomCNIP.sublabel")}
           control={
             <SettingSelect
               value={config.network.randomCNIP}
-              onChange={(value) => onChange("network", "randomCNIP", value)}
+              onChange={(value) =>
+                onChange("network", "randomCNIP", value === "true" ? "true" : "false")
+              }
             >
               <option value="false" className="bg-[#282828]">
                 {t("settings.randomCNIP.disabled")}

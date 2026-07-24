@@ -15,8 +15,6 @@ logging:
   keepDays: 7
 network:
   timeout: 5000
-  max_retries: 1
-  retry_delay: 500
   randomCNIP: false
   proxyMode: system
   proxyUrl: ""

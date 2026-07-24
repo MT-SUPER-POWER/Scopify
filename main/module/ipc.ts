@@ -1,5 +1,6 @@
 import { join } from "node:path";
 import { app, type BrowserWindow, ipcMain, session } from "electron";
+import type { RendererLogEvent } from "@/types/logging";
 import { loadAppConfig, saveAppConfig } from "../config.js";
 import { logger } from "../constants.js";
 import { ensureBackendUrl, getBackendStartupStatus } from "./backend.js";
@@ -24,6 +25,19 @@ function createConfiguredPageCacheStore() {
 }
 
 export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
+  ipcMain.handle("logger:write", (event, payload: RendererLogEvent) => {
+    if (!isRendererLogEvent(payload)) return false;
+
+    const metadata = payload.metadata
+      ? { ...payload.metadata, rendererId: event.sender.id }
+      : { rendererId: event.sender.id };
+    if (payload.level === "debug") logger.debug(`[renderer] ${payload.message}`, metadata);
+    else if (payload.level === "info") logger.info(`[renderer] ${payload.message}`, metadata);
+    else if (payload.level === "warn") logger.warn(`[renderer] ${payload.message}`, metadata);
+    else logger.error(`[renderer] ${payload.message}`, metadata);
+    return true;
+  });
+
   ipcMain.on("relaunch-app", () => {
     logger.info("[IPC] relaunch requested");
     app.relaunch();
@@ -162,4 +176,16 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
       throw error;
     }
   });
+}
+
+function isRendererLogEvent(value: unknown): value is RendererLogEvent {
+  if (!value || typeof value !== "object") return false;
+  const event = value as Partial<RendererLogEvent>;
+  return (
+    typeof event.message === "string" &&
+    (event.level === "debug" ||
+      event.level === "info" ||
+      event.level === "warn" ||
+      event.level === "error")
+  );
 }
