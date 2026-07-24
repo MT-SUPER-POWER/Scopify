@@ -167,7 +167,7 @@ function SiderBarMenu() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost">
             {" "}
-            <Menu className="h-7 w-7" />{" "}
+            <Menu className="size-7" />{" "}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-40" align="start">
@@ -178,7 +178,7 @@ function SiderBarMenu() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => useUiStore.getState().setIsCollapsed(true)}>
-              <PanelLeftClose className="mr-2 h-5 w-5 transition-transform hover:scale-110 active:scale-95" />
+              <PanelLeftClose className="mr-2 size-5 transition-transform hover:scale-110 active:scale-95" />
               <span>{t("sidebar.menu.collapse")}</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
@@ -194,13 +194,13 @@ function SiderBarMenu() {
               <DropdownMenuItem
                 onClick={() => handleCreatePlaylist(t("sidebar.lib.untitledPlaylist"), "0")}
               >
-                <Plus className="mr-2 h-5 w-5" />
+                <Plus className="mr-2 size-5" />
                 <span>{t("sidebar.menu.createPlaylist")}</span>
               </DropdownMenuItem>
 
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <Trash2 className="mr-2 h-5 w-5 text-red-500/80" />
+                  <Trash2 className="mr-2 size-5 text-red-500/80" />
                   <span className="text-red-500/80">{t("sidebar.menu.deletePlaylist")}</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
@@ -217,7 +217,7 @@ function SiderBarMenu() {
                         height={24}
                         src={playlist.coverImgUrl}
                         alt={t("playlist.form.coverAlt")}
-                        className="mr-2 h-6 w-6 rounded-sm"
+                        className="mr-2 size-6 rounded-sm"
                       />
                       <span>{playlist.name}</span>
                     </DropdownMenuItem>

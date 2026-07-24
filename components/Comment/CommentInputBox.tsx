@@ -155,7 +155,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
             const text = e.clipboardData.getData("text/plain");
             document.execCommand("insertText", false, text);
           }}
-          className="max-h-37.5 min-h-15 w-full overflow-y-auto py-0.5 text-sm leading-relaxed break-words whitespace-pre-wrap text-white outline-none"
+          className="max-h-37.5 min-h-15 w-full overflow-y-auto py-0.5 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap text-white outline-none"
         />
       </div>
 
@@ -169,7 +169,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
               handleInput();
             }}
           >
-            <Hash className="h-5 w-5 cursor-pointer transition-colors hover:text-white" />
+            <Hash className="size-5 cursor-pointer transition-colors hover:text-white" />
           </button>
           <button
             type="button"
@@ -179,24 +179,24 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
               handleInput();
             }}
           >
-            <AtSign className="h-5 w-5 cursor-pointer transition-colors hover:text-white" />
+            <AtSign className="size-5 cursor-pointer transition-colors hover:text-white" />
           </button>
 
           <Popover>
             <PopoverTrigger asChild>
               <button type="button">
-                <Smile className="h-5 w-5 cursor-pointer transition-colors hover:text-white" />
+                <Smile className="size-5 cursor-pointer transition-colors hover:text-white" />
               </button>
             </PopoverTrigger>
             <PopoverContent
               side="bottom"
               align="start"
               sideOffset={10}
-              className="emoji-popover z-[100] w-80 border border-white/10 bg-[#1c1c1c] p-3 shadow-2xl"
+              className="emoji-popover z-100 w-80 border border-white/10 bg-[#1c1c1c] p-3 shadow-2xl"
               onOpenAutoFocus={(e) => e.preventDefault()}
               onCloseAutoFocus={(e) => e.preventDefault()}
             >
-              <div className="scrollbar-hide grid max-h-[220px] grid-cols-8 gap-2 overflow-y-auto">
+              <div className="scrollbar-hide grid max-h-55 grid-cols-8 gap-2 overflow-y-auto">
                 {Object.entries(emojiData).map(([name, url]) => (
                   <button
                     key={name}
@@ -219,7 +219,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
                       alt={name}
                       width={20}
                       height={20}
-                      className="pointer-events-none h-5 w-5 object-contain select-none"
+                      className="pointer-events-none size-5 object-contain select-none"
                     />
                   </button>
                 ))}
@@ -236,7 +236,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
             disabled={!inputText.trim() || inputText.length > 140 || isSubmitting}
           >
             {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
             ) : replyTarget ? (
               t("common.action.reply")
             ) : (

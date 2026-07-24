@@ -8,14 +8,14 @@ export function ActionBar({ isSelf, onEdit }: { isSelf?: boolean; onEdit?: () =>
   const [isFollowing, setIsFollowing] = useState(false);
 
   return (
-    <div className="flex items-center gap-6 px-6 py-6">
+    <div className="flex items-center gap-6 p-6">
       {isSelf ? (
         <button
           type="button"
           onClick={onEdit}
           className="ml-2 text-gray-400 transition-colors hover:text-white"
         >
-          <Settings className="h-8 w-8" />
+          <Settings className="size-8" />
         </button>
       ) : (
         <button
@@ -33,7 +33,7 @@ export function ActionBar({ isSelf, onEdit }: { isSelf?: boolean; onEdit?: () =>
       )}
 
       <button type="button" className="text-gray-400 transition-colors hover:text-white">
-        <MoreHorizontal className="h-8 w-8" />
+        <MoreHorizontal className="size-8" />
       </button>
     </div>
   );

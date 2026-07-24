@@ -61,7 +61,7 @@ const QueueItem = memo(
             ease: "easeOut",
             delay: (index % 10) * 0.05,
           }}
-          className="h-full w-full"
+          className="size-full"
         >
           <SongContextMenu
             song={song}
@@ -87,12 +87,12 @@ const QueueItem = memo(
                   {(index + 1).toString().padStart(2, "0")}
                 </span>
 
-                <div className="group/cover relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded">
+                <div className="group/cover relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded">
                   <Image
                     src={song.al.picUrl}
                     alt={song.name}
                     className={cn(
-                      "h-full w-full object-cover transition-opacity",
+                      "size-full object-cover transition-opacity",
                       isActive ? "opacity-40" : "group-hover/cover:opacity-40",
                     )}
                     fill
@@ -108,10 +108,10 @@ const QueueItem = memo(
                           unoptimized
                         />
                       ) : (
-                        <Play className="h-4 w-4 fill-current text-[#1ed760]" />
+                        <Play className="size-4 fill-current text-[#1ed760]" />
                       )
                     ) : (
-                      <Play className="h-4 w-4 fill-current text-white opacity-0 transition-opacity group-hover/cover:opacity-100" />
+                      <Play className="size-4 fill-current text-white opacity-0 transition-opacity group-hover/cover:opacity-100" />
                     )}
                   </div>
                 </div>
@@ -167,7 +167,6 @@ const QueueList = ({ isOpen }: { isOpen: boolean }) => {
   // 用 ref 记录是否已经执行过初始滚动
   const hasScrolledOnOpen = useRef(false);
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: queue.length,
     getScrollElement: () => parentRef.current,
@@ -252,7 +251,7 @@ const QueueList = ({ isOpen }: { isOpen: boolean }) => {
       <div className="p-2">
         {queue.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-zinc-500">
-            <ListMusic className="h-10 w-10 opacity-60" />
+            <ListMusic className="size-10 opacity-60" />
           </div>
         ) : (
           <div
@@ -298,7 +297,6 @@ export const QueuePopover = () => {
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: queue.length,
     getScrollElement: () => parentRef.current,
@@ -320,7 +318,7 @@ export const QueuePopover = () => {
           className="flex items-center justify-center text-zinc-400 transition-colors hover:text-white"
           title={t("queue.triggerTitle")}
         >
-          <ListMusic className="h-5 w-5" />
+          <ListMusic className="size-5" />
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -341,7 +339,7 @@ export const QueuePopover = () => {
             className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
             title={t("queue.locateCurrent")}
           >
-            <LocateFixed className="h-4 w-4" />
+            <LocateFixed className="size-4" />
           </button>
         </div>
         <QueueList isOpen={open} />

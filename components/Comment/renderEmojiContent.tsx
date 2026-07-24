@@ -31,7 +31,7 @@ export function renderEmojiContent(content: string) {
           key={match.index}
           src={emojiUrl}
           alt={emojiName}
-          className="mx-0.5 inline-block h-6 w-6 align-middle"
+          className="mx-0.5 inline-block size-6 align-middle"
           style={{ verticalAlign: "middle" }}
         />,
       );

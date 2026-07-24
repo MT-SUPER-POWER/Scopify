@@ -33,8 +33,8 @@ import type { VipSignDetail } from "@/types/api/vipSign";
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const iconList: { id: "download" | "about"; icon: React.ReactNode }[] = [
-  { id: "download", icon: <FiDownload className="mr-2 h-5 w-5 shrink-0" /> },
-  { id: "about", icon: <FiCoffee className="mr-2 h-5 w-5 shrink-0" /> },
+  { id: "download", icon: <FiDownload className="mr-2 size-5 shrink-0" /> },
+  { id: "about", icon: <FiCoffee className="mr-2 size-5 shrink-0" /> },
 ];
 
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
@@ -126,11 +126,11 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
           <DropdownMenuGroup className="space-y-0.5">
             {/* 小屏才显示的 Bell / Friends */}
             <DropdownMenuItem className="rounded-lg px-3 py-2.5 text-[15px] md:hidden">
-              <FiBell className="mr-3 h-5 w-5 shrink-0" />
+              <FiBell className="mr-3 size-5 shrink-0" />
               <span>{t("profile.menu.notifications")}</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="rounded-lg px-3 py-2.5 text-[15px] md:hidden">
-              <FiUsers className="mr-3 h-5 w-5 shrink-0" />
+              <FiUsers className="mr-3 size-5 shrink-0" />
               <span>{t("profile.menu.friends")}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="md:hidden" />
@@ -139,7 +139,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             {isLoggedIn && (
               <DropdownMenuItem asChild className="rounded-lg px-3 py-2.5 text-[15px]">
                 <Link href={`/profile?userId=${userId}`}>
-                  <FiUser className="mr-3 h-5 w-5 shrink-0" />
+                  <FiUser className="mr-3 size-5 shrink-0" />
                   <span className="flex-1">{t("profile.menu.profile")}</span>
                 </Link>
               </DropdownMenuItem>
@@ -151,13 +151,13 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 className="rounded-lg px-3 py-2.5 text-[15px]"
                 onSelect={(e) => e.preventDefault()}
               >
-                <FiCalendar className="mr-3 h-5 w-5 shrink-0" />
+                <FiCalendar className="mr-3 size-5 shrink-0" />
                 <span className="flex-1">{t("profile.menu.vipSign")}</span>
                 <button
                   type="button"
                   onClick={handleVipSign}
                   disabled={isSignLoading || isSigning}
-                  className={`ml-2 h-7 min-w-[72px] shrink-0 rounded-full px-3 text-[13px] font-semibold transition-all disabled:opacity-60 ${
+                  className={`ml-2 h-7 min-w-18 shrink-0 rounded-full px-3 text-[13px] font-semibold transition-all disabled:opacity-60 ${
                     hasSignedToday
                       ? "border border-zinc-600 bg-transparent text-zinc-300 hover:border-zinc-400 hover:text-white"
                       : "bg-[#1ed760] text-black hover:scale-105 hover:bg-[#1fdf64]"
@@ -177,7 +177,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
               onSelect={() => smartRouter.push("/setting")}
               className="rounded-lg px-3 py-2.5 text-[15px]"
             >
-              <FiSettings className="mr-3 h-5 w-5 shrink-0" />
+              <FiSettings className="mr-3 size-5 shrink-0" />
               <span>{t("profile.menu.settings")}</span>
             </DropdownMenuItem>
 
@@ -204,7 +204,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 onSelect={handleLogoutClick}
                 className="rounded-lg px-3 py-2.5 text-[15px]"
               >
-                <FiLogOut className="mr-3 h-5 w-5 shrink-0 text-[#fe4144]" />
+                <FiLogOut className="mr-3 size-5 shrink-0 text-[#fe4144]" />
                 <span className="text-[#fe4144]">{t("common.action.logout")}</span>
               </DropdownMenuItem>
             ) : (
@@ -212,7 +212,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 onSelect={handleLoginClick}
                 className="rounded-lg px-3 py-2.5 text-[15px]"
               >
-                <FiLogIn className="mr-3 h-5 w-5 shrink-0" />
+                <FiLogIn className="mr-3 size-5 shrink-0" />
                 <span>{t("common.action.login")}</span>
               </DropdownMenuItem>
             )}

@@ -28,7 +28,7 @@ export function GridCardSkeleton({ isArtist = false }: { isArtist?: boolean }) {
 export function BannerItemSkeleton() {
   return (
     <div className="relative flex h-16 items-center overflow-hidden rounded-md bg-white/5 pr-4">
-      <Skeleton className="h-16 w-16 shrink-0 rounded-none bg-white/10" />
+      <Skeleton className="size-16 shrink-0 rounded-none bg-white/10" />
       <Skeleton className="ml-4 h-4 w-32 bg-white/10" />
     </div>
   );
@@ -45,7 +45,7 @@ export function HomePageSkeleton() {
         {/* 标题模拟 */}
         <div className="flex h-9 items-center gap-4">
           <Skeleton className="h-8 w-48 bg-white/10" />
-          <Skeleton className="h-8 w-8 rounded-full bg-white/10" />
+          <Skeleton className="size-8 rounded-full bg-white/10" />
         </div>
         {/* Banner 网格模拟 */}
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">

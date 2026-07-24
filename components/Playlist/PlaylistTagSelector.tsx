@@ -71,7 +71,7 @@ export function PlaylistTagSelector({ value, maxSelected, onChange }: PlaylistTa
         onClick={() => void loadTags()}
         className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:border-white/30 hover:text-white"
       >
-        <RefreshCw className="h-3.5 w-3.5" />
+        <RefreshCw className="size-3.5" />
         {t("playlist.form.tagsRetry")}
       </button>
     );

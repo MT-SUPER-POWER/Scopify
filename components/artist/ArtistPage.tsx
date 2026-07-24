@@ -29,7 +29,7 @@ export default function ArtistPage() {
   if (isLoading || !artist)
     return (
       <div className="flex h-screen items-center justify-center bg-[#121212] p-8 text-white">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1DB954]" />
+        <Loader2 className="size-8 animate-spin text-[#1DB954]" />
       </div>
     );
 

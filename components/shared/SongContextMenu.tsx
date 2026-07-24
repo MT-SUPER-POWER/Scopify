@@ -3,7 +3,6 @@
 import { Ban, Heart, Link2, ListPlus, Pause, Play, PlusCircle, Trash, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
@@ -87,7 +86,7 @@ export function SongContextMenu({
           nextLiked ? t("playlist.track.likedAdded") : t("playlist.track.likedRemoved"),
         );
         if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
-      } catch (_err) {
+      } catch {
         toast.error(t("playlist.table.operationFailed"));
       }
     },
@@ -122,12 +121,12 @@ export function SongContextMenu({
           <ContextMenuItem onClick={onPlay} className="focus:bg-white/10 focus:text-white">
             {isActive && isPlaying ? (
               <>
-                <Pause className="mr-2 h-4 w-4" />
+                <Pause className="mr-2 size-4" />
                 {t("contextMenu.pause")}
               </>
             ) : (
               <>
-                <Play className="mr-2 h-4 w-4" />
+                <Play className="mr-2 size-4" />
                 {t("contextMenu.play")}
               </>
             )}
@@ -141,13 +140,13 @@ export function SongContextMenu({
                   className="focus:bg-white/10 focus:text-white"
                   onClick={handleAddToQueue}
                 >
-                  <ListPlus className="mr-2 h-4 w-4" />
+                  <ListPlus className="mr-2 size-4" />
                   {t("contextMenu.addToQueue")}
                 </ContextMenuItem>
               )}
 
               <ContextMenuItem className="focus:bg-white/10 focus:text-white" onClick={handleLike}>
-                <Heart className="mr-2 h-4 w-4" />
+                <Heart className="mr-2 size-4" />
                 {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
               </ContextMenuItem>
             </>
@@ -160,7 +159,7 @@ export function SongContextMenu({
           {isLogin && (
             <ContextMenuSub>
               <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                <PlusCircle className="mr-4 h-4 w-4" />
+                <PlusCircle className="mr-4 size-4" />
                 {t("contextMenu.addToPlaylist")}
               </ContextMenuSubTrigger>
               <ContextMenuSubContent className="z-9999 border-white/10 bg-[#282828] text-white">
@@ -177,7 +176,7 @@ export function SongContextMenu({
                         void clearPageCache();
                         const store = useUserStore.getState();
                         if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
-                      } catch (_err) {
+                      } catch {
                         toast.error(t("playlist.table.addToPlaylistFailed"));
                       }
                     }}
@@ -189,7 +188,7 @@ export function SongContextMenu({
                       height={28}
                       src={playlist.coverImgUrl}
                       alt={t("playlist.form.coverAlt")}
-                      className="mr-2 h-7 w-7 rounded-sm"
+                      className="mr-2 size-7 rounded-sm"
                     />
                     {playlist.name}
                   </ContextMenuItem>
@@ -201,9 +200,9 @@ export function SongContextMenu({
           <ContextMenuItem asChild className="w-40 border-white/10 bg-[#282828] text-white">
             <Link
               href={song.id ? `/comment/?songId=${song.id}` : "#"}
-              className="block h-full w-full focus:bg-white/10 focus:text-white"
+              className="block size-full focus:bg-white/10 focus:text-white"
             >
-              <FaRegCommentDots className="mr-2 h-4 w-4" />
+              <FaRegCommentDots className="mr-2 size-4" />
               {t("contextMenu.comments")}
             </Link>
           </ContextMenuItem>
@@ -214,16 +213,16 @@ export function SongContextMenu({
               <ContextMenuItem asChild className="w-40 border-white/10 bg-[#282828] text-white">
                 <Link
                   href={`/artist?id=${song.ar[0].id}`}
-                  className="block h-full w-full focus:bg-white/10 focus:text-white"
+                  className="block size-full focus:bg-white/10 focus:text-white"
                 >
-                  <User className="mr-2 h-4 w-4" />
+                  <User className="mr-2 size-4" />
                   {t("contextMenu.goToArtist")}
                 </Link>
               </ContextMenuItem>
             ) : (
               <ContextMenuSub>
                 <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
-                  <User className="mr-4 h-4 w-4" />
+                  <User className="mr-4 size-4" />
                   {t("contextMenu.goToArtist")}
                 </ContextMenuSubTrigger>
                 <ContextMenuSubContent className="z-9999 border-white/10 bg-[#282828] text-white">
@@ -233,7 +232,7 @@ export function SongContextMenu({
                       asChild
                       className="focus:bg-white/10 focus:text-white"
                     >
-                      <Link href={`/artist?id=${artist.id}`} className="block h-full w-full">
+                      <Link href={`/artist?id=${artist.id}`} className="block size-full">
                         {artist.name}
                       </Link>
                     </ContextMenuItem>
@@ -246,9 +245,9 @@ export function SongContextMenu({
             <button
               type="button"
               onClick={handleCopyLink}
-              className="block h-full w-full text-left focus:bg-white/10 focus:text-white"
+              className="block size-full text-left focus:bg-white/10 focus:text-white"
             >
-              <Link2 className="mr-2 h-4 w-4" />
+              <Link2 className="mr-2 size-4" />
               {t("contextMenu.copyLink")}
             </button>
           </ContextMenuItem>
@@ -264,7 +263,7 @@ export function SongContextMenu({
                 variant="destructive"
                 className="focus:bg-red-500 focus:text-white"
               >
-                <Trash className="mr-2 h-4 w-4" />
+                <Trash className="mr-2 size-4" />
                 {t("contextMenu.removeFromQueue")}
               </ContextMenuItem>
             </ContextMenuGroup>
@@ -281,7 +280,7 @@ export function SongContextMenu({
                 variant="destructive"
                 className="focus:bg-red-500 focus:text-white"
               >
-                <Trash className="mr-2 h-4 w-4" />
+                <Trash className="mr-2 size-4" />
                 {t("contextMenu.removeFromPlaylist")}
               </ContextMenuItem>
             </ContextMenuGroup>
@@ -298,7 +297,7 @@ export function SongContextMenu({
                 variant="destructive"
                 className="focus:bg-red-500 focus:text-white"
               >
-                <Ban className="mr-2 h-4 w-4" />
+                <Ban className="mr-2 size-4" />
                 {t("contextMenu.recommendLess")}
               </ContextMenuItem>
             </ContextMenuGroup>

@@ -48,7 +48,7 @@ export function FoliaThemeLibraryDialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onPointerDown={onClose}
-          className="fixed inset-0 z-[150] p-3 backdrop-blur-xl sm:p-5"
+          className="fixed inset-0 z-150 p-3 backdrop-blur-xl sm:p-5"
           style={{ backgroundColor: overlayBackground }}
         >
           <motion.section

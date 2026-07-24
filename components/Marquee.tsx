@@ -30,7 +30,7 @@ export function SongTitle({ title }: { title: string }) {
 
   return (
     <div className="group flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md p-2.5 text-zinc-300 transition-colors hover:bg-white/5">
-      <IoMusicalNotesOutline className="h-4 w-4 shrink-0" />
+      <IoMusicalNotesOutline className="size-4 shrink-0" />
 
       {/* 限制宽度的容器 */}
       <div ref={containerRef} className="relative h-5 flex-1 overflow-hidden whitespace-nowrap">

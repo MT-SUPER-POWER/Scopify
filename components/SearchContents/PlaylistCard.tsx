@@ -36,11 +36,7 @@ export function PlaylistCard({
       onClick={onClick}
     >
       <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md bg-zinc-800 shadow-lg">
-        <img
-          src={playlist.coverImgUrl}
-          alt={playlist.name}
-          className="h-full w-full object-cover"
-        />
+        <img src={playlist.coverImgUrl} alt={playlist.name} className="size-full object-cover" />
         {playlist.playCount > 0 && (
           <div className="absolute top-1 right-2 rounded bg-black/60 px-2 py-0.5 text-[11px] font-bold">
             ▷ {formatCount(playlist.playCount)}
@@ -61,18 +57,18 @@ export function PlaylistCard({
         }}
         disabled={isLoading}
         className={cn(
-          "absolute right-6 bottom-20 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-[0_8px_8px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105 hover:bg-[#3be477] disabled:opacity-80 disabled:hover:scale-100",
+          "absolute right-6 bottom-20 z-10 flex size-12 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-[0_8px_8px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105 hover:bg-[#3be477] disabled:opacity-80 disabled:hover:scale-100",
           isPlaying || isLoading
             ? "translate-y-0 opacity-100"
             : "translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",
         )}
       >
         {isLoading ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
+          <Loader2 className="size-5 animate-spin" />
         ) : isPlaying ? (
-          <Pause className="h-6 w-6 fill-current" />
+          <Pause className="size-6 fill-current" />
         ) : (
-          <Play className="ml-1 h-6 w-6 fill-current" />
+          <Play className="ml-1 size-6 fill-current" />
         )}
       </button>
     </div>

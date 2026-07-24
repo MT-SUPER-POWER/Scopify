@@ -49,7 +49,7 @@ export function AppUpdaterSection() {
               disabled={isChecking || isDownloading}
               className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-black transition hover:bg-white/90 disabled:opacity-50"
             >
-              <RefreshCw className="h-3.5 w-3.5" />
+              <RefreshCw className="size-3.5" />
               {isChecking ? t("settings.updater.checking") : t("settings.updater.check")}
             </button>
             {hasUpdate ? (
@@ -59,7 +59,7 @@ export function AppUpdaterSection() {
                 disabled={isDownloading}
                 className="inline-flex items-center gap-2 rounded-full bg-[#1ed760] px-4 py-2 text-xs font-bold text-black transition hover:bg-[#3be477] disabled:opacity-50"
               >
-                <Download className="h-3.5 w-3.5" />
+                <Download className="size-3.5" />
                 {t("settings.updater.download")}
               </button>
             ) : null}
@@ -69,7 +69,7 @@ export function AppUpdaterSection() {
                 onClick={install}
                 className="inline-flex items-center gap-2 rounded-full bg-[#ff3b5c] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#ff5270]"
               >
-                <Rocket className="h-3.5 w-3.5" />
+                <Rocket className="size-3.5" />
                 {t("settings.updater.install")}
               </button>
             ) : null}

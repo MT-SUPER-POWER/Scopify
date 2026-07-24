@@ -208,7 +208,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             >
               {/* ── 输入行 ── */}
               <div className="flex items-center gap-3 px-5 py-4">
-                <Search className="h-5 w-5 shrink-0 text-zinc-400" />
+                <Search className="size-5 shrink-0 text-zinc-400" />
                 <input
                   ref={inputRef}
                   value={localValue}
@@ -233,7 +233,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                     }}
                     className="shrink-0 rounded-full p-1.5 transition-colors hover:bg-white/10"
                   >
-                    <X className="h-3.5 w-3.5 text-zinc-400" />
+                    <X className="size-3.5 text-zinc-400" />
                   </motion.button>
                 )}
 
@@ -249,7 +249,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                     "disabled:cursor-not-allowed disabled:opacity-30",
                   )}
                 >
-                  <CornerDownLeft className="h-3.5 w-3.5" />
+                  <CornerDownLeft className="size-3.5" />
                 </button>
               </div>
 
@@ -289,7 +289,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                         >
                           <div className="flex min-w-0 items-center gap-3">
                             {/* 首字母头像 */}
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/8">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/8">
                               <span className="text-sm font-semibold text-zinc-300">
                                 {item.charAt(0).toUpperCase()}
                               </span>
@@ -311,7 +311,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             }}
                             className="shrink-0 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-white/10"
                           >
-                            <X className="h-3 w-3 text-zinc-500 hover:text-white" />
+                            <X className="size-3 text-zinc-500 hover:text-white" />
                           </button>
                         </motion.div>
                       ))}
@@ -321,7 +321,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   {/* 加载中 */}
                   {loading && (
                     <div className="flex items-center justify-center py-6">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-600 border-t-white" />
+                      <div className="size-4 animate-spin rounded-full border-2 border-zinc-600 border-t-white" />
                     </div>
                   )}
 
@@ -348,7 +348,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           )}
                         >
                           <div className="flex min-w-0 items-center gap-3">
-                            <Search className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
+                            <Search className="size-3.5 shrink-0 text-zinc-500" />
                             <span className="truncate text-sm">
                               <HighlightText raw={item.highLightInfo} />
                             </span>

@@ -3,11 +3,7 @@ import { join } from "node:path";
 import { app } from "electron";
 import * as yaml from "js-yaml";
 
-import {
-  type AppConfig,
-  DEFAULT_APP_CONFIG,
-  normalizeAppConfig,
-} from "../types/config.js";
+import { type AppConfig, DEFAULT_APP_CONFIG, normalizeAppConfig } from "../types/config.js";
 
 const resourceConfigDir = app.isPackaged
   ? join(process.resourcesPath, "config")

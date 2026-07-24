@@ -25,8 +25,8 @@ export function FoliaQuickEffectPickerMenu<Value extends string>({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.97, y: menuPosition.opensUpward ? 4 : -4 }}
           transition={{ duration: 0.16, ease: "easeOut" }}
-          className={`fixed z-[160] w-[7.25rem] overflow-hidden rounded-[1.15rem] border shadow-2xl ${
-            isDaylight ? "border-black/[0.08] text-black" : "border-white/[0.08] text-white"
+          className={`fixed z-160 w-29 overflow-hidden rounded-[1.15rem] border shadow-2xl ${
+            isDaylight ? "border-black/8 text-black" : "border-white/8 text-white"
           }`}
           style={{
             backgroundColor: isDaylight ? "rgba(255, 255, 255, 0.96)" : "rgba(0, 0, 0, 0.94)",
@@ -67,7 +67,7 @@ export function FoliaQuickEffectPickerMenu<Value extends string>({
                     className={`relative flex w-full items-center justify-center rounded-[0.85rem] px-2 text-center transition-all ${
                       isActive
                         ? "py-1.5"
-                        : `py-2.5 ${isDaylight ? "hover:bg-black/[0.04]" : "hover:bg-white/[0.04]"}`
+                        : `py-2.5 ${isDaylight ? "hover:bg-black/4" : "hover:bg-white/4"}`
                     }`}
                     style={
                       isActive

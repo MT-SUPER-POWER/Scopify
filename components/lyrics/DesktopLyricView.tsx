@@ -82,7 +82,7 @@ export function DesktopLyricView() {
           </div>
         </header>
 
-        <div className="flex h-[136px] flex-col justify-center px-4">
+        <div className="flex h-34 flex-col justify-center px-4">
           <CompactLyricLine
             currentTimeMs={currentTimeMs}
             line={activeLine}

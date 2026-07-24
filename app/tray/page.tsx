@@ -97,7 +97,7 @@ export default function TrayPage() {
   }, []);
 
   if (!mounted) {
-    return <div className="h-full w-full" />;
+    return <div className="size-full" />;
   }
 
   if (!isElectron) return null;
@@ -109,7 +109,7 @@ export default function TrayPage() {
     "w-full justify-start px-3 py-5 text-zinc-300 hover:text-white hover:bg-white/10 rounded-md font-normal transition-colors h-9";
 
   return (
-    <div className="animate-in fade-in zoom-in-95 flex h-full w-full flex-col gap-1 overflow-hidden rounded-xl border border-white/10 bg-[#222226] p-2 font-sans text-[13px] font-medium text-white shadow-2xl duration-200 select-none">
+    <div className="animate-in zoom-in-95 fade-in flex size-full flex-col gap-1 overflow-hidden rounded-xl border border-white/10 bg-[#222226] p-2 font-sans text-[13px] font-medium text-white shadow-2xl duration-200 select-none">
       {/* 头部：当前歌曲 - 固定 */}
       <SongTitle
         title={`${currentSong?.name || t("common.meta.unknownSong")} -
@@ -127,7 +127,7 @@ export default function TrayPage() {
             onClick={playPrev}
             title={t("tray.previous")}
           >
-            <SkipBack className="h-5 w-5 fill-current" />
+            <SkipBack className="size-5 fill-current" />
           </button>
 
           <button
@@ -137,9 +137,9 @@ export default function TrayPage() {
           >
             {/* 修复：这里正确判断并显示 Pause 或 Play 图标 */}
             {isPlaying ? (
-              <Pause className="h-6 w-6 fill-current" />
+              <Pause className="size-6 fill-current" />
             ) : (
-              <Play className="h-6 w-6 fill-current" />
+              <Play className="size-6 fill-current" />
             )}
           </button>
 
@@ -148,14 +148,14 @@ export default function TrayPage() {
             onClick={playNext}
             title={t("tray.next")}
           >
-            <SkipForward className="h-5 w-5 fill-current" />
+            <SkipForward className="size-5 fill-current" />
           </button>
           <button
             className={`rounded-full p-1.5 transition-all ${isLiked ? "text-[#1ed760]" : "text-zinc-400 hover:bg-white/10 hover:text-white"}`}
             onClick={() => toggleLike(!isLiked)}
             title={isLiked ? t("tray.unlike") : t("tray.like")}
           >
-            <Heart className={`h-6 w-6 ${isLiked ? "fill-[#1ed760]" : ""}`} />
+            <Heart className={`size-6 ${isLiked ? "fill-[#1ed760]" : ""}`} />
           </button>
         </div>
 

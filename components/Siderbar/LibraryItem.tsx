@@ -29,13 +29,13 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
           title={title}
           className="group flex h-14 w-full cursor-pointer items-center justify-center rounded-md transition-colors hover:bg-[#1a1a1a] active:scale-95"
         >
-          <div className="relative h-12 w-12 overflow-hidden rounded-md shadow-lg transition-transform group-hover:scale-110">
+          <div className="relative size-12 overflow-hidden rounded-md shadow-lg transition-transform group-hover:scale-110">
             <Image
               width={48}
               height={48}
               src={coverImg}
               alt={title}
-              className="h-full w-full object-cover"
+              className="size-full object-cover"
             />
             {isCurrentPlaylist && isPlaying && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/40">
@@ -55,13 +55,13 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
         title={title}
         className="group flex cursor-pointer items-center gap-3 rounded-md p-2 transition-colors hover:bg-[#1a1a1a]"
       >
-        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md shadow-md transition-transform group-hover:scale-105">
+        <div className="relative size-12 shrink-0 overflow-hidden rounded-md shadow-md transition-transform group-hover:scale-105">
           <Image
             width={48}
             height={48}
             src={coverImg}
             alt={title}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
           />
           {isCurrentPlaylist && isPlaying && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40">

@@ -7,6 +7,7 @@ import { ActionBar } from "@/components/artist/ActionBar";
 import { ArtistHero } from "@/components/artist/ArtistHero";
 import { DiscographyGrid } from "@/components/artist/DiscographyGrid";
 import { PopularTracks } from "@/components/artist/PopularTracks";
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPlay } from "@/hooks/artist/useArtistPlay";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -17,23 +18,58 @@ export default function ArtistPage() {
   const artistId = useSearchParams().get("id");
   const router = useSmartRouter();
 
-  const { artist, popularTracks, hotTracksQueue, discography, isLoading } = useArtistData(artistId);
+  const {
+    artist,
+    popularTracks,
+    hotTracksQueue,
+    discography,
+    isError,
+    isLoading,
+    isRefreshing,
+    refetch,
+  } = useArtistData(artistId);
   const { isPlayingArtist, loadingAlbumId, handlePlayArtist, handlePlayAlbum } =
     useArtistPlay(hotTracksQueue);
 
   if (!artistId)
     return <div className="h-screen bg-[#121212] p-8 text-white">{t("artist.page.invalidId")}</div>;
 
-  if (isLoading || !artist)
+  if (isLoading)
     return (
       <div className="flex h-screen items-center justify-center bg-[#121212] p-8 text-white">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1DB954]" />
+        <Loader2 className="size-8 animate-spin text-[#1DB954]" />
+      </div>
+    );
+
+  if (!artist)
+    return (
+      <div className="min-h-screen bg-[#121212] p-8">
+        <NetworkRetryState
+          title={t("network.offline.title")}
+          subtitle={t("network.offline.subtitle")}
+          actionLabel={t("network.action.refresh")}
+          isRetrying={isRefreshing}
+          onRetry={() => void refetch()}
+        />
       </div>
     );
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#121212] pb-24 font-sans text-white">
       <ArtistHero artist={artist} />
+
+      {isError && (
+        <div className="px-6 pt-6 md:px-8">
+          <NetworkRetryState
+            compact
+            title={t("network.offline.title")}
+            subtitle={t("network.offline.subtitle")}
+            actionLabel={t("network.action.refresh")}
+            isRetrying={isRefreshing}
+            onRetry={() => void refetch()}
+          />
+        </div>
+      )}
 
       <div className="mx-auto w-full max-w-7xl bg-linear-to-b from-black/20 to-[#121212]">
         <ActionBar

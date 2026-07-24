@@ -48,12 +48,12 @@ export function LoginRequiredPrompt({ reason, onLogin, compact }: LoginRequiredP
     <div
       className={
         compact
-          ? "flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/[0.04] px-3 py-2"
-          : "flex flex-col items-center justify-center gap-3 rounded-lg border border-white/10 bg-white/[0.04] px-6 py-8 text-center"
+          ? "flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/4 px-3 py-2"
+          : "flex flex-col items-center justify-center gap-3 rounded-lg border border-white/10 bg-white/4 px-6 py-8 text-center"
       }
     >
       <div className={compact ? "min-w-0" : "flex flex-col items-center gap-2"}>
-        {!compact && <LogIn className="h-8 w-8 text-zinc-400" />}
+        {!compact && <LogIn className="size-8 text-zinc-400" />}
         <p className="text-sm font-semibold text-white">{t(copy.title)}</p>
         <p className="mt-1 text-xs text-zinc-400">{t(copy.subtitle)}</p>
       </div>

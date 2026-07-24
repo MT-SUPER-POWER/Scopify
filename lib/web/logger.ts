@@ -93,11 +93,16 @@ function toLogMetadata(value: unknown): LogMetadata {
 }
 
 function createEventId() {
-  return globalThis.crypto?.randomUUID?.() ?? `renderer-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return (
+    globalThis.crypto?.randomUUID?.() ??
+    `renderer-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  );
 }
 
 function writeToConsole(event: RendererLogEvent) {
-  const args = event.metadata ? ["[renderer]", event.message, event.metadata] : ["[renderer]", event.message];
+  const args = event.metadata
+    ? ["[renderer]", event.message, event.metadata]
+    : ["[renderer]", event.message];
   if (event.level === "debug") rawConsole.debug(...args);
   else if (event.level === "info") rawConsole.info(...args);
   else if (event.level === "warn") rawConsole.warn(...args);

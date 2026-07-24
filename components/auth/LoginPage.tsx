@@ -122,21 +122,21 @@ function LoginPageContent() {
           title={t("login.page.backHomeTitle")}
         >
           <Link href="/" className="flex items-center justify-center">
-            <X className="h-5 w-5 text-zinc-500 transition-colors hover:text-white" />
+            <X className="size-5 text-zinc-500 transition-colors hover:text-white" />
           </Link>
         </button>
       )}
 
       {/* 1. Logo 区域优化 */}
       <div className="mb-6 flex flex-col items-center">
-        <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black text-black shadow-2xl">
+        <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black text-black shadow-2xl">
           <Image src={logo.src} width={50} height={50} alt={t("login.logoAlt")} />
         </div>
         <p className="text-xs font-medium text-zinc-500">{t("login.page.tagline")}</p>
       </div>
 
       {/* 2. 主体宽度 */}
-      <div className="w-full max-w-[320px]">
+      <div className="w-full max-w-80">
         {reason && (
           <div className="mb-4">
             <LoginRequiredPrompt reason={reason} compact />
@@ -150,7 +150,7 @@ function LoginPageContent() {
               title={t("login.mode.qr")}
               className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
             >
-              <QrCode className="mr-1 h-3.5 w-3.5" />
+              <QrCode className="mr-1 size-3.5" />
               {t("login.mode.qr")}
             </TabsTrigger>
             <TabsTrigger
@@ -158,7 +158,7 @@ function LoginPageContent() {
               title={t("login.mode.password")}
               className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
             >
-              <Lock className="mr-1 h-3.5 w-3.5" />
+              <Lock className="mr-1 size-3.5" />
               {t("login.mode.password")}
             </TabsTrigger>
             <TabsTrigger
@@ -166,7 +166,7 @@ function LoginPageContent() {
               title={t("login.mode.sms")}
               className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
             >
-              <Smartphone className="mr-1 h-3.5 w-3.5" />
+              <Smartphone className="mr-1 size-3.5" />
               {t("login.mode.sms")}
             </TabsTrigger>
           </TabsList>

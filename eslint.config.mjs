@@ -1,95 +1,68 @@
-// @ts-check
-
+// eslint.config.mjs
 import eslint from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier";
-import prettierPlugin from "eslint-plugin-prettier";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import tailwindcssPlugin from "eslint-plugin-tailwindcss";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  // --- Global ignore ---
+  // 1. 全局忽略
   {
-    ignores: ["backend/api-enhanced", "node_modules", "dist", ".next", "out", "renderer"],
+    ignores: [
+      "backend/api-enhanced",
+      "node_modules",
+      "dist",
+      ".next",
+      "out",
+      "renderer",
+      "docs",
+      "components/ui",
+      "public/data",
+      ".agents",
+      ".claude",
+      ".codex",
+    ],
   },
 
-  // --- Base: ESLint recommended ---
+  // 2. 基础 ESLint 与 TypeScript 推荐规则（极速语法与逻辑检查）
   eslint.configs.recommended,
+  ...tseslint.configs.recommended,
 
-  // --- TypeScript: type-aware + recommended ---
-  ...tseslint.configs.recommendedTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: ["*.mjs", "*.ts"],
-          defaultProject: "tsconfig.json",
-        },
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
-
-  // --- React & React Hooks ---
+  // 3. React & React Hooks
   {
     ...reactPlugin.configs.flat.recommended,
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
+    settings: { react: { version: "detect" } },
   },
   reactPlugin.configs.flat["jsx-runtime"],
   {
-    plugins: {
-      "react-hooks": reactHooksPlugin,
-    },
+    plugins: { "react-hooks": reactHooksPlugin },
     rules: {
       "react-hooks/exhaustive-deps": "warn",
       "react-hooks/rules-of-hooks": "error",
     },
   },
 
-  // --- Tailwind CSS ---
+  // 4. Tailwind CSS
   tailwindcssPlugin.configs.recommended,
   {
-    settings: {
-      tailwindcss: {
-        cssConfigPath: "app/globals.css",
-      },
-    },
-  },
-
-  // --- Prettier (跑在 ESLint --fix 中，使用 .prettierrc 控制) ---
-  {
-    plugins: {
-      prettier: prettierPlugin,
-    },
+    settings: { tailwindcss: { cssConfigPath: "app/globals.css" } },
+    ignores: ["components/ui/*.tsx"],
     rules: {
-      "prettier/prettier": "error",
+      "tailwindcss/no-custom-classname": "off",
     },
   },
 
-  // --- 项目特定规则覆盖与后处理 ---
+  // 5. 项目自定义覆盖
   {
     files: ["**/*.ts", "**/*.tsx"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-non-null-assertion": "warn",
       "@typescript-eslint/no-unused-vars": [
         "warn",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      // 避免 perfectionist 对 JSX props 的排序与 prettier-plugin-tailwindcss 冲突
-      "perfectionist/sort-jsx-props": "off",
-      "react/prop-types": "off", // TypeScript handles prop types
+      "react/prop-types": "off",
     },
   },
-
-  eslintConfigPrettier,
 );

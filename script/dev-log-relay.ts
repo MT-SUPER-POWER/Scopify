@@ -104,12 +104,18 @@ function writeEvent(event: RendererLogEvent) {
   const source = normalized.source ?? "app";
   const line = JSON.stringify(normalized);
   mkdirSync(logDir, { recursive: true });
-  appendFileSync(getLogPath(normalized.timestamp ?? new Date().toISOString()), `${line}\n`, "utf-8");
+  appendFileSync(
+    getLogPath(normalized.timestamp ?? new Date().toISOString()),
+    `${line}\n`,
+    "utf-8",
+  );
 
   const prefix = `[web:${source}]`;
   if (normalized.level === "debug") console.debug(prefix, normalized.message, normalized.metadata);
-  else if (normalized.level === "info") console.info(prefix, normalized.message, normalized.metadata);
-  else if (normalized.level === "warn") console.warn(prefix, normalized.message, normalized.metadata);
+  else if (normalized.level === "info")
+    console.info(prefix, normalized.message, normalized.metadata);
+  else if (normalized.level === "warn")
+    console.warn(prefix, normalized.message, normalized.metadata);
   else console.error(prefix, normalized.message, normalized.metadata);
 }
 

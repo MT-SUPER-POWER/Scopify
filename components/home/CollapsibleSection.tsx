@@ -41,7 +41,7 @@ export function CollapsibleSection({
               {isOpen ? t("common.action.showLess") : t("common.action.showAll")}
               <ChevronRight
                 className={cn(
-                  "h-4 w-4 transition-transform duration-200",
+                  "size-4 transition-transform duration-200",
                   isOpen ? "-rotate-90" : "rotate-90",
                 )}
               />
@@ -63,7 +63,7 @@ export function CollapsibleSection({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 h-12 bg-linear-to-t from-[#121212] via-[#121212]/80 to-transparent"
+                className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-[#121212] via-[#121212]/80 to-transparent"
               />
             )}
           </AnimatePresence>

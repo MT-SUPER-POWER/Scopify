@@ -17,10 +17,10 @@ export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () =
           <img
             src={artist.picUrl || artist.img1v1Url}
             alt={artist.name}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
           />
         ) : (
-          <User className="h-12 w-12 text-zinc-500" />
+          <User className="size-12 text-zinc-500" />
         )}
       </div>
       <h4 className="mb-1 w-full truncate text-base font-bold">{artist.name}</h4>

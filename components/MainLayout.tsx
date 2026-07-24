@@ -228,7 +228,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             orientation="horizontal"
             defaultLayout={defaultLayout}
             onLayoutChanged={onLayoutChanged}
-            className="h-full w-full"
+            className="size-full"
           >
             <ResizablePanel
               panelRef={sidebarPanelRef}
@@ -254,8 +254,8 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             />
 
             <ResizablePanel>
-              <div className="group/main relative h-full w-full overflow-hidden rounded-lg bg-[#121212]">
-                <div className="pointer-events-none absolute top-0 right-0 left-0 z-20">
+              <div className="group/main relative size-full overflow-hidden rounded-lg bg-[#121212]">
+                <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                   <div className="pointer-events-auto">
                     <Header
                       onOpenSearch={() => setIsSearchOpen(true)}
@@ -265,19 +265,19 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
                 </div>
 
                 {/* DEBUG: 滚动区元素全局绑定共享 */}
-                <ScrollArea className="h-full w-full" viewportRef={setScrollContainer}>
+                <ScrollArea className="size-full" viewportRef={setScrollContainer}>
                   {children}
                 </ScrollArea>
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : (
-          <div className="flex h-full w-full gap-2">
+          <div className="flex size-full gap-2">
             <div className="w-[20%] overflow-hidden rounded-lg bg-[#0f0f0f]">
               <Sidebar />
             </div>
             <div className="group/main relative flex-1 overflow-hidden rounded-lg bg-[#121212]">
-              <div className="pointer-events-none absolute top-0 right-0 left-0 z-20">
+              <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                 <div className="pointer-events-auto">
                   <Header
                     onOpenSearch={() => setIsSearchOpen(true)}
@@ -285,7 +285,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
                   />
                 </div>
               </div>
-              <ScrollArea className="h-full w-full" viewportRef={setScrollContainer}>
+              <ScrollArea className="size-full" viewportRef={setScrollContainer}>
                 {children}
               </ScrollArea>
             </div>

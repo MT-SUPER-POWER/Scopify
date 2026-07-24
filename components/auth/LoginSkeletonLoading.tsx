@@ -9,7 +9,7 @@ const LoginSkeletonLoading = () => {
       {/* Logo 骨架 */}
       <div className="mb-6 flex flex-col items-center">
         <motion.div
-          className="mb-3 h-14 w-14 rounded-2xl bg-zinc-800"
+          className="mb-3 size-14 rounded-2xl bg-zinc-800"
           animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
         />
@@ -20,7 +20,7 @@ const LoginSkeletonLoading = () => {
         />
       </div>
 
-      <div className="w-full max-w-[320px]">
+      <div className="w-full max-w-80">
         {/* Tabs 切换器骨架 */}
         <motion.div
           className="mb-4 h-10 w-full rounded-xl bg-zinc-900"
@@ -35,7 +35,7 @@ const LoginSkeletonLoading = () => {
           transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.3 }}
         >
           {/* 模拟中间的二维码区域 */}
-          <motion.div className="h-40 w-40 rounded-xl bg-zinc-800/80" />
+          <motion.div className="size-40 rounded-xl bg-zinc-800/80" />
           <motion.div className="mt-2 h-4 w-32 rounded-full bg-zinc-800/80" />
           <motion.div className="h-3 w-40 rounded-full bg-zinc-800/60" />
         </motion.div>

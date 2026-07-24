@@ -126,15 +126,15 @@ export function UpdatePlaylistDialog({
                 <img
                   src={coverUrl}
                   alt={t("playlist.form.coverAlt")}
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 />
               ) : (
-                <ImageIcon className="h-12 w-12 text-[#b3b3b3]" />
+                <ImageIcon className="size-12 text-[#b3b3b3]" />
               )}
 
               {/* 悬浮遮罩 */}
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
-                <ImageIcon className="mb-2 h-8 w-8 text-white" />
+                <ImageIcon className="mb-2 size-8 text-white" />
                 <span className="text-sm font-medium text-white">
                   {t("playlist.form.replaceImage")}
                 </span>

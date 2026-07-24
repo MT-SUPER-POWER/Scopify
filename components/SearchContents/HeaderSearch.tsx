@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { searchDefault, searchSuggest } from "@/lib/api/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
+import { getStoredMusicCookie } from "@/lib/web/auth";
 import { useSearchStore } from "@/store/module/search";
 import { HighlightText, type SuggestItem, SuggestTag } from "./SearchHelper";
 
@@ -66,7 +67,7 @@ export default function HeaderSearch() {
     setLoading(true);
     const t = setTimeout(async () => {
       try {
-        const res = await searchSuggest(localValue.trim());
+        const res = await searchSuggest(localValue.trim(), getStoredMusicCookie());
         setSuggests(res.data?.data?.suggests ?? []);
       } catch {
         setSuggests([]);
@@ -82,7 +83,7 @@ export default function HeaderSearch() {
     let isActive = true;
     const fetchHot = async () => {
       try {
-        const res = await searchDefault();
+        const res = await searchDefault(getStoredMusicCookie());
         if (!isActive) return;
         const kws = res.data?.data.algWords.map((w: { keyword: string }) => w.keyword) || [];
         if (!kws.length) return;
@@ -178,7 +179,7 @@ export default function HeaderSearch() {
       >
         <Search
           className={cn(
-            "h-4 w-4 shrink-0 transition-colors",
+            "size-4 shrink-0 transition-colors",
             focused ? "text-zinc-400" : "text-zinc-500 group-hover:text-zinc-400",
           )}
         />
@@ -217,7 +218,7 @@ export default function HeaderSearch() {
             }}
             className="shrink-0 rounded-full p-1 transition-colors hover:bg-white/10"
           >
-            <X className="h-3.5 w-3.5 text-zinc-500 hover:text-white" />
+            <X className="size-3.5 text-zinc-500 hover:text-white" />
           </button>
         ) : (
           <div className="hidden shrink-0 items-center gap-1 rounded-md border border-zinc-700/60 bg-white/3 px-1.5 py-0.5 text-[10px] font-bold text-zinc-600 lg:flex">
@@ -237,7 +238,7 @@ export default function HeaderSearch() {
             transition={{ duration: 0.14, ease: [0.16, 1, 0.3, 1] }}
             style={{ transformOrigin: "top" }}
             className={cn(
-              "absolute top-full right-0 left-0 z-50 overflow-hidden",
+              "absolute inset-x-0 top-full z-50 overflow-hidden",
               GLASS,
               "rounded-t-none rounded-b-2xl border-t-0 pt-2",
             )}
@@ -269,7 +270,7 @@ export default function HeaderSearch() {
                     className="group/item flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-white/5"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <Clock className="h-4 w-4 shrink-0 text-zinc-500" />
+                      <Clock className="size-4 shrink-0 text-zinc-500" />
                       <span className="truncate text-[15px] text-zinc-300">{item}</span>
                     </div>
                     <button
@@ -280,7 +281,7 @@ export default function HeaderSearch() {
                       }}
                       className="shrink-0 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-white/10"
                     >
-                      <X className="h-3.5 w-3.5 text-zinc-500 hover:text-white" />
+                      <X className="size-3.5 text-zinc-500 hover:text-white" />
                     </button>
                   </motion.div>
                 ))}
@@ -290,7 +291,7 @@ export default function HeaderSearch() {
             {/* 加载状态 */}
             {loading && (
               <div className="flex items-center justify-center py-6">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-700 border-t-zinc-400" />
+                <div className="size-4 animate-spin rounded-full border-2 border-zinc-700 border-t-zinc-400" />
               </div>
             )}
 
@@ -314,7 +315,7 @@ export default function HeaderSearch() {
                     className="flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-white/5"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <Search className="h-4 w-4 shrink-0 text-zinc-500" />
+                      <Search className="size-4 shrink-0 text-zinc-500" />
                       <span className="truncate text-base">
                         <HighlightText raw={item.highLightInfo} />
                       </span>

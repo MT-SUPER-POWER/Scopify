@@ -9,7 +9,7 @@ function ArtistAvatar({ artist }: { artist: CommentHeaderArtist }) {
 
   if (!artist.avatarUrl) {
     return (
-      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-700 text-xs font-bold text-white ring-2 ring-[#121212]">
+      <span className="flex size-7 items-center justify-center rounded-full bg-zinc-700 text-xs font-bold text-white ring-2 ring-[#121212]">
         {initial}
       </span>
     );
@@ -21,7 +21,7 @@ function ArtistAvatar({ artist }: { artist: CommentHeaderArtist }) {
       alt={artist.name}
       width={28}
       height={28}
-      className="h-7 w-7 rounded-full object-cover ring-2 ring-[#121212]"
+      className="size-7 rounded-full object-cover ring-2 ring-[#121212]"
     />
   );
 }
@@ -40,13 +40,13 @@ export function CommentHeader({
 
   return (
     <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
-      <div className="h-48 w-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.02] lg:h-56 lg:w-56">
+      <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:size-56">
         <Image
           width={400}
           height={400}
           src={coverUrl}
           alt={title}
-          className="h-full w-full object-cover"
+          className="size-full object-cover"
         />
       </div>
 
@@ -63,7 +63,7 @@ export function CommentHeader({
         </div>
 
         <h1
-          className="m-0 mb-4 line-clamp-3 text-4xl leading-[1.1] font-black tracking-tighter wrap-break-word drop-shadow-lg md:mb-6 md:text-5xl lg:text-6xl"
+          className="leading-1.1 m-0 mb-4 line-clamp-3 text-4xl font-black tracking-tighter wrap-break-word drop-shadow-lg md:mb-6 md:text-5xl lg:text-6xl"
           title={title}
         >
           {title}
@@ -86,7 +86,7 @@ export function CommentHeader({
                     </button>
                   ))}
                   {remainingArtistCount > 0 && (
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-800 text-[11px] font-bold text-white ring-2 ring-[#121212]">
+                    <span className="flex size-7 items-center justify-center rounded-full bg-zinc-800 text-[11px] font-bold text-white ring-2 ring-[#121212]">
                       +{remainingArtistCount}
                     </span>
                   )}

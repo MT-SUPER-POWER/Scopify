@@ -14,7 +14,7 @@ export function DiscographyGrid({ albums, loadingAlbumId, onPlayAlbum, onClickAl
   const { t } = useI18n();
 
   return (
-    <div className="mt-12 mb-12 px-6 md:px-8">
+    <div className="my-12 px-6 md:px-8">
       <h2 className="mb-4 text-2xl font-bold">{t("artist.discography.title")}</h2>
       {albums.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-6 lg:grid-cols-5">
@@ -35,12 +35,12 @@ export function DiscographyGrid({ albums, loadingAlbumId, onPlayAlbum, onClickAl
                 <button
                   type="button"
                   onClick={(e) => onPlayAlbum(album, e)}
-                  className="absolute right-2 bottom-2 flex h-12 w-12 translate-y-2 items-center justify-center rounded-full bg-[#1DB954] opacity-0 shadow-lg shadow-black/40 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1ed760]"
+                  className="absolute right-2 bottom-2 flex size-12 translate-y-2 items-center justify-center rounded-full bg-[#1DB954] opacity-0 shadow-lg shadow-black/40 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1ed760]"
                 >
                   {loadingAlbumId === album.id ? (
-                    <Loader2 className="h-5 w-5 animate-spin text-black" />
+                    <Loader2 className="size-5 animate-spin text-black" />
                   ) : (
-                    <Play className="ml-1 h-5 w-5 fill-black text-black" />
+                    <Play className="ml-1 size-5 fill-black text-black" />
                   )}
                 </button>
               </div>

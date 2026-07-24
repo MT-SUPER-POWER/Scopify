@@ -1,10 +1,11 @@
 "use client";
 
-import { Loader2, Play, RefreshCw } from "lucide-react";
+import { Loader2, Play } from "lucide-react";
 import Image from "next/image";
 import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { GridCard } from "@/components/home/GridCard";
 import { HomePageSkeleton } from "@/components/home/HomePageSkeleton";
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { getTimeTheme, useHomeData } from "@/hooks/home/useHomeData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatPlayCount } from "@/lib/utils";
@@ -54,17 +55,6 @@ export default function HomePage() {
                   <h1 className="text-3xl leading-none font-bold tracking-tight text-white">
                     {t(getTimeTheme().greetingKey)}
                   </h1>
-                  {(hasError || !isLoading) && (
-                    <button
-                      type="button"
-                      onClick={() => fetchHomeData()}
-                      disabled={isLoading}
-                      className="rounded-full p-2 text-zinc-400 transition-all hover:bg-white/10 hover:text-white disabled:opacity-50"
-                      title={t("home.refreshTitle")}
-                    >
-                      <RefreshCw className={cn("size-5", isLoading && "animate-spin")} />
-                    </button>
-                  )}
                 </div>
               }
               collapsedHeight="160px"
@@ -120,7 +110,7 @@ export default function HomePage() {
                       type="button"
                       onClick={(e) => handlePlayPlaylist(item.id, e)}
                       disabled={loadingPlayId === `playlist-${item.id}`}
-                      className="absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1fdf64] disabled:opacity-80"
+                      className="absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1fdf64]"
                     >
                       {loadingPlayId === `playlist-${item.id}` ? (
                         <Loader2 className="size-4 animate-spin" />
@@ -133,6 +123,17 @@ export default function HomePage() {
               </div>
             </CollapsibleSection>
           </section>
+
+          {hasError && (
+            <NetworkRetryState
+              compact
+              title={t("network.offline.title")}
+              subtitle={t("network.offline.subtitle")}
+              actionLabel={t("network.action.refresh")}
+              isRetrying={isLoading}
+              onRetry={() => void fetchHomeData()}
+            />
+          )}
 
           {/* 推荐歌单 */}
           <section>

@@ -21,7 +21,7 @@ export function Toggle({ enabled, onChange }: { enabled: boolean; onChange: () =
     >
       <span
         className={cn(
-          "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+          "pointer-events-none inline-block size-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
           enabled ? "translate-x-5" : "translate-x-0",
         )}
       />
@@ -87,7 +87,7 @@ export function SettingRow({
           <span className="text-base font-medium text-white">{label}</span>
           {requiresRestart ? (
             <span className="inline-flex items-center gap-1 rounded border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-1.5 py-0.5 text-xs font-medium text-[#f59e0b]">
-              <RotateCcw className="h-2.5 w-2.5" />
+              <RotateCcw className="size-2.5" />
               {t("settings.restartRequired")}
             </span>
           ) : null}
@@ -133,7 +133,7 @@ export function SettingSelect({
       >
         {children}
       </select>
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-white" />
+      <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-white" />
     </div>
   );
 }

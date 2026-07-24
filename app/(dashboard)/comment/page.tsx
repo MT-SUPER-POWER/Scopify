@@ -76,7 +76,7 @@ export default function CommentPage() {
   if (!songId) {
     return (
       <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-[#121212] p-8 text-zinc-400">
-        <MessageCircle className="h-16 w-16 opacity-30" />
+        <MessageCircle className="size-16 opacity-30" />
         <span>{t("comments.page.noComments")}</span>
       </div>
     );
@@ -85,7 +85,7 @@ export default function CommentPage() {
   return (
     <div className="relative min-h-screen w-full bg-[#121212] pb-12 font-sans text-white">
       <div
-        className="pointer-events-none absolute top-0 right-0 left-0 z-0 h-100 scale-110 bg-cover bg-center opacity-60 blur-3xl md:h-125"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 scale-110 bg-cover bg-center opacity-60 blur-3xl md:h-125"
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.25), #121212), url(${albumCover})`,
         }}
@@ -101,7 +101,7 @@ export default function CommentPage() {
       />
 
       <div className="relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] via-20% to-[#121212]">
-        <div className="mx-auto w-full max-w-4xl px-6 py-6">
+        <div className="mx-auto w-full max-w-4xl p-6">
           <div className="mb-8 flex items-end justify-between">
             <h2 className="text-xl font-bold">{t("comments.page.allComments")}</h2>
           </div>
@@ -155,7 +155,7 @@ export default function CommentPage() {
 
           <div ref={observerTarget} className="flex items-center justify-center py-8">
             {isLoading ? (
-              <Loader2 className="h-6 w-6 animate-spin text-[#1DB954]" />
+              <Loader2 className="size-6 animate-spin text-[#1DB954]" />
             ) : hasMore ? (
               <span className="text-sm text-[#B3B3B3]">{t("comments.page.loadMore")}</span>
             ) : (
@@ -170,10 +170,10 @@ export default function CommentPage() {
           ref={toggleBtnRef}
           type="button"
           onClick={() => setIsInputOpen((open) => !open)}
-          className="group fixed right-8 bottom-28 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#1DB954] text-black shadow-lg transition-all duration-200 hover:scale-105 hover:bg-[#1ed760] hover:shadow-2xl active:scale-95"
+          className="group fixed right-8 bottom-28 z-40 flex size-14 items-center justify-center rounded-full bg-[#1DB954] text-black shadow-lg transition-all duration-200 hover:scale-105 hover:bg-[#1ed760] hover:shadow-2xl active:scale-95"
           title={replyTarget ? t("comments.page.replyComment") : t("comments.page.addComment")}
         >
-          <MessageCircle className="h-6 w-6 transition-transform group-hover:rotate-12" />
+          <MessageCircle className="size-6 transition-transform group-hover:rotate-12" />
         </button>
       )}
 
@@ -205,7 +205,7 @@ export default function CommentPage() {
                 className="rounded-full p-2 transition-colors hover:bg-white/10"
                 title={t("common.action.close")}
               >
-                <X className="h-5 w-5" />
+                <X className="size-5" />
               </button>
             </div>
 
@@ -221,7 +221,7 @@ export default function CommentPage() {
                   className="shrink-0 text-[#B3B3B3] hover:text-white"
                   title={t("comments.input.cancel")}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="size-4" />
                 </button>
               </div>
             )}

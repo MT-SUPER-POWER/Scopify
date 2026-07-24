@@ -30,13 +30,13 @@ export const VolumeControl = ({
 
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
-      return <VolumeOff className="h-5 w-5" />;
+      return <VolumeOff className="size-5" />;
     } else if (volume < 33) {
-      return <Volume className="h-5 w-5" />;
+      return <Volume className="size-5" />;
     } else if (volume < 66) {
-      return <Volume1 className="h-5 w-5" />;
+      return <Volume1 className="size-5" />;
     } else {
-      return <Volume2 className="h-5 w-5" />;
+      return <Volume2 className="size-5" />;
     }
   };
 

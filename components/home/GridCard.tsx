@@ -46,21 +46,21 @@ export function GridCard({
             height={200}
             src={coverUrl || ""}
             alt={name}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
           />
         </div>
         {onPlay && (
           <button
             type="button"
             onClick={onPlay}
-            className="absolute right-2 bottom-2 flex h-12 w-12 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
+            className="absolute right-2 bottom-2 flex size-12 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
           >
-            <Play className={cn("ml-0.5 h-6 w-6 fill-current", isLoading && "animate-pulse")} />
+            <Play className={cn("ml-0.5 size-6 fill-current", isLoading && "animate-pulse")} />
           </button>
         )}
         {playCount !== undefined && (
           <div className="pointer-events-none absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[11px] text-white opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-300 select-none group-hover:opacity-100">
-            <Play className="h-2.5 w-2.5 fill-current text-white" />
+            <Play className="size-2.5 fill-current text-white" />
             <span>{formatPlayCount(playCount)}次播放</span>
           </div>
         )}

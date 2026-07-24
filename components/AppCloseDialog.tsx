@@ -74,7 +74,7 @@ export default function AppCloseDialog() {
           onClick={() => setRemember((current) => !current)}
         >
           <div
-            className={`flex h-4 w-4 items-center justify-center rounded-sm border transition-colors ${remember ? "border-[#1ed760] bg-[#1ed760]" : "border-[#727272] group-hover:border-white"}`}
+            className={`flex size-4 items-center justify-center rounded-sm border transition-colors ${remember ? "border-[#1ed760] bg-[#1ed760]" : "border-[#727272] group-hover:border-white"}`}
           >
             {remember ? (
               <svg

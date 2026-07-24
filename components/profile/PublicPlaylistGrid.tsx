@@ -30,11 +30,11 @@ export function PublicPlaylistGrid({ playlists, onClickPlaylist }: Props) {
               height={300}
               src={playlist.coverImgUrl ? `${playlist.coverImgUrl}?param=300y300` : ""}
               alt={playlist.name}
-              className="h-full w-full object-cover"
+              className="size-full object-cover"
             />
             <div className="absolute right-2 bottom-2 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
               <button
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1ed760] shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
+                className="flex size-12 items-center justify-center rounded-full bg-[#1ed760] shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
                 onClick={(e) => {
                   e.stopPropagation();
                   onClickPlaylist(playlist.id);

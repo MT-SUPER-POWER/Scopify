@@ -59,14 +59,14 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
             onClick={() => setShowPassword(!showPassword)}
             className="absolute top-1/2 right-3 -translate-y-1/2 text-zinc-500 transition-colors outline-none hover:text-white"
           >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         </div>
       </div>
       <Button
         type="submit"
         disabled={isLoading}
-        className="mt-2 h-10 w-full rounded-full bg-[#1db954] font-bold text-black transition-all hover:scale-[1.02] hover:bg-[#1ed760] active:scale-95 disabled:opacity-50"
+        className="hover:scale-1.02 mt-2 h-10 w-full rounded-full bg-[#1db954] font-bold text-black transition-all hover:bg-[#1ed760] active:scale-95 disabled:opacity-50"
       >
         {isLoading ? t("login.form.passwordSubmitting") : t("login.form.passwordSubmit")}
       </Button>

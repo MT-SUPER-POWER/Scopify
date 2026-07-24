@@ -46,22 +46,22 @@ export default function Header({
         <button
           onClick={() => smartRouter.back()}
           className={cn(
-            "flex h-10 w-10 items-center justify-center rounded-full",
+            "flex size-10 items-center justify-center rounded-full",
             "text-zinc-500 transition-all hover:text-white",
             NAV_BTN,
           )}
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="size-5" />
         </button>
         <button
           onClick={() => smartRouter.forward()}
           className={cn(
-            "flex h-10 w-10 items-center justify-center rounded-full",
+            "flex size-10 items-center justify-center rounded-full",
             "text-zinc-500 transition-all hover:text-white",
             NAV_BTN,
           )}
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="size-5" />
         </button>
       </div>
 
@@ -70,13 +70,13 @@ export default function Header({
         <Link
           href="/"
           className={cn(
-            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+            "flex size-10 shrink-0 items-center justify-center rounded-full",
             "text-zinc-500 transition-all hover:text-white active:scale-95",
             NAV_BTN,
             "hidden md:flex",
           )}
         >
-          <Home className="h-4.5 w-4.5" />
+          <Home className="size-4.5" />
         </Link>
 
         <HeaderSearch />

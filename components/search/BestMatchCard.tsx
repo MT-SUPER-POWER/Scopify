@@ -57,13 +57,13 @@ export function BestMatchCard({ song, songs }: Props) {
           className="group relative flex min-h-55 flex-1 cursor-pointer flex-col justify-end rounded-xl bg-[#181818] p-6 transition-colors hover:bg-[#282828]"
           onClick={handlePlay}
         >
-          <div className="mb-5 h-24 w-24 overflow-hidden rounded-md bg-zinc-800 shadow-2xl">
+          <div className="mb-5 size-24 overflow-hidden rounded-md bg-zinc-800 shadow-2xl">
             <Image
               width={96}
               height={96}
               src={song.album?.picUrl || song.artists[0]?.picUrl || ""}
               alt={song.name}
-              className="h-full w-full object-cover"
+              className="size-full object-cover"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = FALLBACK_IMG;
               }}
@@ -90,12 +90,12 @@ export function BestMatchCard({ song, songs }: Props) {
               e.stopPropagation();
               handlePlay();
             }}
-            className="absolute right-6 bottom-6 flex h-14 w-14 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
+            className="absolute right-6 bottom-6 flex size-14 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
           >
             {isActive && isPlaying ? (
-              <Pause className="h-7 w-7 fill-current" />
+              <Pause className="size-7 fill-current" />
             ) : (
-              <Play className="ml-1 h-7 w-7 fill-current" />
+              <Play className="ml-1 size-7 fill-current" />
             )}
           </button>
         </div>

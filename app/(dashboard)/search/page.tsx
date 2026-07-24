@@ -6,6 +6,7 @@ import { AllView } from "@/components/search/AllView";
 import { CategoryTabs } from "@/components/search/CategoryTabs";
 import { GridCategoryView } from "@/components/search/GridCategoryView";
 import { LoadingSkeleton } from "@/components/search/LoadingSkeleton";
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { SongsView } from "@/components/search/SongsView";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
@@ -31,6 +32,18 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen w-full overflow-y-auto bg-[#121212] p-6 pt-22 text-white">
       <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
+      {hasError && (
+        <div className="mb-6">
+          <NetworkRetryState
+            compact
+            title={t("network.offline.title")}
+            subtitle={t("network.offline.subtitle")}
+            actionLabel={t("network.action.refresh")}
+            isRetrying={loading}
+            onRetry={() => void refetch()}
+          />
+        </div>
+      )}
       {loading && <LoadingSkeleton />}
       {!loading && activeCategory === "All" && (
         <AllView

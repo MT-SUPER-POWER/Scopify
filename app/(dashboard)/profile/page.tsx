@@ -40,7 +40,7 @@ export default function ProfilePage() {
   if (isLoading || !userInfo)
     return (
       <div className="flex h-full min-h-screen items-center justify-center bg-[#121212]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1DB954]" />
+        <Loader2 className="size-8 animate-spin text-[#1DB954]" />
       </div>
     );
 
@@ -67,7 +67,7 @@ export default function ProfilePage() {
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-[#121212] pb-24 font-sans text-white">
       <div
-        className="pointer-events-none absolute top-0 right-0 left-0 z-0 h-100 opacity-60 md:h-125"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 md:h-125"
         style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
       />
       <UserHero userInfo={displayUser} playlistCount={playlists.length} />
@@ -114,7 +114,7 @@ export default function ProfilePage() {
             </h2>
             <ChevronUp
               className={cn(
-                "h-5 w-5 text-zinc-400 transition-transform duration-200",
+                "size-5 text-zinc-400 transition-transform duration-200",
                 playlistsOpen && "rotate-180",
               )}
             />

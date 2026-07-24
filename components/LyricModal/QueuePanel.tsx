@@ -32,7 +32,7 @@ const QueueRow = memo(
           : "border-transparent bg-transparent hover:border-white/10 hover:bg-white/5",
       )}
     >
-      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-white/10 shadow-sm">
+      <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-white/10 shadow-sm">
         {song.al?.picUrl && (
           <Image
             width={48}
@@ -40,14 +40,14 @@ const QueueRow = memo(
             src={`${song.al.picUrl}?param=64y64`}
             alt=""
             className={cn(
-              "h-full w-full object-cover transition-transform duration-500 group-hover:scale-105",
+              "size-full object-cover transition-transform duration-500 group-hover:scale-105",
               isCurrent ? "opacity-80" : "opacity-100",
             )}
           />
         )}
         {isCurrent && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-            <Play className="h-5 w-5 fill-current text-white" />
+            <Play className="size-5 fill-current text-white" />
           </div>
         )}
       </div>
@@ -79,7 +79,6 @@ export const QueuePanel = () => {
   const listRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: queue.length,
     getScrollElement: () => listRef.current,
@@ -111,7 +110,7 @@ export const QueuePanel = () => {
 
   if (!queue.length) {
     return (
-      <div className="flex h-full w-full items-center justify-center text-sm text-white/40">
+      <div className="flex size-full items-center justify-center text-sm text-white/40">
         {t("queue.empty")}
       </div>
     );
@@ -119,11 +118,11 @@ export const QueuePanel = () => {
 
   return (
     // 苹果高质感毛玻璃核心：高斯模糊 + 饱和度提升 + 微弱的白边 + 更大的圆角
-    <div className="relative mx-auto flex h-full w-full max-w-xl flex-col overflow-hidden rounded-[32px] border border-white/8 bg-black/30 shadow-2xl backdrop-blur-[80px] backdrop-saturate-150">
+    <div className="relative mx-auto flex size-full max-w-xl flex-col overflow-hidden rounded-[32px] border border-white/8 bg-black/30 shadow-2xl backdrop-blur-[80px] backdrop-saturate-150">
       {/* 可选：添加极微弱的噪点遮罩增加真实玻璃物理质感 (需要你有一张噪点图或者用 CSS 滤镜，这里用 CSS 模拟) */}
-      <div className="bg-noise pointer-events-none absolute inset-0 opacity-[0.02] mix-blend-overlay" />
+      <div className="bg-noise opacity-0.02 pointer-events-none absolute inset-0 mix-blend-overlay" />
 
-      <div className="relative z-10 shrink-0 px-6 py-6">
+      <div className="relative z-10 shrink-0 p-6">
         <h3 className="text-xl font-bold tracking-tight text-white">{t("queue.title")}</h3>
       </div>
 

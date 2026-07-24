@@ -12,7 +12,7 @@ const DailyCalendarCover = () => {
   const dateNum = today.getDate();
 
   return (
-    <div className="z-10 flex h-full w-full shrink-0 flex-col overflow-hidden rounded-md bg-white shadow-[4px_0_10px_rgba(0,0,0,0.3)] select-none">
+    <div className="z-10 flex size-full shrink-0 flex-col overflow-hidden rounded-md bg-white shadow-[4px_0_10px_rgba(0,0,0,0.3)] select-none">
       <div className="flex h-[22%] items-center justify-center border-b border-black/10 bg-linear-to-b from-[#e34242] to-[#c42b2b]">
         <span className="text-lg font-medium tracking-widest text-white md:text-xl">
           {dayOfWeek}
@@ -48,7 +48,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
 
   return (
     <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
-      <div className="h-48 w-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.02] lg:h-56 lg:w-56">
+      <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:size-56">
         {isDaily || !info.cover ? (
           <DailyCalendarCover />
         ) : (
@@ -57,7 +57,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
             height={400}
             src={info.cover}
             alt={info.title}
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
           />
         )}
       </div>
@@ -78,7 +78,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         </div>
 
         <h1
-          className="m-0 mb-4 line-clamp-3 text-4xl leading-[1.1] font-black tracking-tighter wrap-break-word drop-shadow-lg md:mb-6 md:text-5xl lg:text-6xl"
+          className="leading-1.1 m-0 mb-4 line-clamp-3 text-4xl font-black tracking-tighter wrap-break-word drop-shadow-lg md:mb-6 md:text-5xl lg:text-6xl"
           title={info.title}
         >
           {info.title}
@@ -94,10 +94,10 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
                     alt={info.creator}
                     width={28}
                     height={28}
-                    className="h-7 w-7 rounded-full object-cover"
+                    className="size-7 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-600 text-xs font-bold">
+                  <div className="flex size-7 items-center justify-center rounded-full bg-zinc-600 text-xs font-bold">
                     M
                   </div>
                 )}

@@ -74,7 +74,7 @@ function ActionCard({ title, subtitle, buttonText, onClick }: ActionCardProps) {
 function SkeletonItem() {
   return (
     <div className="flex animate-pulse items-center gap-3 rounded-md p-2">
-      <div className="h-12 w-12 shrink-0 rounded-md bg-[#242424]" />
+      <div className="size-12 shrink-0 rounded-md bg-[#242424]" />
       <div className="flex flex-1 flex-col gap-2">
         <div className="h-3 w-3/4 rounded-full bg-[#242424]" />
         <div className="h-2 w-1/2 rounded-full bg-[#242424]" />
@@ -140,7 +140,7 @@ function SidebarImpl() {
       Promise.all([getUserPlaylist(uid), getUserLikeLists(uid)])
         .then(([userPlaylistRes, likeListRes]) => {
           useUserStore.getState().setPlayList(userPlaylistRes.data.playlist);
-          useUserStore.getState().setLikeListIDs(likeListRes.data.ids);
+          useUserStore.getState().setLikeListIDs(likeListRes.data.ids ?? []);
         })
         .catch((e) => {
           console.error("获取歌单或喜欢列表失败", e);
@@ -240,7 +240,7 @@ function SidebarImpl() {
           height={40}
           src={`${artist.avatarUrl}?param=100y100`}
           alt={artist.name}
-          className="h-10 w-10 shrink-0 rounded-full bg-[#242424] object-cover"
+          className="size-10 shrink-0 rounded-full bg-[#242424] object-cover"
         />
         {!isVeryNarrow && (
           <span className="min-w-0 truncate text-sm font-medium text-zinc-200 group-hover:text-white">
@@ -254,7 +254,7 @@ function SidebarImpl() {
     isVeryNarrow ? (
       <div className="flex flex-col items-center gap-3">
         {[1, 2, 3, 4].map((item) => (
-          <div key={item} className="h-10 w-10 animate-pulse rounded-full bg-[#242424]" />
+          <div key={item} className="size-10 animate-pulse rounded-full bg-[#242424]" />
         ))}
       </div>
     ) : (
@@ -277,7 +277,7 @@ function SidebarImpl() {
     if (artistsError) {
       return isVeryNarrow ? (
         <div className="mt-4 flex flex-col items-center gap-2 text-zinc-500">
-          <RefreshCw className="h-6 w-6" />
+          <RefreshCw className="size-6" />
         </div>
       ) : (
         <div className="flex flex-col gap-3 py-2">
@@ -296,7 +296,7 @@ function SidebarImpl() {
 
       return isVeryNarrow ? (
         <div className="mt-4 flex flex-col items-center gap-4 text-zinc-500">
-          <User className="h-6 w-6" />
+          <User className="size-6" />
         </div>
       ) : (
         <div className="flex flex-col gap-3 py-2">
@@ -330,7 +330,7 @@ function SidebarImpl() {
     <div
       ref={containerRef}
       className={cn(
-        "flex h-full w-full flex-col",
+        "flex size-full flex-col",
         !isVeryNarrow && "bg-momo-dark",
         isVeryNarrow ? "gap-3" : "gap-[6.5px]",
       )}
@@ -354,7 +354,7 @@ function SidebarImpl() {
             )}
           >
             <FaCompactDisc
-              className={cn("h-6 w-6 shrink-0 transition-transform", isVeryNarrow && "h-8 w-8")}
+              className={cn("size-6 shrink-0 transition-transform", isVeryNarrow && "size-8")}
             />
             {!isVeryNarrow && <span className="min-w-0 truncate text-[15px]">Scopify</span>}
           </button>
@@ -412,7 +412,7 @@ function SidebarImpl() {
                     onClick={handleLoginClick}
                     title={t("login.required.followedArtists.title")}
                   >
-                    <User className="h-6 w-6" />
+                    <User className="size-6" />
                   </button>
                 </div>
               ) : (
@@ -433,7 +433,7 @@ function SidebarImpl() {
             isVeryNarrow ? (
               <div className="mt-4 flex flex-col items-center gap-3">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="h-10 w-10 animate-pulse rounded-md bg-[#242424]" />
+                  <div key={i} className="size-10 animate-pulse rounded-md bg-[#242424]" />
                 ))}
               </div>
             ) : (
@@ -446,7 +446,7 @@ function SidebarImpl() {
           ) : error ? (
             isVeryNarrow ? (
               <div className="mt-4 flex flex-col items-center gap-2 text-zinc-500">
-                <RefreshCw className="h-6 w-6" />
+                <RefreshCw className="size-6" />
               </div>
             ) : (
               <div className="flex flex-col gap-3 py-2">
@@ -469,7 +469,7 @@ function SidebarImpl() {
                   onClick={handleLoginClick}
                   title={t("sidebar.card.loginTitle")}
                 >
-                  <User className="h-6 w-6" />
+                  <User className="size-6" />
                 </button>
               </div>
             ) : (
@@ -494,7 +494,7 @@ function SidebarImpl() {
                   className="rounded-md p-2 transition-colors hover:bg-[#242424] hover:text-white"
                   title={t("common.action.reload")}
                 >
-                  <ListMusic className="h-6 w-6" />
+                  <ListMusic className="size-6" />
                 </button>
               </div>
             ) : (

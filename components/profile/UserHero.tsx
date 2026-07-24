@@ -10,13 +10,13 @@ export function UserHero({ userInfo, playlistCount }: Props) {
   return (
     <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
       {/* 头像 */}
-      <div className="h-48 w-48 shrink-0 overflow-hidden rounded-full bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.02] lg:h-56 lg:w-56">
+      <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-full bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:size-56">
         <Image
           width={224}
           height={224}
           src={userInfo.avatarUrl || "https://picsum.photos/seed/profile/400/400"}
           alt={userInfo.nickname}
-          className="h-full w-full object-cover"
+          className="size-full object-cover"
         />
       </div>
 
@@ -31,7 +31,7 @@ export function UserHero({ userInfo, playlistCount }: Props) {
 
         {/* 昵称 */}
         <h1
-          className="m-0 mb-2 line-clamp-3 text-4xl leading-[1.1] font-black tracking-tighter wrap-break-word drop-shadow-lg md:text-5xl lg:text-6xl"
+          className="leading-1.1 m-0 mb-2 line-clamp-3 text-4xl font-black tracking-tighter wrap-break-word drop-shadow-lg md:text-5xl lg:text-6xl"
           title={userInfo.nickname}
         >
           {userInfo.nickname}

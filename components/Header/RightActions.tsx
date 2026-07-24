@@ -18,22 +18,22 @@ const RightActions = () => (
       )}
       onClick={() => window.open("https://github.com/MT-SUPER-POWER/scopify")}
     >
-      <FaGithub className="h-5 w-5" />
+      <FaGithub className="size-5" />
       <span>Github</span>
     </button>
 
     <button
       type="button"
-      className={cn("hidden h-10 w-10 items-center justify-center rounded-full md:flex", NAV_BTN)}
+      className={cn("hidden size-10 items-center justify-center rounded-full md:flex", NAV_BTN)}
     >
-      <Bell className="h-4.5 w-4.5" />
+      <Bell className="size-4.5" />
     </button>
 
     <button
       type="button"
-      className={cn("hidden h-10 w-10 items-center justify-center rounded-full md:flex", NAV_BTN)}
+      className={cn("hidden size-10 items-center justify-center rounded-full md:flex", NAV_BTN)}
     >
-      <Users className="h-4.5 w-4.5" />
+      <Users className="size-4.5" />
     </button>
 
     <ProfileMenu>

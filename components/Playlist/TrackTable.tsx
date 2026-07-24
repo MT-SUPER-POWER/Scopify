@@ -238,8 +238,11 @@ export default function TracklistTable({
   const handleDislikeDailyRecommend = useCallback(
     async (trackId: number | string) => {
       try {
-        const dislikeRes = await dislikeDailyRecommend(trackId);
-        const replaceSong = pruneSongDetail(dislikeRes.data?.data) || null;
+        const dislikeResult = await dislikeDailyRecommend(trackId);
+        if (!dislikeResult.data) {
+          throw new Error("The daily recommendation endpoint did not provide a replacement track.");
+        }
+        const replaceSong = pruneSongDetail(dislikeResult.data);
 
         const updateAlbumList = albumList.map((t) => (t.id === trackId ? replaceSong : t));
 
@@ -248,11 +251,12 @@ export default function TracklistTable({
         void clearPageCache();
 
         toast.success(t("playlist.table.dislikeSuccess"));
-      } catch (err) {
-        console.error("Failed to dislike daily recommend", err);
+      } catch (error) {
+        reportActionFailure("playlist.daily_recommendation.dislike", error, { trackId });
+        toast.error(t("playlist.table.operationFailed"));
       }
     },
-    [albumList, setAlbumList, t],
+    [albumList, dislikeDailyRecommend, setAlbumList, t],
   );
 
   return (

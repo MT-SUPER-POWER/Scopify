@@ -92,7 +92,7 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
             {/* Background Theme Gradient System */}
             <div
               className={cn(
-                "pointer-events-none absolute top-0 right-0 left-0 z-0 bg-linear-to-b opacity-50",
+                "pointer-events-none absolute inset-x-0 top-0 z-0 bg-linear-to-b opacity-50",
                 theme.gradient,
                 "h-full",
               )}
@@ -104,7 +104,7 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
               onClick={onClose}
               className="absolute top-6 right-6 z-20 rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
             >
-              <X className="h-5 w-5" />
+              <X className="size-5" />
             </button>
 
             {/* Content Area */}
@@ -140,7 +140,7 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
                   {/* Wish Words Quote */}
                   <div className="relative flex flex-1 flex-col justify-center py-2 pl-6">
                     <span className="absolute top-0 left-0 font-serif text-5xl leading-none text-white/10 select-none">
-                      "
+                      &quot;
                     </span>
                     {wishWords ? (
                       <div className="flex flex-col gap-1.5">
@@ -163,18 +163,18 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
 
                 {/* Right: Album Cover with buttons */}
                 <div className="flex shrink-0 items-center justify-center">
-                  <div className="group/cover relative h-40 w-40 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
+                  <div className="group/cover relative size-40 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
                     {songCover ? (
                       <Image
                         width={160}
                         height={160}
                         src={songCover}
                         alt={songInfo?.songName ?? ""}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover/cover:scale-105"
+                        className="size-full object-cover transition-transform duration-500 group-hover/cover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center text-zinc-700">
-                        <X className="h-10 w-10" />
+                      <div className="flex size-full items-center justify-center text-zinc-700">
+                        <X className="size-10" />
                       </div>
                     )}
 
@@ -182,10 +182,10 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
                       <button
                         type="button"
                         onClick={handlePlay}
-                        className="absolute right-3 bottom-3 flex h-10 w-10 translate-y-3 cursor-pointer items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
+                        className="absolute right-3 bottom-3 flex size-10 translate-y-3 cursor-pointer items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
                         title={t("contextMenu.play")}
                       >
-                        <Play className="ml-0.5 h-5 w-5 fill-current" />
+                        <Play className="ml-0.5 size-5 fill-current" />
                       </button>
                     )}
                   </div>
@@ -222,13 +222,13 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
                       {t("vipSign.qrHint")}
                     </span>
                   </div>
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-0.5">
+                  <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-0.5">
                     <Image
                       width={40}
                       height={40}
                       src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://music.163.com/m/header"
                       alt={t("vipSign.qrAlt")}
-                      className="h-full w-full object-cover"
+                      className="size-full object-cover"
                     />
                   </div>
                 </div>

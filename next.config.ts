@@ -25,10 +25,7 @@ const frontendDevPort = envNumber(
   process.env.APP_CFG_FRONTEND_DEV_PORT || process.env.FRONTEND_PORT,
   cfg.frontend.devPort,
 );
-const debugLogRelayPort = envNumber(
-  process.env.APP_CFG_DEBUG_LOG_RELAY_PORT,
-  frontendDevPort + 1,
-);
+const debugLogRelayPort = envNumber(process.env.APP_CFG_DEBUG_LOG_RELAY_PORT, frontendDevPort + 1);
 
 const nextConfig: NextConfig = {
   output: "export",

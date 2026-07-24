@@ -58,7 +58,7 @@ export default function PlaylistPage() {
       className="relative flex min-h-screen w-full flex-col bg-[#121212] font-sans"
     >
       <div
-        className="pointer-events-none absolute top-0 right-0 left-0 z-0 h-100 opacity-60 md:h-125"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 md:h-125"
         style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
       />
       {dynamicPlaylistInfo && (

@@ -82,7 +82,7 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
       <Button
         type="submit"
         disabled={isLoading}
-        className="mt-2 h-10 w-full rounded-full bg-[#1db954] font-bold text-black transition-all hover:scale-[1.02] hover:bg-[#1ed760] active:scale-95"
+        className="hover:scale-1.02 mt-2 h-10 w-full rounded-full bg-[#1db954] font-bold text-black transition-all hover:bg-[#1ed760] active:scale-95"
       >
         {isLoading ? t("login.form.verifying") : t("login.form.verifyAndLogin")}
       </Button>

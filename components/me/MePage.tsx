@@ -170,7 +170,7 @@ export default function MePage() {
           height={192}
           src={PROFILE_DATA.avatar}
           alt="Profile"
-          className="h-48 w-48 rounded-full object-cover shadow-2xl"
+          className="size-48 rounded-full object-cover shadow-2xl"
         />
         <div className="flex flex-col items-center text-center md:items-start md:text-left">
           {/* 标签 */}
@@ -224,7 +224,7 @@ export default function MePage() {
                     <Image
                       src={skill.img}
                       alt={skill.name}
-                      className="h-10 w-10 shrink-0 rounded bg-white/5 object-contain p-px shadow-sm"
+                      className="size-10 shrink-0 rounded bg-white/5 object-contain p-px shadow-sm"
                       width={40}
                       height={40}
                     />
@@ -291,7 +291,7 @@ export default function MePage() {
                       alt={skill.name}
                       width={40}
                       height={40}
-                      className="h-10 w-10 shrink-0 rounded bg-white/5 object-contain p-px shadow-sm"
+                      className="size-10 shrink-0 rounded bg-white/5 object-contain p-px shadow-sm"
                     />
                     <div className="flex flex-col overflow-hidden">
                       <span className="cursor-pointer truncate text-base font-medium text-white hover:underline">
@@ -332,12 +332,12 @@ export default function MePage() {
                   alt={project.title}
                   width={100}
                   height={100}
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 />
                 <div className="absolute right-2 bottom-2 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                   <button
                     type="button"
-                    className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1ed760] shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
+                    className="flex size-12 items-center justify-center rounded-full bg-[#1ed760] shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
                   >
                     <Play size={24} fill="black" stroke="black" className="ml-1" />
                   </button>

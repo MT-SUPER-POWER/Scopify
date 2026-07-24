@@ -35,6 +35,7 @@ import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n, useI18nStore } from "@/store/module/i18n";
+import { pruneSongDetail } from "@/types/api/music";
 import type { LibItemMenuProps } from "@/types/components/Siderbar";
 import { UpdatePlaylistDialog } from "../Playlist/PlaylistForm";
 
@@ -217,7 +218,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
                 smartRouter.push(`/playlist/?id=${playlistID}`);
               }}
             >
-              <Eye className="mr-2 h-4 w-4" />
+              <Eye className="mr-2 size-4" />
               {t("contextMenu.view")}
             </ContextMenuItem>
             <ContextMenuItem
@@ -231,7 +232,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
                       getUserLikeLists(uid),
                     ]);
 
-                    const tracks = tracksRes.data?.songs || [];
+                    const tracks = tracksRes.data.songs ?? [];
 
                     if (tracks.length > 0) {
                       const userStore = useUserStore.getState();
@@ -244,7 +245,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
                       }
 
                       // 2. 设置播放队列并播放第一首
-                      playerStore.setQueue(tracks, 0);
+                      playerStore.setQueue(tracks.map(pruneSongDetail), 0);
                       await playerStore.playQueueIndex(0);
 
                       // 3. 跳转播放页面
@@ -259,7 +260,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
                 });
               }}
             >
-              <Play className="mr-2 h-4 w-4" />
+              <Play className="mr-2 size-4" />
               {t("contextMenu.play")}
             </ContextMenuItem>
           </ContextMenuGroup>
@@ -275,7 +276,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
                 toast.success(t("sidebar.lib.playlistLinkCopied"));
               }}
             >
-              <Link className="mr-2 h-4 w-4" />
+              <Link className="mr-2 size-4" />
               {t("contextMenu.copyPlaylistLink")}
             </ContextMenuItem>
           </ContextMenuGroup>
@@ -289,7 +290,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
                 void requireLoginAction("playlist-edit", () => setUpdateFormOpen(true));
               }}
             >
-              <Edit className="mr-2 h-4 w-4" />
+              <Edit className="mr-2 size-4" />
               {t("contextMenu.updatePlaylist")}
             </ContextMenuItem>
 
@@ -300,7 +301,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
               }}
               variant="destructive"
             >
-              <Trash className="mr-2 h-4 w-4" />
+              <Trash className="mr-2 size-4" />
               {t("contextMenu.deletePlaylist")}
             </ContextMenuItem>
           </ContextMenuGroup>

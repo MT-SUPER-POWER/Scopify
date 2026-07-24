@@ -32,7 +32,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         height={40}
         src={comment.user.avatarUrl}
         alt={comment.user.nickname}
-        className="mt-1 h-10 w-10 shrink-0 cursor-pointer rounded-full bg-neutral-800 object-cover"
+        className="mt-1 size-10 shrink-0 cursor-pointer rounded-full bg-neutral-800 object-cover"
       />
       <div className="flex-1 border-b border-white/5 pb-6 group-last:border-0">
         <div className="mb-1 flex items-baseline gap-2">
@@ -93,7 +93,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                   type="button"
                   className="rounded transition-colors outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-[#1DB954]"
                 >
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal className="size-4" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -103,9 +103,9 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                 {isOwnComment ? (
                   <DropdownMenuItem
                     onClick={() => onDelete?.(comment.commentId)}
-                    className="cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
+                    className="cursor-pointer text-red-500 focus:bg-red-500/10"
                   >
-                    <Trash2 className="mr-2 h-4 w-4 text-red-500 focus:text-red-500" />
+                    <Trash2 className="mr-2 size-4 text-red-500" />
                     {t("comments.item.delete")}
                   </DropdownMenuItem>
                 ) : (
@@ -113,7 +113,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                     onClick={() => onReport?.(comment.commentId)}
                     className="hover:bg-black-500/80 cursor-pointer bg-[#282828]"
                   >
-                    <Flag className="mr-2 h-4 w-4" />
+                    <Flag className="mr-2 size-4" />
                     {t("comments.item.report")}
                   </DropdownMenuItem>
                 )}

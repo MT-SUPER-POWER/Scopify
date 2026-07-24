@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { getStoredMusicCookie } from "@/lib/web/auth";
 import { useSearchStore } from "@/store/module/search";
 import type { SuggestItem } from "../SearchHelper";
 
