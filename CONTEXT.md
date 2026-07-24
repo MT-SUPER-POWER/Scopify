@@ -173,3 +173,11 @@ _Avoid_: public catalog data, shared cache
 **Expired Music Session**:
 The loss of a valid authenticated NetEase session while Scopify is running. It triggers a renderer-wide transition that clears session-bound state and returns the user to login.
 _Avoid_: ordinary request failure, page error
+
+**NetEase Session Credential**:
+The opaque cookie bundle returned by NetEase authentication and required by authenticated backend endpoints. It is transport infrastructure, is never logged, and is not passed through component, hook, or business-API function signatures.
+_Avoid_: bearer token, UI state, per-endpoint credential argument
+
+**Session Credential Adapter**:
+The Scopify-owned frontend boundary that retrieves, attaches, and clears a NetEase Session Credential for the immutable NetEase backend contract. It isolates runtime-specific Web and Electron storage from API functions and Query hooks.
+_Avoid_: per-endpoint cookie handling, backend modification, component-level credential access
