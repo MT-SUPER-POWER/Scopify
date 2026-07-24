@@ -1,4 +1,11 @@
-import type { FollowedArtistsResponse } from "@/types/api/artist";
+import type {
+  ArtistAlbumsResponse,
+  ArtistDetailResponse,
+  ArtistFollowCountResponse,
+  ArtistTopSongsResponse,
+  FollowedArtistsResponse,
+  HotArtistsResponse,
+} from "@/types/api/artist";
 import request from "../web/request";
 
 /**
@@ -13,8 +20,8 @@ export function getRecommendedSongs(id: number | string) {
 /**
  * 获取热门歌手列表
  */
-export function getHotArtists(limit: number = 10) {
-  return request.get("/top/artists", {
+export function getHotArtists(limit = 10) {
+  return request.get<HotArtistsResponse>("/top/artists", {
     params: { limit },
   });
 }
@@ -23,7 +30,7 @@ export function getHotArtists(limit: number = 10) {
  * 获取歌手详情（含 briefDesc、cover 等）
  */
 export function getAritstDetail(id: number | string) {
-  return request.get("/artist/detail", {
+  return request.get<ArtistDetailResponse>("/artist/detail", {
     params: { id },
   });
 }
@@ -32,7 +39,7 @@ export function getAritstDetail(id: number | string) {
  * 获取歌手粉丝数
  */
 export function getFansCnt(id: number | string) {
-  return request.get("/artist/follow/count", {
+  return request.get<ArtistFollowCountResponse>("/artist/follow/count", {
     params: { id },
   });
 }
@@ -41,7 +48,7 @@ export function getFansCnt(id: number | string) {
  * 获取歌手热门歌曲
  */
 export function getArtistTopSongs(id: number | string) {
-  return request.get("/v1/artist/songs", {
+  return request.get<ArtistTopSongsResponse>("/v1/artist/songs", {
     params: { id },
   });
 }
@@ -53,7 +60,7 @@ export function getArtistTopSongs(id: number | string) {
  * @param offset 分页偏移
  */
 export function getArtistAlbums(id: number | string, limit = 10, offset = 0) {
-  return request.get("/artist/album", {
+  return request.get<ArtistAlbumsResponse>("/artist/album", {
     params: { id, limit, offset },
   });
 }

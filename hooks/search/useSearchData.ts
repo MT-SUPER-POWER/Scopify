@@ -1,199 +1,156 @@
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { searchAlbums, searchArtists, searchPlaylists, searchSongs } from "@/lib/api/search";
-import { createPageCacheKey, getPageCache, searchTtlMs, setPageCache } from "@/lib/cache/pageCache";
+"use client";
+
+import { useCallback, useMemo } from "react";
+
+import {
+  useAlbumSearchQuery,
+  useArtistSearchQuery,
+  usePlaylistSearchQuery,
+  useSongSearchQuery,
+} from "@/hooks/search/useSearchQueries";
 import { translate } from "@/lib/i18n";
 import { useI18nStore } from "@/store/module/i18n";
-import type { Album, Artist, Playlist, Song } from "@/types/search";
+import type {
+  SearchResultAlbum,
+  SearchResultPlaylist,
+  SearchArtistSource,
+  SongSearchResource,
+} from "@/types/api/search";
+import type { Album, Artist, Category, Playlist, Song } from "@/types/search";
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-type Category = "All" | "Songs" | "Artists" | "Playlists" | "Albums";
-
-interface SearchCachePayload {
-  songs: Song[];
-  albums: Album[];
-  playlists: Playlist[];
-  artists: Artist[];
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-function isValidPicUrl(url: any): url is string {
+function isValidPicUrl(url: string | null | undefined): url is string {
   return typeof url === "string" && url.startsWith("http");
 }
 
-function mapResourceToSong(resource: any): Song {
-  const s = resource?.baseInfo?.simpleSongData || {};
-  const albumPicUrl = isValidPicUrl(s.al?.picUrl)
-    ? s.al.picUrl
-    : isValidPicUrl(s.al?.blurPicUrl)
-      ? s.al.blurPicUrl
-      : null;
-  const artistPicUrl = s.ar?.[0]?.picUrl && isValidPicUrl(s.ar[0].picUrl) ? s.ar[0].picUrl : null;
-
+function mapSearchArtist(source: SearchArtistSource | undefined): Artist {
   return {
-    id: s.id,
-    name: s.name || translate(useI18nStore.getState().locale, "common.meta.unknownSong"),
-    artists:
-      s.ar?.map((a: any) => ({
-        id: a.id,
-        name: a.name,
-        picUrl: isValidPicUrl(a.picUrl) ? a.picUrl : null,
-      })) || [],
-    album: {
-      id: s.al?.id || 0,
-      name: s.al?.name || translate(useI18nStore.getState().locale, "common.meta.unknownAlbum"),
-      artist: s.ar?.[0] || ({} as Artist),
-      publishTime: s.publishTime || 0,
-      size: 0,
-      picUrl: albumPicUrl || artistPicUrl || "",
-    },
-    duration: s.dt || 0,
-    fee: s.fee,
-    alias: s.alia || s.alias || [],
+    albumSize: source?.albumSize,
+    alias: source?.alias,
+    fansSize: source?.fansSize,
+    id: source?.id ?? 0,
+    img1v1Url: source?.img1v1Url,
+    musicSize: source?.musicSize,
+    name: source?.name ?? "",
+    picUrl: isValidPicUrl(source?.picUrl) ? source.picUrl : null,
   };
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HOOK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function mapSearchAlbum(source: SearchResultAlbum, unknownAlbumName: string): Album {
+  return {
+    artist: mapSearchArtist(source.artist),
+    blurPicUrl: source.blurPicUrl,
+    id: source.id,
+    name: source.name || unknownAlbumName,
+    picUrl: source.picUrl,
+    publishTime: source.publishTime ?? 0,
+    size: source.size ?? 0,
+  };
+}
+
+function mapSearchPlaylist(source: SearchResultPlaylist): Playlist {
+  return {
+    bookCount: source.bookCount,
+    coverImgUrl: source.coverImgUrl ?? "",
+    creator: source.creator,
+    description: source.description ?? undefined,
+    id: source.id,
+    name: source.name,
+    playCount: source.playCount ?? 0,
+    trackCount: source.trackCount ?? 0,
+  };
+}
+
+function mapResourceToSong(
+  resource: SongSearchResource,
+  unknownAlbumName: string,
+  unknownSongName: string,
+): Song | null {
+  const song = resource.baseInfo?.simpleSongData;
+  if (!song) return null;
+
+  const artists = song.ar?.map(mapSearchArtist) ?? [];
+  const albumPicUrl = isValidPicUrl(song.al?.picUrl)
+    ? song.al.picUrl
+    : isValidPicUrl(song.al?.blurPicUrl)
+      ? song.al.blurPicUrl
+      : "";
+
+  return {
+    album: {
+      artist: artists[0] ?? mapSearchArtist(undefined),
+      id: song.al?.id ?? 0,
+      name: song.al?.name ?? unknownAlbumName,
+      picUrl: albumPicUrl,
+      publishTime: 0,
+      size: 0,
+    },
+    alias: song.alia ?? song.alias ?? [],
+    artists,
+    duration: song.dt ?? 0,
+    fee: song.fee,
+    id: song.id,
+    name: song.name ?? unknownSongName,
+  };
+}
 
 export function useSearchData(keywords: string, activeCategory: Category) {
-  const [loading, setLoading] = useState(false);
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [albums, setAlbums] = useState<Album[]>([]);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [artists, setArtists] = useState<Artist[]>([]);
+  const locale = useI18nStore((state) => state.locale);
+  const keyword = keywords.trim();
+  const isAll = activeCategory === "All";
+  const loadSongs = isAll || activeCategory === "Songs";
+  const loadAlbums = isAll || activeCategory === "Albums";
+  const loadPlaylists = isAll || activeCategory === "Playlists";
+  const loadArtists = isAll || activeCategory === "Artists";
+  const songQuery = useSongSearchQuery(keyword, isAll ? 4 : 30, loadSongs);
+  const albumQuery = useAlbumSearchQuery(keyword, isAll ? 6 : 20, loadAlbums);
+  const playlistQuery = usePlaylistSearchQuery(keyword, isAll ? 6 : 20, loadPlaylists);
+  const artistQuery = useArtistSearchQuery(keyword, isAll ? 6 : 20, loadArtists);
+  const unknownAlbumName = translate(locale, "common.meta.unknownAlbum");
+  const unknownSongName = translate(locale, "common.meta.unknownSong");
 
-  const fetchAllData = useCallback(async () => {
-    if (!keywords.trim()) return;
-    setLoading(true);
-    const cacheKey = createPageCacheKey("search", [keywords.trim(), "All"]);
-    const cached = await getPageCache<SearchCachePayload>(cacheKey);
-    if (cached) {
-      setSongs(cached.songs);
-      setAlbums(cached.albums);
-      setPlaylists(cached.playlists);
-      setArtists(cached.artists);
-      setLoading(false);
-    }
-    try {
-      const [songsRes, albumsRes, playlistsRes, artistsRes] = await Promise.allSettled([
-        searchSongs(keywords, 4),
-        searchAlbums(keywords, 6),
-        searchPlaylists(keywords, 6),
-        searchArtists(keywords, 6),
-      ]);
-
-      const nextSongs =
-        songsRes.status === "fulfilled" && songsRes.value.data?.data?.resources
-          ? songsRes.value.data.data.resources.map(mapResourceToSong)
-          : [];
-      const nextAlbums =
-        albumsRes.status === "fulfilled" ? albumsRes.value.data?.result?.albums || [] : [];
-      const nextPlaylists =
-        playlistsRes.status === "fulfilled" ? playlistsRes.value.data?.result?.playlists || [] : [];
-      const nextArtists =
-        artistsRes.status === "fulfilled" ? artistsRes.value.data?.result?.artists || [] : [];
-
-      setSongs(nextSongs);
-      setAlbums(nextAlbums);
-      setPlaylists(nextPlaylists);
-      setArtists(nextArtists);
-      await setPageCache(
-        cacheKey,
-        {
-          songs: nextSongs,
-          albums: nextAlbums,
-          playlists: nextPlaylists,
-          artists: nextArtists,
-        },
-        searchTtlMs(),
-      );
-    } catch (err) {
-      console.error("Fetch all data error:", err);
-      toast.error(translate(useI18nStore.getState().locale, "search.hook.failedAll"));
-    } finally {
-      setLoading(false);
-    }
-  }, [keywords]);
-
-  const fetchCategoryData = useCallback(
-    async (category: Category) => {
-      if (!keywords.trim()) return;
-      setLoading(true);
-      const cacheKey = createPageCacheKey("search", [keywords.trim(), category]);
-      const cached = await getPageCache<SearchCachePayload>(cacheKey);
-      if (cached) {
-        setSongs(cached.songs);
-        setAlbums(cached.albums);
-        setPlaylists(cached.playlists);
-        setArtists(cached.artists);
-        setLoading(false);
-      }
-      try {
-        let nextSongs: Song[] = [];
-        let nextAlbums: Album[] = [];
-        let nextPlaylists: Playlist[] = [];
-        let nextArtists: Artist[] = [];
-
-        switch (category) {
-          case "Songs": {
-            const res = await searchSongs(keywords, 30);
-            nextSongs = (res.data?.data?.resources || []).map(mapResourceToSong);
-            setSongs(nextSongs);
-            break;
-          }
-          case "Albums": {
-            const res = await searchAlbums(keywords, 20);
-            nextAlbums = res.data?.result?.albums || [];
-            setAlbums(nextAlbums);
-            break;
-          }
-          case "Playlists": {
-            const res = await searchPlaylists(keywords, 20);
-            nextPlaylists = res.data?.result?.playlists || [];
-            setPlaylists(nextPlaylists);
-            break;
-          }
-          case "Artists": {
-            const res = await searchArtists(keywords, 20);
-            nextArtists = res.data?.result?.artists || [];
-            setArtists(nextArtists);
-            break;
-          }
-        }
-        await setPageCache(
-          cacheKey,
-          {
-            songs: nextSongs,
-            albums: nextAlbums,
-            playlists: nextPlaylists,
-            artists: nextArtists,
-          },
-          searchTtlMs(),
-        );
-      } catch (err) {
-        console.error(`Fetch ${category} error:`, err);
-        const locale = useI18nStore.getState().locale;
-        toast.error(
-          translate(locale, "search.hook.failedCategory", {
-            category: translate(locale, `search.category.${category.toLowerCase()}` as any),
-          }),
-        );
-      } finally {
-        setLoading(false);
-      }
-    },
-    [keywords],
+  const songs = useMemo(
+    () =>
+      loadSongs
+        ? (songQuery.data?.data?.resources ?? [])
+            .map((resource) => mapResourceToSong(resource, unknownAlbumName, unknownSongName))
+            .filter((song): song is Song => song !== null)
+        : [],
+    [loadSongs, songQuery.data?.data?.resources, unknownAlbumName, unknownSongName],
   );
+  const albums = useMemo(
+    () =>
+      loadAlbums
+        ? (albumQuery.data?.result?.albums ?? []).map((album) =>
+            mapSearchAlbum(album, unknownAlbumName),
+          )
+        : [],
+    [albumQuery.data?.result?.albums, loadAlbums, unknownAlbumName],
+  );
+  const playlists = useMemo(
+    () =>
+      loadPlaylists ? (playlistQuery.data?.result?.playlists ?? []).map(mapSearchPlaylist) : [],
+    [loadPlaylists, playlistQuery.data?.result?.playlists],
+  );
+  const artists = useMemo(
+    () => (loadArtists ? (artistQuery.data?.result?.artists ?? []).map(mapSearchArtist) : []),
+    [artistQuery.data?.result?.artists, loadArtists],
+  );
+  const loading =
+    songQuery.isFetching ||
+    albumQuery.isFetching ||
+    playlistQuery.isFetching ||
+    artistQuery.isFetching;
+  const hasError =
+    songQuery.isError || albumQuery.isError || playlistQuery.isError || artistQuery.isError;
 
-  useEffect(() => {
-    if (activeCategory === "All") {
-      fetchAllData();
-    } else {
-      fetchCategoryData(activeCategory);
-    }
-  }, [activeCategory, fetchAllData, fetchCategoryData]);
+  const refetch = useCallback(async () => {
+    await Promise.all([
+      ...(loadSongs ? [songQuery.refetch()] : []),
+      ...(loadAlbums ? [albumQuery.refetch()] : []),
+      ...(loadPlaylists ? [playlistQuery.refetch()] : []),
+      ...(loadArtists ? [artistQuery.refetch()] : []),
+    ]);
+  }, [albumQuery, artistQuery, loadAlbums, loadArtists, loadPlaylists, loadSongs, playlistQuery, songQuery]);
 
-  return { loading, songs, albums, playlists, artists };
+  return { albums, artists, hasError, loading, playlists, refetch, songs };
 }

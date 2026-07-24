@@ -1,3 +1,5 @@
+import type { RawSongDetail } from "@/types/api/music";
+
 export interface NeteasePlaylist {
   id: number;
   name: string;
@@ -16,24 +18,64 @@ export interface NeteasePlaylist {
   };
 }
 
-export const prunePlaylist = (raw: any): NeteasePlaylist => {
-  if (!raw) return {} as NeteasePlaylist;
+export interface RawNeteasePlaylist {
+  coverImgUrl?: string;
+  creator?: {
+    avatarUrl?: string;
+    nickname?: string;
+  };
+  createTime?: number;
+  description?: null | string;
+  id?: number;
+  name?: string;
+  picUrl?: string;
+  playCount?: number;
+  privacy?: number;
+  subscribed?: boolean | null;
+  subscribedCount?: number;
+  tags?: string[];
+  trackCount?: number;
+}
+
+export interface UserPlaylistResponse {
+  code: number;
+  more: boolean;
+  playlist: RawNeteasePlaylist[];
+}
+
+export const prunePlaylist = (raw: null | RawNeteasePlaylist | undefined): NeteasePlaylist => {
+  if (!raw) {
+    return {
+      coverImgUrl: "",
+      createTime: 0,
+      creator: { avatarUrl: "", nickname: "" },
+      description: "",
+      id: 0,
+      name: "",
+      playCount: 0,
+      privacy: 0,
+      subscribed: false,
+      subscribedCount: 0,
+      tags: [],
+      trackCount: 0,
+    };
+  }
 
   return {
-    id: raw.id,
-    name: raw.name || "",
-    createTime: raw.createTime || 0,
-    coverImgUrl: raw.coverImgUrl || raw.picUrl || "", // 兼容网易云不同接口的命名习惯
-    description: raw.description || "",
-    trackCount: raw.trackCount || 0,
-    playCount: raw.playCount || 0,
-    privacy: raw.privacy || 0,
+    id: raw.id ?? 0,
+    name: raw.name ?? "",
+    createTime: raw.createTime ?? 0,
+    coverImgUrl: raw.coverImgUrl ?? raw.picUrl ?? "",
+    description: raw.description ?? "",
+    trackCount: raw.trackCount ?? 0,
+    playCount: raw.playCount ?? 0,
+    privacy: raw.privacy === 10 ? 10 : 0,
     subscribed: Boolean(raw.subscribed),
-    subscribedCount: raw.subscribedCount || 0,
-    tags: Array.isArray(raw.tags) ? raw.tags : [],
+    subscribedCount: raw.subscribedCount ?? 0,
+    tags: raw.tags ?? [],
     creator: {
-      nickname: raw.creator?.nickname || "未知用户",
-      avatarUrl: raw.creator?.avatarUrl || "",
+      nickname: raw.creator?.nickname ?? "未知用户",
+      avatarUrl: raw.creator?.avatarUrl ?? "",
     },
   };
 };
@@ -47,15 +89,101 @@ export interface RecommendPlaylist {
   copywriter: string; //  推荐理由文案
 }
 
-export const pruneRecommendPlaylist = (raw: any): RecommendPlaylist => {
-  if (!raw) return {} as RecommendPlaylist;
+export interface RawRecommendPlaylist {
+  copywriter?: string;
+  id?: number;
+  name?: string;
+  picUrl?: string;
+  playCount?: number;
+  trackCount?: number;
+}
+
+/** `/personalized` 的实际响应。 */
+export interface PersonalizedPlaylistsResponse {
+  category: number;
+  code: number;
+  hasTaste: boolean;
+  result?: RawRecommendPlaylist[];
+}
+
+/** `/recommend/resource` 的实际响应。未登录或会话失效时 `recommend` 可能缺失。 */
+export interface RecommendedPlaylistsResponse {
+  code: number;
+  featureFirst?: boolean;
+  recommend?: RawRecommendPlaylist[];
+}
+
+export interface PlaylistTracksResponse {
+  code: number;
+  songs?: RawSongDetail[];
+}
+
+export type PlaylistTrackOperation = "add" | "del";
+
+/** Successful payload from `GET /playlist/tracks`. */
+export interface PlaylistTrackUpdateResponse {
+  code: 200;
+}
+
+export interface PlaylistTrackMutationVariables {
+  operation: PlaylistTrackOperation;
+  playlistId: number | string;
+  trackId: number | string;
+}
+
+export interface LikeListResponse {
+  code: number;
+  ids?: number[];
+}
+
+export interface DailyRecommendationDislikeResponse {
+  code: number;
+  data?: RawSongDetail;
+}
+
+export interface LikeListResponse {
+  code: number;
+  ids?: number[];
+}
+
+export interface DailyRecommendationDislikeResponse {
+  code: number;
+  data?: RawSongDetail;
+}
+
+/** `/personalized` 的实际响应。 */
+export interface PersonalizedPlaylistsResponse {
+  category: number;
+  code: number;
+  hasTaste: boolean;
+  result?: RawRecommendPlaylist[];
+}
+
+/** `/recommend/resource` 的实际响应。未登录或会话失效时 `recommend` 可能缺失。 */
+export interface RecommendedPlaylistsResponse {
+  code: number;
+  featureFirst?: boolean;
+  recommend?: RawRecommendPlaylist[];
+}
+
+export interface PlaylistTracksResponse {
+  code: number;
+  songs?: RawSongDetail[];
+}
+
+export const pruneRecommendPlaylist = (
+  raw: null | RawRecommendPlaylist | undefined,
+): RecommendPlaylist => {
+  if (!raw) {
+    return { copywriter: "", id: 0, name: "", picUrl: "", playCount: 0, trackCount: 0 };
+  }
 
   return {
-    id: raw.id,
-    name: raw.name || "",
-    picUrl: raw.picUrl || "",
-    playCount: raw.playCount || 0,
-    trackCount: raw.trackCount || 0,
-    copywriter: raw.copywriter || "",
+    id: raw.id ?? 0,
+    name: raw.name ?? "",
+    picUrl: raw.picUrl ?? "",
+    playCount: raw.playCount ?? 0,
+    trackCount: raw.trackCount ?? 0,
+    copywriter: raw.copywriter ?? "",
   };
 };

@@ -1,6 +1,11 @@
 // 歌曲评论接口
 import type { SongRedCountResponse } from "@/types/api/music";
-import request from "../web/request";
+import type {
+  PlaylistTrackMutationVariables,
+  PlaylistTrackUpdateResponse,
+} from "@/types/api/playlist";
+
+import request, { requestConfig, requestData } from "../web/request";
 
 export async function getSongDetail(ids: number | string) {
   return request.get("/song/detail", {
@@ -23,14 +28,24 @@ export function getSongRedCount(id: number | string) {
  * @param pid: 歌单 id
  * @param track 歌曲 id,可多个,用逗号隔开
  */
-export async function updatePlaylistTrack(
-  op: "add" | "del",
-  pid: number | string,
-  tracks: number | string,
-) {
-  return request.get("/playlist/tracks", {
-    params: { op: op, pid: pid, tracks: tracks },
-  });
+export function updatePlaylistTrack({
+  operation,
+  playlistId,
+  trackId,
+}: PlaylistTrackMutationVariables): Promise<PlaylistTrackUpdateResponse> {
+  return requestData<PlaylistTrackUpdateResponse>(
+    requestConfig({
+      errorContext: {
+        action: `playlist.track.${operation}`,
+        playlistId,
+        trackId,
+      },
+      expectedBusinessCodes: [200],
+      method: "get",
+      params: { op: operation, pid: playlistId, tracks: trackId },
+      url: "/playlist/tracks",
+    }),
+  );
 }
 
 /**
@@ -39,7 +54,7 @@ export async function updatePlaylistTrack(
 export function getRecommendedSongs() {
   return request.get("/recommend/songs", {
     params: {
-      cookie: localStorage.getItem("music_cookie") || "",
+      cookie: localStorage.getItem("music_cookie") ?? "",
     },
   });
 }

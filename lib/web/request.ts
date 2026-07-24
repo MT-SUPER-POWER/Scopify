@@ -104,10 +104,7 @@ function reportRequestError(error: ApiError) {
 }
 
 function createRequestTraceId() {
-  return (
-    globalThis.crypto?.randomUUID?.() ??
-    `request-${Date.now()}-${Math.random().toString(16).slice(2)}`
-  );
+  return globalThis.crypto?.randomUUID?.() ?? `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 const request = axios.create({

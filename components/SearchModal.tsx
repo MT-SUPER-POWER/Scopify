@@ -4,6 +4,7 @@ import { CornerDownLeft, Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
+import { getStoredMusicCookie } from "@/lib/web/auth";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -82,7 +83,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     setLoading(true);
     const t = setTimeout(async () => {
       try {
-        const res = await searchSuggest(localValue.trim());
+        const res = await searchSuggest(localValue.trim(), getStoredMusicCookie());
         const newSuggests = res.data?.data?.suggests ?? [];
         setSuggests(newSuggests);
         setSelectedIndex(newSuggests.length > 0 ? 0 : -1);

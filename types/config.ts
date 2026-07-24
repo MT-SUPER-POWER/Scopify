@@ -49,42 +49,57 @@ function toRecord(value: unknown): Record<string, unknown> {
 }
 
 function normalizedBoolean(defaultValue: boolean) {
-  return z.preprocess((value) => {
-    if (typeof value === "boolean") return value;
-    if (value === "true") return true;
-    if (value === "false") return false;
-    return undefined;
-  }, z.boolean().default(defaultValue));
+  return z.preprocess(
+    (value) => {
+      if (typeof value === "boolean") return value;
+      if (value === "true") return true;
+      if (value === "false") return false;
+      return undefined;
+    },
+    z.boolean().default(defaultValue),
+  );
 }
 
 function positiveNumber(defaultValue: number) {
-  return z.preprocess((value) => {
-    const numberValue = Number(value);
-    return Number.isFinite(numberValue) && numberValue > 0 ? numberValue : undefined;
-  }, z.number().default(defaultValue));
+  return z.preprocess(
+    (value) => {
+      const numberValue = Number(value);
+      return Number.isFinite(numberValue) && numberValue > 0 ? numberValue : undefined;
+    },
+    z.number().default(defaultValue),
+  );
 }
 
 function trimmedString(defaultValue: string, allowEmpty = false) {
-  return z.preprocess((value) => {
-    if (typeof value !== "string") return undefined;
-    const trimmed = value.trim();
-    return allowEmpty || trimmed ? trimmed : undefined;
-  }, z.string().default(defaultValue));
+  return z.preprocess(
+    (value) => {
+      if (typeof value !== "string") return undefined;
+      const trimmed = value.trim();
+      return allowEmpty || trimmed ? trimmed : undefined;
+    },
+    z.string().default(defaultValue),
+  );
 }
 
 function optionalPositiveNumber() {
-  return z.preprocess((value) => {
-    const numberValue = Number(value);
-    return Number.isFinite(numberValue) && numberValue > 0 ? numberValue : undefined;
-  }, z.number().optional());
+  return z.preprocess(
+    (value) => {
+      const numberValue = Number(value);
+      return Number.isFinite(numberValue) && numberValue > 0 ? numberValue : undefined;
+    },
+    z.number().optional(),
+  );
 }
 
 function optionalTrimmedString(allowEmpty = false) {
-  return z.preprocess((value) => {
-    if (typeof value !== "string") return undefined;
-    const trimmed = value.trim();
-    return allowEmpty || trimmed ? trimmed : undefined;
-  }, z.string().optional());
+  return z.preprocess(
+    (value) => {
+      if (typeof value !== "string") return undefined;
+      const trimmed = value.trim();
+      return allowEmpty || trimmed ? trimmed : undefined;
+    },
+    z.string().optional(),
+  );
 }
 
 const appSectionConfigSchema = z.preprocess(

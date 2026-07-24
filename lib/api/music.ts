@@ -1,5 +1,6 @@
 import type {
   SongUrlMatchResponse,
+  SongUrlMatchParams,
   MusicQualityLevel,
   SongMusicDetailResponse,
   SongUrlV1Response,
@@ -10,14 +11,14 @@ import request from "../web/request";
 
 // 获取 cookie 的辅助函数
 const getCookie = () => {
-  return typeof window !== "undefined" ? localStorage.getItem("music_cookie") || "" : "";
+  return typeof window !== "undefined" ? (localStorage.getItem("music_cookie") ?? "") : "";
 };
 
 export async function greySongUrlMatch(
   id: number | string,
   source?: string,
 ): Promise<SongUrlMatchResponse> {
-  const params: Record<string, any> = { id };
+  const params: SongUrlMatchParams = { id };
   if (source) params.source = source;
   const cookie = getCookie();
   if (cookie) params.cookie = cookie;

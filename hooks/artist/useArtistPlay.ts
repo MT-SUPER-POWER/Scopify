@@ -24,7 +24,7 @@ export function useArtistPlay(hotTracksQueue: SongDetail[]) {
       return;
     }
     setQueue(hotTracksQueue, 0);
-    playQueueIndex(0);
+    void playQueueIndex(0);
   }, [hotTracksQueue, currentSongDetail, isPlaying, setIsPlaying, setQueue, playQueueIndex]);
 
   const handlePlayTrack = useCallback(
@@ -34,7 +34,9 @@ export function useArtistPlay(hotTracksQueue: SongDetail[]) {
         return;
       }
       if (hotTracksQueue.length > 0) setQueue(hotTracksQueue, index);
-      playTrack(hotTracksQueue[index] || pruneSongDetail(track.raw));
+      const song = hotTracksQueue[index] ?? (track.raw ? pruneSongDetail(track.raw) : null);
+      if (!song) return;
+      void playTrack(song);
     },
     [currentSongDetail, isPlaying, setIsPlaying, hotTracksQueue, setQueue, playTrack],
   );
@@ -46,7 +48,7 @@ export function useArtistPlay(hotTracksQueue: SongDetail[]) {
       setLoadingAlbumId(album.id);
       try {
         const res = await getAlbumDetail(album.id);
-        const tracks: SongDetail[] = (res.data?.songs || []).map(pruneSongDetail);
+        const tracks: SongDetail[] = (res.data?.songs ?? []).map(pruneSongDetail);
         if (!tracks.length) {
           toast.error(translate(useI18nStore.getState().locale, "artist.toast.albumEmpty"));
           return;

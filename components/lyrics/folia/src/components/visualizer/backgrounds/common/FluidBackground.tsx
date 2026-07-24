@@ -167,7 +167,7 @@ const buildDownscaledCover = (coverUrl: string, maxSize: number): Promise<string
     img.src = coverUrl;
 });
 
-const FluidBackground: React.FC<FluidBackgroundProps> = memo(({ coverUrl, theme }) => {
+const FluidBackground: React.FC<FluidBackgroundProps> = memo(function FluidBackground({ coverUrl, theme }) {
     const isIOSSafari = useMemo(detectIOSSafari, []);
     const [softFocusCoverUrl, setSoftFocusCoverUrl] = useState<string | null>(null);
 
@@ -400,5 +400,7 @@ const FluidBackground: React.FC<FluidBackgroundProps> = memo(({ coverUrl, theme 
         pTheme.secondaryColor === nTheme.secondaryColor
     );
 });
+
+FluidBackground.displayName = 'FluidBackground';
 
 export default FluidBackground;

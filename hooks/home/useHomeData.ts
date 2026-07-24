@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { getAlbumDetail, getUserAlbumSublist } from "@/lib/api/album";
-import { getHotArtists } from "@/lib/api/artist";
-import {
-  getPersonalizePlaylists,
-  getPlaylistAllTracks,
-  getRecommendedPlaylists,
-} from "@/lib/api/playlist";
-import { getUserDetail } from "@/lib/api/user";
+import { getAlbumDetail } from "@/lib/api/album";
+import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
-import type { RecommendPlaylist } from "@/types/api/playlist";
+import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneRecommendPlaylist } from "@/types/api/playlist";
+import {
+  useCollectedAlbumsQuery,
+  useHomeUserProfileQuery,
+  useHotArtistsQuery,
+  usePersonalizedPlaylistsQuery,
+  useRecommendedPlaylistsQuery,
+} from "./useHomeQueries";
 
 export interface TimeTheme {
   start: number;
@@ -88,17 +89,48 @@ export function useHomeData() {
   const userName = user?.nickname;
   const userId = user?.userId;
   const setCollectedAlbum = useUserStore((s) => s.setCollectedAlbum);
+  const setUser = useUserStore((s) => s.setUser);
+  const setUserId = useUserStore((s) => s.setUserId);
   const { setQueue, playQueueIndex } = usePlayerStore();
 
-  const [playlists, setPlaylists] = useState<RecommendPlaylist[]>([]);
-  const [bannerPlaylist, setBannerPlaylist] = useState<any[]>([]);
-  const [suggestedArtists, setSuggestedArtists] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [loadingPlayId, setLoadingPlayId] = useState<string | null>(null);
-  const [hasError, setHasError] = useState(false);
   const [dateInfo, setDateInfo] = useState({ dayOfWeek: "星期三", dateNum: 18 });
 
-  const [fetchingUser, setFetchingUser] = useState(false);
+  const storedUserId =
+    isLogin && (!user?.nickname || !userId) && typeof window !== "undefined"
+      ? window.localStorage.getItem("user_id")
+      : null;
+  const personalizedQuery = usePersonalizedPlaylistsQuery();
+  const recommendedQuery = useRecommendedPlaylistsQuery(isLogin);
+  const hotArtistsQuery = useHotArtistsQuery();
+  const collectedAlbumsQuery = useCollectedAlbumsQuery(isLogin);
+  const userProfileQuery = useHomeUserProfileQuery(storedUserId);
+
+  const playlists = useMemo(
+    () => personalizedQuery.data?.result?.map(pruneRecommendPlaylist) ?? [],
+    [personalizedQuery.data?.result],
+  );
+  const bannerPlaylist = useMemo(() => {
+    const recommendations = recommendedQuery.data?.recommend ?? [];
+
+    return recommendations
+      .map((item, index) => ({ index, item: pruneRecommendPlaylist(item) }))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 8)
+      .sort((a, b) => a.index - b.index)
+      .map(({ item }) => item);
+  }, [recommendedQuery.data?.recommend]);
+  const suggestedArtists = hotArtistsQuery.data?.artists ?? [];
+  const isLoading =
+    personalizedQuery.isFetching ||
+    recommendedQuery.isFetching ||
+    hotArtistsQuery.isFetching ||
+    collectedAlbumsQuery.isFetching;
+  const hasError =
+    personalizedQuery.isError ||
+    recommendedQuery.isError ||
+    hotArtistsQuery.isError ||
+    collectedAlbumsQuery.isError;
 
   useEffect(() => {
     const today = new Date();
@@ -108,6 +140,19 @@ export function useHomeData() {
     });
   }, [locale]);
 
+  useEffect(() => {
+    const profile = userProfileQuery.data?.profile;
+    if (!profile) return;
+
+    setUser(profile);
+    setUserId(profile.userId);
+  }, [setUser, setUserId, userProfileQuery.data?.profile]);
+
+  useEffect(() => {
+    if (!isLogin) return;
+    setCollectedAlbum(collectedAlbumsQuery.data?.data ?? []);
+  }, [collectedAlbumsQuery.data?.data, isLogin, setCollectedAlbum]);
+
   const handlePlayPlaylist = useCallback(
     async (id: number | string, e: React.MouseEvent) => {
       e.stopPropagation();
@@ -116,9 +161,9 @@ export function useHomeData() {
       setLoadingPlayId(key);
       try {
         const cookie =
-          typeof window !== "undefined" ? localStorage.getItem("music_cookie") || "" : "";
+          typeof window !== "undefined" ? (window.localStorage.getItem("music_cookie") ?? "") : "";
         const res = await getPlaylistAllTracks({ id, cookie });
-        const tracks: SongDetail[] = (res.data?.songs || []).map(pruneSongDetail);
+        const tracks: SongDetail[] = (res.data.songs ?? []).map(pruneSongDetail);
         if (!tracks.length) {
           toast.error(t("home.toast.playlistEmpty"));
           return;
@@ -142,12 +187,14 @@ export function useHomeData() {
       setLoadingPlayId(key);
       try {
         const res = await getAlbumDetail(id);
-        const tracks: SongDetail[] = (res.data?.songs || []).map((song: SongDetail) =>
+        const tracks: SongDetail[] = (res.data.songs ?? []).map((song: RawSongDetail) =>
           pruneSongDetail({
             ...song,
             al: {
-              ...song.al,
-              picUrl: song.al?.picUrl || res.data?.album?.picUrl || res.data?.album?.blurPicUrl,
+              id: song.al?.id ?? 0,
+              name: song.al?.name ?? "",
+              picUrl:
+                song.al?.picUrl ?? res.data?.album?.picUrl ?? res.data?.album?.blurPicUrl ?? "",
             },
           }),
         );
@@ -167,56 +214,21 @@ export function useHomeData() {
   );
 
   const fetchHomeData = useCallback(async () => {
-    setIsLoading(true);
-    setHasError(false);
-    if (isLogin && (!user?.nickname || !userId) && !fetchingUser) {
-      setFetchingUser(true);
-      try {
-        const cookie = localStorage.getItem("user_id") || "";
-        const accountRes = await getUserDetail(cookie);
-        if (accountRes.data?.profile) {
-          useUserStore.getState().setUser(accountRes.data.profile);
-          useUserStore.getState().setUserId(accountRes.data.account?.id || "");
-        }
-      } catch (err) {
-        console.error("同步用户信息失败:", err);
-      } finally {
-        setFetchingUser(false);
-      }
-    }
-
-    const requests: any[] = [
-      getPersonalizePlaylists(),
-      isLogin ? getRecommendedPlaylists() : { data: { recommend: [] } },
-      getHotArtists(),
-    ];
-    if (isLogin) requests.push(getUserAlbumSublist());
-
-    Promise.all(requests)
-      .then((results) => {
-        const [personalRes, recommendRes, artistsRes, albumsRes] = results;
-        const shuffled = [...(recommendRes.data?.recommend || [])]
-          .map((item, index) => ({ item, index }))
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 8)
-          .sort((a, b) => a.index - b.index)
-          .map(({ item }) => item);
-        setPlaylists(Array.isArray(personalRes.data.result) ? personalRes.data.result : []);
-        setBannerPlaylist(Array.isArray(recommendRes.data?.recommend) ? shuffled : []);
-        setSuggestedArtists(Array.isArray(artistsRes.data.artists) ? artistsRes.data.artists : []);
-        setCollectedAlbum(Array.isArray(albumsRes?.data.data) ? albumsRes.data.data : []);
-      })
-      .catch((error) => {
-        console.error("获取首页数据失败:", error);
-        setHasError(true);
-        toast.error(t("home.toast.loadFailed"));
-      })
-      .finally(() => setIsLoading(false));
-  }, [isLogin, setCollectedAlbum, user, userId, fetchingUser, t]);
-
-  useEffect(() => {
-    fetchHomeData();
-  }, [fetchHomeData]);
+    await Promise.all([
+      personalizedQuery.refetch(),
+      hotArtistsQuery.refetch(),
+      ...(isLogin ? [recommendedQuery.refetch(), collectedAlbumsQuery.refetch()] : []),
+      ...(storedUserId ? [userProfileQuery.refetch()] : []),
+    ]);
+  }, [
+    collectedAlbumsQuery,
+    hotArtistsQuery,
+    isLogin,
+    personalizedQuery,
+    recommendedQuery,
+    storedUserId,
+    userProfileQuery,
+  ]);
 
   return {
     playlists,

@@ -21,8 +21,8 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { LikeButton } from "@/components/ui/LikeButton";
+import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { likeSong } from "@/lib/api/playlist";
-import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
@@ -106,6 +106,7 @@ export const PopularTrackItem = memo(
     const likeListIDs = useUserStore((s) => s.likeListIDs);
     const playlists = useUserStore((s) => s.playlist);
     const isLoggedIn = useLoginStatus();
+    const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
 
     // ── derived ──
     const isActive = currentSongDetail?.id === track.id;
@@ -279,7 +280,11 @@ export const PopularTrackItem = memo(
                       onClick={() => {
                         void (async () => {
                           try {
-                            await updatePlaylistTrack("add", p.id, track.id);
+                            await updatePlaylistTrack({
+                              operation: "add",
+                              playlistId: p.id,
+                              trackId: track.id,
+                            });
                             void clearPageCache();
                             toast.success(t("artist.track.addToPlaylistSuccess"));
                           } catch {

@@ -39,8 +39,7 @@ export function useSmoothPlaylistScroll(scrollContainer: HTMLDivElement | null, 
     };
 
     const animate = () => {
-      const nextScrollTop =
-        currentScrollTop + (targetScrollTop - currentScrollTop) * SCROLL_EASING;
+      const nextScrollTop = currentScrollTop + (targetScrollTop - currentScrollTop) * SCROLL_EASING;
       const distance = targetScrollTop - nextScrollTop;
 
       if (Math.abs(distance) <= STOP_THRESHOLD) {

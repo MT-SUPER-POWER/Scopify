@@ -68,7 +68,11 @@ export function useAlbumData() {
     return albumDetail.songs.map((song) =>
       pruneSongDetail({
         ...song,
-        al: { ...song.al, picUrl: song.al?.picUrl ?? cover ?? "" },
+        al: {
+          id: song.al?.id ?? 0,
+          name: song.al?.name ?? "",
+          picUrl: song.al?.picUrl ?? cover ?? "",
+        },
       }),
     );
   }, [albumDetail]);

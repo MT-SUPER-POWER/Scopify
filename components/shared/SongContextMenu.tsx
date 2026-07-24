@@ -19,8 +19,8 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { likeSong } from "@/lib/api/playlist";
-import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { usePlayerStore, useUserStore } from "@/store";
@@ -59,6 +59,7 @@ export function SongContextMenu({
   const isLogin = useLoginStatus();
   const playlists = useUserStore((s) => s.playlist);
   const likelist = useUserStore((s) => s.likeListIDs);
+  const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
 
   const isLiked = useMemo(() => {
     if (Array.isArray(likelist)) return likelist.includes(song.id);
@@ -167,7 +168,11 @@ export function SongContextMenu({
                   <ContextMenuItem
                     onClick={async () => {
                       try {
-                        await updatePlaylistTrack("add", playlist.id, song.id);
+                        await updatePlaylistTrack({
+                          operation: "add",
+                          playlistId: playlist.id,
+                          trackId: song.id,
+                        });
                         toast.success(t("playlist.table.addToPlaylistSuccess"));
                         void clearPageCache();
                         const store = useUserStore.getState();

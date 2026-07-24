@@ -1,10 +1,10 @@
-import type { SongDetail } from "@/types/api/music";
+import type { RawSongDetail, SongDetail } from "@/types/api/music";
 
 export interface Track {
   id: string | number;
   title: string;
   durationMs: number;
-  ar: Array<{ id: string | number; name: string }>;
+  ar: { id: string | number; name: string }[];
   al: {
     blurPicUrl?: string;
     coverUrl?: string;
@@ -12,7 +12,7 @@ export interface Track {
   };
   publishTime?: number;
   dt: number;
-  raw?: unknown;
+  raw?: RawSongDetail;
 }
 
 export interface Album {

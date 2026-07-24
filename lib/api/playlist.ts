@@ -2,6 +2,14 @@ import type {
   PlaylistHighQualityTagsResponse,
   UpdatePlaylistParams,
 } from "@/types/api/playlistTags";
+import type {
+  DailyRecommendationDislikeResponse,
+  LikeListResponse,
+  PersonalizedPlaylistsResponse,
+  PlaylistTracksResponse,
+  RecommendedPlaylistsResponse,
+  UserPlaylistResponse,
+} from "@/types/api/playlist";
 import request from "../web/request";
 
 /**
@@ -11,8 +19,8 @@ import request from "../web/request";
  * @param offset 偏移数量，用于分页 , 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
  * @returns
  */
-export function getUserPlaylist(uid: number, limit: number = 30, offset: number = 0) {
-  return request.get("/user/playlist", { params: { uid, limit, offset } });
+export function getUserPlaylist(uid: number, limit = 30, offset = 0) {
+  return request.get<UserPlaylistResponse>("/user/playlist", { params: { uid, limit, offset } });
 }
 
 /**
@@ -22,7 +30,7 @@ export function getUserPlaylist(uid: number, limit: number = 30, offset: number 
  * @param offset 偏移数量，用于分页 , 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
  * @returns
  */
-export function getUserPlaylistByID(uid: number, limit: number = 30, offset: number = 0) {
+export function getUserPlaylistByID(uid: number, limit = 30, offset = 0) {
   return request.get("/user/playlist/create", { params: { uid, limit, offset } });
 }
 
@@ -46,7 +54,9 @@ export function getPlaylistAllTracks({
   cookie?: string;
 }) {
   // DEBUG: 后期如果拿不到数据，在这里试试看带上 cookie
-  return request.get("/playlist/track/all", { params: { id, limit, offset } });
+  return request.get<PlaylistTracksResponse>("/playlist/track/all", {
+    params: { cookie, id, limit, offset },
+  });
 }
 
 /**
@@ -54,7 +64,7 @@ export function getPlaylistAllTracks({
  * @param limit 返回数量，默认为 10
  * @returns 最近播放的歌曲列表数据
  */
-export function getRecentSongs(limit: number = 10) {
+export function getRecentSongs(limit = 10) {
   return request.get("/record/recent/song", { params: { limit } });
 }
 
@@ -62,7 +72,7 @@ export function getRecentSongs(limit: number = 10) {
  * 获取用户喜欢的歌曲列表
  */
 export function getUserLikeLists(uid: number | string) {
-  return request.get("/likelist", { params: { uid } });
+  return request.get<LikeListResponse>("/likelist", { params: { uid } });
 }
 
 /**
@@ -78,7 +88,7 @@ export function likeSong(id: number | string, like: boolean) {
  * @param privacy 默认为为公开 10 为私密 0 为普通歌单
  * @returns
  */
-export function createPlaylist(name: string, privacy: string = "0") {
+export function createPlaylist(name: string, privacy = "0") {
   return request.get("/playlist/create", { params: { name, privacy } });
 }
 
@@ -141,7 +151,7 @@ export function updatePlaylistTags(id: number | string, tags: string[]) {
  * @param imgFile 图片文件对象
  * @param imgSize 图片尺寸, 默认为 300
  */
-export function updatePlaylistCover(id: number | string, imgFile: File, imgSize: number = 300) {
+export function updatePlaylistCover(id: number | string, imgFile: File, imgSize = 300) {
   const formData = new FormData();
   formData.append("imgFile", imgFile);
   return request.post(`/playlist/cover/update?id=${id}&imgSize=${imgSize}`, formData, {
@@ -153,7 +163,7 @@ export function updatePlaylistCover(id: number | string, imgFile: File, imgSize:
 
 export function getPersonalizePlaylists(limit?: number) {
   if (limit === undefined || limit > 30) limit = 15;
-  return request.get("/personalized", { params: { limit } });
+  return request.get<PersonalizedPlaylistsResponse>("/personalized", { params: { limit } });
 }
 
 export function getPlaylsitDetail({ id, cookie }: { id: number | string; cookie?: string }) {
@@ -161,13 +171,13 @@ export function getPlaylsitDetail({ id, cookie }: { id: number | string; cookie?
 }
 
 // 获取每日推荐歌单
-export function getRecommendedPlaylists() {
-  const cookie = localStorage.getItem("music_cookie") || "";
-  return request.get("/recommend/resource", { params: { cookie } });
+export function getRecommendedPlaylists(cookie?: string) {
+  return request.get<RecommendedPlaylistsResponse>("/recommend/resource", { params: { cookie } });
 }
 
 // 不喜欢某一首每日推荐
-export function dislikeDailyRecommend(id: number | string) {
-  const cookie = localStorage.getItem("music_cookie") || "";
-  return request.get("/recommend/songs/dislike", { params: { id, cookie } });
+export function dislikeDailyRecommend(id: number | string, cookie?: string) {
+  return request.get<DailyRecommendationDislikeResponse>("/recommend/songs/dislike", {
+    params: { cookie, id },
+  });
 }

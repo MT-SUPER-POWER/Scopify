@@ -316,7 +316,7 @@ const GeometricLayer: React.FC<GeometricBackgroundProps> = ({
 
       return {
         id: index,
-        type: useIcon ? 'icon' : shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
+          type: useIcon ? "icon" : shapeTypes[Math.floor(Math.random() * shapeTypes.length)],
         iconName,
         initialX: Math.random() * 100,
         initialY: Math.random() * 100,
@@ -329,9 +329,13 @@ const GeometricLayer: React.FC<GeometricBackgroundProps> = ({
         initialRotation: Math.random() * 360,
       };
     });
-  }, [theme.lyricsIcons, seed]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [theme.lyricsIcons, seed],
+  );
 
-  const particles = useMemo<BackgroundParticle[]>(() => (
+  const particles = useMemo<BackgroundParticle[]>(
+    () =>
     Array.from({ length: 20 }).map((_, index) => ({
       id: index,
       size: Math.random() * 4 + 1,
@@ -340,8 +344,10 @@ const GeometricLayer: React.FC<GeometricBackgroundProps> = ({
       opacity: Math.random() * 0.3,
       duration: 15 + Math.random() * 20,
       delay: Math.random() * 10,
-    }))
-  ), [seed]);
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [seed],
+  );
 
   return (
     <motion.div
@@ -374,8 +380,9 @@ const GeometricLayer: React.FC<GeometricBackgroundProps> = ({
   );
 };
 
-const GeometricBackground: React.FC<GeometricBackgroundProps> = React.memo((props) => {
-  const layerKey = String(props.seed ?? 'default');
+const GeometricBackground: React.FC<GeometricBackgroundProps> = React.memo(
+  function GeometricBackground(props) {
+    const layerKey = String(props.seed ?? "default");
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -389,7 +396,8 @@ const GeometricBackground: React.FC<GeometricBackgroundProps> = React.memo((prop
       </AnimatePresence>
     </div>
   );
-}, (prevProps, nextProps) => {
+  },
+  (prevProps, nextProps) => {
   if (prevProps.seed !== nextProps.seed) return false;
   if (prevProps.audioPower !== nextProps.audioPower) return false;
   if (prevProps.hideShapes !== nextProps.hideShapes) return false;
@@ -424,10 +432,15 @@ const GeometricBackground: React.FC<GeometricBackgroundProps> = React.memo((prop
   const iconsEqual = Boolean(
     previousTheme.lyricsIcons === nextTheme.lyricsIcons ||
     (previousTheme.lyricsIcons?.length === nextTheme.lyricsIcons?.length &&
-      previousTheme.lyricsIcons?.every((value, index) => value === nextTheme.lyricsIcons?.[index]))
+        previousTheme.lyricsIcons?.every(
+          (value, index) => value === nextTheme.lyricsIcons?.[index],
+        )),
   );
 
   return colorsEqual && iconsEqual;
-});
+  },
+);
+
+GeometricBackground.displayName = "GeometricBackground";
 
 export default GeometricBackground;

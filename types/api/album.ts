@@ -1,4 +1,5 @@
 import type { RawSongDetail } from "@/types/api/music";
+import type { NeteaseUserAlbum } from "@/types/api/release";
 
 export interface AlbumDetailResponse {
   album?: NeteaseAlbum;
@@ -7,8 +8,18 @@ export interface AlbumDetailResponse {
 }
 
 export interface AlbumSublistParams {
+  cookie?: string;
   limit?: number;
   offset?: number;
+}
+
+/** `/album/sublist` 在认证态返回 `data`，匿名态只返回 `code` 和 `paidCount`。 */
+export interface AlbumSublistResponse {
+  code: number;
+  count?: number;
+  data?: NeteaseUserAlbum[];
+  hasMore?: boolean;
+  paidCount?: number;
 }
 
 export interface AlbumSubscribeResponse {

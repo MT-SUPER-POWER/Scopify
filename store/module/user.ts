@@ -4,7 +4,11 @@ import { logout } from "@/lib/api/login";
 import { IS_ELECTRON } from "@/lib/utils";
 import { clearLoginStatus } from "@/lib/web/auth";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
-import { type NeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
+import {
+  type NeteasePlaylist,
+  type RawNeteasePlaylist,
+  prunePlaylist,
+} from "@/types/api/playlist";
 import type { NeteaseUserAlbum } from "@/types/api/release";
 import { type NeteaseUser, pruneUser } from "@/types/api/user";
 import type { FollowedArtist } from "@/types/artist";
@@ -33,7 +37,7 @@ type UserStore = {
   setCollectedAlbumId: (albumId: number, collected: boolean) => void;
   clearCollectedAlbum: () => void;
   setLikeListIDs: (ids: number[]) => void;
-  setPlayList: (playlists: NeteasePlaylist[]) => void;
+  setPlayList: (playlists: RawNeteasePlaylist[]) => void;
   setFollowedArtists: (artists: FollowedArtist[]) => void;
   setUserId: (userId: number | string) => void;
   triggerLibraryUpdate: () => void;
@@ -76,7 +80,11 @@ export const useUserStore = create<UserStore>()(
         set((state) => ({ libraryUpdateTrigger: state.libraryUpdateTrigger + 1 })),
       setUser: (userData: NeteaseUser) => set({ user: pruneUser(userData) }),
       setUserId: (userId: number | string) => {
-        set({ user: { ...useUserStore.getState().user, id: userId } as NeteaseUser });
+        const numericUserId = Number(userId);
+        if (!Number.isFinite(numericUserId)) return;
+        set((state) =>
+          state.user ? { user: { ...state.user, userId: numericUserId } } : state,
+        );
       },
       setLoginType: (loginType: "token" | "cookie" | "qr" | "uid" | null) => set({ loginType }),
       setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => {
@@ -91,7 +99,7 @@ export const useUserStore = create<UserStore>()(
         })),
       clearAlbumList: () => set({ albumList: [] }),
       setLikeListIDs: (ids: number[]) => set({ likeListIDs: ids }),
-      setPlayList: (rawPlaylists: NeteasePlaylist[]) => {
+      setPlayList: (rawPlaylists: RawNeteasePlaylist[]) => {
         const cleanPlaylists = rawPlaylists.map(prunePlaylist);
         set({ playlist: cleanPlaylists });
       },

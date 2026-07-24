@@ -20,11 +20,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
+import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { useSmoothPlaylistScroll } from "@/hooks/playlist/useSmoothPlaylistScroll";
-import { dislikeDailyRecommend } from "@/lib/api/playlist";
-import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
+import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
@@ -80,6 +81,8 @@ export default function TracklistTable({
   };
 
   const { t } = useI18n();
+  const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
+  const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
   const playlistID = useSearchParams().get("id");
   const isDailyRecommend = useSearchParams().get("isDailyRecommend") === "true";
   const pathname = usePathname();
@@ -207,7 +210,11 @@ export default function TracklistTable({
   const handleConfirmDelete = useCallback(async () => {
     if (pendingDelete?.playlistId === undefined) return;
     try {
-      await updatePlaylistTrack("del", pendingDelete.playlistId, pendingDelete.trackId);
+      await updatePlaylistTrack({
+        operation: "del",
+        playlistId: pendingDelete.playlistId,
+        trackId: pendingDelete.trackId,
+      });
 
       // 1. 乐观更新：立刻从视图移出
       setAlbumList(albumList.filter((t) => t.id !== pendingDelete.trackId));
@@ -217,13 +224,12 @@ export default function TracklistTable({
       const store = useUserStore.getState();
       if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
       void clearPageCache();
-    } catch (_err) {
+    } catch {
       toast.error(t("playlist.table.removeFailed"));
-      console.log("delete failed", _err);
     } finally {
       setPendingDelete(null);
     }
-  }, [albumList, pendingDelete, setAlbumList, t]);
+  }, [albumList, pendingDelete, setAlbumList, t, updatePlaylistTrack]);
 
   const handleCancelDelete = useCallback(() => {
     setPendingDelete(null);

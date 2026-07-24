@@ -61,7 +61,7 @@ export function useSearchLogic({ inputRef, onClose, isActive = true }: UseSearch
     setLoading(true);
     const t = setTimeout(async () => {
       try {
-        const res = await searchSuggest(localValue.trim());
+        const res = await searchSuggest(localValue.trim(), getStoredMusicCookie());
         const newSuggests = res.data?.data?.suggests ?? [];
         setSuggests(newSuggests);
         setSelectedIndex(newSuggests.length > 0 ? 0 : -1);

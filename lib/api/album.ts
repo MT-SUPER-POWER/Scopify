@@ -1,6 +1,7 @@
 import type {
   AlbumDetailResponse,
   AlbumSublistParams,
+  AlbumSublistResponse,
   AlbumSubscribeResponse,
 } from "@/types/api/album";
 
@@ -8,10 +9,10 @@ import request, { requestData } from "@/lib/web/request";
 
 // 获取已收藏专辑列表
 export const getUserAlbumSublist = (params?: AlbumSublistParams) => {
-  return request({
+  return request<AlbumSublistResponse>({
     method: "get",
     params: {
-      cookie: localStorage.getItem("music_cookie") || "",
+      cookie: params?.cookie,
       limit: params?.limit ?? 25,
       offset: params?.offset ?? 0,
     },
@@ -21,7 +22,7 @@ export const getUserAlbumSublist = (params?: AlbumSublistParams) => {
 
 // 获取专辑详情
 export const getAlbumDetail = (id: number | string) => {
-  return request.get("/album", {
+  return request.get<AlbumDetailResponse>("/album", {
     params: {
       id,
     },

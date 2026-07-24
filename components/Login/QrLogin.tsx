@@ -11,6 +11,7 @@ import { checkQR, createQR, getQRKey } from "@/lib/api/login";
 import { getUserAccount, getUserDetail } from "@/lib/api/user";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { IS_ELECTRON } from "@/lib/utils";
+import { logger } from "@/lib/web/logger";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 // import { saveMusicCookie } from '@/app/actions/cookie';
@@ -39,7 +40,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
   const [qrStatusText, setQrStatusText] = useState(t("login.qr.loading"));
 
   // 强制刷新触发器，用于用户手动点击刷新
-  const [_refreshKey, setRefreshKey] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     // 标志位：组件是否存活 / 当前流程是否有效
@@ -60,7 +61,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
         const qrRes = await createQR(unikey);
         if (!isActive) return;
 
-        setQrImg(qrRes.data?.data?.qrimg);
+        setQrImg(qrRes.data.data.qrimg);
         setQrStatus("waiting");
         setQrStatusText(t("login.qr.waiting"));
 
@@ -69,7 +70,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
           const statusRes = await checkQR(unikey);
           if (!isActive) break; // 如果请求期间组件卸载或刷新，立刻跳出
 
-          const code = statusRes.data?.code;
+          const code = statusRes.data.code;
 
           if (code === 800) {
             setQrStatus("expired");
@@ -86,7 +87,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             setQrStatusText(t("login.qr.success"));
 
             // NOTE: 登录时 cookie 存储的位置
-            const rawCookie = statusRes.data?.cookie || "";
+            const rawCookie = statusRes.data.cookie ?? "";
             localStorage.setItem("music_cookie", rawCookie); // 先存一份到 localStorage，兜底用
 
             // 1. 调用主进程注入 Cookie (Electron 环境)
@@ -94,7 +95,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
               await window.electronAPI.setCookie(rawCookie);
             } else if (typeof document !== "undefined") {
               // Web 环境：写入 document.cookie
-              const musicUMatch = rawCookie.match(/MUSIC_U=([^;]+)/);
+              const musicUMatch = /MUSIC_U=([^;]+)/.exec(rawCookie);
               const musicUValue = musicUMatch ? musicUMatch[1] : "";
               document.cookie = `MUSIC_U=${musicUValue}; path=/; max-age=${60 * 60 * 24 * 30}`;
             }
@@ -102,10 +103,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             // 强制带上 cookie 发起用户信息请求
             const loginRes = await getUserAccount();
 
-            // DEBUG: QR 登录接口返回的数据，帮助排查登录状态异常问题
-            console.log("[二维码登录] getUserAccount 返回:", loginRes.data);
-
-            if (loginRes.data?.code !== 200) {
+            if (loginRes.data.code !== 200) {
               setQrStatus("expired");
               setQrStatusText(t("login.qr.statusError"));
               toast.error(t("login.qr.toast.statusError"));
@@ -113,17 +111,18 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             }
 
             // 接口返回的 profile 数据不是很稳定，为了解决这个问题，我们走 id 再请求后续的数据
-            const userId = loginRes.data?.account?.id || "";
+            const userId = loginRes.data.account?.id ?? loginRes.data.profile?.userId;
+            if (!userId) {
+              setQrStatus("expired");
+              setQrStatusText(t("login.qr.statusError"));
+              toast.error(t("login.qr.toast.statusError"));
+              break;
+            }
             useUserStore.getState().setUserId(userId); // 兜底的
             localStorage.setItem("user_id", String(userId)); // 存储 userId 到 localStorage 保底
 
-            await getUserDetail(userId).then((detailRes) => {
-              const detailData = detailRes.data?.profile || {};
-              useUserStore.getState().setUser({
-                id: userId,
-                ...detailData,
-              });
-            });
+            const detailRes = await getUserDetail(userId);
+            useUserStore.getState().setUser(detailRes.data.profile);
 
             useUserStore.getState().setLoginType("qr");
             toast.success(t("login.qr.toast.success"));
@@ -140,21 +139,21 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
         }
       } catch (error) {
         if (isActive) {
-          console.error("二维码流程异常", error);
+          logger.error("二维码流程异常", error);
           setQrStatus("expired");
           setQrStatusText(t("login.qr.networkError"));
         }
       }
     };
 
-    startLoginFlow();
+    void startLoginFlow();
 
     return () => {
       // 清理函数：只要重新渲染或组件销毁，立刻把 isActive 置为 false
       // 这会截断任何正在进行中的 while 循环和异步请求后的赋值
       isActive = false;
     };
-  }, [t]); // 通过 ref 获取最新 router 和 onSuccess，避免对象引用变化导致循环重渲染
+  }, [refreshKey, t]); // 通过 ref 获取最新 router 和 onSuccess，避免对象引用变化导致循环重渲染
 
   return (
     <div className="flex flex-col items-center justify-center space-y-4 pt-2">
@@ -163,12 +162,12 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
           <Image
             src={qrImg}
             alt={t("login.qr.alt")}
-            className="block h-40 w-40"
+            className="block size-40"
             width={160}
             height={160}
           />
         ) : (
-          <div className="flex h-40 w-40 animate-pulse items-center justify-center text-sm text-zinc-400">
+          <div className="flex size-40 animate-pulse items-center justify-center text-sm text-zinc-400">
             {t("login.qr.generating")}
           </div>
         )}
@@ -182,7 +181,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
               size="sm"
               className="gap-1.5 rounded-full text-xs font-bold"
             >
-              <RefreshCw className="h-3 w-3" /> {t("login.qr.refresh")}
+              <RefreshCw className="size-3" /> {t("login.qr.refresh")}
             </Button>
           </div>
         )}

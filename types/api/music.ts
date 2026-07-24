@@ -6,6 +6,12 @@ export interface SongUrlMatchResponse {
   proxyUrl: string;
 }
 
+export interface SongUrlMatchParams {
+  cookie?: string;
+  id: number | string;
+  source?: string;
+}
+
 export interface SongStats {
   likedCount?: number;
   commentCount?: number;
@@ -28,7 +34,7 @@ export interface SongDetail {
   id: number;
   name: string;
   dt: number; // 时长 (ms)
-  ar: Array<{ id: number; name: string }>; // 歌手
+  ar: { id: number; name: string }[]; // 歌手
   al: {
     id: number;
     name: string;
@@ -41,12 +47,64 @@ export interface SongDetail {
   likedCount?: number;
   commentCount?: number;
   pc?: {
-    privateCloud?: unknown;
+    privateCloud?: NeteasePrivateCloud;
   };
 }
 
-export interface RawSongDetail extends SongDetail {
-  [key: string]: unknown; // 允许包含任意其他属性
+export interface NeteasePrivateCloud {
+  alicename?: string;
+  bitRate?: number;
+  fileSize?: number;
+  id?: number;
+  name?: string;
+  simpleSongId?: number;
+  songId?: number;
+  version?: number;
+}
+
+export interface RawSongArtist {
+  id: number;
+  img1v1Url?: string;
+  name: string;
+  picUrl?: string;
+}
+
+export interface RawSongAlbum {
+  id: number;
+  blurPicUrl?: string;
+  coverUrl?: string;
+  name: string;
+  picUrl?: string;
+  publishTime?: number;
+}
+
+/**
+ * 原始歌曲对象会因端点不同使用 `ar`/`al` 或 `artists`/`album`。
+ * 字段由 `/album` 与 `/v1/artist/songs` 的实际响应确认。
+ */
+export interface RawSongDetail {
+  al?: RawSongAlbum;
+  album?: RawSongAlbum;
+  alia?: string[];
+  ar?: RawSongArtist[];
+  artists?: RawSongArtist[];
+  commentCount?: number;
+  dt?: number;
+  duration?: number;
+  id: number;
+  info?: {
+    commentThread?: {
+      commentCount?: number;
+    };
+    likedCount?: number;
+  };
+  likedCount?: number;
+  name: string;
+  pc?: {
+    privateCloud?: NeteasePrivateCloud;
+  };
+  publishTime?: number;
+  redCount?: number;
 }
 
 /**
@@ -54,56 +112,40 @@ export interface RawSongDetail extends SongDetail {
  * 兼容标准格式 (ar/al) 和后端异常格式 (artists/album)
  * @param raw 原始 API 返回的歌曲对象
  */
-export const pruneSongDetail = (raw: any): SongDetail => {
-  // 1. 如果传入空数据，直接返回一个类型安全的空结构兜底
-  if (!raw) {
-    return {
-      id: 0,
-      name: "Unknown Song",
-      dt: 0,
-      ar: [],
-      al: { id: 0, name: "", picUrl: "", blurPicUrl: "", coverUrl: "" },
-      publishTime: 0,
-      alia: [],
-    };
-  }
-
-  // 2. 处理歌手字段：优先用 ar，没有就用 artists
-  const artistList = raw.ar || raw.artists || [];
-
-  // 3. 处理专辑字段：优先用 al，没有就用 album
-  const albumData = raw.al || raw.album || {};
+export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
+  const artistList = raw.ar ?? raw.artists ?? [];
+  const albumData = raw.al ?? raw.album;
 
   const likedCount = raw.likedCount ?? raw.info?.likedCount ?? raw.redCount;
   const commentCount = raw.commentCount ?? raw.info?.commentThread?.commentCount;
 
   return {
-    id: raw.id || 0,
-    name: raw.name || "未知歌曲",
-    dt: raw.dt || raw.duration || 0, // 有的接口用 duration
+    id: raw.id,
+    name: raw.name,
+    dt: raw.dt ?? raw.duration ?? 0,
 
     // 4. 确保 ar 一定是数组，兼容两种字段名
     ar: Array.isArray(artistList)
-      ? artistList.map((artist: any) => ({
-          id: artist?.id || 0,
-          name: artist?.name || "Unknown Artist",
+      ? artistList.map((artist) => ({
+          id: artist.id,
+          name: artist.name,
         }))
       : [],
 
     // 5. 处理专辑，兼容两种字段名和各种图片字段
     al: {
-      id: albumData?.id || 0,
-      name: albumData?.name || "Unknown Album",
+      id: albumData?.id ?? 0,
+      name: albumData?.name ?? "Unknown Album",
       // 图片优先级：picUrl > blurPicUrl > pic > 空
-      picUrl: albumData?.picUrl || albumData?.blurPicUrl || albumData?.pic || "",
+      picUrl: albumData?.picUrl ?? albumData?.blurPicUrl ?? "",
       blurPicUrl: albumData?.blurPicUrl,
       coverUrl: albumData?.coverUrl,
     },
-    publishTime: raw.publishTime || albumData?.publishTime || 0,
+    publishTime: raw.publishTime ?? albumData?.publishTime ?? 0,
     alia: Array.isArray(raw.alia) ? raw.alia.filter(Boolean) : [],
     ...(typeof likedCount === "number" && likedCount >= 0 ? { likedCount } : {}),
     ...(typeof commentCount === "number" && commentCount >= 0 ? { commentCount } : {}),
-    pc: raw.pc || {},
+    pc: raw.pc ?? {},
   };
 };
 
@@ -209,24 +251,67 @@ export interface SongMusicDetailResponse {
 }
 
 export interface SongUrlV1Item {
+  accompany: null;
+  auEff: number;
   id: number;
   url: string;
   br: number;
-  size: number;
-  md5: string;
-  code: number;
-  expi: number;
-  type: string;
-  gain: number;
-  fee: number;
-  uf: null | any;
-  payed: number;
-  flag: number;
+  beatType: number;
   canExtend: boolean;
-  freeTrialInfo: null | any;
-  level: string;
+  channelLayout: null | string;
+  closedGain: number;
+  closedPeak: number;
+  code: number;
+  effectTypes: null | number[];
   encodeType: string;
+  expi: number;
+  fee: number;
+  flag: number;
+  freeTimeTrialPrivilege: NeteaseFreeTimeTrialPrivilege;
+  freeTrialInfo: NeteaseFreeTrialInfo | null;
+  freeTrialPrivilege: NeteaseFreeTrialPrivilege;
+  gain: number;
+  immerseType: null | string;
+  level: string;
+  levelConfuse: null | string;
+  md5: string;
+  message: null | string;
+  musicId: string;
+  podcastCtrp: null;
+  rightSource: number;
+  sr: number;
+  size: number;
+  type: string;
+  payed: number;
   time: number;
+  uf: null;
+  urlSource: number;
+}
+
+export interface NeteaseFreeTimeTrialPrivilege {
+  remainTime: number;
+  resConsumable: boolean;
+  type: number;
+  userConsumable: boolean;
+}
+
+export interface NeteaseFreeTrialInfo {
+  algData?: {
+    audioEffect: number;
+    fragSource: string;
+  };
+  end: number;
+  fragmentType: number;
+  start: number;
+}
+
+export interface NeteaseFreeTrialPrivilege {
+  cannotListenReason: number | null;
+  freeLimitTagType: number | null;
+  listenType: number | null;
+  playReason: null | string;
+  resConsumable: boolean;
+  userConsumable: boolean;
 }
 
 export interface SongUrlV1Response {

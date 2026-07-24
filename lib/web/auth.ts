@@ -1,11 +1,17 @@
 import request from "@/lib/web/request";
+import type { NeteaseUser } from "@/types/api/user";
 
 export interface LoginInfo {
   isLoggedIn: boolean;
   loginType: "token" | "cookie" | "qr" | "uid" | null;
   hasToken: boolean;
   hasUser: boolean;
-  user: any;
+  user: NeteaseUser | null;
+}
+
+export function getStoredMusicCookie() {
+  if (typeof window === "undefined") return undefined;
+  return window.localStorage.getItem("music_cookie") ?? undefined;
 }
 
 /**

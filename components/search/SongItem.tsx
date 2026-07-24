@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/context-menu";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { likeSong } from "@/lib/api/playlist";
-import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
@@ -114,6 +113,7 @@ interface SongItemProps {
 export const SongItem = memo(
   function SongItem({ song, index, songs }: SongItemProps) {
     const { t } = useI18n();
+    const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
     // ── store ──
     const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
     const isPlaying = usePlayerStore((s) => s.isPlaying);
@@ -314,7 +314,11 @@ export const SongItem = memo(
                       key={playlist.id}
                       onClick={async () => {
                         try {
-                          await updatePlaylistTrack("add", playlist.id, song.id);
+                          await updatePlaylistTrack({
+                            operation: "add",
+                            playlistId: playlist.id,
+                            trackId: song.id,
+                          });
                           void clearPageCache();
                           toast.success(t("playlist.table.addToPlaylistSuccess"));
                         } catch {

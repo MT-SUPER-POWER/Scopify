@@ -18,7 +18,7 @@ export function ErrorFallback({ error, reset }: ErrorFallbackProps) {
   }, [error]);
 
   return (
-    <main className="bg-background text-foreground grid min-h-dvh place-items-center p-6">
+    <main className="grid min-h-dvh place-items-center bg-background p-6 text-foreground">
       <div className="space-y-4 text-center">
         <h1 className="text-xl font-semibold">Something went wrong</h1>
         <Button type="button" onClick={reset}>

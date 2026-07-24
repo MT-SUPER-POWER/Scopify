@@ -10,13 +10,18 @@ import { SongsView } from "@/components/search/SongsView";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useI18n } from "@/store/module/i18n";
 import type { Category } from "@/types/search";
 
 export default function SearchPage() {
+  const { t } = useI18n();
   const keywords = useSearchParams().get("keywords") || "";
   const router = useSmartRouter();
   const [activeCategory, setActiveCategory] = useState<Category>("All");
-  const { loading, songs, albums, playlists, artists } = useSearchData(keywords, activeCategory);
+  const { albums, artists, hasError, loading, playlists, refetch, songs } = useSearchData(
+    keywords,
+    activeCategory,
+  );
   const { loadingPlayId, handlePlayPlaylist, handlePlayAlbum } = usePlayActions();
 
   const isGridCategory = (["Albums", "Playlists", "Artists"] as Category[]).includes(

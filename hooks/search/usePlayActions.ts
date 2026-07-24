@@ -5,20 +5,20 @@ import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { translate } from "@/lib/i18n";
 import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
 import type { Album, Playlist, Song } from "@/types/search";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function songToSongDetail(song: Song): SongDetail {
-  const picUrl = song.album.picUrl || song.artists[0]?.picUrl || "";
+  const picUrl = song.album.picUrl ?? song.artists[0]?.picUrl ?? "";
   return {
     id: song.id,
     name: song.name,
     dt: song.duration,
     ar: song.artists.map((a) => ({ id: a.id, name: a.name })),
     al: { id: song.album.id, name: song.album.name, picUrl },
-    publishTime: song.album.publishTime || 0,
+    publishTime: song.album.publishTime ?? 0,
   };
 }
 
@@ -38,7 +38,7 @@ export function usePlayActions() {
         return;
       }
       setQueue(songList.map(songToSongDetail), index);
-      playTrack(songToSongDetail(song));
+      void playTrack(songToSongDetail(song));
     },
     [currentSongDetail, isPlaying, setIsPlaying, setQueue, playTrack],
   );
@@ -51,9 +51,9 @@ export function usePlayActions() {
       setLoadingPlayId(key);
       try {
         const cookie =
-          typeof window !== "undefined" ? localStorage.getItem("music_cookie") || "" : "";
+          typeof window !== "undefined" ? (localStorage.getItem("music_cookie") ?? "") : "";
         const res = await getPlaylistAllTracks({ id: playlist.id, cookie });
-        const tracks: SongDetail[] = (res.data?.songs || []).map(pruneSongDetail);
+        const tracks: SongDetail[] = (res.data.songs ?? []).map(pruneSongDetail);
         if (!tracks.length) {
           toast.error(translate(useI18nStore.getState().locale, "sidebar.lib.noTracks"));
           return;
@@ -77,12 +77,14 @@ export function usePlayActions() {
       setLoadingPlayId(key);
       try {
         const res = await getAlbumDetail(album.id);
-        const tracks: SongDetail[] = (res.data?.songs || []).map((song: SongDetail) =>
+        const tracks: SongDetail[] = (res.data.songs ?? []).map((song: RawSongDetail) =>
           pruneSongDetail({
             ...song,
             al: {
-              ...song.al,
-              picUrl: song.al?.picUrl || res.data?.album?.picUrl || res.data?.album?.blurPicUrl,
+              id: song.al?.id ?? 0,
+              name: song.al?.name ?? "",
+              picUrl:
+                song.al?.picUrl ?? res.data?.album?.picUrl ?? res.data?.album?.blurPicUrl ?? "",
             },
           }),
         );
