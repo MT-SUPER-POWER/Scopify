@@ -83,16 +83,22 @@ export default function TracklistTable({
   const { t } = useI18n();
   const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
   const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
-  const playlistID = useSearchParams().get("id");
-  const isDailyRecommend = useSearchParams().get("isDailyRecommend") === "true";
+  const searchParams = useSearchParams();
+  const playlistID = searchParams.get("id");
+  const isDailyRecommendationPage = searchParams.get("isDailyRecommend") === "true";
+  const historicalDailyDate = searchParams.get("dailyDate");
+  const isHistoricalDailyRecommendation = isDailyRecommendationPage && historicalDailyDate !== null;
+  const canDislikeDailyRecommendation =
+    isDailyRecommendationPage && !isHistoricalDailyRecommendation;
+  const dailyQueueId = historicalDailyDate ? `daily:${historicalDailyDate}` : "daily";
   const pathname = usePathname();
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
 
   const currentPageId = useMemo(() => {
     const isPlaylistOrAlbum = pathname.includes("/playlist") || pathname.includes("/album");
     if (!isPlaylistOrAlbum) return null;
-    return playlistID ?? (isDailyRecommend ? "daily" : null);
-  }, [pathname, playlistID, isDailyRecommend]);
+    return playlistID ?? (isDailyRecommendationPage ? dailyQueueId : null);
+  }, [pathname, playlistID, isDailyRecommendationPage, dailyQueueId]);
 
   const isCurrentQueue = useMemo(() => {
     if (currentPageId === null) return true;
@@ -181,7 +187,7 @@ export default function TracklistTable({
       const isCurrent = currentSongDetail?.id === track.id && isCurrentQueue;
       if (isCurrent) setIsPlaying(!isPlaying);
       else {
-        const playSourceId = isDailyRecommend ? "daily" : (playlistID ?? null);
+        const playSourceId = isDailyRecommendationPage ? dailyQueueId : (playlistID ?? null);
         void playFromSong(track, tracks, playSourceId);
       }
     },
@@ -192,7 +198,8 @@ export default function TracklistTable({
       setIsPlaying,
       playFromSong,
       playlistID,
-      isDailyRecommend,
+      isDailyRecommendationPage,
+      dailyQueueId,
       isCurrentQueue,
     ],
   );
@@ -428,12 +435,16 @@ export default function TracklistTable({
                     isPlaying={isPlaying}
                     onPlay={() => handlePlay(track)}
                     playlistID={playlistID}
-                    isDailyRecommend={isDailyRecommend}
-                    readonly={readonly}
+                    isDailyRecommend={canDislikeDailyRecommendation}
+                    readonly={readonly || isHistoricalDailyRecommendation}
                     onRemoveFromPlaylist={() =>
                       handleRequestDelete(playlistID ?? undefined, track.id)
                     }
-                    onDislikeDailyRecommend={() => void handleDislikeDailyRecommend(track.id)}
+                    onDislikeDailyRecommend={
+                      canDislikeDailyRecommendation
+                        ? () => void handleDislikeDailyRecommend(track.id)
+                        : undefined
+                    }
                   >
                     <TrackRow
                       track={track}
@@ -491,12 +502,16 @@ export default function TracklistTable({
                       isPlaying={isPlaying}
                       onPlay={() => handlePlay(track)}
                       playlistID={playlistID}
-                      isDailyRecommend={isDailyRecommend}
-                      readonly={readonly}
+                      isDailyRecommend={canDislikeDailyRecommendation}
+                      readonly={readonly || isHistoricalDailyRecommendation}
                       onRemoveFromPlaylist={() =>
                         handleRequestDelete(playlistID ?? undefined, track.id)
                       }
-                      onDislikeDailyRecommend={() => void handleDislikeDailyRecommend(track.id)}
+                      onDislikeDailyRecommend={
+                        canDislikeDailyRecommendation
+                          ? () => void handleDislikeDailyRecommend(track.id)
+                          : undefined
+                      }
                     >
                       {row}
                     </SongContextMenu>

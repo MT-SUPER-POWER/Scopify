@@ -1,7 +1,14 @@
+"use client";
+
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { getPlaylistAllTracks, getPlaylsitDetail } from "@/lib/api/playlist";
+
+import {
+  getHistoricalDailyRecommendationDetail,
+  getPlaylistAllTracks,
+  getPlaylsitDetail,
+} from "@/lib/api/playlist";
 import { getRecommendedSongs } from "@/lib/api/track";
 import {
   createPageCacheKey,
@@ -16,10 +23,13 @@ import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type RawSongDetail } from "@/types/api/music";
 import {
   prunePlaylistTracks,
+  type HistoricalDailyRecommendationDetailResponse,
   type PlaylistCachePayload,
   type RawNeteasePlaylist,
 } from "@/types/api/playlist";
 import type { PlaylistInfo } from "@/types/playlist";
+
+const DAILY_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 // 颜色缓存机制 (全局共享)
 const colorCache = new Map<string, string>();
@@ -37,30 +47,41 @@ function setColorCache(key: string, value: string) {
   colorCache.set(key, value);
 }
 
+function getDailyCacheDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getHistoricalSongs(
+  response: HistoricalDailyRecommendationDetailResponse,
+): RawSongDetail[] {
+  const songs = response.data?.dailySongs ?? response.data?.songs;
+  return Array.isArray(songs) ? songs : [];
+}
+
 export function usePlaylist() {
   const { t } = useI18n();
   const searchParams = useSearchParams();
   const playlistId = searchParams.get("id");
   const isRecommend = searchParams.get("isRecommend") === "true";
   const isDailyRecommend = searchParams.get("isDailyRecommend") === "true";
+  const requestedDailyDate = searchParams.get("dailyDate");
+  const dailyDate =
+    isDailyRecommend && requestedDailyDate && DAILY_DATE_PATTERN.test(requestedDailyDate)
+      ? requestedDailyDate
+      : null;
+  const dailyCacheDate = dailyDate ?? getDailyCacheDate();
   const [rawDetail, setRawDetail] = useState<RawNeteasePlaylist | null>(null);
 
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1. 渲染期状态更新 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  const currentReqKey = isDailyRecommend ? "daily" : playlistId;
+  const currentReqKey = isDailyRecommend ? `daily:${dailyCacheDate}` : playlistId;
   const [prevReqKey, setPrevReqKey] = useState<string | null>(null);
 
   if (currentReqKey !== prevReqKey) {
     setPrevReqKey(currentReqKey);
-    setRawDetail(null); // 仅在切换歌单时清空数据（触发 Skeleton 骨架屏）
+    setRawDetail(null);
   }
 
-  // isLoading 派生状态：如果是相同歌单的静默刷新（rawDetail 不为空），不会触发 true，从而避免骨架屏闪烁
   const isLoading = Boolean(currentReqKey) && !rawDetail;
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2. 核心数据获取 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  const _libraryUpdateTrigger = useUserStore((s) => s.libraryUpdateTrigger);
+  const _libraryUpdateTrigger = useUserStore((state) => state.libraryUpdateTrigger);
 
   useEffect(() => {
     if (!currentReqKey) return;
@@ -68,7 +89,7 @@ export function usePlaylist() {
     let ignore = false;
     const cookie = typeof window !== "undefined" ? localStorage.getItem("music_cookie") || "" : "";
     const cacheKey = isDailyRecommend
-      ? createPageCacheKey("daily", [new Date().toISOString().slice(0, 10)])
+      ? createPageCacheKey("daily", [dailyCacheDate])
       : createPageCacheKey("playlist", [playlistId, isRecommend]);
 
     getPageCache<PlaylistCachePayload>(cacheKey).then((cached) => {
@@ -80,20 +101,34 @@ export function usePlaylist() {
     const fetchMusicData = async () => {
       try {
         if (isDailyRecommend) {
-          const res = await getRecommendedSongs();
+          let dailySongs: RawSongDetail[];
+          if (dailyDate) {
+            dailySongs = getHistoricalSongs(
+              (await getHistoricalDailyRecommendationDetail(dailyDate, cookie)).data,
+            );
+          } else {
+            const response = await getRecommendedSongs();
+            dailySongs = Array.isArray(response.data?.data?.dailySongs)
+              ? response.data.data.dailySongs
+              : [];
+          }
+
           if (ignore) return;
-          const dailySongs: RawSongDetail[] = Array.isArray(res.data?.data?.dailySongs)
-            ? res.data.data.dailySongs
-            : [];
           const nextDetail = {
-            name: t("playlist.meta.dailyTitle"),
+            name: dailyDate
+              ? t("playlist.meta.historicalDailyTitle", { date: dailyDate })
+              : t("playlist.meta.dailyTitle"),
             trackCount: dailySongs.length,
             tracks: dailySongs,
           };
           const tracks = dailySongs.map(pruneSongDetail);
           setRawDetail(nextDetail);
           useUserStore.getState().setAlbumList(tracks);
-          await setPageCache(cacheKey, { rawDetail: nextDetail, tracks }, dailyTtlMs());
+          await setPageCache(
+            cacheKey,
+            { rawDetail: nextDetail, tracks },
+            dailyDate ? pageTtlMs() : dailyTtlMs(),
+          );
         } else {
           const [detailResponse, trackResponse] = await Promise.all([
             getPlaylsitDetail({
@@ -113,36 +148,43 @@ export function usePlaylist() {
           useUserStore.getState().setAlbumList(tracks);
           await setPageCache(cacheKey, { rawDetail: playlist, tracks }, pageTtlMs());
         }
-      } catch (err) {
+      } catch (error) {
         if (ignore) return;
-        console.error(err);
+        console.error(error);
         toast.error(isDailyRecommend ? t("home.toast.loadFailed") : t("sidebar.toast.fetchFailed"));
       }
     };
 
-    fetchMusicData();
+    void fetchMusicData();
 
     return () => {
       ignore = true;
     };
-    // 无论是 URL 变了，还是由于你点击了取消喜欢导致 Trigger 变了，都会执行这个 Effect 进行拉取
-  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend, t, _libraryUpdateTrigger]);
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3. 数据派生与格式化 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  }, [
+    currentReqKey,
+    playlistId,
+    isDailyRecommend,
+    isRecommend,
+    dailyDate,
+    dailyCacheDate,
+    t,
+    _libraryUpdateTrigger,
+  ]);
 
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (!rawDetail) return null;
 
-    // console.log("Deriving playlistInfo from rawDetail:", rawDetail);
-
     if (isDailyRecommend) {
       return {
         isSpecial: true,
+        dailyDate: dailyDate ?? undefined,
         privacy: t("playlist.meta.madeForYou"),
         tags: [t("playlist.meta.dailyTag"), t("playlist.meta.recommendationTag")],
-        title: t("playlist.meta.dailyTitle"),
+        title: dailyDate
+          ? t("playlist.meta.historicalDailyTitle", { date: dailyDate })
+          : t("playlist.meta.dailyTitle"),
         cover: null,
-        createTime: new Date().toLocaleDateString(),
+        createTime: dailyDate ?? new Date().toLocaleDateString(),
         creator: t("playlist.meta.spotify"),
         creatorID: null,
         creatorAvatar: "",
@@ -161,7 +203,7 @@ export function usePlaylist() {
             : t("playlist.meta.unknownPrivacy"),
       tags: rawDetail.tags ?? [],
       title: rawDetail.name ?? t("playlist.meta.unknown"),
-      cover: rawDetail.coverImgUrl ?? `https://picsum.photos/400/400?random=123`,
+      cover: rawDetail.coverImgUrl ?? "https://picsum.photos/400/400?random=123",
       createTime: rawDetail.createTime
         ? new Date(rawDetail.createTime).toLocaleDateString()
         : t("playlist.meta.unknownDate"),
@@ -171,9 +213,7 @@ export function usePlaylist() {
       likes: rawDetail.subscribedCount ?? 0,
       totalSongs: rawDetail.trackCount ?? 0,
     };
-  }, [rawDetail, isDailyRecommend, t]);
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4. 颜色提取逻辑 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  }, [rawDetail, isDailyRecommend, dailyDate, t]);
 
   const cachedColor = useMemo(() => {
     const cacheKey = isDailyRecommend ? "daily" : playlistInfo?.cover;
@@ -195,13 +235,12 @@ export function usePlaylist() {
     });
   }, [isDailyRecommend, playlistInfo?.cover]);
 
-  const themeColor = cachedColor ?? fetchedColor ?? "#88b325";
-
   return {
     playlistId,
     isDailyRecommend,
+    dailyDate,
     isLoading,
     playlistInfo,
-    themeColor,
+    themeColor: cachedColor ?? fetchedColor ?? "#88b325",
   };
 }

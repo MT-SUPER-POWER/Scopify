@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowDownCircle,
+  CalendarDays,
   List,
   MoreHorizontal,
   Pause,
@@ -11,26 +12,29 @@ import {
   Shuffle,
   X,
 } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
+import type { PlaylistActionsProps } from "@/types/components/playlist";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useHistoricalDailyRecommendationDates } from "@/hooks/playlist/useHistoricalDailyRecommendationDates";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
-interface PlaylistActionsProps {
-  playlistId: string | null;
-  isDaily: boolean;
-  searchOpen: boolean;
-  searchQuery: string;
-  onSearchChange: (q: string) => void;
-  onSearchOpen: () => void;
-  onSearchClose: () => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-}
+const CURRENT_DAILY_VALUE = "__current_daily__";
 
 export default function PlaylistActions(props: PlaylistActionsProps) {
   const { t } = useI18n();
   const {
     playlistId,
     isDaily,
+    dailyDate,
     searchOpen,
     searchQuery,
     onSearchChange,
@@ -40,12 +44,18 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   } = props;
 
   const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const smartRouter = useSmartRouter();
+  const { data: historicalDates = [], isLoading: isHistoryLoading } =
+    useHistoricalDailyRecommendationDates(isDaily);
   const isShuffle = usePlayerStore((s) => s.isShuffle);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
   const albumList = useUserStore((s) => s.albumList);
-  const currentPageId = playlistId ?? (isDaily ? "daily" : null);
+  const currentPageId =
+    playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
   const isCurrentQueue = Boolean(storePlaylistId) && storePlaylistId === currentPageId;
   const showPause = isCurrentQueue && isPlaying; // 只有“是当前歌单”且“正在播放”时，才显示暂停键
 
@@ -62,9 +72,19 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     }
   };
 
+  const handleDailyDateChange = (value: string) => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    if (value === CURRENT_DAILY_VALUE) {
+      nextParams.delete("dailyDate");
+    } else {
+      nextParams.set("dailyDate", value);
+    }
+    smartRouter.replace(`${pathname}?${nextParams.toString()}`);
+  };
+
   return (
-    <div className="flex items-center justify-between p-6">
-      <div className="flex items-center gap-6">
+    <div className="flex flex-wrap items-center justify-between gap-4 p-6">
+      <div className="flex flex-wrap items-center gap-4 md:gap-6">
         <button
           onClick={handlePlayToggle}
           disabled={!currentSongDetail && !albumList.length}
@@ -99,6 +119,32 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             3. 专辑：分享专辑、收藏/取消收藏专辑
          */}
         <MoreHorizontal className="size-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
+        {isDaily && (isHistoryLoading || historicalDates.length > 0) && (
+          <Select
+            value={dailyDate ?? CURRENT_DAILY_VALUE}
+            onValueChange={handleDailyDateChange}
+            disabled={isHistoryLoading}
+          >
+            <SelectTrigger
+              size="sm"
+              aria-label={t("playlist.actions.historyDate")}
+              className="border-white/15 bg-white/10 text-zinc-200 hover:bg-white/15"
+            >
+              <CalendarDays className="size-4 text-zinc-300" />
+              <SelectValue placeholder={t("playlist.actions.historyLoading")} />
+            </SelectTrigger>
+            <SelectContent className="border-white/10 bg-zinc-900 text-zinc-100">
+              <SelectItem value={CURRENT_DAILY_VALUE}>
+                {t("playlist.actions.currentDaily")}
+              </SelectItem>
+              {historicalDates.map((date) => (
+                <SelectItem key={date} value={date}>
+                  {date}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       <div className="flex items-center gap-4">

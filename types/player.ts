@@ -1,6 +1,7 @@
 import type { NeteaseLyric, SongDetail } from "@/types/api/music";
 
-export type MusicQuality = "spatial" | "lossless" | "high" | "standard";
+export type MusicQuality =
+  "sky" | "jymaster" | "dolby" | "spatial" | "hires" | "lossless" | "high" | "standard";
 export type PlaybackFailureSource = "url" | "audio";
 export type RepeatMode = "off" | "all" | "one";
 
@@ -8,7 +9,7 @@ export interface PlayTrackOptions {
   resetFailureCount?: boolean;
 }
 
-export interface PlayQueueIndexOptions extends PlayTrackOptions {}
+export type PlayQueueIndexOptions = PlayTrackOptions;
 
 export interface PlayerStore {
   currentSongDetail: SongDetail | null;

@@ -4,9 +4,9 @@ import PlaylistHeader from "@components/Playlist/Header";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import PlaylistActions from "@/components/Playlist/ActionStation";
 import PlaylistHeaderSkeleton from "@/components/Playlist/HeaderSkeleton";
-import { usePlaylist } from "@/components/Playlist/hook/usePlaylistData";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable";
+import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
@@ -15,7 +15,8 @@ export default function PlaylistPage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { playlistId, isDailyRecommend, isLoading, playlistInfo, themeColor } = usePlaylist();
+  const { playlistId, isDailyRecommend, dailyDate, isLoading, playlistInfo, themeColor } =
+    usePlaylist();
 
   const albumList = useUserStore((s) => s.albumList);
   const triggerLibraryUpdate = useUserStore((s) => s.triggerLibraryUpdate);
@@ -54,7 +55,7 @@ export default function PlaylistPage() {
 
   return (
     <div
-      key={playlistId ?? "daily"}
+      key={playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily")}
       className="relative flex min-h-screen w-full flex-col bg-[#121212] font-sans"
     >
       <div
@@ -71,6 +72,7 @@ export default function PlaylistPage() {
           <PlaylistActions
             playlistId={playlistId}
             isDaily={isDailyRecommend}
+            dailyDate={dailyDate}
             searchOpen={searchOpen}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}

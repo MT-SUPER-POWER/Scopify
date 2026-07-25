@@ -4,6 +4,8 @@ import type {
 } from "@/types/api/playlistTags";
 import type {
   DailyRecommendationDislikeResponse,
+  HistoricalDailyRecommendationDetailResponse,
+  HistoricalDailyRecommendationsResponse,
   LikeListResponse,
   PlaylistDetailResponse,
   PersonalizedPlaylistsResponse,
@@ -181,4 +183,19 @@ export function dislikeDailyRecommend(id: number | string, cookie?: string) {
   return request.get<DailyRecommendationDislikeResponse>("/recommend/songs/dislike", {
     params: { cookie, id },
   });
+}
+
+/** 获取当前账号可查看的历史日推日期。 */
+export function getHistoricalDailyRecommendations(cookie?: string) {
+  return request.get<HistoricalDailyRecommendationsResponse>("/history/recommend/songs", {
+    params: { cookie },
+  });
+}
+
+/** 获取指定日期的历史日推歌曲。 */
+export function getHistoricalDailyRecommendationDetail(date: string, cookie?: string) {
+  return request.get<HistoricalDailyRecommendationDetailResponse>(
+    "/history/recommend/songs/detail",
+    { params: { cookie, date } },
+  );
 }

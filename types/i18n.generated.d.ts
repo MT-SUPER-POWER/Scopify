@@ -1841,6 +1841,24 @@ export interface TranslateFn {
    */
   (key: "playlist.actions.listLabel", params?: TranslationParams): string;
   /**
+   * zh-CN: 历史日推
+   * zh-TW: 歷史日推
+   * en-US: Daily history
+   */
+  (key: "playlist.actions.historyDate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今日推荐
+   * zh-TW: 今日推薦
+   * en-US: Today's recommendations
+   */
+  (key: "playlist.actions.currentDaily", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载历史日推...
+   * zh-TW: 正在載入歷史日推...
+   * en-US: Loading daily history...
+   */
+  (key: "playlist.actions.historyLoading", params?: TranslationParams): string;
+  /**
    * zh-CN: 已添加到喜欢的歌曲
    * zh-TW: 已加入喜歡的歌曲
    * en-US: Added to your Liked Songs
@@ -1858,6 +1876,12 @@ export interface TranslateFn {
    * en-US: Daily Recommendations
    */
   (key: "playlist.meta.dailyTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{date}} 每日推荐
+   * zh-TW: {{date}} 每日推薦
+   * en-US: Daily Recommendations · {{date}}
+   */
+  (key: "playlist.meta.historicalDailyTitle", params?: TranslationParams): string;
   /**
    * zh-CN: 为你推荐
    * zh-TW: 為你推薦
@@ -2404,6 +2428,42 @@ export interface TranslateFn {
    * en-US: Avatar
    */
   (key: "profile.avatarAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关注
+   * zh-TW: 關注
+   * en-US: Follows
+   */
+  (key: "profile.hero.follows", params?: TranslationParams): string;
+  /**
+   * zh-CN: 粉丝
+   * zh-TW: 粉絲
+   * en-US: Followers
+   */
+  (key: "profile.hero.followers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlists
+   */
+  (key: "profile.hero.playlists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态
+   * zh-TW: 動態
+   * en-US: Events
+   */
+  (key: "profile.hero.events", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 首
+   * zh-TW: {{count}} 首
+   * en-US: {{count}} songs
+   */
+  (key: "profile.hero.listenSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{date}} 加入
+   * zh-TW: {{date}} 加入
+   * en-US: Joined {{date}}
+   */
+  (key: "profile.hero.joined", params?: TranslationParams): string;
   /**
    * zh-CN: 签到
    * zh-TW: 簽到
@@ -2957,29 +3017,113 @@ export interface TranslateFn {
    */
   (key: "playbar.quality", params?: TranslationParams): string;
   /**
-   * zh-CN: 音质级别
-   * zh-TW: 音質級別
-   * en-US: Quality Level
+   * zh-CN: 当前歌曲音质
+   * zh-TW: 目前歌曲音質
+   * en-US: Current Track Audio Quality
    */
   (key: "playbar.qualityTitle", params?: TranslationParams): string;
   /**
-   * zh-CN: 高清臻音
-   * zh-TW: 高清臻音
-   * en-US: Hi-Res
+   * zh-CN: 当前歌曲音质
+   * zh-TW: 目前歌曲音質
+   * en-US: Current Track Audio Quality
+   */
+  (key: "playbar.quality.headerTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 了解音质
+   * zh-TW: 了解音質
+   * en-US: Learn More
+   */
+  (key: "playbar.quality.learnMore", params?: TranslationParams): string;
+  /**
+   * zh-CN: 沉浸环绕声
+   * zh-TW: 沉浸環繞聲
+   * en-US: Surround Audio
+   */
+  (key: "playbar.quality.sky.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: Surround Audio
+   * zh-TW: Surround Audio
+   * en-US: Surround Audio
+   */
+  (key: "playbar.quality.sky.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 环绕音感 最高5.1声道
+   * zh-TW: 環繞音感 最高5.1聲道
+   * en-US: Immersive surround, up to 5.1ch
+   */
+  (key: "playbar.quality.sky.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 超清母带
+   * zh-TW: 超清母帶
+   * en-US: Master Audio
+   */
+  (key: "playbar.quality.jymaster.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: Master
+   * zh-TW: Master
+   * en-US: Master
+   */
+  (key: "playbar.quality.jymaster.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 极致细节 192kHz/24bit
+   * zh-TW: 極致細節 192kHz/24bit
+   * en-US: Ultimate detail, 192kHz/24bit
+   */
+  (key: "playbar.quality.jymaster.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 臻音全景声 (Audio Vivid)
+   * zh-TW: 臻音全景聲 (Audio Vivid)
+   * en-US: Audio Vivid
+   */
+  (key: "playbar.quality.dolby.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: Audio Vivid
+   * zh-TW: Audio Vivid
+   * en-US: Audio Vivid
+   */
+  (key: "playbar.quality.dolby.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 沉浸三维空间音频，最高7.1声道
+   * zh-TW: 沉浸三維空間音訊，最高7.1聲道
+   * en-US: Immersive 3D spatial audio, up to 7.1ch
+   */
+  (key: "playbar.quality.dolby.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高清臻音 (Spatial Audio)
+   * zh-TW: 高清臻音 (Spatial Audio)
+   * en-US: Spatial Audio
    */
   (key: "playbar.quality.spatial.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 96kHz/24bit
-   * zh-TW: 96kHz/24bit
-   * en-US: 96kHz/24bit
+   * zh-CN: Spatial Audio
+   * zh-TW: Spatial Audio
+   * en-US: Spatial Audio
    */
   (key: "playbar.quality.spatial.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 高频细节还原与清晰沉浸感
-   * zh-TW: 高頻細節還原與清晰沉浸感
-   * en-US: Restores high-frequency detail and clarity
+   * zh-CN: 高频细节还原与清晰沉浸感，96kHz/24bit
+   * zh-TW: 高頻細節還原與清晰沉浸感，96kHz/24bit
+   * en-US: Restores high-frequency detail, 96kHz/24bit
    */
   (key: "playbar.quality.spatial.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高解析度无损 (Hi-Res)
+   * zh-TW: 高解析度無損 (Hi-Res)
+   * en-US: Hi-Res Lossless
+   */
+  (key: "playbar.quality.hires.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: Hi-Res
+   * zh-TW: Hi-Res
+   * en-US: Hi-Res
+   */
+  (key: "playbar.quality.hires.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更饱满清晰的高解析度音质，最高192kHz/24bit
+   * zh-TW: 更飽滿清晰的高解析度音質，最高192kHz/24bit
+   * en-US: Fuller & clearer Hi-Res, up to 192kHz/24bit
+   */
+  (key: "playbar.quality.hires.description", params?: TranslationParams): string;
   /**
    * zh-CN: 无损 (SQ)
    * zh-TW: 無損 (SQ)
@@ -2987,15 +3131,15 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.lossless.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 最高48kHz/16bit
-   * zh-TW: 最高48kHz/16bit
-   * en-US: Up to 48kHz/16bit
+   * zh-CN: SQ
+   * zh-TW: SQ
+   * en-US: SQ
    */
   (key: "playbar.quality.lossless.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 高保真无损音质
-   * zh-TW: 高保真無損音質
-   * en-US: High-fidelity lossless audio
+   * zh-CN: 高保真无损音质，最高48kHz/16bit
+   * zh-TW: 高保真無損音質，最高48kHz/16bit
+   * en-US: High fidelity lossless, up to 48kHz/16bit
    */
   (key: "playbar.quality.lossless.description", params?: TranslationParams): string;
   /**
@@ -3005,15 +3149,15 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.high.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 最高320kbps
-   * zh-TW: 最高320kbps
-   * en-US: Up to 320kbps
+   * zh-CN: HQ
+   * zh-TW: HQ
+   * en-US: HQ
    */
   (key: "playbar.quality.high.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 近CD音质的细节体验
-   * zh-TW: 近CD音質的細節體驗
-   * en-US: Detail close to CD quality
+   * zh-CN: 近 CD 音质的细节体验，最高320kbps
+   * zh-TW: 近 CD 音質的細節體驗，最高320kbps
+   * en-US: Near CD quality detail, up to 320kbps
    */
   (key: "playbar.quality.high.description", params?: TranslationParams): string;
   /**
@@ -3023,15 +3167,15 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.standard.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 128kbps
-   * zh-TW: 128kbps
-   * en-US: 128kbps
+   * zh-CN: Standard
+   * zh-TW: Standard
+   * en-US: Standard
    */
   (key: "playbar.quality.standard.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 标准音质
-   * zh-TW: 標準音質
-   * en-US: Standard audio quality
+   * zh-CN: 128kbps · 标准音质
+   * zh-TW: 128kbps · 標準音質
+   * en-US: 128kbps · Standard Quality
    */
   (key: "playbar.quality.standard.description", params?: TranslationParams): string;
   /**

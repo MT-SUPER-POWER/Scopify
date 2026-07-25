@@ -172,6 +172,36 @@ export interface DailyRecommendationDislikeResponse {
   data?: RawSongDetail;
 }
 
+/** `/history/recommend/songs` 提供的历史日推日期与会员提示信息。 */
+export interface HistoricalDailyRecommendationData {
+  dates?: string[];
+  description?: null | string;
+  noHistoryMessage?: null | string;
+  purchaseUrl?: null | string;
+  songs?: null | RawSongDetail[];
+}
+
+/** `/history/recommend/songs` 的响应。 */
+export interface HistoricalDailyRecommendationsResponse {
+  code: number;
+  data?: HistoricalDailyRecommendationData;
+}
+
+/** `/history/recommend/songs/detail` 中指定日期的歌曲数据。 */
+export interface HistoricalDailyRecommendationDetailData extends HistoricalDailyRecommendationData {
+  dailySongs?: RawSongDetail[];
+  recommendReasons?: Array<{
+    reason?: string;
+    songId?: number;
+  }>;
+}
+
+/** `/history/recommend/songs/detail` 的响应。 */
+export interface HistoricalDailyRecommendationDetailResponse {
+  code: number;
+  data?: HistoricalDailyRecommendationDetailData;
+}
+
 export const pruneRecommendPlaylist = (
   raw: null | RawRecommendPlaylist | undefined,
 ): RecommendPlaylist => {

@@ -1,5 +1,6 @@
 export interface PlaylistInfo {
   isSpecial: boolean;
+  dailyDate?: string;
   privacy: string;
   tags: string[];
   title: string;

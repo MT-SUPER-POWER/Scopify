@@ -5,11 +5,12 @@ import React from "react";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import type { PlaylistInfo } from "@/types/playlist";
 
-const DailyCalendarCover = () => {
-  const today = new Date();
+const DailyCalendarCover = ({ dailyDate }: { dailyDate?: string }) => {
+  const requestedDate = dailyDate ? new Date(`${dailyDate}T00:00:00`) : new Date();
+  const displayDate = Number.isNaN(requestedDate.getTime()) ? new Date() : requestedDate;
   const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-  const dayOfWeek = days[today.getDay()];
-  const dateNum = today.getDate();
+  const dayOfWeek = days[displayDate.getDay()];
+  const dateNum = displayDate.getDate();
 
   return (
     <div className="z-10 flex size-full shrink-0 flex-col overflow-hidden rounded-md bg-white shadow-[4px_0_10px_rgba(0,0,0,0.3)] select-none">
@@ -50,7 +51,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
     <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
       <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:size-56">
         {isDaily || !info.cover ? (
-          <DailyCalendarCover />
+          <DailyCalendarCover dailyDate={info.dailyDate} />
         ) : (
           <Image
             width={400}

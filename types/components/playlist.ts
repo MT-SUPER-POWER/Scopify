@@ -8,6 +8,18 @@ export interface PlaylistTagSelectorProps {
   value: string[];
 }
 
+export interface PlaylistActionsProps {
+  dailyDate?: null | string;
+  inputRef: RefObject<HTMLInputElement | null>;
+  isDaily: boolean;
+  onSearchChange: (query: string) => void;
+  onSearchClose: () => void;
+  onSearchOpen: () => void;
+  playlistId: null | string;
+  searchOpen: boolean;
+  searchQuery: string;
+}
+
 export interface TracklistTableProps {
   disableVirtualization?: boolean;
   emptyActionLabel?: string;

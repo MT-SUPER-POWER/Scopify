@@ -39,10 +39,14 @@ export async function getLyric(id: number | string) {
 
 /** UI 音质选项 -> API level 参数映射 */
 export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
-  standard: "standard",
-  high: "exhigh",
+  sky: "sky",
+  jymaster: "jymaster",
+  dolby: "dolby",
+  spatial: "jyeffect",
+  hires: "hires",
   lossless: "lossless",
-  spatial: "hires",
+  high: "exhigh",
+  standard: "standard",
 };
 
 /**

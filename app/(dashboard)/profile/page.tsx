@@ -82,23 +82,23 @@ export default function ProfilePage() {
 
         <div className="mx-auto w-full max-w-7xl px-6 py-8">
           <div className="space-y-12">
-            <section>
-              <h2 className="mb-6 text-2xl font-bold">
-                {t("profile.page.publicPlaylists") || "公开歌单"}
-              </h2>
-              {playlists.length > 0 ? (
-                <PublicPlaylistGrid
-                  playlists={playlists}
-                  onClickPlaylist={(id) => router.push(`/playlist?id=${id}`)}
-                />
-              ) : (
-                <div className="py-12 text-center text-white/40">
-                  {t("profile.page.noPlaylists") || "暂无公开歌单"}
-                </div>
-              )}
-            </section>
-
-            {isSelf && (
+            {!isSelf ? (
+              <section>
+                <h2 className="mb-6 text-2xl font-bold">
+                  {t("profile.page.publicPlaylists") || "公开歌单"}
+                </h2>
+                {playlists.length > 0 ? (
+                  <PublicPlaylistGrid
+                    playlists={playlists}
+                    onClickPlaylist={(id) => router.push(`/playlist?id=${id}`)}
+                  />
+                ) : (
+                  <div className="py-12 text-center text-white/40">
+                    {t("profile.page.noPlaylists") || "暂无公开歌单"}
+                  </div>
+                )}
+              </section>
+            ) : (
               <>
                 <section>
                   <h2 className="mb-6 text-2xl font-bold">

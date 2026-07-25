@@ -1,14 +1,5 @@
 import Image from "next/image";
-import {
-  Users,
-  MapPin,
-  CalendarDays,
-  Activity,
-  Trophy,
-  Headphones,
-  Clock,
-  Disc3,
-} from "lucide-react";
+import { Users, MapPin, CalendarDays, Activity, Trophy, Headphones, Disc3 } from "lucide-react";
 import {
   IconZodiacAries,
   IconZodiacTaurus,
@@ -75,8 +66,6 @@ export function UserHero({ userInfo, playlistCount }: Props) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   };
 
-  const bgImage =
-    userInfo.backgroundUrl || userInfo.avatarUrl || "https://picsum.photos/seed/profile/1920/1080";
   const zodiac = getZodiacSign(userInfo.birthday);
   const locationName = getLocationName(userInfo.province, userInfo.city);
 
