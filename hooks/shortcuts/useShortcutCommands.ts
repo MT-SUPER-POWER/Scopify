@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
+import { saveScrollPositionBeforeNavigation } from "@/lib/hooks/useScrollRestoration";
 import { usePlayerStore } from "@/store";
 import { useUiStore } from "@/store/module/ui";
 import type { ShortcutCommandId } from "@/types/shortcuts";
@@ -58,7 +59,8 @@ export function useShortcutCommands() {
           void toggleApplicationFullscreen();
           return;
         case "open-shortcut-settings":
-          router.push("/setting?tab=shortcuts");
+          saveScrollPositionBeforeNavigation();
+          router.push("/setting?tab=shortcuts", { scroll: false });
           return;
         case "show-shortcut-help":
           ui.setIsShortcutHelpOpen(true);

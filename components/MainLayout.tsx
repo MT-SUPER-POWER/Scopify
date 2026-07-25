@@ -14,6 +14,10 @@ import { useDesktopLyricPublisher } from "@/hooks/player/useDesktopLyricPublishe
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { CommandPalette } from "@/components/shortcuts/CommandPalette";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
+import {
+  saveScrollPositionBeforeNavigation,
+  useScrollRestoration,
+} from "@/lib/hooks/useScrollRestoration";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -140,7 +144,8 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   useEffect(() => {
     if (typeof window !== "undefined" && window.electronAPI?.onNavigate) {
       window.electronAPI.onNavigate((path) => {
-        router.push(path);
+        saveScrollPositionBeforeNavigation();
+        router.push(path, { scroll: false });
       });
     }
   }, [router]);
@@ -187,6 +192,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
   const scrollContainer = useUiStore((s) => s.scrollContainer);
   const setScrollContainer = useUiStore((s) => s.setScrollContainer);
+
+  // 自动还原全局 ScrollContainer 的历史滚动位置
+  useScrollRestoration(scrollContainer);
 
   useEffect(() => {
     const syncFullscreen = () => setIsFullscreen(Boolean(document.fullscreenElement));

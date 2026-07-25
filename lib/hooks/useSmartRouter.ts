@@ -1,8 +1,7 @@
 import { useRouter as useNextRouter } from "next/navigation";
 import { useCallback } from "react";
-
-// 定义查询参数的类型，支持基础类型和对象
-type QueryParams = Record<string, string | number | boolean | object | null | undefined>;
+import type { QueryParams } from "@/types/router";
+import { saveScrollPositionBeforeNavigation } from "./useScrollRestoration";
 
 /**
  * 辅助函数：将对象转换为 URL 查询字符串并拼接到 URL 后
@@ -38,23 +37,29 @@ export function useSmartRouter() {
   // 原生的跳转实现（Web/Electron 通用）
   const push = useCallback(
     (url: string, query?: QueryParams) => {
-      nextRouter.push(buildUrlWithQuery(url, query));
+      const fullUrl = buildUrlWithQuery(url, query);
+      saveScrollPositionBeforeNavigation();
+      nextRouter.push(fullUrl, { scroll: false });
     },
     [nextRouter],
   );
 
   const replace = useCallback(
     (url: string, query?: QueryParams) => {
-      nextRouter.replace(buildUrlWithQuery(url, query));
+      const fullUrl = buildUrlWithQuery(url, query);
+      saveScrollPositionBeforeNavigation();
+      nextRouter.replace(fullUrl, { scroll: false });
     },
     [nextRouter],
   );
 
   const back = useCallback(() => {
+    saveScrollPositionBeforeNavigation();
     nextRouter.back();
   }, [nextRouter]);
 
   const forward = useCallback(() => {
+    saveScrollPositionBeforeNavigation();
     nextRouter.forward();
   }, [nextRouter]);
 
