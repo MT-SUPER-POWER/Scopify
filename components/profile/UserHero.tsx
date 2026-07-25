@@ -1,6 +1,32 @@
 import Image from "next/image";
+import {
+  Users,
+  MapPin,
+  CalendarDays,
+  Activity,
+  Trophy,
+  Headphones,
+  Clock,
+  Disc3,
+} from "lucide-react";
+import {
+  IconZodiacAries,
+  IconZodiacTaurus,
+  IconZodiacGemini,
+  IconZodiacCancer,
+  IconZodiacLeo,
+  IconZodiacVirgo,
+  IconZodiacLibra,
+  IconZodiacScorpio,
+  IconZodiacSagittarius,
+  IconZodiacCapricorn,
+  IconZodiacAquarius,
+  IconZodiacPisces,
+} from "@tabler/icons-react";
 import { UserVipBadge } from "@/components/shared/UserVipBadge";
 import type { NeteaseUser } from "@/types/api/user";
+import { useI18n } from "@/store/module/i18n";
+import { getLocationName } from "@/constants/location";
 
 interface Props {
   userInfo: NeteaseUser;
@@ -8,6 +34,52 @@ interface Props {
 }
 
 export function UserHero({ userInfo, playlistCount }: Props) {
+  const { t } = useI18n();
+
+  // Constellation helper
+  const getZodiacSign = (dateTimestamp?: number) => {
+    if (!dateTimestamp) return null;
+    const date = new Date(dateTimestamp);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    if ((month === 1 && day <= 20) || (month === 12 && day >= 22))
+      return { text: "摩羯座", Icon: IconZodiacCapricorn };
+    if ((month === 1 && day >= 21) || (month === 2 && day <= 18))
+      return { text: "水瓶座", Icon: IconZodiacAquarius };
+    if ((month === 2 && day >= 19) || (month === 3 && day <= 20))
+      return { text: "双鱼座", Icon: IconZodiacPisces };
+    if ((month === 3 && day >= 21) || (month === 4 && day <= 19))
+      return { text: "白羊座", Icon: IconZodiacAries };
+    if ((month === 4 && day >= 20) || (month === 5 && day <= 20))
+      return { text: "金牛座", Icon: IconZodiacTaurus };
+    if ((month === 5 && day >= 21) || (month === 6 && day <= 21))
+      return { text: "双子座", Icon: IconZodiacGemini };
+    if ((month === 6 && day >= 22) || (month === 7 && day <= 22))
+      return { text: "巨蟹座", Icon: IconZodiacCancer };
+    if ((month === 7 && day >= 23) || (month === 8 && day <= 22))
+      return { text: "狮子座", Icon: IconZodiacLeo };
+    if ((month === 8 && day >= 23) || (month === 9 && day <= 22))
+      return { text: "处女座", Icon: IconZodiacVirgo };
+    if ((month === 9 && day >= 23) || (month === 10 && day <= 23))
+      return { text: "天秤座", Icon: IconZodiacLibra };
+    if ((month === 10 && day >= 24) || (month === 11 && day <= 22))
+      return { text: "天蝎座", Icon: IconZodiacScorpio };
+    if ((month === 11 && day >= 23) || (month === 12 && day <= 21))
+      return { text: "射手座", Icon: IconZodiacSagittarius };
+    return null;
+  };
+
+  const formatDate = (timestamp?: number) => {
+    if (!timestamp) return "";
+    const d = new Date(timestamp);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+
+  const bgImage =
+    userInfo.backgroundUrl || userInfo.avatarUrl || "https://picsum.photos/seed/profile/1920/1080";
+  const zodiac = getZodiacSign(userInfo.birthday);
+  const locationName = getLocationName(userInfo.province, userInfo.city);
+
   return (
     <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
       {/* 头像 */}
@@ -23,47 +95,87 @@ export function UserHero({ userInfo, playlistCount }: Props) {
 
       {/* 信息区 */}
       <div className="flex min-w-0 flex-1 flex-col pt-1 text-white md:pt-2">
-        {/* 标签 */}
-        <div className="mb-3 flex flex-row flex-wrap items-center gap-2 md:mb-4">
-          <span className="rounded-sm bg-white/10 px-3 py-1 text-sm tracking-wider uppercase drop-shadow-md">
-            Profile
+        <div className="mb-2 flex flex-wrap items-center gap-2 md:mb-4">
+          <span className="rounded-sm bg-white/10 px-3 py-1 text-sm tracking-wider text-white/90 uppercase drop-shadow-md">
+            PROFILE
           </span>
+          {locationName && (
+            <span className="flex items-center gap-1.5 rounded-sm bg-white/10 px-3 py-1 text-[13px] text-white/90 drop-shadow-md">
+              <MapPin size={14} />
+              {locationName}
+            </span>
+          )}
+          {zodiac && (
+            <span className="flex items-center gap-1.5 rounded-sm bg-white/10 px-3 py-1 text-[13px] text-white/90 drop-shadow-md">
+              <zodiac.Icon size={16} stroke={2.5} />
+              {zodiac.text}
+            </span>
+          )}
+          {userInfo.createTime && (
+            <span className="flex items-center gap-1.5 rounded-sm bg-white/10 px-3 py-1 text-[13px] text-white/90 drop-shadow-md">
+              <CalendarDays size={14} />
+              {t("profile.hero.joined", { date: formatDate(userInfo.createTime) })}
+            </span>
+          )}
+          <div className="flex scale-90 items-center justify-center">
+            <UserVipBadge vipType={userInfo.vipType} />
+          </div>
         </div>
 
-        {/* 昵称 */}
-        <div className="mb-2 flex min-w-0 items-center gap-3">
+        <div className="mb-2 flex min-w-0 items-center gap-3 md:mb-4">
           <h1
-            className="leading-1.1 m-0 line-clamp-3 min-w-0 text-4xl font-black tracking-tighter wrap-break-word drop-shadow-lg md:text-5xl lg:text-6xl"
+            className="leading-1.1 m-0 line-clamp-2 min-w-0 text-5xl font-black tracking-tighter wrap-break-word md:text-6xl lg:text-7xl"
             title={userInfo.nickname}
           >
             {userInfo.nickname}
           </h1>
-          <UserVipBadge vipType={userInfo.vipType} />
         </div>
 
-        {/* 签名：紧跟名字，作为副标题而非脚注 */}
         {userInfo.signature && (
-          <p className="mb-4 line-clamp-1 text-sm text-white/50 md:mb-6">{userInfo.signature}</p>
+          <p className="mb-4 text-sm font-medium text-white/50 italic md:mb-6">
+            “{userInfo.signature}”
+          </p>
         )}
-        {/* 无签名时保持原有间距 */}
         {!userInfo.signature && <div className="mb-4 md:mb-6" />}
 
-        {/* 元数据 */}
-        <div className="flex flex-wrap items-center gap-2.5 text-sm text-white/80 drop-shadow-md">
-          <span>
-            <span className="font-semibold text-white">{userInfo.followeds.toLocaleString()}</span>{" "}
-            Followers
+        <div className="flex flex-wrap items-center gap-4 text-sm text-white/70">
+          <span className="flex items-center gap-1.5">
+            <Users size={16} className="text-white/50" />
+            <span className="font-semibold text-white">{userInfo.follows.toLocaleString()}</span>
+            <span className="ml-0.5">{t("profile.hero.follows")}</span>
           </span>
-          <span className="opacity-60">•</span>
-          <span>
-            <span className="font-semibold text-white">{userInfo.follows.toLocaleString()}</span>{" "}
-            Following
+          <span className="flex items-center gap-1.5">
+            <Users size={16} className="text-white/50" />
+            <span className="font-semibold text-white">{userInfo.followeds.toLocaleString()}</span>
+            <span className="ml-0.5">{t("profile.hero.followers")}</span>
           </span>
-          {playlistCount > 0 && (
-            <>
-              <span className="opacity-60">•</span>
-              <span className="font-medium text-white">{playlistCount} Public Playlists</span>
-            </>
+          <span className="flex items-center gap-1.5">
+            <Disc3 size={16} className="text-white/50" />
+            <span className="font-semibold text-white">
+              {userInfo.playlistCount ?? playlistCount}
+            </span>
+            <span className="ml-0.5">{t("profile.hero.playlists")}</span>
+          </span>
+          {(userInfo.eventCount ?? 0) > 0 && (
+            <span className="flex items-center gap-1.5">
+              <Activity size={16} className="text-white/50" />
+              <span className="font-semibold text-white">{userInfo.eventCount}</span>
+              <span className="ml-0.5">{t("profile.hero.events")}</span>
+            </span>
+          )}
+          {userInfo.level !== undefined && (
+            <span className="flex items-center gap-1.5">
+              <Trophy size={16} className="text-white/50" />
+              <span className="font-semibold text-white">Lv.{userInfo.level}</span>
+            </span>
+          )}
+          {userInfo.listenSongs !== undefined && (
+            <span className="flex items-center gap-1.5">
+              <Headphones size={16} className="text-white/50" />
+              <span className="ml-0.5 font-semibold text-white">
+                {t("profile.hero.listenSongs", { count: userInfo.listenSongs.toLocaleString() })}
+              </span>
+            </span>
           )}
         </div>
       </div>

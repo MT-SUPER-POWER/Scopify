@@ -47,8 +47,23 @@ export function useUserData(uid: string | null) {
         // ── 用户基础信息 ──
         if (detailRes.status === "fulfilled") {
           const raw = detailRes.value.data?.profile;
+          const rootData = detailRes.value.data;
           if (raw) {
             const info = pruneUser(raw);
+
+            // Map extended fields
+            info.backgroundUrl = raw.backgroundUrl;
+            info.level = rootData?.level;
+            info.listenSongs = rootData?.listenSongs;
+            info.createDays = rootData?.createDays;
+            info.createTime = raw.createTime;
+            info.province = raw.province;
+            info.city = raw.city;
+            info.gender = raw.gender;
+            info.birthday = raw.birthday;
+            info.eventCount = raw.eventCount;
+            info.playlistCount = raw.playlistCount;
+
             setUserInfo(info);
             if (info.avatarUrl) {
               getMainColorFromImage(info.avatarUrl)

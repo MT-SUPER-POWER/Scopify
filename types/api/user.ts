@@ -203,6 +203,19 @@ export interface NeteaseUser {
   followeds: number;
   follows: number;
   vipType: number;
+
+  // 扩展属性（来自于 /user/detail 完整响应）
+  backgroundUrl?: string;
+  level?: number;
+  listenSongs?: number;
+  createDays?: number;
+  createTime?: number;
+  province?: number;
+  city?: number;
+  gender?: number;
+  birthday?: number;
+  eventCount?: number;
+  playlistCount?: number;
 }
 
 export interface NeteaseUserSource {
