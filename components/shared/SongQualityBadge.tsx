@@ -29,10 +29,10 @@ export function SongQualityBadge({ className, qualityLevel }: SongQualityBadgePr
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center rounded-sm border px-1 py-px text-[10px] leading-none font-medium",
+        "inline-flex h-[13px] shrink-0 items-center rounded-[1px] border px-[2px] text-[9px] leading-[11px] font-normal",
         badge.tone === "gold"
-          ? "border-amber-300/50 bg-amber-300/10 text-amber-200"
-          : "border-red-400/50 bg-red-500/10 text-red-300",
+          ? "border-[#a67d16] bg-[#c4931c]/10 text-[#dfb42b]"
+          : "border-[#9c4141] bg-[#c24c4c]/8 text-[#d86666]",
         className,
       )}
       title={label}

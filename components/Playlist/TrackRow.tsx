@@ -166,7 +166,7 @@ export const TrackRow = memo(
                   isActive ? "text-[#1ed760]" : "text-white",
                 )}
               />
-              <div className="mt-0.5 flex min-w-0 items-center gap-1">
+              <div className="mt-0.5 flex min-w-0 items-center gap-0.5">
                 <SongQualityBadge qualityLevel={track.privilege?.maxBrLevel} />
                 <SongVipBadge fee={track.fee} />
                 <span className="min-w-0 cursor-pointer truncate text-sm font-normal text-zinc-400">

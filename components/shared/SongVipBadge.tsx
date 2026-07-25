@@ -12,7 +12,7 @@ export function SongVipBadge({ fee, className }: SongVipBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center rounded-sm border border-red-400/50 bg-red-500/10 px-1 py-px text-[10px] leading-none font-medium text-red-300",
+        "inline-flex h-[13px] shrink-0 items-center rounded-[1px] border border-[#9c4141] bg-[#c24c4c]/8 px-[2px] text-[9px] leading-[11px] font-normal text-[#d86666]",
         className,
       )}
       title="VIP"
