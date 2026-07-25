@@ -174,6 +174,10 @@ _Avoid_: public catalog data, shared cache
 A compact, locally selected visual marker for a song whose model reports paid or VIP-gated playback. It describes the song's access requirement, never the current listener's membership level.
 _Avoid_: user VIP level, account badge, playback entitlement result
 
+**Song Quality Badge**:
+A compact visual marker for the highest meaningful audio-quality tier available for a song. It is independent of Song Access Badge and omits standard and high-bitrate tiers.
+_Avoid_: selected playback quality, membership level, a badge for every available tier
+
 **Membership Status Badge**:
 A single local VIP badge derived from `profile.vipType` in `/user/detail`. It states that a user has VIP status without implying a membership tier or using NetEase-provided level artwork.
 _Avoid_: song pricing marker, playback restriction indicator, VIP tier, remote level icon

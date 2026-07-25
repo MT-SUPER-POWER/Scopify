@@ -1,4 +1,9 @@
-import type { RawSongDetail } from "@/types/api/music";
+import {
+  pruneSongDetail,
+  type RawSongDetail,
+  type SongDetail,
+  type SongPlaybackPrivilege,
+} from "@/types/api/music";
 
 export interface NeteasePlaylist {
   id: number;
@@ -23,6 +28,7 @@ export interface RawNeteasePlaylist {
   creator?: {
     avatarUrl?: string;
     nickname?: string;
+    userId?: number;
   };
   createTime?: number;
   description?: null | string;
@@ -35,6 +41,7 @@ export interface RawNeteasePlaylist {
   subscribedCount?: number;
   tags?: string[];
   trackCount?: number;
+  tracks?: RawSongDetail[];
 }
 
 export interface UserPlaylistResponse {
@@ -115,7 +122,31 @@ export interface RecommendedPlaylistsResponse {
 
 export interface PlaylistTracksResponse {
   code: number;
+  privileges?: SongPlaybackPrivilege[];
   songs?: RawSongDetail[];
+}
+
+export interface PlaylistDetailResponse {
+  code: number;
+  playlist?: RawNeteasePlaylist;
+}
+
+export interface PlaylistCachePayload {
+  rawDetail: RawNeteasePlaylist;
+  tracks: SongDetail[];
+}
+
+export function prunePlaylistTracks(response: PlaylistTracksResponse): SongDetail[] {
+  const privilegesBySongId = new Map(
+    (response.privileges ?? []).map((privilege) => [privilege.id, privilege]),
+  );
+
+  return (response.songs ?? []).map((song) =>
+    pruneSongDetail({
+      ...song,
+      privilege: privilegesBySongId.get(song.id) ?? song.privilege,
+    }),
+  );
 }
 
 export type PlaylistTrackOperation = "add" | "del";
@@ -139,36 +170,6 @@ export interface LikeListResponse {
 export interface DailyRecommendationDislikeResponse {
   code: number;
   data?: RawSongDetail;
-}
-
-export interface LikeListResponse {
-  code: number;
-  ids?: number[];
-}
-
-export interface DailyRecommendationDislikeResponse {
-  code: number;
-  data?: RawSongDetail;
-}
-
-/** `/personalized` 的实际响应。 */
-export interface PersonalizedPlaylistsResponse {
-  category: number;
-  code: number;
-  hasTaste: boolean;
-  result?: RawRecommendPlaylist[];
-}
-
-/** `/recommend/resource` 的实际响应。未登录或会话失效时 `recommend` 可能缺失。 */
-export interface RecommendedPlaylistsResponse {
-  code: number;
-  featureFirst?: boolean;
-  recommend?: RawRecommendPlaylist[];
-}
-
-export interface PlaylistTracksResponse {
-  code: number;
-  songs?: RawSongDetail[];
 }
 
 export const pruneRecommendPlaylist = (

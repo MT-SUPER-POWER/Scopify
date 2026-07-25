@@ -3035,6 +3035,42 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.standard.description", params?: TranslationParams): string;
   /**
+   * zh-CN: 超清母带
+   * zh-TW: 超清母帶
+   * en-US: Master
+   */
+  (key: "playbar.quality.badge.jymaster", params?: TranslationParams): string;
+  /**
+   * zh-CN: 杜比全景声
+   * zh-TW: 杜比全景聲
+   * en-US: Dolby Atmos
+   */
+  (key: "playbar.quality.badge.dolby", params?: TranslationParams): string;
+  /**
+   * zh-CN: 沉浸环绕声
+   * zh-TW: 沉浸環繞聲
+   * en-US: Immersive Surround
+   */
+  (key: "playbar.quality.badge.sky", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高清环绕声
+   * zh-TW: 高清環繞聲
+   * en-US: HD Surround
+   */
+  (key: "playbar.quality.badge.jyeffect", params?: TranslationParams): string;
+  /**
+   * zh-CN: Hi-Res
+   * zh-TW: Hi-Res
+   * en-US: Hi-Res
+   */
+  (key: "playbar.quality.badge.hires", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无损
+   * zh-TW: 無損
+   * en-US: Lossless
+   */
+  (key: "playbar.quality.badge.lossless", params?: TranslationParams): string;
+  /**
    * zh-CN: 匹配歌词
    * zh-TW: 比對歌詞
    * en-US: Match Lyrics

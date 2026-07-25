@@ -35,6 +35,7 @@ export interface SongDetail {
   name: string;
   dt: number; // 时长 (ms)
   fee: number;
+  privilege?: SongPlaybackPrivilege;
   ar: { id: number; name: string }[]; // 歌手
   al: {
     id: number;
@@ -61,6 +62,15 @@ export interface NeteasePrivateCloud {
   simpleSongId?: number;
   songId?: number;
   version?: number;
+}
+
+/** `/playlist/track/all` 中按歌曲 ID 返回的播放权限与最高可用音质。 */
+export interface SongPlaybackPrivilege {
+  id: number;
+  fee?: number;
+  maxBrLevel?: string;
+  playMaxBrLevel?: string;
+  plLevel?: string;
 }
 
 export interface RawSongArtist {
@@ -105,6 +115,7 @@ export interface RawSongDetail {
   pc?: {
     privateCloud?: NeteasePrivateCloud;
   };
+  privilege?: SongPlaybackPrivilege;
   publishTime?: number;
   redCount?: number;
 }
@@ -125,7 +136,7 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
     id: raw.id,
     name: raw.name,
     dt: raw.dt ?? raw.duration ?? 0,
-    fee: raw.fee ?? 0,
+    fee: raw.privilege?.fee ?? raw.fee ?? 0,
 
     // 4. 确保 ar 一定是数组，兼容两种字段名
     ar: Array.isArray(artistList)
@@ -149,6 +160,7 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
     ...(typeof likedCount === "number" && likedCount >= 0 ? { likedCount } : {}),
     ...(typeof commentCount === "number" && commentCount >= 0 ? { commentCount } : {}),
     pc: raw.pc ?? {},
+    ...(raw.privilege ? { privilege: raw.privilege } : {}),
   };
 };
 

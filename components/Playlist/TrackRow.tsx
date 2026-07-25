@@ -9,7 +9,9 @@ import { toast } from "sonner";
 import type { TrackRowProps } from "@/types/components/playlist";
 
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
@@ -159,29 +161,32 @@ export const TrackRow = memo(
               <SongTitleWithAlia
                 name={track.name}
                 alia={track.alia}
-                fee={track.fee}
                 className={cn(
                   "cursor-pointer text-base font-normal group-hover:underline",
                   isActive ? "text-[#1ed760]" : "text-white",
                 )}
               />
-              <span className="mt-0.5 cursor-pointer truncate text-sm font-normal text-zinc-400">
-                {track.ar.slice(0, 2).map((a, idx, arr) => (
-                  <span
-                    key={`${a.id}-${idx}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      smartRouter.push(`/artist?id=${a.id}`);
-                    }}
-                    title={`/artist?id=${a.id}`}
-                    className="hover:text-white hover:underline"
-                    style={{ display: "inline" }}
-                  >
-                    {a.name}
-                    {idx < arr.length - 1 ? ", " : ""}
-                  </span>
-                ))}
-              </span>
+              <div className="mt-0.5 flex min-w-0 items-center gap-1">
+                <SongQualityBadge qualityLevel={track.privilege?.maxBrLevel} />
+                <SongVipBadge fee={track.fee} />
+                <span className="min-w-0 cursor-pointer truncate text-sm font-normal text-zinc-400">
+                  {track.ar.slice(0, 2).map((a, idx, arr) => (
+                    <span
+                      key={`${a.id}-${idx}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        smartRouter.push(`/artist?id=${a.id}`);
+                      }}
+                      title={`/artist?id=${a.id}`}
+                      className="hover:text-white hover:underline"
+                      style={{ display: "inline" }}
+                    >
+                      {a.name}
+                      {idx < arr.length - 1 ? ", " : ""}
+                    </span>
+                  ))}
+                </span>
+              </div>
             </div>
           </div>
         </TableCell>
@@ -240,5 +245,7 @@ export const TrackRow = memo(
     prev.hideDateColumn === next.hideDateColumn &&
     prev.hideLikeColumn === next.hideLikeColumn &&
     prev.isScrolling === next.isScrolling &&
+    prev.track.fee === next.track.fee &&
+    prev.track.privilege?.maxBrLevel === next.track.privilege?.maxBrLevel &&
     prev.track.alia?.join() === next.track.alia?.join(),
 );

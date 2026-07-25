@@ -1,10 +1,8 @@
 import { cn } from "@/lib/utils";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
 
 interface SongTitleWithAliaProps {
   name: string;
   alia?: string[];
-  fee?: number;
   className?: string;
   aliaClassName?: string;
 }
@@ -12,7 +10,6 @@ interface SongTitleWithAliaProps {
 export function SongTitleWithAlia({
   name,
   alia,
-  fee,
   className,
   aliaClassName,
 }: SongTitleWithAliaProps) {
@@ -24,7 +21,6 @@ export function SongTitleWithAlia({
       title={aliaText ? `${name} (${aliaText})` : name}
     >
       <span className="truncate">{name}</span>
-      <SongVipBadge fee={fee} />
       {aliaText ? (
         <span
           className={cn("shrink-0 font-normal text-zinc-500", aliaClassName)}

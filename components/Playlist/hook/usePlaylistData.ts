@@ -1,7 +1,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { getPlaylsitDetail } from "@/lib/api/playlist";
+import { getPlaylistAllTracks, getPlaylsitDetail } from "@/lib/api/playlist";
 import { getRecommendedSongs } from "@/lib/api/track";
 import {
   createPageCacheKey,
@@ -13,6 +13,12 @@ import {
 import { getMainColorFromImage } from "@/lib/utils";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import { pruneSongDetail, type RawSongDetail } from "@/types/api/music";
+import {
+  prunePlaylistTracks,
+  type PlaylistCachePayload,
+  type RawNeteasePlaylist,
+} from "@/types/api/playlist";
 import type { PlaylistInfo } from "@/types/playlist";
 
 // 颜色缓存机制 (全局共享)
@@ -20,11 +26,6 @@ const colorCache = new Map<string, string>();
 colorCache.set("daily", "#c42b2b");
 colorCache.set("default", "#88b325");
 const COLOR_CACHE_LIMIT = 15;
-
-interface PlaylistCachePayload {
-  rawDetail: any;
-  tracks: any[];
-}
 
 function setColorCache(key: string, value: string) {
   if (colorCache.size >= COLOR_CACHE_LIMIT) {
@@ -42,7 +43,7 @@ export function usePlaylist() {
   const playlistId = searchParams.get("id");
   const isRecommend = searchParams.get("isRecommend") === "true";
   const isDailyRecommend = searchParams.get("isDailyRecommend") === "true";
-  const [rawDetail, setRawDetail] = useState<any>(null);
+  const [rawDetail, setRawDetail] = useState<RawNeteasePlaylist | null>(null);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1. 渲染期状态更新 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -73,38 +74,44 @@ export function usePlaylist() {
     getPageCache<PlaylistCachePayload>(cacheKey).then((cached) => {
       if (ignore || !cached) return;
       setRawDetail(cached.rawDetail);
-      useUserStore.getState().setAlbumList(cached.tracks || []);
+      useUserStore.getState().setAlbumList(cached.tracks ?? []);
     });
 
     const fetchMusicData = async () => {
       try {
         if (isDailyRecommend) {
-          const res: any = await getRecommendedSongs();
+          const res = await getRecommendedSongs();
           if (ignore) return;
-          const dailySongs = res.data?.data?.dailySongs || [];
+          const dailySongs: RawSongDetail[] = Array.isArray(res.data?.data?.dailySongs)
+            ? res.data.data.dailySongs
+            : [];
           const nextDetail = {
             name: t("playlist.meta.dailyTitle"),
             trackCount: dailySongs.length,
             tracks: dailySongs,
           };
+          const tracks = dailySongs.map(pruneSongDetail);
           setRawDetail(nextDetail);
-          useUserStore.getState().setAlbumList(dailySongs);
-          await setPageCache(cacheKey, { rawDetail: nextDetail, tracks: dailySongs }, dailyTtlMs());
+          useUserStore.getState().setAlbumList(tracks);
+          await setPageCache(cacheKey, { rawDetail: nextDetail, tracks }, dailyTtlMs());
         } else {
-          const res: any = await getPlaylsitDetail({
-            id: playlistId as string,
-            cookie: isRecommend ? cookie : undefined,
-          });
+          const [detailResponse, trackResponse] = await Promise.all([
+            getPlaylsitDetail({
+              id: playlistId as string,
+              cookie: isRecommend ? cookie : undefined,
+            }),
+            getPlaylistAllTracks({
+              id: playlistId as string,
+              cookie: isRecommend ? cookie : undefined,
+            }),
+          ]);
           if (ignore) return;
-          const playlist = res.data.playlist;
-          // console.log("Playlist Info:", res.data);
+          const playlist = detailResponse.data.playlist;
+          if (!playlist) throw new Error("Playlist detail is missing");
+          const tracks = prunePlaylistTracks(trackResponse.data);
           setRawDetail(playlist);
-          useUserStore.getState().setAlbumList(playlist.tracks || []);
-          await setPageCache(
-            cacheKey,
-            { rawDetail: playlist, tracks: playlist.tracks || [] },
-            pageTtlMs(),
-          );
+          useUserStore.getState().setAlbumList(tracks);
+          await setPageCache(cacheKey, { rawDetail: playlist, tracks }, pageTtlMs());
         }
       } catch (err) {
         if (ignore) return;
@@ -119,7 +126,7 @@ export function usePlaylist() {
       ignore = true;
     };
     // 无论是 URL 变了，还是由于你点击了取消喜欢导致 Trigger 变了，都会执行这个 Effect 进行拉取
-  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend, t]);
+  }, [currentReqKey, playlistId, isDailyRecommend, isRecommend, t, _libraryUpdateTrigger]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3. 数据派生与格式化 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

@@ -1,14 +1,14 @@
 import { expect, test } from "bun:test";
-import { hasVipMembership, isPaidSong } from "@/lib/vip";
+import { hasVipMembership, isVipSong } from "@/lib/vip";
 import { pruneUser } from "@/types/api/user";
 
-test("identifies paid songs from NetEase fee values", () => {
-  expect(isPaidSong(undefined)).toBe(false);
-  expect(isPaidSong(null)).toBe(false);
-  expect(isPaidSong(0)).toBe(false);
-  expect(isPaidSong(1)).toBe(true);
-  expect(isPaidSong(4)).toBe(true);
-  expect(isPaidSong(8)).toBe(true);
+test("identifies only VIP-gated songs from NetEase fee values", () => {
+  expect(isVipSong(undefined)).toBe(false);
+  expect(isVipSong(null)).toBe(false);
+  expect(isVipSong(0)).toBe(false);
+  expect(isVipSong(1)).toBe(true);
+  expect(isVipSong(4)).toBe(false);
+  expect(isVipSong(8)).toBe(false);
 });
 
 test("identifies a VIP membership without depending on a tier", () => {

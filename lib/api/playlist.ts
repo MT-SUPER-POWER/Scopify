@@ -5,6 +5,7 @@ import type {
 import type {
   DailyRecommendationDislikeResponse,
   LikeListResponse,
+  PlaylistDetailResponse,
   PersonalizedPlaylistsResponse,
   PlaylistTracksResponse,
   RecommendedPlaylistsResponse,
@@ -167,7 +168,7 @@ export function getPersonalizePlaylists(limit?: number) {
 }
 
 export function getPlaylsitDetail({ id, cookie }: { id: number | string; cookie?: string }) {
-  return request.get("/playlist/detail", { params: { id, cookie: cookie } });
+  return request.get<PlaylistDetailResponse>("/playlist/detail", { params: { id, cookie } });
 }
 
 // 获取每日推荐歌单
