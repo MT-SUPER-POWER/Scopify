@@ -44,7 +44,7 @@ export function useShortcutCommands() {
           }
           return;
         case "open-search":
-          ui.setIsSearchOpen(true);
+          ui.setIsSearchOpen(!ui.isSearchOpen);
           return;
         case "toggle-lyric-stage":
           ui.toggleLyrics();
