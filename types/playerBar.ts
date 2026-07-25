@@ -13,6 +13,6 @@ export interface QualityOption {
   isHero?: boolean;
   labelKey: TranslationKey;
   sublabelKey?: TranslationKey;
-  techSpec?: string;
+  techSpec?: TranslationKey;
   shortLabel?: string;
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { Check, HelpCircle } from "lucide-react";
-import React from "react";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
 import { useMusicQuality } from "@/hooks/player/useMusicQuality";
 import { useI18n } from "@/store/module/i18n";
@@ -10,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 function SvipBadge() {
   return (
-    <span className="inline-flex shrink-0 items-center rounded-[2px] border border-[#a67d16] bg-[#c4931c]/10 px-1 py-[1px] text-[9px] leading-none font-medium text-[#dfb42b]">
+    <span className="inline-flex shrink-0 items-center rounded-[2px] border border-[#a67d16] bg-[#c4931c]/10 px-1 py-px text-[9px] leading-none font-medium text-[#dfb42b]">
       SVIP
     </span>
   );
@@ -18,7 +17,7 @@ function SvipBadge() {
 
 function VipBadge() {
   return (
-    <span className="inline-flex shrink-0 items-center rounded-[2px] border border-[#9c4141] bg-[#c24c4c]/8 px-1 py-[1px] text-[9px] leading-none font-medium text-[#d86666]">
+    <span className="inline-flex shrink-0 items-center rounded-[2px] border border-[#9c4141] bg-[#c24c4c]/8 px-1 py-px text-[9px] leading-none font-medium text-[#d86666]">
       VIP
     </span>
   );
@@ -36,7 +35,7 @@ export function AudioQualityDialog() {
   };
 
   return (
-    <div className="w-[360px] overflow-hidden rounded-2xl border border-white/10 bg-[#121216]/95 p-4 text-white shadow-2xl backdrop-blur-2xl select-none md:w-[380px]">
+    <div className="w-90 overflow-hidden rounded-2xl border border-white/10 bg-[#121216]/95 p-4 text-white shadow-2xl backdrop-blur-2xl select-none md:w-95">
       {/* 顶栏标题 */}
       <div className="mb-3.5 flex items-center justify-between px-1">
         <h3 className="text-sm font-bold tracking-tight text-white/90">
@@ -66,10 +65,10 @@ export function AudioQualityDialog() {
               onClick={() => handleSelect(opt.value)}
               className={cn(
                 "group relative flex cursor-pointer flex-col justify-between rounded-xl p-3.5 transition-all",
-                "border bg-gradient-to-b from-white/[0.05] to-white/[0.01]",
+                "border bg-linear-to-b from-white/5 to-white/1",
                 isSelected
-                  ? "border-[#1ed760]/60 bg-gradient-to-b from-[#1ed760]/15 via-white/[0.04] to-transparent shadow-[0_0_20px_rgba(30,215,96,0.15)]"
-                  : "border-white/10 hover:border-white/20 hover:bg-white/[0.06]",
+                  ? "border-[#1ed760]/60 bg-linear-to-b from-[#1ed760]/15 via-white/4 to-transparent shadow-[0_0_20px_rgba(30,215,96,0.15)]"
+                  : "border-white/10 hover:border-white/20 hover:bg-white/6",
               )}
             >
               {/* Top Row: Icon & Badge */}

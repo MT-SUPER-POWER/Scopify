@@ -4,7 +4,6 @@
 
 import { PlayerProgressBar } from "@components/PlayBar/ProgressBar";
 import {
-  Check,
   ChevronDown,
   ChevronUp,
   Expand,
@@ -25,6 +24,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
+import { toast } from "sonner";
 import { AudioQualityDialog } from "@/components/player/AudioQualityDialog";
 import { QueuePopover } from "@/components/QueuePopover";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
@@ -40,16 +40,7 @@ import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
-import type { QualityOptionKey } from "@/types/playerBar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Skeleton } from "./ui/skeleton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -150,11 +141,11 @@ export const PlayerBar = ({
   const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricStageBar = variant === "lyric-stage";
-  const { changeMusicQuality, musicQuality } = useMusicQuality();
+  const { musicQuality } = useMusicQuality();
 
   // 查找当前选中的音质选项，如果找不到就提供一个兜底
   const currentOption = QUALITY_OPTIONS.find((opt) => opt.value === musicQuality);
-  const CurrentIcon = currentOption ? currentOption.icon : Radio;
+  const CurrentIcon = currentOption?.icon ?? Radio;
 
   useEffect(() => {
     if (!currentSong?.id) return;

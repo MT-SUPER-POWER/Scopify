@@ -11,7 +11,7 @@ export function FoliaAudioQualityControl({ theme }: { theme: Theme }) {
   const { changeMusicQuality, isChanging, musicQuality } = useMusicQuality();
   const isDaylight = theme.name === "snow";
   const qualityOptions = QUALITY_OPTIONS.map((option) => ({
-    label: String(t(option.labelKey)),
+    label: String(t(option.labelKey)).replace(/\s*\(.*?\)/g, ""),
     value: option.value,
   }));
 
