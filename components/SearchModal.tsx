@@ -199,11 +199,10 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
           >
             <div
               className={cn(
-                // 亚克力玻璃感核心：半透明背景 + 强模糊 + 微亮边框
                 "overflow-hidden rounded-2xl",
-                "bg-white/[0.07] backdrop-blur-2xl",
+                "bg-[#18181c]/95 backdrop-blur-2xl",
                 "border border-white/12",
-                "shadow-[0_32px_64px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.1)]",
+                "shadow-[0_32px_64px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.1)]",
               )}
             >
               {/* ── 输入行 ── */}
@@ -216,7 +215,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   placeholder={placeholder}
                   className={cn(
                     "flex-1 border-none bg-transparent outline-none",
-                    "text-base font-medium text-white placeholder:text-zinc-500",
+                    "text-base font-medium text-white placeholder:text-white/40",
                     "caret-[#1ed760]",
                   )}
                   onKeyDown={handleKeyDown}
@@ -243,9 +242,9 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   disabled={!localValue.trim()}
                   className={cn(
                     "flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5",
-                    "text-[11px] font-semibold text-zinc-400",
-                    "border border-white/10 bg-white/5",
-                    "transition-all hover:bg-white/10 hover:text-white",
+                    "text-[11px] font-semibold text-white/70",
+                    "border border-white/15 bg-white/10",
+                    "transition-all hover:bg-white/20 hover:text-white",
                     "disabled:cursor-not-allowed disabled:opacity-30",
                   )}
                 >
@@ -263,12 +262,12 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   {showRecent && (
                     <div>
                       <div className="flex items-center justify-between px-5 py-2">
-                        <span className="text-[11px] font-semibold tracking-wider text-zinc-500 uppercase">
+                        <span className="text-[11px] font-bold tracking-wider text-zinc-300 uppercase">
                           {t("search.modal.recentSearches")}
                         </span>
                         <button
                           onClick={() => useSearchStore.getState().clearRecent()}
-                          className="text-[11px] text-zinc-500 transition-colors hover:text-white"
+                          className="text-[11px] font-medium text-zinc-400 transition-colors hover:text-white"
                         >
                           {t("common.action.clearAll")}
                         </button>
@@ -279,7 +278,6 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           initial={{ opacity: 0, x: -8 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.03 }}
-                          // onClick={() => handleItemClick(item)}
                           onClick={() => handleSearch(item)}
                           className={cn(
                             "group/item flex items-center justify-between gap-3 px-5 py-2.5",
@@ -298,7 +296,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                               <span className="truncate text-sm font-medium text-white">
                                 {item}
                               </span>
-                              <span className="text-[11px] text-zinc-500">
+                              <span className="text-[11px] text-zinc-400">
                                 {t("search.modal.recentSearch")}
                               </span>
                             </div>
@@ -311,7 +309,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             }}
                             className="shrink-0 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-white/10"
                           >
-                            <X className="size-3 text-zinc-500 hover:text-white" />
+                            <X className="size-3 text-zinc-400 hover:text-white" />
                           </button>
                         </motion.div>
                       ))}
@@ -329,7 +327,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                   {showSuggests && (
                     <div>
                       <div className="px-5 py-2">
-                        <span className="text-[11px] font-semibold tracking-wider text-zinc-500 uppercase">
+                        <span className="text-[11px] font-bold tracking-wider text-zinc-300 uppercase">
                           {t("search.modal.relatedSuggestions")}
                         </span>
                       </div>
@@ -339,7 +337,6 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           initial={{ opacity: 0, x: -8 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.025 }}
-                          // onClick={() => handleItemClick(item.keyword)}
                           onClick={() => handleSearch(item.keyword)}
                           className={cn(
                             "flex items-center justify-between gap-3 px-5 py-2.5",
@@ -348,7 +345,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           )}
                         >
                           <div className="flex min-w-0 items-center gap-3">
-                            <Search className="size-3.5 shrink-0 text-zinc-500" />
+                            <Search className="size-3.5 shrink-0 text-zinc-400" />
                             <span className="truncate text-sm">
                               <HighlightText raw={item.highLightInfo} />
                             </span>
@@ -361,7 +358,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
                   {/* 无结果 */}
                   {showEmpty && (
-                    <div className="py-8 text-center text-sm text-zinc-500">
+                    <div className="py-8 text-center text-sm text-zinc-400">
                       {t("search.modal.noResults")}
                     </div>
                   )}
@@ -369,21 +366,21 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
               )}
 
               {/* ── 底部提示栏 ── */}
-              <div className="flex items-center gap-4 border-t border-white/6 px-5 py-3">
-                <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono">
+              <div className="flex items-center gap-5 border-t border-white/10 bg-black/30 px-5 py-3 text-xs">
+                <div className="flex items-center gap-1.5 font-medium text-white/80">
+                  <kbd className="rounded-md border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[11px] font-bold text-white shadow-xs">
                     ↑↓
                   </kbd>
                   <span>{t("common.action.select")}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono">
+                <div className="flex items-center gap-1.5 font-medium text-white/80">
+                  <kbd className="rounded-md border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[11px] font-bold text-white shadow-xs">
                     ↵
                   </kbd>
                   <span>{t("common.action.search")}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-zinc-600">
-                  <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono">
+                <div className="flex items-center gap-1.5 font-medium text-white/80">
+                  <kbd className="rounded-md border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[11px] font-bold text-white shadow-xs">
                     Ctrl + K
                   </kbd>
                   <span>{t("common.action.close")}</span>
