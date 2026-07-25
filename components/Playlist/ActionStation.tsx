@@ -13,24 +13,31 @@ import {
   X,
 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import { enUS, zhCN, zhTW } from "react-day-picker/locale";
 import type { PlaylistActionsProps } from "@/types/components/playlist";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useHistoricalDailyRecommendationDates } from "@/hooks/playlist/useHistoricalDailyRecommendationDates";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
-const CURRENT_DAILY_VALUE = "__current_daily__";
+function formatDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function parseDateKey(date: string) {
+  return new Date(`${date}T00:00:00`);
+}
 
 export default function PlaylistActions(props: PlaylistActionsProps) {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const {
     playlistId,
     isDaily,
@@ -47,8 +54,16 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const smartRouter = useSmartRouter();
-  const { data: historicalDates = [], isLoading: isHistoryLoading } =
-    useHistoricalDailyRecommendationDates(isDaily);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const history = useHistoricalDailyRecommendations();
+  const availableHistoryDateSet = useMemo(
+    () => new Set(history.data?.dates ?? []),
+    [history.data?.dates],
+  );
+  const today = useMemo(() => new Date(), []);
+  const todayKey = formatDateKey(today);
+  const selectedCalendarDate = dailyDate ? parseDateKey(dailyDate) : today;
+  const calendarLocale = locale === "zh-CN" ? zhCN : locale === "zh-TW" ? zhTW : enUS;
   const isShuffle = usePlayerStore((s) => s.isShuffle);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
@@ -72,14 +87,17 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     }
   };
 
-  const handleDailyDateChange = (value: string) => {
+  const handleCalendarSelect = (date: Date | undefined) => {
+    if (!date) return;
+    const selectedDateKey = formatDateKey(date);
     const nextParams = new URLSearchParams(searchParams.toString());
-    if (value === CURRENT_DAILY_VALUE) {
+    if (selectedDateKey === todayKey) {
       nextParams.delete("dailyDate");
     } else {
-      nextParams.set("dailyDate", value);
+      nextParams.set("dailyDate", selectedDateKey);
     }
     smartRouter.replace(`${pathname}?${nextParams.toString()}`);
+    setIsCalendarOpen(false);
   };
 
   return (
@@ -119,35 +137,48 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             3. 专辑：分享专辑、收藏/取消收藏专辑
          */}
         <MoreHorizontal className="size-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
-        {isDaily && (isHistoryLoading || historicalDates.length > 0) && (
-          <Select
-            value={dailyDate ?? CURRENT_DAILY_VALUE}
-            onValueChange={handleDailyDateChange}
-            disabled={isHistoryLoading}
-          >
-            <SelectTrigger
-              size="sm"
-              aria-label={t("playlist.actions.historyDate")}
-              className="border-white/15 bg-white/10 text-zinc-200 hover:bg-white/15"
-            >
-              <CalendarDays className="size-4 text-zinc-300" />
-              <SelectValue placeholder={t("playlist.actions.historyLoading")} />
-            </SelectTrigger>
-            <SelectContent className="border-white/10 bg-zinc-900 text-zinc-100">
-              <SelectItem value={CURRENT_DAILY_VALUE}>
-                {t("playlist.actions.currentDaily")}
-              </SelectItem>
-              {historicalDates.map((date) => (
-                <SelectItem key={date} value={date}>
-                  {date}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        {isDaily && (
+          <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+            <TooltipProvider>
+              <Tooltip>
+                <PopoverTrigger asChild>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label={t("playlist.actions.historyDate")}
+                      className="inline-flex size-8 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+                    >
+                      <CalendarDays className="size-4" />
+                    </button>
+                  </TooltipTrigger>
+                </PopoverTrigger>
+                <TooltipContent sideOffset={6}>{t("playlist.actions.historyDate")}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <PopoverContent
+              side="bottom"
+              align="end"
+              sideOffset={8}
+              className="w-auto border-white/10 bg-zinc-950 p-0 text-white"
+            >
+              <Calendar
+                key={dailyDate ?? todayKey}
+                mode="single"
+                selected={selectedCalendarDate}
+                defaultMonth={selectedCalendarDate}
+                onSelect={handleCalendarSelect}
+                locale={calendarLocale}
+                disabled={(date) => {
+                  const dateKey = formatDateKey(date);
+                  return dateKey !== todayKey && !availableHistoryDateSet.has(dateKey);
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+        )}
         <AnimatePresence mode="wait">
           {searchOpen ? (
             <motion.div
@@ -184,10 +215,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
           )}
         </AnimatePresence>
 
-        <div className="flex cursor-pointer items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-white">
-          <span>{t("playlist.actions.listLabel")}</span>
-          <List className="size-5" />
-        </div>
+        <List className="size-5 text-zinc-400" />
       </div>
     </div>
   );

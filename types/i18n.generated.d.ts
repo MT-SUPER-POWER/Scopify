@@ -1883,6 +1883,18 @@ export interface TranslateFn {
    */
   (key: "playlist.meta.historicalDailyTitle", params?: TranslationParams): string;
   /**
+   * zh-CN: 历史日推
+   * zh-TW: 歷史日推
+   * en-US: Daily History
+   */
+  (key: "playlist.history.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无可查看的历史日推
+   * zh-TW: 暫無可查看的歷史日推
+   * en-US: No daily recommendation history is available
+   */
+  (key: "playlist.history.empty", params?: TranslationParams): string;
+  /**
    * zh-CN: 为你推荐
    * zh-TW: 為你推薦
    * en-US: Made For You

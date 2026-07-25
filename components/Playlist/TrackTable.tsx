@@ -49,6 +49,8 @@ export default function TracklistTable({
   hideDateColumn = false,
   hideLikeColumn = false,
   onEmptyAction,
+  dailyRecommendationMode,
+  playSourceId,
   readonly = false,
   searchQuery,
   tracks: externalTracks,
@@ -87,18 +89,20 @@ export default function TracklistTable({
   const playlistID = searchParams.get("id");
   const isDailyRecommendationPage = searchParams.get("isDailyRecommend") === "true";
   const historicalDailyDate = searchParams.get("dailyDate");
-  const isHistoricalDailyRecommendation = isDailyRecommendationPage && historicalDailyDate !== null;
-  const canDislikeDailyRecommendation =
-    isDailyRecommendationPage && !isHistoricalDailyRecommendation;
+  const resolvedDailyRecommendationMode =
+    dailyRecommendationMode ??
+    (isDailyRecommendationPage ? (historicalDailyDate ? "history" : "current") : undefined);
+  const isHistoricalDailyRecommendation = resolvedDailyRecommendationMode === "history";
+  const canDislikeDailyRecommendation = resolvedDailyRecommendationMode === "current";
   const dailyQueueId = historicalDailyDate ? `daily:${historicalDailyDate}` : "daily";
   const pathname = usePathname();
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
 
   const currentPageId = useMemo(() => {
     const isPlaylistOrAlbum = pathname.includes("/playlist") || pathname.includes("/album");
-    if (!isPlaylistOrAlbum) return null;
-    return playlistID ?? (isDailyRecommendationPage ? dailyQueueId : null);
-  }, [pathname, playlistID, isDailyRecommendationPage, dailyQueueId]);
+    if (!isPlaylistOrAlbum && playSourceId === undefined) return null;
+    return playSourceId ?? playlistID ?? (isDailyRecommendationPage ? dailyQueueId : null);
+  }, [pathname, playSourceId, playlistID, isDailyRecommendationPage, dailyQueueId]);
 
   const isCurrentQueue = useMemo(() => {
     if (currentPageId === null) return true;
@@ -187,8 +191,9 @@ export default function TracklistTable({
       const isCurrent = currentSongDetail?.id === track.id && isCurrentQueue;
       if (isCurrent) setIsPlaying(!isPlaying);
       else {
-        const playSourceId = isDailyRecommendationPage ? dailyQueueId : (playlistID ?? null);
-        void playFromSong(track, tracks, playSourceId);
+        const sourceId =
+          playSourceId ?? (isDailyRecommendationPage ? dailyQueueId : (playlistID ?? null));
+        void playFromSong(track, tracks, sourceId);
       }
     },
     [
@@ -197,6 +202,7 @@ export default function TracklistTable({
       isPlaying,
       setIsPlaying,
       playFromSong,
+      playSourceId,
       playlistID,
       isDailyRecommendationPage,
       dailyQueueId,

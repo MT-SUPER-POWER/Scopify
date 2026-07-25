@@ -20,7 +20,10 @@ export interface PlaylistActionsProps {
   searchQuery: string;
 }
 
+export type DailyRecommendationMode = "current" | "history";
+
 export interface TracklistTableProps {
+  dailyRecommendationMode?: DailyRecommendationMode;
   disableVirtualization?: boolean;
   emptyActionLabel?: string;
   hideDateColumn?: boolean;
@@ -33,6 +36,7 @@ export interface TracklistTableProps {
   readonly?: boolean;
   searchOpen?: boolean;
   searchQuery?: string;
+  playSourceId?: null | string;
   tracks?: SongDetail[];
 }
 

@@ -16,14 +16,17 @@ export const historicalDailyRecommendationKeys = {
   dates: () => [...historicalDailyRecommendationKeys.all, "dates"] as const,
 };
 
-export function useHistoricalDailyRecommendationDates(enabled: boolean) {
+export function useHistoricalDailyRecommendations() {
   return useQuery({
     queryKey: historicalDailyRecommendationKeys.dates(),
     queryFn: async () => {
       const response = await getHistoricalDailyRecommendations(getMusicCookie());
-      return (response.data.data?.dates ?? []).filter((date) => HISTORY_DATE_PATTERN.test(date));
+      const data = response.data.data ?? {};
+      return {
+        ...data,
+        dates: (data.dates ?? []).filter((date) => HISTORY_DATE_PATTERN.test(date)),
+      };
     },
-    enabled,
     staleTime: 5 * 60 * 1000,
   });
 }
