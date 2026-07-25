@@ -20,10 +20,10 @@ export function SongTitleWithAlia({
       className={cn("flex min-w-0 items-center gap-1", className)}
       title={aliaText ? `${name} (${aliaText})` : name}
     >
-      <span className="truncate">{name}</span>
+      <span className="max-w-full min-w-0 shrink-0 truncate">{name}</span>
       {aliaText ? (
         <span
-          className={cn("shrink-0 font-normal text-zinc-500", aliaClassName)}
+          className={cn("min-w-0 truncate font-normal text-zinc-500", aliaClassName)}
         >{` (${aliaText})`}</span>
       ) : null}
     </span>
