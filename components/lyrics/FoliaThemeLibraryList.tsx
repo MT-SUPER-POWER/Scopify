@@ -6,6 +6,7 @@ import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { createFoliaStageTheme } from "@/lib/lyrics/foliaTheme";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaThemeLibraryListProps } from "@/types/components/lyrics";
 
@@ -87,68 +88,70 @@ export function FoliaThemeLibraryList({
         </div>
       </div>
 
-      <div className="visualizer-overlay-scrollbar min-h-0 space-y-1.5 overflow-y-auto pr-1">
-        {themes.map((theme) => {
-          const isSelected = theme.id === selectedThemeId;
-          const isEditing = theme.id === editingId;
-          return (
-            <button
-              key={theme.id}
-              type="button"
-              onClick={() => selectTheme(theme.id)}
-              className="flex w-full items-center gap-3 rounded-2xl border p-2.5 text-left transition"
-              style={{
-                backgroundColor: isSelected ? `${theme.dark.accentColor}18` : "transparent",
-                borderColor: isSelected ? theme.dark.accentColor : "rgba(255,255,255,0.08)",
-              }}
-            >
-              <FoliaThemeRecord size="library" theme={theme} />
-              {isEditing ? (
-                <input
-                  ref={inputRef}
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  onBlur={() => commitEdit(theme.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") commitEdit(theme.id);
-                    if (e.key === "Escape") setEditingId(null);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="min-w-0 flex-1 truncate border-b border-white/30 bg-transparent text-sm font-medium outline-none"
-                  style={{ color: theme.dark.primaryColor }}
-                />
-              ) : (
-                <div className="min-w-0 flex-1">
-                  <span
-                    className="block truncate text-sm font-medium"
-                    onDoubleClick={(e) => {
-                      e.stopPropagation();
-                      startEditing(theme.id, theme.name);
+      <ScrollArea className="min-h-0 flex-1 pr-1">
+        <div className="space-y-1.5 pb-3">
+          {themes.map((theme) => {
+            const isSelected = theme.id === selectedThemeId;
+            const isEditing = theme.id === editingId;
+            return (
+              <button
+                key={theme.id}
+                type="button"
+                onClick={() => selectTheme(theme.id)}
+                className="flex w-full items-center gap-3 rounded-2xl border p-2.5 text-left transition"
+                style={{
+                  backgroundColor: isSelected ? `${theme.dark.accentColor}18` : "transparent",
+                  borderColor: isSelected ? theme.dark.accentColor : "rgba(255,255,255,0.08)",
+                }}
+              >
+                <FoliaThemeRecord size="library" theme={theme} />
+                {isEditing ? (
+                  <input
+                    ref={inputRef}
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onBlur={() => commitEdit(theme.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") commitEdit(theme.id);
+                      if (e.key === "Escape") setEditingId(null);
                     }}
-                  >
-                    {theme.name}
-                  </span>
-                  {isSelected && (
-                    <span className="block text-[10px] opacity-50">
-                      {t("folia.ui.currentTheme")}
+                    onClick={(e) => e.stopPropagation()}
+                    className="min-w-0 flex-1 truncate border-b border-white/30 bg-transparent text-sm font-medium outline-none"
+                    style={{ color: theme.dark.primaryColor }}
+                  />
+                ) : (
+                  <div className="min-w-0 flex-1">
+                    <span
+                      className="block truncate text-sm font-medium"
+                      onDoubleClick={(e) => {
+                        e.stopPropagation();
+                        startEditing(theme.id, theme.name);
+                      }}
+                    >
+                      {theme.name}
                     </span>
-                  )}
-                </div>
-              )}
-              <span className="flex shrink-0 gap-1">
-                <i
-                  className="size-2 rounded-full"
-                  style={{ backgroundColor: theme.light.accentColor }}
-                />
-                <i
-                  className="size-2 rounded-full"
-                  style={{ backgroundColor: theme.dark.accentColor }}
-                />
-              </span>
-            </button>
-          );
-        })}
-      </div>
+                    {isSelected && (
+                      <span className="block text-[10px] opacity-50">
+                        {t("folia.ui.currentTheme")}
+                      </span>
+                    )}
+                  </div>
+                )}
+                <span className="flex shrink-0 gap-1">
+                  <i
+                    className="size-2 rounded-full"
+                    style={{ backgroundColor: theme.light.accentColor }}
+                  />
+                  <i
+                    className="size-2 rounded-full"
+                    style={{ backgroundColor: theme.dark.accentColor }}
+                  />
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </ScrollArea>
     </aside>
   );
 }

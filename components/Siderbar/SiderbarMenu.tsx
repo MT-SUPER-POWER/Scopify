@@ -166,8 +166,7 @@ function SiderBarMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost">
-            {" "}
-            <Menu className="size-7" />{" "}
+            <Menu className="size-5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-40" align="start">

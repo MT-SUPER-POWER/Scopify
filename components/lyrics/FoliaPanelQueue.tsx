@@ -11,7 +11,7 @@ export function FoliaPanelQueue() {
   const queue = usePlayerStore((state) => state.queue);
 
   return (
-    <div className="flex max-h-80 flex-col select-none">
+    <div className="flex flex-col select-none">
       <div className="flex shrink-0 items-center justify-between px-2 pb-2">
         <span className="text-xs font-medium opacity-60">
           {t("folia.queue.title")} ({queue.length})
@@ -25,7 +25,7 @@ export function FoliaPanelQueue() {
           <Shuffle size={14} />
         </button>
       </div>
-      <div className="visualizer-overlay-scrollbar min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
+      <div className="space-y-1">
         {queue.length === 0 ? (
           <div className="flex h-32 items-center justify-center text-xs opacity-40">
             {t("folia.queue.empty")}

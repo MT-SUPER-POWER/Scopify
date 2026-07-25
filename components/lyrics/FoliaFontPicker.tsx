@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { useI18n } from "@/store/module/i18n";
 
 import { useFoliaFontPicker } from "@/hooks/player/useFoliaFontPicker";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
 
 interface FoliaFontPickerProps {
@@ -50,33 +51,35 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
           />
         </div>
 
-        <div className="visualizer-overlay-scrollbar min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
-          {!model.supportsSystemFonts ? (
-            <p className="px-3 py-8 text-center text-xs opacity-50">
-              {t("folia.options.systemFontUnsupported")}
-            </p>
-          ) : model.isLoading ? (
-            <p className="px-3 py-8 text-center text-xs opacity-50">{t("folia.ui.loading")}</p>
-          ) : model.filteredFonts.length === 0 ? (
-            <p className="px-3 py-8 text-center text-xs opacity-50">
-              {t("folia.options.systemFontEmpty")}
-            </p>
-          ) : (
-            model.filteredFonts.map((font) => (
-              <button
-                key={font.postscriptName || font.family}
-                type="button"
-                onClick={() => model.applyFontFamily(font.family)}
-                className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left hover:bg-white/10"
-              >
-                <span className="truncate text-sm" style={{ fontFamily: font.family }}>
-                  {font.family}
-                </span>
-                <span className="ml-3 shrink-0 text-[10px] opacity-35">{font.style}</span>
-              </button>
-            ))
-          )}
-        </div>
+        <ScrollArea className="min-h-0 flex-1 pr-1">
+          <div className="space-y-1 pb-3">
+            {!model.supportsSystemFonts ? (
+              <p className="px-3 py-8 text-center text-xs opacity-50">
+                {t("folia.options.systemFontUnsupported")}
+              </p>
+            ) : model.isLoading ? (
+              <p className="px-3 py-8 text-center text-xs opacity-50">{t("folia.ui.loading")}</p>
+            ) : model.filteredFonts.length === 0 ? (
+              <p className="px-3 py-8 text-center text-xs opacity-50">
+                {t("folia.options.systemFontEmpty")}
+              </p>
+            ) : (
+              model.filteredFonts.map((font) => (
+                <button
+                  key={font.postscriptName || font.family}
+                  type="button"
+                  onClick={() => model.applyFontFamily(font.family)}
+                  className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left hover:bg-white/10"
+                >
+                  <span className="truncate text-sm" style={{ fontFamily: font.family }}>
+                    {font.family}
+                  </span>
+                  <span className="ml-3 shrink-0 text-[10px] opacity-35">{font.style}</span>
+                </button>
+              ))
+            )}
+          </div>
+        </ScrollArea>
 
         {model.error ? <p className="mt-3 text-xs text-red-300">{model.error}</p> : null}
         <button

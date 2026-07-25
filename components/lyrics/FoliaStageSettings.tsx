@@ -12,6 +12,7 @@ import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
 import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
 import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
 import { FoliaVisualSettingsDialog } from "@/components/lyrics/FoliaVisualSettingsDialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePlayerStore } from "@/store/module/player";
 import type { FoliaStageSettingsProps } from "@/types/components/lyrics";
 import type { FoliaPanelTab, FoliaStageEditSection } from "@/types/foliaStage";
@@ -56,86 +57,87 @@ export function FoliaStageSettings({
               className="pointer-events-auto absolute inset-0 cursor-default"
             />
             <aside
-              className={`visualizer-overlay-scrollbar pointer-events-auto fixed right-4 bottom-8 z-10 flex max-h-[calc(100dvh-6rem)] w-80 max-w-[calc(100vw-2rem)] flex-col overflow-y-auto rounded-3xl p-5 shadow-2xl backdrop-blur-3xl md:right-8 ${
+              className={`pointer-events-auto fixed right-4 bottom-8 z-10 flex h-[calc(100dvh-6rem)] w-80 max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-3xl shadow-2xl backdrop-blur-3xl md:right-8 ${
                 isDaylight ? "bg-white/60 text-zinc-900" : "bg-black/55 text-white"
               }`}
-              style={{
-                ["--scrollbar-thumb-color" as string]: isDaylight
-                  ? "rgba(0, 0, 0, 0.16)"
-                  : "rgba(255, 255, 255, 0.22)",
-                ["--scrollbar-thumb-hover-color" as string]: isDaylight
-                  ? "rgba(0, 0, 0, 0.28)"
-                  : "rgba(255, 255, 255, 0.35)",
-              }}
             >
-              <div
-                className={`relative mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl shadow-lg ${
-                  isDaylight ? "bg-black/3" : "bg-white/5"
-                }`}
-              >
-                {currentSong?.al.picUrl ? (
-                  <img src={currentSong.al.picUrl} alt="" className="size-full object-cover" />
-                ) : (
-                  <Disc size={40} className={isDaylight ? "text-black/20" : "text-white/20"} />
-                )}
-                <button
-                  type="button"
-                  title={String(t("folia.ui.close"))}
-                  onClick={() => onOpenChange(false)}
-                  className={`absolute top-3 right-3 flex size-11 items-center justify-center rounded-full border backdrop-blur-md ${
-                    isDaylight
-                      ? "border-black/10 bg-white/70 text-zinc-700 hover:bg-white"
-                      : "border-white/15 bg-black/25 text-white/90 hover:bg-black/40"
+              {/* 封面 — 固定，不滚动 */}
+              <div className="shrink-0 p-5 pb-3">
+                <div
+                  className={`relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl shadow-lg ${
+                    isDaylight ? "bg-black/3" : "bg-white/5"
                   }`}
                 >
-                  <X size={18} />
-                </button>
-              </div>
-
-              <div
-                className={`mb-4 flex rounded-xl p-1 ${isDaylight ? "bg-black/5" : "bg-black/20"}`}
-              >
-                {(
-                  [
-                    ["controls", SlidersHorizontal, "folia.panel.controls"],
-                    ["queue", ListMusic, "folia.queue.title"],
-                    ["lyrics", Captions, "folia.options.lyricsRenderer"],
-                  ] as const
-                ).map(([tab, Icon, label]) => (
+                  {currentSong?.al.picUrl ? (
+                    <img src={currentSong.al.picUrl} alt="" className="size-full object-cover" />
+                  ) : (
+                    <Disc size={40} className={isDaylight ? "text-black/20" : "text-white/20"} />
+                  )}
                   <button
-                    key={tab}
                     type="button"
-                    title={String(t(label))}
-                    onClick={() => setActiveTab(tab)}
-                    className={`flex flex-1 items-center justify-center rounded-lg py-2 transition-all ${
-                      activeTab === tab
-                        ? isDaylight
-                          ? "bg-black/10 shadow-sm"
-                          : "bg-white/20 shadow-sm"
-                        : "opacity-40 hover:opacity-100"
+                    title={String(t("folia.ui.close"))}
+                    onClick={() => onOpenChange(false)}
+                    className={`absolute top-3 right-3 flex size-11 items-center justify-center rounded-full border backdrop-blur-md ${
+                      isDaylight
+                        ? "border-black/10 bg-white/70 text-zinc-700 hover:bg-white"
+                        : "border-white/15 bg-black/25 text-white/90 hover:bg-black/40"
                     }`}
-                    style={{ color: theme.primaryColor }}
                   >
-                    <Icon size={16} />
+                    <X size={18} />
                   </button>
-                ))}
+                </div>
               </div>
 
+              {/* Tab 切换栏 — 固定，不滚动 */}
+              <div className="shrink-0 px-5 pb-3">
+                <div className={`flex rounded-xl p-1 ${isDaylight ? "bg-black/5" : "bg-black/20"}`}>
+                  {(
+                    [
+                      ["controls", SlidersHorizontal, "folia.panel.controls"],
+                      ["queue", ListMusic, "folia.queue.title"],
+                      ["lyrics", Captions, "folia.options.lyricsRenderer"],
+                    ] as const
+                  ).map(([tab, Icon, label]) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      title={String(t(label))}
+                      onClick={() => setActiveTab(tab)}
+                      className={`flex flex-1 items-center justify-center rounded-lg py-2 transition-all ${
+                        activeTab === tab
+                          ? isDaylight
+                            ? "bg-black/10 shadow-sm"
+                            : "bg-white/20 shadow-sm"
+                          : "opacity-40 hover:opacity-100"
+                      }`}
+                      style={{ color: theme.primaryColor }}
+                    >
+                      <Icon size={16} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tab 内容区 — 可滚动 */}
               <div className="min-h-0 flex-1">
-                {activeTab === "controls" ? (
-                  <FoliaPanelControls
-                    onOpenSettings={openVisualSettings}
-                    onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
-                    theme={theme}
-                  />
-                ) : null}
-                {activeTab === "queue" ? <FoliaPanelQueue /> : null}
-                {activeTab === "lyrics" ? (
-                  <FoliaLyricsControls
-                    onOpenLyricMatch={() => setIsLyricMatchOpen(true)}
-                    theme={theme}
-                  />
-                ) : null}
+                <ScrollArea className="h-full w-full">
+                  <div className="px-5 pt-1 pb-8">
+                    {activeTab === "controls" ? (
+                      <FoliaPanelControls
+                        onOpenSettings={openVisualSettings}
+                        onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
+                        theme={theme}
+                      />
+                    ) : null}
+                    {activeTab === "queue" ? <FoliaPanelQueue /> : null}
+                    {activeTab === "lyrics" ? (
+                      <FoliaLyricsControls
+                        onOpenLyricMatch={() => setIsLyricMatchOpen(true)}
+                        theme={theme}
+                      />
+                    ) : null}
+                  </div>
+                </ScrollArea>
               </div>
             </aside>
           </motion.div>

@@ -8,9 +8,13 @@ import { useI18n } from "@/store/module/i18n";
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaThemeQuickPicker } from "@/components/lyrics/FoliaThemeQuickPicker";
 import VisPlaygroundSettingsPanel from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundSettingsPanel";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
 import type { FoliaVisualSettingsDialogProps } from "@/types/components/lyrics";
 
+/**
+ * @brief 右下角沉浸式歌词的设置小面板
+ */
 export function FoliaVisualSettingsDialog({
   assets,
   isOpen,
@@ -92,21 +96,26 @@ export function FoliaVisualSettingsDialog({
               </div>
             </header>
 
-            <div className="grid min-h-0 flex-1 gap-4 p-4 sm:p-6 lg:grid-cols-[minmax(0,1.25fr)_360px]">
+            <div className="grid min-h-0 flex-1 grid-rows-[1fr] gap-4 overflow-hidden p-4 sm:p-6 lg:grid-cols-[minmax(0,1.25fr)_360px]">
               <FoliaSettingsPreview
                 activeSection={section}
                 assets={assets}
                 onSectionChange={onSectionChange}
                 theme={theme}
               />
-              <div className="visualizer-overlay-scrollbar min-h-0 space-y-4 overflow-y-auto pr-1">
-                <VisPlaygroundSettingsPanel
-                  {...panelProps}
-                  themeControl={
-                    <FoliaThemeQuickPicker onOpenThemeLibrary={onOpenThemeLibrary} theme={theme} />
-                  }
-                />
-              </div>
+              <ScrollArea className="h-full min-h-0">
+                <div className="space-y-4 pr-1 pb-6">
+                  <VisPlaygroundSettingsPanel
+                    {...panelProps}
+                    themeControl={
+                      <FoliaThemeQuickPicker
+                        onOpenThemeLibrary={onOpenThemeLibrary}
+                        theme={theme}
+                      />
+                    }
+                  />
+                </div>
+              </ScrollArea>
             </div>
           </motion.section>
         </motion.div>
