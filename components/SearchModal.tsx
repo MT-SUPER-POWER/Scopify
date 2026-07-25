@@ -200,7 +200,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             <div
               className={cn(
                 "overflow-hidden rounded-2xl",
-                "bg-[#18181c]/80 backdrop-blur-2xl",
+                "bg-white/[0.07] backdrop-blur-2xl",
                 "border border-white/12",
                 "shadow-[0_32px_64px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.1)]",
               )}
