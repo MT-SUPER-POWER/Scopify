@@ -31,7 +31,7 @@ export interface VipSignPrize {
   time: number;
 }
 
-/** 签到详情 - /vip/sign/info 返回的单条记录 */
+/** 乐签月历或详情记录；today 仅标识这是当天的月历条目 */
 export interface VipSignDetail {
   recordId: number;
   userId: number;
@@ -59,6 +59,40 @@ export interface VipSignDetail {
 export interface VipSignInfoResponse {
   code: number;
   data: VipSignDetail[];
+  message: string;
+}
+
+/** 签到详情响应 */
+export interface VipSignDetailResponse {
+  code: number;
+  data: VipSignDetail;
+  message: string;
+}
+
+/** 乐签日历中的单日状态 */
+export interface VipSignHistoryItem {
+  dayText: string;
+  sign: boolean;
+  songCoverUrl: string | null;
+  signTime: number;
+  today: boolean;
+}
+
+/** 乐签日历状态 */
+export interface VipSignHistory {
+  text: string | null;
+  subText: string;
+  redPrize: boolean;
+  redDay: boolean;
+  btnText: string;
+  bgTexture: string;
+  signInfoList: VipSignHistoryItem[];
+}
+
+/** 乐签日历响应 */
+export interface VipSignHistoryResponse {
+  code: number;
+  data: VipSignHistory;
   message: string;
 }
 

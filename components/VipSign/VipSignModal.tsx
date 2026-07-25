@@ -9,7 +9,7 @@ import { getSongDetail } from "@/lib/api/track";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignDetail } from "@/types/api/vipSign";
+import type { VipSignDetail, VipSignHistory } from "@/types/api/vipSign";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Props
@@ -18,15 +18,23 @@ import type { VipSignDetail } from "@/types/api/vipSign";
 interface VipSignModalProps {
   open: boolean;
   onClose: () => void;
-  /** POST /vip/sign 返回的 checkinDetail.data，包含所有展示数据 */
+  /** 签到或日期详情接口返回的展示数据 */
   todayRecord: VipSignDetail | undefined;
+  signHistory?: VipSignHistory;
+  onSelectSignDay: (signTime: number) => void;
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Component
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) {
+export function VipSignModal({
+  open,
+  onClose,
+  todayRecord,
+  signHistory,
+  onSelectSignDay,
+}: VipSignModalProps) {
   const { t } = useI18n();
 
   // 从 POST /vip/sign 的 checkinDetail.data 中提取所有展示数据

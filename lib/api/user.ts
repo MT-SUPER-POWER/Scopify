@@ -40,18 +40,12 @@ export function getRecentSongs(limit = 10) {
  * @returns
  */
 export function getRecentSongsByID(uid: number, type = 1, limit = 10) {
-  return request.get(
-    "/user/record",
-    requestConfig({ params: { uid, type, limit } }),
-  );
+  return request.get("/user/record", requestConfig({ params: { uid, type, limit } }));
 }
 
 // 最近播放-歌单
 export function getRecentPlaylists(limit = 10) {
-  return request.get(
-    "/record/recent/playlist",
-    requestConfig({ params: { limit } }),
-  );
+  return request.get("/record/recent/playlist", requestConfig({ params: { limit } }));
 }
 
 // 最近播放-专辑
@@ -117,21 +111,35 @@ export const updateUserProfile = (payload: UpdateUserProfilePayload) => {
 // 网易乐签
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import type { VipSignInfoResponse, VipSignResponse } from "@/types/api/vipSign";
+import type {
+  VipSignDetailResponse,
+  VipSignHistoryResponse,
+  VipSignInfoResponse,
+  VipSignResponse,
+} from "@/types/api/vipSign";
 
 /** 网易乐签 - VIP签到 POST /vip/sign */
 export function vipSign(cookie?: string) {
-  return request.post<VipSignResponse>(
-    "/vip/sign",
-    {},
-    requestConfig({ params: { cookie } }),
-  );
+  return request.post<VipSignResponse>("/vip/sign", {}, requestConfig({ params: { cookie } }));
 }
 
 /** 网易乐签 - 签到信息 GET /vip/sign/info */
 export function vipSignInfo(cookie?: string) {
-  return request.get<VipSignInfoResponse>(
-    "/vip/sign/info",
-    requestConfig({ params: { cookie } }),
+  return request.get<VipSignInfoResponse>("/vip/sign/info", requestConfig({ params: { cookie } }));
+}
+
+/** 网易乐签 - 指定日期详情 GET /vip/sign/detail */
+export function vipSignDetail(timestamp: number, cookie?: string) {
+  return request.get<VipSignDetailResponse>(
+    "/vip/sign/detail",
+    requestConfig({ params: { cookie, timestamp } }),
+  );
+}
+
+/** 网易乐签 - 七日打卡状态 GET /vip/sign/history?type=1 */
+export function vipSignHistory(cookie?: string) {
+  return request.get<VipSignHistoryResponse>(
+    "/vip/sign/history",
+    requestConfig({ params: { cookie, type: 1 } }),
   );
 }
