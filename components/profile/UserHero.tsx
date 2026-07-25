@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { UserVipBadge } from "@/components/shared/UserVipBadge";
 import type { NeteaseUser } from "@/types/api/user";
 
 interface Props {
@@ -30,12 +31,15 @@ export function UserHero({ userInfo, playlistCount }: Props) {
         </div>
 
         {/* 昵称 */}
-        <h1
-          className="leading-1.1 m-0 mb-2 line-clamp-3 text-4xl font-black tracking-tighter wrap-break-word drop-shadow-lg md:text-5xl lg:text-6xl"
-          title={userInfo.nickname}
-        >
-          {userInfo.nickname}
-        </h1>
+        <div className="mb-2 flex min-w-0 items-center gap-3">
+          <h1
+            className="leading-1.1 m-0 line-clamp-3 min-w-0 text-4xl font-black tracking-tighter wrap-break-word drop-shadow-lg md:text-5xl lg:text-6xl"
+            title={userInfo.nickname}
+          >
+            {userInfo.nickname}
+          </h1>
+          <UserVipBadge vipType={userInfo.vipType} />
+        </div>
 
         {/* 签名：紧跟名字，作为副标题而非脚注 */}
         {userInfo.signature && (

@@ -170,6 +170,14 @@ _Avoid_: pageCache, duplicate cache
 Remote Music Data whose meaning depends on the authenticated Scopify user, including profiles, libraries, daily recommendations, and comments. It is removed when the authenticated account changes.
 _Avoid_: public catalog data, shared cache
 
+**Song Access Badge**:
+A compact, locally selected visual marker for a song whose model reports paid or VIP-gated playback. It describes the song's access requirement, never the current listener's membership level.
+_Avoid_: user VIP level, account badge, playback entitlement result
+
+**Membership Status Badge**:
+A single local VIP badge derived from `profile.vipType` in `/user/detail`. It states that a user has VIP status without implying a membership tier or using NetEase-provided level artwork.
+_Avoid_: song pricing marker, playback restriction indicator, VIP tier, remote level icon
+
 **Expired Music Session**:
 The loss of a valid authenticated NetEase session while Scopify is running. It triggers a renderer-wide transition that clears session-bound state and returns the user to login.
 _Avoid_: ordinary request failure, page error

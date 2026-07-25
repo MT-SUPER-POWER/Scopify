@@ -159,6 +159,7 @@ export const TrackRow = memo(
               <SongTitleWithAlia
                 name={track.name}
                 alia={track.alia}
+                fee={track.fee}
                 className={cn(
                   "cursor-pointer text-base font-normal group-hover:underline",
                   isActive ? "text-[#1ed760]" : "text-white",

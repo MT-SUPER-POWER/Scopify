@@ -34,6 +34,7 @@ export interface SongDetail {
   id: number;
   name: string;
   dt: number; // 时长 (ms)
+  fee: number;
   ar: { id: number; name: string }[]; // 歌手
   al: {
     id: number;
@@ -91,6 +92,7 @@ export interface RawSongDetail {
   commentCount?: number;
   dt?: number;
   duration?: number;
+  fee?: number;
   id: number;
   info?: {
     commentThread?: {
@@ -123,6 +125,7 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
     id: raw.id,
     name: raw.name,
     dt: raw.dt ?? raw.duration ?? 0,
+    fee: raw.fee ?? 0,
 
     // 4. 确保 ar 一定是数组，兼容两种字段名
     ar: Array.isArray(artistList)

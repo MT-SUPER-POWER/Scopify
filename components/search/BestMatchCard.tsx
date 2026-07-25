@@ -4,6 +4,7 @@ import { Pause, Play } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
@@ -23,6 +24,7 @@ function toDetail(song: Song): SongDetail {
     id: song.id,
     name: song.name,
     dt: song.duration,
+    fee: song.fee ?? 0,
     ar: song.artists.map((a) => ({ id: a.id, name: a.name })),
     al: { id: song.album.id, name: song.album.name, picUrl },
     publishTime: song.album.publishTime || 0,
@@ -50,7 +52,7 @@ export function BestMatchCard({ song, songs }: Props) {
   }, [song, songs, isActive, isPlaying, setIsPlaying, setQueue, playTrack]);
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex size-full flex-col">
       <h2 className="mb-4 text-2xl font-bold tracking-tight">{t("search.section.bestMatch")}</h2>
       {song ? (
         <div
@@ -69,7 +71,10 @@ export function BestMatchCard({ song, songs }: Props) {
               }}
             />
           </div>
-          <h3 className="mb-1 truncate text-3xl font-bold">{song.name}</h3>
+          <div className="mb-1 flex min-w-0 items-center gap-2">
+            <h3 className="min-w-0 truncate text-3xl font-bold">{song.name}</h3>
+            <SongVipBadge fee={song.fee} />
+          </div>
           <div className="flex items-center gap-2 text-sm text-zinc-400">
             {song.artists && song.artists.length > 0 ? (
               <ArtistInlineLinks

@@ -3,6 +3,7 @@
 import { Heart, MoreHorizontal, Pause, Play } from "lucide-react";
 import type React from "react";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { cn } from "@/lib/utils";
 import type { Song } from "@/types/search";
 
@@ -60,14 +61,18 @@ export function SongRow({
         </div>
 
         <div className="flex min-w-0 flex-col">
-          <span
-            className={cn(
-              "truncate text-base font-medium",
-              isPlaying ? "text-[#1ed760]" : "text-white",
-            )}
-          >
-            {song.name}
-          </span>
+          <div className="flex min-w-0 items-center gap-1.5">
+            <span
+              className={cn(
+                "truncate text-base font-medium",
+                isPlaying ? "text-[#1ed760]" : "text-white",
+              )}
+              title={song.name}
+            >
+              {song.name}
+            </span>
+            <SongVipBadge fee={song.fee} />
+          </div>
           <span className="truncate text-sm text-zinc-400 transition-colors group-hover:text-white">
             <ArtistInlineLinks artists={song.artists ?? []} />
           </span>

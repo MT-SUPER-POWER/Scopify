@@ -202,6 +202,7 @@ export interface NeteaseUser {
   signature: string;
   followeds: number;
   follows: number;
+  vipType: number;
 }
 
 export interface NeteaseUserSource {
@@ -212,6 +213,7 @@ export interface NeteaseUserSource {
   nickname?: string;
   signature?: string;
   userId?: number;
+  vipType?: number;
 }
 
 /**
@@ -228,6 +230,7 @@ export const pruneUser = (raw: NeteaseUserSource | null | undefined): NeteaseUse
       signature: "",
       followeds: 0,
       follows: 0,
+      vipType: 0,
     };
   }
 
@@ -240,5 +243,6 @@ export const pruneUser = (raw: NeteaseUserSource | null | undefined): NeteaseUse
     signature: raw.signature ?? "",
     followeds: raw.followeds ?? 0,
     follows: raw.follows ?? 0,
+    vipType: raw.vipType ?? 0,
   };
 };

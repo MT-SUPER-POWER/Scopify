@@ -3,70 +3,62 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Play } from "lucide-react";
 import Image from "next/image";
-import { type CSSProperties, memo, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import type { LyricQueueRowProps } from "@/types/components/player";
 
-const QueueRow = memo(
-  ({
-    song,
-    index,
-    isCurrent,
-    onPlay,
-    style,
-  }: {
-    song: any;
-    index: number;
-    isCurrent: boolean;
-    onPlay: (index: number) => void;
-    style?: CSSProperties;
-  }) => (
-    <button
-      onClick={() => onPlay(index)}
-      style={style} // 直接接收并应用 absolute 样式，省去外层包裹的 div
-      className={cn(
-        "group flex w-full items-center gap-4 rounded-2xl border px-4 py-3 text-left transition-all duration-300",
-        isCurrent
-          ? "border-white/20 bg-white/10 shadow-lg backdrop-blur-md"
-          : "border-transparent bg-transparent hover:border-white/10 hover:bg-white/5",
+const QueueRow = memo(({ song, index, isCurrent, onPlay, style }: LyricQueueRowProps) => (
+  <button
+    onClick={() => onPlay(index)}
+    style={style} // 直接接收并应用 absolute 样式，省去外层包裹的 div
+    className={cn(
+      "group flex w-full items-center gap-4 rounded-2xl border px-4 py-3 text-left transition-all duration-300",
+      isCurrent
+        ? "border-white/20 bg-white/10 shadow-lg backdrop-blur-md"
+        : "border-transparent bg-transparent hover:border-white/10 hover:bg-white/5",
+    )}
+  >
+    <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-white/10 shadow-sm">
+      {song.al?.picUrl && (
+        <Image
+          width={48}
+          height={48}
+          src={`${song.al.picUrl}?param=64y64`}
+          alt=""
+          className={cn(
+            "size-full object-cover transition-transform duration-500 group-hover:scale-105",
+            isCurrent ? "opacity-80" : "opacity-100",
+          )}
+        />
       )}
-    >
-      <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-white/10 shadow-sm">
-        {song.al?.picUrl && (
-          <Image
-            width={48}
-            height={48}
-            src={`${song.al.picUrl}?param=64y64`}
-            alt=""
-            className={cn(
-              "size-full object-cover transition-transform duration-500 group-hover:scale-105",
-              isCurrent ? "opacity-80" : "opacity-100",
-            )}
-          />
-        )}
-        {isCurrent && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-            <Play className="size-5 fill-current text-white" />
-          </div>
-        )}
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-center">
+      {isCurrent && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+          <Play className="size-5 fill-current text-white" />
+        </div>
+      )}
+    </div>
+    <div className="flex min-w-0 flex-1 flex-col justify-center">
+      <div className="flex min-w-0 items-center gap-1.5">
         <p
           className={cn(
             "truncate text-[16px] tracking-wide transition-colors",
             isCurrent ? "font-semibold text-white" : "font-medium text-white/90",
           )}
+          title={song.name}
         >
           {song.name}
         </p>
-        <p className="mt-0.5 truncate text-[13px] font-light text-white/50">
-          {song.ar?.map((a: any) => a.name).join(", ")}
-        </p>
+        <SongVipBadge fee={song.fee} />
       </div>
-    </button>
-  ),
-);
+      <p className="mt-0.5 truncate text-[13px] font-light text-white/50">
+        {song.ar.map((a) => a.name).join(", ")}
+      </p>
+    </div>
+  </button>
+));
 
 QueueRow.displayName = "QueueRow";
 
@@ -135,7 +127,7 @@ export const QueuePanel = () => {
             style={{ height: virtualizer.getTotalSize(), position: "relative" }}
             className="w-full"
           >
-            {virtualizer.getVirtualItems().map((virtualRow: any) => {
+            {virtualizer.getVirtualItems().map((virtualRow) => {
               const song = queue[virtualRow.index];
               return (
                 <QueueRow

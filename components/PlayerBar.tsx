@@ -27,6 +27,7 @@ import { useCallback, useEffect } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { toast } from "sonner";
 import { QueuePopover } from "@/components/QueuePopover";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { VolumeControl } from "@/components/VolumeControl";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
 import { useMusicQuality } from "@/hooks/player/useMusicQuality";
@@ -278,9 +279,12 @@ export const PlayerBar = ({
                     if (onCloseLyricStage) onCloseLyricStage();
                     else closeLyrics();
                   }}
-                  className="cursor-pointer truncate text-sm font-medium text-white hover:underline"
+                  className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-white"
                 >
-                  {currentSong.name}
+                  <span className="cursor-pointer truncate hover:underline">
+                    {currentSong.name}
+                  </span>
+                  <SongVipBadge fee={currentSong.fee} />
                 </span>
                 <span className="mt-0.5 cursor-pointer truncate text-[11px] font-normal text-[#b3b3b3]">
                   {currentSong?.ar?.slice(0, 2).map((a, idx, arr) => (

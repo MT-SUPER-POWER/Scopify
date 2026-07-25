@@ -8,25 +8,15 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
+import type { QueueItemProps } from "@/types/components/player";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { ScrollArea } from "./ui/scroll-area";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件保持不变 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-interface QueueItemProps {
-  song: any;
-  index: number;
-  isActive: boolean;
-  isPlaying: boolean;
-  virtualStart: number;
-  virtualSize: number;
-  onPlay: (index: number) => void;
-  onRemove: (index: number) => void;
-}
 
 const QueueItem = memo(
   function QueueItem({
@@ -118,13 +108,17 @@ const QueueItem = memo(
               </div>
 
               <div className="min-w-0 flex-1">
-                <div
-                  className={cn(
-                    "truncate text-sm font-medium",
-                    isActive ? "text-[#1ed760]" : "text-white",
-                  )}
-                >
-                  {song.name}
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <span
+                    className={cn(
+                      "truncate text-sm font-medium",
+                      isActive ? "text-[#1ed760]" : "text-white",
+                    )}
+                    title={song.name}
+                  >
+                    {song.name}
+                  </span>
+                  <SongVipBadge fee={song.fee} />
                 </div>
                 <div className="mt-0.5 truncate text-xs text-zinc-400">
                   <ArtistInlineLinks
@@ -290,8 +284,8 @@ const QueueList = ({ isOpen }: { isOpen: boolean }) => {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 export const QueuePopover = () => {
   const { t } = useI18n();
-  const queue = usePlayerStore((state: any) => state.queue);
-  const queueIndex = usePlayerStore((state: any) => state.queueIndex);
+  const queue = usePlayerStore((state) => state.queue);
+  const queueIndex = usePlayerStore((state) => state.queueIndex);
   const open = useUiStore((state) => state.isQueueOpen);
   const setOpen = useUiStore((state) => state.setIsQueueOpen);
 

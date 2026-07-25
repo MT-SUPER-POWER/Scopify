@@ -10,6 +10,7 @@ import { memo, useCallback, useMemo } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -40,6 +41,7 @@ function songToSongDetail(song: Song): SongDetail {
     id: song.id,
     name: song.name,
     dt: song.duration,
+    fee: song.fee ?? 0,
     ar: song.artists.map((a) => ({ id: a.id, name: a.name })),
     al: { id: song.album.id, name: song.album.name, picUrl },
     publishTime: song.album.publishTime || 0,
@@ -225,15 +227,18 @@ export const SongItem = memo(
 
             {/* 歌名 + 歌手 */}
             <div className="flex min-w-0 flex-1 flex-col">
-              <span
-                title={song.name}
-                className={cn(
-                  "truncate text-sm font-normal",
-                  isActive ? "text-[#1ed760]" : "text-white",
-                )}
-              >
-                {song.name}
-              </span>
+              <div className="flex min-w-0 items-center gap-1.5">
+                <span
+                  title={song.name}
+                  className={cn(
+                    "truncate text-sm font-normal",
+                    isActive ? "text-[#1ed760]" : "text-white",
+                  )}
+                >
+                  {song.name}
+                </span>
+                <SongVipBadge fee={song.fee} />
+              </div>
               <ArtistInlineLinks
                 artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
                 className="cursor-pointer truncate text-xs text-zinc-400"

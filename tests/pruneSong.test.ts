@@ -26,5 +26,5 @@ const answ = {
 
 test("pruneSongDetail Deal with dislike recommendation data", () => {
   const result = pruneSongDetail(dislikeRec.data);
-  expect(result).toEqual(answ);
+  expect(result).toEqual({ ...answ, fee: dislikeRec.data.fee ?? 0 });
 });

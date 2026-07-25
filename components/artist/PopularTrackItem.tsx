@@ -21,6 +21,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { LikeButton } from "@/components/ui/LikeButton";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
@@ -201,14 +202,18 @@ export const PopularTrackItem = memo(
                 alt={track.name}
                 className="size-10 shrink-0 rounded object-cover"
               />
-              <span
-                className={cn(
-                  "max-w-50 truncate font-medium md:max-w-xs",
-                  isActive ? "text-[#1DB954]" : "text-white",
-                )}
-              >
-                {track.name}
-              </span>
+              <div className="flex min-w-0 items-center gap-1.5">
+                <span
+                  className={cn(
+                    "max-w-50 truncate font-medium md:max-w-xs",
+                    isActive ? "text-[#1DB954]" : "text-white",
+                  )}
+                  title={track.name}
+                >
+                  {track.name}
+                </span>
+                <SongVipBadge fee={track.fee} />
+              </div>
             </div>
 
             {/* 右侧：Like + 时长 */}

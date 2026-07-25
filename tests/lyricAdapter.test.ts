@@ -89,6 +89,7 @@ test("maps and ranks NetEase lyric-match candidates from song search results", (
     al: { id: 3, name: "Album", picUrl: "" },
     ar: [{ id: 2, name: "Artist" }],
     dt: 180_000,
+    fee: 0,
     id: 1,
     name: "A Song",
     publishTime: 0,

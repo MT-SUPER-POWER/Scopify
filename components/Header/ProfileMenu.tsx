@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { VipSignMenuCard } from "@/components/VipSign/VipSignMenuCard";
 import { VipSignModal } from "@/components/VipSign/VipSignModal";
+import { UserVipBadge } from "@/components/shared/UserVipBadge";
 import { useVipSign } from "@/hooks/vipSign/useVipSign";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -156,10 +157,13 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="truncate text-sm font-bold text-white transition-colors group-hover:text-[#1ed760]">
-                        {user.nickname || t("profile.menu.profile")}
-                      </span>
+                    <div className="flex min-w-0 items-center justify-between gap-1">
+                      <div className="flex min-w-0 items-center gap-1.5">
+                        <span className="truncate text-sm font-bold text-white transition-colors group-hover:text-[#1ed760]">
+                          {user.nickname || t("profile.menu.profile")}
+                        </span>
+                        <UserVipBadge vipType={user.vipType} />
+                      </div>
                       <ChevronRight className="size-4 shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5 group-hover:text-white" />
                     </div>
                     <p className="truncate text-xs text-zinc-400">
