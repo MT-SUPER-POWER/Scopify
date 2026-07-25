@@ -140,7 +140,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                 className="group mb-1.5 cursor-pointer rounded-xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-2.5 shadow-xs transition-all hover:border-white/20 hover:bg-white/[0.06] focus:bg-white/[0.08]"
               >
                 <Link href={`/profile?userId=${userId}`} className="flex items-center gap-3">
-                  <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-emerald-500/40 transition-transform group-hover:scale-105">
+                  <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-[#1ed760]/40 transition-transform group-hover:scale-105">
                     {user.avatarUrl ? (
                       <Image
                         src={user.avatarUrl}
@@ -150,14 +150,14 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="flex size-full items-center justify-center bg-gradient-to-br from-emerald-600 to-teal-500 text-sm font-bold text-white">
+                      <div className="flex size-full items-center justify-center bg-gradient-to-br from-[#1db954] to-[#1ed760] text-sm font-bold text-black">
                         {user.nickname?.[0]?.toUpperCase() ?? "U"}
                       </div>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1">
-                      <span className="truncate text-sm font-bold text-white transition-colors group-hover:text-emerald-400">
+                      <span className="truncate text-sm font-bold text-white transition-colors group-hover:text-[#1ed760]">
                         {user.nickname || t("profile.menu.profile")}
                       </span>
                       <ChevronRight className="size-4 shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5 group-hover:text-white" />
@@ -251,9 +251,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             ) : (
               <DropdownMenuItem
                 onSelect={handleLoginClick}
-                className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-emerald-400 transition-colors hover:bg-emerald-500/10 hover:text-emerald-300 focus:bg-emerald-500/10 focus:text-emerald-300"
+                className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-[#1ed760] transition-colors hover:bg-[#1ed760]/10 hover:text-[#1fdf64] focus:bg-[#1ed760]/10 focus:text-[#1fdf64]"
               >
-                <LogIn className="mr-3 size-4 shrink-0 text-emerald-400" />
+                <LogIn className="mr-3 size-4 shrink-0 text-[#1ed760]" />
                 <span>{t("common.action.login")}</span>
               </DropdownMenuItem>
             )}

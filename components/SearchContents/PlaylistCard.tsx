@@ -32,7 +32,7 @@ export function PlaylistCard({
 
   return (
     <div
-      className="group relative cursor-pointer rounded-xl bg-[#181818] p-4 transition-colors hover:bg-[#282828] active:bg-[#202020]"
+      className="group relative min-w-0 cursor-pointer rounded-xl bg-[#181818] p-4 transition-colors hover:bg-[#282828] active:bg-[#202020]"
       onClick={onClick}
     >
       <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md bg-zinc-800 shadow-lg">

@@ -50,7 +50,7 @@ export function BestMatchCard({ song, songs }: Props) {
   }, [song, songs, isActive, isPlaying, setIsPlaying, setQueue, playTrack]);
 
   return (
-    <div className="flex flex-col xl:w-[40%]">
+    <div className="flex h-full w-full flex-col">
       <h2 className="mb-4 text-2xl font-bold tracking-tight">{t("search.section.bestMatch")}</h2>
       {song ? (
         <div

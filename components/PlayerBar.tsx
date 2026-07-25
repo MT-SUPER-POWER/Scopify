@@ -4,6 +4,7 @@
 
 import { PlayerProgressBar } from "@components/PlayBar/ProgressBar";
 import {
+  Check,
   ChevronDown,
   ChevronUp,
   Expand,
@@ -434,45 +435,59 @@ export const PlayerBar = ({
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="flex items-center justify-center transition-colors hover:text-white"
+                className={cn(
+                  "flex cursor-pointer items-center justify-center transition-colors hover:text-white",
+                )}
                 title={t("playbar.quality")}
               >
                 <CurrentIcon className="size-4 lg:size-5" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-64 rounded-xl border-white/10 bg-[#282828] p-2 text-white"
+              className="w-72 overflow-hidden rounded-2xl border border-white/10 bg-[#16161a]/95 p-2 text-white shadow-2xl backdrop-blur-2xl"
               side="top"
               align="end"
               sideOffset={8}
             >
-              <DropdownMenuLabel className="px-2 py-1 text-xs font-normal text-zinc-400">
+              <DropdownMenuLabel className="px-3 py-1.5 text-xs font-bold tracking-wider text-zinc-400 uppercase">
                 {t("playbar.qualityTitle")}
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuSeparator className="my-1 bg-white/10" />
               <DropdownMenuRadioGroup
                 value={musicQuality}
                 onValueChange={(v) => void changeMusicQuality(v as QualityOptionKey)}
+                className="space-y-1"
               >
                 {QUALITY_OPTIONS.map((opt) => {
                   const Icon = opt.icon;
+                  const isSelected = musicQuality === opt.value;
                   return (
                     <DropdownMenuRadioItem
                       key={opt.value}
                       value={opt.value}
-                      className="rounded-lg px-3 py-2.5 text-[15px] focus:bg-white/10 focus:text-white"
+                      className={cn(
+                        "group relative flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 pl-3! outline-hidden transition-all [&_span:first-child]:hidden",
+                        "border border-transparent hover:bg-white/10 focus:bg-white/10",
+                      )}
                     >
                       <div className="flex min-w-0 items-center gap-3">
-                        <Icon className="size-5 shrink-0 text-zinc-300" />
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-colors group-hover:border-white/20 group-hover:text-zinc-200">
+                          <Icon className="size-4" />
+                        </div>
                         <div className="min-w-0">
-                          <div className="truncate text-sm font-medium text-white">
+                          <div className={cn("truncate text-xs font-bold transition-colors")}>
                             {t(opt.labelKey)}
                           </div>
-                          <div className="mt-0.5 truncate text-[11px] text-zinc-400">
+                          <div className="mt-0.5 truncate text-[10px] text-zinc-400">
                             {t(opt.sublabelKey)} · {t(opt.descriptionKey)}
                           </div>
                         </div>
                       </div>
+                      {isSelected && (
+                        <div className="ml-2 flex size-4 shrink-0 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-xs">
+                          <Check className="size-3 stroke-3" />
+                        </div>
+                      )}
                     </DropdownMenuRadioItem>
                   );
                 })}

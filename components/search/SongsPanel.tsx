@@ -14,7 +14,7 @@ export function SongsPanel({ songs, limit, onViewAll }: Props) {
   const displayed = limit ? songs.slice(0, limit) : songs;
 
   return (
-    <div className="flex flex-col xl:w-[60%]">
+    <div className="flex w-full flex-col">
       <div className="mb-4 flex items-end justify-between">
         <h2 className="text-2xl font-bold tracking-tight">{t("search.section.songs")}</h2>
         {onViewAll && songs.length > (limit ?? 0) && (

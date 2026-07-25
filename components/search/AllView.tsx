@@ -36,16 +36,20 @@ export function AllView({
   return (
     <>
       {/* 顶部两栏：最佳匹配 + 歌曲 */}
-      <div className="mb-10 flex flex-col gap-6 xl:flex-row">
-        <BestMatchCard song={topSong} songs={songs} />
-        <SongsPanel songs={songs} limit={4} onViewAll={() => onSeeAll("Songs")} />
+      <div className="mb-10 grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-12">
+        <div className="flex min-w-0 xl:col-span-5">
+          <BestMatchCard song={topSong} songs={songs} />
+        </div>
+        <div className="flex min-w-0 flex-col xl:col-span-7">
+          <SongsPanel songs={songs} limit={4} onViewAll={() => onSeeAll("Songs")} />
+        </div>
       </div>
 
       {/* 歌手网格 */}
       {artists.length > 0 && (
-        <div className="mb-10">
+        <div className="mb-10 w-full min-w-0">
           <SectionHeader title={t("search.section.artists")} onSeeAll={() => onSeeAll("Artists")} />
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
             {artists.slice(0, 6).map((artist) => (
               <ArtistCard
                 key={artist.id}
@@ -59,9 +63,9 @@ export function AllView({
 
       {/* 专辑网格 */}
       {albums.length > 0 && (
-        <div className="mb-10">
+        <div className="mb-10 w-full min-w-0">
           <SectionHeader title={t("search.section.albums")} onSeeAll={() => onSeeAll("Albums")} />
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
             {albums.slice(0, 6).map((album) => (
               <AlbumCard
                 key={album.id}
@@ -78,12 +82,12 @@ export function AllView({
 
       {/* 歌单网格 */}
       {playlists.length > 0 && (
-        <div className="mb-10">
+        <div className="mb-10 w-full min-w-0">
           <SectionHeader
             title={t("search.section.playlists")}
             onSeeAll={() => onSeeAll("Playlists")}
           />
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
             {playlists.slice(0, 6).map((playlist) => (
               <PlaylistCard
                 key={playlist.id}

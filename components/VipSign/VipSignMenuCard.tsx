@@ -22,7 +22,7 @@ export function VipSignMenuCard({
       {/* 顶部标题与奖励提示 */}
       <div className="flex items-center justify-between gap-2 px-0.5">
         <div className="flex min-w-0 items-center gap-1.5">
-          <CalendarDays className="size-4 shrink-0 text-emerald-400" />
+          <CalendarDays className="size-4 shrink-0 text-[#1ed760]" />
           <span className="truncate text-xs font-bold text-white">{t("profile.menu.vipSign")}</span>
         </div>
         {signHistory?.subText && (
@@ -42,7 +42,7 @@ export function VipSignMenuCard({
               key={`label-${record.dayText}-${record.signTime}`}
               className={cn(
                 "w-8 text-center text-[10px] font-medium transition-colors",
-                record.today ? "font-bold text-emerald-400" : "text-zinc-400",
+                record.today ? "font-bold text-[#1ed760]" : "text-zinc-400",
               )}
             >
               {record.today ? "今天" : record.dayText}
@@ -61,9 +61,9 @@ export function VipSignMenuCard({
                 className={cn(
                   "relative z-10 flex size-8 items-center justify-center rounded-full bg-[#1a1a1e] text-[10px] font-semibold shadow-xs transition-all",
                   record.sign
-                    ? "border border-emerald-500/50 text-emerald-300 ring-2 ring-emerald-500/20"
+                    ? "border border-[#1ed760]/50 text-[#1ed760] ring-2 ring-[#1ed760]/20"
                     : record.today
-                      ? "animate-pulse border-2 border-emerald-400 text-emerald-300 ring-2 ring-emerald-500/20"
+                      ? "animate-pulse border-2 border-[#1ed760] text-[#1ed760] ring-2 ring-[#1ed760]/20"
                       : "border border-white/20 text-zinc-400",
                 )}
               >
@@ -82,7 +82,7 @@ export function VipSignMenuCard({
                 )}
 
                 {record.sign && (
-                  <span className="absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full bg-emerald-500 text-black ring-2 ring-[#16161a]">
+                  <span className="absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full bg-[#1ed760] text-black ring-2 ring-[#16161a]">
                     <Check className="size-2.5 stroke-3" />
                   </span>
                 )}
@@ -96,7 +96,7 @@ export function VipSignMenuCard({
                   type="button"
                   onClick={(event) => {
                     event.stopPropagation();
-                    onSelectSignDay(record.signTime);
+                    onSelectSignDay?.(record.signTime);
                   }}
                   className="relative z-10 cursor-pointer transition-transform hover:scale-110 focus:outline-hidden active:scale-95"
                   title={`${record.dayText} 签到详情`}
@@ -140,7 +140,7 @@ export function VipSignMenuCard({
             "flex h-7.5 w-full max-w-[150px] items-center justify-center gap-1 rounded-full text-xs font-bold transition-all active:scale-95 disabled:cursor-wait disabled:opacity-60",
             hasSignedToday
               ? "border border-white/15 bg-white/10 text-zinc-200 hover:border-white/30 hover:bg-white/15"
-              : "hover:scale-1.03 bg-emerald-500 text-black shadow-md shadow-emerald-500/25 hover:bg-emerald-400",
+              : "hover:scale-1.03 bg-[#1ed760] text-black shadow-md shadow-[#1ed760]/20 hover:bg-[#1fdf64]",
           )}
         >
           {isLoading || isSigning ? "..." : actionLabel}

@@ -34,7 +34,7 @@ export function GridCategoryView({
   return (
     <div className="pb-10">
       <h2 className="mb-6 text-2xl font-bold tracking-tight">Search {activeCategory}</h2>
-      <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
         {activeCategory === "Albums" &&
           albums.map((album) => (
             <AlbumCard

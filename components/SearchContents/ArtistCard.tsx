@@ -9,7 +9,7 @@ export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () =
 
   return (
     <div
-      className="group flex cursor-pointer flex-col items-center rounded-xl bg-[#181818] p-4 text-center transition-colors hover:bg-[#282828] active:bg-[#202020]"
+      className="group flex min-w-0 cursor-pointer flex-col items-center rounded-xl bg-[#181818] p-4 text-center transition-colors hover:bg-[#282828] active:bg-[#202020]"
       onClick={onClick}
     >
       <div className="mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-full bg-zinc-800 shadow-lg">
