@@ -43,9 +43,13 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
-      # 🟢 提取 changelog（输出 release_notes.md）
+      # 🟢 提取 CHANGELOG（解析 docs/CHANGELOG.md 当前版本日志，0 脚本）
       - name: Extract Changelog
-        run: python script/extract-changelog.py
+        id: changelog_reader
+        uses: mscoutermarsh/changelog-reader-action@v2
+        with:
+          version: ${{ github.ref_name }}
+          path: docs/CHANGELOG.md
 
       # 🟢 构建
       - name: Build Next.js
@@ -60,12 +64,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bunx electron-builder ${{ matrix.build_target }} --publish always
 
-      # 🟢 只执行一次：写入 changelog
+      # 🟢 只执行一次：更新 Release Notes
       - name: Update Release Notes
         if: matrix.os == 'windows-latest'
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHANGELOG_BODY: ${{ steps.changelog_reader.outputs.log_entries }}
         run: |
+          echo "$CHANGELOG_BODY" > release_notes.md
           gh release edit ${{ github.ref_name }} \
             --notes-file release_notes.md
