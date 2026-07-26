@@ -1,6 +1,7 @@
 import type {
   AlbumSearchResponse,
   ArtistSearchResponse,
+  ComplexSearchResponse,
   PlaylistSearchResponse,
   SongSearchResponse,
 } from "@/types/api/search";
@@ -77,6 +78,14 @@ export function searchArtists(s: string, limit = 15, offset = 0) {
       limit: limit,
       offset: offset,
       needCorrect: true,
+    },
+  });
+}
+
+export function searchComplex(keyword: string) {
+  return request.get<ComplexSearchResponse>("/search/pc/complex/page/v3", {
+    params: {
+      keyword,
     },
   });
 }

@@ -94,3 +94,90 @@ export interface PlaylistSearchResponse {
     playlists?: SearchResultPlaylist[];
   };
 }
+
+export interface ComplexSearchAlbumData {
+  artist?: SearchResultArtist;
+  artists?: SearchResultArtist[];
+  blurPicUrl?: string;
+  id: number;
+  name: string;
+  picUrl?: string;
+  publishTime?: number;
+  size?: number;
+}
+
+export interface ComplexSearchDj {
+  avatarUrl?: string;
+  nickname?: string;
+}
+
+export interface ComplexSearchVoiceListData {
+  category?: string;
+  desc?: string;
+  dj?: ComplexSearchDj;
+  id: number;
+  name: string;
+  picUrl?: string;
+  programCount?: number;
+  subCount?: number;
+}
+
+export interface ComplexSearchVoiceAlbum {
+  blurPicUrl?: string;
+  id?: number;
+  name?: string;
+  picUrl?: string;
+}
+
+export interface ComplexSearchVoiceMainSong {
+  alias?: string[];
+  album?: ComplexSearchVoiceAlbum;
+  artists?: SearchArtistSource[];
+  duration?: number;
+  fee?: number;
+  id: number;
+  name?: string;
+}
+
+export interface ComplexSearchVoiceProgramData {
+  coverUrl?: string;
+  dj?: ComplexSearchDj;
+  duration?: number;
+  id: number;
+  mainSong?: ComplexSearchVoiceMainSong;
+  name?: string;
+  radio?: ComplexSearchVoiceListData;
+}
+
+export interface ComplexSearchResourceBaseInfo {
+  albumData?: ComplexSearchAlbumData;
+  artistDTO?: SearchResultArtist;
+  pubDJProgramData?: ComplexSearchVoiceProgramData;
+  pubDJRadioData?: ComplexSearchVoiceListData;
+  pubPlaylistData?: SearchResultPlaylist;
+  simpleSongData?: SongSearchData;
+}
+
+export interface ComplexSearchResource {
+  baseInfo?: ComplexSearchResourceBaseInfo;
+  blockCode?: string;
+  resourceId?: string;
+  resourceName?: string;
+  resourceType?: string;
+}
+
+export interface ComplexSearchBlock {
+  blockCode: string;
+  resources?: ComplexSearchResource[];
+}
+
+export interface ComplexSearchResponse {
+  code: number;
+  data?: {
+    blocks?: ComplexSearchBlock[];
+    cursor?: {
+      page?: number;
+      traceId?: string;
+    };
+  };
+}
