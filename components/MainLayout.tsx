@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { useAudioVisualizer } from "@/hooks/player/useAudioVisualizer";
@@ -14,10 +13,6 @@ import { useDesktopLyricPublisher } from "@/hooks/player/useDesktopLyricPublishe
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { CommandPalette } from "@/components/shortcuts/CommandPalette";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
-import {
-  saveScrollPositionBeforeNavigation,
-  useScrollRestoration,
-} from "@/lib/hooks/useScrollRestoration";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -144,7 +139,6 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   useEffect(() => {
     if (typeof window !== "undefined" && window.electronAPI?.onNavigate) {
       window.electronAPI.onNavigate((path) => {
-        saveScrollPositionBeforeNavigation();
         router.push(path, { scroll: false });
       });
     }
@@ -190,11 +184,6 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
-  const scrollContainer = useUiStore((s) => s.scrollContainer);
-  const setScrollContainer = useUiStore((s) => s.setScrollContainer);
-
-  // 自动还原全局 ScrollContainer 的历史滚动位置
-  useScrollRestoration(scrollContainer);
 
   useEffect(() => {
     const syncFullscreen = () => setIsFullscreen(Boolean(document.fullscreenElement));
@@ -265,17 +254,11 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               <div className="group/main relative size-full overflow-hidden rounded-lg bg-[#121212]">
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                   <div className="pointer-events-auto">
-                    <Header
-                      onOpenSearch={() => setIsSearchOpen(true)}
-                      scrollContainer={scrollContainer}
-                    />
+                    <Header />
                   </div>
                 </div>
 
-                {/* DEBUG: 滚动区元素全局绑定共享 */}
-                <ScrollArea className="size-full" viewportRef={setScrollContainer}>
-                  {children}
-                </ScrollArea>
+                <div className="size-full overflow-hidden">{children}</div>
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
@@ -287,15 +270,10 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             <div className="group/main relative flex-1 overflow-hidden rounded-lg bg-[#121212]">
               <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                 <div className="pointer-events-auto">
-                  <Header
-                    onOpenSearch={() => setIsSearchOpen(true)}
-                    scrollContainer={scrollContainer}
-                  />
+                  <Header />
                 </div>
               </div>
-              <ScrollArea className="size-full" viewportRef={setScrollContainer}>
-                {children}
-              </ScrollArea>
+              <div className="size-full overflow-hidden">{children}</div>
             </div>
           </div>
         )}

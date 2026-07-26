@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useNavigationScroll } from "@/components/shared/NavigationScrollProvider";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import RightActions from "./Header/RightActions";
@@ -10,21 +10,9 @@ import HeaderSearch from "./SearchContents/HeaderSearch";
 
 const NAV_BTN = "bg-black/50 hover:bg-black/70";
 
-export default function Header({
-  scrollContainer,
-}: {
-  onOpenSearch?: () => void;
-  scrollContainer: HTMLDivElement | null;
-}) {
-  const [isAtTop, setIsAtTop] = useState(true);
+export default function Header() {
+  const { isAtTop } = useNavigationScroll();
   const smartRouter = useSmartRouter();
-
-  useEffect(() => {
-    if (!scrollContainer) return;
-    const handleScroll = () => setIsAtTop(scrollContainer.scrollTop === 0);
-    scrollContainer.addEventListener("scroll", handleScroll);
-    return () => scrollContainer.removeEventListener("scroll", handleScroll);
-  }, [scrollContainer]);
 
   return (
     <div

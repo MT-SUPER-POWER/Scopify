@@ -1,7 +1,6 @@
 import { useRouter as useNextRouter } from "next/navigation";
 import { useCallback } from "react";
 import type { QueryParams } from "@/types/router";
-import { saveScrollPositionBeforeNavigation } from "./useScrollRestoration";
 
 /**
  * 辅助函数：将对象转换为 URL 查询字符串并拼接到 URL 后
@@ -38,7 +37,6 @@ export function useSmartRouter() {
   const push = useCallback(
     (url: string, query?: QueryParams) => {
       const fullUrl = buildUrlWithQuery(url, query);
-      saveScrollPositionBeforeNavigation();
       nextRouter.push(fullUrl, { scroll: false });
     },
     [nextRouter],
@@ -47,19 +45,16 @@ export function useSmartRouter() {
   const replace = useCallback(
     (url: string, query?: QueryParams) => {
       const fullUrl = buildUrlWithQuery(url, query);
-      saveScrollPositionBeforeNavigation();
       nextRouter.replace(fullUrl, { scroll: false });
     },
     [nextRouter],
   );
 
   const back = useCallback(() => {
-    saveScrollPositionBeforeNavigation();
     nextRouter.back();
   }, [nextRouter]);
 
   const forward = useCallback(() => {
-    saveScrollPositionBeforeNavigation();
     nextRouter.forward();
   }, [nextRouter]);
 

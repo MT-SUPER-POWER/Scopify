@@ -16,6 +16,4 @@ export interface UiStore {
   setIsShortcutHelpOpen: (open: boolean) => void;
   isFullscreen: boolean;
   setIsFullscreen: (fullscreen: boolean) => void;
-  scrollContainer: HTMLDivElement | null;
-  setScrollContainer: (element: HTMLDivElement | null) => void;
 }

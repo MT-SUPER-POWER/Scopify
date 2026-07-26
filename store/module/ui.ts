@@ -12,7 +12,6 @@ export const useUiStore = create<UiStore>()(
       isCommandPaletteOpen: false,
       isShortcutHelpOpen: false,
       isFullscreen: false,
-      scrollContainer: null,
 
       setIsSearchOpen: (open) => set({ isSearchOpen: open }),
       setIsLyricsOpen: (open) => {
@@ -26,7 +25,6 @@ export const useUiStore = create<UiStore>()(
       setIsCommandPaletteOpen: (open) => set({ isCommandPaletteOpen: open }),
       setIsShortcutHelpOpen: (open) => set({ isShortcutHelpOpen: open }),
       setIsFullscreen: (fullscreen) => set({ isFullscreen: fullscreen }),
-      setScrollContainer: (el) => set({ scrollContainer: el }),
     }),
     {
       name: "ui-storage",
