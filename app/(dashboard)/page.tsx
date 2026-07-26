@@ -6,6 +6,7 @@ import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { GridCard } from "@/components/home/GridCard";
 import { HomePageSkeleton } from "@/components/home/HomePageSkeleton";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
 import { getTimeTheme, useHomeData } from "@/hooks/home/useHomeData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatPlayCount } from "@/lib/utils";
@@ -14,6 +15,7 @@ import { useI18n } from "@/store/module/i18n";
 import type { NeteaseUserAlbum } from "@/types/api/release";
 
 export default function HomePage() {
+  useRouteRestorationPlaceholder(HomePageSkeleton);
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
   const collectedAlbum = useUserStore((s) => s.collectedAlbum);

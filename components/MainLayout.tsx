@@ -13,6 +13,7 @@ import { useDesktopLyricPublisher } from "@/hooks/player/useDesktopLyricPublishe
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { CommandPalette } from "@/components/shortcuts/CommandPalette";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
+import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -367,6 +368,8 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
   const { t } = useI18n();
   const backendStartup = useBackendStartup();
   const isHydrated = useStoreHydration();
+  const pathname = usePathname();
+  const HydrationPlaceholder = getDashboardLoadingPlaceholder(pathname);
 
   if (backendStartup.state === "starting") {
     return (
@@ -390,7 +393,9 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
 
   // Store 正在从 localStorage 进行异步水合时，显示静默骨架屏，避免闪烁未登录 UI
   if (!isHydrated) {
-    return <MainLayoutSkeleton />;
+    return (
+      <MainLayoutSkeleton content={HydrationPlaceholder ? <HydrationPlaceholder /> : undefined} />
+    );
   }
 
   return <MainLayoutInner>{children}</MainLayoutInner>;

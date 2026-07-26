@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface MainLayoutSkeletonProps {
@@ -8,6 +9,7 @@ interface MainLayoutSkeletonProps {
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
+  content?: ReactNode;
 }
 
 /**
@@ -19,6 +21,7 @@ export default function MainLayoutSkeleton({
   description,
   actionLabel,
   onAction,
+  content,
 }: MainLayoutSkeletonProps) {
   return (
     <div
@@ -38,11 +41,15 @@ export default function MainLayoutSkeleton({
           animate={{ opacity: [0.5, 0.8, 0.5] }}
           transition={{ duration: 2, repeat: Infinity }}
         />
-        <motion.div
-          className="flex-1 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
-          animate={{ opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
+        {content ? (
+          <div className="flex-1 overflow-hidden rounded-lg bg-[#121212]">{content}</div>
+        ) : (
+          <motion.div
+            className="flex-1 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
+            animate={{ opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        )}
       </div>
       <motion.div
         className="h-20 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"

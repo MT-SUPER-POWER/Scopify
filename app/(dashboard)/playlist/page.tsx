@@ -5,11 +5,14 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import PlaylistActions from "@/components/Playlist/ActionStation";
 import PlaylistHeaderSkeleton from "@/components/Playlist/HeaderSkeleton";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
+import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
 import TracklistTable from "@/components/Playlist/TrackTable";
+import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
 import { useI18n } from "@/store/module/i18n";
 
 export default function PlaylistPage() {
+  useRouteRestorationPlaceholder(PlaylistPageSkeleton);
   const { t } = useI18n();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
