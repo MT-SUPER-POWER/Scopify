@@ -63,7 +63,7 @@ export function useShortcutCommands() {
           router.push("/setting?tab=shortcuts", { scroll: false });
           return;
         case "show-shortcut-help":
-          ui.setIsShortcutHelpOpen(true);
+          ui.setIsShortcutHelpOpen(!ui.isShortcutHelpOpen);
           return;
         case "open-command-palette":
           ui.setIsCommandPaletteOpen(true);
