@@ -1,4 +1,4 @@
-import type { LineRenderHints } from './utils/lyrics/renderHints';
+import type { LineRenderHints } from "./utils/lyrics/renderHints";
 
 export interface LyricRuby {
   text: string;
@@ -17,7 +17,7 @@ export interface LyricSyllable {
 }
 
 export interface LyricAlternateText {
-  role: 'translation' | 'romanization' | string;
+  role: "translation" | "romanization" | string;
   language?: string;
   text: string;
   syllables?: LyricSyllable[];
@@ -61,7 +61,7 @@ export interface Line {
   backgroundVocal?: LyricBackgroundVocal;
   renderHints?: LineRenderHints;
   isChorus?: boolean;
-  chorusEffect?: 'bars' | 'circles' | 'beams';
+  chorusEffect?: "bars" | "circles" | "beams";
 }
 
 export interface LyricData {
@@ -70,7 +70,7 @@ export interface LyricData {
   artist?: string;
   isWordByWord?: boolean;
   ttml?: {
-    timingMode?: 'Word' | 'Line';
+    timingMode?: "Word" | "Line";
     agents?: Record<string, LyricAgent>;
   };
 }
@@ -81,17 +81,17 @@ export interface Theme {
   primaryColor: string;
   accentColor: string;
   secondaryColor: string;
-  fontStyle: 'sans' | 'serif' | 'mono';
+  fontStyle: "sans" | "serif" | "mono";
   fontFamily?: string;
   fontFamilyStack?: string[];
-  animationIntensity: 'calm' | 'normal' | 'chaotic';
-  wordColors?: { word: string; color: string; }[];
+  animationIntensity: "calm" | "normal" | "chaotic";
+  wordColors?: { word: string; color: string }[];
   lyricsIcons?: string[];
   provider?: string;
   description?: string;
 }
 
-export type CustomLyricsFontSource = 'system' | 'uploaded';
+export type CustomLyricsFontSource = "system" | "uploaded";
 
 export interface StoredCustomLyricsFont {
   source: CustomLyricsFontSource;
@@ -105,19 +105,19 @@ export interface DualTheme {
   dark: Theme;
 }
 
-export type ThemeMode = 'default' | 'ai' | 'custom';
+export type ThemeMode = "default" | "ai" | "custom";
 
-export type BuiltinVisualizerMode = 'classic' | 'cadenza' | 'partita' | 'fume' | 'monet';
+export type BuiltinVisualizerMode = "classic" | "cadenza" | "partita" | "fume" | "monet";
 export type VisualizerMode = BuiltinVisualizerMode | (string & {});
-export type VisualizerFrameRate = 'off' | 120 | 90 | 60;
+export type VisualizerFrameRate = "off" | 120 | 90 | 60;
 
-export type HomeViewTab = 'playlist' | 'local' | 'albums' | 'navidrome' | 'radio';
+export type HomeViewTab = "playlist" | "local" | "albums" | "navidrome" | "radio";
 
-export type PlaybackContext = 'main' | 'stage';
-export type StageSource = 'stage-api' | 'now-playing';
-export type StageLoopMode = 'off' | 'all' | 'one';
-export type QueueAddBehavior = 'append' | 'next';
-export type StageActiveEntryKind = 'lyrics' | 'media';
+export type PlaybackContext = "main" | "stage";
+export type StageSource = "stage-api" | "now-playing";
+export type StageLoopMode = "off" | "all" | "one";
+export type QueueAddBehavior = "append" | "next";
+export type StageActiveEntryKind = "lyrics" | "media";
 
 export interface StageEmbeddedUsltTag {
   language?: string;
@@ -126,17 +126,17 @@ export interface StageEmbeddedUsltTag {
 }
 
 export interface StageEmbeddedLyricSource {
-  type: 'embedded';
+  type: "embedded";
   usltTags?: StageEmbeddedUsltTag[];
   textContent?: string;
   translationContent?: string;
 }
 
 export interface StageLocalLyricSource {
-  type: 'local';
+  type: "local";
   lrcContent: string;
   tLrcContent?: string;
-  formatHint?: 'lrc' | 'enhanced-lrc' | 'vtt' | 'ttml' | 'yrc' | 'qrc' | 'krc';
+  formatHint?: "lrc" | "enhanced-lrc" | "vtt" | "ttml" | "yrc" | "qrc" | "krc";
 }
 
 export interface StageNeteaseLyricBranch {
@@ -145,7 +145,7 @@ export interface StageNeteaseLyricBranch {
 }
 
 export interface StageNeteaseLyricSource {
-  type: 'netease';
+  type: "netease";
   lrc?: StageNeteaseLyricBranch & {
     yrc?: StageNeteaseLyricBranch;
     ytlrc?: StageNeteaseLyricBranch;
@@ -162,13 +162,13 @@ export interface StageNavidromeStructuredLyricLine {
 }
 
 export interface StageNavidromeLyricSource {
-  type: 'navidrome';
+  type: "navidrome";
   structuredLyrics?: StageNavidromeStructuredLyricLine[];
   plainLyrics?: string;
 }
 
 export interface StageQrcLyricSource {
-  type: 'qrc';
+  type: "qrc";
   qrcContent: string;
   translationContent?: string;
 }
@@ -201,7 +201,7 @@ export interface StageMediaSession {
   audioMimeType?: string;
   coverMimeType?: string;
   lyricsText?: string | null;
-  lyricsFormat?: 'lrc' | 'enhanced-lrc' | 'vtt' | 'ttml' | 'yrc' | 'qrc' | null;
+  lyricsFormat?: "lrc" | "enhanced-lrc" | "vtt" | "ttml" | "yrc" | "qrc" | null;
   updatedAt: number;
 }
 
@@ -232,8 +232,8 @@ export interface StageExternalPlayResult {
 }
 
 export interface StageStatus {
-  domain?: 'stage-input';
-  direction?: 'outside-in';
+  domain?: "stage-input";
+  direction?: "outside-in";
   enabled: boolean;
   modeEnabled?: boolean;
   source?: StageSource | null;
@@ -244,7 +244,8 @@ export interface StageStatus {
   mediaSession: StageMediaSession | null;
 }
 
-export type StagePlayerPlaybackContext = 'normal-playback' | 'stage-session' | 'external-playback-source';
+export type StagePlayerPlaybackContext =
+  "normal-playback" | "stage-session" | "external-playback-source";
 
 export interface StagePlayerCurrent {
   id: string;
@@ -298,11 +299,11 @@ export interface StagePlayerQueueWindow extends StagePlayerQueueSummary {
 }
 
 export type StagePlayerQueueDiffOp =
-  | { op: 'insert'; index: number; item: StagePlayerQueueItem }
-  | { op: 'remove'; index: number }
-  | { op: 'move'; from: number; to: number }
-  | { op: 'clear' }
-  | { op: 'select'; index: number };
+  | { op: "insert"; index: number; item: StagePlayerQueueItem }
+  | { op: "remove"; index: number }
+  | { op: "move"; from: number; to: number }
+  | { op: "clear" }
+  | { op: "select"; index: number };
 
 export interface StagePlayerQueueDiff {
   baseRevision: string;
@@ -326,13 +327,13 @@ export interface StagePlayerSnapshot {
 
 export interface StagePlayerControlRequest {
   requestId: string;
-  action: 'next' | 'prev' | 'pause' | 'resume' | 'seek';
+  action: "next" | "prev" | "pause" | "resume" | "seek";
   positionMs?: number;
 }
 
 export interface StagePlayerQueueRequest {
   requestId: string;
-  action: 'append' | 'insert-next' | 'remove' | 'move' | 'select' | 'clear';
+  action: "append" | "insert-next" | "remove" | "move" | "select" | "clear";
   songId?: number;
   songIds?: number[];
   queueItemId?: string;
@@ -350,7 +351,7 @@ export interface StagePlayerRequestResult {
   result?: unknown;
 }
 
-export type NowPlayingConnectionStatus = 'disabled' | 'connecting' | 'connected' | 'error';
+export type NowPlayingConnectionStatus = "disabled" | "connecting" | "connected" | "error";
 
 export interface NowPlayingTrackSnapshot {
   id: string | null;
@@ -425,7 +426,7 @@ export interface FumeTuning {
   disableGeometricBackground: boolean;
   backgroundObjectOpacity: number;
   textHoldRatio: number;
-  cameraTrackingMode: 'stepped' | 'smooth';
+  cameraTrackingMode: "stepped" | "smooth";
   cameraSpeed: number;
   glowIntensity: number;
   heroScale: number;
@@ -436,7 +437,7 @@ export const DEFAULT_FUME_TUNING: FumeTuning = {
   disableGeometricBackground: true,
   backgroundObjectOpacity: 0.5,
   textHoldRatio: 1,
-  cameraTrackingMode: 'smooth',
+  cameraTrackingMode: "smooth",
   cameraSpeed: 1,
   glowIntensity: 1,
   heroScale: 1,
@@ -458,8 +459,8 @@ export const DEFAULT_CLADDAGH_TUNING: CladdaghTuning = {
   letterSpacingOffset: 0,
 };
 
-export type CappellaEmojiPackSource = 'builtin' | 'custom';
-export type CappellaAvatarSource = 'cover' | 'builtin' | 'color' | 'custom';
+export type CappellaEmojiPackSource = "builtin" | "custom";
+export type CappellaAvatarSource = "cover" | "builtin" | "color" | "custom";
 
 export interface CappellaTuning {
   showEmoMessages: boolean;
@@ -469,11 +470,11 @@ export interface CappellaTuning {
 
 export const DEFAULT_CAPPELLA_TUNING: CappellaTuning = {
   showEmoMessages: true,
-  emojiPackSource: 'builtin',
-  avatarSource: 'cover',
+  emojiPackSource: "builtin",
+  avatarSource: "cover",
 };
 
-export type TiltColorScheme = 'default' | 'swap' | 'accentAll' | 'primaryAll';
+export type TiltColorScheme = "default" | "swap" | "accentAll" | "primaryAll";
 
 export interface TiltTuning {
   splitProbability: number;
@@ -484,14 +485,40 @@ export interface TiltTuning {
 export const DEFAULT_TILT_TUNING: TiltTuning = {
   splitProbability: 0.75,
   tiltStyleProbability: 0.35,
-  colorScheme: 'default',
+  colorScheme: "default",
+};
+
+export interface PendoloTuning {
+  arcRadius: number;
+  arcAngleDeg: number;
+  wheelCenterX: number;
+  wheelCenterY: number;
+  tickSnappiness: number;
+  activeScale: number;
+  showGearDecor: "none" | "subtle" | "full";
+  showCenterGradient?: boolean;
+  showCoverOnWatchFace?: boolean;
+  enableLineGlow?: boolean;
+}
+
+export const DEFAULT_PENDOLO_TUNING: PendoloTuning = {
+  arcRadius: 0.42,
+  arcAngleDeg: 100,
+  wheelCenterX: 0,
+  wheelCenterY: 0.5,
+  tickSnappiness: 2,
+  activeScale: 1.25,
+  showGearDecor: "subtle",
+  showCenterGradient: true,
+  showCoverOnWatchFace: false,
+  enableLineGlow: false,
 };
 
 // Diorama's camera STYLE (calm/standard/chaotic) is not part of its tuning: like every other
 // visualizer it follows theme.animationIntensity (the player-panel intensity chip / AI themes), so
 // the theme system stays the single source of truth. The tuning only carries diorama-specific knobs.
 /** The two mutually-exclusive shapes the point-cloud layer can take. */
-export type DioramaGeometryMode = 'clouds' | 'corridor';
+export type DioramaGeometryMode = "clouds" | "corridor";
 
 export interface DioramaGeometryVisibility {
   /** Parent switch: hides the whole point-cloud layer without discarding child preferences. */
@@ -514,7 +541,7 @@ export interface DioramaGeometryVisibility {
 
 export const DEFAULT_DIORAMA_GEOMETRY_VISIBILITY: DioramaGeometryVisibility = {
   enabled: true,
-  mode: 'clouds',
+  mode: "clouds",
   strands: true,
   blobs: true,
   ribbons: true,
@@ -605,16 +632,17 @@ export const DEFAULT_DIORAMA_TUNING: DioramaTuning = {
   keywordColoringEnabled: true,
 };
 
-export type MonetBackgroundSource = 'cover-derived' | 'uploaded-global';
-export type MonetBackgroundLayout = 'full-overlay' | 'half-pane-gradient';
-export type MonetBackgroundWashColorMode = 'theme' | 'custom';
-export type NomandBackgroundSource = 'cover-derived' | 'uploaded-global';
-export type NomandBackgroundDitheringType = '2x2' | '4x4' | '8x8';
-export type LatentBackgroundDisplayMode = 'dithering' | 'mesh' | 'both';
-export type LatentBackgroundColorSource = 'cover-theme' | 'cover-only';
-export type MonetAudioStyle = 'bar' | 'line';
-export type MonetPortraitSource = 'cover' | 'custom';
-export type BuiltinVisualizerBackgroundMode = 'common' | 'monet' | 'nomand' | 'latent' | 'url' | 'sora';
+export type MonetBackgroundSource = "cover-derived" | "uploaded-global";
+export type MonetBackgroundLayout = "full-overlay" | "half-pane-gradient";
+export type MonetBackgroundWashColorMode = "theme" | "custom";
+export type NomandBackgroundSource = "cover-derived" | "uploaded-global";
+export type NomandBackgroundDitheringType = "2x2" | "4x4" | "8x8";
+export type LatentBackgroundDisplayMode = "dithering" | "mesh" | "both";
+export type LatentBackgroundColorSource = "cover-theme" | "cover-only";
+export type MonetAudioStyle = "bar" | "line";
+export type MonetPortraitSource = "cover" | "custom";
+export type BuiltinVisualizerBackgroundMode =
+  "common" | "monet" | "nomand" | "latent" | "url" | "sora";
 export type VisualizerBackgroundMode = BuiltinVisualizerBackgroundMode | (string & {});
 
 export interface UrlBackgroundItem {
@@ -671,26 +699,26 @@ export interface MonetTuning {
   fontScale: number;
   portraitSource: MonetPortraitSource;
   portraitOffsetX?: number;
-  portraitStyle?: 'square' | 'rectangular';
+  portraitStyle?: "square" | "rectangular";
   showPortraitDragHanger?: boolean;
 }
 
 export const DEFAULT_MONET_BACKGROUND_TUNING: MonetBackgroundTuning = {
-  backgroundSource: 'cover-derived',
-  backgroundLayout: 'full-overlay',
+  backgroundSource: "cover-derived",
+  backgroundLayout: "full-overlay",
   backgroundBlurPx: 6,
   backgroundOverlayOpacity: 0.74,
   backgroundGrayscale: 0,
   backgroundSaturation: 1.05,
   backgroundWash: 0.34,
   backgroundHalfPaneOffsetX: 0,
-  backgroundWashColorMode: 'theme',
-  backgroundWashCustomColor: '#8fb7ff',
+  backgroundWashColorMode: "theme",
+  backgroundWashCustomColor: "#8fb7ff",
 };
 
 export const DEFAULT_NOMAND_BACKGROUND_TUNING: NomandBackgroundTuning = {
-  imageSource: 'cover-derived',
-  ditheringType: '8x8',
+  imageSource: "cover-derived",
+  ditheringType: "8x8",
   size: 2,
   colorSteps: 2,
   originalColors: false,
@@ -700,8 +728,8 @@ export const DEFAULT_NOMAND_BACKGROUND_TUNING: NomandBackgroundTuning = {
 };
 
 export const DEFAULT_LATENT_BACKGROUND_TUNING: LatentBackgroundTuning = {
-  displayMode: 'both',
-  colorSource: 'cover-theme',
+  displayMode: "both",
+  colorSource: "cover-theme",
   dynamicOnlyInPlayer: true,
   enhancedBeatResponse: true,
   ditheringSpeed: 0.1,
@@ -719,11 +747,11 @@ export const DEFAULT_LATENT_BACKGROUND_TUNING: LatentBackgroundTuning = {
 export const DEFAULT_MONET_TUNING: MonetTuning = {
   keywordColoringEnabled: true,
   showDescription: true,
-  audioStyle: 'bar',
+  audioStyle: "bar",
   fontScale: 1.2,
-  portraitSource: 'cover',
+  portraitSource: "cover",
   portraitOffsetX: 0,
-  portraitStyle: 'square',
+  portraitStyle: "square",
   showPortraitDragHanger: true,
 };
 
@@ -780,13 +808,13 @@ export interface MonetPortraitImage {
 }
 
 export enum PlayerState {
-  IDLE = 'IDLE',
-  PLAYING = 'PLAYING',
-  PAUSED = 'PAUSED',
+  IDLE = "IDLE",
+  PLAYING = "PLAYING",
+  PAUSED = "PAUSED",
 }
 
 export interface StatusMessage {
-  type: 'error' | 'success' | 'info';
+  type: "error" | "success" | "info";
   text: string;
   nonce?: number;
   durationMs?: number;
@@ -817,7 +845,7 @@ export interface NeteasePlaylist {
   trackUpdateTime: number;
   creator: NeteaseUser;
   description?: string;
-  specialType?: 'cloud';
+  specialType?: "cloud";
 }
 
 export interface Artist {
@@ -852,8 +880,8 @@ export interface NoCopyrightRecommendation {
   expInfo?: unknown | null;
 }
 
-export type LyricProviderSource = 'netease' | 'qq' | 'kugou' | 'amll';
-export type AmllDbPlatform = 'ncm' | 'qq';
+export type LyricProviderSource = "netease" | "qq" | "kugou" | "amll";
+export type AmllDbPlatform = "ncm" | "qq";
 
 export interface SongResult {
   id: number;
@@ -863,7 +891,7 @@ export interface SongResult {
   duration: number; // milliseconds usually from API
   isPureMusic?: boolean;
   t?: 0 | 1 | 2;
-  sourceType?: 'netease' | 'cloud';
+  sourceType?: "netease" | "cloud";
   // Netease API raw fields
   al?: {
     id: number;
@@ -888,7 +916,7 @@ export interface SongResult {
 }
 
 export interface OnlineLyricsState {
-  lyricsSource: 'online' | 'imported';
+  lyricsSource: "online" | "imported";
   importedLyrics?: LyricData | null;
   importedLyricsName?: string | null;
   hasOnlineOverride?: boolean;
@@ -924,9 +952,9 @@ export interface LocalSong {
 
   // Canonical metadata and retained source snapshots
   title: string;
-  titleOrigin: import('./types/localLibrary').LocalSongTitleOrigin;
-  importedMetadata: import('./types/localLibrary').LocalSongImportedMetadata;
-  onlineMetadata?: import('./types/localLibrary').LocalSongOnlineMetadata;
+  titleOrigin: import("./types/localLibrary").LocalSongTitleOrigin;
+  importedMetadata: import("./types/localLibrary").LocalSongImportedMetadata;
+  onlineMetadata?: import("./types/localLibrary").LocalSongOnlineMetadata;
   trackNumber?: number;
   discNumber?: number;
   embeddedMetadataVersion?: number;
@@ -949,13 +977,13 @@ export interface LocalSong {
   matchedLyricsProviderPlatform?: AmllDbPlatform;
 
   // User preferences for online data override (set via LyricMatchModal)
-  lyricsSource?: 'local' | 'embedded' | 'online';  // Explicit lyrics source selection; undefined = default priority (local > embedded > online)
-  useOnlineCover?: boolean;     // Prefer online cover over embedded cover
+  lyricsSource?: "local" | "embedded" | "online"; // Explicit lyrics source selection; undefined = default priority (local > embedded > online)
+  useOnlineCover?: boolean; // Prefer online cover over embedded cover
 
   // Local Lyrics (.lrc / .vtt / .ttml / .qrc / .yrc / .krc files)
   hasLocalLyrics?: boolean;
   localLyricsContent?: string;
-  localLyricsFormat?: 'vtt' | 'ttml' | 'yrc' | 'qrc' | 'krc';
+  localLyricsFormat?: "vtt" | "ttml" | "yrc" | "qrc" | "krc";
   hasLocalTranslationLyrics?: boolean;
   localTranslationLyricsContent?: string;
 
@@ -969,7 +997,7 @@ export interface LocalSong {
 export interface LocalLibrarySnapshotFile {
   name: string;
   relativePath: string;
-  kind: 'audio' | 'lyric' | 'translationLyric' | 'cover' | 'other';
+  kind: "audio" | "lyric" | "translationLyric" | "cover" | "other";
   size: number;
   lastModified: number;
   signature: string;
@@ -998,7 +1026,7 @@ export interface LocalPlaylist {
   isFavorite?: boolean;
 }
 
-export type LocalLibraryGroupType = 'folder' | 'album' | 'artist' | 'playlist';
+export type LocalLibraryGroupType = "folder" | "album" | "artist" | "playlist";
 
 export interface LocalLibraryGroup {
   type: LocalLibraryGroupType;
@@ -1024,26 +1052,26 @@ export type {
   LocalSongOnlineMetadata,
   LocalSongReference,
   LocalSongTitleOrigin,
-} from './types/localLibrary';
+} from "./types/localLibrary";
 
 // Extend SongResult to support local files and Navidrome files
 export interface UnifiedSong extends SongResult {
   isLocal?: boolean;
-  localRef?: import('./types/localLibrary').LocalSongReference;
+  localRef?: import("./types/localLibrary").LocalSongReference;
   isNavidrome?: boolean;
   navidromeData?: any;
 }
 
-export type ReplayGainMode = 'off' | 'track' | 'album';
+export type ReplayGainMode = "off" | "track" | "album";
 
 // Audio Analysis Types
-import { MotionValue } from 'framer-motion';
+import { MotionValue } from "framer-motion";
 
 export interface AudioBands {
-    bass: MotionValue<number>;    // 20-150Hz (Circles)
-    lowMid: MotionValue<number>;  // 150-400Hz (Squares)
-    mid: MotionValue<number>;     // 400-1200Hz (Triangles)
-    vocal: MotionValue<number>;   // 1000-3500Hz (Icons)
-    treble: MotionValue<number>;  // 3500Hz+ (Crosses)
-    spectrum?: MotionValue<Uint8Array<ArrayBuffer>>; // Raw analyser FFT magnitude bins for full-spectrum visualizers
-  }
+  bass: MotionValue<number>; // 20-150Hz (Circles)
+  lowMid: MotionValue<number>; // 150-400Hz (Squares)
+  mid: MotionValue<number>; // 400-1200Hz (Triangles)
+  vocal: MotionValue<number>; // 1000-3500Hz (Icons)
+  treble: MotionValue<number>; // 3500Hz+ (Crosses)
+  spectrum?: MotionValue<Uint8Array<ArrayBuffer>>; // Raw analyser FFT magnitude bins for full-spectrum visualizers
+}

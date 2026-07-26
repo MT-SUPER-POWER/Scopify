@@ -1,4 +1,5 @@
 import type { NeteaseLyric } from "@/types/api/music";
+import type { VisualizerMode } from "@/components/lyrics/folia/src/types";
 
 /** A NetEase song selected as the source for another track's lyrics. */
 export interface LyricMatchCandidate {
@@ -115,17 +116,8 @@ export interface LyricVisualizerFrame {
   lyrics: LyricData | null;
 }
 
-/** The explicitly registered Folia-derived presentation modes. */
-export type LyricVisualizerMode =
-  | "cadenza"
-  | "cappella"
-  | "claddagh"
-  | "classic"
-  | "diorama"
-  | "fume"
-  | "monet"
-  | "partita"
-  | "tilt";
+/** The Folia visualizer mode persisted by the lyric stage. */
+export type LyricVisualizerMode = VisualizerMode;
 
 export interface LyricVisualizerRendererProps {
   frame: LyricVisualizerFrame;

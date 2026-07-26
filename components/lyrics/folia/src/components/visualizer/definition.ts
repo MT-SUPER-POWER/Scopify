@@ -16,6 +16,7 @@ import {
   type MonetPortraitImage,
   type MonetTuning,
   type PartitaTuning,
+  type PendoloTuning,
   type Theme,
   type TiltTuning,
   type VisualizerMode,
@@ -35,7 +36,8 @@ export type VisualizerTuningKind =
   | "cappella"
   | "tilt"
   | "monet"
-  | "diorama";
+  | "diorama"
+  | "pendolo";
 
 export interface VisualizerSharedProps {
   currentTime: MotionValue<number>;
@@ -82,6 +84,8 @@ export interface VisualizerSharedProps {
   monetTuning?: MonetTuning;
   monetPortraitImage?: MonetPortraitImage | null;
   onMonetTuningChange?: (patch: Partial<MonetTuning>) => void;
+  pendoloTuning?: PendoloTuning;
+  onPendoloTuningChange?: (patch: Partial<PendoloTuning>) => void;
 }
 
 export interface VisualizerSettingsPanelProps {
@@ -121,6 +125,8 @@ export interface VisualizerSettingsPanelProps {
   onUploadMonetPortraitImage?: (files: File[]) => Promise<{ ok: boolean; error?: string }>;
   onClearMonetPortraitImage?: () => Promise<void> | void;
   isLoadingMonetPortraitImage?: boolean;
+  pendoloTuning?: PendoloTuning;
+  onPendoloTuningChange?: (patch: Partial<PendoloTuning>) => void;
   /** Mark slider drag start so onChange only updates draft. */
   onSliderPointerDown?: () => void;
   /** Commit draft values to persistent store on slider release. */
@@ -136,8 +142,10 @@ export interface VisualizerSettingsResetProps {
   resetTiltTuning?: () => void;
   resetDioramaTuning?: () => void;
   resetMonetTuning?: () => void;
+  resetPendoloTuning?: () => void;
   setDraftFumeTuning?: (tuning: FumeTuning) => void;
   setDraftCladdaghTuning?: (tuning: CladdaghTuning) => void;
+  setDraftPendoloTuning?: (tuning: PendoloTuning) => void;
 }
 
 export interface VisualizerRegistryEntry {

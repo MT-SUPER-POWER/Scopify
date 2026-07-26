@@ -17,27 +17,12 @@ import {
 } from "@/components/lyrics/folia/src/components/visualizer/registry";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
-import type { LyricVisualizerMode } from "@/types/lyrics";
 import type { FoliaStageEditSection } from "@/types/foliaStage";
 
 interface FoliaVisualizerControlsProps {
   onOpenSettings: (section: FoliaStageEditSection) => void;
   onOpenThemeLibrary: () => void;
   theme: Theme;
-}
-
-function isLyricVisualizerMode(mode: string): mode is LyricVisualizerMode {
-  return (
-    mode === "cadenza" ||
-    mode === "cappella" ||
-    mode === "claddagh" ||
-    mode === "classic" ||
-    mode === "diorama" ||
-    mode === "fume" ||
-    mode === "monet" ||
-    mode === "partita" ||
-    mode === "tilt"
-  );
 }
 
 export function FoliaVisualizerControls({
@@ -48,11 +33,10 @@ export function FoliaVisualizerControls({
   const { t } = useI18n();
   const model = useFoliaPanelControls();
   const isDaylight = theme.name === "snow";
-  const visualizerOptions = VISUALIZER_REGISTRY.flatMap((entry) =>
-    isLyricVisualizerMode(entry.mode)
-      ? [{ label: getVisualizerModeLabel(entry.mode, t), value: entry.mode }]
-      : [],
-  );
+  const visualizerOptions = VISUALIZER_REGISTRY.map((entry) => ({
+    label: getVisualizerModeLabel(entry.mode, t),
+    value: entry.mode,
+  }));
   const backgroundOptions = VISUALIZER_BACKGROUND_REGISTRY.map((entry) => ({
     label: getVisualizerBackgroundModeLabel(entry.mode, t),
     value: entry.mode,

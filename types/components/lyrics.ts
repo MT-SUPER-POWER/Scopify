@@ -11,6 +11,20 @@ import type {
   FoliaThemeVariant,
 } from "@/types/foliaStage";
 
+export interface FoliaVisualizerPresetOption<T> {
+  label: string;
+  value: T;
+}
+
+export interface FoliaVisualizerPresetGroupProps<T> {
+  isDaylight: boolean;
+  label: string;
+  onChange: (next: T) => void;
+  options: FoliaVisualizerPresetOption<T>[];
+  theme: Theme;
+  value: T;
+}
+
 export interface FoliaQuickEffectPickerOption<Value extends string> {
   label: string;
   value: Value;

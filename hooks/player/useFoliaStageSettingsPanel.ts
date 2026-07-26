@@ -9,6 +9,7 @@ import {
   DEFAULT_DIORAMA_TUNING,
   DEFAULT_FUME_TUNING,
   DEFAULT_MONET_TUNING,
+  DEFAULT_PENDOLO_TUNING,
   DEFAULT_PARTITA_TUNING,
   DEFAULT_TILT_TUNING,
   type Theme,
@@ -18,6 +19,7 @@ import {
   getVisualizerRegistryEntry,
   hasVisualizerMode,
 } from "@/components/lyrics/folia/src/components/visualizer/registry";
+import { hasVisualizerTuningMode } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
 import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
@@ -108,7 +110,9 @@ export function useFoliaStageSettingsPanel(
   ].join(" ");
   const resetCurrentTuning = () => {
     const mode = settings.mode;
-    settings.resetTuning(mode);
+    if (hasVisualizerTuningMode(mode)) {
+      settings.resetTuning(mode);
+    }
   };
 
   return {
@@ -135,6 +139,7 @@ export function useFoliaStageSettingsPanel(
     isLoadingMonetPortraitImage: assets.isLoadingMonetPortraitImage,
     monetPortraitImage: assets.monetPortraitImage,
     monetTuning: settings.tunings.monet ?? DEFAULT_MONET_TUNING,
+    pendoloTuning: settings.tunings.pendolo ?? DEFAULT_PENDOLO_TUNING,
     onCappellaTuningChange: (patch: Partial<typeof DEFAULT_CAPPELLA_TUNING>) =>
       settings.patchTuning("cappella", patch),
     onClearCappellaCustomAvatar: assets.clearCappellaCustomAvatar,
@@ -163,6 +168,8 @@ export function useFoliaStageSettingsPanel(
       settings.patchTuning("monet", patch),
     onPartitaTuningChange: (patch: Partial<typeof DEFAULT_PARTITA_TUNING>) =>
       settings.patchTuning("partita", patch),
+    onPendoloTuningChange: (patch: Partial<typeof DEFAULT_PENDOLO_TUNING>) =>
+      settings.patchTuning("pendolo", patch),
     onResetCommonSettings: () =>
       settings.patchSettings({ fontScale: 1, fontStyle: "sans", visualizerOpacity: 1 }),
     onResetMonetTuning: () => settings.resetTuning("monet"),

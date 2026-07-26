@@ -4745,6 +4745,12 @@ export interface TranslateFn {
    */
   (key: "folia.ui.visualizerDiorama", params?: TranslationParams): string;
   /**
+   * zh-CN: 时计
+   * zh-TW: 時鐘
+   * en-US: Pendolo
+   */
+  (key: "folia.ui.visualizerPendolo", params?: TranslationParams): string;
+  /**
    * zh-CN: 心象参数
    * zh-TW: 心象參數
    * en-US: Mindscape Tuning
@@ -6895,6 +6901,114 @@ export interface TranslateFn {
    * en-US: Letter Spacing
    */
   (key: "folia.options.claddaghLetterSpacingOffset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 轮盘水平位置 (0 = 左边缘)
+   * zh-TW: 輪盤水平位置 (0 = 左邊緣)
+   * en-US: Wheel Center X (0 = Left Edge)
+   */
+  (key: "folia.options.pendoloWheelCenterX", params?: TranslationParams): string;
+  /**
+   * zh-CN: 轮盘半径
+   * zh-TW: 輪盤半徑
+   * en-US: Arc Radius
+   */
+  (key: "folia.options.pendoloArcRadius", params?: TranslationParams): string;
+  /**
+   * zh-CN: 弧度角度
+   * zh-TW: 弧度角度
+   * en-US: Arc Angle Spread
+   */
+  (key: "folia.options.pendoloArcAngleDeg", params?: TranslationParams): string;
+  /**
+   * zh-CN: 擒纵咬合力度
+   * zh-TW: 擒縱咬合力度
+   * en-US: Escapement Snappiness
+   */
+  (key: "folia.options.pendoloTickSnappiness", params?: TranslationParams): string;
+  /**
+   * zh-CN: 聚焦句缩放
+   * zh-TW: 聚焦句縮放
+   * en-US: Active Line Scale
+   */
+  (key: "folia.options.pendoloActiveScale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 机械齿轮饰线
+   * zh-TW: 機械齒輪飾線
+   * en-US: Clockwork Markings
+   */
+  (key: "folia.options.pendoloShowGearDecor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 齿轮中央深色渐变
+   * zh-TW: 齒輪中央深色漸變
+   * en-US: Gear Center Dark Gradient
+   */
+  (key: "folia.options.pendoloShowCenterGradient", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启
+   * zh-TW: 開啟
+   * en-US: On
+   */
+  (key: "folia.options.pendoloCenterGradientOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Off
+   */
+  (key: "folia.options.pendoloCenterGradientOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 表盘显示专辑封面
+   * zh-TW: 表盤顯示專輯封面
+   * en-US: Show Cover on Watch Face
+   */
+  (key: "folia.options.pendoloShowCoverOnWatchFace", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示
+   * zh-TW: 顯示
+   * en-US: Show
+   */
+  (key: "folia.options.pendoloCoverOnWatchFaceOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏
+   * zh-TW: 隱藏
+   * en-US: Hide
+   */
+  (key: "folia.options.pendoloCoverOnWatchFaceOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 线条发光效果
+   * zh-TW: 線條發光效果
+   * en-US: Line Glow
+   */
+  (key: "folia.options.pendoloEnableLineGlow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启
+   * zh-TW: 開啟
+   * en-US: On
+   */
+  (key: "folia.options.pendoloLineGlowOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Off
+   */
+  (key: "folia.options.pendoloLineGlowOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无
+   * zh-TW: 無
+   * en-US: None
+   */
+  (key: "folia.options.decorNone", params?: TranslationParams): string;
+  /**
+   * zh-CN: 半透明
+   * zh-TW: 半透明
+   * en-US: Subtle
+   */
+  (key: "folia.options.decorSubtle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完整
+   * zh-TW: 完整
+   * en-US: Full
+   */
+  (key: "folia.options.decorFull", params?: TranslationParams): string;
   /**
    * zh-CN: 镜台参数
    * zh-TW: 鏡臺參數
