@@ -1,7 +1,12 @@
 "use client";
 
-import { motion } from "motion/react";
 import type { ReactNode } from "react";
+import {
+  LoadingHeaderSkeleton,
+  LoadingPlayerBarSkeleton,
+  LoadingSidebarSkeleton,
+} from "@/components/MainLayout/LoadingChrome";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface MainLayoutSkeletonProps {
@@ -30,32 +35,38 @@ export default function MainLayoutSkeleton({
         "gap-2 overflow-hidden p-2 select-none",
       )}
     >
-      <motion.div
-        className="h-16 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
-        animate={{ opacity: [0.5, 0.8, 0.5] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
       <div className="flex min-h-0 flex-1 gap-2">
-        <motion.div
-          className="w-1/5 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
-          animate={{ opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-        {content ? (
-          <div className="flex-1 overflow-hidden rounded-lg bg-[#121212]">{content}</div>
-        ) : (
-          <motion.div
-            className="flex-1 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
-            animate={{ opacity: [0.5, 0.8, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-        )}
+        <LoadingSidebarSkeleton />
+        <section className="relative min-w-0 flex-1 overflow-hidden rounded-lg bg-[#121212]">
+          <LoadingHeaderSkeleton />
+          {content ? (
+            // Some desktop scroll enhancers annotate this scrollable shell before React hydrates.
+            <div suppressHydrationWarning className="size-full overflow-hidden">
+              {content}
+            </div>
+          ) : (
+            <div className="space-y-6 p-6 pt-24">
+              <Skeleton className="h-8 w-48 bg-white/8" />
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <Skeleton key={index} className="h-16 bg-white/8" />
+                ))}
+              </div>
+              <Skeleton className="h-8 w-64 bg-white/8" />
+              <div className="grid grid-cols-3 gap-6 lg:grid-cols-5">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="space-y-3">
+                    <Skeleton className="aspect-square w-full bg-white/8" />
+                    <Skeleton className="h-3 w-4/5 bg-white/8" />
+                    <Skeleton className="h-2.5 w-1/2 bg-white/6" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
       </div>
-      <motion.div
-        className="h-20 rounded-lg bg-linear-to-r from-zinc-900 via-zinc-800 to-zinc-900"
-        animate={{ opacity: [0.5, 0.8, 0.5] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
+      <LoadingPlayerBarSkeleton />
       {title ? (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
           <div className="pointer-events-auto w-full max-w-md rounded-2xl border border-white/10 bg-black/70 p-6 text-center shadow-2xl backdrop-blur-xl">
