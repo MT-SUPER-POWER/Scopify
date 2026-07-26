@@ -5,10 +5,12 @@ import { useCallback, useMemo } from "react";
 import {
   useAlbumSearchQuery,
   useArtistSearchQuery,
+  useComplexSearchQuery,
   usePlaylistSearchQuery,
   useSongSearchQuery,
 } from "@/hooks/search/useSearchQueries";
 import { translate } from "@/lib/i18n";
+import { mapComplexSearchResponse } from "@/lib/search/complexSearchAdapter";
 import { useI18nStore } from "@/store/module/i18n";
 import type {
   SearchResultAlbum,
@@ -97,60 +99,125 @@ export function useSearchData(keywords: string, activeCategory: Category) {
   const locale = useI18nStore((state) => state.locale);
   const keyword = keywords.trim();
   const isAll = activeCategory === "All";
+  const usesComplexSearch = isAll || activeCategory === "Podcasts" || activeCategory === "Voices";
   const loadSongs = isAll || activeCategory === "Songs";
   const loadAlbums = isAll || activeCategory === "Albums";
   const loadPlaylists = isAll || activeCategory === "Playlists";
   const loadArtists = isAll || activeCategory === "Artists";
-  const songQuery = useSongSearchQuery(keyword, isAll ? 4 : 30, loadSongs);
-  const albumQuery = useAlbumSearchQuery(keyword, isAll ? 6 : 20, loadAlbums);
-  const playlistQuery = usePlaylistSearchQuery(keyword, isAll ? 6 : 20, loadPlaylists);
-  const artistQuery = useArtistSearchQuery(keyword, isAll ? 6 : 20, loadArtists);
+  const complexQuery = useComplexSearchQuery(keyword, usesComplexSearch);
+  const songQuery = useSongSearchQuery(keyword, 30, !usesComplexSearch && loadSongs);
+  const albumQuery = useAlbumSearchQuery(keyword, 20, !usesComplexSearch && loadAlbums);
+  const playlistQuery = usePlaylistSearchQuery(keyword, 20, !usesComplexSearch && loadPlaylists);
+  const artistQuery = useArtistSearchQuery(keyword, 20, !usesComplexSearch && loadArtists);
   const unknownAlbumName = translate(locale, "common.meta.unknownAlbum");
+  const unknownPodcastName = translate(locale, "search.podcast.unknown");
   const unknownSongName = translate(locale, "common.meta.unknownSong");
+  const complexResults = useMemo(
+    () =>
+      mapComplexSearchResponse(
+        complexQuery.data,
+        unknownAlbumName,
+        unknownSongName,
+        unknownPodcastName,
+      ),
+    [complexQuery.data, unknownAlbumName, unknownPodcastName, unknownSongName],
+  );
 
   const songs = useMemo(
     () =>
-      loadSongs
-        ? (songQuery.data?.data?.resources ?? [])
-            .map((resource) => mapResourceToSong(resource, unknownAlbumName, unknownSongName))
-            .filter((song): song is Song => song !== null)
-        : [],
-    [loadSongs, songQuery.data?.data?.resources, unknownAlbumName, unknownSongName],
+      isAll
+        ? complexResults.songs
+        : loadSongs
+          ? (songQuery.data?.data?.resources ?? [])
+              .map((resource) => mapResourceToSong(resource, unknownAlbumName, unknownSongName))
+              .filter((song): song is Song => song !== null)
+          : [],
+    [
+      complexResults.songs,
+      isAll,
+      loadSongs,
+      songQuery.data?.data?.resources,
+      unknownAlbumName,
+      unknownSongName,
+    ],
   );
   const albums = useMemo(
     () =>
-      loadAlbums
-        ? (albumQuery.data?.result?.albums ?? []).map((album) =>
-            mapSearchAlbum(album, unknownAlbumName),
-          )
-        : [],
-    [albumQuery.data?.result?.albums, loadAlbums, unknownAlbumName],
+      isAll
+        ? complexResults.albums
+        : loadAlbums
+          ? (albumQuery.data?.result?.albums ?? []).map((album) =>
+              mapSearchAlbum(album, unknownAlbumName),
+            )
+          : [],
+    [albumQuery.data?.result?.albums, complexResults.albums, isAll, loadAlbums, unknownAlbumName],
   );
   const playlists = useMemo(
     () =>
-      loadPlaylists ? (playlistQuery.data?.result?.playlists ?? []).map(mapSearchPlaylist) : [],
-    [loadPlaylists, playlistQuery.data?.result?.playlists],
+      isAll
+        ? complexResults.playlists
+        : loadPlaylists
+          ? (playlistQuery.data?.result?.playlists ?? []).map(mapSearchPlaylist)
+          : [],
+    [complexResults.playlists, isAll, loadPlaylists, playlistQuery.data?.result?.playlists],
   );
   const artists = useMemo(
-    () => (loadArtists ? (artistQuery.data?.result?.artists ?? []).map(mapSearchArtist) : []),
-    [artistQuery.data?.result?.artists, loadArtists],
+    () =>
+      isAll
+        ? complexResults.artists
+        : loadArtists
+          ? (artistQuery.data?.result?.artists ?? []).map(mapSearchArtist)
+          : [],
+    [artistQuery.data?.result?.artists, complexResults.artists, isAll, loadArtists],
   );
-  const loading =
-    songQuery.isFetching ||
-    albumQuery.isFetching ||
-    playlistQuery.isFetching ||
-    artistQuery.isFetching;
-  const hasError =
-    songQuery.isError || albumQuery.isError || playlistQuery.isError || artistQuery.isError;
+  const podcasts = usesComplexSearch ? complexResults.podcasts : [];
+  const voices = usesComplexSearch ? complexResults.voices : [];
+  const bestMatch = isAll ? complexResults.bestMatch : null;
+  const loading = usesComplexSearch
+    ? complexQuery.isFetching
+    : songQuery.isFetching ||
+      albumQuery.isFetching ||
+      playlistQuery.isFetching ||
+      artistQuery.isFetching;
+  const hasError = usesComplexSearch
+    ? complexQuery.isError
+    : songQuery.isError || albumQuery.isError || playlistQuery.isError || artistQuery.isError;
 
   const refetch = useCallback(async () => {
+    if (usesComplexSearch) {
+      await complexQuery.refetch();
+      return;
+    }
+
     await Promise.all([
       ...(loadSongs ? [songQuery.refetch()] : []),
       ...(loadAlbums ? [albumQuery.refetch()] : []),
       ...(loadPlaylists ? [playlistQuery.refetch()] : []),
       ...(loadArtists ? [artistQuery.refetch()] : []),
     ]);
-  }, [albumQuery, artistQuery, loadAlbums, loadArtists, loadPlaylists, loadSongs, playlistQuery, songQuery]);
+  }, [
+    albumQuery,
+    artistQuery,
+    complexQuery,
+    usesComplexSearch,
+    loadAlbums,
+    loadArtists,
+    loadPlaylists,
+    loadSongs,
+    playlistQuery,
+    songQuery,
+  ]);
 
-  return { albums, artists, hasError, loading, playlists, refetch, songs };
+  return {
+    albums,
+    artists,
+    bestMatch,
+    hasError,
+    loading,
+    playlists,
+    podcasts,
+    refetch,
+    songs,
+    voices,
+  };
 }

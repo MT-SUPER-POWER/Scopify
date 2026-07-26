@@ -8,10 +8,11 @@ import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
-import type { Song } from "@/types/search";
+import type { SearchBestMatch, Song } from "@/types/search";
 
 interface Props {
-  song: Song | null;
+  bestMatch: SearchBestMatch | null;
+  onNavigate: (path: string) => void;
   songs: Song[];
 }
 
@@ -31,7 +32,7 @@ function toDetail(song: Song): SongDetail {
   };
 }
 
-export function BestMatchCard({ song, songs }: Props) {
+export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
   const { t } = useI18n();
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
@@ -39,32 +40,71 @@ export function BestMatchCard({ song, songs }: Props) {
   const setQueue = usePlayerStore((s) => s.setQueue);
   const playTrack = usePlayerStore((s) => s.playTrack);
 
+  const song = bestMatch?.kind === "song" ? bestMatch.song : null;
   const isActive = !!song && currentSongDetail?.id === song.id;
+  const imageSrc =
+    bestMatch?.kind === "album"
+      ? bestMatch.album.picUrl || bestMatch.album.blurPicUrl || FALLBACK_IMG
+      : bestMatch?.kind === "artist"
+        ? bestMatch.artist.picUrl || bestMatch.artist.img1v1Url || FALLBACK_IMG
+        : bestMatch?.kind === "playlist"
+          ? bestMatch.playlist.coverImgUrl || FALLBACK_IMG
+          : song?.album.picUrl || song?.artists[0]?.picUrl || FALLBACK_IMG;
+  const title =
+    bestMatch?.kind === "album"
+      ? bestMatch.album.name
+      : bestMatch?.kind === "artist"
+        ? bestMatch.artist.name
+        : bestMatch?.kind === "playlist"
+          ? bestMatch.playlist.name
+          : (song?.name ?? "");
+  const typeLabel =
+    bestMatch?.kind === "album"
+      ? t("search.section.albums")
+      : bestMatch?.kind === "artist"
+        ? t("search.section.artists")
+        : bestMatch?.kind === "playlist"
+          ? t("search.section.playlists")
+          : t("search.section.songs");
 
-  const handlePlay = useCallback(() => {
-    if (!song) return;
-    if (isActive) {
-      setIsPlaying(!isPlaying);
+  const handlePrimaryAction = useCallback(() => {
+    if (!bestMatch) return;
+
+    if (bestMatch.kind === "song") {
+      if (isActive) {
+        setIsPlaying(!isPlaying);
+        return;
+      }
+
+      const queue = [bestMatch.song, ...songs.filter((item) => item.id !== bestMatch.song.id)];
+      setQueue(queue.map(toDetail), 0);
+      playTrack(toDetail(bestMatch.song));
       return;
     }
-    setQueue(songs.map(toDetail), 0);
-    playTrack(toDetail(song));
-  }, [song, songs, isActive, isPlaying, setIsPlaying, setQueue, playTrack]);
+
+    const path =
+      bestMatch.kind === "artist"
+        ? `/artist?id=${bestMatch.artist.id}`
+        : bestMatch.kind === "album"
+          ? `/album?id=${bestMatch.album.id}`
+          : `/playlist?id=${bestMatch.playlist.id}`;
+    onNavigate(path);
+  }, [bestMatch, isActive, isPlaying, onNavigate, playTrack, setIsPlaying, setQueue, songs]);
 
   return (
     <div className="flex size-full flex-col">
       <h2 className="mb-4 text-2xl font-bold tracking-tight">{t("search.section.bestMatch")}</h2>
-      {song ? (
+      {bestMatch ? (
         <div
           className="group relative flex min-h-55 flex-1 cursor-pointer flex-col justify-end rounded-xl bg-[#181818] p-6 transition-colors hover:bg-[#282828]"
-          onClick={handlePlay}
+          onClick={handlePrimaryAction}
         >
           <div className="mb-5 size-24 overflow-hidden rounded-md bg-zinc-800 shadow-2xl">
             <Image
               width={96}
               height={96}
-              src={song.album?.picUrl || song.artists[0]?.picUrl || ""}
-              alt={song.name}
+              src={imageSrc}
+              alt={title}
               className="size-full object-cover"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = FALLBACK_IMG;
@@ -72,37 +112,56 @@ export function BestMatchCard({ song, songs }: Props) {
             />
           </div>
           <div className="mb-1 flex min-w-0 items-center gap-2">
-            <h3 className="min-w-0 truncate text-3xl font-bold">{song.name}</h3>
-            <SongVipBadge fee={song.fee} />
+            <h3 className="min-w-0 truncate text-3xl font-bold">{title}</h3>
+            {song && <SongVipBadge fee={song.fee} />}
           </div>
           <div className="flex items-center gap-2 text-sm text-zinc-400">
-            {song.artists && song.artists.length > 0 ? (
+            {song &&
+              (song.artists.length > 0 ? (
+                <ArtistInlineLinks
+                  artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
+                  className="font-medium text-white"
+                />
+              ) : (
+                <span className="font-medium text-white hover:underline">
+                  {t("search.song.unknownArtist")}
+                </span>
+              ))}
+            {bestMatch.kind === "album" && (
               <ArtistInlineLinks
-                artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
+                artists={[{ id: bestMatch.album.artist.id, name: bestMatch.album.artist.name }]}
                 className="font-medium text-white"
               />
-            ) : (
-              <span className="font-medium text-white hover:underline">
-                {t("search.song.unknownArtist")}
-              </span>
             )}
+            {bestMatch.kind === "artist" && bestMatch.artist.alias?.length ? (
+              <span className="truncate font-medium text-white">
+                {bestMatch.artist.alias.join(" · ")}
+              </span>
+            ) : null}
+            {bestMatch.kind === "playlist" && bestMatch.playlist.creator?.nickname ? (
+              <span className="truncate font-medium text-white">
+                {bestMatch.playlist.creator.nickname}
+              </span>
+            ) : null}
             <span className="rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase">
-              {t("search.section.songs")}
+              {typeLabel}
             </span>
           </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePlay();
-            }}
-            className="absolute right-6 bottom-6 flex size-14 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
-          >
-            {isActive && isPlaying ? (
-              <Pause className="size-7 fill-current" />
-            ) : (
-              <Play className="ml-1 size-7 fill-current" />
-            )}
-          </button>
+          {song && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrimaryAction();
+              }}
+              className="absolute right-6 bottom-6 flex size-14 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
+            >
+              {isActive && isPlaying ? (
+                <Pause className="size-7 fill-current" />
+              ) : (
+                <Play className="ml-1 size-7 fill-current" />
+              )}
+            </button>
+          )}
         </div>
       ) : (
         <div className="flex flex-1 items-center justify-center rounded-xl bg-[#181818] p-5 text-sm text-zinc-500">

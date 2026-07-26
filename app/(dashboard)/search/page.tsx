@@ -5,9 +5,11 @@ import { useState } from "react";
 import { AllView } from "@/components/search/AllView";
 import { CategoryTabs } from "@/components/search/CategoryTabs";
 import { GridCategoryView } from "@/components/search/GridCategoryView";
-import { LoadingSkeleton } from "@/components/search/LoadingSkeleton";
+import { AllViewSkeleton, LoadingSkeleton } from "@/components/search/LoadingSkeleton";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { PodcastsView } from "@/components/search/PodcastsView";
 import { SongsView } from "@/components/search/SongsView";
+import { VoicesView } from "@/components/search/VoicesView";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -19,10 +21,18 @@ export default function SearchPage() {
   const keywords = useSearchParams().get("keywords") || "";
   const router = useSmartRouter();
   const [activeCategory, setActiveCategory] = useState<Category>("All");
-  const { albums, artists, hasError, loading, playlists, refetch, songs } = useSearchData(
-    keywords,
-    activeCategory,
-  );
+  const {
+    albums,
+    artists,
+    bestMatch,
+    hasError,
+    loading,
+    playlists,
+    podcasts,
+    refetch,
+    songs,
+    voices,
+  } = useSearchData(keywords, activeCategory);
   const { loadingPlayId, handlePlayPlaylist, handlePlayAlbum } = usePlayActions();
 
   const isGridCategory = (["Albums", "Playlists", "Artists"] as Category[]).includes(
@@ -44,21 +54,27 @@ export default function SearchPage() {
           />
         </div>
       )}
-      {loading && <LoadingSkeleton />}
+      {loading && activeCategory === "All" && <AllViewSkeleton />}
+      {loading && activeCategory !== "All" && <LoadingSkeleton />}
       {!loading && activeCategory === "All" && (
         <AllView
           songs={songs}
           albums={albums}
           playlists={playlists}
           artists={artists}
+          bestMatch={bestMatch}
+          podcasts={podcasts}
           loadingPlayId={loadingPlayId}
           onPlayAlbum={handlePlayAlbum}
           onPlayPlaylist={handlePlayPlaylist}
           onSeeAll={setActiveCategory}
           onNavigate={router.push}
+          voices={voices}
         />
       )}
       {!loading && activeCategory === "Songs" && <SongsView songs={songs} />}
+      {!loading && activeCategory === "Podcasts" && <PodcastsView podcasts={podcasts} />}
+      {!loading && activeCategory === "Voices" && <VoicesView voices={voices} />}
       {!loading && isGridCategory && (
         <GridCategoryView
           activeCategory={activeCategory as "Albums" | "Playlists" | "Artists"}

@@ -2,7 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { searchAlbums, searchArtists, searchPlaylists, searchSongs } from "@/lib/api/search";
+import {
+  searchAlbums,
+  searchArtists,
+  searchComplex,
+  searchPlaylists,
+  searchSongs,
+} from "@/lib/api/search";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 function isEnabled(keyword: string, enabled: boolean) {
@@ -38,5 +44,13 @@ export function useArtistSearchQuery(keyword: string, limit: number, enabled: bo
     enabled: isEnabled(keyword, enabled),
     queryFn: async () => (await searchArtists(keyword, limit)).data,
     queryKey: musicQueryKeys.search.artists(keyword, limit),
+  });
+}
+
+export function useComplexSearchQuery(keyword: string, enabled: boolean) {
+  return useQuery({
+    enabled: isEnabled(keyword, enabled),
+    queryFn: async () => (await searchComplex(keyword)).data,
+    queryKey: musicQueryKeys.search.complex(keyword),
   });
 }

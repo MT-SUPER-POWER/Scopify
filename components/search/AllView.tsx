@@ -3,42 +3,33 @@ import { ArtistCard } from "@/components/SearchContents/ArtistCard";
 import { PlaylistCard } from "@/components/SearchContents/PlaylistCard";
 import { SectionHeader } from "@/components/SearchContents/SectionHeader";
 import { useI18n } from "@/store/module/i18n";
-import type { Album, Artist, Category, Playlist, Song } from "@/types/search";
+import type { AllViewProps } from "@/types/components/search";
 import { BestMatchCard } from "./BestMatchCard";
+import { PodcastCard } from "./PodcastCard";
 import { SongsPanel } from "./SongsPanel";
-
-interface Props {
-  songs: Song[];
-  albums: Album[];
-  playlists: Playlist[];
-  artists: Artist[];
-  loadingPlayId: string | null;
-  onPlayAlbum: (album: Album, e: React.MouseEvent) => void;
-  onPlayPlaylist: (playlist: Playlist, e: React.MouseEvent) => void;
-  onSeeAll: (cat: Category) => void;
-  onNavigate: (path: string) => void;
-}
+import { VoiceList } from "./VoiceList";
 
 export function AllView({
   songs,
   albums,
   playlists,
   artists,
+  bestMatch,
   loadingPlayId,
   onPlayAlbum,
   onPlayPlaylist,
   onSeeAll,
   onNavigate,
-}: Props) {
+  podcasts,
+  voices,
+}: AllViewProps) {
   const { t } = useI18n();
-  const topSong = songs[0] ?? null;
-
   return (
     <>
       {/* 顶部两栏：最佳匹配 + 歌曲 */}
       <div className="mb-10 grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-12">
         <div className="flex min-w-0 xl:col-span-5">
-          <BestMatchCard song={topSong} songs={songs} />
+          <BestMatchCard bestMatch={bestMatch} songs={songs} onNavigate={onNavigate} />
         </div>
         <div className="flex min-w-0 flex-col xl:col-span-7">
           <SongsPanel songs={songs} limit={4} onViewAll={() => onSeeAll("Songs")} />
@@ -56,6 +47,21 @@ export function AllView({
                 artist={artist}
                 onClick={() => onNavigate(`/artist?id=${artist.id}`)}
               />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 播客网格 */}
+      {podcasts.length > 0 && (
+        <div className="mb-10 w-full min-w-0">
+          <SectionHeader
+            title={t("search.section.podcasts")}
+            onSeeAll={() => onSeeAll("Podcasts")}
+          />
+          <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
+            {podcasts.slice(0, 6).map((podcast) => (
+              <PodcastCard key={podcast.id} podcast={podcast} />
             ))}
           </div>
         </div>
@@ -99,6 +105,14 @@ export function AllView({
               />
             ))}
           </div>
+        </div>
+      )}
+
+      {/* 声音列表 */}
+      {voices.length > 0 && (
+        <div className="mb-10 w-full min-w-0">
+          <SectionHeader title={t("search.section.voices")} onSeeAll={() => onSeeAll("Voices")} />
+          <VoiceList voices={voices} limit={6} variant="preview" />
         </div>
       )}
     </>

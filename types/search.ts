@@ -41,5 +41,50 @@ export interface Playlist {
   description?: string;
 }
 
-export const CATEGORIES = ["All", "Songs", "Artists", "Playlists", "Albums"] as const;
+export interface Podcast {
+  category?: string;
+  coverUrl: string;
+  description?: string;
+  hostName?: string;
+  id: number;
+  name: string;
+  programCount: number;
+  subscriberCount: number;
+}
+
+export interface Voice {
+  coverUrl: string;
+  duration: number;
+  hostName?: string;
+  id: number;
+  mainSong: Song | null;
+  name: string;
+  podcastName: string;
+}
+
+export type SearchBestMatch =
+  | { kind: "album"; album: Album }
+  | { kind: "artist"; artist: Artist }
+  | { kind: "playlist"; playlist: Playlist }
+  | { kind: "song"; song: Song };
+
+export interface SearchResults {
+  albums: Album[];
+  artists: Artist[];
+  bestMatch: SearchBestMatch | null;
+  podcasts: Podcast[];
+  playlists: Playlist[];
+  songs: Song[];
+  voices: Voice[];
+}
+
+export const CATEGORIES = [
+  "All",
+  "Songs",
+  "Artists",
+  "Playlists",
+  "Albums",
+  "Podcasts",
+  "Voices",
+] as const;
 export type Category = (typeof CATEGORIES)[number];

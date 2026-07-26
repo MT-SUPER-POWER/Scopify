@@ -2009,6 +2009,18 @@ export interface TranslateFn {
    */
   (key: "search.section.playlists", params?: TranslationParams): string;
   /**
+   * zh-CN: 播客
+   * zh-TW: 播客
+   * en-US: Podcasts
+   */
+  (key: "search.section.podcasts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音
+   * zh-TW: 聲音
+   * en-US: Sounds
+   */
+  (key: "search.section.voices", params?: TranslationParams): string;
+  /**
    * zh-CN: 没有匹配结果
    * zh-TW: 沒有匹配結果
    * en-US: No matching results
@@ -2021,11 +2033,35 @@ export interface TranslateFn {
    */
   (key: "search.section.noSongResults", params?: TranslationParams): string;
   /**
+   * zh-CN: 没有播客结果
+   * zh-TW: 沒有播客結果
+   * en-US: No podcast results
+   */
+  (key: "search.section.noPodcastResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有声音结果
+   * zh-TW: 沒有聲音結果
+   * en-US: No sound results
+   */
+  (key: "search.section.noVoiceResults", params?: TranslationParams): string;
+  /**
    * zh-CN: 搜索歌曲
    * zh-TW: 搜尋歌曲
    * en-US: Search Songs
    */
   (key: "search.section.searchSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索播客
+   * zh-TW: 搜尋播客
+   * en-US: Search Podcasts
+   */
+  (key: "search.section.searchPodcasts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索声音
+   * zh-TW: 搜尋聲音
+   * en-US: Search Sounds
+   */
+  (key: "search.section.searchVoices", params?: TranslationParams): string;
   /**
    * zh-CN: 歌手
    * zh-TW: 歌手
@@ -2074,6 +2110,42 @@ export interface TranslateFn {
    * en-US: Albums
    */
   (key: "search.category.albums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播客
+   * zh-TW: 播客
+   * en-US: Podcasts
+   */
+  (key: "search.category.podcasts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音
+   * zh-TW: 聲音
+   * en-US: Sounds
+   */
+  (key: "search.category.voices", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知播客
+   * zh-TW: 未知播客
+   * en-US: Unknown Podcast
+   */
+  (key: "search.podcast.unknown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知主播
+   * zh-TW: 未知主播
+   * en-US: Unknown Host
+   */
+  (key: "search.podcast.unknownHost", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 位订阅者
+   * zh-TW: {{count}} 位訂閱者
+   * en-US: {{count}} subscribers
+   */
+  (key: "search.podcast.subscriberCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 期节目
+   * zh-TW: {{count}} 期節目
+   * en-US: {{count}} episodes
+   */
+  (key: "search.podcast.programCount", params?: TranslationParams): string;
   /**
    * zh-CN: 综合搜索失败，请稍后再试
    * zh-TW: 綜合搜尋失敗，請稍後再試
