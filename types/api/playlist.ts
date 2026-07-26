@@ -131,9 +131,17 @@ export interface PlaylistDetailResponse {
   playlist?: RawNeteasePlaylist;
 }
 
-export interface PlaylistCachePayload {
+/** The detail and tracks rendered by a playlist route. */
+export interface PlaylistContent {
   rawDetail: RawNeteasePlaylist;
   tracks: SongDetail[];
+}
+
+export interface PlaylistContentRequest {
+  dailyDate: null | string;
+  isDailyRecommendation: boolean;
+  isRecommend: boolean;
+  playlistId: null | string;
 }
 
 export function prunePlaylistTracks(response: PlaylistTracksResponse): SongDetail[] {

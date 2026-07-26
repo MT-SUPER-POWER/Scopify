@@ -15,6 +15,11 @@ export const musicQueryKeys = {
     recommendedPlaylists: () => ["home", "recommended-playlists"] as const,
     userProfile: (userId: string) => ["home", "user-profile", userId] as const,
   },
+  playlist: {
+    content: (playlistId: string, isRecommend: boolean) =>
+      ["playlist", "content", "playlist", playlistId, isRecommend] as const,
+    daily: (date: string) => ["playlist", "content", "daily", date] as const,
+  },
   search: {
     albums: (keyword: string, limit: number) => ["search", "albums", keyword, limit] as const,
     artists: (keyword: string, limit: number) => ["search", "artists", keyword, limit] as const,

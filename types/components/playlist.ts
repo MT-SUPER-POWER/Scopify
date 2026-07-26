@@ -18,6 +18,7 @@ export interface PlaylistActionsProps {
   playlistId: null | string;
   searchOpen: boolean;
   searchQuery: string;
+  tracks: SongDetail[];
 }
 
 export type DailyRecommendationMode = "current" | "history";
@@ -30,6 +31,7 @@ export interface TracklistTableProps {
   hideLikeColumn?: boolean;
   inputRef?: RefObject<HTMLInputElement | null>;
   onEmptyAction?: () => void;
+  onTracksChange?: (tracks: SongDetail[]) => void;
   onSearchChange?: (v: string) => void;
   onSearchClose?: () => void;
   onSearchOpen?: () => void;

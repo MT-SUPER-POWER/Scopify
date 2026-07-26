@@ -10,6 +10,10 @@ import { toast } from "sonner";
 
 import type { TracklistTableProps } from "@/types/components/playlist";
 
+import {
+  useNavigationScrollRestorationAdapter,
+  usePrimaryScrollSurface,
+} from "@/components/shared/NavigationScrollProvider";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,14 +26,13 @@ import {
 } from "@/components/ui/table";
 import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
-import { useSmoothPlaylistScroll } from "@/hooks/playlist/useSmoothPlaylistScroll";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
 import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { useUiStore } from "@/store/module/ui";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import type { NavigationScrollRestorationAdapter } from "@/types/navigation-scroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
 import { TrackRow } from "./TrackRow";
@@ -41,6 +44,10 @@ const MIN_COL = 60;
 type SortDirection = "asc" | "desc";
 type SortField = "album" | "date" | "like" | "title" | null;
 
+function waitForAnimationFrame() {
+  return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+}
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function TracklistTable({
@@ -49,6 +56,7 @@ export default function TracklistTable({
   hideDateColumn = false,
   hideLikeColumn = false,
   onEmptyAction,
+  onTracksChange,
   dailyRecommendationMode,
   playSourceId,
   readonly = false,
@@ -172,16 +180,88 @@ export default function TracklistTable({
     }
   };
 
-  const scrollContainer = useUiStore((s) => s.scrollContainer);
-  useSmoothPlaylistScroll(scrollContainer, !disableVirtualization);
+  const primaryScrollSurface = usePrimaryScrollSurface();
+  const virtualRowElementsRef = useRef(new Map<number, HTMLTableRowElement>());
 
   const virtualizer = useVirtualizer({
     count: sortedTracks.length,
+    enabled: !disableVirtualization,
     estimateSize: () => 56,
-    getScrollElement: () => scrollContainer,
+    getItemKey: (index) => sortedTracks[index]?.id ?? index,
+    getScrollElement: () => primaryScrollSurface,
     isScrollingResetDelay: 160,
     overscan: 7,
   });
+  const primaryScrollSurfaceRef = useRef(primaryScrollSurface);
+  const sortedTracksRef = useRef(sortedTracks);
+  const virtualizerRef = useRef(virtualizer);
+  primaryScrollSurfaceRef.current = primaryScrollSurface;
+  sortedTracksRef.current = sortedTracks;
+  virtualizerRef.current = virtualizer;
+
+  const restorationAdapter = useMemo<NavigationScrollRestorationAdapter | null>(() => {
+    if (disableVirtualization) return null;
+
+    return {
+      capture(surface) {
+        const tracks = sortedTracksRef.current;
+        const virtualizer = virtualizerRef.current;
+        const viewport = surface.getBoundingClientRect();
+        const anchor = virtualizer.getVirtualItems().find((virtualItem) => {
+          const row = virtualRowElementsRef.current.get(virtualItem.index);
+          if (!row) return false;
+          const rowRect = row.getBoundingClientRect();
+          return rowRect.bottom > viewport.top && rowRect.top < viewport.bottom;
+        });
+        const track = anchor ? tracks[anchor.index] : undefined;
+        const row = anchor ? virtualRowElementsRef.current.get(anchor.index) : undefined;
+        if (!anchor || !track || !row) return null;
+
+        return {
+          anchorKey: String(track.id),
+          anchorOffset: row.getBoundingClientRect().top - viewport.top,
+          fallbackTop: surface.scrollTop,
+          kind: "virtual-collection",
+        };
+      },
+      getRestoreReadiness({ signal, snapshot, surface }) {
+        if (signal.aborted) return "unavailable";
+        if (primaryScrollSurfaceRef.current !== surface) return "waiting";
+
+        const tracks = sortedTracksRef.current;
+        const targetIndex = tracks.findIndex((track) => String(track.id) === snapshot.anchorKey);
+        if (targetIndex < 0) return "unavailable";
+
+        const virtualizer = virtualizerRef.current;
+        if (virtualizer.scrollElement !== surface || virtualizer.getVirtualItems().length === 0) {
+          return "waiting";
+        }
+
+        return "ready";
+      },
+      async restore({ signal, snapshot, surface }) {
+        const tracks = sortedTracksRef.current;
+        const targetIndex = tracks.findIndex((track) => String(track.id) === snapshot.anchorKey);
+        if (targetIndex < 0 || signal.aborted) return;
+
+        const virtualizer = virtualizerRef.current;
+        virtualizer.scrollToIndex(targetIndex, { align: "start", behavior: "auto" });
+        await waitForAnimationFrame();
+        if (signal.aborted) return;
+
+        const row = virtualRowElementsRef.current.get(targetIndex);
+        if (!row) return;
+
+        const viewport = surface.getBoundingClientRect();
+        const currentAnchorOffset = row.getBoundingClientRect().top - viewport.top;
+        surface.scrollTo({
+          behavior: "auto",
+          top: surface.scrollTop + currentAnchorOffset - snapshot.anchorOffset,
+        });
+      },
+    };
+  }, [disableVirtualization]);
+  useNavigationScrollRestorationAdapter(restorationAdapter);
 
   const virtualItems = virtualizer.getVirtualItems();
   const isVirtualScrolling = virtualizer.isScrolling;
@@ -217,8 +297,18 @@ export default function TracklistTable({
     [],
   );
 
-  const albumList = useUserStore((s) => s.albumList);
   const setAlbumList = useUserStore((s) => s.setAlbumList);
+
+  const updateVisibleTracks = useCallback(
+    (nextTracks: SongDetail[]) => {
+      if (onTracksChange) {
+        onTracksChange(nextTracks);
+        return;
+      }
+      setAlbumList(nextTracks);
+    },
+    [onTracksChange, setAlbumList],
+  );
 
   const handleConfirmDelete = useCallback(async () => {
     if (pendingDelete?.playlistId === undefined) return;
@@ -230,7 +320,7 @@ export default function TracklistTable({
       });
 
       // 1. 乐观更新：立刻从视图移出
-      setAlbumList(albumList.filter((t) => t.id !== pendingDelete.trackId));
+      updateVisibleTracks(tracks.filter((track) => track.id !== pendingDelete.trackId));
       toast.success(t("playlist.table.removeSuccess"));
 
       // 2. 触发全局刷新（这会告诉 Sidebar 在后台悄悄拉取最新歌单封面等元信息）
@@ -242,7 +332,7 @@ export default function TracklistTable({
     } finally {
       setPendingDelete(null);
     }
-  }, [albumList, pendingDelete, setAlbumList, t, updatePlaylistTrack]);
+  }, [pendingDelete, t, tracks, updatePlaylistTrack, updateVisibleTracks]);
 
   const handleCancelDelete = useCallback(() => {
     setPendingDelete(null);
@@ -257,9 +347,9 @@ export default function TracklistTable({
         }
         const replaceSong = pruneSongDetail(dislikeResult.data);
 
-        const updateAlbumList = albumList.map((t) => (t.id === trackId ? replaceSong : t));
+        const nextTracks = tracks.map((track) => (track.id === trackId ? replaceSong : track));
 
-        setAlbumList(updateAlbumList);
+        updateVisibleTracks(nextTracks);
         void usePlayerStore.getState().playNext();
         void clearPageCache();
 
@@ -269,7 +359,7 @@ export default function TracklistTable({
         toast.error(t("playlist.table.operationFailed"));
       }
     },
-    [albumList, dislikeDailyRecommend, setAlbumList, t],
+    [dislikeDailyRecommend, t, tracks, updateVisibleTracks],
   );
 
   return (
@@ -482,6 +572,10 @@ export default function TracklistTable({
                   const row = (
                     <TrackRow
                       key={`${track.id}-${virtualRow.index}`}
+                      ref={(element) => {
+                        if (element) virtualRowElementsRef.current.set(virtualRow.index, element);
+                        else virtualRowElementsRef.current.delete(virtualRow.index);
+                      }}
                       data-index={virtualRow.index}
                       track={track}
                       index={virtualRow.index}

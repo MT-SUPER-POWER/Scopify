@@ -22,7 +22,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
-import { usePlayerStore, useUserStore } from "@/store";
+import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
 function formatDateKey(date: Date) {
@@ -48,6 +48,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     onSearchOpen,
     onSearchClose,
     inputRef,
+    tracks,
   } = props;
 
   const isPlaying = usePlayerStore((s) => s.isPlaying);
@@ -68,7 +69,6 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
-  const albumList = useUserStore((s) => s.albumList);
   const currentPageId =
     playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
   const isCurrentQueue = Boolean(storePlaylistId) && storePlaylistId === currentPageId;
@@ -76,13 +76,13 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
 
   const handlePlayToggle = () => {
     const state = usePlayerStore.getState();
-    if (!albumList.length) return;
+    if (!tracks.length) return;
 
     if (isCurrentQueue) {
       state.setIsPlaying(!state.isPlaying); // 如果已经是当前歌单，直接切换 播放/暂停 状态
     } else {
       // 否则，用当前页面的歌单替换播放队列，并从头播放 (复用 currentPageId)
-      state.setQueue(albumList, 0, currentPageId);
+      state.setQueue(tracks, 0, currentPageId);
       state.playQueueIndex(0);
     }
   };
@@ -105,7 +105,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
       <div className="flex flex-wrap items-center gap-4 md:gap-6">
         <button
           onClick={handlePlayToggle}
-          disabled={!currentSongDetail && !albumList.length}
+          disabled={!currentSongDetail && !tracks.length}
           className="flex size-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {showPause ? (

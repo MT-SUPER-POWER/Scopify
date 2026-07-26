@@ -1,13 +1,12 @@
 "use client";
 
 import PlaylistHeader from "@components/Playlist/Header";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import PlaylistActions from "@/components/Playlist/ActionStation";
 import PlaylistHeaderSkeleton from "@/components/Playlist/HeaderSkeleton";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
-import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
 export default function PlaylistPage() {
@@ -15,21 +14,26 @@ export default function PlaylistPage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { playlistId, isDailyRecommend, dailyDate, isLoading, playlistInfo, themeColor } =
-    usePlaylist();
-
-  const albumList = useUserStore((s) => s.albumList);
-  const triggerLibraryUpdate = useUserStore((s) => s.triggerLibraryUpdate);
+  const {
+    playlistId,
+    isDailyRecommend,
+    dailyDate,
+    isLoading,
+    playlistInfo,
+    refetchTracks,
+    setTracks,
+    themeColor,
+    tracks,
+  } = usePlaylist();
 
   const dynamicPlaylistInfo = useMemo(() => {
     if (!playlistInfo) return null;
-    if (isLoading) return playlistInfo;
     return {
       ...playlistInfo,
-      totalSongs: albumList ? albumList.length : playlistInfo.totalSongs,
+      totalSongs: tracks.length,
       cover: playlistInfo.cover,
     };
-  }, [playlistInfo, albumList, isLoading]);
+  }, [playlistInfo, tracks.length]);
 
   const handleSearchOpen = useCallback(() => {
     setSearchOpen(true);
@@ -40,15 +44,8 @@ export default function PlaylistPage() {
     setSearchQuery("");
   }, []);
   const handleRefreshTracks = useCallback(() => {
-    triggerLibraryUpdate();
-  }, [triggerLibraryUpdate]);
-
-  const clearAlbumList = useUserStore((s) => s.clearAlbumList);
-  useEffect(() => {
-    return () => {
-      clearAlbumList();
-    };
-  }, [clearAlbumList]);
+    void refetchTracks();
+  }, [refetchTracks]);
 
   if (!playlistId && !isDailyRecommend)
     return <div className="p-8 text-white">{t("playlist.page.invalidUrl")}</div>;
@@ -79,6 +76,7 @@ export default function PlaylistPage() {
             onSearchOpen={handleSearchOpen}
             onSearchClose={handleSearchClose}
             inputRef={inputRef}
+            tracks={tracks}
           />
         )}
         <div className="min-w-0 flex-1 overflow-hidden px-6 pb-10">
@@ -94,6 +92,8 @@ export default function PlaylistPage() {
               inputRef={inputRef}
               emptyActionLabel={t("common.action.reload")}
               onEmptyAction={handleRefreshTracks}
+              onTracksChange={setTracks}
+              tracks={tracks}
             />
           )}
         </div>
