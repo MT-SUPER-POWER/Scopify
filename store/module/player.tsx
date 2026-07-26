@@ -19,7 +19,12 @@ import { useTimeStore } from "@/store/module/time";
 import { pruneNeteaseLyric, type NeteaseLyric } from "@/types/api/music";
 import type { PlayerStore } from "@/types/player";
 
-export type { MusicQuality, PlaybackFailureSource, RepeatMode } from "@/types/player";
+export type {
+  MusicQuality,
+  PlaybackFailureSource,
+  RepeatMode,
+  SourceChangeMode,
+} from "@/types/player";
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -59,7 +64,22 @@ export const usePlayerStore = create<PlayerStore>()(
       playlistId: null,
       playbackFailureCount: 0,
       musicQuality: "high",
+      sourceChangeMode: "new-track",
       setMusicQuality: (quality) => set({ musicQuality: quality }),
+      changeMusicQuality: async (quality) => {
+        const { currentSongDetail, musicQuality } = get();
+        if (musicQuality === quality) return;
+
+        set({ musicQuality: quality });
+        if (!currentSongDetail) return;
+
+        const didSwitch = await get().playTrack(currentSongDetail, {
+          preservePlaybackSession: true,
+        });
+        if (!didSwitch) {
+          set({ musicQuality });
+        }
+      },
       setVolume: (v) => set({ volume: v }),
       setIsPlaying: (v) => set({ isPlaying: v }),
       setRepeatMode: (mode) => set({ repeatMode: mode }),
@@ -274,13 +294,17 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playTrack: async (song, options = {}) => {
+        const shouldPreservePlaybackSession = options.preservePlaybackSession ?? false;
         const shouldResetFailureCount = options.resetFailureCount ?? true;
-        useTimeStore.getState().setCurrentTime(0);
-        useTimeStore.getState().setBufferedTime(0);
+        if (!shouldPreservePlaybackSession) {
+          useTimeStore.getState().setCurrentTime(0);
+          useTimeStore.getState().setBufferedTime(0);
+        }
         set({
           currentSongDetail: song,
-          currentSongUrl: null,
-          isPlaying: false,
+          currentSongUrl: shouldPreservePlaybackSession ? get().currentSongUrl : null,
+          isPlaying: shouldPreservePlaybackSession ? get().isPlaying : false,
+          sourceChangeMode: shouldPreservePlaybackSession ? "preserve-position" : "new-track",
           ...(shouldResetFailureCount ? { playbackFailureCount: 0 } : {}),
         });
 
@@ -309,11 +333,11 @@ export const usePlayerStore = create<PlayerStore>()(
               useTimeStore.getState().setTotalTime(song.dt ?? 0);
               set({
                 currentSongUrl: cachedUrl,
-                isPlaying: true,
+                ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
                 lyric: matchedLyric,
                 playbackFailureCount: 0,
               });
-              return;
+              return true;
             }
             // 仅 URL 命中 → 设置 URL，只请求歌词
             console.log(
@@ -328,11 +352,11 @@ export const usePlayerStore = create<PlayerStore>()(
             if (lyricData) await setCachedLyric(song.id, lyricData);
             useTimeStore.getState().setTotalTime(song.dt ?? 0);
             set({
-              isPlaying: true,
+              ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
               lyric: lyricData ?? null,
               playbackFailureCount: 0,
             });
-            return;
+            return true;
           }
 
           // ── 2. Cache miss → fetch both ─────────────────────────────────
@@ -360,13 +384,16 @@ export const usePlayerStore = create<PlayerStore>()(
           useTimeStore.getState().setTotalTime(song.dt ?? 0);
           set({
             currentSongUrl: url,
-            isPlaying: true,
+            ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
             lyric: lyricData2 ?? null,
             playbackFailureCount: 0,
           });
+          return true;
         } catch (e) {
           console.error("获取歌曲播放地址或歌词失败", e);
+          if (shouldPreservePlaybackSession) return false;
           await get().handlePlaybackFailure("url");
+          return false;
         }
       },
 

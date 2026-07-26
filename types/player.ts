@@ -4,8 +4,10 @@ export type MusicQuality =
   "sky" | "jymaster" | "dolby" | "spatial" | "hires" | "lossless" | "high" | "standard";
 export type PlaybackFailureSource = "url" | "audio";
 export type RepeatMode = "off" | "all" | "one";
+export type SourceChangeMode = "new-track" | "preserve-position";
 
 export interface PlayTrackOptions {
+  preservePlaybackSession?: boolean;
   resetFailureCount?: boolean;
 }
 
@@ -14,6 +16,7 @@ export type PlayQueueIndexOptions = PlayTrackOptions;
 export interface PlayerStore {
   currentSongDetail: SongDetail | null;
   currentSongUrl: string | null;
+  changeMusicQuality: (quality: MusicQuality) => Promise<void>;
   fetchCurrentLyric: () => Promise<void>;
   handlePlaybackFailure: (source: PlaybackFailureSource) => Promise<void>;
   historyIndex: number;
@@ -38,7 +41,7 @@ export interface PlayerStore {
     addToHistory?: boolean,
     options?: PlayQueueIndexOptions,
   ) => Promise<void>;
-  playTrack: (song: SongDetail, options?: PlayTrackOptions) => Promise<void>;
+  playTrack: (song: SongDetail, options?: PlayTrackOptions) => Promise<boolean>;
   playlistId: number | string | null;
   queue: SongDetail[];
   queueIndex: number;
@@ -53,6 +56,7 @@ export interface PlayerStore {
   setRepeatMode: (mode: RepeatMode) => void;
   setShuffle: (isShuffle: boolean) => void;
   setVolume: (volume: number) => void;
+  sourceChangeMode: SourceChangeMode;
   togglePlaying: () => void;
   toggleShuffle: () => void;
   volume: number;

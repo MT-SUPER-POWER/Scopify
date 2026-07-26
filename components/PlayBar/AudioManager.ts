@@ -7,6 +7,7 @@ class AudioManager {
   private lastStoreWrite = 0;
   private hasRestoredProgress = false;
   private initialized = false;
+  private pendingSourcePositionMs: number | null = null;
 
   private constructor() {}
 
@@ -50,8 +51,20 @@ class AudioManager {
       if (state.currentSongUrl !== prevUrl) {
         prevUrl = state.currentSongUrl;
         if (this.audio && state.currentSongUrl) {
+          const shouldPreservePosition = state.sourceChangeMode === "preserve-position";
+          const currentTimeMs = this.audio.currentTime * 1000;
+          const sourcePositionMs =
+            shouldPreservePosition && Number.isFinite(currentTimeMs)
+              ? Math.max(0, currentTimeMs)
+              : 0;
+          this.pendingSourcePositionMs = sourcePositionMs;
+
+          if (shouldPreservePosition) {
+            useTimeStore.getState().setCurrentTime(sourcePositionMs);
+          }
+
           this.audio.src = state.currentSongUrl;
-          // ✨ 切歌时重置保险栓，以便触发新的 loadedmetadata 恢复 0 进度
+          // New tracks start at zero; a source replacement restores the captured position.
           this.hasRestoredProgress = false;
           this.audio.load();
           usePlayerStore.getState().fetchCurrentLyric();
@@ -135,17 +148,18 @@ class AudioManager {
 
       // 恢复断点进度
       if (!this.hasRestoredProgress) {
-        const persistedTime = useTimeStore.getState().currentTime;
-        if (persistedTime > 0) {
-          const restoreSeconds = persistedTime / 1000;
+        const restoreTimeMs = this.pendingSourcePositionMs ?? useTimeStore.getState().currentTime;
+        if (restoreTimeMs > 0) {
+          const restoreSeconds = restoreTimeMs / 1000;
           if (Number.isFinite(audio.duration) && audio.duration > 0) {
-            audio.currentTime = Math.min(restoreSeconds, audio.duration - 1);
+            audio.currentTime = Math.min(restoreSeconds, Math.max(0, audio.duration - 0.01));
           } else {
             audio.currentTime = restoreSeconds;
           }
-          // ✨ 主动广播，让进度条 UI 立即跳到恢复位置（无需用户点击播放）
-          window.dispatchEvent(new CustomEvent("player-time", { detail: persistedTime }));
         }
+        useTimeStore.getState().setCurrentTime(restoreTimeMs);
+        window.dispatchEvent(new CustomEvent("player-time", { detail: restoreTimeMs }));
+        this.pendingSourcePositionMs = null;
         // 拉上保险栓，防止后续因为网络缓冲等原因重复触发拉回
         this.hasRestoredProgress = true;
       }
