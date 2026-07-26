@@ -162,6 +162,14 @@ _Avoid_: Zustand data, page state
 Local state that describes the Scopify renderer itself, including playback, UI preferences, dialogs, and the authenticated-session snapshot. It is owned by Zustand or component state.
 _Avoid_: Remote Music Data, backend cache
 
+**Navigation Entry Scroll State**:
+The content position associated with one browser-history entry. Backward or forward navigation restores that entry's prior position, while a newly created navigation entry starts at the top.
+_Avoid_: URL scroll state, route scroll cache, global page position
+
+**Restoration Pending State**:
+The temporary state of a history traversal whose target content position is not ready to reveal. Scopify presents the target page's Skeleton until restoration settles rather than exposing an incorrect position and visibly jumping.
+_Avoid_: top flash, delayed scroll jump, background page
+
 **Persistent Music Cache**:
 The selected subset of Remote Music Data retained across Scopify restarts for fast return visits. It is a persisted portion of the query cache rather than a separate page cache.
 _Avoid_: pageCache, duplicate cache
