@@ -40,6 +40,8 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   // DOM 引用与节流/状态标记
   const audioRef = useRef<HTMLAudioElement>(null);
   const sidebarPanelRef = usePanelRef();
+  const sidebarPanelElementRef = useRef<HTMLDivElement>(null);
+  const hasInitializedSidebarPanelRef = useRef(false);
   const lastStoreWriteRef = useRef(0);
   const hasRestoredProgressRef = useRef(false); // 必须声明：标记是否已经恢复过进度
   const [isMounted, setIsMounted] = useState(false);
@@ -200,8 +202,37 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   useEffect(() => {
     const panel = sidebarPanelRef.current;
     if (!panel) return;
+
+    if (!hasInitializedSidebarPanelRef.current) {
+      hasInitializedSidebarPanelRef.current = true;
+      if (isCollapsed) panel.collapse();
+      else panel.expand();
+      return;
+    }
+
+    const panelElement = sidebarPanelElementRef.current;
+    const shouldReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let clearTransitionTimeout: number | undefined;
+    if (!shouldReduceMotion && panelElement) {
+      panelElement.style.transition = "flex-grow 220ms cubic-bezier(0.22, 1, 0.36, 1)";
+      panelElement.style.willChange = "flex-grow";
+      clearTransitionTimeout = window.setTimeout(() => {
+        panelElement.style.transition = "";
+        panelElement.style.willChange = "";
+      }, 220);
+    }
+
     if (isCollapsed) panel.collapse();
     else panel.expand();
+
+    return () => {
+      if (clearTransitionTimeout !== undefined) {
+        window.clearTimeout(clearTransitionTimeout);
+      }
+      if (!panelElement) return;
+      panelElement.style.transition = "";
+      panelElement.style.willChange = "";
+    };
   }, [isCollapsed, isMounted, sidebarPanelRef]);
 
   return (
@@ -230,6 +261,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           >
             <ResizablePanel
               panelRef={sidebarPanelRef}
+              elementRef={sidebarPanelElementRef}
               defaultSize="20%"
               minSize="15%"
               maxSize="40%"
