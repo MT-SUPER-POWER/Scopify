@@ -16,6 +16,13 @@ export const musicQueryKeys = {
     recommendedPlaylists: () => ["home", "recommended-playlists"] as const,
     userProfile: (userId: string) => ["home", "user-profile", userId] as const,
   },
+  library: {
+    collection: (userId: number) => ["library", "collection", userId] as const,
+    createdPodcasts: (userId: number) => ["library", "podcasts", "created", userId] as const,
+    likedSongs: (userId: number) => ["library", "liked-songs", userId] as const,
+    recentSongs: (userId: number) => ["library", "recent-songs", userId] as const,
+    subscribedPodcasts: (userId: number) => ["library", "podcasts", "subscribed", userId] as const,
+  },
   playlist: {
     content: (playlistId: string, isRecommend: boolean) =>
       ["playlist", "content", "playlist", playlistId, isRecommend] as const,

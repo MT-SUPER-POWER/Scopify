@@ -1,6 +1,6 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Menu, PanelLeftClose, Plus, Trash2 } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeftOpen, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useUiStore, useUserStore } from "@/store";
 import { useI18n, useI18nStore } from "@/store/module/i18n";
+import type { SidebarConfirmDialogProps } from "@/types/components/sidebar";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -80,15 +81,7 @@ function ConfirmDialogShandCN({
   onCancel,
   confirmText = "Confirm",
   cancelText = "Cancel",
-}: {
-  open: boolean;
-  title: string;
-  content: string;
-  onConfirm: () => void | Promise<void>;
-  onCancel: () => void;
-  confirmText?: string;
-  cancelText?: string;
-}) {
+}: SidebarConfirmDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
       <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
@@ -129,7 +122,11 @@ function ConfirmDialogShandCN({
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function SiderBarMenu() {
+interface SiderBarMenuProps {
+  isCollapsed?: boolean;
+}
+
+function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
   const { t } = useI18n();
   const isLoggedIn = useLoginStatus();
   const userPlaylists = useUserStore((s) => s.playlist);
@@ -165,7 +162,11 @@ function SiderBarMenu() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost">
+          <Button
+            variant="ghost"
+            size={isCollapsed ? "icon-sm" : "default"}
+            title={t("sidebar.menu.sidebarTitle")}
+          >
             <Menu className="size-5" />
           </Button>
         </DropdownMenuTrigger>
@@ -176,10 +177,17 @@ function SiderBarMenu() {
               {t("sidebar.menu.sidebarTitle")}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => useUiStore.getState().setIsCollapsed(true)}>
-              <PanelLeftClose className="mr-2 size-5 transition-transform hover:scale-110 active:scale-95" />
-              <span>{t("sidebar.menu.collapse")}</span>
-            </DropdownMenuItem>
+            {isCollapsed ? (
+              <DropdownMenuItem onClick={() => useUiStore.getState().setIsCollapsed(false)}>
+                <PanelLeftOpen className="mr-2 size-5 transition-transform hover:scale-110 active:scale-95" />
+                <span>{t("sidebar.filter.expand")}</span>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => useUiStore.getState().setIsCollapsed(true)}>
+                <PanelLeftClose className="mr-2 size-5 transition-transform hover:scale-110 active:scale-95" />
+                <span>{t("sidebar.menu.collapse")}</span>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuGroup>
 
           {/* Group -- Playlist Function */}

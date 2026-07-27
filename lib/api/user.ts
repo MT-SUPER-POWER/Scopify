@@ -3,6 +3,7 @@ import type {
   UpdateUserProfileResponse,
 } from "@/types/api/profileUpdate";
 import type { UserPlaylistResponse } from "@/types/api/playlist";
+import type { RecentSongsResponse } from "@/types/api/library";
 import type { IUserDetail, UserAccountResponse, UserFollowsResponse } from "@/types/api/user";
 import request, { requestConfig } from "../web/request";
 
@@ -28,7 +29,10 @@ export function getUserComments(uid: number) {
 
 // 最近播放-歌曲
 export function getRecentSongs(limit = 10) {
-  return request.get("/record/recent/song", requestConfig({ params: { limit } }));
+  return request.get<RecentSongsResponse>(
+    "/record/recent/song",
+    requestConfig({ params: { limit } }),
+  );
 }
 
 // 最近播放-歌曲

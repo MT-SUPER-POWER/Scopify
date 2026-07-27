@@ -39,6 +39,7 @@ export interface RawNeteasePlaylist {
   privacy?: number;
   subscribed?: boolean | null;
   subscribedCount?: number;
+  specialType?: number;
   tags?: string[];
   trackCount?: number;
   tracks?: RawSongDetail[];

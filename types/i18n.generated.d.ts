@@ -13705,5 +13705,113 @@ export interface TranslateFn {
    * en-US: No matching commands
    */
   (key: "shortcuts.commandPalette.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢的音乐
+   * zh-TW: 喜歡的音樂
+   * en-US: Liked Songs
+   */
+  (key: "library.title.liked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近播放
+   * zh-TW: 最近播放
+   * en-US: Recently Played
+   */
+  (key: "library.title.recent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的播客
+   * zh-TW: 我的播客
+   * en-US: My Podcasts
+   */
+  (key: "library.title.podcasts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的收藏
+   * zh-TW: 我的收藏
+   * en-US: My Collection
+   */
+  (key: "library.title.collection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有喜欢的音乐
+   * zh-TW: 還沒有喜歡的音樂
+   * en-US: No liked songs yet
+   */
+  (key: "library.empty.liked.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢歌曲后，它们会显示在这里。
+   * zh-TW: 喜歡歌曲後，它們會顯示在這裡。
+   * en-US: Songs you like will appear here.
+   */
+  (key: "library.empty.liked.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有播放记录
+   * zh-TW: 還沒有播放記錄
+   * en-US: No listening history yet
+   */
+  (key: "library.empty.recent.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放歌曲后，它们会显示在这里。
+   * zh-TW: 播放歌曲後，它們會顯示在這裡。
+   * en-US: Songs you play will appear here.
+   */
+  (key: "library.empty.recent.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有收藏内容
+   * zh-TW: 還沒有收藏內容
+   * en-US: No saved content yet
+   */
+  (key: "library.empty.collection.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏专辑或关注歌手后，它们会显示在这里。
+   * zh-TW: 收藏專輯或關注歌手後，它們會顯示在這裡。
+   * en-US: Saved albums and followed artists will appear here.
+   */
+  (key: "library.empty.collection.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有播客内容
+   * zh-TW: 還沒有播客內容
+   * en-US: No podcast content yet
+   */
+  (key: "library.empty.podcasts.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏或创建播客后，它们会显示在这里。
+   * zh-TW: 收藏或建立播客後，它們會顯示在這裡。
+   * en-US: Podcasts you save or create will appear here.
+   */
+  (key: "library.empty.podcasts.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏的专辑
+   * zh-TW: 收藏的專輯
+   * en-US: Saved Albums
+   */
+  (key: "library.section.albums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关注的歌手
+   * zh-TW: 關注的歌手
+   * en-US: Followed Artists
+   */
+  (key: "library.section.artists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏播客
+   * zh-TW: 收藏播客
+   * en-US: Saved Podcasts
+   */
+  (key: "library.podcasts.subscribed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 创建播客
+   * zh-TW: 建立播客
+   * en-US: Created Podcasts
+   */
+  (key: "library.podcasts.created", params?: TranslationParams): string;
+  /**
+   * zh-CN: 购买播客
+   * zh-TW: 購買播客
+   * en-US: Purchased Podcasts
+   */
+  (key: "library.podcasts.purchased", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢的声音
+   * zh-TW: 喜歡的聲音
+   * en-US: Liked Voices
+   */
+  (key: "library.podcasts.likedVoices", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }
