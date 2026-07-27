@@ -40,6 +40,7 @@ import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
+import type { PlayerBarStatActionProps } from "@/types/components/player";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Skeleton } from "./ui/skeleton";
 
@@ -54,14 +55,7 @@ function PlayerBarStatAction({
   href,
   title,
   children,
-}: {
-  count?: number;
-  countClassName?: string;
-  onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
-  href?: string;
-  title?: string;
-  children: React.ReactNode;
-}) {
+}: PlayerBarStatActionProps) {
   const body = (
     <div className="relative inline-flex shrink-0 items-center justify-center transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
       {/* 修复点 1：把 children（图标）显式包裹并设为 z-0，强制将其压在底层 */}
@@ -258,7 +252,7 @@ export const PlayerBar = ({
           {/* 歌曲的名字和歌手 */}
           <div
             className={cn(
-              "flex min-w-0 flex-col justify-center",
+              "flex min-w-0 flex-1 flex-col justify-center overflow-hidden",
               isLyricStageBar ? "max-w-[min(26vw,280px)]" : "max-w-30 sm:max-w-40 lg:max-w-60",
             )}
           >
@@ -305,37 +299,36 @@ export const PlayerBar = ({
           </div>
 
           {/* 点赞和评论 */}
-          <div
-            className={cn(
-              "hidden shrink-0 items-center gap-4 sm:flex lg:gap-5",
-              isLyricStageBar && "hidden",
-            )}
-          >
-            <PlayerBarStatAction
-              count={currentSong?.likedCount}
-              countClassName={isLiked ? "text-[#1ed760]" : "text-zinc-300"}
-              title={isLiked ? t("common.action.unlike") : t("common.action.like")}
-              onClick={() => void toggleLike(!isLiked)}
-            >
-              {isLiked ? (
-                <PiHeartFill className="size-5 text-[#1ed760] lg:size-5.5" />
-              ) : (
-                <PiHeartBold className="size-5 text-zinc-400 transition-colors group-hover:text-white lg:size-5.5" />
+          {currentSong && (
+            <div
+              className={cn(
+                "hidden shrink-0 items-center gap-4 sm:flex lg:gap-5",
+                isLyricStageBar && "hidden",
               )}
-            </PlayerBarStatAction>
-
-            <PlayerBarStatAction
-              count={currentSong?.commentCount}
-              countClassName="text-zinc-300 group-hover:text-white transition-colors"
-              href={currentSong?.id ? `/comment?songId=${currentSong.id}` : "#"}
-              title={t("contextMenu.comments")}
-              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                if (!currentSong?.id) e.preventDefault();
-              }}
             >
-              <PiChatCircleDotsBold className="size-5 text-zinc-400 transition-colors group-hover:text-white lg:size-5.5" />
-            </PlayerBarStatAction>
-          </div>
+              <PlayerBarStatAction
+                count={currentSong.likedCount}
+                countClassName={isLiked ? "text-[#1ed760]" : "text-zinc-300"}
+                title={isLiked ? t("common.action.unlike") : t("common.action.like")}
+                onClick={() => void toggleLike(!isLiked)}
+              >
+                {isLiked ? (
+                  <PiHeartFill className="size-5 text-[#1ed760] lg:size-5.5" />
+                ) : (
+                  <PiHeartBold className="size-5 text-zinc-400 transition-colors group-hover:text-white lg:size-5.5" />
+                )}
+              </PlayerBarStatAction>
+
+              <PlayerBarStatAction
+                count={currentSong.commentCount}
+                countClassName="text-zinc-300 group-hover:text-white transition-colors"
+                href={`/comment?songId=${currentSong.id}`}
+                title={t("contextMenu.comments")}
+              >
+                <PiChatCircleDotsBold className="size-5 text-zinc-400 transition-colors group-hover:text-white lg:size-5.5" />
+              </PlayerBarStatAction>
+            </div>
+          )}
         </div>
 
         {/* ================= Center: Controls ================= */}

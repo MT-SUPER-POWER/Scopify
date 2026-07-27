@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import type { SongDetail } from "@/types/api/music";
 
 export interface QueueItemProps {
@@ -18,4 +18,13 @@ export interface LyricQueueRowProps {
   isCurrent: boolean;
   onPlay: (index: number) => void;
   style?: CSSProperties;
+}
+
+export interface PlayerBarStatActionProps {
+  children: ReactNode;
+  count?: number;
+  countClassName?: string;
+  href?: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
+  title?: string;
 }
