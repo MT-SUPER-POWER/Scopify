@@ -4,6 +4,7 @@ import { Loader2, Play } from "lucide-react";
 import Image from "next/image";
 import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { GridCard } from "@/components/home/GridCard";
+import { FeaturedActivitiesCarousel } from "@/components/home/FeaturedActivitiesCarousel";
 import { HomePageSkeleton } from "@/components/home/HomePageSkeleton";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
@@ -125,6 +126,8 @@ export default function HomePage() {
               </div>
             </CollapsibleSection>
           </section>
+
+          <FeaturedActivitiesCarousel />
 
           {hasError && (
             <NetworkRetryState

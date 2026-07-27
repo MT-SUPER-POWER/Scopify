@@ -9,6 +9,7 @@ export const musicQueryKeys = {
     topSongs: (artistId: string) => ["artist", "top-songs", artistId] as const,
   },
   home: {
+    banners: () => ["home", "banners"] as const,
     collectedAlbums: () => ["home", "collected-albums"] as const,
     hotArtists: () => ["home", "hot-artists"] as const,
     personalizedPlaylists: () => ["home", "personalized-playlists"] as const,

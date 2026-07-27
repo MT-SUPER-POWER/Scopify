@@ -1445,6 +1445,36 @@ export interface TranslateFn {
    */
   (key: "sidebar.filter.expand", params?: TranslationParams): string;
   /**
+   * zh-CN: 资料库
+   * zh-TW: 資料庫
+   * en-US: Library
+   */
+  (key: "sidebar.library.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢的音乐
+   * zh-TW: 喜歡的音樂
+   * en-US: Liked Songs
+   */
+  (key: "sidebar.library.likedMusic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近播放
+   * zh-TW: 最近播放
+   * en-US: Recently Played
+   */
+  (key: "sidebar.library.recentPlayback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的播客
+   * zh-TW: 我的播客
+   * en-US: My Podcasts
+   */
+  (key: "sidebar.library.podcasts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的收藏
+   * zh-TW: 我的收藏
+   * en-US: My Collection
+   */
+  (key: "sidebar.library.collection", params?: TranslationParams): string;
+  /**
    * zh-CN: 加载歌单失败
    * zh-TW: 載入歌單失敗
    * en-US: Failed to load playlists
@@ -1486,6 +1516,12 @@ export interface TranslateFn {
    * en-US: Subscribed Playlists
    */
   (key: "sidebar.group.subscribed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlists
+   */
+  (key: "sidebar.group.playlists", params?: TranslationParams): string;
   /**
    * zh-CN: 关注的歌手
    * zh-TW: 關注的歌手
@@ -2956,6 +2992,54 @@ export interface TranslateFn {
    * en-US: Loading recommendations...
    */
   (key: "home.loadingRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐推荐轮播图
+   * zh-TW: 音樂推薦輪播圖
+   * en-US: Music recommendation carousel
+   */
+  (key: "home.banner.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 精选活动
+   * zh-TW: 精選活動
+   * en-US: Featured activities
+   */
+  (key: "home.featuredActivities", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐推荐横幅
+   * zh-TW: 音樂推薦橫幅
+   * en-US: Music recommendation banner
+   */
+  (key: "home.banner.imageAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在载入音乐推荐
+   * zh-TW: 正在載入音樂推薦
+   * en-US: Loading music recommendations
+   */
+  (key: "home.banner.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 活动轮播导航
+   * zh-TW: 活動輪播導覽
+   * en-US: Activity carousel navigation
+   */
+  (key: "home.banner.navigation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一张横幅
+   * zh-TW: 上一張橫幅
+   * en-US: Previous banner
+   */
+  (key: "home.banner.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一张横幅
+   * zh-TW: 下一張橫幅
+   * en-US: Next banner
+   */
+  (key: "home.banner.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换至第 {{number}} 张横幅
+   * zh-TW: 切換至第 {{number}} 張橫幅
+   * en-US: Go to banner {{number}}
+   */
+  (key: "home.banner.goToSlide", params?: TranslationParams): string;
   /**
    * zh-CN: 共 {{count}} 首
    * zh-TW: 共 {{count}} 首
