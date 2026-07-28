@@ -1,3 +1,22 @@
+import type { RawSongDetail } from "@/types/api/music";
+
+export interface RecentSongHistoryEntry {
+  data?: RawSongDetail;
+  playTime?: number;
+  resourceInfo?: {
+    songData?: RawSongDetail;
+  };
+  song?: RawSongDetail;
+}
+
+export interface RecentSongsResponse {
+  code: number;
+  data?: {
+    list?: RecentSongHistoryEntry[];
+  };
+  list?: RecentSongHistoryEntry[];
+}
+
 export interface IUserDetail {
   level: number;
   listenSongs: number;

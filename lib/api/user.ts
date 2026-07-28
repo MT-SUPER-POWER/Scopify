@@ -3,8 +3,12 @@ import type {
   UpdateUserProfileResponse,
 } from "@/types/api/profileUpdate";
 import type { UserPlaylistResponse } from "@/types/api/playlist";
-import type { RecentSongsResponse } from "@/types/api/library";
-import type { IUserDetail, UserAccountResponse, UserFollowsResponse } from "@/types/api/user";
+import type {
+  IUserDetail,
+  RecentSongsResponse,
+  UserAccountResponse,
+  UserFollowsResponse,
+} from "@/types/api/user";
 import request, { requestConfig } from "../web/request";
 
 // /user/detail

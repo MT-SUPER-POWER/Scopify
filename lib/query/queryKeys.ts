@@ -19,14 +19,21 @@ export const musicQueryKeys = {
   library: {
     collection: (userId: number) => ["library", "collection", userId] as const,
     createdPodcasts: (userId: number) => ["library", "podcasts", "created", userId] as const,
-    likedSongs: (userId: number) => ["library", "liked-songs", userId] as const,
+    likedVoices: (userId: number) => ["library", "podcasts", "liked-voices", userId] as const,
+    likedPlaylist: (userId: number) => ["library", "liked-playlist", userId] as const,
     recentSongs: (userId: number) => ["library", "recent-songs", userId] as const,
-    subscribedPodcasts: (userId: number) => ["library", "podcasts", "subscribed", userId] as const,
+    recommendedPodcasts: (userId: number) =>
+      ["library", "podcasts", "recommendations", userId] as const,
+    subscribedPodcasts: (userId: number) =>
+      ["library", "podcasts", "subscribed", "v2", userId] as const,
   },
   playlist: {
     content: (playlistId: string, isRecommend: boolean) =>
       ["playlist", "content", "playlist", playlistId, isRecommend] as const,
     daily: (date: string) => ["playlist", "content", "daily", date] as const,
+  },
+  radio: {
+    content: (radioId: string) => ["radio", "content", radioId] as const,
   },
   search: {
     albums: (keyword: string, limit: number) => ["search", "albums", keyword, limit] as const,
@@ -34,5 +41,8 @@ export const musicQueryKeys = {
     complex: (keyword: string) => ["search", "complex", keyword] as const,
     playlists: (keyword: string, limit: number) => ["search", "playlists", keyword, limit] as const,
     songs: (keyword: string, limit: number) => ["search", "songs", keyword, limit] as const,
+  },
+  voice: {
+    transcript: (voiceId: number) => ["voice", "transcript", voiceId] as const,
   },
 } as const;

@@ -1,5 +1,6 @@
 export interface LibraryMediaItem {
   coverUrl?: string;
+  date?: number;
   href?: string;
   id: number | string;
   isArtist?: boolean;
