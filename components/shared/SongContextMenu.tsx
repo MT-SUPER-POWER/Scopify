@@ -197,7 +197,7 @@ export function SongContextMenu({
             </ContextMenuSub>
           )}
 
-          <ContextMenuItem asChild className="w-40 border-white/10 bg-[#282828] text-white">
+          <ContextMenuItem asChild className="w-full border-white/10 bg-[#282828] text-white">
             <Link
               href={song.id ? `/comment/?songId=${song.id}` : "#"}
               className="block size-full focus:bg-white/10 focus:text-white"
@@ -210,7 +210,7 @@ export function SongContextMenu({
           {song.ar &&
             song.ar.length > 0 &&
             (song.ar.length === 1 ? (
-              <ContextMenuItem asChild className="w-40 border-white/10 bg-[#282828] text-white">
+              <ContextMenuItem asChild className="w-full border-white/10 bg-[#282828] text-white">
                 <Link
                   href={`/artist?id=${song.ar[0].id}`}
                   className="block size-full focus:bg-white/10 focus:text-white"
@@ -241,7 +241,7 @@ export function SongContextMenu({
               </ContextMenuSub>
             ))}
 
-          <ContextMenuItem asChild className="w-40 border-white/10 bg-[#282828] text-white">
+          <ContextMenuItem asChild className="w-full border-white/10 bg-[#282828] text-white">
             <button
               type="button"
               onClick={handleCopyLink}
