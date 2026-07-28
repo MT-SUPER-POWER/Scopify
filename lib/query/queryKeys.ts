@@ -10,10 +10,10 @@ export const musicQueryKeys = {
   },
   home: {
     banners: () => ["home", "banners"] as const,
-    collectedAlbums: () => ["home", "collected-albums"] as const,
     hotArtists: () => ["home", "hot-artists"] as const,
     personalizedPlaylists: () => ["home", "personalized-playlists"] as const,
     recommendedPlaylists: () => ["home", "recommended-playlists"] as const,
+    recommendedVoiceLists: () => ["home", "recommended-voice-lists"] as const,
     userProfile: (userId: string) => ["home", "user-profile", userId] as const,
   },
   library: {

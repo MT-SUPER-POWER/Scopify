@@ -1,18 +1,24 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { getAlbumDetail } from "@/lib/api/album";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
+import type {
+  RecommendedVoice,
+  RecommendedVoiceArtist,
+  RecommendedVoiceSong,
+  RecommendedVoiceListsResponse,
+} from "@/types/api/voicelist";
+import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import { pruneRecommendPlaylist } from "@/types/api/playlist";
+import type { Artist, Song, Voice } from "@/types/search";
 import {
-  useCollectedAlbumsQuery,
   useHomeUserProfileQuery,
   useHotArtistsQuery,
   usePersonalizedPlaylistsQuery,
   useRecommendedPlaylistsQuery,
+  useRecommendedVoiceListsQuery,
 } from "./useHomeQueries";
 
 export interface TimeTheme {
@@ -77,6 +83,67 @@ export const TIME_THEMES: TimeTheme[] = [
   },
 ];
 
+function getRecommendedVoices(response: RecommendedVoiceListsResponse | undefined) {
+  return response?.data?.recommendVoiceVOS ?? [];
+}
+
+function toArtist(source: RecommendedVoiceArtist): Artist {
+  return {
+    id: source.id ?? 0,
+    name: source.name ?? "",
+    picUrl: source.picUrl ?? null,
+  };
+}
+
+function toSong(
+  source: RecommendedVoiceSong | undefined,
+  fallbackCoverUrl: string,
+  unknownAlbumName: string,
+  unknownSongName: string,
+): Song | null {
+  if (!source?.id) return null;
+
+  const artists = (source.artists ?? source.ar ?? []).map(toArtist);
+  const album = source.album ?? source.al;
+
+  return {
+    album: {
+      artist: artists[0] ?? { id: 0, name: "", picUrl: null },
+      id: album?.id ?? 0,
+      name: album?.name ?? unknownAlbumName,
+      picUrl: album?.picUrl ?? album?.blurPicUrl ?? fallbackCoverUrl,
+      publishTime: 0,
+      size: 0,
+    },
+    artists,
+    duration: source.duration ?? source.dt ?? 0,
+    id: source.id,
+    name: source.name ?? unknownSongName,
+  };
+}
+
+function toRecommendedVoice(
+  voice: RecommendedVoice,
+  fallbackPodcastName: string,
+  unknownAlbumName: string,
+  unknownSongName: string,
+): Voice | null {
+  if (!voice.id) return null;
+
+  const coverUrl = voice.picUrl ?? "";
+  const mainSong = toSong(voice.djProgram?.mainSong, coverUrl, unknownAlbumName, unknownSongName);
+
+  return {
+    coverUrl,
+    duration: voice.duration ?? mainSong?.duration ?? 0,
+    hostName: voice.djProgram?.dj?.nickname,
+    id: voice.id,
+    mainSong,
+    name: voice.name ?? unknownSongName,
+    podcastName: voice.radioName ?? fallbackPodcastName,
+  };
+}
+
 export function getTimeTheme() {
   const hour = new Date().getHours();
   return TIME_THEMES.find((t) => hour >= t.start && hour < t.end) ?? TIME_THEMES[0];
@@ -88,7 +155,6 @@ export function useHomeData() {
   const user = useUserStore((s) => s.user);
   const userName = user?.nickname;
   const userId = user?.userId;
-  const setCollectedAlbum = useUserStore((s) => s.setCollectedAlbum);
   const setUser = useUserStore((s) => s.setUser);
   const setUserId = useUserStore((s) => s.setUserId);
   const { setQueue, playQueueIndex } = usePlayerStore();
@@ -102,8 +168,8 @@ export function useHomeData() {
       : null;
   const personalizedQuery = usePersonalizedPlaylistsQuery();
   const recommendedQuery = useRecommendedPlaylistsQuery(isLogin);
+  const recommendedVoiceListsQuery = useRecommendedVoiceListsQuery();
   const hotArtistsQuery = useHotArtistsQuery();
-  const collectedAlbumsQuery = useCollectedAlbumsQuery(isLogin);
   const userProfileQuery = useHomeUserProfileQuery(storedUserId);
 
   const playlists = useMemo(
@@ -121,16 +187,23 @@ export function useHomeData() {
       .map(({ item }) => item);
   }, [recommendedQuery.data?.recommend]);
   const suggestedArtists = hotArtistsQuery.data?.artists ?? [];
+  const recommendedVoiceLists = useMemo(
+    () =>
+      getRecommendedVoices(recommendedVoiceListsQuery.data)
+        .map((voice) =>
+          toRecommendedVoice(
+            voice,
+            t("home.voiceListMeta"),
+            t("common.meta.unknownAlbum"),
+            t("common.meta.unknownSong"),
+          ),
+        )
+        .filter((voice): voice is Voice => voice !== null),
+    [recommendedVoiceListsQuery.data, t],
+  );
   const isLoading =
-    personalizedQuery.isFetching ||
-    recommendedQuery.isFetching ||
-    hotArtistsQuery.isFetching ||
-    collectedAlbumsQuery.isFetching;
-  const hasError =
-    personalizedQuery.isError ||
-    recommendedQuery.isError ||
-    hotArtistsQuery.isError ||
-    collectedAlbumsQuery.isError;
+    personalizedQuery.isFetching || recommendedQuery.isFetching || hotArtistsQuery.isFetching;
+  const hasError = personalizedQuery.isError || recommendedQuery.isError || hotArtistsQuery.isError;
 
   useEffect(() => {
     const today = new Date();
@@ -147,11 +220,6 @@ export function useHomeData() {
     setUser(profile);
     setUserId(profile.userId);
   }, [setUser, setUserId, userProfileQuery.data?.profile]);
-
-  useEffect(() => {
-    if (!isLogin) return;
-    setCollectedAlbum(collectedAlbumsQuery.data?.data ?? []);
-  }, [collectedAlbumsQuery.data?.data, isLogin, setCollectedAlbum]);
 
   const handlePlayPlaylist = useCallback(
     async (id: number | string, e: React.MouseEvent) => {
@@ -179,53 +247,20 @@ export function useHomeData() {
     [loadingPlayId, setQueue, playQueueIndex, t],
   );
 
-  const handlePlayAlbum = useCallback(
-    async (id: number | string, e: React.MouseEvent) => {
-      e.stopPropagation();
-      const key = `album-${id}`;
-      if (loadingPlayId === key) return;
-      setLoadingPlayId(key);
-      try {
-        const res = await getAlbumDetail(id);
-        const tracks: SongDetail[] = (res.data.songs ?? []).map((song: RawSongDetail) =>
-          pruneSongDetail({
-            ...song,
-            al: {
-              id: song.al?.id ?? 0,
-              name: song.al?.name ?? "",
-              picUrl:
-                song.al?.picUrl ?? res.data?.album?.picUrl ?? res.data?.album?.blurPicUrl ?? "",
-            },
-          }),
-        );
-        if (!tracks.length) {
-          toast.error(t("home.toast.albumEmpty"));
-          return;
-        }
-        setQueue(tracks, 0);
-        await playQueueIndex(0);
-      } catch {
-        toast.error(t("home.toast.loadAlbumFailed"));
-      } finally {
-        setLoadingPlayId(null);
-      }
-    },
-    [loadingPlayId, setQueue, playQueueIndex, t],
-  );
-
   const fetchHomeData = useCallback(async () => {
     await Promise.all([
       personalizedQuery.refetch(),
       hotArtistsQuery.refetch(),
-      ...(isLogin ? [recommendedQuery.refetch(), collectedAlbumsQuery.refetch()] : []),
+      recommendedVoiceListsQuery.refetch(),
+      ...(isLogin ? [recommendedQuery.refetch()] : []),
       ...(storedUserId ? [userProfileQuery.refetch()] : []),
     ]);
   }, [
-    collectedAlbumsQuery,
     hotArtistsQuery,
     isLogin,
     personalizedQuery,
     recommendedQuery,
+    recommendedVoiceListsQuery,
     storedUserId,
     userProfileQuery,
   ]);
@@ -234,6 +269,7 @@ export function useHomeData() {
     playlists,
     bannerPlaylist,
     suggestedArtists,
+    recommendedVoiceLists,
     isLoading,
     loadingPlayId,
     hasError,
@@ -242,7 +278,6 @@ export function useHomeData() {
     userId,
     setLoadingPlayId,
     handlePlayPlaylist,
-    handlePlayAlbum,
     fetchHomeData,
     t,
   };

@@ -6,22 +6,21 @@ import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { GridCard } from "@/components/home/GridCard";
 import { FeaturedActivitiesCarousel } from "@/components/home/FeaturedActivitiesCarousel";
 import { HomePageSkeleton } from "@/components/home/HomePageSkeleton";
+import { RecommendedVoiceLists } from "@/components/home/RecommendedVoiceLists";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
 import { getTimeTheme, useHomeData } from "@/hooks/home/useHomeData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatPlayCount } from "@/lib/utils";
-import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { NeteaseUserAlbum } from "@/types/api/release";
 
 export default function HomePage() {
   useRouteRestorationPlaceholder(HomePageSkeleton);
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
-  const collectedAlbum = useUserStore((s) => s.collectedAlbum);
   const {
     playlists,
+    recommendedVoiceLists,
     bannerPlaylist,
     suggestedArtists,
     isLoading,
@@ -30,7 +29,6 @@ export default function HomePage() {
     dateInfo,
     userName,
     handlePlayPlaylist,
-    handlePlayAlbum,
     fetchHomeData,
   } = useHomeData();
 
@@ -129,6 +127,8 @@ export default function HomePage() {
 
           <FeaturedActivitiesCarousel />
 
+          <RecommendedVoiceLists voices={recommendedVoiceLists} />
+
           {hasError && (
             <NetworkRetryState
               compact
@@ -193,34 +193,6 @@ export default function HomePage() {
                       coverUrl={`${artist.picUrl}?param=200y200`}
                       isArtist
                       onClick={() => smartRouter.push(`/artist?id=${artist.id}`)}
-                    />
-                  ))}
-                </div>
-              </CollapsibleSection>
-            </section>
-          )}
-
-          {/* 已收藏专辑 */}
-          {collectedAlbum.length > 0 && (
-            <section>
-              <CollapsibleSection
-                title={
-                  <h2 className="text-2xl font-bold tracking-tight text-white hover:underline">
-                    {t("home.yourCollectedAlbums")}
-                  </h2>
-                }
-                collapsedHeight="280px"
-              >
-                <div className="grid grid-cols-3 gap-6 md:grid-cols-4 lg:grid-cols-5">
-                  {collectedAlbum.map((item: NeteaseUserAlbum) => (
-                    <GridCard
-                      key={item.id}
-                      id={item.id}
-                      name={item.name}
-                      coverUrl={item.picUrl}
-                      isLoading={loadingPlayId === `album-${item.id}`}
-                      onPlay={(e) => handlePlayAlbum(item.id, e)}
-                      onClick={() => smartRouter.push(`/album?id=${item.id}`)}
                     />
                   ))}
                 </div>

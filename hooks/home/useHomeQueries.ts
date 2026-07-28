@@ -2,8 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getUserAlbumSublist } from "@/lib/api/album";
 import { getHotArtists } from "@/lib/api/artist";
+import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
 import { getPersonalizePlaylists, getRecommendedPlaylists } from "@/lib/api/playlist";
 import { getUserDetail } from "@/lib/api/user";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
@@ -32,22 +32,19 @@ export function useRecommendedPlaylistsQuery(enabled: boolean) {
   });
 }
 
+export function useRecommendedVoiceListsQuery() {
+  return useQuery({
+    meta: { persist: true, scope: "public" },
+    queryFn: async () => (await getRecommendedVoiceLists()).data,
+    queryKey: musicQueryKeys.home.recommendedVoiceLists(),
+  });
+}
+
 export function useHotArtistsQuery() {
   return useQuery({
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getHotArtists()).data,
     queryKey: musicQueryKeys.home.hotArtists(),
-  });
-}
-
-export function useCollectedAlbumsQuery(enabled: boolean) {
-  const cookie = getMusicCookie();
-
-  return useQuery({
-    enabled,
-    meta: { scope: "account" },
-    queryFn: async () => (await getUserAlbumSublist({ cookie })).data,
-    queryKey: musicQueryKeys.home.collectedAlbums(),
   });
 }
 

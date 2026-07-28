@@ -2183,6 +2183,12 @@ export interface TranslateFn {
    */
   (key: "search.podcast.programCount", params?: TranslationParams): string;
   /**
+   * zh-CN: 查看文字稿
+   * zh-TW: 查看文字稿
+   * en-US: View transcript
+   */
+  (key: "search.voice.transcript", params?: TranslationParams): string;
+  /**
    * zh-CN: 综合搜索失败，请稍后再试
    * zh-TW: 綜合搜尋失敗，請稍後再試
    * en-US: Comprehensive search failed. Please try again.
@@ -3053,11 +3059,17 @@ export interface TranslateFn {
    */
   (key: "home.suggestedArtists", params?: TranslationParams): string;
   /**
-   * zh-CN: 你的收藏专辑
-   * zh-TW: 你的收藏專輯
-   * en-US: Your Collected Albums
+   * zh-CN: 推荐声音歌单
+   * zh-TW: 推薦聲音歌單
+   * en-US: Recommended Voice Lists
    */
-  (key: "home.yourCollectedAlbums", params?: TranslationParams): string;
+  (key: "home.recommendedVoiceLists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音歌单
+   * zh-TW: 聲音歌單
+   * en-US: Voice List
+   */
+  (key: "home.voiceListMeta", params?: TranslationParams): string;
   /**
    * zh-CN: 歌单为空
    * zh-TW: 歌單為空
@@ -3070,18 +3082,6 @@ export interface TranslateFn {
    * en-US: Failed to load playlist
    */
   (key: "home.toast.loadPlaylistFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 专辑为空
-   * zh-TW: 專輯為空
-   * en-US: Album is empty
-   */
-  (key: "home.toast.albumEmpty", params?: TranslationParams): string;
-  /**
-   * zh-CN: 加载专辑失败
-   * zh-TW: 載入專輯失敗
-   * en-US: Failed to load album
-   */
-  (key: "home.toast.loadAlbumFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 获取首页数据失败
    * zh-TW: 取得首頁資料失敗
@@ -13730,6 +13730,12 @@ export interface TranslateFn {
    */
   (key: "library.title.collection", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放记录
+   * zh-TW: 播放記錄
+   * en-US: Playback History
+   */
+  (key: "library.meta.playbackHistory", params?: TranslationParams): string;
+  /**
    * zh-CN: 还没有喜欢的音乐
    * zh-TW: 還沒有喜歡的音樂
    * en-US: No liked songs yet
@@ -13802,6 +13808,96 @@ export interface TranslateFn {
    */
   (key: "library.podcasts.created", params?: TranslationParams): string;
   /**
+   * zh-CN: 为你推荐
+   * zh-TW: 為你推薦
+   * en-US: Recommended for You
+   */
+  (key: "library.podcasts.recommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 换一批推荐
+   * zh-TW: 換一批推薦
+   * en-US: Refresh recommendations
+   */
+  (key: "library.podcasts.refreshRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一批推荐
+   * zh-TW: 上一批推薦
+   * en-US: Previous recommendations
+   */
+  (key: "library.podcasts.previousRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一批推荐
+   * zh-TW: 下一批推薦
+   * en-US: Next recommendations
+   */
+  (key: "library.podcasts.nextRecommendations", params?: TranslationParams): string;
+  /**
+   * zh-CN: 列表视图
+   * zh-TW: 列表視圖
+   * en-US: List view
+   */
+  (key: "library.podcasts.view.list", params?: TranslationParams): string;
+  /**
+   * zh-CN: 卡片视图
+   * zh-TW: 卡片視圖
+   * en-US: Card view
+   */
+  (key: "library.podcasts.view.cards", params?: TranslationParams): string;
+  /**
+   * zh-CN: 标题
+   * zh-TW: 標題
+   * en-US: Title
+   */
+  (key: "library.podcasts.column.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放量
+   * zh-TW: 播放量
+   * en-US: Plays
+   */
+  (key: "library.podcasts.column.playCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音数
+   * zh-TW: 聲音數
+   * en-US: Episodes
+   */
+  (key: "library.podcasts.column.voiceCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近更新
+   * zh-TW: 最近更新
+   * en-US: Last updated
+   */
+  (key: "library.podcasts.column.updatedAt", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 期节目
+   * zh-TW: {{count}} 期節目
+   * en-US: {{count}} episodes
+   */
+  (key: "library.podcasts.episodes", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 人收藏
+   * zh-TW: {{count}} 人收藏
+   * en-US: {{count}} subscribers
+   */
+  (key: "library.podcasts.subscribers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新增 {{count}}
+   * zh-TW: 新增 {{count}}
+   * en-US: {{count}} new
+   */
+  (key: "library.podcasts.newVoices", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近播放
+   * zh-TW: 最近播放
+   * en-US: Recently played
+   */
+  (key: "library.podcasts.recentPlay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新于 {{date}}
+   * zh-TW: 更新於 {{date}}
+   * en-US: Updated {{date}}
+   */
+  (key: "library.podcasts.updatedAt", params?: TranslationParams): string;
+  /**
    * zh-CN: 购买播客
    * zh-TW: 購買播客
    * en-US: Purchased Podcasts
@@ -13813,5 +13909,41 @@ export interface TranslateFn {
    * en-US: Liked Voices
    */
   (key: "library.podcasts.likedVoices", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播客节目为空
+   * zh-TW: 播客節目為空
+   * en-US: Podcast is empty
+   */
+  (key: "library.podcasts.toast.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载播客失败
+   * zh-TW: 載入播客失敗
+   * en-US: Failed to load podcast
+   */
+  (key: "library.podcasts.toast.loadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音文字稿
+   * zh-TW: 聲音文字稿
+   * en-US: Voice Transcript
+   */
+  (key: "library.voiceTranscript.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在加载文字稿…
+   * zh-TW: 正在載入文字稿…
+   * en-US: Loading transcript…
+   */
+  (key: "library.voiceTranscript.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 该声音暂未提供文字稿。
+   * zh-TW: 該聲音暫未提供文字稿。
+   * en-US: No transcript is available for this voice.
+   */
+  (key: "library.voiceTranscript.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字稿暂时无法读取。
+   * zh-TW: 文字稿暫時無法讀取。
+   * en-US: The transcript is temporarily unavailable.
+   */
+  (key: "library.voiceTranscript.unavailable", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }
