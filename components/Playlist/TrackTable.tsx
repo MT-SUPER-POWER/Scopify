@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/table";
 import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
 import { reportActionFailure } from "@/lib/web/errorTracking";
@@ -73,6 +74,19 @@ export default function TracklistTable({
   const colAlbumRef = useRef(200);
   const colDateRef = useRef(140);
   const colLikeRef = useRef(80);
+  const showAlbumColumn = useMediaQuery("(min-width: 640px)");
+  const showExtendedColumns = useMediaQuery("(min-width: 1024px)");
+  const showDateColumn = showExtendedColumns && !hideDateColumn;
+  const showLikeColumn = showExtendedColumns && !hideLikeColumn;
+  const compactTitleWidth = showAlbumColumn ? "calc(70% - 6.5rem)" : "calc(100% - 6.5rem)";
+  const titleColumnStyle = showExtendedColumns
+    ? { minWidth: 60, width: colTitle }
+    : { width: compactTitleWidth };
+  const albumColumnStyle = showExtendedColumns
+    ? { minWidth: 64, width: colAlbum }
+    : { width: "30%" };
+  const visibleColumnCount =
+    3 + Number(showAlbumColumn) + Number(showDateColumn) + Number(showLikeColumn);
   const setColTitle = (w: number) => {
     colTitleRef.current = w;
     setColTitleState(w);
@@ -386,10 +400,10 @@ export default function TracklistTable({
             )}
           >
             <TableRow className="border-none hover:bg-transparent">
-              <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
+              <TableHead className="w-10 text-center text-zinc-400 lg:w-12">#</TableHead>
               <TableHead
                 className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                style={{ minWidth: 60, width: colTitle }}
+                style={titleColumnStyle}
                 onClick={() => handleSort("title")}
               >
                 <div className="flex items-center gap-1">
@@ -401,47 +415,51 @@ export default function TracklistTable({
                       <ChevronDown className="size-4" />
                     ))}
                 </div>
-                <ResizeHandle
-                  onMouseDown={makeResizeHandler(
-                    colTitleRef,
-                    setColTitle,
-                    colAlbumRef,
-                    setColAlbum,
-                    60,
-                    64,
-                  )}
-                />
-              </TableHead>
-              <TableHead
-                className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white md:table-cell"
-                style={{ minWidth: 64, width: colAlbum }}
-                onClick={() => handleSort("album")}
-              >
-                <div className="flex items-center gap-1">
-                  {t("playlist.table.columnAlbum")}
-                  {sortField === "album" &&
-                    (sortDirection === "asc" ? (
-                      <ChevronUp className="size-4" />
-                    ) : (
-                      <ChevronDown className="size-4" />
-                    ))}
-                </div>
-                {!hideDateColumn && (
+                {showExtendedColumns && (
                   <ResizeHandle
                     onMouseDown={makeResizeHandler(
+                      colTitleRef,
+                      setColTitle,
                       colAlbumRef,
                       setColAlbum,
-                      colDateRef,
-                      setColDate,
+                      60,
                       64,
-                      120,
                     )}
                   />
                 )}
               </TableHead>
-              {!hideDateColumn && (
+              {showAlbumColumn && (
                 <TableHead
-                  className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white lg:table-cell"
+                  className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
+                  style={albumColumnStyle}
+                  onClick={() => handleSort("album")}
+                >
+                  <div className="flex items-center gap-1">
+                    {t("playlist.table.columnAlbum")}
+                    {sortField === "album" &&
+                      (sortDirection === "asc" ? (
+                        <ChevronUp className="size-4" />
+                      ) : (
+                        <ChevronDown className="size-4" />
+                      ))}
+                  </div>
+                  {showDateColumn && (
+                    <ResizeHandle
+                      onMouseDown={makeResizeHandler(
+                        colAlbumRef,
+                        setColAlbum,
+                        colDateRef,
+                        setColDate,
+                        64,
+                        120,
+                      )}
+                    />
+                  )}
+                </TableHead>
+              )}
+              {showDateColumn && (
+                <TableHead
+                  className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
                   style={{ minWidth: 120, width: colDate }}
                   onClick={() => handleSort("date")}
                 >
@@ -454,7 +472,7 @@ export default function TracklistTable({
                         <ChevronDown className="size-4" />
                       ))}
                   </div>
-                  {!hideLikeColumn && (
+                  {showLikeColumn && (
                     <ResizeHandle
                       onMouseDown={makeResizeHandler(
                         colDateRef,
@@ -468,9 +486,9 @@ export default function TracklistTable({
                   )}
                 </TableHead>
               )}
-              {!hideLikeColumn && (
+              {showLikeColumn && (
                 <TableHead
-                  className="group/head relative hidden cursor-pointer text-zinc-400 transition-colors select-none hover:text-white lg:table-cell"
+                  className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
                   style={{ minWidth: 44, width: colLike }}
                   onClick={() => handleSort("like")}
                 >
@@ -485,7 +503,7 @@ export default function TracklistTable({
                   </div>
                 </TableHead>
               )}
-              <TableHead className="w-32 text-zinc-400">
+              <TableHead className="w-16 text-center text-zinc-400 lg:w-32">
                 <div className="flex size-full items-center justify-center">
                   <Clock className="size-4" />
                 </div>
@@ -496,7 +514,7 @@ export default function TracklistTable({
           <TableBody>
             {sortedTracks.length === 0 ? (
               <TableRow className="border-none hover:bg-transparent">
-                <TableCell colSpan={6} className="py-10 text-center text-zinc-500">
+                <TableCell colSpan={visibleColumnCount} className="py-10 text-center text-zinc-500">
                   {hasSearchQuery ? (
                     t("playlist.table.searchNoResults", {
                       query: searchQuery ?? "",
@@ -552,8 +570,9 @@ export default function TracklistTable({
                       onPlay={handlePlay}
                       onRequestDelete={handleRequestDelete}
                       setIsPlaying={setIsPlaying}
-                      hideDateColumn={hideDateColumn}
-                      hideLikeColumn={hideLikeColumn}
+                      hideAlbumColumn={!showAlbumColumn}
+                      hideDateColumn={!showDateColumn}
+                      hideLikeColumn={!showLikeColumn}
                     />
                   </SongContextMenu>
                 );
@@ -562,7 +581,7 @@ export default function TracklistTable({
               <>
                 {virtualItems.length > 0 && virtualItems[0].start > 0 && (
                   <tr style={{ height: `${virtualItems[0].start}px` }}>
-                    <td colSpan={6} aria-hidden />
+                    <td colSpan={visibleColumnCount} aria-hidden />
                   </tr>
                 )}
                 {virtualItems.map((virtualRow) => {
@@ -586,8 +605,9 @@ export default function TracklistTable({
                       onPlay={handlePlay}
                       onRequestDelete={handleRequestDelete}
                       setIsPlaying={setIsPlaying}
-                      hideDateColumn={hideDateColumn}
-                      hideLikeColumn={hideLikeColumn}
+                      hideAlbumColumn={!showAlbumColumn}
+                      hideDateColumn={!showDateColumn}
+                      hideLikeColumn={!showLikeColumn}
                       isScrolling={isVirtualScrolling}
                     />
                   );
@@ -623,7 +643,7 @@ export default function TracklistTable({
                     const paddingBottom = virtualizer.getTotalSize() - last.end;
                     return paddingBottom > 0 ? (
                       <tr style={{ height: `${paddingBottom}px` }}>
-                        <td colSpan={6} aria-hidden />
+                        <td colSpan={visibleColumnCount} aria-hidden />
                       </tr>
                     ) : null;
                   })()}

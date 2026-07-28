@@ -72,6 +72,7 @@ export const TrackRow = memo(
   forwardRef<HTMLTableRowElement, TrackRowProps>(function TrackRow(
     {
       className,
+      hideAlbumColumn,
       hideDateColumn,
       hideLikeColumn,
       index,
@@ -157,12 +158,12 @@ export const TrackRow = memo(
                 className="size-full rounded object-cover"
               />
             </div>
-            <div className="flex min-w-0 flex-col truncate">
+            <div className="flex min-w-0 flex-1 flex-col truncate">
               <SongTitleWithAlia
                 name={track.name}
                 alia={track.alia}
                 className={cn(
-                  "cursor-pointer text-base font-normal group-hover:underline",
+                  "w-full cursor-pointer text-base font-normal group-hover:underline",
                   isActive ? "text-[#1ed760]" : "text-white",
                 )}
               />
@@ -191,30 +192,32 @@ export const TrackRow = memo(
           </div>
         </TableCell>
 
-        <TableCell className="hidden max-w-0 md:table-cell">
-          <span
-            title={track.al.name}
-            className="block cursor-pointer truncate hover:text-white hover:underline"
-          >
-            <button
-              type="button"
-              onClick={() => {
-                smartRouter.push(`/album?id=${track.al.id}`);
-              }}
+        {!hideAlbumColumn && (
+          <TableCell className="max-w-0">
+            <span
+              title={track.al.name}
+              className="block cursor-pointer truncate hover:text-white hover:underline"
             >
-              {track.al.name}
-            </button>
-          </span>
-        </TableCell>
+              <button
+                type="button"
+                onClick={() => {
+                  smartRouter.push(`/album?id=${track.al.id}`);
+                }}
+              >
+                {track.al.name}
+              </button>
+            </span>
+          </TableCell>
+        )}
 
         {!hideDateColumn && (
-          <TableCell className="hidden truncate lg:table-cell">
+          <TableCell className="truncate">
             <span title={formatDate(track.publishTime)}>{formatDate(track.publishTime)}</span>
           </TableCell>
         )}
 
         {!hideLikeColumn && (
-          <TableCell className="hidden w-20 truncate lg:table-cell">
+          <TableCell className="w-20 truncate">
             <div className="flex size-full justify-center">
               <LikeButton
                 liked={isLiked}
@@ -228,7 +231,7 @@ export const TrackRow = memo(
           </TableCell>
         )}
 
-        <TableCell className="w-32 rounded-r-md align-middle">
+        <TableCell className="w-16 rounded-r-md text-center align-middle lg:w-32">
           <div className="flex items-center justify-center">
             <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
           </div>
@@ -242,6 +245,7 @@ export const TrackRow = memo(
     prev.isPlaying === next.isPlaying &&
     prev.isLiked === next.isLiked &&
     prev.index === next.index &&
+    prev.hideAlbumColumn === next.hideAlbumColumn &&
     prev.hideDateColumn === next.hideDateColumn &&
     prev.hideLikeColumn === next.hideLikeColumn &&
     prev.isScrolling === next.isScrolling &&
