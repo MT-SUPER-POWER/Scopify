@@ -41,6 +41,9 @@ import { TrackRow } from "./TrackRow";
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const MIN_COL = 60;
+const COMPACT_ALBUM_MIN = 96;
+const COMPACT_DURATION_MIN = 56;
+const COMPACT_TITLE_MIN = 160;
 
 type SortDirection = "asc" | "desc";
 type SortField = "album" | "date" | "like" | "title" | null;
@@ -70,6 +73,8 @@ export default function TracklistTable({
   const [colAlbum, setColAlbumState] = useState(200);
   const [colDate, setColDateState] = useState(140);
   const [colLike, setColLikeState] = useState(80);
+  const [compactAlbumWidth, setCompactAlbumWidth] = useState<number | null>(null);
+  const [compactDurationWidth, setCompactDurationWidth] = useState(64);
   const colTitleRef = useRef(300);
   const colAlbumRef = useRef(200);
   const colDateRef = useRef(140);
@@ -78,13 +83,18 @@ export default function TracklistTable({
   const showExtendedColumns = useMediaQuery("(min-width: 1024px)");
   const showDateColumn = showExtendedColumns && !hideDateColumn;
   const showLikeColumn = showExtendedColumns && !hideLikeColumn;
-  const compactTitleWidth = showAlbumColumn ? "calc(70% - 6.5rem)" : "calc(100% - 6.5rem)";
+  const compactFixedWidth = 40 + compactDurationWidth;
+  const compactTitleWidth = showAlbumColumn
+    ? compactAlbumWidth === null
+      ? `calc(70% - ${compactFixedWidth}px)`
+      : `calc(100% - ${compactFixedWidth + compactAlbumWidth}px)`
+    : `calc(100% - ${compactFixedWidth}px)`;
   const titleColumnStyle = showExtendedColumns
     ? { minWidth: 60, width: colTitle }
     : { width: compactTitleWidth };
   const albumColumnStyle = showExtendedColumns
     ? { minWidth: 64, width: colAlbum }
-    : { width: "30%" };
+    : { width: compactAlbumWidth ?? "30%" };
   const visibleColumnCount =
     3 + Number(showAlbumColumn) + Number(showDateColumn) + Number(showLikeColumn);
   const setColTitle = (w: number) => {
@@ -415,7 +425,7 @@ export default function TracklistTable({
                       <ChevronDown className="size-4" />
                     ))}
                 </div>
-                {showExtendedColumns && (
+                {showExtendedColumns ? (
                   <ResizeHandle
                     onMouseDown={makeResizeHandler(
                       colTitleRef,
@@ -425,6 +435,24 @@ export default function TracklistTable({
                       60,
                       64,
                     )}
+                  />
+                ) : (
+                  <ResizeHandle
+                    onMouseDown={
+                      showAlbumColumn
+                        ? makeMeasuredResizeHandler(
+                            (_nextTitleWidth, nextAlbumWidth) =>
+                              setCompactAlbumWidth(nextAlbumWidth),
+                            COMPACT_TITLE_MIN,
+                            COMPACT_ALBUM_MIN,
+                          )
+                        : makeMeasuredResizeHandler(
+                            (_nextTitleWidth, nextDurationWidth) =>
+                              setCompactDurationWidth(nextDurationWidth),
+                            COMPACT_TITLE_MIN,
+                            COMPACT_DURATION_MIN,
+                          )
+                    }
                   />
                 )}
               </TableHead>
@@ -443,15 +471,28 @@ export default function TracklistTable({
                         <ChevronDown className="size-4" />
                       ))}
                   </div>
-                  {showDateColumn && (
+                  {showExtendedColumns ? (
+                    showDateColumn ? (
+                      <ResizeHandle
+                        onMouseDown={makeResizeHandler(
+                          colAlbumRef,
+                          setColAlbum,
+                          colDateRef,
+                          setColDate,
+                          64,
+                          120,
+                        )}
+                      />
+                    ) : null
+                  ) : (
                     <ResizeHandle
-                      onMouseDown={makeResizeHandler(
-                        colAlbumRef,
-                        setColAlbum,
-                        colDateRef,
-                        setColDate,
-                        64,
-                        120,
+                      onMouseDown={makeMeasuredResizeHandler(
+                        (nextAlbumWidth, nextDurationWidth) => {
+                          setCompactAlbumWidth(nextAlbumWidth);
+                          setCompactDurationWidth(nextDurationWidth);
+                        },
+                        COMPACT_ALBUM_MIN,
+                        COMPACT_DURATION_MIN,
                       )}
                     />
                   )}
@@ -503,7 +544,10 @@ export default function TracklistTable({
                   </div>
                 </TableHead>
               )}
-              <TableHead className="w-16 text-center text-zinc-400 lg:w-32">
+              <TableHead
+                className="w-16 text-center text-zinc-400 lg:w-32"
+                style={showExtendedColumns ? undefined : { width: compactDurationWidth }}
+              >
                 <div className="flex size-full items-center justify-center">
                   <Clock className="size-4" />
                 </div>
@@ -571,6 +615,7 @@ export default function TracklistTable({
                       onRequestDelete={handleRequestDelete}
                       setIsPlaying={setIsPlaying}
                       hideAlbumColumn={!showAlbumColumn}
+                      durationColumnWidth={showExtendedColumns ? undefined : compactDurationWidth}
                       hideDateColumn={!showDateColumn}
                       hideLikeColumn={!showLikeColumn}
                     />
@@ -606,6 +651,7 @@ export default function TracklistTable({
                       onRequestDelete={handleRequestDelete}
                       setIsPlaying={setIsPlaying}
                       hideAlbumColumn={!showAlbumColumn}
+                      durationColumnWidth={showExtendedColumns ? undefined : compactDurationWidth}
                       hideDateColumn={!showDateColumn}
                       hideLikeColumn={!showLikeColumn}
                       isScrolling={isVirtualScrolling}
@@ -680,6 +726,39 @@ function makeResizeHandler(
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+}
+
+function makeMeasuredResizeHandler(
+  onResize: (leftWidth: number, rightWidth: number) => void,
+  leftMin = MIN_COL,
+  rightMin = MIN_COL,
+) {
+  return (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const leftCell = e.currentTarget.parentElement;
+    const rightCell = leftCell?.nextElementSibling;
+    if (!(leftCell instanceof HTMLElement) || !(rightCell instanceof HTMLElement)) return;
+
+    const startX = e.clientX;
+    const startLeft = leftCell.getBoundingClientRect().width;
+    const startRight = rightCell.getBoundingClientRect().width;
+    const total = startLeft + startRight;
+
+    const onMove = (event: MouseEvent) => {
+      const delta = event.clientX - startX;
+      const nextLeft = Math.min(Math.max(leftMin, startLeft + delta), total - rightMin);
+      onResize(nextLeft, total - nextLeft);
+    };
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
   };

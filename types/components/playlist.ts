@@ -43,6 +43,7 @@ export interface TracklistTableProps {
 }
 
 export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>, "onPlay"> {
+  durationColumnWidth?: number;
   hideAlbumColumn?: boolean;
   hideDateColumn?: boolean;
   hideLikeColumn?: boolean;

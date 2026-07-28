@@ -72,6 +72,7 @@ export const TrackRow = memo(
   forwardRef<HTMLTableRowElement, TrackRowProps>(function TrackRow(
     {
       className,
+      durationColumnWidth,
       hideAlbumColumn,
       hideDateColumn,
       hideLikeColumn,
@@ -231,7 +232,10 @@ export const TrackRow = memo(
           </TableCell>
         )}
 
-        <TableCell className="w-16 rounded-r-md text-center align-middle lg:w-32">
+        <TableCell
+          className="w-16 rounded-r-md text-center align-middle lg:w-32"
+          style={durationColumnWidth === undefined ? undefined : { width: durationColumnWidth }}
+        >
           <div className="flex items-center justify-center">
             <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
           </div>
