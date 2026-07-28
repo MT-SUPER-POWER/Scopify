@@ -545,10 +545,10 @@ export default function TracklistTable({
                 </TableHead>
               )}
               <TableHead
-                className="w-16 text-center text-zinc-400 lg:w-32"
+                className="w-16 text-right text-zinc-400 lg:w-32"
                 style={showExtendedColumns ? undefined : { width: compactDurationWidth }}
               >
-                <div className="flex size-full items-center justify-center">
+                <div className="flex size-full items-center justify-end">
                   <Clock className="size-4" />
                 </div>
               </TableHead>

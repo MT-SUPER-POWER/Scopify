@@ -233,10 +233,10 @@ export const TrackRow = memo(
         )}
 
         <TableCell
-          className="w-16 rounded-r-md text-center align-middle lg:w-32"
+          className="w-16 rounded-r-md text-right align-middle lg:w-32"
           style={durationColumnWidth === undefined ? undefined : { width: durationColumnWidth }}
         >
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-end">
             <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
           </div>
         </TableCell>
