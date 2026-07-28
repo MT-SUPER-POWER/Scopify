@@ -48,7 +48,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
   };
 
   return (
-    <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
+    <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row md:px-8 lg:px-10 xl:px-12">
       <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:size-56">
         {isDaily || !info.cover ? (
           <DailyCalendarCover dailyDate={info.dailyDate} />

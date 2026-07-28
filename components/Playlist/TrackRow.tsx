@@ -136,7 +136,7 @@ export const TrackRow = memo(
         onDoubleClick={() => onPlay(track)}
         {...props}
       >
-        <TableCell className="rounded-l-md pl-0 text-left font-medium">
+        <TableCell className="rounded-l-md pl-4 text-left font-medium">
           <TrackIndexCell
             index={index}
             isActive={isActive}
@@ -233,7 +233,7 @@ export const TrackRow = memo(
         )}
 
         <TableCell
-          className="w-16 rounded-r-md text-right align-middle lg:w-32"
+          className="w-20 rounded-r-md pr-4 text-right align-middle lg:w-36"
           style={durationColumnWidth === undefined ? undefined : { width: durationColumnWidth }}
         >
           <div className="flex items-center justify-end">

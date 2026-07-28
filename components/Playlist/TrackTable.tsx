@@ -77,7 +77,7 @@ export default function TracklistTable({
   stickyHeaderTop,
   tracks: externalTracks,
 }: TracklistTableProps) {
-  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({ duration: 64 });
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const showAlbumColumn = useMediaQuery("(min-width: 640px)") && !hideAlbumColumn;
   const showExtendedColumns = useMediaQuery("(min-width: 1024px)");
@@ -148,9 +148,9 @@ export default function TracklistTable({
         id: "index",
         enableResizing: false,
         enableSorting: false,
-        maxSize: 48,
-        minSize: 40,
-        size: 40,
+        maxSize: 64,
+        minSize: 56,
+        size: 56,
       },
       { accessorFn: (track) => track.name, id: "title", minSize: 160, size: 300 },
       { accessorFn: (track) => track.al?.name ?? "", id: "album", minSize: 96, size: 200 },
@@ -165,9 +165,9 @@ export default function TracklistTable({
         id: "duration",
         enableResizing: false,
         enableSorting: false,
-        maxSize: 128,
-        minSize: 56,
-        size: 64,
+        maxSize: 144,
+        minSize: 72,
+        size: 80,
       },
     ],
     [likeSet],
@@ -233,16 +233,28 @@ export default function TracklistTable({
     [],
   );
   const compactDurationWidth = durationColumn.getSize();
-  const compactFixedWidth = 40 + compactDurationWidth;
+  const compactFixedWidth = 52 + compactDurationWidth;
   const compactTitleWidth = showAlbumColumn
     ? `calc(70% - ${compactFixedWidth}px)`
     : `calc(100% - ${compactFixedWidth}px)`;
   const titleColumnStyle = showExtendedColumns
-    ? { minWidth: titleColumn.columnDef.minSize, width: titleColumn.getSize() }
+    ? {
+        minWidth: titleColumn.columnDef.minSize,
+        width: columnSizing.title ? titleColumn.getSize() : "auto",
+      }
     : { width: compactTitleWidth };
   const albumColumnStyle = showExtendedColumns
-    ? { minWidth: albumColumn.columnDef.minSize, width: albumColumn.getSize() }
+    ? {
+        minWidth: albumColumn.columnDef.minSize,
+        width: columnSizing.album ? albumColumn.getSize() : "25%",
+      }
     : { width: "30%" };
+  const dateColumnStyle = showExtendedColumns
+    ? {
+        minWidth: dateColumn.columnDef.minSize,
+        width: columnSizing.date ? dateColumn.getSize() : "15%",
+      }
+    : { minWidth: dateColumn.columnDef.minSize, width: dateColumn.getSize() };
   const visibleColumnCount = table.getVisibleLeafColumns().length;
 
   const primaryScrollSurface = usePrimaryScrollSurface();
@@ -459,222 +471,160 @@ export default function TracklistTable({
         onCancel={handleCancelDelete}
       />
 
-      <div className="w-full">
+      <div className="w-full px-6 md:px-8 lg:px-10 xl:px-12">
         <div ref={stickyHeaderSentinelRef} aria-hidden className="-mb-px h-px" />
-        <Table containerClassName="overflow-visible" className="w-full table-fixed text-zinc-400">
-          <TableHeader
-            style={stickyHeaderTop === undefined ? undefined : { top: stickyHeaderTop }}
-            className={cn(
-              "sticky top-0 z-10",
-              "[&_[data-slot=table-head]]:h-9",
-              isVirtualScrolling
-                ? "shadow-none"
-                : "drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
-              isTableHeaderSticky
-                ? "bg-[#121212]/95"
-                : "bg-linear-to-b from-transparent to-[#121212]/10 backdrop-blur-sm",
-              stickyHeaderClassName,
-            )}
-          >
-            <TableRow className="border-none hover:bg-transparent">
-              <TableHead className="w-10 pl-0 text-left text-zinc-400 lg:w-12">#</TableHead>
-              <TableHead
-                className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                style={titleColumnStyle}
-                onClick={handleSortableHeaderClick(titleColumn.getToggleSortingHandler())}
-              >
-                <div className="flex items-center gap-1">
-                  {t("playlist.table.columnTitle")}
-                  {titleColumn.getIsSorted() &&
-                    (titleColumn.getIsSorted() === "asc" ? (
-                      <ChevronUp className="size-4" />
-                    ) : (
-                      <ChevronDown className="size-4" />
-                    ))}
-                </div>
-                {titleResizeHandler && (
-                  <ResizeHandle onResize={titleResizeHandler} onResizeStart={beginColumnResize} />
-                )}
-              </TableHead>
-              {showAlbumColumn && (
-                <TableHead
-                  className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                  style={albumColumnStyle}
-                  onClick={handleSortableHeaderClick(albumColumn.getToggleSortingHandler())}
-                >
-                  <div className="flex items-center gap-1">
-                    {t("playlist.table.columnAlbum")}
-                    {albumColumn.getIsSorted() &&
-                      (albumColumn.getIsSorted() === "asc" ? (
-                        <ChevronUp className="size-4" />
-                      ) : (
-                        <ChevronDown className="size-4" />
-                      ))}
-                  </div>
-                  {albumResizeHandler && (
-                    <ResizeHandle onResize={albumResizeHandler} onResizeStart={beginColumnResize} />
-                  )}
-                </TableHead>
+        <div className="-mx-4">
+          <Table containerClassName="overflow-visible" className="w-full table-fixed text-zinc-400">
+            <TableHeader
+              style={stickyHeaderTop === undefined ? undefined : { top: stickyHeaderTop }}
+              className={cn(
+                "sticky top-0 z-10",
+                "[&_[data-slot=table-head]]:h-9",
+                isVirtualScrolling
+                  ? "shadow-none"
+                  : "drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
+                isTableHeaderSticky
+                  ? "bg-[#121212]/95"
+                  : "bg-linear-to-b from-transparent to-[#121212]/10 backdrop-blur-sm",
+                stickyHeaderClassName,
               )}
-              {showDateColumn && (
-                <TableHead
-                  className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                  style={{ minWidth: dateColumn.columnDef.minSize, width: dateColumn.getSize() }}
-                  onClick={handleSortableHeaderClick(dateColumn.getToggleSortingHandler())}
-                >
-                  <div className="flex items-center gap-1">
-                    {t("playlist.table.columnPublished")}
-                    {dateColumn.getIsSorted() &&
-                      (dateColumn.getIsSorted() === "asc" ? (
-                        <ChevronUp className="size-4" />
-                      ) : (
-                        <ChevronDown className="size-4" />
-                      ))}
-                  </div>
-                  {dateResizeHandler && (
-                    <ResizeHandle onResize={dateResizeHandler} onResizeStart={beginColumnResize} />
-                  )}
-                </TableHead>
-              )}
-              {showLikeColumn && (
-                <TableHead
-                  className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                  style={{ minWidth: likeColumn.columnDef.minSize, width: likeColumn.getSize() }}
-                  onClick={handleSortableHeaderClick(likeColumn.getToggleSortingHandler())}
-                >
-                  <div className="flex items-center justify-center gap-1">
-                    {t("playlist.table.columnLike")}
-                    {likeColumn.getIsSorted() &&
-                      (likeColumn.getIsSorted() === "asc" ? (
-                        <ChevronUp className="size-4" />
-                      ) : (
-                        <ChevronDown className="size-4" />
-                      ))}
-                  </div>
-                  {likeResizeHandler && (
-                    <ResizeHandle onResize={likeResizeHandler} onResizeStart={beginColumnResize} />
-                  )}
-                </TableHead>
-              )}
-              <TableHead
-                className="w-16 text-right text-zinc-400 lg:w-32"
-                style={showExtendedColumns ? undefined : { width: compactDurationWidth }}
-              >
-                <div className="flex size-full items-center justify-end">
-                  <Clock className="size-4" />
-                </div>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {sortedTracks.length === 0 ? (
+            >
               <TableRow className="border-none hover:bg-transparent">
-                <TableCell colSpan={visibleColumnCount} className="py-10 text-center text-zinc-500">
-                  {hasSearchQuery ? (
-                    t("playlist.table.searchNoResults", {
-                      query: searchQuery ?? "",
-                    })
-                  ) : onEmptyAction && emptyActionLabel ? (
-                    <div className="flex flex-col items-center gap-3">
-                      <span>{t("playlist.table.noFetchedData")}</span>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={onEmptyAction}
-                        className="bg-white text-black hover:bg-white/90"
-                      >
-                        <RefreshCw className="size-4" />
-                        {emptyActionLabel}
-                      </Button>
-                    </div>
-                  ) : (
-                    <span>{t("playlist.table.noSongs")}</span>
+                <TableHead className="w-14 pl-4 text-left text-zinc-400 lg:w-16">#</TableHead>
+                <TableHead
+                  className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
+                  style={titleColumnStyle}
+                  onClick={handleSortableHeaderClick(titleColumn.getToggleSortingHandler())}
+                >
+                  <div className="flex items-center gap-1">
+                    {t("playlist.table.columnTitle")}
+                    {titleColumn.getIsSorted() &&
+                      (titleColumn.getIsSorted() === "asc" ? (
+                        <ChevronUp className="size-4" />
+                      ) : (
+                        <ChevronDown className="size-4" />
+                      ))}
+                  </div>
+                  {titleResizeHandler && (
+                    <ResizeHandle onResize={titleResizeHandler} onResizeStart={beginColumnResize} />
                   )}
-                </TableCell>
-              </TableRow>
-            ) : disableVirtualization ? (
-              sortedTracks.map((track, index) => {
-                const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
-                const isLiked = likeSet.has(track.id);
-                return (
-                  <SongContextMenu
-                    key={`${track.id}-${index}`}
-                    song={track}
-                    isActive={isActive}
-                    isPlaying={isPlaying}
-                    onPlay={() => handlePlay(track)}
-                    playlistID={playlistID}
-                    isDailyRecommend={canDislikeDailyRecommendation}
-                    readonly={readonly || isHistoricalDailyRecommendation}
-                    onRemoveFromPlaylist={() =>
-                      handleRequestDelete(playlistID ?? undefined, track.id)
-                    }
-                    onDislikeDailyRecommend={
-                      canDislikeDailyRecommendation
-                        ? () => void handleDislikeDailyRecommend(track.id)
-                        : undefined
-                    }
+                </TableHead>
+                {showAlbumColumn && (
+                  <TableHead
+                    className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
+                    style={albumColumnStyle}
+                    onClick={handleSortableHeaderClick(albumColumn.getToggleSortingHandler())}
                   >
-                    <TrackRow
-                      track={track}
-                      index={index}
-                      isActive={isActive}
-                      isPlaying={isPlaying}
-                      isLiked={isLiked}
-                      playlistID={playlistID}
-                      onPlay={handlePlay}
-                      onRequestDelete={handleRequestDelete}
-                      setIsPlaying={setIsPlaying}
-                      hideAlbumColumn={!showAlbumColumn}
-                      durationColumnWidth={showExtendedColumns ? undefined : compactDurationWidth}
-                      hideDateColumn={!showDateColumn}
-                      hideLikeColumn={!showLikeColumn}
-                    />
-                  </SongContextMenu>
-                );
-              })
-            ) : (
-              <>
-                {virtualItems.length > 0 && virtualItems[0].start > 0 && (
-                  <tr style={{ height: `${virtualItems[0].start}px` }}>
-                    <td colSpan={visibleColumnCount} aria-hidden />
-                  </tr>
+                    <div className="flex items-center gap-1">
+                      {t("playlist.table.columnAlbum")}
+                      {albumColumn.getIsSorted() &&
+                        (albumColumn.getIsSorted() === "asc" ? (
+                          <ChevronUp className="size-4" />
+                        ) : (
+                          <ChevronDown className="size-4" />
+                        ))}
+                    </div>
+                    {albumResizeHandler && (
+                      <ResizeHandle
+                        onResize={albumResizeHandler}
+                        onResizeStart={beginColumnResize}
+                      />
+                    )}
+                  </TableHead>
                 )}
-                {virtualItems.map((virtualRow) => {
-                  const track = sortedTracks[virtualRow.index];
+                {showDateColumn && (
+                  <TableHead
+                    className="group/head relative cursor-pointer px-3 text-xs font-normal text-zinc-400 transition-colors select-none hover:text-white"
+                    style={dateColumnStyle}
+                    onClick={handleSortableHeaderClick(dateColumn.getToggleSortingHandler())}
+                  >
+                    <div className="flex items-center gap-1">
+                      {t("playlist.table.columnPublished")}
+                      {dateColumn.getIsSorted() &&
+                        (dateColumn.getIsSorted() === "asc" ? (
+                          <ChevronUp className="size-4" />
+                        ) : (
+                          <ChevronDown className="size-4" />
+                        ))}
+                    </div>
+                    {dateResizeHandler && (
+                      <ResizeHandle
+                        onResize={dateResizeHandler}
+                        onResizeStart={beginColumnResize}
+                      />
+                    )}
+                  </TableHead>
+                )}
+                {showLikeColumn && (
+                  <TableHead
+                    className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
+                    style={{ minWidth: likeColumn.columnDef.minSize, width: likeColumn.getSize() }}
+                    onClick={handleSortableHeaderClick(likeColumn.getToggleSortingHandler())}
+                  >
+                    <div className="flex items-center justify-center gap-1">
+                      {t("playlist.table.columnLike")}
+                      {likeColumn.getIsSorted() &&
+                        (likeColumn.getIsSorted() === "asc" ? (
+                          <ChevronUp className="size-4" />
+                        ) : (
+                          <ChevronDown className="size-4" />
+                        ))}
+                    </div>
+                    {likeResizeHandler && (
+                      <ResizeHandle
+                        onResize={likeResizeHandler}
+                        onResizeStart={beginColumnResize}
+                      />
+                    )}
+                  </TableHead>
+                )}
+                <TableHead
+                  className="w-20 pr-4 text-right text-zinc-400 lg:w-36"
+                  style={showExtendedColumns ? undefined : { width: compactDurationWidth }}
+                >
+                  <div className="flex size-full items-center justify-end">
+                    <Clock className="size-4" />
+                  </div>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {sortedTracks.length === 0 ? (
+                <TableRow className="border-none hover:bg-transparent">
+                  <TableCell
+                    colSpan={visibleColumnCount}
+                    className="py-10 text-center text-zinc-500"
+                  >
+                    {hasSearchQuery ? (
+                      t("playlist.table.searchNoResults", {
+                        query: searchQuery ?? "",
+                      })
+                    ) : onEmptyAction && emptyActionLabel ? (
+                      <div className="flex flex-col items-center gap-3">
+                        <span>{t("playlist.table.noFetchedData")}</span>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={onEmptyAction}
+                          className="bg-white text-black hover:bg-white/90"
+                        >
+                          <RefreshCw className="size-4" />
+                          {emptyActionLabel}
+                        </Button>
+                      </div>
+                    ) : (
+                      <span>{t("playlist.table.noSongs")}</span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ) : disableVirtualization ? (
+                sortedTracks.map((track, index) => {
                   const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
                   const isLiked = likeSet.has(track.id);
-                  const row = (
-                    <TrackRow
-                      key={`${track.id}-${virtualRow.index}`}
-                      ref={(element) => {
-                        if (element) virtualRowElementsRef.current.set(virtualRow.index, element);
-                        else virtualRowElementsRef.current.delete(virtualRow.index);
-                      }}
-                      data-index={virtualRow.index}
-                      track={track}
-                      index={virtualRow.index}
-                      isActive={isActive}
-                      isPlaying={isPlaying}
-                      isLiked={isLiked}
-                      playlistID={playlistID}
-                      onPlay={handlePlay}
-                      onRequestDelete={handleRequestDelete}
-                      setIsPlaying={setIsPlaying}
-                      hideAlbumColumn={!showAlbumColumn}
-                      durationColumnWidth={showExtendedColumns ? undefined : compactDurationWidth}
-                      hideDateColumn={!showDateColumn}
-                      hideLikeColumn={!showLikeColumn}
-                      isScrolling={isVirtualScrolling}
-                    />
-                  );
-
-                  if (isVirtualScrolling) return row;
-
                   return (
                     <SongContextMenu
-                      key={`${track.id}-${virtualRow.index}`}
+                      key={`${track.id}-${index}`}
                       song={track}
                       isActive={isActive}
                       isPlaying={isPlaying}
@@ -691,24 +641,100 @@ export default function TracklistTable({
                           : undefined
                       }
                     >
-                      {row}
+                      <TrackRow
+                        track={track}
+                        index={index}
+                        isActive={isActive}
+                        isPlaying={isPlaying}
+                        isLiked={isLiked}
+                        playlistID={playlistID}
+                        onPlay={handlePlay}
+                        onRequestDelete={handleRequestDelete}
+                        setIsPlaying={setIsPlaying}
+                        hideAlbumColumn={!showAlbumColumn}
+                        durationColumnWidth={showExtendedColumns ? undefined : compactDurationWidth}
+                        hideDateColumn={!showDateColumn}
+                        hideLikeColumn={!showLikeColumn}
+                      />
                     </SongContextMenu>
                   );
-                })}
-                {virtualItems.length > 0 &&
-                  (() => {
-                    const last = virtualItems[virtualItems.length - 1];
-                    const paddingBottom = virtualizer.getTotalSize() - last.end;
-                    return paddingBottom > 0 ? (
-                      <tr style={{ height: `${paddingBottom}px` }}>
-                        <td colSpan={visibleColumnCount} aria-hidden />
-                      </tr>
-                    ) : null;
-                  })()}
-              </>
-            )}
-          </TableBody>
-        </Table>
+                })
+              ) : (
+                <>
+                  {virtualItems.length > 0 && virtualItems[0].start > 0 && (
+                    <tr style={{ height: `${virtualItems[0].start}px` }}>
+                      <td colSpan={visibleColumnCount} aria-hidden />
+                    </tr>
+                  )}
+                  {virtualItems.map((virtualRow) => {
+                    const track = sortedTracks[virtualRow.index];
+                    const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
+                    const isLiked = likeSet.has(track.id);
+                    const row = (
+                      <TrackRow
+                        key={`${track.id}-${virtualRow.index}`}
+                        ref={(element) => {
+                          if (element) virtualRowElementsRef.current.set(virtualRow.index, element);
+                          else virtualRowElementsRef.current.delete(virtualRow.index);
+                        }}
+                        data-index={virtualRow.index}
+                        track={track}
+                        index={virtualRow.index}
+                        isActive={isActive}
+                        isPlaying={isPlaying}
+                        isLiked={isLiked}
+                        playlistID={playlistID}
+                        onPlay={handlePlay}
+                        onRequestDelete={handleRequestDelete}
+                        setIsPlaying={setIsPlaying}
+                        hideAlbumColumn={!showAlbumColumn}
+                        durationColumnWidth={showExtendedColumns ? undefined : compactDurationWidth}
+                        hideDateColumn={!showDateColumn}
+                        hideLikeColumn={!showLikeColumn}
+                        isScrolling={isVirtualScrolling}
+                      />
+                    );
+
+                    if (isVirtualScrolling) return row;
+
+                    return (
+                      <SongContextMenu
+                        key={`${track.id}-${virtualRow.index}`}
+                        song={track}
+                        isActive={isActive}
+                        isPlaying={isPlaying}
+                        onPlay={() => handlePlay(track)}
+                        playlistID={playlistID}
+                        isDailyRecommend={canDislikeDailyRecommendation}
+                        readonly={readonly || isHistoricalDailyRecommendation}
+                        onRemoveFromPlaylist={() =>
+                          handleRequestDelete(playlistID ?? undefined, track.id)
+                        }
+                        onDislikeDailyRecommend={
+                          canDislikeDailyRecommendation
+                            ? () => void handleDislikeDailyRecommend(track.id)
+                            : undefined
+                        }
+                      >
+                        {row}
+                      </SongContextMenu>
+                    );
+                  })}
+                  {virtualItems.length > 0 &&
+                    (() => {
+                      const last = virtualItems[virtualItems.length - 1];
+                      const paddingBottom = virtualizer.getTotalSize() - last.end;
+                      return paddingBottom > 0 ? (
+                        <tr style={{ height: `${paddingBottom}px` }}>
+                          <td colSpan={visibleColumnCount} aria-hidden />
+                        </tr>
+                      ) : null;
+                    })()}
+                </>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </>
   );
