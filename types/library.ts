@@ -8,4 +8,6 @@ export interface LibraryMediaItem {
   title: string;
 }
 
-export type PodcastLibraryTab = "created" | "likedVoices" | "purchased" | "subscribed";
+export type PodcastLibraryTab = "created" | "liked" | "subscribed";
+
+export type PodcastViewMode = "cards" | "list";

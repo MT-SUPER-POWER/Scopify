@@ -1,6 +1,7 @@
-import { Disc3 } from "lucide-react";
+import { Clock, Disc3 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { formatDate } from "@/lib/utils";
 import type { LibraryMediaItem } from "@/types/library";
 
 interface LibraryMediaGridProps {
@@ -29,6 +30,12 @@ function LibraryMediaTile({ item }: { item: LibraryMediaItem }) {
       </div>
       <h2 className="mt-3 truncate text-sm font-semibold text-white">{item.title}</h2>
       {item.subtitle && <p className="mt-1 truncate text-xs text-zinc-400">{item.subtitle}</p>}
+      {item.date ? (
+        <p className="mt-1 flex items-center gap-1 truncate text-xs text-zinc-500">
+          <Clock className="size-3 shrink-0" />
+          {formatDate(item.date)}
+        </p>
+      ) : null}
     </>
   );
 
