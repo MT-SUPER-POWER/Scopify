@@ -1,6 +1,7 @@
 import type { HTMLAttributes, RefObject } from "react";
 
 import type { SongDetail } from "@/types/api/music";
+import type { PlaylistInfo } from "@/types/playlist";
 
 export interface PlaylistTagSelectorProps {
   maxSelected: number;
@@ -12,12 +13,29 @@ export interface PlaylistActionsProps {
   dailyDate?: null | string;
   inputRef: RefObject<HTMLInputElement | null>;
   isDaily: boolean;
+  isSticky?: boolean;
   onSearchChange: (query: string) => void;
   onSearchClose: () => void;
   onSearchOpen: () => void;
   playlistId: null | string;
+  playSourceId?: null | string;
   searchOpen: boolean;
   searchQuery: string;
+  tracks: SongDetail[];
+}
+
+export interface PlaylistContentProps {
+  dailyDate: null | string;
+  hideAlbumColumn?: boolean;
+  isDailyRecommend: boolean;
+  isLoading: boolean;
+  playlistId: null | string;
+  playlistInfo: PlaylistInfo | null;
+  playSourceId?: null | string;
+  readonly?: boolean;
+  refetchTracks: () => void | Promise<unknown>;
+  setTracks?: (tracks: SongDetail[]) => void;
+  themeColor: string;
   tracks: SongDetail[];
 }
 
@@ -26,6 +44,7 @@ export type DailyRecommendationMode = "current" | "history";
 export interface TracklistTableProps {
   dailyRecommendationMode?: DailyRecommendationMode;
   disableVirtualization?: boolean;
+  hideAlbumColumn?: boolean;
   emptyActionLabel?: string;
   hideDateColumn?: boolean;
   hideLikeColumn?: boolean;
@@ -38,6 +57,8 @@ export interface TracklistTableProps {
   readonly?: boolean;
   searchOpen?: boolean;
   searchQuery?: string;
+  stickyHeaderClassName?: string;
+  stickyHeaderTop?: number;
   playSourceId?: null | string;
   tracks?: SongDetail[];
 }

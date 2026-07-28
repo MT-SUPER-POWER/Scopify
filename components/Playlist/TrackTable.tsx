@@ -5,7 +5,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChevronDown, ChevronUp, Clock, GripVertical, RefreshCw } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { TracklistTableProps } from "@/types/components/playlist";
@@ -57,6 +57,7 @@ function waitForAnimationFrame() {
 export default function TracklistTable({
   disableVirtualization = false,
   emptyActionLabel,
+  hideAlbumColumn = false,
   hideDateColumn = false,
   hideLikeColumn = false,
   onEmptyAction,
@@ -65,6 +66,8 @@ export default function TracklistTable({
   playSourceId,
   readonly = false,
   searchQuery,
+  stickyHeaderClassName,
+  stickyHeaderTop,
   tracks: externalTracks,
 }: TracklistTableProps) {
   const [sortField, setSortField] = useState<SortField>(null);
@@ -79,7 +82,7 @@ export default function TracklistTable({
   const colAlbumRef = useRef(200);
   const colDateRef = useRef(140);
   const colLikeRef = useRef(80);
-  const showAlbumColumn = useMediaQuery("(min-width: 640px)");
+  const showAlbumColumn = useMediaQuery("(min-width: 640px)") && !hideAlbumColumn;
   const showExtendedColumns = useMediaQuery("(min-width: 1024px)");
   const showDateColumn = showExtendedColumns && !hideDateColumn;
   const showLikeColumn = showExtendedColumns && !hideLikeColumn;
@@ -205,7 +208,27 @@ export default function TracklistTable({
   };
 
   const primaryScrollSurface = usePrimaryScrollSurface();
+  const stickyHeaderSentinelRef = useRef<HTMLDivElement>(null);
+  const [isTableHeaderSticky, setIsTableHeaderSticky] = useState(false);
   const virtualRowElementsRef = useRef(new Map<number, HTMLTableRowElement>());
+
+  useEffect(() => {
+    const sentinel = stickyHeaderSentinelRef.current;
+    if (!primaryScrollSurface || !sentinel || stickyHeaderTop === undefined) {
+      setIsTableHeaderSticky(false);
+      return;
+    }
+
+    const syncStickyState = () => {
+      const stickyTop = primaryScrollSurface.getBoundingClientRect().top + stickyHeaderTop;
+      setIsTableHeaderSticky(sentinel.getBoundingClientRect().top <= stickyTop);
+    };
+
+    syncStickyState();
+    primaryScrollSurface.addEventListener("scroll", syncStickyState, { passive: true });
+
+    return () => primaryScrollSurface.removeEventListener("scroll", syncStickyState);
+  }, [primaryScrollSurface, stickyHeaderTop]);
 
   const virtualizer = useVirtualizer({
     count: sortedTracks.length,
@@ -399,18 +422,24 @@ export default function TracklistTable({
       />
 
       <div className="w-full">
-        <Table className="w-full table-fixed text-zinc-400">
+        <div ref={stickyHeaderSentinelRef} aria-hidden className="-mb-px h-px" />
+        <Table containerClassName="overflow-visible" className="w-full table-fixed text-zinc-400">
           <TableHeader
+            style={stickyHeaderTop === undefined ? undefined : { top: stickyHeaderTop }}
             className={cn(
               "sticky top-0 z-10",
+              "[&_[data-slot=table-head]]:h-9",
               isVirtualScrolling
                 ? "shadow-none"
-                : "drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)] backdrop-blur-sm",
-              "bg-linear-to-b from-transparent to-[#121212]/10",
+                : "drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]",
+              isTableHeaderSticky
+                ? "bg-[#121212]/95"
+                : "bg-linear-to-b from-transparent to-[#121212]/10 backdrop-blur-sm",
+              stickyHeaderClassName,
             )}
           >
             <TableRow className="border-none hover:bg-transparent">
-              <TableHead className="w-10 text-center text-zinc-400 lg:w-12">#</TableHead>
+              <TableHead className="w-10 pl-0 text-left text-zinc-400 lg:w-12">#</TableHead>
               <TableHead
                 className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
                 style={titleColumnStyle}

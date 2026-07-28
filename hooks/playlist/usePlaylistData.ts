@@ -30,10 +30,10 @@ function getDailyCacheDate() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function usePlaylist() {
+export function usePlaylist(playlistIdOverride?: null | string) {
   const { t } = useI18n();
   const searchParams = useSearchParams();
-  const playlistId = searchParams.get("id");
+  const playlistId = playlistIdOverride === undefined ? searchParams.get("id") : playlistIdOverride;
   const isRecommend = searchParams.get("isRecommend") === "true";
   const isDailyRecommend = searchParams.get("isDailyRecommend") === "true";
   const requestedDailyDate = searchParams.get("dailyDate");

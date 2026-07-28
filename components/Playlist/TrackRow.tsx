@@ -38,7 +38,7 @@ function TrackIndexCell({
   setIsPlaying: (v: boolean) => void;
 }) {
   return (
-    <div className="group/cell relative mx-auto flex size-4 items-center justify-center">
+    <div className="group/cell relative flex size-4 items-center justify-center">
       <span className={cn("font-normal text-zinc-400 group-hover:hidden", isActive && "hidden")}>
         {index + 1}
       </span>
@@ -136,7 +136,7 @@ export const TrackRow = memo(
         onDoubleClick={() => onPlay(track)}
         {...props}
       >
-        <TableCell className="rounded-l-md text-center font-medium">
+        <TableCell className="rounded-l-md pl-0 text-left font-medium">
           <TrackIndexCell
             index={index}
             isActive={isActive}

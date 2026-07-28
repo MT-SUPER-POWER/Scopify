@@ -40,7 +40,9 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const { locale, t } = useI18n();
   const {
     playlistId,
+    playSourceId,
     isDaily,
+    isSticky = false,
     dailyDate,
     searchOpen,
     searchQuery,
@@ -70,7 +72,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
   const currentPageId =
-    playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
+    playSourceId ?? playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
   const isCurrentQueue = Boolean(storePlaylistId) && storePlaylistId === currentPageId;
   const showPause = isCurrentQueue && isPlaying; // 只有“是当前歌单”且“正在播放”时，才显示暂停键
 
@@ -101,17 +103,30 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 p-6">
-      <div className="flex flex-wrap items-center gap-4 md:gap-6">
+    <div
+      className={cn(
+        "flex min-h-26 flex-wrap items-center justify-between gap-4 p-6 transition-[gap,padding] duration-200",
+        isSticky && "h-16 min-h-0 flex-nowrap gap-3 overflow-x-auto px-6 py-2",
+      )}
+    >
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-4 md:gap-6",
+          isSticky && "shrink-0 flex-nowrap gap-3 md:gap-4",
+        )}
+      >
         <button
           onClick={handlePlayToggle}
           disabled={!currentSongDetail && !tracks.length}
-          className="flex size-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477] disabled:cursor-not-allowed disabled:opacity-50"
+          className={cn(
+            "flex size-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477] disabled:cursor-not-allowed disabled:opacity-50",
+            isSticky && "size-12",
+          )}
         >
           {showPause ? (
-            <Pause className="ml-0.5 size-6 fill-current" />
+            <Pause className={cn("ml-0.5 size-6 fill-current", isSticky && "size-5")} />
           ) : (
-            <Play className="ml-1.5 size-6 fill-current" />
+            <Play className={cn("ml-1.5 size-6 fill-current", isSticky && "size-5")} />
           )}
         </button>
 
@@ -121,7 +136,8 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
         >
           <Shuffle
             className={cn(
-              "size-8 transition-colors",
+              isSticky ? "size-7" : "size-8",
+              "transition-colors",
               isShuffle ? "text-[#1ed760]" : "text-zinc-400 hover:text-white",
             )}
           />
@@ -130,16 +146,26 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
           )}
         </button>
 
-        <ArrowDownCircle className="size-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
+        <ArrowDownCircle
+          className={cn(
+            isSticky ? "size-7" : "size-8",
+            "cursor-pointer text-zinc-400 transition-colors hover:text-white",
+          )}
+        />
         {/* TODO: 实现更多选项
             1. 根据是歌单还是每日推荐 / 专辑 做区分
             2. 歌单：更新歌单封面、编辑歌单信息、分享歌单
             3. 专辑：分享专辑、收藏/取消收藏专辑
          */}
-        <MoreHorizontal className="size-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
+        <MoreHorizontal
+          className={cn(
+            isSticky ? "size-7" : "size-8",
+            "cursor-pointer text-zinc-400 transition-colors hover:text-white",
+          )}
+        />
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className={cn("flex shrink-0 items-center gap-3", isSticky && "gap-2")}>
         {isDaily && (
           <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
             <TooltipProvider>
