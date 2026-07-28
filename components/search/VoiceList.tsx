@@ -2,7 +2,13 @@ import { useI18n } from "@/store/module/i18n";
 import type { VoiceListProps } from "@/types/components/search";
 import { VoiceItem } from "./VoiceItem";
 
-export function VoiceList({ limit, onViewAll, variant = "default", voices }: VoiceListProps) {
+export function VoiceList({
+  limit,
+  onViewAll,
+  onViewTranscript,
+  variant = "default",
+  voices,
+}: VoiceListProps) {
   const { t } = useI18n();
   const displayedVoices = limit ? voices.slice(0, limit) : voices;
 
@@ -15,7 +21,14 @@ export function VoiceList({ limit, onViewAll, variant = "default", voices }: Voi
       }
     >
       {displayedVoices.map((voice, index) => (
-        <VoiceItem key={voice.id} voice={voice} index={index} variant={variant} voices={voices} />
+        <VoiceItem
+          key={voice.id}
+          index={index}
+          onViewTranscript={onViewTranscript}
+          variant={variant}
+          voice={voice}
+          voices={voices}
+        />
       ))}
       {voices.length === 0 && (
         <p className="py-4 text-sm text-zinc-500">{t("search.section.noVoiceResults")}</p>

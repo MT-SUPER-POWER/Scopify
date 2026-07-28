@@ -1,6 +1,6 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
+import { FileText, Pause, Play } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";
 import { cn, formatDuration } from "@/lib/utils";
@@ -29,7 +29,13 @@ function toSongDetail(song: Song): SongDetail {
   };
 }
 
-export function VoiceItem({ index, variant = "default", voice, voices }: VoiceItemProps) {
+export function VoiceItem({
+  index,
+  onViewTranscript,
+  variant = "default",
+  voice,
+  voices,
+}: VoiceItemProps) {
   const { t } = useI18n();
   const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
@@ -93,7 +99,7 @@ export function VoiceItem({ index, variant = "default", voice, voices }: VoiceIt
           {voice.name}
         </p>
         <p className={cn("truncate text-xs text-zinc-400", isPreview && "mt-1")}>
-          {isPreview && `${formatDuration(voice.duration)} · `}
+          {isPreview && voice.duration > 0 && `${formatDuration(voice.duration)} · `}
           {voice.podcastName}
           {voice.hostName ? ` · ${voice.hostName}` : ""}
         </p>
@@ -103,26 +109,47 @@ export function VoiceItem({ index, variant = "default", voice, voices }: VoiceIt
           {formatDuration(voice.duration)}
         </span>
       )}
-      {voice.mainSong && (
-        <button
-          type="button"
-          title={playLabel}
-          aria-label={playLabel}
-          onClick={(event) => {
-            event.stopPropagation();
-            handlePlay();
-          }}
-          className={cn(
-            "flex shrink-0 items-center justify-center rounded-full bg-white/10 text-white opacity-0 transition-all group-hover:opacity-100 hover:scale-105 hover:bg-[#1ed760] hover:text-black focus:opacity-100",
-            isPreview ? "size-10" : "size-9",
+      {(onViewTranscript || voice.mainSong) && (
+        <div className="flex shrink-0 items-center gap-1.5">
+          {onViewTranscript && (
+            <button
+              type="button"
+              title={t("search.voice.transcript")}
+              aria-label={t("search.voice.transcript")}
+              onClick={(event) => {
+                event.stopPropagation();
+                onViewTranscript(voice);
+              }}
+              className={cn(
+                "flex shrink-0 items-center justify-center rounded-full bg-white/10 text-white opacity-0 transition-all group-hover:opacity-100 hover:scale-105 hover:bg-white/20 focus:opacity-100",
+                isPreview ? "size-10" : "size-9",
+              )}
+            >
+              <FileText className="size-4" />
+            </button>
           )}
-        >
-          {isActive && isPlaying ? (
-            <Pause className="size-4 fill-current" />
-          ) : (
-            <Play className="ml-0.5 size-4 fill-current" />
+          {voice.mainSong && (
+            <button
+              type="button"
+              title={playLabel}
+              aria-label={playLabel}
+              onClick={(event) => {
+                event.stopPropagation();
+                handlePlay();
+              }}
+              className={cn(
+                "flex shrink-0 items-center justify-center rounded-full bg-white/10 text-white opacity-0 transition-all group-hover:opacity-100 hover:scale-105 hover:bg-[#1ed760] hover:text-black focus:opacity-100",
+                isPreview ? "size-10" : "size-9",
+              )}
+            >
+              {isActive && isPlaying ? (
+                <Pause className="size-4 fill-current" />
+              ) : (
+                <Play className="ml-0.5 size-4 fill-current" />
+              )}
+            </button>
           )}
-        </button>
+        </div>
       )}
     </div>
   );
