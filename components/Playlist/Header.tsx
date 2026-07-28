@@ -57,7 +57,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
             width={400}
             height={400}
             src={info.cover}
-            alt={info.title}
+            alt={info.title || "cover"}
             className="size-full object-cover"
           />
         )}
@@ -85,6 +85,15 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
           {info.title}
         </h1>
 
+        {info.description ? (
+          <p
+            className="mb-4 line-clamp-2 text-sm leading-6 whitespace-pre-line text-white/70 md:mb-5"
+            title={info.description}
+          >
+            {info.description}
+          </p>
+        ) : null}
+
         <div className="flex flex-wrap items-center gap-2.5 text-sm text-white/80 drop-shadow-md">
           {!info.isSpecial && (
             <>
@@ -92,7 +101,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
                 {info.creatorAvatar ? (
                   <Image
                     src={info.creatorAvatar}
-                    alt={info.creator}
+                    alt={info.creator || "creator"}
                     width={28}
                     height={28}
                     className="size-7 rounded-full object-cover"
