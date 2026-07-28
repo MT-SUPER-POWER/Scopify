@@ -2,10 +2,25 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+import {
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type ColumnSizingState,
+  type SortingState,
+} from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChevronDown, ChevronUp, Clock, GripVertical, RefreshCw } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  type MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "sonner";
 
 import type { TracklistTableProps } from "@/types/components/playlist";
@@ -40,14 +55,6 @@ import { TrackRow } from "./TrackRow";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const MIN_COL = 60;
-const COMPACT_ALBUM_MIN = 96;
-const COMPACT_DURATION_MIN = 56;
-const COMPACT_TITLE_MIN = 160;
-
-type SortDirection = "asc" | "desc";
-type SortField = "album" | "date" | "like" | "title" | null;
-
 function waitForAnimationFrame() {
   return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 }
@@ -70,52 +77,12 @@ export default function TracklistTable({
   stickyHeaderTop,
   tracks: externalTracks,
 }: TracklistTableProps) {
-  const [sortField, setSortField] = useState<SortField>(null);
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [colTitle, setColTitleState] = useState(300);
-  const [colAlbum, setColAlbumState] = useState(200);
-  const [colDate, setColDateState] = useState(140);
-  const [colLike, setColLikeState] = useState(80);
-  const [compactAlbumWidth, setCompactAlbumWidth] = useState<number | null>(null);
-  const [compactDurationWidth, setCompactDurationWidth] = useState(64);
-  const colTitleRef = useRef(300);
-  const colAlbumRef = useRef(200);
-  const colDateRef = useRef(140);
-  const colLikeRef = useRef(80);
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({ duration: 64 });
+  const [sorting, setSorting] = useState<SortingState>([]);
   const showAlbumColumn = useMediaQuery("(min-width: 640px)") && !hideAlbumColumn;
   const showExtendedColumns = useMediaQuery("(min-width: 1024px)");
   const showDateColumn = showExtendedColumns && !hideDateColumn;
   const showLikeColumn = showExtendedColumns && !hideLikeColumn;
-  const compactFixedWidth = 40 + compactDurationWidth;
-  const compactTitleWidth = showAlbumColumn
-    ? compactAlbumWidth === null
-      ? `calc(70% - ${compactFixedWidth}px)`
-      : `calc(100% - ${compactFixedWidth + compactAlbumWidth}px)`
-    : `calc(100% - ${compactFixedWidth}px)`;
-  const titleColumnStyle = showExtendedColumns
-    ? { minWidth: 60, width: colTitle }
-    : { width: compactTitleWidth };
-  const albumColumnStyle = showExtendedColumns
-    ? { minWidth: 64, width: colAlbum }
-    : { width: compactAlbumWidth ?? "30%" };
-  const visibleColumnCount =
-    3 + Number(showAlbumColumn) + Number(showDateColumn) + Number(showLikeColumn);
-  const setColTitle = (w: number) => {
-    colTitleRef.current = w;
-    setColTitleState(w);
-  };
-  const setColAlbum = (w: number) => {
-    colAlbumRef.current = w;
-    setColAlbumState(w);
-  };
-  const setColDate = (w: number) => {
-    colDateRef.current = w;
-    setColDateState(w);
-  };
-  const setColLike = (w: number) => {
-    colLikeRef.current = w;
-    setColLikeState(w);
-  };
 
   const { t } = useI18n();
   const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
@@ -175,37 +142,108 @@ export default function TracklistTable({
   }, [tracks, searchQuery]);
   const hasSearchQuery = Boolean(searchQuery?.trim());
 
-  const sortedTracks = useMemo(() => {
-    if (!sortField) return filteredTracks;
-    return [...filteredTracks].sort((a, b) => {
-      let val = 0;
-      if (sortField === "title") {
-        val = (a.name || "").localeCompare(b.name || "");
-      } else if (sortField === "album") {
-        val = (a.al?.name || "").localeCompare(b.al?.name || "");
-      } else if (sortField === "date") {
-        val = (a.publishTime || 0) - (b.publishTime || 0);
-      } else if (sortField === "like") {
-        const aLiked = likeSet.has(a.id) ? 1 : 0;
-        const bLiked = likeSet.has(b.id) ? 1 : 0;
-        val = aLiked - bLiked;
-      }
-      return sortDirection === "asc" ? val : -val;
-    });
-  }, [filteredTracks, sortField, sortDirection, likeSet]);
+  const columns = useMemo<ColumnDef<SongDetail>[]>(
+    () => [
+      {
+        id: "index",
+        enableResizing: false,
+        enableSorting: false,
+        maxSize: 48,
+        minSize: 40,
+        size: 40,
+      },
+      { accessorFn: (track) => track.name, id: "title", minSize: 160, size: 300 },
+      { accessorFn: (track) => track.al?.name ?? "", id: "album", minSize: 96, size: 200 },
+      { accessorFn: (track) => track.publishTime ?? 0, id: "date", minSize: 120, size: 140 },
+      {
+        accessorFn: (track) => Number(likeSet.has(track.id)),
+        id: "like",
+        minSize: 44,
+        size: 80,
+      },
+      {
+        id: "duration",
+        enableResizing: false,
+        enableSorting: false,
+        maxSize: 128,
+        minSize: 56,
+        size: 64,
+      },
+    ],
+    [likeSet],
+  );
+  const table = useReactTable({
+    columnResizeMode: "onChange",
+    columns,
+    data: filteredTracks,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onColumnSizingChange: setColumnSizing,
+    onSortingChange: setSorting,
+    state: {
+      columnSizing,
+      columnVisibility: {
+        album: showAlbumColumn,
+        date: showDateColumn,
+        like: showLikeColumn,
+      },
+      sorting,
+    },
+  });
+  const sortedRows = table.getRowModel().rows;
+  const sortedTracks = sortedRows.map((row) => row.original);
+  const titleColumn = table.getColumn("title")!;
+  const albumColumn = table.getColumn("album")!;
+  const dateColumn = table.getColumn("date")!;
+  const likeColumn = table.getColumn("like")!;
+  const durationColumn = table.getColumn("duration")!;
+  const getResizeHandler = (columnId: string) =>
+    table
+      .getFlatHeaders()
+      .find((header) => header.column.id === columnId)
+      ?.getResizeHandler();
+  const titleResizeHandler = getResizeHandler("title");
+  const albumResizeHandler = getResizeHandler("album");
+  const dateResizeHandler = getResizeHandler("date");
+  const likeResizeHandler = getResizeHandler("like");
+  const suppressSortAfterResizeRef = useRef(false);
+  const beginColumnResize = useCallback(() => {
+    suppressSortAfterResizeRef.current = true;
 
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      if (sortDirection === "asc") setSortDirection("desc");
-      else {
-        setSortField(null);
-        setSortDirection("desc");
-      }
-    } else {
-      setSortField(field);
-      setSortDirection("asc");
-    }
-  };
+    const clearSuppression = () => {
+      window.setTimeout(() => {
+        suppressSortAfterResizeRef.current = false;
+      }, 0);
+    };
+
+    window.addEventListener("mouseup", clearSuppression, { once: true });
+    window.addEventListener("touchend", clearSuppression, { once: true });
+  }, []);
+  const handleSortableHeaderClick = useCallback(
+    (handler: ((event: unknown) => void) | undefined) =>
+      (event: ReactMouseEvent<HTMLTableCellElement>) => {
+        if (suppressSortAfterResizeRef.current) {
+          event.preventDefault();
+          event.stopPropagation();
+          suppressSortAfterResizeRef.current = false;
+          return;
+        }
+        handler?.(event);
+      },
+    [],
+  );
+  const compactDurationWidth = durationColumn.getSize();
+  const compactFixedWidth = 40 + compactDurationWidth;
+  const compactTitleWidth = showAlbumColumn
+    ? `calc(70% - ${compactFixedWidth}px)`
+    : `calc(100% - ${compactFixedWidth}px)`;
+  const titleColumnStyle = showExtendedColumns
+    ? { minWidth: titleColumn.columnDef.minSize, width: titleColumn.getSize() }
+    : { width: compactTitleWidth };
+  const albumColumnStyle = showExtendedColumns
+    ? { minWidth: albumColumn.columnDef.minSize, width: albumColumn.getSize() }
+    : { width: "30%" };
+  const visibleColumnCount = table.getVisibleLeafColumns().length;
 
   const primaryScrollSurface = usePrimaryScrollSurface();
   const stickyHeaderSentinelRef = useRef<HTMLDivElement>(null);
@@ -443,134 +481,79 @@ export default function TracklistTable({
               <TableHead
                 className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
                 style={titleColumnStyle}
-                onClick={() => handleSort("title")}
+                onClick={handleSortableHeaderClick(titleColumn.getToggleSortingHandler())}
               >
                 <div className="flex items-center gap-1">
                   {t("playlist.table.columnTitle")}
-                  {sortField === "title" &&
-                    (sortDirection === "asc" ? (
+                  {titleColumn.getIsSorted() &&
+                    (titleColumn.getIsSorted() === "asc" ? (
                       <ChevronUp className="size-4" />
                     ) : (
                       <ChevronDown className="size-4" />
                     ))}
                 </div>
-                {showExtendedColumns ? (
-                  <ResizeHandle
-                    onMouseDown={makeResizeHandler(
-                      colTitleRef,
-                      setColTitle,
-                      colAlbumRef,
-                      setColAlbum,
-                      60,
-                      64,
-                    )}
-                  />
-                ) : (
-                  <ResizeHandle
-                    onMouseDown={
-                      showAlbumColumn
-                        ? makeMeasuredResizeHandler(
-                            (_nextTitleWidth, nextAlbumWidth) =>
-                              setCompactAlbumWidth(nextAlbumWidth),
-                            COMPACT_TITLE_MIN,
-                            COMPACT_ALBUM_MIN,
-                          )
-                        : makeMeasuredResizeHandler(
-                            (_nextTitleWidth, nextDurationWidth) =>
-                              setCompactDurationWidth(nextDurationWidth),
-                            COMPACT_TITLE_MIN,
-                            COMPACT_DURATION_MIN,
-                          )
-                    }
-                  />
+                {titleResizeHandler && (
+                  <ResizeHandle onResize={titleResizeHandler} onResizeStart={beginColumnResize} />
                 )}
               </TableHead>
               {showAlbumColumn && (
                 <TableHead
                   className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
                   style={albumColumnStyle}
-                  onClick={() => handleSort("album")}
+                  onClick={handleSortableHeaderClick(albumColumn.getToggleSortingHandler())}
                 >
                   <div className="flex items-center gap-1">
                     {t("playlist.table.columnAlbum")}
-                    {sortField === "album" &&
-                      (sortDirection === "asc" ? (
+                    {albumColumn.getIsSorted() &&
+                      (albumColumn.getIsSorted() === "asc" ? (
                         <ChevronUp className="size-4" />
                       ) : (
                         <ChevronDown className="size-4" />
                       ))}
                   </div>
-                  {showExtendedColumns ? (
-                    showDateColumn ? (
-                      <ResizeHandle
-                        onMouseDown={makeResizeHandler(
-                          colAlbumRef,
-                          setColAlbum,
-                          colDateRef,
-                          setColDate,
-                          64,
-                          120,
-                        )}
-                      />
-                    ) : null
-                  ) : (
-                    <ResizeHandle
-                      onMouseDown={makeMeasuredResizeHandler(
-                        (nextAlbumWidth, nextDurationWidth) => {
-                          setCompactAlbumWidth(nextAlbumWidth);
-                          setCompactDurationWidth(nextDurationWidth);
-                        },
-                        COMPACT_ALBUM_MIN,
-                        COMPACT_DURATION_MIN,
-                      )}
-                    />
+                  {albumResizeHandler && (
+                    <ResizeHandle onResize={albumResizeHandler} onResizeStart={beginColumnResize} />
                   )}
                 </TableHead>
               )}
               {showDateColumn && (
                 <TableHead
                   className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                  style={{ minWidth: 120, width: colDate }}
-                  onClick={() => handleSort("date")}
+                  style={{ minWidth: dateColumn.columnDef.minSize, width: dateColumn.getSize() }}
+                  onClick={handleSortableHeaderClick(dateColumn.getToggleSortingHandler())}
                 >
                   <div className="flex items-center gap-1">
                     {t("playlist.table.columnPublished")}
-                    {sortField === "date" &&
-                      (sortDirection === "asc" ? (
+                    {dateColumn.getIsSorted() &&
+                      (dateColumn.getIsSorted() === "asc" ? (
                         <ChevronUp className="size-4" />
                       ) : (
                         <ChevronDown className="size-4" />
                       ))}
                   </div>
-                  {showLikeColumn && (
-                    <ResizeHandle
-                      onMouseDown={makeResizeHandler(
-                        colDateRef,
-                        setColDate,
-                        colLikeRef,
-                        setColLike,
-                        120,
-                        44,
-                      )}
-                    />
+                  {dateResizeHandler && (
+                    <ResizeHandle onResize={dateResizeHandler} onResizeStart={beginColumnResize} />
                   )}
                 </TableHead>
               )}
               {showLikeColumn && (
                 <TableHead
                   className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                  style={{ minWidth: 44, width: colLike }}
-                  onClick={() => handleSort("like")}
+                  style={{ minWidth: likeColumn.columnDef.minSize, width: likeColumn.getSize() }}
+                  onClick={handleSortableHeaderClick(likeColumn.getToggleSortingHandler())}
                 >
                   <div className="flex items-center justify-center gap-1">
                     {t("playlist.table.columnLike")}
-                    {sortField === "like" &&
-                      (sortDirection === "asc" ? (
+                    {likeColumn.getIsSorted() &&
+                      (likeColumn.getIsSorted() === "asc" ? (
                         <ChevronUp className="size-4" />
                       ) : (
                         <ChevronDown className="size-4" />
                       ))}
                   </div>
+                  {likeResizeHandler && (
+                    <ResizeHandle onResize={likeResizeHandler} onResizeStart={beginColumnResize} />
+                  )}
                 </TableHead>
               )}
               <TableHead
@@ -730,73 +713,28 @@ export default function TracklistTable({
     </>
   );
 }
-function makeResizeHandler(
-  leftRef: React.RefObject<number>,
-  setLeft: (w: number) => void,
-  rightRef: React.RefObject<number>,
-  setRight: (w: number) => void,
-  leftMin = MIN_COL,
-  rightMin = MIN_COL,
-) {
-  return (e: React.MouseEvent) => {
-    e.preventDefault();
-    const startX = e.clientX;
-    const startLeft = leftRef.current;
-    const startRight = rightRef.current;
-    const total = startLeft + startRight;
+function ResizeHandle({
+  onResize,
+  onResizeStart,
+}: {
+  onResize: (event: unknown) => void;
+  onResizeStart: () => void;
+}) {
+  const stopPropagation = (event: { stopPropagation: () => void }) => event.stopPropagation();
 
-    const onMove = (ev: MouseEvent) => {
-      const delta = ev.clientX - startX;
-      const nextLeft = Math.min(Math.max(leftMin, startLeft + delta), total - rightMin);
-      setLeft(nextLeft);
-      setRight(total - nextLeft);
-    };
-    const onUp = () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-  };
-}
-
-function makeMeasuredResizeHandler(
-  onResize: (leftWidth: number, rightWidth: number) => void,
-  leftMin = MIN_COL,
-  rightMin = MIN_COL,
-) {
-  return (e: React.MouseEvent<HTMLSpanElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const leftCell = e.currentTarget.parentElement;
-    const rightCell = leftCell?.nextElementSibling;
-    if (!(leftCell instanceof HTMLElement) || !(rightCell instanceof HTMLElement)) return;
-
-    const startX = e.clientX;
-    const startLeft = leftCell.getBoundingClientRect().width;
-    const startRight = rightCell.getBoundingClientRect().width;
-    const total = startLeft + startRight;
-
-    const onMove = (event: MouseEvent) => {
-      const delta = event.clientX - startX;
-      const nextLeft = Math.min(Math.max(leftMin, startLeft + delta), total - rightMin);
-      onResize(nextLeft, total - nextLeft);
-    };
-    const onUp = () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-  };
-}
-
-function ResizeHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void }) {
   return (
     <span
-      onMouseDown={onMouseDown}
+      onClick={stopPropagation}
+      onMouseDown={(event) => {
+        stopPropagation(event);
+        onResizeStart();
+        onResize(event);
+      }}
+      onTouchStart={(event) => {
+        stopPropagation(event);
+        onResizeStart();
+        onResize(event);
+      }}
       className="absolute top-1/2 right-0 flex h-4 w-3 -translate-y-1/2 cursor-col-resize items-center justify-center opacity-0 transition-opacity select-none group-hover/head:opacity-100"
     >
       <GripVertical className="size-3 text-zinc-500" />
