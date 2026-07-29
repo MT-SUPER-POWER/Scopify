@@ -1,7 +1,10 @@
 "use client";
 
 import { ArrowDownCircle, Heart, MoreHorizontal, Pause, Play, Shuffle } from "lucide-react";
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/store/module/i18n";
 
 interface AlbumActionsProps {
   isPlaying: boolean;
@@ -18,30 +21,100 @@ export function AlbumActions({
   onPlay,
   onToggleSubscribe,
 }: AlbumActionsProps) {
+  const { t } = useI18n();
+  const playLabel = t(isPlaying ? "ui.pause" : "ui.play");
+  const collectionLabel = t(
+    isAlbumCollected ? "album.action.unsubscribe" : "album.action.subscribe",
+  );
+
   return (
-    <div className="flex items-center gap-6 p-6">
-      <button
-        type="button"
-        onClick={onPlay}
-        className="flex size-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477]"
-      >
-        {isPlaying ? (
-          <Pause className="ml-0.5 size-6 fill-current" />
-        ) : (
-          <Play className="ml-1.5 size-6 fill-current" />
-        )}
-      </button>
-      <Shuffle className="size-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
-      <ArrowDownCircle className="size-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
-      <button
-        type="button"
-        disabled={isTogglingAlbumSubscribe}
-        onClick={onToggleSubscribe}
-        className="text-zinc-400 transition-colors hover:text-white disabled:opacity-50"
-      >
-        <Heart className={cn("size-8", isAlbumCollected && "fill-[#1ed760] text-[#1ed760]")} />
-      </button>
-      <MoreHorizontal className="size-8 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
-    </div>
+    <TooltipProvider>
+      <div className="flex items-center gap-6 p-6">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label={playLabel}
+              onClick={onPlay}
+              className="flex size-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+            >
+              {isPlaying ? (
+                <Pause className="ml-0.5 size-6 fill-current" />
+              ) : (
+                <Play className="ml-1.5 size-6 fill-current" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {playLabel}
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label={t("album.action.shuffle")}
+              className="flex size-8 items-center justify-center text-zinc-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+            >
+              <Shuffle className="size-8" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {t("album.action.shuffle")}
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label={t("album.action.download")}
+              className="flex size-8 items-center justify-center text-zinc-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+            >
+              <ArrowDownCircle className="size-8" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {t("album.action.download")}
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              disabled={isTogglingAlbumSubscribe}
+              aria-label={collectionLabel}
+              aria-busy={isTogglingAlbumSubscribe}
+              onClick={onToggleSubscribe}
+              className="flex size-8 items-center justify-center text-zinc-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none disabled:opacity-50"
+            >
+              <Heart
+                className={cn("size-8", isAlbumCollected && "fill-[#1ed760] text-[#1ed760]")}
+              />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {collectionLabel}
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label={t("album.action.more")}
+              className="flex size-8 items-center justify-center text-zinc-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+            >
+              <MoreHorizontal className="size-8" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {t("album.action.more")}
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
   );
 }

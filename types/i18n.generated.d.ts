@@ -2795,6 +2795,24 @@ export interface TranslateFn {
    */
   (key: "album.action.unsubscribe", params?: TranslationParams): string;
   /**
+   * zh-CN: 随机播放
+   * zh-TW: 隨機播放
+   * en-US: Shuffle play
+   */
+  (key: "album.action.shuffle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下载
+   * zh-TW: 下載
+   * en-US: Download
+   */
+  (key: "album.action.download", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多
+   * zh-TW: 更多
+   * en-US: More
+   */
+  (key: "album.action.more", params?: TranslationParams): string;
+  /**
    * zh-CN: 未知专辑 ID
    * zh-TW: 未知專輯 ID
    * en-US: Unknown Album ID
@@ -2866,6 +2884,24 @@ export interface TranslateFn {
    * en-US: Album Cover
    */
   (key: "album.coverAlt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑简介
+   * zh-TW: 專輯簡介
+   * en-US: About this album
+   */
+  (key: "album.description.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭专辑简介
+   * zh-TW: 關閉專輯簡介
+   * en-US: Close album description
+   */
+  (key: "album.description.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发行
+   * zh-TW: 發行
+   * en-US: Released by
+   */
+  (key: "album.meta.publisher", params?: TranslationParams): string;
   /**
    * zh-CN: 无效的歌手 ID
    * zh-TW: 無效的歌手 ID
