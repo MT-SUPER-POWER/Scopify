@@ -85,7 +85,7 @@ export function FeaturedActivitiesCarousel() {
     }
   };
 
-  const { dragOffset, isDragging, swipeHandlers } = useCarouselSwipe({
+  const { dragOffset, isDragging, suppressClickAfterSwipe, swipeHandlers } = useCarouselSwipe({
     onNext: goToNext,
     onPrevious: goToPrevious,
   });
@@ -107,6 +107,7 @@ export function FeaturedActivitiesCarousel() {
       {hasBanners ? (
         <div
           className="group/activity-carousel relative -mx-2 cursor-grab touch-pan-y overflow-hidden px-2 active:cursor-grabbing"
+          onClickCapture={suppressClickAfterSwipe}
           {...swipeHandlers}
         >
           <div

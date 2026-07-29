@@ -1,13 +1,16 @@
+import Link from "next/link";
 import Image from "next/image";
 
+import { resolveBannerDestination } from "@/lib/home/resolveBannerDestination";
 import type { ActivityBannerCardProps } from "@/types/components/home";
 
 export function ActivityBannerCard({ banner, imageAlt }: ActivityBannerCardProps) {
   const imageUrl = banner.imageUrl ?? banner.pic;
+  const destination = resolveBannerDestination(banner);
 
   if (!imageUrl) return null;
 
-  return (
+  const card = (
     <article className="group relative aspect-[16/8] overflow-hidden rounded-md bg-zinc-900 select-none">
       <Image
         src={imageUrl}
@@ -23,5 +26,24 @@ export function ActivityBannerCard({ banner, imageAlt }: ActivityBannerCardProps
         </span>
       )}
     </article>
+  );
+
+  if (!destination) return card;
+
+  const linkClassName =
+    "block cursor-pointer rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
+
+  if (destination.isExternal) {
+    return (
+      <a href={destination.href} className={linkClassName}>
+        {card}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={destination.href} className={linkClassName}>
+      {card}
+    </Link>
   );
 }

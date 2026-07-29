@@ -5,3 +5,10 @@ export interface CarouselSwipeOptions {
 }
 
 export type CarouselDirection = -1 | 1;
+
+export type BannerTargetKind = "album" | "artist" | "playlist" | "radio" | "song";
+
+export interface BannerDestination {
+  href: string;
+  isExternal: boolean;
+}

@@ -22,13 +22,17 @@ export function CarouselDotNavigation({
   onPrevious,
   onSelect,
 }: CarouselDotNavigationProps) {
-  const { dragOffset, isDragging, swipeHandlers } = useCarouselSwipe({ onNext, onPrevious });
+  const { dragOffset, isDragging, suppressClickAfterSwipe, swipeHandlers } = useCarouselSwipe({
+    onNext,
+    onPrevious,
+  });
 
   return (
     <div
       className="relative h-6 w-25 touch-pan-y"
       aria-label={label}
       role="tablist"
+      onClickCapture={suppressClickAfterSwipe}
       {...swipeHandlers}
     >
       <AnimatePresence initial={false} mode="sync">
