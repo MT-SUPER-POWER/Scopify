@@ -33,6 +33,9 @@ interface PendoloActiveLyricSweepProps {
   accentTextColor: string;
   fontPx?: number;
   wordColors?: Theme["wordColors"];
+  isChorus?: boolean;
+  accentMix?: number;
+  chorusGlowMultiplier?: number;
 }
 
 interface PendoloSweepLineProps {
@@ -46,6 +49,7 @@ interface PendoloSweepLineProps {
   primaryTextColor: string;
   fillColor: string;
   tokenColors: Map<string, string>;
+  glowFilter?: string;
 }
 
 const PendoloSweepLine: React.FC<PendoloSweepLineProps> = ({
@@ -59,6 +63,7 @@ const PendoloSweepLine: React.FC<PendoloSweepLineProps> = ({
   primaryTextColor,
   fillColor,
   tokenColors,
+  glowFilter,
 }) => {
   const graphemeOffsets = useMemo(
     () => measureMonetGraphemeOffsets(layoutLine.text, fontPx, fontSpec),
@@ -96,36 +101,40 @@ const PendoloSweepLine: React.FC<PendoloSweepLineProps> = ({
 
   return (
     <span
-      className="relative block whitespace-pre"
+      className="relative block overflow-visible whitespace-pre"
       style={{ width: `${layoutLine.width}px`, height: `${lineHeight}px` }}
     >
       <span style={{ color: colorWithAlpha(primaryTextColor, 0.52) }}>{layoutLine.text}</span>
-      <motion.span
+      <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 block whitespace-pre"
-        style={{
-          opacity: fillOpacity,
-          WebkitMaskImage: maskImage,
-          maskImage,
-          WebkitMaskSize: "100% 100%",
-          maskSize: "100% 100%",
-          WebkitMaskRepeat: "no-repeat",
-          maskRepeat: "no-repeat",
-          textShadow: "none",
-          WebkitTransform: "translateZ(0)",
-          transform: "translateZ(0)",
-        }}
+        className="pointer-events-none absolute inset-0 block overflow-visible whitespace-pre"
+        style={{ filter: glowFilter }}
       >
-        {splitLyricGraphemes(layoutLine.text).map((char, localIdx) => {
-          const globalIdx = layoutLine.graphemeStart + localIdx;
-          const charColor = tokenColors.get(String(globalIdx)) || fillColor;
-          return (
-            <span key={globalIdx} style={{ color: charColor }}>
-              {char}
-            </span>
-          );
-        })}
-      </motion.span>
+        <motion.span
+          className="absolute inset-0 block whitespace-pre"
+          style={{
+            opacity: fillOpacity,
+            WebkitMaskImage: maskImage,
+            maskImage,
+            WebkitMaskSize: "100% 100%",
+            maskSize: "100% 100%",
+            WebkitMaskRepeat: "no-repeat",
+            maskRepeat: "no-repeat",
+            WebkitTransform: "translateZ(0)",
+            transform: "translateZ(0)",
+          }}
+        >
+          {splitLyricGraphemes(layoutLine.text).map((char, localIdx) => {
+            const globalIdx = layoutLine.graphemeStart + localIdx;
+            const charColor = tokenColors.get(String(globalIdx)) || fillColor;
+            return (
+              <span key={globalIdx} style={{ color: charColor }}>
+                {char}
+              </span>
+            );
+          })}
+        </motion.span>
+      </span>
     </span>
   );
 };
@@ -141,6 +150,9 @@ const PendoloActiveLyricSweep: React.FC<PendoloActiveLyricSweepProps> = ({
   accentTextColor,
   fontPx = 28,
   wordColors,
+  isChorus = false,
+  accentMix = 0.32,
+  chorusGlowMultiplier = 0,
 }) => {
   const text = line.fullText;
   const fontSpec = `${fontWeight} ${fontPx}px ${fontFamily}`;
@@ -173,7 +185,10 @@ const PendoloActiveLyricSweep: React.FC<PendoloActiveLyricSweepProps> = ({
     () => buildPendoloTextLayout(text, fontSpec, maxWidth, lineHeight),
     [fontSpec, lineHeight, maxWidth, text],
   );
-  const fillColor = mixColors(primaryTextColor, accentTextColor, 0.32);
+  const fillColor = mixColors(primaryTextColor, accentTextColor, accentMix);
+  const glowFilter = isChorus
+    ? `drop-shadow(0 0 ${Math.round(fontPx * 0.3 * chorusGlowMultiplier)}px ${colorWithAlpha(fillColor, 0.72)}) drop-shadow(0 0 ${Math.round(fontPx * 0.62 * chorusGlowMultiplier)}px ${colorWithAlpha(accentTextColor, 0.28)})`
+    : undefined;
   const textLayoutStyle = {
     fontSize: `${fontPx}px`,
     lineHeight: `${lineHeight}px`,
@@ -195,6 +210,7 @@ const PendoloActiveLyricSweep: React.FC<PendoloActiveLyricSweepProps> = ({
           primaryTextColor={primaryTextColor}
           fillColor={fillColor}
           tokenColors={tokenColors}
+          glowFilter={glowFilter}
         />
       ))}
     </span>

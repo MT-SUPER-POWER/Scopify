@@ -14,6 +14,10 @@ import {
 import { calculatePendoloWheelLayout } from "@/components/lyrics/folia/src/components/visualizer/pendolo/pendoloGeometry";
 import PendoloActiveLyricSweep from "@/components/lyrics/folia/src/components/visualizer/pendolo/PendoloActiveLyricSweep";
 import { buildPendoloTextLayout } from "@/components/lyrics/folia/src/components/visualizer/pendolo/pendoloTextLayout";
+import {
+  resolvePendoloChorusPresentation,
+  resolvePendoloMotionProfile,
+} from "@/components/lyrics/folia/src/components/visualizer/pendolo/pendoloMotionProfile";
 
 const PENDOLO_SCROLL_IDLE_RESET_MS = 2500;
 const PENDOLO_SCROLL_STEP_PX = 90;
@@ -316,9 +320,13 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
 
   // Escapement spring motion for line transition tick
   const springSnappiness = pendoloTuning.tickSnappiness;
+  const motionProfile = useMemo(
+    () => resolvePendoloMotionProfile(theme.animationIntensity),
+    [theme.animationIntensity],
+  );
   const tickSpring = useSpring(targetLineIndex, {
-    stiffness: 180 * springSnappiness,
-    damping: 18 + 4 / Math.max(0.5, springSnappiness),
+    stiffness: 180 * springSnappiness * motionProfile.escapementSpringMultiplier,
+    damping: (18 + 4 / Math.max(0.5, springSnappiness)) * motionProfile.escapementDampingMultiplier,
     mass: 0.8,
   });
 
@@ -457,6 +465,7 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
           coverUrl={props.coverUrl}
           enableLineGlow={pendoloTuning.enableLineGlow ?? false}
           paused={props.paused}
+          motionProfile={motionProfile}
         />
         {pendoloTuning.showGearDecor !== "none" && (
           <div
@@ -491,6 +500,11 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
           >
             {lineItems.map((item) => {
               const isFocal = item.isActive;
+              const chorusPresentation = resolvePendoloChorusPresentation(
+                item.line.isChorus,
+                isFocal && item.index === currentLineIndex,
+                motionProfile,
+              );
               const maxTextWidth = availableTextWidth / item.scale;
               const fontPx = Math.round((isFocal ? 28 : 22) * lyricsFontScale);
               const translation = hideTranslationSubtitle
@@ -526,14 +540,37 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
                       WebkitTransform: "translateZ(0)",
                     }}
                   >
-                    <div
+                    <motion.div
                       className="relative inline-block"
+                      initial={false}
+                      animate={{ scale: chorusPresentation.haloScale }}
+                      transition={{
+                        duration: chorusPresentation.transitionDuration,
+                        ease: "easeOut",
+                      }}
                       style={{
                         transform: `rotate(${item.angleDeg * 0.35}deg) scale(${item.scale}) translateZ(0)`,
                         transformOrigin: "left center",
                         isolation: "isolate",
                       }}
                     >
+                      {chorusPresentation.isActive && (
+                        <motion.div
+                          aria-hidden
+                          className="pointer-events-none absolute -z-10 rounded-2xl"
+                          initial={{ opacity: 0, scale: 0.96 }}
+                          animate={{ opacity: chorusPresentation.haloOpacity, scale: 1 }}
+                          transition={{
+                            duration: chorusPresentation.transitionDuration,
+                            ease: "easeOut",
+                          }}
+                          style={{
+                            inset: "-0.7em -1.1em",
+                            background: `radial-gradient(circle at 42% 50%, ${colorWithAlpha(accentTextColor, 0.14 * chorusPresentation.haloOpacity)} 0%, ${colorWithAlpha(accentTextColor, 0.035 * chorusPresentation.haloOpacity)} 55%, transparent 82%)`,
+                            filter: `blur(${Math.round(10 * motionProfile.chorusGlowMultiplier)}px)`,
+                          }}
+                        />
+                      )}
                       <div style={{ transform: "translateY(-50%)" }}>
                         <div>
                           {isFocal ? (
@@ -547,6 +584,9 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
                               accentTextColor={accentTextColor}
                               fontPx={fontPx}
                               wordColors={theme.wordColors}
+                              isChorus={chorusPresentation.isActive}
+                              accentMix={chorusPresentation.accentMix}
+                              chorusGlowMultiplier={chorusPresentation.glowMultiplier}
                             />
                           ) : (
                             <div
@@ -588,7 +628,7 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   </motion.div>
                 </div>
               );
