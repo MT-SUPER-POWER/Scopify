@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
+import { Disc3, Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -237,12 +237,35 @@ export const SongItem = memo(
                 >
                   {song.name}
                 </span>
+                {song.alias?.length ? (
+                  <span className="truncate text-xs text-zinc-500">({song.alias.join(" / ")})</span>
+                ) : null}
                 <SongVipBadge fee={song.fee} />
+                {song.mvid ? (
+                  <span
+                    className="inline-flex h-[13px] shrink-0 items-center rounded-[1px] border border-[#3d719e] bg-[#438ac3]/10 px-[2px] text-[9px] leading-[11px] font-normal text-[#84c5ef]"
+                    title="MV"
+                  >
+                    MV
+                  </span>
+                ) : null}
               </div>
               <ArtistInlineLinks
                 artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
                 className="cursor-pointer truncate text-xs text-zinc-400"
               />
+            </div>
+
+            <div className="hidden min-w-0 flex-[0.55] items-center gap-2 lg:flex">
+              <Disc3 className="size-3.5 shrink-0 text-zinc-600" aria-hidden="true" />
+              <Link
+                href={`/album?id=${song.album.id}`}
+                title={song.album.name}
+                onClick={(event) => event.stopPropagation()}
+                className="truncate text-xs text-zinc-400 transition-colors hover:text-white hover:underline"
+              >
+                {song.album.name}
+              </Link>
             </div>
 
             {/* Like 按钮 */}

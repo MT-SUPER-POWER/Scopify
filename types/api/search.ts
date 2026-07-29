@@ -29,6 +29,7 @@ export interface SongSearchData {
   dt?: number;
   fee?: number;
   id: number;
+  mvid?: number;
   name?: string;
   al?: SongSearchAlbum;
 }
@@ -39,11 +40,18 @@ export interface SongSearchResource {
   };
 }
 
-export interface SongSearchResponse {
+export interface SearchPagination {
+  hasMore?: boolean;
+  more?: boolean;
+}
+
+export interface SongSearchPayload extends SearchPagination {
+  resources?: SongSearchResource[];
+}
+
+export interface SongSearchResponse extends SearchPagination {
   code: number;
-  data?: {
-    resources?: SongSearchResource[];
-  };
+  data?: SongSearchPayload;
 }
 
 export interface SearchResultArtist extends SearchArtistSource {
@@ -74,25 +82,31 @@ export interface SearchResultPlaylist {
   trackCount?: number;
 }
 
-export interface AlbumSearchResponse {
-  code: number;
-  result?: {
-    albums?: SearchResultAlbum[];
-  };
+export interface AlbumSearchResult extends SearchPagination {
+  albums?: SearchResultAlbum[];
 }
 
-export interface ArtistSearchResponse {
-  code: number;
-  result?: {
-    artists?: SearchResultArtist[];
-  };
+export interface ArtistSearchResult extends SearchPagination {
+  artists?: SearchResultArtist[];
 }
 
-export interface PlaylistSearchResponse {
+export interface PlaylistSearchResult extends SearchPagination {
+  playlists?: SearchResultPlaylist[];
+}
+
+export interface AlbumSearchResponse extends SearchPagination {
   code: number;
-  result?: {
-    playlists?: SearchResultPlaylist[];
-  };
+  result?: AlbumSearchResult;
+}
+
+export interface ArtistSearchResponse extends SearchPagination {
+  code: number;
+  result?: ArtistSearchResult;
+}
+
+export interface PlaylistSearchResponse extends SearchPagination {
+  code: number;
+  result?: PlaylistSearchResult;
 }
 
 export interface ComplexSearchAlbumData {
@@ -119,6 +133,7 @@ export interface ComplexSearchVoiceListData {
   name: string;
   picUrl?: string;
   programCount?: number;
+  score?: number | string;
   subCount?: number;
 }
 
@@ -180,4 +195,81 @@ export interface ComplexSearchResponse {
       traceId?: string;
     };
   };
+}
+
+export interface VoiceSearchArtist extends SearchArtistSource {
+  id?: number;
+  name?: string;
+}
+
+export interface VoiceSearchAlbum {
+  blurPicUrl?: string;
+  id?: number;
+  name?: string | null;
+  picUrl?: string | null;
+}
+
+export interface VoiceSearchSong {
+  al?: VoiceSearchAlbum;
+  album?: VoiceSearchAlbum;
+  alia?: string[];
+  alias?: string[];
+  ar?: VoiceSearchArtist[];
+  artists?: VoiceSearchArtist[];
+  dt?: number;
+  duration?: number;
+  fee?: number;
+  id?: number | string;
+  name?: string;
+}
+
+export interface VoiceSearchProgram {
+  contentCoverUrl?: string;
+  coverUrl?: string;
+  dj?: ComplexSearchDj;
+  duration?: number;
+  id?: number | string;
+  mainSong?: VoiceSearchSong;
+  name?: string;
+  picUrl?: string;
+  radio?: {
+    name?: string;
+    picUrl?: string;
+  };
+  radioName?: string;
+  userName?: string;
+  voiceId?: number | string;
+  voiceListName?: string;
+  voiceName?: string;
+}
+
+export interface VoiceSearchUiElement {
+  image?: {
+    imageUrl?: string;
+  };
+  mainTitle?: {
+    title?: string;
+  };
+}
+
+export interface VoiceSearchItem extends VoiceSearchProgram {
+  baseInfo?: VoiceSearchProgram;
+  resourceId?: number | string;
+  uiElement?: VoiceSearchUiElement;
+}
+
+export interface VoiceSearchPayload extends SearchPagination {
+  data?: VoiceSearchItem[];
+  list?: VoiceSearchItem[];
+  resources?: VoiceSearchItem[];
+  voiceList?: VoiceSearchItem[];
+  voices?: VoiceSearchItem[];
+}
+
+export interface VoiceSearchResponse extends SearchPagination {
+  code: number;
+  data?: VoiceSearchItem[] | VoiceSearchPayload;
+  list?: VoiceSearchItem[];
+  result?: VoiceSearchPayload;
+  voices?: VoiceSearchItem[];
 }

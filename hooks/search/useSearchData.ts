@@ -3,14 +3,21 @@
 import { useCallback, useMemo } from "react";
 
 import {
-  useAlbumSearchQuery,
-  useArtistSearchQuery,
   useComplexSearchQuery,
-  usePlaylistSearchQuery,
-  useSongSearchQuery,
+  useInfiniteAlbumSearchQuery,
+  useInfiniteArtistSearchQuery,
+  useInfinitePlaylistSearchQuery,
+  useInfiniteSongSearchQuery,
+  useInfiniteVoiceListSearchQuery,
+  useInfiniteVoiceSearchQuery,
 } from "@/hooks/search/useSearchQueries";
 import { translate } from "@/lib/i18n";
 import { mapComplexSearchResponse } from "@/lib/search/complexSearchAdapter";
+import {
+  getVoiceListSearchItems,
+  mapVoiceListSearchItem,
+} from "@/lib/search/voiceListSearchAdapter";
+import { getVoiceSearchItems, mapVoiceSearchItem } from "@/lib/search/voiceSearchAdapter";
 import { useI18nStore } from "@/store/module/i18n";
 import type {
   SearchResultAlbum,
@@ -18,7 +25,7 @@ import type {
   SearchArtistSource,
   SongSearchResource,
 } from "@/types/api/search";
-import type { Album, Artist, Category, Playlist, Song } from "@/types/search";
+import type { Album, Artist, Category, Playlist, Podcast, Song } from "@/types/search";
 
 function isValidPicUrl(url: string | null | undefined): url is string {
   return typeof url === "string" && url.startsWith("http");
@@ -91,6 +98,7 @@ function mapResourceToSong(
     duration: song.dt ?? 0,
     fee: song.fee,
     id: song.id,
+    mvid: song.mvid,
     name: song.name ?? unknownSongName,
   };
 }
@@ -99,16 +107,24 @@ export function useSearchData(keywords: string, activeCategory: Category) {
   const locale = useI18nStore((state) => state.locale);
   const keyword = keywords.trim();
   const isAll = activeCategory === "All";
-  const usesComplexSearch = isAll || activeCategory === "Podcasts" || activeCategory === "Voices";
+  const usesComplexSearch = isAll;
   const loadSongs = isAll || activeCategory === "Songs";
   const loadAlbums = isAll || activeCategory === "Albums";
   const loadPlaylists = isAll || activeCategory === "Playlists";
+  const loadPodcasts = activeCategory === "Podcasts";
+  const loadVoices = activeCategory === "Voices";
   const loadArtists = isAll || activeCategory === "Artists";
   const complexQuery = useComplexSearchQuery(keyword, usesComplexSearch);
-  const songQuery = useSongSearchQuery(keyword, 30, !usesComplexSearch && loadSongs);
-  const albumQuery = useAlbumSearchQuery(keyword, 20, !usesComplexSearch && loadAlbums);
-  const playlistQuery = usePlaylistSearchQuery(keyword, 20, !usesComplexSearch && loadPlaylists);
-  const artistQuery = useArtistSearchQuery(keyword, 20, !usesComplexSearch && loadArtists);
+  const songQuery = useInfiniteSongSearchQuery(keyword, 30, !usesComplexSearch && loadSongs);
+  const albumQuery = useInfiniteAlbumSearchQuery(keyword, 20, !usesComplexSearch && loadAlbums);
+  const playlistQuery = useInfinitePlaylistSearchQuery(
+    keyword,
+    20,
+    !usesComplexSearch && loadPlaylists,
+  );
+  const artistQuery = useInfiniteArtistSearchQuery(keyword, 20, !usesComplexSearch && loadArtists);
+  const voiceListQuery = useInfiniteVoiceListSearchQuery(keyword, 30, loadPodcasts);
+  const voiceSearchQuery = useInfiniteVoiceSearchQuery(keyword, 30, loadVoices);
   const unknownAlbumName = translate(locale, "common.meta.unknownAlbum");
   const unknownPodcastName = translate(locale, "search.podcast.unknown");
   const unknownSongName = translate(locale, "common.meta.unknownSong");
@@ -128,7 +144,7 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       isAll
         ? complexResults.songs
         : loadSongs
-          ? (songQuery.data?.data?.resources ?? [])
+          ? (songQuery.data?.pages.flatMap((page) => page.data?.resources ?? []) ?? [])
               .map((resource) => mapResourceToSong(resource, unknownAlbumName, unknownSongName))
               .filter((song): song is Song => song !== null)
           : [],
@@ -136,7 +152,7 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       complexResults.songs,
       isAll,
       loadSongs,
-      songQuery.data?.data?.resources,
+      songQuery.data?.pages,
       unknownAlbumName,
       unknownSongName,
     ],
@@ -146,42 +162,84 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       isAll
         ? complexResults.albums
         : loadAlbums
-          ? (albumQuery.data?.result?.albums ?? []).map((album) =>
-              mapSearchAlbum(album, unknownAlbumName),
+          ? (albumQuery.data?.pages.flatMap((page) => page.result?.albums ?? []) ?? []).map(
+              (album) => mapSearchAlbum(album, unknownAlbumName),
             )
           : [],
-    [albumQuery.data?.result?.albums, complexResults.albums, isAll, loadAlbums, unknownAlbumName],
+    [albumQuery.data?.pages, complexResults.albums, isAll, loadAlbums, unknownAlbumName],
   );
   const playlists = useMemo(
     () =>
       isAll
         ? complexResults.playlists
         : loadPlaylists
-          ? (playlistQuery.data?.result?.playlists ?? []).map(mapSearchPlaylist)
+          ? (playlistQuery.data?.pages.flatMap((page) => page.result?.playlists ?? []) ?? []).map(
+              mapSearchPlaylist,
+            )
           : [],
-    [complexResults.playlists, isAll, loadPlaylists, playlistQuery.data?.result?.playlists],
+    [complexResults.playlists, isAll, loadPlaylists, playlistQuery.data?.pages],
   );
   const artists = useMemo(
     () =>
       isAll
         ? complexResults.artists
         : loadArtists
-          ? (artistQuery.data?.result?.artists ?? []).map(mapSearchArtist)
+          ? (artistQuery.data?.pages.flatMap((page) => page.result?.artists ?? []) ?? []).map(
+              mapSearchArtist,
+            )
           : [],
-    [artistQuery.data?.result?.artists, complexResults.artists, isAll, loadArtists],
+    [artistQuery.data?.pages, complexResults.artists, isAll, loadArtists],
   );
-  const podcasts = usesComplexSearch ? complexResults.podcasts : [];
-  const voices = usesComplexSearch ? complexResults.voices : [];
+  const podcasts = useMemo(
+    () =>
+      isAll
+        ? complexResults.podcasts
+        : loadPodcasts
+          ? (voiceListQuery.data?.pages.flatMap(getVoiceListSearchItems) ?? [])
+              .map((voiceList) => mapVoiceListSearchItem(voiceList, unknownPodcastName))
+              .filter((podcast): podcast is Podcast => podcast !== null)
+          : [],
+    [complexResults.podcasts, isAll, loadPodcasts, unknownPodcastName, voiceListQuery.data?.pages],
+  );
+  const voices = useMemo(
+    () =>
+      isAll
+        ? complexResults.voices
+        : loadVoices
+          ? (voiceSearchQuery.data?.pages
+              .flatMap(getVoiceSearchItems)
+              .map((voice) =>
+                mapVoiceSearchItem(voice, unknownAlbumName, unknownPodcastName, unknownSongName),
+              )
+              .filter((voice): voice is NonNullable<typeof voice> => voice !== null) ?? [])
+          : [],
+    [
+      complexResults.voices,
+      isAll,
+      loadVoices,
+      unknownAlbumName,
+      unknownPodcastName,
+      unknownSongName,
+      voiceSearchQuery.data?.pages,
+    ],
+  );
   const bestMatch = isAll ? complexResults.bestMatch : null;
   const loading = usesComplexSearch
-    ? complexQuery.isFetching
-    : songQuery.isFetching ||
-      albumQuery.isFetching ||
-      playlistQuery.isFetching ||
-      artistQuery.isFetching;
+    ? complexQuery.isLoading
+    : (loadSongs && songQuery.isLoading) ||
+      (loadAlbums && albumQuery.isLoading) ||
+      (loadPlaylists && playlistQuery.isLoading) ||
+      (loadPodcasts && voiceListQuery.isLoading) ||
+      (loadVoices && voiceSearchQuery.isLoading) ||
+      (loadArtists && artistQuery.isLoading);
   const hasError = usesComplexSearch
     ? complexQuery.isError
-    : songQuery.isError || albumQuery.isError || playlistQuery.isError || artistQuery.isError;
+    : (loadSongs && songQuery.isError) ||
+      (loadAlbums && albumQuery.isError) ||
+      (loadPlaylists && playlistQuery.isError) ||
+      (loadPodcasts && voiceListQuery.isError) ||
+      (loadVoices && voiceSearchQuery.isError) ||
+      (loadArtists && artistQuery.isError);
 
   const refetch = useCallback(async () => {
     if (usesComplexSearch) {
@@ -193,6 +251,8 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       ...(loadSongs ? [songQuery.refetch()] : []),
       ...(loadAlbums ? [albumQuery.refetch()] : []),
       ...(loadPlaylists ? [playlistQuery.refetch()] : []),
+      ...(loadPodcasts ? [voiceListQuery.refetch()] : []),
+      ...(loadVoices ? [voiceSearchQuery.refetch()] : []),
       ...(loadArtists ? [artistQuery.refetch()] : []),
     ]);
   }, [
@@ -203,9 +263,13 @@ export function useSearchData(keywords: string, activeCategory: Category) {
     loadAlbums,
     loadArtists,
     loadPlaylists,
+    loadPodcasts,
+    loadVoices,
     loadSongs,
     playlistQuery,
     songQuery,
+    voiceListQuery,
+    voiceSearchQuery,
   ]);
 
   return {
@@ -213,6 +277,24 @@ export function useSearchData(keywords: string, activeCategory: Category) {
     artists,
     bestMatch,
     hasError,
+    fetchNextAlbumPage: albumQuery.fetchNextPage,
+    fetchNextArtistPage: artistQuery.fetchNextPage,
+    fetchNextPlaylistPage: playlistQuery.fetchNextPage,
+    fetchNextPodcastPage: voiceListQuery.fetchNextPage,
+    fetchNextSongPage: songQuery.fetchNextPage,
+    fetchNextVoicePage: voiceSearchQuery.fetchNextPage,
+    hasNextAlbumPage: Boolean(albumQuery.hasNextPage),
+    hasNextArtistPage: Boolean(artistQuery.hasNextPage),
+    hasNextPlaylistPage: Boolean(playlistQuery.hasNextPage),
+    hasNextPodcastPage: Boolean(voiceListQuery.hasNextPage),
+    hasNextSongPage: Boolean(songQuery.hasNextPage),
+    hasNextVoicePage: Boolean(voiceSearchQuery.hasNextPage),
+    isFetchingNextAlbumPage: albumQuery.isFetchingNextPage,
+    isFetchingNextArtistPage: artistQuery.isFetchingNextPage,
+    isFetchingNextPlaylistPage: playlistQuery.isFetchingNextPage,
+    isFetchingNextPodcastPage: voiceListQuery.isFetchingNextPage,
+    isFetchingNextSongPage: songQuery.isFetchingNextPage,
+    isFetchingNextVoicePage: voiceSearchQuery.isFetchingNextPage,
     loading,
     playlists,
     podcasts,

@@ -49,6 +49,8 @@ export interface Podcast {
   id: number;
   name: string;
   programCount: number;
+  score?: number;
+  source?: "dj-radio" | "voice-list";
   subscriberCount: number;
 }
 

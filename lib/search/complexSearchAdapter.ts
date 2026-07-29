@@ -66,6 +66,8 @@ function mapPlaylist(source: SearchResultPlaylist): Playlist {
 }
 
 function mapPodcast(source: ComplexSearchVoiceListData): Podcast {
+  const score = Number(source.score);
+
   return {
     category: source.category,
     coverUrl: source.picUrl ?? "",
@@ -74,6 +76,8 @@ function mapPodcast(source: ComplexSearchVoiceListData): Podcast {
     id: source.id,
     name: source.name,
     programCount: source.programCount ?? 0,
+    score: Number.isFinite(score) ? score : undefined,
+    source: "dj-radio",
     subscriberCount: source.subCount ?? 0,
   };
 }
@@ -100,6 +104,7 @@ function mapSong(source: SongSearchData, unknownAlbumName: string, unknownSongNa
     duration: source.dt ?? 0,
     fee: source.fee,
     id: source.id,
+    mvid: source.mvid,
     name: source.name ?? unknownSongName,
   };
 }

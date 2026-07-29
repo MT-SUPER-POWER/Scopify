@@ -4,6 +4,7 @@ import type {
   ComplexSearchResponse,
   PlaylistSearchResponse,
   SongSearchResponse,
+  VoiceSearchResponse,
 } from "@/types/api/search";
 import request from "../web/request";
 
@@ -86,6 +87,17 @@ export function searchComplex(keyword: string) {
   return request.get<ComplexSearchResponse>("/search/pc/complex/page/v3", {
     params: {
       keyword,
+    },
+  });
+}
+
+export function searchVoices(keyword: string, limit = 30, offset = 0) {
+  return request.get<VoiceSearchResponse>("/search", {
+    params: {
+      keywords: keyword,
+      limit,
+      offset,
+      type: 2000,
     },
   });
 }

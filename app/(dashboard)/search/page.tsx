@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useCallback } from "react";
 import { AllView } from "@/components/search/AllView";
 import { CategoryTabs } from "@/components/search/CategoryTabs";
 import { GridCategoryView } from "@/components/search/GridCategoryView";
@@ -13,20 +13,46 @@ import { VoicesView } from "@/components/search/VoicesView";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
 import { useI18n } from "@/store/module/i18n";
 import type { Category } from "@/types/search";
 
 export default function SearchPage() {
   const { t } = useI18n();
-  const keywords = useSearchParams().get("keywords") || "";
+  const searchParams = useSearchParams();
+  const keywords = searchParams.get("keywords") || "";
   const router = useSmartRouter();
-  const [activeCategory, setActiveCategory] = useState<Category>("All");
+  const activeCategory = getSearchCategory(searchParams.get("tab"));
+  const handleCategoryChange = useCallback(
+    (category: Category) => {
+      router.replace(buildSearchCategoryUrl(searchParams.toString(), category));
+    },
+    [router, searchParams],
+  );
   const {
     albums,
     artists,
     bestMatch,
+    fetchNextAlbumPage,
+    fetchNextArtistPage,
+    fetchNextPlaylistPage,
+    fetchNextPodcastPage,
+    fetchNextSongPage,
+    fetchNextVoicePage,
+    hasNextAlbumPage,
+    hasNextArtistPage,
+    hasNextPlaylistPage,
+    hasNextPodcastPage,
+    hasNextSongPage,
+    hasNextVoicePage,
     hasError,
     loading,
+    isFetchingNextAlbumPage,
+    isFetchingNextArtistPage,
+    isFetchingNextPlaylistPage,
+    isFetchingNextPodcastPage,
+    isFetchingNextSongPage,
+    isFetchingNextVoicePage,
     playlists,
     podcasts,
     refetch,
@@ -38,10 +64,33 @@ export default function SearchPage() {
   const isGridCategory = (["Albums", "Playlists", "Artists"] as Category[]).includes(
     activeCategory,
   );
+  const hasNextGridPage =
+    activeCategory === "Albums"
+      ? hasNextAlbumPage
+      : activeCategory === "Playlists"
+        ? hasNextPlaylistPage
+        : hasNextArtistPage;
+  const isFetchingNextGridPage =
+    activeCategory === "Albums"
+      ? isFetchingNextAlbumPage
+      : activeCategory === "Playlists"
+        ? isFetchingNextPlaylistPage
+        : isFetchingNextArtistPage;
+  const loadNextGridPage = () => {
+    if (activeCategory === "Albums") {
+      void fetchNextAlbumPage();
+      return;
+    }
+    if (activeCategory === "Playlists") {
+      void fetchNextPlaylistPage();
+      return;
+    }
+    if (activeCategory === "Artists") void fetchNextArtistPage();
+  };
 
   return (
     <div className="mx-auto min-h-full w-full max-w-[1600px] p-6 pt-22 text-white">
-      <CategoryTabs active={activeCategory} onChange={setActiveCategory} />
+      <CategoryTabs active={activeCategory} onChange={handleCategoryChange} />
       {hasError && (
         <div className="mb-6">
           <NetworkRetryState
@@ -67,14 +116,35 @@ export default function SearchPage() {
           loadingPlayId={loadingPlayId}
           onPlayAlbum={handlePlayAlbum}
           onPlayPlaylist={handlePlayPlaylist}
-          onSeeAll={setActiveCategory}
+          onSeeAll={handleCategoryChange}
           onNavigate={router.push}
           voices={voices}
         />
       )}
-      {!loading && activeCategory === "Songs" && <SongsView songs={songs} />}
-      {!loading && activeCategory === "Podcasts" && <PodcastsView podcasts={podcasts} />}
-      {!loading && activeCategory === "Voices" && <VoicesView voices={voices} />}
+      {!loading && activeCategory === "Songs" && (
+        <SongsView
+          songs={songs}
+          hasNextPage={hasNextSongPage}
+          isFetchingNextPage={isFetchingNextSongPage}
+          onLoadMore={() => void fetchNextSongPage()}
+        />
+      )}
+      {!loading && activeCategory === "Podcasts" && (
+        <PodcastsView
+          podcasts={podcasts}
+          hasNextPage={hasNextPodcastPage}
+          isFetchingNextPage={isFetchingNextPodcastPage}
+          onLoadMore={() => void fetchNextPodcastPage()}
+        />
+      )}
+      {!loading && activeCategory === "Voices" && (
+        <VoicesView
+          voices={voices}
+          hasNextPage={hasNextVoicePage}
+          isFetchingNextPage={isFetchingNextVoicePage}
+          onLoadMore={() => void fetchNextVoicePage()}
+        />
+      )}
       {!loading && isGridCategory && (
         <GridCategoryView
           activeCategory={activeCategory as "Albums" | "Playlists" | "Artists"}
@@ -85,6 +155,9 @@ export default function SearchPage() {
           onPlayAlbum={handlePlayAlbum}
           onPlayPlaylist={handlePlayPlaylist}
           onNavigate={router.push}
+          hasNextPage={hasNextGridPage}
+          isFetchingNextPage={isFetchingNextGridPage}
+          onLoadMore={loadNextGridPage}
         />
       )}
     </div>

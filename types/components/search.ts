@@ -8,6 +8,7 @@ import type {
   Song,
   Voice,
 } from "@/types/search";
+import type { ReactNode } from "react";
 
 export interface AllViewProps {
   albums: Album[];
@@ -28,8 +29,43 @@ export interface PodcastCardProps {
   podcast: Podcast;
 }
 
-export interface PodcastsViewProps {
+export interface PodcastRowProps {
+  index: number;
+  podcast: Podcast;
+}
+
+export type SearchResultCategory = Exclude<Category, "All">;
+
+export interface SearchCategoryHeaderProps {
+  actions?: ReactNode;
+  category: SearchResultCategory;
+}
+
+export interface SearchPaginationProps {
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  onLoadMore: () => void;
+}
+
+export interface SongsViewProps extends SearchPaginationProps {
+  songs: Song[];
+}
+
+export interface PodcastsViewProps extends SearchPaginationProps {
   podcasts: Podcast[];
+}
+
+export type GridSearchCategory = Extract<Category, "Albums" | "Playlists" | "Artists">;
+
+export interface GridCategoryViewProps extends SearchPaginationProps {
+  activeCategory: GridSearchCategory;
+  albums: Album[];
+  artists: Artist[];
+  loadingPlayId: string | null;
+  onNavigate: (path: string) => void;
+  onPlayAlbum: (album: Album, event: React.MouseEvent) => void;
+  onPlayPlaylist: (playlist: Playlist, event: React.MouseEvent) => void;
+  playlists: Playlist[];
 }
 
 export interface VoiceItemProps {
@@ -41,6 +77,7 @@ export interface VoiceItemProps {
 }
 
 export interface VoiceListProps {
+  layout?: "grid" | "list";
   limit?: number;
   onViewAll?: () => void;
   onViewTranscript?: (voice: Voice) => void;
@@ -48,6 +85,11 @@ export interface VoiceListProps {
   voices: Voice[];
 }
 
-export interface VoicesViewProps {
+export interface VoicesViewProps extends SearchPaginationProps {
   voices: Voice[];
+}
+
+export interface InfiniteScrollTriggerOptions {
+  enabled: boolean;
+  onIntersect: () => void;
 }
