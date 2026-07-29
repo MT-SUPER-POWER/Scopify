@@ -143,6 +143,35 @@ test("keeps a popstate entry when Next replaces its route state", () => {
   expect(snapshots.get(playlistEntryId ?? "")).toEqual(snapshot);
 });
 
+test("restores a query-only popstate without waiting for the scroll surface to remount", () => {
+  const fakeWindow = createWindow();
+  const { registry } = createRegistry();
+  const observedRestoringStates: boolean[] = [];
+  const coordinator = new NavigationScrollCoordinator({
+    onStateChange(state) {
+      observedRestoringStates.push(state.isRestoring);
+    },
+    registry,
+    window: fakeWindow as unknown as Window,
+  });
+  const surface = new FakeScrollSurface();
+
+  coordinator.start();
+  coordinator.registerSurface(surface as unknown as HTMLDivElement);
+  const podcastsSearchHistoryState = fakeWindow.history.state;
+
+  surface.scrollTop = 900;
+  fakeWindow.history.pushState({}, "", "/search/?keywords=next&tab=Songs");
+  surface.scrollTop = 0;
+
+  fakeWindow.history.state = podcastsSearchHistoryState;
+  fakeWindow.dispatchEvent(new Event("popstate"));
+  fakeWindow.flushAnimationFrames();
+
+  expect(surface.scrollTop).toBe(900);
+  expect(observedRestoringStates.at(-1)).toBe(false);
+});
+
 test("does not synchronously notify React state observers from history writes", () => {
   const fakeWindow = createWindow();
   const { registry } = createRegistry();

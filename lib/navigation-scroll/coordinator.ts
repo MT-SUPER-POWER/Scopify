@@ -344,6 +344,16 @@ export class NavigationScrollCoordinator {
     this.pendingIntent = "restore";
     this.surfaceEpoch = -1;
     this.setState({ entryId: this.activeEntryId, isRestoring: true });
+
+    // Search keyword/category history traversal only changes query parameters,
+    // so App Router keeps the current template and scroll surface mounted.
+    // Start restoration against that surface instead of waiting forever for a
+    // registerSurface call that will never happen.
+    const surface = this.activeSurface;
+    if (!surface) return;
+
+    this.surfaceEpoch = this.navigationEpoch;
+    this.handleRegisteredSurface(surface, this.navigationEpoch);
   };
 
   private readonly handleSurfaceScroll = () => {
