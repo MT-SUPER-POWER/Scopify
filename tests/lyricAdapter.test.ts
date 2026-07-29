@@ -69,20 +69,42 @@ test("falls back to LRC and keeps the complete raw response", () => {
       startTimeMs: 1500,
       text: "first",
       translation: "one",
-      words: [{ endTimeMs: 3000, startTimeMs: 1500, text: "first" }],
+      words: [{ endTimeMs: 2850, startTimeMs: 1500, text: "first" }],
     },
     {
-      endTimeMs: 3000,
+      endTimeMs: 8000,
       romanization: "er",
       startTimeMs: 3000,
       text: "second",
       translation: "two",
-      words: [{ endTimeMs: 3000, startTimeMs: 3000, text: "second" }],
+      words: [{ endTimeMs: 7500, startTimeMs: 3000, text: "second" }],
     },
   ]);
   expect(result.raw).toBe(lyric);
   expect(result.raw.futureField).toEqual({ preserved: true });
   expect(pruneNeteaseLyric(lyric)).toBe(lyric);
+});
+
+test("synthesizes staggered CJK word timing for line-timed LRC visualizers", () => {
+  const result = adaptLyricDataToFolia(
+    adaptNeteaseLyric({
+      code: 200,
+      lrc: {
+        lyric: "[00:01.000]逐字出现\n[00:05.000]下一行",
+        version: 1,
+      },
+    }),
+  );
+  const line = result.lines.find((candidate) => candidate.fullText === "逐字出现");
+
+  expect(line?.words.map((word) => word.text)).toEqual(["逐", "字", "出", "现"]);
+  expect(line?.words.map((word) => word.startTime)).toEqual([1, 1.9, 2.8, 3.7]);
+
+  const visibleTextAtIntermediateTime = line?.words
+    .filter((word) => word.startTime <= 1.95)
+    .map((word) => word.text)
+    .join("");
+  expect(visibleTextAtIntermediateTime).toBe("逐字");
 });
 
 test("surfaces timed credits and animates long instrumental gaps in Folia", () => {
@@ -145,6 +167,30 @@ test("marks chorus ranges so Folia visualizers can activate song effects", () =>
     isChorus: true,
   });
   expect(result.lines.find((line) => line.fullText === "Outro")?.isChorus).toBeUndefined();
+});
+
+test("detects repeated chorus text when NetEase has no native chorus ranges", () => {
+  const lyrics = adaptNeteaseLyric({
+    code: 200,
+    lrc: {
+      lyric: [
+        "[00:01.000]Verse",
+        "[00:05.000]We sing together",
+        "[00:10.000]Bridge",
+        "[00:15.000]We sing together",
+        "[00:20.000]Outro",
+      ].join("\n"),
+      version: 1,
+    },
+  });
+
+  const result = adaptLyricDataToFolia(lyrics);
+  const repeatedLines = result.lines.filter((line) => line.fullText === "We sing together");
+
+  expect(repeatedLines).toHaveLength(2);
+  expect(repeatedLines.every((line) => line.isChorus)).toBe(true);
+  expect(repeatedLines.every((line) => line.chorusEffect === "bars")).toBe(true);
+  expect(result.lines.find((line) => line.fullText === "Verse")?.isChorus).toBeUndefined();
 });
 
 test("maps and ranks NetEase lyric-match candidates from song search results", () => {

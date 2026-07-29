@@ -8,6 +8,8 @@ import type {
   LyricWord,
 } from "@/types/lyrics";
 
+import { buildSyntheticTimedWords } from "./syntheticWordTiming";
+
 const LRC_TIME_TAG = /\[(\d{1,3}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g;
 const LRC_METADATA_TAG = /^\[([a-zA-Z]+):\s*(.*?)\]\s*$/;
 const YRC_LINE = /^\[(\d+),(\d+)\](.*)$/;
@@ -84,11 +86,17 @@ function finalizeLineDurations(lines: LyricDisplayLine[]): LyricDisplayLine[] {
   const orderedLines = [...lines].sort((left, right) => left.startTimeMs - right.startTimeMs);
   return orderedLines.map((line, index) => {
     const nextStartTimeMs = orderedLines[index + 1]?.startTimeMs;
-    const endTimeMs = nextStartTimeMs ?? line.startTimeMs;
+    let durationMs = nextStartTimeMs === undefined ? 5_000 : nextStartTimeMs - line.startTimeMs;
+    const estimatedReadingTimeMs = line.text.length * 500;
+    if (durationMs > estimatedReadingTimeMs + 2_000 && durationMs > 5_000) {
+      durationMs = Math.min(durationMs, estimatedReadingTimeMs + 2_000);
+    }
+    const endTimeMs = line.startTimeMs + durationMs;
+
     return {
       ...line,
       endTimeMs,
-      words: line.words.map((word) => ({ ...word, endTimeMs })),
+      words: buildSyntheticTimedWords(line.text, line.startTimeMs, endTimeMs),
     };
   });
 }

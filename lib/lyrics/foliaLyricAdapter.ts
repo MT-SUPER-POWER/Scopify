@@ -4,6 +4,8 @@ import type {
 } from "@/components/lyrics/folia/src/types";
 import type { LyricChorusRange, LyricData } from "@/types/lyrics";
 
+import { detectRepeatedChorusTexts } from "./chorusRanges";
+
 const MILLISECONDS_PER_SECOND = 1_000;
 const MINIMUM_TIMED_UNIT_SECONDS = 0.04;
 const INTERLUDE_FULL_TEXT = "......";
@@ -20,7 +22,9 @@ export function adaptLyricDataToFolia(
   const lyricLines = lyrics.lines.map((line, index, lines) =>
     adaptLine(line, lines[index + 1]?.startTimeMs, lyrics.isWordByWord),
   );
-  const decoratedLyricLines = applyChorusRanges(lyricLines, chorusRanges);
+  const repeatedChorusTexts =
+    chorusRanges.length === 0 ? detectRepeatedChorusTexts(lyrics.lines) : new Set<string>();
+  const decoratedLyricLines = applyChorusEffects(lyricLines, chorusRanges, repeatedChorusTexts);
   const creditLines = adaptTimedCredits(lyrics.metadata.timedCredits, decoratedLyricLines);
 
   return {
@@ -124,8 +128,18 @@ function adaptTimedCredits(
   });
 }
 
-function applyChorusRanges(lines: FoliaLine[], chorusRanges: LyricChorusRange[]): FoliaLine[] {
-  if (chorusRanges.length === 0) return lines;
+function applyChorusEffects(
+  lines: FoliaLine[],
+  chorusRanges: LyricChorusRange[],
+  repeatedChorusTexts: Set<string>,
+): FoliaLine[] {
+  if (chorusRanges.length === 0 && repeatedChorusTexts.size === 0) return lines;
+
+  const repeatedTextEffects = new Map(
+    [...repeatedChorusTexts].map(
+      (text, index) => [text, CHORUS_EFFECTS[index % CHORUS_EFFECTS.length]] as const,
+    ),
+  );
 
   return lines.map((line) => {
     const matchedRangeIndex = chorusRanges.findIndex(
@@ -133,11 +147,15 @@ function applyChorusRanges(lines: FoliaLine[], chorusRanges: LyricChorusRange[])
         line.startTime < range.endTimeMs / MILLISECONDS_PER_SECOND &&
         line.endTime > range.startTimeMs / MILLISECONDS_PER_SECOND,
     );
-    if (matchedRangeIndex < 0) return line;
+    const repeatedTextEffect = repeatedTextEffects.get(line.fullText.trim());
+    if (matchedRangeIndex < 0 && !repeatedTextEffect) return line;
 
     return {
       ...line,
-      chorusEffect: CHORUS_EFFECTS[matchedRangeIndex % CHORUS_EFFECTS.length],
+      chorusEffect:
+        matchedRangeIndex >= 0
+          ? CHORUS_EFFECTS[matchedRangeIndex % CHORUS_EFFECTS.length]
+          : repeatedTextEffect,
       isChorus: true,
     };
   });
