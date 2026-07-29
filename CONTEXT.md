@@ -152,6 +152,78 @@ _Avoid_: a separate settings route, an ungrouped long-form settings page
 The Settings Tab containing the Shortcut Management Surface. It gives the Shortcut Registry a focused editing workspace while remaining part of Settings.
 _Avoid_: standalone shortcut route, keyboard-help panel
 
+## Radio and Voice Content
+
+**DJ Radio**:
+NetEase's legacy radio container, identified by `djRadioId` or `rid`; it contains DJ Programs and is independent of a Voice List.
+_Avoid_: podcast list, voice list
+
+**DJ Program**:
+One legacy episode inside a DJ Radio, identified by its program ID and associated with a playable `mainTrackId`.
+_Avoid_: Voice, playlist track
+
+**Voice List**:
+A workbench-defined podcast container, identified by `voiceListId`; it has its own cover, category, and ordered Voices.
+_Avoid_: DJ Radio, playlist
+
+**Voice**:
+A workbench-defined sound item, identified by `voiceId`, that belongs to a Voice List and has publication status and optional lyrics.
+_Avoid_: DJ Program
+
+**Recommended Voice Feed**:
+The `recommendVoiceVOS` result from `/v1/pc/voicelist/rcmd/list`; each item references a DJ Radio and embeds a DJ Program, so it is not a Voice List result.
+_Avoid_: recommended voice list, podcast-list recommendation
+
+## Playlist Structure
+
+**Playlist Content**:
+The playlist body beneath its metadata. It contains playlist actions and the Tracklist; it is not a single track row.
+_Avoid_: track row, table cell
+
+**Tracklist**:
+The ordered collection of tracks displayed within Playlist Content, including its column headings and Track Rows.
+_Avoid_: playlist content, individual track row
+
+**Track Row**:
+One displayed track within a Tracklist. Its cells follow the Tracklist's shared column alignment.
+_Avoid_: playlist content, table-wide layout
+
+**Tracklist Adjacent-Column Resize**:
+The temporary Tracklist column-resize interaction in which moving one visible column divider changes only the width of the column on its left and the immediately adjacent visible column on its right. Every visible column other than the fixed Tracklist Index Column participates. The Tracklist's total width remains fixed and every uninvolved column keeps its position and width throughout the drag. When either affected column reaches its minimum width, the divider stops rather than moving a third column or expanding the Tracklist. Its widths exist only while that Tracklist is mounted; returning to the view restores defaults.
+_Avoid_: persistent user preference, whole-table reflow, proportional resize, independent column expansion
+
+**Tracklist Index Column**:
+The Tracklist's leading `#` column. Its compact width is fixed and never gives or receives width during Tracklist Adjacent-Column Resize.
+_Avoid_: resizable metadata column, content column
+
+**Tracklist Resize Divider**:
+The mouse, touch, and pen dedicated drag handle for the logical boundary between two participating visible Tracklist columns. It is represented only by the compact grip without a visible boundary line. Dragging it starts Tracklist Adjacent-Column Resize; clicking the header label retains the column's ordinary sort behavior. No divider follows the fixed Tracklist Index Column; the last visible column participates through the divider on its left. It has no keyboard-resize interaction in this scope and does not require a long-press gesture for touch.
+_Avoid_: whole-header drag, sort gesture, row drag handle, keyboard resize, touch long press, fixed-index divider, last-column-only handle
+
+**Tracklist Resize Feedback**:
+The active presentation of a Tracklist Resize Divider: only the compact grip is highlighted, the pointer uses the `col-resize` cursor, and text selection is disabled. Its two columns update immediately without a transition for the duration of the drag; no column-boundary line is drawn.
+_Avoid_: visible boundary line, delayed resize, animated drag lag, selectable header text, ambiguous active divider
+
+**Tracklist Resize Pair Reset**:
+The double-click action on a Tracklist Resize Divider. It redistributes only the two adjacent columns' current combined width according to their Tracklist Default Column Hierarchy proportions, leaving every other column unchanged.
+_Avoid_: whole-Tracklist reset, content auto-fit, unrelated-column movement
+
+**Tracklist Column Layout Model**:
+The Scopify-owned, single source of truth that assigns default widths to the visible Tracklist columns and applies Tracklist Adjacent-Column Resize constraints. It replaces TanStack column sizing as the authority for Tracklist widths while retaining TanStack only for row and sorting models. Initial layouts and responsive breakpoint changes distribute the available width by percentage; an active resize uses controlled pixel deltas only for the two affected columns. Whenever the visible column set changes at a responsive breakpoint, it creates a fresh default layout for that set rather than carrying temporary widths across breakpoints.
+_Avoid_: competing width systems, browser-derived table reflow, breakpoint-width carryover, TanStack-owned column width
+
+**Tracklist Default Column Hierarchy**:
+The initial allocation of a Tracklist Column Layout Model after the fixed Tracklist Index Column is removed from the available width. At the full desktop breakpoint, its percentages are title 40, album 30, date 15, like 7, and duration 8. At the medium breakpoint, where date and like are hidden, they are title 60, album 30, and duration 10. At the compact breakpoint, where only title and duration remain, they are title 86 and duration 14. Every visible column except the Tracklist Index Column may later give or receive width through Tracklist Adjacent-Column Resize.
+_Avoid_: equal-width columns, immutable metadata columns, title-starved default layout
+
+**Tracklist Column Minimums**:
+The smallest widths that a Tracklist Adjacent-Column Resize may assign: title 200px, album 120px, date 104px, like 48px, duration 72px, and the fixed Tracklist Index Column 56px.
+_Avoid_: unreadable shrink, overflow-driven width, content-dependent minimum
+
+**Playlist Tracklist Sticky Header**:
+The Global Header remains visible while the Tracklist column headings stay fixed beneath it. Playlist Action remains in the normal content flow.
+_Avoid_: sticky playlist action, direction-based playlist control reveal
+
 ## State Ownership
 
 **Remote Music Data**:
