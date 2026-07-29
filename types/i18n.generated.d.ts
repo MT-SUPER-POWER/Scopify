@@ -14174,6 +14174,24 @@ export interface TranslateFn {
    */
   (key: "library.podcasts.action.unfavorite", params?: TranslationParams): string;
   /**
+   * zh-CN: 查看节目简介
+   * zh-TW: 查看節目簡介
+   * en-US: View program description
+   */
+  (key: "library.podcasts.action.showDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 节目简介
+   * zh-TW: 節目簡介
+   * en-US: Program description
+   */
+  (key: "library.podcasts.description.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭节目简介
+   * zh-TW: 關閉節目簡介
+   * en-US: Close program description
+   */
+  (key: "library.podcasts.description.close", params?: TranslationParams): string;
+  /**
    * zh-CN: 声音文字稿
    * zh-TW: 聲音文字稿
    * en-US: Voice Transcript

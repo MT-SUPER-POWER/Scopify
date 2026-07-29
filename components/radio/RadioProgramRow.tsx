@@ -1,11 +1,12 @@
 "use client";
 
+import { RadioProgramPlaybackBadge } from "@/components/radio/RadioProgramPlaybackBadge";
+import { RadioProgramDescription } from "@/components/radio/RadioProgramDescription";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getRadioProgramPlaybackProgress } from "@/lib/radio/programPlaybackProgress";
 import { cn, formatDate, formatDuration, formatPlayCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
 import type { RadioProgramRowProps } from "@/types/components/radio";
 
 export function RadioProgramRow({
@@ -20,19 +21,12 @@ export function RadioProgramRow({
   showUpdatedAtColumn,
   track,
 }: RadioProgramRowProps) {
-  const { t } = useI18n();
   const duration = program.duration ?? track.dt;
   const playbackProgress = getRadioProgramPlaybackProgress({
     duration,
     isListened: isActive ? false : program.djPlayRecordVo?.isListened,
     listenLocation: isActive ? currentTime : program.djPlayRecordVo?.listenLocation,
   });
-  const progressLabel =
-    playbackProgress.kind === "complete"
-      ? t("library.podcasts.progress.complete")
-      : playbackProgress.kind === "partial"
-        ? t("library.podcasts.progress.partial", { percentage: playbackProgress.percentage })
-        : "—";
 
   return (
     <TableRow
@@ -64,20 +58,25 @@ export function RadioProgramRow({
               className="size-full rounded object-cover"
             />
           </div>
-          <SongTitleWithAlia
-            name={program.name ?? track.name}
-            alia={track.alia}
-            className={cn(
-              "w-full cursor-pointer text-base font-normal group-hover:underline",
-              isActive ? "text-[#1ed760]" : "text-white",
-            )}
-          />
+          <div className="min-w-0 flex-1">
+            <SongTitleWithAlia
+              name={program.name ?? track.name}
+              alia={track.alia}
+              className={cn(
+                "w-full text-base font-normal group-hover:underline",
+                isActive ? "text-[#1ed760]" : "text-white",
+              )}
+            />
+            <RadioProgramDescription
+              cover={program.coverUrl ?? track.al.picUrl}
+              description={program.description}
+              title={program.name ?? track.name}
+            />
+          </div>
         </div>
       </TableCell>
-      <TableCell className="truncate text-sm tabular-nums">
-        <span className={playbackProgress.kind === "none" ? "text-zinc-600" : "text-zinc-300"}>
-          {progressLabel}
-        </span>
+      <TableCell className="text-center align-middle">
+        <RadioProgramPlaybackBadge progress={playbackProgress} />
       </TableCell>
       {showUpdatedAtColumn && (
         <TableCell className="truncate">

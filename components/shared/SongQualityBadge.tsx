@@ -1,7 +1,7 @@
 "use client";
 
+import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { getSongQualityBadge } from "@/lib/song/qualityBadge";
-import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 
 interface SongQualityBadgeProps {
@@ -27,17 +27,12 @@ export function SongQualityBadge({ className, qualityLevel }: SongQualityBadgePr
   const label = t(qualityLabelKeys[badge.level]);
 
   return (
-    <span
-      className={cn(
-        "inline-flex h-[13px] shrink-0 items-center rounded-[1px] border px-[2px] text-[9px] leading-[11px] font-normal",
-        badge.tone === "gold"
-          ? "border-[#a67d16] bg-[#c4931c]/10 text-[#dfb42b]"
-          : "border-[#9c4141] bg-[#c24c4c]/8 text-[#d86666]",
-        className,
-      )}
+    <MediaInfoBadge
+      className={className}
       title={label}
+      tone={badge.tone === "gold" ? "gold" : "red"}
     >
       {label}
-    </span>
+    </MediaInfoBadge>
   );
 }

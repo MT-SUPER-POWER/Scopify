@@ -1,11 +1,7 @@
-export interface RadioProgramPlaybackProgressInput {
-  duration: number;
-  isListened?: boolean;
-  listenLocation?: number;
-}
-
-export type RadioProgramPlaybackProgress =
-  { kind: "complete" } | { kind: "none" } | { kind: "partial"; percentage: number };
+import type {
+  RadioProgramPlaybackProgress,
+  RadioProgramPlaybackProgressInput,
+} from "@/types/radio";
 
 /** Normalizes a DJ program's cloud listening record into a display state. */
 export function getRadioProgramPlaybackProgress({

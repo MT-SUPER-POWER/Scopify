@@ -20,8 +20,8 @@ describe("radio tracklist column layout", () => {
       duration: 120,
       index: 56,
       playCount: 140,
-      progress: 120,
-      title: 460,
+      progress: 220,
+      title: 360,
       updatedAt: 160,
     });
   });
@@ -74,8 +74,8 @@ describe("radio tracklist column layout", () => {
       duration: 120,
       index: 56,
       playCount: 140,
-      progress: 80,
-      title: 500,
+      progress: 140,
+      title: 440,
       updatedAt: 160,
     });
     expect(resizeRadioTracklistColumnPair(widths, pair, -1_000)).toMatchObject({
@@ -94,13 +94,13 @@ describe("radio tracklist column layout", () => {
     const resized = resizeRadioTracklistColumnPair(widths, pair, 80);
 
     expect(resetRadioTracklistColumnPair(resized, pair, columns)).toMatchObject({
-      progress: 120,
-      title: 460,
+      progress: 220,
+      title: 360,
     });
 
     const fitted = fitRadioTracklistColumnWidths(resized, 1256, columns);
     expect(fitted.index).toBe(56);
-    expect(fitted.title / fitted.progress).toBeCloseTo(500 / 80);
+    expect(fitted.title / fitted.progress).toBeCloseTo(440 / 140);
     expect(Object.values(fitted).reduce((sum, width) => sum + width, 0)).toBe(1256);
   });
 

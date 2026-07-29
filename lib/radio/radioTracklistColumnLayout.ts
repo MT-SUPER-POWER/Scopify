@@ -30,8 +30,8 @@ const RADIO_TRACKLIST_COLUMN_MINIMUMS: Record<RadioTracklistColumnId, number> = 
 const FULL_LAYOUT_WEIGHTS: Record<RadioTracklistResizableColumnId, number> = {
   duration: 0.12,
   playCount: 0.14,
-  progress: 0.12,
-  title: 0.46,
+  progress: 0.22,
+  title: 0.36,
   updatedAt: 0.16,
 };
 

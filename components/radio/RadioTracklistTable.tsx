@@ -1,5 +1,6 @@
 "use client";
 
+import { Clock } from "lucide-react";
 import { useCallback, useMemo } from "react";
 
 import { RadioProgramRow } from "@/components/radio/RadioProgramRow";
@@ -103,7 +104,7 @@ export function RadioTracklistTable({
                   onPointerDown={(event) => columnLayout.startResize("title", event)}
                 />
               </TableHead>
-              <TableHead className="group/head relative text-zinc-400 select-none">
+              <TableHead className="group/head relative text-center text-zinc-400 select-none">
                 {t("library.podcasts.column.progress")}
                 <TracklistResizeHandle
                   active={columnLayout.activeDivider === "progress"}
@@ -132,7 +133,10 @@ export function RadioTracklistTable({
                 </TableHead>
               )}
               <TableHead className="pr-4 text-right text-zinc-400">
-                {t("library.podcasts.column.duration")}
+                <span className="flex justify-end" title={t("library.podcasts.column.duration")}>
+                  <Clock aria-hidden="true" className="size-4" />
+                  <span className="sr-only">{t("library.podcasts.column.duration")}</span>
+                </span>
               </TableHead>
             </TableRow>
           </TableHeader>

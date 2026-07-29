@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React from "react";
 
+import { HeaderDescription } from "@/components/shared/HeaderDescription";
 import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import type { PlaylistInfo } from "@/types/playlist";
@@ -21,6 +22,7 @@ const DailyCalendarCover = ({ dailyDate }: { dailyDate?: string }) => {
           {dayOfWeek}
         </span>
       </div>
+      {/* eslint-disable-next-line tailwindcss/classnames-order -- Prettier owns the Tailwind v4 class order. */}
       <div className="from-momo-light relative flex flex-1 items-center justify-center bg-linear-to-b from-45% to-[#e6e6e6] to-45%">
         <div className="absolute top-[45%] left-0 h-0.5 w-full -translate-y-1/2 bg-black/5 shadow-[0_1px_1px_rgba(255,255,255,0.8)]" />
         <span className="z-10 -mt-3 font-sans text-7xl font-black tracking-tighter text-[#2a2a2a] md:text-8xl">
@@ -87,14 +89,12 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         </div>
 
         {/* Description */}
-        {info.description ? (
-          <p
-            className="mb-4 line-clamp-2 text-xs leading-relaxed font-normal whitespace-pre-line text-white/70 md:mb-5 lg:text-sm"
-            title={info.description}
-          >
-            {info.description}
-          </p>
-        ) : null}
+        <HeaderDescription
+          cover={info.cover}
+          description={info.description}
+          title={info.title}
+          triggerClassName="mb-4 md:mb-5"
+        />
 
         {/* Bottom: Creator & Metadata line */}
         <div className="flex flex-wrap items-center gap-2.5 text-xs text-white/80 drop-shadow-md lg:text-sm">

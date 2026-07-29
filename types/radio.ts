@@ -13,6 +13,15 @@ export interface RadioSubscriptionVariables {
   subscribe: boolean;
 }
 
+export interface RadioProgramPlaybackProgressInput {
+  duration: number;
+  isListened?: boolean;
+  listenLocation?: number;
+}
+
+export type RadioProgramPlaybackProgress =
+  { kind: "complete" } | { kind: "none" } | { kind: "partial"; percentage: number };
+
 export type RadioTracklistColumnId =
   "duration" | "index" | "playCount" | "progress" | "title" | "updatedAt";
 
