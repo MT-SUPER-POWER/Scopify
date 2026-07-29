@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test";
 
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
+import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import {
   buildLyricMatchQuery,
   getLyricMatchScore,
@@ -82,6 +83,68 @@ test("falls back to LRC and keeps the complete raw response", () => {
   expect(result.raw).toBe(lyric);
   expect(result.raw.futureField).toEqual({ preserved: true });
   expect(pruneNeteaseLyric(lyric)).toBe(lyric);
+});
+
+test("surfaces timed credits and animates long instrumental gaps in Folia", () => {
+  const lyrics = adaptNeteaseLyric({
+    code: 200,
+    yrc: {
+      lyric: [
+        '{"t":0,"c":[{"tx":"Composer: "},{"tx":"Scopify"}]}',
+        "[8000,1000](8000,1000,0)First",
+        "[14000,1000](14000,1000,0)Second",
+      ].join("\n"),
+      version: 1,
+    },
+  });
+
+  const result = adaptLyricDataToFolia(lyrics);
+
+  expect(result.lines.map((line) => line.fullText)).toEqual([
+    "Composer: Scopify",
+    "......",
+    "First",
+    "......",
+    "Second",
+  ]);
+  expect(result.lines[0]).toMatchObject({
+    endTime: 3,
+    fullText: "Composer: Scopify",
+    startTime: 0,
+  });
+  expect(result.lines[1]).toMatchObject({
+    endTime: 7.95,
+    fullText: "......",
+    startTime: 3.05,
+  });
+  expect(result.lines[1]?.words).toHaveLength(6);
+  expect(result.lines[3]).toMatchObject({
+    endTime: 13.95,
+    fullText: "......",
+    startTime: 9.05,
+  });
+  expect(result.lines[3]?.words).toHaveLength(6);
+});
+
+test("marks chorus ranges so Folia visualizers can activate song effects", () => {
+  const lyrics = adaptNeteaseLyric({
+    code: 200,
+    lrc: {
+      lyric: "[00:01.000]Verse\n[00:10.000]Chorus\n[00:14.000]Outro",
+      version: 1,
+    },
+  });
+
+  const result = adaptLyricDataToFolia(lyrics, [{ startTimeMs: 9_000, endTimeMs: 13_000 }]);
+  const chorusLine = result.lines.find((line) => line.fullText === "Chorus");
+
+  expect(result.lines[0]?.isChorus).toBeUndefined();
+  expect(chorusLine).toMatchObject({
+    chorusEffect: "bars",
+    fullText: "Chorus",
+    isChorus: true,
+  });
+  expect(result.lines.find((line) => line.fullText === "Outro")?.isChorus).toBeUndefined();
 });
 
 test("maps and ranks NetEase lyric-match candidates from song search results", () => {

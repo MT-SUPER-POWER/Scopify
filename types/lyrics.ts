@@ -46,6 +46,12 @@ export interface LyricCreditEntry {
   text: string;
 }
 
+/** One chorus interval returned by NetEase, normalized to milliseconds. */
+export interface LyricChorusRange {
+  endTimeMs: number;
+  startTimeMs: number;
+}
+
 /**
  * The presentation contract for every lyric renderer.
  *
