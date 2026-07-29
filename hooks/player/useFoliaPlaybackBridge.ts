@@ -4,7 +4,7 @@ import { useMotionValue } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { AudioBands } from "@/components/lyrics/folia/src/types";
-import type { LyricAudioBands } from "@/types/lyrics";
+import type { LyricAudioBands, LyricChorusRange } from "@/types/lyrics";
 import type { FoliaPlaybackBridge } from "@/types/foliaStage";
 
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
@@ -15,7 +15,7 @@ import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useTimeStore } from "@/store/module/time";
 
-const EMPTY_CHORUS_RANGES = [];
+const EMPTY_CHORUS_RANGES: LyricChorusRange[] = [];
 
 export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
   const isPlaying = usePlayerStore((state) => state.isPlaying);
