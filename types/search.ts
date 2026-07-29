@@ -53,13 +53,21 @@ export interface Podcast {
 }
 
 export interface Voice {
+  auditStatus?: null | string;
   coverUrl: string;
+  description?: string;
+  displayStatus?: null | string;
   duration: number;
   hostName?: string;
   id: number;
+  isPlayable?: boolean;
+  lastPlayTime?: number;
+  likeTime?: number;
   mainSong: Song | null;
   name: string;
   podcastName: string;
+  playCount?: number;
+  publishTime?: number;
 }
 
 export type SearchBestMatch =

@@ -14,7 +14,7 @@ export function LikedVoiceList({ voices }: LikedVoiceListProps) {
 
   return (
     <>
-      <VoiceList voices={voices} onViewTranscript={setSelectedVoice} />
+      <VoiceList voices={voices} variant="liked" onViewTranscript={setSelectedVoice} />
       <VoiceTranscriptDialog
         open={selectedVoice !== null}
         voice={selectedVoice}

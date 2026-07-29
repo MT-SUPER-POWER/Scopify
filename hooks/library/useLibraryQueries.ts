@@ -155,15 +155,26 @@ function toLikedVoice(source: LikedVoice): Voice | null {
   if (!Number.isFinite(id) || !name) return null;
 
   const mainSong = toLikedVoiceSong(source);
+  const displayStatus = source.displayStatus ?? source.disPlayStatus;
   return {
+    auditStatus: source.auditStatus,
     coverUrl:
       source.coverUrl ?? source.picUrl ?? source.contentCoverUrl ?? mainSong?.album.picUrl ?? "",
+    description: source.voiceDesc,
+    displayStatus,
     duration: source.duration ?? mainSong?.duration ?? 0,
     hostName: source.userName ?? source.dj?.nickname ?? source.djProgram?.dj?.nickname,
     id,
+    isPlayable:
+      (displayStatus === undefined || displayStatus === null || displayStatus === "ONLINE") &&
+      source.auditStatus !== "AUDIT_FAILED",
+    lastPlayTime: source.lastPlayTime,
+    likeTime: source.likeTime,
     mainSong,
     name,
     podcastName: source.voiceListName ?? source.radioName ?? "",
+    playCount: source.playCount,
+    publishTime: source.publishTime,
   };
 }
 

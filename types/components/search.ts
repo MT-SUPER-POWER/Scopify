@@ -35,7 +35,7 @@ export interface PodcastsViewProps {
 export interface VoiceItemProps {
   index: number;
   onViewTranscript?: (voice: Voice) => void;
-  variant?: "default" | "preview";
+  variant?: "default" | "liked" | "preview";
   voice: Voice;
   voices: Voice[];
 }
@@ -44,7 +44,7 @@ export interface VoiceListProps {
   limit?: number;
   onViewAll?: () => void;
   onViewTranscript?: (voice: Voice) => void;
-  variant?: "default" | "preview";
+  variant?: "default" | "liked" | "preview";
   voices: Voice[];
 }
 

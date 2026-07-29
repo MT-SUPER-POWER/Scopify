@@ -119,6 +119,7 @@ export interface RecommendedVoiceListsResponse {
 }
 
 export interface LikedVoice {
+  auditStatus?: null | string;
   contentCoverUrl?: string;
   contentId?: number | string;
   contentName?: string;
@@ -133,13 +134,20 @@ export interface LikedVoice {
     mainSong?: RecommendedVoiceSong;
   };
   duration?: number;
+  disPlayStatus?: null | string;
+  displayStatus?: null | string;
   id?: number | string;
+  lastPlayTime?: number;
+  likeTime?: number;
   mainSong?: RecommendedVoiceSong;
   name?: string;
   picUrl?: string;
+  playCount?: number;
+  publishTime?: number;
   radioName?: string;
   userName?: string;
   voiceId?: number | string;
+  voiceDesc?: string;
   voiceListName?: string;
   voiceName?: string;
 }
