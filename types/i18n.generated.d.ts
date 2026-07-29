@@ -3683,6 +3683,18 @@ export interface TranslateFn {
    */
   (key: "ui.next", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "ui.play", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停
+   * zh-TW: 暫停
+   * en-US: Pause
+   */
+  (key: "ui.pause", params?: TranslationParams): string;
+  /**
    * zh-CN: 循环模式
    * zh-TW: 循環模式
    * en-US: Loop Mode
@@ -3718,6 +3730,48 @@ export interface TranslateFn {
    * en-US: Repeat: One
    */
   (key: "ui.repeatOne", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开歌词界面
+   * zh-TW: 開啟歌詞介面
+   * en-US: Open lyrics
+   */
+  (key: "ui.showLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭歌词界面
+   * zh-TW: 關閉歌詞介面
+   * en-US: Close lyrics
+   */
+  (key: "ui.hideLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音质设置
+   * zh-TW: 音質設定
+   * en-US: Audio quality
+   */
+  (key: "ui.audioQuality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 进入全屏
+   * zh-TW: 進入全螢幕
+   * en-US: Enter fullscreen
+   */
+  (key: "ui.fullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出全屏
+   * zh-TW: 退出全螢幕
+   * en-US: Exit fullscreen
+   */
+  (key: "ui.exitFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 蓝牙设备
+   * zh-TW: 藍牙裝置
+   * en-US: Bluetooth devices
+   */
+  (key: "ui.bluetooth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消静音
+   * zh-TW: 取消靜音
+   * en-US: Unmute
+   */
+  (key: "ui.unmute", params?: TranslationParams): string;
   /**
    * zh-CN: 喜欢
    * zh-TW: 喜歡

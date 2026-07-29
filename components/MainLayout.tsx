@@ -320,7 +320,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           className="hidden"
           ref={audioRef}
           // 下一曲了
-          onEnded={() => void playNext()}
+          onEnded={() => void playNext("ended")}
           // 切歌存新的时间
           onDurationChange={(e) => {
             const duration = e.currentTarget.duration;

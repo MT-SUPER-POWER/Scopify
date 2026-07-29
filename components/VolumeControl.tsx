@@ -2,6 +2,7 @@
 
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useI18n } from "@/store/module/i18n";
 import { SmoothSlider } from "./SmoothSlider";
 
 interface VolumeControlProps {
@@ -19,6 +20,7 @@ export const VolumeControl = ({
   variant = "popup",
   className = "",
 }: VolumeControlProps) => {
+  const { t } = useI18n();
   const [volume, setVolume] = useState(initialVolume);
   const [isMuted, setMuted] = useState(false);
   const prevVolumeRef = useRef<number>(initialVolume);
@@ -105,6 +107,8 @@ export const VolumeControl = ({
     }
   };
 
+  const volumeLabel = isMuted ? t("ui.unmute") : `${t("ui.volume")}: ${Math.round(volume)}%`;
+
   // 点击外部关闭 (仅针对弹窗模式生效)
   useEffect(() => {
     if (variant !== "popup") return;
@@ -140,6 +144,8 @@ export const VolumeControl = ({
         className="flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none hover:bg-white/5"
       >
         <button
+          type="button"
+          aria-label={volumeLabel}
           onClick={handleMuteToggle}
           className="shrink-0 text-[#b3b3b3] transition-colors hover:text-white"
         >
@@ -172,6 +178,8 @@ export const VolumeControl = ({
       onMouseLeave={() => setIsOpen(false)}
     >
       <button
+        type="button"
+        aria-label={volumeLabel}
         onClick={handleMuteToggle}
         className="text-[#b3b3b3] transition-colors hover:text-white"
       >

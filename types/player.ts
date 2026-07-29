@@ -3,6 +3,7 @@ import type { NeteaseLyric, SongDetail } from "@/types/api/music";
 export type MusicQuality =
   "sky" | "jymaster" | "dolby" | "spatial" | "hires" | "lossless" | "high" | "standard";
 export type PlaybackFailureSource = "url" | "audio";
+export type PlaybackNextSource = "manual" | "ended";
 export type RepeatMode = "off" | "all" | "one";
 export type SourceChangeMode = "new-track" | "preserve-position";
 
@@ -34,7 +35,7 @@ export interface PlayerStore {
     playlistId?: number | string | null,
   ) => Promise<void>;
   playbackFailureCount: number;
-  playNext: () => Promise<void>;
+  playNext: (source?: PlaybackNextSource) => Promise<void>;
   playPrev: () => Promise<void>;
   playQueueIndex: (
     index: number,

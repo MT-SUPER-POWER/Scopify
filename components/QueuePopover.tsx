@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore } from "@/store";
@@ -306,15 +307,24 @@ export const QueuePopover = () => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="flex items-center justify-center text-zinc-400 transition-colors hover:text-white"
-          title={t("queue.triggerTitle")}
-        >
-          <ListMusic className="size-5" />
-        </button>
-      </PopoverTrigger>
+      <TooltipProvider>
+        <Tooltip>
+          <PopoverTrigger asChild>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label={t("queue.triggerTitle")}
+                className="flex items-center justify-center text-zinc-400 transition-colors hover:text-white"
+              >
+                <ListMusic className="size-5" />
+              </button>
+            </TooltipTrigger>
+          </PopoverTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {t("queue.triggerTitle")}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <PopoverContent
         align="end"
         className="w-96 border border-white/10 bg-[#181818] p-0 text-zinc-100 shadow-2xl"

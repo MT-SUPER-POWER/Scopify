@@ -98,7 +98,7 @@ class AudioManager {
     if (!this.audio) return;
 
     this.audio.addEventListener("ended", () => {
-      usePlayerStore.getState().playNext();
+      usePlayerStore.getState().playNext("ended");
     });
 
     // ✨ 修正 1：loadedmetadata 现在只做一件事，就是安全的拿总时长

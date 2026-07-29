@@ -43,6 +43,7 @@ import { useUiStore } from "@/store/module/ui";
 import type { PlayerBarStatActionProps } from "@/types/components/player";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Skeleton } from "./ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -81,18 +82,27 @@ function PlayerBarStatAction({
 
   const className = "group shrink-0 py-1 pr-2 cursor-pointer hover:opacity-90 transition-opacity";
 
-  if (href) {
-    return (
-      <Link href={href} title={title} onClick={onClick} className={className}>
-        {body}
-      </Link>
-    );
-  }
-
-  return (
-    <button type="button" title={title} onClick={onClick} className={className}>
+  const action = href ? (
+    <Link href={href} aria-label={title} onClick={onClick} className={className}>
+      {body}
+    </Link>
+  ) : (
+    <button type="button" aria-label={title} onClick={onClick} className={className}>
       {body}
     </button>
+  );
+
+  if (!title) return action;
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{action}</TooltipTrigger>
+        <TooltipContent side="top" sideOffset={8}>
+          {title}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 
@@ -155,6 +165,13 @@ export const PlayerBar = ({
     const next = modes[(modes.indexOf(repeatMode) + 1) % modes.length];
     setRepeatMode(next);
   };
+  const shuffleModeLabel = t(isShuffle ? "ui.shuffleOn" : "ui.shuffleOff");
+  const repeatModeLabel = t(
+    repeatMode === "one" ? "ui.repeatOne" : repeatMode === "all" ? "ui.repeatAll" : "ui.repeatOff",
+  );
+  const playbackActionLabel = t(isPlaying ? "ui.pause" : "ui.play");
+  const lyricsActionLabel = t(isLyricsOpen ? "ui.hideLyrics" : "ui.showLyrics");
+  const fullscreenActionLabel = t(isFullscreen ? "ui.exitFullscreen" : "ui.fullscreen");
 
   const toggleLike = useCallback(
     async (next: boolean) => {
@@ -224,28 +241,39 @@ export const PlayerBar = ({
               onClick={openLyrics}
               className="absolute top-[25%] left-[25%] flex items-center justify-center rounded-full bg-black/70 p-1 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:scale-105 hover:bg-black/80"
             >
-              {isLyricOpen ? (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (onCloseLyricStage) onCloseLyricStage();
-                    else closeLyrics();
-                  }}
-                >
-                  <ChevronDown className="size-5 text-white" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openLyrics();
-                  }}
-                >
-                  <ChevronUp className="size-5 text-white" />
-                </button>
-              )}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    {isLyricOpen ? (
+                      <button
+                        type="button"
+                        aria-label={lyricsActionLabel}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onCloseLyricStage) onCloseLyricStage();
+                          else closeLyrics();
+                        }}
+                      >
+                        <ChevronDown className="size-5 text-white" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        aria-label={lyricsActionLabel}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openLyrics();
+                        }}
+                      >
+                        <ChevronUp className="size-5 text-white" />
+                      </button>
+                    )}
+                  </TooltipTrigger>
+                  <TooltipContent side="top" sideOffset={8}>
+                    {lyricsActionLabel}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
 
@@ -338,62 +366,104 @@ export const PlayerBar = ({
             isLyricStageBar ? "w-[clamp(280px,40vw,560px)]" : "flex-2 lg:flex-4",
           )}
         >
-          <div className="mt-1 flex items-center gap-4 lg:gap-5">
-            <button
-              type="button"
-              onClick={toggleShuffle}
-              className={cn(
-                "relative hidden transition-colors sm:block",
-                isShuffle ? "text-[#1ed760]" : "text-[#b3b3b3] hover:text-white",
-                "after:absolute after:-bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-[#1ed760] after:content-['']",
-                isShuffle ? "after:opacity-100" : "after:opacity-0",
-              )}
-            >
-              <Shuffle className="size-4 lg:size-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => void playPrev()}
-              className="text-[#b3b3b3] transition-colors hover:text-white"
-            >
-              <SkipBack className="size-4 fill-current lg:size-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsPlaying(!isPlaying)}
-              disabled={!currentSong}
-              className="flex size-9 items-center justify-center rounded-full bg-white text-black transition-all hover:scale-105 hover:bg-gray-200 active:scale-95 disabled:opacity-40 lg:size-10"
-            >
-              {isPlaying ? (
-                <Pause className="size-4 fill-current lg:size-5" />
-              ) : (
-                <Play className="size-4 fill-current lg:size-5" />
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={() => void playNext()}
-              className="text-[#b3b3b3] transition-colors hover:text-white"
-            >
-              <SkipForward className="size-4 fill-current lg:size-5" />
-            </button>
-            <button
-              type="button"
-              onClick={cycleRepeat}
-              className={cn(
-                "relative hidden transition-colors sm:block",
-                repeatMode !== "off" ? "text-[#1ed760]" : "text-[#b3b3b3] hover:text-white",
-                "after:absolute after:-bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-[#1ed760] after:content-['']",
-                repeatMode !== "off" ? "after:opacity-100" : "after:opacity-0",
-              )}
-            >
-              {repeatMode === "one" ? (
-                <Repeat1 className="size-4 lg:size-5" />
-              ) : (
-                <Repeat className="size-4 lg:size-5" />
-              )}
-            </button>
-          </div>
+          <TooltipProvider>
+            <div className="mt-1 flex items-center gap-4 lg:gap-5">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={shuffleModeLabel}
+                    onClick={toggleShuffle}
+                    className={cn(
+                      "relative hidden transition-colors sm:block",
+                      isShuffle ? "text-[#1ed760]" : "text-[#b3b3b3] hover:text-white",
+                      "after:absolute after:-bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-[#1ed760] after:content-['']",
+                      isShuffle ? "after:opacity-100" : "after:opacity-0",
+                    )}
+                  >
+                    <Shuffle className="size-4 lg:size-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={8}>
+                  {shuffleModeLabel}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={t("ui.previous")}
+                    onClick={() => void playPrev()}
+                    className="text-[#b3b3b3] transition-colors hover:text-white"
+                  >
+                    <SkipBack className="size-4 fill-current lg:size-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={8}>
+                  {t("ui.previous")}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={playbackActionLabel}
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    disabled={!currentSong}
+                    className="flex size-9 items-center justify-center rounded-full bg-white text-black transition-all hover:scale-105 hover:bg-gray-200 active:scale-95 disabled:opacity-40 lg:size-10"
+                  >
+                    {isPlaying ? (
+                      <Pause className="size-4 fill-current lg:size-5" />
+                    ) : (
+                      <Play className="size-4 fill-current lg:size-5" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={8}>
+                  {playbackActionLabel}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={t("ui.next")}
+                    onClick={() => void playNext()}
+                    className="text-[#b3b3b3] transition-colors hover:text-white"
+                  >
+                    <SkipForward className="size-4 fill-current lg:size-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={8}>
+                  {t("ui.next")}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={repeatModeLabel}
+                    onClick={cycleRepeat}
+                    className={cn(
+                      "relative hidden transition-colors sm:block",
+                      repeatMode !== "off" ? "text-[#1ed760]" : "text-[#b3b3b3] hover:text-white",
+                      "after:absolute after:-bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-[#1ed760] after:content-['']",
+                      repeatMode !== "off" ? "after:opacity-100" : "after:opacity-0",
+                    )}
+                  >
+                    {repeatMode === "one" ? (
+                      <Repeat1 className="size-4 lg:size-5" />
+                    ) : (
+                      <Repeat className="size-4 lg:size-5" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={8}>
+                  {repeatModeLabel}
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
 
           <div className="hidden h-4 w-full sm:flex">
             <PlayerProgressBar />
@@ -408,29 +478,46 @@ export const PlayerBar = ({
           )}
         >
           {/* Lyric Stage */}
-          <button
-            type="button"
-            onClick={() => toggleLyrics()}
-            title={t("playerBar.lyrics")}
-            aria-label={t("playerBar.lyrics")}
-            className={`transition-colors hover:text-white ${isLyricsOpen ? "text-[#1db954]" : ""}`}
-          >
-            <Mic2 className="size-4 lg:size-5" />
-          </button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => toggleLyrics()}
+                  aria-label={lyricsActionLabel}
+                  className={`transition-colors hover:text-white ${isLyricsOpen ? "text-[#1db954]" : ""}`}
+                >
+                  <Mic2 className="size-4 lg:size-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={8}>
+                {lyricsActionLabel}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           {/* 音质选择 */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className={cn(
-                  "flex cursor-pointer items-center justify-center transition-colors hover:text-white",
-                )}
-                title={t("playbar.quality")}
-              >
-                <CurrentIcon className="size-4 lg:size-5" />
-              </button>
-            </DropdownMenuTrigger>
+            <TooltipProvider>
+              <Tooltip>
+                <DropdownMenuTrigger asChild>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label={t("ui.audioQuality")}
+                      className={cn(
+                        "flex cursor-pointer items-center justify-center transition-colors hover:text-white",
+                      )}
+                    >
+                      <CurrentIcon className="size-4 lg:size-5" />
+                    </button>
+                  </TooltipTrigger>
+                </DropdownMenuTrigger>
+                <TooltipContent side="top" sideOffset={8}>
+                  {t("ui.audioQuality")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <DropdownMenuContent
               className="border-none bg-transparent p-0 shadow-none outline-none"
               side="top"
@@ -459,12 +546,22 @@ export const PlayerBar = ({
 
           {/* TODO: 蓝牙 */}
           <div className="hidden lg:block">
-            <button
-              type="button"
-              className="flex items-center justify-center transition-colors hover:text-white"
-            >
-              <MonitorSpeaker className="size-4 lg:size-5" />
-            </button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={t("ui.bluetooth")}
+                    className="flex items-center justify-center transition-colors hover:text-white"
+                  >
+                    <MonitorSpeaker className="size-4 lg:size-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={8}>
+                  {t("ui.bluetooth")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           {/* 音量控制 */}
@@ -474,17 +571,27 @@ export const PlayerBar = ({
           />
 
           {/* 最大化/最小化按钮 */}
-          <button
-            type="button"
-            onClick={() => void toggleApplicationFullscreen()}
-            className="hidden transition-colors hover:text-white sm:block"
-          >
-            {isFullscreen ? (
-              <MinimizeIcon className="size-4 lg:size-5" />
-            ) : (
-              <Expand className="size-4 lg:size-5" />
-            )}
-          </button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={fullscreenActionLabel}
+                  onClick={() => void toggleApplicationFullscreen()}
+                  className="hidden transition-colors hover:text-white sm:block"
+                >
+                  {isFullscreen ? (
+                    <MinimizeIcon className="size-4 lg:size-5" />
+                  ) : (
+                    <Expand className="size-4 lg:size-5" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={8}>
+                {fullscreenActionLabel}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </div>

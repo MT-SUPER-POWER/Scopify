@@ -22,6 +22,7 @@ import type { PlayerStore } from "@/types/player";
 export type {
   MusicQuality,
   PlaybackFailureSource,
+  PlaybackNextSource,
   RepeatMode,
   SourceChangeMode,
 } from "@/types/player";
@@ -421,10 +422,20 @@ export const usePlayerStore = create<PlayerStore>()(
         await get().playTrack(queue[index], options);
       },
 
-      playNext: async () => {
+      playNext: async (source = "manual") => {
         const { queue, queueIndex, repeatMode, historyStack, historyIndex, reshuffleQueue } = get();
 
         if (!queue.length) return;
+
+        if (
+          source === "ended" &&
+          repeatMode === "one" &&
+          queueIndex >= 0 &&
+          queueIndex < queue.length
+        ) {
+          await get().playQueueIndex(queueIndex, false);
+          return;
+        }
 
         // 历史前进
         if (historyIndex < historyStack.length - 1) {
@@ -441,7 +452,8 @@ export const usePlayerStore = create<PlayerStore>()(
             reshuffleQueue();
             nextIndex = 0;
           } else if (repeatMode === "one") {
-            nextIndex = queueIndex;
+            await get().playQueueIndex(queueIndex, false);
+            return;
           } else {
             set({ isPlaying: false });
             toast.success(translate(useI18nStore.getState().locale, "common.message.endOfQueue"));
