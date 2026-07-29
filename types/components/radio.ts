@@ -20,6 +20,8 @@ export interface RadioProgramRowProps {
   onPlay: (track: SongDetail) => void;
   program: RadioProgram;
   setIsPlaying: (isPlaying: boolean) => void;
+  showPlayCountColumn: boolean;
+  showUpdatedAtColumn: boolean;
   track: SongDetail;
 }
 

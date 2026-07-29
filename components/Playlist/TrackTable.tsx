@@ -23,6 +23,7 @@ import {
   usePrimaryScrollSurface,
 } from "@/components/shared/NavigationScrollProvider";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
+import { TracklistResizeHandle } from "@/components/shared/TracklistResizeHandle";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -46,7 +47,6 @@ import type { NavigationScrollRestorationAdapter } from "@/types/navigation-scro
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
 import { TrackRow } from "./TrackRow";
-import { TracklistResizeHandle } from "./TracklistResizeHandle";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

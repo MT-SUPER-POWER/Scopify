@@ -14072,6 +14072,18 @@ export interface TranslateFn {
    */
   (key: "library.podcasts.column.updatedAt", params?: TranslationParams): string;
   /**
+   * zh-CN: 已播完
+   * zh-TW: 已播完
+   * en-US: Played
+   */
+  (key: "library.podcasts.progress.complete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已播 {{percentage}}%
+   * zh-TW: 已播 {{percentage}}%
+   * en-US: Played {{percentage}}%
+   */
+  (key: "library.podcasts.progress.partial", params?: TranslationParams): string;
+  /**
    * zh-CN: {{count}} 期节目
    * zh-TW: {{count}} 期節目
    * en-US: {{count}} episodes

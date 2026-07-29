@@ -2,16 +2,16 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Disc3, Pause, Play } from "lucide-react";
+import { Disc3 } from "lucide-react";
 import { forwardRef, memo, useCallback } from "react";
 import { toast } from "sonner";
 
-import type { TrackIndexCellProps, TrackRowProps } from "@/types/components/playlist";
+import type { TrackRowProps } from "@/types/components/playlist";
 
-import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
@@ -21,44 +21,6 @@ import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
 import { LikeButton } from "../ui/LikeButton";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件: 序号与播放状态 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-export function TrackIndexCell({
-  index,
-  isActive,
-  isPlaying,
-  onPlay,
-  setIsPlaying,
-}: TrackIndexCellProps) {
-  return (
-    <div className="group/cell relative flex size-4 items-center justify-center">
-      <span className={cn("font-normal text-zinc-400 group-hover:hidden", isActive && "hidden")}>
-        {index + 1}
-      </span>
-
-      {isActive && isPlaying && <PlayingAnimation className="h-3 group-hover:hidden" />}
-
-      {isActive && !isPlaying && (
-        <Play className="size-4 fill-current text-[#1ed760] group-hover:hidden" />
-      )}
-
-      <div className="hidden items-center justify-center group-hover:flex">
-        {isActive && isPlaying ? (
-          <Pause
-            className="size-4 cursor-pointer fill-current text-[#1ed760]"
-            onClick={() => setIsPlaying(false)}
-          />
-        ) : (
-          <Play
-            className="size-4 cursor-pointer fill-current text-white"
-            onClick={() => onPlay()}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件: 单行数据 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

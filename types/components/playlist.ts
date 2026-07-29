@@ -87,11 +87,3 @@ export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>,
   setIsPlaying: (v: boolean) => void;
   track: SongDetail;
 }
-
-export interface TrackIndexCellProps {
-  index: number;
-  isActive: boolean;
-  isPlaying: boolean;
-  onPlay: () => void;
-  setIsPlaying: (isPlaying: boolean) => void;
-}

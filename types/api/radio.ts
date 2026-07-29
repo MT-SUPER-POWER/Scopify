@@ -30,12 +30,21 @@ export interface RadioProgram {
   createTime?: number;
   description?: string;
   dj?: RadioHost;
+  djPlayRecordVo?: null | RadioProgramPlayRecord;
   duration?: number;
   id: number;
   listenerCount?: number;
   mainSong: RawSongDetail;
   name?: string;
   radio?: RadioDetail;
+}
+
+/** 登录用户在一个电台节目中的云端收听断点，时间均为毫秒。 */
+export interface RadioProgramPlayRecord {
+  id: number;
+  isListened: boolean;
+  listenLocation: number;
+  uploadTime: number;
 }
 
 export interface RadioDetailResponse {
@@ -57,9 +66,11 @@ export interface RadioProgramsResponse {
 }
 
 export interface RadioProgramsParams {
+  asc?: boolean;
   id: number | string;
   limit?: number;
   offset?: number;
+  updateOrder?: boolean;
 }
 
 export interface RadioSublistResponse {

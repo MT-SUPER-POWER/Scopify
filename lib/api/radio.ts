@@ -11,9 +11,15 @@ export function getRadioDetail(id: number | string) {
   return request.get<RadioDetailResponse>("/dj/detail", { params: { rid: id } });
 }
 
-export function getRadioPrograms({ id, limit = 200, offset = 0 }: RadioProgramsParams) {
-  return request.get<RadioProgramsResponse>("/dj/program", {
-    params: { limit, offset, rid: id },
+export function getRadioPrograms({
+  id,
+  limit = 200,
+  offset = 0,
+  asc = true,
+  updateOrder = true,
+}: RadioProgramsParams) {
+  return request.get<RadioProgramsResponse>("/dj/program/v6", {
+    params: { asc, limit, offset, rid: id, updateOrder },
   });
 }
 
