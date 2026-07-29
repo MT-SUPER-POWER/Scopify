@@ -211,14 +211,16 @@ export const PlayerBar = ({
           "z-20 h-17 w-full items-center px-4 transition-all duration-300 ease-linear lg:h-20",
           isLyricStageBar
             ? "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4"
-            : "flex justify-between",
+            : "flex justify-between md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-4",
         )}
       >
         {/* ================= Left: Song Info ================= */}
         <div
           className={cn(
             "flex min-w-0 items-center gap-3 lg:gap-4",
-            isLyricStageBar ? "justify-start" : "flex-1 lg:flex-3",
+            isLyricStageBar
+              ? "justify-start"
+              : "flex-1 md:w-fit md:max-w-full md:flex-none md:justify-self-start",
           )}
         >
           {/* 专辑封面 */}
@@ -281,7 +283,9 @@ export const PlayerBar = ({
           <div
             className={cn(
               "flex min-w-0 flex-1 flex-col justify-center overflow-hidden",
-              isLyricStageBar ? "max-w-[min(26vw,280px)]" : "max-w-30 sm:max-w-40 lg:max-w-60",
+              isLyricStageBar
+                ? "max-w-[min(26vw,280px)]"
+                : "max-w-30 sm:max-w-40 md:w-fit md:flex-none lg:max-w-60",
             )}
           >
             {currentSong ? (
@@ -363,7 +367,9 @@ export const PlayerBar = ({
         <div
           className={cn(
             "flex min-w-0 flex-col items-center justify-center gap-1.5",
-            isLyricStageBar ? "w-[clamp(280px,40vw,560px)]" : "flex-2 lg:flex-4",
+            isLyricStageBar
+              ? "w-[clamp(280px,40vw,560px)]"
+              : "flex-2 md:w-[clamp(280px,40vw,560px)] md:flex-none",
           )}
         >
           <TooltipProvider>
@@ -474,7 +480,7 @@ export const PlayerBar = ({
         <div
           className={cn(
             "flex items-center justify-end gap-2 text-[#b3b3b3] lg:gap-3",
-            isLyricStageBar ? "min-w-0" : "flex-1 lg:flex-3",
+            isLyricStageBar ? "min-w-0" : "flex-1 md:flex-none md:justify-self-end",
           )}
         >
           {/* Lyric Stage */}
