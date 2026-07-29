@@ -8,6 +8,7 @@ import type {
   VoiceDetailResponse,
   VoiceLyricResponse,
   VoiceListDetailResponse,
+  VoiceListSearchResponse,
 } from "@/types/api/voicelist";
 
 export function getSubscribedVoiceLists(limit = 200) {
@@ -48,4 +49,10 @@ export function getVoiceLyric(id: number | string) {
 
 export function getVoiceListDetail(id: number | string) {
   return request.get<VoiceListDetailResponse>("/voicelist/detail", { params: { id } });
+}
+
+export function searchVoiceLists(keyword: string, limit = 30, offset = 0) {
+  return request.get<VoiceListSearchResponse>("/voicelist/search", {
+    params: { keyword, limit, offset },
+  });
 }

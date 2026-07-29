@@ -1,3 +1,5 @@
+import type { RefObject } from "react";
+
 export interface PlaylistInfo {
   description?: string;
   isSpecial: boolean;
@@ -16,4 +18,11 @@ export interface PlaylistInfo {
   createTimeLabel?: string;
   likesLabel?: string;
   totalSongsLabel?: string;
+}
+
+export interface PlaylistStickyControlsOptions {
+  actionBarRef: RefObject<HTMLDivElement | null>;
+  enabled: boolean;
+  sentinelRef: RefObject<HTMLDivElement | null>;
+  topOffset: number;
 }

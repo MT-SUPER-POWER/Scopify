@@ -18,6 +18,81 @@ export interface SubscribedVoiceList {
   voiceName?: string;
 }
 
+export interface VoiceListSearchBaseInfo {
+  category?: string;
+  categoryName?: string;
+  coverUrl?: string;
+  creator?: {
+    nickname?: string;
+  };
+  desc?: string;
+  description?: string;
+  dj?: {
+    nickname?: string;
+  };
+  id?: number | string;
+  name?: string;
+  picUrl?: string;
+  programCount?: number;
+  score?: number | string;
+  secondCategory?: string;
+  secondCategoryName?: string;
+  subCount?: number;
+  subscriberCount?: number;
+  userName?: string;
+  voiceCount?: number;
+  voiceListId?: number | string;
+  voiceListName?: string;
+}
+
+export interface VoiceListSearchUiElement {
+  image?: {
+    imageUrl?: string;
+  };
+  mainTitle?: {
+    title?: string;
+  };
+}
+
+export interface VoiceListSearchScoreInfo {
+  recommendWord?: string;
+  score?: number | string;
+}
+
+export interface VoiceListSearchExtInfo {
+  rightLabelText?: string;
+  scoreDto?: VoiceListSearchScoreInfo;
+}
+
+export interface VoiceListSearchItem extends VoiceListSearchBaseInfo {
+  baseInfo?: VoiceListSearchBaseInfo;
+  extInfo?: VoiceListSearchExtInfo;
+  resourceId?: number | string;
+  uiElement?: VoiceListSearchUiElement;
+}
+
+export interface VoiceListSearchPayload {
+  data?: VoiceListSearchItem[];
+  hasMore?: boolean;
+  list?: VoiceListSearchItem[];
+  more?: boolean;
+  resources?: VoiceListSearchItem[];
+  voiceList?: VoiceListSearchItem[];
+  voiceLists?: VoiceListSearchItem[];
+}
+
+export interface VoiceListSearchResponse {
+  code: number;
+  data?: VoiceListSearchItem[] | VoiceListSearchPayload;
+  hasMore?: boolean;
+  list?: VoiceListSearchItem[];
+  message?: string | null;
+  more?: boolean;
+  resources?: VoiceListSearchItem[];
+  voiceList?: VoiceListSearchItem[];
+  voiceLists?: VoiceListSearchItem[];
+}
+
 export interface SubscribedVoiceListsResponse {
   code: number;
   data?: {

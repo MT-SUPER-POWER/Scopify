@@ -1,14 +1,30 @@
-import { useI18n } from "@/store/module/i18n";
+import { LoaderCircle } from "lucide-react";
+import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import type { VoicesViewProps } from "@/types/components/search";
+import { SearchCategoryHeader } from "./SearchCategoryHeader";
 import { VoiceList } from "./VoiceList";
 
-export function VoicesView({ voices }: VoicesViewProps) {
-  const { t } = useI18n();
+export function VoicesView({
+  hasNextPage,
+  isFetchingNextPage,
+  onLoadMore,
+  voices,
+}: VoicesViewProps) {
+  const loadMoreRef = useInfiniteScrollTrigger({
+    enabled: hasNextPage && !isFetchingNextPage,
+    onIntersect: onLoadMore,
+  });
 
   return (
     <div className="pb-10">
-      <h2 className="mb-6 text-2xl font-bold tracking-tight">{t("search.section.searchVoices")}</h2>
-      <VoiceList voices={voices} />
+      <SearchCategoryHeader category="Voices" />
+      <VoiceList voices={voices} layout="grid" />
+      <div ref={loadMoreRef} aria-hidden className="h-px" />
+      {isFetchingNextPage ? (
+        <div className="flex justify-center py-6 text-zinc-400" aria-live="polite">
+          <LoaderCircle className="size-5 animate-spin" />
+        </div>
+      ) : null}
     </div>
   );
 }

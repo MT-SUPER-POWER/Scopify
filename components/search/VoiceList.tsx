@@ -3,6 +3,7 @@ import type { VoiceListProps } from "@/types/components/search";
 import { VoiceItem } from "./VoiceItem";
 
 export function VoiceList({
+  layout = "list",
   limit,
   onViewAll,
   onViewTranscript,
@@ -17,7 +18,9 @@ export function VoiceList({
       className={
         variant === "preview"
           ? "grid w-full grid-cols-1 gap-x-12 gap-y-5 lg:grid-cols-2"
-          : "flex w-full flex-col"
+          : layout === "grid"
+            ? "grid w-full grid-cols-1 gap-2 md:grid-cols-2 2xl:grid-cols-3"
+            : "flex w-full flex-col"
       }
     >
       {displayedVoices.map((voice, index) => (
