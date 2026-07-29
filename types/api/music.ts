@@ -232,6 +232,17 @@ export interface NeteaseLyric {
   [key: string]: unknown;
 }
 
+export interface SongChorusApiRange {
+  endTime: number;
+  startTime: number;
+}
+
+export interface SongChorusResponse {
+  chorus?: SongChorusApiRange[];
+  code: number;
+  data?: SongChorusApiRange[];
+}
+
 /**
  * @deprecated The player now stores raw lyric responses losslessly. Retained
  * for callers during the migration from the old LRC/YRC-only shape.

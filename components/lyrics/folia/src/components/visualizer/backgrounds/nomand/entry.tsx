@@ -12,12 +12,13 @@ export default defineVisualizerBackground({
   order: 30,
   labelKey: "folia.options.visualizerBackgroundModeNomand",
   labelFallback: "Nomand",
-  render: ({ config, coverUrl, theme }) => (
+  render: ({ config, coverUrl, theme, isDaylight }) => (
     <NomandBackgroundLayer
       coverUrl={coverUrl}
       monetBackgroundImage={config?.customImage}
       tuning={config?.nomand?.tuning}
       theme={theme}
+      isDaylight={isDaylight}
     />
   ),
   renderSettingsPanel: ({ config, actions, ...props }) => (

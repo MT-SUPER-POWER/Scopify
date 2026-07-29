@@ -7,6 +7,7 @@ import type { AudioBands } from "@/components/lyrics/folia/src/types";
 import type { LyricAudioBands } from "@/types/lyrics";
 import type { FoliaPlaybackBridge } from "@/types/foliaStage";
 
+import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
@@ -14,9 +15,12 @@ import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useTimeStore } from "@/store/module/time";
 
+const EMPTY_CHORUS_RANGES = [];
+
 export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const rawLyric = usePlayerStore((state) => state.lyric);
+  const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id ?? null);
   const storedTimeMs = useTimeStore((state) => state.currentTime);
   const durationMs = useTimeStore((state) => state.totalTime);
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
@@ -34,9 +38,11 @@ export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
   const isPlayingRef = useRef(isPlaying);
   const currentLineIndexRef = useRef(-1);
   const [currentLineIndex, setCurrentLineIndex] = useState(-1);
+  const chorusQuery = useSongChorus(currentSongId);
+  const chorusRanges = chorusQuery.data ?? EMPTY_CHORUS_RANGES;
   const lyrics = useMemo(
-    () => (rawLyric ? adaptLyricDataToFolia(adaptNeteaseLyric(rawLyric)) : null),
-    [rawLyric],
+    () => (rawLyric ? adaptLyricDataToFolia(adaptNeteaseLyric(rawLyric), chorusRanges) : null),
+    [chorusRanges, rawLyric],
   );
   const audioBands = useMemo<AudioBands>(
     () => ({ bass, lowMid, mid, spectrum, treble, vocal }),
