@@ -7,6 +7,7 @@ import { searchDefault, searchSuggest } from "@/lib/api/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { getStoredMusicCookie } from "@/lib/web/auth";
+import { useI18n } from "@/store/module/i18n";
 import { useSearchStore } from "@/store/module/search";
 import { HighlightText, type SuggestItem, SuggestTag } from "./SearchHelper";
 
@@ -20,6 +21,7 @@ const GLASS = cn(
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SEARCH COMPONENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function HeaderSearch() {
+  const { t } = useI18n();
   const smartRouter = useSmartRouter();
   const intervalRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -248,14 +250,14 @@ export default function HeaderSearch() {
               <>
                 <div className="flex items-center justify-between px-5 pt-2 pb-1">
                   <span className="mb-1 text-[11px] font-semibold tracking-widest text-zinc-500 uppercase">
-                    Recent Searches
+                    {t("search.modal.recentSearches")}
                   </span>
                   <button
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => useSearchStore.getState().clearRecent()}
                     className="text-xs text-zinc-500 transition-colors hover:text-zinc-300"
                   >
-                    Clear All
+                    {t("common.action.clearAll")}
                   </button>
                 </div>
                 {recentList.slice(0, 8).map((item: string, i: number) => (
@@ -300,7 +302,7 @@ export default function HeaderSearch() {
               <>
                 <div className="px-5 pb-1">
                   <span className="text-xs font-semibold tracking-widest text-zinc-500 uppercase">
-                    Related Searches
+                    {t("search.modal.relatedSuggestions")}
                   </span>
                 </div>
                 {suggests.map((item, i) => (

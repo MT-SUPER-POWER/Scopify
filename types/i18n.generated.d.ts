@@ -1031,6 +1031,12 @@ export interface TranslateFn {
    */
   (key: "contextMenu.addToLiked", params?: TranslationParams): string;
   /**
+   * zh-CN: 收藏播客
+   * zh-TW: 收藏播客
+   * en-US: Favorite Podcast
+   */
+  (key: "contextMenu.favoritePodcast", params?: TranslationParams): string;
+  /**
    * zh-CN: 从喜欢中移除
    * zh-TW: 從喜歡中移除
    * en-US: Remove from Liked Songs
@@ -2069,6 +2075,24 @@ export interface TranslateFn {
    */
   (key: "search.section.noSongResults", params?: TranslationParams): string;
   /**
+   * zh-CN: 没有歌手结果
+   * zh-TW: 沒有歌手結果
+   * en-US: No artist results
+   */
+  (key: "search.section.noArtistResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有专辑结果
+   * zh-TW: 沒有專輯結果
+   * en-US: No album results
+   */
+  (key: "search.section.noAlbumResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有歌单结果
+   * zh-TW: 沒有歌單結果
+   * en-US: No playlist results
+   */
+  (key: "search.section.noPlaylistResults", params?: TranslationParams): string;
+  /**
    * zh-CN: 没有播客结果
    * zh-TW: 沒有播客結果
    * en-US: No podcast results
@@ -2086,6 +2110,24 @@ export interface TranslateFn {
    * en-US: Search Songs
    */
   (key: "search.section.searchSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌手
+   * zh-TW: 搜尋歌手
+   * en-US: Search Artists
+   */
+  (key: "search.section.searchArtists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索专辑
+   * zh-TW: 搜尋專輯
+   * en-US: Search Albums
+   */
+  (key: "search.section.searchAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌单
+   * zh-TW: 搜尋歌單
+   * en-US: Search Playlists
+   */
+  (key: "search.section.searchPlaylists", params?: TranslationParams): string;
   /**
    * zh-CN: 搜索播客
    * zh-TW: 搜尋播客
@@ -2182,6 +2224,36 @@ export interface TranslateFn {
    * en-US: {{count}} episodes
    */
   (key: "search.podcast.programCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 订阅者
+   * zh-TW: 訂閱者
+   * en-US: Subscribers
+   */
+  (key: "search.podcast.subscribers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 节目
+   * zh-TW: 節目
+   * en-US: Episodes
+   */
+  (key: "search.podcast.episodes", params?: TranslationParams): string;
+  /**
+   * zh-CN: 标签
+   * zh-TW: 標籤
+   * en-US: Tags
+   */
+  (key: "search.podcast.tags", params?: TranslationParams): string;
+  /**
+   * zh-CN: 评分
+   * zh-TW: 評分
+   * en-US: Rating
+   */
+  (key: "search.podcast.rating", params?: TranslationParams): string;
+  /**
+   * zh-CN: 评分 {{score}}
+   * zh-TW: 評分 {{score}}
+   * en-US: Score {{score}}
+   */
+  (key: "search.podcast.score", params?: TranslationParams): string;
   /**
    * zh-CN: 查看文字稿
    * zh-TW: 查看文字稿
@@ -3616,6 +3688,36 @@ export interface TranslateFn {
    * en-US: Loop Mode
    */
   (key: "ui.loopMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随机播放：开启
+   * zh-TW: 隨機播放：開啟
+   * en-US: Shuffle: On
+   */
+  (key: "ui.shuffleOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随机播放：关闭
+   * zh-TW: 隨機播放：關閉
+   * en-US: Shuffle: Off
+   */
+  (key: "ui.shuffleOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 循环模式：顺序播放
+   * zh-TW: 循環模式：順序播放
+   * en-US: Repeat: Off
+   */
+  (key: "ui.repeatOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 循环模式：列表循环
+   * zh-TW: 循環模式：列表循環
+   * en-US: Repeat: All
+   */
+  (key: "ui.repeatAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 循环模式：单曲循环
+   * zh-TW: 循環模式：單曲循環
+   * en-US: Repeat: One
+   */
+  (key: "ui.repeatOne", params?: TranslationParams): string;
   /**
    * zh-CN: 喜欢
    * zh-TW: 喜歡
@@ -13862,9 +13964,9 @@ export interface TranslateFn {
    */
   (key: "library.podcasts.column.voiceCount", params?: TranslationParams): string;
   /**
-   * zh-CN: 最近更新
-   * zh-TW: 最近更新
-   * en-US: Last updated
+   * zh-CN: 更新时间
+   * zh-TW: 更新時間
+   * en-US: Updated
    */
   (key: "library.podcasts.column.updatedAt", params?: TranslationParams): string;
   /**
@@ -13921,6 +14023,18 @@ export interface TranslateFn {
    * en-US: Failed to load podcast
    */
   (key: "library.podcasts.toast.loadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播客已收藏
+   * zh-TW: 播客已收藏
+   * en-US: Podcast saved
+   */
+  (key: "library.podcasts.toast.favoriteSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏播客失败
+   * zh-TW: 收藏播客失敗
+   * en-US: Failed to save podcast
+   */
+  (key: "library.podcasts.toast.favoriteFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 声音文字稿
    * zh-TW: 聲音文字稿

@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Pause, Play } from "lucide-react";
+import { Disc3, Pause, Play } from "lucide-react";
 import { forwardRef, memo, useCallback } from "react";
 import { toast } from "sonner";
 
@@ -195,19 +195,21 @@ export const TrackRow = memo(
 
         {!hideAlbumColumn && (
           <TableCell className="max-w-0">
-            <span
+            <button
+              type="button"
               title={track.al.name}
-              className="block cursor-pointer truncate hover:text-white hover:underline"
+              onClick={(e) => {
+                e.stopPropagation();
+                smartRouter.push(`/album?id=${track.al.id}`);
+              }}
+              className="group/album flex max-w-full min-w-0 items-center gap-1.5 text-left text-zinc-400 transition-colors hover:text-white hover:underline"
             >
-              <button
-                type="button"
-                onClick={() => {
-                  smartRouter.push(`/album?id=${track.al.id}`);
-                }}
-              >
-                {track.al.name}
-              </button>
-            </span>
+              <Disc3
+                className="size-3.5 shrink-0 text-zinc-600 transition-colors group-hover/album:text-white"
+                aria-hidden="true"
+              />
+              <span className="truncate">{track.al.name}</span>
+            </button>
           </TableCell>
         )}
 
