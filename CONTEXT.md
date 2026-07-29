@@ -12,10 +12,6 @@ _Avoid_: external integration, Folia player
 Scopify code copied from or adapted from Folia under AGPL-3.0. It retains Folia's required copyright and license notices.
 _Avoid_: independent implementation, runtime dependency
 
-**Folia Source Snapshot**:
-The immutable Folia source revision from which Scopify vendors lyric-presentation code. The selected snapshot is `0a3d0980ae81002b291617c819b308a2e6207b14`.
-_Avoid_: floating main branch, untracked copy
-
 **Folia Playback Stage**:
 The complete source-preserved single-page playback presentation from the Folia Source Snapshot: its shared renderer, shell and subtitle overlay; all nine Visualizer Modes; all six backgrounds; floating controls, progress bar and lyric timeline; chrome auto-hide; visual settings; built-in assets; and responsive animation runtime.
 _Avoid_: Folia-style screen, starter visualizers, simplified renderer

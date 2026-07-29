@@ -4,6 +4,14 @@ This directory vendors the playback-stage presentation runtime from
 [`chthollyphile/folia-major`](https://github.com/chthollyphile/folia-major) at
 commit `0a3d0980ae81002b291617c819b308a2e6207b14` (2026-07-22).
 
+Selected upstream presentation updates are reviewed and recorded separately from
+the original full-copy baseline:
+
+- `55e67e13e79a8b183de038557e002a1bf4ce228e` — correct Nomand image sampling
+  direction for daylight generated-color themes.
+- `a41e20e85b19f0c4438f0ce79e529952300229f8` — add Pendolo chorus emphasis and
+  animation-intensity motion profiles.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
@@ -35,6 +43,8 @@ Scopify is also distributed under AGPL-3.0.
 - Locale dictionaries include host labels for the Lyric Stage-only Theme Library.
 - Scopify supplies lyrics, playback time, audio bands, metadata, and transport
   callbacks through a separate adapter outside this directory.
+- Scopify exposes Nomand's daylight sampling rule through a small pure helper so
+  the host can regression-test light and dark behavior without mounting WebGL.
 
 `.vendor-closure.ps1` records and reproduces the source dependency closure. Any
 upstream refresh must update the pinned commit above and review every host
