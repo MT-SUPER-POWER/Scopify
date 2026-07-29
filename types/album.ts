@@ -21,6 +21,5 @@ export interface AlbumInfo {
 
 export interface AlbumSubscriptionMutation {
   id: number | string;
-  previousCollected: boolean;
   subscribe: boolean;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -9,11 +9,13 @@ import type { AlbumInfo, AlbumSubscriptionMutation } from "@/types/album";
 
 import { subscribeAlbum } from "@/lib/api/album";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail } from "@/types/api/music";
 
 import { useAlbumQuery } from "./useAlbumQuery";
+import { useAlbumCollectionQuery } from "./useAlbumCollectionQuery";
 
 const colorCache = new Map<string, string>();
 const COLOR_CACHE_LIMIT = 10;
@@ -23,6 +25,8 @@ export function useAlbumData() {
   const searchParams = useSearchParams();
   const albumId = searchParams.get("id");
   const requireLoginAction = useRequireLoginAction();
+  const queryClient = useQueryClient();
+  const userId = useUserStore((state) => state.user?.userId);
   const {
     data: albumDetail,
     isError,
@@ -35,9 +39,11 @@ export function useAlbumData() {
   const [themeColor, setThemeColor] = useState("from-[#88b325]");
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const isShuffle = usePlayerStore((s) => s.isShuffle);
-  const collectedAlbumIds = useUserStore((s) => s.collectedAlbumIds);
-  const setCollectedAlbumId = useUserStore((s) => s.setCollectedAlbumId);
-  const isAlbumCollected = albumId ? collectedAlbumIds.has(Number(albumId)) : false;
+  const albumCollectionQuery = useAlbumCollectionQuery();
+  const albumCollectionQueryKey = musicQueryKeys.album.subscriptions(userId ?? 0);
+  const isAlbumCollected = albumId
+    ? albumCollectionQuery.data?.includes(Number(albumId)) === true
+    : false;
 
   const ALBUM_INFO = useMemo<AlbumInfo | null>(() => {
     const album = albumDetail?.album;
@@ -111,12 +117,25 @@ export function useAlbumData() {
 
   const subscribeMutation = useMutation({
     mutationFn: ({ id, subscribe }: AlbumSubscriptionMutation) => subscribeAlbum(id, subscribe),
-    onError: (_error, variables) => {
-      setCollectedAlbumId(Number(variables.id), variables.previousCollected);
-      toast.error(t("album.toast.subscribeFailed"));
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: albumCollectionQueryKey });
+      const previousCollectedAlbumIds = queryClient.getQueryData<number[]>(albumCollectionQueryKey);
+
+      queryClient.setQueryData<number[]>(albumCollectionQueryKey, (current = []) =>
+        variables.subscribe
+          ? [...new Set([...current, Number(variables.id)])]
+          : current.filter((id) => id !== Number(variables.id)),
+      );
+
+      return { previousCollectedAlbumIds };
     },
-    onMutate: (variables) => {
-      setCollectedAlbumId(Number(variables.id), variables.subscribe);
+    onError: (_error, _variables, context) => {
+      if (context?.previousCollectedAlbumIds !== undefined) {
+        queryClient.setQueryData(albumCollectionQueryKey, context.previousCollectedAlbumIds);
+      } else {
+        queryClient.removeQueries({ queryKey: albumCollectionQueryKey });
+      }
+      toast.error(t("album.toast.subscribeFailed"));
     },
     onSuccess: (_data, variables) => {
       toast.success(
@@ -124,6 +143,12 @@ export function useAlbumData() {
           ? t("album.toast.subscribeSuccess")
           : t("album.toast.unsubscribeSuccess"),
       );
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: albumCollectionQueryKey });
+      if (userId) {
+        void queryClient.invalidateQueries({ queryKey: musicQueryKeys.library.collection(userId) });
+      }
     },
   });
 
@@ -133,7 +158,6 @@ export function useAlbumData() {
     await requireLoginAction("album-subscribe", async () => {
       await subscribeMutation.mutateAsync({
         id: albumId,
-        previousCollected: isAlbumCollected,
         subscribe: !isAlbumCollected,
       });
     });
@@ -159,7 +183,8 @@ export function useAlbumData() {
     isRefetchError,
     isRefreshing: isFetching,
     isShuffle,
-    isTogglingAlbumSubscribe: subscribeMutation.isPending,
+    isTogglingAlbumSubscribe:
+      subscribeMutation.isPending || (Boolean(userId) && albumCollectionQuery.isPending),
     themeColor,
     togglePlay,
     tracks,

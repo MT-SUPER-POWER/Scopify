@@ -1,9 +1,8 @@
 "use client";
 
-import { ArrowDownCircle, Heart, MoreHorizontal, Pause, Play, Shuffle } from "lucide-react";
-
+import { ArrowDownCircle, MoreHorizontal, Pause, Play, Shuffle } from "lucide-react";
+import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 
 interface AlbumActionsProps {
@@ -23,9 +22,6 @@ export function AlbumActions({
 }: AlbumActionsProps) {
   const { t } = useI18n();
   const playLabel = t(isPlaying ? "ui.pause" : "ui.play");
-  const collectionLabel = t(
-    isAlbumCollected ? "album.action.unsubscribe" : "album.action.subscribe",
-  );
 
   return (
     <TooltipProvider>
@@ -80,25 +76,13 @@ export function AlbumActions({
           </TooltipContent>
         </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              disabled={isTogglingAlbumSubscribe}
-              aria-label={collectionLabel}
-              aria-busy={isTogglingAlbumSubscribe}
-              onClick={onToggleSubscribe}
-              className="flex size-8 items-center justify-center text-zinc-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none disabled:opacity-50"
-            >
-              <Heart
-                className={cn("size-8", isAlbumCollected && "fill-[#1ed760] text-[#1ed760]")}
-              />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="top" sideOffset={8}>
-            {collectionLabel}
-          </TooltipContent>
-        </Tooltip>
+        <CollectionToggleButton
+          isCollected={isAlbumCollected}
+          isLoading={isTogglingAlbumSubscribe}
+          onToggle={onToggleSubscribe}
+          subscribeLabel={t("album.action.subscribe")}
+          unsubscribeLabel={t("album.action.unsubscribe")}
+        />
 
         <Tooltip>
           <TooltipTrigger asChild>

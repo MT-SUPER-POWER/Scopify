@@ -5,6 +5,7 @@ import { LibraryContentState } from "@/components/library/LibraryContentState";
 import { LibraryEmptyState } from "@/components/library/LibraryEmptyState";
 import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
 import { LibraryPageHeader } from "@/components/library/LibraryPageHeader";
+import { TimeBasedBackground } from "@/components/shared/TimeBasedBackground";
 import { useCollectionQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -19,8 +20,9 @@ export default function CollectionPage() {
   const artists = collectionQuery.data?.artists ?? [];
 
   return (
-    <main className="min-h-screen bg-[#121212] px-6 pt-24 pb-28 md:px-10">
-      <div className="mx-auto w-full max-w-7xl">
+    <main className="relative min-h-screen bg-[#121212] px-6 pt-24 pb-28 md:px-10">
+      <TimeBasedBackground />
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
         <LibraryPageHeader title={t("library.title.collection")} />
         {!isLoggedIn ? (
           <LoginRequiredPrompt
