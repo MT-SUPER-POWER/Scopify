@@ -72,7 +72,6 @@ export const TrackRow = memo(
   forwardRef<HTMLTableRowElement, TrackRowProps>(function TrackRow(
     {
       className,
-      durationColumnWidth,
       hideAlbumColumn,
       hideDateColumn,
       hideLikeColumn,
@@ -220,7 +219,7 @@ export const TrackRow = memo(
         )}
 
         {!hideLikeColumn && (
-          <TableCell className="w-20 truncate">
+          <TableCell className="truncate">
             <div className="flex size-full justify-center">
               <LikeButton
                 liked={isLiked}
@@ -234,10 +233,7 @@ export const TrackRow = memo(
           </TableCell>
         )}
 
-        <TableCell
-          className="w-20 rounded-r-md pr-4 text-right align-middle lg:w-36"
-          style={durationColumnWidth === undefined ? undefined : { width: durationColumnWidth }}
-        >
+        <TableCell className="rounded-r-md pr-4 text-right align-middle">
           <div className="flex items-center justify-end">
             <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
           </div>

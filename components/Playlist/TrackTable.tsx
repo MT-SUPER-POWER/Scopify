@@ -7,20 +7,13 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
-  type ColumnSizingState,
   type SortingState,
+  type Table as TanstackTable,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ChevronDown, ChevronUp, Clock, GripVertical, RefreshCw } from "lucide-react";
+import { ChevronDown, ChevronUp, Clock, RefreshCw } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import {
-  type MouseEvent as ReactMouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { TracklistTableProps } from "@/types/components/playlist";
@@ -41,6 +34,7 @@ import {
 } from "@/components/ui/table";
 import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
+import { useTracklistColumnLayout } from "@/hooks/playlist/useTracklistColumnLayout";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
@@ -52,11 +46,18 @@ import type { NavigationScrollRestorationAdapter } from "@/types/navigation-scro
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
 import { TrackRow } from "./TrackRow";
+import { TracklistResizeHandle } from "./TracklistResizeHandle";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function waitForAnimationFrame() {
   return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+}
+
+function getRequiredTracklistColumn(table: TanstackTable<SongDetail>, columnId: string) {
+  const column = table.getColumn(columnId);
+  if (!column) throw new Error(`Missing required Tracklist column: ${columnId}`);
+  return column;
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -77,12 +78,16 @@ export default function TracklistTable({
   stickyHeaderTop,
   tracks: externalTracks,
 }: TracklistTableProps) {
-  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const showAlbumColumn = useMediaQuery("(min-width: 640px)") && !hideAlbumColumn;
   const showExtendedColumns = useMediaQuery("(min-width: 1024px)");
   const showDateColumn = showExtendedColumns && !hideDateColumn;
   const showLikeColumn = showExtendedColumns && !hideLikeColumn;
+  const columnLayout = useTracklistColumnLayout({
+    showAlbumColumn,
+    showDateColumn,
+    showLikeColumn,
+  });
 
   const { t } = useI18n();
   const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
@@ -146,42 +151,29 @@ export default function TracklistTable({
     () => [
       {
         id: "index",
-        enableResizing: false,
         enableSorting: false,
-        maxSize: 64,
-        minSize: 56,
-        size: 56,
       },
-      { accessorFn: (track) => track.name, id: "title", minSize: 160, size: 300 },
-      { accessorFn: (track) => track.al?.name ?? "", id: "album", minSize: 96, size: 200 },
-      { accessorFn: (track) => track.publishTime ?? 0, id: "date", minSize: 120, size: 140 },
+      { accessorFn: (track) => track.name, id: "title" },
+      { accessorFn: (track) => track.al?.name ?? "", id: "album" },
+      { accessorFn: (track) => track.publishTime ?? 0, id: "date" },
       {
         accessorFn: (track) => Number(likeSet.has(track.id)),
         id: "like",
-        minSize: 44,
-        size: 80,
       },
       {
         id: "duration",
-        enableResizing: false,
         enableSorting: false,
-        maxSize: 144,
-        minSize: 72,
-        size: 80,
       },
     ],
     [likeSet],
   );
   const table = useReactTable({
-    columnResizeMode: "onChange",
     columns,
     data: filteredTracks,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onColumnSizingChange: setColumnSizing,
     onSortingChange: setSorting,
     state: {
-      columnSizing,
       columnVisibility: {
         album: showAlbumColumn,
         date: showDateColumn,
@@ -192,70 +184,11 @@ export default function TracklistTable({
   });
   const sortedRows = table.getRowModel().rows;
   const sortedTracks = sortedRows.map((row) => row.original);
-  const titleColumn = table.getColumn("title")!;
-  const albumColumn = table.getColumn("album")!;
-  const dateColumn = table.getColumn("date")!;
-  const likeColumn = table.getColumn("like")!;
-  const durationColumn = table.getColumn("duration")!;
-  const getResizeHandler = (columnId: string) =>
-    table
-      .getFlatHeaders()
-      .find((header) => header.column.id === columnId)
-      ?.getResizeHandler();
-  const titleResizeHandler = getResizeHandler("title");
-  const albumResizeHandler = getResizeHandler("album");
-  const dateResizeHandler = getResizeHandler("date");
-  const likeResizeHandler = getResizeHandler("like");
-  const suppressSortAfterResizeRef = useRef(false);
-  const beginColumnResize = useCallback(() => {
-    suppressSortAfterResizeRef.current = true;
-
-    const clearSuppression = () => {
-      window.setTimeout(() => {
-        suppressSortAfterResizeRef.current = false;
-      }, 0);
-    };
-
-    window.addEventListener("mouseup", clearSuppression, { once: true });
-    window.addEventListener("touchend", clearSuppression, { once: true });
-  }, []);
-  const handleSortableHeaderClick = useCallback(
-    (handler: ((event: unknown) => void) | undefined) =>
-      (event: ReactMouseEvent<HTMLTableCellElement>) => {
-        if (suppressSortAfterResizeRef.current) {
-          event.preventDefault();
-          event.stopPropagation();
-          suppressSortAfterResizeRef.current = false;
-          return;
-        }
-        handler?.(event);
-      },
-    [],
-  );
-  const compactDurationWidth = durationColumn.getSize();
-  const compactFixedWidth = 52 + compactDurationWidth;
-  const compactTitleWidth = showAlbumColumn
-    ? `calc(70% - ${compactFixedWidth}px)`
-    : `calc(100% - ${compactFixedWidth}px)`;
-  const titleColumnStyle = showExtendedColumns
-    ? {
-        minWidth: titleColumn.columnDef.minSize,
-        width: columnSizing.title ? titleColumn.getSize() : "auto",
-      }
-    : { width: compactTitleWidth };
-  const albumColumnStyle = showExtendedColumns
-    ? {
-        minWidth: albumColumn.columnDef.minSize,
-        width: columnSizing.album ? albumColumn.getSize() : "25%",
-      }
-    : { width: "30%" };
-  const dateColumnStyle = showExtendedColumns
-    ? {
-        minWidth: dateColumn.columnDef.minSize,
-        width: columnSizing.date ? dateColumn.getSize() : "15%",
-      }
-    : { minWidth: dateColumn.columnDef.minSize, width: dateColumn.getSize() };
-  const visibleColumnCount = table.getVisibleLeafColumns().length;
+  const titleColumn = getRequiredTracklistColumn(table, "title");
+  const albumColumn = getRequiredTracklistColumn(table, "album");
+  const dateColumn = getRequiredTracklistColumn(table, "date");
+  const likeColumn = getRequiredTracklistColumn(table, "like");
+  const visibleColumnCount = columnLayout.visibleColumns.length;
 
   const primaryScrollSurface = usePrimaryScrollSurface();
   const stickyHeaderSentinelRef = useRef<HTMLDivElement>(null);
@@ -473,8 +406,17 @@ export default function TracklistTable({
 
       <div className="w-full px-6 md:px-8 lg:px-10 xl:px-12">
         <div ref={stickyHeaderSentinelRef} aria-hidden className="-mb-px h-px" />
-        <div className="-mx-4">
-          <Table containerClassName="overflow-visible" className="w-full table-fixed text-zinc-400">
+        <div ref={columnLayout.containerRef} className="-mx-4">
+          <Table
+            containerClassName="overflow-visible"
+            className="w-full table-fixed text-zinc-400"
+            style={{ minWidth: columnLayout.minimumTableWidth }}
+          >
+            <colgroup>
+              {columnLayout.visibleColumns.map((column) => (
+                <col key={column} style={columnLayout.getColumnStyle(column)} />
+              ))}
+            </colgroup>
             <TableHeader
               style={stickyHeaderTop === undefined ? undefined : { top: stickyHeaderTop }}
               className={cn(
@@ -490,11 +432,10 @@ export default function TracklistTable({
               )}
             >
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="w-14 pl-4 text-left text-zinc-400 lg:w-16">#</TableHead>
+                <TableHead className="pl-4 text-left text-zinc-400">#</TableHead>
                 <TableHead
                   className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                  style={titleColumnStyle}
-                  onClick={handleSortableHeaderClick(titleColumn.getToggleSortingHandler())}
+                  onClick={titleColumn.getToggleSortingHandler()}
                 >
                   <div className="flex items-center gap-1">
                     {t("playlist.table.columnTitle")}
@@ -505,15 +446,16 @@ export default function TracklistTable({
                         <ChevronDown className="size-4" />
                       ))}
                   </div>
-                  {titleResizeHandler && (
-                    <ResizeHandle onResize={titleResizeHandler} onResizeStart={beginColumnResize} />
-                  )}
+                  <TracklistResizeHandle
+                    active={columnLayout.activeDivider === "title"}
+                    onDoubleClick={(event) => columnLayout.resetResizePair("title", event)}
+                    onPointerDown={(event) => columnLayout.startResize("title", event)}
+                  />
                 </TableHead>
                 {showAlbumColumn && (
                   <TableHead
                     className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                    style={albumColumnStyle}
-                    onClick={handleSortableHeaderClick(albumColumn.getToggleSortingHandler())}
+                    onClick={albumColumn.getToggleSortingHandler()}
                   >
                     <div className="flex items-center gap-1">
                       {t("playlist.table.columnAlbum")}
@@ -524,19 +466,17 @@ export default function TracklistTable({
                           <ChevronDown className="size-4" />
                         ))}
                     </div>
-                    {albumResizeHandler && (
-                      <ResizeHandle
-                        onResize={albumResizeHandler}
-                        onResizeStart={beginColumnResize}
-                      />
-                    )}
+                    <TracklistResizeHandle
+                      active={columnLayout.activeDivider === "album"}
+                      onDoubleClick={(event) => columnLayout.resetResizePair("album", event)}
+                      onPointerDown={(event) => columnLayout.startResize("album", event)}
+                    />
                   </TableHead>
                 )}
                 {showDateColumn && (
                   <TableHead
                     className="group/head relative cursor-pointer px-3 text-xs font-normal text-zinc-400 transition-colors select-none hover:text-white"
-                    style={dateColumnStyle}
-                    onClick={handleSortableHeaderClick(dateColumn.getToggleSortingHandler())}
+                    onClick={dateColumn.getToggleSortingHandler()}
                   >
                     <div className="flex items-center gap-1">
                       {t("playlist.table.columnPublished")}
@@ -547,19 +487,17 @@ export default function TracklistTable({
                           <ChevronDown className="size-4" />
                         ))}
                     </div>
-                    {dateResizeHandler && (
-                      <ResizeHandle
-                        onResize={dateResizeHandler}
-                        onResizeStart={beginColumnResize}
-                      />
-                    )}
+                    <TracklistResizeHandle
+                      active={columnLayout.activeDivider === "date"}
+                      onDoubleClick={(event) => columnLayout.resetResizePair("date", event)}
+                      onPointerDown={(event) => columnLayout.startResize("date", event)}
+                    />
                   </TableHead>
                 )}
                 {showLikeColumn && (
                   <TableHead
                     className="group/head relative cursor-pointer text-zinc-400 transition-colors select-none hover:text-white"
-                    style={{ minWidth: likeColumn.columnDef.minSize, width: likeColumn.getSize() }}
-                    onClick={handleSortableHeaderClick(likeColumn.getToggleSortingHandler())}
+                    onClick={likeColumn.getToggleSortingHandler()}
                   >
                     <div className="flex items-center justify-center gap-1">
                       {t("playlist.table.columnLike")}
@@ -570,18 +508,14 @@ export default function TracklistTable({
                           <ChevronDown className="size-4" />
                         ))}
                     </div>
-                    {likeResizeHandler && (
-                      <ResizeHandle
-                        onResize={likeResizeHandler}
-                        onResizeStart={beginColumnResize}
-                      />
-                    )}
+                    <TracklistResizeHandle
+                      active={columnLayout.activeDivider === "like"}
+                      onDoubleClick={(event) => columnLayout.resetResizePair("like", event)}
+                      onPointerDown={(event) => columnLayout.startResize("like", event)}
+                    />
                   </TableHead>
                 )}
-                <TableHead
-                  className="w-20 pr-4 text-right text-zinc-400 lg:w-36"
-                  style={showExtendedColumns ? undefined : { width: compactDurationWidth }}
-                >
+                <TableHead className="pr-4 text-right text-zinc-400">
                   <div className="flex size-full items-center justify-end">
                     <Clock className="size-4" />
                   </div>
@@ -652,7 +586,6 @@ export default function TracklistTable({
                         onRequestDelete={handleRequestDelete}
                         setIsPlaying={setIsPlaying}
                         hideAlbumColumn={!showAlbumColumn}
-                        durationColumnWidth={showExtendedColumns ? undefined : compactDurationWidth}
                         hideDateColumn={!showDateColumn}
                         hideLikeColumn={!showLikeColumn}
                       />
@@ -688,7 +621,6 @@ export default function TracklistTable({
                         onRequestDelete={handleRequestDelete}
                         setIsPlaying={setIsPlaying}
                         hideAlbumColumn={!showAlbumColumn}
-                        durationColumnWidth={showExtendedColumns ? undefined : compactDurationWidth}
                         hideDateColumn={!showDateColumn}
                         hideLikeColumn={!showLikeColumn}
                         isScrolling={isVirtualScrolling}
@@ -737,33 +669,5 @@ export default function TracklistTable({
         </div>
       </div>
     </>
-  );
-}
-function ResizeHandle({
-  onResize,
-  onResizeStart,
-}: {
-  onResize: (event: unknown) => void;
-  onResizeStart: () => void;
-}) {
-  const stopPropagation = (event: { stopPropagation: () => void }) => event.stopPropagation();
-
-  return (
-    <span
-      onClick={stopPropagation}
-      onMouseDown={(event) => {
-        stopPropagation(event);
-        onResizeStart();
-        onResize(event);
-      }}
-      onTouchStart={(event) => {
-        stopPropagation(event);
-        onResizeStart();
-        onResize(event);
-      }}
-      className="absolute top-1/2 right-0 flex h-4 w-3 -translate-y-1/2 cursor-col-resize items-center justify-center opacity-0 transition-opacity select-none group-hover/head:opacity-100"
-    >
-      <GripVertical className="size-3 text-zinc-500" />
-    </span>
   );
 }
