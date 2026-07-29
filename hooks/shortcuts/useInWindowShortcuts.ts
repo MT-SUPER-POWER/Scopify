@@ -13,7 +13,7 @@ export function useInWindowShortcuts() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || event.repeat) return;
+      if (event.defaultPrevented) return;
 
       const ui = useUiStore.getState();
       if (
@@ -33,7 +33,9 @@ export function useInWindowShortcuts() {
         return binding ? isShortcutBindingMatch(binding, event) : false;
       });
 
-      if (!command || (isEditableTarget(event.target) && command.id !== "open-search")) return;
+      if (!command) return;
+      if (event.repeat && !command.id.startsWith("seek-")) return;
+      if (isEditableTarget(event.target) && command.id !== "open-search") return;
 
       event.preventDefault();
       executeShortcutCommand(command.id);

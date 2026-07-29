@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { usePlayerStore } from "@/store";
+import { useTimeStore } from "@/store/module/time";
 import { useUiStore } from "@/store/module/ui";
 import type { ShortcutCommandId } from "@/types/shortcuts";
 
@@ -42,6 +43,32 @@ export function useShortcutCommands() {
             player.setVolume(muteRestoreLevel);
           }
           return;
+        case "seek-backward-5s": {
+          const { currentTime } = useTimeStore.getState();
+          const targetTime = Math.max(0, currentTime - 5000);
+          window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
+          return;
+        }
+        case "seek-forward-5s": {
+          const { currentTime, totalTime } = useTimeStore.getState();
+          const maxTime = totalTime > 0 ? totalTime : Infinity;
+          const targetTime = Math.min(maxTime, currentTime + 5000);
+          window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
+          return;
+        }
+        case "seek-backward-1s": {
+          const { currentTime } = useTimeStore.getState();
+          const targetTime = Math.max(0, currentTime - 1000);
+          window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
+          return;
+        }
+        case "seek-forward-1s": {
+          const { currentTime, totalTime } = useTimeStore.getState();
+          const maxTime = totalTime > 0 ? totalTime : Infinity;
+          const targetTime = Math.min(maxTime, currentTime + 1000);
+          window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
+          return;
+        }
         case "open-search":
           ui.setIsSearchOpen(!ui.isSearchOpen);
           return;

@@ -43,7 +43,8 @@ export function getShortcutBindingFromEvent(event: KeyboardEvent): ShortcutBindi
     ...(event.shiftKey ? { shift: true } : {}),
   };
 
-  if (!binding.primary && !binding.alt && !binding.shift && binding.key !== "Space") return null;
+  const isSingleKeyAllowed = binding.key === "Space" || binding.key.startsWith("Arrow");
+  if (!binding.primary && !binding.alt && !binding.shift && !isSingleKeyAllowed) return null;
   return binding;
 }
 

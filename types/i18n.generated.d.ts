@@ -13832,6 +13832,30 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.toggleMute", params?: TranslationParams): string;
   /**
+   * zh-CN: 快退 5 秒
+   * zh-TW: 倒帶 5 秒
+   * en-US: Rewind 5s
+   */
+  (key: "shortcuts.command.seekBackward5s", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快进 5 秒
+   * zh-TW: 快進 5 秒
+   * en-US: Fast Forward 5s
+   */
+  (key: "shortcuts.command.seekForward5s", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快退 1 秒
+   * zh-TW: 倒帶 1 秒
+   * en-US: Rewind 1s
+   */
+  (key: "shortcuts.command.seekBackward1s", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快进 1 秒
+   * zh-TW: 快進 1 秒
+   * en-US: Fast Forward 1s
+   */
+  (key: "shortcuts.command.seekForward1s", params?: TranslationParams): string;
+  /**
    * zh-CN: 打开搜索
    * zh-TW: 開啟搜尋
    * en-US: Open Search
@@ -13845,7 +13869,7 @@ export interface TranslateFn {
   (key: "shortcuts.command.toggleLyricStage", params?: TranslationParams): string;
   /**
    * zh-CN: 切换侧边栏
-   * zh-TW: 切換側邊欄
+   * zh-TW: 切換側欄
    * en-US: Toggle Sidebar
    */
   (key: "shortcuts.command.toggleSidebar", params?: TranslationParams): string;

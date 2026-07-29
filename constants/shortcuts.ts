@@ -39,6 +39,30 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyM", primary: true, alt: true },
   },
   {
+    id: "seek-backward-5s",
+    group: "playback",
+    labelKey: "shortcuts.command.seekBackward5s",
+    defaultBinding: { key: "ArrowLeft" },
+  },
+  {
+    id: "seek-forward-5s",
+    group: "playback",
+    labelKey: "shortcuts.command.seekForward5s",
+    defaultBinding: { key: "ArrowRight" },
+  },
+  {
+    id: "seek-backward-1s",
+    group: "playback",
+    labelKey: "shortcuts.command.seekBackward1s",
+    defaultBinding: { key: "ArrowLeft", shift: true },
+  },
+  {
+    id: "seek-forward-1s",
+    group: "playback",
+    labelKey: "shortcuts.command.seekForward1s",
+    defaultBinding: { key: "ArrowRight", shift: true },
+  },
+  {
     id: "open-search",
     group: "interface",
     labelKey: "shortcuts.command.openSearch",
