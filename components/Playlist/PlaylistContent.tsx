@@ -13,6 +13,8 @@ import { useI18n } from "@/store/module/i18n";
 import type { PlaylistContentProps } from "@/types/components/playlist";
 
 export function PlaylistContent({
+  actionSlot,
+  contentSlot,
   dailyDate,
   hideAlbumColumn,
   isDailyRecommend,
@@ -66,6 +68,7 @@ export function PlaylistContent({
         ) : (
           <>
             <PlaylistActions
+              actionSlot={actionSlot}
               playlistId={playlistId}
               playSourceId={playSourceId}
               isDaily={isDailyRecommend}
@@ -83,6 +86,8 @@ export function PlaylistContent({
         <div className="min-w-0 flex-1 pb-10">
           {isLoading ? (
             <PlaylistLoading />
+          ) : contentSlot ? (
+            contentSlot({ searchQuery })
           ) : (
             <TracklistTable
               searchOpen={searchOpen}

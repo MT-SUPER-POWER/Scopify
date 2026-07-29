@@ -3,6 +3,7 @@
 import { CalendarDays, Headphones, ListMusic, Pause, Play, Radio, Users } from "lucide-react";
 import Image from "next/image";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatDate, formatNumber } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -21,7 +22,7 @@ export function SubscribedPodcastCard({
   const categoryLabel = [podcast.category, podcast.secondCategory].filter(Boolean).join(" · ");
   const lastUpdatedAt = podcast.lastProgramCreateTime ?? podcast.createTime;
 
-  return (
+  const card = (
     <div
       onClick={() => router.push(`/radio?id=${podcast.id}`)}
       className="group min-w-0 cursor-pointer rounded-md p-2.5 transition-colors hover:bg-white/5"
@@ -59,7 +60,10 @@ export function SubscribedPodcastCard({
         {isActive && isPlaying ? (
           <button
             type="button"
-            onClick={onPause}
+            onClick={(event) => {
+              event.stopPropagation();
+              onPause();
+            }}
             title={t("contextMenu.pause")}
             aria-label={t("contextMenu.pause")}
             className="absolute right-2 bottom-2 flex size-12 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#3be477]"
@@ -112,5 +116,18 @@ export function SubscribedPodcastCard({
         ) : null}
       </div>
     </div>
+  );
+
+  return (
+    <PodcastContextMenu
+      isActive={isActive}
+      isFavorited
+      isPlaying={isPlaying}
+      onPause={onPause}
+      podcast={podcast}
+      onPlay={onPlay}
+    >
+      {card}
+    </PodcastContextMenu>
   );
 }

@@ -1,31 +1,109 @@
-import { ListMusic, Radio } from "lucide-react";
+"use client";
+
+import { ListMusic, Pause, Play, Radio } from "lucide-react";
 import Image from "next/image";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { getPodcastDestination } from "@/lib/search/podcastDestination";
+import { cn } from "@/lib/utils";
+import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { PodcastCardProps } from "@/types/components/search";
+import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 
 const FALLBACK_COVER =
   "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=400&auto=format&fit=crop";
 
 export function PodcastCard({ podcast }: PodcastCardProps) {
   const { t } = useI18n();
+  const router = useSmartRouter();
+  const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
+  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const playlistId = usePlayerStore((state) => state.playlistId);
+  const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
+  const isActive =
+    currentSongDetail?.al?.id === podcast.id || String(playlistId) === `radio:${podcast.id}`;
+  const categoryLabel = podcast.category;
 
-  return (
-    <article className="min-w-0 rounded-xl bg-[#181818] p-4 transition-colors hover:bg-[#282828]">
+  const handleNavigate = () => router.push(getPodcastDestination(podcast));
+
+  const card = (
+    <article
+      role="link"
+      tabIndex={0}
+      onClick={handleNavigate}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        handleNavigate();
+      }}
+      className="group min-w-0 cursor-pointer rounded-xl bg-[#181818] p-4 transition-colors hover:bg-[#282828]"
+    >
       <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md bg-zinc-800 shadow-lg">
         <Image
           width={300}
           height={300}
           src={podcast.coverUrl || FALLBACK_COVER}
           alt={podcast.name}
-          className="size-full object-cover"
+          className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        {podcast.category && (
-          <span className="absolute right-2 bottom-2 rounded bg-black/70 px-2 py-0.5 text-[11px] font-medium text-white">
-            {podcast.category}
+        {categoryLabel && (
+          <span
+            className="absolute top-2 left-2 max-w-[calc(100%-1rem)] truncate rounded-md bg-black/65 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm"
+            title={categoryLabel}
+          >
+            {categoryLabel}
           </span>
         )}
+        {isActive && isPlaying ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+            <PlayingAnimation size={24} />
+          </div>
+        ) : null}
+        {isActive && isPlaying ? (
+          <button
+            type="button"
+            title={t("contextMenu.pause")}
+            aria-label={t("contextMenu.pause")}
+            onClick={(event) => {
+              event.stopPropagation();
+              setIsPlaying(false);
+            }}
+            className="absolute right-2 bottom-2 flex size-12 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#3be477]"
+          >
+            <Pause className="size-6 fill-current" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            title={t("contextMenu.play")}
+            aria-label={t("contextMenu.play")}
+            onClick={(event) => void handlePlayPodcast(podcast.id, event)}
+            className="absolute right-2 bottom-2 flex size-12 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477] focus-visible:translate-y-0 focus-visible:opacity-100"
+          >
+            <Play
+              className={cn(
+                "ml-0.5 size-6 fill-current",
+                loadingPodcastId === podcast.id && "animate-pulse",
+              )}
+            />
+          </button>
+        )}
       </div>
-      <h3 className="truncate text-base font-bold text-white">{podcast.name}</h3>
+      <div className="flex min-w-0 items-center gap-1">
+        <h3 className="truncate text-base font-bold text-white">{podcast.name}</h3>
+        {podcast.score !== undefined ? (
+          <span
+            className="inline-flex h-[13px] shrink-0 items-center rounded-[1px] border border-[#a67d16] bg-[#c4931c]/10 px-[2px] text-[9px] leading-[11px] font-normal text-[#dfb42b]"
+            title={t("search.podcast.score", { score: podcast.score })}
+          >
+            <span className="sr-only">{t("search.podcast.score", { score: podcast.score })}</span>
+            {podcast.score}
+          </span>
+        ) : null}
+      </div>
       <p className="mt-1 truncate text-sm text-zinc-400">
         {podcast.hostName || t("search.podcast.unknownHost")}
       </p>
@@ -40,5 +118,17 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
         </span>
       </div>
     </article>
+  );
+
+  return (
+    <PodcastContextMenu
+      isActive={isActive}
+      isPlaying={isPlaying}
+      onPause={() => setIsPlaying(false)}
+      podcast={podcast}
+      onPlay={() => handlePlayPodcast(podcast.id)}
+    >
+      {card}
+    </PodcastContextMenu>
   );
 }

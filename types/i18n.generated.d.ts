@@ -14042,11 +14042,23 @@ export interface TranslateFn {
    */
   (key: "library.podcasts.column.title", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放进度
+   * zh-TW: 播放進度
+   * en-US: Playback progress
+   */
+  (key: "library.podcasts.column.progress", params?: TranslationParams): string;
+  /**
    * zh-CN: 播放量
    * zh-TW: 播放量
    * en-US: Plays
    */
   (key: "library.podcasts.column.playCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时长
+   * zh-TW: 時長
+   * en-US: Duration
+   */
+  (key: "library.podcasts.column.duration", params?: TranslationParams): string;
   /**
    * zh-CN: 声音数
    * zh-TW: 聲音數
@@ -14126,6 +14138,30 @@ export interface TranslateFn {
    */
   (key: "library.podcasts.toast.favoriteFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 已取消收藏播客
+   * zh-TW: 已取消收藏播客
+   * en-US: Podcast removed from saved podcasts
+   */
+  (key: "library.podcasts.toast.unfavoriteSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏播客失败
+   * zh-TW: 取消收藏播客失敗
+   * en-US: Failed to remove podcast from saved podcasts
+   */
+  (key: "library.podcasts.toast.unfavoriteFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏
+   * zh-TW: 收藏
+   * en-US: Save
+   */
+  (key: "library.podcasts.action.favorite", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏
+   * zh-TW: 取消收藏
+   * en-US: Unsave
+   */
+  (key: "library.podcasts.action.unfavorite", params?: TranslationParams): string;
+  /**
    * zh-CN: 声音文字稿
    * zh-TW: 聲音文字稿
    * en-US: Voice Transcript
@@ -14149,5 +14185,35 @@ export interface TranslateFn {
    * en-US: The transcript is temporarily unavailable.
    */
   (key: "library.voiceTranscript.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内容已下架
+   * zh-TW: 內容已下架
+   * en-US: Unavailable
+   */
+  (key: "library.voice.status.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏于 {{date}}
+   * zh-TW: 收藏於 {{date}}
+   * en-US: Liked {{date}}
+   */
+  (key: "library.voice.meta.likedAt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上次播放 {{date}}
+   * zh-TW: 上次播放 {{date}}
+   * en-US: Last played {{date}}
+   */
+  (key: "library.voice.meta.lastPlayedAt", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发布于 {{date}}
+   * zh-TW: 發佈於 {{date}}
+   * en-US: Published {{date}}
+   */
+  (key: "library.voice.meta.publishedAt", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 次播放
+   * zh-TW: {{count}} 次播放
+   * en-US: {{count}} plays
+   */
+  (key: "library.voice.meta.playCount", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }

@@ -32,6 +32,7 @@ export interface RadioProgram {
   dj?: RadioHost;
   duration?: number;
   id: number;
+  listenerCount?: number;
   mainSong: RawSongDetail;
   name?: string;
   radio?: RadioDetail;
@@ -71,5 +72,10 @@ export interface RadioSublistResponse {
   };
   djRadios?: RadioDetail[];
   hasMore?: boolean;
+  message?: string | null;
+}
+
+export interface RadioSubscriptionResponse {
+  code: number;
   message?: string | null;
 }

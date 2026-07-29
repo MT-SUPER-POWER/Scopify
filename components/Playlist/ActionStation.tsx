@@ -39,6 +39,7 @@ function parseDateKey(date: string) {
 export default function PlaylistActions(props: PlaylistActionsProps) {
   const { locale, t } = useI18n();
   const {
+    actionSlot,
     playlistId,
     playSourceId,
     isDaily,
@@ -105,7 +106,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   return (
     <div
       className={cn(
-        "flex min-h-26 flex-wrap items-center justify-between gap-4 px-6 py-6 transition-[gap,padding] duration-200 md:px-8 lg:px-10 xl:px-12",
+        "flex min-h-26 flex-wrap items-center justify-between gap-4 p-6 transition-[gap,padding] duration-200 md:px-8 lg:px-10 xl:px-12",
         isSticky && "h-16 min-h-0 flex-nowrap gap-3 overflow-x-auto py-2",
       )}
     >
@@ -129,6 +130,8 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             <Play className={cn("ml-1.5 size-6 fill-current", isSticky && "size-5")} />
           )}
         </button>
+
+        {actionSlot}
 
         <button
           onClick={toggleShuffle}

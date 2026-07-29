@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { RecommendedPodcast } from "@/types/api/voicelist";
 import type { RadioDetail } from "@/types/api/radio";
 import type { PodcastViewMode } from "@/types/library";
@@ -18,8 +18,8 @@ export interface SubscribedPodcastCardProps {
   isActive: boolean;
   isLoading: boolean;
   isPlaying: boolean;
-  onPause: (event: MouseEvent<HTMLButtonElement>) => void;
-  onPlay: (event: MouseEvent<HTMLButtonElement>) => void;
+  onPause: () => void;
+  onPlay: () => void;
   podcast: RadioDetail;
 }
 

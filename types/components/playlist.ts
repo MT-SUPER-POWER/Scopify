@@ -1,4 +1,4 @@
-import type { HTMLAttributes, RefObject } from "react";
+import type { HTMLAttributes, ReactNode, RefObject } from "react";
 
 import type { SongDetail } from "@/types/api/music";
 import type { PlaylistInfo } from "@/types/playlist";
@@ -10,6 +10,7 @@ export interface PlaylistTagSelectorProps {
 }
 
 export interface PlaylistActionsProps {
+  actionSlot?: ReactNode;
   dailyDate?: null | string;
   inputRef: RefObject<HTMLInputElement | null>;
   isDaily: boolean;
@@ -25,6 +26,8 @@ export interface PlaylistActionsProps {
 }
 
 export interface PlaylistContentProps {
+  actionSlot?: ReactNode;
+  contentSlot?: (props: PlaylistContentSlotProps) => ReactNode;
   dailyDate: null | string;
   hideAlbumColumn?: boolean;
   isDailyRecommend: boolean;
@@ -37,6 +40,10 @@ export interface PlaylistContentProps {
   setTracks?: (tracks: SongDetail[]) => void;
   themeColor: string;
   tracks: SongDetail[];
+}
+
+export interface PlaylistContentSlotProps {
+  searchQuery: string;
 }
 
 export type DailyRecommendationMode = "current" | "history";
@@ -79,4 +86,12 @@ export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>,
   playlistID: null | string;
   setIsPlaying: (v: boolean) => void;
   track: SongDetail;
+}
+
+export interface TrackIndexCellProps {
+  index: number;
+  isActive: boolean;
+  isPlaying: boolean;
+  onPlay: () => void;
+  setIsPlaying: (isPlaying: boolean) => void;
 }

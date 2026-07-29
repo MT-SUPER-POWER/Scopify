@@ -1,6 +1,7 @@
 export const musicQueryKeys = {
   album: {
     detail: (albumId: string) => ["album", "detail", albumId] as const,
+    subscriptions: (userId: number) => ["album", "subscriptions", userId] as const,
   },
   artist: {
     albums: (artistId: string) => ["artist", "albums", artistId] as const,
@@ -34,6 +35,7 @@ export const musicQueryKeys = {
   },
   radio: {
     content: (radioId: string) => ["radio", "content", radioId] as const,
+    subscriptions: (userId: number) => ["radio", "subscriptions", userId] as const,
   },
   search: {
     albums: (keyword: string, limit: number) => ["search", "albums", keyword, limit] as const,
@@ -41,6 +43,9 @@ export const musicQueryKeys = {
     complex: (keyword: string) => ["search", "complex", keyword] as const,
     playlists: (keyword: string, limit: number) => ["search", "playlists", keyword, limit] as const,
     songs: (keyword: string, limit: number) => ["search", "songs", keyword, limit] as const,
+    voices: (keyword: string, limit: number) => ["search", "voices", keyword, limit] as const,
+    voiceLists: (keyword: string, limit: number) =>
+      ["search", "voice-lists", keyword, limit] as const,
   },
   voice: {
     transcript: (voiceId: number) => ["voice", "transcript", voiceId] as const,

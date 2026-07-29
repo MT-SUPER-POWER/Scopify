@@ -27,11 +27,8 @@ export function SubscribedPodcastGrid({ podcasts }: SubscribedPodcastGridProps) 
             isActive={isActive}
             isLoading={loadingPodcastId === podcast.id}
             isPlaying={isPlaying}
-            onPause={(event) => {
-              event.stopPropagation();
-              setIsPlaying(false);
-            }}
-            onPlay={(event) => handlePlayPodcast(podcast.id, event)}
+            onPause={() => setIsPlaying(false)}
+            onPlay={() => void handlePlayPodcast(podcast.id)}
           />
         );
       })}

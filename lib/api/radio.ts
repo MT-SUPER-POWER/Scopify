@@ -4,6 +4,7 @@ import type {
   RadioProgramsParams,
   RadioProgramsResponse,
   RadioSublistResponse,
+  RadioSubscriptionResponse,
 } from "@/types/api/radio";
 
 export function getRadioDetail(id: number | string) {
@@ -18,4 +19,10 @@ export function getRadioPrograms({ id, limit = 200, offset = 0 }: RadioProgramsP
 
 export function getSubscribedRadios(limit = 200) {
   return request.get<RadioSublistResponse>("/dj/sublist", { params: { limit } });
+}
+
+export function subscribeRadio(id: number | string, subscribe: boolean) {
+  return request.get<RadioSubscriptionResponse>("/dj/sub", {
+    params: { rid: id, t: subscribe ? 1 : 0 },
+  });
 }

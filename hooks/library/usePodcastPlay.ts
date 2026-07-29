@@ -7,7 +7,7 @@ import { getRadioDetail, getRadioPrograms } from "@/lib/api/radio";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
-import type { RadioDetail, RadioProgram } from "@/types/api/radio";
+import type { RadioDetail, RadioDetailResponse, RadioProgram } from "@/types/api/radio";
 
 function toRadioTrack(program: RadioProgram, radio: RadioDetail): SongDetail {
   const track = pruneSongDetail(program.mainSong);
@@ -27,6 +27,35 @@ function toRadioTrack(program: RadioProgram, radio: RadioDetail): SongDetail {
   };
 }
 
+async function fetchAllRadioPrograms(id: number | string): Promise<RadioProgram[]> {
+  const programs: RadioProgram[] = [];
+  let hasMore = true;
+  let offset = 0;
+
+  while (hasMore) {
+    const response = await getRadioPrograms({ id, limit: 200, offset });
+    const page = response.data.data?.programs ?? response.data.programs ?? [];
+
+    programs.push(...page);
+    if (page.length === 0) break;
+
+    offset += page.length;
+    hasMore = response.data.data?.more ?? response.data.more ?? false;
+  }
+
+  return programs;
+}
+
+function getRadioFromResponse(
+  response: RadioDetailResponse,
+  programs: RadioProgram[],
+): RadioDetail | null {
+  const payload = response.data;
+  if (payload && "id" in payload) return payload;
+
+  return payload?.djRadio ?? response.djRadio ?? programs[0]?.radio ?? null;
+}
+
 export function usePodcastPlay() {
   const [loadingPodcastId, setLoadingPodcastId] = useState<string | number | null>(null);
   const { setQueue, playQueueIndex } = usePlayerStore();
@@ -42,16 +71,12 @@ export function usePodcastPlay() {
 
       setLoadingPodcastId(id);
       try {
-        const [detailResponse, programsResponse] = await Promise.all([
+        const [detailResponse, programs] = await Promise.all([
           getRadioDetail(id),
-          getRadioPrograms({ id, limit: 200 }),
+          fetchAllRadioPrograms(id),
         ]);
 
-        const programs = programsResponse.data?.programs ?? programsResponse.programs ?? [];
-        const radio =
-          detailResponse.data?.djRadio ??
-          detailResponse.data ??
-          (programs[0]?.radio as RadioDetail | undefined);
+        const radio = getRadioFromResponse(detailResponse.data, programs);
 
         if (!programs.length || !radio) {
           toast.error(t("library.podcasts.toast.empty"));

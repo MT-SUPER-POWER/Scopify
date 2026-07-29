@@ -6,7 +6,7 @@ import { Disc3, Pause, Play } from "lucide-react";
 import { forwardRef, memo, useCallback } from "react";
 import { toast } from "sonner";
 
-import type { TrackRowProps } from "@/types/components/playlist";
+import type { TrackIndexCellProps, TrackRowProps } from "@/types/components/playlist";
 
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
@@ -24,19 +24,13 @@ import { LikeButton } from "../ui/LikeButton";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 子组件: 序号与播放状态 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function TrackIndexCell({
+export function TrackIndexCell({
   index,
   isActive,
   isPlaying,
   onPlay,
   setIsPlaying,
-}: {
-  index: number;
-  isActive: boolean;
-  isPlaying: boolean;
-  onPlay: () => void;
-  setIsPlaying: (v: boolean) => void;
-}) {
+}: TrackIndexCellProps) {
   return (
     <div className="group/cell relative flex size-4 items-center justify-center">
       <span className={cn("font-normal text-zinc-400 group-hover:hidden", isActive && "hidden")}>

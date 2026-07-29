@@ -3,6 +3,7 @@
 import { Headphones, Pause, Play, Radio } from "lucide-react";
 import Image from "next/image";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import {
   Table,
   TableBody,
@@ -58,9 +59,8 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
             String(storePlaylistId) === `radio:${podcast.id}` ||
             String(storePlaylistId) === String(podcast.id);
 
-          return (
+          const row = (
             <TableRow
-              key={podcast.id}
               role="link"
               tabIndex={0}
               onClick={() => router.push(`/radio?id=${podcast.id}`)}
@@ -167,6 +167,20 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
                 {lastUpdatedAt ? formatDate(lastUpdatedAt) : "-"}
               </TableCell>
             </TableRow>
+          );
+
+          return (
+            <PodcastContextMenu
+              key={podcast.id}
+              isActive={isActive}
+              isFavorited
+              isPlaying={isPlaying}
+              onPause={() => setIsPlaying(false)}
+              podcast={podcast}
+              onPlay={() => void handlePlayPodcast(podcast.id)}
+            >
+              {row}
+            </PodcastContextMenu>
           );
         })}
       </TableBody>

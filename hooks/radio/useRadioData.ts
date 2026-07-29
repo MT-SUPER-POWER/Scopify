@@ -7,6 +7,10 @@ import { useEffect, useMemo, useState } from "react";
 import { getRadioDetail, getRadioPrograms } from "@/lib/api/radio";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { formatDate, getMainColorFromImage } from "@/lib/utils";
+import {
+  isSubscribedRadio,
+  useRadioSubscriptionsQuery,
+} from "@/hooks/radio/useRadioSubscriptionsQuery";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import type {
@@ -19,6 +23,12 @@ import type {
 } from "@/types/api/radio";
 import type { PlaylistInfo } from "@/types/playlist";
 import type { RadioContent } from "@/types/radio";
+
+export {
+  getSubscribedRadioIds,
+  isRadioSubscriptionLoading,
+  isSubscribedRadio,
+} from "@/hooks/radio/useRadioSubscriptionsQuery";
 
 function getPrograms(response: RadioProgramsResponse) {
   return response.data?.programs ?? response.programs ?? [];
@@ -67,6 +77,7 @@ async function fetchRadioContent(radioId: string): Promise<RadioContent> {
 
   return {
     host: getHost(radio, programs),
+    programs,
     radio,
     tracks: programs.map((program) => toRadioTrack(program, radio)),
   };
@@ -86,6 +97,7 @@ export function useRadioData() {
     queryKey: musicQueryKeys.radio.content(radioId ?? ""),
   });
   const content = radioQuery.data;
+  const subscriptionsQuery = useRadioSubscriptionsQuery();
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (!content) return null;
 
@@ -126,7 +138,10 @@ export function useRadioData() {
 
   return {
     isLoading: radioQuery.isPending,
+    isSubscribed: radioId ? isSubscribedRadio(subscriptionsQuery.data, radioId) : false,
+    isSubscriptionLoading: subscriptionsQuery.isLoading,
     playlistInfo,
+    programs: content?.programs ?? [],
     radioId,
     refetchTracks: radioQuery.refetch,
     themeColor,
