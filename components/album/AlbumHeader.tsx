@@ -4,35 +4,14 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { AlbumDescriptionDialog } from "@/components/album/AlbumDescriptionDialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 
-import { useElementOverflow } from "@/lib/hooks/useElementOverflow";
 import { useI18n } from "@/store/module/i18n";
 import type { AlbumHeaderProps } from "@/types/components/album";
-
-function getTitleFontSizeClass(title?: string): string {
-  const len = title?.length || 0;
-  if (len > 30) return "text-2xl sm:text-3xl md:text-4xl lg:text-5xl";
-  if (len > 18) return "text-3xl sm:text-4xl md:text-5xl lg:text-6xl";
-  return "text-4xl sm:text-5xl md:text-6xl lg:text-7xl";
-}
 
 export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
   const { t } = useI18n();
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
-  const titleSizeClass = getTitleFontSizeClass(info.title);
-  const { elementRef: titleRef, isOverflowing: isTitleOverflowing } =
-    useElementOverflow<HTMLHeadingElement>(info.title);
-
-  const titleElement = (
-    <h1
-      ref={titleRef}
-      tabIndex={isTitleOverflowing ? 0 : undefined}
-      className={`m-0 w-full truncate leading-none font-black tracking-normal text-white drop-shadow-lg focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none ${titleSizeClass}`}
-    >
-      {info.title}
-    </h1>
-  );
 
   return (
     <div className="relative z-10 flex flex-col items-start gap-7 px-6 pt-24 pb-7 md:flex-row md:items-end md:gap-8 md:px-8 lg:px-10 xl:px-12">
@@ -46,7 +25,7 @@ export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
         />
       </div>
 
-      <div className="grid h-48 w-full min-w-0 grid-rows-[1.5rem_4rem_3.5rem_1.75rem] content-end gap-y-1.5 overflow-hidden text-white md:flex-1 lg:h-56 lg:grid-rows-[1.5rem_5rem_3.5rem_1.75rem]">
+      <div className="[container-type:inline-size] grid h-48 w-full min-w-0 grid-rows-[1.5rem_4rem_3.5rem_1.75rem] content-end gap-y-1.5 overflow-hidden text-white md:flex-1 lg:h-56 lg:grid-rows-[1.5rem_5rem_3.5rem_1.75rem]">
         {/* Top: Album Type Badges */}
         <div className="flex min-w-0 items-center gap-2 overflow-hidden">
           <span className="max-w-[45%] truncate rounded-sm bg-white/10 px-3 py-1 text-xs font-semibold tracking-wider uppercase drop-shadow-md">
@@ -61,18 +40,7 @@ export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
 
         {/* Album Title */}
         <div className="flex min-w-0 items-center overflow-hidden">
-          {isTitleOverflowing ? (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>{titleElement}</TooltipTrigger>
-                <TooltipContent side="top" sideOffset={8} className="max-w-lg">
-                  {info.title}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ) : (
-            titleElement
-          )}
+          <ResponsiveHeaderTitle title={info.title} />
         </div>
 
         {/* Description */}

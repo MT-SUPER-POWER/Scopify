@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import React from "react";
+
+import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import type { PlaylistInfo } from "@/types/playlist";
 
@@ -34,13 +36,6 @@ interface PlaylistHeaderProps {
   isDaily: boolean;
 }
 
-function getTitleFontSizeClass(title?: string): string {
-  const len = title?.length || 0;
-  if (len > 30) return "text-2xl sm:text-3xl md:text-4xl lg:text-5xl";
-  if (len > 18) return "text-3xl sm:text-4xl md:text-5xl lg:text-6xl";
-  return "text-4xl sm:text-5xl md:text-6xl lg:text-7xl";
-}
-
 const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
   const smartRouter = useSmartRouter();
 
@@ -53,8 +48,6 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
       smartRouter.push(`/profile?userId=${info.creatorID}`);
     }
   };
-
-  const titleSizeClass = getTitleFontSizeClass(info.title);
 
   return (
     <div className="relative z-10 flex flex-col items-start gap-7 px-6 pt-24 pb-7 md:flex-row md:items-stretch md:gap-8 md:px-8 lg:px-10 xl:px-12">
@@ -72,7 +65,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         )}
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col justify-end text-white md:min-h-48 lg:min-h-56">
+      <div className="[container-type:inline-size] flex min-w-0 flex-1 flex-col justify-end text-white md:min-h-48 lg:min-h-56">
         {/* Top: Privacy & Style Pill Badges */}
         <div className="mb-3 flex flex-row flex-wrap items-center gap-2 md:mb-4">
           <span className="rounded-sm bg-white/10 px-3 py-1 text-sm tracking-wider uppercase drop-shadow-md">
@@ -89,12 +82,9 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         </div>
 
         {/* Title */}
-        <h1
-          className={`m-0 mb-3 line-clamp-2 leading-[1.15] font-black tracking-normal wrap-break-word text-white drop-shadow-lg md:mb-4 ${titleSizeClass}`}
-          title={info.title}
-        >
-          {info.title}
-        </h1>
+        <div className="mb-3 flex h-16 min-w-0 items-center overflow-hidden md:mb-4 lg:h-20">
+          <ResponsiveHeaderTitle title={info.title} />
+        </div>
 
         {/* Description */}
         {info.description ? (

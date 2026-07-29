@@ -34,7 +34,12 @@ export function RouteScrollSurface({ children }: RouteScrollSurfaceProps) {
     <div className="relative size-full">
       <ScrollArea
         aria-busy={isRestoring}
-        className={cn("isolate z-0 size-full bg-[#121212]", isRestoring && "pointer-events-none")}
+        className={cn(
+          "isolate z-0 size-full bg-[#121212]",
+          "[&_[data-slot=scroll-area-viewport]>div]:block!",
+          "[&_[data-slot=scroll-area-viewport]>div]:w-full!",
+          isRestoring && "pointer-events-none",
+        )}
         viewportRef={surfaceRef}
       >
         <div className={cn("min-h-full", isRestoring && "invisible")}>{children}</div>
