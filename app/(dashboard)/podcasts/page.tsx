@@ -10,6 +10,7 @@ import { PodcastRecommendations } from "@/components/library/PodcastRecommendati
 import { PodcastViewToggle } from "@/components/library/PodcastViewToggle";
 import { SubscribedPodcastGrid } from "@/components/library/SubscribedPodcastGrid";
 import { SubscribedPodcastTable } from "@/components/library/SubscribedPodcastTable";
+import { TimeBasedBackground } from "@/components/shared/TimeBasedBackground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useCreatedPodcastsQuery,
@@ -48,8 +49,9 @@ export default function PodcastsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#121212] px-6 pt-24 pb-28 md:px-10">
-      <div className="mx-auto w-full max-w-7xl">
+    <main className="relative min-h-screen bg-[#121212] px-6 pt-24 pb-28 md:px-10">
+      <TimeBasedBackground />
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
         <Tabs value={activeTab} onValueChange={handleTabChange}>
           <header className="flex flex-wrap items-center justify-between gap-4 pb-5">
             <h1 className="text-3xl font-bold text-white">{t("library.title.podcasts")}</h1>
