@@ -49,8 +49,10 @@ jobs:
         shell: bash
         run: |
           VERSION="${{ github.ref_name }}"
+          # 转义版本号中的点号供 awk 使用
+          ESCAPED_VERSION=$(echo "$VERSION" | sed 's/\./\\./g')
           # 从 CHANGELOG.md 提取当前版本的日志（从 ## v1.1.0 到下一个 ## 或文件末尾）
-          CHANGELOG=$(awk "/^## ${VERSION}$/,/^## [^#]/" docs/CHANGELOG.md | sed '$d')
+          CHANGELOG=$(awk "/^## ${ESCAPED_VERSION}$/,/^## [^#]/" docs/CHANGELOG.md | sed '$d')
           # 使用 EOF 语法设置多行输出
           echo "log_entries<<EOF" >> "$GITHUB_OUTPUT"
           echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
