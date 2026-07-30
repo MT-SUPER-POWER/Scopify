@@ -1,12 +1,21 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { SmoothSlider } from "@/components/SmoothSlider";
+import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
+import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
 import { formatDuration } from "@/lib/utils";
+import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
 
 export const PlayerProgressBar = memo(() => {
   // 1. 低频数据：直接从 Zustand 读，因为它本来就不怎么变
   const totalTime = useTimeStore((s) => s.totalTime);
   const bufferedTime = useTimeStore((s) => s.bufferedTime);
+  const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id ?? null);
+  const chorusQuery = useSongChorus(currentSongId);
+  const chorusRanges = useMemo(
+    () => getChorusProgressRanges(chorusQuery.data ?? [], totalTime),
+    [chorusQuery.data, totalTime],
+  );
 
   // 2. 高频数据：完全使用本地 State，初始值从 localStorage 直读（绕过 Zustand 异步水合）
   const [localTime, setLocalTime] = useState(() => {
@@ -84,6 +93,8 @@ export const PlayerProgressBar = memo(() => {
         trackThickness={4}
         thumbSize={12}
         thumbOnHover={true}
+        rangeMarkers={chorusRanges}
+        markerColor="rgba(30, 215, 96, 0.85)"
       />
 
       <span className="w-10 shrink-0 text-[11px] font-normal tracking-widest text-[#b3b3b3] tabular-nums">

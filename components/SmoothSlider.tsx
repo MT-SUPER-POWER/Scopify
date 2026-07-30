@@ -1,24 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-
-interface SmoothSliderProps {
-  value: number; // 0-100
-  bufferedValue?: number; // 0-100
-  onChange: (value: number, isCommit: boolean) => void;
-  orientation?: "horizontal" | "vertical";
-  size?: number | string;
-  trackColor?: string;
-  bufferedColor?: string;
-  fillColor?: string;
-  thumbColor?: string;
-  hoverFillColor?: string;
-  showThumb?: boolean;
-  thumbOnHover?: boolean;
-  trackThickness?: number;
-  thumbSize?: number;
-  className?: string;
-}
+import { ProgressRangeMarkers } from "@/components/shared/ProgressRangeMarkers";
+import type { SmoothSliderProps } from "@/types/components/slider";
 
 export const SmoothSlider = ({
   value,
@@ -35,6 +19,8 @@ export const SmoothSlider = ({
   thumbOnHover = true,
   trackThickness = 4,
   thumbSize = 12,
+  rangeMarkers = [],
+  markerColor = "rgba(30, 215, 96, 0.85)",
   className = "",
 }: SmoothSliderProps) => {
   const [isHovering, setIsHovering] = useState(false);
@@ -140,7 +126,7 @@ export const SmoothSlider = ({
     >
       <div
         ref={trackRef}
-        className="relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full"
+        className="relative flex w-full cursor-pointer items-center justify-center rounded-full"
         style={{
           backgroundColor: trackColor,
           ...(isVertical
@@ -199,6 +185,8 @@ export const SmoothSlider = ({
                 }),
           }}
         />
+
+        <ProgressRangeMarkers color={markerColor} orientation={orientation} ranges={rangeMarkers} />
       </div>
 
       {/* 滑块：可拖动，体验与轨道一致 */}

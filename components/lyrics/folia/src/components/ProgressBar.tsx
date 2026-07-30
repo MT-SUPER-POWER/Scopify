@@ -1,5 +1,7 @@
 import React, { useCallback, useLayoutEffect, useRef } from "react";
 import { MotionValue, useMotionValueEvent } from "framer-motion";
+import { ProgressRangeMarkers } from "@/components/shared/ProgressRangeMarkers";
+import type { ProgressRangeMarker } from "@/types/components/slider";
 
 interface ProgressBarProps {
   currentTime: MotionValue<number>;
@@ -11,6 +13,8 @@ interface ProgressBarProps {
   secondaryColor?: string;
   trackColor?: string;
   disabled?: boolean;
+  rangeMarkers?: readonly ProgressRangeMarker[];
+  markerColor?: string;
 }
 
 const formatTime = (time: number) => {
@@ -30,7 +34,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   secondaryColor = "rgba(255,255,255,0.5)",
   trackColor = "rgba(255,255,255,0.1)",
   disabled = false,
+  rangeMarkers = [],
+  markerColor,
 }) => {
+  const effectiveMarkerColor = markerColor || primaryColor;
   const progressRef = useRef<HTMLDivElement>(null);
   const timeRef = useRef<HTMLSpanElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -132,6 +139,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
             willChange: "clip-path",
           }}
         />
+
+        <ProgressRangeMarkers color={effectiveMarkerColor} ranges={rangeMarkers} />
         <input
           ref={inputRef}
           type="range"

@@ -1,8 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Play, Pause, Repeat, Repeat1, RepeatOff, ChartBar } from "lucide-react";
 import { MotionValue } from "framer-motion";
+import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
+import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
 import { useI18n } from "@/store/module/i18n";
+import { usePlayerStore } from "@/store/module/player";
+import type { ProgressRangeMarker } from "@/types/components/slider";
 import ProgressBar from "./ProgressBar";
 import { PlayerState, LyricData, Theme } from "../types";
 import LyricsTimelineModal from "./modal/LyricsTimelineModal";
@@ -67,8 +71,14 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
   controlsDisabled = false,
 }) => {
   const { t } = useI18n();
+  const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id ?? null);
+  const chorusQuery = useSongChorus(currentSongId);
+  const chorusRanges = useMemo(
+    () => getChorusProgressRanges(chorusQuery.data ?? [], duration * 1000),
+    [chorusQuery.data, duration],
+  );
   const resolvedNoTrackText = noTrackText ?? t("folia.ui.noTrack");
-  // const isDaylight = theme?.name === 'Daylight Default'; // Deprecated, passed as prop
+  const themeMarkerColor = theme?.accentColor || theme?.primaryColor || primaryColor;
   const glassBgExpanded = isDaylight
     ? "bg-white/60 border border-white/20 shadow-xl"
     : "bg-black/40 border border-white/5";
@@ -199,6 +209,8 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
                   hasLyrics={!!lyrics}
                   isDaylight={isDaylight}
                   controlsDisabled={controlsDisabled}
+                  rangeMarkers={chorusRanges}
+                  markerColor={themeMarkerColor}
                 />
               ) : (
                 <CollapsedView
@@ -209,6 +221,8 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
                   secondaryColor={secondaryColor}
                   trackColor={trackColor}
                   controlsDisabled={controlsDisabled}
+                  rangeMarkers={chorusRanges}
+                  markerColor={themeMarkerColor}
                 />
               )}
             </motion.div>
@@ -257,6 +271,8 @@ interface ExpandedViewProps {
   trackColor?: string;
   isDaylight?: boolean;
   controlsDisabled?: boolean;
+  rangeMarkers?: readonly ProgressRangeMarker[];
+  markerColor?: string;
 }
 
 const ExpandedView: React.FC<ExpandedViewProps> = ({
@@ -278,6 +294,8 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
   trackColor,
   isDaylight,
   controlsDisabled = false,
+  rangeMarkers = [],
+  markerColor,
 }) => {
   const { t } = useI18n();
   return (
@@ -352,6 +370,8 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
           secondaryColor={secondaryColor}
           trackColor={trackColor}
           disabled={controlsDisabled}
+          rangeMarkers={rangeMarkers}
+          markerColor={markerColor}
         />
       </div>
     </div>
@@ -367,6 +387,8 @@ interface CollapsedViewProps {
   secondaryColor: string;
   trackColor?: string;
   controlsDisabled?: boolean;
+  rangeMarkers?: readonly ProgressRangeMarker[];
+  markerColor?: string;
 }
 
 const CollapsedView: React.FC<CollapsedViewProps> = ({
@@ -377,6 +399,8 @@ const CollapsedView: React.FC<CollapsedViewProps> = ({
   secondaryColor,
   trackColor,
   controlsDisabled = false,
+  rangeMarkers = [],
+  markerColor,
 }) => {
   return (
     <div className="flex h-8 w-full items-center justify-center px-4">
@@ -388,6 +412,8 @@ const CollapsedView: React.FC<CollapsedViewProps> = ({
         secondaryColor={secondaryColor}
         trackColor={trackColor}
         disabled={controlsDisabled}
+        rangeMarkers={rangeMarkers}
+        markerColor={markerColor}
       />
     </div>
   );
