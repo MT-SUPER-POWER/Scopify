@@ -161,6 +161,12 @@ export interface TranslateFn {
    */
   (key: "common.action.delete", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "common.action.play", params?: TranslationParams): string;
+  /**
    * zh-CN: 喜欢
    * zh-TW: 喜歡
    * en-US: Like
@@ -2662,6 +2668,24 @@ export interface TranslateFn {
    * en-US: Joined {{date}}
    */
   (key: "profile.hero.joined", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等级
+   * zh-TW: 等級
+   * en-US: Level
+   */
+  (key: "profile.stats.level", params?: TranslationParams): string;
+  /**
+   * zh-CN: 累计听歌
+   * zh-TW: 累計聽歌
+   * en-US: Total listened
+   */
+  (key: "profile.stats.listenSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 入村陪伴
+   * zh-TW: 入村陪伴
+   * en-US: Days as member
+   */
+  (key: "profile.stats.createDays", params?: TranslationParams): string;
   /**
    * zh-CN: 签到
    * zh-TW: 簽到

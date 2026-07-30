@@ -200,7 +200,6 @@ export interface NeteaseAvatarDetail {
 
 interface NeteaseArtistIdentity {
   id: number;
-  name?: string;
 }
 
 export type NeteaseExpertMap = Record<string, boolean | null | number | string>;

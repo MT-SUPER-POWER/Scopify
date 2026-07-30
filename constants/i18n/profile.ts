@@ -37,6 +37,9 @@ export const profileMessages = defineMessages(
     "profile.hero.events": "动态",
     "profile.hero.listenSongs": "{{count}} 首",
     "profile.hero.joined": "{{date}} 加入",
+    "profile.stats.level": "等级",
+    "profile.stats.listenSongs": "累计听歌",
+    "profile.stats.createDays": "入村陪伴",
   },
   {
     "profile.menu.notifications": "通知",
@@ -74,6 +77,9 @@ export const profileMessages = defineMessages(
     "profile.hero.events": "動態",
     "profile.hero.listenSongs": "{{count}} 首",
     "profile.hero.joined": "{{date}} 加入",
+    "profile.stats.level": "等級",
+    "profile.stats.listenSongs": "累計聽歌",
+    "profile.stats.createDays": "入村陪伴",
   },
   {
     "profile.menu.notifications": "Notifications",
@@ -111,5 +117,8 @@ export const profileMessages = defineMessages(
     "profile.hero.events": "Events",
     "profile.hero.listenSongs": "{{count}} songs",
     "profile.hero.joined": "Joined {{date}}",
+    "profile.stats.level": "Level",
+    "profile.stats.listenSongs": "Total listened",
+    "profile.stats.createDays": "Days as member",
   },
 );

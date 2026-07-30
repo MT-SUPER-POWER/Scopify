@@ -15,7 +15,7 @@ import { useI18n } from "@/store/module/i18n";
 import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
 import type { NeteaseUser } from "@/types/api/user";
 
-type EditableProfileUser = NeteaseUser & Partial<Pick<UpdateUserProfilePayload, "gender">>;
+type EditableProfileUser = NeteaseUser;
 
 interface EditUserProfileDialogProps {
   open: boolean;
