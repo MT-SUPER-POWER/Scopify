@@ -24,3 +24,6 @@ cache:
   maxSizeMB: 256
   pageTtlMinutes: 360
   searchTtlMinutes: 30
+updater:
+  checkOnStartup: true
+  autoDownload: false

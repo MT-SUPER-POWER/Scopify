@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import type { AppUpdateState } from "@/types/updater";
 
-const initialState: AppUpdateState = { status: "idle" };
+const initialState: AppUpdateState = {
+  status: "idle",
+  supported: false,
+  currentVersion: "",
+};
 
 export function useAppUpdater() {
   const [state, setState] = useState<AppUpdateState>(initialState);
@@ -12,28 +16,40 @@ export function useAppUpdater() {
     if (typeof window === "undefined" || !window.electronAPI) return;
     let disposed = false;
 
-    window.electronAPI.getUpdateStatus().then((status) => {
-      if (!disposed) setState(status);
-    });
+    const api = window.electronAPI;
+    api
+      .getUpdateStatus()
+      .then((status) => {
+        if (!disposed) setState(status);
+      })
+      .catch((error: unknown) => {
+        if (!disposed) {
+          setState((current) => ({
+            ...current,
+            status: "error",
+            message: error instanceof Error ? error.message : String(error),
+          }));
+        }
+      });
 
-    window.electronAPI.onUpdateStatusChanged((status) => {
+    const unsubscribe = api.onUpdateStatusChanged((status) => {
       setState(status);
     });
 
     return () => {
       disposed = true;
-      window.electronAPI?.off("updater:status-changed");
+      unsubscribe();
     };
   }, []);
 
   const check = useCallback(async () => {
-    setState((current) => ({ ...current, status: "checking" }));
-    await window.electronAPI?.checkForUpdates();
+    const nextState = await window.electronAPI?.checkForUpdates();
+    if (nextState) setState(nextState);
   }, []);
 
   const download = useCallback(async () => {
-    setState((current) => ({ ...current, status: "downloading" }));
-    await window.electronAPI?.downloadUpdate();
+    const nextState = await window.electronAPI?.downloadUpdate();
+    if (nextState) setState(nextState);
   }, []);
 
   const install = useCallback(() => {

@@ -39,4 +39,7 @@ export const appConfig: AppConfig = {
   cache: {
     ...DEFAULT_APP_CONFIG.cache,
   },
+  updater: {
+    ...DEFAULT_APP_CONFIG.updater,
+  },
 };

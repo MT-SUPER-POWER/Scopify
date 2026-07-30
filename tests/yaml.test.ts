@@ -18,6 +18,8 @@ test("app config yml keeps backend host and port", () => {
   expect(config.cache.maxSizeMB).toBe(256);
   expect(config.cache.pageTtlMinutes).toBe(360);
   expect(config.cache.searchTtlMinutes).toBe(30);
+  expect(config.updater.checkOnStartup).toBe(true);
+  expect(config.updater.autoDownload).toBe(false);
 });
 
 test("normalizing legacy backend config ignores autoStart", () => {
@@ -70,6 +72,20 @@ test("normalizing legacy and malformed config falls back per field", () => {
   expect(config.network.proxyMode).toBe("system");
   expect("max_retries" in config.network).toBe(false);
   expect("retry_delay" in config.network).toBe(false);
+  expect(config.updater.checkOnStartup).toBe(true);
+  expect(config.updater.autoDownload).toBe(false);
+});
+
+test("normalizing updater config accepts persisted boolean strings", () => {
+  const config = normalizeAppConfig({
+    updater: {
+      checkOnStartup: "false",
+      autoDownload: "true",
+    },
+  });
+
+  expect(config.updater.checkOnStartup).toBe(false);
+  expect(config.updater.autoDownload).toBe(true);
 });
 
 test("network overrides retain valid values and discard invalid or legacy fields", () => {

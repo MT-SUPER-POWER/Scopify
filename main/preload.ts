@@ -84,9 +84,14 @@ const electronAPI: ElectronAPI = {
     });
   },
   onUpdateStatusChanged: (callback) => {
-    ipcRenderer.on("updater:status-changed", (_event, status) => {
+    const listener = (
+      _event: Electron.IpcRendererEvent,
+      status: Parameters<typeof callback>[0],
+    ) => {
       callback(status);
-    });
+    };
+    ipcRenderer.on("updater:status-changed", listener);
+    return () => ipcRenderer.removeListener("updater:status-changed", listener);
   },
   openDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:open"),
   toggleDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:toggle"),

@@ -10,3 +10,13 @@ export interface StorageSettingsTabProps {
   isClearingCache: boolean;
   onClearCache: () => Promise<void>;
 }
+
+export interface DesktopSettingsTabProps {
+  config: AppConfig;
+  onChange: SettingsChangeHandler;
+}
+
+export interface AppUpdaterSectionProps {
+  config: AppConfig;
+  onChange: SettingsChangeHandler;
+}
