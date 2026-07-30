@@ -94,7 +94,7 @@ export default function ProfilePage() {
                   />
                 ) : (
                   <div className="py-12 text-center text-white/40">
-                    {t("profile.page.noPlaylists") || "暂无公开歌单"}
+                    {t("profile.page.noPublicPlaylists") || "暂无公开歌单"}
                   </div>
                 )}
               </section>
