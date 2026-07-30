@@ -809,6 +809,102 @@ export interface TranslateFn {
    */
   (key: "settings.updater.install", params?: TranslationParams): string;
   /**
+   * zh-CN: 启动时检查更新
+   * zh-TW: 啟動時檢查更新
+   * en-US: Check for Updates on Startup
+   */
+  (key: "settings.updater.checkOnStartup.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 应用启动后自动检查 GitHub Release 中的最新版本。
+   * zh-TW: 應用程式啟動後自動檢查 GitHub Release 中的最新版本。
+   * en-US: Check GitHub Releases for a newer version after the app starts.
+   */
+  (key: "settings.updater.checkOnStartup.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动下载更新
+   * zh-TW: 自動下載更新
+   * en-US: Download Updates Automatically
+   */
+  (key: "settings.updater.autoDownload.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现新版本后自动开始下载，安装仍需你确认重启。
+   * zh-TW: 發現新版本後自動開始下載，安裝仍需你確認重啟。
+   * en-US: Start downloading when a new version is found; restarting to install remains manual.
+   */
+  (key: "settings.updater.autoDownload.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前版本 {{version}}
+   * zh-TW: 目前版本 {{version}}
+   * en-US: Current version {{version}}
+   */
+  (key: "settings.updater.currentVersion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现新版本 {{version}}
+   * zh-TW: 發現新版本 {{version}}
+   * en-US: New version {{version}} available
+   */
+  (key: "settings.updater.availableVersion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动更新只在已安装的桌面端中可用。
+   * zh-TW: 自動更新只在已安裝的桌面版中可用。
+   * en-US: Automatic updates are available only in an installed desktop build.
+   */
+  (key: "settings.updater.packagedOnly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未检查
+   * zh-TW: 未檢查
+   * en-US: Not checked
+   */
+  (key: "settings.updater.state.idle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检查中
+   * zh-TW: 檢查中
+   * en-US: Checking
+   */
+  (key: "settings.updater.state.checking", params?: TranslationParams): string;
+  /**
+   * zh-CN: 有新版本
+   * zh-TW: 有新版本
+   * en-US: Update available
+   */
+  (key: "settings.updater.state.available", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已是最新
+   * zh-TW: 已是最新
+   * en-US: Up to date
+   */
+  (key: "settings.updater.state.notAvailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下载中
+   * zh-TW: 下載中
+   * en-US: Downloading
+   */
+  (key: "settings.updater.state.downloading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下载中 {{percent}}%
+   * zh-TW: 下載中 {{percent}}%
+   * en-US: Downloading {{percent}}%
+   */
+  (key: "settings.updater.state.downloadingProgress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等待安装
+   * zh-TW: 等待安裝
+   * en-US: Ready to install
+   */
+  (key: "settings.updater.state.downloaded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前环境不支持
+   * zh-TW: 目前環境不支援
+   * en-US: Unsupported environment
+   */
+  (key: "settings.updater.state.unsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新失败
+   * zh-TW: 更新失敗
+   * en-US: Update failed
+   */
+  (key: "settings.updater.state.error", params?: TranslationParams): string;
+  /**
    * zh-CN: 启用页面缓存
    * zh-TW: 啟用頁面快取
    * en-US: Enable Page Cache
@@ -14293,5 +14389,95 @@ export interface TranslateFn {
    * en-US: {{count}} plays
    */
   (key: "library.voice.meta.playCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通知
+   * zh-TW: 通知
+   * en-US: Notifications
+   */
+  (key: "notifications.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无新通知
+   * zh-TW: 目前沒有新通知
+   * en-US: No new notifications
+   */
+  (key: "notifications.empty.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 有新的桌面端版本时，会在这里提醒你。
+   * zh-TW: 有新的桌面版時，會在這裡提醒你。
+   * en-US: New desktop releases will appear here.
+   */
+  (key: "notifications.empty.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现新版本
+   * zh-TW: 發現新版本
+   * en-US: Update available
+   */
+  (key: "notifications.updater.available.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: Scopify {{version}} 已准备好下载。
+   * zh-TW: Scopify {{version}} 已準備好下載。
+   * en-US: Scopify {{version}} is ready to download.
+   */
+  (key: "notifications.updater.available.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在下载更新
+   * zh-TW: 正在下載更新
+   * en-US: Downloading update
+   */
+  (key: "notifications.updater.downloading.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新版本正在下载：{{percent}}%。
+   * zh-TW: 新版本正在下載：{{percent}}%。
+   * en-US: The new version is downloading: {{percent}}%.
+   */
+  (key: "notifications.updater.downloading.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新已下载
+   * zh-TW: 更新已下載
+   * en-US: Update downloaded
+   */
+  (key: "notifications.updater.downloaded.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: Scopify {{version}} 已下载完成，重启即可安装。
+   * zh-TW: Scopify {{version}} 已下載完成，重啟即可安裝。
+   * en-US: Scopify {{version}} is ready to install after a restart.
+   */
+  (key: "notifications.updater.downloaded.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在检查更新
+   * zh-TW: 正在檢查更新
+   * en-US: Checking for updates
+   */
+  (key: "notifications.updater.checking.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在检查 GitHub Release 中的最新版本。
+   * zh-TW: 正在檢查 GitHub Release 中的最新版本。
+   * en-US: Checking GitHub Releases for the latest version.
+   */
+  (key: "notifications.updater.checking.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新检查失败
+   * zh-TW: 更新檢查失敗
+   * en-US: Update check failed
+   */
+  (key: "notifications.updater.error.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请稍后重试，或前往设置手动检查。
+   * zh-TW: 請稍後再試，或前往設定手動檢查。
+   * en-US: Try again later, or open Settings to check manually.
+   */
+  (key: "notifications.updater.error.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开更新设置
+   * zh-TW: 開啟更新設定
+   * en-US: Open update settings
+   */
+  (key: "notifications.updater.openSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启并安装
+   * zh-TW: 重啟並安裝
+   * en-US: Restart and install
+   */
+  (key: "notifications.updater.install", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }

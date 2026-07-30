@@ -1,6 +1,7 @@
 import type { BackendStartupStatus } from "@/types/backend";
 import type { AppConfig } from "@/types/config";
 import type { RendererLogEvent } from "@/types/logging";
+import type { AppUpdateState } from "@/types/updater";
 import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
@@ -9,16 +10,6 @@ import type {
   DesktopLyricSnapshotInput,
   DesktopLyricSnapshotUpdate,
 } from "@/types/desktopLyric";
-
-export type UpdateStatus =
-  "idle" | "checking" | "available" | "not-available" | "downloading" | "downloaded" | "error";
-
-export interface UpdateState {
-  status: UpdateStatus;
-  version?: string;
-  percent?: number;
-  message?: string;
-}
 
 export interface PageCacheStats {
   dir: string;
@@ -49,9 +40,9 @@ export interface ElectronAPI {
   clearPageCache: () => Promise<PageCacheStats>;
   getPageCacheStats: () => Promise<PageCacheStats>;
   getBackendStatus: () => Promise<BackendStartupStatus>;
-  getUpdateStatus: () => Promise<UpdateState>;
-  checkForUpdates: () => Promise<unknown>;
-  downloadUpdate: () => Promise<unknown>;
+  getUpdateStatus: () => Promise<AppUpdateState>;
+  checkForUpdates: () => Promise<AppUpdateState>;
+  downloadUpdate: () => Promise<AppUpdateState>;
   quitAndInstallUpdate: () => void;
   setCookie: (cookieStr: string) => Promise<boolean>;
   navigateTo: (path: string) => void;
@@ -59,7 +50,7 @@ export interface ElectronAPI {
   loginSuccess: () => void;
   onControlAudio: (callback: (action: "toggle-play" | "next" | "prev") => void) => void;
   onBackendStatusChanged: (callback: (status: BackendStartupStatus) => void) => void;
-  onUpdateStatusChanged: (callback: (status: UpdateState) => void) => void;
+  onUpdateStatusChanged: (callback: (status: AppUpdateState) => void) => () => void;
   openDesktopLyric: () => Promise<boolean>;
   toggleDesktopLyric: () => Promise<boolean>;
   closeDesktopLyric: () => Promise<boolean>;

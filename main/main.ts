@@ -20,7 +20,7 @@ import initializeLoginWindow from "./module/login.js";
 import { applyElectronProxy } from "./module/proxy.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
 import initTray from "./module/tray.js";
-import { checkForUpdates, initializeUpdater } from "./module/updater.js";
+import { initializeUpdater, scheduleStartupUpdateCheck } from "./module/updater.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ VARIABLES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -195,7 +195,7 @@ function setupWindowModules(win: BrowserWindowType) {
   initializeDesktopLyricCompanion(win, {
     rendererBaseUrl: useStaticRenderer ? "app://-/" : devBase,
   });
-  initializeUpdater(win);
+  initializeUpdater(win, appConfig.updater);
 
   if (process.platform !== "darwin") {
     initTray(win);
@@ -242,11 +242,7 @@ if (!gotTheLock) {
 
     if (mainWindow) {
       setupWindowModules(mainWindow);
-      setTimeout(() => {
-        checkForUpdates().catch((error) => {
-          logger.warn("[updater] startup check failed:", error);
-        });
-      }, 5000);
+      scheduleStartupUpdateCheck();
     }
 
     cleanOldLogs();

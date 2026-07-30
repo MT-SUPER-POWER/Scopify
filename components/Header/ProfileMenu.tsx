@@ -187,7 +187,12 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             )}
 
             {/* 小屏才显示的 Bell / Friends */}
-            <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white md:hidden">
+            <DropdownMenuItem
+              onSelect={() =>
+                smartRouter.push(IS_ELECTRON ? "/setting?tab=desktop#app-updater" : "/setting")
+              }
+              className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white md:hidden"
+            >
               <Bell className="mr-3 size-4 shrink-0 text-zinc-400" />
               <span>{t("profile.menu.notifications")}</span>
             </DropdownMenuItem>

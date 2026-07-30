@@ -2,14 +2,9 @@
 
 import { useI18n } from "@/store/module/i18n";
 import type { AppConfig } from "@/types/config";
-import type { SettingsChangeHandler } from "@/types/settings";
+import type { DesktopSettingsTabProps } from "@/types/components/settings";
 import { AppUpdaterSection } from "./AppUpdaterSection";
 import { SettingInput, SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
-
-interface DesktopSettingsTabProps {
-  config: AppConfig;
-  onChange: SettingsChangeHandler;
-}
 
 export function DesktopSettingsTab({ config, onChange }: DesktopSettingsTabProps) {
   const { t } = useI18n();
@@ -53,7 +48,7 @@ export function DesktopSettingsTab({ config, onChange }: DesktopSettingsTabProps
           }
         />
       </SettingSection>
-      <AppUpdaterSection />
+      <AppUpdaterSection config={config} onChange={onChange} />
     </div>
   );
 }

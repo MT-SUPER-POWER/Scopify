@@ -38,6 +38,10 @@ export const DEFAULT_APP_CONFIG = {
     pageTtlMinutes: 360,
     searchTtlMinutes: 30,
   },
+  updater: {
+    checkOnStartup: true,
+    autoDownload: false,
+  },
 } as const;
 
 const appLocaleSchema = z.enum(APP_LOCALES);
@@ -159,6 +163,14 @@ const cacheConfigSchema = z.preprocess(
   }),
 );
 
+const updaterConfigSchema = z.preprocess(
+  toRecord,
+  z.object({
+    checkOnStartup: normalizedBoolean(DEFAULT_APP_CONFIG.updater.checkOnStartup),
+    autoDownload: normalizedBoolean(DEFAULT_APP_CONFIG.updater.autoDownload),
+  }),
+);
+
 export const appConfigSchema = z.preprocess(
   toRecord,
   z
@@ -169,6 +181,7 @@ export const appConfigSchema = z.preprocess(
       logging: loggingConfigSchema,
       network: networkConfigSchema,
       cache: cacheConfigSchema,
+      updater: updaterConfigSchema,
     })
     .strip(),
 );

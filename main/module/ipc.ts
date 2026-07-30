@@ -11,6 +11,7 @@ import { updateThumbarButtons } from "./thumbarButtons.js";
 import { trayWindow } from "./tray.js";
 import {
   checkForUpdates,
+  configureUpdater,
   downloadUpdate,
   getUpdateState,
   quitAndInstallUpdate,
@@ -70,6 +71,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
   ipcMain.handle("update-app-config", async (_event, newConfig) => {
     logger.info("[IPC] update-app-config", newConfig);
     const savedConfig = saveAppConfig(newConfig);
+    configureUpdater(savedConfig.updater);
     await applyElectronProxy(savedConfig).catch((error) => {
       logger.error("[IPC] failed to apply proxy after config update:", error);
     });

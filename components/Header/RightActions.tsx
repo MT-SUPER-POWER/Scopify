@@ -1,8 +1,9 @@
-import { Bell, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import MockAvatar from "./Avatar";
 import { ProfileMenu } from "./ProfileMenu";
+import { UpdateNotificationCenter } from "./UpdateNotificationCenter";
 
 const NAV_BTN = "bg-black/50 hover:bg-black/70 text-zinc-500 hover:text-white transition-all";
 
@@ -22,12 +23,7 @@ const RightActions = () => (
       <span>Github</span>
     </button>
 
-    <button
-      type="button"
-      className={cn("hidden size-10 items-center justify-center rounded-full md:flex", NAV_BTN)}
-    >
-      <Bell className="size-4.5" />
-    </button>
+    <UpdateNotificationCenter />
 
     <button
       type="button"
