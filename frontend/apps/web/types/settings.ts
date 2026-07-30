@@ -1,4 +1,5 @@
-import type { AppConfig } from "@/types/config";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import type { WebConfig } from "@/types/config";
 
 export type SettingsTabId = "general" | "network" | "storage" | "desktop" | "shortcuts";
 
@@ -6,11 +7,19 @@ export interface SettingsPageRouteProps {
   searchParams: Promise<{ tab?: string | string[] }>;
 }
 
-export type SettingsChangeHandler = <
-  Section extends keyof AppConfig,
-  Key extends keyof AppConfig[Section],
+export interface SettingsConfig {
+  desktop: DesktopHostConfig | null;
+  web: WebConfig;
+}
+
+type ConfigChangeHandler<Config> = <
+  Section extends keyof Config,
+  Key extends keyof Config[Section],
 >(
   section: Section,
   key: Key,
-  value: AppConfig[Section][Key],
+  value: Config[Section][Key],
 ) => void;
+
+export type DesktopSettingsChangeHandler = ConfigChangeHandler<DesktopHostConfig>;
+export type WebSettingsChangeHandler = ConfigChangeHandler<WebConfig>;

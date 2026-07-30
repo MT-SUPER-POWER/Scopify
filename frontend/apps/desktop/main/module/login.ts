@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
-import { __iconIcoPath, __iconWindow, __preloadScript, appConfig } from "../constants.js";
+import { __iconIcoPath, __iconWindow, __preloadScript, desktopConfig } from "../constants.js";
 
 // 检查图标文件是否存在
 fs.access(__iconIcoPath).catch(() => {
@@ -39,12 +39,12 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
   });
 
   const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
-  const devPort = appConfig.frontend.devPort || 3000;
-  const loginUrl = useStaticRenderer ? "app://-/login/" : `http://localhost:${devPort}/login`;
+  const devBase = `http://${desktopConfig.frontend.host}:${desktopConfig.frontend.devPort}`;
+  const loginUrl = useStaticRenderer ? "app://-/login/" : `${devBase}/login`;
 
   loginWindow.loadURL(loginUrl);
 
-  if (appConfig.app.devTools) {
+  if (desktopConfig.app.devTools) {
     loginWindow.webContents.openDevTools({ mode: "detach" });
   }
 
@@ -55,7 +55,7 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
       (process.platform === "darwin" && input.meta && input.alt && input.code === "KeyI");
 
     if (isDevToolsKey) {
-      if (appConfig.app.devTools) {
+      if (desktopConfig.app.devTools) {
         if (input.type === "keyDown") {
           loginWindow?.webContents.toggleDevTools();
         }

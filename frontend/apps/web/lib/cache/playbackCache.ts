@@ -6,6 +6,7 @@
 // LRU 列表，最多 100 首，超限淘汰最旧。
 
 import { del, get, set } from "idb-keyval";
+import { runtime } from "@/lib/runtime";
 import type { PlaybackSongCacheEntry } from "@/types/cache";
 import type {
   ImportedLyricOverride,
@@ -32,14 +33,8 @@ const KEY_LRU = "playback-lru";
 // ── Storage Backend ────────────────────────────────────────────────────────────
 // Electron → IPC; Web → IndexedDB (idb-keyval)
 
-function isElectron(): boolean {
-  return typeof window !== "undefined" && !!window.electronAPI;
-}
-
 async function storageGet<T>(key: string): Promise<T | null> {
-  if (isElectron()) {
-    return window.electronAPI!.getPageCache<T>(key);
-  }
+  if (runtime.isDesktop) return runtime.cache.get<T>(key);
   try {
     const val = await get<T>(key);
     return val ?? null;
@@ -49,8 +44,8 @@ async function storageGet<T>(key: string): Promise<T | null> {
 }
 
 async function storageSet<T>(key: string, value: T, ttlMs?: number): Promise<void> {
-  if (isElectron()) {
-    await window.electronAPI!.setPageCache(key, value, ttlMs ?? URL_TTL_MS);
+  if (runtime.isDesktop) {
+    await runtime.cache.set(key, value, ttlMs ?? URL_TTL_MS);
     return;
   }
   try {
@@ -61,8 +56,8 @@ async function storageSet<T>(key: string, value: T, ttlMs?: number): Promise<voi
 }
 
 async function storageDelete(key: string): Promise<void> {
-  if (isElectron()) {
-    await window.electronAPI!.deletePageCache(key);
+  if (runtime.isDesktop) {
+    await runtime.cache.delete(key);
     return;
   }
   try {
@@ -247,9 +242,9 @@ export async function getPlaybackCacheStats(): Promise<{
   const lru = await readLru();
 
   let cacheDir: string | null = null;
-  if (isElectron()) {
+  if (runtime.isDesktop) {
     try {
-      const stats = await window.electronAPI!.getPageCacheStats();
+      const stats = await runtime.cache.stats();
       cacheDir = stats.dir;
     } catch {
       // 静默

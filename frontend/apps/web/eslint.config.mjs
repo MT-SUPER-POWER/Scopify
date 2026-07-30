@@ -42,4 +42,17 @@ export default tseslint.config(
       "react/prop-types": "off",
     },
   },
+  {
+    // Folia is a vendored source snapshot. Keep semantic React/Hook checks, but
+    // do not rewrite upstream typing/style conventions as Scopify lint debt.
+    files: ["components/lyrics/folia/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
+      "no-empty": "off",
+      "no-useless-escape": "off",
+      "prefer-const": "off",
+      "react/no-unknown-property": "off",
+    },
+  },
 );

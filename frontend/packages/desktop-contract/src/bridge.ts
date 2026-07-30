@@ -7,6 +7,7 @@ import type {
 } from "./desktopLyrics";
 import type { RendererLogEvent } from "./logging";
 import type { AppUpdateState } from "./updater";
+import type { DesktopHostConfig } from "./config";
 
 export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 1;
 
@@ -37,7 +38,7 @@ export interface PageCacheStats {
 
 export type Unsubscribe = () => void;
 
-export interface DesktopBridge<TConfig = unknown, TLyrics = unknown> {
+export interface DesktopBridge<TLyrics = unknown> {
   checkForUpdates(): Promise<AppUpdateState>;
   clearPageCache(): Promise<PageCacheStats>;
   closeDesktopLyric(): Promise<boolean>;
@@ -46,7 +47,7 @@ export interface DesktopBridge<TConfig = unknown, TLyrics = unknown> {
   enterFullScreen(): void;
   exitApp(): void;
   exitFullScreen(): void;
-  getAppConfig(): Promise<TConfig>;
+  getHostConfig(): Promise<DesktopHostConfig>;
   getBridgeInfo(): Promise<DesktopBridgeInfo>;
   getDesktopLyricPreferences(): Promise<DesktopLyricPreferences | null>;
   getDesktopLyricSnapshot(): Promise<DesktopLyricSnapshot<TLyrics> | null>;
@@ -71,10 +72,10 @@ export interface DesktopBridge<TConfig = unknown, TLyrics = unknown> {
   relaunchApp(): void;
   sendAppCloseAction(action: "exit" | "minimize"): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;
-  setCookie(cookie: string): Promise<boolean>;
+  setCookie(cookie: string, backendOrigin: string): Promise<boolean>;
   setPageCache<T = unknown>(key: string, value: T, ttlMs: number): Promise<boolean>;
   setPlayerPlaying(isPlaying: boolean): void;
-  updateAppConfig(config: TConfig): Promise<TConfig>;
+  updateHostConfig(config: DesktopHostConfig): Promise<DesktopHostConfig>;
   updateDesktopLyricPreferences(
     update: DesktopLyricPreferencesUpdate,
   ): Promise<DesktopLyricPreferences | null>;

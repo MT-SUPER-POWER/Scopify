@@ -8,6 +8,7 @@ import type { LyricDisplayLine } from "@/types/lyrics";
 
 import { useDesktopLyricSnapshot } from "@/hooks/player/useDesktopLyricSnapshot";
 import { getWordProgress } from "@/lib/lyrics/timeline";
+import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 
 /** Electron-only transparent companion supplied by the shared desktop IPC contract. */
@@ -18,7 +19,7 @@ export function DesktopLyricView() {
   useEffect(() => {
     document.documentElement.classList.add("desktop-lyrics-html");
     document.body.classList.add("desktop-lyrics-body");
-    void window.electronAPI?.getDesktopLyricPreferences().then(setPreferences);
+    void runtime.desktopLyrics.getPreferences().then(setPreferences);
     return () => {
       document.documentElement.classList.remove("desktop-lyrics-html");
       document.body.classList.remove("desktop-lyrics-body");
@@ -26,10 +27,10 @@ export function DesktopLyricView() {
   }, []);
 
   const sendCommand = (command: DesktopLyricCommand) => {
-    window.electronAPI?.sendDesktopLyricCommand(command);
+    runtime.desktopLyrics.sendCommand(command);
   };
   const updatePreferences = (update: Partial<DesktopLyricPreferences>) => {
-    void window.electronAPI?.updateDesktopLyricPreferences(update).then(setPreferences);
+    void runtime.desktopLyrics.updatePreferences(update).then(setPreferences);
   };
   const title = snapshot?.track?.title ?? "";
   const artistNames = snapshot?.track?.artistNames.join(", ") ?? "";
@@ -74,7 +75,7 @@ export function DesktopLyricView() {
               type="button"
               title="Close desktop lyrics"
               aria-label="Close desktop lyrics"
-              onClick={() => void window.electronAPI?.closeDesktopLyric()}
+              onClick={() => void runtime.desktopLyrics.close()}
               className="p-1.5 text-white/55 hover:text-white"
             >
               <X className="size-3.5" />
@@ -165,7 +166,7 @@ function CompactLyricLine({
     <button
       type="button"
       onClick={() =>
-        window.electronAPI?.sendDesktopLyricCommand({ positionMs: line.startTimeMs, type: "seek" })
+        runtime.desktopLyrics.sendCommand({ positionMs: line.startTimeMs, type: "seek" })
       }
       className="block w-full text-center text-xl leading-tight font-semibold"
     >

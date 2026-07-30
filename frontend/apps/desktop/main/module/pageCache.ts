@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import { join } from "node:path";
-import type { AppConfig } from "../../types/config.js";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
 
 export interface PageCacheStats {
   dir: string;
@@ -17,7 +17,7 @@ interface CacheEntry<T> {
 }
 
 interface PageCacheStoreOptions {
-  config: AppConfig["cache"];
+  config: DesktopHostConfig["cache"];
   defaultDir: string;
   now?: () => number;
 }
@@ -30,7 +30,7 @@ export interface PageCacheStore {
   getStats(): PageCacheStats;
 }
 
-function resolveCacheDir(config: AppConfig["cache"], defaultDir: string) {
+function resolveCacheDir(config: DesktopHostConfig["cache"], defaultDir: string) {
   return config.dir.trim() || defaultDir;
 }
 

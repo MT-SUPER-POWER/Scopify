@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createPageCacheStore } from "@/main/module/pageCache";
-import type { AppConfig } from "@/types/config";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
 
 const tempDirs: string[] = [];
 
@@ -13,7 +13,7 @@ function createTempDir() {
   return dir;
 }
 
-function createConfig(dir: string): AppConfig["cache"] {
+function createConfig(dir: string): DesktopHostConfig["cache"] {
   return {
     enabled: true,
     dir,

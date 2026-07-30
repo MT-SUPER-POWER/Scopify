@@ -5,9 +5,11 @@ import type {
 import type { UserPlaylistResponse } from "@/types/api/playlist";
 import type {
   IUserDetail,
+  RecentPlaylistsResponse,
   RecentSongsResponse,
   UserAccountResponse,
   UserFollowsResponse,
+  UserRecordResponse,
 } from "@/types/api/user";
 import request, { requestConfig } from "../web/request";
 
@@ -48,12 +50,18 @@ export function getRecentSongs(limit = 10) {
  * @returns
  */
 export function getRecentSongsByID(uid: number, type = 1, limit = 10) {
-  return request.get("/user/record", requestConfig({ params: { uid, type, limit } }));
+  return request.get<UserRecordResponse>(
+    "/user/record",
+    requestConfig({ params: { uid, type, limit } }),
+  );
 }
 
 // 最近播放-歌单
 export function getRecentPlaylists(limit = 10) {
-  return request.get("/record/recent/playlist", requestConfig({ params: { limit } }));
+  return request.get<RecentPlaylistsResponse>(
+    "/record/recent/playlist",
+    requestConfig({ params: { limit } }),
+  );
 }
 
 // 最近播放-专辑

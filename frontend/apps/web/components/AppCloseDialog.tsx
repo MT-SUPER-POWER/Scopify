@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 
 export default function AppCloseDialog() {
@@ -10,18 +11,18 @@ export default function AppCloseDialog() {
   const [remember, setRemember] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.electronAPI) return;
+    if (!runtime.isDesktop) return;
 
     const handleCloseConfirm = () => {
       const savedAction = localStorage.getItem("app-close-action");
       if (savedAction === "minimize" || savedAction === "exit") {
-        window.electronAPI?.sendAppCloseAction(savedAction);
+        runtime.app.submitCloseAction(savedAction);
         return;
       }
       setIsOpen(true);
     };
 
-    return window.electronAPI.onAppCloseRequested(handleCloseConfirm);
+    return runtime.app.onCloseRequested(handleCloseConfirm);
   }, []);
 
   const handleAction = useCallback(
@@ -29,7 +30,7 @@ export default function AppCloseDialog() {
       if (remember) {
         localStorage.setItem("app-close-action", action);
       }
-      window.electronAPI?.sendAppCloseAction(action);
+      runtime.app.submitCloseAction(action);
       setIsOpen(false);
     },
     [remember],

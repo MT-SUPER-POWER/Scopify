@@ -5,8 +5,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ShortcutSettings } from "@/components/shortcuts/ShortcutSettings";
 import { SETTINGS_TABS } from "@/constants/settings";
 import { useSettingsState } from "@/hooks/settings/useSettingsState";
+import { runtime } from "@/lib/runtime";
 import { parseSettingsTab } from "@/lib/settings/tabs";
-import { IS_ELECTRON } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { SettingsTabId } from "@/types/settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -48,7 +48,7 @@ const SettingsPage = () => {
         className="flex min-h-0 flex-1 flex-col"
       >
         <TabsList className="h-auto justify-start gap-1 overflow-x-auto bg-[#0f0f0f] p-1">
-          {SETTINGS_TABS.filter((tab) => tab.id !== "desktop" || IS_ELECTRON).map((tab) => (
+          {SETTINGS_TABS.filter((tab) => tab.id !== "desktop" || runtime.isDesktop).map((tab) => (
             <TabsTrigger key={tab.id} value={tab.id} className="shrink-0 px-4 py-2">
               {t(tab.labelKey)}
             </TabsTrigger>
@@ -56,15 +56,23 @@ const SettingsPage = () => {
         </TabsList>
         <div className="min-h-0 flex-1 py-8 pb-20">
           <TabsContent value="general">
-            <GeneralSettingsTab config={settings.config} onChange={settings.handleLocalChange} />
+            <GeneralSettingsTab
+              config={settings.config}
+              onWebChange={settings.handleWebChange}
+              onDesktopChange={settings.handleDesktopChange}
+            />
           </TabsContent>
           <TabsContent value="network">
-            <NetworkSettingsTab config={settings.config} onChange={settings.handleLocalChange} />
+            <NetworkSettingsTab
+              config={settings.config}
+              onWebChange={settings.handleWebChange}
+              onDesktopChange={settings.handleDesktopChange}
+            />
           </TabsContent>
           <TabsContent value="storage">
             <StorageSettingsTab
-              config={settings.config}
-              onChange={settings.handleLocalChange}
+              config={settings.config.desktop}
+              onChange={settings.handleDesktopChange}
               playbackCacheStats={settings.playbackCacheStats}
               isClearingPlaybackCache={settings.isClearingPlaybackCache}
               onClearPlaybackCache={settings.handleClearPlaybackCache}
@@ -72,9 +80,12 @@ const SettingsPage = () => {
               onClearCache={settings.handleClearCache}
             />
           </TabsContent>
-          {IS_ELECTRON ? (
+          {settings.config.desktop ? (
             <TabsContent value="desktop">
-              <DesktopSettingsTab config={settings.config} onChange={settings.handleLocalChange} />
+              <DesktopSettingsTab
+                config={settings.config.desktop}
+                onChange={settings.handleDesktopChange}
+              />
             </TabsContent>
           ) : null}
           <TabsContent value="shortcuts">
@@ -92,7 +103,7 @@ const SettingsPage = () => {
         onClose={() => settings.setIsModalOpen(false)}
         onConfirm={() => void settings.handleConfirmSave()}
         requiresRestart={settings.requiresRestart}
-        isWeb={!IS_ELECTRON}
+        isWeb={!runtime.isDesktop}
       />
     </div>
   );

@@ -28,14 +28,13 @@ import { UserVipBadge } from "@/components/shared/UserVipBadge";
 import { useVipSign } from "@/hooks/vipSign/useVipSign";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { VipSignDetail } from "@/types/api/vipSign";
 
 export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   const { t } = useI18n();
-  const isElectron = IS_ELECTRON;
   const smartRouter = useSmartRouter();
   const user = useUserStore((state) => state.user);
   const userId = user?.userId;
@@ -92,11 +91,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   };
 
   const handleLoginClick = () => {
-    if (typeof window !== "undefined" && isElectron) {
-      window.electronAPI?.openLoginWindow();
-    } else {
-      smartRouter.push("/login");
-    }
+    if (!runtime.auth.openLoginWindow()) smartRouter.push("/login");
   };
 
   const handleLogoutClick = () => {
@@ -189,7 +184,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             {/* 小屏才显示的 Bell / Friends */}
             <DropdownMenuItem
               onSelect={() =>
-                smartRouter.push(IS_ELECTRON ? "/setting?tab=desktop#app-updater" : "/setting")
+                smartRouter.push(
+                  runtime.isDesktop ? "/setting?tab=desktop#app-updater" : "/setting",
+                )
               }
               className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white md:hidden"
             >
@@ -227,7 +224,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             </DropdownMenuItem>
 
             {/* 下载桌面端 */}
-            {!IS_ELECTRON && (
+            {!runtime.isDesktop && (
               <DropdownMenuItem
                 className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-zinc-200 hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white"
                 onSelect={() => ProfileCallback("download")}

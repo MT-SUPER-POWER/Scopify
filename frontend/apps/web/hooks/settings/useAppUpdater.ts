@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { runtime } from "@/lib/runtime";
 import type { AppUpdateState } from "@/types/updater";
 
 const initialState: AppUpdateState = {
@@ -13,12 +14,10 @@ export function useAppUpdater() {
   const [state, setState] = useState<AppUpdateState>(initialState);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.electronAPI) return;
     let disposed = false;
 
-    const api = window.electronAPI;
-    api
-      .getUpdateStatus()
+    runtime.updates
+      .getStatus()
       .then((status) => {
         if (!disposed) setState(status);
       })
@@ -32,7 +31,7 @@ export function useAppUpdater() {
         }
       });
 
-    const unsubscribe = api.onUpdateStatusChanged((status) => {
+    const unsubscribe = runtime.updates.onStatusChanged((status) => {
       setState(status);
     });
 
@@ -43,17 +42,15 @@ export function useAppUpdater() {
   }, []);
 
   const check = useCallback(async () => {
-    const nextState = await window.electronAPI?.checkForUpdates();
-    if (nextState) setState(nextState);
+    setState(await runtime.updates.check());
   }, []);
 
   const download = useCallback(async () => {
-    const nextState = await window.electronAPI?.downloadUpdate();
-    if (nextState) setState(nextState);
+    setState(await runtime.updates.download());
   }, []);
 
   const install = useCallback(() => {
-    window.electronAPI?.quitAndInstallUpdate();
+    runtime.updates.install();
   }, []);
 
   return { state, check, download, install };

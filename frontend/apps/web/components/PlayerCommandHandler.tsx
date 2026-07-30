@@ -8,7 +8,7 @@
 
 import { useEffect } from "react";
 import { useInWindowShortcuts } from "@/hooks/shortcuts/useInWindowShortcuts";
-import { IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
 import type { PlayerBroadcastCommand } from "@/types/player";
 
@@ -21,7 +21,7 @@ export function PlayerCommandHandler() {
   useInWindowShortcuts();
 
   useEffect(() => {
-    if (!IS_ELECTRON || typeof window === "undefined") return;
+    if (!runtime.isDesktop || typeof window === "undefined") return;
 
     if (window.location.pathname.includes("/tray")) return;
 
@@ -65,7 +65,7 @@ export function PlayerCommandHandler() {
     // 同步播放状态，让托盘窗口的播放/暂停按钮图标保持正确
     const unsubscribePlayerStore = usePlayerStore.subscribe((state) => {
       stateChannel.postMessage(getSafeState(state));
-      window.electronAPI?.setPlayerPlaying(state.isPlaying);
+      runtime.media.setPlaying(state.isPlaying);
     });
 
     const handleThumbarControl = (command: string) => {
@@ -85,13 +85,13 @@ export function PlayerCommandHandler() {
       }
     };
 
-    const unsubscribeControlAudio = window.electronAPI?.onControlAudio(handleThumbarControl);
+    const unsubscribeControlAudio = runtime.media.onCommand(handleThumbarControl);
 
     return () => {
       cmdChannel.close();
       stateChannel.close();
       unsubscribePlayerStore();
-      unsubscribeControlAudio?.();
+      unsubscribeControlAudio();
     };
   }, []);
 

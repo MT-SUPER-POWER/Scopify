@@ -31,6 +31,11 @@ const stateToType: Record<FilterState, FilterAction["type"]> = {
   2: "SUBSCRIBED",
   3: "ARTISTS",
 };
+const FILTER_TYPES: FilterAction["type"][] = ["ALL", "CREATED", "SUBSCRIBED", "ARTISTS"];
+
+function isFilterType(value: string): value is FilterAction["type"] {
+  return FILTER_TYPES.some((type) => type === value);
+}
 
 const iconList = {
   ALL: <IconDisc className="mr-2 size-5" />,
@@ -122,9 +127,11 @@ export function FilterMenu({
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup
             value={stateToType[filterHook.state]}
-            onValueChange={(val) => handleFilterSelect({ type: val as any }, filterHook.dispatch)}
+            onValueChange={(value) => {
+              if (isFilterType(value)) handleFilterSelect({ type: value }, filterHook.dispatch);
+            }}
           >
-            {(["ALL", "CREATED", "SUBSCRIBED", "ARTISTS"] as const).map((item) => (
+            {FILTER_TYPES.map((item) => (
               <DropdownMenuRadioItem key={item} value={item} className="focus:bg-white/10">
                 {iconList[item]}
                 <span>{labelMap[item]}</span>

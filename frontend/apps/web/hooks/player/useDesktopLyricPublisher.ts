@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import type { DesktopLyricSnapshotInput } from "@/types/desktopLyric";
 
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
+import { runtime } from "@/lib/runtime";
 import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
 import { useUserStore } from "@/store/module/user";
@@ -12,14 +13,14 @@ import { useUserStore } from "@/store/module/user";
 /** Mirrors Scopify's player state into the optional Electron companion. */
 export function useDesktopLyricPublisher() {
   useEffect(() => {
-    if (!window.electronAPI) return;
+    if (!runtime.isDesktop) return;
 
     let lastPublishedAt = 0;
     const publish = (positionMs = useTimeStore.getState().currentTime, force = false) => {
       const now = Date.now();
       if (!force && now - lastPublishedAt < 90) return;
       lastPublishedAt = now;
-      void window.electronAPI?.publishDesktopLyricSnapshot(buildSnapshot(positionMs));
+      void runtime.desktopLyrics.publish(buildSnapshot(positionMs));
     };
     const onPlayerTime = (event: Event) => {
       const positionMs = (event as CustomEvent<unknown>).detail;

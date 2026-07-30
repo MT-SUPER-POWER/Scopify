@@ -6,10 +6,10 @@ import type {
   DesktopLyricPreferencesUpdate,
   DesktopLyricSnapshot,
   DesktopLyricSnapshotInput,
+  DesktopHostConfig,
 } from "@scopify/desktop-contract";
-import type { AppConfig } from "@/types/config";
 
-const electronAPI: DesktopBridge<AppConfig> = {
+const electronAPI: DesktopBridge = {
   relaunchApp: () => {
     ipcRenderer.send("relaunch-app");
   },
@@ -42,8 +42,8 @@ const electronAPI: DesktopBridge<AppConfig> = {
   sendAppCloseAction: (action: "minimize" | "exit") => {
     ipcRenderer.send("app-close-action", action);
   },
-  getAppConfig: () => ipcRenderer.invoke("get-app-config"),
-  updateAppConfig: (config) => ipcRenderer.invoke("update-app-config", config),
+  getHostConfig: () => ipcRenderer.invoke("config:get-host"),
+  updateHostConfig: (config: DesktopHostConfig) => ipcRenderer.invoke("config:update-host", config),
   writeLog: (event) => ipcRenderer.invoke("logger:write", event),
   getPageCache: (key) => ipcRenderer.invoke("cache:get", key),
   setPageCache: (key, value, ttlMs) => ipcRenderer.invoke("cache:set", key, value, ttlMs),
@@ -54,7 +54,8 @@ const electronAPI: DesktopBridge<AppConfig> = {
   checkForUpdates: () => ipcRenderer.invoke("updater:check"),
   downloadUpdate: () => ipcRenderer.invoke("updater:download"),
   quitAndInstallUpdate: () => ipcRenderer.send("updater:quit-and-install"),
-  setCookie: (cookieStr: string) => ipcRenderer.invoke("set-music-cookie", cookieStr),
+  setCookie: (cookieStr: string, backendOrigin: string) =>
+    ipcRenderer.invoke("set-music-cookie", cookieStr, backendOrigin),
   navigateTo: (path: string) => ipcRenderer.send("navigate-main-window", path),
   onNavigate: (callback: (path: string) => void) => {
     const listener = (_event: Electron.IpcRendererEvent, path: string) => callback(path);
@@ -63,10 +64,8 @@ const electronAPI: DesktopBridge<AppConfig> = {
   },
   loginSuccess: () => ipcRenderer.send("login-success"),
   onControlAudio: (callback) => {
-    const listener = (
-      _event: Electron.IpcRendererEvent,
-      action: "next" | "prev" | "toggle-play",
-    ) => callback(action);
+    const listener = (_event: Electron.IpcRendererEvent, action: "next" | "prev" | "toggle-play") =>
+      callback(action);
     ipcRenderer.on("control-audio", listener);
     return () => ipcRenderer.removeListener("control-audio", listener);
   },

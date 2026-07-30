@@ -1,4 +1,5 @@
 import type { RawSongDetail } from "@/types/api/music";
+import type { RawNeteasePlaylist } from "@/types/api/playlist";
 
 export interface RecentSongHistoryEntry {
   data?: RawSongDetail;
@@ -15,6 +16,19 @@ export interface RecentSongsResponse {
     list?: RecentSongHistoryEntry[];
   };
   list?: RecentSongHistoryEntry[];
+}
+
+export interface UserRecordResponse {
+  allData?: Array<{ song: RawSongDetail }>;
+  code: number;
+  weekData?: Array<{ song: RawSongDetail }>;
+}
+
+export interface RecentPlaylistsResponse {
+  code: number;
+  data?: {
+    list?: Array<{ data?: RawNeteasePlaylist }>;
+  };
 }
 
 export interface IUserDetail {

@@ -18,7 +18,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { loginByCellphone } from "@/lib/api/login";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { cn, IS_WEB } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
+import { cn } from "@/lib/utils";
 import { sendCaptcha } from "@/lib/web/auth";
 import logo from "@/resources/icon_source.png";
 import { useI18n } from "@/store/module/i18n";
@@ -65,13 +66,13 @@ function LoginPageContent() {
   const handleSubmit = async (phone: string, extra: string) => {
     setIsLoading(true);
     try {
-      let res: any;
       if (mode === "password") {
-        res = await loginByCellphone({ phone, password: extra });
+        const response = await loginByCellphone({ phone, password: extra });
+        console.log("登录响应", response);
       } else if (mode === "sms") {
-        res = await loginByCellphone({ phone, captcha: extra });
+        const response = await loginByCellphone({ phone, captcha: extra });
+        console.log("登录响应", response);
       }
-      console.log("登录响应", res);
     } catch (error) {
       console.error(error);
       toast.error(t("login.page.loginFailed"));
@@ -106,7 +107,7 @@ function LoginPageContent() {
     return <LoginSkeletonLoading />;
   }
 
-  const showExitButton = isMounted && IS_WEB;
+  const showExitButton = isMounted && !runtime.isDesktop;
 
   return (
     <div

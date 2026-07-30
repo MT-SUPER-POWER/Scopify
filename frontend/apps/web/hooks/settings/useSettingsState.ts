@@ -1,29 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
 import { toast } from "sonner";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { clearPlaybackCache, getPlaybackCacheStats } from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
-import { IS_ELECTRON } from "@/lib/utils";
-import { appConfig } from "@/lib/web/env";
+import { runtime } from "@/lib/runtime";
+import { webConfig } from "@/lib/web/env";
 import { pingBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
-import type { AppConfig } from "@/types/config";
+import type { WebConfig } from "@/types/config";
+import type { SettingsConfig } from "@/types/settings";
 
 export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
 export const WEB_BACKEND_SETTINGS_KEY = "momo-web-backend-settings";
 
-function checkRequiresRestart(current: AppConfig, original: AppConfig): boolean {
+function checkRequiresRestart(current: DesktopHostConfig, original: DesktopHostConfig): boolean {
   return (
     current.app.gpuAcceleration !== original.app.gpuAcceleration ||
     current.app.devTools !== original.app.devTools ||
-    current.backend.host !== original.backend.host ||
-    current.backend.port !== original.backend.port
+    current.frontend.host !== original.frontend.host ||
+    current.frontend.devPort !== original.frontend.devPort
   );
 }
 
-function loadWebNetworkOverride(): Partial<AppConfig["network"]> | null {
+function loadWebNetworkOverride(): Partial<WebConfig["network"]> | null {
   if (typeof window === "undefined") return null;
 
   try {
@@ -34,43 +36,35 @@ function loadWebNetworkOverride(): Partial<AppConfig["network"]> | null {
   }
 }
 
-function loadWebBackendOverride(): AppConfig["backend"] | null {
+function loadWebBackendOverride(): WebConfig["backend"] | null {
   if (typeof window === "undefined") return null;
 
   try {
     const stored = localStorage.getItem(WEB_BACKEND_SETTINGS_KEY);
     if (!stored) return null;
-    const parsed = JSON.parse(stored) as Partial<AppConfig["backend"]>;
-    if (typeof parsed?.host !== "string" || typeof parsed?.port !== "number") return null;
+    const parsed = JSON.parse(stored) as Partial<WebConfig["backend"]>;
+    if (typeof parsed.host !== "string" || typeof parsed.port !== "number") return null;
     return { host: parsed.host, port: parsed.port };
   } catch {
     return null;
   }
 }
 
-function buildWebConfig(): AppConfig {
-  const networkOverride = loadWebNetworkOverride();
-  const backendOverride = loadWebBackendOverride();
-  const locale = useI18nStore.getState().locale;
-
+function buildWebConfig(): WebConfig {
   return {
-    ...appConfig,
-    app: {
-      ...appConfig.app,
-      locale,
-    },
+    app: { locale: useI18nStore.getState().locale },
     backend: {
-      ...appConfig.backend,
-      ...(backendOverride ?? {}),
+      ...webConfig.backend,
+      ...(loadWebBackendOverride() ?? {}),
     },
     network: {
-      ...appConfig.network,
-      ...networkOverride,
+      ...webConfig.network,
+      ...(loadWebNetworkOverride() ?? {}),
     },
   };
 }
 
-function validateBackendConfig(locale: AppConfig["app"]["locale"], backend: AppConfig["backend"]) {
+function validateBackendConfig(locale: WebConfig["app"]["locale"], backend: WebConfig["backend"]) {
   if (!backend.host.trim()) {
     toast.error(translate(locale, "settings.backendHost.required"));
     return false;
@@ -84,7 +78,7 @@ function validateBackendConfig(locale: AppConfig["app"]["locale"], backend: AppC
   return true;
 }
 
-function syncCloseActionPreference(closeAction: AppConfig["app"]["closeAction"]) {
+function syncCloseActionPreference(closeAction: DesktopHostConfig["app"]["closeAction"]) {
   if (typeof window === "undefined") return;
 
   if (closeAction === 0) {
@@ -100,14 +94,14 @@ function syncCloseActionPreference(closeAction: AppConfig["app"]["closeAction"])
   localStorage.removeItem("app-close-action");
 }
 
-function emitAppConfigUpdated(config: AppConfig) {
+function emitWebConfigUpdated(config: WebConfig) {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent("app-config-updated", { detail: config }));
 }
 
 export function useSettingsState() {
-  const [config, setConfig] = useState<AppConfig | null>(null);
-  const [originalConfig, setOriginalConfig] = useState<AppConfig | null>(null);
+  const [config, setConfig] = useState<SettingsConfig | null>(null);
+  const [originalConfig, setOriginalConfig] = useState<SettingsConfig | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isClearingCache, setIsClearingCache] = useState(false);
@@ -120,26 +114,25 @@ export function useSettingsState() {
   const setLocale = useI18nStore((state) => state.setLocale);
 
   useEffect(() => {
-    if (!IS_ELECTRON) {
-      const webConfig = buildWebConfig();
-      setConfig(webConfig);
-      setOriginalConfig(webConfig);
+    const currentWebConfig = buildWebConfig();
+    if (!runtime.isDesktop) {
+      const nextConfig = { desktop: null, web: currentWebConfig };
+      setConfig(nextConfig);
+      setOriginalConfig(nextConfig);
       return;
     }
 
-    if (typeof window === "undefined" || !window.electronAPI) return;
-
     let isMounted = true;
-
-    window.electronAPI
-      .getAppConfig()
-      .then((nextConfig: AppConfig) => {
-        if (!isMounted) return;
+    runtime.config
+      .loadHostConfig()
+      .then((desktopConfig) => {
+        if (!isMounted || !desktopConfig) return;
+        const nextConfig = { desktop: desktopConfig, web: currentWebConfig };
         setConfig(nextConfig);
         setOriginalConfig(nextConfig);
       })
       .catch((error: unknown) => {
-        console.error("[Settings] failed to load app config:", error);
+        console.error("[Settings] failed to load Desktop host config:", error);
         toast.error(translate(useI18nStore.getState().locale, "settings.loadFailed"));
       });
 
@@ -148,85 +141,98 @@ export function useSettingsState() {
     };
   }, []);
 
-  // 加载播放缓存统计
   useEffect(() => {
     getPlaybackCacheStats()
       .then(setPlaybackCacheStats)
       .catch(() => {});
   }, []);
 
-  const handleLocalChange = <S extends keyof AppConfig, K extends keyof AppConfig[S]>(
+  const handleWebChange = <S extends keyof WebConfig, K extends keyof WebConfig[S]>(
     section: S,
     key: K,
-    value: AppConfig[S][K],
+    value: WebConfig[S][K],
   ) => {
-    setConfig((currentConfig) => {
-      if (!currentConfig) return currentConfig;
+    setConfig((current) =>
+      current
+        ? {
+            ...current,
+            web: {
+              ...current.web,
+              [section]: { ...current.web[section], [key]: value },
+            },
+          }
+        : current,
+    );
+  };
 
-      return {
-        ...currentConfig,
-        [section]: {
-          ...currentConfig[section],
-          [key]: value,
-        },
-      };
-    });
+  const handleDesktopChange = <
+    S extends keyof DesktopHostConfig,
+    K extends keyof DesktopHostConfig[S],
+  >(
+    section: S,
+    key: K,
+    value: DesktopHostConfig[S][K],
+  ) => {
+    setConfig((current) =>
+      current?.desktop
+        ? {
+            ...current,
+            desktop: {
+              ...current.desktop,
+              [section]: { ...current.desktop[section], [key]: value },
+            },
+          }
+        : current,
+    );
   };
 
   const handleConfirmSave = async () => {
     if (!config) return;
 
-    if (IS_ELECTRON && config.network.proxyMode === "custom" && !config.network.proxyUrl.trim()) {
-      toast.error(translate(config.app.locale, "settings.proxyUrl.required"));
+    if (config.desktop?.network.proxyMode === "custom" && !config.desktop.network.proxyUrl.trim()) {
+      toast.error(translate(config.web.app.locale, "settings.proxyUrl.required"));
       return;
     }
 
-    if (!validateBackendConfig(config.app.locale, config.backend)) {
-      return;
-    }
+    if (!validateBackendConfig(config.web.app.locale, config.web.backend)) return;
 
     setIsSaving(true);
-
     try {
-      if (!IS_ELECTRON) {
-        localStorage.setItem(WEB_NETWORK_SETTINGS_KEY, JSON.stringify(config.network));
-        localStorage.setItem(WEB_BACKEND_SETTINGS_KEY, JSON.stringify(config.backend));
-        setLocale(config.app.locale);
-        emitAppConfigUpdated(config);
-        setOriginalConfig(config);
-        setConfig(config);
-        setIsModalOpen(false);
-        toast.success(translate(config.app.locale, "settings.saveSuccess"));
+      const savedDesktopConfig = config.desktop
+        ? await runtime.config.saveHostConfig(config.desktop)
+        : null;
+      if (runtime.isDesktop && !savedDesktopConfig) return;
 
-        // 异步检查后端是否可达
-        const backendUrl = `http://${config.backend.host}:${config.backend.port}`;
-        const reachable = await pingBackend(backendUrl);
-        if (!reachable) {
-          toast.warning(
-            translate(config.app.locale, "settings.backendUnreachable", { url: backendUrl }),
-            { duration: 8000 },
-          );
-        }
-        return;
-      }
+      localStorage.setItem(WEB_NETWORK_SETTINGS_KEY, JSON.stringify(config.web.network));
+      localStorage.setItem(WEB_BACKEND_SETTINGS_KEY, JSON.stringify(config.web.backend));
+      setLocale(config.web.app.locale);
+      emitWebConfigUpdated(config.web);
 
-      if (!window.electronAPI) return;
-
-      const nextConfig = await window.electronAPI.updateAppConfig(config);
+      const nextConfig = { desktop: savedDesktopConfig, web: config.web };
       setOriginalConfig(nextConfig);
       setConfig(nextConfig);
-      setLocale(nextConfig.app.locale);
-      emitAppConfigUpdated(nextConfig);
       setIsModalOpen(false);
-      syncCloseActionPreference(nextConfig.app.closeAction);
-      toast.success(translate(nextConfig.app.locale, "settings.saveSuccess"));
+      if (savedDesktopConfig) syncCloseActionPreference(savedDesktopConfig.app.closeAction);
+      toast.success(translate(config.web.app.locale, "settings.saveSuccess"));
 
-      if (originalConfig && checkRequiresRestart(nextConfig, originalConfig)) {
-        window.electronAPI.relaunchApp();
+      if (
+        savedDesktopConfig &&
+        originalConfig?.desktop &&
+        checkRequiresRestart(savedDesktopConfig, originalConfig.desktop)
+      ) {
+        runtime.app.relaunch();
+      }
+
+      const backendUrl = `http://${config.web.backend.host}:${config.web.backend.port}`;
+      if (!(await pingBackend(backendUrl))) {
+        toast.warning(
+          translate(config.web.app.locale, "settings.backendUnreachable", { url: backendUrl }),
+          { duration: 8000 },
+        );
       }
     } catch (error) {
-      console.error("[Settings] failed to save app config:", error);
-      toast.error(translate(config.app.locale, "settings.saveFailed"));
+      console.error("[Settings] failed to save config:", error);
+      toast.error(translate(config.web.app.locale, "settings.saveFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -234,14 +240,13 @@ export function useSettingsState() {
 
   const handleClearCache = async () => {
     if (!config) return;
-
     setIsClearingCache(true);
     try {
       await clearPageCache();
-      toast.success(translate(config.app.locale, "settings.cache.clearSuccess"));
+      toast.success(translate(config.web.app.locale, "settings.cache.clearSuccess"));
     } catch (error) {
       console.error("[Settings] failed to clear cache:", error);
-      toast.error(translate(config.app.locale, "settings.cache.clearFailed"));
+      toast.error(translate(config.web.app.locale, "settings.cache.clearFailed"));
     } finally {
       setIsClearingCache(false);
     }
@@ -249,15 +254,14 @@ export function useSettingsState() {
 
   const handleClearPlaybackCache = async () => {
     if (!config) return;
-
     setIsClearingPlaybackCache(true);
     try {
-      const result = await clearPlaybackCache();
+      await clearPlaybackCache();
       setPlaybackCacheStats({ entryCount: 0, cacheDir: playbackCacheStats?.cacheDir ?? null });
-      toast.success(translate(config.app.locale, "settings.playbackCache.clearSuccess"));
+      toast.success(translate(config.web.app.locale, "settings.playbackCache.clearSuccess"));
     } catch (error) {
       console.error("[Settings] failed to clear playback cache:", error);
-      toast.error(translate(config.app.locale, "settings.playbackCache.clearFailed"));
+      toast.error(translate(config.web.app.locale, "settings.playbackCache.clearFailed"));
     } finally {
       setIsClearingPlaybackCache(false);
     }
@@ -266,9 +270,11 @@ export function useSettingsState() {
   const hasChanges = Boolean(
     config && originalConfig && JSON.stringify(config) !== JSON.stringify(originalConfig),
   );
-  const requiresRestart =
-    IS_ELECTRON &&
-    Boolean(config && originalConfig && checkRequiresRestart(config, originalConfig));
+  const requiresRestart = Boolean(
+    config?.desktop &&
+    originalConfig?.desktop &&
+    checkRequiresRestart(config.desktop, originalConfig.desktop),
+  );
 
   return {
     config,
@@ -278,7 +284,8 @@ export function useSettingsState() {
     isClearingCache,
     requiresRestart,
     setIsModalOpen,
-    handleLocalChange,
+    handleWebChange,
+    handleDesktopChange,
     handleConfirmSave,
     handleClearCache,
     isClearingPlaybackCache,

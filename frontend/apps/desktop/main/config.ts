@@ -3,7 +3,8 @@ import { join } from "node:path";
 import { app } from "electron";
 import * as yaml from "js-yaml";
 
-import { type AppConfig, DEFAULT_APP_CONFIG, normalizeAppConfig } from "../types/config.js";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import { DEFAULT_DESKTOP_HOST_CONFIG, normalizeDesktopHostConfig } from "../types/config.js";
 
 const resourceConfigDir = app.isPackaged
   ? join(process.resourcesPath, "config")
@@ -29,20 +30,20 @@ function readYamlConfig(filePath: string): unknown {
   return yaml.load(raw) ?? null;
 }
 
-export function loadDefaultAppConfig(): AppConfig {
+export function loadDefaultDesktopHostConfig(): DesktopHostConfig {
   const defaultConfig = readYamlConfig(appConfigDefaultPathValue);
-  return normalizeAppConfig(defaultConfig ?? DEFAULT_APP_CONFIG);
+  return normalizeDesktopHostConfig(defaultConfig ?? DEFAULT_DESKTOP_HOST_CONFIG);
 }
 
-export function loadAppConfig(): AppConfig {
+export function loadDesktopHostConfig(): DesktopHostConfig {
   ensureConfigFile();
   const config = readYamlConfig(appConfigPathValue);
-  return normalizeAppConfig(config ?? loadDefaultAppConfig());
+  return normalizeDesktopHostConfig(config ?? loadDefaultDesktopHostConfig());
 }
 
-export function saveAppConfig(newConfig: AppConfig): AppConfig {
+export function saveDesktopHostConfig(newConfig: DesktopHostConfig): DesktopHostConfig {
   ensureConfigFile();
-  const normalizedConfig = normalizeAppConfig(newConfig);
+  const normalizedConfig = normalizeDesktopHostConfig(newConfig);
   const yamlString = yaml.dump(normalizedConfig, { noRefs: true });
   fs.writeFileSync(appConfigPathValue, yamlString, "utf-8");
   return normalizedConfig;

@@ -2,10 +2,6 @@ app:
   gpuAcceleration: true
   devTools: false
   closeAction: 2
-  locale: zh-CN
-backend:
-  port: 3838
-  host: 127.0.0.1
 frontend:
   devPort: 3000
   host: 127.0.0.1
@@ -14,8 +10,6 @@ logging:
   format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}"
   keepDays: 7
 network:
-  timeout: 5000
-  randomCNIP: false
   proxyMode: system
   proxyUrl: ""
 cache:

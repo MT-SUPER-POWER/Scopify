@@ -6,7 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSidebarPlaylists } from "@/hooks/sidebar/useSidebarPlaylists";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { cn, IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
+import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { CollapsibleLibraryGroup } from "./CollapsibleLibraryGroup";
@@ -30,8 +31,7 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
   );
 
   const handleLogin = () => {
-    if (typeof window !== "undefined" && IS_ELECTRON) window.electronAPI?.openLoginWindow();
-    else smartRouter.replace("/login");
+    if (!runtime.auth.openLoginWindow()) smartRouter.replace("/login");
   };
 
   const renderPlaylistItems = (items: typeof playlists) =>

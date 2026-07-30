@@ -2,16 +2,17 @@ import { expect, test } from "bun:test";
 import fs from "node:fs";
 import path from "node:path/win32";
 import * as yaml from "js-yaml";
-import { networkConfigOverrideSchema, normalizeAppConfig } from "@/types/config";
+import { normalizeDesktopHostConfig } from "@/types/config";
 
-test("app config yml keeps backend host and port", () => {
+test("desktop config yml contains only host-owned settings", () => {
   const configFilePath = path.resolve(__dirname, "../config/app.config.yml");
   const raw = fs.readFileSync(configFilePath, "utf-8");
-  const config = normalizeAppConfig(yaml.load(raw));
+  const parsed = yaml.load(raw);
+  const config = normalizeDesktopHostConfig(parsed);
 
   expect(config.app.gpuAcceleration).toBe(true);
-  expect(config.backend.host).toBe("127.0.0.1");
-  expect(config.backend.port).toBe(3838);
+  expect(config.frontend.host).toBe("127.0.0.1");
+  expect(config.frontend.devPort).toBe(3000);
   expect(config.logging.level).toBe("info");
   expect(config.cache.enabled).toBe(true);
   expect(config.cache.dir).toBe("");
@@ -20,24 +21,36 @@ test("app config yml keeps backend host and port", () => {
   expect(config.cache.searchTtlMinutes).toBe(30);
   expect(config.updater.checkOnStartup).toBe(true);
   expect(config.updater.autoDownload).toBe(false);
+  expect(parsed).not.toHaveProperty("backend");
+  expect(parsed).not.toHaveProperty("app.locale");
+  expect(parsed).not.toHaveProperty("network.timeout");
+  expect(parsed).not.toHaveProperty("network.randomCNIP");
 });
 
-test("normalizing legacy backend config ignores autoStart", () => {
-  const config = normalizeAppConfig({
-    backend: {
-      host: "10.0.0.20",
-      port: 4545,
-      autoStart: true,
+test("normalizing legacy config drops Web-owned and unknown fields", () => {
+  const config = normalizeDesktopHostConfig({
+    app: { locale: "zh-TW" },
+    backend: { autoStart: true, host: "10.0.0.20", port: 4545 },
+    network: {
+      max_retries: 5,
+      proxyMode: "custom",
+      proxyUrl: "  http://127.0.0.1:7890  ",
+      randomCNIP: true,
+      retry_delay: 1000,
+      timeout: "9000",
     },
   });
 
-  expect(config.backend.host).toBe("10.0.0.20");
-  expect(config.backend.port).toBe(4545);
-  expect("autoStart" in config.backend).toBe(false);
+  expect(config.network).toEqual({
+    proxyMode: "custom",
+    proxyUrl: "http://127.0.0.1:7890",
+  });
+  expect(config.app).not.toHaveProperty("locale");
+  expect(config).not.toHaveProperty("backend");
 });
 
 test("normalizing cache config clamps invalid values", () => {
-  const config = normalizeAppConfig({
+  const config = normalizeDesktopHostConfig({
     cache: {
       enabled: "false",
       dir: "  D:/Scopify Cache  ",
@@ -54,30 +67,20 @@ test("normalizing cache config clamps invalid values", () => {
   expect(config.cache.searchTtlMinutes).toBe(30);
 });
 
-test("normalizing legacy and malformed config falls back per field", () => {
-  const config = normalizeAppConfig({
-    app: { locale: "unsupported" },
-    network: {
-      max_retries: 5,
-      proxyMode: "unsupported",
-      randomCNIP: true,
-      retry_delay: 1000,
-      timeout: "9000",
-    },
+test("normalizing malformed host config falls back per field", () => {
+  const config = normalizeDesktopHostConfig({
+    app: { closeAction: 99 },
+    network: { proxyMode: "unsupported" },
   });
 
-  expect(config.app.locale).toBe("zh-CN");
-  expect(config.network.timeout).toBe(9000);
-  expect(config.network.randomCNIP).toBe("true");
+  expect(config.app.closeAction).toBe(2);
   expect(config.network.proxyMode).toBe("system");
-  expect("max_retries" in config.network).toBe(false);
-  expect("retry_delay" in config.network).toBe(false);
   expect(config.updater.checkOnStartup).toBe(true);
   expect(config.updater.autoDownload).toBe(false);
 });
 
 test("normalizing updater config accepts persisted boolean strings", () => {
-  const config = normalizeAppConfig({
+  const config = normalizeDesktopHostConfig({
     updater: {
       checkOnStartup: "false",
       autoDownload: "true",
@@ -86,24 +89,4 @@ test("normalizing updater config accepts persisted boolean strings", () => {
 
   expect(config.updater.checkOnStartup).toBe(false);
   expect(config.updater.autoDownload).toBe(true);
-});
-
-test("network overrides retain valid values and discard invalid or legacy fields", () => {
-  const result = networkConfigOverrideSchema.safeParse({
-    max_retries: 5,
-    proxyMode: "unsupported",
-    proxyUrl: "  http://127.0.0.1:7890  ",
-    randomCNIP: true,
-    retry_delay: 1000,
-    timeout: "9000",
-  });
-
-  expect(result.success).toBe(true);
-  if (!result.success) return;
-
-  expect(result.data).toEqual({
-    proxyUrl: "http://127.0.0.1:7890",
-    randomCNIP: "true",
-    timeout: 9000,
-  });
 });

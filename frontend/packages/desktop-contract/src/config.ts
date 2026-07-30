@@ -1,0 +1,39 @@
+export type DesktopCloseAction = 0 | 1 | 2;
+export type DesktopLogLevel = "debug" | "error" | "info" | "warn";
+export type DesktopProxyMode = "custom" | "direct" | "system";
+
+/**
+ * Desktop-owned settings exposed to the Renderer settings UI.
+ * Web request, locale and backend settings deliberately do not cross this boundary.
+ */
+export interface DesktopHostConfig {
+  app: {
+    closeAction: DesktopCloseAction;
+    devTools: boolean;
+    gpuAcceleration: boolean;
+  };
+  cache: {
+    dir: string;
+    enabled: boolean;
+    maxSizeMB: number;
+    pageTtlMinutes: number;
+    searchTtlMinutes: number;
+  };
+  frontend: {
+    devPort: number;
+    host: string;
+  };
+  logging: {
+    format: string;
+    keepDays: number;
+    level: DesktopLogLevel;
+  };
+  network: {
+    proxyMode: DesktopProxyMode;
+    proxyUrl: string;
+  };
+  updater: {
+    autoDownload: boolean;
+    checkOnStartup: boolean;
+  };
+}

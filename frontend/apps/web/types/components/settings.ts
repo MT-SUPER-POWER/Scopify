@@ -1,9 +1,9 @@
-import type { AppConfig } from "@/types/config";
-import type { SettingsChangeHandler } from "@/types/settings";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import type { DesktopSettingsChangeHandler } from "@/types/settings";
 
 export interface StorageSettingsTabProps {
-  config: AppConfig;
-  onChange: SettingsChangeHandler;
+  config: DesktopHostConfig | null;
+  onChange: DesktopSettingsChangeHandler;
   playbackCacheStats: { entryCount: number; cacheDir: string | null } | null;
   isClearingPlaybackCache: boolean;
   onClearPlaybackCache: () => Promise<void>;
@@ -12,11 +12,11 @@ export interface StorageSettingsTabProps {
 }
 
 export interface DesktopSettingsTabProps {
-  config: AppConfig;
-  onChange: SettingsChangeHandler;
+  config: DesktopHostConfig;
+  onChange: DesktopSettingsChangeHandler;
 }
 
 export interface AppUpdaterSectionProps {
-  config: AppConfig;
-  onChange: SettingsChangeHandler;
+  config: DesktopHostConfig;
+  onChange: DesktopSettingsChangeHandler;
 }

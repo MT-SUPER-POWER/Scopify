@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppUpdater } from "@/hooks/settings/useAppUpdater";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { cn, IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
+import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 
 // Turns the header bell into the renderer-facing update lifecycle notification center.
@@ -38,7 +39,7 @@ export function UpdateNotificationCenter() {
   };
 
   const openUpdaterSettings = () => {
-    router.push(IS_ELECTRON ? "/setting?tab=desktop#app-updater" : "/setting");
+    router.push(runtime.isDesktop ? "/setting?tab=desktop#app-updater" : "/setting");
   };
 
   const noticeTitle =

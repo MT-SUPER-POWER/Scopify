@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { checkQR, createQR, getQRKey } from "@/lib/api/login";
 import { getUserAccount, getUserDetail } from "@/lib/api/user";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
+import { getBackendBaseUrl } from "@/lib/web/request";
 import { logger } from "@/lib/web/logger";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
@@ -91,14 +92,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             localStorage.setItem("music_cookie", rawCookie); // 先存一份到 localStorage，兜底用
 
             // 1. 调用主进程注入 Cookie (Electron 环境)
-            if (IS_ELECTRON && window.electronAPI?.setCookie) {
-              await window.electronAPI.setCookie(rawCookie);
-            } else if (typeof document !== "undefined") {
-              // Web 环境：写入 document.cookie
-              const musicUMatch = /MUSIC_U=([^;]+)/.exec(rawCookie);
-              const musicUValue = musicUMatch ? musicUMatch[1] : "";
-              document.cookie = `MUSIC_U=${musicUValue}; path=/; max-age=${60 * 60 * 24 * 30}`;
-            }
+            await runtime.auth.persistMusicCookie(rawCookie, getBackendBaseUrl());
 
             // 强制带上 cookie 发起用户信息请求
             const loginRes = await getUserAccount();
@@ -128,9 +122,10 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             toast.success(t("login.qr.toast.success"));
 
             // 通知主线程登录成功
-            if (IS_ELECTRON) window.electronAPI?.loginSuccess?.();
-            else if (onSuccessRef.current) onSuccessRef.current();
-            else routerRef.current.replace("/");
+            if (!runtime.auth.completeLogin()) {
+              if (onSuccessRef.current) onSuccessRef.current();
+              else routerRef.current.replace("/");
+            }
             break;
           }
 

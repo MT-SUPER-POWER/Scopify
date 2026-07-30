@@ -1,6 +1,6 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 
-import { networkConfigOverrideSchema, type AppConfig } from "@/types/config";
+import { networkConfigOverrideSchema, type WebConfig } from "@/types/config";
 import type { ScopifyRequestConfig } from "@/types/network";
 
 import {
@@ -8,21 +8,22 @@ import {
   WEB_NETWORK_SETTINGS_KEY,
 } from "@/hooks/settings/useSettingsState";
 import { notifyExpiredMusicSession } from "@/lib/query/session";
+import { runtime } from "@/lib/runtime";
 
 import { ApiError, toApiError } from "./apiError";
-import { appConfig, logger } from "./env";
+import { logger, webConfig } from "./env";
 import { reportFailure } from "./errorTracking";
 
-function buildBackendBaseUrl(config: Pick<AppConfig, "backend">) {
+function buildBackendBaseUrl(config: Pick<WebConfig, "backend">) {
   return `http://${config.backend.host}:${config.backend.port}`;
 }
 
-function loadInitialBackendConfig(): AppConfig["backend"] {
-  if (typeof window === "undefined") return appConfig.backend;
+function loadInitialBackendConfig(): WebConfig["backend"] {
+  if (typeof window === "undefined") return webConfig.backend;
 
   try {
     const stored = localStorage.getItem(WEB_BACKEND_SETTINGS_KEY);
-    if (!stored) return appConfig.backend;
+    if (!stored) return webConfig.backend;
     const parsed = parseJsonObject(stored);
     if (typeof parsed.host === "string" && typeof parsed.port === "number") {
       return { host: parsed.host, port: parsed.port };
@@ -31,28 +32,28 @@ function loadInitialBackendConfig(): AppConfig["backend"] {
     // Ignore malformed local cache.
   }
 
-  return appConfig.backend;
+  return webConfig.backend;
 }
 
 const INITIAL_BACKEND_CONFIG = loadInitialBackendConfig();
 
 let baseURL = buildBackendBaseUrl({ backend: INITIAL_BACKEND_CONFIG });
-let runtimeNetworkConfig: AppConfig["network"] = { ...appConfig.network };
-let runtimeBackendConfig: AppConfig["backend"] = { ...INITIAL_BACKEND_CONFIG };
+let runtimeNetworkConfig: WebConfig["network"] = { ...webConfig.network };
+let runtimeBackendConfig: WebConfig["backend"] = { ...INITIAL_BACKEND_CONFIG };
 
 export function getBackendBaseUrl() {
   return buildBackendBaseUrl({ backend: runtimeBackendConfig });
 }
 
-function applyRuntimeConfig(config: Pick<AppConfig, "backend" | "network">) {
+function applyRuntimeConfig(config: Pick<WebConfig, "backend" | "network">) {
   runtimeNetworkConfig = { ...config.network };
   runtimeBackendConfig = { ...config.backend };
   baseURL = buildBackendBaseUrl({ backend: runtimeBackendConfig });
   request.defaults.baseURL = baseURL;
 }
 
-function getNetworkConfig(): AppConfig["network"] {
-  if (typeof window === "undefined" || isElectronRuntime()) return runtimeNetworkConfig;
+function getNetworkConfig(): WebConfig["network"] {
+  if (typeof window === "undefined") return runtimeNetworkConfig;
 
   try {
     const stored = localStorage.getItem(WEB_NETWORK_SETTINGS_KEY);
@@ -64,10 +65,6 @@ function getNetworkConfig(): AppConfig["network"] {
   }
 
   return runtimeNetworkConfig;
-}
-
-function isElectronRuntime() {
-  return typeof window !== "undefined" && !!window.electronAPI;
 }
 
 function isNoLoginRequest(config?: ScopifyRequestConfig) {
@@ -84,7 +81,7 @@ function parseJsonObject(value: string): Record<string, unknown> {
   return isRecord(parsed) ? parsed : {};
 }
 
-function parseStoredNetworkConfig(value: string): Partial<AppConfig["network"]> {
+function parseStoredNetworkConfig(value: string): Partial<WebConfig["network"]> {
   return networkConfigOverrideSchema.safeParse(parseJsonObject(value)).data ?? {};
 }
 
@@ -120,23 +117,9 @@ logger.info("--------------------------------------------------");
 logger.info("Next.js Request Backend URL is", baseURL);
 logger.info("--------------------------------------------------");
 
-if (typeof window !== "undefined" && window.electronAPI?.getAppConfig) {
-  const syncRuntimeConfig = async () => {
-    try {
-      const runtimeConfig = await window.electronAPI?.getAppConfig();
-      if (runtimeConfig) {
-        applyRuntimeConfig(runtimeConfig);
-        logger.info("Overrode runtime app config from Electron:", runtimeConfig);
-      }
-    } catch (error) {
-      logger.warn("Failed to read runtime appConfig from Electron preload", error);
-    }
-  };
-
-  void syncRuntimeConfig();
-
+if (typeof window !== "undefined") {
   window.addEventListener("app-config-updated", (event) => {
-    const nextConfig = (event as CustomEvent<AppConfig>).detail;
+    const nextConfig = (event as CustomEvent<WebConfig>).detail;
     if (nextConfig) applyRuntimeConfig(nextConfig);
   });
 }
@@ -152,11 +135,8 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRe
   config.params = {
     ...requestParams,
     timestamp: Date.now(),
-    ...(isElectronRuntime() ? { os: "pc" } : { platform: "web" }),
+    ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
     randomCNIP: networkConfig.randomCNIP,
-    ...(isElectronRuntime() && networkConfig.proxyMode === "custom" && networkConfig.proxyUrl
-      ? { proxy: networkConfig.proxyUrl }
-      : {}),
   };
 
   return config;

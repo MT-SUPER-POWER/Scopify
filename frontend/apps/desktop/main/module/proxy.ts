@@ -1,10 +1,10 @@
 import { type ProxyConfig, session } from "electron";
 
-import type { AppConfig } from "@/types/config";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
 
 import { logger } from "../constants.js";
 
-function buildProxyConfig(config: AppConfig): ProxyConfig {
+function buildProxyConfig(config: DesktopHostConfig): ProxyConfig {
   const { proxyMode, proxyUrl } = config.network;
 
   if (proxyMode === "direct") {
@@ -21,7 +21,7 @@ function buildProxyConfig(config: AppConfig): ProxyConfig {
   return { mode: "system" };
 }
 
-export async function applyElectronProxy(config: AppConfig) {
+export async function applyElectronProxy(config: DesktopHostConfig) {
   const proxyConfig = buildProxyConfig(config);
   logger.info("[proxy] applying Electron proxy:", proxyConfig);
 

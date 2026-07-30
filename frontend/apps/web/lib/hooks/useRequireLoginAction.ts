@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { toast } from "sonner";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import type { LoginRequiredReason } from "@/types/auth";
 
@@ -28,9 +28,7 @@ export function useRequireLoginAction() {
       }
 
       toast.info(t("login.required.toast"));
-      if (IS_ELECTRON && window.electronAPI?.openLoginWindow) {
-        window.electronAPI.openLoginWindow();
-      } else {
+      if (!runtime.auth.openLoginWindow()) {
         smartRouter.push("/login", {
           redirect: getCurrentPath(),
           reason,

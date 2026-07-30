@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { type TranslationKey, type TranslationParams, translate } from "@/lib/i18n";
-import { type AppLocale, DEFAULT_APP_CONFIG } from "@/types/config";
+import { type AppLocale, DEFAULT_WEB_CONFIG } from "@/types/config";
 import type { TranslateFn } from "@/types/i18n.generated";
 
 interface I18nStore {
@@ -16,7 +16,7 @@ export const useI18nStore = create<I18nStore>()(
   persist(
     (set) => ({
       // NOTE: setting 来控制的 i18n 的传入点
-      locale: DEFAULT_APP_CONFIG.app.locale,
+      locale: DEFAULT_WEB_CONFIG.app.locale,
       setLocale: (locale) => set({ locale }),
     }),
     {

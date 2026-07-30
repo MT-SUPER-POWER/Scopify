@@ -1,14 +1,10 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { logout } from "@/lib/api/login";
-import { IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
 import { clearLoginStatus } from "@/lib/web/auth";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
-import {
-  type NeteasePlaylist,
-  type RawNeteasePlaylist,
-  prunePlaylist,
-} from "@/types/api/playlist";
+import { type NeteasePlaylist, type RawNeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
 import type { NeteaseUserAlbum } from "@/types/api/release";
 import { type NeteaseUser, pruneUser } from "@/types/api/user";
 import type { FollowedArtist } from "@/types/artist";
@@ -82,9 +78,7 @@ export const useUserStore = create<UserStore>()(
       setUserId: (userId: number | string) => {
         const numericUserId = Number(userId);
         if (!Number.isFinite(numericUserId)) return;
-        set((state) =>
-          state.user ? { user: { ...state.user, userId: numericUserId } } : state,
-        );
+        set((state) => (state.user ? { user: { ...state.user, userId: numericUserId } } : state));
       },
       setLoginType: (loginType: "token" | "cookie" | "qr" | "uid" | null) => set({ loginType }),
       setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => {
@@ -141,7 +135,7 @@ export const useUserStore = create<UserStore>()(
   ),
 );
 
-if (IS_ELECTRON) {
+if (runtime.isDesktop) {
   window.addEventListener("storage", (e) => {
     if (e.key === "user-storage" && e.newValue) {
       try {

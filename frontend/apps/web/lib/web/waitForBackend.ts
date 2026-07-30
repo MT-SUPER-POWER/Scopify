@@ -19,9 +19,10 @@ export async function waitForBackend(
       // 请求一个有效的 API 路径 /inner/version，会经过后端 CORS 中间件处理并返回 200
       await axios.get(pingUrl, { timeout: interval });
       return true;
-    } catch (e: any) {
+    } catch (error: unknown) {
       // 如果是 ECONNREFUSED 说明还没起来，如果是其他错误说明响应了
-      if (e.code !== "ECONNREFUSED" && e.code !== "ETIMEDOUT") {
+      const code = axios.isAxiosError(error) ? error.code : undefined;
+      if (code !== "ECONNREFUSED" && code !== "ETIMEDOUT") {
         return true;
       }
     }

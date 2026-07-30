@@ -14,6 +14,7 @@ import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { CommandPalette } from "@/components/shortcuts/CommandPalette";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
+import { runtime } from "@/lib/runtime";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -140,15 +141,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
   // 监听来自 Electron 主进程的导航请求
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    return window.electronAPI?.onNavigate((path) => {
+    return runtime.navigation.onNavigate((path) => {
       router.push(path, { scroll: false });
     });
   }, [router]);
 
   useEffect(() => {
-    const unsubscribe = window.electronAPI?.onDesktopLyricCommand((command) => {
+    const unsubscribe = runtime.desktopLyrics.onCommand((command) => {
       switch (command.type) {
         case "next":
           void usePlayerStore.getState().playNext();
@@ -189,14 +188,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
 
   useEffect(() => {
-    const syncFullscreen = () => setIsFullscreen(Boolean(document.fullscreenElement));
-    document.addEventListener("fullscreenchange", syncFullscreen);
-    const unsubscribeFullscreen = window.electronAPI?.onFullScreenChanged(setIsFullscreen);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", syncFullscreen);
-      unsubscribeFullscreen?.();
-    };
+    return runtime.window.onFullscreenChanged(setIsFullscreen);
   }, [setIsFullscreen]);
 
   useEffect(() => {
@@ -418,7 +410,7 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
         title={t("layout.failedTitle")}
         description={backendStartup.message ?? t("layout.failedDescription")}
         actionLabel={t("layout.restartApp")}
-        onAction={() => window.electronAPI?.relaunchApp()}
+        onAction={() => runtime.app.relaunch()}
       />
     );
   }

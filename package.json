@@ -23,8 +23,10 @@
     "release:win": "bun run build:desktop && bun run --cwd frontend/apps/desktop release:win",
     "release:mac": "bun run build:desktop && bun run --cwd frontend/apps/desktop release:mac",
     "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
-    "lint": "turbo run lint",
+    "test:architecture": "bun test scripts/check-architecture.test.ts",
+    "test": "bun run test:architecture && turbo run test",
+    "lint:architecture": "bun scripts/check-architecture.ts",
+    "lint": "bun run lint:architecture && turbo run lint",
     "format": "prettier --write .",
     "i18n:types": "bun run --cwd frontend/apps/web i18n:types",
     "i18n:audit": "bun run --cwd frontend/apps/web i18n:audit"

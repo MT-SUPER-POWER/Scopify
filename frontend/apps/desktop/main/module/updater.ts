@@ -1,14 +1,17 @@
 import { app, type BrowserWindow } from "electron";
 import electronUpdater from "electron-updater";
-import type { AppUpdateState, AppUpdateStatePatch } from "@scopify/desktop-contract";
-import type { AppConfig } from "@/types/config";
+import type {
+  AppUpdateState,
+  AppUpdateStatePatch,
+  DesktopHostConfig,
+} from "@scopify/desktop-contract";
 import { logger } from "../constants.js";
 
 const { autoUpdater } = electronUpdater;
 
 let mainWindow: BrowserWindow | null = null;
 let initialized = false;
-let updaterConfig: AppConfig["updater"] = {
+let updaterConfig: DesktopHostConfig["updater"] = {
   checkOnStartup: true,
   autoDownload: false,
 };
@@ -40,7 +43,7 @@ export function getUpdateState(): AppUpdateState {
   };
 }
 
-export function configureUpdater(config: AppConfig["updater"]) {
+export function configureUpdater(config: DesktopHostConfig["updater"]) {
   updaterConfig = { ...config };
 
   if (updaterConfig.autoDownload && state.status === "available") {
@@ -50,7 +53,7 @@ export function configureUpdater(config: AppConfig["updater"]) {
   }
 }
 
-export function initializeUpdater(window: BrowserWindow, config: AppConfig["updater"]) {
+export function initializeUpdater(window: BrowserWindow, config: DesktopHostConfig["updater"]) {
   mainWindow = window;
   if (initialized) return;
 

@@ -19,10 +19,10 @@ export function useStoreHydration(): boolean {
     // persist store 在 create() 时即发起水合（从 localStorage 读取），
     // 但时序可能在组件 mount 前或后完成。
     // persist API 提供 onFinishHydration 回调来监听水合结束。
-    const stores = [useUserStore, usePlayerStore, useTimeStore];
+    const stores = [useUserStore.persist, usePlayerStore.persist, useTimeStore.persist];
 
     // 先检查是否所有 store 都已经水合完成（大多数情况下是同步完成的）
-    const allReady = stores.every((store) => (store as any).persist?.hasHydrated?.() ?? true);
+    const allReady = stores.every((persist) => persist.hasHydrated());
 
     if (allReady) {
       setHydrated(true);
@@ -41,16 +41,10 @@ export function useStoreHydration(): boolean {
     };
 
     for (const store of stores) {
-      const persistApi = (store as any).persist;
-      if (persistApi?.hasHydrated?.()) {
+      if (store.hasHydrated()) {
         // 已经水合过了，直接减一
         onHydrated();
-      } else if (persistApi?.onFinishHydration) {
-        unsubs.push(persistApi.onFinishHydration(onHydrated));
-      } else {
-        // 没有 persist（不应发生），视为已就绪
-        onHydrated();
-      }
+      } else unsubs.push(store.onFinishHydration(onHydrated));
     }
 
     return () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import type { StorageSettingsTabProps } from "@/types/components/settings";
 import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
@@ -22,7 +22,9 @@ export function StorageSettingsTab({
         <SettingRow
           label={t("settings.playbackCache.count")}
           sublabel={
-            IS_ELECTRON && playbackCacheStats?.cacheDir ? playbackCacheStats.cacheDir : undefined
+            runtime.isDesktop && playbackCacheStats?.cacheDir
+              ? playbackCacheStats.cacheDir
+              : undefined
           }
           control={
             <span className="text-sm font-medium text-white">
@@ -48,7 +50,7 @@ export function StorageSettingsTab({
           }
         />
       </SettingSection>
-      {IS_ELECTRON ? (
+      {config ? (
         <SettingSection title={t("settings.section.cache")}>
           <SettingRow
             label={t("settings.cache.enabled.label")}

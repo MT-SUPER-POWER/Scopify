@@ -1,19 +1,27 @@
 "use client";
 
-import { IS_ELECTRON } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { AppConfig } from "@/types/config";
-import type { SettingsChangeHandler } from "@/types/settings";
+import type { DesktopProxyMode } from "@scopify/desktop-contract";
+import type {
+  DesktopSettingsChangeHandler,
+  SettingsConfig,
+  WebSettingsChangeHandler,
+} from "@/types/settings";
 import { SettingInput, SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
 
 interface NetworkSettingsTabProps {
-  config: AppConfig;
-  onChange: SettingsChangeHandler;
+  config: SettingsConfig;
+  onDesktopChange: DesktopSettingsChangeHandler;
+  onWebChange: WebSettingsChangeHandler;
 }
 
-export function NetworkSettingsTab({ config, onChange }: NetworkSettingsTabProps) {
+export function NetworkSettingsTab({
+  config,
+  onDesktopChange,
+  onWebChange,
+}: NetworkSettingsTabProps) {
   const { t } = useI18n();
-  const isCustomProxy = config.network.proxyMode === "custom";
+  const isCustomProxy = config.desktop?.network.proxyMode === "custom";
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
@@ -23,8 +31,8 @@ export function NetworkSettingsTab({ config, onChange }: NetworkSettingsTabProps
           sublabel={t("settings.backendHost.sublabel")}
           control={
             <SettingInput
-              value={config.backend.host}
-              onChange={(value) => onChange("backend", "host", value)}
+              value={config.web.backend.host}
+              onChange={(value) => onWebChange("backend", "host", value)}
               className="w-64"
               placeholder={t("settings.backendHost.placeholder")}
             />
@@ -36,8 +44,8 @@ export function NetworkSettingsTab({ config, onChange }: NetworkSettingsTabProps
           control={
             <SettingInput
               type="number"
-              value={config.backend.port}
-              onChange={(value) => onChange("backend", "port", Number(value) || 0)}
+              value={config.web.backend.port}
+              onChange={(value) => onWebChange("backend", "port", Number(value) || 0)}
               className="w-28"
             />
           }
@@ -50,8 +58,8 @@ export function NetworkSettingsTab({ config, onChange }: NetworkSettingsTabProps
           control={
             <SettingInput
               type="number"
-              value={config.network.timeout}
-              onChange={(value) => onChange("network", "timeout", Number(value))}
+              value={config.web.network.timeout}
+              onChange={(value) => onWebChange("network", "timeout", Number(value))}
             />
           }
         />
@@ -60,9 +68,9 @@ export function NetworkSettingsTab({ config, onChange }: NetworkSettingsTabProps
           sublabel={t("settings.randomCNIP.sublabel")}
           control={
             <SettingSelect
-              value={config.network.randomCNIP}
+              value={config.web.network.randomCNIP}
               onChange={(value) =>
-                onChange("network", "randomCNIP", value === "true" ? "true" : "false")
+                onWebChange("network", "randomCNIP", value === "true" ? "true" : "false")
               }
             >
               <option value="false" className="bg-[#282828]">
@@ -74,16 +82,16 @@ export function NetworkSettingsTab({ config, onChange }: NetworkSettingsTabProps
             </SettingSelect>
           }
         />
-        {IS_ELECTRON ? (
+        {config.desktop ? (
           <>
             <SettingRow
               label={t("settings.proxyMode.label")}
               sublabel={t("settings.proxyMode.sublabel")}
               control={
                 <SettingSelect
-                  value={config.network.proxyMode}
+                  value={config.desktop.network.proxyMode}
                   onChange={(value) =>
-                    onChange("network", "proxyMode", value as AppConfig["network"]["proxyMode"])
+                    onDesktopChange("network", "proxyMode", value as DesktopProxyMode)
                   }
                 >
                   <option value="system" className="bg-[#282828]">
@@ -103,8 +111,8 @@ export function NetworkSettingsTab({ config, onChange }: NetworkSettingsTabProps
               sublabel={t("settings.proxyUrl.sublabel")}
               control={
                 <SettingInput
-                  value={config.network.proxyUrl}
-                  onChange={(value) => onChange("network", "proxyUrl", value)}
+                  value={config.desktop.network.proxyUrl}
+                  onChange={(value) => onDesktopChange("network", "proxyUrl", value)}
                   className="w-64"
                   placeholder={t("settings.proxyUrl.placeholder")}
                   disabled={!isCustomProxy}

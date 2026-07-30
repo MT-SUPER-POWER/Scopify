@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/store/module/i18n";
-import type { AppConfig } from "@/types/config";
+import type { DesktopLogLevel } from "@scopify/desktop-contract";
 import type { DesktopSettingsTabProps } from "@/types/components/settings";
 import { AppUpdaterSection } from "./AppUpdaterSection";
 import { SettingInput, SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
@@ -17,9 +17,7 @@ export function DesktopSettingsTab({ config, onChange }: DesktopSettingsTabProps
           control={
             <SettingSelect
               value={config.logging.level}
-              onChange={(value) =>
-                onChange("logging", "level", value as AppConfig["logging"]["level"])
-              }
+              onChange={(value) => onChange("logging", "level", value as DesktopLogLevel)}
             >
               <option value="debug" className="bg-[#282828]">
                 {t("settings.logLevel.debug")}

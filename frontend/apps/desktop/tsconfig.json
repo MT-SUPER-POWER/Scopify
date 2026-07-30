@@ -19,6 +19,7 @@
   },
   "include": [
     "electron.vite.config.ts",
+    "lib/**/*.ts",
     "main/**/*.ts",
     "scripts/**/*.ts",
     "tests/**/*.ts",

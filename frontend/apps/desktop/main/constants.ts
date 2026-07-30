@@ -21,7 +21,7 @@ export const __splashHtmlDesc = `[SPLASH] Electron 启动页: ${__splashHtmlPath
 import fs from "node:fs";
 import { app, nativeImage } from "electron";
 import log from "electron-log";
-import { appConfigDefaultPath, appConfigPath, loadAppConfig } from "./config.js";
+import { appConfigDefaultPath, appConfigPath, loadDesktopHostConfig } from "./config.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ICON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -75,8 +75,8 @@ if (_nativeDockMac.isEmpty()) {
 }
 
 export const __preloadScript = join(__dirname, "../main/preload.js");
-const __rendererDir = join(__dirname, "../../renderer");
-const appConfig = loadAppConfig();
+export const __rendererDir = join(__dirname, "../../renderer");
+const desktopConfig = loadDesktopHostConfig();
 
 const __picDir = app.isPackaged
   ? join(process.resourcesPath, "resources/pic")
@@ -101,7 +101,7 @@ if (play.isEmpty()) {
 }
 
 // utils
-const configStr = JSON.stringify(appConfig, null, 2)
+const configStr = JSON.stringify(desktopConfig, null, 2)
   .split("\n")
   .map((line, i) => (i === 0 ? line : `              ${line}`))
   .join("\n");
@@ -112,7 +112,7 @@ const logsDir = app.isPackaged
   ? join(app.getPath("userData"), "logs")
   : join(process.cwd(), "logs");
 
-const keepDays = appConfig.logging.keepDays || 7;
+const keepDays = desktopConfig.logging.keepDays || 7;
 
 // 按天命名文件
 log.transports.file.resolvePathFn = () => {
@@ -122,11 +122,11 @@ log.transports.file.resolvePathFn = () => {
   return join(logsDir, `${localISOTime}.log`);
 };
 
-log.transports.file.level = appConfig.logging.level;
+log.transports.file.level = desktopConfig.logging.level;
 
-if (appConfig.logging.format) {
-  log.transports.console.format = appConfig.logging.format;
-  log.transports.file.format = appConfig.logging.format;
+if (desktopConfig.logging.format) {
+  log.transports.console.format = desktopConfig.logging.format;
+  log.transports.file.format = desktopConfig.logging.format;
 }
 
 // 清理过期日志
@@ -174,7 +174,7 @@ log.info(`
 `);
 
 export {
-  appConfig,
+  desktopConfig,
   appConfigDefaultPath as __appConfigDefaultPath,
   appConfigPath as __appConfig,
   log as logger,

@@ -9,11 +9,13 @@ import {
   __iconDock,
   __iconWindow,
   __preloadScript,
+  __rendererDir,
   __splashHtmlPath,
-  appConfig,
+  desktopConfig,
   cleanOldLogs,
   logger,
 } from "./constants.js";
+import { verifyRendererArtifact } from "../lib/rendererArtifact.js";
 import { registerIpcHandlers } from "./module/ipc.js";
 import { initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
 import initializeLoginWindow from "./module/login.js";
@@ -34,11 +36,10 @@ let isQuitting = false;
 
 const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = useStaticRenderer
-  ? serve({ directory: join(__dirname, "../../renderer") })
+  ? serve({ directory: __rendererDir })
   : null;
 
-const devPort = appConfig.frontend.devPort;
-const devBase = `http://localhost:${devPort}`;
+const devBase = `http://${desktopConfig.frontend.host}:${desktopConfig.frontend.devPort}`;
 const gotTheLock = app.requestSingleInstanceLock();
 
 logger.info("--------------------------------------------------");
@@ -115,7 +116,7 @@ function createWindow() {
 
   mainWindow.webContents.once("did-finish-load", () => {
     revealMainWindow();
-    if (appConfig.app.devTools) {
+    if (desktopConfig.app.devTools) {
       mainWindow?.webContents.openDevTools();
     }
   });
@@ -126,7 +127,7 @@ function createWindow() {
     } else {
       appServe(mainWindow).catch((err) => {
         logger.error("[renderer] Failed to load static renderer via app:// protocol:", err);
-        const fallbackIndex = join(__dirname, "../../renderer/index.html");
+        const fallbackIndex = join(__rendererDir, "index.html");
         mainWindow?.loadFile(fallbackIndex).catch((fallbackErr) => {
           logger.error("[renderer] Fallback loadFile also failed:", fallbackErr);
         });
@@ -160,7 +161,7 @@ function createWindow() {
       (process.platform === "darwin" && input.meta && input.alt && input.code === "KeyI");
 
     if (isDevToolsKey) {
-      if (appConfig.app.devTools) {
+      if (desktopConfig.app.devTools) {
         if (input.type === "keyDown") {
           mainWindow?.webContents.toggleDevTools();
         }
@@ -195,7 +196,7 @@ function setupWindowModules(win: BrowserWindowType) {
   initializeDesktopLyricCompanion(win, {
     rendererBaseUrl: useStaticRenderer ? "app://-/" : devBase,
   });
-  initializeUpdater(win, appConfig.updater);
+  initializeUpdater(win, desktopConfig.updater);
 
   if (process.platform !== "darwin") {
     initTray(win);
@@ -204,7 +205,7 @@ function setupWindowModules(win: BrowserWindowType) {
   initializeLoginWindow(win);
 }
 
-if (!appConfig.app.gpuAcceleration) {
+if (!desktopConfig.app.gpuAcceleration) {
   app.disableHardwareAcceleration();
   logger.warn("[app] Hardware acceleration disabled based on config.");
 }
@@ -222,7 +223,18 @@ if (!gotTheLock) {
   app.whenReady().then(async () => {
     logger.info("Scopify ready, creating window...");
 
-    await applyElectronProxy(appConfig).catch((error) => {
+    if (useStaticRenderer) {
+      const rendererVerification = verifyRendererArtifact(__rendererDir);
+      if (!rendererVerification.ok) {
+        logger.error(`[renderer] ${rendererVerification.message}`);
+        dialog.showErrorBox("Renderer verification failed", rendererVerification.message);
+        app.quit();
+        return;
+      }
+      logger.info("[renderer] verified artifact", rendererVerification.manifest);
+    }
+
+    await applyElectronProxy(desktopConfig).catch((error) => {
       logger.error("[proxy] failed to apply startup proxy config:", error);
     });
 

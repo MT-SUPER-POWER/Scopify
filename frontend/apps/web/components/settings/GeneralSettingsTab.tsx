@@ -1,18 +1,26 @@
 "use client";
 
 import { languageLabelKeys } from "@/lib/i18n";
-import { IS_ELECTRON } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import { APP_LOCALES, type AppConfig, type AppLocale } from "@/types/config";
-import type { SettingsChangeHandler } from "@/types/settings";
+import { APP_LOCALES, type AppLocale } from "@/types/config";
+import type {
+  DesktopSettingsChangeHandler,
+  SettingsConfig,
+  WebSettingsChangeHandler,
+} from "@/types/settings";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
 
 interface GeneralSettingsTabProps {
-  config: AppConfig;
-  onChange: SettingsChangeHandler;
+  config: SettingsConfig;
+  onDesktopChange: DesktopSettingsChangeHandler;
+  onWebChange: WebSettingsChangeHandler;
 }
 
-export function GeneralSettingsTab({ config, onChange }: GeneralSettingsTabProps) {
+export function GeneralSettingsTab({
+  config,
+  onDesktopChange,
+  onWebChange,
+}: GeneralSettingsTabProps) {
   const { t } = useI18n();
 
   return (
@@ -24,8 +32,8 @@ export function GeneralSettingsTab({ config, onChange }: GeneralSettingsTabProps
             sublabel={t("settings.language.sublabel")}
             control={
               <SettingSelect
-                value={config.app.locale}
-                onChange={(value) => onChange("app", "locale", value as AppLocale)}
+                value={config.web.app.locale}
+                onChange={(value) => onWebChange("app", "locale", value as AppLocale)}
               >
                 {APP_LOCALES.map((locale) => (
                   <option key={locale} value={locale} className="bg-[#282828]">
@@ -35,7 +43,7 @@ export function GeneralSettingsTab({ config, onChange }: GeneralSettingsTabProps
               </SettingSelect>
             }
           />
-          {IS_ELECTRON ? (
+          {config.desktop ? (
             <>
               <SettingRow
                 label={t("settings.gpu.label")}
@@ -43,8 +51,14 @@ export function GeneralSettingsTab({ config, onChange }: GeneralSettingsTabProps
                 requiresRestart
                 control={
                   <Toggle
-                    enabled={config.app.gpuAcceleration}
-                    onChange={() => onChange("app", "gpuAcceleration", !config.app.gpuAcceleration)}
+                    enabled={config.desktop.app.gpuAcceleration}
+                    onChange={() =>
+                      onDesktopChange(
+                        "app",
+                        "gpuAcceleration",
+                        !config.desktop?.app.gpuAcceleration,
+                      )
+                    }
                   />
                 }
               />
@@ -53,8 +67,10 @@ export function GeneralSettingsTab({ config, onChange }: GeneralSettingsTabProps
                 requiresRestart
                 control={
                   <Toggle
-                    enabled={config.app.devTools}
-                    onChange={() => onChange("app", "devTools", !config.app.devTools)}
+                    enabled={config.desktop.app.devTools}
+                    onChange={() =>
+                      onDesktopChange("app", "devTools", !config.desktop?.app.devTools)
+                    }
                   />
                 }
               />
@@ -62,8 +78,10 @@ export function GeneralSettingsTab({ config, onChange }: GeneralSettingsTabProps
                 label={t("settings.windowClose.label")}
                 control={
                   <SettingSelect
-                    value={config.app.closeAction}
-                    onChange={(value) => onChange("app", "closeAction", Number(value) as 0 | 1 | 2)}
+                    value={config.desktop.app.closeAction}
+                    onChange={(value) =>
+                      onDesktopChange("app", "closeAction", Number(value) as 0 | 1 | 2)
+                    }
                   >
                     <option value={0} className="bg-[#282828]">
                       {t("settings.windowClose.minimize")}
@@ -81,15 +99,15 @@ export function GeneralSettingsTab({ config, onChange }: GeneralSettingsTabProps
           ) : null}
         </SettingSection>
       </div>
-      {process.env.NODE_ENV !== "production" ? (
+      {process.env.NODE_ENV !== "production" && config.desktop ? (
         <SettingSection title={t("settings.section.frontend")}>
           <SettingRow
             label={t("settings.frontendHost.label")}
             requiresRestart
             control={
               <SettingInput
-                value={config.frontend.host}
-                onChange={(value) => onChange("frontend", "host", value)}
+                value={config.desktop.frontend.host}
+                onChange={(value) => onDesktopChange("frontend", "host", value)}
               />
             }
           />
@@ -99,8 +117,8 @@ export function GeneralSettingsTab({ config, onChange }: GeneralSettingsTabProps
             control={
               <SettingInput
                 type="number"
-                value={config.frontend.devPort}
-                onChange={(value) => onChange("frontend", "devPort", Number(value))}
+                value={config.desktop.frontend.devPort}
+                onChange={(value) => onDesktopChange("frontend", "devPort", Number(value))}
               />
             }
           />

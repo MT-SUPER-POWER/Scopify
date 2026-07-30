@@ -6,6 +6,7 @@ import type { DesktopLyricSnapshot } from "@/types/desktopLyric";
 import type { LyricDisplayLine } from "@/types/lyrics";
 
 import { findActiveLyricLineIndex } from "@/lib/lyrics/timeline";
+import { runtime } from "@/lib/runtime";
 
 interface DesktopLyricRuntime {
   activeLine: LyricDisplayLine | null;
@@ -19,8 +20,8 @@ export function useDesktopLyricSnapshot(): DesktopLyricRuntime {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    void window.electronAPI?.getDesktopLyricSnapshot().then(setSnapshot);
-    return window.electronAPI?.onDesktopLyricSnapshot(setSnapshot);
+    void runtime.desktopLyrics.getSnapshot().then(setSnapshot);
+    return runtime.desktopLyrics.onSnapshot(setSnapshot);
   }, []);
 
   useEffect(() => {

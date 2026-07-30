@@ -21,7 +21,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { VolumeControl } from "@/components/VolumeControl";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { IS_ELECTRON } from "@/lib/utils";
+import { runtime } from "@/lib/runtime";
 // 引入自定义 Hook 和状态管理
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
@@ -32,11 +32,11 @@ export default function TrayPage() {
   const smartRouter = useSmartRouter();
   const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
-  const isElectron = IS_ELECTRON;
+  const isDesktop = runtime.isDesktop;
 
   // 建立通信频道
   const commandChannel = useMemo(() => {
-    return IS_ELECTRON ? new BroadcastChannel("momo-player-controls") : null;
+    return runtime.isDesktop ? new BroadcastChannel("momo-player-controls") : null;
   }, []);
 
   // 播放器核心状态（仅读取用于展示）
@@ -59,7 +59,7 @@ export default function TrayPage() {
 
   // Main 和 Tray 之间的状态同步逻辑
   useEffect(() => {
-    if (!IS_ELECTRON) return;
+    if (!runtime.isDesktop) return;
     const stateChannel = new BroadcastChannel("momo-player-state");
     const commandChannel = new BroadcastChannel("momo-player-controls");
 
@@ -76,10 +76,10 @@ export default function TrayPage() {
 
   // 路由跳转副作用，必须放在所有 Hook 之前
   useEffect(() => {
-    if (isElectron === false && typeof window !== "undefined") {
+    if (!isDesktop && typeof window !== "undefined") {
       smartRouter.replace("/");
     }
-  }, [smartRouter]);
+  }, [isDesktop, smartRouter]);
 
   // 强制 body 透明，防止背景黑色
   useEffect(() => {
@@ -100,7 +100,7 @@ export default function TrayPage() {
     return <div className="size-full" />;
   }
 
-  if (!isElectron) return null;
+  if (!isDesktop) return null;
 
   // 提取公共样式
   const iconClass = "w-4 h-4 mr-2";
@@ -182,7 +182,7 @@ export default function TrayPage() {
         <Button
           variant="ghost"
           className={`${menuItemClass}`}
-          onClick={() => window.electronAPI?.navigateTo("/setting")}
+          onClick={() => runtime.navigation.navigateMainWindow("/setting")}
         >
           <Settings className={iconClass} />
           <span>{t("tray.settings")}</span>
@@ -191,20 +191,12 @@ export default function TrayPage() {
         <Separator className="my-1.5 bg-white/10" />
 
         {/* 最小化和退出 */}
-        <Button
-          variant="ghost"
-          className={menuItemClass}
-          onClick={() => window.electronAPI?.minimizeApp()}
-        >
+        <Button variant="ghost" className={menuItemClass} onClick={() => runtime.window.minimize()}>
           <Minimize className={iconClass} />
           <span>{t("tray.minimize")}</span>
         </Button>
 
-        <Button
-          variant="ghost"
-          className={menuItemClass}
-          onClick={() => window.electronAPI?.exitApp()}
-        >
+        <Button variant="ghost" className={menuItemClass} onClick={() => runtime.app.exit()}>
           <Power className={iconClass} />
           <span>{t("tray.exit")}</span>
         </Button>

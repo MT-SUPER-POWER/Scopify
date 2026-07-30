@@ -2,7 +2,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } fr
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { DESKTOP_BRIDGE_PROTOCOL_VERSION } from "@scopify/desktop-contract";
+import { createRendererArtifactManifest } from "../lib/rendererArtifact";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const desktopRoot = resolve(scriptDir, "..");
@@ -27,11 +27,11 @@ const webPackage = JSON.parse(readFileSync(resolve(webRoot, "package.json"), "ut
 writeFileSync(
   resolve(targetDir, "renderer.manifest.json"),
   `${JSON.stringify(
-    {
-      bridgeProtocolVersion: DESKTOP_BRIDGE_PROTOCOL_VERSION,
-      buildTarget: "desktop",
+    createRendererArtifactManifest(targetDir, {
       rendererVersion: webPackage.version,
-    },
+      sourceRevision:
+        process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || "local-development",
+    }),
     null,
     2,
   )}\n`,

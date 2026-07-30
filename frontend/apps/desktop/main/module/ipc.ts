@@ -2,12 +2,12 @@ import { join } from "node:path";
 import { app, type BrowserWindow, ipcMain, session } from "electron";
 import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
+  type DesktopHostConfig,
   type DesktopBridgeCapability,
   type RendererLogEvent,
 } from "@scopify/desktop-contract";
-import { loadAppConfig, saveAppConfig } from "../config.js";
+import { loadDesktopHostConfig, saveDesktopHostConfig } from "../config.js";
 import { logger } from "../constants.js";
-import { ensureBackendUrl, getBackendStartupStatus } from "./backend.js";
 import { loginWindow } from "./login.js";
 import { createPageCacheStore } from "./pageCache.js";
 import { applyElectronProxy } from "./proxy.js";
@@ -22,7 +22,7 @@ import {
 } from "./updater.js";
 
 function createConfiguredPageCacheStore() {
-  const config = loadAppConfig();
+  const config = loadDesktopHostConfig();
   return createPageCacheStore({
     config: config.cache,
     defaultDir: join(app.getPath("userData"), "cache", "music-pages"),
@@ -73,26 +73,20 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     }
   });
 
-  ipcMain.handle("backend:get-url", async () => ensureBackendUrl());
-  ipcMain.handle("backend:get-status", async () => getBackendStartupStatus());
-  ipcMain.on("backend:get-url-sync", (event) => {
-    event.returnValue = ensureBackendUrl();
-  });
-
   ipcMain.handle("updater:get-status", () => getUpdateState());
   ipcMain.handle("updater:check", () => checkForUpdates());
   ipcMain.handle("updater:download", () => downloadUpdate());
   ipcMain.on("updater:quit-and-install", () => quitAndInstallUpdate());
 
-  ipcMain.handle("get-app-config", () => {
-    const config = loadAppConfig();
-    logger.info("[IPC] get-app-config", config);
+  ipcMain.handle("config:get-host", () => {
+    const config = loadDesktopHostConfig();
+    logger.info("[IPC] config:get-host", config);
     return config;
   });
 
-  ipcMain.handle("update-app-config", async (_event, newConfig) => {
-    logger.info("[IPC] update-app-config", newConfig);
-    const savedConfig = saveAppConfig(newConfig);
+  ipcMain.handle("config:update-host", async (_event, newConfig: DesktopHostConfig) => {
+    logger.info("[IPC] config:update-host", newConfig);
+    const savedConfig = saveDesktopHostConfig(newConfig);
     configureUpdater(savedConfig.updater);
     await applyElectronProxy(savedConfig).catch((error) => {
       logger.error("[IPC] failed to apply proxy after config update:", error);
@@ -178,11 +172,11 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     trayWindow?.hide();
   });
 
-  ipcMain.handle("set-music-cookie", async (_event, cookieStr: string) => {
+  ipcMain.handle("set-music-cookie", async (_event, cookieStr: string, backendOrigin: string) => {
     try {
       const musicUMatch = cookieStr.match(/MUSIC_U=([^;]+)/);
       const value = musicUMatch ? musicUMatch[1] : cookieStr;
-      const url = new URL(ensureBackendUrl()).origin;
+      const url = parseAllowedBackendOrigin(backendOrigin);
 
       await session.defaultSession.cookies.set({
         url,
@@ -200,6 +194,14 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
       throw error;
     }
   });
+}
+
+function parseAllowedBackendOrigin(value: string) {
+  const url = new URL(value);
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new Error("Backend origin must use HTTP or HTTPS.");
+  }
+  return url.origin;
 }
 
 function isRendererLogEvent(value: unknown): value is RendererLogEvent {

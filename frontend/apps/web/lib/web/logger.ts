@@ -5,6 +5,7 @@ import type {
   RendererLogLevel,
   RendererTrackingEvent,
 } from "@/types/logging";
+import { runtime } from "@/lib/runtime";
 
 const MAX_ARRAY_LENGTH = 20;
 const MAX_DEPTH = 4;
@@ -133,21 +134,22 @@ function getWebDevRelayUrl() {
 function dispatch(event: RendererLogEvent) {
   if (typeof window === "undefined") return;
 
-  if (window.electronAPI?.writeLog) {
-    void window.electronAPI.writeLog(event).catch(() => undefined);
-    return;
-  }
+  void runtime.logging
+    .write(event)
+    .catch(() => false)
+    .then((written) => {
+      if (written) return;
+      const relayUrl = getWebDevRelayUrl();
+      if (!relayUrl) return;
 
-  const relayUrl = getWebDevRelayUrl();
-  if (!relayUrl) return;
-
-  void fetch(relayUrl, {
-    body: JSON.stringify(event),
-    credentials: "omit",
-    headers: { "content-type": "application/json" },
-    keepalive: true,
-    method: "POST",
-  }).catch(() => undefined);
+      void fetch(relayUrl, {
+        body: JSON.stringify(event),
+        credentials: "omit",
+        headers: { "content-type": "application/json" },
+        keepalive: true,
+        method: "POST",
+      }).catch(() => undefined);
+    });
 }
 
 function write(level: RendererLogLevel, args: unknown[]) {

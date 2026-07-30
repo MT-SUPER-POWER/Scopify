@@ -11,8 +11,27 @@ import { getMainColorFromImage } from "@/lib/utils";
 import { useI18nStore } from "@/store/module/i18n";
 import { useUserStore } from "@/store/module/user";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import type { RawNeteasePlaylist } from "@/types/api/playlist";
 import { type NeteaseUser, pruneUser } from "@/types/api/user";
 import type { UserPlaylist } from "@/types/profile";
+
+function toUserPlaylist(playlist: RawNeteasePlaylist): UserPlaylist {
+  const creator = playlist.creator
+    ? {
+        nickname: playlist.creator.nickname ?? "",
+        userId: playlist.creator.userId ?? 0,
+      }
+    : undefined;
+
+  return {
+    id: playlist.id ?? 0,
+    name: playlist.name ?? "",
+    coverImgUrl: playlist.coverImgUrl ?? playlist.picUrl ?? "",
+    trackCount: playlist.trackCount ?? 0,
+    playCount: playlist.playCount ?? 0,
+    creator,
+  };
+}
 
 export function useUserData(uid: string | null) {
   const selfId = useUserStore((s) => s.user?.userId);
@@ -20,7 +39,7 @@ export function useUserData(uid: string | null) {
   const [userInfo, setUserInfo] = useState<NeteaseUser | null>(null);
   const [playlists, setPlaylists] = useState<UserPlaylist[]>([]);
   const [recentSongs, setRecentSongs] = useState<SongDetail[]>([]);
-  const [recentPlaylists, setRecentPlaylists] = useState<any[]>([]);
+  const [recentPlaylists, setRecentPlaylists] = useState<UserPlaylist[]>([]);
   const [themeColor, setThemeColor] = useState("#535353");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,14 +52,15 @@ export function useUserData(uid: string | null) {
       setIsLoading(true);
     }); // 确保在当前事件循环结束后才显示加载状态，避免闪烁
 
-    const baseRequests: Promise<any>[] = [getUserDetailInfo({ uid }), getUserPlaylists({ uid })];
+    const songsRequest = isSelf ? getRecentSongsByID(Number(uid)) : Promise.resolve(null);
+    const recentPlaylistsRequest = isSelf ? getRecentPlaylists(10) : Promise.resolve(null);
 
-    // 只有自己才能拿到最近播放
-    const selfRequests: Promise<any>[] = isSelf
-      ? [getRecentSongsByID(Number(uid)), getRecentPlaylists(10)]
-      : [];
-
-    Promise.allSettled([...baseRequests, ...selfRequests])
+    Promise.allSettled([
+      getUserDetailInfo({ uid }),
+      getUserPlaylists({ uid }),
+      songsRequest,
+      recentPlaylistsRequest,
+    ] as const)
       .then((results) => {
         const [detailRes, playlistsRes, songsRes, recentPlaylistsRes] = results;
 
@@ -79,18 +99,9 @@ export function useUserData(uid: string | null) {
 
         // ── 创建的歌单（过滤掉收藏的） ──
         if (playlistsRes.status === "fulfilled") {
-          const raw: any[] = playlistsRes.value.data?.playlist || [];
+          const raw = playlistsRes.value.data?.playlist ?? [];
           setPlaylists(
-            raw
-              .filter((p: any) => p.userId === Number(uid))
-              .map((p: any): UserPlaylist => ({
-                id: p.id,
-                name: p.name,
-                coverImgUrl: p.coverImgUrl || "",
-                trackCount: p.trackCount ?? 0,
-                playCount: p.playCount ?? 0,
-                creator: p.creator,
-              })),
+            raw.filter((playlist) => playlist.creator?.userId === Number(uid)).map(toUserPlaylist),
           );
         } else {
           toast.error(
@@ -99,15 +110,17 @@ export function useUserData(uid: string | null) {
         }
 
         // ── 自己专属：最近播放歌曲 ──
-        if (isSelf && songsRes?.status === "fulfilled") {
-          const rawSongs = songsRes.value.data?.weekData || [];
-          setRecentSongs(rawSongs.slice(0, 15).map((item: any) => pruneSongDetail(item.song)));
+        if (isSelf && songsRes.status === "fulfilled") {
+          const rawSongs = songsRes.value?.data.weekData ?? [];
+          setRecentSongs(rawSongs.slice(0, 15).map((item) => pruneSongDetail(item.song)));
         }
 
         // ── 自己专属：最近播放歌单 ──
-        if (isSelf && recentPlaylistsRes?.status === "fulfilled") {
-          const rawPlaylists = recentPlaylistsRes.value.data?.data?.list || [];
-          setRecentPlaylists(rawPlaylists.slice(0, 10).map((item: any) => item.data));
+        if (isSelf && recentPlaylistsRes.status === "fulfilled") {
+          const rawPlaylists = recentPlaylistsRes.value?.data.data?.list ?? [];
+          setRecentPlaylists(
+            rawPlaylists.slice(0, 10).flatMap(({ data }) => (data ? [toUserPlaylist(data)] : [])),
+          );
         }
       })
       .finally(() => {
