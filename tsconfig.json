@@ -1,59 +1,8 @@
 {
-  "compilerOptions": {
-    "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@components/*": [
-        "./components/*"
-      ],
-      "@store/*": [
-        "./store/*"
-      ],
-      "@app-types/*": [
-        "./types/*"
-      ]
-    }
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts",
-    "renderer/types/**/*.ts",
-    "renderer/dev/types/**/*.ts",
-    "renderer-e2e/types/**/*.ts",
-    "renderer-e2e/dev/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    ".next",
-    "backend/api-enhanced/module_example/**/*.ts",
-    "backend/api-enhanced/test/**/*.ts"
+  "files": [],
+  "references": [
+    { "path": "./frontend/apps/web" },
+    { "path": "./frontend/apps/desktop" },
+    { "path": "./frontend/packages/desktop-contract" }
   ]
 }

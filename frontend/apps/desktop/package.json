@@ -1,0 +1,92 @@
+{
+  "name": "@scopify/desktop",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Scopify Electron desktop host",
+  "type": "module",
+  "main": "out/main/main.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "package:win": "electron-builder --win",
+    "package:mac": "electron-builder --mac",
+    "release:win": "electron-builder --win --publish always",
+    "release:mac": "electron-builder --mac --publish always"
+  },
+  "dependencies": {
+    "@scopify/desktop-contract": "1.0.0",
+    "electron-log": "^5.4.4",
+    "electron-serve": "^3.0.1",
+    "electron-updater": "^6.8.9",
+    "js-yaml": "^4.3.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.19.43",
+    "electron": "^42.7.1",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.9.3"
+  },
+  "build": {
+    "appId": "com.momo.scopify",
+    "productName": "Scopify",
+    "publish": [
+      "github"
+    ],
+    "artifactName": "${productName}.Setup.v${version}.${platform}.${arch}.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "compression": "maximum",
+    "extraResources": [
+      {
+        "from": "config",
+        "to": "config",
+        "filter": [
+          "**/*.yml"
+        ]
+      },
+      {
+        "from": "resources",
+        "to": "resources",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "files": [
+      "out/main/**/*.js",
+      "renderer/**/*",
+      "package.json",
+      "!**/node_modules",
+      "!**/*.map"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "resources/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "mac": {
+      "target": [
+        "zip",
+        "dmg"
+      ],
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.music",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true
+    }
+  }
+}

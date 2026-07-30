@@ -1,0 +1,6 @@
+.next/
+out/
+logs/
+node_modules/
+public/data/
+components/ui/

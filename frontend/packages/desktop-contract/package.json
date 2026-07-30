@@ -1,0 +1,21 @@
+{
+  "name": "@scopify/desktop-contract",
+  "version": "1.0.0",
+  "description": "Versioned IPC contract between the Scopify renderer and desktop host",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

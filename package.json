@@ -1,193 +1,42 @@
 {
-  "name": "scopify",
+  "name": "scopify-workspace",
   "version": "1.1.0",
   "private": true,
-  "author": {
-    "name": "Momo",
-    "email": "shuhengwen@gmail.com"
-  },
-  "contributors": [
-    {
-      "name": "TrimiTroll",
-      "email": "1740627301@qq.com"
-    }
+  "packageManager": "bun@1.3.7",
+  "workspaces": [
+    "frontend/apps/*",
+    "frontend/packages/*"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MT-SUPER-POWER/Scopify.git"
-  },
-  "type": "module",
-  "main": "out/main/main.js",
-  "description": "Electron + Next.js Music Player Base on NetEase Music API",
   "scripts": {
     "prepare": "husky",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "check": "eslint --fix .",
-    "i18n:types": "bun script/generate-i18n-types.ts",
-    "i18n:audit": "bun script/audit-i18n.ts",
-    "dev": "bun run build:web && cross-env ELECTRON_RENDERER_MODE=static bunx electron-vite dev",
-    "dev:fast": "cross-env ELECTRON_RENDERER_MODE=static bunx electron-vite dev",
-    "start": "bunx serve renderer -p 3000",
+    "dev": "turbo run dev --filter=@scopify/web --filter=@scopify/desktop --parallel",
+    "dev:web": "turbo run dev --filter=@scopify/web",
+    "dev:desktop": "turbo run dev --filter=@scopify/desktop",
     "dev:backend": "bun run backend/api-enhanced/app.js",
-    "dev:web": "bun run script/dev-web.ts",
-    "dev:full": "concurrently -n \"NEXT,NETEASE\" -c \"yellow,red\" --kill-others \"bun run dev:web\" \"bun run dev:backend\"",
-    "build:web": "next build",
-    "build:electron": "electron-vite build",
-    "build:win": "bun run build:web && bun run build:electron && electron-builder -- win",
-    "build:mac": "bun run build:web && bun run build:electron && electron-builder -- mac"
-  },
-  "dependencies": {
-    "@chenglou/pretext": "^0.0.8",
-    "@paper-design/shaders-react": "^0.0.77",
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.6.1",
-    "@react-three/postprocessing": "^3.0.4",
-    "@tanstack/react-query": "^5.101.4",
-    "@tanstack/react-query-persist-client": "^5.101.4",
-    "@tanstack/react-table": "^8.21.3",
-    "axios": "^1.18.1",
-    "electron-log": "^5.4.4",
-    "electron-serve": "^3.0.1",
-    "electron-updater": "^6.8.9",
-    "idb-keyval": "^6.3.0",
-    "js-yaml": "^4.3.0",
-    "react-colorful": "^5.8.0",
-    "react-day-picker": "^10.0.1",
-    "three": "^0.185.1",
-    "twgl.js": "^7.0.0",
-    "zod": "^3.25.76"
+    "dev:full": "concurrently -n \"CLIENTS,NETEASE\" -c \"yellow,red\" --kill-others \"bun run dev\" \"bun run dev:backend\"",
+    "build": "bun run build:web && bun run build:desktop",
+    "build:web": "turbo run build --filter=@scopify/web",
+    "build:desktop-renderer": "turbo run build:desktop --filter=@scopify/web && bun frontend/apps/desktop/scripts/sync-renderer.ts",
+    "build:desktop": "bun run build:desktop-renderer && turbo run build --filter=@scopify/desktop",
+    "build:win": "bun run build:desktop && bun run --cwd frontend/apps/desktop package:win",
+    "build:mac": "bun run build:desktop && bun run --cwd frontend/apps/desktop package:mac",
+    "release:win": "bun run build:desktop && bun run --cwd frontend/apps/desktop release:win",
+    "release:mac": "bun run build:desktop && bun run --cwd frontend/apps/desktop release:mac",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write .",
+    "i18n:types": "bun run --cwd frontend/apps/web i18n:types",
+    "i18n:audit": "bun run --cwd frontend/apps/web i18n:audit"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.5",
-    "@pixi/app": "^7.4.3",
-    "@pixi/core": "^7.4.3",
-    "@pixi/display": "^7.4.3",
-    "@pixi/filter-blur": "^7.4.3",
-    "@pixi/filter-bulge-pinch": "^5.1.1",
-    "@pixi/filter-color-matrix": "^7.4.3",
-    "@pixi/sprite": "^7.4.3",
-    "@radix-ui/react-collapsible": "^1.1.18",
-    "@radix-ui/react-label": "^2.1.13",
-    "@radix-ui/react-slot": "^1.3.1",
-    "@radix-ui/react-tabs": "^1.1.19",
-    "@radix-ui/react-toast": "^1.2.21",
-    "@tabler/icons-react": "^3.45.0",
-    "@tailwindcss/postcss": "^4.3.3",
-    "@tanstack/react-virtual": "^3.14.8",
-    "@types/bun": "latest",
-    "@types/colorthief": "^2.6.1",
-    "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20.19.43",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@types/react-split-pane": "^0.1.67",
-    "@types/three": "^0.185.1",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "colorthief": "^3.4.0",
     "concurrently": "^9.2.4",
-    "cross-env": "^10.1.0",
-    "electron": "^42.7.1",
-    "electron-builder": "^26.15.3",
-    "electron-vite": "^5.0.0",
-    "eslint": "^9.39.5",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-perfectionist": "^5.10.0",
-    "eslint-plugin-prettier": "^5.5.6",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-tailwindcss": "^4.2.0",
-    "framer-motion": "^12.42.2",
     "husky": "^9.1.7",
-    "jss": "^10.10.0",
-    "jss-preset-default": "^10.10.0",
     "lint-staged": "^15.5.2",
-    "lucide-react": "^1.26.0",
-    "motion": "^12.42.2",
-    "next": "16.1.6",
-    "next-themes": "^0.4.6",
-    "picocolors": "1.1.1",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "radix-ui": "^1.6.5",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "react-icons": "^5.7.0",
-    "react-resizable-panels": "^4.12.2",
-    "shadcn": "^3.8.5",
-    "sonner": "^2.0.7",
-    "tailwind-merge": "^3.6.0",
-    "tailwindcss": "^4.3.3",
-    "tw-animate-css": "^1.4.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.65.0",
-    "zustand": "^5.0.14",
-    "zustand-devtools": "^1.1.0"
-  },
-  "ignoreScripts": [
-    "sharp",
-    "unrs-resolver"
-  ],
-  "build": {
-    "appId": "com.momo.scopify",
-    "productName": "Scopify",
-    "publish": [
-      "github"
-    ],
-    "artifactName": "${productName}.Setup.v${version}.${platform}.${arch}.${ext}",
-    "directories": {
-      "output": "dist"
-    },
-    "compression": "maximum",
-    "extraResources": [
-      {
-        "from": "config",
-        "to": "config",
-        "filter": [
-          "**/*.yml"
-        ]
-      },
-      {
-        "from": "resources",
-        "to": "resources",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    "files": [
-      "out/main/**/*.js",
-      "out/types/**/*.js",
-      "renderer/**/*",
-      "public/**/*",
-      "package.json",
-      "!**/node_modules",
-      "!**/*.map",
-      "!backend/api-enhanced"
-    ],
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "icon": "resources/icon.ico",
-      "requestedExecutionLevel": "asInvoker"
-    },
-    "mac": {
-      "target": [
-        "zip",
-        "dmg"
-      ],
-      "icon": "resources/icon.icns",
-      "category": "public.app-category.music",
-      "hardenedRuntime": false,
-      "gatekeeperAssess": false
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "deleteAppDataOnUninstall": true
-    }
+    "turbo": "^2.5.6",
+    "typescript": "^5.9.3"
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs,jsx,tsx}": [

@@ -1,8 +1,8 @@
 # Scopify — Agent Instructions
 
-Scopify 是 **Next.js App Router + Electron + Zustand** 的网易云音乐客户端。前端与 `backend/api-enhanced` 解耦部署；后端有自己的 [AGENTS.md](./backend/api-enhanced/AGENTS.md)。
+Scopify 是 **Next.js App Router + Electron + Zustand** 的网易云音乐客户端。根目录是 Bun Workspaces + Turborepo 编排层；Web、Electron 和契约分别位于 `frontend/apps/web`、`frontend/apps/desktop` 和 `frontend/packages/desktop-contract`。前端与 `backend/api-enhanced` 解耦部署；后端有自己的 [AGENTS.md](./backend/api-enhanced/AGENTS.md)。
 
-**本文件是前端/Electron 代码结构的唯一规范。** 新建或修改代码时必须遵守；发现 inline 类型、散落 hook 等历史债务时，顺手迁移到正确目录。
+**本文件是前端/Electron 代码结构的唯一规范。** 下文中未加前缀的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 路径都相对于 `frontend/apps/web/`。新建或修改代码时必须遵守；发现 inline 类型、散落 hook 等历史债务时，顺手迁移到正确目录。
 
 ---
 
@@ -15,9 +15,10 @@ Scopify 是 **Next.js App Router + Electron + Zustand** 的网易云音乐客户
 
 ```bash
 bun install
-bun run dev:full          # Web + 后端联调
+bun run dev               # Web + Electron
 bun run dev:web           # 仅 Web
-bun run dev               # Electron 桌面端
+bun run dev:desktop       # 仅 Electron
+bun run dev:full          # Web + Electron + 后端联调
 bun run i18n:types        # 生成 i18n 类型
 ```
 
@@ -27,60 +28,38 @@ bun run i18n:types        # 生成 i18n 类型
 
 ```
 Scopify/
-├── app/                    # 路由层：URL 入口，适度组装页面（见下文）
-│   ├── (auth)/             # 登录相关路由
-│   ├── (dashboard)/        # 主应用路由
-│   └── tray/               # Electron 托盘页
-│
-├── components/             # UI 组件，按业务领域分子目录
-│   ├── ui/                 # shadcn 通用组件（勿改结构）
-│   ├── artist/             # 歌手页
-│   ├── album/              # 专辑页
-│   ├── Playlist/           # 歌单（历史命名，保持 PascalCase）
-│   ├── profile/            # 用户资料
-│   ├── settings/           # 设置
-│   ├── shared/             # 跨领域复用组件
-│   └── …
-│
-├── types/                  # ★ 所有类型定义的归宿
-│   ├── api/                # API 请求/响应类型（配合 lib/api/）
-│   ├── components/         # 组件 Props（被 2+ 文件引用或字段 > 5）
-│   ├── artist.ts           # 领域实体（Artist、Track、Album…）
-│   ├── playlist.ts
-│   └── …
-│
-├── hooks/                  # 业务域 custom hooks
-│   ├── artist/
-│   ├── player/
-│   ├── search/
-│   ├── settings/
-│   ├── profile/
-│   └── vipSign/            # ★ TanStack Query 封装（缓存 + 状态管理）
-│
-├── lib/                    # 工具、API 客户端、基础设施
-│   ├── api/                # 后端 API 调用函数（★ 禁止在此定义 interface）
-│   ├── hooks/              # 跨域/基础设施 hooks（路由、登录态、Electron 检测…）
-│   ├── web/                # request、env、网络错误处理
-│   ├── query/              # TanStack Query 配置（QueryClient、persister）
-│   ├── player/
-│   ├── cache/
-│   └── utils.ts
-│
-├── store/                  # Zustand 全局状态（不是 stores/）
-│   ├── index.ts
-│   └── module/             # player、user、i18n、ui、search…
-│
-├── main/                   # Electron 主进程
-├── constants/              # 静态配置、枚举、导航数据（>10 条数组放这里）
-├── tests/                  # 单元测试
-└── script/                 # 构建/开发脚本
+├── frontend/
+│   ├── apps/
+│   │   ├── web/                 # Next.js Web + Desktop Renderer 源码
+│   │   │   ├── app/             # URL 路由与页面组装
+│   │   │   ├── components/      # 按业务领域组织的 UI
+│   │   │   ├── types/           # 业务、API 与 Props 类型
+│   │   │   ├── hooks/           # 业务 hooks
+│   │   │   ├── lib/             # API 客户端与基础设施
+│   │   │   ├── store/           # Zustand 全局状态
+│   │   │   ├── constants/       # 静态配置与枚举
+│   │   │   ├── tests/           # Web 测试
+│   │   │   └── scripts/         # Web 构建/开发脚本
+│   │   ├── desktop/             # Electron host，不反向 import Web 源码
+│   │   │   ├── main/            # 主进程与 preload
+│   │   │   ├── renderer/        # 构建生成的静态制品插槽（不提交）
+│   │   │   ├── config/          # 桌面配置
+│   │   │   ├── resources/       # 打包资源
+│   │   │   └── tests/           # Electron 测试
+│   │   └── mobile/              # Flutter 预留入口
+│   └── packages/
+│       └── desktop-contract/    # Web/Desktop 之间的版本化纯 TS 契约
+├── backend/
+│   └── api-enhanced/            # 独立后端 submodule
+├── package.json                 # workspace 脚本入口
+└── turbo.json                   # 任务编排与缓存
 ```
 
-### Path Aliases（tsconfig）
+### Web Path Aliases（`frontend/apps/web/tsconfig.json`）
 
 | Alias           | 路径             |
 | --------------- | ---------------- |
-| `@/*`           | 项目根           |
+| `@/*`           | `frontend/apps/web/*` |
 | `@components/*` | `./components/*` |
 | `@store/*`      | `./store/*`      |
 | `@app-types/*`  | `./types/*`      |
@@ -329,7 +308,7 @@ Request (lib/web/request)
 | `lib/web/`      | `request.ts`、环境变量、网络重试         |
 | `store/module/` | Zustand slice，类型从 `@/types` import   |
 | `constants/`    | 静态列表、枚举、配置常量                 |
-| `main/`         | Electron 主进程；IPC 见 `main/README.md` |
+| `frontend/apps/desktop/main/` | Electron 主进程；IPC 见 `frontend/apps/desktop/main/README.md` |
 | `tests/`        | 单元测试；有意义的行为才写测试           |
 
 ---
@@ -376,7 +355,7 @@ export function PopularTracks({ artistId, tracks, onPlay }: PopularTracksProps) 
 
 ## 后端
 
-NetEase API 服务位于 `backend/api-enhanced/`（git submodule）。前端通过 `lib/web/request.ts` 配置的 base URL 访问，开发时可用 `bun run dev:backend` 启动。后端规范见 [backend/api-enhanced/AGENTS.md](./backend/api-enhanced/AGENTS.md)。
+NetEase API 服务位于 `backend/api-enhanced/`（git submodule）。前端通过 `frontend/apps/web/lib/web/request.ts` 配置的 base URL 访问，开发时可用 `bun run dev:backend` 启动。后端规范见 [backend/api-enhanced/AGENTS.md](./backend/api-enhanced/AGENTS.md)。
 
 ---
 

@@ -14,17 +14,23 @@
 /coverage
 /test-results/
 
-# next.js
-/.next/
-/out/
-/dist/
-/renderer/
+# workspace build outputs
+/frontend/apps/web/.next/
+/frontend/apps/web/out/
+/frontend/apps/desktop/out/
+/frontend/apps/desktop/dist/
+/frontend/apps/desktop/renderer/
 /renderer-e2e/
 
 # production
-/build
+build/
 /logs/
 /log/*.log
+/renderer
+.turbo/
+.next/
+out/
+dist/
 
 # misc
 .DS_Store

@@ -18,16 +18,16 @@ jobs:
         os: [windows-latest, macos-latest]
         include:
           - os: windows-latest
-            build_target: --win
+            build_script: release:win
           - os: macos-latest
-            build_target: --mac
+            build_script: release:mac
 
     steps:
       # 🟢 拉代码
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 🟢 Node 24（避免未来炸）
+      # 🟢 Node 24
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -37,11 +37,11 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.3.7
 
       # 🟢 安装依赖
       - name: Install Dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
       # 🟢 提取 CHANGELOG（解析 docs/CHANGELOG.md 当前版本日志）
       - name: Extract Changelog
@@ -58,18 +58,11 @@ jobs:
           echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
 
-      # 🟢 构建
-      - name: Build Next.js
-        run: bun run build:web
-
-      - name: Build Electron Runtime
-        run: bun run build:electron
-
-      # 🟢 核心：构建 + 自动创建 release + 上传 assets
+      # 🟢 核心：根 workspace 脚本构建 renderer、Electron 并发布 assets
       - name: Build & Publish Electron
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bunx electron-builder ${{ matrix.build_target }} --publish always
+        run: bun run ${{ matrix.build_script }}
 
       # 🟢 只执行一次：更新 Release Notes
       - name: Update Release Notes
