@@ -43,13 +43,18 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
-      # 🟢 提取 CHANGELOG（解析 docs/CHANGELOG.md 当前版本日志，0 脚本）
+      # 🟢 提取 CHANGELOG（解析 docs/CHANGELOG.md 当前版本日志）
       - name: Extract Changelog
         id: changelog_reader
-        uses: mscoutermarsh/changelog-reader-action@v2
-        with:
-          version: ${{ github.ref_name }}
-          path: docs/CHANGELOG.md
+        shell: bash
+        run: |
+          VERSION="${{ github.ref_name }}"
+          # 从 CHANGELOG.md 提取当前版本的日志（从 ## v1.1.0 到下一个 ## 或文件末尾）
+          CHANGELOG=$(awk "/^## ${VERSION}$/,/^## [^#]/" docs/CHANGELOG.md | sed '$d')
+          # 使用 EOF 语法设置多行输出
+          echo "log_entries<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       # 🟢 构建
       - name: Build Next.js
