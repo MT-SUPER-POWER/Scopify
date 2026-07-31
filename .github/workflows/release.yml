@@ -178,8 +178,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
-        run: >-
-          gh release create "${GITHUB_REF_NAME}" release/*
-          --verify-tag
-          --title "${GITHUB_REF_NAME}"
-          --notes-file release_notes.md
+        run: |
+          release_flags=()
+          if [[ "${GITHUB_REF_NAME}" == *-* ]]; then
+            release_flags+=(--prerelease --latest=false)
+          fi
+
+          gh release create "${GITHUB_REF_NAME}" release/* \
+            --verify-tag \
+            --title "${GITHUB_REF_NAME}" \
+            --notes-file release_notes.md \
+            "${release_flags[@]}"

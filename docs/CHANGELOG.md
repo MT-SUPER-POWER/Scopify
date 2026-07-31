@@ -18,6 +18,7 @@
 - Desktop Release 改为只构建一次不可变 Renderer，各平台下载同一制品后再独立打包
 - Renderer 新增 manifest、协议版本、source revision 与确定性 SHA-256 校验，篡改或版本不匹配时拒绝启动和发布
 - GitHub Release 汇总 Windows/macOS 制品，生成校验和并附加构建来源证明
+- 含预发布后缀的标签会自动发布为 GitHub Prerelease，且不会覆盖最新稳定版
 
 ### Quality
 
