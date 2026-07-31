@@ -91,12 +91,13 @@ function writeEvent(event: RendererLogEvent) {
   );
 
   const prefix = `[web:${source}]`;
-  if (normalized.level === "debug") console.debug(prefix, normalized.message, normalized.metadata);
-  else if (normalized.level === "info")
-    console.info(prefix, normalized.message, normalized.metadata);
-  else if (normalized.level === "warn")
-    console.warn(prefix, normalized.message, normalized.metadata);
-  else console.error(prefix, normalized.message, normalized.metadata);
+  const args = normalized.metadata
+    ? [prefix, normalized.message, normalized.metadata]
+    : [prefix, normalized.message];
+  if (normalized.level === "debug") console.debug(...args);
+  else if (normalized.level === "info") console.info(...args);
+  else if (normalized.level === "warn") console.warn(...args);
+  else console.error(...args);
 }
 
 function reply(response: ServerResponse, status: number) {

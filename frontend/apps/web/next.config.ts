@@ -22,14 +22,39 @@ const frontendDevPort = envNumber(
 const debugLogRelayPort = envNumber(process.env.APP_CFG_DEBUG_LOG_RELAY_PORT, frontendDevPort + 1);
 const isDesktopBuild = process.env.SCOPIFY_BUILD_TARGET === "desktop";
 
+export function shouldUseUnoptimizedImages(
+  buildTarget = process.env.SCOPIFY_BUILD_TARGET,
+  nodeEnv = process.env.NODE_ENV,
+) {
+  return buildTarget === "desktop" || nodeEnv === "development";
+}
+
+export const WEB_IMAGE_REMOTE_PATTERNS = [
+  { protocol: "http", hostname: "**.music.126.net" },
+  { protocol: "https", hostname: "**.music.126.net" },
+  { protocol: "https", hostname: "api.qrserver.com" },
+  { protocol: "https", hostname: "avatars.githubusercontent.com" },
+  { protocol: "https", hostname: "cdn.jsdelivr.net" },
+  { protocol: "https", hostname: "cdn-icons-png.flaticon.com" },
+  { protocol: "https", hostname: "cdnb.artstation.com" },
+  { protocol: "https", hostname: "images.steamusercontent.com" },
+  { protocol: "https", hostname: "images.unsplash.com" },
+  { protocol: "https", hostname: "miqh.gallerycdn.vsassets.io" },
+  { protocol: "https", hostname: "picsum.photos" },
+  { protocol: "https", hostname: "upload.wikimedia.org" },
+] satisfies NonNullable<NextConfig["images"]>["remotePatterns"];
+
 const nextConfig: NextConfig = {
   transpilePackages: ["@scopify/desktop-contract"],
+  images: {
+    remotePatterns: WEB_IMAGE_REMOTE_PATTERNS,
+    unoptimized: shouldUseUnoptimizedImages(),
+  },
   ...(isDesktopBuild
     ? {
         output: "export",
         distDir: process.env.NEXT_DIST_DIR || "out",
         trailingSlash: true,
-        images: { unoptimized: true },
       }
     : {}),
   serverExternalPackages: [],
