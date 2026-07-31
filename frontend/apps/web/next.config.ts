@@ -7,19 +7,45 @@ function envNumber(value: string | undefined, fallback: number) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
+export function parseBackendPublicUrl(value: string | undefined) {
+  if (!value) return null;
+
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+
+    const protocol = url.protocol === "https:" ? "https" : "http";
+    return {
+      host: url.hostname,
+      port: envNumber(url.port, protocol === "https" ? 443 : 80),
+      protocol,
+    } as const;
+  } catch {
+    return null;
+  }
+}
+
+const backendPublicUrl = parseBackendPublicUrl(process.env.BACKEND_PUBLIC_URL);
 const backendHost =
   process.env.APP_CFG_BACKEND_HOST ||
+  backendPublicUrl?.host ||
   process.env.BACKEND_PUBLIC_HOST ||
   DEFAULT_WEB_CONFIG.backend.host;
 const backendPort = envNumber(
-  process.env.APP_CFG_BACKEND_PORT || process.env.BACKEND_PUBLIC_PORT || process.env.BACKEND_PORT,
+  process.env.APP_CFG_BACKEND_PORT ||
+    (backendPublicUrl ? String(backendPublicUrl.port) : undefined) ||
+    process.env.BACKEND_PUBLIC_PORT ||
+    process.env.BACKEND_PORT,
   DEFAULT_WEB_CONFIG.backend.port,
 );
+const configuredBackendProtocol = process.env.APP_CFG_BACKEND_PROTOCOL;
 const backendProtocol =
-  process.env.APP_CFG_BACKEND_PROTOCOL === "https" ||
-  process.env.BACKEND_PUBLIC_PROTOCOL === "https"
-    ? "https"
-    : DEFAULT_WEB_CONFIG.backend.protocol;
+  configuredBackendProtocol === "http" || configuredBackendProtocol === "https"
+    ? configuredBackendProtocol
+    : backendPublicUrl?.protocol ||
+      (process.env.BACKEND_PUBLIC_PROTOCOL === "https"
+        ? "https"
+        : DEFAULT_WEB_CONFIG.backend.protocol);
 const frontendDevPort = envNumber(
   process.env.APP_CFG_FRONTEND_DEV_PORT || process.env.FRONTEND_PORT,
   3000,

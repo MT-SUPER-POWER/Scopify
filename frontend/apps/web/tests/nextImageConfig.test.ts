@@ -1,6 +1,24 @@
 import { expect, test } from "bun:test";
 import { hasRemoteMatch } from "next/dist/shared/lib/match-remote-pattern";
-import { shouldUseUnoptimizedImages, WEB_IMAGE_REMOTE_PATTERNS } from "@/next.config";
+import {
+  parseBackendPublicUrl,
+  shouldUseUnoptimizedImages,
+  WEB_IMAGE_REMOTE_PATTERNS,
+} from "@/next.config";
+
+test("parses environment-specific backend URLs", () => {
+  expect(parseBackendPublicUrl("http://127.0.0.1:3838")).toEqual({
+    host: "127.0.0.1",
+    port: 3838,
+    protocol: "http",
+  });
+  expect(parseBackendPublicUrl("https://scopify-api.vercel.app")).toEqual({
+    host: "scopify-api.vercel.app",
+    port: 443,
+    protocol: "https",
+  });
+  expect(parseBackendPublicUrl("ftp://invalid.example")).toBeNull();
+});
 
 test("bypasses the image proxy in development and Desktop builds", () => {
   expect(shouldUseUnoptimizedImages(undefined, "development")).toBeTrue();

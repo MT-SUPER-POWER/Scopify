@@ -40,6 +40,7 @@
       "version": "1.2.0-beta",
       "dependencies": {
         "@chenglou/pretext": "^0.0.8",
+        "@paper-design/shaders": "^0.0.77",
         "@paper-design/shaders-react": "^0.0.77",
         "@react-three/drei": "^10.7.7",
         "@react-three/fiber": "^9.6.1",
