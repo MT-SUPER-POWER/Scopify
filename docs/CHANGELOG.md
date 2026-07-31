@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.2.0-beta
+## v1.2.0-beta.1
 
 > 前端多端拆分的首个 Beta 版本：在保持 Web 与 Electron 可运行的前提下，完成 Monorepo 结构、运行时边界和独立发布链路。
 
@@ -32,6 +32,7 @@
 - 开发模式和 Electron 静态构建直接加载远程图片，Vercel 生产构建仅允许受信任的图片域名
 - Web 后端按 `.env.development` / `.env.production` 分层，并支持完整 HTTP/HTTPS URL，避免线上请求被 mixed-content 策略拦截
 - 修复开发日志在缺少 metadata 时额外输出 `undefined` 的问题
+- 修复标签构建时 electron-builder 隐式发布导致 Windows/macOS 打包失败的问题
 
 ## v1.1.0
 
