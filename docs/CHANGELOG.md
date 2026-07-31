@@ -29,6 +29,7 @@
 
 - 修复开发环境中网易云远程图片触发 Next.js `next/image` 域名与代理校验错误的问题
 - 开发模式和 Electron 静态构建直接加载远程图片，Vercel 生产构建仅允许受信任的图片域名
+- Web 后端地址支持独立配置 HTTP/HTTPS，避免线上 HTTPS 页面请求 API 时被 mixed-content 策略拦截
 - 修复开发日志在缺少 metadata 时额外输出 `undefined` 的问题
 
 ## v1.1.0

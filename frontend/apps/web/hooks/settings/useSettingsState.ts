@@ -7,6 +7,7 @@ import { clearPageCache } from "@/lib/cache/pageCache";
 import { clearPlaybackCache, getPlaybackCacheStats } from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
+import { buildBackendBaseUrl } from "@/lib/web/backendUrl";
 import { webConfig } from "@/lib/web/env";
 import { pingBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
@@ -44,7 +45,11 @@ function loadWebBackendOverride(): WebConfig["backend"] | null {
     if (!stored) return null;
     const parsed = JSON.parse(stored) as Partial<WebConfig["backend"]>;
     if (typeof parsed.host !== "string" || typeof parsed.port !== "number") return null;
-    return { host: parsed.host, port: parsed.port };
+    return {
+      host: parsed.host,
+      port: parsed.port,
+      protocol: parsed.protocol === "https" ? "https" : webConfig.backend.protocol,
+    };
   } catch {
     return null;
   }
@@ -223,7 +228,7 @@ export function useSettingsState() {
         runtime.app.relaunch();
       }
 
-      const backendUrl = `http://${config.web.backend.host}:${config.web.backend.port}`;
+      const backendUrl = buildBackendBaseUrl(config.web.backend);
       if (!(await pingBackend(backendUrl))) {
         toast.warning(
           translate(config.web.app.locale, "settings.backendUnreachable", { url: backendUrl }),

@@ -11,12 +11,9 @@ import { notifyExpiredMusicSession } from "@/lib/query/session";
 import { runtime } from "@/lib/runtime";
 
 import { ApiError, toApiError } from "./apiError";
+import { buildBackendBaseUrl } from "./backendUrl";
 import { logger, webConfig } from "./env";
 import { reportFailure } from "./errorTracking";
-
-function buildBackendBaseUrl(config: Pick<WebConfig, "backend">) {
-  return `http://${config.backend.host}:${config.backend.port}`;
-}
 
 function loadInitialBackendConfig(): WebConfig["backend"] {
   if (typeof window === "undefined") return webConfig.backend;
@@ -26,7 +23,11 @@ function loadInitialBackendConfig(): WebConfig["backend"] {
     if (!stored) return webConfig.backend;
     const parsed = parseJsonObject(stored);
     if (typeof parsed.host === "string" && typeof parsed.port === "number") {
-      return { host: parsed.host, port: parsed.port };
+      return {
+        host: parsed.host,
+        port: parsed.port,
+        protocol: parsed.protocol === "https" ? "https" : webConfig.backend.protocol,
+      };
     }
   } catch {
     // Ignore malformed local cache.
@@ -37,18 +38,18 @@ function loadInitialBackendConfig(): WebConfig["backend"] {
 
 const INITIAL_BACKEND_CONFIG = loadInitialBackendConfig();
 
-let baseURL = buildBackendBaseUrl({ backend: INITIAL_BACKEND_CONFIG });
+let baseURL = buildBackendBaseUrl(INITIAL_BACKEND_CONFIG);
 let runtimeNetworkConfig: WebConfig["network"] = { ...webConfig.network };
 let runtimeBackendConfig: WebConfig["backend"] = { ...INITIAL_BACKEND_CONFIG };
 
 export function getBackendBaseUrl() {
-  return buildBackendBaseUrl({ backend: runtimeBackendConfig });
+  return buildBackendBaseUrl(runtimeBackendConfig);
 }
 
 function applyRuntimeConfig(config: Pick<WebConfig, "backend" | "network">) {
   runtimeNetworkConfig = { ...config.network };
   runtimeBackendConfig = { ...config.backend };
-  baseURL = buildBackendBaseUrl({ backend: runtimeBackendConfig });
+  baseURL = buildBackendBaseUrl(runtimeBackendConfig);
   request.defaults.baseURL = baseURL;
 }
 

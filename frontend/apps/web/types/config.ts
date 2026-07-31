@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const APP_LOCALES = ["zh-CN", "zh-TW", "en-US"] as const;
+export const BACKEND_PROTOCOLS = ["http", "https"] as const;
 export const DEFAULT_WEB_CONFIG = {
   app: {
     locale: "zh-CN",
@@ -8,6 +9,7 @@ export const DEFAULT_WEB_CONFIG = {
   backend: {
     host: "127.0.0.1",
     port: 3838,
+    protocol: "http",
   },
   network: {
     randomCNIP: "false",
@@ -16,6 +18,7 @@ export const DEFAULT_WEB_CONFIG = {
 } as const;
 
 const appLocaleSchema = z.enum(APP_LOCALES);
+const backendProtocolSchema = z.enum(BACKEND_PROTOCOLS);
 
 function toRecord(value: unknown): Record<string, unknown> {
   return z.record(z.unknown()).safeParse(value).data ?? {};
@@ -68,6 +71,7 @@ export const webConfigSchema = z.preprocess(
         z.object({
           host: trimmedString(DEFAULT_WEB_CONFIG.backend.host),
           port: positiveNumber(DEFAULT_WEB_CONFIG.backend.port),
+          protocol: backendProtocolSchema.catch(DEFAULT_WEB_CONFIG.backend.protocol),
         }),
       ),
       network: z.preprocess(
@@ -82,6 +86,7 @@ export const webConfigSchema = z.preprocess(
 );
 
 export type AppLocale = z.output<typeof appLocaleSchema>;
+export type BackendProtocol = z.output<typeof backendProtocolSchema>;
 export type WebConfig = z.output<typeof webConfigSchema>;
 
 export function isAppLocale(value: unknown): value is AppLocale {

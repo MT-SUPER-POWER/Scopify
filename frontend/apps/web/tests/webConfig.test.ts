@@ -4,7 +4,7 @@ import { networkConfigOverrideSchema, normalizeWebConfig } from "@/types/config"
 test("Web config keeps only Renderer-owned fields", () => {
   const config = normalizeWebConfig({
     app: { devTools: true, locale: "zh-TW" },
-    backend: { host: "api.example.test", port: "4545" },
+    backend: { host: "api.example.test", port: "4545", protocol: "https" },
     cache: { enabled: false },
     network: {
       proxyMode: "custom",
@@ -17,7 +17,7 @@ test("Web config keeps only Renderer-owned fields", () => {
 
   expect(config).toEqual({
     app: { locale: "zh-TW" },
-    backend: { host: "api.example.test", port: 4545 },
+    backend: { host: "api.example.test", port: 4545, protocol: "https" },
     network: { randomCNIP: "true", timeout: 9000 },
   });
 });

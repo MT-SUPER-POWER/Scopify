@@ -15,6 +15,11 @@ const backendPort = envNumber(
   process.env.APP_CFG_BACKEND_PORT || process.env.BACKEND_PUBLIC_PORT || process.env.BACKEND_PORT,
   DEFAULT_WEB_CONFIG.backend.port,
 );
+const backendProtocol =
+  process.env.APP_CFG_BACKEND_PROTOCOL === "https" ||
+  process.env.BACKEND_PUBLIC_PROTOCOL === "https"
+    ? "https"
+    : DEFAULT_WEB_CONFIG.backend.protocol;
 const frontendDevPort = envNumber(
   process.env.APP_CFG_FRONTEND_DEV_PORT || process.env.FRONTEND_PORT,
   3000,
@@ -62,6 +67,7 @@ const nextConfig: NextConfig = {
     APP_CFG_APP_LOCALE: process.env.APP_CFG_APP_LOCALE || DEFAULT_WEB_CONFIG.app.locale,
     APP_CFG_BACKEND_HOST: backendHost,
     APP_CFG_BACKEND_PORT: String(backendPort),
+    APP_CFG_BACKEND_PROTOCOL: backendProtocol,
     APP_CFG_FRONTEND_DEV_PORT: String(frontendDevPort),
     APP_CFG_NET_TIMEOUT:
       process.env.APP_CFG_NET_TIMEOUT || String(DEFAULT_WEB_CONFIG.network.timeout),
