@@ -1,5 +1,36 @@
 # Changelog
 
+## v1.2.0-beta
+
+> 前端多端拆分的首个 Beta 版本：在保持 Web 与 Electron 可运行的前提下，完成 Monorepo 结构、运行时边界和独立发布链路。
+
+### Architecture
+
+- 将前端整理为 Bun Workspaces + Turborepo Monorepo，统一管理 Web、Desktop、Mobile 预留入口与 Desktop 契约包
+- Web 源码迁入 `frontend/apps/web`，Electron host 迁入 `frontend/apps/desktop`，Desktop 不再反向引用 Web 源码
+- 新增 Browser/Electron Runtime 适配层，UI 不再直接访问 `window.electronAPI` 或判断 Electron 环境
+- 拆分 Web 与 Desktop 配置所有权，跨端只共享版本化的纯 TypeScript DTO 和 IPC 协议
+- 增加架构守卫，阻止 Desktop 导入 Web、UI 绕过 Runtime 边界以及跨端配置重新耦合
+
+### Deployment
+
+- Vercel 独立构建 `@scopify/web`，Cloudflare 仅负责 DNS 与 API 边缘安全，不参与 Web 应用构建
+- Desktop Release 改为只构建一次不可变 Renderer，各平台下载同一制品后再独立打包
+- Renderer 新增 manifest、协议版本、source revision 与确定性 SHA-256 校验，篡改或版本不匹配时拒绝启动和发布
+- GitHub Release 汇总 Windows/macOS 制品，生成校验和并附加构建来源证明
+
+### Quality
+
+- 清零 Web/Folia ESLint error，根目录 `lint`、`typecheck`、`test` 与 `build` 均可作为 Monorepo 统一门禁运行
+- 补充 Runtime 适配器、架构边界、配置映射和 Renderer 制品完整性测试
+- API 与用户数据响应补齐类型，移除相关 `any` 与不安全断言
+
+### Fixed
+
+- 修复开发环境中网易云远程图片触发 Next.js `next/image` 域名与代理校验错误的问题
+- 开发模式和 Electron 静态构建直接加载远程图片，Vercel 生产构建仅允许受信任的图片域名
+- 修复开发日志在缺少 metadata 时额外输出 `undefined` 的问题
+
 ## v1.1.0
 
 ### Added
