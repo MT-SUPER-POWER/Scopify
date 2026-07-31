@@ -1,8 +1,17 @@
 {
   "name": "@scopify/desktop",
-  "version": "1.2.0-beta.1",
+  "version": "1.2.0-beta.2",
   "private": true,
   "description": "Scopify Electron desktop host",
+  "author": {
+    "name": "Momo",
+    "email": "shuhengwen@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MT-SUPER-POWER/Scopify.git",
+    "directory": "frontend/apps/desktop"
+  },
   "type": "module",
   "main": "out/main/main.js",
   "scripts": {

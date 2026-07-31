@@ -16,7 +16,7 @@
     },
     "frontend/apps/desktop": {
       "name": "@scopify/desktop",
-      "version": "1.2.0-beta.1",
+      "version": "1.2.0-beta.2",
       "dependencies": {
         "@scopify/desktop-contract": "1.0.0",
         "electron-log": "^5.4.4",
@@ -37,7 +37,7 @@
     },
     "frontend/apps/web": {
       "name": "@scopify/web",
-      "version": "1.2.0-beta.1",
+      "version": "1.2.0-beta.2",
       "dependencies": {
         "@chenglou/pretext": "^0.0.8",
         "@paper-design/shaders": "^0.0.77",
