@@ -756,18 +756,47 @@ const getEstimatedMessageHeight = (
   message: CappellaMessage,
   isActive: boolean,
   motionConfig: CappellaIntensityConfig["motion"],
+  theme: Theme,
+  baseFontSize: number,
+  maxTextWidth: number,
 ): number => {
-  if (message.kind === "title") {
-    return 40;
-  }
   if (message.kind === "emo") {
     const imageSize = isActive ? motionConfig.emoActiveSize : motionConfig.emoInactiveSize;
-    return imageSize + 48 + 12; // 图像高度 + pt-12 (48px) padding + gap-3 (12px) 间距
+    const scaleOverflow =
+      isActive && motionConfig.activeScale > 1
+        ? Math.ceil(imageSize * (motionConfig.activeScale - 1))
+        : 0;
+    return imageSize + scaleOverflow + 48 + 12; // 图像高度 + 缩放上溢 + pt-12 (48px) padding + gap-3 (12px) 间距
   }
-  const baseHeight = isActive
-    ? motionConfig.activeMinHeight + 16
-    : motionConfig.inactiveMinHeight + 10;
-  return baseHeight + 12; // 估算的气泡高度 + gap-3 (12px) 间距
+
+  const fontSize =
+    message.kind === "title"
+      ? baseFontSize
+      : baseFontSize *
+        (isActive ? motionConfig.activeFontMultiplier : motionConfig.inactiveFontMultiplier);
+  const paddingX = isActive ? motionConfig.activePaddingX : motionConfig.inactivePaddingX;
+  const paddingY = isActive ? motionConfig.activePaddingY : motionConfig.inactivePaddingY;
+  const lineHeightPx = fontSize * 1.45;
+  const measuredHeight = measureBubbleText({
+    text: message.kind === "title" ? message.text : message.line.fullText,
+    theme,
+    fontSize,
+    lineHeightPx,
+    maxTextWidth,
+    paddingX,
+    paddingY,
+  }).height;
+  const minHeight = Math.max(
+    isActive ? motionConfig.activeMinHeight : motionConfig.inactiveMinHeight,
+    lineHeightPx + paddingY * 2,
+  );
+  const renderedHeight = Math.max(measuredHeight, minHeight);
+  const scaleOverflow =
+    isActive && motionConfig.activeScale > 1
+      ? Math.ceil(renderedHeight * (motionConfig.activeScale - 1))
+      : 0;
+
+  return renderedHeight + scaleOverflow + 12; // 气泡实际高度 + 缩放上溢 + gap-3 (12px) 间距
 };
 
 /**
@@ -780,6 +809,9 @@ const getVisibleMessages = (
   currentLineIndex: number,
   currentTime: number,
   motionConfig: CappellaIntensityConfig["motion"],
+  theme: Theme,
+  baseFontSize: number,
+  maxTextWidth: number,
 ) => {
   const visible = messages.filter((message) => {
     if (message.kind === "title") {
@@ -805,7 +837,14 @@ const getVisibleMessages = (
     const isActive = timedData
       ? getTimedMessageState(timedData, currentTime, currentLineIndex).isActive
       : false;
-    const estHeight = getEstimatedMessageHeight(message, isActive, motionConfig);
+    const estHeight = getEstimatedMessageHeight(
+      message,
+      isActive,
+      motionConfig,
+      theme,
+      baseFontSize,
+      maxTextWidth,
+    );
 
     if (accumulatedHeight + estHeight > usableHeight && result.length >= 2) {
       // 保留至少 2 条消息做为上下文，其余超出高度的不再包括
@@ -1701,6 +1740,10 @@ const VisualizerCappella: React.FC<VisualizerCappellaProps> = (props) => {
       ),
     [activeEmoImages, intensityConfig, isPreviewMode, lines, resolvedCappellaTuning, titleText],
   );
+  const baseFontSize = Math.max(15, Math.min(26, 18 * lyricsFontScale));
+  const maxPanelWidth = Math.min(Math.max(viewportSize.width - 32, 1), 896);
+  const bubbleGroupRatio = viewportSize.width >= 640 ? 0.68 : 0.78;
+  const maxTextWidth = Math.max(96, Math.floor(maxPanelWidth * bubbleGroupRatio - 56));
   const visibleMessages = useMemo(
     () =>
       getVisibleMessages(
@@ -1710,20 +1753,22 @@ const VisualizerCappella: React.FC<VisualizerCappellaProps> = (props) => {
         currentLineIndex,
         currentTime.get(),
         intensityConfig.motion,
+        theme,
+        baseFontSize,
+        maxTextWidth,
       ),
     [
+      baseFontSize,
       currentLineIndex,
       currentTime,
       intensityConfig.motion,
+      maxTextWidth,
       messages,
+      theme,
       viewportSize.height,
       visibleLineIndex,
     ],
   );
-  const baseFontSize = Math.max(15, Math.min(26, 18 * lyricsFontScale));
-  const maxPanelWidth = Math.min(Math.max(viewportSize.width - 32, 1), 896);
-  const bubbleGroupRatio = viewportSize.width >= 640 ? 0.68 : 0.78;
-  const maxTextWidth = Math.max(96, Math.floor(maxPanelWidth * bubbleGroupRatio - 56));
   const { activeLine, recentCompletedLine, upcomingLine, nextLines } = useVisualizerRuntime({
     currentTime,
     currentLineIndex,

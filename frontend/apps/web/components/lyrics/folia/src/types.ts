@@ -84,6 +84,7 @@ export interface Theme {
   fontStyle: "sans" | "serif" | "mono";
   fontFamily?: string;
   fontFamilyStack?: string[];
+  fontWeight?: number;
   animationIntensity: "calm" | "normal" | "chaotic";
   wordColors?: { word: string; color: string }[];
   lyricsIcons?: string[];
@@ -512,6 +513,38 @@ export const DEFAULT_PENDOLO_TUNING: PendoloTuning = {
   showCenterGradient: true,
   showCoverOnWatchFace: false,
   enableLineGlow: false,
+};
+
+export type SonnetOuterFrameMode = "none" | "frame" | "full";
+
+export interface SonnetTuning {
+  cameraIntensity: number;
+  typographyMotion: number;
+  mgDensity: number;
+  showOnlyText: boolean;
+  showGuide: boolean;
+  showBackgroundMg: boolean;
+  showFixedGeo: boolean;
+  showGiantDecorativeText: boolean;
+  showBackgroundDecor: boolean;
+  enableTransitions: boolean;
+  outerFrameMode: SonnetOuterFrameMode;
+  textureResolution: number;
+}
+
+export const DEFAULT_SONNET_TUNING: SonnetTuning = {
+  cameraIntensity: 1,
+  typographyMotion: 1,
+  mgDensity: 1,
+  showOnlyText: false,
+  showGuide: true,
+  showBackgroundMg: true,
+  showFixedGeo: true,
+  showGiantDecorativeText: true,
+  showBackgroundDecor: true,
+  enableTransitions: true,
+  outerFrameMode: "full",
+  textureResolution: 1.5,
 };
 
 // Diorama's camera STYLE (calm/standard/chaotic) is not part of its tuning: like every other

@@ -90,7 +90,7 @@ export function useFoliaPanelControls() {
     setVisualizerBackgroundMode: (mode: VisualizerBackgroundMode) =>
       useLyricStageStore.getState().setBackgroundMode(mode),
     setVisualizerMode: (mode: LyricVisualizerMode) =>
-      useLyricStageStore.getState().patchSettings({ mode }),
+      useLyricStageStore.getState().requestVisualizerMode(mode),
     toggleLatentBackgroundOverlay: () => {
       const lyricStage = useLyricStageStore.getState();
       lyricStage.patchLatentBackground({

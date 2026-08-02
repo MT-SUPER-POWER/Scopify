@@ -9,6 +9,7 @@ import fumeEntry from "./fume/entry";
 import monetEntry from "./monet/entry";
 import partitaEntry from "./partita/entry";
 import pendoloEntry from "./pendolo/entry";
+import sonnetEntry from "./sonnet/entry";
 import tiltEntry from "./tilt/entry";
 
 export type {
@@ -30,6 +31,7 @@ const visualizerEntryModules: Record<string, VisualizerEntryModule> = {
   "./monet/entry.tsx": { default: monetEntry },
   "./partita/entry.tsx": { default: partitaEntry },
   "./pendolo/entry.tsx": { default: pendoloEntry },
+  "./sonnet/entry.tsx": { default: sonnetEntry },
   "./tilt/entry.tsx": { default: tiltEntry },
 };
 

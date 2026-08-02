@@ -82,6 +82,15 @@ export interface FoliaStageSettingsProps {
   theme: Theme;
 }
 
+export interface FoliaSonnetPerformanceWarningDialogProps {
+  dontShowAgain: boolean;
+  isDaylight: boolean;
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  onDontShowAgainChange: (enabled: boolean) => void;
+}
+
 export interface FoliaSettingsPreviewProps {
   activeSection: FoliaStageEditSection;
   assets: FoliaStageAssets;

@@ -54,6 +54,7 @@ export interface FoliaStageSettings {
   lyricOffsetMs: number;
   mode: LyricVisualizerMode;
   showSubtitleTranslation: boolean;
+  sonnetPerformanceWarningDismissed: boolean;
   subtitleFontFallbackFamilies: string[];
   subtitleFontFamily: string | null;
   subtitleFontInheritsLyrics: boolean;
@@ -81,10 +82,17 @@ export interface FoliaStageStore extends FoliaStageSettings {
     patch: Partial<VisualizerTuningMap[Mode]>,
   ) => void;
   replaceSettings: (settings: FoliaStageSettings) => void;
+  pendingVisualizerMode: LyricVisualizerMode | null;
+  requestVisualizerMode: (mode: LyricVisualizerMode) => void;
   resetAll: () => void;
   resetTheme: (id: string) => void;
   resetBackgroundTuning: (mode: VisualizerBackgroundMode) => void;
   resetTuning: (mode: VisualizerTuningMode) => void;
+  sonnetPerformanceWarningDontShowAgain: boolean;
+  sonnetPerformanceWarningOpen: boolean;
+  cancelSonnetPerformanceWarning: () => void;
+  confirmSonnetPerformanceWarning: () => void;
+  setSonnetPerformanceWarningDontShowAgain: (enabled: boolean) => void;
   selectUrlBackground: (id: null | string) => void;
   setBackgroundMode: (mode: VisualizerBackgroundMode) => void;
   setThemeId: (id: string) => void;

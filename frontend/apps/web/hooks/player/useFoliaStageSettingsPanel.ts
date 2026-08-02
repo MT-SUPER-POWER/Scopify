@@ -11,6 +11,7 @@ import {
   DEFAULT_MONET_TUNING,
   DEFAULT_PENDOLO_TUNING,
   DEFAULT_PARTITA_TUNING,
+  DEFAULT_SONNET_TUNING,
   DEFAULT_TILT_TUNING,
   type Theme,
 } from "@/components/lyrics/folia/src/types";
@@ -140,6 +141,7 @@ export function useFoliaStageSettingsPanel(
     monetPortraitImage: assets.monetPortraitImage,
     monetTuning: settings.tunings.monet ?? DEFAULT_MONET_TUNING,
     pendoloTuning: settings.tunings.pendolo ?? DEFAULT_PENDOLO_TUNING,
+    sonnetTuning: settings.tunings.sonnet ?? DEFAULT_SONNET_TUNING,
     onCappellaTuningChange: (patch: Partial<typeof DEFAULT_CAPPELLA_TUNING>) =>
       settings.patchTuning("cappella", patch),
     onClearCappellaCustomAvatar: assets.clearCappellaCustomAvatar,
@@ -170,6 +172,8 @@ export function useFoliaStageSettingsPanel(
       settings.patchTuning("partita", patch),
     onPendoloTuningChange: (patch: Partial<typeof DEFAULT_PENDOLO_TUNING>) =>
       settings.patchTuning("pendolo", patch),
+    onSonnetTuningChange: (patch: Partial<typeof DEFAULT_SONNET_TUNING>) =>
+      settings.patchTuning("sonnet", patch),
     onResetCommonSettings: () =>
       settings.patchSettings({ fontScale: 1, fontStyle: "sans", visualizerOpacity: 1 }),
     onResetMonetTuning: () => settings.resetTuning("monet"),
@@ -208,7 +212,7 @@ export function useFoliaStageSettingsPanel(
     onUploadMonetPortraitImage: assets.uploadMonetPortraitImage,
     onVisualizerModeChange: (mode: string) => {
       if (hasVisualizerMode(mode)) {
-        settings.patchSettings({ mode: mode as typeof settings.mode });
+        settings.requestVisualizerMode(mode as typeof settings.mode);
       }
     },
     onVisualizerOpacityChange: (visualizerOpacity: number) =>

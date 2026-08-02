@@ -8,6 +8,7 @@ import type {
   MonetTuning,
   PartitaTuning,
   PendoloTuning,
+  SonnetTuning,
   TiltTuning,
   VisualizerMode,
 } from "../../types";
@@ -21,6 +22,7 @@ import fumeTuning from "./fume/tuning";
 import monetTuning from "./monet/tuning";
 import partitaTuning from "./partita/tuning";
 import pendoloTuning from "./pendolo/tuning";
+import sonnetTuning from "./sonnet/tuning";
 import tiltTuning from "./tilt/tuning";
 
 // src/components/visualizer/tuningRegistry.ts
@@ -36,6 +38,7 @@ export interface VisualizerTuningMap {
   diorama: DioramaTuning;
   monet: MonetTuning;
   pendolo: PendoloTuning;
+  sonnet: SonnetTuning;
 }
 
 export type VisualizerTuningMode = keyof VisualizerTuningMap;
@@ -69,6 +72,7 @@ const tuningModules: Record<string, VisualizerTuningModule> = {
   "./monet/tuning.ts": { default: monetTuning as VisualizerTuningAdapter },
   "./partita/tuning.ts": { default: partitaTuning as VisualizerTuningAdapter },
   "./pendolo/tuning.ts": { default: pendoloTuning as VisualizerTuningAdapter },
+  "./sonnet/tuning.ts": { default: sonnetTuning as VisualizerTuningAdapter },
   "./tilt/tuning.ts": { default: tiltTuning as VisualizerTuningAdapter },
 };
 const adapters = Object.values(tuningModules).map((module) => module.default);

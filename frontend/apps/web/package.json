@@ -44,6 +44,7 @@
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.18.1",
     "idb-keyval": "^6.3.0",
+    "pixi.js": "^8.19.0",
     "react-colorful": "^5.8.0",
     "react-day-picker": "^10.0.1",
     "three": "^0.185.1",

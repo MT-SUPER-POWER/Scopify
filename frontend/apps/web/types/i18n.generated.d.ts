@@ -5219,6 +5219,12 @@ export interface TranslateFn {
    */
   (key: "folia.ui.visualizerPendolo", params?: TranslationParams): string;
   /**
+   * zh-CN: 商籁
+   * zh-TW: 商籟
+   * en-US: Sonnet
+   */
+  (key: "folia.ui.visualizerSonnet", params?: TranslationParams): string;
+  /**
    * zh-CN: 心象参数
    * zh-TW: 心象參數
    * en-US: Mindscape Tuning
@@ -7459,6 +7465,162 @@ export interface TranslateFn {
    * en-US: Off
    */
   (key: "folia.options.pendoloLineGlowOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 商籁参数
+   * zh-TW: 商籟參數
+   * en-US: Sonnet Settings
+   */
+  (key: "folia.options.sonnetSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 基于歌词时间轴生成 PV 风格动态构图；建议搭配空 / Sora 等偏静态背景。
+   * zh-TW: 基於歌詞時間軸生成 PV 風格動態構圖；建議搭配空 / Sora 等偏靜態背景。
+   * en-US: Generate PV-style dynamic compositions from the lyric timeline; pair with a static background such as Sora.
+   */
+  (key: "folia.options.sonnetSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态与构图
+   * zh-TW: 動態與構圖
+   * en-US: Motion and composition
+   */
+  (key: "folia.options.sonnetMotionSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示内容
+   * zh-TW: 顯示內容
+   * en-US: Visible elements
+   */
+  (key: "folia.options.sonnetDisplaySection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 渲染质量
+   * zh-TW: 渲染品質
+   * en-US: Rendering quality
+   */
+  (key: "folia.options.sonnetQualitySection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜头运动强度
+   * zh-TW: 鏡頭運動強度
+   * en-US: Camera intensity
+   */
+  (key: "folia.options.sonnetCameraIntensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字动势
+   * zh-TW: 文字動勢
+   * en-US: Typography motion
+   */
+  (key: "folia.options.sonnetTypographyMotion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景短线密度
+   * zh-TW: 背景短線密度
+   * en-US: Background line density
+   */
+  (key: "folia.options.sonnetMgDensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纹理分辨率
+   * zh-TW: 紋理解析度
+   * en-US: Texture resolution
+   */
+  (key: "folia.options.sonnetTextureResolution", params?: TranslationParams): string;
+  /**
+   * zh-CN: 提高纹理分辨率会增加 GPU 显存占用和渲染负载；卡顿时请优先降低此项。
+   * zh-TW: 提高紋理解析度會增加 GPU 記憶體佔用和渲染負載；卡頓時請優先降低此項。
+   * en-US: Higher texture resolution increases GPU memory use and rendering load; lower it first if playback stutters.
+   */
+  (key: "folia.options.sonnetTexturePerformanceWarning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 外层边框
+   * zh-TW: 外層邊框
+   * en-US: Outer frame
+   */
+  (key: "folia.options.sonnetOuterFrameMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完全隐藏
+   * zh-TW: 完全隱藏
+   * en-US: Hidden
+   */
+  (key: "folia.options.sonnetOuterFrameNone", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅显示框架
+   * zh-TW: 僅顯示框架
+   * en-US: Frame only
+   */
+  (key: "folia.options.sonnetOuterFrameFrame", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完全显示
+   * zh-TW: 完全顯示
+   * en-US: Full
+   */
+  (key: "folia.options.sonnetOuterFrameFull", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅显示文字
+   * zh-TW: 僅顯示文字
+   * en-US: Text only
+   */
+  (key: "folia.options.sonnetShowOnlyText", params?: TranslationParams): string;
+  /**
+   * zh-CN: 轨迹线
+   * zh-TW: 軌跡線
+   * en-US: Guide lines
+   */
+  (key: "folia.options.sonnetShowGuide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主场景
+   * zh-TW: 主場景
+   * en-US: Main scene
+   */
+  (key: "folia.options.sonnetShowBackgroundMg", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字浮标
+   * zh-TW: 文字浮標
+   * en-US: Text markers
+   */
+  (key: "folia.options.sonnetShowFixedGeo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 巨型装饰镂空文字
+   * zh-TW: 巨型裝飾鏤空文字
+   * en-US: Giant decorative outline text
+   */
+  (key: "folia.options.sonnetShowGiantDecorativeText", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景装饰
+   * zh-TW: 背景裝飾
+   * en-US: Background decorations
+   */
+  (key: "folia.options.sonnetShowBackgroundDecor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景转场
+   * zh-TW: 場景轉場
+   * en-US: Scene transitions
+   */
+  (key: "folia.options.sonnetEnableTransitions", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启
+   * zh-TW: 開啟
+   * en-US: On
+   */
+  (key: "folia.options.sonnetToggleOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Off
+   */
+  (key: "folia.options.sonnetToggleOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 商籁性能警告
+   * zh-TW: 商籟效能警告
+   * en-US: Sonnet performance warning
+   */
+  (key: "folia.options.sonnetPerformanceWarningTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 商籁使用高密度动态场景，会对 GPU 和 CPU 造成较高负载，部分设备上可能严重卡顿。可以降低纹理分辨率，并搭配空 / Sora 等偏静态背景。
+   * zh-TW: 商籟使用高密度動態場景，會對 GPU 和 CPU 造成較高負載，部分裝置上可能嚴重卡頓。可以降低紋理解析度，並搭配空 / Sora 等偏靜態背景。
+   * en-US: Sonnet uses a high-density animated scene and can heavily load the GPU and CPU, causing severe stuttering on some devices. Lower texture resolution and use a static background such as Sora.
+   */
+  (key: "folia.options.sonnetPerformanceWarningDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不再显示此警告
+   * zh-TW: 不再顯示此警告
+   * en-US: Do not show this warning again
+   */
+  (key: "folia.options.sonnetPerformanceWarningDontShowAgain", params?: TranslationParams): string;
   /**
    * zh-CN: 无
    * zh-TW: 無

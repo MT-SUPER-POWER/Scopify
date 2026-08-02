@@ -11,9 +11,11 @@ import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
 import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
 import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
 import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
+import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/FoliaSonnetPerformanceWarningDialog";
 import { FoliaVisualSettingsDialog } from "@/components/lyrics/FoliaVisualSettingsDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePlayerStore } from "@/store/module/player";
+import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaStageSettingsProps } from "@/types/components/lyrics";
 import type { FoliaPanelTab, FoliaStageEditSection } from "@/types/foliaStage";
 
@@ -26,6 +28,21 @@ export function FoliaStageSettings({
 }: FoliaStageSettingsProps) {
   const { t } = useI18n();
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const sonnetPerformanceWarningOpen = useLyricStageStore(
+    (state) => state.sonnetPerformanceWarningOpen,
+  );
+  const sonnetPerformanceWarningDontShowAgain = useLyricStageStore(
+    (state) => state.sonnetPerformanceWarningDontShowAgain,
+  );
+  const cancelSonnetPerformanceWarning = useLyricStageStore(
+    (state) => state.cancelSonnetPerformanceWarning,
+  );
+  const confirmSonnetPerformanceWarning = useLyricStageStore(
+    (state) => state.confirmSonnetPerformanceWarning,
+  );
+  const setSonnetPerformanceWarningDontShowAgain = useLyricStageStore(
+    (state) => state.setSonnetPerformanceWarningDontShowAgain,
+  );
   const isDaylight = theme.name === "snow";
   const [activeSection, setActiveSection] = useState<FoliaStageEditSection>("common");
   const [activeTab, setActiveTab] = useState<FoliaPanelTab>("controls");
@@ -174,6 +191,15 @@ export function FoliaStageSettings({
         isOpen={isThemeLibraryOpen}
         onClose={() => setIsThemeLibraryOpen(false)}
         theme={theme}
+      />
+
+      <FoliaSonnetPerformanceWarningDialog
+        dontShowAgain={sonnetPerformanceWarningDontShowAgain}
+        isDaylight={isDaylight}
+        isOpen={sonnetPerformanceWarningOpen}
+        onClose={cancelSonnetPerformanceWarning}
+        onConfirm={confirmSonnetPerformanceWarning}
+        onDontShowAgainChange={setSonnetPerformanceWarningDontShowAgain}
       />
 
       {!isOpen && !isChromeHidden ? (

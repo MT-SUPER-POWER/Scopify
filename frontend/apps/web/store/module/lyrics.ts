@@ -25,6 +25,9 @@ export const useLyricStageStore = create<FoliaStageStore>()(
   persist<FoliaStageStore, [], [], FoliaStageSettings>(
     (set, get) => ({
       ...createDefaultFoliaStageSettings(),
+      pendingVisualizerMode: null,
+      sonnetPerformanceWarningDontShowAgain: false,
+      sonnetPerformanceWarningOpen: false,
       addUrlBackground: (item) =>
         set((state) => ({
           background: {
@@ -120,6 +123,21 @@ export const useLyricStageStore = create<FoliaStageStore>()(
           },
         })),
       replaceSettings: (settings) => set(normalizeFoliaStageSettings(settings)),
+      requestVisualizerMode: (mode) => {
+        if (
+          mode === "sonnet" &&
+          get().mode !== "sonnet" &&
+          !get().sonnetPerformanceWarningDismissed
+        ) {
+          set({
+            pendingVisualizerMode: mode,
+            sonnetPerformanceWarningDontShowAgain: false,
+            sonnetPerformanceWarningOpen: true,
+          });
+          return;
+        }
+        set({ mode });
+      },
       resetAll: () => set(createDefaultFoliaStageSettings()),
       resetTheme: (id) =>
         set((state) => {
@@ -140,6 +158,26 @@ export const useLyricStageStore = create<FoliaStageStore>()(
         set((state) => ({
           tunings: { ...state.tunings, [mode]: structuredClone(tuningDefaults[mode]) },
         })),
+      cancelSonnetPerformanceWarning: () =>
+        set({
+          pendingVisualizerMode: null,
+          sonnetPerformanceWarningDontShowAgain: false,
+          sonnetPerformanceWarningOpen: false,
+        }),
+      confirmSonnetPerformanceWarning: () => {
+        const pendingMode = get().pendingVisualizerMode;
+        const dismissWarning = get().sonnetPerformanceWarningDontShowAgain;
+        set({
+          mode: pendingMode ?? get().mode,
+          pendingVisualizerMode: null,
+          sonnetPerformanceWarningDismissed:
+            get().sonnetPerformanceWarningDismissed || dismissWarning,
+          sonnetPerformanceWarningDontShowAgain: false,
+          sonnetPerformanceWarningOpen: false,
+        });
+      },
+      setSonnetPerformanceWarningDontShowAgain: (enabled) =>
+        set({ sonnetPerformanceWarningDontShowAgain: enabled }),
       selectUrlBackground: (selectedId) =>
         set((state) => ({
           background: {

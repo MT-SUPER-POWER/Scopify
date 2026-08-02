@@ -11,13 +11,18 @@ the original full-copy baseline:
   direction for daylight generated-color themes.
 - `a41e20e85b19f0c4438f0ce79e529952300229f8` — add Pendolo chorus emphasis and
   animation-intensity motion profiles.
+- `c3d0f9a96999615499d326139601be7e39d6a483` — add the complete Sonnet / 商籁
+  Pixi lyric-PV visualizer, tuning panel, and performance guidance from Folia
+  v0.6.10.
+- `ed7b29732168a95e821cd6f149a3fefd8bb3e54e` — measure Cappella message height
+  from the actual wrapped lyric bubble and reserve a safe lower viewport area.
 
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
 ## Included
 
-- all nine registered lyric visualizers and their tuning panels
+- all eleven registered lyric visualizers and their tuning panels
 - all six registered visualizer backgrounds and their settings panels
 - shared renderer, shell, subtitle, timing, font, color, and lyric helpers
 - Folia's top-level theme CSS-variable builder (`buildAppStyle.ts`)
@@ -45,7 +50,10 @@ Scopify is also distributed under AGPL-3.0.
   callbacks through a separate adapter outside this directory.
 - Scopify exposes Nomand's daylight sampling rule through a small pure helper so
   the host can regression-test light and dark behavior without mounting WebGL.
+- Sonnet keeps Folia's lazy Pixi v8 runtime and full scene/tuning implementation;
+  Scopify adapts its i18n keys, persists its tuning bundle, and owns the one-time
+  performance-warning dialog at the host boundary.
 
 `.vendor-closure.ps1` records and reproduces the source dependency closure. Any
-upstream refresh must update the pinned commit above and review every host
-adaptation against that new snapshot.
+upstream refresh must record the reviewed commit above and review every host
+adaptation against that snapshot.
