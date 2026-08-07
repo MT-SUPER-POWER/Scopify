@@ -7,11 +7,12 @@ import { clearPageCache } from "@/lib/cache/pageCache";
 import { clearPlaybackCache, getPlaybackCacheStats } from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
-import { buildBackendBaseUrl } from "@/lib/web/backendUrl";
+import { normalizeBackendConfig, resolveBackendBaseUrl } from "@/lib/web/backendUrl";
 import { webConfig } from "@/lib/web/env";
-import { pingBackend } from "@/lib/web/waitForBackend";
+import { pingBackend, probeBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
 import type { WebConfig } from "@/types/config";
+import type { BackendPingResult } from "@/types/network";
 import type { SettingsConfig } from "@/types/settings";
 
 export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
@@ -44,12 +45,22 @@ function loadWebBackendOverride(): WebConfig["backend"] | null {
     const stored = localStorage.getItem(WEB_BACKEND_SETTINGS_KEY);
     if (!stored) return null;
     const parsed = JSON.parse(stored) as Partial<WebConfig["backend"]>;
-    if (typeof parsed.host !== "string" || typeof parsed.port !== "number") return null;
-    return {
+    const parsedPort =
+      typeof parsed.port === "number" || typeof parsed.port === "string"
+        ? Number(parsed.port)
+        : Number.NaN;
+    if (typeof parsed.host !== "string" || !Number.isFinite(parsedPort)) return null;
+    const protocol =
+      parsed.protocol === "https" || parsed.protocol === "http"
+        ? parsed.protocol
+        : webConfig.backend.protocol;
+    const resolved = normalizeBackendConfig({
+      ...webConfig.backend,
       host: parsed.host,
-      port: parsed.port,
-      protocol: parsed.protocol === "https" ? "https" : webConfig.backend.protocol,
-    };
+      port: parsedPort,
+      protocol,
+    });
+    return resolved.ok ? resolved.backend : null;
   } catch {
     return null;
   }
@@ -72,15 +83,21 @@ function buildWebConfig(): WebConfig {
 function validateBackendConfig(locale: WebConfig["app"]["locale"], backend: WebConfig["backend"]) {
   if (!backend.host.trim()) {
     toast.error(translate(locale, "settings.backendHost.required"));
-    return false;
+    return null;
   }
 
   if (!Number.isFinite(backend.port) || backend.port < 1 || backend.port > 65535) {
     toast.error(translate(locale, "settings.backendPort.invalid"));
-    return false;
+    return null;
   }
 
-  return true;
+  const resolved = normalizeBackendConfig(backend);
+  if (!resolved.ok) {
+    toast.error(translate(locale, "settings.backendInvalid", { message: resolved.message }));
+    return null;
+  }
+
+  return resolved;
 }
 
 function syncCloseActionPreference(closeAction: DesktopHostConfig["app"]["closeAction"]) {
@@ -111,6 +128,8 @@ export function useSettingsState() {
   const [isSaving, setIsSaving] = useState(false);
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [isClearingPlaybackCache, setIsClearingPlaybackCache] = useState(false);
+  const [isPingingBackend, setIsPingingBackend] = useState(false);
+  const [backendPingResult, setBackendPingResult] = useState<BackendPingResult | null>(null);
   const [playbackCacheStats, setPlaybackCacheStats] = useState<{
     entryCount: number;
     cacheDir: string | null;
@@ -157,6 +176,7 @@ export function useSettingsState() {
     key: K,
     value: WebConfig[S][K],
   ) => {
+    if (section === "backend" || section === "network") setBackendPingResult(null);
     setConfig((current) =>
       current
         ? {
@@ -168,6 +188,40 @@ export function useSettingsState() {
           }
         : current,
     );
+  };
+
+  const handlePingBackend = async () => {
+    if (!config || isPingingBackend) return;
+
+    const backendUrl = resolveBackendBaseUrl(config.web.backend);
+    if (!backendUrl.ok) {
+      toast.error(
+        translate(config.web.app.locale, "settings.backendInvalid", {
+          message: backendUrl.message,
+        }),
+      );
+      return;
+    }
+
+    const timeout =
+      Number.isFinite(config.web.network.timeout) && config.web.network.timeout > 0
+        ? config.web.network.timeout
+        : 10000;
+    setIsPingingBackend(true);
+    setBackendPingResult(null);
+    try {
+      setBackendPingResult(await probeBackend(backendUrl.url, timeout));
+    } catch (error) {
+      console.error("[Settings] failed to ping backend:", error);
+      setBackendPingResult({
+        latencyMs: 0,
+        reachable: false,
+        reason: "network",
+        url: backendUrl.url,
+      });
+    } finally {
+      setIsPingingBackend(false);
+    }
   };
 
   const handleDesktopChange = <
@@ -199,7 +253,13 @@ export function useSettingsState() {
       return;
     }
 
-    if (!validateBackendConfig(config.web.app.locale, config.web.backend)) return;
+    const resolvedBackend = validateBackendConfig(config.web.app.locale, config.web.backend);
+    if (!resolvedBackend) return;
+
+    const nextWebConfig: WebConfig = {
+      ...config.web,
+      backend: resolvedBackend.backend,
+    };
 
     setIsSaving(true);
     try {
@@ -208,17 +268,17 @@ export function useSettingsState() {
         : null;
       if (runtime.isDesktop && !savedDesktopConfig) return;
 
-      localStorage.setItem(WEB_NETWORK_SETTINGS_KEY, JSON.stringify(config.web.network));
-      localStorage.setItem(WEB_BACKEND_SETTINGS_KEY, JSON.stringify(config.web.backend));
-      setLocale(config.web.app.locale);
-      emitWebConfigUpdated(config.web);
+      localStorage.setItem(WEB_NETWORK_SETTINGS_KEY, JSON.stringify(nextWebConfig.network));
+      localStorage.setItem(WEB_BACKEND_SETTINGS_KEY, JSON.stringify(nextWebConfig.backend));
+      setLocale(nextWebConfig.app.locale);
+      emitWebConfigUpdated(nextWebConfig);
 
-      const nextConfig = { desktop: savedDesktopConfig, web: config.web };
+      const nextConfig = { desktop: savedDesktopConfig, web: nextWebConfig };
       setOriginalConfig(nextConfig);
       setConfig(nextConfig);
       setIsModalOpen(false);
       if (savedDesktopConfig) syncCloseActionPreference(savedDesktopConfig.app.closeAction);
-      toast.success(translate(config.web.app.locale, "settings.saveSuccess"));
+      toast.success(translate(nextWebConfig.app.locale, "settings.saveSuccess"));
 
       if (
         savedDesktopConfig &&
@@ -228,10 +288,11 @@ export function useSettingsState() {
         runtime.app.relaunch();
       }
 
-      const backendUrl = buildBackendBaseUrl(config.web.backend);
-      if (!(await pingBackend(backendUrl))) {
+      if (!(await pingBackend(resolvedBackend.url, nextWebConfig.network.timeout))) {
         toast.warning(
-          translate(config.web.app.locale, "settings.backendUnreachable", { url: backendUrl }),
+          translate(nextWebConfig.app.locale, "settings.backendUnreachable", {
+            url: resolvedBackend.url,
+          }),
           { duration: 8000 },
         );
       }
@@ -296,5 +357,8 @@ export function useSettingsState() {
     isClearingPlaybackCache,
     playbackCacheStats,
     handleClearPlaybackCache,
+    backendPingResult,
+    isPingingBackend,
+    handlePingBackend,
   };
 }

@@ -18,6 +18,25 @@ export interface ClassifiedNetworkError {
 
 export type NetworkErrorKind = "backend" | "business" | "network" | "offline" | "timeout";
 
+export type BackendPingFailureReason = "invalid-response" | "network" | "server" | "timeout";
+
+export interface BackendPingSuccess {
+  latencyMs: number;
+  reachable: true;
+  url: string;
+  version: string | null;
+}
+
+export interface BackendPingFailure {
+  latencyMs: number;
+  reachable: false;
+  reason: BackendPingFailureReason;
+  status?: number;
+  url: string;
+}
+
+export type BackendPingResult = BackendPingFailure | BackendPingSuccess;
+
 export interface ScopifyRequestConfig<D = unknown> extends AxiosRequestConfig<D> {
   /** Operation context appended to the final transport failure event. */
   errorContext?: LogMetadata;

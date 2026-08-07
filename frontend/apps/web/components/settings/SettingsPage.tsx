@@ -64,9 +64,12 @@ const SettingsPage = () => {
           </TabsContent>
           <TabsContent value="network">
             <NetworkSettingsTab
+              backendPingResult={settings.backendPingResult}
               config={settings.config}
+              isPingingBackend={settings.isPingingBackend}
               onWebChange={settings.handleWebChange}
               onDesktopChange={settings.handleDesktopChange}
+              onPingBackend={settings.handlePingBackend}
             />
           </TabsContent>
           <TabsContent value="storage">

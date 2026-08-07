@@ -11,7 +11,7 @@ import { notifyExpiredMusicSession } from "@/lib/query/session";
 import { runtime } from "@/lib/runtime";
 
 import { ApiError, toApiError } from "./apiError";
-import { buildBackendBaseUrl } from "./backendUrl";
+import { buildBackendBaseUrl, normalizeBackendConfig } from "./backendUrl";
 import { logger, webConfig } from "./env";
 import { reportFailure } from "./errorTracking";
 
@@ -22,12 +22,22 @@ function loadInitialBackendConfig(): WebConfig["backend"] {
     const stored = localStorage.getItem(WEB_BACKEND_SETTINGS_KEY);
     if (!stored) return webConfig.backend;
     const parsed = parseJsonObject(stored);
-    if (typeof parsed.host === "string" && typeof parsed.port === "number") {
-      return {
+    const parsedPort =
+      typeof parsed.port === "number" || typeof parsed.port === "string"
+        ? Number(parsed.port)
+        : Number.NaN;
+    if (typeof parsed.host === "string" && Number.isFinite(parsedPort)) {
+      const protocol =
+        parsed.protocol === "https" || parsed.protocol === "http"
+          ? parsed.protocol
+          : webConfig.backend.protocol;
+      const resolved = normalizeBackendConfig({
+        ...webConfig.backend,
         host: parsed.host,
-        port: parsed.port,
-        protocol: parsed.protocol === "https" ? "https" : webConfig.backend.protocol,
-      };
+        port: parsedPort,
+        protocol,
+      });
+      if (resolved.ok) return resolved.backend;
     }
   } catch {
     // Ignore malformed local cache.
@@ -48,8 +58,9 @@ export function getBackendBaseUrl() {
 
 function applyRuntimeConfig(config: Pick<WebConfig, "backend" | "network">) {
   runtimeNetworkConfig = { ...config.network };
-  runtimeBackendConfig = { ...config.backend };
-  baseURL = buildBackendBaseUrl(runtimeBackendConfig);
+  const resolved = normalizeBackendConfig(config.backend);
+  runtimeBackendConfig = resolved.ok ? resolved.backend : { ...config.backend };
+  baseURL = resolved.ok ? resolved.url : buildBackendBaseUrl(runtimeBackendConfig);
   request.defaults.baseURL = baseURL;
 }
 

@@ -635,15 +635,15 @@ export interface TranslateFn {
    */
   (key: "settings.backendHost.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 后端 API 所在的主机地址。修改后保存即生效，无需重启应用。
-   * zh-TW: 後端 API 所在的主機位址。修改後儲存即生效，無需重啟應用。
-   * en-US: Host where the backend API runs. Changes take effect immediately after saving, no restart required.
+   * zh-CN: 可填域名、带端口地址或完整 http(s):// 地址；保存和 Ping 时会自动匹配协议、主机和端口。
+   * zh-TW: 可填網域、含埠位址或完整 http(s):// 位址；儲存和 Ping 時會自動匹配協定、主機和埠。
+   * en-US: Enter a domain, host with port, or full http(s):// URL; protocol, host, and port are normalized on save and Ping.
    */
   (key: "settings.backendHost.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 例如 127.0.0.1 或 192.168.1.10
-   * zh-TW: 例如 127.0.0.1 或 192.168.1.10
-   * en-US: e.g. 127.0.0.1 or 192.168.1.10
+   * zh-CN: 例如 127.0.0.1 或 https://api.example.com
+   * zh-TW: 例如 127.0.0.1 或 https://api.example.com
+   * en-US: e.g. 127.0.0.1 or https://api.example.com
    */
   (key: "settings.backendHost.placeholder", params?: TranslationParams): string;
   /**
@@ -682,6 +682,60 @@ export interface TranslateFn {
    * en-US: Backend service is unreachable at {{url}}. Make sure the backend is running or update the host and port.
    */
   (key: "settings.backendUnreachable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接测试
+   * zh-TW: 連線測試
+   * en-US: Connection Test
+   */
+  (key: "settings.backendPing.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用当前填写的地址发送 Ping 请求，验证远端 API 是否可用。
+   * zh-TW: 使用目前填寫的位址傳送 Ping 請求，確認遠端 API 是否可用。
+   * en-US: Send a Ping request to the current address to verify that the remote API is available.
+   */
+  (key: "settings.backendPing.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: Ping
+   * zh-TW: Ping
+   * en-US: Ping
+   */
+  (key: "settings.backendPing.button", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检测中...
+   * zh-TW: 檢查中...
+   * en-US: Checking...
+   */
+  (key: "settings.backendPing.checking", params?: TranslationParams): string;
+  /**
+   * zh-CN: 可用 · {{latency}} ms
+   * zh-TW: 可用 · {{latency}} ms
+   * en-US: Available · {{latency}} ms
+   */
+  (key: "settings.backendPing.success", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请求超时
+   * zh-TW: 請求逾時
+   * en-US: Request timed out
+   */
+  (key: "settings.backendPing.timeout", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法连接
+   * zh-TW: 無法連線
+   * en-US: Unable to connect
+   */
+  (key: "settings.backendPing.networkError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 服务返回 {{status}}
+   * zh-TW: 服務回傳 {{status}}
+   * en-US: Service returned {{status}}
+   */
+  (key: "settings.backendPing.serverError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 响应不是有效的后端服务
+   * zh-TW: 回應不是有效的後端服務
+   * en-US: Response is not a valid backend service
+   */
+  (key: "settings.backendPing.invalidResponse", params?: TranslationParams): string;
   /**
    * zh-CN: 正在加载设置...
    * zh-TW: 正在載入設定...
