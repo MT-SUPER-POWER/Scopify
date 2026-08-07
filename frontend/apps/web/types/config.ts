@@ -13,7 +13,7 @@ export const DEFAULT_WEB_CONFIG = {
   },
   network: {
     randomCNIP: "false",
-    timeout: 5000,
+    timeout: 10000,
   },
 } as const;
 

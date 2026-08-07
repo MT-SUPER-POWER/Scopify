@@ -36,7 +36,7 @@ export async function waitForBackend(
  * @param url 后端地址
  * @param timeout 单次请求超时 (ms)
  */
-export async function pingBackend(url: string, timeout: number = 3000): Promise<boolean> {
+export async function pingBackend(url: string, timeout: number = 10000): Promise<boolean> {
   const pingUrl = url.endsWith("/") ? `${url}inner/version` : `${url}/inner/version`;
   try {
     await axios.get(pingUrl, { timeout });
