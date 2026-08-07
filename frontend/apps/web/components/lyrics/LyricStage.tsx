@@ -158,11 +158,13 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
             },
           }}
           lyricsFontScale={settings.fontScale}
+          subtitleFontScale={settings.subtitleFontScale}
           subtitleOverlayOpacity={settings.subtitleOverlayOpacity}
           subtitleOverlayBackground={settings.subtitleOverlayBackground}
           isPlayerChromeHidden={isPlayerChromeHidden}
           hideTranslationSubtitle={settings.hideTranslationSubtitle}
           showSubtitleTranslation={settings.showSubtitleTranslation}
+          subtitleContentMode={settings.subtitleContentMode}
           paused={!bridge.isPlaying}
           onBack={onClose}
           cappellaCustomAvatarImages={assets.cappellaCustomAvatarImages}

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   CaptionsOff,
-  Languages,
   Monitor,
   PanelTop,
   RotateCcw,
@@ -20,6 +19,7 @@ import {
   type PartitaTuning,
   type PendoloTuning,
   type SonnetTuning,
+  type SubtitleContentMode,
   type Theme,
   type TiltTuning,
   type DioramaTuning,
@@ -94,6 +94,8 @@ interface VisPlaygroundSettingsPanelProps {
   fontScale: number;
   fontScaleOptions: PresetOption<number>[];
   onFontScaleChange: (fontScale: number) => void;
+  subtitleFontScale: number;
+  onSubtitleFontScaleChange: (fontScale: number) => void;
   onResetCommonSettings?: () => void;
   classicTuning: ClassicTuning;
   onClassicTuningChange?: (patch: Partial<ClassicTuning>) => void;
@@ -130,8 +132,9 @@ interface VisPlaygroundSettingsPanelProps {
   isLoadingMonetPortraitImage?: boolean;
   hideTranslationSubtitle: boolean;
   onToggleHideTranslationSubtitle?: (hidden: boolean) => void;
-  showSubtitleTranslation: boolean;
   onToggleShowSubtitleTranslation?: (shown: boolean) => void;
+  subtitleContentMode: SubtitleContentMode;
+  onSubtitleContentModeChange?: (mode: SubtitleContentMode) => void;
   subtitleOverlayOpacity: number;
   onSubtitleOverlayOpacityChange?: (opacity: number) => void;
   subtitleOverlayBackground: boolean;
@@ -344,6 +347,8 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
     fontScale,
     fontScaleOptions,
     onFontScaleChange,
+    subtitleFontScale,
+    onSubtitleFontScaleChange,
     onResetCommonSettings,
     classicTuning,
     onClassicTuningChange,
@@ -379,8 +384,9 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
     isLoadingMonetPortraitImage,
     hideTranslationSubtitle,
     onToggleHideTranslationSubtitle,
-    showSubtitleTranslation,
     onToggleShowSubtitleTranslation,
+    subtitleContentMode,
+    onSubtitleContentModeChange,
     subtitleOverlayOpacity,
     onSubtitleOverlayOpacityChange,
     subtitleOverlayBackground,
@@ -750,13 +756,26 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               icon={CaptionsOff}
             />
 
-            <ToggleRow
-              label={t("folia.options.showSubtitleTranslation")}
-              description={t("folia.options.showSubtitleTranslationDesc")}
-              checked={showSubtitleTranslation}
-              onChange={onToggleShowSubtitleTranslation}
+            <PresetGroup<SubtitleContentMode>
+              label={t("folia.options.subtitleContentMode")}
+              value={subtitleContentMode}
+              options={[
+                {
+                  label: t("folia.options.subtitleContentTranslation"),
+                  value: "translation",
+                },
+                {
+                  label: t("folia.options.subtitleContentRomanization"),
+                  value: "romanization",
+                },
+                { label: t("folia.options.subtitleContentNone"), value: "none" },
+              ]}
+              onChange={
+                onSubtitleContentModeChange ??
+                ((mode) => onToggleShowSubtitleTranslation?.(mode !== "none"))
+              }
+              isDaylight={isDaylight}
               theme={theme}
-              icon={Languages}
             />
 
             <ToggleRow
@@ -776,6 +795,30 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               theme={theme}
               icon={Monitor}
             />
+
+            <div className="space-y-2">
+              <div
+                className="flex items-center justify-between text-sm"
+                style={{ color: theme.primaryColor }}
+              >
+                <span>{t("folia.options.subtitleFontScale")}</span>
+                <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
+                  {Math.round(subtitleFontScale * 100)}%
+                </span>
+              </div>
+              <input
+                aria-label={t("folia.options.subtitleFontScale")}
+                type="range"
+                min="0.85"
+                max="1.4"
+                step="0.05"
+                value={subtitleFontScale}
+                onChange={(event) => onSubtitleFontScaleChange(parseFloat(event.target.value))}
+                onPointerDown={onSliderPointerDown}
+                onPointerUp={onSliderCommit}
+                className={rangeInputClass}
+              />
+            </div>
 
             {!subtitleFontInheritsLyrics && (
               <div className="space-y-4">

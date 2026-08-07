@@ -18,6 +18,7 @@ import {
   type PartitaTuning,
   type PendoloTuning,
   type SonnetTuning,
+  type SubtitleContentMode,
   type Theme,
   type TiltTuning,
   type VisualizerMode,
@@ -61,11 +62,13 @@ export interface VisualizerSharedProps {
   visualizerOpacity?: number;
   background?: VisualizerBackgroundConfig;
   lyricsFontScale?: number;
+  subtitleFontScale?: number;
   subtitleOverlayOpacity?: number;
   subtitleOverlayBackground?: boolean;
   isPlayerChromeHidden?: boolean;
   hideTranslationSubtitle?: boolean;
   showSubtitleTranslation?: boolean;
+  subtitleContentMode?: SubtitleContentMode;
   paused?: boolean;
   onBack?: () => void;
   alwaysShowBackButton?: boolean;

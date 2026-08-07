@@ -70,11 +70,13 @@ export function FoliaSettingsPreview({
             },
           }}
           lyricsFontScale={settings.fontScale}
+          subtitleFontScale={settings.subtitleFontScale}
           subtitleOverlayOpacity={settings.subtitleOverlayOpacity}
           subtitleOverlayBackground={settings.subtitleOverlayBackground}
           isPlayerChromeHidden
           hideTranslationSubtitle={settings.hideTranslationSubtitle}
           showSubtitleTranslation={settings.showSubtitleTranslation}
+          subtitleContentMode={settings.subtitleContentMode}
           paused={false}
           cappellaCustomAvatarImages={assets.cappellaCustomAvatarImages}
           cappellaCustomEmojiImages={assets.cappellaCustomEmojiImages}

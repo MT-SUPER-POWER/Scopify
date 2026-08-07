@@ -5,6 +5,7 @@ import type {
   LyricData,
   MonetBackgroundTuning,
   NomandBackgroundTuning,
+  SubtitleContentMode,
   Theme,
   UrlBackgroundItem,
   VisualizerBackgroundMode,
@@ -55,9 +56,11 @@ export interface FoliaStageSettings {
   mode: LyricVisualizerMode;
   showSubtitleTranslation: boolean;
   sonnetPerformanceWarningDismissed: boolean;
+  subtitleContentMode: SubtitleContentMode;
   subtitleFontFallbackFamilies: string[];
   subtitleFontFamily: string | null;
   subtitleFontInheritsLyrics: boolean;
+  subtitleFontScale: number;
   subtitleFontStyle: Theme["fontStyle"];
   subtitleOverlayBackground: boolean;
   subtitleOverlayOpacity: number;

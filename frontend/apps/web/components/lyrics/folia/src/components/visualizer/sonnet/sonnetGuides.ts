@@ -1,6 +1,6 @@
 import type { Theme } from "../../../types";
 import type { SonnetSemanticSegment } from "./types";
-import type { SonnetTypographyPlacement } from "./sonnetTypographyLayout";
+import { isSonnetEmphasisRole, type SonnetTypographyPlacement } from "./sonnetTypographyLayout";
 
 // src/components/visualizer/sonnet/sonnetGuides.ts
 // Creates short-lived semantic lead-in curves and locator marks before text arrival.
@@ -44,7 +44,7 @@ export const createSonnetGuide = (
   // Container for geometric decorations
   const shapesContainer = new pixi.Container();
 
-  const isHero = placement.role === "hero";
+  const isHero = isSonnetEmphasisRole(placement.role);
   const fallbackDirection = placement.timingPhase < 0.5 ? -1 : 1;
   const startX = placement.enterX || fallbackDirection * fontSize * 1.8;
   const startY = placement.enterY || -fontSize * 0.9;

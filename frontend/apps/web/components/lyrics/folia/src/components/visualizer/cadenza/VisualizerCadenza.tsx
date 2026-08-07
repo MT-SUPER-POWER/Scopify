@@ -1343,11 +1343,13 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
     showText = true,
     cadenzaTuning = DEFAULT_CADENZA_TUNING,
     lyricsFontScale = 1,
+    subtitleFontScale = 1,
     subtitleOverlayOpacity,
     subtitleOverlayBackground,
     isPlayerChromeHidden = false,
     hideTranslationSubtitle = false,
     showSubtitleTranslation = true,
+    subtitleContentMode,
   } = props;
   const { t } = useI18n();
   const [viewport, setViewport] = useState({ width: 0, height: 0 });
@@ -1842,11 +1844,13 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
         subtitleTheme={subtitleTheme}
         translationFontSize={translationFontSize}
         upcomingFontSize={upcomingFontSize}
+        subtitleFontScale={subtitleFontScale}
         subtitleOverlayOpacity={subtitleOverlayOpacity}
         subtitleOverlayBackground={subtitleOverlayBackground}
         isPlayerChromeHidden={isPlayerChromeHidden}
         hideTranslationSubtitle={hideTranslationSubtitle}
         showSubtitleTranslation={showSubtitleTranslation}
+        subtitleContentMode={subtitleContentMode}
       />
     </VisualizerShell>
   );

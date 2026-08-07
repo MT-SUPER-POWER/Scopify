@@ -6,13 +6,32 @@ import { resolveSonnetSegmentDepth, resolveSonnetSegmentNormalOffset } from "./s
 import { hashSonnetSeed } from "./sonnetRandom";
 import { buildSonnetStaffView } from "./sonnetStaffView";
 import { buildSonnetTextFixedGeo } from "./sonnetTextFixedGeo";
+import { resolveSonnetCameraTrackingGlyphs } from "./sonnetCameraTracking";
 import { createSonnetGuide, type SonnetGuideView } from "./sonnetGuides";
+import {
+  buildSonnetFrameDecor,
+  resolveSonnetFrameDecorSpec,
+  type SonnetFrameDecorView,
+} from "./sonnetFrameDecor";
 import type { SonnetSemanticSegment } from "./types";
-import type { SonnetSegmentRole, SonnetTypographyPlacement } from "./sonnetTypographyLayout";
+import {
+  isSonnetEmphasisRole,
+  type SonnetSegmentRole,
+  type SonnetTypographyPlacement,
+} from "./sonnetTypographyLayout";
 
 // src/components/visualizer/sonnet/sonnetTextViewBuilder.ts
 // Creates parser-timed core/halo glyph pairs and their semantic guide view.
 type PixiModule = typeof import("pixi.js");
+
+export interface GlyphGhostView {
+  node: import("pixi.js").Text;
+  // Full-spread offset in wrapper-local px and the layer's peak alpha, both
+  // precomputed so the runtime only scales by the envelope.
+  dirX: number;
+  dirY: number;
+  alphaBase: number;
+}
 
 export interface GlyphView {
   display: import("pixi.js").Container;
@@ -20,6 +39,8 @@ export interface GlyphView {
   caCyan?: import("pixi.js").Text;
   caRed?: import("pixi.js").Text;
   caOffset?: number;
+  ghosts?: GlyphGhostView[];
+  ghostDuration?: number;
   baseX: number;
   baseY: number;
   enterX: number;
@@ -47,7 +68,9 @@ export interface SegmentView {
   vertical: boolean;
   timingPhase: number;
   guide: SonnetGuideView;
+  frameDecor?: SonnetFrameDecorView | null;
   glyphs: GlyphView[];
+  trackingGlyphs: GlyphView[];
 }
 
 interface SonnetTextViewOptions {
@@ -88,17 +111,7 @@ export const buildSonnetTextView = (
 ): SegmentView => {
   const { Text, TextStyle } = pixi;
   const { segment, placement: originalPlacement } = options;
-  const isAscii = Array.from(segment.text.trim()).every(
-    (character) => (character.codePointAt(0) ?? 0x80) <= 0x7f,
-  );
   const placement = { ...originalPlacement };
-
-  // In vertical layout, pure English (ASCII) words should not be stacked vertically letter-by-letter.
-  // Instead, they should be laid out horizontally, and the entire word block rotated 90 degrees clockwise.
-  if (placement.vertical && isAscii && segment.text.length > 1) {
-    placement.vertical = false;
-    placement.rotation += Math.PI / 2;
-  }
 
   const fontSize = options.baseFontSize * placement.fontScale;
   const normalOffsetSeed = hashSonnetSeed(
@@ -129,12 +142,12 @@ export const buildSonnetTextView = (
   // The glow and decoration edges use keyword colors, or accent colors for support text
   const glowColor = isKeyword
     ? isKeyword.color
-    : placement.role === "hero"
+    : isSonnetEmphasisRole(placement.role)
       ? options.theme.primaryColor
       : options.theme.accentColor;
 
   const isDecoration = placement.role === "decoration";
-  const renderWeight = placement.role === "hero" ? "900" : isDecoration ? "300" : "700";
+  const renderWeight = isSonnetEmphasisRole(placement.role) ? "900" : isDecoration ? "300" : "700";
   const fontSpec = `${renderWeight} ${fontSize}px ${options.fontFamily}`;
 
   // Parallax depth assignment
@@ -165,6 +178,37 @@ export const buildSonnetTextView = (
     dropShadow: baseDropShadow,
     padding: baseDropShadow ? Math.max(20, baseDropShadow.blur * 2.5) : 0,
   });
+
+  // Semi-hero echo ghosts: hollow (stroke-only) copies that split along the
+  // normal of the layout flow direction, fade in and vanish quickly. Peak alpha
+  // is kept low so they read as a faint afterimage, never competing with the core.
+  const isSemiHero = placement.role === "semi-hero";
+  const ghostStyle = isSemiHero
+    ? new TextStyle({
+        fontFamily: options.fontFamily,
+        fontWeight: renderWeight as import("pixi.js").TextStyleFontWeight,
+        fontSize,
+        fill: "transparent",
+        stroke: { color: glowColor, width: Math.max(1, Math.min(8, fontSize * 0.006)) },
+        align: "center",
+      })
+    : undefined;
+  // Normal of the flow direction in screen space, converted into wrapper-local
+  // coordinates so the ghosts inherit the wrapper's rotation correctly.
+  const ghostNormal = (() => {
+    const screen = placement.layoutDirection === "vertical" ? { x: 1, y: 0 } : { x: 0, y: 1 };
+    const cosine = Math.cos(-placement.rotation);
+    const sine = Math.sin(-placement.rotation);
+    return {
+      x: screen.x * cosine - screen.y * sine,
+      y: screen.x * sine + screen.y * cosine,
+    };
+  })();
+  const ghostSpread = fontSize * 0.85;
+  const ghostDuration = Math.min(
+    0.7,
+    Math.max(0.4, (options.shotEndTime - options.shotStartTime) * 0.12 + 0.1),
+  );
 
   if (segment.text === "♪") {
     const staffView = buildSonnetStaffView(
@@ -201,6 +245,7 @@ export const buildSonnetTextView = (
       timingPhase: placement.timingPhase,
       guide,
       glyphs: [staffView],
+      trackingGlyphs: [staffView],
     };
   }
 
@@ -229,7 +274,7 @@ export const buildSonnetTextView = (
     let caOffsetValue: number | undefined;
 
     if (!isDecoration) {
-      const isHero = placement.role === "hero";
+      const isHero = isSonnetEmphasisRole(placement.role);
       const offset = fontSize * (isHero ? 0.025 : 0.01);
       caOffsetValue = offset;
 
@@ -252,6 +297,29 @@ export const buildSonnetTextView = (
 
     wrapper.addChild(display);
 
+    // Echo ghosts sit behind the core glyph; per-ghost dir/alpha precomputed.
+    // Both echoes stack on one normal side (deterministic per segment) so the
+    // afterimage reads as a directional streak rather than a symmetric blur.
+    let ghosts: GlyphGhostView[] | undefined;
+    if (ghostStyle) {
+      ghosts = [];
+      const side = normalOffsetSeed % 2 === 0 ? 1 : -1;
+      for (let layer = 1; layer <= 2; layer++) {
+        const ghost = new Text({ text: glyph.char, style: ghostStyle });
+        ghost.anchor.set(0.5);
+        ghost.alpha = 0;
+        ghost.visible = false;
+        wrapper.addChildAt(ghost, 0);
+        const factor = layer === 1 ? 1 : 1.7;
+        ghosts.push({
+          node: ghost,
+          dirX: ghostNormal.x * side * factor * ghostSpread,
+          dirY: ghostNormal.y * side * factor * ghostSpread,
+          alphaBase: layer === 1 ? 0.3 : 0.16,
+        });
+      }
+    }
+
     options.textLayer.addChild(wrapper);
 
     return {
@@ -260,6 +328,8 @@ export const buildSonnetTextView = (
       caCyan: caCyanNode,
       caRed: caRedNode,
       caOffset: caOffsetValue,
+      ghosts,
+      ghostDuration: ghosts ? ghostDuration : undefined,
       baseX: glyph.baseX,
       baseY: glyph.baseY,
       enterX: glyph.enterX,
@@ -273,17 +343,21 @@ export const buildSonnetTextView = (
     };
   });
 
-  // Randomized background geometry accompanying specific text segments
+  // Randomized background geometry accompanying specific text segments.
+  // Kept rarer than before and mutually exclusive with the frame decor so the
+  // two outline-style layers never stack on the same segment.
   const isChorusParagraph = options.paragraphKind === "chorus";
   const textSeed =
     segment.text.split("").reduce((a, b) => a + b.charCodeAt(0), 0) + options.segmentIndex * 13;
   const isChorusEffect = isChorusParagraph || textSeed % 100 < 35;
-  const shapeThreshold = isChorusEffect ? 40 : 25; // Higher chance in chorus effect
+  const shapeThreshold = isChorusEffect ? 26 : 15; // Higher chance in chorus effect
+  const hasFrameDecor = resolveSonnetFrameDecorSpec(segment).applied;
   const shouldAddBgShape =
     options.showFixedGeo &&
     textSeed % 100 < shapeThreshold &&
     !isDecoration &&
     segment.isWordLike &&
+    !hasFrameDecor &&
     glyphs.length > 0;
 
   if (shouldAddBgShape) {
@@ -333,6 +407,20 @@ export const buildSonnetTextView = (
   if (!isDecoration) {
     options.guideLayer.addChild(guide.container);
   }
+
+  // Decorative open frame (30% of segments), kept behind the glyphs.
+  const frameDecor = buildSonnetFrameDecor(pixi, {
+    segment,
+    placement,
+    theme: options.theme,
+    fontSize,
+    shotStartTime: options.shotStartTime,
+    shotEndTime: options.shotEndTime,
+    firstGlyphStartTime:
+      glyphs.find((glyph) => glyph.isTextGlyph !== false)?.startTime ?? segment.startTime,
+  });
+  if (frameDecor) options.textLayer.addChildAt(frameDecor.container, 0);
+
   return {
     segmentIndex: options.segmentIndex,
     displayText: segment.text,
@@ -346,6 +434,8 @@ export const buildSonnetTextView = (
     vertical: placement.vertical,
     timingPhase: placement.timingPhase,
     guide,
+    frameDecor,
     glyphs,
+    trackingGlyphs: resolveSonnetCameraTrackingGlyphs(glyphs),
   };
 };

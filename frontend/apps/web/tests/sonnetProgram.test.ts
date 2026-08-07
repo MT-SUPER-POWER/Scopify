@@ -6,6 +6,8 @@ import {
   compileSonnetProgram,
   findSonnetParagraphIndexAtTime,
   resolveSonnetParagraphGapThreshold,
+  SONNET_DEBUG_SHOT_KIND,
+  SONNET_SHOT_KINDS,
 } from "@/components/lyrics/folia/src/components/visualizer/sonnet/sonnetProgram";
 
 const line = (
@@ -17,6 +19,12 @@ const line = (
 ): Line => ({ fullText, startTime, endTime, words, ...extra });
 
 describe("Sonnet program compiler", () => {
+  test("registers poster blocks once and leaves the debug override disabled", () => {
+    expect(SONNET_SHOT_KINDS).toContain("poster-blocks");
+    expect(new Set(SONNET_SHOT_KINDS).size).toBe(SONNET_SHOT_KINDS.length);
+    expect(SONNET_DEBUG_SHOT_KIND).toBeNull();
+  });
+
   test("preserves source text and parser timing for CJK and repeated Latin words", () => {
     const cjk = line("世界， 再见！", 1, 4, [
       { text: "世界", startTime: 1, endTime: 2 },
@@ -55,7 +63,9 @@ describe("Sonnet program compiler", () => {
     expect(first).toEqual(second);
     expect(first.paragraphs.every((paragraph) => paragraph.lines.length <= 6)).toBe(true);
     expect(first.paragraphs.some((paragraph) => paragraph.kind === "chorus")).toBe(true);
-    shotKinds.slice(1).forEach((kind, index) => expect(kind).not.toBe(shotKinds[index]));
+    if (SONNET_DEBUG_SHOT_KIND === null) {
+      shotKinds.slice(1).forEach((kind, index) => expect(kind).not.toBe(shotKinds[index]));
+    }
     const finalParagraph = first.paragraphs.at(-1);
     expect(finalParagraph).toBeDefined();
     if (finalParagraph) {

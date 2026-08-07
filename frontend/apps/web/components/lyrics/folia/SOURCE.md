@@ -16,6 +16,15 @@ the original full-copy baseline:
   v0.6.10.
 - `ed7b29732168a95e821cd6f149a3fefd8bb3e54e` — measure Cappella message height
   from the actual wrapped lyric bubble and reserve a safe lower viewport area.
+- `bb70a1c` through `40f0d13` — update Sonnet to the reviewed v2 layout and
+  camera pipeline, including ShotFlow, poster blocks, semi-hero typography and
+  artifacts, measured frame decoration, deterministic camera tracking, expanded
+  MG scenes, and fixed-geometry growth. The later full-scene post-process series
+  beginning at `5d61d77` remains intentionally excluded.
+- `a0481ff`, `c939b1d`, `0b98951`, `581b7a0`, `3a36230`, and `d71d949` — add
+  translation / romanization / hidden subtitle modes, independent subtitle
+  scaling, the theme-aware fading subtitle backdrop, the iOS compositing fix,
+  and complete Sonnet subtitle-settings wiring.
 
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.

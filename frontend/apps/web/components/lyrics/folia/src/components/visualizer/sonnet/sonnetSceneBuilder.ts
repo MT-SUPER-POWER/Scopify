@@ -8,9 +8,15 @@ import {
   createSonnetHaloLayer,
   resolveSonnetPostProcessProfile,
 } from "./sonnetPostProcess";
-import { resolveSonnetTypographyLayout } from "./sonnetTypographyLayout";
+import { isSonnetLayoutSegment, resolveSonnetTypographyLayout } from "./sonnetTypographyLayout";
 import { buildSonnetTextView, type SegmentView } from "./sonnetTextViewBuilder";
 import { createSonnetGlitchEffect, type SonnetGlitchEffect } from "./sonnetGlitchFilter";
+import {
+  buildSonnetMeasuredBoundsDebug,
+  createSonnetShotDebugInfo,
+  type SonnetDebugShotInfo,
+} from "./sonnetDebug";
+import { resolveSonnetGeoVariant } from "./sonnetSpatialMgGeometry";
 
 // src/components/visualizer/sonnet/sonnetSceneBuilder.ts
 // Builds one bounded paragraph scene; playback-time mutation remains in the runtime controller.
@@ -20,6 +26,7 @@ export interface ShotView {
   shot: SonnetShot;
   container: import("pixi.js").Container;
   segments: SegmentView[];
+  debugInfo: SonnetDebugShotInfo;
   baseX: number;
   baseY: number;
   basePivotX: number;
@@ -154,7 +161,7 @@ export const buildSonnetScene = (
       .map((lineIndex) => paragraph.lines.find((item) => item.sourceIndex === lineIndex))
       .filter(Boolean) as SonnetParagraph["lines"];
     const linesSegments = compiledLines
-      .map((line) => line.segments.filter((segment) => segment.text.length > 0))
+      .map((line) => line.segments.filter(isSonnetLayoutSegment))
       .filter((segs) => segs.length > 0);
     const segments = linesSegments.flat();
     const wordCount = Math.max(1, segments.filter((segment) => segment.isWordLike).length);
@@ -242,22 +249,52 @@ export const buildSonnetScene = (
       shotContainer.addChild(mask);
       shotContainer.mask = mask;
     }
+    // Debug overlay stays above the text and never feeds the bounds/mask math.
+    shotContainer.addChild(buildSonnetMeasuredBoundsDebug(pixi, placements));
+    const usesGeoMg = shot.kind === "type-impact" || shot.kind === "fragment-collage";
+    const debugInfo = createSonnetShotDebugInfo({
+      programSeed: options.programSeed,
+      paragraphId: paragraph.id,
+      paragraphKind: paragraph.kind,
+      shot,
+      shotIndex,
+      shotCount: paragraph.shots.length,
+      baseFontSize: fontSize,
+      wordCount,
+      geoVariant: usesGeoMg ? resolveSonnetGeoVariant(sceneSeed + shotIndex * 97) : null,
+      placements,
+      segmentTexts: segments.map((segment) => segment.text),
+    });
 
-    // Ensure camera always focuses precisely on the hero word, regardless of how large or skewed the layout is
+    // Poster blocks start centered before runtime tracking; other templates start on the hero word.
     const heroPlacement = placements.find((p) => p.role === "hero");
-    const focusX = heroPlacement ? heroPlacement.x : bounds.x + bounds.width / 2;
-    const focusY = heroPlacement ? heroPlacement.y : bounds.y + bounds.height / 2;
+    const focusX =
+      shot.kind === "poster-blocks"
+        ? 0
+        : heroPlacement
+          ? heroPlacement.x
+          : bounds.x + bounds.width / 2;
+    const focusY =
+      shot.kind === "poster-blocks"
+        ? 0
+        : heroPlacement
+          ? heroPlacement.y
+          : bounds.y + bounds.height / 2;
 
     shotContainer.pivot.set(focusX, focusY);
     shotContainer.position.set(
-      width * (0.5 + shot.camera.x),
-      height * (0.48 + shot.camera.y + (shotIndex % 2 ? 0.025 : -0.025)),
+      width * (shot.kind === "poster-blocks" ? 0.5 : 0.5 + shot.camera.x),
+      height *
+        (shot.kind === "poster-blocks"
+          ? 0.5
+          : 0.48 + shot.camera.y + (shotIndex % 2 ? 0.025 : -0.025)),
     );
     container.addChild(shotContainer);
     return {
       shot,
       container: shotContainer,
       segments: views,
+      debugInfo,
       baseX: shotContainer.x,
       baseY: shotContainer.y,
       basePivotX: focusX,

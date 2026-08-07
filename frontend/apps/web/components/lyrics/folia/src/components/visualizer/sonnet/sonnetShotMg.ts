@@ -5,7 +5,9 @@ import {
   drawSonnetSolidCuboid,
   drawSonnetTrapezoidPrism,
   drawSonnetTriangularPrism,
+  resolveSonnetHudRotationQuarterTurns,
   resolveSonnetGeoVariant,
+  resolveSonnetMoleculeVariant,
 } from "./sonnetSpatialMgGeometry";
 import {
   buildSonnetIconParticleIndices,
@@ -14,6 +16,8 @@ import {
   resolveSonnetIconEntryPhase,
 } from "./sonnetIcons";
 import { drawAdditionalSonnetShotMg } from "./sonnetAdditionalShotMg";
+import { SONNET_THEMED_GEO_VARIANT_START } from "./sonnetThemedShotMg";
+import { resolveSonnetShotMgBleed } from "./sonnetShotMgViewport";
 
 // src/components/visualizer/sonnet/sonnetShotMg.ts
 // Builds PV style high-density semantic decorative elements (HUD, Geometric Chaos, Particles)
@@ -41,6 +45,7 @@ class AnimatedGraphics {
   private currentLength = 0;
   private lastX = 0;
   private lastY = 0;
+  private staggerScheduled = false;
 
   constructor(pixi: PixiModule) {
     this.display = new pixi.Graphics();
@@ -194,19 +199,45 @@ class AnimatedGraphics {
     return this;
   }
 
+  // Assigns each stroke/fill its own deterministic time window so growth layers
+  // across the whole shot instead of everything finishing together. Golden-ratio
+  // slots spread the start times evenly (no aliasing clusters), per-command jitter
+  // varies the durations, and every span is clamped so all commands complete
+  // exactly at progress 1. Pure function of command order — seek-safe.
+  private scheduleStagger() {
+    const GOLDEN = 0.6180339887498949;
+    let strokeIndex = 0;
+    let fillIndex = 0;
+    for (const cmd of this.commands) {
+      const isStroke = cmd.type === "stroke";
+      const index = isStroke ? strokeIndex++ : fillIndex++;
+      const slot = (index * GOLDEN) % 1;
+      const jitter = ((index * 2654435761) >>> 0) / 4294967296;
+      const delay = slot * (isStroke ? 0.5 : 0.45);
+      const span = isStroke ? 0.32 + jitter * 0.26 : 0.4 + jitter * 0.25;
+      cmd.staggerDelay = delay;
+      cmd.staggerSpan = Math.min(span, 1 - delay);
+    }
+    this.staggerScheduled = true;
+  }
+
   update(rawProgress: number) {
     this.display.clear();
-    let strokeIndex = 0;
+    if (!this.staggerScheduled) this.scheduleStagger();
     for (const cmd of this.commands) {
       if (cmd.type === "fill") {
         this.display.moveTo(0, 0);
+        const localRaw = Math.min(
+          1,
+          Math.max(0, (rawProgress - cmd.staggerDelay) / cmd.staggerSpan),
+        );
+        const localProgress = 1 - Math.pow(1 - localRaw, 3); // Cubic ease-out locally
         let isRectWipe = false;
         if (cmd.path.length === 6 && cmd.path[0].type === "rect_hint") {
           isRectWipe = true;
           const r = cmd.path[0];
           // Left to right mask wipe: just animate the width
-          const wipeProgress = 1 - Math.pow(1 - rawProgress, 3); // Cubic ease-out
-          this.display.rect(r.x, r.y, r.w * wipeProgress, r.h);
+          this.display.rect(r.x, r.y, r.w * localProgress, r.h);
         }
 
         if (!isRectWipe) {
@@ -223,18 +254,17 @@ class AnimatedGraphics {
               this.display.bezierCurveTo(p.c1x, p.c1y, p.c2x, p.c2y, p.tx, p.ty);
           }
         }
-        const alphaProgress = 1 - Math.pow(1 - Math.min(1, rawProgress * 2), 3); // Ease out alpha over first 50%
+        const alphaProgress = 1 - Math.pow(1 - Math.min(1, localRaw * 2), 3); // Ease out alpha over the first half of the window
         const alpha = (cmd.options.alpha ?? 1) * alphaProgress;
         this.display.fill({ ...cmd.options, alpha });
       } else if (cmd.type === "stroke") {
         if (cmd.length <= 0) continue;
 
-        // Add extreme stagger effect based on stroke index to create significant speed differences
-        const delay = (strokeIndex * 0.23) % 0.4; // Starts anywhere between 0.0 and 0.4
-        const finishTime = 0.5 + ((strokeIndex * 0.31) % 0.5); // Ends anywhere between 0.5 and 1.0
-        const localRaw = Math.min(1, Math.max(0, (rawProgress - delay) / (finishTime - delay)));
+        const localRaw = Math.min(
+          1,
+          Math.max(0, (rawProgress - cmd.staggerDelay) / cmd.staggerSpan),
+        );
         const localProgress = 1 - Math.pow(1 - localRaw, 3); // Apply cubic ease-out LOCALLY
-        strokeIndex++;
 
         const targetLen = cmd.length * localProgress;
         let currentLen = 0;
@@ -321,7 +351,7 @@ export const buildSonnetShotMg = (
   seed: number,
   iconTextures: Map<string, import("pixi.js").Texture>,
 ) => {
-  const { Container, Graphics, Sprite, Text, TextStyle } = pixi;
+  const { Container, Graphics, Sprite } = pixi;
   const container = new Container();
   const primary = colorNumber(pixi, theme.primaryColor);
   const secondary = colorNumber(pixi, theme.secondaryColor);
@@ -340,7 +370,9 @@ export const buildSonnetShotMg = (
       .stroke({ color, width: 1, alpha });
   };
 
-  // Helper: Draw diagonal hatching pattern
+  // Helper: Draw diagonal hatching pattern. Lines are recorded on an
+  // AnimatedGraphics so they grow with the shared stagger schedule; only the
+  // clip mask stays static. Returns the hatch so callers can drive its update.
   const drawHatching = (
     x: number,
     y: number,
@@ -349,11 +381,7 @@ export const buildSonnetShotMg = (
     spacing = 8,
     target: import("pixi.js").Container = bg.display,
   ) => {
-    const lines = new Graphics();
-    lines.rect(x, y, w, h);
-    target.addChild(lines); // just for keeping it in target scope conceptually
-
-    const hatch = new Graphics();
+    const hatch = new AnimatedGraphics(pixi);
     for (let i = -w; i < w + h; i += spacing) {
       hatch
         .moveTo(x + i, y)
@@ -365,8 +393,9 @@ export const buildSonnetShotMg = (
     mask.rect(x, y, w, h).fill({ color: 0xffffff });
     hatch.mask = mask;
 
-    target.addChild(hatch);
+    target.addChild(hatch.display);
     target.addChild(mask);
+    return hatch;
   };
 
   // --- Component: HUD Overlays ---
@@ -397,6 +426,8 @@ export const buildSonnetShotMg = (
 
   // --- Component: Geometric Chaos ---
   let geo: AnimatedGraphics | undefined;
+  let fixedGeo: AnimatedGraphics | undefined;
+  let fixedHatch: AnimatedGraphics | undefined;
   let fixedGeoLayer: import("pixi.js").Container | undefined;
   if (kind === "type-impact" || kind === "fragment-collage") {
     // Massive overlapping geometries
@@ -465,7 +496,7 @@ export const buildSonnetShotMg = (
       }
     } else if (geoVariant === 3) {
       // Variant 3: Organic Molecules
-      const molVariant = seed % 3;
+      const molVariant = resolveSonnetMoleculeVariant(seed);
 
       if (molVariant === 0) {
         // Sub-variant 0: Benzene Cluster
@@ -683,7 +714,8 @@ export const buildSonnetShotMg = (
         .fill({ color: primary, alpha: 0.6 });
     } else if (geoVariant === 6) {
       // Variant 6: Abstract Wireframe Mountains (Cyberpunk grid landscape)
-      const w = radius * 1.5;
+      const bleed = resolveSonnetShotMgBleed(width, height, radius);
+      const w = bleed.x * 1.08;
       const h = radius * 0.8;
       const baseY = radius * 0.2;
 
@@ -693,8 +725,8 @@ export const buildSonnetShotMg = (
         .stroke({ color: primary, width: 2, alpha: 0.4 });
       for (let i = 0; i < 5; i++) {
         geo!
-          .moveTo(-radius * 0.4, baseY - h * 0.6 + i * 15)
-          .lineTo(radius * 0.4, baseY - h * 0.6 + i * 15)
+          .moveTo(-bleed.x, baseY - h * 0.6 + i * 15)
+          .lineTo(bleed.x, baseY - h * 0.6 + i * 15)
           .stroke({ color: primary, width: 1, alpha: 0.3 });
       }
 
@@ -729,7 +761,7 @@ export const buildSonnetShotMg = (
       for (let i = -4; i <= 4; i++) {
         geo!
           .moveTo(i * radius * 0.2, baseY)
-          .lineTo(i * radius * 0.6, baseY + radius * 0.6)
+          .lineTo(i * bleed.x * 0.32, bleed.y)
           .stroke({ color: primary, width: 1, alpha: 0.3 });
       }
     } else if (geoVariant === 7) {
@@ -1226,6 +1258,8 @@ export const buildSonnetShotMg = (
         target: geo,
         variant: geoVariant,
         radius,
+        width,
+        height,
         seed,
         primary,
         secondary,
@@ -1235,28 +1269,39 @@ export const buildSonnetShotMg = (
     // Randomized Geometric Composition moved to sonnetTextViewBuilder so they accompany text
 
     // Selectively apply deterministic rotation based on variant compatibility
-    if (![6, 8, 9, 14, 15, 16, 17, 20, 22, 23].includes(geoVariant)) {
+    const keepsUpright =
+      [6, 8, 9, 14, 15, 16, 17, 20, 22, 23].includes(geoVariant) ||
+      geoVariant >= SONNET_THEMED_GEO_VARIANT_START;
+    if (!keepsUpright) {
       // Arbitrary rotation
       geo!.rotation = ((seed * 13) % 360) * (Math.PI / 180);
     } else if (geoVariant === 8) {
       // HUD frames rotate in 90-degree increments
-      geo!.rotation = (seed % 4) * (Math.PI / 2);
+      geo!.rotation = resolveSonnetHudRotationQuarterTurns(seed) * (Math.PI / 2);
     }
 
     container.addChild(geo!.display);
 
     // Fixed geometry stays upright while the camera moves, so it can be toggled independently
-    // from the animated main scene and floating particles.
+    // from the animated main scene and floating particles. Recorded on AnimatedGraphics so the
+    // solid block, hollow frame and hatching all grow with the shared stagger schedule.
     fixedGeoLayer = new Container();
-    const fixedGeo = new Graphics();
+    fixedGeo = new AnimatedGraphics(pixi);
     fixedGeo
       .rect(-radius * 0.4, -radius * 0.2, radius * 0.6, radius * 0.15)
       .fill({ color: primary, alpha: 0.7 });
     fixedGeo
       .rect(-radius * 0.1, radius * 0.1, radius * 0.5, radius * 0.3)
       .stroke({ color: primary, width: 2, alpha: 0.6 });
-    fixedGeoLayer.addChild(fixedGeo);
-    drawHatching(-radius * 0.3, -radius * 0.4, radius * 0.4, radius * 0.25, 6, fixedGeoLayer);
+    fixedGeoLayer.addChild(fixedGeo.display);
+    fixedHatch = drawHatching(
+      -radius * 0.3,
+      -radius * 0.4,
+      radius * 0.4,
+      radius * 0.25,
+      6,
+      fixedGeoLayer,
+    );
     container.addChild(fixedGeoLayer);
   } else if (kind === "editorial-column") {
     // Strict grids
@@ -1292,6 +1337,8 @@ export const buildSonnetShotMg = (
     (container as any).geo = geo;
     (container as any).geoLayer = geo.display;
   }
+  if (fixedGeo) (container as any).fixedGeo = fixedGeo;
+  if (fixedHatch) (container as any).fixedHatch = fixedHatch;
   (container as any).fixedGeoLayer = fixedGeoLayer;
 
   container.addChild(bg.display);
@@ -1413,6 +1460,8 @@ export const buildSonnetShotMg = (
     const c = container as any;
     if (c.geo) c.geo.update(rawProgress);
     if (c.bg) c.bg.update(rawProgress);
+    if (c.fixedGeo) c.fixedGeo.update(rawProgress);
+    if (c.fixedHatch) c.fixedHatch.update(rawProgress);
 
     const audioEnergy =
       normalizeAudioLevel(audioBass) * 0.34 +

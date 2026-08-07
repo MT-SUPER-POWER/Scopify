@@ -40,6 +40,8 @@ export interface LyricBackgroundVocal {
   alternateTexts?: LyricAlternateText[];
 }
 
+export type SubtitleContentMode = "translation" | "romanization" | "none";
+
 export interface LyricAgent {
   id: string;
   name?: string;

@@ -44,6 +44,7 @@ const NUMERIC_RANGES = {
   "background.nomand.tuning.size": [0.5, 20],
   fontScale: [0.85, 1.4],
   lyricOffsetMs: [-30_000, 30_000],
+  subtitleFontScale: [0.85, 1.4],
   subtitleOverlayOpacity: [0.2, 1],
   "tunings.cadenza.beamIntensity": [0, 1.2],
   "tunings.cadenza.fontScale": [0.5, 2],
@@ -109,6 +110,7 @@ const STRING_ENUMS = {
     "sonnet",
     "tilt",
   ],
+  subtitleContentMode: ["translation", "romanization", "none"],
   subtitleFontStyle: ["sans", "serif", "mono"],
   themeVariant: ["dark", "light"],
   "tunings.cappella.avatarSource": ["cover", "builtin", "color", "custom"],
@@ -146,11 +148,13 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     mode: "classic",
     showSubtitleTranslation: true,
     sonnetPerformanceWarningDismissed: false,
+    subtitleContentMode: "translation",
     subtitleFontFallbackFamilies: [],
     subtitleFontFamily: null,
     subtitleFontInheritsLyrics: true,
+    subtitleFontScale: 1,
     subtitleFontStyle: "sans",
-    subtitleOverlayBackground: false,
+    subtitleOverlayBackground: true,
     subtitleOverlayOpacity: 0.6,
     themeId: "monochrome",
     themeRecentIds: [],
@@ -300,9 +304,17 @@ function normalizeUrlBackgroundItem(candidate: unknown) {
 
 function withLegacyAliases(candidate: unknown): unknown {
   if (!isRecord(candidate)) return candidate;
-  if (candidate.showSubtitleTranslation !== undefined) return candidate;
-  if (typeof candidate.showTranslation !== "boolean") return candidate;
-  return { ...candidate, showSubtitleTranslation: candidate.showTranslation };
+  const normalized =
+    candidate.showSubtitleTranslation === undefined &&
+    typeof candidate.showTranslation === "boolean"
+      ? { ...candidate, showSubtitleTranslation: candidate.showTranslation }
+      : candidate;
+  if (normalized.subtitleContentMode !== undefined) return normalized;
+  if (typeof normalized.showSubtitleTranslation !== "boolean") return normalized;
+  return {
+    ...normalized,
+    subtitleContentMode: normalized.showSubtitleTranslation ? "translation" : "none",
+  };
 }
 
 function withThemeLibraryMigration(candidate: unknown): unknown {

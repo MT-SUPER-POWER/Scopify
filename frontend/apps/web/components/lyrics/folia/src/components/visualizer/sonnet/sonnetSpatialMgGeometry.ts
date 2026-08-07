@@ -1,6 +1,6 @@
 // src/components/visualizer/sonnet/sonnetSpatialMgGeometry.ts
 // Owns deterministic variant selection and reusable spatial recipes for Sonnet MG scenes.
-export const SONNET_GEO_VARIANT_COUNT = 24;
+export const SONNET_GEO_VARIANT_COUNT = 48;
 
 interface SonnetMgPathTarget {
   moveTo: (x: number, y: number) => SonnetMgPathTarget;
@@ -13,6 +13,20 @@ type Point = readonly [number, number];
 export const resolveSonnetGeoVariant = (seed: number) =>
   ((Math.trunc(seed) % SONNET_GEO_VARIANT_COUNT) + SONNET_GEO_VARIANT_COUNT) %
   SONNET_GEO_VARIANT_COUNT;
+
+const resolveSonnetGeoCycle = (seed: number) =>
+  Math.floor(Math.trunc(seed) / SONNET_GEO_VARIANT_COUNT);
+
+// Keeps sub-variant selection independent from the primary geometry index.
+const resolveSonnetGeoSubVariant = (seed: number, count: number) => {
+  const cycle = resolveSonnetGeoCycle(seed);
+  return ((cycle % count) + count) % count;
+};
+
+export const resolveSonnetMoleculeVariant = (seed: number) => resolveSonnetGeoSubVariant(seed, 3);
+
+export const resolveSonnetHudRotationQuarterTurns = (seed: number) =>
+  resolveSonnetGeoSubVariant(seed, 4);
 
 const tracePolygon = (target: SonnetMgPathTarget, points: Point[]) => {
   target.moveTo(points[0][0], points[0][1]);

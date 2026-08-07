@@ -11,7 +11,11 @@ import {
   clamp01,
   easeSonnetInOut,
   resolveSegmentProgress,
+  resolveSonnetAnimationScale,
+  resolveSonnetBreathWeight,
+  resolveSonnetCameraBreath,
   resolveSonnetFocusWeights,
+  resolveSonnetSmoothedCameraFocus,
   resolveShotMotionFrame,
   resolveShotProgress,
   resolveTimelineShake,
@@ -24,6 +28,7 @@ import {
   resolveSonnetShotTransitionFrame,
 } from "./sonnetTransitions";
 import { buildSonnetScene, type SceneView, type ShotView } from "./sonnetSceneBuilder";
+import { isSonnetEmphasisRole } from "./sonnetTypographyLayout";
 import { getSonnetTexturePool } from "./sonnetTexturePool";
 import { destroySonnetContainerChildren, unloadSonnetDisplayTree } from "./sonnetPixiResources";
 import {
@@ -31,6 +36,8 @@ import {
   hasSonnetCreditsMetadata,
   resolveSonnetCreditsFrame,
 } from "./sonnetCredits";
+import { sonnetDebugState } from "./sonnetDebug";
+import { resolveSonnetSegmentCameraFocus } from "./sonnetCameraTracking";
 
 // src/components/visualizer/sonnet/createSonnetPixiRuntime.ts
 // Owns Pixi lifecycle and mutates bounded scene views directly from absolute playback time.
@@ -58,9 +65,6 @@ export interface SonnetRuntimeOptions {
   songAlbum?: string | null;
   signal?: AbortSignal;
 }
-
-const animationScale = (theme: Theme) =>
-  theme.animationIntensity === "calm" ? 0.65 : theme.animationIntensity === "chaotic" ? 1.35 : 1;
 
 export class SonnetPixiRuntime {
   private readonly sceneCache = new Map<number, SceneView>();
@@ -367,8 +371,10 @@ export class SonnetPixiRuntime {
     shakeIntensity: number,
   ) {
     const progress = resolveShotProgress(view.shot, time);
-    const motion = this.options.tuning.typographyMotion * animationScale(this.options.theme);
-    const camera = this.options.tuning.cameraIntensity * animationScale(this.options.theme);
+    const motion =
+      this.options.tuning.typographyMotion * resolveSonnetAnimationScale(this.options.theme);
+    const camera =
+      this.options.tuning.cameraIntensity * resolveSonnetAnimationScale(this.options.theme);
     const cameraFrame = resolveShotMotionFrame(view.shot.kind, progress);
 
     // Add a slow continuous pan during the time gap to prevent the scene from looking frozen
@@ -394,67 +400,65 @@ export class SonnetPixiRuntime {
 
     const shake = resolveTimelineShake(time, shakeIntensity);
 
-    let trackSegments = view.segments.filter((s) => s.role !== "decoration" && s.glyphs.length > 0);
-    if (trackSegments.length === 0)
-      trackSegments = view.segments.filter((s) => s.glyphs.length > 0);
+    let trackSegments = view.segments.filter(
+      (s) => s.role !== "decoration" && s.trackingGlyphs.length > 0,
+    );
+    if (trackSegments.length === 0) {
+      trackSegments = view.segments.filter((s) => s.trackingGlyphs.length > 0);
+    }
+
+    // Layer a deterministic breathing float once the lyric reveal completes, so the
+    // frame never goes fully static while the shot holds or drifts through a gap.
+    const revealDoneTime =
+      trackSegments.length > 0
+        ? Math.max(
+            ...trackSegments.map(
+              (segment) => segment.trackingGlyphs.at(-1)?.startTime ?? view.shot.endTime,
+            ),
+          )
+        : view.shot.endTime;
+    const breathWeight = resolveSonnetBreathWeight(time, revealDoneTime);
+    if (breathWeight > 0) {
+      const breathPhase = ((hashSonnetSeed(view.shot.id) % 1024) / 1024) * Math.PI * 2;
+      const breath = resolveSonnetCameraBreath(time, breathPhase);
+      cameraFrame.x += breath.x * breathWeight;
+      cameraFrame.y += breath.y * breathWeight;
+      cameraFrame.scale += breath.scale * breathWeight;
+      cameraFrame.rotation += breath.rotation * breathWeight;
+    }
 
     let currentFocusX = view.basePivotX;
     let currentFocusY = view.basePivotY;
 
     if (trackSegments.length > 0) {
-      const getSegmentFocus = (seg: (typeof view.segments)[0], t: number) => {
-        if (seg.glyphs.length === 0) return { x: 0, y: 0 };
-        const first = seg.glyphs[0];
-        const last = seg.glyphs[seg.glyphs.length - 1];
-
-        // Dampen the tracking distance to prevent the camera from advancing too fast
-        // and pushing settled text off the screen edge.
-        const trackingFactor = 0.35;
-        const segCenterX = (first.baseX + last.baseX) / 2;
-        const segCenterY = (first.baseY + last.baseY) / 2;
-        const applyFactor = (exactX: number, exactY: number) => ({
-          x: segCenterX + (exactX - segCenterX) * trackingFactor,
-          y: segCenterY + (exactY - segCenterY) * trackingFactor,
-        });
-
-        if (t <= first.startTime) return applyFactor(first.baseX, first.baseY);
-        if (t >= last.startTime) return applyFactor(last.baseX, last.baseY);
-
-        for (let i = 0; i < seg.glyphs.length - 1; i++) {
-          if (t >= seg.glyphs[i].startTime && t <= seg.glyphs[i + 1].startTime) {
-            const g1 = seg.glyphs[i];
-            const g2 = seg.glyphs[i + 1];
-            const p = (t - g1.startTime) / Math.max(0.001, g2.startTime - g1.startTime);
-            const exactX = g1.baseX + (g2.baseX - g1.baseX) * p;
-            const exactY = g1.baseY + (g2.baseY - g1.baseY) * p;
-            return applyFactor(exactX, exactY);
-          }
+      const focusRanges = trackSegments.map((segment) => ({
+        startTime: segment.trackingGlyphs[0]?.startTime ?? view.shot.startTime,
+        endTime: segment.trackingGlyphs.at(-1)?.startTime ?? view.shot.endTime,
+      }));
+      const resolveFocusAtTime = (focusTime: number) => {
+        let focusX = 0;
+        let focusY = 0;
+        const focusWeights = resolveSonnetFocusWeights(focusRanges, focusTime);
+        for (let i = 0; i < trackSegments.length; i++) {
+          const seg = trackSegments[i];
+          if (seg.trackingGlyphs.length === 0) continue;
+          const weight = focusWeights[i] ?? 0;
+          const pos = resolveSonnetSegmentCameraFocus(seg.trackingGlyphs, focusTime);
+          focusX += pos.x * weight;
+          focusY += pos.y * weight;
         }
-        return applyFactor(first.baseX, first.baseY);
+        return { x: focusX, y: focusY };
       };
-
       const focusTime = Math.max(view.shot.startTime, Math.min(time, view.shot.endTime));
-      let focusX = 0;
-      let focusY = 0;
-      const focusWeights = resolveSonnetFocusWeights(
-        trackSegments.map((segment) => ({
-          startTime: segment.glyphs[0]?.startTime ?? view.shot.startTime,
-          endTime: segment.glyphs.at(-1)?.startTime ?? view.shot.endTime,
-        })),
+      const smoothedFocus = resolveSonnetSmoothedCameraFocus(
         focusTime,
+        view.shot.startTime,
+        view.shot.endTime,
+        resolveFocusAtTime,
       );
 
-      for (let i = 0; i < trackSegments.length; i++) {
-        const seg = trackSegments[i];
-        if (seg.glyphs.length === 0) continue;
-        const weight = focusWeights[i] ?? 0;
-        const pos = getSegmentFocus(seg, focusTime);
-        focusX += pos.x * weight;
-        focusY += pos.y * weight;
-      }
-
-      currentFocusX = focusX;
-      currentFocusY = focusY;
+      currentFocusX = smoothedFocus.x;
+      currentFocusY = smoothedFocus.y;
     }
 
     view.container.pivot.set(
@@ -520,6 +524,21 @@ export class SonnetPixiRuntime {
         }
       }
 
+      // Decorative open frames share the 文字浮标 (showFixedGeo) toggle.
+      const frameDecor = segmentView.frameDecor;
+      if (frameDecor) {
+        const frameVisible = this.options.tuning.showFixedGeo && !this.options.tuning.showOnlyText;
+        frameDecor.container.visible = frameVisible;
+        if (frameVisible) {
+          frameDecor.update(
+            clamp01(
+              (time - frameDecor.startTime) /
+                Math.max(0.001, frameDecor.endTime - frameDecor.startTime),
+            ),
+          );
+        }
+      }
+
       segmentView.glyphs.forEach((glyph) => {
         const glyphProgress = resolveSegmentProgress(glyph.startTime, glyph.settleTime, time);
         const waiting = time < glyph.startTime;
@@ -527,7 +546,7 @@ export class SonnetPixiRuntime {
         const coreAlpha = waiting ? 0 : 0.16 + glyphProgress * 0.84;
         const haloAlpha = waiting ? 0 : 1 - glyphProgress * 0.28;
         const scale =
-          segmentView.role === "hero" && view.shot.kind === "type-impact"
+          isSonnetEmphasisRole(segmentView.role) && view.shot.kind === "type-impact"
             ? 0.52 + glyphProgress * 0.48
             : 0.86 + glyphProgress * 0.14;
         const x = glyph.baseX + glyph.enterX * offset;
@@ -572,13 +591,36 @@ export class SonnetPixiRuntime {
           glyph.caRed.position.set(currentOffset, -currentOffset * 0.5);
         }
 
+        // Semi-hero echo ghosts: split along the layout normal on glyph entry,
+        // fade in over the first quarter, then quickly vanish. One-shot.
+        if (glyph.ghosts && glyph.ghostDuration) {
+          const ghostProgress = clamp01((time - glyph.startTime) / glyph.ghostDuration);
+          const ghostActive = glyphVisible && ghostProgress > 0 && ghostProgress < 1;
+          // Quick fade-in, then a squared falloff so the echo dies fast.
+          const envelope =
+            ghostProgress <= 0.2
+              ? ghostProgress / 0.2
+              : Math.pow(1 - (ghostProgress - 0.2) / 0.8, 2);
+          const spread = 1 - Math.pow(1 - ghostProgress, 3);
+          for (const ghost of glyph.ghosts) {
+            ghost.node.visible = ghostActive;
+            if (!ghostActive) continue;
+            ghost.node.position.set(ghost.dirX * spread, ghost.dirY * spread);
+            ghost.node.alpha = envelope * ghost.alphaBase;
+          }
+        }
+
         glyph.updateAnimation?.(time);
       });
     });
   }
 
   private renderFrame = () => {
-    if (this.destroyed || this.options.program.paragraphs.length === 0) return;
+    if (this.destroyed || this.options.program.paragraphs.length === 0) {
+      sonnetDebugState.activeShot = null;
+      sonnetDebugState.paragraphIndex = -1;
+      return;
+    }
     const time = this.options.currentTime.get();
     const paragraphIndex = findSonnetParagraphIndexAtTime(this.options.program, time);
     if (paragraphIndex !== this.activeParagraphIndex) {
@@ -670,6 +712,9 @@ export class SonnetPixiRuntime {
         if (previousShot) unloadSonnetDisplayTree(previousShot.container);
         scene.activeShotIndex = visibleShotIndex;
       }
+      // Publish the active shot so the dev overlay's Sonnet tab can inspect it.
+      sonnetDebugState.activeShot = scene.shots[visibleShotIndex]?.debugInfo ?? null;
+      sonnetDebugState.paragraphIndex = index;
 
       const isFinalScene = index === this.options.program.paragraphs.length - 1;
       const lyricAlpha = isFinalScene && hasCredits ? creditsFrame.lyricAlpha : 1;
@@ -724,6 +769,8 @@ export class SonnetPixiRuntime {
   destroy() {
     if (this.destroyed) return;
     this.destroyed = true;
+    sonnetDebugState.activeShot = null;
+    sonnetDebugState.paragraphIndex = -1;
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
     this.app.stop();

@@ -6950,9 +6950,9 @@ export interface TranslateFn {
    */
   (key: "folia.options.subtitleOverlayBackground", params?: TranslationParams): string;
   /**
-   * zh-CN: 为底部字幕添加主题自适应的半透明背景，提高复杂画面中的可读性。
-   * zh-TW: 為底部字幕添加主題自適應的半透明背景，提高複雜畫面中的可讀性。
-   * en-US: Add a theme-aware translucent background to improve readability over busy visuals.
+   * zh-CN: 为底部字幕添加主题自适应的柔和扩散光晕，提高复杂画面中的可读性。
+   * zh-TW: 為底部字幕添加主題自適應的柔和擴散光暈，提高複雜畫面中的可讀性。
+   * en-US: Add a theme-aware, soft diffused halo to improve readability over busy visuals.
    */
   (key: "folia.options.subtitleOverlayBackgroundDesc", params?: TranslationParams): string;
   /**
@@ -6967,6 +6967,30 @@ export interface TranslateFn {
    * en-US: Controls translation text in Monet and the bottom subtitle overlay.
    */
   (key: "folia.options.showSubtitleTranslationDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 副字幕内容
+   * zh-TW: 副字幕內容
+   * en-US: Subtitle Content
+   */
+  (key: "folia.options.subtitleContentMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 翻译
+   * zh-TW: 翻譯
+   * en-US: Translation
+   */
+  (key: "folia.options.subtitleContentTranslation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 罗马音
+   * zh-TW: 羅馬音
+   * en-US: Romanization
+   */
+  (key: "folia.options.subtitleContentRomanization", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不显示
+   * zh-TW: 不顯示
+   * en-US: None
+   */
+  (key: "folia.options.subtitleContentNone", params?: TranslationParams): string;
   /**
    * zh-CN: 流光参数
    * zh-TW: 流光參數
@@ -8071,6 +8095,12 @@ export interface TranslateFn {
    * en-US: Turn off to set a separate subtitle font.
    */
   (key: "folia.options.subtitleFontInheritsLyricsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕缩放
+   * zh-TW: 字幕縮放
+   * en-US: Subtitle scale
+   */
+  (key: "folia.options.subtitleFontScale", params?: TranslationParams): string;
   /**
    * zh-CN: 字幕字体
    * zh-TW: 字幕字體

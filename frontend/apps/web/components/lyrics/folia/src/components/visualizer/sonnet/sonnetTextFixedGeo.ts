@@ -5,17 +5,35 @@ import type { Theme } from "../../../types";
 type PixiModule = typeof import("pixi.js");
 
 export type SonnetTextFixedGeoPlan =
-  | { category: "hollow"; variant: "straight-frame" | "rotated-frame" }
+  | {
+      category: "hollow";
+      variant: "straight-frame" | "rotated-frame" | "orbit-crosshair" | "split-arches";
+    }
   | { category: "solid"; variant: "orb-hatch" | "music-steps" | "bent-lines" };
+
+const HOLLOW_VARIANTS = [
+  "straight-frame",
+  "rotated-frame",
+  "orbit-crosshair",
+  "split-arches",
+] as const;
+
+const resolveHollowVariant = (seed: number, divisor: number, offset: number) => {
+  const index = Math.floor(seed / divisor) + offset;
+  return HOLLOW_VARIANTS[
+    ((index % HOLLOW_VARIANTS.length) + HOLLOW_VARIANTS.length) % HOLLOW_VARIANTS.length
+  ];
+};
 
 export const resolveSonnetTextFixedGeoPlan = (
   seed: number,
   isChorusEffect: boolean,
 ): SonnetTextFixedGeoPlan => {
   if (isChorusEffect) {
-    const chorusSeed = seed % 10;
-    if (chorusSeed < 5) return { category: "hollow", variant: "straight-frame" };
-    if (chorusSeed < 9) return { category: "hollow", variant: "rotated-frame" };
+    const chorusSeed = ((seed % 10) + 10) % 10;
+    if (chorusSeed < 9) {
+      return { category: "hollow", variant: resolveHollowVariant(seed, 10, chorusSeed) };
+    }
     const solidVariants = ["orb-hatch", "music-steps", "bent-lines"] as const;
     return {
       category: "solid",
@@ -23,9 +41,10 @@ export const resolveSonnetTextFixedGeoPlan = (
     };
   }
 
-  const legacyType = seed % 4;
-  if (legacyType === 1) return { category: "hollow", variant: "straight-frame" };
-  if (legacyType === 2) return { category: "hollow", variant: "rotated-frame" };
+  const legacyType = ((seed % 4) + 4) % 4;
+  if (legacyType === 1 || legacyType === 2) {
+    return { category: "hollow", variant: resolveHollowVariant(seed, 4, legacyType) };
+  }
   const solidVariants = ["orb-hatch", "music-steps", "bent-lines"] as const;
   return { category: "solid", variant: solidVariants[Math.floor(seed / 4) % solidVariants.length] };
 };
@@ -80,7 +99,64 @@ const drawBentLines = (
   }
 };
 
-// Keeps the legacy hollow/solid class probabilities while expanding only the solid-class artwork.
+const drawOrbitCrosshair = (
+  graphic: import("pixi.js").Graphics,
+  width: number,
+  height: number,
+  alpha: number,
+  color: string,
+  secondaryColor: string,
+) => {
+  const radius = Math.min(width, height) * 0.46;
+  graphic.circle(0, 0, radius).stroke({ color, width: 1.5, alpha });
+  graphic
+    .circle(-width * 0.17, 0, radius * 0.72)
+    .stroke({ color: secondaryColor, width: 1, alpha: alpha * 0.72 });
+  graphic
+    .circle(width * 0.17, 0, radius * 0.72)
+    .stroke({ color: secondaryColor, width: 1, alpha: alpha * 0.72 });
+  graphic
+    .moveTo(-width * 0.62, 0)
+    .lineTo(width * 0.62, 0)
+    .stroke({ color, width: 1, alpha: alpha * 0.64 });
+  graphic
+    .moveTo(0, -height * 0.62)
+    .lineTo(0, height * 0.62)
+    .stroke({ color, width: 1, alpha: alpha * 0.64 });
+};
+
+const drawSplitArches = (
+  graphic: import("pixi.js").Graphics,
+  width: number,
+  height: number,
+  alpha: number,
+  color: string,
+  secondaryColor: string,
+) => {
+  const halfWidth = width * 0.46;
+  const archRadius = Math.min(width * 0.34, height * 0.52);
+  [-1, 1].forEach((direction, index) => {
+    const x = direction * halfWidth * 0.42;
+    graphic
+      .moveTo(x - archRadius * 0.72, height * 0.42)
+      .lineTo(x - archRadius * 0.72, 0)
+      .arc(x, 0, archRadius * 0.72, Math.PI, 0)
+      .lineTo(x + archRadius * 0.72, height * 0.42)
+      .stroke({ color: index === 0 ? color : secondaryColor, width: 1.5, alpha });
+    graphic
+      .moveTo(x - archRadius * 0.48, height * 0.42)
+      .lineTo(x - archRadius * 0.48, 0)
+      .arc(x, 0, archRadius * 0.48, Math.PI, 0)
+      .lineTo(x + archRadius * 0.48, height * 0.42)
+      .stroke({ color: index === 0 ? secondaryColor : color, width: 1, alpha: alpha * 0.58 });
+  });
+  graphic
+    .moveTo(-halfWidth, height * 0.42)
+    .lineTo(halfWidth, height * 0.42)
+    .stroke({ color, width: 2, alpha: alpha * 0.72 });
+};
+
+// Keeps the legacy hollow/solid class probabilities while varying artwork within each class.
 export const buildSonnetTextFixedGeo = (pixi: PixiModule, options: SonnetTextFixedGeoOptions) => {
   const { seed, isChorusEffect, fontSize, layoutWidth, theme } = options;
   const plan = resolveSonnetTextFixedGeoPlan(seed, isChorusEffect);
@@ -92,6 +168,14 @@ export const buildSonnetTextFixedGeo = (pixi: PixiModule, options: SonnetTextFix
   const height = Math.max(fontSize * 1.8 * scaleMultiplier, layoutWidth * 0.08 * scaleMultiplier);
 
   if (plan.category === "hollow") {
+    if (plan.variant === "orbit-crosshair") {
+      drawOrbitCrosshair(graphic, width, height, alpha, color, theme.secondaryColor);
+      return graphic;
+    }
+    if (plan.variant === "split-arches") {
+      drawSplitArches(graphic, width, height, alpha, color, theme.secondaryColor);
+      return graphic;
+    }
     const frameWidth = plan.variant === "rotated-frame" ? width * 0.8 : width;
     const frameHeight = plan.variant === "rotated-frame" ? height * 0.8 : height;
     graphic

@@ -12,6 +12,7 @@ export type SonnetShotKind =
   | "fragment-collage"
   | "tracking-ribbon"
   | "mask-reveal"
+  | "poster-blocks"
   | "quiet-tableau";
 export const SONNET_TRANSITION_KINDS = ["fast-blur", "mono-glitch", "camera-pull"] as const;
 export type SonnetTransitionKind = (typeof SONNET_TRANSITION_KINDS)[number];

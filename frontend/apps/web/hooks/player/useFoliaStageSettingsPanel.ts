@@ -181,11 +181,13 @@ export function useFoliaStageSettingsPanel(
       settings.patchSettings({
         hideTranslationSubtitle: false,
         showSubtitleTranslation: true,
+        subtitleContentMode: "translation",
         subtitleFontFallbackFamilies: [],
         subtitleFontFamily: null,
         subtitleFontInheritsLyrics: true,
+        subtitleFontScale: 1,
         subtitleFontStyle: "sans",
-        subtitleOverlayBackground: false,
+        subtitleOverlayBackground: true,
         subtitleOverlayOpacity: 0.6,
       }),
     onResetVisualizerTuning: resetCurrentTuning,
@@ -196,6 +198,10 @@ export function useFoliaStageSettingsPanel(
       settings.patchSettings({ subtitleFontFamily }),
     onSubtitleFontInheritsLyricsChange: (subtitleFontInheritsLyrics: boolean) =>
       settings.patchSettings({ subtitleFontInheritsLyrics }),
+    onSubtitleFontScaleChange: (subtitleFontScale: number) =>
+      settings.patchSettings({
+        subtitleFontScale: Math.min(1.4, Math.max(0.85, subtitleFontScale)),
+      }),
     onOpenSubtitleFontPicker: () => onOpenFontPicker("subtitle"),
     onSubtitleFontStyleChange: (subtitleFontStyle: Theme["fontStyle"]) =>
       settings.patchSettings({ subtitleFontStyle }),
@@ -206,7 +212,15 @@ export function useFoliaStageSettingsPanel(
     onToggleHideTranslationSubtitle: (hideTranslationSubtitle: boolean) =>
       settings.patchSettings({ hideTranslationSubtitle }),
     onToggleShowSubtitleTranslation: (showSubtitleTranslation: boolean) =>
-      settings.patchSettings({ showSubtitleTranslation }),
+      settings.patchSettings({
+        showSubtitleTranslation,
+        subtitleContentMode: showSubtitleTranslation ? "translation" : "none",
+      }),
+    onSubtitleContentModeChange: (subtitleContentMode: typeof settings.subtitleContentMode) =>
+      settings.patchSettings({
+        showSubtitleTranslation: subtitleContentMode !== "none",
+        subtitleContentMode,
+      }),
     onToggleSubtitleOverlayBackground: (subtitleOverlayBackground: boolean) =>
       settings.patchSettings({ subtitleOverlayBackground }),
     onUploadMonetPortraitImage: assets.uploadMonetPortraitImage,
@@ -220,9 +234,11 @@ export function useFoliaStageSettingsPanel(
     partitaTuning: settings.tunings.partita ?? DEFAULT_PARTITA_TUNING,
     rangeInputClass,
     showSubtitleTranslation: settings.showSubtitleTranslation,
+    subtitleContentMode: settings.subtitleContentMode,
     subtitleFontFallbackFamilies: settings.subtitleFontFallbackFamilies,
     subtitleFontFamily: settings.subtitleFontFamily,
     subtitleFontInheritsLyrics: settings.subtitleFontInheritsLyrics,
+    subtitleFontScale: settings.subtitleFontScale,
     subtitleFontStyle: settings.subtitleFontStyle,
     subtitleFontStyleOptions: fontStyleOptions,
     subtitleOverlayBackground: settings.subtitleOverlayBackground,
