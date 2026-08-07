@@ -1,5 +1,19 @@
 # Changelog
 
+# v1.3.0
+
+
+### Added
+
+- 设置后端地址增加了 ping 测试后端是否可用
+- ping 测试地址适配了协议测试机制
+
+### Quality
+
+- Folia 沉浸式歌词优化 Sonnet/v2
+- Folia Subtitle 优化副歌词显示内容
+
+
 ## v1.2.0-beta.2
 
 > 前端多端拆分的首个 Beta 版本：在保持 Web 与 Electron 可运行的前提下，完成 Monorepo 结构、运行时边界和独立发布链路。
