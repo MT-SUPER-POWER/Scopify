@@ -35,6 +35,8 @@ export const playlistMessages = defineMessages(
     "playlist.actions.historyDate": "历史日推",
     "playlist.actions.currentDaily": "今日推荐",
     "playlist.actions.historyLoading": "加载历史日推...",
+    "playlist.actions.historyLoadFailed": "加载历史日推失败，请确认已登录且开通黑胶VIP。",
+    "playlist.actions.historyRequiresVip": "历史日推仅对黑胶VIP开放。",
     "playlist.track.likedAdded": "已添加到喜欢的歌曲",
     "playlist.track.likedRemoved": "已从喜欢的歌曲中移除",
     "playlist.meta.dailyTitle": "每日推荐",
@@ -86,6 +88,8 @@ export const playlistMessages = defineMessages(
     "playlist.actions.historyDate": "歷史日推",
     "playlist.actions.currentDaily": "今日推薦",
     "playlist.actions.historyLoading": "正在載入歷史日推...",
+    "playlist.actions.historyLoadFailed": "載入歷史日推失敗，請確認已登入且開通黑膠VIP。",
+    "playlist.actions.historyRequiresVip": "歷史日推僅對黑膠VIP開放。",
     "playlist.track.likedAdded": "已加入喜歡的歌曲",
     "playlist.track.likedRemoved": "已從喜歡的歌曲中移除",
     "playlist.meta.dailyTitle": "每日推薦",
@@ -138,6 +142,10 @@ export const playlistMessages = defineMessages(
     "playlist.actions.historyDate": "Daily history",
     "playlist.actions.currentDaily": "Today's recommendations",
     "playlist.actions.historyLoading": "Loading daily history...",
+    "playlist.actions.historyLoadFailed":
+      "Couldn't load daily history. Confirm that you're signed in and have Black Vinyl VIP.",
+    "playlist.actions.historyRequiresVip":
+      "Daily history is available to Black Vinyl VIP members only.",
     "playlist.track.likedAdded": "Added to your Liked Songs",
     "playlist.track.likedRemoved": "Removed from your Liked Songs",
     "playlist.meta.dailyTitle": "Daily Recommendations",

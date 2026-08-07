@@ -13,8 +13,9 @@ import {
   X,
 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { enUS, zhCN, zhTW } from "react-day-picker/locale";
+import { toast } from "sonner";
 import type { PlaylistActionsProps } from "@/types/components/playlist";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -34,6 +35,10 @@ function formatDateKey(date: Date) {
 
 function parseDateKey(date: string) {
   return new Date(`${date}T00:00:00`);
+}
+
+function getHistoryRequestErrorMessage(error: unknown, fallback: string) {
+  return error instanceof Error && error.message.trim() ? error.message : fallback;
 }
 
 export default function PlaylistActions(props: PlaylistActionsProps) {
@@ -59,7 +64,9 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const searchParams = useSearchParams();
   const smartRouter = useSmartRouter();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const history = useHistoricalDailyRecommendations();
+  const history = useHistoricalDailyRecommendations(isCalendarOpen);
+  const reportedHistoryDataAt = useRef(0);
+  const reportedHistoryErrorAt = useRef(0);
   const availableHistoryDateSet = useMemo(
     () => new Set(history.data?.dates ?? []),
     [history.data?.dates],
@@ -76,6 +83,29 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     playSourceId ?? playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
   const isCurrentQueue = Boolean(storePlaylistId) && storePlaylistId === currentPageId;
   const showPause = isCurrentQueue && isPlaying; // 只有“是当前歌单”且“正在播放”时，才显示暂停键
+
+  useEffect(() => {
+    if (
+      !isCalendarOpen ||
+      !history.error ||
+      history.errorUpdatedAt === reportedHistoryErrorAt.current
+    )
+      return;
+
+    reportedHistoryErrorAt.current = history.errorUpdatedAt;
+    toast.error(
+      getHistoryRequestErrorMessage(history.error, t("playlist.actions.historyLoadFailed")),
+    );
+  }, [history.error, history.errorUpdatedAt, isCalendarOpen, t]);
+
+  useEffect(() => {
+    const message = history.data?.noHistoryMessage;
+    if (!isCalendarOpen || !message || history.dataUpdatedAt === reportedHistoryDataAt.current)
+      return;
+
+    reportedHistoryDataAt.current = history.dataUpdatedAt;
+    toast.info(message || t("playlist.actions.historyRequiresVip"));
+  }, [history.data?.noHistoryMessage, history.dataUpdatedAt, isCalendarOpen, t]);
 
   const handlePlayToggle = () => {
     const state = usePlayerStore.getState();

@@ -14,6 +14,7 @@ import { ApiError, toApiError } from "./apiError";
 import { buildBackendBaseUrl, normalizeBackendConfig } from "./backendUrl";
 import { logger, webConfig } from "./env";
 import { reportFailure } from "./errorTracking";
+import { attachMusicSessionCredential, getMusicSessionCredential } from "./musicSessionCredential";
 
 function loadInitialBackendConfig(): WebConfig["backend"] {
   if (typeof window === "undefined") return webConfig.backend;
@@ -144,8 +145,11 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRe
   config.timeout = networkConfig.timeout;
   config.traceId ??= createRequestTraceId();
   const requestParams = isRecord(config.params) ? config.params : {};
+  const sessionParams = config.requiresMusicSession
+    ? attachMusicSessionCredential(requestParams, getMusicSessionCredential())
+    : requestParams;
   config.params = {
-    ...requestParams,
+    ...sessionParams,
     timestamp: Date.now(),
     ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
     randomCNIP: networkConfig.randomCNIP,

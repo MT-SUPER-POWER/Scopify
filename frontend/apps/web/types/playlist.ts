@@ -26,3 +26,9 @@ export interface PlaylistStickyControlsOptions {
   sentinelRef: RefObject<HTMLDivElement | null>;
   topOffset: number;
 }
+
+/** Separates the selected historical day from the date used to key the daily cache. */
+export interface DailyRecommendationRequest {
+  cacheDate: string;
+  dailyDate: null | string;
+}

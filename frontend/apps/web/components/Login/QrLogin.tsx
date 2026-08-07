@@ -11,6 +11,7 @@ import { checkQR, createQR, getQRKey } from "@/lib/api/login";
 import { getUserAccount, getUserDetail } from "@/lib/api/user";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
+import { saveMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { getBackendBaseUrl } from "@/lib/web/request";
 import { logger } from "@/lib/web/logger";
 import { useUserStore } from "@/store";
@@ -89,7 +90,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
 
             // NOTE: 登录时 cookie 存储的位置
             const rawCookie = statusRes.data.cookie ?? "";
-            localStorage.setItem("music_cookie", rawCookie); // 先存一份到 localStorage，兜底用
+            saveMusicSessionCredential(rawCookie);
 
             // 1. 调用主进程注入 Cookie (Electron 环境)
             await runtime.auth.persistMusicCookie(rawCookie, getBackendBaseUrl());

@@ -19,11 +19,6 @@ import {
   type RawNeteasePlaylist,
 } from "@/types/api/playlist";
 
-function getMusicCookie() {
-  if (typeof window === "undefined") return undefined;
-  return window.localStorage.getItem("music_cookie") ?? undefined;
-}
-
 function getHistoricalSongs(
   response: HistoricalDailyRecommendationDetailResponse,
 ): RawSongDetail[] {
@@ -37,11 +32,9 @@ async function fetchPlaylistContent({
   isRecommend,
   playlistId,
 }: PlaylistContentRequest): Promise<PlaylistContent> {
-  const cookie = getMusicCookie();
-
   if (isDailyRecommendation) {
     const dailySongs = dailyDate
-      ? getHistoricalSongs((await getHistoricalDailyRecommendationDetail(dailyDate, cookie)).data)
+      ? getHistoricalSongs((await getHistoricalDailyRecommendationDetail(dailyDate)).data)
       : ((await getRecommendedSongs()).data?.data?.dailySongs ?? []);
     const rawDetail: RawNeteasePlaylist = {
       trackCount: dailySongs.length,
@@ -57,8 +50,8 @@ async function fetchPlaylistContent({
   if (!playlistId) throw new Error("Playlist ID is required.");
 
   const [detailResponse, trackResponse] = await Promise.all([
-    getPlaylsitDetail({ id: playlistId, cookie: isRecommend ? cookie : undefined }),
-    getPlaylistAllTracks({ id: playlistId, cookie: isRecommend ? cookie : undefined }),
+    getPlaylsitDetail({ id: playlistId, requiresMusicSession: isRecommend }),
+    getPlaylistAllTracks({ id: playlistId, requiresMusicSession: isRecommend }),
   ]);
   const rawDetail = detailResponse.data.playlist;
   if (!rawDetail) throw new Error("Playlist detail is missing.");
@@ -71,13 +64,13 @@ async function fetchPlaylistContent({
 
 export function usePlaylistContentQuery(request: PlaylistContentRequest) {
   const queryClient = useQueryClient();
-  const { dailyDate, isDailyRecommendation, isRecommend, playlistId } = request;
+  const { dailyCacheDate, isDailyRecommendation, isRecommend, playlistId } = request;
   const queryKey = useMemo(
     () =>
       isDailyRecommendation
-        ? musicQueryKeys.playlist.daily(dailyDate ?? "current")
+        ? musicQueryKeys.playlist.daily(dailyCacheDate)
         : musicQueryKeys.playlist.content(playlistId ?? "", isRecommend),
-    [dailyDate, isDailyRecommendation, isRecommend, playlistId],
+    [dailyCacheDate, isDailyRecommendation, isRecommend, playlistId],
   );
   const query = useQuery({
     enabled: isDailyRecommendation || Boolean(playlistId),

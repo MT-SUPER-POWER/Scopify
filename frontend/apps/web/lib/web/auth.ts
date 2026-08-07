@@ -1,4 +1,8 @@
 import request from "@/lib/web/request";
+import {
+  clearMusicSessionCredential,
+  getMusicSessionCredential,
+} from "@/lib/web/musicSessionCredential";
 import type { NeteaseUser } from "@/types/api/user";
 
 export interface LoginInfo {
@@ -10,8 +14,7 @@ export interface LoginInfo {
 }
 
 export function getStoredMusicCookie() {
-  if (typeof window === "undefined") return undefined;
-  return window.localStorage.getItem("music_cookie") ?? undefined;
+  return getMusicSessionCredential();
 }
 
 /**
@@ -41,6 +44,6 @@ export function verifyCaptcha(
  * 清除登录状态
  */
 export function clearLoginStatus(): void {
-  localStorage.removeItem("music_cookie");
+  clearMusicSessionCredential();
   localStorage.removeItem("user_id");
 }

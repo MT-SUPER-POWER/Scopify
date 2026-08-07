@@ -127,6 +127,20 @@ export interface PlaylistTracksResponse {
   songs?: RawSongDetail[];
 }
 
+export interface PlaylistAllTracksParams {
+  cookie?: string;
+  id: number | string;
+  limit?: number;
+  offset?: number;
+  requiresMusicSession?: boolean;
+}
+
+export interface PlaylistDetailParams {
+  cookie?: string;
+  id: number | string;
+  requiresMusicSession?: boolean;
+}
+
 export interface PlaylistDetailResponse {
   code: number;
   playlist?: RawNeteasePlaylist;
@@ -139,6 +153,8 @@ export interface PlaylistContent {
 }
 
 export interface PlaylistContentRequest {
+  /** Stable cache identity for today's recommendations, separate from a selected history date. */
+  dailyCacheDate: string;
   dailyDate: null | string;
   isDailyRecommendation: boolean;
   isRecommend: boolean;

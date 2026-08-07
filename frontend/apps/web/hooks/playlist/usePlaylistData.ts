@@ -5,12 +5,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { usePlaylistContentQuery } from "@/hooks/playlist/usePlaylistContentQuery";
+import { resolveDailyRecommendationRequest } from "@/lib/playlist/dailyRecommendationRequest";
 import { getMainColorFromImage } from "@/lib/utils";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistInfo } from "@/types/playlist";
-
-const DAILY_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 const colorCache = new Map<string, string>([
   ["daily", "#c42b2b"],
@@ -26,10 +25,6 @@ function setColorCache(key: string, value: string) {
   colorCache.set(key, value);
 }
 
-function getDailyCacheDate() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export function usePlaylist(playlistIdOverride?: null | string) {
   const { t } = useI18n();
   const searchParams = useSearchParams();
@@ -37,16 +32,16 @@ export function usePlaylist(playlistIdOverride?: null | string) {
   const isRecommend = searchParams.get("isRecommend") === "true";
   const isDailyRecommend = searchParams.get("isDailyRecommend") === "true";
   const requestedDailyDate = searchParams.get("dailyDate");
-  const dailyDate =
-    isDailyRecommend && requestedDailyDate && DAILY_DATE_PATTERN.test(requestedDailyDate)
-      ? requestedDailyDate
-      : null;
-  const dailyCacheDate = dailyDate ?? getDailyCacheDate();
+  const dailyRecommendationRequest = resolveDailyRecommendationRequest(
+    isDailyRecommend ? requestedDailyDate : null,
+  );
+  const dailyDate = isDailyRecommend ? dailyRecommendationRequest.dailyDate : null;
   const libraryUpdateTrigger = useUserStore((state) => state.libraryUpdateTrigger);
   const previousLibraryUpdateTrigger = useRef(libraryUpdateTrigger);
   const reportedError = useRef<unknown>(null);
   const { data, error, isPending, refetch, setTracks } = usePlaylistContentQuery({
-    dailyDate: dailyCacheDate,
+    dailyCacheDate: dailyRecommendationRequest.cacheDate,
+    dailyDate,
     isDailyRecommendation: isDailyRecommend,
     isRecommend,
     playlistId,

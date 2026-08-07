@@ -7,13 +7,15 @@ import type {
   HistoricalDailyRecommendationDetailResponse,
   HistoricalDailyRecommendationsResponse,
   LikeListResponse,
+  PlaylistAllTracksParams,
+  PlaylistDetailParams,
   PlaylistDetailResponse,
   PersonalizedPlaylistsResponse,
   PlaylistTracksResponse,
   RecommendedPlaylistsResponse,
   UserPlaylistResponse,
 } from "@/types/api/playlist";
-import request from "../web/request";
+import request, { requestConfig } from "../web/request";
 
 /**
  * 登录后调用此接口 , 传入用户 id, 可以获取用户歌单
@@ -50,16 +52,13 @@ export function getPlaylistAllTracks({
   limit,
   offset,
   cookie,
-}: {
-  id: number | string;
-  limit?: number;
-  offset?: number;
-  cookie?: string;
-}) {
+  requiresMusicSession,
+}: PlaylistAllTracksParams) {
   // DEBUG: 后期如果拿不到数据，在这里试试看带上 cookie
-  return request.get<PlaylistTracksResponse>("/playlist/track/all", {
-    params: { cookie, id, limit, offset },
-  });
+  return request.get<PlaylistTracksResponse>(
+    "/playlist/track/all",
+    requestConfig({ params: { cookie, id, limit, offset }, requiresMusicSession }),
+  );
 }
 
 /**
@@ -169,8 +168,11 @@ export function getPersonalizePlaylists(limit?: number) {
   return request.get<PersonalizedPlaylistsResponse>("/personalized", { params: { limit } });
 }
 
-export function getPlaylsitDetail({ id, cookie }: { id: number | string; cookie?: string }) {
-  return request.get<PlaylistDetailResponse>("/playlist/detail", { params: { id, cookie } });
+export function getPlaylsitDetail({ id, cookie, requiresMusicSession }: PlaylistDetailParams) {
+  return request.get<PlaylistDetailResponse>(
+    "/playlist/detail",
+    requestConfig({ params: { id, cookie }, requiresMusicSession }),
+  );
 }
 
 // 获取每日推荐歌单
@@ -179,23 +181,25 @@ export function getRecommendedPlaylists(cookie?: string) {
 }
 
 // 不喜欢某一首每日推荐
-export function dislikeDailyRecommend(id: number | string, cookie?: string) {
-  return request.get<DailyRecommendationDislikeResponse>("/recommend/songs/dislike", {
-    params: { cookie, id },
-  });
+export function dislikeDailyRecommend(id: number | string) {
+  return request.get<DailyRecommendationDislikeResponse>(
+    "/recommend/songs/dislike",
+    requestConfig({ params: { id }, requiresMusicSession: true }),
+  );
 }
 
 /** 获取当前账号可查看的历史日推日期。 */
-export function getHistoricalDailyRecommendations(cookie?: string) {
-  return request.get<HistoricalDailyRecommendationsResponse>("/history/recommend/songs", {
-    params: { cookie },
-  });
+export function getHistoricalDailyRecommendations() {
+  return request.get<HistoricalDailyRecommendationsResponse>(
+    "/history/recommend/songs",
+    requestConfig({ requiresMusicSession: true }),
+  );
 }
 
 /** 获取指定日期的历史日推歌曲。 */
-export function getHistoricalDailyRecommendationDetail(date: string, cookie?: string) {
+export function getHistoricalDailyRecommendationDetail(date: string) {
   return request.get<HistoricalDailyRecommendationDetailResponse>(
     "/history/recommend/songs/detail",
-    { params: { cookie, date } },
+    requestConfig({ params: { date }, requiresMusicSession: true }),
   );
 }

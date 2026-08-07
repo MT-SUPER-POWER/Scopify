@@ -42,6 +42,8 @@ export interface ScopifyRequestConfig<D = unknown> extends AxiosRequestConfig<D>
   errorContext?: LogMetadata;
   /** Expected top-level business codes for endpoints that reply with HTTP 200 on failure. */
   expectedBusinessCodes?: readonly number[];
+  /** Attach the current NetEase session credential to this backend request. */
+  requiresMusicSession?: boolean;
   /** Correlates retries, transport failures, Query failures and action failures. */
   traceId?: string;
 }

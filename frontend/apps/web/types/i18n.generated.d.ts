@@ -2057,6 +2057,18 @@ export interface TranslateFn {
    */
   (key: "playlist.actions.historyLoading", params?: TranslationParams): string;
   /**
+   * zh-CN: 加载历史日推失败，请确认已登录且开通黑胶VIP。
+   * zh-TW: 載入歷史日推失敗，請確認已登入且開通黑膠VIP。
+   * en-US: Couldn't load daily history. Confirm that you're signed in and have Black Vinyl VIP.
+   */
+  (key: "playlist.actions.historyLoadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 历史日推仅对黑胶VIP开放。
+   * zh-TW: 歷史日推僅對黑膠VIP開放。
+   * en-US: Daily history is available to Black Vinyl VIP members only.
+   */
+  (key: "playlist.actions.historyRequiresVip", params?: TranslationParams): string;
+  /**
    * zh-CN: 已添加到喜欢的歌曲
    * zh-TW: 已加入喜歡的歌曲
    * en-US: Added to your Liked Songs
