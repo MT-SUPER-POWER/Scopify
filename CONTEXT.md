@@ -1,6 +1,12 @@
 # Scopify
 
-Scopify is a NetEase Cloud Music client whose renderer coordinates music data, playback, and user interactions across web and Electron runtimes.
+Scopify is a family of NetEase Cloud Music clients that coordinate music data, playback, and user interactions across Web, Electron, and mobile runtimes.
+
+## Client Boundaries
+
+**Shared Backend**:
+The independent music API service used by Scopify clients. It is a common service boundary, not a shared frontend, playback implementation, or release cycle.
+_Avoid_: shared client, mobile adapter, frontend runtime
 
 ## Language
 

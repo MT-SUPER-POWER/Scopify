@@ -299,7 +299,7 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 - [ ] 可选的 AI 歌曲主题生成：用户配置 Gemini 或 OpenAI-compatible API Key，根据歌曲歌词和封面生成视觉参数。该能力不属于当前 Folia 歌词舞台迁移范围。
 - [ ] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
-- [ ] 本地音乐库管理
+- [ ] 本地音乐库管理(离线歌单)
 - [ ] 接入 QQ、AMLLDB、酷狗等多源歌词匹配
 - [ ] Discord 显示正在使用我们的软件
 
