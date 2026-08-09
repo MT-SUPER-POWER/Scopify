@@ -32,18 +32,22 @@ export default function ArtistPage() {
     useArtistPlay(hotTracksQueue);
 
   if (!artistId)
-    return <div className="h-screen bg-[#121212] p-8 text-white">{t("artist.page.invalidId")}</div>;
+    return (
+      <div className="bg-surface-raised text-content h-screen p-8">
+        {t("artist.page.invalidId")}
+      </div>
+    );
 
   if (isLoading)
     return (
-      <div className="flex h-screen items-center justify-center bg-[#121212] p-8 text-white">
-        <Loader2 className="size-8 animate-spin text-[#1DB954]" />
+      <div className="bg-surface-raised text-content flex h-screen items-center justify-center p-8">
+        <Loader2 className="text-brand size-8 animate-spin" />
       </div>
     );
 
   if (!artist)
     return (
-      <div className="min-h-screen bg-[#121212] p-8">
+      <div className="bg-surface-raised min-h-screen p-8">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
@@ -55,7 +59,7 @@ export default function ArtistPage() {
     );
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#121212] pb-24 font-sans text-white">
+    <div className="bg-surface-raised text-content min-h-screen overflow-x-hidden pb-24 font-sans">
       <ArtistHero artist={artist} />
 
       {isError && (
@@ -71,7 +75,7 @@ export default function ArtistPage() {
         </div>
       )}
 
-      <div className="mx-auto w-full max-w-7xl bg-linear-to-b from-black/20 to-[#121212]">
+      <div className="from-hero-shade to-surface-raised mx-auto w-full max-w-7xl bg-linear-to-b">
         <ActionBar
           artistId={artist.id}
           isPlayingArtist={isPlayingArtist}

@@ -32,7 +32,7 @@ export function AlbumActions({
               type="button"
               aria-label={playLabel}
               onClick={onPlay}
-              className="flex size-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+              className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover focus-visible:ring-brand/60 flex size-14 items-center justify-center rounded-full transition-all hover:scale-105 focus-visible:ring-2 focus-visible:outline-none"
             >
               {isPlaying ? (
                 <Pause className="ml-0.5 size-6 fill-current" />
@@ -51,7 +51,7 @@ export function AlbumActions({
             <button
               type="button"
               aria-label={t("album.action.shuffle")}
-              className="flex size-8 items-center justify-center text-zinc-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+              className="text-content-muted hover:text-content focus-visible:ring-brand/60 flex size-8 items-center justify-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
               <Shuffle className="size-8" />
             </button>
@@ -66,7 +66,7 @@ export function AlbumActions({
             <button
               type="button"
               aria-label={t("album.action.download")}
-              className="flex size-8 items-center justify-center text-zinc-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+              className="text-content-muted hover:text-content focus-visible:ring-brand/60 flex size-8 items-center justify-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
               <ArrowDownCircle className="size-8" />
             </button>
@@ -89,7 +89,7 @@ export function AlbumActions({
             <button
               type="button"
               aria-label={t("album.action.more")}
-              className="flex size-8 items-center justify-center text-zinc-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
+              className="text-content-muted hover:text-content focus-visible:ring-brand/60 flex size-8 items-center justify-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
             >
               <MoreHorizontal className="size-8" />
             </button>

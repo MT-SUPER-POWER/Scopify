@@ -15,7 +15,7 @@ export function SectionHeader({ title, onSeeAll }: { title: string; onSeeAll: ()
       </h2>
       <button
         onClick={onSeeAll}
-        className="text-sm font-bold text-zinc-400 hover:text-white hover:underline"
+        className="text-content-muted hover:text-content text-sm font-bold hover:underline"
       >
         {t("common.action.seeAll")}
       </button>

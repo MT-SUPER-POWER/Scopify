@@ -26,19 +26,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="zh-CN" data-theme="scopify" suppressHydrationWarning>
       <body
         className={cn(
           "fixed inset-0 flex overflow-hidden antialiased",
-          "selection:bg-[#1db954] selection:text-white",
+          "selection:bg-brand selection:text-brand-foreground",
         )}
         suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
+          storageKey="scopify-color-mode"
         >
           <I18nProvider>
             <QueryProvider>{children}</QueryProvider>

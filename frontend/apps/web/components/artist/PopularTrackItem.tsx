@@ -59,9 +59,9 @@ function TrackIndexCell({
   const { t } = useI18n();
 
   return (
-    <div className="relative flex w-6 items-center justify-center text-right text-sm text-gray-400 tabular-nums">
+    <div className="text-content-muted relative flex w-6 items-center justify-center text-right text-sm tabular-nums">
       {/* 默认：序号 */}
-      <span className={cn("group-hover:hidden", isActive ? "hidden font-bold text-[#1DB954]" : "")}>
+      <span className={cn("group-hover:hidden", isActive ? "text-brand hidden font-bold" : "")}>
         {index + 1}
       </span>
 
@@ -80,15 +80,15 @@ function TrackIndexCell({
 
       {/* 暂停中：静态绿色 Play */}
       {isActive && !isPlaying && (
-        <Play className="size-4 fill-current text-[#1DB954] group-hover:hidden" />
+        <Play className="text-brand size-4 fill-current group-hover:hidden" />
       )}
 
       {/* Hover 覆盖 */}
       <div className="hidden items-center justify-center group-hover:flex">
         {isActive && isPlaying ? (
-          <Pause className="size-4 cursor-pointer fill-white text-white" onClick={onPause} />
+          <Pause className="text-content size-4 cursor-pointer fill-current" onClick={onPause} />
         ) : (
-          <Play className="size-4 cursor-pointer fill-white text-white" onClick={onPlay} />
+          <Play className="text-content size-4 cursor-pointer fill-current" onClick={onPlay} />
         )}
       </div>
     </div>
@@ -179,8 +179,8 @@ export const PopularTrackItem = memo(
           <div
             className={cn(
               "group flex items-center justify-between rounded-md p-2",
-              "cursor-pointer transition-colors select-none hover:bg-white/10",
-              isActive && "text-[#1DB954]",
+              "hover:bg-content/10 cursor-pointer transition-colors select-none",
+              isActive && "text-brand",
             )}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
@@ -206,7 +206,7 @@ export const PopularTrackItem = memo(
                 <span
                   className={cn(
                     "max-w-50 truncate font-medium md:max-w-xs",
-                    isActive ? "text-[#1DB954]" : "text-white",
+                    isActive ? "text-brand" : "text-content",
                   )}
                   title={track.name}
                 >
@@ -217,7 +217,7 @@ export const PopularTrackItem = memo(
             </div>
 
             {/* 右侧：Like + 时长 */}
-            <div className="flex items-center gap-4 text-sm text-gray-400">
+            <div className="text-content-muted flex items-center gap-4 text-sm">
               <div className={cn("transition-opacity", hovered ? "opacity-100" : "opacity-0")}>
                 <LikeButton
                   liked={isLiked}
@@ -233,12 +233,9 @@ export const PopularTrackItem = memo(
         </ContextMenuTrigger>
 
         {/* ── Context Menu ── */}
-        <ContextMenuContent className="w-52 border-white/10 bg-[#282828] text-white">
+        <ContextMenuContent className="w-52">
           <ContextMenuGroup>
-            <ContextMenuItem
-              onClick={handleRowClick}
-              className="focus:bg-white/10 focus:text-white"
-            >
+            <ContextMenuItem onClick={handleRowClick}>
               {isActive && isPlaying ? (
                 <>
                   <Pause className="mr-2 size-4" />
@@ -252,32 +249,26 @@ export const PopularTrackItem = memo(
               )}
             </ContextMenuItem>
 
-            <ContextMenuItem
-              onClick={handleAddToQueue}
-              className="focus:bg-white/10 focus:text-white"
-            >
+            <ContextMenuItem onClick={handleAddToQueue}>
               <ListPlus className="mr-2 size-4" />
               {t("contextMenu.addToQueue")}
             </ContextMenuItem>
 
-            <ContextMenuItem
-              onClick={() => void handleLike(!isLiked)}
-              className="focus:bg-white/10 focus:text-white"
-            >
+            <ContextMenuItem onClick={() => void handleLike(!isLiked)}>
               <Heart className="mr-2 size-4" />
               {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
             </ContextMenuItem>
           </ContextMenuGroup>
 
-          <ContextMenuSeparator className="bg-white/10" />
+          <ContextMenuSeparator />
 
           <ContextMenuGroup>
             <ContextMenuSub>
-              <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+              <ContextMenuSubTrigger>
                 <PlusCircle className="mr-4 size-4" />
                 {t("contextMenu.addToPlaylist")}
               </ContextMenuSubTrigger>
-              <ContextMenuSubContent className="border-white/10 bg-[#282828] text-white">
+              <ContextMenuSubContent>
                 {isLoggedIn &&
                   playlists.map((p) => (
                     <ContextMenuItem
@@ -297,7 +288,6 @@ export const PopularTrackItem = memo(
                           }
                         })();
                       }}
-                      className="focus:bg-white/10 focus:text-white"
                     >
                       <Image
                         width={28}
@@ -312,14 +302,14 @@ export const PopularTrackItem = memo(
               </ContextMenuSubContent>
             </ContextMenuSub>
 
-            <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
+            <ContextMenuItem asChild>
               <Link href={`/comment/?songId=${track.id}`} className="block size-full">
                 <FaRegCommentDots className="mr-2 size-4" />
                 {t("contextMenu.comments")}
               </Link>
             </ContextMenuItem>
 
-            <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
+            <ContextMenuItem asChild>
               <button
                 type="button"
                 onClick={() => {
@@ -338,7 +328,7 @@ export const PopularTrackItem = memo(
             {/* View Artist */}
             {track.ar.length > 0 &&
               (track.ar.length === 1 ? (
-                <ContextMenuItem asChild className="focus:bg-white/10 focus:text-white">
+                <ContextMenuItem asChild>
                   <Link href={`/artist?id=${track.ar[0].id}`} className="block size-full">
                     <User className="mr-2 size-4" />
                     {t("contextMenu.goToArtist")}
@@ -346,17 +336,13 @@ export const PopularTrackItem = memo(
                 </ContextMenuItem>
               ) : (
                 <ContextMenuSub>
-                  <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+                  <ContextMenuSubTrigger>
                     <User className="mr-4 size-4" />
                     {t("contextMenu.goToArtist")}
                   </ContextMenuSubTrigger>
-                  <ContextMenuSubContent className="border-white/10 bg-[#282828] text-white">
+                  <ContextMenuSubContent>
                     {track.ar.map((artist) => (
-                      <ContextMenuItem
-                        key={artist.id}
-                        asChild
-                        className="focus:bg-white/10 focus:text-white"
-                      >
+                      <ContextMenuItem key={artist.id} asChild>
                         <Link href={`/artist?id=${artist.id}`} className="block size-full">
                           {artist.name}
                         </Link>

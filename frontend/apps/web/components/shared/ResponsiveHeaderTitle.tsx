@@ -24,7 +24,7 @@ export function ResponsiveHeaderTitle({ className, title }: ResponsiveHeaderTitl
       ref={elementRef}
       tabIndex={isOverflowing ? 0 : undefined}
       className={cn(
-        "m-0 w-full truncate leading-none font-black tracking-normal text-white drop-shadow-lg focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none",
+        "text-content focus-visible:ring-brand/50 m-0 w-full truncate leading-none font-black tracking-normal focus-visible:ring-2 focus-visible:outline-none",
         getTitleFontSizeClass(title),
         className,
       )}

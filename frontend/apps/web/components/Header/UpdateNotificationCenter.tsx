@@ -73,28 +73,28 @@ export function UpdateNotificationCenter() {
           type="button"
           aria-label={t("notifications.title")}
           className={cn(
-            "relative hidden size-10 items-center justify-center rounded-full bg-black/50 text-zinc-500 transition-all hover:bg-black/70 hover:text-white md:flex",
-            hasUnreadUpdate && "text-[#1ed760]",
+            "bg-surface-sunken/80 text-content-muted hover:bg-surface-elevated hover:text-content relative hidden size-10 items-center justify-center rounded-full transition-all md:flex",
+            hasUnreadUpdate && "text-brand",
           )}
         >
           <Bell className="size-4.5" />
           {hasUnreadUpdate ? (
-            <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-[#1ed760] ring-2 ring-black" />
+            <span className="bg-brand ring-surface absolute top-1.5 right-1.5 size-2 rounded-full ring-2" />
           ) : null}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-88 rounded-2xl border border-white/10 bg-[#16161a]/95 p-0 text-white shadow-2xl shadow-black/80 backdrop-blur-2xl"
+        className="bg-surface-overlay/95 text-content shadow-floating border-border w-88 rounded-2xl border p-0 backdrop-blur-2xl"
       >
-        <div className="border-b border-white/10 px-4 py-3">
+        <div className="border-border border-b px-4 py-3">
           <h2 className="text-sm font-bold">{t("notifications.title")}</h2>
         </div>
         {hasStatusNotice ? (
           <div className="p-4">
-            <div className="flex items-start gap-3 rounded-xl bg-white/5 p-3">
-              <div className="mt-0.5 rounded-full bg-[#1ed760]/15 p-2 text-[#1ed760]">
+            <div className="bg-surface-elevated flex items-start gap-3 rounded-xl p-3">
+              <div className="bg-brand/15 text-brand mt-0.5 rounded-full p-2">
                 {state.status === "error" ? (
                   <CircleAlert className="size-4" />
                 ) : state.status === "downloaded" ? (
@@ -104,14 +104,14 @@ export function UpdateNotificationCenter() {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-white">{noticeTitle}</p>
-                <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-zinc-400">
+                <p className="text-content text-sm font-semibold">{noticeTitle}</p>
+                <p className="text-muted-foreground mt-1 line-clamp-3 text-xs leading-relaxed">
                   {noticeDescription}
                 </p>
                 {state.status === "downloading" ? (
-                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+                  <div className="bg-skeleton mt-3 h-1.5 overflow-hidden rounded-full">
                     <div
-                      className="h-full rounded-full bg-[#1ed760] transition-[width]"
+                      className="bg-brand h-full rounded-full transition-[width]"
                       style={{ width: `${Math.min(100, Math.max(0, state.percent ?? 0))}%` }}
                     />
                   </div>
@@ -119,7 +119,7 @@ export function UpdateNotificationCenter() {
                 <button
                   type="button"
                   onClick={state.status === "downloaded" ? install : openUpdaterSettings}
-                  className="mt-3 text-xs font-bold text-[#1ed760] hover:text-[#3be477]"
+                  className="text-brand hover:text-brand-hover mt-3 text-xs font-bold"
                 >
                   {state.status === "downloaded"
                     ? t("notifications.updater.install")
@@ -130,11 +130,13 @@ export function UpdateNotificationCenter() {
           </div>
         ) : (
           <div className="flex flex-col items-center px-6 py-10 text-center">
-            <BellRing className="size-8 text-zinc-600" />
-            <p className="mt-3 text-sm font-semibold text-zinc-300">
+            <BellRing className="text-content-subtle size-8" />
+            <p className="text-content-muted mt-3 text-sm font-semibold">
               {t("notifications.empty.title")}
             </p>
-            <p className="mt-1 text-xs text-zinc-500">{t("notifications.empty.description")}</p>
+            <p className="text-content-subtle mt-1 text-xs">
+              {t("notifications.empty.description")}
+            </p>
           </div>
         )}
       </DropdownMenuContent>

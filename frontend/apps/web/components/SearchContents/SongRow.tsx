@@ -34,22 +34,22 @@ export function SongRow({
 
   return (
     <div
-      className="group flex cursor-pointer items-center justify-between rounded-md p-2.5 transition-colors hover:bg-white/10 active:bg-white/5"
+      className="group hover:bg-content/10 active:bg-content/5 flex cursor-pointer items-center justify-between rounded-md p-2.5 transition-colors"
       onClick={onRowClick}
     >
       <div className="flex min-w-0 items-center gap-4">
-        <div className="relative size-11 shrink-0 rounded bg-zinc-800">
+        <div className="bg-surface-elevated relative size-11 shrink-0 rounded">
           <img src={imageUrl} alt={song.name} className="size-full rounded object-cover" />
           <div
             className={cn(
-              "absolute inset-0 flex items-center justify-center rounded bg-black/50 transition-opacity",
+              "bg-media-overlay absolute inset-0 flex items-center justify-center rounded transition-opacity",
               isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100",
             )}
           >
             <button
               type="button"
               onClick={onTogglePlay}
-              className="text-white transition-transform hover:scale-110"
+              className="text-overlay-foreground transition-transform hover:scale-110"
             >
               {isPlaying ? (
                 <Pause className="size-5 fill-current" />
@@ -65,7 +65,7 @@ export function SongRow({
             <span
               className={cn(
                 "truncate text-base font-medium",
-                isPlaying ? "text-[#1ed760]" : "text-white",
+                isPlaying ? "text-brand" : "text-content",
               )}
               title={song.name}
             >
@@ -73,18 +73,18 @@ export function SongRow({
             </span>
             <SongVipBadge fee={song.fee} />
           </div>
-          <span className="truncate text-sm text-zinc-400 transition-colors group-hover:text-white">
+          <span className="text-content-muted group-hover:text-content truncate text-sm transition-colors">
             <ArtistInlineLinks artists={song.artists ?? []} />
           </span>
         </div>
       </div>
 
-      <div className="ml-4 flex shrink-0 items-center gap-6 text-zinc-400">
-        <Heart className="size-4 cursor-pointer opacity-0 transition-all group-hover:opacity-100 hover:scale-110 hover:text-white" />
+      <div className="text-content-muted ml-4 flex shrink-0 items-center gap-6">
+        <Heart className="hover:text-content size-4 cursor-pointer opacity-0 transition-all group-hover:opacity-100 hover:scale-110" />
         <span className="w-12 text-right text-sm font-medium tabular-nums">
           {formatDuration(song.duration)}
         </span>
-        <MoreHorizontal className="size-5 cursor-pointer opacity-0 transition-all group-hover:opacity-100 hover:text-white" />
+        <MoreHorizontal className="hover:text-content size-5 cursor-pointer opacity-0 transition-all group-hover:opacity-100" />
       </div>
     </div>
   );

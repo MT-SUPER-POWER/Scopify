@@ -37,7 +37,7 @@ export function HeaderDescription({
         aria-expanded={open}
         aria-haspopup="dialog"
         className={cn(
-          "group -ml-2 block max-w-2xl min-w-0 cursor-pointer rounded-lg px-2 py-1 text-left transition-colors hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none",
+          "group hover:bg-content/5 focus-visible:ring-brand/50 -ml-2 block max-w-2xl min-w-0 cursor-pointer rounded-lg px-2 py-1 text-left transition-colors focus-visible:ring-2 focus-visible:outline-none",
           triggerClassName,
         )}
         onClick={(event) => {
@@ -48,7 +48,7 @@ export function HeaderDescription({
       >
         <span
           className={cn(
-            "block max-h-9 overflow-hidden text-xs leading-[18px] font-normal whitespace-pre-line text-white/70 drop-shadow-md transition-colors group-hover:text-white/85 lg:text-sm",
+            "text-content/70 group-hover:text-content/85 block max-h-9 overflow-hidden text-xs leading-[18px] font-normal whitespace-pre-line transition-colors lg:text-sm",
             summaryClassName,
           )}
         >
@@ -58,7 +58,7 @@ export function HeaderDescription({
       <MediaDescriptionDialog
         closeLabel={t("common.action.close")}
         header={
-          <div className="relative shrink-0 overflow-hidden border-b border-white/10">
+          <div className="border-border relative shrink-0 overflow-hidden border-b">
             {cover && (
               <img
                 aria-hidden="true"
@@ -67,22 +67,22 @@ export function HeaderDescription({
                 className="absolute inset-0 size-full scale-110 object-cover opacity-45 blur-2xl"
               />
             )}
-            <div className="absolute inset-0 bg-linear-to-r from-black/75 via-black/60 to-black/80" />
-            <div className="absolute inset-0 bg-linear-to-t from-[#151515] via-transparent to-black/15" />
+            <div className="from-overlay via-overlay/75 to-overlay absolute inset-0 bg-linear-to-r" />
+            <div className="from-surface-overlay to-overlay/20 absolute inset-0 bg-linear-to-t via-transparent" />
 
             <div className="relative flex items-end gap-5 px-5 pt-14 pb-6 sm:gap-7 sm:px-8 sm:pt-16 sm:pb-8">
-              <div className="size-28 shrink-0 overflow-hidden rounded-xl bg-white/5 shadow-[0_16px_48px_rgba(0,0,0,0.45)] ring-1 ring-white/10 sm:size-36">
+              <div className="bg-content/5 ring-content/10 shadow-floating size-28 shrink-0 overflow-hidden rounded-xl ring-1 sm:size-36">
                 {cover ? (
                   <img src={cover} alt={title} className="size-full object-cover" />
                 ) : (
-                  <div className="flex size-full items-center justify-center text-white/25">
+                  <div className="text-overlay-foreground/25 flex size-full items-center justify-center">
                     <Music2 className="size-10" />
                   </div>
                 )}
               </div>
 
               <div className="min-w-0 pb-1">
-                <DialogPrimitive.Title className="line-clamp-2 text-2xl leading-tight font-bold tracking-tight text-balance sm:text-4xl">
+                <DialogPrimitive.Title className="text-overlay-foreground line-clamp-2 text-2xl leading-tight font-bold tracking-tight text-balance sm:text-4xl">
                   {title}
                 </DialogPrimitive.Title>
                 <DialogPrimitive.Description className="sr-only">
@@ -97,7 +97,7 @@ export function HeaderDescription({
       >
         <ScrollArea className="h-full min-h-0">
           <article className="px-5 py-6 sm:p-8">
-            <p className="text-[15px] leading-7 whitespace-pre-wrap text-zinc-200 sm:text-base sm:leading-8">
+            <p className="text-content text-[15px] leading-7 whitespace-pre-wrap sm:text-base sm:leading-8">
               {content}
             </p>
           </article>

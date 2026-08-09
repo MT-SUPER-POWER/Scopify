@@ -39,9 +39,9 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
         event.preventDefault();
         handleNavigate();
       }}
-      className="group min-w-0 cursor-pointer rounded-xl bg-[#181818] p-4 transition-colors hover:bg-[#282828]"
+      className="bg-surface-elevated hover:bg-surface-overlay group min-w-0 cursor-pointer rounded-xl p-4 transition-colors"
     >
-      <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md bg-zinc-800 shadow-lg">
+      <div className="bg-surface-sunken shadow-panel relative mb-4 aspect-square w-full overflow-hidden rounded-md">
         <Image
           width={300}
           height={300}
@@ -51,14 +51,14 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
         />
         {categoryLabel && (
           <span
-            className="absolute top-2 left-2 max-w-[calc(100%-1rem)] truncate rounded-md bg-black/65 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm"
+            className="bg-overlay/80 text-overlay-foreground absolute top-2 left-2 max-w-[calc(100%-1rem)] truncate rounded-md px-2 py-1 text-xs font-medium backdrop-blur-sm"
             title={categoryLabel}
           >
             {categoryLabel}
           </span>
         )}
         {isActive && isPlaying ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+          <div className="bg-media-overlay absolute inset-0 flex items-center justify-center">
             <PlayingAnimation size={24} />
           </div>
         ) : null}
@@ -71,7 +71,7 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
               event.stopPropagation();
               setIsPlaying(false);
             }}
-            className="absolute right-2 bottom-2 flex size-12 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#3be477]"
+            className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-2 bottom-2 flex size-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-105"
           >
             <Pause className="size-6 fill-current" />
           </button>
@@ -81,7 +81,7 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
             title={t("contextMenu.play")}
             aria-label={t("contextMenu.play")}
             onClick={(event) => void handlePlayPodcast(podcast.id, event)}
-            className="absolute right-2 bottom-2 flex size-12 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477] focus-visible:translate-y-0 focus-visible:opacity-100"
+            className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-2 bottom-2 flex size-12 translate-y-3 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 focus-visible:translate-y-0 focus-visible:opacity-100"
           >
             <Play
               className={cn(
@@ -93,10 +93,10 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
         )}
       </div>
       <div className="flex min-w-0 items-center gap-1">
-        <h3 className="truncate text-base font-bold text-white">{podcast.name}</h3>
+        <h3 className="text-content truncate text-base font-bold">{podcast.name}</h3>
         {podcast.score !== undefined ? (
           <span
-            className="inline-flex h-[13px] shrink-0 items-center rounded-[1px] border border-[#a67d16] bg-[#c4931c]/10 px-[2px] text-[9px] leading-[11px] font-normal text-[#dfb42b]"
+            className="border-warning text-warning bg-warning/10 inline-flex h-[13px] shrink-0 items-center rounded-xs border px-[2px] text-[9px] leading-[11px] font-normal"
             title={t("search.podcast.score", { score: podcast.score })}
           >
             <span className="sr-only">{t("search.podcast.score", { score: podcast.score })}</span>
@@ -104,10 +104,10 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
           </span>
         ) : null}
       </div>
-      <p className="mt-1 truncate text-sm text-zinc-400">
+      <p className="text-content-muted mt-1 truncate text-sm">
         {podcast.hostName || t("search.podcast.unknownHost")}
       </p>
-      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500">
+      <div className="text-content-subtle mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
         <span className="inline-flex items-center gap-1">
           <Radio className="size-3" />
           {t("search.podcast.subscriberCount", { count: podcast.subscriberCount })}

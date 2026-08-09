@@ -24,7 +24,7 @@ export function LibraryNavigation({ isCollapsed }: LibraryNavigationProps) {
   if (isCollapsed) {
     return (
       <nav
-        className="mx-2 flex shrink-0 flex-col items-center gap-2 border-y border-white/5 py-3"
+        className="border-content/10 mx-2 flex shrink-0 flex-col items-center gap-2 border-y py-3"
         aria-label={t("sidebar.library.title")}
       >
         {libraryItems.map((item) => {
@@ -42,8 +42,8 @@ export function LibraryNavigation({ isCollapsed }: LibraryNavigationProps) {
               className={cn(
                 "group flex size-12 items-center justify-center rounded-md transition-colors",
                 isActive
-                  ? "bg-white/10 text-white"
-                  : "bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white",
+                  ? "bg-content/10 text-content"
+                  : "bg-content/5 text-content-muted hover:bg-content/10 hover:text-content",
               )}
             >
               <Icon className="size-5" />
@@ -56,7 +56,9 @@ export function LibraryNavigation({ isCollapsed }: LibraryNavigationProps) {
 
   return (
     <nav className="flex shrink-0 flex-col gap-1 px-3 py-4" aria-label={t("sidebar.library.title")}>
-      <p className="px-2 pb-1 text-xs font-bold text-zinc-500">{t("sidebar.library.title")}</p>
+      <p className="text-content-subtle px-2 pb-1 text-xs font-bold">
+        {t("sidebar.library.title")}
+      </p>
       {libraryItems.map((item) => {
         const isActive = pathname === item.href;
         const label = t(item.labelKey);
@@ -72,8 +74,8 @@ export function LibraryNavigation({ isCollapsed }: LibraryNavigationProps) {
               "group flex min-w-0 items-center rounded-md text-sm font-medium transition-colors",
               "gap-3 p-2",
               isActive
-                ? "bg-white/10 text-white"
-                : "text-zinc-400 hover:bg-white/5 hover:text-white",
+                ? "bg-content/10 text-content"
+                : "text-content-muted hover:bg-content/5 hover:text-content",
             )}
           >
             <Icon className="size-4 shrink-0" />

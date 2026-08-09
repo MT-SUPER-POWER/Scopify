@@ -36,7 +36,7 @@ export default function RecentSongsPage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="min-h-screen bg-[#121212] px-6 pt-24 pb-28 md:px-10">
+      <main className="bg-surface-raised min-h-screen px-6 pt-24 pb-28 md:px-10">
         <LoginRequiredPrompt
           reason="library"
           onLogin={() => router.push("/login?reason=library")}
@@ -47,7 +47,7 @@ export default function RecentSongsPage() {
 
   if (recentSongsQuery.isError) {
     return (
-      <main className="min-h-screen bg-[#121212] px-6 pt-24 pb-28 md:px-10">
+      <main className="bg-surface-raised min-h-screen px-6 pt-24 pb-28 md:px-10">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
@@ -68,7 +68,7 @@ export default function RecentSongsPage() {
       playlistInfo={playlistInfo}
       playSourceId="library:recent"
       refetchTracks={recentSongsQuery.refetch}
-      themeColor="#3B6B61"
+      themeColor="var(--page-accent-recent)"
       tracks={tracks}
     />
   );

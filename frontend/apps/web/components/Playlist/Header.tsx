@@ -16,16 +16,16 @@ const DailyCalendarCover = ({ dailyDate }: { dailyDate?: string }) => {
   const dateNum = displayDate.getDate();
 
   return (
-    <div className="z-10 flex size-full shrink-0 flex-col overflow-hidden rounded-md bg-white shadow-[4px_0_10px_rgba(0,0,0,0.3)] select-none">
-      <div className="flex h-[22%] items-center justify-center border-b border-black/10 bg-linear-to-b from-[#e34242] to-[#c42b2b]">
-        <span className="text-lg font-medium tracking-widest text-white md:text-xl">
+    <div className="bg-calendar-surface shadow-calendar z-10 flex size-full shrink-0 flex-col overflow-hidden rounded-md select-none">
+      <div className="border-calendar-divider from-calendar-accent to-calendar-accent-hover flex h-[22%] items-center justify-center border-b bg-linear-to-b">
+        <span className="text-calendar-surface text-lg font-medium tracking-widest md:text-xl">
           {dayOfWeek}
         </span>
       </div>
       {/* eslint-disable-next-line tailwindcss/classnames-order -- Prettier owns the Tailwind v4 class order. */}
-      <div className="from-momo-light relative flex flex-1 items-center justify-center bg-linear-to-b from-45% to-[#e6e6e6] to-45%">
-        <div className="absolute top-[45%] left-0 h-0.5 w-full -translate-y-1/2 bg-black/5 shadow-[0_1px_1px_rgba(255,255,255,0.8)]" />
-        <span className="z-10 -mt-3 font-sans text-7xl font-black tracking-tighter text-[#2a2a2a] md:text-8xl">
+      <div className="from-calendar-surface to-calendar-surface-muted relative flex flex-1 items-center justify-center bg-linear-to-b from-45% to-45%">
+        <div className="bg-calendar-divider absolute top-[45%] left-0 h-0.5 w-full -translate-y-1/2" />
+        <span className="text-calendar-ink z-10 -mt-3 font-sans text-7xl font-black tracking-tighter md:text-8xl">
           {dateNum}
         </span>
       </div>
@@ -53,7 +53,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
 
   return (
     <div className="relative z-10 flex flex-col items-start gap-7 px-6 pt-24 pb-7 md:flex-row md:items-stretch md:gap-8 md:px-8 lg:px-10 xl:px-12">
-      <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-md bg-black/20 shadow-[0_8px_40px_rgba(0,0,0,0.5)] transition-transform duration-300 lg:size-56">
+      <div className="bg-surface-elevated hover:scale-1.02 shadow-floating size-48 shrink-0 overflow-hidden rounded-md transition-transform duration-300 lg:size-56">
         {isDaily || !info.cover ? (
           <DailyCalendarCover dailyDate={info.dailyDate} />
         ) : (
@@ -67,16 +67,16 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         )}
       </div>
 
-      <div className="[container-type:inline-size] flex min-w-0 flex-1 flex-col justify-end text-white md:min-h-48 lg:min-h-56">
+      <div className="text-content [container-type:inline-size] flex min-w-0 flex-1 flex-col justify-end md:min-h-48 lg:min-h-56">
         {/* Top: Privacy & Style Pill Badges */}
         <div className="mb-3 flex flex-row flex-wrap items-center gap-2 md:mb-4">
-          <span className="rounded-sm bg-white/10 px-3 py-1 text-sm tracking-wider uppercase drop-shadow-md">
+          <span className="bg-content/10 rounded-sm px-3 py-1 text-sm tracking-wider uppercase">
             {info.privacy || "歌单"}
           </span>
           {info.tags?.map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-white/10 px-3 py-1 text-[12px] font-medium drop-shadow-md transition-colors hover:bg-white/20"
+              className="bg-content/10 hover:bg-content/20 rounded-full px-3 py-1 text-[12px] font-medium transition-colors"
             >
               {tag}
             </span>
@@ -97,10 +97,10 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         />
 
         {/* Bottom: Creator & Metadata line */}
-        <div className="flex flex-wrap items-center gap-2.5 text-xs text-white/80 drop-shadow-md lg:text-sm">
+        <div className="text-content/80 flex flex-wrap items-center gap-2.5 text-xs lg:text-sm">
           {!info.isSpecial && (
             <>
-              <div className="group mr-1 flex cursor-pointer items-center gap-2 text-white">
+              <div className="text-content group mr-1 flex cursor-pointer items-center gap-2">
                 {info.creatorAvatar ? (
                   <Image
                     src={info.creatorAvatar}
@@ -110,7 +110,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
                     className="size-7 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="flex size-7 items-center justify-center rounded-full bg-zinc-600 text-xs font-bold">
+                  <div className="bg-content/20 flex size-7 items-center justify-center rounded-full text-xs font-bold">
                     M
                   </div>
                 )}
@@ -129,7 +129,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
               <span className="opacity-60">•</span>
             </>
           )}
-          <span className="font-medium text-white">
+          <span className="text-content font-medium">
             {info.totalSongsLabel ?? `共 ${info.totalSongs} 首歌`}
           </span>
         </div>

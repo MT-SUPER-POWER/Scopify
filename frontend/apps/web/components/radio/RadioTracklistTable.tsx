@@ -90,7 +90,7 @@ export function RadioTracklistTable({
             className={cn(
               "sticky z-10 transition-[background-color,filter,backdrop-filter] duration-150 [&_[data-slot=table-head]]:h-9",
               isTableHeaderSticky
-                ? "bg-[#121212]/95 drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)] backdrop-blur-sm"
+                ? "bg-surface-raised/95 drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)] backdrop-blur-sm"
                 : "bg-transparent",
             )}
           >

@@ -9,10 +9,10 @@ export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () =
 
   return (
     <div
-      className="group flex min-w-0 cursor-pointer flex-col items-center rounded-xl bg-[#181818] p-4 text-center transition-colors hover:bg-[#282828] active:bg-[#202020]"
+      className="bg-surface-elevated hover:bg-surface-overlay active:bg-surface-sunken group flex min-w-0 cursor-pointer flex-col items-center rounded-xl p-4 text-center transition-colors"
       onClick={onClick}
     >
-      <div className="mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-full bg-zinc-800 shadow-lg">
+      <div className="bg-surface-sunken shadow-panel mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-full">
         {artist.picUrl || artist.img1v1Url ? (
           <img
             src={artist.picUrl || artist.img1v1Url}
@@ -20,11 +20,11 @@ export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () =
             className="size-full object-cover"
           />
         ) : (
-          <User className="size-12 text-zinc-500" />
+          <User className="text-content-subtle size-12" />
         )}
       </div>
       <h4 className="mb-1 w-full truncate text-base font-bold">{artist.name}</h4>
-      <p className="mt-1 w-full truncate text-sm text-zinc-400">
+      <p className="text-content-muted mt-1 w-full truncate text-sm">
         {t("search.section.artistLabel")}
       </p>
     </div>

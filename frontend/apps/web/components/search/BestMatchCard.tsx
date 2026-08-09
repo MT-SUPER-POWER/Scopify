@@ -96,10 +96,10 @@ export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
       <h2 className="mb-4 text-2xl font-bold tracking-tight">{t("search.section.bestMatch")}</h2>
       {bestMatch ? (
         <div
-          className="group relative flex min-h-55 flex-1 cursor-pointer flex-col justify-end rounded-xl bg-[#181818] p-6 transition-colors hover:bg-[#282828]"
+          className="bg-surface-elevated hover:bg-surface-overlay group relative flex min-h-55 flex-1 cursor-pointer flex-col justify-end rounded-xl p-6 transition-colors"
           onClick={handlePrimaryAction}
         >
-          <div className="mb-5 size-24 overflow-hidden rounded-md bg-zinc-800 shadow-2xl">
+          <div className="bg-surface-sunken shadow-floating mb-5 size-24 overflow-hidden rounded-md">
             <Image
               width={96}
               height={96}
@@ -115,35 +115,35 @@ export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
             <h3 className="min-w-0 truncate text-3xl font-bold">{title}</h3>
             {song && <SongVipBadge fee={song.fee} />}
           </div>
-          <div className="flex items-center gap-2 text-sm text-zinc-400">
+          <div className="text-content-muted flex items-center gap-2 text-sm">
             {song &&
               (song.artists.length > 0 ? (
                 <ArtistInlineLinks
                   artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
-                  className="font-medium text-white"
+                  className="text-content font-medium"
                 />
               ) : (
-                <span className="font-medium text-white hover:underline">
+                <span className="text-content font-medium hover:underline">
                   {t("search.song.unknownArtist")}
                 </span>
               ))}
             {bestMatch.kind === "album" && (
               <ArtistInlineLinks
                 artists={[{ id: bestMatch.album.artist.id, name: bestMatch.album.artist.name }]}
-                className="font-medium text-white"
+                className="text-content font-medium"
               />
             )}
             {bestMatch.kind === "artist" && bestMatch.artist.alias?.length ? (
-              <span className="truncate font-medium text-white">
+              <span className="text-content truncate font-medium">
                 {bestMatch.artist.alias.join(" · ")}
               </span>
             ) : null}
             {bestMatch.kind === "playlist" && bestMatch.playlist.creator?.nickname ? (
-              <span className="truncate font-medium text-white">
+              <span className="text-content truncate font-medium">
                 {bestMatch.playlist.creator.nickname}
               </span>
             ) : null}
-            <span className="rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase">
+            <span className="bg-overlay/60 text-overlay-foreground rounded-full px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase">
               {typeLabel}
             </span>
           </div>
@@ -153,7 +153,7 @@ export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
                 e.stopPropagation();
                 handlePrimaryAction();
               }}
-              className="absolute right-6 bottom-6 flex size-14 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
+              className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-6 bottom-6 flex size-14 translate-y-3 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105"
             >
               {isActive && isPlaying ? (
                 <Pause className="size-7 fill-current" />
@@ -164,7 +164,7 @@ export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
           )}
         </div>
       ) : (
-        <div className="flex flex-1 items-center justify-center rounded-xl bg-[#181818] p-5 text-sm text-zinc-500">
+        <div className="bg-surface-elevated text-content-subtle flex flex-1 items-center justify-center rounded-xl p-5 text-sm">
           {t("search.section.noMatchingResults")}
         </div>
       )}

@@ -31,21 +31,21 @@ export default function AlbumPage() {
 
   if (!albumId)
     return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-[#121212] text-zinc-400">
+      <div className="bg-surface-raised text-content-muted flex min-h-screen w-full items-center justify-center">
         <span className="text-lg font-medium">{t("album.empty.invalidId")}</span>
       </div>
     );
 
   if (isLoading && !ALBUM_INFO)
     return (
-      <div className="min-h-screen w-full bg-[#121212] px-6 py-24">
+      <div className="bg-surface-raised min-h-screen w-full px-6 py-24">
         <PlaylistLoading />
       </div>
     );
 
   if ((isError && !ALBUM_INFO) || (!isLoading && !ALBUM_INFO))
     return (
-      <div className="min-h-screen w-full bg-[#121212] px-6 py-24">
+      <div className="bg-surface-raised min-h-screen w-full px-6 py-24">
         <div className="mb-6 opacity-70">
           <PlaylistLoading />
         </div>
@@ -63,7 +63,7 @@ export default function AlbumPage() {
   return (
     <div
       key={albumId}
-      className="relative flex min-h-screen w-full flex-col bg-[#121212] font-sans"
+      className="bg-surface-raised relative flex min-h-screen w-full flex-col font-sans"
     >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 transition-colors duration-700 md:h-125"
@@ -87,7 +87,7 @@ export default function AlbumPage() {
           />
         </div>
       )}
-      <div className="relative z-10 flex flex-1 flex-col bg-linear-to-b from-black/20 via-[#121212] via-20% to-[#121212]">
+      <div className="bg-surface-raised from-hero-shade via-surface-raised to-surface-raised relative z-10 flex flex-1 flex-col bg-linear-to-b via-20%">
         <AlbumActions
           isPlaying={isPlaying}
           isAlbumCollected={isAlbumCollected}

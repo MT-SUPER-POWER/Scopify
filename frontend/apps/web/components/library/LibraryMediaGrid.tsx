@@ -12,7 +12,7 @@ function LibraryMediaTile({ item }: { item: LibraryMediaItem }) {
   const media = (
     <>
       <div
-        className={`aspect-square overflow-hidden bg-zinc-800 ${item.isArtist ? "rounded-full" : "rounded-md"}`}
+        className={`bg-surface-elevated aspect-square overflow-hidden ${item.isArtist ? "rounded-full" : "rounded-md"}`}
       >
         {item.coverUrl ? (
           <Image
@@ -23,15 +23,15 @@ function LibraryMediaTile({ item }: { item: LibraryMediaItem }) {
             className="size-full object-cover"
           />
         ) : (
-          <div className="flex size-full items-center justify-center text-zinc-500">
+          <div className="text-content-subtle flex size-full items-center justify-center">
             <Disc3 className="size-8" />
           </div>
         )}
       </div>
-      <h2 className="mt-3 truncate text-sm font-semibold text-white">{item.title}</h2>
-      {item.subtitle && <p className="mt-1 truncate text-xs text-zinc-400">{item.subtitle}</p>}
+      <h2 className="text-content mt-3 truncate text-sm font-semibold">{item.title}</h2>
+      {item.subtitle && <p className="text-content-muted mt-1 truncate text-xs">{item.subtitle}</p>}
       {item.date ? (
-        <p className="mt-1 flex items-center gap-1 truncate text-xs text-zinc-500">
+        <p className="text-content-subtle mt-1 flex items-center gap-1 truncate text-xs">
           <Clock className="size-3 shrink-0" />
           {formatDate(item.date)}
         </p>
@@ -39,7 +39,7 @@ function LibraryMediaTile({ item }: { item: LibraryMediaItem }) {
     </>
   );
 
-  const className = "group min-w-0 rounded-md p-3 transition-colors hover:bg-white/5";
+  const className = "group hover:bg-content/5 min-w-0 rounded-md p-3 transition-colors";
   return item.href ? (
     <Link href={item.href} className={className}>
       {media}

@@ -5,7 +5,8 @@ import MockAvatar from "./Avatar";
 import { ProfileMenu } from "./ProfileMenu";
 import { UpdateNotificationCenter } from "./UpdateNotificationCenter";
 
-const NAV_BTN = "bg-black/50 hover:bg-black/70 text-zinc-500 hover:text-white transition-all";
+const NAV_BTN =
+  "bg-surface-sunken/80 hover:bg-surface-elevated text-content-muted hover:text-content transition-all";
 
 const RightActions = () => (
   <div className="flex flex-row items-center gap-2">
@@ -13,7 +14,7 @@ const RightActions = () => (
       type="button"
       className={cn(
         "h-10 rounded-full px-4",
-        "bg-white text-black transition-all hover:scale-105",
+        "bg-surface-sunken/80 text-content-muted hover:bg-surface-elevated hover:text-content transition-all hover:scale-105",
         "hidden items-center gap-2 xl:flex",
         "text-sm font-bold",
       )}

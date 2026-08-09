@@ -35,14 +35,15 @@ export function RouteScrollSurface({ children }: RouteScrollSurfaceProps) {
       <ScrollArea
         aria-busy={isRestoring}
         className={cn(
-          "isolate z-0 size-full bg-[#121212]",
+          "bg-surface-raised isolate z-0 size-full",
           "[&_[data-slot=scroll-area-viewport]>div]:block!",
+          "[&_[data-slot=scroll-area-viewport]>div]:h-full!",
           "[&_[data-slot=scroll-area-viewport]>div]:w-full!",
           isRestoring && "pointer-events-none",
         )}
         viewportRef={surfaceRef}
       >
-        <div className={cn("min-h-full", isRestoring && "invisible")}>{children}</div>
+        <div className={cn("h-full", isRestoring && "invisible")}>{children}</div>
       </ScrollArea>
       {isRestoring ? <RouteScrollSkeleton Placeholder={restorationPlaceholder} /> : null}
     </div>
@@ -52,19 +53,22 @@ export function RouteScrollSurface({ children }: RouteScrollSurfaceProps) {
 function RouteScrollSkeleton({ Placeholder }: { Placeholder: null | RouteRestorationPlaceholder }) {
   if (Placeholder) {
     return (
-      <div aria-hidden="true" className="absolute inset-0 z-10 overflow-hidden bg-[#121212]">
+      <div aria-hidden="true" className="bg-surface-raised absolute inset-0 z-10 overflow-hidden">
         <Placeholder />
       </div>
     );
   }
 
   return (
-    <div aria-hidden="true" className="absolute inset-0 z-10 animate-pulse bg-[#121212] px-6 pt-24">
-      <div className="h-8 w-48 rounded bg-white/8" />
-      <div className="mt-4 h-4 w-80 max-w-full rounded bg-white/6" />
+    <div
+      aria-hidden="true"
+      className="bg-surface-raised absolute inset-0 z-10 animate-pulse px-6 pt-24"
+    >
+      <div className="bg-skeleton-subtle h-8 w-48 rounded" />
+      <div className="bg-skeleton-subtle mt-4 h-4 w-80 max-w-full rounded" />
       <div className="mt-10 space-y-3">
         {["one", "two", "three", "four", "five", "six"].map((key) => (
-          <div key={key} className="h-14 rounded bg-white/5" />
+          <div key={key} className="bg-skeleton-subtle h-14 rounded" />
         ))}
       </div>
     </div>

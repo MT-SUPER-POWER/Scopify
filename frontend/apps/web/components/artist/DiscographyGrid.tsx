@@ -21,7 +21,7 @@ export function DiscographyGrid({ albums, loadingAlbumId, onPlayAlbum, onClickAl
           {albums.map((album) => (
             <div
               key={album.id}
-              className="group cursor-pointer rounded-lg bg-[#181818] p-4 transition-colors hover:bg-[#282828]"
+              className="bg-surface-elevated hover:bg-surface-overlay group cursor-pointer rounded-lg p-4 transition-colors"
               onClick={() => onClickAlbum(album.id)}
             >
               <div className="relative mb-4 pb-[100%]">
@@ -30,31 +30,31 @@ export function DiscographyGrid({ albums, loadingAlbumId, onPlayAlbum, onClickAl
                   alt={album.title}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                  className="rounded-md object-cover shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+                  className="shadow-panel rounded-md object-cover"
                 />
                 <button
                   type="button"
                   onClick={(e) => onPlayAlbum(album, e)}
-                  className="absolute right-2 bottom-2 flex size-12 translate-y-2 items-center justify-center rounded-full bg-[#1DB954] opacity-0 shadow-lg shadow-black/40 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#1ed760]"
+                  className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-2 bottom-2 flex size-12 translate-y-2 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105"
                 >
                   {loadingAlbumId === album.id ? (
-                    <Loader2 className="size-5 animate-spin text-black" />
+                    <Loader2 className="size-5 animate-spin" />
                   ) : (
-                    <Play className="ml-1 size-5 fill-black text-black" />
+                    <Play className="ml-1 size-5 fill-current" />
                   )}
                 </button>
               </div>
-              <h3 className="mb-1 truncate font-bold text-white" title={album.title}>
+              <h3 className="text-content mb-1 truncate font-bold" title={album.title}>
                 {album.title}
               </h3>
-              <p className="text-sm text-gray-400 capitalize">
+              <p className="text-content-muted text-sm capitalize">
                 {album.releaseYear} • {album.type}
               </p>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-sm text-zinc-500">{t("artist.discography.noAlbums")}</div>
+        <div className="text-content-subtle text-sm">{t("artist.discography.noAlbums")}</div>
       )}
     </div>
   );

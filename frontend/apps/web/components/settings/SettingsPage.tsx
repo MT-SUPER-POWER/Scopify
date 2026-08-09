@@ -36,9 +36,9 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="relative flex min-h-[80vh] w-full flex-col rounded-lg bg-[#121212] p-6 text-[#b3b3b3] shadow-2xl md:p-10">
+    <div className="bg-surface-raised text-muted-foreground shadow-floating relative flex min-h-full w-full flex-col rounded-lg p-6 md:p-10">
       <div className="mt-4 mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl">
+        <h1 className="text-foreground text-3xl font-black tracking-tight md:text-4xl">
           {t("settings.title")}
         </h1>
       </div>
@@ -47,7 +47,7 @@ const SettingsPage = () => {
         onValueChange={handleTabChange}
         className="flex min-h-0 flex-1 flex-col"
       >
-        <TabsList className="h-auto justify-start gap-1 overflow-x-auto bg-[#0f0f0f] p-1">
+        <TabsList className="bg-surface-sunken h-auto w-fit max-w-full justify-start gap-1 self-start overflow-x-auto p-1">
           {SETTINGS_TABS.filter((tab) => tab.id !== "desktop" || runtime.isDesktop).map((tab) => (
             <TabsTrigger key={tab.id} value={tab.id} className="shrink-0 px-4 py-2">
               {t(tab.labelKey)}

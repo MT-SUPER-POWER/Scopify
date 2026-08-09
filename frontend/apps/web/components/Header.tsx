@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import RightActions from "./Header/RightActions";
 import HeaderSearch from "./SearchContents/HeaderSearch";
 
-const NAV_BTN = "bg-black/50 hover:bg-black/70";
+const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
 
 export default function Header() {
   const { isAtTop } = useNavigationScroll();
@@ -24,8 +24,8 @@ export default function Header() {
       {/* 滚动时的背景遮罩 */}
       <div
         className={cn(
-          "bg-momo-grey/10 absolute inset-0 -z-10 rounded-[10px] backdrop-blur-lg transition-opacity duration-300",
-          isAtTop ? "opacity-0" : "border-b border-white/5 opacity-100",
+          "bg-surface-overlay/80 absolute inset-0 -z-10 rounded-lg backdrop-blur-lg transition-opacity duration-300",
+          isAtTop ? "opacity-0" : "border-border border-b opacity-100",
         )}
       />
 
@@ -35,7 +35,7 @@ export default function Header() {
           onClick={() => smartRouter.back()}
           className={cn(
             "flex size-10 items-center justify-center rounded-full",
-            "text-zinc-500 transition-all hover:text-white",
+            "text-content-muted hover:text-content transition-all",
             NAV_BTN,
           )}
         >
@@ -45,7 +45,7 @@ export default function Header() {
           onClick={() => smartRouter.forward()}
           className={cn(
             "flex size-10 items-center justify-center rounded-full",
-            "text-zinc-500 transition-all hover:text-white",
+            "text-content-muted hover:text-content transition-all",
             NAV_BTN,
           )}
         >
@@ -59,7 +59,7 @@ export default function Header() {
           href="/"
           className={cn(
             "flex size-10 shrink-0 items-center justify-center rounded-full",
-            "text-zinc-500 transition-all hover:text-white active:scale-95",
+            "text-content-muted hover:text-content transition-all active:scale-95",
             NAV_BTN,
             "hidden md:flex",
           )}

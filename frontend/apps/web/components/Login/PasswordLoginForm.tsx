@@ -29,7 +29,7 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="phone" className="text-xs text-zinc-300">
+        <Label htmlFor="phone" className="text-content-muted text-xs">
           {t("login.form.phoneLabel")}
         </Label>
         <Input
@@ -38,11 +38,11 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder={t("login.form.phonePlaceholder")}
-          className="h-10 border-white/10 bg-black/50 text-sm"
+          className="bg-content/5 border-content/10 text-content h-10 text-sm"
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="password" className="text-xs text-zinc-300">
+        <Label htmlFor="password" className="text-content-muted text-xs">
           {t("login.form.passwordLabel")}
         </Label>
         <div className="group relative">
@@ -52,12 +52,12 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t("login.form.passwordPlaceholder")}
-            className="h-10 border-white/10 bg-black/50 pr-10 text-sm"
+            className="bg-content/5 border-content/10 text-content h-10 pr-10 text-sm"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-1/2 right-3 -translate-y-1/2 text-zinc-500 transition-colors outline-none hover:text-white"
+            className="text-content-subtle hover:text-content absolute top-1/2 right-3 -translate-y-1/2 transition-colors outline-none"
           >
             {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
@@ -66,7 +66,7 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
       <Button
         type="submit"
         disabled={isLoading}
-        className="hover:scale-1.02 mt-2 h-10 w-full rounded-full bg-[#1db954] font-bold text-black transition-all hover:bg-[#1ed760] active:scale-95 disabled:opacity-50"
+        className="bg-brand text-brand-foreground hover:bg-brand-hover hover:scale-1.02 mt-2 h-10 w-full rounded-full font-bold transition-all active:scale-95 disabled:opacity-50"
       >
         {isLoading ? t("login.form.passwordSubmitting") : t("login.form.passwordSubmit")}
       </Button>

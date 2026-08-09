@@ -120,16 +120,19 @@ function ConfirmDialogShandCN({
 }) {
   return (
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
-      <AlertDialogOverlay className="bg-black/60 backdrop-blur-sm" />
+      <AlertDialogOverlay className="backdrop-blur-sm" />
       <AlertDialogContent
-        className={cn("w-96 rounded-xl border-none bg-[#282828] p-8 shadow-2xl", "flex flex-col")}
+        className={cn(
+          "bg-surface-overlay shadow-floating w-96 rounded-xl border-none p-8",
+          "flex flex-col",
+        )}
       >
         {/* text-center 覆盖 shadcn AlertDialogHeader 默认的 text-left */}
         <AlertDialogHeader className="mb-8 w-full space-y-2">
-          <AlertDialogTitle className="w-full text-center text-2xl font-bold tracking-tight text-white">
+          <AlertDialogTitle className="text-content w-full text-center text-2xl font-bold tracking-tight">
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-sm text-[#b3b3b3]">
+          <AlertDialogDescription className="text-content-muted text-sm">
             {content}
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -139,14 +142,14 @@ function ConfirmDialogShandCN({
           <button
             type="button"
             onClick={onConfirm}
-            className="w-full rounded-full bg-[#1ed760] py-3.5 text-base font-bold text-black transition-all hover:bg-[#1fdf64]"
+            className="bg-brand text-brand-foreground hover:bg-brand-hover w-full rounded-full py-3.5 text-base font-bold transition-all"
           >
             {confirmText}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="w-full rounded-full border border-[#727272] bg-transparent py-3.5 text-base font-bold text-white transition-all hover:border-white"
+            className="border-content-muted text-content hover:border-content w-full rounded-full bg-transparent py-3.5 text-base font-bold transition-all"
           >
             {cancelText}
           </button>

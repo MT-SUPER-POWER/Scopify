@@ -116,9 +116,9 @@ export function SongContextMenu({
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
 
-      <ContextMenuContent className="z-9999 w-48 border-white/10 bg-[#282828] text-white">
+      <ContextMenuContent className="z-9999 w-48">
         <ContextMenuGroup>
-          <ContextMenuItem onClick={onPlay} className="focus:bg-white/10 focus:text-white">
+          <ContextMenuItem onClick={onPlay}>
             {isActive && isPlaying ? (
               <>
                 <Pause className="mr-2 size-4" />
@@ -136,16 +136,13 @@ export function SongContextMenu({
             <>
               {/* Add to Queue (If not already in queue/table context) */}
               {!onRemoveFromQueue && (
-                <ContextMenuItem
-                  className="focus:bg-white/10 focus:text-white"
-                  onClick={handleAddToQueue}
-                >
+                <ContextMenuItem onClick={handleAddToQueue}>
                   <ListPlus className="mr-2 size-4" />
                   {t("contextMenu.addToQueue")}
                 </ContextMenuItem>
               )}
 
-              <ContextMenuItem className="focus:bg-white/10 focus:text-white" onClick={handleLike}>
+              <ContextMenuItem onClick={handleLike}>
                 <Heart className="mr-2 size-4" />
                 {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
               </ContextMenuItem>
@@ -153,16 +150,16 @@ export function SongContextMenu({
           )}
         </ContextMenuGroup>
 
-        <ContextMenuSeparator className="bg-white/10" />
+        <ContextMenuSeparator />
 
         <ContextMenuGroup>
           {isLogin && (
             <ContextMenuSub>
-              <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+              <ContextMenuSubTrigger>
                 <PlusCircle className="mr-4 size-4" />
                 {t("contextMenu.addToPlaylist")}
               </ContextMenuSubTrigger>
-              <ContextMenuSubContent className="z-9999 border-white/10 bg-[#282828] text-white">
+              <ContextMenuSubContent className="z-9999">
                 {filteredPlaylists.map((playlist: NeteasePlaylist) => (
                   <ContextMenuItem
                     onClick={async () => {
@@ -181,7 +178,6 @@ export function SongContextMenu({
                       }
                     }}
                     key={playlist.id}
-                    className="focus:bg-white/10 focus:text-white"
                   >
                     <Image
                       width={28}
@@ -197,11 +193,8 @@ export function SongContextMenu({
             </ContextMenuSub>
           )}
 
-          <ContextMenuItem asChild className="w-full border-white/10 bg-[#282828] text-white">
-            <Link
-              href={song.id ? `/comment/?songId=${song.id}` : "#"}
-              className="block size-full focus:bg-white/10 focus:text-white"
-            >
+          <ContextMenuItem asChild className="w-full">
+            <Link href={song.id ? `/comment/?songId=${song.id}` : "#"} className="block size-full">
               <FaRegCommentDots className="mr-2 size-4" />
               {t("contextMenu.comments")}
             </Link>
@@ -210,28 +203,21 @@ export function SongContextMenu({
           {song.ar &&
             song.ar.length > 0 &&
             (song.ar.length === 1 ? (
-              <ContextMenuItem asChild className="w-full border-white/10 bg-[#282828] text-white">
-                <Link
-                  href={`/artist?id=${song.ar[0].id}`}
-                  className="block size-full focus:bg-white/10 focus:text-white"
-                >
+              <ContextMenuItem asChild className="w-full">
+                <Link href={`/artist?id=${song.ar[0].id}`} className="block size-full">
                   <User className="mr-2 size-4" />
                   {t("contextMenu.goToArtist")}
                 </Link>
               </ContextMenuItem>
             ) : (
               <ContextMenuSub>
-                <ContextMenuSubTrigger className="focus:bg-white/10 focus:text-white">
+                <ContextMenuSubTrigger>
                   <User className="mr-4 size-4" />
                   {t("contextMenu.goToArtist")}
                 </ContextMenuSubTrigger>
-                <ContextMenuSubContent className="z-9999 border-white/10 bg-[#282828] text-white">
+                <ContextMenuSubContent className="z-9999">
                   {song.ar.map((artist) => (
-                    <ContextMenuItem
-                      key={artist.id}
-                      asChild
-                      className="focus:bg-white/10 focus:text-white"
-                    >
+                    <ContextMenuItem key={artist.id} asChild>
                       <Link href={`/artist?id=${artist.id}`} className="block size-full">
                         {artist.name}
                       </Link>
@@ -241,12 +227,8 @@ export function SongContextMenu({
               </ContextMenuSub>
             ))}
 
-          <ContextMenuItem asChild className="w-full border-white/10 bg-[#282828] text-white">
-            <button
-              type="button"
-              onClick={handleCopyLink}
-              className="block size-full text-left focus:bg-white/10 focus:text-white"
-            >
+          <ContextMenuItem asChild className="w-full">
+            <button type="button" onClick={handleCopyLink} className="block size-full text-left">
               <Link2 className="mr-2 size-4" />
               {t("contextMenu.copyLink")}
             </button>
@@ -256,13 +238,9 @@ export function SongContextMenu({
         {/* Queue removal */}
         {onRemoveFromQueue && (
           <>
-            <ContextMenuSeparator className="bg-white/10" />
+            <ContextMenuSeparator />
             <ContextMenuGroup>
-              <ContextMenuItem
-                onClick={onRemoveFromQueue}
-                variant="destructive"
-                className="focus:bg-red-500 focus:text-white"
-              >
+              <ContextMenuItem onClick={onRemoveFromQueue} variant="destructive">
                 <Trash className="mr-2 size-4" />
                 {t("contextMenu.removeFromQueue")}
               </ContextMenuItem>
@@ -273,13 +251,9 @@ export function SongContextMenu({
         {/* Playlist removal */}
         {isLogin && !readonly && !isDailyRecommend && onRemoveFromPlaylist && (
           <>
-            <ContextMenuSeparator className="bg-white/10" />
+            <ContextMenuSeparator />
             <ContextMenuGroup>
-              <ContextMenuItem
-                onClick={onRemoveFromPlaylist}
-                variant="destructive"
-                className="focus:bg-red-500 focus:text-white"
-              >
+              <ContextMenuItem onClick={onRemoveFromPlaylist} variant="destructive">
                 <Trash className="mr-2 size-4" />
                 {t("contextMenu.removeFromPlaylist")}
               </ContextMenuItem>
@@ -290,13 +264,9 @@ export function SongContextMenu({
         {/* Daily recommendation dislike */}
         {isDailyRecommend && isLogin && onDislikeDailyRecommend && (
           <>
-            <ContextMenuSeparator className="bg-white/10" />
+            <ContextMenuSeparator />
             <ContextMenuGroup>
-              <ContextMenuItem
-                onClick={onDislikeDailyRecommend}
-                variant="destructive"
-                className="focus:bg-red-500 focus:text-white"
-              >
+              <ContextMenuItem onClick={onDislikeDailyRecommend} variant="destructive">
                 <Ban className="mr-2 size-4" />
                 {t("contextMenu.recommendLess")}
               </ContextMenuItem>

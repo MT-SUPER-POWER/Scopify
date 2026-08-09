@@ -83,9 +83,9 @@ export const TrackRow = memo(
       <TableRow
         ref={ref}
         className={cn(
-          "group cursor-default border-none hover:bg-white/10",
+          "group hover:bg-content/10 cursor-default border-none",
           isScrolling ? "**:transition-none" : "transition-colors",
-          isActive && "text-[#1ed760]",
+          isActive && "text-brand",
           className,
         )}
         onDoubleClick={() => onPlay(track)}
@@ -103,7 +103,7 @@ export const TrackRow = memo(
 
         <TableCell className="max-w-0 min-w-0">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="size-10 shrink-0 rounded bg-zinc-800">
+            <div className="bg-surface-elevated size-10 shrink-0 rounded">
               <img
                 width={40}
                 height={40}
@@ -120,13 +120,13 @@ export const TrackRow = memo(
                 alia={track.alia}
                 className={cn(
                   "w-full cursor-pointer text-base font-normal group-hover:underline",
-                  isActive ? "text-[#1ed760]" : "text-white",
+                  isActive ? "text-brand" : "text-content",
                 )}
               />
               <div className="mt-0.5 flex min-w-0 items-center gap-0.5">
                 <SongQualityBadge qualityLevel={track.privilege?.maxBrLevel} />
                 <SongVipBadge fee={track.fee} />
-                <span className="min-w-0 cursor-pointer truncate text-sm font-normal text-zinc-400">
+                <span className="text-content-muted min-w-0 cursor-pointer truncate text-sm font-normal">
                   {track.ar.slice(0, 2).map((a, idx, arr) => (
                     <span
                       key={`${a.id}-${idx}`}
@@ -135,7 +135,7 @@ export const TrackRow = memo(
                         smartRouter.push(`/artist?id=${a.id}`);
                       }}
                       title={`/artist?id=${a.id}`}
-                      className="hover:text-white hover:underline"
+                      className="hover:text-content hover:underline"
                       style={{ display: "inline" }}
                     >
                       {a.name}
@@ -157,10 +157,10 @@ export const TrackRow = memo(
                 e.stopPropagation();
                 smartRouter.push(`/album?id=${track.al.id}`);
               }}
-              className="group/album flex max-w-full min-w-0 items-center gap-1.5 text-left text-zinc-400 transition-colors hover:text-white hover:underline"
+              className="text-content-muted group/album hover:text-content flex max-w-full min-w-0 items-center gap-1.5 text-left transition-colors hover:underline"
             >
               <Disc3
-                className="size-3.5 shrink-0 text-zinc-600 transition-colors group-hover/album:text-white"
+                className="text-content-subtle group-hover/album:text-content size-3.5 shrink-0 transition-colors"
                 aria-hidden="true"
               />
               <span className="truncate">{track.al.name}</span>

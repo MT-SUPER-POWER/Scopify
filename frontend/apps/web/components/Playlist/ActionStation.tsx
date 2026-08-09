@@ -150,7 +150,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
           onClick={handlePlayToggle}
           disabled={!currentSongDetail && !tracks.length}
           className={cn(
-            "flex size-14 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-lg transition-all hover:scale-105 hover:bg-[#3be477] disabled:cursor-not-allowed disabled:opacity-50",
+            "bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover flex size-14 items-center justify-center rounded-full transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50",
             isSticky && "size-12",
           )}
         >
@@ -171,18 +171,18 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             className={cn(
               isSticky ? "size-7" : "size-8",
               "transition-colors",
-              isShuffle ? "text-[#1ed760]" : "text-zinc-400 hover:text-white",
+              isShuffle ? "text-brand" : "text-content-muted hover:text-content",
             )}
           />
           {isShuffle && (
-            <span className="absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#1ed760]" />
+            <span className="bg-brand absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full" />
           )}
         </button>
 
         <ArrowDownCircle
           className={cn(
             isSticky ? "size-7" : "size-8",
-            "cursor-pointer text-zinc-400 transition-colors hover:text-white",
+            "text-content-muted hover:text-content cursor-pointer transition-colors",
           )}
         />
         {/* TODO: 实现更多选项
@@ -193,7 +193,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
         <MoreHorizontal
           className={cn(
             isSticky ? "size-7" : "size-8",
-            "cursor-pointer text-zinc-400 transition-colors hover:text-white",
+            "text-content-muted hover:text-content cursor-pointer transition-colors",
           )}
         />
       </div>
@@ -208,7 +208,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                     <button
                       type="button"
                       aria-label={t("playlist.actions.historyDate")}
-                      className="inline-flex size-8 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+                      className="text-content-muted hover:bg-content/10 hover:text-content inline-flex size-8 items-center justify-center rounded-full transition-colors"
                     >
                       <CalendarDays className="size-4" />
                     </button>
@@ -221,7 +221,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               side="bottom"
               align="end"
               sideOffset={8}
-              className="w-auto border-white/10 bg-zinc-950 p-0 text-white"
+              className="bg-surface-overlay text-content border-border w-auto p-0"
             >
               <Calendar
                 key={dailyDate ?? todayKey}
@@ -246,18 +246,18 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               animate={{ width: 160, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="flex items-center gap-1 overflow-hidden rounded-full bg-white/10 px-2 py-1"
+              className="bg-content/10 flex items-center gap-1 overflow-hidden rounded-full px-2 py-1"
             >
-              <Search className="size-4 shrink-0 text-zinc-400" />
+              <Search className="text-content-muted size-4 shrink-0" />
               <input
                 ref={inputRef}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={t("playlist.actions.searchPlaceholder")}
-                className="w-full bg-transparent text-xs text-white outline-none"
+                className="text-content w-full bg-transparent text-xs outline-none"
               />
               <button onClick={onSearchClose}>
-                <X className="size-3 shrink-0 text-zinc-400 hover:text-white" />
+                <X className="text-content-muted hover:text-content size-3 shrink-0" />
               </button>
             </motion.div>
           ) : (
@@ -269,12 +269,12 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               transition={{ duration: 0.05, ease: "linear" }}
               onClick={onSearchOpen}
             >
-              <Search className="size-4 cursor-pointer text-zinc-400 transition-colors hover:text-white" />
+              <Search className="text-content-muted hover:text-content size-4 cursor-pointer transition-colors" />
             </motion.button>
           )}
         </AnimatePresence>
 
-        <List className="size-5 text-zinc-400" />
+        <List className="text-content-muted size-5" />
       </div>
     </div>
   );

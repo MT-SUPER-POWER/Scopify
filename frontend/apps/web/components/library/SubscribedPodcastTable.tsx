@@ -30,21 +30,21 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
 
   return (
-    <Table containerClassName="overflow-x-auto" className="w-full table-fixed text-zinc-400">
-      <TableHeader className="border-b border-white/5">
+    <Table containerClassName="overflow-x-auto" className="text-content-muted w-full table-fixed">
+      <TableHeader className="border-content/5 border-b">
         <TableRow className="border-none hover:bg-transparent">
-          <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
-          <TableHead className="text-zinc-400">{t("library.podcasts.column.title")}</TableHead>
-          <TableHead className="hidden w-56 text-zinc-400 lg:table-cell">
+          <TableHead className="text-content-muted w-12 text-center">#</TableHead>
+          <TableHead className="text-content-muted">{t("library.podcasts.column.title")}</TableHead>
+          <TableHead className="text-content-muted hidden w-56 lg:table-cell">
             {t("library.podcasts.recentPlay")}
           </TableHead>
-          <TableHead className="hidden w-28 text-right text-zinc-400 sm:table-cell">
+          <TableHead className="text-content-muted hidden w-28 text-right sm:table-cell">
             {t("library.podcasts.column.playCount")}
           </TableHead>
-          <TableHead className="hidden w-24 text-right text-zinc-400 sm:table-cell">
+          <TableHead className="text-content-muted hidden w-24 text-right sm:table-cell">
             {t("library.podcasts.column.voiceCount")}
           </TableHead>
-          <TableHead className="hidden w-28 text-right text-zinc-400 lg:table-cell">
+          <TableHead className="text-content-muted hidden w-28 text-right lg:table-cell">
             {t("library.podcasts.column.updatedAt")}
           </TableHead>
         </TableRow>
@@ -69,15 +69,15 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
                 event.preventDefault();
                 router.push(`/radio?id=${podcast.id}`);
               }}
-              className="group cursor-pointer border-none transition-colors duration-150 select-none hover:bg-white/10"
+              className="group hover:bg-content/10 cursor-pointer border-none transition-colors duration-150 select-none"
             >
-              <TableCell className="rounded-l-md py-1.5 text-center text-xs text-zinc-500 tabular-nums">
+              <TableCell className="text-content-subtle rounded-l-md py-1.5 text-center text-xs tabular-nums">
                 {isActive && isPlaying ? (
                   <div className="flex items-center justify-center group-hover:hidden">
                     <PlayingAnimation className="h-3.5" />
                   </div>
                 ) : isActive && !isPlaying ? (
-                  <Play className="mx-auto size-3.5 fill-current text-[#1ed760] group-hover:hidden" />
+                  <Play className="text-brand mx-auto size-3.5 fill-current group-hover:hidden" />
                 ) : (
                   <span className="group-hover:hidden">{String(index + 1).padStart(2, "0")}</span>
                 )}
@@ -91,7 +91,7 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
                         e.stopPropagation();
                         setIsPlaying(false);
                       }}
-                      className="inline-flex items-center justify-center text-[#1ed760] transition-transform hover:scale-110"
+                      className="text-brand inline-flex items-center justify-center transition-transform hover:scale-110"
                     >
                       <Pause className="size-3.5 fill-current" />
                     </button>
@@ -100,12 +100,12 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
                       type="button"
                       title={t("common.action.play")}
                       onClick={(e) => handlePlayPodcast(podcast.id, e)}
-                      className="inline-flex items-center justify-center text-white transition-transform hover:scale-110"
+                      className="text-content inline-flex items-center justify-center transition-transform hover:scale-110"
                     >
                       <Play
                         className={cn(
                           "size-3.5 fill-current",
-                          isActive ? "text-[#1ed760]" : "text-white",
+                          isActive ? "text-brand" : "text-content",
                           isLoading && "animate-pulse",
                         )}
                       />
@@ -115,7 +115,7 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
               </TableCell>
               <TableCell className="py-1.5">
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="relative size-10 shrink-0 overflow-hidden rounded-sm bg-zinc-800">
+                  <div className="bg-surface-elevated relative size-10 shrink-0 overflow-hidden rounded-sm">
                     {podcast.picUrl ? (
                       <Image
                         width={80}
@@ -125,7 +125,7 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
                         className="size-full object-cover"
                       />
                     ) : (
-                      <div className="flex size-full items-center justify-center text-zinc-500">
+                      <div className="text-content-subtle flex size-full items-center justify-center">
                         <Radio className="size-4" />
                       </div>
                     )}
@@ -134,12 +134,12 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
                     <p
                       className={cn(
                         "truncate font-medium group-hover:underline",
-                        isActive ? "text-[#1ed760]" : "text-white",
+                        isActive ? "text-brand" : "text-content",
                       )}
                     >
                       {podcast.name}
                     </p>
-                    <p className="mt-0.5 truncate text-xs text-zinc-500">
+                    <p className="text-content-subtle mt-0.5 truncate text-xs">
                       {[podcast.dj?.nickname, categories].filter(Boolean).join(" · ")}
                     </p>
                   </div>
@@ -147,14 +147,14 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
               </TableCell>
               <TableCell className="hidden py-1.5 lg:table-cell">
                 {podcast.latestEpisodeName ? (
-                  <span className="flex min-w-0 items-center gap-1.5 text-sm text-zinc-300">
-                    <Headphones className="size-3.5 shrink-0 text-emerald-400" />
+                  <span className="text-content-muted flex min-w-0 items-center gap-1.5 text-sm">
+                    <Headphones className="text-success size-3.5 shrink-0" />
                     <span className="truncate" title={podcast.latestEpisodeName}>
                       {podcast.latestEpisodeName}
                     </span>
                   </span>
                 ) : (
-                  <span className="text-zinc-600">-</span>
+                  <span className="text-content-subtle">-</span>
                 )}
               </TableCell>
               <TableCell className="hidden py-1.5 text-right text-sm tabular-nums sm:table-cell">

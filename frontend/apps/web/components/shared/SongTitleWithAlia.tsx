@@ -23,7 +23,7 @@ export function SongTitleWithAlia({
       <span className="max-w-full min-w-0 shrink-0 truncate">{name}</span>
       {aliaText ? (
         <span
-          className={cn("min-w-0 truncate font-normal text-zinc-500", aliaClassName)}
+          className={cn("text-content-subtle min-w-0 truncate font-normal", aliaClassName)}
         >{` (${aliaText})`}</span>
       ) : null}
     </span>

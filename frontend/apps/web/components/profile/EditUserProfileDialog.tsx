@@ -47,48 +47,42 @@ export function EditUserProfileDialog({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#282828] p-6 shadow-2xl">
-        <h2 className="text-xl font-bold text-white">{t("profile.edit.title")}</h2>
+    <div className="bg-overlay fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm">
+      <div className="bg-surface-overlay shadow-floating w-full max-w-md rounded-xl border p-6">
+        <h2 className="text-content text-xl font-bold">{t("profile.edit.title")}</h2>
         <div className="mt-5 flex flex-col gap-4">
-          <label className="flex flex-col gap-2 text-xs font-semibold text-zinc-400">
+          <label className="text-content-muted flex flex-col gap-2 text-xs font-semibold">
             {t("profile.edit.nickname")}
             <Input
               value={nickname}
               maxLength={30}
               onChange={(event) => setNickname(event.target.value)}
-              className="bg-white/10 text-white placeholder:text-zinc-500 focus-visible:ring-white/30"
+              className="bg-content/10 text-content placeholder:text-content-subtle focus-visible:ring-brand/30"
             />
           </label>
-          <label className="flex flex-col gap-2 text-xs font-semibold text-zinc-400">
+          <label className="text-content-muted flex flex-col gap-2 text-xs font-semibold">
             {t("profile.edit.signature")}
             <Textarea
               value={signature}
               maxLength={300}
               rows={4}
               onChange={(event) => setSignature(event.target.value)}
-              className="resize-none bg-white/10 text-white placeholder:text-zinc-500 focus-visible:ring-white/30"
+              className="bg-content/10 text-content placeholder:text-content-subtle focus-visible:ring-brand/30 resize-none"
             />
           </label>
-          <label className="flex flex-col gap-2 text-xs font-semibold text-zinc-400">
+          <label className="text-content-muted flex flex-col gap-2 text-xs font-semibold">
             {t("profile.edit.gender")}
             <Select
               value={String(gender)}
               onValueChange={(val) => setGender(Number(val) as 0 | 1 | 2)}
             >
-              <SelectTrigger className="bg-white/10 text-white focus-visible:ring-white/30">
+              <SelectTrigger className="bg-content/10 text-content focus-visible:ring-brand/30">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="border-white/10 bg-[#282828] text-white">
-                <SelectItem value="0" className="focus:bg-white/10 focus:text-white">
-                  {t("profile.edit.genderPrivate")}
-                </SelectItem>
-                <SelectItem value="1" className="focus:bg-white/10 focus:text-white">
-                  {t("profile.edit.genderMale")}
-                </SelectItem>
-                <SelectItem value="2" className="focus:bg-white/10 focus:text-white">
-                  {t("profile.edit.genderFemale")}
-                </SelectItem>
+              <SelectContent>
+                <SelectItem value="0">{t("profile.edit.genderPrivate")}</SelectItem>
+                <SelectItem value="1">{t("profile.edit.genderMale")}</SelectItem>
+                <SelectItem value="2">{t("profile.edit.genderFemale")}</SelectItem>
               </SelectContent>
             </Select>
           </label>
@@ -98,7 +92,7 @@ export function EditUserProfileDialog({
             type="button"
             variant="outline"
             onClick={onCancel}
-            className="rounded-full border-white/20 text-white hover:border-white hover:text-white"
+            className="border-content/20 text-content hover:border-content hover:text-content rounded-full"
           >
             {t("common.action.cancel")}
           </Button>
@@ -106,7 +100,7 @@ export function EditUserProfileDialog({
             type="button"
             disabled={saving || !nickname.trim()}
             onClick={() => onConfirm({ nickname: nickname.trim(), signature, gender })}
-            className="rounded-full bg-[#1ed760] text-black hover:bg-[#3be477] disabled:opacity-50"
+            className="bg-brand text-brand-foreground hover:bg-brand-hover rounded-full disabled:opacity-50"
           >
             {saving ? t("common.action.saving") : t("common.action.save")}
           </Button>

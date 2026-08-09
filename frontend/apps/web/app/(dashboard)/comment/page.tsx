@@ -75,7 +75,7 @@ export default function CommentPage() {
 
   if (!songId) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-[#121212] p-8 text-zinc-400">
+      <div className="bg-surface-raised text-content-muted flex min-h-screen w-full flex-col items-center justify-center gap-4 p-8">
         <MessageCircle className="size-16 opacity-30" />
         <span>{t("comments.page.noComments")}</span>
       </div>
@@ -83,11 +83,11 @@ export default function CommentPage() {
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-[#121212] pb-12 font-sans text-white">
+    <div className="bg-surface-raised text-content relative min-h-screen w-full pb-12 font-sans">
       <div
         className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 scale-110 bg-cover bg-center opacity-60 blur-3xl md:h-125"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.25), #121212), url(${albumCover})`,
+          backgroundImage: `linear-gradient(to bottom, var(--image-scrim), var(--surface-raised)), url(${albumCover})`,
         }}
       />
 
@@ -100,7 +100,7 @@ export default function CommentPage() {
         onArtistClick={(artistId) => smartRouter.push(`/artist?id=${artistId}`)}
       />
 
-      <div className="relative z-10 flex flex-col bg-linear-to-b from-black/20 via-[#121212] via-20% to-[#121212]">
+      <div className="bg-surface-raised from-hero-shade via-surface-raised to-surface-raised relative z-10 flex flex-col bg-linear-to-b via-20%">
         <div className="mx-auto w-full max-w-4xl p-6">
           <div className="mb-8 flex items-end justify-between">
             <h2 className="text-xl font-bold">{t("comments.page.allComments")}</h2>
@@ -108,7 +108,7 @@ export default function CommentPage() {
 
           {hotComments.length > 0 && (
             <section className="mb-10">
-              <h3 className="mb-6 border-b border-white/10 pb-2 text-lg font-bold">
+              <h3 className="border-border mb-6 border-b pb-2 text-lg font-bold">
                 {t("comments.page.hotComments")}
               </h3>
               <div className="space-y-6">
@@ -130,11 +130,13 @@ export default function CommentPage() {
           )}
 
           <section>
-            <h3 className="mb-6 border-b border-white/10 pb-2 text-lg font-bold">
+            <h3 className="border-border mb-6 border-b pb-2 text-lg font-bold">
               {t("comments.page.latestComments")}
             </h3>
             {comments.length === 0 && !isLoading ? (
-              <div className="py-20 text-center text-zinc-500">{t("comments.page.noComments")}</div>
+              <div className="text-content-subtle py-20 text-center">
+                {t("comments.page.noComments")}
+              </div>
             ) : (
               <div className="space-y-6">
                 {comments.map((comment) => (
@@ -155,11 +157,11 @@ export default function CommentPage() {
 
           <div ref={observerTarget} className="flex items-center justify-center py-8">
             {isLoading ? (
-              <Loader2 className="size-6 animate-spin text-[#1DB954]" />
+              <Loader2 className="text-brand size-6 animate-spin" />
             ) : hasMore ? (
-              <span className="text-sm text-[#B3B3B3]">{t("comments.page.loadMore")}</span>
+              <span className="text-content-muted text-sm">{t("comments.page.loadMore")}</span>
             ) : (
-              <span className="text-sm text-[#B3B3B3]">{t("comments.page.end")}</span>
+              <span className="text-content-muted text-sm">{t("comments.page.end")}</span>
             )}
           </div>
         </div>
@@ -170,7 +172,7 @@ export default function CommentPage() {
           ref={toggleBtnRef}
           type="button"
           onClick={() => setIsInputOpen((open) => !open)}
-          className="group fixed right-8 bottom-28 z-40 flex size-14 items-center justify-center rounded-full bg-[#1DB954] text-black shadow-lg transition-all duration-200 hover:scale-105 hover:bg-[#1ed760] hover:shadow-2xl active:scale-95"
+          className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover group fixed right-8 bottom-28 z-40 flex size-14 items-center justify-center rounded-full transition-all duration-200 hover:scale-105 active:scale-95"
           title={replyTarget ? t("comments.page.replyComment") : t("comments.page.addComment")}
         >
           <MessageCircle className="size-6 transition-transform group-hover:rotate-12" />
@@ -182,7 +184,7 @@ export default function CommentPage() {
       >
         <div
           ref={inputPanelRef}
-          className="pointer-events-auto relative w-full max-w-4xl rounded-b-2xl border-x border-b border-white/10 bg-[#1a1a1a]/95 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl"
+          className="bg-surface-overlay/95 shadow-floating border-border pointer-events-auto relative w-full max-w-4xl rounded-b-2xl border-x border-b backdrop-blur-xl"
         >
           <div className="px-6 pt-8 md:pt-9">
             <div className="mb-4 flex items-center justify-between">
@@ -191,9 +193,7 @@ export default function CommentPage() {
                   {replyTarget ? t("comments.page.replyComment") : t("comments.page.addComment")}
                 </h3>
                 {replyTarget && (
-                  <span className="truncate text-sm text-[#1DB954]">
-                    @{replyTarget.user?.nickname}
-                  </span>
+                  <span className="text-brand truncate text-sm">@{replyTarget.user?.nickname}</span>
                 )}
               </div>
               <button
@@ -202,7 +202,7 @@ export default function CommentPage() {
                   setIsInputOpen(false);
                   setReplyTarget(null);
                 }}
-                className="rounded-full p-2 transition-colors hover:bg-white/10"
+                className="hover:bg-content/10 rounded-full p-2 transition-colors"
                 title={t("common.action.close")}
               >
                 <X className="size-5" />
@@ -210,15 +210,15 @@ export default function CommentPage() {
             </div>
 
             {replyTarget && (
-              <div className="mb-4 flex items-start gap-3 rounded-lg bg-white/5 p-3">
+              <div className="bg-content/5 mb-4 flex items-start gap-3 rounded-lg p-3">
                 <div className="min-w-0 flex-1 text-sm">
-                  <span className="text-[#B3B3B3]">{t("comments.page.replyingTo")}</span>
-                  <span className="line-clamp-2 text-white">{replyTarget.content}</span>
+                  <span className="text-content-muted">{t("comments.page.replyingTo")}</span>
+                  <span className="text-content line-clamp-2">{replyTarget.content}</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setReplyTarget(null)}
-                  className="shrink-0 text-[#B3B3B3] hover:text-white"
+                  className="text-content-muted hover:text-content shrink-0"
                   title={t("comments.input.cancel")}
                 >
                   <X className="size-4" />
@@ -234,7 +234,7 @@ export default function CommentPage() {
           </div>
 
           <div className="flex justify-center pt-1 pb-3">
-            <div className="h-1 w-12 rounded-full bg-white/20" />
+            <div className="bg-content/20 h-1 w-12 rounded-full" />
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ export function SongsPanel({ songs, limit, onViewAll }: Props) {
         {onViewAll && songs.length > (limit ?? 0) && (
           <button
             onClick={onViewAll}
-            className="text-sm font-bold text-zinc-400 hover:text-white hover:underline"
+            className="text-content-muted hover:text-content text-sm font-bold hover:underline"
           >
             {t("common.action.viewAll")}
           </button>
@@ -31,7 +31,7 @@ export function SongsPanel({ songs, limit, onViewAll }: Props) {
           <SongItem key={song.id} song={song} index={i} songs={songs} />
         ))}
         {songs.length === 0 && (
-          <p className="py-4 text-sm text-zinc-500">{t("search.section.noSongResults")}</p>
+          <p className="text-content-subtle py-4 text-sm">{t("search.section.noSongResults")}</p>
         )}
       </div>
     </div>

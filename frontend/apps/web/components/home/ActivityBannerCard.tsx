@@ -11,7 +11,7 @@ export function ActivityBannerCard({ banner, imageAlt }: ActivityBannerCardProps
   if (!imageUrl) return null;
 
   const card = (
-    <article className="group relative aspect-[16/8] overflow-hidden rounded-md bg-zinc-900 select-none">
+    <article className="bg-surface-elevated group relative aspect-[16/8] overflow-hidden rounded-md select-none">
       <Image
         src={imageUrl}
         alt={banner.typeTitle || imageAlt}
@@ -19,9 +19,9 @@ export function ActivityBannerCard({ banner, imageAlt }: ActivityBannerCardProps
         sizes="(min-width: 640px) 33vw, 100vw"
         className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-transparent" />
+      <div className="from-overlay/70 absolute inset-0 bg-linear-to-t via-transparent to-transparent" />
       {banner.typeTitle && (
-        <span className="pointer-events-none absolute right-2 bottom-2 max-w-[calc(100%-1rem)] truncate rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-medium text-white shadow-md backdrop-blur-sm select-none">
+        <span className="bg-overlay/75 text-overlay-foreground shadow-panel pointer-events-none absolute right-2 bottom-2 max-w-[calc(100%-1rem)] truncate rounded-full px-2 py-0.5 text-[11px] font-medium backdrop-blur-sm select-none">
           {banner.typeTitle}
         </span>
       )}
@@ -31,7 +31,7 @@ export function ActivityBannerCard({ banner, imageAlt }: ActivityBannerCardProps
   if (!destination) return card;
 
   const linkClassName =
-    "block cursor-pointer rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
+    "focus-visible:outline-brand block cursor-pointer rounded-md focus-visible:outline-2 focus-visible:outline-offset-2";
 
   if (destination.isExternal) {
     return (

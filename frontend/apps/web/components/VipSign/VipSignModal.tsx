@@ -91,7 +91,7 @@ export function VipSignModal({
 
           {/* Card Container */}
           <motion.div
-            className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-[#121212] shadow-2xl"
+            className="bg-surface-raised relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/10 shadow-2xl"
             initial={{ scale: 0.95, y: 15 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 15 }}

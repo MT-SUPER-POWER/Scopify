@@ -48,7 +48,7 @@ export function VipSignHistoryStrip({ records, onSelectSignDay }: VipSignHistory
                 <span>{record.dayText.replace("日", "")}</span>
               )}
               {record.sign ? (
-                <span className="absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full bg-[#1ed760] text-black ring-2 ring-[#121212]">
+                <span className="bg-brand text-brand-foreground ring-surface-raised absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full ring-2">
                   <Check className="size-2.5 stroke-3" />
                 </span>
               ) : null}

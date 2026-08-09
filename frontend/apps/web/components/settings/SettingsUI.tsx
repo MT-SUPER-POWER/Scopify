@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 
 const selectClass =
-  "bg-transparent border border-[#727272] text-white py-2 pl-4 pr-10 rounded text-sm font-medium cursor-pointer hover:border-white transition-colors appearance-none outline-none focus:ring-1 focus:ring-white";
+  "border-input text-foreground hover:border-content focus:ring-ring cursor-pointer appearance-none rounded border bg-transparent py-2 pr-10 pl-4 text-sm font-medium transition-colors outline-none focus:ring-1";
 
 export function Toggle({ enabled, onChange }: { enabled: boolean; onChange: () => void }) {
   return (
@@ -16,12 +16,12 @@ export function Toggle({ enabled, onChange }: { enabled: boolean; onChange: () =
       onClick={onChange}
       className={cn(
         "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none",
-        enabled ? "bg-[#1ed760] hover:bg-[#1fdf64]" : "bg-[#535353] hover:bg-[#b3b3b3]",
+        enabled ? "bg-brand hover:bg-brand-hover" : "bg-muted hover:bg-accent",
       )}
     >
       <span
         className={cn(
-          "pointer-events-none inline-block size-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+          "bg-content pointer-events-none inline-block size-5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out",
           enabled ? "translate-x-5" : "translate-x-0",
         )}
       />
@@ -52,7 +52,7 @@ export function SettingInput({
       disabled={disabled}
       placeholder={placeholder}
       className={cn(
-        "rounded border border-[#727272] bg-transparent px-3 py-1.5 text-right text-sm font-medium text-white transition-colors outline-none placeholder:text-[#727272] focus:border-white focus:ring-1 focus:ring-white",
+        "border-input text-foreground placeholder:text-content-subtle hover:border-content focus:border-ring focus:ring-ring rounded border bg-transparent px-3 py-1.5 text-right text-sm font-medium transition-colors outline-none focus:ring-1",
         disabled && "cursor-not-allowed opacity-40",
         className,
       )}
@@ -84,16 +84,16 @@ export function SettingRow({
     >
       <div className={cn("flex flex-col gap-1", !isColumn && "max-w-[75%]")}>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-base font-medium text-white">{label}</span>
+          <span className="text-foreground text-base font-medium">{label}</span>
           {requiresRestart ? (
-            <span className="inline-flex items-center gap-1 rounded border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-1.5 py-0.5 text-xs font-medium text-[#f59e0b]">
+            <span className="border-warning/40 bg-warning/10 text-warning inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-xs font-medium">
               <RotateCcw className="size-2.5" />
               {t("settings.restartRequired")}
             </span>
           ) : null}
         </div>
         {sublabel ? (
-          <span className="text-sm leading-relaxed text-[#a7a7a7]">{sublabel}</span>
+          <span className="text-muted-foreground text-sm leading-relaxed">{sublabel}</span>
         ) : null}
       </div>
       {control}
@@ -104,7 +104,7 @@ export function SettingRow({
 export function SettingSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h3 className="mb-6 border-b border-[#282828] pb-2 text-xs font-bold tracking-widest text-white uppercase">
+      <h3 className="text-foreground border-border mb-6 border-b pb-2 text-xs font-bold tracking-widest uppercase">
         {title}
       </h3>
       {children}
@@ -133,51 +133,51 @@ export function SettingSelect({
       >
         {children}
       </select>
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-white" />
+      <ChevronDown className="text-content pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2" />
     </div>
   );
 }
 
 export function SettingsLoadingState() {
   return (
-    <div className="animate-in fade-in relative flex min-h-[80vh] w-full flex-col rounded-lg bg-[#121212] p-10 text-[#b3b3b3] duration-500 md:p-14">
+    <div className="bg-surface-raised text-muted-foreground animate-in fade-in relative flex min-h-[80vh] w-full flex-col rounded-lg p-10 duration-500 md:p-14">
       {/* 标题骨架 */}
       <div className="mt-4.5 mb-10 flex items-center justify-between">
-        <Skeleton className="h-12 w-32 bg-white/10" />
+        <Skeleton className="bg-skeleton h-12 w-32" />
       </div>
 
       <div className="grid grow grid-cols-1 items-start gap-x-16 gap-y-10 pb-20 lg:grid-cols-2">
         {/* 左侧栏骨架 */}
         <div className="flex flex-col gap-10">
           <div>
-            <div className="mb-6 border-b border-[#282828] pb-2">
-              <Skeleton className="h-4 w-28 bg-white/10" />
+            <div className="border-border mb-6 border-b pb-2">
+              <Skeleton className="bg-skeleton h-4 w-28" />
             </div>
             <div className="space-y-6">
               {[1, 2, 3].map((id) => (
                 <div key={id} className="flex items-center justify-between">
                   <div className="max-w-[70%] flex-1 space-y-1.5">
-                    <Skeleton className="h-5 w-40 bg-white/10" />
-                    <Skeleton className="h-3 w-64 bg-white/10" />
+                    <Skeleton className="bg-skeleton h-5 w-40" />
+                    <Skeleton className="bg-skeleton h-3 w-64" />
                   </div>
-                  <Skeleton className="h-6 w-11 rounded-full bg-white/10" />
+                  <Skeleton className="bg-skeleton h-6 w-11 rounded-full" />
                 </div>
               ))}
             </div>
           </div>
 
           <div>
-            <div className="mb-6 border-b border-[#282828] pb-2">
-              <Skeleton className="h-4 w-32 bg-white/10" />
+            <div className="border-border mb-6 border-b pb-2">
+              <Skeleton className="bg-skeleton h-4 w-32" />
             </div>
             <div className="space-y-6">
               {[1, 2].map((id) => (
                 <div key={id} className="flex items-center justify-between">
                   <div className="max-w-[70%] flex-1 space-y-1.5">
-                    <Skeleton className="h-5 w-32 bg-white/10" />
-                    <Skeleton className="h-3 w-48 bg-white/10" />
+                    <Skeleton className="bg-skeleton h-5 w-32" />
+                    <Skeleton className="bg-skeleton h-3 w-48" />
                   </div>
-                  <Skeleton className="h-8 w-24 bg-white/10" />
+                  <Skeleton className="bg-skeleton h-8 w-24" />
                 </div>
               ))}
             </div>
@@ -187,34 +187,34 @@ export function SettingsLoadingState() {
         {/* 右侧栏骨架 */}
         <div className="flex flex-col gap-10">
           <div>
-            <div className="mb-6 border-b border-[#282828] pb-2">
-              <Skeleton className="h-4 w-24 bg-white/10" />
+            <div className="border-border mb-6 border-b pb-2">
+              <Skeleton className="bg-skeleton h-4 w-24" />
             </div>
             <div className="space-y-6">
               {[1, 2].map((id) => (
                 <div key={id} className="flex items-center justify-between">
                   <div className="max-w-[70%] flex-1 space-y-1.5">
-                    <Skeleton className="h-5 w-44 bg-white/10" />
-                    <Skeleton className="h-3 w-56 bg-white/10" />
+                    <Skeleton className="bg-skeleton h-5 w-44" />
+                    <Skeleton className="bg-skeleton h-3 w-56" />
                   </div>
-                  <Skeleton className="h-8 w-28 bg-white/10" />
+                  <Skeleton className="bg-skeleton h-8 w-28" />
                 </div>
               ))}
             </div>
           </div>
 
           <div>
-            <div className="mb-6 border-b border-[#282828] pb-2">
-              <Skeleton className="h-4 w-28 bg-white/10" />
+            <div className="border-border mb-6 border-b pb-2">
+              <Skeleton className="bg-skeleton h-4 w-28" />
             </div>
             <div className="space-y-6">
               {[1, 2].map((id) => (
                 <div key={id} className="flex items-center justify-between">
                   <div className="max-w-[70%] flex-1 space-y-1.5">
-                    <Skeleton className="h-5 w-36 bg-white/10" />
-                    <Skeleton className="h-3 w-52 bg-white/10" />
+                    <Skeleton className="bg-skeleton h-5 w-36" />
+                    <Skeleton className="bg-skeleton h-3 w-52" />
                   </div>
-                  <Skeleton className="h-8 w-20 bg-white/10" />
+                  <Skeleton className="bg-skeleton h-8 w-20" />
                 </div>
               ))}
             </div>
@@ -238,7 +238,7 @@ export function SaveChangesButton({ visible, onClick }: { visible: boolean; onCl
       <button
         type="button"
         onClick={onClick}
-        className="flex cursor-pointer items-center gap-2 rounded-full bg-[#1ed760] px-8 py-3.5 text-base font-bold text-black shadow-[0_8px_24px_rgba(30,215,96,0.3)] transition-all hover:scale-105 hover:bg-[#1fdf64] active:scale-100"
+        className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover flex cursor-pointer items-center gap-2 rounded-full px-8 py-3.5 text-base font-bold transition-all hover:scale-105 active:scale-100"
       >
         {t("settings.save")}
       </button>
@@ -273,18 +273,18 @@ export function SaveConfirmModal({
 
   return (
     <div
-      className="animate-in fade-in fixed inset-0 z-9999 flex items-center justify-center bg-black/80 backdrop-blur-sm duration-200"
+      className="bg-overlay animate-in fade-in fixed inset-0 z-9999 flex items-center justify-center backdrop-blur-sm duration-200"
       onClick={onClose}
     >
       <div
-        className="relative flex w-100 flex-col items-center rounded-xl bg-[#282828] p-8 text-center shadow-2xl"
+        className="bg-surface-overlay shadow-floating relative flex w-100 flex-col items-center rounded-xl p-8 text-center"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-8 space-y-2">
-          <h2 className="text-2xl font-bold tracking-tight text-white">
+          <h2 className="text-foreground text-2xl font-bold tracking-tight">
             {t("settings.confirm.title")}
           </h2>
-          <p className="text-sm text-[#b3b3b3]">{subtitle}</p>
+          <p className="text-muted-foreground text-sm">{subtitle}</p>
         </div>
 
         <div className="flex w-full flex-col gap-4">
@@ -292,18 +292,18 @@ export function SaveConfirmModal({
             type="button"
             onClick={onConfirm}
             disabled={isSaving}
-            className="flex w-full flex-col items-center justify-center rounded-full bg-[#1ed760] py-3.5 transition-all hover:scale-105 hover:bg-[#1fdf64] active:scale-100 disabled:opacity-50 disabled:hover:scale-100"
+            className="bg-brand hover:bg-brand-hover flex w-full flex-col items-center justify-center rounded-full py-3.5 transition-all hover:scale-105 active:scale-100 disabled:opacity-50 disabled:hover:scale-100"
           >
-            <span className="text-base font-bold text-black">
+            <span className="text-brand-foreground text-base font-bold">
               {isSaving ? `${t("settings.confirm.confirm")}...` : t("settings.confirm.confirm")}
             </span>
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="flex w-full flex-col items-center justify-center rounded-full border border-[#727272] bg-transparent py-3.5 transition-all hover:scale-105 hover:border-white active:scale-100"
+            className="border-input hover:border-content text-foreground flex w-full flex-col items-center justify-center rounded-full border bg-transparent py-3.5 transition-all hover:scale-105 active:scale-100"
           >
-            <span className="text-base font-bold text-white">{t("settings.confirm.cancel")}</span>
+            <span className="text-base font-bold">{t("settings.confirm.cancel")}</span>
           </button>
         </div>
       </div>

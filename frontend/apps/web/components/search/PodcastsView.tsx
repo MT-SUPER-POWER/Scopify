@@ -33,21 +33,26 @@ export function PodcastsView({
       />
       {podcasts.length > 0 ? (
         view === "list" ? (
-          <Table containerClassName="overflow-x-auto" className="w-full table-fixed text-zinc-400">
-            <TableHeader className="border-b border-white/5">
+          <Table
+            containerClassName="overflow-x-auto"
+            className="text-content-muted w-full table-fixed"
+          >
+            <TableHeader className="border-content/5 border-b">
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="w-12 text-center text-zinc-400">#</TableHead>
-                <TableHead className="text-zinc-400">{t("search.category.podcasts")}</TableHead>
-                <TableHead className="hidden w-32 text-zinc-400 md:table-cell">
+                <TableHead className="text-content-muted w-12 text-center">#</TableHead>
+                <TableHead className="text-content-muted">
+                  {t("search.category.podcasts")}
+                </TableHead>
+                <TableHead className="text-content-muted hidden w-32 md:table-cell">
                   {t("search.podcast.tags")}
                 </TableHead>
-                <TableHead className="hidden w-20 text-right text-zinc-400 md:table-cell">
+                <TableHead className="text-content-muted hidden w-20 text-right md:table-cell">
                   {t("search.podcast.rating")}
                 </TableHead>
-                <TableHead className="hidden w-28 text-right text-zinc-400 sm:table-cell">
+                <TableHead className="text-content-muted hidden w-28 text-right sm:table-cell">
                   {t("search.podcast.subscribers")}
                 </TableHead>
-                <TableHead className="hidden w-24 text-right text-zinc-400 sm:table-cell">
+                <TableHead className="text-content-muted hidden w-24 text-right sm:table-cell">
                   {t("search.podcast.episodes")}
                 </TableHead>
               </TableRow>
@@ -66,13 +71,13 @@ export function PodcastsView({
           </div>
         )
       ) : (
-        <p className="py-8 text-center text-sm text-zinc-500">
+        <p className="text-content-subtle py-8 text-center text-sm">
           {t("search.section.noPodcastResults")}
         </p>
       )}
       <div ref={loadMoreRef} aria-hidden className="h-px" />
       {isFetchingNextPage ? (
-        <div className="flex justify-center py-6 text-zinc-400" aria-live="polite">
+        <div className="text-content-muted flex justify-center py-6" aria-live="polite">
           <LoaderCircle className="size-5 animate-spin" />
         </div>
       ) : null}

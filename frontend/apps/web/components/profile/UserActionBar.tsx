@@ -13,7 +13,7 @@ export function ActionBar({ isSelf, onEdit }: { isSelf?: boolean; onEdit?: () =>
         <button
           type="button"
           onClick={onEdit}
-          className="ml-2 text-gray-400 transition-colors hover:text-white"
+          className="text-content-muted hover:text-content ml-2 transition-colors"
         >
           <Settings className="size-8" />
         </button>
@@ -24,15 +24,15 @@ export function ActionBar({ isSelf, onEdit }: { isSelf?: boolean; onEdit?: () =>
           className={cn(
             "rounded-full border px-5 py-1.5 text-sm font-bold tracking-widest uppercase transition-all hover:scale-105",
             isFollowing
-              ? "border-white text-white hover:border-gray-400"
-              : "border-gray-400 text-white hover:border-white",
+              ? "border-content text-content hover:border-content-muted"
+              : "border-content-muted text-content hover:border-content",
           )}
         >
           {isFollowing ? "Following" : "Follow"}
         </button>
       )}
 
-      <button type="button" className="text-gray-400 transition-colors hover:text-white">
+      <button type="button" className="text-content-muted hover:text-content transition-colors">
         <MoreHorizontal className="size-8" />
       </button>
     </div>

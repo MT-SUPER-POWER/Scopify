@@ -29,57 +29,57 @@ export function UserMilestones({ userInfo }: Props) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       {/* Level Card */}
-      <div className="group relative overflow-hidden rounded-2xl bg-white/5 p-6 backdrop-blur-md transition-colors hover:bg-white/10">
-        <div className="absolute -top-4 -right-4 size-24 rounded-full bg-linear-to-br from-yellow-400/20 to-orange-500/20 blur-2xl transition-transform group-hover:scale-150" />
+      <div className="bg-content/5 hover:bg-content/10 group relative overflow-hidden rounded-2xl p-6 backdrop-blur-md transition-colors">
+        <div className="from-warning/20 to-warning/5 absolute -top-4 -right-4 size-24 rounded-full bg-linear-to-br blur-2xl transition-transform group-hover:scale-150" />
         <div className="flex items-center gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-yellow-500/10 text-yellow-500">
+          <div className="bg-warning/10 text-warning flex size-12 shrink-0 items-center justify-center rounded-full">
             <Trophy size={24} />
           </div>
           <div>
-            <div className="text-sm font-medium text-white/50">
+            <div className="text-content/50 text-sm font-medium">
               {t("profile.stats.level") || "等级"}
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-black text-white">Lv.{userInfo.level || 0}</span>
+              <span className="text-content text-2xl font-black">Lv.{userInfo.level || 0}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Listen Songs Card */}
-      <div className="group relative overflow-hidden rounded-2xl bg-white/5 p-6 backdrop-blur-md transition-colors hover:bg-white/10">
-        <div className="absolute -top-4 -right-4 size-24 rounded-full bg-linear-to-br from-blue-400/20 to-cyan-500/20 blur-2xl transition-transform group-hover:scale-150" />
+      <div className="bg-content/5 hover:bg-content/10 group relative overflow-hidden rounded-2xl p-6 backdrop-blur-md transition-colors">
+        <div className="from-info/20 to-info/5 absolute -top-4 -right-4 size-24 rounded-full bg-linear-to-br blur-2xl transition-transform group-hover:scale-150" />
         <div className="flex items-center gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-500">
+          <div className="bg-info/10 text-info flex size-12 shrink-0 items-center justify-center rounded-full">
             <Headphones size={24} />
           </div>
           <div>
-            <div className="text-sm font-medium text-white/50">
+            <div className="text-content/50 text-sm font-medium">
               {t("profile.stats.listenSongs") || "累计听歌"}
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-black text-white">
+              <span className="text-content text-2xl font-black">
                 {userInfo.listenSongs?.toLocaleString() || 0}
               </span>
-              <span className="text-xs text-white/40">首</span>
+              <span className="text-content/40 text-xs">首</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Create Days Card */}
-      <div className="group relative overflow-hidden rounded-2xl bg-white/5 p-6 backdrop-blur-md transition-colors hover:bg-white/10">
-        <div className="absolute -top-4 -right-4 size-24 rounded-full bg-linear-to-br from-green-400/20 to-emerald-500/20 blur-2xl transition-transform group-hover:scale-150" />
+      <div className="bg-content/5 hover:bg-content/10 group relative overflow-hidden rounded-2xl p-6 backdrop-blur-md transition-colors">
+        <div className="from-success/20 to-success/5 absolute -top-4 -right-4 size-24 rounded-full bg-linear-to-br blur-2xl transition-transform group-hover:scale-150" />
         <div className="flex items-center gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500">
+          <div className="bg-success/10 text-success flex size-12 shrink-0 items-center justify-center rounded-full">
             <Calendar size={24} />
           </div>
           <div>
-            <div className="text-sm font-medium text-white/50">
+            <div className="text-content/50 text-sm font-medium">
               {t("profile.stats.createDays") || "入村陪伴"}
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="text-lg font-bold text-white">{formattedAge || "0 天"}</span>
+              <span className="text-content text-lg font-bold">{formattedAge || "0 天"}</span>
             </div>
           </div>
         </div>

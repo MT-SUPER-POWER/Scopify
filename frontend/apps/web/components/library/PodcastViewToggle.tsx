@@ -15,7 +15,7 @@ export function PodcastViewToggle({ onChange, value }: PodcastViewToggleProps) {
   const { t } = useI18n();
 
   return (
-    <div className="inline-flex items-center rounded-md border border-white/10 bg-white/5 p-1">
+    <div className="bg-content/5 border-content/10 inline-flex items-center rounded-md border p-1">
       {(["list", "cards"] as PodcastViewMode[]).map((view) => {
         const Icon = viewIcons[view];
         const label = t(`library.podcasts.view.${view}`);
@@ -30,8 +30,8 @@ export function PodcastViewToggle({ onChange, value }: PodcastViewToggleProps) {
             title={label}
             onClick={() => onChange(view)}
             className={cn(
-              "flex size-8 items-center justify-center rounded-sm text-zinc-400 transition-colors hover:text-white",
-              isActive && "bg-white text-zinc-950 hover:text-zinc-950",
+              "text-content-muted hover:text-content flex size-8 items-center justify-center rounded-sm transition-colors",
+              isActive && "bg-content text-surface hover:text-surface",
             )}
           >
             <Icon className="size-4" />

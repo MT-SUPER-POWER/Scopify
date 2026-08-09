@@ -10,6 +10,18 @@ _Avoid_: shared client, mobile adapter, frontend runtime
 
 ## Language
 
+**Scopify React Design System**:
+The shared interface language and behavioral contract for Scopify's Web and Electron renderer surfaces. It does not govern the Flutter mobile client or replace Lyric Stage-specific visual themes.
+_Avoid_: cross-platform component library, Flutter UI kit, Lyric Stage theme library
+
+**Application Theme**:
+A named global appearance of the Scopify React Design System with coordinated light and dark visual choices. It applies to ordinary Web and Electron renderer surfaces without changing the Lyric Stage Theme Library.
+_Avoid_: Lyric Stage theme, page-local palette, isolated component skin
+
+**Default Application Theme**:
+The built-in Application Theme with matched light and dark variants: its dark variant preserves Scopify's recognizable current interface as the migration baseline, while its light variant is designed as a deliberate companion. It is a normalized visual language rather than a promise to retain every legacy hard-coded value.
+_Avoid_: legacy stylesheet, hard-coded-value catalogue, Lyric Stage default theme
+
 **Folia**:
 A source project whose lyric-rendering and desktop-lyric implementation may be adapted into Scopify. Folia remains a separate product and is not an integrated runtime component.
 _Avoid_: external integration, Folia player

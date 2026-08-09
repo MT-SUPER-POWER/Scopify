@@ -53,7 +53,7 @@ export function PlaylistContent({
   return (
     <div
       key={playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily")}
-      className="relative flex min-h-screen w-full flex-col bg-[#121212] font-sans"
+      className="bg-surface-raised relative flex min-h-screen w-full flex-col font-sans"
     >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 md:h-125"
@@ -62,7 +62,7 @@ export function PlaylistContent({
       {dynamicPlaylistInfo && (
         <PlaylistHeader info={dynamicPlaylistInfo} isDaily={isDailyRecommend} />
       )}
-      <div className="relative z-10 flex flex-1 flex-col bg-linear-to-b from-black/20 via-[#121212] via-20% to-[#121212]">
+      <div className="bg-surface-raised from-hero-shade via-surface-raised to-surface-raised relative z-10 flex flex-1 flex-col bg-linear-to-b via-20%">
         {isLoading ? (
           <PlaylistHeaderSkeleton />
         ) : (

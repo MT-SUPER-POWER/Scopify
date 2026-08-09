@@ -102,7 +102,7 @@ export function FeaturedActivitiesCarousel() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <h2 className="text-xl font-bold text-white sm:text-2xl">{t("home.featuredActivities")}</h2>
+      <h2 className="text-content text-xl font-bold sm:text-2xl">{t("home.featuredActivities")}</h2>
 
       {hasBanners ? (
         <div
@@ -137,7 +137,7 @@ export function FeaturedActivitiesCarousel() {
                 title={t("home.banner.previous")}
                 onClick={goToPrevious}
                 onPointerDown={(event) => event.stopPropagation()}
-                className="pointer-events-none absolute top-1/2 left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white opacity-0 transition-opacity group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 hover:bg-black/70 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="bg-overlay/60 text-overlay-foreground border-overlay-foreground/15 hover:bg-overlay focus-visible:outline-brand pointer-events-none absolute top-1/2 left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border opacity-0 transition-opacity group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 <ChevronLeft className="size-4" />
               </button>
@@ -147,7 +147,7 @@ export function FeaturedActivitiesCarousel() {
                 title={t("home.banner.next")}
                 onClick={goToNext}
                 onPointerDown={(event) => event.stopPropagation()}
-                className="pointer-events-none absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white opacity-0 transition-opacity group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 hover:bg-black/70 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="bg-overlay/60 text-overlay-foreground border-overlay-foreground/15 hover:bg-overlay focus-visible:outline-brand pointer-events-none absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border opacity-0 transition-opacity group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 <ChevronRight className="size-4" />
               </button>
@@ -159,7 +159,7 @@ export function FeaturedActivitiesCarousel() {
           {Array.from({ length: 3 }, (_, index) => (
             <div
               key={index}
-              className="aspect-[16/8] animate-pulse rounded-md bg-white/8"
+              className="bg-skeleton aspect-[16/8] animate-pulse rounded-md"
               aria-hidden="true"
             />
           ))}

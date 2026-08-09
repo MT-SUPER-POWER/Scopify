@@ -72,10 +72,10 @@ export function GridCategoryView({
             />
           ))}
       </div>
-      {isEmpty && <p className="py-8 text-center text-sm text-zinc-500">{emptyStateText}</p>}
+      {isEmpty && <p className="text-content-subtle py-8 text-center text-sm">{emptyStateText}</p>}
       <div ref={loadMoreRef} aria-hidden className="h-px" />
       {isFetchingNextPage ? (
-        <div className="flex justify-center py-6 text-zinc-400" aria-live="polite">
+        <div className="text-content-muted flex justify-center py-6" aria-live="polite">
           <LoaderCircle className="size-5 animate-spin" />
         </div>
       ) : null}

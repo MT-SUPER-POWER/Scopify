@@ -8,6 +8,7 @@ import type {
   SettingsConfig,
   WebSettingsChangeHandler,
 } from "@/types/settings";
+import { AppearanceModeControl } from "./AppearanceModeControl";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
 
 interface GeneralSettingsTabProps {
@@ -36,13 +37,14 @@ export function GeneralSettingsTab({
                 onChange={(value) => onWebChange("app", "locale", value as AppLocale)}
               >
                 {APP_LOCALES.map((locale) => (
-                  <option key={locale} value={locale} className="bg-[#282828]">
+                  <option key={locale} value={locale} className="bg-popover">
                     {t(languageLabelKeys[locale])}
                   </option>
                 ))}
               </SettingSelect>
             }
           />
+          <AppearanceModeControl />
           {config.desktop ? (
             <>
               <SettingRow
@@ -83,13 +85,13 @@ export function GeneralSettingsTab({
                       onDesktopChange("app", "closeAction", Number(value) as 0 | 1 | 2)
                     }
                   >
-                    <option value={0} className="bg-[#282828]">
+                    <option value={0} className="bg-popover">
                       {t("settings.windowClose.minimize")}
                     </option>
-                    <option value={1} className="bg-[#282828]">
+                    <option value={1} className="bg-popover">
                       {t("settings.windowClose.exit")}
                     </option>
-                    <option value={2} className="bg-[#282828]">
+                    <option value={2} className="bg-popover">
                       {t("settings.windowClose.ask")}
                     </option>
                   </SettingSelect>

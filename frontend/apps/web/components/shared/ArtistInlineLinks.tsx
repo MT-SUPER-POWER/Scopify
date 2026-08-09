@@ -22,7 +22,7 @@ export function ArtistInlineLinks({ artists, className }: ArtistInlineLinksProps
                 event.stopPropagation();
                 if (hasLink) smartRouter.push(`/artist?id=${artist.id}`);
               }}
-              className="inline text-left hover:text-white hover:underline disabled:cursor-default disabled:hover:text-inherit disabled:hover:no-underline"
+              className="hover:text-content inline text-left hover:underline disabled:cursor-default disabled:hover:text-inherit disabled:hover:no-underline"
             >
               {artist.name}
             </button>

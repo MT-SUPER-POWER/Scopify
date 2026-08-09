@@ -413,6 +413,36 @@ export interface TranslateFn {
    */
   (key: "settings.language.sublabel", params?: TranslationParams): string;
   /**
+   * zh-CN: 界面主题
+   * zh-TW: 介面主題
+   * en-US: Appearance
+   */
+  (key: "settings.appearance.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换 Default 应用主题的浅色、暗色或跟随系统模式；不会影响歌词舞台主题。
+   * zh-TW: 切換 Default 應用主題的淺色、暗色或跟隨系統模式；不會影響歌詞舞台主題。
+   * en-US: Switch the Default application theme between light, dark, and system mode. This does not affect Lyric Stage themes.
+   */
+  (key: "settings.appearance.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浅色
+   * zh-TW: 淺色
+   * en-US: Light
+   */
+  (key: "settings.appearance.light", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暗色
+   * zh-TW: 暗色
+   * en-US: Dark
+   */
+  (key: "settings.appearance.dark", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跟随系统
+   * zh-TW: 跟隨系統
+   * en-US: Follow System
+   */
+  (key: "settings.appearance.system", params?: TranslationParams): string;
+  /**
    * zh-CN: 硬件加速
    * zh-TW: 硬體加速
    * en-US: Hardware Acceleration

@@ -19,16 +19,13 @@ export function NetworkSettingsTab({
 
   const pingStatus = backendPingResult ? (
     backendPingResult.reachable ? (
-      <span
-        className="flex items-center gap-1 text-xs text-emerald-400"
-        title={backendPingResult.url}
-      >
+      <span className="text-success flex items-center gap-1 text-xs" title={backendPingResult.url}>
         <Check className="size-3.5" />
         {t("settings.backendPing.success", { latency: backendPingResult.latencyMs })}
         {backendPingResult.version ? ` · ${backendPingResult.version}` : ""}
       </span>
     ) : (
-      <span className="flex items-center gap-1 text-xs text-red-400" title={backendPingResult.url}>
+      <span className="text-danger flex items-center gap-1 text-xs" title={backendPingResult.url}>
         <X className="size-3.5" />
         {backendPingResult.reason === "timeout"
           ? t("settings.backendPing.timeout")
@@ -77,7 +74,7 @@ export function NetworkSettingsTab({
                 type="button"
                 onClick={() => void onPingBackend()}
                 disabled={isPingingBackend}
-                className="inline-flex items-center gap-2 rounded border border-[#727272] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:border-white disabled:cursor-wait disabled:opacity-50"
+                className="border-input text-foreground hover:border-content inline-flex items-center gap-2 rounded border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-wait disabled:opacity-50"
               >
                 {isPingingBackend ? (
                   <LoaderCircle className="size-4 animate-spin" />
@@ -115,10 +112,10 @@ export function NetworkSettingsTab({
                 onWebChange("network", "randomCNIP", value === "true" ? "true" : "false")
               }
             >
-              <option value="false" className="bg-[#282828]">
+              <option value="false" className="bg-popover">
                 {t("settings.randomCNIP.disabled")}
               </option>
-              <option value="true" className="bg-[#282828]">
+              <option value="true" className="bg-popover">
                 {t("settings.randomCNIP.enabled")}
               </option>
             </SettingSelect>
@@ -136,13 +133,13 @@ export function NetworkSettingsTab({
                     onDesktopChange("network", "proxyMode", value as DesktopProxyMode)
                   }
                 >
-                  <option value="system" className="bg-[#282828]">
+                  <option value="system" className="bg-popover">
                     {t("settings.proxyMode.system")}
                   </option>
-                  <option value="direct" className="bg-[#282828]">
+                  <option value="direct" className="bg-popover">
                     {t("settings.proxyMode.direct")}
                   </option>
-                  <option value="custom" className="bg-[#282828]">
+                  <option value="custom" className="bg-popover">
                     {t("settings.proxyMode.custom")}
                   </option>
                 </SettingSelect>

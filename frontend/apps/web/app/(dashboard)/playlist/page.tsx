@@ -9,7 +9,7 @@ export default function PlaylistPage() {
   const playlist = usePlaylist();
 
   if (!playlist.playlistId && !playlist.isDailyRecommend)
-    return <div className="p-8 text-white">{t("playlist.page.invalidUrl")}</div>;
+    return <div className="text-content p-8">{t("playlist.page.invalidUrl")}</div>;
 
   return <PlaylistContent {...playlist} />;
 }

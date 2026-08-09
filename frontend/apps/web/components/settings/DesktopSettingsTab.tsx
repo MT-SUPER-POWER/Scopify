@@ -19,16 +19,16 @@ export function DesktopSettingsTab({ config, onChange }: DesktopSettingsTabProps
               value={config.logging.level}
               onChange={(value) => onChange("logging", "level", value as DesktopLogLevel)}
             >
-              <option value="debug" className="bg-[#282828]">
+              <option value="debug" className="bg-popover">
                 {t("settings.logLevel.debug")}
               </option>
-              <option value="info" className="bg-[#282828]">
+              <option value="info" className="bg-popover">
                 {t("settings.logLevel.info")}
               </option>
-              <option value="warn" className="bg-[#282828]">
+              <option value="warn" className="bg-popover">
                 {t("settings.logLevel.warn")}
               </option>
-              <option value="error" className="bg-[#282828]">
+              <option value="error" className="bg-popover">
                 {t("settings.logLevel.error")}
               </option>
             </SettingSelect>

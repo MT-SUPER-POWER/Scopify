@@ -21,7 +21,7 @@ export function VoicesView({
       <VoiceList voices={voices} layout="grid" />
       <div ref={loadMoreRef} aria-hidden className="h-px" />
       {isFetchingNextPage ? (
-        <div className="flex justify-center py-6 text-zinc-400" aria-live="polite">
+        <div className="text-content-muted flex justify-center py-6" aria-live="polite">
           <LoaderCircle className="size-5 animate-spin" />
         </div>
       ) : null}

@@ -112,28 +112,28 @@ function LoginPageContent() {
   return (
     <div
       className={cn(
-        "flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-black p-4 text-white",
+        "bg-surface text-content flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden p-4",
       )}
     >
       {/* 右上角退出按钮，点击返回主页 */}
       {showExitButton && (
         <button
           type="button"
-          className="absolute top-5 right-6 rounded-full p-1 transition-colors hover:bg-white/10"
+          className="hover:bg-content/10 absolute top-5 right-6 rounded-full p-1 transition-colors"
           title={t("login.page.backHomeTitle")}
         >
           <Link href="/" className="flex items-center justify-center">
-            <X className="size-5 text-zinc-500 transition-colors hover:text-white" />
+            <X className="text-content-subtle hover:text-content size-5 transition-colors" />
           </Link>
         </button>
       )}
 
       {/* 1. Logo 区域优化 */}
       <div className="mb-6 flex flex-col items-center">
-        <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black text-black shadow-2xl">
+        <div className="shadow-floating mb-3 flex size-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black">
           <Image src={logo.src} width={50} height={50} alt={t("login.logoAlt")} />
         </div>
-        <p className="text-xs font-medium text-zinc-500">{t("login.page.tagline")}</p>
+        <p className="text-content-subtle text-xs font-medium">{t("login.page.tagline")}</p>
       </div>
 
       {/* 2. 主体宽度 */}
@@ -145,11 +145,11 @@ function LoginPageContent() {
         )}
         <Tabs value={mode} onValueChange={(v) => setMode(v as LoginMode)} className="w-full">
           {/* 3. Tab 切换器 */}
-          <TabsList className="mb-4 grid h-10 grid-cols-3 rounded-xl border border-white/5 bg-zinc-900/60 p-1">
+          <TabsList className="bg-content/5 border-content/5 mb-4 grid h-10 grid-cols-3 rounded-xl border p-1">
             <TabsTrigger
               value="qr"
               title={t("login.mode.qr")}
-              className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
+              className="data-[state=active]:bg-surface-elevated rounded-lg text-xs"
             >
               <QrCode className="mr-1 size-3.5" />
               {t("login.mode.qr")}
@@ -157,7 +157,7 @@ function LoginPageContent() {
             <TabsTrigger
               value="password"
               title={t("login.mode.password")}
-              className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
+              className="data-[state=active]:bg-surface-elevated rounded-lg text-xs"
             >
               <Lock className="mr-1 size-3.5" />
               {t("login.mode.password")}
@@ -165,7 +165,7 @@ function LoginPageContent() {
             <TabsTrigger
               value="sms"
               title={t("login.mode.sms")}
-              className="rounded-lg text-xs data-[state=active]:bg-zinc-800"
+              className="data-[state=active]:bg-surface-elevated rounded-lg text-xs"
             >
               <Smartphone className="mr-1 size-3.5" />
               {t("login.mode.sms")}
@@ -173,7 +173,7 @@ function LoginPageContent() {
           </TabsList>
 
           {/* 4. 表单容器 */}
-          <div className="rounded-2xl border border-white/5 bg-zinc-900/30 p-5 shadow-2xl backdrop-blur-xl">
+          <div className="bg-surface-raised shadow-floating border-content/5 rounded-2xl border p-5 backdrop-blur-xl">
             <TabsContent value="password" className="mt-0 outline-none">
               <PasswordLoginForm
                 isLoading={isLoading}
@@ -196,7 +196,7 @@ function LoginPageContent() {
         </Tabs>
 
         {/* 底部文案 */}
-        <p className="mt-6 text-center text-[12px] font-medium text-zinc-600">
+        <p className="text-content-subtle mt-6 text-center text-[12px] font-medium">
           {t("login.page.qrOnlyNotice")}
         </p>
       </div>

@@ -69,8 +69,8 @@ function PlayerBarStatAction({
             "absolute top-0 right-0 z-10 translate-x-[63%] -translate-y-1/3",
             // 修复点 3：加上 transform-gpu 开启 3D 硬件加速，彻底解决 scale 动画和毛玻璃冲突的 Bug
             "transform-gpu",
-            "flex min-w-4 items-center justify-center rounded-full border border-white/10 bg-[#9f9faa]/20 px-1 py-px text-white shadow-sm backdrop-blur-md",
-            "pointer-events-none text-[9px] leading-none font-bold whitespace-nowrap text-white tabular-nums",
+            "bg-surface-overlay/80 border-border text-content flex min-w-4 items-center justify-center rounded-full border px-1 py-px shadow-sm backdrop-blur-md",
+            "pointer-events-none text-[9px] leading-none font-bold whitespace-nowrap tabular-nums",
             countClassName,
           )}
         >
@@ -201,7 +201,7 @@ export const PlayerBar = ({
     <div
       className={cn(
         "z-20 flex h-17 w-full items-center justify-between transition-all duration-300 ease-linear lg:h-20",
-        bgClass ?? "bg-black",
+        bgClass ?? "bg-surface",
         className,
       )}
       style={style}
@@ -224,7 +224,7 @@ export const PlayerBar = ({
           )}
         >
           {/* 专辑封面 */}
-          <div className="group relative size-12 shrink-0 cursor-pointer overflow-hidden rounded-md bg-zinc-800 shadow-[0_4px_12px_rgba(0,0,0,0.5)] lg:size-14">
+          <div className="bg-surface-elevated shadow-panel group relative size-12 shrink-0 cursor-pointer overflow-hidden rounded-md lg:size-14">
             {currentSong?.al?.picUrl ? (
               <Image
                 width={56}
@@ -241,7 +241,7 @@ export const PlayerBar = ({
             )}
             <div
               onClick={openLyrics}
-              className="absolute top-[25%] left-[25%] flex items-center justify-center rounded-full bg-black/70 p-1 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:scale-105 hover:bg-black/80"
+              className="bg-overlay text-content absolute top-[25%] left-[25%] flex items-center justify-center rounded-full p-1 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:scale-105"
             >
               <TooltipProvider>
                 <Tooltip>
@@ -256,7 +256,7 @@ export const PlayerBar = ({
                           else closeLyrics();
                         }}
                       >
-                        <ChevronDown className="size-5 text-white" />
+                        <ChevronDown className="size-5" />
                       </button>
                     ) : (
                       <button
@@ -267,7 +267,7 @@ export const PlayerBar = ({
                           openLyrics();
                         }}
                       >
-                        <ChevronUp className="size-5 text-white" />
+                        <ChevronUp className="size-5" />
                       </button>
                     )}
                   </TooltipTrigger>
@@ -296,14 +296,14 @@ export const PlayerBar = ({
                     if (onCloseLyricStage) onCloseLyricStage();
                     else closeLyrics();
                   }}
-                  className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-white"
+                  className="text-content flex min-w-0 items-center gap-1.5 text-sm font-medium"
                 >
                   <span className="cursor-pointer truncate hover:underline">
                     {currentSong.name}
                   </span>
                   <SongVipBadge fee={currentSong.fee} />
                 </span>
-                <span className="mt-0.5 cursor-pointer truncate text-[11px] font-normal text-[#b3b3b3]">
+                <span className="text-content-muted mt-0.5 cursor-pointer truncate text-[11px] font-normal">
                   {currentSong?.ar?.slice(0, 2).map((a, idx, arr) => (
                     <span
                       key={a.id}
@@ -313,7 +313,7 @@ export const PlayerBar = ({
                         smartRouter.push(`/artist?id=${a.id}`);
                       }}
                       title={`/artist?id=${a.id}`}
-                      className="hover:text-white hover:underline"
+                      className="hover:text-content hover:underline"
                       style={{ display: "inline" }}
                     >
                       {a.name}
@@ -324,8 +324,8 @@ export const PlayerBar = ({
               </>
             ) : (
               <div className="space-y-1.5">
-                <div className="h-3 w-24 rounded-full bg-white/10" />
-                <div className="h-2.5 w-16 rounded-full bg-white/10" />
+                <div className="bg-skeleton h-3 w-24 rounded-full" />
+                <div className="bg-skeleton h-2.5 w-16 rounded-full" />
               </div>
             )}
           </div>
@@ -340,24 +340,24 @@ export const PlayerBar = ({
             >
               <PlayerBarStatAction
                 count={currentSong.likedCount}
-                countClassName={isLiked ? "text-[#1ed760]" : "text-zinc-300"}
+                countClassName={isLiked ? "text-brand" : "text-content-muted"}
                 title={isLiked ? t("common.action.unlike") : t("common.action.like")}
                 onClick={() => void toggleLike(!isLiked)}
               >
                 {isLiked ? (
-                  <PiHeartFill className="size-5 text-[#1ed760] lg:size-5.5" />
+                  <PiHeartFill className="text-brand size-5 lg:size-5.5" />
                 ) : (
-                  <PiHeartBold className="size-5 text-zinc-400 transition-colors group-hover:text-white lg:size-5.5" />
+                  <PiHeartBold className="text-content-muted group-hover:text-content size-5 transition-colors lg:size-5.5" />
                 )}
               </PlayerBarStatAction>
 
               <PlayerBarStatAction
                 count={currentSong.commentCount}
-                countClassName="text-zinc-300 group-hover:text-white transition-colors"
+                countClassName="text-content-muted group-hover:text-content transition-colors"
                 href={`/comment?songId=${currentSong.id}`}
                 title={t("contextMenu.comments")}
               >
-                <PiChatCircleDotsBold className="size-5 text-zinc-400 transition-colors group-hover:text-white lg:size-5.5" />
+                <PiChatCircleDotsBold className="text-content-muted group-hover:text-content size-5 transition-colors lg:size-5.5" />
               </PlayerBarStatAction>
             </div>
           )}
@@ -382,8 +382,8 @@ export const PlayerBar = ({
                     onClick={toggleShuffle}
                     className={cn(
                       "relative hidden transition-colors sm:block",
-                      isShuffle ? "text-[#1ed760]" : "text-[#b3b3b3] hover:text-white",
-                      "after:absolute after:-bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-[#1ed760] after:content-['']",
+                      isShuffle ? "text-brand" : "text-content-muted hover:text-content",
+                      "after:bg-brand after:absolute after:-bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:content-['']",
                       isShuffle ? "after:opacity-100" : "after:opacity-0",
                     )}
                   >
@@ -400,7 +400,7 @@ export const PlayerBar = ({
                     type="button"
                     aria-label={t("ui.previous")}
                     onClick={() => void playPrev()}
-                    className="text-[#b3b3b3] transition-colors hover:text-white"
+                    className="text-content-muted hover:text-content transition-colors"
                   >
                     <SkipBack className="size-4 fill-current lg:size-5" />
                   </button>
@@ -416,7 +416,7 @@ export const PlayerBar = ({
                     aria-label={playbackActionLabel}
                     onClick={() => setIsPlaying(!isPlaying)}
                     disabled={!currentSong}
-                    className="flex size-9 items-center justify-center rounded-full bg-white text-black transition-all hover:scale-105 hover:bg-gray-200 active:scale-95 disabled:opacity-40 lg:size-10"
+                    className="bg-primary text-primary-foreground hover:bg-brand-hover flex size-9 items-center justify-center rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-40 lg:size-10"
                   >
                     {isPlaying ? (
                       <Pause className="size-4 fill-current lg:size-5" />
@@ -435,7 +435,7 @@ export const PlayerBar = ({
                     type="button"
                     aria-label={t("ui.next")}
                     onClick={() => void playNext()}
-                    className="text-[#b3b3b3] transition-colors hover:text-white"
+                    className="text-content-muted hover:text-content transition-colors"
                   >
                     <SkipForward className="size-4 fill-current lg:size-5" />
                   </button>
@@ -452,8 +452,8 @@ export const PlayerBar = ({
                     onClick={cycleRepeat}
                     className={cn(
                       "relative hidden transition-colors sm:block",
-                      repeatMode !== "off" ? "text-[#1ed760]" : "text-[#b3b3b3] hover:text-white",
-                      "after:absolute after:-bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-[#1ed760] after:content-['']",
+                      repeatMode !== "off" ? "text-brand" : "text-content-muted hover:text-content",
+                      "after:bg-brand after:absolute after:-bottom-1.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:content-['']",
                       repeatMode !== "off" ? "after:opacity-100" : "after:opacity-0",
                     )}
                   >
@@ -479,7 +479,7 @@ export const PlayerBar = ({
         {/* ================= Right: Extra Controls ================= */}
         <div
           className={cn(
-            "flex items-center justify-end gap-2 text-[#b3b3b3] lg:gap-3",
+            "text-content-muted flex items-center justify-end gap-2 lg:gap-3",
             isLyricStageBar ? "min-w-0" : "flex-1 md:flex-none md:justify-self-end",
           )}
         >
@@ -491,7 +491,7 @@ export const PlayerBar = ({
                   type="button"
                   onClick={() => toggleLyrics()}
                   aria-label={lyricsActionLabel}
-                  className={`transition-colors hover:text-white ${isLyricsOpen ? "text-[#1db954]" : ""}`}
+                  className={`hover:text-content transition-colors ${isLyricsOpen ? "text-brand" : ""}`}
                 >
                   <Mic2 className="size-4 lg:size-5" />
                 </button>
@@ -512,7 +512,7 @@ export const PlayerBar = ({
                       type="button"
                       aria-label={t("ui.audioQuality")}
                       className={cn(
-                        "flex cursor-pointer items-center justify-center transition-colors hover:text-white",
+                        "hover:text-content flex cursor-pointer items-center justify-center transition-colors",
                       )}
                     >
                       <CurrentIcon className="size-4 lg:size-5" />
@@ -558,7 +558,7 @@ export const PlayerBar = ({
                   <button
                     type="button"
                     aria-label={t("ui.bluetooth")}
-                    className="flex items-center justify-center transition-colors hover:text-white"
+                    className="hover:text-content flex items-center justify-center transition-colors"
                   >
                     <MonitorSpeaker className="size-4 lg:size-5" />
                   </button>
@@ -584,7 +584,7 @@ export const PlayerBar = ({
                   type="button"
                   aria-label={fullscreenActionLabel}
                   onClick={() => void toggleApplicationFullscreen()}
-                  className="hidden transition-colors hover:text-white sm:block"
+                  className="hover:text-content hidden transition-colors sm:block"
                 >
                   {isFullscreen ? (
                     <MinimizeIcon className="size-4 lg:size-5" />

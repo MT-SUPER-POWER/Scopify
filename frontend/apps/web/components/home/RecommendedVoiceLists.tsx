@@ -22,7 +22,7 @@ export function RecommendedVoiceLists({ voices }: RecommendedVoiceListsProps) {
     <section>
       <CollapsibleSection
         title={
-          <h2 className="text-2xl font-bold tracking-tight text-white hover:underline">
+          <h2 className="text-content text-2xl font-bold tracking-tight hover:underline">
             {t("home.recommendedVoiceLists")}
           </h2>
         }

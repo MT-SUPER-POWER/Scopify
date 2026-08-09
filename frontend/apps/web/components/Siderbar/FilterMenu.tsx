@@ -45,7 +45,7 @@ const iconList = {
 
   ENLARGE: <PanelRightClose className="mr-2 size-5" />,
   COLLAPSE: <PanelLeftClose className="mr-2 size-5" />,
-  FAVORITES: <IconDisc className="mr-2 size-5 text-yellow-500" />,
+  FAVORITES: <IconDisc className="text-warning mr-2 size-5" />,
   "CREATE PLAYLISTS": <Plus className="mr-2 size-5" />,
 };
 
@@ -132,7 +132,7 @@ export function FilterMenu({
             }}
           >
             {FILTER_TYPES.map((item) => (
-              <DropdownMenuRadioItem key={item} value={item} className="focus:bg-white/10">
+              <DropdownMenuRadioItem key={item} value={item} className="focus:bg-content/10">
                 {iconList[item]}
                 <span>{labelMap[item]}</span>
               </DropdownMenuRadioItem>

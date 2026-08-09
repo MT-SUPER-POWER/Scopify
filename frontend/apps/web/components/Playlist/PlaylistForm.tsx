@@ -73,10 +73,10 @@ export function UpdatePlaylistDialog({
   return (
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
       {/* 使用模糊背景还原截图质感 */}
-      <AlertDialogOverlay className="bg-black/40 backdrop-blur-md" />
-      <AlertDialogContent className="pointer-events-auto flex w-150 max-w-[90vw] flex-col rounded-xl border border-white/10 bg-[#282828]/95 p-6 shadow-2xl">
+      <AlertDialogOverlay className="backdrop-blur-md" />
+      <AlertDialogContent className="bg-surface-overlay shadow-floating pointer-events-auto flex w-150 max-w-[90vw] flex-col rounded-xl border p-6">
         <AlertDialogHeader className="mb-4">
-          <AlertDialogTitle className="text-left text-xl font-bold tracking-tight text-white">
+          <AlertDialogTitle className="text-content text-left text-xl font-bold tracking-tight">
             {t("playlist.form.editTitle")}
           </AlertDialogTitle>
         </AlertDialogHeader>
@@ -91,9 +91,9 @@ export function UpdatePlaylistDialog({
                 maxLength={40}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={t("playlist.form.namePlaceholder")}
-                className="w-full rounded-md bg-white/10 px-3 py-2 text-sm text-white transition-all outline-none placeholder:text-[#b3b3b3] focus:ring-1 focus:ring-white/30"
+                className="bg-content/10 text-content placeholder:text-content-muted focus:ring-brand/50 w-full rounded-md px-3 py-2 text-sm transition-all outline-none focus:ring-1"
               />
-              <span className="absolute top-2 right-2 text-xs text-[#b3b3b3]">
+              <span className="text-content-muted absolute top-2 right-2 text-xs">
                 {name.length}/40
               </span>
             </div>
@@ -106,9 +106,9 @@ export function UpdatePlaylistDialog({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={t("playlist.form.descriptionPlaceholder")}
                 rows={4}
-                className="w-full resize-none rounded-md bg-white/10 px-3 py-2 text-sm text-white transition-all outline-none placeholder:text-[#b3b3b3] focus:ring-1 focus:ring-white/30"
+                className="bg-content/10 text-content placeholder:text-content-muted focus:ring-brand/50 w-full resize-none rounded-md px-3 py-2 text-sm transition-all outline-none focus:ring-1"
               />
-              <span className="absolute right-2 bottom-2 text-xs text-[#b3b3b3]">
+              <span className="text-content-muted absolute right-2 bottom-2 text-xs">
                 {description.length}/300
               </span>
             </div>
@@ -119,7 +119,7 @@ export function UpdatePlaylistDialog({
           {/* 右侧封面区 */}
           <div className="w-45 shrink-0">
             <div
-              className="group relative flex aspect-square w-full cursor-pointer items-center justify-center overflow-hidden rounded-md border border-white/5 bg-white/10"
+              className="bg-content/10 border-content/10 group relative flex aspect-square w-full cursor-pointer items-center justify-center overflow-hidden rounded-md border"
               onClick={() => fileInputRef.current?.click()}
             >
               {coverUrl ? (
@@ -129,13 +129,13 @@ export function UpdatePlaylistDialog({
                   className="size-full object-cover"
                 />
               ) : (
-                <ImageIcon className="size-12 text-[#b3b3b3]" />
+                <ImageIcon className="text-content-muted size-12" />
               )}
 
               {/* 悬浮遮罩 */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
-                <ImageIcon className="mb-2 size-8 text-white" />
-                <span className="text-sm font-medium text-white">
+              <div className="bg-overlay absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                <ImageIcon className="text-overlay-foreground mb-2 size-8" />
+                <span className="text-overlay-foreground text-sm font-medium">
                   {t("playlist.form.replaceImage")}
                 </span>
               </div>
@@ -156,7 +156,7 @@ export function UpdatePlaylistDialog({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-full border border-[#727272] bg-transparent px-6 py-2 text-sm font-bold text-white transition-all hover:border-white"
+            className="border-content-muted text-content hover:border-content rounded-full border bg-transparent px-6 py-2 text-sm font-bold transition-all"
           >
             {t("common.action.cancel")}
           </button>
@@ -164,7 +164,7 @@ export function UpdatePlaylistDialog({
             type="button"
             onClick={handleSubmit}
             disabled={loading || !name.trim()}
-            className="rounded-full bg-[#1ed760] px-6 py-2 text-sm font-bold text-black transition-all hover:bg-[#1fdf64] disabled:opacity-50"
+            className="bg-brand text-brand-foreground hover:bg-brand-hover rounded-full px-6 py-2 text-sm font-bold transition-all disabled:opacity-50"
           >
             {loading ? t("common.action.saving") : t("common.action.save")}
           </button>

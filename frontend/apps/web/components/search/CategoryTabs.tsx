@@ -27,7 +27,9 @@ export function CategoryTabs({ active, onChange }: Props) {
           onClick={() => onChange(cat)}
           className={cn(
             "rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-all duration-200 active:scale-95",
-            active === cat ? "bg-white text-black" : "bg-[#2a2a2a] text-white hover:bg-[#333333]",
+            active === cat
+              ? "bg-brand text-brand-foreground"
+              : "bg-surface-elevated text-content hover:bg-surface-overlay",
           )}
         >
           {labelMap[cat]}

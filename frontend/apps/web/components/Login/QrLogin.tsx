@@ -153,7 +153,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
 
   return (
     <div className="flex flex-col items-center justify-center space-y-4 pt-2">
-      <div className="relative rounded-xl bg-white p-3 shadow-lg transition-transform hover:scale-105">
+      <div className="bg-qr-surface shadow-panel relative rounded-xl p-3 transition-transform hover:scale-105">
         {qrImg ? (
           <Image
             src={qrImg}
@@ -163,13 +163,13 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             height={160}
           />
         ) : (
-          <div className="flex size-40 animate-pulse items-center justify-center text-sm text-zinc-400">
+          <div className="text-calendar-ink flex size-40 animate-pulse items-center justify-center text-sm">
             {t("login.qr.generating")}
           </div>
         )}
         {qrStatus === "expired" && (
           <div
-            className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-xl bg-black/60 backdrop-blur-[2px]"
+            className="bg-overlay absolute inset-0 flex cursor-pointer items-center justify-center rounded-xl backdrop-blur-[2px]"
             onClick={() => setRefreshKey((k) => k + 1)} // 每次点击改变 key，触发 useEffect 重新执行
           >
             <Button
@@ -182,18 +182,20 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
           </div>
         )}
         {qrStatus === "scanned" && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/40 backdrop-blur-[1px]">
-            <p className="text-sm font-bold text-white">{t("login.qr.confirmOnPhone")}</p>
+          <div className="bg-media-overlay absolute inset-0 flex items-center justify-center rounded-xl backdrop-blur-[1px]">
+            <p className="text-overlay-foreground text-sm font-bold">
+              {t("login.qr.confirmOnPhone")}
+            </p>
           </div>
         )}
       </div>
       <div className="flex flex-col items-center gap-1">
         <p
-          className={`text-sm font-bold ${qrStatus === "success" ? "text-[#1db954]" : qrStatus === "expired" ? "text-red-400" : "text-zinc-100"}`}
+          className={`text-sm font-bold ${qrStatus === "success" ? "text-brand" : qrStatus === "expired" ? "text-danger" : "text-content"}`}
         >
           {qrStatusText}
         </p>
-        <div className="flex items-center gap-1 text-xs text-zinc-500">
+        <div className="text-content-subtle flex items-center gap-1 text-xs">
           {t("login.qr.scanHint")}
         </div>
       </div>

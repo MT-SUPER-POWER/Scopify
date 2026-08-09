@@ -16,6 +16,12 @@ export const settingsMessages = defineMessages(
     "settings.section.updater": "客户端更新",
     "settings.language.label": "界面语言",
     "settings.language.sublabel": "支持简体中文、繁體中文和英语，默认简体中文。",
+    "settings.appearance.label": "界面主题",
+    "settings.appearance.sublabel":
+      "切换 Default 应用主题的浅色、暗色或跟随系统模式；不会影响歌词舞台主题。",
+    "settings.appearance.light": "浅色",
+    "settings.appearance.dark": "暗色",
+    "settings.appearance.system": "跟随系统",
     "settings.gpu.label": "硬件加速",
     "settings.gpu.sublabel": "当应用卡顿或 GPU 兼容性较差时，可以关闭。",
     "settings.devTools.label": "开发者工具",
@@ -151,6 +157,12 @@ export const settingsMessages = defineMessages(
     "settings.section.updater": "客戶端更新",
     "settings.language.label": "介面語言",
     "settings.language.sublabel": "支援簡體中文、繁體中文與英文，預設為簡體中文。",
+    "settings.appearance.label": "介面主題",
+    "settings.appearance.sublabel":
+      "切換 Default 應用主題的淺色、暗色或跟隨系統模式；不會影響歌詞舞台主題。",
+    "settings.appearance.light": "淺色",
+    "settings.appearance.dark": "暗色",
+    "settings.appearance.system": "跟隨系統",
     "settings.gpu.label": "硬體加速",
     "settings.gpu.sublabel": "當應用卡頓或 GPU 相容性較差時，可以關閉。",
     "settings.devTools.label": "開發者工具",
@@ -288,6 +300,12 @@ export const settingsMessages = defineMessages(
     "settings.language.label": "Interface Language",
     "settings.language.sublabel":
       "Supports Simplified Chinese, Traditional Chinese, and English. Default is Simplified Chinese.",
+    "settings.appearance.label": "Appearance",
+    "settings.appearance.sublabel":
+      "Switch the Default application theme between light, dark, and system mode. This does not affect Lyric Stage themes.",
+    "settings.appearance.light": "Light",
+    "settings.appearance.dark": "Dark",
+    "settings.appearance.system": "Follow System",
     "settings.gpu.label": "Hardware Acceleration",
     "settings.gpu.sublabel": "Turn this off if the app is slow or the GPU is unstable.",
     "settings.devTools.label": "Developer Tools",

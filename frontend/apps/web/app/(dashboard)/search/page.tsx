@@ -89,7 +89,7 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="mx-auto min-h-full w-full max-w-[1600px] p-6 pt-22 text-white">
+    <div className="text-content mx-auto min-h-full w-full max-w-[1600px] p-6 pt-22">
       <CategoryTabs active={activeCategory} onChange={handleCategoryChange} />
       {hasError && (
         <div className="mb-6">

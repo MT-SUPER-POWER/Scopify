@@ -34,8 +34,8 @@ export function VoiceTranscriptDialog({ onOpenChange, open, voice }: VoiceTransc
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="flex w-[min(42rem,calc(100%-2rem))] max-w-none flex-col gap-0 overflow-hidden border-white/10 bg-[#181818] p-0 text-white">
-        <AlertDialogHeader className="border-b border-white/10 p-6 text-left">
+      <AlertDialogContent className="bg-surface-elevated text-content flex w-[min(42rem,calc(100%-2rem))] max-w-none flex-col gap-0 overflow-hidden p-0">
+        <AlertDialogHeader className="border-border border-b p-6 text-left">
           <div className="flex min-w-0 items-center gap-4">
             <Image
               width={64}
@@ -45,10 +45,10 @@ export function VoiceTranscriptDialog({ onOpenChange, open, voice }: VoiceTransc
               className="size-16 shrink-0 rounded-md object-cover"
             />
             <div className="min-w-0">
-              <AlertDialogTitle className="truncate text-xl text-white">
+              <AlertDialogTitle className="text-content truncate text-xl">
                 {voice?.name ?? t("library.voiceTranscript.title")}
               </AlertDialogTitle>
-              <AlertDialogDescription className="mt-1 truncate text-zinc-400">
+              <AlertDialogDescription className="text-content-muted mt-1 truncate">
                 {[voice?.podcastName, voice?.hostName].filter(Boolean).join(" · ")}
               </AlertDialogDescription>
             </div>
@@ -58,17 +58,17 @@ export function VoiceTranscriptDialog({ onOpenChange, open, voice }: VoiceTransc
         <ScrollArea className="h-[min(55vh,40rem)] px-6">
           <div className="py-5">
             {transcriptQuery.isLoading ? (
-              <div className="flex items-center justify-center gap-2 py-16 text-sm text-zinc-400">
+              <div className="text-content-muted flex items-center justify-center gap-2 py-16 text-sm">
                 <LoaderCircle className="size-4 animate-spin" />
                 {t("library.voiceTranscript.loading")}
               </div>
             ) : transcriptQuery.isError ? (
-              <div className="flex items-center justify-center gap-2 py-16 text-sm text-zinc-400">
+              <div className="text-content-muted flex items-center justify-center gap-2 py-16 text-sm">
                 <ScrollText className="size-4" />
                 {t("library.voiceTranscript.unavailable")}
               </div>
             ) : sentences.length === 0 ? (
-              <div className="flex items-center justify-center gap-2 py-16 text-sm text-zinc-400">
+              <div className="text-content-muted flex items-center justify-center gap-2 py-16 text-sm">
                 <ScrollText className="size-4" />
                 {t("library.voiceTranscript.empty")}
               </div>
@@ -79,10 +79,10 @@ export function VoiceTranscriptDialog({ onOpenChange, open, voice }: VoiceTransc
                     key={`${sentence.beg}-${sentence.end}`}
                     className="flex gap-4 text-sm leading-6"
                   >
-                    <time className="w-11 shrink-0 pt-0.5 text-right font-mono text-xs text-zinc-500">
+                    <time className="text-content-subtle w-11 shrink-0 pt-0.5 text-right font-mono text-xs">
                       {formatDuration(sentence.beg)}
                     </time>
-                    <p className="text-zinc-200">{sentence.name}</p>
+                    <p className="text-content">{sentence.name}</p>
                   </li>
                 ))}
               </ol>
@@ -90,8 +90,8 @@ export function VoiceTranscriptDialog({ onOpenChange, open, voice }: VoiceTransc
           </div>
         </ScrollArea>
 
-        <AlertDialogFooter className="border-t border-white/10 p-4">
-          <AlertDialogCancel className="border-white/10 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+        <AlertDialogFooter className="border-border border-t p-4">
+          <AlertDialogCancel className="bg-content/5 text-content hover:bg-content/10 hover:text-content">
             {t("common.action.cancel")}
           </AlertDialogCancel>
         </AlertDialogFooter>

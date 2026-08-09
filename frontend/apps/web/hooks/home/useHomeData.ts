@@ -37,49 +37,50 @@ export const TIME_THEMES: TimeTheme[] = [
     start: 0,
     end: 5,
     greetingKey: "home.greeting.night",
-    gradient: "from-indigo-950/90 via-[#121212]/80 to-[#121212] h-80",
+    gradient: "from-home-atmosphere-night/90 via-surface-raised/80 to-surface-raised h-80",
   },
   {
     start: 5,
     end: 7,
     greetingKey: "home.greeting.morning",
-    gradient: "from-rose-300/45 via-orange-200/30 to-[#121212] h-30",
+    gradient: "from-home-atmosphere-dawn/45 via-home-atmosphere-sunset/30 to-surface-raised h-30",
   },
   {
     start: 7,
     end: 10,
     greetingKey: "home.greeting.morning",
-    gradient: "from-sky-300/60 via-[#121212]/80 to-[#121212] h-80",
+    gradient: "from-home-atmosphere-morning/60 via-surface-raised/80 to-surface-raised h-80",
   },
   {
     start: 10,
     end: 14,
     greetingKey: "home.greeting.afternoon",
-    gradient: "from-sky-500/65 via-[#121212]/80 to-[#121212] h-80",
+    gradient: "from-home-atmosphere-afternoon/65 via-surface-raised/80 to-surface-raised h-80",
   },
   {
     start: 14,
     end: 17,
     greetingKey: "home.greeting.afternoon",
-    gradient: "from-cyan-400/60 via-[#121212]/80 to-[#121212] h-80",
+    gradient: "from-home-atmosphere-daylight/60 via-surface-raised/80 to-surface-raised h-80",
   },
   {
     start: 17,
     end: 19,
     greetingKey: "home.greeting.evening",
-    gradient: "from-orange-400/45 via-purple-500/30 to-[#121212] h-40",
+    gradient:
+      "from-home-atmosphere-sunset/45 via-home-atmosphere-evening/30 to-surface-raised h-40",
   },
   {
     start: 19,
     end: 22,
     greetingKey: "home.greeting.evening",
-    gradient: "from-violet-900/80 via-[#121212]/85 to-[#121212] h-80",
+    gradient: "from-home-atmosphere-evening/80 via-surface-raised/85 to-surface-raised h-80",
   },
   {
     start: 22,
     end: 24,
     greetingKey: "home.greeting.night",
-    gradient: "from-slate-900/90 via-[#121212]/85 to-[#121212] h-80",
+    gradient: "from-home-atmosphere-late-night/90 via-surface-raised/85 to-surface-raised h-80",
   },
 ];
 

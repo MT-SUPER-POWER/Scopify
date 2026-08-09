@@ -265,7 +265,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   return (
     <div
       className={cn(
-        "flex-1 flex-col bg-black font-sans text-white",
+        "bg-surface text-content flex-1 flex-col font-sans",
         "gap-2 overflow-hidden p-2",
         "flex h-screen",
       )}
@@ -295,7 +295,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               collapsible
               collapsedSize={80}
               onResize={() => setIsCollapsed(sidebarPanelRef.current?.isCollapsed() ?? false)}
-              className={cn("overflow-hidden rounded-lg bg-[#0f0f0f]")}
+              className={cn("bg-surface-sunken overflow-hidden rounded-lg")}
             >
               <Sidebar />
             </ResizablePanel>
@@ -305,13 +305,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
                 "relative flex w-2 items-center justify-center bg-transparent transition-colors",
                 "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
                 "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
-                "hover:after:bg-white/10",
-                "data-[resize-handle-state=drag]:after:bg-white/30",
+                "hover:after:bg-border",
+                "data-[resize-handle-state=drag]:after:bg-content-muted/50",
               )}
             />
 
             <ResizablePanel>
-              <div className="group/main relative size-full overflow-hidden rounded-lg bg-[#121212]">
+              <div className="bg-surface-raised group/main relative size-full overflow-hidden rounded-lg">
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                   <div className="pointer-events-auto">
                     <Header />
@@ -324,10 +324,10 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           </ResizablePanelGroup>
         ) : (
           <div className="flex size-full gap-2">
-            <div className="w-[20%] overflow-hidden rounded-lg bg-[#0f0f0f]">
+            <div className="bg-surface-sunken w-[20%] overflow-hidden rounded-lg">
               <Sidebar />
             </div>
-            <div className="group/main relative flex-1 overflow-hidden rounded-lg bg-[#121212]">
+            <div className="bg-surface-raised group/main relative flex-1 overflow-hidden rounded-lg">
               <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                 <div className="pointer-events-auto">
                   <Header />

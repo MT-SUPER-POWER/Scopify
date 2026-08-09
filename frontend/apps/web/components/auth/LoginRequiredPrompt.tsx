@@ -48,14 +48,14 @@ export function LoginRequiredPrompt({ reason, onLogin, compact }: LoginRequiredP
     <div
       className={
         compact
-          ? "flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/4 px-3 py-2"
-          : "flex flex-col items-center justify-center gap-3 rounded-lg border border-white/10 bg-white/4 px-6 py-8 text-center"
+          ? "bg-content/4 border-content/10 flex items-center justify-between gap-3 rounded-md border px-3 py-2"
+          : "bg-content/4 border-content/10 flex flex-col items-center justify-center gap-3 rounded-lg border px-6 py-8 text-center"
       }
     >
       <div className={compact ? "min-w-0" : "flex flex-col items-center gap-2"}>
-        {!compact && <LogIn className="size-8 text-zinc-400" />}
-        <p className="text-sm font-semibold text-white">{t(copy.title)}</p>
-        <p className="mt-1 text-xs text-zinc-400">{t(copy.subtitle)}</p>
+        {!compact && <LogIn className="text-content-muted size-8" />}
+        <p className="text-content text-sm font-semibold">{t(copy.title)}</p>
+        <p className="text-content-muted mt-1 text-xs">{t(copy.subtitle)}</p>
       </div>
       <Button type="button" size={compact ? "sm" : "default"} onClick={onLogin}>
         {t("common.action.login")}

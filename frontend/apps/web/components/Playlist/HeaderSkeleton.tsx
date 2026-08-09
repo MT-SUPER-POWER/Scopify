@@ -6,7 +6,7 @@ export default function PlaylistHeaderSkeleton() {
       {/* 1. 头部信息区域 */}
       <div className="flex w-full flex-row items-end gap-6 p-6">
         {/* 左侧：封面图 */}
-        <Skeleton className="size-52 shrink-0 rounded-md shadow-lg" />
+        <Skeleton className="shadow-panel size-52 shrink-0 rounded-md" />
 
         {/* 右侧：文本信息 */}
         <div className="flex w-full flex-col gap-3 pb-2">

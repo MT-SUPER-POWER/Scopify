@@ -50,12 +50,9 @@ export function PodcastContextMenu({
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="z-9999 w-48 border-white/10 bg-[#282828] text-white">
+      <ContextMenuContent className="z-9999 w-48">
         <ContextMenuGroup>
-          <ContextMenuItem
-            onClick={onPlaybackAction}
-            className="focus:bg-white/10 focus:text-white"
-          >
+          <ContextMenuItem onClick={onPlaybackAction}>
             {playbackAction === "pause" ? (
               <>
                 <Pause className="mr-2 size-4 fill-current" />
@@ -71,7 +68,6 @@ export function PodcastContextMenu({
           <ContextMenuItem
             disabled={isFavoriteStateLoading || favorite.isFavoriting}
             onClick={() => void favorite.toggleFavorite(podcast.id)}
-            className="focus:bg-white/10 focus:text-white"
           >
             <Heart className="mr-2 size-4" fill={favorite.isFavorited ? "currentColor" : "none"} />
             {favorite.isFavorited
@@ -79,8 +75,8 @@ export function PodcastContextMenu({
               : t("library.podcasts.action.favorite")}
           </ContextMenuItem>
         </ContextMenuGroup>
-        <ContextMenuSeparator className="bg-white/10" />
-        <ContextMenuItem onClick={handleCopyLink} className="focus:bg-white/10 focus:text-white">
+        <ContextMenuSeparator />
+        <ContextMenuItem onClick={handleCopyLink}>
           <Link2 className="mr-2 size-4" />
           {t("contextMenu.copyLink")}
         </ContextMenuItem>

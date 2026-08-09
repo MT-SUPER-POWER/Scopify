@@ -22,24 +22,26 @@ export function TrackIndexCell({
 }: TrackIndexCellProps) {
   return (
     <div className="group/cell relative flex size-4 items-center justify-center">
-      <span className={cn("font-normal text-zinc-400 group-hover:hidden", isActive && "hidden")}>
+      <span
+        className={cn("text-content-muted font-normal group-hover:hidden", isActive && "hidden")}
+      >
         {index + 1}
       </span>
 
       {isActive && isPlaying && <PlayingAnimation className="h-3 group-hover:hidden" />}
 
       {isActive && !isPlaying && (
-        <Play className="size-4 fill-current text-[#1ed760] group-hover:hidden" />
+        <Play className="text-brand size-4 fill-current group-hover:hidden" />
       )}
 
       <div className="hidden items-center justify-center group-hover:flex">
         {isActive && isPlaying ? (
           <Pause
-            className="size-4 cursor-pointer fill-current text-[#1ed760]"
+            className="text-brand size-4 cursor-pointer fill-current"
             onClick={() => setIsPlaying(false)}
           />
         ) : (
-          <Play className="size-4 cursor-pointer fill-current text-white" onClick={onPlay} />
+          <Play className="text-content size-4 cursor-pointer fill-current" onClick={onPlay} />
         )}
       </div>
     </div>

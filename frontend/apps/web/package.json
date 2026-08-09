@@ -26,7 +26,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "bun test tests",
-    "lint": "eslint .",
+    "lint": "bun run lint:theme && eslint .",
+    "lint:theme": "bun scripts/check-theme-hardcodes.ts",
     "format": "prettier --write .",
     "i18n:types": "bun scripts/generate-i18n-types.ts",
     "i18n:audit": "bun scripts/audit-i18n.ts"

@@ -24,20 +24,24 @@ export default function ArtistPage() {
   // console.log("Artist Data:", { artist, popularTracks, hotTracksQueue });
 
   if (!artistId)
-    return <div className="h-screen bg-[#121212] p-8 text-white">{t("artist.page.invalidId")}</div>;
+    return (
+      <div className="bg-surface-raised text-content h-screen p-8">
+        {t("artist.page.invalidId")}
+      </div>
+    );
 
   if (isLoading || !artist)
     return (
-      <div className="flex h-screen items-center justify-center bg-[#121212] p-8 text-white">
-        <Loader2 className="size-8 animate-spin text-[#1DB954]" />
+      <div className="bg-surface-raised text-content flex h-screen items-center justify-center p-8">
+        <Loader2 className="text-brand size-8 animate-spin" />
       </div>
     );
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#121212] pb-24 font-sans text-white">
+    <div className="bg-surface-raised text-content min-h-screen overflow-x-hidden pb-24 font-sans">
       <ArtistHero artist={artist} />
 
-      <div className="mx-auto w-full max-w-7xl bg-linear-to-b from-black/20 to-[#121212]">
+      <div className="from-hero-shade to-surface-raised mx-auto w-full max-w-7xl bg-linear-to-b">
         <ActionBar
           artistId={artist.id}
           isPlayingArtist={isPlayingArtist}

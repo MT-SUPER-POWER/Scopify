@@ -32,9 +32,9 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         height={40}
         src={comment.user.avatarUrl}
         alt={comment.user.nickname}
-        className="mt-1 size-10 shrink-0 cursor-pointer rounded-full bg-neutral-800 object-cover"
+        className="bg-surface-elevated mt-1 size-10 shrink-0 cursor-pointer rounded-full object-cover"
       />
-      <div className="flex-1 border-b border-white/5 pb-6 group-last:border-0">
+      <div className="border-content/5 flex-1 border-b pb-6 group-last:border-0">
         <div className="mb-1 flex items-baseline gap-2">
           <button
             type="button"
@@ -43,26 +43,26 @@ export const CommentItem: React.FC<CommentItemProps> = ({
             <span className="cursor-pointer text-sm font-bold select-text hover:underline">
               {comment.user.nickname}
             </span>
-            <span className="ml-2 text-xs text-[#B3B3B3]">{comment.timeStr}</span>
+            <span className="text-content-muted ml-2 text-xs">{comment.timeStr}</span>
           </button>
         </div>
 
-        <p className="cursor-text text-sm leading-relaxed whitespace-pre-wrap text-white/90 select-text">
+        <p className="text-content/90 cursor-text text-sm leading-relaxed whitespace-pre-wrap select-text">
           {renderEmojiContent(comment.content)}
         </p>
 
         {comment.beReplied && comment.beReplied.length > 0 && (
-          <div className="mt-4 flex flex-col gap-1.5 rounded-r-lg border-l-[3px] border-[#1DB954] bg-[#1a1a1a] px-4 py-3">
-            <span className="text-sm font-bold text-[#1DB954] select-text">
+          <div className="bg-surface-elevated border-brand mt-4 flex flex-col gap-1.5 rounded-r-lg border-l-[3px] px-4 py-3">
+            <span className="text-brand text-sm font-bold select-text">
               @{comment.beReplied[0].user?.nickname || t("common.meta.unknownUser")}
             </span>
             {!comment.beReplied[0].content ||
             comment.beReplied[0].content.includes("该评论已删除") ? (
-              <span className="text-sm text-white/40 select-text">
+              <span className="text-content/40 text-sm select-text">
                 {t("comments.item.deletedComment")}
               </span>
             ) : (
-              <span className="line-clamp-3 cursor-text text-sm text-[#B3B3B3] select-text">
+              <span className="text-content-muted line-clamp-3 cursor-text text-sm select-text">
                 {comment.beReplied[0].content}
               </span>
             )}
@@ -74,13 +74,13 @@ export const CommentItem: React.FC<CommentItemProps> = ({
             <button
               type="button"
               onClick={() => onReply?.(comment.commentId)}
-              className="text-xs font-semibold text-[#B3B3B3] transition-colors hover:text-white"
+              className="text-content-muted hover:text-content text-xs font-semibold transition-colors"
             >
               {t("common.action.reply")}
             </button>
           </div>
 
-          <div className="flex items-center gap-6 text-[#B3B3B3]">
+          <div className="text-content-muted flex items-center gap-6">
             <LikeButton
               liked={comment.liked}
               likedCount={comment.likedCount}
@@ -91,27 +91,24 @@ export const CommentItem: React.FC<CommentItemProps> = ({
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
-                  className="rounded transition-colors outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-[#1DB954]"
+                  className="hover:text-content focus-visible:ring-brand rounded transition-colors outline-none focus-visible:ring-2"
                 >
                   <MoreHorizontal className="size-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="w-32 border-white/10 bg-[#282828] text-white"
-              >
+              <DropdownMenuContent align="end" className="w-32">
                 {isOwnComment ? (
                   <DropdownMenuItem
                     onClick={() => onDelete?.(comment.commentId)}
-                    className="cursor-pointer text-red-500 focus:bg-red-500/10"
+                    className="text-destructive cursor-pointer"
                   >
-                    <Trash2 className="mr-2 size-4 text-red-500" />
+                    <Trash2 className="text-destructive mr-2 size-4" />
                     {t("comments.item.delete")}
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem
                     onClick={() => onReport?.(comment.commentId)}
-                    className="hover:bg-black-500/80 cursor-pointer bg-[#282828]"
+                    className="cursor-pointer"
                   >
                     <Flag className="mr-2 size-4" />
                     {t("comments.item.report")}

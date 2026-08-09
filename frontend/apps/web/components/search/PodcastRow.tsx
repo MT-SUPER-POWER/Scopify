@@ -35,9 +35,9 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
         event.preventDefault();
         handleNavigate();
       }}
-      className="group cursor-pointer border-none transition-colors duration-150 select-none hover:bg-white/10"
+      className="group hover:bg-content/10 cursor-pointer border-none transition-colors duration-150 select-none"
     >
-      <TableCell className="rounded-l-md py-1.5 text-center text-xs text-zinc-500 tabular-nums">
+      <TableCell className="text-content-subtle rounded-l-md py-1.5 text-center text-xs tabular-nums">
         {isVoiceList ? (
           <span>{String(index + 1).padStart(2, "0")}</span>
         ) : (
@@ -47,7 +47,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
                 <PlayingAnimation className="h-3.5" />
               </div>
             ) : isActive ? (
-              <Play className="mx-auto size-3.5 fill-current text-[#1ed760] group-hover:hidden" />
+              <Play className="text-brand mx-auto size-3.5 fill-current group-hover:hidden" />
             ) : (
               <span className="group-hover:hidden">{String(index + 1).padStart(2, "0")}</span>
             )}
@@ -60,7 +60,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
                     event.stopPropagation();
                     setIsPlaying(false);
                   }}
-                  className="inline-flex items-center justify-center text-[#1ed760] transition-transform hover:scale-110"
+                  className="text-brand inline-flex items-center justify-center transition-transform hover:scale-110"
                 >
                   <Pause className="size-3.5 fill-current" />
                 </button>
@@ -69,12 +69,12 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
                   type="button"
                   title={t("contextMenu.play")}
                   onClick={(event) => void handlePlayPodcast(podcast.id, event)}
-                  className="inline-flex items-center justify-center text-white transition-transform hover:scale-110"
+                  className="text-content inline-flex items-center justify-center transition-transform hover:scale-110"
                 >
                   <Play
                     className={cn(
                       "size-3.5 fill-current",
-                      isActive ? "text-[#1ed760]" : "text-white",
+                      isActive ? "text-brand" : "text-content",
                       isLoading && "animate-pulse",
                     )}
                   />
@@ -86,7 +86,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
       </TableCell>
       <TableCell className="py-1.5">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="relative size-10 shrink-0 overflow-hidden rounded-sm bg-zinc-800">
+          <div className="bg-surface-elevated relative size-10 shrink-0 overflow-hidden rounded-sm">
             {podcast.coverUrl ? (
               <Image
                 width={80}
@@ -96,7 +96,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
                 className="size-full object-cover"
               />
             ) : (
-              <div className="flex size-full items-center justify-center text-zinc-500">
+              <div className="text-content-subtle flex size-full items-center justify-center">
                 <Radio className="size-4" />
               </div>
             )}
@@ -105,25 +105,25 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
             <p
               className={cn(
                 "truncate font-medium group-hover:underline",
-                isActive ? "text-[#1ed760]" : "text-white",
+                isActive ? "text-brand" : "text-content",
               )}
             >
               {podcast.name}
             </p>
-            <p className="mt-0.5 truncate text-xs text-zinc-500">
+            <p className="text-content-subtle mt-0.5 truncate text-xs">
               {podcast.hostName || t("search.podcast.unknownHost")}
             </p>
           </div>
         </div>
       </TableCell>
-      <TableCell className="hidden py-1.5 text-sm text-zinc-400 md:table-cell">
+      <TableCell className="text-content-muted hidden py-1.5 text-sm md:table-cell">
         <span className="block truncate" title={podcast.category}>
           {podcast.category || "-"}
         </span>
       </TableCell>
       <TableCell className="hidden py-1.5 text-right text-sm tabular-nums md:table-cell">
         {podcast.score !== undefined ? (
-          <span className="inline-flex min-w-10 justify-center rounded-sm border border-amber-400/50 bg-amber-400/10 px-1.5 py-0.5 text-xs font-semibold text-amber-300">
+          <span className="border-warning/50 bg-warning/10 text-warning inline-flex min-w-10 justify-center rounded-sm border px-1.5 py-0.5 text-xs font-semibold">
             {podcast.score}
           </span>
         ) : (

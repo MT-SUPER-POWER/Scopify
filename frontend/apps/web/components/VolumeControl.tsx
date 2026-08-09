@@ -141,13 +141,13 @@ export const VolumeControl = ({
     return (
       <div
         onWheel={handleWheel}
-        className="flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none hover:bg-white/5"
+        className="hover:bg-accent flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none"
       >
         <button
           type="button"
           aria-label={volumeLabel}
           onClick={handleMuteToggle}
-          className="shrink-0 text-[#b3b3b3] transition-colors hover:text-white"
+          className="text-content-muted hover:text-content shrink-0 transition-colors"
         >
           {getVolumeIcon()}
         </button>
@@ -161,7 +161,7 @@ export const VolumeControl = ({
             thumbOnHover={true}
           />
         </div>
-        <span className="w-8 shrink-0 text-right text-xs font-medium text-[#b3b3b3] tabular-nums">
+        <span className="text-content-muted w-8 shrink-0 text-right text-xs font-medium tabular-nums">
           {isMuted ? 0 : Math.round(volume)}%
         </span>
       </div>
@@ -181,14 +181,14 @@ export const VolumeControl = ({
         type="button"
         aria-label={volumeLabel}
         onClick={handleMuteToggle}
-        className="text-[#b3b3b3] transition-colors hover:text-white"
+        className="text-content-muted hover:text-content transition-colors"
       >
         {getVolumeIcon()}
       </button>
 
       {isOpen && (
         <div className="absolute bottom-full left-1/2 z-50 -translate-x-1/2 pb-2">
-          <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 shadow-xl">
+          <div className="bg-surface-overlay shadow-floating border-border rounded-lg border p-3">
             <div className="mt-2 flex flex-col items-center gap-2">
               <SmoothSlider
                 value={isMuted ? 0 : volume}
@@ -199,7 +199,7 @@ export const VolumeControl = ({
                 thumbSize={10}
                 thumbOnHover={false}
               />
-              <span className="inline-block w-[4ch] text-center text-xs font-medium text-white tabular-nums">
+              <span className="text-content inline-block w-[4ch] text-center text-xs font-medium tabular-nums">
                 {isMuted ? 0 : Math.round(volume)}%
               </span>
             </div>

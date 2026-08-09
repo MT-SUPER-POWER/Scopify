@@ -27,7 +27,7 @@ export function StorageSettingsTab({
               : undefined
           }
           control={
-            <span className="text-sm font-medium text-white">
+            <span className="text-foreground text-sm font-medium">
               {playbackCacheStats
                 ? t("settings.playbackCache.countValue", { count: playbackCacheStats.entryCount })
                 : "-"}
@@ -41,7 +41,7 @@ export function StorageSettingsTab({
               type="button"
               onClick={() => void onClearPlaybackCache()}
               disabled={isClearingPlaybackCache}
-              className="rounded bg-white px-4 py-2 text-sm font-bold text-black hover:bg-white/90 disabled:opacity-50"
+              className="bg-primary text-primary-foreground hover:bg-brand-hover rounded px-4 py-2 text-sm font-bold disabled:opacity-50"
             >
               {isClearingPlaybackCache
                 ? t("settings.playbackCache.clearing")
@@ -116,7 +116,7 @@ export function StorageSettingsTab({
                 type="button"
                 onClick={() => void onClearCache()}
                 disabled={isClearingCache}
-                className="rounded bg-white px-4 py-2 text-sm font-bold text-black hover:bg-white/90 disabled:opacity-50"
+                className="bg-primary text-primary-foreground hover:bg-brand-hover rounded px-4 py-2 text-sm font-bold disabled:opacity-50"
               >
                 {isClearingCache
                   ? t("settings.cache.clear.clearing")

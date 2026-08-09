@@ -24,10 +24,10 @@ export function AlbumCard({
 
   return (
     <div
-      className="group relative min-w-0 cursor-pointer rounded-xl bg-[#181818] p-4 transition-colors hover:bg-[#282828] active:bg-[#202020]"
+      className="bg-surface-elevated hover:bg-surface-overlay active:bg-surface-sunken group relative min-w-0 cursor-pointer rounded-xl p-4 transition-colors"
       onClick={onClick}
     >
-      <div className="mb-4 aspect-square w-full overflow-hidden rounded-md bg-zinc-800 shadow-lg">
+      <div className="bg-surface-sunken shadow-panel mb-4 aspect-square w-full overflow-hidden rounded-md">
         <Image
           src={
             album.picUrl ||
@@ -40,7 +40,7 @@ export function AlbumCard({
         />
       </div>
       <h4 className="mb-1 truncate text-base font-bold">{album.name}</h4>
-      <p className="mt-1 truncate text-sm text-zinc-400">
+      <p className="text-content-muted mt-1 truncate text-sm">
         {new Date(album.publishTime).getFullYear()} •{" "}
         {album.artist?.name || t("common.meta.unknownArtist")}
       </p>
@@ -52,7 +52,7 @@ export function AlbumCard({
         }}
         disabled={isLoading}
         className={cn(
-          "absolute right-6 bottom-20 z-10 flex size-12 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-[0_8px_8px_rgba(0,0,0,0.3)] transition-all duration-300 hover:scale-105 hover:bg-[#3be477] disabled:opacity-80 disabled:hover:scale-100",
+          "bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-6 bottom-20 z-10 flex size-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-105 disabled:opacity-80 disabled:hover:scale-100",
           isPlaying || isLoading
             ? "translate-y-0 opacity-100"
             : "translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",

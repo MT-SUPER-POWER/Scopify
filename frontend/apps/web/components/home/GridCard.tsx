@@ -32,12 +32,12 @@ export function GridCard({
     <div
       key={id}
       onClick={onClick}
-      className="group cursor-pointer overflow-hidden rounded-md bg-[#181818] p-4 transition-colors hover:bg-[#282828]"
+      className="bg-surface-elevated hover:bg-surface-overlay group cursor-pointer overflow-hidden rounded-md p-4 transition-colors"
     >
       <div className="relative mb-4">
         <div
           className={cn(
-            "aspect-square w-full overflow-hidden rounded-md bg-zinc-800 shadow-lg",
+            "bg-surface-sunken shadow-panel aspect-square w-full overflow-hidden rounded-md",
             isArtist && "rounded-full",
           )}
         >
@@ -53,20 +53,20 @@ export function GridCard({
           <button
             type="button"
             onClick={onPlay}
-            className="absolute right-2 bottom-2 flex size-12 translate-y-3 items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
+            className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-2 bottom-2 flex size-12 translate-y-3 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105"
           >
             <Play className={cn("ml-0.5 size-6 fill-current", isLoading && "animate-pulse")} />
           </button>
         )}
         {playCount !== undefined && (
-          <div className="pointer-events-none absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[11px] text-white opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-300 select-none group-hover:opacity-100">
-            <Play className="size-2.5 fill-current text-white" />
+          <div className="bg-overlay/75 text-overlay-foreground shadow-panel pointer-events-none absolute top-2 right-2 flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] opacity-0 backdrop-blur-sm transition-opacity duration-300 select-none group-hover:opacity-100">
+            <Play className="size-2.5 fill-current" />
             <span>{formatPlayCount(playCount)}次播放</span>
           </div>
         )}
       </div>
-      <h3 className="truncate text-sm font-bold text-white">{name}</h3>
-      {subtitle && <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{subtitle}</p>}
+      <h3 className="text-content truncate text-sm font-bold">{name}</h3>
+      {subtitle && <p className="text-content-muted mt-1 line-clamp-2 text-xs">{subtitle}</p>}
     </div>
   );
 }

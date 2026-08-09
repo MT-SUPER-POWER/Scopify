@@ -13,7 +13,7 @@ export function PublicPlaylistGrid({ playlists, onClickPlaylist }: Props) {
   console.log("Public playlists:", playlists);
 
   if (playlists.length === 0) {
-    return <div className="text-sm text-gray-400">{t("profile.page.noPublicPlaylists")}</div>;
+    return <div className="text-content-muted text-sm">{t("profile.page.noPublicPlaylists")}</div>;
   }
 
   return (
@@ -21,10 +21,10 @@ export function PublicPlaylistGrid({ playlists, onClickPlaylist }: Props) {
       {playlists.map((playlist, index) => (
         <div
           key={`${playlist.id}-${index}`}
-          className="group cursor-pointer rounded-md bg-[#181818] p-4 transition duration-300 hover:bg-[#282828]"
+          className="bg-surface-elevated hover:bg-surface-overlay group cursor-pointer rounded-md p-4 transition duration-300"
           onClick={() => onClickPlaylist(playlist.id)}
         >
-          <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md shadow-lg">
+          <div className="shadow-panel relative mb-4 aspect-square w-full overflow-hidden rounded-md">
             <Image
               width={300}
               height={300}
@@ -34,20 +34,20 @@ export function PublicPlaylistGrid({ playlists, onClickPlaylist }: Props) {
             />
             <div className="absolute right-2 bottom-2 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
               <button
-                className="flex size-12 items-center justify-center rounded-full bg-[#1ed760] shadow-xl hover:scale-105 hover:bg-[#1fdf64]"
+                className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover flex size-12 items-center justify-center rounded-full hover:scale-105"
                 onClick={(e) => {
                   e.stopPropagation();
                   onClickPlaylist(playlist.id);
                 }}
               >
-                <Play size={24} fill="black" stroke="black" className="ml-1" />
+                <Play size={24} fill="currentColor" stroke="currentColor" className="ml-1" />
               </button>
             </div>
           </div>
-          <h3 className="mb-1 truncate font-bold text-white" title={playlist.name}>
+          <h3 className="text-content mb-1 truncate font-bold" title={playlist.name}>
             {playlist.name}
           </h3>
-          <p className="truncate text-sm text-gray-400">
+          <p className="text-content-muted truncate text-sm">
             {t("profile.page.playlistSongCount", { count: playlist.trackCount })}
           </p>
         </div>

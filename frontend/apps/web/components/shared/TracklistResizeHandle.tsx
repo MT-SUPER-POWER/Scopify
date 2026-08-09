@@ -27,7 +27,7 @@ export function TracklistResizeHandle({
         active && "opacity-100",
       )}
     >
-      <GripVertical className={cn("size-3 text-zinc-500", active && "text-white")} />
+      <GripVertical className={cn("text-content-subtle size-3", active && "text-content")} />
     </span>
   );
 }

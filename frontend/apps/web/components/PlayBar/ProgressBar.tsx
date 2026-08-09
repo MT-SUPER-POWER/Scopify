@@ -80,7 +80,7 @@ export const PlayerProgressBar = memo(() => {
 
   return (
     <div className="flex w-full items-center gap-2">
-      <span className="w-10 shrink-0 text-right text-[11px] font-normal tracking-widest text-[#b3b3b3] tabular-nums">
+      <span className="text-content-muted w-10 shrink-0 text-right text-[11px] font-normal tracking-widest tabular-nums">
         {formatDuration(localTime)}
       </span>
 
@@ -95,10 +95,10 @@ export const PlayerProgressBar = memo(() => {
         thumbOnHover={true}
         rangeMarkers={chorusRanges}
         markerAppearance="glow"
-        markerColor="rgba(30, 215, 96, 0.85)"
+        markerColor="var(--brand)"
       />
 
-      <span className="w-10 shrink-0 text-[11px] font-normal tracking-widest text-[#b3b3b3] tabular-nums">
+      <span className="text-content-muted w-10 shrink-0 text-[11px] font-normal tracking-widest tabular-nums">
         {formatDuration(totalTime)}
       </span>
     </div>
