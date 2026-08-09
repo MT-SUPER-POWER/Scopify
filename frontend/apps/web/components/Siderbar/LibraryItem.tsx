@@ -53,7 +53,7 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
       <Link
         href={href}
         title={title}
-        className="group flex cursor-pointer items-center gap-3 rounded-md p-2 transition-colors hover:bg-[#1a1a1a]"
+        className="group flex w-full min-w-0 cursor-pointer items-center gap-3 overflow-hidden rounded-md p-2 transition-colors hover:bg-[#1a1a1a]"
       >
         <div className="relative size-12 shrink-0 overflow-hidden rounded-md shadow-md transition-transform group-hover:scale-105">
           <Image

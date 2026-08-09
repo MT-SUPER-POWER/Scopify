@@ -150,8 +150,13 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
           {t("sidebar.group.playlists")}
         </p>
       )}
-      <ScrollArea className="scrollbar-custom min-h-0 flex-1 px-2">
-        <div className={cn("space-y-1", isCollapsed ? "pb-2" : "pb-4")}>{content}</div>
+      <ScrollArea
+        className="scrollbar-custom min-h-0 flex-1 px-2"
+        viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+      >
+        <div className={cn("w-full min-w-0 space-y-1", isCollapsed ? "pb-2" : "pb-4")}>
+          {content}
+        </div>
       </ScrollArea>
     </section>
   );
