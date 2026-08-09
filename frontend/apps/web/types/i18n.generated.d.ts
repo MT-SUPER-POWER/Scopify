@@ -7682,6 +7682,60 @@ export interface TranslateFn {
    */
   (key: "folia.options.sonnetEnableTransitions", params?: TranslationParams): string;
   /**
+   * zh-CN: 后处理
+   * zh-TW: 後處理
+   * en-US: Post-processing
+   */
+  (key: "folia.options.sonnetPostProcessSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整体后处理滤镜
+   * zh-TW: 整體後處理濾鏡
+   * en-US: Scene post-process filter
+   */
+  (key: "folia.options.sonnetPostProcessEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 胶片颗粒
+   * zh-TW: 膠片顆粒
+   * en-US: Film grain
+   */
+  (key: "folia.options.sonnetPostProcessGrain", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对比度增强
+   * zh-TW: 對比度增強
+   * en-US: Contrast boost
+   */
+  (key: "folia.options.sonnetPostProcessContrast", params?: TranslationParams): string;
+  /**
+   * zh-CN: RGB 色差
+   * zh-TW: RGB 色差
+   * en-US: RGB shift
+   */
+  (key: "folia.options.sonnetPostProcessRgbShift", params?: TranslationParams): string;
+  /**
+   * zh-CN: 透镜扭曲
+   * zh-TW: 透鏡扭曲
+   * en-US: Lens distortion
+   */
+  (key: "folia.options.sonnetPostProcessLensDistortion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 透镜色散
+   * zh-TW: 透鏡色散
+   * en-US: Lens dispersion
+   */
+  (key: "folia.options.sonnetPostProcessLensDispersion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 半调网点
+   * zh-TW: 半調網點
+   * en-US: Halftone screen
+   */
+  (key: "folia.options.sonnetPostProcessHalftone", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暗角
+   * zh-TW: 暗角
+   * en-US: Vignette
+   */
+  (key: "folia.options.sonnetPostProcessVignette", params?: TranslationParams): string;
+  /**
    * zh-CN: 开启
    * zh-TW: 開啟
    * en-US: On

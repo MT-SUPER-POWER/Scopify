@@ -19,8 +19,11 @@ the original full-copy baseline:
 - `bb70a1c` through `40f0d13` — update Sonnet to the reviewed v2 layout and
   camera pipeline, including ShotFlow, poster blocks, semi-hero typography and
   artifacts, measured frame decoration, deterministic camera tracking, expanded
-  MG scenes, and fixed-geometry growth. The later full-scene post-process series
-  beginning at `5d61d77` remains intentionally excluded.
+  MG scenes, and fixed-geometry growth.
+- `5d61d77` through `2a181f9` — add the opt-in Sonnet full-scene post-process
+  pipeline from Folia v0.6.15, including film grain, contrast, corrected RGB
+  shift, halftone, vignette, lens distortion and chromatic dispersion. The
+  reviewed final defaults keep the pipeline disabled until the user enables it.
 - `a0481ff`, `c939b1d`, `0b98951`, `581b7a0`, `3a36230`, and `d71d949` — add
   translation / romanization / hidden subtitle modes, independent subtitle
   scaling, the theme-aware fading subtitle backdrop, the iOS compositing fix,

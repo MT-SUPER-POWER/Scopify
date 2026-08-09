@@ -49,7 +49,7 @@ export const resolveSonnetTransitionEffectFrame = (
     return {
       x: 0,
       y: 0,
-      scale: phase === "exit" ? 1 + amount * 0.035 : 1 - amount * 0.035,
+      scale: 1,
       rotation: 0,
       alpha: phase === "exit" ? 1 - amount : 1 - amount * 0.82,
       blur: amount * 14,
@@ -75,7 +75,8 @@ export const resolveSonnetTransitionEffectFrame = (
   return {
     x: 0,
     y: 0,
-    scale: phase === "exit" ? 1 + amount * 0.22 : 1 - amount * 0.18,
+    // Full-scene filters use a viewport-sized render surface, so transitions keep identity scale.
+    scale: 1,
     rotation: 0,
     alpha: phase === "exit" ? 1 - amount : 1 - amount * 0.72,
     blur: 0,

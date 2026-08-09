@@ -47,7 +47,7 @@ describe("Sonnet scene transitions", () => {
     expect(frame.alpha).toBeLessThan(1);
   });
 
-  test("keeps glitch deterministic and camera-pull transitions seek-safe", () => {
+  test("keeps glitch deterministic and viewport-scale transitions seek-safe", () => {
     const first = resolveSonnetTransitionEffectFrame("mono-glitch", "exit", 0.55, 1234);
     const second = resolveSonnetTransitionEffectFrame("mono-glitch", "exit", 0.55, 1234);
     expect(first).toEqual(second);
@@ -56,9 +56,18 @@ describe("Sonnet scene transitions", () => {
     expect(first.y).toBe(0);
 
     const start = resolveSonnetEnterTransitionFrame("camera-pull", 0, 0.2, true, 7);
+    const middle = resolveSonnetEnterTransitionFrame("camera-pull", 0.1, 0.2, true, 7);
     const end = resolveSonnetEnterTransitionFrame("camera-pull", 0.2, 0.2, true, 7);
-    expect(start.scale).toBeLessThan(1);
+    expect(start.scale).toBe(1);
+    expect(middle.scale).toBe(1);
     expect(end).toEqual(IDLE_SONNET_TRANSITION_FRAME);
+  });
+
+  test("does not scale the viewport post-process surface", () => {
+    for (const kind of ["fast-blur", "mono-glitch", "camera-pull"] as const) {
+      expect(resolveSonnetTransitionEffectFrame(kind, "enter", 0.35, 17).scale).toBe(1);
+      expect(resolveSonnetTransitionEffectFrame(kind, "exit", 0.65, 17).scale).toBe(1);
+    }
   });
 
   test("transitions both sides of every internal shot boundary", () => {

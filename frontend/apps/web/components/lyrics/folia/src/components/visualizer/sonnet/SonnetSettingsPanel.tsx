@@ -132,6 +132,102 @@ const SonnetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         ))}
       </SonnetSettingsSection>
 
+      <SonnetSettingsSection title={t("folia.options.sonnetPostProcessSection") || "后处理"}>
+        <VisualizerPresetGroup
+          label={t("folia.options.sonnetPostProcessEnabled") || "整体后处理滤镜"}
+          value={sonnetTuning.postProcessEnabled}
+          options={booleanOptions}
+          onChange={(postProcessEnabled) => onSonnetTuningChange?.({ postProcessEnabled })}
+          isDaylight={isDaylight}
+          theme={theme}
+        />
+        {sonnetTuning.postProcessEnabled ? (
+          <>
+            <SonnetRangeControl
+              label={t("folia.options.sonnetPostProcessGrain") || "胶片颗粒"}
+              value={sonnetTuning.postProcessGrain}
+              min={0}
+              max={1}
+              step={0.05}
+              rangeInputClass={rangeInputClass}
+              onChange={(postProcessGrain) => onSonnetTuningChange?.({ postProcessGrain })}
+              onPointerDown={onSliderPointerDown}
+              onPointerUp={onSliderCommit}
+            />
+            <SonnetRangeControl
+              label={t("folia.options.sonnetPostProcessContrast") || "对比度增强"}
+              value={sonnetTuning.postProcessContrast}
+              min={0}
+              max={1}
+              step={0.05}
+              rangeInputClass={rangeInputClass}
+              onChange={(postProcessContrast) => onSonnetTuningChange?.({ postProcessContrast })}
+              onPointerDown={onSliderPointerDown}
+              onPointerUp={onSliderCommit}
+            />
+            <SonnetRangeControl
+              label={t("folia.options.sonnetPostProcessRgbShift") || "RGB 色差"}
+              value={sonnetTuning.postProcessRgbShift}
+              min={0}
+              max={1}
+              step={0.05}
+              rangeInputClass={rangeInputClass}
+              onChange={(postProcessRgbShift) => onSonnetTuningChange?.({ postProcessRgbShift })}
+              onPointerDown={onSliderPointerDown}
+              onPointerUp={onSliderCommit}
+            />
+            <SonnetRangeControl
+              label={t("folia.options.sonnetPostProcessLensDistortion") || "透镜扭曲"}
+              value={sonnetTuning.postProcessLensDistortion}
+              min={0}
+              max={2}
+              step={0.05}
+              rangeInputClass={rangeInputClass}
+              onChange={(postProcessLensDistortion) =>
+                onSonnetTuningChange?.({ postProcessLensDistortion })
+              }
+              onPointerDown={onSliderPointerDown}
+              onPointerUp={onSliderCommit}
+            />
+            <SonnetRangeControl
+              label={t("folia.options.sonnetPostProcessLensDispersion") || "透镜色散"}
+              value={sonnetTuning.postProcessLensDispersion}
+              min={0}
+              max={1}
+              step={0.05}
+              rangeInputClass={rangeInputClass}
+              onChange={(postProcessLensDispersion) =>
+                onSonnetTuningChange?.({ postProcessLensDispersion })
+              }
+              onPointerDown={onSliderPointerDown}
+              onPointerUp={onSliderCommit}
+            />
+            <SonnetRangeControl
+              label={t("folia.options.sonnetPostProcessHalftone") || "半调网点"}
+              value={sonnetTuning.postProcessHalftone}
+              min={0}
+              max={1}
+              step={0.05}
+              rangeInputClass={rangeInputClass}
+              onChange={(postProcessHalftone) => onSonnetTuningChange?.({ postProcessHalftone })}
+              onPointerDown={onSliderPointerDown}
+              onPointerUp={onSliderCommit}
+            />
+            <SonnetRangeControl
+              label={t("folia.options.sonnetPostProcessVignette") || "暗角"}
+              value={sonnetTuning.postProcessVignette}
+              min={0}
+              max={2}
+              step={0.05}
+              rangeInputClass={rangeInputClass}
+              onChange={(postProcessVignette) => onSonnetTuningChange?.({ postProcessVignette })}
+              onPointerDown={onSliderPointerDown}
+              onPointerUp={onSliderCommit}
+            />
+          </>
+        ) : null}
+      </SonnetSettingsSection>
+
       <SonnetSettingsSection title={t("folia.options.sonnetDisplaySection")}>
         <VisualizerPresetGroup
           label={t("folia.options.sonnetOuterFrameMode")}

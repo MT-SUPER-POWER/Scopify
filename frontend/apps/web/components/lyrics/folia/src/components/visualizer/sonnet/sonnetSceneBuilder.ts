@@ -309,9 +309,16 @@ export const buildSonnetScene = (
   });
 
   if (!showOnlyText) {
-    postProcessFilters.push(
-      ...applySonnetScenePostProcess(pixi, container, postProcessProfile, sceneSeed),
+    const sceneFilters = applySonnetScenePostProcess(
+      pixi,
+      container,
+      postProcessProfile,
+      sceneSeed,
     );
+    if (sceneFilters.length > 0) {
+      container.filterArea = new pixi.Rectangle(0, 0, width, height);
+      postProcessFilters.push(...sceneFilters);
+    }
   }
   const transitionBlurFilter =
     options.tuning.enableTransitions && !options.staticMode
