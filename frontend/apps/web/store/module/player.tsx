@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getLyric, getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
 import {
+  clearCachedPlayUrl,
   getCachedLyric,
   getCachedPlayUrl,
   getImportedLyricOverride,
@@ -47,6 +48,38 @@ async function getStoredLyricSource(songId: number): Promise<NeteaseLyric | null
   return matchedLyric?.lyric ?? null;
 }
 
+export function selectPersistedPlayerState(state: PlayerStore) {
+  return {
+    volume: state.volume,
+    currentSongDetail: state.currentSongDetail,
+    repeatMode: state.repeatMode,
+    isShuffle: state.isShuffle,
+    originalQueue: state.originalQueue,
+    queue: state.queue,
+    queueIndex: state.queueIndex,
+    historyStack: state.historyStack,
+    historyIndex: state.historyIndex,
+    lyric: state.lyric,
+    playlistId: state.playlistId,
+    musicQuality: state.musicQuality,
+  };
+}
+
+export function mergePersistedPlayerState(
+  persistedState: unknown,
+  currentState: PlayerStore,
+): PlayerStore {
+  return {
+    ...currentState,
+    ...(persistedState as Partial<PlayerStore>),
+    // Playback URLs are time-limited CDN capabilities. Never revive one
+    // from an older app session, including payloads written by old builds.
+    currentSongUrl: null,
+    isPlaying: false,
+    playbackFailureCount: 0,
+  };
+}
+
 export const usePlayerStore = create<PlayerStore>()(
   persist(
     (set, get) => ({
@@ -82,7 +115,17 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       },
       setVolume: (v) => set({ volume: v }),
-      setIsPlaying: (v) => set({ isPlaying: v }),
+      setIsPlaying: (isPlaying) => {
+        const { currentSongDetail, currentSongUrl } = get();
+        if (!isPlaying || currentSongUrl) {
+          set({ isPlaying });
+          return;
+        }
+
+        // Several legacy controls still express "play" as setIsPlaying(true).
+        // Route that intent through the URL-aware resume path after hydration.
+        if (currentSongDetail) void get().togglePlaying();
+      },
       setRepeatMode: (mode) => set({ repeatMode: mode }),
       moveQueueItem: (fromIndex, toIndex) => {
         const { currentSongDetail, queue } = get();
@@ -203,11 +246,19 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       },
 
-      togglePlaying: () =>
-        set((state) => {
-          if (!state.currentSongUrl) return state;
-          return { isPlaying: !state.isPlaying };
-        }),
+      togglePlaying: async () => {
+        const { currentSongDetail, currentSongUrl, isPlaying } = get();
+        if (currentSongUrl) {
+          set({ isPlaying: !isPlaying });
+          return;
+        }
+        if (!currentSongDetail || isPlaying) return;
+
+        const didLoad = await get().playTrack(currentSongDetail, {
+          preservePlaybackSession: true,
+        });
+        if (didLoad) set({ isPlaying: true });
+      },
 
       toggleShuffle: () => {
         const { isShuffle, originalQueue, queueIndex, queue } = get();
@@ -294,6 +345,23 @@ export const usePlayerStore = create<PlayerStore>()(
         });
       },
 
+      refreshCurrentTrackUrl: async () => {
+        const { currentSongDetail, musicQuality } = get();
+        if (!currentSongDetail) return false;
+
+        console.info("[player] Refreshing playback URL", {
+          musicQuality,
+          songId: currentSongDetail.id,
+        });
+        set({ currentSongUrl: null });
+        await clearCachedPlayUrl(currentSongDetail.id, musicQuality);
+
+        return get().playTrack(currentSongDetail, {
+          preservePlaybackSession: true,
+          resetFailureCount: false,
+        });
+      },
+
       playTrack: async (song, options = {}) => {
         const shouldPreservePlaybackSession = options.preservePlaybackSession ?? false;
         const shouldResetFailureCount = options.resetFailureCount ?? true;
@@ -374,12 +442,12 @@ export const usePlayerStore = create<PlayerStore>()(
 
           // 写入缓存
           console.log("[Cache] WRITE: URL + lyric for song", song.id);
-          await Promise.all([
-            setCachedPlayUrl(song.id, musicQuality, url),
-            lyricRes.data && !storedLyric
-              ? setCachedLyric(song.id, lyricRes.data)
-              : Promise.resolve(),
-          ]);
+          // URL and lyric share one cache record. Serialize the writes so each
+          // update merges the latest record instead of racing and dropping data.
+          await setCachedPlayUrl(song.id, musicQuality, url);
+          if (lyricRes.data && !storedLyric) {
+            await setCachedLyric(song.id, lyricRes.data);
+          }
           const lyricData2 = lyricRes.data;
 
           useTimeStore.getState().setTotalTime(song.dt ?? 0);
@@ -526,21 +594,8 @@ export const usePlayerStore = create<PlayerStore>()(
     {
       name: "player-storage",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        volume: state.volume,
-        currentSongDetail: state.currentSongDetail,
-        currentSongUrl: state.currentSongUrl,
-        repeatMode: state.repeatMode,
-        isShuffle: state.isShuffle,
-        originalQueue: state.originalQueue,
-        queue: state.queue, // 保持原名
-        queueIndex: state.queueIndex,
-        historyStack: state.historyStack,
-        historyIndex: state.historyIndex,
-        lyric: state.lyric,
-        playlistId: state.playlistId,
-        musicQuality: state.musicQuality,
-      }),
+      partialize: selectPersistedPlayerState,
+      merge: mergePersistedPlayerState,
     },
   ),
 );

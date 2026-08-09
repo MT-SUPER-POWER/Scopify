@@ -45,6 +45,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const hasInitializedSidebarPanelRef = useRef(false);
   const lastStoreWriteRef = useRef(0);
   const hasRestoredProgressRef = useRef(false); // 必须声明：标记是否已经恢复过进度
+  const hasWarmedPlaybackUrlRef = useRef(false);
+  const failedSourceRetrySongIdRef = useRef<number | null>(null);
+  const isRefreshingFailedSourceRef = useRef(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useAudioVisualizer(audioRef);
@@ -58,7 +61,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const clearSearchQuery = useSearchStore((s) => s.clearQuery);
   const volume = usePlayerStore((s) => s.volume);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const currentSongUrl = usePlayerStore((s) => s.currentSongUrl);
+  const refreshCurrentTrackUrl = usePlayerStore((s) => s.refreshCurrentTrackUrl);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const playNext = usePlayerStore((s) => s.playNext);
   const isCollapsed = useUiStore((s) => s.isCollapsed);
@@ -79,10 +84,12 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       hasRestoredProgressRef.current = false;
       lastStoreWriteRef.current = 0;
 
-      useTimeStore.getState().setCurrentTime(0);
       useTimeStore.getState().setBufferedTime(0);
-      useTimeStore.getState().setTotalTime(0);
-      window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
+      if (!currentSongDetail) {
+        useTimeStore.getState().setCurrentTime(0);
+        useTimeStore.getState().setTotalTime(0);
+        window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
+      }
       return;
     }
 
@@ -93,7 +100,22 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       audio.load();
     }
     void usePlayerStore.getState().fetchCurrentLyric();
-  }, [currentSongUrl]);
+  }, [currentSongDetail, currentSongUrl]);
+
+  // Restored songs deliberately do not persist their expiring CDN URL. Warm a
+  // fresh source while the player remains paused so the next user click can
+  // call play() against a loaded source within the browser's user gesture.
+  useEffect(() => {
+    if (hasWarmedPlaybackUrlRef.current) return;
+    hasWarmedPlaybackUrlRef.current = true;
+    if (!currentSongDetail || currentSongUrl) return;
+
+    void refreshCurrentTrackUrl();
+  }, [currentSongDetail, currentSongUrl, refreshCurrentTrackUrl]);
+
+  useEffect(() => {
+    failedSourceRetrySongIdRef.current = null;
+  }, [currentSongDetail?.id]);
 
   // 2. 负责触发播放/暂停
   useEffect(() => {
@@ -101,8 +123,21 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     if (!audio || !currentSongUrl) return;
 
     if (isPlaying) {
-      audio.play().catch((err) => {
-        console.warn("Play interrupted or not allowed:", err);
+      audio.play().catch((error) => {
+        let sourceHost: string | null = null;
+        try {
+          sourceHost = new URL(audio.currentSrc || audio.src).host || null;
+        } catch {
+          // Keep expiring URLs and their query parameters out of logs.
+        }
+        console.error("[player] Audio play() rejected", {
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorName: error instanceof Error ? error.name : null,
+          networkState: audio.networkState,
+          readyState: audio.readyState,
+          songId: usePlayerStore.getState().currentSongDetail?.id ?? null,
+          sourceHost,
+        });
         setIsPlaying(false);
       });
     } else {
@@ -313,6 +348,46 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           ref={audioRef}
           // 下一曲了
           onEnded={() => void playNext("ended")}
+          onError={(event) => {
+            const audio = event.currentTarget;
+            const player = usePlayerStore.getState();
+            const songId = player.currentSongDetail?.id ?? null;
+            let sourceHost: string | null = null;
+            try {
+              sourceHost = new URL(audio.currentSrc || audio.src).host || null;
+            } catch {
+              // Keep expiring URLs and their query parameters out of logs.
+            }
+
+            console.error("[player] Media playback failed", {
+              errorCode: audio.error?.code ?? null,
+              errorMessage: audio.error?.message ?? null,
+              networkState: audio.networkState,
+              readyState: audio.readyState,
+              songId,
+              sourceHost,
+            });
+
+            if (!songId || isRefreshingFailedSourceRef.current) return;
+            if (failedSourceRetrySongIdRef.current === songId) {
+              void player.handlePlaybackFailure("audio");
+              return;
+            }
+
+            failedSourceRetrySongIdRef.current = songId;
+            isRefreshingFailedSourceRef.current = true;
+            void player
+              .refreshCurrentTrackUrl()
+              .then((refreshed) => {
+                if (!refreshed) return player.handlePlaybackFailure("audio");
+              })
+              .finally(() => {
+                isRefreshingFailedSourceRef.current = false;
+              });
+          }}
+          onPlaying={() => {
+            failedSourceRetrySongIdRef.current = null;
+          }}
           // 切歌存新的时间
           onDurationChange={(e) => {
             const duration = e.currentTarget.duration;
@@ -374,8 +449,6 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               // 恢复完毕，拉上保险栓，防止后续因为网络缓冲等原因重复触发
               hasRestoredProgressRef.current = true;
             }
-
-            if (isPlaying) audio.play().catch(console.error);
           }}
         />
 

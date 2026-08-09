@@ -108,8 +108,10 @@ export async function getCachedPlayUrl(
   const entry = await storageGet<PlaybackSongCacheEntry>(`${KEY_PREFIX_SONG}:${songId}`);
   if (!entry) return null;
 
-  // 30 分钟软过期
-  if (Date.now() - entry.cachedAt > URL_TTL_MS) return null;
+  // Legacy entries only have the shared cachedAt field, which lyric writes could
+  // refresh. Treat them as URL misses instead of reviving a time-limited CDN URL.
+  const cachedAt = entry.urlCachedAt?.[quality];
+  if (!cachedAt || Date.now() - cachedAt > URL_TTL_MS) return null;
 
   return entry.url[quality] ?? null;
 }
@@ -121,12 +123,14 @@ export async function setCachedPlayUrl(
 ): Promise<void> {
   const entry = (await storageGet<PlaybackSongCacheEntry>(`${KEY_PREFIX_SONG}:${songId}`)) ?? {
     url: {},
+    urlCachedAt: {},
     lyric: null,
     cachedAt: 0,
   };
 
+  const cachedAt = Date.now();
   entry.url[quality] = url;
-  entry.cachedAt = Date.now();
+  entry.urlCachedAt = { ...entry.urlCachedAt, [quality]: cachedAt };
 
   await storageSet(`${KEY_PREFIX_SONG}:${songId}`, entry, URL_TTL_MS);
   const evicted = await touchLru(songId);
@@ -137,6 +141,19 @@ export async function setCachedPlayUrl(
   }
 }
 
+export async function clearCachedPlayUrl(songId: number, quality: MusicQuality): Promise<void> {
+  const key = `${KEY_PREFIX_SONG}:${songId}`;
+  const entry = await storageGet<PlaybackSongCacheEntry>(key);
+  if (!entry) return;
+
+  delete entry.url[quality];
+  if (entry.urlCachedAt) delete entry.urlCachedAt[quality];
+
+  // The entry may still own a cached lyric, so keep the shared record while
+  // removing only the failed quality's expiring playback URL.
+  await storageSet(key, entry, LYRIC_TTL_MS);
+}
+
 // ── Public API: Lyric ──────────────────────────────────────────────────────────
 
 export async function getCachedLyric(songId: number): Promise<NeteaseLyric | null> {
@@ -144,7 +161,7 @@ export async function getCachedLyric(songId: number): Promise<NeteaseLyric | nul
   if (!entry?.lyric) return null;
 
   // 24 小时硬过期
-  if (Date.now() - entry.cachedAt > LYRIC_TTL_MS) return null;
+  if (Date.now() - (entry.lyricCachedAt ?? entry.cachedAt) > LYRIC_TTL_MS) return null;
 
   return entry.lyric;
 }
@@ -152,12 +169,14 @@ export async function getCachedLyric(songId: number): Promise<NeteaseLyric | nul
 export async function setCachedLyric(songId: number, lyric: NeteaseLyric): Promise<void> {
   const entry = (await storageGet<PlaybackSongCacheEntry>(`${KEY_PREFIX_SONG}:${songId}`)) ?? {
     url: {},
+    urlCachedAt: {},
     lyric: null,
     cachedAt: 0,
   };
 
   entry.lyric = lyric;
-  entry.cachedAt = Date.now();
+  entry.lyricCachedAt = Date.now();
+  entry.cachedAt = entry.lyricCachedAt;
 
   await storageSet(`${KEY_PREFIX_SONG}:${songId}`, entry, LYRIC_TTL_MS);
   const evicted = await touchLru(songId);

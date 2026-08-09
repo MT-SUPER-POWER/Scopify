@@ -49,6 +49,7 @@ export interface PlayerStore {
   playlistId: number | string | null;
   queue: SongDetail[];
   queueIndex: number;
+  refreshCurrentTrackUrl: () => Promise<boolean>;
   cleanCache: () => void;
   removeQueueItem: (index: number) => void;
   reshuffleQueue: () => void;
@@ -61,7 +62,7 @@ export interface PlayerStore {
   setShuffle: (isShuffle: boolean) => void;
   setVolume: (volume: number) => void;
   sourceChangeMode: SourceChangeMode;
-  togglePlaying: () => void;
+  togglePlaying: () => Promise<void>;
   toggleShuffle: () => void;
   volume: number;
 }
