@@ -140,7 +140,11 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           }}
         />
 
-        <ProgressRangeMarkers color={effectiveMarkerColor} ranges={rangeMarkers} />
+        <ProgressRangeMarkers
+          appearance="glow"
+          color={effectiveMarkerColor}
+          ranges={rangeMarkers}
+        />
         <input
           ref={inputRef}
           type="range"
