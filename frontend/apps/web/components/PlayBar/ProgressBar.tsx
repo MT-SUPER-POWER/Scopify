@@ -94,6 +94,7 @@ export const PlayerProgressBar = memo(() => {
         thumbSize={12}
         thumbOnHover={true}
         rangeMarkers={chorusRanges}
+        markerAppearance="glow"
         markerColor="rgba(30, 215, 96, 0.85)"
       />
 

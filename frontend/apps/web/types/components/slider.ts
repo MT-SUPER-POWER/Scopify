@@ -3,7 +3,10 @@ export interface ProgressRangeMarker {
   startPercent: number;
 }
 
+export type ProgressRangeMarkerAppearance = "glow" | "pin";
+
 export interface ProgressRangeMarkersProps {
+  appearance?: ProgressRangeMarkerAppearance;
   color: string;
   orientation?: "horizontal" | "vertical";
   ranges: readonly ProgressRangeMarker[];
@@ -25,6 +28,7 @@ export interface SmoothSliderProps {
   trackThickness?: number;
   thumbSize?: number;
   rangeMarkers?: readonly ProgressRangeMarker[];
+  markerAppearance?: ProgressRangeMarkerAppearance;
   markerColor?: string;
   className?: string;
 }

@@ -20,6 +20,7 @@ export const SmoothSlider = ({
   trackThickness = 4,
   thumbSize = 12,
   rangeMarkers = [],
+  markerAppearance = "pin",
   markerColor = "rgba(30, 215, 96, 0.85)",
   className = "",
 }: SmoothSliderProps) => {
@@ -136,57 +137,62 @@ export const SmoothSlider = ({
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       >
-        {/* 缓冲层：使用 transform: scale 替代 width/height，触发 GPU 加速 */}
+        {/* 缓冲层：clip-path 不会像 scale 一样压扁胶囊两端的圆角 */}
         <div
-          className="pointer-events-none absolute rounded-full will-change-transform"
+          className="pointer-events-none absolute rounded-full"
           style={{
             backgroundColor: bufferedColor,
-            transformOrigin: isVertical ? "bottom center" : "left center",
-            transition: "transform 0.25s linear", // 缓冲进度更新慢，可以保留 transition
+            transition: "clip-path 0.25s linear", // 缓冲进度更新慢，可以保留 transition
+            willChange: "clip-path",
             ...(isVertical
               ? {
                   width: "100%",
                   height: "100%",
                   bottom: 0,
                   left: 0,
-                  transform: `scaleY(${scaleBuffered})`,
+                  clipPath: `inset(${(1 - scaleBuffered) * 100}% 0 0 0 round 999px)`,
                 }
               : {
                   height: "100%",
                   width: "100%",
                   top: 0,
                   left: 0,
-                  transform: `scaleX(${scaleBuffered})`,
+                  clipPath: `inset(0 ${(1 - scaleBuffered) * 100}% 0 0 round 999px)`,
                 }),
           }}
         />
 
-        {/* 进度层：去除高频 transition 打架问题，使用 transform */}
+        {/* 进度层：去除高频 transition 打架问题，并保留圆润端点 */}
         <div
-          className="pointer-events-none absolute rounded-full will-change-transform"
+          className="pointer-events-none absolute rounded-full"
           style={{
             backgroundColor: currentFillColor,
-            transformOrigin: isVertical ? "bottom center" : "left center",
-            transition: isDragging ? "none" : "background-color 0.2s", // ⚠️ 彻底砍掉 transform/width 的过渡动画
+            transition: isDragging ? "none" : "background-color 0.2s", // ⚠️ 彻底砍掉进度的过渡动画
+            willChange: "clip-path",
             ...(isVertical
               ? {
                   width: "100%",
                   height: "100%",
                   bottom: 0,
                   left: 0,
-                  transform: `scaleY(${scaleValue})`,
+                  clipPath: `inset(${(1 - scaleValue) * 100}% 0 0 0 round 999px)`,
                 }
               : {
                   height: "100%",
                   width: "100%",
                   top: 0,
                   left: 0,
-                  transform: `scaleX(${scaleValue})`,
+                  clipPath: `inset(0 ${(1 - scaleValue) * 100}% 0 0 round 999px)`,
                 }),
           }}
         />
 
-        <ProgressRangeMarkers color={markerColor} orientation={orientation} ranges={rangeMarkers} />
+        <ProgressRangeMarkers
+          appearance={markerAppearance}
+          color={markerColor}
+          orientation={orientation}
+          ranges={rangeMarkers}
+        />
       </div>
 
       {/* 滑块：可拖动，体验与轨道一致 */}
