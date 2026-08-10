@@ -2,7 +2,7 @@
 
 import { Clock, Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchDefault, searchSuggest } from "@/lib/api/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
@@ -26,7 +26,6 @@ export default function HeaderSearch() {
   const intervalRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const clickTimeoutRef = useRef<number | null>(null);
 
   const addRecent = useSearchStore((s) => s.addRecent);
   const recentList = useSearchStore((s) => s.recent);
@@ -43,6 +42,7 @@ export default function HeaderSearch() {
   const [suggests, setSuggests] = useState<SuggestItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [isMac, setIsMac] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   // 客户端检测系统，替代 node:os
   useEffect(() => {
@@ -64,6 +64,7 @@ export default function HeaderSearch() {
   useEffect(() => {
     if (!localValue.trim()) {
       setSuggests([]);
+      setSelectedIndex(-1);
       return;
     }
     setLoading(true);
@@ -71,8 +72,10 @@ export default function HeaderSearch() {
       try {
         const res = await searchSuggest(localValue.trim(), getStoredMusicCookie());
         setSuggests(res.data?.data?.suggests ?? []);
+        setSelectedIndex(-1);
       } catch {
         setSuggests([]);
+        setSelectedIndex(-1);
       } finally {
         setLoading(false);
       }
@@ -126,45 +129,60 @@ export default function HeaderSearch() {
       const trimmed = (keyword ?? localValue).trim();
       const query = trimmed || placeholder;
       if (!query) return;
-      if (trimmed) addRecent(trimmed);
+      setLocalValue(query);
+      setGlobalQuery(query);
+      addRecent(query);
+      setSelectedIndex(-1);
       setOpen(false);
       setFocused(false);
       inputRef.current?.blur();
       smartRouter.replace(`/search?keywords=${encodeURIComponent(query)}`);
     },
-    [localValue, placeholder, addRecent, smartRouter],
-  );
-
-  const handleSelect = useCallback(
-    (keyword: string) => {
-      setLocalValue(keyword);
-      setGlobalQuery(keyword);
-      setTimeout(() => inputRef.current?.focus(), 0);
-    },
-    [setGlobalQuery],
-  );
-
-  // 单双击拦截器
-  const _handleItemClick = useCallback(
-    (keyword: string) => {
-      if (clickTimeoutRef.current) {
-        window.clearTimeout(clickTimeoutRef.current);
-        clickTimeoutRef.current = null;
-        handleSearch(keyword);
-      } else {
-        clickTimeoutRef.current = window.setTimeout(() => {
-          handleSelect(keyword);
-          clickTimeoutRef.current = null;
-        }, 250);
-      }
-    },
-    [handleSearch, handleSelect],
+    [localValue, placeholder, addRecent, setGlobalQuery, smartRouter],
   );
 
   const showRecent = !localValue && recentList.length > 0;
   const showSuggests = !!localValue && suggests.length > 0;
   const showEmpty = !!localValue && !loading && suggests.length === 0;
   const dropdownVisible = open && (showRecent || showSuggests || loading || showEmpty);
+  const selectableItems = useMemo(() => {
+    if (showRecent) return recentList.slice(0, 8);
+    if (showSuggests) return suggests.map((item) => item.keyword);
+    return [];
+  }, [recentList, showRecent, showSuggests, suggests]);
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "ArrowDown") {
+        if (selectableItems.length === 0) return;
+        event.preventDefault();
+        setSelectedIndex((current) => (current + 1) % selectableItems.length);
+        return;
+      }
+
+      if (event.key === "ArrowUp") {
+        if (selectableItems.length === 0) return;
+        event.preventDefault();
+        setSelectedIndex((current) => (current <= 0 ? selectableItems.length - 1 : current - 1));
+        return;
+      }
+
+      if (event.key === "Enter") {
+        event.preventDefault();
+        const selectedItem = selectableItems[selectedIndex];
+        handleSearch(selectedItem);
+        return;
+      }
+
+      if (event.key === "Escape") {
+        setOpen(false);
+        setFocused(false);
+        setSelectedIndex(-1);
+        inputRef.current?.blur();
+      }
+    },
+    [handleSearch, selectableItems, selectedIndex],
+  );
 
   return (
     <div ref={wrapperRef} className="relative flex-1">
@@ -189,10 +207,14 @@ export default function HeaderSearch() {
         <input
           ref={inputRef}
           value={localValue}
-          onChange={(e) => setLocalValue(e.target.value)}
+          onChange={(e) => {
+            setLocalValue(e.target.value);
+            setSelectedIndex(-1);
+          }}
           onFocus={() => {
             setFocused(true);
             setOpen(true);
+            setSelectedIndex(-1);
           }}
           onBlur={() => {
             setTimeout(() => {
@@ -201,14 +223,7 @@ export default function HeaderSearch() {
           }}
           className="text-content caret-brand placeholder:text-content-subtle flex-1 border-none bg-transparent text-sm font-medium transition-all outline-none"
           placeholder={placeholder}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch();
-            if (e.key === "Escape") {
-              setOpen(false);
-              setFocused(false);
-              inputRef.current?.blur();
-            }
-          }}
+          onKeyDown={handleKeyDown}
         />
 
         {localValue ? (
@@ -217,6 +232,7 @@ export default function HeaderSearch() {
             onClick={() => {
               setLocalValue("");
               setSuggests([]);
+              setSelectedIndex(-1);
             }}
             className="hover:bg-accent shrink-0 rounded-full p-1 transition-colors"
           >
@@ -267,9 +283,12 @@ export default function HeaderSearch() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.02 }}
                     onMouseDown={(e) => e.preventDefault()}
-                    // onClick={() => handleItemClick(item)}
                     onClick={() => handleSearch(item)}
-                    className="hover:bg-accent group/item flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors"
+                    onMouseEnter={() => setSelectedIndex(i)}
+                    className={cn(
+                      "hover:bg-accent group/item flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors",
+                      selectedIndex === i && "bg-accent",
+                    )}
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <Clock className="text-content-subtle size-4 shrink-0" />
@@ -312,9 +331,12 @@ export default function HeaderSearch() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.02 }}
                     onMouseDown={(e) => e.preventDefault()}
-                    // onClick={() => handleItemClick(item.keyword)}
                     onClick={() => handleSearch(item.keyword)}
-                    className="hover:bg-accent flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors"
+                    onMouseEnter={() => setSelectedIndex(i)}
+                    className={cn(
+                      "hover:bg-accent flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors",
+                      selectedIndex === i && "bg-accent",
+                    )}
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <Search className="text-content-subtle size-4 shrink-0" />
