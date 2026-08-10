@@ -1307,11 +1307,23 @@ export interface TranslateFn {
    */
   (key: "login.page.tagline", params?: TranslationParams): string;
   /**
-   * zh-CN: 目前只有扫码登录可用，其他登录方式暂不可用。
-   * zh-TW: 目前只有掃碼登入可用，其他登入方式暫不可用。
-   * en-US: Only QR login is currently available. Other methods are temporarily unavailable.
+   * zh-CN: 目前只有
+   * zh-TW: 目前只有
+   * en-US: Only
    */
-  (key: "login.page.qrOnlyNotice", params?: TranslationParams): string;
+  (key: "login.page.qrOnlyNoticePrefix", params?: TranslationParams): string;
+  /**
+   * zh-CN: 扫码登录
+   * zh-TW: 掃碼登入
+   * en-US: QR login
+   */
+  (key: "login.page.qrOnlyNoticeStrong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 可用，其他登录方式暂不可用。
+   * zh-TW: 可用，其他登入方式暫不可用。
+   * en-US:  is currently available. Other methods are temporarily unavailable.
+   */
+  (key: "login.page.qrOnlyNoticeSuffix", params?: TranslationParams): string;
   /**
    * zh-CN: 登录失败，请检查账号信息
    * zh-TW: 登入失敗，請檢查帳號資訊

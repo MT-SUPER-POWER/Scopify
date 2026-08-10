@@ -17,6 +17,7 @@ import type {
 const AT_TOP_TOLERANCE_PX = 1;
 const DEFAULT_RESTORE_TIMEOUT_MS = 2_000;
 const RESTORE_RETRY_DELAY_MS = 32;
+const SURFACE_RECONCILE_FRAMES = 2;
 
 /**
  * Coordinates the only route-level scroll surface. It owns history-entry IDs,
@@ -51,6 +52,7 @@ export class NavigationScrollCoordinator {
     isRestoring: false,
   };
   private surfaceEpoch = -1;
+  private surfaceReconcileRaf: number | null = null;
   private window: Window | null;
 
   private readonly registry;
@@ -116,6 +118,7 @@ export class NavigationScrollCoordinator {
 
     surface.addEventListener("scroll", this.handleSurfaceScroll, { passive: true });
     this.updateAtTop(surface);
+    this.scheduleSurfaceStateReconcile(surface);
 
     if (this.surfaceEpoch === this.navigationEpoch) return;
     this.surfaceEpoch = this.navigationEpoch;
@@ -231,6 +234,10 @@ export class NavigationScrollCoordinator {
 
     this.activeSurface.removeEventListener("scroll", this.handleSurfaceScroll);
     this.activeSurface = null;
+    if (this.window && this.surfaceReconcileRaf !== null) {
+      this.window.cancelAnimationFrame(this.surfaceReconcileRaf);
+    }
+    this.surfaceReconcileRaf = null;
     // React development effects may immediately re-register the same template
     // surface. Treat that registration as a fresh restoration opportunity.
     this.surfaceEpoch = -1;
@@ -565,6 +572,21 @@ export class NavigationScrollCoordinator {
     this.stateNotificationRaf = this.window.requestAnimationFrame(() => {
       this.stateNotificationRaf = null;
       this.onStateChange?.(this.state);
+    });
+  }
+
+  private scheduleSurfaceStateReconcile(
+    surface: HTMLDivElement,
+    remainingFrames = SURFACE_RECONCILE_FRAMES,
+  ) {
+    if (!this.window || this.surfaceReconcileRaf !== null || remainingFrames <= 0) return;
+
+    this.surfaceReconcileRaf = this.window.requestAnimationFrame(() => {
+      this.surfaceReconcileRaf = null;
+      if (this.activeSurface !== surface) return;
+
+      this.updateAtTop(surface);
+      this.scheduleSurfaceStateReconcile(surface, remainingFrames - 1);
     });
   }
 

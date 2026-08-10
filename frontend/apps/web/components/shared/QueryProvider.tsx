@@ -14,6 +14,8 @@ import { pageTtlMs } from "@/lib/cache/pageCache";
 import { useRendererErrorReporting } from "@/lib/hooks/useRendererErrorReporting";
 import { queryPersister } from "@/lib/query/persister";
 import { MUSIC_SESSION_EXPIRED_EVENT } from "@/lib/query/session";
+import { runtime } from "@/lib/runtime";
+import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import { reportFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore, useUserStore } from "@/store";
 
@@ -32,7 +34,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
       queryClient.removeQueries({
         predicate: (query) => query.meta?.scope === "account",
       });
-      router.replace("/login");
+      openLoginWindowOrFallback(runtime.auth, () => router.replace("/login"));
     };
 
     window.addEventListener(MUSIC_SESSION_EXPIRED_EVENT, handleExpiredSession);

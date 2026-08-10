@@ -172,6 +172,30 @@ test("restores a query-only popstate without waiting for the scroll surface to r
   expect(observedRestoringStates.at(-1)).toBe(false);
 });
 
+test("reconciles header state after a late native scroll restoration", () => {
+  const fakeWindow = createWindow();
+  const { registry } = createRegistry();
+  const observedAtTopStates: boolean[] = [];
+  const coordinator = new NavigationScrollCoordinator({
+    onStateChange(state) {
+      observedAtTopStates.push(state.isAtTop);
+    },
+    registry,
+    window: fakeWindow as unknown as Window,
+  });
+  const surface = new FakeScrollSurface();
+
+  coordinator.start();
+  coordinator.registerSurface(surface as unknown as HTMLDivElement);
+
+  // Chromium can restore the element position after React registers the
+  // surface without dispatching a scroll event through the app's listener.
+  surface.scrollTop = 900;
+  fakeWindow.flushAnimationFrames();
+
+  expect(observedAtTopStates.at(-1)).toBe(false);
+});
+
 test("does not synchronously notify React state observers from history writes", () => {
   const fakeWindow = createWindow();
   const { registry } = createRegistry();

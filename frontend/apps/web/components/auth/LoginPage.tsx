@@ -2,7 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Lock, QrCode, Smartphone, X } from "lucide-react";
+import { Lock, QrCode, Smartphone, TriangleAlert, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -107,6 +107,7 @@ function LoginPageContent() {
     return <LoginSkeletonLoading />;
   }
 
+  const isDesktop = isMounted && runtime.isDesktop;
   const showExitButton = isMounted && !runtime.isDesktop;
 
   return (
@@ -173,7 +174,13 @@ function LoginPageContent() {
           </TabsList>
 
           {/* 4. 表单容器 */}
-          <div className="bg-surface-raised shadow-floating border-content/5 rounded-2xl border p-5 backdrop-blur-xl">
+          <div
+            className={cn(
+              "bg-surface-raised shadow-floating border-content/5 rounded-2xl border p-5 backdrop-blur-xl",
+              isDesktop &&
+                "bg-surface-elevated shadow-panel border-content/10 dark:bg-surface-raised dark:shadow-floating dark:border-content/5",
+            )}
+          >
             <TabsContent value="password" className="mt-0 outline-none">
               <PasswordLoginForm
                 isLoading={isLoading}
@@ -196,9 +203,16 @@ function LoginPageContent() {
         </Tabs>
 
         {/* 底部文案 */}
-        <p className="text-content-subtle mt-6 text-center text-[12px] font-medium">
-          {t("login.page.qrOnlyNotice")}
-        </p>
+        <div className="text-content-subtle mt-6 flex items-center justify-center gap-1.5 text-center text-[12px] font-medium">
+          <TriangleAlert aria-hidden="true" className="text-warning size-4 shrink-0" />
+          <p>
+            {t("login.page.qrOnlyNoticePrefix")}
+            <strong className="text-content font-semibold">
+              {t("login.page.qrOnlyNoticeStrong")}
+            </strong>
+            {t("login.page.qrOnlyNoticeSuffix")}
+          </p>
+        </div>
       </div>
     </div>
   );

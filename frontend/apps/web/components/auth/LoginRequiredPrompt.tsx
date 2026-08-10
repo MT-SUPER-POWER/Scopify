@@ -3,6 +3,8 @@
 import { LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { TranslationKey } from "@/lib/i18n";
+import { runtime } from "@/lib/runtime";
+import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import { useI18n } from "@/store/module/i18n";
 import type { LoginRequiredPromptProps, LoginRequiredReason } from "@/types/auth";
 
@@ -43,6 +45,9 @@ const loginRequiredCopy: Record<
 export function LoginRequiredPrompt({ reason, onLogin, compact }: LoginRequiredPromptProps) {
   const { t } = useI18n();
   const copy = loginRequiredCopy[reason];
+  const handleLogin = () => {
+    openLoginWindowOrFallback(runtime.auth, () => onLogin?.());
+  };
 
   return (
     <div
@@ -57,7 +62,7 @@ export function LoginRequiredPrompt({ reason, onLogin, compact }: LoginRequiredP
         <p className="text-content text-sm font-semibold">{t(copy.title)}</p>
         <p className="text-content-muted mt-1 text-xs">{t(copy.subtitle)}</p>
       </div>
-      <Button type="button" size={compact ? "sm" : "default"} onClick={onLogin}>
+      <Button type="button" size={compact ? "sm" : "default"} onClick={handleLogin}>
         {t("common.action.login")}
       </Button>
     </div>

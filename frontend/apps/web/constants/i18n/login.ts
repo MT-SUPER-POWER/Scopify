@@ -4,7 +4,9 @@ export const loginMessages = defineMessages(
   {
     "login.page.backHomeTitle": "返回主页",
     "login.page.tagline": "发现属于你的旋律",
-    "login.page.qrOnlyNotice": "目前只有扫码登录可用，其他登录方式暂不可用。",
+    "login.page.qrOnlyNoticePrefix": "目前只有",
+    "login.page.qrOnlyNoticeStrong": "扫码登录",
+    "login.page.qrOnlyNoticeSuffix": "可用，其他登录方式暂不可用。",
     "login.page.loginFailed": "登录失败，请检查账号信息",
     "login.page.sendCaptchaFailed": "发送验证码失败",
     "login.mode.qr": "扫码",
@@ -55,7 +57,9 @@ export const loginMessages = defineMessages(
   {
     "login.page.backHomeTitle": "返回首頁",
     "login.page.tagline": "發現屬於你的旋律",
-    "login.page.qrOnlyNotice": "目前只有掃碼登入可用，其他登入方式暫不可用。",
+    "login.page.qrOnlyNoticePrefix": "目前只有",
+    "login.page.qrOnlyNoticeStrong": "掃碼登入",
+    "login.page.qrOnlyNoticeSuffix": "可用，其他登入方式暫不可用。",
     "login.page.loginFailed": "登入失敗，請檢查帳號資訊",
     "login.page.sendCaptchaFailed": "發送驗證碼失敗",
     "login.mode.qr": "掃碼",
@@ -106,8 +110,10 @@ export const loginMessages = defineMessages(
   {
     "login.page.backHomeTitle": "Back to Home",
     "login.page.tagline": "Find the melody that belongs to you",
-    "login.page.qrOnlyNotice":
-      "Only QR login is currently available. Other methods are temporarily unavailable.",
+    "login.page.qrOnlyNoticePrefix": "Only ",
+    "login.page.qrOnlyNoticeStrong": "QR login",
+    "login.page.qrOnlyNoticeSuffix":
+      " is currently available. Other methods are temporarily unavailable.",
     "login.page.loginFailed": "Login failed. Please check your account details.",
     "login.page.sendCaptchaFailed": "Failed to send verification code",
     "login.mode.qr": "QR",

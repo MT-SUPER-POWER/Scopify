@@ -10,7 +10,7 @@ import {
 
 import { createBrowserRuntime } from "@/lib/runtime/adapters/browser";
 import { createElectronRuntime } from "@/lib/runtime/adapters/electron";
-
+import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import type { LyricData } from "@/types/lyrics";
 
 class MemoryStorage {
@@ -187,6 +187,30 @@ describe("browser runtime adapter", () => {
     ).toBeTrue();
     expect(document.cookie).toContain("MUSIC_U=abc123");
     expect(document.cookie).not.toContain("__csrf");
+  });
+});
+
+describe("login window fallback", () => {
+  test("does not navigate when the desktop login window opens", () => {
+    const calls: string[] = [];
+
+    expect(
+      openLoginWindowOrFallback({ openLoginWindow: () => true }, () =>
+        calls.push("navigate-login"),
+      ),
+    ).toBeTrue();
+    expect(calls).toEqual([]);
+  });
+
+  test("navigates to the login page when no desktop window is available", () => {
+    const calls: string[] = [];
+
+    expect(
+      openLoginWindowOrFallback({ openLoginWindow: () => false }, () =>
+        calls.push("navigate-login"),
+      ),
+    ).toBeFalse();
+    expect(calls).toEqual(["navigate-login"]);
   });
 });
 
