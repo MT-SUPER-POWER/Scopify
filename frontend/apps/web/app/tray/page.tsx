@@ -95,27 +95,27 @@ export default function TrayPage() {
   if (!isDesktop) return null;
 
   // 提取公共样式
-  const iconClass = "w-4 h-4 mr-2";
+  const iconClass = "mr-2 size-4";
   // 覆盖 Button 的默认样式，让其更像一个菜单项
   const menuItemClass =
-    "w-full justify-start px-3 py-5 text-zinc-300 hover:text-white hover:bg-white/10 rounded-md font-normal transition-colors h-9";
+    "h-9 w-full justify-start rounded-md px-3 py-5 font-normal text-content-muted transition-colors hover:bg-surface-elevated hover:text-content";
 
   return (
-    <div className="animate-in zoom-in-95 fade-in flex size-full flex-col gap-1 overflow-hidden rounded-xl border border-white/10 bg-[#222226] p-2 font-sans text-[13px] font-medium text-white shadow-2xl duration-200 select-none">
+    <div className="animate-in zoom-in-95 fade-in border-border bg-surface-overlay text-content shadow-floating flex size-full flex-col gap-1 overflow-hidden rounded-xl border p-2 font-sans text-[13px] font-medium duration-200 select-none">
       {/* 头部：当前歌曲 - 固定 */}
       <SongTitle
         title={`${playback.track?.title || t("common.meta.unknownSong")} -
         ${playback.track?.artistNames.join(" / ") || t("common.meta.unknownArtist")}`}
       />
 
-      <Separator className="my-1.5 bg-white/10" />
+      <Separator className="bg-border my-1.5" />
 
       {/* 可滚动区域 */}
       <ScrollArea className="flex-1 overflow-x-hidden overflow-y-auto pr-1">
         {/* 播放控制区 - 固定 */}
         <div className="flex shrink-0 items-center justify-between px-4 py-1">
           <button
-            className="rounded-full p-1.5 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
+            className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-1.5 transition-all"
             onClick={playPrev}
             title={t("tray.previous")}
           >
@@ -123,7 +123,7 @@ export default function TrayPage() {
           </button>
 
           <button
-            className="rounded-full p-2 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
+            className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-2 transition-all"
             onClick={togglePlay}
             title={playback.isPlaying ? t("tray.pause") : t("tray.play")}
           >
@@ -136,22 +136,22 @@ export default function TrayPage() {
           </button>
 
           <button
-            className="rounded-full p-1.5 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
+            className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-1.5 transition-all"
             onClick={playNext}
             title={t("tray.next")}
           >
             <SkipForward className="size-5 fill-current" />
           </button>
           <button
-            className={`rounded-full p-1.5 transition-all ${playback.liked ? "text-[#1ed760]" : "text-zinc-400 hover:bg-white/10 hover:text-white"}`}
+            className={`rounded-full p-1.5 transition-all ${playback.liked ? "text-brand" : "text-content-muted hover:bg-surface-elevated hover:text-content"}`}
             onClick={toggleLike}
             title={playback.liked ? t("tray.unlike") : t("tray.like")}
           >
-            <Heart className={`size-6 ${playback.liked ? "fill-[#1ed760]" : ""}`} />
+            <Heart className={`size-6 ${playback.liked ? "fill-brand" : ""}`} />
           </button>
         </div>
 
-        <Separator className="my-1.5 bg-white/10" />
+        <Separator className="bg-border my-1.5" />
 
         {/* 音量条区 */}
         <VolumeControl
@@ -161,14 +161,14 @@ export default function TrayPage() {
           variant="inline"
         />
 
-        <Separator className="my-1.5 bg-white/10" />
+        <Separator className="bg-border my-1.5" />
 
         <Button variant="ghost" className={menuItemClass}>
           <MicVocal className={iconClass} />
           {t("tray.openDesktopLyrics")}
         </Button>
 
-        <div className="flex h-10 items-center rounded-md px-3 text-zinc-300 transition-colors hover:bg-white/10 hover:text-white">
+        <div className="text-content-muted hover:bg-surface-elevated hover:text-content flex h-10 items-center rounded-md px-3 transition-colors">
           <button
             type="button"
             className="flex min-w-0 flex-1 items-center"
@@ -185,7 +185,7 @@ export default function TrayPage() {
           />
         </div>
 
-        <Separator className="my-1.5 bg-white/10" />
+        <Separator className="bg-border my-1.5" />
 
         {/* 主窗口跳转设置页面 */}
         <Button
@@ -197,7 +197,7 @@ export default function TrayPage() {
           <span>{t("tray.settings")}</span>
         </Button>
 
-        <Separator className="my-1.5 bg-white/10" />
+        <Separator className="bg-border my-1.5" />
 
         {/* 最小化和退出 */}
         <Button variant="ghost" className={menuItemClass} onClick={() => runtime.window.minimize()}>
