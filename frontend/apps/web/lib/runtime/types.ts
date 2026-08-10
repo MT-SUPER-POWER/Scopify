@@ -7,6 +7,8 @@ import type {
   DesktopPlaybackWallpaperPreferencesUpdate,
   DesktopHostConfig,
   PageCacheStats,
+  PlaybackTransportPayload,
+  PlaybackTransportRole,
   RendererLogEvent,
 } from "@scopify/desktop-contract";
 
@@ -14,10 +16,9 @@ import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
-  DesktopLyricSnapshot,
-  DesktopLyricSnapshotInput,
 } from "@/types/desktopLyric";
 import type { AppUpdateState } from "@/types/updater";
+import type { LyricData } from "@/types/lyrics";
 
 export type RuntimeUnsubscribe = () => void;
 export type RuntimeKind = "browser" | "desktop";
@@ -53,10 +54,7 @@ export interface RuntimeConfiguration {
 export interface RuntimeDesktopLyrics {
   close(): Promise<boolean>;
   getPreferences(): Promise<DesktopLyricPreferences | null>;
-  getSnapshot(): Promise<DesktopLyricSnapshot | null>;
   onCommand(callback: (command: DesktopLyricCommand) => void): RuntimeUnsubscribe;
-  onSnapshot(callback: (snapshot: DesktopLyricSnapshot) => void): RuntimeUnsubscribe;
-  publish(snapshot: DesktopLyricSnapshotInput): Promise<DesktopLyricSnapshot | null>;
   sendCommand(command: DesktopLyricCommand): void;
   updatePreferences(update: DesktopLyricPreferencesUpdate): Promise<DesktopLyricPreferences | null>;
 }
@@ -72,14 +70,9 @@ export interface RuntimeDesktopPlaybackWallpaper {
     update: DesktopPlaybackWallpaperPreferencesUpdate,
   ): Promise<DesktopPlaybackWallpaperModel>;
   getModel(): Promise<DesktopPlaybackWallpaperModel>;
-  getPresentation(): Promise<DesktopLyricSnapshot | null>;
   onAudioFrame(callback: (frame: DesktopPlaybackWallpaperAudioFrame) => void): RuntimeUnsubscribe;
   onModelChanged(callback: (model: DesktopPlaybackWallpaperModel) => void): RuntimeUnsubscribe;
-  onPresentationChanged(callback: (presentation: DesktopLyricSnapshot) => void): RuntimeUnsubscribe;
   publishAudioFrame(frame: DesktopPlaybackWallpaperAudioFrame): void;
-  publishPresentation(
-    presentation: DesktopLyricSnapshotInput,
-  ): Promise<DesktopLyricSnapshot | null>;
   retry(): Promise<DesktopPlaybackWallpaperModel>;
   setControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showController(): Promise<DesktopPlaybackControllerOpenResult>;
@@ -92,6 +85,16 @@ export interface RuntimeLogging {
 export interface RuntimeMediaControls {
   onCommand(callback: (command: MediaControlCommand) => void): RuntimeUnsubscribe;
   setPlaying(isPlaying: boolean): void;
+}
+
+export interface RuntimePlaybackTransport<TLyrics = LyricData> {
+  connect(
+    role: PlaybackTransportRole,
+    connectionId: string,
+    onPayload: (payload: PlaybackTransportPayload<TLyrics>) => void,
+    onClose: () => void,
+  ): RuntimeUnsubscribe;
+  send(payload: PlaybackTransportPayload<TLyrics>): boolean;
 }
 
 export interface RuntimeNavigation {
@@ -130,6 +133,7 @@ export interface WebRuntime {
   readonly logging: RuntimeLogging;
   readonly media: RuntimeMediaControls;
   readonly navigation: RuntimeNavigation;
+  readonly playback: RuntimePlaybackTransport;
   readonly updates: RuntimeUpdates;
   readonly window: RuntimeWindowControls;
 }

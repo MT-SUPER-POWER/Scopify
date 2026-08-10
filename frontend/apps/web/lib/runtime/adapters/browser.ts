@@ -188,10 +188,7 @@ export function createBrowserRuntime(
     desktopLyrics: {
       close: async () => false,
       getPreferences: async () => null,
-      getSnapshot: async () => null,
       onCommand: () => NOOP,
-      onSnapshot: () => NOOP,
-      publish: async () => null,
       sendCommand: NOOP,
       updatePreferences: async () => null,
     },
@@ -199,12 +196,9 @@ export function createBrowserRuntime(
       closeController: async () => false,
       configure: async () => unsupportedDesktopPlaybackWallpaperModel(),
       getModel: async () => unsupportedDesktopPlaybackWallpaperModel(),
-      getPresentation: async () => null,
       onAudioFrame: () => NOOP,
       onModelChanged: () => NOOP,
-      onPresentationChanged: () => NOOP,
       publishAudioFrame: NOOP,
-      publishPresentation: async () => null,
       retry: async () => unsupportedDesktopPlaybackWallpaperModel(),
       setControllerLayout: async () => false,
       showController: async () => ({ opened: false, reason: "unsupported" }),
@@ -219,6 +213,10 @@ export function createBrowserRuntime(
     navigation: {
       navigateMainWindow: () => false,
       onNavigate: () => NOOP,
+    },
+    playback: {
+      connect: () => NOOP,
+      send: () => false,
     },
     updates: {
       check: async () => unsupportedUpdateState(),

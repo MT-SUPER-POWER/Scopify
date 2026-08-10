@@ -41,6 +41,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
       "login",
       "media-controls",
       "navigation",
+      "playback-transport",
       "renderer-logging",
       "updates",
       "window-controls",

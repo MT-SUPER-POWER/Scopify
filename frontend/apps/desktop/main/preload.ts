@@ -5,18 +5,60 @@ import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
-  DesktopLyricSnapshot,
-  DesktopLyricSnapshotInput,
   DesktopHostConfig,
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperAudioFrame,
-  DesktopPlaybackWallpaperPresentation,
-  DesktopPlaybackWallpaperPresentationInput,
   DesktopPlaybackWallpaperPreferencesUpdate,
+  PlaybackTransportPayload,
+  PlaybackTransportRole,
 } from "@scopify/desktop-contract";
 
+type ElectronRendererMessagePort = MessagePort & {
+  onclose: ((event: Event) => void) | null;
+};
+
+let playbackTransportPort: ElectronRendererMessagePort | null = null;
+
+function closePlaybackTransportPort() {
+  const port = playbackTransportPort;
+  playbackTransportPort = null;
+  if (!port) return;
+  port.onmessage = null;
+  port.onmessageerror = null;
+  port.onclose = null;
+  port.close();
+}
+
 const electronAPI: DesktopBridge = {
+  connectPlaybackTransport: (
+    role: PlaybackTransportRole,
+    connectionId: string,
+    onPayload: (payload: PlaybackTransportPayload) => void,
+    onClose: () => void,
+  ) => {
+    closePlaybackTransportPort();
+    const channel = new MessageChannel();
+    const port = channel.port1 as ElectronRendererMessagePort;
+    playbackTransportPort = port;
+    port.onmessage = (event) => onPayload(event.data as PlaybackTransportPayload);
+    port.onmessageerror = () => {
+      if (playbackTransportPort !== port) return;
+      closePlaybackTransportPort();
+      onClose();
+    };
+    port.onclose = () => {
+      if (playbackTransportPort !== port) return;
+      playbackTransportPort = null;
+      onClose();
+    };
+    port.start();
+    ipcRenderer.postMessage("playback-transport:connect", { connectionId, role }, [channel.port2]);
+
+    return () => {
+      if (playbackTransportPort === port) closePlaybackTransportPort();
+    };
+  },
   relaunchApp: () => {
     ipcRenderer.send("relaunch-app");
   },
@@ -28,6 +70,16 @@ const electronAPI: DesktopBridge = {
   },
   setPlayerPlaying: (isPlaying) => {
     ipcRenderer.send("player-state-changed", { isPlaying });
+  },
+  sendPlaybackTransportPayload: (payload: PlaybackTransportPayload) => {
+    const port = playbackTransportPort;
+    if (!port) return false;
+    try {
+      port.postMessage(payload);
+      return true;
+    } catch {
+      return false;
+    }
   },
   enterFullScreen: () => ipcRenderer.send("window-enter-full-screen"),
   exitFullScreen: () => ipcRenderer.send("window-exit-full-screen"),
@@ -93,21 +145,11 @@ const electronAPI: DesktopBridge = {
   closeDesktopPlaybackController: () => ipcRenderer.invoke("desktop-playback-controller:close"),
   setDesktopPlaybackControllerLayout: (layout: DesktopPlaybackControllerLayout) =>
     ipcRenderer.invoke("desktop-playback-controller:set-layout", layout),
-  getDesktopLyricSnapshot: () => ipcRenderer.invoke("desktop-lyric:get-snapshot"),
-  publishDesktopLyricSnapshot: (snapshot: DesktopLyricSnapshotInput) =>
-    ipcRenderer.invoke("desktop-lyric:publish-snapshot", snapshot),
   getDesktopLyricPreferences: () => ipcRenderer.invoke("desktop-lyric:get-preferences"),
   updateDesktopLyricPreferences: (update: DesktopLyricPreferencesUpdate) =>
     ipcRenderer.invoke("desktop-lyric:update-preferences", update),
   sendDesktopLyricCommand: (command: DesktopLyricCommand) =>
     ipcRenderer.send("desktop-lyric:command", command),
-  onDesktopLyricSnapshot: (callback: (snapshot: DesktopLyricSnapshot) => void) => {
-    const listener = (_event: Electron.IpcRendererEvent, snapshot: DesktopLyricSnapshot) => {
-      callback(snapshot);
-    };
-    ipcRenderer.on("desktop-lyric:snapshot", listener);
-    return () => ipcRenderer.removeListener("desktop-lyric:snapshot", listener);
-  },
   onDesktopLyricCommand: (callback: (command: DesktopLyricCommand) => void) => {
     const listener = (_event: Electron.IpcRendererEvent, command: DesktopLyricCommand) => {
       callback(command);
@@ -117,14 +159,9 @@ const electronAPI: DesktopBridge = {
   },
   getDesktopPlaybackWallpaperModel: () =>
     ipcRenderer.invoke("desktop-playback-wallpaper:get-model"),
-  getDesktopPlaybackWallpaperPresentation: () =>
-    ipcRenderer.invoke("desktop-playback-wallpaper:get-presentation"),
   updateDesktopPlaybackWallpaperPreferences: (update: DesktopPlaybackWallpaperPreferencesUpdate) =>
     ipcRenderer.invoke("desktop-playback-wallpaper:configure", update),
   retryDesktopPlaybackWallpaper: () => ipcRenderer.invoke("desktop-playback-wallpaper:retry"),
-  publishDesktopPlaybackWallpaperPresentation: (
-    presentation: DesktopPlaybackWallpaperPresentationInput,
-  ) => ipcRenderer.invoke("desktop-playback-wallpaper:publish-presentation", presentation),
   publishDesktopPlaybackWallpaperAudioFrame: (frame: DesktopPlaybackWallpaperAudioFrame) =>
     ipcRenderer.send("desktop-playback-wallpaper:audio-frame", frame),
   showDesktopPlaybackController: () => ipcRenderer.invoke("desktop-playback-controller:show"),
@@ -135,17 +172,6 @@ const electronAPI: DesktopBridge = {
       callback(model);
     ipcRenderer.on("desktop-playback-wallpaper:model-changed", listener);
     return () => ipcRenderer.removeListener("desktop-playback-wallpaper:model-changed", listener);
-  },
-  onDesktopPlaybackWallpaperPresentationChanged: (
-    callback: (presentation: DesktopPlaybackWallpaperPresentation) => void,
-  ) => {
-    const listener = (
-      _event: Electron.IpcRendererEvent,
-      presentation: DesktopPlaybackWallpaperPresentation,
-    ) => callback(presentation);
-    ipcRenderer.on("desktop-playback-wallpaper:presentation-changed", listener);
-    return () =>
-      ipcRenderer.removeListener("desktop-playback-wallpaper:presentation-changed", listener);
   },
   onDesktopPlaybackWallpaperAudioFrame: (
     callback: (frame: DesktopPlaybackWallpaperAudioFrame) => void,

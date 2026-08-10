@@ -10,12 +10,12 @@ import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { useAudioVisualizer } from "@/hooks/player/useAudioVisualizer";
 import { useDesktopPlaybackWallpaperAudioPublisher } from "@/hooks/player/useDesktopPlaybackWallpaperAudioPublisher";
-import { useDesktopLyricPublisher } from "@/hooks/player/useDesktopLyricPublisher";
-import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { CommandPalette } from "@/components/shortcuts/CommandPalette";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
+import { PlaybackAuthorityProvider } from "@/components/player/PlaybackAuthorityProvider";
+import { isPlaybackSourceCurrent } from "@/lib/player/playbackSource";
 import { runtime } from "@/lib/runtime";
 import { DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH } from "@/constants/desktopPlaybackController";
 // lib
@@ -47,15 +47,15 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const sidebarPanelElementRef = useRef<HTMLDivElement>(null);
   const hasInitializedSidebarPanelRef = useRef(false);
   const lastStoreWriteRef = useRef(0);
-  const hasRestoredProgressRef = useRef(false); // 必须声明：标记是否已经恢复过进度
+  const isMediaSourceLoadingRef = useRef(false);
+  const mediaSourceLoadRevisionRef = useRef(-1);
   const hasWarmedPlaybackUrlRef = useRef(false);
-  const failedSourceRetrySongIdRef = useRef<number | null>(null);
-  const isRefreshingFailedSourceRef = useRef(false);
+  const failedSourceRetrySessionKeyRef = useRef<string | null>(null);
+  const refreshingFailedSourceSessionKeyRef = useRef<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   useAudioVisualizer(audioRef);
   useDesktopPlaybackWallpaperAudioPublisher();
-  useDesktopLyricPublisher();
 
   useEffect(() => {
     setIsMounted(true);
@@ -63,13 +63,11 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
   // Zustand Stores
   const clearSearchQuery = useSearchStore((s) => s.clearQuery);
-  const volume = usePlayerStore((s) => s.volume);
-  const isPlaying = usePlayerStore((s) => s.isPlaying);
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const currentSongUrl = usePlayerStore((s) => s.currentSongUrl);
+  const playbackLoadRevision = usePlayerStore((s) => s.playbackLoadRevision);
+  const sourceChangeMode = usePlayerStore((s) => s.sourceChangeMode);
   const refreshCurrentTrackUrl = usePlayerStore((s) => s.refreshCurrentTrackUrl);
-  const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
-  const playNext = usePlayerStore((s) => s.playNext);
   const isCollapsed = useUiStore((s) => s.isCollapsed);
   const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
   const setIsFullscreen = useUiStore((s) => s.setIsFullscreen);
@@ -79,32 +77,43 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     const audio = audioRef.current;
     if (!audio) return;
 
+    const capturePreservedPosition = () => {
+      const hasSource = Boolean(audio.currentSrc || audio.getAttribute("src"));
+      if (
+        sourceChangeMode === "preserve-position" &&
+        hasSource &&
+        Number.isFinite(audio.currentTime)
+      ) {
+        useTimeStore.getState().setCurrentTime(Math.max(0, audio.currentTime * 1_000));
+      }
+    };
+
     if (!currentSongUrl) {
-      audio.pause();
-      audio.currentTime = 0;
+      capturePreservedPosition();
+      isMediaSourceLoadingRef.current = currentSongDetail !== null;
+      mediaSourceLoadRevisionRef.current = -1;
       audio.removeAttribute("src");
       audio.load();
 
-      hasRestoredProgressRef.current = false;
       lastStoreWriteRef.current = 0;
 
       useTimeStore.getState().setBufferedTime(0);
       if (!currentSongDetail) {
         useTimeStore.getState().setCurrentTime(0);
         useTimeStore.getState().setTotalTime(0);
-        window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
       }
       return;
     }
 
     if (audio.src !== currentSongUrl) {
+      capturePreservedPosition();
+      isMediaSourceLoadingRef.current = true;
+      mediaSourceLoadRevisionRef.current = playbackLoadRevision;
       audio.src = currentSongUrl;
-      hasRestoredProgressRef.current = false; // ⚠️ 核心：切歌时必须重置保险栓
-      window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
       audio.load();
     }
     void usePlayerStore.getState().fetchCurrentLyric();
-  }, [currentSongDetail, currentSongUrl]);
+  }, [currentSongDetail, currentSongUrl, playbackLoadRevision, sourceChangeMode]);
 
   // Restored songs deliberately do not persist their expiring CDN URL. Warm a
   // fresh source while the player remains paused so the next user click can
@@ -118,58 +127,8 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   }, [currentSongDetail, currentSongUrl, refreshCurrentTrackUrl]);
 
   useEffect(() => {
-    failedSourceRetrySongIdRef.current = null;
+    failedSourceRetrySessionKeyRef.current = null;
   }, [currentSongDetail?.id]);
-
-  // 2. 负责触发播放/暂停
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !currentSongUrl) return;
-
-    if (isPlaying) {
-      audio.play().catch((error) => {
-        let sourceHost: string | null = null;
-        try {
-          sourceHost = new URL(audio.currentSrc || audio.src).host || null;
-        } catch {
-          // Keep expiring URLs and their query parameters out of logs.
-        }
-        console.error("[player] Audio play() rejected", {
-          errorMessage: error instanceof Error ? error.message : String(error),
-          errorName: error instanceof Error ? error.name : null,
-          networkState: audio.networkState,
-          readyState: audio.readyState,
-          songId: usePlayerStore.getState().currentSongDetail?.id ?? null,
-          sourceHost,
-        });
-        setIsPlaying(false);
-      });
-    } else {
-      audio.pause();
-    }
-  }, [isPlaying, currentSongUrl, setIsPlaying]);
-
-  // 3. 负责同步音量
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = Math.max(0, Math.min(1, volume / 100));
-    }
-  }, [volume]);
-
-  // 4. 监听进度条的跳转 (Seek) 指令
-  useEffect(() => {
-    const onSeek = (e: Event) => {
-      const newTimeMs = (e as CustomEvent<number>).detail;
-      if (audioRef.current) {
-        audioRef.current.currentTime = newTimeMs / 1000;
-      }
-      // 手动跳转时，立刻把时间存入 Store 以便持久化
-      useTimeStore.getState().setCurrentTime(newTimeMs);
-    };
-
-    window.addEventListener("player-seek", onSeek);
-    return () => window.removeEventListener("player-seek", onSeek);
-  }, []);
 
   // 监听路由变化，如果回到首页则清空搜索词
   useEffect(() => {
@@ -187,30 +146,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   }, [router]);
 
   useEffect(() => {
-    const unsubscribe = runtime.desktopLyrics.onCommand((command) => {
-      switch (command.type) {
-        case "next":
-          void usePlayerStore.getState().playNext();
-          break;
-        case "previous":
-          void usePlayerStore.getState().playPrev();
-          break;
-        case "seek":
-          window.dispatchEvent(new CustomEvent("player-seek", { detail: command.positionMs }));
-          break;
-        case "toggle-like":
-          void toggleCurrentSongLike().catch((error) => {
-            console.warn("[desktop-lyric] failed to toggle like", error);
-          });
-          break;
-        case "toggle-play":
-          usePlayerStore.getState().togglePlaying();
-          break;
-        default:
-          window.dispatchEvent(new CustomEvent("desktop-lyric:stage-command", { detail: command }));
-      }
+    return runtime.desktopLyrics.onCommand((command) => {
+      window.dispatchEvent(new CustomEvent("desktop-lyric:stage-command", { detail: command }));
     });
-    return unsubscribe;
   }, []);
 
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
@@ -267,200 +205,242 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     };
   }, [isCollapsed, isMounted, sidebarPanelRef]);
 
+  const isActiveMediaSource = (audio: HTMLAudioElement) => {
+    const player = usePlayerStore.getState();
+    return Boolean(
+      player.currentSongUrl &&
+      mediaSourceLoadRevisionRef.current === player.playbackLoadRevision &&
+      isPlaybackSourceCurrent(audio, player.currentSongUrl),
+    );
+  };
+
+  const isPlaybackSessionCurrent = (sessionKey: string | null) => {
+    if (!sessionKey) return false;
+    const player = usePlayerStore.getState();
+    const songId = player.currentSongDetail?.id;
+    return songId !== undefined && `${player.playbackSessionRevision}:${songId}` === sessionKey;
+  };
+
   return (
-    <div
-      className={cn(
-        "bg-surface text-content flex-1 flex-col font-sans",
-        "gap-2 overflow-hidden p-2",
-        "flex h-screen",
-      )}
+    <PlaybackAuthorityProvider
+      audioRef={audioRef}
+      isMediaSourceLoadingRef={isMediaSourceLoadingRef}
+      mediaSourceLoadRevisionRef={mediaSourceLoadRevisionRef}
     >
-      {/* 模态注册 */}
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-      <AudioSettingsDialog />
-      <CommandPalette />
-      <KeyboardShortcutHelp />
-      <AppCloseDialog />
-      <LyricStageMount />
+      <div
+        className={cn(
+          "bg-surface text-content flex-1 flex-col font-sans",
+          "gap-2 overflow-hidden p-2",
+          "flex h-screen",
+        )}
+      >
+        {/* 模态注册 */}
+        <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+        <AudioSettingsDialog />
+        <CommandPalette />
+        <KeyboardShortcutHelp />
+        <AppCloseDialog />
+        <LyricStageMount />
 
-      {/* 左右结构 */}
-      <main className="relative min-h-0 w-full flex-1">
-        {isMounted ? (
-          <ResizablePanelGroup
-            orientation="horizontal"
-            defaultLayout={defaultLayout}
-            onLayoutChanged={onLayoutChanged}
-            className="size-full"
-          >
-            <ResizablePanel
-              panelRef={sidebarPanelRef}
-              elementRef={sidebarPanelElementRef}
-              defaultSize="20%"
-              minSize="15%"
-              maxSize="40%"
-              collapsible
-              collapsedSize={80}
-              onResize={() => setIsCollapsed(sidebarPanelRef.current?.isCollapsed() ?? false)}
-              className={cn("bg-surface-sunken overflow-hidden rounded-lg")}
+        {/* 左右结构 */}
+        <main className="relative min-h-0 w-full flex-1">
+          {isMounted ? (
+            <ResizablePanelGroup
+              orientation="horizontal"
+              defaultLayout={defaultLayout}
+              onLayoutChanged={onLayoutChanged}
+              className="size-full"
             >
-              <Sidebar />
-            </ResizablePanel>
+              <ResizablePanel
+                panelRef={sidebarPanelRef}
+                elementRef={sidebarPanelElementRef}
+                defaultSize="20%"
+                minSize="15%"
+                maxSize="40%"
+                collapsible
+                collapsedSize={80}
+                onResize={() => setIsCollapsed(sidebarPanelRef.current?.isCollapsed() ?? false)}
+                className={cn("bg-surface-sunken overflow-hidden rounded-lg")}
+              >
+                <Sidebar />
+              </ResizablePanel>
 
-            <ResizableHandle
-              className={cn(
-                "relative flex w-2 items-center justify-center bg-transparent transition-colors",
-                "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
-                "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
-                "hover:after:bg-border",
-                "data-[resize-handle-state=drag]:after:bg-content-muted/50",
-              )}
-            />
+              <ResizableHandle
+                className={cn(
+                  "relative flex w-2 items-center justify-center bg-transparent transition-colors",
+                  "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
+                  "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
+                  "hover:after:bg-border",
+                  "data-[resize-handle-state=drag]:after:bg-content-muted/50",
+                )}
+              />
 
-            <ResizablePanel>
-              <div className="bg-surface-raised group/main relative size-full overflow-hidden rounded-lg">
+              <ResizablePanel>
+                <div className="bg-surface-raised group/main relative size-full overflow-hidden rounded-lg">
+                  <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
+                    <div className="pointer-events-auto">
+                      <Header />
+                    </div>
+                  </div>
+
+                  <div className="size-full overflow-hidden">{children}</div>
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          ) : (
+            <div className="flex size-full gap-2">
+              <div className="bg-surface-sunken w-[20%] overflow-hidden rounded-lg">
+                <Sidebar />
+              </div>
+              <div className="bg-surface-raised group/main relative flex-1 overflow-hidden rounded-lg">
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                   <div className="pointer-events-auto">
                     <Header />
                   </div>
                 </div>
-
                 <div className="size-full overflow-hidden">{children}</div>
               </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        ) : (
-          <div className="flex size-full gap-2">
-            <div className="bg-surface-sunken w-[20%] overflow-hidden rounded-lg">
-              <Sidebar />
             </div>
-            <div className="bg-surface-raised group/main relative flex-1 overflow-hidden rounded-lg">
-              <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-                <div className="pointer-events-auto">
-                  <Header />
-                </div>
-              </div>
-              <div className="size-full overflow-hidden">{children}</div>
-            </div>
-          </div>
-        )}
-      </main>
+          )}
+        </main>
 
-      <footer>
-        {/* NOTE: 所有的原生音频事件绑定在这里 */}
-        <audio
-          preload="auto"
-          crossOrigin="anonymous"
-          className="hidden"
-          ref={audioRef}
-          // 下一曲了
-          onEnded={() => void playNext("ended")}
-          onError={(event) => {
-            const audio = event.currentTarget;
-            const player = usePlayerStore.getState();
-            const songId = player.currentSongDetail?.id ?? null;
-            let sourceHost: string | null = null;
-            try {
-              sourceHost = new URL(audio.currentSrc || audio.src).host || null;
-            } catch {
-              // Keep expiring URLs and their query parameters out of logs.
-            }
-
-            console.error("[player] Media playback failed", {
-              errorCode: audio.error?.code ?? null,
-              errorMessage: audio.error?.message ?? null,
-              networkState: audio.networkState,
-              readyState: audio.readyState,
-              songId,
-              sourceHost,
-            });
-
-            if (!songId || isRefreshingFailedSourceRef.current) return;
-            if (failedSourceRetrySongIdRef.current === songId) {
-              void player.handlePlaybackFailure("audio");
-              return;
-            }
-
-            failedSourceRetrySongIdRef.current = songId;
-            isRefreshingFailedSourceRef.current = true;
-            void player
-              .refreshCurrentTrackUrl()
-              .then((refreshed) => {
-                if (!refreshed) return player.handlePlaybackFailure("audio");
-              })
-              .finally(() => {
-                isRefreshingFailedSourceRef.current = false;
-              });
-          }}
-          onPlaying={() => {
-            failedSourceRetrySongIdRef.current = null;
-          }}
-          // 切歌存新的时间
-          onDurationChange={(e) => {
-            const duration = e.currentTarget.duration;
-            if (Number.isFinite(duration) && duration > 0) {
-              window.dispatchEvent(new CustomEvent("player-duration", { detail: duration * 1000 }));
-              useTimeStore.getState().setTotalTime(duration * 1000);
-            }
-          }}
-          // 加载进度缓存存储
-          onProgress={(e) => {
-            const audio = e.currentTarget;
-            if (audio.buffered.length > 0) {
-              // 获取最新缓冲段的结束时间
-              const bufferedEnd = audio.buffered.end(audio.buffered.length - 1);
-              // console.log("Buffered end:", "write time");
-              useTimeStore.getState().setBufferedTime(bufferedEnd * 1000);
-            }
-          }}
-          // 同步 UI 时间，并存储时间到 Zustand 永久化存储
-          onTimeUpdate={(e) => {
-            const audio = e.currentTarget;
-            if (audio.paused) return;
-
-            const currentTimeMs = audio.currentTime * 1000;
-            const now = Date.now();
-
-            // A. 每秒多次：广播给进度条组件（完全脱离 React 渲染树）
-            window.dispatchEvent(new CustomEvent("player-time", { detail: currentTimeMs }));
-
-            // B. 每 3 秒一次：写入 Zustand 做持久化备份
-            if (now - lastStoreWriteRef.current > 3000) {
-              useTimeStore.getState().setCurrentTime(currentTimeMs);
-              lastStoreWriteRef.current = now;
-            }
-          }}
-          // 重新恢复歌曲到存储的位置
-          onCanPlay={(e) => {
-            const audio = e.currentTarget;
-
-            // 如果这首歌还没恢复过进度，则进行跳转
-            if (!hasRestoredProgressRef.current) {
-              const persistedTime = useTimeStore.getState().currentTime;
-
-              if (persistedTime > 0) {
-                const restoreSeconds = persistedTime / 1000;
-                if (Number.isFinite(audio.duration) && audio.duration > 0) {
-                  audio.currentTime = Math.min(restoreSeconds, audio.duration - 1);
-                } else {
-                  audio.currentTime = restoreSeconds;
-                }
-                // 🔁 广播恢复后的进度给 ProgressBar（无需等用户点播放）
-                window.dispatchEvent(new CustomEvent("player-time", { detail: persistedTime }));
-              } else {
-                // 如果 persistedTime 为 0，说明是切歌，强制 currentTime 归零并写入 store
-                audio.currentTime = 0;
-                useTimeStore.getState().setCurrentTime(0);
-                window.dispatchEvent(new CustomEvent("player-time", { detail: 0 }));
+        <footer>
+          {/* NOTE: 所有的原生音频事件绑定在这里 */}
+          <audio
+            preload="auto"
+            crossOrigin="anonymous"
+            className="hidden"
+            ref={audioRef}
+            onError={(event) => {
+              const audio = event.currentTarget;
+              const player = usePlayerStore.getState();
+              const songId = player.currentSongDetail?.id ?? null;
+              const failureSessionKey =
+                songId !== null ? `${player.playbackSessionRevision}:${songId}` : null;
+              let sourceHost: string | null = null;
+              try {
+                sourceHost = new URL(audio.currentSrc || audio.src).host || null;
+              } catch {
+                // Keep expiring URLs and their query parameters out of logs.
               }
-              // 恢复完毕，拉上保险栓，防止后续因为网络缓冲等原因重复触发
-              hasRestoredProgressRef.current = true;
-            }
-          }}
-        />
 
-        <PlayerBar />
-      </footer>
-    </div>
+              if (!isActiveMediaSource(audio)) {
+                console.warn("[player] Ignored an error from an obsolete media source", {
+                  songId,
+                  sourceHost,
+                });
+                return;
+              }
+
+              console.error("[player] Media playback failed", {
+                errorCode: audio.error?.code ?? null,
+                errorMessage: audio.error?.message ?? null,
+                networkState: audio.networkState,
+                readyState: audio.readyState,
+                songId,
+                sourceHost,
+              });
+
+              if (!songId) {
+                isMediaSourceLoadingRef.current = false;
+                return;
+              }
+              if (refreshingFailedSourceSessionKeyRef.current === failureSessionKey) return;
+              if (failedSourceRetrySessionKeyRef.current === failureSessionKey) {
+                const failureIdentity = {
+                  revision: player.playbackLoadRevision,
+                  trackId: songId,
+                };
+                isMediaSourceLoadingRef.current = true;
+                void player.handlePlaybackFailure("audio", failureIdentity).finally(() => {
+                  if (isPlaybackSessionCurrent(failureSessionKey)) {
+                    isMediaSourceLoadingRef.current = false;
+                  }
+                });
+                return;
+              }
+
+              failedSourceRetrySessionKeyRef.current = failureSessionKey;
+              isMediaSourceLoadingRef.current = true;
+              refreshingFailedSourceSessionKeyRef.current = failureSessionKey;
+              void player
+                .refreshCurrentTrackUrl()
+                .then(async (result) => {
+                  if (result.status !== "failed") return;
+                  await usePlayerStore.getState().handlePlaybackFailure("audio", result.identity);
+                  if (isPlaybackSessionCurrent(failureSessionKey)) {
+                    isMediaSourceLoadingRef.current = false;
+                  }
+                })
+                .catch((error) => {
+                  console.error("[player] Failed to refresh the playback source", error);
+                  if (isPlaybackSessionCurrent(failureSessionKey)) {
+                    isMediaSourceLoadingRef.current = false;
+                  }
+                })
+                .finally(() => {
+                  if (refreshingFailedSourceSessionKeyRef.current === failureSessionKey) {
+                    refreshingFailedSourceSessionKeyRef.current = null;
+                  }
+                });
+            }}
+            onPlaying={(event) => {
+              if (!isActiveMediaSource(event.currentTarget)) return;
+              isMediaSourceLoadingRef.current = false;
+              failedSourceRetrySessionKeyRef.current = null;
+            }}
+            // 切歌存新的时间
+            onDurationChange={(e) => {
+              if (!isActiveMediaSource(e.currentTarget)) return;
+              const duration = e.currentTarget.duration;
+              if (Number.isFinite(duration) && duration > 0) {
+                useTimeStore.getState().setTotalTime(duration * 1000);
+              }
+            }}
+            onPause={(event) => {
+              if (!isActiveMediaSource(event.currentTarget)) return;
+              if (isMediaSourceLoadingRef.current) return;
+              const positionMs = event.currentTarget.currentTime * 1_000;
+              if (Number.isFinite(positionMs)) {
+                useTimeStore.getState().setCurrentTime(Math.max(0, positionMs));
+              }
+            }}
+            // 加载进度缓存存储
+            onProgress={(e) => {
+              const audio = e.currentTarget;
+              if (!isActiveMediaSource(audio)) return;
+              if (audio.buffered.length > 0) {
+                // 获取最新缓冲段的结束时间
+                const bufferedEnd = audio.buffered.end(audio.buffered.length - 1);
+                // console.log("Buffered end:", "write time");
+                useTimeStore.getState().setBufferedTime(bufferedEnd * 1000);
+              }
+            }}
+            // 同步 UI 时间，并存储时间到 Zustand 永久化存储
+            onTimeUpdate={(e) => {
+              const audio = e.currentTarget;
+              if (!isActiveMediaSource(audio)) return;
+              if (audio.paused) return;
+
+              const currentTimeMs = audio.currentTime * 1000;
+              const now = Date.now();
+
+              // 每 3 秒写入一次恢复检查点；实时 UI 位置由 Playback Replica 投影。
+              if (now - lastStoreWriteRef.current > 3000) {
+                useTimeStore.getState().setCurrentTime(currentTimeMs);
+                lastStoreWriteRef.current = now;
+              }
+            }}
+            onCanPlay={(event) => {
+              if (!isActiveMediaSource(event.currentTarget)) return;
+              isMediaSourceLoadingRef.current = false;
+            }}
+          />
+
+          <PlayerBar />
+        </footer>
+      </div>
+    </PlaybackAuthorityProvider>
   );
 }
 

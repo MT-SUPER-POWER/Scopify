@@ -8,7 +8,6 @@ import {
   type IpcMainInvokeEvent,
 } from "electron";
 import type {
-  DesktopLyricSnapshot,
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperModel,
@@ -29,10 +28,7 @@ import {
   type DesktopPlaybackWallpaperCapability,
   type DesktopPlaybackWallpaperDriver,
 } from "./capability.js";
-import {
-  isDesktopPlaybackWallpaperAudioFrame,
-  isDesktopPlaybackWallpaperPresentationInput,
-} from "./ipcValidation.js";
+import { isDesktopPlaybackWallpaperAudioFrame } from "./ipcValidation.js";
 import { createDesktopPlaybackWallpaperPreferencesRepository } from "./preferences.js";
 
 const PREFERENCES_FILE = "desktop-playback-wallpaper.json";
@@ -44,7 +40,6 @@ let ipcRegistered = false;
 let quitCleanupRegistered = false;
 let getControllerWindow: () => BrowserWindow | null = () => null;
 let getWallpaperWindow: () => BrowserWindow | null = () => null;
-let presentation: DesktopLyricSnapshot | null = null;
 
 interface DesktopPlaybackControllerHost extends DesktopPlaybackControllerLauncher {
   setLayout(layout: DesktopPlaybackControllerLayout): boolean;
@@ -131,11 +126,6 @@ function registerIpcHandlers() {
     return requireCapability().getModel();
   });
 
-  ipcMain.handle("desktop-playback-wallpaper:get-presentation", (event) => {
-    requireModelReader(event, "desktop-playback-wallpaper:get-presentation");
-    return presentation;
-  });
-
   ipcMain.handle("desktop-playback-wallpaper:configure", async (event, input: unknown) => {
     requireControlSender(event, "desktop-playback-wallpaper:configure");
     const update = parseDesktopPlaybackWallpaperPreferencesUpdate(input);
@@ -166,18 +156,6 @@ function registerIpcHandlers() {
       throw new TypeError("Invalid desktop playback controller layout.");
     }
     return controllerHost?.setLayout(input) ?? false;
-  });
-
-  ipcMain.handle("desktop-playback-wallpaper:publish-presentation", (event, input: unknown) => {
-    requireMainWindowSender(event, "desktop-playback-wallpaper:publish-presentation");
-    if (!isDesktopPlaybackWallpaperPresentationInput(input)) {
-      throw new Error("Invalid desktop playback wallpaper presentation.");
-    }
-    presentation = { ...input, updatedAt: Date.now() };
-    // The main process owns one replayable snapshot and fans it out to every companion renderer.
-    sendPresentation(getWallpaperWindow(), presentation);
-    sendPresentation(getControllerWindow(), presentation);
-    return presentation;
   });
 
   ipcMain.on("desktop-playback-wallpaper:audio-frame", (event, input: unknown) => {
@@ -266,11 +244,6 @@ function broadcastModel(model: DesktopPlaybackWallpaperModel) {
 function sendModel(window: BrowserWindow | null, model: DesktopPlaybackWallpaperModel) {
   if (!window || window.isDestroyed() || window.webContents.isDestroyed()) return;
   window.webContents.send("desktop-playback-wallpaper:model-changed", model);
-}
-
-function sendPresentation(window: BrowserWindow | null, snapshot: DesktopLyricSnapshot) {
-  if (!window || window.isDestroyed() || window.webContents.isDestroyed()) return;
-  window.webContents.send("desktop-playback-wallpaper:presentation-changed", snapshot);
 }
 
 function sendAudioFrame(window: BrowserWindow | null, frame: DesktopPlaybackWallpaperAudioFrame) {

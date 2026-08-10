@@ -2,11 +2,11 @@ import type {
   DesktopIconVisibilityState,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
+  PlaybackTrack,
 } from "@scopify/desktop-contract";
 import type { ReactNode } from "react";
 
 import type { SongDetail } from "@/types/api/music";
-import type { DesktopLyricTrack } from "@/types/desktopLyric";
 
 export interface DesktopPlaybackControllerLyric {
   primary: string;
@@ -32,7 +32,7 @@ export interface DesktopPlaybackPlayerControlsProps {
   onTogglePlaying(): void;
   onVolumeChange(volume: number): void;
   positionMs: number;
-  track: DesktopLyricTrack | null;
+  track: PlaybackTrack | null;
   volume: number;
 }
 

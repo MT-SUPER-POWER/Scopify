@@ -9,20 +9,19 @@ import {
   DEFAULT_NOMAND_BACKGROUND_TUNING,
   type VisualizerBackgroundMode,
 } from "@/components/lyrics/folia/src/types";
-import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
+import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
+import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { usePlayerStore } from "@/store/module/player";
-import { useUserStore } from "@/store/module/user";
 import type { LyricVisualizerMode } from "@/types/lyrics";
 
 export function useFoliaPanelControls() {
+  const playback = usePlaybackProjection();
+  const commands = usePlaybackCommands();
   const animationIntensity = useLyricStageStore((state) => state.animationIntensity);
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
-  const isPlaying = usePlayerStore((state) => state.isPlaying);
   const isShuffle = usePlayerStore((state) => state.isShuffle);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
-  const volume = usePlayerStore((state) => state.volume);
-  const likedIds = useUserStore((state) => state.likeListIDs);
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
   const visualizerMode = useLyricStageStore((state) => state.mode);
   const visualizerBackgroundMode = useLyricStageStore(
@@ -40,18 +39,16 @@ export function useFoliaPanelControls() {
   const latentBackgroundTuning = useLyricStageStore(
     (state) => state.background.latent?.tuning ?? DEFAULT_LATENT_BACKGROUND_TUNING,
   );
-  const previousVolumeRef = useRef(volume || 70);
-  const isLiked = currentSong ? likedIds.includes(currentSong.id) : false;
+  const previousVolumeRef = useRef(playback.volume || 70);
 
   const toggleMute = useCallback(() => {
-    const player = usePlayerStore.getState();
-    if (player.volume > 0) {
-      previousVolumeRef.current = player.volume;
-      player.setVolume(0);
+    if (playback.volume > 0) {
+      previousVolumeRef.current = playback.volume;
+      void commands.setVolume(0);
       return;
     }
-    player.setVolume(previousVolumeRef.current);
-  }, []);
+    void commands.setVolume(previousVolumeRef.current);
+  }, [commands, playback.volume]);
 
   return {
     animationIntensity,
@@ -64,22 +61,22 @@ export function useFoliaPanelControls() {
       });
     },
     currentSong,
-    isLiked,
-    isPlaying,
+    isLiked: playback.liked,
+    isPlaying: playback.isPlaying,
     isShuffle,
     latentBackgroundTuning,
     lyricOffsetMs,
     monetBackgroundTuning,
     nomandBackgroundTuning,
-    playNext: () => void usePlayerStore.getState().playNext(),
-    playPrev: () => void usePlayerStore.getState().playPrev(),
+    playNext: () => void commands.next(),
+    playPrev: () => void commands.previous(),
     repeatMode,
     setLyricOffsetMs: (offsetMs: number) =>
       useLyricStageStore.getState().patchSettings({ lyricOffsetMs: offsetMs }),
-    setVolume: (nextVolume: number) => usePlayerStore.getState().setVolume(nextVolume),
-    toggleLike: () => void toggleCurrentSongLike(),
+    setVolume: (nextVolume: number) => void commands.setVolume(nextVolume),
+    toggleLike: () => void commands.toggleLike(),
     toggleMute,
-    togglePlay: () => usePlayerStore.getState().togglePlaying(),
+    togglePlay: () => void commands.toggle(),
     toggleRepeat: () => {
       const player = usePlayerStore.getState();
       player.setRepeatMode(
@@ -132,6 +129,6 @@ export function useFoliaPanelControls() {
     useCoverColorBg,
     visualizerBackgroundMode,
     visualizerMode,
-    volume,
+    volume: playback.volume,
   };
 }

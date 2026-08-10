@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/presentation/buildAppStyle";
 import FloatingPlayerControls from "@/components/lyrics/folia/src/components/FloatingPlayerControls";
@@ -12,6 +12,8 @@ import {
 } from "@/constants/desktopPlaybackController";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
+import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
+import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePlayerStore } from "@/store/module/player";
 import type { DesktopLyricCommand } from "@/types/desktopLyric";
 
@@ -29,6 +31,8 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const [isTransparent, setIsTransparent] = useState(false);
   const appearance = useFoliaPresentationAppearance();
   const bridge = useFoliaPlaybackBridge();
+  const playback = usePlaybackProjection();
+  const commands = usePlaybackCommands();
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
@@ -112,6 +116,19 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   }, [cyclePlayerChromeVisibilityMode, onClose, setPlayerChromeVisibilityMode]);
 
   const playerState = bridge.isPlaying ? PlayerState.PLAYING : PlayerState.PAUSED;
+  const seekToSeconds = useCallback(
+    (timeSeconds: number) => {
+      void commands.seek(Math.max(0, timeSeconds) * 1_000);
+    },
+    [commands],
+  );
+  const seekToAndResume = useCallback(
+    (timeSeconds: number) => {
+      seekToSeconds(timeSeconds);
+      if (!playback.isPlaying) void commands.play();
+    },
+    [commands, playback.isPlaying, seekToSeconds],
+  );
 
   return (
     <section
@@ -134,7 +151,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
                 albumTitle: currentSong.al.name,
                 artistNames: currentSong.ar.map((artist) => artist.name),
                 artworkUrl: currentSong.al.picUrl,
-                durationMs: currentSong.dt,
+                durationMs: playback.durationMs,
                 id: currentSong.id,
                 title: currentSong.name,
               }
@@ -151,10 +168,10 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
         loopMode={repeatMode}
         currentView="player"
         audioSrc={currentSongUrl}
-        canTogglePlay={Boolean(currentSongUrl)}
+        canTogglePlay={playback.canControl}
         lyrics={bridge.lyrics}
         onSeek={seekToSeconds}
-        onTogglePlay={() => usePlayerStore.getState().togglePlaying()}
+        onTogglePlay={() => void commands.toggle()}
         onToggleLoop={cycleRepeatMode}
         onNavigateToPlayer={() => undefined}
         primaryColor={theme.primaryColor}
@@ -162,7 +179,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
         theme={theme}
         isDaylight={isDaylight}
         isHidden={isPlayerChromeHidden}
-        controlsDisabled={!currentSongUrl}
+        controlsDisabled={!playback.canControl}
       />
 
       <FoliaStageSettings
@@ -177,19 +194,9 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   );
 }
 
-function seekToAndResume(timeSeconds: number) {
-  seekToSeconds(Math.max(0, timeSeconds));
-  const player = usePlayerStore.getState();
-  if (!player.isPlaying) player.togglePlaying();
-}
-
 function cycleRepeatMode() {
   const player = usePlayerStore.getState();
   const nextMode =
     player.repeatMode === "off" ? "all" : player.repeatMode === "all" ? "one" : "off";
   player.setRepeatMode(nextMode);
-}
-
-function seekToSeconds(timeSeconds: number) {
-  window.dispatchEvent(new CustomEvent("player-seek", { detail: timeSeconds * 1_000 }));
 }

@@ -17,7 +17,7 @@ import {
 } from "./constants.js";
 import { verifyRendererArtifact } from "../lib/rendererArtifact.js";
 import { registerIpcHandlers } from "./module/ipc.js";
-import { initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
+import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
 import { initializeDesktopIconVisibilityCapability } from "./module/desktopIcons/index.js";
 import { initializeDesktopPlaybackWallpaperCapability } from "./module/desktopPlaybackWallpaper/index.js";
 import {
@@ -28,10 +28,14 @@ import {
   createDesktopPlaybackControllerWindow,
   type DesktopPlaybackControllerWindow,
 } from "./module/desktopPlaybackWallpaper/controllerWindow.js";
+import {
+  initializePlaybackBrokerIpc,
+  type PlaybackBrokerIpcHost,
+} from "./module/playbackBroker/ipc.js";
 import initializeLoginWindow from "./module/login.js";
 import { applyElectronProxy } from "./module/proxy.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
-import initTray from "./module/tray.js";
+import initTray, { trayWindow } from "./module/tray.js";
 import { initializeUpdater, scheduleStartupUpdateCheck } from "./module/updater.js";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ VARIABLES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -45,6 +49,7 @@ let mainWindowReleased = false;
 let isQuitting = false;
 let desktopPlaybackWallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | null = null;
 let desktopPlaybackControllerWindow: DesktopPlaybackControllerWindow | null = null;
+let playbackBrokerIpcHost: PlaybackBrokerIpcHost | null = null;
 
 const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = useStaticRenderer
@@ -229,6 +234,16 @@ function setupWindowModules(win: BrowserWindowType) {
     getControllerWindow: desktopPlaybackControllerWindow.getWindow,
     getWallpaperWindow: desktopPlaybackWallpaperDriver.getWindow,
   });
+  playbackBrokerIpcHost ??= initializePlaybackBrokerIpc({
+    getAuthorityWindow: () => mainWindow,
+    getReplicaWindows: () => [
+      getDesktopLyricWindow(),
+      desktopPlaybackControllerWindow?.getWindow() ?? null,
+      desktopPlaybackWallpaperDriver?.getWindow() ?? null,
+      trayWindow,
+    ],
+    onRejected: (message) => logger.warn(`[playback-broker] ${message}`),
+  });
   initializeUpdater(win, desktopConfig.updater);
 
   if (process.platform !== "darwin") {
@@ -309,6 +324,8 @@ if (!gotTheLock) {
 
   app.on("before-quit", () => {
     isQuitting = true;
+    playbackBrokerIpcHost?.dispose();
+    playbackBrokerIpcHost = null;
     desktopPlaybackControllerWindow?.dispose();
     desktopPlaybackControllerWindow = null;
   });

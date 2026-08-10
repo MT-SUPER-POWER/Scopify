@@ -14,7 +14,7 @@ import {
   SkipBack,
   SkipForward,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SongTitle } from "@/components/Marquee";
 // 引入 UI 组件
@@ -24,11 +24,12 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { VolumeControl } from "@/components/VolumeControl";
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
+import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
+import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
-// 引入自定义 Hook 和状态管理
-import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import type { LyricData } from "@/types/lyrics";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -38,29 +39,16 @@ export default function TrayPage() {
   const [mounted, setMounted] = useState(false);
   const isDesktop = runtime.isDesktop;
   const wallpaper = useDesktopPlaybackWallpaperController();
+  const playback = usePlaybackProjection<LyricData>();
+  const playbackCommands = usePlaybackCommands();
 
-  // 建立通信频道
-  const commandChannel = useMemo(() => {
-    return runtime.isDesktop ? new BroadcastChannel("momo-player-controls") : null;
-  }, []);
-
-  // 播放器核心状态（仅读取用于展示）
-  const volume = usePlayerStore((state) => state.volume);
-  const isPlaying = usePlayerStore((state) => state.isPlaying);
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
-  const likeList = useUserStore((state) => state.likeListIDs) || [];
-  const isLiked = currentSong && likeList.includes(currentSong.id);
-
-  // ━━━━━━ 发送遥控指令，不直接执行 ━━━━━━
-  const playNext = () => commandChannel?.postMessage({ type: "PLAY_NEXT" });
-  const playPrev = () => commandChannel?.postMessage({ type: "PLAY_PREV" });
-  const togglePlay = () => commandChannel?.postMessage({ type: "TOGGLE_PLAY" });
+  const playNext = () => void playbackCommands.next();
+  const playPrev = () => void playbackCommands.previous();
+  const togglePlay = () => void playbackCommands.toggle();
   const handleVolumeChange = (newVolume: number) => {
-    commandChannel?.postMessage({ type: "SET_VOLUME", payload: newVolume });
+    void playbackCommands.setVolume(newVolume);
   };
-  const toggleLike = (isLiked: boolean) => {
-    commandChannel?.postMessage({ type: "TOGGLE_LIKE", payload: isLiked });
-  };
+  const toggleLike = () => void playbackCommands.toggleLike();
   const openDesktopPlaybackController = async () => {
     try {
       if (!(await wallpaper.showController())) {
@@ -77,23 +65,6 @@ export default function TrayPage() {
       toast.error(t("desktopPlaybackController.updateFailed"));
     }
   };
-
-  // Main 和 Tray 之间的状态同步逻辑
-  useEffect(() => {
-    if (!runtime.isDesktop) return;
-    const stateChannel = new BroadcastChannel("momo-player-state");
-    const commandChannel = new BroadcastChannel("momo-player-controls");
-
-    // 收到主窗口的状态，直接同步到托盘的 Zustand 内存中
-    stateChannel.onmessage = (event) => {
-      usePlayerStore.setState(event.data);
-    };
-
-    // 托盘刚打开时，向主窗口要一次当前最新的状态（防止主窗口没变化时托盘数据滞后）
-    commandChannel?.postMessage({ type: "REQUEST_STATE" });
-
-    return () => stateChannel.close();
-  }, []);
 
   // 路由跳转副作用，必须放在所有 Hook 之前
   useEffect(() => {
@@ -133,8 +104,8 @@ export default function TrayPage() {
     <div className="animate-in zoom-in-95 fade-in flex size-full flex-col gap-1 overflow-hidden rounded-xl border border-white/10 bg-[#222226] p-2 font-sans text-[13px] font-medium text-white shadow-2xl duration-200 select-none">
       {/* 头部：当前歌曲 - 固定 */}
       <SongTitle
-        title={`${currentSong?.name || t("common.meta.unknownSong")} -
-        ${currentSong?.ar?.[0]?.name || t("common.meta.unknownArtist")}`}
+        title={`${playback.track?.title || t("common.meta.unknownSong")} -
+        ${playback.track?.artistNames.join(" / ") || t("common.meta.unknownArtist")}`}
       />
 
       <Separator className="my-1.5 bg-white/10" />
@@ -154,10 +125,10 @@ export default function TrayPage() {
           <button
             className="rounded-full p-2 text-zinc-400 transition-all hover:bg-white/10 hover:text-white"
             onClick={togglePlay}
-            title={isPlaying ? t("tray.pause") : t("tray.play")}
+            title={playback.isPlaying ? t("tray.pause") : t("tray.play")}
           >
             {/* 修复：这里正确判断并显示 Pause 或 Play 图标 */}
-            {isPlaying ? (
+            {playback.isPlaying ? (
               <Pause className="size-6 fill-current" />
             ) : (
               <Play className="size-6 fill-current" />
@@ -172,11 +143,11 @@ export default function TrayPage() {
             <SkipForward className="size-5 fill-current" />
           </button>
           <button
-            className={`rounded-full p-1.5 transition-all ${isLiked ? "text-[#1ed760]" : "text-zinc-400 hover:bg-white/10 hover:text-white"}`}
-            onClick={() => toggleLike(!isLiked)}
-            title={isLiked ? t("tray.unlike") : t("tray.like")}
+            className={`rounded-full p-1.5 transition-all ${playback.liked ? "text-[#1ed760]" : "text-zinc-400 hover:bg-white/10 hover:text-white"}`}
+            onClick={toggleLike}
+            title={playback.liked ? t("tray.unlike") : t("tray.like")}
           >
-            <Heart className={`size-6 ${isLiked ? "fill-[#1ed760]" : ""}`} />
+            <Heart className={`size-6 ${playback.liked ? "fill-[#1ed760]" : ""}`} />
           </button>
         </div>
 
@@ -184,7 +155,7 @@ export default function TrayPage() {
 
         {/* 音量条区 */}
         <VolumeControl
-          initialVolume={volume}
+          initialVolume={playback.volume}
           onChange={handleVolumeChange}
           orientation="horizontal"
           variant="inline"

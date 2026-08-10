@@ -6,30 +6,16 @@ export type PlaybackFailureSource = "url" | "audio";
 export type PlaybackNextSource = "manual" | "ended";
 export type RepeatMode = "off" | "all" | "one";
 export type SourceChangeMode = "new-track" | "preserve-position";
-export type PlayerBroadcastCommand =
-  | { type: "PLAY_NEXT" | "PLAY_PREV" | "REQUEST_STATE" | "SYNC_USER_STORE" | "TOGGLE_PLAY" }
-  | { payload: number; type: "SEEK" | "SET_VOLUME" };
 
-export interface RemotePlayerSnapshot {
-  currentSongDetail: SongDetail | null;
-  isPlaying: boolean;
-  positionMs: number;
-  volume: number;
+export interface PlaybackLoadIdentity {
+  revision: number;
+  trackId: number;
 }
 
-export interface RemotePlayerSnapshotSource<State extends RemotePlayerSnapshot> {
-  getState(): State;
-  subscribe(listener: (state: State) => void): () => void;
-}
-
-export interface RemotePlayerControllerState extends RemotePlayerSnapshot {
-  isConnected: boolean;
-  playNext(): void;
-  playPrevious(): void;
-  seek(positionMs: number): void;
-  setVolume(volume: number): void;
-  togglePlaying(): void;
-}
+export type PlaybackSourceRefreshResult =
+  | { status: "refreshed" }
+  | { identity: PlaybackLoadIdentity; status: "failed" }
+  | { status: "superseded" };
 
 export interface PlayTrackOptions {
   preservePlaybackSession?: boolean;
@@ -43,7 +29,10 @@ export interface PlayerStore {
   currentSongUrl: string | null;
   changeMusicQuality: (quality: MusicQuality) => Promise<void>;
   fetchCurrentLyric: () => Promise<void>;
-  handlePlaybackFailure: (source: PlaybackFailureSource) => Promise<void>;
+  handlePlaybackFailure: (
+    source: PlaybackFailureSource,
+    identity?: PlaybackLoadIdentity,
+  ) => Promise<void>;
   historyIndex: number;
   historyStack: number[];
   isPlaying: boolean;
@@ -59,6 +48,8 @@ export interface PlayerStore {
     playlistId?: number | string | null,
   ) => Promise<void>;
   playbackFailureCount: number;
+  playbackLoadRevision: number;
+  playbackSessionRevision: number;
   playNext: (source?: PlaybackNextSource) => Promise<void>;
   playPrev: () => Promise<void>;
   playQueueIndex: (
@@ -70,7 +61,7 @@ export interface PlayerStore {
   playlistId: number | string | null;
   queue: SongDetail[];
   queueIndex: number;
-  refreshCurrentTrackUrl: () => Promise<boolean>;
+  refreshCurrentTrackUrl: () => Promise<PlaybackSourceRefreshResult>;
   cleanCache: () => void;
   removeQueueItem: (index: number) => void;
   reshuffleQueue: () => void;

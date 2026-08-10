@@ -1,10 +1,13 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
+import {
+  usePlaybackPosition as usePlaybackPositionMs,
+  usePlaybackProjection,
+} from "@/hooks/player/usePlaybackProjection";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
-import { usePlayerStore } from "@/store";
-import { useTimeStore } from "@/store/module/time";
 import { useUiStore } from "@/store/module/ui";
 import type { ShortcutCommandId } from "@/types/shortcuts";
 
@@ -13,62 +16,61 @@ let muteRestoreLevel: number | null = null;
 
 export function useShortcutCommands() {
   const router = useRouter();
+  const playback = usePlaybackProjection();
+  const positionMs = usePlaybackPositionMs();
+  const commands = usePlaybackCommands();
+  const playbackRef = useRef(playback);
+  const positionMsRef = useRef(positionMs);
+  playbackRef.current = playback;
+  positionMsRef.current = positionMs;
 
   return useCallback(
     (commandId: ShortcutCommandId) => {
-      const player = usePlayerStore.getState();
       const ui = useUiStore.getState();
+      const { durationMs, volume } = playbackRef.current;
+      const seekBy = (deltaMs: number) => {
+        const unclampedPositionMs = Math.max(0, positionMsRef.current + deltaMs);
+        const targetPositionMs =
+          durationMs > 0 ? Math.min(durationMs, unclampedPositionMs) : unclampedPositionMs;
+        void commands.seek(targetPositionMs);
+      };
 
       switch (commandId) {
         case "toggle-playback":
-          player.togglePlaying();
+          void commands.toggle();
           return;
         case "previous-track":
-          void player.playPrev();
+          void commands.previous();
           return;
         case "next-track":
-          void player.playNext();
+          void commands.next();
           return;
         case "increase-volume":
-          player.setVolume(Math.min(100, player.volume + VOLUME_STEP));
+          void commands.setVolume(Math.min(100, volume + VOLUME_STEP));
           return;
         case "decrease-volume":
-          player.setVolume(Math.max(0, player.volume - VOLUME_STEP));
+          void commands.setVolume(Math.max(0, volume - VOLUME_STEP));
           return;
         case "toggle-mute":
-          if (player.volume > 0) {
-            muteRestoreLevel = player.volume;
-            player.setVolume(0);
+          if (volume > 0) {
+            muteRestoreLevel = volume;
+            void commands.setVolume(0);
           } else if (muteRestoreLevel !== null) {
-            player.setVolume(muteRestoreLevel);
+            void commands.setVolume(muteRestoreLevel);
           }
           return;
-        case "seek-backward-5s": {
-          const { currentTime } = useTimeStore.getState();
-          const targetTime = Math.max(0, currentTime - 5000);
-          window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
+        case "seek-backward-5s":
+          seekBy(-5_000);
           return;
-        }
-        case "seek-forward-5s": {
-          const { currentTime, totalTime } = useTimeStore.getState();
-          const maxTime = totalTime > 0 ? totalTime : Infinity;
-          const targetTime = Math.min(maxTime, currentTime + 5000);
-          window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
+        case "seek-forward-5s":
+          seekBy(5_000);
           return;
-        }
-        case "seek-backward-1s": {
-          const { currentTime } = useTimeStore.getState();
-          const targetTime = Math.max(0, currentTime - 1000);
-          window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
+        case "seek-backward-1s":
+          seekBy(-1_000);
           return;
-        }
-        case "seek-forward-1s": {
-          const { currentTime, totalTime } = useTimeStore.getState();
-          const maxTime = totalTime > 0 ? totalTime : Infinity;
-          const targetTime = Math.min(maxTime, currentTime + 1000);
-          window.dispatchEvent(new CustomEvent("player-seek", { detail: targetTime }));
+        case "seek-forward-1s":
+          seekBy(1_000);
           return;
-        }
         case "open-search":
           ui.setIsSearchOpen(!ui.isSearchOpen);
           return;
@@ -94,6 +96,6 @@ export function useShortcutCommands() {
           ui.setIsCommandPaletteOpen(true);
       }
     },
-    [router],
+    [commands, router],
   );
 }

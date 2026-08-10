@@ -14,6 +14,7 @@ import {
 } from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
+import { isPlaybackLoadCurrent } from "@/lib/player/playbackLoad";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
@@ -97,6 +98,8 @@ export const usePlayerStore = create<PlayerStore>()(
       lyric: null,
       playlistId: null,
       playbackFailureCount: 0,
+      playbackLoadRevision: 0,
+      playbackSessionRevision: 0,
       musicQuality: "high",
       sourceChangeMode: "new-track",
       setMusicQuality: (quality) => set({ musicQuality: quality }),
@@ -110,7 +113,11 @@ export const usePlayerStore = create<PlayerStore>()(
         const didSwitch = await get().playTrack(currentSongDetail, {
           preservePlaybackSession: true,
         });
-        if (!didSwitch) {
+        if (
+          !didSwitch &&
+          get().musicQuality === quality &&
+          get().currentSongDetail?.id === currentSongDetail.id
+        ) {
           set({ musicQuality });
         }
       },
@@ -173,6 +180,7 @@ export const usePlayerStore = create<PlayerStore>()(
             isPlaying: false,
             lyric: null,
             originalQueue: [],
+            playbackLoadRevision: get().playbackLoadRevision + 1,
             queue: [],
             queueIndex: -1,
           });
@@ -297,20 +305,23 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       fetchCurrentLyric: async () => {
-        const { currentSongDetail, lyric } = get();
+        const { currentSongDetail, lyric, playbackLoadRevision } = get();
         if (!currentSongDetail || lyric) return;
+        const songId = currentSongDetail.id;
+        const loadIdentity = { revision: playbackLoadRevision, trackId: songId };
         try {
-          const storedLyric = await getStoredLyricSource(currentSongDetail.id);
-          const lyricRes = storedLyric
-            ? { data: storedLyric }
-            : await getLyric(currentSongDetail.id);
+          const storedLyric = await getStoredLyricSource(songId);
+          const lyricRes = storedLyric ? { data: storedLyric } : await getLyric(songId);
+          if (!isPlaybackLoadCurrent(get(), loadIdentity)) return;
           set({ lyric: lyricRes.data });
         } catch (e) {
           console.error("静默恢复歌词失败:", e);
         }
       },
 
-      handlePlaybackFailure: async (source) => {
+      handlePlaybackFailure: async (source, identity) => {
+        if (identity && !isPlaybackLoadCurrent(get(), identity)) return;
+
         const { queue, queueIndex, playbackFailureCount } = get();
         const hasNextTrack = queueIndex >= 0 && queueIndex < queue.length - 1;
         const action = getPlaybackFailureAction(playbackFailureCount, hasNextTrack);
@@ -339,6 +350,7 @@ export const usePlayerStore = create<PlayerStore>()(
           isPlaying: false,
           lyric: null,
           playbackFailureCount: action.nextFailureCount,
+          playbackLoadRevision: get().playbackLoadRevision + 1,
         });
         toast.error(translate(locale, "common.message.playbackConsecutiveFailed"), {
           id: "playback-consecutive-failed",
@@ -347,19 +359,44 @@ export const usePlayerStore = create<PlayerStore>()(
 
       refreshCurrentTrackUrl: async () => {
         const { currentSongDetail, musicQuality } = get();
-        if (!currentSongDetail) return false;
+        if (!currentSongDetail) return { status: "superseded" };
+        const songId = currentSongDetail.id;
 
         console.info("[player] Refreshing playback URL", {
           musicQuality,
           songId: currentSongDetail.id,
         });
-        set({ currentSongUrl: null });
-        await clearCachedPlayUrl(currentSongDetail.id, musicQuality);
+        set({
+          currentSongUrl: null,
+          playbackLoadRevision: get().playbackLoadRevision + 1,
+          sourceChangeMode: "preserve-position",
+        });
+        const refreshRevision = get().playbackLoadRevision;
+        const refreshIdentity = { revision: refreshRevision, trackId: songId };
+        try {
+          await clearCachedPlayUrl(songId, musicQuality);
+        } catch (error) {
+          if (!isPlaybackLoadCurrent(get(), refreshIdentity)) return { status: "superseded" };
+          console.error("清理过期播放地址失败", error);
+          return { identity: refreshIdentity, status: "failed" };
+        }
+        if (!isPlaybackLoadCurrent(get(), refreshIdentity) || get().musicQuality !== musicQuality) {
+          return { status: "superseded" };
+        }
 
-        return get().playTrack(currentSongDetail, {
+        const refreshPromise = get().playTrack(currentSongDetail, {
           preservePlaybackSession: true,
           resetFailureCount: false,
         });
+        const loadIdentity = {
+          revision: get().playbackLoadRevision,
+          trackId: songId,
+        };
+        const refreshed = await refreshPromise;
+        if (!isPlaybackLoadCurrent(get(), loadIdentity) || get().musicQuality !== musicQuality) {
+          return { status: "superseded" };
+        }
+        return refreshed ? { status: "refreshed" } : { identity: loadIdentity, status: "failed" };
       },
 
       playTrack: async (song, options = {}) => {
@@ -373,9 +410,19 @@ export const usePlayerStore = create<PlayerStore>()(
           currentSongDetail: song,
           currentSongUrl: shouldPreservePlaybackSession ? get().currentSongUrl : null,
           isPlaying: shouldPreservePlaybackSession ? get().isPlaying : false,
+          playbackLoadRevision: get().playbackLoadRevision + 1,
           sourceChangeMode: shouldPreservePlaybackSession ? "preserve-position" : "new-track",
+          ...(!shouldPreservePlaybackSession
+            ? {
+                lyric: null,
+                playbackSessionRevision: get().playbackSessionRevision + 1,
+              }
+            : {}),
           ...(shouldResetFailureCount ? { playbackFailureCount: 0 } : {}),
         });
+        const requestLoadRevision = get().playbackLoadRevision;
+        const loadIdentity = { revision: requestLoadRevision, trackId: song.id };
+        const isCurrentPlaybackLoad = () => isPlaybackLoadCurrent(get(), loadIdentity);
 
         void enrichSongStatsById(song.id, {
           likedCount: song.likedCount,
@@ -392,6 +439,7 @@ export const usePlayerStore = create<PlayerStore>()(
             getCachedLyric(song.id),
             getStoredLyricSource(song.id),
           ]);
+          if (!isCurrentPlaybackLoad()) return false;
           const matchedLyric = storedLyric ?? cachedLyric;
 
           if (cachedUrl) {
@@ -419,6 +467,7 @@ export const usePlayerStore = create<PlayerStore>()(
             const lyricRes = await getLyric(song.id);
             const lyricData = lyricRes.data;
             if (lyricData) await setCachedLyric(song.id, lyricData);
+            if (!isCurrentPlaybackLoad()) return false;
             useTimeStore.getState().setTotalTime(song.dt ?? 0);
             set({
               ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
@@ -434,6 +483,7 @@ export const usePlayerStore = create<PlayerStore>()(
             getSongUrlWithQuality(song.id, level),
             storedLyric ? Promise.resolve({ data: storedLyric }) : getLyric(song.id),
           ]);
+          if (!isCurrentPlaybackLoad()) return false;
           const url = urlRes.data;
 
           if (!url) {
@@ -448,6 +498,7 @@ export const usePlayerStore = create<PlayerStore>()(
           if (lyricRes.data && !storedLyric) {
             await setCachedLyric(song.id, lyricRes.data);
           }
+          if (!isCurrentPlaybackLoad()) return false;
           const lyricData2 = lyricRes.data;
 
           useTimeStore.getState().setTotalTime(song.dt ?? 0);
@@ -459,9 +510,10 @@ export const usePlayerStore = create<PlayerStore>()(
           });
           return true;
         } catch (e) {
+          if (!isCurrentPlaybackLoad()) return false;
           console.error("获取歌曲播放地址或歌词失败", e);
           if (shouldPreservePlaybackSession) return false;
-          await get().handlePlaybackFailure("url");
+          await get().handlePlaybackFailure("url", loadIdentity);
           return false;
         }
       },
@@ -588,6 +640,8 @@ export const usePlayerStore = create<PlayerStore>()(
           lyric: null,
           playlistId: null,
           playbackFailureCount: 0,
+          playbackLoadRevision: get().playbackLoadRevision + 1,
+          playbackSessionRevision: get().playbackSessionRevision + 1,
         });
       },
     }),

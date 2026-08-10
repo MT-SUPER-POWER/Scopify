@@ -47,10 +47,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
     desktopLyrics: {
       close: () => bridge.closeDesktopLyric(),
       getPreferences: () => bridge.getDesktopLyricPreferences(),
-      getSnapshot: () => bridge.getDesktopLyricSnapshot(),
       onCommand: (callback) => bridge.onDesktopLyricCommand(callback),
-      onSnapshot: (callback) => bridge.onDesktopLyricSnapshot(callback),
-      publish: (snapshot) => bridge.publishDesktopLyricSnapshot(snapshot),
       sendCommand: (command) => bridge.sendDesktopLyricCommand(command),
       updatePreferences: (update) => bridge.updateDesktopLyricPreferences(update),
     },
@@ -58,14 +55,9 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       closeController: () => bridge.closeDesktopPlaybackController(),
       configure: (update) => bridge.updateDesktopPlaybackWallpaperPreferences(update),
       getModel: () => bridge.getDesktopPlaybackWallpaperModel(),
-      getPresentation: () => bridge.getDesktopPlaybackWallpaperPresentation(),
       onAudioFrame: (callback) => bridge.onDesktopPlaybackWallpaperAudioFrame(callback),
       onModelChanged: (callback) => bridge.onDesktopPlaybackWallpaperModelChanged(callback),
-      onPresentationChanged: (callback) =>
-        bridge.onDesktopPlaybackWallpaperPresentationChanged(callback),
       publishAudioFrame: (frame) => bridge.publishDesktopPlaybackWallpaperAudioFrame(frame),
-      publishPresentation: (presentation) =>
-        bridge.publishDesktopPlaybackWallpaperPresentation(presentation),
       retry: () => bridge.retryDesktopPlaybackWallpaper(),
       setControllerLayout: (layout) => bridge.setDesktopPlaybackControllerLayout(layout),
       showController: () => bridge.showDesktopPlaybackController(),
@@ -83,6 +75,11 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
         return true;
       },
       onNavigate: (callback) => bridge.onNavigate(callback),
+    },
+    playback: {
+      connect: (role, connectionId, onPayload, onClose) =>
+        bridge.connectPlaybackTransport(role, connectionId, onPayload, onClose),
+      send: (payload) => bridge.sendPlaybackTransportPayload(payload),
     },
     updates: {
       check: () => bridge.checkForUpdates(),

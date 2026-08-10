@@ -14,10 +14,7 @@ import {
   isDesktopPlaybackWallpaperModelReader,
   isDesktopPlaybackWallpaperPublisherSender,
 } from "@/main/module/desktopPlaybackWallpaper/authorization";
-import {
-  isDesktopPlaybackWallpaperAudioFrame,
-  isDesktopPlaybackWallpaperPresentationInput,
-} from "@/main/module/desktopPlaybackWallpaper/ipcValidation";
+import { isDesktopPlaybackWallpaperAudioFrame } from "@/main/module/desktopPlaybackWallpaper/ipcValidation";
 import {
   parseSystemWallpaperResult,
   shouldUseDesktopPlaybackWallpaperSystemFallback,
@@ -266,32 +263,6 @@ describe("desktop playback wallpaper feed validation", () => {
         ...frame,
         spectrum: Array.from({ length: 2_049 }, () => 0),
       }),
-    ).toBeFalse();
-  });
-
-  test("requires a complete presentation envelope and valid track metadata", () => {
-    const presentation = {
-      isLiked: false,
-      isPlaying: true,
-      lyrics: null,
-      positionMs: 1_000,
-      track: {
-        artistNames: ["Folia"],
-        durationMs: 180_000,
-        id: 1,
-        title: "Desktop",
-      },
-    };
-
-    expect(isDesktopPlaybackWallpaperPresentationInput(presentation)).toBeTrue();
-    expect(
-      isDesktopPlaybackWallpaperPresentationInput({
-        ...presentation,
-        track: { ...presentation.track, artistNames: [1] },
-      }),
-    ).toBeFalse();
-    expect(
-      isDesktopPlaybackWallpaperPresentationInput({ ...presentation, positionMs: -1 }),
     ).toBeFalse();
   });
 });

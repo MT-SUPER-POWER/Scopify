@@ -1,76 +1,119 @@
 import { describe, expect, test } from "bun:test";
 
-import { createDesktopPlaybackTimeline } from "@/lib/desktopPlaybackWallpaper/playback";
-import type { DesktopLyricSnapshot } from "@/types/desktopLyric";
+import {
+  PLAYBACK_PROTOCOL_VERSION,
+  type PlaybackBootstrap,
+  type PlaybackClockAnchored,
+  type PlaybackSessionState,
+  type PlaybackTimelineDiscontinued,
+} from "@scopify/desktop-contract";
 
-function createSnapshot(
-  positionMs: number,
-  updatedAt: number,
-  overrides: Partial<DesktopLyricSnapshot> = {},
-): DesktopLyricSnapshot {
+import { ManualPlaybackClock } from "@/lib/playbackProjection/clock";
+import { createInMemoryPlaybackTransport } from "@/lib/playbackProjection/inMemoryTransport";
+
+function createState(trackId = 1): PlaybackSessionState {
   return {
-    isLiked: false,
-    isPlaying: true,
+    canControl: true,
+    durationMs: 180_000,
+    liked: false,
     lyrics: null,
-    positionMs,
+    lyricsVersion: null,
+    phase: "playing",
     track: {
-      artistNames: ["Artist"],
-      durationMs: 180_000,
-      id: 1,
-      title: "Song",
+      artistNames: [trackId === 1 ? "Artist" : "Next artist"],
+      id: trackId,
+      title: trackId === 1 ? "Song" : "Next song",
     },
-    updatedAt,
-    ...overrides,
+    volume: 80,
+  };
+}
+
+function createBootstrap(
+  sequence: number,
+  positionMs: number,
+  sampledAtMs: number,
+  sessionId = "session-a",
+  trackId = 1,
+): PlaybackBootstrap {
+  return {
+    anchor: { positionMs, rate: 1, sampledAtMs, timelineRevision: 0 },
+    authorityId: "authority-a",
+    protocolVersion: PLAYBACK_PROTOCOL_VERSION,
+    sequence,
+    sessionId,
+    state: createState(trackId),
+    type: "bootstrap",
+  };
+}
+
+function createAnchor(
+  sequence: number,
+  positionMs: number,
+  sampledAtMs: number,
+): PlaybackClockAnchored {
+  return {
+    anchor: { positionMs, rate: 1, sampledAtMs, timelineRevision: 0 },
+    authorityId: "authority-a",
+    protocolVersion: PLAYBACK_PROTOCOL_VERSION,
+    sequence,
+    sessionId: "session-a",
+    type: "clock-anchored",
+  };
+}
+
+function createSeek(
+  sequence: number,
+  positionMs: number,
+  sampledAtMs: number,
+  timelineRevision: number,
+): PlaybackTimelineDiscontinued {
+  return {
+    anchor: { positionMs, rate: 1, sampledAtMs, timelineRevision },
+    authorityId: "authority-a",
+    protocolVersion: PLAYBACK_PROTOCOL_VERSION,
+    reason: "seek",
+    sequence,
+    sessionId: "session-a",
+    type: "timeline-discontinued",
   };
 }
 
 describe("desktop playback timeline regression", () => {
-  test("a routine same-track snapshot cannot pull the interpolated clock backward", () => {
-    const timeline = createDesktopPlaybackTimeline();
-    const previousSnapshot = createSnapshot(10_000, 1_000);
-    timeline.accept(previousSnapshot);
-    const previousPositionMs = timeline.sample(1_300);
+  test("a routine same-session anchor cannot pull the projection backward", () => {
+    const clock = new ManualPlaybackClock(1_000);
+    const transport = createInMemoryPlaybackTransport({ clock });
+    transport.deliver(createBootstrap(1, 10_000, clock.nowMs()));
+    clock.advanceBy(300);
+    const previousPositionMs = transport.source.getSnapshot().positionMs;
 
-    const newerSnapshot = createSnapshot(10_080, 1_300);
-    timeline.accept(newerSnapshot);
-    const nextPositionMs = timeline.sample(1_300);
+    transport.deliver(createAnchor(2, 10_080, clock.nowMs()));
 
-    expect(nextPositionMs).toBeGreaterThanOrEqual(previousPositionMs);
+    expect(transport.source.getSnapshot().positionMs).toBeGreaterThanOrEqual(previousPositionMs);
   });
 
-  test("still accepts an intentional backward seek on the same track", () => {
-    const timeline = createDesktopPlaybackTimeline();
-    timeline.accept(createSnapshot(10_000, 1_000));
+  test("accepts intentional backward and forward seeks as explicit discontinuities", () => {
+    const clock = new ManualPlaybackClock(1_000);
+    const transport = createInMemoryPlaybackTransport({ clock });
+    transport.deliver(createBootstrap(1, 10_000, clock.nowMs()));
 
-    timeline.accept(createSnapshot(4_000, 1_300));
+    transport.deliver(createSeek(2, 4_000, clock.nowMs(), 1));
+    expect(transport.source.getSnapshot().positionMs).toBe(4_000);
 
-    expect(timeline.sample(1_300)).toBe(4_000);
+    transport.deliver(createSeek(3, 16_000, clock.nowMs(), 2));
+    expect(transport.source.getSnapshot().positionMs).toBe(16_000);
   });
 
-  test("still accepts an intentional forward seek on the same track", () => {
-    const timeline = createDesktopPlaybackTimeline();
-    timeline.accept(createSnapshot(10_000, 1_000));
+  test("resets immediately when a new playback session starts", () => {
+    const clock = new ManualPlaybackClock(1_000);
+    const transport = createInMemoryPlaybackTransport({ clock });
+    transport.deliver(createBootstrap(1, 10_000, clock.nowMs()));
 
-    timeline.accept(createSnapshot(16_000, 1_300));
+    transport.deliver(createBootstrap(2, 0, clock.nowMs(), "session-b", 2));
 
-    expect(timeline.sample(1_300)).toBe(16_000);
-  });
-
-  test("resets immediately when the canonical snapshot changes tracks", () => {
-    const timeline = createDesktopPlaybackTimeline();
-    timeline.accept(createSnapshot(10_000, 1_000));
-
-    timeline.accept(
-      createSnapshot(0, 1_300, {
-        track: {
-          artistNames: ["Next artist"],
-          durationMs: 200_000,
-          id: 2,
-          title: "Next song",
-        },
-      }),
-    );
-
-    expect(timeline.sample(1_300)).toBe(0);
+    expect(transport.source.getSnapshot()).toMatchObject({
+      positionMs: 0,
+      sessionId: "session-b",
+      track: { id: 2, title: "Next song" },
+    });
   });
 });
