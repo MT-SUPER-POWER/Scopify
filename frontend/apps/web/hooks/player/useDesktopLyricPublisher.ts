@@ -2,11 +2,9 @@
 
 import { useEffect } from "react";
 
-import type { DesktopPlaybackWallpaperModel } from "@scopify/desktop-contract";
-
 import type { DesktopLyricSnapshotInput } from "@/types/desktopLyric";
 
-import { shouldPublishDesktopWallpaperPresentation } from "@/lib/desktopPlaybackWallpaper/playback";
+import { shouldPublishDesktopCompanionSnapshot } from "@/lib/desktopPlaybackWallpaper/playback";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { REMOTE_PLAYER_SNAPSHOT_EVENT } from "@/lib/player/remotePlayerState";
 import { runtime } from "@/lib/runtime";
@@ -17,15 +15,13 @@ import { useUserStore } from "@/store/module/user";
 const DESKTOP_LYRIC_PUBLISH_INTERVAL_MS = 90;
 const DESKTOP_WALLPAPER_PUBLISH_INTERVAL_MS = 250;
 
-/** Mirrors Scopify's player state into the optional Electron companion. */
+/** Publishes the canonical playback snapshot consumed by every Electron companion window. */
 export function useDesktopLyricPublisher() {
   useEffect(() => {
     if (!runtime.isDesktop) return;
 
     let lastDesktopLyricPublishedAt = 0;
     let lastWallpaperPublishedAt = 0;
-    let wallpaperActive = false;
-    let wallpaperModelEventReceived = false;
     const publish = (positionMs = useTimeStore.getState().currentTime, force = false) => {
       const now = Date.now();
       if (!force && now - lastDesktopLyricPublishedAt < DESKTOP_LYRIC_PUBLISH_INTERVAL_MS) return;
@@ -33,8 +29,7 @@ export function useDesktopLyricPublisher() {
       const snapshot = buildSnapshot(positionMs);
       void runtime.desktopLyrics.publish(snapshot);
       if (
-        shouldPublishDesktopWallpaperPresentation(
-          wallpaperActive,
+        shouldPublishDesktopCompanionSnapshot(
           force,
           now - lastWallpaperPublishedAt,
           DESKTOP_WALLPAPER_PUBLISH_INTERVAL_MS,
@@ -42,14 +37,6 @@ export function useDesktopLyricPublisher() {
       ) {
         lastWallpaperPublishedAt = now;
         void runtime.desktopPlaybackWallpaper.publishPresentation(snapshot);
-      }
-    };
-    const updateWallpaperModel = (model: DesktopPlaybackWallpaperModel) => {
-      const wasActive = wallpaperActive;
-      wallpaperActive = model.status.state === "running" || model.status.state === "starting";
-      if (wallpaperActive && !wasActive) {
-        lastWallpaperPublishedAt = 0;
-        publish(undefined, true);
       }
     };
     const onPlayerTime = (event: Event) => {
@@ -61,19 +48,11 @@ export function useDesktopLyricPublisher() {
     publish(undefined, true);
     window.addEventListener("player-time", onPlayerTime);
     window.addEventListener(REMOTE_PLAYER_SNAPSHOT_EVENT, onRemotePlayerSnapshot);
-    void runtime.desktopPlaybackWallpaper.getModel().then((model) => {
-      if (!wallpaperModelEventReceived) updateWallpaperModel(model);
-    });
-    const stopWallpaperSubscription = runtime.desktopPlaybackWallpaper.onModelChanged((model) => {
-      wallpaperModelEventReceived = true;
-      updateWallpaperModel(model);
-    });
     const stopUserSubscription = useUserStore.subscribe(() => publish(undefined, true));
     return () => {
       window.removeEventListener("player-time", onPlayerTime);
       window.removeEventListener(REMOTE_PLAYER_SNAPSHOT_EVENT, onRemotePlayerSnapshot);
       stopUserSubscription();
-      stopWallpaperSubscription();
     };
   }, []);
 }

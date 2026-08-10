@@ -3,8 +3,7 @@
 import { Music2, Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { DesktopPlaybackProgressControl } from "@/components/desktopWallpaper/DesktopPlaybackProgressControl";
-import { cn } from "@/lib/utils";
+import { FoliaPlaybackProgressBar } from "@/components/desktopWallpaper/FoliaPlaybackProgressBar";
 import { useI18n } from "@/store/module/i18n";
 import type { DesktopPlaybackPlayerControlsProps } from "@/types/components/desktopPlaybackWallpaper";
 
@@ -17,7 +16,6 @@ export function DesktopPlaybackPlayerControls({
   currentSong,
   desktopControl,
   durationMs,
-  isConnected,
   isPlaying,
   onNext,
   onPrevious,
@@ -32,13 +30,13 @@ export function DesktopPlaybackPlayerControls({
   const [isControlAreaHovered, setIsControlAreaHovered] = useState(false);
   const [showLyrics, setShowLyrics] = useState(false);
   const artworkUrl =
-    track?.artworkUrl ??
     currentSong?.al.coverUrl ??
     currentSong?.al.picUrl ??
-    currentSong?.al.blurPicUrl;
-  const title = track?.title ?? currentSong?.name ?? t("desktopPlaybackController.noTrack");
+    currentSong?.al.blurPicUrl ??
+    track?.artworkUrl;
+  const title = currentSong?.name ?? track?.title ?? t("desktopPlaybackController.noTrack");
   const artistNames =
-    track?.artistNames.join(" / ") ?? currentSong?.ar.map((artist) => artist.name).join(" / ");
+    currentSong?.ar.map((artist) => artist.name).join(" / ") ?? track?.artistNames.join(" / ");
   const showLyricView = showLyrics && Boolean(activeLyric?.primary);
 
   useEffect(() => {
@@ -70,24 +68,15 @@ export function DesktopPlaybackPlayerControls({
 
       <div className="flex min-h-28 min-w-0 flex-col justify-between">
         <div className="min-w-0 pr-16">
-          <div className="flex min-w-0 items-center gap-2">
-            <div className="min-w-0 flex-1 truncate text-[15px] leading-5 font-bold tracking-[-0.01em]">
-              {title}
-            </div>
-            <span
-              aria-hidden
-              className={cn(
-                "size-1.5 shrink-0 rounded-full",
-                isConnected ? "bg-emerald-500" : "bg-content-muted/35",
-              )}
-            />
+          <div className="min-w-0 truncate text-[15px] leading-5 font-bold tracking-[-0.01em]">
+            {title}
           </div>
           <div className="desktop-controller-muted mt-0.5 truncate text-xs font-medium">
             {artistNames || t("common.meta.unknownArtist")}
           </div>
         </div>
 
-        <DesktopPlaybackProgressControl
+        <FoliaPlaybackProgressBar
           ariaLabel={t("desktopPlaybackController.playbackProgress")}
           durationMs={durationMs}
           onSeek={onSeek}

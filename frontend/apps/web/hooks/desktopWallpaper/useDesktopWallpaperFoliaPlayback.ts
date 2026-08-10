@@ -7,8 +7,8 @@ import type { DesktopPlaybackWallpaperAudioFrame } from "@scopify/desktop-contra
 
 import type { AudioBands } from "@/components/lyrics/folia/src/types";
 import {
+  createDesktopPlaybackTimeline,
   DESKTOP_WALLPAPER_PRESENTATION_STALE_MS,
-  getDesktopWallpaperPlaybackTimeMs,
 } from "@/lib/desktopPlaybackWallpaper/playback";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
@@ -28,7 +28,7 @@ export function useDesktopWallpaperFoliaPlayback(
   const [presentation, setPresentation] = useState<DesktopLyricSnapshot | null>(null);
   const [feedIsLive, setFeedIsLive] = useState(false);
   const [currentLineIndex, setCurrentLineIndex] = useState(-1);
-  const presentationRef = useRef<DesktopLyricSnapshot | null>(null);
+  const timelineRef = useRef(createDesktopPlaybackTimeline());
   const currentLineIndexRef = useRef(-1);
   const latestAudioSampleRef = useRef(-1);
   const lastAudioFrameReceivedAtRef = useRef(0);
@@ -56,9 +56,8 @@ export function useDesktopWallpaperFoliaPlayback(
     let disposed = false;
     const acceptPresentation = (nextPresentation: DesktopLyricSnapshot) => {
       if (disposed) return;
-      setPresentation((current) =>
-        !current || nextPresentation.updatedAt >= current.updatedAt ? nextPresentation : current,
-      );
+      if (!timelineRef.current.accept(nextPresentation)) return;
+      setPresentation(nextPresentation);
     };
     const stopModelSubscription = runtime.desktopPlaybackWallpaper.onModelChanged((nextModel) => {
       modelEventReceived = true;
@@ -90,7 +89,6 @@ export function useDesktopWallpaperFoliaPlayback(
   }, [audioPower, bass, lowMid, mid, spectrum, treble, vocal]);
 
   useEffect(() => {
-    presentationRef.current = presentation;
     if (!presentation?.isPlaying) {
       setFeedIsLive(false);
       return;
@@ -109,8 +107,7 @@ export function useDesktopWallpaperFoliaPlayback(
     let animationFrame = 0;
     const tick = () => {
       const now = Date.now();
-      const nextTimeSeconds =
-        getDesktopWallpaperPlaybackTimeMs(presentationRef.current, now) / 1_000;
+      const nextTimeSeconds = timelineRef.current.sample(now) / 1_000;
       const effectiveLyricTime = nextTimeSeconds - lyricOffsetMs / 1_000;
       currentTime.set(nextTimeSeconds);
       lyricCurrentTime.set(effectiveLyricTime);
@@ -163,6 +160,7 @@ export function useDesktopWallpaperFoliaPlayback(
       lyrics,
     },
     model,
+    positionMs: timelineRef.current.sample(Date.now()),
     presentation,
   };
 }

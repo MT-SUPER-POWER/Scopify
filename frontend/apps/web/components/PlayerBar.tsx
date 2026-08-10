@@ -417,7 +417,7 @@ export const PlayerBar = ({
                     aria-label={playbackActionLabel}
                     onClick={() => setIsPlaying(!isPlaying)}
                     disabled={!currentSong}
-                    className="bg-primary text-primary-foreground hover:bg-brand-hover flex size-9 items-center justify-center rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-40 lg:size-10"
+                    className="bg-content text-surface hover:bg-content/90 flex size-9 items-center justify-center rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-40 lg:size-10"
                   >
                     {isPlaying ? (
                       <Pause className="size-4 fill-current lg:size-5" />

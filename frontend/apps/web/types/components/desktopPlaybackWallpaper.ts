@@ -13,12 +13,18 @@ export interface DesktopPlaybackControllerLyric {
   secondary?: string;
 }
 
+export interface FoliaPlaybackProgressBarProps {
+  ariaLabel: string;
+  durationMs: number;
+  onSeek(positionMs: number): void;
+  positionMs: number;
+}
+
 export interface DesktopPlaybackPlayerControlsProps {
   activeLyric: DesktopPlaybackControllerLyric | null;
   currentSong: SongDetail | null;
   desktopControl: ReactNode;
   durationMs: number;
-  isConnected: boolean;
   isPlaying: boolean;
   onNext(): void;
   onPrevious(): void;

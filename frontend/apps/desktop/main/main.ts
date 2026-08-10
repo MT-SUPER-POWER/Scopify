@@ -118,6 +118,7 @@ function createWindow() {
       symbolColor: "white",
     },
     webPreferences: {
+      backgroundThrottling: false,
       preload: __preloadScript,
       nodeIntegration: false,
       contextIsolation: true,

@@ -13,8 +13,11 @@ export interface ProgressRangeMarkersProps {
 }
 
 export interface SmoothSliderProps {
+  ariaLabel?: string;
+  ariaValueText?: string;
   value: number;
   bufferedValue?: number;
+  disabled?: boolean;
   onChange: (value: number, isCommit: boolean) => void;
   orientation?: "horizontal" | "vertical";
   size?: number | string;

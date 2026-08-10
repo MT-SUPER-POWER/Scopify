@@ -19,6 +19,7 @@ import {
   type SonnetSegmentRole,
   type SonnetTypographyPlacement,
 } from "./sonnetTypographyLayout";
+import { resolveSonnetRoleFontWeight } from "./sonnetTypographyRoles";
 
 // src/components/visualizer/sonnet/sonnetTextViewBuilder.ts
 // Creates parser-timed core/halo glyph pairs and their semantic guide view.
@@ -83,7 +84,7 @@ interface SonnetTextViewOptions {
   paragraphKind: string;
   width: number;
   fontFamily: string;
-  fontWeight: number;
+  fontWeight?: number | null;
   theme: Theme;
   glowEnabled: boolean;
   showFixedGeo: boolean;
@@ -147,7 +148,7 @@ export const buildSonnetTextView = (
       : options.theme.accentColor;
 
   const isDecoration = placement.role === "decoration";
-  const renderWeight = isSonnetEmphasisRole(placement.role) ? "900" : isDecoration ? "300" : "700";
+  const renderWeight = resolveSonnetRoleFontWeight(options.fontWeight, placement.role);
   const fontSpec = `${renderWeight} ${fontSize}px ${options.fontFamily}`;
 
   // Parallax depth assignment
@@ -168,7 +169,7 @@ export const buildSonnetTextView = (
 
   const style = new TextStyle({
     fontFamily: options.fontFamily,
-    fontWeight: renderWeight as import("pixi.js").TextStyleFontWeight,
+    fontWeight: String(renderWeight) as import("pixi.js").TextStyleFontWeight,
     fontSize,
     fill: isDecoration ? "transparent" : bodyColor,
     stroke: isDecoration
@@ -186,7 +187,7 @@ export const buildSonnetTextView = (
   const ghostStyle = isSemiHero
     ? new TextStyle({
         fontFamily: options.fontFamily,
-        fontWeight: renderWeight as import("pixi.js").TextStyleFontWeight,
+        fontWeight: String(renderWeight) as import("pixi.js").TextStyleFontWeight,
         fontSize,
         fill: "transparent",
         stroke: { color: glowColor, width: Math.max(1, Math.min(8, fontSize * 0.006)) },

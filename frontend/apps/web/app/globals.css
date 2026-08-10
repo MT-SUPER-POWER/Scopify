@@ -555,49 +555,6 @@ img,
   box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
 }
 
-.desktop-controller-progress {
-  background: var(--desktop-controller-soft-hover);
-}
-
-.desktop-controller-seek {
-  height: 0.875rem;
-  appearance: none;
-  color: var(--desktop-controller-primary);
-  background: transparent;
-}
-
-.desktop-controller-seek::-webkit-slider-runnable-track {
-  height: 3px;
-  border-radius: 9999px;
-  background: linear-gradient(
-    to right,
-    var(--desktop-controller-primary) 0%,
-    var(--desktop-controller-primary) var(--desktop-controller-seek-progress),
-    var(--desktop-controller-soft-hover) var(--desktop-controller-seek-progress),
-    var(--desktop-controller-soft-hover) 100%
-  );
-}
-
-.desktop-controller-seek::-webkit-slider-thumb {
-  width: 9px;
-  height: 9px;
-  margin-top: -3px;
-  appearance: none;
-  border-radius: 9999px;
-  background: var(--desktop-controller-primary);
-  box-shadow: 0 1px 4px rgb(0 0 0 / 22%);
-  transition: transform 120ms ease;
-}
-
-.desktop-controller-seek:hover::-webkit-slider-thumb,
-.desktop-controller-seek:focus-visible::-webkit-slider-thumb {
-  transform: scale(1.25);
-}
-
-.desktop-controller-seek:focus-visible {
-  outline: none;
-}
-
 .desktop-controller-panel {
   background: var(--desktop-controller-panel);
   border-color: var(--desktop-controller-border);

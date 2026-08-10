@@ -56,9 +56,8 @@ export function DesktopPlaybackController() {
     : null;
   const presentationTrack = foliaPlayback.presentation?.track ?? null;
   const durationMs = presentationTrack?.durationMs ?? player.currentSongDetail?.dt ?? 0;
-  const positionMs = player.isConnected
-    ? player.positionMs
-    : (foliaPlayback.presentation?.positionMs ?? 0);
+  const positionMs = foliaPlayback.presentation ? foliaPlayback.positionMs : player.positionMs;
+  const fallbackCurrentSong = foliaPlayback.presentation ? null : player.currentSongDetail;
   const controllerThemeStyle = {
     "--desktop-controller-accent": theme.accentColor,
     "--desktop-controller-background": theme.backgroundColor,
@@ -160,7 +159,7 @@ export function DesktopPlaybackController() {
         >
           <DesktopPlaybackPlayerControls
             activeLyric={activeLyric}
-            currentSong={player.currentSongDetail}
+            currentSong={fallbackCurrentSong}
             desktopControl={
               <DesktopPlaybackControllerQuickToggle
                 isPending={wallpaper.isPending}
@@ -169,7 +168,6 @@ export function DesktopPlaybackController() {
               />
             }
             durationMs={durationMs}
-            isConnected={player.isConnected || Boolean(presentationTrack)}
             isPlaying={foliaPlayback.presentation?.isPlaying ?? player.isPlaying}
             onNext={player.playNext}
             onPrevious={player.playPrevious}

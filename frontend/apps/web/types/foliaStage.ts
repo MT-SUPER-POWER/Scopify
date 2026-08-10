@@ -23,7 +23,7 @@ import type { DesktopLyricTrack } from "@/types/desktopLyric";
 import type { DesktopPlaybackWallpaperLayers } from "@scopify/desktop-contract";
 
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
-export type FoliaPanelTab = "controls" | "lyrics" | "queue";
+export type FoliaPanelTab = "controls" | "queue" | "settings";
 export type FoliaThemeVariant = "dark" | "light";
 
 export interface FoliaThemeColors {

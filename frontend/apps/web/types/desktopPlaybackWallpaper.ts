@@ -13,6 +13,7 @@ export type DesktopPlaybackControllerTab = "appearance" | "wallpaper";
 export interface DesktopWallpaperFoliaPlaybackState {
   bridge: FoliaPlaybackBridge;
   model: DesktopPlaybackWallpaperModel | null;
+  positionMs: number;
   presentation: DesktopLyricSnapshot | null;
 }
 
@@ -24,6 +25,11 @@ export interface DesktopWallpaperAudioMotionValues {
   spectrum: MotionValue<Uint8Array<ArrayBuffer>>;
   treble: MotionValue<number>;
   vocal: MotionValue<number>;
+}
+
+export interface DesktopPlaybackTimeline {
+  accept(snapshot: DesktopLyricSnapshot): boolean;
+  sample(now: number): number;
 }
 
 export interface DesktopPlaybackWallpaperControllerState {

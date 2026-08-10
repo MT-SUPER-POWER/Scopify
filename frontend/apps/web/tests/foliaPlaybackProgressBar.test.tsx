@@ -2,7 +2,8 @@ import { Children, isValidElement, type ReactElement, type ReactNode } from "rea
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test } from "bun:test";
 
-import { DesktopPlaybackProgressControl } from "@/components/desktopWallpaper/DesktopPlaybackProgressControl";
+import { PlaybackProgressBar } from "@/components/PlayBar/PlaybackProgressBar";
+import { FoliaPlaybackProgressBar } from "@/components/desktopWallpaper/FoliaPlaybackProgressBar";
 
 function findElement(
   node: ReactNode,
@@ -19,10 +20,10 @@ function findElement(
   return null;
 }
 
-describe("desktop playback progress control", () => {
-  test("shows elapsed and total time and emits the dragged seek position", () => {
+describe("Folia playback progress bar", () => {
+  test("reuses the shared progress bar and emits dragged seek positions", () => {
     const seekPositions: number[] = [];
-    const control = DesktopPlaybackProgressControl({
+    const control = FoliaPlaybackProgressBar({
       ariaLabel: "播放进度",
       durationMs: 210_000,
       onSeek: (positionMs) => seekPositions.push(positionMs),
@@ -33,19 +34,18 @@ describe("desktop playback progress control", () => {
     expect(markup).toContain(">1:05<");
     expect(markup).toContain(">3:30<");
 
-    const input = findElement(control, (element) => element.type === "input");
-    expect(input).not.toBeNull();
-    const inputProps = input?.props as {
-      "aria-label": string;
-      max: number;
-      onChange(event: { currentTarget: { value: string } }): void;
-      value: number;
+    const progressBar = findElement(control, (element) => element.type === PlaybackProgressBar);
+    expect(progressBar).not.toBeNull();
+    const progressBarProps = progressBar?.props as {
+      ariaLabel: string;
+      onSeek(positionMs: number, isCommit: boolean): void;
+      variant: string;
     };
-    expect(inputProps["aria-label"]).toBe("播放进度");
-    expect(inputProps.max).toBe(210_000);
-    expect(inputProps.value).toBe(65_000);
+    expect(progressBarProps.ariaLabel).toBe("播放进度");
+    expect(progressBarProps.variant).toBe("folia");
 
-    inputProps.onChange({ currentTarget: { value: "90000" } });
-    expect(seekPositions).toEqual([90_000]);
+    progressBarProps.onSeek(90_000, false);
+    progressBarProps.onSeek(95_000, true);
+    expect(seekPositions).toEqual([90_000, 95_000]);
   });
 });

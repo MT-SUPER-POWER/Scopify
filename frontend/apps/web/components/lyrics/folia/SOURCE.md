@@ -28,6 +28,9 @@ the original full-copy baseline:
   translation / romanization / hidden subtitle modes, independent subtitle
   scaling, the theme-aware fading subtitle backdrop, the iOS compositing fix,
   and complete Sonnet subtitle-settings wiring.
+- `40d31e906af97e08cbeb113c80feb5c83b69fd05` — make Sonnet preserve its designed
+  role hierarchy in automatic mode while honoring the Lyric Stage theme's
+  manual global font-weight override from Folia v0.6.16.
 
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.

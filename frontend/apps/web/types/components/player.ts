@@ -1,5 +1,16 @@
 import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import type { SongDetail } from "@/types/api/music";
+import type { ProgressRangeMarker } from "@/types/components/slider";
+
+export interface PlaybackProgressBarProps {
+  ariaLabel?: string;
+  bufferedPositionMs?: number;
+  durationMs: number;
+  onSeek(positionMs: number, isCommit: boolean): void;
+  positionMs: number;
+  rangeMarkers?: readonly ProgressRangeMarker[];
+  variant?: "folia" | "player";
+}
 
 export interface QueueItemProps {
   song: SongDetail;

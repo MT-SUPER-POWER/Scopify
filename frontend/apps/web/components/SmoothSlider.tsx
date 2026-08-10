@@ -5,8 +5,11 @@ import { ProgressRangeMarkers } from "@/components/shared/ProgressRangeMarkers";
 import type { SmoothSliderProps } from "@/types/components/slider";
 
 export const SmoothSlider = ({
+  ariaLabel,
+  ariaValueText,
   value,
   bufferedValue = 0,
+  disabled = false,
   onChange,
   orientation = "horizontal",
   size = "100%",
@@ -27,6 +30,7 @@ export const SmoothSlider = ({
   const [isHovering, setIsHovering] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
+  const latestValueRef = useRef(value);
 
   const isVertical = orientation === "vertical";
 
@@ -36,7 +40,7 @@ export const SmoothSlider = ({
 
   const calculateValue = useCallback(
     (clientX: number, clientY: number) => {
-      if (!trackRef.current) return;
+      if (disabled || !trackRef.current) return;
       const rect = trackRef.current.getBoundingClientRect();
       let percent: number;
 
@@ -46,17 +50,20 @@ export const SmoothSlider = ({
         percent = ((clientX - rect.left) / rect.width) * 100;
       }
 
-      onChange(Math.max(0, Math.min(100, percent)), false);
+      const nextValue = Math.max(0, Math.min(100, percent));
+      latestValueRef.current = nextValue;
+      onChange(nextValue, false);
     },
-    [isVertical, onChange],
+    [disabled, isVertical, onChange],
   );
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
+      if (disabled) return;
       setIsDragging(true);
       calculateValue(e.clientX, e.clientY);
     },
-    [calculateValue],
+    [calculateValue, disabled],
   );
 
   const handleMouseMove = useCallback(
@@ -69,18 +76,41 @@ export const SmoothSlider = ({
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
-    if (trackRef.current) {
-      // 取最后一次鼠标位置
-      onChange(Math.max(0, Math.min(100, value)), true);
-    }
-  }, [onChange, value]);
+    onChange(latestValueRef.current, true);
+  }, [onChange]);
 
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
+      if (disabled) return;
       setIsDragging(true);
       calculateValue(e.touches[0].clientX, e.touches[0].clientY);
     },
-    [calculateValue],
+    [calculateValue, disabled],
+  );
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (disabled) return;
+      const step = event.shiftKey ? 5 : 1;
+      let nextValue: number | null = null;
+
+      if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+        nextValue = value - step;
+      } else if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+        nextValue = value + step;
+      } else if (event.key === "Home") {
+        nextValue = 0;
+      } else if (event.key === "End") {
+        nextValue = 100;
+      }
+
+      if (nextValue === null) return;
+      event.preventDefault();
+      const clampedValue = Math.max(0, Math.min(100, nextValue));
+      latestValueRef.current = clampedValue;
+      onChange(clampedValue, true);
+    },
+    [disabled, onChange, value],
   );
 
   const handleTouchMove = useCallback(
@@ -93,8 +123,12 @@ export const SmoothSlider = ({
 
   const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
-    onChange(Math.max(0, Math.min(100, value)), true);
-  }, [onChange, value]);
+    onChange(latestValueRef.current, true);
+  }, [onChange]);
+
+  useEffect(() => {
+    if (!isDragging) latestValueRef.current = Math.max(0, Math.min(100, value));
+  }, [isDragging, value]);
 
   useEffect(() => {
     if (isDragging) {
@@ -116,12 +150,21 @@ export const SmoothSlider = ({
 
   return (
     <div
-      className={`relative flex touch-none items-center justify-center select-none ${className}`}
+      aria-disabled={disabled}
+      aria-label={ariaLabel}
+      aria-valuemax={100}
+      aria-valuemin={0}
+      aria-valuenow={Math.round(Math.max(0, Math.min(100, value)))}
+      aria-valuetext={ariaValueText}
+      className={`relative flex touch-none items-center justify-center select-none ${disabled ? "pointer-events-none opacity-45" : ""} ${className}`}
+      onKeyDown={handleKeyDown}
+      role={ariaLabel ? "slider" : undefined}
       style={{
         ...(isVertical
           ? { height: size, width: thumbSize, flexDirection: "column" }
           : { width: size, height: thumbSize }),
       }}
+      tabIndex={ariaLabel ? (disabled ? -1 : 0) : undefined}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >

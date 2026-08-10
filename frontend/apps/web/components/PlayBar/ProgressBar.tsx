@@ -1,8 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { SmoothSlider } from "@/components/SmoothSlider";
+import { PlaybackProgressBar } from "@/components/PlayBar/PlaybackProgressBar";
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
-import { formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
 
@@ -66,8 +65,7 @@ export const PlayerProgressBar = memo(() => {
   }, []);
 
   // 4. 用户拖拽进度条
-  const handleSeek = (value: number, isCommit: boolean) => {
-    const newTimeMs = (value / 100) * totalTime;
+  const handleSeek = (newTimeMs: number, isCommit: boolean) => {
     setLocalTime(newTimeMs); // 优先让本地滑块跟手
 
     if (isCommit) {
@@ -75,33 +73,14 @@ export const PlayerProgressBar = memo(() => {
     }
   };
 
-  const progressPercent = totalTime > 0 ? (localTime / totalTime) * 100 : 0;
-  const bufferedPercent = totalTime > 0 ? (bufferedTime / totalTime) * 100 : 0;
-
   return (
-    <div className="flex w-full items-center gap-2">
-      <span className="text-content-muted w-10 shrink-0 text-right text-[11px] font-normal tracking-widest tabular-nums">
-        {formatDuration(localTime)}
-      </span>
-
-      <SmoothSlider
-        value={progressPercent}
-        bufferedValue={bufferedPercent}
-        onChange={handleSeek}
-        orientation="horizontal"
-        className="flex-1"
-        trackThickness={4}
-        thumbSize={12}
-        thumbOnHover={true}
-        rangeMarkers={chorusRanges}
-        markerAppearance="glow"
-        markerColor="var(--brand)"
-      />
-
-      <span className="text-content-muted w-10 shrink-0 text-[11px] font-normal tracking-widest tabular-nums">
-        {formatDuration(totalTime)}
-      </span>
-    </div>
+    <PlaybackProgressBar
+      bufferedPositionMs={bufferedTime}
+      durationMs={totalTime}
+      onSeek={handleSeek}
+      positionMs={localTime}
+      rangeMarkers={chorusRanges}
+    />
   );
 });
 

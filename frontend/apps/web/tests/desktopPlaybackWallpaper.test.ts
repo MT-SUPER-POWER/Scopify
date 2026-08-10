@@ -4,7 +4,7 @@ import {
   DESKTOP_WALLPAPER_PRESENTATION_STALE_MS,
   downsampleSpectrum,
   getDesktopWallpaperPlaybackTimeMs,
-  shouldPublishDesktopWallpaperPresentation,
+  shouldPublishDesktopCompanionSnapshot,
 } from "@/lib/desktopPlaybackWallpaper/playback";
 import { getDesktopPlaybackWallpaperToggleUpdate } from "@/lib/desktopPlaybackWallpaper/toggle";
 import type { DesktopLyricSnapshot } from "@/types/desktopLyric";
@@ -27,11 +27,10 @@ function createPresentation(overrides: Partial<DesktopLyricSnapshot> = {}): Desk
 }
 
 describe("desktop wallpaper Folia playback feed", () => {
-  test("publishes a forced track snapshot even while the wallpaper is inactive", () => {
-    expect(shouldPublishDesktopWallpaperPresentation(false, true, 0, 250)).toBeTrue();
-    expect(shouldPublishDesktopWallpaperPresentation(false, false, 250, 250)).toBeFalse();
-    expect(shouldPublishDesktopWallpaperPresentation(true, false, 249, 250)).toBeFalse();
-    expect(shouldPublishDesktopWallpaperPresentation(true, false, 250, 250)).toBeTrue();
+  test("keeps the canonical companion snapshot live even while the wallpaper is inactive", () => {
+    expect(shouldPublishDesktopCompanionSnapshot(true, 0, 250)).toBeTrue();
+    expect(shouldPublishDesktopCompanionSnapshot(false, 249, 250)).toBeFalse();
+    expect(shouldPublishDesktopCompanionSnapshot(false, 250, 250)).toBeTrue();
   });
 
   test("interpolates a live snapshot and freezes once the publisher becomes stale", () => {

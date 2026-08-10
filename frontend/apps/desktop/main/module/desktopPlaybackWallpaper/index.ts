@@ -174,7 +174,9 @@ function registerIpcHandlers() {
       throw new Error("Invalid desktop playback wallpaper presentation.");
     }
     presentation = { ...input, updatedAt: Date.now() };
+    // The main process owns one replayable snapshot and fans it out to every companion renderer.
     sendPresentation(getWallpaperWindow(), presentation);
+    sendPresentation(getControllerWindow(), presentation);
     return presentation;
   });
 

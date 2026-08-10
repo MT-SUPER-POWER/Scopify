@@ -16,6 +16,7 @@ export function useDesktopPlaybackWallpaperAudioPublisher() {
     if (!runtime.isDesktop) return;
 
     let active = false;
+    let modelEventReceived = false;
     let lastPublishedAt = 0;
     const updateModel = (model: DesktopPlaybackWallpaperModel) => {
       active = model.status.state === "running" || model.status.state === "starting";
@@ -40,8 +41,13 @@ export function useDesktopPlaybackWallpaperAudioPublisher() {
       });
     };
 
-    void runtime.desktopPlaybackWallpaper.getModel().then(updateModel);
-    const unsubscribe = runtime.desktopPlaybackWallpaper.onModelChanged(updateModel);
+    void runtime.desktopPlaybackWallpaper.getModel().then((model) => {
+      if (!modelEventReceived) updateModel(model);
+    });
+    const unsubscribe = runtime.desktopPlaybackWallpaper.onModelChanged((model) => {
+      modelEventReceived = true;
+      updateModel(model);
+    });
     window.addEventListener("player-audio-bands", onAudioBands);
     return () => {
       unsubscribe();

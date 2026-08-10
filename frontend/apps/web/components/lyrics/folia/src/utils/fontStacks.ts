@@ -99,12 +99,20 @@ export const resolveThemeFontStack = (
   return `${customFontStack.join(", ")}, ${fallbackStack}`;
 };
 
-export const resolveThemeFontWeight = (theme: Pick<Theme, "fontWeight">, fallback: number) => {
-  const weight = theme.fontWeight;
-  return typeof weight === "number" && Number.isFinite(weight)
-    ? Math.min(900, Math.max(100, weight))
-    : fallback;
+export const MIN_FONT_WEIGHT = 100;
+export const MAX_FONT_WEIGHT = 900;
+export const FONT_WEIGHT_STEP = 10;
+
+export const normalizeFontWeight = (fontWeight: unknown): number | null => {
+  if (typeof fontWeight !== "number" || !Number.isFinite(fontWeight)) return null;
+  const clamped = Math.min(MAX_FONT_WEIGHT, Math.max(MIN_FONT_WEIGHT, fontWeight));
+  return Math.round(clamped / FONT_WEIGHT_STEP) * FONT_WEIGHT_STEP;
 };
+
+export const resolveThemeFontWeight = (
+  theme: Pick<Theme, "fontWeight"> | null | undefined,
+  fallback: number,
+) => normalizeFontWeight(theme?.fontWeight) ?? fallback;
 
 export const resolveThemeTranslationFontStack = (
   theme: Pick<Theme, "fontStyle" | "fontFamily" | "fontFamilyStack">,

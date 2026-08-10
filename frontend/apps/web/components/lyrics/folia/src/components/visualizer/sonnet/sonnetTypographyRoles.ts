@@ -1,3 +1,4 @@
+import { normalizeFontWeight } from "../../../utils/fontStacks";
 import type { SonnetSemanticSegment } from "./types";
 
 // src/components/visualizer/sonnet/sonnetTypographyRoles.ts
@@ -6,6 +7,17 @@ export type SonnetSegmentRole = "hero" | "semi-hero" | "support" | "decoration";
 
 export const isSonnetEmphasisRole = (role: SonnetSegmentRole) =>
   role === "hero" || role === "semi-hero";
+
+/** Uses Sonnet's designed role weights in auto mode, or the user's global manual override. */
+export const resolveSonnetRoleFontWeight = (
+  configuredFontWeight: number | null | undefined,
+  role: SonnetSegmentRole,
+) => {
+  const manualWeight = normalizeFontWeight(configuredFontWeight);
+  if (manualWeight !== null) return manualWeight;
+  if (isSonnetEmphasisRole(role)) return 900;
+  return role === "decoration" ? 300 : 700;
+};
 
 export const getSonnetVisibleSegmentLength = (segment: SonnetSemanticSegment) =>
   segment.graphemes.filter((item) => item.char.trim().length > 0).length;

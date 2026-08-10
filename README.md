@@ -293,11 +293,9 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 - [ ] 好友功能的完善
   - [ ] Followers 和 Followings 的 Modal 展示
 - [ ] 对正在播放的歌曲再次播放的话，可以重新请求（解决有些的时候的 bug 问题）
-- [ ] 宽度比较小，高度高的情况下，在歌词 UI 有一部分头部内容没有渲染出来
 
 ### 提案
 
-- [ ] 可选的 AI 歌曲主题生成：用户配置 Gemini 或 OpenAI-compatible API Key，根据歌曲歌词和封面生成视觉参数。该能力不属于当前 Folia 歌词舞台迁移范围。
 - [ ] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
 - [ ] 本地音乐库管理(离线歌单)
 - [ ] 接入 QQ、AMLLDB、酷狗等多源歌词匹配

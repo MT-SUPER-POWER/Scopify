@@ -1,14 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Captions, Disc, ListMusic, Settings2, SlidersHorizontal, X } from "lucide-react";
+import { Disc, ListMusic, Settings2, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
 import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
+import { FoliaPanelSettings } from "@/components/lyrics/FoliaPanelSettings";
 import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
-import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
 import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
 import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
 import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/FoliaSonnetPerformanceWarningDialog";
@@ -54,6 +54,7 @@ export function FoliaStageSettings({
 
   useEffect(() => {
     if (themeLibraryRequestId <= 0) return;
+    setActiveTab("settings");
     setIsThemeLibraryOpen(true);
   }, [themeLibraryRequestId]);
 
@@ -118,7 +119,7 @@ export function FoliaStageSettings({
                     [
                       ["controls", SlidersHorizontal, "folia.panel.controls"],
                       ["queue", ListMusic, "folia.queue.title"],
-                      ["lyrics", Captions, "folia.options.lyricsRenderer"],
+                      ["settings", Settings2, "folia.options.visualSettings"],
                     ] as const
                   ).map(([tab, Icon, label]) => (
                     <button
@@ -143,19 +144,19 @@ export function FoliaStageSettings({
 
               {/* Tab 内容区 — 可滚动 */}
               <div className="min-h-0 flex-1">
-                <ScrollArea className="h-full w-full">
+                <ScrollArea className="size-full">
                   <div className="px-5 pt-1 pb-8">
                     {activeTab === "controls" ? (
                       <FoliaPanelControls
-                        onOpenSettings={openVisualSettings}
-                        onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
+                        onOpenLyricMatch={() => setIsLyricMatchOpen(true)}
                         theme={theme}
                       />
                     ) : null}
                     {activeTab === "queue" ? <FoliaPanelQueue /> : null}
-                    {activeTab === "lyrics" ? (
-                      <FoliaLyricsControls
-                        onOpenLyricMatch={() => setIsLyricMatchOpen(true)}
+                    {activeTab === "settings" ? (
+                      <FoliaPanelSettings
+                        onOpenSettings={openVisualSettings}
+                        onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
                         theme={theme}
                       />
                     ) : null}
