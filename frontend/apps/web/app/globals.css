@@ -411,6 +411,16 @@ img,
   background: transparent !important;
 }
 
+.desktop-wallpaper-spike-html,
+.desktop-wallpaper-spike-body {
+  background: transparent !important;
+}
+
+.desktop-playback-wallpaper-html,
+.desktop-playback-wallpaper-body {
+  background: transparent !important;
+}
+
 @keyframes eq-play {
   0%,
   100% {

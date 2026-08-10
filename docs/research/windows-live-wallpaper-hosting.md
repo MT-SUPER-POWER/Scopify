@@ -1,6 +1,7 @@
 # Windows 动态桌面壁纸宿主调研
 
 > 调研日期：2026-07-29  
+> 补充验证：2026-08-09（任务栏/Mica 与系统静态壁纸策略）
 > 项目基线：Scopify、Electron `42.7.1`、Next.js `16.1.6`、React `19.2.3`  
 > 文档性质：Folia 桌面播放壁纸的技术可行性与架构输入，不是最终 ADR，也不修改实现代码。  
 > 结论适用范围：Windows 10/11 桌面应用；Web 版不具备本文所述的 Shell 嵌入能力。
@@ -14,6 +15,7 @@
 5. **不能只实现经典 WorkerW 分支。** 公开源码 Lively 当前同时处理经典桌面树和 newer Windows 的 raised-desktop 树；后一种结构要求把自有窗口设为 `WS_CHILD | WS_EX_LAYERED`、挂到 `Progman`，再将 Z 序放在 `SHELLDLL_DefView` 之下、系统 `WorkerW` 之上。
 6. **建议 Scopify 使用独立的 Windows 原生 sidecar 管理 Shell 宿主，Electron 继续管理渲染和控制器。** sidecar 隔离未文档化的窗口操作、Explorer 重启监控和系统状态轮询；主窗口、现有桌面歌词伴随窗与桌面壁纸窗保持三种不同产品形态。
 7. **MVP 应先做单主屏、非交互、默认全屏暂停。** 背景层和歌词层独立开关；两层都关闭时销毁/卸载渲染窗。多显示器随后采用“一屏一窗”，虚拟桌面差异化壁纸延后。
+8. **任务栏视觉连续性需要“动态宿主 + 系统静态壁纸”的混合方案。** WorkerW/Progman 负责实时 Folia，`IDesktopWallpaper` 负责一张与当前背景匹配的静态 fallback，供 Windows 11 任务栏、Mica 和其他只采样系统壁纸的 Shell 表面使用。纯系统壁纸 API 无法承载动画或同步歌词；纯 WorkerW 又无法保证这些 Shell 材质显示同一内容。
 
 ## 1. 证据分级与术语
 
@@ -134,6 +136,38 @@ Microsoft 文档确认 `WS_EX_NOREDIRECTIONBITMAP` 表示窗口不渲染到 DWM 
 - `BrowserWindow.setIgnoreMouseEvents(true)` 可作为额外保险，但不能替代正确的父子关系和 Z 序。[Electron `setIgnoreMouseEvents`](https://www.electronjs.org/docs/latest/api/browser-window#winsetignoremouseeventsignore-options)
 
 **建议：** 第一版壁纸窗完全不接收输入、不获取焦点、不进入任务栏。用户从 Scopify 托盘右键打开控制器；不要劫持 Windows 桌面右键菜单。若未来需要鼠标视差，应像 Lively 公开源码那样从独立 raw-input 通道读取全局指针，而不是把图标后的网页变成可点击窗口。[Lively raw input 接线](https://github.com/rocksdanister/lively/blob/c1036feb664960722e34bf4309042c247d6a909d/src/Lively/Lively/Core/WinDesktopCore.cs#L88-L96)
+
+### 3.5 系统壁纸、任务栏与 Windows 11 材质
+
+2026-08-09 的实机 spike 给出了两个不同层面的结果：
+
+- Explorer 的 `Progman`、`WorkerW` 和 `SHELLDLL_DefView` 均覆盖完整的 `1920 × 1080` 显示器；任务栏是另一个位于 `y = 1032–1080` 的 `Shell_TrayWnd` 顶层窗口。
+- 初版 Electron HWND 虽请求 `1920 × 1080`，普通窗口约束曾把实际外框压成 `(-8, 0)–(1928, 1040)`。这属于窗口布局 bug，应由 native host 在 attach 后按目标显示器矩形校验并修正；但即使 HWND 真正铺满，任务栏仍是独立的 Shell 表面。
+
+**官方事实：** Windows 11 的 Mica 是将用户主题与桌面壁纸结合的材质，并为性能只捕获一次背景壁纸；它不是对任意 WorkerW 子窗口进行持续实时采样。[Microsoft：System backdrops](https://learn.microsoft.com/en-us/windows/apps/develop/ui/system-backdrops)
+
+**Wallpaper Engine 一方的直接证据：** Wallpaper Engine 开发者说明其代码不隐藏或操作任务栏；另一条官方开发者回复说明 Windows 11 UI 会为性能直接渲染 Windows 静态壁纸，并建议启用产品中的 “Override Windows wallpaper” 作为 workaround。[Wallpaper Engine 开发者：不操作任务栏](https://steamcommunity.com/app/431960/discussions/2/1745646187889092342/) [Wallpaper Engine 开发者：Override Windows wallpaper](https://steamcommunity.com/app/431960/discussions/1/4520010433852289629/)
+
+因此，“把动态 HWND 再扩大一点”不能独自解决任务栏/Mica 显示旧背景的问题。建议采用以下混合模型：
+
+| 层 | 内容 | 更新频率 | Windows 使用者 |
+| --- | --- | --- | --- |
+| 系统静态壁纸 | 当前 Folia 背景的一张代表帧，不包含歌词和瞬时播放控件 | 曲目、背景或主题变化时低频更新 | 任务栏、Mica、Shell fallback、动态宿主不可用时的桌面 |
+| WorkerW 动态窗口 | Folia 动画、逐字歌词、音频响应 | rAF / 播放时钟 | Explorer 图标后方的实时桌面 |
+
+`IDesktopWallpaper::SetWallpaper` 接收完整图片路径，并可用 monitor ID 对不同显示器分别设置；它从 Windows 8 起是受支持的桌面 API。[`IDesktopWallpaper::SetWallpaper`](https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-setwallpaper) Electron 可用 `webContents.capturePage()` 获得 `NativeImage`，再用 `NativeImage.toPNG()` 生成静态 fallback。[Electron `capturePage`](https://www.electronjs.org/docs/latest/api/web-contents#contentscapturepagerect-opts) [Electron `NativeImage.toPNG`](https://www.electronjs.org/docs/latest/api/native-image#imagetopngoptions)
+
+系统壁纸写入必须是一个显式、可恢复的产品能力，不能只是启动时覆盖：
+
+1. 开启前按 monitor ID 读取每屏路径，同时记录全局 position、背景色和 slideshow 状态；`GetWallpaper(NULL)` 在多屏图片不同或 slideshow 运行时会返回 `S_FALSE`，所以不能只保存一个全局路径。[`IDesktopWallpaper::GetWallpaper`](https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-getwallpaper)
+2. Scopify 生成稳定文件到应用自有缓存目录，再按 monitor ID 调用 `SetWallpaper`；不以播放帧率反复写系统设置。
+3. 用户关闭同步时，仅当当前系统路径仍指向 Scopify 生成文件时才恢复旧状态；若用户期间手动换了壁纸，Scopify 不覆盖用户的新选择。
+4. 崩溃恢复需要一个小型、版本化 journal。没有 journal 的技术 spike 不应默认写用户系统壁纸，因为进程崩溃后无法可靠恢复 slideshow 和每屏配置。
+5. 控制器将该能力命名为“同步 Windows 系统背景（补全任务栏/Mica）”，与“动态桌面背景”和“桌面歌词”分开开关。
+
+**结论：** 纯 `IDesktopWallpaper` 路线只能得到静态图；纯 WorkerW 路线不能统一所有 Windows Shell 材质。Scopify 的目标能力应是混合架构，而不是二选一。
+
+**Spike 验证结果（2026-08-09）：** Electron 动态 HWND 在 attach 后通过了 `(0, 0)–(1920, 1080)` 精确覆盖校验；捕获帧经系统壁纸 API 应用后，任务栏区域显示了同一蓝紫色背景。恢复测试最终精确回到原中文图片路径、`Fill` position 和原背景色，journal 被删除。测试同时证明恢复协议必须在写入前复制原图，并在 Windows PowerShell 5.1 中显式按 UTF-8 读取 journal；否则非 ASCII 路径会被破坏。
 
 ## 4. Electron 能做什么、缺什么
 
@@ -307,7 +341,9 @@ flowchart LR
     Controller["托盘右键控制器"] --> Orchestrator["Electron main\nDesktop Wallpaper Orchestrator"]
     Orchestrator --> WallpaperRenderer
     Orchestrator <--> NativeHost["Windows sidecar\nShell host + lifecycle + policy sensors"]
+    Orchestrator <--> SystemWallpaper["System Wallpaper Adapter\n静态 fallback + 恢复 journal"]
     NativeHost <--> Explorer["Progman / WorkerW / DefView"]
+    SystemWallpaper <--> WindowsWallpaper["IDesktopWallpaper\n任务栏 / Mica / Shell fallback"]
     Orchestrator --> Publisher
 ```
 
@@ -319,6 +355,7 @@ flowchart LR
 | Wallpaper Renderer | Folia 背景和歌词的纯渲染；执行 pause/resume | 直接调用 Win32、持久化系统策略 |
 | Wallpaper Orchestrator | 创建/销毁 BrowserWindow，校验 IPC，保存偏好，协调状态机 | 枚举 WorkerW 的细节 |
 | Native Host sidecar | 探测 Shell 树、attach/detach、Z 序、Explorer/显示/全屏信号 | 音乐状态、React UI、业务偏好 |
+| System Wallpaper Adapter | 生成/设置静态 fallback，保存并条件恢复每屏系统壁纸状态 | 动画、歌词时钟、高频系统设置写入 |
 | Controller | 主开关、图层开关、显示器与性能策略、故障状态 | 承载真正的壁纸画面 |
 
 不要把 WorkerW 类名、`0x052C` 和 Win32 常量散落在 `main/module/*.ts`。原生桥接应是一个深模块，TypeScript 只消费稳定、可测试的结果对象。
@@ -381,6 +418,7 @@ flowchart LR
 | 与 Wallpaper Engine/Lively/桌面增强软件冲突 | 中 | 多个程序争用同一 Shell 层与 Z 序 | 启动前检测/提示互斥；不主动重排他人窗口 |
 | 虚拟桌面差异化需求扩大范围 | 中 | 公开 API 不提供完整枚举和通知，child HWND 也不适配 | 第一版统一壁纸；单独实验后再承诺 |
 | renderer/sidecar 崩溃留下错误窗口样式 | 中 | 自有 HWND 可能仍挂在即将失效的父树 | renderer 随主进程销毁；sidecar watchdog；detach 恢复样式；失败回到系统壁纸 |
+| 系统静态壁纸覆盖后未恢复 | 中高 | 多屏、slideshow、用户运行中改壁纸与进程崩溃都会使简单“保存一个路径”失效 | 显式 opt-in；按屏快照；版本化 journal；只在当前路径仍归 Scopify 时条件恢复 |
 | 托盘控制器与壁纸窗抢焦点 | 中 | Chromium 新窗/加载可能激活普通窗口 | renderer `focusable: false`、`showInactive`、skipTaskbar；控制器保持独立窗口 |
 
 ## 8. 建议的验证顺序
@@ -395,6 +433,7 @@ flowchart LR
 4. 透明背景能否透出 Windows 原壁纸；
 5. Explorer 重启后自动恢复；
 6. attach 失败是否安全回到系统壁纸。
+7. 只读探测 `IDesktopWallpaper` 的每屏路径、position 与 slideshow 状态；写入测试必须显式 opt-in 并验证完整恢复。
 
 ### 阶段 1：单主屏 Folia MVP
 
@@ -450,11 +489,16 @@ flowchart LR
 
 技术决策上，先批准一个 Windows-only spike，而不是立即把 WorkerW 代码并入正式 main process。只有当真实 Electron BrowserWindow 在 classic/raised、Explorer 重启、透明歌词-only 和混合 DPI 四个关键场景全部通过，才进入正式 ADR 与产品实现。
 
+任务栏/Mica 不再作为“扩大 WorkerW 窗口”问题处理。正式产品采用 WorkerW 动态 renderer 与 `IDesktopWallpaper` 静态 fallback 的混合方案；系统壁纸同步默认关闭，直到每屏恢复 journal 和用户运行中改壁纸的冲突规则通过验证。
+
 ## 参考资料
 
 ### Microsoft
 
 - [`IDesktopWallpaper`](https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-idesktopwallpaper)
+- [`IDesktopWallpaper::GetWallpaper`](https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-getwallpaper)
+- [`IDesktopWallpaper::SetWallpaper`](https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-idesktopwallpaper-setwallpaper)
+- [Windows System backdrops](https://learn.microsoft.com/en-us/windows/apps/develop/ui/system-backdrops)
 - [`EnumWindows`](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows)
 - [`FindWindowExW`](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindowexw)
 - [`SetParent`](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setparent)
@@ -472,6 +516,8 @@ flowchart LR
 ### Electron
 
 - [`BrowserWindow`](https://www.electronjs.org/docs/latest/api/browser-window)
+- [`webContents.capturePage`](https://www.electronjs.org/docs/latest/api/web-contents#contentscapturepagerect-opts)
+- [`NativeImage.toPNG`](https://www.electronjs.org/docs/latest/api/native-image#imagetopngoptions)
 - [`screen`](https://www.electronjs.org/docs/latest/api/screen/)
 - [`powerMonitor`](https://www.electronjs.org/docs/latest/api/power-monitor/)
 
@@ -484,9 +530,10 @@ flowchart LR
 - [多显示器 profile](https://help.wallpaperengine.io/en/functionality/wallpaperperapp.html)
 - [休眠与显示器关闭](https://help.wallpaperengine.io/en/general/brokensleep.html)
 - [Windows 锁屏](https://help.wallpaperengine.io/en/general/lockscreen.html)
+- [开发者说明：Wallpaper Engine 不操作任务栏](https://steamcommunity.com/app/431960/discussions/2/1745646187889092342/)
+- [开发者说明：Override Windows wallpaper 用于 Windows 11 UI](https://steamcommunity.com/app/431960/discussions/1/4520010433852289629/)
 
 ### 公开源码实现证据
 
 - [Lively Wallpaper](https://github.com/rocksdanister/lively/tree/c1036feb664960722e34bf4309042c247d6a909d)
 - [Lively `WinDesktopCore.cs` 固定提交](https://github.com/rocksdanister/lively/blob/c1036feb664960722e34bf4309042c247d6a909d/src/Lively/Lively/Core/WinDesktopCore.cs)
-

@@ -4001,6 +4001,24 @@ export interface TranslateFn {
    */
   (key: "ui.audioQuality", params?: TranslationParams): string;
   /**
+   * zh-CN: 开启桌面音乐壁纸
+   * zh-TW: 開啟桌面音樂桌布
+   * en-US: Enable desktop music wallpaper
+   */
+  (key: "ui.enableDesktopMusicWallpaper", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭桌面音乐壁纸
+   * zh-TW: 關閉桌面音樂桌布
+   * en-US: Disable desktop music wallpaper
+   */
+  (key: "ui.disableDesktopMusicWallpaper", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面音乐壁纸切换失败
+   * zh-TW: 桌面音樂桌布切換失敗
+   * en-US: Desktop music wallpaper failed to switch
+   */
+  (key: "ui.desktopMusicWallpaperFailed", params?: TranslationParams): string;
+  /**
    * zh-CN: 进入全屏
    * zh-TW: 進入全螢幕
    * en-US: Enter fullscreen
@@ -4108,6 +4126,180 @@ export interface TranslateFn {
    * en-US: Like
    */
   (key: "desktopLyrics.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面音乐
+   * zh-TW: 桌面音樂
+   * en-US: Desktop Music
+   */
+  (key: "desktopPlaybackController.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开桌面音乐控制器
+   * zh-TW: 開啟桌面音樂控制器
+   * en-US: Open desktop music controller
+   */
+  (key: "desktopPlaybackController.open", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面音乐壁纸
+   * zh-TW: 桌面音樂桌布
+   * en-US: Desktop music wallpaper
+   */
+  (key: "desktopPlaybackController.wallpaper", params?: TranslationParams): string;
+  /**
+   * zh-CN: Folia 桌面外观
+   * zh-TW: Folia 桌面外觀
+   * en-US: Folia desktop appearance
+   */
+  (key: "desktopPlaybackController.appearance", params?: TranslationParams): string;
+  /**
+   * zh-CN: Folia 外观
+   * zh-TW: Folia 外觀
+   * en-US: Folia appearance
+   */
+  (key: "desktopPlaybackController.appearanceTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面图层
+   * zh-TW: 桌面圖層
+   * en-US: Desktop layers
+   */
+  (key: "desktopPlaybackController.wallpaperTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面显示
+   * zh-TW: 桌面顯示
+   * en-US: Desktop display
+   */
+  (key: "desktopPlaybackController.desktopDisplay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动画、背景与 DIY 配色会实时同步到桌面。
+   * zh-TW: 動畫、背景與 DIY 配色會即時同步到桌面。
+   * en-US: Animation, background, and DIY colors sync to the desktop in real time.
+   */
+  (key: "desktopPlaybackController.liveSyncHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示内容
+   * zh-TW: 顯示內容
+   * en-US: Visible content
+   */
+  (key: "desktopPlaybackController.layers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景
+   * zh-TW: 背景
+   * en-US: Background
+   */
+  (key: "desktopPlaybackController.background", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "desktopPlaybackController.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示桌面图标
+   * zh-TW: 顯示桌面圖示
+   * en-US: Show desktop icons
+   */
+  (key: "desktopPlaybackController.showDesktopIcons", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时无法读取 Explorer 桌面图标状态。
+   * zh-TW: 暫時無法讀取 Explorer 桌面圖示狀態。
+   * en-US: Explorer desktop icon visibility is temporarily unavailable.
+   */
+  (key: "desktopPlaybackController.desktopIconsUnavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法更新桌面图标显示状态
+   * zh-TW: 無法更新桌面圖示顯示狀態
+   * en-US: Could not update desktop icon visibility
+   */
+  (key: "desktopPlaybackController.desktopIconsUpdateFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 兼容设置
+   * zh-TW: 相容設定
+   * en-US: Compatibility
+   */
+  (key: "desktopPlaybackController.compatibility", params?: TranslationParams): string;
+  /**
+   * zh-CN: Shell 静态补全
+   * zh-TW: Shell 靜態補全
+   * en-US: Shell static fallback
+   */
+  (key: "desktopPlaybackController.systemFallback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放控制
+   * zh-TW: 播放控制
+   * en-US: Playback
+   */
+  (key: "desktopPlaybackController.playback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无播放
+   * zh-TW: 暫無播放
+   * en-US: Nothing playing
+   */
+  (key: "desktopPlaybackController.noTrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 运行状态
+   * zh-TW: 執行狀態
+   * en-US: Status
+   */
+  (key: "desktopPlaybackController.status", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未运行
+   * zh-TW: 未執行
+   * en-US: Inactive
+   */
+  (key: "desktopPlaybackController.statusInactive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在启动
+   * zh-TW: 正在啟動
+   * en-US: Starting
+   */
+  (key: "desktopPlaybackController.statusStarting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 运行中
+   * zh-TW: 執行中
+   * en-US: Running
+   */
+  (key: "desktopPlaybackController.statusRunning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已暂停
+   * zh-TW: 已暫停
+   * en-US: Paused
+   */
+  (key: "desktopPlaybackController.statusPaused", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在恢复
+   * zh-TW: 正在恢復
+   * en-US: Recovering
+   */
+  (key: "desktopPlaybackController.statusRecovering", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动失败
+   * zh-TW: 啟動失敗
+   * en-US: Failed to start
+   */
+  (key: "desktopPlaybackController.statusFaulted", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前环境不支持
+   * zh-TW: 目前環境不支援
+   * en-US: Unsupported
+   */
+  (key: "desktopPlaybackController.statusUnsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Retry
+   */
+  (key: "desktopPlaybackController.retry", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法打开桌面音乐控制器
+   * zh-TW: 無法開啟桌面音樂控制器
+   * en-US: Could not open desktop music controller
+   */
+  (key: "desktopPlaybackController.openFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面音乐设置更新失败
+   * zh-TW: 桌面音樂設定更新失敗
+   * en-US: Could not update desktop music settings
+   */
+  (key: "desktopPlaybackController.updateFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 添加封面色彩
    * zh-TW: 添加封面色彩

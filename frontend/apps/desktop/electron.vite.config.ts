@@ -11,7 +11,9 @@ export default defineConfig({
       },
     },
     build: {
-      externalizeDeps: true,
+      externalizeDeps: {
+        exclude: ["@scopify/desktop-contract"],
+      },
       rollupOptions: {
         input: {
           main: resolve(root, "main/main.ts"),
@@ -30,7 +32,9 @@ export default defineConfig({
       },
     },
     build: {
-      externalizeDeps: true,
+      externalizeDeps: {
+        exclude: ["@scopify/desktop-contract"],
+      },
       outDir: "out/main",
       emptyOutDir: false,
       rollupOptions: {

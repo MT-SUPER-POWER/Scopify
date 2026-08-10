@@ -21,6 +21,7 @@ import { lyricsMessages } from "./lyrics";
 import { uiMessages } from "./ui";
 import { playerBarMessages } from "./playerBar";
 import { desktopLyricsMessages } from "./desktopLyrics";
+import { desktopPlaybackControllerMessages } from "./desktopPlaybackController";
 import { foliaMessages } from "./folia";
 import { shortcutsMessages } from "./shortcuts";
 import { libraryMessages } from "./library";
@@ -51,6 +52,7 @@ export const messages = {
     ...uiMessages["zh-CN"],
     ...playerBarMessages["zh-CN"],
     ...desktopLyricsMessages["zh-CN"],
+    ...desktopPlaybackControllerMessages["zh-CN"],
     ...foliaMessages["zh-CN"],
     ...shortcutsMessages["zh-CN"],
     ...libraryMessages["zh-CN"],
@@ -80,6 +82,7 @@ export const messages = {
     ...uiMessages["zh-TW"],
     ...playerBarMessages["zh-TW"],
     ...desktopLyricsMessages["zh-TW"],
+    ...desktopPlaybackControllerMessages["zh-TW"],
     ...foliaMessages["zh-TW"],
     ...shortcutsMessages["zh-TW"],
     ...libraryMessages["zh-TW"],
@@ -109,6 +112,7 @@ export const messages = {
     ...uiMessages["en-US"],
     ...playerBarMessages["en-US"],
     ...desktopLyricsMessages["en-US"],
+    ...desktopPlaybackControllerMessages["en-US"],
     ...foliaMessages["en-US"],
     ...shortcutsMessages["en-US"],
     ...libraryMessages["en-US"],

@@ -8,14 +8,17 @@
 
 import { useEffect } from "react";
 import { useInWindowShortcuts } from "@/hooks/shortcuts/useInWindowShortcuts";
+import {
+  publishCrossWindowPlayerSnapshot,
+  REMOTE_PLAYER_SNAPSHOT_EVENT,
+  selectRemotePlayerSnapshot,
+  subscribeCrossWindowPlayerSnapshots,
+} from "@/lib/player/remotePlayerState";
 import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
-import type { PlayerBroadcastCommand } from "@/types/player";
+import type { PlayerBroadcastCommand, RemotePlayerSnapshot } from "@/types/player";
 
-const getSafeState = <T extends object>(state: T): Partial<T> =>
-  Object.fromEntries(
-    Object.entries(state).filter(([, value]) => typeof value !== "function"),
-  ) as Partial<T>;
+const REMOTE_PLAYER_HEARTBEAT_INTERVAL_MS = 1_000;
 
 export function PlayerCommandHandler() {
   useInWindowShortcuts();
@@ -27,6 +30,23 @@ export function PlayerCommandHandler() {
 
     const cmdChannel = new BroadcastChannel("momo-player-controls");
     const stateChannel = new BroadcastChannel("momo-player-state");
+    const snapshotListeners: Array<(snapshot: RemotePlayerSnapshot) => void> = [
+      (snapshot) => stateChannel.postMessage(snapshot),
+      (snapshot) => runtime.media.setPlaying(snapshot.isPlaying),
+      (snapshot) =>
+        window.dispatchEvent(new CustomEvent(REMOTE_PLAYER_SNAPSHOT_EVENT, { detail: snapshot })),
+    ];
+    const onSnapshotListenerError = (error: unknown, listenerIndex: number) => {
+      void runtime.logging.write({
+        level: "warn",
+        message: "Cross-window player snapshot listener failed.",
+        metadata: { error: String(error), listenerIndex },
+      });
+    };
+    const publishState = () => {
+      const snapshot = selectRemotePlayerSnapshot(usePlayerStore.getState());
+      publishCrossWindowPlayerSnapshot(snapshot, snapshotListeners, onSnapshotListenerError);
+    };
 
     cmdChannel.onmessage = (event: MessageEvent<PlayerBroadcastCommand>) => {
       const message = event.data;
@@ -57,16 +77,28 @@ export function PlayerCommandHandler() {
           break;
         }
         case "REQUEST_STATE":
-          stateChannel.postMessage(getSafeState(usePlayerStore.getState()));
+          publishState();
           break;
       }
     };
 
-    // 同步播放状态，让托盘窗口的播放/暂停按钮图标保持正确
-    const unsubscribePlayerStore = usePlayerStore.subscribe((state) => {
-      stateChannel.postMessage(getSafeState(state));
-      runtime.media.setPlaying(state.isPlaying);
-    });
+    // The controller can mount before this authoritative handler is ready. Publish once on
+    // connection as well as on later changes so a missed one-shot request cannot leave it stale.
+    const unsubscribePlayerStore = subscribeCrossWindowPlayerSnapshots(
+      {
+        getState: () => usePlayerStore.getState(),
+        subscribe: (listener) => usePlayerStore.subscribe(listener),
+      },
+      snapshotListeners,
+      {
+        heartbeatIntervalMs: REMOTE_PLAYER_HEARTBEAT_INTERVAL_MS,
+        onListenerError: onSnapshotListenerError,
+        scheduler: {
+          clearInterval: (handle) => window.clearInterval(handle as number),
+          setInterval: (callback, intervalMs) => window.setInterval(callback, intervalMs),
+        },
+      },
+    );
 
     const handleThumbarControl = (command: string) => {
       const player = usePlayerStore.getState();

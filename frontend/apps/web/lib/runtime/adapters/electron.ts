@@ -40,6 +40,10 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       loadHostConfig: () => bridge.getHostConfig(),
       saveHostConfig: (config) => bridge.updateHostConfig(config),
     },
+    desktopIcons: {
+      getVisibility: () => bridge.getDesktopIconVisibility(),
+      setVisibility: (visible) => bridge.setDesktopIconVisibility(visible),
+    },
     desktopLyrics: {
       close: () => bridge.closeDesktopLyric(),
       getPreferences: () => bridge.getDesktopLyricPreferences(),
@@ -49,6 +53,21 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       publish: (snapshot) => bridge.publishDesktopLyricSnapshot(snapshot),
       sendCommand: (command) => bridge.sendDesktopLyricCommand(command),
       updatePreferences: (update) => bridge.updateDesktopLyricPreferences(update),
+    },
+    desktopPlaybackWallpaper: {
+      closeController: () => bridge.closeDesktopPlaybackController(),
+      configure: (update) => bridge.updateDesktopPlaybackWallpaperPreferences(update),
+      getModel: () => bridge.getDesktopPlaybackWallpaperModel(),
+      getPresentation: () => bridge.getDesktopPlaybackWallpaperPresentation(),
+      onAudioFrame: (callback) => bridge.onDesktopPlaybackWallpaperAudioFrame(callback),
+      onModelChanged: (callback) => bridge.onDesktopPlaybackWallpaperModelChanged(callback),
+      onPresentationChanged: (callback) =>
+        bridge.onDesktopPlaybackWallpaperPresentationChanged(callback),
+      publishAudioFrame: (frame) => bridge.publishDesktopPlaybackWallpaperAudioFrame(frame),
+      publishPresentation: (presentation) =>
+        bridge.publishDesktopPlaybackWallpaperPresentation(presentation),
+      retry: () => bridge.retryDesktopPlaybackWallpaper(),
+      showController: () => bridge.showDesktopPlaybackController(),
     },
     isDesktop: true,
     kind: "desktop",

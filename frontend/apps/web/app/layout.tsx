@@ -4,6 +4,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 import { I18nProvider } from "@/components/i18n-provider";
+import { FoliaStageStoreSync } from "@/components/lyrics/FoliaStageStoreSync";
 import { QueryProvider } from "@/components/shared/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
@@ -42,6 +43,7 @@ export default function RootLayout({
           storageKey="scopify-color-mode"
         >
           <I18nProvider>
+            <FoliaStageStoreSync />
             <QueryProvider>{children}</QueryProvider>
             <Toaster position="top-center" duration={3000} />
           </I18nProvider>

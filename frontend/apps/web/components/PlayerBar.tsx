@@ -25,6 +25,7 @@ import Link from "next/link";
 import { useCallback, useEffect } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { toast } from "sonner";
+import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
 import { AudioQualityDialog } from "@/components/player/AudioQualityDialog";
 import { QueuePopover } from "@/components/QueuePopover";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
@@ -483,6 +484,8 @@ export const PlayerBar = ({
             isLyricStageBar ? "min-w-0" : "flex-1 md:flex-none md:justify-self-end",
           )}
         >
+          <DesktopPlaybackControllerLauncher />
+
           {/* Lyric Stage */}
           <TooltipProvider>
             <Tooltip>

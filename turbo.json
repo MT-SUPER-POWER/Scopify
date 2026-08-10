@@ -1,6 +1,16 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["APP_CFG_*", "BACKEND_*", "FRONTEND_*", "NEXT_DIST_DIR", "NEXT_TELEMETRY_DISABLED"],
+  "globalEnv": [
+    "APP_CFG_*",
+    "BACKEND_*",
+    "FRONTEND_*",
+    "NEXT_DIST_DIR",
+    "NEXT_TELEMETRY_DISABLED",
+    "SCOPIFY_DESKTOP_WALLPAPER_SPIKE",
+    "SCOPIFY_DESKTOP_WALLPAPER_SPIKE_STATE_DIR",
+    "SCOPIFY_DESKTOP_WALLPAPER_SPIKE_SYSTEM_FALLBACK",
+    "SCOPIFY_DESKTOP_WALLPAPER_SPIKE_TRANSPARENT"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

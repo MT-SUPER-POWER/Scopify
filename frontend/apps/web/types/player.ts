@@ -10,6 +10,25 @@ export type PlayerBroadcastCommand =
   | { type: "PLAY_NEXT" | "PLAY_PREV" | "REQUEST_STATE" | "SYNC_USER_STORE" | "TOGGLE_PLAY" }
   | { payload: number; type: "SET_VOLUME" };
 
+export interface RemotePlayerSnapshot {
+  currentSongDetail: SongDetail | null;
+  isPlaying: boolean;
+  volume: number;
+}
+
+export interface RemotePlayerSnapshotSource<State extends RemotePlayerSnapshot> {
+  getState(): State;
+  subscribe(listener: (state: State) => void): () => void;
+}
+
+export interface RemotePlayerControllerState extends RemotePlayerSnapshot {
+  isConnected: boolean;
+  playNext(): void;
+  playPrevious(): void;
+  setVolume(volume: number): void;
+  togglePlaying(): void;
+}
+
 export interface PlayTrackOptions {
   preservePlaybackSession?: boolean;
   resetFailureCount?: boolean;

@@ -9,6 +9,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { useAudioVisualizer } from "@/hooks/player/useAudioVisualizer";
+import { useDesktopPlaybackWallpaperAudioPublisher } from "@/hooks/player/useDesktopPlaybackWallpaperAudioPublisher";
 import { useDesktopLyricPublisher } from "@/hooks/player/useDesktopLyricPublisher";
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { CommandPalette } from "@/components/shortcuts/CommandPalette";
@@ -51,6 +52,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useAudioVisualizer(audioRef);
+  useDesktopPlaybackWallpaperAudioPublisher();
   useDesktopLyricPublisher();
 
   useEffect(() => {

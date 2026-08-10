@@ -54,6 +54,34 @@ _Avoid_: player window, mini player
 A user action initiated in the Desktop Lyric Window and executed by the Scopify playback or lyric-stage owner. The command does not transfer state ownership to the companion surface.
 _Avoid_: secondary player state, window-local playback
 
+**Desktop Playback Wallpaper**:
+An optional Windows desktop presentation of Scopify's current playback behind the desktop icons. It may show its Background Layer, Lyric Layer, or both, but never owns audio, queue, or playback state.
+_Avoid_: Desktop Lyric Window, fullscreen player, system wallpaper
+
+**Wallpaper Background Layer**:
+The shared visual backdrop selected from Folia's background catalogue for a Desktop Playback Wallpaper. It is independently visible from the selected Visualizer Mode.
+_Avoid_: Windows system wallpaper, lyric text, wallpaper window
+
+**Wallpaper Lyric Layer**:
+The selected Folia Visualizer Mode presented by a Desktop Playback Wallpaper, including its timed lyrics and mode-owned visual composition. It is independently visible from the shared Background Layer.
+_Avoid_: Desktop Lyric Window, wallpaper background, playback owner
+
+**Desktop Playback Controller Window**:
+A dedicated auxiliary Scopify window that presents playback controls together with Desktop Playback Wallpaper intent and status while the main window may be hidden. It controls the presentation without hosting it or owning playback.
+_Avoid_: wallpaper window, DockMenu Playback Panel, second player
+
+**DockMenu Playback Panel**:
+The compact control surface revealed from Scopify's Windows tray entry. It exposes essential playback and wallpaper actions and may open the full Desktop Playback Controller Window.
+_Avoid_: Desktop Playback Controller Window, native context menu, second player
+
+**Desktop Playback Controller Launcher**:
+An entry point, such as the PlayBar desktop-music button, that asks the host to show the existing Desktop Playback Controller Window. A Launcher never duplicates the controller's state or behavior.
+_Avoid_: second controller, embedded controller state, wallpaper toggle implementation
+
+**System Wallpaper Fallback**:
+An optional static companion image used while the Wallpaper Background Layer is active so Windows Shell surfaces that cannot show the dynamic presentation can still visually match it. It is not the Desktop Playback Wallpaper and must be relinquished when Scopify no longer owns the presentation.
+_Avoid_: dynamic wallpaper, taskbar renderer, permanent wallpaper replacement
+
 **Visualizer Mode**:
 One independently selectable immersive lyric presentation rendered against a shared song, timeline, theme, and interaction contract.
 _Avoid_: page, player

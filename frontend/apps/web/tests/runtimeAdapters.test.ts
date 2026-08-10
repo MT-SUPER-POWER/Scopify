@@ -1,9 +1,16 @@
 import { describe, expect, test } from "bun:test";
 
-import type { DesktopBridge, DesktopHostConfig } from "@scopify/desktop-contract";
+import {
+  DESKTOP_BRIDGE_PROTOCOL_VERSION,
+  type DesktopBridge,
+  type DesktopHostConfig,
+  type DesktopIconVisibilityState,
+  type DesktopPlaybackWallpaperModel,
+} from "@scopify/desktop-contract";
 
 import { createBrowserRuntime } from "@/lib/runtime/adapters/browser";
 import { createElectronRuntime } from "@/lib/runtime/adapters/electron";
+
 import type { LyricData } from "@/types/lyrics";
 
 class MemoryStorage {
@@ -46,12 +53,26 @@ const HOST_CONFIG: DesktopHostConfig = {
   network: { proxyMode: "system", proxyUrl: "" },
   updater: { autoDownload: false, checkOnStartup: true },
 };
+const WALLPAPER_MODEL: DesktopPlaybackWallpaperModel = {
+  preferences: {
+    enabled: false,
+    fullscreenPolicy: "pause",
+    layers: { background: true, lyrics: true },
+    systemWallpaperFallback: false,
+  },
+  status: { reason: "disabled", state: "inactive" },
+};
+const DESKTOP_ICON_STATE: DesktopIconVisibilityState = {
+  supported: true,
+  visible: true,
+};
 
 function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): DesktopBridge<LyricData> {
   return {
     checkForUpdates: async () => UPDATE_STATE,
     clearPageCache: async () => ({ dir: "cache", entryCount: 0, sizeBytes: 0 }),
     closeDesktopLyric: async () => true,
+    closeDesktopPlaybackController: async () => true,
     deletePageCache: async () => true,
     downloadUpdate: async () => UPDATE_STATE,
     enterFullScreen: NOOP,
@@ -62,10 +83,13 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
       capabilities: [],
       desktopVersion: "1.1.0",
       electronVersion: "40.0.0",
-      protocolVersion: 1,
+      protocolVersion: DESKTOP_BRIDGE_PROTOCOL_VERSION,
     }),
     getDesktopLyricPreferences: async () => null,
+    getDesktopIconVisibility: async () => DESKTOP_ICON_STATE,
     getDesktopLyricSnapshot: async () => null,
+    getDesktopPlaybackWallpaperModel: async () => WALLPAPER_MODEL,
+    getDesktopPlaybackWallpaperPresentation: async () => null,
     getPageCache: async () => null,
     getPageCacheStats: async () => ({ dir: "cache", entryCount: 0, sizeBytes: 0 }),
     getUpdateStatus: async () => UPDATE_STATE,
@@ -76,20 +100,39 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     onControlAudio: () => NOOP,
     onDesktopLyricCommand: () => NOOP,
     onDesktopLyricSnapshot: () => NOOP,
+    onDesktopPlaybackWallpaperAudioFrame: () => NOOP,
+    onDesktopPlaybackWallpaperModelChanged: () => NOOP,
+    onDesktopPlaybackWallpaperPresentationChanged: () => NOOP,
     onFullScreenChanged: () => NOOP,
     onNavigate: () => NOOP,
     onUpdateStatusChanged: () => NOOP,
     openLoginWindow: NOOP,
     publishDesktopLyricSnapshot: async () => null,
+    publishDesktopPlaybackWallpaperAudioFrame: NOOP,
+    publishDesktopPlaybackWallpaperPresentation: async () => null,
     quitAndInstallUpdate: NOOP,
     relaunchApp: NOOP,
+    retryDesktopPlaybackWallpaper: async () => WALLPAPER_MODEL,
     sendAppCloseAction: NOOP,
     sendDesktopLyricCommand: NOOP,
+    showDesktopPlaybackController: async () => ({ opened: true }),
     setCookie: async () => true,
+    setDesktopIconVisibility: async (visible) => ({ supported: true, visible }),
     setPageCache: async () => true,
     setPlayerPlaying: NOOP,
     updateHostConfig: async (nextConfig) => nextConfig,
     updateDesktopLyricPreferences: async () => null,
+    updateDesktopPlaybackWallpaperPreferences: async (update) => ({
+      ...WALLPAPER_MODEL,
+      preferences: {
+        ...WALLPAPER_MODEL.preferences,
+        ...update,
+        layers: {
+          ...WALLPAPER_MODEL.preferences.layers,
+          ...update.layers,
+        },
+      },
+    }),
     writeLog: async () => true,
     ...overrides,
   };
@@ -106,6 +149,9 @@ describe("browser runtime adapter", () => {
     expect(runtime.auth.completeLogin()).toBeFalse();
     expect((await runtime.updates.getStatus()).supported).toBeFalse();
     expect(runtime.navigation.navigateMainWindow("/setting")).toBeFalse();
+    expect((await runtime.desktopPlaybackWallpaper.getModel()).status.state).toBe("unsupported");
+    expect((await runtime.desktopPlaybackWallpaper.showController()).opened).toBeFalse();
+    expect((await runtime.desktopIcons.getVisibility()).supported).toBeFalse();
   });
 
   test("owns browser cache expiry and namespace invalidation", async () => {
@@ -198,5 +244,68 @@ describe("electron runtime adapter", () => {
     expect(subscribed).toBeTrue();
     expect(paths).toEqual(["/album?id=1"]);
     expect(unsubscribed).toBeTrue();
+  });
+
+  test("routes every desktop wallpaper launcher through one runtime capability", async () => {
+    const calls: string[] = [];
+    const bridge = createBridge({
+      closeDesktopPlaybackController: async () => {
+        calls.push("close-controller");
+        return true;
+      },
+      getDesktopPlaybackWallpaperModel: async () => {
+        calls.push("get-model");
+        return WALLPAPER_MODEL;
+      },
+      retryDesktopPlaybackWallpaper: async () => {
+        calls.push("retry");
+        return WALLPAPER_MODEL;
+      },
+      showDesktopPlaybackController: async () => {
+        calls.push("show-controller");
+        return { opened: true };
+      },
+      updateDesktopPlaybackWallpaperPreferences: async (update) => {
+        calls.push(`configure:${String(update.enabled)}`);
+        return WALLPAPER_MODEL;
+      },
+    });
+    const runtime = createElectronRuntime(bridge);
+
+    await runtime.desktopPlaybackWallpaper.getModel();
+    await runtime.desktopPlaybackWallpaper.configure({ enabled: true });
+    await runtime.desktopPlaybackWallpaper.retry();
+    expect(await runtime.desktopPlaybackWallpaper.showController()).toEqual({ opened: true });
+    expect(await runtime.desktopPlaybackWallpaper.closeController()).toBeTrue();
+
+    expect(calls).toEqual([
+      "get-model",
+      "configure:true",
+      "retry",
+      "show-controller",
+      "close-controller",
+    ]);
+  });
+
+  test("routes desktop icon visibility through the desktop bridge", async () => {
+    const calls: string[] = [];
+    const bridge = createBridge({
+      getDesktopIconVisibility: async () => {
+        calls.push("get-icons");
+        return DESKTOP_ICON_STATE;
+      },
+      setDesktopIconVisibility: async (visible) => {
+        calls.push(`set-icons:${visible}`);
+        return { supported: true, visible };
+      },
+    });
+    const runtime = createElectronRuntime(bridge);
+
+    expect(await runtime.desktopIcons.getVisibility()).toEqual(DESKTOP_ICON_STATE);
+    expect(await runtime.desktopIcons.setVisibility(false)).toEqual({
+      supported: true,
+      visible: false,
+    });
+    expect(calls).toEqual(["get-icons", "set-icons:false"]);
   });
 });

@@ -1,4 +1,9 @@
-import type { PageCacheStats } from "@scopify/desktop-contract";
+import {
+  DEFAULT_DESKTOP_PLAYBACK_WALLPAPER_PREFERENCES,
+  type DesktopIconVisibilityState,
+  type DesktopPlaybackWallpaperModel,
+  type PageCacheStats,
+} from "@scopify/desktop-contract";
 
 import type { AppUpdateState } from "@/types/updater";
 
@@ -31,6 +36,27 @@ export interface BrowserRuntimeEnvironment {
 
 function unsupportedUpdateState(): AppUpdateState {
   return { currentVersion: "", status: "unsupported", supported: false };
+}
+
+function unsupportedDesktopPlaybackWallpaperModel(): DesktopPlaybackWallpaperModel {
+  return {
+    preferences: {
+      ...DEFAULT_DESKTOP_PLAYBACK_WALLPAPER_PREFERENCES,
+      layers: { ...DEFAULT_DESKTOP_PLAYBACK_WALLPAPER_PREFERENCES.layers },
+    },
+    status: {
+      diagnostic: "Desktop playback wallpaper requires the Windows desktop runtime.",
+      state: "unsupported",
+    },
+  };
+}
+
+function unsupportedDesktopIconVisibilityState(): DesktopIconVisibilityState {
+  return {
+    diagnostic: "Desktop icon visibility control requires Windows Explorer.",
+    supported: false,
+    visible: null,
+  };
 }
 
 function getDefaultEnvironment(): BrowserRuntimeEnvironment {
@@ -155,6 +181,10 @@ export function createBrowserRuntime(
       loadHostConfig: async () => null,
       saveHostConfig: async () => null,
     },
+    desktopIcons: {
+      getVisibility: async () => unsupportedDesktopIconVisibilityState(),
+      setVisibility: async () => unsupportedDesktopIconVisibilityState(),
+    },
     desktopLyrics: {
       close: async () => false,
       getPreferences: async () => null,
@@ -164,6 +194,19 @@ export function createBrowserRuntime(
       publish: async () => null,
       sendCommand: NOOP,
       updatePreferences: async () => null,
+    },
+    desktopPlaybackWallpaper: {
+      closeController: async () => false,
+      configure: async () => unsupportedDesktopPlaybackWallpaperModel(),
+      getModel: async () => unsupportedDesktopPlaybackWallpaperModel(),
+      getPresentation: async () => null,
+      onAudioFrame: () => NOOP,
+      onModelChanged: () => NOOP,
+      onPresentationChanged: () => NOOP,
+      publishAudioFrame: NOOP,
+      publishPresentation: async () => null,
+      retry: async () => unsupportedDesktopPlaybackWallpaperModel(),
+      showController: async () => ({ opened: false, reason: "unsupported" }),
     },
     isDesktop: false,
     kind: "browser",

@@ -1,0 +1,37 @@
+import type {
+  DesktopPlaybackWallpaperModel,
+  DesktopPlaybackWallpaperPreferencesUpdate,
+} from "@scopify/desktop-contract";
+import type { MotionValue } from "framer-motion";
+
+import type { DesktopLyricSnapshot } from "@/types/desktopLyric";
+import type { FoliaPlaybackBridge } from "@/types/foliaStage";
+
+export type DesktopPlaybackControllerTab = "appearance" | "wallpaper";
+
+export interface DesktopWallpaperFoliaPlaybackState {
+  bridge: FoliaPlaybackBridge;
+  model: DesktopPlaybackWallpaperModel | null;
+  presentation: DesktopLyricSnapshot | null;
+}
+
+export interface DesktopWallpaperAudioMotionValues {
+  audioPower: MotionValue<number>;
+  bass: MotionValue<number>;
+  lowMid: MotionValue<number>;
+  mid: MotionValue<number>;
+  spectrum: MotionValue<Uint8Array<ArrayBuffer>>;
+  treble: MotionValue<number>;
+  vocal: MotionValue<number>;
+}
+
+export interface DesktopPlaybackWallpaperControllerState {
+  closeController(): Promise<boolean>;
+  configure(
+    update: DesktopPlaybackWallpaperPreferencesUpdate,
+  ): Promise<DesktopPlaybackWallpaperModel | null>;
+  isPending: boolean;
+  model: DesktopPlaybackWallpaperModel | null;
+  retry(): Promise<DesktopPlaybackWallpaperModel | null>;
+  showController(): Promise<boolean>;
+}

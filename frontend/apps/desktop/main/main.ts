@@ -18,6 +18,16 @@ import {
 import { verifyRendererArtifact } from "../lib/rendererArtifact.js";
 import { registerIpcHandlers } from "./module/ipc.js";
 import { initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
+import { initializeDesktopIconVisibilityCapability } from "./module/desktopIcons/index.js";
+import { initializeDesktopPlaybackWallpaperCapability } from "./module/desktopPlaybackWallpaper/index.js";
+import {
+  createElectronDesktopPlaybackWallpaperDriver,
+  type ElectronDesktopPlaybackWallpaperDriver,
+} from "./module/desktopPlaybackWallpaper/electronDriver.js";
+import {
+  createDesktopPlaybackControllerWindow,
+  type DesktopPlaybackControllerWindow,
+} from "./module/desktopPlaybackWallpaper/controllerWindow.js";
 import initializeLoginWindow from "./module/login.js";
 import { applyElectronProxy } from "./module/proxy.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
@@ -33,6 +43,8 @@ let splashWindow: BrowserWindowType | null = null;
 let mainWindow: BrowserWindowType | null = null;
 let mainWindowReleased = false;
 let isQuitting = false;
+let desktopPlaybackWallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | null = null;
+let desktopPlaybackControllerWindow: DesktopPlaybackControllerWindow | null = null;
 
 const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = useStaticRenderer
@@ -116,6 +128,10 @@ function createWindow() {
 
   mainWindow.webContents.once("did-finish-load", () => {
     revealMainWindow();
+    setTimeout(() => {
+      desktopPlaybackControllerWindow?.prepare();
+      desktopPlaybackWallpaperDriver?.prepare();
+    }, 500);
     if (desktopConfig.app.devTools) {
       mainWindow?.webContents.openDevTools();
     }
@@ -192,9 +208,25 @@ function createWindow() {
 }
 
 function setupWindowModules(win: BrowserWindowType) {
+  const rendererBaseUrl = useStaticRenderer ? "app://-/" : devBase;
+  desktopPlaybackWallpaperDriver ??= createElectronDesktopPlaybackWallpaperDriver({
+    rendererBaseUrl,
+  });
+  desktopPlaybackControllerWindow ??= createDesktopPlaybackControllerWindow({
+    rendererBaseUrl,
+  });
   registerIpcHandlers(win);
+  initializeDesktopIconVisibilityCapability(win, {
+    getControllerWindow: desktopPlaybackControllerWindow.getWindow,
+  });
   initializeDesktopLyricCompanion(win, {
-    rendererBaseUrl: useStaticRenderer ? "app://-/" : devBase,
+    rendererBaseUrl,
+  });
+  initializeDesktopPlaybackWallpaperCapability(win, {
+    controller: desktopPlaybackControllerWindow,
+    driver: desktopPlaybackWallpaperDriver,
+    getControllerWindow: desktopPlaybackControllerWindow.getWindow,
+    getWallpaperWindow: desktopPlaybackWallpaperDriver.getWindow,
   });
   initializeUpdater(win, desktopConfig.updater);
 
@@ -276,6 +308,8 @@ if (!gotTheLock) {
 
   app.on("before-quit", () => {
     isQuitting = true;
+    desktopPlaybackControllerWindow?.dispose();
+    desktopPlaybackControllerWindow = null;
   });
 
   process.on("uncaughtException", (err) => {

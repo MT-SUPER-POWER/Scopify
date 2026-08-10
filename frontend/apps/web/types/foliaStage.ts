@@ -18,6 +18,9 @@ import type {
   VisualizerTuningMode,
 } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
 import type { LyricVisualizerMode } from "@/types/lyrics";
+import type { FoliaStageAssets } from "@/types/foliaAssets";
+import type { DesktopLyricTrack } from "@/types/desktopLyric";
+import type { DesktopPlaybackWallpaperLayers } from "@scopify/desktop-contract";
 
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
 export type FoliaPanelTab = "controls" | "lyrics" | "queue";
@@ -117,4 +120,23 @@ export interface FoliaPlaybackBridge {
   lines: Line[];
   lyricCurrentTime: MotionValue<number>;
   lyrics: LyricData | null;
+}
+
+export interface FoliaPresentationAppearance {
+  assets: FoliaStageAssets;
+  isDaylight: boolean;
+  settings: FoliaStageStore;
+  subtitleTheme: Theme;
+  theme: Theme;
+}
+
+export interface FoliaPresentationSurfaceProps {
+  appearance: FoliaPresentationAppearance;
+  bridge: FoliaPlaybackBridge;
+  isPlayerChromeHidden?: boolean;
+  layers: DesktopPlaybackWallpaperLayers;
+  onBack?: () => void;
+  onLyricLineSeek?: (timeSeconds: number) => void;
+  staticMode?: boolean;
+  track: DesktopLyricTrack | null;
 }

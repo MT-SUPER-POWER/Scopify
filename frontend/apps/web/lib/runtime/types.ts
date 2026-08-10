@@ -1,4 +1,9 @@
 import type {
+  DesktopIconVisibilityState,
+  DesktopPlaybackControllerOpenResult,
+  DesktopPlaybackWallpaperAudioFrame,
+  DesktopPlaybackWallpaperModel,
+  DesktopPlaybackWallpaperPreferencesUpdate,
   DesktopHostConfig,
   PageCacheStats,
   RendererLogEvent,
@@ -55,6 +60,29 @@ export interface RuntimeDesktopLyrics {
   updatePreferences(update: DesktopLyricPreferencesUpdate): Promise<DesktopLyricPreferences | null>;
 }
 
+export interface RuntimeDesktopIcons {
+  getVisibility(): Promise<DesktopIconVisibilityState>;
+  setVisibility(visible: boolean): Promise<DesktopIconVisibilityState>;
+}
+
+export interface RuntimeDesktopPlaybackWallpaper {
+  closeController(): Promise<boolean>;
+  configure(
+    update: DesktopPlaybackWallpaperPreferencesUpdate,
+  ): Promise<DesktopPlaybackWallpaperModel>;
+  getModel(): Promise<DesktopPlaybackWallpaperModel>;
+  getPresentation(): Promise<DesktopLyricSnapshot | null>;
+  onAudioFrame(callback: (frame: DesktopPlaybackWallpaperAudioFrame) => void): RuntimeUnsubscribe;
+  onModelChanged(callback: (model: DesktopPlaybackWallpaperModel) => void): RuntimeUnsubscribe;
+  onPresentationChanged(callback: (presentation: DesktopLyricSnapshot) => void): RuntimeUnsubscribe;
+  publishAudioFrame(frame: DesktopPlaybackWallpaperAudioFrame): void;
+  publishPresentation(
+    presentation: DesktopLyricSnapshotInput,
+  ): Promise<DesktopLyricSnapshot | null>;
+  retry(): Promise<DesktopPlaybackWallpaperModel>;
+  showController(): Promise<DesktopPlaybackControllerOpenResult>;
+}
+
 export interface RuntimeLogging {
   write(event: RendererLogEvent): Promise<boolean>;
 }
@@ -92,7 +120,9 @@ export interface WebRuntime {
   readonly auth: RuntimeAuthentication;
   readonly cache: RuntimeCache;
   readonly config: RuntimeConfiguration;
+  readonly desktopIcons: RuntimeDesktopIcons;
   readonly desktopLyrics: RuntimeDesktopLyrics;
+  readonly desktopPlaybackWallpaper: RuntimeDesktopPlaybackWallpaper;
   readonly isDesktop: boolean;
   readonly kind: RuntimeKind;
   readonly logging: RuntimeLogging;

@@ -14,6 +14,7 @@
     "dev:desktop": "turbo run dev --filter=@scopify/desktop",
     "dev:backend": "bun run backend/api-enhanced/app.js",
     "dev:full": "concurrently -n \"CLIENTS,NETEASE\" -c \"yellow,red\" --kill-others \"bun run dev\" \"bun run dev:backend\"",
+    "prototype:desktop-wallpaper": "bun scripts/run-desktop-wallpaper-spike.ts",
     "build": "bun run build:web && bun run build:desktop",
     "build:web": "turbo run build --filter=@scopify/web",
     "build:desktop-renderer": "turbo run build:desktop --filter=@scopify/web && bun frontend/apps/desktop/scripts/sync-renderer.ts",
