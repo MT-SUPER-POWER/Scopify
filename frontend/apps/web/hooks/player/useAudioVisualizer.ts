@@ -2,6 +2,11 @@
 
 import { type MutableRefObject, useEffect, useRef } from "react";
 
+import {
+  applyAudioEqualizerSettings,
+  connectAudioEqualizerGraph,
+} from "@/lib/player/audioEqualizerGraph";
+import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import type { LyricAudioBands } from "@/types/lyrics";
 
 interface AudioContextWindow extends Window {
@@ -14,8 +19,10 @@ interface AudioContextWindow extends Window {
  */
 export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement | null>) {
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const equalizerFiltersRef = useRef<BiquadFilterNode[]>([]);
   const mediaSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const contextRef = useRef<AudioContext | null>(null);
+  const equalizerSettings = useAudioEqualizerStore((state) => state.settings);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -45,7 +52,12 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
           analyser = context.createAnalyser();
           analyser.fftSize = 2048;
           analyser.smoothingTimeConstant = 0.6;
-          source.connect(analyser);
+          equalizerFiltersRef.current = connectAudioEqualizerGraph(
+            context,
+            source,
+            analyser,
+            useAudioEqualizerStore.getState().settings,
+          );
           analyser.connect(context.destination);
           analyserRef.current = analyser;
         }
@@ -98,6 +110,12 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
       window.cancelAnimationFrame(animationFrame);
     };
   }, [audioRef]);
+
+  useEffect(() => {
+    const context = contextRef.current;
+    if (!context || equalizerFiltersRef.current.length === 0) return;
+    applyAudioEqualizerSettings(context, equalizerFiltersRef.current, equalizerSettings);
+  }, [equalizerSettings]);
 }
 
 function averageFrequencyRange(data: Uint8Array, minimumHz: number, maximumHz: number): number {

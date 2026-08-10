@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 
-import { FoliaAudioQualityControl } from "@/components/lyrics/FoliaAudioQualityControl";
+import { FoliaAudioSettingsControl } from "@/components/lyrics/FoliaAudioSettingsControl";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import { FoliaVisualizerControls } from "@/components/lyrics/FoliaVisualizerControls";
@@ -119,7 +119,14 @@ export function FoliaPanelControls({
         </span>
       </label>
 
-      <FoliaAudioQualityControl theme={theme} />
+      <section
+        className={`flex items-center justify-between gap-3 border-t pt-4 ${isDaylight ? "border-black/5" : "border-white/5"}`}
+      >
+        <span className="text-[11px] font-semibold tracking-wider uppercase opacity-55">
+          {t("audioSettings.title")}
+        </span>
+        <FoliaAudioSettingsControl theme={theme} />
+      </section>
 
       <FoliaVisualizerControls
         onOpenSettings={onOpenSettings}

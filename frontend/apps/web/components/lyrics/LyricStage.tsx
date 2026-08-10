@@ -51,7 +51,12 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape" || event.code === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+        return;
+      }
       if (event.key.toLowerCase() === "h") {
         event.preventDefault();
         cyclePlayerChromeVisibilityMode();
@@ -71,10 +76,10 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
       }
     };
     window.addEventListener("desktop-lyric:stage-command", onDesktopCommand);
-    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keydown", onKeyDown, true);
     return () => {
       window.removeEventListener("desktop-lyric:stage-command", onDesktopCommand);
-      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keydown", onKeyDown, true);
     };
   }, [cyclePlayerChromeVisibilityMode, onClose, setPlayerChromeVisibilityMode]);
 

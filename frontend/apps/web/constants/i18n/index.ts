@@ -22,6 +22,8 @@ import { uiMessages } from "./ui";
 import { playerBarMessages } from "./playerBar";
 import { desktopLyricsMessages } from "./desktopLyrics";
 import { desktopPlaybackControllerMessages } from "./desktopPlaybackController";
+import { audioEqualizerMessages } from "./audioEqualizer";
+import { audioSettingsMessages } from "./audioSettings";
 import { foliaMessages } from "./folia";
 import { shortcutsMessages } from "./shortcuts";
 import { libraryMessages } from "./library";
@@ -53,6 +55,8 @@ export const messages = {
     ...playerBarMessages["zh-CN"],
     ...desktopLyricsMessages["zh-CN"],
     ...desktopPlaybackControllerMessages["zh-CN"],
+    ...audioEqualizerMessages["zh-CN"],
+    ...audioSettingsMessages["zh-CN"],
     ...foliaMessages["zh-CN"],
     ...shortcutsMessages["zh-CN"],
     ...libraryMessages["zh-CN"],
@@ -83,6 +87,8 @@ export const messages = {
     ...playerBarMessages["zh-TW"],
     ...desktopLyricsMessages["zh-TW"],
     ...desktopPlaybackControllerMessages["zh-TW"],
+    ...audioEqualizerMessages["zh-TW"],
+    ...audioSettingsMessages["zh-TW"],
     ...foliaMessages["zh-TW"],
     ...shortcutsMessages["zh-TW"],
     ...libraryMessages["zh-TW"],
@@ -113,6 +119,8 @@ export const messages = {
     ...playerBarMessages["en-US"],
     ...desktopLyricsMessages["en-US"],
     ...desktopPlaybackControllerMessages["en-US"],
+    ...audioEqualizerMessages["en-US"],
+    ...audioSettingsMessages["en-US"],
     ...foliaMessages["en-US"],
     ...shortcutsMessages["en-US"],
     ...libraryMessages["en-US"],

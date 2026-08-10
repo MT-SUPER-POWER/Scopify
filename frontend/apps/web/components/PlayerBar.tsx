@@ -26,7 +26,6 @@ import { useCallback, useEffect } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { toast } from "sonner";
 import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
-import { AudioQualityDialog } from "@/components/player/AudioQualityDialog";
 import { QueuePopover } from "@/components/QueuePopover";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { VolumeControl } from "@/components/VolumeControl";
@@ -40,9 +39,9 @@ import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useUiStore } from "@/store/module/ui";
 import type { PlayerBarStatActionProps } from "@/types/components/player";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Skeleton } from "./ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
@@ -147,6 +146,7 @@ export const PlayerBar = ({
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricStageBar = variant === "lyric-stage";
   const { musicQuality } = useMusicQuality();
+  const openAudioSettings = useAudioEqualizerStore((state) => state.openDialog);
 
   // 查找当前选中的音质选项，如果找不到就提供一个兜底
   const currentOption = QUALITY_OPTIONS.find((opt) => opt.value === musicQuality);
@@ -505,37 +505,24 @@ export const PlayerBar = ({
             </Tooltip>
           </TooltipProvider>
 
-          {/* 音质选择 */}
-          <DropdownMenu>
-            <TooltipProvider>
-              <Tooltip>
-                <DropdownMenuTrigger asChild>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label={t("ui.audioQuality")}
-                      className={cn(
-                        "hover:text-content flex cursor-pointer items-center justify-center transition-colors",
-                      )}
-                    >
-                      <CurrentIcon className="size-4 lg:size-5" />
-                    </button>
-                  </TooltipTrigger>
-                </DropdownMenuTrigger>
-                <TooltipContent side="top" sideOffset={8}>
-                  {t("ui.audioQuality")}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <DropdownMenuContent
-              className="border-none bg-transparent p-0 shadow-none outline-none"
-              side="top"
-              align="end"
-              sideOffset={8}
-            >
-              <AudioQualityDialog />
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* 音频设置 */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={t("audioSettings.open")}
+                  onClick={() => openAudioSettings("quality")}
+                  className="hover:text-content flex cursor-pointer items-center justify-center transition-colors"
+                >
+                  <CurrentIcon className="size-4 lg:size-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={8}>
+                {t("audioSettings.title")}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           {/* 播放列表模态界面 */}
           <div className="hidden md:block">

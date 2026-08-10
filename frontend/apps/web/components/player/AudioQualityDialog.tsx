@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 function SvipBadge() {
   return (
-    <span className="inline-flex shrink-0 items-center rounded-[2px] border border-[#a67d16] bg-[#c4931c]/10 px-1 py-px text-[9px] leading-none font-medium text-[#dfb42b]">
+    <span className="border-warning/50 bg-warning/10 text-warning inline-flex shrink-0 items-center rounded-[2px] border px-1 py-px text-[9px] leading-none font-medium">
       SVIP
     </span>
   );
@@ -17,7 +17,7 @@ function SvipBadge() {
 
 function VipBadge() {
   return (
-    <span className="inline-flex shrink-0 items-center rounded-[2px] border border-[#9c4141] bg-[#c24c4c]/8 px-1 py-px text-[9px] leading-none font-medium text-[#d86666]">
+    <span className="border-danger/50 bg-danger/10 text-danger inline-flex shrink-0 items-center rounded-[2px] border px-1 py-px text-[9px] leading-none font-medium">
       VIP
     </span>
   );
@@ -35,15 +35,15 @@ export function AudioQualityDialog() {
   };
 
   return (
-    <div className="w-90 overflow-hidden rounded-2xl border border-white/10 bg-[#121216]/95 p-4 text-white shadow-2xl backdrop-blur-2xl select-none md:w-95">
+    <div className="border-brand/20 bg-brand/5 text-content min-w-0 overflow-hidden rounded-2xl border p-3 select-none sm:p-4">
       {/* 顶栏标题 */}
-      <div className="mb-3.5 flex items-center justify-between px-1">
-        <h3 className="text-sm font-bold tracking-tight text-white/90">
+      <div className="mb-3 flex items-center justify-between gap-3 px-1 sm:mb-3.5">
+        <h3 className="text-content text-sm font-bold tracking-tight">
           {t("playbar.quality.headerTitle") || "当前歌曲音质"}
         </h3>
         <button
           type="button"
-          className="flex cursor-pointer items-center gap-1 text-xs text-white/40 transition-colors hover:text-white/80"
+          className="text-content-subtle hover:text-content flex shrink-0 cursor-pointer items-center gap-1 text-xs transition-colors"
           onClick={() => {
             // 可展开详情提示
           }}
@@ -54,21 +54,21 @@ export function AudioQualityDialog() {
       </div>
 
       {/* 顶部旗舰双卡片 (Scopify Green Accent Hero Tiers) */}
-      <div className="mb-3 grid grid-cols-2 gap-2.5">
+      <div className="mb-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {heroOptions.map((opt) => {
           const isSelected = musicQuality === opt.value;
           const Icon = opt.icon;
 
           return (
-            <div
+            <button
+              type="button"
               key={opt.value}
               onClick={() => handleSelect(opt.value)}
               className={cn(
-                "group relative flex cursor-pointer flex-col justify-between rounded-xl p-3.5 transition-all",
-                "border bg-linear-to-b from-white/5 to-white/1",
+                "group relative flex w-full cursor-pointer flex-col justify-between rounded-xl border p-3.5 text-left transition-all",
                 isSelected
-                  ? "border-[#1ed760]/60 bg-linear-to-b from-[#1ed760]/15 via-white/4 to-transparent shadow-[0_0_20px_rgba(30,215,96,0.15)]"
-                  : "border-white/10 hover:border-white/20 hover:bg-white/6",
+                  ? "border-brand/50 bg-brand/10 shadow-panel"
+                  : "border-brand/15 bg-brand/5 hover:border-brand/30 hover:bg-brand/10",
               )}
             >
               {/* Top Row: Icon & Badge */}
@@ -77,8 +77,8 @@ export function AudioQualityDialog() {
                   className={cn(
                     "flex size-9 items-center justify-center rounded-full transition-transform group-hover:scale-105",
                     isSelected
-                      ? "bg-[#1ed760]/20 text-[#1ed760]"
-                      : "bg-white/10 text-white/70 group-hover:text-white",
+                      ? "bg-brand/15 text-brand"
+                      : "bg-brand/10 text-brand/70 group-hover:bg-brand/15 group-hover:text-brand",
                   )}
                 >
                   {Icon && <Icon className="size-5" />}
@@ -91,18 +91,18 @@ export function AudioQualityDialog() {
                 <div
                   className={cn(
                     "text-sm font-bold tracking-tight transition-colors",
-                    isSelected ? "text-[#1ed760]" : "text-white",
+                    isSelected ? "text-brand" : "text-content",
                   )}
                 >
                   {t(opt.labelKey)}
                 </div>
                 {opt.sublabelKey && (
-                  <div className="text-[11px] font-medium tracking-wider text-white/40">
+                  <div className="text-content-subtle text-[11px] font-medium tracking-wider">
                     {t(opt.sublabelKey)}
                   </div>
                 )}
                 {opt.techSpec && (
-                  <div className="mt-1.5 text-[11px] leading-tight text-white/50">
+                  <div className="text-content-muted mt-1.5 text-[11px] leading-tight">
                     {t(opt.techSpec)}
                   </div>
                 )}
@@ -110,11 +110,11 @@ export function AudioQualityDialog() {
 
               {/* Active Indicator checkmark (Scopify Green) */}
               {isSelected && (
-                <div className="absolute top-2.5 right-2.5 flex size-4.5 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-xs">
+                <div className="bg-brand text-brand-foreground absolute top-2.5 right-2.5 flex size-4.5 items-center justify-center rounded-full shadow-xs">
                   <Check size={11} strokeWidth={3.5} />
                 </div>
               )}
-            </div>
+            </button>
           );
         })}
       </div>
@@ -126,14 +126,13 @@ export function AudioQualityDialog() {
           const Icon = opt.icon;
 
           return (
-            <div
+            <button
+              type="button"
               key={opt.value}
               onClick={() => handleSelect(opt.value)}
               className={cn(
-                "group relative flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 transition-all",
-                isSelected
-                  ? "border border-[#1ed760]/30 bg-[#1ed760]/10"
-                  : "border border-transparent hover:bg-white/5",
+                "group relative flex w-full cursor-pointer items-center justify-between rounded-xl border px-3 py-2.5 text-left transition-all",
+                isSelected ? "border-brand/30 bg-brand/10" : "hover:bg-brand/8 border-transparent",
               )}
             >
               {/* Left Side: Icon / Circle Badge + Text */}
@@ -143,8 +142,8 @@ export function AudioQualityDialog() {
                   className={cn(
                     "flex size-9 shrink-0 items-center justify-center rounded-full transition-colors",
                     isSelected
-                      ? "bg-[#1ed760]/20 text-[#1ed760]"
-                      : "bg-white/5 text-zinc-400 group-hover:bg-white/10 group-hover:text-white/90",
+                      ? "bg-brand/15 text-brand"
+                      : "bg-brand/8 text-brand/70 group-hover:bg-brand/15 group-hover:text-brand",
                   )}
                 >
                   {opt.shortLabel ? (
@@ -160,7 +159,7 @@ export function AudioQualityDialog() {
                     <span
                       className={cn(
                         "text-sm font-semibold tracking-tight transition-colors",
-                        isSelected ? "text-[#1ed760]" : "text-white/90 group-hover:text-white",
+                        isSelected ? "text-brand" : "text-content",
                       )}
                     >
                       {t(opt.labelKey)}
@@ -169,7 +168,7 @@ export function AudioQualityDialog() {
                     {opt.badgeType === "vip" && <VipBadge />}
                   </div>
                   {opt.techSpec && (
-                    <span className="mt-0.5 truncate text-[11px] text-white/45">
+                    <span className="text-content-muted mt-0.5 truncate text-[11px]">
                       {t(opt.techSpec)}
                     </span>
                   )}
@@ -178,11 +177,11 @@ export function AudioQualityDialog() {
 
               {/* Right Side: Selected Checkmark (Scopify Green) */}
               {isSelected && (
-                <div className="ml-2 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#1ed760] text-black shadow-xs">
+                <div className="bg-brand text-brand-foreground ml-2 flex size-5 shrink-0 items-center justify-center rounded-full shadow-xs">
                   <Check size={12} strokeWidth={3.5} />
                 </div>
               )}
-            </div>
+            </button>
           );
         })}
       </div>

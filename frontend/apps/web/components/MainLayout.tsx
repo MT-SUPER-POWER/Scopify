@@ -15,6 +15,7 @@ import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { CommandPalette } from "@/components/shortcuts/CommandPalette";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
+import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
 import { runtime } from "@/lib/runtime";
 // lib
 import { cn } from "@/lib/utils";
@@ -274,6 +275,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     >
       {/* 模态注册 */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <AudioSettingsDialog />
       <CommandPalette />
       <KeyboardShortcutHelp />
       <AppCloseDialog />

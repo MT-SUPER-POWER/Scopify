@@ -4313,6 +4313,126 @@ export interface TranslateFn {
    */
   (key: "desktopPlaybackController.updateFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 打开 10 段音频均衡器
+   * zh-TW: 開啟 10 段音訊等化器
+   * en-US: Open 10-band equalizer
+   */
+  (key: "audioEqualizer.open", params?: TranslationParams): string;
+  /**
+   * zh-CN: 10 段音频均衡器
+   * zh-TW: 10 段音訊等化器
+   * en-US: 10-band equalizer
+   */
+  (key: "audioEqualizer.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从低频到高频塑造播放声音，所有修改都会自动保存。
+   * zh-TW: 從低頻到高頻塑造播放聲音，所有修改都會自動儲存。
+   * en-US: Shape playback from deep bass to high treble. Changes save automatically.
+   */
+  (key: "audioEqualizer.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 均衡器已开启
+   * zh-TW: 等化器已開啟
+   * en-US: Equalizer on
+   */
+  (key: "audioEqualizer.enabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 均衡器已关闭
+   * zh-TW: 等化器已關閉
+   * en-US: Equalizer off
+   */
+  (key: "audioEqualizer.disabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 频段增益
+   * zh-TW: 頻段增益
+   * en-US: Band gain
+   */
+  (key: "audioEqualizer.bandGain", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完成
+   * zh-TW: 完成
+   * en-US: Done
+   */
+  (key: "audioEqualizer.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 水平
+   * zh-TW: 水平
+   * en-US: Flat
+   */
+  (key: "audioEqualizer.preset.flat", params?: TranslationParams): string;
+  /**
+   * zh-CN: Lo-Fi
+   * zh-TW: Lo-Fi
+   * en-US: Lo-Fi
+   */
+  (key: "audioEqualizer.preset.lofi", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收音机
+   * zh-TW: 收音機
+   * en-US: Radio
+   */
+  (key: "audioEqualizer.preset.radio", params?: TranslationParams): string;
+  /**
+   * zh-CN: 黑胶
+   * zh-TW: 黑膠
+   * en-US: Vinyl
+   */
+  (key: "audioEqualizer.preset.vinyl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 人声
+   * zh-TW: 人聲
+   * en-US: Vocal
+   */
+  (key: "audioEqualizer.preset.vocal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 低音
+   * zh-TW: 低音
+   * en-US: Bass
+   */
+  (key: "audioEqualizer.preset.bass", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自訂
+   * en-US: Custom
+   */
+  (key: "audioEqualizer.preset.custom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开音频设置
+   * zh-TW: 開啟音訊設定
+   * en-US: Open audio settings
+   */
+  (key: "audioSettings.open", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频设置
+   * zh-TW: 音訊設定
+   * en-US: Audio settings
+   */
+  (key: "audioSettings.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 统一管理播放音质和 10 段均衡器。
+   * zh-TW: 統一管理播放音質和 10 段等化器。
+   * en-US: Manage playback quality and the 10-band equalizer in one place.
+   */
+  (key: "audioSettings.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放音质
+   * zh-TW: 播放音質
+   * en-US: Playback quality
+   */
+  (key: "audioSettings.qualityTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 均衡器
+   * zh-TW: 等化器
+   * en-US: Equalizer
+   */
+  (key: "audioSettings.equalizerTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完成
+   * zh-TW: 完成
+   * en-US: Done
+   */
+  (key: "audioSettings.close", params?: TranslationParams): string;
+  /**
    * zh-CN: 添加封面色彩
    * zh-TW: 添加封面色彩
    * en-US: Cover color added
