@@ -8,11 +8,12 @@ export type RepeatMode = "off" | "all" | "one";
 export type SourceChangeMode = "new-track" | "preserve-position";
 export type PlayerBroadcastCommand =
   | { type: "PLAY_NEXT" | "PLAY_PREV" | "REQUEST_STATE" | "SYNC_USER_STORE" | "TOGGLE_PLAY" }
-  | { payload: number; type: "SET_VOLUME" };
+  | { payload: number; type: "SEEK" | "SET_VOLUME" };
 
 export interface RemotePlayerSnapshot {
   currentSongDetail: SongDetail | null;
   isPlaying: boolean;
+  positionMs: number;
   volume: number;
 }
 
@@ -25,6 +26,7 @@ export interface RemotePlayerControllerState extends RemotePlayerSnapshot {
   isConnected: boolean;
   playNext(): void;
   playPrevious(): void;
+  seek(positionMs: number): void;
   setVolume(volume: number): void;
   togglePlaying(): void;
 }

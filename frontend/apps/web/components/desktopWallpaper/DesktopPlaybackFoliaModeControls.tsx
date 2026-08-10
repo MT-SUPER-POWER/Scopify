@@ -7,7 +7,6 @@ import {
   DESKTOP_FOLIA_BACKGROUND_OPTIONS,
   DESKTOP_FOLIA_VISUALIZER_OPTIONS,
 } from "@/constants/desktopPlaybackController";
-import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
@@ -16,15 +15,15 @@ export function DesktopPlaybackFoliaModeControls() {
   const settings = useLyricStageStore();
 
   return (
-    <div className="space-y-4">
+    <div className="desktop-controller-card space-y-3 rounded-2xl p-3">
       <label className="block space-y-2">
-        <span className="text-content-muted flex items-center gap-2 text-[11px] font-semibold tracking-wide uppercase">
+        <span className="text-content-muted flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] uppercase">
           <Waves className="size-3.5" />
           {t("folia.options.lyricsRenderer")}
         </span>
         <select
           aria-label={t("folia.options.lyricsRenderer")}
-          className="border-border bg-surface-overlay text-content h-10 w-full rounded-lg border px-3 text-sm outline-none focus:border-current"
+          className="desktop-controller-field h-9 w-full rounded-xl px-3 text-xs transition"
           onChange={(event) => {
             const option = DESKTOP_FOLIA_VISUALIZER_OPTIONS.find(
               ({ value }) => value === event.currentTarget.value,
@@ -42,13 +41,13 @@ export function DesktopPlaybackFoliaModeControls() {
       </label>
 
       <label className="block space-y-2">
-        <span className="text-content-muted flex items-center gap-2 text-[11px] font-semibold tracking-wide uppercase">
+        <span className="text-content-muted flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] uppercase">
           <ImageIcon className="size-3.5" />
           {t("folia.options.visualizerBackgroundMode")}
         </span>
         <select
           aria-label={t("folia.options.visualizerBackgroundMode")}
-          className="border-border bg-surface-overlay text-content h-10 w-full rounded-lg border px-3 text-sm outline-none focus:border-current"
+          className="desktop-controller-field h-9 w-full rounded-xl px-3 text-xs transition"
           onChange={(event) => {
             const option = DESKTOP_FOLIA_BACKGROUND_OPTIONS.find(
               ({ value }) => value === event.currentTarget.value,
@@ -66,22 +65,18 @@ export function DesktopPlaybackFoliaModeControls() {
       </label>
 
       <div className="space-y-2">
-        <span className="text-content-muted flex items-center gap-2 text-[11px] font-semibold tracking-wide uppercase">
+        <span className="text-content-muted flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] uppercase">
           <Activity className="size-3.5" />
           {t("folia.options.animationIntensity")}
         </span>
-        <div className="bg-surface-overlay grid grid-cols-3 gap-1 rounded-lg p-1">
+        <div className="desktop-controller-segment grid grid-cols-3 gap-1 rounded-xl p-1">
           {DESKTOP_FOLIA_ANIMATION_OPTIONS.map((option) => (
             <button
               key={option.value}
               type="button"
               aria-pressed={settings.animationIntensity === option.value}
-              className={cn(
-                "h-8 rounded-md text-xs transition-colors",
-                settings.animationIntensity === option.value
-                  ? "bg-content/12 text-content font-medium"
-                  : "text-content-muted hover:text-content",
-              )}
+              className="desktop-controller-segment-button h-8 rounded-lg text-xs transition"
+              data-active={settings.animationIntensity === option.value}
               onClick={() => settings.patchSettings({ animationIntensity: option.value })}
             >
               {t(option.labelKey)}
@@ -98,7 +93,7 @@ export function DesktopPlaybackFoliaModeControls() {
         <input
           type="range"
           aria-label={t("folia.options.visualizerOpacity")}
-          className="accent-brand h-1.5 w-full cursor-pointer"
+          className="desktop-controller-range w-full cursor-pointer"
           max={100}
           min={20}
           onChange={(event) =>

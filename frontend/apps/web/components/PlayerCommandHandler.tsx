@@ -16,6 +16,7 @@ import {
 } from "@/lib/player/remotePlayerState";
 import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
+import { useTimeStore } from "@/store/module/time";
 import type { PlayerBroadcastCommand, RemotePlayerSnapshot } from "@/types/player";
 
 const REMOTE_PLAYER_HEARTBEAT_INTERVAL_MS = 1_000;
@@ -43,9 +44,19 @@ export function PlayerCommandHandler() {
         metadata: { error: String(error), listenerIndex },
       });
     };
+    let latestPositionMs = useTimeStore.getState().currentTime;
+    const selectPlayerSnapshot = (positionMs = latestPositionMs) =>
+      selectRemotePlayerSnapshot({
+        ...usePlayerStore.getState(),
+        positionMs: Math.max(0, positionMs),
+      });
     const publishState = () => {
-      const snapshot = selectRemotePlayerSnapshot(usePlayerStore.getState());
+      const snapshot = selectPlayerSnapshot();
       publishCrossWindowPlayerSnapshot(snapshot, snapshotListeners, onSnapshotListenerError);
+    };
+    const publishPosition = (positionMs: number) => {
+      latestPositionMs = Math.max(0, positionMs);
+      stateChannel.postMessage(selectPlayerSnapshot());
     };
 
     cmdChannel.onmessage = (event: MessageEvent<PlayerBroadcastCommand>) => {
@@ -65,6 +76,12 @@ export function PlayerCommandHandler() {
         case "SET_VOLUME":
           player.setVolume(message.payload);
           break;
+        case "SEEK": {
+          const positionMs = Math.max(0, message.payload);
+          window.dispatchEvent(new CustomEvent("player-seek", { detail: positionMs }));
+          publishPosition(positionMs);
+          break;
+        }
         case "SYNC_USER_STORE": {
           const userStr = localStorage.getItem("user-storage");
           if (userStr) {
@@ -86,8 +103,12 @@ export function PlayerCommandHandler() {
     // connection as well as on later changes so a missed one-shot request cannot leave it stale.
     const unsubscribePlayerStore = subscribeCrossWindowPlayerSnapshots(
       {
-        getState: () => usePlayerStore.getState(),
-        subscribe: (listener) => usePlayerStore.subscribe(listener),
+        getState: () => ({
+          ...usePlayerStore.getState(),
+          positionMs: latestPositionMs,
+        }),
+        subscribe: (listener) =>
+          usePlayerStore.subscribe((state) => listener({ ...state, positionMs: latestPositionMs })),
       },
       snapshotListeners,
       {
@@ -118,10 +139,18 @@ export function PlayerCommandHandler() {
     };
 
     const unsubscribeControlAudio = runtime.media.onCommand(handleThumbarControl);
+    const onPlayerTime = (event: Event) => {
+      const positionMs = (event as CustomEvent<unknown>).detail;
+      if (typeof positionMs === "number" && Number.isFinite(positionMs)) {
+        publishPosition(Math.max(0, positionMs));
+      }
+    };
+    window.addEventListener("player-time", onPlayerTime);
 
     return () => {
       cmdChannel.close();
       stateChannel.close();
+      window.removeEventListener("player-time", onPlayerTime);
       unsubscribePlayerStore();
       unsubscribeControlAudio();
     };

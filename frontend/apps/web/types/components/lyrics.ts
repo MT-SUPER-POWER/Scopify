@@ -80,6 +80,7 @@ export interface FoliaStageSettingsProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   theme: Theme;
+  themeLibraryRequestId: number;
 }
 
 export interface FoliaSonnetPerformanceWarningDialogProps {

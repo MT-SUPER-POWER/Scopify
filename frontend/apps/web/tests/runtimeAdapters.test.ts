@@ -115,6 +115,7 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     retryDesktopPlaybackWallpaper: async () => WALLPAPER_MODEL,
     sendAppCloseAction: NOOP,
     sendDesktopLyricCommand: NOOP,
+    setDesktopPlaybackControllerLayout: async () => true,
     showDesktopPlaybackController: async () => ({ opened: true }),
     setCookie: async () => true,
     setDesktopIconVisibility: async (visible) => ({ supported: true, visible }),
@@ -151,6 +152,7 @@ describe("browser runtime adapter", () => {
     expect(runtime.navigation.navigateMainWindow("/setting")).toBeFalse();
     expect((await runtime.desktopPlaybackWallpaper.getModel()).status.state).toBe("unsupported");
     expect((await runtime.desktopPlaybackWallpaper.showController()).opened).toBeFalse();
+    expect(await runtime.desktopPlaybackWallpaper.setControllerLayout("expanded")).toBeFalse();
     expect((await runtime.desktopIcons.getVisibility()).supported).toBeFalse();
   });
 
@@ -289,6 +291,10 @@ describe("electron runtime adapter", () => {
         calls.push("show-controller");
         return { opened: true };
       },
+      setDesktopPlaybackControllerLayout: async (layout) => {
+        calls.push(`layout:${layout}`);
+        return true;
+      },
       updateDesktopPlaybackWallpaperPreferences: async (update) => {
         calls.push(`configure:${String(update.enabled)}`);
         return WALLPAPER_MODEL;
@@ -299,6 +305,7 @@ describe("electron runtime adapter", () => {
     await runtime.desktopPlaybackWallpaper.getModel();
     await runtime.desktopPlaybackWallpaper.configure({ enabled: true });
     await runtime.desktopPlaybackWallpaper.retry();
+    expect(await runtime.desktopPlaybackWallpaper.setControllerLayout("expanded")).toBeTrue();
     expect(await runtime.desktopPlaybackWallpaper.showController()).toEqual({ opened: true });
     expect(await runtime.desktopPlaybackWallpaper.closeController()).toBeTrue();
 
@@ -306,6 +313,7 @@ describe("electron runtime adapter", () => {
       "get-model",
       "configure:true",
       "retry",
+      "layout:expanded",
       "show-controller",
       "close-controller",
     ]);

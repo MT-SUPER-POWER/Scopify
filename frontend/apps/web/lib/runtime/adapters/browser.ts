@@ -206,6 +206,7 @@ export function createBrowserRuntime(
       publishAudioFrame: NOOP,
       publishPresentation: async () => null,
       retry: async () => unsupportedDesktopPlaybackWallpaperModel(),
+      setControllerLayout: async () => false,
       showController: async () => ({ opened: false, reason: "unsupported" }),
     },
     isDesktop: false,

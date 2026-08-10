@@ -68,9 +68,9 @@ export function DesktopPlaybackWallpaperControls({
   const canRetry = status.state === "faulted" && status.retryable;
 
   return (
-    <section className="h-full overflow-y-auto px-5 py-4">
-      <div className="border-border border-b pb-1">
-        <div className="text-content-muted px-1 pb-2 text-[11px] font-semibold tracking-wide uppercase">
+    <section className="desktop-controller-scroll h-full space-y-3 overflow-y-auto px-4 pt-3 pb-4">
+      <div className="desktop-controller-card rounded-2xl px-3 py-2">
+        <div className="text-content-muted px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] uppercase">
           {t("desktopPlaybackController.desktopDisplay")}
         </div>
         <div className="flex h-10 items-center justify-between gap-4 px-1">
@@ -115,8 +115,8 @@ export function DesktopPlaybackWallpaperControls({
         ) : null}
       </div>
 
-      <div className="border-border border-b py-1">
-        <div className="text-content-muted px-1 pt-3 pb-2 text-[11px] font-semibold tracking-wide uppercase">
+      <div className="desktop-controller-card rounded-2xl px-3 py-2">
+        <div className="text-content-muted px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] uppercase">
           {t("desktopPlaybackController.layers")}
         </div>
         <ControlRow
@@ -135,8 +135,8 @@ export function DesktopPlaybackWallpaperControls({
         />
       </div>
 
-      <div className="border-border border-b py-1">
-        <div className="text-content-muted px-1 pt-3 pb-2 text-[11px] font-semibold tracking-wide uppercase">
+      <div className="desktop-controller-card rounded-2xl px-3 py-2">
+        <div className="text-content-muted px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] uppercase">
           {t("desktopPlaybackController.compatibility")}
         </div>
         <ControlRow
@@ -150,7 +150,7 @@ export function DesktopPlaybackWallpaperControls({
         />
       </div>
 
-      <div className="mt-4 flex items-start justify-between gap-3">
+      <div className="desktop-controller-card flex items-start justify-between gap-3 rounded-2xl px-4 py-3">
         <div className="min-w-0">
           <div className="text-content-muted flex items-center gap-2 text-xs">
             <span className={cn("size-2 shrink-0 rounded-full", statusPresentation.className)} />
@@ -165,7 +165,7 @@ export function DesktopPlaybackWallpaperControls({
         {canRetry ? (
           <button
             type="button"
-            className="text-content-muted hover:bg-surface-overlay hover:text-content flex h-8 shrink-0 items-center gap-1.5 px-2 text-xs transition-colors"
+            className="desktop-controller-soft-button flex h-8 shrink-0 items-center gap-1.5 rounded-lg px-2 text-xs transition"
             disabled={isPending}
             onClick={() => void onRetry()}
           >
@@ -188,7 +188,7 @@ interface ControlRowProps {
 
 function ControlRow({ checked, disabled, icon, label, onCheckedChange }: ControlRowProps) {
   return (
-    <label className="hover:bg-surface-overlay flex h-10 cursor-pointer items-center gap-3 px-1 transition-colors has-disabled:cursor-default has-disabled:opacity-45">
+    <label className="desktop-controller-row flex h-10 cursor-pointer items-center gap-3 rounded-xl px-1 transition has-disabled:cursor-default has-disabled:opacity-45">
       <span className="text-content-muted">{icon}</span>
       <span className="text-content flex-1 text-sm">{label}</span>
       <Switch

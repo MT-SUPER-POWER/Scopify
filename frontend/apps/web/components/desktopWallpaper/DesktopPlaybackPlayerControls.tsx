@@ -1,105 +1,166 @@
 "use client";
 
-import { Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Music2, Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
+import { DesktopPlaybackProgressControl } from "@/components/desktopWallpaper/DesktopPlaybackProgressControl";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { DesktopPlaybackPlayerControlsProps } from "@/types/components/desktopPlaybackWallpaper";
 
 const transportButtonClass =
-  "flex size-10 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-surface-overlay hover:text-content disabled:pointer-events-none disabled:opacity-35";
+  "desktop-controller-soft-button flex size-8 items-center justify-center rounded-full transition disabled:pointer-events-none disabled:opacity-35";
+const LYRIC_REVEAL_DELAY_MS = 800;
 
 export function DesktopPlaybackPlayerControls({
+  activeLyric,
   currentSong,
+  desktopControl,
+  durationMs,
   isConnected,
   isPlaying,
   onNext,
   onPrevious,
+  onSeek,
   onTogglePlaying,
   onVolumeChange,
+  positionMs,
+  track,
   volume,
 }: DesktopPlaybackPlayerControlsProps) {
   const { t } = useI18n();
+  const [isControlAreaHovered, setIsControlAreaHovered] = useState(false);
+  const [showLyrics, setShowLyrics] = useState(false);
   const artworkUrl =
-    currentSong?.al.coverUrl ?? currentSong?.al.picUrl ?? currentSong?.al.blurPicUrl;
-  const artistNames = currentSong?.ar.map((artist) => artist.name).join(" / ");
+    track?.artworkUrl ??
+    currentSong?.al.coverUrl ??
+    currentSong?.al.picUrl ??
+    currentSong?.al.blurPicUrl;
+  const title = track?.title ?? currentSong?.name ?? t("desktopPlaybackController.noTrack");
+  const artistNames =
+    track?.artistNames.join(" / ") ?? currentSong?.ar.map((artist) => artist.name).join(" / ");
+  const showLyricView = showLyrics && Boolean(activeLyric?.primary);
+
+  useEffect(() => {
+    if (isControlAreaHovered) {
+      setShowLyrics(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => setShowLyrics(true), LYRIC_REVEAL_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [isControlAreaHovered]);
 
   return (
-    <section className="border-border border-b px-5 py-4">
-      <div className="mb-4 flex min-w-0 items-center gap-3">
-        <div
-          aria-hidden
-          className="bg-surface-overlay size-14 shrink-0 bg-cover bg-center shadow-sm"
-          style={artworkUrl ? { backgroundImage: `url("${artworkUrl}")` } : undefined}
-        />
-        <div className="min-w-0 flex-1">
-          <div className="text-content truncate text-sm font-semibold">
-            {currentSong?.name ?? t("desktopPlaybackController.noTrack")}
+    <section className="grid w-full grid-cols-[112px_minmax(0,1fr)] items-center gap-4 [-webkit-app-region:no-drag]">
+      <div className="desktop-controller-cover relative size-28 shrink-0 overflow-hidden rounded-xl bg-cover bg-center shadow-md">
+        {artworkUrl ? (
+          <div
+            aria-label={track?.albumTitle ?? currentSong?.al.name}
+            className="size-full bg-cover bg-center"
+            role="img"
+            style={{ backgroundImage: `url("${artworkUrl}")` }}
+          />
+        ) : (
+          <div className="desktop-controller-muted flex size-full items-center justify-center">
+            <Music2 className="size-8 opacity-45" />
           </div>
-          <div className="text-content-muted mt-1 truncate text-xs">
+        )}
+      </div>
+
+      <div className="flex min-h-28 min-w-0 flex-col justify-between">
+        <div className="min-w-0 pr-16">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="min-w-0 flex-1 truncate text-[15px] leading-5 font-bold tracking-[-0.01em]">
+              {title}
+            </div>
+            <span
+              aria-hidden
+              className={cn(
+                "size-1.5 shrink-0 rounded-full",
+                isConnected ? "bg-emerald-500" : "bg-content-muted/35",
+              )}
+            />
+          </div>
+          <div className="desktop-controller-muted mt-0.5 truncate text-xs font-medium">
             {artistNames || t("common.meta.unknownArtist")}
           </div>
         </div>
-        <span
-          className={cn(
-            "size-2 shrink-0 rounded-full",
-            isConnected ? "bg-emerald-500" : "bg-content-muted/40",
-          )}
+
+        <DesktopPlaybackProgressControl
+          ariaLabel={t("desktopPlaybackController.playbackProgress")}
+          durationMs={durationMs}
+          onSeek={onSeek}
+          positionMs={positionMs}
         />
-      </div>
 
-      <div className="flex items-center justify-center gap-5">
-        <button
-          type="button"
-          aria-label={t("ui.previous")}
-          className={transportButtonClass}
-          disabled={!currentSong}
-          onClick={onPrevious}
+        <div
+          className="relative min-h-9 w-full"
+          onMouseEnter={() => setIsControlAreaHovered(true)}
+          onMouseLeave={() => setIsControlAreaHovered(false)}
         >
-          <SkipBack className="size-5 fill-current" />
-        </button>
-        <button
-          type="button"
-          aria-label={t(isPlaying ? "ui.pause" : "ui.play")}
-          className="bg-content text-surface hover:bg-content/90 flex size-12 items-center justify-center rounded-full transition-colors disabled:pointer-events-none disabled:opacity-35"
-          disabled={!currentSong}
-          onClick={onTogglePlaying}
-        >
-          {isPlaying ? (
-            <Pause className="size-5 fill-current" />
+          {showLyricView ? (
+            <div className="animate-in fade-in slide-in-from-bottom-1 absolute inset-0 flex min-w-0 flex-col justify-center duration-150">
+              <div className="truncate text-base leading-5 font-bold">{activeLyric?.primary}</div>
+              <div className="desktop-controller-muted mt-0.5 truncate text-[11px] leading-4 font-medium">
+                {activeLyric?.secondary}
+              </div>
+            </div>
           ) : (
-            <Play className="ml-0.5 size-5 fill-current" />
-          )}
-        </button>
-        <button
-          type="button"
-          aria-label={t("ui.next")}
-          className={transportButtonClass}
-          disabled={!currentSong}
-          onClick={onNext}
-        >
-          <SkipForward className="size-5 fill-current" />
-        </button>
-      </div>
+            <div className="animate-in fade-in absolute inset-0 flex items-center justify-between duration-150">
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  aria-label={t("ui.previous")}
+                  className={transportButtonClass}
+                  disabled={!currentSong && !track}
+                  onClick={onPrevious}
+                >
+                  <SkipBack className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label={t(isPlaying ? "ui.pause" : "ui.play")}
+                  className="desktop-controller-primary-button flex size-9 items-center justify-center rounded-full transition disabled:pointer-events-none disabled:opacity-35"
+                  disabled={!currentSong && !track}
+                  onClick={onTogglePlaying}
+                >
+                  {isPlaying ? (
+                    <Pause className="size-4 fill-current" />
+                  ) : (
+                    <Play className="ml-0.5 size-4 fill-current" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  aria-label={t("ui.next")}
+                  className={transportButtonClass}
+                  disabled={!currentSong && !track}
+                  onClick={onNext}
+                >
+                  <SkipForward className="size-4" />
+                </button>
+              </div>
 
-      <div className="mt-4">
-        <div className="text-content-muted mb-2 flex items-center justify-between text-xs">
-          <span>{t("ui.volume")}</span>
-          <span className="tabular-nums">{Math.round(volume)}%</span>
+              <div className="flex items-center gap-1.5">
+                <label className="desktop-controller-muted flex items-center gap-1.5">
+                  <Volume2 className="size-3.5 shrink-0" />
+                  <input
+                    type="range"
+                    aria-label={t("ui.volume")}
+                    className="desktop-controller-range w-14 cursor-pointer"
+                    max={100}
+                    min={0}
+                    onChange={(event) => onVolumeChange(Number(event.currentTarget.value))}
+                    step={1}
+                    value={Math.round(volume)}
+                  />
+                </label>
+                {desktopControl}
+              </div>
+            </div>
+          )}
         </div>
-        <label className="text-content-muted flex items-center gap-3">
-          <Volume2 className="size-4 shrink-0" />
-          <input
-            type="range"
-            aria-label={t("ui.volume")}
-            className="accent-brand h-1.5 min-w-0 flex-1 cursor-pointer"
-            max={100}
-            min={0}
-            onChange={(event) => onVolumeChange(Number(event.currentTarget.value))}
-            step={1}
-            value={Math.round(volume)}
-          />
-        </label>
       </div>
     </section>
   );

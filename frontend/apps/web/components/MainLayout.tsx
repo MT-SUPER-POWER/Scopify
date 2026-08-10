@@ -17,6 +17,7 @@ import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHel
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
 import { runtime } from "@/lib/runtime";
+import { DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH } from "@/constants/desktopPlaybackController";
 // lib
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -180,6 +181,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   // 监听来自 Electron 主进程的导航请求
   useEffect(() => {
     return runtime.navigation.onNavigate((path) => {
+      if (path === DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH) return;
       router.push(path, { scroll: false });
     });
   }, [router]);

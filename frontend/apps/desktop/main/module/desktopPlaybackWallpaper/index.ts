@@ -9,6 +9,7 @@ import {
 } from "electron";
 import type {
   DesktopLyricSnapshot,
+  DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferences,
@@ -37,6 +38,7 @@ import { createDesktopPlaybackWallpaperPreferencesRepository } from "./preferenc
 const PREFERENCES_FILE = "desktop-playback-wallpaper.json";
 
 let capability: DesktopPlaybackWallpaperCapability | null = null;
+let controllerHost: DesktopPlaybackControllerHost | null = null;
 let mainWindow: BrowserWindow | null = null;
 let ipcRegistered = false;
 let quitCleanupRegistered = false;
@@ -44,8 +46,12 @@ let getControllerWindow: () => BrowserWindow | null = () => null;
 let getWallpaperWindow: () => BrowserWindow | null = () => null;
 let presentation: DesktopLyricSnapshot | null = null;
 
+interface DesktopPlaybackControllerHost extends DesktopPlaybackControllerLauncher {
+  setLayout(layout: DesktopPlaybackControllerLayout): boolean;
+}
+
 export interface DesktopPlaybackWallpaperCapabilityHostOptions {
-  controller?: DesktopPlaybackControllerLauncher;
+  controller?: DesktopPlaybackControllerHost;
   driver?: DesktopPlaybackWallpaperDriver;
   getControllerWindow?: () => BrowserWindow | null;
   getWallpaperWindow?: () => BrowserWindow | null;
@@ -57,6 +63,7 @@ export function initializeDesktopPlaybackWallpaperCapability(
   options: DesktopPlaybackWallpaperCapabilityHostOptions = {},
 ) {
   mainWindow = nextMainWindow;
+  controllerHost = options.controller ?? controllerHost;
   getControllerWindow = options.getControllerWindow ?? getControllerWindow;
   getWallpaperWindow = options.getWallpaperWindow ?? getWallpaperWindow;
 
@@ -82,6 +89,7 @@ export function initializeDesktopPlaybackWallpaperCapability(
     app.once("will-quit", () => {
       void capability?.dispose();
       capability = null;
+      controllerHost = null;
     });
   }
 
@@ -152,6 +160,14 @@ function registerIpcHandlers() {
     return true;
   });
 
+  ipcMain.handle("desktop-playback-controller:set-layout", (event, input: unknown) => {
+    requireControllerSender(event, "desktop-playback-controller:set-layout");
+    if (!isDesktopPlaybackControllerLayout(input)) {
+      throw new TypeError("Invalid desktop playback controller layout.");
+    }
+    return controllerHost?.setLayout(input) ?? false;
+  });
+
   ipcMain.handle("desktop-playback-wallpaper:publish-presentation", (event, input: unknown) => {
     requireMainWindowSender(event, "desktop-playback-wallpaper:publish-presentation");
     if (!isDesktopPlaybackWallpaperPresentationInput(input)) {
@@ -193,6 +209,12 @@ function requireControlSender(event: IpcMainInvokeEvent, channel: string) {
   throw new Error("The renderer is not authorized to control desktop playback wallpaper.");
 }
 
+function requireControllerSender(event: IpcMainInvokeEvent, channel: string) {
+  if (event.sender.id === getWindowId(getControllerWindow())) return;
+  logger.warn(`[desktop-playback-wallpaper] rejected IPC from an unexpected renderer: ${channel}`);
+  throw new Error("Only the desktop playback controller may perform this action.");
+}
+
 function requireModelReader(event: IpcMainInvokeEvent, channel: string) {
   if (
     isDesktopPlaybackWallpaperModelReader(event.sender.id, {
@@ -224,6 +246,12 @@ function logRejectedSender(channel: string) {
 
 function getWindowId(window: BrowserWindow | null) {
   return window && !window.isDestroyed() ? window.webContents.id : null;
+}
+
+function isDesktopPlaybackControllerLayout(
+  value: unknown,
+): value is DesktopPlaybackControllerLayout {
+  return value === "compact" || value === "expanded";
 }
 
 function broadcastModel(model: DesktopPlaybackWallpaperModel) {

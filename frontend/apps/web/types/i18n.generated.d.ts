@@ -4175,15 +4175,45 @@ export interface TranslateFn {
    */
   (key: "desktopPlaybackController.wallpaperTab", params?: TranslationParams): string;
   /**
+   * zh-CN: 展开控制面板
+   * zh-TW: 展開控制面板
+   * en-US: Expand controls
+   */
+  (key: "desktopPlaybackController.expandWindow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收起控制面板
+   * zh-TW: 收起控制面板
+   * en-US: Collapse controls
+   */
+  (key: "desktopPlaybackController.collapseWindow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在主窗口编辑 Folia
+   * zh-TW: 在主視窗編輯 Folia
+   * en-US: Edit Folia in the main window
+   */
+  (key: "desktopPlaybackController.openMainSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这里仅用于快速切换，主题编辑请在主窗口完成。
+   * zh-TW: 這裡僅用於快速切換，主題編輯請在主視窗完成。
+   * en-US: Use this window for quick switching. Edit themes in the main window.
+   */
+  (key: "desktopPlaybackController.settingsInMainHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题切换
+   * zh-TW: 主題切換
+   * en-US: Theme switching
+   */
+  (key: "desktopPlaybackController.themeSwitch", params?: TranslationParams): string;
+  /**
    * zh-CN: 桌面显示
    * zh-TW: 桌面顯示
    * en-US: Desktop display
    */
   (key: "desktopPlaybackController.desktopDisplay", params?: TranslationParams): string;
   /**
-   * zh-CN: 动画、背景与 DIY 配色会实时同步到桌面。
-   * zh-TW: 動畫、背景與 DIY 配色會即時同步到桌面。
-   * en-US: Animation, background, and DIY colors sync to the desktop in real time.
+   * zh-CN: 效果、背景与主题切换会实时同步到桌面。
+   * zh-TW: 效果、背景與主題切換會即時同步到桌面。
+   * en-US: Effects, backgrounds, and theme switches sync to the desktop in real time.
    */
   (key: "desktopPlaybackController.liveSyncHint", params?: TranslationParams): string;
   /**
@@ -4240,6 +4270,12 @@ export interface TranslateFn {
    * en-US: Playback
    */
   (key: "desktopPlaybackController.playback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放进度
+   * zh-TW: 播放進度
+   * en-US: Playback progress
+   */
+  (key: "desktopPlaybackController.playbackProgress", params?: TranslationParams): string;
   /**
    * zh-CN: 暂无播放
    * zh-TW: 暫無播放
@@ -4312,6 +4348,18 @@ export interface TranslateFn {
    * en-US: Could not update desktop music settings
    */
   (key: "desktopPlaybackController.updateFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法调整控制窗口大小
+   * zh-TW: 無法調整控制視窗大小
+   * en-US: Could not resize the controller window
+   */
+  (key: "desktopPlaybackController.layoutUpdateFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法打开主窗口中的 Folia 设置
+   * zh-TW: 無法開啟主視窗中的 Folia 設定
+   * en-US: Could not open Folia settings in the main window
+   */
+  (key: "desktopPlaybackController.settingsOpenFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 打开 10 段音频均衡器
    * zh-TW: 開啟 10 段音訊等化器

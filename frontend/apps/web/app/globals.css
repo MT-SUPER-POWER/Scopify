@@ -431,6 +431,256 @@ img,
   background: transparent !important;
 }
 
+.desktop-playback-controller-html,
+.desktop-playback-controller-body {
+  background: transparent !important;
+}
+
+.desktop-playback-controller-shell {
+  --desktop-controller-background: var(--surface-base);
+  --desktop-controller-primary: var(--content);
+  --desktop-controller-secondary: var(--content-muted);
+  --desktop-controller-accent: var(--brand);
+  --desktop-controller-border: color-mix(
+    in srgb,
+    var(--desktop-controller-primary) 11%,
+    transparent
+  );
+  --desktop-controller-soft: color-mix(
+    in srgb,
+    var(--desktop-controller-primary) 5.5%,
+    transparent
+  );
+  --desktop-controller-soft-hover: color-mix(
+    in srgb,
+    var(--desktop-controller-primary) 10%,
+    transparent
+  );
+  --desktop-controller-panel: color-mix(
+    in srgb,
+    var(--desktop-controller-background) 84%,
+    transparent
+  );
+
+  color: var(--desktop-controller-primary);
+  font-family: var(--font-ui);
+}
+
+.desktop-playback-controller-surface {
+  background: var(--desktop-controller-background);
+  border-color: var(--desktop-controller-border);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 18%);
+}
+
+.desktop-controller-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(48px);
+  transition:
+    background-color 500ms ease,
+    opacity 500ms ease;
+}
+
+.desktop-controller-window-button {
+  color: var(--desktop-controller-secondary);
+  opacity: 0.58;
+}
+
+.desktop-controller-window-button:hover,
+.desktop-controller-window-button:focus-visible {
+  color: var(--desktop-controller-primary);
+  background: var(--desktop-controller-soft-hover);
+  opacity: 1;
+  outline: none;
+}
+
+.desktop-controller-cover {
+  background: var(--desktop-controller-soft);
+  border: 1px solid var(--desktop-controller-border);
+}
+
+.desktop-controller-muted {
+  color: var(--desktop-controller-secondary);
+}
+
+.desktop-controller-soft-button {
+  color: var(--desktop-controller-secondary);
+  background: var(--desktop-controller-soft);
+}
+
+.desktop-controller-soft-button:hover,
+.desktop-controller-soft-button:focus-visible {
+  color: var(--desktop-controller-primary);
+  background: var(--desktop-controller-soft-hover);
+  outline: none;
+}
+
+.desktop-controller-soft-button[data-active="true"] {
+  color: var(--desktop-controller-accent);
+  background: var(--desktop-controller-soft-hover);
+  box-shadow: inset 0 0 0 1px var(--desktop-controller-border);
+}
+
+.desktop-controller-primary-button {
+  color: var(--desktop-controller-background);
+  background: var(--desktop-controller-primary);
+}
+
+.desktop-controller-primary-button:hover,
+.desktop-controller-primary-button:focus-visible {
+  filter: brightness(0.94);
+  outline: none;
+}
+
+.desktop-controller-range {
+  height: 1.25rem;
+  appearance: none;
+  color: var(--desktop-controller-primary);
+  background: transparent;
+}
+
+.desktop-controller-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 9999px;
+  background: var(--desktop-controller-soft-hover);
+}
+
+.desktop-controller-range::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+  margin-top: -3.5px;
+  appearance: none;
+  border-radius: 9999px;
+  background: var(--desktop-controller-primary);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+}
+
+.desktop-controller-progress {
+  background: var(--desktop-controller-soft-hover);
+}
+
+.desktop-controller-seek {
+  height: 0.875rem;
+  appearance: none;
+  color: var(--desktop-controller-primary);
+  background: transparent;
+}
+
+.desktop-controller-seek::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--desktop-controller-primary) 0%,
+    var(--desktop-controller-primary) var(--desktop-controller-seek-progress),
+    var(--desktop-controller-soft-hover) var(--desktop-controller-seek-progress),
+    var(--desktop-controller-soft-hover) 100%
+  );
+}
+
+.desktop-controller-seek::-webkit-slider-thumb {
+  width: 9px;
+  height: 9px;
+  margin-top: -3px;
+  appearance: none;
+  border-radius: 9999px;
+  background: var(--desktop-controller-primary);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 22%);
+  transition: transform 120ms ease;
+}
+
+.desktop-controller-seek:hover::-webkit-slider-thumb,
+.desktop-controller-seek:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.25);
+}
+
+.desktop-controller-seek:focus-visible {
+  outline: none;
+}
+
+.desktop-controller-panel {
+  background: var(--desktop-controller-panel);
+  border-color: var(--desktop-controller-border);
+  backdrop-filter: blur(28px) saturate(120%);
+}
+
+.desktop-controller-segment {
+  background: var(--desktop-controller-soft);
+}
+
+.desktop-controller-segment-button {
+  color: var(--desktop-controller-secondary);
+}
+
+.desktop-controller-segment-button:hover,
+.desktop-controller-segment-button:focus-visible {
+  color: var(--desktop-controller-primary);
+  outline: none;
+}
+
+.desktop-controller-segment-button[data-active="true"] {
+  color: var(--desktop-controller-background);
+  background: var(--desktop-controller-primary);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+}
+
+.desktop-controller-field {
+  color: var(--desktop-controller-primary);
+  background: var(--desktop-controller-soft);
+  border: 1px solid var(--desktop-controller-border);
+}
+
+.desktop-controller-field:hover,
+.desktop-controller-field:focus {
+  background: var(--desktop-controller-soft-hover);
+  border-color: var(--desktop-controller-secondary);
+  outline: none;
+}
+
+.desktop-controller-field option {
+  color: var(--desktop-controller-primary);
+  background: var(--desktop-controller-background);
+}
+
+.desktop-controller-card {
+  background: var(--desktop-controller-soft);
+  border: 1px solid var(--desktop-controller-border);
+}
+
+.desktop-controller-row:hover {
+  background: var(--desktop-controller-soft-hover);
+}
+
+.desktop-controller-scroll {
+  scrollbar-color: var(--desktop-controller-border) transparent;
+  scrollbar-width: thin;
+}
+
+.desktop-controller-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.desktop-controller-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.desktop-controller-scroll::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: var(--desktop-controller-border);
+}
+
+.desktop-playback-controller-shell [data-slot="switch"][data-state="checked"] {
+  background: var(--desktop-controller-primary);
+}
+
+.desktop-playback-controller-shell [data-slot="switch"][data-state="unchecked"] {
+  background: var(--desktop-controller-soft-hover);
+}
+
+.desktop-playback-controller-shell [data-slot="switch-thumb"] {
+  background: var(--desktop-controller-background);
+}
+
 @keyframes eq-play {
   0%,
   100% {

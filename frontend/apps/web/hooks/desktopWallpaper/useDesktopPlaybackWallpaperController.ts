@@ -61,6 +61,7 @@ export function useDesktopPlaybackWallpaperController(): DesktopPlaybackWallpape
     isPending,
     model,
     retry,
+    setLayout: (layout) => runtime.desktopPlaybackWallpaper.setControllerLayout(layout),
     showController: async () => {
       const result = await runtime.desktopPlaybackWallpaper.showController();
       return result.opened;

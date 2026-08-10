@@ -1,27 +1,79 @@
 "use client";
 
-import { Layers3, MonitorCog, Palette, X } from "lucide-react";
-import { useState } from "react";
+import { Layers3, Palette } from "lucide-react";
+import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import type { DesktopPlaybackWallpaperPreferencesUpdate } from "@scopify/desktop-contract";
+import type {
+  DesktopPlaybackControllerLayout,
+  DesktopPlaybackWallpaperPreferencesUpdate,
+} from "@scopify/desktop-contract";
 
 import { DesktopPlaybackAppearanceControls } from "@/components/desktopWallpaper/DesktopPlaybackAppearanceControls";
+import { DesktopPlaybackControllerHeader } from "@/components/desktopWallpaper/DesktopPlaybackControllerHeader";
+import { DesktopPlaybackControllerQuickToggle } from "@/components/desktopWallpaper/DesktopPlaybackControllerQuickToggle";
 import { DesktopPlaybackPlayerControls } from "@/components/desktopWallpaper/DesktopPlaybackPlayerControls";
 import { DesktopPlaybackWallpaperControls } from "@/components/desktopWallpaper/DesktopPlaybackWallpaperControls";
 import { useDesktopIconVisibility } from "@/hooks/desktopWallpaper/useDesktopIconVisibility";
+import { useDesktopWallpaperFoliaPlayback } from "@/hooks/desktopWallpaper/useDesktopWallpaperFoliaPlayback";
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
 import { useRemotePlayerController } from "@/hooks/player/useRemotePlayerController";
+import { requestDesktopPlaybackControllerThemeEditor } from "@/lib/desktopPlaybackWallpaper/controllerThemeEditor";
+import { getFoliaStageTheme, getFoliaThemeColors } from "@/lib/lyrics/foliaTheme";
+import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
+import { useLyricStageStore } from "@/store/module/lyrics";
 import type { DesktopPlaybackControllerTab } from "@/types/desktopPlaybackWallpaper";
 
 export function DesktopPlaybackController() {
   const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<DesktopPlaybackControllerTab>("appearance");
+  const [layout, setLayout] = useState<DesktopPlaybackControllerLayout>("compact");
+  const [isLayoutPending, setIsLayoutPending] = useState(false);
   const player = useRemotePlayerController();
   const desktopIcons = useDesktopIconVisibility();
   const wallpaper = useDesktopPlaybackWallpaperController();
+  const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
+  const foliaThemeId = useLyricStageStore((state) => state.themeId);
+  const foliaThemes = useLyricStageStore((state) => state.themes);
+  const foliaThemeVariant = useLyricStageStore((state) => state.themeVariant);
+  const theme = getFoliaThemeColors(
+    getFoliaStageTheme(foliaThemes, foliaThemeId),
+    foliaThemeVariant,
+  );
+  const foliaPlayback = useDesktopWallpaperFoliaPlayback(lyricOffsetMs);
+  const isExpanded = layout === "expanded";
+  const activeLineIndex = foliaPlayback.bridge.currentLineIndex;
+  const activeLine = foliaPlayback.bridge.lines[activeLineIndex] ?? null;
+  const nextLine = foliaPlayback.bridge.lines[activeLineIndex + 1] ?? null;
+  const activeLyric = activeLine
+    ? {
+        primary: activeLine.fullText,
+        secondary: activeLine.translation ?? activeLine.romanization ?? nextLine?.fullText,
+      }
+    : null;
+  const presentationTrack = foliaPlayback.presentation?.track ?? null;
+  const durationMs = presentationTrack?.durationMs ?? player.currentSongDetail?.dt ?? 0;
+  const positionMs = player.isConnected
+    ? player.positionMs
+    : (foliaPlayback.presentation?.positionMs ?? 0);
+  const controllerThemeStyle = {
+    "--desktop-controller-accent": theme.accentColor,
+    "--desktop-controller-background": theme.backgroundColor,
+    "--desktop-controller-primary": theme.primaryColor,
+    "--desktop-controller-secondary": theme.secondaryColor,
+  } as CSSProperties;
+  useEffect(() => {
+    document.documentElement.classList.add("desktop-playback-controller-html");
+    document.body.classList.add("desktop-playback-controller-body");
+    setLayout(window.innerHeight >= 400 ? "expanded" : "compact");
+    return () => {
+      document.documentElement.classList.remove("desktop-playback-controller-html");
+      document.body.classList.remove("desktop-playback-controller-body");
+    };
+  }, []);
 
   const configureWallpaper = async (update: DesktopPlaybackWallpaperPreferencesUpdate) => {
     try {
@@ -29,6 +81,16 @@ export function DesktopPlaybackController() {
     } catch {
       toast.error(t("desktopPlaybackController.updateFailed"));
     }
+  };
+
+  const setWallpaperEnabled = (enabled: boolean) => {
+    const preferences = wallpaper.model?.preferences;
+    void configureWallpaper({
+      enabled,
+      ...(enabled && preferences && !preferences.layers.background && !preferences.layers.lyrics
+        ? { layers: { background: true } }
+        : {}),
+    });
   };
 
   const retryWallpaper = async () => {
@@ -50,67 +112,116 @@ export function DesktopPlaybackController() {
     }
   };
 
+  const toggleLayout = async () => {
+    const nextLayout = isExpanded ? "compact" : "expanded";
+    setIsLayoutPending(true);
+    try {
+      if (await wallpaper.setLayout(nextLayout)) {
+        setLayout(nextLayout);
+      } else {
+        toast.error(t("desktopPlaybackController.layoutUpdateFailed"));
+      }
+    } catch {
+      toast.error(t("desktopPlaybackController.layoutUpdateFailed"));
+    } finally {
+      setIsLayoutPending(false);
+    }
+  };
+
+  const openMainSettings = async () => {
+    try {
+      if (!(await requestDesktopPlaybackControllerThemeEditor(runtime))) {
+        toast.error(t("desktopPlaybackController.settingsOpenFailed"));
+      }
+    } catch {
+      toast.error(t("desktopPlaybackController.settingsOpenFailed"));
+    }
+  };
+
   return (
-    <main className="bg-surface text-content flex size-full flex-col overflow-hidden border border-white/10 shadow-2xl">
-      <header className="border-border flex h-11 shrink-0 items-center border-b px-3 [-webkit-app-region:drag]">
-        <MonitorCog className="text-brand size-4" />
-        <span className="ml-2 flex-1 text-sm font-semibold">
-          {t("desktopPlaybackController.title")}
-        </span>
-        <button
-          type="button"
-          aria-label={t("ui.close")}
-          className="text-content-muted hover:bg-surface-overlay hover:text-content flex size-8 items-center justify-center transition-colors [-webkit-app-region:no-drag]"
-          onClick={() => void wallpaper.closeController()}
+    <main
+      className="desktop-playback-controller-shell size-full bg-transparent select-none"
+      style={controllerThemeStyle}
+    >
+      <section className="desktop-playback-controller-surface relative flex size-full flex-col overflow-hidden rounded-[20px] border">
+        <ControllerAtmosphere />
+        <DesktopPlaybackControllerHeader
+          isLayoutPending={isLayoutPending}
+          layout={layout}
+          onClose={() => void wallpaper.closeController()}
+          onLayoutChange={() => void toggleLayout()}
+        />
+
+        <div
+          className={cn(
+            "relative z-10 flex shrink-0 items-center px-4",
+            isExpanded ? "h-42 pt-3" : "min-h-0 flex-1",
+          )}
         >
-          <X className="size-4" />
-        </button>
-      </header>
-
-      <DesktopPlaybackPlayerControls
-        currentSong={player.currentSongDetail}
-        isConnected={player.isConnected}
-        isPlaying={player.isPlaying}
-        onNext={player.playNext}
-        onPrevious={player.playPrevious}
-        onTogglePlaying={player.togglePlaying}
-        onVolumeChange={player.setVolume}
-        volume={player.volume}
-      />
-
-      <nav
-        className="border-border grid h-11 shrink-0 grid-cols-2 border-b px-3"
-        aria-label={t("desktopPlaybackController.title")}
-      >
-        <ControllerTabButton
-          active={activeTab === "appearance"}
-          icon={<Palette className="size-3.5" />}
-          label={t("desktopPlaybackController.appearanceTab")}
-          onClick={() => setActiveTab("appearance")}
-        />
-        <ControllerTabButton
-          active={activeTab === "wallpaper"}
-          icon={<Layers3 className="size-3.5" />}
-          label={t("desktopPlaybackController.wallpaperTab")}
-          onClick={() => setActiveTab("wallpaper")}
-        />
-      </nav>
-
-      <div className="min-h-0 flex-1">
-        {activeTab === "appearance" ? (
-          <DesktopPlaybackAppearanceControls />
-        ) : (
-          <DesktopPlaybackWallpaperControls
-            desktopIconVisibility={desktopIcons.state}
-            isDesktopIconPending={desktopIcons.isPending}
-            isPending={wallpaper.isPending}
-            model={wallpaper.model}
-            onConfigure={configureWallpaper}
-            onDesktopIconVisibilityChange={updateDesktopIconVisibility}
-            onRetry={retryWallpaper}
+          <DesktopPlaybackPlayerControls
+            activeLyric={activeLyric}
+            currentSong={player.currentSongDetail}
+            desktopControl={
+              <DesktopPlaybackControllerQuickToggle
+                isPending={wallpaper.isPending}
+                model={wallpaper.model}
+                onEnabledChange={setWallpaperEnabled}
+              />
+            }
+            durationMs={durationMs}
+            isConnected={player.isConnected || Boolean(presentationTrack)}
+            isPlaying={foliaPlayback.presentation?.isPlaying ?? player.isPlaying}
+            onNext={player.playNext}
+            onPrevious={player.playPrevious}
+            onSeek={player.seek}
+            onTogglePlaying={player.togglePlaying}
+            onVolumeChange={player.setVolume}
+            positionMs={positionMs}
+            track={presentationTrack}
+            volume={player.volume}
           />
-        )}
-      </div>
+        </div>
+
+        {isExpanded ? (
+          <section className="desktop-controller-panel relative z-10 flex min-h-0 flex-1 flex-col border-t">
+            <nav
+              className="desktop-controller-segment mx-4 mt-3 grid h-10 shrink-0 grid-cols-2 gap-1 rounded-xl p-1"
+              aria-label={t("desktopPlaybackController.title")}
+            >
+              <ControllerTabButton
+                active={activeTab === "appearance"}
+                icon={<Palette className="size-3.5" />}
+                label={t("desktopPlaybackController.appearanceTab")}
+                onClick={() => setActiveTab("appearance")}
+              />
+              <ControllerTabButton
+                active={activeTab === "wallpaper"}
+                icon={<Layers3 className="size-3.5" />}
+                label={t("desktopPlaybackController.wallpaperTab")}
+                onClick={() => setActiveTab("wallpaper")}
+              />
+            </nav>
+
+            <div className="animate-in fade-in min-h-0 flex-1 duration-150">
+              {activeTab === "appearance" ? (
+                <DesktopPlaybackAppearanceControls
+                  onOpenMainSettings={() => void openMainSettings()}
+                />
+              ) : (
+                <DesktopPlaybackWallpaperControls
+                  desktopIconVisibility={desktopIcons.state}
+                  isDesktopIconPending={desktopIcons.isPending}
+                  isPending={wallpaper.isPending}
+                  model={wallpaper.model}
+                  onConfigure={configureWallpaper}
+                  onDesktopIconVisibilityChange={updateDesktopIconVisibility}
+                  onRetry={retryWallpaper}
+                />
+              )}
+            </div>
+          </section>
+        ) : null}
+      </section>
     </main>
   );
 }
@@ -122,7 +233,7 @@ function ControllerTabButton({
   onClick,
 }: {
   active: boolean;
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   onClick(): void;
 }) {
@@ -130,20 +241,32 @@ function ControllerTabButton({
     <button
       type="button"
       aria-pressed={active}
-      className={cn(
-        "relative flex items-center justify-center gap-2 text-xs transition-colors",
-        active ? "text-content" : "text-content-muted hover:text-content",
-      )}
+      className="desktop-controller-segment-button flex items-center justify-center gap-2 rounded-lg text-xs font-semibold transition"
+      data-active={active}
       onClick={onClick}
     >
       {icon}
       {label}
-      <span
-        className={cn(
-          "bg-brand absolute inset-x-4 bottom-0 h-0.5 transition-opacity",
-          active ? "opacity-100" : "opacity-0",
-        )}
-      />
     </button>
+  );
+}
+
+function ControllerAtmosphere() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="bg-surface absolute inset-0" />
+      <div
+        className="desktop-controller-blob -top-16 -left-14 size-52"
+        style={{ backgroundColor: "var(--desktop-controller-accent)", opacity: 0.16 }}
+      />
+      <div
+        className="desktop-controller-blob -right-16 -bottom-20 size-60"
+        style={{ backgroundColor: "var(--desktop-controller-secondary)", opacity: 0.12 }}
+      />
+      <div
+        className="desktop-controller-blob top-1/4 right-1/4 size-40"
+        style={{ backgroundColor: "var(--desktop-controller-primary)", opacity: 0.05 }}
+      />
+    </div>
   );
 }

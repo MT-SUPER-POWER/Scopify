@@ -1,5 +1,6 @@
 import type {
   DesktopIconVisibilityState,
+  DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
   DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperModel,
@@ -80,6 +81,7 @@ export interface RuntimeDesktopPlaybackWallpaper {
     presentation: DesktopLyricSnapshotInput,
   ): Promise<DesktopLyricSnapshot | null>;
   retry(): Promise<DesktopPlaybackWallpaperModel>;
+  setControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showController(): Promise<DesktopPlaybackControllerOpenResult>;
 }
 

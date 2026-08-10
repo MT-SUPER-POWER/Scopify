@@ -3,17 +3,30 @@ import type {
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
 } from "@scopify/desktop-contract";
+import type { ReactNode } from "react";
 
 import type { SongDetail } from "@/types/api/music";
+import type { DesktopLyricTrack } from "@/types/desktopLyric";
+
+export interface DesktopPlaybackControllerLyric {
+  primary: string;
+  secondary?: string;
+}
 
 export interface DesktopPlaybackPlayerControlsProps {
+  activeLyric: DesktopPlaybackControllerLyric | null;
   currentSong: SongDetail | null;
+  desktopControl: ReactNode;
+  durationMs: number;
   isConnected: boolean;
   isPlaying: boolean;
   onNext(): void;
   onPrevious(): void;
+  onSeek(positionMs: number): void;
   onTogglePlaying(): void;
   onVolumeChange(volume: number): void;
+  positionMs: number;
+  track: DesktopLyricTrack | null;
   volume: number;
 }
 

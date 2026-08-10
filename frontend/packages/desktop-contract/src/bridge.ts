@@ -7,6 +7,7 @@ import type {
 } from "./desktopLyrics";
 import type { DesktopIconVisibilityState } from "./desktopIcons";
 import type {
+  DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
   DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperModel,
@@ -18,7 +19,7 @@ import type { RendererLogEvent } from "./logging";
 import type { AppUpdateState } from "./updater";
 import type { DesktopHostConfig } from "./config";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 3;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 4;
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
@@ -101,6 +102,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
   sendAppCloseAction(action: "exit" | "minimize"): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;
+  setDesktopPlaybackControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showDesktopPlaybackController(): Promise<DesktopPlaybackControllerOpenResult>;
   setCookie(cookie: string, backendOrigin: string): Promise<boolean>;
   setDesktopIconVisibility(visible: boolean): Promise<DesktopIconVisibilityState>;

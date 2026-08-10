@@ -1,12 +1,17 @@
-import { BrowserWindow } from "electron";
+import { BrowserWindow, screen } from "electron";
 
-import type { DesktopPlaybackControllerOpenResult } from "@scopify/desktop-contract";
+import type {
+  DesktopPlaybackControllerLayout,
+  DesktopPlaybackControllerOpenResult,
+} from "@scopify/desktop-contract";
 
 import { __iconWindow, __preloadScript, logger } from "../../constants.js";
+import {
+  DESKTOP_PLAYBACK_CONTROLLER_SIZES,
+  resolveDesktopPlaybackControllerBounds,
+} from "./controllerLayout.js";
 
 const DESKTOP_PLAYBACK_CONTROLLER_ROUTE = "/desktop-playback-controller";
-const CONTROLLER_WIDTH = 420;
-const CONTROLLER_HEIGHT = 580;
 
 export interface DesktopPlaybackControllerWindowOptions {
   rendererBaseUrl: string;
@@ -17,6 +22,7 @@ export interface DesktopPlaybackControllerWindow {
   dispose(): void;
   getWindow(): BrowserWindow | null;
   prepare(): void;
+  setLayout(layout: DesktopPlaybackControllerLayout): boolean;
   show(): Promise<DesktopPlaybackControllerOpenResult>;
 }
 
@@ -34,20 +40,25 @@ export function createDesktopPlaybackControllerWindow(
     controllerWindow && !controllerWindow.isDestroyed() ? controllerWindow : null;
 
   const createWindow = () => {
+    const compactSize = DESKTOP_PLAYBACK_CONTROLLER_SIZES.compact;
     const window = new BrowserWindow({
       autoHideMenuBar: true,
-      backgroundColor: "#0b0c10",
+      backgroundMaterial: "none",
+      backgroundColor: "#00000000",
       frame: false,
-      hasShadow: true,
-      height: CONTROLLER_HEIGHT,
+      hasShadow: false,
+      height: compactSize.height,
       icon: __iconWindow,
       maximizable: false,
       minimizable: true,
       resizable: false,
+      roundedCorners: false,
       show: false,
       skipTaskbar: false,
+      thickFrame: false,
       title: "Scopify Desktop Music",
-      width: CONTROLLER_WIDTH,
+      transparent: true,
+      width: compactSize.width,
       webPreferences: {
         backgroundThrottling: false,
         contextIsolation: true,
@@ -105,6 +116,17 @@ export function createDesktopPlaybackControllerWindow(
 
     prepare() {
       ensureWindow();
+    },
+
+    setLayout(layout) {
+      const window = getWindow();
+      if (!window) return false;
+      const currentBounds = window.getBounds();
+      const display = screen.getDisplayMatching(currentBounds);
+      window.setBounds(
+        resolveDesktopPlaybackControllerBounds(layout, currentBounds, display.workArea),
+      );
+      return true;
     },
 
     async show() {

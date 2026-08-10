@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function DesktopPlaybackControllerPage() {
   return (
-    <div className="size-full bg-[#0b0c10]">
+    <div className="size-full bg-transparent">
       <DesktopPlaybackController />
     </div>
   );

@@ -149,6 +149,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
 
   ipcMain.on("navigate-main-window", (_event, path) => {
     if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.show();
     mainWindow.focus();
     mainWindow.webContents.send("navigate-to", path);

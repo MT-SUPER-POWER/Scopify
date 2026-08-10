@@ -1,5 +1,6 @@
 import type { DesktopLyricSnapshot, DesktopLyricSnapshotInput } from "./desktopLyrics";
 
+export type DesktopPlaybackControllerLayout = "compact" | "expanded";
 export type DesktopPlaybackWallpaperFullscreenPolicy = "keep-running" | "pause" | "stop";
 
 export interface DesktopPlaybackWallpaperLayers {

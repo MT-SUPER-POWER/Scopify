@@ -17,6 +17,7 @@ export function selectRemotePlayerSnapshot(state: RemotePlayerSnapshot): RemoteP
   return {
     currentSongDetail: state.currentSongDetail,
     isPlaying: state.isPlaying,
+    positionMs: state.positionMs,
     volume: state.volume,
   };
 }
@@ -80,6 +81,7 @@ function snapshotsMatch(left: RemotePlayerSnapshot, right: RemotePlayerSnapshot 
     right !== null &&
     left.currentSongDetail === right.currentSongDetail &&
     left.isPlaying === right.isPlaying &&
+    left.positionMs === right.positionMs &&
     left.volume === right.volume
   );
 }

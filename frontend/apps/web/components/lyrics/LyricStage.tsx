@@ -6,6 +6,10 @@ import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/pres
 import FloatingPlayerControls from "@/components/lyrics/folia/src/components/FloatingPlayerControls";
 import { PlayerState } from "@/components/lyrics/folia/src/types";
 import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
+import {
+  FOLIA_STAGE_SETTINGS_OPEN_EVENT,
+  FOLIA_STAGE_SETTINGS_PENDING_KEY,
+} from "@/constants/desktopPlaybackController";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { usePlayerStore } from "@/store/module/player";
@@ -21,6 +25,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const [isBorderVisible, setIsBorderVisible] = useState(false);
   const [isPlayerChromeHidden, setIsPlayerChromeHidden] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [themeLibraryRequestId, setThemeLibraryRequestId] = useState(0);
   const [isTransparent, setIsTransparent] = useState(false);
   const appearance = useFoliaPresentationAppearance();
   const bridge = useFoliaPlaybackBridge();
@@ -48,6 +53,29 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
       setAutoHidePlayerChromePreference: keepAutoHideEnabled,
       setIsPlayerChromeHidden,
     });
+
+  useEffect(() => {
+    const openSettings = () => {
+      try {
+        window.sessionStorage.removeItem(FOLIA_STAGE_SETTINGS_PENDING_KEY);
+      } catch {
+        // Opening the settings panel does not depend on session storage cleanup.
+      }
+      setIsSettingsOpen(true);
+      setThemeLibraryRequestId((requestId) => requestId + 1);
+    };
+
+    try {
+      if (window.sessionStorage.getItem(FOLIA_STAGE_SETTINGS_PENDING_KEY) === "1") {
+        openSettings();
+      }
+    } catch {
+      // The live event below remains available when session storage is blocked.
+    }
+
+    window.addEventListener(FOLIA_STAGE_SETTINGS_OPEN_EVENT, openSettings);
+    return () => window.removeEventListener(FOLIA_STAGE_SETTINGS_OPEN_EVENT, openSettings);
+  }, []);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -143,6 +171,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
         isOpen={isSettingsOpen}
         onOpenChange={setIsSettingsOpen}
         theme={theme}
+        themeLibraryRequestId={themeLibraryRequestId}
       />
     </section>
   );

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Captions, Disc, ListMusic, Settings2, SlidersHorizontal, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
@@ -25,6 +25,7 @@ export function FoliaStageSettings({
   isOpen,
   onOpenChange,
   theme,
+  themeLibraryRequestId,
 }: FoliaStageSettingsProps) {
   const { t } = useI18n();
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
@@ -50,6 +51,11 @@ export function FoliaStageSettings({
   const [isLyricMatchOpen, setIsLyricMatchOpen] = useState(false);
   const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
   const [isThemeLibraryOpen, setIsThemeLibraryOpen] = useState(false);
+
+  useEffect(() => {
+    if (themeLibraryRequestId <= 0) return;
+    setIsThemeLibraryOpen(true);
+  }, [themeLibraryRequestId]);
 
   const openVisualSettings = (section: FoliaStageEditSection) => {
     setActiveSection(section);

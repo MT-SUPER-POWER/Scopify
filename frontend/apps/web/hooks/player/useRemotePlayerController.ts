@@ -12,6 +12,7 @@ import type {
 const DEFAULT_REMOTE_PLAYER_SNAPSHOT: RemotePlayerSnapshot = {
   currentSongDetail: null,
   isPlaying: false,
+  positionMs: 0,
   volume: 100,
 };
 
@@ -37,6 +38,10 @@ export function useRemotePlayerController(): RemotePlayerControllerState {
         currentSongDetail:
           next.currentSongDetail === undefined ? current.currentSongDetail : next.currentSongDetail,
         isPlaying: typeof next.isPlaying === "boolean" ? next.isPlaying : current.isPlaying,
+        positionMs:
+          typeof next.positionMs === "number" && Number.isFinite(next.positionMs)
+            ? Math.max(0, next.positionMs)
+            : current.positionMs,
         volume: typeof next.volume === "number" ? next.volume : current.volume,
       }));
       setIsConnected(true);
@@ -58,6 +63,11 @@ export function useRemotePlayerController(): RemotePlayerControllerState {
     isConnected,
     playNext: () => sendCommand({ type: "PLAY_NEXT" }),
     playPrevious: () => sendCommand({ type: "PLAY_PREV" }),
+    seek: (positionMs) =>
+      sendCommand({
+        payload: Math.max(0, positionMs),
+        type: "SEEK",
+      }),
     setVolume: (volume) =>
       sendCommand({
         payload: Math.max(0, Math.min(100, volume)),

@@ -8,6 +8,7 @@ import type {
   DesktopLyricSnapshot,
   DesktopLyricSnapshotInput,
   DesktopHostConfig,
+  DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperPresentation,
@@ -90,6 +91,8 @@ const electronAPI: DesktopBridge = {
   },
   closeDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:close"),
   closeDesktopPlaybackController: () => ipcRenderer.invoke("desktop-playback-controller:close"),
+  setDesktopPlaybackControllerLayout: (layout: DesktopPlaybackControllerLayout) =>
+    ipcRenderer.invoke("desktop-playback-controller:set-layout", layout),
   getDesktopLyricSnapshot: () => ipcRenderer.invoke("desktop-lyric:get-snapshot"),
   publishDesktopLyricSnapshot: (snapshot: DesktopLyricSnapshotInput) =>
     ipcRenderer.invoke("desktop-lyric:publish-snapshot", snapshot),

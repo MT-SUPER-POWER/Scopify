@@ -25,6 +25,7 @@ describe("remote player state publisher", () => {
       currentSongDetail: createSong(2),
       ignoredAction: () => undefined,
       isPlaying: true,
+      positionMs: 12_000,
       volume: 80,
     };
     const subscription: { listener: ((nextState: typeof state) => void) | null } = {
@@ -49,7 +50,12 @@ describe("remote player state publisher", () => {
     state = { ...state, currentSongDetail: createSong(3) };
     subscription.listener?.(state);
     expect(snapshots.map((snapshot) => snapshot.currentSongDetail?.id)).toEqual([2, 3]);
-    expect(Object.keys(snapshots[1]).sort()).toEqual(["currentSongDetail", "isPlaying", "volume"]);
+    expect(Object.keys(snapshots[1]).sort()).toEqual([
+      "currentSongDetail",
+      "isPlaying",
+      "positionMs",
+      "volume",
+    ]);
 
     unsubscribe();
   });
@@ -58,6 +64,7 @@ describe("remote player state publisher", () => {
     let state: RemotePlayerSnapshot = {
       currentSongDetail: createSong(10),
       isPlaying: true,
+      positionMs: 20_000,
       volume: 80,
     };
     const heartbeatCallbacks: Array<() => void> = [];
@@ -99,6 +106,7 @@ describe("remote player state publisher", () => {
     let state: RemotePlayerSnapshot = {
       currentSongDetail: createSong(20),
       isPlaying: true,
+      positionMs: 30_000,
       volume: 80,
     };
     let notify: (() => void) | null = null;

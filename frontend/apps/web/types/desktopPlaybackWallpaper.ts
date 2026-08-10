@@ -1,4 +1,5 @@
 import type {
+  DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
 } from "@scopify/desktop-contract";
@@ -33,5 +34,6 @@ export interface DesktopPlaybackWallpaperControllerState {
   isPending: boolean;
   model: DesktopPlaybackWallpaperModel | null;
   retry(): Promise<DesktopPlaybackWallpaperModel | null>;
+  setLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showController(): Promise<boolean>;
 }

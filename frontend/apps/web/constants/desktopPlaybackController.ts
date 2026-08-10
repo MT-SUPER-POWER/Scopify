@@ -1,6 +1,11 @@
 import type { VisualizerBackgroundMode } from "@/components/lyrics/folia/src/types";
 import type { LyricVisualizerMode } from "@/types/lyrics";
 
+export const FOLIA_STAGE_SETTINGS_OPEN_EVENT = "scopify:folia-stage-settings-open";
+export const FOLIA_STAGE_SETTINGS_PENDING_KEY = "scopify:folia-stage-settings-pending";
+export const DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH =
+  "/?desktopPlaybackController=edit-folia-theme";
+
 export const DESKTOP_FOLIA_VISUALIZER_OPTIONS = [
   { labelKey: "folia.ui.visualizerClassic", value: "classic" },
   { labelKey: "folia.ui.visualizerCadenze", value: "cadenza" },

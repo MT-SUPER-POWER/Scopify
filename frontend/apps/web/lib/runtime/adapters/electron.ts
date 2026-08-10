@@ -67,6 +67,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       publishPresentation: (presentation) =>
         bridge.publishDesktopPlaybackWallpaperPresentation(presentation),
       retry: () => bridge.retryDesktopPlaybackWallpaper(),
+      setControllerLayout: (layout) => bridge.setDesktopPlaybackControllerLayout(layout),
       showController: () => bridge.showDesktopPlaybackController(),
     },
     isDesktop: true,
