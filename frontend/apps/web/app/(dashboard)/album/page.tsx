@@ -87,7 +87,7 @@ export default function AlbumPage() {
           />
         </div>
       )}
-      <div className="bg-surface-raised from-hero-shade via-surface-raised to-surface-raised relative z-10 flex flex-1 flex-col bg-linear-to-b via-20%">
+      <div className="hero-content-transition relative z-10 flex flex-1 flex-col">
         <AlbumActions
           isPlaying={isPlaying}
           isAlbumCollected={isAlbumCollected}

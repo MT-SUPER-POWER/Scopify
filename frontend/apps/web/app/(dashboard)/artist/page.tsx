@@ -75,7 +75,7 @@ export default function ArtistPage() {
         </div>
       )}
 
-      <div className="from-hero-shade to-surface-raised mx-auto w-full max-w-7xl bg-linear-to-b">
+      <div className="hero-content-transition mx-auto w-full max-w-7xl">
         <ActionBar
           artistId={artist.id}
           isPlayingArtist={isPlayingArtist}

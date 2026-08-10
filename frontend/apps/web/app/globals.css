@@ -57,7 +57,8 @@
   --overlay-foreground: #ffffff;
   --media-overlay: rgb(0 0 0 / 40%);
   --image-scrim: rgb(0 0 0 / 25%);
-  --hero-shade: rgb(0 0 0 / 20%);
+  --hero-shade: rgb(255 255 255 / 18%);
+  --hero-transition-depth: 10rem;
   --calendar-surface: #ffffff;
   --calendar-surface-muted: #f0f0f0;
   --calendar-ink: #2a2a2a;
@@ -237,6 +238,7 @@
   --overlay: rgb(0 0 0 / 80%);
   --overlay-foreground: #ffffff;
   --media-overlay: rgb(0 0 0 / 40%);
+  --hero-shade: rgb(0 0 0 / 20%);
   --skeleton: rgb(255 255 255 / 8%);
   --skeleton-subtle: rgb(255 255 255 / 6%);
   --scrollbar-thumb: rgb(255 255 255 / 18%);
@@ -258,6 +260,14 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .hero-content-transition {
+    background-image: linear-gradient(to bottom, var(--hero-shade), var(--surface-raised));
+    background-repeat: no-repeat;
+    background-size: 100% var(--hero-transition-depth);
   }
 }
 

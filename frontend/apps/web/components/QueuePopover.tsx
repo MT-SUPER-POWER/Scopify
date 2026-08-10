@@ -314,7 +314,7 @@ export const QueuePopover = () => {
               <button
                 type="button"
                 aria-label={t("queue.triggerTitle")}
-                className="flex items-center justify-center text-zinc-400 transition-colors hover:text-white"
+                className="text-content-muted hover:text-content flex items-center justify-center transition-colors"
               >
                 <ListMusic className="size-5" />
               </button>

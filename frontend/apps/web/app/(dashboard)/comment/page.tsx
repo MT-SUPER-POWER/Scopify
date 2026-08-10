@@ -100,7 +100,7 @@ export default function CommentPage() {
         onArtistClick={(artistId) => smartRouter.push(`/artist?id=${artistId}`)}
       />
 
-      <div className="bg-surface-raised from-hero-shade via-surface-raised to-surface-raised relative z-10 flex flex-col bg-linear-to-b via-20%">
+      <div className="hero-content-transition relative z-10 flex flex-col">
         <div className="mx-auto w-full max-w-4xl p-6">
           <div className="mb-8 flex items-end justify-between">
             <h2 className="text-xl font-bold">{t("comments.page.allComments")}</h2>

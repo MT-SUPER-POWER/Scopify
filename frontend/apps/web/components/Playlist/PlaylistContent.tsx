@@ -62,7 +62,7 @@ export function PlaylistContent({
       {dynamicPlaylistInfo && (
         <PlaylistHeader info={dynamicPlaylistInfo} isDaily={isDailyRecommend} />
       )}
-      <div className="bg-surface-raised from-hero-shade via-surface-raised to-surface-raised relative z-10 flex flex-1 flex-col bg-linear-to-b via-20%">
+      <div className="hero-content-transition relative z-10 flex flex-1 flex-col">
         {isLoading ? (
           <PlaylistHeaderSkeleton />
         ) : (

@@ -13,7 +13,7 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChevronDown, ChevronUp, Clock, RefreshCw } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import type { TracklistTableProps } from "@/types/components/playlist";
@@ -192,7 +192,9 @@ export default function TracklistTable({
 
   const primaryScrollSurface = usePrimaryScrollSurface();
   const stickyHeaderSentinelRef = useRef<HTMLDivElement>(null);
+  const tableBodyRef = useRef<HTMLTableSectionElement>(null);
   const [isTableHeaderSticky, setIsTableHeaderSticky] = useState(false);
+  const [tracklistScrollMargin, setTracklistScrollMargin] = useState(0);
   const virtualRowElementsRef = useRef(new Map<number, HTMLTableRowElement>());
 
   useEffect(() => {
@@ -213,6 +215,41 @@ export default function TracklistTable({
     return () => primaryScrollSurface.removeEventListener("scroll", syncStickyState);
   }, [primaryScrollSurface, stickyHeaderTop]);
 
+  useLayoutEffect(() => {
+    const tableBody = tableBodyRef.current;
+    if (disableVirtualization || !primaryScrollSurface || !tableBody) {
+      setTracklistScrollMargin(0);
+      return;
+    }
+
+    const measureScrollMargin = () => {
+      const surfaceTop = primaryScrollSurface.getBoundingClientRect().top;
+      const nextScrollMargin =
+        tableBody.getBoundingClientRect().top - surfaceTop + primaryScrollSurface.scrollTop;
+
+      setTracklistScrollMargin((current) =>
+        Math.abs(current - nextScrollMargin) < 0.5 ? current : nextScrollMargin,
+      );
+    };
+
+    measureScrollMargin();
+    const resizeObserver = new ResizeObserver(measureScrollMargin);
+    resizeObserver.observe(primaryScrollSurface);
+    resizeObserver.observe(tableBody);
+    window.addEventListener("resize", measureScrollMargin);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", measureScrollMargin);
+    };
+  }, [
+    disableVirtualization,
+    primaryScrollSurface,
+    showAlbumColumn,
+    showDateColumn,
+    showLikeColumn,
+  ]);
+
   const virtualizer = useVirtualizer({
     count: sortedTracks.length,
     enabled: !disableVirtualization,
@@ -221,6 +258,7 @@ export default function TracklistTable({
     getScrollElement: () => primaryScrollSurface,
     isScrollingResetDelay: 160,
     overscan: 7,
+    scrollMargin: tracklistScrollMargin,
   });
   const primaryScrollSurfaceRef = useRef(primaryScrollSurface);
   const sortedTracksRef = useRef(sortedTracks);
@@ -295,6 +333,12 @@ export default function TracklistTable({
 
   const virtualItems = virtualizer.getVirtualItems();
   const isVirtualScrolling = virtualizer.isScrolling;
+  const virtualPaddingTop =
+    virtualItems.length > 0 ? Math.max(0, virtualItems[0].start - tracklistScrollMargin) : 0;
+  const lastVirtualItem = virtualItems[virtualItems.length - 1];
+  const virtualPaddingBottom = lastVirtualItem
+    ? Math.max(0, virtualizer.getTotalSize() - (lastVirtualItem.end - tracklistScrollMargin))
+    : 0;
 
   const handlePlay = useCallback(
     (track: SongDetail) => {
@@ -422,10 +466,9 @@ export default function TracklistTable({
               className={cn(
                 "sticky top-0 z-10",
                 "[&_[data-slot=table-head]]:h-9",
-                isVirtualScrolling ? "shadow-none" : "shadow-panel",
                 isTableHeaderSticky
-                  ? "bg-surface-raised/95"
-                  : "to-surface-raised/10 bg-linear-to-b from-transparent backdrop-blur-sm",
+                  ? "bg-surface-raised/95 shadow-panel backdrop-blur-sm"
+                  : "bg-transparent shadow-none",
                 stickyHeaderClassName,
               )}
             >
@@ -521,7 +564,7 @@ export default function TracklistTable({
               </TableRow>
             </TableHeader>
 
-            <TableBody>
+            <TableBody ref={tableBodyRef}>
               {sortedTracks.length === 0 ? (
                 <TableRow className="border-none hover:bg-transparent">
                   <TableCell
@@ -592,8 +635,8 @@ export default function TracklistTable({
                 })
               ) : (
                 <>
-                  {virtualItems.length > 0 && virtualItems[0].start > 0 && (
-                    <tr style={{ height: `${virtualItems[0].start}px` }}>
+                  {virtualPaddingTop > 0 && (
+                    <tr style={{ height: `${virtualPaddingTop}px` }}>
                       <td colSpan={visibleColumnCount} aria-hidden />
                     </tr>
                   )}
@@ -650,16 +693,11 @@ export default function TracklistTable({
                       </SongContextMenu>
                     );
                   })}
-                  {virtualItems.length > 0 &&
-                    (() => {
-                      const last = virtualItems[virtualItems.length - 1];
-                      const paddingBottom = virtualizer.getTotalSize() - last.end;
-                      return paddingBottom > 0 ? (
-                        <tr style={{ height: `${paddingBottom}px` }}>
-                          <td colSpan={visibleColumnCount} aria-hidden />
-                        </tr>
-                      ) : null;
-                    })()}
+                  {virtualPaddingBottom > 0 && (
+                    <tr style={{ height: `${virtualPaddingBottom}px` }}>
+                      <td colSpan={visibleColumnCount} aria-hidden />
+                    </tr>
+                  )}
                 </>
               )}
             </TableBody>
