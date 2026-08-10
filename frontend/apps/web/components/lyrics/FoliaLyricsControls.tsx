@@ -33,15 +33,11 @@ export function FoliaLyricsControls({ onOpenLyricMatch, theme }: FoliaLyricsCont
   ];
 
   return (
-    <motion.div
-      animate={{ opacity: 1 }}
-      className="flex flex-col px-2 pt-0"
-      initial={{ opacity: 0 }}
-    >
+    <motion.div animate={{ opacity: 1 }} className="flex flex-col" initial={{ opacity: 0 }}>
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <span className="flex items-center gap-1.5 text-[12px] font-bold tracking-widest uppercase opacity-40">
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold tracking-wider uppercase opacity-55">
               {t("lyrics.tab.title")}
             </span>
             {model.importedLyric ? (
@@ -88,36 +84,49 @@ export function FoliaLyricsControls({ onOpenLyricMatch, theme }: FoliaLyricsCont
         </div>
 
         {sources.length === 1 ? (
-          <div
-            className={`flex items-center justify-between rounded-lg p-2 pl-3 ${isDaylight ? "bg-black/5" : "bg-white/5"}`}
-          >
-            <span className="text-[11px] opacity-60">{t("lyrics.tab.source")}</span>
-            <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${activeTabBg}`}>
-              {sources[0].label}
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold tracking-wider uppercase opacity-55">
+              {t("lyrics.tab.source")}
+            </span>
+            <span
+              className={`inline-flex h-5 max-w-28 items-center rounded-md px-2 text-[9px] leading-none font-bold tracking-normal normal-case transition-colors ${
+                isDaylight ? "hover:bg-white" : "hover:bg-white/14"
+              }`}
+              style={{
+                backgroundColor: isDaylight ? "rgba(255,255,255,0.78)" : "rgba(255,255,255,0.08)",
+                color: theme.accentColor,
+              }}
+            >
+              <span className="truncate">{sources[0].label}</span>
             </span>
           </div>
         ) : (
-          <div className={`relative flex rounded-lg p-0.5 ${tabContainerBg}`}>
-            {sources.map((source) => {
-              const isActive = model.source === source.key;
-              return (
-                <button
-                  className={`relative flex-1 rounded-md px-1.5 py-1 text-[10px] font-medium transition-colors duration-200 focus:outline-none ${isActive ? activeTextColor : inactiveTextColor}`}
-                  key={source.key}
-                  onClick={() => void model.selectSource(source.key)}
-                  type="button"
-                >
-                  {isActive ? (
-                    <motion.span
-                      className={`absolute inset-0 rounded-md ${activePillBg}`}
-                      layoutId="online-lyrics-active-pill"
-                      transition={{ damping: 30, stiffness: 380, type: "spring" }}
-                    />
-                  ) : null}
-                  <span className="relative z-10 truncate">{source.label}</span>
-                </button>
-              );
-            })}
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-semibold tracking-wider uppercase opacity-55">
+              {t("lyrics.tab.source")}
+            </span>
+            <div className={`relative flex rounded-lg p-0.5 ${tabContainerBg}`}>
+              {sources.map((source) => {
+                const isActive = model.source === source.key;
+                return (
+                  <button
+                    className={`relative flex-1 rounded-md px-1.5 py-1 text-[10px] font-medium transition-colors duration-200 focus:outline-none ${isActive ? activeTextColor : inactiveTextColor}`}
+                    key={source.key}
+                    onClick={() => void model.selectSource(source.key)}
+                    type="button"
+                  >
+                    {isActive ? (
+                      <motion.span
+                        className={`absolute inset-0 rounded-md ${activePillBg}`}
+                        layoutId="online-lyrics-active-pill"
+                        transition={{ damping: 30, stiffness: 380, type: "spring" }}
+                      />
+                    ) : null}
+                    <span className="relative z-10 truncate">{source.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 

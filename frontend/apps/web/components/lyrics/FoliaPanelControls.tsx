@@ -17,22 +17,16 @@ import {
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaAudioSettingsControl } from "@/components/lyrics/FoliaAudioSettingsControl";
-import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import type { Theme } from "@/components/lyrics/folia/src/types";
-import { FoliaVisualizerControls } from "@/components/lyrics/FoliaVisualizerControls";
-import type { FoliaStageEditSection } from "@/types/foliaStage";
+import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
+import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 
 interface FoliaPanelControlsProps {
-  onOpenSettings: (section: FoliaStageEditSection) => void;
-  onOpenThemeLibrary: () => void;
+  onOpenLyricMatch: () => void;
   theme: Theme;
 }
 
-export function FoliaPanelControls({
-  onOpenSettings,
-  onOpenThemeLibrary,
-  theme,
-}: FoliaPanelControlsProps) {
+export function FoliaPanelControls({ onOpenLyricMatch, theme }: FoliaPanelControlsProps) {
   const { t } = useI18n();
   const model = useFoliaPanelControls();
   const isDaylight = theme.name === "snow";
@@ -42,59 +36,63 @@ export function FoliaPanelControls({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-3">
-        <IconButton theme={theme} title={String(t("folia.ui.previous"))} onClick={model.playPrev}>
-          <SkipBack size={20} />
-        </IconButton>
-        <IconButton
-          title={String(t(model.isPlaying ? "folia.ui.pause" : "folia.ui.play"))}
-          onClick={model.togglePlay}
-          theme={theme}
-        >
-          {model.isPlaying ? (
-            <Pause size={20} fill="currentColor" />
-          ) : (
-            <Play size={20} fill="currentColor" />
-          )}
-        </IconButton>
-        <IconButton theme={theme} title={String(t("folia.ui.next"))} onClick={model.playNext}>
-          <SkipForward size={20} />
-        </IconButton>
+      {/* 1st Section: Media Playback Controls (Boxed) */}
+      <div className="space-y-3">
+        <div className="grid grid-cols-3 gap-3">
+          <IconButton theme={theme} title={String(t("folia.ui.previous"))} onClick={model.playPrev}>
+            <SkipBack size={20} />
+          </IconButton>
+          <IconButton
+            title={String(t(model.isPlaying ? "folia.ui.pause" : "folia.ui.play"))}
+            onClick={model.togglePlay}
+            theme={theme}
+          >
+            {model.isPlaying ? (
+              <Pause size={20} fill="currentColor" />
+            ) : (
+              <Play size={20} fill="currentColor" />
+            )}
+          </IconButton>
+          <IconButton theme={theme} title={String(t("folia.ui.next"))} onClick={model.playNext}>
+            <SkipForward size={20} />
+          </IconButton>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          <IconButton
+            theme={theme}
+            title={String(t("folia.ui.loopMode"))}
+            onClick={model.toggleRepeat}
+          >
+            <RepeatIcon size={20} />
+          </IconButton>
+          <IconButton
+            active={model.isLiked}
+            theme={theme}
+            title={String(t("folia.ui.like"))}
+            onClick={model.toggleLike}
+          >
+            <Heart size={20} fill={model.isLiked ? "currentColor" : "none"} />
+          </IconButton>
+          <IconButton
+            active={model.isShuffle}
+            theme={theme}
+            title={String(t("folia.queue.shuffle"))}
+            onClick={model.toggleShuffle}
+          >
+            <Shuffle size={20} />
+          </IconButton>
+        </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
-        <IconButton
-          theme={theme}
-          title={String(t("folia.ui.loopMode"))}
-          onClick={model.toggleRepeat}
-        >
-          <RepeatIcon size={20} />
-        </IconButton>
-        <IconButton
-          active={model.isLiked}
-          theme={theme}
-          title={String(t("folia.ui.like"))}
-          onClick={model.toggleLike}
-        >
-          <Heart size={20} fill={model.isLiked ? "currentColor" : "none"} />
-        </IconButton>
-        <IconButton
-          active={model.isShuffle}
-          theme={theme}
-          title={String(t("folia.queue.shuffle"))}
-          onClick={model.toggleShuffle}
-        >
-          <Shuffle size={20} />
-        </IconButton>
-      </div>
-
-      <label
+      {/* 2nd Section: Volume */}
+      <section
         className={`block space-y-2 border-t pt-4 ${isDaylight ? "border-black/5" : "border-white/5"}`}
       >
-        <span className="flex items-center justify-between text-[10px] font-bold tracking-widest uppercase opacity-55">
+        <div className="flex items-center justify-between text-[11px] font-semibold tracking-wider uppercase opacity-55">
           <span>{t("folia.ui.volume")}</span>
-          <span>{Math.round(model.volume)}%</span>
-        </span>
+          <span className="font-mono">{Math.round(model.volume)}%</span>
+        </div>
         <span
           className={`flex items-center gap-3 rounded-xl p-2 ${isDaylight ? "bg-black/5" : "bg-black/20"}`}
         >
@@ -117,8 +115,9 @@ export function FoliaPanelControls({
             style={{ accentColor: theme.accentColor }}
           />
         </span>
-      </label>
+      </section>
 
+      {/* Audio Settings */}
       <section
         className={`flex items-center justify-between gap-3 border-t pt-4 ${isDaylight ? "border-black/5" : "border-white/5"}`}
       >
@@ -128,11 +127,10 @@ export function FoliaPanelControls({
         <FoliaAudioSettingsControl theme={theme} />
       </section>
 
-      <FoliaVisualizerControls
-        onOpenSettings={onOpenSettings}
-        onOpenThemeLibrary={onOpenThemeLibrary}
-        theme={theme}
-      />
+      {/* 3rd Section: Lyrics */}
+      <div className={`border-t pt-4 ${isDaylight ? "border-black/5" : "border-white/5"}`}>
+        <FoliaLyricsControls onOpenLyricMatch={onOpenLyricMatch} theme={theme} />
+      </div>
     </div>
   );
 }

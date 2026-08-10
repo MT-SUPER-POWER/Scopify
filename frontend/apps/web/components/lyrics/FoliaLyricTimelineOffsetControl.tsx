@@ -30,7 +30,7 @@ export function FoliaLyricTimelineOffsetControl({
 
   return (
     <div className="flex items-center justify-between">
-      <span className="mr-3 shrink-0 text-[11px] font-semibold tracking-wider uppercase opacity-50">
+      <span className="text-[11px] font-semibold tracking-wider uppercase opacity-55">
         {t("lyrics.tab.offset")}
       </span>
       <div className="flex items-center">
