@@ -75,8 +75,8 @@
   --home-atmosphere-evening: #7e22ce;
   --home-atmosphere-late-night: #0f172a;
   --page-accent-recent: #3b6b61;
-  --skeleton: rgb(0 0 0 / 9%);
-  --skeleton-subtle: rgb(0 0 0 / 6%);
+  --skeleton: rgb(0 0 0 / 18%);
+  --skeleton-subtle: rgb(0 0 0 / 12%);
   --scrollbar-thumb: rgb(0 0 0 / 22%);
   --scrollbar-thumb-hover: rgb(0 0 0 / 36%);
   --elevation-panel: 0 8px 24px rgb(0 0 0 / 12%);

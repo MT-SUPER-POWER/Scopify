@@ -21,17 +21,20 @@ export function LoadingHeaderSkeleton() {
 
 export function LoadingSidebarSkeleton() {
   return (
-    <aside className="bg-surface-sunken flex min-h-0 w-20 shrink-0 flex-col overflow-hidden rounded-lg p-3 lg:w-1/5 lg:p-4">
-      <div className="mb-7 flex h-9 items-center gap-3">
+    <aside className="bg-surface-raised flex min-h-0 w-20 shrink-0 flex-col overflow-hidden rounded-lg p-3 lg:w-1/5 lg:p-4">
+      <div className="mb-7 flex h-9 items-center justify-center gap-3 lg:justify-start">
         <div className="bg-surface border-border text-content flex size-9 items-center justify-center rounded-full border text-xs font-semibold">
-          N
+          S
         </div>
         <Skeleton className="bg-skeleton hidden h-4 w-24 lg:block" />
       </div>
 
       <div className="space-y-2">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="flex h-9 items-center gap-3 rounded-md px-1">
+          <div
+            key={index}
+            className="flex h-9 items-center justify-center gap-3 rounded-md lg:justify-start lg:px-1"
+          >
             <Skeleton className="bg-skeleton size-5 shrink-0 rounded-md" />
             <Skeleton className="bg-skeleton hidden h-3 lg:block lg:w-20" />
           </div>
@@ -42,7 +45,10 @@ export function LoadingSidebarSkeleton() {
       <Skeleton className="bg-skeleton mb-3 hidden h-3 w-20 lg:block" />
       <div className="space-y-3">
         {Array.from({ length: 5 }).map((_, index) => (
-          <div key={index} className="flex items-center gap-3 px-1">
+          <div
+            key={index}
+            className="flex items-center justify-center gap-3 lg:justify-start lg:px-1"
+          >
             <Skeleton className="bg-skeleton size-8 shrink-0 rounded-md" />
             <div className="hidden min-w-0 flex-1 space-y-1.5 lg:block">
               <Skeleton className="bg-skeleton h-3 w-4/5" />
@@ -57,7 +63,7 @@ export function LoadingSidebarSkeleton() {
 
 export function LoadingPlayerBarSkeleton() {
   return (
-    <footer className="bg-surface-elevated flex h-17 items-center gap-4 rounded-lg px-4 lg:h-20 lg:px-6">
+    <footer className="bg-surface flex h-17 items-center gap-4 rounded-lg px-4 lg:h-20 lg:px-6">
       <div className="flex min-w-0 flex-1 items-center gap-3 lg:gap-4">
         <Skeleton className="bg-skeleton size-12 shrink-0 rounded-md lg:size-14" />
         <div className="min-w-0 space-y-2">
