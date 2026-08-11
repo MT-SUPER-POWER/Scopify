@@ -38,7 +38,7 @@ export interface PlaylistContentProps {
   readonly?: boolean;
   refetchTracks: () => void | Promise<unknown>;
   setTracks?: (tracks: SongDetail[]) => void;
-  themeColor: string;
+  themeColor: null | string;
   tracks: SongDetail[];
 }
 
