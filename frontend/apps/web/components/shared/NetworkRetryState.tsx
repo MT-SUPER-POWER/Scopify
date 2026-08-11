@@ -14,6 +14,8 @@ export function NetworkRetryState({
 }: NetworkRetryStateProps) {
   return (
     <div
+      aria-live="polite"
+      role="status"
       className={
         compact
           ? "flex min-h-44 flex-col items-center justify-center gap-4 px-6 py-8 text-center"

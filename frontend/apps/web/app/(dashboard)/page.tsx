@@ -2,9 +2,10 @@
 
 import { Loader2, Play } from "lucide-react";
 import Image from "next/image";
+
 import { CollapsibleSection } from "@/components/home/CollapsibleSection";
-import { GridCard } from "@/components/home/GridCard";
 import { FeaturedActivitiesCarousel } from "@/components/home/FeaturedActivitiesCarousel";
+import { GridCard } from "@/components/home/GridCard";
 import { HomePageSkeleton } from "@/components/home/HomePageSkeleton";
 import { RecommendedVoiceLists } from "@/components/home/RecommendedVoiceLists";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
@@ -18,12 +19,14 @@ export default function HomePage() {
   useRouteRestorationPlaceholder(HomePageSkeleton);
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
+  const timeTheme = getTimeTheme();
   const {
     playlists,
     recommendedVoiceLists,
     bannerPlaylist,
     suggestedArtists,
     isLoading,
+    isUnavailable,
     loadingPlayId,
     hasError,
     dateInfo,
@@ -34,27 +37,38 @@ export default function HomePage() {
 
   return (
     <div className="bg-surface-raised relative min-h-screen pb-24 font-sans">
-      {/* 背景渐变始终保留 */}
       <div
         className={cn(
-          "absolute inset-x-0 top-0 h-full bg-linear-to-b",
-          getTimeTheme().gradient,
-          "pointer-events-none z-0",
+          "pointer-events-none absolute inset-x-0 top-0 z-0 h-full bg-linear-to-b",
+          timeTheme.gradient,
         )}
       />
 
-      {/* === 核心加载逻辑：如果是首次加载或数据为空时显示骨架屏 === */}
-      {isLoading && playlists.length === 0 ? (
+      {isUnavailable ? (
+        <div className="relative z-10 flex min-h-screen flex-col p-6 pt-20">
+          <h1 className="text-content text-3xl leading-none font-bold tracking-tight">
+            {t(timeTheme.greetingKey)}
+          </h1>
+          <main className="flex flex-1 items-center justify-center pb-28">
+            <NetworkRetryState
+              title={t("network.offline.title")}
+              subtitle={t("network.offline.subtitle")}
+              actionLabel={t("network.action.refresh")}
+              isRetrying={isLoading}
+              onRetry={() => void fetchHomeData()}
+            />
+          </main>
+        </div>
+      ) : isLoading && playlists.length === 0 ? (
         <HomePageSkeleton />
       ) : (
         <div className="animate-in fade-in relative z-10 space-y-8 p-6 pt-20 duration-500">
-          {/* 欢迎语 + 快速访问 */}
           <section>
             <CollapsibleSection
               title={
                 <div className="flex items-center gap-4">
                   <h1 className="text-content text-3xl leading-none font-bold tracking-tight">
-                    {t(getTimeTheme().greetingKey)}
+                    {t(timeTheme.greetingKey)}
                   </h1>
                 </div>
               }
@@ -83,8 +97,8 @@ export default function HomePage() {
                   </span>
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
+                    onClick={(event) => {
+                      event.stopPropagation();
                       smartRouter.push("/playlist/?isDailyRecommend=true");
                     }}
                     className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105"
@@ -111,7 +125,7 @@ export default function HomePage() {
                     </span>
                     <button
                       type="button"
-                      onClick={(e) => handlePlayPlaylist(item.id, e)}
+                      onClick={(event) => handlePlayPlaylist(item.id, event)}
                       disabled={loadingPlayId === `playlist-${item.id}`}
                       className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105"
                     >
@@ -142,7 +156,6 @@ export default function HomePage() {
             />
           )}
 
-          {/* 推荐歌单 */}
           <section>
             <CollapsibleSection
               title={
@@ -165,7 +178,7 @@ export default function HomePage() {
                     })}
                     playCount={playlist.playCount}
                     isLoading={loadingPlayId === `playlist-${playlist.id}`}
-                    onPlay={(e) => handlePlayPlaylist(playlist.id, e)}
+                    onPlay={(event) => handlePlayPlaylist(playlist.id, event)}
                     onClick={() =>
                       smartRouter.push(`/playlist/?id=${playlist.id}&isRecommend=true`)
                     }
@@ -175,7 +188,6 @@ export default function HomePage() {
             </CollapsibleSection>
           </section>
 
-          {/* 推荐歌手 */}
           {suggestedArtists.length > 0 && (
             <section>
               <CollapsibleSection

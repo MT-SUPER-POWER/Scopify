@@ -204,8 +204,26 @@ export function useHomeData() {
     [recommendedVoiceListsQuery.data, t],
   );
   const isLoading =
-    personalizedQuery.isFetching || recommendedQuery.isFetching || hotArtistsQuery.isFetching;
-  const hasError = personalizedQuery.isError || recommendedQuery.isError || hotArtistsQuery.isError;
+    personalizedQuery.isFetching ||
+    recommendedQuery.isFetching ||
+    recommendedVoiceListsQuery.isFetching ||
+    hotArtistsQuery.isFetching;
+  const hasError =
+    personalizedQuery.isError ||
+    recommendedQuery.isError ||
+    recommendedVoiceListsQuery.isError ||
+    hotArtistsQuery.isError;
+  const hasHomeContent =
+    playlists.length > 0 ||
+    bannerPlaylist.length > 0 ||
+    recommendedVoiceLists.length > 0 ||
+    suggestedArtists.length > 0;
+  const isUnavailable =
+    !isLoading &&
+    !hasHomeContent &&
+    personalizedQuery.isError &&
+    recommendedVoiceListsQuery.isError &&
+    hotArtistsQuery.isError;
 
   useEffect(() => {
     const today = new Date();
@@ -273,6 +291,7 @@ export function useHomeData() {
     suggestedArtists,
     recommendedVoiceLists,
     isLoading,
+    isUnavailable,
     loadingPlayId,
     hasError,
     dateInfo,

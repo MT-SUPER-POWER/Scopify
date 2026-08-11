@@ -61,13 +61,13 @@ export function PlaylistContent({
           style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
         />
       ) : null}
-      {dynamicPlaylistInfo && (
+      {dynamicPlaylistInfo ? (
         <PlaylistHeader info={dynamicPlaylistInfo} isDaily={isDailyRecommend} />
+      ) : (
+        <PlaylistHeaderSkeleton showActions={isLoading} />
       )}
       <div className="hero-content-transition relative z-10 flex flex-1 flex-col">
-        {isLoading ? (
-          <PlaylistHeaderSkeleton />
-        ) : (
+        {!isLoading && (
           <>
             <PlaylistActions
               actionSlot={actionSlot}

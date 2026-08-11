@@ -46,6 +46,10 @@ export interface PlaylistContentSlotProps {
   searchQuery: string;
 }
 
+export interface PlaylistHeaderSkeletonProps {
+  showActions?: boolean;
+}
+
 export type DailyRecommendationMode = "current" | "history";
 
 export interface TracklistTableProps {
