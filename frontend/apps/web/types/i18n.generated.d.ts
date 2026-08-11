@@ -527,6 +527,30 @@ export interface TranslateFn {
    */
   (key: "settings.keepDays.sublabel", params?: TranslationParams): string;
   /**
+   * zh-CN: 日志存储位置
+   * zh-TW: 日誌儲存位置
+   * en-US: Log Storage Location
+   */
+  (key: "settings.logDirectory.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前桌面端日志文件的实际存储路径。
+   * zh-TW: 目前桌面版日誌檔案的實際儲存路徑。
+   * en-US: The active storage path for desktop log files.
+   */
+  (key: "settings.logDirectory.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在读取日志路径...
+   * zh-TW: 正在讀取日誌路徑...
+   * en-US: Loading log path...
+   */
+  (key: "settings.logDirectory.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 日志路径暂时不可用
+   * zh-TW: 日誌路徑暫時不可用
+   * en-US: Log path is temporarily unavailable
+   */
+  (key: "settings.logDirectory.unavailable", params?: TranslationParams): string;
+  /**
    * zh-CN: 超时时间 (ms)
    * zh-TW: 逾時時間 (ms)
    * en-US: Timeout (ms)
@@ -928,6 +952,12 @@ export interface TranslateFn {
    * en-US: New version {{version}} available
    */
   (key: "settings.updater.availableVersion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近检查
+   * zh-TW: 最近檢查
+   * en-US: Last checked
+   */
+  (key: "settings.updater.lastChecked", params?: TranslationParams): string;
   /**
    * zh-CN: 自动更新只在已安装的桌面端中可用。
    * zh-TW: 自動更新只在已安裝的桌面版中可用。

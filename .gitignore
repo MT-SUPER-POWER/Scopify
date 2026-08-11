@@ -9,6 +9,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+.vscode/*
 
 # testing
 /coverage
@@ -19,6 +20,7 @@
 /frontend/apps/web/out/
 /frontend/apps/desktop/out/
 /frontend/apps/desktop/dist/
+/frontend/apps/desktop/dist*/
 /frontend/apps/desktop/renderer/
 /renderer-e2e/
 

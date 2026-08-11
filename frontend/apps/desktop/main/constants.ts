@@ -112,6 +112,10 @@ const logsDir = app.isPackaged
   ? join(app.getPath("userData"), "logs")
   : join(process.cwd(), "logs");
 
+export function getLogDirectory() {
+  return logsDir;
+}
+
 const keepDays = desktopConfig.logging.keepDays || 7;
 
 // 按天命名文件

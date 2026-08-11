@@ -204,7 +204,10 @@ export function createBrowserRuntime(
     },
     isDesktop: false,
     kind: "browser",
-    logging: { write: async () => false },
+    logging: {
+      getDirectory: async () => null,
+      write: async () => false,
+    },
     media: {
       onCommand: () => NOOP,
       setPlaying: NOOP,

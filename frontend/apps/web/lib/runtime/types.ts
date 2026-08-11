@@ -78,6 +78,7 @@ export interface RuntimeDesktopPlaybackWallpaper {
 }
 
 export interface RuntimeLogging {
+  getDirectory(): Promise<string | null>;
   write(event: RendererLogEvent): Promise<boolean>;
 }
 

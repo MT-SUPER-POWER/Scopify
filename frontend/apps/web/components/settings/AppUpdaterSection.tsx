@@ -8,12 +8,23 @@ import type { AppUpdaterSectionProps } from "@/types/components/settings";
 import { SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const { state, check, download, install } = useAppUpdater();
   const isChecking = state.status === "checking";
   const isDownloading = state.status === "downloading";
   const hasUpdate = state.status === "available";
   const downloaded = state.status === "downloaded";
+  const lastCheckedAt =
+    typeof state.lastCheckedAt === "number" && Number.isFinite(state.lastCheckedAt)
+      ? new Date(state.lastCheckedAt)
+      : null;
+  const formattedLastCheckedAt =
+    lastCheckedAt && !Number.isNaN(lastCheckedAt.valueOf())
+      ? new Intl.DateTimeFormat(locale, {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }).format(lastCheckedAt)
+      : null;
   const statusLabel =
     state.status === "downloading" && state.percent !== undefined
       ? t("settings.updater.state.downloadingProgress", {
@@ -53,14 +64,29 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                 ? t("settings.updater.currentVersion", { version: state.currentVersion })
                 : t("settings.updater.statusHint")
           }
-          control={<span className="text-sm font-semibold text-white">{statusLabel}</span>}
+          control={
+            <span aria-live="polite" className="text-foreground text-sm font-semibold">
+              {statusLabel}
+            </span>
+          }
         />
-        {state.message ? (
+        {formattedLastCheckedAt && lastCheckedAt ? (
           <SettingRow
-            label={t("settings.updater.message")}
-            sublabel={state.message}
-            control={<span className="text-xs text-zinc-500" />}
+            label={t("settings.updater.lastChecked")}
+            control={
+              <time
+                dateTime={lastCheckedAt.toISOString()}
+                className="text-muted-foreground text-sm font-medium"
+              >
+                {formattedLastCheckedAt}
+              </time>
+            }
           />
+        ) : null}
+        {state.message ? (
+          <p role="alert" className="text-danger -mt-2 mb-6 text-sm leading-relaxed">
+            {t("settings.updater.message")}：{state.message}
+          </p>
         ) : null}
         <SettingRow
           label={t("settings.updater.action")}
@@ -71,9 +97,9 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                 type="button"
                 onClick={() => void check()}
                 disabled={!state.supported || isChecking || isDownloading}
-                className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-black transition hover:bg-white/90 disabled:opacity-50"
+                className="border-input bg-surface-raised text-foreground hover:bg-accent inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold transition disabled:opacity-50"
               >
-                <RefreshCw className="size-3.5" />
+                <RefreshCw className={isChecking ? "size-3.5 animate-spin" : "size-3.5"} />
                 {isChecking ? t("settings.updater.checking") : t("settings.updater.check")}
               </button>
               {hasUpdate ? (
@@ -81,7 +107,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                   type="button"
                   onClick={() => void download()}
                   disabled={isDownloading}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#1ed760] px-4 py-2 text-xs font-bold text-black transition hover:bg-[#3be477] disabled:opacity-50"
+                  className="bg-brand text-brand-foreground hover:bg-brand-hover inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition disabled:opacity-50"
                 >
                   <Download className="size-3.5" />
                   {t("settings.updater.download")}
@@ -91,7 +117,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                 <button
                   type="button"
                   onClick={install}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#ff3b5c] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#ff5270]"
+                  className="bg-brand text-brand-foreground hover:bg-brand-hover inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition"
                 >
                   <Rocket className="size-3.5" />
                   {t("settings.updater.install")}

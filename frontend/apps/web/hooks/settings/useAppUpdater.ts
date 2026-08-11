@@ -42,11 +42,27 @@ export function useAppUpdater() {
   }, []);
 
   const check = useCallback(async () => {
-    setState(await runtime.updates.check());
+    try {
+      setState(await runtime.updates.check());
+    } catch (error) {
+      setState((current) => ({
+        ...current,
+        status: "error",
+        message: error instanceof Error ? error.message : String(error),
+      }));
+    }
   }, []);
 
   const download = useCallback(async () => {
-    setState(await runtime.updates.download());
+    try {
+      setState(await runtime.updates.download());
+    } catch (error) {
+      setState((current) => ({
+        ...current,
+        status: "error",
+        message: error instanceof Error ? error.message : String(error),
+      }));
+    }
   }, []);
 
   const install = useCallback(() => {

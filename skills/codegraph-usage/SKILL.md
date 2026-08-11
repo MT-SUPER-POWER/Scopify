@@ -1,4 +1,4 @@
-﻿---
+---
 name: codegraph-usage
 description: >
   当需要定位符号、理解调用链、追踪跨文件依赖、或回答"这个函数/类在哪里/被谁调用"时触发。
@@ -53,7 +53,7 @@ codegraph sync
 
 ### 方式一：MCP 工具（推荐）
 
-通过 `codegraph_explore` MCP 工具调用，传入自然语言或符号名查询。  
+通过 `codegraph_explore` MCP 工具调用，传入自然语言或符号名查询。
 一次调用即可返回：相关符号的逐字源码（带行号）+ 符号间调用路径。
 
 ### 方式二：Shell

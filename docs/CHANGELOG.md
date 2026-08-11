@@ -17,7 +17,9 @@
 
 ### Quality
 
+- 修复 CodeGraph skill 的 YAML frontmatter 解析歧义，确保 Codex 能正常加载该 skill。
 - Desktop 构建中间产物与 Windows/macOS 发布物统一写入仓库根目录的 `build/` 目录
+- Release workflow 按共享 Renderer、平台打包和发布汇总分层，并同步根目录 `build/` 制品布局。
 - popover 现在会显示一些快捷操作的快捷键
 - 搜素窗口的适配了快捷键，同时补全的内容也会出现在标题输入内容
 - 移除 Turborepo `dev` 脚本中已废弃的 `--parallel` 参数，依赖 `turbo.json` 中配置的 `"persistent": true`

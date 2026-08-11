@@ -7,7 +7,7 @@ import {
   type RendererLogEvent,
 } from "@scopify/desktop-contract";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "../config.js";
-import { logger } from "../constants.js";
+import { getLogDirectory, logger } from "../constants.js";
 import { loginWindow } from "./login.js";
 import { createPageCacheStore } from "./pageCache.js";
 import { applyElectronProxy } from "./proxy.js";
@@ -39,6 +39,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
       "desktop-lyrics",
       "desktop-playback-wallpaper",
       "login",
+      "logs",
       "media-controls",
       "navigation",
       "playback-transport",
@@ -63,6 +64,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     else logger.error(`[renderer] ${payload.message}`, metadata);
     return true;
   });
+  ipcMain.handle("logger:get-directory", () => getLogDirectory());
 
   ipcMain.on("relaunch-app", () => {
     logger.info("[IPC] relaunch requested");

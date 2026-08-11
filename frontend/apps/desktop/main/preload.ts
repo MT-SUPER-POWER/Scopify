@@ -97,6 +97,7 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.send("app-close-action", action);
   },
   getHostConfig: () => ipcRenderer.invoke("config:get-host"),
+  getLogDirectory: () => ipcRenderer.invoke("logger:get-directory"),
   getDesktopIconVisibility: () => ipcRenderer.invoke("desktop-icons:get-visibility"),
   updateHostConfig: (config: DesktopHostConfig) => ipcRenderer.invoke("config:update-host", config),
   writeLog: (event) => ipcRenderer.invoke("logger:write", event),

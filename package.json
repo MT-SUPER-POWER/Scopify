@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "prepare": "husky",
-    "dev": "turbo run dev --filter=@scopify/web --filter=@scopify/desktop --parallel",
+    "dev": "turbo run dev --filter=@scopify/web --filter=@scopify/desktop",
     "dev:web": "turbo run dev --filter=@scopify/web",
     "dev:desktop": "turbo run dev --filter=@scopify/desktop",
     "dev:backend": "bun run backend/api-enhanced/app.js",

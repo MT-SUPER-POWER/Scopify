@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/store/module/i18n";
+import { useLogDirectory } from "@/hooks/settings/useLogDirectory";
 import type { DesktopLogLevel } from "@scopify/desktop-contract";
 import type { DesktopSettingsTabProps } from "@/types/components/settings";
 import { AppUpdaterSection } from "./AppUpdaterSection";
@@ -8,6 +9,7 @@ import { SettingInput, SettingRow, SettingSection, SettingSelect } from "./Setti
 
 export function DesktopSettingsTab({ config, onChange }: DesktopSettingsTabProps) {
   const { t } = useI18n();
+  const logDirectory = useLogDirectory();
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
@@ -43,6 +45,19 @@ export function DesktopSettingsTab({ config, onChange }: DesktopSettingsTabProps
               value={config.logging.keepDays}
               onChange={(value) => onChange("logging", "keepDays", Number(value))}
             />
+          }
+        />
+        <SettingRow
+          label={t("settings.logDirectory.label")}
+          sublabel={t("settings.logDirectory.sublabel")}
+          isColumn
+          control={
+            <code className="border-input bg-surface-sunken text-foreground block w-full rounded border px-3 py-2 text-left text-xs font-medium break-all">
+              {logDirectory ??
+                (logDirectory === null
+                  ? t("settings.logDirectory.unavailable")
+                  : t("settings.logDirectory.loading"))}
+            </code>
           }
         />
       </SettingSection>

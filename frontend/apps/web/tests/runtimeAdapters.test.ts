@@ -86,6 +86,7 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
       electronVersion: "40.0.0",
       protocolVersion: DESKTOP_BRIDGE_PROTOCOL_VERSION,
     }),
+    getLogDirectory: async () => "logs",
     getDesktopLyricPreferences: async () => null,
     getDesktopIconVisibility: async () => DESKTOP_ICON_STATE,
     getDesktopPlaybackWallpaperModel: async () => WALLPAPER_MODEL,
@@ -143,6 +144,7 @@ describe("browser runtime adapter", () => {
     expect(runtime.isDesktop).toBeFalse();
     expect(runtime.auth.openLoginWindow()).toBeFalse();
     expect(runtime.auth.completeLogin()).toBeFalse();
+    expect(await runtime.logging.getDirectory()).toBeNull();
     expect((await runtime.updates.getStatus()).supported).toBeFalse();
     expect(runtime.navigation.navigateMainWindow("/setting")).toBeFalse();
     expect((await runtime.desktopPlaybackWallpaper.getModel()).status.state).toBe("unsupported");
@@ -222,6 +224,10 @@ describe("electron runtime adapter", () => {
         calls.push(`cookie:${cookie}@${origin}`);
         return true;
       },
+      getLogDirectory: async () => {
+        calls.push("get-log-directory");
+        return "C:\\Users\\Scopify\\logs";
+      },
       setPlayerPlaying: (isPlaying) => calls.push(`playing:${isPlaying}`),
     });
     const runtime = createElectronRuntime(bridge);
@@ -234,6 +240,7 @@ describe("electron runtime adapter", () => {
     ).toBeTrue();
     expect(runtime.navigation.navigateMainWindow("/setting")).toBeTrue();
     runtime.media.setPlaying(true);
+    expect(await runtime.logging.getDirectory()).toBe("C:\\Users\\Scopify\\logs");
 
     expect(calls).toEqual([
       "open-login",
@@ -241,6 +248,7 @@ describe("electron runtime adapter", () => {
       "cookie:MUSIC_U=abc@http://127.0.0.1:3838",
       "navigate:/setting",
       "playing:true",
+      "get-log-directory",
     ]);
   });
 

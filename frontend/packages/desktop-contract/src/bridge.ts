@@ -16,7 +16,7 @@ import type { AppUpdateState } from "./updater";
 import type { DesktopHostConfig } from "./config";
 import type { PlaybackTransportPayload, PlaybackTransportRole } from "./playback";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 7;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 8;
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
@@ -26,6 +26,7 @@ export type DesktopBridgeCapability =
   | "desktop-lyrics"
   | "desktop-playback-wallpaper"
   | "login"
+  | "logs"
   | "media-controls"
   | "navigation"
   | "playback-transport"
@@ -66,6 +67,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   exitFullScreen(): void;
   getHostConfig(): Promise<DesktopHostConfig>;
   getBridgeInfo(): Promise<DesktopBridgeInfo>;
+  getLogDirectory(): Promise<string>;
   getDesktopIconVisibility(): Promise<DesktopIconVisibilityState>;
   getDesktopLyricPreferences(): Promise<DesktopLyricPreferences | null>;
   getDesktopPlaybackWallpaperModel(): Promise<DesktopPlaybackWallpaperModel>;

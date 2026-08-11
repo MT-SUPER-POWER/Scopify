@@ -50,7 +50,7 @@ jobs:
       - name: Pack Renderer and write checksum
         shell: bash
         run: |
-          tar -czf "renderer-${GITHUB_SHA}.tar.gz" -C frontend/apps/desktop/renderer .
+          tar -czf "renderer-${GITHUB_SHA}.tar.gz" -C build/desktop/app/renderer .
           sha256sum "renderer-${GITHUB_SHA}.tar.gz" > "renderer-${GITHUB_SHA}.tar.gz.sha256"
 
       - name: Upload immutable Renderer artifact
@@ -75,9 +75,27 @@ jobs:
           - platform: windows
             os: windows-latest
             package-script: package:win
+            artifact-path: |
+              build/release/*.exe
+              build/release/*.blockmap
+              build/release/latest*.yml
+            required-artifacts: |
+              build/release/*.exe
+              build/release/*.blockmap
+              build/release/latest.yml
           - platform: macos
             os: macos-latest
             package-script: package:mac
+            artifact-path: |
+              build/release/*.dmg
+              build/release/*.zip
+              build/release/*.blockmap
+              build/release/latest*.yml
+            required-artifacts: |
+              build/release/*.dmg
+              build/release/*.zip
+              build/release/*.blockmap
+              build/release/latest-mac.yml
 
     steps:
       - name: Checkout code
@@ -107,7 +125,7 @@ jobs:
           bun .github/scripts/unpack-renderer-artifact.ts
           .artifacts/renderer/renderer-${{ github.sha }}.tar.gz
           .artifacts/renderer/renderer-${{ github.sha }}.tar.gz.sha256
-          frontend/apps/desktop/renderer
+          build/desktop/app/renderer
 
       - name: Verify Renderer manifest and content again
         run: bun frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
@@ -118,16 +136,27 @@ jobs:
       - name: Package Electron without publishing
         run: bun run --cwd frontend/apps/desktop ${{ matrix.package-script }}
 
+      - name: Verify platform release outputs
+        shell: bash
+        env:
+          REQUIRED_ARTIFACTS: ${{ matrix.required-artifacts }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          while IFS= read -r pattern; do
+            [[ -z "${pattern}" ]] && continue
+            matches=( ${pattern} )
+            if (( ${#matches[@]} == 0 )); then
+              echo "Missing required release artifact: ${pattern}" >&2
+              exit 1
+            fi
+          done <<< "${REQUIRED_ARTIFACTS}"
+
       - name: Upload platform release files
         uses: actions/upload-artifact@v4
         with:
           name: desktop-${{ matrix.platform }}-${{ github.sha }}
-          path: |
-            frontend/apps/desktop/dist/*.exe
-            frontend/apps/desktop/dist/*.dmg
-            frontend/apps/desktop/dist/*.zip
-            frontend/apps/desktop/dist/*.blockmap
-            frontend/apps/desktop/dist/latest*.yml
+          path: ${{ matrix.artifact-path }}
           if-no-files-found: error
           retention-days: 14
 

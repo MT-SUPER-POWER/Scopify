@@ -63,7 +63,10 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
     },
     isDesktop: true,
     kind: "desktop",
-    logging: { write: (event) => bridge.writeLog(event) },
+    logging: {
+      getDirectory: () => bridge.getLogDirectory(),
+      write: (event) => bridge.writeLog(event),
+    },
     media: {
       onCommand: (callback) => bridge.onControlAudio(callback),
       setPlaying: (isPlaying) => bridge.setPlayerPlaying(isPlaying),
