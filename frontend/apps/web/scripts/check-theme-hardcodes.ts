@@ -18,6 +18,7 @@ const targetPatterns = [
   "components/MainLayout/**/*.tsx",
   "components/PlayerBar.tsx",
   "components/PlayBar/ProgressBar.tsx",
+  "components/player/**/*.tsx",
   "components/Playlist/ActionStation.tsx",
   "components/Playlist/Header.tsx",
   "components/Playlist/HeaderSkeleton.tsx",

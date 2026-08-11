@@ -25,7 +25,8 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
-import { QueuePopover } from "@/components/QueuePopover";
+import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
+import { QueuePopover } from "@/components/player/QueuePopover";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { VolumeControl } from "@/components/VolumeControl";
@@ -40,7 +41,6 @@ import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useUiStore } from "@/store/module/ui";
 import type { PlayerBarStatActionProps } from "@/types/components/player";
 import { Skeleton } from "./ui/skeleton";
@@ -146,7 +146,6 @@ export const PlayerBar = ({
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricStageBar = variant === "lyric-stage";
   const { musicQuality } = useMusicQuality();
-  const openAudioSettings = useAudioEqualizerStore((state) => state.openDialog);
 
   // 查找当前选中的音质选项，如果找不到就提供一个兜底
   const currentOption = QUALITY_OPTIONS.find((opt) => opt.value === musicQuality);
@@ -486,23 +485,24 @@ export const PlayerBar = ({
           {/* 音频设置 */}
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  aria-label={t("audioSettings.open")}
-                  onClick={() => openAudioSettings("quality")}
-                  className="hover:text-content flex cursor-pointer items-center justify-center transition-colors"
-                >
-                  <CurrentIcon className="size-4 lg:size-5" />
-                </button>
-              </TooltipTrigger>
+              <AudioSettingsDialog>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={t("audioSettings.open")}
+                    className="hover:text-content flex cursor-pointer items-center justify-center transition-colors"
+                  >
+                    <CurrentIcon className="size-4 lg:size-5" />
+                  </button>
+                </TooltipTrigger>
+              </AudioSettingsDialog>
               <TooltipContent side="top" sideOffset={8}>
                 {t("audioSettings.title")}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
-          {/* 播放列表模态界面 */}
+          {/* 播放列表浮层 */}
           <div className="hidden md:block">
             <AnimatePresence>
               <motion.div

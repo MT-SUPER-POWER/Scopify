@@ -16,8 +16,8 @@ import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
 import type { QueueItemProps } from "@/types/components/player";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { ScrollArea } from "./ui/scroll-area";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const QueueItem = memo(
   function QueueItem({
@@ -65,14 +65,14 @@ const QueueItem = memo(
               onClick={() => onPlay(index)}
               className={cn(
                 "group flex h-full cursor-pointer items-center gap-3 rounded-md p-4 transition-all",
-                isActive ? "bg-white/10" : "hover:bg-white/5",
+                isActive ? "bg-content/10" : "hover:bg-content/10",
               )}
             >
               <div className="flex shrink-0 items-center gap-3 pr-1">
                 <span
                   className={cn(
                     "w-4 text-center text-[10px] tabular-nums",
-                    isActive ? "text-[#1ed760]" : "text-zinc-500",
+                    isActive ? "text-brand" : "text-content-muted",
                   )}
                 >
                   {(index + 1).toString().padStart(2, "0")}
@@ -99,10 +99,10 @@ const QueueItem = memo(
                           unoptimized
                         />
                       ) : (
-                        <Play className="size-4 fill-current text-[#1ed760]" />
+                        <Play className="text-brand size-4 fill-current" />
                       )
                     ) : (
-                      <Play className="size-4 fill-current text-white opacity-0 transition-opacity group-hover/cover:opacity-100" />
+                      <Play className="text-content size-4 fill-current opacity-0 transition-opacity group-hover/cover:opacity-100" />
                     )}
                   </div>
                 </div>
@@ -113,7 +113,7 @@ const QueueItem = memo(
                   <span
                     className={cn(
                       "truncate text-sm font-medium",
-                      isActive ? "text-[#1ed760]" : "text-white",
+                      isActive ? "text-brand" : "text-content",
                     )}
                     title={song.name}
                   >
@@ -121,7 +121,7 @@ const QueueItem = memo(
                   </span>
                   <SongVipBadge fee={song.fee} />
                 </div>
-                <div className="mt-0.5 truncate text-xs text-zinc-400">
+                <div className="text-content-muted mt-0.5 truncate text-xs">
                   <ArtistInlineLinks
                     artists={song.ar.map((a: { id: number; name: string }) => ({
                       id: a.id,
@@ -131,7 +131,7 @@ const QueueItem = memo(
                 </div>
               </div>
 
-              <div className="pr-1 text-xs text-zinc-500 tabular-nums">
+              <div className="text-content-muted pr-1 text-xs tabular-nums">
                 {formatDuration(song.dt)}
               </div>
             </div>
@@ -245,7 +245,7 @@ const QueueList = ({ isOpen }: { isOpen: boolean }) => {
     <ScrollArea viewportRef={parentRef} className="h-125 w-full">
       <div className="p-2">
         {queue.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-zinc-500">
+          <div className="text-content-muted flex flex-col items-center justify-center py-16">
             <ListMusic className="size-10 opacity-60" />
           </div>
         ) : (
@@ -327,12 +327,12 @@ export const QueuePopover = () => {
       </TooltipProvider>
       <PopoverContent
         align="end"
-        className="w-96 border border-white/10 bg-[#181818] p-0 text-zinc-100 shadow-2xl"
+        className="border-content/10 bg-surface-elevated text-content w-96 border p-0 shadow-2xl"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#181818]/90 p-4 backdrop-blur-sm">
+        <div className="border-content/10 bg-surface-elevated/90 sticky top-0 z-10 flex items-center justify-between border-b p-4 backdrop-blur-sm">
           <div>
             <h3 className="text-lg font-bold">{t("queue.title")}</h3>
-            <p className="text-xs text-zinc-400">
+            <p className="text-content-muted text-xs">
               {t("queue.totalSongs", { count: queue.length })}
             </p>
           </div>
@@ -340,7 +340,7 @@ export const QueuePopover = () => {
           <button
             type="button"
             onClick={scrollToCurrent}
-            className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+            className="text-content-muted hover:bg-content/10 hover:text-content rounded-full p-2 transition-colors"
             title={t("queue.locateCurrent")}
           >
             <LocateFixed className="size-4" />

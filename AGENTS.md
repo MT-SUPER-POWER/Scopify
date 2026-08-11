@@ -66,6 +66,18 @@ Scopify/
 
 优先使用 `@/types/...`、`@/lib/...`、`@/components/...`。
 
+
+---
+
+## 新增功能的文档规定
+
+每当你新增功能、修复 Bug，或者进行其他任何修改时，你都需要在 **[changlog](docs/CHANGELOG.md)** 中记录，并且需要标明新功能所属的分类。当前分类如下：
+
+- **Added**: 新增功能
+- **Visual**: 界面改进
+- **Quality**: 代码质量改进
+- **Fixed**: Bug 修复
+
 ---
 
 ## 代码规范与架构约定
@@ -75,10 +87,25 @@ Scopify/
 
 ---
 
-<!-- START: Backend Rules-->
+## CodeGraph 代码索引
+
+本项目已建立 `.codegraph/` 索引。**需要定位符号、理解调用链、追踪跨文件依赖时，必须优先使用 CodeGraph，而非 grep/逐文件阅读。**
+
+> 经验法则：需要跨 2 个以上文件才能回答的问题，先 `codegraph_explore`。
+
+- **MCP 工具**：`codegraph_explore`（首选，一次调用返回带行号源码 + 调用路径）
+- **Shell 备选**：`codegraph explore "<符号名或问题描述>"`
+- 修改代码后执行 `codegraph sync` 保持索引同步
+
+完整使用规范见 Skill：
+👉 **[skills/codegraph-usage/](skills/codegraph-usage/SKILL.md)**
+
+---
+
+---
 
 ### Backend
 
 NetEase API 服务位于 `backend/api-enhanced/`（git submodule）。前端通过 `frontend/apps/web/lib/web/request.ts` 配置的 base URL 访问，开发时可用 `bun run dev:backend` 启动。后端规范见 [backend/api-enhanced/AGENTS.md](./backend/api-enhanced/AGENTS.md)。
 
-<!-- END: Backend Rules-->
+---

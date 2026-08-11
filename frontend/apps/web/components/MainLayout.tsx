@@ -13,7 +13,6 @@ import { useDesktopPlaybackWallpaperAudioPublisher } from "@/hooks/player/useDes
 import { CommandPalette } from "@/components/shortcuts/CommandPalette";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
-import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
 import { PlaybackAuthorityProvider } from "@/components/player/PlaybackAuthorityProvider";
 import { isPlaybackSourceCurrent } from "@/lib/player/playbackSource";
 import { runtime } from "@/lib/runtime";
@@ -233,9 +232,8 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           "flex h-screen",
         )}
       >
-        {/* 模态注册 */}
+        {/* 全局工具注册 */}
         <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-        <AudioSettingsDialog />
         <CommandPalette />
         <KeyboardShortcutHelp />
         <LyricStageMount />
