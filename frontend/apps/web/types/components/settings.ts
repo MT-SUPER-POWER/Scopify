@@ -12,6 +12,15 @@ export interface NetworkSettingsTabProps {
   onWebChange: WebSettingsChangeHandler;
 }
 
+export interface SaveConfirmModalProps {
+  isSaving: boolean;
+  isWeb?: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  open: boolean;
+  requiresRestart?: boolean;
+}
+
 export interface StorageSettingsTabProps {
   config: DesktopHostConfig | null;
   onChange: DesktopSettingsChangeHandler;

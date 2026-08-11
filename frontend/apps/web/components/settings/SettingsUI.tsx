@@ -2,9 +2,18 @@
 
 import { ChevronDown, RotateCcw } from "lucide-react";
 import type React from "react";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
+import type { SaveConfirmModalProps } from "@/types/components/settings";
 
 const selectClass =
   "border-input text-foreground hover:border-content focus:ring-ring cursor-pointer appearance-none rounded border bg-transparent py-2 pr-10 pl-4 text-sm font-medium transition-colors outline-none focus:ring-1";
@@ -253,17 +262,8 @@ export function SaveConfirmModal({
   onConfirm,
   requiresRestart = false,
   isWeb = false,
-}: {
-  open: boolean;
-  isSaving: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  requiresRestart?: boolean;
-  isWeb?: boolean;
-}) {
+}: SaveConfirmModalProps) {
   const { t } = useI18n();
-
-  if (!open) return null;
 
   const subtitle = isWeb
     ? t("settings.confirm.subtitle.web")
@@ -272,22 +272,21 @@ export function SaveConfirmModal({
       : t("settings.confirm.subtitle.instant");
 
   return (
-    <div
-      className="bg-overlay animate-in fade-in fixed inset-0 z-9999 flex items-center justify-center backdrop-blur-sm duration-200"
-      onClick={onClose}
-    >
-      <div
-        className="bg-surface-overlay shadow-floating relative flex w-100 flex-col items-center rounded-xl p-8 text-center"
-        onClick={(event) => event.stopPropagation()}
+    <AlertDialog open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
+      <AlertDialogContent
+        className="bg-surface-overlay shadow-floating w-100 rounded-xl border-none p-8 text-center"
+        overlayClassName="backdrop-blur-sm"
       >
-        <div className="mb-8 space-y-2">
-          <h2 className="text-foreground text-2xl font-bold tracking-tight">
+        <AlertDialogHeader className="mb-8 w-full space-y-2 text-center sm:place-items-center sm:text-center">
+          <AlertDialogTitle className="text-foreground text-2xl font-bold tracking-tight">
             {t("settings.confirm.title")}
-          </h2>
-          <p className="text-muted-foreground text-sm">{subtitle}</p>
-        </div>
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-muted-foreground text-sm">
+            {subtitle}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
-        <div className="flex w-full flex-col gap-4">
+        <AlertDialogFooter className="flex w-full flex-col gap-4 sm:flex-col">
           <button
             type="button"
             onClick={onConfirm}
@@ -305,8 +304,8 @@ export function SaveConfirmModal({
           >
             <span className="text-base font-bold">{t("settings.confirm.cancel")}</span>
           </button>
-        </div>
-      </div>
-    </div>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
