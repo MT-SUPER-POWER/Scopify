@@ -3,9 +3,7 @@
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
-import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { SmoothSlider } from "./SmoothSlider";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface VolumeControlProps {
   initialVolume?: number;
@@ -111,7 +109,7 @@ export const VolumeControl = ({
 
   const volumeLabel = isMuted ? t("ui.unmute") : `${t("ui.volume")}: ${Math.round(volume)}%`;
 
-  // 点击外部关闭 (仅针对弹窗模式生效)
+  // 点击外部及 ESC 键关闭 (仅针对弹窗模式生效)
   useEffect(() => {
     if (variant !== "popup") return;
 
@@ -121,8 +119,18 @@ export const VolumeControl = ({
       }
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [variant]);
 
   useEffect(() => {
@@ -177,38 +185,18 @@ export const VolumeControl = ({
       ref={containerRef}
       data-shortcut-scope="volume"
       onWheel={handleWheel}
-      className={`relative flex items-center justify-center select-none ${className}`}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
+      className={`relative flex items-center justify-center select-none ${className}`}
     >
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              aria-label={volumeLabel}
-              onClick={handleMuteToggle}
-              className="text-content-muted hover:text-content transition-colors"
-            >
-              {getVolumeIcon()}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="top" sideOffset={8}>
-            <div className="space-y-1.5">
-              <ShortcutHint commandId="toggle-mute" label={volumeLabel} />
-              <p className="text-background/70 text-[10px]">{t("shortcuts.scope.volume")}</p>
-              <ShortcutHint
-                commandId="increase-volume"
-                label={t("shortcuts.command.increaseVolume")}
-              />
-              <ShortcutHint
-                commandId="decrease-volume"
-                label={t("shortcuts.command.decreaseVolume")}
-              />
-            </div>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <button
+        type="button"
+        aria-label={volumeLabel}
+        onClick={handleMuteToggle}
+        className="text-content-muted hover:text-content transition-colors"
+      >
+        {getVolumeIcon()}
+      </button>
 
       {isOpen && (
         <div className="absolute bottom-full left-1/2 z-50 -translate-x-1/2 pb-2">

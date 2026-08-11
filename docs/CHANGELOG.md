@@ -2,6 +2,14 @@
 
 ## v1.4.0
 
+### Visual
+
+- 完善桌面端“客户端更新”状态：显示最近检查时间，适配浅/深色主题，并清晰呈现更新失败消息。
+
+### Added
+
+- 桌面端“日志与诊断”现在显示日志文件的实际存储路径。
+
 ### Changed
 
 - VisualSetting 界面内容重新分布
@@ -12,6 +20,7 @@
 - Desktop 构建中间产物与 Windows/macOS 发布物统一写入仓库根目录的 `build/` 目录
 - popover 现在会显示一些快捷操作的快捷键
 - 搜素窗口的适配了快捷键，同时补全的内容也会出现在标题输入内容
+- 移除 Turborepo `dev` 脚本中已废弃的 `--parallel` 参数，依赖 `turbo.json` 中配置的 `"persistent": true`
 
 ### Added
 
@@ -23,6 +32,8 @@
 
 ### Fixed
 
+- 修复 PlayerBar 音量控制图标 Hover 时音量面板与 Tooltip 冲突的问题（移除冗余 Hover Tooltip，恢复悬停展开音量调节面板，并完好保留全局键盘快捷键响应）。
+- 修复 Electron 开发模式构建产物路径与启动器入口不一致，导致桌面端无法启动的问题。
 - 修复 Electron 安装包移除 source map 后导致 renderer 完整性校验失败、应用无法启动的问题
 - 登陆界面返回我们的全局 header 会失去颜色的问题
 - 侧边栏目的响应式是伪响应式
