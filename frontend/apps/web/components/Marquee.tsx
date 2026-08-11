@@ -29,7 +29,7 @@ export function SongTitle({ title }: { title: string }) {
   }, []);
 
   return (
-    <div className="group flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md p-2.5 text-zinc-300 transition-colors hover:bg-white/5">
+    <div className="group text-content-muted hover:bg-surface-elevated flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md p-2.5 transition-colors">
       <IoMusicalNotesOutline className="size-4 shrink-0" />
 
       {/* 限制宽度的容器 */}

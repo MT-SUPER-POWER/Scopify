@@ -1,5 +1,5 @@
 import { app, BrowserWindow, screen, Tray } from "electron";
-import { __iconTray, __preloadScript } from "../constants.js";
+import { __iconTray, __preloadScript, desktopConfig } from "../constants.js";
 
 const TRAY_WIDTH = 240;
 const TRAY_HEIGHT = 380;
@@ -20,6 +20,7 @@ function createTrayWindow() {
     frame: false,
     fullscreenable: false,
     transparent: true,
+    hasShadow: false,
     alwaysOnTop: true,
     resizable: false,
     skipTaskbar: true,
@@ -33,8 +34,8 @@ function createTrayWindow() {
   });
 
   const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
-  const devPort = process.env.NEXT_PORT ?? "3000";
-  const trayUrl = useStaticRenderer ? "app://-/tray/" : `http://localhost:${devPort}/tray`;
+  const devBase = `http://${desktopConfig.frontend.host}:${desktopConfig.frontend.devPort}`;
+  const trayUrl = useStaticRenderer ? "app://-/tray/" : `${devBase}/tray`;
 
   trayWindow.loadURL(trayUrl);
   trayWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {

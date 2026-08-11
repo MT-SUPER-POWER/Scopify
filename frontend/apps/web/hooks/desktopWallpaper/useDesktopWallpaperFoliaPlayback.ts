@@ -6,18 +6,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { DesktopPlaybackWallpaperAudioFrame } from "@scopify/desktop-contract";
 
 import type { AudioBands } from "@/components/lyrics/folia/src/types";
-import {
-  createDesktopPlaybackTimeline,
-  DESKTOP_WALLPAPER_PRESENTATION_STALE_MS,
-} from "@/lib/desktopPlaybackWallpaper/playback";
+import { usePlaybackPositionMs, usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
 import { runtime } from "@/lib/runtime";
-import type { DesktopLyricSnapshot } from "@/types/desktopLyric";
 import type {
   DesktopWallpaperAudioMotionValues,
   DesktopWallpaperFoliaPlaybackState,
 } from "@/types/desktopPlaybackWallpaper";
+import type { LyricData } from "@/types/lyrics";
 
 const DESKTOP_WALLPAPER_AUDIO_STALE_MS = 500;
 
@@ -25,14 +22,10 @@ export function useDesktopWallpaperFoliaPlayback(
   lyricOffsetMs: number,
 ): DesktopWallpaperFoliaPlaybackState {
   const [model, setModel] = useState<DesktopWallpaperFoliaPlaybackState["model"]>(null);
-  const [presentation, setPresentation] = useState<DesktopLyricSnapshot | null>(null);
-  const [feedIsLive, setFeedIsLive] = useState(false);
-  const [currentLineIndex, setCurrentLineIndex] = useState(-1);
-  const timelineRef = useRef(createDesktopPlaybackTimeline());
-  const currentLineIndexRef = useRef(-1);
+  const projection = usePlaybackProjection<LyricData>();
+  const positionMs = usePlaybackPositionMs();
   const latestAudioSampleRef = useRef(-1);
-  const lastAudioFrameReceivedAtRef = useRef(0);
-  const audioWasResetRef = useRef(true);
+  const audioResetTimerRef = useRef<number | null>(null);
   const currentTime = useMotionValue(0);
   const lyricCurrentTime = useMotionValue(0);
   const audioPower = useMotionValue(0);
@@ -43,125 +36,84 @@ export function useDesktopWallpaperFoliaPlayback(
   const treble = useMotionValue(0);
   const spectrum = useMotionValue(new Uint8Array(new ArrayBuffer(0)));
   const lyrics = useMemo(
-    () => (presentation?.lyrics ? adaptLyricDataToFolia(presentation.lyrics, []) : null),
-    [presentation?.lyrics],
+    () => (projection.lyrics ? adaptLyricDataToFolia(projection.lyrics, []) : null),
+    [projection.lyrics],
   );
+  const effectiveLyricTimeSeconds = positionMs / 1_000 - lyricOffsetMs / 1_000;
+  const currentLineIndex = lyrics
+    ? findLatestActiveFoliaLineIndex(lyrics.lines, effectiveLyricTimeSeconds)
+    : -1;
   const audioBands = useMemo<AudioBands>(
     () => ({ bass, lowMid, mid, spectrum, treble, vocal }),
     [bass, lowMid, mid, spectrum, treble, vocal],
+  );
+  const track = useMemo(
+    () =>
+      projection.track
+        ? {
+            ...projection.track,
+            durationMs: projection.durationMs,
+          }
+        : null,
+    [projection.durationMs, projection.track],
   );
 
   useEffect(() => {
     let modelEventReceived = false;
     let disposed = false;
-    const acceptPresentation = (nextPresentation: DesktopLyricSnapshot) => {
-      if (disposed) return;
-      if (!timelineRef.current.accept(nextPresentation)) return;
-      setPresentation(nextPresentation);
-    };
     const stopModelSubscription = runtime.desktopPlaybackWallpaper.onModelChanged((nextModel) => {
       modelEventReceived = true;
       if (!disposed) setModel(nextModel);
     });
-    const stopPresentationSubscription =
-      runtime.desktopPlaybackWallpaper.onPresentationChanged(acceptPresentation);
     const stopAudioSubscription = runtime.desktopPlaybackWallpaper.onAudioFrame((frame) => {
       if (disposed || frame.sampledAt < latestAudioSampleRef.current) return;
       latestAudioSampleRef.current = frame.sampledAt;
-      lastAudioFrameReceivedAtRef.current = Date.now();
-      audioWasResetRef.current = false;
       applyAudioFrame(frame, { audioPower, bass, lowMid, mid, spectrum, treble, vocal });
+      if (audioResetTimerRef.current !== null) {
+        window.clearTimeout(audioResetTimerRef.current);
+      }
+      audioResetTimerRef.current = window.setTimeout(() => {
+        resetAudioFrame({ audioPower, bass, lowMid, mid, spectrum, treble, vocal });
+        audioResetTimerRef.current = null;
+      }, DESKTOP_WALLPAPER_AUDIO_STALE_MS);
     });
 
     void runtime.desktopPlaybackWallpaper.getModel().then((initialModel) => {
       if (!disposed && !modelEventReceived) setModel(initialModel);
     });
-    void runtime.desktopPlaybackWallpaper.getPresentation().then((initialPresentation) => {
-      if (initialPresentation) acceptPresentation(initialPresentation);
-    });
 
     return () => {
       disposed = true;
+      if (audioResetTimerRef.current !== null) {
+        window.clearTimeout(audioResetTimerRef.current);
+        audioResetTimerRef.current = null;
+      }
       stopAudioSubscription();
       stopModelSubscription();
-      stopPresentationSubscription();
     };
   }, [audioPower, bass, lowMid, mid, spectrum, treble, vocal]);
 
   useEffect(() => {
-    if (!presentation?.isPlaying) {
-      setFeedIsLive(false);
-      return;
-    }
+    currentTime.set(positionMs / 1_000);
+    lyricCurrentTime.set(effectiveLyricTimeSeconds);
+  }, [currentTime, effectiveLyricTimeSeconds, lyricCurrentTime, positionMs]);
 
-    const remainingLiveTime = Math.max(
-      0,
-      DESKTOP_WALLPAPER_PRESENTATION_STALE_MS - (Date.now() - presentation.updatedAt),
-    );
-    setFeedIsLive(remainingLiveTime > 0);
-    const timeout = window.setTimeout(() => setFeedIsLive(false), remainingLiveTime);
-    return () => window.clearTimeout(timeout);
-  }, [presentation]);
-
-  useEffect(() => {
-    let animationFrame = 0;
-    const tick = () => {
-      const now = Date.now();
-      const nextTimeSeconds = timelineRef.current.sample(now) / 1_000;
-      const effectiveLyricTime = nextTimeSeconds - lyricOffsetMs / 1_000;
-      currentTime.set(nextTimeSeconds);
-      lyricCurrentTime.set(effectiveLyricTime);
-
-      const nextLineIndex = lyrics
-        ? findLatestActiveFoliaLineIndex(lyrics.lines, effectiveLyricTime)
-        : -1;
-      if (nextLineIndex !== currentLineIndexRef.current) {
-        currentLineIndexRef.current = nextLineIndex;
-        setCurrentLineIndex(nextLineIndex);
-      }
-
-      if (
-        !audioWasResetRef.current &&
-        now - lastAudioFrameReceivedAtRef.current > DESKTOP_WALLPAPER_AUDIO_STALE_MS
-      ) {
-        resetAudioFrame({ audioPower, bass, lowMid, mid, spectrum, treble, vocal });
-        audioWasResetRef.current = true;
-      }
-      animationFrame = window.requestAnimationFrame(tick);
-    };
-
-    animationFrame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(animationFrame);
-  }, [
-    audioPower,
-    bass,
-    currentTime,
-    lowMid,
-    lyricCurrentTime,
-    lyricOffsetMs,
-    lyrics,
-    mid,
-    spectrum,
-    treble,
-    vocal,
-  ]);
-
-  const runtimeIsActive = model?.status.state === "running" || model?.status.state === "starting";
   return {
     bridge: {
       audioBands,
       audioPower,
       currentLineIndex,
       currentTime,
-      durationSeconds: (presentation?.track?.durationMs ?? 0) / 1_000,
-      isPlaying: Boolean(runtimeIsActive && presentation?.isPlaying && feedIsLive),
+      durationSeconds: projection.durationMs / 1_000,
+      isPlaying: projection.connection === "connected" && projection.isPlaying,
       lines: lyrics?.lines ?? [],
       lyricCurrentTime,
       lyrics,
     },
     model,
-    positionMs: timelineRef.current.sample(Date.now()),
-    presentation,
+    positionMs,
+    projection,
+    track,
   };
 }
 

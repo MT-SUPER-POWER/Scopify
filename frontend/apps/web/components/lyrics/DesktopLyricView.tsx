@@ -1,20 +1,33 @@
 "use client";
 
 import { Heart, MousePointer2, Pause, Pin, Play, SkipBack, SkipForward, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import type { DesktopLyricCommand, DesktopLyricPreferences } from "@/types/desktopLyric";
-import type { LyricDisplayLine } from "@/types/lyrics";
+import type { DesktopLyricPreferences } from "@/types/desktopLyric";
+import type { LyricData, LyricDisplayLine } from "@/types/lyrics";
 
-import { useDesktopLyricSnapshot } from "@/hooks/player/useDesktopLyricSnapshot";
-import { getWordProgress } from "@/lib/lyrics/timeline";
+import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
+import { usePlaybackPositionMs, usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import { findActiveLyricLineIndex, getWordProgress } from "@/lib/lyrics/timeline";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/store/module/i18n";
 
 /** Electron-only transparent companion supplied by the shared desktop IPC contract. */
 export function DesktopLyricView() {
+  const { t } = useI18n();
   const [preferences, setPreferences] = useState<DesktopLyricPreferences | null>(null);
-  const { activeLine, currentTimeMs, nextLine, snapshot } = useDesktopLyricSnapshot();
+  const projection = usePlaybackProjection<LyricData>();
+  const currentTimeMs = usePlaybackPositionMs();
+  const playbackCommands = usePlaybackCommands();
+  const { activeLine, nextLine } = useMemo(() => {
+    const lines = projection.lyrics?.lines ?? [];
+    const activeIndex = findActiveLyricLineIndex(lines, currentTimeMs);
+    return {
+      activeLine: activeIndex >= 0 ? lines[activeIndex] : null,
+      nextLine: activeIndex >= 0 ? (lines[activeIndex + 1] ?? null) : (lines[0] ?? null),
+    };
+  }, [currentTimeMs, projection.lyrics]);
 
   useEffect(() => {
     document.documentElement.classList.add("desktop-lyrics-html");
@@ -26,14 +39,11 @@ export function DesktopLyricView() {
     };
   }, []);
 
-  const sendCommand = (command: DesktopLyricCommand) => {
-    runtime.desktopLyrics.sendCommand(command);
-  };
   const updatePreferences = (update: Partial<DesktopLyricPreferences>) => {
     void runtime.desktopLyrics.updatePreferences(update).then(setPreferences);
   };
-  const title = snapshot?.track?.title ?? "";
-  const artistNames = snapshot?.track?.artistNames.join(", ") ?? "";
+  const title = projection.track?.title ?? "";
+  const artistNames = projection.track?.artistNames.join(", ") ?? "";
 
   return (
     <main
@@ -55,8 +65,8 @@ export function DesktopLyricView() {
           >
             <button
               type="button"
-              title="Keep on top"
-              aria-label="Keep on top"
+              title={t("desktopLyrics.keepOnTop")}
+              aria-label={t("desktopLyrics.keepOnTop")}
               onClick={() => updatePreferences({ alwaysOnTop: !preferences?.alwaysOnTop })}
               className={cn("p-1.5", preferences?.alwaysOnTop ? "text-white" : "text-white/35")}
             >
@@ -64,8 +74,8 @@ export function DesktopLyricView() {
             </button>
             <button
               type="button"
-              title="Click through"
-              aria-label="Click through"
+              title={t("desktopLyrics.clickThrough")}
+              aria-label={t("desktopLyrics.clickThrough")}
               onClick={() => updatePreferences({ clickThrough: !preferences?.clickThrough })}
               className={cn("p-1.5", preferences?.clickThrough ? "text-white" : "text-white/35")}
             >
@@ -73,8 +83,8 @@ export function DesktopLyricView() {
             </button>
             <button
               type="button"
-              title="Close desktop lyrics"
-              aria-label="Close desktop lyrics"
+              title={t("desktopLyrics.close")}
+              aria-label={t("desktopLyrics.close")}
               onClick={() => void runtime.desktopLyrics.close()}
               className="p-1.5 text-white/55 hover:text-white"
             >
@@ -87,6 +97,7 @@ export function DesktopLyricView() {
           <CompactLyricLine
             currentTimeMs={currentTimeMs}
             line={activeLine}
+            onSeek={(positionMs) => void playbackCommands.seek(positionMs)}
             showTranslation={true}
           />
           {nextLine ? (
@@ -100,21 +111,21 @@ export function DesktopLyricView() {
         >
           <button
             type="button"
-            title="Previous"
-            aria-label="Previous"
-            onClick={() => sendCommand({ type: "previous" })}
+            title={t("desktopLyrics.previous")}
+            aria-label={t("desktopLyrics.previous")}
+            onClick={() => void playbackCommands.previous()}
             className="p-1.5 text-white/75 hover:text-white"
           >
             <SkipBack className="size-4" />
           </button>
           <button
             type="button"
-            title="Play or pause"
-            aria-label="Play or pause"
-            onClick={() => sendCommand({ type: "toggle-play" })}
+            title={t("desktopLyrics.playPause")}
+            aria-label={t("desktopLyrics.playPause")}
+            onClick={() => void playbackCommands.toggle()}
             className="p-1.5 text-white hover:text-cyan-100"
           >
-            {snapshot?.isPlaying ? (
+            {projection.isPlaying ? (
               <Pause className="size-4 fill-current" />
             ) : (
               <Play className="size-4 fill-current" />
@@ -122,24 +133,24 @@ export function DesktopLyricView() {
           </button>
           <button
             type="button"
-            title="Next"
-            aria-label="Next"
-            onClick={() => sendCommand({ type: "next" })}
+            title={t("desktopLyrics.next")}
+            aria-label={t("desktopLyrics.next")}
+            onClick={() => void playbackCommands.next()}
             className="p-1.5 text-white/75 hover:text-white"
           >
             <SkipForward className="size-4" />
           </button>
           <button
             type="button"
-            title="Like"
-            aria-label="Like"
-            onClick={() => sendCommand({ type: "toggle-like" })}
+            title={t("desktopLyrics.like")}
+            aria-label={t("desktopLyrics.like")}
+            onClick={() => void playbackCommands.toggleLike()}
             className={cn(
               "p-1.5",
-              snapshot?.isLiked ? "text-rose-300" : "text-white/75 hover:text-white",
+              projection.liked ? "text-rose-300" : "text-white/75 hover:text-white",
             )}
           >
-            <Heart className={cn("size-4", snapshot?.isLiked && "fill-current")} />
+            <Heart className={cn("size-4", projection.liked && "fill-current")} />
           </button>
         </footer>
       </section>
@@ -150,24 +161,25 @@ export function DesktopLyricView() {
 function CompactLyricLine({
   currentTimeMs,
   line,
+  onSeek,
   showTranslation,
 }: {
   currentTimeMs: number;
   line: LyricDisplayLine | null;
+  onSeek(positionMs: number): void;
   showTranslation: boolean;
 }) {
+  const { t } = useI18n();
   if (!line)
     return (
       <span className="block text-center text-xl font-semibold text-white/60">
-        No lyrics available
+        {t("folia.ui.noLyricsAvailable")}
       </span>
     );
   return (
     <button
       type="button"
-      onClick={() =>
-        runtime.desktopLyrics.sendCommand({ positionMs: line.startTimeMs, type: "seek" })
-      }
+      onClick={() => onSeek(line.startTimeMs)}
       className="block w-full text-center text-xl leading-tight font-semibold"
     >
       {line.words.map((word, index) => (

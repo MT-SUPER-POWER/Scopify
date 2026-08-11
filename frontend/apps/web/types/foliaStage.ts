@@ -19,7 +19,7 @@ import type {
 } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
 import type { LyricVisualizerMode } from "@/types/lyrics";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
-import type { DesktopLyricTrack } from "@/types/desktopLyric";
+import type { PlaybackPresentationTrack } from "@/types/playbackProjection";
 import type { DesktopPlaybackWallpaperLayers } from "@scopify/desktop-contract";
 
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
@@ -138,5 +138,5 @@ export interface FoliaPresentationSurfaceProps {
   onBack?: () => void;
   onLyricLineSeek?: (timeSeconds: number) => void;
   staticMode?: boolean;
-  track: DesktopLyricTrack | null;
+  track: PlaybackPresentationTrack | null;
 }

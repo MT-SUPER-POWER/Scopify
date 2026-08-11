@@ -2,6 +2,7 @@ import type { TranslationKey } from "@/lib/i18n";
 
 export type ShortcutCommandId =
   | "toggle-playback"
+  | "toggle-like"
   | "previous-track"
   | "next-track"
   | "increase-volume"
@@ -18,9 +19,12 @@ export type ShortcutCommandId =
   | "show-shortcut-help"
   | "open-command-palette"
   | "toggle-mute"
-  | "toggle-fullscreen";
+  | "toggle-fullscreen"
+  | "open-current-track-comments"
+  | "focus-playlist-search";
 
 export type ShortcutGroup = "playback" | "interface" | "shortcuts";
+export type ShortcutScope = "global" | "playlist";
 
 export interface ShortcutBinding {
   key: string;
@@ -34,6 +38,11 @@ export interface ShortcutCommandDefinition {
   group: ShortcutGroup;
   labelKey: TranslationKey;
   defaultBinding: ShortcutBinding;
+  scope?: ShortcutScope;
+}
+
+export interface ShortcutCommandExecutorOptions {
+  navigateTo?(path: string): void;
 }
 
 export type ShortcutOverrides = Partial<Record<ShortcutCommandId, ShortcutBinding | null>>;

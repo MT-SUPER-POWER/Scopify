@@ -10,9 +10,21 @@ Git commit conventions for Claude Code. Auto-enforced after installation, works 
 ## Core Principles
 
 1. **Auto-commit**: Stage and commit task-related changes by default. Skip only when user explicitly says "don't commit" or "commit later".
-2. **Precise staging**: Run `git status` and `git diff` before every commit. Only include files produced by the current task.
-3. **Protect user changes**: Never overwrite, revert, clean up, or mix the user's existing changes into the current commit.
-4. **No destructive operations**: Never use `reset --hard`, `clean -fd`, `push --force`, etc. unless the user explicitly authorizes it.
+2. **Session-scoped staging**: Only stage and commit files created or modified during the **current conversation session**. Never scan, diff, or stage unrelated uncommitted changes in the workspace.
+3. **Targeted diffing**: Run `git status` to check status, then filter for current task files. Only run `git diff <file1> <file2> ...` on session files if needed to draft the commit message. Never run global `git diff` or inspect unrelated files one-by-one.
+4. **Protect user changes**: Never overwrite, revert, clean up, or mix the user's existing uncommitted changes into the current commit.
+5. **No destructive operations**: Never use `reset --hard`, `clean -fd`, `push --force`, etc. unless the user explicitly authorizes it.
+
+## Execution Workflow
+
+1. **Identify Session Files**: Determine which files were edited, created, or specified in the current session.
+2. **Check Git Status**: Run `git status` to verify current working tree state.
+3. **Targeted Inspection & Staging**:
+   - Filter `git status` output to match **only** the session files.
+   - (Optional) Run `git diff <session-files>` only on those target files if diff details are needed to compose the commit message.
+   - Run `git add <file1> <file2> ...` to stage only the target files.
+   - *Exception*: Only scan and inspect all workspace changes if the user explicitly requests an all-inclusive commit (e.g., "commit all changes", "整理并全量提交所有修改").
+4. **Create Commit**: Craft a Conventional Commit message and commit.
 
 ## Commit Format
 
@@ -59,7 +71,8 @@ Body is optional but **recommended** for cross-module changes, behavior changes,
 
 ## Pre-Commit Checklist
 
-- [ ] Diff contains **only** current task content
+- [ ] Staging contains **only** files touched during the current session
+- [ ] No global `git diff` executed on unrelated files
 - [ ] User's existing changes are **preserved**
 - [ ] Code, tests, and documentation are in the **correct location**
 - [ ] Subject line accurately describes the overall change

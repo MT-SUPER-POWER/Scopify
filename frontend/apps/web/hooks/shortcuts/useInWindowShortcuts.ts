@@ -5,11 +5,25 @@ import { SHORTCUT_COMMANDS } from "@/constants/shortcuts";
 import { getEffectiveShortcutBinding, isShortcutBindingMatch } from "@/lib/shortcuts/bindings";
 import { useShortcutStore } from "@/store/module/shortcuts";
 import { useUiStore } from "@/store/module/ui";
+import type { ShortcutCommandId, ShortcutScope } from "@/types/shortcuts";
 import { useShortcutCommands } from "./useShortcutCommands";
 
-export function useInWindowShortcuts() {
+interface InWindowShortcutsOptions {
+  commandIds?: readonly ShortcutCommandId[];
+  executeCommand?: (commandId: ShortcutCommandId) => void;
+  scope?: ShortcutScope;
+}
+
+const VOLUME_COMMAND_IDS = new Set<ShortcutCommandId>(["increase-volume", "decrease-volume"]);
+
+export function useInWindowShortcuts({
+  commandIds,
+  executeCommand,
+  scope = "global",
+}: InWindowShortcutsOptions = {}) {
   const overrides = useShortcutStore((state) => state.overrides);
-  const executeShortcutCommand = useShortcutCommands();
+  const defaultExecuteShortcutCommand = useShortcutCommands();
+  const executeShortcutCommand = executeCommand ?? defaultExecuteShortcutCommand;
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -29,13 +43,15 @@ export function useInWindowShortcuts() {
       }
 
       const command = SHORTCUT_COMMANDS.find((candidate) => {
+        if ((candidate.scope ?? "global") !== scope) return false;
+        if (commandIds && !commandIds.includes(candidate.id)) return false;
         const binding = getEffectiveShortcutBinding(candidate.id, overrides);
         return binding ? isShortcutBindingMatch(binding, event) : false;
       });
 
       if (!command) return;
       if (event.repeat && !command.id.startsWith("seek-")) return;
-      if (isEditableTarget(event.target) && command.id !== "open-search") return;
+      if (!canHandleShortcutInCurrentFocus(command.id, event.target)) return;
 
       event.preventDefault();
       executeShortcutCommand(command.id);
@@ -43,7 +59,26 @@ export function useInWindowShortcuts() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [executeShortcutCommand, overrides]);
+  }, [commandIds, executeShortcutCommand, overrides, scope]);
+}
+
+function canHandleShortcutInCurrentFocus(commandId: ShortcutCommandId, target: EventTarget | null) {
+  if (VOLUME_COMMAND_IDS.has(commandId)) return isShortcutScopeFocused("volume");
+  if (
+    commandId === "open-search" ||
+    commandId === "focus-playlist-search" ||
+    commandId === "toggle-mute"
+  )
+    return true;
+  return !isEditableTarget(target);
+}
+
+function isShortcutScopeFocused(scope: string) {
+  const activeElement = document.activeElement;
+  return (
+    activeElement instanceof HTMLElement &&
+    Boolean(activeElement.closest(`[data-shortcut-scope="${scope}"]`))
+  );
 }
 
 function isEditableTarget(target: EventTarget | null) {

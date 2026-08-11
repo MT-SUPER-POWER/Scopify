@@ -100,22 +100,6 @@ function validateBackendConfig(locale: WebConfig["app"]["locale"], backend: WebC
   return resolved;
 }
 
-function syncCloseActionPreference(closeAction: DesktopHostConfig["app"]["closeAction"]) {
-  if (typeof window === "undefined") return;
-
-  if (closeAction === 0) {
-    localStorage.setItem("app-close-action", "minimize");
-    return;
-  }
-
-  if (closeAction === 1) {
-    localStorage.setItem("app-close-action", "exit");
-    return;
-  }
-
-  localStorage.removeItem("app-close-action");
-}
-
 function emitWebConfigUpdated(config: WebConfig) {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent("app-config-updated", { detail: config }));
@@ -277,7 +261,6 @@ export function useSettingsState() {
       setOriginalConfig(nextConfig);
       setConfig(nextConfig);
       setIsModalOpen(false);
-      if (savedDesktopConfig) syncCloseActionPreference(savedDesktopConfig.app.closeAction);
       toast.success(translate(nextWebConfig.app.locale, "settings.saveSuccess"));
 
       if (

@@ -14,13 +14,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DASHBOARD_HEADER_HEIGHT } from "@/constants/layout";
+import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
+import {
+  usePlaybackPosition as usePlaybackPositionMs,
+  usePlaybackProjection,
+} from "@/hooks/player/usePlaybackProjection";
 import { useRadioTracklistColumnLayout } from "@/hooks/radio/useRadioTracklistColumnLayout";
 import { useRadioTracklistStickyHeader } from "@/hooks/radio/useRadioTracklistStickyHeader";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { useTimeStore } from "@/store/module/time";
 import type { RadioTracklistTableProps } from "@/types/components/radio";
 
 export function RadioTracklistTable({
@@ -30,12 +34,11 @@ export function RadioTracklistTable({
   tracks,
 }: RadioTracklistTableProps) {
   const { t } = useI18n();
-  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
-  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const playback = usePlaybackProjection();
+  const currentTime = usePlaybackPositionMs();
+  const commands = usePlaybackCommands();
   const playlistId = usePlayerStore((state) => state.playlistId);
   const playFromSong = usePlayerStore((state) => state.playFromSong);
-  const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
-  const currentTime = useTimeStore((state) => state.currentTime);
   const showMetadataColumns = useMediaQuery("(min-width: 1024px)");
   const columnLayout = useRadioTracklistColumnLayout({
     showPlayCountColumn: showMetadataColumns,
@@ -60,15 +63,21 @@ export function RadioTracklistTable({
   }, [programs, searchQuery, tracks]);
   const handlePlay = useCallback(
     (track: (typeof rows)[number]["track"]) => {
-      const isCurrent = currentSongDetail?.id === track.id && playlistId === playSourceId;
+      const isCurrent = playback.track?.id === track.id && playlistId === playSourceId;
       if (isCurrent) {
-        setIsPlaying(!isPlaying);
+        void commands.toggle();
         return;
       }
 
       void playFromSong(track, tracks, playSourceId);
     },
-    [currentSongDetail, isPlaying, playFromSong, playSourceId, playlistId, setIsPlaying, tracks],
+    [commands, playback.track?.id, playFromSong, playSourceId, playlistId, tracks],
+  );
+  const setIsPlaying = useCallback(
+    (shouldPlay: boolean) => {
+      void (shouldPlay ? commands.play() : commands.pause());
+    },
+    [commands],
   );
 
   return (
@@ -158,8 +167,8 @@ export function RadioTracklistTable({
                   key={program.id}
                   currentTime={currentTime}
                   index={index}
-                  isActive={currentSongDetail?.id === track.id && playlistId === playSourceId}
-                  isPlaying={isPlaying}
+                  isActive={playback.track?.id === track.id && playlistId === playSourceId}
+                  isPlaying={playback.isPlaying}
                   onPlay={handlePlay}
                   program={program}
                   setIsPlaying={setIsPlaying}

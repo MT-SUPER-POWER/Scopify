@@ -6,10 +6,6 @@ import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
-  DesktopLyricSnapshot,
-  DesktopLyricSnapshotInput,
-  DesktopLyricSnapshotUpdate,
-  DesktopLyricTrack,
 } from "@scopify/desktop-contract";
 
 import { __iconWindow, __preloadScript, logger } from "../constants.js";
@@ -26,7 +22,6 @@ const DEFAULT_PREFERENCES: DesktopLyricPreferences = {
 let mainWindow: BrowserWindow | null = null;
 let desktopLyricWindow: BrowserWindow | null = null;
 let desktopLyricUrl: null | string = null;
-let snapshot: DesktopLyricSnapshot | null = null;
 let preferences: DesktopLyricPreferences | null = null;
 let ipcRegistered = false;
 
@@ -41,6 +36,10 @@ export function initializeDesktopLyricCompanion(
   mainWindow = nextMainWindow;
   desktopLyricUrl = new URL(DESKTOP_LYRIC_ROUTE, options.rendererBaseUrl).toString();
   registerIpcHandlers();
+}
+
+export function getDesktopLyricWindow() {
+  return isWindowAlive(desktopLyricWindow) ? desktopLyricWindow : null;
 }
 
 function applyMainWindowCommand(command: DesktopLyricCommand) {
@@ -85,11 +84,6 @@ function isDesktopLyricCommand(value: unknown): value is DesktopLyricCommand {
   if (!isRecord(value) || typeof value.type !== "string") return false;
 
   switch (value.type) {
-    case "next":
-    case "previous":
-    case "toggle-like":
-    case "toggle-play":
-      return Object.keys(value).length === 1;
     case "resize-main-window":
       return (
         isFiniteNonNegativeNumber(value.width) &&
@@ -97,8 +91,6 @@ function isDesktopLyricCommand(value: unknown): value is DesktopLyricCommand {
         isFiniteNonNegativeNumber(value.height) &&
         value.height > 0
       );
-    case "seek":
-      return isFiniteNonNegativeNumber(value.positionMs);
     case "set-main-window-always-on-top":
     case "set-main-window-click-through":
     case "set-stage-transparent":
@@ -124,60 +116,6 @@ function isDesktopLyricPreferencesUpdate(value: unknown): value is DesktopLyricP
   );
 }
 
-function isDesktopLyricSnapshotInput(value: unknown): value is DesktopLyricSnapshotInput {
-  if (!isRecord(value)) return false;
-
-  return (
-    (value.track === null || isDesktopLyricTrack(value.track)) &&
-    typeof value.isLiked === "boolean" &&
-    typeof value.isPlaying === "boolean" &&
-    isFiniteNonNegativeNumber(value.positionMs) &&
-    "lyrics" in value
-  );
-}
-
-function isDesktopLyricSnapshotUpdate(value: unknown): value is DesktopLyricSnapshotUpdate {
-  if (!isRecord(value)) return false;
-
-  const keys = Object.keys(value);
-  if (keys.length === 0) return false;
-
-  return keys.every((key) => {
-    switch (key) {
-      case "isLiked":
-        return typeof value.isLiked === "boolean";
-      case "isPlaying":
-        return typeof value.isPlaying === "boolean";
-      case "lyrics":
-        return true;
-      case "positionMs":
-        return isFiniteNonNegativeNumber(value.positionMs);
-      case "track":
-        return value.track === null || isDesktopLyricTrack(value.track);
-      default:
-        return false;
-    }
-  });
-}
-
-function isDesktopLyricTrack(value: unknown): value is DesktopLyricTrack {
-  if (!isRecord(value)) return false;
-
-  const hasValidId = typeof value.id === "string" || typeof value.id === "number";
-  const hasValidArtists =
-    Array.isArray(value.artistNames) &&
-    value.artistNames.every((artist) => typeof artist === "string");
-
-  return (
-    hasValidId &&
-    typeof value.title === "string" &&
-    hasValidArtists &&
-    isFiniteNonNegativeNumber(value.durationMs) &&
-    (value.albumTitle === undefined || typeof value.albumTitle === "string") &&
-    (value.artworkUrl === undefined || typeof value.artworkUrl === "string")
-  );
-}
-
 function isDesktopLyricWindowSender(event: Electron.IpcMainEvent | IpcMainInvokeEvent) {
   return isWindowAlive(desktopLyricWindow) && event.sender.id === desktopLyricWindow.webContents.id;
 }
@@ -200,19 +138,6 @@ function isWindowAlive(window: BrowserWindow | null): window is BrowserWindow {
 
 function preferencesPath() {
   return join(app.getPath("userData"), PREFERENCES_FILE);
-}
-
-function publishSnapshot(nextSnapshot: DesktopLyricSnapshotInput) {
-  snapshot = {
-    ...nextSnapshot,
-    updatedAt: Date.now(),
-  };
-
-  if (isWindowAlive(desktopLyricWindow)) {
-    desktopLyricWindow.webContents.send("desktop-lyric:snapshot", snapshot);
-  }
-
-  return snapshot;
 }
 
 function readPreferences(): DesktopLyricPreferences {
@@ -271,38 +196,6 @@ function registerIpcHandlers() {
       return false;
     }
     return closeDesktopLyricWindow();
-  });
-
-  ipcMain.handle("desktop-lyric:get-snapshot", (event) => {
-    if (!isMainWindowSender(event) && !isDesktopLyricWindowSender(event)) {
-      rejectUnexpectedSender("desktop-lyric:get-snapshot");
-      return null;
-    }
-    return snapshot;
-  });
-
-  ipcMain.handle("desktop-lyric:publish-snapshot", (event, nextSnapshot: unknown) => {
-    if (!isMainWindowSender(event)) {
-      rejectUnexpectedSender("desktop-lyric:publish-snapshot");
-      return null;
-    }
-    if (!isDesktopLyricSnapshotInput(nextSnapshot)) {
-      logger.warn("[desktop-lyric] rejected invalid snapshot");
-      return null;
-    }
-    return publishSnapshot(nextSnapshot);
-  });
-
-  ipcMain.handle("desktop-lyric:update-snapshot", (event, update: unknown) => {
-    if (!isMainWindowSender(event)) {
-      rejectUnexpectedSender("desktop-lyric:update-snapshot");
-      return null;
-    }
-    if (!isDesktopLyricSnapshotUpdate(update)) {
-      logger.warn("[desktop-lyric] rejected invalid snapshot update");
-      return null;
-    }
-    return updateSnapshot(update);
   });
 
   ipcMain.handle("desktop-lyric:get-preferences", (event) => {
@@ -392,9 +285,6 @@ function showDesktopLyricWindow() {
 
   desktopLyricWindow.once("ready-to-show", () => {
     desktopLyricWindow?.show();
-    if (snapshot) {
-      desktopLyricWindow?.webContents.send("desktop-lyric:snapshot", snapshot);
-    }
     desktopLyricWindow?.webContents.send("desktop-lyric:preferences", getPreferences());
   });
 
@@ -434,9 +324,4 @@ function updatePreferences(update: DesktopLyricPreferencesUpdate) {
   }
 
   return nextPreferences;
-}
-
-function updateSnapshot(update: DesktopLyricSnapshotUpdate) {
-  if (!snapshot) return null;
-  return publishSnapshot({ ...snapshot, ...update });
 }

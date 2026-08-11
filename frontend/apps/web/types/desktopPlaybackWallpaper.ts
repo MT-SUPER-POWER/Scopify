@@ -2,11 +2,13 @@ import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
+  PlaybackProjection,
 } from "@scopify/desktop-contract";
 import type { MotionValue } from "framer-motion";
 
-import type { DesktopLyricSnapshot } from "@/types/desktopLyric";
 import type { FoliaPlaybackBridge } from "@/types/foliaStage";
+import type { LyricData } from "@/types/lyrics";
+import type { PlaybackPresentationTrack } from "@/types/playbackProjection";
 
 export type DesktopPlaybackControllerTab = "appearance" | "wallpaper";
 
@@ -14,7 +16,8 @@ export interface DesktopWallpaperFoliaPlaybackState {
   bridge: FoliaPlaybackBridge;
   model: DesktopPlaybackWallpaperModel | null;
   positionMs: number;
-  presentation: DesktopLyricSnapshot | null;
+  projection: PlaybackProjection<LyricData>;
+  track: PlaybackPresentationTrack | null;
 }
 
 export interface DesktopWallpaperAudioMotionValues {
@@ -25,11 +28,6 @@ export interface DesktopWallpaperAudioMotionValues {
   spectrum: MotionValue<Uint8Array<ArrayBuffer>>;
   treble: MotionValue<number>;
   vocal: MotionValue<number>;
-}
-
-export interface DesktopPlaybackTimeline {
-  accept(snapshot: DesktopLyricSnapshot): boolean;
-  sample(now: number): number;
 }
 
 export interface DesktopPlaybackWallpaperControllerState {

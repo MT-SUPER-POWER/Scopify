@@ -269,6 +269,15 @@ export interface VoiceLyricSentence {
   end: number;
   name: string;
   speaker?: string;
+  sylls?: VoiceLyricSyllable[] | null;
+}
+
+export interface VoiceLyricSyllable {
+  beg: number;
+  end: number;
+  name: string;
+  speaker?: string | null;
+  sylls?: VoiceLyricSyllable[] | null;
 }
 
 export interface VoiceLyricDocument {

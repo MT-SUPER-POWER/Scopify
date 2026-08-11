@@ -1,6 +1,17 @@
 "use client";
 
-import { Ban, Heart, Link2, ListPlus, Pause, Play, PlusCircle, Trash, User } from "lucide-react";
+import {
+  Ban,
+  Heart,
+  Link2,
+  ListPlus,
+  Pause,
+  Play,
+  PlusCircle,
+  ScrollText,
+  Trash,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useMemo } from "react";
@@ -35,6 +46,7 @@ interface SongContextMenuProps {
   onRemoveFromQueue?: () => void;
   onRemoveFromPlaylist?: () => void;
   onDislikeDailyRecommend?: () => void;
+  onViewTranscript?: () => void;
   playlistID?: string | null;
   isDailyRecommend?: boolean;
   readonly?: boolean;
@@ -49,6 +61,7 @@ export function SongContextMenu({
   onRemoveFromQueue,
   onRemoveFromPlaylist,
   onDislikeDailyRecommend,
+  onViewTranscript,
   playlistID,
   isDailyRecommend = false,
   readonly = false,
@@ -105,12 +118,14 @@ export function SongContextMenu({
   }, [song, t]);
 
   const handleCopyLink = useCallback(() => {
-    const href = `https://music.163.com/#/song?id=${song.id}`;
+    const id = song.voiceId ?? song.id;
+    const type = song.voiceId ? "dj" : "song";
+    const href = `https://music.163.com/#/${type}?id=${id}`;
     navigator.clipboard
       .writeText(href)
       .then(() => toast.success(t("playlist.table.copySuccess")))
       .catch(() => toast.error(t("playlist.table.copyFailed")));
-  }, [song.id, t]);
+  }, [song.id, song.voiceId, t]);
 
   return (
     <ContextMenu>
@@ -153,6 +168,13 @@ export function SongContextMenu({
         <ContextMenuSeparator />
 
         <ContextMenuGroup>
+          {onViewTranscript && (
+            <ContextMenuItem onClick={onViewTranscript}>
+              <ScrollText className="mr-2 size-4" />
+              {t("search.voice.transcript")}
+            </ContextMenuItem>
+          )}
+
           {isLogin && (
             <ContextMenuSub>
               <ContextMenuSubTrigger>

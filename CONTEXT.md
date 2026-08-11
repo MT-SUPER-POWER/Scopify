@@ -273,8 +273,36 @@ Data obtained from the NetEase backend, including music catalog, recommendations
 _Avoid_: Zustand data, page state
 
 **Renderer State**:
-Local state that describes the Scopify renderer itself, including playback, UI preferences, dialogs, and the authenticated-session snapshot. It is owned by Zustand or component state.
-_Avoid_: Remote Music Data, backend cache
+Local state that describes one Scopify renderer, including UI preferences, dialogs, and the authenticated-session snapshot. Authoritative Playback State is excluded; renderers consume its Playback Projection instead.
+_Avoid_: Remote Music Data, backend cache, authoritative playback state
+
+**Playback Authority**:
+The sole owner of the active Playback State and the only actor allowed to execute playback commands or sample the real media clock.
+_Avoid_: player window, Electron broker, playback UI
+
+**Playback State**:
+The authoritative current playback session, transport phase, media clock, volume, and command availability owned by the Playback Authority.
+_Avoid_: Renderer State, Resume Checkpoint, window-local player state
+
+**Playback Session**:
+One loaded lifetime of a track under the Playback Authority. It has an identity independent of Track ID so replaying or reloading the same song creates a new session.
+_Avoid_: track ID, queue item, persisted song
+
+**Playback Projection**:
+A read-only, time-aware view of Playback State consumed consistently by PlayBar, Folia, and companion windows.
+_Avoid_: playback owner, remote player snapshot, window-local playback state
+
+**Clock Anchor**:
+A source-timestamped media position and advance rate associated with one Playback Session and timeline revision. Renderers use it to project continuous time locally rather than receiving a position every frame.
+_Avoid_: progress tick, persisted position, receive-time timestamp
+
+**Timeline Discontinuity**:
+An explicit Playback Authority decision that changes the meaning of the media timeline, such as seek, track replacement, resume restoration, or same-track reload. It is the only event allowed to hard-jump a Playback Projection.
+_Avoid_: clock drift, delayed snapshot, inferred seek
+
+**Resume Checkpoint**:
+A coarse persisted playback position used only when the Playback Authority restores a session. It is not a live media clock or cross-window synchronization source.
+_Avoid_: current playback time, Clock Anchor, Playback Projection
 
 **Navigation Entry Scroll State**:
 The content position associated with one browser-history entry. Backward or forward navigation restores that entry's prior position, while a newly created navigation entry starts at the top.

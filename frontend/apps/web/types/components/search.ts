@@ -69,18 +69,22 @@ export interface GridCategoryViewProps extends SearchPaginationProps {
 }
 
 export interface VoiceItemProps {
+  enableContextMenu?: boolean;
   index: number;
   onViewTranscript?: (voice: Voice) => void;
+  transcriptMode?: "dialog" | "popover";
   variant?: "default" | "liked" | "preview";
   voice: Voice;
   voices: Voice[];
 }
 
 export interface VoiceListProps {
+  enableContextMenu?: boolean;
   layout?: "grid" | "list";
   limit?: number;
   onViewAll?: () => void;
   onViewTranscript?: (voice: Voice) => void;
+  transcriptMode?: "dialog" | "popover";
   variant?: "default" | "liked" | "preview";
   voices: Voice[];
 }

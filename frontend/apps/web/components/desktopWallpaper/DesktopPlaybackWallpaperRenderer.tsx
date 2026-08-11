@@ -9,7 +9,7 @@ import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentat
 export function DesktopPlaybackWallpaperRenderer() {
   const [captureBackgroundOnly, setCaptureBackgroundOnly] = useState(false);
   const appearance = useFoliaPresentationAppearance();
-  const { bridge, model, presentation } = useDesktopWallpaperFoliaPlayback(
+  const { bridge, model, track } = useDesktopWallpaperFoliaPlayback(
     appearance.settings.lyricOffsetMs,
   );
 
@@ -51,7 +51,7 @@ export function DesktopPlaybackWallpaperRenderer() {
           bridge={bridge}
           isPlayerChromeHidden
           layers={layers}
-          track={presentation?.track ?? null}
+          track={track}
         />
       ) : null}
     </div>

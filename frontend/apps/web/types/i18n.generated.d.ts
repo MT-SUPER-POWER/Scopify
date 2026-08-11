@@ -14636,6 +14636,12 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.togglePlayback", params?: TranslationParams): string;
   /**
+   * zh-CN: 喜欢/取消喜欢当前歌曲
+   * zh-TW: 喜歡/取消喜歡目前歌曲
+   * en-US: Like/Unlike Current Track
+   */
+  (key: "shortcuts.command.toggleLike", params?: TranslationParams): string;
+  /**
    * zh-CN: 上一首
    * zh-TW: 上一首
    * en-US: Previous Track
@@ -14719,6 +14725,24 @@ export interface TranslateFn {
    * en-US: Toggle Fullscreen
    */
   (key: "shortcuts.command.toggleFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看当前歌曲评论
+   * zh-TW: 查看目前歌曲評論
+   * en-US: Open Current Track Comments
+   */
+  (key: "shortcuts.command.openCurrentTrackComments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在歌单内搜索
+   * zh-TW: 在歌單內搜尋
+   * en-US: Search Within Playlist
+   */
+  (key: "shortcuts.command.focusPlaylistSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 聚焦音量控件后可用
+   * zh-TW: 聚焦音量控制項後可用
+   * en-US: Available when the volume control is focused
+   */
+  (key: "shortcuts.scope.volume", params?: TranslationParams): string;
   /**
    * zh-CN: 打开快捷键管理
    * zh-TW: 開啟快速鍵管理

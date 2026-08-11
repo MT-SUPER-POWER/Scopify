@@ -7,6 +7,17 @@ import { Input } from "@/components/ui/input";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { useI18n } from "@/store/module/i18n";
 import { ShortcutBindingRow } from "./ShortcutBindingRow";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function ShortcutSettings() {
   const { t } = useI18n();
@@ -30,39 +41,65 @@ export function ShortcutSettings() {
   );
 
   return (
-    <section className="space-y-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <section className="space-y-6">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+        {/* 左侧：标题区 + 恢复默认按钮 */}
         <div>
-          <h2 className="text-xl font-bold text-white">{t("shortcuts.title")}</h2>
-          <p className="mt-1 text-sm text-zinc-400">{t("shortcuts.subtitle")}</p>
+          <div className="flex items-center gap-2">
+            <h2 className="text-foreground text-xl font-bold">{t("shortcuts.title")}</h2>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  type="button"
+                  title={t("shortcuts.resetAll")}
+                  aria-label={t("shortcuts.resetAll")}
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring mt-0.5 flex size-7 items-center justify-center rounded transition-colors focus-visible:ring-1 focus-visible:outline-none"
+                >
+                  <RotateCcw className="size-4" />
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>恢复全部默认值</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    确定要清除所有自定义的快捷键绑定吗？此操作将恢复系统默认设置，且无法撤销。
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t("common.action.cancel") || "取消"}</AlertDialogCancel>
+                  <AlertDialogAction onClick={resetAllShortcuts}>
+                    {t("common.action.confirm") || "确定"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+          <p className="text-muted-foreground mt-1 text-sm">{t("shortcuts.subtitle")}</p>
         </div>
-        <button
-          type="button"
-          onClick={resetAllShortcuts}
-          className="inline-flex items-center justify-center gap-2 rounded bg-white px-3 py-2 text-sm font-semibold text-black transition-colors hover:bg-zinc-200"
-        >
-          <RotateCcw className="size-4" />
-          {t("shortcuts.resetAll")}
-        </button>
+
+        {/* 右侧：搜索框 */}
+        <div className="mt-1 flex w-full shrink-0 justify-start sm:w-[272px]">
+          <div className="relative w-full sm:w-[192px]">
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={t("shortcuts.searchPlaceholder")}
+              className="border-border bg-muted text-foreground placeholder:text-muted-foreground w-full pl-9"
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="relative max-w-md">
-        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-500" />
-        <Input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t("shortcuts.searchPlaceholder")}
-          className="border-white/10 bg-black/20 pl-9 text-white placeholder:text-zinc-500"
-        />
-      </div>
-
-      <div className="space-y-7">
+      <div className="mt-8 space-y-10">
         {groups.map(({ group, commands: groupedCommands }) => (
           <div key={group}>
-            <h3 className="text-xs font-semibold text-zinc-500 uppercase">
-              {t(SHORTCUT_GROUP_LABEL_KEYS[group])}
-            </h3>
-            <div className="mt-2">
+            <div className="border-border mb-2 border-b pb-3">
+              <h3 className="text-foreground text-base font-bold">
+                {t(SHORTCUT_GROUP_LABEL_KEYS[group])}
+              </h3>
+            </div>
+            <div className="flex flex-col">
               {groupedCommands.map((command) => (
                 <ShortcutBindingRow
                   key={command.id}

@@ -1,22 +1,6 @@
-import type {
-  DesktopLyricSnapshotInput,
-  DesktopPlaybackWallpaperAudioFrame,
-} from "@scopify/desktop-contract";
+import type { DesktopPlaybackWallpaperAudioFrame } from "@scopify/desktop-contract";
 
 const MAXIMUM_AUDIO_SPECTRUM_BINS = 2_048;
-
-export function isDesktopPlaybackWallpaperPresentationInput(
-  value: unknown,
-): value is DesktopLyricSnapshotInput {
-  if (!isRecord(value)) return false;
-  return (
-    typeof value.isLiked === "boolean" &&
-    typeof value.isPlaying === "boolean" &&
-    isFiniteNonNegativeNumber(value.positionMs) &&
-    (value.track === null || isTrack(value.track)) &&
-    "lyrics" in value
-  );
-}
 
 export function isDesktopPlaybackWallpaperAudioFrame(
   value: unknown,
@@ -39,19 +23,6 @@ export function isDesktopPlaybackWallpaperAudioFrame(
       value.vocal,
       ...value.spectrum,
     ].every(isAudioMagnitude)
-  );
-}
-
-function isTrack(value: unknown) {
-  if (!isRecord(value)) return false;
-  return (
-    (typeof value.id === "number" || typeof value.id === "string") &&
-    typeof value.title === "string" &&
-    Array.isArray(value.artistNames) &&
-    value.artistNames.every((artist) => typeof artist === "string") &&
-    isFiniteNonNegativeNumber(value.durationMs) &&
-    (value.albumTitle === undefined || typeof value.albumTitle === "string") &&
-    (value.artworkUrl === undefined || typeof value.artworkUrl === "string")
   );
 }
 

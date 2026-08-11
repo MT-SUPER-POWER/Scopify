@@ -13,12 +13,13 @@ import type {
 import { DesktopPlaybackAppearanceControls } from "@/components/desktopWallpaper/DesktopPlaybackAppearanceControls";
 import { DesktopPlaybackControllerHeader } from "@/components/desktopWallpaper/DesktopPlaybackControllerHeader";
 import { DesktopPlaybackControllerQuickToggle } from "@/components/desktopWallpaper/DesktopPlaybackControllerQuickToggle";
+import { DesktopPlaybackControllerShortcutHandler } from "@/components/desktopWallpaper/DesktopPlaybackControllerShortcutHandler";
 import { DesktopPlaybackPlayerControls } from "@/components/desktopWallpaper/DesktopPlaybackPlayerControls";
 import { DesktopPlaybackWallpaperControls } from "@/components/desktopWallpaper/DesktopPlaybackWallpaperControls";
 import { useDesktopIconVisibility } from "@/hooks/desktopWallpaper/useDesktopIconVisibility";
 import { useDesktopWallpaperFoliaPlayback } from "@/hooks/desktopWallpaper/useDesktopWallpaperFoliaPlayback";
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
-import { useRemotePlayerController } from "@/hooks/player/useRemotePlayerController";
+import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { requestDesktopPlaybackControllerThemeEditor } from "@/lib/desktopPlaybackWallpaper/controllerThemeEditor";
 import { getFoliaStageTheme, getFoliaThemeColors } from "@/lib/lyrics/foliaTheme";
 import { runtime } from "@/lib/runtime";
@@ -32,7 +33,7 @@ export function DesktopPlaybackController() {
   const [activeTab, setActiveTab] = useState<DesktopPlaybackControllerTab>("appearance");
   const [layout, setLayout] = useState<DesktopPlaybackControllerLayout>("compact");
   const [isLayoutPending, setIsLayoutPending] = useState(false);
-  const player = useRemotePlayerController();
+  const playbackCommands = usePlaybackCommands();
   const desktopIcons = useDesktopIconVisibility();
   const wallpaper = useDesktopPlaybackWallpaperController();
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
@@ -54,10 +55,7 @@ export function DesktopPlaybackController() {
         secondary: activeLine.translation ?? activeLine.romanization ?? nextLine?.fullText,
       }
     : null;
-  const presentationTrack = foliaPlayback.presentation?.track ?? null;
-  const durationMs = presentationTrack?.durationMs ?? player.currentSongDetail?.dt ?? 0;
-  const positionMs = foliaPlayback.presentation ? foliaPlayback.positionMs : player.positionMs;
-  const fallbackCurrentSong = foliaPlayback.presentation ? null : player.currentSongDetail;
+  const { projection, track } = foliaPlayback;
   const controllerThemeStyle = {
     "--desktop-controller-accent": theme.accentColor,
     "--desktop-controller-background": theme.backgroundColor,
@@ -139,11 +137,14 @@ export function DesktopPlaybackController() {
 
   return (
     <main
-      className="desktop-playback-controller-shell size-full bg-transparent select-none"
+      className="desktop-playback-controller-shell size-full bg-transparent p-1 select-none"
       style={controllerThemeStyle}
     >
       <section className="desktop-playback-controller-surface relative flex size-full flex-col overflow-hidden rounded-[20px] border">
         <ControllerAtmosphere />
+        <DesktopPlaybackControllerShortcutHandler
+          onClose={() => void wallpaper.closeController()}
+        />
         <DesktopPlaybackControllerHeader
           isLayoutPending={isLayoutPending}
           layout={layout}
@@ -159,7 +160,7 @@ export function DesktopPlaybackController() {
         >
           <DesktopPlaybackPlayerControls
             activeLyric={activeLyric}
-            currentSong={fallbackCurrentSong}
+            currentSong={null}
             desktopControl={
               <DesktopPlaybackControllerQuickToggle
                 isPending={wallpaper.isPending}
@@ -167,16 +168,16 @@ export function DesktopPlaybackController() {
                 onEnabledChange={setWallpaperEnabled}
               />
             }
-            durationMs={durationMs}
-            isPlaying={foliaPlayback.presentation?.isPlaying ?? player.isPlaying}
-            onNext={player.playNext}
-            onPrevious={player.playPrevious}
-            onSeek={player.seek}
-            onTogglePlaying={player.togglePlaying}
-            onVolumeChange={player.setVolume}
-            positionMs={positionMs}
-            track={presentationTrack}
-            volume={player.volume}
+            durationMs={projection.durationMs}
+            isPlaying={projection.isPlaying}
+            onNext={() => void playbackCommands.next()}
+            onPrevious={() => void playbackCommands.previous()}
+            onSeek={(positionMs) => void playbackCommands.seek(positionMs)}
+            onTogglePlaying={() => void playbackCommands.toggle()}
+            onVolumeChange={(volume) => void playbackCommands.setVolume(volume)}
+            positionMs={foliaPlayback.positionMs}
+            track={track}
+            volume={projection.volume}
           />
         </div>
 

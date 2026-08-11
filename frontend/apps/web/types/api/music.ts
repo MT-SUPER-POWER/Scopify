@@ -35,6 +35,8 @@ export interface SongDetail {
   name: string;
   dt: number; // 时长 (ms)
   fee: number;
+  /** Voice program ID when this playable song is backed by a voice transcript. */
+  voiceId?: number;
   privilege?: SongPlaybackPrivilege;
   ar: { id: number; name: string }[]; // 歌手
   al: {

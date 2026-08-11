@@ -19,8 +19,10 @@ export function CommandPalette() {
   const executeShortcutCommand = useShortcutCommands();
   const matches = useMemo(
     () =>
-      commands.filter((command) =>
-        t(command.labelKey).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
+      commands.filter(
+        (command) =>
+          (command.scope ?? "global") === "global" &&
+          t(command.labelKey).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
       ),
     [commands, query, t],
   );

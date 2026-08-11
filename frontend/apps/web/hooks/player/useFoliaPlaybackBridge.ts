@@ -4,28 +4,30 @@ import { useMotionValue } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { AudioBands } from "@/components/lyrics/folia/src/types";
-import type { LyricAudioBands, LyricChorusRange } from "@/types/lyrics";
+import type { LyricAudioBands, LyricChorusRange, LyricData } from "@/types/lyrics";
 import type { FoliaPlaybackBridge } from "@/types/foliaStage";
 
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
+import {
+  usePlaybackProjection,
+  usePlaybackProjectionStore,
+} from "@/hooks/player/usePlaybackProjection";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
-import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
-import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import { useTimeStore } from "@/store/module/time";
 
 const EMPTY_CHORUS_RANGES: LyricChorusRange[] = [];
 
 export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
-  const isPlaying = usePlayerStore((state) => state.isPlaying);
-  const rawLyric = usePlayerStore((state) => state.lyric);
-  const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id ?? null);
-  const storedTimeMs = useTimeStore((state) => state.currentTime);
-  const durationMs = useTimeStore((state) => state.totalTime);
+  const playbackStore = usePlaybackProjectionStore<LyricData>();
+  const playback = usePlaybackProjection<LyricData>();
+  const isPlaying = playback.isPlaying;
+  const rawLyric = playback.lyrics;
+  const currentSongId = playback.track?.id ?? null;
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
-  const currentTime = useMotionValue(storedTimeMs / 1_000);
-  const lyricCurrentTime = useMotionValue(storedTimeMs / 1_000);
+  const initialPositionSeconds = playbackStore.samplePositionMs() / 1_000;
+  const currentTime = useMotionValue(initialPositionSeconds);
+  const lyricCurrentTime = useMotionValue(initialPositionSeconds);
   const audioPower = useMotionValue(0);
   const bass = useMotionValue(0);
   const lowMid = useMotionValue(0);
@@ -33,15 +35,12 @@ export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
   const vocal = useMotionValue(0);
   const treble = useMotionValue(0);
   const spectrum = useMotionValue(new Uint8Array(new ArrayBuffer(0)));
-  const sourceTimeSecondsRef = useRef(storedTimeMs / 1_000);
-  const sourceTimestampRef = useRef(0);
-  const isPlayingRef = useRef(isPlaying);
   const currentLineIndexRef = useRef(-1);
   const [currentLineIndex, setCurrentLineIndex] = useState(-1);
   const chorusQuery = useSongChorus(currentSongId);
   const chorusRanges = chorusQuery.data ?? EMPTY_CHORUS_RANGES;
   const lyrics = useMemo(
-    () => (rawLyric ? adaptLyricDataToFolia(adaptNeteaseLyric(rawLyric), chorusRanges) : null),
+    () => (rawLyric ? adaptLyricDataToFolia(rawLyric, chorusRanges) : null),
     [chorusRanges, rawLyric],
   );
   const audioBands = useMemo<AudioBands>(
@@ -50,29 +49,6 @@ export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
   );
 
   useEffect(() => {
-    isPlayingRef.current = isPlaying;
-    sourceTimeSecondsRef.current = currentTime.get();
-    sourceTimestampRef.current = performance.now();
-  }, [currentTime, isPlaying]);
-
-  useEffect(() => {
-    const nextTimeSeconds = storedTimeMs / 1_000;
-    sourceTimeSecondsRef.current = nextTimeSeconds;
-    sourceTimestampRef.current = performance.now();
-    currentTime.set(nextTimeSeconds);
-    lyricCurrentTime.set(nextTimeSeconds - lyricOffsetMs / 1_000);
-  }, [currentTime, lyricCurrentTime, lyricOffsetMs, storedTimeMs]);
-
-  useEffect(() => {
-    const onPlayerTime = (event: Event) => {
-      const timeMs = (event as CustomEvent<unknown>).detail;
-      if (typeof timeMs !== "number" || !Number.isFinite(timeMs)) return;
-      const nextTimeSeconds = timeMs / 1_000;
-      sourceTimeSecondsRef.current = nextTimeSeconds;
-      sourceTimestampRef.current = performance.now();
-      currentTime.set(nextTimeSeconds);
-      lyricCurrentTime.set(nextTimeSeconds - lyricOffsetMs / 1_000);
-    };
     const onAudioBands = (event: Event) => {
       const bands = (event as CustomEvent<LyricAudioBands>).detail;
       if (!bands) return;
@@ -86,30 +62,15 @@ export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
     };
 
     window.addEventListener("player-audio-bands", onAudioBands);
-    window.addEventListener("player-time", onPlayerTime);
     return () => {
       window.removeEventListener("player-audio-bands", onAudioBands);
-      window.removeEventListener("player-time", onPlayerTime);
     };
-  }, [
-    audioPower,
-    bass,
-    currentTime,
-    lowMid,
-    lyricCurrentTime,
-    lyricOffsetMs,
-    mid,
-    spectrum,
-    treble,
-    vocal,
-  ]);
+  }, [audioPower, bass, lowMid, mid, spectrum, treble, vocal]);
 
   useEffect(() => {
     let animationFrame = 0;
-    const tick = (now: number) => {
-      const nextTime = isPlayingRef.current
-        ? sourceTimeSecondsRef.current + Math.max(0, now - sourceTimestampRef.current) / 1_000
-        : sourceTimeSecondsRef.current;
+    const tick = () => {
+      const nextTime = playbackStore.samplePositionMs() / 1_000;
       currentTime.set(nextTime);
       const effectiveLyricTime = nextTime - lyricOffsetMs / 1_000;
       lyricCurrentTime.set(effectiveLyricTime);
@@ -124,17 +85,16 @@ export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
       animationFrame = requestAnimationFrame(tick);
     };
 
-    sourceTimestampRef.current = performance.now();
     animationFrame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animationFrame);
-  }, [currentTime, lyricCurrentTime, lyricOffsetMs, lyrics]);
+  }, [currentTime, lyricCurrentTime, lyricOffsetMs, lyrics, playbackStore]);
 
   return {
     audioBands,
     audioPower,
     currentLineIndex,
     currentTime,
-    durationSeconds: durationMs / 1_000,
+    durationSeconds: playback.durationMs / 1_000,
     isPlaying,
     lines: lyrics?.lines ?? [],
     lyricCurrentTime,

@@ -1,6 +1,7 @@
 import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import type { SongDetail } from "@/types/api/music";
 import type { ProgressRangeMarker } from "@/types/components/slider";
+import type { ShortcutCommandId } from "@/types/shortcuts";
 
 export interface PlaybackProgressBarProps {
   ariaLabel?: string;
@@ -37,5 +38,6 @@ export interface PlayerBarStatActionProps {
   countClassName?: string;
   href?: string;
   onClick?: MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
+  shortcutCommandId?: ShortcutCommandId;
   title?: string;
 }

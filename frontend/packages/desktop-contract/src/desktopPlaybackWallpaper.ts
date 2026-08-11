@@ -1,5 +1,3 @@
-import type { DesktopLyricSnapshot, DesktopLyricSnapshotInput } from "./desktopLyrics";
-
 export type DesktopPlaybackControllerLayout = "compact" | "expanded";
 export type DesktopPlaybackWallpaperFullscreenPolicy = "keep-running" | "pause" | "stop";
 
@@ -60,11 +58,6 @@ export interface DesktopPlaybackWallpaperModel {
   preferences: DesktopPlaybackWallpaperPreferences;
   status: DesktopPlaybackWallpaperStatus;
 }
-
-export type DesktopPlaybackWallpaperPresentation<TLyrics = unknown> = DesktopLyricSnapshot<TLyrics>;
-
-export type DesktopPlaybackWallpaperPresentationInput<TLyrics = unknown> =
-  DesktopLyricSnapshotInput<TLyrics>;
 
 export interface DesktopPlaybackWallpaperAudioFrame {
   bass: number;

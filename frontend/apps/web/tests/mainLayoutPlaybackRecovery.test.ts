@@ -6,6 +6,10 @@ const mainLayoutSource = readFileSync(
   join(import.meta.dir, "../components/MainLayout.tsx"),
   "utf8",
 );
+const playbackAuthorityProviderSource = readFileSync(
+  join(import.meta.dir, "../components/player/PlaybackAuthorityProvider.tsx"),
+  "utf8",
+);
 
 test("the production audio element warms and observes restored playback URLs", () => {
   expect(mainLayoutSource).toContain("if (hasWarmedPlaybackUrlRef.current) return;");
@@ -13,5 +17,8 @@ test("the production audio element warms and observes restored playback URLs", (
   expect(mainLayoutSource).toContain("void refreshCurrentTrackUrl();");
   expect(mainLayoutSource).toContain("onError={(event) => {");
   expect(mainLayoutSource).toContain('console.error("[player] Media playback failed"');
-  expect(mainLayoutSource).toContain('console.error("[player] Audio play() rejected"');
+  expect(mainLayoutSource).toContain("<PlaybackAuthorityProvider");
+  expect(mainLayoutSource).not.toContain("audio.play()");
+  expect(playbackAuthorityProviderSource).toContain("authority.dispatch");
+  expect(playbackAuthorityProviderSource).toContain('receipt.status !== "accepted"');
 });

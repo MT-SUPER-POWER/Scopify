@@ -55,10 +55,12 @@ export function PlaylistContent({
       key={playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily")}
       className="bg-surface-raised relative flex min-h-screen w-full flex-col font-sans"
     >
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 md:h-125"
-        style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
-      />
+      {!isLoading && themeColor ? (
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 md:h-125"
+          style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
+        />
+      ) : null}
       {dynamicPlaylistInfo && (
         <PlaylistHeader info={dynamicPlaylistInfo} isDaily={isDailyRecommend} />
       )}

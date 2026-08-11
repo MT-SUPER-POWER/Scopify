@@ -11,10 +11,7 @@ import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistInfo } from "@/types/playlist";
 
-const colorCache = new Map<string, string>([
-  ["daily", "#c42b2b"],
-  ["default", "#88b325"],
-]);
+const colorCache = new Map<string, string>([["daily", "#c42b2b"]]);
 const COLOR_CACHE_LIMIT = 15;
 
 function setColorCache(key: string, value: string) {
@@ -106,7 +103,7 @@ export function usePlaylist(playlistIdOverride?: null | string) {
 
   const colorCacheKey = isDailyRecommend ? "daily" : playlistInfo?.cover;
   const cachedColor = colorCacheKey ? (colorCache.get(colorCacheKey) ?? null) : null;
-  const [fetchedColor, setFetchedColor] = useState<string | null>(null);
+  const [fetchedColor, setFetchedColor] = useState<{ color: string; key: string } | null>(null);
 
   useEffect(() => {
     if (!colorCacheKey || colorCache.has(colorCacheKey)) return;
@@ -115,9 +112,11 @@ export function usePlaylist(playlistIdOverride?: null | string) {
     getMainColorFromImage(colorCacheKey).then((color) => {
       if (!color) return;
       setColorCache(colorCacheKey, color);
-      setFetchedColor(color);
+      setFetchedColor({ color, key: colorCacheKey });
     });
   }, [colorCacheKey]);
+  const currentFetchedColor =
+    fetchedColor && fetchedColor.key === colorCacheKey ? fetchedColor.color : null;
 
   return {
     dailyDate,
@@ -127,7 +126,7 @@ export function usePlaylist(playlistIdOverride?: null | string) {
     playlistInfo,
     refetchTracks: refetch,
     setTracks,
-    themeColor: cachedColor ?? fetchedColor ?? "#88b325",
+    themeColor: cachedColor ?? currentFetchedColor,
     tracks: data?.tracks ?? [],
   };
 }

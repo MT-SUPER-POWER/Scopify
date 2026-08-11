@@ -22,24 +22,25 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
-import { toast } from "sonner";
 import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
-import { QueuePopover } from "@/components/QueuePopover";
+import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
+import { QueuePopover } from "@/components/player/QueuePopover";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { VolumeControl } from "@/components/VolumeControl";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
 import { useMusicQuality } from "@/hooks/player/useMusicQuality";
-import { likeSong } from "@/lib/api/playlist";
-import { clearPageCache } from "@/lib/cache/pageCache";
+import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
+import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
+import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount } from "@/lib/utils";
-import { usePlayerStore, useUserStore } from "@/store";
+import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useUiStore } from "@/store/module/ui";
 import type { PlayerBarStatActionProps } from "@/types/components/player";
 import { Skeleton } from "./ui/skeleton";
@@ -54,6 +55,7 @@ function PlayerBarStatAction({
   countClassName,
   onClick,
   href,
+  shortcutCommandId,
   title,
   children,
 }: PlayerBarStatActionProps) {
@@ -99,7 +101,7 @@ function PlayerBarStatAction({
       <Tooltip>
         <TooltipTrigger asChild>{action}</TooltipTrigger>
         <TooltipContent side="top" sideOffset={8}>
-          {title}
+          <ShortcutHint commandId={shortcutCommandId} label={title} />
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -128,25 +130,22 @@ export const PlayerBar = ({
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
   const smartRouter = useSmartRouter();
+  const playback = usePlaybackProjection();
+  const commands = usePlaybackCommands();
 
   // Zustand Stores
-  const volume = usePlayerStore((s) => s.volume);
-  const isPlaying = usePlayerStore((s) => s.isPlaying);
   const currentSong = usePlayerStore((s) => s.currentSongDetail);
+  const artworkUrl = resolveCoverUrl(currentSong?.al?.picUrl, currentSong?.al?.coverUrl);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const isShuffle = usePlayerStore((s) => s.isShuffle);
-  const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const setRepeatMode = usePlayerStore((s) => s.setRepeatMode);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
-  const playNext = usePlayerStore((s) => s.playNext);
-  const playPrev = usePlayerStore((s) => s.playPrev);
-
-  const likelist = useUserStore((s) => s.likeListIDs) || [];
-  const isLiked = Array.isArray(likelist) ? likelist.includes(currentSong?.id ?? -1) : false;
+  const isLiked = playback.liked;
+  const isPlaying = playback.isPlaying;
+  const volume = playback.volume;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricStageBar = variant === "lyric-stage";
   const { musicQuality } = useMusicQuality();
-  const openAudioSettings = useAudioEqualizerStore((state) => state.openDialog);
 
   // 查找当前选中的音质选项，如果找不到就提供一个兜底
   const currentOption = QUALITY_OPTIONS.find((opt) => opt.value === musicQuality);
@@ -173,30 +172,6 @@ export const PlayerBar = ({
   const playbackActionLabel = t(isPlaying ? "ui.pause" : "ui.play");
   const lyricsActionLabel = t(isLyricsOpen ? "ui.hideLyrics" : "ui.showLyrics");
   const fullscreenActionLabel = t(isFullscreen ? "ui.exitFullscreen" : "ui.fullscreen");
-
-  const toggleLike = useCallback(
-    async (next: boolean) => {
-      const songId = currentSong?.id;
-      if (!songId) return;
-
-      try {
-        await likeSong(songId, next);
-        useUserStore.getState().libraryUpdateTrigger += 1; // 触发喜欢列表更新
-        const store = useUserStore.getState();
-        const cur = Array.isArray(store.likeListIDs)
-          ? store.likeListIDs.map((id) => Number(id))
-          : [];
-        const idNum = Number(songId);
-        const nextList: number[] = next ? [...cur, idNum] : cur.filter((id) => id !== idNum);
-        store.setLikeListIDs(nextList);
-        void clearPageCache();
-        toast.success(next ? t("playlist.table.likedAdded") : t("playlist.table.likedRemoved"));
-      } catch (error) {
-        console.log("Error toggling like status:", error);
-      }
-    },
-    [currentSong, t],
-  );
 
   return (
     <div
@@ -226,11 +201,11 @@ export const PlayerBar = ({
         >
           {/* 专辑封面 */}
           <div className="bg-surface-elevated shadow-panel group relative size-12 shrink-0 cursor-pointer overflow-hidden rounded-md lg:size-14">
-            {currentSong?.al?.picUrl ? (
+            {currentSong && artworkUrl ? (
               <Image
                 width={56}
                 height={56}
-                src={(currentSong.al.picUrl || currentSong.al.coverUrl) ?? ""}
+                src={artworkUrl}
                 alt={currentSong.al.name}
                 className="size-full object-cover"
                 onError={(e) => {
@@ -273,7 +248,7 @@ export const PlayerBar = ({
                     )}
                   </TooltipTrigger>
                   <TooltipContent side="top" sideOffset={8}>
-                    {lyricsActionLabel}
+                    <ShortcutHint commandId="toggle-lyric-stage" label={lyricsActionLabel} />
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -343,7 +318,8 @@ export const PlayerBar = ({
                 count={currentSong.likedCount}
                 countClassName={isLiked ? "text-brand" : "text-content-muted"}
                 title={isLiked ? t("common.action.unlike") : t("common.action.like")}
-                onClick={() => void toggleLike(!isLiked)}
+                shortcutCommandId="toggle-like"
+                onClick={() => void commands.toggleLike()}
               >
                 {isLiked ? (
                   <PiHeartFill className="text-brand size-5 lg:size-5.5" />
@@ -357,6 +333,7 @@ export const PlayerBar = ({
                 countClassName="text-content-muted group-hover:text-content transition-colors"
                 href={`/comment?songId=${currentSong.id}`}
                 title={t("contextMenu.comments")}
+                shortcutCommandId="open-current-track-comments"
               >
                 <PiChatCircleDotsBold className="text-content-muted group-hover:text-content size-5 transition-colors lg:size-5.5" />
               </PlayerBarStatAction>
@@ -400,14 +377,14 @@ export const PlayerBar = ({
                   <button
                     type="button"
                     aria-label={t("ui.previous")}
-                    onClick={() => void playPrev()}
+                    onClick={() => void commands.previous()}
                     className="text-content-muted hover:text-content transition-colors"
                   >
                     <SkipBack className="size-4 fill-current lg:size-5" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" sideOffset={8}>
-                  {t("ui.previous")}
+                  <ShortcutHint commandId="previous-track" label={t("ui.previous")} />
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -415,8 +392,8 @@ export const PlayerBar = ({
                   <button
                     type="button"
                     aria-label={playbackActionLabel}
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    disabled={!currentSong}
+                    onClick={() => void commands.toggle()}
+                    disabled={!playback.canControl}
                     className="bg-content text-surface hover:bg-content/90 flex size-9 items-center justify-center rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-40 lg:size-10"
                   >
                     {isPlaying ? (
@@ -427,7 +404,7 @@ export const PlayerBar = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" sideOffset={8}>
-                  {playbackActionLabel}
+                  <ShortcutHint commandId="toggle-playback" label={playbackActionLabel} />
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -435,14 +412,14 @@ export const PlayerBar = ({
                   <button
                     type="button"
                     aria-label={t("ui.next")}
-                    onClick={() => void playNext()}
+                    onClick={() => void commands.next()}
                     className="text-content-muted hover:text-content transition-colors"
                   >
                     <SkipForward className="size-4 fill-current lg:size-5" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" sideOffset={8}>
-                  {t("ui.next")}
+                  <ShortcutHint commandId="next-track" label={t("ui.next")} />
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -500,7 +477,7 @@ export const PlayerBar = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent side="top" sideOffset={8}>
-                {lyricsActionLabel}
+                <ShortcutHint commandId="toggle-lyric-stage" label={lyricsActionLabel} />
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -508,23 +485,24 @@ export const PlayerBar = ({
           {/* 音频设置 */}
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  aria-label={t("audioSettings.open")}
-                  onClick={() => openAudioSettings("quality")}
-                  className="hover:text-content flex cursor-pointer items-center justify-center transition-colors"
-                >
-                  <CurrentIcon className="size-4 lg:size-5" />
-                </button>
-              </TooltipTrigger>
+              <AudioSettingsDialog>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={t("audioSettings.open")}
+                    className="hover:text-content flex cursor-pointer items-center justify-center transition-colors"
+                  >
+                    <CurrentIcon className="size-4 lg:size-5" />
+                  </button>
+                </TooltipTrigger>
+              </AudioSettingsDialog>
               <TooltipContent side="top" sideOffset={8}>
                 {t("audioSettings.title")}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
-          {/* 播放列表模态界面 */}
+          {/* 播放列表浮层 */}
           <div className="hidden md:block">
             <AnimatePresence>
               <motion.div
@@ -563,7 +541,7 @@ export const PlayerBar = ({
           {/* 音量控制 */}
           <VolumeControl
             initialVolume={volume}
-            onChange={(v) => usePlayerStore.getState().setVolume(v)}
+            onChange={(nextVolume) => void commands.setVolume(nextVolume)}
           />
 
           {/* 最大化/最小化按钮 */}
@@ -584,7 +562,7 @@ export const PlayerBar = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent side="top" sideOffset={8}>
-                {fullscreenActionLabel}
+                <ShortcutHint commandId="toggle-fullscreen" label={fullscreenActionLabel} />
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

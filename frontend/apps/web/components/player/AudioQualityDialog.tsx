@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Check, HelpCircle } from "lucide-react";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 function SvipBadge() {
   return (
-    <span className="border-warning/50 bg-warning/10 text-warning inline-flex shrink-0 items-center rounded-[2px] border px-1 py-px text-[9px] leading-none font-medium">
+    <span className="border-warning/40 bg-warning/10 text-warning inline-flex shrink-0 items-center rounded px-1 py-px text-[9px] leading-none font-semibold">
       SVIP
     </span>
   );
@@ -17,7 +17,7 @@ function SvipBadge() {
 
 function VipBadge() {
   return (
-    <span className="border-danger/50 bg-danger/10 text-danger inline-flex shrink-0 items-center rounded-[2px] border px-1 py-px text-[9px] leading-none font-medium">
+    <span className="border-danger/40 bg-danger/10 text-danger inline-flex shrink-0 items-center rounded px-1 py-px text-[9px] leading-none font-semibold">
       VIP
     </span>
   );
@@ -35,25 +35,23 @@ export function AudioQualityDialog() {
   };
 
   return (
-    <div className="border-brand/20 bg-brand/5 text-content min-w-0 overflow-hidden rounded-2xl border p-3 select-none sm:p-4">
-      {/* 顶栏标题 */}
-      <div className="mb-3 flex items-center justify-between gap-3 px-1 sm:mb-3.5">
-        <h3 className="text-content text-sm font-bold tracking-tight">
+    <div className="text-content select-none">
+      {/* Header */}
+      <div className="mb-3 flex items-center justify-between gap-3 px-1">
+        <h3 className="text-content text-sm font-semibold">
           {t("playbar.quality.headerTitle") || "当前歌曲音质"}
         </h3>
         <button
           type="button"
-          className="text-content-subtle hover:text-content flex shrink-0 cursor-pointer items-center gap-1 text-xs transition-colors"
-          onClick={() => {
-            // 可展开详情提示
-          }}
+          className="text-content-subtle hover:text-content-muted flex shrink-0 cursor-pointer items-center gap-1 text-xs transition-colors"
+          onClick={() => {}}
         >
           <span>{t("playbar.quality.learnMore") || "了解音质"}</span>
           <HelpCircle size={12} />
         </button>
       </div>
 
-      {/* 顶部旗舰双卡片 (Scopify Green Accent Hero Tiers) */}
+      {/* Hero Cards */}
       <div className="mb-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {heroOptions.map((opt) => {
           const isSelected = musicQuality === opt.value;
@@ -67,8 +65,8 @@ export function AudioQualityDialog() {
               className={cn(
                 "group relative flex w-full cursor-pointer flex-col justify-between rounded-xl border p-3.5 text-left transition-all",
                 isSelected
-                  ? "border-brand/50 bg-brand/10 shadow-panel"
-                  : "border-brand/15 bg-brand/5 hover:border-brand/30 hover:bg-brand/10",
+                  ? "border-primary/50 bg-primary/10 shadow-sm"
+                  : "border-border bg-muted/30 hover:border-border/80 hover:bg-muted/50",
               )}
             >
               {/* Top Row: Icon & Badge */}
@@ -77,8 +75,8 @@ export function AudioQualityDialog() {
                   className={cn(
                     "flex size-9 items-center justify-center rounded-full transition-transform group-hover:scale-105",
                     isSelected
-                      ? "bg-brand/15 text-brand"
-                      : "bg-brand/10 text-brand/70 group-hover:bg-brand/15 group-hover:text-brand",
+                      ? "bg-primary/15 text-primary"
+                      : "bg-warning/10 text-warning group-hover:bg-warning/20", // Hero default icons use warning/gold color
                   )}
                 >
                   {Icon && <Icon className="size-5" />}
@@ -91,27 +89,27 @@ export function AudioQualityDialog() {
                 <div
                   className={cn(
                     "text-sm font-bold tracking-tight transition-colors",
-                    isSelected ? "text-brand" : "text-content",
+                    isSelected ? "text-primary" : "text-foreground",
                   )}
                 >
                   {t(opt.labelKey)}
                 </div>
                 {opt.sublabelKey && (
-                  <div className="text-content-subtle text-[11px] font-medium tracking-wider">
+                  <div className="text-muted-foreground mt-0.5 text-[11px] font-medium tracking-wider">
                     {t(opt.sublabelKey)}
                   </div>
                 )}
                 {opt.techSpec && (
-                  <div className="text-content-muted mt-1.5 text-[11px] leading-tight">
+                  <div className="text-muted-foreground/70 mt-1 text-[11px] leading-tight">
                     {t(opt.techSpec)}
                   </div>
                 )}
               </div>
 
-              {/* Active Indicator checkmark (Scopify Green) */}
+              {/* Active Indicator checkmark */}
               {isSelected && (
-                <div className="bg-brand text-brand-foreground absolute top-2.5 right-2.5 flex size-4.5 items-center justify-center rounded-full shadow-xs">
-                  <Check size={11} strokeWidth={3.5} />
+                <div className="bg-primary text-primary-foreground absolute top-2.5 right-2.5 flex size-4.5 items-center justify-center rounded-full shadow-sm">
+                  <Check size={11} strokeWidth={3} />
                 </div>
               )}
             </button>
@@ -119,8 +117,8 @@ export function AudioQualityDialog() {
         })}
       </div>
 
-      {/* 列表音质 (Scopify Style Stacked List) */}
-      <div className="space-y-1">
+      {/* 列表音质 */}
+      <div className="space-y-0.5">
         {listOptions.map((opt) => {
           const isSelected = musicQuality === opt.value;
           const Icon = opt.icon;
@@ -131,35 +129,33 @@ export function AudioQualityDialog() {
               key={opt.value}
               onClick={() => handleSelect(opt.value)}
               className={cn(
-                "group relative flex w-full cursor-pointer items-center justify-between rounded-xl border px-3 py-2.5 text-left transition-all",
-                isSelected ? "border-brand/30 bg-brand/10" : "hover:bg-brand/8 border-transparent",
+                "group relative flex w-full cursor-pointer items-center justify-between rounded-xl border border-transparent px-2 py-2 text-left transition-all",
+                isSelected ? "border-primary/20 bg-primary/10" : "hover:bg-accent",
               )}
             >
               {/* Left Side: Icon / Circle Badge + Text */}
               <div className="flex min-w-0 items-center gap-3">
-                {/* Circle Icon Container */}
                 <div
                   className={cn(
-                    "flex size-9 shrink-0 items-center justify-center rounded-full transition-colors",
+                    "flex size-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold transition-colors",
                     isSelected
-                      ? "bg-brand/15 text-brand"
-                      : "bg-brand/8 text-brand/70 group-hover:bg-brand/15 group-hover:text-brand",
+                      ? "bg-primary/15 text-primary"
+                      : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary",
                   )}
                 >
                   {opt.shortLabel ? (
-                    <span className="text-xs font-black tracking-tight">{opt.shortLabel}</span>
+                    <span className="text-[10px] font-black">{opt.shortLabel}</span>
                   ) : Icon ? (
                     <Icon className="size-4" />
                   ) : null}
                 </div>
 
-                {/* Main Text & Tech Spec */}
                 <div className="flex min-w-0 flex-col">
                   <div className="flex items-center gap-1.5">
                     <span
                       className={cn(
-                        "text-sm font-semibold tracking-tight transition-colors",
-                        isSelected ? "text-brand" : "text-content",
+                        "text-sm font-medium transition-colors",
+                        isSelected ? "text-primary" : "text-foreground",
                       )}
                     >
                       {t(opt.labelKey)}
@@ -168,17 +164,17 @@ export function AudioQualityDialog() {
                     {opt.badgeType === "vip" && <VipBadge />}
                   </div>
                   {opt.techSpec && (
-                    <span className="text-content-muted mt-0.5 truncate text-[11px]">
+                    <span className="text-muted-foreground truncate text-[11px]">
                       {t(opt.techSpec)}
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Right Side: Selected Checkmark (Scopify Green) */}
+              {/* Right Side: Selected Checkmark */}
               {isSelected && (
-                <div className="bg-brand text-brand-foreground ml-2 flex size-5 shrink-0 items-center justify-center rounded-full shadow-xs">
-                  <Check size={12} strokeWidth={3.5} />
+                <div className="bg-primary text-primary-foreground ml-2 flex size-4.5 shrink-0 items-center justify-center rounded-full shadow-sm">
+                  <Check size={11} strokeWidth={3} />
                 </div>
               )}
             </button>
