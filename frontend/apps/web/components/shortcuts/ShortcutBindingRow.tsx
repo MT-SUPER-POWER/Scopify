@@ -43,12 +43,12 @@ export function ShortcutBindingRow({
   };
 
   return (
-    <div className="grid gap-3 border-b border-white/8 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+    <div className="border-border grid gap-3 border-b py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-white">{t(command.labelKey)}</p>
-        {error ? <p className="mt-1 text-xs text-rose-400">{error}</p> : null}
+        <p className="text-foreground truncate text-sm font-medium">{t(command.labelKey)}</p>
+        {error ? <p className="text-danger mt-1 text-xs">{error}</p> : null}
       </div>
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex w-full shrink-0 items-center justify-end gap-2 sm:w-[272px]">
         <button
           type="button"
           onClick={() => {
@@ -57,7 +57,7 @@ export function ShortcutBindingRow({
           }}
           onKeyDown={handleKeyDown}
           onBlur={() => setIsRecording(false)}
-          className="min-w-36 rounded border border-white/15 bg-black/20 px-3 py-1.5 text-sm text-white transition-colors hover:border-white/35 focus-visible:border-[#1db954] focus-visible:outline-none"
+          className="border-border bg-muted text-foreground hover:border-foreground/30 focus-visible:border-brand flex-1 truncate rounded border px-3 py-1.5 text-center text-sm transition-colors focus-visible:outline-none"
         >
           {isRecording
             ? t("shortcuts.recording")
@@ -73,7 +73,7 @@ export function ShortcutBindingRow({
             setError(null);
             onDisable();
           }}
-          className="flex size-8 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex size-8 shrink-0 items-center justify-center rounded transition-colors"
         >
           <CircleOff className="size-4" />
         </button>
@@ -86,7 +86,7 @@ export function ShortcutBindingRow({
             onReset();
           }}
           disabled={!isCustomized}
-          className="flex size-8 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-30"
+          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex size-8 shrink-0 items-center justify-center rounded transition-colors disabled:pointer-events-none disabled:opacity-30"
         >
           <RotateCcw className="size-4" />
         </button>
