@@ -2,37 +2,24 @@
 
 import { FileText, Pause, Play } from "lucide-react";
 import Image from "next/image";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { LikedVoiceMetadata } from "@/components/voice/LikedVoiceMetadata";
+import { VoiceTranscriptPopover } from "@/components/voice/VoiceTranscriptPopover";
+import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
 import type { VoiceItemProps } from "@/types/components/search";
-import type { Song } from "@/types/search";
 
 const FALLBACK_COVER =
   "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=160&auto=format&fit=crop";
 
-function toSongDetail(song: Song): SongDetail {
-  return {
-    al: {
-      id: song.album.id,
-      name: song.album.name,
-      picUrl: song.album.picUrl || song.artists[0]?.picUrl || "",
-    },
-    ar: song.artists.map((artist) => ({ id: artist.id, name: artist.name })),
-    dt: song.duration,
-    fee: song.fee ?? 0,
-    id: song.id,
-    name: song.name,
-    publishTime: song.album.publishTime,
-  };
-}
-
 export function VoiceItem({
+  enableContextMenu = false,
   index,
   onViewTranscript,
+  transcriptMode = "dialog",
   variant = "default",
   voice,
   voices,
@@ -44,6 +31,7 @@ export function VoiceItem({
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
   const setQueue = usePlayerStore((state) => state.setQueue);
   const isLikedVoice = variant === "liked";
+  const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const isUnavailable = voice.isPlayable === false;
   const isActive =
     !isUnavailable && !!voice.mainSong && voice.mainSong.id === currentSongDetail?.id;
@@ -57,13 +45,15 @@ export function VoiceItem({
     }
 
     const queue = voices.flatMap((item) =>
-      item.mainSong && item.isPlayable !== false ? [toSongDetail(item.mainSong)] : [],
+      item.mainSong && item.isPlayable !== false
+        ? [toVoiceSongDetail(item.mainSong, item.coverUrl, item.id)]
+        : [],
     );
     const queueIndex = voices
       .slice(0, index)
       .filter((item) => item.mainSong && item.isPlayable !== false).length;
     setQueue(queue, queueIndex);
-    void playTrack(toSongDetail(voice.mainSong));
+    void playTrack(toVoiceSongDetail(voice.mainSong, voice.coverUrl, voice.id));
   }, [
     index,
     isActive,
@@ -72,14 +62,25 @@ export function VoiceItem({
     playTrack,
     setIsPlaying,
     setQueue,
+    voice.coverUrl,
+    voice.id,
     voice.mainSong,
     voices,
   ]);
 
+  const canViewTranscript = transcriptMode === "popover" || Boolean(onViewTranscript);
+  const handleViewTranscript = useCallback(() => {
+    if (transcriptMode === "popover") {
+      setIsTranscriptOpen(true);
+      return;
+    }
+    onViewTranscript?.(voice);
+  }, [onViewTranscript, transcriptMode, voice]);
+
   const playLabel = isActive && isPlaying ? t("contextMenu.pause") : t("contextMenu.play");
   const isPreview = variant === "preview";
 
-  return (
+  const item = (
     <div
       className={cn(
         "group flex min-w-0 items-center rounded-md transition-colors",
@@ -141,16 +142,16 @@ export function VoiceItem({
           {formatDuration(voice.duration)}
         </span>
       )}
-      {(onViewTranscript || (voice.mainSong && !isUnavailable)) && (
+      {(canViewTranscript || (voice.mainSong && !isUnavailable)) && (
         <div className="flex shrink-0 items-center gap-1.5">
-          {onViewTranscript && (
+          {canViewTranscript && (
             <button
               type="button"
               title={t("search.voice.transcript")}
               aria-label={t("search.voice.transcript")}
               onClick={(event) => {
                 event.stopPropagation();
-                onViewTranscript(voice);
+                handleViewTranscript();
               }}
               className={cn(
                 "bg-content/10 text-content hover:bg-content/20 flex shrink-0 items-center justify-center rounded-full opacity-0 transition-all group-hover:opacity-100 hover:scale-105 focus:opacity-100",
@@ -184,5 +185,32 @@ export function VoiceItem({
         </div>
       )}
     </div>
+  );
+
+  const contextItem =
+    !enableContextMenu || !voice.mainSong || isUnavailable ? (
+      item
+    ) : (
+      <SongContextMenu
+        isActive={isActive}
+        isPlaying={isPlaying}
+        onPlay={handlePlay}
+        onViewTranscript={canViewTranscript ? handleViewTranscript : undefined}
+        song={toVoiceSongDetail(voice.mainSong, voice.coverUrl, voice.id)}
+      >
+        {item}
+      </SongContextMenu>
+    );
+
+  if (transcriptMode !== "popover") return contextItem;
+
+  return (
+    <VoiceTranscriptPopover
+      open={isTranscriptOpen}
+      onOpenChange={setIsTranscriptOpen}
+      voice={voice}
+    >
+      {contextItem}
+    </VoiceTranscriptPopover>
   );
 }

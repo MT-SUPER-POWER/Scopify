@@ -1,4 +1,5 @@
 import type { VoiceSearchItem, VoiceSearchProgram, VoiceSearchResponse } from "@/types/api/search";
+import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import type { Artist, Song, Voice } from "@/types/search";
 
 function toVoiceSearchArtist(source: {
@@ -30,7 +31,7 @@ function toVoiceSearchSong(
       artist: artists[0] ?? { id: 0, name: "", picUrl: null },
       id: album?.id ?? 0,
       name: album?.name ?? unknownAlbumName,
-      picUrl: album?.picUrl ?? album?.blurPicUrl ?? undefined,
+      picUrl: resolveCoverUrl(album?.picUrl, album?.blurPicUrl),
       publishTime: 0,
       size: 0,
     },
@@ -95,17 +96,17 @@ export function mapVoiceSearchItem(
   const mainSong = toVoiceSearchSong(baseInfo, unknownAlbumName, unknownSongName);
 
   return {
-    coverUrl:
-      voice.coverUrl ??
-      voice.picUrl ??
-      voice.contentCoverUrl ??
-      baseInfo.coverUrl ??
-      baseInfo.picUrl ??
-      voice.radio?.picUrl ??
-      baseInfo.radio?.picUrl ??
-      voice.uiElement?.image?.imageUrl ??
-      mainSong?.album.picUrl ??
-      "",
+    coverUrl: resolveCoverUrl(
+      voice.coverUrl,
+      voice.picUrl,
+      voice.contentCoverUrl,
+      baseInfo.coverUrl,
+      baseInfo.picUrl,
+      voice.radio?.picUrl,
+      baseInfo.radio?.picUrl,
+      voice.uiElement?.image?.imageUrl,
+      mainSong?.album.picUrl,
+    ),
     duration: voice.duration ?? baseInfo.duration ?? mainSong?.duration ?? 0,
     hostName: voice.userName ?? voice.dj?.nickname ?? baseInfo.userName ?? baseInfo.dj?.nickname,
     id,

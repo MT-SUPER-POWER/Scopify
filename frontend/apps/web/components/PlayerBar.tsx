@@ -34,6 +34,7 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
+import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
@@ -132,6 +133,7 @@ export const PlayerBar = ({
 
   // Zustand Stores
   const currentSong = usePlayerStore((s) => s.currentSongDetail);
+  const artworkUrl = resolveCoverUrl(currentSong?.al?.picUrl, currentSong?.al?.coverUrl);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const isShuffle = usePlayerStore((s) => s.isShuffle);
   const setRepeatMode = usePlayerStore((s) => s.setRepeatMode);
@@ -198,11 +200,11 @@ export const PlayerBar = ({
         >
           {/* 专辑封面 */}
           <div className="bg-surface-elevated shadow-panel group relative size-12 shrink-0 cursor-pointer overflow-hidden rounded-md lg:size-14">
-            {currentSong?.al?.picUrl ? (
+            {currentSong && artworkUrl ? (
               <Image
                 width={56}
                 height={56}
-                src={(currentSong.al.picUrl || currentSong.al.coverUrl) ?? ""}
+                src={artworkUrl}
                 alt={currentSong.al.name}
                 className="size-full object-cover"
                 onError={(e) => {

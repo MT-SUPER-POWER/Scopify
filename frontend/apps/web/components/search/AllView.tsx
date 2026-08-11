@@ -24,6 +24,7 @@ export function AllView({
   voices,
 }: AllViewProps) {
   const { t } = useI18n();
+
   return (
     <>
       {/* 顶部两栏：最佳匹配 + 歌曲 */}
@@ -112,7 +113,13 @@ export function AllView({
       {voices.length > 0 && (
         <div className="mb-10 w-full min-w-0">
           <SectionHeader title={t("search.section.voices")} onSeeAll={() => onSeeAll("Voices")} />
-          <VoiceList voices={voices} limit={6} variant="preview" />
+          <VoiceList
+            enableContextMenu
+            voices={voices}
+            limit={6}
+            transcriptMode="popover"
+            variant="preview"
+          />
         </div>
       )}
     </>

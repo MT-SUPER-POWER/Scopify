@@ -18,7 +18,7 @@ export function VoicesView({
   return (
     <div className="pb-10">
       <SearchCategoryHeader category="Voices" />
-      <VoiceList voices={voices} layout="grid" />
+      <VoiceList enableContextMenu voices={voices} layout="grid" transcriptMode="popover" />
       <div ref={loadMoreRef} aria-hidden className="h-px" />
       {isFetchingNextPage ? (
         <div className="text-content-muted flex justify-center py-6" aria-live="polite">

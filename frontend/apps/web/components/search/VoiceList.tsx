@@ -3,10 +3,12 @@ import type { VoiceListProps } from "@/types/components/search";
 import { VoiceItem } from "./VoiceItem";
 
 export function VoiceList({
+  enableContextMenu = false,
   layout = "list",
   limit,
   onViewAll,
   onViewTranscript,
+  transcriptMode = "dialog",
   variant = "default",
   voices,
 }: VoiceListProps) {
@@ -25,9 +27,11 @@ export function VoiceList({
     >
       {displayedVoices.map((voice, index) => (
         <VoiceItem
+          enableContextMenu={enableContextMenu}
           key={voice.id}
           index={index}
           onViewTranscript={onViewTranscript}
+          transcriptMode={transcriptMode}
           variant={variant}
           voice={voice}
           voices={voices}

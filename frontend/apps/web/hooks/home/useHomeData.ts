@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type {
@@ -112,7 +113,7 @@ function toSong(
       artist: artists[0] ?? { id: 0, name: "", picUrl: null },
       id: album?.id ?? 0,
       name: album?.name ?? unknownAlbumName,
-      picUrl: album?.picUrl ?? album?.blurPicUrl ?? fallbackCoverUrl,
+      picUrl: resolveCoverUrl(album?.picUrl, album?.blurPicUrl, fallbackCoverUrl),
       publishTime: 0,
       size: 0,
     },
