@@ -1,8 +1,8 @@
 {
   "name": "scopify-workspace",
-  "version": "1.2.0-beta.2",
+  "version": "1.4.0",
   "private": true,
-  "packageManager": "bun@1.3.7",
+  "packageManager": "bun@1.3.11",
   "workspaces": [
     "frontend/apps/*",
     "frontend/packages/*"
