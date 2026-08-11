@@ -114,6 +114,16 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Prepare Electron distribution
+        shell: bash
+        run: |
+          set -euo pipefail
+          electron_dir="frontend/apps/desktop/node_modules/electron"
+          if [[ ! -f "${electron_dir}/dist/version" ]]; then
+            node "${electron_dir}/install.js"
+          fi
+          test -f "${electron_dir}/dist/version"
+
       - name: Download locked Renderer artifact
         uses: actions/download-artifact@v5
         with:
