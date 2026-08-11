@@ -1,12 +1,7 @@
 import { Check } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { VipSignHistoryItem } from "@/types/api/vipSign";
-
-interface VipSignHistoryStripProps {
-  records: VipSignHistoryItem[];
-  onSelectSignDay: (signTime: number) => void;
-}
+import type { VipSignHistoryStripProps } from "@/types/components/vipSign";
 
 export function VipSignHistoryStrip({ records, onSelectSignDay }: VipSignHistoryStripProps) {
   if (records.length === 0) return null;
@@ -16,8 +11,8 @@ export function VipSignHistoryStrip({ records, onSelectSignDay }: VipSignHistory
       {records.map((record) => {
         const cardClassName = cn(
           "relative flex min-w-0 flex-col items-center gap-1.5 p-1 text-[11px] transition-colors",
-          record.sign ? "cursor-pointer text-white hover:text-emerald-200" : "text-zinc-500",
-          record.today && "text-rose-200",
+          record.sign ? "text-content hover:text-brand cursor-pointer" : "text-content-muted",
+          record.today && "text-danger",
         );
 
         const content = (
@@ -29,9 +24,9 @@ export function VipSignHistoryStrip({ records, onSelectSignDay }: VipSignHistory
               className={cn(
                 "relative z-10 flex size-9 items-center justify-center overflow-hidden rounded-full border",
                 record.sign
-                  ? "border-white/20 bg-zinc-800 text-zinc-950"
-                  : "border-dashed border-current text-zinc-500",
-                record.today && "border-rose-500 text-rose-200",
+                  ? "bg-surface-elevated border-border text-content"
+                  : "text-content-muted border-dashed border-current",
+                record.today && "border-danger text-danger",
               )}
             >
               {record.sign && record.songCoverUrl ? (

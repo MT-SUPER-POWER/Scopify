@@ -272,8 +272,6 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
           open={signModalOpen}
           onClose={() => setSignModalOpen(false)}
           todayRecord={modalTodayRecord}
-          signHistory={signHistory}
-          onSelectSignDay={handleSelectVipSignDay}
         />
       )}
     </>

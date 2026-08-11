@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.4.1
+
+### Fixed
+
+- 修复乐签硬编码问题
+- 修复生产环境默认开启 devTools 的问题
+
 ## v1.4.0
 
 ### Visual

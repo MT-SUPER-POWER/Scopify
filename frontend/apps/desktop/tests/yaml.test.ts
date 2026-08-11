@@ -11,6 +11,7 @@ test("desktop config yml contains only host-owned settings", () => {
   const config = normalizeDesktopHostConfig(parsed);
 
   expect(config.app.gpuAcceleration).toBe(true);
+  expect(config.app.devTools).toBe(false);
   expect(config.frontend.host).toBe("127.0.0.1");
   expect(config.frontend.devPort).toBe(3000);
   expect(config.logging.level).toBe("info");

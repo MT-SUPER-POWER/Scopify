@@ -37,6 +37,7 @@ const targetPatterns = [
   "components/Header/ProfileMenu.tsx",
   "components/Header/RightActions.tsx",
   "components/Header/UpdateNotificationCenter.tsx",
+  "components/VipSign/**/*.tsx",
   "components/SearchContents/**/*.tsx",
   "components/search/**/*.tsx",
   "components/shared/**/*.tsx",

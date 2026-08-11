@@ -4,37 +4,19 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Play, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { getTimeTheme } from "@/hooks/home/useHomeData";
 import { getSongDetail } from "@/lib/api/track";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignDetail, VipSignHistory } from "@/types/api/vipSign";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Props
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-interface VipSignModalProps {
-  open: boolean;
-  onClose: () => void;
-  /** 签到或日期详情接口返回的展示数据 */
-  todayRecord: VipSignDetail | undefined;
-  signHistory?: VipSignHistory;
-  onSelectSignDay: (signTime: number) => void;
-}
+import type { VipSignModalProps } from "@/types/components/vipSign";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Component
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export function VipSignModal({
-  open,
-  onClose,
-  todayRecord,
-  signHistory,
-  onSelectSignDay,
-}: VipSignModalProps) {
+export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) {
   const { t } = useI18n();
 
   // 从 POST /vip/sign 的 checkinDetail.data 中提取所有展示数据
@@ -76,7 +58,7 @@ export function VipSignModal({
     onClose();
   }, [songId, onClose]);
 
-  return (
+  const modal = (
     <AnimatePresence>
       {open && (
         <motion.div
@@ -87,11 +69,11 @@ export function VipSignModal({
           transition={{ duration: 0.25 }}
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-xs" onClick={onClose} />
+          <div className="bg-overlay absolute inset-0 backdrop-blur-xs" onClick={onClose} />
 
           {/* Card Container */}
           <motion.div
-            className="bg-surface-raised relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/10 shadow-2xl"
+            className="bg-surface-raised shadow-floating border-border relative w-full max-w-2xl overflow-hidden rounded-3xl border"
             initial={{ scale: 0.95, y: 15 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 15 }}
@@ -110,20 +92,20 @@ export function VipSignModal({
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-6 right-6 z-20 rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+              className="text-content-muted hover:bg-accent hover:text-content absolute top-6 right-6 z-20 rounded-full p-2 transition-colors"
             >
               <X className="size-5" />
             </button>
 
             {/* Content Area */}
-            <div className="relative z-10 flex flex-col gap-6 p-8 text-white select-none">
+            <div className="text-content relative z-10 flex flex-col gap-6 p-8 select-none">
               {/* Header: Date */}
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black">{formattedDate.mm}</span>
-                <span className="text-xs font-medium text-zinc-500">{t("vipSign.month")}</span>
-                <span className="px-1 font-light text-zinc-600">/</span>
+                <span className="text-content-muted text-xs font-medium">{t("vipSign.month")}</span>
+                <span className="text-content-subtle px-1 font-light">/</span>
                 <span className="text-2xl font-black">{formattedDate.dd}</span>
-                <span className="text-xs font-medium text-zinc-500">{t("vipSign.day")}</span>
+                <span className="text-content-muted text-xs font-medium">{t("vipSign.day")}</span>
               </div>
 
               {/* Main Body */}
@@ -132,37 +114,37 @@ export function VipSignModal({
                 <div className="flex min-w-0 flex-1 flex-col justify-between">
                   <div>
                     <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="text-2xl font-black tracking-tight text-white">
+                      <span className="text-content text-2xl font-black tracking-tight">
                         {songInfo?.songName ?? t("vipSign.recommendedSong")}
                       </span>
                       {songInfo?.artistName && (
-                        <span className="text-xs font-medium text-zinc-400">
+                        <span className="text-content-muted text-xs font-medium">
                           - {songInfo.artistName}
                         </span>
                       )}
                     </div>
                     {/* Line Divider */}
-                    <div className="my-3 w-full border-t border-white/10" />
+                    <div className="border-border my-3 w-full border-t" />
                   </div>
 
                   {/* Wish Words Quote */}
                   <div className="relative flex flex-1 flex-col justify-center py-2 pl-6">
-                    <span className="absolute top-0 left-0 font-serif text-5xl leading-none text-white/10 select-none">
+                    <span className="text-content absolute top-0 left-0 font-serif text-5xl leading-none opacity-10 select-none">
                       &quot;
                     </span>
                     {wishWords ? (
                       <div className="flex flex-col gap-1.5">
-                        <p className="line-clamp-3 text-sm leading-relaxed font-medium text-zinc-200 italic">
+                        <p className="text-content line-clamp-3 text-sm leading-relaxed font-medium italic">
                           {wishWords}
                         </p>
                         {wishUserNickname && (
-                          <span className="self-end text-[10px] text-zinc-500">
+                          <span className="text-content-muted self-end text-[10px]">
                             {t("vipSign.commentFrom", { nickname: wishUserNickname })}
                           </span>
                         )}
                       </div>
                     ) : (
-                      <div className="text-xs text-zinc-500 italic">
+                      <div className="text-content-muted text-xs italic">
                         {t("vipSign.recommendedSong")}
                       </div>
                     )}
@@ -171,7 +153,7 @@ export function VipSignModal({
 
                 {/* Right: Album Cover with buttons */}
                 <div className="flex shrink-0 items-center justify-center">
-                  <div className="group/cover relative size-40 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
+                  <div className="bg-surface-elevated shadow-floating group/cover border-border relative size-40 overflow-hidden rounded-2xl border">
                     {songCover ? (
                       <Image
                         width={160}
@@ -181,7 +163,7 @@ export function VipSignModal({
                         className="size-full object-cover transition-transform duration-500 group-hover/cover:scale-105"
                       />
                     ) : (
-                      <div className="flex size-full items-center justify-center text-zinc-700">
+                      <div className="text-content-subtle flex size-full items-center justify-center">
                         <X className="size-10" />
                       </div>
                     )}
@@ -190,7 +172,7 @@ export function VipSignModal({
                       <button
                         type="button"
                         onClick={handlePlay}
-                        className="absolute right-3 bottom-3 flex size-10 translate-y-3 cursor-pointer items-center justify-center rounded-full bg-[#1ed760] text-black opacity-0 shadow-xl transition-all duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 hover:scale-105 hover:bg-[#3be477]"
+                        className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-3 bottom-3 flex size-10 translate-y-3 cursor-pointer items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 hover:scale-105"
                         title={t("contextMenu.play")}
                       >
                         <Play className="ml-0.5 size-5 fill-current" />
@@ -201,36 +183,36 @@ export function VipSignModal({
               </div>
 
               {/* Dotted Divider */}
-              <div className="my-2 h-0.5 w-full bg-[repeating-linear-gradient(to_right,rgba(255,255,255,0.2)_0,rgba(255,255,255,0.2)_2px,transparent_2px,transparent_10px)]" />
+              <div className="border-border my-2 w-full border-t border-dashed" />
 
               {/* Footer Section */}
               <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
                 {/* Monthly signed */}
                 <div className="text-left">
-                  <div className="mb-1 text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
+                  <div className="text-content-muted mb-1 text-[10px] font-semibold tracking-wider uppercase">
                     {t("vipSign.monthlyCheckIn")}
                   </div>
-                  <div className="flex items-baseline text-2xl font-black text-white">
+                  <div className="text-content flex items-baseline text-2xl font-black">
                     {consecutiveDays}
-                    <span className="ml-0.5 text-xs font-normal text-zinc-400">
+                    <span className="text-content-muted ml-0.5 text-xs font-normal">
                       {t("vipSign.days")}
                     </span>
                   </div>
                 </div>
 
-                <div className="hidden h-8 w-px bg-white/10 sm:block" />
+                <div className="bg-border hidden h-8 w-px sm:block" />
 
                 {/* QR Code */}
-                <div className="flex max-w-60 items-center gap-3 rounded-2xl border border-white/5 bg-white/5 p-2.5">
+                <div className="bg-surface-elevated border-border flex max-w-60 items-center gap-3 rounded-2xl border p-2.5">
                   <div className="flex flex-col text-left">
-                    <span className="text-[10px] font-medium text-zinc-500">
+                    <span className="text-content-muted text-[10px] font-medium">
                       {t("vipSign.qrGuide")}
                     </span>
-                    <span className="mt-0.5 text-xs font-semibold text-rose-500">
+                    <span className="text-danger mt-0.5 text-xs font-semibold">
                       {t("vipSign.qrHint")}
                     </span>
                   </div>
-                  <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-0.5">
+                  <div className="bg-qr-surface flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg p-0.5">
                     <Image
                       width={40}
                       height={40}
@@ -247,4 +229,6 @@ export function VipSignModal({
       )}
     </AnimatePresence>
   );
+
+  return typeof document === "undefined" ? null : createPortal(modal, document.body);
 }
