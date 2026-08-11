@@ -63,11 +63,6 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.send("relaunch-app");
   },
   getBridgeInfo: () => ipcRenderer.invoke("bridge:get-info"),
-  onAppCloseRequested: (callback) => {
-    const listener = () => callback();
-    ipcRenderer.on("app-close-confirm", listener);
-    return () => ipcRenderer.removeListener("app-close-confirm", listener);
-  },
   setPlayerPlaying: (isPlaying) => {
     ipcRenderer.send("player-state-changed", { isPlaying });
   },
@@ -98,7 +93,7 @@ const electronAPI: DesktopBridge = {
   minimizeApp: () => {
     ipcRenderer.send("minimize-to-tray");
   },
-  sendAppCloseAction: (action: "minimize" | "exit") => {
+  sendAppCloseAction: (action: "minimize" | "exit" | "cancel") => {
     ipcRenderer.send("app-close-action", action);
   },
   getHostConfig: () => ipcRenderer.invoke("config:get-host"),

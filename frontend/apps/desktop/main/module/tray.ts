@@ -20,6 +20,7 @@ function createTrayWindow() {
     frame: false,
     fullscreenable: false,
     transparent: true,
+    hasShadow: false,
     alwaysOnTop: true,
     resizable: false,
     skipTaskbar: true,

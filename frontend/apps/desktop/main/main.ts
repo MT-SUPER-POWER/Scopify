@@ -16,6 +16,8 @@ import {
   logger,
 } from "./constants.js";
 import { verifyRendererArtifact } from "../lib/rendererArtifact.js";
+import { loadDesktopHostConfig } from "./config.js";
+import { disposeAppCloseWindow, showAppCloseWindow } from "./module/appCloseWindow.js";
 import { registerIpcHandlers } from "./module/ipc.js";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
 import { initializeDesktopIconVisibilityCapability } from "./module/desktopIcons/index.js";
@@ -57,6 +59,7 @@ const appServe: ((win: BrowserWindowType) => Promise<void>) | null = useStaticRe
   : null;
 
 const devBase = `http://${desktopConfig.frontend.host}:${desktopConfig.frontend.devPort}`;
+const rendererBaseUrl = useStaticRenderer ? "app://-/" : devBase;
 const gotTheLock = app.requestSingleInstanceLock();
 
 logger.info("--------------------------------------------------");
@@ -204,7 +207,18 @@ function createWindow() {
     if (isQuitting) return;
 
     e.preventDefault();
-    mainWindow?.webContents.send("app-close-confirm");
+    const closeAction = loadDesktopHostConfig().app.closeAction;
+    if (closeAction === 0) {
+      mainWindow?.hide();
+      return;
+    }
+
+    if (closeAction === 1) {
+      app.quit();
+      return;
+    }
+
+    if (mainWindow) showAppCloseWindow(mainWindow, rendererBaseUrl);
   });
 
   mainWindow.on("closed", () => {
@@ -214,7 +228,6 @@ function createWindow() {
 }
 
 function setupWindowModules(win: BrowserWindowType) {
-  const rendererBaseUrl = useStaticRenderer ? "app://-/" : devBase;
   desktopPlaybackWallpaperDriver ??= createElectronDesktopPlaybackWallpaperDriver({
     rendererBaseUrl,
   });
@@ -324,6 +337,7 @@ if (!gotTheLock) {
 
   app.on("before-quit", () => {
     isQuitting = true;
+    disposeAppCloseWindow();
     playbackBrokerIpcHost?.dispose();
     playbackBrokerIpcHost = null;
     desktopPlaybackControllerWindow?.dispose();

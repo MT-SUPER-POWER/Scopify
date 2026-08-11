@@ -9,12 +9,12 @@ const controllerWindowSource = readFileSync(
   "utf8",
 );
 
-test("desktop playback controller uses the tray's minimal transparent-window setup", () => {
+test("desktop playback controller uses the tray's shadow-free transparent-window setup", () => {
   expect(controllerWindowSource).toContain('backgroundColor: "#00000000"');
   expect(controllerWindowSource).toContain("frame: false");
   expect(controllerWindowSource).toContain("transparent: true");
   expect(controllerWindowSource).not.toContain("backgroundMaterial");
-  expect(controllerWindowSource).not.toContain("hasShadow");
+  expect(controllerWindowSource).toContain("hasShadow: false");
   expect(controllerWindowSource).not.toContain("roundedCorners");
   expect(controllerWindowSource).not.toContain("thickFrame");
 });

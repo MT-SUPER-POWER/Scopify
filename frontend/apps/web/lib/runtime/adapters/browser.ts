@@ -123,7 +123,6 @@ export function createBrowserRuntime(
   return {
     app: {
       exit: NOOP,
-      onCloseRequested: () => NOOP,
       relaunch: NOOP,
       submitCloseAction: NOOP,
     },

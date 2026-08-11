@@ -23,11 +23,10 @@ import type { LyricData } from "@/types/lyrics";
 export type RuntimeUnsubscribe = () => void;
 export type RuntimeKind = "browser" | "desktop";
 export type MediaControlCommand = "next" | "prev" | "toggle-play";
-export type AppCloseAction = "exit" | "minimize";
+export type AppCloseAction = "exit" | "minimize" | "cancel";
 
 export interface RuntimeAppLifecycle {
   exit(): void;
-  onCloseRequested(callback: () => void): RuntimeUnsubscribe;
   relaunch(): void;
   submitCloseAction(action: AppCloseAction): void;
 }

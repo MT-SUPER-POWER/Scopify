@@ -436,6 +436,11 @@ img,
   background: transparent !important;
 }
 
+.tray-html,
+.tray-body {
+  background: transparent !important;
+}
+
 .desktop-playback-controller-shell {
   --desktop-controller-background: var(--surface-base);
   --desktop-controller-primary: var(--content);
@@ -469,7 +474,6 @@ img,
 .desktop-playback-controller-surface {
   background: var(--desktop-controller-background);
   border-color: var(--desktop-controller-border);
-  box-shadow: 0 18px 48px rgb(0 0 0 / 18%);
 }
 
 .desktop-controller-blob {

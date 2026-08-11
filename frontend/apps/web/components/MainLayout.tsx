@@ -30,7 +30,6 @@ import Header from "../components/Header";
 import { LyricStageMount } from "../components/lyrics/LyricStageMount";
 import { PlayerBar } from "../components/PlayerBar";
 import { SearchModal } from "../components/SearchModal";
-import AppCloseDialog from "./AppCloseDialog";
 // self components
 import MainLayoutSkeleton from "./MainLayout/Skeleton";
 import { Sidebar } from "./Sidebar";
@@ -239,7 +238,6 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
         <AudioSettingsDialog />
         <CommandPalette />
         <KeyboardShortcutHelp />
-        <AppCloseDialog />
         <LyricStageMount />
 
         {/* 左右结构 */}

@@ -73,12 +73,14 @@ export default function TrayPage() {
     }
   }, [isDesktop, smartRouter]);
 
-  // 强制 body 透明，防止背景黑色
+  // 透明宿主窗口只承载内容卡片，避免原生背景和圆角介入。
   useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.body.style.backgroundColor = "transparent";
-      document.documentElement.style.backgroundColor = "transparent";
-    }
+    document.documentElement.classList.add("tray-html");
+    document.body.classList.add("tray-body");
+    return () => {
+      document.documentElement.classList.remove("tray-html");
+      document.body.classList.remove("tray-body");
+    };
   }, []);
 
   // 水合问题
@@ -101,115 +103,121 @@ export default function TrayPage() {
     "h-9 w-full justify-start rounded-md px-3 py-5 font-normal text-content-muted transition-colors hover:bg-surface-elevated hover:text-content";
 
   return (
-    <div className="animate-in zoom-in-95 fade-in border-border bg-surface-overlay text-content shadow-floating flex size-full flex-col gap-1 overflow-hidden rounded-xl border p-2 font-sans text-[13px] font-medium duration-200 select-none">
-      {/* 头部：当前歌曲 - 固定 */}
-      <SongTitle
-        title={`${playback.track?.title || t("common.meta.unknownSong")} -
+    <main className="size-full bg-transparent p-1">
+      <div className="animate-in zoom-in-95 fade-in border-border bg-surface-overlay text-content flex size-full flex-col gap-1 overflow-hidden rounded-xl border p-2 font-sans text-[13px] font-medium duration-200 select-none">
+        {/* 头部：当前歌曲 - 固定 */}
+        <SongTitle
+          title={`${playback.track?.title || t("common.meta.unknownSong")} -
         ${playback.track?.artistNames.join(" / ") || t("common.meta.unknownArtist")}`}
-      />
-
-      <Separator className="bg-border my-1.5" />
-
-      {/* 可滚动区域 */}
-      <ScrollArea className="flex-1 overflow-x-hidden overflow-y-auto pr-1">
-        {/* 播放控制区 - 固定 */}
-        <div className="flex shrink-0 items-center justify-between px-4 py-1">
-          <button
-            className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-1.5 transition-all"
-            onClick={playPrev}
-            title={t("tray.previous")}
-          >
-            <SkipBack className="size-5 fill-current" />
-          </button>
-
-          <button
-            className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-2 transition-all"
-            onClick={togglePlay}
-            title={playback.isPlaying ? t("tray.pause") : t("tray.play")}
-          >
-            {/* 修复：这里正确判断并显示 Pause 或 Play 图标 */}
-            {playback.isPlaying ? (
-              <Pause className="size-6 fill-current" />
-            ) : (
-              <Play className="size-6 fill-current" />
-            )}
-          </button>
-
-          <button
-            className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-1.5 transition-all"
-            onClick={playNext}
-            title={t("tray.next")}
-          >
-            <SkipForward className="size-5 fill-current" />
-          </button>
-          <button
-            className={`rounded-full p-1.5 transition-all ${playback.liked ? "text-brand" : "text-content-muted hover:bg-surface-elevated hover:text-content"}`}
-            onClick={toggleLike}
-            title={playback.liked ? t("tray.unlike") : t("tray.like")}
-          >
-            <Heart className={`size-6 ${playback.liked ? "fill-brand" : ""}`} />
-          </button>
-        </div>
-
-        <Separator className="bg-border my-1.5" />
-
-        {/* 音量条区 */}
-        <VolumeControl
-          initialVolume={playback.volume}
-          onChange={handleVolumeChange}
-          orientation="horizontal"
-          variant="inline"
         />
 
         <Separator className="bg-border my-1.5" />
 
-        <Button variant="ghost" className={menuItemClass}>
-          <MicVocal className={iconClass} />
-          {t("tray.openDesktopLyrics")}
-        </Button>
+        {/* 可滚动区域 */}
+        <ScrollArea className="flex-1 overflow-x-hidden overflow-y-auto pr-1">
+          {/* 播放控制区 - 固定 */}
+          <div className="flex shrink-0 items-center justify-between px-4 py-1">
+            <button
+              className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-1.5 transition-all"
+              onClick={playPrev}
+              title={t("tray.previous")}
+            >
+              <SkipBack className="size-5 fill-current" />
+            </button>
 
-        <div className="text-content-muted hover:bg-surface-elevated hover:text-content flex h-10 items-center rounded-md px-3 transition-colors">
-          <button
-            type="button"
-            className="flex min-w-0 flex-1 items-center"
-            onClick={() => void openDesktopPlaybackController()}
-          >
-            <MonitorCog className={iconClass} />
-            <span className="truncate">{t("desktopPlaybackController.open")}</span>
-          </button>
-          <Switch
-            aria-label={t("desktopPlaybackController.wallpaper")}
-            checked={wallpaper.model?.preferences.enabled ?? false}
-            disabled={!wallpaper.model || wallpaper.isPending}
-            onCheckedChange={(enabled) => void setDesktopPlaybackWallpaperEnabled(enabled)}
+            <button
+              className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-2 transition-all"
+              onClick={togglePlay}
+              title={playback.isPlaying ? t("tray.pause") : t("tray.play")}
+            >
+              {/* 修复：这里正确判断并显示 Pause 或 Play 图标 */}
+              {playback.isPlaying ? (
+                <Pause className="size-6 fill-current" />
+              ) : (
+                <Play className="size-6 fill-current" />
+              )}
+            </button>
+
+            <button
+              className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-1.5 transition-all"
+              onClick={playNext}
+              title={t("tray.next")}
+            >
+              <SkipForward className="size-5 fill-current" />
+            </button>
+            <button
+              className={`rounded-full p-1.5 transition-all ${playback.liked ? "text-brand" : "text-content-muted hover:bg-surface-elevated hover:text-content"}`}
+              onClick={toggleLike}
+              title={playback.liked ? t("tray.unlike") : t("tray.like")}
+            >
+              <Heart className={`size-6 ${playback.liked ? "fill-brand" : ""}`} />
+            </button>
+          </div>
+
+          <Separator className="bg-border my-1.5" />
+
+          {/* 音量条区 */}
+          <VolumeControl
+            initialVolume={playback.volume}
+            onChange={handleVolumeChange}
+            orientation="horizontal"
+            variant="inline"
           />
-        </div>
 
-        <Separator className="bg-border my-1.5" />
+          <Separator className="bg-border my-1.5" />
 
-        {/* 主窗口跳转设置页面 */}
-        <Button
-          variant="ghost"
-          className={`${menuItemClass}`}
-          onClick={() => runtime.navigation.navigateMainWindow("/setting")}
-        >
-          <Settings className={iconClass} />
-          <span>{t("tray.settings")}</span>
-        </Button>
+          <Button variant="ghost" className={menuItemClass}>
+            <MicVocal className={iconClass} />
+            {t("tray.openDesktopLyrics")}
+          </Button>
 
-        <Separator className="bg-border my-1.5" />
+          <div className="text-content-muted hover:bg-surface-elevated hover:text-content flex h-10 items-center rounded-md px-3 transition-colors">
+            <button
+              type="button"
+              className="flex min-w-0 flex-1 items-center"
+              onClick={() => void openDesktopPlaybackController()}
+            >
+              <MonitorCog className={iconClass} />
+              <span className="truncate">{t("desktopPlaybackController.open")}</span>
+            </button>
+            <Switch
+              aria-label={t("desktopPlaybackController.wallpaper")}
+              checked={wallpaper.model?.preferences.enabled ?? false}
+              disabled={!wallpaper.model || wallpaper.isPending}
+              onCheckedChange={(enabled) => void setDesktopPlaybackWallpaperEnabled(enabled)}
+            />
+          </div>
 
-        {/* 最小化和退出 */}
-        <Button variant="ghost" className={menuItemClass} onClick={() => runtime.window.minimize()}>
-          <Minimize className={iconClass} />
-          <span>{t("tray.minimize")}</span>
-        </Button>
+          <Separator className="bg-border my-1.5" />
 
-        <Button variant="ghost" className={menuItemClass} onClick={() => runtime.app.exit()}>
-          <Power className={iconClass} />
-          <span>{t("tray.exit")}</span>
-        </Button>
-      </ScrollArea>
-    </div>
+          {/* 主窗口跳转设置页面 */}
+          <Button
+            variant="ghost"
+            className={`${menuItemClass}`}
+            onClick={() => runtime.navigation.navigateMainWindow("/setting")}
+          >
+            <Settings className={iconClass} />
+            <span>{t("tray.settings")}</span>
+          </Button>
+
+          <Separator className="bg-border my-1.5" />
+
+          {/* 最小化和退出 */}
+          <Button
+            variant="ghost"
+            className={menuItemClass}
+            onClick={() => runtime.window.minimize()}
+          >
+            <Minimize className={iconClass} />
+            <span>{t("tray.minimize")}</span>
+          </Button>
+
+          <Button variant="ghost" className={menuItemClass} onClick={() => runtime.app.exit()}>
+            <Power className={iconClass} />
+            <span>{t("tray.exit")}</span>
+          </Button>
+        </ScrollArea>
+      </div>
+    </main>
   );
 }

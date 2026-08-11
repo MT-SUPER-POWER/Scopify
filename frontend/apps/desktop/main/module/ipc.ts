@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { app, type BrowserWindow, ipcMain, session } from "electron";
+import { app, BrowserWindow, ipcMain, session } from "electron";
 import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
   type DesktopHostConfig,
@@ -156,9 +156,13 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     mainWindow.webContents.send("navigate-to", path);
   });
 
-  ipcMain.on("app-close-action", (_event, action) => {
-    if (action === "minimize") {
-      mainWindow?.hide();
+  ipcMain.on("app-close-action", (event, action) => {
+    if (action !== "minimize" && action !== "exit" && action !== "cancel") return;
+
+    if (action === "minimize" || action === "cancel") {
+      const actionWindow = BrowserWindow.fromWebContents(event.sender);
+      if (actionWindow && actionWindow !== mainWindow) actionWindow.close();
+      if (action === "minimize") mainWindow?.hide();
       return;
     }
 

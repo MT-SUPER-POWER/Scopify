@@ -75,7 +75,6 @@ export interface DesktopBridge<TLyrics = unknown> {
   loginSuccess(): void;
   minimizeApp(): void;
   navigateTo(path: string): void;
-  onAppCloseRequested(callback: () => void): Unsubscribe;
   onControlAudio(callback: (action: "next" | "prev" | "toggle-play") => void): Unsubscribe;
   onDesktopLyricCommand(callback: (command: DesktopLyricCommand) => void): Unsubscribe;
   onDesktopPlaybackWallpaperModelChanged(
@@ -92,7 +91,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   quitAndInstallUpdate(): void;
   relaunchApp(): void;
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
-  sendAppCloseAction(action: "exit" | "minimize"): void;
+  sendAppCloseAction(action: "exit" | "minimize" | "cancel"): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;
   setDesktopPlaybackControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showDesktopPlaybackController(): Promise<DesktopPlaybackControllerOpenResult>;

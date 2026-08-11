@@ -137,7 +137,7 @@ export function DesktopPlaybackController() {
 
   return (
     <main
-      className="desktop-playback-controller-shell size-full bg-transparent select-none"
+      className="desktop-playback-controller-shell size-full bg-transparent p-1 select-none"
       style={controllerThemeStyle}
     >
       <section className="desktop-playback-controller-surface relative flex size-full flex-col overflow-hidden rounded-[20px] border">

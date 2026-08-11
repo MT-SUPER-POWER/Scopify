@@ -95,7 +95,6 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     loginSuccess: NOOP,
     minimizeApp: NOOP,
     navigateTo: NOOP,
-    onAppCloseRequested: () => NOOP,
     onControlAudio: () => NOOP,
     onDesktopLyricCommand: () => NOOP,
     onDesktopPlaybackWallpaperAudioFrame: () => NOOP,

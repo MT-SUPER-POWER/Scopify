@@ -46,6 +46,7 @@ export function createDesktopPlaybackControllerWindow(
       backgroundColor: "#00000000",
       transparent: true,
       frame: false,
+      hasShadow: false,
       icon: __iconWindow,
       maximizable: false,
       minimizable: true,

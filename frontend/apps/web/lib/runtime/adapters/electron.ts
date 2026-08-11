@@ -10,7 +10,6 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
   return {
     app: {
       exit: () => bridge.exitApp(),
-      onCloseRequested: (callback) => bridge.onAppCloseRequested(callback),
       relaunch: () => bridge.relaunchApp(),
       submitCloseAction: (action) => bridge.sendAppCloseAction(action),
     },
