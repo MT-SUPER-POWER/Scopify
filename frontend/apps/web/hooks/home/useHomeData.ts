@@ -297,6 +297,7 @@ export function useHomeData() {
     dateInfo,
     userName,
     userId,
+    isLogin,
     setLoadingPlayId,
     handlePlayPlaylist,
     fetchHomeData,

@@ -31,6 +31,7 @@ export default function HomePage() {
     hasError,
     dateInfo,
     userName,
+    isLogin,
     handlePlayPlaylist,
     fetchHomeData,
   } = useHomeData();
@@ -47,7 +48,9 @@ export default function HomePage() {
       {isUnavailable ? (
         <div className="relative z-10 flex min-h-screen flex-col p-6 pt-20">
           <h1 className="text-content text-3xl leading-none font-bold tracking-tight">
-            {t(timeTheme.greetingKey)}
+            {isLogin && userName
+              ? `${t(timeTheme.greetingKey)}, ${userName}`
+              : t(timeTheme.greetingKey)}
           </h1>
           <main className="flex flex-1 items-center justify-center pb-28">
             <NetworkRetryState
@@ -68,7 +71,9 @@ export default function HomePage() {
               title={
                 <div className="flex items-center gap-4">
                   <h1 className="text-content text-3xl leading-none font-bold tracking-tight">
-                    {t(timeTheme.greetingKey)}
+                    {isLogin && userName
+                      ? `${t(timeTheme.greetingKey)}, ${userName}`
+                      : t(timeTheme.greetingKey)}
                   </h1>
                 </div>
               }
