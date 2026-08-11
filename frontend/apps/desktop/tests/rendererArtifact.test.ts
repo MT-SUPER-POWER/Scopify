@@ -19,6 +19,7 @@ function createRendererFixture() {
   mkdirSync(join(root, "_next"), { recursive: true });
   writeFileSync(join(root, "index.html"), "<main>Scopify</main>");
   writeFileSync(join(root, "_next", "app.js"), "console.log('renderer')");
+  writeFileSync(join(root, "_next", "app.js.map"), '{"version":3}');
   const manifest = createRendererArtifactManifest(root, {
     rendererVersion: "1.1.0",
     sourceRevision: "test-revision",
@@ -41,6 +42,13 @@ test("rejects renderer files changed after the manifest was created", () => {
     message: expect.stringContaining("checksum mismatch"),
     ok: false,
   });
+});
+
+test("accepts an artifact after package-only source maps are removed", () => {
+  const { manifest, root } = createRendererFixture();
+  rmSync(join(root, "_next", "app.js.map"));
+
+  expect(verifyRendererArtifact(root)).toEqual({ manifest, ok: true });
 });
 
 test("rejects a renderer built for a different bridge protocol", () => {

@@ -8,7 +8,7 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const desktopRoot = resolve(scriptDir, "..");
 const webRoot = resolve(desktopRoot, "..", "web");
 const sourceDir = resolve(webRoot, "out");
-const targetDir = resolve(desktopRoot, "renderer");
+const targetDir = resolve(desktopRoot, "../../../build/desktop/app/renderer");
 
 if (!existsSync(resolve(sourceDir, "index.html"))) {
   throw new Error(
@@ -39,3 +39,5 @@ writeFileSync(
 );
 
 console.log(`Synced Desktop renderer artifact: ${sourceDir} -> ${targetDir}`);
+
+rmSync(sourceDir, { force: true, recursive: true });

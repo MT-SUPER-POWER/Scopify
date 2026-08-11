@@ -2,6 +2,8 @@ import { resolve } from "node:path";
 import { defineConfig } from "electron-vite";
 
 const root = __dirname;
+const packagedAppRoot = resolve(root, "../../../build/desktop/app");
+const runtimeOutDir = resolve(packagedAppRoot, "out/main");
 
 export default defineConfig({
   main: {
@@ -11,6 +13,8 @@ export default defineConfig({
       },
     },
     build: {
+      emptyOutDir: true,
+      outDir: runtimeOutDir,
       externalizeDeps: {
         exclude: ["@scopify/desktop-contract"],
       },
@@ -35,7 +39,7 @@ export default defineConfig({
       externalizeDeps: {
         exclude: ["@scopify/desktop-contract"],
       },
-      outDir: "out/main",
+      outDir: runtimeOutDir,
       emptyOutDir: false,
       rollupOptions: {
         input: {

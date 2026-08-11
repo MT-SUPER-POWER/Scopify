@@ -19,7 +19,9 @@ function collectArtifactFiles(root: string, current = root): string[] {
       const entryPath = resolve(current, entry.name);
       if (entry.isDirectory()) return collectArtifactFiles(root, entryPath);
       if (!entry.isFile()) return [];
-      if (relative(root, entryPath).split(sep).join("/") === MANIFEST_FILE) return [];
+      const artifactPath = relative(root, entryPath).split(sep).join("/");
+      // electron-builder excludes source maps from the shipped application bundle.
+      if (artifactPath === MANIFEST_FILE || artifactPath.endsWith(".map")) return [];
       return [entryPath];
     })
     .sort((left, right) => left.localeCompare(right));
