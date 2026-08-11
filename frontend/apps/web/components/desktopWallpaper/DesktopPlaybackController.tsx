@@ -13,6 +13,7 @@ import type {
 import { DesktopPlaybackAppearanceControls } from "@/components/desktopWallpaper/DesktopPlaybackAppearanceControls";
 import { DesktopPlaybackControllerHeader } from "@/components/desktopWallpaper/DesktopPlaybackControllerHeader";
 import { DesktopPlaybackControllerQuickToggle } from "@/components/desktopWallpaper/DesktopPlaybackControllerQuickToggle";
+import { DesktopPlaybackControllerShortcutHandler } from "@/components/desktopWallpaper/DesktopPlaybackControllerShortcutHandler";
 import { DesktopPlaybackPlayerControls } from "@/components/desktopWallpaper/DesktopPlaybackPlayerControls";
 import { DesktopPlaybackWallpaperControls } from "@/components/desktopWallpaper/DesktopPlaybackWallpaperControls";
 import { useDesktopIconVisibility } from "@/hooks/desktopWallpaper/useDesktopIconVisibility";
@@ -141,6 +142,9 @@ export function DesktopPlaybackController() {
     >
       <section className="desktop-playback-controller-surface relative flex size-full flex-col overflow-hidden rounded-[20px] border">
         <ControllerAtmosphere />
+        <DesktopPlaybackControllerShortcutHandler
+          onClose={() => void wallpaper.closeController()}
+        />
         <DesktopPlaybackControllerHeader
           isLayoutPending={isLayoutPending}
           layout={layout}

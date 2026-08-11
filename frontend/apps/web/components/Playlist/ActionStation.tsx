@@ -20,7 +20,9 @@ import type { PlaylistActionsProps } from "@/types/components/playlist";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
+import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
@@ -64,6 +66,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const searchParams = useSearchParams();
   const smartRouter = useSmartRouter();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  usePlaylistSearchShortcut({ inputRef, onSearchOpen });
   const history = useHistoricalDailyRecommendations(isCalendarOpen);
   const reportedHistoryDataAt = useRef(0);
   const reportedHistoryErrorAt = useRef(0);
@@ -133,149 +136,197 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     setIsCalendarOpen(false);
   };
 
+  const playbackActionLabel = t(showPause ? "ui.pause" : "ui.play");
+  const shuffleActionLabel = t(isShuffle ? "ui.shuffleOn" : "ui.shuffleOff");
+
   return (
-    <div
-      className={cn(
-        "flex min-h-26 flex-wrap items-center justify-between gap-4 p-6 transition-[gap,padding] duration-200 md:px-8 lg:px-10 xl:px-12",
-        isSticky && "h-16 min-h-0 flex-nowrap gap-3 overflow-x-auto py-2",
-      )}
-    >
+    <TooltipProvider>
       <div
         className={cn(
-          "flex flex-wrap items-center gap-4 md:gap-6",
-          isSticky && "shrink-0 flex-nowrap gap-3 md:gap-4",
+          "flex min-h-26 flex-wrap items-center justify-between gap-4 p-6 transition-[gap,padding] duration-200 md:px-8 lg:px-10 xl:px-12",
+          isSticky && "h-16 min-h-0 flex-nowrap gap-3 overflow-x-auto py-2",
         )}
       >
-        <button
-          onClick={handlePlayToggle}
-          disabled={!currentSongDetail && !tracks.length}
+        <div
           className={cn(
-            "bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover flex size-14 items-center justify-center rounded-full transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50",
-            isSticky && "size-12",
+            "flex flex-wrap items-center gap-4 md:gap-6",
+            isSticky && "shrink-0 flex-nowrap gap-3 md:gap-4",
           )}
         >
-          {showPause ? (
-            <Pause className={cn("ml-0.5 size-6 fill-current", isSticky && "size-5")} />
-          ) : (
-            <Play className={cn("ml-1.5 size-6 fill-current", isSticky && "size-5")} />
-          )}
-        </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label={playbackActionLabel}
+                onClick={handlePlayToggle}
+                disabled={!currentSongDetail && !tracks.length}
+                className={cn(
+                  "bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover flex size-14 items-center justify-center rounded-full transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50",
+                  isSticky && "size-12",
+                )}
+              >
+                {showPause ? (
+                  <Pause className={cn("ml-0.5 size-6 fill-current", isSticky && "size-5")} />
+                ) : (
+                  <Play className={cn("ml-1.5 size-6 fill-current", isSticky && "size-5")} />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" sideOffset={8}>
+              {playbackActionLabel}
+            </TooltipContent>
+          </Tooltip>
 
-        {actionSlot}
+          {actionSlot}
 
-        <button
-          onClick={toggleShuffle}
-          className="relative inline-flex cursor-pointer items-center justify-center"
-        >
-          <Shuffle
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label={shuffleActionLabel}
+                onClick={toggleShuffle}
+                className="relative inline-flex cursor-pointer items-center justify-center"
+              >
+                <Shuffle
+                  className={cn(
+                    isSticky ? "size-7" : "size-8",
+                    "transition-colors",
+                    isShuffle ? "text-brand" : "text-content-muted hover:text-content",
+                  )}
+                />
+                {isShuffle && (
+                  <span className="bg-brand absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" sideOffset={8}>
+              {shuffleActionLabel}
+            </TooltipContent>
+          </Tooltip>
+
+          <ArrowDownCircle
             className={cn(
               isSticky ? "size-7" : "size-8",
-              "transition-colors",
-              isShuffle ? "text-brand" : "text-content-muted hover:text-content",
+              "text-content-muted hover:text-content cursor-pointer transition-colors",
             )}
           />
-          {isShuffle && (
-            <span className="bg-brand absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full" />
-          )}
-        </button>
-
-        <ArrowDownCircle
-          className={cn(
-            isSticky ? "size-7" : "size-8",
-            "text-content-muted hover:text-content cursor-pointer transition-colors",
-          )}
-        />
-        {/* TODO: 实现更多选项
+          {/* TODO: 实现更多选项
             1. 根据是歌单还是每日推荐 / 专辑 做区分
             2. 歌单：更新歌单封面、编辑歌单信息、分享歌单
             3. 专辑：分享专辑、收藏/取消收藏专辑
          */}
-        <MoreHorizontal
-          className={cn(
-            isSticky ? "size-7" : "size-8",
-            "text-content-muted hover:text-content cursor-pointer transition-colors",
-          )}
-        />
-      </div>
+          <MoreHorizontal
+            className={cn(
+              isSticky ? "size-7" : "size-8",
+              "text-content-muted hover:text-content cursor-pointer transition-colors",
+            )}
+          />
+        </div>
 
-      <div className={cn("flex shrink-0 items-center gap-3", isSticky && "gap-2")}>
-        {isDaily && (
-          <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-            <TooltipProvider>
-              <Tooltip>
-                <PopoverTrigger asChild>
+        <div className={cn("flex shrink-0 items-center gap-3", isSticky && "gap-2")}>
+          {isDaily && (
+            <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+              <TooltipProvider>
+                <Tooltip>
+                  <PopoverTrigger asChild>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label={t("playlist.actions.historyDate")}
+                        className="text-content-muted hover:bg-content/10 hover:text-content inline-flex size-8 items-center justify-center rounded-full transition-colors"
+                      >
+                        <CalendarDays className="size-4" />
+                      </button>
+                    </TooltipTrigger>
+                  </PopoverTrigger>
+                  <TooltipContent sideOffset={6}>
+                    {t("playlist.actions.historyDate")}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <PopoverContent
+                side="bottom"
+                align="end"
+                sideOffset={8}
+                className="bg-surface-overlay text-content border-border w-auto p-0"
+              >
+                <Calendar
+                  key={dailyDate ?? todayKey}
+                  mode="single"
+                  selected={selectedCalendarDate}
+                  defaultMonth={selectedCalendarDate}
+                  onSelect={handleCalendarSelect}
+                  locale={calendarLocale}
+                  disabled={(date) => {
+                    const dateKey = formatDateKey(date);
+                    return dateKey !== todayKey && !availableHistoryDateSet.has(dateKey);
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+          )}
+          <AnimatePresence mode="wait">
+            {searchOpen ? (
+              <motion.div
+                key="search-input"
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 160, opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                className="bg-content/10 flex items-center gap-1 overflow-hidden rounded-full px-2 py-1"
+              >
+                <Search className="text-content-muted size-4 shrink-0" />
+                <input
+                  ref={inputRef}
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  placeholder={t("playlist.actions.searchPlaceholder")}
+                  className="text-content w-full bg-transparent text-xs outline-none"
+                />
+                <Tooltip>
                   <TooltipTrigger asChild>
                     <button
                       type="button"
-                      aria-label={t("playlist.actions.historyDate")}
-                      className="text-content-muted hover:bg-content/10 hover:text-content inline-flex size-8 items-center justify-center rounded-full transition-colors"
+                      aria-label={t("common.action.close")}
+                      onClick={onSearchClose}
                     >
-                      <CalendarDays className="size-4" />
+                      <X className="text-content-muted hover:text-content size-3 shrink-0" />
                     </button>
                   </TooltipTrigger>
-                </PopoverTrigger>
-                <TooltipContent sideOffset={6}>{t("playlist.actions.historyDate")}</TooltipContent>
+                  <TooltipContent side="top" sideOffset={8}>
+                    {t("common.action.close")}
+                  </TooltipContent>
+                </Tooltip>
+              </motion.div>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <motion.button
+                    key="search-icon"
+                    type="button"
+                    aria-label={t("playlist.actions.searchPlaceholder")}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.05, ease: "linear" }}
+                    onClick={onSearchOpen}
+                  >
+                    <Search className="text-content-muted hover:text-content size-4 cursor-pointer transition-colors" />
+                  </motion.button>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={8}>
+                  <ShortcutHint
+                    commandId="focus-playlist-search"
+                    label={t("playlist.actions.searchPlaceholder")}
+                  />
+                </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
-            <PopoverContent
-              side="bottom"
-              align="end"
-              sideOffset={8}
-              className="bg-surface-overlay text-content border-border w-auto p-0"
-            >
-              <Calendar
-                key={dailyDate ?? todayKey}
-                mode="single"
-                selected={selectedCalendarDate}
-                defaultMonth={selectedCalendarDate}
-                onSelect={handleCalendarSelect}
-                locale={calendarLocale}
-                disabled={(date) => {
-                  const dateKey = formatDateKey(date);
-                  return dateKey !== todayKey && !availableHistoryDateSet.has(dateKey);
-                }}
-              />
-            </PopoverContent>
-          </Popover>
-        )}
-        <AnimatePresence mode="wait">
-          {searchOpen ? (
-            <motion.div
-              key="search-input"
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 160, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="bg-content/10 flex items-center gap-1 overflow-hidden rounded-full px-2 py-1"
-            >
-              <Search className="text-content-muted size-4 shrink-0" />
-              <input
-                ref={inputRef}
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder={t("playlist.actions.searchPlaceholder")}
-                className="text-content w-full bg-transparent text-xs outline-none"
-              />
-              <button onClick={onSearchClose}>
-                <X className="text-content-muted hover:text-content size-3 shrink-0" />
-              </button>
-            </motion.div>
-          ) : (
-            <motion.button
-              key="search-icon"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.05, ease: "linear" }}
-              onClick={onSearchOpen}
-            >
-              <Search className="text-content-muted hover:text-content size-4 cursor-pointer transition-colors" />
-            </motion.button>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
 
-        <List className="text-content-muted size-5" />
+          <List className="text-content-muted size-5" />
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }

@@ -27,6 +27,7 @@ import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi";
 import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
 import { QueuePopover } from "@/components/QueuePopover";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { VolumeControl } from "@/components/VolumeControl";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
 import { useMusicQuality } from "@/hooks/player/useMusicQuality";
@@ -54,6 +55,7 @@ function PlayerBarStatAction({
   countClassName,
   onClick,
   href,
+  shortcutCommandId,
   title,
   children,
 }: PlayerBarStatActionProps) {
@@ -99,7 +101,7 @@ function PlayerBarStatAction({
       <Tooltip>
         <TooltipTrigger asChild>{action}</TooltipTrigger>
         <TooltipContent side="top" sideOffset={8}>
-          {title}
+          <ShortcutHint commandId={shortcutCommandId} label={title} />
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -247,7 +249,7 @@ export const PlayerBar = ({
                     )}
                   </TooltipTrigger>
                   <TooltipContent side="top" sideOffset={8}>
-                    {lyricsActionLabel}
+                    <ShortcutHint commandId="toggle-lyric-stage" label={lyricsActionLabel} />
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -317,6 +319,7 @@ export const PlayerBar = ({
                 count={currentSong.likedCount}
                 countClassName={isLiked ? "text-brand" : "text-content-muted"}
                 title={isLiked ? t("common.action.unlike") : t("common.action.like")}
+                shortcutCommandId="toggle-like"
                 onClick={() => void commands.toggleLike()}
               >
                 {isLiked ? (
@@ -331,6 +334,7 @@ export const PlayerBar = ({
                 countClassName="text-content-muted group-hover:text-content transition-colors"
                 href={`/comment?songId=${currentSong.id}`}
                 title={t("contextMenu.comments")}
+                shortcutCommandId="open-current-track-comments"
               >
                 <PiChatCircleDotsBold className="text-content-muted group-hover:text-content size-5 transition-colors lg:size-5.5" />
               </PlayerBarStatAction>
@@ -381,7 +385,7 @@ export const PlayerBar = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" sideOffset={8}>
-                  {t("ui.previous")}
+                  <ShortcutHint commandId="previous-track" label={t("ui.previous")} />
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -401,7 +405,7 @@ export const PlayerBar = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" sideOffset={8}>
-                  {playbackActionLabel}
+                  <ShortcutHint commandId="toggle-playback" label={playbackActionLabel} />
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -416,7 +420,7 @@ export const PlayerBar = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="top" sideOffset={8}>
-                  {t("ui.next")}
+                  <ShortcutHint commandId="next-track" label={t("ui.next")} />
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -474,7 +478,7 @@ export const PlayerBar = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent side="top" sideOffset={8}>
-                {lyricsActionLabel}
+                <ShortcutHint commandId="toggle-lyric-stage" label={lyricsActionLabel} />
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -558,7 +562,7 @@ export const PlayerBar = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent side="top" sideOffset={8}>
-                {fullscreenActionLabel}
+                <ShortcutHint commandId="toggle-fullscreen" label={fullscreenActionLabel} />
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

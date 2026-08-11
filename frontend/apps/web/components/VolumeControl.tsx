@@ -3,7 +3,9 @@
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { SmoothSlider } from "./SmoothSlider";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface VolumeControlProps {
   initialVolume?: number;
@@ -140,6 +142,7 @@ export const VolumeControl = ({
   if (variant === "inline") {
     return (
       <div
+        data-shortcut-scope="volume"
         onWheel={handleWheel}
         className="hover:bg-accent flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none"
       >
@@ -172,19 +175,40 @@ export const VolumeControl = ({
   return (
     <div
       ref={containerRef}
+      data-shortcut-scope="volume"
       onWheel={handleWheel}
       className={`relative flex items-center justify-center select-none ${className}`}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
-      <button
-        type="button"
-        aria-label={volumeLabel}
-        onClick={handleMuteToggle}
-        className="text-content-muted hover:text-content transition-colors"
-      >
-        {getVolumeIcon()}
-      </button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label={volumeLabel}
+              onClick={handleMuteToggle}
+              className="text-content-muted hover:text-content transition-colors"
+            >
+              {getVolumeIcon()}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            <div className="space-y-1.5">
+              <ShortcutHint commandId="toggle-mute" label={volumeLabel} />
+              <p className="text-background/70 text-[10px]">{t("shortcuts.scope.volume")}</p>
+              <ShortcutHint
+                commandId="increase-volume"
+                label={t("shortcuts.command.increaseVolume")}
+              />
+              <ShortcutHint
+                commandId="decrease-volume"
+                label={t("shortcuts.command.decreaseVolume")}
+              />
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       {isOpen && (
         <div className="absolute bottom-full left-1/2 z-50 -translate-x-1/2 pb-2">

@@ -1,14 +1,13 @@
 "use client";
 
-import { Music2, Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Music2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { FoliaPlaybackProgressBar } from "@/components/desktopWallpaper/FoliaPlaybackProgressBar";
+import { DesktopPlaybackTransportControls } from "@/components/desktopWallpaper/DesktopPlaybackTransportControls";
 import { useI18n } from "@/store/module/i18n";
 import type { DesktopPlaybackPlayerControlsProps } from "@/types/components/desktopPlaybackWallpaper";
 
-const transportButtonClass =
-  "desktop-controller-soft-button flex size-8 items-center justify-center rounded-full transition disabled:pointer-events-none disabled:opacity-35";
 const LYRIC_REVEAL_DELAY_MS = 800;
 
 export function DesktopPlaybackPlayerControls({
@@ -96,58 +95,16 @@ export function DesktopPlaybackPlayerControls({
               </div>
             </div>
           ) : (
-            <div className="animate-in fade-in absolute inset-0 flex items-center justify-between duration-150">
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  aria-label={t("ui.previous")}
-                  className={transportButtonClass}
-                  disabled={!currentSong && !track}
-                  onClick={onPrevious}
-                >
-                  <SkipBack className="size-4" />
-                </button>
-                <button
-                  type="button"
-                  aria-label={t(isPlaying ? "ui.pause" : "ui.play")}
-                  className="desktop-controller-primary-button flex size-9 items-center justify-center rounded-full transition disabled:pointer-events-none disabled:opacity-35"
-                  disabled={!currentSong && !track}
-                  onClick={onTogglePlaying}
-                >
-                  {isPlaying ? (
-                    <Pause className="size-4 fill-current" />
-                  ) : (
-                    <Play className="ml-0.5 size-4 fill-current" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  aria-label={t("ui.next")}
-                  className={transportButtonClass}
-                  disabled={!currentSong && !track}
-                  onClick={onNext}
-                >
-                  <SkipForward className="size-4" />
-                </button>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <label className="desktop-controller-muted flex items-center gap-1.5">
-                  <Volume2 className="size-3.5 shrink-0" />
-                  <input
-                    type="range"
-                    aria-label={t("ui.volume")}
-                    className="desktop-controller-range w-14 cursor-pointer"
-                    max={100}
-                    min={0}
-                    onChange={(event) => onVolumeChange(Number(event.currentTarget.value))}
-                    step={1}
-                    value={Math.round(volume)}
-                  />
-                </label>
-                {desktopControl}
-              </div>
-            </div>
+            <DesktopPlaybackTransportControls
+              desktopControl={desktopControl}
+              hasTrack={Boolean(currentSong || track)}
+              isPlaying={isPlaying}
+              onNext={onNext}
+              onPrevious={onPrevious}
+              onTogglePlaying={onTogglePlaying}
+              onVolumeChange={onVolumeChange}
+              volume={volume}
+            />
           )}
         </div>
       </div>

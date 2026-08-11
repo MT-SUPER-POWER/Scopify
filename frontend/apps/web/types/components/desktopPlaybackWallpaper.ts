@@ -36,6 +36,17 @@ export interface DesktopPlaybackPlayerControlsProps {
   volume: number;
 }
 
+export interface DesktopPlaybackTransportControlsProps {
+  desktopControl: ReactNode;
+  hasTrack: boolean;
+  isPlaying: boolean;
+  onNext(): void;
+  onPrevious(): void;
+  onTogglePlaying(): void;
+  onVolumeChange(volume: number): void;
+  volume: number;
+}
+
 export interface DesktopPlaybackWallpaperControlsProps {
   desktopIconVisibility: DesktopIconVisibilityState | null;
   isDesktopIconPending: boolean;

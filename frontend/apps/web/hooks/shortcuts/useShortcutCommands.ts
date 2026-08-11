@@ -9,20 +9,32 @@ import {
 } from "@/hooks/player/usePlaybackProjection";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { useUiStore } from "@/store/module/ui";
-import type { ShortcutCommandId } from "@/types/shortcuts";
+import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts";
 
 const VOLUME_STEP = 5;
 let muteRestoreLevel: number | null = null;
 
-export function useShortcutCommands() {
+export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
   const router = useRouter();
   const playback = usePlaybackProjection();
   const positionMs = usePlaybackPositionMs();
   const commands = usePlaybackCommands();
   const playbackRef = useRef(playback);
   const positionMsRef = useRef(positionMs);
+  const navigateToOverride = options?.navigateTo;
   playbackRef.current = playback;
   positionMsRef.current = positionMs;
+
+  const navigateTo = useCallback(
+    (path: string) => {
+      if (navigateToOverride) {
+        navigateToOverride(path);
+        return;
+      }
+      router.push(path, { scroll: false });
+    },
+    [navigateToOverride, router],
+  );
 
   return useCallback(
     (commandId: ShortcutCommandId) => {
@@ -38,6 +50,9 @@ export function useShortcutCommands() {
       switch (commandId) {
         case "toggle-playback":
           void commands.toggle();
+          return;
+        case "toggle-like":
+          void commands.toggleLike();
           return;
         case "previous-track":
           void commands.previous();
@@ -87,8 +102,15 @@ export function useShortcutCommands() {
           void toggleApplicationFullscreen();
           return;
         case "open-shortcut-settings":
-          router.push("/setting?tab=shortcuts", { scroll: false });
+          navigateTo("/setting?tab=shortcuts");
           return;
+        case "open-current-track-comments": {
+          const trackId = playbackRef.current.track?.id;
+          if (trackId !== undefined && trackId !== null) {
+            navigateTo(`/comment?songId=${trackId}`);
+          }
+          return;
+        }
         case "show-shortcut-help":
           ui.setIsShortcutHelpOpen(!ui.isShortcutHelpOpen);
           return;
@@ -96,6 +118,6 @@ export function useShortcutCommands() {
           ui.setIsCommandPaletteOpen(true);
       }
     },
-    [commands, router],
+    [commands, navigateTo],
   );
 }
