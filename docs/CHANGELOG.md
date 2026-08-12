@@ -5,11 +5,18 @@
 ### Visual
 
 - 优化歌手详情页布局：歌手“简介”卡片与热门歌曲区域同级并支持 Sticky 悬浮跟随（浏览热门歌曲列表时在右侧保持固定），“音乐作品”保持独立全宽下沉显示，并支持点击简介卡片查看全量歌手介绍弹窗。
+- 移动桌面端设置中的 Discord “连接测试” 控制项至 Discord 设置分组卡片内。
+- 移除设置页面上的强行满屏最小高度与双层背景卡片约束，使布局自然根据配置表单内容自适应贴合。
+- 优化 Discord 与后端连接测试行布局：将连接状态指示标签（如“已接通”）调整至“连接测试”标题旁紧凑排列，右侧控件仅保留测试操作按钮。
 
 ### Added
 
 - 统一搜索窗口支持以 `>` 前缀搜索并执行命令；`Ctrl + Shift + P` 会直接打开命令查询。
 - 命令候选按设备本地累计使用次数排序，并继续支持上下方向键和 Enter 操作。
+
+### Fixed
+
+- Windows 桌面端按下 `Alt` 不再显示原生 Electron 菜单栏。
 - 桌面端新增 Discord Rich Presence：在设置中填入 Scopify 的 Discord Application ID 并启用后，可同步当前曲目、封面、播放状态与进度。
 - Discord Rich Presence 默认使用 Scopify Application ID `1536959813114658836` 并在新配置中启用。
 - Discord 设置新增本机连接测试与实时连接状态：直接尝试 Discord 桌面端 RPC，并以 Toast 明确反馈连接、配置或启动失败原因。
@@ -22,7 +29,6 @@
 
 ### Quality
 
-- 统一工作空间版本声明：以根目录 `package.json` 为单一版本源，桌面端构建（Electron Builder / sync-renderer / prepare-packaged-app）自动继承根目录版本号，无需再手动修改三个 `package.json`。
 - 新增 Discord Rich Presence 技术参考，收录官方 RPC、应用配置及活动字段文档。
 - 优化 CodeGraph 工作流：适配 CodeGraph Auto-sync 自动增量同步特性，移除手动执行 `codegraph sync` 的规范要求与操作步骤。
 
