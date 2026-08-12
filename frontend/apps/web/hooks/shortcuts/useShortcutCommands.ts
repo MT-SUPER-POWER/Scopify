@@ -9,6 +9,7 @@ import {
 } from "@/hooks/player/usePlaybackProjection";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { useUiStore } from "@/store/module/ui";
+import { useSearchStore } from "@/store/module/search";
 import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts";
 
 const VOLUME_STEP = 5;
@@ -115,7 +116,8 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           ui.setIsShortcutHelpOpen(!ui.isShortcutHelpOpen);
           return;
         case "open-command-palette":
-          ui.setIsCommandPaletteOpen(true);
+          useSearchStore.getState().setQuery("> ");
+          ui.setIsSearchOpen(true);
       }
     },
     [commands, navigateTo],

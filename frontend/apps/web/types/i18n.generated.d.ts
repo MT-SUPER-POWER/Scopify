@@ -14804,6 +14804,12 @@ export interface TranslateFn {
    */
   (key: "shortcuts.commandPalette.placeholder", params?: TranslationParams): string;
   /**
+   * zh-CN: 命令
+   * zh-TW: 命令
+   * en-US: Commands
+   */
+  (key: "shortcuts.commandPalette.title", params?: TranslationParams): string;
+  /**
    * zh-CN: 没有匹配的命令
    * zh-TW: 沒有相符的命令
    * en-US: No matching commands

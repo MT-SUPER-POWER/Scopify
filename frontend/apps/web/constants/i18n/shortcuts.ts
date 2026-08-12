@@ -39,6 +39,7 @@ export const shortcutsMessages = defineMessages(
     "shortcuts.command.openCommandPalette": "打开命令面板",
     "shortcuts.help.title": "快捷键帮助",
     "shortcuts.commandPalette.placeholder": "搜索命令",
+    "shortcuts.commandPalette.title": "命令",
     "shortcuts.commandPalette.empty": "没有匹配的命令",
   },
   {
@@ -79,6 +80,7 @@ export const shortcutsMessages = defineMessages(
     "shortcuts.command.openCommandPalette": "開啟命令面板",
     "shortcuts.help.title": "快速鍵說明",
     "shortcuts.commandPalette.placeholder": "搜尋命令",
+    "shortcuts.commandPalette.title": "命令",
     "shortcuts.commandPalette.empty": "沒有相符的命令",
   },
   {
@@ -119,6 +121,7 @@ export const shortcutsMessages = defineMessages(
     "shortcuts.command.openCommandPalette": "Open Command Palette",
     "shortcuts.help.title": "Keyboard Shortcut Help",
     "shortcuts.commandPalette.placeholder": "Search commands",
+    "shortcuts.commandPalette.title": "Commands",
     "shortcuts.commandPalette.empty": "No matching commands",
   },
 );

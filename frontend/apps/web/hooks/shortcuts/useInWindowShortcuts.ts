@@ -66,6 +66,7 @@ function canHandleShortcutInCurrentFocus(commandId: ShortcutCommandId, target: E
   if (VOLUME_COMMAND_IDS.has(commandId)) return isShortcutScopeFocused("volume");
   if (
     commandId === "open-search" ||
+    commandId === "open-command-palette" ||
     commandId === "focus-playlist-search" ||
     commandId === "toggle-mute"
   )

@@ -56,8 +56,10 @@ yarn-error.log*
 next-env.d.ts
 doc/README-TEMPLATE.md
 
-# superpowers
+# skills Prod
 .superpowers/
+.codegraph/
+CONTEXT.md
 
 # Agent
 .codex/
@@ -68,5 +70,9 @@ doc/README-TEMPLATE.md
 .gemini/
 .opencode/
 
-# codegraph
-.codegraph/
+# DOCS
+docs/plan/**
+docs/spec/**
+docs/research/**
+docs/adr/**
+docs/task/**

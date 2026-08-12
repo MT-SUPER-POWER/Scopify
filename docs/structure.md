@@ -87,23 +87,6 @@ bun run build:desktop  # 静态 Renderer + Electron 构建
 bun run i18n:types     # 更新 i18n 类型
 ```
 
----
-
-## 迁移进度
-
-已完成：
-
-- [x] `lib/api/artist.ts`、`music.ts`、`comment.ts` 类型迁至 `types/api/`
-- [x] `types/artist.ts` 工具函数迁至 `lib/utils.ts`
-- [x] `hooks/artist/useArtistData.ts` 缓存类型迁至 `types/artist.ts`
-
-待逐步迁移（改到相关文件时顺手做）：
-
-- [ ] `components/**` 内约 40+ 处 inline interface → `types/components/`
-- [ ] `components/Playlist/hook/`、`components/SearchContents/hooks/` → `hooks/`
-
----
-
 ## 相关文档
 
 - [AGENTS.md](../AGENTS.md) — Agent 与贡献者共同遵循的结构规范
