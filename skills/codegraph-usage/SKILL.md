@@ -19,15 +19,9 @@ description: >
 codegraph index
 ```
 
-### 写完代码后同步
+### 自动同步 (Auto-sync)
 
-每次完成代码修改，执行同步以保持索引与实际代码一致：
-
-```bash
-codegraph sync
-```
-
-建议收尾习惯：改完代码 → 验证 → `codegraph sync` → commit。
+CodeGraph 默认开启 Auto-sync 监听机制。在修改、新增或删除文件时，索引会自动实时增量更新，无需手动执行 `codegraph sync` 命令。
 
 ---
 
@@ -81,7 +75,7 @@ CodeGraph 返回两类核心信息：
 1. **符号源码**：带行号的逐字源码，可直接用于精准定位和编辑
 2. **调用路径**：从调用方到被调用方的完整路径，包含接口动态派发跳转（grep 无法追踪）
 
-> CodeGraph 是索引快照，可能轻微落后于最新代码。用 `view_file` 核对行号后再编辑，提交前以文件实际内容为准。
+> CodeGraph 已开启 Auto-sync 实时增量更新。用 `view_file` 核对行号后再编辑，提交前以文件实际内容为准。
 
 ---
 

@@ -95,7 +95,7 @@ Scopify/
 
 - **MCP 工具**：`codegraph_explore`（首选，一次调用返回带行号源码 + 调用路径）
 - **Shell 备选**：`codegraph explore "<符号名或问题描述>"`
-- 修改代码后执行 `codegraph sync` 保持索引同步
+- **自动同步**：CodeGraph 已默认开启 Auto-sync，文件变更时自动实时更新索引，无需手动同步
 
 完整使用规范见 Skill：
 👉 **[skills/codegraph-usage/](skills/codegraph-usage/SKILL.md)**
