@@ -20,7 +20,9 @@ rmSync(targetDir, { force: true, recursive: true });
 mkdirSync(targetDir, { recursive: true });
 cpSync(sourceDir, targetDir, { recursive: true });
 
-const webPackage = JSON.parse(readFileSync(resolve(webRoot, "package.json"), "utf8")) as {
+const rootPackage = JSON.parse(
+  readFileSync(resolve(desktopRoot, "../../package.json"), "utf8"),
+) as {
   version: string;
 };
 
@@ -28,7 +30,7 @@ writeFileSync(
   resolve(targetDir, "renderer.manifest.json"),
   `${JSON.stringify(
     createRendererArtifactManifest(targetDir, {
-      rendererVersion: webPackage.version,
+      rendererVersion: rootPackage.version,
       sourceRevision:
         process.env.GITHUB_SHA || process.env.VERCEL_GIT_COMMIT_SHA || "local-development",
     }),
