@@ -1,6 +1,18 @@
 # Changelog
 
+## v1.4.2
+
+### Added
+
+- 统一搜索窗口支持以 `>` 前缀搜索并执行命令；`Ctrl + Shift + P` 会直接打开命令查询。
+- 命令候选按设备本地累计使用次数排序，并继续支持上下方向键和 Enter 操作。
+
+
 ## v1.4.1
+
+### Added
+
+- README 新增 GitHub Release 总下载量徽章。
 
 ### Fixed
 

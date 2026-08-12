@@ -10,7 +10,6 @@ import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { useAudioVisualizer } from "@/hooks/player/useAudioVisualizer";
 import { useDesktopPlaybackWallpaperAudioPublisher } from "@/hooks/player/useDesktopPlaybackWallpaperAudioPublisher";
-import { CommandPalette } from "@/components/shortcuts/CommandPalette";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { PlaybackAuthorityProvider } from "@/components/player/PlaybackAuthorityProvider";
@@ -234,7 +233,6 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       >
         {/* 全局工具注册 */}
         <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-        <CommandPalette />
         <KeyboardShortcutHelp />
         <LyricStageMount />
 

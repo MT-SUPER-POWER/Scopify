@@ -1,14 +1,19 @@
 "use client";
 
-import { CornerDownLeft, Search, X } from "lucide-react";
+import { Command, CornerDownLeft, Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
 import { getStoredMusicCookie } from "@/lib/web/auth";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useSearchStore } from "@/store/module/search";
+import { useShortcutStore } from "@/store/module/shortcuts";
+import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
+import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
+import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
+import type { ShortcutCommandId } from "@/types/shortcuts";
 import { HighlightText, type SuggestItem, SuggestTag } from "./SearchContents/SearchHelper";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MODAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -17,6 +22,8 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   const smartRouter = useSmartRouter();
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
+  const candidateListRef = useRef<HTMLDivElement>(null);
+  const candidateRefs = useRef(new Map<number, HTMLElement>());
 
   const setGlobalQuery = useSearchStore((s) => s.setQuery);
   const setIsSearching = useSearchStore((s) => s.setIsSearching);
@@ -25,23 +32,55 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   const persistedQuery = useSearchStore((s) => s.query);
   const recentList = useSearchStore((s) => s.recent);
   const placeholder = useSearchStore((s) => s.placeholder);
+  const usageCounts = useShortcutStore((s) => s.usageCounts);
+  const incrementUsage = useShortcutStore((s) => s.incrementUsage);
+  const { commands } = useShortcutRegistry();
+  const executeCommand = useShortcutCommands();
 
   const [localValue, setLocalValue] = useState(persistedQuery || "");
   const [suggests, setSuggests] = useState<SuggestItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
+  const commandQuery = localValue.trimStart().startsWith(">");
+  const commandText = commandQuery ? localValue.trimStart().slice(1).trim() : "";
+  const commandMatches = useMemo(
+    () =>
+      commands
+        .filter((command) => (command.scope ?? "global") === "global")
+        .filter((command) =>
+          t(command.labelKey).toLocaleLowerCase().includes(commandText.toLocaleLowerCase()),
+        )
+        .sort((a, b) => {
+          const countDelta = (usageCounts[b.id] ?? 0) - (usageCounts[a.id] ?? 0);
+          if (countDelta !== 0) return countDelta;
+          return commands.indexOf(a) - commands.indexOf(b);
+        }),
+    [commandQuery, commandText, commands, t, usageCounts],
+  );
+
   const showRecent = !localValue && recentList.length > 0;
-  const showSuggests = !!localValue && suggests.length > 0;
-  const showEmpty = !!localValue && !loading && suggests.length === 0;
-  const hasContent = showRecent || showSuggests || loading || showEmpty;
+  const showSuggests = !commandQuery && !!localValue && suggests.length > 0;
+  const showCommands = commandQuery && commandMatches.length > 0;
+  const showEmpty = !!localValue && !loading && !showCommands && !showSuggests;
+  const hasContent = showRecent || showCommands || showSuggests || loading || showEmpty;
 
   // 获取当前可见的项
   const items = useMemo(() => {
     if (showRecent) return recentList;
+    if (showCommands) return commandMatches;
     if (showSuggests) return suggests.map((s) => s.keyword);
     return [];
-  }, [showRecent, recentList, showSuggests, suggests]);
+  }, [showRecent, recentList, showCommands, commandMatches, showSuggests, suggests]);
+
+  const runCommand = useCallback(
+    (commandId: ShortcutCommandId) => {
+      incrementUsage(commandId);
+      executeCommand(commandId);
+      onClose();
+    },
+    [executeCommand, incrementUsage, onClose],
+  );
 
   const handleSearch = useCallback(
     (query: string) => {
@@ -75,7 +114,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
   // 防抖拉取 suggest
   useEffect(() => {
-    if (!localValue.trim()) {
+    if (!localValue.trim() || commandQuery) {
       setSuggests([]);
       setSelectedIndex(-1);
       return;
@@ -95,7 +134,24 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
       }
     }, 200);
     return () => clearTimeout(t);
-  }, [localValue]);
+  }, [commandQuery, localValue]);
+
+  useLayoutEffect(() => {
+    if (selectedIndex < 0) return;
+    const container = candidateListRef.current;
+    const candidate = candidateRefs.current.get(selectedIndex);
+    if (!container || !candidate) return;
+
+    const candidateTop = candidate.offsetTop;
+    const candidateBottom = candidateTop + candidate.offsetHeight;
+    const visibleTop = container.scrollTop;
+    const visibleBottom = visibleTop + container.clientHeight;
+    if (candidateTop >= visibleTop && candidateBottom <= visibleBottom) return;
+
+    const targetTop =
+      candidateTop < visibleTop ? candidateTop : candidateBottom - container.clientHeight;
+    container.scrollTop = targetTop;
+  }, [selectedIndex]);
 
   // 键盘导航处理
   const handleKeyDown = useCallback(
@@ -112,15 +168,28 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
         e.preventDefault();
         if (selectedIndex >= 0 && selectedIndex < items.length) {
           const selected = items[selectedIndex];
-          handleSearch(selected);
+          if (commandQuery && typeof selected !== "string") runCommand(selected.id);
+          else if (typeof selected === "string") handleSearch(selected);
         } else {
-          handleSearch(localValue);
+          if (commandQuery) {
+            if (commandMatches[0]) runCommand(commandMatches[0].id);
+          } else handleSearch(localValue);
         }
       } else if (e.key === "Escape") {
         onClose();
       }
     },
-    [isOpen, items, selectedIndex, handleSearch, localValue, onClose],
+    [
+      isOpen,
+      items,
+      selectedIndex,
+      commandQuery,
+      commandMatches,
+      runCommand,
+      handleSearch,
+      localValue,
+      onClose,
+    ],
   );
 
   // Esc 关闭 (保持原有的全局监听以防 input 没聚焦时也没法关)
@@ -140,36 +209,9 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     setTimeout(() => inputRef.current?.focus(), 0);
   }, []);
 
-  // ─────────────────────────────────────────────────────────────────
-  // 核心：自定义单击/双击判定拦截器
-  // 发现双击跳转有点反直觉，就还是单机跳转好了
-  // ─────────────────────────────────────────────────────────────────
-  const clickTimeoutRef = useRef<number | null>(null);
-
-  const _handleItemClick = useCallback(
-    (keyword: string) => {
-      if (clickTimeoutRef.current) {
-        // 250ms 内触发了第二次点击 -> 判定为【双击】，直接搜索跳转
-        window.clearTimeout(clickTimeoutRef.current);
-        clickTimeoutRef.current = null;
-        handleSearch(keyword);
-      } else {
-        // 第一次点击 -> 开启 250ms 定时器
-        clickTimeoutRef.current = window.setTimeout(() => {
-          // 超时未触发第二次点击 -> 判定为【单击】，填入输入框
-          handleSelect(keyword);
-          clickTimeoutRef.current = null;
-        }, 250);
-      }
-    },
-    [handleSearch, handleSelect],
-  );
-
-  // 组件卸载时清理定时器，防止内存泄漏
-  useEffect(() => {
-    return () => {
-      if (clickTimeoutRef.current) window.clearTimeout(clickTimeoutRef.current);
-    };
+  const handleClear = useCallback(() => {
+    setLocalValue("");
+    setSuggests([]);
   }, []);
 
   return (
@@ -227,8 +269,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     onClick={() => {
-                      setLocalValue("");
-                      setSuggests([]);
+                      handleClear();
                     }}
                     className="shrink-0 rounded-full p-1.5 transition-colors hover:bg-white/10"
                   >
@@ -238,8 +279,12 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
                 {/* Enter 提示徽章 */}
                 <button
-                  onClick={() => handleSearch(localValue)}
-                  disabled={!localValue.trim()}
+                  onClick={() => {
+                    if (commandQuery) {
+                      if (commandMatches[0]) runCommand(commandMatches[0].id);
+                    } else handleSearch(localValue);
+                  }}
+                  disabled={!localValue.trim() || (commandQuery && !commandMatches.length)}
                   className={cn(
                     "flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1.5",
                     "text-[11px] font-semibold text-white/70",
@@ -257,7 +302,10 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
               {/* ── 内容区 ── */}
               {hasContent && (
-                <div className="no-scrollbar max-h-[52vh] overflow-y-auto py-2">
+                <div
+                  ref={candidateListRef}
+                  className="no-scrollbar max-h-[52vh] overflow-y-auto py-2"
+                >
                   {/* 最近搜索 */}
                   {showRecent && (
                     <div>
@@ -275,13 +323,20 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                       {recentList.slice(0, 8).map((item, i) => (
                         <motion.div
                           key={item}
+                          ref={(node) => {
+                            if (node) candidateRefs.current.set(i, node);
+                            else candidateRefs.current.delete(i);
+                          }}
                           initial={{ opacity: 0, x: -8 }}
-                          animate={{ opacity: 1, x: 0 }}
+                          animate={{
+                            opacity: 1,
+                            x: 0,
+                          }}
                           transition={{ delay: i * 0.03 }}
                           onClick={() => handleSearch(item)}
                           className={cn(
                             "group/item flex items-center justify-between gap-3 px-5 py-2.5",
-                            "cursor-pointer transition-colors hover:bg-white/6",
+                            "cursor-pointer hover:bg-white/6",
                             selectedIndex === i && "bg-white/10",
                           )}
                         >
@@ -323,6 +378,51 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                     </div>
                   )}
 
+                  {/* 命令列表 */}
+                  {commandQuery && (
+                    <div>
+                      <div className="px-5 py-2">
+                        <span className="text-[11px] font-bold tracking-wider text-zinc-300 uppercase">
+                          {t("shortcuts.commandPalette.title")}
+                        </span>
+                      </div>
+                      {commandMatches.map((command, i) => (
+                        <motion.button
+                          key={command.id}
+                          type="button"
+                          ref={(node) => {
+                            if (node) candidateRefs.current.set(i, node);
+                            else candidateRefs.current.delete(i);
+                          }}
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{
+                            opacity: 1,
+                            x: 0,
+                          }}
+                          transition={{ delay: i * 0.025 }}
+                          onClick={() => runCommand(command.id)}
+                          className={cn(
+                            "flex w-full items-center justify-between gap-3 px-5 py-2.5 text-left",
+                            "cursor-pointer hover:bg-white/6",
+                            selectedIndex === i && "bg-white/10",
+                          )}
+                        >
+                          <div className="flex min-w-0 items-center gap-3">
+                            <Command className="size-3.5 shrink-0 text-[#1ed760]" />
+                            <span className="truncate text-sm text-white">
+                              {t(command.labelKey)}
+                            </span>
+                          </div>
+                          {command.binding ? (
+                            <kbd className="shrink-0 text-xs text-zinc-500">
+                              {getShortcutBindingLabel(command.binding)}
+                            </kbd>
+                          ) : null}
+                        </motion.button>
+                      ))}
+                    </div>
+                  )}
+
                   {/* 建议列表 */}
                   {showSuggests && (
                     <div>
@@ -334,13 +434,20 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                       {suggests.map((item, i) => (
                         <motion.div
                           key={i}
+                          ref={(node) => {
+                            if (node) candidateRefs.current.set(i, node);
+                            else candidateRefs.current.delete(i);
+                          }}
                           initial={{ opacity: 0, x: -8 }}
-                          animate={{ opacity: 1, x: 0 }}
+                          animate={{
+                            opacity: 1,
+                            x: 0,
+                          }}
                           transition={{ delay: i * 0.025 }}
                           onClick={() => handleSearch(item.keyword)}
                           className={cn(
                             "flex items-center justify-between gap-3 px-5 py-2.5",
-                            "cursor-pointer transition-colors hover:bg-white/6",
+                            "cursor-pointer hover:bg-white/6",
                             selectedIndex === i && "bg-white/10",
                           )}
                         >

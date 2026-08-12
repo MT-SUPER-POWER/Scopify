@@ -147,8 +147,16 @@ The dedicated settings interface for browsing, editing, detecting conflicts in, 
 _Avoid_: static shortcut documentation, command palette
 
 **Command Palette**:
-A searchable transient interface for finding and executing named Scopify commands without navigating to their UI. It complements, but does not replace, the Shortcut Management Surface.
+A searchable transient interface within the unified search entry for finding and executing named Scopify commands without navigating to their UI. A leading `>` command prefix limits its result list to matching commands; without the prefix, the entry presents music search results. It complements, but does not replace, the Shortcut Management Surface.
 _Avoid_: shortcut registry, settings page
+
+**Command Usage Count**:
+The device-local cumulative number of user-confirmed executions for each named Scopify command. The count increases when the user confirms a command from Command Palette, regardless of an asynchronous command's eventual effect. Command Palette results sort by this count in descending order; commands with equal counts retain Shortcut Registry order. It is Renderer State and is independent of the signed-in music account.
+_Avoid_: recent command history, shortcut priority, account-scoped command statistics
+
+**Command Prefix**:
+The leading `>` character in a unified-search query. It must be the query's first non-whitespace character, remains visible in the input, and restricts the candidate list to commands matching the trimmed text after it. A `>` elsewhere in a query does not affect music-search results.
+_Avoid_: explicit mode toggle, command text, an in-query search operator
 
 **Keyboard Help Panel**:
 A read-only, transient display of commonly used In-Window Shortcuts. It helps discovery without providing binding-editing controls.

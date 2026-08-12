@@ -6,6 +6,7 @@ export const useShortcutStore = create<ShortcutStoreState>()(
   persist(
     (set) => ({
       overrides: {},
+      usageCounts: {},
       setOverride: (commandId, binding) =>
         set((state) => ({
           overrides: { ...state.overrides, [commandId]: binding },
@@ -16,6 +17,13 @@ export const useShortcutStore = create<ShortcutStoreState>()(
           return { overrides };
         }),
       resetAllOverrides: () => set({ overrides: {} }),
+      incrementUsage: (commandId) =>
+        set((state) => ({
+          usageCounts: {
+            ...state.usageCounts,
+            [commandId]: (state.usageCounts[commandId] ?? 0) + 1,
+          },
+        })),
     }),
     {
       name: "shortcut-storage",
