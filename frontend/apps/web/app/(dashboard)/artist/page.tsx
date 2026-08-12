@@ -59,7 +59,7 @@ export default function ArtistPage() {
     );
 
   return (
-    <div className="bg-surface-raised text-content min-h-screen overflow-x-hidden pb-24 font-sans">
+    <div className="bg-surface-raised text-content min-h-screen pb-24 font-sans">
       <ArtistHero artist={artist} />
 
       {isError && (
@@ -83,9 +83,11 @@ export default function ArtistPage() {
           onPlayArtist={handlePlayArtist}
         />
 
-        <div className="flex flex-col gap-12 px-6 md:px-8 xl:flex-row">
+        <div className="flex flex-col items-start gap-8 px-6 md:px-8 lg:flex-row lg:gap-12">
           <PopularTracks tracks={popularTracks} queue={hotTracksQueue} artist={artist} />
-          <AboutSection artist={artist} />
+          <aside className="sticky top-20 w-full shrink-0 self-start lg:w-80">
+            <AboutSection artist={artist} />
+          </aside>
         </div>
 
         <DiscographyGrid

@@ -37,13 +37,13 @@ export function RouteScrollSurface({ children }: RouteScrollSurfaceProps) {
         className={cn(
           "bg-surface-raised isolate z-0 size-full",
           "[&_[data-slot=scroll-area-viewport]>div]:block!",
-          "[&_[data-slot=scroll-area-viewport]>div]:h-full!",
+          "[&_[data-slot=scroll-area-viewport]>div]:min-h-full!",
           "[&_[data-slot=scroll-area-viewport]>div]:w-full!",
           isRestoring && "pointer-events-none",
         )}
         viewportRef={surfaceRef}
       >
-        <div className={cn("h-full", isRestoring && "invisible")}>{children}</div>
+        <div className={cn("min-h-full", isRestoring && "invisible")}>{children}</div>
       </ScrollArea>
       {isRestoring ? <RouteScrollSkeleton Placeholder={restorationPlaceholder} /> : null}
     </div>
