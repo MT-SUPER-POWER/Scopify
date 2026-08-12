@@ -10,7 +10,6 @@
 
 [![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers)
 [![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases)
-[![Downloads](https://img.shields.io/github/downloads/MT-SUPER-POWER/Scopify/total)](https://github.com/MT-SUPER-POWER/Scopify/releases)
 [![license](https://img.shields.io/github/license/mt-super-power/scopify)](https://github.com/mt-super-power/scopify/blob/master/license)
 [![Issues](https://img.shields.io/github/issues/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/issues)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MT-SUPER-POWER/Scopify)
@@ -22,7 +21,7 @@
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
 
 - 本项目主要技术链为 [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [ShadCN UI](https://ui.shadcn.com/) + [Electron](https://www.electronjs.org/zh/docs/latest/)
-- Node.js 版本要求：>= 20，包管理器：bun >= 1.3.11
+- Node.js 版本要求：>= 20，包管理器：bun >= 1.3.7
 - 支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配
 
 ## 技术栈总览
@@ -180,8 +179,25 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 - 新建歌单及歌单编辑
 - 收藏 / 取消收藏歌单
 - 支持评论区
-- 完整 Folia
+- 完整 Folia Playback Stage：从固定快照保真迁移九种 visualizer、六种背景、共享 renderer/shell/subtitle、FloatingPlayerControls/ProgressBar/歌词时间线、chrome auto-hide、模式与背景设置、内置资产和响应式动画运行时
+- Electron 桌面歌词：透明无边框窗口、当前/下一句、逐字高亮、播放/切歌/收藏与窗口偏好
 - 音乐频谱显示
+
+### Folia Playback Stage 接口缺口
+
+固定快照中的舞台源码与功能范围保持完整。下表同时保留已关闭项作为迁移记录；只有标记为“未实现”或“部分实现”的项目仍是 Interface Gap。接口缺口不会被简化 visualizer 或替代 UI 掩盖。
+
+| 责任边界 | 能力 | 状态 | Scopify 当前实现 | 后续接口 |
+| --------- | ------- | ------ | -------------------- | -------- |
+| 后端接口 | 完整结构化歌词 | 未实现 | `/lyric/new` 原始响应已无损保留，但当前 adapter 主要消费 YRC/LRC、行级翻译和罗马音，尚未提供 syllable、background vocal、agent、song part、chorus 等 Folia 字段 | Docker 联调后完善 `NeteaseLyric` 精确类型，并定义输出 Folia 完整 `LyricData` 的 `LyricsPresentationPayload` |
+| 后端接口 | 多格式、多来源歌词匹配 | 未实现 | 当前播放主链只请求 NetEase 歌词；Folia 的 TTML/QRC/KRC/VTT、QQ/Kugou/AMLL 匹配尚未接入 | 增加 `LyricsMatchCandidate[]` 查询和选定候选的 `LyricsResolveResult`；该项仍按下方提案推进 |
+| Scopify Host Adapter | 播放、收藏、队列与歌词偏移 | 已实现，非接口缺口 | Controls 已接入 previous/play/next、repeat、like、shuffle、volume 和 lyric offset；Queue 可查看、切歌和 shuffle；独立 `lyricCurrentTime` 已应用持久化 offset | 继续由 Scopify store/API 保持单一播放所有权，不新增第二套播放器状态 |
+| Scopify Host Adapter | 歌词署名与丰富行信息 | 未实现 | timed credits 已能解析，但 adapter 尚未透传全部 credits、source/language 和 Folia `Line` metadata | 扩展 `LyricsPresentationPayload` 和 host adapter，保留完整 metadata |
+| Scopify Host Adapter | 歌曲视觉主题 | 未实现 | 封面和歌曲元数据已存在，Stage 暂用固定主题，尚未提供 light/dark、`wordColors`、`lyricsIcons` 和 animation intensity | 定义 `SongVisualTheme`，优先接封面取色和本地主题；AI 主题仍是可选提案，不阻塞舞台迁移 |
+| Scopify Host Adapter | 外部 Stage 输入 | 未实现 | 当前 Stage 只消费正在播放的 NetEase 歌曲 | 后续以 `StagePresentationSession` 接入 embedded/local/now-playing/stage-api 来源，不改变当前播放所有权 |
+| 本地能力 | Cappella/Monet 图片资产与上传字体 | 已实现，非接口缺口 | IndexedDB 已持久化 Cappella emoji/avatar、Monet background/portrait 和上传字体；设置面板已接 upload/clear，字体通过 FontFace 恢复，object URL 会清理 | 保持当前视觉资产与字体资产边界 |
+| 本地能力 | 系统字体选择 | 已实现，非接口缺口 | 已接入受权限与能力检测保护的 Local Font Access system font picker，并保留 woff2/woff/ttf/otf 上传字体 fallback | 继续在不支持 Local Font Access 的浏览器中使用上传字体路径 |
+| 本地能力 | 完整视觉配置包导入导出 | 部分实现 | 已支持版本化校验后的 JSON 设置导入导出，但 JSON 不含 IndexedDB 中的图片/字体 Blob，也未覆盖 Folia shortcode | 增加 asset bundle export/import、asset manifest 与 shortcode codec，使视觉配置可跨设备完整迁移 |
 
 ## 单页展示
 
@@ -280,6 +296,7 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 ### 提案
 
+- [ ] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
 - [ ] 本地音乐库管理(离线歌单)
 - [ ] 接入 QQ、AMLLDB、酷狗等多源歌词匹配
 - [ ] Discord 显示正在使用我们的软件

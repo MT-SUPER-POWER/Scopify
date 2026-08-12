@@ -19,14 +19,7 @@ mkdirSync(packagedAppRoot, { recursive: true });
 const desktopPackage = JSON.parse(
   readFileSync(resolve(desktopRoot, "package.json"), "utf8"),
 ) as Record<string, unknown>;
-const rootPackage = JSON.parse(
-  readFileSync(resolve(desktopRoot, "../../package.json"), "utf8"),
-) as Record<string, unknown>;
-
-const packagedAppPackage: Record<string, unknown> = {
-  version: rootPackage.version,
-  ...desktopPackage,
-};
+const packagedAppPackage = { ...desktopPackage };
 delete packagedAppPackage.build;
 const dependencies = packagedAppPackage.dependencies;
 if (dependencies && typeof dependencies === "object" && !Array.isArray(dependencies)) {
