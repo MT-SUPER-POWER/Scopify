@@ -3,7 +3,7 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { BrowserWindow as BrowserWindowType } from "electron";
-import { app, BrowserWindow, dialog } from "electron";
+import { app, BrowserWindow, dialog, Menu } from "electron";
 import serve from "electron-serve";
 import {
   __iconDock,
@@ -52,6 +52,12 @@ let isQuitting = false;
 let desktopPlaybackWallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | null = null;
 let desktopPlaybackControllerWindow: DesktopPlaybackControllerWindow | null = null;
 let playbackBrokerIpcHost: PlaybackBrokerIpcHost | null = null;
+let splashShownAtMs = 0;
+let resolveSplashReady: (() => void) | null = null;
+let splashReady = Promise.resolve();
+
+const SPLASH_MINIMUM_VISIBLE_MS = 900;
+const SPLASH_READY_TIMEOUT_MS = 1_500;
 
 const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
 const appServe: ((win: BrowserWindowType) => Promise<void>) | null = useStaticRenderer
@@ -75,7 +81,22 @@ function destroySplashWindow() {
   splashWindow = null;
 }
 
-function revealMainWindow() {
+async function waitForSplashVisibility() {
+  await Promise.race([
+    splashReady,
+    new Promise<void>((resolve) => setTimeout(resolve, SPLASH_READY_TIMEOUT_MS)),
+  ]);
+
+  const remainingMs = Math.max(0, SPLASH_MINIMUM_VISIBLE_MS - (Date.now() - splashShownAtMs));
+  if (remainingMs > 0) {
+    await new Promise<void>((resolve) => setTimeout(resolve, remainingMs));
+  }
+}
+
+async function revealMainWindow() {
+  if (!mainWindow || mainWindowReleased || mainWindow.isDestroyed()) return;
+
+  await waitForSplashVisibility();
   if (!mainWindow || mainWindowReleased || mainWindow.isDestroyed()) return;
 
   mainWindowReleased = true;
@@ -93,6 +114,10 @@ function revealMainWindow() {
 
 function createWindow() {
   mainWindowReleased = false;
+  splashShownAtMs = 0;
+  splashReady = new Promise((resolve) => {
+    resolveSplashReady = resolve;
+  });
 
   splashWindow = new BrowserWindow({
     width: 700,
@@ -102,14 +127,30 @@ function createWindow() {
     alwaysOnTop: true,
     icon: __iconWindow,
     resizable: false,
-    show: true,
+    show: false,
     movable: false,
-    type: "toolbar",
+    skipTaskbar: true,
   });
 
-  splashWindow.loadFile(__splashHtmlPath);
-  splashWindow.center();
-  splashWindow.focus();
+  splashWindow.once("ready-to-show", () => {
+    if (!splashWindow || splashWindow.isDestroyed()) return;
+    splashShownAtMs = Date.now();
+    splashWindow.show();
+    splashWindow.center();
+    splashWindow.focus();
+    resolveSplashReady?.();
+    resolveSplashReady = null;
+  });
+  splashWindow.webContents.once("did-fail-load", (_event, code, description) => {
+    logger.error(`[splash] Failed to load (${code}): ${description}`);
+    resolveSplashReady?.();
+    resolveSplashReady = null;
+  });
+  splashWindow.loadFile(__splashHtmlPath).catch((error) => {
+    logger.error("[splash] Failed to load:", error);
+    resolveSplashReady?.();
+    resolveSplashReady = null;
+  });
 
   mainWindow = new BrowserWindow({
     width: 1400,
@@ -136,7 +177,7 @@ function createWindow() {
   });
 
   mainWindow.webContents.once("did-finish-load", () => {
-    revealMainWindow();
+    void revealMainWindow();
     setTimeout(() => {
       desktopPlaybackControllerWindow?.prepare();
       desktopPlaybackWallpaperDriver?.prepare();
@@ -283,6 +324,9 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     logger.info("Scopify ready, creating window...");
+
+    // autoHideMenuBar still reveals Electron's native menu when Alt is pressed on Windows.
+    if (process.platform === "win32") Menu.setApplicationMenu(null);
 
     if (useStaticRenderer) {
       const rendererVerification = verifyRendererArtifact(__rendererDir);
