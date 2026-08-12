@@ -7,6 +7,10 @@
 - 统一搜索窗口支持以 `>` 前缀搜索并执行命令；`Ctrl + Shift + P` 会直接打开命令查询。
 - 命令候选按设备本地累计使用次数排序，并继续支持上下方向键和 Enter 操作。
 
+### Quality
+
+- 统一工作空间版本声明：以根目录 `package.json` 为单一版本源，桌面端构建（Electron Builder / sync-renderer / prepare-packaged-app）自动继承根目录版本号，无需再手动修改三个 `package.json`。
+
 
 ## v1.4.1
 
