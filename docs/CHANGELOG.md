@@ -16,6 +16,7 @@
 
 ### Fixed
 
+- 修复搜索页点播歌曲时播放栏的点赞/评论总数可能长期空白：统计请求现已按歌曲去重、自动重试并回填缓存；加载中显示轻量指示，最终失败时可直接重试并记录结构化诊断事件。
 - Windows 桌面端按下 `Alt` 不再显示原生 Electron 菜单栏。
 - 桌面端新增 Discord Rich Presence：在设置中填入 Scopify 的 Discord Application ID 并启用后，可同步当前曲目、封面、播放状态与进度。
 - Discord Rich Presence 默认使用 Scopify Application ID `1536959813114658836` 并在新配置中启用。

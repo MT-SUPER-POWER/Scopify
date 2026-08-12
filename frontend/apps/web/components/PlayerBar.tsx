@@ -7,6 +7,7 @@ import {
   ChevronDown,
   ChevronUp,
   Expand,
+  LoaderCircle,
   Mic2,
   MinimizeIcon,
   MonitorSpeaker,
@@ -15,6 +16,7 @@ import {
   Radio,
   Repeat,
   Repeat1,
+  RotateCw,
   Shuffle,
   SkipBack,
   SkipForward,
@@ -22,7 +24,6 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
 import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
@@ -34,10 +35,10 @@ import { QUALITY_OPTIONS } from "@/constants/playerBar";
 import { useMusicQuality } from "@/hooks/player/useMusicQuality";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
-import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
@@ -54,11 +55,17 @@ function PlayerBarStatAction({
   count,
   countClassName,
   onClick,
+  onRetry,
   href,
+  retryLabel,
   shortcutCommandId,
+  statsStatus = "idle",
   title,
   children,
 }: PlayerBarStatActionProps) {
+  const isLoading = count === undefined && statsStatus === "loading";
+  const isUnavailable =
+    count === undefined && (statsStatus === "failed" || statsStatus === "partial");
   const body = (
     <div className="relative inline-flex shrink-0 items-center justify-center transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
       {/* 修复点 1：把 children（图标）显式包裹并设为 z-0，强制将其压在底层 */}
@@ -78,11 +85,16 @@ function PlayerBarStatAction({
         >
           {formatCompactCount(count)}
         </span>
+      ) : isLoading ? (
+        <LoaderCircle
+          aria-label={title}
+          className="text-content-muted absolute top-0 right-0 size-3.5 translate-x-[42%] translate-y-[-42%] animate-spin"
+        />
       ) : null}
     </div>
   );
 
-  const className = "group shrink-0 py-1 pr-2 cursor-pointer hover:opacity-90 transition-opacity";
+  const className = "shrink-0 py-1 pr-2 cursor-pointer hover:opacity-90 transition-opacity";
 
   const action = href ? (
     <Link href={href} aria-label={title} onClick={onClick} className={className}>
@@ -94,16 +106,48 @@ function PlayerBarStatAction({
     </button>
   );
 
-  if (!title) return action;
+  const retryAction =
+    isUnavailable && onRetry ? (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            aria-label={retryLabel}
+            className="bg-surface border-border text-content-muted hover:text-content absolute top-0 right-1 z-20 flex size-3.5 translate-x-1/2 -translate-y-1/3 items-center justify-center rounded-full border transition-colors"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onRetry();
+            }}
+          >
+            <RotateCw className="size-2.5" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="top" sideOffset={8}>
+          {retryLabel}
+        </TooltipContent>
+      </Tooltip>
+    ) : null;
+
+  if (!title)
+    return (
+      <div className="group relative shrink-0">
+        {action}
+        {retryAction}
+      </div>
+    );
 
   return (
     <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>{action}</TooltipTrigger>
-        <TooltipContent side="top" sideOffset={8}>
-          <ShortcutHint commandId={shortcutCommandId} label={title} />
-        </TooltipContent>
-      </Tooltip>
+      <div className="group relative shrink-0">
+        <Tooltip>
+          <TooltipTrigger asChild>{action}</TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            <ShortcutHint commandId={shortcutCommandId} label={title} />
+          </TooltipContent>
+        </Tooltip>
+        {retryAction}
+      </div>
     </TooltipProvider>
   );
 }
@@ -146,18 +190,11 @@ export const PlayerBar = ({
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricStageBar = variant === "lyric-stage";
   const { musicQuality } = useMusicQuality();
+  const songStats = useSongStatsEnrichment(currentSong);
 
   // 查找当前选中的音质选项，如果找不到就提供一个兜底
   const currentOption = QUALITY_OPTIONS.find((opt) => opt.value === musicQuality);
   const CurrentIcon = currentOption?.icon ?? Radio;
-
-  useEffect(() => {
-    if (!currentSong?.id) return;
-    void enrichSongStatsById(currentSong.id, {
-      likedCount: currentSong.likedCount,
-      commentCount: currentSong.commentCount,
-    });
-  }, [currentSong?.id, currentSong?.likedCount, currentSong?.commentCount]);
 
   // 切换播放模式
   const cycleRepeat = () => {
@@ -317,6 +354,9 @@ export const PlayerBar = ({
               <PlayerBarStatAction
                 count={currentSong.likedCount}
                 countClassName={isLiked ? "text-brand" : "text-content-muted"}
+                onRetry={() => void songStats.retry()}
+                retryLabel={t("common.action.retry")}
+                statsStatus={songStats.state.status}
                 title={isLiked ? t("common.action.unlike") : t("common.action.like")}
                 shortcutCommandId="toggle-like"
                 onClick={() => void commands.toggleLike()}
@@ -332,6 +372,9 @@ export const PlayerBar = ({
                 count={currentSong.commentCount}
                 countClassName="text-content-muted group-hover:text-content transition-colors"
                 href={`/comment?songId=${currentSong.id}`}
+                onRetry={() => void songStats.retry()}
+                retryLabel={t("common.action.retry")}
+                statsStatus={songStats.state.status}
                 title={t("contextMenu.comments")}
                 shortcutCommandId="open-current-track-comments"
               >
