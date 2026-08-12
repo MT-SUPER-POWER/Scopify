@@ -1,8 +1,10 @@
 import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
 import type { DesktopSettingsChangeHandler } from "@/types/settings";
 import type { SettingsConfig, WebSettingsChangeHandler } from "@/types/settings";
+import type { BackendPingResult } from "@/types/network";
 
 export interface NetworkSettingsTabProps {
+  backendPingResult: BackendPingResult | null;
   config: SettingsConfig;
   isPingingBackend: boolean;
   onDesktopChange: DesktopSettingsChangeHandler;

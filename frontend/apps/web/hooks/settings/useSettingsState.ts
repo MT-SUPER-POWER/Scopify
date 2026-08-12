@@ -12,6 +12,7 @@ import { webConfig } from "@/lib/web/env";
 import { pingBackend, probeBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
 import type { WebConfig } from "@/types/config";
+import type { BackendPingResult } from "@/types/network";
 import type { SettingsConfig } from "@/types/settings";
 
 export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
@@ -112,6 +113,7 @@ export function useSettingsState() {
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [isClearingPlaybackCache, setIsClearingPlaybackCache] = useState(false);
   const [isPingingBackend, setIsPingingBackend] = useState(false);
+  const [backendPingResult, setBackendPingResult] = useState<BackendPingResult | null>(null);
   const [isTestingDiscord, setIsTestingDiscord] = useState(false);
   const [discordStatus, setDiscordStatus] = useState<DiscordPresenceStatus | null>(null);
   const [playbackCacheStats, setPlaybackCacheStats] = useState<{
@@ -213,6 +215,7 @@ export function useSettingsState() {
     setIsPingingBackend(true);
     try {
       const result = await probeBackend(backendUrl.url, timeout);
+      setBackendPingResult(result);
       if (result.reachable) {
         toast.success(
           translate(
@@ -424,6 +427,7 @@ export function useSettingsState() {
     isClearingPlaybackCache,
     playbackCacheStats,
     handleClearPlaybackCache,
+    backendPingResult,
     isPingingBackend,
     handlePingBackend,
     discordStatus,

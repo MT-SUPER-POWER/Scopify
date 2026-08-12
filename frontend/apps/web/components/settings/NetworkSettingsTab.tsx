@@ -1,12 +1,13 @@
 "use client";
 
-import { LoaderCircle, Radio } from "lucide-react";
+import { CircleCheck, CircleX, LoaderCircle, Radio } from "lucide-react";
 import type { DesktopProxyMode } from "@scopify/desktop-contract";
 import type { NetworkSettingsTabProps } from "@/types/components/settings";
 import { useI18n } from "@/store/module/i18n";
 import { SettingInput, SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
 
 export function NetworkSettingsTab({
+  backendPingResult,
   config,
   isPingingBackend,
   onDesktopChange,
@@ -15,6 +16,41 @@ export function NetworkSettingsTab({
 }: NetworkSettingsTabProps) {
   const { t } = useI18n();
   const isCustomProxy = config.desktop?.network.proxyMode === "custom";
+
+  const pingBadge = backendPingResult ? (
+    <span
+      aria-live="polite"
+      className={
+        backendPingResult.reachable
+          ? "text-success flex items-center gap-1 text-xs font-medium"
+          : "text-danger flex items-center gap-1 text-xs font-medium"
+      }
+    >
+      {backendPingResult.reachable ? (
+        <CircleCheck className="size-3.5" />
+      ) : (
+        <CircleX className="size-3.5" />
+      )}
+      {backendPingResult.reachable
+        ? backendPingResult.version
+          ? t("settings.backendPing.successWithVersion", {
+              latency: backendPingResult.latencyMs,
+              version: backendPingResult.version.startsWith("v")
+                ? backendPingResult.version
+                : `v${backendPingResult.version}`,
+            })
+          : t("settings.backendPing.success", {
+              latency: backendPingResult.latencyMs,
+            })
+        : backendPingResult.reason === "timeout"
+          ? t("settings.backendPing.timeout")
+          : backendPingResult.reason === "invalid-response"
+            ? t("settings.backendPing.invalidResponse")
+            : backendPingResult.reason === "server"
+              ? t("settings.backendPing.serverError", { status: backendPingResult.status ?? 0 })
+              : t("settings.backendPing.networkError")}
+    </span>
+  ) : null;
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
@@ -44,7 +80,12 @@ export function NetworkSettingsTab({
           }
         />
         <SettingRow
-          label={t("settings.backendPing.label")}
+          label={
+            <div className="flex items-center gap-2">
+              <span>{t("settings.backendPing.label")}</span>
+              {pingBadge}
+            </div>
+          }
           sublabel={t("settings.backendPing.sublabel")}
           control={
             <button
