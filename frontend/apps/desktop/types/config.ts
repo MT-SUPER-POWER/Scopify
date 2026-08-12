@@ -28,6 +28,10 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     pageTtlMinutes: 360,
     searchTtlMinutes: 30,
   },
+  discord: {
+    enabled: true,
+    applicationId: "1536959813114658836",
+  },
   updater: {
     checkOnStartup: true,
     autoDownload: false,
@@ -110,6 +114,13 @@ export const desktopHostConfigSchema = z.preprocess(
           maxSizeMB: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.maxSizeMB),
           pageTtlMinutes: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.pageTtlMinutes),
           searchTtlMinutes: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.searchTtlMinutes),
+        }),
+      ),
+      discord: z.preprocess(
+        toRecord,
+        z.object({
+          enabled: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.discord.enabled),
+          applicationId: trimmedString(DEFAULT_DESKTOP_HOST_CONFIG.discord.applicationId, true),
         }),
       ),
       updater: z.preprocess(

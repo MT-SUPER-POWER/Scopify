@@ -20,6 +20,7 @@ test("desktop config yml contains only host-owned settings", () => {
   expect(config.cache.maxSizeMB).toBe(256);
   expect(config.cache.pageTtlMinutes).toBe(360);
   expect(config.cache.searchTtlMinutes).toBe(30);
+  expect(config.discord).toEqual({ applicationId: "1536959813114658836", enabled: true });
   expect(config.updater.checkOnStartup).toBe(true);
   expect(config.updater.autoDownload).toBe(false);
   expect(parsed).not.toHaveProperty("backend");
@@ -90,4 +91,15 @@ test("normalizing updater config accepts persisted boolean strings", () => {
 
   expect(config.updater.checkOnStartup).toBe(false);
   expect(config.updater.autoDownload).toBe(true);
+});
+
+test("normalizing Discord config accepts an application ID and boolean strings", () => {
+  const config = normalizeDesktopHostConfig({
+    discord: {
+      applicationId: " 123456789012345678 ",
+      enabled: "true",
+    },
+  });
+
+  expect(config.discord).toEqual({ applicationId: "123456789012345678", enabled: true });
 });

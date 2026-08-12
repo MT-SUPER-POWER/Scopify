@@ -1,10 +1,8 @@
-import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
 import type { DesktopSettingsChangeHandler } from "@/types/settings";
-import type { BackendPingResult } from "@/types/network";
 import type { SettingsConfig, WebSettingsChangeHandler } from "@/types/settings";
 
 export interface NetworkSettingsTabProps {
-  backendPingResult: BackendPingResult | null;
   config: SettingsConfig;
   isPingingBackend: boolean;
   onDesktopChange: DesktopSettingsChangeHandler;
@@ -33,7 +31,10 @@ export interface StorageSettingsTabProps {
 
 export interface DesktopSettingsTabProps {
   config: DesktopHostConfig;
+  discordStatus: DiscordPresenceStatus | null;
+  isTestingDiscord: boolean;
   onChange: DesktopSettingsChangeHandler;
+  onTestDiscord: () => Promise<void>;
 }
 
 export interface AppUpdaterSectionProps {

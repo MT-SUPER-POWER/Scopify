@@ -14,9 +14,10 @@ import type {
 import type { RendererLogEvent } from "./logging";
 import type { AppUpdateState } from "./updater";
 import type { DesktopHostConfig } from "./config";
+import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "./discord";
 import type { PlaybackTransportPayload, PlaybackTransportRole } from "./playback";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 8;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 10;
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
@@ -25,6 +26,7 @@ export type DesktopBridgeCapability =
   | "desktop-icons"
   | "desktop-lyrics"
   | "desktop-playback-wallpaper"
+  | "discord-presence"
   | "login"
   | "logs"
   | "media-controls"
@@ -65,6 +67,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   enterFullScreen(): void;
   exitApp(): void;
   exitFullScreen(): void;
+  getDiscordPresenceStatus(): Promise<DiscordPresenceStatus>;
   getHostConfig(): Promise<DesktopHostConfig>;
   getBridgeInfo(): Promise<DesktopBridgeInfo>;
   getLogDirectory(): Promise<string>;
@@ -85,10 +88,13 @@ export interface DesktopBridge<TLyrics = unknown> {
   onDesktopPlaybackWallpaperAudioFrame(
     callback: (frame: DesktopPlaybackWallpaperAudioFrame) => void,
   ): Unsubscribe;
+  onDiscordPresenceStatusChanged(callback: (status: DiscordPresenceStatus) => void): Unsubscribe;
   onFullScreenChanged(callback: (isFullScreen: boolean) => void): Unsubscribe;
   onNavigate(callback: (path: string) => void): Unsubscribe;
   onUpdateStatusChanged(callback: (status: AppUpdateState) => void): Unsubscribe;
   openLoginWindow(): void;
+  publishDiscordPresenceSnapshot(snapshot: DiscordPresenceSnapshot): Promise<DiscordPresenceStatus>;
+  testDiscordPresenceConnection(): Promise<DiscordPresenceStatus>;
   publishDesktopPlaybackWallpaperAudioFrame(frame: DesktopPlaybackWallpaperAudioFrame): void;
   quitAndInstallUpdate(): void;
   relaunchApp(): void;

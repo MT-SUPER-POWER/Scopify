@@ -17,6 +17,7 @@ import {
 } from "./constants.js";
 import { verifyRendererArtifact } from "../lib/rendererArtifact.js";
 import { loadDesktopHostConfig } from "./config.js";
+import { createDiscordPresenceController } from "./module/discordPresence.js";
 import { disposeAppCloseWindow, showAppCloseWindow } from "./module/appCloseWindow.js";
 import { registerIpcHandlers } from "./module/ipc.js";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
@@ -268,6 +269,16 @@ function createWindow() {
   });
 }
 
+const discordPresenceController = createDiscordPresenceController({
+  getApplicationId: () => loadDesktopHostConfig().discord.applicationId,
+  isEnabled: () => loadDesktopHostConfig().discord.enabled,
+  onStatusChange: (status) => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send("discord-presence:status-changed", status);
+    }
+  },
+});
+
 function setupWindowModules(win: BrowserWindowType) {
   desktopPlaybackWallpaperDriver ??= createElectronDesktopPlaybackWallpaperDriver({
     rendererBaseUrl,
@@ -275,7 +286,7 @@ function setupWindowModules(win: BrowserWindowType) {
   desktopPlaybackControllerWindow ??= createDesktopPlaybackControllerWindow({
     rendererBaseUrl,
   });
-  registerIpcHandlers(win);
+  registerIpcHandlers(win, discordPresenceController);
   initializeDesktopIconVisibilityCapability(win, {
     getControllerWindow: desktopPlaybackControllerWindow.getWindow,
   });
@@ -384,6 +395,7 @@ if (!gotTheLock) {
     disposeAppCloseWindow();
     playbackBrokerIpcHost?.dispose();
     playbackBrokerIpcHost = null;
+    void discordPresenceController.destroy();
     desktopPlaybackControllerWindow?.dispose();
     desktopPlaybackControllerWindow = null;
   });

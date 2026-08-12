@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@scopify/desktop-contract": "1.0.0",
+    "@xhayper/discord-rpc": "^1.3.4",
     "electron-log": "^5.4.4",
     "electron-serve": "^3.0.1",
     "electron-updater": "^6.8.9",

@@ -48,6 +48,7 @@ const HOST_CONFIG: DesktopHostConfig = {
     pageTtlMinutes: 360,
     searchTtlMinutes: 30,
   },
+  discord: { applicationId: "1536959813114658836", enabled: true },
   frontend: { devPort: 3000, host: "127.0.0.1" },
   logging: { format: "", keepDays: 7, level: "info" },
   network: { proxyMode: "system", proxyUrl: "" },
@@ -79,6 +80,22 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     enterFullScreen: NOOP,
     exitApp: NOOP,
     exitFullScreen: NOOP,
+    getDiscordPresenceStatus: async () => ({
+      applicationId: null,
+      configured: false,
+      connected: false,
+      enabled: false,
+      error: null,
+      updatedAtMs: 0,
+    }),
+    testDiscordPresenceConnection: async () => ({
+      applicationId: null,
+      configured: false,
+      connected: false,
+      enabled: false,
+      error: null,
+      updatedAtMs: 0,
+    }),
     getHostConfig: async () => HOST_CONFIG,
     getBridgeInfo: async () => ({
       capabilities: [],
@@ -100,10 +117,19 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     onDesktopLyricCommand: () => NOOP,
     onDesktopPlaybackWallpaperAudioFrame: () => NOOP,
     onDesktopPlaybackWallpaperModelChanged: () => NOOP,
+    onDiscordPresenceStatusChanged: () => NOOP,
     onFullScreenChanged: () => NOOP,
     onNavigate: () => NOOP,
     onUpdateStatusChanged: () => NOOP,
     openLoginWindow: NOOP,
+    publishDiscordPresenceSnapshot: async () => ({
+      applicationId: null,
+      configured: false,
+      connected: false,
+      enabled: false,
+      error: null,
+      updatedAtMs: 0,
+    }),
     publishDesktopPlaybackWallpaperAudioFrame: NOOP,
     quitAndInstallUpdate: NOOP,
     relaunchApp: NOOP,
@@ -342,5 +368,22 @@ describe("electron runtime adapter", () => {
       visible: false,
     });
     expect(calls).toEqual(["get-icons", "set-icons:false"]);
+  });
+
+  test("routes Discord connection tests through the desktop bridge", async () => {
+    const bridge = createBridge({
+      testDiscordPresenceConnection: async () => ({
+        applicationId: "1536959813114658836",
+        configured: true,
+        connected: true,
+        enabled: true,
+        error: null,
+        updatedAtMs: 1,
+      }),
+    });
+
+    await expect(createElectronRuntime(bridge).discord.testConnection()).resolves.toMatchObject({
+      connected: true,
+    });
   });
 });

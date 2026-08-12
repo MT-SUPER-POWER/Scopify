@@ -36,17 +36,13 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="bg-surface-raised text-muted-foreground shadow-floating relative flex min-h-full w-full flex-col rounded-lg p-6 md:p-10">
+    <div className="text-muted-foreground relative flex w-full flex-col p-6 md:p-10">
       <div className="mt-4 mb-8 flex items-center justify-between">
         <h1 className="text-foreground text-3xl font-black tracking-tight md:text-4xl">
           {t("settings.title")}
         </h1>
       </div>
-      <Tabs
-        value={activeTab}
-        onValueChange={handleTabChange}
-        className="flex min-h-0 flex-1 flex-col"
-      >
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="flex flex-col">
         <TabsList className="bg-surface-sunken h-auto w-fit max-w-full justify-start gap-1 self-start overflow-x-auto p-1">
           {SETTINGS_TABS.filter((tab) => tab.id !== "desktop" || runtime.isDesktop).map((tab) => (
             <TabsTrigger key={tab.id} value={tab.id} className="shrink-0 px-4 py-2">
@@ -54,7 +50,7 @@ const SettingsPage = () => {
             </TabsTrigger>
           ))}
         </TabsList>
-        <div className="min-h-0 flex-1 py-8 pb-20">
+        <div className="py-8 pb-12">
           <TabsContent value="general">
             <GeneralSettingsTab
               config={settings.config}
@@ -64,7 +60,6 @@ const SettingsPage = () => {
           </TabsContent>
           <TabsContent value="network">
             <NetworkSettingsTab
-              backendPingResult={settings.backendPingResult}
               config={settings.config}
               isPingingBackend={settings.isPingingBackend}
               onWebChange={settings.handleWebChange}
@@ -87,7 +82,10 @@ const SettingsPage = () => {
             <TabsContent value="desktop">
               <DesktopSettingsTab
                 config={settings.config.desktop}
+                discordStatus={settings.discordStatus}
+                isTestingDiscord={settings.isTestingDiscord}
                 onChange={settings.handleDesktopChange}
+                onTestDiscord={settings.handleTestDiscord}
               />
             </TabsContent>
           ) : null}

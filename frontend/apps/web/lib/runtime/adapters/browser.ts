@@ -184,6 +184,12 @@ export function createBrowserRuntime(
       getVisibility: async () => unsupportedDesktopIconVisibilityState(),
       setVisibility: async () => unsupportedDesktopIconVisibilityState(),
     },
+    discord: {
+      getStatus: async () => null,
+      onStatusChanged: () => NOOP,
+      publish: async () => null,
+      testConnection: async () => null,
+    },
     desktopLyrics: {
       close: async () => false,
       getPreferences: async () => null,

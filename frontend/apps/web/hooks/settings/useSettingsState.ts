@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
 import { toast } from "sonner";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { clearPlaybackCache, getPlaybackCacheStats } from "@/lib/cache/playbackCache";
@@ -12,7 +12,6 @@ import { webConfig } from "@/lib/web/env";
 import { pingBackend, probeBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
 import type { WebConfig } from "@/types/config";
-import type { BackendPingResult } from "@/types/network";
 import type { SettingsConfig } from "@/types/settings";
 
 export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
@@ -113,7 +112,8 @@ export function useSettingsState() {
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [isClearingPlaybackCache, setIsClearingPlaybackCache] = useState(false);
   const [isPingingBackend, setIsPingingBackend] = useState(false);
-  const [backendPingResult, setBackendPingResult] = useState<BackendPingResult | null>(null);
+  const [isTestingDiscord, setIsTestingDiscord] = useState(false);
+  const [discordStatus, setDiscordStatus] = useState<DiscordPresenceStatus | null>(null);
   const [playbackCacheStats, setPlaybackCacheStats] = useState<{
     entryCount: number;
     cacheDir: string | null;
@@ -155,12 +155,31 @@ export function useSettingsState() {
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    if (!runtime.isDesktop) return;
+
+    let isMounted = true;
+    void runtime.discord
+      .getStatus()
+      .then((status) => {
+        if (isMounted) setDiscordStatus(status);
+      })
+      .catch(() => {});
+
+    const unsubscribe = runtime.discord.onStatusChanged((status) => {
+      if (isMounted) setDiscordStatus(status);
+    });
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
+
   const handleWebChange = <S extends keyof WebConfig, K extends keyof WebConfig[S]>(
     section: S,
     key: K,
     value: WebConfig[S][K],
   ) => {
-    if (section === "backend" || section === "network") setBackendPingResult(null);
     setConfig((current) =>
       current
         ? {
@@ -192,19 +211,84 @@ export function useSettingsState() {
         ? config.web.network.timeout
         : 10000;
     setIsPingingBackend(true);
-    setBackendPingResult(null);
     try {
-      setBackendPingResult(await probeBackend(backendUrl.url, timeout));
+      const result = await probeBackend(backendUrl.url, timeout);
+      if (result.reachable) {
+        toast.success(
+          translate(
+            config.web.app.locale,
+            result.version
+              ? "settings.backendPing.successWithVersion"
+              : "settings.backendPing.success",
+            result.version
+              ? { latency: result.latencyMs, version: result.version }
+              : { latency: result.latencyMs },
+          ),
+        );
+        return;
+      }
+
+      const message =
+        result.reason === "timeout"
+          ? translate(config.web.app.locale, "settings.backendPing.timeout")
+          : result.reason === "invalid-response"
+            ? translate(config.web.app.locale, "settings.backendPing.invalidResponse")
+            : result.reason === "server"
+              ? translate(config.web.app.locale, "settings.backendPing.serverError", {
+                  status: result.status ?? 0,
+                })
+              : translate(config.web.app.locale, "settings.backendPing.networkError");
+      toast.error(message);
     } catch (error) {
       console.error("[Settings] failed to ping backend:", error);
-      setBackendPingResult({
-        latencyMs: 0,
-        reachable: false,
-        reason: "network",
-        url: backendUrl.url,
-      });
+      toast.error(translate(config.web.app.locale, "settings.backendPing.networkError"));
     } finally {
       setIsPingingBackend(false);
+    }
+  };
+
+  const handleTestDiscord = async () => {
+    if (!config?.desktop || isTestingDiscord) return;
+
+    const locale = config.web.app.locale;
+    const savedDiscordConfig = originalConfig?.desktop?.discord;
+    const hasUnsavedDiscordChanges =
+      !savedDiscordConfig ||
+      JSON.stringify(config.desktop.discord) !== JSON.stringify(savedDiscordConfig);
+    if (hasUnsavedDiscordChanges) {
+      toast.warning(translate(locale, "settings.discord.test.saveFirst"));
+      return;
+    }
+
+    setIsTestingDiscord(true);
+    try {
+      const status = await runtime.discord.testConnection();
+      setDiscordStatus(status);
+      if (status?.connected) {
+        toast.success(translate(locale, "settings.discord.test.connected"));
+      } else if (!status?.enabled) {
+        toast.error(translate(locale, "settings.discord.test.disabled"));
+      } else if (!status.configured) {
+        toast.error(translate(locale, "settings.discord.test.applicationIdRequired"));
+      } else {
+        toast.error(
+          translate(locale, "settings.discord.test.failed", {
+            message: status.error || translate(locale, "settings.discord.test.unknownError"),
+          }),
+        );
+      }
+    } catch (error) {
+      console.error("[Settings] failed to test Discord connection:", error);
+      toast.error(
+        translate(locale, "settings.discord.test.failed", {
+          message:
+            error instanceof Error && error.message
+              ? error.message
+              : translate(locale, "settings.discord.test.unknownError"),
+        }),
+      );
+    } finally {
+      setIsTestingDiscord(false);
     }
   };
 
@@ -340,8 +424,10 @@ export function useSettingsState() {
     isClearingPlaybackCache,
     playbackCacheStats,
     handleClearPlaybackCache,
-    backendPingResult,
     isPingingBackend,
     handlePingBackend,
+    discordStatus,
+    isTestingDiscord,
+    handleTestDiscord,
   };
 }

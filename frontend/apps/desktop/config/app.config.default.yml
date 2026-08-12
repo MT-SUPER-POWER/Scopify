@@ -18,6 +18,9 @@ cache:
   maxSizeMB: 256
   pageTtlMinutes: 360
   searchTtlMinutes: 30
+discord:
+  enabled: true
+  applicationId: "1536959813114658836"
 updater:
   checkOnStartup: true
   autoDownload: false

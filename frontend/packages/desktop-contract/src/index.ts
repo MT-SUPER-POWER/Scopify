@@ -4,6 +4,7 @@ export * from "./config";
 export * from "./desktopIcons";
 export * from "./desktopLyrics";
 export * from "./desktopPlaybackWallpaper";
+export * from "./discord";
 export * from "./logging";
 export * from "./playback";
 export * from "./rendererArtifact";

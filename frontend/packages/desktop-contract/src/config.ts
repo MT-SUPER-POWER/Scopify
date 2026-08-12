@@ -19,6 +19,10 @@ export interface DesktopHostConfig {
     pageTtlMinutes: number;
     searchTtlMinutes: number;
   };
+  discord: {
+    applicationId: string;
+    enabled: boolean;
+  };
   frontend: {
     devPort: number;
     host: string;

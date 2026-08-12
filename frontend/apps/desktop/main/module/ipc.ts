@@ -4,6 +4,7 @@ import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
   type DesktopHostConfig,
   type DesktopBridgeCapability,
+  type DiscordPresenceSnapshot,
   type RendererLogEvent,
 } from "@scopify/desktop-contract";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "../config.js";
@@ -11,6 +12,7 @@ import { getLogDirectory, logger } from "../constants.js";
 import { loginWindow } from "./login.js";
 import { createPageCacheStore } from "./pageCache.js";
 import { applyElectronProxy } from "./proxy.js";
+import type { createDiscordPresenceController } from "./discordPresence.js";
 import { updateThumbarButtons } from "./thumbarButtons.js";
 import { trayWindow } from "./tray.js";
 import {
@@ -29,7 +31,10 @@ function createConfiguredPageCacheStore() {
   });
 }
 
-export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
+export function registerIpcHandlers(
+  mainWindow: BrowserWindow | null,
+  discordPresence: ReturnType<typeof createDiscordPresenceController>,
+) {
   ipcMain.handle("bridge:get-info", () => ({
     capabilities: [
       "app-lifecycle",
@@ -38,6 +43,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
       "desktop-icons",
       "desktop-lyrics",
       "desktop-playback-wallpaper",
+      "discord-presence",
       "login",
       "logs",
       "media-controls",
@@ -78,6 +84,12 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     }
   });
 
+  ipcMain.handle("discord-presence:get-status", () => discordPresence.getStatus());
+  ipcMain.handle("discord-presence:test-connection", () => discordPresence.testConnection());
+  ipcMain.handle("discord-presence:publish", (_event, snapshot: DiscordPresenceSnapshot) =>
+    discordPresence.publishSnapshot(snapshot),
+  );
+
   ipcMain.handle("updater:get-status", () => getUpdateState());
   ipcMain.handle("updater:check", () => checkForUpdates());
   ipcMain.handle("updater:download", () => downloadUpdate());
@@ -93,6 +105,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow | null) {
     logger.info("[IPC] config:update-host", newConfig);
     const savedConfig = saveDesktopHostConfig(newConfig);
     configureUpdater(savedConfig.updater);
+    void discordPresence.refresh();
     await applyElectronProxy(savedConfig).catch((error) => {
       logger.error("[IPC] failed to apply proxy after config update:", error);
     });

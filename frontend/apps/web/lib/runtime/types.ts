@@ -6,6 +6,8 @@ import type {
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
   DesktopHostConfig,
+  DiscordPresenceSnapshot,
+  DiscordPresenceStatus,
   PageCacheStats,
   PlaybackTransportPayload,
   PlaybackTransportRole,
@@ -61,6 +63,13 @@ export interface RuntimeDesktopLyrics {
 export interface RuntimeDesktopIcons {
   getVisibility(): Promise<DesktopIconVisibilityState>;
   setVisibility(visible: boolean): Promise<DesktopIconVisibilityState>;
+}
+
+export interface RuntimeDiscordPresence {
+  getStatus(): Promise<DiscordPresenceStatus | null>;
+  onStatusChanged(callback: (status: DiscordPresenceStatus) => void): RuntimeUnsubscribe;
+  publish(snapshot: DiscordPresenceSnapshot): Promise<DiscordPresenceStatus | null>;
+  testConnection(): Promise<DiscordPresenceStatus | null>;
 }
 
 export interface RuntimeDesktopPlaybackWallpaper {
@@ -126,6 +135,7 @@ export interface WebRuntime {
   readonly cache: RuntimeCache;
   readonly config: RuntimeConfiguration;
   readonly desktopIcons: RuntimeDesktopIcons;
+  readonly discord: RuntimeDiscordPresence;
   readonly desktopLyrics: RuntimeDesktopLyrics;
   readonly desktopPlaybackWallpaper: RuntimeDesktopPlaybackWallpaper;
   readonly isDesktop: boolean;

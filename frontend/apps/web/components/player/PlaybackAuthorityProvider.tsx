@@ -10,12 +10,14 @@ import type {
 
 import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjectionProvider";
 import { usePlaybackAuthority } from "@/hooks/player/usePlaybackAuthority";
+import { useDiscordPresence } from "@/hooks/player/useDiscordPresence";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { createCompositePlaybackAuthorityTransport } from "@/lib/playbackProjection/compositeTransport";
 import { systemPlaybackClock } from "@/lib/playbackProjection/clock";
 import { createElectronPlaybackAuthorityTransport } from "@/lib/playbackProjection/electronTransport";
 import { createInProcessPlaybackTransport } from "@/lib/playbackProjection/inProcessTransport";
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
+import { buildDiscordPresenceArtist } from "@/lib/player/discordPresence";
 import { isPlaybackSourceCurrent, waitForPlaybackSource } from "@/lib/player/playbackSource";
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { runtime } from "@/lib/runtime";
@@ -72,6 +74,23 @@ export function PlaybackAuthorityProvider({
     if (!currentSongDetail || !Array.isArray(likeListIds)) return false;
     return likeListIds.some((id) => Number(id) === currentSongDetail.id);
   }, [currentSongDetail, likeListIds]);
+  const discordPresence = useMemo(
+    () => ({
+      album: currentSongDetail?.al.name ?? "",
+      artist: buildDiscordPresenceArtist({
+        album: currentSongDetail?.al.name ?? "",
+        artistNames: currentSongDetail?.ar.map((artist) => artist.name) ?? [],
+        title: currentSongDetail?.name ?? "",
+      }),
+      coverUrl: currentSongDetail?.al.picUrl ?? null,
+      durationMs: currentSongDetail?.dt ?? 0,
+      isPlaying: isPlayingIntent,
+      positionMs: 0,
+      title: currentSongDetail?.name ?? "",
+    }),
+    [currentSongDetail, isPlayingIntent],
+  );
+  useDiscordPresence(discordPresence);
   const lyricVersion = useMemo(() => {
     if (!rawLyric || !currentSongDetail) return null;
     return [

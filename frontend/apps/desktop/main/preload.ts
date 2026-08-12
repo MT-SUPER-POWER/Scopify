@@ -63,6 +63,8 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.send("relaunch-app");
   },
   getBridgeInfo: () => ipcRenderer.invoke("bridge:get-info"),
+  getDiscordPresenceStatus: () => ipcRenderer.invoke("discord-presence:get-status"),
+  testDiscordPresenceConnection: () => ipcRenderer.invoke("discord-presence:test-connection"),
   setPlayerPlaying: (isPlaying) => {
     ipcRenderer.send("player-state-changed", { isPlaying });
   },
@@ -153,6 +155,18 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.on("desktop-lyric:command", listener);
     return () => ipcRenderer.removeListener("desktop-lyric:command", listener);
   },
+  onDiscordPresenceStatusChanged: (callback) => {
+    const listener = (
+      _event: Electron.IpcRendererEvent,
+      status: Parameters<typeof callback>[0],
+    ) => {
+      callback(status);
+    };
+    ipcRenderer.on("discord-presence:status-changed", listener);
+    return () => ipcRenderer.removeListener("discord-presence:status-changed", listener);
+  },
+  publishDiscordPresenceSnapshot: (snapshot) =>
+    ipcRenderer.invoke("discord-presence:publish", snapshot),
   getDesktopPlaybackWallpaperModel: () =>
     ipcRenderer.invoke("desktop-playback-wallpaper:get-model"),
   updateDesktopPlaybackWallpaperPreferences: (update: DesktopPlaybackWallpaperPreferencesUpdate) =>

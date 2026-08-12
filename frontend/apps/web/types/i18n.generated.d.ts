@@ -401,6 +401,132 @@ export interface TranslateFn {
    */
   (key: "settings.section.updater", params?: TranslationParams): string;
   /**
+   * zh-CN: Discord
+   * zh-TW: Discord
+   * en-US: Discord
+   */
+  (key: "settings.section.discord", params?: TranslationParams): string;
+  /**
+   * zh-CN: Discord 播放状态
+   * zh-TW: Discord 播放狀態
+   * en-US: Discord Playback Status
+   */
+  (key: "settings.discord.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在 Discord 桌面端显示当前正在播放的歌曲。
+   * zh-TW: 在 Discord 桌面版顯示目前正在播放的歌曲。
+   * en-US: Show the currently playing track in Discord desktop.
+   */
+  (key: "settings.discord.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: Discord Application ID
+   * zh-TW: Discord Application ID
+   * en-US: Discord Application ID
+   */
+  (key: "settings.discord.applicationId.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在 Discord Developer Portal 创建 Scopify 应用后填入其 Application ID；不会上传该值。
+   * zh-TW: 在 Discord Developer Portal 建立 Scopify 應用後填入其 Application ID；不會上傳此值。
+   * en-US: Create a Scopify application in the Discord Developer Portal and enter its Application ID. This value stays on this device.
+   */
+  (key: "settings.discord.applicationId.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 例如 123456789012345678
+   * zh-TW: 例如 123456789012345678
+   * en-US: e.g. 123456789012345678
+   */
+  (key: "settings.discord.applicationId.placeholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接测试
+   * zh-TW: 連線測試
+   * en-US: Connection Test
+   */
+  (key: "settings.discord.test.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 测试已保存的 Discord 设置是否能连接本机 Discord 桌面端。
+   * zh-TW: 測試已儲存的 Discord 設定是否能連線本機 Discord 桌面版。
+   * en-US: Tests whether the saved Discord settings can connect to Discord desktop on this device.
+   */
+  (key: "settings.discord.test.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 测试连接
+   * zh-TW: 測試連線
+   * en-US: Test Connection
+   */
+  (key: "settings.discord.test.button", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检测中...
+   * zh-TW: 檢查中...
+   * en-US: Testing...
+   */
+  (key: "settings.discord.test.testing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请先保存 Discord 设置后再测试
+   * zh-TW: 請先儲存 Discord 設定後再測試
+   * en-US: Save the Discord settings before testing
+   */
+  (key: "settings.discord.test.saveFirst", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已连接到 Discord
+   * zh-TW: 已連線到 Discord
+   * en-US: Connected to Discord
+   */
+  (key: "settings.discord.test.connected", params?: TranslationParams): string;
+  /**
+   * zh-CN: Discord 播放状态尚未启用
+   * zh-TW: Discord 播放狀態尚未啟用
+   * en-US: Discord Playback Status is not enabled
+   */
+  (key: "settings.discord.test.disabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请填写有效的 Discord Application ID
+   * zh-TW: 請填寫有效的 Discord Application ID
+   * en-US: Enter a valid Discord Application ID
+   */
+  (key: "settings.discord.test.applicationIdRequired", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法连接 Discord：{{message}}
+   * zh-TW: 無法連線 Discord：{{message}}
+   * en-US: Could not connect to Discord: {{message}}
+   */
+  (key: "settings.discord.test.failed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知错误
+   * zh-TW: 未知錯誤
+   * en-US: Unknown error
+   */
+  (key: "settings.discord.test.unknownError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 尚未检测
+   * zh-TW: 尚未檢查
+   * en-US: Not tested
+   */
+  (key: "settings.discord.status.unknown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已接通
+   * zh-TW: 已連線
+   * en-US: Connected
+   */
+  (key: "settings.discord.status.connected", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未启用
+   * zh-TW: 尚未啟用
+   * en-US: Disabled
+   */
+  (key: "settings.discord.status.disabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 需要 Application ID
+   * zh-TW: 需要 Application ID
+   * en-US: Application ID required
+   */
+  (key: "settings.discord.status.applicationIdRequired", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未接通
+   * zh-TW: 未連線
+   * en-US: Disconnected
+   */
+  (key: "settings.discord.status.disconnected", params?: TranslationParams): string;
+  /**
    * zh-CN: 界面语言
    * zh-TW: 介面語言
    * en-US: Interface Language
@@ -766,6 +892,12 @@ export interface TranslateFn {
    * en-US: Available · {{latency}} ms
    */
   (key: "settings.backendPing.success", params?: TranslationParams): string;
+  /**
+   * zh-CN: 可用 · {{latency}} ms · {{version}}
+   * zh-TW: 可用 · {{latency}} ms · {{version}}
+   * en-US: Available · {{latency}} ms · {{version}}
+   */
+  (key: "settings.backendPing.successWithVersion", params?: TranslationParams): string;
   /**
    * zh-CN: 请求超时
    * zh-TW: 請求逾時

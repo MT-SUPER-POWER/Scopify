@@ -43,6 +43,12 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       getVisibility: () => bridge.getDesktopIconVisibility(),
       setVisibility: (visible) => bridge.setDesktopIconVisibility(visible),
     },
+    discord: {
+      getStatus: () => bridge.getDiscordPresenceStatus(),
+      onStatusChanged: (callback) => bridge.onDiscordPresenceStatusChanged(callback),
+      publish: (snapshot) => bridge.publishDiscordPresenceSnapshot(snapshot),
+      testConnection: () => bridge.testDiscordPresenceConnection(),
+    },
     desktopLyrics: {
       close: () => bridge.closeDesktopLyric(),
       getPreferences: () => bridge.getDesktopLyricPreferences(),
