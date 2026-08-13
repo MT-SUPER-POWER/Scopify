@@ -8,9 +8,9 @@ const tag = process.argv[2] || process.env.GITHUB_REF_NAME;
 if (!tag) throw new Error("A release tag argument or GITHUB_REF_NAME is required");
 
 const versions = {
-  desktop: readVersion("frontend/apps/desktop/package.json"),
+  desktop: readVersion("repo/frontend/apps/desktop/package.json"),
   root: readVersion("package.json"),
-  web: readVersion("frontend/apps/web/package.json"),
+  web: readVersion("repo/frontend/apps/web/package.json"),
 };
 const expectedTag = `v${versions.desktop}`;
 

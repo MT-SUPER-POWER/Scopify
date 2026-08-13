@@ -45,7 +45,7 @@ jobs:
         run: bun run build:desktop-renderer
 
       - name: Verify Renderer manifest and content
-        run: bun frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
+        run: bun repo/frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
 
       - name: Pack Renderer and write checksum
         shell: bash
@@ -118,7 +118,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          electron_dir="frontend/apps/desktop/node_modules/electron"
+          electron_dir="repo/frontend/apps/desktop/node_modules/electron"
           if [[ ! -f "${electron_dir}/dist/version" ]]; then
             node "${electron_dir}/install.js"
           fi
@@ -138,13 +138,13 @@ jobs:
           build/desktop/app/renderer
 
       - name: Verify Renderer manifest and content again
-        run: bun frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
+        run: bun repo/frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
 
       - name: Build Electron host
         run: bunx turbo run build --filter=@scopify/desktop
 
       - name: Package Electron without publishing
-        run: bun run --cwd frontend/apps/desktop ${{ matrix.package-script }}
+        run: bun run --cwd repo/frontend/apps/desktop ${{ matrix.package-script }}
 
       - name: Verify platform release outputs
         shell: bash

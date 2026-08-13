@@ -17,8 +17,8 @@ const IGNORED_DIRECTORIES = new Set([
   "renderer",
 ]);
 
-const WEB_RUNTIME_COMPOSITION_ROOT = "frontend/apps/web/lib/runtime/index.ts";
-const WEB_ELECTRON_DECLARATION = "frontend/apps/web/types/electron.d.ts";
+const WEB_RUNTIME_COMPOSITION_ROOT = "repo/frontend/apps/web/lib/runtime/index.ts";
+const WEB_ELECTRON_DECLARATION = "repo/frontend/apps/web/types/electron.d.ts";
 const BANNED_WEB_RUNTIME_PATTERNS = [
   { expression: /\bwindow\s*\.\s*electronAPI\b/, label: "window.electronAPI" },
   { expression: /\bIS_ELECTRON\b/, label: "IS_ELECTRON" },
@@ -87,7 +87,7 @@ export function findForbiddenDesktopImports(
   absoluteFilePath: string,
   source: string,
 ): ArchitectureViolation[] {
-  const webRoot = resolve(repositoryRoot, "frontend/apps/web");
+  const webRoot = resolve(repositoryRoot, "repo/frontend/apps/web");
   const file = toPosix(relative(repositoryRoot, absoluteFilePath));
   const violations: ArchitectureViolation[] = [];
 
@@ -96,7 +96,7 @@ export function findForbiddenDesktopImports(
     if (!specifier) continue;
 
     const importsWebPackage = specifier === "@scopify/web" || specifier.startsWith("@scopify/web/");
-    const importsWebPath = specifier.replaceAll("\\", "/").includes("frontend/apps/web");
+    const importsWebPath = specifier.replaceAll("\\", "/").includes("repo/frontend/apps/web");
     const resolvesIntoWeb = specifier.startsWith(".")
       ? isWithin(webRoot, resolve(dirname(absoluteFilePath), specifier))
       : false;
@@ -113,8 +113,8 @@ export function findForbiddenDesktopImports(
 }
 
 export function checkArchitecture(repositoryRoot = resolve(import.meta.dir, "..")) {
-  const webRoot = resolve(repositoryRoot, "frontend/apps/web");
-  const desktopRoot = resolve(repositoryRoot, "frontend/apps/desktop");
+  const webRoot = resolve(repositoryRoot, "repo/frontend/apps/web");
+  const desktopRoot = resolve(repositoryRoot, "repo/frontend/apps/desktop");
 
   const webViolations = listSourceFiles(webRoot).flatMap((file) =>
     findForbiddenWebRuntimeUsage(

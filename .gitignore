@@ -16,12 +16,13 @@
 /test-results/
 
 # workspace build outputs
-/frontend/apps/web/.next/
-/frontend/apps/web/out/
-/frontend/apps/desktop/out/
-/frontend/apps/desktop/dist/
-/frontend/apps/desktop/dist*/
-/frontend/apps/desktop/renderer/
+/repo/frontend/apps/web/.next/
+/repo/frontend/apps/web/.next-dev/
+/repo/frontend/apps/web/out/
+/repo/frontend/apps/desktop/out/
+/repo/frontend/apps/desktop/dist/
+/repo/frontend/apps/desktop/dist*/
+/repo/frontend/apps/desktop/renderer/
 /renderer-e2e/
 
 # production

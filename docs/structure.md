@@ -2,7 +2,7 @@
 
 > **AI Agent 请读根目录 [AGENTS.md](../AGENTS.md)**
 
-Scopify 使用 Bun Workspaces + Turborepo 管理多端。本文中的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 都相对于 `frontend/apps/web/`；Electron 位于 `frontend/apps/desktop/`。目标是：类型、逻辑、UI 各归其位；**路由层可以组装页面，但不要做无意义的单组件转发**。
+Scopify 使用 Bun Workspaces + Turborepo 管理多端。所有应用源码位于 `repo/`；本文中的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 都相对于 `repo/frontend/apps/web/`；Electron 位于 `repo/frontend/apps/desktop/`。目标是：类型、逻辑、UI 各归其位；**路由层可以组装页面，但不要做无意义的单组件转发**。
 
 ---
 
@@ -18,30 +18,31 @@ Scopify 使用 Bun Workspaces + Turborepo 管理多端。本文中的 `app/`、`
 ## 目录一览
 
 ```text
-frontend/
-  apps/
-    web/
-      app/              路由入口：page / layout 适度组装，非空壳转发
-      components/       UI 组件，按 artist、album、Playlist… 分子目录
-      types/            所有 Web type / interface
-        api/            配合 lib/api/ 的请求与响应类型
-        components/     复杂或多文件复用的组件 Props
-      hooks/            业务域 hooks（artist、player、search…）
-      lib/
-        api/            后端 API 函数（禁止写 interface）
-        hooks/          基础设施 hooks（登录态、路由、Electron…）
-        web/            request、env、网络错误
-      store/module/     Zustand 全局状态
-      constants/        静态配置与枚举（>10 条数组放这里）
-    desktop/
-      main/             Electron 主进程与 preload
-      renderer/         Web 静态构建生成的制品插槽，不提交
-    mobile/             Flutter 预留入口
-  packages/
-    desktop-contract/   Web/Desktop 共享的版本化 IPC 契约
+repo/
+  frontend/
+    apps/
+      web/
+        app/              路由入口：page / layout 适度组装，非空壳转发
+        components/       UI 组件，按 artist、album、Playlist… 分子目录
+        types/            所有 Web type / interface
+          api/            配合 lib/api/ 的请求与响应类型
+          components/     复杂或多文件复用的组件 Props
+        hooks/            业务域 hooks（artist、player、search…）
+        lib/
+          api/            后端 API 函数（禁止写 interface）
+          hooks/          基础设施 hooks（登录态、路由、Electron…）
+          web/            request、env、网络错误
+        store/module/     Zustand 全局状态
+        constants/        静态配置与枚举（>10 条数组放这里）
+      desktop/
+        main/             Electron 主进程与 preload
+        renderer/         Web 静态构建生成的制品插槽，不提交
+      mobile/             Flutter 预留入口
+    packages/
+      desktop-contract/   Web/Desktop 共享的版本化 IPC 契约
 ```
 
-Web Path alias：`@/` → `frontend/apps/web/`，例如 `@/types/…`、`@/lib/…`、`@/components/…`。Desktop 不得反向 import Web 源码，只能消费 `@scopify/desktop-contract` 和生成的 `renderer/` 制品。
+Web Path alias：`@/` → `repo/frontend/apps/web/`，例如 `@/types/…`、`@/lib/…`、`@/components/…`。Desktop 不得反向 import Web 源码，只能消费 `@scopify/desktop-contract` 和生成的 `renderer/` 制品。
 
 ---
 
@@ -90,5 +91,5 @@ bun run i18n:types     # 更新 i18n 类型
 ## 相关文档
 
 - [AGENTS.md](../AGENTS.md) — Agent 与贡献者共同遵循的结构规范
-- [backend/api-enhanced/AGENTS.md](../backend/api-enhanced/AGENTS.md) — 后端 API 规范
+- [repo/backend/api-enhanced/AGENTS.md](../repo/backend/api-enhanced/AGENTS.md) — 后端 API 规范
 - `.agents/skills/nextjs-project-structure/` — 更细的 page / components / types-hooks 分规则

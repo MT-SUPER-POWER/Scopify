@@ -7,7 +7,7 @@ const repositoryRoot = resolve("D:/workspace/Scopify");
 describe("Web Runtime boundary", () => {
   test("rejects direct Electron access from Web UI", () => {
     const violations = findForbiddenWebRuntimeUsage(
-      "frontend/apps/web/components/Header.tsx",
+      "repo/frontend/apps/web/components/Header.tsx",
       "window.electronAPI?.minimize(); const desktop = IS_ELECTRON || isElectron(); const web = IS_WEB;",
     );
 
@@ -22,7 +22,7 @@ describe("Web Runtime boundary", () => {
   test("allows Electron discovery in the composition root", () => {
     expect(
       findForbiddenWebRuntimeUsage(
-        "frontend/apps/web/lib/runtime/index.ts",
+        "repo/frontend/apps/web/lib/runtime/index.ts",
         "const bridge = window.electronAPI;",
       ),
     ).toEqual([]);
@@ -31,14 +31,14 @@ describe("Web Runtime boundary", () => {
 
 describe("Desktop ownership boundary", () => {
   test("rejects package and relative imports into Web", () => {
-    const desktopFile = resolve(repositoryRoot, "frontend/apps/desktop/main/main.ts");
+    const desktopFile = resolve(repositoryRoot, "repo/frontend/apps/desktop/main/main.ts");
     const violations = findForbiddenDesktopImports(
       repositoryRoot,
       desktopFile,
       [
         'import web from "@scopify/web";',
         'import page from "../../web/app/page";',
-        'export { thing } from "../../../frontend/apps/web/lib/thing";',
+        'export { thing } from "../../../repo/frontend/apps/web/lib/thing";',
       ].join("\n"),
     );
 
@@ -46,7 +46,7 @@ describe("Desktop ownership boundary", () => {
   });
 
   test("allows the versioned Desktop contract", () => {
-    const desktopFile = resolve(repositoryRoot, "frontend/apps/desktop/main/preload.ts");
+    const desktopFile = resolve(repositoryRoot, "repo/frontend/apps/desktop/main/preload.ts");
     expect(
       findForbiddenDesktopImports(
         repositoryRoot,

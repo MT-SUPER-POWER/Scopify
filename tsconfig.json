@@ -1,8 +1,8 @@
 {
   "files": [],
   "references": [
-    { "path": "./frontend/apps/web" },
-    { "path": "./frontend/apps/desktop" },
-    { "path": "./frontend/packages/desktop-contract" }
+    { "path": "./repo/frontend/apps/web" },
+    { "path": "./repo/frontend/apps/desktop" },
+    { "path": "./repo/frontend/packages/desktop-contract" }
   ]
 }

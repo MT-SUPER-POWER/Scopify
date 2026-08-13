@@ -557,12 +557,12 @@ uniformPixelScale = renderScale
 ## 建议代码落位
 
 ```text
-frontend/packages/desktop-contract/src/
+repo/frontend/packages/desktop-contract/src/
     playback.ts                 # 保留可靠 Projection/Command
     playbackHost.ts             # Session Seed、Host Status、Checkpoint 摘要
     audioFeature.ts             # 高频帧、ACK 与运行时校验
 
-frontend/apps/desktop/main/module/
+repo/frontend/apps/desktop/main/module/
     playbackHost/
         index.ts                # 深 Module Interface
         window.ts               # BrowserWindow Adapter
@@ -576,35 +576,35 @@ frontend/apps/desktop/main/module/
         port.ts
     desktopPlaybackWallpaper/   # 保留 Capability/Driver/WorkerW 职责
 
-frontend/apps/web/app/playback-host/
+repo/frontend/apps/web/app/playback-host/
     page.tsx                    # 只组装 Host Root
 
-frontend/apps/web/components/player/
+repo/frontend/apps/web/components/player/
     PlaybackHostRoot.tsx
 
-frontend/apps/web/lib/playbackHost/
+repo/frontend/apps/web/lib/playbackHost/
     runtime.ts                  # Playback Runtime 深 Module
     queue.ts                    # 纯 Queue Module
     catalog.ts                  # Catalog Port 与 Web Adapter
     audioFeatureSampler.ts
 
-frontend/apps/web/lib/desktopPlaybackWallpaper/
+repo/frontend/apps/web/lib/desktopPlaybackWallpaper/
     shaderViewport.ts           # 纯尺度解析
     audioFeatureSmoothing.ts    # 纯衰减/插值规则
 
-frontend/apps/web/hooks/player/
+repo/frontend/apps/web/hooks/player/
     usePlaybackProjection.ts    # UI seam 保持不变
 
-frontend/apps/web/hooks/desktopWallpaper/
+repo/frontend/apps/web/hooks/desktopWallpaper/
     useDesktopWallpaperFoliaPlayback.ts
 
-frontend/apps/web/tests/
+repo/frontend/apps/web/tests/
     playbackHostRuntime.test.ts
     playbackQueue.test.ts
     audioFeatureSmoothing.test.ts
     shaderViewport.test.ts
 
-frontend/apps/desktop/tests/
+repo/frontend/apps/desktop/tests/
     playbackHost.test.ts
     audioFeatureBroker.test.ts
 ```

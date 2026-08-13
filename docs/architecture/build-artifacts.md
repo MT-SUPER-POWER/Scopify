@@ -19,4 +19,4 @@ build/
 - `bun run build:mac`：生成 macOS 制品至 `build/release`。
 - `bun run clean:legacy-build-artifacts`：移除迁移前遗留在应用目录中的构建产物；不会删除根目录 `build/`。
 
-Desktop renderer 的 Next 静态导出会短暂生成在 `frontend/apps/web/out`，同步至 `build/desktop/app/renderer` 并写入 manifest 后立即清除。Next.js 不支持将 `distDir` 指向 Web 项目以外的目录，因此 Web 的本地 `.next` 缓存不属于交付物，仍由 Next.js 在应用目录中管理。
+Desktop renderer 的 Next 静态导出会短暂生成在 `repo/frontend/apps/web/out`，同步至 `build/desktop/app/renderer` 并写入 manifest 后立即清除。Next.js 不支持将 `distDir` 指向 Web 项目以外的目录，因此 Web 的本地 `.next` 缓存不属于交付物，仍由 Next.js 在应用目录中管理。

@@ -1,0 +1,124 @@
+{
+  "name": "@scopify/desktop",
+  "version": "1.4.2",
+  "private": true,
+  "description": "Scopify Electron desktop host",
+  "author": {
+    "name": "Momo",
+    "email": "shuhengwen@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MT-SUPER-POWER/Scopify.git",
+    "directory": "repo/frontend/apps/desktop"
+  },
+  "type": "module",
+  "main": "out/main/main.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build && bun scripts/prepare-packaged-app.ts && bun run check:runtime-bundle",
+    "check:runtime-bundle": "bun scripts/check-runtime-bundle.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "package:win": "electron-builder --win --publish never",
+    "package:mac": "electron-builder --mac --publish never",
+    "release:win": "electron-builder --win --publish always",
+    "release:mac": "electron-builder --mac --publish always"
+  },
+  "dependencies": {
+    "@scopify/desktop-contract": "1.0.0",
+    "@xhayper/discord-rpc": "^1.3.4",
+    "electron-log": "^5.4.4",
+    "electron-serve": "^3.0.1",
+    "electron-updater": "^6.8.9",
+    "js-yaml": "^4.3.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.19.43",
+    "electron": "^42.7.1",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.9.3"
+  },
+  "build": {
+    "appId": "com.momo.scopify",
+    "productName": "Scopify",
+    "publish": [
+      "github"
+    ],
+    "artifactName": "${productName}.Setup.v${version}.${platform}.${arch}.${ext}",
+    "directories": {
+      "app": "../../../../build/desktop/app",
+      "output": "../../../../build/release"
+    },
+    "electronDist": "node_modules/electron/dist",
+    "compression": "maximum",
+    "extraResources": [
+      {
+        "from": "config",
+        "to": "config",
+        "filter": [
+          "**/*.yml"
+        ]
+      },
+      {
+        "from": "resources",
+        "to": "resources",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "prototypes/desktop-wallpaper-host-spike",
+        "to": "desktop-wallpaper-host-spike",
+        "filter": [
+          "**/*.ps1"
+        ]
+      }
+    ],
+    "files": [
+      "out/main/**/*.js",
+      "renderer/**/*",
+      "package.json",
+      "!**/node_modules",
+      "!**/*.map"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "resources/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.music",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true
+    }
+  }
+}

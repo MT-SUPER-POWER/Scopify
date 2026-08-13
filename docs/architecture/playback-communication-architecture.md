@@ -442,30 +442,30 @@ Authority 重启产生新 Authority ID。Broker 清除旧的可重放状态，Re
 ## 建议代码落位
 
 ```text
-frontend/packages/desktop-contract/src/playback.ts
+repo/frontend/packages/desktop-contract/src/playback.ts
     # 协议消息、命令、Projection 与运行时校验所需类型
 
-frontend/apps/web/lib/playbackProjection/
+repo/frontend/apps/web/lib/playbackProjection/
     authority.ts
     replica.ts
     inProcessTransport.ts
     clock.ts
 
-frontend/apps/web/hooks/player/
+repo/frontend/apps/web/hooks/player/
     usePlaybackAuthority.ts
     usePlaybackProjection.ts
     usePlaybackCommands.ts
 
-frontend/apps/web/types/playbackProjection.ts
+repo/frontend/apps/web/types/playbackProjection.ts
     # Web 内部依赖与 React Adapter 类型；共享契约不重复定义
 
-frontend/apps/desktop/main/module/playbackBroker/
+repo/frontend/apps/desktop/main/module/playbackBroker/
     index.ts
     authorization.ts
     ipcValidation.ts
 
-frontend/apps/web/tests/playbackProjection.test.ts
-frontend/apps/desktop/tests/playbackBroker.test.ts
+repo/frontend/apps/web/tests/playbackProjection.test.ts
+repo/frontend/apps/desktop/tests/playbackBroker.test.ts
 ```
 
 `MainLayout` 只负责把 `audioRef` 交给 Authority hook 并组装 UI，不继续承载跨窗口通讯逻辑。UI 组件只导入 hooks，不导入 transport 或 desktop contract 消息。

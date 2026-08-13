@@ -21,7 +21,7 @@
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
 
 - 本项目主要技术链为 [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [ShadCN UI](https://ui.shadcn.com/) + [Electron](https://www.electronjs.org/zh/docs/latest/)
-- Node.js 版本要求：>= 20，包管理器：bun >= 1.3.7
+- Node.js 版本要求：>= 20，包管理器：bun >= 1.3.11
 - 支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配
 
 ## 技术栈总览
@@ -36,21 +36,23 @@
 8. Eslint + Prettier + Husky: 代码格式化约束 + Git 提交规范
 9. Framer-Motion: 动画框架
 10. TanStack-Virtual: 虚拟列表
+11. WebGL: 歌词舞台可视化
 
 ### 代码结构
 
 仓库使用 Bun Workspaces + Turborepo 管理 Web、Electron 和共享契约：
 
 ```text
-frontend/
-├── apps/
-│   ├── web/                 # Next.js Web 与 Electron Renderer 源码
-│   ├── desktop/             # Electron 主进程、预加载与打包配置
-│   └── mobile/              # Flutter 预留入口
-└── packages/
-    └── desktop-contract/     # Web 与 Electron 之间的类型化契约
-backend/
-└── api-enhanced/            # 独立后端 submodule
+repo/
+├── frontend/
+│   ├── apps/
+│   │   ├── web/                 # Next.js Web 与 Electron Renderer 源码
+│   │   ├── desktop/             # Electron 主进程、预加载与打包配置
+│   │   └── mobile/              # Flutter 预留入口（submodule）
+│   └── packages/
+│       └── desktop-contract/    # Web 与 Electron 之间的类型化契约
+└── backend/
+    └── api-enhanced/            # NetEase API 后端（submodule）
 ```
 
 新建或修改代码前，请先阅读：
@@ -76,17 +78,59 @@ backend/
 
 Scopify 现在把桌面客户端、Web 前端和后端分开管理。前端构建不依赖后端源码；Web 和桌面客户端只需要能访问一个独立运行的 NetEase API 后端。
 
-### 1. Docker Compose 部署 Web
+### 1. Vercel 部署 Web 与 API
 
-推荐用于本机、局域网或私有服务器部署。根目录的 `docker-compose.yml` 会启动 Web 和后端（需要已拉取 `backend/api-enhanced` submodule）：
+Vercel 可以同时部署 Scopify Web 和 `api-enhanced` 后端。两者应创建为独立项目：先部署 API，再将其 HTTPS 地址配置给 Web。
+
+1. 在 Vercel 导入 `repo/backend/api-enhanced` 对应的 API 仓库，或导入本仓库并将 **Root Directory** 设为 `repo/backend/api-enhanced`。保留该目录的 `vercel.json`，它会以 `index.js` 作为 Node.js Serverless Function 入口。
+2. 部署 API 后记录 Vercel 分配的地址，例如 `https://scopify-api.vercel.app`。若需要限制跨域来源，在 API 项目的 **Settings > Environment Variables** 中设置：
+
+   ```env
+   CORS_ALLOW_ORIGIN=https://scopify-web.vercel.app
+   ```
+
+   多个来源使用逗号分隔。未设置时，后端会按请求 Origin 返回 CORS 响应。
+
+3. 在 Vercel 导入本仓库作为 Web 项目，并设置：
+
+   | 项目设置 | 值 |
+   | --- | --- |
+   | Root Directory | `repo/frontend/apps/web` |
+   | Framework Preset | `Next.js` |
+   | Install Command | `cd ../../../.. && bun install --frozen-lockfile` |
+   | Build Command | 保持 `repo/frontend/apps/web/vercel.json` 中的配置 |
+
+   Web 的构建命令会回到 workspace 根目录执行 `bun run build:web`，以正确解析共享契约包。
+
+4. 在 Web 项目的 **Settings > Environment Variables** 中配置 API 地址：
+
+   ```env
+   BACKEND_PUBLIC_URL=https://scopify-api.vercel.app
+   ```
+
+   `BACKEND_PUBLIC_URL` 必须是完整的 HTTP(S) API 根地址，不能包含路径、查询参数或哈希。它在构建时写入浏览器配置，修改后需要重新部署 Web 项目。
+
+5. 分别为两个 Vercel 项目绑定自定义域名，并将 Web 域名加入 API 项目的 `CORS_ALLOW_ORIGIN`。Vercel 提供 HTTPS，Web 与 API 都使用 HTTPS 时不会触发浏览器的 mixed-content 限制。
+
+Vercel 的默认分支会生成 Production 部署，其他分支生成 Preview 部署。Preview 环境可复用生产 API，或者配置独立且稳定的 Preview API 域名。
+
+### 2. Docker Compose 部署 Web 与 API
+
+推荐用于本机、局域网或私有服务器部署。根目录的 `docker-compose.yml` 会启动 Web 和后端（需要已拉取 `repo/backend/api-enhanced` submodule）：
 
 - Web: `http://127.0.0.1:3000`
 - Backend: `http://127.0.0.1:3838`
 
 ```bash
-git clone https://github.com/MT-SUPER-POWER/Scopify.git
+git clone --recurse-submodules https://github.com/MT-SUPER-POWER/Scopify.git
 cd Scopify
 docker compose up -d --build
+```
+
+已克隆仓库但未拉取子模块时，先执行：
+
+```bash
+git submodule update --init --recursive repo/backend/api-enhanced
 ```
 
 查看状态和日志：
@@ -106,11 +150,11 @@ BACKEND_PUBLIC_PORT=3838
 
 `BACKEND_PUBLIC_HOST` 是浏览器访问后端时使用的地址。如果 Web 部署在服务器上并给其他设备访问，请改成服务器 IP 或域名，而不是 `127.0.0.1`。
 
-Docker Web 会在根 workspace 安装依赖，执行 `bun run build:web`，然后从 `frontend/apps/web` 运行 `next start`。Electron 使用的静态 Renderer 是另一个构建目标，不用于普通 Web 部署。
+Docker Web 会在根 workspace 安装依赖，执行 `bun run build:web`，然后从 `repo/frontend/apps/web` 运行 `next start`。Electron 使用的静态 Renderer 是另一个构建目标，不用于普通 Web 部署。
 
-### 2. 桌面客户端连接独立后端
+### 3. 桌面客户端连接独立后端
 
-Release 安装包只包含桌面客户端，不内置或自动启动后端。使用前请先部署 backend，然后在 `frontend/apps/desktop/config/app.config.yml` 中配置构建时默认后端地址：
+Release 安装包只包含桌面客户端，不内置或自动启动后端。使用前请先部署 backend，然后在 `repo/frontend/apps/desktop/config/app.config.yml` 中配置构建时默认后端地址：
 
 ```yaml
 backend:
@@ -120,20 +164,20 @@ backend:
 
 如果后端部署在远程服务器，把 `host` 改成服务器 IP 或域名。客户端会请求 `http://host:port`。
 
-### 3. 后端部署
+### 4. 单独部署后端
 
 后端可以独立部署，不需要和前端在同一个仓库 checkout 中构建。你可以使用已有的 NetEase API Enhanced 服务，只要保证 Web 或客户端能访问到它。
 
 如果需要从本仓库的后端子模块构建，再单独拉取 submodule：
 
 ```bash
-git submodule update --init --recursive backend/api-enhanced
-cd backend/api-enhanced
+git submodule update --init --recursive repo/backend/api-enhanced
+cd repo/backend/api-enhanced
 docker build -t scopify-backend .
 docker run -d --name scopify-backend -p 3838:3838 -e HOST=0.0.0.0 -e PORT=3838 scopify-backend
 ```
 
-### 4. 本地开发
+### 5. 本地开发
 
 ```bash
 bun install
@@ -146,13 +190,13 @@ bun run dev:full         # Web + Electron + backend
 如果需要同时调试后端，先拉取后端子模块，然后再运行后端开发脚本：
 
 ```bash
-git submodule update --init --recursive backend/api-enhanced
+git submodule update --init --recursive repo/backend/api-enhanced
 bun run dev:backend
 ```
 
-`dev:web` 是开发服务；生产 Web 使用 `bun run build:web` + `bun run --cwd frontend/apps/web start`。桌面端使用 `bun run build:desktop` 构建静态 Renderer 和 Electron 主进程，打包时运行 `bun run build:win` 或 `bun run build:mac`。
+`dev:web` 是开发服务；生产 Web 使用 `bun run build:web` + `bun run --cwd repo/frontend/apps/web start`。桌面端使用 `bun run build:desktop` 构建静态 Renderer 和 Electron 主进程，打包时运行 `bun run build:win` 或 `bun run build:mac`。
 
-### 5. Release 检查清单
+### 6. Release 检查清单
 
 发布 tag 前建议确认：
 
@@ -174,30 +218,7 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 ## 功能
 
-- 只支持扫码登录
-- 封面主题色自适应，支持全站着色
-- 新建歌单及歌单编辑
-- 收藏 / 取消收藏歌单
-- 支持评论区
-- 完整 Folia Playback Stage：从固定快照保真迁移九种 visualizer、六种背景、共享 renderer/shell/subtitle、FloatingPlayerControls/ProgressBar/歌词时间线、chrome auto-hide、模式与背景设置、内置资产和响应式动画运行时
-- Electron 桌面歌词：透明无边框窗口、当前/下一句、逐字高亮、播放/切歌/收藏与窗口偏好
-- 音乐频谱显示
-
-### Folia Playback Stage 接口缺口
-
-固定快照中的舞台源码与功能范围保持完整。下表同时保留已关闭项作为迁移记录；只有标记为“未实现”或“部分实现”的项目仍是 Interface Gap。接口缺口不会被简化 visualizer 或替代 UI 掩盖。
-
-| 责任边界 | 能力 | 状态 | Scopify 当前实现 | 后续接口 |
-| --------- | ------- | ------ | -------------------- | -------- |
-| 后端接口 | 完整结构化歌词 | 未实现 | `/lyric/new` 原始响应已无损保留，但当前 adapter 主要消费 YRC/LRC、行级翻译和罗马音，尚未提供 syllable、background vocal、agent、song part、chorus 等 Folia 字段 | Docker 联调后完善 `NeteaseLyric` 精确类型，并定义输出 Folia 完整 `LyricData` 的 `LyricsPresentationPayload` |
-| 后端接口 | 多格式、多来源歌词匹配 | 未实现 | 当前播放主链只请求 NetEase 歌词；Folia 的 TTML/QRC/KRC/VTT、QQ/Kugou/AMLL 匹配尚未接入 | 增加 `LyricsMatchCandidate[]` 查询和选定候选的 `LyricsResolveResult`；该项仍按下方提案推进 |
-| Scopify Host Adapter | 播放、收藏、队列与歌词偏移 | 已实现，非接口缺口 | Controls 已接入 previous/play/next、repeat、like、shuffle、volume 和 lyric offset；Queue 可查看、切歌和 shuffle；独立 `lyricCurrentTime` 已应用持久化 offset | 继续由 Scopify store/API 保持单一播放所有权，不新增第二套播放器状态 |
-| Scopify Host Adapter | 歌词署名与丰富行信息 | 未实现 | timed credits 已能解析，但 adapter 尚未透传全部 credits、source/language 和 Folia `Line` metadata | 扩展 `LyricsPresentationPayload` 和 host adapter，保留完整 metadata |
-| Scopify Host Adapter | 歌曲视觉主题 | 未实现 | 封面和歌曲元数据已存在，Stage 暂用固定主题，尚未提供 light/dark、`wordColors`、`lyricsIcons` 和 animation intensity | 定义 `SongVisualTheme`，优先接封面取色和本地主题；AI 主题仍是可选提案，不阻塞舞台迁移 |
-| Scopify Host Adapter | 外部 Stage 输入 | 未实现 | 当前 Stage 只消费正在播放的 NetEase 歌曲 | 后续以 `StagePresentationSession` 接入 embedded/local/now-playing/stage-api 来源，不改变当前播放所有权 |
-| 本地能力 | Cappella/Monet 图片资产与上传字体 | 已实现，非接口缺口 | IndexedDB 已持久化 Cappella emoji/avatar、Monet background/portrait 和上传字体；设置面板已接 upload/clear，字体通过 FontFace 恢复，object URL 会清理 | 保持当前视觉资产与字体资产边界 |
-| 本地能力 | 系统字体选择 | 已实现，非接口缺口 | 已接入受权限与能力检测保护的 Local Font Access system font picker，并保留 woff2/woff/ttf/otf 上传字体 fallback | 继续在不支持 Local Font Access 的浏览器中使用上传字体路径 |
-| 本地能力 | 完整视觉配置包导入导出 | 部分实现 | 已支持版本化校验后的 JSON 设置导入导出，但 JSON 不含 IndexedDB 中的图片/字体 Blob，也未覆盖 Folia shortcode | 增加 asset bundle export/import、asset manifest 与 shortcode codec，使视觉配置可跨设备完整迁移 |
+<!-- TODO: 补充一个 Xmind 类似的 功能 图谱 -->
 
 ## 单页展示
 
@@ -280,6 +301,21 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 </details>
 
+<details>
+<summary> 全屏音乐歌词 </summary>
+
+![桌面音乐效果](/docs/img/desktopMusic.png)
+
+</details>
+
+<details>
+<summary> Discord 接入 </summary>
+
+![Discord接入效果](/docs/img/DiscordPresnet.png)
+
+</details>
+
+
 ## TODO
 
 - [ ] 歌单的评论区
@@ -296,10 +332,8 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 ### 提案
 
-- [ ] 将歌词舞台的双色主题库扩展为 Scopify 应用级主题系统；当前主题库仅作用于 Lyric Stage，不影响主应用界面。
 - [ ] 本地音乐库管理(离线歌单)
 - [ ] 接入 QQ、AMLLDB、酷狗等多源歌词匹配
-- [ ] Discord 显示正在使用我们的软件
 
 ## 版本号规则
 

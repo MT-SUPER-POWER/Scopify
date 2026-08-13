@@ -6,11 +6,11 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(scriptDir, "..");
 const workspacePrefix = `${workspaceRoot}${sep}`;
 const legacyArtifactDirs = [
-  "frontend/apps/web/out",
-  "frontend/apps/desktop/out",
-  "frontend/apps/desktop/renderer",
-  "frontend/apps/desktop/dist",
-  "frontend/apps/desktop/dist-retry",
+  "repo/frontend/apps/web/out",
+  "repo/frontend/apps/desktop/out",
+  "repo/frontend/apps/desktop/renderer",
+  "repo/frontend/apps/desktop/dist",
+  "repo/frontend/apps/desktop/dist-retry",
 ].map((relativePath) => resolve(workspaceRoot, relativePath));
 
 for (const artifactDir of legacyArtifactDirs) {
