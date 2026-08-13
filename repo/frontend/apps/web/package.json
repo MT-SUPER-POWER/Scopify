@@ -24,7 +24,7 @@
     "build": "next build",
     "build:desktop": "cross-env SCOPIFY_BUILD_TARGET=desktop next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "bun test tests",
     "lint": "bun run lint:theme && eslint .",
     "lint:theme": "bun scripts/check-theme-hardcodes.ts",
