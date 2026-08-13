@@ -1,22 +1,22 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 import {
-    DIORAMA_PARTICLE_DENSITY_MAX,
-    DIORAMA_PARTICLE_DENSITY_MIN,
-    DIORAMA_PARTICLE_DENSITY_STEP,
-} from '../../../types';
+  DIORAMA_PARTICLE_DENSITY_MAX,
+  DIORAMA_PARTICLE_DENSITY_MIN,
+  DIORAMA_PARTICLE_DENSITY_STEP,
+} from "../../../types";
 import {
-    DIORAMA_PARTICLE_AUDIO_SCALE_MAX,
-    DIORAMA_STEP_DISTANCE,
-    hashSeed,
-    seededUnit,
-    type DioramaVec,
-} from './cameraPath';
-import { type DioramaParticleClusterAnchor } from './dioramaGeometry';
+  DIORAMA_PARTICLE_AUDIO_SCALE_MAX,
+  DIORAMA_STEP_DISTANCE,
+  hashSeed,
+  seededUnit,
+  type DioramaVec,
+} from "./cameraPath";
+import { type DioramaParticleClusterAnchor } from "./dioramaGeometry";
 import {
-    DIORAMA_PARTICLE_CORRIDOR_RADIUS,
-    type DioramaParticleCorridorSpan,
-} from './dioramaParticleCorridor';
-import { buildDioramaStructuredSurface } from './dioramaParticleSurfaces';
+  DIORAMA_PARTICLE_CORRIDOR_RADIUS,
+  type DioramaParticleCorridorSpan,
+} from "./dioramaParticleCorridor";
+import { buildDioramaStructuredSurface } from "./dioramaParticleSurfaces";
 
 // src/components/visualizer/diorama/dioramaParticleModel.ts
 // Builds the deterministic point buffers for BOTH geometry modes (formation clouds and the path tunnel)
@@ -30,45 +30,48 @@ export const DIORAMA_MAX_PARTICLE_POINTS = 65536;
 const DIORAMA_MAX_CLOUD_POINTS_PER_CLUSTER = 1024;
 const DIORAMA_MAX_CORRIDOR_POINTS_PER_SPAN = 2048;
 
-const FAMILY_INDEX: Record<DioramaParticleClusterAnchor['kind'], number> = {
-    box: 0,
-    sphere: 1,
-    cone: 2,
-    torus: 3,
+const FAMILY_INDEX: Record<DioramaParticleClusterAnchor["kind"], number> = {
+  box: 0,
+  sphere: 1,
+  cone: 2,
+  torus: 3,
 };
 
 // Shared attribute layout consumed by dioramaParticleShaders.ts. Every point carries a base local
 // offset from its anchor, a unit displacement direction, the anchor it breathes around, a scale pair,
 // a palette/noise phase and a small style triple. Nothing mode-specific leaks into the shader.
 export interface DioramaParticleGeometryData {
-    positions: Float32Array;   // vec3 base local offset from anchor
-    normals: Float32Array;     // vec3 unit displacement direction
-    anchors: Float32Array;     // vec3 world centre to translate + pulse around
-    // vec3 (uniformScale, yStretch, localRadius). localRadius is the primitive's OWN size in its local
-    // units (~0.7 for a cloud lattice, the tunnel radius for the corridor). The shader displaces by a
-    // fraction of it, so one amplitude number reads the same on a small cloud and on the tunnel.
-    scales: Float32Array;
-    phases: Float32Array;      // float palette + ripple phase
-    styles: Float32Array;      // vec3 (familyIndex, colorSlot, isFar)
-    // vec2 wave coordinate (w1, w2). Neighbouring points get near-identical values, so the shader's
-    // coherent travelling-wave field moves them together instead of scattering them independently.
-    // Corridor: (longitudinal-along-tunnel, ring-angle). Clouds: (in-cluster plane projections).
-    waves: Float32Array;
-    pointCount: number;
-    pointsPerUnit: number;     // points per cluster (clouds) or per span (corridor)
-    /**
-     * The coarsest neighbour gap in this buffer, in the unit space the shader reads its ripple field in
-     * (radius-normalised for both modes). Drives the shader's wavenumber ceiling - see resolveWaveNumberMax.
-     */
-    spacing: number;
+  positions: Float32Array; // vec3 base local offset from anchor
+  normals: Float32Array; // vec3 unit displacement direction
+  anchors: Float32Array; // vec3 world centre to translate + pulse around
+  // vec3 (uniformScale, yStretch, localRadius). localRadius is the primitive's OWN size in its local
+  // units (~0.7 for a cloud lattice, the tunnel radius for the corridor). The shader displaces by a
+  // fraction of it, so one amplitude number reads the same on a small cloud and on the tunnel.
+  scales: Float32Array;
+  phases: Float32Array; // float palette + ripple phase
+  styles: Float32Array; // vec3 (familyIndex, colorSlot, isFar)
+  // vec2 wave coordinate (w1, w2). Neighbouring points get near-identical values, so the shader's
+  // coherent travelling-wave field moves them together instead of scattering them independently.
+  // Corridor: (longitudinal-along-tunnel, ring-angle). Clouds: (in-cluster plane projections).
+  waves: Float32Array;
+  pointCount: number;
+  pointsPerUnit: number; // points per cluster (clouds) or per span (corridor)
+  /**
+   * The coarsest neighbour gap in this buffer, in the unit space the shader reads its ripple field in
+   * (radius-normalised for both modes). Drives the shader's wavenumber ceiling - see resolveWaveNumberMax.
+   */
+  spacing: number;
 }
 
 const normalizeDensity = (density: number): number => {
-    const clamped = Math.min(DIORAMA_PARTICLE_DENSITY_MAX, Math.max(DIORAMA_PARTICLE_DENSITY_MIN, density));
-    return Math.max(
-        DIORAMA_PARTICLE_DENSITY_MIN,
-        Math.floor(clamped / DIORAMA_PARTICLE_DENSITY_STEP) * DIORAMA_PARTICLE_DENSITY_STEP,
-    );
+  const clamped = Math.min(
+    DIORAMA_PARTICLE_DENSITY_MAX,
+    Math.max(DIORAMA_PARTICLE_DENSITY_MIN, density),
+  );
+  return Math.max(
+    DIORAMA_PARTICLE_DENSITY_MIN,
+    Math.floor(clamped / DIORAMA_PARTICLE_DENSITY_STEP) * DIORAMA_PARTICLE_DENSITY_STEP,
+  );
 };
 
 /**
@@ -78,95 +81,103 @@ const normalizeDensity = (density: number): number => {
  * Because it is derived from the ACTUAL lattice, the density slider now raises and lowers the detail
  * ceiling honestly instead of us hard-coding a number that only holds at one density.
  */
-export const resolveWaveNumberMax = (spacing: number): number => (
-    (Math.PI * 2) / Math.max(1e-4, spacing * 4)
-);
+export const resolveWaveNumberMax = (spacing: number): number =>
+  (Math.PI * 2) / Math.max(1e-4, spacing * 4);
 
-const allocate = (pointCount: number, pointsPerUnit: number, spacing: number): DioramaParticleGeometryData => ({
-    positions: new Float32Array(pointCount * 3),
-    normals: new Float32Array(pointCount * 3),
-    anchors: new Float32Array(pointCount * 3),
-    scales: new Float32Array(pointCount * 3),
-    phases: new Float32Array(pointCount),
-    styles: new Float32Array(pointCount * 3),
-    waves: new Float32Array(pointCount * 2),
-    pointCount,
-    pointsPerUnit,
-    spacing,
+const allocate = (
+  pointCount: number,
+  pointsPerUnit: number,
+  spacing: number,
+): DioramaParticleGeometryData => ({
+  positions: new Float32Array(pointCount * 3),
+  normals: new Float32Array(pointCount * 3),
+  anchors: new Float32Array(pointCount * 3),
+  scales: new Float32Array(pointCount * 3),
+  phases: new Float32Array(pointCount),
+  styles: new Float32Array(pointCount * 3),
+  waves: new Float32Array(pointCount * 2),
+  pointCount,
+  pointsPerUnit,
+  spacing,
 });
 
-const writeStyle = (data: DioramaParticleGeometryData, index: number, family: number, colorSlot: number, isFar: number) => {
-    const offset = index * 3;
-    data.styles[offset] = family;
-    data.styles[offset + 1] = colorSlot;
-    data.styles[offset + 2] = isFar;
+const writeStyle = (
+  data: DioramaParticleGeometryData,
+  index: number,
+  family: number,
+  colorSlot: number,
+  isFar: number,
+) => {
+  const offset = index * 3;
+  data.styles[offset] = family;
+  data.styles[offset + 1] = colorSlot;
+  data.styles[offset + 2] = isFar;
 };
 
 /** Expands each visible formation anchor into a deterministic surface lattice (the 'clouds' mode). */
 export const buildDioramaCloudGeometryData = (
-    clusters: DioramaParticleClusterAnchor[],
-    density: number,
+  clusters: DioramaParticleClusterAnchor[],
+  density: number,
 ): DioramaParticleGeometryData => {
-    // The BUDGET stays count-independent (it only follows the density slider), but each welded lattice
-    // lands on its own honest point count under it, so the buffer is sized from the surfaces themselves.
-    const budget = normalizeDensity(Math.min(density, DIORAMA_MAX_CLOUD_POINTS_PER_CLUSTER));
-    const surfaces = clusters.map((cluster) => (
-        buildDioramaStructuredSurface(cluster.kind, budget, cluster.stretchY)
-    ));
-    const pointCount = surfaces.reduce((sum, surface) => sum + surface.count, 0);
-    // One shared buffer draws every cluster, so the detail ceiling has to satisfy the COARSEST lattice
-    // present - a fine sphere must not be allowed to alias the tetrahedron drawn alongside it.
-    const spacing = surfaces.reduce((widest, surface) => Math.max(widest, surface.spacing), 0);
-    const data = allocate(pointCount, budget, spacing);
+  // The BUDGET stays count-independent (it only follows the density slider), but each welded lattice
+  // lands on its own honest point count under it, so the buffer is sized from the surfaces themselves.
+  const budget = normalizeDensity(Math.min(density, DIORAMA_MAX_CLOUD_POINTS_PER_CLUSTER));
+  const surfaces = clusters.map((cluster) =>
+    buildDioramaStructuredSurface(cluster.kind, budget, cluster.stretchY),
+  );
+  const pointCount = surfaces.reduce((sum, surface) => sum + surface.count, 0);
+  // One shared buffer draws every cluster, so the detail ceiling has to satisfy the COARSEST lattice
+  // present - a fine sphere must not be allowed to alias the tetrahedron drawn alongside it.
+  const spacing = surfaces.reduce((widest, surface) => Math.max(widest, surface.spacing), 0);
+  const data = allocate(pointCount, budget, spacing);
 
-    let target = 0;
-    clusters.forEach((cluster, clusterIndex) => {
-        const surface = surfaces[clusterIndex];
-        const seed = hashSeed(`${cluster.particleSeed}|${cluster.kind}`);
-        // One shared phase keeps every vertex of a cluster inside the same coherent ripple field.
-        const clusterPhase = seededUnit(seed + 31) * Math.PI * 2;
-        const family = FAMILY_INDEX[cluster.kind];
-        const isFar = cluster.layer === 'far' ? 1 : 0;
-        for (let pointIndex = 0; pointIndex < surface.count; pointIndex += 1, target += 1) {
-            const v = target * 3;
-            const s = target * 3;
-            const px = surface.positions[pointIndex * 3];
-            const py = surface.positions[pointIndex * 3 + 1];
-            const pz = surface.positions[pointIndex * 3 + 2];
-            data.positions[v] = px;
-            data.positions[v + 1] = py;
-            data.positions[v + 2] = pz;
-            data.normals[v] = surface.normals[pointIndex * 3];
-            data.normals[v + 1] = surface.normals[pointIndex * 3 + 1];
-            data.normals[v + 2] = surface.normals[pointIndex * 3 + 2];
-            data.anchors[v] = cluster.position.x;
-            data.anchors[v + 1] = cluster.position.y;
-            data.anchors[v + 2] = cluster.position.z;
-            data.scales[s] = cluster.scale;
-            data.scales[s + 1] = cluster.stretchY;
-            data.scales[s + 2] = surface.radius;
-            data.phases[target] = clusterPhase;
-            // Clouds no longer wave off this coordinate - their ripple field is a pure function of
-            // position (see the shader). It survives only as the per-point seed the dissolve scatters by,
-            // since aPhase alone is constant across a whole cluster.
-            data.waves[target * 2] = clusterPhase + (px + pz * 0.6) * 2.2;
-            data.waves[target * 2 + 1] = clusterPhase * 0.7 + py * 2.6;
-            writeStyle(data, target, family, cluster.colorSlot, isFar);
-        }
-    });
-    return data;
+  let target = 0;
+  clusters.forEach((cluster, clusterIndex) => {
+    const surface = surfaces[clusterIndex];
+    const seed = hashSeed(`${cluster.particleSeed}|${cluster.kind}`);
+    // One shared phase keeps every vertex of a cluster inside the same coherent ripple field.
+    const clusterPhase = seededUnit(seed + 31) * Math.PI * 2;
+    const family = FAMILY_INDEX[cluster.kind];
+    const isFar = cluster.layer === "far" ? 1 : 0;
+    for (let pointIndex = 0; pointIndex < surface.count; pointIndex += 1, target += 1) {
+      const v = target * 3;
+      const s = target * 3;
+      const px = surface.positions[pointIndex * 3];
+      const py = surface.positions[pointIndex * 3 + 1];
+      const pz = surface.positions[pointIndex * 3 + 2];
+      data.positions[v] = px;
+      data.positions[v + 1] = py;
+      data.positions[v + 2] = pz;
+      data.normals[v] = surface.normals[pointIndex * 3];
+      data.normals[v + 1] = surface.normals[pointIndex * 3 + 1];
+      data.normals[v + 2] = surface.normals[pointIndex * 3 + 2];
+      data.anchors[v] = cluster.position.x;
+      data.anchors[v + 1] = cluster.position.y;
+      data.anchors[v + 2] = cluster.position.z;
+      data.scales[s] = cluster.scale;
+      data.scales[s + 1] = cluster.stretchY;
+      data.scales[s + 2] = surface.radius;
+      data.phases[target] = clusterPhase;
+      // Clouds no longer wave off this coordinate - their ripple field is a pure function of
+      // position (see the shader). It survives only as the per-point seed the dissolve scatters by,
+      // since aPhase alone is constant across a whole cluster.
+      data.waves[target * 2] = clusterPhase + (px + pz * 0.6) * 2.2;
+      data.waves[target * 2 + 1] = clusterPhase * 0.7 + py * 2.6;
+      writeStyle(data, target, family, cluster.colorSlot, isFar);
+    }
+  });
+  return data;
 };
 
 const normalizeVec = (x: number, y: number, z: number): DioramaVec => {
-    const length = Math.hypot(x, y, z) || 1;
-    return { x: x / length, y: y / length, z: z / length };
+  const length = Math.hypot(x, y, z) || 1;
+  return { x: x / length, y: y / length, z: z / length };
 };
 
 // Ring segment count grows with the per-span budget so the tunnel wall stays evenly tessellated at
 // every density without ever exceeding it.
-const resolveRingSegments = (pointsPerSpan: number): number => (
-    Math.max(12, Math.min(256, Math.round(Math.sqrt(pointsPerSpan * 2.4))))
-);
+const resolveRingSegments = (pointsPerSpan: number): number =>
+  Math.max(12, Math.min(256, Math.round(Math.sqrt(pointsPerSpan * 2.4))));
 
 /**
  * Sweeps a regular ring grid straight along the mounted path spans (the 'corridor' mode). Ring centres
@@ -174,110 +185,113 @@ const resolveRingSegments = (pointsPerSpan: number): number => (
  * never drift, tilt off the path or morph. Deterministic: identical spans yield identical buffers.
  */
 export const buildDioramaCorridorGeometryData = (
-    spans: DioramaParticleCorridorSpan[],
-    density: number,
-    radius = DIORAMA_PARTICLE_CORRIDOR_RADIUS,
+  spans: DioramaParticleCorridorSpan[],
+  density: number,
+  radius = DIORAMA_PARTICLE_CORRIDOR_RADIUS,
 ): DioramaParticleGeometryData => {
-    const activeSpans = spans.filter((span) => span.enabled);
-    const spanCount = activeSpans.length;
-    const pointsPerSpan = normalizeDensity(Math.min(density, DIORAMA_MAX_CORRIDOR_POINTS_PER_SPAN));
-    const ringSegments = resolveRingSegments(pointsPerSpan);
-    const rings = Math.max(1, Math.floor(pointsPerSpan / ringSegments));
-    const perSpan = ringSegments * rings;
-    const pointCount = spanCount * perSpan;
-    // One span spans DIORAMA_STEP_DISTANCE of path; expressed in radius units (the field's space) that is
-    // spanUnits, cut into `rings`. Around, the gap is the ring arc. The coarser of the two is the ceiling.
-    const spanUnits = DIORAMA_STEP_DISTANCE / radius;
-    const spacing = Math.max(spanUnits / Math.max(1, rings), (Math.PI * 2) / ringSegments);
-    const data = allocate(pointCount, perSpan, spacing);
+  const activeSpans = spans.filter((span) => span.enabled);
+  const spanCount = activeSpans.length;
+  const pointsPerSpan = normalizeDensity(Math.min(density, DIORAMA_MAX_CORRIDOR_POINTS_PER_SPAN));
+  const ringSegments = resolveRingSegments(pointsPerSpan);
+  const rings = Math.max(1, Math.floor(pointsPerSpan / ringSegments));
+  const perSpan = ringSegments * rings;
+  const pointCount = spanCount * perSpan;
+  // One span spans DIORAMA_STEP_DISTANCE of path; expressed in radius units (the field's space) that is
+  // spanUnits, cut into `rings`. Around, the gap is the ring arc. The coarser of the two is the ceiling.
+  const spanUnits = DIORAMA_STEP_DISTANCE / radius;
+  const spacing = Math.max(spanUnits / Math.max(1, rings), (Math.PI * 2) / ringSegments);
+  const data = allocate(pointCount, perSpan, spacing);
 
-    let target = 0;
-    activeSpans.forEach((span) => {
-        for (let ring = 0; ring < rings; ring += 1) {
-            // Depth along this span; a whole ring shares one centre and basis so it stays circular.
-            const t = rings > 1 ? ring / (rings - 1) : 0.5;
-            const cx = span.start.x + (span.end.x - span.start.x) * t;
-            const cy = span.start.y + (span.end.y - span.start.y) * t;
-            const cz = span.start.z + (span.end.z - span.start.z) * t;
-            const right = normalizeVec(
-                span.startRight.x + (span.endRight.x - span.startRight.x) * t,
-                span.startRight.y + (span.endRight.y - span.startRight.y) * t,
-                span.startRight.z + (span.endRight.z - span.startRight.z) * t,
-            );
-            const up = normalizeVec(
-                span.startUp.x + (span.endUp.x - span.startUp.x) * t,
-                span.startUp.y + (span.endUp.y - span.startUp.y) * t,
-                span.startUp.z + (span.endUp.z - span.startUp.z) * t,
-            );
-            // ABSOLUTE longitudinal (global path coordinate), so the wave phase at a given world section is
-            // identical no matter where the mounted window starts - the tunnel never rolls when it slides.
-            const longitudinal = span.pathStart + t;
-            for (let segment = 0; segment < ringSegments; segment += 1) {
-                const angle = (segment / ringSegments) * Math.PI * 2;
-                const cos = Math.cos(angle);
-                const sin = Math.sin(angle);
-                const radial = normalizeVec(
-                    right.x * cos + up.x * sin,
-                    right.y * cos + up.y * sin,
-                    right.z * cos + up.z * sin,
-                );
-                const v = target * 3;
-                const s = target * 3;
-                data.positions[v] = radial.x * radius;
-                data.positions[v + 1] = radial.y * radius;
-                data.positions[v + 2] = radial.z * radius;
-                data.normals[v] = radial.x;
-                data.normals[v + 1] = radial.y;
-                data.normals[v + 2] = radial.z;
-                data.anchors[v] = cx;
-                data.anchors[v + 1] = cy;
-                data.anchors[v + 2] = cz;
-                data.scales[s] = 1;
-                data.scales[s + 1] = 1;
-                // The tunnel's own size, so its swell is the same fraction-of-radius the clouds get.
-                data.scales[s + 2] = radius;
-                // Phase carries NO angular term. It used to be `longitudinal * 1.7 + angle * 0.35`, and
-                // since angle jumps 2*PI back to 0 at the seam, that alone stepped the phase by 2.2 rad
-                // there - which the whole-body sway below then turned into a visible ring-wide offset. A
-                // ring shares one phase now, so it sways as one rigid ring, which is what a tunnel does.
-                data.phases[target] = longitudinal * 1.7;
-                // Wave coordinate = (along the tunnel, angle around it), the tunnel's surface parameters.
-                // `along` is in RADIUS UNITS so it is the same unit space the clouds' field lives in and
-                // one set of ripple parameters drives both modes. The angle stays raw; the shader wraps it
-                // (see corridorSurfaceDelta) rather than us baking a discontinuity into the buffer.
-                data.waves[target * 2] = longitudinal * spanUnits;
-                data.waves[target * 2 + 1] = angle;
-                // A slow colour band alternates along the tunnel so loud regions read as coloured waves.
-                // Keyed off the absolute path coordinate so the banding is stable as the window slides.
-                writeStyle(data, target, 3, (Math.round(span.pathStart) + ring) % 2, 0);
-                target += 1;
-            }
-        }
-    });
-    return data;
+  let target = 0;
+  activeSpans.forEach((span) => {
+    for (let ring = 0; ring < rings; ring += 1) {
+      // Depth along this span; a whole ring shares one centre and basis so it stays circular.
+      const t = rings > 1 ? ring / (rings - 1) : 0.5;
+      const cx = span.start.x + (span.end.x - span.start.x) * t;
+      const cy = span.start.y + (span.end.y - span.start.y) * t;
+      const cz = span.start.z + (span.end.z - span.start.z) * t;
+      const right = normalizeVec(
+        span.startRight.x + (span.endRight.x - span.startRight.x) * t,
+        span.startRight.y + (span.endRight.y - span.startRight.y) * t,
+        span.startRight.z + (span.endRight.z - span.startRight.z) * t,
+      );
+      const up = normalizeVec(
+        span.startUp.x + (span.endUp.x - span.startUp.x) * t,
+        span.startUp.y + (span.endUp.y - span.startUp.y) * t,
+        span.startUp.z + (span.endUp.z - span.startUp.z) * t,
+      );
+      // ABSOLUTE longitudinal (global path coordinate), so the wave phase at a given world section is
+      // identical no matter where the mounted window starts - the tunnel never rolls when it slides.
+      const longitudinal = span.pathStart + t;
+      for (let segment = 0; segment < ringSegments; segment += 1) {
+        const angle = (segment / ringSegments) * Math.PI * 2;
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+        const radial = normalizeVec(
+          right.x * cos + up.x * sin,
+          right.y * cos + up.y * sin,
+          right.z * cos + up.z * sin,
+        );
+        const v = target * 3;
+        const s = target * 3;
+        data.positions[v] = radial.x * radius;
+        data.positions[v + 1] = radial.y * radius;
+        data.positions[v + 2] = radial.z * radius;
+        data.normals[v] = radial.x;
+        data.normals[v + 1] = radial.y;
+        data.normals[v + 2] = radial.z;
+        data.anchors[v] = cx;
+        data.anchors[v + 1] = cy;
+        data.anchors[v + 2] = cz;
+        data.scales[s] = 1;
+        data.scales[s + 1] = 1;
+        // The tunnel's own size, so its swell is the same fraction-of-radius the clouds get.
+        data.scales[s + 2] = radius;
+        // Phase carries NO angular term. It used to be `longitudinal * 1.7 + angle * 0.35`, and
+        // since angle jumps 2*PI back to 0 at the seam, that alone stepped the phase by 2.2 rad
+        // there - which the whole-body sway below then turned into a visible ring-wide offset. A
+        // ring shares one phase now, so it sways as one rigid ring, which is what a tunnel does.
+        data.phases[target] = longitudinal * 1.7;
+        // Wave coordinate = (along the tunnel, angle around it), the tunnel's surface parameters.
+        // `along` is in RADIUS UNITS so it is the same unit space the clouds' field lives in and
+        // one set of ripple parameters drives both modes. The angle stays raw; the shader wraps it
+        // (see corridorSurfaceDelta) rather than us baking a discontinuity into the buffer.
+        data.waves[target * 2] = longitudinal * spanUnits;
+        data.waves[target * 2 + 1] = angle;
+        // A slow colour band alternates along the tunnel so loud regions read as coloured waves.
+        // Keyed off the absolute path coordinate so the banding is stable as the window slides.
+        writeStyle(data, target, 3, (Math.round(span.pathStart) + ring) % 2, 0);
+        target += 1;
+      }
+    }
+  });
+  return data;
 };
 
 /** Single draw-call geometry for either mode; the owner disposes it when replaced or unmounted. */
-export const createDioramaBufferGeometry = (data: DioramaParticleGeometryData): THREE.BufferGeometry => {
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(data.positions, 3));
-    geometry.setAttribute('aNormal', new THREE.BufferAttribute(data.normals, 3));
-    geometry.setAttribute('aAnchor', new THREE.BufferAttribute(data.anchors, 3));
-    geometry.setAttribute('aScale', new THREE.BufferAttribute(data.scales, 3));
-    geometry.setAttribute('aPhase', new THREE.BufferAttribute(data.phases, 1));
-    geometry.setAttribute('aStyle', new THREE.BufferAttribute(data.styles, 3));
-    geometry.setAttribute('aWave', new THREE.BufferAttribute(data.waves, 2));
-    geometry.setDrawRange(0, data.pointCount);
-    return geometry;
+export const createDioramaBufferGeometry = (
+  data: DioramaParticleGeometryData,
+): THREE.BufferGeometry => {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(data.positions, 3));
+  geometry.setAttribute("aNormal", new THREE.BufferAttribute(data.normals, 3));
+  geometry.setAttribute("aAnchor", new THREE.BufferAttribute(data.anchors, 3));
+  geometry.setAttribute("aScale", new THREE.BufferAttribute(data.scales, 3));
+  geometry.setAttribute("aPhase", new THREE.BufferAttribute(data.phases, 1));
+  geometry.setAttribute("aStyle", new THREE.BufferAttribute(data.styles, 3));
+  geometry.setAttribute("aWave", new THREE.BufferAttribute(data.waves, 2));
+  geometry.setDrawRange(0, data.pointCount);
+  return geometry;
 };
 
 export const stepDioramaEnvelope = (
-    current: number,
-    target: number,
-    attack: number,
-    release: number,
-    delta: number,
-): number => current + (target - current) * (1 - Math.exp(-(target > current ? attack : release) * delta));
+  current: number,
+  target: number,
+  attack: number,
+  release: number,
+  delta: number,
+): number =>
+  current + (target - current) * (1 - Math.exp(-(target > current ? attack : release) * delta));
 
 const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
 
@@ -308,16 +322,20 @@ const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
  *             (a held bass note keeps reading high) - the continuous-energy signal.
  */
 export interface DioramaBandTracker {
-    fast: number;
-    floor: number;
-    peak: number;
-    /** Schmitt trigger: true once a transient crossed the high edge, until it falls back under the low. */
-    armed: boolean;
-    primed: boolean;
+  fast: number;
+  floor: number;
+  peak: number;
+  /** Schmitt trigger: true once a transient crossed the high edge, until it falls back under the low. */
+  armed: boolean;
+  primed: boolean;
 }
 
 export const createDioramaBandTracker = (): DioramaBandTracker => ({
-    fast: 0, floor: 0, peak: 0, armed: false, primed: false,
+  fast: 0,
+  floor: 0,
+  peak: 0,
+  armed: false,
+  primed: false,
 });
 
 const FAST_ATTACK = 22;
@@ -342,43 +360,43 @@ const TRIGGER_HIGH = 0.42;
 const TRIGGER_LOW = 0.2;
 
 export interface DioramaBandSignal {
-    /** 0..1 kick/transient strength, normalised against the band's own dynamic range. */
-    transient: number;
-    /** 0..1 continuous energy in this band relative to the song's loudness. */
-    sustained: number;
-    /** True on the single frame a hit crosses the trigger - the only thing that spawns a ripple. */
-    onset: boolean;
+  /** 0..1 kick/transient strength, normalised against the band's own dynamic range. */
+  transient: number;
+  /** 0..1 continuous energy in this band relative to the song's loudness. */
+  sustained: number;
+  /** True on the single frame a hit crosses the trigger - the only thing that spawns a ripple. */
+  onset: boolean;
 }
 
 export const stepDioramaBandTracker = (
-    state: DioramaBandTracker,
-    level: number,
-    delta: number,
+  state: DioramaBandTracker,
+  level: number,
+  delta: number,
 ): DioramaBandSignal => {
-    const safe = clamp01(level);
-    if (!state.primed) {
-        // Start ON the signal, not at zero: otherwise the first frames read a full-scale transient that
-        // nothing later in the song can match.
-        state.fast = safe;
-        state.floor = safe;
-        state.peak = safe;
-        state.primed = true;
-    } else {
-        state.fast = stepDioramaEnvelope(state.fast, safe, FAST_ATTACK, FAST_RELEASE, delta);
-        state.floor = stepDioramaEnvelope(state.floor, safe, FLOOR_RISE, FLOOR_FALL, delta);
-        state.peak = stepDioramaEnvelope(state.peak, safe, PEAK_RISE, PEAK_FALL, delta);
-    }
-    const range = Math.max(MIN_RANGE, state.peak - state.floor);
-    const transient = clamp01((state.fast - state.floor) / range);
-    const sustained = clamp01(state.fast / Math.max(MIN_PEAK, state.peak));
-    let onset = false;
-    if (!state.armed && transient >= TRIGGER_HIGH) {
-        state.armed = true;
-        onset = true;
-    } else if (state.armed && transient <= TRIGGER_LOW) {
-        state.armed = false;
-    }
-    return { transient, sustained, onset };
+  const safe = clamp01(level);
+  if (!state.primed) {
+    // Start ON the signal, not at zero: otherwise the first frames read a full-scale transient that
+    // nothing later in the song can match.
+    state.fast = safe;
+    state.floor = safe;
+    state.peak = safe;
+    state.primed = true;
+  } else {
+    state.fast = stepDioramaEnvelope(state.fast, safe, FAST_ATTACK, FAST_RELEASE, delta);
+    state.floor = stepDioramaEnvelope(state.floor, safe, FLOOR_RISE, FLOOR_FALL, delta);
+    state.peak = stepDioramaEnvelope(state.peak, safe, PEAK_RISE, PEAK_FALL, delta);
+  }
+  const range = Math.max(MIN_RANGE, state.peak - state.floor);
+  const transient = clamp01((state.fast - state.floor) / range);
+  const sustained = clamp01(state.fast / Math.max(MIN_PEAK, state.peak));
+  let onset = false;
+  if (!state.armed && transient >= TRIGGER_HIGH) {
+    state.armed = true;
+    onset = true;
+  } else if (state.armed && transient <= TRIGGER_LOW) {
+    state.armed = false;
+  }
+  return { transient, sustained, onset };
 };
 
 /**
@@ -397,9 +415,9 @@ export const stepDioramaBandTracker = (
  * speed, width and strength regardless, which is where the difference actually shows anyway.
  */
 export const RIPPLE_BANDS = [
-    { band: 'bass' as const, strength: 1.45, speed: 0.9, width: 0.66, wavenumber: 3.4 },
-    { band: 'mid' as const, strength: 0.9, speed: 1.6, width: 0.36, wavenumber: 5.5 },
-    { band: 'treble' as const, strength: 0.5, speed: 2.5, width: 0.22, wavenumber: 9 },
+  { band: "bass" as const, strength: 1.45, speed: 0.9, width: 0.66, wavenumber: 3.4 },
+  { band: "mid" as const, strength: 0.9, speed: 1.6, width: 0.36, wavenumber: 5.5 },
+  { band: "treble" as const, strength: 0.5, speed: 2.5, width: 0.22, wavenumber: 9 },
 ];
 
 /**
@@ -421,13 +439,13 @@ export const RIPPLE_SLOTS_PER_BAND = 3;
 export const DIORAMA_RIPPLE_COUNT = RIPPLE_BANDS.length * RIPPLE_SLOTS_PER_BAND;
 
 const smoothstep = (edge0: number, edge1: number, value: number): number => {
-    const amount = Math.min(1, Math.max(0, (value - edge0) / (edge1 - edge0)));
-    return amount * amount * (3 - 2 * amount);
+  const amount = Math.min(1, Math.max(0, (value - edge0) / (edge1 - edge0)));
+  return amount * amount * (3 - 2 * amount);
 };
 
 export interface DioramaParticleAudioResponse {
-    flowSpeed: number;
-    clusterPulse: number;
+  flowSpeed: number;
+  clusterPulse: number;
 }
 
 /**
@@ -437,16 +455,16 @@ export interface DioramaParticleAudioResponse {
  * passage and erase the beat, which is the same mistake the old baseline made one layer down.
  */
 export const resolveDioramaParticleAudioResponse = (
-    bass: DioramaBandSignal,
-    mid: DioramaBandSignal,
+  bass: DioramaBandSignal,
+  mid: DioramaBandSignal,
 ): DioramaParticleAudioResponse => ({
-    flowSpeed: Math.min(1.55, 0.3 + clamp01(bass.sustained) * 1.25),
-    // A gentle whole-body breath on the beat - deliberately small so the wave field, not an overall scale
-    // pump, carries the motion (the previous 1.44 pump read as "too exaggerated").
-    clusterPulse: Math.min(
-        DIORAMA_PARTICLE_AUDIO_SCALE_MAX,
-        1 + smoothstep(0.1, 0.9, bass.transient) * 0.14 + smoothstep(0.15, 0.95, mid.transient) * 0.05,
-    ),
+  flowSpeed: Math.min(1.55, 0.3 + clamp01(bass.sustained) * 1.25),
+  // A gentle whole-body breath on the beat - deliberately small so the wave field, not an overall scale
+  // pump, carries the motion (the previous 1.44 pump read as "too exaggerated").
+  clusterPulse: Math.min(
+    DIORAMA_PARTICLE_AUDIO_SCALE_MAX,
+    1 + smoothstep(0.1, 0.9, bass.transient) * 0.14 + smoothstep(0.15, 0.95, mid.transient) * 0.05,
+  ),
 });
 
 /**
@@ -468,19 +486,19 @@ export const DIORAMA_CORRIDOR_PULSE_SHARE = 0.12;
  * corridor only DIORAMA_CORRIDOR_PULSE_SHARE of it survives.
  */
 export const resolveDioramaPulseTarget = (
-    clusterPulse: number,
-    gain: number,
-    isCorridor: boolean,
+  clusterPulse: number,
+  gain: number,
+  isCorridor: boolean,
 ): number => 1 + (clusterPulse - 1) * gain * (isCorridor ? DIORAMA_CORRIDOR_PULSE_SHARE : 1);
 
 export interface DioramaParticleElasticState {
-    value: number;
-    velocity: number;
+  value: number;
+  velocity: number;
 }
 
 export const createDioramaParticleElasticState = (): DioramaParticleElasticState => ({
-    value: 1,
-    velocity: 0,
+  value: 1,
+  velocity: 0,
 });
 
 /**
@@ -489,19 +507,19 @@ export const createDioramaParticleElasticState = (): DioramaParticleElasticState
  * feel the previous over-clamped version had lost.
  */
 export const stepDioramaParticleElasticResponse = (
-    state: DioramaParticleElasticState,
-    target: number,
-    delta: number,
+  state: DioramaParticleElasticState,
+  target: number,
+  delta: number,
 ): number => {
-    let remaining = Math.min(0.1, Math.max(0, delta));
-    const safeTarget = Math.min(DIORAMA_PARTICLE_AUDIO_SCALE_MAX, Math.max(0.9, target));
-    while (remaining > 0) {
-        const step = Math.min(1 / 240, remaining);
-        const acceleration = (safeTarget - state.value) * 150 - state.velocity * 15;
-        state.velocity += acceleration * step;
-        state.value += state.velocity * step;
-        remaining -= step;
-    }
-    state.value = Math.min(DIORAMA_PARTICLE_AUDIO_SCALE_MAX, Math.max(0.9, state.value));
-    return state.value;
+  let remaining = Math.min(0.1, Math.max(0, delta));
+  const safeTarget = Math.min(DIORAMA_PARTICLE_AUDIO_SCALE_MAX, Math.max(0.9, target));
+  while (remaining > 0) {
+    const step = Math.min(1 / 240, remaining);
+    const acceleration = (safeTarget - state.value) * 150 - state.velocity * 15;
+    state.velocity += acceleration * step;
+    state.value += state.velocity * step;
+    remaining -= step;
+  }
+  state.value = Math.min(DIORAMA_PARTICLE_AUDIO_SCALE_MAX, Math.max(0.9, state.value));
+  return state.value;
 };

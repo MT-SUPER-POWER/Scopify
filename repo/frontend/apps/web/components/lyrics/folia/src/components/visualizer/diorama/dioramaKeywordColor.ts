@@ -1,14 +1,14 @@
-import * as THREE from 'three';
-import type { Theme } from '../../../types';
+import * as THREE from "three";
+import type { Theme } from "../../../types";
 import {
-    buildWordColorRangesFromMatchers,
-    prepareWordColorMatchers,
-    resolveTokenColorMap,
-    type WordColorMatcher,
-} from '../wordColoring';
+  buildWordColorRangesFromMatchers,
+  prepareWordColorMatchers,
+  resolveTokenColorMap,
+  type WordColorMatcher,
+} from "../wordColoring";
 // Generic WCAG ratio between two linear-space THREE.Colors. It lives in the particle module and is
 // named for it, but the maths is plain WCAG and duplicating it here would be worse than the name.
-import { getDioramaParticleContrastRatio as wcagContrastRatio } from './dioramaParticleMaterials';
+import { getDioramaParticleContrastRatio as wcagContrastRatio } from "./dioramaParticleMaterials";
 
 // src/components/visualizer/diorama/dioramaKeywordColor.ts
 // 关键字着色 for the diorama, reusing the shared keyword system every other visualizer draws from:
@@ -38,9 +38,8 @@ const KEYWORD_MIN_BG_CONTRAST = 4.5;
 // TOWARD it, so a target too close to primary means the dye does nothing and the keyword never shows.
 const KEYWORD_MIN_PRIMARY_SEPARATION = 0.4;
 
-const separationFromPrimary = (color: THREE.Color, primary: THREE.Color): number => (
-    Math.abs(color.r - primary.r) + Math.abs(color.g - primary.g) + Math.abs(color.b - primary.b)
-);
+const separationFromPrimary = (color: THREE.Color, primary: THREE.Color): number =>
+  Math.abs(color.r - primary.r) + Math.abs(color.g - primary.g) + Math.abs(color.b - primary.b);
 
 /**
  * What a text glyph of this colour actually becomes on screen: the base material is a white raster
@@ -54,35 +53,38 @@ const separationFromPrimary = (color: THREE.Color, primary: THREE.Color): number
  * custom ShaderMaterial there is no colour-space bug to model here.
  */
 const asDisplayedText = (color: THREE.Color, background: THREE.Color): THREE.Color => {
-    const src = color.clone().convertLinearToSRGB();
-    const dst = background.clone().convertLinearToSRGB();
-    const blend = (s: number, d: number) => s * ACTIVE_LINE_OPACITY + d * (1 - ACTIVE_LINE_OPACITY);
-    return new THREE.Color(blend(src.r, dst.r), blend(src.g, dst.g), blend(src.b, dst.b))
-        .convertSRGBToLinear();
+  const src = color.clone().convertLinearToSRGB();
+  const dst = background.clone().convertLinearToSRGB();
+  const blend = (s: number, d: number) => s * ACTIVE_LINE_OPACITY + d * (1 - ACTIVE_LINE_OPACITY);
+  return new THREE.Color(
+    blend(src.r, dst.r),
+    blend(src.g, dst.g),
+    blend(src.b, dst.b),
+  ).convertSRGBToLinear();
 };
 
 /** The contrast ratio of the PIXEL a keyword glyph of this colour becomes, against the scene behind it. */
 export const getDioramaKeywordDisplayedContrastRatio = (
-    color: THREE.Color,
-    background: THREE.Color,
+  color: THREE.Color,
+  background: THREE.Color,
 ): number => wcagContrastRatio(asDisplayedText(color, background), background);
 
 /** Smallest lerp toward `target` that clears `minimum`, or the full lerp if even that cannot. */
 const nudgeUntil = (
-    color: THREE.Color,
-    target: THREE.Color,
-    minimum: number,
-    measure: (candidate: THREE.Color) => number,
+  color: THREE.Color,
+  target: THREE.Color,
+  minimum: number,
+  measure: (candidate: THREE.Color) => number,
 ): THREE.Color => {
-    if (measure(color) >= minimum) return color.clone();
-    let low = 0;
-    let high = 1;
-    for (let iteration = 0; iteration < 10; iteration += 1) {
-        const amount = (low + high) * 0.5;
-        if (measure(color.clone().lerp(target, amount)) >= minimum) high = amount;
-        else low = amount;
-    }
-    return color.clone().lerp(target, high);
+  if (measure(color) >= minimum) return color.clone();
+  let low = 0;
+  let high = 1;
+  for (let iteration = 0; iteration < 10; iteration += 1) {
+    const amount = (low + high) * 0.5;
+    if (measure(color.clone().lerp(target, amount)) >= minimum) high = amount;
+    else low = amount;
+  }
+  return color.clone().lerp(target, high);
 };
 
 /**
@@ -101,40 +103,35 @@ const nudgeUntil = (
  * chasing each other would oscillate for a case nobody configures on purpose.
  */
 export const resolveDioramaKeywordColor = (
-    keyword: THREE.Color,
-    primary: THREE.Color,
-    accent: THREE.Color,
-    background: THREE.Color,
+  keyword: THREE.Color,
+  primary: THREE.Color,
+  accent: THREE.Color,
+  background: THREE.Color,
 ): THREE.Color => {
-    // 1. A keyword that looks like ordinary text is not a keyword. Nudge toward the theme's ACCENT -
-    //    its own designated emphasis colour, and what Fume already falls back to for emphasis - rather
-    //    than inventing a hue the theme never chose. If the accent is degenerate too this cannot help,
-    //    and the colour is left as the theme set it rather than fabricated.
-    const separated = nudgeUntil(
-        keyword,
-        accent,
-        KEYWORD_MIN_PRIMARY_SEPARATION,
-        (candidate) => separationFromPrimary(candidate, primary),
-    );
-    // 2. Legibility against the scene, on the displayed pixel: toward whichever pole the background
-    //    contrasts with more, so dark scenes brighten their keywords and light scenes darken them.
-    const lightTarget = new THREE.Color(0xffffff);
-    const darkTarget = new THREE.Color(0x050505);
-    const pole = getDioramaKeywordDisplayedContrastRatio(lightTarget, background)
-        >= getDioramaKeywordDisplayedContrastRatio(darkTarget, background)
-        ? lightTarget
-        : darkTarget;
-    return nudgeUntil(
-        separated,
-        pole,
-        KEYWORD_MIN_BG_CONTRAST,
-        (candidate) => getDioramaKeywordDisplayedContrastRatio(candidate, background),
-    );
+  // 1. A keyword that looks like ordinary text is not a keyword. Nudge toward the theme's ACCENT -
+  //    its own designated emphasis colour, and what Fume already falls back to for emphasis - rather
+  //    than inventing a hue the theme never chose. If the accent is degenerate too this cannot help,
+  //    and the colour is left as the theme set it rather than fabricated.
+  const separated = nudgeUntil(keyword, accent, KEYWORD_MIN_PRIMARY_SEPARATION, (candidate) =>
+    separationFromPrimary(candidate, primary),
+  );
+  // 2. Legibility against the scene, on the displayed pixel: toward whichever pole the background
+  //    contrasts with more, so dark scenes brighten their keywords and light scenes darken them.
+  const lightTarget = new THREE.Color(0xffffff);
+  const darkTarget = new THREE.Color(0x050505);
+  const pole =
+    getDioramaKeywordDisplayedContrastRatio(lightTarget, background) >=
+    getDioramaKeywordDisplayedContrastRatio(darkTarget, background)
+      ? lightTarget
+      : darkTarget;
+  return nudgeUntil(separated, pole, KEYWORD_MIN_BG_CONTRAST, (candidate) =>
+    getDioramaKeywordDisplayedContrastRatio(candidate, background),
+  );
 };
 
 export const prepareDioramaKeywordMatchers = (
-    wordColors: Theme['wordColors'],
-    enabled: boolean,
+  wordColors: Theme["wordColors"],
+  enabled: boolean,
 ): WordColorMatcher[] => prepareWordColorMatchers(wordColors, enabled);
 
 /**
@@ -143,38 +140,38 @@ export const prepareDioramaKeywordMatchers = (
  * the scene falls back to exactly its original colouring.
  */
 export const resolveDioramaKeywordUnitColors = (
-    lineText: string,
-    units: { charStart: number; charEnd: number }[],
-    matchers: WordColorMatcher[],
-    primary: THREE.Color,
-    accent: THREE.Color,
-    background: THREE.Color,
+  lineText: string,
+  units: { charStart: number; charEnd: number }[],
+  matchers: WordColorMatcher[],
+  primary: THREE.Color,
+  accent: THREE.Color,
+  background: THREE.Color,
 ): Map<number, THREE.Color> => {
-    const resolved = new Map<number, THREE.Color>();
-    if (!lineText || units.length === 0 || matchers.length === 0) return resolved;
+  const resolved = new Map<number, THREE.Color>();
+  if (!lineText || units.length === 0 || matchers.length === 0) return resolved;
 
-    const ranges = buildWordColorRangesFromMatchers(lineText, matchers);
-    if (ranges.length === 0) return resolved;
+  const ranges = buildWordColorRangesFromMatchers(lineText, matchers);
+  if (ranges.length === 0) return resolved;
 
-    const colorByKey = resolveTokenColorMap(
-        units.map((unit, index) => ({
-            key: String(index),
-            timed: true,
-            startOffset: unit.charStart,
-            endOffset: unit.charEnd,
-        })),
-        ranges,
-    );
-    // One adaptation per distinct keyword colour, not per unit: a line repeating a keyword resolves the
-    // same hex to the same THREE.Color instead of running the search again for every character.
-    const adapted = new Map<string, THREE.Color>();
-    colorByKey.forEach((hex, key) => {
-        let color = adapted.get(hex);
-        if (!color) {
-            color = resolveDioramaKeywordColor(new THREE.Color(hex), primary, accent, background);
-            adapted.set(hex, color);
-        }
-        resolved.set(Number(key), color);
-    });
-    return resolved;
+  const colorByKey = resolveTokenColorMap(
+    units.map((unit, index) => ({
+      key: String(index),
+      timed: true,
+      startOffset: unit.charStart,
+      endOffset: unit.charEnd,
+    })),
+    ranges,
+  );
+  // One adaptation per distinct keyword colour, not per unit: a line repeating a keyword resolves the
+  // same hex to the same THREE.Color instead of running the search again for every character.
+  const adapted = new Map<string, THREE.Color>();
+  colorByKey.forEach((hex, key) => {
+    let color = adapted.get(hex);
+    if (!color) {
+      color = resolveDioramaKeywordColor(new THREE.Color(hex), primary, accent, background);
+      adapted.set(hex, color);
+    }
+    resolved.set(Number(key), color);
+  });
+  return resolved;
 };

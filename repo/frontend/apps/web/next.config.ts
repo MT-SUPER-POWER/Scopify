@@ -52,7 +52,8 @@ const frontendDevPort = envNumber(
 );
 const debugLogRelayPort = envNumber(process.env.APP_CFG_DEBUG_LOG_RELAY_PORT, frontendDevPort + 1);
 const isDesktopBuild = process.env.SCOPIFY_BUILD_TARGET === "desktop";
-const nextDistDir = process.env.NEXT_DIST_DIR || (process.env.NODE_ENV === "development" ? ".next-dev" : ".next");
+const nextDistDir =
+  process.env.NEXT_DIST_DIR || (process.env.NODE_ENV === "development" ? ".next-dev" : ".next");
 
 export function shouldUseUnoptimizedImages(
   buildTarget = process.env.SCOPIFY_BUILD_TARGET,

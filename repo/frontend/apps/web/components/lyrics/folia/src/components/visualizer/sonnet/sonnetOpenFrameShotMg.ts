@@ -86,13 +86,11 @@ const drawDashedOrbits = ({
     const span = (TAU / dashes) * 0.55;
     for (let dash = 0; dash < dashes; dash += 1) {
       const start = offset + (dash / dashes) * TAU;
-      target
-        .arc(0, 0, ringRadius, start, start + span)
-        .stroke({
-          color: ring === 1 ? secondary : primary,
-          width: ring === 1 ? 1 : 2,
-          alpha: 0.28 + ring * 0.06,
-        });
+      target.arc(0, 0, ringRadius, start, start + span).stroke({
+        color: ring === 1 ? secondary : primary,
+        width: ring === 1 ? 1 : 2,
+        alpha: 0.28 + ring * 0.06,
+      });
     }
   }
   const markerAngle = seed * 0.31;
@@ -380,13 +378,11 @@ const drawOpenRadar = ({ target, radius, seed, primary, secondary }: AdditionalS
   for (let ring = 0; ring < 3; ring += 1) {
     const ringRadius = radius * (0.3 + ring * 0.18);
     const start = seed * 0.1 + ring * 0.9;
-    target
-      .arc(0, 0, ringRadius, start, start + span)
-      .stroke({
-        color: ring === 1 ? secondary : primary,
-        width: ring === 1 ? 2 : 1,
-        alpha: 0.35 + ring * 0.06,
-      });
+    target.arc(0, 0, ringRadius, start, start + span).stroke({
+      color: ring === 1 ? secondary : primary,
+      width: ring === 1 ? 2 : 1,
+      alpha: 0.35 + ring * 0.06,
+    });
   }
   const sweep = seed * 0.07;
   target

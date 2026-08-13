@@ -1,10 +1,10 @@
 import {
-    DIORAMA_SHAPE_DISSOLVE_END,
-    DIORAMA_SHAPE_DISSOLVE_START,
-    DIORAMA_SHAPE_FADE_IN_END,
-    DIORAMA_SHAPE_FADE_IN_START,
-} from './cameraPath';
-import { DIORAMA_RIPPLE_COUNT } from './dioramaParticleModel';
+  DIORAMA_SHAPE_DISSOLVE_END,
+  DIORAMA_SHAPE_DISSOLVE_START,
+  DIORAMA_SHAPE_FADE_IN_END,
+  DIORAMA_SHAPE_FADE_IN_START,
+} from "./cameraPath";
+import { DIORAMA_RIPPLE_COUNT } from "./dioramaParticleModel";
 
 // src/components/visualizer/diorama/dioramaParticleShaders.ts
 // One self-lit soft-point shader shared by both geometry modes and both render layers (opaque contrast
@@ -100,10 +100,10 @@ float hash11(float n) { return fract(sin(n) * 43758.5453123); }
 
 float resolveLife(float distanceToCamera) {
     float farT = clamp((${DIORAMA_SHAPE_FADE_IN_END.toFixed(1)} - distanceToCamera) / ${(
-        DIORAMA_SHAPE_FADE_IN_END - DIORAMA_SHAPE_FADE_IN_START
+      DIORAMA_SHAPE_FADE_IN_END - DIORAMA_SHAPE_FADE_IN_START
     ).toFixed(1)}, 0.0, 1.0);
     float nearT = clamp((distanceToCamera - ${DIORAMA_SHAPE_DISSOLVE_END.toFixed(1)}) / ${(
-        DIORAMA_SHAPE_DISSOLVE_START - DIORAMA_SHAPE_DISSOLVE_END
+      DIORAMA_SHAPE_DISSOLVE_START - DIORAMA_SHAPE_DISSOLVE_END
     ).toFixed(1)}, 0.0, 1.0);
     return hermite(farT) * hermite(nearT);
 }

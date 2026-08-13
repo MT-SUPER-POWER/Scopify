@@ -1,11 +1,6 @@
-import {
-    DIORAMA_STEP_DISTANCE,
-    getFrame,
-    type DioramaFrame,
-    type DioramaVec,
-} from './cameraPath';
-import { extendDioramaFrame } from './dioramaMoteField';
-import { resolveGlobal, type SequencerState } from './dioramaSequencer';
+import { DIORAMA_STEP_DISTANCE, getFrame, type DioramaFrame, type DioramaVec } from "./cameraPath";
+import { extendDioramaFrame } from "./dioramaMoteField";
+import { resolveGlobal, type SequencerState } from "./dioramaSequencer";
 
 // src/components/visualizer/diorama/dioramaParticleCorridor.ts
 // One line-local span of the always-on point tunnel. No audio triggers, no camera tracking, no morph:
@@ -14,50 +9,51 @@ import { resolveGlobal, type SequencerState } from './dioramaSequencer';
 export const DIORAMA_PARTICLE_CORRIDOR_RADIUS = 7.4;
 
 export interface DioramaParticleCorridorSpan {
-    /** Path-centre world position where this line's tunnel section starts. */
-    start: DioramaVec;
-    /** Path-centre world position where it ends (the next line's centre, or one step ahead). */
-    end: DioramaVec;
-    /** Ring basis (frame right/up) at each end; ring points sit on right*cos + up*sin. */
-    startRight: DioramaVec;
-    endRight: DioramaVec;
-    startUp: DioramaVec;
-    endUp: DioramaVec;
-    /**
-     * Absolute along-path coordinate (the line's global index). Used as the wave's longitudinal phase so
-     * the tunnel pattern is anchored to world sections, not to the mounted window - it can't roll or shift
-     * when the window slides. Also keeps neighbouring spans' waves continuous.
-     */
-    pathStart: number;
-    /** False for an outgoing/transition line - its span is skipped so the tunnel stays on the live path. */
-    enabled: boolean;
+  /** Path-centre world position where this line's tunnel section starts. */
+  start: DioramaVec;
+  /** Path-centre world position where it ends (the next line's centre, or one step ahead). */
+  end: DioramaVec;
+  /** Ring basis (frame right/up) at each end; ring points sit on right*cos + up*sin. */
+  startRight: DioramaVec;
+  endRight: DioramaVec;
+  startUp: DioramaVec;
+  endUp: DioramaVec;
+  /**
+   * Absolute along-path coordinate (the line's global index). Used as the wave's longitudinal phase so
+   * the tunnel pattern is anchored to world sections, not to the mounted window - it can't roll or shift
+   * when the window slides. Also keeps neighbouring spans' waves continuous.
+   */
+  pathStart: number;
+  /** False for an outgoing/transition line - its span is skipped so the tunnel stays on the live path. */
+  enabled: boolean;
 }
 
 /** Builds one line-local tunnel span; it never bridges across a song-segment transition gap. */
 export const buildDioramaParticleCorridorSpan = (
-    frame: DioramaFrame,
-    nextFrame: DioramaFrame | null,
-    pathStart: number,
-    enabled: boolean,
+  frame: DioramaFrame,
+  nextFrame: DioramaFrame | null,
+  pathStart: number,
+  enabled: boolean,
 ): DioramaParticleCorridorSpan => {
-    const start = { ...frame.position };
-    const end = nextFrame != null
-        ? { ...nextFrame.position }
-        : {
-            x: start.x + frame.forward.x * DIORAMA_STEP_DISTANCE,
-            y: start.y + frame.forward.y * DIORAMA_STEP_DISTANCE,
-            z: start.z + frame.forward.z * DIORAMA_STEP_DISTANCE,
+  const start = { ...frame.position };
+  const end =
+    nextFrame != null
+      ? { ...nextFrame.position }
+      : {
+          x: start.x + frame.forward.x * DIORAMA_STEP_DISTANCE,
+          y: start.y + frame.forward.y * DIORAMA_STEP_DISTANCE,
+          z: start.z + frame.forward.z * DIORAMA_STEP_DISTANCE,
         };
-    return {
-        start,
-        end,
-        startRight: frame.right,
-        endRight: nextFrame ? nextFrame.right : frame.right,
-        startUp: frame.up,
-        endUp: nextFrame ? nextFrame.up : frame.up,
-        pathStart,
-        enabled,
-    };
+  return {
+    start,
+    end,
+    startRight: frame.right,
+    endRight: nextFrame ? nextFrame.right : frame.right,
+    startUp: frame.up,
+    endUp: nextFrame ? nextFrame.up : frame.up,
+    pathStart,
+    enabled,
+  };
 };
 
 /**
@@ -76,25 +72,25 @@ export const buildDioramaParticleCorridorSpan = (
  *    Each tunnel now extends itself, and the two overlap in the fog instead of reaching into each other.
  */
 export const buildDioramaParticleCorridorWindow = (
-    sequencer: SequencerState,
-    center: number,
-    behind: number,
-    ahead: number,
+  sequencer: SequencerState,
+  center: number,
+  behind: number,
+  ahead: number,
 ): DioramaParticleCorridorSpan[] => {
-    const anchor = resolveGlobal(sequencer, center);
-    if (!anchor) return [];
-    const { segment } = anchor;
-    const first = segment.globalStart;
-    const last = segment.globalStart + segment.span - 1;
-    const frameAt = (index: number): DioramaFrame => {
-        const clamped = Math.min(Math.max(index, first), last);
-        return extendDioramaFrame(getFrame(segment.frames, clamped - first), index - clamped);
-    };
-    const spans: DioramaParticleCorridorSpan[] = [];
-    for (let i = center - behind; i <= center + ahead; i += 1) {
-        // frameAt(i + 1) rather than the raw next frame: it is the same straight continuation past the
-        // ends, so every span's end is exactly the next span's start and the rings never gap.
-        spans.push(buildDioramaParticleCorridorSpan(frameAt(i), frameAt(i + 1), i, true));
-    }
-    return spans;
+  const anchor = resolveGlobal(sequencer, center);
+  if (!anchor) return [];
+  const { segment } = anchor;
+  const first = segment.globalStart;
+  const last = segment.globalStart + segment.span - 1;
+  const frameAt = (index: number): DioramaFrame => {
+    const clamped = Math.min(Math.max(index, first), last);
+    return extendDioramaFrame(getFrame(segment.frames, clamped - first), index - clamped);
+  };
+  const spans: DioramaParticleCorridorSpan[] = [];
+  for (let i = center - behind; i <= center + ahead; i += 1) {
+    // frameAt(i + 1) rather than the raw next frame: it is the same straight continuation past the
+    // ends, so every span's end is exactly the next span's start and the rings never gap.
+    spans.push(buildDioramaParticleCorridorSpan(frameAt(i), frameAt(i + 1), i, true));
+  }
+  return spans;
 };
