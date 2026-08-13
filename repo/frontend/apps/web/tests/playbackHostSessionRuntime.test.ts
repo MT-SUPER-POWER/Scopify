@@ -13,9 +13,90 @@ let closedConnections = 0;
 let inbound: ((payload: PlaybackHostReplaceSessionCommand) => void) | null = null;
 let closeInboundControl: (() => void) | null = null;
 const reportReady = mock(() => true);
+const cacheRecords = new Map<string, { expiresAt: number; value: unknown }>();
+const cachePreferences = {
+  page: { enabled: true, maxSizeMB: 256, searchTtlMinutes: 30, ttlMinutes: 360 },
+  playback: {
+    enabled: true,
+    lyricTtlMinutes: 1440,
+    maxEntries: 100,
+    maxSizeMB: 64,
+    urlTtlMinutes: 30,
+  },
+};
+
+const cache = {
+  clear: async () => ({ dir: "cache", entryCount: 0, sizeBytes: 0 }),
+  clearSelected: async () => ({
+    page: {
+      categories: [],
+      dir: "cache/page",
+      enabled: true,
+      entryCount: 0,
+      maxSizeMB: 256,
+      scope: "page",
+      sizeBytes: 0,
+    },
+    playback: {
+      categories: [],
+      dir: "cache/playback",
+      enabled: true,
+      entryCount: 0,
+      maxSizeMB: 64,
+      scope: "playback",
+      sizeBytes: 0,
+    },
+    rootDir: "cache",
+  }),
+  delete: async (key: string) => {
+    cacheRecords.delete(`page:${key}`);
+  },
+  deleteScoped: async (scope: string, key: string) => {
+    cacheRecords.delete(`${scope}:${key}`);
+  },
+  get: async <T>(key: string) => cache.getScoped<T>("page", key),
+  getPreferences: async () => cachePreferences,
+  getScoped: async <T>(scope: string, key: string) => {
+    const record = cacheRecords.get(`${scope}:${key}`);
+    if (!record || record.expiresAt <= Date.now()) {
+      cacheRecords.delete(`${scope}:${key}`);
+      return null;
+    }
+    return record.value as T;
+  },
+  savePreferences: async (preferences: typeof cachePreferences) => preferences,
+  set: async <T>(key: string, value: T, ttlMs: number) =>
+    cache.setScoped("page", key, value, ttlMs),
+  setScoped: async <T>(scope: string, key: string, value: T, ttlMs: number) => {
+    cacheRecords.set(`${scope}:${key}`, { expiresAt: Date.now() + ttlMs, value });
+  },
+  stats: async () => ({ dir: "cache", entryCount: 0, sizeBytes: 0 }),
+  statsAll: async () => ({
+    page: {
+      categories: [],
+      dir: "cache/page",
+      enabled: true,
+      entryCount: 0,
+      maxSizeMB: 256,
+      scope: "page",
+      sizeBytes: 0,
+    },
+    playback: {
+      categories: [],
+      dir: "cache/playback",
+      enabled: true,
+      entryCount: 0,
+      maxSizeMB: 64,
+      scope: "playback",
+      sizeBytes: 0,
+    },
+    rootDir: "cache",
+  }),
+};
 
 mock.module("@/lib/runtime", () => ({
   runtime: {
+    cache,
     playbackHost: {
       getNonce: () => "test-host-nonce",
       reportReady,
