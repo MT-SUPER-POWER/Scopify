@@ -75,6 +75,8 @@ if (_nativeDockMac.isEmpty()) {
 }
 
 export const __preloadScript = join(__dirname, "../main/preload.js");
+/** Dedicated least-privileged preload for the hidden playback authority host. */
+export const __playbackHostPreloadScript = join(__dirname, "../main/playbackHostPreload.js");
 export const __rendererDir = join(__dirname, "../../renderer");
 const desktopConfig = loadDesktopHostConfig();
 

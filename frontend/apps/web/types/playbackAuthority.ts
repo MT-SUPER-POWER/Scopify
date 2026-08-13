@@ -8,6 +8,7 @@ import type {
 import type { ReactNode, RefObject } from "react";
 
 import type { PlaybackClock, PlaybackProjectionSource } from "@/types/playbackProjection";
+import type { PlaybackAuthority } from "@/lib/playbackProjection/authority";
 
 export type PlaybackAuthorityMediaEvent =
   | "can-play"
@@ -49,6 +50,12 @@ export interface PlaybackAuthorityIdentityFactory {
   createSessionId(): string;
 }
 
+/** Immutable identity for the currently running Authority lifecycle and media session. */
+export interface PlaybackAuthorityIdentity {
+  readonly authorityId: string;
+  readonly sessionId: string;
+}
+
 export interface PlaybackAuthorityStatePatch<TLyrics = unknown> {
   canControl?: boolean;
   liked?: boolean;
@@ -69,11 +76,44 @@ export interface PlaybackAuthorityCallbacks {
   toggleLike?(): boolean | Promise<boolean | void> | void;
 }
 
-export interface PlaybackAuthorityProviderProps {
+/** Sanitised media failure facts safe to pass to the Host runtime. */
+export interface PlaybackAuthorityMediaError {
+  errorCode: number | null;
+  errorMessage: string | null;
+}
+
+/**
+ * Lets a long-lived Playback Host own source preparation and queue advancement.
+ * Supplying this object opts the provider out of its legacy Zustand queue callbacks.
+ */
+export interface PlaybackAuthorityExternalSessionControl {
+  ensureSource?: PlaybackAuthorityCallbacks["ensureSource"];
+  next?: PlaybackAuthorityCallbacks["next"];
+  onEnded?: PlaybackAuthorityCallbacks["onEnded"];
+  /**
+   * Recovers an active media source entirely through the Host Runtime. The
+   * media element must never invoke the legacy player Store's retry/skip path
+   * while this external mode is selected.
+   */
+  onMediaError?(error: PlaybackAuthorityMediaError): Promise<void> | void;
+  onPhaseChange?: PlaybackAuthorityCallbacks["onPhaseChange"];
+  onVolumeChange?: PlaybackAuthorityCallbacks["onVolumeChange"];
+  previous?: PlaybackAuthorityCallbacks["previous"];
+}
+
+export interface PlaybackAuthorityProviderProps<TLyrics = unknown> {
   audioRef: RefObject<HTMLAudioElement | null>;
   children: ReactNode;
+  /** Electron Authority connection identity; omitted for browser-only playback. */
+  electronConnectionId?: string;
+  /**
+   * Keeps the HTML media Authority alive with one stable empty session. Session
+   * replacement is then performed explicitly by the Playback Host controller.
+   */
+  externalSessionControl?: PlaybackAuthorityExternalSessionControl;
   isMediaSourceLoadingRef: RefObject<boolean>;
   mediaSourceLoadRevisionRef: RefObject<number>;
+  onAuthorityConnected?(authority: PlaybackAuthority<TLyrics>): void;
 }
 
 export interface PlaybackAuthorityOptions<TLyrics = unknown> {
@@ -121,6 +161,8 @@ export interface UsePlaybackAuthorityOptions<TLyrics = unknown> {
   audioRef: RefObject<HTMLAudioElement | null>;
   callbacks?: PlaybackAuthorityCallbacks;
   clock?: PlaybackClock;
+  /** Prevents reactive session replacement; callers explicitly invoke beginSession instead. */
+  externalSessionControl?: boolean;
   healthAnchorIntervalMs?: number;
   identityFactory?: PlaybackAuthorityIdentityFactory;
   initialState: PlaybackSessionState<TLyrics>;

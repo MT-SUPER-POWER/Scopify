@@ -9,6 +9,7 @@ import {
 } from "@scopify/desktop-contract";
 
 const MANIFEST_FILE = "renderer.manifest.json";
+const REQUIRED_RENDERER_ENTRIES = ["index.html", "playback-host/index.html"] as const;
 
 export type RendererArtifactVerification =
   { manifest: RendererArtifactManifest; ok: true } | { message: string; ok: false };
@@ -69,11 +70,13 @@ function isRendererArtifactManifest(value: unknown): value is RendererArtifactMa
 }
 
 export function verifyRendererArtifact(rendererRoot: string): RendererArtifactVerification {
-  const indexPath = resolve(rendererRoot, "index.html");
   const manifestPath = resolve(rendererRoot, MANIFEST_FILE);
 
-  if (!existsSync(indexPath) || !statSync(indexPath).isFile()) {
-    return { message: `Renderer entry is missing: ${indexPath}`, ok: false };
+  for (const entry of REQUIRED_RENDERER_ENTRIES) {
+    const entryPath = resolve(rendererRoot, entry);
+    if (!existsSync(entryPath) || !statSync(entryPath).isFile()) {
+      return { message: `Renderer entry is missing: ${entryPath}`, ok: false };
+    }
   }
   if (!existsSync(manifestPath) || !statSync(manifestPath).isFile()) {
     return { message: `Renderer manifest is missing: ${manifestPath}`, ok: false };

@@ -187,6 +187,27 @@ function createFixture(
 }
 
 describe("PlaybackAuthority lifecycle", () => {
+  test("exposes a readonly identity for the active Authority session only", () => {
+    const { authority } = createFixture();
+
+    expect(authority.currentIdentity).toBeNull();
+    authority.start(createState());
+    expect(authority.currentIdentity).toEqual({
+      authorityId: "authority-1",
+      sessionId: "session-1",
+    });
+    expect(Object.isFrozen(authority.currentIdentity)).toBeTrue();
+
+    authority.beginSession(createState(), { reason: "replay" });
+    expect(authority.currentIdentity).toEqual({
+      authorityId: "authority-1",
+      sessionId: "session-2",
+    });
+
+    authority.stop();
+    expect(authority.currentIdentity).toBeNull();
+  });
+
   test("uses unique lifecycle/session identities and strictly increasing reliable sequence", () => {
     const { authority, media, messages, scheduler } = createFixture();
     authority.start(createState());
@@ -259,6 +280,25 @@ describe("PlaybackAuthority lifecycle", () => {
       "error",
     ]);
     expect(messagesOfType(messages, "clock-anchored")).toHaveLength(7);
+  });
+
+  test("notifies injected phase and volume callbacks without queue side effects", async () => {
+    const phases: PlaybackPhase[] = [];
+    const volumes: number[] = [];
+    const { authority, media } = createFixture({
+      callbacks: {
+        onPhaseChange: (phase) => phases.push(phase),
+        onVolumeChange: (volume) => volumes.push(volume),
+      },
+    });
+    authority.start(createState());
+
+    media.sample.paused = false;
+    media.emit("playing");
+    await authority.dispatch({ commandId: "volume", type: "set-volume", volume: 72 });
+
+    expect(phases).toEqual(["playing"]);
+    expect(volumes).toEqual([72]);
   });
 });
 
@@ -500,6 +540,7 @@ describe("in-process playback transport", () => {
     const received: PlaybackMessage[] = [];
     const projection: PlaybackProjection = {
       ...createState(),
+      authorityId: null,
       connection: "connected",
       isPlaying: false,
       positionMs: 0,

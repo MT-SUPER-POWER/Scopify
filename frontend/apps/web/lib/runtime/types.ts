@@ -1,14 +1,17 @@
 import type {
+  AudioFeatureFrameV1,
+  AudioFeatureTransportRole,
   DesktopIconVisibilityState,
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
-  DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
   DesktopHostConfig,
   DiscordPresenceSnapshot,
   DiscordPresenceStatus,
   PageCacheStats,
+  PlaybackHostClientCommand,
+  PlaybackHostHostMessage,
   PlaybackTransportPayload,
   PlaybackTransportRole,
   RendererLogEvent,
@@ -37,6 +40,17 @@ export interface RuntimeAuthentication {
   completeLogin(): boolean;
   openLoginWindow(): boolean;
   persistMusicCookie(cookie: string, backendOrigin: string): Promise<boolean>;
+}
+
+/** Bounded high-frequency audio feature transport; payload delivery is best-effort. */
+export interface RuntimeAudioFeature {
+  connect(
+    role: AudioFeatureTransportRole,
+    connectionId: string,
+    onFrame: (frame: AudioFeatureFrameV1) => void,
+    onClose: () => void,
+  ): RuntimeUnsubscribe;
+  publish(frame: AudioFeatureFrameV1): boolean;
 }
 
 export interface RuntimeCache {
@@ -78,9 +92,7 @@ export interface RuntimeDesktopPlaybackWallpaper {
     update: DesktopPlaybackWallpaperPreferencesUpdate,
   ): Promise<DesktopPlaybackWallpaperModel>;
   getModel(): Promise<DesktopPlaybackWallpaperModel>;
-  onAudioFrame(callback: (frame: DesktopPlaybackWallpaperAudioFrame) => void): RuntimeUnsubscribe;
   onModelChanged(callback: (model: DesktopPlaybackWallpaperModel) => void): RuntimeUnsubscribe;
-  publishAudioFrame(frame: DesktopPlaybackWallpaperAudioFrame): void;
   retry(): Promise<DesktopPlaybackWallpaperModel>;
   setControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showController(): Promise<DesktopPlaybackControllerOpenResult>;
@@ -104,6 +116,45 @@ export interface RuntimePlaybackTransport<TLyrics = LyricData> {
     onClose: () => void,
   ): RuntimeUnsubscribe;
   send(payload: PlaybackTransportPayload<TLyrics>): boolean;
+}
+
+/** Payloads received by the visible client are Host receipts and snapshots. */
+export type RuntimePlaybackHostControlClientPayload = PlaybackHostHostMessage;
+
+/** Every queue or session command the visible client may send to the Host. */
+export type RuntimePlaybackHostControlHostPayload = PlaybackHostClientCommand;
+
+/** A lifecycle-bound view of one preload-owned, role-specific control port. */
+export interface RuntimePlaybackHostControlConnection<TPayload> {
+  close(): void;
+  send(payload: TPayload): boolean;
+}
+
+/**
+ * Low-frequency session control is directionally constrained:
+ * the visible renderer is the client and the hidden renderer is the Host.
+ * Neither adapter exposes the other side of its preload bridge.
+ */
+export interface RuntimePlaybackHostControl {
+  connectClient(
+    connectionId: string,
+    onPayload: (payload: RuntimePlaybackHostControlClientPayload) => void,
+    onClose: () => void,
+  ): RuntimePlaybackHostControlConnection<RuntimePlaybackHostControlHostPayload>;
+  connectHost(
+    connectionId: string,
+    onPayload: (payload: RuntimePlaybackHostControlHostPayload) => void,
+    onClose: () => void,
+  ): RuntimePlaybackHostControlConnection<RuntimePlaybackHostControlClientPayload>;
+}
+
+/**
+ * The narrow lifecycle proof available only to the hidden Playback Host.
+ * Other renderer kinds deliberately expose a safe inert implementation.
+ */
+export interface RuntimePlaybackHost {
+  getNonce(): string | null;
+  reportReady(nonce: string): boolean;
 }
 
 export interface RuntimeNavigation {
@@ -131,6 +182,7 @@ export interface RuntimeWindowControls {
  */
 export interface WebRuntime {
   readonly app: RuntimeAppLifecycle;
+  readonly audioFeature: RuntimeAudioFeature;
   readonly auth: RuntimeAuthentication;
   readonly cache: RuntimeCache;
   readonly config: RuntimeConfiguration;
@@ -144,6 +196,8 @@ export interface WebRuntime {
   readonly media: RuntimeMediaControls;
   readonly navigation: RuntimeNavigation;
   readonly playback: RuntimePlaybackTransport;
+  readonly playbackHost: RuntimePlaybackHost;
+  readonly playbackHostControl: RuntimePlaybackHostControl;
   readonly updates: RuntimeUpdates;
   readonly window: RuntimeWindowControls;
 }

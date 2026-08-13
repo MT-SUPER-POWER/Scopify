@@ -1,3 +1,4 @@
+import type { AudioFeatureFrameV1, AudioFeatureTransportRole } from "./audioFeature";
 import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
@@ -7,7 +8,6 @@ import type { DesktopIconVisibilityState } from "./desktopIcons";
 import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
-  DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
 } from "./desktopPlaybackWallpaper";
@@ -16,11 +16,13 @@ import type { AppUpdateState } from "./updater";
 import type { DesktopHostConfig } from "./config";
 import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "./discord";
 import type { PlaybackTransportPayload, PlaybackTransportRole } from "./playback";
+import type { PlaybackHostClientCommand, PlaybackHostHostMessage } from "./playbackHostControl";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 10;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 14;
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
+  | "audio-feature-transport"
   | "cache"
   | "config"
   | "desktop-icons"
@@ -32,6 +34,7 @@ export type DesktopBridgeCapability =
   | "media-controls"
   | "navigation"
   | "playback-transport"
+  | "playback-host-control"
   | "renderer-logging"
   | "updates"
   | "window-controls";
@@ -56,10 +59,22 @@ export interface DesktopBridge<TLyrics = unknown> {
   clearPageCache(): Promise<PageCacheStats>;
   closeDesktopLyric(): Promise<boolean>;
   closeDesktopPlaybackController(): Promise<boolean>;
+  connectAudioFeatureTransport(
+    role: AudioFeatureTransportRole,
+    connectionId: string,
+    onFrame: (frame: AudioFeatureFrameV1) => void,
+    onClose: () => void,
+  ): Unsubscribe;
   connectPlaybackTransport(
     role: PlaybackTransportRole,
     connectionId: string,
     onPayload: (payload: PlaybackTransportPayload<TLyrics>) => void,
+    onClose: () => void,
+  ): Unsubscribe;
+  /** Connects the main renderer's low-frequency client control channel. */
+  connectPlaybackHostControl(
+    connectionId: string,
+    onPayload: (payload: PlaybackHostHostMessage) => void,
     onClose: () => void,
   ): Unsubscribe;
   deletePageCache(key: string): Promise<boolean>;
@@ -85,17 +100,14 @@ export interface DesktopBridge<TLyrics = unknown> {
   onDesktopPlaybackWallpaperModelChanged(
     callback: (model: DesktopPlaybackWallpaperModel) => void,
   ): Unsubscribe;
-  onDesktopPlaybackWallpaperAudioFrame(
-    callback: (frame: DesktopPlaybackWallpaperAudioFrame) => void,
-  ): Unsubscribe;
   onDiscordPresenceStatusChanged(callback: (status: DiscordPresenceStatus) => void): Unsubscribe;
   onFullScreenChanged(callback: (isFullScreen: boolean) => void): Unsubscribe;
   onNavigate(callback: (path: string) => void): Unsubscribe;
   onUpdateStatusChanged(callback: (status: AppUpdateState) => void): Unsubscribe;
   openLoginWindow(): void;
+  publishAudioFeatureFrame(frame: AudioFeatureFrameV1): boolean;
   publishDiscordPresenceSnapshot(snapshot: DiscordPresenceSnapshot): Promise<DiscordPresenceStatus>;
   testDiscordPresenceConnection(): Promise<DiscordPresenceStatus>;
-  publishDesktopPlaybackWallpaperAudioFrame(frame: DesktopPlaybackWallpaperAudioFrame): void;
   quitAndInstallUpdate(): void;
   relaunchApp(): void;
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
@@ -108,6 +120,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   setPageCache<T = unknown>(key: string, value: T, ttlMs: number): Promise<boolean>;
   setPlayerPlaying(isPlaying: boolean): void;
   sendPlaybackTransportPayload(payload: PlaybackTransportPayload<TLyrics>): boolean;
+  /** Sends a versioned Main→Host command; the Host owns every queue mutation. */
+  sendPlaybackHostControlPayload(payload: PlaybackHostClientCommand): boolean;
   updateHostConfig(config: DesktopHostConfig): Promise<DesktopHostConfig>;
   updateDesktopLyricPreferences(
     update: DesktopLyricPreferencesUpdate,

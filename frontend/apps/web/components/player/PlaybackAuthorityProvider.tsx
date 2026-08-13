@@ -8,6 +8,7 @@ import type {
   PlaybackTimelineDiscontinuityReason,
 } from "@scopify/desktop-contract";
 
+import { PlaybackAudioFeaturePublisher } from "@/components/player/PlaybackAudioFeaturePublisher";
 import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjectionProvider";
 import { usePlaybackAuthority } from "@/hooks/player/usePlaybackAuthority";
 import { useDiscordPresence } from "@/hooks/player/useDiscordPresence";
@@ -18,6 +19,7 @@ import { createElectronPlaybackAuthorityTransport } from "@/lib/playbackProjecti
 import { createInProcessPlaybackTransport } from "@/lib/playbackProjection/inProcessTransport";
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
 import { buildDiscordPresenceArtist } from "@/lib/player/discordPresence";
+import { shouldForwardExternalSessionPhase } from "@/lib/player/externalSessionPhase";
 import { isPlaybackSourceCurrent, waitForPlaybackSource } from "@/lib/player/playbackSource";
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { runtime } from "@/lib/runtime";
@@ -31,7 +33,7 @@ import type {
 import type { LyricData } from "@/types/lyrics";
 import type { PlaybackProjectionSource } from "@/types/playbackProjection";
 
-const MAIN_RENDERER_AUTHORITY_CONNECTION_ID = "main-renderer-playback-authority";
+const DEFAULT_AUTHORITY_CONNECTION_ID = "main-renderer-playback-authority";
 
 interface SessionIdentity {
   key: string;
@@ -43,9 +45,12 @@ interface SessionIdentity {
 export function PlaybackAuthorityProvider({
   audioRef,
   children,
+  electronConnectionId = DEFAULT_AUTHORITY_CONNECTION_ID,
+  externalSessionControl,
   isMediaSourceLoadingRef,
   mediaSourceLoadRevisionRef,
-}: PlaybackAuthorityProviderProps) {
+  onAuthorityConnected,
+}: PlaybackAuthorityProviderProps<LyricData>) {
   const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const isPlayingIntent = usePlayerStore((state) => state.isPlaying);
@@ -114,6 +119,19 @@ export function PlaybackAuthorityProvider({
     }),
     [currentSongDetail, isPlayingIntent, liked, lyricVersion, lyrics, track, volume],
   );
+  const externalInitialState = useMemo<PlaybackSessionState<LyricData>>(
+    () => ({
+      canControl: false,
+      durationMs: 0,
+      liked: false,
+      lyrics: null,
+      lyricsVersion: null,
+      phase: "idle",
+      track: null,
+      volume,
+    }),
+    [volume],
+  );
 
   const trackId = currentSongDetail?.id ?? null;
   const sessionKey = `${playbackSessionRevision}:${trackId ?? "none"}`;
@@ -152,7 +170,7 @@ export function PlaybackAuthorityProvider({
   const [electronTransport] = useState(() =>
     runtime.isDesktop
       ? createElectronPlaybackAuthorityTransport<LyricData>({
-          connectionId: MAIN_RENDERER_AUTHORITY_CONNECTION_ID,
+          connectionId: electronConnectionId,
           port: runtime.playback,
         })
       : null,
@@ -188,35 +206,51 @@ export function PlaybackAuthorityProvider({
     },
     audioRef,
     callbacks: {
-      ensureSource: async () => {
-        const audio = audioRef.current;
-        const initialPlayer = usePlayerStore.getState();
-        const activeTrack = initialPlayer.currentSongDetail;
-        if (!audio || !activeTrack) return false;
-        const activeTrackId = activeTrack.id;
+      ensureSource: externalSessionControl
+        ? externalSessionControl.ensureSource
+        : async () => {
+            const audio = audioRef.current;
+            const initialPlayer = usePlayerStore.getState();
+            const activeTrack = initialPlayer.currentSongDetail;
+            if (!audio || !activeTrack) return false;
+            const activeTrackId = activeTrack.id;
 
-        let sourceUrl = initialPlayer.currentSongUrl;
-        if (!sourceUrl) {
-          const result = await initialPlayer.refreshCurrentTrackUrl();
-          if (result.status !== "refreshed") return false;
-          sourceUrl = usePlayerStore.getState().currentSongUrl;
-        }
-        if (!sourceUrl) return false;
+            let sourceUrl = initialPlayer.currentSongUrl;
+            if (!sourceUrl) {
+              const result = await initialPlayer.refreshCurrentTrackUrl();
+              if (result.status !== "refreshed") return false;
+              sourceUrl = usePlayerStore.getState().currentSongUrl;
+            }
+            if (!sourceUrl) return false;
 
-        const expectedSourceUrl = sourceUrl;
-        const expectedLoadRevision = usePlayerStore.getState().playbackLoadRevision;
-        return waitForPlaybackSource(audio, expectedSourceUrl, () => {
-          const currentPlayer = usePlayerStore.getState();
-          return (
-            currentPlayer.currentSongDetail?.id === activeTrackId &&
-            currentPlayer.currentSongUrl === expectedSourceUrl &&
-            currentPlayer.playbackLoadRevision === expectedLoadRevision
-          );
-        });
-      },
-      next: () => usePlayerStore.getState().playNext(),
-      onEnded: () => usePlayerStore.getState().playNext("ended"),
+            const expectedSourceUrl = sourceUrl;
+            const expectedLoadRevision = usePlayerStore.getState().playbackLoadRevision;
+            return waitForPlaybackSource(audio, expectedSourceUrl, () => {
+              const currentPlayer = usePlayerStore.getState();
+              return (
+                currentPlayer.currentSongDetail?.id === activeTrackId &&
+                currentPlayer.currentSongUrl === expectedSourceUrl &&
+                currentPlayer.playbackLoadRevision === expectedLoadRevision
+              );
+            });
+          },
+      next: externalSessionControl
+        ? externalSessionControl.next
+        : () => usePlayerStore.getState().playNext(),
+      onEnded: externalSessionControl
+        ? externalSessionControl.onEnded
+        : () => usePlayerStore.getState().playNext("ended"),
       onPhaseChange: (phase) => {
+        if (externalSessionControl) {
+          if (!shouldForwardExternalSessionPhase(phase, isMediaSourceLoadingRef.current)) return;
+          if (phase === "playing") runtime.media.setPlaying(true);
+          if (phase === "paused" || phase === "ended" || phase === "error") {
+            runtime.media.setPlaying(false);
+          }
+          externalSessionControl.onPhaseChange?.(phase);
+          return;
+        }
+
         if (phase === "playing") {
           runtime.media.setPlaying(true);
           if (!usePlayerStore.getState().isPlaying) {
@@ -235,8 +269,12 @@ export function PlaybackAuthorityProvider({
           usePlayerStore.getState().setIsPlaying(false);
         }
       },
-      onVolumeChange: (nextVolume) => usePlayerStore.getState().setVolume(nextVolume),
-      previous: () => usePlayerStore.getState().playPrev(),
+      onVolumeChange: externalSessionControl
+        ? externalSessionControl.onVolumeChange
+        : (nextVolume) => usePlayerStore.getState().setVolume(nextVolume),
+      previous: externalSessionControl
+        ? externalSessionControl.previous
+        : () => usePlayerStore.getState().playPrev(),
       toggleLike: async () => {
         await toggleCurrentSongLike();
         const activeTrackId = usePlayerStore.getState().currentSongDetail?.id;
@@ -249,12 +287,18 @@ export function PlaybackAuthorityProvider({
       },
     },
     clock: systemPlaybackClock,
-    initialState,
-    resumePositionMs,
-    sessionKey,
-    sessionReason,
+    externalSessionControl: Boolean(externalSessionControl),
+    initialState: externalSessionControl ? externalInitialState : initialState,
+    resumePositionMs: externalSessionControl ? undefined : resumePositionMs,
+    sessionKey: externalSessionControl ? "external-playback-host-session" : sessionKey,
+    sessionReason: externalSessionControl ? undefined : sessionReason,
     transport: authorityTransport,
   });
+
+  useEffect(() => {
+    if (!authority) return;
+    onAuthorityConnected?.(authority);
+  }, [authority, onAuthorityConnected]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -272,6 +316,7 @@ export function PlaybackAuthorityProvider({
           !disposed &&
           shouldPlay &&
           receipt.status !== "accepted" &&
+          !externalSessionControl &&
           usePlayerStore.getState().isPlaying
         ) {
           usePlayerStore.getState().setIsPlaying(false);
@@ -285,7 +330,7 @@ export function PlaybackAuthorityProvider({
       disposed = true;
       audio.removeEventListener("canplay", applyPlaybackIntent);
     };
-  }, [audioRef, authority, currentSongUrl, isPlayingIntent, sessionKey]);
+  }, [audioRef, authority, currentSongUrl, externalSessionControl, isPlayingIntent, sessionKey]);
 
   const correctedSourceLoadRevisionRef = useRef<number | null>(null);
   useEffect(() => {
@@ -342,6 +387,7 @@ export function PlaybackAuthorityProvider({
 
   return (
     <PlaybackProjectionProvider source={localProjectionSource}>
+      <PlaybackAudioFeaturePublisher />
       {children}
     </PlaybackProjectionProvider>
   );

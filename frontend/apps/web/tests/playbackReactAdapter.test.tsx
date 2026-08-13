@@ -21,6 +21,7 @@ import type { PlaybackProjectionSource } from "@/types/playbackProjection";
 import type { PlaybackCommands, PlaybackRendererPort } from "@/types/playbackTransport";
 
 const INITIAL_PROJECTION: PlaybackProjection = {
+  authorityId: "authority-a",
   canControl: true,
   connection: "connected",
   durationMs: 180_000,

@@ -106,6 +106,7 @@ export type PlaybackTransportPayload<TLyrics = unknown> =
   PlaybackCommand | PlaybackCommandReceipt | PlaybackMessage<TLyrics> | PlaybackTransportControl;
 
 export interface PlaybackProjection<TLyrics = unknown> extends PlaybackSessionState<TLyrics> {
+  authorityId: string | null;
   connection: PlaybackConnectionState;
   isPlaying: boolean;
   positionMs: number;

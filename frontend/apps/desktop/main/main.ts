@@ -35,6 +35,10 @@ import {
   initializePlaybackBrokerIpc,
   type PlaybackBrokerIpcHost,
 } from "./module/playbackBroker/ipc.js";
+import {
+  initializeAudioFeatureBrokerIpc,
+  type AudioFeatureBrokerIpcHost,
+} from "./module/audioFeatureBroker/ipc.js";
 import initializeLoginWindow from "./module/login.js";
 import { applyElectronProxy } from "./module/proxy.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
@@ -53,6 +57,7 @@ let isQuitting = false;
 let desktopPlaybackWallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | null = null;
 let desktopPlaybackControllerWindow: DesktopPlaybackControllerWindow | null = null;
 let playbackBrokerIpcHost: PlaybackBrokerIpcHost | null = null;
+let audioFeatureBrokerIpcHost: AudioFeatureBrokerIpcHost | null = null;
 let splashShownAtMs = 0;
 let resolveSplashReady: (() => void) | null = null;
 let splashReady = Promise.resolve();
@@ -177,6 +182,10 @@ function createWindow() {
     },
   });
 
+  // The Main renderer owns the Authority, so its broker listeners must exist
+  // before `loadURL` can mount the React playback runtime.
+  setupWindowModules(mainWindow);
+
   mainWindow.webContents.once("did-finish-load", () => {
     void revealMainWindow();
     setTimeout(() => {
@@ -300,14 +309,28 @@ function setupWindowModules(win: BrowserWindowType) {
     getWallpaperWindow: desktopPlaybackWallpaperDriver.getWindow,
   });
   playbackBrokerIpcHost ??= initializePlaybackBrokerIpc({
+    // Main owns the only media element and is therefore the only Authority.
+    // Companion, tray and wallpaper windows remain read-only Replicas.
     getAuthorityWindow: () => mainWindow,
     getReplicaWindows: () => [
+      mainWindow,
       getDesktopLyricWindow(),
       desktopPlaybackControllerWindow?.getWindow() ?? null,
       desktopPlaybackWallpaperDriver?.getWindow() ?? null,
       trayWindow,
     ],
+    onAuthorityConnected: (senderId) => {
+      logger.info("[playback] main renderer authority connected", { senderId });
+    },
     onRejected: (message) => logger.warn(`[playback-broker] ${message}`),
+  });
+  audioFeatureBrokerIpcHost ??= initializeAudioFeatureBrokerIpc({
+    getPublisherWindow: () => mainWindow,
+    getSubscriberWindows: () => [
+      desktopPlaybackWallpaperDriver?.getWindow() ?? null,
+      desktopPlaybackControllerWindow?.getWindow() ?? null,
+    ],
+    onRejected: (message) => logger.warn(`[audio-feature-broker] ${message}`),
   });
   initializeUpdater(win, desktopConfig.updater);
 
@@ -368,19 +391,13 @@ if (!gotTheLock) {
       }
     }
 
-    if (mainWindow) {
-      setupWindowModules(mainWindow);
-      scheduleStartupUpdateCheck();
-    }
+    if (mainWindow) scheduleStartupUpdateCheck();
 
     cleanOldLogs();
 
     app.on("activate", () => {
       if (mainWindow !== null) return;
       createWindow();
-      if (mainWindow) {
-        setupWindowModules(mainWindow);
-      }
     });
   });
 
@@ -395,6 +412,8 @@ if (!gotTheLock) {
     disposeAppCloseWindow();
     playbackBrokerIpcHost?.dispose();
     playbackBrokerIpcHost = null;
+    audioFeatureBrokerIpcHost?.dispose();
+    audioFeatureBrokerIpcHost = null;
     void discordPresenceController.destroy();
     desktopPlaybackControllerWindow?.dispose();
     desktopPlaybackControllerWindow = null;

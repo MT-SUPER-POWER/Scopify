@@ -1,24 +1,45 @@
-import { expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { describe, expect, test } from "bun:test";
 
-const mainLayoutSource = readFileSync(
-  join(import.meta.dir, "../components/MainLayout.tsx"),
-  "utf8",
-);
-const playbackAuthorityProviderSource = readFileSync(
-  join(import.meta.dir, "../components/player/PlaybackAuthorityProvider.tsx"),
-  "utf8",
-);
+import {
+  shouldUseLegacyPlaybackCatalog,
+  shouldWarmLegacyPlaybackUrl,
+} from "@/hooks/player/usePlaybackMediaSource";
+import type { PlaybackAuthorityExternalSessionControl } from "@/types/playbackAuthority";
 
-test("the production audio element warms and observes restored playback URLs", () => {
-  expect(mainLayoutSource).toContain("if (hasWarmedPlaybackUrlRef.current) return;");
-  expect(mainLayoutSource).toContain("hasWarmedPlaybackUrlRef.current = true;");
-  expect(mainLayoutSource).toContain("void refreshCurrentTrackUrl();");
-  expect(mainLayoutSource).toContain("onError={(event) => {");
-  expect(mainLayoutSource).toContain('console.error("[player] Media playback failed"');
-  expect(mainLayoutSource).toContain("<PlaybackAuthorityProvider");
-  expect(mainLayoutSource).not.toContain("audio.play()");
-  expect(playbackAuthorityProviderSource).toContain("authority.dispatch");
-  expect(playbackAuthorityProviderSource).toContain('receipt.status !== "accepted"');
+const hostCatalog: PlaybackAuthorityExternalSessionControl = {};
+
+describe("playback recovery ownership", () => {
+  test("keeps restored URL warming in browser playback and out of the Host catalog", () => {
+    expect(shouldUseLegacyPlaybackCatalog(undefined)).toBeTrue();
+    expect(shouldUseLegacyPlaybackCatalog(hostCatalog)).toBeFalse();
+
+    expect(
+      shouldWarmLegacyPlaybackUrl({
+        externalSessionControl: undefined,
+        hasSong: true,
+        hasSourceUrl: false,
+        hasWarmed: false,
+      }),
+    ).toBeTrue();
+    expect(
+      shouldWarmLegacyPlaybackUrl({
+        externalSessionControl: hostCatalog,
+        hasSong: true,
+        hasSourceUrl: false,
+        hasWarmed: false,
+      }),
+    ).toBeFalse();
+  });
+
+  test("does not warm an already loaded, absent, or previously restored browser source", () => {
+    for (const input of [
+      { hasSong: false, hasSourceUrl: false, hasWarmed: false },
+      { hasSong: true, hasSourceUrl: true, hasWarmed: false },
+      { hasSong: true, hasSourceUrl: false, hasWarmed: true },
+    ]) {
+      expect(
+        shouldWarmLegacyPlaybackUrl({ externalSessionControl: undefined, ...input }),
+      ).toBeFalse();
+    }
+  });
 });

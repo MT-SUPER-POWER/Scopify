@@ -17,7 +17,9 @@ function createRendererFixture() {
   const root = mkdtempSync(join(tmpdir(), "scopify-renderer-"));
   tempDirs.push(root);
   mkdirSync(join(root, "_next"), { recursive: true });
+  mkdirSync(join(root, "playback-host"), { recursive: true });
   writeFileSync(join(root, "index.html"), "<main>Scopify</main>");
+  writeFileSync(join(root, "playback-host", "index.html"), "<main>Playback Host</main>");
   writeFileSync(join(root, "_next", "app.js"), "console.log('renderer')");
   writeFileSync(join(root, "_next", "app.js.map"), '{"version":3}');
   const manifest = createRendererArtifactManifest(root, {
@@ -32,6 +34,16 @@ test("accepts an intact renderer artifact with the current bridge protocol", () 
   const { manifest, root } = createRendererFixture();
 
   expect(verifyRendererArtifact(root)).toEqual({ manifest, ok: true });
+});
+
+test("rejects a renderer artifact without the dedicated playback host route", () => {
+  const { root } = createRendererFixture();
+  rmSync(join(root, "playback-host", "index.html"));
+
+  expect(verifyRendererArtifact(root)).toMatchObject({
+    message: expect.stringContaining("playback-host"),
+    ok: false,
+  });
 });
 
 test("rejects renderer files changed after the manifest was created", () => {

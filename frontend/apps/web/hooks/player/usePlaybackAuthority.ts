@@ -105,6 +105,7 @@ export function usePlaybackAuthority<TLyrics = unknown>({
   audioRef,
   callbacks,
   clock = browserClock,
+  externalSessionControl = false,
   healthAnchorIntervalMs,
   identityFactory,
   initialState,
@@ -209,6 +210,13 @@ export function usePlaybackAuthority<TLyrics = unknown>({
     const authority = authorityRef.current;
     if (!authority) return;
 
+    if (externalSessionControl) {
+      // The hidden Playback Host applies complete sessions explicitly. Do not
+      // let its local Zustand mirror create a competing Authority session.
+      authority.updateState({ volume: initialState.volume });
+      return;
+    }
+
     if (activeSessionKeyRef.current !== sessionKey) {
       activeSessionKeyRef.current = sessionKey;
       authority.beginSession(initialState, {
@@ -226,7 +234,7 @@ export function usePlaybackAuthority<TLyrics = unknown>({
       track: initialState.track,
       volume: initialState.volume,
     });
-  }, [initialState, resumePositionMs, sessionKey, sessionReason]);
+  }, [externalSessionControl, initialState, resumePositionMs, sessionKey, sessionReason]);
 
   return authoritySnapshot;
 }

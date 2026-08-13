@@ -12,6 +12,8 @@ export const PLAYBACK_CONNECT_CHANNEL = "playback-transport:connect";
 export interface PlaybackBrokerIpcOptions {
   getAuthorityWindow(): BrowserWindow | null;
   getReplicaWindows(): Array<BrowserWindow | null>;
+  /** Called once for each authorized authority transport that registers successfully. */
+  onAuthorityConnected?(senderId: number): void;
   onRejected?(message: string): void;
 }
 
@@ -65,7 +67,10 @@ export function initializePlaybackBrokerIpc(
       options.onRejected?.(
         `Failed to register ${request.role} playback connection for renderer ${senderId}.`,
       );
+      return;
     }
+
+    if (request.role === "authority") options.onAuthorityConnected?.(senderId);
   };
 
   ipcMain.on(PLAYBACK_CONNECT_CHANNEL, onConnect);

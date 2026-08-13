@@ -157,6 +157,24 @@ describe("playback projection contract", () => {
 });
 
 describe("PlaybackReplica", () => {
+  test("exposes the active authority identity in its projection snapshot", () => {
+    const clock = new ManualPlaybackClock(500);
+    const transport = createInMemoryPlaybackTransport<TestLyrics>({ clock });
+
+    expect(transport.source.getSnapshot().authorityId).toBeNull();
+    transport.deliver(createBootstrap(1, 0, clock.nowMs()));
+    expect(transport.source.getSnapshot().authorityId).toBe("authority-a");
+
+    transport.disconnect();
+    transport.deliver(
+      createBootstrap(1, 0, clock.nowMs(), {
+        authorityId: "authority-b",
+        sessionId: "session-b",
+      }),
+    );
+    expect(transport.source.getSnapshot().authorityId).toBe("authority-b");
+  });
+
   test("does not regress from 34s when a delayed same-revision 32s anchor arrives", () => {
     const clock = new ManualPlaybackClock(10_000);
     const transport = createInMemoryPlaybackTransport<TestLyrics>({ clock });
