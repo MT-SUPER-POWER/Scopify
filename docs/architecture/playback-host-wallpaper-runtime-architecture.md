@@ -1,10 +1,47 @@
-# 独立 Playback Host 与桌面壁纸运行时架构
+# 独立 Playback Host 与桌面壁纸运行时架构（已废止）
 
-> Status: Implemented on `feat/playback-host-wallpaper-runtime`; automated validation complete, Windows visual acceptance pending
+> Status: Superseded on `feat/playback-host-wallpaper-runtime` after desktop integration regressions. The hidden Host is no longer launched.
 >
 > Decision date: 2026-08-12
 >
 > Scope: Electron 桌面端播放所有权、音频特征流、桌面壁纸生命周期与 Shader 空间尺度
+
+## 当前生效决策（2026-08-13）
+
+独立 `PlaybackHost` 在当前实现阶段扩大了调试与状态同步的距离：可见 Main Renderer 被降为 Replica 后，队列、歌词、播放控制、Tray 与桌面背景都依赖额外的控制和投影链路。该链路没有提供一个真正独立音频引擎应有的故障隔离能力，反而成为功能回归的来源。
+
+因此桌面端改为以下稳定拓扑：
+
+```mermaid
+flowchart LR
+    Main["Main Renderer\n唯一 audio / Queue / Lyrics / Authority"]
+    Broker["Playback Broker"]
+    Tray["Tray Replica"]
+    Lyric["Desktop Lyrics Replica"]
+    Controller["Controller Replica"]
+    Wallpaper["Wallpaper Replica"]
+    Features["Audio Feature Broker"]
+
+    Main --> Broker
+    Broker --> Tray
+    Broker --> Lyric
+    Broker --> Controller
+    Broker --> Wallpaper
+    Main --> Features
+    Features --> Wallpaper
+    Features --> Controller
+```
+
+- Main Renderer 是唯一的媒体和状态所有者；`audio`、Web Audio/EQ、队列、URL/歌词缓存与 Authority 均在此运行，开发期可直接用 Next Fast Refresh 调试。
+- 主进程只授权 Main 连接 Playback Broker 和 Audio Feature Broker；Tray、沉浸歌词、控制器与桌面背景保持 Replica，不可修改队列或创建第二个媒体源。
+- 顺序模式下自然播放到队尾必须停止；此后用户显式点击“下一首”才从队首开始。媒体错误恢复属于自动推进，到队尾仍停止。
+- 关闭/最小化到托盘不会销毁 Main Renderer；真正退出应用会停止播放。Main Renderer 的完整页面重载不承诺无缝持续播放，这不是一个独立音频引擎能够提供的能力。
+
+后续清理在桌面人工验收通过后进行：删除未启动的 Host route、preload、Host Control、Checkpoint 与其专用打包入口；在此之前它们保留为未绑定的历史代码，避免本次重新绑定与大规模删除混在同一变更中。
+
+---
+
+以下内容记录已废止 Host 方案的背景与实现，不再作为当前架构指引。
 
 本文把 [播放通讯与跨窗口时间同步架构](./playback-communication-architecture.md) 中原本可选的 Phase 6 收束为可执行方案。既有 Playback Contract、Broker、Replica 和 Projection 语义保持不变；本设计只迁移 Authority 的运行位置，并补齐高频音频特征、壁纸独立运行、队列续播和 Shader 尺度的缺口。
 

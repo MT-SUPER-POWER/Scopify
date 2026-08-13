@@ -13,12 +13,9 @@ const DEFAULT_TIMER = {
   },
 };
 
-/** Only the hidden Electron Host may publish its analyser feature stream. */
-export function shouldConnectAudioFeaturePublisher(
-  isDesktop: boolean,
-  playbackHostNonce: string | null,
-): boolean {
-  return isDesktop && playbackHostNonce !== null;
+/** The desktop Main Authority owns the only analyser feature stream. */
+export function shouldConnectAudioFeaturePublisher(isDesktop: boolean): boolean {
+  return isDesktop;
 }
 
 /**

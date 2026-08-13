@@ -10,9 +10,7 @@ import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
-import { DesktopMainPlaybackReplicaProvider } from "@/components/player/DesktopMainPlaybackReplicaProvider";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
-import { resolveMainWindowPlaybackMediaRuntimeMode } from "@/lib/player/playbackMediaRuntimeMode";
 import { runtime } from "@/lib/runtime";
 import { DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH } from "@/constants/desktopPlaybackController";
 // lib
@@ -206,15 +204,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       </footer>
     </div>
   );
-  const playbackRuntimeMode = resolveMainWindowPlaybackMediaRuntimeMode({
-    isDesktop: runtime.isDesktop,
-  });
-
-  return playbackRuntimeMode === "in-page-authority" ? (
-    <PlaybackMediaRuntimeProvider>{content}</PlaybackMediaRuntimeProvider>
-  ) : (
-    <DesktopMainPlaybackReplicaProvider>{content}</DesktopMainPlaybackReplicaProvider>
-  );
+  return <PlaybackMediaRuntimeProvider>{content}</PlaybackMediaRuntimeProvider>;
 }
 
 /**

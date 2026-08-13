@@ -5,13 +5,6 @@ import type { PlaybackAuthorityExternalSessionControl } from "@/types/playbackAu
 import type { PlaybackAuthority } from "@/lib/playbackProjection/authority";
 import type { LyricData } from "@/types/lyrics";
 
-/** The renderer-local role selected before either a media element or a transport connects. */
-export type PlaybackMediaRuntimeMode = "desktop-main-replica" | "in-page-authority";
-
-export interface PlaybackMediaRuntimeModeOptions {
-  isDesktop: boolean;
-}
-
 export interface PlaybackMediaRuntimeProviderProps {
   /** Only the hidden host supplies this in Electron; browser mode remains fully in-process. */
   authorityConnectionId?: string;

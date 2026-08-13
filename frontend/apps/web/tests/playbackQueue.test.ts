@@ -59,6 +59,20 @@ describe("playback queue", () => {
     expect(result.snapshot.historyStack).toEqual([0, 2]);
   });
 
+  test("stops on natural tail completion but restarts on a later manual next", () => {
+    const tail = snapshot({ historyIndex: 2, historyStack: [0, 1, 2], queueIndex: 2 });
+
+    const ended = queue.playNext(tail, { currentTrack: c }, "ended");
+    expect(ended.effect).toEqual({ type: "stop" });
+    expect(ended.snapshot).toEqual(tail);
+
+    const manual = queue.playNext(tail, { currentTrack: c }, "manual");
+    expect(manual.effect).toEqual({ track: a, type: "play" });
+    expect(manual.snapshot.queueIndex).toBe(0);
+    expect(manual.snapshot.historyStack).toEqual([0, 1, 2, 0]);
+    expect(manual.snapshot.historyIndex).toBe(3);
+  });
+
   test("wraps previous to the queue tail at the beginning of history", () => {
     const result = queue.playPrev(snapshot({ historyIndex: 0, historyStack: [0] }));
 

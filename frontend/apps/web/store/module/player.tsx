@@ -84,7 +84,9 @@ function selectPlayerQueueState(snapshot: PlaybackQueueSnapshot<SongDetail>) {
 }
 
 function isDesktopMainPlaybackClient(): boolean {
-  return runtime.isDesktop && runtime.playbackHost.getNonce() === null;
+  // The desktop Main renderer is the audio Authority again. This legacy
+  // hand-off remains dormant until the unused Host-only modules are removed.
+  return false;
 }
 
 let desktopMainCommandSequence = 0;

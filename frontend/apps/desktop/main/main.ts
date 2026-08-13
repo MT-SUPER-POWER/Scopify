@@ -3,12 +3,11 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { BrowserWindow as BrowserWindowType } from "electron";
-import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
+import { app, BrowserWindow, dialog, Menu } from "electron";
 import serve from "electron-serve";
 import {
   __iconDock,
   __iconWindow,
-  __playbackHostPreloadScript,
   __preloadScript,
   __rendererDir,
   __splashHtmlPath,
@@ -37,29 +36,12 @@ import {
   type PlaybackBrokerIpcHost,
 } from "./module/playbackBroker/ipc.js";
 import {
-  createPlaybackHostManager,
-  type PlaybackHostManager,
-} from "./module/playbackHost/index.js";
-import {
-  createPlaybackHostCheckpointRepository,
-  type PlaybackHostCheckpointRepository,
-} from "./module/playbackHost/checkpoint.js";
-import { initializePlaybackHostIpc, type PlaybackHostIpcHost } from "./module/playbackHost/ipc.js";
-import {
-  initializePlaybackHostMediaPlayingIpc,
-  type PlaybackHostMediaPlayingIpcHost,
-} from "./module/playbackHost/mediaPlayingIpc.js";
-import {
   initializeAudioFeatureBrokerIpc,
   type AudioFeatureBrokerIpcHost,
 } from "./module/audioFeatureBroker/ipc.js";
-import {
-  initializePlaybackHostControlBrokerIpc,
-  type PlaybackHostControlBrokerIpcHost,
-} from "./module/playbackHostControl/ipc.js";
 import initializeLoginWindow from "./module/login.js";
 import { applyElectronProxy } from "./module/proxy.js";
-import { initThumbarButtons, updateThumbarButtons } from "./module/thumbarButtons.js";
+import { initThumbarButtons } from "./module/thumbarButtons.js";
 import initTray, { trayWindow } from "./module/tray.js";
 import { initializeUpdater, scheduleStartupUpdateCheck } from "./module/updater.js";
 
@@ -76,11 +58,6 @@ let desktopPlaybackWallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | nul
 let desktopPlaybackControllerWindow: DesktopPlaybackControllerWindow | null = null;
 let playbackBrokerIpcHost: PlaybackBrokerIpcHost | null = null;
 let audioFeatureBrokerIpcHost: AudioFeatureBrokerIpcHost | null = null;
-let playbackHostManager: PlaybackHostManager | null = null;
-let playbackHostIpcHost: PlaybackHostIpcHost | null = null;
-let playbackHostMediaPlayingIpcHost: PlaybackHostMediaPlayingIpcHost | null = null;
-let playbackHostControlBrokerIpcHost: PlaybackHostControlBrokerIpcHost | null = null;
-let playbackHostCheckpointRepository: PlaybackHostCheckpointRepository | null = null;
 let splashShownAtMs = 0;
 let resolveSplashReady: (() => void) | null = null;
 let splashReady = Promise.resolve();
@@ -205,6 +182,10 @@ function createWindow() {
     },
   });
 
+  // The Main renderer owns the Authority, so its broker listeners must exist
+  // before `loadURL` can mount the React playback runtime.
+  setupWindowModules(mainWindow);
+
   mainWindow.webContents.once("did-finish-load", () => {
     void revealMainWindow();
     setTimeout(() => {
@@ -308,13 +289,6 @@ const discordPresenceController = createDiscordPresenceController({
 });
 
 function setupWindowModules(win: BrowserWindowType) {
-  playbackHostManager ??= createPlaybackHostManager({
-    createWindow: (options) => new BrowserWindow(options),
-    icon: __iconWindow,
-    isQuitting: () => isQuitting,
-    preloadScript: __playbackHostPreloadScript,
-    rendererBaseUrl,
-  });
   desktopPlaybackWallpaperDriver ??= createElectronDesktopPlaybackWallpaperDriver({
     rendererBaseUrl,
   });
@@ -334,36 +308,10 @@ function setupWindowModules(win: BrowserWindowType) {
     getControllerWindow: desktopPlaybackControllerWindow.getWindow,
     getWallpaperWindow: desktopPlaybackWallpaperDriver.getWindow,
   });
-  playbackHostControlBrokerIpcHost ??= initializePlaybackHostControlBrokerIpc({
-    checkpointRepository: getPlaybackHostCheckpointRepository(),
-    getClientWindow: () => mainWindow,
-    getHostWindow: getPlaybackHostWindow,
-    onClientConnected: (senderId) => {
-      logger.info("[playback-host-control] client connected", {
-        senderId,
-        diagnostics: playbackHostControlBrokerIpcHost?.getDiagnostics(),
-      });
-    },
-    onHostConnected: (senderId) => {
-      logger.info("[playback-host-control] host connected", {
-        senderId,
-        diagnostics: playbackHostControlBrokerIpcHost?.getDiagnostics(),
-      });
-    },
-    onHostRecoverySettled: (senderId) => {
-      if (!playbackHostManager?.reportControlReady(senderId)) {
-        logger.warn(`[playback-host] rejected control-ready signal from renderer ${senderId}.`);
-        return;
-      }
-      logger.info("[playback-host-control] host recovery barrier settled", {
-        senderId,
-        diagnostics: playbackHostControlBrokerIpcHost?.getDiagnostics(),
-      });
-    },
-    onRejected: (message) => logger.warn(`[playback-host-control] ${message}`),
-  });
   playbackBrokerIpcHost ??= initializePlaybackBrokerIpc({
-    getAuthorityWindow: getPlaybackHostWindow,
+    // Main owns the only media element and is therefore the only Authority.
+    // Companion, tray and wallpaper windows remain read-only Replicas.
+    getAuthorityWindow: () => mainWindow,
     getReplicaWindows: () => [
       mainWindow,
       getDesktopLyricWindow(),
@@ -372,36 +320,18 @@ function setupWindowModules(win: BrowserWindowType) {
       trayWindow,
     ],
     onAuthorityConnected: (senderId) => {
-      if (!playbackHostManager?.reportAuthorityConnected(senderId)) {
-        logger.warn(`[playback-host] rejected authority connection from renderer ${senderId}.`);
-      }
+      logger.info("[playback] main renderer authority connected", { senderId });
     },
     onRejected: (message) => logger.warn(`[playback-broker] ${message}`),
   });
   audioFeatureBrokerIpcHost ??= initializeAudioFeatureBrokerIpc({
-    getPublisherWindow: getPlaybackHostWindow,
+    getPublisherWindow: () => mainWindow,
     getSubscriberWindows: () => [
       desktopPlaybackWallpaperDriver?.getWindow() ?? null,
       desktopPlaybackControllerWindow?.getWindow() ?? null,
     ],
     onRejected: (message) => logger.warn(`[audio-feature-broker] ${message}`),
   });
-  playbackHostIpcHost ??= initializePlaybackHostIpc({
-    ipc: ipcMain,
-    manager: playbackHostManager,
-    onRejected: (message) => logger.warn(`[playback-host] ${message}`),
-  });
-  playbackHostMediaPlayingIpcHost ??= initializePlaybackHostMediaPlayingIpc({
-    getPlaybackHostWindow,
-    ipc: ipcMain,
-    onRejected: (message) => logger.warn(`[playback-host] ${message}`),
-    setMediaPlaying: (isPlaying) => {
-      if (mainWindow && !mainWindow.isDestroyed()) {
-        updateThumbarButtons(mainWindow, isPlaying);
-      }
-    },
-  });
-  logger.info("[playback-host] starting", playbackHostManager.start());
   initializeUpdater(win, desktopConfig.updater);
 
   if (process.platform !== "darwin") {
@@ -409,53 +339,6 @@ function setupWindowModules(win: BrowserWindowType) {
   }
 
   initializeLoginWindow(win);
-}
-
-function getPlaybackHostCheckpointRepository(): PlaybackHostCheckpointRepository {
-  if (playbackHostCheckpointRepository) return playbackHostCheckpointRepository;
-
-  const repository = createPlaybackHostCheckpointRepository({
-    checkpointPath: join(app.getPath("userData"), "playback-host-checkpoint.v1.json"),
-  });
-  playbackHostCheckpointRepository = {
-    clear: () => reportCheckpointOperation("clear", repository, repository.clear()),
-    getDiagnostics: repository.getDiagnostics,
-    load: () => reportCheckpointOperation("load", repository, repository.load()),
-    save: (checkpoint) =>
-      reportCheckpointOperation("save", repository, repository.save(checkpoint)),
-  };
-  logger.info("[playback-host-checkpoint] repository initialized", {
-    diagnostics: playbackHostCheckpointRepository.getDiagnostics(),
-  });
-  return playbackHostCheckpointRepository;
-}
-
-async function reportCheckpointOperation<T>(
-  operation: "clear" | "load" | "save",
-  repository: PlaybackHostCheckpointRepository,
-  operationPromise: Promise<T>,
-): Promise<T> {
-  try {
-    const result = await operationPromise;
-    const diagnostics = repository.getDiagnostics();
-    if (diagnostics.lastIssue) {
-      logger.warn(`[playback-host-checkpoint] ${operation} completed with an issue`, {
-        diagnostics,
-      });
-    }
-    return result;
-  } catch (error) {
-    logger.warn(`[playback-host-checkpoint] ${operation} threw unexpectedly`, {
-      diagnostics: repository.getDiagnostics(),
-      error,
-    });
-    throw error;
-  }
-}
-
-function getPlaybackHostWindow(): BrowserWindowType | null {
-  const hostWindow = playbackHostManager?.getWindow();
-  return hostWindow && !hostWindow.isDestroyed() ? (hostWindow as BrowserWindowType) : null;
 }
 
 if (!desktopConfig.app.gpuAcceleration) {
@@ -508,19 +391,13 @@ if (!gotTheLock) {
       }
     }
 
-    if (mainWindow) {
-      setupWindowModules(mainWindow);
-      scheduleStartupUpdateCheck();
-    }
+    if (mainWindow) scheduleStartupUpdateCheck();
 
     cleanOldLogs();
 
     app.on("activate", () => {
       if (mainWindow !== null) return;
       createWindow();
-      if (mainWindow) {
-        setupWindowModules(mainWindow);
-      }
     });
   });
 
@@ -533,14 +410,6 @@ if (!gotTheLock) {
   app.on("before-quit", () => {
     isQuitting = true;
     disposeAppCloseWindow();
-    playbackHostControlBrokerIpcHost?.dispose();
-    playbackHostControlBrokerIpcHost = null;
-    playbackHostIpcHost?.dispose();
-    playbackHostIpcHost = null;
-    playbackHostMediaPlayingIpcHost?.dispose();
-    playbackHostMediaPlayingIpcHost = null;
-    playbackHostManager?.dispose();
-    playbackHostManager = null;
     playbackBrokerIpcHost?.dispose();
     playbackBrokerIpcHost = null;
     audioFeatureBrokerIpcHost?.dispose();

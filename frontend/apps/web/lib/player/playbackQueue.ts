@@ -277,6 +277,9 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
         if (snapshot.repeatMode === "one") {
           return playQueueIndex(snapshot, snapshot.queueIndex, false);
         }
+        // Natural completion at the tail stops. A later explicit next is an
+        // intentional request to begin the queue again.
+        if (source === "manual") return playQueueIndex(snapshot, 0);
         return { effect: { type: "stop" }, snapshot };
       }
 

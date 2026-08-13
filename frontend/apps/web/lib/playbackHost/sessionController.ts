@@ -534,7 +534,10 @@ export class PlaybackHostSessionController<TLyrics = unknown> {
       }
 
       const advanced = await this.applyQueueTransition(async () => {
-        const session = this.queue.next("manual");
+        // A recovery fallback is automatic progression, not a user request to
+        // restart an exhausted queue. It must keep the same stop-at-tail
+        // semantics as a natural ended event.
+        const session = this.queue.next("ended");
         if (!session) return false;
         await this.runtime.seedSession(session);
         return true;

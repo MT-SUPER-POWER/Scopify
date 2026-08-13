@@ -75,16 +75,15 @@ function createHarness() {
 }
 
 describe("audio feature publisher lifecycle", () => {
-  test("selects the hidden Desktop Host as the sole publisher", () => {
-    expect(shouldConnectAudioFeaturePublisher(false, "host-nonce")).toBeFalse();
-    expect(shouldConnectAudioFeaturePublisher(true, null)).toBeFalse();
-    expect(shouldConnectAudioFeaturePublisher(true, "host-nonce")).toBeTrue();
+  test("selects the desktop Main Authority as the sole publisher", () => {
+    expect(shouldConnectAudioFeaturePublisher(false)).toBeFalse();
+    expect(shouldConnectAudioFeaturePublisher(true)).toBeTrue();
   });
 
   test("reconnects a passive close without interrupting the fixed-rate sampler", () => {
     const harness = createHarness();
     const connection = createAudioFeaturePublisherConnection({
-      connectionId: "playback-host-audio-feature-publisher",
+      connectionId: "main-renderer-audio-feature-publisher",
       reconnectDelayMs: 1_000,
       sampler: harness.sampler,
       timer: harness.timer,

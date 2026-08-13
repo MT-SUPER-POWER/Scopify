@@ -18,6 +18,8 @@
 
 ### Fixed
 
+- 修复独立 Playback Host 造成的桌面播放状态分裂：主 Renderer 重新成为唯一的 `audio`、队列、歌词与 Authority 所有者；Tray、桌面歌词和流光背景继续消费同一 Broker 投影，隐藏 Host 不再启动。
+- 修复顺序模式末曲的“下一首”语义：自然播放结束仍停止；用户随后主动点击下一首会从队首重新开始。
 - 修复桌面音乐控制器错误继承 Folia 主题色的问题；控制器现在仅跟随全局 NextTheme 的明暗主题，Folia 主题切换只影响歌词渲染。
 - 移除桌面控制器 Folia 外观面板中的冗余说明、图标与标题，保留全部提示与确认功能。
 - 修复 Electron 多 preload 入口被提取为共享 chunk、导致 sandbox 窗口无法加载桥接的问题；普通窗口与 Playback Host preload 现独立构建为自包含单文件，并由生产门禁拒绝不受支持的 `require`，恢复桌面设置、Tray 与关闭退出流程。
@@ -46,6 +48,7 @@
 
 ### Quality
 
+- 将桌面播放架构文档标注为已废止，并记录 Main Renderer 重新承担单一 Authority、所有 Replica 继续经 Broker 消费投影的迁移与后续清理边界。
 - 新增 Discord Rich Presence 技术参考，收录官方 RPC、应用配置及活动字段文档。
 - 新增独立 Playback Host 与桌面壁纸运行时架构文档：结合 Lively 的 Core/播放器隔离思路，明确 Authority、队列、音频特征 latest-wins 通道、Wallpaper 生命周期、Shader 尺度及分阶段迁移方案。
 - 将桌面主窗口降为 Playback Replica 与会话命令客户端：队列游标、重复/随机、清缓存、URL/歌词加载、媒体错误恢复和音频特征发布均只有 Host 一个执行者；浏览器模式继续复用同一 Runtime seam。
