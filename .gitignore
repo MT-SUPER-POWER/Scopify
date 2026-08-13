@@ -77,3 +77,4 @@ docs/spec/**
 docs/research/**
 docs/adr/**
 docs/task/**
+.env*
