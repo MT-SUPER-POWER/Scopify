@@ -24,7 +24,7 @@
 
 ### Fixed
 
-- 修复 Vercel 部署因重构 `repo/` 目录层级缺失根目录 `installCommand` 导致的 Workspace 包解析与构建失败；在 `vercel.json` 中补全根目录依赖安装指令。
+- 修复 Vercel 部署因重构 `repo/` 目录层级导致构建指令退出后工作目录脱离 `repo/frontend/apps/web` 从而无法定位 `.next` 制品的问题；在 `vercel.json` 中配置切回子项目目录指令。
 - 修复 Windows Release 打包在 Bun 1.3.7 下无法解析 Discord Rich Presence 运行时依赖的问题；发布工作流现使用与工作区一致的 Bun 1.3.11。
 - 修复页面缓存与播放缓存共用目录和清理范围的问题；桌面端改为独立子目录并安全迁移旧缓存，Web 端改用分区 IndexedDB 存储。
 - 修复 Windows 桌面播放壁纸在安装包中被错误标记为不支持的问题；WorkerW 附着与系统壁纸回退脚本现随安装包发布，并按开发或生产运行时解析对应路径。
