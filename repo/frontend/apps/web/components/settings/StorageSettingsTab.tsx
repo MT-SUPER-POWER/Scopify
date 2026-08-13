@@ -36,6 +36,7 @@ export function StorageSettingsTab({
         />
         <SettingRow
           label={t("settings.playbackCache.clearButton")}
+          sublabel={t("settings.playbackCache.clearSublabel")}
           control={
             <button
               type="button"

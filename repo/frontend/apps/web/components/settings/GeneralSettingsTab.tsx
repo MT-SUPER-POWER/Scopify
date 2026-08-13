@@ -66,6 +66,7 @@ export function GeneralSettingsTab({
               />
               <SettingRow
                 label={t("settings.devTools.label")}
+                sublabel={t("settings.devTools.sublabel")}
                 requiresRestart
                 control={
                   <Toggle
@@ -78,6 +79,7 @@ export function GeneralSettingsTab({
               />
               <SettingRow
                 label={t("settings.windowClose.label")}
+                sublabel={t("settings.windowClose.sublabel")}
                 control={
                   <SettingSelect
                     value={config.desktop.app.closeAction}
@@ -105,6 +107,7 @@ export function GeneralSettingsTab({
         <SettingSection title={t("settings.section.frontend")}>
           <SettingRow
             label={t("settings.frontendHost.label")}
+            sublabel={t("settings.frontendHost.sublabel")}
             requiresRestart
             control={
               <SettingInput
@@ -115,6 +118,7 @@ export function GeneralSettingsTab({
           />
           <SettingRow
             label={t("settings.frontendPort.label")}
+            sublabel={t("settings.frontendPort.sublabel")}
             requiresRestart
             control={
               <SettingInput

@@ -33,6 +33,7 @@ export function DesktopSettingsTab({
       <SettingSection title={t("settings.section.logging")}>
         <SettingRow
           label={t("settings.logLevel.label")}
+          sublabel={t("settings.logLevel.sublabel")}
           control={
             <SettingSelect
               value={config.logging.level}

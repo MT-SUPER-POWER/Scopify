@@ -587,11 +587,23 @@ export interface TranslateFn {
    */
   (key: "settings.devTools.label", params?: TranslationParams): string;
   /**
+   * zh-CN: 开启 Electron 内置 DevTools 调试控制台。
+   * zh-TW: 開啟 Electron 內建 DevTools 除錯主控台。
+   * en-US: Open built-in Electron DevTools console for debugging.
+   */
+  (key: "settings.devTools.sublabel", params?: TranslationParams): string;
+  /**
    * zh-CN: 关闭窗口行为
    * zh-TW: 關閉視窗行為
    * en-US: Window Close Action
    */
   (key: "settings.windowClose.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设置点击应用窗口关闭按钮时的响应动作。
+   * zh-TW: 設定點擊應用程式視窗關閉按鈕時的響應動作。
+   * en-US: Choose the action when clicking the window close button.
+   */
+  (key: "settings.windowClose.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 最小化到托盘
    * zh-TW: 最小化到系統匣
@@ -616,6 +628,12 @@ export interface TranslateFn {
    * en-US: Log Level
    */
   (key: "settings.logLevel.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制桌面端应用写入日志文件的最小日志级别。
+   * zh-TW: 控制桌面端應用寫入日誌檔案的最小日誌等級。
+   * en-US: Set the minimum log level saved by the desktop app.
+   */
+  (key: "settings.logLevel.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 调试
    * zh-TW: 除錯
@@ -797,11 +815,23 @@ export interface TranslateFn {
    */
   (key: "settings.frontendHost.label", params?: TranslationParams): string;
   /**
+   * zh-CN: 桌面端本地开发时关联的 Web 前端 IP 或主机名。
+   * zh-TW: 桌面端本地開發時關聯的 Web 前端 IP 或主機名稱。
+   * en-US: Listen host for Web frontend service during local development.
+   */
+  (key: "settings.frontendHost.sublabel", params?: TranslationParams): string;
+  /**
    * zh-CN: 开发端口
    * zh-TW: 開發埠
    * en-US: Development Port
    */
   (key: "settings.frontendPort.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面端本地开发时关联的 Web 前端端口。
+   * zh-TW: 桌面端本地開發時關聯的 Web 前端埠。
+   * en-US: Listen port for Web frontend service during local development.
+   */
+  (key: "settings.frontendPort.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 后端服务
    * zh-TW: 後端服務
@@ -1276,6 +1306,12 @@ export interface TranslateFn {
    * en-US: Clear Cache
    */
   (key: "settings.playbackCache.clearButton", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除本地缓存的音乐音频文件，释放存储空间。
+   * zh-TW: 刪除本機快取的音樂音訊檔案，釋放儲存空間。
+   * en-US: Delete locally cached audio files to free up disk space.
+   */
+  (key: "settings.playbackCache.clearSublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 清除中...
    * zh-TW: 清除中...
