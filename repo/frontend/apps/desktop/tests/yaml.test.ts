@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import fs from "node:fs";
-import path from "node:path/win32";
+import path from "node:path";
 import * as yaml from "js-yaml";
 import { normalizeDesktopHostConfig } from "@/types/config";
 

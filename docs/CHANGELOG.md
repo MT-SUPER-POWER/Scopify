@@ -24,6 +24,7 @@
 
 ### Fixed
 
+- 修复桌面配置测试在 Linux CI 上使用 Windows 路径解析器读取 YAML 失败的问题，改用跨平台的 Node 路径 API。
 - 修复 CI 的干净克隆环境缺少 Next.js 生成的图片模块类型声明，导致 Web TypeScript 检查失败的问题；typecheck 现在会先生成 Next 类型文件。
 - 修复 Vercel 部署因重构 `repo/` 目录层级导致构建指令退出后工作目录脱离 `repo/frontend/apps/web` 从而无法定位 `.next` 制品的问题；在 `vercel.json` 中配置切回子项目目录指令。
 - 修复 Windows Release 打包在 Bun 1.3.7 下无法解析 Discord Rich Presence 运行时依赖的问题；发布工作流现使用与工作区一致的 Bun 1.3.11。
