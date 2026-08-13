@@ -1,6 +1,7 @@
 import type { AudioFeatureFrameV1 } from "./audioFeature";
 import type { PlaybackTransportPayload } from "./playback";
 import type { PlaybackHostClientCommand, PlaybackHostHostMessage } from "./playbackHostControl";
+import type { PlaybackCacheCategory } from "./cache";
 
 /**
  * The hidden Playback Host is intentionally not a general Desktop renderer.
@@ -50,6 +51,15 @@ export interface PlaybackHostBridge<TLyrics = unknown> {
   /** Connects the sole high-frequency transport role exposed to the host: publisher. */
   connectAudioFeatureTransport(connectionId: string, onClose: () => void): PlaybackHostUnsubscribe;
   publishAudioFeatureFrame(frame: AudioFeatureFrameV1): boolean;
+  /** Playback-only cache access; the hidden host cannot access page cache or configuration. */
+  getPlaybackCache<T = unknown>(key: string): Promise<T | null>;
+  setPlaybackCache<T = unknown>(
+    key: string,
+    value: T,
+    ttlMs: number,
+    category?: PlaybackCacheCategory,
+  ): Promise<boolean>;
+  deletePlaybackCache(key: string): Promise<boolean>;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

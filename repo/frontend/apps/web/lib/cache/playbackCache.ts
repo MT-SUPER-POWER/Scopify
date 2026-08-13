@@ -1,13 +1,11 @@
 // lib/cache/playbackCache.ts
 // ── Playback Data Cache ────────────────────────────────────────────────────────
 // 双后端设计：
-//   Electron → 复用 cache:* IPC（文件存储，路径 = cache.dir）
-//   Web      → IndexedDB（idb-keyval）
-// LRU 列表，最多 100 首，超限淘汰最旧。
+//   Electron → scoped cache IPC（文件存储，路径 = cache.dir/playback）
+//   Web      → IndexedDB 的 playback object store
+// Every category uses separate keys so cleanup can precisely report and delete it.
 
-import { del, get, set } from "idb-keyval";
 import { runtime } from "@/lib/runtime";
-import type { PlaybackSongCacheEntry } from "@/types/cache";
 import type {
   ImportedLyricOverride,
   LyricMatchOverride,
@@ -16,87 +14,41 @@ import type {
 import type { MusicQuality } from "@/types/player";
 import type { NeteaseLyric } from "@/types/api/music";
 
-export const PLAYBACK_CACHE_MAX = 100;
-
-// ── Constants ──────────────────────────────────────────────────────────────────
-
 const URL_TTL_MS = 30 * 60 * 1000; // 30 分钟
 const LYRIC_TTL_MS = 24 * 60 * 60 * 1000; // 24 小时
 const LYRIC_OVERRIDE_TTL_MS = 10 * 365 * 24 * 60 * 60 * 1000;
 
-const KEY_PREFIX_SONG = "playback-song";
+const KEY_PREFIX_PLAY_URL = "playback-play-url";
+const KEY_PREFIX_ONLINE_LYRIC = "playback-online-lyric";
 const KEY_PREFIX_LYRIC_OVERRIDE = "playback-lyric-override";
 const KEY_PREFIX_IMPORTED_LYRIC = "playback-imported-lyric";
 const KEY_PREFIX_LYRIC_SOURCE = "playback-lyric-source";
-const KEY_LRU = "playback-lru";
 
 // ── Storage Backend ────────────────────────────────────────────────────────────
-// Electron → IPC; Web → IndexedDB (idb-keyval)
+// The runtime chooses Electron IPC or IndexedDB. Callers never branch by host.
 
 async function storageGet<T>(key: string): Promise<T | null> {
-  if (runtime.isDesktop) return runtime.cache.get<T>(key);
-  try {
-    const val = await get<T>(key);
-    return val ?? null;
-  } catch {
-    return null;
-  }
+  return runtime.cache.getScoped<T>("playback", key);
 }
 
-async function storageSet<T>(key: string, value: T, ttlMs?: number): Promise<void> {
-  if (runtime.isDesktop) {
-    await runtime.cache.set(key, value, ttlMs ?? URL_TTL_MS);
-    return;
-  }
-  try {
-    await set(key, value);
-  } catch {
-    // IndexedDB 不可用时静默降级
-  }
+async function storageSet<T>(
+  key: string,
+  value: T,
+  ttlMs: number,
+  category: "play-url" | "online-lyric" | "lyric-match" | "imported-lyric" | "lyric-source",
+): Promise<void> {
+  const preferences = await runtime.cache.getPreferences();
+  const effectiveTtlMs =
+    category === "play-url"
+      ? preferences.playback.urlTtlMinutes * 60 * 1000
+      : category === "online-lyric"
+        ? preferences.playback.lyricTtlMinutes * 60 * 1000
+        : ttlMs;
+  await runtime.cache.setScoped("playback", key, value, effectiveTtlMs, category);
 }
 
 async function storageDelete(key: string): Promise<void> {
-  if (runtime.isDesktop) {
-    await runtime.cache.delete(key);
-    return;
-  }
-  try {
-    await del(key);
-  } catch {
-    // 静默
-  }
-}
-
-// ── LRU ────────────────────────────────────────────────────────────────────────
-
-async function readLru(): Promise<number[]> {
-  const list = await storageGet<number[]>(KEY_LRU);
-  return list ?? [];
-}
-
-async function writeLru(list: number[]): Promise<void> {
-  await storageSet(KEY_LRU, list.slice(0, PLAYBACK_CACHE_MAX), 365 * 24 * 60 * 60 * 1000);
-}
-
-/** 把 songId 移到 LRU 头部，超限时淘汰末尾并返回被淘汰的 ID */
-async function touchLru(songId: number): Promise<number | null> {
-  const list = await readLru();
-
-  // 若已存在，删除旧位置
-  const idx = list.indexOf(songId);
-  if (idx !== -1) list.splice(idx, 1);
-
-  // 插入头部
-  list.unshift(songId);
-
-  // 超限淘汰
-  let evicted: number | null = null;
-  if (list.length > PLAYBACK_CACHE_MAX) {
-    evicted = list.pop() ?? null;
-  }
-
-  await writeLru(list);
-  return evicted;
+  await runtime.cache.deleteScoped("playback", key);
 }
 
 // ── Public API: Play URL ───────────────────────────────────────────────────────
@@ -105,15 +57,7 @@ export async function getCachedPlayUrl(
   songId: number,
   quality: MusicQuality,
 ): Promise<string | null> {
-  const entry = await storageGet<PlaybackSongCacheEntry>(`${KEY_PREFIX_SONG}:${songId}`);
-  if (!entry) return null;
-
-  // Legacy entries only have the shared cachedAt field, which lyric writes could
-  // refresh. Treat them as URL misses instead of reviving a time-limited CDN URL.
-  const cachedAt = entry.urlCachedAt?.[quality];
-  if (!cachedAt || Date.now() - cachedAt > URL_TTL_MS) return null;
-
-  return entry.url[quality] ?? null;
+  return storageGet<string>(`${KEY_PREFIX_PLAY_URL}:${songId}:${quality}`);
 }
 
 export async function setCachedPlayUrl(
@@ -121,69 +65,21 @@ export async function setCachedPlayUrl(
   quality: MusicQuality,
   url: string,
 ): Promise<void> {
-  const entry = (await storageGet<PlaybackSongCacheEntry>(`${KEY_PREFIX_SONG}:${songId}`)) ?? {
-    url: {},
-    urlCachedAt: {},
-    lyric: null,
-    cachedAt: 0,
-  };
-
-  const cachedAt = Date.now();
-  entry.url[quality] = url;
-  entry.urlCachedAt = { ...entry.urlCachedAt, [quality]: cachedAt };
-
-  await storageSet(`${KEY_PREFIX_SONG}:${songId}`, entry, URL_TTL_MS);
-  const evicted = await touchLru(songId);
-
-  // 淘汰旧数据
-  if (evicted != null && evicted !== songId) {
-    await storageDelete(`${KEY_PREFIX_SONG}:${evicted}`);
-  }
+  await storageSet(`${KEY_PREFIX_PLAY_URL}:${songId}:${quality}`, url, URL_TTL_MS, "play-url");
 }
 
 export async function clearCachedPlayUrl(songId: number, quality: MusicQuality): Promise<void> {
-  const key = `${KEY_PREFIX_SONG}:${songId}`;
-  const entry = await storageGet<PlaybackSongCacheEntry>(key);
-  if (!entry) return;
-
-  delete entry.url[quality];
-  if (entry.urlCachedAt) delete entry.urlCachedAt[quality];
-
-  // The entry may still own a cached lyric, so keep the shared record while
-  // removing only the failed quality's expiring playback URL.
-  await storageSet(key, entry, LYRIC_TTL_MS);
+  await storageDelete(`${KEY_PREFIX_PLAY_URL}:${songId}:${quality}`);
 }
 
 // ── Public API: Lyric ──────────────────────────────────────────────────────────
 
 export async function getCachedLyric(songId: number): Promise<NeteaseLyric | null> {
-  const entry = await storageGet<PlaybackSongCacheEntry>(`${KEY_PREFIX_SONG}:${songId}`);
-  if (!entry?.lyric) return null;
-
-  // 24 小时硬过期
-  if (Date.now() - (entry.lyricCachedAt ?? entry.cachedAt) > LYRIC_TTL_MS) return null;
-
-  return entry.lyric;
+  return storageGet<NeteaseLyric>(`${KEY_PREFIX_ONLINE_LYRIC}:${songId}`);
 }
 
 export async function setCachedLyric(songId: number, lyric: NeteaseLyric): Promise<void> {
-  const entry = (await storageGet<PlaybackSongCacheEntry>(`${KEY_PREFIX_SONG}:${songId}`)) ?? {
-    url: {},
-    urlCachedAt: {},
-    lyric: null,
-    cachedAt: 0,
-  };
-
-  entry.lyric = lyric;
-  entry.lyricCachedAt = Date.now();
-  entry.cachedAt = entry.lyricCachedAt;
-
-  await storageSet(`${KEY_PREFIX_SONG}:${songId}`, entry, LYRIC_TTL_MS);
-  const evicted = await touchLru(songId);
-
-  if (evicted != null && evicted !== songId) {
-    await storageDelete(`${KEY_PREFIX_SONG}:${evicted}`);
-  }
+  await storageSet(`${KEY_PREFIX_ONLINE_LYRIC}:${songId}`, lyric, LYRIC_TTL_MS, "online-lyric");
 }
 
 // ── Public API: Manually matched lyrics ─────────────────────────────────────────
@@ -196,7 +92,12 @@ export async function setLyricMatchOverride(
   songId: number,
   override: LyricMatchOverride,
 ): Promise<void> {
-  await storageSet(`${KEY_PREFIX_LYRIC_OVERRIDE}:${songId}`, override, LYRIC_OVERRIDE_TTL_MS);
+  await storageSet(
+    `${KEY_PREFIX_LYRIC_OVERRIDE}:${songId}`,
+    override,
+    LYRIC_OVERRIDE_TTL_MS,
+    "lyric-match",
+  );
 }
 
 export async function clearLyricMatchOverride(songId: number): Promise<void> {
@@ -213,7 +114,12 @@ export async function setImportedLyricOverride(
   songId: number,
   override: ImportedLyricOverride,
 ): Promise<void> {
-  await storageSet(`${KEY_PREFIX_IMPORTED_LYRIC}:${songId}`, override, LYRIC_OVERRIDE_TTL_MS);
+  await storageSet(
+    `${KEY_PREFIX_IMPORTED_LYRIC}:${songId}`,
+    override,
+    LYRIC_OVERRIDE_TTL_MS,
+    "imported-lyric",
+  );
 }
 
 export async function clearImportedLyricOverride(songId: number): Promise<void> {
@@ -230,7 +136,12 @@ export async function setLyricSourceSelection(
   songId: number,
   source: LyricSourceSelection,
 ): Promise<void> {
-  await storageSet(`${KEY_PREFIX_LYRIC_SOURCE}:${songId}`, source, LYRIC_OVERRIDE_TTL_MS);
+  await storageSet(
+    `${KEY_PREFIX_LYRIC_SOURCE}:${songId}`,
+    source,
+    LYRIC_OVERRIDE_TTL_MS,
+    "lyric-source",
+  );
 }
 
 export async function clearLyricSourceSelection(songId: number): Promise<void> {
@@ -240,35 +151,25 @@ export async function clearLyricSourceSelection(songId: number): Promise<void> {
 // ── Public API: Cache Management ───────────────────────────────────────────────
 
 export async function clearPlaybackCache(): Promise<{ entryCount: number }> {
-  const lru = await readLru();
-  const count = lru.length;
-
-  // 删除所有歌曲缓存
-  for (const songId of lru) {
-    await storageDelete(`${KEY_PREFIX_SONG}:${songId}`);
-  }
-
-  // 删除 LRU 列表
-  await storageDelete(KEY_LRU);
-
-  return { entryCount: count };
+  const before = await runtime.cache.statsAll();
+  await runtime.cache.clearSelected({
+    categories: [
+      "play-url",
+      "online-lyric",
+      "lyric-match",
+      "imported-lyric",
+      "lyric-source",
+      "other",
+    ],
+    scope: "playback",
+  });
+  return { entryCount: before.playback.entryCount };
 }
 
 export async function getPlaybackCacheStats(): Promise<{
   entryCount: number;
   cacheDir: string | null;
 }> {
-  const lru = await readLru();
-
-  let cacheDir: string | null = null;
-  if (runtime.isDesktop) {
-    try {
-      const stats = await runtime.cache.stats();
-      cacheDir = stats.dir;
-    } catch {
-      // 静默
-    }
-  }
-
-  return { entryCount: lru.length, cacheDir };
+  const stats = await runtime.cache.statsAll();
+  return { entryCount: stats.playback.entryCount, cacheDir: stats.playback.dir };
 }

@@ -15,11 +15,14 @@ test("desktop config yml contains only host-owned settings", () => {
   expect(config.frontend.host).toBe("127.0.0.1");
   expect(config.frontend.devPort).toBe(3000);
   expect(config.logging.level).toBe("info");
-  expect(config.cache.enabled).toBe(true);
   expect(config.cache.dir).toBe("");
-  expect(config.cache.maxSizeMB).toBe(256);
-  expect(config.cache.pageTtlMinutes).toBe(360);
-  expect(config.cache.searchTtlMinutes).toBe(30);
+  expect(config.cache.page).toEqual({
+    enabled: true,
+    maxSizeMB: 256,
+    ttlMinutes: 360,
+    searchTtlMinutes: 30,
+  });
+  expect(config.cache.playback.maxSizeMB).toBe(64);
   expect(config.discord).toEqual({ applicationId: "1536959813114658836", enabled: true });
   expect(config.updater.checkOnStartup).toBe(true);
   expect(config.updater.autoDownload).toBe(false);
@@ -62,11 +65,11 @@ test("normalizing cache config clamps invalid values", () => {
     },
   });
 
-  expect(config.cache.enabled).toBe(false);
+  expect(config.cache.page.enabled).toBe(false);
   expect(config.cache.dir).toBe("D:/Scopify Cache");
-  expect(config.cache.maxSizeMB).toBe(256);
-  expect(config.cache.pageTtlMinutes).toBe(360);
-  expect(config.cache.searchTtlMinutes).toBe(30);
+  expect(config.cache.page.maxSizeMB).toBe(256);
+  expect(config.cache.page.ttlMinutes).toBe(360);
+  expect(config.cache.page.searchTtlMinutes).toBe(30);
 });
 
 test("normalizing malformed host config falls back per field", () => {

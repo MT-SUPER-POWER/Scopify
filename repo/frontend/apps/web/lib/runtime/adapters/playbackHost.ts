@@ -1,6 +1,7 @@
 import type {
   AudioFeatureTransportRole,
   PlaybackHostBridge,
+  PlaybackCacheCategory,
   PlaybackTransportRole,
 } from "@scopify/desktop-contract";
 
@@ -34,6 +35,29 @@ export function createPlaybackHostRuntime(bridge: PlaybackHostBridge<LyricData>)
         return bridge.connectAudioFeatureTransport(connectionId, onClose);
       },
       publish: (frame) => bridge.publishAudioFeatureFrame(frame),
+    },
+    cache: {
+      ...browserRuntime.cache,
+      deleteScoped: async (scope, key) => {
+        if (scope === "playback") await bridge.deletePlaybackCache(key);
+        else await browserRuntime.cache.deleteScoped(scope, key);
+      },
+      getScoped: <T>(scope: "page" | "playback", key: string) =>
+        scope === "playback"
+          ? bridge.getPlaybackCache<T>(key)
+          : browserRuntime.cache.getScoped<T>(scope, key),
+      setScoped: async (scope, key, value, ttlMs, category) => {
+        if (scope === "playback") {
+          await bridge.setPlaybackCache(
+            key,
+            value,
+            ttlMs,
+            category === "other" ? undefined : (category as PlaybackCacheCategory),
+          );
+          return;
+        }
+        await browserRuntime.cache.setScoped(scope, key, value, ttlMs, category);
+      },
     },
     isDesktop: true,
     kind: "desktop",

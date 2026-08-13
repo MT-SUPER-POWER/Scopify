@@ -1,132 +1,106 @@
 "use client";
 
+import { FolderOpen } from "lucide-react";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
+import type { CachePreferences } from "@/types/cache";
 import type { StorageSettingsTabProps } from "@/types/components/settings";
-import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
+import { CacheSummaryRow } from "./CacheSummaryRow";
+import { PageCacheAdvancedControls } from "./PageCacheAdvancedControls";
+import { PlaybackCacheAdvancedControls } from "./PlaybackCacheAdvancedControls";
+import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
 
 export function StorageSettingsTab({
+  cachePreferences,
   config,
+  cacheStats,
   onChange,
-  playbackCacheStats,
-  isClearingPlaybackCache,
-  onClearPlaybackCache,
-  isClearingCache,
-  onClearCache,
+  onCachePreferencesChange,
 }: StorageSettingsTabProps) {
   const { t } = useI18n();
 
+  const isDesktopHost = runtime.isDesktop && Boolean(config);
+
+  const updatePage = (update: Partial<CachePreferences["page"]>) => {
+    if (!cachePreferences) return;
+    onCachePreferencesChange({
+      ...cachePreferences,
+      page: { ...cachePreferences.page, ...update },
+    });
+  };
+
+  const updatePlayback = (update: Partial<CachePreferences["playback"]>) => {
+    if (!cachePreferences) return;
+    onCachePreferencesChange({
+      ...cachePreferences,
+      playback: { ...cachePreferences.playback, ...update },
+    });
+  };
+
+  const handleBrowseDir = async () => {
+    if (!config) return;
+    const currentPath = config.cache.dir || cacheStats?.rootDir;
+    const selected = await runtime.config.selectDirectory(currentPath);
+    if (selected) {
+      onChange("cache", "dir", selected);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
-      <SettingSection title={t("settings.playbackCache.section")}>
-        <SettingRow
-          label={t("settings.playbackCache.count")}
-          sublabel={
-            runtime.isDesktop && playbackCacheStats?.cacheDir
-              ? playbackCacheStats.cacheDir
-              : undefined
-          }
-          control={
-            <span className="text-foreground text-sm font-medium">
-              {playbackCacheStats
-                ? t("settings.playbackCache.countValue", { count: playbackCacheStats.entryCount })
-                : "-"}
-            </span>
-          }
-        />
-        <SettingRow
-          label={t("settings.playbackCache.clearButton")}
-          sublabel={t("settings.playbackCache.clearSublabel")}
-          control={
-            <button
-              type="button"
-              onClick={() => void onClearPlaybackCache()}
-              disabled={isClearingPlaybackCache}
-              className="bg-primary text-primary-foreground hover:bg-brand-hover rounded px-4 py-2 text-sm font-bold disabled:opacity-50"
-            >
-              {isClearingPlaybackCache
-                ? t("settings.playbackCache.clearing")
-                : t("settings.playbackCache.clearButton")}
-            </button>
-          }
-        />
-      </SettingSection>
-      {config ? (
-        <SettingSection title={t("settings.section.cache")}>
-          <SettingRow
-            label={t("settings.cache.enabled.label")}
-            sublabel={t("settings.cache.enabled.sublabel")}
-            control={
-              <Toggle
-                enabled={config.cache.enabled}
-                onChange={() => onChange("cache", "enabled", !config.cache.enabled)}
-              />
-            }
-          />
+      {isDesktopHost && config ? (
+        <SettingSection title={t("settings.section.generalCache")}>
           <SettingRow
             label={t("settings.cache.dir.label")}
             sublabel={t("settings.cache.dir.sublabel")}
             isColumn
             control={
-              <SettingInput
-                value={config.cache.dir}
-                onChange={(value) => onChange("cache", "dir", value)}
-                className="w-full text-left"
-                placeholder={t("settings.cache.dir.placeholder")}
-              />
-            }
-          />
-          <SettingRow
-            label={t("settings.cache.maxSize.label")}
-            sublabel={t("settings.cache.maxSize.sublabel")}
-            control={
-              <SettingInput
-                type="number"
-                value={config.cache.maxSizeMB}
-                onChange={(value) => onChange("cache", "maxSizeMB", Number(value))}
-              />
-            }
-          />
-          <SettingRow
-            label={t("settings.cache.pageTtl.label")}
-            sublabel={t("settings.cache.pageTtl.sublabel")}
-            control={
-              <SettingInput
-                type="number"
-                value={config.cache.pageTtlMinutes}
-                onChange={(value) => onChange("cache", "pageTtlMinutes", Number(value))}
-              />
-            }
-          />
-          <SettingRow
-            label={t("settings.cache.searchTtl.label")}
-            sublabel={t("settings.cache.searchTtl.sublabel")}
-            control={
-              <SettingInput
-                type="number"
-                value={config.cache.searchTtlMinutes}
-                onChange={(value) => onChange("cache", "searchTtlMinutes", Number(value))}
-              />
-            }
-          />
-          <SettingRow
-            label={t("settings.cache.clear.label")}
-            sublabel={t("settings.cache.clear.sublabel")}
-            control={
-              <button
-                type="button"
-                onClick={() => void onClearCache()}
-                disabled={isClearingCache}
-                className="bg-primary text-primary-foreground hover:bg-brand-hover rounded px-4 py-2 text-sm font-bold disabled:opacity-50"
-              >
-                {isClearingCache
-                  ? t("settings.cache.clear.clearing")
-                  : t("settings.cache.clear.button")}
-              </button>
+              <div className="flex w-full items-center gap-2">
+                <SettingInput
+                  value={config.cache.dir || cacheStats?.rootDir || ""}
+                  onChange={(value) => onChange("cache", "dir", value)}
+                  className="flex-1 text-left"
+                  placeholder={t("settings.cache.dir.placeholder")}
+                />
+                <button
+                  type="button"
+                  onClick={() => void handleBrowseDir()}
+                  className="border-input text-foreground hover:bg-accent hover:border-content flex shrink-0 cursor-pointer items-center gap-1.5 rounded border bg-transparent px-3 py-1.5 text-sm font-medium transition-colors"
+                >
+                  <FolderOpen className="size-4" />
+                  {t("settings.cache.dir.browse")}
+                </button>
+              </div>
             }
           />
         </SettingSection>
       ) : null}
+
+      <SettingSection title={t("settings.cache.scope.page.title")}>
+        {cachePreferences ? (
+          <PageCacheAdvancedControls preferences={cachePreferences.page} onChange={updatePage} />
+        ) : null}
+        <CacheSummaryRow
+          maxSizeMB={cachePreferences?.page.maxSizeMB ?? 256}
+          sizeBytes={cacheStats?.page.sizeBytes}
+        />
+      </SettingSection>
+
+      <SettingSection title={t("settings.cache.scope.playback.title")}>
+        <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
+          {t("settings.cache.playbackExplanation")}
+        </p>
+        {cachePreferences ? (
+          <PlaybackCacheAdvancedControls
+            preferences={cachePreferences.playback}
+            onChange={updatePlayback}
+          />
+        ) : null}
+        <CacheSummaryRow
+          maxSizeMB={cachePreferences?.playback.maxSizeMB ?? 64}
+          sizeBytes={cacheStats?.playback.sizeBytes}
+        />
+      </SettingSection>
     </div>
   );
 }

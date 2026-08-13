@@ -1,4 +1,5 @@
 export * from "./backend";
+export * from "./cache";
 export * from "./audioFeature";
 export * from "./bridge";
 export * from "./config";

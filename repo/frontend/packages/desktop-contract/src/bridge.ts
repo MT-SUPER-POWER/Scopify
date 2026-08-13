@@ -138,6 +138,7 @@ export interface DesktopBridge<TLyrics = unknown> {
     category?: CacheCategory,
   ): Promise<boolean>;
   setPlayerPlaying(isPlaying: boolean): void;
+  selectDirectory(defaultPath?: string): Promise<string | null>;
   sendPlaybackTransportPayload(payload: PlaybackTransportPayload<TLyrics>): boolean;
   /** Sends a versioned Main→Host command; the Host owns every queue mutation. */
   sendPlaybackHostControlPayload(payload: PlaybackHostClientCommand): boolean;

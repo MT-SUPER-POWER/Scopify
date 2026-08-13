@@ -229,6 +229,7 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
       updatedAtMs: 0,
     }),
     getHostConfig: async () => HOST_CONFIG,
+    selectDirectory: async () => null,
     getBridgeInfo: async () => ({
       capabilities: [],
       desktopVersion: "1.1.0",
@@ -605,6 +606,10 @@ describe("electron runtime adapter", () => {
         calls.push("get-log-directory");
         return "C:\\Users\\Scopify\\logs";
       },
+      selectDirectory: async (defaultPath) => {
+        calls.push(`select-directory:${defaultPath ?? "none"}`);
+        return "D:\\CustomCache";
+      },
       setPlayerPlaying: (isPlaying) => calls.push(`playing:${isPlaying}`),
     });
     const runtime = createElectronRuntime(bridge);
@@ -618,6 +623,7 @@ describe("electron runtime adapter", () => {
     expect(runtime.navigation.navigateMainWindow("/setting")).toBeTrue();
     runtime.media.setPlaying(true);
     expect(await runtime.logging.getDirectory()).toBe("C:\\Users\\Scopify\\logs");
+    expect(await runtime.config.selectDirectory("C:\\DefaultCache")).toBe("D:\\CustomCache");
 
     expect(calls).toEqual([
       "open-login",
@@ -626,6 +632,7 @@ describe("electron runtime adapter", () => {
       "navigate:/setting",
       "playing:true",
       "get-log-directory",
+      "select-directory:C:\\DefaultCache",
     ]);
   });
 

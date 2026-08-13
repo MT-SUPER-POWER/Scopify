@@ -51,5 +51,22 @@ export function searchTtlMs(minutes = DEFAULT_SEARCH_TTL_MINUTES) {
 }
 
 export async function setPageCache<T = unknown>(key: string, value: T, ttlMs: number) {
-  await runtime.cache.set(key, value, ttlMs);
+  const category = pageCacheCategory(key);
+  const preferences = await runtime.cache.getPreferences();
+  const configuredTtlMs =
+    (category === "search" ? preferences.page.searchTtlMinutes : preferences.page.ttlMinutes) *
+    MINUTE;
+  const effectiveTtlMs = category === "daily" ? Math.min(ttlMs, configuredTtlMs) : configuredTtlMs;
+  await runtime.cache.setScoped("page", key, value, effectiveTtlMs, category);
+}
+
+function pageCacheCategory(key: string): PageCacheNamespace | "other" {
+  const namespace = key.split(":", 1)[0];
+  return namespace === "album" ||
+    namespace === "artist" ||
+    namespace === "daily" ||
+    namespace === "playlist" ||
+    namespace === "search"
+    ? namespace
+    : "other";
 }

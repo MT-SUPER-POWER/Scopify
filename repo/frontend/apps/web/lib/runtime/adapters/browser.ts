@@ -365,6 +365,7 @@ export function createBrowserRuntime(
     config: {
       loadHostConfig: async () => null,
       saveHostConfig: async () => null,
+      selectDirectory: async () => null,
     },
     desktopIcons: {
       getVisibility: async () => unsupportedDesktopIconVisibilityState(),

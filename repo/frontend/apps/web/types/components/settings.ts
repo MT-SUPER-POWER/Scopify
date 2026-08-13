@@ -2,6 +2,8 @@ import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-
 import type { DesktopSettingsChangeHandler } from "@/types/settings";
 import type { SettingsConfig, WebSettingsChangeHandler } from "@/types/settings";
 import type { BackendPingResult } from "@/types/network";
+import type { CacheStats } from "@/types/cache";
+import type { CachePreferences } from "@/types/cache";
 
 export interface NetworkSettingsTabProps {
   backendPingResult: BackendPingResult | null;
@@ -22,13 +24,16 @@ export interface SaveConfirmModalProps {
 }
 
 export interface StorageSettingsTabProps {
+  cachePreferences: CachePreferences | null;
   config: DesktopHostConfig | null;
   onChange: DesktopSettingsChangeHandler;
-  playbackCacheStats: { entryCount: number; cacheDir: string | null } | null;
-  isClearingPlaybackCache: boolean;
-  onClearPlaybackCache: () => Promise<void>;
-  isClearingCache: boolean;
-  onClearCache: () => Promise<void>;
+  onCachePreferencesChange: (preferences: CachePreferences) => void;
+  cacheStats: CacheStats | null;
+}
+
+export interface CacheAdvancedScopeControlsProps<Preferences> {
+  preferences: Preferences;
+  onChange: (update: Partial<Preferences>) => void;
 }
 
 export interface DesktopSettingsTabProps {

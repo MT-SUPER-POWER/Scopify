@@ -14,10 +14,19 @@ export interface DesktopHostConfig {
   };
   cache: {
     dir: string;
-    enabled: boolean;
-    maxSizeMB: number;
-    pageTtlMinutes: number;
-    searchTtlMinutes: number;
+    page: {
+      enabled: boolean;
+      maxSizeMB: number;
+      searchTtlMinutes: number;
+      ttlMinutes: number;
+    };
+    playback: {
+      enabled: boolean;
+      lyricTtlMinutes: number;
+      maxEntries: number;
+      maxSizeMB: number;
+      urlTtlMinutes: number;
+    };
   };
   discord: {
     applicationId: string;

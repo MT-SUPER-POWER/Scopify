@@ -1,8 +1,11 @@
 import { join } from "node:path";
-import { app, BrowserWindow, ipcMain, session } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, session } from "electron";
 import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
   type DesktopHostConfig,
+  type CacheCategory,
+  type CacheScope,
+  type ClearDesktopCacheRequest,
   type DesktopBridgeCapability,
   type DiscordPresenceSnapshot,
   type RendererLogEvent,
@@ -10,7 +13,7 @@ import {
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "../config.js";
 import { getLogDirectory, logger } from "../constants.js";
 import { loginWindow } from "./login.js";
-import { createPageCacheStore } from "./pageCache.js";
+import { assertSafeCacheRoot, createPageCacheStore, migrateCacheRoot } from "./pageCache.js";
 import { applyElectronProxy } from "./proxy.js";
 import type { createDiscordPresenceController } from "./discordPresence.js";
 import { updateThumbarButtons } from "./thumbarButtons.js";
@@ -27,8 +30,12 @@ function createConfiguredPageCacheStore() {
   const config = loadDesktopHostConfig();
   return createPageCacheStore({
     config: config.cache,
-    defaultDir: join(app.getPath("userData"), "cache", "music-pages"),
+    defaultDir: join(app.getPath("userData"), "cache"),
   });
+}
+
+function configuredCacheRoot(config: DesktopHostConfig) {
+  return config.cache.dir.trim() || join(app.getPath("userData"), "cache");
 }
 
 export function registerIpcHandlers(
@@ -96,14 +103,41 @@ export function registerIpcHandlers(
   ipcMain.handle("updater:download", () => downloadUpdate());
   ipcMain.on("updater:quit-and-install", () => quitAndInstallUpdate());
 
+  ipcMain.handle("dialog:select-directory", async (event, defaultPath?: string) => {
+    if (!isMainRenderer(event, mainWindow)) return null;
+    const options: Electron.OpenDialogOptions = {
+      properties: ["openDirectory"],
+      defaultPath:
+        typeof defaultPath === "string" && defaultPath.trim() ? defaultPath.trim() : undefined,
+    };
+    const result =
+      mainWindow && !mainWindow.isDestroyed()
+        ? await dialog.showOpenDialog(mainWindow, options)
+        : await dialog.showOpenDialog(options);
+    if (result.canceled || result.filePaths.length === 0) return null;
+    return result.filePaths[0];
+  });
+
   ipcMain.handle("config:get-host", () => {
     const config = loadDesktopHostConfig();
     logger.info("[IPC] config:get-host", config);
     return config;
   });
 
-  ipcMain.handle("config:update-host", async (_event, newConfig: DesktopHostConfig) => {
+  ipcMain.handle("config:update-host", async (event, newConfig: DesktopHostConfig) => {
+    if (!isMainRenderer(event, mainWindow)) throw new Error("Unauthorized config update.");
     logger.info("[IPC] config:update-host", newConfig);
+    const currentConfig = loadDesktopHostConfig();
+    // Instantiate once so a pre-scoped `music-pages` directory is promoted to
+    // `page` before copying the configured root elsewhere.
+    createPageCacheStore({
+      config: currentConfig.cache,
+      defaultDir: join(app.getPath("userData"), "cache"),
+    });
+    const currentRoot = configuredCacheRoot(currentConfig);
+    const nextRoot = configuredCacheRoot(newConfig);
+    assertSafeCacheRoot(nextRoot);
+    if (currentRoot !== nextRoot) migrateCacheRoot({ from: currentRoot, to: nextRoot });
     const savedConfig = saveDesktopHostConfig(newConfig);
     configureUpdater(savedConfig.updater);
     void discordPresence.refresh();
@@ -113,28 +147,81 @@ export function registerIpcHandlers(
     return savedConfig;
   });
 
-  ipcMain.handle("cache:get", (_event, key: string) => {
+  ipcMain.handle("cache:get", (event, key: string) => {
+    if (!isMainRenderer(event, mainWindow) || typeof key !== "string") return null;
     return createConfiguredPageCacheStore().get(key);
   });
 
-  ipcMain.handle("cache:set", (_event, key: string, value: unknown, ttlMs: number) => {
+  ipcMain.handle("cache:set", (event, key: string, value: unknown, ttlMs: number) => {
+    if (
+      !isMainRenderer(event, mainWindow) ||
+      typeof key !== "string" ||
+      !Number.isFinite(ttlMs) ||
+      ttlMs <= 0
+    )
+      return false;
     createConfiguredPageCacheStore().set(key, value, ttlMs);
     return true;
   });
 
-  ipcMain.handle("cache:delete", (_event, key: string) => {
+  ipcMain.handle("cache:delete", (event, key: string) => {
+    if (!isMainRenderer(event, mainWindow) || typeof key !== "string") return false;
     createConfiguredPageCacheStore().delete(key);
     return true;
   });
 
-  ipcMain.handle("cache:clear", () => {
+  ipcMain.handle("cache:clear", (event) => {
+    if (!isMainRenderer(event, mainWindow)) return null;
     const store = createConfiguredPageCacheStore();
     store.clear();
     return store.getStats();
   });
 
-  ipcMain.handle("cache:get-stats", () => {
+  ipcMain.handle("cache:get-stats", (event) => {
+    if (!isMainRenderer(event, mainWindow)) return null;
     return createConfiguredPageCacheStore().getStats();
+  });
+
+  ipcMain.handle("cache:get-scoped", (event, scope: unknown, key: unknown) => {
+    if (!isMainRenderer(event, mainWindow) || !isCacheScope(scope) || typeof key !== "string")
+      return null;
+    return createConfiguredPageCacheStore().getScoped(scope, key);
+  });
+
+  ipcMain.handle(
+    "cache:set-scoped",
+    (event, scope: unknown, key: unknown, value: unknown, ttlMs: unknown, category: unknown) => {
+      if (
+        !isMainRenderer(event, mainWindow) ||
+        !isCacheScope(scope) ||
+        typeof key !== "string" ||
+        typeof ttlMs !== "number" ||
+        !Number.isFinite(ttlMs) ||
+        ttlMs <= 0 ||
+        (category !== undefined && !isCacheCategoryForScope(scope, category))
+      ) {
+        return false;
+      }
+      createConfiguredPageCacheStore().setScoped(scope, key, value, ttlMs, category);
+      return true;
+    },
+  );
+
+  ipcMain.handle("cache:delete-scoped", (event, scope: unknown, key: unknown) => {
+    if (!isMainRenderer(event, mainWindow) || !isCacheScope(scope) || typeof key !== "string")
+      return false;
+    createConfiguredPageCacheStore().deleteScoped(scope, key);
+    return true;
+  });
+
+  ipcMain.handle("cache:get-all-stats", (event) => {
+    if (!isMainRenderer(event, mainWindow)) return null;
+    return createConfiguredPageCacheStore().getStatsAll();
+  });
+
+  ipcMain.handle("cache:clear-selected", (event, request: unknown) => {
+    if (!isMainRenderer(event, mainWindow) || !isClearCacheRequest(request)) return null;
+    return createConfiguredPageCacheStore().clear(request);
   });
 
   ipcMain.on("login-success", () => {
@@ -218,6 +305,40 @@ export function registerIpcHandlers(
       throw error;
     }
   });
+}
+
+function isMainRenderer(event: Electron.IpcMainInvokeEvent, mainWindow: BrowserWindow | null) {
+  return Boolean(
+    mainWindow && !mainWindow.isDestroyed() && event.sender.id === mainWindow.webContents.id,
+  );
+}
+
+function isCacheScope(value: unknown): value is CacheScope {
+  return value === "page" || value === "playback";
+}
+
+function isCacheCategoryForScope(scope: CacheScope, value: unknown): value is CacheCategory {
+  const page = ["album", "artist", "daily", "playlist", "search", "other"];
+  const playback = [
+    "play-url",
+    "online-lyric",
+    "lyric-match",
+    "imported-lyric",
+    "lyric-source",
+    "other",
+  ];
+  return typeof value === "string" && (scope === "page" ? page : playback).includes(value);
+}
+
+function isClearCacheRequest(value: unknown): value is ClearDesktopCacheRequest {
+  if (!value || typeof value !== "object") return false;
+  const request = value as Partial<ClearDesktopCacheRequest>;
+  return (
+    isCacheScope(request.scope) &&
+    Array.isArray(request.categories) &&
+    request.categories.length > 0 &&
+    request.categories.every((category) => isCacheCategoryForScope(request.scope!, category))
+  );
 }
 
 function parseAllowedBackendOrigin(value: string) {

@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react";
 import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
 import { toast } from "sonner";
-import { clearPageCache } from "@/lib/cache/pageCache";
-import { clearPlaybackCache, getPlaybackCacheStats } from "@/lib/cache/playbackCache";
+import {
+  getCachePreferences,
+  getCacheStats,
+  saveCachePreferences,
+} from "@/lib/cache/cacheManagement";
 import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
 import { normalizeBackendConfig, resolveBackendBaseUrl } from "@/lib/web/backendUrl";
@@ -14,6 +17,7 @@ import { useI18nStore } from "@/store/module/i18n";
 import type { WebConfig } from "@/types/config";
 import type { BackendPingResult } from "@/types/network";
 import type { SettingsConfig } from "@/types/settings";
+import type { CachePreferences } from "@/types/cache";
 
 export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
 export const WEB_BACKEND_SETTINGS_KEY = "momo-web-backend-settings";
@@ -110,16 +114,14 @@ export function useSettingsState() {
   const [originalConfig, setOriginalConfig] = useState<SettingsConfig | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isClearingCache, setIsClearingCache] = useState(false);
-  const [isClearingPlaybackCache, setIsClearingPlaybackCache] = useState(false);
   const [isPingingBackend, setIsPingingBackend] = useState(false);
   const [backendPingResult, setBackendPingResult] = useState<BackendPingResult | null>(null);
   const [isTestingDiscord, setIsTestingDiscord] = useState(false);
   const [discordStatus, setDiscordStatus] = useState<DiscordPresenceStatus | null>(null);
-  const [playbackCacheStats, setPlaybackCacheStats] = useState<{
-    entryCount: number;
-    cacheDir: string | null;
-  } | null>(null);
+  const [cacheStats, setCacheStats] = useState<Awaited<ReturnType<typeof getCacheStats>> | null>(
+    null,
+  );
+  const [cachePreferences, setCachePreferences] = useState<CachePreferences | null>(null);
   const _locale = useI18nStore((state) => state.locale);
   const setLocale = useI18nStore((state) => state.setLocale);
 
@@ -152,9 +154,19 @@ export function useSettingsState() {
   }, []);
 
   useEffect(() => {
-    getPlaybackCacheStats()
-      .then(setPlaybackCacheStats)
+    getCacheStats()
+      .then(setCacheStats)
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (runtime.isDesktop) return;
+
+    getCachePreferences()
+      .then(setCachePreferences)
+      .catch((error: unknown) => {
+        console.error("[Settings] failed to load cache preferences:", error);
+      });
   }, []);
 
   useEffect(() => {
@@ -316,6 +328,36 @@ export function useSettingsState() {
     );
   };
 
+  const handleCachePreferencesChange = (preferences: CachePreferences) => {
+    if (runtime.isDesktop) {
+      setConfig((current) =>
+        current?.desktop
+          ? {
+              ...current,
+              desktop: {
+                ...current.desktop,
+                cache: {
+                  ...current.desktop.cache,
+                  page: preferences.page,
+                  playback: preferences.playback,
+                },
+              },
+            }
+          : current,
+      );
+      return;
+    }
+
+    setCachePreferences(preferences);
+    void saveCachePreferences(preferences).catch((error: unknown) => {
+      console.error("[Settings] failed to save cache preferences:", error);
+      toast.error(translate(useI18nStore.getState().locale, "settings.saveFailed"));
+      void getCachePreferences()
+        .then(setCachePreferences)
+        .catch(() => {});
+    });
+  };
+
   const handleConfirmSave = async () => {
     if (!config) return;
 
@@ -374,35 +416,6 @@ export function useSettingsState() {
     }
   };
 
-  const handleClearCache = async () => {
-    if (!config) return;
-    setIsClearingCache(true);
-    try {
-      await clearPageCache();
-      toast.success(translate(config.web.app.locale, "settings.cache.clearSuccess"));
-    } catch (error) {
-      console.error("[Settings] failed to clear cache:", error);
-      toast.error(translate(config.web.app.locale, "settings.cache.clearFailed"));
-    } finally {
-      setIsClearingCache(false);
-    }
-  };
-
-  const handleClearPlaybackCache = async () => {
-    if (!config) return;
-    setIsClearingPlaybackCache(true);
-    try {
-      await clearPlaybackCache();
-      setPlaybackCacheStats({ entryCount: 0, cacheDir: playbackCacheStats?.cacheDir ?? null });
-      toast.success(translate(config.web.app.locale, "settings.playbackCache.clearSuccess"));
-    } catch (error) {
-      console.error("[Settings] failed to clear playback cache:", error);
-      toast.error(translate(config.web.app.locale, "settings.playbackCache.clearFailed"));
-    } finally {
-      setIsClearingPlaybackCache(false);
-    }
-  };
-
   const hasChanges = Boolean(
     config && originalConfig && JSON.stringify(config) !== JSON.stringify(originalConfig),
   );
@@ -417,16 +430,16 @@ export function useSettingsState() {
     hasChanges,
     isModalOpen,
     isSaving,
-    isClearingCache,
     requiresRestart,
     setIsModalOpen,
     handleWebChange,
     handleDesktopChange,
     handleConfirmSave,
-    handleClearCache,
-    isClearingPlaybackCache,
-    playbackCacheStats,
-    handleClearPlaybackCache,
+    cacheStats,
+    cachePreferences: config?.desktop
+      ? { page: config.desktop.cache.page, playback: config.desktop.cache.playback }
+      : cachePreferences,
+    handleCachePreferencesChange,
     backendPingResult,
     isPingingBackend,
     handlePingBackend,

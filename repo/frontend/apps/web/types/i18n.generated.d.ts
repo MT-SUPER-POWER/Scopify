@@ -395,6 +395,12 @@ export interface TranslateFn {
    */
   (key: "settings.section.cache", params?: TranslationParams): string;
   /**
+   * zh-CN: 通用设置
+   * zh-TW: 通用設定
+   * en-US: General Settings
+   */
+  (key: "settings.section.generalCache", params?: TranslationParams): string;
+  /**
    * zh-CN: 客户端更新
    * zh-TW: 客戶端更新
    * en-US: Client Updates
@@ -1198,6 +1204,18 @@ export interface TranslateFn {
    * en-US: Default cache directory
    */
   (key: "settings.cache.dir.placeholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浏览
+   * zh-TW: 瀏覽
+   * en-US: Browse
+   */
+  (key: "settings.cache.dir.browse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 数据占用
+   * zh-TW: 資料占用
+   * en-US: Data Usage
+   */
+  (key: "settings.cache.usage", params?: TranslationParams): string;
   /**
    * zh-CN: 已使用 {{used}} / {{limit}}
    * zh-TW: 已使用 {{used}} / {{limit}}

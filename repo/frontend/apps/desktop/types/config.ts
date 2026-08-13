@@ -22,11 +22,20 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     proxyUrl: "",
   },
   cache: {
-    enabled: true,
     dir: "",
-    maxSizeMB: 256,
-    pageTtlMinutes: 360,
-    searchTtlMinutes: 30,
+    page: {
+      enabled: true,
+      maxSizeMB: 256,
+      ttlMinutes: 360,
+      searchTtlMinutes: 30,
+    },
+    playback: {
+      enabled: true,
+      maxSizeMB: 64,
+      maxEntries: 100,
+      urlTtlMinutes: 30,
+      lyricTtlMinutes: 1440,
+    },
   },
   discord: {
     enabled: true,
@@ -64,6 +73,31 @@ function trimmedString(defaultValue: string, allowEmpty = false) {
     const trimmed = value.trim();
     return allowEmpty || trimmed ? trimmed : undefined;
   }, z.string().default(defaultValue));
+}
+
+function normalizeCacheConfig(value: unknown): Record<string, unknown> {
+  const cache = toRecord(value);
+  const page = toRecord(cache.page);
+  const playback = toRecord(cache.playback);
+
+  // Flat cache keys were used through v1. Keep reading them so existing YAML files
+  // become the new scoped configuration on their next save.
+  return {
+    dir: cache.dir,
+    page: {
+      enabled: page.enabled ?? cache.enabled,
+      maxSizeMB: page.maxSizeMB ?? cache.maxSizeMB,
+      ttlMinutes: page.ttlMinutes ?? cache.pageTtlMinutes,
+      searchTtlMinutes: page.searchTtlMinutes ?? cache.searchTtlMinutes,
+    },
+    playback: {
+      enabled: playback.enabled ?? cache.enabled,
+      maxSizeMB: playback.maxSizeMB,
+      maxEntries: playback.maxEntries,
+      urlTtlMinutes: playback.urlTtlMinutes,
+      lyricTtlMinutes: playback.lyricTtlMinutes,
+    },
+  };
 }
 
 export const desktopHostConfigSchema = z.preprocess(
@@ -107,13 +141,34 @@ export const desktopHostConfigSchema = z.preprocess(
         }),
       ),
       cache: z.preprocess(
-        toRecord,
+        normalizeCacheConfig,
         z.object({
-          enabled: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.cache.enabled),
           dir: trimmedString(DEFAULT_DESKTOP_HOST_CONFIG.cache.dir, true),
-          maxSizeMB: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.maxSizeMB),
-          pageTtlMinutes: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.pageTtlMinutes),
-          searchTtlMinutes: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.searchTtlMinutes),
+          page: z.preprocess(
+            toRecord,
+            z.object({
+              enabled: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.cache.page.enabled),
+              maxSizeMB: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.page.maxSizeMB),
+              ttlMinutes: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.page.ttlMinutes),
+              searchTtlMinutes: positiveNumber(
+                DEFAULT_DESKTOP_HOST_CONFIG.cache.page.searchTtlMinutes,
+              ),
+            }),
+          ),
+          playback: z.preprocess(
+            toRecord,
+            z.object({
+              enabled: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.cache.playback.enabled),
+              maxSizeMB: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.playback.maxSizeMB),
+              maxEntries: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.cache.playback.maxEntries),
+              urlTtlMinutes: positiveNumber(
+                DEFAULT_DESKTOP_HOST_CONFIG.cache.playback.urlTtlMinutes,
+              ),
+              lyricTtlMinutes: positiveNumber(
+                DEFAULT_DESKTOP_HOST_CONFIG.cache.playback.lyricTtlMinutes,
+              ),
+            }),
+          ),
         }),
       ),
       discord: z.preprocess(

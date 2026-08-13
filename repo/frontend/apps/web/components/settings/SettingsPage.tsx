@@ -72,11 +72,9 @@ const SettingsPage = () => {
             <StorageSettingsTab
               config={settings.config.desktop}
               onChange={settings.handleDesktopChange}
-              playbackCacheStats={settings.playbackCacheStats}
-              isClearingPlaybackCache={settings.isClearingPlaybackCache}
-              onClearPlaybackCache={settings.handleClearPlaybackCache}
-              isClearingCache={settings.isClearingCache}
-              onClearCache={settings.handleClearCache}
+              cacheStats={settings.cacheStats}
+              cachePreferences={settings.cachePreferences}
+              onCachePreferencesChange={settings.handleCachePreferencesChange}
             />
           </TabsContent>
           {settings.config.desktop ? (

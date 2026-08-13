@@ -142,6 +142,10 @@ const playbackHostAPI: PlaybackHostBridge = {
       return false;
     }
   },
+  getPlaybackCache: (key) => ipcRenderer.invoke("playback-host-cache:get", key),
+  setPlaybackCache: (key, value, ttlMs, category) =>
+    ipcRenderer.invoke("playback-host-cache:set", key, value, ttlMs, category),
+  deletePlaybackCache: (key) => ipcRenderer.invoke("playback-host-cache:delete", key),
 };
 
 try {

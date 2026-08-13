@@ -13,11 +13,18 @@ network:
   proxyMode: system
   proxyUrl: ""
 cache:
-  enabled: true
   dir: ""
-  maxSizeMB: 256
-  pageTtlMinutes: 360
-  searchTtlMinutes: 30
+  page:
+    enabled: true
+    maxSizeMB: 256
+    ttlMinutes: 360
+    searchTtlMinutes: 30
+  playback:
+    enabled: true
+    maxSizeMB: 64
+    maxEntries: 100
+    urlTtlMinutes: 30
+    lyricTtlMinutes: 1440
 discord:
   enabled: true
   applicationId: "1536959813114658836"

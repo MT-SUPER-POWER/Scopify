@@ -82,6 +82,7 @@ export interface RuntimeCache {
 export interface RuntimeConfiguration {
   loadHostConfig(): Promise<DesktopHostConfig | null>;
   saveHostConfig(config: DesktopHostConfig): Promise<DesktopHostConfig | null>;
+  selectDirectory(defaultPath?: string): Promise<string | null>;
 }
 
 export interface RuntimeDesktopLyrics {

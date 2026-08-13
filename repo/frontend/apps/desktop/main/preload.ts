@@ -184,6 +184,8 @@ const electronAPI: DesktopBridge = {
   sendAppCloseAction: (action: "minimize" | "exit" | "cancel") => {
     ipcRenderer.send("app-close-action", action);
   },
+  selectDirectory: (defaultPath?: string) =>
+    ipcRenderer.invoke("dialog:select-directory", defaultPath),
   getHostConfig: () => ipcRenderer.invoke("config:get-host"),
   getLogDirectory: () => ipcRenderer.invoke("logger:get-directory"),
   getDesktopIconVisibility: () => ipcRenderer.invoke("desktop-icons:get-visibility"),

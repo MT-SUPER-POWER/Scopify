@@ -66,6 +66,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
     config: {
       loadHostConfig: () => bridge.getHostConfig(),
       saveHostConfig: (config) => bridge.updateHostConfig(config),
+      selectDirectory: (defaultPath) => bridge.selectDirectory(defaultPath),
     },
     desktopIcons: {
       getVisibility: () => bridge.getDesktopIconVisibility(),
