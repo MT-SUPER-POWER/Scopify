@@ -1181,27 +1181,15 @@ export interface TranslateFn {
    */
   (key: "settings.updater.state.error", params?: TranslationParams): string;
   /**
-   * zh-CN: 启用页面缓存
-   * zh-TW: 啟用頁面快取
-   * en-US: Enable Page Cache
-   */
-  (key: "settings.cache.enabled.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 缓存歌单、专辑、歌手和搜索页面，加快再次打开速度。
-   * zh-TW: 快取歌單、專輯、歌手和搜尋頁面，加快再次開啟速度。
-   * en-US: Cache playlist, album, artist, and search pages so they reopen faster.
-   */
-  (key: "settings.cache.enabled.sublabel", params?: TranslationParams): string;
-  /**
    * zh-CN: 缓存目录
    * zh-TW: 快取目錄
    * en-US: Cache Directory
    */
   (key: "settings.cache.dir.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 留空时使用系统默认应用数据目录。
-   * zh-TW: 留空時使用系統預設應用資料目錄。
-   * en-US: Leave empty to use the default app data directory.
+   * zh-CN: 留空时使用系统默认缓存目录。
+   * zh-TW: 留空時使用系統預設快取目錄。
+   * en-US: Leave empty to use the default cache directory.
    */
   (key: "settings.cache.dir.sublabel", params?: TranslationParams): string;
   /**
@@ -1211,125 +1199,371 @@ export interface TranslateFn {
    */
   (key: "settings.cache.dir.placeholder", params?: TranslationParams): string;
   /**
-   * zh-CN: 最大缓存 (MB)
-   * zh-TW: 最大快取 (MB)
-   * en-US: Max Cache (MB)
+   * zh-CN: 已使用 {{used}} / {{limit}}
+   * zh-TW: 已使用 {{used}} / {{limit}}
+   * en-US: {{used}} used / {{limit}}
    */
-  (key: "settings.cache.maxSize.label", params?: TranslationParams): string;
+  (key: "settings.cache.summary.usage", params?: TranslationParams): string;
   /**
-   * zh-CN: 超过上限时会优先清理较旧的缓存文件。
-   * zh-TW: 超過上限時會優先清理較舊的快取檔案。
-   * en-US: Older cache files are removed first when the limit is reached.
+   * zh-CN: 清理缓存
+   * zh-TW: 清理快取
+   * en-US: Clear cache
    */
-  (key: "settings.cache.maxSize.sublabel", params?: TranslationParams): string;
+  (key: "settings.cache.manage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高级设置
+   * zh-TW: 進階設定
+   * en-US: Advanced settings
+   */
+  (key: "settings.cache.advanced", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存设置
+   * zh-TW: 快取設定
+   * en-US: Cache settings
+   */
+  (key: "settings.cache.advancedSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放数据缓存包括临时播放地址和歌词，不包含音频文件。
+   * zh-TW: 播放資料快取包含臨時播放位址與歌詞，不包含音訊檔案。
+   * en-US: Playback data cache includes temporary playback URLs and lyrics, not audio files.
+   */
+  (key: "settings.cache.playbackExplanation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 页面缓存
+   * zh-TW: 頁面快取
+   * en-US: Page Cache
+   */
+  (key: "settings.cache.scope.page.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存歌单、专辑、歌手和搜索内容，加快再次打开速度。
+   * zh-TW: 快取歌單、專輯、歌手和搜尋內容，加快再次開啟速度。
+   * en-US: Caches playlist, album, artist, and search data so pages reopen faster.
+   */
+  (key: "settings.cache.scope.page.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用页面缓存
+   * zh-TW: 啟用頁面快取
+   * en-US: Enable page cache
+   */
+  (key: "settings.cache.scope.page.enabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 页面缓存上限 (MB)
+   * zh-TW: 頁面快取上限 (MB)
+   * en-US: Page cache limit (MB)
+   */
+  (key: "settings.cache.scope.page.limit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 超过上限时优先移除较旧的页面缓存。
+   * zh-TW: 超過上限時優先移除較舊的頁面快取。
+   * en-US: Older page cache data is removed when this limit is reached.
+   */
+  (key: "settings.cache.scope.page.limitDescription", params?: TranslationParams): string;
   /**
    * zh-CN: 页面缓存时间 (分钟)
    * zh-TW: 頁面快取時間 (分鐘)
-   * en-US: Page Cache Time (minutes)
+   * en-US: Page cache time (minutes)
    */
-  (key: "settings.cache.pageTtl.label", params?: TranslationParams): string;
+  (key: "settings.cache.scope.page.ttl", params?: TranslationParams): string;
   /**
    * zh-CN: 歌单、专辑和歌手页面的缓存有效期。
    * zh-TW: 歌單、專輯和歌手頁面的快取有效期。
-   * en-US: Validity for playlist, album, and artist page cache.
+   * en-US: How long playlist, album, and artist data stays cached.
    */
-  (key: "settings.cache.pageTtl.sublabel", params?: TranslationParams): string;
+  (key: "settings.cache.scope.page.ttlDescription", params?: TranslationParams): string;
   /**
    * zh-CN: 搜索缓存时间 (分钟)
    * zh-TW: 搜尋快取時間 (分鐘)
-   * en-US: Search Cache Time (minutes)
+   * en-US: Search cache time (minutes)
    */
-  (key: "settings.cache.searchTtl.label", params?: TranslationParams): string;
+  (key: "settings.cache.scope.page.searchTtl", params?: TranslationParams): string;
   /**
-   * zh-CN: 搜索结果变化更快，因此建议保持较短。
-   * zh-TW: 搜尋結果變化更快，因此建議保持較短。
-   * en-US: Search changes faster, so a shorter cache time is recommended.
+   * zh-CN: 搜索结果变化更快，建议使用较短期限。
+   * zh-TW: 搜尋結果變化更快，建議使用較短期限。
+   * en-US: Search results change faster, so a shorter time is recommended.
    */
-  (key: "settings.cache.searchTtl.sublabel", params?: TranslationParams): string;
+  (key: "settings.cache.scope.page.searchTtlDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放数据缓存
+   * zh-TW: 播放資料快取
+   * en-US: Playback Data Cache
+   */
+  (key: "settings.cache.scope.playback.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 缓存临时播放地址与歌词，不包含音频文件。
+   * zh-TW: 快取臨時播放位址與歌詞，不包含音訊檔案。
+   * en-US: Caches temporary playback URLs and lyrics, not audio files.
+   */
+  (key: "settings.cache.scope.playback.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用播放数据缓存
+   * zh-TW: 啟用播放資料快取
+   * en-US: Enable playback data cache
+   */
+  (key: "settings.cache.scope.playback.enabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放缓存上限 (MB)
+   * zh-TW: 播放快取上限 (MB)
+   * en-US: Playback cache limit (MB)
+   */
+  (key: "settings.cache.scope.playback.limit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 超过上限时优先移除较旧的播放数据。
+   * zh-TW: 超過上限時優先移除較舊的播放資料。
+   * en-US: Older playback data is removed when this limit is reached.
+   */
+  (key: "settings.cache.scope.playback.limitDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最多缓存歌曲数
+   * zh-TW: 最多快取歌曲數
+   * en-US: Maximum cached songs
+   */
+  (key: "settings.cache.scope.playback.maxEntries", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放地址和在线歌词最多保留的歌曲数量。
+   * zh-TW: 播放位址和線上歌詞最多保留的歌曲數量。
+   * en-US: Maximum number of songs with playback URLs and online lyrics.
+   */
+  (key: "settings.cache.scope.playback.maxEntriesDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放地址缓存时间 (分钟)
+   * zh-TW: 播放位址快取時間 (分鐘)
+   * en-US: Playback URL cache time (minutes)
+   */
+  (key: "settings.cache.scope.playback.urlTtl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 临时播放地址的有效期。
+   * zh-TW: 臨時播放位址的有效期。
+   * en-US: How long temporary playback URLs stay valid.
+   */
+  (key: "settings.cache.scope.playback.urlTtlDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在线歌词缓存时间 (分钟)
+   * zh-TW: 線上歌詞快取時間 (分鐘)
+   * en-US: Online lyric cache time (minutes)
+   */
+  (key: "settings.cache.scope.playback.lyricTtl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在线歌词的缓存有效期。
+   * zh-TW: 線上歌詞的快取有效期。
+   * en-US: How long online lyrics stay cached.
+   */
+  (key: "settings.cache.scope.playback.lyricTtlDescription", params?: TranslationParams): string;
   /**
    * zh-CN: 清理缓存
    * zh-TW: 清理快取
    * en-US: Clear Cache
    */
-  (key: "settings.cache.clear.label", params?: TranslationParams): string;
+  (key: "settings.cache.cleanup.title", params?: TranslationParams): string;
   /**
-   * zh-CN: 删除已保存的页面和歌曲缓存。
-   * zh-TW: 刪除已儲存的頁面和歌曲快取。
-   * en-US: Delete saved page and song cache.
+   * zh-CN: 选择要删除的数据类别；清理后无法恢复。
+   * zh-TW: 選擇要刪除的資料類別；清理後無法復原。
+   * en-US: Choose data categories to delete. Cleared data cannot be recovered.
    */
-  (key: "settings.cache.clear.sublabel", params?: TranslationParams): string;
+  (key: "settings.cache.cleanup.subtitle", params?: TranslationParams): string;
   /**
-   * zh-CN: 清理
-   * zh-TW: 清理
-   * en-US: Clear
+   * zh-CN: 返回存储设置
+   * zh-TW: 返回儲存空間設定
+   * en-US: Back to storage settings
    */
-  (key: "settings.cache.clear.button", params?: TranslationParams): string;
+  (key: "settings.cache.cleanup.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新
+   * zh-TW: 重新整理
+   * en-US: Refresh
+   */
+  (key: "settings.cache.cleanup.refresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 共 {{count}} 项 · {{size}} · 已选 {{selectedSize}}
+   * zh-TW: 共 {{count}} 項 · {{size}} · 已選 {{selectedSize}}
+   * en-US: {{count}} items · {{size}} · {{selectedSize}} selected
+   */
+  (key: "settings.cache.cleanup.scopeSummary", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 项 · {{size}}
+   * zh-TW: {{count}} 項 · {{size}}
+   * en-US: {{count}} items · {{size}}
+   */
+  (key: "settings.cache.cleanup.categorySummary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已选择 {{count}} 项，预计释放 {{size}}
+   * zh-TW: 已選擇 {{count}} 項，預計釋放 {{size}}
+   * en-US: {{count}} items selected, freeing {{size}}
+   */
+  (key: "settings.cache.cleanup.selection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清理所选
+   * zh-TW: 清理所選
+   * en-US: Clear selected
+   */
+  (key: "settings.cache.cleanup.action", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确认清理缓存
+   * zh-TW: 確認清理快取
+   * en-US: Confirm cache cleanup
+   */
+  (key: "settings.cache.cleanup.confirm.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 将删除 {{count}} 项缓存数据，预计释放 {{size}}。
+   * zh-TW: 將刪除 {{count}} 項快取資料，預計釋放 {{size}}。
+   * en-US: This will delete {{count}} cached items and free {{size}}.
+   */
+  (key: "settings.cache.cleanup.confirm.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选内容包含手动匹配、导入歌词或歌词来源选择，删除后无法恢复。
+   * zh-TW: 所選內容包含手動匹配、匯入歌詞或歌詞來源選擇，刪除後無法復原。
+   * en-US: The selection includes matched lyrics, imported lyrics, or lyric source choices. They cannot be recovered after deletion.
+   */
+  (key: "settings.cache.cleanup.confirm.lyricWarning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确认清理
+   * zh-TW: 確認清理
+   * en-US: Clear cache
+   */
+  (key: "settings.cache.cleanup.confirm.action", params?: TranslationParams): string;
   /**
    * zh-CN: 清理中...
    * zh-TW: 清理中...
    * en-US: Clearing...
    */
-  (key: "settings.cache.clear.clearing", params?: TranslationParams): string;
+  (key: "settings.cache.cleanup.confirm.clearing", params?: TranslationParams): string;
   /**
-   * zh-CN: 缓存已清理
-   * zh-TW: 快取已清理
-   * en-US: Cache cleared
+   * zh-CN: 已清理 {{count}} 项，释放 {{size}}
+   * zh-TW: 已清理 {{count}} 項，釋放 {{size}}
+   * en-US: Cleared {{count}} items and freed {{size}}
    */
-  (key: "settings.cache.clearSuccess", params?: TranslationParams): string;
+  (key: "settings.cache.cleanup.success", params?: TranslationParams): string;
   /**
-   * zh-CN: 清理缓存失败
-   * zh-TW: 清理快取失敗
-   * en-US: Failed to clear cache
+   * zh-CN: 部分缓存未能清理，请重试。
+   * zh-TW: 部分快取無法清理，請重試。
+   * en-US: Some cache data could not be cleared. Please try again.
    */
-  (key: "settings.cache.clearFailed", params?: TranslationParams): string;
+  (key: "settings.cache.cleanup.partialFailure", params?: TranslationParams): string;
   /**
-   * zh-CN: 播放缓存
-   * zh-TW: 播放快取
-   * en-US: Playback Cache
+   * zh-CN: 专辑页面
+   * zh-TW: 專輯頁面
+   * en-US: Album pages
    */
-  (key: "settings.playbackCache.section", params?: TranslationParams): string;
+  (key: "settings.cache.category.album", params?: TranslationParams): string;
   /**
-   * zh-CN: 已缓存歌曲
-   * zh-TW: 已快取歌曲
-   * en-US: Cached Songs
+   * zh-CN: 歌手页面
+   * zh-TW: 歌手頁面
+   * en-US: Artist pages
    */
-  (key: "settings.playbackCache.count", params?: TranslationParams): string;
+  (key: "settings.cache.category.artist", params?: TranslationParams): string;
   /**
-   * zh-CN: {count} 首
-   * zh-TW: {count} 首
-   * en-US: {count} songs
+   * zh-CN: 每日推荐
+   * zh-TW: 每日推薦
+   * en-US: Daily recommendations
    */
-  (key: "settings.playbackCache.countValue", params?: TranslationParams): string;
+  (key: "settings.cache.category.daily", params?: TranslationParams): string;
   /**
-   * zh-CN: 清除缓存
-   * zh-TW: 清除快取
-   * en-US: Clear Cache
+   * zh-CN: 歌单页面
+   * zh-TW: 歌單頁面
+   * en-US: Playlist pages
    */
-  (key: "settings.playbackCache.clearButton", params?: TranslationParams): string;
+  (key: "settings.cache.category.playlist", params?: TranslationParams): string;
   /**
-   * zh-CN: 删除本地缓存的音乐音频文件，释放存储空间。
-   * zh-TW: 刪除本機快取的音樂音訊檔案，釋放儲存空間。
-   * en-US: Delete locally cached audio files to free up disk space.
+   * zh-CN: 搜索结果
+   * zh-TW: 搜尋結果
+   * en-US: Search results
    */
-  (key: "settings.playbackCache.clearSublabel", params?: TranslationParams): string;
+  (key: "settings.cache.category.search", params?: TranslationParams): string;
   /**
-   * zh-CN: 清除中...
-   * zh-TW: 清除中...
-   * en-US: Clearing...
+   * zh-CN: 临时播放地址
+   * zh-TW: 臨時播放位址
+   * en-US: Temporary playback URLs
    */
-  (key: "settings.playbackCache.clearing", params?: TranslationParams): string;
+  (key: "settings.cache.category.play-url", params?: TranslationParams): string;
   /**
-   * zh-CN: 播放缓存已清除
-   * zh-TW: 播放快取已清除
-   * en-US: Playback cache cleared
+   * zh-CN: 在线歌词
+   * zh-TW: 線上歌詞
+   * en-US: Online lyrics
    */
-  (key: "settings.playbackCache.clearSuccess", params?: TranslationParams): string;
+  (key: "settings.cache.category.online-lyric", params?: TranslationParams): string;
   /**
-   * zh-CN: 清除播放缓存失败
-   * zh-TW: 清除播放快取失敗
-   * en-US: Failed to clear playback cache
+   * zh-CN: 手动匹配歌词
+   * zh-TW: 手動匹配歌詞
+   * en-US: Manually matched lyrics
    */
-  (key: "settings.playbackCache.clearFailed", params?: TranslationParams): string;
+  (key: "settings.cache.category.lyric-match", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入歌词
+   * zh-TW: 匯入歌詞
+   * en-US: Imported lyrics
+   */
+  (key: "settings.cache.category.imported-lyric", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词来源选择
+   * zh-TW: 歌詞來源選擇
+   * en-US: Lyric source choices
+   */
+  (key: "settings.cache.category.lyric-source", params?: TranslationParams): string;
+  /**
+   * zh-CN: 其他缓存数据
+   * zh-TW: 其他快取資料
+   * en-US: Other cached data
+   */
+  (key: "settings.cache.category.other", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面歌词
+   * zh-TW: 桌面歌詞
+   * en-US: Desktop Lyrics
+   */
+  (key: "settings.section.desktopLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面歌词测试
+   * zh-TW: 桌面歌詞測試
+   * en-US: Desktop Lyrics Test
+   */
+  (key: "settings.desktopLyrics.test.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 测试独立桌面歌词悬浮窗口的开/关显示与悬浮功能。
+   * zh-TW: 測試獨立桌面歌詞懸浮視窗的開/關顯示與懸浮功能。
+   * en-US: Test opening or closing the standalone floating desktop lyrics window.
+   */
+  (key: "settings.desktopLyrics.test.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开/关桌面歌词
+   * zh-TW: 開/關桌面歌詞
+   * en-US: Toggle Desktop Lyrics
+   */
+  (key: "settings.desktopLyrics.test.button", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保持窗口置顶
+   * zh-TW: 保持視窗置頂
+   * en-US: Always on Top
+   */
+  (key: "settings.desktopLyrics.alwaysOnTop.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使桌面歌词窗口始终悬浮在其他应用程序窗口上方。
+   * zh-TW: 使桌面歌詞視窗始終懸浮於其他應用程式視窗上方。
+   * en-US: Keep the desktop lyrics window above all other application windows.
+   */
+  (key: "settings.desktopLyrics.alwaysOnTop.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 鼠标穿透
+   * zh-TW: 滑鼠穿透
+   * en-US: Mouse Click-through
+   */
+  (key: "settings.desktopLyrics.clickThrough.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启后鼠标点击可直接穿透歌词窗口，不影响下方界面操作。
+   * zh-TW: 開啟後滑鼠點擊可直接穿透歌詞視窗，不影響下方介面操作。
+   * en-US: Allow mouse clicks to pass through the desktop lyrics window to applications below.
+   */
+  (key: "settings.desktopLyrics.clickThrough.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏任务栏图标
+   * zh-TW: 隱藏工作列圖示
+   * en-US: Skip Taskbar
+   */
+  (key: "settings.desktopLyrics.skipTaskbar.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不在操作系统任务栏中单独显示桌面歌词窗口图标。
+   * zh-TW: 不在作業系統工作列中單獨顯示桌面歌詞視窗圖示。
+   * en-US: Do not show a separate icon for the lyrics window on the OS taskbar.
+   */
+  (key: "settings.desktopLyrics.skipTaskbar.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 关闭 Scopify
    * zh-TW: 關閉 Scopify

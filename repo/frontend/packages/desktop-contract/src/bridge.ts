@@ -17,8 +17,14 @@ import type { DesktopHostConfig } from "./config";
 import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "./discord";
 import type { PlaybackTransportPayload, PlaybackTransportRole } from "./playback";
 import type { PlaybackHostClientCommand, PlaybackHostHostMessage } from "./playbackHostControl";
+import type {
+  CacheCategory,
+  CacheScope,
+  ClearDesktopCacheRequest,
+  DesktopCacheStats,
+} from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 14;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 15;
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
@@ -56,8 +62,11 @@ export type Unsubscribe = () => void;
 
 export interface DesktopBridge<TLyrics = unknown> {
   checkForUpdates(): Promise<AppUpdateState>;
+  clearCache(request: ClearDesktopCacheRequest): Promise<DesktopCacheStats>;
   clearPageCache(): Promise<PageCacheStats>;
   closeDesktopLyric(): Promise<boolean>;
+  openDesktopLyric(): Promise<boolean>;
+  toggleDesktopLyric(): Promise<boolean>;
   closeDesktopPlaybackController(): Promise<boolean>;
   connectAudioFeatureTransport(
     role: AudioFeatureTransportRole,
@@ -78,6 +87,7 @@ export interface DesktopBridge<TLyrics = unknown> {
     onClose: () => void,
   ): Unsubscribe;
   deletePageCache(key: string): Promise<boolean>;
+  deleteCache(scope: CacheScope, key: string): Promise<boolean>;
   downloadUpdate(): Promise<AppUpdateState>;
   enterFullScreen(): void;
   exitApp(): void;
@@ -91,6 +101,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   getDesktopPlaybackWallpaperModel(): Promise<DesktopPlaybackWallpaperModel>;
   getPageCache<T = unknown>(key: string): Promise<T | null>;
   getPageCacheStats(): Promise<PageCacheStats>;
+  getCache<T = unknown>(scope: CacheScope, key: string): Promise<T | null>;
+  getCacheStats(): Promise<DesktopCacheStats>;
   getUpdateStatus(): Promise<AppUpdateState>;
   loginSuccess(): void;
   minimizeApp(): void;
@@ -118,6 +130,13 @@ export interface DesktopBridge<TLyrics = unknown> {
   setCookie(cookie: string, backendOrigin: string): Promise<boolean>;
   setDesktopIconVisibility(visible: boolean): Promise<DesktopIconVisibilityState>;
   setPageCache<T = unknown>(key: string, value: T, ttlMs: number): Promise<boolean>;
+  setCache<T = unknown>(
+    scope: CacheScope,
+    key: string,
+    value: T,
+    ttlMs: number,
+    category?: CacheCategory,
+  ): Promise<boolean>;
   setPlayerPlaying(isPlaying: boolean): void;
   sendPlaybackTransportPayload(payload: PlaybackTransportPayload<TLyrics>): boolean;
   /** Sends a versioned Main→Host command; the Host owns every queue mutation. */

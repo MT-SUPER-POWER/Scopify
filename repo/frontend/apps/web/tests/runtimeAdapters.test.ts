@@ -17,6 +17,7 @@ import {
 } from "@scopify/desktop-contract";
 
 import { createBrowserRuntime } from "@/lib/runtime/adapters/browser";
+import { MemoryBrowserCacheStorage } from "@/lib/cache/browserCacheStorage";
 import { createElectronRuntime } from "@/lib/runtime/adapters/electron";
 import { createPlaybackHostRuntime } from "@/lib/runtime/adapters/playbackHost";
 import { createRuntimeForWindow } from "@/lib/runtime";
@@ -47,16 +48,34 @@ class MemoryStorage {
   }
 }
 
+class MemoryLegacyPlaybackStorage {
+  readonly deleted: string[] = [];
+  readonly values = new Map<string, unknown>();
+
+  async delete(key: string) {
+    this.deleted.push(key);
+    this.values.delete(key);
+  }
+
+  async entries(): Promise<Array<[string, unknown]>> {
+    return [...this.values] as Array<[string, unknown]>;
+  }
+}
+
 const NOOP = () => undefined;
 const UPDATE_STATE = { currentVersion: "1.1.0", status: "idle", supported: true } as const;
 const HOST_CONFIG: DesktopHostConfig = {
   app: { closeAction: 2, devTools: false, gpuAcceleration: true },
   cache: {
     dir: "",
-    enabled: true,
-    maxSizeMB: 256,
-    pageTtlMinutes: 360,
-    searchTtlMinutes: 30,
+    page: { enabled: true, maxSizeMB: 256, searchTtlMinutes: 30, ttlMinutes: 360 },
+    playback: {
+      enabled: true,
+      lyricTtlMinutes: 1440,
+      maxEntries: 100,
+      maxSizeMB: 64,
+      urlTtlMinutes: 30,
+    },
   },
   discord: { applicationId: "1536959813114658836", enabled: true },
   frontend: { devPort: 3000, host: "127.0.0.1" },
@@ -158,13 +177,37 @@ const PLAYBACK_HOST_SNAPSHOT: PlaybackHostSessionSnapshot = {
 function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): DesktopBridge<LyricData> {
   return {
     checkForUpdates: async () => UPDATE_STATE,
+    clearCache: async () => ({
+      page: {
+        categories: [],
+        dir: "cache/page",
+        enabled: true,
+        entryCount: 0,
+        maxSizeMB: 256,
+        scope: "page",
+        sizeBytes: 0,
+      },
+      playback: {
+        categories: [],
+        dir: "cache/playback",
+        enabled: true,
+        entryCount: 0,
+        maxSizeMB: 64,
+        scope: "playback",
+        sizeBytes: 0,
+      },
+      rootDir: "cache",
+    }),
     clearPageCache: async () => ({ dir: "cache", entryCount: 0, sizeBytes: 0 }),
     closeDesktopLyric: async () => true,
+    openDesktopLyric: async () => true,
+    toggleDesktopLyric: async () => true,
     closeDesktopPlaybackController: async () => true,
     connectAudioFeatureTransport: () => NOOP,
     connectPlaybackHostControl: () => NOOP,
     connectPlaybackTransport: () => NOOP,
     deletePageCache: async () => true,
+    deleteCache: async () => true,
     downloadUpdate: async () => UPDATE_STATE,
     enterFullScreen: NOOP,
     exitApp: NOOP,
@@ -197,6 +240,28 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     getDesktopIconVisibility: async () => DESKTOP_ICON_STATE,
     getDesktopPlaybackWallpaperModel: async () => WALLPAPER_MODEL,
     getPageCache: async () => null,
+    getCache: async () => null,
+    getCacheStats: async () => ({
+      page: {
+        categories: [],
+        dir: "cache/page",
+        enabled: true,
+        entryCount: 0,
+        maxSizeMB: 256,
+        scope: "page",
+        sizeBytes: 0,
+      },
+      playback: {
+        categories: [],
+        dir: "cache/playback",
+        enabled: true,
+        entryCount: 0,
+        maxSizeMB: 64,
+        scope: "playback",
+        sizeBytes: 0,
+      },
+      rootDir: "cache",
+    }),
     getPageCacheStats: async () => ({ dir: "cache", entryCount: 0, sizeBytes: 0 }),
     getUpdateStatus: async () => UPDATE_STATE,
     loginSuccess: NOOP,
@@ -229,6 +294,7 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     setCookie: async () => true,
     setDesktopIconVisibility: async (visible) => ({ supported: true, visible }),
     setPageCache: async () => true,
+    setCache: async () => true,
     setPlayerPlaying: NOOP,
     sendPlaybackHostControlPayload: () => false,
     sendPlaybackTransportPayload: () => true,
@@ -258,11 +324,14 @@ function createPlaybackHostBridge(
     connectPlaybackHostControl: () => NOOP,
     connectPlaybackTransport: () => NOOP,
     getNonce: () => "host-nonce",
+    getPlaybackCache: async () => null,
     publishAudioFeatureFrame: () => true,
     reportReady: NOOP,
     sendPlaybackHostControlPayload: () => false,
     sendPlaybackTransportPayload: () => true,
     setMediaPlaying: NOOP,
+    setPlaybackCache: async () => true,
+    deletePlaybackCache: async () => true,
     ...overrides,
   };
 }
@@ -327,6 +396,71 @@ describe("browser runtime adapter", () => {
 
     await runtime.cache.set("expired", "value", -1);
     expect(await runtime.cache.get("expired")).toBeNull();
+  });
+
+  test("migrates legacy IndexedDB playback data without overwriting current records", async () => {
+    const storage = new MemoryStorage();
+    const cacheStorage = new MemoryBrowserCacheStorage();
+    const legacyPlaybackStorage = new MemoryLegacyPlaybackStorage();
+    const now = 1_000_000;
+    const originalDateNow = Date.now;
+    Date.now = () => now;
+
+    legacyPlaybackStorage.values.set("playback-song:42", {
+      cachedAt: now - 10 * 60_000,
+      lyric: { lrc: { lyric: "legacy lyric" } },
+      lyricCachedAt: now - 5 * 60_000,
+      url: { high: "https://legacy.example/42.mp3" },
+      urlCachedAt: { high: now - 5 * 60_000 },
+    });
+    legacyPlaybackStorage.values.set("playback-lyric-override:42", { title: "matched" });
+    legacyPlaybackStorage.values.set("playback-imported-lyric:42", { content: "imported" });
+    legacyPlaybackStorage.values.set("playback-lyric-source:42", "imported");
+    await cacheStorage.set("playback", "playback-play-url:42:high", {
+      accessedAt: now,
+      category: "play-url",
+      expiresAt: now + 60_000,
+      sizeBytes: 1,
+      value: "https://current.example/42.mp3",
+    });
+
+    try {
+      const runtime = createBrowserRuntime({ cacheStorage, legacyPlaybackStorage, storage });
+
+      expect(
+        await runtime.cache.getScoped<unknown>("playback", "playback-online-lyric:42"),
+      ).toEqual({
+        lrc: { lyric: "legacy lyric" },
+      });
+      expect(await runtime.cache.getScoped<string>("playback", "playback-play-url:42:high")).toBe(
+        "https://current.example/42.mp3",
+      );
+      expect(
+        await runtime.cache.getScoped<unknown>("playback", "playback-lyric-override:42"),
+      ).toEqual({
+        title: "matched",
+      });
+      expect(
+        await runtime.cache.getScoped<unknown>("playback", "playback-imported-lyric:42"),
+      ).toEqual({
+        content: "imported",
+      });
+      expect(await runtime.cache.getScoped<string>("playback", "playback-lyric-source:42")).toBe(
+        "imported",
+      );
+      expect(legacyPlaybackStorage.values.size).toBe(0);
+      expect(storage.getItem("scopify-playback-cache-migration-v2")).toBe("complete");
+
+      await runtime.cache.statsAll();
+      expect(legacyPlaybackStorage.deleted).toEqual([
+        "playback-song:42",
+        "playback-lyric-override:42",
+        "playback-imported-lyric:42",
+        "playback-lyric-source:42",
+      ]);
+    } finally {
+      Date.now = originalDateNow;
+    }
   });
 
   test("persists the music cookie through the browser adapter", async () => {
@@ -606,6 +740,44 @@ describe("electron runtime adapter", () => {
 });
 
 describe("playback host runtime adapter", () => {
+  test("routes scoped playback cache operations through the host-only bridge", async () => {
+    const calls: string[] = [];
+    const runtime = createPlaybackHostRuntime(
+      createPlaybackHostBridge({
+        deletePlaybackCache: async (key) => {
+          calls.push(`delete:${key}`);
+          return true;
+        },
+        getPlaybackCache: async <T>(key: string): Promise<T | null> => {
+          calls.push(`get:${key}`);
+          return "https://cdn.example/track.mp3" as T;
+        },
+        setPlaybackCache: async (key, _value, _ttlMs, category) => {
+          calls.push(`set:${key}:${category}`);
+          return true;
+        },
+      }),
+    );
+
+    await runtime.cache.setScoped(
+      "playback",
+      "playback-play-url:1:high",
+      "url",
+      30_000,
+      "play-url",
+    );
+    expect(await runtime.cache.getScoped<string>("playback", "playback-play-url:1:high")).toBe(
+      "https://cdn.example/track.mp3",
+    );
+    await runtime.cache.deleteScoped("playback", "playback-play-url:1:high");
+
+    expect(calls).toEqual([
+      "set:playback-play-url:1:high:play-url",
+      "get:playback-play-url:1:high",
+      "delete:playback-play-url:1:high",
+    ]);
+  });
+
   test("composes browser, main desktop, and dedicated host renderers without widening host privileges", () => {
     expect(createRuntimeForWindow(undefined).kind).toBe("browser");
     expect(createRuntimeForWindow({ electronAPI: createBridge() }).kind).toBe("desktop");

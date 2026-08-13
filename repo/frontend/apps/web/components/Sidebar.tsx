@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { FaCompactDisc } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { useSidebarNarrow } from "@/lib/hooks/useSidebarNarrow";
@@ -21,15 +22,16 @@ function SidebarImpl() {
             isCollapsed ? "justify-center px-2 py-3" : "justify-between",
           )}
         >
-          <div
+          <Link
+            href="/"
             className={cn(
-              "flex items-center gap-3 overflow-hidden font-semibold",
+              "text-foreground hover:text-primary flex cursor-pointer items-center gap-3 overflow-hidden font-semibold transition-colors",
               isCollapsed && "gap-0",
             )}
           >
             <FaCompactDisc className={cn("size-6 shrink-0", isCollapsed && "size-8")} />
             {!isCollapsed && <span className="min-w-0 truncate text-[15px]">Scopify</span>}
-          </div>
+          </Link>
           {!isCollapsed && <SiderBarMenuMemo />}
         </header>
 

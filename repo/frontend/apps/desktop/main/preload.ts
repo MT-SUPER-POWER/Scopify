@@ -194,6 +194,12 @@ const electronAPI: DesktopBridge = {
   deletePageCache: (key) => ipcRenderer.invoke("cache:delete", key),
   clearPageCache: () => ipcRenderer.invoke("cache:clear"),
   getPageCacheStats: () => ipcRenderer.invoke("cache:get-stats"),
+  getCache: (scope, key) => ipcRenderer.invoke("cache:get-scoped", scope, key),
+  setCache: (scope, key, value, ttlMs, category) =>
+    ipcRenderer.invoke("cache:set-scoped", scope, key, value, ttlMs, category),
+  deleteCache: (scope, key) => ipcRenderer.invoke("cache:delete-scoped", scope, key),
+  getCacheStats: () => ipcRenderer.invoke("cache:get-all-stats"),
+  clearCache: (request) => ipcRenderer.invoke("cache:clear-selected", request),
   getUpdateStatus: () => ipcRenderer.invoke("updater:get-status"),
   checkForUpdates: () => ipcRenderer.invoke("updater:check"),
   downloadUpdate: () => ipcRenderer.invoke("updater:download"),
@@ -226,6 +232,8 @@ const electronAPI: DesktopBridge = {
     return () => ipcRenderer.removeListener("updater:status-changed", listener);
   },
   closeDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:close"),
+  openDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:open"),
+  toggleDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:toggle"),
   closeDesktopPlaybackController: () => ipcRenderer.invoke("desktop-playback-controller:close"),
   setDesktopPlaybackControllerLayout: (layout: DesktopPlaybackControllerLayout) =>
     ipcRenderer.invoke("desktop-playback-controller:set-layout", layout),

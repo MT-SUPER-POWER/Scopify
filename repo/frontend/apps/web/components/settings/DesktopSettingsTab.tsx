@@ -6,6 +6,7 @@ import { useLogDirectory } from "@/hooks/settings/useLogDirectory";
 import type { DesktopLogLevel } from "@scopify/desktop-contract";
 import type { DesktopSettingsTabProps } from "@/types/components/settings";
 import { AppUpdaterSection } from "./AppUpdaterSection";
+import { DesktopLyricSection } from "./DesktopLyricSection";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
 
 export function DesktopSettingsTab({
@@ -144,6 +145,7 @@ export function DesktopSettingsTab({
           }
         />
       </SettingSection>
+      <DesktopLyricSection />
       <AppUpdaterSection config={config} onChange={onChange} />
     </div>
   );

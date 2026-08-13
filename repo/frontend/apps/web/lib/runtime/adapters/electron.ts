@@ -44,6 +44,24 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
         await bridge.setPageCache(key, value, ttlMs);
       },
       stats: () => bridge.getPageCacheStats(),
+      getScoped: (scope, key) => bridge.getCache(scope, key),
+      setScoped: async (scope, key, value, ttlMs, category) => {
+        await bridge.setCache(scope, key, value, ttlMs, category);
+      },
+      deleteScoped: async (scope, key) => {
+        await bridge.deleteCache(scope, key);
+      },
+      statsAll: () => bridge.getCacheStats(),
+      clearSelected: (request) => bridge.clearCache(request),
+      getPreferences: async () => (await bridge.getHostConfig()).cache,
+      savePreferences: async (preferences) => {
+        const config = await bridge.getHostConfig();
+        const saved = await bridge.updateHostConfig({
+          ...config,
+          cache: { ...config.cache, page: preferences.page, playback: preferences.playback },
+        });
+        return saved.cache;
+      },
     },
     config: {
       loadHostConfig: () => bridge.getHostConfig(),
@@ -63,7 +81,9 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       close: () => bridge.closeDesktopLyric(),
       getPreferences: () => bridge.getDesktopLyricPreferences(),
       onCommand: (callback) => bridge.onDesktopLyricCommand(callback),
+      open: () => bridge.openDesktopLyric(),
       sendCommand: (command) => bridge.sendDesktopLyricCommand(command),
+      toggle: () => bridge.toggleDesktopLyric(),
       updatePreferences: (update) => bridge.updateDesktopLyricPreferences(update),
     },
     desktopPlaybackWallpaper: {

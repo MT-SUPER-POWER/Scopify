@@ -9,6 +9,10 @@ import type {
   DesktopHostConfig,
   DiscordPresenceSnapshot,
   DiscordPresenceStatus,
+  CacheCategory,
+  CacheScope,
+  ClearDesktopCacheRequest,
+  DesktopCacheStats,
   PageCacheStats,
   PlaybackHostClientCommand,
   PlaybackHostHostMessage,
@@ -24,6 +28,7 @@ import type {
 } from "@/types/desktopLyric";
 import type { AppUpdateState } from "@/types/updater";
 import type { LyricData } from "@/types/lyrics";
+import type { CachePreferences } from "@/types/cache";
 
 export type RuntimeUnsubscribe = () => void;
 export type RuntimeKind = "browser" | "desktop";
@@ -55,10 +60,23 @@ export interface RuntimeAudioFeature {
 
 export interface RuntimeCache {
   clear(): Promise<PageCacheStats>;
+  clearSelected(request: ClearDesktopCacheRequest): Promise<DesktopCacheStats>;
   delete(key: string): Promise<void>;
+  deleteScoped(scope: CacheScope, key: string): Promise<void>;
   get<T = unknown>(key: string): Promise<T | null>;
+  getPreferences(): Promise<CachePreferences>;
+  getScoped<T = unknown>(scope: CacheScope, key: string): Promise<T | null>;
+  savePreferences(preferences: CachePreferences): Promise<CachePreferences>;
   set<T = unknown>(key: string, value: T, ttlMs: number): Promise<void>;
+  setScoped<T = unknown>(
+    scope: CacheScope,
+    key: string,
+    value: T,
+    ttlMs: number,
+    category?: CacheCategory,
+  ): Promise<void>;
   stats(): Promise<PageCacheStats>;
+  statsAll(): Promise<DesktopCacheStats>;
 }
 
 export interface RuntimeConfiguration {
@@ -70,7 +88,9 @@ export interface RuntimeDesktopLyrics {
   close(): Promise<boolean>;
   getPreferences(): Promise<DesktopLyricPreferences | null>;
   onCommand(callback: (command: DesktopLyricCommand) => void): RuntimeUnsubscribe;
+  open(): Promise<boolean>;
   sendCommand(command: DesktopLyricCommand): void;
+  toggle(): Promise<boolean>;
   updatePreferences(update: DesktopLyricPreferencesUpdate): Promise<DesktopLyricPreferences | null>;
 }
 
