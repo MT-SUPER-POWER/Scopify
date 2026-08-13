@@ -26,10 +26,3 @@ export function isDesktopPlaybackWallpaperModelReader(
     allowed.wallpaperWindowId === senderId
   );
 }
-
-export function isDesktopPlaybackWallpaperPublisherSender(
-  senderId: number,
-  mainWindowId?: number | null,
-) {
-  return mainWindowId !== null && mainWindowId !== undefined && senderId === mainWindowId;
-}

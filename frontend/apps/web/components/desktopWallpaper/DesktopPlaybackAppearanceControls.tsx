@@ -1,6 +1,6 @@
 "use client";
 
-import { Paintbrush, Palette } from "lucide-react";
+import { Paintbrush } from "lucide-react";
 
 import { DesktopPlaybackFoliaModeControls } from "@/components/desktopWallpaper/DesktopPlaybackFoliaModeControls";
 import { DesktopPlaybackThemeControls } from "@/components/desktopWallpaper/DesktopPlaybackThemeControls";
@@ -31,18 +31,6 @@ export function DesktopPlaybackAppearanceControls({
 
   return (
     <section className="desktop-controller-scroll h-full overflow-y-auto px-4 pt-3 pb-4">
-      <div className="mb-3 flex items-start gap-3 px-1">
-        <Palette className="text-brand mt-0.5 size-4 shrink-0" />
-        <div>
-          <h2 className="text-content text-sm font-semibold">
-            {t("desktopPlaybackController.appearance")}
-          </h2>
-          <p className="text-content-muted mt-1 text-[11px] leading-4">
-            {t("desktopPlaybackController.liveSyncHint")}
-          </p>
-        </div>
-      </div>
-
       <DesktopPlaybackFoliaModeControls />
 
       <div className="desktop-controller-card mt-3 rounded-2xl p-3">

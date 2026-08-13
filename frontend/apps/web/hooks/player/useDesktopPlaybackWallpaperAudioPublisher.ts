@@ -1,57 +1,47 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-import type { DesktopPlaybackWallpaperModel } from "@scopify/desktop-contract";
+import type { PlaybackProjection } from "@scopify/desktop-contract";
 
-import { downsampleSpectrum } from "@/lib/desktopPlaybackWallpaper/playback";
+import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import {
+  createAudioFeaturePublisherConnection,
+  shouldConnectAudioFeaturePublisher,
+} from "@/lib/audioFeature/publisherConnection";
+import { AudioFeatureHostSampler } from "@/lib/audioFeature/source";
 import { runtime } from "@/lib/runtime";
-import type { LyricAudioBands } from "@/types/lyrics";
 
-const AUDIO_FRAME_INTERVAL_MS = 33;
-const MAX_SPECTRUM_BINS = 256;
+const PUBLISHER_CONNECTION_ID = "playback-host-audio-feature-publisher";
+const RECONNECT_DELAY_MS = 1_000;
 
+/**
+ * The hidden Playback Host samples its own analyser at 30fps. It neither waits
+ * for the Main Window nor consults desktop-wallpaper state, so presentation
+ * window lifecycle cannot interrupt the desktop background's feature stream.
+ */
 export function useDesktopPlaybackWallpaperAudioPublisher() {
+  const projection = usePlaybackProjection();
+  const projectionRef = useRef<PlaybackProjection>(projection);
+
+  projectionRef.current = projection;
+
   useEffect(() => {
-    if (!runtime.isDesktop) return;
+    if (!shouldConnectAudioFeaturePublisher(runtime.isDesktop, runtime.playbackHost.getNonce()))
+      return;
 
-    let active = false;
-    let modelEventReceived = false;
-    let lastPublishedAt = 0;
-    const updateModel = (model: DesktopPlaybackWallpaperModel) => {
-      active = model.status.state === "running" || model.status.state === "starting";
-    };
-    const onAudioBands = (event: Event) => {
-      if (!active) return;
-      const now = performance.now();
-      if (now - lastPublishedAt < AUDIO_FRAME_INTERVAL_MS) return;
-      lastPublishedAt = now;
-
-      const bands = (event as CustomEvent<LyricAudioBands>).detail;
-      if (!bands) return;
-      runtime.desktopPlaybackWallpaper.publishAudioFrame({
-        bass: bands.bass,
-        lowMid: bands.lowMid,
-        mid: bands.mid,
-        power: bands.power,
-        sampledAt: Date.now(),
-        spectrum: downsampleSpectrum(bands.spectrum, MAX_SPECTRUM_BINS),
-        treble: bands.treble,
-        vocal: bands.vocal,
-      });
-    };
-
-    void runtime.desktopPlaybackWallpaper.getModel().then((model) => {
-      if (!modelEventReceived) updateModel(model);
+    const sampler = new AudioFeatureHostSampler({
+      getProjection: () => projectionRef.current,
+      publish: (frame) => runtime.audioFeature.publish(frame),
     });
-    const unsubscribe = runtime.desktopPlaybackWallpaper.onModelChanged((model) => {
-      modelEventReceived = true;
-      updateModel(model);
+    const connection = createAudioFeaturePublisherConnection({
+      connectionId: PUBLISHER_CONNECTION_ID,
+      reconnectDelayMs: RECONNECT_DELAY_MS,
+      sampler,
+      transport: runtime.audioFeature,
     });
-    window.addEventListener("player-audio-bands", onAudioBands);
-    return () => {
-      unsubscribe();
-      window.removeEventListener("player-audio-bands", onAudioBands);
-    };
+
+    connection.start();
+    return () => connection.dispose();
   }, []);
 }

@@ -13,9 +13,22 @@
 
 - 统一搜索窗口支持以 `>` 前缀搜索并执行命令；`Ctrl + Shift + P` 会直接打开命令查询。
 - 命令候选按设备本地累计使用次数排序，并继续支持上下方向键和 Enter 操作。
+- 桌面端新增应用级隐藏 Playback Host：独立承载媒体元素、AudioContext、播放 Authority、队列、网易云音源/歌词解析及自动续播，主窗口隐藏、刷新或销毁不再中断播放运行时。
+- 新增版本化 Audio Feature 与 Playback Host Control MessagePort 协议，并加入 Host 会话 Checkpoint；Host 崩溃后可在有界重试中恢复完整队列、播放意图、音量和粗粒度进度，同时重新解析媒体地址。
 
 ### Fixed
 
+- 修复桌面音乐控制器错误继承 Folia 主题色的问题；控制器现在仅跟随全局 NextTheme 的明暗主题，Folia 主题切换只影响歌词渲染。
+- 移除桌面控制器 Folia 外观面板中的冗余说明、图标与标题，保留全部提示与确认功能。
+- 修复 Electron 多 preload 入口被提取为共享 chunk、导致 sandbox 窗口无法加载桥接的问题；普通窗口与 Playback Host preload 现独立构建为自包含单文件，并由生产门禁拒绝不受支持的 `require`，恢复桌面设置、Tray 与关闭退出流程。
+- 修复开发模式 React Strict Effects 重放时过早销毁 Playback Host Runtime、导致 Host 未接入播放控制与 Authority 通道的问题；点播现在可由独立 Host 正常加载并持续播放。
+- 修复 Audio Feature Broker 仅授权壁纸窗口、遗漏桌面播放控制器订阅的问题；壁纸与控制器均以各自受限的 Electron sender 身份连接，沉浸式视觉不再因授权拒绝持续重连。
+- 修复桌面主窗口直接点歌、上一首/下一首会被本地草稿或过期会话覆盖的问题；所有队列替换与切换现在都由 Playback Host 收敛，过期 Main 会话不会再抬高版本重写 Host 队列。
+- 修复 Playback Host 切歌时嵌套等待 Authority 命令、以及 React 尚未写入 `audio.src` 就判定新音源无效的问题；切歌会等待对应 URL/revision 的媒体元素就绪后播放，不再短暂加载新曲又回滚旧曲。
+- 修复 Playback Host 已解析网易云歌词却未同步到 Authority 的问题；桌面沉浸歌词、Folia 与其他 Playback Replica 现在会收到同一份规范化歌词，重复 source 确认也不会重复广播。
+- 修复非列表循环的末曲结束后仍保留播放意图的问题；Host 现在会持久化暂停快照，控制通道重连不会重播已结束歌曲；正常列表循环重播时仍会重新同步缓存歌词。
+- 修复桌面端列表点击会先发送完整队列、随后被单曲播放命令覆盖的问题；搜索、歌手等旧入口现在会把区域全部歌曲和选中索引一并交给 Playback Host，后续切歌、结束策略与歌词会基于正确队列执行。
+- 修复队首执行“上一首”回绕到队尾时未同步历史游标的问题；Playback Host 现在会将队尾作为完整的新历史状态提交，避免随后“下一首”仍按第一首历史循环。
 - 修复搜索页点播歌曲时播放栏的点赞/评论总数可能长期空白：统计请求现已按歌曲去重、自动重试并回填缓存；加载中显示轻量指示，最终失败时可直接重试并记录结构化诊断事件。
 - Windows 桌面端按下 `Alt` 不再显示原生 Electron 菜单栏。
 - 桌面端新增 Discord Rich Presence：在设置中填入 Scopify 的 Discord Application ID 并启用后，可同步当前曲目、封面、播放状态与进度。
@@ -27,10 +40,16 @@
 - 修复桌面端打包版首屏加载动画可能一闪而过的问题：启动页现在等待自身渲染完成，并在 Renderer 就绪前保持可见。
 - 修复桌面端 renderer 同步与打包脚本错误定位工作区根目录、导致正式构建在复制 renderer 后中断的问题。
 - 修复 Discord Rich Presence 将曲目名重复显示为副标题或封面说明的问题；封面说明优先显示专辑名。后端 Ping 的成功与失败结果也统一通过 Toast 提示，不再滞留在设置行内。
+- 修复主窗口收纳、隐藏或重建后桌面背景流光间断的问题：音频特征改由 Playback Host 以独立 33 ms 时钟采样，并由壁纸 Renderer 自己按 rAF 平滑、衰减；Publisher、Subscriber 与 Host Control 端口断开后都会独立重连。
+- 修复高分辨率与高 DPI 桌面上 Dithering 流光被过度放大、只能看到局部闪烁的问题；Shader 像素尺度现在会补偿实际渲染降采样比例。
+- 修复 Playback Host 接管播放后 Windows 缩略图播放状态不再更新的问题；状态上报使用仅允许当前 Host sender 的窄 IPC 能力。
 
 ### Quality
 
 - 新增 Discord Rich Presence 技术参考，收录官方 RPC、应用配置及活动字段文档。
+- 新增独立 Playback Host 与桌面壁纸运行时架构文档：结合 Lively 的 Core/播放器隔离思路，明确 Authority、队列、音频特征 latest-wins 通道、Wallpaper 生命周期、Shader 尺度及分阶段迁移方案。
+- 将桌面主窗口降为 Playback Replica 与会话命令客户端：队列游标、重复/随机、清缓存、URL/歌词加载、媒体错误恢复和音频特征发布均只有 Host 一个执行者；浏览器模式继续复用同一 Runtime seam。
+- 为 Playback Host、控制 Broker、Checkpoint、独立采样、壁纸流排序、打包入口和 Renderer 制品补齐自动化门禁；专用 preload 采用最小权限桥接并由构建脚本强制校验。
 - 优化 CodeGraph 工作流：适配 CodeGraph Auto-sync 自动增量同步特性，移除手动执行 `codegraph sync` 的规范要求与操作步骤。
 
 

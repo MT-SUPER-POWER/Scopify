@@ -126,6 +126,10 @@ export function createBrowserRuntime(
       relaunch: NOOP,
       submitCloseAction: NOOP,
     },
+    audioFeature: {
+      connect: () => NOOP,
+      publish: () => false,
+    },
     auth: {
       completeLogin: () => false,
       openLoginWindow: () => false,
@@ -201,9 +205,7 @@ export function createBrowserRuntime(
       closeController: async () => false,
       configure: async () => unsupportedDesktopPlaybackWallpaperModel(),
       getModel: async () => unsupportedDesktopPlaybackWallpaperModel(),
-      onAudioFrame: () => NOOP,
       onModelChanged: () => NOOP,
-      publishAudioFrame: NOOP,
       retry: async () => unsupportedDesktopPlaybackWallpaperModel(),
       setControllerLayout: async () => false,
       showController: async () => ({ opened: false, reason: "unsupported" }),
@@ -225,6 +227,14 @@ export function createBrowserRuntime(
     playback: {
       connect: () => NOOP,
       send: () => false,
+    },
+    playbackHost: {
+      getNonce: () => null,
+      reportReady: () => false,
+    },
+    playbackHostControl: {
+      connectClient: () => ({ close: NOOP, send: () => false }),
+      connectHost: () => ({ close: NOOP, send: () => false }),
     },
     updates: {
       check: async () => unsupportedUpdateState(),

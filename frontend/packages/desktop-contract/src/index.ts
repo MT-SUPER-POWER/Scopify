@@ -1,4 +1,5 @@
 export * from "./backend";
+export * from "./audioFeature";
 export * from "./bridge";
 export * from "./config";
 export * from "./desktopIcons";
@@ -7,5 +8,8 @@ export * from "./desktopPlaybackWallpaper";
 export * from "./discord";
 export * from "./logging";
 export * from "./playback";
+export * from "./playbackCheckpoint";
+export * from "./playbackHost";
+export * from "./playbackHostControl";
 export * from "./rendererArtifact";
 export * from "./updater";

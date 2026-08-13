@@ -12,9 +12,7 @@ import {
 import {
   isDesktopPlaybackWallpaperControlSender,
   isDesktopPlaybackWallpaperModelReader,
-  isDesktopPlaybackWallpaperPublisherSender,
 } from "@/main/module/desktopPlaybackWallpaper/authorization";
-import { isDesktopPlaybackWallpaperAudioFrame } from "@/main/module/desktopPlaybackWallpaper/ipcValidation";
 import {
   parseSystemWallpaperResult,
   shouldUseDesktopPlaybackWallpaperSystemFallback,
@@ -142,10 +140,6 @@ describe("desktop playback wallpaper capability", () => {
     expect(
       isDesktopPlaybackWallpaperModelReader(50, { ...allowed, wallpaperWindowId: 40 }),
     ).toBeFalse();
-    expect(isDesktopPlaybackWallpaperPublisherSender(10, allowed.mainWindowId)).toBeTrue();
-    expect(isDesktopPlaybackWallpaperPublisherSender(20, allowed.mainWindowId)).toBeFalse();
-    expect(isDesktopPlaybackWallpaperPublisherSender(30, allowed.mainWindowId)).toBeFalse();
-    expect(isDesktopPlaybackWallpaperPublisherSender(40, allowed.mainWindowId)).toBeFalse();
   });
 
   test("persists one atomic intent and exposes the settled driver status", async () => {
@@ -237,33 +231,6 @@ describe("desktop playback wallpaper capability", () => {
 
     await expect(capability.configure({ enabled: true })).rejects.toThrow("disk full");
     expect(capability.getModel().status).toEqual({ reason: "disabled", state: "inactive" });
-  });
-});
-
-describe("desktop playback wallpaper feed validation", () => {
-  test("accepts a bounded finite audio frame and rejects malformed spectrum data", () => {
-    const frame = {
-      bass: 1,
-      lowMid: 2,
-      mid: 3,
-      power: 4,
-      sampledAt: 5,
-      spectrum: [0, 64, 255],
-      treble: 6,
-      vocal: 7,
-    };
-
-    expect(isDesktopPlaybackWallpaperAudioFrame(frame)).toBeTrue();
-    expect(
-      isDesktopPlaybackWallpaperAudioFrame({ ...frame, spectrum: [0, Number.NaN] }),
-    ).toBeFalse();
-    expect(isDesktopPlaybackWallpaperAudioFrame({ ...frame, power: 256 })).toBeFalse();
-    expect(
-      isDesktopPlaybackWallpaperAudioFrame({
-        ...frame,
-        spectrum: Array.from({ length: 2_049 }, () => 0),
-      }),
-    ).toBeFalse();
   });
 });
 

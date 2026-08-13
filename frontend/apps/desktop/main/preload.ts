@@ -8,17 +8,34 @@ import type {
   DesktopHostConfig,
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
-  DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperPreferencesUpdate,
+  AudioFeatureAck,
+  AudioFeatureFrameV1,
+  AudioFeatureTransportRole,
   PlaybackTransportPayload,
   PlaybackTransportRole,
 } from "@scopify/desktop-contract";
+import { createPlaybackHostControlPreloadTransport } from "./preloadPlaybackHostControl";
 
 type ElectronRendererMessagePort = MessagePort & {
   onclose: ((event: Event) => void) | null;
 };
 
 let playbackTransportPort: ElectronRendererMessagePort | null = null;
+let audioFeatureTransportPort: ElectronRendererMessagePort | null = null;
+
+const playbackHostControlTransport = createPlaybackHostControlPreloadTransport("client", {
+  createChannel: () => {
+    const channel = new MessageChannel();
+    return {
+      port1: channel.port1 as ElectronRendererMessagePort,
+      port2: channel.port2,
+    };
+  },
+  connectPort: (connectionId, role, port) => {
+    ipcRenderer.postMessage("playback-host-control:connect", { connectionId, role }, [port]);
+  },
+});
 
 function closePlaybackTransportPort() {
   const port = playbackTransportPort;
@@ -30,7 +47,63 @@ function closePlaybackTransportPort() {
   port.close();
 }
 
+function closeAudioFeatureTransportPort() {
+  const port = audioFeatureTransportPort;
+  audioFeatureTransportPort = null;
+  if (!port) return;
+  port.onmessage = null;
+  port.onmessageerror = null;
+  port.onclose = null;
+  port.close();
+}
+
 const electronAPI: DesktopBridge = {
+  connectAudioFeatureTransport: (
+    role: AudioFeatureTransportRole,
+    connectionId: string,
+    onFrame: (frame: AudioFeatureFrameV1) => void,
+    onClose: () => void,
+  ) => {
+    closeAudioFeatureTransportPort();
+    const channel = new MessageChannel();
+    const port = channel.port1 as ElectronRendererMessagePort;
+    audioFeatureTransportPort = port;
+    port.onmessage = (event) => {
+      if (role !== "subscriber") return;
+      const frame = event.data as AudioFeatureFrameV1;
+      try {
+        onFrame(frame);
+      } finally {
+        try {
+          port.postMessage({
+            sequence: frame.sequence,
+            streamId: frame.streamId,
+            type: "audio-feature-ack",
+          } satisfies AudioFeatureAck);
+        } catch {
+          // The main process owns transport failure handling; do not fall back to IPC.
+        }
+      }
+    };
+    port.onmessageerror = () => {
+      if (audioFeatureTransportPort !== port) return;
+      closeAudioFeatureTransportPort();
+      onClose();
+    };
+    port.onclose = () => {
+      if (audioFeatureTransportPort !== port) return;
+      audioFeatureTransportPort = null;
+      onClose();
+    };
+    port.start();
+    ipcRenderer.postMessage("audio-feature-transport:connect", { connectionId, role }, [
+      channel.port2,
+    ]);
+
+    return () => {
+      if (audioFeatureTransportPort === port) closeAudioFeatureTransportPort();
+    };
+  },
   connectPlaybackTransport: (
     role: PlaybackTransportRole,
     connectionId: string,
@@ -59,6 +132,8 @@ const electronAPI: DesktopBridge = {
       if (playbackTransportPort === port) closePlaybackTransportPort();
     };
   },
+  connectPlaybackHostControl: (connectionId, onPayload, onClose) =>
+    playbackHostControlTransport.connect(connectionId, onPayload, onClose),
   relaunchApp: () => {
     ipcRenderer.send("relaunch-app");
   },
@@ -73,6 +148,17 @@ const electronAPI: DesktopBridge = {
     if (!port) return false;
     try {
       port.postMessage(payload);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  sendPlaybackHostControlPayload: (payload) => playbackHostControlTransport.send(payload),
+  publishAudioFeatureFrame: (frame: AudioFeatureFrameV1) => {
+    const port = audioFeatureTransportPort;
+    if (!port) return false;
+    try {
+      port.postMessage(frame);
       return true;
     } catch {
       return false;
@@ -172,8 +258,6 @@ const electronAPI: DesktopBridge = {
   updateDesktopPlaybackWallpaperPreferences: (update: DesktopPlaybackWallpaperPreferencesUpdate) =>
     ipcRenderer.invoke("desktop-playback-wallpaper:configure", update),
   retryDesktopPlaybackWallpaper: () => ipcRenderer.invoke("desktop-playback-wallpaper:retry"),
-  publishDesktopPlaybackWallpaperAudioFrame: (frame: DesktopPlaybackWallpaperAudioFrame) =>
-    ipcRenderer.send("desktop-playback-wallpaper:audio-frame", frame),
   showDesktopPlaybackController: () => ipcRenderer.invoke("desktop-playback-controller:show"),
   onDesktopPlaybackWallpaperModelChanged: (
     callback: (model: DesktopPlaybackWallpaperModel) => void,
@@ -182,16 +266,6 @@ const electronAPI: DesktopBridge = {
       callback(model);
     ipcRenderer.on("desktop-playback-wallpaper:model-changed", listener);
     return () => ipcRenderer.removeListener("desktop-playback-wallpaper:model-changed", listener);
-  },
-  onDesktopPlaybackWallpaperAudioFrame: (
-    callback: (frame: DesktopPlaybackWallpaperAudioFrame) => void,
-  ) => {
-    const listener = (
-      _event: Electron.IpcRendererEvent,
-      frame: DesktopPlaybackWallpaperAudioFrame,
-    ) => callback(frame);
-    ipcRenderer.on("desktop-playback-wallpaper:audio-frame", listener);
-    return () => ipcRenderer.removeListener("desktop-playback-wallpaper:audio-frame", listener);
   },
 };
 

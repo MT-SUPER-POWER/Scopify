@@ -15,8 +15,14 @@ import {
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { isPlaybackLoadCurrent } from "@/lib/player/playbackLoad";
+import { dispatchDesktopMainPlaybackCommand } from "@/lib/playbackHost/desktopMainCommandDispatcher";
+import { dispatchDesktopMainQueueCommand } from "@/lib/playbackHost/desktopMainQueueCommandDispatcher";
+import { getPlayerPersistenceStorageKey } from "@/lib/playbackHost/persistenceNamespace";
+import { toPlaybackQueueEntry } from "@/lib/playbackHost/sessionMapper";
+import { createPlaybackQueue, type PlaybackQueueSnapshot } from "@/lib/player/playbackQueue";
 import { getVoiceNeteaseLyric } from "@/lib/lyrics/voiceLyric";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
+import { runtime } from "@/lib/runtime";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
 import { pruneNeteaseLyric, type NeteaseLyric, type SongDetail } from "@/types/api/music";
@@ -30,13 +36,102 @@ export type {
   SourceChangeMode,
 } from "@/types/player";
 
-function shuffleArray<T>(array: T[]): T[] {
+function shuffleArray<T>(array: readonly T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
+}
+
+const playbackQueue = createPlaybackQueue<SongDetail>(shuffleArray);
+
+function createPlayerQueueSnapshot(state: PlayerStore): PlaybackQueueSnapshot<SongDetail> {
+  return {
+    historyIndex: state.historyIndex,
+    historyStack: state.historyStack,
+    isShuffle: state.isShuffle,
+    originalQueue: state.originalQueue,
+    playlistId: state.playlistId,
+    queue: state.queue,
+    queueIndex: state.queueIndex,
+    repeatMode: state.repeatMode,
+  };
+}
+
+function selectPlayerQueueState(snapshot: PlaybackQueueSnapshot<SongDetail>) {
+  return {
+    historyIndex: snapshot.historyIndex,
+    historyStack: snapshot.historyStack,
+    isShuffle: snapshot.isShuffle,
+    originalQueue: snapshot.originalQueue,
+    playlistId: snapshot.playlistId,
+    queue: snapshot.queue,
+    queueIndex: snapshot.queueIndex,
+    repeatMode: snapshot.repeatMode,
+  } satisfies Pick<
+    PlayerStore,
+    | "historyIndex"
+    | "historyStack"
+    | "isShuffle"
+    | "originalQueue"
+    | "playlistId"
+    | "queue"
+    | "queueIndex"
+    | "repeatMode"
+  >;
+}
+
+function isDesktopMainPlaybackClient(): boolean {
+  return runtime.isDesktop && runtime.playbackHost.getNonce() === null;
+}
+
+let desktopMainCommandSequence = 0;
+
+interface DesktopMainPendingQueueReplacement {
+  playlistId: PlayerStore["playlistId"];
+  songs: readonly SongDetail[];
+  startIndex: number;
+}
+
+// Legacy list entry points call `setQueue(...)` and `playTrack(...)` in one
+// synchronous handler. Main remains a non-authoritative Replica, but it needs
+// this short-lived request pairing so the latter command cannot replace the
+// Host's full source queue with a one-song queue before its snapshot returns.
+let desktopMainPendingQueueReplacement: DesktopMainPendingQueueReplacement | null = null;
+
+type DesktopMainPlaybackCommandDraft =
+  | { type: "next" | "previous" | "toggle" | "play" | "pause" }
+  | { type: "set-volume"; volume: number };
+
+function dispatchDesktopMainCommand(command: DesktopMainPlaybackCommandDraft): void {
+  desktopMainCommandSequence += 1;
+  const commandId = `desktop-main-${command.type}-${desktopMainCommandSequence.toString(36)}`;
+  switch (command.type) {
+    case "set-volume":
+      void dispatchDesktopMainPlaybackCommand({
+        commandId,
+        type: "set-volume",
+        volume: command.volume,
+      });
+      return;
+    case "next":
+      void dispatchDesktopMainPlaybackCommand({ commandId, type: "next" });
+      return;
+    case "previous":
+      void dispatchDesktopMainPlaybackCommand({ commandId, type: "previous" });
+      return;
+    case "toggle":
+      void dispatchDesktopMainPlaybackCommand({ commandId, type: "toggle" });
+      return;
+    case "play":
+      void dispatchDesktopMainPlaybackCommand({ commandId, type: "play" });
+      return;
+    case "pause":
+      void dispatchDesktopMainPlaybackCommand({ commandId, type: "pause" });
+      return;
+  }
 }
 
 async function getStoredLyricSource(songId: number): Promise<NeteaseLyric | null> {
@@ -120,6 +215,13 @@ export const usePlayerStore = create<PlayerStore>()(
         const { currentSongDetail, musicQuality } = get();
         if (musicQuality === quality) return;
 
+        if (isDesktopMainPlaybackClient()) {
+          // The Host receives this durable draft through the session client and
+          // owns the resulting source reload. Main must not resolve a URL here.
+          set({ musicQuality: quality });
+          return;
+        }
+
         set({ musicQuality: quality });
         if (!currentSongDetail) return;
 
@@ -134,8 +236,20 @@ export const usePlayerStore = create<PlayerStore>()(
           set({ musicQuality });
         }
       },
-      setVolume: (v) => set({ volume: v }),
+      setVolume: (v) => {
+        if (isDesktopMainPlaybackClient()) {
+          dispatchDesktopMainCommand({ type: "set-volume", volume: v });
+          return;
+        }
+        set({ volume: v });
+      },
       setIsPlaying: (isPlaying) => {
+        if (isDesktopMainPlaybackClient()) {
+          if (!get().currentSongDetail) return;
+          dispatchDesktopMainCommand({ type: isPlaying ? "play" : "pause" });
+          return;
+        }
+
         const { currentSongDetail, currentSongUrl } = get();
         if (!isPlaying || currentSongUrl) {
           set({ isPlaying });
@@ -146,128 +260,142 @@ export const usePlayerStore = create<PlayerStore>()(
         // Route that intent through the URL-aware resume path after hydration.
         if (currentSongDetail) void get().togglePlaying();
       },
-      setRepeatMode: (mode) => set({ repeatMode: mode }),
-      moveQueueItem: (fromIndex, toIndex) => {
-        const { currentSongDetail, queue } = get();
-        if (
-          fromIndex < 0 ||
-          fromIndex >= queue.length ||
-          toIndex < 0 ||
-          toIndex >= queue.length ||
-          fromIndex === toIndex
-        ) {
+      setRepeatMode: (mode) => {
+        if (isDesktopMainPlaybackClient()) {
+          void dispatchDesktopMainQueueCommand({ repeatMode: mode, type: "set-repeat-mode" });
           return;
         }
-        const reordered = [...queue];
-        const [item] = reordered.splice(fromIndex, 1);
-        reordered.splice(toIndex, 0, item);
-        const nextCurrentIndex = currentSongDetail
-          ? reordered.findIndex(
-              (song) => song === currentSongDetail || song.id === currentSongDetail.id,
-            )
-          : -1;
-        set({
-          historyIndex: nextCurrentIndex >= 0 ? 0 : -1,
-          historyStack: nextCurrentIndex >= 0 ? [nextCurrentIndex] : [],
-          originalQueue: [...reordered],
-          queue: reordered,
-          queueIndex: nextCurrentIndex,
-        });
+        const snapshot = createPlayerQueueSnapshot(get());
+        const transition = playbackQueue.setRepeatMode(snapshot, mode);
+        set(selectPlayerQueueState(transition.snapshot));
+      },
+      moveQueueItem: (fromIndex, toIndex) => {
+        if (isDesktopMainPlaybackClient()) {
+          void dispatchDesktopMainQueueCommand({ fromIndex, toIndex, type: "move-queue-item" });
+          return;
+        }
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.moveQueueItem(
+          snapshot,
+          { currentTrack: state.currentSongDetail },
+          fromIndex,
+          toIndex,
+        );
+        if (transition.snapshot === snapshot) return;
+        set(selectPlayerQueueState(transition.snapshot));
       },
       moveQueueItemToNext: (index) => {
-        const { queue, queueIndex } = get();
-        if (index < 0 || index >= queue.length || index === queueIndex) return;
-        const insertAfterCurrent = index < queueIndex ? queueIndex : queueIndex + 1;
-        get().moveQueueItem(index, Math.min(queue.length - 1, insertAfterCurrent));
+        if (isDesktopMainPlaybackClient()) {
+          void dispatchDesktopMainQueueCommand({ index, type: "move-queue-item-to-next" });
+          return;
+        }
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.moveQueueItemToNext(
+          snapshot,
+          { currentTrack: state.currentSongDetail },
+          index,
+        );
+        if (transition.snapshot === snapshot) return;
+        set(selectPlayerQueueState(transition.snapshot));
       },
       removeQueueItem: (index) => {
-        const { currentSongDetail, queue, queueIndex } = get();
-        if (index < 0 || index >= queue.length) return;
-        const nextQueue = queue.filter((_, itemIndex) => itemIndex !== index);
-        if (nextQueue.length === 0) {
+        if (isDesktopMainPlaybackClient()) {
+          void dispatchDesktopMainQueueCommand({ index, type: "remove-queue-item" });
+          return;
+        }
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.removeQueueItem(
+          snapshot,
+          { currentTrack: state.currentSongDetail },
+          index,
+        );
+        if (transition.snapshot === snapshot) return;
+
+        if (transition.effect.type === "clear") {
           set({
+            ...selectPlayerQueueState(transition.snapshot),
             currentSongDetail: null,
             currentSongUrl: null,
-            historyIndex: -1,
-            historyStack: [],
             isPlaying: false,
             lyric: null,
-            originalQueue: [],
-            playbackLoadRevision: get().playbackLoadRevision + 1,
-            queue: [],
-            queueIndex: -1,
+            playbackLoadRevision: state.playbackLoadRevision + 1,
           });
           return;
         }
 
-        const removedCurrent = index === queueIndex || queue[index]?.id === currentSongDetail?.id;
-        const nextCurrentIndex = removedCurrent
-          ? Math.min(index, nextQueue.length - 1)
-          : index < queueIndex
-            ? queueIndex - 1
-            : queueIndex;
-        set({
-          historyIndex: 0,
-          historyStack: [nextCurrentIndex],
-          originalQueue: [...nextQueue],
-          queue: nextQueue,
-          queueIndex: nextCurrentIndex,
-        });
-        if (removedCurrent) void get().playTrack(nextQueue[nextCurrentIndex]);
+        set(selectPlayerQueueState(transition.snapshot));
+        if (transition.effect.type === "play") void get().playTrack(transition.effect.track);
       },
       setQueue: (songs, startIndex = 0, playlistId = null) => {
-        const { isShuffle } = get();
-        const queue = isShuffle ? shuffleArray(songs) : [...songs];
-
-        set({
-          originalQueue: songs,
-          queue, // 保持原名
-          queueIndex: startIndex,
-          playlistId,
-          historyStack: [startIndex],
-          historyIndex: 0,
-        });
+        if (isDesktopMainPlaybackClient()) {
+          const pendingReplacement: DesktopMainPendingQueueReplacement = {
+            playlistId,
+            songs: [...songs],
+            startIndex,
+          };
+          desktopMainPendingQueueReplacement = pendingReplacement;
+          void dispatchDesktopMainQueueCommand({
+            play: false,
+            playlistId,
+            queue: songs.map(toPlaybackQueueEntry),
+            startIndex,
+            type: "replace-queue",
+          }).then(
+            () => {
+              if (desktopMainPendingQueueReplacement === pendingReplacement)
+                desktopMainPendingQueueReplacement = null;
+            },
+            () => {
+              if (desktopMainPendingQueueReplacement === pendingReplacement)
+                desktopMainPendingQueueReplacement = null;
+            },
+          );
+          return;
+        }
+        const snapshot = createPlayerQueueSnapshot(get());
+        const transition = playbackQueue.setQueue(snapshot, songs, startIndex, playlistId);
+        set(selectPlayerQueueState(transition.snapshot));
       },
       setLyric: (lyric) => set({ lyric: pruneNeteaseLyric(lyric) }),
-      setShuffle: (v) => set({ isShuffle: v }),
+      setShuffle: (v) => {
+        if (isDesktopMainPlaybackClient()) {
+          void dispatchDesktopMainQueueCommand({ enabled: v, type: "set-shuffle" });
+          return;
+        }
+        const snapshot = createPlayerQueueSnapshot(get());
+        const transition = playbackQueue.setShuffle(snapshot, v);
+        set(selectPlayerQueueState(transition.snapshot));
+      },
 
       playFromSong: async (song, allSongs, playlistId = null) => {
-        const { isShuffle } = get();
-
-        // 更新原始队列
-        const songIndex = allSongs.findIndex((s) => s.id === song.id);
-
-        if (isShuffle) {
-          // 随机模式：生成新队列，点击的歌放在第一位
-          const remainingSongs = allSongs.filter((s) => s.id !== song.id);
-          const newQueue = [song, ...shuffleArray(remainingSongs)];
-
-          set({
-            originalQueue: allSongs,
-            queue: newQueue,
-            queueIndex: 0,
-            historyStack: [0],
-            historyIndex: 0,
+        if (isDesktopMainPlaybackClient()) {
+          const startIndex = allSongs.findIndex((candidate) => candidate.id === song.id);
+          void dispatchDesktopMainQueueCommand({
+            play: true,
             playlistId,
+            queue: allSongs.map(toPlaybackQueueEntry),
+            startIndex,
+            type: "replace-queue",
           });
-
-          await get().playTrack(song);
-        } else {
-          // 顺序模式：正常设置队列，从点击的位置开始
-          set({
-            originalQueue: allSongs,
-            queue: [...allSongs],
-            queueIndex: songIndex,
-            historyStack: [songIndex],
-            historyIndex: 0,
-            playlistId,
-          });
-
-          await get().playTrack(song);
+          return;
         }
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.playFromSong(snapshot, song, allSongs, playlistId);
+        set(selectPlayerQueueState(transition.snapshot));
+        if (transition.effect.type === "play") await get().playTrack(transition.effect.track);
       },
 
       togglePlaying: async () => {
+        if (isDesktopMainPlaybackClient()) {
+          if (!get().currentSongDetail) return;
+          dispatchDesktopMainCommand({ type: "toggle" });
+          return;
+        }
+
         const { currentSongDetail, currentSongUrl, isPlaying } = get();
         if (currentSongUrl) {
           set({ isPlaying: !isPlaying });
@@ -282,42 +410,18 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       toggleShuffle: () => {
-        const { isShuffle, originalQueue, queueIndex, queue } = get();
-        const newShuffleState = !isShuffle;
-
-        if (newShuffleState) {
-          // 开启随机
-          const currentSong = queue[queueIndex];
-          const remainingSongs = originalQueue.filter((s) => s.id !== currentSong?.id);
-          const newQueue = currentSong
-            ? [currentSong, ...shuffleArray(remainingSongs)]
-            : shuffleArray(originalQueue);
-
-          set({
-            isShuffle: true,
-            queue: newQueue, // 保持原名
-            queueIndex: 0,
-            historyStack: [0],
-            historyIndex: 0,
-          });
-        } else {
-          // 关闭随机，从当前歌曲位置继续顺序播放
-          const currentSong = queue[queueIndex];
-          const newIndex = currentSong
-            ? originalQueue.findIndex((s) => s.id === currentSong.id)
-            : 0;
-
-          set({
-            isShuffle: false,
-            queue: [...originalQueue], // 保持原名
-            queueIndex: Math.max(0, newIndex),
-            historyStack: [Math.max(0, newIndex)],
-            historyIndex: 0,
-          });
+        if (isDesktopMainPlaybackClient()) {
+          void dispatchDesktopMainQueueCommand({ type: "toggle-shuffle" });
+          return;
         }
+        const snapshot = createPlayerQueueSnapshot(get());
+        const transition = playbackQueue.toggleShuffle(snapshot);
+        set(selectPlayerQueueState(transition.snapshot));
       },
 
       fetchCurrentLyric: async () => {
+        if (isDesktopMainPlaybackClient()) return;
+
         const { currentSongDetail, lyric, playbackLoadRevision } = get();
         if (!currentSongDetail || lyric) return;
         const songId = currentSongDetail.id;
@@ -339,6 +443,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       handlePlaybackFailure: async (source, identity) => {
+        if (isDesktopMainPlaybackClient()) return;
         if (identity && !isPlaybackLoadCurrent(get(), identity)) return;
 
         const { queue, queueIndex, playbackFailureCount } = get();
@@ -377,6 +482,8 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       refreshCurrentTrackUrl: async () => {
+        if (isDesktopMainPlaybackClient()) return { status: "superseded" };
+
         const { currentSongDetail, musicQuality } = get();
         if (!currentSongDetail) return { status: "superseded" };
         const songId = currentSongDetail.id;
@@ -419,6 +526,46 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playTrack: async (song, options = {}) => {
+        if (isDesktopMainPlaybackClient()) {
+          void options;
+          const pendingReplacement = desktopMainPendingQueueReplacement;
+          const pendingQueueIndex =
+            pendingReplacement?.songs[pendingReplacement.startIndex]?.id === song.id
+              ? pendingReplacement.startIndex
+              : (pendingReplacement?.songs.findIndex((candidate) => candidate.id === song.id) ??
+                -1);
+          if (pendingReplacement && pendingQueueIndex >= 0) {
+            desktopMainPendingQueueReplacement = null;
+            const receipt = await dispatchDesktopMainQueueCommand({
+              play: true,
+              playlistId: pendingReplacement.playlistId,
+              queue: pendingReplacement.songs.map(toPlaybackQueueEntry),
+              startIndex: pendingQueueIndex,
+              type: "replace-queue",
+            });
+            return receipt.status === "applied";
+          }
+
+          const queueIndex = get().queue.findIndex((candidate) => candidate.id === song.id);
+          if (queueIndex >= 0) {
+            const receipt = await dispatchDesktopMainQueueCommand({
+              addToHistory: true,
+              index: queueIndex,
+              type: "select-queue-index",
+            });
+            return receipt.status === "applied";
+          }
+
+          const receipt = await dispatchDesktopMainQueueCommand({
+            play: true,
+            playlistId: null,
+            queue: [toPlaybackQueueEntry(song)],
+            startIndex: 0,
+            type: "replace-queue",
+          });
+          return receipt.status === "applied";
+        }
+
         const shouldPreservePlaybackSession = options.preservePlaybackSession ?? false;
         const shouldResetFailureCount = options.resetFailureCount ?? true;
         if (!shouldPreservePlaybackSession) {
@@ -546,110 +693,100 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playQueueIndex: async (index, addToHistory = true, options = {}) => {
-        const { queue, historyStack, historyIndex } = get();
-        if (index < 0 || index >= queue.length) return;
-
-        let newHistoryStack = [...historyStack];
-        let newHistoryIndex = historyIndex;
-
-        if (addToHistory) {
-          if (historyIndex < historyStack.length - 1) {
-            newHistoryStack = newHistoryStack.slice(0, historyIndex + 1);
-          }
-          newHistoryStack.push(index);
-          newHistoryIndex = newHistoryStack.length - 1;
+        if (isDesktopMainPlaybackClient()) {
+          void options;
+          void dispatchDesktopMainQueueCommand({
+            addToHistory,
+            index,
+            type: "select-queue-index",
+          });
+          return;
         }
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.playQueueIndex(snapshot, index, addToHistory);
+        if (transition.snapshot === snapshot) return;
 
-        set({
-          queueIndex: index,
-          historyStack: newHistoryStack,
-          historyIndex: newHistoryIndex,
-        });
-
-        await get().playTrack(queue[index], options);
+        set(selectPlayerQueueState(transition.snapshot));
+        if (transition.effect.type === "play") {
+          await get().playTrack(transition.effect.track, options);
+        }
       },
 
       playNext: async (source = "manual") => {
-        const { queue, queueIndex, repeatMode, historyStack, historyIndex, reshuffleQueue } = get();
-
-        if (!queue.length) return;
-
-        if (
-          source === "ended" &&
-          repeatMode === "one" &&
-          queueIndex >= 0 &&
-          queueIndex < queue.length
-        ) {
-          await get().playQueueIndex(queueIndex, false);
+        if (isDesktopMainPlaybackClient()) {
+          // Both user and media-end progression belong to the Host queue.
+          // Main only sends commands and waits for the authoritative snapshot.
+          void source;
+          if (!get().currentSongDetail) return;
+          dispatchDesktopMainCommand({ type: "next" });
           return;
         }
 
-        // 历史前进
-        if (historyIndex < historyStack.length - 1) {
-          const nextIndex = historyStack[historyIndex + 1];
-          set({ historyIndex: historyIndex + 1, queueIndex: nextIndex });
-          await get().playTrack(queue[nextIndex]);
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.playNext(
+          snapshot,
+          { currentTrack: state.currentSongDetail },
+          source,
+        );
+        if (transition.effect.type === "none") return;
+        if (transition.effect.type === "stop") {
+          set({ isPlaying: false });
+          toast.success(translate(useI18nStore.getState().locale, "common.message.endOfQueue"));
           return;
         }
 
-        let nextIndex = queueIndex + 1;
-
-        if (nextIndex >= queue.length) {
-          if (repeatMode === "all") {
-            reshuffleQueue();
-            nextIndex = 0;
-          } else if (repeatMode === "one") {
-            await get().playQueueIndex(queueIndex, false);
-            return;
-          } else {
-            set({ isPlaying: false });
-            toast.success(translate(useI18nStore.getState().locale, "common.message.endOfQueue"));
-            return;
-          }
-        }
-
-        await get().playQueueIndex(nextIndex);
+        set(selectPlayerQueueState(transition.snapshot));
+        if (transition.effect.type === "play") await get().playTrack(transition.effect.track);
       },
 
       playPrev: async () => {
-        const { historyIndex, historyStack, queue } = get();
-
-        if (historyIndex > 0) {
-          const prevIndex = historyStack[historyIndex - 1];
-          set({
-            historyIndex: historyIndex - 1,
-            queueIndex: prevIndex,
-          });
-          await get().playTrack(queue[prevIndex]);
+        if (isDesktopMainPlaybackClient()) {
+          if (!get().currentSongDetail) return;
+          dispatchDesktopMainCommand({ type: "previous" });
           return;
         }
 
-        if (queue.length > 0) {
-          const prevIndex = queue.length - 1;
-          set({ queueIndex: prevIndex });
-          await get().playTrack(queue[prevIndex]);
-        }
+        const snapshot = createPlayerQueueSnapshot(get());
+        const transition = playbackQueue.playPrev(snapshot);
+        if (transition.effect.type !== "play") return;
+        set(selectPlayerQueueState(transition.snapshot));
+        await get().playTrack(transition.effect.track);
       },
 
       reshuffleQueue: () => {
-        const { originalQueue, isShuffle, currentSongDetail } = get();
-        if (!isShuffle || originalQueue.length === 0) return;
-
-        const currentSong = currentSongDetail;
-        const remainingSongs = originalQueue.filter((s) => s.id !== currentSong?.id);
-        const newQueue = currentSong
-          ? [currentSong, ...shuffleArray(remainingSongs)]
-          : shuffleArray(originalQueue);
-
-        set({
-          queue: newQueue, // 保持原名
-          queueIndex: 0,
-          historyStack: [0],
-          historyIndex: 0,
+        if (isDesktopMainPlaybackClient()) {
+          void dispatchDesktopMainQueueCommand({ type: "reshuffle-queue" });
+          return;
+        }
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.reshuffleQueue(snapshot, {
+          currentTrack: state.currentSongDetail,
         });
+        if (transition.snapshot === snapshot) return;
+        set(selectPlayerQueueState(transition.snapshot));
       },
 
       cleanCache: () => {
+        if (isDesktopMainPlaybackClient()) {
+          // The visible desktop renderer is only a projection. Clearing its
+          // queue locally would race an unavailable/recovering Host and could
+          // be echoed back as a competing session. The empty replacement is a
+          // validated Host queue command; its promise is intentionally ignored
+          // here because the session-control client resolves it only after the
+          // matching authoritative snapshot has been applied to Main.
+          void dispatchDesktopMainQueueCommand({
+            play: false,
+            playlistId: null,
+            queue: [],
+            startIndex: 0,
+            type: "replace-queue",
+          });
+          return;
+        }
+
         useTimeStore.getState().setCurrentTime(0);
         useTimeStore.getState().setTotalTime(0);
         set({
@@ -673,7 +810,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
     }),
     {
-      name: "player-storage",
+      name: getPlayerPersistenceStorageKey(),
       storage: createJSONStorage(() => localStorage),
       partialize: selectPersistedPlayerState,
       merge: mergePersistedPlayerState,

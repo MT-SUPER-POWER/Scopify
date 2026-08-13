@@ -38,6 +38,7 @@ export function registerIpcHandlers(
   ipcMain.handle("bridge:get-info", () => ({
     capabilities: [
       "app-lifecycle",
+      "audio-feature-transport",
       "cache",
       "config",
       "desktop-icons",

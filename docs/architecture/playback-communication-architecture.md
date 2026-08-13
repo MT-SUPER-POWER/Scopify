@@ -2,6 +2,8 @@
 
 > Status: Accepted — implemented on `codex/playback-transport-refactor`
 
+> 2026-08-12 follow-up: Electron Authority 迁入独立 Playback Host 已被采纳为后续分阶段实施方案，详见 [独立 Playback Host 与桌面壁纸运行时架构](./playback-host-wallpaper-runtime-architecture.md)。本文继续作为可靠协议、Broker、Replica 与时间投影语义的规范。
+
 本文定义 Scopify Web 与 Electron 各 Renderer 之间统一的播放状态、播放时钟、命令和音频频谱通讯架构。它取代当前由 DOM Event、Zustand、BroadcastChannel、Desktop Lyrics IPC 与 Desktop Playback Wallpaper IPC 共同组成的多数据源体系。
 
 本设计对应 [ADR 0011](../adr/0011-unify-playback-projection-across-renderers.md)，并细化 [ADR 0005](../adr/0005-adopt-folia-style-desktop-lyric-companion.md) 中“桌面伴随窗口接收播放呈现”的传输方式。第三方通讯与状态库的评估见 [播放通讯第三方库选型调研](../research/playback-communication-libraries.md)。
@@ -29,7 +31,7 @@ Phase 1–5 已在 `codex/playback-transport-refactor` 分支落地：
 - `useTimeStore` 只保存恢复检查点、时长和缓冲进度，不再作为实时播放数据源；异步歌曲加载另有 `playbackLoadRevision`，旧请求不能覆盖新 Session。
 - 换源恢复以精确媒体位置和 `playbackLoadRevision` 绑定；URL 刷新明确区分 `refreshed`、`superseded` 与 `failed`，旧失败回调不能误伤新歌曲。
 - Broker 会请求缺失的 Bootstrap、按 Electron sender 绑定连接所有权，并为待处理命令设置有界超时；Replica 的软 stale 可由下一条有序消息自恢复。
-- 独立 Playback Host 仍是可选 Phase 6，本次没有改变音频所有权。
+- Phase 1–5 没有改变音频所有权；独立 Playback Host 已在 2026-08-12 的后续架构中采纳，尚未开始功能迁移。
 
 ## 目标
 
@@ -527,9 +529,9 @@ frontend/apps/desktop/tests/playbackBroker.test.ts
 - 删除旧 publisher、remote controller、timeline heuristic 与重复测试。
 - 更新 CodeGraph、README 与桌面 IPC 文档。
 
-### Phase 6：可选独立 Playback Host
+### Phase 6：已采纳的独立 Playback Host
 
-只有在统一 seam 稳定并完成性能测量后，才评估把 Electron Authority 从主 Renderer 移入隐藏 Playback Host。该阶段替换 Authority Adapter，不修改 UI、Replica 或协议。
+统一 seam 已完成并具备迁移条件。Electron Authority 将按 [独立 Playback Host 与桌面壁纸运行时架构](./playback-host-wallpaper-runtime-architecture.md) 分阶段移入隐藏 Playback Host；该阶段替换 Authority Adapter，不修改 UI、Replica 或可靠协议，并同时补齐 Audio Feature latest-wins 通道、队列续播和 Wallpaper 独立运行规则。
 
 ## 验证矩阵
 
@@ -597,4 +599,4 @@ frontend/apps/desktop/tests/playbackBroker.test.ts
 - 第一阶段保留主 Renderer 的 `HTMLAudioElement` 作为 Playback Authority。
 - 所有播放界面，包括同窗口 PlayBar 与 Folia，都迁入统一 Playback Replica。
 - 架构优先保证状态语义正确，不以提高 IPC 频率掩盖数据源问题。
-- 独立 Playback Host 是 seam 稳定后的可选第二阶段，不与协议重构同时进行。
+- 独立 Playback Host 已在 seam 稳定后被采纳为第二阶段；它不回改已经落地的可靠协议与 Replica 语义。

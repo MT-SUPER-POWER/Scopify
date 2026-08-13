@@ -14,6 +14,7 @@ import {
 } from "@scopify/desktop-contract";
 
 import type {
+  PlaybackAuthorityIdentity,
   PlaybackAuthorityIdentityFactory,
   PlaybackAuthorityOptions,
   PlaybackAuthorityStatePatch,
@@ -114,6 +115,15 @@ export class PlaybackAuthority<TLyrics = unknown> {
     }
 
     this.identityFactory = options.identityFactory ?? createDefaultIdentityFactory();
+  }
+
+  /**
+   * A snapshot of the active Authority and media-session identity. The result is
+   * recreated for every read so callers cannot mutate Authority internals.
+   */
+  get currentIdentity(): PlaybackAuthorityIdentity | null {
+    if (!this.authorityId || !this.sessionId) return null;
+    return Object.freeze({ authorityId: this.authorityId, sessionId: this.sessionId });
   }
 
   start(initialState: PlaybackSessionState<TLyrics>): void {

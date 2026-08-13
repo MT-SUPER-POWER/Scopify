@@ -1,7 +1,7 @@
 "use client";
 
 import { Layers3, Palette } from "lucide-react";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,7 +21,6 @@ import { useDesktopWallpaperFoliaPlayback } from "@/hooks/desktopWallpaper/useDe
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { requestDesktopPlaybackControllerThemeEditor } from "@/lib/desktopPlaybackWallpaper/controllerThemeEditor";
-import { getFoliaStageTheme, getFoliaThemeColors } from "@/lib/lyrics/foliaTheme";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -37,13 +36,6 @@ export function DesktopPlaybackController() {
   const desktopIcons = useDesktopIconVisibility();
   const wallpaper = useDesktopPlaybackWallpaperController();
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
-  const foliaThemeId = useLyricStageStore((state) => state.themeId);
-  const foliaThemes = useLyricStageStore((state) => state.themes);
-  const foliaThemeVariant = useLyricStageStore((state) => state.themeVariant);
-  const theme = getFoliaThemeColors(
-    getFoliaStageTheme(foliaThemes, foliaThemeId),
-    foliaThemeVariant,
-  );
   const foliaPlayback = useDesktopWallpaperFoliaPlayback(lyricOffsetMs);
   const isExpanded = layout === "expanded";
   const activeLineIndex = foliaPlayback.bridge.currentLineIndex;
@@ -56,12 +48,6 @@ export function DesktopPlaybackController() {
       }
     : null;
   const { projection, track } = foliaPlayback;
-  const controllerThemeStyle = {
-    "--desktop-controller-accent": theme.accentColor,
-    "--desktop-controller-background": theme.backgroundColor,
-    "--desktop-controller-primary": theme.primaryColor,
-    "--desktop-controller-secondary": theme.secondaryColor,
-  } as CSSProperties;
   useEffect(() => {
     document.documentElement.classList.add("desktop-playback-controller-html");
     document.body.classList.add("desktop-playback-controller-body");
@@ -136,10 +122,7 @@ export function DesktopPlaybackController() {
   };
 
   return (
-    <main
-      className="desktop-playback-controller-shell size-full bg-transparent p-1 select-none"
-      style={controllerThemeStyle}
-    >
+    <main className="desktop-playback-controller-shell size-full bg-transparent p-1 select-none">
       <section className="desktop-playback-controller-surface relative flex size-full flex-col overflow-hidden rounded-[20px] border">
         <ControllerAtmosphere />
         <DesktopPlaybackControllerShortcutHandler

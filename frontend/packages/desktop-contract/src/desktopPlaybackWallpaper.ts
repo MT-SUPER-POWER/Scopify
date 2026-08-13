@@ -59,17 +59,6 @@ export interface DesktopPlaybackWallpaperModel {
   status: DesktopPlaybackWallpaperStatus;
 }
 
-export interface DesktopPlaybackWallpaperAudioFrame {
-  bass: number;
-  lowMid: number;
-  mid: number;
-  power: number;
-  sampledAt: number;
-  spectrum: number[];
-  treble: number;
-  vocal: number;
-}
-
 export type DesktopPlaybackControllerOpenResult =
   | { opened: true }
   | {

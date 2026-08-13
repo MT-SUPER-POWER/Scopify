@@ -3,10 +3,13 @@
 import { useMotionValue } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import type { DesktopPlaybackWallpaperAudioFrame } from "@scopify/desktop-contract";
-
 import type { AudioBands } from "@/components/lyrics/folia/src/types";
 import { usePlaybackPositionMs, usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import {
+  AudioFeatureRuntime,
+  type AudioFeatureValues,
+} from "@/lib/desktopPlaybackWallpaper/audioFeatureRuntime";
+import { createAudioFeatureSubscriberConnection } from "@/lib/desktopPlaybackWallpaper/subscriberConnection";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
 import { runtime } from "@/lib/runtime";
@@ -16,16 +19,14 @@ import type {
 } from "@/types/desktopPlaybackWallpaper";
 import type { LyricData } from "@/types/lyrics";
 
-const DESKTOP_WALLPAPER_AUDIO_STALE_MS = 500;
-
 export function useDesktopWallpaperFoliaPlayback(
   lyricOffsetMs: number,
 ): DesktopWallpaperFoliaPlaybackState {
   const [model, setModel] = useState<DesktopWallpaperFoliaPlaybackState["model"]>(null);
   const projection = usePlaybackProjection<LyricData>();
   const positionMs = usePlaybackPositionMs();
-  const latestAudioSampleRef = useRef(-1);
-  const audioResetTimerRef = useRef<number | null>(null);
+  const audioFeatureRuntimeRef = useRef<AudioFeatureRuntime | null>(null);
+  const audioFeatureConnectionIdRef = useRef<string | null>(null);
   const currentTime = useMotionValue(0);
   const lyricCurrentTime = useMotionValue(0);
   const audioPower = useMotionValue(0);
@@ -35,6 +36,12 @@ export function useDesktopWallpaperFoliaPlayback(
   const vocal = useMotionValue(0);
   const treble = useMotionValue(0);
   const spectrum = useMotionValue(new Uint8Array(new ArrayBuffer(0)));
+  if (audioFeatureRuntimeRef.current === null) {
+    audioFeatureRuntimeRef.current = new AudioFeatureRuntime();
+  }
+  if (audioFeatureConnectionIdRef.current === null) {
+    audioFeatureConnectionIdRef.current = createAudioFeatureConnectionId();
+  }
   const lyrics = useMemo(
     () => (projection.lyrics ? adaptLyricDataToFolia(projection.lyrics, []) : null),
     [projection.lyrics],
@@ -65,18 +72,27 @@ export function useDesktopWallpaperFoliaPlayback(
       modelEventReceived = true;
       if (!disposed) setModel(nextModel);
     });
-    const stopAudioSubscription = runtime.desktopPlaybackWallpaper.onAudioFrame((frame) => {
-      if (disposed || frame.sampledAt < latestAudioSampleRef.current) return;
-      latestAudioSampleRef.current = frame.sampledAt;
-      applyAudioFrame(frame, { audioPower, bass, lowMid, mid, spectrum, treble, vocal });
-      if (audioResetTimerRef.current !== null) {
-        window.clearTimeout(audioResetTimerRef.current);
-      }
-      audioResetTimerRef.current = window.setTimeout(() => {
-        resetAudioFrame({ audioPower, bass, lowMid, mid, spectrum, treble, vocal });
-        audioResetTimerRef.current = null;
-      }, DESKTOP_WALLPAPER_AUDIO_STALE_MS);
+    const audioFeatureRuntime = audioFeatureRuntimeRef.current!;
+    const applyAudioValues = (values: AudioFeatureValues) => {
+      applyAudioValuesToMotionValues(values, {
+        audioPower,
+        bass,
+        lowMid,
+        mid,
+        spectrum,
+        treble,
+        vocal,
+      });
+    };
+    audioFeatureRuntime.start(applyAudioValues);
+    const audioFeatureSubscriber = createAudioFeatureSubscriberConnection({
+      connectionId: audioFeatureConnectionIdRef.current!,
+      onFrame: (frame) => {
+        if (!disposed) audioFeatureRuntime.accept(frame, performance.now());
+      },
+      port: runtime.audioFeature,
     });
+    audioFeatureSubscriber.start();
 
     void runtime.desktopPlaybackWallpaper.getModel().then((initialModel) => {
       if (!disposed && !modelEventReceived) setModel(initialModel);
@@ -84,14 +100,18 @@ export function useDesktopWallpaperFoliaPlayback(
 
     return () => {
       disposed = true;
-      if (audioResetTimerRef.current !== null) {
-        window.clearTimeout(audioResetTimerRef.current);
-        audioResetTimerRef.current = null;
-      }
-      stopAudioSubscription();
+      audioFeatureSubscriber.stop();
       stopModelSubscription();
+      audioFeatureRuntime.stop();
     };
   }, [audioPower, bass, lowMid, mid, spectrum, treble, vocal]);
+
+  useEffect(() => {
+    audioFeatureRuntimeRef.current?.setExpectedIdentity({
+      authorityId: projection.authorityId,
+      sessionId: projection.sessionId,
+    });
+  }, [projection.authorityId, projection.sessionId]);
 
   useEffect(() => {
     currentTime.set(positionMs / 1_000);
@@ -117,8 +137,8 @@ export function useDesktopWallpaperFoliaPlayback(
   };
 }
 
-function applyAudioFrame(
-  frame: DesktopPlaybackWallpaperAudioFrame,
+function applyAudioValuesToMotionValues(
+  frame: AudioFeatureValues,
   values: DesktopWallpaperAudioMotionValues,
 ) {
   values.audioPower.set(frame.power);
@@ -130,12 +150,9 @@ function applyAudioFrame(
   values.vocal.set(frame.vocal);
 }
 
-function resetAudioFrame(values: DesktopWallpaperAudioMotionValues) {
-  values.audioPower.set(0);
-  values.bass.set(0);
-  values.lowMid.set(0);
-  values.mid.set(0);
-  values.spectrum.set(new Uint8Array(new ArrayBuffer(0)));
-  values.treble.set(0);
-  values.vocal.set(0);
+function createAudioFeatureConnectionId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `desktop-wallpaper:${crypto.randomUUID()}`;
+  }
+  return `desktop-wallpaper:${Math.random().toString(36).slice(2)}`;
 }

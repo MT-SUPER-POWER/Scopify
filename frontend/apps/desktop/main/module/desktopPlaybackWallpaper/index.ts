@@ -1,15 +1,8 @@
 import { join } from "node:path";
 
-import {
-  app,
-  type BrowserWindow,
-  ipcMain,
-  type IpcMainEvent,
-  type IpcMainInvokeEvent,
-} from "electron";
+import { app, type BrowserWindow, ipcMain, type IpcMainInvokeEvent } from "electron";
 import type {
   DesktopPlaybackControllerLayout,
-  DesktopPlaybackWallpaperAudioFrame,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferences,
 } from "@scopify/desktop-contract";
@@ -20,7 +13,6 @@ import { trayWindow } from "../tray.js";
 import {
   isDesktopPlaybackWallpaperControlSender,
   isDesktopPlaybackWallpaperModelReader,
-  isDesktopPlaybackWallpaperPublisherSender,
 } from "./authorization.js";
 import {
   createDesktopPlaybackWallpaperCapability,
@@ -28,7 +20,6 @@ import {
   type DesktopPlaybackWallpaperCapability,
   type DesktopPlaybackWallpaperDriver,
 } from "./capability.js";
-import { isDesktopPlaybackWallpaperAudioFrame } from "./ipcValidation.js";
 import { createDesktopPlaybackWallpaperPreferencesRepository } from "./preferences.js";
 
 const PREFERENCES_FILE = "desktop-playback-wallpaper.json";
@@ -157,15 +148,6 @@ function registerIpcHandlers() {
     }
     return controllerHost?.setLayout(input) ?? false;
   });
-
-  ipcMain.on("desktop-playback-wallpaper:audio-frame", (event, input: unknown) => {
-    if (!isMainWindowSender(event)) {
-      logRejectedSender("desktop-playback-wallpaper:audio-frame");
-      return;
-    }
-    if (!isDesktopPlaybackWallpaperAudioFrame(input)) return;
-    sendAudioFrame(getWallpaperWindow(), input);
-  });
 }
 
 function requireCapability() {
@@ -210,20 +192,6 @@ function requireModelReader(event: IpcMainInvokeEvent, channel: string) {
   throw new Error("The renderer is not authorized to read desktop playback wallpaper state.");
 }
 
-function requireMainWindowSender(event: IpcMainEvent | IpcMainInvokeEvent, channel: string) {
-  if (isMainWindowSender(event)) return;
-  logRejectedSender(channel);
-  throw new Error("Only the main renderer may publish desktop playback state.");
-}
-
-function isMainWindowSender(event: IpcMainEvent | IpcMainInvokeEvent) {
-  return isDesktopPlaybackWallpaperPublisherSender(event.sender.id, getWindowId(mainWindow));
-}
-
-function logRejectedSender(channel: string) {
-  logger.warn(`[desktop-playback-wallpaper] rejected IPC from an unexpected renderer: ${channel}`);
-}
-
 function getWindowId(window: BrowserWindow | null) {
   return window && !window.isDestroyed() ? window.webContents.id : null;
 }
@@ -244,9 +212,4 @@ function broadcastModel(model: DesktopPlaybackWallpaperModel) {
 function sendModel(window: BrowserWindow | null, model: DesktopPlaybackWallpaperModel) {
   if (!window || window.isDestroyed() || window.webContents.isDestroyed()) return;
   window.webContents.send("desktop-playback-wallpaper:model-changed", model);
-}
-
-function sendAudioFrame(window: BrowserWindow | null, frame: DesktopPlaybackWallpaperAudioFrame) {
-  if (!window || window.isDestroyed() || window.webContents.isDestroyed()) return;
-  window.webContents.send("desktop-playback-wallpaper:audio-frame", frame);
 }

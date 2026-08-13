@@ -104,6 +104,7 @@ export class PlaybackReplica<TLyrics = unknown> implements PlaybackProjectionSou
 
     return {
       ...this.sessionState,
+      authorityId: this.authorityId,
       connection: this.connection,
       isPlaying: this.sessionState.phase === "playing",
       positionMs,

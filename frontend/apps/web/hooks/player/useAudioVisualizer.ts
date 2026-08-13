@@ -6,6 +6,12 @@ import {
   applyAudioEqualizerSettings,
   connectAudioEqualizerGraph,
 } from "@/lib/player/audioEqualizerGraph";
+import {
+  createAnalyserAudioFeatureSource,
+  type AudioFeatureSource,
+  registerAudioFeatureSource,
+} from "@/lib/audioFeature/source";
+import { runtime } from "@/lib/runtime";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import type { LyricAudioBands } from "@/types/lyrics";
 
@@ -31,6 +37,9 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
     let animationFrame = 0;
     let analyser = analyserRef.current;
     let didFail = false;
+    let audioFeatureSource: AudioFeatureSource | null = null;
+    let unregisterAudioFeatureSource: (() => void) | undefined;
+    const shouldBroadcastFoliaBands = runtime.playbackHost.getNonce() === null;
 
     const broadcast = (bands: LyricAudioBands) => {
       window.dispatchEvent(
@@ -60,6 +69,11 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
           );
           analyser.connect(context.destination);
           analyserRef.current = analyser;
+          audioFeatureSource = createAnalyserAudioFeatureSource({
+            analyser,
+            isPaused: () => audio.paused,
+          });
+          unregisterAudioFeatureSource = registerAudioFeatureSource(audioFeatureSource);
         }
       } catch (error) {
         didFail = true;
@@ -73,7 +87,8 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
     };
 
     const tick = () => {
-      if (!analyser || audio.paused) {
+      const bands = audioFeatureSource?.readBands();
+      if (!bands) {
         const breath = (Math.sin(Date.now() / 2_000) + 1) * 20;
         broadcast({
           bass: breath,
@@ -85,29 +100,18 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
           vocal: breath,
         });
       } else {
-        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-        analyser.getByteFrequencyData(frequencyData);
-        const bass = averageFrequencyRange(frequencyData, 20, 150);
-        const lowMid = averageFrequencyRange(frequencyData, 150, 400);
-        broadcast({
-          bass: emphasize(bass, 1.8),
-          lowMid: emphasize(lowMid, 2),
-          mid: emphasize(averageFrequencyRange(frequencyData, 400, 1200), 2),
-          power: emphasize((bass + lowMid) / 2, 3),
-          spectrum: Array.from(frequencyData),
-          treble: emphasize(averageFrequencyRange(frequencyData, 3500, 12000), 2),
-          vocal: emphasize(averageFrequencyRange(frequencyData, 1000, 3500), 1.5),
-        });
+        broadcast(bands);
       }
       animationFrame = window.requestAnimationFrame(tick);
     };
 
     audio.addEventListener("play", onPlay);
     if (!audio.paused) onPlay();
-    animationFrame = window.requestAnimationFrame(tick);
+    if (shouldBroadcastFoliaBands) animationFrame = window.requestAnimationFrame(tick);
     return () => {
       audio.removeEventListener("play", onPlay);
       window.cancelAnimationFrame(animationFrame);
+      unregisterAudioFeatureSource?.();
     };
   }, [audioRef]);
 
@@ -116,16 +120,4 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
     if (!context || equalizerFiltersRef.current.length === 0) return;
     applyAudioEqualizerSettings(context, equalizerFiltersRef.current, equalizerSettings);
   }, [equalizerSettings]);
-}
-
-function averageFrequencyRange(data: Uint8Array, minimumHz: number, maximumHz: number): number {
-  const start = Math.floor(minimumHz / 21.5);
-  const end = Math.min(data.length - 1, Math.floor(maximumHz / 21.5));
-  let total = 0;
-  for (let index = start; index <= end; index += 1) total += data[index] ?? 0;
-  return end >= start ? total / (end - start + 1) : 0;
-}
-
-function emphasize(value: number, boost: number): number {
-  return Math.pow(value / 255, boost) * 255;
 }
