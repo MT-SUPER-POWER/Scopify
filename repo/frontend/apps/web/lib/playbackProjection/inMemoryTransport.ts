@@ -1,4 +1,4 @@
-import type { PlaybackCommand, PlaybackMessage } from "@scopifymusicplayer/desktop-contract";
+import type { PlaybackCommand, PlaybackMessage } from "@mt-super-power/desktop-contract";
 
 import { createPlaybackReplica, type PlaybackReplica } from "@/lib/playbackProjection/replica";
 import type {

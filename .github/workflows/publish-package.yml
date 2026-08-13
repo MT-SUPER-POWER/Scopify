@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: 20
           registry-url: "https://npm.pkg.github.com"
-          scope: "@scopifymusicplayer"
+          scope: "@mt-super-power"
 
       - name: Install workspace dependencies
         run: bun install --frozen-lockfile

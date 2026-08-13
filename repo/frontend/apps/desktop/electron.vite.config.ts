@@ -26,7 +26,7 @@ export default defineConfig(({ command }) => {
         emptyOutDir: true,
         outDir: runtimeOutDir,
         externalizeDeps: {
-          exclude: ["@scopifymusicplayer/desktop-contract"],
+          exclude: ["@mt-super-power/desktop-contract"],
         },
         rollupOptions: {
           input: {

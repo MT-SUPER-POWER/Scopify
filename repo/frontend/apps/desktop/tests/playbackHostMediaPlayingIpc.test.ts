@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { BrowserWindow, IpcMainEvent } from "electron";
 
-import { PLAYBACK_HOST_MEDIA_PLAYING_CHANNEL } from "@scopifymusicplayer/desktop-contract/playbackHost";
+import { PLAYBACK_HOST_MEDIA_PLAYING_CHANNEL } from "@mt-super-power/desktop-contract/playbackHost";
 
 import {
   initializePlaybackHostMediaPlayingIpc,

@@ -3,7 +3,7 @@ import { describe, expect, test } from "bun:test";
 import {
   PLAYBACK_CHECKPOINT_PROTOCOL_VERSION,
   type PlaybackCheckpoint,
-} from "@scopifymusicplayer/desktop-contract/playbackCheckpoint";
+} from "@mt-super-power/desktop-contract/playbackCheckpoint";
 
 import {
   createPlaybackHostCheckpointRepository,

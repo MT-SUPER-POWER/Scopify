@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type {
-  DesktopHostConfig,
-  DiscordPresenceStatus,
-} from "@scopifymusicplayer/desktop-contract";
+import type { DesktopHostConfig, DiscordPresenceStatus } from "@mt-super-power/desktop-contract";
 import { toast } from "sonner";
 import {
   getCachePreferences,

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import type {
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import { runtime } from "@/lib/runtime";
 import type { DesktopPlaybackWallpaperControllerState } from "@/types/desktopPlaybackWallpaper";

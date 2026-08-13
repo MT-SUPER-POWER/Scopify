@@ -5,7 +5,7 @@ import type {
   PlaybackProjection,
   PlaybackTransportPayload,
   PlaybackTransportRole,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 import type { ReactNode } from "react";
 
 import type { PlaybackAuthorityBinding } from "@/types/playbackAuthority";

@@ -1,6 +1,6 @@
 import { app, type IpcMain, type IpcMainInvokeEvent } from "electron";
 import { join } from "node:path";
-import type { PlaybackCacheCategory } from "@scopifymusicplayer/desktop-contract";
+import type { PlaybackCacheCategory } from "@mt-super-power/desktop-contract";
 import { loadDesktopHostConfig } from "../../config.js";
 import { createPageCacheStore } from "../pageCache.js";
 

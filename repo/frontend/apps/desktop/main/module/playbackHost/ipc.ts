@@ -3,7 +3,7 @@ import type { IpcMainEvent } from "electron";
 import {
   parsePlaybackHostRendererReadyRequest,
   PLAYBACK_HOST_RENDERER_READY_CHANNEL,
-} from "@scopifymusicplayer/desktop-contract/playbackHost";
+} from "@mt-super-power/desktop-contract/playbackHost";
 
 import type { PlaybackHostManager } from "./index.js";
 

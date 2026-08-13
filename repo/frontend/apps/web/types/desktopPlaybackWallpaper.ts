@@ -3,7 +3,7 @@ import type {
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
   PlaybackProjection,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 import type { MotionValue } from "framer-motion";
 
 import type { FoliaPlaybackBridge } from "@/types/foliaStage";

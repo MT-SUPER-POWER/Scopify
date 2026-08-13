@@ -9,7 +9,7 @@ import {
   type DesktopBridgeCapability,
   type DiscordPresenceSnapshot,
   type RendererLogEvent,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "../config.js";
 import { getLogDirectory, logger } from "../constants.js";
 import { loginWindow } from "./login.js";

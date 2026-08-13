@@ -3,16 +3,16 @@ import type {
   PlaybackHostControlReceipt,
   PlaybackHostReplaceSessionCommand,
   PlaybackHostSessionSnapshot,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 import {
   PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION,
   validatePlaybackHostClientCommand,
   validatePlaybackHostControlPayload,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 import {
   PLAYBACK_CHECKPOINT_PROTOCOL_VERSION,
   type PlaybackCheckpoint,
-} from "@scopifymusicplayer/desktop-contract/playbackCheckpoint";
+} from "@mt-super-power/desktop-contract/playbackCheckpoint";
 
 import type { PlaybackHostCheckpointRepository } from "../playbackHost/checkpoint.js";
 

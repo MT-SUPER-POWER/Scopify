@@ -14,7 +14,7 @@ import type {
   AudioFeatureTransportRole,
   PlaybackTransportPayload,
   PlaybackTransportRole,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 import { createPlaybackHostControlPreloadTransport } from "./preloadPlaybackHostControl";
 
 type ElectronRendererMessagePort = MessagePort & {

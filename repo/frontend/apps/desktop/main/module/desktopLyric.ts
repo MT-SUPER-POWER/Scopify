@@ -6,7 +6,7 @@ import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import { __iconWindow, __preloadScript, logger } from "../constants.js";
 

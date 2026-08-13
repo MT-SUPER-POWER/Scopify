@@ -5,7 +5,7 @@ import type {
   PlaybackPhase,
   PlaybackProjection,
   PlaybackSessionState,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import { PlaybackAuthority } from "@/lib/playbackProjection/authority";
 import { createInProcessPlaybackTransport } from "@/lib/playbackProjection/inProcessTransport";

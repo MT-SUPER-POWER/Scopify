@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { DesktopHostConfig } from "@scopifymusicplayer/desktop-contract";
+import type { DesktopHostConfig } from "@mt-super-power/desktop-contract";
 
 export const ELECTRON_PROXY_MODES = ["system", "direct", "custom"] as const;
 export const DEFAULT_DESKTOP_HOST_CONFIG = {

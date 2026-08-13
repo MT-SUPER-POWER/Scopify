@@ -11,7 +11,7 @@ import {
   type PlaybackStateChanged,
   type PlaybackTimelineDiscontinued,
   type PlaybackTimelineDiscontinuityReason,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import type {
   PlaybackAuthorityIdentity,

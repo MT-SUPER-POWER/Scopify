@@ -1,10 +1,10 @@
 {
-  "name": "@scopifymusicplayer/desktop-contract",
+  "name": "@mt-super-power/desktop-contract",
   "version": "1.0.0",
   "description": "Versioned IPC contract between the Scopify renderer and desktop host",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ScopifyMusicPlayer/Scopify.git",
+    "url": "https://github.com/MT-SUPER-POWER/Scopify.git",
     "directory": "repo/frontend/packages/desktop-contract"
   },
   "type": "module",

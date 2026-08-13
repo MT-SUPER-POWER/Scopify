@@ -6,7 +6,7 @@ import type {
   PlaybackPhase,
   PlaybackSessionState,
   PlaybackTrack,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import type { PlaybackRuntimeSession, PlaybackSourceRequest } from "@/lib/playbackHost/catalog";
 import type {

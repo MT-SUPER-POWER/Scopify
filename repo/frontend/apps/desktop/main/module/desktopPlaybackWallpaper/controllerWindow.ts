@@ -3,7 +3,7 @@ import { BrowserWindow, screen } from "electron";
 import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import { __iconWindow, __preloadScript, logger } from "../../constants.js";
 import {

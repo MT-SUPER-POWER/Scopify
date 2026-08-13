@@ -1,4 +1,4 @@
-import type { AudioFeatureFrameV1 } from "@scopifymusicplayer/desktop-contract";
+import type { AudioFeatureFrameV1 } from "@mt-super-power/desktop-contract";
 
 /** Timer seam for the publisher transport lifecycle. */
 export interface AudioFeaturePublisherTimer {

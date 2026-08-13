@@ -20,7 +20,7 @@ import type {
 import type { LyricVisualizerMode } from "@/types/lyrics";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
 import type { PlaybackPresentationTrack } from "@/types/playbackProjection";
-import type { DesktopPlaybackWallpaperLayers } from "@scopifymusicplayer/desktop-contract";
+import type { DesktopPlaybackWallpaperLayers } from "@mt-super-power/desktop-contract";
 
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
 export type FoliaPanelTab = "controls" | "queue" | "settings";

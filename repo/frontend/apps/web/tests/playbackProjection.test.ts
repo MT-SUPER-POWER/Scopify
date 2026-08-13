@@ -9,7 +9,7 @@ import {
   type PlaybackTimelineDiscontinued,
   validatePlaybackCommand,
   validatePlaybackMessage,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import { ManualPlaybackClock } from "@/lib/playbackProjection/clock";
 import { createInMemoryPlaybackTransport } from "@/lib/playbackProjection/inMemoryTransport";

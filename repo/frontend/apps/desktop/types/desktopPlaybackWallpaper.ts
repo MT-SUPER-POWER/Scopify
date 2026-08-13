@@ -1,8 +1,8 @@
 import type {
   DesktopPlaybackWallpaperPreferences,
   DesktopPlaybackWallpaperPreferencesUpdate,
-} from "@scopifymusicplayer/desktop-contract";
-import { DEFAULT_DESKTOP_PLAYBACK_WALLPAPER_PREFERENCES } from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
+import { DEFAULT_DESKTOP_PLAYBACK_WALLPAPER_PREFERENCES } from "@mt-super-power/desktop-contract";
 import { z } from "zod";
 
 const FULLSCREEN_POLICIES = ["keep-running", "pause", "stop"] as const;

@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
-import type { DesktopPlaybackWallpaperPreferences } from "@scopifymusicplayer/desktop-contract";
+import type { DesktopPlaybackWallpaperPreferences } from "@mt-super-power/desktop-contract";
 
 import {
   cloneDesktopPlaybackWallpaperPreferences,

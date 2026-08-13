@@ -15,7 +15,7 @@
 
 ### Added
 
-- 新增 GitHub Package 自动化发布支持：配置 GitHub Actions 工作流 `.github/workflows/publish-package.yml`，在打 tag（如 `v*` 或 `contract-v*`）时自动将桌面契约包发布至 GitHub Packages (`npm.pkg.github.com`)；全库仓库地址与包名同步迁移至组织目标 `@scopifymusicplayer/desktop-contract` (https://github.com/ScopifyMusicPlayer/Scopify)。
+- 新增 GitHub Package 自动化发布支持：配置 GitHub Actions 工作流 `.github/workflows/publish-package.yml`，在打 tag（如 `v*` 或 `contract-v*`）时自动将桌面契约包发布至 GitHub Packages (`npm.pkg.github.com`)；全库仓库地址与包名同步迁移至组织目标 `@mt-super-power/desktop-contract` (https://github.com/MT-SUPER-POWER/Scopify)。
 - 统一搜索窗口支持以 `>` 前缀搜索并执行命令；`Ctrl + Shift + P` 会直接打开命令查询。
 - 命令候选按设备本地累计使用次数排序，并继续支持上下方向键和 Enter 操作。
 - 桌面端新增应用级隐藏 Playback Host：独立承载媒体元素、AudioContext、播放 Authority、队列、网易云音源/歌词解析及自动续播，主窗口隐藏、刷新或销毁不再中断播放运行时。

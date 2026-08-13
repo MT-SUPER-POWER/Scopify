@@ -9,7 +9,7 @@ import {
   validatePlaybackHostQueueCommand,
   validatePlaybackHostReplaceSessionCommand,
   validatePlaybackHostSessionSnapshot,
-} from "@scopifymusicplayer/desktop-contract/playbackHostControl";
+} from "@mt-super-power/desktop-contract/playbackHostControl";
 
 function createReplaceSessionCommand(): PlaybackHostReplaceSessionCommand {
   return {

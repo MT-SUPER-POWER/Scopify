@@ -1,4 +1,4 @@
-import type { PlaybackQueueEntry } from "@scopifymusicplayer/desktop-contract";
+import type { PlaybackQueueEntry } from "@mt-super-power/desktop-contract";
 
 import type { NeteaseLyric } from "@/types/api/music";
 import type { PlaybackSourceRequest } from "@/lib/playbackHost/catalog";

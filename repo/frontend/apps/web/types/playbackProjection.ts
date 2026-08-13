@@ -4,7 +4,7 @@ import type {
   PlaybackMessage,
   PlaybackProjection,
   PlaybackTrack,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 export interface PlaybackClock {
   nowMs(): number;

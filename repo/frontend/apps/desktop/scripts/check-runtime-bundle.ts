@@ -14,7 +14,7 @@ const runtimeBundles = [
 ];
 const sandboxedPreloadBundles = runtimeBundles.slice(1);
 const rendererRoot = resolve(packagedAppRoot, "renderer");
-const forbiddenWorkspaceImports = ["@scopifymusicplayer/desktop-contract"];
+const forbiddenWorkspaceImports = ["@mt-super-power/desktop-contract"];
 
 const missingRuntimeBundles = runtimeBundles.filter(
   (bundlePath) => !existsSync(bundlePath) || !statSync(bundlePath).isFile(),

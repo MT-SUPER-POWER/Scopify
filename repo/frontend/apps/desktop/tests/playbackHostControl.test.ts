@@ -5,9 +5,9 @@ import type {
   PlaybackHostControlReceipt,
   PlaybackHostReplaceSessionCommand,
   PlaybackHostSessionSnapshot,
-} from "@scopifymusicplayer/desktop-contract";
-import { PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION } from "@scopifymusicplayer/desktop-contract";
-import type { PlaybackCheckpoint } from "@scopifymusicplayer/desktop-contract/playbackCheckpoint";
+} from "@mt-super-power/desktop-contract";
+import { PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION } from "@mt-super-power/desktop-contract";
+import type { PlaybackCheckpoint } from "@mt-super-power/desktop-contract/playbackCheckpoint";
 
 import {
   createPlaybackHostControlBroker,

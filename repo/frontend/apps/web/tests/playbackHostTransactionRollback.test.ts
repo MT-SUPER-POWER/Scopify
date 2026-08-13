@@ -7,7 +7,7 @@ import {
   type PlaybackQueueEntry,
   type PlaybackSessionState,
   type PlaybackSessionSeed,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import type { PlaybackRuntimeSession } from "@/lib/playbackHost/catalog";
 import { createPlaybackHostMediaProjection } from "@/lib/playbackHost/hostMediaProjection";

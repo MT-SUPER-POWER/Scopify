@@ -2,8 +2,8 @@ import type {
   PlaybackHostMusicQuality,
   PlaybackHostPlaybackIntent,
   PlaybackQueueEntry,
-} from "@scopifymusicplayer/desktop-contract/playbackHostControl";
-import type { PlaybackSessionState } from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract/playbackHostControl";
+import type { PlaybackSessionState } from "@mt-super-power/desktop-contract";
 
 import {
   createPlaybackHostMediaProjection,

@@ -7,7 +7,7 @@ import {
   type PlaybackProjection,
   type PlaybackSessionState,
   validatePlaybackMessage,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import type {
   PlaybackMessageApplyResult,

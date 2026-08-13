@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { DESKTOP_BRIDGE_PROTOCOL_VERSION } from "@scopifymusicplayer/desktop-contract";
+import { DESKTOP_BRIDGE_PROTOCOL_VERSION } from "@mt-super-power/desktop-contract";
 
 import { createRendererArtifactManifest, verifyRendererArtifact } from "@/lib/rendererArtifact";
 

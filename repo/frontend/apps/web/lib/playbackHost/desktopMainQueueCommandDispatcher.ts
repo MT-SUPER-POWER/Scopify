@@ -1,4 +1,4 @@
-import type { PlaybackHostQueueCommand } from "@scopifymusicplayer/desktop-contract/playbackHostControl";
+import type { PlaybackHostQueueCommand } from "@mt-super-power/desktop-contract/playbackHostControl";
 
 /**
  * Intent-only queue command emitted by the visible desktop renderer. Sequence

@@ -4,7 +4,7 @@ import {
   PLAYBACK_CHECKPOINT_PROTOCOL_VERSION,
   type PlaybackCheckpointV1,
   validatePlaybackCheckpoint,
-} from "@scopifymusicplayer/desktop-contract/playbackCheckpoint";
+} from "@mt-super-power/desktop-contract/playbackCheckpoint";
 
 function createCheckpoint(): PlaybackCheckpointV1 {
   return {

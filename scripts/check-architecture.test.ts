@@ -51,7 +51,7 @@ describe("Desktop ownership boundary", () => {
       findForbiddenDesktopImports(
         repositoryRoot,
         desktopFile,
-        'import type { DesktopBridge } from "@scopifymusicplayer/desktop-contract";',
+        'import type { DesktopBridge } from "@mt-super-power/desktop-contract";',
       ),
     ).toEqual([]);
   });

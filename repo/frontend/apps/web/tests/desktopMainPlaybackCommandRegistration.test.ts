@@ -5,7 +5,7 @@ import {
   dispatchDesktopMainPlaybackCommand,
   hasDesktopMainPlaybackCommandDispatcher,
 } from "@/lib/playbackHost/desktopMainCommandDispatcher";
-import type { PlaybackCommand } from "@scopifymusicplayer/desktop-contract";
+import type { PlaybackCommand } from "@mt-super-power/desktop-contract";
 
 function createSource() {
   const commands: PlaybackCommand[] = [];

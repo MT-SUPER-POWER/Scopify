@@ -210,7 +210,8 @@ jobs:
             found { print }
           ' docs/CHANGELOG.md > release_notes.md
           if [ ! -s release_notes.md ]; then
-            printf 'Scopify %s\n' "$VERSION" > release_notes.md
+            echo "Error: Release notes heading '## ${VERSION}' not found in docs/CHANGELOG.md" >&2
+            exit 1
           fi
 
       - name: Create release

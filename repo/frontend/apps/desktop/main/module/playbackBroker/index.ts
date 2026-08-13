@@ -3,12 +3,12 @@ import type {
   PlaybackBootstrap,
   PlaybackCommandReceipt,
   PlaybackMessage,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 import {
   isPlaybackCommand,
   isPlaybackCommandReceipt,
   validatePlaybackMessage,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 import type { PlaybackBrokerPort } from "./port.js";
 

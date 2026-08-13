@@ -2,7 +2,7 @@ import { Client, type SetActivity } from "@xhayper/discord-rpc";
 import type {
   DiscordPresenceSnapshot,
   DiscordPresenceStatus,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 const DISCORD_PRESENCE_UPDATE_INTERVAL_MS = 15_000;
 const DISCORD_ACTIVITY_TYPE_LISTENING = 2;

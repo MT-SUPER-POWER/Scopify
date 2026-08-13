@@ -2,7 +2,7 @@
 
 import { Maximize2, Minimize2, X } from "lucide-react";
 
-import type { DesktopPlaybackControllerLayout } from "@scopifymusicplayer/desktop-contract";
+import type { DesktopPlaybackControllerLayout } from "@mt-super-power/desktop-contract";
 
 import { useI18n } from "@/store/module/i18n";
 

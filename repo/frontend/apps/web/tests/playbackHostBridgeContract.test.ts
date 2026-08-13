@@ -5,7 +5,7 @@ import {
   PLAYBACK_HOST_MEDIA_PLAYING_CHANNEL,
   PLAYBACK_HOST_NONCE_MAX_LENGTH,
   PLAYBACK_HOST_RENDERER_READY_CHANNEL,
-} from "@scopifymusicplayer/desktop-contract";
+} from "@mt-super-power/desktop-contract";
 
 describe("Playback Host bridge contract", () => {
   test("uses a dedicated ready channel and preserves a valid per-load nonce", () => {

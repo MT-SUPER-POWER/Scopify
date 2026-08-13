@@ -3,7 +3,7 @@ import {
   type PlaybackHostSessionSnapshot,
   type PlaybackQueueEntry,
   type PlaybackSessionSeed,
-} from "@scopifymusicplayer/desktop-contract/playbackHostControl";
+} from "@mt-super-power/desktop-contract/playbackHostControl";
 
 import type { SongDetail } from "@/types/api/music";
 import type { PlayerStore } from "@/types/player";

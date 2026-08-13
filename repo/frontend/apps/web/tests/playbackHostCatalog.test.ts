@@ -1,6 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 
-import type { PlaybackQueueEntry } from "@scopifymusicplayer/desktop-contract";
+import type { PlaybackQueueEntry } from "@mt-super-power/desktop-contract";
 
 import {
   createNeteasePlaybackCatalog,

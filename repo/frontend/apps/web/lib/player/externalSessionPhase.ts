@@ -1,4 +1,4 @@
-import type { PlaybackPhase } from "@scopifymusicplayer/desktop-contract";
+import type { PlaybackPhase } from "@mt-super-power/desktop-contract";
 
 /**
  * Loading a replacement source can synchronously emit `pause` for the retired
