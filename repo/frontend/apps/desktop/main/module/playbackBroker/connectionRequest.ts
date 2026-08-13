@@ -1,4 +1,4 @@
-import type { PlaybackTransportRole } from "@scopify/desktop-contract";
+import type { PlaybackTransportRole } from "@scopifymusicplayer/desktop-contract";
 
 export interface PlaybackConnectionRequest {
   connectionId: string;

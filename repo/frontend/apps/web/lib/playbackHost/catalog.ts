@@ -1,7 +1,7 @@
 import type {
   PlaybackSessionState,
   PlaybackTimelineDiscontinuityReason,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 /**
  * The immutable description of a playback session that can be owned by either

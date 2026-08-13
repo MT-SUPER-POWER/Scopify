@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import type {
   DesktopPlaybackWallpaperPreferences,
   DesktopPlaybackWallpaperPreferencesUpdate,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import {
   createDesktopPlaybackWallpaperCapability,

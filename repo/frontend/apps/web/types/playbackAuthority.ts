@@ -4,7 +4,7 @@ import type {
   PlaybackMessage,
   PlaybackSessionState,
   PlaybackTimelineDiscontinuityReason,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 import type { ReactNode, RefObject } from "react";
 
 import type { PlaybackClock, PlaybackProjectionSource } from "@/types/playbackProjection";

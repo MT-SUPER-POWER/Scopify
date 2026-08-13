@@ -8,7 +8,7 @@ import {
   type PlaybackHostSessionSnapshot,
   type PlaybackQueueEntry,
   type PlaybackSessionSeed,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import {
   createPlaybackHostSessionController,

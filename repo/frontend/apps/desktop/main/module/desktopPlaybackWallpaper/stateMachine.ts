@@ -2,7 +2,7 @@ import type {
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferences,
   DesktopPlaybackWallpaperStatus,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { cloneDesktopPlaybackWallpaperPreferences } from "../../../types/desktopPlaybackWallpaper.js";
 

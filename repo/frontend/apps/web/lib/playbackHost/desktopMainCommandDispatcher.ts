@@ -1,4 +1,4 @@
-import type { PlaybackCommand, PlaybackCommandReceipt } from "@scopify/desktop-contract";
+import type { PlaybackCommand, PlaybackCommandReceipt } from "@scopifymusicplayer/desktop-contract";
 
 /**
  * Narrow hand-off from Main Window session drafts to its active playback

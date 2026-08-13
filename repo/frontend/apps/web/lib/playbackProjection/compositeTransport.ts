@@ -1,4 +1,4 @@
-import type { PlaybackMessage } from "@scopify/desktop-contract";
+import type { PlaybackMessage } from "@scopifymusicplayer/desktop-contract";
 
 import type {
   InProcessPlaybackTransport,

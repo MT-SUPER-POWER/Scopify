@@ -10,7 +10,7 @@ import type {
   DesktopCacheStats,
   DesktopHostConfig,
   PageCacheCategory,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 const CACHE_MARKER = ".scopify-cache-root";
 const SCOPES: CacheScope[] = ["page", "playback"];

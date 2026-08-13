@@ -4,7 +4,7 @@ import {
   type PlaybackHostReplaceSessionCommand,
   type PlaybackQueueEntry,
   type PlaybackSessionSeed,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import type { NeteaseLyric } from "@/types/api/music";
 

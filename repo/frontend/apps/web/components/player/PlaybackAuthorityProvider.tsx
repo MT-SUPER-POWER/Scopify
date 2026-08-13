@@ -6,7 +6,7 @@ import type {
   PlaybackCommand,
   PlaybackSessionState,
   PlaybackTimelineDiscontinuityReason,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { PlaybackAudioFeaturePublisher } from "@/components/player/PlaybackAudioFeaturePublisher";
 import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjectionProvider";

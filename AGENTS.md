@@ -58,15 +58,14 @@ Scopify/
 
 ### Web Path Aliases（`repo/frontend/apps/web/tsconfig.json`）
 
-| Alias           | 路径             |
-| --------------- | ---------------- |
+| Alias           | 路径                       |
+| --------------- | -------------------------- |
 | `@/*`           | `repo/frontend/apps/web/*` |
-| `@components/*` | `./components/*` |
-| `@store/*`      | `./store/*`      |
-| `@app-types/*`  | `./types/*`      |
+| `@components/*` | `./components/*`           |
+| `@store/*`      | `./store/*`                |
+| `@app-types/*`  | `./types/*`                |
 
 优先使用 `@/types/...`、`@/lib/...`、`@/components/...`。
-
 
 ---
 
@@ -112,6 +111,7 @@ NetEase API 服务位于 `repo/backend/api-enhanced/`（git submodule）。前�
 ---
 
 <!-- CODEGRAPH_START -->
+
 ## CodeGraph
 
 In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:

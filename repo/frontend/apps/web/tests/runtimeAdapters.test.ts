@@ -14,7 +14,7 @@ import {
   type PlaybackHostReplaceSessionCommand,
   type PlaybackHostSessionSnapshot,
   type PlaybackSessionSeed,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { createBrowserRuntime } from "@/lib/runtime/adapters/browser";
 import { MemoryBrowserCacheStorage } from "@/lib/cache/browserCacheStorage";

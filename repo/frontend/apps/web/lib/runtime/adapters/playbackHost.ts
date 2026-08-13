@@ -3,7 +3,7 @@ import type {
   PlaybackHostBridge,
   PlaybackCacheCategory,
   PlaybackTransportRole,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { connectPlaybackHostControlTransport } from "@/lib/playbackHost/controlTransport";
 import { createBrowserRuntime } from "./browser";

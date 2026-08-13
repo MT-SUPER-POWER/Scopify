@@ -1,4 +1,4 @@
-import type { DesktopIconVisibilityState } from "@scopify/desktop-contract";
+import type { DesktopIconVisibilityState } from "@scopifymusicplayer/desktop-contract";
 
 export interface DesktopIconVisibilityControllerState {
   isPending: boolean;

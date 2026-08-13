@@ -1,7 +1,7 @@
 import {
   type PlaybackCheckpoint,
   validatePlaybackCheckpoint,
-} from "@scopify/desktop-contract/playbackCheckpoint";
+} from "@scopifymusicplayer/desktop-contract/playbackCheckpoint";
 import * as nodeFs from "node:fs/promises";
 
 const UTF8 = "utf8" as const;

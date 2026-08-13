@@ -17,7 +17,7 @@ export function AboutSection({ artist }: Props) {
 
   const modal = isOpen ? (
     <div
-      className="animate-in fade-in fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4 backdrop-blur-md duration-200 md:p-6"
+      className="animate-in fade-in bg-overlay/75 fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md duration-200 md:p-6"
       onClick={() => setIsOpen(false)}
     >
       <div
@@ -28,7 +28,7 @@ export function AboutSection({ artist }: Props) {
         <button
           type="button"
           onClick={() => setIsOpen(false)}
-          className="absolute top-4 right-4 z-20 flex size-9 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/70"
+          className="bg-overlay/40 text-overlay-foreground hover:bg-overlay/70 absolute top-4 right-4 z-20 flex size-9 cursor-pointer items-center justify-center rounded-full backdrop-blur-md transition-colors"
         >
           <X className="size-5" />
         </button>

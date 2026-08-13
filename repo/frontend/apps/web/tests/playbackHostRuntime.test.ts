@@ -4,7 +4,7 @@ import type {
   PlaybackCommand,
   PlaybackCommandReceipt,
   PlaybackSessionState,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import type {
   PlaybackCatalogPort,

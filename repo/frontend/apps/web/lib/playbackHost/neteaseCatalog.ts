@@ -1,4 +1,4 @@
-import type { PlaybackQueueEntry } from "@scopify/desktop-contract";
+import type { PlaybackQueueEntry } from "@scopifymusicplayer/desktop-contract";
 
 import { UI_QUALITY_TO_LEVEL, getLyric, getSongUrlWithQuality } from "@/lib/api/music";
 import {

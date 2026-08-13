@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { join } from "node:path";
 
 import { app } from "electron";
-import type { DesktopIconVisibilityState } from "@scopify/desktop-contract";
+import type { DesktopIconVisibilityState } from "@scopifymusicplayer/desktop-contract";
 
 import { parseWindowsDesktopIconVisibilityResult } from "./result.js";
 

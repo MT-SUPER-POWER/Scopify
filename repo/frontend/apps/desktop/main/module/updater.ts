@@ -4,7 +4,7 @@ import type {
   AppUpdateState,
   AppUpdateStatePatch,
   DesktopHostConfig,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 import { logger } from "../constants.js";
 
 const { autoUpdater } = electronUpdater;

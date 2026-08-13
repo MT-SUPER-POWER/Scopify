@@ -3,7 +3,7 @@ import {
   isPlaybackQueueEntry,
   isPlaybackSessionSeed,
   type PlaybackHostSessionSnapshot,
-} from "@scopify/desktop-contract/playbackHostControl";
+} from "@scopifymusicplayer/desktop-contract/playbackHostControl";
 
 import {
   createInitialPlaybackSessionRevision,

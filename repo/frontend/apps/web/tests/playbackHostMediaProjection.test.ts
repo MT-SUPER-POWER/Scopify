@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import type { PlaybackCommand, PlaybackSessionState } from "@scopify/desktop-contract";
+import type { PlaybackCommand, PlaybackSessionState } from "@scopifymusicplayer/desktop-contract";
 
 import {
   createDeferredPlaybackHostAuthorityPort,

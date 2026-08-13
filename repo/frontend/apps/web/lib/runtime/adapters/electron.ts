@@ -1,4 +1,4 @@
-import type { DesktopBridge } from "@scopify/desktop-contract";
+import type { DesktopBridge } from "@scopifymusicplayer/desktop-contract";
 
 import { connectPlaybackHostControlTransport } from "@/lib/playbackHost/controlTransport";
 import type { LyricData } from "@/types/lyrics";

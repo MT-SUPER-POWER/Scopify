@@ -1,7 +1,12 @@
 {
-  "name": "@scopify/desktop-contract",
+  "name": "@scopifymusicplayer/desktop-contract",
   "version": "1.0.0",
   "description": "Versioned IPC contract between the Scopify renderer and desktop host",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ScopifyMusicPlayer/Scopify.git",
+    "directory": "repo/frontend/packages/desktop-contract"
+  },
   "type": "module",
   "files": [
     "src"
@@ -19,6 +24,7 @@
     "typescript": "^5.9.3"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   }
 }

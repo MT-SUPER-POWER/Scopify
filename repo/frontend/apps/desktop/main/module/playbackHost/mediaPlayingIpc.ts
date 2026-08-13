@@ -3,7 +3,7 @@ import type { BrowserWindow, IpcMainEvent } from "electron";
 import {
   PLAYBACK_HOST_MEDIA_PLAYING_CHANNEL,
   parsePlaybackHostMediaPlayingRequest,
-} from "@scopify/desktop-contract/playbackHost";
+} from "@scopifymusicplayer/desktop-contract/playbackHost";
 
 export type PlaybackHostMediaPlayingListener = (event: IpcMainEvent, input: unknown) => void;
 

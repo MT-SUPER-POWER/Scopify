@@ -13,7 +13,7 @@ import {
   type PlaybackQueueSeed,
   type PlaybackSessionSeed,
   validatePlaybackHostClientCommand,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import {
   createPlaybackQueue,

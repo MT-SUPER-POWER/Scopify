@@ -1,4 +1,4 @@
-import type { CacheScope } from "@scopify/desktop-contract";
+import type { CacheScope } from "@scopifymusicplayer/desktop-contract";
 import { createStore, del, entries } from "idb-keyval";
 
 export interface BrowserCacheRecord {

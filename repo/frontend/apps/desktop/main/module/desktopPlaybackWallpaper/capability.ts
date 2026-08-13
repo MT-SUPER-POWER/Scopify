@@ -3,7 +3,7 @@ import type {
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferences,
   DesktopPlaybackWallpaperPreferencesUpdate,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import {
   applyDesktopPlaybackWallpaperPreferencesUpdate,

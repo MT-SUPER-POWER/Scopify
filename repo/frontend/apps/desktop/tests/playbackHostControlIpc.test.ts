@@ -1,8 +1,8 @@
 import { describe, expect, mock, test } from "bun:test";
 import type { BrowserWindow, IpcMainEvent } from "electron";
 
-import type { PlaybackHostReplaceSessionCommand } from "@scopify/desktop-contract";
-import { PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION } from "@scopify/desktop-contract";
+import type { PlaybackHostReplaceSessionCommand } from "@scopifymusicplayer/desktop-contract";
+import { PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION } from "@scopifymusicplayer/desktop-contract";
 
 type IpcListener = (event: IpcMainEvent, input: unknown) => void;
 type PortListener = (...args: unknown[]) => void;

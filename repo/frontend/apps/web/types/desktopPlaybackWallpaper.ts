@@ -3,7 +3,7 @@ import type {
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
   PlaybackProjection,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 import type { MotionValue } from "framer-motion";
 
 import type { FoliaPlaybackBridge } from "@/types/foliaStage";

@@ -19,7 +19,7 @@ import type {
   PlaybackTransportPayload,
   PlaybackTransportRole,
   RendererLogEvent,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import type {
   DesktopLyricCommand,

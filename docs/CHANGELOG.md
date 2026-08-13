@@ -15,6 +15,7 @@
 
 ### Added
 
+- 新增 GitHub Package 自动化发布支持：配置 GitHub Actions 工作流 `.github/workflows/publish-package.yml`，在打 tag（如 `v*` 或 `contract-v*`）时自动将桌面契约包发布至 GitHub Packages (`npm.pkg.github.com`)；全库仓库地址与包名同步迁移至组织目标 `@scopifymusicplayer/desktop-contract` (https://github.com/ScopifyMusicPlayer/Scopify)。
 - 统一搜索窗口支持以 `>` 前缀搜索并执行命令；`Ctrl + Shift + P` 会直接打开命令查询。
 - 命令候选按设备本地累计使用次数排序，并继续支持上下方向键和 Enter 操作。
 - 桌面端新增应用级隐藏 Playback Host：独立承载媒体元素、AudioContext、播放 Authority、队列、网易云音源/歌词解析及自动续播，主窗口隐藏、刷新或销毁不再中断播放运行时。
@@ -23,6 +24,7 @@
 
 ### Fixed
 
+- 修复 Vercel 部署因重构 `repo/` 目录层级缺失根目录 `installCommand` 导致的 Workspace 包解析与构建失败；在 `vercel.json` 中补全根目录依赖安装指令。
 - 修复 Windows Release 打包在 Bun 1.3.7 下无法解析 Discord Rich Presence 运行时依赖的问题；发布工作流现使用与工作区一致的 Bun 1.3.11。
 - 修复页面缓存与播放缓存共用目录和清理范围的问题；桌面端改为独立子目录并安全迁移旧缓存，Web 端改用分区 IndexedDB 存储。
 - 修复 Windows 桌面播放壁纸在安装包中被错误标记为不支持的问题；WorkerW 附着与系统壁纸回退脚本现随安装包发布，并按开发或生产运行时解析对应路径。
@@ -40,6 +42,8 @@
 
 ### Quality
 
+- 新增 PR 质量门禁工作流 `.github/workflows/ci.yml`，在 PR 与主干提交时自动执行 `typecheck`、`format:check`、`lint` 与 `test` 检验；明确收敛 Prettier 校验范围，自动忽略 `repo/backend/` 和 `repo/frontend/apps/mobile/` 子模块与各项构建/工具缓存，配置 Bun 与 Turbo 缓存并支持自动取消同一 PR 的旧构建任务。
+- 增强发布工作流 `.github/workflows/release.yml` 的 Changelog 校验逻辑：当提取到的版本发版说明为空时显式 `exit 1` 终止发版，防止漏写 CHANGELOG。
 - 将 Next.js 开发缓存隔离至 `.next-dev/`，避免开发服务与生产或桌面 Renderer 构建共用 `.next/` 后触发 Turbopack 缓存重建和 I/O 警告。
 - 收敛应用源码目录至 `repo/`：Web、Electron、共享契约、Mobile 与 API 后端统一迁移为 `repo/frontend/*`、`repo/backend/*`，并同步更新 workspace、Docker、Vercel、Release workflow、构建制品路径与架构文档。
 - Discord 设置新增本机连接测试与实时连接状态：直接尝试 Discord 桌面端 RPC，并以 Toast 明确反馈连接、配置或启动失败原因。

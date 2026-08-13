@@ -24,7 +24,7 @@ delete packagedAppPackage.build;
 const dependencies = packagedAppPackage.dependencies;
 if (dependencies && typeof dependencies === "object" && !Array.isArray(dependencies)) {
   const runtimeDependencies = { ...(dependencies as Record<string, unknown>) };
-  delete runtimeDependencies["@scopify/desktop-contract"];
+  delete runtimeDependencies["@scopifymusicplayer/desktop-contract"];
   packagedAppPackage.dependencies = runtimeDependencies;
 }
 writeFileSync(

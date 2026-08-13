@@ -1,4 +1,4 @@
-import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import type { DesktopHostConfig } from "@scopifymusicplayer/desktop-contract";
 import type { WebConfig } from "@/types/config";
 
 export type SettingsTabId = "general" | "network" | "storage" | "desktop" | "shortcuts";

@@ -5,7 +5,7 @@ import {
   validatePlaybackHostClientCommand,
   validatePlaybackHostControlReceipt,
   validatePlaybackHostSessionSnapshot,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 /** Main Window receives only Host-owned receipts and session snapshots. */
 export type PlaybackHostControlClientInboundPayload = PlaybackHostHostMessage;

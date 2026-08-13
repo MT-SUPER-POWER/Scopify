@@ -78,7 +78,7 @@ export const WEB_IMAGE_REMOTE_PATTERNS = [
 ] satisfies NonNullable<NextConfig["images"]>["remotePatterns"];
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@scopify/desktop-contract"],
+  transpilePackages: ["@scopifymusicplayer/desktop-contract"],
   images: {
     remotePatterns: WEB_IMAGE_REMOTE_PATTERNS,
     unoptimized: shouldUseUnoptimizedImages(),

@@ -1,4 +1,4 @@
-import type { AudioFeatureFrameV1, PlaybackProjection } from "@scopify/desktop-contract";
+import type { AudioFeatureFrameV1, PlaybackProjection } from "@scopifymusicplayer/desktop-contract";
 
 import { AudioFeatureSampler } from "@/lib/playbackHost/audioFeatureSampler";
 import { downsampleSpectrum } from "@/lib/desktopPlaybackWallpaper/playback";

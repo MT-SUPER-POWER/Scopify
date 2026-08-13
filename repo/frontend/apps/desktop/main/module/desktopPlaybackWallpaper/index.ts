@@ -5,7 +5,7 @@ import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferences,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { parseDesktopPlaybackWallpaperPreferencesUpdate } from "../../../types/desktopPlaybackWallpaper.js";
 import { logger } from "../../constants.js";

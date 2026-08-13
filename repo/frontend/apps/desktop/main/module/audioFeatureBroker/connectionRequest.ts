@@ -1,4 +1,4 @@
-import type { AudioFeatureTransportRole } from "@scopify/desktop-contract";
+import type { AudioFeatureTransportRole } from "@scopifymusicplayer/desktop-contract";
 
 export interface AudioFeatureConnectionRequest {
   connectionId: string;

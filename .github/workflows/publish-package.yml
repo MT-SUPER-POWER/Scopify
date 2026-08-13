@@ -1,0 +1,43 @@
+name: Publish Desktop Contract Package
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "contract-v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@scopifymusicplayer"
+
+      - name: Install workspace dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run typecheck
+        run: bun run --cwd repo/frontend/packages/desktop-contract typecheck
+
+      - name: Publish to GitHub Packages
+        run: npm publish --access public
+        working-directory: repo/frontend/packages/desktop-contract
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

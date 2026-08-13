@@ -6,7 +6,19 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["node_modules", ".next", "out", "logs", "components/ui", "public/data"],
+    ignores: [
+      "node_modules",
+      ".next",
+      ".next-dev",
+      "out",
+      "dist",
+      "build",
+      ".turbo",
+      "logs",
+      "coverage",
+      "components/ui",
+      "public/data",
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

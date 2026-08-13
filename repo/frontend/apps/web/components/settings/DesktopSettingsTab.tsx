@@ -3,7 +3,7 @@
 import { CircleCheck, CircleX, LoaderCircle, Radio } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 import { useLogDirectory } from "@/hooks/settings/useLogDirectory";
-import type { DesktopLogLevel } from "@scopify/desktop-contract";
+import type { DesktopLogLevel } from "@scopifymusicplayer/desktop-contract";
 import type { DesktopSettingsTabProps } from "@/types/components/settings";
 import { AppUpdaterSection } from "./AppUpdaterSection";
 import { DesktopLyricSection } from "./DesktopLyricSection";

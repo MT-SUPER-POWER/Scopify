@@ -7,7 +7,7 @@ import {
   type DesktopIconVisibilityState,
   type DesktopPlaybackWallpaperModel,
   type PageCacheStats,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import {
   createBrowserCacheStorage,

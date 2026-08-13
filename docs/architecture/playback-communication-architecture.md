@@ -399,7 +399,7 @@ Authority 重启产生新 Authority ID。Broker 清除旧的可重放状态，Re
 
 ## Transport Adapters
 
-技术选型采用 Electron 自带的 `MessageChannelMain` / `MessagePortMain` 作为跨 Renderer Transport，沿用 `@scopify/desktop-contract`、Zod 与 `zustand/vanilla`；本阶段不新增 `electron-trpc`、Comlink、`broadcast-channel`、XState 或 RxJS。原因不是这些库无效，而是它们分别只覆盖 RPC、广播、状态机或流组合，不能替代 Session、sequence、Clock Anchor、Timeline Revision、Bootstrap 与单调投影协议。完整证据和采用触发条件见 [库选型调研](../research/playback-communication-libraries.md)。
+技术选型采用 Electron 自带的 `MessageChannelMain` / `MessagePortMain` 作为跨 Renderer Transport，沿用 `@scopifymusicplayer/desktop-contract`、Zod 与 `zustand/vanilla`；本阶段不新增 `electron-trpc`、Comlink、`broadcast-channel`、XState 或 RxJS。原因不是这些库无效，而是它们分别只覆盖 RPC、广播、状态机或流组合，不能替代 Session、sequence、Clock Anchor、Timeline Revision、Bootstrap 与单调投影协议。完整证据和采用触发条件见 [库选型调研](../research/playback-communication-libraries.md)。
 
 ### In-process Adapter
 

@@ -7,7 +7,7 @@ import {
   validateAudioFeatureAck,
   validateAudioFeatureFrame,
   validateAudioFeatureTransportPayload,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 function createFrame(overrides: Partial<AudioFeatureFrameV1> = {}): AudioFeatureFrameV1 {
   return {

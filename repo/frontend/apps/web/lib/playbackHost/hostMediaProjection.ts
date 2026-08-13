@@ -1,4 +1,4 @@
-import type { PlaybackCommand, PlaybackCommandReceipt } from "@scopify/desktop-contract";
+import type { PlaybackCommand, PlaybackCommandReceipt } from "@scopifymusicplayer/desktop-contract";
 
 import type { PlaybackRuntimeSession } from "@/lib/playbackHost/catalog";
 import type {

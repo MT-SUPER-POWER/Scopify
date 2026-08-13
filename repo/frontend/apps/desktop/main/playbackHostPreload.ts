@@ -6,7 +6,7 @@ import {
   type AudioFeatureFrameV1,
   type PlaybackHostBridge,
   type PlaybackTransportPayload,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 import { createPlaybackHostControlPreloadTransport } from "./preloadPlaybackHostControl";
 
 type ElectronRendererMessagePort = MessagePort & {

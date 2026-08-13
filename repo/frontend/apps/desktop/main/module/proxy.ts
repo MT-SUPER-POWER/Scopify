@@ -1,6 +1,6 @@
 import { type ProxyConfig, session } from "electron";
 
-import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import type { DesktopHostConfig } from "@scopifymusicplayer/desktop-contract";
 
 import { logger } from "../constants.js";
 

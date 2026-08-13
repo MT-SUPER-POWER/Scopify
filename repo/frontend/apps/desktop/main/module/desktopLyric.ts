@@ -6,7 +6,7 @@ import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { __iconWindow, __preloadScript, logger } from "../constants.js";
 

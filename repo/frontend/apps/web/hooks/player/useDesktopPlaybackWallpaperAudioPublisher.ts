@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import type { PlaybackProjection } from "@scopify/desktop-contract";
+import type { PlaybackProjection } from "@scopifymusicplayer/desktop-contract";
 
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import {

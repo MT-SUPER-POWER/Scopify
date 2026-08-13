@@ -42,7 +42,7 @@ repo/
       desktop-contract/   Web/Desktop 共享的版本化 IPC 契约
 ```
 
-Web Path alias：`@/` → `repo/frontend/apps/web/`，例如 `@/types/…`、`@/lib/…`、`@/components/…`。Desktop 不得反向 import Web 源码，只能消费 `@scopify/desktop-contract` 和生成的 `renderer/` 制品。
+Web Path alias：`@/` → `repo/frontend/apps/web/`，例如 `@/types/…`、`@/lib/…`、`@/components/…`。Desktop 不得反向 import Web 源码，只能消费 `@scopifymusicplayer/desktop-contract` 和生成的 `renderer/` 制品。
 
 ---
 

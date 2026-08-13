@@ -5,7 +5,7 @@ import {
   isPlaybackTransportControl,
   validatePlaybackCommand,
   validatePlaybackCommandReceipt,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
 import type { PlaybackAuthorityBinding } from "@/types/playbackAuthority";

@@ -4,7 +4,7 @@ import {
   type PlaybackHostQueueCommand,
   type PlaybackHostReplaceSessionCommand,
   type PlaybackHostSessionSnapshot,
-} from "@scopify/desktop-contract/playbackHostControl";
+} from "@scopifymusicplayer/desktop-contract/playbackHostControl";
 
 import {
   createInitialPlaybackSessionRevision,

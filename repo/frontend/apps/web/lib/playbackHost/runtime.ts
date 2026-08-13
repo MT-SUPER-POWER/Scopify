@@ -2,8 +2,8 @@ import type {
   PlaybackCommand,
   PlaybackCommandReceipt,
   PlaybackSessionState,
-} from "@scopify/desktop-contract";
-import { PLAYBACK_VOLUME_MAX } from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
+import { PLAYBACK_VOLUME_MAX } from "@scopifymusicplayer/desktop-contract";
 
 import type {
   PlaybackCatalogPort,

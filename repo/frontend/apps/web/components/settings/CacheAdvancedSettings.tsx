@@ -1,7 +1,7 @@
 "use client";
 
 import { FolderOpen } from "lucide-react";
-import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import type { DesktopHostConfig } from "@scopifymusicplayer/desktop-contract";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import type { CachePreferences } from "@/types/cache";

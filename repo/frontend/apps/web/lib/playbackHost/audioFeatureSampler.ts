@@ -1,7 +1,7 @@
 import {
   AUDIO_FEATURE_PROTOCOL_VERSION,
   type AudioFeatureFrameV1,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { createAudioFeatureStream, type AudioFeatureStream } from "@/lib/audioFeature/stream";
 

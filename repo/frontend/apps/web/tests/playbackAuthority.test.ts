@@ -5,7 +5,7 @@ import type {
   PlaybackPhase,
   PlaybackProjection,
   PlaybackSessionState,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { PlaybackAuthority } from "@/lib/playbackProjection/authority";
 import { createInProcessPlaybackTransport } from "@/lib/playbackProjection/inProcessTransport";

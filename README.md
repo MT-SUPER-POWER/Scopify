@@ -93,12 +93,12 @@ Vercel 可以同时部署 Scopify Web 和 `api-enhanced` 后端。两者应创�
 
 3. 在 Vercel 导入本仓库作为 Web 项目，并设置：
 
-   | 项目设置 | 值 |
-   | --- | --- |
-   | Root Directory | `repo/frontend/apps/web` |
-   | Framework Preset | `Next.js` |
-   | Install Command | `cd ../../../.. && bun install --frozen-lockfile` |
-   | Build Command | 保持 `repo/frontend/apps/web/vercel.json` 中的配置 |
+   | 项目设置         | 值                                                 |
+   | ---------------- | -------------------------------------------------- |
+   | Root Directory   | `repo/frontend/apps/web`                           |
+   | Framework Preset | `Next.js`                                          |
+   | Install Command  | `cd ../../../.. && bun install --frozen-lockfile`  |
+   | Build Command    | 保持 `repo/frontend/apps/web/vercel.json` 中的配置 |
 
    Web 的构建命令会回到 workspace 根目录执行 `bun run build:web`，以正确解析共享契约包。
 
@@ -314,7 +314,6 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 ![Discord接入效果](/docs/img/DiscordPresnet.png)
 
 </details>
-
 
 ## TODO
 

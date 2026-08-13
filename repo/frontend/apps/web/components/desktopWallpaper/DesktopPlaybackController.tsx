@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperPreferencesUpdate,
-} from "@scopify/desktop-contract";
+} from "@scopifymusicplayer/desktop-contract";
 
 import { DesktopPlaybackAppearanceControls } from "@/components/desktopWallpaper/DesktopPlaybackAppearanceControls";
 import { DesktopPlaybackControllerHeader } from "@/components/desktopWallpaper/DesktopPlaybackControllerHeader";
