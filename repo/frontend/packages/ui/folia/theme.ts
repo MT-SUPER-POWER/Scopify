@@ -1,4 +1,4 @@
-import type { FoliaStageTheme, FoliaThemeColors, FoliaThemeVariant } from "@/types/foliaStage";
+import type { FoliaStageTheme, FoliaThemeColors, FoliaThemeVariant } from "./types";
 
 const HEX_COLOR_PATTERN = /^#[\da-f]{6}$/i;
 

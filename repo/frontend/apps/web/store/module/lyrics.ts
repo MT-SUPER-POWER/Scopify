@@ -16,7 +16,7 @@ import {
   getBuiltinFoliaStageTheme,
   isBuiltinFoliaStageTheme,
   normalizeFoliaStageTheme,
-} from "@/lib/lyrics/foliaTheme";
+} from "@scopify/ui/folia";
 import type { FoliaStageSettings, FoliaStageStore } from "@/types/foliaStage";
 
 const tuningDefaults = createDefaultFoliaStageSettings().tunings;

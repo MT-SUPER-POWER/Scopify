@@ -1,16 +1,22 @@
-import type { Theme } from "../../types";
-import type { TranslationKey } from "@/lib/i18n";
+import type { FoliaThemeColors } from "./types";
 
-// src/components/visualizer/themePresets.ts
-// Built-in color theme presets for the visualizer stage.
+export type FoliaThemePresetLabelKey =
+  | "folia.preset.amber"
+  | "folia.preset.dusk"
+  | "folia.preset.forest"
+  | "folia.preset.lavender"
+  | "folia.preset.midnight"
+  | "folia.preset.ocean"
+  | "folia.preset.rose"
+  | "folia.preset.snow";
 
-export interface ThemePreset {
+export interface FoliaThemePreset {
+  colors: FoliaThemeColors;
   id: string;
-  labelKey: TranslationKey;
-  colors: Pick<Theme, "backgroundColor" | "primaryColor" | "accentColor" | "secondaryColor">;
+  labelKey: FoliaThemePresetLabelKey;
 }
 
-export const THEME_PRESETS: ThemePreset[] = [
+export const THEME_PRESETS: readonly FoliaThemePreset[] = [
   {
     id: "midnight",
     labelKey: "folia.preset.midnight",
@@ -93,10 +99,12 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
 ];
 
-const PRESET_MAP = new Map(THEME_PRESETS.map((p) => [p.id, p]));
-
 export const DEFAULT_THEME_PRESET_ID = "midnight";
 
-export function getThemePresetById(id: string): ThemePreset {
+const PRESET_MAP = new Map<string, FoliaThemePreset>(
+  THEME_PRESETS.map((preset) => [preset.id, preset]),
+);
+
+export function getThemePresetById(id: string): FoliaThemePreset {
   return PRESET_MAP.get(id) ?? PRESET_MAP.get(DEFAULT_THEME_PRESET_ID)!;
 }

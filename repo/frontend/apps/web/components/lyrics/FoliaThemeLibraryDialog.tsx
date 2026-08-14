@@ -7,7 +7,7 @@ import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeEditor } from "@/components/lyrics/FoliaThemeEditor";
 import { FoliaThemeLibraryList } from "@/components/lyrics/FoliaThemeLibraryList";
-import { getFoliaStageTheme } from "@/lib/lyrics/foliaTheme";
+import { getFoliaStageTheme } from "@scopify/ui/folia";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaThemeLibraryDialogProps } from "@/types/components/lyrics";
 

@@ -1,0 +1,40 @@
+{
+  "name": "@scopify/ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared Scopify UI primitives, product themes, and Folia theme model",
+  "type": "module",
+  "imports": {
+    "@/*": "./*"
+  },
+  "files": [
+    "folia",
+    "scopify",
+    "shadcn",
+    "theme.css"
+  ],
+  "exports": {
+    "./folia": "./folia/index.ts",
+    "./scopify/theme.css": "./scopify/theme.css",
+    "./shadcn/theme.css": "./shadcn/theme.css",
+    "./shadcn/components/*": "./shadcn/components/*.tsx",
+    "./shadcn/lib/*": "./shadcn/lib/*.ts",
+    "./theme.css": "./theme.css"
+  },
+  "scripts": {
+    "test": "bun test tests",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.468.0",
+    "shadcn": "^3.8.5",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  }
+}

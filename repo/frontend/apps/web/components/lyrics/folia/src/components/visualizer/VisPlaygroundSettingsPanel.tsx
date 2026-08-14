@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { THEME_PRESETS } from "@scopify/ui/folia";
 import {
   AlertTriangle,
   CaptionsOff,
@@ -31,7 +32,6 @@ import {
   getVisualizerModeLabel,
   type VisualizerRegistryEntry,
 } from "./registry";
-import { THEME_PRESETS } from "./themePresets";
 import { type VisPlaygroundEditSection } from "./VisPlaygroundPreviewHotspots";
 import type {
   VisualizerBackgroundActions,

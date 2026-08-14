@@ -6,7 +6,7 @@ import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
   type RendererArtifactManifest,
   RENDERER_ARTIFACT_MANIFEST_VERSION,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 const MANIFEST_FILE = "renderer.manifest.json";
 const REQUIRED_RENDERER_ENTRIES = ["index.html"] as const;

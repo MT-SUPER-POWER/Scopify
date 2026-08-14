@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
-import { createFoliaStageTheme } from "@/lib/lyrics/foliaTheme";
+import { createFoliaStageTheme } from "@scopify/ui/folia";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaThemeLibraryListProps } from "@/types/components/lyrics";

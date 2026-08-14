@@ -3,6 +3,7 @@
   "references": [
     { "path": "./repo/frontend/apps/web" },
     { "path": "./repo/frontend/apps/desktop" },
-    { "path": "./repo/frontend/packages/desktop-contract" }
+    { "path": "./repo/frontend/packages/desktop-contract" },
+    { "path": "./repo/frontend/packages/ui" }
   ]
 }

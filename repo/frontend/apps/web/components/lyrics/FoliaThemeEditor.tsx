@@ -8,7 +8,7 @@ import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaThemeColorEditor } from "@/components/lyrics/FoliaThemeColorEditor";
 import { FoliaThemeJsonTransfer } from "@/components/lyrics/FoliaThemeJsonTransfer";
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
-import { getFoliaThemeColors, isBuiltinFoliaStageTheme } from "@/lib/lyrics/foliaTheme";
+import { getFoliaThemeColors, isBuiltinFoliaStageTheme } from "@scopify/ui/folia";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import type { FoliaThemeEditorProps } from "@/types/components/lyrics";

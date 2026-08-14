@@ -1,5 +1,5 @@
-import type { AudioFeatureAck, AudioFeatureFrameV1 } from "@mt-super-power/desktop-contract";
-import { isAudioFeatureAck, isAudioFeatureFrame } from "@mt-super-power/desktop-contract";
+import type { AudioFeatureAck, AudioFeatureFrameV1 } from "@scopify/desktop-contract";
+import { isAudioFeatureAck, isAudioFeatureFrame } from "@scopify/desktop-contract";
 
 import type { AudioFeatureBrokerPort } from "./port.js";
 

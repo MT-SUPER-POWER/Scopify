@@ -1,5 +1,7 @@
 import type { LineRenderHints } from "./utils/lyrics/renderHints";
 
+export type { DualTheme, Theme } from "@scopify/ui/folia";
+
 export interface LyricRuby {
   text: string;
   startTime: number; // Seconds
@@ -77,23 +79,6 @@ export interface LyricData {
   };
 }
 
-export interface Theme {
-  name: string;
-  backgroundColor: string;
-  primaryColor: string;
-  accentColor: string;
-  secondaryColor: string;
-  fontStyle: "sans" | "serif" | "mono";
-  fontFamily?: string;
-  fontFamilyStack?: string[];
-  fontWeight?: number;
-  animationIntensity: "calm" | "normal" | "chaotic";
-  wordColors?: { word: string; color: string }[];
-  lyricsIcons?: string[];
-  provider?: string;
-  description?: string;
-}
-
 export type CustomLyricsFontSource = "system" | "uploaded";
 
 export interface StoredCustomLyricsFont {
@@ -101,11 +86,6 @@ export interface StoredCustomLyricsFont {
   family: string;
   label?: string | null;
   fontId?: string;
-}
-
-export interface DualTheme {
-  light: Theme;
-  dark: Theme;
 }
 
 export type ThemeMode = "default" | "ai" | "custom";

@@ -5,7 +5,7 @@ import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeJsonExport } from "@/components/lyrics/FoliaThemeJsonExport";
 import { FoliaThemeJsonImport } from "@/components/lyrics/FoliaThemeJsonImport";
-import { parseFoliaStageThemeJson } from "@/lib/lyrics/foliaTheme";
+import { parseFoliaStageThemeJson } from "@scopify/ui/folia";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type {
   FoliaThemeImportMode,
