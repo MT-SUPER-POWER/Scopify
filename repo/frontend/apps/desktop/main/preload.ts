@@ -15,7 +15,6 @@ import type {
   PlaybackTransportPayload,
   PlaybackTransportRole,
 } from "@mt-super-power/desktop-contract";
-import { createPlaybackHostControlPreloadTransport } from "./preloadPlaybackHostControl";
 
 type ElectronRendererMessagePort = MessagePort & {
   onclose: ((event: Event) => void) | null;
@@ -23,19 +22,6 @@ type ElectronRendererMessagePort = MessagePort & {
 
 let playbackTransportPort: ElectronRendererMessagePort | null = null;
 let audioFeatureTransportPort: ElectronRendererMessagePort | null = null;
-
-const playbackHostControlTransport = createPlaybackHostControlPreloadTransport("client", {
-  createChannel: () => {
-    const channel = new MessageChannel();
-    return {
-      port1: channel.port1 as ElectronRendererMessagePort,
-      port2: channel.port2,
-    };
-  },
-  connectPort: (connectionId, role, port) => {
-    ipcRenderer.postMessage("playback-host-control:connect", { connectionId, role }, [port]);
-  },
-});
 
 function closePlaybackTransportPort() {
   const port = playbackTransportPort;
@@ -132,8 +118,6 @@ const electronAPI: DesktopBridge = {
       if (playbackTransportPort === port) closePlaybackTransportPort();
     };
   },
-  connectPlaybackHostControl: (connectionId, onPayload, onClose) =>
-    playbackHostControlTransport.connect(connectionId, onPayload, onClose),
   relaunchApp: () => {
     ipcRenderer.send("relaunch-app");
   },
@@ -153,7 +137,6 @@ const electronAPI: DesktopBridge = {
       return false;
     }
   },
-  sendPlaybackHostControlPayload: (payload) => playbackHostControlTransport.send(payload),
   publishAudioFeatureFrame: (frame: AudioFeatureFrameV1) => {
     const port = audioFeatureTransportPort;
     if (!port) return false;

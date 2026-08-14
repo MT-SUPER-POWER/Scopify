@@ -3,11 +3,11 @@ import type { PlaybackProjection } from "@mt-super-power/desktop-contract";
 
 import {
   AUDIO_FEATURE_SAMPLE_INTERVAL_MS,
-  AudioFeatureHostSampler,
+  AudioFeatureSourceSampler,
   getAudioFeatureSource,
   registerAudioFeatureSource,
-  type AudioFeatureSource,
 } from "@/lib/audioFeature/source";
+import type { AudioFeatureSource } from "@/types/audioFeaturePublisher";
 
 class ManualIntervalTimer {
   callback: (() => void) | null = null;
@@ -65,10 +65,10 @@ function bands() {
   };
 }
 
-describe("AudioFeatureHostSampler", () => {
-  test("samples the Host source every 33ms and sends only connected projection identities", () => {
+describe("AudioFeatureSourceSampler", () => {
+  test("samples the analyser source every 33ms and sends only connected projection identities", () => {
     const timer = new ManualIntervalTimer();
-    const frames: Array<Parameters<typeof samplerPublish>[0]> = [];
+    const frames: AudioFeaturePublishedFrame[] = [];
     let currentProjection = projection({ connection: "disconnected" });
     let reads = 0;
     const source: AudioFeatureSource = {
@@ -77,7 +77,7 @@ describe("AudioFeatureHostSampler", () => {
         return bands();
       },
     };
-    const sampler = new AudioFeatureHostSampler({
+    const sampler = new AudioFeatureSourceSampler({
       getProjection: () => currentProjection,
       getSource: () => source,
       nowMs: () => 123,
@@ -113,11 +113,11 @@ describe("AudioFeatureHostSampler", () => {
   });
 
   test("skips paused or unavailable analysers and replaces the stream after an identity or transport change", () => {
-    const frames: Array<Parameters<typeof samplerPublish>[0]> = [];
+    const frames: AudioFeaturePublishedFrame[] = [];
     let currentProjection = projection();
     let isPaused = true;
     let acceptsFrames = true;
-    const sampler = new AudioFeatureHostSampler({
+    const sampler = new AudioFeatureSourceSampler({
       getProjection: () => currentProjection,
       getSource: () => ({ readBands: () => (isPaused ? null : bands()) }),
       publish: (frame) => {
@@ -168,12 +168,10 @@ describe("AudioFeatureHostSampler", () => {
   });
 });
 
-function samplerPublish(frame: {
+interface AudioFeaturePublishedFrame {
   authorityId: string;
   sequence: number;
   sessionId: string;
   spectrum: number[];
   streamId: string;
-}) {
-  return frame;
 }

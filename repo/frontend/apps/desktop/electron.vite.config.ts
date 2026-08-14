@@ -52,7 +52,6 @@ export default defineConfig(({ command }) => {
         rollupOptions: {
           input: {
             preload: resolve(root, "main/preload.ts"),
-            playbackHostPreload: resolve(root, "main/playbackHostPreload.ts"),
           },
           output: {
             entryFileNames: "[name].js",

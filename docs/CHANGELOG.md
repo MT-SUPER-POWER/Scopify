@@ -12,6 +12,7 @@
 ### Quality
 
 - **自闭环主进程内联打包**：桌面端生产构建（`electron-vite`）将纯 JS 运行时依赖（`@xhayper/discord-rpc`、`electron-log`、`electron-updater`、`js-yaml`、`zod` 等）全量 Tree-Shaking 编译并内联至 `out/main/main.js`；打包运行时声明 0 外部依赖，彻底免除了跨平台/CI 环境中对 `node_modules` 软链接的依赖与查找异常，并提升桌面端启动 I/O 效率。
+- **收敛桌面播放 Authority**：彻底移除未启用的隐藏播放 Renderer、专用 preload、会话控制协议、恢复检查点、路由与构建门禁；桌面主 Renderer 继续独占媒体元素、队列与播放 Authority，伴随窗口仅通过可靠 Playback Broker 消费投影。通用媒体类型、持久化 key 与音频特征采样器已迁回对应全局模块，`desktop-contract` 同步升级至 2.0.0。
 
 ### Fixed
 
@@ -36,7 +37,6 @@
 - 新增 GitHub Package 自动化发布支持：配置 GitHub Actions 工作流 `.github/workflows/publish-package.yml`，在打 tag（如 `v*` 或 `contract-v*`）时自动将桌面契约包发布至 GitHub Packages (`npm.pkg.github.com`)；全库仓库地址与包名同步迁移至组织目标 `@mt-super-power/desktop-contract` (https://github.com/MT-SUPER-POWER/Scopify)。
 - 统一搜索窗口支持以 `>` 前缀搜索并执行命令；`Ctrl + Shift + P` 会直接打开命令查询。
 - 命令候选按设备本地累计使用次数排序，并继续支持上下方向键和 Enter 操作。
-- 桌面端新增应用级隐藏 Playback Host：独立承载媒体元素、AudioContext、播放 Authority、队列、网易云音源/歌词解析及自动续播，主窗口隐藏、刷新或销毁不再中断播放运行时。
 - 桌面端设置新增“桌面歌词”独立配置与测试卡片：支持一键开/关桌面歌词悬浮窗口测试，并实时配置保持窗口置顶、鼠标穿透与隐藏任务栏图标。
 - 新增独立缓存清理页：按页面、播放地址、在线歌词及用户歌词数据分类展示条目数和占用空间，支持分组勾选、二次确认与选择性清理。
 
@@ -64,7 +64,7 @@
 - 修复桌面端打包版首屏加载动画可能一闪而过的问题：启动页现在等待自身渲染完成，并在 Renderer 就绪前保持可见。
 - 修复桌面端 renderer 同步与打包脚本错误定位工作区根目录、导致正式构建在复制 renderer 后中断的问题。
 - 修复 Discord Rich Presence 将曲目名重复显示为副标题或封面说明的问题；封面说明优先显示专辑名。后端 Ping 的成功与失败结果也统一通过 Toast 提示，不再滞留在设置行内。
-- 修复主窗口收纳、隐藏或重建后桌面背景流光间断的问题：音频特征改由 Playback Host 以独立 33 ms 时钟采样，并由壁纸 Renderer 自己按 rAF 平滑、衰减；Publisher、Subscriber 与 Host Control 端口断开后都会独立重连。
+- 修复主窗口收纳或隐藏后桌面背景流光间断的问题：音频特征由主 Renderer 以独立 33 ms 时钟采样，并由壁纸 Renderer 自己按 rAF 平滑、衰减；Publisher 与 Subscriber 端口断开后都会独立重连。
 - 修复高分辨率与高 DPI 桌面上 Dithering 流光被过度放大、只能看到局部闪烁的问题；Shader 像素尺度现在会补偿实际渲染降采样比例。
 
 ### Quality
@@ -75,9 +75,7 @@
 - 收敛应用源码目录至 `repo/`：Web、Electron、共享契约、Mobile 与 API 后端统一迁移为 `repo/frontend/*`、`repo/backend/*`，并同步更新 workspace、Docker、Vercel、Release workflow、构建制品路径与架构文档。
 - Discord 设置新增本机连接测试与实时连接状态：直接尝试 Discord 桌面端 RPC，并以 Toast 明确反馈连接、配置或启动失败原因。
 - 完善 README 部署说明：新增 Vercel 双项目部署、环境变量、CORS、HTTPS 与自定义域名配置指引，并补齐 Docker Compose 子模块初始化步骤。
-- 将桌面播放架构文档标注为已废止，并记录 Main Renderer 重新承担单一 Authority、所有 Replica 继续经 Broker 消费投影的迁移与后续清理边界。
 - 新增 Discord Rich Presence 技术参考，收录官方 RPC、应用配置及活动字段文档。
-- 将桌面主窗口降为 Playback Replica 与会话命令客户端：队列游标、重复/随机、清缓存、URL/歌词加载、媒体错误恢复和音频特征发布均只有 Host 一个执行者；浏览器模式继续复用同一 Runtime seam。
 - 优化 CodeGraph 工作流：适配 CodeGraph Auto-sync 自动增量同步特性，移除手动执行 `codegraph sync` 的规范要求与操作步骤。
 
 ## v1.4.1

@@ -2,7 +2,7 @@
 
 > Status: Accepted — implemented on `codex/playback-transport-refactor`
 
-> 2026-08-12 follow-up: Electron Authority 迁入独立 Playback Host 已被采纳为后续分阶段实施方案，详见 [独立 Playback Host 与桌面壁纸运行时架构](./playback-host-wallpaper-runtime-architecture.md)。本文继续作为可靠协议、Broker、Replica 与时间投影语义的规范。
+> 2026-08-14 follow-up: 隐藏播放 Renderer 方案因增加队列、歌词与媒体状态的同步距离而被否决，相关实现已移除。Electron 主 Renderer 继续承担唯一 Authority；可靠协议、Broker、Replica 与时间投影语义保持不变。
 
 本文定义 Scopify Web 与 Electron 各 Renderer 之间统一的播放状态、播放时钟、命令和音频频谱通讯架构。它取代当前由 DOM Event、Zustand、BroadcastChannel、Desktop Lyrics IPC 与 Desktop Playback Wallpaper IPC 共同组成的多数据源体系。
 
@@ -17,7 +17,7 @@
 - 普通校准不得让可见时间倒退；只有显式 Timeline Discontinuity 可以硬跳。
 - 播放状态与音频频谱使用不同通道：前者可靠、有序、可重放，后者高频、允许丢帧、禁止补发积压。
 - `useTimeStore` 中的时间只作为 Resume Checkpoint，不再参与实时播放通讯。
-- Authority 的位置通过 seam 隔离；统一接口稳定后，可在不修改 UI 的前提下把 Electron Authority 迁入独立 Playback Host。
+- Authority 的位置继续通过 seam 隔离，但桌面端固定由主 Renderer 持有媒体与队列，避免引入第二套会话控制协议。
 
 ## 实施状态（2026-08-10）
 
@@ -31,7 +31,7 @@ Phase 1–5 已在 `codex/playback-transport-refactor` 分支落地：
 - `useTimeStore` 只保存恢复检查点、时长和缓冲进度，不再作为实时播放数据源；异步歌曲加载另有 `playbackLoadRevision`，旧请求不能覆盖新 Session。
 - 换源恢复以精确媒体位置和 `playbackLoadRevision` 绑定；URL 刷新明确区分 `refreshed`、`superseded` 与 `failed`，旧失败回调不能误伤新歌曲。
 - Broker 会请求缺失的 Bootstrap、按 Electron sender 绑定连接所有权，并为待处理命令设置有界超时；Replica 的软 stale 可由下一条有序消息自恢复。
-- Phase 1–5 没有改变音频所有权；独立 Playback Host 已在 2026-08-12 的后续架构中采纳，尚未开始功能迁移。
+- Phase 1–5 没有改变音频所有权；后续曾验证过隐藏播放 Renderer，但最终保留主 Renderer Authority，并删除了专用控制链路。
 
 ## 目标
 
@@ -529,9 +529,9 @@ repo/frontend/apps/desktop/tests/playbackBroker.test.ts
 - 删除旧 publisher、remote controller、timeline heuristic 与重复测试。
 - 更新 CodeGraph、README 与桌面 IPC 文档。
 
-### Phase 6：已采纳的独立 Playback Host
+### Phase 6：收敛主 Renderer Authority
 
-统一 seam 已完成并具备迁移条件。Electron Authority 将按 [独立 Playback Host 与桌面壁纸运行时架构](./playback-host-wallpaper-runtime-architecture.md) 分阶段移入隐藏 Playback Host；该阶段替换 Authority Adapter，不修改 UI、Replica 或可靠协议，并同时补齐 Audio Feature latest-wins 通道、队列续播和 Wallpaper 独立运行规则。
+隐藏播放 Renderer 的原型验证表明，它会把队列、歌词、媒体恢复和音频特征拆到额外控制链路中，却没有带来足够的故障隔离收益。最终实现固定由主 Renderer 持有唯一媒体元素、队列和 Authority；Electron Main 只负责可靠 Playback Broker 与 Audio Feature Broker，桌面歌词、壁纸、控制器和 Tray 均保持 Replica 身份。
 
 ## 验证矩阵
 
@@ -599,4 +599,4 @@ repo/frontend/apps/desktop/tests/playbackBroker.test.ts
 - 第一阶段保留主 Renderer 的 `HTMLAudioElement` 作为 Playback Authority。
 - 所有播放界面，包括同窗口 PlayBar 与 Folia，都迁入统一 Playback Replica。
 - 架构优先保证状态语义正确，不以提高 IPC 频率掩盖数据源问题。
-- 独立 Playback Host 已在 seam 稳定后被采纳为第二阶段；它不回改已经落地的可靠协议与 Replica 语义。
+- 主 Renderer 是桌面端唯一 Playback Authority；独立 Renderer 方案已否决，不再保留专用路由、preload、会话控制或恢复协议。

@@ -3,36 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { usePlayerStore } from "@/store/module/player";
-import type {
-  PlaybackAuthorityExternalSessionControl,
-  PlaybackAuthorityMediaError,
-} from "@/types/playbackAuthority";
 import { useTimeStore } from "@/store/module/time";
-import type { PlaybackMediaEventHandlers, PlaybackMediaSourceState } from "@/types/playbackHost";
-
-/**
- * Chooses exactly one recovery owner for an already-validated media error.
- * The Host branch intentionally never invokes the legacy callback: that path
- * mutates the renderer-local Player Store and may select a separate queue item.
- */
-export async function recoverPlaybackMediaError(
-  externalSessionControl: PlaybackAuthorityExternalSessionControl | undefined,
-  error: PlaybackAuthorityMediaError,
-  recoverWithLegacyStore: () => Promise<void>,
-): Promise<"host" | "legacy"> {
-  if (externalSessionControl) {
-    await externalSessionControl.onMediaError?.(error);
-    return "host";
-  }
-
-  await recoverWithLegacyStore();
-  return "legacy";
-}
+import type { PlaybackMediaEventHandlers, PlaybackMediaSourceState } from "@/types/playbackMedia";
 
 /** Keeps media DOM events out of layout code while retaining source/revision rejection. */
 export function usePlaybackMediaEvents(
   source: PlaybackMediaSourceState,
-  externalSessionControl?: PlaybackAuthorityExternalSessionControl,
 ): PlaybackMediaEventHandlers {
   const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id);
   const failedSourceRetrySessionKeyRef = useRef<string | null>(null);
@@ -79,30 +55,6 @@ export function usePlaybackMediaEvents(
         return;
       }
 
-      if (externalSessionControl) {
-        if (refreshingFailedSourceSessionKeyRef.current === failureSessionKey) return;
-
-        source.isMediaSourceLoadingRef.current = true;
-        refreshingFailedSourceSessionKeyRef.current = failureSessionKey;
-        const mediaError: PlaybackAuthorityMediaError = {
-          errorCode: audio.error?.code ?? null,
-          errorMessage: audio.error?.message ?? null,
-        };
-        void recoverPlaybackMediaError(externalSessionControl, mediaError, async () => undefined)
-          .catch((error) => {
-            console.error("[player] Playback Host failed to recover the media source", error);
-          })
-          .finally(() => {
-            if (source.isPlaybackSessionCurrent(failureSessionKey)) {
-              source.isMediaSourceLoadingRef.current = false;
-            }
-            if (refreshingFailedSourceSessionKeyRef.current === failureSessionKey) {
-              refreshingFailedSourceSessionKeyRef.current = null;
-            }
-          });
-        return;
-      }
-
       if (refreshingFailedSourceSessionKeyRef.current === failureSessionKey) return;
       if (failedSourceRetrySessionKeyRef.current === failureSessionKey) {
         const failureIdentity = { revision: player.playbackLoadRevision, trackId: songId };
@@ -139,7 +91,7 @@ export function usePlaybackMediaEvents(
           }
         });
     },
-    [externalSessionControl, source],
+    [source],
   );
 
   return useMemo(

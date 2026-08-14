@@ -29,7 +29,7 @@
     "build:mac": "electron-builder --mac --publish never"
   },
   "dependencies": {
-    "@mt-super-power/desktop-contract": "1.0.0",
+    "@mt-super-power/desktop-contract": "2.0.0",
     "@xhayper/discord-rpc": "^1.3.4",
     "electron-log": "^5.4.4",
     "electron-serve": "^3.0.1",

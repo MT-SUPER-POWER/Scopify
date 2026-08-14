@@ -17,7 +17,5 @@ describe("companion playback route detection", () => {
     expect(getCompanionPlaybackPath("/")).toBeNull();
     expect(getCompanionPlaybackPath("/playlist/")).toBeNull();
     expect(getCompanionPlaybackPath("/app-close/")).toBeNull();
-    expect(getCompanionPlaybackPath("/playback-host")).toBeNull();
-    expect(getCompanionPlaybackPath("/playback-host/")).toBeNull();
   });
 });

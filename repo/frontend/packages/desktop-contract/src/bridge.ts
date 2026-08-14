@@ -16,7 +16,6 @@ import type { AppUpdateState } from "./updater";
 import type { DesktopHostConfig } from "./config";
 import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "./discord";
 import type { PlaybackTransportPayload, PlaybackTransportRole } from "./playback";
-import type { PlaybackHostClientCommand, PlaybackHostHostMessage } from "./playbackHostControl";
 import type {
   CacheCategory,
   CacheScope,
@@ -24,7 +23,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 15;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 16;
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
@@ -40,7 +39,6 @@ export type DesktopBridgeCapability =
   | "media-controls"
   | "navigation"
   | "playback-transport"
-  | "playback-host-control"
   | "renderer-logging"
   | "updates"
   | "window-controls";
@@ -78,12 +76,6 @@ export interface DesktopBridge<TLyrics = unknown> {
     role: PlaybackTransportRole,
     connectionId: string,
     onPayload: (payload: PlaybackTransportPayload<TLyrics>) => void,
-    onClose: () => void,
-  ): Unsubscribe;
-  /** Connects the main renderer's low-frequency client control channel. */
-  connectPlaybackHostControl(
-    connectionId: string,
-    onPayload: (payload: PlaybackHostHostMessage) => void,
     onClose: () => void,
   ): Unsubscribe;
   deletePageCache(key: string): Promise<boolean>;
@@ -140,8 +132,6 @@ export interface DesktopBridge<TLyrics = unknown> {
   setPlayerPlaying(isPlaying: boolean): void;
   selectDirectory(defaultPath?: string): Promise<string | null>;
   sendPlaybackTransportPayload(payload: PlaybackTransportPayload<TLyrics>): boolean;
-  /** Sends a versioned Main→Host command; the Host owns every queue mutation. */
-  sendPlaybackHostControlPayload(payload: PlaybackHostClientCommand): boolean;
   updateHostConfig(config: DesktopHostConfig): Promise<DesktopHostConfig>;
   updateDesktopLyricPreferences(
     update: DesktopLyricPreferencesUpdate,

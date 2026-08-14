@@ -1,6 +1,6 @@
 {
   "name": "@mt-super-power/desktop-contract",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Versioned IPC contract between the Scopify renderer and desktop host",
   "repository": {
     "type": "git",
@@ -12,10 +12,7 @@
     "src"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./playbackHost": "./src/playbackHost.ts",
-    "./playbackHostControl": "./src/playbackHostControl.ts",
-    "./playbackCheckpoint": "./src/playbackCheckpoint.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

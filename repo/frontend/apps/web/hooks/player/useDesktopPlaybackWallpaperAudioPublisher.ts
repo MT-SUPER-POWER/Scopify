@@ -9,7 +9,7 @@ import {
   createAudioFeaturePublisherConnection,
   shouldConnectAudioFeaturePublisher,
 } from "@/lib/audioFeature/publisherConnection";
-import { AudioFeatureHostSampler } from "@/lib/audioFeature/source";
+import { AudioFeatureSourceSampler } from "@/lib/audioFeature/source";
 import { runtime } from "@/lib/runtime";
 
 const PUBLISHER_CONNECTION_ID = "main-renderer-audio-feature-publisher";
@@ -28,7 +28,7 @@ export function useDesktopPlaybackWallpaperAudioPublisher() {
   useEffect(() => {
     if (!shouldConnectAudioFeaturePublisher(runtime.isDesktop)) return;
 
-    const sampler = new AudioFeatureHostSampler({
+    const sampler = new AudioFeatureSourceSampler({
       getProjection: () => projectionRef.current,
       publish: (frame) => runtime.audioFeature.publish(frame),
     });

@@ -2,24 +2,16 @@ import { describe, expect, test } from "bun:test";
 
 import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
-  PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION,
   type DesktopBridge,
   type DesktopHostConfig,
   type DesktopIconVisibilityState,
   type DesktopPlaybackWallpaperModel,
   type AudioFeatureFrameV1,
-  type PlaybackHostBridge,
-  type PlaybackHostControlReceipt,
-  type PlaybackHostSetRepeatModeCommand,
-  type PlaybackHostReplaceSessionCommand,
-  type PlaybackHostSessionSnapshot,
-  type PlaybackSessionSeed,
 } from "@mt-super-power/desktop-contract";
 
 import { createBrowserRuntime } from "@/lib/runtime/adapters/browser";
 import { MemoryBrowserCacheStorage } from "@/lib/cache/browserCacheStorage";
 import { createElectronRuntime } from "@/lib/runtime/adapters/electron";
-import { createPlaybackHostRuntime } from "@/lib/runtime/adapters/playbackHost";
 import { createRuntimeForWindow } from "@/lib/runtime";
 import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import type { LyricData } from "@/types/lyrics";
@@ -112,68 +104,6 @@ const AUDIO_FEATURE_FRAME: AudioFeatureFrameV1 = {
   type: "audio-feature-frame",
   vocal: 42,
 };
-const PLAYBACK_HOST_SESSION: PlaybackSessionSeed = {
-  intent: "play",
-  quality: "lossless",
-  queue: {
-    historyIndex: 0,
-    historyStack: [0],
-    originalQueue: [
-      {
-        album: { artworkUrl: "https://example.test/cover.jpg", id: 7, title: "Album" },
-        artists: [{ id: 3, name: "Artist" }],
-        durationMs: 180_000,
-        fee: 0,
-        id: 1,
-        publishTime: 0,
-        title: "Track",
-      },
-    ],
-    playlistId: "playlist-a",
-    queue: [
-      {
-        album: { artworkUrl: "https://example.test/cover.jpg", id: 7, title: "Album" },
-        artists: [{ id: 3, name: "Artist" }],
-        durationMs: 180_000,
-        fee: 0,
-        id: 1,
-        publishTime: 0,
-        title: "Track",
-      },
-    ],
-    queueIndex: 0,
-    repeatMode: "all",
-    shuffleEnabled: false,
-  },
-  resumePositionMs: 0,
-  revision: 1,
-  volume: 0.8,
-};
-const PLAYBACK_HOST_COMMAND: PlaybackHostReplaceSessionCommand = {
-  commandId: "replace-session-1",
-  protocolVersion: PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION,
-  session: PLAYBACK_HOST_SESSION,
-  type: "replace-session",
-};
-const PLAYBACK_HOST_RECEIPT: PlaybackHostControlReceipt = {
-  commandId: PLAYBACK_HOST_COMMAND.commandId,
-  protocolVersion: PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION,
-  revision: PLAYBACK_HOST_SESSION.revision,
-  status: "applied",
-  type: "command-receipt",
-};
-const PLAYBACK_HOST_SET_REPEAT_MODE: PlaybackHostSetRepeatModeCommand = {
-  commandId: "set-repeat-mode-1",
-  protocolVersion: PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION,
-  repeatMode: "one",
-  type: "set-repeat-mode",
-};
-const PLAYBACK_HOST_SNAPSHOT: PlaybackHostSessionSnapshot = {
-  protocolVersion: PLAYBACK_HOST_CONTROL_PROTOCOL_VERSION,
-  session: PLAYBACK_HOST_SESSION,
-  type: "session-snapshot",
-};
-
 function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): DesktopBridge<LyricData> {
   return {
     checkForUpdates: async () => UPDATE_STATE,
@@ -204,7 +134,6 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     toggleDesktopLyric: async () => true,
     closeDesktopPlaybackController: async () => true,
     connectAudioFeatureTransport: () => NOOP,
-    connectPlaybackHostControl: () => NOOP,
     connectPlaybackTransport: () => NOOP,
     deletePageCache: async () => true,
     deleteCache: async () => true,
@@ -297,7 +226,6 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     setPageCache: async () => true,
     setCache: async () => true,
     setPlayerPlaying: NOOP,
-    sendPlaybackHostControlPayload: () => false,
     sendPlaybackTransportPayload: () => true,
     updateHostConfig: async (nextConfig) => nextConfig,
     updateDesktopLyricPreferences: async () => null,
@@ -317,27 +245,12 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
   };
 }
 
-function createPlaybackHostBridge(
-  overrides: Partial<PlaybackHostBridge<LyricData>> = {},
-): PlaybackHostBridge<LyricData> {
-  return {
-    connectAudioFeatureTransport: () => NOOP,
-    connectPlaybackHostControl: () => NOOP,
-    connectPlaybackTransport: () => NOOP,
-    getNonce: () => "host-nonce",
-    getPlaybackCache: async () => null,
-    publishAudioFeatureFrame: () => true,
-    reportReady: NOOP,
-    sendPlaybackHostControlPayload: () => false,
-    sendPlaybackTransportPayload: () => true,
-    setMediaPlaying: NOOP,
-    setPlaybackCache: async () => true,
-    deletePlaybackCache: async () => true,
-    ...overrides,
-  };
-}
-
 describe("browser runtime adapter", () => {
+  test("selects the desktop adapter only when the preload bridge exists", () => {
+    expect(createRuntimeForWindow(undefined).kind).toBe("browser");
+    expect(createRuntimeForWindow({ electronAPI: createBridge() }).kind).toBe("desktop");
+  });
+
   test("provides a complete browser fallback without a preload bridge", async () => {
     const storage = new MemoryStorage();
     const runtime = createBrowserRuntime({ storage });
@@ -354,32 +267,6 @@ describe("browser runtime adapter", () => {
     expect(await runtime.desktopPlaybackWallpaper.setControllerLayout("expanded")).toBeFalse();
     expect((await runtime.desktopIcons.getVisibility()).supported).toBeFalse();
     expect(runtime.audioFeature.publish(AUDIO_FEATURE_FRAME)).toBeFalse();
-  });
-
-  test("keeps playback Host control inert outside a desktop renderer", () => {
-    const runtime = createBrowserRuntime();
-    const payloads: string[] = [];
-    const closed: string[] = [];
-
-    const client = runtime.playbackHostControl.connectClient(
-      "browser-client",
-      (payload) => payloads.push(payload.type),
-      () => closed.push("client"),
-    );
-    const host = runtime.playbackHostControl.connectHost(
-      "browser-host",
-      (payload) => payloads.push(payload.type),
-      () => closed.push("host"),
-    );
-
-    expect(client.send(PLAYBACK_HOST_COMMAND)).toBeFalse();
-    expect(client.send(PLAYBACK_HOST_SET_REPEAT_MODE)).toBeFalse();
-    expect(host.send(PLAYBACK_HOST_RECEIPT)).toBeFalse();
-    client.close();
-    host.close();
-
-    expect(payloads).toEqual([]);
-    expect(closed).toEqual([]);
   });
 
   test("owns browser cache expiry and namespace invalidation", async () => {
@@ -547,51 +434,6 @@ describe("electron runtime adapter", () => {
     ]);
   });
 
-  test("binds the visible renderer to its client-only Playback Host control port", () => {
-    const calls: string[] = [];
-    const received: string[] = [];
-    let closePort: () => void = NOOP;
-    const runtime = createElectronRuntime(
-      createBridge({
-        connectPlaybackHostControl: (connectionId, onPayload, onClose) => {
-          calls.push(`connect:${connectionId}`);
-          onPayload(PLAYBACK_HOST_RECEIPT);
-          closePort = onClose;
-          return () => calls.push("unsubscribe");
-        },
-        sendPlaybackHostControlPayload: (payload) => {
-          calls.push(`send:${payload.type}`);
-          return true;
-        },
-      }),
-    );
-
-    const connection = runtime.playbackHostControl.connectClient(
-      "main-control",
-      (payload) => received.push(payload.type),
-      () => calls.push("closed"),
-    );
-
-    expect(connection.send(PLAYBACK_HOST_COMMAND)).toBeTrue();
-    expect(connection.send(PLAYBACK_HOST_SET_REPEAT_MODE)).toBeTrue();
-    closePort();
-    closePort();
-    connection.close();
-    expect(connection.send(PLAYBACK_HOST_COMMAND)).toBeFalse();
-
-    expect(received).toEqual(["command-receipt"]);
-    expect(calls).toEqual([
-      "connect:main-control",
-      "send:replace-session",
-      "send:set-repeat-mode",
-      "unsubscribe",
-      "closed",
-    ]);
-    expect(() => runtime.playbackHostControl.connectHost("forbidden", NOOP, NOOP)).toThrow(
-      "only supports the Playback Host control client role",
-    );
-  });
-
   test("translates intent-level calls to the preload bridge", async () => {
     const calls: string[] = [];
     const bridge = createBridge({
@@ -743,179 +585,5 @@ describe("electron runtime adapter", () => {
     await expect(createElectronRuntime(bridge).discord.testConnection()).resolves.toMatchObject({
       connected: true,
     });
-  });
-});
-
-describe("playback host runtime adapter", () => {
-  test("routes scoped playback cache operations through the host-only bridge", async () => {
-    const calls: string[] = [];
-    const runtime = createPlaybackHostRuntime(
-      createPlaybackHostBridge({
-        deletePlaybackCache: async (key) => {
-          calls.push(`delete:${key}`);
-          return true;
-        },
-        getPlaybackCache: async <T>(key: string): Promise<T | null> => {
-          calls.push(`get:${key}`);
-          return "https://cdn.example/track.mp3" as T;
-        },
-        setPlaybackCache: async (key, _value, _ttlMs, category) => {
-          calls.push(`set:${key}:${category}`);
-          return true;
-        },
-      }),
-    );
-
-    await runtime.cache.setScoped(
-      "playback",
-      "playback-play-url:1:high",
-      "url",
-      30_000,
-      "play-url",
-    );
-    expect(await runtime.cache.getScoped<string>("playback", "playback-play-url:1:high")).toBe(
-      "https://cdn.example/track.mp3",
-    );
-    await runtime.cache.deleteScoped("playback", "playback-play-url:1:high");
-
-    expect(calls).toEqual([
-      "set:playback-play-url:1:high:play-url",
-      "get:playback-play-url:1:high",
-      "delete:playback-play-url:1:high",
-    ]);
-  });
-
-  test("composes browser, main desktop, and dedicated host renderers without widening host privileges", () => {
-    expect(createRuntimeForWindow(undefined).kind).toBe("browser");
-    expect(createRuntimeForWindow({ electronAPI: createBridge() }).kind).toBe("desktop");
-    expect(
-      createRuntimeForWindow({
-        playbackHostAPI: createPlaybackHostBridge(),
-      }).playbackHost.getNonce(),
-    ).toBe("host-nonce");
-
-    const mainRuntime = createRuntimeForWindow({
-      electronAPI: createBridge(),
-      playbackHostAPI: createPlaybackHostBridge(),
-    });
-    expect(mainRuntime.auth.openLoginWindow()).toBeTrue();
-    expect(mainRuntime.playbackHost.getNonce()).toBeNull();
-  });
-
-  test("exposes only the fixed authority and publisher transports", () => {
-    const calls: string[] = [];
-    const runtime = createPlaybackHostRuntime(
-      createPlaybackHostBridge({
-        connectAudioFeatureTransport: (connectionId, onClose) => {
-          calls.push(`audio:${connectionId}`);
-          onClose();
-          return NOOP;
-        },
-        connectPlaybackTransport: (connectionId, onPayload, onClose) => {
-          calls.push(`playback:${connectionId}`);
-          onPayload({ type: "request-bootstrap" });
-          onClose();
-          return NOOP;
-        },
-      }),
-    );
-    const payloads: string[] = [];
-    const closed: string[] = [];
-
-    runtime.playback.connect(
-      "authority",
-      "playback-host-authority",
-      (payload) => {
-        if ("type" in payload) payloads.push(payload.type);
-      },
-      () => closed.push("playback"),
-    );
-    runtime.audioFeature.connect(
-      "publisher",
-      "playback-host-audio",
-      () => closed.push("unexpected-frame"),
-      () => closed.push("audio"),
-    );
-
-    expect(runtime.isDesktop).toBeTrue();
-    expect(runtime.kind).toBe("desktop");
-    expect(payloads).toEqual(["request-bootstrap"]);
-    expect(closed).toEqual(["playback", "audio"]);
-    expect(calls).toEqual(["playback:playback-host-authority", "audio:playback-host-audio"]);
-    expect(() => runtime.playback.connect("replica", "forbidden", NOOP, NOOP)).toThrow(
-      "only supports the playback authority role",
-    );
-    expect(() => runtime.audioFeature.connect("subscriber", "forbidden", NOOP, NOOP)).toThrow(
-      "only supports the audio-feature publisher role",
-    );
-  });
-
-  test("binds the hidden Host to its host-only Playback Host control port", () => {
-    const calls: string[] = [];
-    const received: string[] = [];
-    let closed = 0;
-    const runtime = createPlaybackHostRuntime(
-      createPlaybackHostBridge({
-        connectPlaybackHostControl: (connectionId, onPayload) => {
-          calls.push(`connect:${connectionId}`);
-          onPayload(PLAYBACK_HOST_COMMAND);
-          onPayload(PLAYBACK_HOST_SET_REPEAT_MODE);
-          return () => calls.push("unsubscribe");
-        },
-        sendPlaybackHostControlPayload: (payload) => {
-          calls.push(`send:${payload.type}`);
-          return true;
-        },
-      }),
-    );
-
-    const connection = runtime.playbackHostControl.connectHost(
-      "host-control",
-      (payload) => received.push(payload.type),
-      () => {
-        closed += 1;
-      },
-    );
-
-    expect(connection.send(PLAYBACK_HOST_RECEIPT)).toBeTrue();
-    expect(connection.send(PLAYBACK_HOST_SNAPSHOT)).toBeTrue();
-    connection.close();
-    connection.close();
-    expect(connection.send(PLAYBACK_HOST_RECEIPT)).toBeFalse();
-
-    expect(received).toEqual(["replace-session", "set-repeat-mode"]);
-    expect(closed).toBe(0);
-    expect(calls).toEqual([
-      "connect:host-control",
-      "send:command-receipt",
-      "send:session-snapshot",
-      "unsubscribe",
-    ]);
-    expect(() => runtime.playbackHostControl.connectClient("forbidden", NOOP, NOOP)).toThrow(
-      "only supports the Playback Host control host role",
-    );
-  });
-
-  test("reports its nonce without acquiring unrelated desktop privileges", async () => {
-    const readyNonces: string[] = [];
-    const mediaPlaying: boolean[] = [];
-    const runtime = createPlaybackHostRuntime(
-      createPlaybackHostBridge({
-        getNonce: () => "host-nonce-42",
-        reportReady: (nonce) => readyNonces.push(nonce),
-        setMediaPlaying: (isPlaying) => mediaPlaying.push(isPlaying),
-      }),
-    );
-
-    expect(runtime.playbackHost.getNonce()).toBe("host-nonce-42");
-    expect(runtime.playbackHost.reportReady("host-nonce-42")).toBeTrue();
-    expect(runtime.playbackHost.reportReady("")).toBeFalse();
-    runtime.media.setPlaying(true);
-    runtime.media.setPlaying(false);
-    expect(readyNonces).toEqual(["host-nonce-42"]);
-    expect(mediaPlaying).toEqual([true, false]);
-    expect(runtime.auth.openLoginWindow()).toBeFalse();
-    expect(runtime.navigation.navigateMainWindow("/setting")).toBeFalse();
-    expect(await runtime.logging.getDirectory()).toBeNull();
   });
 });

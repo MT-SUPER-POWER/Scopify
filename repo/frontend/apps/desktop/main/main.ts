@@ -3,7 +3,7 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { BrowserWindow as BrowserWindowType } from "electron";
-import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
+import { app, BrowserWindow, dialog, Menu } from "electron";
 import serve from "electron-serve";
 import {
   __iconDock,
@@ -20,7 +20,6 @@ import { loadDesktopHostConfig } from "./config.js";
 import { createDiscordPresenceController } from "./module/discordPresence.js";
 import { disposeAppCloseWindow, showAppCloseWindow } from "./module/appCloseWindow.js";
 import { registerIpcHandlers } from "./module/ipc.js";
-import { initializePlaybackHostCacheIpc } from "./module/playbackHost/cacheIpc.js";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
 import { initializeDesktopIconVisibilityCapability } from "./module/desktopIcons/index.js";
 import { initializeDesktopPlaybackWallpaperCapability } from "./module/desktopPlaybackWallpaper/index.js";
@@ -62,8 +61,6 @@ let audioFeatureBrokerIpcHost: AudioFeatureBrokerIpcHost | null = null;
 let splashShownAtMs = 0;
 let resolveSplashReady: (() => void) | null = null;
 let splashReady = Promise.resolve();
-
-initializePlaybackHostCacheIpc(ipcMain);
 
 const SPLASH_MINIMUM_VISIBLE_MS = 900;
 const SPLASH_READY_TIMEOUT_MS = 1_500;

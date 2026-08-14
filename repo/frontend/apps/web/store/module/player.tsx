@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { PLAYER_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
 import { getLyric, getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
 import {
   clearCachedPlayUrl,
@@ -15,14 +16,9 @@ import {
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { isPlaybackLoadCurrent } from "@/lib/player/playbackLoad";
-import { dispatchDesktopMainPlaybackCommand } from "@/lib/playbackHost/desktopMainCommandDispatcher";
-import { dispatchDesktopMainQueueCommand } from "@/lib/playbackHost/desktopMainQueueCommandDispatcher";
-import { getPlayerPersistenceStorageKey } from "@/lib/playbackHost/persistenceNamespace";
-import { toPlaybackQueueEntry } from "@/lib/playbackHost/sessionMapper";
 import { createPlaybackQueue, type PlaybackQueueSnapshot } from "@/lib/player/playbackQueue";
 import { getVoiceNeteaseLyric } from "@/lib/lyrics/voiceLyric";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
-import { runtime } from "@/lib/runtime";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
 import { pruneNeteaseLyric, type NeteaseLyric, type SongDetail } from "@/types/api/music";
@@ -81,59 +77,6 @@ function selectPlayerQueueState(snapshot: PlaybackQueueSnapshot<SongDetail>) {
     | "queueIndex"
     | "repeatMode"
   >;
-}
-
-function isDesktopMainPlaybackClient(): boolean {
-  // The desktop Main renderer is the audio Authority again. This legacy
-  // hand-off remains dormant until the unused Host-only modules are removed.
-  return false;
-}
-
-let desktopMainCommandSequence = 0;
-
-interface DesktopMainPendingQueueReplacement {
-  playlistId: PlayerStore["playlistId"];
-  songs: readonly SongDetail[];
-  startIndex: number;
-}
-
-// Legacy list entry points call `setQueue(...)` and `playTrack(...)` in one
-// synchronous handler. Main remains a non-authoritative Replica, but it needs
-// this short-lived request pairing so the latter command cannot replace the
-// Host's full source queue with a one-song queue before its snapshot returns.
-let desktopMainPendingQueueReplacement: DesktopMainPendingQueueReplacement | null = null;
-
-type DesktopMainPlaybackCommandDraft =
-  | { type: "next" | "previous" | "toggle" | "play" | "pause" }
-  | { type: "set-volume"; volume: number };
-
-function dispatchDesktopMainCommand(command: DesktopMainPlaybackCommandDraft): void {
-  desktopMainCommandSequence += 1;
-  const commandId = `desktop-main-${command.type}-${desktopMainCommandSequence.toString(36)}`;
-  switch (command.type) {
-    case "set-volume":
-      void dispatchDesktopMainPlaybackCommand({
-        commandId,
-        type: "set-volume",
-        volume: command.volume,
-      });
-      return;
-    case "next":
-      void dispatchDesktopMainPlaybackCommand({ commandId, type: "next" });
-      return;
-    case "previous":
-      void dispatchDesktopMainPlaybackCommand({ commandId, type: "previous" });
-      return;
-    case "toggle":
-      void dispatchDesktopMainPlaybackCommand({ commandId, type: "toggle" });
-      return;
-    case "play":
-      void dispatchDesktopMainPlaybackCommand({ commandId, type: "play" });
-      return;
-    case "pause":
-      void dispatchDesktopMainPlaybackCommand({ commandId, type: "pause" });
-      return;
-  }
 }
 
 async function getStoredLyricSource(songId: number): Promise<NeteaseLyric | null> {
@@ -217,13 +160,6 @@ export const usePlayerStore = create<PlayerStore>()(
         const { currentSongDetail, musicQuality } = get();
         if (musicQuality === quality) return;
 
-        if (isDesktopMainPlaybackClient()) {
-          // The Host receives this durable draft through the session client and
-          // owns the resulting source reload. Main must not resolve a URL here.
-          set({ musicQuality: quality });
-          return;
-        }
-
         set({ musicQuality: quality });
         if (!currentSongDetail) return;
 
@@ -239,19 +175,9 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       },
       setVolume: (v) => {
-        if (isDesktopMainPlaybackClient()) {
-          dispatchDesktopMainCommand({ type: "set-volume", volume: v });
-          return;
-        }
         set({ volume: v });
       },
       setIsPlaying: (isPlaying) => {
-        if (isDesktopMainPlaybackClient()) {
-          if (!get().currentSongDetail) return;
-          dispatchDesktopMainCommand({ type: isPlaying ? "play" : "pause" });
-          return;
-        }
-
         const { currentSongDetail, currentSongUrl } = get();
         if (!isPlaying || currentSongUrl) {
           set({ isPlaying });
@@ -263,19 +189,11 @@ export const usePlayerStore = create<PlayerStore>()(
         if (currentSongDetail) void get().togglePlaying();
       },
       setRepeatMode: (mode) => {
-        if (isDesktopMainPlaybackClient()) {
-          void dispatchDesktopMainQueueCommand({ repeatMode: mode, type: "set-repeat-mode" });
-          return;
-        }
         const snapshot = createPlayerQueueSnapshot(get());
         const transition = playbackQueue.setRepeatMode(snapshot, mode);
         set(selectPlayerQueueState(transition.snapshot));
       },
       moveQueueItem: (fromIndex, toIndex) => {
-        if (isDesktopMainPlaybackClient()) {
-          void dispatchDesktopMainQueueCommand({ fromIndex, toIndex, type: "move-queue-item" });
-          return;
-        }
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.moveQueueItem(
@@ -288,10 +206,6 @@ export const usePlayerStore = create<PlayerStore>()(
         set(selectPlayerQueueState(transition.snapshot));
       },
       moveQueueItemToNext: (index) => {
-        if (isDesktopMainPlaybackClient()) {
-          void dispatchDesktopMainQueueCommand({ index, type: "move-queue-item-to-next" });
-          return;
-        }
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.moveQueueItemToNext(
@@ -303,10 +217,6 @@ export const usePlayerStore = create<PlayerStore>()(
         set(selectPlayerQueueState(transition.snapshot));
       },
       removeQueueItem: (index) => {
-        if (isDesktopMainPlaybackClient()) {
-          void dispatchDesktopMainQueueCommand({ index, type: "remove-queue-item" });
-          return;
-        }
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.removeQueueItem(
@@ -332,58 +242,18 @@ export const usePlayerStore = create<PlayerStore>()(
         if (transition.effect.type === "play") void get().playTrack(transition.effect.track);
       },
       setQueue: (songs, startIndex = 0, playlistId = null) => {
-        if (isDesktopMainPlaybackClient()) {
-          const pendingReplacement: DesktopMainPendingQueueReplacement = {
-            playlistId,
-            songs: [...songs],
-            startIndex,
-          };
-          desktopMainPendingQueueReplacement = pendingReplacement;
-          void dispatchDesktopMainQueueCommand({
-            play: false,
-            playlistId,
-            queue: songs.map(toPlaybackQueueEntry),
-            startIndex,
-            type: "replace-queue",
-          }).then(
-            () => {
-              if (desktopMainPendingQueueReplacement === pendingReplacement)
-                desktopMainPendingQueueReplacement = null;
-            },
-            () => {
-              if (desktopMainPendingQueueReplacement === pendingReplacement)
-                desktopMainPendingQueueReplacement = null;
-            },
-          );
-          return;
-        }
         const snapshot = createPlayerQueueSnapshot(get());
         const transition = playbackQueue.setQueue(snapshot, songs, startIndex, playlistId);
         set(selectPlayerQueueState(transition.snapshot));
       },
       setLyric: (lyric) => set({ lyric: pruneNeteaseLyric(lyric) }),
       setShuffle: (v) => {
-        if (isDesktopMainPlaybackClient()) {
-          void dispatchDesktopMainQueueCommand({ enabled: v, type: "set-shuffle" });
-          return;
-        }
         const snapshot = createPlayerQueueSnapshot(get());
         const transition = playbackQueue.setShuffle(snapshot, v);
         set(selectPlayerQueueState(transition.snapshot));
       },
 
       playFromSong: async (song, allSongs, playlistId = null) => {
-        if (isDesktopMainPlaybackClient()) {
-          const startIndex = allSongs.findIndex((candidate) => candidate.id === song.id);
-          void dispatchDesktopMainQueueCommand({
-            play: true,
-            playlistId,
-            queue: allSongs.map(toPlaybackQueueEntry),
-            startIndex,
-            type: "replace-queue",
-          });
-          return;
-        }
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.playFromSong(snapshot, song, allSongs, playlistId);
@@ -392,12 +262,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       togglePlaying: async () => {
-        if (isDesktopMainPlaybackClient()) {
-          if (!get().currentSongDetail) return;
-          dispatchDesktopMainCommand({ type: "toggle" });
-          return;
-        }
-
         const { currentSongDetail, currentSongUrl, isPlaying } = get();
         if (currentSongUrl) {
           set({ isPlaying: !isPlaying });
@@ -412,18 +276,12 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       toggleShuffle: () => {
-        if (isDesktopMainPlaybackClient()) {
-          void dispatchDesktopMainQueueCommand({ type: "toggle-shuffle" });
-          return;
-        }
         const snapshot = createPlayerQueueSnapshot(get());
         const transition = playbackQueue.toggleShuffle(snapshot);
         set(selectPlayerQueueState(transition.snapshot));
       },
 
       fetchCurrentLyric: async () => {
-        if (isDesktopMainPlaybackClient()) return;
-
         const { currentSongDetail, lyric, playbackLoadRevision } = get();
         if (!currentSongDetail || lyric) return;
         const songId = currentSongDetail.id;
@@ -445,7 +303,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       handlePlaybackFailure: async (source, identity) => {
-        if (isDesktopMainPlaybackClient()) return;
         if (identity && !isPlaybackLoadCurrent(get(), identity)) return;
 
         const { queue, queueIndex, playbackFailureCount } = get();
@@ -484,8 +341,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       refreshCurrentTrackUrl: async () => {
-        if (isDesktopMainPlaybackClient()) return { status: "superseded" };
-
         const { currentSongDetail, musicQuality } = get();
         if (!currentSongDetail) return { status: "superseded" };
         const songId = currentSongDetail.id;
@@ -528,46 +383,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playTrack: async (song, options = {}) => {
-        if (isDesktopMainPlaybackClient()) {
-          void options;
-          const pendingReplacement = desktopMainPendingQueueReplacement;
-          const pendingQueueIndex =
-            pendingReplacement?.songs[pendingReplacement.startIndex]?.id === song.id
-              ? pendingReplacement.startIndex
-              : (pendingReplacement?.songs.findIndex((candidate) => candidate.id === song.id) ??
-                -1);
-          if (pendingReplacement && pendingQueueIndex >= 0) {
-            desktopMainPendingQueueReplacement = null;
-            const receipt = await dispatchDesktopMainQueueCommand({
-              play: true,
-              playlistId: pendingReplacement.playlistId,
-              queue: pendingReplacement.songs.map(toPlaybackQueueEntry),
-              startIndex: pendingQueueIndex,
-              type: "replace-queue",
-            });
-            return receipt.status === "applied";
-          }
-
-          const queueIndex = get().queue.findIndex((candidate) => candidate.id === song.id);
-          if (queueIndex >= 0) {
-            const receipt = await dispatchDesktopMainQueueCommand({
-              addToHistory: true,
-              index: queueIndex,
-              type: "select-queue-index",
-            });
-            return receipt.status === "applied";
-          }
-
-          const receipt = await dispatchDesktopMainQueueCommand({
-            play: true,
-            playlistId: null,
-            queue: [toPlaybackQueueEntry(song)],
-            startIndex: 0,
-            type: "replace-queue",
-          });
-          return receipt.status === "applied";
-        }
-
         const shouldPreservePlaybackSession = options.preservePlaybackSession ?? false;
         const shouldResetFailureCount = options.resetFailureCount ?? true;
         if (!shouldPreservePlaybackSession) {
@@ -695,15 +510,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playQueueIndex: async (index, addToHistory = true, options = {}) => {
-        if (isDesktopMainPlaybackClient()) {
-          void options;
-          void dispatchDesktopMainQueueCommand({
-            addToHistory,
-            index,
-            type: "select-queue-index",
-          });
-          return;
-        }
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.playQueueIndex(snapshot, index, addToHistory);
@@ -716,15 +522,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playNext: async (source = "manual") => {
-        if (isDesktopMainPlaybackClient()) {
-          // Both user and media-end progression belong to the Host queue.
-          // Main only sends commands and waits for the authoritative snapshot.
-          void source;
-          if (!get().currentSongDetail) return;
-          dispatchDesktopMainCommand({ type: "next" });
-          return;
-        }
-
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.playNext(
@@ -744,12 +541,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playPrev: async () => {
-        if (isDesktopMainPlaybackClient()) {
-          if (!get().currentSongDetail) return;
-          dispatchDesktopMainCommand({ type: "previous" });
-          return;
-        }
-
         const snapshot = createPlayerQueueSnapshot(get());
         const transition = playbackQueue.playPrev(snapshot);
         if (transition.effect.type !== "play") return;
@@ -758,10 +549,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       reshuffleQueue: () => {
-        if (isDesktopMainPlaybackClient()) {
-          void dispatchDesktopMainQueueCommand({ type: "reshuffle-queue" });
-          return;
-        }
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.reshuffleQueue(snapshot, {
@@ -772,23 +559,6 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       cleanCache: () => {
-        if (isDesktopMainPlaybackClient()) {
-          // The visible desktop renderer is only a projection. Clearing its
-          // queue locally would race an unavailable/recovering Host and could
-          // be echoed back as a competing session. The empty replacement is a
-          // validated Host queue command; its promise is intentionally ignored
-          // here because the session-control client resolves it only after the
-          // matching authoritative snapshot has been applied to Main.
-          void dispatchDesktopMainQueueCommand({
-            play: false,
-            playlistId: null,
-            queue: [],
-            startIndex: 0,
-            type: "replace-queue",
-          });
-          return;
-        }
-
         useTimeStore.getState().setCurrentTime(0);
         useTimeStore.getState().setTotalTime(0);
         set({
@@ -812,7 +582,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
     }),
     {
-      name: getPlayerPersistenceStorageKey(),
+      name: PLAYER_PERSISTENCE_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
       partialize: selectPersistedPlayerState,
       merge: mergePersistedPlayerState,

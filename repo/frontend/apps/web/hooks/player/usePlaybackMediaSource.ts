@@ -4,35 +4,20 @@ import { useCallback, useEffect, useRef, type MutableRefObject } from "react";
 
 import { isPlaybackSourceCurrent } from "@/lib/player/playbackSource";
 import { usePlayerStore } from "@/store/module/player";
-import type { PlaybackAuthorityExternalSessionControl } from "@/types/playbackAuthority";
 import { useTimeStore } from "@/store/module/time";
-import type { PlaybackMediaSourceState } from "@/types/playbackHost";
+import type { PlaybackMediaSourceState } from "@/types/playbackMedia";
 
-/** The dedicated Host resolves both URLs and lyrics through its Runtime catalog. */
-export function shouldUseLegacyPlaybackCatalog(
-  externalSessionControl: PlaybackAuthorityExternalSessionControl | undefined,
-): boolean {
-  return !externalSessionControl;
-}
-
-export function shouldWarmLegacyPlaybackUrl(input: {
-  externalSessionControl: PlaybackAuthorityExternalSessionControl | undefined;
+export function shouldWarmPlaybackUrl(input: {
   hasSong: boolean;
   hasSourceUrl: boolean;
   hasWarmed: boolean;
 }): boolean {
-  return (
-    shouldUseLegacyPlaybackCatalog(input.externalSessionControl) &&
-    !input.hasWarmed &&
-    input.hasSong &&
-    !input.hasSourceUrl
-  );
+  return !input.hasWarmed && input.hasSong && !input.hasSourceUrl;
 }
 
 /** Owns source replacement and its revision guards for the sole in-page media element. */
 export function usePlaybackMediaSource(
   audioRef: MutableRefObject<HTMLAudioElement | null>,
-  externalSessionControl?: PlaybackAuthorityExternalSessionControl,
 ): PlaybackMediaSourceState {
   const isMediaSourceLoadingRef = useRef(false);
   const mediaSourceLoadRevisionRef = useRef(-1);
@@ -79,28 +64,14 @@ export function usePlaybackMediaSource(
       audio.src = currentSongUrl;
       audio.load();
     }
-    // Host catalog resolution delivers source and lyric data as one guarded
-    // transaction. Do not start the legacy lyric fetch as a competing catalog.
-    if (shouldUseLegacyPlaybackCatalog(externalSessionControl)) {
-      void usePlayerStore.getState().fetchCurrentLyric();
-    }
-  }, [
-    audioRef,
-    currentSongDetail,
-    currentSongUrl,
-    externalSessionControl,
-    playbackLoadRevision,
-    sourceChangeMode,
-  ]);
+    void usePlayerStore.getState().fetchCurrentLyric();
+  }, [audioRef, currentSongDetail, currentSongUrl, playbackLoadRevision, sourceChangeMode]);
 
   // Restored songs deliberately do not persist expiring CDN URLs. Warm one
   // while paused so the next user gesture can invoke play() against a source.
   useEffect(() => {
-    // The Host Runtime owns catalog resolution and recovery. Calling the
-    // legacy Store here would create a second source/catalog owner.
     if (
-      !shouldWarmLegacyPlaybackUrl({
-        externalSessionControl,
+      !shouldWarmPlaybackUrl({
         hasSong: currentSongDetail !== null,
         hasSourceUrl: Boolean(currentSongUrl),
         hasWarmed: hasWarmedPlaybackUrlRef.current,
@@ -111,7 +82,7 @@ export function usePlaybackMediaSource(
     hasWarmedPlaybackUrlRef.current = true;
 
     void refreshCurrentTrackUrl();
-  }, [currentSongDetail, currentSongUrl, externalSessionControl, refreshCurrentTrackUrl]);
+  }, [currentSongDetail, currentSongUrl, refreshCurrentTrackUrl]);
 
   const isActiveMediaSource = useCallback((audio: HTMLAudioElement) => {
     const player = usePlayerStore.getState();

@@ -3,49 +3,16 @@ import {
   type AudioFeatureFrameV1,
 } from "@mt-super-power/desktop-contract";
 
-import { createAudioFeatureStream, type AudioFeatureStream } from "@/lib/audioFeature/stream";
+import { createAudioFeatureStream } from "@/lib/audioFeature/stream";
+import type {
+  AudioFeatureBands,
+  AudioFeatureStream,
+  AudioFeatureSamplerOptions,
+  PlaybackFeatureIdentity,
+  PlaybackFeaturePublisher,
+} from "@/types/audioFeaturePublisher";
 
-/** The Authority/session pair that scopes every high-frequency feature stream. */
-export interface PlaybackFeatureIdentity {
-  authorityId: string;
-  sessionId: string;
-}
-
-/**
- * Runtime only needs identity lifecycle notifications. Implementations may
- * additionally sample an AnalyserNode and publish frames over the best-effort
- * Audio Feature transport.
- */
-export interface PlaybackFeaturePublisher {
-  setIdentity(identity: PlaybackFeatureIdentity | null): void;
-  stop?(): void;
-}
-
-export interface AudioFeatureBands {
-  bass: number;
-  lowMid: number;
-  mid: number;
-  power: number;
-  spectrum: ReadonlyArray<number>;
-  treble: number;
-  vocal: number;
-}
-
-export interface AudioFeatureFrameSink {
-  publish(frame: AudioFeatureFrameV1): boolean;
-}
-
-export interface AudioFeatureSamplerOptions {
-  createStream?: (identity: PlaybackFeatureIdentity) => AudioFeatureStream;
-  nowMs?: () => number;
-  sink: AudioFeatureFrameSink;
-}
-
-/**
- * Adds the transport envelope to analyser-derived values. It deliberately does
- * not own an animation loop: the host chooses sampling cadence, while this
- * object guarantees a fresh stream on every Authority/session change.
- */
+/** Adds a versioned transport envelope to analyser-derived audio values. */
 export class AudioFeatureSampler implements PlaybackFeaturePublisher {
   private identity: PlaybackFeatureIdentity | null = null;
   private stream: AudioFeatureStream | null = null;
@@ -85,7 +52,7 @@ export class AudioFeatureSampler implements PlaybackFeaturePublisher {
       treble: clampMagnitude(bands.treble),
       type: "audio-feature-frame",
       vocal: clampMagnitude(bands.vocal),
-    });
+    } satisfies AudioFeatureFrameV1);
     if (!published) this.stream = null;
     return published;
   }

@@ -8,11 +8,10 @@ import {
 } from "@/lib/player/audioEqualizerGraph";
 import {
   createAnalyserAudioFeatureSource,
-  type AudioFeatureSource,
   registerAudioFeatureSource,
 } from "@/lib/audioFeature/source";
-import { runtime } from "@/lib/runtime";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
+import type { AudioFeatureSource } from "@/types/audioFeaturePublisher";
 import type { LyricAudioBands } from "@/types/lyrics";
 
 interface AudioContextWindow extends Window {
@@ -39,7 +38,6 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
     let didFail = false;
     let audioFeatureSource: AudioFeatureSource | null = null;
     let unregisterAudioFeatureSource: (() => void) | undefined;
-    const shouldBroadcastFoliaBands = runtime.playbackHost.getNonce() === null;
 
     const broadcast = (bands: LyricAudioBands) => {
       window.dispatchEvent(
@@ -107,7 +105,7 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
 
     audio.addEventListener("play", onPlay);
     if (!audio.paused) onPlay();
-    if (shouldBroadcastFoliaBands) animationFrame = window.requestAnimationFrame(tick);
+    animationFrame = window.requestAnimationFrame(tick);
     return () => {
       audio.removeEventListener("play", onPlay);
       window.cancelAnimationFrame(animationFrame);

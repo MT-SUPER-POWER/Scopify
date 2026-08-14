@@ -1,16 +1,8 @@
 // store/module/time.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getTimePersistenceStorageKey } from "@/lib/playbackHost/persistenceNamespace";
-
-interface TimeStore {
-  currentTime: number;
-  totalTime: number;
-  bufferedTime: number;
-  setCurrentTime: (time: number) => void;
-  setTotalTime: (time: number) => void;
-  setBufferedTime: (time: number) => void;
-}
+import { TIME_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
+import type { TimeStore } from "@/types/time";
 
 export const useTimeStore = create<TimeStore>()(
   persist(
@@ -23,7 +15,7 @@ export const useTimeStore = create<TimeStore>()(
       setBufferedTime: (time) => set({ bufferedTime: time }),
     }),
     {
-      name: getTimePersistenceStorageKey(),
+      name: TIME_PERSISTENCE_STORAGE_KEY,
       partialize: (state) => ({
         currentTime: state.currentTime,
         totalTime: state.totalTime,

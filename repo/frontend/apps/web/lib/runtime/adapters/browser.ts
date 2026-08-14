@@ -2,7 +2,6 @@ import {
   DEFAULT_DESKTOP_PLAYBACK_WALLPAPER_PREFERENCES,
   type CacheCategory,
   type CacheScope,
-  type ClearDesktopCacheRequest,
   type DesktopCacheStats,
   type DesktopIconVisibilityState,
   type DesktopPlaybackWallpaperModel,
@@ -412,14 +411,6 @@ export function createBrowserRuntime(
     playback: {
       connect: () => NOOP,
       send: () => false,
-    },
-    playbackHost: {
-      getNonce: () => null,
-      reportReady: () => false,
-    },
-    playbackHostControl: {
-      connectClient: () => ({ close: NOOP, send: () => false }),
-      connectHost: () => ({ close: NOOP, send: () => false }),
     },
     updates: {
       check: async () => unsupportedUpdateState(),

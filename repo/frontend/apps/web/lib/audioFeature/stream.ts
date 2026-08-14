@@ -1,16 +1,8 @@
-export interface AudioFeatureStreamIdentity {
-  authorityId: string;
-  sessionId: string;
-}
-
-export interface AudioFeatureStream extends AudioFeatureStreamIdentity {
-  nextSequence(): number;
-  streamId: string;
-}
-
-export interface AudioFeatureStreamOptions {
-  createStreamId?(): string;
-}
+import type {
+  AudioFeatureStream,
+  AudioFeatureStreamIdentity,
+  AudioFeatureStreamOptions,
+} from "@/types/audioFeaturePublisher";
 
 let fallbackStreamOrdinal = 0;
 

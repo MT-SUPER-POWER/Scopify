@@ -9,7 +9,7 @@ import {
 } from "@mt-super-power/desktop-contract";
 
 const MANIFEST_FILE = "renderer.manifest.json";
-const REQUIRED_RENDERER_ENTRIES = ["index.html", "playback-host/index.html"] as const;
+const REQUIRED_RENDERER_ENTRIES = ["index.html"] as const;
 
 export type RendererArtifactVerification =
   { manifest: RendererArtifactManifest; ok: true } | { message: string; ok: false };

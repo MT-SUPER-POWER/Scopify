@@ -1,12 +1,81 @@
 import type { AudioFeatureFrameV1 } from "@mt-super-power/desktop-contract";
 
+import type { LyricAudioBands } from "@/types/lyrics";
+
+export interface AudioFeatureStreamIdentity {
+  authorityId: string;
+  sessionId: string;
+}
+
+export interface AudioFeatureStream extends AudioFeatureStreamIdentity {
+  nextSequence(): number;
+  streamId: string;
+}
+
+export interface AudioFeatureStreamOptions {
+  createStreamId?(): string;
+}
+
+export interface PlaybackFeatureIdentity {
+  authorityId: string;
+  sessionId: string;
+}
+
+export interface PlaybackFeaturePublisher {
+  setIdentity(identity: PlaybackFeatureIdentity | null): void;
+  stop?(): void;
+}
+
+export interface AudioFeatureBands {
+  bass: number;
+  lowMid: number;
+  mid: number;
+  power: number;
+  spectrum: ReadonlyArray<number>;
+  treble: number;
+  vocal: number;
+}
+
+export interface AudioFeatureFrameSink {
+  publish(frame: AudioFeatureFrameV1): boolean;
+}
+
+export interface AudioFeatureSamplerOptions {
+  createStream?: (identity: PlaybackFeatureIdentity) => AudioFeatureStream;
+  nowMs?: () => number;
+  sink: AudioFeatureFrameSink;
+}
+
+export interface AudioFeatureSource {
+  readBands(): LyricAudioBands | null;
+}
+
+export interface AnalyserAudioFeatureSourceOptions {
+  analyser: AnalyserNode;
+  isPaused: () => boolean;
+}
+
+export interface AudioFeatureSourceSamplerTimer {
+  clearInterval(handle: ReturnType<typeof setInterval>): void;
+  setInterval(callback: () => void, intervalMs: number): ReturnType<typeof setInterval>;
+}
+
+export interface AudioFeatureSourceSamplerOptions {
+  getProjection: () => import("@mt-super-power/desktop-contract").PlaybackProjection;
+  getSource?: () => AudioFeatureSource | null;
+  intervalMs?: number;
+  nowMs?: () => number;
+  publish: (frame: AudioFeatureFrameV1) => boolean;
+  timer?: AudioFeatureSourceSamplerTimer;
+}
+
 /** Timer seam for the publisher transport lifecycle. */
 export interface AudioFeaturePublisherTimer {
   clearTimeout(handle: unknown): void;
   setTimeout(callback: () => void, delayMs: number): unknown;
 }
 
-/** The fixed-rate Host sampler controlled by the transport lifecycle. */
+/** The fixed-rate source sampler controlled by the transport lifecycle. */
 export interface AudioFeaturePublisherSampler {
   disconnect(): void;
   start(): void;

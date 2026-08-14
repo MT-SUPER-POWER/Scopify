@@ -1,13 +1,8 @@
 import type { DesktopBridge } from "@mt-super-power/desktop-contract";
 
-import { connectPlaybackHostControlTransport } from "@/lib/playbackHost/controlTransport";
 import type { LyricData } from "@/types/lyrics";
 
-import type {
-  RuntimePlaybackHostControlClientPayload,
-  RuntimePlaybackHostControlHostPayload,
-  WebRuntime,
-} from "../types";
+import type { WebRuntime } from "../types";
 
 export type ScopifyDesktopBridge = DesktopBridge<LyricData>;
 
@@ -117,30 +112,6 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       connect: (role, connectionId, onPayload, onClose) =>
         bridge.connectPlaybackTransport(role, connectionId, onPayload, onClose),
       send: (payload) => bridge.sendPlaybackTransportPayload(payload),
-    },
-    playbackHost: {
-      getNonce: () => null,
-      reportReady: () => false,
-    },
-    playbackHostControl: {
-      connectClient: (connectionId, onPayload, onClose) =>
-        connectPlaybackHostControlTransport<
-          RuntimePlaybackHostControlClientPayload,
-          RuntimePlaybackHostControlHostPayload
-        >(
-          {
-            connect: (id, receive, close) => bridge.connectPlaybackHostControl(id, receive, close),
-            send: (payload) => bridge.sendPlaybackHostControlPayload(payload),
-          },
-          connectionId,
-          onPayload,
-          onClose,
-        ),
-      connectHost: () => {
-        throw new TypeError(
-          "The main desktop renderer only supports the Playback Host control client role",
-        );
-      },
     },
     updates: {
       check: () => bridge.checkForUpdates(),

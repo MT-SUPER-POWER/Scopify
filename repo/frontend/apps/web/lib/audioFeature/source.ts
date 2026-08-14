@@ -1,8 +1,10 @@
-import type { AudioFeatureFrameV1, PlaybackProjection } from "@mt-super-power/desktop-contract";
-
-import { AudioFeatureSampler } from "@/lib/playbackHost/audioFeatureSampler";
+import { AudioFeatureSampler } from "@/lib/audioFeature/sampler";
 import { downsampleSpectrum } from "@/lib/desktopPlaybackWallpaper/playback";
-import type { LyricAudioBands } from "@/types/lyrics";
+import type {
+  AnalyserAudioFeatureSourceOptions,
+  AudioFeatureSource,
+  AudioFeatureSourceSamplerOptions,
+} from "@/types/audioFeaturePublisher";
 
 export const AUDIO_FEATURE_SAMPLE_INTERVAL_MS = 33;
 export const AUDIO_FEATURE_MAX_SPECTRUM_BINS = 256;
@@ -12,15 +14,6 @@ export const AUDIO_FEATURE_MAX_SPECTRUM_BINS = 256;
  * desktop publisher read this same source so they never maintain independent
  * FFT-to-band conversion paths.
  */
-export interface AudioFeatureSource {
-  readBands(): LyricAudioBands | null;
-}
-
-interface AnalyserAudioFeatureSourceOptions {
-  analyser: AnalyserNode;
-  isPaused: () => boolean;
-}
-
 let activeAudioFeatureSource: AudioFeatureSource | null = null;
 
 /** Registers the analyser source for this renderer and returns its exact cleanup. */
@@ -40,7 +33,7 @@ export function getAudioFeatureSource(): AudioFeatureSource | null {
   return activeAudioFeatureSource;
 }
 
-/** Creates the reusable FFT reader used by both Folia and the Host publisher. */
+/** Creates the reusable FFT reader used by both Folia and the desktop publisher. */
 export function createAnalyserAudioFeatureSource({
   analyser,
   isPaused,
@@ -67,30 +60,15 @@ export function createAnalyserAudioFeatureSource({
   };
 }
 
-interface AudioFeatureHostSamplerTimer {
-  clearInterval(handle: ReturnType<typeof setInterval>): void;
-  setInterval(callback: () => void, intervalMs: number): ReturnType<typeof setInterval>;
-}
-
-export interface AudioFeatureHostSamplerOptions {
-  getProjection: () => PlaybackProjection;
-  getSource?: () => AudioFeatureSource | null;
-  intervalMs?: number;
-  nowMs?: () => number;
-  publish: (frame: AudioFeatureFrameV1) => boolean;
-  timer?: AudioFeatureHostSamplerTimer;
-}
-
 /**
- * Host-only 30fps publisher. It is intentionally decoupled from DOM events
- * and wallpaper state: the Host samples its local analyser whether or not the
- * visible window is minimized, hidden, or destroyed.
+ * Fixed-rate publisher decoupled from DOM events and wallpaper presentation.
+ * It samples the main renderer's analyser even while the window is hidden.
  */
-export class AudioFeatureHostSampler {
+export class AudioFeatureSourceSampler {
   private interval: ReturnType<typeof setInterval> | null = null;
   private readonly sampler: AudioFeatureSampler;
 
-  constructor(private readonly options: AudioFeatureHostSamplerOptions) {
+  constructor(private readonly options: AudioFeatureSourceSamplerOptions) {
     this.sampler = new AudioFeatureSampler({
       nowMs: options.nowMs,
       sink: { publish: (frame) => options.publish(frame) },

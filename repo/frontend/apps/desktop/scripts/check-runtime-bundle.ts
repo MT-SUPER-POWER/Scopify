@@ -10,7 +10,6 @@ const packagedAppRoot = resolve(scriptDir, "../build/desktop/app");
 const runtimeBundles = [
   resolve(packagedAppRoot, "out/main/main.js"),
   resolve(packagedAppRoot, "out/main/preload.js"),
-  resolve(packagedAppRoot, "out/main/playbackHostPreload.js"),
 ];
 const sandboxedPreloadBundles = runtimeBundles.slice(1);
 const rendererRoot = resolve(packagedAppRoot, "renderer");
