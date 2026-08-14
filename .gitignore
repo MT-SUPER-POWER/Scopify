@@ -24,6 +24,7 @@
 /repo/frontend/apps/desktop/dist/
 /repo/frontend/apps/desktop/dist*/
 /repo/frontend/apps/desktop/renderer/
+/repo/frontend/apps/desktop/build/
 /renderer-e2e/
 
 # production

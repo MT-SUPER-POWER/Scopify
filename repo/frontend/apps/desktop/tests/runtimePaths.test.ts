@@ -13,7 +13,7 @@ describe("Electron runtime output directory", () => {
 
   test("keeps packaged builds in the shared build directory", () => {
     expect(resolveElectronOutputDirectory(desktopRoot, "build")).toBe(
-      resolve(desktopRoot, "../../../../build/desktop/app/out/main"),
+      resolve(desktopRoot, "build/desktop/app/out/main"),
     );
   });
 });

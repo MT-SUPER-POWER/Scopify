@@ -39,10 +39,10 @@ jobs:
       - name: Verify release tag and workspace versions
         run: bun .github/scripts/verify-release-version.ts ${{ github.ref_name }}
 
-      - name: Build Desktop Renderer once
+      - name: Build and sync Desktop Renderer once
         env:
           GITHUB_SHA: ${{ github.sha }}
-        run: bun run build:desktop-renderer
+        run: bun run sync:renderer
 
       - name: Verify Renderer manifest and content
         run: bun repo/frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
@@ -50,7 +50,7 @@ jobs:
       - name: Pack Renderer and write checksum
         shell: bash
         run: |
-          tar -czf "renderer-${GITHUB_SHA}.tar.gz" -C build/desktop/app/renderer .
+          tar -czf "renderer-${GITHUB_SHA}.tar.gz" -C repo/frontend/apps/desktop/build/desktop/app/renderer .
           sha256sum "renderer-${GITHUB_SHA}.tar.gz" > "renderer-${GITHUB_SHA}.tar.gz.sha256"
 
       - name: Upload immutable Renderer artifact
@@ -76,26 +76,26 @@ jobs:
             os: windows-latest
             package-script: package:win
             artifact-path: |
-              build/release/*.exe
-              build/release/*.blockmap
-              build/release/latest*.yml
+              repo/frontend/apps/desktop/build/release/*.exe
+              repo/frontend/apps/desktop/build/release/*.blockmap
+              repo/frontend/apps/desktop/build/release/latest*.yml
             required-artifacts: |
-              build/release/*.exe
-              build/release/*.blockmap
-              build/release/latest.yml
+              repo/frontend/apps/desktop/build/release/*.exe
+              repo/frontend/apps/desktop/build/release/*.blockmap
+              repo/frontend/apps/desktop/build/release/latest.yml
           - platform: macos
             os: macos-latest
             package-script: package:mac
             artifact-path: |
-              build/release/*.dmg
-              build/release/*.zip
-              build/release/*.blockmap
-              build/release/latest*.yml
+              repo/frontend/apps/desktop/build/release/*.dmg
+              repo/frontend/apps/desktop/build/release/*.zip
+              repo/frontend/apps/desktop/build/release/*.blockmap
+              repo/frontend/apps/desktop/build/release/latest*.yml
             required-artifacts: |
-              build/release/*.dmg
-              build/release/*.zip
-              build/release/*.blockmap
-              build/release/latest-mac.yml
+              repo/frontend/apps/desktop/build/release/*.dmg
+              repo/frontend/apps/desktop/build/release/*.zip
+              repo/frontend/apps/desktop/build/release/*.blockmap
+              repo/frontend/apps/desktop/build/release/latest-mac.yml
 
     steps:
       - name: Checkout code
@@ -139,7 +139,7 @@ jobs:
           bun .github/scripts/unpack-renderer-artifact.ts
           .artifacts/renderer/renderer-${{ github.sha }}.tar.gz
           .artifacts/renderer/renderer-${{ github.sha }}.tar.gz.sha256
-          build/desktop/app/renderer
+          repo/frontend/apps/desktop/build/desktop/app/renderer
 
       - name: Verify Renderer manifest and content again
         run: bun repo/frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
@@ -148,7 +148,7 @@ jobs:
         run: bunx turbo run build --filter=@scopify/desktop
 
       - name: Package Electron without publishing
-        run: bun run --cwd repo/frontend/apps/desktop ${{ matrix.package-script }}
+        run: bunx turbo run ${{ matrix.package-script }} --filter=@scopify/desktop
 
       - name: Verify platform release outputs
         shell: bash

@@ -37,7 +37,18 @@ jobs:
         run: bun run --cwd repo/frontend/packages/desktop-contract typecheck
 
       - name: Publish to GitHub Packages
-        run: npm publish --access public
+        shell: bash
         working-directory: repo/frontend/packages/desktop-contract
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+          echo "Checking if ${PACKAGE_NAME}@${PACKAGE_VERSION} is already published on GitHub Packages..."
+          if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version --registry=https://npm.pkg.github.com > /dev/null 2>&1; then
+            echo "Version ${PACKAGE_VERSION} of ${PACKAGE_NAME} is already published on GitHub Packages. Skipping publish."
+          else
+            echo "Publishing ${PACKAGE_NAME}@${PACKAGE_VERSION} to GitHub Packages..."
+            npm publish --access public
+          fi

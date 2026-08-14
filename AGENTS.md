@@ -87,21 +87,6 @@ Scopify/
 
 ---
 
-## CodeGraph 代码索引
-
-本项目已建立 `.codegraph/` 索引。**需要定位符号、理解调用链、追踪跨文件依赖时，必须优先使用 CodeGraph，而非 grep/逐文件阅读。**
-
-> 经验法则：需要跨 2 个以上文件才能回答的问题，先 `codegraph_explore`。
-
-- **MCP 工具**：`codegraph_explore`（首选，一次调用返回带行号源码 + 调用路径）
-- **Shell 备选**：`codegraph explore "<符号名或问题描述>"`
-- **自动同步**：CodeGraph 已默认开启 Auto-sync，文件变更时自动实时更新索引，无需手动同步
-
-完整使用规范见 Skill：
-👉 **[skills/codegraph-usage/](skills/codegraph-usage/SKILL.md)**
-
----
-
 ---
 
 ### Backend

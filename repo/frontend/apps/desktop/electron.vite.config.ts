@@ -25,13 +25,12 @@ export default defineConfig(({ command }) => {
       build: {
         emptyOutDir: true,
         outDir: runtimeOutDir,
-        externalizeDeps: {
-          exclude: ["@mt-super-power/desktop-contract"],
-        },
+        externalizeDeps: false,
         rollupOptions: {
           input: {
             main: resolve(root, "main/main.ts"),
           },
+          external: ["bufferutil", "utf-8-validate"],
           output: {
             entryFileNames: "[name].js",
             format: "es",

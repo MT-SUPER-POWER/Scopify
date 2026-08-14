@@ -6,7 +6,7 @@ import { verifyRendererArtifact } from "../lib/rendererArtifact";
 import { verifySandboxedPreloadBundleSource } from "../lib/runtimeBundle";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
-const packagedAppRoot = resolve(scriptDir, "../../../../../build/desktop/app");
+const packagedAppRoot = resolve(scriptDir, "../build/desktop/app");
 const runtimeBundles = [
   resolve(packagedAppRoot, "out/main/main.js"),
   resolve(packagedAppRoot, "out/main/preload.js"),

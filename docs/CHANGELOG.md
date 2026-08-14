@@ -22,6 +22,10 @@
 - 桌面端设置新增“桌面歌词”独立配置与测试卡片：支持一键开/关桌面歌词悬浮窗口测试，并实时配置保持窗口置顶、鼠标穿透与隐藏任务栏图标。
 - 新增独立缓存清理页：按页面、播放地址、在线歌词及用户歌词数据分类展示条目数和占用空间，支持分组勾选、二次确认与选择性清理。
 
+### Quality
+
+- 优化 Electron 主进程打包策略：桌面端生产构建（`electron-vite`）现直接将纯 JS 运行时依赖（如 `@xhayper/discord-rpc`、`electron-log`、`electron-updater`、`js-yaml`、`zod` 等）完整打包内联至 `out/main/main.js`；移除了打包制品对跨目录 `node_modules` 软链接的脆弱依赖，彻底杜绝跨平台/CI 下由于符号链接权限导致的依赖丢失问题，并提升桌面端冷启动加载速度。
+
 ### Fixed
 
 - 修复 CI 并发加载测试文件时 Runtime mock 缺少 Cache 契约、导致播放缓存过期回归测试失败的问题；测试替身现覆盖带过期语义的最小缓存接口。
@@ -30,6 +34,7 @@
 - 修复 Vercel 部署因 `vercel.json` 缺少 Monorepo 根目录导航与子项目目录切换指令导致无法识别 Next.js 依赖及定位 `.next` 制品的问题；增加根目录 `.vercelignore` 过滤无关子模块与桌面端构建文件。
 - 修复 Windows Release 打包在 Bun 1.3.7 下无法解析 Discord Rich Presence 运行时依赖的问题；发布工作流现使用与工作区一致的 Bun 1.3.11。
 - 修复 Windows CI Release 工作流在 `windows-latest` 上因缺少开发者模式权限导致 Bun Workspace 创建 `node_modules` 软链接失败、进而使 `electron-builder` 无法定位 `@xhayper/discord-rpc` 等运行时依赖的问题；构建前现自动开启 Windows 开发者模式。
+- 修复 GitHub Package 发布工作流在 tag 触发时因 `@mt-super-power/desktop-contract` 版本未变动导致 `npm publish` 报 409 Conflict 失败的问题；发布前现自动检测远端版本，已存在时优雅跳过发布。
 - 修复页面缓存与播放缓存共用目录和清理范围的问题；桌面端改为独立子目录并安全迁移旧缓存，Web 端改用分区 IndexedDB 存储。
 - 修复 Windows 桌面播放壁纸在安装包中被错误标记为不支持的问题；WorkerW 附着与系统壁纸回退脚本现随安装包发布，并按开发或生产运行时解析对应路径。
 - 修复桌面音乐控制器错误继承 Folia 主题色的问题；控制器现在仅跟随全局 NextTheme 的明暗主题，Folia 主题切换只影响歌词渲染。

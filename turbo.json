@@ -14,11 +14,37 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "out/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "out/**", "build/**"]
     },
     "build:desktop": {
       "dependsOn": ["^build"],
       "outputs": ["out/**"]
+    },
+    "sync:renderer": {
+      "dependsOn": ["@scopify/web#build:desktop"],
+      "cache": false
+    },
+    "build:win": {
+      "dependsOn": ["sync:renderer", "build"],
+      "cache": false
+    },
+    "build:mac": {
+      "dependsOn": ["sync:renderer", "build"],
+      "cache": false
+    },
+    "package:win": {
+      "cache": false
+    },
+    "package:mac": {
+      "cache": false
+    },
+    "release:win": {
+      "dependsOn": ["sync:renderer", "build"],
+      "cache": false
+    },
+    "release:mac": {
+      "dependsOn": ["sync:renderer", "build"],
+      "cache": false
     },
     "dev": {
       "cache": false,
