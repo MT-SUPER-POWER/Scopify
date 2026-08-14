@@ -14,6 +14,7 @@
 # testing
 /coverage
 /test-results/
+.tmp/
 
 # workspace build outputs
 /repo/frontend/apps/web/.next/

@@ -29,6 +29,7 @@
 - 修复 CI 的干净克隆环境缺少 Next.js 生成的图片模块类型声明，导致 Web TypeScript 检查失败的问题；typecheck 现在会先生成 Next 类型文件。
 - 修复 Vercel 部署因 `vercel.json` 缺少 Monorepo 根目录导航与子项目目录切换指令导致无法识别 Next.js 依赖及定位 `.next` 制品的问题；增加根目录 `.vercelignore` 过滤无关子模块与桌面端构建文件。
 - 修复 Windows Release 打包在 Bun 1.3.7 下无法解析 Discord Rich Presence 运行时依赖的问题；发布工作流现使用与工作区一致的 Bun 1.3.11。
+- 修复 Windows CI Release 工作流在 `windows-latest` 上因缺少开发者模式权限导致 Bun Workspace 创建 `node_modules` 软链接失败、进而使 `electron-builder` 无法定位 `@xhayper/discord-rpc` 等运行时依赖的问题；构建前现自动开启 Windows 开发者模式。
 - 修复页面缓存与播放缓存共用目录和清理范围的问题；桌面端改为独立子目录并安全迁移旧缓存，Web 端改用分区 IndexedDB 存储。
 - 修复 Windows 桌面播放壁纸在安装包中被错误标记为不支持的问题；WorkerW 附着与系统壁纸回退脚本现随安装包发布，并按开发或生产运行时解析对应路径。
 - 修复桌面音乐控制器错误继承 Folia 主题色的问题；控制器现在仅跟随全局 NextTheme 的明暗主题，Folia 主题切换只影响歌词渲染。
