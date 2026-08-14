@@ -1,0 +1,10 @@
+repo/backend/api-enhanced
+repo/frontend/apps/mobile
+repo/frontend/apps/desktop
+node_modules
+.next
+.turbo
+.vercel
+logs
+*.tsbuildinfo
+coverage
