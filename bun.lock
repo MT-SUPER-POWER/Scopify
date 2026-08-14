@@ -16,7 +16,7 @@
     },
     "repo/frontend/apps/desktop": {
       "name": "@scopify/desktop",
-      "version": "1.4.2",
+      "version": "1.4.3",
       "dependencies": {
         "@mt-super-power/desktop-contract": "1.0.0",
         "@xhayper/discord-rpc": "^1.3.4",
@@ -38,7 +38,7 @@
     },
     "repo/frontend/apps/web": {
       "name": "@scopify/web",
-      "version": "1.4.2",
+      "version": "1.4.3",
       "dependencies": {
         "@chenglou/pretext": "^0.0.8",
         "@mt-super-power/desktop-contract": "1.0.0",

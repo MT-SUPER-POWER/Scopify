@@ -1,5 +1,23 @@
 # Changelog
 
+
+## v1.4.3
+
+### Refactor
+
+- **统一桌面端构建产物目录收敛**：桌面端所有构建阶段输入输出（`build/desktop/app/out/main`、`build/desktop/app/renderer`、`build/desktop/app/package.json`、`build/release`）完全内聚收敛于 `repo/frontend/apps/desktop/build/` 内部；彻底消除了以往跨仓库根目录的多级跳转（`../../../../`）与散落临时文件。
+- **全链路 Turborepo Task DAG 编排**：桌面端同步、编译、打包全面交由 Turborepo 任务依赖图（Task DAG）管理（`sync:renderer` -> `build` -> `build:win/mac`）；根目录 `package.json` 彻底移除了所有的 `&&` 脚本拼接与 `--cwd`，全部采用单行纯粹的 Turbo 标准命令。
+- **阶段化解耦与原子命令提供**：Desktop 内部解耦并提供了清晰的原子阶段命令（`sync:renderer` 同步、`build` 编译、`package:win/mac` 本地打包、`release:win/mac` 发布打包），支持灵活单步调试与 CI 分布式流水线调度。
+
+### Quality
+
+- **自闭环主进程内联打包**：桌面端生产构建（`electron-vite`）将纯 JS 运行时依赖（`@xhayper/discord-rpc`、`electron-log`、`electron-updater`、`js-yaml`、`zod` 等）全量 Tree-Shaking 编译并内联至 `out/main/main.js`；打包运行时声明 0 外部依赖，彻底免除了跨平台/CI 环境中对 `node_modules` 软链接的依赖与查找异常，并提升桌面端启动 I/O 效率。
+
+### Fixed
+
+- **修复 ws 模块可选原生依赖动态加载报错**：在 `electron.vite.config.ts` 中将 `ws` 的可选原生模块 `bufferutil` 和 `utf-8-validate` 标记为 `external`，防止 Vite 打包将其转译为顶层抛错 stub，确保在开发态和生产运行时自动平滑降级为纯 JS Buffer 运算。
+- **修复 GitHub Packages 发布工作流 409 Conflict 异常**：在 `.github/workflows/publish-package.yml` 中新增版本预检逻辑，当目标版本已在远端存在时优雅跳过，避免 tag 发布流程因包版本未变更而报错中断。
+
 ## v1.4.2
 
 ### Visual
