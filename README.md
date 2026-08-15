@@ -317,9 +317,7 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不�
 
 ## TODO
 
-- [ ] 歌单的评论区
 - [ ] 云盘功能
-- [ ] 拉去 github 的 release 自动更新客户端版本
 - [ ] 设备管理区域
 - [ ] 编辑歌单的部分还要做一个 Tag 的编辑功能
 - [ ] 系统消息机制的完善
