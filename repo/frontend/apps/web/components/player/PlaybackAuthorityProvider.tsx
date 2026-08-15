@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import type {
   PlaybackCommand,
@@ -10,6 +11,7 @@ import type {
 
 import { PlaybackAudioFeaturePublisher } from "@/components/player/PlaybackAudioFeaturePublisher";
 import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjectionProvider";
+import { useLikedVoicesQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaybackAuthority } from "@/hooks/player/usePlaybackAuthority";
 import { useDiscordPresence } from "@/hooks/player/useDiscordPresence";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
@@ -18,6 +20,7 @@ import { systemPlaybackClock } from "@/lib/playbackProjection/clock";
 import { createElectronPlaybackAuthorityTransport } from "@/lib/playbackProjection/electronTransport";
 import { createInProcessPlaybackTransport } from "@/lib/playbackProjection/inProcessTransport";
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { buildDiscordPresenceArtist } from "@/lib/player/discordPresence";
 import { isPlaybackSourceCurrent, waitForPlaybackSource } from "@/lib/player/playbackSource";
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
@@ -56,6 +59,9 @@ export function PlaybackAuthorityProvider({
   const sourceChangeMode = usePlayerStore((state) => state.sourceChangeMode);
   const volume = usePlayerStore((state) => state.volume);
   const likeListIds = useUserStore((state) => state.likeListIDs);
+  const userId = useUserStore((state) => state.user?.userId);
+  const queryClient = useQueryClient();
+  const likedVoices = useLikedVoicesQuery(currentSongDetail?.voiceId !== undefined);
 
   const lyrics = useMemo(() => (rawLyric ? adaptNeteaseLyric(rawLyric) : null), [rawLyric]);
   const track = useMemo(
@@ -72,9 +78,13 @@ export function PlaybackAuthorityProvider({
     [currentSongDetail],
   );
   const liked = useMemo(() => {
-    if (!currentSongDetail || !Array.isArray(likeListIds)) return false;
+    if (!currentSongDetail) return false;
+    if (currentSongDetail.voiceId !== undefined) {
+      return Boolean(likedVoices.data?.some((voice) => voice.id === currentSongDetail.voiceId));
+    }
+    if (!Array.isArray(likeListIds)) return false;
     return likeListIds.some((id) => Number(id) === currentSongDetail.id);
-  }, [currentSongDetail, likeListIds]);
+  }, [currentSongDetail, likeListIds, likedVoices.data]);
   const discordPresence = useMemo(
     () => ({
       album: currentSongDetail?.al.name ?? "",
@@ -238,7 +248,16 @@ export function PlaybackAuthorityProvider({
       onVolumeChange: (nextVolume) => usePlayerStore.getState().setVolume(nextVolume),
       previous: () => usePlayerStore.getState().playPrev(),
       toggleLike: async () => {
-        await toggleCurrentSongLike();
+        const currentTrack = usePlayerStore.getState().currentSongDetail;
+        const nextLiked = await toggleCurrentSongLike(liked);
+        if (currentTrack?.voiceId !== undefined) {
+          if (userId) {
+            void queryClient.invalidateQueries({
+              queryKey: musicQueryKeys.library.likedVoices(userId),
+            });
+          }
+          return nextLiked;
+        }
         const activeTrackId = usePlayerStore.getState().currentSongDetail?.id;
         const nextLikeListIds = useUserStore.getState().likeListIDs;
         return (
