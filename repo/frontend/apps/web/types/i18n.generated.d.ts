@@ -887,15 +887,15 @@ export interface TranslateFn {
    */
   (key: "settings.backendHost.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 可填域名、带端口地址或完整 http(s):// 地址；保存和 Ping 时会自动匹配协议、主机和端口。
-   * zh-TW: 可填網域、含埠位址或完整 http(s):// 位址；儲存和 Ping 時會自動匹配協定、主機和埠。
-   * en-US: Enter a domain, host with port, or full http(s):// URL; protocol, host, and port are normalized on save and Ping.
+   * zh-CN: 例如 127.0.0.1 或 api.example.com。
+   * zh-TW: 例如 127.0.0.1 或 api.example.com。
+   * en-US: e.g. 127.0.0.1 or api.example.com.
    */
   (key: "settings.backendHost.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 例如 127.0.0.1 或 https://api.example.com
-   * zh-TW: 例如 127.0.0.1 或 https://api.example.com
-   * en-US: e.g. 127.0.0.1 or https://api.example.com
+   * zh-CN: 127.0.0.1
+   * zh-TW: 127.0.0.1
+   * en-US: 127.0.0.1
    */
   (key: "settings.backendHost.placeholder", params?: TranslationParams): string;
   /**
@@ -904,6 +904,12 @@ export interface TranslateFn {
    * en-US: Backend host cannot be empty
    */
   (key: "settings.backendHost.required", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后端主机格式不合规，请输入有效的 IP 地址或域名
+   * zh-TW: 後端主機格式不合規，請輸入有效的 IP 位址或網域
+   * en-US: Invalid backend host format. Please enter a valid IP address or domain name
+   */
+  (key: "settings.backendHost.invalid", params?: TranslationParams): string;
   /**
    * zh-CN: 后端端口
    * zh-TW: 後端埠

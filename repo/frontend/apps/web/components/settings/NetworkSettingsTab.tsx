@@ -3,6 +3,7 @@
 import { CircleCheck, CircleX, LoaderCircle, Radio } from "lucide-react";
 import type { DesktopProxyMode } from "@scopify/desktop-contract";
 import type { NetworkSettingsTabProps } from "@/types/components/settings";
+import { isBackendHostInputValid } from "@/lib/web/backendUrl";
 import { useI18n } from "@/store/module/i18n";
 import { SettingInput, SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
 
@@ -13,17 +14,21 @@ export function NetworkSettingsTab({
   onDesktopChange,
   onPingBackend,
   onWebChange,
+  onBackendHostBlur,
 }: NetworkSettingsTabProps) {
   const { t } = useI18n();
   const isCustomProxy = config.desktop?.network.proxyMode === "custom";
+
+  const hostTrimmed = config.web.backend.host.trim();
+  const isHostInvalid = hostTrimmed !== "" && !isBackendHostInputValid(hostTrimmed);
 
   const pingBadge = backendPingResult ? (
     <span
       aria-live="polite"
       className={
         backendPingResult.reachable
-          ? "text-success flex items-center gap-1 text-xs font-medium"
-          : "text-danger flex items-center gap-1 text-xs font-medium"
+          ? "flex items-center gap-1 text-xs font-medium text-success"
+          : "flex items-center gap-1 text-xs font-medium text-danger"
       }
     >
       {backendPingResult.reachable ? (
@@ -77,12 +82,22 @@ export function NetworkSettingsTab({
           label={t("settings.backendHost.label")}
           sublabel={t("settings.backendHost.sublabel")}
           control={
-            <SettingInput
-              value={config.web.backend.host}
-              onChange={(value) => onWebChange("backend", "host", value)}
-              className="w-64"
-              placeholder={t("settings.backendHost.placeholder")}
-            />
+            <div className="flex flex-col items-end gap-1">
+              <SettingInput
+                value={config.web.backend.host}
+                onChange={(value) => onWebChange("backend", "host", value)}
+                onBlur={onBackendHostBlur}
+                className="w-42 sm:w-50"
+                placeholder={t("settings.backendHost.placeholder")}
+                align="right"
+                isInvalid={isHostInvalid}
+              />
+              {isHostInvalid ? (
+                <span className="max-w-50 text-right text-xs font-medium text-danger">
+                  {t("settings.backendHost.invalid")}
+                </span>
+              ) : null}
+            </div>
           }
         />
         <SettingRow
@@ -110,7 +125,7 @@ export function NetworkSettingsTab({
               type="button"
               onClick={() => void onPingBackend()}
               disabled={isPingingBackend}
-              className="border-input text-foreground hover:border-content inline-flex items-center gap-2 rounded border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-wait disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content disabled:cursor-wait disabled:opacity-50"
             >
               {isPingingBackend ? (
                 <LoaderCircle className="size-4 animate-spin" />
@@ -186,9 +201,10 @@ export function NetworkSettingsTab({
                 <SettingInput
                   value={config.desktop.network.proxyUrl}
                   onChange={(value) => onDesktopChange("network", "proxyUrl", value)}
-                  className="w-64"
+                  className="w-48 sm:w-56"
                   placeholder={t("settings.proxyUrl.placeholder")}
                   disabled={!isCustomProxy}
+                  align="right"
                 />
               }
             />

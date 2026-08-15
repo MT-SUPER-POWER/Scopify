@@ -3,6 +3,8 @@ import { expect, test } from "bun:test";
 import {
   buildBackendBaseUrl,
   cleanBackendHostInput,
+  isBackendHostInputValid,
+  isValidBackendHost,
   normalizeBackendConfig,
 } from "@/lib/web/backendUrl";
 
@@ -24,6 +26,60 @@ test("cleans host inputs by stripping protocol, port, and trailing paths", () =>
     host: "api.example.com",
     port: 443,
   });
+  expect(cleanBackendHostInput("[::1]:3838")).toEqual({
+    host: "[::1]",
+    port: 3838,
+  });
+});
+
+test("does NOT corrupt raw numeric or partial inputs to 0.0.0.x", () => {
+  expect(cleanBackendHostInput("12323123123")).toEqual({
+    host: "12323123123",
+  });
+  expect(cleanBackendHostInput("0.0.0.")).toEqual({
+    host: "0.0.0.",
+  });
+});
+
+test("validates valid and invalid host formats correctly", () => {
+  // Valid IPv4
+  expect(isValidBackendHost("127.0.0.1")).toBe(true);
+  expect(isValidBackendHost("192.168.1.100")).toBe(true);
+  expect(isValidBackendHost("0.0.0.0")).toBe(true);
+
+  // Invalid IPv4
+  expect(isValidBackendHost("0.0.0.12323123123")).toBe(false);
+  expect(isValidBackendHost("256.0.0.1")).toBe(false);
+  expect(isValidBackendHost("1.2.3")).toBe(false);
+
+  // Valid domain / localhost / hostnames
+  expect(isValidBackendHost("localhost")).toBe(true);
+  expect(isValidBackendHost("api.example.com")).toBe(true);
+  expect(isValidBackendHost("music-api.scopify.app")).toBe(true);
+  expect(isValidBackendHost("local-server")).toBe(true);
+
+  // Invalid domains / hostnames
+  expect(isValidBackendHost("")).toBe(false);
+  expect(isValidBackendHost("12323123123")).toBe(false);
+  expect(isValidBackendHost("api..example.com")).toBe(false);
+  expect(isValidBackendHost(".example.com")).toBe(false);
+  expect(isValidBackendHost("example.com.")).toBe(false);
+  expect(isValidBackendHost("-example.com")).toBe(false);
+  expect(isValidBackendHost("api.example.com/subpath")).toBe(false);
+  expect(isValidBackendHost("非法字符.com")).toBe(false);
+
+  // Valid IPv6
+  expect(isValidBackendHost("::1")).toBe(true);
+  expect(isValidBackendHost("[::1]")).toBe(true);
+});
+
+test("validates full user host input strings", () => {
+  expect(isBackendHostInputValid("127.0.0.1")).toBe(true);
+  expect(isBackendHostInputValid("http://127.0.0.1:3838")).toBe(true);
+  expect(isBackendHostInputValid("https://api.example.com:443/api")).toBe(true);
+  expect(isBackendHostInputValid("ftp://127.0.0.1")).toBe(false);
+  expect(isBackendHostInputValid("0.0.0.12323123123")).toBe(false);
+  expect(isBackendHostInputValid("12323123123")).toBe(false);
 });
 
 test("builds local HTTP backend origins with a non-standard port", () => {
@@ -110,6 +166,16 @@ test("rejects an empty backend host", () => {
   expect(
     normalizeBackendConfig({
       host: "   ",
+      port: 3838,
+      protocol: "http",
+    }),
+  ).toMatchObject({ ok: false });
+});
+
+test("rejects an invalid backend host format", () => {
+  expect(
+    normalizeBackendConfig({
+      host: "0.0.0.12323123123",
       port: 3838,
       protocol: "http",
     }),

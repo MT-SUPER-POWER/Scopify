@@ -36,14 +36,14 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="text-muted-foreground relative flex w-full flex-col p-6 md:p-10">
+    <div className="relative flex w-full flex-col p-6 text-muted-foreground md:p-10">
       <div className="mt-4 mb-8 flex items-center justify-between">
-        <h1 className="text-foreground text-3xl font-black tracking-tight md:text-4xl">
+        <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
           {t("settings.title")}
         </h1>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="flex flex-col">
-        <TabsList className="bg-surface-sunken h-auto w-fit max-w-full justify-start gap-1 self-start overflow-x-auto p-1">
+        <TabsList className="h-auto w-fit max-w-full justify-start gap-1 self-start overflow-x-auto bg-surface-sunken p-1">
           {SETTINGS_TABS.filter((tab) => tab.id !== "desktop" || runtime.isDesktop).map((tab) => (
             <TabsTrigger key={tab.id} value={tab.id} className="shrink-0 px-4 py-2">
               {t(tab.labelKey)}
@@ -66,6 +66,7 @@ const SettingsPage = () => {
               onWebChange={settings.handleWebChange}
               onDesktopChange={settings.handleDesktopChange}
               onPingBackend={settings.handlePingBackend}
+              onBackendHostBlur={settings.handleBackendHostBlur}
             />
           </TabsContent>
           <TabsContent value="storage">

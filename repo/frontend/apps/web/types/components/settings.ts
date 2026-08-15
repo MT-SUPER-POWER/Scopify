@@ -21,6 +21,7 @@ export interface NetworkSettingsTabProps {
   onDesktopChange: DesktopSettingsChangeHandler;
   onPingBackend: () => Promise<void>;
   onWebChange: WebSettingsChangeHandler;
+  onBackendHostBlur?: () => void;
 }
 
 export interface SaveConfirmModalProps {

@@ -12,6 +12,7 @@ import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
 import {
   cleanBackendHostInput,
+  isValidBackendHost,
   normalizeBackendConfig,
   resolveBackendBaseUrl,
 } from "@/lib/web/backendUrl";
@@ -93,7 +94,14 @@ function validateBackendConfig(locale: WebConfig["app"]["locale"], backend: WebC
     return null;
   }
 
-  if (!Number.isFinite(backend.port) || backend.port < 1 || backend.port > 65535) {
+  const cleaned = cleanBackendHostInput(backend.host);
+  if (!isValidBackendHost(cleaned.host)) {
+    toast.error(translate(locale, "settings.backendHost.invalid"));
+    return null;
+  }
+
+  const port = cleaned.port ?? backend.port;
+  if (!Number.isFinite(port) || port < 1 || port > 65535) {
     toast.error(translate(locale, "settings.backendPort.invalid"));
     return null;
   }
@@ -198,7 +206,6 @@ export function useSettingsState() {
     value: WebConfig[S][K],
   ) => {
     if (section === "backend" && key === "host" && typeof value === "string") {
-      const cleaned = cleanBackendHostInput(value);
       setConfig((current) => {
         if (!current) return current;
         return {
@@ -207,9 +214,7 @@ export function useSettingsState() {
             ...current.web,
             backend: {
               ...current.web.backend,
-              host: cleaned.host,
-              ...(cleaned.protocol ? { protocol: cleaned.protocol } : {}),
-              ...(cleaned.port !== undefined ? { port: cleaned.port } : {}),
+              host: value,
             },
           },
         };
@@ -251,18 +256,45 @@ export function useSettingsState() {
     );
   };
 
+  const handleBackendHostBlur = () => {
+    setConfig((current) => {
+      if (!current) return current;
+      const rawHost = current.web.backend.host;
+      if (!rawHost.trim()) return current;
+
+      const cleaned = cleanBackendHostInput(rawHost);
+      return {
+        ...current,
+        web: {
+          ...current.web,
+          backend: {
+            ...current.web.backend,
+            host: cleaned.host || rawHost.trim(),
+            ...(cleaned.protocol ? { protocol: cleaned.protocol } : {}),
+            ...(cleaned.port !== undefined ? { port: cleaned.port } : {}),
+          },
+        },
+      };
+    });
+  };
+
   const handlePingBackend = async () => {
     if (!config || isPingingBackend) return;
 
-    const backendUrl = resolveBackendBaseUrl(config.web.backend);
-    if (!backendUrl.ok) {
-      toast.error(
-        translate(config.web.app.locale, "settings.backendInvalid", {
-          message: backendUrl.message,
-        }),
-      );
-      return;
-    }
+    const validated = validateBackendConfig(config.web.app.locale, config.web.backend);
+    if (!validated) return;
+
+    setConfig((current) =>
+      current
+        ? {
+            ...current,
+            web: {
+              ...current.web,
+              backend: validated.backend,
+            },
+          }
+        : current,
+    );
 
     const timeout =
       Number.isFinite(config.web.network.timeout) && config.web.network.timeout > 0
@@ -270,7 +302,7 @@ export function useSettingsState() {
         : 10000;
     setIsPingingBackend(true);
     try {
-      const result = await probeBackend(backendUrl.url, timeout);
+      const result = await probeBackend(validated.url, timeout);
       setBackendPingResult(result);
       if (result.reachable) {
         toast.success(
@@ -284,22 +316,26 @@ export function useSettingsState() {
               : { latency: result.latencyMs },
           ),
         );
-        return;
+      } else {
+        toast.error(
+          result.reason === "timeout"
+            ? translate(config.web.app.locale, "settings.backendPing.timeout")
+            : result.reason === "invalid-response"
+              ? translate(config.web.app.locale, "settings.backendPing.invalidResponse")
+              : result.reason === "server"
+                ? translate(config.web.app.locale, "settings.backendPing.serverError", {
+                    status: result.status ?? 0,
+                  })
+                : translate(config.web.app.locale, "settings.backendPing.networkError"),
+        );
       }
-
-      const message =
-        result.reason === "timeout"
-          ? translate(config.web.app.locale, "settings.backendPing.timeout")
-          : result.reason === "invalid-response"
-            ? translate(config.web.app.locale, "settings.backendPing.invalidResponse")
-            : result.reason === "server"
-              ? translate(config.web.app.locale, "settings.backendPing.serverError", {
-                  status: result.status ?? 0,
-                })
-              : translate(config.web.app.locale, "settings.backendPing.networkError");
-      toast.error(message);
-    } catch (error) {
-      console.error("[Settings] failed to ping backend:", error);
+    } catch {
+      setBackendPingResult({
+        latencyMs: 0,
+        reachable: false,
+        reason: "network",
+        url: validated.url,
+      });
       toast.error(translate(config.web.app.locale, "settings.backendPing.networkError"));
     } finally {
       setIsPingingBackend(false);
@@ -487,6 +523,7 @@ export function useSettingsState() {
     backendPingResult,
     isPingingBackend,
     handlePingBackend,
+    handleBackendHostBlur,
     discordStatus,
     isTestingDiscord,
     handleTestDiscord,

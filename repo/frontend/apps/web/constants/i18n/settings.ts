@@ -94,10 +94,10 @@ export const settingsMessages = defineMessages(
     "settings.backendProtocol.label": "传输协议",
     "settings.backendProtocol.sublabel": "连接后端 API 时使用的传输协议（HTTP 或 HTTPS）。",
     "settings.backendHost.label": "后端主机",
-    "settings.backendHost.sublabel":
-      "可填域名、带端口地址或完整 http(s):// 地址；保存和 Ping 时会自动匹配协议、主机和端口。",
-    "settings.backendHost.placeholder": "例如 127.0.0.1 或 https://api.example.com",
+    "settings.backendHost.sublabel": "例如 127.0.0.1 或 api.example.com。",
+    "settings.backendHost.placeholder": "127.0.0.1",
     "settings.backendHost.required": "后端主机不能为空",
+    "settings.backendHost.invalid": "后端主机格式不合规，请输入有效的 IP 地址或域名",
     "settings.backendPort.label": "后端端口",
     "settings.backendPort.sublabel": "后端 API 监听的端口。修改后保存即生效，无需重启应用。",
     "settings.backendPort.invalid": "后端端口必须为 1-65535 之间的整数",
@@ -316,10 +316,10 @@ export const settingsMessages = defineMessages(
     "settings.backendProtocol.label": "傳輸協定",
     "settings.backendProtocol.sublabel": "連線後端 API 時使用的傳輸協定（HTTP 或 HTTPS）。",
     "settings.backendHost.label": "後端主機",
-    "settings.backendHost.sublabel":
-      "可填網域、含埠位址或完整 http(s):// 位址；儲存和 Ping 時會自動匹配協定、主機和埠。",
-    "settings.backendHost.placeholder": "例如 127.0.0.1 或 https://api.example.com",
+    "settings.backendHost.sublabel": "例如 127.0.0.1 或 api.example.com。",
+    "settings.backendHost.placeholder": "127.0.0.1",
     "settings.backendHost.required": "後端主機不能為空",
+    "settings.backendHost.invalid": "後端主機格式不合規，請輸入有效的 IP 位址或網域",
     "settings.backendPort.label": "後端埠",
     "settings.backendPort.sublabel": "後端 API 監聽的埠。修改後儲存即生效，無需重啟應用。",
     "settings.backendPort.invalid": "後端埠必須為 1-65535 之間的整數",
@@ -545,10 +545,11 @@ export const settingsMessages = defineMessages(
     "settings.backendProtocol.sublabel":
       "Transport protocol used when connecting to backend API (HTTP or HTTPS).",
     "settings.backendHost.label": "Backend Host",
-    "settings.backendHost.sublabel":
-      "Enter a domain, host with port, or full http(s):// URL; protocol, host, and port are normalized on save and Ping.",
-    "settings.backendHost.placeholder": "e.g. 127.0.0.1 or https://api.example.com",
+    "settings.backendHost.sublabel": "e.g. 127.0.0.1 or api.example.com.",
+    "settings.backendHost.placeholder": "127.0.0.1",
     "settings.backendHost.required": "Backend host cannot be empty",
+    "settings.backendHost.invalid":
+      "Invalid backend host format. Please enter a valid IP address or domain name",
     "settings.backendPort.label": "Backend Port",
     "settings.backendPort.sublabel":
       "Port on which the backend API listens. Changes take effect immediately after saving, no restart required.",
