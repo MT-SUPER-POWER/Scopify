@@ -1,6 +1,7 @@
 import type { HTMLAttributes, ReactNode, RefObject } from "react";
 
 import type { SongDetail } from "@/types/api/music";
+import type { CommentResourceKind } from "@/types/api/comment";
 import type { PlaylistInfo } from "@/types/playlist";
 
 export interface PlaylistTagSelectorProps {
@@ -11,6 +12,8 @@ export interface PlaylistTagSelectorProps {
 
 export interface PlaylistActionsProps {
   actionSlot?: ReactNode;
+  commentResourceId?: null | string;
+  commentResourceKind?: CommentResourceKind;
   dailyDate?: null | string;
   inputRef: RefObject<HTMLInputElement | null>;
   isDaily: boolean;
@@ -27,6 +30,8 @@ export interface PlaylistActionsProps {
 
 export interface PlaylistContentProps {
   actionSlot?: ReactNode;
+  commentResourceId?: null | string;
+  commentResourceKind?: CommentResourceKind;
   contentSlot?: (props: PlaylistContentSlotProps) => ReactNode;
   dailyDate: null | string;
   hideAlbumColumn?: boolean;

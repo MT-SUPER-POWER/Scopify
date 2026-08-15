@@ -1,9 +1,15 @@
-import type { MusicCommentParams } from "@/types/api/comment";
+import type {
+  CommentResourceType,
+  MusicCommentParams,
+  NewCommentParams,
+  NewCommentResponse,
+} from "@/types/api/comment";
+import type { SongComment } from "@/types/api/music";
 import request from "../web/request";
 
 export async function getMusicComments(params: MusicCommentParams) {
   const cookie = localStorage.getItem("music_cookie") ?? "";
-  return request.get("/comment/music", {
+  return request.get<SongComment>("/comment/music", {
     params: {
       id: params.id,
       limit: params.limit,
@@ -14,14 +20,34 @@ export async function getMusicComments(params: MusicCommentParams) {
   });
 }
 
+export function getPlaylistComments(params: MusicCommentParams) {
+  return request.get<SongComment>("/comment/playlist", { params });
+}
+
+export function getVoiceComments(params: MusicCommentParams) {
+  return request.get<SongComment>("/comment/dj", { params });
+}
+
+export function getNewComments(params: NewCommentParams) {
+  return request.get<NewCommentResponse>("/comment/new", { params });
+}
+
 /**
  *
  * @param id
  * @param content
  */
 export function addMusicComments(id: string | number, content: string) {
+  return addResourceComment(id, content, 0);
+}
+
+export function addResourceComment(
+  id: string | number,
+  content: string,
+  type: CommentResourceType,
+) {
   return request.get("/comment/add", {
-    params: { id: id, content: content },
+    params: { id, content, type },
   });
 }
 
@@ -29,12 +55,16 @@ export function addMusicComments(id: string | number, content: string) {
  *
  * @param id 歌曲id
  * @param t 0 删除 1 发送, 2 回复
- * @param type 资源类型 0歌曲 1mv 2专辑 3歌单 4电台 5视频
+ * @param type 资源类型 0歌曲 2歌单 4电台节目 7电台/VoiceList
  * @param commentId 被操作的评论id
  */
-export function delComments(songId: string | number, commentId: string | number) {
+export function delComments(
+  resourceId: string | number,
+  commentId: string | number,
+  type: CommentResourceType = 0,
+) {
   return request.get("/comment", {
-    params: { id: songId, t: 0, type: 0, commentId: commentId },
+    params: { id: resourceId, t: 0, type, commentId },
   });
 }
 
@@ -45,15 +75,16 @@ export function delComments(songId: string | number, commentId: string | number)
  * @param content 回复内容
  */
 export function replyComments(
-  songId: string | number,
+  resourceId: string | number,
   commentId: string | number,
   content: string,
+  type: CommentResourceType = 0,
 ) {
   return request.get("/comment", {
     params: {
-      id: songId,
+      id: resourceId,
       t: 2,
-      type: 0,
+      type,
       commentId: commentId,
       content: content,
     },
@@ -65,13 +96,13 @@ export function replyComments(
  * @param id 资源id
  * @param cid 评论id
  * @param t 是否点赞 1点赞 0取消
- * @param type 资源类型 0歌曲 1mv 2专辑 3歌单 4电台 5视频
+ * @param type 资源类型 0歌曲 2歌单 4电台节目 7电台/VoiceList
  */
 export function toggleLikeComments(
   id: string | number,
   cid: string | number,
   t: 1 | 0,
-  type: number,
+  type: CommentResourceType,
 ) {
   const cookie = localStorage.getItem("music_cookie") ?? "";
   return request.get("/comment/like", {

@@ -9,6 +9,8 @@ import {
 } from "@/hooks/player/usePlaybackProjection";
 import { toggleApplicationDeveloperTools } from "@/lib/shortcuts/developerTools";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
+import { getCommentHref } from "@/lib/comment/commentResource";
+import { usePlayerStore } from "@/store/module/player";
 import { useUiStore } from "@/store/module/ui";
 import { useSearchStore } from "@/store/module/search";
 import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts";
@@ -110,9 +112,14 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           navigateTo("/setting?tab=shortcuts");
           return;
         case "open-current-track-comments": {
-          const trackId = playbackRef.current.track?.id;
-          if (trackId !== undefined && trackId !== null) {
-            navigateTo(`/comment?songId=${trackId}`);
+          const track = usePlayerStore.getState().currentSongDetail;
+          if (track) {
+            navigateTo(
+              getCommentHref(
+                track.voiceId === undefined ? "song" : "voice",
+                track.voiceId ?? track.id,
+              ),
+            );
           }
           return;
         }

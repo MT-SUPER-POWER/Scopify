@@ -26,6 +26,7 @@ export interface RadioDetail {
 export type RadioDetailPayload = RadioDetail | { djRadio?: RadioDetail };
 
 export interface RadioProgram {
+  commentCount?: number;
   coverUrl?: string;
   createTime?: number;
   description?: string;
@@ -34,9 +35,16 @@ export interface RadioProgram {
   duration?: number;
   id: number;
   listenerCount?: number;
+  likedCount?: number;
   mainSong: RawSongDetail;
   name?: string;
   radio?: RadioDetail;
+}
+
+export interface RadioProgramDetailResponse {
+  code: number;
+  message?: string | null;
+  program?: RadioProgram;
 }
 
 /** 登录用户在一个电台节目中的云端收听断点，时间均为毫秒。 */

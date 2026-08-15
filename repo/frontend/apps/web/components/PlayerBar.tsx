@@ -37,6 +37,7 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { getCommentHref } from "@/lib/comment/commentResource";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn, formatCompactCount } from "@/lib/utils";
@@ -371,7 +372,10 @@ export const PlayerBar = ({
               <PlayerBarStatAction
                 count={currentSong.commentCount}
                 countClassName="text-content-muted group-hover:text-content transition-colors"
-                href={`/comment?songId=${currentSong.id}`}
+                href={getCommentHref(
+                  currentSong.voiceId === undefined ? "song" : "voice",
+                  currentSong.voiceId ?? currentSong.id,
+                )}
                 onRetry={() => void songStats.retry()}
                 retryLabel={t("common.action.retry")}
                 statsStatus={songStats.state.status}

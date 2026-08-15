@@ -10,11 +10,12 @@ import type { SongDetail } from "@/types/api/music";
 
 const EMPTY_STATS_STATE = getSongStatsEnrichmentState(null);
 
-/** Keeps the player bar informed while its current song statistics are loaded. */
-export function useSongStatsEnrichment(song: SongDetail | null) {
+/** Keeps a song consumer informed while its interaction statistics are loaded. */
+export function useSongStatsEnrichment(song: SongDetail | null, enabled = true) {
   const songId = song?.id ?? null;
   const likedCount = song?.likedCount;
   const commentCount = song?.commentCount;
+  const voiceId = song?.voiceId;
   const state = useSyncExternalStore(
     subscribeSongStatsEnrichment,
     () => getSongStatsEnrichmentState(songId),
@@ -22,14 +23,14 @@ export function useSongStatsEnrichment(song: SongDetail | null) {
   );
 
   useEffect(() => {
-    if (songId === null) return;
-    void enrichSongStatsById(songId, { commentCount, likedCount });
-  }, [commentCount, likedCount, songId]);
+    if (!enabled || songId === null) return;
+    void enrichSongStatsById(songId, { commentCount, likedCount }, voiceId);
+  }, [commentCount, enabled, likedCount, songId, voiceId]);
 
   const retry = useCallback(() => {
-    if (songId === null) return Promise.resolve(EMPTY_STATS_STATE);
-    return enrichSongStatsById(songId, { commentCount, likedCount });
-  }, [commentCount, likedCount, songId]);
+    if (!enabled || songId === null) return Promise.resolve(EMPTY_STATS_STATE);
+    return enrichSongStatsById(songId, { commentCount, likedCount }, voiceId);
+  }, [commentCount, enabled, likedCount, songId, voiceId]);
 
   return { retry, state };
 }

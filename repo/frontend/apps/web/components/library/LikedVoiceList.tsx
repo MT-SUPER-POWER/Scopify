@@ -14,7 +14,12 @@ export function LikedVoiceList({ voices }: LikedVoiceListProps) {
 
   return (
     <>
-      <VoiceList voices={voices} variant="liked" onViewTranscript={setSelectedVoice} />
+      <VoiceList
+        enableContextMenu
+        voices={voices}
+        variant="liked"
+        onViewTranscript={setSelectedVoice}
+      />
       <VoiceTranscriptDialog
         open={selectedVoice !== null}
         voice={selectedVoice}

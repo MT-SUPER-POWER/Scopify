@@ -1,10 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { Badge } from "@scopify/ui/shadcn/components/badge";
 import {
   ArrowDownCircle,
   CalendarDays,
   List,
+  MessageCircle,
   MoreHorizontal,
   Pause,
   Play,
@@ -21,10 +23,12 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
+import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { cn } from "@/lib/utils";
+import { getCommentHref } from "@/lib/comment/commentResource";
+import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
@@ -47,6 +51,8 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const { locale, t } = useI18n();
   const {
     actionSlot,
+    commentResourceId,
+    commentResourceKind,
     playlistId,
     playSourceId,
     isDaily,
@@ -81,6 +87,10 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const isShuffle = usePlayerStore((s) => s.isShuffle);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+  const { data: commentCount } = useCommentCountQuery(
+    commentResourceKind,
+    commentResourceId ?? null,
+  );
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
   const currentPageId =
     playSourceId ?? playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
@@ -138,6 +148,12 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
 
   const playbackActionLabel = t(showPause ? "ui.pause" : "ui.play");
   const shuffleActionLabel = t(isShuffle ? "ui.shuffleOn" : "ui.shuffleOff");
+  const commentActionLabel =
+    commentCount === undefined
+      ? t("playlist.actions.comments")
+      : t("playlist.actions.commentsWithCount", {
+          count: formatCompactCount(commentCount),
+        });
 
   return (
     <TooltipProvider>
@@ -204,6 +220,34 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             </TooltipContent>
           </Tooltip>
 
+          {commentResourceKind && commentResourceId && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={commentActionLabel}
+                  onClick={() =>
+                    smartRouter.push(getCommentHref(commentResourceKind, commentResourceId))
+                  }
+                  className="text-content-muted hover:text-content relative inline-flex cursor-pointer items-center justify-center transition-colors"
+                >
+                  <MessageCircle className={cn(isSticky ? "size-7" : "size-8")} />
+                  {commentCount !== undefined && (
+                    <Badge
+                      variant="outline"
+                      className="border-border bg-surface-overlay text-content-muted shadow-panel pointer-events-none absolute top-0 right-0 h-4 min-w-4 translate-x-1/2 -translate-y-1/3 px-1 text-[9px] leading-none tabular-nums backdrop-blur-sm"
+                    >
+                      {formatCompactCount(commentCount)}
+                    </Badge>
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={8}>
+                {commentActionLabel}
+              </TooltipContent>
+            </Tooltip>
+          )}
+
           <ArrowDownCircle
             className={cn(
               isSticky ? "size-7" : "size-8",
@@ -248,7 +292,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                 side="bottom"
                 align="end"
                 sideOffset={8}
-                className="bg-surface-overlay text-content border-border w-auto p-0"
+                className="border-border bg-surface-overlay text-content w-auto p-0"
               >
                 <Calendar
                   key={dailyDate ?? todayKey}

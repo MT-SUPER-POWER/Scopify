@@ -34,6 +34,8 @@ export default function RadioPage() {
           tracks={radio.tracks}
         />
       )}
+      commentResourceId={radioId}
+      commentResourceKind="voice-list"
       dailyDate={null}
       isDailyRecommend={false}
       isLoading={radio.isLoading}

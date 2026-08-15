@@ -13,6 +13,7 @@ export interface CommentHeaderProps {
   artists: CommentHeaderArtist[];
   total: number;
   onArtistClick: (artistId: number | string) => void;
+  tagLabel?: string;
 }
 
 export interface CommentItemProps {

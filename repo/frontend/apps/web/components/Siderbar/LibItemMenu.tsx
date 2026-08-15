@@ -1,6 +1,6 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Edit, Eye, Link, Play, Trash } from "lucide-react";
+import { Edit, Eye, Link, MessageCircle, Play, Trash } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 import {
@@ -20,6 +20,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import {
   delPlaylist,
   getPlaylistAllTracks,
@@ -29,10 +30,11 @@ import {
 } from "@/lib/api/playlist";
 import { getUserPlaylist } from "@/lib/api/user";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { getCommentHref } from "@/lib/comment/commentResource";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { translate } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
+import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n, useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail } from "@/types/api/music";
@@ -170,7 +172,13 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
   const playlistInfo = userPlaylists.find((p) => String(p.id) === String(playlistID));
 
   const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [contextMenuOpen, setContextMenuOpen] = React.useState(false);
   const [updateFormOpen, setUpdateFormOpen] = React.useState(false);
+  const { data: commentCount } = useCommentCountQuery(
+    "playlist",
+    String(playlistID),
+    contextMenuOpen,
+  );
 
   const handleConfirmDelete = async () => {
     handleDeletePlaylist(playlistID, playlistInfo?.name || t("sidebar.lib.untitledPlaylist"));
@@ -211,7 +219,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
         onCancel={() => setUpdateFormOpen(false)}
       />
 
-      <ContextMenu>
+      <ContextMenu onOpenChange={setContextMenuOpen}>
         <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
         <ContextMenuContent className="w-48">
           {/* 歌单和播放快捷 */}
@@ -272,6 +280,18 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
 
           {/* 杂项，未来拓展 */}
           <ContextMenuGroup>
+            <ContextMenuItem
+              onClick={() => {
+                smartRouter.push(getCommentHref("playlist", playlistID));
+              }}
+            >
+              <MessageCircle className="mr-2 size-4" />
+              {commentCount === undefined
+                ? t("contextMenu.viewComments")
+                : t("contextMenu.viewCommentsWithCount", {
+                    count: formatCompactCount(commentCount),
+                  })}
+            </ContextMenuItem>
             <ContextMenuItem
               onClick={() => {
                 const url = `https://music.163.com/#/playlist?id=${playlistID}`;

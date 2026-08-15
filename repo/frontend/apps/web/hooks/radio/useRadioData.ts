@@ -61,8 +61,11 @@ function toRadioTrack(program: RadioProgram, radio: RadioDetail): SongDetail {
       picUrl: coverUrl,
     },
     dt: program.duration ?? track.dt,
+    commentCount: program.commentCount,
+    likedCount: program.likedCount,
     name: program.name ?? track.name,
     publishTime: program.createTime ?? track.publishTime,
+    voiceId: program.id,
   };
 }
 

@@ -8,6 +8,7 @@ interface RequestPlan {
 }
 
 const plans = new Map<number, RequestPlan>();
+const voicePlans = new Map<number, { comment: number; liked: number }>();
 const requestCounts = new Map<string, number>();
 
 function nextPlannedValue(songId: number, type: keyof RequestPlan): PlannedValue {
@@ -35,6 +36,29 @@ const getMusicComments = mock(async ({ id }: { id: number | string }) => {
   return { data: { code: 200, total: value } };
 });
 
+const getVoiceComments = mock(async ({ id }: { id: number | string }) => {
+  const voiceId = Number(id);
+  const plan = voicePlans.get(voiceId);
+  if (!plan) throw new Error(`No voice comment plan for voice ${voiceId}`);
+  requestCounts.set(
+    `${voiceId}:voice-comment`,
+    (requestCounts.get(`${voiceId}:voice-comment`) ?? 0) + 1,
+  );
+  return { data: { code: 200, total: plan.comment } };
+});
+
+const getRadioProgramDetail = mock(async (voiceId: number) => {
+  const plan = voicePlans.get(voiceId);
+  if (!plan) throw new Error(`No liked count plan for voice ${voiceId}`);
+  requestCounts.set(
+    `${voiceId}:voice-liked`,
+    (requestCounts.get(`${voiceId}:voice-liked`) ?? 0) + 1,
+  );
+  return { data: { code: 200, program: { likedCount: plan.liked } } };
+});
+
+const getVoiceDetail = mock(async () => ({ data: { code: 200, data: {} } }));
+
 const reportFailure = mock(() => undefined);
 
 const playerState = {
@@ -43,8 +67,10 @@ const playerState = {
   queue: [],
 };
 
-mock.module("@/lib/api/comment", () => ({ getMusicComments }));
+mock.module("@/lib/api/comment", () => ({ getMusicComments, getVoiceComments }));
+mock.module("@/lib/api/radio", () => ({ getRadioProgramDetail }));
 mock.module("@/lib/api/track", () => ({ getSongRedCount }));
+mock.module("@/lib/api/voicelist", () => ({ getVoiceDetail }));
 mock.module("@/lib/web/errorTracking", () => ({ reportFailure }));
 mock.module("@/store", () => ({
   usePlayerStore: {
@@ -110,5 +136,19 @@ describe("song stats enrichment", () => {
         event: "song.stats_enrichment_failed",
       }),
     );
+  });
+
+  test("loads voice comment and liked counts from the voice resource", async () => {
+    voicePlans.set(9001, { comment: 65, liked: 191 });
+
+    await expect(enrichSongStatsById(104, undefined, 9001)).resolves.toEqual({
+      stats: { commentCount: 65, likedCount: 191 },
+      status: "complete",
+    });
+
+    expect(requestCounts.get("9001:voice-comment")).toBe(1);
+    expect(requestCounts.get("9001:voice-liked")).toBe(1);
+    expect(countRequests(104, "comment")).toBe(0);
+    expect(countRequests(104, "red")).toBe(0);
   });
 });

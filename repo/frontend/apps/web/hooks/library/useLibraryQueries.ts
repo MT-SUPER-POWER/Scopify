@@ -280,11 +280,11 @@ export function useRecommendedPodcastsQuery() {
   });
 }
 
-export function useLikedVoicesQuery() {
+export function useLikedVoicesQuery(enabled = true) {
   const { isLoggedIn, userId } = useLibrarySession();
 
   return useQuery({
-    enabled: isLoggedIn && Boolean(userId),
+    enabled: enabled && isLoggedIn && Boolean(userId),
     queryKey: musicQueryKeys.library.likedVoices(userId ?? 0),
     queryFn: async (): Promise<Voice[]> => {
       const response = await getLikedVoices();

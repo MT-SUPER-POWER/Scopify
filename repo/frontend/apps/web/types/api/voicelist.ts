@@ -242,10 +242,12 @@ export interface LikedVoicesResponse {
 }
 
 export interface VoiceDetail {
+  commentCount?: number;
   coverUrl?: string;
   description?: string;
   duration?: number;
   id?: number;
+  likedCount?: number;
   name?: string;
   voiceListId?: number;
 }
@@ -292,6 +294,11 @@ export interface VoiceListDetail {
   id?: number;
   name?: string;
   picUrl?: string;
+}
+
+export interface VoiceLikeResponse {
+  code: number;
+  message?: string | null;
 }
 
 export interface VoiceListDetailResponse {

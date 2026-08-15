@@ -1,5 +1,7 @@
-import { getMusicComments } from "@/lib/api/comment";
+import { getMusicComments, getVoiceComments } from "@/lib/api/comment";
+import { getRadioProgramDetail } from "@/lib/api/radio";
 import { getSongRedCount } from "@/lib/api/track";
+import { getVoiceDetail } from "@/lib/api/voicelist";
 import { usePlayerStore, useUserStore } from "@/store";
 import type { SongDetail, SongStats } from "@/types/api/music";
 import type { SongStatsEnrichmentState, SongStatsLoadResult } from "@/types/songStats";
@@ -79,10 +81,23 @@ function parseRedCount(
 }
 
 function parseCommentTotal(
-  res: Awaited<ReturnType<typeof getMusicComments>> | null,
+  res: Awaited<ReturnType<typeof getMusicComments | typeof getVoiceComments>> | null,
 ): number | undefined {
   const total = res?.data?.total;
   return typeof total === "number" && total >= 0 ? total : undefined;
+}
+
+async function getVoiceLikedCount(voiceId: number) {
+  try {
+    const response = await getRadioProgramDetail(voiceId);
+    const likedCount = response.data?.program?.likedCount;
+    if (typeof likedCount === "number") return likedCount;
+  } catch {
+    // New Voice resources can fall back to the login-aware detail endpoint.
+  }
+
+  const response = await getVoiceDetail(voiceId);
+  return response.data?.data?.likedCount;
 }
 
 function resolveKnownStatistic(value?: number): Promise<SongStatsLoadResult> {
@@ -101,6 +116,7 @@ export function songNeedsStatsEnrichment(
 async function loadSongStats(
   songId: number,
   existing?: SongStats,
+  voiceId?: number,
 ): Promise<SongStatsEnrichmentState> {
   const cached = statsCache.get(songId);
   const initialStats = mergeSongStats(existing, cached);
@@ -113,11 +129,19 @@ async function loadSongStats(
 
   const [liked, comments] = await Promise.all([
     needsLiked
-      ? loadStatistic(() => getSongRedCount(songId), parseRedCount)
+      ? voiceId === undefined
+        ? loadStatistic(() => getSongRedCount(songId), parseRedCount)
+        : loadStatistic(
+            () => getVoiceLikedCount(voiceId),
+            (count) => count,
+          )
       : resolveKnownStatistic(initialStats.likedCount),
     needsComment
       ? loadStatistic(
-          () => getMusicComments({ id: songId, limit: 1, offset: 0 }),
+          () =>
+            voiceId === undefined
+              ? getMusicComments({ id: songId, limit: 1, offset: 0 })
+              : getVoiceComments({ id: voiceId, limit: 1, offset: 0 }),
           parseCommentTotal,
         )
       : resolveKnownStatistic(initialStats.commentCount),
@@ -192,10 +216,14 @@ export function enrichSongsStats(
       const song = pending[index++];
       active += 1;
 
-      void enrichSongStatsById(song.id, {
-        likedCount: song.likedCount,
-        commentCount: song.commentCount,
-      })
+      void enrichSongStatsById(
+        song.id,
+        {
+          likedCount: song.likedCount,
+          commentCount: song.commentCount,
+        },
+        song.voiceId,
+      )
         .then(({ stats }) => {
           if (stats.likedCount != null || stats.commentCount != null) {
             onUpdate(song.id, stats);
@@ -212,7 +240,7 @@ export function enrichSongsStats(
 }
 
 /** 单首歌曲补全（播放时按需触发） */
-export function enrichSongStatsById(songId: number, existing?: SongStats) {
+export function enrichSongStatsById(songId: number, existing?: SongStats, voiceId?: number) {
   const cached = statsCache.get(songId);
   const resolvedStats = mergeSongStats(existing, cached);
 
@@ -228,7 +256,7 @@ export function enrichSongStatsById(songId: number, existing?: SongStats) {
   if (inFlightRequest) return inFlightRequest;
 
   setSongStatsEnrichmentState(songId, { stats: resolvedStats, status: "loading" });
-  const request = loadSongStats(songId, resolvedStats)
+  const request = loadSongStats(songId, resolvedStats, voiceId)
     .then((state) => {
       propagateSongStats(songId, state.stats);
       setSongStatsEnrichmentState(songId, state);

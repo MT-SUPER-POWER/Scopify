@@ -29,12 +29,17 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
+    "radix-ui": "^1.6.7",
     "shadcn": "^3.8.5",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/react": "^19.2.17",
     "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "react": "^19.2.3"
   }
 }

@@ -21,7 +21,7 @@ export default function CommentPage() {
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
 
   const {
-    songId,
+    resourceId,
     albumCover,
     commentHeaderInfo,
     replyTarget,
@@ -73,7 +73,7 @@ export default function CommentPage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [isInputOpen, setIsInputOpen]);
 
-  if (!songId) {
+  if (!resourceId) {
     return (
       <div className="bg-surface-raised text-content-muted flex min-h-screen w-full flex-col items-center justify-center gap-4 p-8">
         <MessageCircle className="size-16 opacity-30" />
@@ -97,13 +97,21 @@ export default function CommentPage() {
         albumName={commentHeaderInfo.albumName}
         artists={commentHeaderInfo.artists}
         total={commentHeaderInfo.total}
+        tagLabel={commentHeaderInfo.tagLabel}
         onArtistClick={(artistId) => smartRouter.push(`/artist?id=${artistId}`)}
       />
 
-      <div className="hero-content-transition relative z-10 flex flex-col">
-        <div className="mx-auto w-full max-w-4xl p-6">
+      <div className="hero-content-transition relative z-10 flex flex-col px-6 pt-6 md:px-8 md:pt-8 lg:px-10 xl:px-12">
+        <div className="w-full pb-10">
           <div className="mb-8 flex items-end justify-between">
-            <h2 className="text-xl font-bold">{t("comments.page.allComments")}</h2>
+            <h2 className="flex items-baseline gap-2 text-xl font-bold">
+              {t("comments.page.allComments")}
+              {commentHeaderInfo.total > 0 && (
+                <span className="text-content-muted text-sm font-normal">
+                  ({commentHeaderInfo.total.toLocaleString()})
+                </span>
+              )}
+            </h2>
           </div>
 
           {hotComments.length > 0 && (

@@ -14,9 +14,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   ContextMenu,
@@ -30,9 +31,13 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
+import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
+import { useVoiceLike } from "@/hooks/voice/useVoiceLike";
 import { likeSong } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { getCommentHref } from "@/lib/comment/commentResource";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
@@ -68,15 +73,17 @@ export function SongContextMenu({
   children,
 }: SongContextMenuProps) {
   const { t } = useI18n();
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+  const songStats = useSongStatsEnrichment(song, isContextMenuOpen);
+  const queryClient = useQueryClient();
   const isLogin = useLoginStatus();
+  const likedList = useUserStore((s) => s.likeListIDs);
+  const { isLiked: isLikedVoice, toggleLike: toggleVoiceLike } = useVoiceLike(song.voiceId ?? null);
+  const isLikedSong = useMemo(() => likedList?.includes(song.id), [likedList, song.id]);
+  const isLiked = song.voiceId === undefined ? isLikedSong : isLikedVoice;
   const playlists = useUserStore((s) => s.playlist);
-  const likelist = useUserStore((s) => s.likeListIDs);
   const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
-
-  const isLiked = useMemo(() => {
-    if (Array.isArray(likelist)) return likelist.includes(song.id);
-    return false;
-  }, [likelist, song.id]);
+  const commentCount = song.commentCount ?? songStats.state.stats.commentCount;
 
   const filteredPlaylists = useMemo(
     () => playlists.filter((p: NeteasePlaylist) => String(p.id) !== String(playlistID)),
@@ -86,6 +93,11 @@ export function SongContextMenu({
   const handleLike = useCallback(
     async (e: React.MouseEvent | Event) => {
       e.stopPropagation();
+      if (song.voiceId !== undefined) {
+        await toggleVoiceLike();
+        return;
+      }
+
       const nextLiked = !isLiked;
       try {
         await likeSong(song.id, nextLiked);
@@ -98,12 +110,15 @@ export function SongContextMenu({
         toast.success(
           nextLiked ? t("playlist.track.likedAdded") : t("playlist.track.likedRemoved"),
         );
-        if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
+          queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
+        ]);
       } catch {
         toast.error(t("playlist.table.operationFailed"));
       }
     },
-    [song.id, isLiked, t],
+    [isLiked, queryClient, song.id, song.voiceId, t, toggleVoiceLike],
   );
 
   const handleAddToQueue = useCallback(() => {
@@ -128,7 +143,7 @@ export function SongContextMenu({
   }, [song.id, song.voiceId, t]);
 
   return (
-    <ContextMenu>
+    <ContextMenu onOpenChange={setIsContextMenuOpen}>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
 
       <ContextMenuContent className="z-9999 w-48">
@@ -216,9 +231,20 @@ export function SongContextMenu({
           )}
 
           <ContextMenuItem asChild className="w-full">
-            <Link href={song.id ? `/comment/?songId=${song.id}` : "#"} className="block size-full">
+            <Link
+              href={
+                song.voiceId !== undefined
+                  ? getCommentHref("voice", song.voiceId)
+                  : getCommentHref("song", song.id)
+              }
+              className="block size-full"
+            >
               <FaRegCommentDots className="mr-2 size-4" />
-              {t("contextMenu.comments")}
+              {commentCount === undefined
+                ? t("contextMenu.comments")
+                : t("contextMenu.commentsWithCount", {
+                    count: formatCompactCount(commentCount),
+                  })}
             </Link>
           </ContextMenuItem>
 

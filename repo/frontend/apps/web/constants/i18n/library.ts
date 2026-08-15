@@ -60,6 +60,9 @@ export const libraryMessages = defineMessages(
     "library.voice.meta.lastPlayedAt": "上次播放 {{date}}",
     "library.voice.meta.publishedAt": "发布于 {{date}}",
     "library.voice.meta.playCount": "{{count}} 次播放",
+    "library.voice.likeSuccess": "已喜欢该声音",
+    "library.voice.unlikeSuccess": "已取消喜欢该声音",
+    "library.voice.likeFailed": "声音喜欢状态更新失败",
   },
   {
     "library.title.liked": "喜歡的音樂",
@@ -120,6 +123,9 @@ export const libraryMessages = defineMessages(
     "library.voice.meta.lastPlayedAt": "上次播放 {{date}}",
     "library.voice.meta.publishedAt": "發佈於 {{date}}",
     "library.voice.meta.playCount": "{{count}} 次播放",
+    "library.voice.likeSuccess": "已喜歡該聲音",
+    "library.voice.unlikeSuccess": "已取消喜歡該聲音",
+    "library.voice.likeFailed": "聲音喜歡狀態更新失敗",
   },
   {
     "library.title.liked": "Liked Songs",
@@ -180,5 +186,8 @@ export const libraryMessages = defineMessages(
     "library.voice.meta.lastPlayedAt": "Last played {{date}}",
     "library.voice.meta.publishedAt": "Published {{date}}",
     "library.voice.meta.playCount": "{{count}} plays",
+    "library.voice.likeSuccess": "Voice liked",
+    "library.voice.unlikeSuccess": "Voice unliked",
+    "library.voice.likeFailed": "Couldn't update the voice like",
   },
 );

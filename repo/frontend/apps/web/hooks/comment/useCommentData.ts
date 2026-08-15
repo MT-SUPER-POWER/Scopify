@@ -1,86 +1,208 @@
+"use client";
+
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+
 import { getAritstDetail } from "@/lib/api/artist";
 import {
-  addMusicComments,
+  addResourceComment,
   delComments,
   getMusicComments,
+  getNewComments,
+  getPlaylistComments,
+  getVoiceComments,
   replyComments,
   toggleLikeComments,
 } from "@/lib/api/comment";
+import { getPlaylsitDetail } from "@/lib/api/playlist";
+import { getRadioDetail, getRadioProgramDetail } from "@/lib/api/radio";
 import { getSongDetail } from "@/lib/api/track";
+import { getVoiceDetail } from "@/lib/api/voicelist";
+import {
+  normalizeLegacyComments,
+  normalizeNewComments,
+  resolveCommentResource,
+} from "@/lib/comment/commentResource";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
-import type { NeteaseComment, SongComment, SongDetail } from "@/types/api/music";
-import type { CommentHeaderArtist } from "@/types/components/comment";
+import type { CommentResourceKind } from "@/types/api/comment";
+import type { NeteaseComment, SongDetail } from "@/types/api/music";
+import type { CommentResourceHeaderData } from "@/types/comment";
 
 const LIMIT = 20;
 const FALLBACK_COVER =
   "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000&auto=format&fit=crop";
 const artistAvatarCache = new Map<string, string>();
 
-type ArtistAvatarSource = {
-  avatar?: string;
-  avatarUrl?: string;
-  cover?: string;
-  img1v1Url?: string;
-  picUrl?: string;
-};
+function getArtistAvatar(source: Record<string, unknown> | undefined) {
+  for (const key of ["avatar", "avatarUrl", "img1v1Url", "picUrl", "cover"]) {
+    const value = source?.[key];
+    if (typeof value === "string" && value) return value;
+  }
+  return "";
+}
 
-function getArtistAvatar(source: ArtistAvatarSource | undefined) {
-  return (
-    source?.avatar ||
-    source?.avatarUrl ||
-    source?.img1v1Url ||
-    source?.picUrl ||
-    source?.cover ||
-    ""
+async function getSongHeader(resourceId: string): Promise<CommentResourceHeaderData> {
+  const response = await getSongDetail(resourceId);
+  const song = response.data?.songs?.[0] as SongDetail | undefined;
+  const artists = await Promise.all(
+    (song?.ar ?? []).map(async (artist) => {
+      const cacheKey = String(artist.id);
+      let avatarUrl = artistAvatarCache.get(cacheKey) ?? "";
+      if (!avatarUrl) {
+        try {
+          const artistResponse = await getAritstDetail(artist.id);
+          avatarUrl = getArtistAvatar(
+            artistResponse.data?.data?.artist as unknown as Record<string, unknown> | undefined,
+          );
+          if (avatarUrl) artistAvatarCache.set(cacheKey, avatarUrl);
+        } catch {
+          // Artist artwork is supplementary; comments remain usable without it.
+        }
+      }
+      return { avatarUrl, id: artist.id, name: artist.name };
+    }),
   );
+
+  return {
+    albumName: song?.al?.name,
+    artists,
+    coverUrl: song?.al?.picUrl || FALLBACK_COVER,
+    title: song?.name ?? "",
+  };
+}
+
+async function getPlaylistHeader(resourceId: string): Promise<CommentResourceHeaderData> {
+  const response = await getPlaylsitDetail({ id: resourceId });
+  const playlist = response.data?.playlist;
+  return {
+    albumName: playlist?.creator?.nickname,
+    artists: [],
+    coverUrl: playlist?.coverImgUrl ?? playlist?.picUrl ?? FALLBACK_COVER,
+    title: playlist?.name ?? "",
+  };
+}
+
+async function getVoiceHeader(resourceId: string): Promise<CommentResourceHeaderData> {
+  try {
+    const response = await getRadioProgramDetail(resourceId);
+    const program = response.data?.program;
+    if (program) {
+      return {
+        albumName: program.radio?.name ?? program.dj?.nickname,
+        artists: [],
+        coverUrl: program.coverUrl ?? FALLBACK_COVER,
+        title: program.name ?? program.mainSong?.name ?? "",
+      };
+    }
+  } catch {
+    // New Voice resources can fall back to the login-aware detail endpoint.
+  }
+
+  const response = await getVoiceDetail(resourceId);
+  const voice = response.data?.data;
+  return {
+    artists: [],
+    coverUrl: voice?.coverUrl || FALLBACK_COVER,
+    title: voice?.name ?? "",
+  };
+}
+
+async function getVoiceListHeader(resourceId: string): Promise<CommentResourceHeaderData> {
+  const response = await getRadioDetail(resourceId);
+  const payload = response.data?.data;
+  const radio = payload && "id" in payload ? payload : payload?.djRadio;
+  return {
+    albumName: radio?.dj?.nickname,
+    artists: [],
+    coverUrl: radio?.picUrl ?? FALLBACK_COVER,
+    title: radio?.name ?? "",
+  };
+}
+
+function getResourceHeader(kind: CommentResourceKind, resourceId: string) {
+  switch (kind) {
+    case "playlist":
+      return getPlaylistHeader(resourceId);
+    case "voice":
+      return getVoiceHeader(resourceId);
+    case "voice-list":
+      return getVoiceListHeader(resourceId);
+    default:
+      return getSongHeader(resourceId);
+  }
 }
 
 export function useCommentData() {
   const { t } = useI18n();
   const isLogin = useLoginStatus();
   const searchParams = useSearchParams();
-  const songId = searchParams.get("SongId") || searchParams.get("songId");
+  const resource = useMemo(
+    () =>
+      resolveCommentResource(
+        searchParams.get("resource"),
+        searchParams.get("id"),
+        searchParams.get("SongId") || searchParams.get("songId"),
+      ),
+    [searchParams],
+  );
 
-  const [songInfo, setSongInfo] = useState<SongDetail | null>(null);
-  const [albumCover, setAlbumCover] = useState(FALLBACK_COVER);
+  const [headerData, setHeaderData] = useState<CommentResourceHeaderData>({
+    artists: [],
+    coverUrl: FALLBACK_COVER,
+    title: "",
+  });
   const [replyTarget, setReplyTarget] = useState<NeteaseComment | null>(null);
   const [hotComments, setHotComments] = useState<NeteaseComment[]>([]);
   const [comments, setComments] = useState<NeteaseComment[]>([]);
   const [total, setTotal] = useState(0);
-  const [artistAvatars, setArtistAvatars] = useState<Record<string, string>>({});
   const [offset, setOffset] = useState(0);
+  const [cursor, setCursor] = useState<number | string | undefined>();
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isInputOpen, setIsInputOpen] = useState(false);
 
-  const updateCommentPage = useCallback((data: SongComment | undefined, currentOffset: number) => {
-    const fetchedComments = data?.comments || [];
-
-    if (currentOffset === 0) {
-      setHotComments(data?.hotComments || []);
-      setComments(fetchedComments);
-    } else {
-      setComments((prev) => [...prev, ...fetchedComments]);
-    }
-
-    setTotal(data?.total || 0);
-    setOffset(currentOffset + LIMIT);
-    setHasMore(data?.more || false);
-  }, []);
-
   const fetchComments = useCallback(
-    async (currentOffset = 0) => {
-      if (!songId) return;
+    async (currentOffset = 0, currentCursor?: number | string) => {
+      if (!resource) return;
       setIsLoading(true);
       try {
-        const res = await getMusicComments({ id: songId, limit: LIMIT, offset: currentOffset });
-        updateCommentPage(res?.data as SongComment | undefined, currentOffset);
-      } catch (err) {
-        console.error("Failed to load comments:", err);
+        const params = { id: resource.id, limit: LIMIT, offset: currentOffset };
+        const page =
+          resource.kind === "voice-list"
+            ? normalizeNewComments(
+                (
+                  await getNewComments({
+                    cursor: currentCursor,
+                    id: resource.id,
+                    pageNo: currentOffset / LIMIT + 1,
+                    pageSize: LIMIT,
+                    sortType: 3,
+                    type: resource.type,
+                  })
+                ).data,
+              )
+            : normalizeLegacyComments(
+                (
+                  await (resource.kind === "playlist"
+                    ? getPlaylistComments(params)
+                    : resource.kind === "voice"
+                      ? getVoiceComments(params)
+                      : getMusicComments(params))
+                ).data,
+              );
+
+        setHotComments(currentOffset === 0 ? page.hotComments : (previous) => previous);
+        setComments((previous) =>
+          currentOffset === 0 ? page.comments : [...previous, ...page.comments],
+        );
+        setTotal(page.total);
+        setOffset(currentOffset + LIMIT);
+        setCursor(page.cursor);
+        setHasMore(page.hasMore);
+      } catch (error) {
+        console.error("Failed to load comments:", error);
         if (currentOffset === 0) {
           setHotComments([]);
           setComments([]);
@@ -90,96 +212,39 @@ export function useCommentData() {
         setIsLoading(false);
       }
     },
-    [songId, t, updateCommentPage],
+    [resource, t],
   );
 
   useEffect(() => {
-    if (!songId) return;
+    if (!resource) return;
+    let ignore = false;
 
+    setHeaderData({ artists: [], coverUrl: FALLBACK_COVER, title: "" });
     setOffset(0);
+    setCursor(undefined);
     setHasMore(true);
     setReplyTarget(null);
     setIsInputOpen(false);
-    setIsLoading(true);
-
-    Promise.all([getSongDetail(songId), getMusicComments({ id: songId, limit: LIMIT, offset: 0 })])
-      .then(([songRes, commentRes]) => {
-        const song = songRes?.data?.songs?.[0] as SongDetail | undefined;
-        setSongInfo(song || null);
-        setAlbumCover(song?.al?.picUrl || FALLBACK_COVER);
-        updateCommentPage(commentRes?.data as SongComment | undefined, 0);
+    void fetchComments(0);
+    void getResourceHeader(resource.kind, resource.id)
+      .then((nextHeader) => {
+        if (!ignore) setHeaderData(nextHeader);
       })
-      .catch((err) => {
-        console.error("Failed to load comment page:", err);
-        toast.error(t("common.message.requestFailed", { message: "" }));
-      })
-      .finally(() => setIsLoading(false));
-  }, [songId, t, updateCommentPage]);
-
-  useEffect(() => {
-    const artists = songInfo?.ar || [];
-    if (artists.length === 0) {
-      setArtistAvatars({});
-      return;
-    }
-
-    let ignore = false;
-    const nextAvatars: Record<string, string> = {};
-    const missingArtistIds: Array<number | string> = [];
-
-    for (const artist of artists) {
-      const artistId = String(artist.id);
-      const existingAvatar = getArtistAvatar(artist as ArtistAvatarSource);
-      const cachedAvatar = artistAvatarCache.get(artistId);
-
-      if (existingAvatar) {
-        artistAvatarCache.set(artistId, existingAvatar);
-        nextAvatars[artistId] = existingAvatar;
-      } else if (cachedAvatar) {
-        nextAvatars[artistId] = cachedAvatar;
-      } else {
-        missingArtistIds.push(artist.id);
-      }
-    }
-
-    setArtistAvatars(nextAvatars);
-    if (missingArtistIds.length === 0) return;
-
-    Promise.allSettled(
-      missingArtistIds.map(async (artistId) => {
-        const res = await getAritstDetail(artistId);
-        const avatar = getArtistAvatar(res?.data?.data?.artist as ArtistAvatarSource | undefined);
-        return { artistId: String(artistId), avatar };
-      }),
-    ).then((results) => {
-      if (ignore) return;
-
-      const fetchedAvatars: Record<string, string> = {};
-      for (const result of results) {
-        if (result.status !== "fulfilled" || !result.value.avatar) continue;
-        artistAvatarCache.set(result.value.artistId, result.value.avatar);
-        fetchedAvatars[result.value.artistId] = result.value.avatar;
-      }
-
-      if (Object.keys(fetchedAvatars).length > 0) {
-        setArtistAvatars((prev) => ({ ...prev, ...fetchedAvatars }));
-      }
-    });
+      .catch((error) => console.error("Failed to load comment resource header:", error));
 
     return () => {
       ignore = true;
     };
-  }, [songInfo]);
+  }, [fetchComments, resource]);
 
   const loadMore = useCallback(async () => {
-    if (!songId || !hasMore || isLoading) return;
-    await fetchComments(offset);
-  }, [fetchComments, hasMore, isLoading, offset, songId]);
+    if (!resource || !hasMore || isLoading) return;
+    await fetchComments(offset, cursor);
+  }, [cursor, fetchComments, hasMore, isLoading, offset, resource]);
 
   const handleLike = useCallback(
     async (commentId: number, isHot: boolean) => {
-      if (!songId) return;
-
+      if (!resource) return;
       const source = isHot ? hotComments : comments;
       const target =
         source.find((comment) => comment.commentId === commentId) ??
@@ -188,40 +253,43 @@ export function useCommentData() {
       if (!target) return;
 
       try {
-        await toggleLikeComments(songId, commentId, target.liked ? 0 : 1, 0);
+        await toggleLikeComments(resource.id, commentId, target.liked ? 0 : 1, resource.type);
         const toggle = (comment: NeteaseComment) => {
           if (comment.commentId !== commentId) return comment;
           const liked = !comment.liked;
-          const likedCount = Math.max(0, comment.likedCount + (liked ? 1 : -1));
-          return { ...comment, liked, likedCount };
+          return {
+            ...comment,
+            liked,
+            likedCount: Math.max(0, comment.likedCount + (liked ? 1 : -1)),
+          };
         };
-        setHotComments((prev) => prev.map(toggle));
-        setComments((prev) => prev.map(toggle));
+        setHotComments((previous) => previous.map(toggle));
+        setComments((previous) => previous.map(toggle));
         toast.success(
           target.liked ? t("comments.page.unlikeSuccess") : t("comments.page.likeSuccess"),
         );
-      } catch (err) {
-        console.error("Failed to toggle comment like:", err);
+      } catch (error) {
+        console.error("Failed to toggle comment like:", error);
         toast.error(t("common.message.requestFailed", { message: "" }));
       }
     },
-    [comments, hotComments, songId, t],
+    [comments, hotComments, resource, t],
   );
 
   const handleDelete = useCallback(
     async (commentId: number) => {
-      if (!songId) return;
+      if (!resource) return;
       try {
-        await delComments(songId, commentId);
-        setComments((prev) => prev.filter((comment) => comment.commentId !== commentId));
-        setHotComments((prev) => prev.filter((comment) => comment.commentId !== commentId));
+        await delComments(resource.id, commentId, resource.type);
+        setComments((previous) => previous.filter((comment) => comment.commentId !== commentId));
+        setHotComments((previous) => previous.filter((comment) => comment.commentId !== commentId));
         toast.success(t("comments.page.deleted"));
-      } catch (err) {
-        console.error("Failed to delete comment:", err);
+      } catch (error) {
+        console.error("Failed to delete comment:", error);
         toast.error(t("common.message.requestFailed", { message: "" }));
       }
     },
-    [songId, t],
+    [resource, t],
   );
 
   const handleReply = useCallback(
@@ -238,7 +306,7 @@ export function useCommentData() {
 
   const handleSubmitComment = useCallback(
     async (text: string) => {
-      if (!songId || !text.trim() || text.length > 140) return false;
+      if (!resource || !text.trim() || text.length > 140) return false;
       if (!isLogin) {
         toast.error(t("comments.page.loginRequired"));
         return false;
@@ -246,68 +314,52 @@ export function useCommentData() {
 
       try {
         if (replyTarget) {
-          await replyComments(songId, replyTarget.commentId, text);
+          await replyComments(resource.id, replyTarget.commentId, text, resource.type);
           toast.success(t("comments.page.replySuccess"));
         } else {
-          await addMusicComments(songId, text);
+          await addResourceComment(resource.id, text, resource.type);
           toast.success(t("comments.page.publishSuccess"));
         }
-
         setReplyTarget(null);
         setIsInputOpen(false);
         await fetchComments(0);
         return true;
-      } catch (err) {
-        console.error("Failed to submit comment:", err);
+      } catch (error) {
+        console.error("Failed to submit comment:", error);
         toast.error(t("common.message.requestFailed", { message: "" }));
         return false;
       }
     },
-    [fetchComments, isLogin, replyTarget, songId, t],
+    [fetchComments, isLogin, replyTarget, resource, t],
   );
 
-  const commentHeaderInfo = useMemo(() => {
-    const albumName = songInfo?.al?.name;
-    const artists: CommentHeaderArtist[] = (songInfo?.ar || []).map((artist) => {
-      const avatarCandidate = artist as typeof artist & {
-        picUrl?: string;
-        img1v1Url?: string;
-        avatarUrl?: string;
-      };
-
-      return {
-        id: artist.id,
-        name: artist.name,
-        avatarUrl: getArtistAvatar(avatarCandidate) || artistAvatars[String(artist.id)] || "",
-      };
-    });
-
-    return {
-      title: songInfo?.name || t("comments.page.loadingTrack"),
-      albumName,
-      artists,
+  const commentHeaderInfo = useMemo(
+    () => ({
+      albumName: headerData.albumName,
+      artists: headerData.artists,
+      tagLabel: t(`comments.page.${resource?.kind ?? "song"}Tag`),
+      title: headerData.title || t("comments.page.loadingResource"),
       total,
-    };
-  }, [artistAvatars, songInfo, t, total]);
+    }),
+    [headerData, resource?.kind, t, total],
+  );
 
   return {
-    songId,
-    songInfo,
-    albumCover,
+    albumCover: headerData.coverUrl,
     commentHeaderInfo,
-    replyTarget,
-    setReplyTarget,
-    hotComments,
     comments,
-    total,
-    hasMore,
-    isLoading,
-    isInputOpen,
-    setIsInputOpen,
-    loadMore,
-    handleLike,
     handleDelete,
+    handleLike,
     handleReply,
     handleSubmitComment,
+    hasMore,
+    hotComments,
+    isInputOpen,
+    isLoading,
+    loadMore,
+    replyTarget,
+    resourceId: resource?.id ?? null,
+    setIsInputOpen,
+    setReplyTarget,
   };
 }

@@ -1715,6 +1715,24 @@ export interface TranslateFn {
    */
   (key: "contextMenu.comments", params?: TranslationParams): string;
   /**
+   * zh-CN: 评论（{{count}}）
+   * zh-TW: 評論（{{count}}）
+   * en-US: Comments ({{count}})
+   */
+  (key: "contextMenu.commentsWithCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看评论
+   * zh-TW: 查看評論
+   * en-US: View comments
+   */
+  (key: "contextMenu.viewComments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看评论（{{count}}）
+   * zh-TW: 查看評論（{{count}}）
+   * en-US: View comments ({{count}})
+   */
+  (key: "contextMenu.viewCommentsWithCount", params?: TranslationParams): string;
+  /**
    * zh-CN: 复制链接
    * zh-TW: 複製連結
    * en-US: Copy Link
@@ -2549,6 +2567,18 @@ export interface TranslateFn {
    */
   (key: "playlist.actions.searchPlaceholder", params?: TranslationParams): string;
   /**
+   * zh-CN: 查看评论
+   * zh-TW: 查看評論
+   * en-US: View comments
+   */
+  (key: "playlist.actions.comments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看评论（{{count}}）
+   * zh-TW: 查看評論（{{count}}）
+   * en-US: View comments ({{count}})
+   */
+  (key: "playlist.actions.commentsWithCount", params?: TranslationParams): string;
+  /**
    * zh-CN: 列表
    * zh-TW: 列表
    * en-US: List
@@ -3005,11 +3035,35 @@ export interface TranslateFn {
    */
   (key: "comments.page.trackTag", params?: TranslationParams): string;
   /**
+   * zh-CN: 单曲
+   * zh-TW: 單曲
+   * en-US: Track
+   */
+  (key: "comments.page.songTag", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlist
+   */
+  (key: "comments.page.playlistTag", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音
+   * zh-TW: 聲音
+   * en-US: Voice
+   */
+  (key: "comments.page.voiceTag", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音列表
+   * zh-TW: 聲音列表
+   * en-US: Voice List
+   */
+  (key: "comments.page.voice-listTag", params?: TranslationParams): string;
+  /**
    * zh-CN: 加载中...
    * zh-TW: 載入中...
    * en-US: Loading...
    */
-  (key: "comments.page.loadingTrack", params?: TranslationParams): string;
+  (key: "comments.page.loadingResource", params?: TranslationParams): string;
   /**
    * zh-CN: 全部评论
    * zh-TW: 全部評論
@@ -15613,6 +15667,24 @@ export interface TranslateFn {
    * en-US: {{count}} plays
    */
   (key: "library.voice.meta.playCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已喜欢该声音
+   * zh-TW: 已喜歡該聲音
+   * en-US: Voice liked
+   */
+  (key: "library.voice.likeSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消喜欢该声音
+   * zh-TW: 已取消喜歡該聲音
+   * en-US: Voice unliked
+   */
+  (key: "library.voice.unlikeSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音喜欢状态更新失败
+   * zh-TW: 聲音喜歡狀態更新失敗
+   * en-US: Couldn't update the voice like
+   */
+  (key: "library.voice.likeFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 通知
    * zh-TW: 通知

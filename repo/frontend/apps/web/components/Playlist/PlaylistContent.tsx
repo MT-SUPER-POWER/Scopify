@@ -14,6 +14,8 @@ import type { PlaylistContentProps } from "@/types/components/playlist";
 
 export function PlaylistContent({
   actionSlot,
+  commentResourceId,
+  commentResourceKind,
   contentSlot,
   dailyDate,
   hideAlbumColumn,
@@ -71,6 +73,8 @@ export function PlaylistContent({
           <>
             <PlaylistActions
               actionSlot={actionSlot}
+              commentResourceId={commentResourceId}
+              commentResourceKind={commentResourceKind}
               playlistId={playlistId}
               playSourceId={playSourceId}
               isDaily={isDailyRecommend}

@@ -1,3 +1,5 @@
+import type { CommentResourceKind } from "@/types/api/comment";
+
 export const musicQueryKeys = {
   album: {
     detail: (albumId: string) => ["album", "detail", albumId] as const,
@@ -27,6 +29,10 @@ export const musicQueryKeys = {
       ["library", "podcasts", "recommendations", userId] as const,
     subscribedPodcasts: (userId: number) =>
       ["library", "podcasts", "subscribed", "v2", userId] as const,
+  },
+  comment: {
+    count: (kind: CommentResourceKind | "unknown", resourceId: string) =>
+      ["comment", "count", kind, resourceId] as const,
   },
   playlist: {
     content: (playlistId: string, isRecommend: boolean) =>

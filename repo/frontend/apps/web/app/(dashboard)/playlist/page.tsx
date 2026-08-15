@@ -11,5 +11,11 @@ export default function PlaylistPage() {
   if (!playlist.playlistId && !playlist.isDailyRecommend)
     return <div className="text-content p-8">{t("playlist.page.invalidUrl")}</div>;
 
-  return <PlaylistContent {...playlist} />;
+  return (
+    <PlaylistContent
+      {...playlist}
+      commentResourceId={playlist.playlistId}
+      commentResourceKind="playlist"
+    />
+  );
 }

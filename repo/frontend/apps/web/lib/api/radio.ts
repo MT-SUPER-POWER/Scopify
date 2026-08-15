@@ -3,6 +3,7 @@ import type {
   RadioDetailResponse,
   RadioProgramsParams,
   RadioProgramsResponse,
+  RadioProgramDetailResponse,
   RadioSublistResponse,
   RadioSubscriptionResponse,
 } from "@/types/api/radio";
@@ -21,6 +22,10 @@ export function getRadioPrograms({
   return request.get<RadioProgramsResponse>("/dj/program/v6", {
     params: { asc, limit, offset, rid: id, updateOrder },
   });
+}
+
+export function getRadioProgramDetail(id: number | string) {
+  return request.get<RadioProgramDetailResponse>("/dj/program/detail", { params: { id } });
 }
 
 export function getSubscribedRadios(limit = 200) {

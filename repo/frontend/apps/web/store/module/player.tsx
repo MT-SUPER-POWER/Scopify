@@ -407,10 +407,14 @@ export const usePlayerStore = create<PlayerStore>()(
         const loadIdentity = { revision: requestLoadRevision, trackId: song.id };
         const isCurrentPlaybackLoad = () => isPlaybackLoadCurrent(get(), loadIdentity);
 
-        void enrichSongStatsById(song.id, {
-          likedCount: song.likedCount,
-          commentCount: song.commentCount,
-        });
+        void enrichSongStatsById(
+          song.id,
+          {
+            likedCount: song.likedCount,
+            commentCount: song.commentCount,
+          },
+          song.voiceId,
+        );
 
         try {
           const { musicQuality } = get();
