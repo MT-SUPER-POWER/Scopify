@@ -5,6 +5,7 @@
 
 ### Quality
 
+- **重构桌面配置自愈与出厂模板测试体系**：将桌面 YAML 单测严格对齐至不可变的出厂底本 `app.config.default.yml`，消除针对本地动态工作配置 `app.config.yml` 的脆弱硬编码断言；完善主进程 `ensureConfigFile` 的回退自愈与落户机制，补充本地配置自定义与默认底本隔离的单测覆盖。
 - **清理 GitHub Packages 发布工作流与配置**：移除 `.github/workflows/publish-package.yml`，将 `@scopify/desktop-contract` 标记为 `private: true` 并移除 `publishConfig`，收敛桌面契约包仅作为内部 Monorepo workspace 模块维护。
 - **完善 Commit 阶段代码质量门禁**：在 `lint-staged` 中补充 Web 源码的 ESLint 自动检查与修复（`eslint --fix`），在 `.husky/pre-commit` 钩子中补充毫秒级架构边界检查（`bun run lint:architecture`），并在 `scripts/check-architecture.ts` 中补齐 `.next-dev` / `.turbo` 忽略目录，确保本地提交阶段与 CI 质量门禁一致。
 

@@ -6,7 +6,7 @@ import * as yaml from "js-yaml";
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
 import { DEFAULT_DESKTOP_HOST_CONFIG, normalizeDesktopHostConfig } from "../types/config.js";
 
-const resourceConfigDir = app.isPackaged
+const resourceConfigDir = app?.isPackaged
   ? join(process.resourcesPath, "config")
   : join(process.cwd(), "config");
 
@@ -16,11 +16,14 @@ const appConfigDefaultPathValue = join(resourceConfigDir, "app.config.default.ym
 export const appConfigPath = appConfigPathValue;
 export const appConfigDefaultPath = appConfigDefaultPathValue;
 
-function ensureConfigFile() {
+export function ensureConfigFile() {
   if (fs.existsSync(appConfigPathValue)) return;
   fs.mkdirSync(resourceConfigDir, { recursive: true });
   if (fs.existsSync(appConfigDefaultPathValue)) {
     fs.copyFileSync(appConfigDefaultPathValue, appConfigPathValue);
+  } else {
+    const yamlString = yaml.dump(DEFAULT_DESKTOP_HOST_CONFIG, { noRefs: true });
+    fs.writeFileSync(appConfigPathValue, yamlString, "utf-8");
   }
 }
 

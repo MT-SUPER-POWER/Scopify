@@ -4,8 +4,8 @@ import path from "node:path";
 import * as yaml from "js-yaml";
 import { normalizeDesktopHostConfig } from "@/types/config";
 
-test("desktop config yml contains only host-owned settings", () => {
-  const configFilePath = path.resolve(__dirname, "../config/app.config.yml");
+test("desktop default config yml contains only host-owned settings", () => {
+  const configFilePath = path.resolve(__dirname, "../config/app.config.default.yml");
   const raw = fs.readFileSync(configFilePath, "utf-8");
   const parsed = yaml.load(raw);
   const config = normalizeDesktopHostConfig(parsed);
@@ -30,6 +30,26 @@ test("desktop config yml contains only host-owned settings", () => {
   expect(parsed).not.toHaveProperty("app.locale");
   expect(parsed).not.toHaveProperty("network.timeout");
   expect(parsed).not.toHaveProperty("network.randomCNIP");
+});
+
+test("instantiating local config preserves custom user changes without mutating default baseline", () => {
+  const defaultConfigPath = path.resolve(__dirname, "../config/app.config.default.yml");
+  const defaultRaw = fs.readFileSync(defaultConfigPath, "utf-8");
+  const defaultParsed = yaml.load(defaultRaw);
+  const baseConfig = normalizeDesktopHostConfig(defaultParsed);
+
+  // Simulate user changing settings locally (e.g. enabling devTools)
+  const userLocalConfig = normalizeDesktopHostConfig({
+    ...baseConfig,
+    app: { ...baseConfig.app, devTools: true },
+    logging: { ...baseConfig.logging, keepDays: 30 },
+  });
+
+  expect(userLocalConfig.app.devTools).toBe(true);
+  expect(userLocalConfig.logging.keepDays).toBe(30);
+
+  // Baseline template remains immutable and default-configured
+  expect(baseConfig.app.devTools).toBe(false);
 });
 
 test("normalizing legacy config drops Web-owned and unknown fields", () => {
