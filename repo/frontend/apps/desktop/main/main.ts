@@ -192,9 +192,6 @@ function createWindow() {
       desktopPlaybackControllerWindow?.prepare();
       desktopPlaybackWallpaperDriver?.prepare();
     }, 500);
-    if (desktopConfig.app.devTools) {
-      mainWindow?.webContents.openDevTools();
-    }
   });
 
   if (useStaticRenderer) {
@@ -228,20 +225,6 @@ function createWindow() {
     }
 
     if ((input.control || input.meta) && input.key === "-") {
-      event.preventDefault();
-    }
-
-    const isDevToolsKey =
-      input.code === "F12" ||
-      ((input.control || input.meta) && input.shift && input.code === "KeyI") ||
-      (process.platform === "darwin" && input.meta && input.alt && input.code === "KeyI");
-
-    if (isDevToolsKey) {
-      if (desktopConfig.app.devTools) {
-        if (input.type === "keyDown") {
-          mainWindow?.webContents.toggleDevTools();
-        }
-      }
       event.preventDefault();
     }
   });

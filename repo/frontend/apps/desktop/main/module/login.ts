@@ -44,10 +44,6 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
 
   loginWindow.loadURL(loginUrl);
 
-  if (desktopConfig.app.devTools) {
-    loginWindow.webContents.openDevTools({ mode: "detach" });
-  }
-
   loginWindow.webContents.on("before-input-event", (event, input) => {
     const isDevToolsKey =
       input.code === "F12" ||
@@ -55,11 +51,6 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
       (process.platform === "darwin" && input.meta && input.alt && input.code === "KeyI");
 
     if (isDevToolsKey) {
-      if (desktopConfig.app.devTools) {
-        if (input.type === "keyDown") {
-          loginWindow?.webContents.toggleDevTools();
-        }
-      }
       event.preventDefault();
     }
   });

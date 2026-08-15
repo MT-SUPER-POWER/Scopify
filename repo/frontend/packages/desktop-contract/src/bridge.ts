@@ -23,13 +23,14 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 16;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 17;
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
   | "audio-feature-transport"
   | "cache"
   | "config"
+  | "developer-tools"
   | "desktop-icons"
   | "desktop-lyrics"
   | "desktop-playback-wallpaper"
@@ -112,6 +113,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   publishAudioFeatureFrame(frame: AudioFeatureFrameV1): boolean;
   publishDiscordPresenceSnapshot(snapshot: DiscordPresenceSnapshot): Promise<DiscordPresenceStatus>;
   testDiscordPresenceConnection(): Promise<DiscordPresenceStatus>;
+  toggleDeveloperTools(): Promise<boolean>;
   quitAndInstallUpdate(): void;
   relaunchApp(): void;
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;

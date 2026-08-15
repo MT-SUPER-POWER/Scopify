@@ -32,6 +32,14 @@ describe("shortcut definitions", () => {
     expect(playlistSearch.defaultBinding).not.toEqual(fullscreen.defaultBinding);
   });
 
+  test("registers developer tools as a runtime shortcut command", () => {
+    const developerTools = getShortcut("toggle-developer-tools");
+
+    expect(developerTools.defaultBinding).toEqual({ key: "F12" });
+    expect(developerTools.scope).toBeUndefined();
+    expect(findShortcutConflict(developerTools.id, developerTools.defaultBinding, {})).toBeNull();
+  });
+
   test("limits desktop-controller registration to controls available in that window", () => {
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).toEqual(
       expect.arrayContaining([

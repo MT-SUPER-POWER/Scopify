@@ -103,6 +103,12 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyF", primary: true, shift: true },
   },
   {
+    id: "toggle-developer-tools",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleDeveloperTools",
+    defaultBinding: { key: "F12" },
+  },
+  {
     id: "open-current-track-comments",
     group: "interface",
     labelKey: "shortcuts.command.openCurrentTrackComments",

@@ -7,6 +7,7 @@ import {
   usePlaybackPosition as usePlaybackPositionMs,
   usePlaybackProjection,
 } from "@/hooks/player/usePlaybackProjection";
+import { toggleApplicationDeveloperTools } from "@/lib/shortcuts/developerTools";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { useUiStore } from "@/store/module/ui";
 import { useSearchStore } from "@/store/module/search";
@@ -101,6 +102,9 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           return;
         case "toggle-fullscreen":
           void toggleApplicationFullscreen();
+          return;
+        case "toggle-developer-tools":
+          void toggleApplicationDeveloperTools();
           return;
         case "open-shortcut-settings":
           navigateTo("/setting?tab=shortcuts");

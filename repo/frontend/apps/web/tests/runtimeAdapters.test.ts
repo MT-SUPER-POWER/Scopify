@@ -157,6 +157,7 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
       error: null,
       updatedAtMs: 0,
     }),
+    toggleDeveloperTools: async () => true,
     getHostConfig: async () => HOST_CONFIG,
     selectDirectory: async () => null,
     getBridgeInfo: async () => ({
@@ -257,6 +258,7 @@ describe("browser runtime adapter", () => {
 
     expect(runtime.kind).toBe("browser");
     expect(runtime.isDesktop).toBeFalse();
+    expect(await runtime.window.toggleDeveloperTools()).toBeFalse();
     expect(runtime.auth.openLoginWindow()).toBeFalse();
     expect(runtime.auth.completeLogin()).toBeFalse();
     expect(await runtime.logging.getDirectory()).toBeNull();
@@ -453,6 +455,10 @@ describe("electron runtime adapter", () => {
         return "D:\\CustomCache";
       },
       setPlayerPlaying: (isPlaying) => calls.push(`playing:${isPlaying}`),
+      toggleDeveloperTools: async () => {
+        calls.push("toggle-developer-tools");
+        return true;
+      },
     });
     const runtime = createElectronRuntime(bridge);
 
@@ -466,6 +472,7 @@ describe("electron runtime adapter", () => {
     runtime.media.setPlaying(true);
     expect(await runtime.logging.getDirectory()).toBe("C:\\Users\\Scopify\\logs");
     expect(await runtime.config.selectDirectory("C:\\DefaultCache")).toBe("D:\\CustomCache");
+    expect(await runtime.window.toggleDeveloperTools()).toBeTrue();
 
     expect(calls).toEqual([
       "open-login",
@@ -475,6 +482,7 @@ describe("electron runtime adapter", () => {
       "playing:true",
       "get-log-directory",
       "select-directory:C:\\DefaultCache",
+      "toggle-developer-tools",
     ]);
   });
 

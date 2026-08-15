@@ -127,6 +127,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
         if (fullscreen) bridge.enterFullScreen();
         else bridge.exitFullScreen();
       },
+      toggleDeveloperTools: () => bridge.toggleDeveloperTools(),
     },
   };
 }

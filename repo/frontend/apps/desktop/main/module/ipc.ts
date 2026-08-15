@@ -42,12 +42,20 @@ export function registerIpcHandlers(
   mainWindow: BrowserWindow | null,
   discordPresence: ReturnType<typeof createDiscordPresenceController>,
 ) {
+  let hasAuthorizedDeveloperToolsOpen = false;
+  mainWindow?.webContents.on("devtools-opened", () => {
+    const isAllowed = hasAuthorizedDeveloperToolsOpen && loadDesktopHostConfig().app.devTools;
+    hasAuthorizedDeveloperToolsOpen = false;
+    if (!isAllowed) mainWindow.webContents.closeDevTools();
+  });
+
   ipcMain.handle("bridge:get-info", () => ({
     capabilities: [
       "app-lifecycle",
       "audio-feature-transport",
       "cache",
       "config",
+      "developer-tools",
       "desktop-icons",
       "desktop-lyrics",
       "desktop-playback-wallpaper",
@@ -139,12 +147,36 @@ export function registerIpcHandlers(
     assertSafeCacheRoot(nextRoot);
     if (currentRoot !== nextRoot) migrateCacheRoot({ from: currentRoot, to: nextRoot });
     const savedConfig = saveDesktopHostConfig(newConfig);
+    if (!savedConfig.app.devTools && mainWindow?.webContents.isDevToolsOpened()) {
+      mainWindow.webContents.closeDevTools();
+    }
     configureUpdater(savedConfig.updater);
     void discordPresence.refresh();
     await applyElectronProxy(savedConfig).catch((error) => {
       logger.error("[IPC] failed to apply proxy after config update:", error);
     });
     return savedConfig;
+  });
+
+  ipcMain.handle("developer-tools:toggle", (event) => {
+    if (!isMainRenderer(event, mainWindow) || !mainWindow || mainWindow.isDestroyed()) return false;
+
+    if (!loadDesktopHostConfig().app.devTools) {
+      if (mainWindow.webContents.isDevToolsOpened()) mainWindow.webContents.closeDevTools();
+      return false;
+    }
+
+    if (mainWindow.webContents.isDevToolsOpened()) {
+      mainWindow.webContents.closeDevTools();
+      return true;
+    }
+
+    hasAuthorizedDeveloperToolsOpen = true;
+    mainWindow.webContents.openDevTools();
+    setTimeout(() => {
+      hasAuthorizedDeveloperToolsOpen = false;
+    }, 1_000);
+    return true;
   });
 
   ipcMain.handle("cache:get", (event, key: string) => {

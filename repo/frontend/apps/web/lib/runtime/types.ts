@@ -154,6 +154,7 @@ export interface RuntimeWindowControls {
   minimize(): void;
   onFullscreenChanged(callback: (isFullscreen: boolean) => void): RuntimeUnsubscribe;
   setFullscreen(fullscreen: boolean): Promise<void>;
+  toggleDeveloperTools(): Promise<boolean>;
 }
 
 /**

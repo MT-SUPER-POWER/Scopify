@@ -20,6 +20,7 @@ export type ShortcutCommandId =
   | "open-command-palette"
   | "toggle-mute"
   | "toggle-fullscreen"
+  | "toggle-developer-tools"
   | "open-current-track-comments"
   | "focus-playlist-search";
 

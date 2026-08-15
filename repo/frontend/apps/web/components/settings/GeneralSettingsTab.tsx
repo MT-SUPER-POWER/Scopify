@@ -3,19 +3,9 @@
 import { languageLabelKeys } from "@/lib/i18n";
 import { useI18n } from "@/store/module/i18n";
 import { APP_LOCALES, type AppLocale } from "@/types/config";
-import type {
-  DesktopSettingsChangeHandler,
-  SettingsConfig,
-  WebSettingsChangeHandler,
-} from "@/types/settings";
+import type { GeneralSettingsTabProps } from "@/types/components/settings";
 import { AppearanceModeControl } from "./AppearanceModeControl";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
-
-interface GeneralSettingsTabProps {
-  config: SettingsConfig;
-  onDesktopChange: DesktopSettingsChangeHandler;
-  onWebChange: WebSettingsChangeHandler;
-}
 
 export function GeneralSettingsTab({
   config,
@@ -67,7 +57,6 @@ export function GeneralSettingsTab({
               <SettingRow
                 label={t("settings.devTools.label")}
                 sublabel={t("settings.devTools.sublabel")}
-                requiresRestart
                 control={
                   <Toggle
                     enabled={config.desktop.app.devTools}

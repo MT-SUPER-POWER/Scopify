@@ -1,9 +1,18 @@
 import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
-import type { DesktopSettingsChangeHandler } from "@/types/settings";
-import type { SettingsConfig, WebSettingsChangeHandler } from "@/types/settings";
+import type {
+  DesktopSettingsChangeHandler,
+  SettingsConfig,
+  WebSettingsChangeHandler,
+} from "@/types/settings";
 import type { BackendPingResult } from "@/types/network";
 import type { CacheStats } from "@/types/cache";
 import type { CachePreferences } from "@/types/cache";
+
+export interface GeneralSettingsTabProps {
+  config: SettingsConfig;
+  onDesktopChange: DesktopSettingsChangeHandler;
+  onWebChange: WebSettingsChangeHandler;
+}
 
 export interface NetworkSettingsTabProps {
   backendPingResult: BackendPingResult | null;
