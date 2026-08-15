@@ -1,6 +1,7 @@
 {
   "name": "@scopify/desktop-contract",
   "version": "2.0.0",
+  "private": true,
   "description": "Versioned IPC contract between the Scopify renderer and desktop host",
   "repository": {
     "type": "git",
@@ -19,9 +20,5 @@
   },
   "devDependencies": {
     "typescript": "^5.9.3"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
   }
 }
