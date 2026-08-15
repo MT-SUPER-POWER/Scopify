@@ -51,26 +51,28 @@ interface SongContextMenuProps {
   onRemoveFromQueue?: () => void;
   onRemoveFromPlaylist?: () => void;
   onDislikeDailyRecommend?: () => void;
+  onRequestDelete?: () => void;
   onViewTranscript?: () => void;
-  playlistID?: string | null;
+  playlistID?: number | string | null;
   isDailyRecommend?: boolean;
   readonly?: boolean;
   children: React.ReactNode;
 }
 
 export function SongContextMenu({
-  song,
+  children,
   isActive,
+  isDailyRecommend = false,
   isPlaying,
-  onPlay,
-  onRemoveFromQueue,
-  onRemoveFromPlaylist,
   onDislikeDailyRecommend,
+  onPlay,
+  onRemoveFromPlaylist,
+  onRemoveFromQueue,
+  onRequestDelete,
   onViewTranscript,
   playlistID,
-  isDailyRecommend = false,
   readonly = false,
-  children,
+  song,
 }: SongContextMenuProps) {
   const { t } = useI18n();
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
@@ -207,9 +209,6 @@ export function SongContextMenu({
                           trackId: song.id,
                         });
                         toast.success(t("playlist.table.addToPlaylistSuccess"));
-                        void clearPageCache();
-                        const store = useUserStore.getState();
-                        if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
                       } catch {
                         toast.error(t("playlist.table.addToPlaylistFailed"));
                       }

@@ -5,6 +5,7 @@
 import { Disc3 } from "lucide-react";
 import { forwardRef, memo, useCallback } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import type { TrackRowProps } from "@/types/components/playlist";
 
@@ -50,6 +51,7 @@ export const TrackRow = memo(
     ref,
   ) {
     const { t } = useI18n();
+    const queryClient = useQueryClient();
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     const handleLike = useCallback(
@@ -68,15 +70,16 @@ export const TrackRow = memo(
             nextLiked ? t("playlist.track.likedAdded") : t("playlist.track.likedRemoved"),
           );
 
-          // 2. 触发全局 Sidebar 更新（解决封面等不同步的问题）
-          if (store.triggerLibraryUpdate) {
-            store.triggerLibraryUpdate();
-          }
+          // 2. 触发全局 TanStack Query 缓存失效
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
+            queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
+          ]);
         } catch (error) {
           console.error("Failed to toggle like:", error);
         }
       },
-      [track, t],
+      [queryClient, track, t],
     );
     const smartRouter = useSmartRouter();
     return (

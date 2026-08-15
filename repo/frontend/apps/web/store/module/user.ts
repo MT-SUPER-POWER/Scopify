@@ -14,7 +14,6 @@ type UserStore = {
   loginType: "token" | "cookie" | "qr" | "uid" | null;
   searchValue: string;
   searchType: number;
-  libraryUpdateTrigger: number;
   collectedAlbumIds: Set<number>;
   collectedAlbum: NeteaseUserAlbum[];
   likeListIDs: number[];
@@ -36,7 +35,6 @@ type UserStore = {
   setPlayList: (playlists: RawNeteasePlaylist[]) => void;
   setFollowedArtists: (artists: FollowedArtist[]) => void;
   setUserId: (userId: number | string) => void;
-  triggerLibraryUpdate: () => void;
 };
 
 export const useUserStore = create<UserStore>()(
@@ -48,7 +46,6 @@ export const useUserStore = create<UserStore>()(
       searchValue: "",
       searchType: 0,
       collectedAlbumIds: new Set(),
-      libraryUpdateTrigger: 0,
 
       playlist: [],
       followedArtists: [],
@@ -72,8 +69,6 @@ export const useUserStore = create<UserStore>()(
         }),
       clearCollectedAlbum: () => set({ collectedAlbum: [], collectedAlbumIds: new Set() }),
 
-      triggerLibraryUpdate: () =>
-        set((state) => ({ libraryUpdateTrigger: state.libraryUpdateTrigger + 1 })),
       setUser: (userData: NeteaseUser) => set({ user: pruneUser(userData) }),
       setUserId: (userId: number | string) => {
         const numericUserId = Number(userId);

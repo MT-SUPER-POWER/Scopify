@@ -22,7 +22,6 @@ export async function toggleCurrentSongLike(currentVoiceLiked = false) {
     : [];
   const isLiked = likedIds.includes(songId);
   await likeSong(songId, !isLiked);
-  userState.libraryUpdateTrigger += 1;
   userState.setLikeListIDs(
     isLiked ? likedIds.filter((id) => id !== songId) : [...likedIds, songId],
   );

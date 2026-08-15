@@ -9,12 +9,12 @@ import {
   getRecommendedPodcasts,
   getSubscribedVoiceLists,
 } from "@/lib/api/voicelist";
-import { getUserPlaylist } from "@/lib/api/playlist";
+import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
 import { getRecentSongs } from "@/lib/api/user";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import { type RawNeteasePlaylist } from "@/types/api/playlist";
+import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/api/playlist";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import type {
   CreatedVoiceList,
@@ -305,6 +305,32 @@ export function useCreatedPodcastsQuery() {
     queryFn: async () => {
       const response = await getCreatedVoiceLists();
       return getCreatedVoiceListItems(response.data).map(toCreatedPodcastItem);
+    },
+  });
+}
+
+export function useUserPlaylistsQuery() {
+  const { isLoggedIn, userId } = useLibrarySession();
+
+  return useQuery({
+    enabled: isLoggedIn && Boolean(userId),
+    queryKey: musicQueryKeys.library.playlists(userId ?? 0),
+    queryFn: async (): Promise<NeteasePlaylist[]> => {
+      if (!userId) return [];
+
+      const [playlistResponse, likeListResponse] = await Promise.all([
+        getUserPlaylist(userId, 100),
+        getUserLikeLists(userId),
+      ]);
+
+      const rawPlaylists = playlistResponse.data.playlist ?? [];
+      const cleanPlaylists = rawPlaylists.map(prunePlaylist);
+
+      const store = useUserStore.getState();
+      store.setPlayList(rawPlaylists);
+      store.setLikeListIDs(likeListResponse.data.ids ?? []);
+
+      return cleanPlaylists;
     },
   });
 }

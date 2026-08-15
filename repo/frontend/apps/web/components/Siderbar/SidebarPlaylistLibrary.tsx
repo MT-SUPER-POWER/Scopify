@@ -22,9 +22,8 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
   const { t } = useI18n();
   const isLoggedIn = useLoginStatus();
   const smartRouter = useSmartRouter();
-  const playlists = useUserStore((state) => state.playlist);
   const userName = useUserStore((state) => state.user?.nickname);
-  const { error, isLoading, reload } = useSidebarPlaylists();
+  const { error, isLoading, playlists, reload } = useSidebarPlaylists();
   const createdPlaylists = playlists.filter((playlist) => playlist?.creator?.nickname === userName);
   const subscribedPlaylists = playlists.filter(
     (playlist) => playlist?.creator?.nickname !== userName,

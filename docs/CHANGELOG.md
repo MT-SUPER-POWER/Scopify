@@ -28,6 +28,7 @@
 
 ### Fixed
 
+- **修复歌单跳转时头部骨架屏隐形与排版跳动问题**：为 `PlaylistHeaderSkeleton` 中的骨架占位显式应用 `bg-skeleton` 语义 token，并将基础 `Skeleton` 默认背景色调整为 `bg-skeleton`，解决暗色模式下回退到 sunken 背景色导致骨架屏完全“隐形”的视觉缺陷；同步重构头部骨架屏的封面尺寸与外层内边距，使其与真实 `PlaylistHeader` 和 `ActionStation` 严格像素级对齐，消除加载完成替换时的 CLS 抖动。
 - **修复添加/删除歌单单曲后侧边栏封面与歌单内容不同步问题**：重构 `usePlaylistTrackMutation`，在单曲增删操作成功后自动通过 TanStack Query 精确失效目标歌单内容缓存、用户歌单缓存及喜欢音乐缓存，自动触发侧边栏歌单实时静默拉取最新封面（`coverImgUrl`）与歌曲数（`trackCount`），并清理散落在各 UI 触发点（右键菜单、歌曲列表、歌手页等）的冗余手动缓存清理代码。
 - **修复设置页后端地址规范化时丢失自定义端口的问题**：重构 `normalizeBackendConfig` 解析逻辑，当主机输入框填写带 `http://` 协议前缀（但未内联端口）或填写本地回环地址（`127.0.0.1`/`localhost`）时，正确继承并保留端口输入框中的自定义端口（如 `3838`），并确保本地地址智能回退为 HTTP 协议，避免端口被误置为 80 或协议误判为 HTTPS。
 

@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { usePlaylistContentQuery } from "@/hooks/playlist/usePlaylistContentQuery";
 import { resolveDailyRecommendationRequest } from "@/lib/playlist/dailyRecommendationRequest";
 import { getMainColorFromImage } from "@/lib/utils";
-import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistInfo } from "@/types/playlist";
 
@@ -33,8 +32,6 @@ export function usePlaylist(playlistIdOverride?: null | string) {
     isDailyRecommend ? requestedDailyDate : null,
   );
   const dailyDate = isDailyRecommend ? dailyRecommendationRequest.dailyDate : null;
-  const libraryUpdateTrigger = useUserStore((state) => state.libraryUpdateTrigger);
-  const previousLibraryUpdateTrigger = useRef(libraryUpdateTrigger);
   const reportedError = useRef<unknown>(null);
   const { data, error, isPending, refetch, setTracks } = usePlaylistContentQuery({
     dailyCacheDate: dailyRecommendationRequest.cacheDate,
@@ -44,12 +41,6 @@ export function usePlaylist(playlistIdOverride?: null | string) {
     playlistId,
   });
   const rawDetail = data?.rawDetail ?? null;
-
-  useEffect(() => {
-    if (previousLibraryUpdateTrigger.current === libraryUpdateTrigger) return;
-    previousLibraryUpdateTrigger.current = libraryUpdateTrigger;
-    void refetch();
-  }, [libraryUpdateTrigger, refetch]);
 
   useEffect(() => {
     if (!error || reportedError.current === error) return;

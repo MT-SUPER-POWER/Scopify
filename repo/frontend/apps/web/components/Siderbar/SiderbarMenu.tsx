@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { useUiStore, useUserStore } from "@/store";
 import { useI18n, useI18nStore } from "@/store/module/i18n";
 import type { SidebarConfirmDialogProps } from "@/types/components/sidebar";
+import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -37,7 +38,11 @@ import {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function handleCreatePlaylist(playlistName: string, privacy: "0" | "10"): void {
+function handleCreatePlaylist(
+  playlistName: string,
+  privacy: "0" | "10",
+  queryClient?: QueryClient,
+): void {
   const locale = useI18nStore.getState().locale;
   createPlaylist(playlistName, privacy).then((res) => {
     if (res.data.code === 200) {
@@ -46,6 +51,9 @@ function handleCreatePlaylist(playlistName: string, privacy: "0" | "10"): void {
       const userStore = useUserStore.getState();
       userStore.setPlayList([...userStore.playlist, newPlaylist]);
       void clearPageCache();
+      if (queryClient) {
+        void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
+      }
       toast.success(translate(locale, "sidebar.menu.createSuccess", { name: playlistName }));
     } else {
       console.error("创建歌单失败:", res.data.message);
@@ -54,7 +62,11 @@ function handleCreatePlaylist(playlistName: string, privacy: "0" | "10"): void {
   });
 }
 
-function handleDeletePlaylist(playlistId: string | number, playlistName: string): void {
+function handleDeletePlaylist(
+  playlistId: string | number,
+  playlistName: string,
+  queryClient?: QueryClient,
+): void {
   const locale = useI18nStore.getState().locale;
   delPlaylist(playlistId).then((res) => {
     if (res.data.code === 200) {
@@ -63,6 +75,12 @@ function handleDeletePlaylist(playlistId: string | number, playlistName: string)
       const updatedPlaylists = userStore.playlist.filter((p) => p.id !== playlistId);
       userStore.setPlayList(updatedPlaylists);
       void clearPageCache();
+      if (queryClient) {
+        void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
+        void queryClient.invalidateQueries({
+          queryKey: ["playlist", "content", "playlist", String(playlistId)],
+        });
+      }
       toast.success(translate(locale, "sidebar.menu.deleteSuccess", { name: playlistName }));
     } else {
       console.error("删除歌单失败:", res.data.message);
@@ -131,6 +149,7 @@ interface SiderBarMenuProps {
 
 function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
   const { t } = useI18n();
+  const queryClient = useQueryClient();
   const isLoggedIn = useLoginStatus();
   const userPlaylists = useUserStore((s) => s.playlist);
   const [confirmOpen, setConfirmOpen] = React.useState(false);
@@ -146,7 +165,7 @@ function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
 
   const handleConfirmDelete = async () => {
     if (!pendingDelete) return;
-    handleDeletePlaylist(pendingDelete.id, pendingDelete.name);
+    handleDeletePlaylist(pendingDelete.id, pendingDelete.name, queryClient);
     setConfirmOpen(false);
     setPendingDelete(null);
   };
@@ -202,7 +221,9 @@ function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
-                onClick={() => handleCreatePlaylist(t("sidebar.lib.untitledPlaylist"), "0")}
+                onClick={() =>
+                  handleCreatePlaylist(t("sidebar.lib.untitledPlaylist"), "0", queryClient)
+                }
               >
                 <Plus className="mr-2 size-5" />
                 <span>{t("sidebar.menu.createPlaylist")}</span>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { memo, useCallback, useMemo, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import type { ArtistInfo } from "@/types/artist";
 
@@ -108,6 +109,7 @@ export const PopularTrackItem = memo(
     const playlists = useUserStore((s) => s.playlist);
     const isLoggedIn = useLoginStatus();
     const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
+    const queryClient = useQueryClient();
 
     // ── derived ──
     const isActive = currentSongDetail?.id === track.id;
@@ -152,11 +154,15 @@ export const PopularTrackItem = memo(
           store.setLikeListIDs(nextList);
           void clearPageCache();
           toast.success(next ? t("artist.track.likedAdded") : t("artist.track.likedRemoved"));
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
+            queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
+          ]);
         } catch {
           toast.error(t("artist.track.operationFailed"));
         }
       },
-      [track.id, t],
+      [queryClient, track.id, t],
     );
 
     const handleAddToQueue = useCallback(() => {

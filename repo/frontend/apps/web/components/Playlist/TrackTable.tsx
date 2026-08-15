@@ -396,11 +396,6 @@ export default function TracklistTable({
       // 1. 乐观更新：立刻从视图移出
       updateVisibleTracks(tracks.filter((track) => track.id !== pendingDelete.trackId));
       toast.success(t("playlist.table.removeSuccess"));
-
-      // 2. 触发全局刷新（这会告诉 Sidebar 在后台悄悄拉取最新歌单封面等元信息）
-      const store = useUserStore.getState();
-      if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
-      void clearPageCache();
     } catch {
       toast.error(t("playlist.table.removeFailed"));
     } finally {

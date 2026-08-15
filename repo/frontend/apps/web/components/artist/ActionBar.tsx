@@ -1,6 +1,7 @@
 import { MoreHorizontal, Pause, Play } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { subscribeArtist } from "@/lib/api/artist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
@@ -16,6 +17,7 @@ interface Props {
 export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }: Props) {
   const [loading, setLoading] = useState(false);
   const { t } = useI18n();
+  const queryClient = useQueryClient();
   const isLoggedIn = useLoginStatus();
 
   const followedArtists = useUserStore((s) => s.followedArtists);
@@ -47,14 +49,16 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         );
         toast(t("artist.action.unfollow"));
       }
-      // 触发侧边栏刷新
-      if (store.triggerLibraryUpdate) store.triggerLibraryUpdate();
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["library", "collection"] }),
+        queryClient.invalidateQueries({ queryKey: ["artist", "follow-count", String(artistId)] }),
+      ]);
     } catch {
       toast.error(t("common.message.requestFailed", { message: "" }));
     } finally {
       setLoading(false);
     }
-  }, [artistId, isFollowing, isLoggedIn, t]);
+  }, [artistId, isFollowing, isLoggedIn, queryClient, t]);
 
   return (
     <div className="flex items-center gap-6 p-6 md:p-8">

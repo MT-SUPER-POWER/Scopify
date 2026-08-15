@@ -3,6 +3,7 @@
 import { Edit, Eye, Link, MessageCircle, Play, Trash } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
+import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -43,7 +44,11 @@ import { UpdatePlaylistDialog } from "../Playlist/PlaylistForm";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function handleDeletePlaylist(playlistId: string | number, playlistName: string): void {
+function handleDeletePlaylist(
+  playlistId: string | number,
+  playlistName: string,
+  queryClient?: QueryClient,
+): void {
   const locale = useI18nStore.getState().locale;
   delPlaylist(playlistId).then((res) => {
     if (res.data.code === 200) {
@@ -52,6 +57,12 @@ function handleDeletePlaylist(playlistId: string | number, playlistName: string)
       const updatedPlaylists = userStore.playlist.filter((p) => p.id !== playlistId);
       userStore.setPlayList(updatedPlaylists);
       void clearPageCache();
+      if (queryClient) {
+        void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
+        void queryClient.invalidateQueries({
+          queryKey: ["playlist", "content", "playlist", String(playlistId)],
+        });
+      }
       toast.success(translate(locale, "sidebar.menu.deleteSuccess", { name: playlistName }));
     } else {
       console.error("删除歌单失败:", res.data.message);
@@ -66,6 +77,7 @@ function handleUpdatePlaylist(
   desc?: string,
   tags?: string[],
   coverFile?: File | null,
+  queryClient?: QueryClient,
 ): void {
   const locale = useI18nStore.getState().locale;
   const updateTasks = [updatePlaylist({ id, name, desc, tags })];
@@ -88,6 +100,12 @@ function handleUpdatePlaylist(
           });
           toast.success(translate(locale, "sidebar.lib.updateSuccess", { name }));
           void clearPageCache();
+          if (queryClient) {
+            void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
+            void queryClient.invalidateQueries({
+              queryKey: ["playlist", "content", "playlist", String(id)],
+            });
+          }
         }
       } else {
         const errorRes = results.find((res) => res.data.code !== 200);
@@ -166,6 +184,7 @@ function ConfirmDialogShandCN({
 function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
   const smartRouter = useSmartRouter();
   const { t } = useI18n();
+  const queryClient = useQueryClient();
   const requireLoginAction = useRequireLoginAction();
 
   const userPlaylists = useUserStore((s) => s.playlist);
@@ -181,7 +200,11 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
   );
 
   const handleConfirmDelete = async () => {
-    handleDeletePlaylist(playlistID, playlistInfo?.name || t("sidebar.lib.untitledPlaylist"));
+    handleDeletePlaylist(
+      playlistID,
+      playlistInfo?.name || t("sidebar.lib.untitledPlaylist"),
+      queryClient,
+    );
     setConfirmOpen(false);
   };
 
@@ -192,7 +215,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
     tags?: string[],
     coverFile?: File | null,
   ) => {
-    handleUpdatePlaylist(id, name, desc, tags, coverFile);
+    handleUpdatePlaylist(id, name, desc, tags, coverFile, queryClient);
     setUpdateFormOpen(false);
   };
 

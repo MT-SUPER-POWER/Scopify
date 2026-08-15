@@ -9,6 +9,7 @@ import Link from "next/link";
 import { memo, useCallback, useMemo } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import {
@@ -119,6 +120,7 @@ interface SongItemProps {
 export const SongItem = memo(
   function SongItem({ song, index, songs }: SongItemProps) {
     const { t } = useI18n();
+    const queryClient = useQueryClient();
     const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
     // ── store ──
     const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
@@ -171,12 +173,16 @@ export const SongItem = memo(
           toast.success(
             nextLiked ? t("playlist.table.likedAdded") : t("playlist.table.likedRemoved"),
           );
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
+            queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
+          ]);
         } catch (error) {
           console.error("Failed to toggle like:", error);
           // toast.error("操作失败，请稍后再试");
         }
       },
-      [song.id, t],
+      [queryClient, song.id, t],
     );
 
     const handleAddToQueue = useCallback(() => {
@@ -344,7 +350,6 @@ export const SongItem = memo(
                             playlistId: playlist.id,
                             trackId: song.id,
                           });
-                          void clearPageCache();
                           toast.success(t("playlist.table.addToPlaylistSuccess"));
                         } catch {
                           toast.error(t("playlist.table.addToPlaylistFailed"));
