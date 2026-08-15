@@ -20,6 +20,7 @@ function createSong(id: number): SongDetail {
 
 test("natural completion repeats the current song in single-repeat mode", async () => {
   const originalState = usePlayerStore.getState();
+  const initialPlayTrack = originalState.playTrack;
   const songs = [createSong(1), createSong(2)];
   const playTrack = mock(async () => true);
 
@@ -47,7 +48,7 @@ test("natural completion repeats the current song in single-repeat mode", async 
       historyIndex: originalState.historyIndex,
       historyStack: originalState.historyStack,
       originalQueue: originalState.originalQueue,
-      playTrack: originalState.playTrack,
+      playTrack: initialPlayTrack,
       queue: originalState.queue,
       queueIndex: originalState.queueIndex,
       repeatMode: originalState.repeatMode,

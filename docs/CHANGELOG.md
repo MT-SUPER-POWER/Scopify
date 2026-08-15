@@ -1,10 +1,23 @@
 # Changelog
 
 
-## Unreleased
+## v1.4.5
+
+### Fixed
+
+- **修复设置页后端主机输入被 `0.0.0.` 劫持问题**：废弃 `cleanBackendHostInput` 中依赖 WHATWG URL 整数 IP 解析的副作用逻辑，避免打字输入数字时被自动格式化为 `0.0.0.x`；输入框实时输入与失焦清洗逻辑解耦，用户打字时保持原生输入状态。
+
+### Visual
+
+- **优化后端主机设置项描述与对齐排版**：移除输入框中冗长的“例如...”占位符，将示例（如 `例如 127.0.0.1 或 api.example.com。`）统一收敛至左侧描述文本，避免误导用户重复输入协议；将主机和代理输入框统一限制宽度并恢复右对齐，与其他表单控件保持严格视觉对齐。
+
+### Added
+
+- **新增后端主机格式合法性校验与即时提示**：引入合规性校验规则，支持标准 IPv4、IPv6、localhost 及多级域名，拒绝格式错误、非法字符及非法顶级域名；当输入非法格式时即时高亮红框并展示多语言错误提示，并在 Ping 和保存时进行强校验拦截。
 
 ### Quality
 
+- **修复播放器状态单测的隔离污染与 Action 丢失**：重构 `playerExpiredUrl.test.ts` 与 `playerRepeat.test.ts` 的状态清理机制，废弃全量 `replace` 重置模式，确保测试前后安全隔离并保留 `usePlayerStore` actions。
 - **重构桌面配置自愈与出厂模板测试体系**：将桌面 YAML 单测严格对齐至不可变的出厂底本 `app.config.default.yml`，消除针对本地动态工作配置 `app.config.yml` 的脆弱硬编码断言；完善主进程 `ensureConfigFile` 的回退自愈与落户机制，补充本地配置自定义与默认底本隔离的单测覆盖。
 - **清理 GitHub Packages 发布工作流与配置**：移除 `.github/workflows/publish-package.yml`，将 `@scopify/desktop-contract` 标记为 `private: true` 并移除 `publishConfig`，收敛桌面契约包仅作为内部 Monorepo workspace 模块维护。
 - **完善 Commit 阶段代码质量门禁**：在 `lint-staged` 中补充 Web 源码的 ESLint 自动检查与修复（`eslint --fix`），在 `.husky/pre-commit` 钩子中补充毫秒级架构边界检查（`bun run lint:architecture`），并在 `scripts/check-architecture.ts` 中补齐 `.next-dev` / `.turbo` 忽略目录，确保本地提交阶段与 CI 质量门禁一致。

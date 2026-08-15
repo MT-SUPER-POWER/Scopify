@@ -64,10 +64,17 @@ Object.defineProperty(globalThis, "window", {
 
 const { mergePersistedPlayerState, selectPersistedPlayerState, usePlayerStore } =
   await import("@/store/module/player");
-const originalState = usePlayerStore.getState();
+
+const initialPlayTrack = usePlayerStore.getState().playTrack;
 
 afterEach(() => {
-  usePlayerStore.setState(originalState, true);
+  usePlayerStore.setState({
+    currentSongDetail: null,
+    currentSongUrl: null,
+    isPlaying: false,
+    playbackFailureCount: 0,
+    playTrack: initialPlayTrack,
+  });
 });
 
 afterAll(() => {
@@ -108,9 +115,17 @@ test("request a fresh playback URL when resuming a restored song", async () => {
     playTrack,
   });
 
-  await usePlayerStore.getState().togglePlaying();
-
-  expect(playTrack).toHaveBeenCalledWith(song, { preservePlaybackSession: true });
+  try {
+    await usePlayerStore.getState().togglePlaying();
+    expect(playTrack).toHaveBeenCalledWith(song, { preservePlaybackSession: true });
+  } finally {
+    usePlayerStore.setState({
+      currentSongDetail: null,
+      currentSongUrl: null,
+      isPlaying: false,
+      playTrack: initialPlayTrack,
+    });
+  }
 });
 
 test("legacy play controls request a fresh URL through setIsPlaying", async () => {
@@ -123,8 +138,16 @@ test("legacy play controls request a fresh URL through setIsPlaying", async () =
     playTrack,
   });
 
-  usePlayerStore.getState().setIsPlaying(true);
-  await Promise.resolve();
-
-  expect(playTrack).toHaveBeenCalledWith(song, { preservePlaybackSession: true });
+  try {
+    usePlayerStore.getState().setIsPlaying(true);
+    await Promise.resolve();
+    expect(playTrack).toHaveBeenCalledWith(song, { preservePlaybackSession: true });
+  } finally {
+    usePlayerStore.setState({
+      currentSongDetail: null,
+      currentSongUrl: null,
+      isPlaying: false,
+      playTrack: initialPlayTrack,
+    });
+  }
 });
