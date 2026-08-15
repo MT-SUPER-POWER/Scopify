@@ -1,6 +1,6 @@
 {
   "name": "scopify-workspace",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "private": true,
   "packageManager": "bun@1.3.11",
   "workspaces": [
