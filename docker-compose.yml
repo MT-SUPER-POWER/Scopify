@@ -24,7 +24,7 @@ services:
 
   backend:
     container_name: ${BACKEND_CONTAINER_NAME:-scopify-netease-api}
-    image: ${BACKEND_IMAGE_NAME:-scopify-netease-api}:${BACKEND_VERSION:-4.39.0}
+    image: ${BACKEND_IMAGE_NAME:-scopify-netease-api}:${BACKEND_VERSION:-latest}
     build:
       context: ./repo/backend/api-enhanced
       dockerfile: Dockerfile
