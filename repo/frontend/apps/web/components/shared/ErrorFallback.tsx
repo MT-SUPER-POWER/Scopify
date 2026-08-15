@@ -2,11 +2,14 @@
 
 import { useEffect } from "react";
 
-import { Button } from "@/components/ui/button";
+import { AppStatusPage } from "@/components/shared/AppStatusPage";
 import { reportFailure } from "@/lib/web/errorTracking";
+import { useI18n } from "@/store/module/i18n";
 import type { ErrorFallbackProps } from "@/types/components/error";
 
 export function ErrorFallback({ error, reset }: ErrorFallbackProps) {
+  const { t } = useI18n();
+
   useEffect(() => {
     reportFailure({
       context: error.digest ? { digest: error.digest } : undefined,
@@ -18,13 +21,13 @@ export function ErrorFallback({ error, reset }: ErrorFallbackProps) {
   }, [error]);
 
   return (
-    <main className="bg-background text-foreground grid min-h-dvh place-items-center p-6">
-      <div className="space-y-4 text-center">
-        <h1 className="text-xl font-semibold">Something went wrong</h1>
-        <Button type="button" onClick={reset}>
-          Try again
-        </Button>
-      </div>
-    </main>
+    <AppStatusPage
+      description={t("errorPage.unexpected.description")}
+      homeLabel={t("ui.backToHome")}
+      onRetry={reset}
+      retryLabel={t("common.action.retry")}
+      statusCode="500"
+      title={t("errorPage.unexpected.title")}
+    />
   );
 }

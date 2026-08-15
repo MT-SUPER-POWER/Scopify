@@ -329,6 +329,30 @@ export interface TranslateFn {
    */
   (key: "common.message.copyFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 你访问的页面不存在、已被移动，或链接已经失效。
+   * zh-TW: 你造訪的頁面不存在、已被移動，或連結已經失效。
+   * en-US: The page you requested does not exist, has moved, or the link is no longer valid.
+   */
+  (key: "errorPage.notFound.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这里没有你要找的内容
+   * zh-TW: 這裡沒有你要找的內容
+   * en-US: We couldn't find that page
+   */
+  (key: "errorPage.notFound.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 页面暂时无法继续显示。你可以重试，或返回主页继续使用 Scopify。
+   * zh-TW: 頁面暫時無法繼續顯示。你可以重試，或返回首頁繼續使用 Scopify。
+   * en-US: This page cannot continue right now. Try again, or return home to keep using Scopify.
+   */
+  (key: "errorPage.unexpected.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 页面出现了一点问题
+   * zh-TW: 頁面出現了一點問題
+   * en-US: Something went wrong
+   */
+  (key: "errorPage.unexpected.title", params?: TranslationParams): string;
+  /**
    * zh-CN: 设置
    * zh-TW: 設定
    * en-US: Settings

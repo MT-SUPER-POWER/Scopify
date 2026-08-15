@@ -41,6 +41,7 @@
       "version": "1.4.3",
       "dependencies": {
         "@chenglou/pretext": "^0.0.8",
+        "@fontsource/black-ops-one": "^5.3.0",
         "@paper-design/shaders": "^0.0.77",
         "@paper-design/shaders-react": "^0.0.77",
         "@react-three/drei": "^10.7.7",
@@ -328,6 +329,8 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.9", "https://registry.npmmirror.com/@floating-ui/react-dom/-/react-dom-2.1.9.tgz", { "dependencies": { "@floating-ui/dom": "^1.8.0" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-JDjEFGCpImxDCA7JJKviA0M9+RtmJdj0m/NVU5IMgBK+AmZouAQQ7/+2GLH0GXXY0YMw9oXPB8hKdbPYg5QLYg=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.12", "https://registry.npmmirror.com/@floating-ui/utils/-/utils-0.2.12.tgz", {}, "sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww=="],
+
+    "@fontsource/black-ops-one": ["@fontsource/black-ops-one@5.3.0", "https://registry.npmmirror.com/@fontsource/black-ops-one/-/black-ops-one-5.3.0.tgz", {}, "sha512-kDqkJFtvMErjajEeMXv6nyIW3t6UKb5usW+1/sQox9vA5q8dyMpAdAW9tU6+aIWo6xIQlatqNrfUlrBdJu6D4A=="],
 
     "@hono/node-server": ["@hono/node-server@1.19.14", "https://registry.npmmirror.com/@hono/node-server/-/node-server-1.19.14.tgz", { "peerDependencies": { "hono": "^4" } }, "sha512-GwtvgtXxnWsucXvbQXkRgqksiH2Qed37H9xHZocE5sA3N8O8O8/8FA3uclQXxXVzc9XBZuEOMK7+r02FmSpHtw=="],
 

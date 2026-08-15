@@ -36,6 +36,7 @@
     "@scopify/ui": "workspace:*",
     "@scopify/desktop-contract": "workspace:*",
     "@chenglou/pretext": "^0.0.8",
+    "@fontsource/black-ops-one": "^5.3.0",
     "@paper-design/shaders": "^0.0.77",
     "@paper-design/shaders-react": "^0.0.77",
     "@react-three/drei": "^10.7.7",

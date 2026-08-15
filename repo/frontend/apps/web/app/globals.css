@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@fontsource/black-ops-one/400.css";
 @import "@scopify/ui/theme.css";
+
+@theme inline {
+  --font-status-code: "Black Ops One", var(--font-ui);
+}
 
 @layer components {
   .hero-content-transition {
