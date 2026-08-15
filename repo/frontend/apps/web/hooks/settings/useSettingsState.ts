@@ -10,7 +10,11 @@ import {
 } from "@/lib/cache/cacheManagement";
 import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
-import { normalizeBackendConfig, resolveBackendBaseUrl } from "@/lib/web/backendUrl";
+import {
+  cleanBackendHostInput,
+  normalizeBackendConfig,
+  resolveBackendBaseUrl,
+} from "@/lib/web/backendUrl";
 import { webConfig } from "@/lib/web/env";
 import { pingBackend, probeBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
@@ -25,7 +29,6 @@ export const WEB_BACKEND_SETTINGS_KEY = "momo-web-backend-settings";
 function checkRequiresRestart(current: DesktopHostConfig, original: DesktopHostConfig): boolean {
   return (
     current.app.gpuAcceleration !== original.app.gpuAcceleration ||
-    current.app.devTools !== original.app.devTools ||
     current.frontend.host !== original.frontend.host ||
     current.frontend.devPort !== original.frontend.devPort
   );
@@ -194,6 +197,47 @@ export function useSettingsState() {
     key: K,
     value: WebConfig[S][K],
   ) => {
+    if (section === "backend" && key === "host" && typeof value === "string") {
+      const cleaned = cleanBackendHostInput(value);
+      setConfig((current) => {
+        if (!current) return current;
+        return {
+          ...current,
+          web: {
+            ...current.web,
+            backend: {
+              ...current.web.backend,
+              host: cleaned.host,
+              ...(cleaned.protocol ? { protocol: cleaned.protocol } : {}),
+              ...(cleaned.port !== undefined ? { port: cleaned.port } : {}),
+            },
+          },
+        };
+      });
+      return;
+    }
+
+    if (section === "backend" && key === "protocol") {
+      setConfig((current) => {
+        if (!current) return current;
+        let nextPort = current.web.backend.port;
+        if (value === "https" && nextPort === 80) nextPort = 443;
+        if (value === "http" && nextPort === 443) nextPort = 80;
+        return {
+          ...current,
+          web: {
+            ...current.web,
+            backend: {
+              ...current.web.backend,
+              protocol: value as "http" | "https",
+              port: nextPort,
+            },
+          },
+        };
+      });
+      return;
+    }
+
     setConfig((current) =>
       current
         ? {

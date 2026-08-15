@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v1.4.4
+
+### Added
+
+- **开发者工具接入快捷键与命令体系**：桌面端启动时不再自动打开 DevTools；设置项改为运行时访问权限开关，无需重启即可生效，并新增默认 `F12` 的“打开/关闭开发者工具”命令供快捷键系统与命令面板统一调用。
+
+### Quality
+
+- **移除 triggerLibraryUpdate 状态肿瘤并全面接入 TanStack Query**：彻底废弃并移除 Zustand `useUserStore` 中的 `libraryUpdateTrigger` 与 `triggerLibraryUpdate` 遗留补丁，将用户歌单列表生命周期收敛为 `musicQueryKeys.library.playlists(userId)` 与 `useUserPlaylistsQuery`。
+- **契约包规范化为内部组织包名**：将桌面契约包统一收敛为本地 Workspace 组织包名 `@scopify/desktop-contract`，各子应用统一使用 `workspace:*` 声明依赖。
+- **拆分共享 UI 主题层**：新增内部 `@scopify/ui` workspace package，将 shadcn/tweakcn 标准 token、Scopify 产品语义 token 与 Folia 运行时主题模型拆成三个独立入口；Web 端改为消费共享主题接口，为后续迁移基础组件与统一主题编辑能力建立稳定 seam。
+- **固化共享 UI 分层约束**：新增 `ui-package-boundaries` Skill 并接入根项目规范，明确原生 shadcn CLI vendor 层、Scopify 扩展层与应用业务层的职责、依赖方向和迁移决策流程。
+- **规范 Docker Compose 镜像版本标识**：为 `docker-compose.yml` 中的后端与前端镜像构建绑定明确的版本环境变量与默认版本号（前端 `1.4.3`，后端 `4.39.0`），避免使用 `latest` 导致版本模糊，并同步更新 `.env` 与 `.env.example`。
+- **设置页后端网络配置解耦与智能清洗**：在设置页新增显式「传输协议（HTTP/HTTPS）」切换；主机输入框支持输入智能清洗，自动剥离粘贴混入的协议、路径与端口并同步回填至对应控件；解耦端口维护并大幅简化底层 URL 解析规范化逻辑。
+
+### Fixed
+
+- **修复添加/删除歌单单曲后侧边栏封面与歌单内容不同步问题**：重构 `usePlaylistTrackMutation`，在单曲增删操作成功后自动通过 TanStack Query 精确失效目标歌单内容缓存、用户歌单缓存及喜欢音乐缓存，自动触发侧边栏歌单实时静默拉取最新封面（`coverImgUrl`）与歌曲数（`trackCount`），并清理散落在各 UI 触发点（右键菜单、歌曲列表、歌手页等）的冗余手动缓存清理代码。
+- **修复设置页后端地址规范化时丢失自定义端口的问题**：重构 `normalizeBackendConfig` 解析逻辑，当主机输入框填写带 `http://` 协议前缀（但未内联端口）或填写本地回环地址（`127.0.0.1`/`localhost`）时，正确继承并保留端口输入框中的自定义端口（如 `3838`），并确保本地地址智能回退为 HTTP 协议，避免端口被误置为 80 或协议误判为 HTTPS。
+
+
 ## v1.4.3
 
 ### Refactor
@@ -16,6 +37,7 @@
 
 ### Fixed
 
+- **修复共享 UI 主题入口构建失败**：补齐共享主题依赖的 shadcn token 层；Web 对 Folia TS 模型以 `workspace:*` 声明依赖，而全局 CSS 以 monorepo 相对路径加载主题，避开 PostCSS 对 workspace bare specifier 的不稳定解析；新增聚合主题入口完整性测试。
 - **修复 ws 模块可选原生依赖动态加载报错**：在 `electron.vite.config.ts` 中将 `ws` 的可选原生模块 `bufferutil` 和 `utf-8-validate` 标记为 `external`，防止 Vite 打包将其转译为顶层抛错 stub，确保在开发态和生产运行时自动平滑降级为纯 JS Buffer 运算。
 - **修复 GitHub Packages 发布工作流 409 Conflict 异常**：在 `.github/workflows/publish-package.yml` 中新增版本预检逻辑，当目标版本已在远端存在时优雅跳过，避免 tag 发布流程因包版本未变更而报错中断。
 
@@ -34,7 +56,7 @@
 
 ### Added
 
-- 新增 GitHub Package 自动化发布支持：配置 GitHub Actions 工作流 `.github/workflows/publish-package.yml`，在打 tag（如 `v*` 或 `contract-v*`）时自动将桌面契约包发布至 GitHub Packages (`npm.pkg.github.com`)；全库仓库地址与包名同步迁移至组织目标 `@mt-super-power/desktop-contract` (https://github.com/MT-SUPER-POWER/Scopify)。
+- 新增 GitHub Package 自动化发布支持：配置 GitHub Actions 工作流 `.github/workflows/publish-package.yml`，在打 tag（如 `v*` 或 `contract-v*`）时自动将桌面契约包发布至 GitHub Packages (`npm.pkg.github.com`)；全库仓库地址与包名同步迁移至组织目标 `@scopify/desktop-contract` (https://github.com/MT-SUPER-POWER/Scopify)。
 - 统一搜索窗口支持以 `>` 前缀搜索并执行命令；`Ctrl + Shift + P` 会直接打开命令查询。
 - 命令候选按设备本地累计使用次数排序，并继续支持上下方向键和 Enter 操作。
 - 桌面端设置新增“桌面歌词”独立配置与测试卡片：支持一键开/关桌面歌词悬浮窗口测试，并实时配置保持窗口置顶、鼠标穿透与隐藏任务栏图标。
@@ -52,7 +74,7 @@
 - 修复 Vercel 部署因 `vercel.json` 缺少 Monorepo 根目录导航与子项目目录切换指令导致无法识别 Next.js 依赖及定位 `.next` 制品的问题；增加根目录 `.vercelignore` 过滤无关子模块与桌面端构建文件。
 - 修复 Windows Release 打包在 Bun 1.3.7 下无法解析 Discord Rich Presence 运行时依赖的问题；发布工作流现使用与工作区一致的 Bun 1.3.11。
 - 修复 Windows CI Release 工作流在 `windows-latest` 上因缺少开发者模式权限导致 Bun Workspace 创建 `node_modules` 软链接失败、进而使 `electron-builder` 无法定位 `@xhayper/discord-rpc` 等运行时依赖的问题；构建前现自动开启 Windows 开发者模式。
-- 修复 GitHub Package 发布工作流在 tag 触发时因 `@mt-super-power/desktop-contract` 版本未变动导致 `npm publish` 报 409 Conflict 失败的问题；发布前现自动检测远端版本，已存在时优雅跳过发布。
+- 修复 GitHub Package 发布工作流在 tag 触发时因 `@scopify/desktop-contract` 版本未变动导致 `npm publish` 报 409 Conflict 失败的问题；发布前现自动检测远端版本，已存在时优雅跳过发布。
 - 修复页面缓存与播放缓存共用目录和清理范围的问题；桌面端改为独立子目录并安全迁移旧缓存，Web 端改用分区 IndexedDB 存储。
 - 修复 Windows 桌面播放壁纸在安装包中被错误标记为不支持的问题；WorkerW 附着与系统壁纸回退脚本现随安装包发布，并按开发或生产运行时解析对应路径。
 - 修复桌面音乐控制器错误继承 Folia 主题色的问题；控制器现在仅跟随全局 NextTheme 的明暗主题，Folia 主题切换只影响歌词渲染。

@@ -56,6 +56,24 @@ export function NetworkSettingsTab({
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
       <SettingSection title={t("settings.section.backend")}>
         <SettingRow
+          label={t("settings.backendProtocol.label")}
+          sublabel={t("settings.backendProtocol.sublabel")}
+          control={
+            <SettingSelect
+              value={config.web.backend.protocol}
+              onChange={(value) => onWebChange("backend", "protocol", value as "http" | "https")}
+              className="w-28"
+            >
+              <option value="http" className="bg-popover">
+                HTTP
+              </option>
+              <option value="https" className="bg-popover">
+                HTTPS
+              </option>
+            </SettingSelect>
+          }
+        />
+        <SettingRow
           label={t("settings.backendHost.label")}
           sublabel={t("settings.backendHost.sublabel")}
           control={

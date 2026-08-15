@@ -593,9 +593,9 @@ export interface TranslateFn {
    */
   (key: "settings.devTools.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 开启 Electron 内置 DevTools 调试控制台。
-   * zh-TW: 開啟 Electron 內建 DevTools 除錯主控台。
-   * en-US: Open built-in Electron DevTools console for debugging.
+   * zh-CN: 允许通过快捷键或命令面板打开 Electron 开发者工具。
+   * zh-TW: 允許透過快速鍵或命令面板開啟 Electron 開發者工具。
+   * en-US: Allow Electron Developer Tools to open from shortcuts or the command palette.
    */
   (key: "settings.devTools.sublabel", params?: TranslationParams): string;
   /**
@@ -15175,6 +15175,12 @@ export interface TranslateFn {
    * en-US: Toggle Fullscreen
    */
   (key: "shortcuts.command.toggleFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭开发者工具
+   * zh-TW: 開啟/關閉開發者工具
+   * en-US: Toggle Developer Tools
+   */
+  (key: "shortcuts.command.toggleDeveloperTools", params?: TranslationParams): string;
   /**
    * zh-CN: 查看当前歌曲评论
    * zh-TW: 查看目前歌曲評論
