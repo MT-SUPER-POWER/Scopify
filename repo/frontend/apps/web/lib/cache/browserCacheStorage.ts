@@ -1,4 +1,4 @@
-import type { CacheScope } from "@mt-super-power/desktop-contract";
+import type { CacheScope } from "@scopify/desktop-contract";
 import { createStore, del, entries } from "idb-keyval";
 
 export interface BrowserCacheRecord {

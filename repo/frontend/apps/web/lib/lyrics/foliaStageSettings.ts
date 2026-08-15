@@ -19,7 +19,7 @@ import {
   createFoliaStageTheme,
   getFoliaStageTheme,
   normalizeFoliaStageThemes,
-} from "@/lib/lyrics/foliaTheme";
+} from "@scopify/ui/folia";
 import type { FoliaStageSettings } from "@/types/foliaStage";
 
 const NUMERIC_RANGES = {

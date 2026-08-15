@@ -1,5 +1,5 @@
 {
-  "name": "@mt-super-power/desktop-contract",
+  "name": "@scopify/desktop-contract",
   "version": "2.0.0",
   "description": "Versioned IPC contract between the Scopify renderer and desktop host",
   "repository": {

@@ -2,7 +2,7 @@
 
 import { Music } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { DesktopLyricPreferences } from "@mt-super-power/desktop-contract";
+import type { DesktopLyricPreferences } from "@scopify/desktop-contract";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import { SettingRow, SettingSection, Toggle } from "./SettingsUI";

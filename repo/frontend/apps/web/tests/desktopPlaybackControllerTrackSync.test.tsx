@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test } from "bun:test";
 
-import type { PlaybackTrack } from "@mt-super-power/desktop-contract";
+import type { PlaybackTrack } from "@scopify/desktop-contract";
 
 import { DesktopPlaybackPlayerControls } from "@/components/desktopWallpaper/DesktopPlaybackPlayerControls";
 

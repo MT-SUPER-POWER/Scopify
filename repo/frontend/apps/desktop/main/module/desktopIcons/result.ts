@@ -1,4 +1,4 @@
-import type { DesktopIconVisibilityState } from "@mt-super-power/desktop-contract";
+import type { DesktopIconVisibilityState } from "@scopify/desktop-contract";
 import { z } from "zod";
 
 const WINDOWS_DESKTOP_ICON_RESULT_SCHEMA = z.object({

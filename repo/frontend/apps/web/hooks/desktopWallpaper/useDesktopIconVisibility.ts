@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { DesktopIconVisibilityState } from "@mt-super-power/desktop-contract";
+import type { DesktopIconVisibilityState } from "@scopify/desktop-contract";
 
 import { runtime } from "@/lib/runtime";
 import type { DesktopIconVisibilityControllerState } from "@/types/desktopIcons";

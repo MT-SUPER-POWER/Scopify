@@ -4,7 +4,7 @@ import { Monitor } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import type { DesktopPlaybackWallpaperModel } from "@mt-super-power/desktop-contract";
+import type { DesktopPlaybackWallpaperModel } from "@scopify/desktop-contract";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getDesktopPlaybackWallpaperToggleUpdate } from "@/lib/desktopPlaybackWallpaper/toggle";

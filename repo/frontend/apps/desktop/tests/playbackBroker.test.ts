@@ -6,7 +6,7 @@ import {
   type PlaybackClockAnchored,
   type PlaybackCommand,
   type PlaybackCommandReceipt,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import { createPlaybackBroker, type PlaybackBrokerPort } from "@/main/module/playbackBroker";
 

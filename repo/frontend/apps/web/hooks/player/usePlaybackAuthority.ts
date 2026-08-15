@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { PLAYBACK_VOLUME_MAX } from "@mt-super-power/desktop-contract";
+import { PLAYBACK_VOLUME_MAX } from "@scopify/desktop-contract";
 
 import { PlaybackAuthority } from "@/lib/playbackProjection/authority";
 import type {

@@ -1,8 +1,5 @@
 import { Client, type SetActivity } from "@xhayper/discord-rpc";
-import type {
-  DiscordPresenceSnapshot,
-  DiscordPresenceStatus,
-} from "@mt-super-power/desktop-contract";
+import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "@scopify/desktop-contract";
 
 const DISCORD_PRESENCE_UPDATE_INTERVAL_MS = 15_000;
 const DISCORD_ACTIVITY_TYPE_LISTENING = 2;

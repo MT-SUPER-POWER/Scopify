@@ -33,14 +33,14 @@
     "i18n:audit": "bun scripts/audit-i18n.ts"
   },
   "dependencies": {
+    "@scopify/ui": "workspace:*",
+    "@scopify/desktop-contract": "workspace:*",
     "@chenglou/pretext": "^0.0.8",
     "@paper-design/shaders": "^0.0.77",
     "@paper-design/shaders-react": "^0.0.77",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@react-three/postprocessing": "^3.0.4",
-    "@mt-super-power/desktop-contract": "2.0.0",
-    "@scopify/ui": "workspace:*",
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-query-persist-client": "^5.101.4",
     "@tanstack/react-table": "^8.21.3",

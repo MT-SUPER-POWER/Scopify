@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import type { AudioFeatureAck, AudioFeatureFrameV1 } from "@mt-super-power/desktop-contract";
+import type { AudioFeatureAck, AudioFeatureFrameV1 } from "@scopify/desktop-contract";
 
 import {
   createAudioFeatureBroker,

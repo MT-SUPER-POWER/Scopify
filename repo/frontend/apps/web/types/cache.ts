@@ -3,11 +3,11 @@ import type {
   CacheScope,
   ClearDesktopCacheRequest,
   DesktopCacheStats,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 import type { NeteaseLyric } from "@/types/api/music";
 import type { MusicQuality } from "@/types/player";
 
-export type { CacheCategory, CacheScope } from "@mt-super-power/desktop-contract";
+export type { CacheCategory, CacheScope } from "@scopify/desktop-contract";
 
 export type CacheStats = DesktopCacheStats;
 export type CacheClearRequest = ClearDesktopCacheRequest;

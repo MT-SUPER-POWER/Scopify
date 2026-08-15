@@ -1,6 +1,6 @@
 import type { Rectangle } from "electron";
 
-import type { DesktopPlaybackControllerLayout } from "@mt-super-power/desktop-contract";
+import type { DesktopPlaybackControllerLayout } from "@scopify/desktop-contract";
 
 export const DESKTOP_PLAYBACK_CONTROLLER_SIZES = {
   compact: { height: 230, width: 450 },

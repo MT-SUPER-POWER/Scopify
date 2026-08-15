@@ -1,4 +1,4 @@
-import type { DesktopBridge } from "@mt-super-power/desktop-contract";
+import type { DesktopBridge } from "@scopify/desktop-contract";
 
 import type { LyricData } from "@/types/lyrics";
 

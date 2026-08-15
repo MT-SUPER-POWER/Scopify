@@ -3,7 +3,7 @@
 import { CircleAlert, LayoutGrid, Monitor, RotateCw, Sparkles, Type } from "lucide-react";
 import type { ReactNode } from "react";
 
-import type { DesktopPlaybackWallpaperStatus } from "@mt-super-power/desktop-contract";
+import type { DesktopPlaybackWallpaperStatus } from "@scopify/desktop-contract";
 
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";

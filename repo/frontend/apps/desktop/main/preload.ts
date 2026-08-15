@@ -14,7 +14,7 @@ import type {
   AudioFeatureTransportRole,
   PlaybackTransportPayload,
   PlaybackTransportRole,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 type ElectronRendererMessagePort = MessagePort & {
   onclose: ((event: Event) => void) | null;

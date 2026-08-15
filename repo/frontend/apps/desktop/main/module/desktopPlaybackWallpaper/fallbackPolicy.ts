@@ -1,4 +1,4 @@
-import type { DesktopPlaybackWallpaperPreferences } from "@mt-super-power/desktop-contract";
+import type { DesktopPlaybackWallpaperPreferences } from "@scopify/desktop-contract";
 import { z } from "zod";
 
 import type { SystemWallpaperFallbackOperationResult } from "../../../types/systemWallpaperFallback.js";

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import type {
   DesktopPlaybackWallpaperPreferences,
   DesktopPlaybackWallpaperPreferencesUpdate,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import {
   createDesktopPlaybackWallpaperCapability,

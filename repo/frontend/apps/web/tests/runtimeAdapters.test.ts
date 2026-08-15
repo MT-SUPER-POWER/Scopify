@@ -7,7 +7,7 @@ import {
   type DesktopIconVisibilityState,
   type DesktopPlaybackWallpaperModel,
   type AudioFeatureFrameV1,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import { createBrowserRuntime } from "@/lib/runtime/adapters/browser";
 import { MemoryBrowserCacheStorage } from "@/lib/cache/browserCacheStorage";

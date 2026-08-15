@@ -17,7 +17,7 @@ import type {
   PlaybackTransportPayload,
   PlaybackTransportRole,
   RendererLogEvent,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import type {
   DesktopLyricCommand,

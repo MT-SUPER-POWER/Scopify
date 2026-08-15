@@ -6,7 +6,7 @@ import {
   type DesktopIconVisibilityState,
   type DesktopPlaybackWallpaperModel,
   type PageCacheStats,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import {
   createBrowserCacheStorage,

@@ -1,7 +1,7 @@
 import type {
   DesktopPlaybackWallpaperPreferences,
   DesktopPlaybackWallpaperPreferencesUpdate,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 export function getDesktopPlaybackWallpaperToggleUpdate(
   preferences: DesktopPlaybackWallpaperPreferences,

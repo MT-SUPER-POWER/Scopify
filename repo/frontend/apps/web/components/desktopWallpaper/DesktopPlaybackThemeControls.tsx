@@ -3,7 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
-import { getFoliaStageTheme } from "@/lib/lyrics/foliaTheme";
+import { getFoliaStageTheme } from "@scopify/ui/folia";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
 

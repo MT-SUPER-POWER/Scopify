@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { PlaybackProjection } from "@mt-super-power/desktop-contract";
+import type { PlaybackProjection } from "@scopify/desktop-contract";
 
 import {
   AUDIO_FEATURE_SAMPLE_INTERVAL_MS,

@@ -1,4 +1,4 @@
-import type { DesktopHostConfig, DiscordPresenceStatus } from "@mt-super-power/desktop-contract";
+import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
 import type { DesktopSettingsChangeHandler } from "@/types/settings";
 import type { SettingsConfig, WebSettingsChangeHandler } from "@/types/settings";
 import type { BackendPingResult } from "@/types/network";

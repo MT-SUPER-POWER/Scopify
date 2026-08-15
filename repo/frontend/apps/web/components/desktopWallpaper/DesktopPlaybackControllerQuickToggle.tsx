@@ -2,7 +2,7 @@
 
 import { MonitorOff, MonitorUp } from "lucide-react";
 
-import type { DesktopPlaybackWallpaperModel } from "@mt-super-power/desktop-contract";
+import type { DesktopPlaybackWallpaperModel } from "@scopify/desktop-contract";
 
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";

@@ -5,7 +5,7 @@ import {
   isPlaybackTransportControl,
   validatePlaybackCommand,
   validatePlaybackCommandReceipt,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
 import type { PlaybackAuthorityBinding } from "@/types/playbackAuthority";

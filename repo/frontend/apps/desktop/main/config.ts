@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { app } from "electron";
 import * as yaml from "js-yaml";
 
-import type { DesktopHostConfig } from "@mt-super-power/desktop-contract";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
 import { DEFAULT_DESKTOP_HOST_CONFIG, normalizeDesktopHostConfig } from "../types/config.js";
 
 const resourceConfigDir = app.isPackaged

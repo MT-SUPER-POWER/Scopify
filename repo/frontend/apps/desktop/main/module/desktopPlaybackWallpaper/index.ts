@@ -5,7 +5,7 @@ import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferences,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import { parseDesktopPlaybackWallpaperPreferencesUpdate } from "../../../types/desktopPlaybackWallpaper.js";
 import { logger } from "../../constants.js";

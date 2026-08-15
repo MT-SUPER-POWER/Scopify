@@ -2,7 +2,7 @@ import type {
   PlaybackCommand,
   PlaybackCommandReceipt,
   PlaybackMessage,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import type {
   InProcessPlaybackTransport,

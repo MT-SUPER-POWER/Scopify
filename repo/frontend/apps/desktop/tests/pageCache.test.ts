@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { createPageCacheStore, migrateCacheRoot } from "@/main/module/pageCache";
-import type { DesktopHostConfig } from "@mt-super-power/desktop-contract";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
 
 const tempDirs: string[] = [];
 

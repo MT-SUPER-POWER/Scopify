@@ -1,7 +1,7 @@
 import {
   AUDIO_FEATURE_PROTOCOL_VERSION,
   type AudioFeatureFrameV1,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 
 import { createAudioFeatureStream } from "@/lib/audioFeature/stream";
 import type {

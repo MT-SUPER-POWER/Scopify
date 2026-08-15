@@ -4,8 +4,8 @@ import type {
   PlaybackProjection,
   PlaybackTransportPayload,
   PlaybackTransportRole,
-} from "@mt-super-power/desktop-contract";
-import { PLAYBACK_PROTOCOL_VERSION } from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
+import { PLAYBACK_PROTOCOL_VERSION } from "@scopify/desktop-contract";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test } from "bun:test";
 

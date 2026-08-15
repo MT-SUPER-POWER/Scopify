@@ -3,7 +3,7 @@ import type {
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
   PlaybackTrack,
-} from "@mt-super-power/desktop-contract";
+} from "@scopify/desktop-contract";
 import type { ReactNode } from "react";
 
 import type { SongDetail } from "@/types/api/music";

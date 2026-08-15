@@ -1,7 +1,7 @@
 "use client";
 
 import { CircleCheck, CircleX, LoaderCircle, Radio } from "lucide-react";
-import type { DesktopProxyMode } from "@mt-super-power/desktop-contract";
+import type { DesktopProxyMode } from "@scopify/desktop-contract";
 import type { NetworkSettingsTabProps } from "@/types/components/settings";
 import { useI18n } from "@/store/module/i18n";
 import { SettingInput, SettingRow, SettingSection, SettingSelect } from "./SettingsUI";

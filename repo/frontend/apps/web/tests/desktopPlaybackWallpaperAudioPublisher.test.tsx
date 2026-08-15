@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { AudioFeatureFrameV1 } from "@mt-super-power/desktop-contract";
+import type { AudioFeatureFrameV1 } from "@scopify/desktop-contract";
 
 import {
   createAudioFeaturePublisherConnection,
