@@ -20,6 +20,7 @@
 - **拆分共享 UI 主题层**：新增内部 `@scopify/ui` workspace package，将 shadcn/tweakcn 标准 token、Scopify 产品语义 token 与 Folia 运行时主题模型拆成三个独立入口；Web 端改为消费共享主题接口，为后续迁移基础组件与统一主题编辑能力建立稳定 seam。
 - **固化共享 UI 分层约束**：新增 `ui-package-boundaries` Skill 并接入根项目规范，明确原生 shadcn CLI vendor 层、Scopify 扩展层与应用业务层的职责、依赖方向和迁移决策流程。
 - **规范 Docker Compose 镜像版本标识**：为 `docker-compose.yml` 中的后端与前端镜像构建绑定明确的版本环境变量与默认版本号（前端 `1.4.3`，后端 `4.39.0`），避免使用 `latest` 导致版本模糊，并同步更新 `.env` 与 `.env.example`。
+- **完善 Commit 阶段代码质量门禁**：在 `lint-staged` 中补充 Web 源码的 ESLint 自动检查与修复（`eslint --fix`），在 `.husky/pre-commit` 钩子中补充毫秒级架构边界检查（`bun run lint:architecture`），并在 `scripts/check-architecture.ts` 中补齐 `.next-dev` / `.turbo` 忽略目录，确保本地提交阶段与 CI 质量门禁一致。
 - **设置页后端网络配置解耦与智能清洗**：在设置页新增显式「传输协议（HTTP/HTTPS）」切换；主机输入框支持输入智能清洗，自动剥离粘贴混入的协议、路径与端口并同步回填至对应控件；解耦端口维护并大幅简化底层 URL 解析规范化逻辑。
 
 ### Visual

@@ -84,7 +84,7 @@ export function normalizeBackendConfig(backend: WebConfig["backend"]): BackendCo
   const protocol: BackendProtocol =
     cleaned.protocol || (backend.protocol === "https" ? "https" : "http");
 
-  let port = cleaned.port ?? backend.port;
+  const port = cleaned.port ?? backend.port;
   if (!isValidPort(port)) {
     return { message: "Backend port must be an integer between 1 and 65535.", ok: false };
   }

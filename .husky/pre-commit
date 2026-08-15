@@ -1,1 +1,1 @@
-bunx lint-staged
+bun run lint:architecture && bunx lint-staged

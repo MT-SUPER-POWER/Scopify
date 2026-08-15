@@ -10,6 +10,8 @@ export interface ArchitectureViolation {
 const SOURCE_EXTENSIONS = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx"]);
 const IGNORED_DIRECTORIES = new Set([
   ".next",
+  ".next-dev",
+  ".turbo",
   "coverage",
   "dist",
   "node_modules",
