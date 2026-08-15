@@ -1,6 +1,6 @@
 app:
   gpuAcceleration: true
-  devTools: false
+  devTools: true
   closeAction: 2
 frontend:
   devPort: 3000

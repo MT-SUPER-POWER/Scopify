@@ -125,15 +125,17 @@ export function SettingSelect({
   value,
   onChange,
   children,
+  className,
   disabled = false,
 }: {
   value: string | number;
   onChange: (value: string) => void;
   children: React.ReactNode;
+  className?: string;
   disabled?: boolean;
 }) {
   return (
-    <div className={cn("relative", disabled && "cursor-not-allowed opacity-40")}>
+    <div className={cn("relative", className, disabled && "cursor-not-allowed opacity-40")}>
       <select
         className={cn(selectClass, disabled && "pointer-events-none")}
         value={value}

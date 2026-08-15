@@ -869,6 +869,18 @@ export interface TranslateFn {
    */
   (key: "settings.section.backend", params?: TranslationParams): string;
   /**
+   * zh-CN: 传输协议
+   * zh-TW: 傳輸協定
+   * en-US: Transport Protocol
+   */
+  (key: "settings.backendProtocol.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接后端 API 时使用的传输协议（HTTP 或 HTTPS）。
+   * zh-TW: 連線後端 API 時使用的傳輸協定（HTTP 或 HTTPS）。
+   * en-US: Transport protocol used when connecting to backend API (HTTP or HTTPS).
+   */
+  (key: "settings.backendProtocol.sublabel", params?: TranslationParams): string;
+  /**
    * zh-CN: 后端主机
    * zh-TW: 後端主機
    * en-US: Backend Host

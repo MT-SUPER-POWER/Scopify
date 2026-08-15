@@ -91,6 +91,8 @@ export const settingsMessages = defineMessages(
     "settings.frontendPort.label": "开发端口",
     "settings.frontendPort.sublabel": "桌面端本地开发时关联的 Web 前端端口。",
     "settings.section.backend": "后端服务",
+    "settings.backendProtocol.label": "传输协议",
+    "settings.backendProtocol.sublabel": "连接后端 API 时使用的传输协议（HTTP 或 HTTPS）。",
     "settings.backendHost.label": "后端主机",
     "settings.backendHost.sublabel":
       "可填域名、带端口地址或完整 http(s):// 地址；保存和 Ping 时会自动匹配协议、主机和端口。",
@@ -311,6 +313,8 @@ export const settingsMessages = defineMessages(
     "settings.frontendPort.label": "開發埠",
     "settings.frontendPort.sublabel": "桌面端本地開發時關聯的 Web 前端埠。",
     "settings.section.backend": "後端服務",
+    "settings.backendProtocol.label": "傳輸協定",
+    "settings.backendProtocol.sublabel": "連線後端 API 時使用的傳輸協定（HTTP 或 HTTPS）。",
     "settings.backendHost.label": "後端主機",
     "settings.backendHost.sublabel":
       "可填網域、含埠位址或完整 http(s):// 位址；儲存和 Ping 時會自動匹配協定、主機和埠。",
@@ -537,6 +541,9 @@ export const settingsMessages = defineMessages(
     "settings.frontendPort.sublabel":
       "Listen port for Web frontend service during local development.",
     "settings.section.backend": "Backend Service",
+    "settings.backendProtocol.label": "Transport Protocol",
+    "settings.backendProtocol.sublabel":
+      "Transport protocol used when connecting to backend API (HTTP or HTTPS).",
     "settings.backendHost.label": "Backend Host",
     "settings.backendHost.sublabel":
       "Enter a domain, host with port, or full http(s):// URL; protocol, host, and port are normalized on save and Ping.",
