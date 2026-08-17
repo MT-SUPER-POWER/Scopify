@@ -27,9 +27,6 @@ export const VolumeControl = ({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 用于存储防抖定时器的引用
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
       return <VolumeOff className="size-5" />;
@@ -52,14 +49,7 @@ export const VolumeControl = ({
         setMuted(false);
       }
 
-      // 2. 防抖处理
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-
-      debounceTimerRef.current = setTimeout(() => {
-        onChange?.(roundedVolume);
-      }, 300);
+      onChange?.(roundedVolume);
     },
     [isMuted, onChange],
   );
@@ -90,11 +80,6 @@ export const VolumeControl = ({
     const nextMuted = !isMuted;
     setMuted(nextMuted);
 
-    // 静音属于点击动作，通常需要立即响应。
-    // 这里清空之前的滑动防抖，防止冲突，直接触发 onChange
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
     if (nextMuted) {
       // 记录静音前的音量
       prevVolumeRef.current = volume > 0 ? volume : prevVolumeRef.current || initialVolume;
@@ -137,28 +122,19 @@ export const VolumeControl = ({
     setVolume(initialVolume);
   }, [initialVolume]);
 
-  // 组件卸载时清理定时器，防止内存泄漏
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
   // 🟢 形态 1：常驻内联模式 (推荐在 Tray 中使用)
   if (variant === "inline") {
     return (
       <div
         data-shortcut-scope="volume"
         onWheel={handleWheel}
-        className="hover:bg-accent flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none"
+        className="flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none hover:bg-accent"
       >
         <button
           type="button"
           aria-label={volumeLabel}
           onClick={handleMuteToggle}
-          className="text-content-muted hover:text-content shrink-0 transition-colors"
+          className="shrink-0 text-content-muted transition-colors hover:text-content"
         >
           {getVolumeIcon()}
         </button>
@@ -172,7 +148,7 @@ export const VolumeControl = ({
             thumbOnHover={true}
           />
         </div>
-        <span className="text-content-muted w-8 shrink-0 text-right text-xs font-medium tabular-nums">
+        <span className="w-8 shrink-0 text-right text-xs font-medium text-content-muted tabular-nums">
           {isMuted ? 0 : Math.round(volume)}%
         </span>
       </div>
@@ -193,14 +169,14 @@ export const VolumeControl = ({
         type="button"
         aria-label={volumeLabel}
         onClick={handleMuteToggle}
-        className="text-content-muted hover:text-content transition-colors"
+        className="text-content-muted transition-colors hover:text-content"
       >
         {getVolumeIcon()}
       </button>
 
       {isOpen && (
         <div className="absolute bottom-full left-1/2 z-50 -translate-x-1/2 pb-2">
-          <div className="bg-surface-overlay shadow-floating border-border rounded-lg border p-3">
+          <div className="rounded-lg border border-border bg-surface-overlay p-3 shadow-floating">
             <div className="mt-2 flex flex-col items-center gap-2">
               <SmoothSlider
                 value={isMuted ? 0 : volume}
@@ -211,7 +187,7 @@ export const VolumeControl = ({
                 thumbSize={10}
                 thumbOnHover={false}
               />
-              <span className="text-content inline-block w-[4ch] text-center text-xs font-medium tabular-nums">
+              <span className="inline-block w-[4ch] text-center text-xs font-medium text-content tabular-nums">
                 {isMuted ? 0 : Math.round(volume)}%
               </span>
             </div>
