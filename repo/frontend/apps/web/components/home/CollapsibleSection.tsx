@@ -56,7 +56,7 @@ export function CollapsibleSection({
   }, [collapsedHeight]);
 
   return (
-    <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="space-y-4">
+    <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="space-y-6">
       <div className="group/section flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="cursor-pointer">{title}</div>

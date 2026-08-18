@@ -1,12 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { SectionPagination } from "@/components/home/SectionPagination";
 import { VoiceList } from "@/components/search/VoiceList";
 import { VoiceTranscriptDialog } from "@/components/voice/VoiceTranscriptDialog";
+import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { RecommendedVoiceListsProps } from "@/types/components/home";
 import type { Voice } from "@/types/search";
@@ -14,6 +16,8 @@ import type { Voice } from "@/types/search";
 const DEFAULT_PAGE_SIZE = 6;
 
 export function RecommendedVoiceLists({
+  isRefreshing = false,
+  onRefresh,
   pageSize = DEFAULT_PAGE_SIZE,
   voices,
 }: RecommendedVoiceListsProps) {
@@ -37,6 +41,12 @@ export function RecommendedVoiceLists({
     setPage(targetPage);
   };
 
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPage(0);
+    onRefresh?.();
+  };
+
   const visibleVoices = isOpen
     ? voices.slice(page * pageSize, (page + 1) * pageSize)
     : voices.slice(0, pageSize);
@@ -47,9 +57,23 @@ export function RecommendedVoiceLists({
         open={isOpen}
         onOpenChange={setIsOpen}
         title={
-          <h2 className="text-2xl font-bold tracking-tight text-content hover:underline">
-            {t("home.recommendedVoiceLists")}
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold tracking-tight text-content hover:underline">
+              {t("home.recommendedVoiceLists")}
+            </h2>
+            {onRefresh ? (
+              <button
+                type="button"
+                title={t("home.refreshVoiceLists")}
+                aria-label={t("home.refreshVoiceLists")}
+                disabled={isRefreshing}
+                onClick={handleRefresh}
+                className="flex size-7 shrink-0 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <RefreshCw className={cn("size-3.5", isRefreshing && "animate-spin")} />
+              </button>
+            ) : null}
+          </div>
         }
         action={
           isOpen && pageCount > 1 ? (

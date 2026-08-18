@@ -1,14 +1,16 @@
 # Changelog
 
-## Unreleased
+## v1.4.7
 
 ### Added
 
+- **推荐声音歌单支持独立刷新**：主页「推荐声音歌单」板块标题旁新增刷新按钮，点击可重新向 `/v1/pc/voicelist/rcmd/list` 获取最新随机推荐；接口预取数量调整为 24 条，按 6 个一组展示并支持分页直达。
 - **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的分页导航栏，并调高了各接口的单次预取上限。
 
 ### Visual
 
 - **统一板块顶栏分页导航并优化 HomeGreeting 排版**：将各 Section 的分页控件从卡片下方抽离为独立的 `SectionPagination` 组件，统一收敛至 Section 头部右侧与「展开/收起」按钮并排展示，避免卡片下方浮空分页条造成的视觉割裂；`HomeGreetingSection` 默认折叠展示 2 排（6 张卡片），展开后展示 3 排（9 个卡片/组）。
+- **拉开首页各 Section 标题与卡片内容间距**：将 `CollapsibleSection` 及活动轮播区的标题与内容间距统一调整为 `space-y-6`（24px），主页外层间距调整为 `space-y-10`（40px），并同步骨架屏尺寸与轮播标题排版，消除标题与卡片列表过近紧贴的问题。
 
 ### Quality
 

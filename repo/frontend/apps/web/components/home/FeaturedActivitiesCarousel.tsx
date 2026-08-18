@@ -98,11 +98,13 @@ export function FeaturedActivitiesCarousel() {
     <section
       aria-busy={isPending}
       aria-label={t("home.banner.label")}
-      className="space-y-3"
+      className="space-y-6"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <h2 className="text-content text-xl font-bold sm:text-2xl">{t("home.featuredActivities")}</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-content">
+        {t("home.featuredActivities")}
+      </h2>
 
       {hasBanners ? (
         <div
@@ -137,7 +139,7 @@ export function FeaturedActivitiesCarousel() {
                 title={t("home.banner.previous")}
                 onClick={goToPrevious}
                 onPointerDown={(event) => event.stopPropagation()}
-                className="bg-overlay/60 text-overlay-foreground border-overlay-foreground/15 hover:bg-overlay focus-visible:outline-brand pointer-events-none absolute top-1/2 left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border opacity-0 transition-opacity group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="pointer-events-none absolute top-1/2 left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-overlay-foreground/15 bg-overlay/60 text-overlay-foreground opacity-0 transition-opacity group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 hover:bg-overlay focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 <ChevronLeft className="size-4" />
               </button>
@@ -147,7 +149,7 @@ export function FeaturedActivitiesCarousel() {
                 title={t("home.banner.next")}
                 onClick={goToNext}
                 onPointerDown={(event) => event.stopPropagation()}
-                className="bg-overlay/60 text-overlay-foreground border-overlay-foreground/15 hover:bg-overlay focus-visible:outline-brand pointer-events-none absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border opacity-0 transition-opacity group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="pointer-events-none absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-overlay-foreground/15 bg-overlay/60 text-overlay-foreground opacity-0 transition-opacity group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 hover:bg-overlay focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 <ChevronRight className="size-4" />
               </button>
@@ -159,7 +161,7 @@ export function FeaturedActivitiesCarousel() {
           {Array.from({ length: 3 }, (_, index) => (
             <div
               key={index}
-              className="bg-skeleton aspect-[16/8] animate-pulse rounded-md"
+              className="aspect-[16/8] animate-pulse rounded-md bg-skeleton"
               aria-hidden="true"
             />
           ))}

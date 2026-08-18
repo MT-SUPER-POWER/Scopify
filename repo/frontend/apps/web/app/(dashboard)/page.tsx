@@ -19,6 +19,7 @@ export default function HomePage() {
   const {
     playlists,
     recommendedVoiceLists,
+    isRefreshingVoiceLists,
     bannerPlaylist,
     suggestedArtists,
     isLoading,
@@ -29,6 +30,7 @@ export default function HomePage() {
     userName,
     isLogin,
     handlePlayPlaylist,
+    refreshRecommendedVoiceLists,
     fetchHomeData,
   } = useHomeData();
 
@@ -62,7 +64,7 @@ export default function HomePage() {
       ) : isLoading && playlists.length === 0 ? (
         <HomePageSkeleton />
       ) : (
-        <div className="relative z-10 animate-in space-y-8 p-6 pt-20 duration-500 fade-in">
+        <div className="relative z-10 animate-in space-y-10 p-6 pt-20 duration-500 fade-in">
           <HomeGreetingSection
             dateInfo={dateInfo}
             greeting={greetingText}
@@ -80,7 +82,11 @@ export default function HomePage() {
 
           <FeaturedActivitiesCarousel />
 
-          <RecommendedVoiceLists voices={recommendedVoiceLists} />
+          <RecommendedVoiceLists
+            voices={recommendedVoiceLists}
+            isRefreshing={isRefreshingVoiceLists}
+            onRefresh={refreshRecommendedVoiceLists}
+          />
 
           {hasError && (
             <NetworkRetryState

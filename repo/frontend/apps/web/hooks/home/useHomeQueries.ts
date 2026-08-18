@@ -32,7 +32,7 @@ export function useRecommendedPlaylistsQuery(enabled: boolean) {
   });
 }
 
-export function useRecommendedVoiceListsQuery(limit = 36) {
+export function useRecommendedVoiceListsQuery(limit = 24) {
   return useQuery({
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getRecommendedVoiceLists(limit)).data,

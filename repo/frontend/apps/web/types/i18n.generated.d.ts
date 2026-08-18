@@ -3947,6 +3947,12 @@ export interface TranslateFn {
    */
   (key: "home.recommendedVoiceLists", params?: TranslationParams): string;
   /**
+   * zh-CN: 刷新推荐声音歌单
+   * zh-TW: 重新整理推薦聲音歌單
+   * en-US: Refresh recommended voice lists
+   */
+  (key: "home.refreshVoiceLists", params?: TranslationParams): string;
+  /**
    * zh-CN: 声音歌单
    * zh-TW: 聲音歌單
    * en-US: Voice List

@@ -45,6 +45,8 @@ export interface SuggestedArtistsProps {
 }
 
 export interface RecommendedVoiceListsProps {
+  isRefreshing?: boolean;
+  onRefresh?: () => void | Promise<unknown>;
   pageSize?: number;
   voices: Voice[];
 }

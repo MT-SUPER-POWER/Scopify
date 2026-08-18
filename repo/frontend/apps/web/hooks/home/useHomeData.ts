@@ -264,6 +264,10 @@ export function useHomeData() {
     [loadingPlayId, setQueue, playQueueIndex, t],
   );
 
+  const refreshRecommendedVoiceLists = useCallback(async () => {
+    await recommendedVoiceListsQuery.refetch();
+  }, [recommendedVoiceListsQuery]);
+
   const fetchHomeData = useCallback(async () => {
     await Promise.all([
       personalizedQuery.refetch(),
@@ -287,6 +291,7 @@ export function useHomeData() {
     bannerPlaylist,
     suggestedArtists,
     recommendedVoiceLists,
+    isRefreshingVoiceLists: recommendedVoiceListsQuery.isFetching,
     isLoading,
     isUnavailable,
     loadingPlayId,
@@ -297,6 +302,7 @@ export function useHomeData() {
     isLogin,
     setLoadingPlayId,
     handlePlayPlaylist,
+    refreshRecommendedVoiceLists,
     fetchHomeData,
     t,
   };
