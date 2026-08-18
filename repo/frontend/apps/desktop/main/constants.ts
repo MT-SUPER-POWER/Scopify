@@ -9,6 +9,7 @@ import {
   cleanArchivedLogs,
   getCurrentLogPath,
   prepareLogSession,
+  sanitizeLogText,
 } from "./logging.js";
 
 // ━━━━━━━━━━━━━━━━ ESM 路径兼容 ━━━━━━━━━━━━━━━━
@@ -34,6 +35,7 @@ const logsDir = app.isPackaged
   : join(process.cwd(), "logs");
 const currentLogPath = prepareLogSession(logsDir);
 let activeLoggingConfig = desktopConfig.logging;
+const defaultFileTransforms = [...log.transports.file.transforms];
 
 export function getLogDirectory() {
   return logsDir;
@@ -51,6 +53,10 @@ export function configureLogging(loggingConfig: DesktopHostConfig["logging"]) {
   };
   log.transports.file.level = loggingConfig.level;
   log.transports.file.maxSize = loggingConfig.maxSizeMB * 1024 * 1024;
+  log.transports.file.transforms = [
+    ...defaultFileTransforms,
+    ({ data }) => data.map((item) => (typeof item === "string" ? sanitizeLogText(item) : item)),
+  ];
 
   if (loggingConfig.format) {
     log.transports.console.format = loggingConfig.format;
@@ -152,7 +158,7 @@ export function cleanOldLogs() {
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LOG ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-log.info(`\x1b[32m
+log.info(`
   --------------------------------------------------
   ███████╗ ██████╗ ██████╗ ██████╗ ██╗███████╗██╗   ██╗
   ██╔════╝██╔════╝██╔═══██╗██╔══██╗██║██╔════╝╚██╗ ██╔╝
@@ -163,7 +169,7 @@ log.info(`\x1b[32m
 
   CREATED BY - MOMO
   --------------------------------------------------
-  \x1b[32m`);
+`);
 
 log.info(`
   Version:        ${app.getVersion()}

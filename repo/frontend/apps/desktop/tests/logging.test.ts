@@ -7,6 +7,7 @@ import {
   cleanArchivedLogs,
   getCurrentLogPath,
   prepareLogSession,
+  sanitizeLogText,
 } from "@/main/logging";
 
 let temporaryDirectory: string | null = null;
@@ -22,6 +23,10 @@ function createLogsDirectory() {
 }
 
 describe("desktop log lifecycle", () => {
+  test("sanitizes terminal control sequences without flattening carriage-return output", () => {
+    expect(sanitizeLogText("\u001b[32mScopify\u001b[0m\rBackend\n")).toBe("Scopify\nBackend\n");
+  });
+
   test("archives the previous main.log and marks interrupted sessions", () => {
     const logsDirectory = createLogsDirectory();
     const currentLogPath = getCurrentLogPath(logsDirectory);

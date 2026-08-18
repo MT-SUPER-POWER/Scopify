@@ -7,6 +7,8 @@ export const SESSION_SHUTDOWN_MARKER = "[session] shutdown";
 
 const RECOVERY_MARKER = "[session] previous session ended unexpectedly";
 const RECENT_LOG_TAIL_BYTES = 4096;
+const ANSI_ESCAPE_SEQUENCE_PATTERN =
+  /(?:\u001B\][\s\S]*?(?:\u0007|\u001B\\)|\u001B\[[0-?]*[ -/]*[@-~]|\u001B[@-_])/g;
 
 function pad(value: number, length = 2) {
   return String(value).padStart(length, "0");
@@ -14,6 +16,11 @@ function pad(value: number, length = 2) {
 
 export function getCurrentLogPath(logsDir: string) {
   return join(logsDir, CURRENT_LOG_FILE_NAME);
+}
+
+/** Removes terminal styling and turns carriage-return progress output into log lines. */
+export function sanitizeLogText(text: string) {
+  return text.replace(ANSI_ESCAPE_SEQUENCE_PATTERN, "").replace(/\r\n?/g, "\n");
 }
 
 export function formatLogTimestamp(date: Date) {
