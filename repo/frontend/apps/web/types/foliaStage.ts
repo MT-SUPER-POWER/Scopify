@@ -5,6 +5,7 @@ import type {
   LyricData,
   MonetBackgroundTuning,
   NomandBackgroundTuning,
+  SoraBackgroundTuning,
   SubtitleContentMode,
   Theme,
   UrlBackgroundItem,
@@ -70,6 +71,7 @@ export interface FoliaStageStore extends FoliaStageSettings {
   patchLatentBackground: (patch: Partial<LatentBackgroundTuning>) => void;
   patchMonetBackground: (patch: Partial<MonetBackgroundTuning>) => void;
   patchNomandBackground: (patch: Partial<NomandBackgroundTuning>) => void;
+  patchSoraBackground: (patch: Partial<SoraBackgroundTuning>) => void;
   patchSettings: (patch: Partial<FoliaStageSettings>) => void;
   patchTuning: <Mode extends VisualizerTuningMode>(
     mode: Mode,

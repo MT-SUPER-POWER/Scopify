@@ -8,6 +8,7 @@ import type {
   MonetBackgroundImage,
   MonetBackgroundTuning,
   NomandBackgroundTuning,
+  SoraBackgroundTuning,
   Theme,
   UrlBackgroundItem,
   VisualizerBackgroundMode,
@@ -34,6 +35,9 @@ export interface VisualizerBackgroundConfig {
   };
   latent?: {
     tuning?: LatentBackgroundTuning;
+  };
+  sora?: {
+    tuning?: SoraBackgroundTuning;
   };
   url?: {
     items?: UrlBackgroundItem[];
@@ -64,6 +68,10 @@ export interface VisualizerBackgroundActions {
   };
   latent?: {
     onTuningChange?: (patch: Partial<LatentBackgroundTuning>) => void;
+    onResetTuning?: () => void;
+  };
+  sora?: {
+    onTuningChange?: (patch: Partial<SoraBackgroundTuning>) => void;
     onResetTuning?: () => void;
   };
   url?: {

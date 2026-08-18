@@ -713,6 +713,16 @@ export interface NomandBackgroundTuning {
   overlayOpacity: number;
 }
 
+export interface SoraBackgroundTuning {
+  starDensity: number;
+  starSize: number;
+  starSpeed: number;
+  twinkleIntensity: number;
+  accentRatio: number;
+  audioSyncStrength: number;
+  backgroundBrightness: number;
+}
+
 export interface LatentBackgroundTuning {
   displayMode: LatentBackgroundDisplayMode;
   colorSource: LatentBackgroundColorSource;
@@ -763,6 +773,16 @@ export const DEFAULT_NOMAND_BACKGROUND_TUNING: NomandBackgroundTuning = {
   inverted: false,
   overlayEnabled: true,
   overlayOpacity: 0.35,
+};
+
+export const DEFAULT_SORA_BACKGROUND_TUNING: SoraBackgroundTuning = {
+  starDensity: 1,
+  starSize: 1,
+  starSpeed: 1,
+  twinkleIntensity: 0.85,
+  accentRatio: 0.75,
+  audioSyncStrength: 0.4,
+  backgroundBrightness: 1,
 };
 
 export const DEFAULT_LATENT_BACKGROUND_TUNING: LatentBackgroundTuning = {
