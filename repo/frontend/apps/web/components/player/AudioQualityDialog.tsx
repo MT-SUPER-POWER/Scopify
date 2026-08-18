@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Check, HelpCircle } from "lucide-react";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
@@ -7,19 +7,21 @@ import { useI18n } from "@/store/module/i18n";
 import type { QualityOptionKey } from "@/types/playerBar";
 import { cn } from "@/lib/utils";
 
+import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
+
 function SvipBadge() {
   return (
-    <span className="border-warning/40 bg-warning/10 text-warning inline-flex shrink-0 items-center rounded px-1 py-px text-[9px] leading-none font-semibold">
+    <MediaInfoBadge tone="gold" title="SVIP" ariaLabel="SVIP">
       SVIP
-    </span>
+    </MediaInfoBadge>
   );
 }
 
 function VipBadge() {
   return (
-    <span className="border-danger/40 bg-danger/10 text-danger inline-flex shrink-0 items-center rounded px-1 py-px text-[9px] leading-none font-semibold">
+    <MediaInfoBadge tone="red" title="VIP" ariaLabel="VIP">
       VIP
-    </span>
+    </MediaInfoBadge>
   );
 }
 
@@ -38,12 +40,12 @@ export function AudioQualityDialog() {
     <div className="text-content select-none">
       {/* Header */}
       <div className="mb-3 flex items-center justify-between gap-3 px-1">
-        <h3 className="text-content text-sm font-semibold">
+        <h3 className="text-sm font-semibold text-content">
           {t("playbar.quality.headerTitle") || "当前歌曲音质"}
         </h3>
         <button
           type="button"
-          className="text-content-subtle hover:text-content-muted flex shrink-0 cursor-pointer items-center gap-1 text-xs transition-colors"
+          className="flex shrink-0 cursor-pointer items-center gap-1 text-xs text-content-subtle transition-colors hover:text-content-muted"
           onClick={() => {}}
         >
           <span>{t("playbar.quality.learnMore") || "了解音质"}</span>
@@ -95,12 +97,12 @@ export function AudioQualityDialog() {
                   {t(opt.labelKey)}
                 </div>
                 {opt.sublabelKey && (
-                  <div className="text-muted-foreground mt-0.5 text-[11px] font-medium tracking-wider">
+                  <div className="mt-0.5 text-[11px] font-medium tracking-wider text-muted-foreground">
                     {t(opt.sublabelKey)}
                   </div>
                 )}
                 {opt.techSpec && (
-                  <div className="text-muted-foreground/70 mt-1 text-[11px] leading-tight">
+                  <div className="mt-1 text-[11px] leading-tight text-muted-foreground/70">
                     {t(opt.techSpec)}
                   </div>
                 )}
@@ -108,7 +110,7 @@ export function AudioQualityDialog() {
 
               {/* Active Indicator checkmark */}
               {isSelected && (
-                <div className="bg-primary text-primary-foreground absolute top-2.5 right-2.5 flex size-4.5 items-center justify-center rounded-full shadow-sm">
+                <div className="absolute top-2.5 right-2.5 flex size-4.5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
                   <Check size={11} strokeWidth={3} />
                 </div>
               )}
@@ -129,7 +131,7 @@ export function AudioQualityDialog() {
               key={opt.value}
               onClick={() => handleSelect(opt.value)}
               className={cn(
-                "group relative flex w-full cursor-pointer items-center justify-between rounded-xl border border-transparent px-2 py-2 text-left transition-all",
+                "group relative flex w-full cursor-pointer items-center justify-between rounded-xl border border-transparent p-2 text-left transition-all",
                 isSelected ? "border-primary/20 bg-primary/10" : "hover:bg-accent",
               )}
             >
@@ -164,7 +166,7 @@ export function AudioQualityDialog() {
                     {opt.badgeType === "vip" && <VipBadge />}
                   </div>
                   {opt.techSpec && (
-                    <span className="text-muted-foreground truncate text-[11px]">
+                    <span className="truncate text-[11px] text-muted-foreground">
                       {t(opt.techSpec)}
                     </span>
                   )}
@@ -173,7 +175,7 @@ export function AudioQualityDialog() {
 
               {/* Right Side: Selected Checkmark */}
               {isSelected && (
-                <div className="bg-primary text-primary-foreground ml-2 flex size-4.5 shrink-0 items-center justify-center rounded-full shadow-sm">
+                <div className="ml-2 flex size-4.5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
                   <Check size={11} strokeWidth={3} />
                 </div>
               )}

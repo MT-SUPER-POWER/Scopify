@@ -102,9 +102,11 @@ export function GeneralSettingsTab({
               <SettingInput
                 value={config.desktop.frontend.host}
                 onChange={(value) => onDesktopChange("frontend", "host", value)}
+                align="right"
               />
             }
           />
+
           <SettingRow
             label={t("settings.frontendPort.label")}
             sublabel={t("settings.frontendPort.sublabel")}
