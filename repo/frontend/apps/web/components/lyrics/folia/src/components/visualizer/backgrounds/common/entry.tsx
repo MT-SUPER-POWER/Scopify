@@ -1,6 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Cone } from "lucide-react";
 import { defineVisualizerBackground } from "../definition";
+import { QuickControlToggle } from "../../../shared/QuickControlChip";
 import CommonBackgroundSettingsCard from "./CommonBackgroundSettingsCard";
 import FluidBackground from "./FluidBackground";
 import GeometricBackground from "./GeometricBackground";
@@ -55,6 +57,20 @@ export default defineVisualizerBackground({
     );
   },
   renderSettingsPanel: (props) => <CommonBackgroundSettingsCard {...props} />,
+  renderQuickControls: ({ config, actions, t, theme }) => {
+    const useCoverColorBg = config?.common?.useCoverColorBg ?? false;
+
+    return (
+      <QuickControlToggle
+        active={useCoverColorBg}
+        theme={theme}
+        label={t(useCoverColorBg ? "theme.addCoverColor" : "theme.useDefaultColor")}
+        onToggle={() => actions?.common?.onCoverColorChange?.(!useCoverColorBg)}
+      >
+        <Cone size={14} />
+      </QuickControlToggle>
+    );
+  },
   resetSettings: (actions) => {
     actions?.common?.onOpacityChange?.(0.75);
     actions?.common?.onCoverColorChange?.(false);

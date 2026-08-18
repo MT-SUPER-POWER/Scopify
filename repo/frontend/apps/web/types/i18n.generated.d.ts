@@ -5021,6 +5021,126 @@ export interface TranslateFn {
    */
   (key: "audioEqualizer.bandGain", params?: TranslationParams): string;
   /**
+   * zh-CN: 声音预设
+   * zh-TW: 聲音預設
+   * en-US: Sound preset
+   */
+  (key: "audioEqualizer.presetLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内置预设
+   * zh-TW: 內建預設
+   * en-US: Built-in presets
+   */
+  (key: "audioEqualizer.builtinPresets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的预设
+   * zh-TW: 我的預設
+   * en-US: My presets
+   */
+  (key: "audioEqualizer.myPresets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从当前声音新建预设
+   * zh-TW: 從目前聲音新建預設
+   * en-US: Create preset from current sound
+   */
+  (key: "audioEqualizer.createPreset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的预设 {{index}}
+   * zh-TW: 我的預設 {{index}}
+   * en-US: My preset {{index}}
+   */
+  (key: "audioEqualizer.newPresetName", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{name}} 副本
+   * zh-TW: {{name}} 副本
+   * en-US: {{name}} copy
+   */
+  (key: "audioEqualizer.copyName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预设名称
+   * zh-TW: 預設名稱
+   * en-US: Preset name
+   */
+  (key: "audioEqualizer.presetName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制预设
+   * zh-TW: 複製預設
+   * en-US: Duplicate preset
+   */
+  (key: "audioEqualizer.duplicatePreset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除预设
+   * zh-TW: 刪除預設
+   * en-US: Delete preset
+   */
+  (key: "audioEqualizer.deletePreset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音色效果
+   * zh-TW: 音色效果
+   * en-US: Sound effects
+   */
+  (key: "audioEqualizer.effects", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从音色到空间感，拖动立即生效
+   * zh-TW: 從音色到空間感，拖動立即生效
+   * en-US: Tone, texture, width, and space
+   */
+  (key: "audioEqualizer.effectsHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 低切
+   * zh-TW: 低切
+   * en-US: High-pass
+   */
+  (key: "audioEqualizer.effect.highpass", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高切
+   * zh-TW: 高切
+   * en-US: Low-pass
+   */
+  (key: "audioEqualizer.effect.lowpass", params?: TranslationParams): string;
+  /**
+   * zh-CN: 驱动
+   * zh-TW: 驅動
+   * en-US: Drive
+   */
+  (key: "audioEqualizer.effect.drive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 颗粒
+   * zh-TW: 顆粒
+   * en-US: Crush
+   */
+  (key: "audioEqualizer.effect.crush", params?: TranslationParams): string;
+  /**
+   * zh-CN: 磁带摆动
+   * zh-TW: 磁帶擺動
+   * en-US: Tape wow
+   */
+  (key: "audioEqualizer.effect.wow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 黑胶噪声
+   * zh-TW: 黑膠噪聲
+   * en-US: Vinyl noise
+   */
+  (key: "audioEqualizer.effect.noise", params?: TranslationParams): string;
+  /**
+   * zh-CN: 立体声宽度
+   * zh-TW: 立體聲寬度
+   * en-US: Stereo width
+   */
+  (key: "audioEqualizer.effect.width", params?: TranslationParams): string;
+  /**
+   * zh-CN: 空间混响
+   * zh-TW: 空間混響
+   * en-US: Space
+   */
+  (key: "audioEqualizer.effect.space", params?: TranslationParams): string;
+  /**
+   * zh-CN: 低频冲击
+   * zh-TW: 低頻衝擊
+   * en-US: Punch
+   */
+  (key: "audioEqualizer.effect.punch", params?: TranslationParams): string;
+  /**
    * zh-CN: 完成
    * zh-TW: 完成
    * en-US: Done
@@ -5063,11 +5183,29 @@ export interface TranslateFn {
    */
   (key: "audioEqualizer.preset.bass", params?: TranslationParams): string;
   /**
-   * zh-CN: 自定义
-   * zh-TW: 自訂
-   * en-US: Custom
+   * zh-CN: 自定义 1
+   * zh-TW: 自訂 1
+   * en-US: Custom 1
    */
-  (key: "audioEqualizer.preset.custom", params?: TranslationParams): string;
+  (key: "audioEqualizer.preset.custom-1", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义 2
+   * zh-TW: 自訂 2
+   * en-US: Custom 2
+   */
+  (key: "audioEqualizer.preset.custom-2", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义 3
+   * zh-TW: 自訂 3
+   * en-US: Custom 3
+   */
+  (key: "audioEqualizer.preset.custom-3", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置当前自定义槽位
+   * zh-TW: 重設當前自訂槽位
+   * en-US: Reset current custom slot
+   */
+  (key: "audioEqualizer.reset", params?: TranslationParams): string;
   /**
    * zh-CN: 打开音频设置
    * zh-TW: 開啟音訊設定
@@ -5098,6 +5236,12 @@ export interface TranslateFn {
    * en-US: Equalizer
    */
   (key: "audioSettings.equalizerTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频增益
+   * zh-TW: 音訊增益
+   * en-US: Audio gain
+   */
+  (key: "audioSettings.replayGain", params?: TranslationParams): string;
   /**
    * zh-CN: 完成
    * zh-TW: 完成
@@ -6220,6 +6364,18 @@ export interface TranslateFn {
    * en-US: Open Visualizer Settings
    */
   (key: "folia.ui.openVisualizerSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多设置
+   * zh-TW: 更多設置
+   * en-US: More settings
+   */
+  (key: "folia.ui.moreSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动余量
+   * zh-TW: 自動餘量
+   * en-US: Auto headroom
+   */
+  (key: "folia.audioEqualizer.autoHeadroom", params?: TranslationParams): string;
   /**
    * zh-CN: 歌词样式
    * zh-TW: 歌詞樣式
@@ -7814,23 +7970,197 @@ export interface TranslateFn {
    */
   (key: "folia.options.lyricsAnimationAdjust", params?: TranslationParams): string;
   /**
-   * zh-CN: 歌词样式
-   * zh-TW: 歌詞樣式
-   * en-US: Lyrics Style
+   * zh-CN: Folia 设置
+   * zh-TW: Folia 設置
+   * en-US: Folia Settings
    */
   (key: "folia.options.lyricsStyleSettings", params?: TranslationParams): string;
   /**
-   * zh-CN: 字体、字号和当前渲染器附加参数
-   * zh-TW: 字體、字號和當前渲染器附加參數
-   * en-US: Typography plus renderer-specific tuning.
+   * zh-CN: 歌词、主题、背景和音频效果设置
+   * zh-TW: 歌詞、主題、背景和音訊效果設置
+   * en-US: Lyrics, themes, backgrounds, and audio effects.
    */
   (key: "folia.options.lyricsStyleSettingsDesc", params?: TranslationParams): string;
   /**
-   * zh-CN: 打开歌词样式设置
-   * zh-TW: 打開歌詞樣式設置
-   * en-US: Open lyrics style settings
+   * zh-CN: 打开 Folia 设置
+   * zh-TW: 打開 Folia 設置
+   * en-US: Open Folia settings
    */
   (key: "folia.options.openLyricsStyleSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词全局设置
+   * zh-TW: 歌詞全局設置
+   * en-US: Global Lyrics Settings
+   */
+  (key: "folia.options.lyricsGlobalSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 统一调整歌词时间轴和播放音频效果。
+   * zh-TW: 統一調整歌詞時間軸和播放音訊效果。
+   * en-US: Adjust lyric timing and playback audio effects together.
+   */
+  (key: "folia.options.lyricsGlobalSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 和声歌词
+   * zh-TW: 和聲歌詞
+   * en-US: Harmony Lyrics
+   */
+  (key: "folia.options.harmonySettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制副歌、伴唱等和声歌词的显示方式。
+   * zh-TW: 控制副歌、伴唱等和聲歌詞的顯示方式。
+   * en-US: Control how backing and harmony vocals are displayed.
+   */
+  (key: "folia.options.harmonySettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示和声歌词
+   * zh-TW: 顯示和聲歌詞
+   * en-US: Show harmony lyrics
+   */
+  (key: "folia.options.showHarmonySubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 和声歌词背景
+   * zh-TW: 和聲歌詞背景
+   * en-US: Harmony lyric background
+   */
+  (key: "folia.options.harmonySubtitleBackground", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每首歌随机切换歌词动画
+   * zh-TW: 每首歌隨機切換歌詞動畫
+   * en-US: Random lyric animation for each track
+   */
+  (key: "folia.options.randomVisualizerMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导出 Folia 视频
+   * zh-TW: 匯出 Folia 影片
+   * en-US: Export Folia Video
+   */
+  (key: "folia.videoExport.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 录制当前歌词舞台和正在播放的音频。
+   * zh-TW: 錄製當前歌詞舞台和正在播放的音訊。
+   * en-US: Record the current lyric stage with playback audio.
+   */
+  (key: "folia.videoExport.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 把当前视觉效果录成 MP4 或 WebM 视频。
+   * zh-TW: 把當前視覺效果錄成 MP4 或 WebM 影片。
+   * en-US: Capture the current visual as an MP4 or WebM video.
+   */
+  (key: "folia.videoExport.cardDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择画幅后开始录制
+   * zh-TW: 選擇畫幅後開始錄製
+   * en-US: Choose a frame size, then start recording
+   */
+  (key: "folia.videoExport.ready", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开始录制
+   * zh-TW: 開始錄製
+   * en-US: Start recording
+   */
+  (key: "folia.videoExport.start", params?: TranslationParams): string;
+  /**
+   * zh-CN: 停止并保存
+   * zh-TW: 停止並儲存
+   * en-US: Stop and save
+   */
+  (key: "folia.videoExport.stop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 录制中
+   * zh-TW: 錄製中
+   * en-US: Recording
+   */
+  (key: "folia.videoExport.recording", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视频已保存
+   * zh-TW: 影片已儲存
+   * en-US: Video saved
+   */
+  (key: "folia.videoExport.done", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前环境不支持 Folia 视频导出。
+   * zh-TW: 當前環境不支援 Folia 影片匯出。
+   * en-US: Folia video export is unavailable in this environment.
+   */
+  (key: "folia.videoExport.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法获取歌词舞台画面。
+   * zh-TW: 無法取得歌詞舞台畫面。
+   * en-US: Could not capture the lyric stage.
+   */
+  (key: "folia.videoExport.captureFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法获取当前播放音轨。
+   * zh-TW: 無法取得目前播放音軌。
+   * en-US: Could not capture the current playback audio.
+   */
+  (key: "folia.videoExport.audioFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从当前位置录制
+   * zh-TW: 從目前位置錄製
+   * en-US: Record from current position
+   */
+  (key: "folia.videoExport.fromCurrent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从歌曲开头录制
+   * zh-TW: 從歌曲開頭錄製
+   * en-US: Record from track start
+   */
+  (key: "folia.videoExport.fromStart", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "folia.videoExport.cancel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消录制
+   * zh-TW: 已取消錄製
+   * en-US: Recording cancelled
+   */
+  (key: "folia.videoExport.cancelled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全局歌词偏移
+   * zh-TW: 全局歌詞偏移
+   * en-US: Global Lyric Offset
+   */
+  (key: "folia.offset.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 一边听歌一边把歌词对准声音，应用前不会修改当前设置。
+   * zh-TW: 一邊聽歌一邊把歌詞對準聲音，套用前不會修改目前設定。
+   * en-US: Align lyrics while listening. Changes apply only after confirmation.
+   */
+  (key: "folia.offset.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 应用
+   * zh-TW: 套用
+   * en-US: Apply
+   */
+  (key: "folia.offset.apply", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回到零点
+   * zh-TW: 回到零點
+   * en-US: Reset to zero
+   */
+  (key: "folia.offset.reset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等待当前歌词
+   * zh-TW: 等待目前歌詞
+   * en-US: Waiting for the current lyric
+   */
+  (key: "folia.offset.waiting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前就是已应用的偏移值
+   * zh-TW: 目前就是已套用的偏移值
+   * en-US: This is the currently applied offset
+   */
+  (key: "folia.offset.applied", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前已应用 {{applied}}ms，确认后替换
+   * zh-TW: 目前已套用 {{applied}}ms，確認後取代
+   * en-US: Currently applied: {{applied}}ms. Confirm to replace it.
+   */
+  (key: "folia.offset.pending", params?: TranslationParams): string;
   /**
    * zh-CN: 背景
    * zh-TW: 背景
@@ -9971,6 +10301,117 @@ export interface TranslateFn {
    */
   (key: "folia.options.nomandBackgroundOverlayOpacity", params?: TranslationParams): string;
   /**
+   * zh-CN: 背景滤镜
+   * zh-TW: 背景濾鏡
+   * en-US: Background Filter
+   */
+  (key: "folia.options.nomandBackgroundEffect", params?: TranslationParams): string;
+  /**
+   * zh-CN: 像素抖动
+   * zh-TW: 像素抖動
+   * en-US: Dithering
+   */
+  (key: "folia.options.nomandBackgroundEffectDithering", params?: TranslationParams): string;
+  /**
+   * zh-CN: 百叶玻璃
+   * zh-TW: 百葉玻璃
+   * en-US: Fluted Glass
+   */
+  (key: "folia.options.nomandBackgroundEffectFlutedGlass", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纸张纹理
+   * zh-TW: 紙張紋理
+   * en-US: Paper Texture
+   */
+  (key: "folia.options.nomandBackgroundEffectPaperTexture", params?: TranslationParams): string;
+  /**
+   * zh-CN: 半色调网点
+   * zh-TW: 半色調網點
+   * en-US: Halftone Dots
+   */
+  (key: "folia.options.nomandBackgroundEffectHalftoneDots", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜头畸变
+   * zh-TW: 鏡頭畸變
+   * en-US: Lens Distortion
+   */
+  (key: "folia.options.nomandBackgroundEffectLensDistortion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 条纹尺寸
+   * zh-TW: 條紋尺寸
+   * en-US: Flute Size
+   */
+  (key: "folia.options.nomandBackgroundFlutedGlassSize", params?: TranslationParams): string;
+  /**
+   * zh-CN: 扭曲强度
+   * zh-TW: 扭曲強度
+   * en-US: Distortion
+   */
+  (key: "folia.options.nomandBackgroundFlutedGlassDistortion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 模糊强度
+   * zh-TW: 模糊強度
+   * en-US: Blur
+   */
+  (key: "folia.options.nomandBackgroundFlutedGlassBlur", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纸张对比度
+   * zh-TW: 紙張對比度
+   * en-US: Paper Contrast
+   */
+  (key: "folia.options.nomandBackgroundPaperTextureContrast", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纸张粗糙度
+   * zh-TW: 紙張粗糙度
+   * en-US: Paper Roughness
+   */
+  (key: "folia.options.nomandBackgroundPaperTextureRoughness", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纤维强度
+   * zh-TW: 纖維強度
+   * en-US: Fiber Strength
+   */
+  (key: "folia.options.nomandBackgroundPaperTextureFiber", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网点间距
+   * zh-TW: 網點間距
+   * en-US: Dot Spacing
+   */
+  (key: "folia.options.nomandBackgroundHalftoneDotsSize", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网点半径
+   * zh-TW: 網點半徑
+   * en-US: Dot Radius
+   */
+  (key: "folia.options.nomandBackgroundHalftoneDotsRadius", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网点对比度
+   * zh-TW: 網點對比度
+   * en-US: Dot Contrast
+   */
+  (key: "folia.options.nomandBackgroundHalftoneDotsContrast", params?: TranslationParams): string;
+  /**
+   * zh-CN: 影响范围
+   * zh-TW: 影響範圍
+   * en-US: Effect Spread
+   */
+  (key: "folia.options.nomandBackgroundLensDistortionSpread", params?: TranslationParams): string;
+  /**
+   * zh-CN: 膨胀强度
+   * zh-TW: 膨脹強度
+   * en-US: Bulge
+   */
+  (key: "folia.options.nomandBackgroundLensDistortionBulge", params?: TranslationParams): string;
+  /**
+   * zh-CN: 色散强度
+   * zh-TW: 色散強度
+   * en-US: Dispersion
+   */
+  (
+    key: "folia.options.nomandBackgroundLensDistortionDispersion",
+    params?: TranslationParams,
+  ): string;
+  /**
    * zh-CN: 隐现背景
    * zh-TW: 隱現背景
    * en-US: Latent Background
@@ -10162,6 +10603,36 @@ export interface TranslateFn {
    * en-US: Background Blur
    */
   (key: "folia.options.monetBackgroundBlur", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景漂移
+   * zh-TW: 背景漂移
+   * en-US: Background Drift
+   */
+  (key: "folia.options.monetBackgroundDriftEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 让背景画面缓慢移动，减少静止感。
+   * zh-TW: 讓背景畫面緩慢移動，減少靜止感。
+   * en-US: Slowly move the background to keep the scene from feeling static.
+   */
+  (key: "folia.options.monetBackgroundDriftEnabledDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 漂移幅度
+   * zh-TW: 漂移幅度
+   * en-US: Drift Strength
+   */
+  (key: "folia.options.monetBackgroundDriftStrength", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流动光带
+   * zh-TW: 流動光帶
+   * en-US: Flowing Light Streaks
+   */
+  (key: "folia.options.monetBackgroundStreaksEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在背景上叠加缓慢流动的柔和光带。
+   * zh-TW: 在背景上疊加緩慢流動的柔和光帶。
+   * en-US: Layer soft, slowly moving light streaks over the background.
+   */
+  (key: "folia.options.monetBackgroundStreaksEnabledDesc", params?: TranslationParams): string;
   /**
    * zh-CN: 主题叠色强度
    * zh-TW: 主題疊色強度

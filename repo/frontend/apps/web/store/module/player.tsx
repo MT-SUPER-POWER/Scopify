@@ -7,11 +7,13 @@ import {
   clearCachedPlayUrl,
   getCachedLyric,
   getCachedPlayUrl,
+  getCachedReplayGain,
   getImportedLyricOverride,
   getLyricMatchOverride,
   getLyricSourceSelection,
   setCachedLyric,
   setCachedPlayUrl,
+  setCachedReplayGain,
 } from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
@@ -28,6 +30,7 @@ export type {
   MusicQuality,
   PlaybackFailureSource,
   PlaybackNextSource,
+  ReplayGainMode,
   RepeatMode,
   SourceChangeMode,
 } from "@/types/player";
@@ -53,6 +56,7 @@ function createPlayerQueueSnapshot(state: PlayerStore): PlaybackQueueSnapshot<So
     queue: state.queue,
     queueIndex: state.queueIndex,
     repeatMode: state.repeatMode,
+    replayGainMode: state.replayGainMode,
   };
 }
 
@@ -142,6 +146,7 @@ export const usePlayerStore = create<PlayerStore>()(
       currentSongDetail: null,
       currentSongUrl: null,
       repeatMode: "off",
+      replayGainMode: "off",
       isShuffle: false,
       originalQueue: [],
       queue: [], // 保持原名，兼容现有代码
@@ -193,6 +198,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const transition = playbackQueue.setRepeatMode(snapshot, mode);
         set(selectPlayerQueueState(transition.snapshot));
       },
+      setReplayGainMode: (replayGainMode) => set({ replayGainMode }),
       moveQueueItem: (fromIndex, toIndex) => {
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
@@ -421,13 +427,17 @@ export const usePlayerStore = create<PlayerStore>()(
           const level = UI_QUALITY_TO_LEVEL[musicQuality] || "exhigh";
 
           // ── 1. Try cache ────────────────────────────────────────────────
-          const [cachedUrl, cachedLyric, storedLyric] = await Promise.all([
+          const [cachedUrl, cachedReplayGain, cachedLyric, storedLyric] = await Promise.all([
             getCachedPlayUrl(song.id, musicQuality),
+            getCachedReplayGain(song.id),
             song.voiceId === undefined ? getCachedLyric(song.id) : Promise.resolve(null),
             song.voiceId === undefined ? getStoredLyricSource(song.id) : Promise.resolve(null),
           ]);
           if (!isCurrentPlaybackLoad()) return false;
           const matchedLyric = storedLyric ?? cachedLyric;
+          const cachedSong = Number.isFinite(cachedReplayGain)
+            ? { ...song, replayGain: cachedReplayGain!, replayGainTrackGain: cachedReplayGain! }
+            : song;
 
           if (cachedUrl) {
             // URL 缓存命中
@@ -436,6 +446,7 @@ export const usePlayerStore = create<PlayerStore>()(
               console.log("[Cache] HIT: URL + lyric for song", song.id);
               useTimeStore.getState().setTotalTime(song.dt ?? 0);
               set({
+                currentSongDetail: cachedSong,
                 currentSongUrl: cachedUrl,
                 ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
                 lyric: matchedLyric,
@@ -450,7 +461,7 @@ export const usePlayerStore = create<PlayerStore>()(
               "), lyric miss for song",
               song.id,
             );
-            set({ currentSongUrl: cachedUrl });
+            set({ currentSongDetail: cachedSong, currentSongUrl: cachedUrl });
             const lyricData =
               song.voiceId === undefined
                 ? storedLyric
@@ -463,6 +474,7 @@ export const usePlayerStore = create<PlayerStore>()(
             if (!isCurrentPlaybackLoad()) return false;
             useTimeStore.getState().setTotalTime(song.dt ?? 0);
             set({
+              currentSongDetail: cachedSong,
               ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
               lyric: lyricData ?? null,
               playbackFailureCount: 0,
@@ -492,12 +504,23 @@ export const usePlayerStore = create<PlayerStore>()(
           // URL and lyric share one cache record. Serialize the writes so each
           // update merges the latest record instead of racing and dropping data.
           await setCachedPlayUrl(song.id, musicQuality, url);
+          if (urlRes.replayGainTrackGain != null) {
+            await setCachedReplayGain(song.id, urlRes.replayGainTrackGain);
+          }
           if (lyricData && song.voiceId === undefined && !storedLyric) {
             await setCachedLyric(song.id, lyricData);
           }
           if (!isCurrentPlaybackLoad()) return false;
           useTimeStore.getState().setTotalTime(song.dt ?? 0);
           set({
+            currentSongDetail:
+              urlRes.replayGainTrackGain != null
+                ? {
+                    ...song,
+                    replayGain: urlRes.replayGainTrackGain,
+                    replayGainTrackGain: urlRes.replayGainTrackGain,
+                  }
+                : song,
             currentSongUrl: url,
             ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
             lyric: lyricData ?? null,

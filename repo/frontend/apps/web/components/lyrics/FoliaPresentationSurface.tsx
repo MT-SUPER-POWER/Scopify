@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/presentation/buildAppStyle";
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
 import VisualizerShell from "@/components/lyrics/folia/src/components/visualizer/VisualizerShell";
+import { VISUALIZER_REGISTRY } from "@/components/lyrics/folia/src/components/visualizer/registry";
+import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaPresentationSurfaceProps } from "@/types/foliaStage";
 
 export function FoliaPresentationSurface({
@@ -17,6 +19,29 @@ export function FoliaPresentationSurface({
   staticMode = false,
   track,
 }: FoliaPresentationSurfaceProps) {
+  const observedTrackIdRef = useRef<string | null>(null);
+  const wasRandomEnabledRef = useRef(appearance.settings.randomVisualizerMode);
+
+  useEffect(() => {
+    const trackId = track?.id ? String(track.id) : null;
+    const wasEnabled = wasRandomEnabledRef.current;
+    wasRandomEnabledRef.current = appearance.settings.randomVisualizerMode;
+    if (!appearance.settings.randomVisualizerMode || !wasEnabled) {
+      observedTrackIdRef.current = trackId;
+      return;
+    }
+    if (!trackId || observedTrackIdRef.current === null) {
+      observedTrackIdRef.current = trackId;
+      return;
+    }
+    if (observedTrackIdRef.current === trackId) return;
+    observedTrackIdRef.current = trackId;
+    const candidates = VISUALIZER_REGISTRY.map((entry) => entry.mode).filter(
+      (mode) => mode !== appearance.settings.mode,
+    );
+    const nextMode = candidates[Math.floor(Math.random() * candidates.length)];
+    if (nextMode) useLyricStageStore.getState().requestVisualizerMode(nextMode);
+  }, [appearance.settings.mode, appearance.settings.randomVisualizerMode, track?.id]);
   const { assets, isDaylight, settings, subtitleTheme, theme } = appearance;
   const transparentBackground = !layers.background;
   const appStyle = useMemo(
@@ -67,6 +92,8 @@ export function FoliaPresentationSurface({
       {layers.lyrics ? (
         <VisualizerRenderer
           mode={settings.mode}
+          harmonySubtitleBackground={settings.harmonySubtitleBackground}
+          showHarmonySubtitle={settings.showHarmonySubtitle}
           currentTime={bridge.lyricCurrentTime}
           currentLineIndex={bridge.currentLineIndex}
           lines={bridge.lines}

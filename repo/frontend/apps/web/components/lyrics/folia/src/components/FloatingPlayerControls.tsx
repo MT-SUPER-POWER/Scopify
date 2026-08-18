@@ -5,6 +5,7 @@ import { MotionValue } from "framer-motion";
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
 import { useI18n } from "@/store/module/i18n";
+import { FoliaTrackTitleNavigator } from "@/components/lyrics/FoliaTrackTitleNavigator";
 import { usePlayerStore } from "@/store/module/player";
 import type { ProgressRangeMarker } from "@/types/components/slider";
 import ProgressBar from "./ProgressBar";
@@ -303,12 +304,12 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
       {/* Desktop Layout - responsive grid positions apply from the sm breakpoint */}
       {/* Mobile Layout - base grid positions apply below the sm breakpoint */}
       {/* Row 1: Centered Title */}
-      <div
-        className="col-span-3 row-start-1 min-w-0 truncate px-2 text-center text-sm font-bold sm:col-span-1 sm:col-start-2"
-        style={{ color: primaryColor }}
-      >
-        {currentSong?.name || noTrackText}
-      </div>
+      <FoliaTrackTitleNavigator
+        color={primaryColor}
+        disabled={controlsDisabled}
+        fallback={currentSong?.name || noTrackText}
+        isDaylight={isDaylight}
+      />
 
       {/* Row 3: Loop Button, Play Button, Lyrics Button */}
       <button

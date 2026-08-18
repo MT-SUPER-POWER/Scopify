@@ -50,6 +50,11 @@ export interface SongDetail {
   alia?: string[];
   likedCount?: number;
   commentCount?: number;
+  replayGain?: number;
+  replayGainTrackGain?: number;
+  replayGainTrackPeak?: number;
+  replayGainAlbumGain?: number;
+  replayGainAlbumPeak?: number;
   pc?: {
     privateCloud?: NeteasePrivateCloud;
   };

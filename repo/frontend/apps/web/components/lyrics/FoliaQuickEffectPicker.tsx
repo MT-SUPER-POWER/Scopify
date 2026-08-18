@@ -11,7 +11,9 @@ import type { FoliaQuickEffectPickerProps } from "@/types/components/lyrics";
 export function FoliaQuickEffectPicker<Value extends string>({
   ariaLabel,
   isDaylight,
+  moreActionLabel,
   onChange,
+  onMoreAction,
   options,
   primaryColor,
   value,
@@ -99,8 +101,10 @@ export function FoliaQuickEffectPicker<Value extends string>({
               isOpen={isOpen}
               menuPosition={menuPosition}
               menuRef={menuRef}
+              moreActionLabel={moreActionLabel}
               onChange={onChange}
               onClose={() => setIsOpen(false)}
+              onMoreAction={onMoreAction}
               options={options}
               primaryColor={primaryColor}
               value={value}

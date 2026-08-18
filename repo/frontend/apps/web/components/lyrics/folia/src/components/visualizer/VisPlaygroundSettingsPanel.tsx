@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { THEME_PRESETS } from "@scopify/ui/folia";
+import { FoliaQuickEffectPicker } from "@/components/lyrics/FoliaQuickEffectPicker";
 import {
   AlertTriangle,
   CaptionsOff,
@@ -59,6 +60,15 @@ interface PresetGroupProps<T> {
   isDaylight: boolean;
   theme: Theme;
   isOptionActive?: (option: PresetOption<T>) => boolean;
+}
+
+interface OptionPickerProps<T extends string> {
+  isDaylight: boolean;
+  label: string;
+  onChange: (next: T) => void;
+  options: PresetOption<T>[];
+  theme: Theme;
+  value: T;
 }
 
 interface ToggleRowProps {
@@ -154,6 +164,8 @@ interface VisPlaygroundSettingsPanelProps {
   themePresetId?: string;
   onThemePresetChange?: (id: string) => void;
   themeControl?: React.ReactNode;
+  commonControl?: React.ReactNode;
+  subtitleControl?: React.ReactNode;
 }
 
 const SECTION_OPTIONS: VisPlaygroundEditSection[] = [
@@ -214,7 +226,7 @@ const PresetGroup = <T,>({
             key={String(option.value)}
             type="button"
             onClick={() => onChange(option.value)}
-            className="rounded-full border px-3 py-2 text-sm transition-all"
+            className="max-w-full min-w-0 rounded-full border px-3 py-2 text-sm break-words transition-all"
             style={{
               ...getAccentOptionStyle(isActive, theme, isDaylight),
               color: theme.primaryColor,
@@ -225,6 +237,32 @@ const PresetGroup = <T,>({
         );
       })}
     </div>
+  </div>
+);
+
+const OptionPicker = <T extends string>({
+  isDaylight,
+  label,
+  onChange,
+  options,
+  theme,
+  value,
+}: OptionPickerProps<T>) => (
+  <div className="flex min-w-0 items-center justify-between gap-3">
+    <div
+      className="min-w-0 text-xs font-medium tracking-[0.24em] uppercase opacity-60"
+      style={{ color: theme.secondaryColor }}
+    >
+      {label}
+    </div>
+    <FoliaQuickEffectPicker
+      ariaLabel={label}
+      isDaylight={isDaylight}
+      onChange={onChange}
+      options={options}
+      primaryColor={theme.accentColor}
+      value={value}
+    />
   </div>
 );
 
@@ -406,6 +444,8 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
     themePresetId,
     onThemePresetChange,
     themeControl,
+    commonControl,
+    subtitleControl,
   } = props;
 
   const modeOptions = useMemo(
@@ -435,7 +475,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
   );
 
   return (
-    <div className="flex min-h-0 flex-col gap-4">
+    <div className="flex min-h-0 min-w-0 flex-col gap-4">
       <SectionTabs
         activeSection={activeSection}
         onSectionChange={onSectionChange}
@@ -444,32 +484,34 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
         isDaylight={isDaylight}
       />
 
-      <div className="visualizer-overlay-scrollbar flex-1 space-y-4 overflow-y-auto pr-1">
+      <div className="visualizer-overlay-scrollbar min-w-0 flex-1 space-y-4 overflow-y-auto pr-1">
         {activeSection === "common" && (
-          <div
-            className="space-y-4 rounded-[24px] border p-4"
-            style={{
-              backgroundColor: controlCardBg,
-              borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
-            }}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="space-y-1">
-                <div className="text-sm font-medium" style={{ color: theme.primaryColor }}>
-                  {t("folia.options.previewCommonSettings")}
+          <div className="space-y-4">
+            <div
+              className="space-y-4 rounded-[24px] border p-4"
+              style={{
+                backgroundColor: controlCardBg,
+                borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+              }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="text-sm font-medium" style={{ color: theme.primaryColor }}>
+                    {t("folia.options.previewCommonSettings")}
+                  </div>
+                  <div className="text-xs opacity-70" style={{ color: theme.secondaryColor }}>
+                    {t("folia.options.previewCommonSettingsDesc")}
+                  </div>
                 </div>
-                <div className="text-xs opacity-70" style={{ color: theme.secondaryColor }}>
-                  {t("folia.options.previewCommonSettingsDesc")}
-                </div>
+                <ResetSectionButton
+                  label={t("folia.ui.default")}
+                  onClick={onResetCommonSettings}
+                  theme={theme}
+                />
               </div>
-              <ResetSectionButton
-                label={t("folia.ui.default")}
-                onClick={onResetCommonSettings}
-                theme={theme}
-              />
-            </div>
 
-            {themeControl ?? (
+              {themeControl && <div className="space-y-3.5">{themeControl}</div>}
+
               <div className="space-y-2.5">
                 <div
                   className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
@@ -513,72 +555,81 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                   })}
                 </div>
               </div>
-            )}
 
-            <PresetGroup
-              label={t("folia.options.fontFamily")}
-              value={fontStyleValue}
-              options={fontStyleOptions}
-              onChange={onFontStyleChange}
-              isDaylight={isDaylight}
-              theme={theme}
-              isOptionActive={(option) => option.value === fontStyleValue}
-            />
+              <PresetGroup
+                label={t("folia.options.fontFamily")}
+                value={fontStyleValue}
+                options={fontStyleOptions}
+                onChange={onFontStyleChange}
+                isDaylight={isDaylight}
+                theme={theme}
+                isOptionActive={(option) => option.value === fontStyleValue}
+              />
 
-            <PresetGroup
-              label={t("folia.options.fontSize")}
-              value={fontScale}
-              options={fontScaleOptions}
-              onChange={onFontScaleChange}
-              isDaylight={isDaylight}
-              theme={theme}
-            />
-
-            <div className="space-y-2">
-              <div
-                className="flex items-center justify-between text-sm"
-                style={{ color: theme.primaryColor }}
-              >
-                <span>{t("folia.options.fontSize")}</span>
-                <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
-                  {Math.round(fontScale * 100)}%
-                </span>
-              </div>
-              <input
-                type="range"
-                min="0.85"
-                max="1.4"
-                step="0.05"
+              <PresetGroup
+                label={t("folia.options.fontSize")}
                 value={fontScale}
-                onChange={(event) => onFontScaleChange(parseFloat(event.target.value))}
-                onPointerDown={onSliderPointerDown}
-                onPointerUp={onSliderCommit}
-                className={rangeInputClass}
+                options={fontScaleOptions}
+                onChange={onFontScaleChange}
+                isDaylight={isDaylight}
+                theme={theme}
               />
-            </div>
 
-            <div className="space-y-2">
-              <div
-                className="flex items-center justify-between text-sm"
-                style={{ color: theme.primaryColor }}
-              >
-                <span>{t("folia.options.visualizerOpacity")}</span>
-                <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
-                  {Math.round(visualizerOpacity * 100)}%
-                </span>
+              <div className="space-y-2">
+                <div
+                  className="flex items-center justify-between text-sm"
+                  style={{ color: theme.primaryColor }}
+                >
+                  <span>{t("folia.options.fontSize")}</span>
+                  <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
+                    {Math.round(fontScale * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0.85"
+                  max="1.4"
+                  step="0.05"
+                  value={fontScale}
+                  onChange={(event) => onFontScaleChange(parseFloat(event.target.value))}
+                  onInput={(event) =>
+                    onFontScaleChange(parseFloat((event.target as HTMLInputElement).value))
+                  }
+                  onPointerDown={onSliderPointerDown}
+                  onPointerUp={onSliderCommit}
+                  className={rangeInputClass}
+                />
               </div>
-              <input
-                type="range"
-                min="0.2"
-                max="1"
-                step="0.05"
-                value={visualizerOpacity}
-                onChange={(event) => onVisualizerOpacityChange?.(parseFloat(event.target.value))}
-                onPointerDown={onSliderPointerDown}
-                onPointerUp={onSliderCommit}
-                className={rangeInputClass}
-              />
+
+              <div className="space-y-2">
+                <div
+                  className="flex items-center justify-between text-sm"
+                  style={{ color: theme.primaryColor }}
+                >
+                  <span>{t("folia.options.visualizerOpacity")}</span>
+                  <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
+                    {Math.round(visualizerOpacity * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0.2"
+                  max="1"
+                  step="0.05"
+                  value={visualizerOpacity}
+                  onChange={(event) => onVisualizerOpacityChange?.(parseFloat(event.target.value))}
+                  onInput={(event) =>
+                    onVisualizerOpacityChange?.(
+                      parseFloat((event.target as HTMLInputElement).value),
+                    )
+                  }
+                  onPointerDown={onSliderPointerDown}
+                  onPointerUp={onSliderCommit}
+                  className={rangeInputClass}
+                />
+              </div>
             </div>
+            {commonControl}
           </div>
         )}
 
@@ -724,145 +775,156 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
         )}
 
         {activeSection === "subtitle" && (
-          <div
-            className="space-y-4 rounded-[24px] border p-4"
-            style={{
-              backgroundColor: controlCardBg,
-              borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
-            }}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="space-y-1">
-                <div className="text-sm font-medium" style={{ color: theme.primaryColor }}>
-                  {t("folia.options.previewSubtitleSettings")}
+          <div className="space-y-4">
+            {subtitleControl}
+            <div
+              className="space-y-4 rounded-[24px] border p-4"
+              style={{
+                backgroundColor: controlCardBg,
+                borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+              }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="text-sm font-medium" style={{ color: theme.primaryColor }}>
+                    {t("folia.options.previewSubtitleSettings")}
+                  </div>
+                  <div className="text-xs opacity-70" style={{ color: theme.secondaryColor }}>
+                    {t("folia.options.previewSubtitleSettingsDesc")}
+                  </div>
                 </div>
-                <div className="text-xs opacity-70" style={{ color: theme.secondaryColor }}>
-                  {t("folia.options.previewSubtitleSettingsDesc")}
-                </div>
-              </div>
-              <ResetSectionButton
-                label={t("folia.ui.default")}
-                onClick={onResetSubtitleSettings}
-                theme={theme}
-              />
-            </div>
-
-            <ToggleRow
-              label={t("folia.options.hidePlayerTranslationSubtitle")}
-              description={t("folia.options.hidePlayerTranslationSubtitleDesc")}
-              checked={hideTranslationSubtitle}
-              onChange={onToggleHideTranslationSubtitle}
-              theme={theme}
-              icon={CaptionsOff}
-            />
-
-            <PresetGroup<SubtitleContentMode>
-              label={t("folia.options.subtitleContentMode")}
-              value={subtitleContentMode}
-              options={[
-                {
-                  label: t("folia.options.subtitleContentTranslation"),
-                  value: "translation",
-                },
-                {
-                  label: t("folia.options.subtitleContentRomanization"),
-                  value: "romanization",
-                },
-                { label: t("folia.options.subtitleContentNone"), value: "none" },
-              ]}
-              onChange={
-                onSubtitleContentModeChange ??
-                ((mode) => onToggleShowSubtitleTranslation?.(mode !== "none"))
-              }
-              isDaylight={isDaylight}
-              theme={theme}
-            />
-
-            <ToggleRow
-              label={t("folia.options.subtitleOverlayBackground")}
-              description={t("folia.options.subtitleOverlayBackgroundDesc")}
-              checked={subtitleOverlayBackground}
-              onChange={onToggleSubtitleOverlayBackground}
-              theme={theme}
-              icon={PanelTop}
-            />
-
-            <ToggleRow
-              label={t("folia.options.subtitleFontInheritsLyrics")}
-              description={t("folia.options.subtitleFontInheritsLyricsDesc")}
-              checked={subtitleFontInheritsLyrics}
-              onChange={onSubtitleFontInheritsLyricsChange}
-              theme={theme}
-              icon={Monitor}
-            />
-
-            <div className="space-y-2">
-              <div
-                className="flex items-center justify-between text-sm"
-                style={{ color: theme.primaryColor }}
-              >
-                <span>{t("folia.options.subtitleFontScale")}</span>
-                <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
-                  {Math.round(subtitleFontScale * 100)}%
-                </span>
-              </div>
-              <input
-                aria-label={t("folia.options.subtitleFontScale")}
-                type="range"
-                min="0.85"
-                max="1.4"
-                step="0.05"
-                value={subtitleFontScale}
-                onChange={(event) => onSubtitleFontScaleChange(parseFloat(event.target.value))}
-                onPointerDown={onSliderPointerDown}
-                onPointerUp={onSliderCommit}
-                className={rangeInputClass}
-              />
-            </div>
-
-            {!subtitleFontInheritsLyrics && (
-              <div className="space-y-4">
-                <PresetGroup
-                  label={t("folia.options.subtitleFontFamily")}
-                  value={subtitleFontFamily ? "custom" : subtitleFontStyle}
-                  options={subtitleFontStyleOptions}
-                  onChange={(next) => {
-                    if (next === "custom") {
-                      onOpenSubtitleFontPicker?.();
-                    } else {
-                      onSubtitleFontFamilyChange?.(null);
-                      onSubtitleFontStyleChange?.(next as Theme["fontStyle"]);
-                    }
-                  }}
-                  isDaylight={isDaylight}
+                <ResetSectionButton
+                  label={t("folia.ui.default")}
+                  onClick={onResetSubtitleSettings}
                   theme={theme}
                 />
               </div>
-            )}
 
-            <div className="space-y-2">
-              <div
-                className="flex items-center justify-between text-sm"
-                style={{ color: theme.primaryColor }}
-              >
-                <span>{t("folia.options.subtitleOverlayOpacity")}</span>
-                <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
-                  {Math.round(subtitleOverlayOpacity * 100)}%
-                </span>
-              </div>
-              <input
-                type="range"
-                min="0.2"
-                max="1"
-                step="0.05"
-                value={subtitleOverlayOpacity}
-                onChange={(event) =>
-                  onSubtitleOverlayOpacityChange?.(parseFloat(event.target.value))
-                }
-                onPointerDown={onSliderPointerDown}
-                onPointerUp={onSliderCommit}
-                className={rangeInputClass}
+              <ToggleRow
+                label={t("folia.options.hidePlayerTranslationSubtitle")}
+                description={t("folia.options.hidePlayerTranslationSubtitleDesc")}
+                checked={hideTranslationSubtitle}
+                onChange={onToggleHideTranslationSubtitle}
+                theme={theme}
+                icon={CaptionsOff}
               />
+
+              <PresetGroup<SubtitleContentMode>
+                label={t("folia.options.subtitleContentMode")}
+                value={subtitleContentMode}
+                options={[
+                  {
+                    label: t("folia.options.subtitleContentTranslation"),
+                    value: "translation",
+                  },
+                  {
+                    label: t("folia.options.subtitleContentRomanization"),
+                    value: "romanization",
+                  },
+                  { label: t("folia.options.subtitleContentNone"), value: "none" },
+                ]}
+                onChange={
+                  onSubtitleContentModeChange ??
+                  ((mode) => onToggleShowSubtitleTranslation?.(mode !== "none"))
+                }
+                isDaylight={isDaylight}
+                theme={theme}
+              />
+
+              <ToggleRow
+                label={t("folia.options.subtitleOverlayBackground")}
+                description={t("folia.options.subtitleOverlayBackgroundDesc")}
+                checked={subtitleOverlayBackground}
+                onChange={onToggleSubtitleOverlayBackground}
+                theme={theme}
+                icon={PanelTop}
+              />
+
+              <ToggleRow
+                label={t("folia.options.subtitleFontInheritsLyrics")}
+                description={t("folia.options.subtitleFontInheritsLyricsDesc")}
+                checked={subtitleFontInheritsLyrics}
+                onChange={onSubtitleFontInheritsLyricsChange}
+                theme={theme}
+                icon={Monitor}
+              />
+
+              <div className="space-y-2">
+                <div
+                  className="flex items-center justify-between text-sm"
+                  style={{ color: theme.primaryColor }}
+                >
+                  <span>{t("folia.options.subtitleFontScale")}</span>
+                  <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
+                    {Math.round(subtitleFontScale * 100)}%
+                  </span>
+                </div>
+                <input
+                  aria-label={t("folia.options.subtitleFontScale")}
+                  type="range"
+                  min="0.85"
+                  max="1.4"
+                  step="0.05"
+                  value={subtitleFontScale}
+                  onChange={(event) => onSubtitleFontScaleChange(parseFloat(event.target.value))}
+                  onInput={(event) =>
+                    onSubtitleFontScaleChange(parseFloat((event.target as HTMLInputElement).value))
+                  }
+                  onPointerDown={onSliderPointerDown}
+                  onPointerUp={onSliderCommit}
+                  className={rangeInputClass}
+                />
+              </div>
+
+              {!subtitleFontInheritsLyrics && (
+                <div className="space-y-4">
+                  <PresetGroup
+                    label={t("folia.options.subtitleFontFamily")}
+                    value={subtitleFontFamily ? "custom" : subtitleFontStyle}
+                    options={subtitleFontStyleOptions}
+                    onChange={(next) => {
+                      if (next === "custom") {
+                        onOpenSubtitleFontPicker?.();
+                      } else {
+                        onSubtitleFontFamilyChange?.(null);
+                        onSubtitleFontStyleChange?.(next as Theme["fontStyle"]);
+                      }
+                    }}
+                    isDaylight={isDaylight}
+                    theme={theme}
+                  />
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <div
+                  className="flex items-center justify-between text-sm"
+                  style={{ color: theme.primaryColor }}
+                >
+                  <span>{t("folia.options.subtitleOverlayOpacity")}</span>
+                  <span className="font-mono opacity-70" style={{ color: theme.secondaryColor }}>
+                    {Math.round(subtitleOverlayOpacity * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0.2"
+                  max="1"
+                  step="0.05"
+                  value={subtitleOverlayOpacity}
+                  onChange={(event) =>
+                    onSubtitleOverlayOpacityChange?.(parseFloat(event.target.value))
+                  }
+                  onInput={(event) =>
+                    onSubtitleOverlayOpacityChange?.(
+                      parseFloat((event.target as HTMLInputElement).value),
+                    )
+                  }
+                  onPointerDown={onSliderPointerDown}
+                  onPointerUp={onSliderCommit}
+                  className={rangeInputClass}
+                />
+              </div>
             </div>
           </div>
         )}

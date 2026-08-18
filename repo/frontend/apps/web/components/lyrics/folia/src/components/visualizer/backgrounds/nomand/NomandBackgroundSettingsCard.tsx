@@ -1,21 +1,21 @@
 import React, { useRef, useState } from "react";
 import { Trash2, Upload } from "lucide-react";
-import type { TranslateFn } from "@/types/i18n.generated";
-import type {
-  MonetBackgroundImage,
-  NomandBackgroundDitheringType,
-  NomandBackgroundSource,
-  NomandBackgroundTuning,
-  Theme,
+import {
+  DEFAULT_NOMAND_BACKGROUND_TUNING,
+  type MonetBackgroundImage,
+  type NomandBackgroundSource,
+  type NomandBackgroundTuning,
+  type Theme,
 } from "../../../../types";
 import { colorWithAlpha } from "../../colorMix";
 import BackgroundToggleRow from "../BackgroundToggleRow";
+import NomandBackgroundEffectSettings from "./NomandBackgroundEffectSettings";
 
 // src/components/visualizer/backgrounds/nomand/NomandBackgroundSettingsCard.tsx
-// Edits the Paper dithering background while reusing the shared custom background image asset.
+// Edits the Paper shader background while reusing the shared custom background image asset.
 
 interface NomandBackgroundSettingsCardProps {
-  t: TranslateFn;
+  t: (key: string) => string;
   isDaylight: boolean;
   theme: Theme;
   controlCardBg: string;
@@ -29,8 +29,6 @@ interface NomandBackgroundSettingsCardProps {
   onSliderPointerDown?: () => void;
   onSliderCommit?: () => void;
 }
-
-const DITHERING_TYPES: NomandBackgroundDitheringType[] = ["2x2", "4x4", "8x8"];
 
 const NomandBackgroundSettingsCard: React.FC<NomandBackgroundSettingsCardProps> = ({
   t,
@@ -47,6 +45,7 @@ const NomandBackgroundSettingsCard: React.FC<NomandBackgroundSettingsCardProps> 
   onSliderPointerDown,
   onSliderCommit,
 }) => {
+  const resolvedTuning = { ...DEFAULT_NOMAND_BACKGROUND_TUNING, ...tuning };
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [feedback, setFeedback] = useState("");
   const borderColor = colorWithAlpha(theme.secondaryColor, isDaylight ? 0.18 : 0.16);
@@ -103,8 +102,8 @@ const NomandBackgroundSettingsCard: React.FC<NomandBackgroundSettingsCardProps> 
               onClick={() => setSource(value)}
               className="rounded-2xl border px-3 py-2 text-sm disabled:opacity-40"
               style={{
-                borderColor: tuning.imageSource === value ? theme.accentColor : borderColor,
-                backgroundColor: tuning.imageSource === value ? selectedBg : "transparent",
+                borderColor: resolvedTuning.imageSource === value ? theme.accentColor : borderColor,
+                backgroundColor: resolvedTuning.imageSource === value ? selectedBg : "transparent",
                 color: theme.primaryColor,
               }}
             >
@@ -149,49 +148,39 @@ const NomandBackgroundSettingsCard: React.FC<NomandBackgroundSettingsCardProps> 
         </div>
       </div>
 
-      <div className="space-y-2">
-        <div className="text-sm" style={{ color: theme.primaryColor }}>
-          {t("folia.options.nomandBackgroundDitheringType")}
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          {DITHERING_TYPES.map((type) => (
-            <button
-              key={type}
-              type="button"
-              onClick={() => onTuningChange?.({ ditheringType: type })}
-              className="rounded-xl border p-2 text-xs"
-              style={{
-                borderColor: tuning.ditheringType === type ? theme.accentColor : borderColor,
-                backgroundColor: tuning.ditheringType === type ? selectedBg : "transparent",
-                color: theme.primaryColor,
-              }}
-            >
-              {type}
-            </button>
-          ))}
-        </div>
-      </div>
+      <NomandBackgroundEffectSettings
+        t={t}
+        isDaylight={isDaylight}
+        theme={theme}
+        rangeInputClass={rangeInputClass}
+        tuning={resolvedTuning}
+        onTuningChange={onTuningChange}
+        onSliderPointerDown={onSliderPointerDown}
+        onSliderCommit={onSliderCommit}
+      />
 
       <div className="space-y-3 rounded-2xl border p-3" style={{ borderColor }}>
         <BackgroundToggleRow
           label={t("folia.options.nomandBackgroundOverlay")}
           description={t("folia.options.nomandBackgroundOverlayDesc")}
-          checked={tuning.overlayEnabled}
+          checked={resolvedTuning.overlayEnabled}
           onChange={(overlayEnabled) => onTuningChange?.({ overlayEnabled })}
           theme={theme}
         />
-        <label className={`block space-y-2 ${tuning.overlayEnabled ? "" : "opacity-45"}`}>
+        <label className={`block space-y-2 ${resolvedTuning.overlayEnabled ? "" : "opacity-45"}`}>
           <span className="flex justify-between text-sm" style={{ color: theme.primaryColor }}>
             <span>{t("folia.options.nomandBackgroundOverlayOpacity")}</span>
-            <span className="font-mono opacity-70">{Math.round(tuning.overlayOpacity * 100)}%</span>
+            <span className="font-mono opacity-70">
+              {Math.round(resolvedTuning.overlayOpacity * 100)}%
+            </span>
           </span>
           <input
             type="range"
             min="0"
             max="1"
             step="0.05"
-            value={tuning.overlayOpacity}
-            disabled={!tuning.overlayEnabled}
+            value={resolvedTuning.overlayOpacity}
+            disabled={!resolvedTuning.overlayEnabled}
             onChange={(event) => onTuningChange?.({ overlayOpacity: Number(event.target.value) })}
             onPointerDown={onSliderPointerDown}
             onPointerUp={onSliderCommit}
@@ -199,57 +188,6 @@ const NomandBackgroundSettingsCard: React.FC<NomandBackgroundSettingsCardProps> 
           />
         </label>
       </div>
-
-      <label className="block space-y-2">
-        <span className="flex justify-between text-sm" style={{ color: theme.primaryColor }}>
-          <span>{t("folia.options.nomandBackgroundSize")}</span>
-          <span className="font-mono opacity-70">{tuning.size.toFixed(1)}</span>
-        </span>
-        <input
-          type="range"
-          min="0.5"
-          max="20"
-          step="0.5"
-          value={tuning.size}
-          onChange={(event) => onTuningChange?.({ size: Number(event.target.value) })}
-          onPointerDown={onSliderPointerDown}
-          onPointerUp={onSliderCommit}
-          className={rangeInputClass}
-        />
-      </label>
-
-      <label className="block space-y-2">
-        <span className="flex justify-between text-sm" style={{ color: theme.primaryColor }}>
-          <span>{t("folia.options.nomandBackgroundColorSteps")}</span>
-          <span className="font-mono opacity-70">{tuning.colorSteps}</span>
-        </span>
-        <input
-          type="range"
-          min="1"
-          max="7"
-          step="1"
-          value={tuning.colorSteps}
-          onChange={(event) => onTuningChange?.({ colorSteps: Number(event.target.value) })}
-          onPointerDown={onSliderPointerDown}
-          onPointerUp={onSliderCommit}
-          className={rangeInputClass}
-        />
-      </label>
-
-      {(
-        [
-          ["originalColors", t("folia.options.nomandBackgroundOriginalColors")],
-          ["inverted", t("folia.options.nomandBackgroundInverted")],
-        ] as const
-      ).map(([key, label]) => (
-        <BackgroundToggleRow
-          key={key}
-          label={label}
-          checked={tuning[key]}
-          onChange={(checked) => onTuningChange?.({ [key]: checked })}
-          theme={theme}
-        />
-      ))}
     </div>
   );
 };

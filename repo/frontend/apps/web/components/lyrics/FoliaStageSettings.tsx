@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
+import { FoliaAudioEqualizerDialog } from "@/components/lyrics/FoliaAudioEqualizerDialog";
 import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
 import { FoliaPanelSettings } from "@/components/lyrics/FoliaPanelSettings";
 import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
@@ -49,6 +50,7 @@ export function FoliaStageSettings({
   const [activeTab, setActiveTab] = useState<FoliaPanelTab>("controls");
   const [fontPickerTarget, setFontPickerTarget] = useState<"lyrics" | "subtitle" | null>(null);
   const [isLyricMatchOpen, setIsLyricMatchOpen] = useState(false);
+  const [isEqualizerOpen, setIsEqualizerOpen] = useState(false);
   const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
   const [isThemeLibraryOpen, setIsThemeLibraryOpen] = useState(false);
 
@@ -148,6 +150,8 @@ export function FoliaStageSettings({
                   <div className="px-5 pt-1 pb-8">
                     {activeTab === "controls" ? (
                       <FoliaPanelControls
+                        onOpenEqualizer={() => setIsEqualizerOpen(true)}
+                        onOpenFoliaSettings={() => openVisualSettings("common")}
                         onOpenLyricMatch={() => setIsLyricMatchOpen(true)}
                         theme={theme}
                       />
@@ -184,6 +188,12 @@ export function FoliaStageSettings({
         onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
         onSectionChange={setActiveSection}
         section={activeSection}
+        theme={theme}
+      />
+
+      <FoliaAudioEqualizerDialog
+        isOpen={isEqualizerOpen}
+        onClose={() => setIsEqualizerOpen(false)}
         theme={theme}
       />
 

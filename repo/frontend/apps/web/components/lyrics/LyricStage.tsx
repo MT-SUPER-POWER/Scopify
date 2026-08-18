@@ -14,6 +14,7 @@ import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import { usePlaybackWakeLock } from "@/hooks/player/usePlaybackWakeLock";
 import { usePlayerStore } from "@/store/module/player";
 import type { DesktopLyricCommand } from "@/types/desktopLyric";
 
@@ -36,6 +37,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
+  usePlaybackWakeLock(bridge.isPlaying);
   const { assets, isDaylight, settings, theme } = appearance;
   const stageStyle = useMemo(
     () =>

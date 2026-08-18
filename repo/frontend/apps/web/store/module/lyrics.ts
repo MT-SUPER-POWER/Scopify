@@ -5,6 +5,7 @@ import {
   DEFAULT_LATENT_BACKGROUND_TUNING,
   DEFAULT_MONET_BACKGROUND_TUNING,
   DEFAULT_NOMAND_BACKGROUND_TUNING,
+  DEFAULT_SORA_BACKGROUND_TUNING,
 } from "@/components/lyrics/folia/src/types";
 import {
   createDefaultFoliaStageSettings,
@@ -114,6 +115,19 @@ export const useLyricStageStore = create<FoliaStageStore>()(
             },
           },
         })),
+      patchSoraBackground: (patch) =>
+        set((state) => ({
+          background: {
+            ...state.background,
+            sora: {
+              tuning: {
+                ...DEFAULT_SORA_BACKGROUND_TUNING,
+                ...state.background.sora?.tuning,
+                ...patch,
+              },
+            },
+          },
+        })),
       patchSettings: (patch) => set(patch),
       patchTuning: (mode, patch) =>
         set((state) => ({
@@ -153,6 +167,7 @@ export const useLyricStageStore = create<FoliaStageStore>()(
         if (mode === "monet") get().patchMonetBackground(DEFAULT_MONET_BACKGROUND_TUNING);
         if (mode === "nomand") get().patchNomandBackground(DEFAULT_NOMAND_BACKGROUND_TUNING);
         if (mode === "latent") get().patchLatentBackground(DEFAULT_LATENT_BACKGROUND_TUNING);
+        if (mode === "sora") get().patchSoraBackground(DEFAULT_SORA_BACKGROUND_TUNING);
       },
       resetTuning: (mode) =>
         set((state) => ({

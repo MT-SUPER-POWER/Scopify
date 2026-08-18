@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
+import { FoliaGlobalSettingsCard } from "@/components/lyrics/FoliaGlobalSettingsCard";
+import { FoliaHarmonySettingsCard } from "@/components/lyrics/FoliaHarmonySettingsCard";
 import { FoliaThemeQuickPicker } from "@/components/lyrics/FoliaThemeQuickPicker";
 import VisPlaygroundSettingsPanel from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundSettingsPanel";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -59,7 +61,7 @@ export function FoliaVisualSettingsDialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onPointerDown={onClose}
-          className="fixed inset-0 z-140 p-3 backdrop-blur-xl sm:p-5"
+          className="fixed inset-0 z-80 p-3 backdrop-blur-xl sm:p-5"
           style={{ backgroundColor: overlayBackground }}
         >
           <motion.section
@@ -107,6 +109,18 @@ export function FoliaVisualSettingsDialog({
                 <div className="space-y-4 pr-1 pb-6">
                   <VisPlaygroundSettingsPanel
                     {...panelProps}
+                    commonControl={
+                      <FoliaGlobalSettingsCard
+                        controlCardBg={panelProps.controlCardBg}
+                        theme={theme}
+                      />
+                    }
+                    subtitleControl={
+                      <FoliaHarmonySettingsCard
+                        controlCardBg={panelProps.controlCardBg}
+                        theme={theme}
+                      />
+                    }
                     themeControl={
                       <FoliaThemeQuickPicker
                         onOpenThemeLibrary={onOpenThemeLibrary}

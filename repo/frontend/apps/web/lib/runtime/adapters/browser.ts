@@ -437,6 +437,13 @@ export function createBrowserRuntime(
       install: NOOP,
       onStatusChanged: () => NOOP,
     },
+    videoExport: {
+      getCaptureSource: async () => null,
+      prepareWindow: async () => false,
+      restoreWindow: async () => false,
+      selectFile: async () => null,
+      writeFile: async () => false,
+    },
     window: {
       minimize: NOOP,
       onFullscreenChanged: (callback) => {

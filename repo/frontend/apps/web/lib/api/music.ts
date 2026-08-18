@@ -103,7 +103,12 @@ export async function getSongUrlWithQuality(
     const res = await getSongUrlV1(id, level);
     const item = res.data?.data?.[0];
     if (item?.url) {
-      return { data: item.url, level, source: "url-v1" as const };
+      return {
+        data: item.url,
+        level,
+        replayGainTrackGain: Number.isFinite(item.gain) ? item.gain : undefined,
+        source: "url-v1" as const,
+      };
     }
     throw new Error("No URL returned from v1");
   } catch {
@@ -112,6 +117,7 @@ export async function getSongUrlWithQuality(
     return {
       data: fallback.data ?? fallback.proxyUrl,
       level,
+      replayGainTrackGain: undefined,
       source: "url-match" as const,
     };
   }

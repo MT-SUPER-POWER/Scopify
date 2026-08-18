@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
 
 import type { FoliaQuickEffectPickerMenuProps } from "@/types/components/lyrics";
 
@@ -10,8 +11,10 @@ export function FoliaQuickEffectPickerMenu<Value extends string>({
   isOpen,
   menuPosition,
   menuRef,
+  moreActionLabel,
   onChange,
   onClose,
+  onMoreAction,
   options,
   primaryColor,
   value,
@@ -104,6 +107,26 @@ export function FoliaQuickEffectPickerMenu<Value extends string>({
                 );
               })}
             </div>
+            {moreActionLabel && onMoreAction ? (
+              <div
+                className={`mt-1.5 border-t pt-1.5 ${isDaylight ? "border-black/8" : "border-white/10"}`}
+              >
+                <button
+                  className={`flex w-full items-center justify-between rounded-[0.85rem] px-2.5 py-2 text-[9px] font-medium transition-colors ${
+                    isDaylight ? "hover:bg-black/4" : "hover:bg-white/6"
+                  }`}
+                  onClick={() => {
+                    onClose();
+                    onMoreAction();
+                  }}
+                  style={{ color: primaryColor }}
+                  type="button"
+                >
+                  <span>{moreActionLabel}</span>
+                  <ChevronRight aria-hidden size={12} />
+                </button>
+              </div>
+            ) : null}
           </div>
         </motion.div>
       ) : null}

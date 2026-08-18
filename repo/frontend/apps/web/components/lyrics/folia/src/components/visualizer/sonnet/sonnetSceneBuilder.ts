@@ -17,6 +17,9 @@ import {
   type SonnetDebugShotInfo,
 } from "./sonnetDebug";
 import { resolveSonnetGeoVariant } from "./sonnetSpatialMgGeometry";
+import { resolveSonnetBackgroundMgVariant } from "./sonnetBackgroundMgVariants";
+import { resolveSonnetBackgroundDecorVariant } from "./sonnetBackgroundDecor";
+import { resolveSonnetFixedGeoVariant } from "./sonnetFixedGeoVariants";
 
 // src/components/visualizer/sonnet/sonnetSceneBuilder.ts
 // Builds one bounded paragraph scene; playback-time mutation remains in the runtime controller.
@@ -161,7 +164,6 @@ export const buildSonnetScene = (
     if (showOuterMetadata) sceneBackgroundLayer.addChild(descText);
   }
   container.addChild(sceneBackgroundLayer);
-
   const shots = paragraph.shots.map((shot, shotIndex) => {
     const shotContainer = new Container();
     const compiledLines = shot.lineIndices
@@ -188,13 +190,14 @@ export const buildSonnetScene = (
       fontFamily,
       fontWeight: manualFontWeight,
     });
+    const shotSeed = sceneSeed + shotIndex * 97;
     const mgLayer = buildSonnetShotMg(
       pixi,
       shot.kind,
       options.theme,
       width,
       height,
-      sceneSeed + shotIndex * 97,
+      shotSeed,
       iconTextures,
     );
     shotContainer.addChild(mgLayer);
@@ -249,14 +252,9 @@ export const buildSonnetScene = (
       );
     });
     const bounds = shotContainer.getLocalBounds();
-    if (shot.kind === "mask-reveal") {
-      const mask = new Graphics()
-        .rect(bounds.x - 6, bounds.y - 6, bounds.width + 12, bounds.height + 12)
-        .fill(0xffffff);
-      shotContainer.addChild(mask);
-      shotContainer.mask = mask;
-    }
-    // Debug overlay stays above the text and never feeds the bounds/mask math.
+    // `mask-reveal` is revealed by the glyph timeline. A bounds-sized mask would stay
+    // static while camera tracking and parallax move the shot, clipping open MG artwork.
+    // Debug overlay stays above the text and never feeds the bounds/focus math.
     shotContainer.addChild(buildSonnetMeasuredBoundsDebug(pixi, placements));
     const usesGeoMg = shot.kind === "type-impact" || shot.kind === "fragment-collage";
     const debugInfo = createSonnetShotDebugInfo({
@@ -268,7 +266,10 @@ export const buildSonnetScene = (
       shotCount: paragraph.shots.length,
       baseFontSize: fontSize,
       wordCount,
-      geoVariant: usesGeoMg ? resolveSonnetGeoVariant(sceneSeed + shotIndex * 97) : null,
+      geoVariant: usesGeoMg ? resolveSonnetGeoVariant(shotSeed) : null,
+      backgroundMgVariant: resolveSonnetBackgroundMgVariant(shotSeed),
+      fixedGeoVariant: usesGeoMg ? resolveSonnetFixedGeoVariant(shotSeed) : null,
+      backgroundDecorVariant: resolveSonnetBackgroundDecorVariant(shotSeed),
       placements,
       segmentTexts: segments.map((segment) => segment.text),
     });
@@ -323,6 +324,7 @@ export const buildSonnetScene = (
       sceneSeed,
     );
     if (sceneFilters.length > 0) {
+      // Keep full-scene shaders in viewport space even when visible lyric/decor bounds are smaller.
       container.filterArea = new pixi.Rectangle(0, 0, width, height);
       postProcessFilters.push(...sceneFilters);
     }
@@ -332,6 +334,12 @@ export const buildSonnetScene = (
       ? new pixi.BlurFilter({ strength: 0, quality: 1, kernelSize: 5, resolution: 0.5 })
       : null;
   if (transitionBlurFilter) {
+    // BlurFilter's padding is strength * 2, and Pixi pads the chain's shared render frame
+    // (already clipped to the viewport) by the sum of all enabled filters' padding. A growing
+    // frame rescales the vignette pass's screen coordinates, so ramping the blur brightened the
+    // vignette mid-transition. repeatEdgePixels pins padding at 0; the extra margin was
+    // off-screen anyway.
+    transitionBlurFilter.repeatEdgePixels = true;
     transitionBlurFilter.enabled = false;
     container.filters = [...(container.filters ?? []), transitionBlurFilter];
     postProcessFilters.push(transitionBlurFilter);

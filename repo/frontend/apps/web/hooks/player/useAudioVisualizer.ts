@@ -5,17 +5,36 @@ import { type MutableRefObject, useEffect, useRef } from "react";
 import {
   applyAudioEqualizerSettings,
   connectAudioEqualizerGraph,
+  type AudioEqualizerGraph,
 } from "@/lib/player/audioEqualizerGraph";
+import { DEFAULT_AUDIO_EFFECT_SETTINGS } from "@/constants/audioEqualizer";
+import {
+  connectAudioPostEffectsGraph,
+  type AudioPostEffectsGraph,
+} from "@/lib/player/audioPostEffectsGraph";
 import {
   createAnalyserAudioFeatureSource,
   registerAudioFeatureSource,
 } from "@/lib/audioFeature/source";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
+import { usePlayerStore } from "@/store/module/player";
 import type { AudioFeatureSource } from "@/types/audioFeaturePublisher";
 import type { LyricAudioBands } from "@/types/lyrics";
+import type { SongDetail } from "@/types/api/music";
+import type { ReplayGainMode } from "@/types/player";
 
 interface AudioContextWindow extends Window {
   webkitAudioContext?: typeof AudioContext;
+}
+
+function resolveReplayGainRatio(song: SongDetail | null, mode: ReplayGainMode) {
+  if (!song || mode === "off") return 1;
+  const gainDb =
+    mode === "album" ? song.replayGainAlbumGain : (song.replayGainTrackGain ?? song.replayGain);
+  const peak = mode === "album" ? song.replayGainAlbumPeak : song.replayGainTrackPeak;
+  if (gainDb == null || !Number.isFinite(gainDb)) return 1;
+  const ratio = 10 ** (Math.max(-24, Math.min(24, gainDb)) / 20);
+  return peak && peak > 0 ? Math.min(ratio, 1 / peak) : ratio;
 }
 
 /**
@@ -24,10 +43,14 @@ interface AudioContextWindow extends Window {
  */
 export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement | null>) {
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const equalizerFiltersRef = useRef<BiquadFilterNode[]>([]);
+  const equalizerGraphRef = useRef<AudioEqualizerGraph | null>(null);
+  const postEffectsRef = useRef<AudioPostEffectsGraph | null>(null);
+  const replayGainNodeRef = useRef<GainNode | null>(null);
   const mediaSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const contextRef = useRef<AudioContext | null>(null);
   const equalizerSettings = useAudioEqualizerStore((state) => state.settings);
+  const replayGainMode = usePlayerStore((state) => state.replayGainMode);
+  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -56,13 +79,27 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
         const source = mediaSourceRef.current ?? context.createMediaElementSource(audio);
         mediaSourceRef.current = source;
         if (!analyser) {
+          const replayGainNode = context.createGain();
+          replayGainNode.gain.value = resolveReplayGainRatio(
+            usePlayerStore.getState().currentSongDetail,
+            usePlayerStore.getState().replayGainMode,
+          );
+          source.connect(replayGainNode);
+          replayGainNodeRef.current = replayGainNode;
           analyser = context.createAnalyser();
           analyser.fftSize = 2048;
           analyser.smoothingTimeConstant = 0.6;
-          equalizerFiltersRef.current = connectAudioEqualizerGraph(
+          postEffectsRef.current = connectAudioPostEffectsGraph(
             context,
-            source,
             analyser,
+            useAudioEqualizerStore.getState().settings.enabled
+              ? useAudioEqualizerStore.getState().settings.effects
+              : DEFAULT_AUDIO_EFFECT_SETTINGS,
+          );
+          equalizerGraphRef.current = connectAudioEqualizerGraph(
+            context,
+            replayGainNode,
+            postEffectsRef.current.input,
             useAudioEqualizerStore.getState().settings,
           );
           analyser.connect(context.destination);
@@ -115,7 +152,20 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
 
   useEffect(() => {
     const context = contextRef.current;
-    if (!context || equalizerFiltersRef.current.length === 0) return;
-    applyAudioEqualizerSettings(context, equalizerFiltersRef.current, equalizerSettings);
+    const graph = equalizerGraphRef.current;
+    if (!context || !graph) return;
+    applyAudioEqualizerSettings(context, graph, equalizerSettings);
+    postEffectsRef.current?.apply(
+      equalizerSettings.enabled ? equalizerSettings.effects : DEFAULT_AUDIO_EFFECT_SETTINGS,
+    );
   }, [equalizerSettings]);
+
+  useEffect(() => {
+    const context = contextRef.current;
+    const gainNode = replayGainNodeRef.current;
+    if (!context || !gainNode) return;
+    const ratio = resolveReplayGainRatio(currentSongDetail, replayGainMode);
+    gainNode.gain.cancelScheduledValues(context.currentTime);
+    gainNode.gain.setTargetAtTime(ratio, context.currentTime, 0.02);
+  }, [currentSongDetail, replayGainMode]);
 }

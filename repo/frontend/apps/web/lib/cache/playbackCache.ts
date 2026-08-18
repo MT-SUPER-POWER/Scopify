@@ -18,7 +18,8 @@ const URL_TTL_MS = 30 * 60 * 1000; // 30 分钟
 const LYRIC_TTL_MS = 24 * 60 * 60 * 1000; // 24 小时
 const LYRIC_OVERRIDE_TTL_MS = 10 * 365 * 24 * 60 * 60 * 1000;
 
-const KEY_PREFIX_PLAY_URL = "playback-play-url";
+const KEY_PREFIX_PLAY_URL = "playback-play-url-v2";
+const KEY_PREFIX_REPLAY_GAIN = "playback-replay-gain-v1";
 const KEY_PREFIX_ONLINE_LYRIC = "playback-online-lyric";
 const KEY_PREFIX_LYRIC_OVERRIDE = "playback-lyric-override";
 const KEY_PREFIX_IMPORTED_LYRIC = "playback-imported-lyric";
@@ -66,6 +67,14 @@ export async function setCachedPlayUrl(
   url: string,
 ): Promise<void> {
   await storageSet(`${KEY_PREFIX_PLAY_URL}:${songId}:${quality}`, url, URL_TTL_MS, "play-url");
+}
+
+export async function getCachedReplayGain(songId: number): Promise<number | null> {
+  return storageGet<number>(`${KEY_PREFIX_REPLAY_GAIN}:${songId}`);
+}
+
+export async function setCachedReplayGain(songId: number, gainDb: number): Promise<void> {
+  await storageSet(`${KEY_PREFIX_REPLAY_GAIN}:${songId}`, gainDb, URL_TTL_MS, "play-url");
 }
 
 export async function clearCachedPlayUrl(songId: number, quality: MusicQuality): Promise<void> {

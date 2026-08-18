@@ -5,6 +5,7 @@ import type {
   LyricData,
   MonetBackgroundTuning,
   NomandBackgroundTuning,
+  SoraBackgroundTuning,
   SubtitleContentMode,
   Theme,
   UrlBackgroundItem,
@@ -38,9 +39,12 @@ export interface FoliaQuickEffectPickerPosition {
 
 export interface FoliaStageSettings {
   animationIntensity: Theme["animationIntensity"];
+  harmonySubtitleBackground: boolean;
+  showHarmonySubtitle: boolean;
   background: VisualizerBackgroundConfig;
   fontFamily: string | null;
   fontScale: number;
+  randomVisualizerMode: boolean;
   fontStyle: Theme["fontStyle"];
   hideTranslationSubtitle: boolean;
   lyricOffsetMs: number;
@@ -70,6 +74,7 @@ export interface FoliaStageStore extends FoliaStageSettings {
   patchLatentBackground: (patch: Partial<LatentBackgroundTuning>) => void;
   patchMonetBackground: (patch: Partial<MonetBackgroundTuning>) => void;
   patchNomandBackground: (patch: Partial<NomandBackgroundTuning>) => void;
+  patchSoraBackground: (patch: Partial<SoraBackgroundTuning>) => void;
   patchSettings: (patch: Partial<FoliaStageSettings>) => void;
   patchTuning: <Mode extends VisualizerTuningMode>(
     mode: Mode,

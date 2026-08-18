@@ -124,6 +124,13 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       install: () => bridge.quitAndInstallUpdate(),
       onStatusChanged: (callback) => bridge.onUpdateStatusChanged(callback),
     },
+    videoExport: {
+      getCaptureSource: () => bridge.getVideoExportCaptureSource(),
+      prepareWindow: (size) => bridge.prepareVideoExportWindow(size),
+      restoreWindow: () => bridge.restoreVideoExportWindow(),
+      selectFile: (request) => bridge.selectVideoExportFile(request),
+      writeFile: (filePath, data) => bridge.writeVideoExportFile(filePath, data),
+    },
     window: {
       minimize: () => bridge.minimizeApp(),
       onFullscreenChanged: (callback) => bridge.onFullScreenChanged(callback),

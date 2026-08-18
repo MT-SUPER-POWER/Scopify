@@ -7,6 +7,8 @@ import type {
   DesktopPlaybackControllerOpenResult,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
+  DesktopVideoExportSaveRequest,
+  DesktopVideoExportSource,
   DesktopHostConfig,
   DiscordPresenceSnapshot,
   DiscordPresenceStatus,
@@ -163,6 +165,14 @@ export interface RuntimeWindowControls {
   toggleDeveloperTools(): Promise<boolean>;
 }
 
+export interface RuntimeVideoExport {
+  getCaptureSource(): Promise<DesktopVideoExportSource | null>;
+  prepareWindow(size: { width: number; height: number }): Promise<boolean>;
+  restoreWindow(): Promise<boolean>;
+  selectFile(request: DesktopVideoExportSaveRequest): Promise<string | null>;
+  writeFile(filePath: string, data: ArrayBuffer): Promise<boolean>;
+}
+
 /**
  * The sole seam between renderer behaviour and its Browser/Electron hosts.
  * Callers depend on these intent-level modules, never on the preload bridge.
@@ -185,5 +195,6 @@ export interface WebRuntime {
   readonly navigation: RuntimeNavigation;
   readonly playback: RuntimePlaybackTransport;
   readonly updates: RuntimeUpdates;
+  readonly videoExport: RuntimeVideoExport;
   readonly window: RuntimeWindowControls;
 }

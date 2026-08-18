@@ -172,6 +172,12 @@ const electronAPI: DesktopBridge = {
   },
   selectDirectory: (defaultPath?: string) =>
     ipcRenderer.invoke("dialog:select-directory", defaultPath),
+  getVideoExportCaptureSource: () => ipcRenderer.invoke("video-export:get-capture-source"),
+  prepareVideoExportWindow: (size) => ipcRenderer.invoke("video-export:prepare-window", size),
+  restoreVideoExportWindow: () => ipcRenderer.invoke("video-export:restore-window"),
+  selectVideoExportFile: (request) => ipcRenderer.invoke("video-export:select-file", request),
+  writeVideoExportFile: (filePath, data) =>
+    ipcRenderer.invoke("video-export:write-file", filePath, data),
   getHostConfig: () => ipcRenderer.invoke("config:get-host"),
   getLogDirectory: () => ipcRenderer.invoke("logger:get-directory"),
   getDesktopIconVisibility: () => ipcRenderer.invoke("desktop-icons:get-visibility"),

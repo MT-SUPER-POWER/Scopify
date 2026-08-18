@@ -60,6 +60,18 @@ function adaptLine(
     ],
     endTime,
     fullText: line.text,
+    agentId: line.agentId,
+    blockIndex: line.blockIndex,
+    backgroundVocals: line.backgroundVocals?.map((vocal) => ({
+      text: vocal.text,
+      startTime: vocal.startTimeMs / MILLISECONDS_PER_SECOND,
+      endTime: vocal.endTimeMs / MILLISECONDS_PER_SECOND,
+      words: vocal.words?.map((word) => ({
+        text: word.text,
+        startTime: word.startTimeMs / MILLISECONDS_PER_SECOND,
+        endTime: word.endTimeMs / MILLISECONDS_PER_SECOND,
+      })),
+    })),
     romanization: line.romanization,
     startTime,
     translation: line.translation,

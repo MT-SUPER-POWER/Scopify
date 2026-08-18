@@ -69,12 +69,22 @@ export interface LyricData {
 
 /** A display-ready line shared by the lyric stage and desktop lyric window. */
 export interface LyricDisplayLine {
+  agentId?: string;
+  backgroundVocals?: LyricBackgroundVocal[];
+  blockIndex?: number;
   endTimeMs: number;
   romanization?: string;
   startTimeMs: number;
   text: string;
   translation?: string;
   words: LyricWord[];
+}
+
+export interface LyricBackgroundVocal {
+  endTimeMs: number;
+  startTimeMs: number;
+  text: string;
+  words?: LyricWord[];
 }
 
 /** Metadata extracted from standard LRC tags and NetEase timed credit records. */

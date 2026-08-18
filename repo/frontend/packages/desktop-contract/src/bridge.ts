@@ -24,7 +24,18 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 18;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 19;
+
+export interface DesktopVideoExportSource {
+  id: string;
+  name: string;
+}
+
+export interface DesktopVideoExportSaveRequest {
+  defaultPath: string;
+  extension: "mp4" | "webm";
+  formatName: string;
+}
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
@@ -44,6 +55,7 @@ export type DesktopBridgeCapability =
   | "playback-transport"
   | "renderer-logging"
   | "updates"
+  | "video-export"
   | "window-controls";
 
 export interface DesktopBridgeInfo {
@@ -101,6 +113,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   getCacheStats(): Promise<DesktopCacheStats>;
   getMusicCookie?(): string | null;
   getUpdateStatus(): Promise<AppUpdateState>;
+  getVideoExportCaptureSource(): Promise<DesktopVideoExportSource | null>;
   loginSuccess(): void;
   minimizeApp(): void;
   navigateTo(path: string): void;
@@ -138,6 +151,10 @@ export interface DesktopBridge<TLyrics = unknown> {
   ): Promise<boolean>;
   setPlayerPlaying(isPlaying: boolean): void;
   selectDirectory(defaultPath?: string): Promise<string | null>;
+  prepareVideoExportWindow(size: { width: number; height: number }): Promise<boolean>;
+  restoreVideoExportWindow(): Promise<boolean>;
+  selectVideoExportFile(request: DesktopVideoExportSaveRequest): Promise<string | null>;
+  writeVideoExportFile(filePath: string, data: ArrayBuffer): Promise<boolean>;
   sendPlaybackTransportPayload(payload: PlaybackTransportPayload<TLyrics>): boolean;
   updateHostConfig(config: DesktopHostConfig): Promise<DesktopHostConfig>;
   updateDesktopLyricPreferences(

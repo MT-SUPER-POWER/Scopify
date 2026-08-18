@@ -1,10 +1,14 @@
 "use client";
 
-import { Cone, Layers } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 
+import {
+  DEFAULT_VISUALIZER_BACKGROUND_MODE,
+  getVisualizerBackgroundRegistryEntry,
+} from "@/components/lyrics/folia/src/components/visualizer/backgrounds/registry";
+import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import type { Theme } from "@/components/lyrics/folia/src/types";
-import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
+import { useLyricStageStore } from "@/store/module/lyrics";
 
 interface FoliaBackgroundQuickControlProps {
   isDaylight: boolean;
@@ -16,94 +20,24 @@ export function FoliaBackgroundQuickControl({
   theme,
 }: FoliaBackgroundQuickControlProps) {
   const { t } = useI18n();
-  const model = useFoliaPanelControls();
-  const activeOptionBg = isDaylight
-    ? "bg-white shadow-sm hover:bg-white/90"
-    : "bg-white/20 shadow-sm hover:bg-white/30";
-  const iconButtonClass =
-    "rounded-md p-1 opacity-55 transition-all hover:bg-white/10 hover:opacity-100";
+  const settings = useLyricStageStore();
+  const mode = settings.background.mode ?? DEFAULT_VISUALIZER_BACKGROUND_MODE;
+  const entry = getVisualizerBackgroundRegistryEntry(mode);
+  const actions: VisualizerBackgroundActions = {
+    common: {
+      onCoverColorChange: (useCoverColorBg) => settings.patchBackgroundCommon({ useCoverColorBg }),
+    },
+    latent: { onTuningChange: settings.patchLatentBackground },
+    monet: { onTuningChange: settings.patchMonetBackground },
+    nomand: { onTuningChange: settings.patchNomandBackground },
+    sora: { onTuningChange: settings.patchSoraBackground },
+  };
 
-  if (model.visualizerBackgroundMode === "common") {
-    return (
-      <button
-        aria-pressed={model.useCoverColorBg}
-        className={`${iconButtonClass} ${model.useCoverColorBg ? "text-blue-400 opacity-100" : ""}`}
-        onClick={model.toggleCoverColorBackground}
-        style={{ color: model.useCoverColorBg ? undefined : theme.primaryColor }}
-        title={String(
-          t(model.useCoverColorBg ? "folia.theme.addCoverColor" : "folia.theme.useDefaultColor"),
-        )}
-        type="button"
-      >
-        <Cone size={14} />
-      </button>
-    );
-  }
-
-  if (model.visualizerBackgroundMode === "monet") {
-    const isFullOverlay = model.monetBackgroundTuning.backgroundLayout === "full-overlay";
-    const label = String(
-      t(
-        isFullOverlay
-          ? "folia.options.monetLayoutFullOverlay"
-          : "folia.options.monetLayoutHalfPane",
-      ),
-    );
-    return (
-      <button
-        aria-label={`${t("folia.options.monetBackgroundLayout")}: ${label}`}
-        aria-pressed={isFullOverlay}
-        className={`rounded-md px-1.5 py-1 text-[10px] font-bold transition-all ${activeOptionBg}`}
-        onClick={model.toggleMonetBackgroundLayout}
-        style={{ color: theme.primaryColor }}
-        title={`${t("folia.options.monetBackgroundLayout")}: ${label}`}
-        type="button"
-      >
-        {label}
-      </button>
-    );
-  }
-
-  if (model.visualizerBackgroundMode === "nomand") {
-    return (
-      <button
-        aria-label={String(t("folia.options.nomandBackgroundOverlay"))}
-        aria-pressed={model.nomandBackgroundTuning.overlayEnabled}
-        className={`${iconButtonClass} ${model.nomandBackgroundTuning.overlayEnabled ? "text-blue-400 opacity-100" : ""}`}
-        onClick={model.toggleNomandBackgroundOverlay}
-        style={{
-          color: model.nomandBackgroundTuning.overlayEnabled ? undefined : theme.primaryColor,
-        }}
-        title={String(t("folia.options.nomandBackgroundOverlay"))}
-        type="button"
-      >
-        <Layers size={14} />
-      </button>
-    );
-  }
-
-  if (model.visualizerBackgroundMode === "latent") {
-    const displayMode = model.latentBackgroundTuning.displayMode;
-    const displayModeLabelKey =
-      displayMode === "dithering"
-        ? "folia.options.latentDisplayDithering"
-        : displayMode === "mesh"
-          ? "folia.options.latentDisplayMesh"
-          : "folia.options.latentDisplayBoth";
-    const label = String(t(displayModeLabelKey));
-    return (
-      <button
-        aria-label={`${t("folia.options.latentDisplayMode")}: ${label}`}
-        className={`rounded-md px-1.5 py-1 text-[10px] font-bold transition-all ${activeOptionBg}`}
-        onClick={model.cycleLatentBackgroundDisplayMode}
-        style={{ color: theme.primaryColor }}
-        title={`${t("folia.options.latentDisplayMode")}: ${label}`}
-        type="button"
-      >
-        {label}
-      </button>
-    );
-  }
-
-  return null;
+  return entry.renderQuickControls?.({
+    actions,
+    config: settings.background,
+    isDaylight,
+    t: (key) => String(t(`folia.${key}`)),
+    theme,
+  });
 }

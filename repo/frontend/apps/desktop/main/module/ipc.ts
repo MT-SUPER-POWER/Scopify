@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { writeFile } from "node:fs/promises";
 import { app, BrowserWindow, dialog, ipcMain, session } from "electron";
 import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
@@ -9,6 +10,7 @@ import {
   type DesktopBridgeCapability,
   type DiscordPresenceSnapshot,
   type RendererLogEvent,
+  type DesktopVideoExportSaveRequest,
 } from "@scopify/desktop-contract";
 import type { DesktopBackendController } from "./backend.js";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "../config.js";
@@ -50,6 +52,7 @@ export function registerIpcHandlers(
   backendController: DesktopBackendController,
 ) {
   let hasAuthorizedDeveloperToolsOpen = false;
+  let videoExportWindowBounds: Electron.Rectangle | null = null;
   mainWindow?.webContents.on("devtools-opened", () => {
     const isAllowed = hasAuthorizedDeveloperToolsOpen && loadDesktopHostConfig().app.devTools;
     hasAuthorizedDeveloperToolsOpen = false;
@@ -75,6 +78,7 @@ export function registerIpcHandlers(
       "playback-transport",
       "renderer-logging",
       "updates",
+      "video-export",
       "window-controls",
     ] satisfies DesktopBridgeCapability[],
     desktopVersion: app.getVersion(),
@@ -140,6 +144,50 @@ export function registerIpcHandlers(
         : await dialog.showOpenDialog(options);
     if (result.canceled || result.filePaths.length === 0) return null;
     return result.filePaths[0];
+  });
+
+  ipcMain.handle("video-export:get-capture-source", (event) => {
+    if (!isMainRenderer(event, mainWindow) || !mainWindow || mainWindow.isDestroyed()) return null;
+    return { id: mainWindow.getMediaSourceId(), name: mainWindow.getTitle() };
+  });
+
+  ipcMain.handle("video-export:prepare-window", (event, size: unknown) => {
+    if (!isMainRenderer(event, mainWindow) || !mainWindow || mainWindow.isDestroyed()) return false;
+    if (!isVideoExportSize(size)) return false;
+    if (!videoExportWindowBounds) videoExportWindowBounds = mainWindow.getBounds();
+    if (mainWindow.isFullScreen()) mainWindow.setFullScreen(false);
+    mainWindow.setContentSize(size.width, size.height, false);
+    mainWindow.center();
+    return true;
+  });
+
+  ipcMain.handle("video-export:restore-window", (event) => {
+    if (!isMainRenderer(event, mainWindow) || !mainWindow || mainWindow.isDestroyed()) return false;
+    if (videoExportWindowBounds) {
+      mainWindow.setBounds(videoExportWindowBounds, false);
+      videoExportWindowBounds = null;
+    }
+    return true;
+  });
+
+  ipcMain.handle("video-export:select-file", async (event, request: unknown) => {
+    if (!isMainRenderer(event, mainWindow) || !isVideoExportSaveRequest(request)) return null;
+    const result = await dialog.showSaveDialog(mainWindow!, {
+      defaultPath: request.defaultPath,
+      filters: [{ name: request.formatName, extensions: [request.extension] }],
+    });
+    return result.canceled ? null : (result.filePath ?? null);
+  });
+
+  ipcMain.handle("video-export:write-file", async (event, filePath: unknown, data: unknown) => {
+    if (
+      !isMainRenderer(event, mainWindow) ||
+      typeof filePath !== "string" ||
+      !(data instanceof ArrayBuffer)
+    )
+      return false;
+    await writeFile(filePath, Buffer.from(data));
+    return true;
   });
 
   ipcMain.handle("config:get-host", () => {
@@ -371,6 +419,28 @@ export function registerIpcHandlers(
 function isMainRenderer(event: Electron.IpcMainInvokeEvent, mainWindow: BrowserWindow | null) {
   return Boolean(
     mainWindow && !mainWindow.isDestroyed() && event.sender.id === mainWindow.webContents.id,
+  );
+}
+
+function isVideoExportSize(value: unknown): value is { width: number; height: number } {
+  if (!value || typeof value !== "object") return false;
+  const size = value as { width?: unknown; height?: unknown };
+  return [size.width, size.height].every(
+    (dimension) =>
+      typeof dimension === "number" &&
+      Number.isInteger(dimension) &&
+      dimension >= 240 &&
+      dimension <= 4320,
+  );
+}
+
+function isVideoExportSaveRequest(value: unknown): value is DesktopVideoExportSaveRequest {
+  if (!value || typeof value !== "object") return false;
+  const request = value as Partial<DesktopVideoExportSaveRequest>;
+  return (
+    typeof request.defaultPath === "string" &&
+    typeof request.formatName === "string" &&
+    (request.extension === "mp4" || request.extension === "webm")
   );
 }
 

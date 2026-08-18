@@ -4,6 +4,13 @@ import { resolveSonnetFrameLocalDimensions } from "./sonnetFrameDecor";
 import { SONNET_THEMED_GEO_VARIANT_START, SONNET_THEMED_GEO_VARIANTS } from "./sonnetThemedShotMg";
 import { SONNET_OPEN_GEO_VARIANT_START, SONNET_OPEN_GEO_VARIANTS } from "./sonnetOpenFrameShotMg";
 import { SONNET_ADDITIONAL_GEO_VARIANT_START } from "./sonnetAdditionalShotMg";
+import {
+  SONNET_EXTENDED_GEO_VARIANT_START,
+  SONNET_EXTENDED_GEO_VARIANTS,
+} from "./sonnetExtendedShotMg";
+import { SONNET_BACKGROUND_MG_VARIANTS } from "./sonnetBackgroundMgVariants";
+import { SONNET_BACKGROUND_DECOR_VARIANTS } from "./sonnetBackgroundDecor";
+import { SONNET_FIXED_GEO_VARIANTS } from "./sonnetFixedGeoVariants";
 
 // src/components/visualizer/sonnet/sonnetDebug.ts
 // Debug-only overlays for visual verification during layout development.
@@ -79,6 +86,9 @@ export interface SonnetDebugShotInfo {
   wordCount: number;
   geoVariant: number | null;
   geoVariantLabel: string | null;
+  backgroundMgLabel: string;
+  fixedGeoLabel: string | null;
+  backgroundDecorLabel: string;
   segments: SonnetDebugSegmentSnapshot[];
 }
 
@@ -93,6 +103,10 @@ export const sonnetDebugState: {
 // Human-readable label for a geo MG variant; only the themed/open ranges carry
 // real names, the core/additional ranges stay numeric.
 export const resolveSonnetGeoVariantLabel = (variant: number) => {
+  if (variant >= SONNET_EXTENDED_GEO_VARIANT_START) {
+    const name = SONNET_EXTENDED_GEO_VARIANTS[variant - SONNET_EXTENDED_GEO_VARIANT_START];
+    return name ? `extended #${variant} ${name}` : `extended #${variant}`;
+  }
   if (variant >= SONNET_OPEN_GEO_VARIANT_START) {
     const name = SONNET_OPEN_GEO_VARIANTS[variant - SONNET_OPEN_GEO_VARIANT_START];
     return name ? `open #${variant} ${name}` : `open #${variant}`;
@@ -107,6 +121,13 @@ export const resolveSonnetGeoVariantLabel = (variant: number) => {
   return `core #${variant}`;
 };
 
+// Labels for the seeded background-layer variants; names come from each
+// module's variant registry so the debug tab stays in sync automatically.
+const labelFor = (prefix: string, names: readonly string[], variant: number) => {
+  const name = names[variant];
+  return name ? `${prefix} #${variant} ${name}` : `${prefix} #${variant}`;
+};
+
 // Builds the static per-shot snapshot consumed by the debug tab.
 export const createSonnetShotDebugInfo = (options: {
   programSeed: string;
@@ -118,6 +139,9 @@ export const createSonnetShotDebugInfo = (options: {
   baseFontSize: number;
   wordCount: number;
   geoVariant: number | null;
+  backgroundMgVariant: number;
+  fixedGeoVariant: number | null;
+  backgroundDecorVariant: number;
   placements: SonnetTypographyPlacement[];
   segmentTexts: string[];
 }): SonnetDebugShotInfo => ({
@@ -137,6 +161,16 @@ export const createSonnetShotDebugInfo = (options: {
   geoVariant: options.geoVariant,
   geoVariantLabel:
     options.geoVariant === null ? null : resolveSonnetGeoVariantLabel(options.geoVariant),
+  backgroundMgLabel: labelFor("bgMG", SONNET_BACKGROUND_MG_VARIANTS, options.backgroundMgVariant),
+  fixedGeoLabel:
+    options.fixedGeoVariant === null
+      ? null
+      : labelFor("fixedGeo", SONNET_FIXED_GEO_VARIANTS, options.fixedGeoVariant),
+  backgroundDecorLabel: labelFor(
+    "decor",
+    SONNET_BACKGROUND_DECOR_VARIANTS,
+    options.backgroundDecorVariant,
+  ),
   segments: options.placements.map((placement) => ({
     text: options.segmentTexts[placement.segmentIndex] ?? placement.displayText,
     role: placement.role,

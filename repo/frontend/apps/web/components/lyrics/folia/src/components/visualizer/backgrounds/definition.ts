@@ -8,6 +8,7 @@ import type {
   MonetBackgroundImage,
   MonetBackgroundTuning,
   NomandBackgroundTuning,
+  SoraBackgroundTuning,
   Theme,
   UrlBackgroundItem,
   VisualizerBackgroundMode,
@@ -34,6 +35,9 @@ export interface VisualizerBackgroundConfig {
   };
   latent?: {
     tuning?: LatentBackgroundTuning;
+  };
+  sora?: {
+    tuning?: SoraBackgroundTuning;
   };
   url?: {
     items?: UrlBackgroundItem[];
@@ -64,6 +68,10 @@ export interface VisualizerBackgroundActions {
   };
   latent?: {
     onTuningChange?: (patch: Partial<LatentBackgroundTuning>) => void;
+    onResetTuning?: () => void;
+  };
+  sora?: {
+    onTuningChange?: (patch: Partial<SoraBackgroundTuning>) => void;
     onResetTuning?: () => void;
   };
   url?: {
@@ -98,6 +106,15 @@ export interface VisualizerBackgroundSettingsProps {
   onSliderCommit?: () => void;
 }
 
+/** Compact mode-specific controls shown beside the background selector. */
+export interface VisualizerBackgroundQuickControlsProps {
+  config?: VisualizerBackgroundConfig;
+  actions?: VisualizerBackgroundActions;
+  t: (key: string) => string;
+  isDaylight: boolean;
+  theme: Theme;
+}
+
 export interface VisualizerBackgroundRegistryEntry {
   mode: VisualizerBackgroundMode;
   order: number;
@@ -105,6 +122,7 @@ export interface VisualizerBackgroundRegistryEntry {
   labelFallback: string;
   render: (props: VisualizerBackgroundRenderProps) => React.ReactNode;
   renderSettingsPanel?: (props: VisualizerBackgroundSettingsProps) => React.ReactNode;
+  renderQuickControls?: (props: VisualizerBackgroundQuickControlsProps) => React.ReactNode;
   resetSettings?: (actions?: VisualizerBackgroundActions) => void;
 }
 

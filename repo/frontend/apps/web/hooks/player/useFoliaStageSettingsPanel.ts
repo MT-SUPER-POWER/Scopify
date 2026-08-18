@@ -16,6 +16,7 @@ import {
   type Theme,
 } from "@/components/lyrics/folia/src/types";
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
+import { getFoliaStageTheme, THEME_PRESETS } from "@scopify/ui/folia";
 import {
   getVisualizerRegistryEntry,
   hasVisualizerMode,
@@ -83,6 +84,10 @@ export function useFoliaStageSettingsPanel(
         onResetTuning: () => settings.resetBackgroundTuning("latent"),
         onTuningChange: settings.patchLatentBackground,
       },
+      sora: {
+        onResetTuning: () => settings.resetBackgroundTuning("sora"),
+        onTuningChange: settings.patchSoraBackground,
+      },
       monet: {
         onResetTuning: () => settings.resetBackgroundTuning("monet"),
         onTuningChange: settings.patchMonetBackground,
@@ -101,6 +106,29 @@ export function useFoliaStageSettingsPanel(
     }),
     [assets, settings],
   );
+  const themePresetId = useMemo(() => {
+    const theme = getFoliaStageTheme(settings.themes, settings.themeId);
+    const themeColors = settings.themeVariant === "light" ? theme.light : theme.dark;
+    const matchedPreset = THEME_PRESETS.find(
+      (preset) =>
+        preset.colors.accentColor === themeColors.accentColor &&
+        preset.colors.backgroundColor === themeColors.backgroundColor &&
+        preset.colors.primaryColor === themeColors.primaryColor &&
+        preset.colors.secondaryColor === themeColors.secondaryColor,
+    );
+    return matchedPreset?.id ?? "midnight";
+  }, [settings.themeId, settings.themeVariant, settings.themes]);
+  const onThemePresetChange = (presetId: string) => {
+    const preset = THEME_PRESETS.find((item) => item.id === presetId);
+    if (!preset) return;
+    const theme = getFoliaStageTheme(settings.themes, settings.themeId);
+    const nextTheme =
+      settings.themeVariant === "light"
+        ? { ...theme, light: preset.colors }
+        : { ...theme, dark: preset.colors };
+
+    settings.updateTheme(nextTheme);
+  };
   const rangeInputClass = [
     "h-1.5 w-full cursor-pointer appearance-none rounded-full",
     "[&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125",
@@ -234,6 +262,8 @@ export function useFoliaStageSettingsPanel(
     partitaTuning: settings.tunings.partita ?? DEFAULT_PARTITA_TUNING,
     rangeInputClass,
     showSubtitleTranslation: settings.showSubtitleTranslation,
+    themePresetId,
+    onThemePresetChange,
     subtitleContentMode: settings.subtitleContentMode,
     subtitleFontFallbackFamilies: settings.subtitleFontFallbackFamilies,
     subtitleFontFamily: settings.subtitleFontFamily,

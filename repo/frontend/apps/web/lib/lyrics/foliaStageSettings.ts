@@ -9,6 +9,7 @@ import {
   DEFAULT_MONET_BACKGROUND_TUNING,
   DEFAULT_MONET_TUNING,
   DEFAULT_NOMAND_BACKGROUND_TUNING,
+  DEFAULT_SORA_BACKGROUND_TUNING,
   DEFAULT_PENDOLO_TUNING,
   DEFAULT_PARTITA_TUNING,
   DEFAULT_SONNET_TUNING,
@@ -42,6 +43,13 @@ const NUMERIC_RANGES = {
   "background.nomand.tuning.colorSteps": [1, 7],
   "background.nomand.tuning.overlayOpacity": [0, 1],
   "background.nomand.tuning.size": [0.5, 20],
+  "background.sora.tuning.accentRatio": [0, 1],
+  "background.sora.tuning.audioSyncStrength": [0, 1],
+  "background.sora.tuning.backgroundBrightness": [0.1, 1],
+  "background.sora.tuning.starDensity": [0.35, 2],
+  "background.sora.tuning.starSize": [0.2, 2.5],
+  "background.sora.tuning.starSpeed": [0.2, 3],
+  "background.sora.tuning.twinkleIntensity": [0, 1],
   fontScale: [0.85, 1.4],
   lyricOffsetMs: [-30_000, 30_000],
   subtitleFontScale: [0.85, 1.4],
@@ -134,6 +142,8 @@ const STRING_ENUMS = {
 export function createDefaultFoliaStageSettings(): FoliaStageSettings {
   return {
     animationIntensity: "normal",
+    harmonySubtitleBackground: true,
+    showHarmonySubtitle: true,
     background: {
       common: {
         disableGeometricBackground: false,
@@ -145,10 +155,12 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
       mode: "latent",
       monet: { tuning: structuredClone(DEFAULT_MONET_BACKGROUND_TUNING) },
       nomand: { tuning: structuredClone(DEFAULT_NOMAND_BACKGROUND_TUNING) },
+      sora: { tuning: structuredClone(DEFAULT_SORA_BACKGROUND_TUNING) },
       url: { items: [], selectedId: null },
     },
     fontFamily: null,
     fontScale: 1,
+    randomVisualizerMode: false,
     fontStyle: "sans",
     hideTranslationSubtitle: false,
     lyricOffsetMs: 0,

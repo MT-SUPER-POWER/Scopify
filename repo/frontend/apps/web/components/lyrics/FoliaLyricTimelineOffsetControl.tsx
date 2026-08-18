@@ -1,15 +1,10 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, RotateCcw, Settings2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { useI18n } from "@/store/module/i18n";
-
-interface FoliaLyricTimelineOffsetControlProps {
-  isDaylight: boolean;
-  offsetMs: number;
-  onOffsetChange: (offsetMs: number) => void;
-}
+import type { FoliaLyricTimelineOffsetControlProps } from "@/types/components/lyrics";
 
 const STEP_MS = 250;
 
@@ -17,6 +12,7 @@ export function FoliaLyricTimelineOffsetControl({
   isDaylight,
   offsetMs,
   onOffsetChange,
+  onOpenSettings,
 }: FoliaLyricTimelineOffsetControlProps) {
   const { t } = useI18n();
   const [inputValue, setInputValue] = useState(String(offsetMs));
@@ -76,6 +72,16 @@ export function FoliaLyricTimelineOffsetControl({
         >
           <RotateCcw size={12} />
         </button>
+        {onOpenSettings ? (
+          <button
+            className={`ml-1 rounded-md p-1 opacity-70 transition-colors hover:opacity-100 ${buttonHover}`}
+            onClick={onOpenSettings}
+            title={t("folia.options.openLyricsStyleSettings")}
+            type="button"
+          >
+            <Settings2 size={13} />
+          </button>
+        ) : null}
       </div>
     </div>
   );

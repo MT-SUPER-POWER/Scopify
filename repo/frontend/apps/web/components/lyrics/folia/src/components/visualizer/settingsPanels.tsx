@@ -140,8 +140,11 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   return (
     <div
-      className="space-y-4 rounded-[24px] border border-white/10 p-4"
-      style={{ backgroundColor: controlCardBg }}
+      className="space-y-4 rounded-[24px] border p-4"
+      style={{
+        backgroundColor: controlCardBg,
+        borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+      }}
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
@@ -275,8 +278,11 @@ export const PartitaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   return (
     <div
-      className="space-y-4 rounded-[24px] border border-white/10 p-4"
-      style={{ backgroundColor: controlCardBg }}
+      className="space-y-4 rounded-[24px] border p-4"
+      style={{
+        backgroundColor: controlCardBg,
+        borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+      }}
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
@@ -409,8 +415,11 @@ export const FumeSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   return (
     <div
-      className="space-y-4 rounded-[24px] border border-white/10 p-4"
-      style={{ backgroundColor: controlCardBg }}
+      className="space-y-4 rounded-[24px] border p-4"
+      style={{
+        backgroundColor: controlCardBg,
+        borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+      }}
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
@@ -717,8 +726,11 @@ export const CappellaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   return (
     <div
-      className="space-y-4 rounded-[24px] border border-white/10 p-4"
-      style={{ backgroundColor: controlCardBg }}
+      className="space-y-4 rounded-[24px] border p-4"
+      style={{
+        backgroundColor: controlCardBg,
+        borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+      }}
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
@@ -1017,8 +1029,11 @@ export const TiltSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   return (
     <div
-      className="space-y-4 rounded-[24px] border border-white/10 p-4"
-      style={{ backgroundColor: controlCardBg }}
+      className="space-y-4 rounded-[24px] border p-4"
+      style={{
+        backgroundColor: controlCardBg,
+        borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+      }}
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
@@ -1179,8 +1194,11 @@ export const DioramaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   return (
     <div
-      className="space-y-4 rounded-[24px] border border-white/10 p-4"
-      style={{ backgroundColor: controlCardBg }}
+      className="space-y-4 rounded-[24px] border p-4"
+      style={{
+        backgroundColor: controlCardBg,
+        borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+      }}
     >
       <div>
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
@@ -1420,8 +1438,11 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   return (
     <div
-      className="space-y-4 rounded-[24px] border border-white/10 p-4"
-      style={{ backgroundColor: controlCardBg }}
+      className="space-y-4 rounded-[24px] border p-4"
+      style={{
+        backgroundColor: controlCardBg,
+        borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+      }}
     >
       <div className="space-y-1">
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
