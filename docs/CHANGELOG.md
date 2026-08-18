@@ -4,7 +4,11 @@
 
 ### Added
 
-- **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的底部分页栏，并调高了各接口的单次预取上限。
+- **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的分页导航栏，并调高了各接口的单次预取上限。
+
+### Visual
+
+- **统一板块顶栏分页导航并优化 HomeGreeting 排版**：将各 Section 的分页控件从卡片下方抽离为独立的 `SectionPagination` 组件，统一收敛至 Section 头部右侧与「展开/收起」按钮并排展示，避免卡片下方浮空分页条造成的视觉割裂；`HomeGreetingSection` 默认折叠展示 2 排（6 张卡片），展开后展示 3 排（9 个卡片/组）。
 
 ### Quality
 

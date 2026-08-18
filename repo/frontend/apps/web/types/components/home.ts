@@ -48,3 +48,10 @@ export interface RecommendedVoiceListsProps {
   pageSize?: number;
   voices: Voice[];
 }
+
+export interface SectionPaginationProps {
+  className?: string;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  pageCount: number;
+}
