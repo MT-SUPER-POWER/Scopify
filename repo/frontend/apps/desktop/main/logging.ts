@@ -23,6 +23,18 @@ export function sanitizeLogText(text: string) {
   return text.replace(ANSI_ESCAPE_SEQUENCE_PATTERN, "").replace(/\r\n?/g, "\n");
 }
 
+/**
+ * Sanitizes the value passed between electron-log transforms.
+ * The built-in file transform chain returns a string after `toString`.
+ */
+export function sanitizeLogData(data: unknown) {
+  if (typeof data === "string") return sanitizeLogText(data);
+  if (Array.isArray(data)) {
+    return data.map((item) => (typeof item === "string" ? sanitizeLogText(item) : item));
+  }
+  return data;
+}
+
 export function formatLogTimestamp(date: Date) {
   return [
     `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`,

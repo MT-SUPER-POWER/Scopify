@@ -7,6 +7,7 @@ import {
   cleanArchivedLogs,
   getCurrentLogPath,
   prepareLogSession,
+  sanitizeLogData,
   sanitizeLogText,
 } from "@/main/logging";
 
@@ -25,6 +26,10 @@ function createLogsDirectory() {
 describe("desktop log lifecycle", () => {
   test("sanitizes terminal control sequences without flattening carriage-return output", () => {
     expect(sanitizeLogText("\u001b[32mScopify\u001b[0m\rBackend\n")).toBe("Scopify\nBackend\n");
+  });
+
+  test("sanitizes the scalar output produced by electron-log file transforms", () => {
+    expect(sanitizeLogData("\u001b[32mScopify\u001b[0m\rBackend\n")).toBe("Scopify\nBackend\n");
   });
 
   test("archives the previous main.log and marks interrupted sessions", () => {

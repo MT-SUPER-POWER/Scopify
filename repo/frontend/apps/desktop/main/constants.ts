@@ -9,7 +9,7 @@ import {
   cleanArchivedLogs,
   getCurrentLogPath,
   prepareLogSession,
-  sanitizeLogText,
+  sanitizeLogData,
 } from "./logging.js";
 
 // ━━━━━━━━━━━━━━━━ ESM 路径兼容 ━━━━━━━━━━━━━━━━
@@ -53,10 +53,7 @@ export function configureLogging(loggingConfig: DesktopHostConfig["logging"]) {
   };
   log.transports.file.level = loggingConfig.level;
   log.transports.file.maxSize = loggingConfig.maxSizeMB * 1024 * 1024;
-  log.transports.file.transforms = [
-    ...defaultFileTransforms,
-    ({ data }) => data.map((item) => (typeof item === "string" ? sanitizeLogText(item) : item)),
-  ];
+  log.transports.file.transforms = [...defaultFileTransforms, ({ data }) => sanitizeLogData(data)];
 
   if (loggingConfig.format) {
     log.transports.console.format = loggingConfig.format;

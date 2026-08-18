@@ -9,6 +9,7 @@ import type {
   DesktopBackendState,
   DesktopHostConfig,
 } from "@scopify/desktop-contract";
+import { formatBackendChildOutput, formatBackendLogEntry } from "./backendOutput.js";
 
 const BACKEND_HOST = "127.0.0.1";
 const BACKEND_START_TIMEOUT_MS = 20_000;
@@ -172,10 +173,6 @@ function resolveBackendEntry(backendRoot: string) {
   return resolve(app.getAppPath(), "resources/backend-entry.cjs");
 }
 
-function formatChildOutput(value: Buffer) {
-  return value.toString("utf8").trim().replace(/\s+/g, " ").slice(0, 500);
-}
-
 export function createDesktopBackendController(
   options: BackendControllerOptions,
   initialConfig: DesktopHostConfig["backend"],
@@ -228,12 +225,12 @@ export function createDesktopBackendController(
       child = nextChild;
       activePort = port;
       nextChild.stdout.on("data", (data: Buffer) => {
-        const message = formatChildOutput(data);
-        if (message) options.log.info("[backend] %s", message);
+        const message = formatBackendChildOutput(data);
+        if (message) options.log.info("%s", formatBackendLogEntry(message));
       });
       nextChild.stderr.on("data", (data: Buffer) => {
-        const message = formatChildOutput(data);
-        if (message) options.log.warn("[backend] %s", message);
+        const message = formatBackendChildOutput(data);
+        if (message) options.log.warn("%s", formatBackendLogEntry(message));
       });
       nextChild.once("error", (error) => {
         if (child !== nextChild) return;
