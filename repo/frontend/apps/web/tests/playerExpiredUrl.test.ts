@@ -2,6 +2,16 @@ import { afterAll, afterEach, beforeEach, expect, mock, test } from "bun:test";
 import type { SongDetail } from "@/types/api/music";
 import type { PlayerStore } from "@/types/player";
 
+function requireAction<T extends (...args: unknown[]) => unknown>(
+  action: T | undefined,
+  actionName: string,
+): T {
+  if (typeof action !== "function") {
+    throw new Error(`[test] missing player action: ${actionName}`);
+  }
+  return action;
+}
+
 function createSong(id: number): SongDetail {
   return {
     id,
@@ -64,10 +74,24 @@ Object.defineProperty(globalThis, "window", {
 
 const { mergePersistedPlayerState, selectPersistedPlayerState, usePlayerStore } =
   await import("@/store/module/player");
-const initialPlayerState = usePlayerStore.getInitialState();
-const { playTrack: initialPlayTrack, setIsPlaying, togglePlaying } = initialPlayerState;
+const getInitialPlayerState = () => usePlayerStore.getState();
+const getInitialPlayerActions = () => {
+  const state = getInitialPlayerState();
+  return {
+    playTrack: requireAction(state.playTrack, "playTrack"),
+    setIsPlaying: requireAction(state.setIsPlaying, "setIsPlaying"),
+    togglePlaying: requireAction(state.togglePlaying, "togglePlaying"),
+  };
+};
+
+const initialPlayerState = getInitialPlayerState();
+const initialPlayerActions = getInitialPlayerActions();
+const { playTrack: initialPlayTrack, setIsPlaying, togglePlaying } = initialPlayerActions;
 
 const resetPlayerStore = (playTrack: PlayerStore["playTrack"] = initialPlayTrack) => {
+  const { setIsPlaying: resolvedSetIsPlaying, togglePlaying: resolvedTogglePlaying } =
+    getInitialPlayerActions();
+
   usePlayerStore.setState({
     ...initialPlayerState,
     currentSongDetail: null,
@@ -75,6 +99,8 @@ const resetPlayerStore = (playTrack: PlayerStore["playTrack"] = initialPlayTrack
     isPlaying: false,
     playbackFailureCount: 0,
     playTrack,
+    setIsPlaying: resolvedSetIsPlaying,
+    togglePlaying: resolvedTogglePlaying,
   });
 };
 

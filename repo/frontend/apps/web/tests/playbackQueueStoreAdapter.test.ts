@@ -2,13 +2,33 @@ import { expect, mock, test } from "bun:test";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/api/music";
 
-const initialPlayerState = usePlayerStore.getInitialState();
+function requireAction<T extends (...args: unknown[]) => unknown>(
+  action: T | undefined,
+  actionName: string,
+): T {
+  if (typeof action !== "function") {
+    throw new Error(`[test] missing player action: ${actionName}`);
+  }
+  return action;
+}
+
+const getInitialPlayerActions = () => {
+  const state = usePlayerStore.getState();
+  return {
+    playQueueIndex: requireAction(state.playQueueIndex, "playQueueIndex"),
+    moveQueueItem: requireAction(state.moveQueueItem, "moveQueueItem"),
+    removeQueueItem: requireAction(state.removeQueueItem, "removeQueueItem"),
+    playTrack: requireAction(state.playTrack, "playTrack"),
+  };
+};
+
+const initialPlayerState = usePlayerStore.getState();
 const {
   playQueueIndex,
   moveQueueItem,
   removeQueueItem,
   playTrack: initialPlayTrack,
-} = initialPlayerState;
+} = getInitialPlayerActions();
 
 function createSong(id: number): SongDetail {
   return {

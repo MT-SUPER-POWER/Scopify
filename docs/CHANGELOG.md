@@ -51,6 +51,7 @@
 - **修复 Folia 背景类型回退英文**：为通用、莫奈、漫游与隐现背景的注册项补齐 `folia.` 翻译命名空间，使展开式背景选择正确显示当前语言文案；嵌入与空背景继续沿用已有的正确翻译键。
 - **补齐 Monet 漫游背景新增效果翻译**：补充背景漂移、漂移幅度和流动光带的简体中文、繁体中文与英文文案，避免原始 i18n key 撑出 Folia 设置面板。
 - **修复播放器状态 Store 单测在 CI 中偶发缺失 Action 的问题**：`playerExpiredUrl.test.ts`、`playerRepeat.test.ts` 与 `playbackQueueStoreAdapter.test.ts` 改为固定基线 actions 并复用 `setState` 基线快照，避免直接依赖 `usePlayerStore.getState()` 带来的并发污染，确保 `togglePlaying`、`setIsPlaying` 与 `playNext` 在测试运行中始终可调用。
+- **修复播放器状态 Store 单测在 CI 中 `getInitialState` 兼容性问题**：将三处测试改回 `usePlayerStore.getState()` 并通过 action 存在校验与回滚保护，避免 GitHub Actions 环境下 `getInitialState` 不存在导致 CI 直接报错。
 
 
 
