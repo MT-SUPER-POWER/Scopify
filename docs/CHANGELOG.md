@@ -36,6 +36,7 @@
 
 ### Fixed
 
+- **修复 Release 打包工作流子模块更新失败**：将 `release.yml` 中 `package` 任务的 `actions/checkout` 切换为 `submodules: false`，并显式仅初始化 `repo/backend/api-enhanced` 子模块，避免 `frontend/apps/mobile` 缺失提交导致 GitHub Actions 打包终止。
 - **修复内置后端 Logo 被压成单行**：转发后端 stdout/stderr 时保留多行输出和 Logo 内部排版，并让多行日志的 `[backend]` 标记独占一行，同时清理终端控制字符，避免启动 Logo 在日志中变成一串方块或横向乱码。
 - **修复 electron-log 文件写入失败**：内置文件 transform 完成格式化后会传递字符串，改为对最终日志文本进行清理，避免错误调用 `data.map` 导致 `main.log` 始终为空。
 - **修复桌面日志中的终端控制字符与 Logo 排版**：文件日志最终落盘前会清除 ANSI 颜色码，并将回车控制符还原为换行，避免彩色字体残留或后端 Logo 被压成不完整的一行。

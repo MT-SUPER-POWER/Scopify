@@ -101,7 +101,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
+
+      - name: Checkout backend API submodule only
+        run: git submodule update --init --depth 1 repo/backend/api-enhanced
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
