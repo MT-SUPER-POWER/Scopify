@@ -1,5 +1,15 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { app, nativeImage } from "electron";
+import log from "electron-log";
+import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import { appConfigDefaultPath, appConfigPath, loadDesktopHostConfig } from "./config.js";
+import {
+  archiveLogFile,
+  cleanArchivedLogs,
+  getCurrentLogPath,
+  prepareLogSession,
+} from "./logging.js";
 
 // ━━━━━━━━━━━━━━━━ ESM 路径兼容 ━━━━━━━━━━━━━━━━
 const __filename = fileURLToPath(import.meta.url);
@@ -16,12 +26,41 @@ export const __splashHtmlPath = app.isPackaged
 
 export const __splashHtmlDesc = `[SPLASH] Electron 启动页: ${__splashHtmlPath}`;
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LOGGER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import fs from "node:fs";
-import { app, nativeImage } from "electron";
-import log from "electron-log";
-import { appConfigDefaultPath, appConfigPath, loadDesktopHostConfig } from "./config.js";
+const desktopConfig = loadDesktopHostConfig();
+const logsDir = app.isPackaged
+  ? join(app.getPath("userData"), "logs")
+  : join(process.cwd(), "logs");
+const currentLogPath = prepareLogSession(logsDir);
+let activeLoggingConfig = desktopConfig.logging;
+
+export function getLogDirectory() {
+  return logsDir;
+}
+
+export function getCurrentLogFilePath() {
+  return currentLogPath;
+}
+
+export function configureLogging(loggingConfig: DesktopHostConfig["logging"]) {
+  activeLoggingConfig = loggingConfig;
+  log.transports.file.resolvePathFn = () => currentLogPath;
+  log.transports.file.archiveLogFn = (file) => {
+    archiveLogFile(file.toString(), logsDir);
+  };
+  log.transports.file.level = loggingConfig.level;
+  log.transports.file.maxSize = loggingConfig.maxSizeMB * 1024 * 1024;
+
+  if (loggingConfig.format) {
+    log.transports.console.format = loggingConfig.format;
+    log.transports.file.format = loggingConfig.format;
+  }
+}
+
+configureLogging(activeLoggingConfig);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ICON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -76,7 +115,6 @@ if (_nativeDockMac.isEmpty()) {
 
 export const __preloadScript = join(__dirname, "../main/preload.js");
 export const __rendererDir = join(__dirname, "../../renderer");
-const desktopConfig = loadDesktopHostConfig();
 
 const __picDir = app.isPackaged
   ? join(process.resourcesPath, "resources/pic")
@@ -106,44 +144,10 @@ const configStr = JSON.stringify(desktopConfig, null, 2)
   .map((line, i) => (i === 0 ? line : `              ${line}`))
   .join("\n");
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LOGGER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const logsDir = app.isPackaged
-  ? join(app.getPath("userData"), "logs")
-  : join(process.cwd(), "logs");
-
-export function getLogDirectory() {
-  return logsDir;
-}
-
-const keepDays = desktopConfig.logging.keepDays || 7;
-
-// 按天命名文件
-log.transports.file.resolvePathFn = () => {
-  const now = new Date();
-  const offset = now.getTimezoneOffset() * 60000;
-  const localISOTime = new Date(now.getTime() - offset).toISOString().slice(0, 10);
-  return join(logsDir, `${localISOTime}.log`);
-};
-
-log.transports.file.level = desktopConfig.logging.level;
-
-if (desktopConfig.logging.format) {
-  log.transports.console.format = desktopConfig.logging.format;
-  log.transports.file.format = desktopConfig.logging.format;
-}
-
-// 清理过期日志
 export function cleanOldLogs() {
-  if (!fs.existsSync(logsDir)) return;
-  const cutoff = Date.now() - keepDays * 24 * 60 * 60 * 1000;
-  fs.readdirSync(logsDir).forEach((file: string) => {
-    const filePath = join(logsDir, file);
-    if (fs.statSync(filePath).mtimeMs < cutoff) {
-      fs.unlinkSync(filePath);
-      log.info(`Deleted old log: ${file}`);
-    }
-  });
+  const deletedCount = cleanArchivedLogs(logsDir, activeLoggingConfig.keepDays);
+  if (deletedCount > 0) log.info(`[logger] deleted ${deletedCount} expired archived log(s)`);
+  return deletedCount;
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LOG ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

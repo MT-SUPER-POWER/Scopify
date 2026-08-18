@@ -20,6 +20,7 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     level: "info",
     format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}",
     keepDays: 7,
+    maxSizeMB: 16,
   },
   network: {
     proxyMode: "system",
@@ -149,6 +150,7 @@ export const desktopHostConfigSchema = z.preprocess(
             .catch(DEFAULT_DESKTOP_HOST_CONFIG.logging.level),
           format: trimmedString(DEFAULT_DESKTOP_HOST_CONFIG.logging.format, true),
           keepDays: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.logging.keepDays),
+          maxSizeMB: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.logging.maxSizeMB),
         }),
       ),
       network: z.preprocess(

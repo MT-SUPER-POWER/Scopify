@@ -1,6 +1,7 @@
 "use client";
 
-import { CircleCheck, CircleX, LoaderCircle, Radio } from "lucide-react";
+import { CircleCheck, CircleX, FileText, FolderOpen, LoaderCircle, Radio } from "lucide-react";
+import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import { useLogDirectory } from "@/hooks/settings/useLogDirectory";
 import type { DesktopLogLevel } from "@scopify/desktop-contract";
@@ -74,16 +75,49 @@ export function DesktopSettingsTab({
           }
         />
         <SettingRow
+          label={t("settings.maxLogSize.label")}
+          sublabel={t("settings.maxLogSize.sublabel")}
+          control={
+            <SettingInput
+              type="number"
+              value={config.logging.maxSizeMB}
+              onChange={(value) => onChange("logging", "maxSizeMB", Number(value))}
+            />
+          }
+        />
+        <SettingRow
           label={t("settings.logDirectory.label")}
           sublabel={t("settings.logDirectory.sublabel")}
           isColumn
           control={
-            <code className="block w-full rounded border border-input bg-surface-sunken px-3 py-2 text-left text-xs font-medium break-all text-foreground">
-              {logDirectory ??
-                (logDirectory === null
-                  ? t("settings.logDirectory.unavailable")
-                  : t("settings.logDirectory.loading"))}
-            </code>
+            <div className="w-full space-y-2">
+              <code className="block w-full rounded border border-input bg-surface-sunken px-3 py-2 text-left text-xs font-medium break-all text-foreground">
+                {logDirectory ??
+                  (logDirectory === null
+                    ? t("settings.logDirectory.unavailable")
+                    : t("settings.logDirectory.loading"))}
+              </code>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  disabled={!logDirectory}
+                  onClick={() => void runtime.logging.openCurrentFile()}
+                  className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <FileText className="size-4" />
+                  {t("settings.logDirectory.openCurrent")}
+                </button>
+                <button
+                  type="button"
+                  disabled={!logDirectory}
+                  onClick={() => void runtime.logging.openDirectory()}
+                  className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <FolderOpen className="size-4" />
+                  {t("settings.logDirectory.openDirectory")}
+                </button>
+              </div>
+            </div>
           }
         />
       </SettingSection>

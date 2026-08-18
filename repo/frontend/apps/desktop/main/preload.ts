@@ -180,6 +180,8 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.invoke("video-export:write-file", filePath, data),
   getHostConfig: () => ipcRenderer.invoke("config:get-host"),
   getLogDirectory: () => ipcRenderer.invoke("logger:get-directory"),
+  openCurrentLog: () => ipcRenderer.invoke("logger:open-current"),
+  openLogDirectory: () => ipcRenderer.invoke("logger:open-directory"),
   getDesktopIconVisibility: () => ipcRenderer.invoke("desktop-icons:get-visibility"),
   toggleDeveloperTools: () => ipcRenderer.invoke("developer-tools:toggle"),
   updateHostConfig: (config: DesktopHostConfig) => ipcRenderer.invoke("config:update-host", config),

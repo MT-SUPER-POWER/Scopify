@@ -73,7 +73,7 @@ const HOST_CONFIG: DesktopHostConfig = {
   },
   discord: { applicationId: "1536959813114658836", enabled: true },
   frontend: { devPort: 3000, host: "127.0.0.1" },
-  logging: { format: "", keepDays: 7, level: "info" },
+  logging: { format: "", keepDays: 7, level: "info", maxSizeMB: 16 },
   network: { proxyMode: "system", proxyUrl: "" },
   updater: { autoDownload: false, checkOnStartup: true },
 };
@@ -180,6 +180,8 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
       protocolVersion: DESKTOP_BRIDGE_PROTOCOL_VERSION,
     }),
     getLogDirectory: async () => "logs",
+    openCurrentLog: async () => true,
+    openLogDirectory: async () => true,
     getDesktopLyricPreferences: async () => null,
     getDesktopIconVisibility: async () => DESKTOP_ICON_STATE,
     getDesktopPlaybackWallpaperModel: async () => WALLPAPER_MODEL,
@@ -281,6 +283,8 @@ describe("browser runtime adapter", () => {
     expect(runtime.auth.openLoginWindow()).toBeFalse();
     expect(runtime.auth.completeLogin()).toBeFalse();
     expect(await runtime.logging.getDirectory()).toBeNull();
+    expect(await runtime.logging.openCurrentFile()).toBeFalse();
+    expect(await runtime.logging.openDirectory()).toBeFalse();
     expect((await runtime.updates.getStatus()).supported).toBeFalse();
     expect(runtime.navigation.navigateMainWindow("/setting")).toBeFalse();
     expect((await runtime.desktopPlaybackWallpaper.getModel()).status.state).toBe("unsupported");
@@ -469,6 +473,14 @@ describe("electron runtime adapter", () => {
         calls.push("get-log-directory");
         return "C:\\Users\\Scopify\\logs";
       },
+      openCurrentLog: async () => {
+        calls.push("open-current-log");
+        return true;
+      },
+      openLogDirectory: async () => {
+        calls.push("open-log-directory");
+        return true;
+      },
       selectDirectory: async (defaultPath) => {
         calls.push(`select-directory:${defaultPath ?? "none"}`);
         return "D:\\CustomCache";
@@ -490,6 +502,8 @@ describe("electron runtime adapter", () => {
     expect(runtime.navigation.navigateMainWindow("/setting")).toBeTrue();
     runtime.media.setPlaying(true);
     expect(await runtime.logging.getDirectory()).toBe("C:\\Users\\Scopify\\logs");
+    expect(await runtime.logging.openCurrentFile()).toBeTrue();
+    expect(await runtime.logging.openDirectory()).toBeTrue();
     expect(await runtime.config.selectDirectory("C:\\DefaultCache")).toBe("D:\\CustomCache");
     expect(await runtime.window.toggleDeveloperTools()).toBeTrue();
 
@@ -500,6 +514,8 @@ describe("electron runtime adapter", () => {
       "navigate:/setting",
       "playing:true",
       "get-log-directory",
+      "open-current-log",
+      "open-log-directory",
       "select-directory:C:\\DefaultCache",
       "toggle-developer-tools",
     ]);

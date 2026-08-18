@@ -24,7 +24,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 19;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 20;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -104,6 +104,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   getHostConfig(): Promise<DesktopHostConfig>;
   getBridgeInfo(): Promise<DesktopBridgeInfo>;
   getLogDirectory(): Promise<string>;
+  openCurrentLog(): Promise<boolean>;
+  openLogDirectory(): Promise<boolean>;
   getDesktopIconVisibility(): Promise<DesktopIconVisibilityState>;
   getDesktopLyricPreferences(): Promise<DesktopLyricPreferences | null>;
   getDesktopPlaybackWallpaperModel(): Promise<DesktopPlaybackWallpaperModel>;

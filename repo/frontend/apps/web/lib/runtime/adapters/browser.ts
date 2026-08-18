@@ -416,6 +416,8 @@ export function createBrowserRuntime(
     kind: "browser",
     logging: {
       getDirectory: async () => null,
+      openCurrentFile: async () => false,
+      openDirectory: async () => false,
       write: async () => false,
     },
     media: {

@@ -99,6 +99,8 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
     kind: "desktop",
     logging: {
       getDirectory: () => bridge.getLogDirectory(),
+      openCurrentFile: () => bridge.openCurrentLog(),
+      openDirectory: () => bridge.openLogDirectory(),
       write: (event) => bridge.writeLog(event),
     },
     media: {

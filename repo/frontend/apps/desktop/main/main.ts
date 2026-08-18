@@ -398,6 +398,7 @@ if (!gotTheLock) {
 
   app.on("before-quit", () => {
     isQuitting = true;
+    logger.info("[session] shutdown");
     disposeAppCloseWindow();
     playbackBrokerIpcHost?.dispose();
     playbackBrokerIpcHost = null;
