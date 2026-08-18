@@ -39,9 +39,12 @@ export interface FoliaQuickEffectPickerPosition {
 
 export interface FoliaStageSettings {
   animationIntensity: Theme["animationIntensity"];
+  harmonySubtitleBackground: boolean;
+  showHarmonySubtitle: boolean;
   background: VisualizerBackgroundConfig;
   fontFamily: string | null;
   fontScale: number;
+  randomVisualizerMode: boolean;
   fontStyle: Theme["fontStyle"];
   hideTranslationSubtitle: boolean;
   lyricOffsetMs: number;

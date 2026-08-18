@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   DEFAULT_MONET_BACKGROUND_TUNING,
@@ -12,6 +12,7 @@ import {
   resolveMonetBackgroundDataUrl,
   checkCanvasFilterSupport,
 } from "../../monet/monetBackgroundPipeline";
+import { buildMonetDriftTrack } from "./monetBackgroundDrift";
 
 // src/components/visualizer/backgrounds/monet/MonetBackgroundLayer.tsx
 // Shared shell-level Monet image background with debounced bitmap post-processing.
@@ -22,11 +23,63 @@ interface MonetBackgroundLayerProps {
   isDaylight?: boolean;
   tuning?: MonetBackgroundTuning;
   transparentBackground?: boolean;
+  staticMode?: boolean;
 }
 
 const PIPELINE_DEBOUNCE_MS = 180;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Plays the noise-driven drift track on `ref` for as long as it stays enabled. The keyframes are
+ * handed to the Web Animations API rather than written per frame, so playback stays on the
+ * compositor and costs no main-thread work once started.
+ */
+const useMonetBackgroundDrift = (
+  ref: React.RefObject<HTMLDivElement | null>,
+  enabled: boolean,
+  strength: number,
+) => {
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || !enabled || strength <= 0 || typeof element.animate !== "function") {
+      return;
+    }
+
+    let animation: Animation | null = null;
+    const start = () => {
+      animation?.cancel();
+      animation = prefersReducedMotion()
+        ? null
+        : (() => {
+            const track = buildMonetDriftTrack(strength);
+            return element.animate(track.keyframes, {
+              duration: track.durationMs,
+              iterations: Infinity,
+              easing: "linear",
+            });
+          })();
+    };
+
+    start();
+
+    const motionQuery =
+      typeof window !== "undefined" && typeof window.matchMedia === "function"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)")
+        : null;
+    motionQuery?.addEventListener("change", start);
+
+    return () => {
+      motionQuery?.removeEventListener("change", start);
+      animation?.cancel();
+    };
+  }, [enabled, ref, strength]);
+};
 
 const resolveSourceUrl = (
   coverUrl: string | null | undefined,
@@ -44,6 +97,7 @@ const MonetBackgroundLayer: React.FC<MonetBackgroundLayerProps> = ({
   isDaylight = false,
   tuning = DEFAULT_MONET_BACKGROUND_TUNING,
   transparentBackground = false,
+  staticMode = false,
 }) => {
   const [pipelineUrl, setPipelineUrl] = useState<string | null>(null);
   const sourceUrl = resolveSourceUrl(coverUrl, monetBackgroundImage, tuning);
@@ -101,6 +155,16 @@ const MonetBackgroundLayer: React.FC<MonetBackgroundLayerProps> = ({
     };
   }, [backgroundCacheKey, sourceUrl, transparentBackground]);
 
+  const driftRef = useRef<HTMLDivElement | null>(null);
+  const driftStrength = clamp(tuning.backgroundDriftStrength ?? 0, 0, 1);
+  const driftEnabled = Boolean(tuning.backgroundDriftEnabled) && !staticMode && driftStrength > 0;
+  useMonetBackgroundDrift(driftRef, driftEnabled, driftStrength);
+  // Only promote the layer while it actually moves; an idle drift wrapper stays a plain div.
+  const driftStyle = useMemo<React.CSSProperties | undefined>(
+    () => (driftEnabled ? { willChange: "transform" } : undefined),
+    [driftEnabled],
+  );
+
   const isCanvasFilterSupported = useMemo(() => checkCanvasFilterSupport(), []);
   const blurValue = !isCanvasFilterSupported ? tuning.backgroundBlurPx : 0;
 
@@ -126,23 +190,25 @@ const MonetBackgroundLayer: React.FC<MonetBackgroundLayerProps> = ({
   if (tuning.backgroundLayout === "full-overlay") {
     return (
       <div className="absolute inset-0 z-0 overflow-hidden">
-        <AnimatePresence initial={false}>
-          <motion.div
-            key={pipelineUrl || sourceUrl || "fallback"}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute inset-0"
-            style={{
-              backgroundColor: theme.backgroundColor,
-              backgroundImage: resolvedBackgroundImage,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              ...blurStyle,
-            }}
-          />
-        </AnimatePresence>
+        <div ref={driftRef} className="absolute inset-0" style={driftStyle}>
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={pipelineUrl || sourceUrl || "fallback"}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="absolute inset-0"
+              style={{
+                backgroundColor: theme.backgroundColor,
+                backgroundImage: resolvedBackgroundImage,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                ...blurStyle,
+              }}
+            />
+          </AnimatePresence>
+        </div>
         <div className="absolute inset-0" style={{ background: readabilityGradient }} />
       </div>
     );
@@ -172,21 +238,23 @@ const MonetBackgroundLayer: React.FC<MonetBackgroundLayerProps> = ({
                 "linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.94) 48%, rgba(0,0,0,0.46) 74%, rgba(0,0,0,0) 100%)",
             }}
           >
-            <motion.div
-              key={pipelineUrl || sourceUrl || "fallback"}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: imageOpacity }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-0"
-              style={{
-                backgroundImage: resolvedBackgroundImage,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                backgroundPosition: `${imagePositionX}% center`,
-                ...blurStyle,
-              }}
-            />
+            <div ref={driftRef} className="absolute inset-0" style={driftStyle}>
+              <motion.div
+                key={pipelineUrl || sourceUrl || "fallback"}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: imageOpacity }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: resolvedBackgroundImage,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  backgroundPosition: `${imagePositionX}% center`,
+                  ...blurStyle,
+                }}
+              />
+            </div>
           </div>
         ) : null}
       </AnimatePresence>

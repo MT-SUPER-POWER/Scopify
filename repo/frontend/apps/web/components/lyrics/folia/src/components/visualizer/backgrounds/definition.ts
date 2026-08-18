@@ -106,6 +106,15 @@ export interface VisualizerBackgroundSettingsProps {
   onSliderCommit?: () => void;
 }
 
+/** Compact mode-specific controls shown beside the background selector. */
+export interface VisualizerBackgroundQuickControlsProps {
+  config?: VisualizerBackgroundConfig;
+  actions?: VisualizerBackgroundActions;
+  t: (key: string) => string;
+  isDaylight: boolean;
+  theme: Theme;
+}
+
 export interface VisualizerBackgroundRegistryEntry {
   mode: VisualizerBackgroundMode;
   order: number;
@@ -113,6 +122,7 @@ export interface VisualizerBackgroundRegistryEntry {
   labelFallback: string;
   render: (props: VisualizerBackgroundRenderProps) => React.ReactNode;
   renderSettingsPanel?: (props: VisualizerBackgroundSettingsProps) => React.ReactNode;
+  renderQuickControls?: (props: VisualizerBackgroundQuickControlsProps) => React.ReactNode;
   resetSettings?: (actions?: VisualizerBackgroundActions) => void;
 }
 

@@ -142,6 +142,8 @@ const STRING_ENUMS = {
 export function createDefaultFoliaStageSettings(): FoliaStageSettings {
   return {
     animationIntensity: "normal",
+    harmonySubtitleBackground: true,
+    showHarmonySubtitle: true,
     background: {
       common: {
         disableGeometricBackground: false,
@@ -158,6 +160,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     },
     fontFamily: null,
     fontScale: 1,
+    randomVisualizerMode: false,
     fontStyle: "sans",
     hideTranslationSubtitle: false,
     lyricOffsetMs: 0,

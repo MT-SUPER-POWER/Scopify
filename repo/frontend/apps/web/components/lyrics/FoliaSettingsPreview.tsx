@@ -1,6 +1,7 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { Pause, Play, Sparkles } from "lucide-react";
+import { useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 
 import VisPlaygroundPreviewHotspots from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundPreviewHotspots";
@@ -17,7 +18,8 @@ export function FoliaSettingsPreview({
   theme,
 }: FoliaSettingsPreviewProps) {
   const { t } = useI18n();
-  const preview = useFoliaSettingsPreview();
+  const [isPreviewPaused, setIsPreviewPaused] = useState(false);
+  const preview = useFoliaSettingsPreview(isPreviewPaused);
   const settings = useLyricStageStore();
   const isDaylight = theme.name === "snow";
   const modeLabel = getVisualizerModeLabel(settings.mode, t);
@@ -33,6 +35,15 @@ export function FoliaSettingsPreview({
       >
         <Sparkles size={13} />
         <span>{t("folia.ui.livePreview")}</span>
+        <button
+          aria-label={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
+          className="ml-1 rounded-full p-1 transition-colors hover:bg-white/15"
+          onClick={() => setIsPreviewPaused((paused) => !paused)}
+          title={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
+          type="button"
+        >
+          {isPreviewPaused ? <Play size={12} fill="currentColor" /> : <Pause size={12} />}
+        </button>
       </div>
       <div
         className="absolute top-4 right-4 z-40 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs backdrop-blur-md"
@@ -77,7 +88,9 @@ export function FoliaSettingsPreview({
           hideTranslationSubtitle={settings.hideTranslationSubtitle}
           showSubtitleTranslation={settings.showSubtitleTranslation}
           subtitleContentMode={settings.subtitleContentMode}
-          paused={false}
+          harmonySubtitleBackground={settings.harmonySubtitleBackground}
+          showHarmonySubtitle={settings.showHarmonySubtitle}
+          paused={isPreviewPaused}
           cappellaCustomAvatarImages={assets.cappellaCustomAvatarImages}
           cappellaCustomEmojiImages={assets.cappellaCustomEmojiImages}
           monetPortraitImage={assets.monetPortraitImage}
