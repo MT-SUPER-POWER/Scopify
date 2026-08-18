@@ -27,7 +27,7 @@
     "build:mac": "turbo run build:mac --filter=@scopify/desktop",
     "typecheck": "turbo run typecheck",
     "test:architecture": "bun test scripts/check-architecture.test.ts",
-    "test": "bun run test:architecture && turbo run test",
+    "test": "bun run test:architecture && turbo run test -- --isolate",
     "lint:architecture": "bun scripts/check-architecture.ts",
     "lint": "bun run lint:architecture && turbo run lint",
     "format": "prettier --write .",

@@ -4,9 +4,11 @@ import type { NeteaseLyric } from "@/types/api/music";
 const storage = new Map<string, unknown>();
 
 mock.module("idb-keyval", () => ({
+  createStore: () => ({}),
   del: async (key: string) => {
     storage.delete(key);
   },
+  entries: async () => [],
   get: async <T>(key: string) => storage.get(key) as T | undefined,
   set: async (key: string, value: unknown) => {
     storage.set(key, structuredClone(value));
