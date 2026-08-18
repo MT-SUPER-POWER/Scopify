@@ -224,7 +224,7 @@ export function AudioEqualizerPanel() {
               <Copy size={14} />
             </button>
             <button
-              className="flex size-9 items-center justify-center rounded-xl border border-red-400/20 text-red-400 transition-colors hover:bg-red-400/10"
+              className="flex size-9 items-center justify-center rounded-xl border border-destructive/40 text-destructive transition-colors hover:bg-destructive/10"
               onClick={() => deleteCustomPreset(activeCustomPreset.id)}
               title={t("audioEqualizer.deletePreset")}
               type="button"
