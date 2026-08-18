@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 
 export function useLoginStatus(): boolean {
   const isStoreLogin = useUserStore((state) => !!state.user?.userId);
@@ -10,7 +11,7 @@ export function useLoginStatus(): boolean {
   useEffect(() => {
     // useEffect 只会在客户端浏览器执行
     const storageUserId = localStorage.getItem("user_id");
-    const cookie = localStorage.getItem("music_cookie");
+    const cookie = getMusicSessionCredential();
     setIsLogin(Boolean(cookie && (isStoreLogin || storageUserId)));
   }, [isStoreLogin]);
 

@@ -9,10 +9,11 @@ import type {
   SongChorusResponse,
 } from "@/types/api/music";
 import request from "../web/request";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 
 // 获取 cookie 的辅助函数
 const getCookie = () => {
-  return typeof window !== "undefined" ? (localStorage.getItem("music_cookie") ?? "") : "";
+  return getMusicSessionCredential() ?? "";
 };
 
 export async function greySongUrlMatch(

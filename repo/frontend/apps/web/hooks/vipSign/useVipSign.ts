@@ -5,6 +5,7 @@ import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { vipSign, vipSignDetail, vipSignHistory } from "@/lib/api/user";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { getVipSignTodayRecord, hasVipSignedToday } from "@/lib/vipSign";
 import { useUserStore } from "@/store";
 import type { VipSignDetail, VipSignHistoryResponse } from "@/types/api/vipSign";
@@ -32,8 +33,7 @@ export function useVipSign() {
   const userId = useUserStore((state) => state.user?.userId);
 
   const getCookie = useCallback(() => {
-    if (typeof window === "undefined") return undefined;
-    return localStorage.getItem("music_cookie") ?? undefined;
+    return getMusicSessionCredential();
   }, []);
 
   // ─────────────────────────────────────────────────────────

@@ -124,6 +124,7 @@ const electronAPI: DesktopBridge = {
   getBridgeInfo: () => ipcRenderer.invoke("bridge:get-info"),
   getDiscordPresenceStatus: () => ipcRenderer.invoke("discord-presence:get-status"),
   testDiscordPresenceConnection: () => ipcRenderer.invoke("discord-presence:test-connection"),
+  getMusicCookie: () => ipcRenderer.sendSync("get-music-cookie"),
   setPlayerPlaying: (isPlaying) => {
     ipcRenderer.send("player-state-changed", { isPlaying });
   },

@@ -1,4 +1,6 @@
 const MUSIC_SESSION_STORAGE_KEY = "music_cookie";
+const EMPTY = "";
+let resolvedMusicSessionCredential: string | null | undefined;
 
 /**
  * Session Credential Adapter for the NetEase backend contract.
@@ -7,16 +9,31 @@ const MUSIC_SESSION_STORAGE_KEY = "music_cookie";
  */
 export function getMusicSessionCredential() {
   if (typeof window === "undefined") return undefined;
-  return window.localStorage.getItem(MUSIC_SESSION_STORAGE_KEY) ?? undefined;
+
+  if (resolvedMusicSessionCredential === undefined) {
+    resolvedMusicSessionCredential =
+      typeof window.localStorage.getItem === "function"
+        ? window.localStorage.getItem(MUSIC_SESSION_STORAGE_KEY)
+        : null;
+  }
+
+  return resolvedMusicSessionCredential || undefined;
 }
 
 export function saveMusicSessionCredential(credential: string) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(MUSIC_SESSION_STORAGE_KEY, credential);
+  resolvedMusicSessionCredential = credential;
+  if (credential) {
+    window.localStorage.setItem(MUSIC_SESSION_STORAGE_KEY, credential);
+    return;
+  }
+  resolvedMusicSessionCredential = EMPTY;
+  window.localStorage.removeItem(MUSIC_SESSION_STORAGE_KEY);
 }
 
 export function clearMusicSessionCredential() {
   if (typeof window === "undefined") return;
+  resolvedMusicSessionCredential = EMPTY;
   window.localStorage.removeItem(MUSIC_SESSION_STORAGE_KEY);
 }
 

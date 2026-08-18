@@ -25,6 +25,11 @@ import {
   getUpdateState,
   quitAndInstallUpdate,
 } from "./updater.js";
+import {
+  clearMusicSessionCookie,
+  readMusicSessionCookie,
+  saveMusicSessionCookie,
+} from "./musicCookieStore.js";
 
 function createConfiguredPageCacheStore() {
   const config = loadDesktopHostConfig();
@@ -319,6 +324,14 @@ export function registerIpcHandlers(
     try {
       const musicUMatch = cookieStr.match(/MUSIC_U=([^;]+)/);
       const value = musicUMatch ? musicUMatch[1] : cookieStr;
+      const persistedValue = musicUMatch ? `MUSIC_U=${value}` : value;
+
+      if (!value) {
+        clearMusicSessionCookie();
+      } else {
+        saveMusicSessionCookie(persistedValue);
+      }
+
       const url = parseAllowedBackendOrigin(backendOrigin);
 
       await session.defaultSession.cookies.set({
@@ -336,6 +349,10 @@ export function registerIpcHandlers(
       logger.error("[IPC] set-music-cookie failed", error);
       throw error;
     }
+  });
+
+  ipcMain.on("get-music-cookie", (event) => {
+    event.returnValue = readMusicSessionCookie();
   });
 }
 

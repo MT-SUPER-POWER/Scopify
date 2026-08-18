@@ -4,8 +4,10 @@
 
 ### Fixed
 
+- **移除登录页重复的未登录提示**：删除登录页根据 `reason` 参数渲染的紧凑登录提示卡片，并停止各未登录业务入口向 `/login` 传递已无用途的原因参数，避免从非 ProfileMenu 入口进入登录页时出现多余槽位。
 - **移除前端自建日志链路**：删除 `repo/frontend/apps/web/lib/web/logger.ts` 及其相关调用路径，页面与请求日志改为直接通过 Electron 侧 `runtime.logging` 落盘，并在上报失败时保底输出控制台日志；同步清理前端日志中转脚本与测试文件，保留桌面端日志功能不变。
 - **移除无意义日志中继配置**：删除 `APP_CFG_DEBUG_LOG_RELAY_*` 在前端 Next 配置中的注入与依赖，连同前端开发时的 `renderer log relay` 配置入口一并清理。
+- **修复桌面端版本更新后登录状态丢失**：主进程新增 `music_cookie` 持久化文件存储（`repo/frontend/apps/desktop/main/module/musicCookieStore.ts`），在 `set-music-cookie` 时同步落盘并提供 `get-music-cookie` 同步读取通道；Web 侧 `musicSessionCredential` 支持 Electron 回填到 `localStorage`，兼容保持 Web `localStorage` 为主的现有方案，实现桌面端升级后自动恢复登录态。
 
 ## v1.4.6
 

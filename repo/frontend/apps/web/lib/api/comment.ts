@@ -6,9 +6,10 @@ import type {
 } from "@/types/api/comment";
 import type { SongComment } from "@/types/api/music";
 import request from "../web/request";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 
 export async function getMusicComments(params: MusicCommentParams) {
-  const cookie = localStorage.getItem("music_cookie") ?? "";
+  const cookie = getMusicSessionCredential() ?? "";
   return request.get<SongComment>("/comment/music", {
     params: {
       id: params.id,
@@ -104,7 +105,7 @@ export function toggleLikeComments(
   t: 1 | 0,
   type: CommentResourceType,
 ) {
-  const cookie = localStorage.getItem("music_cookie") ?? "";
+  const cookie = getMusicSessionCredential() ?? "";
   return request.get("/comment/like", {
     params: { id, cid, t, type, cookie },
   });

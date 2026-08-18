@@ -96,6 +96,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   getPageCacheStats(): Promise<PageCacheStats>;
   getCache<T = unknown>(scope: CacheScope, key: string): Promise<T | null>;
   getCacheStats(): Promise<DesktopCacheStats>;
+  getMusicCookie?(): string | null;
   getUpdateStatus(): Promise<AppUpdateState>;
   loginSuccess(): void;
   minimizeApp(): void;

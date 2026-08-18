@@ -7,10 +7,10 @@ import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
 import { getPersonalizePlaylists, getRecommendedPlaylists } from "@/lib/api/playlist";
 import { getUserDetail } from "@/lib/api/user";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 
 function getMusicCookie() {
-  if (typeof window === "undefined") return undefined;
-  return window.localStorage.getItem("music_cookie") ?? undefined;
+  return getMusicSessionCredential();
 }
 
 export function usePersonalizedPlaylistsQuery() {

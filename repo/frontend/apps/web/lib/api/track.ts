@@ -6,6 +6,7 @@ import type {
 } from "@/types/api/playlist";
 
 import request, { requestConfig, requestData } from "../web/request";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 
 export async function getSongDetail(ids: number | string) {
   return request.get("/song/detail", {
@@ -54,7 +55,7 @@ export function updatePlaylistTrack({
 export function getRecommendedSongs() {
   return request.get("/recommend/songs", {
     params: {
-      cookie: localStorage.getItem("music_cookie") ?? "",
+      cookie: getMusicSessionCredential() ?? "",
     },
   });
 }
