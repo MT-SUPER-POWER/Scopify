@@ -67,7 +67,7 @@ export function CollapsibleSection({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="flex cursor-pointer items-center gap-1 text-sm font-bold text-content-muted transition-colors outline-none hover:text-content hover:underline"
+                className="text-content-muted hover:text-content flex cursor-pointer items-center gap-1 text-sm font-bold transition-colors outline-none hover:underline"
               >
                 {isOpen ? t("common.action.showLess") : t("common.action.showAll")}
                 <ChevronRight
@@ -95,7 +95,7 @@ export function CollapsibleSection({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-surface-raised via-surface-raised/80 to-transparent"
+                className="from-surface-raised via-surface-raised/80 pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t to-transparent"
               />
             )}
           </AnimatePresence>

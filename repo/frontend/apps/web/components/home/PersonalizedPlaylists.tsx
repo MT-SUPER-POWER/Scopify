@@ -50,7 +50,7 @@ export function PersonalizedPlaylists({
         open={isOpen}
         onOpenChange={setIsOpen}
         title={
-          <h2 className="text-2xl font-bold tracking-tight text-content hover:underline">
+          <h2 className="text-content text-2xl font-bold tracking-tight hover:underline">
             {t("home.madeFor", { name: userName ?? t("home.you") })}
           </h2>
         }

@@ -20,7 +20,7 @@ export default function CollectionPage() {
   const artists = collectionQuery.data?.artists ?? [];
 
   return (
-    <main className="relative min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
+    <main className="bg-surface-raised relative min-h-screen px-6 pt-24 pb-28 md:px-10">
       <TimeBasedBackground />
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <LibraryPageHeader title={t("library.title.collection")} />
@@ -43,7 +43,7 @@ export default function CollectionPage() {
             <div className="space-y-12">
               {albums.length > 0 && (
                 <section>
-                  <h2 className="mb-6 text-xl font-bold text-content">
+                  <h2 className="text-content mb-6 text-xl font-bold">
                     {t("library.section.albums")}
                   </h2>
                   <LibraryMediaGrid items={albums} />
@@ -51,7 +51,7 @@ export default function CollectionPage() {
               )}
               {artists.length > 0 && (
                 <section>
-                  <h2 className="mb-6 text-xl font-bold text-content">
+                  <h2 className="text-content mb-6 text-xl font-bold">
                     {t("library.section.artists")}
                   </h2>
                   <LibraryMediaGrid items={artists} />

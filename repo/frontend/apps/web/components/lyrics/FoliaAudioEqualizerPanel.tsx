@@ -269,7 +269,7 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
 
       {/* EQ bands */}
       <div className="rounded-2xl border p-4" style={surfaceStyle}>
-        <div className="mb-3 flex items-center justify-between text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
+        <div className="text-muted-foreground mb-3 flex items-center justify-between text-[10px] font-semibold tracking-widest uppercase">
           <span>{t("audioEqualizer.bandGain")}</span>
           <span>
             {t("folia.audioEqualizer.autoHeadroom")} −{headroomDb} dB · +12 / −12 dB
@@ -281,7 +281,7 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
             return (
               <label key={band.frequency} className="flex flex-col items-center gap-1.5">
                 <span
-                  className={cn("text-[10px] font-semibold text-muted-foreground tabular-nums")}
+                  className={cn("text-muted-foreground text-[10px] font-semibold tabular-nums")}
                   style={{ color: gain !== 0 ? accentColor : undefined }}
                 >
                   {gain > 0 ? "+" : ""}
@@ -300,23 +300,23 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
                   onPointerCancel={commitDraft}
                   onKeyUp={commitDraft}
                   onBlur={commitDraft}
-                  className="h-24 w-1.5 cursor-pointer appearance-none rounded-full bg-border accent-primary"
+                  className="bg-border accent-primary h-24 w-1.5 cursor-pointer appearance-none rounded-full"
                   style={{ accentColor, direction: "rtl", writingMode: "vertical-lr" }}
                 />
-                <span className="text-[10px] font-semibold text-muted-foreground tabular-nums">
+                <span className="text-muted-foreground text-[10px] font-semibold tabular-nums">
                   {band.label}
                 </span>
               </label>
             );
           })}
         </div>
-        <div className="mt-2 text-center text-[9px] tracking-widest text-muted-foreground uppercase">
+        <div className="text-muted-foreground mt-2 text-center text-[9px] tracking-widest uppercase">
           Hz
         </div>
       </div>
 
       <div className="rounded-2xl border p-4" style={surfaceStyle}>
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+        <div className="text-muted-foreground mb-3 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold tracking-[0.18em] uppercase">
           <span className="flex items-center gap-1.5">
             <Waves size={13} />
             {t("audioEqualizer.effects")}
@@ -329,11 +329,11 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
             return (
               <label key={control.id} className="flex flex-col gap-1">
                 <span className="flex items-baseline justify-between gap-2">
-                  <span className="text-[11px] font-semibold text-muted-foreground">
+                  <span className="text-muted-foreground text-[11px] font-semibold">
                     {t(`audioEqualizer.effect.${control.id}`)}
                   </span>
                   <span
-                    className="text-[10px] font-semibold text-muted-foreground tabular-nums"
+                    className="text-muted-foreground text-[10px] font-semibold tabular-nums"
                     style={{ color: value !== control.neutral ? accentColor : undefined }}
                   >
                     {formatEffectValue(control, value)}
@@ -341,7 +341,7 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
                 </span>
                 <input
                   aria-label={t(`audioEqualizer.effect.${control.id}`)}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-border accent-primary"
+                  className="bg-border accent-primary h-1.5 w-full cursor-pointer appearance-none rounded-full"
                   style={{ accentColor }}
                   max={1000}
                   min={0}

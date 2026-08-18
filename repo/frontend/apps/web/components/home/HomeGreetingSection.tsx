@@ -62,7 +62,7 @@ export function HomeGreetingSection({
         onOpenChange={setIsOpen}
         title={
           <div className="flex items-center gap-4">
-            <h1 className="text-3xl leading-none font-bold tracking-tight text-content">
+            <h1 className="text-content text-3xl leading-none font-bold tracking-tight">
               {greeting}
             </h1>
           </div>
@@ -91,22 +91,22 @@ export function HomeGreetingSection({
               {(page === 0 || !isOpen) && (
                 <div
                   onClick={() => smartRouter.push("/playlist/?isDailyRecommend=true")}
-                  className="group relative flex h-16 cursor-pointer items-center overflow-hidden rounded-md bg-content/10 pr-4 transition-colors hover:bg-content/20"
+                  className="group bg-content/10 hover:bg-content/20 relative flex h-16 cursor-pointer items-center overflow-hidden rounded-md pr-4 transition-colors"
                 >
-                  <div className="z-10 flex size-16 shrink-0 flex-col overflow-hidden rounded-l-md bg-calendar-surface shadow-calendar select-none">
-                    <div className="flex h-5.5 items-center justify-center border-b border-calendar-divider bg-linear-to-b from-calendar-accent to-calendar-accent-hover">
-                      <span className="text-[10px] font-medium tracking-[0.15em] text-calendar-surface">
+                  <div className="bg-calendar-surface shadow-calendar z-10 flex size-16 shrink-0 flex-col overflow-hidden rounded-l-md select-none">
+                    <div className="border-calendar-divider from-calendar-accent to-calendar-accent-hover flex h-5.5 items-center justify-center border-b bg-linear-to-b">
+                      <span className="text-calendar-surface text-[10px] font-medium tracking-[0.15em]">
                         {dateInfo.dayOfWeek}
                       </span>
                     </div>
-                    <div className="relative flex flex-1 items-center justify-center bg-linear-to-b from-calendar-surface from-50% to-calendar-surface-muted to-50%">
-                      <div className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-calendar-divider" />
-                      <span className="z-10 mt-1 text-3xl leading-none font-black tracking-tighter text-calendar-ink">
+                    <div className="from-calendar-surface to-calendar-surface-muted relative flex flex-1 items-center justify-center bg-linear-to-b from-50% to-50%">
+                      <div className="bg-calendar-divider absolute top-1/2 left-0 h-px w-full -translate-y-1/2" />
+                      <span className="text-calendar-ink z-10 mt-1 text-3xl leading-none font-black tracking-tighter">
                         {dateInfo.dateNum}
                       </span>
                     </div>
                   </div>
-                  <span className="ml-4 truncate text-sm font-bold text-content">
+                  <span className="text-content ml-4 truncate text-sm font-bold">
                     {t("home.dailyRecommendations")}
                   </span>
                   <button
@@ -115,7 +115,7 @@ export function HomeGreetingSection({
                       event.stopPropagation();
                       smartRouter.push("/playlist/?isDailyRecommend=true");
                     }}
-                    className="absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full bg-brand text-brand-foreground opacity-0 shadow-brand transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-brand-hover"
+                    className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105"
                   >
                     <Play className="ml-1 size-5 fill-current" />
                   </button>
@@ -126,21 +126,21 @@ export function HomeGreetingSection({
                 <div
                   key={item.id}
                   onClick={() => smartRouter.push(`/playlist/?id=${item.id}&isRecommend=true`)}
-                  className="group relative flex h-16 cursor-pointer items-center overflow-hidden rounded-md bg-content/10 pr-4 transition-colors hover:bg-content/20"
+                  className="group bg-content/10 hover:bg-content/20 relative flex h-16 cursor-pointer items-center overflow-hidden rounded-md pr-4 transition-colors"
                 >
                   <Image
                     width={64}
                     height={64}
                     src={item.picUrl}
                     alt={t("playlist.form.coverAlt")}
-                    className="z-10 size-16 object-cover shadow-calendar"
+                    className="shadow-calendar z-10 size-16 object-cover"
                   />
-                  <span className="ml-4 truncate text-sm font-bold text-content">{item.name}</span>
+                  <span className="text-content ml-4 truncate text-sm font-bold">{item.name}</span>
                   <button
                     type="button"
                     onClick={(event) => onPlayPlaylist(item.id, event)}
                     disabled={loadingPlayId === `playlist-${item.id}`}
-                    className="absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full bg-brand text-brand-foreground opacity-0 shadow-brand transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-brand-hover"
+                    className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105"
                   >
                     {loadingPlayId === `playlist-${item.id}` ? (
                       <Loader2 className="size-4 animate-spin" />

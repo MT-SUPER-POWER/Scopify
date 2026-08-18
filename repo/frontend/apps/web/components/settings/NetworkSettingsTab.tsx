@@ -27,8 +27,8 @@ export function NetworkSettingsTab({
       aria-live="polite"
       className={
         backendPingResult.reachable
-          ? "flex items-center gap-1 text-xs font-medium text-success"
-          : "flex items-center gap-1 text-xs font-medium text-danger"
+          ? "text-success flex items-center gap-1 text-xs font-medium"
+          : "text-danger flex items-center gap-1 text-xs font-medium"
       }
     >
       {backendPingResult.reachable ? (
@@ -93,7 +93,7 @@ export function NetworkSettingsTab({
                 isInvalid={isHostInvalid}
               />
               {isHostInvalid ? (
-                <span className="max-w-50 text-right text-xs font-medium text-danger">
+                <span className="text-danger max-w-50 text-right text-xs font-medium">
                   {t("settings.backendHost.invalid")}
                 </span>
               ) : null}
@@ -125,7 +125,7 @@ export function NetworkSettingsTab({
               type="button"
               onClick={() => void onPingBackend()}
               disabled={isPingingBackend}
-              className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content disabled:cursor-wait disabled:opacity-50"
+              className="border-input text-foreground hover:border-content inline-flex items-center gap-2 rounded border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-wait disabled:opacity-50"
             >
               {isPingingBackend ? (
                 <LoaderCircle className="size-4 animate-spin" />

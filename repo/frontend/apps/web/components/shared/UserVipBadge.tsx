@@ -15,7 +15,7 @@ export function UserVipBadge({ vipType, className }: UserVipBadgeProps) {
     <Badge
       variant="outline"
       className={cn(
-        "inline-flex shrink-0 items-center gap-1 rounded-xs border-warning/45 bg-warning/10 px-1.5 py-0.5 text-[10px] leading-none font-bold text-warning select-none",
+        "border-warning/45 bg-warning/10 text-warning inline-flex shrink-0 items-center gap-1 rounded-xs px-1.5 py-0.5 text-[10px] leading-none font-bold select-none",
         className,
       )}
       title="VIP"
