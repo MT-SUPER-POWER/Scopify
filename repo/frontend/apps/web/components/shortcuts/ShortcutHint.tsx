@@ -21,7 +21,7 @@ export function ShortcutHint({ commandId, label }: ShortcutHintProps) {
     <span className="flex items-center gap-3 whitespace-nowrap">
       <span>{label}</span>
       {shortcutLabel ? (
-        <kbd className="bg-background/15 rounded px-1.5 py-0.5 font-sans text-[10px] font-medium tabular-nums">
+        <kbd className="rounded bg-background/15 px-1.5 py-0.5 font-sans text-[10px] font-medium tabular-nums">
           {shortcutLabel}
         </kbd>
       ) : null}

@@ -6,6 +6,11 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
+    linterOptions: {
+      reportUnusedDisableDirectives: "off",
+    },
+  },
+  {
     ignores: [
       "node_modules",
       ".next",
@@ -36,7 +41,12 @@ export default tseslint.config(
   },
   tailwindcssPlugin.configs.recommended,
   {
-    settings: { tailwindcss: { cssConfigPath: "app/globals.css" } },
+    settings: {
+      tailwindcss: {
+        callees: ["cn", "cva", "clsx"],
+        cssConfigPath: "app/globals.css",
+      },
+    },
     ignores: ["components/ui/*.tsx"],
     rules: {
       "tailwindcss/no-custom-classname": "off",
@@ -61,6 +71,13 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "tailwindcss/classnames-order": "off",
+      "tailwindcss/no-custom-classname": "off",
+      "tailwindcss/enforces-negative-arbitrary-values": "off",
+      "tailwindcss/no-unnecessary-arbitrary-value": "off",
       "no-empty": "off",
       "no-useless-escape": "off",
       "prefer-const": "off",

@@ -35,14 +35,14 @@ export function PopularTracks({ tracks, queue, artist }: Props) {
             <button
               type="button"
               onClick={() => setExpanded((value) => !value)}
-              className="text-content-muted border-content/10 hover:border-content/30 hover:text-content mt-4 w-fit rounded-full border px-4 py-2 text-sm font-semibold transition"
+              className="mt-4 w-fit rounded-full border border-content/10 px-4 py-2 text-sm font-semibold text-content-muted transition hover:border-content/30 hover:text-content"
             >
               {expanded ? t("common.action.showLess") : t("common.action.showAll")}
             </button>
           )}
         </div>
       ) : (
-        <div className="text-content-subtle py-4 text-sm">{t("artist.popular.noTracks")}</div>
+        <div className="py-4 text-sm text-content-subtle">{t("artist.popular.noTracks")}</div>
       )}
     </div>
   );

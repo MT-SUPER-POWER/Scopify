@@ -25,7 +25,7 @@ export function DesktopPlaybackTransportControls({
 
   return (
     <TooltipProvider>
-      <div className="animate-in fade-in absolute inset-0 flex items-center justify-between duration-150">
+      <div className="absolute inset-0 flex animate-in items-center justify-between duration-150 fade-in">
         <div className="flex items-center gap-1.5">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -104,7 +104,7 @@ export function DesktopPlaybackTransportControls({
             <TooltipContent side="top" sideOffset={8}>
               <div className="space-y-1.5">
                 <span>{t("ui.volume")}</span>
-                <p className="text-background/70 text-[10px]">{t("shortcuts.scope.volume")}</p>
+                <p className="text-[10px] text-background/70">{t("shortcuts.scope.volume")}</p>
                 <ShortcutHint
                   commandId="increase-volume"
                   label={t("shortcuts.command.increaseVolume")}

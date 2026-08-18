@@ -14,7 +14,7 @@ const RightActions = () => (
       type="button"
       className={cn(
         "h-10 rounded-full px-4",
-        "bg-surface-sunken/80 text-content-muted hover:bg-surface-elevated hover:text-content transition-all hover:scale-105",
+        "bg-surface-sunken/80 text-content-muted transition-all hover:scale-105 hover:bg-surface-elevated hover:text-content",
         "hidden items-center gap-2 xl:flex",
         "text-sm font-bold",
       )}

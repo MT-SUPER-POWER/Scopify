@@ -434,9 +434,10 @@ export const usePlayerStore = create<PlayerStore>()(
           ]);
           if (!isCurrentPlaybackLoad()) return false;
           const matchedLyric = storedLyric ?? cachedLyric;
-          const cachedSong = Number.isFinite(cachedReplayGain)
-            ? { ...song, replayGain: cachedReplayGain!, replayGainTrackGain: cachedReplayGain! }
-            : song;
+          const cachedSong =
+            cachedReplayGain !== null && Number.isFinite(cachedReplayGain)
+              ? { ...song, replayGain: cachedReplayGain, replayGainTrackGain: cachedReplayGain }
+              : song;
 
           if (cachedUrl) {
             // URL 缓存命中

@@ -35,9 +35,9 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
         event.preventDefault();
         handleNavigate();
       }}
-      className="group hover:bg-content/10 cursor-pointer border-none transition-colors duration-150 select-none"
+      className="group cursor-pointer border-none transition-colors duration-150 select-none hover:bg-content/10"
     >
-      <TableCell className="text-content-subtle rounded-l-md py-1.5 text-center text-xs tabular-nums">
+      <TableCell className="rounded-l-md py-1.5 text-center text-xs text-content-subtle tabular-nums">
         {isVoiceList ? (
           <span>{String(index + 1).padStart(2, "0")}</span>
         ) : (
@@ -47,7 +47,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
                 <PlayingAnimation className="h-3.5" />
               </div>
             ) : isActive ? (
-              <Play className="text-brand mx-auto size-3.5 fill-current group-hover:hidden" />
+              <Play className="mx-auto size-3.5 fill-current text-brand group-hover:hidden" />
             ) : (
               <span className="group-hover:hidden">{String(index + 1).padStart(2, "0")}</span>
             )}
@@ -60,7 +60,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
                     event.stopPropagation();
                     setIsPlaying(false);
                   }}
-                  className="text-brand inline-flex items-center justify-center transition-transform hover:scale-110"
+                  className="inline-flex items-center justify-center text-brand transition-transform hover:scale-110"
                 >
                   <Pause className="size-3.5 fill-current" />
                 </button>
@@ -69,7 +69,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
                   type="button"
                   title={t("contextMenu.play")}
                   onClick={(event) => void handlePlayPodcast(podcast.id, event)}
-                  className="text-content inline-flex items-center justify-center transition-transform hover:scale-110"
+                  className="inline-flex items-center justify-center text-content transition-transform hover:scale-110"
                 >
                   <Play
                     className={cn(
@@ -86,7 +86,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
       </TableCell>
       <TableCell className="py-1.5">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="bg-surface-elevated relative size-10 shrink-0 overflow-hidden rounded-sm">
+          <div className="relative size-10 shrink-0 overflow-hidden rounded-sm bg-surface-elevated">
             {podcast.coverUrl ? (
               <Image
                 width={80}
@@ -96,7 +96,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
                 className="size-full object-cover"
               />
             ) : (
-              <div className="text-content-subtle flex size-full items-center justify-center">
+              <div className="flex size-full items-center justify-center text-content-subtle">
                 <Radio className="size-4" />
               </div>
             )}
@@ -110,20 +110,20 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
             >
               {podcast.name}
             </p>
-            <p className="text-content-subtle mt-0.5 truncate text-xs">
+            <p className="mt-0.5 truncate text-xs text-content-subtle">
               {podcast.hostName || t("search.podcast.unknownHost")}
             </p>
           </div>
         </div>
       </TableCell>
-      <TableCell className="text-content-muted hidden py-1.5 text-sm md:table-cell">
+      <TableCell className="hidden py-1.5 text-sm text-content-muted md:table-cell">
         <span className="block truncate" title={podcast.category}>
           {podcast.category || "-"}
         </span>
       </TableCell>
       <TableCell className="hidden py-1.5 text-right text-sm tabular-nums md:table-cell">
         {podcast.score !== undefined ? (
-          <span className="border-warning/50 bg-warning/10 text-warning inline-flex min-w-10 justify-center rounded-sm border px-1.5 py-0.5 text-xs font-semibold">
+          <span className="inline-flex min-w-10 justify-center rounded-sm border border-warning/50 bg-warning/10 px-1.5 py-0.5 text-xs font-semibold text-warning">
             {podcast.score}
           </span>
         ) : (

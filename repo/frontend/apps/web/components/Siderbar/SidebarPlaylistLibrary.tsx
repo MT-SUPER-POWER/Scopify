@@ -57,7 +57,7 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
       title={label}
       aria-label={label}
       onClick={onClick}
-      className="text-content-muted hover:bg-content/10 hover:text-content mx-auto mt-4 flex rounded-md p-2 transition-colors"
+      className="mx-auto mt-4 flex rounded-md p-2 text-content-muted transition-colors hover:bg-content/10 hover:text-content"
     >
       {icon}
     </button>
@@ -71,7 +71,7 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
           <div
             key={item}
             className={cn(
-              "bg-skeleton animate-pulse rounded-md",
+              "animate-pulse rounded-md bg-skeleton",
               isCollapsed ? "size-10" : "h-14 w-full",
             )}
           />
@@ -141,11 +141,11 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
 
   return (
     <section
-      className={cn("flex min-h-0 flex-1 flex-col", !isCollapsed && "border-content/10 border-t")}
+      className={cn("flex min-h-0 flex-1 flex-col", !isCollapsed && "border-t border-content/10")}
       aria-label={t("sidebar.group.playlists")}
     >
       {!isCollapsed && (
-        <p className="text-content-subtle shrink-0 px-5 pt-4 pb-2 text-xs font-bold">
+        <p className="shrink-0 px-5 pt-4 pb-2 text-xs font-bold text-content-subtle">
           {t("sidebar.group.playlists")}
         </p>
       )}

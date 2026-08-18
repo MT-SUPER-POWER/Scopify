@@ -86,7 +86,7 @@ export const TrackRow = memo(
       <TableRow
         ref={ref}
         className={cn(
-          "group hover:bg-content/10 cursor-default border-none",
+          "group cursor-default border-none hover:bg-content/10",
           isScrolling ? "**:transition-none" : "transition-colors",
           isActive && "text-brand",
           className,
@@ -106,7 +106,7 @@ export const TrackRow = memo(
 
         <TableCell className="max-w-0 min-w-0">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="bg-surface-elevated size-10 shrink-0 rounded">
+            <div className="size-10 shrink-0 rounded bg-surface-elevated">
               <img
                 width={40}
                 height={40}
@@ -129,7 +129,7 @@ export const TrackRow = memo(
               <div className="mt-0.5 flex min-w-0 items-center gap-0.5">
                 <SongQualityBadge qualityLevel={track.privilege?.maxBrLevel} />
                 <SongVipBadge fee={track.fee} />
-                <span className="text-content-muted min-w-0 cursor-pointer truncate text-sm font-normal">
+                <span className="min-w-0 cursor-pointer truncate text-sm font-normal text-content-muted">
                   {track.ar.slice(0, 2).map((a, idx, arr) => (
                     <span
                       key={`${a.id}-${idx}`}
@@ -160,10 +160,10 @@ export const TrackRow = memo(
                 e.stopPropagation();
                 smartRouter.push(`/album?id=${track.al.id}`);
               }}
-              className="text-content-muted group/album hover:text-content flex max-w-full min-w-0 items-center gap-1.5 text-left transition-colors hover:underline"
+              className="group/album flex max-w-full min-w-0 items-center gap-1.5 text-left text-content-muted transition-colors hover:text-content hover:underline"
             >
               <Disc3
-                className="text-content-subtle group-hover/album:text-content size-3.5 shrink-0 transition-colors"
+                className="size-3.5 shrink-0 text-content-subtle transition-colors group-hover/album:text-content"
                 aria-hidden="true"
               />
               <span className="truncate">{track.al.name}</span>

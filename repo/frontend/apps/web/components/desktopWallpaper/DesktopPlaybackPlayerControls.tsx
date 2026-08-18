@@ -88,7 +88,7 @@ export function DesktopPlaybackPlayerControls({
           onMouseLeave={() => setIsControlAreaHovered(false)}
         >
           {showLyricView ? (
-            <div className="animate-in fade-in slide-in-from-bottom-1 absolute inset-0 flex min-w-0 flex-col justify-center duration-150">
+            <div className="absolute inset-0 flex min-w-0 animate-in flex-col justify-center duration-150 fade-in slide-in-from-bottom-1">
               <div className="truncate text-base leading-5 font-bold">{activeLyric?.primary}</div>
               <div className="desktop-controller-muted mt-0.5 truncate text-[11px] leading-4 font-medium">
                 {activeLyric?.secondary}

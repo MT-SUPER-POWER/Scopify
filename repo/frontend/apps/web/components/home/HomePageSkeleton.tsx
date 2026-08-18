@@ -12,14 +12,14 @@ export function GridCardSkeleton({ isArtist = false }: { isArtist?: boolean }) {
       {/* 封面区域 */}
       <Skeleton
         className={cn(
-          "bg-skeleton-subtle aspect-square w-full",
+          "aspect-square w-full bg-skeleton-subtle",
           isArtist ? "rounded-full" : "rounded-md",
         )}
       />
       {/* 文本区域 */}
       <div className="flex flex-col gap-1.5">
-        <Skeleton className="bg-skeleton-subtle h-4 w-3/4" />
-        {!isArtist && <Skeleton className="bg-skeleton-subtle h-3 w-1/2" />}
+        <Skeleton className="h-4 w-3/4 bg-skeleton-subtle" />
+        {!isArtist && <Skeleton className="h-3 w-1/2 bg-skeleton-subtle" />}
       </div>
     </div>
   );
@@ -30,9 +30,9 @@ export function GridCardSkeleton({ isArtist = false }: { isArtist?: boolean }) {
 // ==========================================
 export function BannerItemSkeleton() {
   return (
-    <div className="bg-skeleton-subtle relative flex h-16 items-center overflow-hidden rounded-md pr-4">
-      <Skeleton className="bg-skeleton size-16 shrink-0 rounded-none" />
-      <Skeleton className="bg-skeleton ml-4 h-4 w-32" />
+    <div className="relative flex h-16 items-center overflow-hidden rounded-md bg-skeleton-subtle pr-4">
+      <Skeleton className="size-16 shrink-0 rounded-none bg-skeleton" />
+      <Skeleton className="ml-4 h-4 w-32 bg-skeleton" />
     </div>
   );
 }
@@ -42,13 +42,13 @@ export function BannerItemSkeleton() {
 // ==========================================
 export function HomePageSkeleton() {
   return (
-    <div className="animate-in fade-in relative z-10 space-y-10 p-6 pt-20 duration-500">
+    <div className="relative z-10 animate-in space-y-10 p-6 pt-20 duration-500 fade-in">
       {/* 1. 欢迎语 + 快速访问 */}
       <section className="space-y-6">
         {/* 标题模拟 */}
         <div className="flex h-9 items-center gap-4">
-          <Skeleton className="bg-skeleton h-8 w-48" />
-          <Skeleton className="bg-skeleton size-8 rounded-full" />
+          <Skeleton className="h-8 w-48 bg-skeleton" />
+          <Skeleton className="size-8 rounded-full bg-skeleton" />
         </div>
         {/* Banner 网格模拟 */}
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
@@ -60,7 +60,7 @@ export function HomePageSkeleton() {
 
       {/* 2. 推荐歌单 */}
       <section className="space-y-6">
-        <Skeleton className="bg-skeleton h-8 w-64" />
+        <Skeleton className="h-8 w-64 bg-skeleton" />
         <div className="grid grid-cols-3 gap-6 md:grid-cols-4 lg:grid-cols-5">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => (
             <GridCardSkeleton key={id} />
@@ -70,7 +70,7 @@ export function HomePageSkeleton() {
 
       {/* 3. 推荐歌手 */}
       <section className="space-y-6">
-        <Skeleton className="bg-skeleton h-8 w-32" />
+        <Skeleton className="h-8 w-32 bg-skeleton" />
         <div className="grid grid-cols-3 gap-6 md:grid-cols-4 lg:grid-cols-5">
           {[1, 2, 3, 4, 5].map((id) => (
             <GridCardSkeleton key={id} isArtist />

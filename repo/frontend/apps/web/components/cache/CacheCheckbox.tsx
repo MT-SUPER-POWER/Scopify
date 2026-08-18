@@ -39,7 +39,7 @@ export function CacheCheckbox({
         />
         <span
           className={cn(
-            "border-input bg-background peer-focus-visible:ring-ring/60 grid size-4 place-items-center rounded-[3px] border transition-colors peer-focus-visible:ring-2",
+            "grid size-4 place-items-center rounded-[3px] border border-input bg-background transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-ring/60",
             (checked || indeterminate) && "border-primary bg-primary text-primary-foreground",
           )}
           aria-hidden="true"
@@ -51,7 +51,7 @@ export function CacheCheckbox({
           ) : null}
         </span>
       </span>
-      <span className="text-foreground text-sm font-medium">{label}</span>
+      <span className="text-sm font-medium text-foreground">{label}</span>
     </label>
   );
 }

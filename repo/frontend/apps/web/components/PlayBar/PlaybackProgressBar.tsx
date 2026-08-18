@@ -73,11 +73,11 @@ export function PlaybackProgressBar({
 
   return (
     <div className="flex w-full items-center gap-2">
-      <span className="text-content-muted w-10 shrink-0 text-right text-[11px] font-normal tracking-widest tabular-nums">
+      <span className="w-10 shrink-0 text-right text-[11px] font-normal tracking-widest text-content-muted tabular-nums">
         {formatDuration(safePositionMs)}
       </span>
       {slider}
-      <span className="text-content-muted w-10 shrink-0 text-[11px] font-normal tracking-widest tabular-nums">
+      <span className="w-10 shrink-0 text-[11px] font-normal tracking-widest text-content-muted tabular-nums">
         {formatDuration(safeDurationMs)}
       </span>
     </div>

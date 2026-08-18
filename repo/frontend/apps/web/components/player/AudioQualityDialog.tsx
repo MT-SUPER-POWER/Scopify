@@ -40,12 +40,12 @@ export function AudioQualityDialog() {
     <div className="text-content select-none">
       {/* Header */}
       <div className="mb-3 flex items-center justify-between gap-3 px-1">
-        <h3 className="text-content text-sm font-semibold">
+        <h3 className="text-sm font-semibold text-content">
           {t("playbar.quality.headerTitle") || "当前歌曲音质"}
         </h3>
         <button
           type="button"
-          className="text-content-subtle hover:text-content-muted flex shrink-0 cursor-pointer items-center gap-1 text-xs transition-colors"
+          className="flex shrink-0 cursor-pointer items-center gap-1 text-xs text-content-subtle transition-colors hover:text-content-muted"
           onClick={() => {}}
         >
           <span>{t("playbar.quality.learnMore") || "了解音质"}</span>
@@ -97,12 +97,12 @@ export function AudioQualityDialog() {
                   {t(opt.labelKey)}
                 </div>
                 {opt.sublabelKey && (
-                  <div className="text-muted-foreground mt-0.5 text-[11px] font-medium tracking-wider">
+                  <div className="mt-0.5 text-[11px] font-medium tracking-wider text-muted-foreground">
                     {t(opt.sublabelKey)}
                   </div>
                 )}
                 {opt.techSpec && (
-                  <div className="text-muted-foreground/70 mt-1 text-[11px] leading-tight">
+                  <div className="mt-1 text-[11px] leading-tight text-muted-foreground/70">
                     {t(opt.techSpec)}
                   </div>
                 )}
@@ -110,7 +110,7 @@ export function AudioQualityDialog() {
 
               {/* Active Indicator checkmark */}
               {isSelected && (
-                <div className="bg-primary text-primary-foreground absolute top-2.5 right-2.5 flex size-4.5 items-center justify-center rounded-full shadow-sm">
+                <div className="absolute top-2.5 right-2.5 flex size-4.5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
                   <Check size={11} strokeWidth={3} />
                 </div>
               )}
@@ -166,7 +166,7 @@ export function AudioQualityDialog() {
                     {opt.badgeType === "vip" && <VipBadge />}
                   </div>
                   {opt.techSpec && (
-                    <span className="text-muted-foreground truncate text-[11px]">
+                    <span className="truncate text-[11px] text-muted-foreground">
                       {t(opt.techSpec)}
                     </span>
                   )}
@@ -175,7 +175,7 @@ export function AudioQualityDialog() {
 
               {/* Right Side: Selected Checkmark */}
               {isSelected && (
-                <div className="bg-primary text-primary-foreground ml-2 flex size-4.5 shrink-0 items-center justify-center rounded-full shadow-sm">
+                <div className="ml-2 flex size-4.5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
                   <Check size={11} strokeWidth={3} />
                 </div>
               )}

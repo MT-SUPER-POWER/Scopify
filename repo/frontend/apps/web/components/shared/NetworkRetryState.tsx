@@ -25,14 +25,14 @@ export function NetworkRetryState({
       <div className="max-w-md">
         <p
           className={
-            compact ? "text-content text-base font-bold" : "text-content text-xl font-bold"
+            compact ? "text-base font-bold text-content" : "text-xl font-bold text-content"
           }
         >
           {title}
         </p>
         <p
           className={
-            compact ? "text-content-muted mt-1.5 text-sm" : "text-content-muted mt-2 text-sm"
+            compact ? "mt-1.5 text-sm text-content-muted" : "mt-2 text-sm text-content-muted"
           }
         >
           {subtitle}
@@ -44,7 +44,7 @@ export function NetworkRetryState({
         disabled={isRetrying}
         aria-label={actionLabel}
         title={actionLabel}
-        className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover focus-visible:ring-brand focus-visible:ring-offset-surface-raised inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-5 text-sm font-bold transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-100 disabled:cursor-wait disabled:opacity-50 disabled:hover:scale-100"
+        className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-brand px-5 text-sm font-bold text-brand-foreground shadow-brand transition-transform hover:scale-105 hover:bg-brand-hover focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised focus-visible:outline-none active:scale-100 disabled:cursor-wait disabled:opacity-50 disabled:hover:scale-100"
       >
         <RefreshCw className={`size-4 ${isRetrying ? "animate-spin" : ""}`} />
         {actionLabel}

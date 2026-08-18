@@ -72,7 +72,7 @@ export function UserHero({ userInfo, playlistCount }: Props) {
   return (
     <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
       {/* 头像 */}
-      <div className="bg-surface-elevated hover:scale-1.02 shadow-floating size-48 shrink-0 overflow-hidden rounded-full transition-transform duration-300 lg:size-56">
+      <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-full bg-surface-elevated shadow-floating transition-transform duration-300 lg:size-56">
         <Image
           width={224}
           height={224}
@@ -83,25 +83,25 @@ export function UserHero({ userInfo, playlistCount }: Props) {
       </div>
 
       {/* 信息区 */}
-      <div className="text-content flex min-w-0 flex-1 flex-col pt-1 md:pt-2">
+      <div className="flex min-w-0 flex-1 flex-col pt-1 text-content md:pt-2">
         <div className="mb-2 flex flex-wrap items-center gap-2 md:mb-4">
-          <span className="bg-content/10 text-content/90 rounded-sm px-3 py-1 text-sm tracking-wider uppercase">
+          <span className="rounded-sm bg-content/10 px-3 py-1 text-sm tracking-wider text-content/90 uppercase">
             PROFILE
           </span>
           {locationName && (
-            <span className="bg-content/10 text-content/90 flex items-center gap-1.5 rounded-sm px-3 py-1 text-[13px]">
+            <span className="flex items-center gap-1.5 rounded-sm bg-content/10 px-3 py-1 text-[13px] text-content/90">
               <MapPin size={14} />
               {locationName}
             </span>
           )}
           {zodiac && (
-            <span className="bg-content/10 text-content/90 flex items-center gap-1.5 rounded-sm px-3 py-1 text-[13px]">
+            <span className="flex items-center gap-1.5 rounded-sm bg-content/10 px-3 py-1 text-[13px] text-content/90">
               <zodiac.Icon size={16} stroke={2.5} />
               {zodiac.text}
             </span>
           )}
           {userInfo.createTime && (
-            <span className="bg-content/10 text-content/90 flex items-center gap-1.5 rounded-sm px-3 py-1 text-[13px]">
+            <span className="flex items-center gap-1.5 rounded-sm bg-content/10 px-3 py-1 text-[13px] text-content/90">
               <CalendarDays size={14} />
               {t("profile.hero.joined", { date: formatDate(userInfo.createTime) })}
             </span>
@@ -121,28 +121,28 @@ export function UserHero({ userInfo, playlistCount }: Props) {
         </div>
 
         {userInfo.signature && (
-          <p className="text-content/50 mb-4 text-sm font-medium italic md:mb-6">
+          <p className="mb-4 text-sm font-medium text-content/50 italic md:mb-6">
             “{userInfo.signature}”
           </p>
         )}
         {!userInfo.signature && <div className="mb-4 md:mb-6" />}
 
-        <div className="text-content/70 flex flex-wrap items-center gap-4 text-sm">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-content/70">
           <span className="flex items-center gap-1.5">
             <Users size={16} className="text-content/50" />
-            <span className="text-content font-semibold">{userInfo.follows.toLocaleString()}</span>
+            <span className="font-semibold text-content">{userInfo.follows.toLocaleString()}</span>
             <span className="ml-0.5">{t("profile.hero.follows")}</span>
           </span>
           <span className="flex items-center gap-1.5">
             <Users size={16} className="text-content/50" />
-            <span className="text-content font-semibold">
+            <span className="font-semibold text-content">
               {userInfo.followeds.toLocaleString()}
             </span>
             <span className="ml-0.5">{t("profile.hero.followers")}</span>
           </span>
           <span className="flex items-center gap-1.5">
             <Disc3 size={16} className="text-content/50" />
-            <span className="text-content font-semibold">
+            <span className="font-semibold text-content">
               {userInfo.playlistCount ?? playlistCount}
             </span>
             <span className="ml-0.5">{t("profile.hero.playlists")}</span>
@@ -150,20 +150,20 @@ export function UserHero({ userInfo, playlistCount }: Props) {
           {(userInfo.eventCount ?? 0) > 0 && (
             <span className="flex items-center gap-1.5">
               <Activity size={16} className="text-content/50" />
-              <span className="text-content font-semibold">{userInfo.eventCount}</span>
+              <span className="font-semibold text-content">{userInfo.eventCount}</span>
               <span className="ml-0.5">{t("profile.hero.events")}</span>
             </span>
           )}
           {userInfo.level !== undefined && (
             <span className="flex items-center gap-1.5">
               <Trophy size={16} className="text-content/50" />
-              <span className="text-content font-semibold">Lv.{userInfo.level}</span>
+              <span className="font-semibold text-content">Lv.{userInfo.level}</span>
             </span>
           )}
           {userInfo.listenSongs !== undefined && (
             <span className="flex items-center gap-1.5">
               <Headphones size={16} className="text-content/50" />
-              <span className="text-content ml-0.5 font-semibold">
+              <span className="ml-0.5 font-semibold text-content">
                 {t("profile.hero.listenSongs", { count: userInfo.listenSongs.toLocaleString() })}
               </span>
             </span>

@@ -45,7 +45,7 @@ const iconList = {
 
   ENLARGE: <PanelRightClose className="mr-2 size-5" />,
   COLLAPSE: <PanelLeftClose className="mr-2 size-5" />,
-  FAVORITES: <IconDisc className="text-warning mr-2 size-5" />,
+  FAVORITES: <IconDisc className="mr-2 size-5 text-warning" />,
   "CREATE PLAYLISTS": <Plus className="mr-2 size-5" />,
 };
 

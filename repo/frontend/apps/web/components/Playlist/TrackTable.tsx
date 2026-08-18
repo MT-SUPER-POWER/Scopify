@@ -448,7 +448,7 @@ export default function TracklistTable({
         <div ref={columnLayout.containerRef} className="-mx-4">
           <Table
             containerClassName="overflow-visible"
-            className="text-content-muted w-full table-fixed"
+            className="w-full table-fixed text-content-muted"
             style={{ minWidth: columnLayout.minimumTableWidth }}
           >
             <colgroup>
@@ -468,9 +468,9 @@ export default function TracklistTable({
               )}
             >
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="text-content-muted pl-4 text-left">#</TableHead>
+                <TableHead className="pl-4 text-left text-content-muted">#</TableHead>
                 <TableHead
-                  className="text-content-muted group/head hover:text-content relative cursor-pointer transition-colors select-none"
+                  className="group/head relative cursor-pointer text-content-muted transition-colors select-none hover:text-content"
                   onClick={titleColumn.getToggleSortingHandler()}
                 >
                   <div className="flex items-center gap-1">
@@ -490,7 +490,7 @@ export default function TracklistTable({
                 </TableHead>
                 {showAlbumColumn && (
                   <TableHead
-                    className="text-content-muted group/head hover:text-content relative cursor-pointer transition-colors select-none"
+                    className="group/head relative cursor-pointer text-content-muted transition-colors select-none hover:text-content"
                     onClick={albumColumn.getToggleSortingHandler()}
                   >
                     <div className="flex items-center gap-1">
@@ -511,7 +511,7 @@ export default function TracklistTable({
                 )}
                 {showDateColumn && (
                   <TableHead
-                    className="text-content-muted group/head hover:text-content relative cursor-pointer px-3 text-xs font-normal transition-colors select-none"
+                    className="group/head relative cursor-pointer px-3 text-xs font-normal text-content-muted transition-colors select-none hover:text-content"
                     onClick={dateColumn.getToggleSortingHandler()}
                   >
                     <div className="flex items-center gap-1">
@@ -532,7 +532,7 @@ export default function TracklistTable({
                 )}
                 {showLikeColumn && (
                   <TableHead
-                    className="text-content-muted group/head hover:text-content relative cursor-pointer transition-colors select-none"
+                    className="group/head relative cursor-pointer text-content-muted transition-colors select-none hover:text-content"
                     onClick={likeColumn.getToggleSortingHandler()}
                   >
                     <div className="flex items-center justify-center gap-1">
@@ -551,7 +551,7 @@ export default function TracklistTable({
                     />
                   </TableHead>
                 )}
-                <TableHead className="text-content-muted pr-4 text-right">
+                <TableHead className="pr-4 text-right text-content-muted">
                   <div className="flex size-full items-center justify-end">
                     <Clock className="size-4" />
                   </div>
@@ -564,7 +564,7 @@ export default function TracklistTable({
                 <TableRow className="border-none hover:bg-transparent">
                   <TableCell
                     colSpan={visibleColumnCount}
-                    className="text-content-subtle py-10 text-center"
+                    className="py-10 text-center text-content-subtle"
                   >
                     {hasSearchQuery ? (
                       t("playlist.table.searchNoResults", {

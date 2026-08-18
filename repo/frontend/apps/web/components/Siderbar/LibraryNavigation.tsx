@@ -24,7 +24,7 @@ export function LibraryNavigation({ isCollapsed }: LibraryNavigationProps) {
   if (isCollapsed) {
     return (
       <nav
-        className="border-content/10 mx-2 flex shrink-0 flex-col items-center gap-2 border-y py-3"
+        className="mx-2 flex shrink-0 flex-col items-center gap-2 border-y border-content/10 py-3"
         aria-label={t("sidebar.library.title")}
       >
         {libraryItems.map((item) => {
@@ -56,7 +56,7 @@ export function LibraryNavigation({ isCollapsed }: LibraryNavigationProps) {
 
   return (
     <nav className="flex shrink-0 flex-col gap-1 px-3 py-4" aria-label={t("sidebar.library.title")}>
-      <p className="text-content-subtle px-2 pb-1 text-xs font-bold">
+      <p className="px-2 pb-1 text-xs font-bold text-content-subtle">
         {t("sidebar.library.title")}
       </p>
       {libraryItems.map((item) => {

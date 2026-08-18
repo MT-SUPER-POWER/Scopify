@@ -16,18 +16,18 @@ export function ArtistHero({ artist }: Props) {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${artist.headerImageUrl})` }}
       />
-      <div className="from-surface-raised via-surface-raised/70 absolute inset-0 bg-linear-to-t to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-surface-raised via-surface-raised/70 to-transparent" />
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-2 p-6 md:p-8">
         {artist.isVerified && (
-          <div className="text-content flex items-center gap-2 text-sm font-medium md:text-base">
-            <BadgeCheck className="text-brand size-5" fill="var(--overlay-foreground)" />
+          <div className="flex items-center gap-2 text-sm font-medium text-content md:text-base">
+            <BadgeCheck className="size-5 text-brand" fill="var(--overlay-foreground)" />
             <span>{t("artist.hero.verified")}</span>
           </div>
         )}
-        <h1 className="text-content mb-4 text-5xl font-black tracking-tighter md:text-7xl lg:text-8xl">
+        <h1 className="mb-4 text-5xl font-black tracking-tighter text-content md:text-7xl lg:text-8xl">
           {artist.name}
         </h1>
-        <p className="text-content-muted text-sm font-medium md:text-base">
+        <p className="text-sm font-medium text-content-muted md:text-base">
           {t("artist.hero.listeners", { count: formatNumber(artist.listeners) })}
         </p>
       </div>

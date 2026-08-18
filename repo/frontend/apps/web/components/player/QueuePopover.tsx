@@ -99,10 +99,10 @@ const QueueItem = memo(
                           unoptimized
                         />
                       ) : (
-                        <Play className="text-brand size-4 fill-current" />
+                        <Play className="size-4 fill-current text-brand" />
                       )
                     ) : (
-                      <Play className="text-content size-4 fill-current opacity-0 transition-opacity group-hover/cover:opacity-100" />
+                      <Play className="size-4 fill-current text-content opacity-0 transition-opacity group-hover/cover:opacity-100" />
                     )}
                   </div>
                 </div>
@@ -121,7 +121,7 @@ const QueueItem = memo(
                   </span>
                   <SongVipBadge fee={song.fee} />
                 </div>
-                <div className="text-content-muted mt-0.5 truncate text-xs">
+                <div className="mt-0.5 truncate text-xs text-content-muted">
                   <ArtistInlineLinks
                     artists={song.ar.map((a: { id: number; name: string }) => ({
                       id: a.id,
@@ -131,7 +131,7 @@ const QueueItem = memo(
                 </div>
               </div>
 
-              <div className="text-content-muted pr-1 text-xs tabular-nums">
+              <div className="pr-1 text-xs text-content-muted tabular-nums">
                 {formatDuration(song.dt)}
               </div>
             </div>
@@ -245,7 +245,7 @@ const QueueList = ({ isOpen }: { isOpen: boolean }) => {
     <ScrollArea viewportRef={parentRef} className="h-125 w-full">
       <div className="p-2">
         {queue.length === 0 ? (
-          <div className="text-content-muted flex flex-col items-center justify-center py-16">
+          <div className="flex flex-col items-center justify-center py-16 text-content-muted">
             <ListMusic className="size-10 opacity-60" />
           </div>
         ) : (
@@ -314,7 +314,7 @@ export const QueuePopover = () => {
               <button
                 type="button"
                 aria-label={t("queue.triggerTitle")}
-                className="text-content-muted hover:text-content flex items-center justify-center transition-colors"
+                className="flex items-center justify-center text-content-muted transition-colors hover:text-content"
               >
                 <ListMusic className="size-5" />
               </button>
@@ -327,12 +327,12 @@ export const QueuePopover = () => {
       </TooltipProvider>
       <PopoverContent
         align="end"
-        className="border-content/10 bg-surface-elevated text-content w-96 border p-0 shadow-2xl"
+        className="w-96 border border-content/10 bg-surface-elevated p-0 text-content shadow-2xl"
       >
-        <div className="border-content/10 bg-surface-elevated/90 sticky top-0 z-10 flex items-center justify-between border-b p-4 backdrop-blur-sm">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-content/10 bg-surface-elevated/90 p-4 backdrop-blur-sm">
           <div>
             <h3 className="text-lg font-bold">{t("queue.title")}</h3>
-            <p className="text-content-muted text-xs">
+            <p className="text-xs text-content-muted">
               {t("queue.totalSongs", { count: queue.length })}
             </p>
           </div>
@@ -340,7 +340,7 @@ export const QueuePopover = () => {
           <button
             type="button"
             onClick={scrollToCurrent}
-            className="text-content-muted hover:bg-content/10 hover:text-content rounded-full p-2 transition-colors"
+            className="rounded-full p-2 text-content-muted transition-colors hover:bg-content/10 hover:text-content"
             title={t("queue.locateCurrent")}
           >
             <LocateFixed className="size-4" />

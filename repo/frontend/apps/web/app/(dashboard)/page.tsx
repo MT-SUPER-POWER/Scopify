@@ -38,7 +38,7 @@ export default function HomePage() {
     isLogin && userName ? `${t(timeTheme.greetingKey)}, ${userName}` : t(timeTheme.greetingKey);
 
   return (
-    <div className="bg-surface-raised relative min-h-screen pb-24 font-sans">
+    <div className="relative min-h-screen bg-surface-raised pb-24 font-sans">
       <div
         className={cn(
           "pointer-events-none absolute inset-x-0 top-0 z-0 h-full bg-linear-to-b",
@@ -48,7 +48,7 @@ export default function HomePage() {
 
       {isUnavailable ? (
         <div className="relative z-10 flex min-h-screen flex-col p-6 pt-20">
-          <h1 className="text-content text-3xl leading-none font-bold tracking-tight">
+          <h1 className="text-3xl leading-none font-bold tracking-tight text-content">
             {greetingText}
           </h1>
           <main className="flex flex-1 items-center justify-center pb-28">
@@ -64,7 +64,7 @@ export default function HomePage() {
       ) : isLoading && playlists.length === 0 ? (
         <HomePageSkeleton />
       ) : (
-        <div className="animate-in fade-in relative z-10 space-y-10 p-6 pt-20 duration-500">
+        <div className="relative z-10 animate-in space-y-10 p-6 pt-20 duration-500 fade-in">
           <HomeGreetingSection
             dateInfo={dateInfo}
             greeting={greetingText}

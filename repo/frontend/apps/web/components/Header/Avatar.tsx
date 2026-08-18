@@ -10,8 +10,8 @@ const MockAvatar = () => {
   const imgSrc = useUserStore.getState().user?.avatarUrl;
 
   return (
-    <div className="bg-surface-sunken border-border text-content hover:border-content flex size-10 items-center justify-center rounded-full border-[3px] transition-transform hover:scale-105">
-      <div className="bg-brand flex size-full items-center justify-center overflow-hidden rounded-full">
+    <div className="flex size-10 items-center justify-center rounded-full border-[3px] border-border bg-surface-sunken text-content transition-transform hover:scale-105 hover:border-content">
+      <div className="flex size-full items-center justify-center overflow-hidden rounded-full bg-brand">
         {isLogged && imgSrc !== "" && imgSrc !== undefined ? (
           <Image src={imgSrc} alt="avatar" className="size-full" width={40} height={40} />
         ) : (

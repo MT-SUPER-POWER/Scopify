@@ -65,7 +65,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                 : t("settings.updater.statusHint")
           }
           control={
-            <span aria-live="polite" className="text-foreground text-sm font-semibold">
+            <span aria-live="polite" className="text-sm font-semibold text-foreground">
               {statusLabel}
             </span>
           }
@@ -76,7 +76,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
             control={
               <time
                 dateTime={lastCheckedAt.toISOString()}
-                className="text-muted-foreground text-sm font-medium"
+                className="text-sm font-medium text-muted-foreground"
               >
                 {formattedLastCheckedAt}
               </time>
@@ -84,7 +84,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
           />
         ) : null}
         {state.message ? (
-          <p role="alert" className="text-danger -mt-2 mb-6 text-sm leading-relaxed">
+          <p role="alert" className="-mt-2 mb-6 text-sm leading-relaxed text-danger">
             {t("settings.updater.message")}：{state.message}
           </p>
         ) : null}
@@ -97,7 +97,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                 type="button"
                 onClick={() => void check()}
                 disabled={!state.supported || isChecking || isDownloading}
-                className="border-input bg-surface-raised text-foreground hover:bg-accent inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold transition disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-full border border-input bg-surface-raised px-4 py-2 text-xs font-bold text-foreground transition hover:bg-accent disabled:opacity-50"
               >
                 <RefreshCw className={isChecking ? "size-3.5 animate-spin" : "size-3.5"} />
                 {isChecking ? t("settings.updater.checking") : t("settings.updater.check")}
@@ -107,7 +107,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                   type="button"
                   onClick={() => void download()}
                   disabled={isDownloading}
-                  className="bg-brand text-brand-foreground hover:bg-brand-hover inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-xs font-bold text-brand-foreground transition hover:bg-brand-hover disabled:opacity-50"
                 >
                   <Download className="size-3.5" />
                   {t("settings.updater.download")}
@@ -117,7 +117,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                 <button
                   type="button"
                   onClick={install}
-                  className="bg-brand text-brand-foreground hover:bg-brand-hover inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition"
+                  className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-xs font-bold text-brand-foreground transition hover:bg-brand-hover"
                 >
                   <Rocket className="size-3.5" />
                   {t("settings.updater.install")}

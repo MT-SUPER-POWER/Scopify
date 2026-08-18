@@ -31,7 +31,7 @@ export function HighlightText({ raw }: { raw: string }) {
     <>
       {segments.map((seg, i) =>
         seg.highLighted ? (
-          <span key={i} className="text-content font-semibold">
+          <span key={i} className="font-semibold text-content">
             {seg.text}
           </span>
         ) : (
@@ -62,8 +62,8 @@ export function SuggestTag({ item }: { item: SuggestItem }) {
         className={cn(
           "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold sm:px-2 sm:text-[11px]",
           item.skinType === "colorPrimary1"
-            ? "border-brand/40 bg-brand/10 text-brand border"
-            : "border-content-subtle text-content-muted border",
+            ? "border border-brand/40 bg-brand/10 text-brand"
+            : "border border-content-subtle text-content-muted",
         )}
       >
         {item.tag}

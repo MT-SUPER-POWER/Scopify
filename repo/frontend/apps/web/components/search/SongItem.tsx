@@ -69,7 +69,7 @@ function SongIndexCell({
       {/* 默认：序号 */}
       <span
         className={cn(
-          "text-content-muted text-sm font-normal group-hover:hidden",
+          "text-sm font-normal text-content-muted group-hover:hidden",
           isActive && "hidden",
         )}
       >
@@ -82,7 +82,7 @@ function SongIndexCell({
           {[0, 0.2, 0.4].map((delay) => (
             <motion.div
               key={delay}
-              className="bg-brand w-0.5 rounded-full"
+              className="w-0.5 rounded-full bg-brand"
               animate={{ scaleY: [0.4, 1, 0.4] }}
               transition={{ duration: 0.8, repeat: Infinity, delay, ease: "easeInOut" }}
               style={{ height: "100%", originY: 1 }}
@@ -93,15 +93,15 @@ function SongIndexCell({
 
       {/* 暂停中：静态绿色播放图标 */}
       {isActive && !isPlaying && (
-        <Play className="text-brand size-4 fill-current group-hover:hidden" />
+        <Play className="size-4 fill-current text-brand group-hover:hidden" />
       )}
 
       {/* Hover 覆盖：播放 / 暂停按钮 */}
       <div className="hidden items-center justify-center group-hover:flex">
         {isActive && isPlaying ? (
-          <Pause className="text-brand size-4 cursor-pointer fill-current" onClick={onPause} />
+          <Pause className="size-4 cursor-pointer fill-current text-brand" onClick={onPause} />
         ) : (
-          <Play className="text-content size-4 cursor-pointer fill-current" onClick={onPlay} />
+          <Play className="size-4 cursor-pointer fill-current text-content" onClick={onPlay} />
         )}
       </div>
     </div>
@@ -203,7 +203,7 @@ export const SongItem = memo(
           <div
             className={cn(
               "group flex items-center gap-3 rounded-md px-3 py-2",
-              "hover:bg-content/10 cursor-default transition-colors select-none",
+              "cursor-default transition-colors select-none hover:bg-content/10",
               isActive && "text-brand",
             )}
             onDoubleClick={handleRowDoubleClick}
@@ -220,7 +220,7 @@ export const SongItem = memo(
             </div>
 
             {/* 封面 */}
-            <div className="bg-surface-elevated size-10 shrink-0 overflow-hidden rounded">
+            <div className="size-10 shrink-0 overflow-hidden rounded bg-surface-elevated">
               <Image
                 width={40}
                 height={40}
@@ -247,14 +247,14 @@ export const SongItem = memo(
                   {song.name}
                 </span>
                 {song.alias?.length ? (
-                  <span className="text-content-subtle truncate text-xs">
+                  <span className="truncate text-xs text-content-subtle">
                     ({song.alias.join(" / ")})
                   </span>
                 ) : null}
                 <SongVipBadge fee={song.fee} />
                 {song.mvid ? (
                   <span
-                    className="border-info text-info bg-info/10 inline-flex h-[13px] shrink-0 items-center rounded-xs border px-[2px] text-[9px] leading-[11px] font-normal"
+                    className="inline-flex h-[13px] shrink-0 items-center rounded-xs border border-info bg-info/10 px-[2px] text-[9px] leading-[11px] font-normal text-info"
                     title="MV"
                   >
                     MV
@@ -263,17 +263,17 @@ export const SongItem = memo(
               </div>
               <ArtistInlineLinks
                 artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
-                className="text-content-muted cursor-pointer truncate text-xs"
+                className="cursor-pointer truncate text-xs text-content-muted"
               />
             </div>
 
             <div className="hidden min-w-0 flex-[0.55] items-center gap-2 lg:flex">
-              <Disc3 className="text-content-subtle size-3.5 shrink-0" aria-hidden="true" />
+              <Disc3 className="size-3.5 shrink-0 text-content-subtle" aria-hidden="true" />
               <Link
                 href={`/album?id=${song.album.id}`}
                 title={song.album.name}
                 onClick={(event) => event.stopPropagation()}
-                className="text-content-muted hover:text-content truncate text-xs transition-colors hover:underline"
+                className="truncate text-xs text-content-muted transition-colors hover:text-content hover:underline"
               >
                 {song.album.name}
               </Link>
@@ -289,7 +289,7 @@ export const SongItem = memo(
             </div>
 
             {/* 时长 */}
-            <div className="text-content-muted w-12 shrink-0 text-right text-sm">
+            <div className="w-12 shrink-0 text-right text-sm text-content-muted">
               {formatDuration(song.duration)}
             </div>
           </div>

@@ -16,8 +16,8 @@ export function SidebarLibraryStateCard({
   return (
     <div className="flex flex-col items-start gap-3 px-2 py-3">
       <div className="space-y-1">
-        <p className="text-content text-sm font-medium">{title}</p>
-        <p className="text-content-muted text-xs leading-5">{subtitle}</p>
+        <p className="text-sm font-medium text-content">{title}</p>
+        <p className="text-xs leading-5 text-content-muted">{subtitle}</p>
       </div>
       <Button type="button" variant="secondary" size="sm" onClick={onAction}>
         {actionLabel}

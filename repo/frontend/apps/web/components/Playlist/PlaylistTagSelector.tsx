@@ -58,7 +58,7 @@ export function PlaylistTagSelector({ value, maxSelected, onChange }: PlaylistTa
     return (
       <div className="flex flex-wrap gap-2">
         {skeletonKeys.map((key) => (
-          <span key={key} className="bg-skeleton h-7 w-14 animate-pulse rounded-full" />
+          <span key={key} className="h-7 w-14 animate-pulse rounded-full bg-skeleton" />
         ))}
       </div>
     );
@@ -69,7 +69,7 @@ export function PlaylistTagSelector({ value, maxSelected, onChange }: PlaylistTa
       <button
         type="button"
         onClick={() => void loadTags()}
-        className="text-content-muted border-content/10 hover:border-content/30 hover:text-content inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium"
+        className="inline-flex items-center gap-2 rounded-full border border-content/10 px-3 py-1.5 text-xs font-medium text-content-muted hover:border-content/30 hover:text-content"
       >
         <RefreshCw className="size-3.5" />
         {t("playlist.form.tagsRetry")}
@@ -79,7 +79,7 @@ export function PlaylistTagSelector({ value, maxSelected, onChange }: PlaylistTa
 
   return (
     <div className="space-y-2">
-      <div className="text-content-muted flex items-center justify-between text-xs">
+      <div className="flex items-center justify-between text-xs text-content-muted">
         <span>{t("playlist.form.tagsLabel")}</span>
         <span>
           {value.length}/{maxSelected}
@@ -99,7 +99,7 @@ export function PlaylistTagSelector({ value, maxSelected, onChange }: PlaylistTa
                 "rounded-full border px-3 py-1 text-xs transition",
                 selected
                   ? "border-brand bg-brand/20 text-brand"
-                  : "text-content-muted border-content/10 bg-content/5 hover:border-content/30 hover:text-content",
+                  : "border-content/10 bg-content/5 text-content-muted hover:border-content/30 hover:text-content",
                 disabled && "cursor-not-allowed opacity-40",
               )}
             >

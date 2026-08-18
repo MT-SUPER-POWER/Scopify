@@ -60,9 +60,9 @@ function TrackIndexCell({
   const { t } = useI18n();
 
   return (
-    <div className="text-content-muted relative flex w-6 items-center justify-center text-right text-sm tabular-nums">
+    <div className="relative flex w-6 items-center justify-center text-right text-sm text-content-muted tabular-nums">
       {/* 默认：序号 */}
-      <span className={cn("group-hover:hidden", isActive ? "text-brand hidden font-bold" : "")}>
+      <span className={cn("group-hover:hidden", isActive ? "hidden font-bold text-brand" : "")}>
         {index + 1}
       </span>
 
@@ -81,15 +81,15 @@ function TrackIndexCell({
 
       {/* 暂停中：静态绿色 Play */}
       {isActive && !isPlaying && (
-        <Play className="text-brand size-4 fill-current group-hover:hidden" />
+        <Play className="size-4 fill-current text-brand group-hover:hidden" />
       )}
 
       {/* Hover 覆盖 */}
       <div className="hidden items-center justify-center group-hover:flex">
         {isActive && isPlaying ? (
-          <Pause className="text-content size-4 cursor-pointer fill-current" onClick={onPause} />
+          <Pause className="size-4 cursor-pointer fill-current text-content" onClick={onPause} />
         ) : (
-          <Play className="text-content size-4 cursor-pointer fill-current" onClick={onPlay} />
+          <Play className="size-4 cursor-pointer fill-current text-content" onClick={onPlay} />
         )}
       </div>
     </div>
@@ -185,7 +185,7 @@ export const PopularTrackItem = memo(
           <div
             className={cn(
               "group flex items-center justify-between rounded-md p-2",
-              "hover:bg-content/10 cursor-pointer transition-colors select-none",
+              "cursor-pointer transition-colors select-none hover:bg-content/10",
               isActive && "text-brand",
             )}
             onMouseEnter={() => setHovered(true)}
@@ -223,7 +223,7 @@ export const PopularTrackItem = memo(
             </div>
 
             {/* 右侧：Like + 时长 */}
-            <div className="text-content-muted flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-4 text-sm text-content-muted">
               <div className={cn("transition-opacity", hovered ? "opacity-100" : "opacity-0")}>
                 <LikeButton
                   liked={isLiked}

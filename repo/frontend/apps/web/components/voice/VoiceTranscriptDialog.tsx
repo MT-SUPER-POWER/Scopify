@@ -27,7 +27,7 @@ export function VoiceTranscriptDialog({ onOpenChange, open, voice }: VoiceTransc
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="bg-surface-elevated text-content flex w-[min(42rem,calc(100%-2rem))] max-w-none flex-col gap-0 overflow-hidden p-0">
+      <AlertDialogContent className="flex w-[min(42rem,calc(100%-2rem))] max-w-none flex-col gap-0 overflow-hidden bg-surface-elevated p-0 text-content">
         <AlertDialogHeader className="sr-only">
           <AlertDialogTitle>{voice?.name ?? t("library.voiceTranscript.title")}</AlertDialogTitle>
           <AlertDialogDescription>{t("library.voiceTranscript.title")}</AlertDialogDescription>
@@ -41,7 +41,7 @@ export function VoiceTranscriptDialog({ onOpenChange, open, voice }: VoiceTransc
           voice={voice}
         />
 
-        <AlertDialogFooter className="border-border border-t p-4">
+        <AlertDialogFooter className="border-t border-border p-4">
           <AlertDialogCancel className="bg-content/5 text-content hover:bg-content/10 hover:text-content">
             {t("common.action.cancel")}
           </AlertDialogCancel>

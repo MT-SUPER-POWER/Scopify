@@ -72,7 +72,13 @@ export function useDesktopWallpaperFoliaPlayback(
       modelEventReceived = true;
       if (!disposed) setModel(nextModel);
     });
-    const audioFeatureRuntime = audioFeatureRuntimeRef.current!;
+    const audioFeatureRuntime = audioFeatureRuntimeRef.current;
+    const audioFeatureConnectionId = audioFeatureConnectionIdRef.current;
+    if (!audioFeatureRuntime || !audioFeatureConnectionId) {
+      return () => {
+        stopModelSubscription();
+      };
+    }
     const applyAudioValues = (values: AudioFeatureValues) => {
       applyAudioValuesToMotionValues(values, {
         audioPower,
@@ -86,7 +92,7 @@ export function useDesktopWallpaperFoliaPlayback(
     };
     audioFeatureRuntime.start(applyAudioValues);
     const audioFeatureSubscriber = createAudioFeatureSubscriberConnection({
-      connectionId: audioFeatureConnectionIdRef.current!,
+      connectionId: audioFeatureConnectionId,
       onFrame: (frame) => {
         if (!disposed) audioFeatureRuntime.accept(frame, performance.now());
       },

@@ -26,7 +26,7 @@
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "bun test tests",
-    "lint": "bun run lint:theme && eslint .",
+    "lint": "bun run lint:theme && eslint . --max-warnings 0 --no-warn-ignored",
     "lint:theme": "bun scripts/check-theme-hardcodes.ts",
     "format": "prettier --write .",
     "i18n:types": "bun scripts/generate-i18n-types.ts",

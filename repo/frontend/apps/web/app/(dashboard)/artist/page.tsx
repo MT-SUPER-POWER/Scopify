@@ -33,21 +33,21 @@ export default function ArtistPage() {
 
   if (!artistId)
     return (
-      <div className="bg-surface-raised text-content h-screen p-8">
+      <div className="h-screen bg-surface-raised p-8 text-content">
         {t("artist.page.invalidId")}
       </div>
     );
 
   if (isLoading)
     return (
-      <div className="bg-surface-raised text-content flex h-screen items-center justify-center p-8">
-        <Loader2 className="text-brand size-8 animate-spin" />
+      <div className="flex h-screen items-center justify-center bg-surface-raised p-8 text-content">
+        <Loader2 className="size-8 animate-spin text-brand" />
       </div>
     );
 
   if (!artist)
     return (
-      <div className="bg-surface-raised min-h-screen p-8">
+      <div className="min-h-screen bg-surface-raised p-8">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
@@ -59,7 +59,7 @@ export default function ArtistPage() {
     );
 
   return (
-    <div className="bg-surface-raised text-content min-h-screen pb-24 font-sans">
+    <div className="min-h-screen bg-surface-raised pb-24 font-sans text-content">
       <ArtistHero artist={artist} />
 
       {isError && (

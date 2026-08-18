@@ -40,7 +40,7 @@ export function DesktopLyricSection() {
           <button
             type="button"
             onClick={handleToggle}
-            className="border-input text-foreground hover:border-content inline-flex items-center gap-2 rounded border px-3 py-1.5 text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content"
           >
             <Music className="size-4" />
             {t("settings.desktopLyrics.test.button")}

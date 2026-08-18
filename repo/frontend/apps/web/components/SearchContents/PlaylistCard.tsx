@@ -32,19 +32,19 @@ export function PlaylistCard({
 
   return (
     <div
-      className="bg-surface-elevated hover:bg-surface-overlay active:bg-surface-sunken group relative min-w-0 cursor-pointer rounded-xl p-4 transition-colors"
+      className="group relative min-w-0 cursor-pointer rounded-xl bg-surface-elevated p-4 transition-colors hover:bg-surface-overlay active:bg-surface-sunken"
       onClick={onClick}
     >
-      <div className="bg-surface-sunken shadow-panel relative mb-4 aspect-square w-full overflow-hidden rounded-md">
+      <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md bg-surface-sunken shadow-panel">
         <img src={playlist.coverImgUrl} alt={playlist.name} className="size-full object-cover" />
         {playlist.playCount > 0 && (
-          <div className="bg-overlay/75 text-overlay-foreground absolute top-1 right-2 rounded px-2 py-0.5 text-[11px] font-bold">
+          <div className="absolute top-1 right-2 rounded bg-overlay/75 px-2 py-0.5 text-[11px] font-bold text-overlay-foreground">
             ▷ {formatCount(playlist.playCount)}
           </div>
         )}
       </div>
       <h4 className="mb-1 truncate text-base font-bold">{playlist.name}</h4>
-      <p className="text-content-muted mt-1 truncate text-sm">
+      <p className="mt-1 truncate text-sm text-content-muted">
         {t("search.playlist.byCreator", {
           name: playlist.creator?.nickname || t("search.playlist.neteaseUser"),
         })}
@@ -57,7 +57,7 @@ export function PlaylistCard({
         }}
         disabled={isLoading}
         className={cn(
-          "bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-6 bottom-20 z-10 flex size-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-105 disabled:opacity-80 disabled:hover:scale-100",
+          "absolute right-6 bottom-20 z-10 flex size-12 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all duration-300 hover:scale-105 hover:bg-brand-hover disabled:opacity-80 disabled:hover:scale-100",
           isPlaying || isLoading
             ? "translate-y-0 opacity-100"
             : "translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",

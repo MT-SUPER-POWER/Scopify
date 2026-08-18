@@ -24,8 +24,8 @@ export default function Header() {
       {/* 滚动时的背景遮罩 */}
       <div
         className={cn(
-          "bg-surface-overlay/80 absolute inset-0 -z-10 rounded-lg backdrop-blur-lg transition-opacity duration-300",
-          isAtTop ? "opacity-0" : "border-border border-b opacity-100",
+          "absolute inset-0 -z-10 rounded-lg bg-surface-overlay/80 backdrop-blur-lg transition-opacity duration-300",
+          isAtTop ? "opacity-0" : "border-b border-border opacity-100",
         )}
       />
 
@@ -35,7 +35,7 @@ export default function Header() {
           onClick={() => smartRouter.back()}
           className={cn(
             "flex size-10 items-center justify-center rounded-full",
-            "text-content-muted hover:text-content transition-all",
+            "text-content-muted transition-all hover:text-content",
             NAV_BTN,
           )}
         >
@@ -45,7 +45,7 @@ export default function Header() {
           onClick={() => smartRouter.forward()}
           className={cn(
             "flex size-10 items-center justify-center rounded-full",
-            "text-content-muted hover:text-content transition-all",
+            "text-content-muted transition-all hover:text-content",
             NAV_BTN,
           )}
         >
@@ -59,7 +59,7 @@ export default function Header() {
           href="/"
           className={cn(
             "flex size-10 shrink-0 items-center justify-center rounded-full",
-            "text-content-muted hover:text-content transition-all active:scale-95",
+            "text-content-muted transition-all hover:text-content active:scale-95",
             NAV_BTN,
             "hidden md:flex",
           )}

@@ -38,13 +38,13 @@ export function VoiceList({
         />
       ))}
       {voices.length === 0 && (
-        <p className="text-content-subtle py-4 text-sm">{t("search.section.noVoiceResults")}</p>
+        <p className="py-4 text-sm text-content-subtle">{t("search.section.noVoiceResults")}</p>
       )}
       {onViewAll && voices.length > (limit ?? 0) && (
         <button
           type="button"
           onClick={onViewAll}
-          className="text-content-muted hover:text-content col-span-full mt-3 self-start text-sm font-bold hover:underline"
+          className="col-span-full mt-3 self-start text-sm font-bold text-content-muted hover:text-content hover:underline"
         >
           {t("common.action.viewAll")}
         </button>

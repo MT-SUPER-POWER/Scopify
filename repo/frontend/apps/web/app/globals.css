@@ -94,7 +94,7 @@
 
     /* 滚动条滑块 (默认与背景融为一体) */
     &::-webkit-scrollbar-thumb {
-      @apply border-surface-raised rounded-full border-[3px] bg-transparent;
+      @apply rounded-full border-[3px] border-surface-raised bg-transparent;
     }
 
     /* 悬浮时的滑块 */
@@ -117,7 +117,7 @@
 
     /* 滚动条滑块 (默认与背景融为一体) */
     &::-webkit-scrollbar-thumb {
-      @apply border-surface-raised rounded-full border-[3px] bg-transparent;
+      @apply rounded-full border-[3px] border-surface-raised bg-transparent;
     }
 
     /* 悬浮时的滑块 */

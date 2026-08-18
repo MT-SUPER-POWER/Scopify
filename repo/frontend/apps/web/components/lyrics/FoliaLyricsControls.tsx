@@ -18,7 +18,6 @@ export function FoliaLyricsControls({
   const inputRef = useRef<HTMLInputElement>(null);
   const model = useOnlineLyricsTab();
   const isDaylight = theme.name === "snow";
-  const activeTabBg = isDaylight ? "bg-blue-500/15 text-blue-600" : "bg-blue-500/20 text-blue-300";
   const tabContainerBg = isDaylight ? "bg-black/5" : "bg-white/5";
   const activePillBg = isDaylight
     ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]"

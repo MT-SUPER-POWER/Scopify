@@ -33,12 +33,12 @@ export function LikedVoiceMetadata({ voice }: LikedVoiceMetadataProps) {
   return (
     <>
       {voice.description ? (
-        <p className="text-content-subtle mt-1 line-clamp-2 text-xs leading-relaxed">
+        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-content-subtle">
           {voice.description}
         </p>
       ) : null}
       {metadata.length > 0 ? (
-        <p className="text-content-subtle mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
+        <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-content-subtle">
           {metadata.map((item) => (
             <span key={item}>{item}</span>
           ))}

@@ -193,7 +193,7 @@ export default function HeaderSearch() {
           !focused && !dropdownVisible && `${NAV_BTN} rounded-full border border-transparent`,
           (focused || dropdownVisible) && GLASS,
           dropdownVisible
-            ? "border-border rounded-t-2xl rounded-b-none border-b"
+            ? "rounded-t-2xl rounded-b-none border-b border-border"
             : focused && "rounded-full",
         )}
       >
@@ -221,7 +221,7 @@ export default function HeaderSearch() {
               if (!wrapperRef.current?.contains(document.activeElement)) setFocused(false);
             }, 100);
           }}
-          className="text-content caret-brand placeholder:text-content-subtle flex-1 border-none bg-transparent text-sm font-medium transition-all outline-none"
+          className="flex-1 border-none bg-transparent text-sm font-medium text-content caret-brand transition-all outline-none placeholder:text-content-subtle"
           placeholder={placeholder}
           onKeyDown={handleKeyDown}
         />
@@ -234,12 +234,12 @@ export default function HeaderSearch() {
               setSuggests([]);
               setSelectedIndex(-1);
             }}
-            className="hover:bg-accent shrink-0 rounded-full p-1 transition-colors"
+            className="shrink-0 rounded-full p-1 transition-colors hover:bg-accent"
           >
-            <X className="text-content-subtle hover:text-content size-3.5" />
+            <X className="size-3.5 text-content-subtle hover:text-content" />
           </button>
         ) : (
-          <div className="bg-surface-elevated border-border text-content-subtle hidden shrink-0 items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10px] font-bold lg:flex">
+          <div className="hidden shrink-0 items-center gap-1 rounded-md border border-border bg-surface-elevated px-1.5 py-0.5 text-[10px] font-bold text-content-subtle lg:flex">
             <span>{isMac ? "⌘" : "Ctrl"}</span>
             <span>K</span>
           </div>
@@ -265,13 +265,13 @@ export default function HeaderSearch() {
             {showRecent && (
               <>
                 <div className="flex items-center justify-between px-5 pt-2 pb-1">
-                  <span className="text-content-subtle mb-1 text-[11px] font-semibold tracking-widest uppercase">
+                  <span className="mb-1 text-[11px] font-semibold tracking-widest text-content-subtle uppercase">
                     {t("search.modal.recentSearches")}
                   </span>
                   <button
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => useSearchStore.getState().clearRecent()}
-                    className="text-content-subtle hover:text-content-muted text-xs transition-colors"
+                    className="text-xs text-content-subtle transition-colors hover:text-content-muted"
                   >
                     {t("common.action.clearAll")}
                   </button>
@@ -286,13 +286,13 @@ export default function HeaderSearch() {
                     onClick={() => handleSearch(item)}
                     onMouseEnter={() => setSelectedIndex(i)}
                     className={cn(
-                      "hover:bg-accent group/item flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors",
+                      "group/item flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-accent",
                       selectedIndex === i && "bg-accent",
                     )}
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <Clock className="text-content-subtle size-4 shrink-0" />
-                      <span className="text-content-muted truncate text-[15px]">{item}</span>
+                      <Clock className="size-4 shrink-0 text-content-subtle" />
+                      <span className="truncate text-[15px] text-content-muted">{item}</span>
                     </div>
                     <button
                       onMouseDown={(e) => e.stopPropagation()}
@@ -300,9 +300,9 @@ export default function HeaderSearch() {
                         e.stopPropagation();
                         removeRecent(item);
                       }}
-                      className="hover:bg-accent shrink-0 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100"
+                      className="shrink-0 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-accent"
                     >
-                      <X className="text-content-subtle hover:text-content size-3.5" />
+                      <X className="size-3.5 text-content-subtle hover:text-content" />
                     </button>
                   </motion.div>
                 ))}
@@ -312,7 +312,7 @@ export default function HeaderSearch() {
             {/* 加载状态 */}
             {loading && (
               <div className="flex items-center justify-center py-6">
-                <div className="border-input border-t-content-muted size-4 animate-spin rounded-full border-2" />
+                <div className="size-4 animate-spin rounded-full border-2 border-input border-t-content-muted" />
               </div>
             )}
 
@@ -320,7 +320,7 @@ export default function HeaderSearch() {
             {showSuggests && (
               <>
                 <div className="px-5 pb-1">
-                  <span className="text-content-subtle text-xs font-semibold tracking-widest uppercase">
+                  <span className="text-xs font-semibold tracking-widest text-content-subtle uppercase">
                     {t("search.modal.relatedSuggestions")}
                   </span>
                 </div>
@@ -334,12 +334,12 @@ export default function HeaderSearch() {
                     onClick={() => handleSearch(item.keyword)}
                     onMouseEnter={() => setSelectedIndex(i)}
                     className={cn(
-                      "hover:bg-accent flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors",
+                      "flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-accent",
                       selectedIndex === i && "bg-accent",
                     )}
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <Search className="text-content-subtle size-4 shrink-0" />
+                      <Search className="size-4 shrink-0 text-content-subtle" />
                       <span className="truncate text-base">
                         <HighlightText raw={item.highLightInfo} />
                       </span>
@@ -352,7 +352,7 @@ export default function HeaderSearch() {
 
             {/* 空状态 */}
             {showEmpty && (
-              <div className="text-content-subtle py-6 text-center text-sm">
+              <div className="py-6 text-center text-sm text-content-subtle">
                 No relevant content found
               </div>
             )}

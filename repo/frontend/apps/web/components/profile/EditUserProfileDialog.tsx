@@ -47,11 +47,11 @@ export function EditUserProfileDialog({
   if (!open) return null;
 
   return (
-    <div className="bg-overlay fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm">
-      <div className="bg-surface-overlay shadow-floating w-full max-w-md rounded-xl border p-6">
-        <h2 className="text-content text-xl font-bold">{t("profile.edit.title")}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay px-4 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-xl border bg-surface-overlay p-6 shadow-floating">
+        <h2 className="text-xl font-bold text-content">{t("profile.edit.title")}</h2>
         <div className="mt-5 flex flex-col gap-4">
-          <label className="text-content-muted flex flex-col gap-2 text-xs font-semibold">
+          <label className="flex flex-col gap-2 text-xs font-semibold text-content-muted">
             {t("profile.edit.nickname")}
             <Input
               value={nickname}
@@ -60,17 +60,17 @@ export function EditUserProfileDialog({
               className="bg-content/10 text-content placeholder:text-content-subtle focus-visible:ring-brand/30"
             />
           </label>
-          <label className="text-content-muted flex flex-col gap-2 text-xs font-semibold">
+          <label className="flex flex-col gap-2 text-xs font-semibold text-content-muted">
             {t("profile.edit.signature")}
             <Textarea
               value={signature}
               maxLength={300}
               rows={4}
               onChange={(event) => setSignature(event.target.value)}
-              className="bg-content/10 text-content placeholder:text-content-subtle focus-visible:ring-brand/30 resize-none"
+              className="resize-none bg-content/10 text-content placeholder:text-content-subtle focus-visible:ring-brand/30"
             />
           </label>
-          <label className="text-content-muted flex flex-col gap-2 text-xs font-semibold">
+          <label className="flex flex-col gap-2 text-xs font-semibold text-content-muted">
             {t("profile.edit.gender")}
             <Select
               value={String(gender)}
@@ -92,7 +92,7 @@ export function EditUserProfileDialog({
             type="button"
             variant="outline"
             onClick={onCancel}
-            className="border-content/20 text-content hover:border-content hover:text-content rounded-full"
+            className="rounded-full border-content/20 text-content hover:border-content hover:text-content"
           >
             {t("common.action.cancel")}
           </Button>
@@ -100,7 +100,7 @@ export function EditUserProfileDialog({
             type="button"
             disabled={saving || !nickname.trim()}
             onClick={() => onConfirm({ nickname: nickname.trim(), signature, gender })}
-            className="bg-brand text-brand-foreground hover:bg-brand-hover rounded-full disabled:opacity-50"
+            className="rounded-full bg-brand text-brand-foreground hover:bg-brand-hover disabled:opacity-50"
           >
             {saving ? t("common.action.saving") : t("common.action.save")}
           </Button>

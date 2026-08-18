@@ -21,7 +21,7 @@ export function VoicesView({
       <VoiceList enableContextMenu voices={voices} layout="grid" transcriptMode="popover" />
       <div ref={loadMoreRef} aria-hidden className="h-px" />
       {isFetchingNextPage ? (
-        <div className="text-content-muted flex justify-center py-6" aria-live="polite">
+        <div className="flex justify-center py-6 text-content-muted" aria-live="polite">
           <LoaderCircle className="size-5 animate-spin" />
         </div>
       ) : null}

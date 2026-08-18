@@ -37,7 +37,7 @@ export function AppCloseRememberChoice({
           </svg>
         ) : null}
       </span>
-      <span className="text-content-muted group-hover:text-content text-sm transition-colors">
+      <span className="text-sm text-content-muted transition-colors group-hover:text-content">
         {label}
       </span>
     </button>

@@ -12,7 +12,7 @@ export function FoliaLyricMatchPreview({
   isPureMusic,
   previewLines,
   song,
-  theme,
+  theme: _theme,
 }: FoliaLyricMatchPreviewProps) {
   const { t } = useI18n();
   const title = candidate?.name ?? song?.name ?? t("lyrics.match.noSong");

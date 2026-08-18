@@ -28,7 +28,7 @@ function Calendar({
           "relative flex h-8 items-center justify-center",
           defaultClassNames.month_caption,
         ),
-        caption_label: cn("text-foreground text-sm font-medium", defaultClassNames.caption_label),
+        caption_label: cn("text-sm font-medium text-foreground", defaultClassNames.caption_label),
         nav: cn(
           "absolute inset-x-0 top-0 flex items-center justify-between",
           defaultClassNames.nav,
@@ -46,14 +46,14 @@ function Calendar({
         month_grid: cn("w-full border-collapse", defaultClassNames.month_grid),
         weekdays: cn("flex", defaultClassNames.weekdays),
         weekday: cn(
-          "text-content-subtle w-9 pb-2 text-center text-xs font-medium",
+          "w-9 pb-2 text-center text-xs font-medium text-content-subtle",
           defaultClassNames.weekday,
         ),
         week: cn("mt-1 flex w-full", defaultClassNames.week),
         day: cn("relative size-9 p-0 text-center", defaultClassNames.day),
         day_button: cn(
           buttonVariants({ variant: "ghost", size: "icon-sm" }),
-          "text-content hover:bg-accent hover:text-accent-foreground size-9 rounded-md text-sm",
+          "size-9 rounded-md text-sm text-content hover:bg-accent hover:text-accent-foreground",
           defaultClassNames.day_button,
         ),
         selected: cn("bg-primary text-primary-foreground", defaultClassNames.selected),

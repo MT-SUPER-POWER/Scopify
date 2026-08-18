@@ -26,7 +26,7 @@ function ScrollArea({
         ref={viewportRef} // 利用 ref 把整个组件的状态暴露给 --> scrollContainer
         data-slot="scroll-area-viewport"
         className={cn(
-          "focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1",
+          "size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1",
           viewportClassName,
         )}
       >
@@ -57,7 +57,7 @@ function ScrollBar({
     >
       <ScrollAreaPrimitive.ScrollAreaThumb
         data-slot="scroll-area-thumb"
-        className="bg-scrollbar-thumb hover:bg-scrollbar-thumb-hover relative flex-1 rounded-full transition-colors"
+        className="relative flex-1 rounded-full bg-scrollbar-thumb transition-colors hover:bg-scrollbar-thumb-hover"
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
   );

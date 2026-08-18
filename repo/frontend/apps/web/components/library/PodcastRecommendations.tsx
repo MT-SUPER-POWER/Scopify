@@ -17,9 +17,9 @@ function RecommendationSkeleton() {
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {[0, 1, 2, 3, 4].map((index) => (
         <div key={index} className="animate-pulse space-y-2">
-          <div className="bg-skeleton-subtle aspect-square rounded-md" />
-          <div className="bg-skeleton-subtle h-4 w-4/5 rounded-sm" />
-          <div className="bg-skeleton-subtle h-3 w-1/2 rounded-sm" />
+          <div className="aspect-square rounded-md bg-skeleton-subtle" />
+          <div className="h-4 w-4/5 rounded-sm bg-skeleton-subtle" />
+          <div className="h-3 w-1/2 rounded-sm bg-skeleton-subtle" />
         </div>
       ))}
     </div>
@@ -61,7 +61,7 @@ export function PodcastRecommendations({
   return (
     <section className="mt-14" aria-labelledby="podcast-recommendations-heading">
       <div className="mb-5 flex items-center justify-between gap-4">
-        <h2 id="podcast-recommendations-heading" className="text-content text-2xl font-bold">
+        <h2 id="podcast-recommendations-heading" className="text-2xl font-bold text-content">
           {t("library.podcasts.recommendations")}
         </h2>
         <button
@@ -70,7 +70,7 @@ export function PodcastRecommendations({
           aria-label={t("library.podcasts.refreshRecommendations")}
           disabled={isRefreshing}
           onClick={handleRefresh}
-          className="text-content-muted hover:bg-content/10 hover:text-content flex size-9 shrink-0 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content disabled:cursor-not-allowed disabled:opacity-50"
         >
           <RefreshCw className={cn("size-4", isRefreshing && "animate-spin")} />
         </button>
@@ -113,7 +113,7 @@ export function PodcastRecommendations({
                 aria-label={t("library.podcasts.previousRecommendations")}
                 disabled={page === 0}
                 onClick={() => setPage((currentPage) => currentPage - 1)}
-                className="bg-overlay/60 text-overlay-foreground border-overlay-foreground/15 hover:bg-overlay focus-visible:outline-brand pointer-events-none absolute top-1/2 left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border opacity-0 transition-opacity group-hover/podcast-carousel:pointer-events-auto group-hover/podcast-carousel:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-0"
+                className="pointer-events-none absolute top-1/2 left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-overlay-foreground/15 bg-overlay/60 text-overlay-foreground opacity-0 transition-opacity group-hover/podcast-carousel:pointer-events-auto group-hover/podcast-carousel:opacity-100 hover:bg-overlay focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-0"
               >
                 <ChevronLeft className="size-4" />
               </button>
@@ -123,7 +123,7 @@ export function PodcastRecommendations({
                 aria-label={t("library.podcasts.nextRecommendations")}
                 disabled={page === pageCount - 1}
                 onClick={() => setPage((currentPage) => currentPage + 1)}
-                className="bg-overlay/60 text-overlay-foreground border-overlay-foreground/15 hover:bg-overlay focus-visible:outline-brand pointer-events-none absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border opacity-0 transition-opacity group-hover/podcast-carousel:pointer-events-auto group-hover/podcast-carousel:opacity-100 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-0"
+                className="pointer-events-none absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-overlay-foreground/15 bg-overlay/60 text-overlay-foreground opacity-0 transition-opacity group-hover/podcast-carousel:pointer-events-auto group-hover/podcast-carousel:opacity-100 hover:bg-overlay focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-0"
               >
                 <ChevronRight className="size-4" />
               </button>

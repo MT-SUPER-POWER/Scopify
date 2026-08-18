@@ -48,7 +48,7 @@ export function DesktopWallpaperSpikeBackdrop() {
         ref={movingGlowRef}
         className="absolute top-[28%] left-[42%] size-[42vw] rounded-full bg-cyan-400/22 blur-[110px] will-change-transform"
       />
-      <div className="absolute -right-[8vw] -bottom-[18vh] size-[52vw] rounded-full bg-violet-500/24 blur-[130px]" />
+      <div className="absolute right-[-8vw] bottom-[-18vh] size-[52vw] rounded-full bg-violet-500/24 blur-[130px]" />
       <div className="absolute top-[16vh] left-[12vw] size-32 rotate-12 border border-white/20 bg-white/5 shadow-[0_0_80px_rgba(125,211,252,0.22)]" />
       <div className="absolute right-[18vw] bottom-[21vh] size-24 rounded-full border border-white/18 bg-white/4 shadow-[0_0_90px_rgba(167,139,250,0.28)]" />
     </div>

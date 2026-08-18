@@ -55,7 +55,7 @@ export function PlaylistContent({
   return (
     <div
       key={playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily")}
-      className="bg-surface-raised relative flex min-h-screen w-full flex-col font-sans"
+      className="relative flex min-h-screen w-full flex-col bg-surface-raised font-sans"
     >
       {!isLoading && themeColor ? (
         <div

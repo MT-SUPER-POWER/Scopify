@@ -12,7 +12,7 @@ function LibraryMediaTile({ item }: { item: LibraryMediaItem }) {
   const media = (
     <>
       <div
-        className={`bg-surface-elevated aspect-square overflow-hidden ${item.isArtist ? "rounded-full" : "rounded-md"}`}
+        className={`aspect-square overflow-hidden bg-surface-elevated ${item.isArtist ? "rounded-full" : "rounded-md"}`}
       >
         {item.coverUrl ? (
           <Image
@@ -23,15 +23,15 @@ function LibraryMediaTile({ item }: { item: LibraryMediaItem }) {
             className="size-full object-cover"
           />
         ) : (
-          <div className="text-content-subtle flex size-full items-center justify-center">
+          <div className="flex size-full items-center justify-center text-content-subtle">
             <Disc3 className="size-8" />
           </div>
         )}
       </div>
-      <h2 className="text-content mt-3 truncate text-sm font-semibold">{item.title}</h2>
-      {item.subtitle && <p className="text-content-muted mt-1 truncate text-xs">{item.subtitle}</p>}
+      <h2 className="mt-3 truncate text-sm font-semibold text-content">{item.title}</h2>
+      {item.subtitle && <p className="mt-1 truncate text-xs text-content-muted">{item.subtitle}</p>}
       {item.date ? (
-        <p className="text-content-subtle mt-1 flex items-center gap-1 truncate text-xs">
+        <p className="mt-1 flex items-center gap-1 truncate text-xs text-content-subtle">
           <Clock className="size-3 shrink-0" />
           {formatDate(item.date)}
         </p>

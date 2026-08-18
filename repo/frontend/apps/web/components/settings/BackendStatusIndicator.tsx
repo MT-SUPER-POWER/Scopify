@@ -15,7 +15,7 @@ export function BackendStatusIndicator({ status }: BackendStatusIndicatorProps) 
   return (
     <span
       aria-label={label}
-      className="text-muted-foreground inline-flex items-center gap-1 text-xs font-medium"
+      className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground"
       title={status?.error ?? label}
     >
       <span
@@ -23,7 +23,7 @@ export function BackendStatusIndicator({ status }: BackendStatusIndicatorProps) 
         className={cn(
           "size-2 rounded-full",
           isRunning && "bg-success",
-          isStarting && "bg-warning animate-pulse",
+          isStarting && "animate-pulse bg-warning",
           isError && "bg-danger",
           !isRunning && !isStarting && !isError && "bg-muted-foreground/50",
         )}

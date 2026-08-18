@@ -58,7 +58,7 @@ export function RecommendedVoiceLists({
         onOpenChange={setIsOpen}
         title={
           <div className="flex items-center gap-2">
-            <h2 className="text-content text-2xl font-bold tracking-tight hover:underline">
+            <h2 className="text-2xl font-bold tracking-tight text-content hover:underline">
               {t("home.recommendedVoiceLists")}
             </h2>
             {onRefresh ? (
@@ -68,7 +68,7 @@ export function RecommendedVoiceLists({
                 aria-label={t("home.refreshVoiceLists")}
                 disabled={isRefreshing}
                 onClick={handleRefresh}
-                className="text-content-muted hover:bg-content/10 hover:text-content flex size-7 shrink-0 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex size-7 shrink-0 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <RefreshCw className={cn("size-3.5", isRefreshing && "animate-spin")} />
               </button>

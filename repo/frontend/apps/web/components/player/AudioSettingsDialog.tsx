@@ -35,11 +35,11 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
         align="end"
         side="top"
         sideOffset={10}
-        className="bg-popover text-popover-foreground shadow-floating w-[28rem] max-w-[calc(100vw-2rem)] overflow-hidden border p-0"
+        className="w-md max-w-[calc(100vw-2rem)] overflow-hidden border bg-popover p-0 text-popover-foreground shadow-floating"
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
         {/* Header */}
-        <div className="bg-popover/95 sticky top-0 z-10 flex items-start justify-between gap-4 border-b px-4 py-3 backdrop-blur-sm">
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b bg-popover/95 px-4 py-3 backdrop-blur-sm">
           <div>
             <h3 className="flex items-center gap-2 text-base font-semibold">
               <AudioLines className="size-4" />
@@ -49,7 +49,7 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
           <button
             type="button"
             aria-label={t("audioSettings.close")}
-            className="text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-full p-1.5 transition-colors"
+            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             onClick={closeDialog}
           >
             <X className="size-4" />
@@ -57,7 +57,7 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
         </div>
 
         {/* Tab switcher — segment control style */}
-        <div className="bg-muted/60 mx-4 mt-3 grid grid-cols-2 rounded-lg p-0.5" role="tablist">
+        <div className="mx-4 mt-3 grid grid-cols-2 rounded-lg bg-muted/60 p-0.5" role="tablist">
           <AudioSettingsTabButton
             active={activeTab === "quality"}
             icon={<Waves className="size-3.5" />}

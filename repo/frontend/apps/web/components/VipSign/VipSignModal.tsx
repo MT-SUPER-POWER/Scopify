@@ -69,11 +69,11 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
           transition={{ duration: 0.25 }}
         >
           {/* Backdrop */}
-          <div className="bg-overlay absolute inset-0 backdrop-blur-xs" onClick={onClose} />
+          <div className="absolute inset-0 bg-overlay backdrop-blur-xs" onClick={onClose} />
 
           {/* Card Container */}
           <motion.div
-            className="bg-surface-raised shadow-floating border-border relative w-full max-w-2xl overflow-hidden rounded-3xl border"
+            className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-border bg-surface-raised shadow-floating"
             initial={{ scale: 0.95, y: 15 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 15 }}
@@ -92,20 +92,20 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
             <button
               type="button"
               onClick={onClose}
-              className="text-content-muted hover:bg-accent hover:text-content absolute top-6 right-6 z-20 rounded-full p-2 transition-colors"
+              className="absolute top-6 right-6 z-20 rounded-full p-2 text-content-muted transition-colors hover:bg-accent hover:text-content"
             >
               <X className="size-5" />
             </button>
 
             {/* Content Area */}
-            <div className="text-content relative z-10 flex flex-col gap-6 p-8 select-none">
+            <div className="relative z-10 flex flex-col gap-6 p-8 text-content select-none">
               {/* Header: Date */}
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black">{formattedDate.mm}</span>
-                <span className="text-content-muted text-xs font-medium">{t("vipSign.month")}</span>
-                <span className="text-content-subtle px-1 font-light">/</span>
+                <span className="text-xs font-medium text-content-muted">{t("vipSign.month")}</span>
+                <span className="px-1 font-light text-content-subtle">/</span>
                 <span className="text-2xl font-black">{formattedDate.dd}</span>
-                <span className="text-content-muted text-xs font-medium">{t("vipSign.day")}</span>
+                <span className="text-xs font-medium text-content-muted">{t("vipSign.day")}</span>
               </div>
 
               {/* Main Body */}
@@ -114,37 +114,37 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
                 <div className="flex min-w-0 flex-1 flex-col justify-between">
                   <div>
                     <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="text-content text-2xl font-black tracking-tight">
+                      <span className="text-2xl font-black tracking-tight text-content">
                         {songInfo?.songName ?? t("vipSign.recommendedSong")}
                       </span>
                       {songInfo?.artistName && (
-                        <span className="text-content-muted text-xs font-medium">
+                        <span className="text-xs font-medium text-content-muted">
                           - {songInfo.artistName}
                         </span>
                       )}
                     </div>
                     {/* Line Divider */}
-                    <div className="border-border my-3 w-full border-t" />
+                    <div className="my-3 w-full border-t border-border" />
                   </div>
 
                   {/* Wish Words Quote */}
                   <div className="relative flex flex-1 flex-col justify-center py-2 pl-6">
-                    <span className="text-content absolute top-0 left-0 font-serif text-5xl leading-none opacity-10 select-none">
+                    <span className="absolute top-0 left-0 font-serif text-5xl leading-none text-content opacity-10 select-none">
                       &quot;
                     </span>
                     {wishWords ? (
                       <div className="flex flex-col gap-1.5">
-                        <p className="text-content line-clamp-3 text-sm leading-relaxed font-medium italic">
+                        <p className="line-clamp-3 text-sm leading-relaxed font-medium text-content italic">
                           {wishWords}
                         </p>
                         {wishUserNickname && (
-                          <span className="text-content-muted self-end text-[10px]">
+                          <span className="self-end text-[10px] text-content-muted">
                             {t("vipSign.commentFrom", { nickname: wishUserNickname })}
                           </span>
                         )}
                       </div>
                     ) : (
-                      <div className="text-content-muted text-xs italic">
+                      <div className="text-xs text-content-muted italic">
                         {t("vipSign.recommendedSong")}
                       </div>
                     )}
@@ -153,7 +153,7 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
 
                 {/* Right: Album Cover with buttons */}
                 <div className="flex shrink-0 items-center justify-center">
-                  <div className="bg-surface-elevated shadow-floating group/cover border-border relative size-40 overflow-hidden rounded-2xl border">
+                  <div className="group/cover relative size-40 overflow-hidden rounded-2xl border border-border bg-surface-elevated shadow-floating">
                     {songCover ? (
                       <Image
                         width={160}
@@ -163,7 +163,7 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
                         className="size-full object-cover transition-transform duration-500 group-hover/cover:scale-105"
                       />
                     ) : (
-                      <div className="text-content-subtle flex size-full items-center justify-center">
+                      <div className="flex size-full items-center justify-center text-content-subtle">
                         <X className="size-10" />
                       </div>
                     )}
@@ -172,7 +172,7 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
                       <button
                         type="button"
                         onClick={handlePlay}
-                        className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover absolute right-3 bottom-3 flex size-10 translate-y-3 cursor-pointer items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 hover:scale-105"
+                        className="absolute right-3 bottom-3 flex size-10 translate-y-3 cursor-pointer items-center justify-center rounded-full bg-brand text-brand-foreground opacity-0 shadow-brand transition-all duration-300 group-hover/cover:translate-y-0 group-hover/cover:opacity-100 hover:scale-105 hover:bg-brand-hover"
                         title={t("contextMenu.play")}
                       >
                         <Play className="ml-0.5 size-5 fill-current" />
@@ -183,36 +183,36 @@ export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) 
               </div>
 
               {/* Dotted Divider */}
-              <div className="border-border my-2 w-full border-t border-dashed" />
+              <div className="my-2 w-full border-t border-dashed border-border" />
 
               {/* Footer Section */}
               <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
                 {/* Monthly signed */}
                 <div className="text-left">
-                  <div className="text-content-muted mb-1 text-[10px] font-semibold tracking-wider uppercase">
+                  <div className="mb-1 text-[10px] font-semibold tracking-wider text-content-muted uppercase">
                     {t("vipSign.monthlyCheckIn")}
                   </div>
-                  <div className="text-content flex items-baseline text-2xl font-black">
+                  <div className="flex items-baseline text-2xl font-black text-content">
                     {consecutiveDays}
-                    <span className="text-content-muted ml-0.5 text-xs font-normal">
+                    <span className="ml-0.5 text-xs font-normal text-content-muted">
                       {t("vipSign.days")}
                     </span>
                   </div>
                 </div>
 
-                <div className="bg-border hidden h-8 w-px sm:block" />
+                <div className="hidden h-8 w-px bg-border sm:block" />
 
                 {/* QR Code */}
-                <div className="bg-surface-elevated border-border flex max-w-60 items-center gap-3 rounded-2xl border p-2.5">
+                <div className="flex max-w-60 items-center gap-3 rounded-2xl border border-border bg-surface-elevated p-2.5">
                   <div className="flex flex-col text-left">
-                    <span className="text-content-muted text-[10px] font-medium">
+                    <span className="text-[10px] font-medium text-content-muted">
                       {t("vipSign.qrGuide")}
                     </span>
-                    <span className="text-danger mt-0.5 text-xs font-semibold">
+                    <span className="mt-0.5 text-xs font-semibold text-danger">
                       {t("vipSign.qrHint")}
                     </span>
                   </div>
-                  <div className="bg-qr-surface flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg p-0.5">
+                  <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-qr-surface p-0.5">
                     <Image
                       width={40}
                       height={40}

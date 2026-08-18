@@ -86,22 +86,22 @@ export function VoiceItem({
         "group flex min-w-0 items-center rounded-md transition-colors",
         isPreview ? "gap-3 p-1" : isLikedVoice ? "items-start gap-3 p-3" : "gap-3 px-3 py-2",
         isUnavailable
-          ? "bg-content/15 cursor-not-allowed opacity-45 grayscale"
+          ? "cursor-not-allowed bg-content/15 opacity-45 grayscale"
           : voice.mainSong
-            ? "hover:bg-content/10 cursor-pointer"
+            ? "cursor-pointer hover:bg-content/10"
             : "cursor-default opacity-70",
         isActive && "text-brand",
       )}
       onClick={handlePlay}
     >
       {!isPreview && (
-        <div className="text-content-muted flex w-6 shrink-0 justify-center text-sm">
+        <div className="flex w-6 shrink-0 justify-center text-sm text-content-muted">
           {index + 1}
         </div>
       )}
       <div
         className={cn(
-          "bg-surface-elevated shrink-0 overflow-hidden rounded",
+          "shrink-0 overflow-hidden rounded bg-surface-elevated",
           isPreview ? "size-16" : "size-11",
         )}
       >
@@ -125,12 +125,12 @@ export function VoiceItem({
             {voice.name}
           </p>
           {isLikedVoice && isUnavailable ? (
-            <span className="bg-content/10 text-content-muted shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium">
+            <span className="shrink-0 rounded-full bg-content/10 px-2 py-0.5 text-[10px] font-medium text-content-muted">
               {t("library.voice.status.unavailable")}
             </span>
           ) : null}
         </div>
-        <p className={cn("text-content-muted truncate text-xs", isPreview && "mt-1")}>
+        <p className={cn("truncate text-xs text-content-muted", isPreview && "mt-1")}>
           {isPreview && voice.duration > 0 && `${formatDuration(voice.duration)} · `}
           {voice.podcastName}
           {voice.hostName ? ` · ${voice.hostName}` : ""}
@@ -138,7 +138,7 @@ export function VoiceItem({
         {isLikedVoice ? <LikedVoiceMetadata voice={voice} /> : null}
       </div>
       {!isPreview && (
-        <span className="text-content-muted w-12 shrink-0 text-right text-sm">
+        <span className="w-12 shrink-0 text-right text-sm text-content-muted">
           {formatDuration(voice.duration)}
         </span>
       )}
@@ -154,7 +154,7 @@ export function VoiceItem({
                 handleViewTranscript();
               }}
               className={cn(
-                "bg-content/10 text-content hover:bg-content/20 flex shrink-0 items-center justify-center rounded-full opacity-0 transition-all group-hover:opacity-100 hover:scale-105 focus:opacity-100",
+                "flex shrink-0 items-center justify-center rounded-full bg-content/10 text-content opacity-0 transition-all group-hover:opacity-100 hover:scale-105 hover:bg-content/20 focus:opacity-100",
                 isPreview ? "size-10" : "size-9",
               )}
             >
@@ -171,7 +171,7 @@ export function VoiceItem({
                 handlePlay();
               }}
               className={cn(
-                "bg-content/10 text-content hover:bg-brand hover:text-brand-foreground flex shrink-0 items-center justify-center rounded-full opacity-0 transition-all group-hover:opacity-100 hover:scale-105 focus:opacity-100",
+                "flex shrink-0 items-center justify-center rounded-full bg-content/10 text-content opacity-0 transition-all group-hover:opacity-100 hover:scale-105 hover:bg-brand hover:text-brand-foreground focus:opacity-100",
                 isPreview ? "size-10" : "size-9",
               )}
             >

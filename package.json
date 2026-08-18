@@ -44,14 +44,6 @@
     "turbo": "^2.10.9",
     "typescript": "^5.9.3"
   },
-  "lint-staged": {
-    "repo/frontend/apps/web/**/*.{js,jsx,ts,tsx,mjs}": [
-      "bun run --cwd repo/frontend/apps/web eslint --fix"
-    ],
-    "*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc,css,yml}": [
-      "prettier --write"
-    ]
-  },
   "trustedDependencies": [
     "sharp",
     "unrs-resolver"

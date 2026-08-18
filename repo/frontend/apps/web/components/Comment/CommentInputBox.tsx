@@ -117,17 +117,17 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
     <div
       className={cn(
         "relative z-50 transition-all",
-        "bg-surface-raised/40 border-content/10 rounded-xl border p-4 backdrop-blur-xl",
+        "rounded-xl border border-content/10 bg-surface-raised/40 p-4 backdrop-blur-xl",
         "focus-within:border-content/30 focus-within:bg-surface-overlay/80",
       )}
     >
       {replyTarget && (
-        <div className="text-brand mb-2 flex items-center justify-between rounded-md px-3 py-1.5 text-sm">
+        <div className="mb-2 flex items-center justify-between rounded-md px-3 py-1.5 text-sm text-brand">
           <span>{t("comments.input.replyTo", { name: replyTarget.user.nickname })}</span>
           <button
             type="button"
             onClick={onCancelReply}
-            className="text-content-subtle hover:text-content transition-colors"
+            className="text-content-subtle transition-colors hover:text-content"
           >
             {t("comments.input.cancel")}
           </button>
@@ -136,7 +136,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
 
       <div className="relative mb-2">
         {(!inputText || inputText.length === 0) && (
-          <div className="text-content-subtle pointer-events-none absolute top-0 left-0 text-sm select-none">
+          <div className="pointer-events-none absolute top-0 left-0 text-sm text-content-subtle select-none">
             {replyTarget
               ? t("comments.input.replyPlaceholder")
               : t("comments.input.publishPlaceholder")}
@@ -155,12 +155,12 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
             const text = e.clipboardData.getData("text/plain");
             document.execCommand("insertText", false, text);
           }}
-          className="text-content max-h-37.5 min-h-15 w-full overflow-y-auto py-0.5 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap outline-none"
+          className="max-h-37.5 min-h-15 w-full overflow-y-auto py-0.5 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap text-content outline-none"
         />
       </div>
 
-      <div className="border-border mt-2 flex items-center justify-between border-t pt-2">
-        <div className="text-content-muted flex gap-4">
+      <div className="mt-2 flex items-center justify-between border-t border-border pt-2">
+        <div className="flex gap-4 text-content-muted">
           <button
             type="button"
             onClick={() => {
@@ -169,7 +169,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
               handleInput();
             }}
           >
-            <Hash className="hover:text-content size-5 cursor-pointer transition-colors" />
+            <Hash className="size-5 cursor-pointer transition-colors hover:text-content" />
           </button>
           <button
             type="button"
@@ -179,20 +179,20 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
               handleInput();
             }}
           >
-            <AtSign className="hover:text-content size-5 cursor-pointer transition-colors" />
+            <AtSign className="size-5 cursor-pointer transition-colors hover:text-content" />
           </button>
 
           <Popover>
             <PopoverTrigger asChild>
               <button type="button">
-                <Smile className="hover:text-content size-5 cursor-pointer transition-colors" />
+                <Smile className="size-5 cursor-pointer transition-colors hover:text-content" />
               </button>
             </PopoverTrigger>
             <PopoverContent
               side="bottom"
               align="start"
               sideOffset={10}
-              className="bg-popover text-popover-foreground shadow-floating emoji-popover z-100 w-80 border p-3"
+              className="emoji-popover z-100 w-80 border bg-popover p-3 text-popover-foreground shadow-floating"
               onOpenAutoFocus={(e) => e.preventDefault()}
               onCloseAutoFocus={(e) => e.preventDefault()}
             >
@@ -212,7 +212,7 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
                       handleEmojiClick(name, url as string);
                     }}
                     title={name}
-                    className="hover:bg-content/10 flex items-center justify-center rounded p-1.5 transition-colors hover:scale-110 active:scale-95"
+                    className="flex items-center justify-center rounded p-1.5 transition-colors hover:scale-110 hover:bg-content/10 active:scale-95"
                   >
                     <Image
                       src={url as string}
@@ -228,11 +228,11 @@ export function CommentInputBox({ replyTarget, onCancelReply, onSubmit }: Commen
           </Popover>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-content-muted text-xs">{inputText.length}/140</span>
+          <span className="text-xs text-content-muted">{inputText.length}/140</span>
           <button
             type="button"
             onClick={handleSubmit}
-            className="bg-brand text-brand-foreground hover:bg-brand-hover flex min-w-18 scale-100 items-center justify-center rounded-full px-6 py-2 text-sm font-bold transition-all hover:scale-105 disabled:opacity-50"
+            className="flex min-w-18 scale-100 items-center justify-center rounded-full bg-brand px-6 py-2 text-sm font-bold text-brand-foreground transition-all hover:scale-105 hover:bg-brand-hover disabled:opacity-50"
             disabled={!inputText.trim() || inputText.length > 140 || isSubmitting}
           >
             {isSubmitting ? (

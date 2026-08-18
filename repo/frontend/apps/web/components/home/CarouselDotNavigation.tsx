@@ -57,10 +57,10 @@ export function CarouselDotNavigation({
                 aria-current={offset === 0 ? "true" : undefined}
                 aria-label={getSlideLabel(index)}
                 onClick={() => onSelect(index)}
-                className="focus-visible:outline-brand flex size-5 shrink-0 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="flex size-5 shrink-0 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 <span
-                  className="bg-overlay-foreground size-2 rounded-full"
+                  className="size-2 rounded-full bg-overlay-foreground"
                   style={{ opacity, transform: `scale(${scale})` }}
                 />
               </button>

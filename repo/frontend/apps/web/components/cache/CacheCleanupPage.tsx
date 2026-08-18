@@ -59,11 +59,11 @@ export function CacheCleanupPage({
   };
 
   return (
-    <div className="text-muted-foreground relative flex w-full flex-col p-6 md:p-10">
+    <div className="relative flex w-full flex-col p-6 text-muted-foreground md:p-10">
       <div className="max-w-4xl">
         {/* 头部：去除冗余的局部返回按钮，将刷新按钮约束在 max-w-4xl 内容容器右侧 */}
         <div className="mt-4 mb-8 flex items-center justify-between gap-4">
-          <h1 className="text-foreground text-3xl font-black tracking-tight md:text-4xl">
+          <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
             {t("settings.cache.cleanup.title")}
           </h1>
           <Button
@@ -78,7 +78,7 @@ export function CacheCleanupPage({
           </Button>
         </div>
 
-        {error ? <p className="text-destructive mb-6 text-sm">{error}</p> : null}
+        {error ? <p className="mb-6 text-sm text-destructive">{error}</p> : null}
 
         <div className="space-y-8 pb-32">
           {(["page", "playback"] as const).map((scope) => {
@@ -98,7 +98,7 @@ export function CacheCleanupPage({
               ) ?? { entryCount: 0, sizeBytes: 0 };
 
             return (
-              <section key={scope} className="border-border border-b pb-6 last:border-b-0">
+              <section key={scope} className="border-b border-border pb-6 last:border-b-0">
                 <div className="mb-4 flex items-center justify-between gap-4">
                   <CacheCheckbox
                     checked={selectionState.checked}
@@ -107,7 +107,7 @@ export function CacheCleanupPage({
                     label={t(`settings.cache.scope.${scope}.title`)}
                     onCheckedChange={(checked) => onToggleScope(scope, checked)}
                   />
-                  <p className="text-muted-foreground text-sm tabular-nums">
+                  <p className="text-sm text-muted-foreground tabular-nums">
                     {t("settings.cache.cleanup.scopeSummary", {
                       count: scopeStats?.entryCount ?? 0,
                       size: formatCacheSize(scopeStats?.sizeBytes ?? 0),
@@ -115,7 +115,7 @@ export function CacheCleanupPage({
                     })}
                   </p>
                 </div>
-                <div className="divide-border/65 ml-7 divide-y">
+                <div className="ml-7 divide-y divide-border/65">
                   {categories.map((category) => {
                     const categoryStats = scopeStats?.categories.find(
                       (entry) => entry.category === category,
@@ -131,7 +131,7 @@ export function CacheCleanupPage({
                           label={t(`settings.cache.category.${category}`)}
                           onCheckedChange={(checked) => onToggleCategory(scope, category, checked)}
                         />
-                        <p className="text-muted-foreground shrink-0 text-right text-sm tabular-nums">
+                        <p className="shrink-0 text-right text-sm text-muted-foreground tabular-nums">
                           {t("settings.cache.cleanup.categorySummary", {
                             count: categoryStats?.entryCount ?? 0,
                             size: formatCacheSize(categoryStats?.sizeBytes ?? 0),
@@ -156,12 +156,12 @@ export function CacheCleanupPage({
             : "pointer-events-none translate-y-4 scale-95 opacity-0",
         )}
       >
-        <div className="bg-surface-overlay/95 border-border/80 shadow-floating flex items-center justify-between gap-4 rounded-full border px-6 py-3.5 backdrop-blur-md">
+        <div className="flex items-center justify-between gap-4 rounded-full border border-border/80 bg-surface-overlay/95 px-6 py-3.5 shadow-floating backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <span className="bg-destructive/15 text-destructive flex size-7 items-center justify-center rounded-full">
+            <span className="flex size-7 items-center justify-center rounded-full bg-destructive/15 text-destructive">
               <Trash2 className="size-3.5" />
             </span>
-            <p className="text-foreground text-sm font-medium">
+            <p className="text-sm font-medium text-foreground">
               {t("settings.cache.cleanup.selection", {
                 count: selection.entryCount,
                 size: formatCacheSize(selection.sizeBytes),

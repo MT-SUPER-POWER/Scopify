@@ -33,19 +33,19 @@ export function KeyboardShortcutHelp() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="bg-background/80 fixed inset-0 z-120 flex items-center justify-center p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-120 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm"
           onMouseDown={() => setIsOpen(false)}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
-            className="border-border bg-surface-overlay w-full max-w-2xl rounded-lg border p-5 shadow-2xl"
+            className="w-full max-w-2xl rounded-lg border border-border bg-surface-overlay p-5 shadow-2xl"
             onMouseDown={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <div className="text-foreground flex items-center gap-2">
-                <Keyboard className="text-brand size-5" />
+              <div className="flex items-center gap-2 text-foreground">
+                <Keyboard className="size-5 text-brand" />
                 <h2 className="text-lg font-bold">{t("shortcuts.help.title")}</h2>
               </div>
               <button
@@ -53,7 +53,7 @@ export function KeyboardShortcutHelp() {
                 title={t("common.action.close")}
                 aria-label={t("common.action.close")}
                 onClick={() => setIsOpen(false)}
-                className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex size-8 items-center justify-center rounded"
+                className="flex size-8 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               >
                 <X className="size-4" />
               </button>
@@ -67,7 +67,7 @@ export function KeyboardShortcutHelp() {
 
                 return (
                   <section key={group}>
-                    <h3 className="text-muted-foreground text-xs font-semibold uppercase">
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase">
                       {t(SHORTCUT_GROUP_LABEL_KEYS[group])}
                     </h3>
                     <div className="mt-2 space-y-2">
@@ -76,8 +76,8 @@ export function KeyboardShortcutHelp() {
                           key={command.id}
                           className="flex items-center justify-between gap-3 text-sm"
                         >
-                          <span className="text-foreground truncate">{t(command.labelKey)}</span>
-                          <kbd className="bg-muted text-foreground border-border shrink-0 rounded border px-2 py-1 text-xs">
+                          <span className="truncate text-foreground">{t(command.labelKey)}</span>
+                          <kbd className="shrink-0 rounded border border-border bg-muted px-2 py-1 text-xs text-foreground">
                             {getShortcutBindingLabel(command.binding)}
                           </kbd>
                         </div>

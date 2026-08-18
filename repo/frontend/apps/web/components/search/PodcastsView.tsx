@@ -35,24 +35,24 @@ export function PodcastsView({
         view === "list" ? (
           <Table
             containerClassName="overflow-x-auto"
-            className="text-content-muted w-full table-fixed"
+            className="w-full table-fixed text-content-muted"
           >
-            <TableHeader className="border-content/5 border-b">
+            <TableHeader className="border-b border-content/5">
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="text-content-muted w-12 text-center">#</TableHead>
+                <TableHead className="w-12 text-center text-content-muted">#</TableHead>
                 <TableHead className="text-content-muted">
                   {t("search.category.podcasts")}
                 </TableHead>
-                <TableHead className="text-content-muted hidden w-32 md:table-cell">
+                <TableHead className="hidden w-32 text-content-muted md:table-cell">
                   {t("search.podcast.tags")}
                 </TableHead>
-                <TableHead className="text-content-muted hidden w-20 text-right md:table-cell">
+                <TableHead className="hidden w-20 text-right text-content-muted md:table-cell">
                   {t("search.podcast.rating")}
                 </TableHead>
-                <TableHead className="text-content-muted hidden w-28 text-right sm:table-cell">
+                <TableHead className="hidden w-28 text-right text-content-muted sm:table-cell">
                   {t("search.podcast.subscribers")}
                 </TableHead>
-                <TableHead className="text-content-muted hidden w-24 text-right sm:table-cell">
+                <TableHead className="hidden w-24 text-right text-content-muted sm:table-cell">
                   {t("search.podcast.episodes")}
                 </TableHead>
               </TableRow>
@@ -71,13 +71,13 @@ export function PodcastsView({
           </div>
         )
       ) : (
-        <p className="text-content-subtle py-8 text-center text-sm">
+        <p className="py-8 text-center text-sm text-content-subtle">
           {t("search.section.noPodcastResults")}
         </p>
       )}
       <div ref={loadMoreRef} aria-hidden className="h-px" />
       {isFetchingNextPage ? (
-        <div className="text-content-muted flex justify-center py-6" aria-live="polite">
+        <div className="flex justify-center py-6 text-content-muted" aria-live="polite">
           <LoaderCircle className="size-5 animate-spin" />
         </div>
       ) : null}

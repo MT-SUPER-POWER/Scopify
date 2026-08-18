@@ -13,7 +13,7 @@ export default function RadioPage() {
   const { isFavorited, isFavoriting, toggleFavorite } = useRadioFavorite(radio.isSubscribed);
   const radioId = radio.radioId;
 
-  if (!radioId) return <div className="text-content p-8">{t("playlist.page.invalidUrl")}</div>;
+  if (!radioId) return <div className="p-8 text-content">{t("playlist.page.invalidUrl")}</div>;
 
   return (
     <PlaylistContent

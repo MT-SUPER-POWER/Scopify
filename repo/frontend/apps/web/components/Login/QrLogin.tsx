@@ -152,7 +152,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
 
   return (
     <div className="flex flex-col items-center justify-center space-y-4 pt-2">
-      <div className="bg-qr-surface shadow-panel relative rounded-xl p-3 transition-transform hover:scale-105">
+      <div className="relative rounded-xl bg-qr-surface p-3 shadow-panel transition-transform hover:scale-105">
         {qrImg ? (
           <Image
             src={qrImg}
@@ -162,13 +162,13 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             height={160}
           />
         ) : (
-          <div className="text-calendar-ink flex size-40 animate-pulse items-center justify-center text-sm">
+          <div className="flex size-40 animate-pulse items-center justify-center text-sm text-calendar-ink">
             {t("login.qr.generating")}
           </div>
         )}
         {qrStatus === "expired" && (
           <div
-            className="bg-overlay absolute inset-0 flex cursor-pointer items-center justify-center rounded-xl backdrop-blur-[2px]"
+            className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-xl bg-overlay backdrop-blur-[2px]"
             onClick={() => setRefreshKey((k) => k + 1)} // 每次点击改变 key，触发 useEffect 重新执行
           >
             <Button
@@ -181,8 +181,8 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
           </div>
         )}
         {qrStatus === "scanned" && (
-          <div className="bg-media-overlay absolute inset-0 flex items-center justify-center rounded-xl backdrop-blur-[1px]">
-            <p className="text-overlay-foreground text-sm font-bold">
+          <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-media-overlay backdrop-blur-[1px]">
+            <p className="text-sm font-bold text-overlay-foreground">
               {t("login.qr.confirmOnPhone")}
             </p>
           </div>
@@ -194,7 +194,7 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
         >
           {qrStatusText}
         </p>
-        <div className="text-content-subtle flex items-center gap-1 text-xs">
+        <div className="flex items-center gap-1 text-xs text-content-subtle">
           {t("login.qr.scanHint")}
         </div>
       </div>

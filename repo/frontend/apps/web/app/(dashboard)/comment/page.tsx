@@ -75,7 +75,7 @@ export default function CommentPage() {
 
   if (!resourceId) {
     return (
-      <div className="bg-surface-raised text-content-muted flex min-h-screen w-full flex-col items-center justify-center gap-4 p-8">
+      <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-surface-raised p-8 text-content-muted">
         <MessageCircle className="size-16 opacity-30" />
         <span>{t("comments.page.noComments")}</span>
       </div>
@@ -83,7 +83,7 @@ export default function CommentPage() {
   }
 
   return (
-    <div className="bg-surface-raised text-content relative min-h-screen w-full pb-12 font-sans">
+    <div className="relative min-h-screen w-full bg-surface-raised pb-12 font-sans text-content">
       <div
         className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 scale-110 bg-cover bg-center opacity-60 blur-3xl md:h-125"
         style={{
@@ -107,7 +107,7 @@ export default function CommentPage() {
             <h2 className="flex items-baseline gap-2 text-xl font-bold">
               {t("comments.page.allComments")}
               {commentHeaderInfo.total > 0 && (
-                <span className="text-content-muted text-sm font-normal">
+                <span className="text-sm font-normal text-content-muted">
                   ({commentHeaderInfo.total.toLocaleString()})
                 </span>
               )}
@@ -116,7 +116,7 @@ export default function CommentPage() {
 
           {hotComments.length > 0 && (
             <section className="mb-10">
-              <h3 className="border-border mb-6 border-b pb-2 text-lg font-bold">
+              <h3 className="mb-6 border-b border-border pb-2 text-lg font-bold">
                 {t("comments.page.hotComments")}
               </h3>
               <div className="space-y-6">
@@ -138,11 +138,11 @@ export default function CommentPage() {
           )}
 
           <section>
-            <h3 className="border-border mb-6 border-b pb-2 text-lg font-bold">
+            <h3 className="mb-6 border-b border-border pb-2 text-lg font-bold">
               {t("comments.page.latestComments")}
             </h3>
             {comments.length === 0 && !isLoading ? (
-              <div className="text-content-subtle py-20 text-center">
+              <div className="py-20 text-center text-content-subtle">
                 {t("comments.page.noComments")}
               </div>
             ) : (
@@ -165,11 +165,11 @@ export default function CommentPage() {
 
           <div ref={observerTarget} className="flex items-center justify-center py-8">
             {isLoading ? (
-              <Loader2 className="text-brand size-6 animate-spin" />
+              <Loader2 className="size-6 animate-spin text-brand" />
             ) : hasMore ? (
-              <span className="text-content-muted text-sm">{t("comments.page.loadMore")}</span>
+              <span className="text-sm text-content-muted">{t("comments.page.loadMore")}</span>
             ) : (
-              <span className="text-content-muted text-sm">{t("comments.page.end")}</span>
+              <span className="text-sm text-content-muted">{t("comments.page.end")}</span>
             )}
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function CommentPage() {
           ref={toggleBtnRef}
           type="button"
           onClick={() => setIsInputOpen((open) => !open)}
-          className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover group fixed right-8 bottom-28 z-40 flex size-14 items-center justify-center rounded-full transition-all duration-200 hover:scale-105 active:scale-95"
+          className="group fixed right-8 bottom-28 z-40 flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all duration-200 hover:scale-105 hover:bg-brand-hover active:scale-95"
           title={replyTarget ? t("comments.page.replyComment") : t("comments.page.addComment")}
         >
           <MessageCircle className="size-6 transition-transform group-hover:rotate-12" />
@@ -192,7 +192,7 @@ export default function CommentPage() {
       >
         <div
           ref={inputPanelRef}
-          className="bg-surface-overlay/95 shadow-floating border-border pointer-events-auto relative w-full max-w-4xl rounded-b-2xl border-x border-b backdrop-blur-xl"
+          className="pointer-events-auto relative w-full max-w-4xl rounded-b-2xl border-x border-b border-border bg-surface-overlay/95 shadow-floating backdrop-blur-xl"
         >
           <div className="px-6 pt-8 md:pt-9">
             <div className="mb-4 flex items-center justify-between">
@@ -201,7 +201,7 @@ export default function CommentPage() {
                   {replyTarget ? t("comments.page.replyComment") : t("comments.page.addComment")}
                 </h3>
                 {replyTarget && (
-                  <span className="text-brand truncate text-sm">@{replyTarget.user?.nickname}</span>
+                  <span className="truncate text-sm text-brand">@{replyTarget.user?.nickname}</span>
                 )}
               </div>
               <button
@@ -210,7 +210,7 @@ export default function CommentPage() {
                   setIsInputOpen(false);
                   setReplyTarget(null);
                 }}
-                className="hover:bg-content/10 rounded-full p-2 transition-colors"
+                className="rounded-full p-2 transition-colors hover:bg-content/10"
                 title={t("common.action.close")}
               >
                 <X className="size-5" />
@@ -218,15 +218,15 @@ export default function CommentPage() {
             </div>
 
             {replyTarget && (
-              <div className="bg-content/5 mb-4 flex items-start gap-3 rounded-lg p-3">
+              <div className="mb-4 flex items-start gap-3 rounded-lg bg-content/5 p-3">
                 <div className="min-w-0 flex-1 text-sm">
                   <span className="text-content-muted">{t("comments.page.replyingTo")}</span>
-                  <span className="text-content line-clamp-2">{replyTarget.content}</span>
+                  <span className="line-clamp-2 text-content">{replyTarget.content}</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setReplyTarget(null)}
-                  className="text-content-muted hover:text-content shrink-0"
+                  className="shrink-0 text-content-muted hover:text-content"
                   title={t("comments.input.cancel")}
                 >
                   <X className="size-4" />
@@ -242,7 +242,7 @@ export default function CommentPage() {
           </div>
 
           <div className="flex justify-center pt-1 pb-3">
-            <div className="bg-content/20 h-1 w-12 rounded-full" />
+            <div className="h-1 w-12 rounded-full bg-content/20" />
           </div>
         </div>
       </div>

@@ -38,7 +38,7 @@ export function AppearanceModeControl() {
             </option>
           </SettingSelect>
         ) : (
-          <span aria-hidden className="bg-skeleton h-9 w-28 rounded" />
+          <span aria-hidden className="h-9 w-28 rounded bg-skeleton" />
         )
       }
     />

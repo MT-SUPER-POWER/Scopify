@@ -49,12 +49,12 @@ export default function PodcastsPage() {
   };
 
   return (
-    <main className="bg-surface-raised relative min-h-screen px-6 pt-24 pb-28 md:px-10">
+    <main className="relative min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
       <TimeBasedBackground />
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <Tabs value={activeTab} onValueChange={handleTabChange}>
           <header className="flex flex-wrap items-center justify-between gap-4 pb-5">
-            <h1 className="text-content text-3xl font-bold">{t("library.title.podcasts")}</h1>
+            <h1 className="text-3xl font-bold text-content">{t("library.title.podcasts")}</h1>
             {isLoggedIn && activeTab === "subscribed" ? (
               <PodcastViewToggle value={subscribedView} onChange={setSubscribedView} />
             ) : null}
@@ -63,19 +63,19 @@ export default function PodcastsPage() {
             <TabsList className="h-auto w-full justify-start gap-2 overflow-x-auto bg-transparent p-0">
               <TabsTrigger
                 value="subscribed"
-                className="border-content/10 bg-content/5 shrink-0 rounded-full border"
+                className="shrink-0 rounded-full border border-content/10 bg-content/5"
               >
                 {t("library.podcasts.subscribed")}
               </TabsTrigger>
               <TabsTrigger
                 value="created"
-                className="border-content/10 bg-content/5 shrink-0 rounded-full border"
+                className="shrink-0 rounded-full border border-content/10 bg-content/5"
               >
                 {t("library.podcasts.created")}
               </TabsTrigger>
               <TabsTrigger
                 value="liked"
-                className="border-content/10 bg-content/5 shrink-0 rounded-full border"
+                className="shrink-0 rounded-full border border-content/10 bg-content/5"
               >
                 {t("library.podcasts.likedVoices")}
               </TabsTrigger>

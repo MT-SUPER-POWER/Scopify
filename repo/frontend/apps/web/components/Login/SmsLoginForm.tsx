@@ -43,7 +43,7 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="phone-sms" className="text-content-muted text-xs">
+        <Label htmlFor="phone-sms" className="text-xs text-content-muted">
           {t("login.form.phoneLabel")}
         </Label>
         <Input
@@ -52,11 +52,11 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder={t("login.form.phonePlaceholder")}
-          className="bg-content/5 border-content/10 text-content h-10 text-sm"
+          className="h-10 border-content/10 bg-content/5 text-sm text-content"
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="captcha" className="text-content-muted text-xs">
+        <Label htmlFor="captcha" className="text-xs text-content-muted">
           {t("login.form.captchaLabel")}
         </Label>
         <div className="flex gap-2">
@@ -66,14 +66,14 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
             value={captcha}
             onChange={(e) => setCaptcha(e.target.value)}
             placeholder={t("login.form.captchaPlaceholder")}
-            className="bg-content/5 border-content/10 text-content h-10 text-sm"
+            className="h-10 border-content/10 bg-content/5 text-sm text-content"
           />
           <Button
             type="button"
             variant="outline"
             onClick={handleSendCaptcha}
             disabled={countdown > 0}
-            className="text-content hover:bg-content/5 border-content/10 h-10 shrink-0 rounded-md px-3 text-xs font-bold transition-colors disabled:opacity-50"
+            className="h-10 shrink-0 rounded-md border-content/10 px-3 text-xs font-bold text-content transition-colors hover:bg-content/5 disabled:opacity-50"
           >
             {countdown > 0 ? `${countdown}s` : t("login.form.getCaptcha")}
           </Button>
@@ -82,7 +82,7 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
       <Button
         type="submit"
         disabled={isLoading}
-        className="bg-brand text-brand-foreground hover:bg-brand-hover hover:scale-1.02 mt-2 h-10 w-full rounded-full font-bold transition-all active:scale-95"
+        className="hover:scale-1.02 mt-2 h-10 w-full rounded-full bg-brand font-bold text-brand-foreground transition-all hover:bg-brand-hover active:scale-95"
       >
         {isLoading ? t("login.form.verifying") : t("login.form.verifyAndLogin")}
       </Button>

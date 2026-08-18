@@ -9,7 +9,7 @@ function ArtistAvatar({ artist }: { artist: CommentHeaderArtist }) {
 
   if (!artist.avatarUrl) {
     return (
-      <span className="bg-surface-elevated text-content ring-surface-raised flex size-7 items-center justify-center rounded-full text-xs font-bold ring-2">
+      <span className="flex size-7 items-center justify-center rounded-full bg-surface-elevated text-xs font-bold text-content ring-2 ring-surface-raised">
         {initial}
       </span>
     );
@@ -21,7 +21,7 @@ function ArtistAvatar({ artist }: { artist: CommentHeaderArtist }) {
       alt={artist.name}
       width={28}
       height={28}
-      className="ring-surface-raised size-7 rounded-full object-cover ring-2"
+      className="size-7 rounded-full object-cover ring-2 ring-surface-raised"
     />
   );
 }
@@ -31,7 +31,7 @@ export function CommentHeader({
   title,
   albumName,
   artists,
-  total,
+  total: _total,
   onArtistClick,
   tagLabel,
 }: CommentHeaderProps) {
@@ -41,7 +41,7 @@ export function CommentHeader({
 
   return (
     <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row md:px-8 lg:px-10 xl:px-12">
-      <div className="bg-surface-elevated hover:scale-1.02 shadow-floating size-48 shrink-0 overflow-hidden rounded-md transition-transform duration-300 lg:size-56">
+      <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-md bg-surface-elevated shadow-floating transition-transform duration-300 lg:size-56">
         <Image
           width={400}
           height={400}
@@ -51,13 +51,13 @@ export function CommentHeader({
         />
       </div>
 
-      <div className="text-content flex min-w-0 flex-1 flex-col pt-1 md:pt-2">
+      <div className="flex min-w-0 flex-1 flex-col pt-1 text-content md:pt-2">
         <div className="mb-3 flex flex-row flex-wrap items-center gap-2 md:mb-4">
-          <span className="bg-content/10 rounded-sm px-3 py-1 text-sm tracking-wider uppercase">
+          <span className="rounded-sm bg-content/10 px-3 py-1 text-sm tracking-wider uppercase">
             {tagLabel ?? t("comments.page.trackTag")}
           </span>
           {albumName && (
-            <span className="bg-content/10 rounded-full px-3 py-1 text-[12px] font-medium">
+            <span className="rounded-full bg-content/10 px-3 py-1 text-[12px] font-medium">
               {albumName}
             </span>
           )}
@@ -71,8 +71,8 @@ export function CommentHeader({
         </h1>
 
         {artists.length > 0 && (
-          <div className="text-content/80 flex flex-wrap items-center gap-2.5 text-sm">
-            <div className="text-content mr-1 flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 text-sm text-content/80">
+            <div className="mr-1 flex items-center gap-3 text-content">
               <div className="flex -space-x-2">
                 {visibleArtists.map((artist) => (
                   <button
@@ -80,13 +80,13 @@ export function CommentHeader({
                     type="button"
                     onClick={() => onArtistClick(artist.id)}
                     title={artist.name}
-                    className="focus-visible:ring-brand rounded-full transition-transform hover:z-10 hover:scale-110 focus-visible:ring-2 focus-visible:outline-none"
+                    className="rounded-full transition-transform hover:z-10 hover:scale-110 focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
                   >
                     <ArtistAvatar artist={artist} />
                   </button>
                 ))}
                 {remainingArtistCount > 0 && (
-                  <span className="bg-surface-elevated text-content ring-surface-raised flex size-7 items-center justify-center rounded-full text-[11px] font-bold ring-2">
+                  <span className="flex size-7 items-center justify-center rounded-full bg-surface-elevated text-[11px] font-bold text-content ring-2 ring-surface-raised">
                     +{remainingArtistCount}
                   </span>
                 )}
@@ -98,7 +98,7 @@ export function CommentHeader({
                     <button
                       type="button"
                       onClick={() => onArtistClick(artist.id)}
-                      className="text-content text-[15px] font-bold hover:underline"
+                      className="text-[15px] font-bold text-content hover:underline"
                     >
                       {artist.name}
                     </button>

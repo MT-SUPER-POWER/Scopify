@@ -68,7 +68,7 @@ export function SongContextMenu({
   onPlay,
   onRemoveFromPlaylist,
   onRemoveFromQueue,
-  onRequestDelete,
+  onRequestDelete: _onRequestDelete,
   onViewTranscript,
   playlistID,
   readonly = false,

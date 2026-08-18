@@ -14,18 +14,18 @@ function SidebarImpl() {
   const isCollapsed = useSidebarNarrow(containerRef);
 
   return (
-    <aside ref={containerRef} className="bg-surface flex size-full min-h-0 flex-col">
-      <div className="bg-sidebar flex min-h-0 flex-1 flex-col overflow-hidden rounded-md">
+    <aside ref={containerRef} className="flex size-full min-h-0 flex-col bg-surface">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-md bg-sidebar">
         <header
           className={cn(
-            "text-muted-foreground flex shrink-0 items-center px-3 py-4",
+            "flex shrink-0 items-center px-3 py-4 text-muted-foreground",
             isCollapsed ? "justify-center px-2 py-3" : "justify-between",
           )}
         >
           <Link
             href="/"
             className={cn(
-              "text-foreground hover:text-primary flex cursor-pointer items-center gap-3 overflow-hidden font-semibold transition-colors",
+              "flex cursor-pointer items-center gap-3 overflow-hidden font-semibold text-foreground transition-colors hover:text-primary",
               isCollapsed && "gap-0",
             )}
           >

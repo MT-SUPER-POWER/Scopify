@@ -177,7 +177,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                 onClick={handlePlayToggle}
                 disabled={!currentSongDetail && !tracks.length}
                 className={cn(
-                  "bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover flex size-14 items-center justify-center rounded-full transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50",
+                  "flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50",
                   isSticky && "size-12",
                 )}
               >
@@ -211,7 +211,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                   )}
                 />
                 {isShuffle && (
-                  <span className="bg-brand absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full" />
+                  <span className="absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-brand" />
                 )}
               </button>
             </TooltipTrigger>
@@ -229,13 +229,13 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                   onClick={() =>
                     smartRouter.push(getCommentHref(commentResourceKind, commentResourceId))
                   }
-                  className="text-content-muted hover:text-content relative inline-flex cursor-pointer items-center justify-center transition-colors"
+                  className="relative inline-flex cursor-pointer items-center justify-center text-content-muted transition-colors hover:text-content"
                 >
                   <MessageCircle className={cn(isSticky ? "size-7" : "size-8")} />
                   {commentCount !== undefined && (
                     <Badge
                       variant="outline"
-                      className="border-border bg-surface-overlay text-content-muted shadow-panel pointer-events-none absolute top-0 right-0 h-4 min-w-4 translate-x-1/2 -translate-y-1/3 px-1 text-[9px] leading-none tabular-nums backdrop-blur-sm"
+                      className="pointer-events-none absolute top-0 right-0 h-4 min-w-4 translate-x-1/2 -translate-y-1/3 border-border bg-surface-overlay px-1 text-[9px] leading-none text-content-muted tabular-nums shadow-panel backdrop-blur-sm"
                     >
                       {formatCompactCount(commentCount)}
                     </Badge>
@@ -251,7 +251,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
           <ArrowDownCircle
             className={cn(
               isSticky ? "size-7" : "size-8",
-              "text-content-muted hover:text-content cursor-pointer transition-colors",
+              "cursor-pointer text-content-muted transition-colors hover:text-content",
             )}
           />
           {/* TODO: 实现更多选项
@@ -262,7 +262,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
           <MoreHorizontal
             className={cn(
               isSticky ? "size-7" : "size-8",
-              "text-content-muted hover:text-content cursor-pointer transition-colors",
+              "cursor-pointer text-content-muted transition-colors hover:text-content",
             )}
           />
         </div>
@@ -277,7 +277,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                       <button
                         type="button"
                         aria-label={t("playlist.actions.historyDate")}
-                        className="text-content-muted hover:bg-content/10 hover:text-content inline-flex size-8 items-center justify-center rounded-full transition-colors"
+                        className="inline-flex size-8 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content"
                       >
                         <CalendarDays className="size-4" />
                       </button>
@@ -292,7 +292,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                 side="bottom"
                 align="end"
                 sideOffset={8}
-                className="border-border bg-surface-overlay text-content w-auto p-0"
+                className="w-auto border-border bg-surface-overlay p-0 text-content"
               >
                 <Calendar
                   key={dailyDate ?? todayKey}
@@ -317,15 +317,15 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                 animate={{ width: 160, opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="bg-content/10 flex items-center gap-1 overflow-hidden rounded-full px-2 py-1"
+                className="flex items-center gap-1 overflow-hidden rounded-full bg-content/10 px-2 py-1"
               >
-                <Search className="text-content-muted size-4 shrink-0" />
+                <Search className="size-4 shrink-0 text-content-muted" />
                 <input
                   ref={inputRef}
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   placeholder={t("playlist.actions.searchPlaceholder")}
-                  className="text-content w-full bg-transparent text-xs outline-none"
+                  className="w-full bg-transparent text-xs text-content outline-none"
                 />
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -334,7 +334,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                       aria-label={t("common.action.close")}
                       onClick={onSearchClose}
                     >
-                      <X className="text-content-muted hover:text-content size-3 shrink-0" />
+                      <X className="size-3 shrink-0 text-content-muted hover:text-content" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="top" sideOffset={8}>
@@ -355,7 +355,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                     transition={{ duration: 0.05, ease: "linear" }}
                     onClick={onSearchOpen}
                   >
-                    <Search className="text-content-muted hover:text-content size-4 cursor-pointer transition-colors" />
+                    <Search className="size-4 cursor-pointer text-content-muted transition-colors hover:text-content" />
                   </motion.button>
                 </TooltipTrigger>
                 <TooltipContent side="top" sideOffset={8}>
@@ -368,7 +368,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             )}
           </AnimatePresence>
 
-          <List className="text-content-muted size-5" />
+          <List className="size-5 text-content-muted" />
         </div>
       </div>
     </TooltipProvider>

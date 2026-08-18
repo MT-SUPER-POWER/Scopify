@@ -26,7 +26,7 @@ export function SectionPagination({
         aria-label={t("home.pagination.previous")}
         disabled={currentPage === 0}
         onClick={() => onPageChange(currentPage - 1)}
-        className="text-content-muted hover:bg-content/10 hover:text-content flex size-7 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-25"
+        className="flex size-7 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content disabled:cursor-not-allowed disabled:opacity-25"
       >
         <ChevronLeft className="size-4" />
       </button>
@@ -41,7 +41,7 @@ export function SectionPagination({
             className={cn(
               "flex size-6 items-center justify-center rounded-md text-xs font-semibold tabular-nums transition-colors",
               currentPage === index
-                ? "bg-brand text-brand-foreground font-bold shadow-xs"
+                ? "bg-brand font-bold text-brand-foreground shadow-xs"
                 : "text-content-muted hover:bg-content/10 hover:text-content",
             )}
           >
@@ -56,7 +56,7 @@ export function SectionPagination({
         aria-label={t("home.pagination.next")}
         disabled={currentPage >= pageCount - 1}
         onClick={() => onPageChange(currentPage + 1)}
-        className="text-content-muted hover:bg-content/10 hover:text-content flex size-7 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-25"
+        className="flex size-7 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content disabled:cursor-not-allowed disabled:opacity-25"
       >
         <ChevronRight className="size-4" />
       </button>

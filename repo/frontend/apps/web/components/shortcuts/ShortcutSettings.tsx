@@ -46,14 +46,14 @@ export function ShortcutSettings() {
         {/* 左侧：标题区 + 恢复默认按钮 */}
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-foreground text-xl font-bold">{t("shortcuts.title")}</h2>
+            <h2 className="text-xl font-bold text-foreground">{t("shortcuts.title")}</h2>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <button
                   type="button"
                   title={t("shortcuts.resetAll")}
                   aria-label={t("shortcuts.resetAll")}
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring mt-0.5 flex size-7 items-center justify-center rounded transition-colors focus-visible:ring-1 focus-visible:outline-none"
+                  className="mt-0.5 flex size-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   <RotateCcw className="size-4" />
                 </button>
@@ -74,18 +74,18 @@ export function ShortcutSettings() {
               </AlertDialogContent>
             </AlertDialog>
           </div>
-          <p className="text-muted-foreground mt-1 text-sm">{t("shortcuts.subtitle")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("shortcuts.subtitle")}</p>
         </div>
 
         {/* 右侧：搜索框 */}
-        <div className="mt-1 flex w-full shrink-0 justify-start sm:w-[272px]">
-          <div className="relative w-full sm:w-[192px]">
-            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <div className="mt-1 flex w-full shrink-0 justify-start sm:w-68">
+          <div className="relative w-full sm:w-48">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t("shortcuts.searchPlaceholder")}
-              className="border-border bg-muted text-foreground placeholder:text-muted-foreground w-full pl-9"
+              className="w-full border-border bg-muted pl-9 text-foreground placeholder:text-muted-foreground"
             />
           </div>
         </div>
@@ -94,8 +94,8 @@ export function ShortcutSettings() {
       <div className="mt-8 space-y-10">
         {groups.map(({ group, commands: groupedCommands }) => (
           <div key={group}>
-            <div className="border-border mb-2 border-b pb-3">
-              <h3 className="text-foreground text-base font-bold">
+            <div className="mb-2 border-b border-border pb-3">
+              <h3 className="text-base font-bold text-foreground">
                 {t(SHORTCUT_GROUP_LABEL_KEYS[group])}
               </h3>
             </div>

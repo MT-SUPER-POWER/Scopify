@@ -128,13 +128,13 @@ export const VolumeControl = ({
       <div
         data-shortcut-scope="volume"
         onWheel={handleWheel}
-        className="hover:bg-accent flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none"
+        className="flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none hover:bg-accent"
       >
         <button
           type="button"
           aria-label={volumeLabel}
           onClick={handleMuteToggle}
-          className="text-content-muted hover:text-content shrink-0 transition-colors"
+          className="shrink-0 text-content-muted transition-colors hover:text-content"
         >
           {getVolumeIcon()}
         </button>
@@ -148,7 +148,7 @@ export const VolumeControl = ({
             thumbOnHover={true}
           />
         </div>
-        <span className="text-content-muted w-8 shrink-0 text-right text-xs font-medium tabular-nums">
+        <span className="w-8 shrink-0 text-right text-xs font-medium text-content-muted tabular-nums">
           {isMuted ? 0 : Math.round(volume)}%
         </span>
       </div>
@@ -169,14 +169,14 @@ export const VolumeControl = ({
         type="button"
         aria-label={volumeLabel}
         onClick={handleMuteToggle}
-        className="text-content-muted hover:text-content transition-colors"
+        className="text-content-muted transition-colors hover:text-content"
       >
         {getVolumeIcon()}
       </button>
 
       {isOpen && (
         <div className="absolute bottom-full left-1/2 z-50 -translate-x-1/2 pb-2">
-          <div className="border-border bg-surface-overlay shadow-floating rounded-lg border p-3">
+          <div className="rounded-lg border border-border bg-surface-overlay p-3 shadow-floating">
             <div className="mt-2 flex flex-col items-center gap-2">
               <SmoothSlider
                 value={isMuted ? 0 : volume}
@@ -187,7 +187,7 @@ export const VolumeControl = ({
                 thumbSize={10}
                 thumbOnHover={false}
               />
-              <span className="text-content inline-block w-[4ch] text-center text-xs font-medium tabular-nums">
+              <span className="inline-block w-[4ch] text-center text-xs font-medium text-content tabular-nums">
                 {isMuted ? 0 : Math.round(volume)}%
               </span>
             </div>

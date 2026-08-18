@@ -56,7 +56,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
           if (countDelta !== 0) return countDelta;
           return commands.indexOf(a) - commands.indexOf(b);
         }),
-    [commandQuery, commandText, commands, t, usageCounts],
+    [commandText, commands, t, usageCounts],
   );
 
   const showRecent = !localValue && recentList.length > 0;
@@ -203,12 +203,6 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     return () => document.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  const handleSelect = useCallback((keyword: string) => {
-    setLocalValue(keyword);
-    // setGlobalQuery(keyword);
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, []);
-
   const handleClear = useCallback(() => {
     setLocalValue("");
     setSuggests([]);
@@ -236,7 +230,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.97 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="no-scrollbar fixed top-[14vh] left-1/2 z-50 w-full max-w-2xl -translate-x-1/2 px-4"
+            className="fixed top-[14vh] left-1/2 z-50 no-scrollbar w-full max-w-2xl -translate-x-1/2 px-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div

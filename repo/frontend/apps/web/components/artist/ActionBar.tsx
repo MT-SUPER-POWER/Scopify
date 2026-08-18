@@ -66,7 +66,7 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         type="button"
         onClick={onPlayArtist}
         disabled={disabled}
-        className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover flex size-14 items-center justify-center rounded-full transition-all hover:scale-105 disabled:opacity-50"
+        className="flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover disabled:opacity-50"
       >
         {isPlayingArtist ? (
           <Pause className="size-6 fill-current" />
@@ -101,7 +101,7 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         </span>
       </button>
 
-      <button type="button" className="text-content-muted hover:text-content transition-colors">
+      <button type="button" className="text-content-muted transition-colors hover:text-content">
         <MoreHorizontal className="size-8" />
       </button>
     </div>

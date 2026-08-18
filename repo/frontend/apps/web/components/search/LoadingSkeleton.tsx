@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 const CARD_COUNT = 6;
 
 function SkeletonBlock({ className }: { className: string }) {
-  return <div className={cn("bg-skeleton-subtle animate-pulse rounded-md", className)} />;
+  return <div className={cn("animate-pulse rounded-md bg-skeleton-subtle", className)} />;
 }
 
 function SectionHeadingSkeleton() {
@@ -19,7 +19,7 @@ function ArtistGridSkeleton() {
   return (
     <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
       {Array.from({ length: CARD_COUNT }, (_, index) => (
-        <div key={index} className="bg-surface-elevated rounded-xl p-4">
+        <div key={index} className="rounded-xl bg-surface-elevated p-4">
           <SkeletonBlock className="mx-auto aspect-square w-full rounded-full" />
           <SkeletonBlock className="mx-auto mt-4 h-5 w-3/5" />
           <SkeletonBlock className="mx-auto mt-2 h-4 w-1/4" />
@@ -33,7 +33,7 @@ function CardGridSkeleton() {
   return (
     <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
       {Array.from({ length: CARD_COUNT }, (_, index) => (
-        <div key={index} className="bg-surface-elevated rounded-xl p-4">
+        <div key={index} className="rounded-xl bg-surface-elevated p-4">
           <SkeletonBlock className="aspect-square w-full" />
           <SkeletonBlock className="mt-4 h-5 w-4/5" />
           <SkeletonBlock className="mt-2 h-4 w-3/5" />
@@ -63,10 +63,10 @@ export function LoadingSkeleton() {
   return (
     <div className="space-y-4">
       <div className="flex gap-6">
-        <div className="bg-skeleton-subtle h-64 w-[40%] animate-pulse rounded-xl" />
+        <div className="h-64 w-[40%] animate-pulse rounded-xl bg-skeleton-subtle" />
         <div className="w-[60%] space-y-2">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-skeleton-subtle h-14 animate-pulse rounded-md" />
+            <div key={i} className="h-14 animate-pulse rounded-md bg-skeleton-subtle" />
           ))}
         </div>
       </div>
@@ -78,12 +78,12 @@ export function AllViewSkeleton() {
   return (
     <div className="w-full min-w-0">
       <div className="mb-10 grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-12">
-        <div className="bg-surface-elevated rounded-xl p-6 xl:col-span-5">
+        <div className="rounded-xl bg-surface-elevated p-6 xl:col-span-5">
           <SkeletonBlock className="size-24" />
           <SkeletonBlock className="mt-6 h-8 w-2/5" />
           <SkeletonBlock className="mt-3 h-5 w-3/5" />
         </div>
-        <div className="bg-surface-elevated rounded-xl p-5 xl:col-span-7">
+        <div className="rounded-xl bg-surface-elevated p-5 xl:col-span-7">
           <div className="mb-4 flex items-center justify-between">
             <SkeletonBlock className="h-7 w-16" />
             <SkeletonBlock className="h-4 w-14" />

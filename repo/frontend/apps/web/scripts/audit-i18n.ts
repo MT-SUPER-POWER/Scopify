@@ -34,7 +34,8 @@ function listFiles(dir: string): string[] {
   const stack = [dir];
 
   while (stack.length > 0) {
-    const current = stack.pop()!;
+    const current = stack.pop();
+    if (!current) continue;
     for (const entry of new Bun.Glob("**/*.{ts,tsx}").scanSync({ cwd: current, onlyFiles: true })) {
       paths.push(join(current, entry));
     }

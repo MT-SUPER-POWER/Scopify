@@ -28,7 +28,7 @@ export function VoiceTranscriptPopover({
       <PopoverContent
         align="start"
         sideOffset={8}
-        className="border-content/10 bg-surface-elevated text-content w-[min(24rem,calc(100vw-2rem))] border p-0 shadow-2xl"
+        className="w-[min(24rem,calc(100vw-2rem))] border border-content/10 bg-surface-elevated p-0 text-content shadow-2xl"
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
         <VoiceTranscriptPanel

@@ -37,7 +37,7 @@ export function CacheCleanupConfirmDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         {containsLyricData ? (
-          <p className="text-destructive text-sm">
+          <p className="text-sm text-destructive">
             {t("settings.cache.cleanup.confirm.lyricWarning")}
           </p>
         ) : null}

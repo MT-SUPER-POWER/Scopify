@@ -11,7 +11,7 @@ export function VipSignHistoryStrip({ records, onSelectSignDay }: VipSignHistory
       {records.map((record) => {
         const cardClassName = cn(
           "relative flex min-w-0 flex-col items-center gap-1.5 p-1 text-[11px] transition-colors",
-          record.sign ? "text-content hover:text-brand cursor-pointer" : "text-content-muted",
+          record.sign ? "cursor-pointer text-content hover:text-brand" : "text-content-muted",
           record.today && "text-danger",
         );
 
@@ -24,8 +24,8 @@ export function VipSignHistoryStrip({ records, onSelectSignDay }: VipSignHistory
               className={cn(
                 "relative z-10 flex size-9 items-center justify-center overflow-hidden rounded-full border",
                 record.sign
-                  ? "bg-surface-elevated border-border text-content"
-                  : "text-content-muted border-dashed border-current",
+                  ? "border-border bg-surface-elevated text-content"
+                  : "border-dashed border-current text-content-muted",
                 record.today && "border-danger text-danger",
               )}
             >
@@ -43,7 +43,7 @@ export function VipSignHistoryStrip({ records, onSelectSignDay }: VipSignHistory
                 <span>{record.dayText.replace("日", "")}</span>
               )}
               {record.sign ? (
-                <span className="bg-brand text-brand-foreground ring-surface-raised absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full ring-2">
+                <span className="absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full bg-brand text-brand-foreground ring-2 ring-surface-raised">
                   <Check className="size-2.5 stroke-3" />
                 </span>
               ) : null}

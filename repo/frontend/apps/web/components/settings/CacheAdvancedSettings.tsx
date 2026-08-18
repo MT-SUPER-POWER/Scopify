@@ -63,7 +63,7 @@ export function CacheAdvancedSettings({
               <button
                 type="button"
                 onClick={() => void handleBrowseDir()}
-                className="border-input text-foreground hover:bg-accent hover:border-content flex shrink-0 cursor-pointer items-center gap-1.5 rounded border bg-transparent px-3 py-1.5 text-sm font-medium transition-colors"
+                className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded border border-input bg-transparent px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content hover:bg-accent"
               >
                 <FolderOpen className="size-4" />
                 {t("settings.cache.dir.browse")}

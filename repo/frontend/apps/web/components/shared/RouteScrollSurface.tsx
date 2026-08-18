@@ -35,7 +35,7 @@ export function RouteScrollSurface({ children }: RouteScrollSurfaceProps) {
       <ScrollArea
         aria-busy={isRestoring}
         className={cn(
-          "bg-surface-raised isolate z-0 size-full",
+          "isolate z-0 size-full bg-surface-raised",
           "[&_[data-slot=scroll-area-viewport]>div]:block!",
           "[&_[data-slot=scroll-area-viewport]>div]:min-h-full!",
           "[&_[data-slot=scroll-area-viewport]>div]:w-full!",
@@ -53,7 +53,7 @@ export function RouteScrollSurface({ children }: RouteScrollSurfaceProps) {
 function RouteScrollSkeleton({ Placeholder }: { Placeholder: null | RouteRestorationPlaceholder }) {
   if (Placeholder) {
     return (
-      <div aria-hidden="true" className="bg-surface-raised absolute inset-0 z-10 overflow-hidden">
+      <div aria-hidden="true" className="absolute inset-0 z-10 overflow-hidden bg-surface-raised">
         <Placeholder />
       </div>
     );
@@ -62,13 +62,13 @@ function RouteScrollSkeleton({ Placeholder }: { Placeholder: null | RouteRestora
   return (
     <div
       aria-hidden="true"
-      className="bg-surface-raised absolute inset-0 z-10 animate-pulse px-6 pt-24"
+      className="absolute inset-0 z-10 animate-pulse bg-surface-raised px-6 pt-24"
     >
-      <div className="bg-skeleton-subtle h-8 w-48 rounded" />
-      <div className="bg-skeleton-subtle mt-4 h-4 w-80 max-w-full rounded" />
+      <div className="h-8 w-48 rounded bg-skeleton-subtle" />
+      <div className="mt-4 h-4 w-80 max-w-full rounded bg-skeleton-subtle" />
       <div className="mt-10 space-y-3">
         {["one", "two", "three", "four", "five", "six"].map((key) => (
-          <div key={key} className="bg-skeleton-subtle h-14 rounded" />
+          <div key={key} className="h-14 rounded bg-skeleton-subtle" />
         ))}
       </div>
     </div>

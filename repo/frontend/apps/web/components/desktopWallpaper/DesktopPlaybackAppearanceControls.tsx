@@ -35,7 +35,7 @@ export function DesktopPlaybackAppearanceControls({
 
       <div className="desktop-controller-card mt-3 rounded-2xl p-3">
         <div className="mb-2.5 flex items-center justify-between gap-3">
-          <div className="text-content-muted text-[10px] font-semibold tracking-[0.12em] uppercase">
+          <div className="text-[10px] font-semibold tracking-[0.12em] text-content-muted uppercase">
             {t("desktopPlaybackController.themeSwitch")}
           </div>
           <button

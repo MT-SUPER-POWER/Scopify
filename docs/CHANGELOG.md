@@ -30,6 +30,7 @@
 ### Quality
 
 - **收敛前端内联标签并消除硬编码样式**：重构 `MediaInfoBadge` 消除散落在各处的独立内联 `<span>` 硬编码，统一复用 `@scopify/ui` 导出的 `Badge` 原生组件与设计 Token，保证跨平台与暗黑模式下的边框、圆角与字号规范统一。
+- **规范 Tailwind CSS 类名顺序与收紧 CI / Husky Lint 拦截规则**：为 Prettier 与 ESLint 补充 `tailwindStylesheet` 和 `tailwindFunctions` 配置，统一修复全仓类名顺序和无意义任意值警告；将 ESLint 警告阈值设为 `--max-warnings 0`，并在 `lint-staged` 与 CI/CD 中开启严格拦截，确保代码提交和持续集成中存在任何 Warning 或 Error 时自动中断。
 - **解耦主页各业务板块组件与修正数据流向**：将主页内联的问候横条与推荐歌手板块分别抽离为独立的 `HomeGreetingSection` 与 `SuggestedArtists` 组件；完善各板块 Props 类型至 `types/components/home.ts`；「为 {{name}} 推荐」板块准确绑定至登录用户个性化推荐接口（`/recommend/resource`，未登录自动回退至 `/personalized`），顶部问候横条绑定至公共推荐池（`/personalized`）。
 - **补充日志轮转边界测试**：覆盖启动归档、异常退出标记、同毫秒重名规避和归档清理不影响 `main.log` 等场景。
 

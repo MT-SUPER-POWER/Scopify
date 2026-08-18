@@ -27,9 +27,9 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
         <Link
           href={href}
           title={title}
-          className="group hover:bg-content/10 flex h-14 w-full cursor-pointer items-center justify-center rounded-md transition-colors active:scale-95"
+          className="group flex h-14 w-full cursor-pointer items-center justify-center rounded-md transition-colors hover:bg-content/10 active:scale-95"
         >
-          <div className="shadow-panel relative size-12 overflow-hidden rounded-md transition-transform group-hover:scale-110">
+          <div className="relative size-12 overflow-hidden rounded-md shadow-panel transition-transform group-hover:scale-110">
             <Image
               width={48}
               height={48}
@@ -38,7 +38,7 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
               className="size-full object-cover"
             />
             {isCurrentPlaylist && isPlaying && (
-              <div className="bg-media-overlay absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-media-overlay">
                 <PlayingAnimation size={16} />
               </div>
             )}
@@ -53,9 +53,9 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
       <Link
         href={href}
         title={title}
-        className="group hover:bg-content/10 flex w-full min-w-0 cursor-pointer items-center gap-3 overflow-hidden rounded-md p-2 transition-colors"
+        className="group flex w-full min-w-0 cursor-pointer items-center gap-3 overflow-hidden rounded-md p-2 transition-colors hover:bg-content/10"
       >
-        <div className="shadow-panel relative size-12 shrink-0 overflow-hidden rounded-md transition-transform group-hover:scale-105">
+        <div className="relative size-12 shrink-0 overflow-hidden rounded-md shadow-panel transition-transform group-hover:scale-105">
           <Image
             width={48}
             height={48}
@@ -64,16 +64,16 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
             className="size-full object-cover"
           />
           {isCurrentPlaylist && isPlaying && (
-            <div className="bg-media-overlay absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center bg-media-overlay">
               <PlayingAnimation size={16} />
             </div>
           )}
         </div>
         <div className="flex min-w-0 flex-1 flex-col">
-          <span className="text-content group-hover:text-content truncate text-base font-normal">
+          <span className="truncate text-base font-normal text-content group-hover:text-content">
             {title}
           </span>
-          <span className="text-content-muted mt-0.5 truncate text-sm">{subtitle}</span>
+          <span className="mt-0.5 truncate text-sm text-content-muted">{subtitle}</span>
         </div>
       </Link>
     </LibItemContextMenu>

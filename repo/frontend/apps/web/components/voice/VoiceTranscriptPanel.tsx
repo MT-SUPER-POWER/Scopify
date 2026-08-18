@@ -34,10 +34,10 @@ export function VoiceTranscriptPanel({
     <div className="min-w-0">
       <div
         className={cn(
-          "border-border flex min-w-0 border-b",
+          "flex min-w-0 border-b border-border",
           isDialog
             ? "items-center gap-4 p-6"
-            : "bg-surface-elevated/90 sticky top-0 z-10 items-center gap-3 px-4 py-3 backdrop-blur-sm",
+            : "sticky top-0 z-10 items-center gap-3 bg-surface-elevated/90 px-4 py-3 backdrop-blur-sm",
         )}
       >
         <Image
@@ -48,10 +48,10 @@ export function VoiceTranscriptPanel({
           className={cn("shrink-0 rounded-md object-cover", isDialog ? "size-16" : "size-11")}
         />
         <div className="min-w-0">
-          <p className="text-content truncate text-sm font-semibold">
+          <p className="truncate text-sm font-semibold text-content">
             {voice?.name ?? t("library.voiceTranscript.title")}
           </p>
-          <p className="text-content-muted mt-0.5 truncate text-xs">
+          <p className="mt-0.5 truncate text-xs text-content-muted">
             {[voice?.podcastName, voice?.hostName].filter(Boolean).join(" · ")}
           </p>
         </div>
@@ -62,7 +62,7 @@ export function VoiceTranscriptPanel({
           {isLoading ? (
             <div
               className={cn(
-                "text-content-muted flex items-center justify-center gap-2 text-sm",
+                "flex items-center justify-center gap-2 text-sm text-content-muted",
                 isDialog ? "py-16" : "py-12",
               )}
             >
@@ -72,7 +72,7 @@ export function VoiceTranscriptPanel({
           ) : isError ? (
             <div
               className={cn(
-                "text-content-muted flex items-center justify-center gap-2 text-sm",
+                "flex items-center justify-center gap-2 text-sm text-content-muted",
                 isDialog ? "py-16" : "py-12",
               )}
             >
@@ -82,7 +82,7 @@ export function VoiceTranscriptPanel({
           ) : sentences.length === 0 ? (
             <div
               className={cn(
-                "text-content-muted flex items-center justify-center gap-2 text-sm",
+                "flex items-center justify-center gap-2 text-sm text-content-muted",
                 isDialog ? "py-16" : "py-12",
               )}
             >
@@ -98,13 +98,13 @@ export function VoiceTranscriptPanel({
                 >
                   <time
                     className={cn(
-                      "text-content-subtle w-11 shrink-0 pt-0.5 text-right font-mono",
+                      "w-11 shrink-0 pt-0.5 text-right font-mono text-content-subtle",
                       isDialog ? "text-xs" : "text-[11px]",
                     )}
                   >
                     {formatDuration(sentence.beg)}
                   </time>
-                  <p className="text-content min-w-0">{sentence.name}</p>
+                  <p className="min-w-0 text-content">{sentence.name}</p>
                 </li>
               ))}
             </ol>

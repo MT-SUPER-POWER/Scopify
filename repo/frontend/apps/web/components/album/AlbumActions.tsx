@@ -32,7 +32,7 @@ export function AlbumActions({
               type="button"
               aria-label={playLabel}
               onClick={onPlay}
-              className="bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover focus-visible:ring-brand/60 flex size-14 items-center justify-center rounded-full transition-all hover:scale-105 focus-visible:ring-2 focus-visible:outline-none"
+              className="flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:outline-none"
             >
               {isPlaying ? (
                 <Pause className="ml-0.5 size-6 fill-current" />
@@ -51,7 +51,7 @@ export function AlbumActions({
             <button
               type="button"
               aria-label={t("album.action.shuffle")}
-              className="text-content-muted hover:text-content focus-visible:ring-brand/60 flex size-8 items-center justify-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              className="flex size-8 items-center justify-center text-content-muted transition-colors hover:text-content focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:outline-none"
             >
               <Shuffle className="size-8" />
             </button>
@@ -66,7 +66,7 @@ export function AlbumActions({
             <button
               type="button"
               aria-label={t("album.action.download")}
-              className="text-content-muted hover:text-content focus-visible:ring-brand/60 flex size-8 items-center justify-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              className="flex size-8 items-center justify-center text-content-muted transition-colors hover:text-content focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:outline-none"
             >
               <ArrowDownCircle className="size-8" />
             </button>
@@ -89,7 +89,7 @@ export function AlbumActions({
             <button
               type="button"
               aria-label={t("album.action.more")}
-              className="text-content-muted hover:text-content focus-visible:ring-brand/60 flex size-8 items-center justify-center transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              className="flex size-8 items-center justify-center text-content-muted transition-colors hover:text-content focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:outline-none"
             >
               <MoreHorizontal className="size-8" />
             </button>

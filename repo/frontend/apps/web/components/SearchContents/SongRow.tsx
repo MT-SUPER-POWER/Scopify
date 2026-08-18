@@ -34,15 +34,15 @@ export function SongRow({
 
   return (
     <div
-      className="group hover:bg-content/10 active:bg-content/5 flex cursor-pointer items-center justify-between rounded-md p-2.5 transition-colors"
+      className="group flex cursor-pointer items-center justify-between rounded-md p-2.5 transition-colors hover:bg-content/10 active:bg-content/5"
       onClick={onRowClick}
     >
       <div className="flex min-w-0 items-center gap-4">
-        <div className="bg-surface-elevated relative size-11 shrink-0 rounded">
+        <div className="relative size-11 shrink-0 rounded bg-surface-elevated">
           <img src={imageUrl} alt={song.name} className="size-full rounded object-cover" />
           <div
             className={cn(
-              "bg-media-overlay absolute inset-0 flex items-center justify-center rounded transition-opacity",
+              "absolute inset-0 flex items-center justify-center rounded bg-media-overlay transition-opacity",
               isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100",
             )}
           >
@@ -73,18 +73,18 @@ export function SongRow({
             </span>
             <SongVipBadge fee={song.fee} />
           </div>
-          <span className="text-content-muted group-hover:text-content truncate text-sm transition-colors">
+          <span className="truncate text-sm text-content-muted transition-colors group-hover:text-content">
             <ArtistInlineLinks artists={song.artists ?? []} />
           </span>
         </div>
       </div>
 
-      <div className="text-content-muted ml-4 flex shrink-0 items-center gap-6">
-        <Heart className="hover:text-content size-4 cursor-pointer opacity-0 transition-all group-hover:opacity-100 hover:scale-110" />
+      <div className="ml-4 flex shrink-0 items-center gap-6 text-content-muted">
+        <Heart className="size-4 cursor-pointer opacity-0 transition-all group-hover:opacity-100 hover:scale-110 hover:text-content" />
         <span className="w-12 text-right text-sm font-medium tabular-nums">
           {formatDuration(song.duration)}
         </span>
-        <MoreHorizontal className="hover:text-content size-5 cursor-pointer opacity-0 transition-all group-hover:opacity-100" />
+        <MoreHorizontal className="size-5 cursor-pointer opacity-0 transition-all group-hover:opacity-100 hover:text-content" />
       </div>
     </div>
   );

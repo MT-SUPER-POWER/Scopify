@@ -21,7 +21,7 @@ export default function LikedSongsPage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="bg-surface-raised min-h-screen px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
         <LoginRequiredPrompt reason="library" onLogin={() => router.push("/login")} />
       </main>
     );
@@ -31,7 +31,7 @@ export default function LikedSongsPage() {
 
   if (likedPlaylistQuery.isError) {
     return (
-      <main className="bg-surface-raised min-h-screen px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
@@ -45,7 +45,7 @@ export default function LikedSongsPage() {
 
   if (!likedPlaylistId) {
     return (
-      <main className="bg-surface-raised min-h-screen px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
         <LibraryEmptyState
           title={t("library.empty.liked.title")}
           description={t("library.empty.liked.description")}

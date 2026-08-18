@@ -73,28 +73,28 @@ export function UpdateNotificationCenter() {
           type="button"
           aria-label={t("notifications.title")}
           className={cn(
-            "bg-surface-sunken/80 text-content-muted hover:bg-surface-elevated hover:text-content relative hidden size-10 items-center justify-center rounded-full transition-all md:flex",
+            "relative hidden size-10 items-center justify-center rounded-full bg-surface-sunken/80 text-content-muted transition-all hover:bg-surface-elevated hover:text-content md:flex",
             hasUnreadUpdate && "text-brand",
           )}
         >
           <Bell className="size-4.5" />
           {hasUnreadUpdate ? (
-            <span className="bg-brand ring-surface absolute top-1.5 right-1.5 size-2 rounded-full ring-2" />
+            <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-brand ring-2 ring-surface" />
           ) : null}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="bg-surface-overlay/95 text-content shadow-floating border-border w-88 rounded-2xl border p-0 backdrop-blur-2xl"
+        className="w-88 rounded-2xl border border-border bg-surface-overlay/95 p-0 text-content shadow-floating backdrop-blur-2xl"
       >
-        <div className="border-border border-b px-4 py-3">
+        <div className="border-b border-border px-4 py-3">
           <h2 className="text-sm font-bold">{t("notifications.title")}</h2>
         </div>
         {hasStatusNotice ? (
           <div className="p-4">
-            <div className="bg-surface-elevated flex items-start gap-3 rounded-xl p-3">
-              <div className="bg-brand/15 text-brand mt-0.5 rounded-full p-2">
+            <div className="flex items-start gap-3 rounded-xl bg-surface-elevated p-3">
+              <div className="mt-0.5 rounded-full bg-brand/15 p-2 text-brand">
                 {state.status === "error" ? (
                   <CircleAlert className="size-4" />
                 ) : state.status === "downloaded" ? (
@@ -104,14 +104,14 @@ export function UpdateNotificationCenter() {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-content text-sm font-semibold">{noticeTitle}</p>
-                <p className="text-muted-foreground mt-1 line-clamp-3 text-xs leading-relaxed">
+                <p className="text-sm font-semibold text-content">{noticeTitle}</p>
+                <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
                   {noticeDescription}
                 </p>
                 {state.status === "downloading" ? (
-                  <div className="bg-skeleton mt-3 h-1.5 overflow-hidden rounded-full">
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-skeleton">
                     <div
-                      className="bg-brand h-full rounded-full transition-[width]"
+                      className="h-full rounded-full bg-brand transition-[width]"
                       style={{ width: `${Math.min(100, Math.max(0, state.percent ?? 0))}%` }}
                     />
                   </div>
@@ -119,7 +119,7 @@ export function UpdateNotificationCenter() {
                 <button
                   type="button"
                   onClick={state.status === "downloaded" ? install : openUpdaterSettings}
-                  className="text-brand hover:text-brand-hover mt-3 text-xs font-bold"
+                  className="mt-3 text-xs font-bold text-brand hover:text-brand-hover"
                 >
                   {state.status === "downloaded"
                     ? t("notifications.updater.install")
@@ -130,11 +130,11 @@ export function UpdateNotificationCenter() {
           </div>
         ) : (
           <div className="flex flex-col items-center px-6 py-10 text-center">
-            <BellRing className="text-content-subtle size-8" />
-            <p className="text-content-muted mt-3 text-sm font-semibold">
+            <BellRing className="size-8 text-content-subtle" />
+            <p className="mt-3 text-sm font-semibold text-content-muted">
               {t("notifications.empty.title")}
             </p>
-            <p className="text-content-subtle mt-1 text-xs">
+            <p className="mt-1 text-xs text-content-subtle">
               {t("notifications.empty.description")}
             </p>
           </div>

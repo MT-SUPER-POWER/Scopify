@@ -70,13 +70,13 @@ export function DesktopPlaybackWallpaperControls({
   return (
     <section className="desktop-controller-scroll h-full space-y-3 overflow-y-auto px-4 pt-3 pb-4">
       <div className="desktop-controller-card rounded-2xl px-3 py-2">
-        <div className="text-content-muted px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] uppercase">
+        <div className="px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] text-content-muted uppercase">
           {t("desktopPlaybackController.desktopDisplay")}
         </div>
         <div className="flex h-10 items-center justify-between gap-4 px-1">
           <div className="flex min-w-0 items-center gap-3">
-            <Monitor className="text-content-muted size-4 shrink-0" />
-            <span className="text-content truncate text-sm font-medium">
+            <Monitor className="size-4 shrink-0 text-content-muted" />
+            <span className="truncate text-sm font-medium text-content">
               {t("desktopPlaybackController.wallpaper")}
             </span>
           </div>
@@ -109,14 +109,14 @@ export function DesktopPlaybackWallpaperControls({
           onCheckedChange={(visible) => void onDesktopIconVisibilityChange(visible)}
         />
         {desktopIconVisibility && !desktopIconVisibility.supported ? (
-          <p className="text-content-muted px-8 pb-2 text-[11px] leading-4">
+          <p className="px-8 pb-2 text-[11px] leading-4 text-content-muted">
             {t("desktopPlaybackController.desktopIconsUnavailable")}
           </p>
         ) : null}
       </div>
 
       <div className="desktop-controller-card rounded-2xl px-3 py-2">
-        <div className="text-content-muted px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] uppercase">
+        <div className="px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] text-content-muted uppercase">
           {t("desktopPlaybackController.layers")}
         </div>
         <ControlRow
@@ -136,7 +136,7 @@ export function DesktopPlaybackWallpaperControls({
       </div>
 
       <div className="desktop-controller-card rounded-2xl px-3 py-2">
-        <div className="text-content-muted px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] uppercase">
+        <div className="px-1 pb-1 text-[10px] font-semibold tracking-[0.12em] text-content-muted uppercase">
           {t("desktopPlaybackController.compatibility")}
         </div>
         <ControlRow
@@ -152,12 +152,12 @@ export function DesktopPlaybackWallpaperControls({
 
       <div className="desktop-controller-card flex items-start justify-between gap-3 rounded-2xl px-4 py-3">
         <div className="min-w-0">
-          <div className="text-content-muted flex items-center gap-2 text-xs">
+          <div className="flex items-center gap-2 text-xs text-content-muted">
             <span className={cn("size-2 shrink-0 rounded-full", statusPresentation.className)} />
             <span>{statusPresentation.label}</span>
           </div>
           {"diagnostic" in status ? (
-            <p className="text-content-muted mt-2 line-clamp-2 text-[11px] leading-4">
+            <p className="mt-2 line-clamp-2 text-[11px] leading-4 text-content-muted">
               {status.diagnostic}
             </p>
           ) : null}
@@ -190,7 +190,7 @@ function ControlRow({ checked, disabled, icon, label, onCheckedChange }: Control
   return (
     <label className="desktop-controller-row flex h-10 cursor-pointer items-center gap-3 rounded-xl px-1 transition has-disabled:cursor-default has-disabled:opacity-45">
       <span className="text-content-muted">{icon}</span>
-      <span className="text-content flex-1 text-sm">{label}</span>
+      <span className="flex-1 text-sm text-content">{label}</span>
       <Switch
         aria-label={label}
         checked={checked}

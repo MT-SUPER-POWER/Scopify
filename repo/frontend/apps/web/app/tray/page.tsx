@@ -104,21 +104,21 @@ export default function TrayPage() {
 
   return (
     <main className="size-full bg-transparent p-1">
-      <div className="animate-in zoom-in-95 fade-in border-border bg-surface-overlay text-content flex size-full flex-col gap-1 overflow-hidden rounded-xl border p-2 font-sans text-[13px] font-medium duration-200 select-none">
+      <div className="flex size-full animate-in flex-col gap-1 overflow-hidden rounded-xl border border-border bg-surface-overlay p-2 font-sans text-[13px] font-medium text-content duration-200 select-none zoom-in-95 fade-in">
         {/* 头部：当前歌曲 - 固定 */}
         <SongTitle
           title={`${playback.track?.title || t("common.meta.unknownSong")} -
         ${playback.track?.artistNames.join(" / ") || t("common.meta.unknownArtist")}`}
         />
 
-        <Separator className="bg-border my-1.5" />
+        <Separator className="my-1.5 bg-border" />
 
         {/* 可滚动区域 */}
         <ScrollArea className="flex-1 overflow-x-hidden overflow-y-auto pr-1">
           {/* 播放控制区 - 固定 */}
           <div className="flex shrink-0 items-center justify-between px-4 py-1">
             <button
-              className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-1.5 transition-all"
+              className="rounded-full p-1.5 text-content-muted transition-all hover:bg-surface-elevated hover:text-content"
               onClick={playPrev}
               title={t("tray.previous")}
             >
@@ -126,7 +126,7 @@ export default function TrayPage() {
             </button>
 
             <button
-              className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-2 transition-all"
+              className="rounded-full p-2 text-content-muted transition-all hover:bg-surface-elevated hover:text-content"
               onClick={togglePlay}
               title={playback.isPlaying ? t("tray.pause") : t("tray.play")}
             >
@@ -139,7 +139,7 @@ export default function TrayPage() {
             </button>
 
             <button
-              className="text-content-muted hover:bg-surface-elevated hover:text-content rounded-full p-1.5 transition-all"
+              className="rounded-full p-1.5 text-content-muted transition-all hover:bg-surface-elevated hover:text-content"
               onClick={playNext}
               title={t("tray.next")}
             >
@@ -154,7 +154,7 @@ export default function TrayPage() {
             </button>
           </div>
 
-          <Separator className="bg-border my-1.5" />
+          <Separator className="my-1.5 bg-border" />
 
           {/* 音量条区 */}
           <VolumeControl
@@ -164,14 +164,14 @@ export default function TrayPage() {
             variant="inline"
           />
 
-          <Separator className="bg-border my-1.5" />
+          <Separator className="my-1.5 bg-border" />
 
           <Button variant="ghost" className={menuItemClass}>
             <MicVocal className={iconClass} />
             {t("tray.openDesktopLyrics")}
           </Button>
 
-          <div className="text-content-muted hover:bg-surface-elevated hover:text-content flex h-10 items-center rounded-md px-3 transition-colors">
+          <div className="flex h-10 items-center rounded-md px-3 text-content-muted transition-colors hover:bg-surface-elevated hover:text-content">
             <button
               type="button"
               className="flex min-w-0 flex-1 items-center"
@@ -188,7 +188,7 @@ export default function TrayPage() {
             />
           </div>
 
-          <Separator className="bg-border my-1.5" />
+          <Separator className="my-1.5 bg-border" />
 
           {/* 主窗口跳转设置页面 */}
           <Button
@@ -200,7 +200,7 @@ export default function TrayPage() {
             <span>{t("tray.settings")}</span>
           </Button>
 
-          <Separator className="bg-border my-1.5" />
+          <Separator className="my-1.5 bg-border" />
 
           {/* 最小化和退出 */}
           <Button

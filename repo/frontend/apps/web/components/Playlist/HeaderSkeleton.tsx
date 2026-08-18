@@ -9,18 +9,18 @@ export default function PlaylistHeaderSkeleton({
       {/* 1. 头部信息区域 */}
       <div className="relative z-10 flex flex-col items-start gap-7 px-6 pt-24 pb-7 md:flex-row md:items-stretch md:gap-8 md:px-8 lg:px-10 xl:px-12">
         {/* 左侧：封面图 */}
-        <Skeleton className="bg-skeleton shadow-panel size-48 shrink-0 rounded-md lg:size-56" />
+        <Skeleton className="size-48 shrink-0 rounded-md bg-skeleton shadow-panel lg:size-56" />
 
         {/* 右侧：文本信息 */}
         <div className="flex min-w-0 flex-1 flex-col justify-end gap-3 pb-2 md:min-h-48 lg:min-h-56">
-          <Skeleton className="bg-skeleton h-6 w-24 rounded-sm" />
-          <Skeleton className="bg-skeleton mb-2 h-14 w-3/5 rounded-md lg:h-16" />
+          <Skeleton className="h-6 w-24 rounded-sm bg-skeleton" />
+          <Skeleton className="mb-2 h-14 w-3/5 rounded-md bg-skeleton lg:h-16" />
 
           <div className="flex items-center gap-3">
-            <Skeleton className="bg-skeleton size-7 shrink-0 rounded-full" />
-            <Skeleton className="bg-skeleton h-4 w-28 rounded-sm" />
-            <Skeleton className="bg-skeleton size-1.5 rounded-full" />
-            <Skeleton className="bg-skeleton h-4 w-40 rounded-sm" />
+            <Skeleton className="size-7 shrink-0 rounded-full bg-skeleton" />
+            <Skeleton className="h-4 w-28 rounded-sm bg-skeleton" />
+            <Skeleton className="size-1.5 rounded-full bg-skeleton" />
+            <Skeleton className="h-4 w-40 rounded-sm bg-skeleton" />
           </div>
         </div>
       </div>
@@ -31,17 +31,17 @@ export default function PlaylistHeaderSkeleton({
           {/* 左侧操作按钮组：播放、评论、随机、下载、更多 */}
           <div className="flex flex-wrap items-center gap-4 md:gap-6">
             {/* 播放按钮 */}
-            <Skeleton className="bg-skeleton size-14 rounded-full" />
+            <Skeleton className="size-14 rounded-full bg-skeleton" />
             {/* 辅助操作图标 */}
-            <Skeleton className="bg-skeleton size-8 rounded-full" />
-            <Skeleton className="bg-skeleton size-8 rounded-full" />
-            <Skeleton className="bg-skeleton size-8 rounded-full" />
-            <Skeleton className="bg-skeleton size-8 rounded-full" />
+            <Skeleton className="size-8 rounded-full bg-skeleton" />
+            <Skeleton className="size-8 rounded-full bg-skeleton" />
+            <Skeleton className="size-8 rounded-full bg-skeleton" />
+            <Skeleton className="size-8 rounded-full bg-skeleton" />
           </div>
 
           {/* 右侧视图控制组：搜索等 */}
           <div className="flex shrink-0 items-center gap-3">
-            <Skeleton className="bg-skeleton size-8 rounded-full" />
+            <Skeleton className="size-8 rounded-full bg-skeleton" />
           </div>
         </div>
       )}

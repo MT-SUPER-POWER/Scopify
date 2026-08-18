@@ -32,7 +32,7 @@ export function DesktopPlaybackControllerLauncher() {
             type="button"
             aria-label={t("desktopPlaybackController.open")}
             className={cn(
-              "hover:text-content flex items-center justify-center transition-colors",
+              "flex items-center justify-center transition-colors hover:text-content",
               controller.model?.preferences.enabled && "text-brand",
             )}
             onClick={() => void openController()}

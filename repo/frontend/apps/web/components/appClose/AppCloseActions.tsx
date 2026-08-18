@@ -19,7 +19,7 @@ export function AppCloseActions({
         type="button"
         disabled={disabled}
         onClick={() => onAction("minimize")}
-        className="bg-brand text-brand-foreground hover:bg-brand-hover w-full rounded-full py-3.5 text-base font-bold transition-all hover:scale-105 active:scale-100 disabled:pointer-events-none disabled:opacity-60"
+        className="w-full rounded-full bg-brand py-3.5 text-base font-bold text-brand-foreground transition-all hover:scale-105 hover:bg-brand-hover active:scale-100 disabled:pointer-events-none disabled:opacity-60"
       >
         {minimizeLabel}
       </button>
@@ -27,7 +27,7 @@ export function AppCloseActions({
         type="button"
         disabled={disabled}
         onClick={() => onAction("exit")}
-        className="border-content-subtle text-content hover:border-content hover:bg-content/5 w-full rounded-full border bg-transparent py-3.5 text-base font-bold transition-all hover:scale-105 active:scale-100 disabled:pointer-events-none disabled:opacity-60"
+        className="w-full rounded-full border border-content-subtle bg-transparent py-3.5 text-base font-bold text-content transition-all hover:scale-105 hover:border-content hover:bg-content/5 active:scale-100 disabled:pointer-events-none disabled:opacity-60"
       >
         {exitLabel}
       </button>

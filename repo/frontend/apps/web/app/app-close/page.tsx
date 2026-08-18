@@ -20,19 +20,19 @@ export default function AppClosePage() {
         }}
       />
       <main
-        className="text-content size-full bg-transparent p-1"
+        className="size-full bg-transparent p-1 text-content"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         <section
           aria-describedby="app-close-description"
           aria-labelledby="app-close-title"
-          className="border-border bg-surface-overlay relative flex size-full flex-col items-center justify-center overflow-hidden rounded-xl border p-8"
+          className="relative flex size-full flex-col items-center justify-center overflow-hidden rounded-xl border border-border bg-surface-overlay p-8"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
           <button
             type="button"
             onClick={() => void submitAction("cancel")}
-            className="text-muted-foreground hover:bg-accent hover:text-accent-foreground absolute top-4 right-4 rounded-full p-1.5 transition-colors"
+            className="absolute top-4 right-4 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             aria-label={t("ui.close")}
           >
             <X className="size-4" />

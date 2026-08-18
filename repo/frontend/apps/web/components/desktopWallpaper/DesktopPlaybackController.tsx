@@ -184,7 +184,7 @@ export function DesktopPlaybackController() {
               />
             </nav>
 
-            <div className="animate-in fade-in min-h-0 flex-1 duration-150">
+            <div className="min-h-0 flex-1 animate-in duration-150 fade-in">
               {activeTab === "appearance" ? (
                 <DesktopPlaybackAppearanceControls
                   onOpenMainSettings={() => void openMainSettings()}
@@ -236,7 +236,7 @@ function ControllerTabButton({
 function ControllerAtmosphere() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="bg-surface absolute inset-0" />
+      <div className="absolute inset-0 bg-surface" />
       <div
         className="desktop-controller-blob -top-16 -left-14 size-52"
         style={{ backgroundColor: "var(--desktop-controller-accent)", opacity: 0.16 }}

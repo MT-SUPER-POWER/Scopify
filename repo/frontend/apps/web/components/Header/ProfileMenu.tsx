@@ -123,7 +123,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className="bg-surface-overlay/95 text-content shadow-floating border-border w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border p-2 backdrop-blur-2xl transition-all"
+          className="w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-border bg-surface-overlay/95 p-2 text-content shadow-floating backdrop-blur-2xl transition-all"
           align="end"
           side="bottom"
           sideOffset={8}
@@ -133,10 +133,10 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             {isLoggedIn && user ? (
               <DropdownMenuItem
                 asChild
-                className="bg-surface-elevated border-border hover:border-content/20 hover:bg-accent focus:bg-accent group mb-1.5 cursor-pointer rounded-xl border p-2.5 shadow-xs transition-all"
+                className="group mb-1.5 cursor-pointer rounded-xl border border-border bg-surface-elevated p-2.5 shadow-xs transition-all hover:border-content/20 hover:bg-accent focus:bg-accent"
               >
                 <Link href={`/profile?userId=${userId}`} className="flex items-center gap-3">
-                  <div className="ring-brand/40 relative size-10 shrink-0 overflow-hidden rounded-full ring-2 transition-transform group-hover:scale-105">
+                  <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-brand/40 transition-transform group-hover:scale-105">
                     {user.avatarUrl ? (
                       <Image
                         src={user.avatarUrl}
@@ -146,7 +146,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="bg-brand text-brand-foreground flex size-full items-center justify-center text-sm font-bold">
+                      <div className="flex size-full items-center justify-center bg-brand text-sm font-bold text-brand-foreground">
                         {user.nickname?.[0]?.toUpperCase() ?? "U"}
                       </div>
                     )}
@@ -154,14 +154,14 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                   <div className="min-w-0 flex-1">
                     <div className="flex min-w-0 items-center justify-between gap-1">
                       <div className="flex min-w-0 items-center gap-1.5">
-                        <span className="text-content group-hover:text-brand truncate text-sm font-bold transition-colors">
+                        <span className="truncate text-sm font-bold text-content transition-colors group-hover:text-brand">
                           {user.nickname || t("profile.menu.profile")}
                         </span>
                         <UserVipBadge vipType={user.vipType} />
                       </div>
-                      <ChevronRight className="text-content-muted group-hover:text-content size-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                      <ChevronRight className="size-4 shrink-0 text-content-muted transition-transform group-hover:translate-x-0.5 group-hover:text-content" />
                     </div>
-                    <p className="text-content-muted truncate text-xs">
+                    <p className="truncate text-xs text-content-muted">
                       {user.signature || t("profile.menu.profile")}
                     </p>
                   </div>
@@ -171,10 +171,10 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
               isLoggedIn && (
                 <DropdownMenuItem
                   asChild
-                  className="text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content cursor-pointer rounded-lg px-3 py-2 text-sm font-medium"
+                  className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content"
                 >
                   <Link href={`/profile?userId=${userId}`}>
-                    <User className="text-content-muted mr-3 size-4 shrink-0" />
+                    <User className="mr-3 size-4 shrink-0 text-content-muted" />
                     <span className="flex-1">{t("profile.menu.profile")}</span>
                   </Link>
                 </DropdownMenuItem>
@@ -188,16 +188,16 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                   runtime.isDesktop ? "/setting?tab=desktop#app-updater" : "/setting",
                 )
               }
-              className="text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content cursor-pointer rounded-lg px-3 py-2 text-sm font-medium md:hidden"
+              className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content md:hidden"
             >
-              <Bell className="text-content-muted mr-3 size-4 shrink-0" />
+              <Bell className="mr-3 size-4 shrink-0 text-content-muted" />
               <span>{t("profile.menu.notifications")}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content cursor-pointer rounded-lg px-3 py-2 text-sm font-medium md:hidden">
-              <Users className="text-content-muted mr-3 size-4 shrink-0" />
+            <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content md:hidden">
+              <Users className="mr-3 size-4 shrink-0 text-content-muted" />
               <span>{t("profile.menu.friends")}</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="bg-border my-1 md:hidden" />
+            <DropdownMenuSeparator className="my-1 bg-border md:hidden" />
 
             {/* 网易乐签 */}
             {isLoggedIn && (
@@ -217,49 +217,49 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             {/* 设置 */}
             <DropdownMenuItem
               onSelect={() => smartRouter.push("/setting")}
-              className="text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content cursor-pointer rounded-lg px-3 py-2 text-sm font-medium"
+              className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content"
             >
-              <Settings className="text-content-muted mr-3 size-4 shrink-0" />
+              <Settings className="mr-3 size-4 shrink-0 text-content-muted" />
               <span>{t("profile.menu.settings")}</span>
             </DropdownMenuItem>
 
             {/* 下载桌面端 */}
             {!runtime.isDesktop && (
               <DropdownMenuItem
-                className="text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content cursor-pointer rounded-lg px-3 py-2 text-sm font-medium"
+                className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content"
                 onSelect={() => ProfileCallback("download")}
               >
-                <Download className="text-content-muted mr-3 size-4 shrink-0" />
+                <Download className="mr-3 size-4 shrink-0 text-content-muted" />
                 <span>{t("profile.menu.download")}</span>
               </DropdownMenuItem>
             )}
 
             {/* 关于我 */}
             <DropdownMenuItem
-              className="text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content cursor-pointer rounded-lg px-3 py-2 text-sm font-medium"
+              className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content"
               onSelect={() => ProfileCallback("about")}
             >
-              <Coffee className="text-content-muted mr-3 size-4 shrink-0" />
+              <Coffee className="mr-3 size-4 shrink-0 text-content-muted" />
               <span>{t("profile.menu.aboutMe")}</span>
             </DropdownMenuItem>
 
-            <DropdownMenuSeparator className="bg-border my-1.5" />
+            <DropdownMenuSeparator className="my-1.5 bg-border" />
 
             {/* 登录/登出 放在最后 */}
             {isLoggedIn ? (
               <DropdownMenuItem
                 onSelect={handleLogoutClick}
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
               >
-                <LogOut className="text-destructive mr-3 size-4 shrink-0" />
+                <LogOut className="mr-3 size-4 shrink-0 text-destructive" />
                 <span>{t("common.action.logout")}</span>
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem
                 onSelect={handleLoginClick}
-                className="text-brand hover:bg-brand/10 hover:text-brand-hover focus:bg-brand/10 focus:text-brand-hover cursor-pointer rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-brand transition-colors hover:bg-brand/10 hover:text-brand-hover focus:bg-brand/10 focus:text-brand-hover"
               >
-                <LogIn className="text-brand mr-3 size-4 shrink-0" />
+                <LogIn className="mr-3 size-4 shrink-0 text-brand" />
                 <span>{t("common.action.login")}</span>
               </DropdownMenuItem>
             )}

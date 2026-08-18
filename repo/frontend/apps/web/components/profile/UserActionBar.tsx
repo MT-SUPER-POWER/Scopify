@@ -13,7 +13,7 @@ export function ActionBar({ isSelf, onEdit }: { isSelf?: boolean; onEdit?: () =>
         <button
           type="button"
           onClick={onEdit}
-          className="text-content-muted hover:text-content ml-2 transition-colors"
+          className="ml-2 text-content-muted transition-colors hover:text-content"
         >
           <Settings className="size-8" />
         </button>
@@ -32,7 +32,7 @@ export function ActionBar({ isSelf, onEdit }: { isSelf?: boolean; onEdit?: () =>
         </button>
       )}
 
-      <button type="button" className="text-content-muted hover:text-content transition-colors">
+      <button type="button" className="text-content-muted transition-colors hover:text-content">
         <MoreHorizontal className="size-8" />
       </button>
     </div>

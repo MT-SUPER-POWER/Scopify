@@ -17,7 +17,7 @@ export function DesktopPlaybackFoliaModeControls() {
   return (
     <div className="desktop-controller-card space-y-3 rounded-2xl p-3">
       <label className="block space-y-2">
-        <span className="text-content-muted flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] uppercase">
+        <span className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] text-content-muted uppercase">
           <Waves className="size-3.5" />
           {t("folia.options.lyricsRenderer")}
         </span>
@@ -41,7 +41,7 @@ export function DesktopPlaybackFoliaModeControls() {
       </label>
 
       <label className="block space-y-2">
-        <span className="text-content-muted flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] uppercase">
+        <span className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] text-content-muted uppercase">
           <ImageIcon className="size-3.5" />
           {t("folia.options.visualizerBackgroundMode")}
         </span>
@@ -65,7 +65,7 @@ export function DesktopPlaybackFoliaModeControls() {
       </label>
 
       <div className="space-y-2">
-        <span className="text-content-muted flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] uppercase">
+        <span className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.12em] text-content-muted uppercase">
           <Activity className="size-3.5" />
           {t("folia.options.animationIntensity")}
         </span>
@@ -85,7 +85,7 @@ export function DesktopPlaybackFoliaModeControls() {
         </div>
       </div>
 
-      <label className="text-content-muted block space-y-2 text-xs">
+      <label className="block space-y-2 text-xs text-content-muted">
         <span className="flex items-center justify-between gap-3">
           <span>{t("folia.options.visualizerOpacity")}</span>
           <span className="tabular-nums">{Math.round(settings.visualizerOpacity * 100)}%</span>
