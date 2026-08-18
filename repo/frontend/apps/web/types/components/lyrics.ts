@@ -31,7 +31,54 @@ export interface FoliaQuickEffectPickerOption<Value extends string> {
 }
 
 export interface FoliaLyricsControlsProps {
+  onOpenFoliaSettings: () => void;
   onOpenLyricMatch: () => void;
+  theme: Theme;
+}
+
+export interface FoliaAudioSettingsControlProps {
+  onOpenEqualizer: () => void;
+  theme: Theme;
+}
+
+export interface FoliaPanelControlsProps extends FoliaAudioSettingsControlProps {
+  onOpenFoliaSettings: () => void;
+  onOpenLyricMatch: () => void;
+}
+
+export interface FoliaLyricTimelineOffsetControlProps {
+  isDaylight: boolean;
+  offsetMs: number;
+  onOffsetChange: (offsetMs: number) => void;
+  onOpenSettings?: () => void;
+}
+
+export interface FoliaAudioEqualizerDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  theme: Theme;
+}
+
+export interface FoliaVideoExportDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  theme: Theme;
+}
+
+export interface FoliaGlobalLyricOffsetDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  theme: Theme;
+}
+
+export interface FoliaGlobalSettingsCardProps {
+  controlCardBg: string;
+  theme: Theme;
+}
+
+export interface FoliaHarmonySettingsCardProps {
+  className?: string;
+  controlCardBg: string;
   theme: Theme;
 }
 
@@ -185,7 +232,9 @@ export interface FoliaThemeQuickPickerProps {
 export interface FoliaQuickEffectPickerProps<Value extends string> {
   ariaLabel: string;
   isDaylight: boolean;
+  moreActionLabel?: string;
   onChange: (value: Value) => void;
+  onMoreAction?: () => void;
   options: FoliaQuickEffectPickerOption<Value>[];
   primaryColor: string;
   value: Value;

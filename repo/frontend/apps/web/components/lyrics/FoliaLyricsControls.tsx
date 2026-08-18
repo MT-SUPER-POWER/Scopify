@@ -9,7 +9,11 @@ import { useOnlineLyricsTab } from "@/hooks/lyrics/useOnlineLyricsTab";
 import { useI18n } from "@/store/module/i18n";
 import type { FoliaLyricsControlsProps } from "@/types/components/lyrics";
 
-export function FoliaLyricsControls({ onOpenLyricMatch, theme }: FoliaLyricsControlsProps) {
+export function FoliaLyricsControls({
+  onOpenFoliaSettings,
+  onOpenLyricMatch,
+  theme,
+}: FoliaLyricsControlsProps) {
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const model = useOnlineLyricsTab();
@@ -134,6 +138,7 @@ export function FoliaLyricsControls({ onOpenLyricMatch, theme }: FoliaLyricsCont
           isDaylight={isDaylight}
           offsetMs={model.lyricOffsetMs}
           onOffsetChange={model.setLyricOffsetMs}
+          onOpenSettings={onOpenFoliaSettings}
         />
       </div>
     </motion.div>

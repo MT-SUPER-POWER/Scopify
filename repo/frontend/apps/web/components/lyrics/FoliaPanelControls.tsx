@@ -17,16 +17,18 @@ import {
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaAudioSettingsControl } from "@/components/lyrics/FoliaAudioSettingsControl";
+import { FoliaReplayGainControl } from "@/components/lyrics/FoliaReplayGainControl";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
+import type { FoliaPanelControlsProps } from "@/types/components/lyrics";
 
-interface FoliaPanelControlsProps {
-  onOpenLyricMatch: () => void;
-  theme: Theme;
-}
-
-export function FoliaPanelControls({ onOpenLyricMatch, theme }: FoliaPanelControlsProps) {
+export function FoliaPanelControls({
+  onOpenEqualizer,
+  onOpenFoliaSettings,
+  onOpenLyricMatch,
+  theme,
+}: FoliaPanelControlsProps) {
   const { t } = useI18n();
   const model = useFoliaPanelControls();
   const isDaylight = theme.name === "snow";
@@ -125,12 +127,18 @@ export function FoliaPanelControls({ onOpenLyricMatch, theme }: FoliaPanelContro
         <span className="text-[11px] font-semibold tracking-wider uppercase opacity-55">
           {t("audioSettings.title")}
         </span>
-        <FoliaAudioSettingsControl theme={theme} />
+        <FoliaAudioSettingsControl onOpenEqualizer={onOpenEqualizer} theme={theme} />
       </section>
+
+      <FoliaReplayGainControl theme={theme} />
 
       {/* 3rd Section: Lyrics */}
       <div className={`border-t pt-4 ${isDaylight ? "border-black/5" : "border-white/5"}`}>
-        <FoliaLyricsControls onOpenLyricMatch={onOpenLyricMatch} theme={theme} />
+        <FoliaLyricsControls
+          onOpenFoliaSettings={onOpenFoliaSettings}
+          onOpenLyricMatch={onOpenLyricMatch}
+          theme={theme}
+        />
       </div>
     </div>
   );
