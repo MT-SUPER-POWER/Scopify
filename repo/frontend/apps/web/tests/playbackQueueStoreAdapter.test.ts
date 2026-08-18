@@ -2,9 +2,13 @@ import { expect, mock, test } from "bun:test";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/api/music";
 
-const baselinePlayerState = usePlayerStore.getState();
-const { playQueueIndex, moveQueueItem, removeQueueItem } = baselinePlayerState;
-const initialPlayTrack = baselinePlayerState.playTrack;
+const initialPlayerState = usePlayerStore.getInitialState();
+const {
+  playQueueIndex,
+  moveQueueItem,
+  removeQueueItem,
+  playTrack: initialPlayTrack,
+} = initialPlayerState;
 
 function createSong(id: number): SongDetail {
   return {
@@ -19,7 +23,7 @@ function createSong(id: number): SongDetail {
 }
 
 test("player store applies a queue transition snapshot before loading its selected track", async () => {
-  const originalState = baselinePlayerState;
+  const originalState = usePlayerStore.getState();
   const songs = [createSong(1), createSong(2), createSong(3)];
   const playTrack = mock(async () => true);
 
@@ -56,7 +60,7 @@ test("player store applies a queue transition snapshot before loading its select
 });
 
 test("player store delegates queue moves to the pure transition while following the loaded track", () => {
-  const originalState = baselinePlayerState;
+  const originalState = usePlayerStore.getState();
   const songs = [createSong(1), createSong(2), createSong(3)];
 
   usePlayerStore.setState({
@@ -89,7 +93,7 @@ test("player store delegates queue moves to the pure transition while following 
 });
 
 test("removing the current queue item atomically updates the queue before loading its successor", () => {
-  const originalState = baselinePlayerState;
+  const originalState = usePlayerStore.getState();
   const songs = [createSong(1), createSong(2), createSong(3)];
   const playTrack = mock(async () => true);
 

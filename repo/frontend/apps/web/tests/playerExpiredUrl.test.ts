@@ -64,12 +64,12 @@ Object.defineProperty(globalThis, "window", {
 
 const { mergePersistedPlayerState, selectPersistedPlayerState, usePlayerStore } =
   await import("@/store/module/player");
-const baselinePlayerState = usePlayerStore.getState();
-const { playTrack: initialPlayTrack, setIsPlaying, togglePlaying } = baselinePlayerState;
+const initialPlayerState = usePlayerStore.getInitialState();
+const { playTrack: initialPlayTrack, setIsPlaying, togglePlaying } = initialPlayerState;
 
 const resetPlayerStore = (playTrack: PlayerStore["playTrack"] = initialPlayTrack) => {
   usePlayerStore.setState({
-    ...baselinePlayerState,
+    ...initialPlayerState,
     currentSongDetail: null,
     currentSongUrl: null,
     isPlaying: false,

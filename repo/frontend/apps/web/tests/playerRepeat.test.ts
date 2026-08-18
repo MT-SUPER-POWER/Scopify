@@ -2,6 +2,9 @@ import { expect, mock, test } from "bun:test";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/api/music";
 
+const initialPlayerState = usePlayerStore.getInitialState();
+const { playNext: initialPlayNext, playTrack: initialPlayTrack } = initialPlayerState;
+
 function createSong(id: number): SongDetail {
   return {
     id,
@@ -20,7 +23,6 @@ function createSong(id: number): SongDetail {
 
 test("natural completion repeats the current song in single-repeat mode", async () => {
   const baselineState = usePlayerStore.getState();
-  const { playNext, playTrack: initialPlayTrack } = baselineState;
   const songs = [createSong(1), createSong(2)];
   const playTrack = mock(async () => true);
 
@@ -35,12 +37,12 @@ test("natural completion repeats the current song in single-repeat mode", async 
   });
 
   try {
-    await playNext("ended");
+    await initialPlayNext("ended");
 
     expect(playTrack).toHaveBeenCalledWith(songs[0]);
 
     playTrack.mockClear();
-    await playNext();
+    await initialPlayNext();
 
     expect(playTrack).toHaveBeenCalledWith(songs[1]);
   } finally {
