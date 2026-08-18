@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { writeFile } from "node:fs/promises";
-import { app, BrowserWindow, dialog, ipcMain, session } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, session, shell } from "electron";
 import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
   type DesktopHostConfig,
@@ -14,7 +14,13 @@ import {
 } from "@scopify/desktop-contract";
 import type { DesktopBackendController } from "./backend.js";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "../config.js";
-import { getLogDirectory, logger } from "../constants.js";
+import {
+  cleanOldLogs,
+  configureLogging,
+  getCurrentLogFilePath,
+  getLogDirectory,
+  logger,
+} from "../constants.js";
 import { loginWindow } from "./login.js";
 import { assertSafeCacheRoot, createPageCacheStore, migrateCacheRoot } from "./pageCache.js";
 import { applyElectronProxy } from "./proxy.js";
@@ -107,6 +113,24 @@ export function registerIpcHandlers(
     return true;
   });
   ipcMain.handle("logger:get-directory", () => getLogDirectory());
+  ipcMain.handle("logger:open-current", async (event) => {
+    if (!isMainRenderer(event, mainWindow)) return false;
+    const error = await shell.openPath(getCurrentLogFilePath());
+    if (error) {
+      logger.warn("[logger] failed to open current log:", error);
+      return false;
+    }
+    return true;
+  });
+  ipcMain.handle("logger:open-directory", async (event) => {
+    if (!isMainRenderer(event, mainWindow)) return false;
+    const error = await shell.openPath(getLogDirectory());
+    if (error) {
+      logger.warn("[logger] failed to open log directory:", error);
+      return false;
+    }
+    return true;
+  });
 
   ipcMain.on("relaunch-app", () => {
     logger.info("[IPC] relaunch requested");
@@ -211,6 +235,8 @@ export function registerIpcHandlers(
     assertSafeCacheRoot(nextRoot);
     if (currentRoot !== nextRoot) migrateCacheRoot({ from: currentRoot, to: nextRoot });
     const savedConfig = saveDesktopHostConfig(newConfig);
+    configureLogging(savedConfig.logging);
+    cleanOldLogs();
     if (!savedConfig.app.devTools && mainWindow?.webContents.isDevToolsOpened()) {
       mainWindow.webContents.closeDevTools();
     }

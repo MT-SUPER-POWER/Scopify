@@ -44,6 +44,7 @@ export interface DesktopHostConfig {
     format: string;
     keepDays: number;
     level: DesktopLogLevel;
+    maxSizeMB: number;
   };
   network: {
     proxyMode: DesktopProxyMode;

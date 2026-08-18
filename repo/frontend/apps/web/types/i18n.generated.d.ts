@@ -701,6 +701,18 @@ export interface TranslateFn {
    */
   (key: "settings.keepDays.sublabel", params?: TranslationParams): string;
   /**
+   * zh-CN: 单个日志上限
+   * zh-TW: 單個日誌上限
+   * en-US: Per-file Log Limit
+   */
+  (key: "settings.maxLogSize.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前日志文件超过此大小后会自动按时间归档，单位 MB。
+   * zh-TW: 目前日誌檔案超過此大小後會自動按時間歸檔，單位 MB。
+   * en-US: Archive the current log by time when it exceeds this size, in MB.
+   */
+  (key: "settings.maxLogSize.sublabel", params?: TranslationParams): string;
+  /**
    * zh-CN: 日志存储位置
    * zh-TW: 日誌儲存位置
    * en-US: Log Storage Location
@@ -724,6 +736,18 @@ export interface TranslateFn {
    * en-US: Log path is temporarily unavailable
    */
   (key: "settings.logDirectory.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开当前日志
+   * zh-TW: 開啟目前日誌
+   * en-US: Open Current Log
+   */
+  (key: "settings.logDirectory.openCurrent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开日志目录
+   * zh-TW: 開啟日誌目錄
+   * en-US: Open Log Directory
+   */
+  (key: "settings.logDirectory.openDirectory", params?: TranslationParams): string;
   /**
    * zh-CN: 超时时间 (ms)
    * zh-TW: 逾時時間 (ms)

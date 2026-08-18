@@ -12,6 +12,7 @@ logging:
   level: info
   format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}"
   keepDays: 7
+  maxSizeMB: 16
 network:
   proxyMode: system
   proxyUrl: ""

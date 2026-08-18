@@ -127,6 +127,8 @@ export interface RuntimeDesktopPlaybackWallpaper {
 
 export interface RuntimeLogging {
   getDirectory(): Promise<string | null>;
+  openCurrentFile(): Promise<boolean>;
+  openDirectory(): Promise<boolean>;
   write(event: RendererLogEvent): Promise<boolean>;
 }
 
