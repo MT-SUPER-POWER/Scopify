@@ -469,51 +469,51 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               />
             </div>
 
-            {themeControl ?? (
-              <div className="space-y-2.5">
-                <div
-                  className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
-                  style={{ color: theme.secondaryColor }}
-                >
-                  {t("folia.options.themePresets")}
-                </div>
-                <div className="grid grid-cols-4 gap-2">
-                  {THEME_PRESETS.map((preset) => {
-                    const isActive = themePresetId === preset.id;
-                    return (
-                      <button
-                        key={preset.id}
-                        type="button"
-                        onClick={() => onThemePresetChange?.(preset.id)}
-                        className="flex flex-col items-center gap-1.5 rounded-xl border p-2 transition-all"
-                        style={{
-                          ...getAccentOptionStyle(isActive, theme, isDaylight),
-                          color: theme.primaryColor,
-                        }}
-                      >
-                        <div className="flex gap-0.5">
-                          {[
-                            preset.colors.backgroundColor,
-                            preset.colors.primaryColor,
-                            preset.colors.accentColor,
-                            preset.colors.secondaryColor,
-                          ].map((c, i) => (
-                            <div
-                              key={i}
-                              className="size-2.5 rounded-full border border-black/10"
-                              style={{ backgroundColor: c }}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-[10px] leading-tight font-medium opacity-80">
-                          {t(preset.labelKey)}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+            {themeControl && <div className="space-y-3.5">{themeControl}</div>}
+
+            <div className="space-y-2.5">
+              <div
+                className="text-xs font-medium tracking-[0.24em] uppercase opacity-45"
+                style={{ color: theme.secondaryColor }}
+              >
+                {t("folia.options.themePresets")}
               </div>
-            )}
+              <div className="grid grid-cols-4 gap-2">
+                {THEME_PRESETS.map((preset) => {
+                  const isActive = themePresetId === preset.id;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => onThemePresetChange?.(preset.id)}
+                      className="flex flex-col items-center gap-1.5 rounded-xl border p-2 transition-all"
+                      style={{
+                        ...getAccentOptionStyle(isActive, theme, isDaylight),
+                        color: theme.primaryColor,
+                      }}
+                    >
+                      <div className="flex gap-0.5">
+                        {[
+                          preset.colors.backgroundColor,
+                          preset.colors.primaryColor,
+                          preset.colors.accentColor,
+                          preset.colors.secondaryColor,
+                        ].map((c, i) => (
+                          <div
+                            key={i}
+                            className="size-2.5 rounded-full border border-black/10"
+                            style={{ backgroundColor: c }}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] leading-tight font-medium opacity-80">
+                        {t(preset.labelKey)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
             <PresetGroup
               label={t("folia.options.fontFamily")}
@@ -551,6 +551,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                 step="0.05"
                 value={fontScale}
                 onChange={(event) => onFontScaleChange(parseFloat(event.target.value))}
+                onInput={(event) => onFontScaleChange(parseFloat((event.target as HTMLInputElement).value))}
                 onPointerDown={onSliderPointerDown}
                 onPointerUp={onSliderCommit}
                 className={rangeInputClass}
@@ -574,6 +575,9 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                 step="0.05"
                 value={visualizerOpacity}
                 onChange={(event) => onVisualizerOpacityChange?.(parseFloat(event.target.value))}
+                onInput={(event) =>
+                  onVisualizerOpacityChange?.(parseFloat((event.target as HTMLInputElement).value))
+                }
                 onPointerDown={onSliderPointerDown}
                 onPointerUp={onSliderCommit}
                 className={rangeInputClass}
@@ -814,6 +818,9 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                 step="0.05"
                 value={subtitleFontScale}
                 onChange={(event) => onSubtitleFontScaleChange(parseFloat(event.target.value))}
+                onInput={(event) =>
+                  onSubtitleFontScaleChange(parseFloat((event.target as HTMLInputElement).value))
+                }
                 onPointerDown={onSliderPointerDown}
                 onPointerUp={onSliderCommit}
                 className={rangeInputClass}
@@ -858,6 +865,11 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                 value={subtitleOverlayOpacity}
                 onChange={(event) =>
                   onSubtitleOverlayOpacityChange?.(parseFloat(event.target.value))
+                }
+                onInput={(event) =>
+                  onSubtitleOverlayOpacityChange?.(
+                    parseFloat((event.target as HTMLInputElement).value),
+                  )
                 }
                 onPointerDown={onSliderPointerDown}
                 onPointerUp={onSliderCommit}

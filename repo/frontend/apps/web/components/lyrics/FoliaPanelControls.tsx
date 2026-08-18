@@ -111,6 +111,7 @@ export function FoliaPanelControls({ onOpenLyricMatch, theme }: FoliaPanelContro
             step="1"
             value={model.volume}
             onChange={(event) => model.setVolume(Number(event.currentTarget.value))}
+            onInput={(event) => model.setVolume(Number(event.currentTarget.value))}
             className={`h-1 flex-1 cursor-pointer appearance-none rounded-full ${isDaylight ? "bg-black/10" : "bg-white/10"}`}
             style={{ accentColor: theme.accentColor }}
           />
