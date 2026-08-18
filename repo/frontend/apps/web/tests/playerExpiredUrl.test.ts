@@ -71,9 +71,9 @@ Object.defineProperty(globalThis, "window", {
 
 const { mergePersistedPlayerState, selectPersistedPlayerState, usePlayerStore } =
   await import("@/store/module/player");
-const getInitialPlayerState = () => usePlayerStore.getState();
-const getInitialPlayerActions = () => {
-  const state = getInitialPlayerState();
+const getPlayerState = () => usePlayerStore.getState();
+const getPlayerActions = () => {
+  const state = getPlayerState();
   return {
     playTrack: requireAction(state.playTrack, "playTrack"),
     setIsPlaying: requireAction(state.setIsPlaying, "setIsPlaying"),
@@ -81,23 +81,20 @@ const getInitialPlayerActions = () => {
   };
 };
 
-const initialPlayerState = getInitialPlayerState();
-const initialPlayerActions = getInitialPlayerActions();
-const { playTrack: initialPlayTrack, setIsPlaying, togglePlaying } = initialPlayerActions;
-
-const resetPlayerStore = (playTrack: PlayerStore["playTrack"] = initialPlayTrack) => {
-  const { setIsPlaying: resolvedSetIsPlaying, togglePlaying: resolvedTogglePlaying } =
-    getInitialPlayerActions();
+const resetPlayerStore = (playTrack?: PlayerStore["playTrack"]) => {
+  const currentState = getPlayerState();
+  const { setIsPlaying, togglePlaying, playTrack: currentPlayTrack } = getPlayerActions();
+  const resolvedPlayTrack = playTrack ?? currentPlayTrack;
 
   usePlayerStore.setState({
-    ...initialPlayerState,
+    ...currentState,
     currentSongDetail: null,
     currentSongUrl: null,
     isPlaying: false,
     playbackFailureCount: 0,
-    playTrack,
-    setIsPlaying: resolvedSetIsPlaying,
-    togglePlaying: resolvedTogglePlaying,
+    playTrack: resolvedPlayTrack,
+    setIsPlaying,
+    togglePlaying,
   });
 };
 
@@ -140,6 +137,7 @@ test("discard an expired persisted playback URL during rehydration", () => {
 test("request a fresh playback URL when resuming a restored song", async () => {
   const song = createSong(2);
   const playTrack = mock(async () => true);
+  const { togglePlaying } = getPlayerActions();
   usePlayerStore.setState({
     currentSongDetail: song,
     currentSongUrl: null,
@@ -151,13 +149,14 @@ test("request a fresh playback URL when resuming a restored song", async () => {
     await togglePlaying();
     expect(playTrack).toHaveBeenCalledWith(song, { preservePlaybackSession: true });
   } finally {
-    resetPlayerStore(initialPlayTrack);
+    resetPlayerStore();
   }
 });
 
 test("legacy play controls request a fresh URL through setIsPlaying", async () => {
   const song = createSong(3);
   const playTrack = mock(async () => true);
+  const { setIsPlaying } = getPlayerActions();
   usePlayerStore.setState({
     currentSongDetail: song,
     currentSongUrl: null,
@@ -170,6 +169,6 @@ test("legacy play controls request a fresh URL through setIsPlaying", async () =
     await Promise.resolve();
     expect(playTrack).toHaveBeenCalledWith(song, { preservePlaybackSession: true });
   } finally {
-    resetPlayerStore(initialPlayTrack);
+    resetPlayerStore();
   }
 });

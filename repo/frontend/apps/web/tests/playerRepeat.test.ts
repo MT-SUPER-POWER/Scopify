@@ -9,16 +9,13 @@ function requireAction<T>(action: T, actionName: string): T {
   return action;
 }
 
-const getInitialPlayerActions = () => {
+const getPlayerActions = () => {
   const state = usePlayerStore.getState();
   return {
     playNext: requireAction(state.playNext, "playNext"),
     playTrack: requireAction(state.playTrack, "playTrack"),
   };
 };
-
-const initialPlayerState = usePlayerStore.getState();
-const { playNext: initialPlayNext, playTrack: initialPlayTrack } = getInitialPlayerActions();
 
 function createSong(id: number): SongDetail {
   return {
@@ -38,6 +35,7 @@ function createSong(id: number): SongDetail {
 
 test("natural completion repeats the current song in single-repeat mode", async () => {
   const baselineState = usePlayerStore.getState();
+  const { playNext, playTrack: initialPlayTrack } = getPlayerActions();
   const songs = [createSong(1), createSong(2)];
   const playTrack = mock(async () => true);
 
@@ -52,12 +50,12 @@ test("natural completion repeats the current song in single-repeat mode", async 
   });
 
   try {
-    await initialPlayNext("ended");
+    await playNext("ended");
 
     expect(playTrack).toHaveBeenCalledWith(songs[0]);
 
     playTrack.mockClear();
-    await initialPlayNext();
+    await playNext();
 
     expect(playTrack).toHaveBeenCalledWith(songs[1]);
   } finally {
