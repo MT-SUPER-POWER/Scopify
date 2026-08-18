@@ -68,7 +68,12 @@ export const createSonnetGlitchEffect = (pixi: PixiModule): SonnetGlitchEffect =
   const filter = new pixi.Filter({
     glProgram: pixi.GlProgram.from({ vertex, fragment, name: "sonnet-mono-glitch" }),
     resources: { glitchUniforms: uniforms },
-    padding: 40,
+    // padding must stay 0: Pixi sums the padding of every enabled filter in the chain and
+    // grows the shared render frame *after* clipping it to the viewport, so padding here only
+    // ever adds off-screen pixels — while shifting the frame that the scene's vignette pass
+    // derives its screen coordinates from, which made the vignette pop outward on every glitch
+    // transition. The tear samples with uInputClamp, so it never needs the extra margin.
+    padding: 0,
   });
   filter.enabled = false;
   return {

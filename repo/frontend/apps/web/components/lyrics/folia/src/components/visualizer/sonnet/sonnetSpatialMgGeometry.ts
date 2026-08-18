@@ -1,6 +1,6 @@
 // src/components/visualizer/sonnet/sonnetSpatialMgGeometry.ts
 // Owns deterministic variant selection and reusable spatial recipes for Sonnet MG scenes.
-export const SONNET_GEO_VARIANT_COUNT = 48;
+export const SONNET_GEO_VARIANT_COUNT = 100;
 
 interface SonnetMgPathTarget {
   moveTo: (x: number, y: number) => SonnetMgPathTarget;
