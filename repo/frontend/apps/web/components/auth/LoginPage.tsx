@@ -9,7 +9,6 @@ import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
 import LoginSkeletonLoading from "@/components/auth/LoginSkeletonLoading";
 import { PasswordLoginForm } from "@/components/Login/PasswordLoginForm";
 import { QrLogin } from "@/components/Login/QrLogin";
@@ -23,7 +22,6 @@ import { cn } from "@/lib/utils";
 import { sendCaptcha } from "@/lib/web/auth";
 import logo from "@/resources/icon_source.png";
 import { useI18n } from "@/store/module/i18n";
-import type { LoginRequiredReason } from "@/types/auth";
 import type { LoginMode } from "@/types/login";
 
 let hydrationReady = false;
@@ -57,7 +55,6 @@ function LoginPageContent() {
   const isLoggedIn = useLoginStatus();
   const [isMounted, setIsMounted] = useState(false);
   const redirectTarget = useMemo(() => searchParams.get("redirect") || "/", [searchParams]);
-  const reason = searchParams.get("reason") as LoginRequiredReason | null;
   const finishLogin = useCallback(() => {
     smartRouter.replace(redirectTarget.startsWith("/") ? redirectTarget : "/");
   }, [redirectTarget, smartRouter]);
@@ -113,44 +110,39 @@ function LoginPageContent() {
   return (
     <div
       className={cn(
-        "bg-surface text-content flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden p-4",
+        "flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-surface p-4 text-content",
       )}
     >
       {/* 右上角退出按钮，点击返回主页 */}
       {showExitButton && (
         <button
           type="button"
-          className="hover:bg-content/10 absolute top-5 right-6 rounded-full p-1 transition-colors"
+          className="absolute top-5 right-6 rounded-full p-1 transition-colors hover:bg-content/10"
           title={t("login.page.backHomeTitle")}
         >
           <Link href="/" className="flex items-center justify-center">
-            <X className="text-content-subtle hover:text-content size-5 transition-colors" />
+            <X className="size-5 text-content-subtle transition-colors hover:text-content" />
           </Link>
         </button>
       )}
 
       {/* 1. Logo 区域优化 */}
       <div className="mb-6 flex flex-col items-center">
-        <div className="shadow-floating mb-3 flex size-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black">
+        <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black shadow-floating">
           <Image src={logo.src} width={50} height={50} alt={t("login.logoAlt")} />
         </div>
-        <p className="text-content-subtle text-xs font-medium">{t("login.page.tagline")}</p>
+        <p className="text-xs font-medium text-content-subtle">{t("login.page.tagline")}</p>
       </div>
 
       {/* 2. 主体宽度 */}
       <div className="w-full max-w-80">
-        {reason && (
-          <div className="mb-4">
-            <LoginRequiredPrompt reason={reason} compact />
-          </div>
-        )}
         <Tabs value={mode} onValueChange={(v) => setMode(v as LoginMode)} className="w-full">
           {/* 3. Tab 切换器 */}
-          <TabsList className="bg-content/5 border-content/5 mb-4 grid h-10 grid-cols-3 rounded-xl border p-1">
+          <TabsList className="mb-4 grid h-10 grid-cols-3 rounded-xl border border-content/5 bg-content/5 p-1">
             <TabsTrigger
               value="qr"
               title={t("login.mode.qr")}
-              className="data-[state=active]:bg-surface-elevated rounded-lg text-xs"
+              className="rounded-lg text-xs data-[state=active]:bg-surface-elevated"
             >
               <QrCode className="mr-1 size-3.5" />
               {t("login.mode.qr")}
@@ -158,7 +150,7 @@ function LoginPageContent() {
             <TabsTrigger
               value="password"
               title={t("login.mode.password")}
-              className="data-[state=active]:bg-surface-elevated rounded-lg text-xs"
+              className="rounded-lg text-xs data-[state=active]:bg-surface-elevated"
             >
               <Lock className="mr-1 size-3.5" />
               {t("login.mode.password")}
@@ -166,7 +158,7 @@ function LoginPageContent() {
             <TabsTrigger
               value="sms"
               title={t("login.mode.sms")}
-              className="data-[state=active]:bg-surface-elevated rounded-lg text-xs"
+              className="rounded-lg text-xs data-[state=active]:bg-surface-elevated"
             >
               <Smartphone className="mr-1 size-3.5" />
               {t("login.mode.sms")}
@@ -176,9 +168,9 @@ function LoginPageContent() {
           {/* 4. 表单容器 */}
           <div
             className={cn(
-              "bg-surface-raised shadow-floating border-content/5 rounded-2xl border p-5 backdrop-blur-xl",
+              "rounded-2xl border border-content/5 bg-surface-raised p-5 shadow-floating backdrop-blur-xl",
               isDesktop &&
-                "bg-surface-elevated shadow-panel border-content/10 dark:bg-surface-raised dark:shadow-floating dark:border-content/5",
+                "border-content/10 bg-surface-elevated shadow-panel dark:border-content/5 dark:bg-surface-raised dark:shadow-floating",
             )}
           >
             <TabsContent value="password" className="mt-0 outline-none">
@@ -203,11 +195,11 @@ function LoginPageContent() {
         </Tabs>
 
         {/* 底部文案 */}
-        <div className="text-content-subtle mt-6 flex items-center justify-center gap-1.5 text-center text-[12px] font-medium">
-          <TriangleAlert aria-hidden="true" className="text-warning size-4 shrink-0" />
+        <div className="mt-6 flex items-center justify-center gap-1.5 text-center text-[12px] font-medium text-content-subtle">
+          <TriangleAlert aria-hidden="true" className="size-4 shrink-0 text-warning" />
           <p>
             {t("login.page.qrOnlyNoticePrefix")}
-            <strong className="text-content font-semibold">
+            <strong className="font-semibold text-content">
               {t("login.page.qrOnlyNoticeStrong")}
             </strong>
             {t("login.page.qrOnlyNoticeSuffix")}

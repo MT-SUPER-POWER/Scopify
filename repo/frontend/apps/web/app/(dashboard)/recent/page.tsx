@@ -36,18 +36,15 @@ export default function RecentSongsPage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="bg-surface-raised min-h-screen px-6 pt-24 pb-28 md:px-10">
-        <LoginRequiredPrompt
-          reason="library"
-          onLogin={() => router.push("/login?reason=library")}
-        />
+      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
+        <LoginRequiredPrompt reason="library" onLogin={() => router.push("/login")} />
       </main>
     );
   }
 
   if (recentSongsQuery.isError) {
     return (
-      <main className="bg-surface-raised min-h-screen px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}

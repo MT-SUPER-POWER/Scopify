@@ -143,16 +143,16 @@ function ConfirmDialogShandCN({
       <AlertDialogOverlay className="backdrop-blur-sm" />
       <AlertDialogContent
         className={cn(
-          "bg-surface-overlay shadow-floating w-96 rounded-xl border-none p-8",
+          "w-96 rounded-xl border-none bg-surface-overlay p-8 shadow-floating",
           "flex flex-col",
         )}
       >
         {/* text-center 覆盖 shadcn AlertDialogHeader 默认的 text-left */}
         <AlertDialogHeader className="mb-8 w-full space-y-2">
-          <AlertDialogTitle className="text-content w-full text-center text-2xl font-bold tracking-tight">
+          <AlertDialogTitle className="w-full text-center text-2xl font-bold tracking-tight text-content">
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-content-muted text-sm">
+          <AlertDialogDescription className="text-sm text-content-muted">
             {content}
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -162,14 +162,14 @@ function ConfirmDialogShandCN({
           <button
             type="button"
             onClick={onConfirm}
-            className="bg-brand text-brand-foreground hover:bg-brand-hover w-full rounded-full py-3.5 text-base font-bold transition-all"
+            className="w-full rounded-full bg-brand py-3.5 text-base font-bold text-brand-foreground transition-all hover:bg-brand-hover"
           >
             {confirmText}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="border-content-muted text-content hover:border-content w-full rounded-full bg-transparent py-3.5 text-base font-bold transition-all"
+            className="w-full rounded-full border-content-muted bg-transparent py-3.5 text-base font-bold text-content transition-all hover:border-content"
           >
             {cancelText}
           </button>
@@ -257,7 +257,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
             </ContextMenuItem>
             <ContextMenuItem
               onClick={async () => {
-                await requireLoginAction("library", async () => {
+                await requireLoginAction(async () => {
                   try {
                     const uid = useUserStore.getState().user?.userId;
                     if (!uid) return;
@@ -333,7 +333,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
           <ContextMenuGroup>
             <ContextMenuItem
               onClick={() => {
-                void requireLoginAction("playlist-edit", () => setUpdateFormOpen(true));
+                void requireLoginAction(() => setUpdateFormOpen(true));
               }}
             >
               <Edit className="mr-2 size-4" />

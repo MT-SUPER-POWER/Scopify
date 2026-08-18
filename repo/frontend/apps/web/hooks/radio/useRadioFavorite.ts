@@ -61,7 +61,7 @@ export function useRadioFavorite(initialFavorite = false) {
 
   const favoriteRadio = useCallback(
     async (radioId: number | string) => {
-      await requireLoginAction("library", async () => {
+      await requireLoginAction(async () => {
         await mutateAsync({ radioId, subscribe: true });
       });
     },
@@ -70,7 +70,7 @@ export function useRadioFavorite(initialFavorite = false) {
 
   const toggleFavorite = useCallback(
     async (radioId: number | string) => {
-      await requireLoginAction("library", async () => {
+      await requireLoginAction(async () => {
         await mutateAsync({ radioId, subscribe: !isFavorited });
       });
     },

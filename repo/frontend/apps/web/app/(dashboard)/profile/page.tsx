@@ -32,22 +32,22 @@ export default function ProfilePage() {
 
   if (!uid)
     return (
-      <div className="bg-surface-raised text-content h-full p-8">
+      <div className="h-full bg-surface-raised p-8 text-content">
         {t("profile.page.invalidUserId") || "Invalid User ID"}
       </div>
     );
 
   if (isLoading || !userInfo)
     return (
-      <div className="bg-surface-raised flex h-full min-h-screen items-center justify-center">
-        <Loader2 className="text-brand size-8 animate-spin" />
+      <div className="flex h-full min-h-screen items-center justify-center bg-surface-raised">
+        <Loader2 className="size-8 animate-spin text-brand" />
       </div>
     );
 
   const displayUser = profileOverride ?? userInfo;
 
   const handleSaveProfile = async (payload: UpdateUserProfilePayload) => {
-    await requireLoginAction("profile-edit", async () => {
+    await requireLoginAction(async () => {
       setSavingProfile(true);
       try {
         await updateUserProfile(payload);
@@ -65,7 +65,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="bg-surface-raised text-content relative flex min-h-screen w-full flex-col pb-24 font-sans">
+    <div className="relative flex min-h-screen w-full flex-col bg-surface-raised pb-24 font-sans text-content">
       {/* Background blend */}
       <div
         className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 md:h-125"
@@ -77,7 +77,7 @@ export default function ProfilePage() {
       <div className="hero-content-transition relative z-10 flex flex-1 flex-col">
         <UserActionBar
           isSelf={isSelf}
-          onEdit={() => void requireLoginAction("profile-edit", () => setEditOpen(true))}
+          onEdit={() => void requireLoginAction(() => setEditOpen(true))}
         />
 
         <div className="mx-auto w-full max-w-7xl px-6 py-8">
@@ -93,7 +93,7 @@ export default function ProfilePage() {
                     onClickPlaylist={(id) => router.push(`/playlist?id=${id}`)}
                   />
                 ) : (
-                  <div className="text-content/40 py-12 text-center">
+                  <div className="py-12 text-center text-content/40">
                     {t("profile.page.noPublicPlaylists") || "暂无公开歌单"}
                   </div>
                 )}
@@ -112,7 +112,7 @@ export default function ProfilePage() {
                       readonly
                     />
                   ) : (
-                    <div className="text-content/40 py-4 text-sm">
+                    <div className="py-4 text-sm text-content/40">
                       {t("profile.page.noRecentSongs") || "暂无最近播放歌曲"}
                     </div>
                   )}
@@ -128,7 +128,7 @@ export default function ProfilePage() {
                       onClickPlaylist={(id) => router.push(`/playlist?id=${id}`)}
                     />
                   ) : (
-                    <div className="text-content/40 py-4 text-sm">
+                    <div className="py-4 text-sm text-content/40">
                       {t("profile.page.noRecentPlaylists") || "暂无最近播放歌单"}
                     </div>
                   )}

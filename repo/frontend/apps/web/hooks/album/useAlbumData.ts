@@ -155,7 +155,7 @@ export function useAlbumData() {
   const handleToggleAlbumSubscribe = useCallback(async () => {
     if (!albumId) return;
 
-    await requireLoginAction("album-subscribe", async () => {
+    await requireLoginAction(async () => {
       await subscribeMutation.mutateAsync({
         id: albumId,
         subscribe: !isAlbumCollected,

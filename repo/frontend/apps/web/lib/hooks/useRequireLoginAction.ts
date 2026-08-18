@@ -6,7 +6,6 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
-import type { LoginRequiredReason } from "@/types/auth";
 
 type LoginAction = () => void | Promise<void>;
 
@@ -21,7 +20,7 @@ export function useRequireLoginAction() {
   const { t } = useI18n();
 
   return useCallback(
-    async (reason: LoginRequiredReason, action: LoginAction) => {
+    async (action: LoginAction) => {
       if (isLoggedIn) {
         await action();
         return true;
@@ -31,7 +30,6 @@ export function useRequireLoginAction() {
       if (!runtime.auth.openLoginWindow()) {
         smartRouter.push("/login", {
           redirect: getCurrentPath(),
-          reason,
         });
       }
       return false;

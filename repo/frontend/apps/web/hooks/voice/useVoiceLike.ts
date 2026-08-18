@@ -48,7 +48,7 @@ export function useVoiceLike(voiceId: null | number, initialLiked = false) {
   const toggleLike = useCallback(async () => {
     if (voiceId === null) return false;
     let updated = false;
-    await requireLoginAction("library", async () => {
+    await requireLoginAction(async () => {
       await mutation.mutateAsync(!isLiked);
       updated = true;
     });
