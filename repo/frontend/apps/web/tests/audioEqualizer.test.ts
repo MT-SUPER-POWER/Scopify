@@ -1,6 +1,10 @@
 import { afterAll, describe, expect, test } from "bun:test";
 
-import { AUDIO_EQUALIZER_BANDS, AUDIO_EQUALIZER_PRESETS } from "@/constants/audioEqualizer";
+import {
+  AUDIO_EQUALIZER_BANDS,
+  AUDIO_EQUALIZER_PRESETS,
+  DEFAULT_AUDIO_EQUALIZER_SETTINGS,
+} from "@/constants/audioEqualizer";
 import { resolveAudioEqualizerSettings } from "@/lib/player/audioEqualizer";
 import {
   applyAudioEqualizerSettings,
@@ -78,7 +82,7 @@ describe("audio equalizer", () => {
     expect(settings.enabled).toBe(true);
     expect(settings.gains).toHaveLength(AUDIO_EQUALIZER_BANDS.length);
     expect(settings.gains.slice(0, 5)).toEqual([12, -12, 4, 0, 0]);
-    expect(settings.preset).toBe("custom");
+    expect(settings.preset).toBe("custom-1");
     expect(settings.customGains).toEqual(settings.gains);
   });
 
@@ -103,29 +107,35 @@ describe("audio equalizer", () => {
       currentTime: 2,
       sampleRate: 48_000,
       createBiquadFilter: () => filters[filterIndex++],
+      createGain: () => ({
+        connect: () => {},
+        gain: createAudioParam(),
+      }),
     } as unknown as AudioContext;
     const input = createFilter();
     const output = {} as AudioNode;
-    const nodes = connectAudioEqualizerGraph(context, input as unknown as AudioNode, output, {
+    const graph = connectAudioEqualizerGraph(context, input as unknown as AudioNode, output, {
+      ...DEFAULT_AUDIO_EQUALIZER_SETTINGS,
       enabled: true,
       gains: Array.from({ length: 10 }, (_, index) => index - 5),
-      preset: "custom",
+      preset: "custom-1",
       customGains: Array(10).fill(0),
     });
 
-    expect(nodes).toHaveLength(10);
-    expect(nodes[0].type).toBe("lowshelf");
-    expect(nodes[9].type).toBe("highshelf");
-    expect(nodes[0].gain.value).toBe(-5);
-    expect(nodes[9].gain.value).toBe(4);
+    expect(graph.filters).toHaveLength(10);
+    expect(graph.filters[0].type).toBe("lowshelf");
+    expect(graph.filters[9].type).toBe("highshelf");
+    expect(graph.filters[0].gain.value).toBe(-5);
+    expect(graph.filters[9].gain.value).toBe(4);
 
-    applyAudioEqualizerSettings(context, nodes, {
+    applyAudioEqualizerSettings(context, graph, {
+      ...DEFAULT_AUDIO_EQUALIZER_SETTINGS,
       enabled: false,
       gains: Array(10).fill(6),
-      preset: "custom",
+      preset: "custom-1",
       customGains: Array(10).fill(6),
     });
-    nodes.forEach((node) => {
+    graph.filters.forEach((node) => {
       const gain = node.gain as unknown as ReturnType<typeof createAudioParam>;
       expect(gain.cancelledAt).toBe(2);
       expect(gain.target).toEqual([0, 2, 0.015]);

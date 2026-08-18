@@ -1,4 +1,5 @@
 import React from "react";
+import type { TranslateFn } from "@/types/i18n.generated";
 import type { NomandBackgroundTuning, Theme } from "../../../../types";
 import { colorWithAlpha } from "../../colorMix";
 
@@ -6,7 +7,7 @@ import { colorWithAlpha } from "../../colorMix";
 // Shares the panel contract and slider presentation used by each Nomand effect variant.
 
 export interface NomandBackgroundEffectPanelProps {
-  t: (key: string) => string;
+  t: TranslateFn;
   isDaylight: boolean;
   theme: Theme;
   rangeInputClass: string;

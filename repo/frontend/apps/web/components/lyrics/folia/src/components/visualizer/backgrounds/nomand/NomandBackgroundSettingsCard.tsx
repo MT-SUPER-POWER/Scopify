@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Trash2, Upload } from "lucide-react";
+import type { TranslateFn } from "@/types/i18n.generated";
 import {
   DEFAULT_NOMAND_BACKGROUND_TUNING,
   type MonetBackgroundImage,
@@ -15,7 +16,7 @@ import NomandBackgroundEffectSettings from "./NomandBackgroundEffectSettings";
 // Edits the Paper shader background while reusing the shared custom background image asset.
 
 interface NomandBackgroundSettingsCardProps {
-  t: (key: string) => string;
+  t: TranslateFn;
   isDaylight: boolean;
   theme: Theme;
   controlCardBg: string;

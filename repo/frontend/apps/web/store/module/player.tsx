@@ -56,7 +56,6 @@ function createPlayerQueueSnapshot(state: PlayerStore): PlaybackQueueSnapshot<So
     queue: state.queue,
     queueIndex: state.queueIndex,
     repeatMode: state.repeatMode,
-    replayGainMode: state.replayGainMode,
   };
 }
 

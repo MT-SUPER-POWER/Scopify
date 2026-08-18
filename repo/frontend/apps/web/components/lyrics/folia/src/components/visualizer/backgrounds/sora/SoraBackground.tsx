@@ -102,8 +102,8 @@ void main() {
 }
 `;
 
-const clampValue = (value: number, min: number, max: number, fallback: number) =>
-  Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : fallback;
+const clampValue = (value: number | undefined, min: number, max: number, fallback: number) =>
+  value !== undefined && Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : fallback;
 
 const clampTuning = (candidate?: SoraBackgroundTuning): SoraBackgroundTuning => {
   const fallback = DEFAULT_SORA_BACKGROUND_TUNING;

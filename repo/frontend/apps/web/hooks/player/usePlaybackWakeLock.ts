@@ -7,7 +7,7 @@ interface ScreenWakeLockSentinel extends EventTarget {
   released: boolean;
 }
 
-interface WakeLockNavigator extends Navigator {
+interface WakeLockNavigator {
   wakeLock?: {
     request: (type: "screen") => Promise<ScreenWakeLockSentinel>;
   };

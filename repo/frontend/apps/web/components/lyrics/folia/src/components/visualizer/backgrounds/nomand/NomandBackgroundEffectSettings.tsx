@@ -1,4 +1,5 @@
 import React from "react";
+import type { TranslationKey } from "@/lib/i18n";
 import type { NomandBackgroundEffect } from "../../../../types";
 import NomandDitheringSettings from "./NomandDitheringSettings";
 import NomandFlutedGlassSettings from "./NomandFlutedGlassSettings";
@@ -21,7 +22,7 @@ const EFFECTS: NomandBackgroundEffect[] = [
   "lens-distortion",
 ];
 
-const EFFECT_LABEL_KEYS: Record<NomandBackgroundEffect, string> = {
+const EFFECT_LABEL_KEYS: Record<NomandBackgroundEffect, TranslationKey> = {
   dithering: "folia.options.nomandBackgroundEffectDithering",
   "fluted-glass": "folia.options.nomandBackgroundEffectFlutedGlass",
   "paper-texture": "folia.options.nomandBackgroundEffectPaperTexture",

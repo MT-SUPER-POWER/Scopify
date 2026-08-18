@@ -23,7 +23,7 @@ import {
 // Locks the expanded geometric recipes into Sonnet's existing single MG scene collection.
 describe("Sonnet spatial MG variants", () => {
   it("extends the original collection without a second layer family", () => {
-    expect(SONNET_GEO_VARIANT_COUNT).toBe(48);
+    expect(SONNET_GEO_VARIANT_COUNT).toBe(100);
     expect(Array.from({ length: 24 }, (_, seed) => resolveSonnetGeoVariant(seed))).toEqual(
       Array.from({ length: 24 }, (_, seed) => seed),
     );
@@ -65,9 +65,7 @@ describe("Sonnet spatial MG variants", () => {
     expect(SONNET_OPEN_GEO_VARIANT_START).toBe(36);
     expect(SONNET_OPEN_GEO_VARIANT_COUNT).toBe(12);
     expect(SONNET_OPEN_GEO_VARIANTS).toHaveLength(12);
-    expect(SONNET_OPEN_GEO_VARIANT_START + SONNET_OPEN_GEO_VARIANT_COUNT).toBe(
-      SONNET_GEO_VARIANT_COUNT,
-    );
+    expect(SONNET_OPEN_GEO_VARIANT_START + SONNET_OPEN_GEO_VARIANT_COUNT).toBe(48);
   });
 
   it("builds every themed background from both wireframe and filled paths", () => {

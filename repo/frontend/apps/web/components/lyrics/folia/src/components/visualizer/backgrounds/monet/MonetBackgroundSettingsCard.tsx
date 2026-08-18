@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { ImagePlus, Trash2 } from "lucide-react";
+import type { TranslateFn } from "@/types/i18n.generated";
 import {
   DEFAULT_MONET_BACKGROUND_TUNING,
   type MonetBackgroundImage,
@@ -22,7 +23,7 @@ interface PresetOption<T> {
 }
 
 interface MonetBackgroundSettingsCardProps {
-  t: (key: string) => string;
+  t: TranslateFn;
   isDaylight: boolean;
   theme: Theme;
   controlCardBg: string;

@@ -1,5 +1,6 @@
 "use client";
 
+import type { TranslationKey } from "@/lib/i18n";
 import { useI18n } from "@/store/module/i18n";
 
 import {
@@ -37,7 +38,7 @@ export function FoliaBackgroundQuickControl({
     actions,
     config: settings.background,
     isDaylight,
-    t: (key) => String(t(`folia.${key}`)),
+    t: (key) => String(t(`folia.${key}` as TranslationKey)),
     theme,
   });
 }
