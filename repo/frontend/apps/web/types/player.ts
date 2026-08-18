@@ -5,6 +5,7 @@ export type MusicQuality =
 export type PlaybackFailureSource = "url" | "audio";
 export type PlaybackNextSource = "manual" | "ended";
 export type RepeatMode = "off" | "all" | "one";
+export type ReplayGainMode = "off" | "track" | "album";
 export type SourceChangeMode = "new-track" | "preserve-position";
 
 export interface PlaybackLoadIdentity {
@@ -66,11 +67,13 @@ export interface PlayerStore {
   removeQueueItem: (index: number) => void;
   reshuffleQueue: () => void;
   repeatMode: RepeatMode;
+  replayGainMode: ReplayGainMode;
   setIsPlaying: (isPlaying: boolean) => void;
   setLyric: (lyric: NeteaseLyric | null) => void;
   setMusicQuality: (quality: MusicQuality) => void;
   setQueue: (songs: SongDetail[], startIndex?: number, playlistId?: number | string | null) => void;
   setRepeatMode: (mode: RepeatMode) => void;
+  setReplayGainMode: (mode: ReplayGainMode) => void;
   setShuffle: (isShuffle: boolean) => void;
   setVolume: (volume: number) => void;
   sourceChangeMode: SourceChangeMode;
