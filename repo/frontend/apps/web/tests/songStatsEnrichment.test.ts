@@ -1,107 +1,91 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
+import {
+  createSongStatsEnricher,
+  type SongStatsFailure,
+  type SongStatsLoader,
+  type SongStatsResource,
+} from "@/lib/song/enrichSongStatsCore";
 
 type PlannedValue = number | "error";
 
 interface RequestPlan {
   comment: PlannedValue[];
-  red: PlannedValue[];
+  liked: PlannedValue[];
 }
 
 const plans = new Map<number, RequestPlan>();
 const voicePlans = new Map<number, { comment: number; liked: number }>();
 const requestCounts = new Map<string, number>();
 
-function nextPlannedValue(songId: number, type: keyof RequestPlan): PlannedValue {
-  const plan = plans.get(songId);
-  if (!plan) throw new Error(`No ${type} plan for song ${songId}`);
-
-  const key = `${songId}:${type}`;
+function nextPlannedValue(resource: SongStatsResource, type: "comment" | "liked"): PlannedValue {
+  const key = `${resource.kind}:${resource.id}:${type}`;
   requestCounts.set(key, (requestCounts.get(key) ?? 0) + 1);
 
+  if (resource.kind === "voice") {
+    const plan = voicePlans.get(resource.id);
+    if (!plan) throw new Error(`No ${type} plan for voice ${resource.id}`);
+    return plan[type];
+  }
+
+  const plan = plans.get(resource.id);
+  if (!plan) throw new Error(`No ${type} plan for song ${resource.id}`);
   const value = plan[type].shift();
-  if (value === undefined) throw new Error(`No remaining ${type} response for song ${songId}`);
+  if (value === undefined) throw new Error(`No remaining ${type} response for song ${resource.id}`);
   return value;
 }
 
-const getSongRedCount = mock(async (songId: number) => {
-  const value = nextPlannedValue(songId, "red");
-  if (value === "error") throw new Error("red count unavailable");
-  return { data: { code: 200, data: { count: value } } };
-});
+function createLoader(): SongStatsLoader {
+  const load = async (resource: SongStatsResource, type: "comment" | "liked") => {
+    const value = nextPlannedValue(resource, type);
+    if (value === "error") throw new Error(`${type} count unavailable`);
+    return value;
+  };
 
-const getMusicComments = mock(async ({ id }: { id: number | string }) => {
-  const songId = Number(id);
-  const value = nextPlannedValue(songId, "comment");
-  if (value === "error") throw new Error("comment count unavailable");
-  return { data: { code: 200, total: value } };
-});
+  return {
+    getCommentCount: (resource) => load(resource, "comment"),
+    getLikedCount: (resource) => load(resource, "liked"),
+  };
+}
 
-const getVoiceComments = mock(async ({ id }: { id: number | string }) => {
-  const voiceId = Number(id);
-  const plan = voicePlans.get(voiceId);
-  if (!plan) throw new Error(`No voice comment plan for voice ${voiceId}`);
-  requestCounts.set(
-    `${voiceId}:voice-comment`,
-    (requestCounts.get(`${voiceId}:voice-comment`) ?? 0) + 1,
-  );
-  return { data: { code: 200, total: plan.comment } };
-});
-
-const getRadioProgramDetail = mock(async (voiceId: number) => {
-  const plan = voicePlans.get(voiceId);
-  if (!plan) throw new Error(`No liked count plan for voice ${voiceId}`);
-  requestCounts.set(
-    `${voiceId}:voice-liked`,
-    (requestCounts.get(`${voiceId}:voice-liked`) ?? 0) + 1,
-  );
-  return { data: { code: 200, program: { likedCount: plan.liked } } };
-});
-
-const getVoiceDetail = mock(async () => ({ data: { code: 200, data: {} } }));
-
-const reportFailure = mock(() => undefined);
-
-const playerState = {
-  currentSongDetail: null,
-  originalQueue: [],
-  queue: [],
-};
-
-mock.module("@/lib/api/comment", () => ({ getMusicComments, getVoiceComments }));
-mock.module("@/lib/api/radio", () => ({ getRadioProgramDetail }));
-mock.module("@/lib/api/track", () => ({ getSongRedCount }));
-mock.module("@/lib/api/voicelist", () => ({ getVoiceDetail }));
-mock.module("@/lib/web/errorTracking", () => ({ reportFailure }));
-mock.module("@/store", () => ({
-  usePlayerStore: {
-    getState: () => playerState,
-    setState: (patch: Partial<typeof playerState>) => Object.assign(playerState, patch),
-  },
-  useUserStore: {
-    getState: () => ({ mergeSongStats: () => undefined }),
-  },
-}));
-
-const { enrichSongStatsById } = await import("@/lib/song/enrichSongStats");
+function createEnricher(reportFailure = mock(() => undefined)) {
+  return {
+    enricher: createSongStatsEnricher({
+      loader: createLoader(),
+      propagateSongStats: () => undefined,
+      reportFailure,
+    }),
+    reportFailure,
+  };
+}
 
 function setPlan(songId: number, plan: RequestPlan) {
-  reportFailure.mockClear();
-  plans.set(songId, { comment: [...plan.comment], red: [...plan.red] });
+  plans.set(songId, { comment: [...plan.comment], liked: [...plan.liked] });
 }
 
-function countRequests(songId: number, type: keyof RequestPlan) {
-  return requestCounts.get(`${songId}:${type}`) ?? 0;
+function setVoicePlan(voiceId: number, plan: { comment: number; liked: number }) {
+  voicePlans.set(voiceId, { ...plan });
 }
+
+function countRequests(resource: SongStatsResource, type: "comment" | "liked") {
+  return requestCounts.get(`${resource.kind}:${resource.id}:${type}`) ?? 0;
+}
+
+afterEach(() => {
+  plans.clear();
+  voicePlans.clear();
+  requestCounts.clear();
+});
 
 describe("song stats enrichment", () => {
   test("deduplicates concurrent enrichment requests for the same song", async () => {
-    setPlan(101, { comment: [22], red: [11] });
+    setPlan(101, { comment: [22], liked: [11] });
+    const { enricher } = createEnricher();
 
-    const first = enrichSongStatsById(101);
-    const second = enrichSongStatsById(101);
+    const first = enricher.enrichSongStatsById(101);
+    const second = enricher.enrichSongStatsById(101);
 
-    expect(countRequests(101, "red")).toBe(1);
-    expect(countRequests(101, "comment")).toBe(1);
+    expect(countRequests({ kind: "song", id: 101 }, "liked")).toBe(1);
+    expect(countRequests({ kind: "song", id: 101 }, "comment")).toBe(1);
     await expect(Promise.all([first, second])).resolves.toEqual([
       { stats: { commentCount: 22, likedCount: 11 }, status: "complete" },
       { stats: { commentCount: 22, likedCount: 11 }, status: "complete" },
@@ -109,46 +93,49 @@ describe("song stats enrichment", () => {
   });
 
   test("retries a failed statistic request before reporting success", async () => {
-    setPlan(102, { comment: [44], red: ["error", 33] });
+    setPlan(102, { comment: [44], liked: ["error", 33] });
+    const { enricher } = createEnricher();
 
-    await expect(enrichSongStatsById(102)).resolves.toEqual({
+    await expect(enricher.enrichSongStatsById(102)).resolves.toEqual({
       stats: { commentCount: 44, likedCount: 33 },
       status: "complete",
     });
 
-    expect(countRequests(102, "red")).toBe(2);
-    expect(countRequests(102, "comment")).toBe(1);
+    expect(countRequests({ kind: "song", id: 102 }, "liked")).toBe(2);
+    expect(countRequests({ kind: "song", id: 102 }, "comment")).toBe(1);
   });
 
   test("reports unavailable when neither statistic can be loaded after retrying", async () => {
-    setPlan(103, { comment: ["error", "error"], red: ["error", "error"] });
+    setPlan(103, { comment: ["error", "error"], liked: ["error", "error"] });
+    const { enricher, reportFailure } = createEnricher();
 
-    await expect(enrichSongStatsById(103)).resolves.toEqual({
+    await expect(enricher.enrichSongStatsById(103)).resolves.toEqual({
       stats: {},
       status: "failed",
     });
 
-    expect(countRequests(103, "red")).toBe(2);
-    expect(countRequests(103, "comment")).toBe(2);
+    expect(countRequests({ kind: "song", id: 103 }, "liked")).toBe(2);
+    expect(countRequests({ kind: "song", id: 103 }, "comment")).toBe(2);
     expect(reportFailure).toHaveBeenCalledWith(
       expect.objectContaining({
         context: { missingStats: ["likedCount", "commentCount"], songId: 103 },
         event: "song.stats_enrichment_failed",
-      }),
+      } satisfies Partial<SongStatsFailure>),
     );
   });
 
   test("loads voice comment and liked counts from the voice resource", async () => {
-    voicePlans.set(9001, { comment: 65, liked: 191 });
+    setVoicePlan(9001, { comment: 65, liked: 191 });
+    const { enricher } = createEnricher();
 
-    await expect(enrichSongStatsById(104, undefined, 9001)).resolves.toEqual({
+    await expect(enricher.enrichSongStatsById(104, undefined, 9001)).resolves.toEqual({
       stats: { commentCount: 65, likedCount: 191 },
       status: "complete",
     });
 
-    expect(requestCounts.get("9001:voice-comment")).toBe(1);
-    expect(requestCounts.get("9001:voice-liked")).toBe(1);
-    expect(countRequests(104, "comment")).toBe(0);
-    expect(countRequests(104, "red")).toBe(0);
+    expect(countRequests({ kind: "voice", id: 9001 }, "comment")).toBe(1);
+    expect(countRequests({ kind: "voice", id: 9001 }, "liked")).toBe(1);
+    expect(countRequests({ kind: "song", id: 104 }, "comment")).toBe(0);
+    expect(countRequests({ kind: "song", id: 104 }, "liked")).toBe(0);
   });
 });
