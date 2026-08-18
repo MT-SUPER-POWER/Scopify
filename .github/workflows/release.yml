@@ -104,8 +104,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: false
-        with:
-          submodules: false
 
       - name: Checkout backend API submodule only
         run: git submodule update --init --depth 1 repo/backend/api-enhanced
