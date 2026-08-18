@@ -3971,6 +3971,18 @@ export interface TranslateFn {
    */
   (key: "home.toast.loadFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 上一页
+   * zh-TW: 上一頁
+   * en-US: Previous page
+   */
+  (key: "home.pagination.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一页
+   * zh-TW: 下一頁
+   * en-US: Next page
+   */
+  (key: "home.pagination.next", params?: TranslationParams): string;
+  /**
    * zh-CN: 当前网络异常
    * zh-TW: 目前網路異常
    * en-US: Network unavailable
@@ -15296,9 +15308,9 @@ export interface TranslateFn {
    */
   (key: "shortcuts.scope.volume", params?: TranslationParams): string;
   /**
-   * zh-CN: 打开快捷键管理
-   * zh-TW: 開啟快速鍵管理
-   * en-US: Open Shortcut Settings
+   * zh-CN: 打开设置
+   * zh-TW: 開啟設定
+   * en-US: Open Settings
    */
   (key: "shortcuts.command.openSettings", params?: TranslationParams): string;
   /**

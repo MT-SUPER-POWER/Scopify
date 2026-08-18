@@ -5,32 +5,28 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { CollapsibleSection } from "@/components/home/CollapsibleSection";
-import { VoiceList } from "@/components/search/VoiceList";
-import { VoiceTranscriptDialog } from "@/components/voice/VoiceTranscriptDialog";
+import { GridCard } from "@/components/home/GridCard";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { RecommendedVoiceListsProps } from "@/types/components/home";
-import type { Voice } from "@/types/search";
+import type { SuggestedArtistsProps } from "@/types/components/home";
 
-const DEFAULT_PAGE_SIZE = 6;
+const DEFAULT_PAGE_SIZE = 10;
 
-export function RecommendedVoiceLists({
-  pageSize = DEFAULT_PAGE_SIZE,
-  voices,
-}: RecommendedVoiceListsProps) {
+export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: SuggestedArtistsProps) {
   const { t } = useI18n();
+  const smartRouter = useSmartRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
 
-  const pageCount = Math.max(1, Math.ceil(voices.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(artists.length / pageSize));
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
-  if (voices.length === 0) return null;
+  if (artists.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {
     if (targetPage === page) return;
@@ -52,9 +48,9 @@ export function RecommendedVoiceLists({
     }
   };
 
-  const visibleVoices = isOpen
-    ? voices.slice(page * pageSize, (page + 1) * pageSize)
-    : voices.slice(0, pageSize);
+  const visibleArtists = isOpen
+    ? artists.slice(page * pageSize, (page + 1) * pageSize)
+    : artists.slice(0, pageSize);
 
   return (
     <section>
@@ -63,10 +59,10 @@ export function RecommendedVoiceLists({
         onOpenChange={setIsOpen}
         title={
           <h2 className="text-2xl font-bold tracking-tight text-content hover:underline">
-            {t("home.recommendedVoiceLists")}
+            {t("home.suggestedArtists")}
           </h2>
         }
-        collapsedHeight="244px"
+        collapsedHeight="260px"
       >
         <div className="space-y-4">
           <div className="relative overflow-hidden">
@@ -77,12 +73,18 @@ export function RecommendedVoiceLists({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -direction * 16 }}
                 transition={{ duration: 0.22, ease: "easeOut" }}
+                className="grid grid-cols-3 gap-6 md:grid-cols-4 lg:grid-cols-5"
               >
-                <VoiceList
-                  voices={visibleVoices}
-                  variant="preview"
-                  onViewTranscript={setSelectedVoice}
-                />
+                {visibleArtists.map((artist) => (
+                  <GridCard
+                    key={artist.id}
+                    id={artist.id}
+                    name={artist.name}
+                    coverUrl={`${artist.picUrl}?param=200y200`}
+                    isArtist
+                    onClick={() => smartRouter.push(`/artist?id=${artist.id}`)}
+                  />
+                ))}
               </motion.div>
             </AnimatePresence>
           </div>
@@ -133,13 +135,6 @@ export function RecommendedVoiceLists({
           )}
         </div>
       </CollapsibleSection>
-      <VoiceTranscriptDialog
-        open={selectedVoice !== null}
-        voice={selectedVoice}
-        onOpenChange={(open) => {
-          if (!open) setSelectedVoice(null);
-        }}
-      />
     </section>
   );
 }

@@ -20,7 +20,7 @@ export function getRecommendedSongs(id: number | string) {
 /**
  * 获取热门歌手列表
  */
-export function getHotArtists(limit = 10) {
+export function getHotArtists(limit = 50) {
   return request.get<HotArtistsResponse>("/top/artists", {
     params: { limit },
   });

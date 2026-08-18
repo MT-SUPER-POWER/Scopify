@@ -175,20 +175,17 @@ export function useHomeData() {
   const hotArtistsQuery = useHotArtistsQuery();
   const userProfileQuery = useHomeUserProfileQuery(storedUserId);
 
-  const playlists = useMemo(
-    () => personalizedQuery.data?.result?.map(pruneRecommendPlaylist) ?? [],
-    [personalizedQuery.data?.result],
-  );
   const bannerPlaylist = useMemo(() => {
-    const recommendations = recommendedQuery.data?.recommend ?? [];
+    return personalizedQuery.data?.result?.map(pruneRecommendPlaylist) ?? [];
+  }, [personalizedQuery.data?.result]);
 
-    return recommendations
-      .map((item, index) => ({ index, item: pruneRecommendPlaylist(item) }))
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 8)
-      .sort((a, b) => a.index - b.index)
-      .map(({ item }) => item);
-  }, [recommendedQuery.data?.recommend]);
+  const playlists = useMemo(() => {
+    const userRecommendations = recommendedQuery.data?.recommend;
+    if (isLogin && userRecommendations && userRecommendations.length > 0) {
+      return userRecommendations.map(pruneRecommendPlaylist);
+    }
+    return personalizedQuery.data?.result?.map(pruneRecommendPlaylist) ?? [];
+  }, [isLogin, recommendedQuery.data?.recommend, personalizedQuery.data?.result]);
   const suggestedArtists = hotArtistsQuery.data?.artists ?? [];
   const recommendedVoiceLists = useMemo(
     () =>

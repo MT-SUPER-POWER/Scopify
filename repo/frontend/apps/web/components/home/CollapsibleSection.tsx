@@ -12,6 +12,8 @@ interface CollapsibleSectionProps {
   children: React.ReactNode;
   action?: React.ReactNode;
   defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   collapsedHeight?: string;
 }
 
@@ -20,9 +22,19 @@ export function CollapsibleSection({
   children,
   action,
   defaultOpen = false,
+  open,
+  onOpenChange,
   collapsedHeight = "180px",
 }: CollapsibleSectionProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : uncontrolledOpen;
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!isControlled) {
+      setUncontrolledOpen(nextOpen);
+    }
+    onOpenChange?.(nextOpen);
+  };
   const [hasCollapsedOverflow, setHasCollapsedOverflow] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
   const { t } = useI18n();
@@ -44,7 +56,7 @@ export function CollapsibleSection({
   }, [collapsedHeight]);
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-4">
+    <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="space-y-4">
       <div className="group/section flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="cursor-pointer">{title}</div>
@@ -55,7 +67,7 @@ export function CollapsibleSection({
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="text-content-muted hover:text-content flex cursor-pointer items-center gap-1 text-sm font-bold transition-colors outline-none hover:underline"
+                className="flex cursor-pointer items-center gap-1 text-sm font-bold text-content-muted transition-colors outline-none hover:text-content hover:underline"
               >
                 {isOpen ? t("common.action.showLess") : t("common.action.showAll")}
                 <ChevronRight
@@ -83,7 +95,7 @@ export function CollapsibleSection({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="from-surface-raised via-surface-raised/80 pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t to-transparent"
+                className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-surface-raised via-surface-raised/80 to-transparent"
               />
             )}
           </AnimatePresence>

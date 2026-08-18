@@ -13,10 +13,10 @@ export const musicQueryKeys = {
   },
   home: {
     banners: () => ["home", "banners"] as const,
-    hotArtists: () => ["home", "hot-artists"] as const,
-    personalizedPlaylists: () => ["home", "personalized-playlists"] as const,
+    hotArtists: (limit = 50) => ["home", "hot-artists", limit] as const,
+    personalizedPlaylists: (limit = 100) => ["home", "personalized-playlists", limit] as const,
     recommendedPlaylists: () => ["home", "recommended-playlists"] as const,
-    recommendedVoiceLists: () => ["home", "recommended-voice-lists"] as const,
+    recommendedVoiceLists: (limit = 36) => ["home", "recommended-voice-lists", limit] as const,
     userProfile: (userId: string) => ["home", "user-profile", userId] as const,
   },
   library: {

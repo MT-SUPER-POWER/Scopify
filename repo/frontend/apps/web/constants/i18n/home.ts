@@ -26,6 +26,8 @@ export const homeMessages = defineMessages(
     "home.toast.playlistEmpty": "歌单为空",
     "home.toast.loadPlaylistFailed": "加载歌单失败",
     "home.toast.loadFailed": "获取首页数据失败",
+    "home.pagination.previous": "上一页",
+    "home.pagination.next": "下一页",
   },
   {
     "home.greeting.night": "晚上好",
@@ -52,6 +54,8 @@ export const homeMessages = defineMessages(
     "home.toast.playlistEmpty": "歌單為空",
     "home.toast.loadPlaylistFailed": "載入歌單失敗",
     "home.toast.loadFailed": "取得首頁資料失敗",
+    "home.pagination.previous": "上一頁",
+    "home.pagination.next": "下一頁",
   },
   {
     "home.greeting.night": "Good Night",
@@ -78,5 +82,7 @@ export const homeMessages = defineMessages(
     "home.toast.playlistEmpty": "Playlist is empty",
     "home.toast.loadPlaylistFailed": "Failed to load playlist",
     "home.toast.loadFailed": "Failed to load homepage data",
+    "home.pagination.previous": "Previous page",
+    "home.pagination.next": "Next page",
   },
 );

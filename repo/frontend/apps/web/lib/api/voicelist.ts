@@ -28,7 +28,7 @@ export function getRecommendedPodcasts(limit = 6) {
   });
 }
 
-export function getRecommendedVoiceLists(limit = 12) {
+export function getRecommendedVoiceLists(limit = 36) {
   return request.get<RecommendedVoiceListsResponse>("/v1/pc/voicelist/rcmd/list", {
     params: { limit },
   });

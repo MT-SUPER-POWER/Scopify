@@ -13,11 +13,11 @@ function getMusicCookie() {
   return getMusicSessionCredential();
 }
 
-export function usePersonalizedPlaylistsQuery() {
+export function usePersonalizedPlaylistsQuery(limit = 100) {
   return useQuery({
     meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getPersonalizePlaylists()).data,
-    queryKey: musicQueryKeys.home.personalizedPlaylists(),
+    queryFn: async () => (await getPersonalizePlaylists(limit)).data,
+    queryKey: musicQueryKeys.home.personalizedPlaylists(limit),
   });
 }
 
@@ -32,19 +32,19 @@ export function useRecommendedPlaylistsQuery(enabled: boolean) {
   });
 }
 
-export function useRecommendedVoiceListsQuery() {
+export function useRecommendedVoiceListsQuery(limit = 36) {
   return useQuery({
     meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getRecommendedVoiceLists()).data,
-    queryKey: musicQueryKeys.home.recommendedVoiceLists(),
+    queryFn: async () => (await getRecommendedVoiceLists(limit)).data,
+    queryKey: musicQueryKeys.home.recommendedVoiceLists(limit),
   });
 }
 
-export function useHotArtistsQuery() {
+export function useHotArtistsQuery(limit = 50) {
   return useQuery({
     meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getHotArtists()).data,
-    queryKey: musicQueryKeys.home.hotArtists(),
+    queryFn: async () => (await getHotArtists(limit)).data,
+    queryKey: musicQueryKeys.home.hotArtists(limit),
   });
 }
 

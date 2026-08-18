@@ -163,8 +163,7 @@ export function updatePlaylistCover(id: number | string, imgFile: File, imgSize 
   });
 }
 
-export function getPersonalizePlaylists(limit?: number) {
-  if (limit === undefined || limit > 30) limit = 15;
+export function getPersonalizePlaylists(limit = 100) {
   return request.get<PersonalizedPlaylistsResponse>("/personalized", { params: { limit } });
 }
 

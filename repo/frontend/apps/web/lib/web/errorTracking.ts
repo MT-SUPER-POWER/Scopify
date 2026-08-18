@@ -1,6 +1,6 @@
 import { isApiError } from "@/lib/web/apiError";
 import { runtime } from "@/lib/runtime";
-import type { RendererLogSource } from "@/types/logging";
+import type { LogMetadata, LogValue, RendererLogSource } from "@/types/logging";
 
 const MAX_ARRAY_LENGTH = 20;
 const MAX_DEPTH = 4;
@@ -8,8 +8,6 @@ const MAX_STRING_LENGTH = 2_000;
 const SENSITIVE_KEY = /authorization|cookie|csrf|music_[a-z_]+|password|secret|token/i;
 const SENSITIVE_COOKIE_VALUE =
   /(MUSIC_[A-Z_]+|__csrf|authorization|cookie|password|secret|token)=([^\s;&]+)/gi;
-
-type LogMetadata = Record<string, unknown>;
 
 interface FailureTrackingInput {
   context?: unknown;
@@ -29,7 +27,7 @@ function truncate(value: string) {
     : value;
 }
 
-function toMetadata(value: unknown, depth = 0, seen = new WeakSet<object>()): unknown {
+function toMetadata(value: unknown, depth = 0, seen = new WeakSet<object>()): LogValue {
   if (value === null) return null;
   switch (typeof value) {
     case "boolean":
@@ -90,8 +88,8 @@ function writeFailureEvent(
       message: redactString(message),
       metadata:
         typeof metadata === "object" && metadata !== null
-          ? (toMetadata(metadata) as Record<string, unknown>)
-          : { details: metadata },
+          ? (toMetadata(metadata) as LogMetadata)
+          : { details: toMetadata(metadata) },
       source,
       timestamp: new Date().toISOString(),
       ...(traceId ? { traceId } : {}),

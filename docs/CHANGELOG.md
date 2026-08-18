@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的底部分页栏，并调高了各接口的单次预取上限。
+
+### Quality
+
+- **解耦主页各业务板块组件与修正数据流向**：将主页内联的问候横条与推荐歌手板块分别抽离为独立的 `HomeGreetingSection` 与 `SuggestedArtists` 组件；完善各板块 Props 类型至 `types/components/home.ts`；「为 {{name}} 推荐」板块准确绑定至登录用户个性化推荐接口（`/recommend/resource`，未登录自动回退至 `/personalized`），顶部问候横条绑定至公共推荐池（`/personalized`）。
+
 ### Fixed
 
 - **移除登录页重复的未登录提示**：删除登录页根据 `reason` 参数渲染的紧凑登录提示卡片，并停止各未登录业务入口向 `/login` 传递已无用途的原因参数，避免从非 ProfileMenu 入口进入登录页时出现多余槽位。
