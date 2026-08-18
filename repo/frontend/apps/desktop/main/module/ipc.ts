@@ -10,6 +10,7 @@ import {
   type DiscordPresenceSnapshot,
   type RendererLogEvent,
 } from "@scopify/desktop-contract";
+import type { DesktopBackendController } from "./backend.js";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "../config.js";
 import { getLogDirectory, logger } from "../constants.js";
 import { loginWindow } from "./login.js";
@@ -46,6 +47,7 @@ function configuredCacheRoot(config: DesktopHostConfig) {
 export function registerIpcHandlers(
   mainWindow: BrowserWindow | null,
   discordPresence: ReturnType<typeof createDiscordPresenceController>,
+  backendController: DesktopBackendController,
 ) {
   let hasAuthorizedDeveloperToolsOpen = false;
   mainWindow?.webContents.on("devtools-opened", () => {
@@ -57,6 +59,7 @@ export function registerIpcHandlers(
   ipcMain.handle("bridge:get-info", () => ({
     capabilities: [
       "app-lifecycle",
+      "backend",
       "audio-feature-transport",
       "cache",
       "config",
@@ -78,6 +81,14 @@ export function registerIpcHandlers(
     electronVersion: process.versions.electron,
     protocolVersion: DESKTOP_BRIDGE_PROTOCOL_VERSION,
   }));
+
+  ipcMain.handle("backend:get-status", () => backendController.getStatus());
+  const unsubscribeBackendStatus = backendController.onStatusChanged((status) => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send("backend:status-changed", status);
+    }
+  });
+  mainWindow?.once("closed", unsubscribeBackendStatus);
 
   ipcMain.handle("logger:write", (event, payload: RendererLogEvent) => {
     if (!isRendererLogEvent(payload)) return false;
@@ -156,6 +167,7 @@ export function registerIpcHandlers(
       mainWindow.webContents.closeDevTools();
     }
     configureUpdater(savedConfig.updater);
+    await backendController.reconcile(savedConfig.backend);
     void discordPresence.refresh();
     await applyElectronProxy(savedConfig).catch((error) => {
       logger.error("[IPC] failed to apply proxy after config update:", error);

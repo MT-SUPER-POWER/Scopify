@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
+import type {
+  DesktopBackendStatus,
+  DesktopHostConfig,
+  DiscordPresenceStatus,
+} from "@scopify/desktop-contract";
 import { toast } from "sonner";
 import {
   getCachePreferences,
@@ -14,7 +18,6 @@ import {
   cleanBackendHostInput,
   isValidBackendHost,
   normalizeBackendConfig,
-  resolveBackendBaseUrl,
 } from "@/lib/web/backendUrl";
 import { webConfig } from "@/lib/web/env";
 import { pingBackend, probeBackend } from "@/lib/web/waitForBackend";
@@ -129,6 +132,7 @@ export function useSettingsState() {
   const [backendPingResult, setBackendPingResult] = useState<BackendPingResult | null>(null);
   const [isTestingDiscord, setIsTestingDiscord] = useState(false);
   const [discordStatus, setDiscordStatus] = useState<DiscordPresenceStatus | null>(null);
+  const [backendStatus, setBackendStatus] = useState<DesktopBackendStatus | null>(null);
   const [cacheStats, setCacheStats] = useState<Awaited<ReturnType<typeof getCacheStats>> | null>(
     null,
   );
@@ -161,6 +165,26 @@ export function useSettingsState() {
 
     return () => {
       isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!runtime.isDesktop) return;
+
+    let isMounted = true;
+    void runtime.backend
+      .getStatus()
+      .then((status) => {
+        if (isMounted) setBackendStatus(status);
+      })
+      .catch(() => {});
+
+    const unsubscribe = runtime.backend.onStatusChanged((status) => {
+      if (isMounted) setBackendStatus(status);
+    });
+    return () => {
+      isMounted = false;
+      unsubscribe();
     };
   }, []);
 
@@ -395,6 +419,60 @@ export function useSettingsState() {
     key: K,
     value: DesktopHostConfig[S][K],
   ) => {
+    if (section === "backend" && key === "autoStart" && typeof value === "boolean") {
+      setConfig((current) => {
+        if (!current?.desktop) return current;
+        return {
+          ...current,
+          desktop: {
+            ...current.desktop,
+            backend: { ...current.desktop.backend, autoStart: value },
+          },
+          ...(value
+            ? {
+                web: {
+                  ...current.web,
+                  backend: {
+                    ...current.web.backend,
+                    host: "127.0.0.1",
+                    port: current.desktop.backend.port,
+                    protocol: "http" as const,
+                  },
+                },
+              }
+            : {}),
+        };
+      });
+      return;
+    }
+
+    if (section === "backend" && key === "port" && typeof value === "number") {
+      setConfig((current) => {
+        if (!current?.desktop) return current;
+        return {
+          ...current,
+          desktop: {
+            ...current.desktop,
+            backend: { ...current.desktop.backend, port: value },
+          },
+          ...(current.desktop.backend.autoStart
+            ? {
+                web: {
+                  ...current.web,
+                  backend: {
+                    ...current.web.backend,
+                    host: "127.0.0.1",
+                    port: value,
+                    protocol: "http" as const,
+                  },
+                },
+              }
+            : {}),
+        };
+      });
+      return;
+    }
+
     setConfig((current) =>
       current?.desktop
         ? {
@@ -446,7 +524,15 @@ export function useSettingsState() {
       return;
     }
 
-    const resolvedBackend = validateBackendConfig(config.web.app.locale, config.web.backend);
+    const backendToUse = config.desktop?.backend.autoStart
+      ? {
+          ...config.web.backend,
+          host: "127.0.0.1",
+          port: config.desktop.backend.port,
+          protocol: "http" as const,
+        }
+      : config.web.backend;
+    const resolvedBackend = validateBackendConfig(config.web.app.locale, backendToUse);
     if (!resolvedBackend) return;
 
     const nextWebConfig: WebConfig = {
@@ -522,6 +608,7 @@ export function useSettingsState() {
     handleCachePreferencesChange,
     backendPingResult,
     isPingingBackend,
+    backendStatus,
     handlePingBackend,
     handleBackendHostBlur,
     discordStatus,

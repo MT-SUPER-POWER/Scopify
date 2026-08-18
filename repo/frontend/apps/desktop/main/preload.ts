@@ -6,6 +6,7 @@ import type {
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
   DesktopHostConfig,
+  DesktopBackendStatus,
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
@@ -44,6 +45,7 @@ function closeAudioFeatureTransportPort() {
 }
 
 const electronAPI: DesktopBridge = {
+  getBackendStatus: () => ipcRenderer.invoke("backend:get-status"),
   connectAudioFeatureTransport: (
     role: AudioFeatureTransportRole,
     connectionId: string,
@@ -217,6 +219,13 @@ const electronAPI: DesktopBridge = {
     };
     ipcRenderer.on("updater:status-changed", listener);
     return () => ipcRenderer.removeListener("updater:status-changed", listener);
+  },
+  onBackendStatusChanged: (callback) => {
+    const listener = (_event: Electron.IpcRendererEvent, status: DesktopBackendStatus) => {
+      callback(status);
+    };
+    ipcRenderer.on("backend:status-changed", listener);
+    return () => ipcRenderer.removeListener("backend:status-changed", listener);
   },
   closeDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:close"),
   openDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:open"),

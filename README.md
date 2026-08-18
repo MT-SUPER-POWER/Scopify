@@ -154,15 +154,17 @@ Docker Web 会在根 workspace 安装依赖，执行 `bun run build:web`，然�
 
 ### 3. 桌面客户端连接独立后端
 
-Release 安装包只包含桌面客户端，不内置或自动启动后端。使用前请先部署 backend，然后在 `repo/frontend/apps/desktop/config/app.config.yml` 中配置构建时默认后端地址：
+桌面端支持两种后端模式：默认连接独立后端；也可以在设置页的「网络 → 本地后端」中启用随安装包提供的本地 API。启用后可自定义端口，桌面端会在启动时检查端口占用并显示运行状态，网络设置中的 Ping 可用于验证接口是否可用。
+
+独立后端模式下，在设置页的「网络 → 后端服务」中填写协议、主机和端口即可；这些设置也适用于普通 Web。桌面端配置文件只保留本地后端的启动策略，例如：
 
 ```yaml
 backend:
-  host: 127.0.0.1
+  autoStart: false
   port: 3838
 ```
 
-如果后端部署在远程服务器，把 `host` 改成服务器 IP 或域名。客户端会请求 `http://host:port`。
+如果后端部署在远程服务器，把 Web 设置中的主机改成服务器 IP 或域名。客户端会请求 `http://host:port`；本地后端模式则固定使用 `127.0.0.1` 和设置中指定的端口。
 
 ### 4. 单独部署后端
 
@@ -210,7 +212,7 @@ docker compose up -d --build
 - `http://127.0.0.1:3000`
 - 你配置的后端地址，例如 `http://127.0.0.1:3838`
 
-GitHub Actions 会在推送 `v*` tag 时构建安装包。Release workflow 不再 checkout submodule，并从 `docs/CHANGELOG.md` 中提取同名版本标题作为 Release Notes。发布 `v1.0.5` 前请确保存在：
+GitHub Actions 会在推送 `v*` tag 时构建安装包；桌面打包 job 会递归 checkout 后端 submodule 以准备可选的内置后端资源。Release workflow 会从 `docs/CHANGELOG.md` 中提取同名版本标题作为 Release Notes。发布 `v1.0.5` 前请确保存在：
 
 ```md
 ## v1.0.5

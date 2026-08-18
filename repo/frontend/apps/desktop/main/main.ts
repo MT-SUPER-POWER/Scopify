@@ -20,6 +20,7 @@ import { loadDesktopHostConfig } from "./config.js";
 import { createDiscordPresenceController } from "./module/discordPresence.js";
 import { disposeAppCloseWindow, showAppCloseWindow } from "./module/appCloseWindow.js";
 import { registerIpcHandlers } from "./module/ipc.js";
+import { createDesktopBackendController } from "./module/backend.js";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
 import { initializeDesktopIconVisibilityCapability } from "./module/desktopIcons/index.js";
 import { initializeDesktopPlaybackWallpaperCapability } from "./module/desktopPlaybackWallpaper/index.js";
@@ -58,6 +59,7 @@ let desktopPlaybackWallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | nul
 let desktopPlaybackControllerWindow: DesktopPlaybackControllerWindow | null = null;
 let playbackBrokerIpcHost: PlaybackBrokerIpcHost | null = null;
 let audioFeatureBrokerIpcHost: AudioFeatureBrokerIpcHost | null = null;
+const backendController = createDesktopBackendController({ log: logger }, desktopConfig.backend);
 let splashShownAtMs = 0;
 let resolveSplashReady: (() => void) | null = null;
 let splashReady = Promise.resolve();
@@ -278,7 +280,7 @@ function setupWindowModules(win: BrowserWindowType) {
   desktopPlaybackControllerWindow ??= createDesktopPlaybackControllerWindow({
     rendererBaseUrl,
   });
-  registerIpcHandlers(win, discordPresenceController);
+  registerIpcHandlers(win, discordPresenceController, backendController);
   initializeDesktopIconVisibilityCapability(win, {
     getControllerWindow: desktopPlaybackControllerWindow.getWindow,
   });
@@ -360,6 +362,10 @@ if (!gotTheLock) {
       logger.error("[proxy] failed to apply startup proxy config:", error);
     });
 
+    void backendController.reconcile(loadDesktopHostConfig().backend).catch((error) => {
+      logger.error("[backend] failed to reconcile local backend:", error);
+    });
+
     try {
       createWindow();
     } catch (err) {
@@ -398,6 +404,7 @@ if (!gotTheLock) {
     audioFeatureBrokerIpcHost?.dispose();
     audioFeatureBrokerIpcHost = null;
     void discordPresenceController.destroy();
+    void backendController.dispose();
     desktopPlaybackControllerWindow?.dispose();
     desktopPlaybackControllerWindow = null;
   });

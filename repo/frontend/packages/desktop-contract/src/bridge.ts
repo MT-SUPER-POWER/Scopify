@@ -14,6 +14,7 @@ import type {
 import type { RendererLogEvent } from "./logging";
 import type { AppUpdateState } from "./updater";
 import type { DesktopHostConfig } from "./config";
+import type { DesktopBackendStatus } from "./backend";
 import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "./discord";
 import type { PlaybackTransportPayload, PlaybackTransportRole } from "./playback";
 import type {
@@ -23,10 +24,11 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 17;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 18;
 
 export type DesktopBridgeCapability =
   | "app-lifecycle"
+  | "backend"
   | "audio-feature-transport"
   | "cache"
   | "config"
@@ -60,6 +62,7 @@ export interface PageCacheStats {
 export type Unsubscribe = () => void;
 
 export interface DesktopBridge<TLyrics = unknown> {
+  getBackendStatus(): Promise<DesktopBackendStatus>;
   checkForUpdates(): Promise<AppUpdateState>;
   clearCache(request: ClearDesktopCacheRequest): Promise<DesktopCacheStats>;
   clearPageCache(): Promise<PageCacheStats>;
@@ -110,6 +113,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   onFullScreenChanged(callback: (isFullScreen: boolean) => void): Unsubscribe;
   onNavigate(callback: (path: string) => void): Unsubscribe;
   onUpdateStatusChanged(callback: (status: AppUpdateState) => void): Unsubscribe;
+  onBackendStatusChanged(callback: (status: DesktopBackendStatus) => void): Unsubscribe;
   openLoginWindow(): void;
   publishAudioFeatureFrame(frame: AudioFeatureFrameV1): boolean;
   publishDiscordPresenceSnapshot(snapshot: DiscordPresenceSnapshot): Promise<DiscordPresenceStatus>;

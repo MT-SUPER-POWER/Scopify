@@ -91,6 +91,18 @@ export const settingsMessages = defineMessages(
     "settings.frontendPort.label": "开发端口",
     "settings.frontendPort.sublabel": "桌面端本地开发时关联的 Web 前端端口。",
     "settings.section.backend": "后端服务",
+    "settings.section.localBackend": "内置后端",
+    "settings.localBackend.autoStart.label": "启动时运行本地后端",
+    "settings.localBackend.autoStart.sublabel":
+      "使用 Electron 随应用启动本地后端，减少国内网络访问远端 Vercel 后端的延迟。",
+    "settings.localBackend.port.label": "本地后端端口",
+    "settings.localBackend.port.sublabel":
+      "仅监听本机 127.0.0.1；端口被占用时不会强行终止其他服务。",
+    "settings.localBackend.status.disabled": "未启用",
+    "settings.localBackend.status.starting": "启动中",
+    "settings.localBackend.status.running": "已运行",
+    "settings.localBackend.status.stopped": "未运行",
+    "settings.localBackend.status.error": "启动失败",
     "settings.backendProtocol.label": "传输协议",
     "settings.backendProtocol.sublabel": "连接后端 API 时使用的传输协议（HTTP 或 HTTPS）。",
     "settings.backendHost.label": "后端主机",
@@ -313,6 +325,18 @@ export const settingsMessages = defineMessages(
     "settings.frontendPort.label": "開發埠",
     "settings.frontendPort.sublabel": "桌面端本地開發時關聯的 Web 前端埠。",
     "settings.section.backend": "後端服務",
+    "settings.section.localBackend": "內建後端",
+    "settings.localBackend.autoStart.label": "啟動時執行本機後端",
+    "settings.localBackend.autoStart.sublabel":
+      "由 Electron 隨應用程式啟動本機後端，降低連線遠端 Vercel 後端的延遲。",
+    "settings.localBackend.port.label": "本機後端連接埠",
+    "settings.localBackend.port.sublabel":
+      "只監聽本機 127.0.0.1；連接埠被占用時不會強制終止其他服務。",
+    "settings.localBackend.status.disabled": "未啟用",
+    "settings.localBackend.status.starting": "啟動中",
+    "settings.localBackend.status.running": "已執行",
+    "settings.localBackend.status.stopped": "未執行",
+    "settings.localBackend.status.error": "啟動失敗",
     "settings.backendProtocol.label": "傳輸協定",
     "settings.backendProtocol.sublabel": "連線後端 API 時使用的傳輸協定（HTTP 或 HTTPS）。",
     "settings.backendHost.label": "後端主機",
@@ -541,6 +565,18 @@ export const settingsMessages = defineMessages(
     "settings.frontendPort.sublabel":
       "Listen port for Web frontend service during local development.",
     "settings.section.backend": "Backend Service",
+    "settings.section.localBackend": "Bundled Backend",
+    "settings.localBackend.autoStart.label": "Start the local backend on launch",
+    "settings.localBackend.autoStart.sublabel":
+      "Let Electron launch the local backend to avoid slow remote Vercel requests for some regions.",
+    "settings.localBackend.port.label": "Local backend port",
+    "settings.localBackend.port.sublabel":
+      "Listens on 127.0.0.1 only; an occupied port will not terminate another service.",
+    "settings.localBackend.status.disabled": "Disabled",
+    "settings.localBackend.status.starting": "Starting",
+    "settings.localBackend.status.running": "Running",
+    "settings.localBackend.status.stopped": "Stopped",
+    "settings.localBackend.status.error": "Start failed",
     "settings.backendProtocol.label": "Transport Protocol",
     "settings.backendProtocol.sublabel":
       "Transport protocol used when connecting to backend API (HTTP or HTTPS).",

@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
   type DesktopBridge,
+  type DesktopBackendStatus,
   type DesktopHostConfig,
   type DesktopIconVisibilityState,
   type DesktopPlaybackWallpaperModel,
@@ -58,6 +59,7 @@ const NOOP = () => undefined;
 const UPDATE_STATE = { currentVersion: "1.1.0", status: "idle", supported: true } as const;
 const HOST_CONFIG: DesktopHostConfig = {
   app: { closeAction: 2, devTools: false, gpuAcceleration: true },
+  backend: { autoStart: false, port: 3838 },
   cache: {
     dir: "",
     page: { enabled: true, maxSizeMB: 256, searchTtlMinutes: 30, ttlMinutes: 360 },
@@ -74,6 +76,16 @@ const HOST_CONFIG: DesktopHostConfig = {
   logging: { format: "", keepDays: 7, level: "info" },
   network: { proxyMode: "system", proxyUrl: "" },
   updater: { autoDownload: false, checkOnStartup: true },
+};
+const BACKEND_STATUS: DesktopBackendStatus = {
+  error: null,
+  host: "127.0.0.1",
+  managed: false,
+  origin: "http://127.0.0.1:3838",
+  pid: null,
+  port: 3838,
+  source: null,
+  state: "disabled",
 };
 const WALLPAPER_MODEL: DesktopPlaybackWallpaperModel = {
   preferences: {
@@ -106,6 +118,7 @@ const AUDIO_FEATURE_FRAME: AudioFeatureFrameV1 = {
 };
 function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): DesktopBridge<LyricData> {
   return {
+    getBackendStatus: async () => BACKEND_STATUS,
     checkForUpdates: async () => UPDATE_STATE,
     clearCache: async () => ({
       page: {
@@ -205,6 +218,7 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     onFullScreenChanged: () => NOOP,
     onNavigate: () => NOOP,
     onUpdateStatusChanged: () => NOOP,
+    onBackendStatusChanged: () => NOOP,
     openLoginWindow: NOOP,
     publishDiscordPresenceSnapshot: async () => ({
       applicationId: null,

@@ -8,6 +8,10 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     devTools: false,
     closeAction: 2,
   },
+  backend: {
+    autoStart: false,
+    port: 3838,
+  },
   frontend: {
     devPort: 3000,
     host: "127.0.0.1",
@@ -67,6 +71,15 @@ function positiveNumber(defaultValue: number) {
   }, z.number().default(defaultValue));
 }
 
+function portNumber(defaultValue: number) {
+  return z.preprocess((value) => {
+    const numberValue = Number(value);
+    return Number.isInteger(numberValue) && numberValue >= 1 && numberValue <= 65535
+      ? numberValue
+      : undefined;
+  }, z.number().default(defaultValue));
+}
+
 function trimmedString(defaultValue: string, allowEmpty = false) {
   return z.preprocess((value) => {
     if (typeof value !== "string") return undefined;
@@ -112,6 +125,13 @@ export const desktopHostConfigSchema = z.preprocess(
           closeAction: z
             .union([z.literal(0), z.literal(1), z.literal(2)])
             .catch(DEFAULT_DESKTOP_HOST_CONFIG.app.closeAction),
+        }),
+      ),
+      backend: z.preprocess(
+        toRecord,
+        z.object({
+          autoStart: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.backend.autoStart),
+          port: portNumber(DEFAULT_DESKTOP_HOST_CONFIG.backend.port),
         }),
       ),
       frontend: z.preprocess(

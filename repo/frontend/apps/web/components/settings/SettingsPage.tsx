@@ -81,6 +81,7 @@ const SettingsPage = () => {
           {settings.config.desktop ? (
             <TabsContent value="desktop">
               <DesktopSettingsTab
+                backendStatus={settings.backendStatus}
                 config={settings.config.desktop}
                 discordStatus={settings.discordStatus}
                 isTestingDiscord={settings.isTestingDiscord}

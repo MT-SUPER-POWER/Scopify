@@ -1,4 +1,8 @@
-import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
+import type {
+  DesktopBackendStatus,
+  DesktopHostConfig,
+  DiscordPresenceStatus,
+} from "@scopify/desktop-contract";
 import type {
   DesktopSettingsChangeHandler,
   SettingsConfig,
@@ -24,6 +28,16 @@ export interface NetworkSettingsTabProps {
   onBackendHostBlur?: () => void;
 }
 
+export interface BackendStatusIndicatorProps {
+  status: DesktopBackendStatus | null;
+}
+
+export interface LocalBackendSettingsSectionProps {
+  backendStatus: DesktopBackendStatus | null;
+  config: DesktopHostConfig;
+  onChange: DesktopSettingsChangeHandler;
+}
+
 export interface SaveConfirmModalProps {
   isSaving: boolean;
   isWeb?: boolean;
@@ -47,6 +61,7 @@ export interface CacheAdvancedScopeControlsProps<Preferences> {
 }
 
 export interface DesktopSettingsTabProps {
+  backendStatus: DesktopBackendStatus | null;
   config: DesktopHostConfig;
   discordStatus: DiscordPresenceStatus | null;
   isTestingDiscord: boolean;

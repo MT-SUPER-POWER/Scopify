@@ -2,6 +2,7 @@ import {
   DEFAULT_DESKTOP_PLAYBACK_WALLPAPER_PREFERENCES,
   type CacheCategory,
   type CacheScope,
+  type DesktopBackendStatus,
   type DesktopCacheStats,
   type DesktopIconVisibilityState,
   type DesktopPlaybackWallpaperModel,
@@ -71,6 +72,19 @@ export interface BrowserRuntimeEnvironment {
 
 function unsupportedUpdateState(): AppUpdateState {
   return { currentVersion: "", status: "unsupported", supported: false };
+}
+
+function unsupportedBackendStatus(): DesktopBackendStatus {
+  return {
+    error: null,
+    host: "127.0.0.1",
+    managed: false,
+    origin: "http://127.0.0.1:3838",
+    pid: null,
+    port: 3838,
+    source: null,
+    state: "disabled",
+  };
 }
 
 function unsupportedDesktopPlaybackWallpaperModel(): DesktopPlaybackWallpaperModel {
@@ -319,6 +333,10 @@ export function createBrowserRuntime(
       exit: NOOP,
       relaunch: NOOP,
       submitCloseAction: NOOP,
+    },
+    backend: {
+      getStatus: async () => unsupportedBackendStatus(),
+      onStatusChanged: () => NOOP,
     },
     audioFeature: {
       connect: () => NOOP,

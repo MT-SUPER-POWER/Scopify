@@ -19,6 +19,13 @@ test.each(["package:win", "package:mac"] as const)(
   },
 );
 
+test.each(["package:win", "package:mac"] as const)(
+  "%s prepares the bundled backend before packaging",
+  (scriptName) => {
+    expect(desktopPackage.scripts[scriptName]).toContain("backend:prepare");
+  },
+);
+
 test.each(["release:win", "release:mac"] as const)(
   "%s keeps explicit electron-builder publishing",
   (scriptName) => {
@@ -31,5 +38,13 @@ test("desktop packaging includes the wallpaper PowerShell hosts as resources", (
     filter: ["**/*.ps1"],
     from: "prototypes/desktop-wallpaper-host-spike",
     to: "desktop-wallpaper-host-spike",
+  });
+});
+
+test("desktop packaging includes the prepared backend resource", () => {
+  expect(desktopPackage.build.extraResources).toContainEqual({
+    filter: ["**/*"],
+    from: "build/backend",
+    to: "backend",
   });
 });

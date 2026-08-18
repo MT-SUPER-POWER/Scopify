@@ -7,9 +7,11 @@ import type { DesktopLogLevel } from "@scopify/desktop-contract";
 import type { DesktopSettingsTabProps } from "@/types/components/settings";
 import { AppUpdaterSection } from "./AppUpdaterSection";
 import { DesktopLyricSection } from "./DesktopLyricSection";
+import { LocalBackendSettingsSection } from "./LocalBackendSettingsSection";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
 
 export function DesktopSettingsTab({
+  backendStatus,
   config,
   discordStatus,
   isTestingDiscord,
@@ -31,6 +33,11 @@ export function DesktopSettingsTab({
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
+      <LocalBackendSettingsSection
+        backendStatus={backendStatus}
+        config={config}
+        onChange={onChange}
+      />
       <SettingSection title={t("settings.section.logging")}>
         <SettingRow
           label={t("settings.logLevel.label")}
@@ -71,7 +78,7 @@ export function DesktopSettingsTab({
           sublabel={t("settings.logDirectory.sublabel")}
           isColumn
           control={
-            <code className="border-input bg-surface-sunken text-foreground block w-full rounded border px-3 py-2 text-left text-xs font-medium break-all">
+            <code className="block w-full rounded border border-input bg-surface-sunken px-3 py-2 text-left text-xs font-medium break-all text-foreground">
               {logDirectory ??
                 (logDirectory === null
                   ? t("settings.logDirectory.unavailable")
@@ -112,8 +119,8 @@ export function DesktopSettingsTab({
                 aria-live="polite"
                 className={
                   hasDiscordConnection
-                    ? "text-success flex items-center gap-1 text-xs font-medium"
-                    : "text-muted-foreground flex items-center gap-1 text-xs font-medium"
+                    ? "flex items-center gap-1 text-xs font-medium text-success"
+                    : "flex items-center gap-1 text-xs font-medium text-muted-foreground"
                 }
               >
                 {hasDiscordConnection ? (
@@ -131,7 +138,7 @@ export function DesktopSettingsTab({
               type="button"
               onClick={() => void onTestDiscord()}
               disabled={isTestingDiscord}
-              className="border-input text-foreground hover:border-content inline-flex items-center gap-2 rounded border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-wait disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content disabled:cursor-wait disabled:opacity-50"
             >
               {isTestingDiscord ? (
                 <LoaderCircle className="size-4 animate-spin" />

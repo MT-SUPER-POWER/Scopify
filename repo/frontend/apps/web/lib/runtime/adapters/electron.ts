@@ -29,6 +29,10 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       },
       persistMusicCookie: (cookie, backendOrigin) => bridge.setCookie(cookie, backendOrigin),
     },
+    backend: {
+      getStatus: () => bridge.getBackendStatus(),
+      onStatusChanged: (callback) => bridge.onBackendStatusChanged(callback),
+    },
     cache: {
       clear: () => bridge.clearPageCache(),
       delete: async (key) => {

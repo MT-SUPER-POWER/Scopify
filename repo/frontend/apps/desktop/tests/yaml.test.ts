@@ -12,6 +12,7 @@ test("desktop default config yml contains only host-owned settings", () => {
 
   expect(config.app.gpuAcceleration).toBe(true);
   expect(config.app.devTools).toBe(false);
+  expect(config.backend).toEqual({ autoStart: false, port: 3838 });
   expect(config.frontend.host).toBe("127.0.0.1");
   expect(config.frontend.devPort).toBe(3000);
   expect(config.logging.level).toBe("info");
@@ -26,7 +27,7 @@ test("desktop default config yml contains only host-owned settings", () => {
   expect(config.discord).toEqual({ applicationId: "1536959813114658836", enabled: true });
   expect(config.updater.checkOnStartup).toBe(true);
   expect(config.updater.autoDownload).toBe(false);
-  expect(parsed).not.toHaveProperty("backend");
+  expect(parsed).toHaveProperty("backend");
   expect(parsed).not.toHaveProperty("app.locale");
   expect(parsed).not.toHaveProperty("network.timeout");
   expect(parsed).not.toHaveProperty("network.randomCNIP");
@@ -71,7 +72,7 @@ test("normalizing legacy config drops Web-owned and unknown fields", () => {
     proxyUrl: "http://127.0.0.1:7890",
   });
   expect(config.app).not.toHaveProperty("locale");
-  expect(config).not.toHaveProperty("backend");
+  expect(config.backend).toEqual({ autoStart: true, port: 4545 });
 });
 
 test("normalizing cache config clamps invalid values", () => {

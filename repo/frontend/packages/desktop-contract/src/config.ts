@@ -12,6 +12,10 @@ export interface DesktopHostConfig {
     devTools: boolean;
     gpuAcceleration: boolean;
   };
+  backend: {
+    autoStart: boolean;
+    port: number;
+  };
   cache: {
     dir: string;
     page: {

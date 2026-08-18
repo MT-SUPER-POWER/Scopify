@@ -19,16 +19,17 @@
     "predev": "bun run electron:ensure",
     "dev": "electron-vite dev",
     "sync:renderer": "bun scripts/sync-renderer.ts",
+    "backend:prepare": "bun scripts/prepare-backend-resource.ts",
     "build": "electron-vite build && bun scripts/prepare-packaged-app.ts && bun run check:runtime-bundle",
     "check:runtime-bundle": "bun scripts/check-runtime-bundle.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "package:win": "bun run electron:ensure && electron-builder --win --publish never",
-    "package:mac": "bun run electron:ensure && electron-builder --mac --publish never",
-    "release:win": "bun run electron:ensure && electron-builder --win --publish always",
-    "release:mac": "bun run electron:ensure && electron-builder --mac --publish always",
-    "build:win": "bun run electron:ensure && electron-builder --win --publish never",
-    "build:mac": "bun run electron:ensure && electron-builder --mac --publish never"
+    "package:win": "bun run electron:ensure && bun run backend:prepare && electron-builder --win --publish never",
+    "package:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish never",
+    "release:win": "bun run electron:ensure && bun run backend:prepare && electron-builder --win --publish always",
+    "release:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish always",
+    "build:win": "bun run electron:ensure && bun run backend:prepare && electron-builder --win --publish never",
+    "build:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish never"
   },
   "dependencies": {
     "@scopify/desktop-contract": "workspace:*",
@@ -81,6 +82,13 @@
         "to": "desktop-wallpaper-host-spike",
         "filter": [
           "**/*.ps1"
+        ]
+      },
+      {
+        "from": "build/backend",
+        "to": "backend",
+        "filter": [
+          "**/*"
         ]
       }
     ],

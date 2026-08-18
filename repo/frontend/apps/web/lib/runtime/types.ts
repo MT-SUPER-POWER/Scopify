@@ -1,6 +1,7 @@
 import type {
   AudioFeatureFrameV1,
   AudioFeatureTransportRole,
+  DesktopBackendStatus,
   DesktopIconVisibilityState,
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
@@ -81,6 +82,11 @@ export interface RuntimeConfiguration {
   loadHostConfig(): Promise<DesktopHostConfig | null>;
   saveHostConfig(config: DesktopHostConfig): Promise<DesktopHostConfig | null>;
   selectDirectory(defaultPath?: string): Promise<string | null>;
+}
+
+export interface RuntimeBackend {
+  getStatus(): Promise<DesktopBackendStatus>;
+  onStatusChanged(callback: (status: DesktopBackendStatus) => void): RuntimeUnsubscribe;
 }
 
 export interface RuntimeDesktopLyrics {
@@ -165,6 +171,7 @@ export interface WebRuntime {
   readonly app: RuntimeAppLifecycle;
   readonly audioFeature: RuntimeAudioFeature;
   readonly auth: RuntimeAuthentication;
+  readonly backend: RuntimeBackend;
   readonly cache: RuntimeCache;
   readonly config: RuntimeConfiguration;
   readonly desktopIcons: RuntimeDesktopIcons;
