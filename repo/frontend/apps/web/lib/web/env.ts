@@ -1,8 +1,6 @@
 import type { WebConfig } from "@/types/config";
 import { DEFAULT_WEB_CONFIG } from "@/types/config";
 
-export { logger } from "./logger";
-
 export const webConfig: WebConfig = {
   app: {
     locale:

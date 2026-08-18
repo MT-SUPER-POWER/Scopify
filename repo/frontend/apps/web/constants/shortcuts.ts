@@ -125,7 +125,7 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     id: "open-shortcut-settings",
     group: "shortcuts",
     labelKey: "shortcuts.command.openSettings",
-    defaultBinding: { key: "KeyK", primary: true, alt: true },
+    defaultBinding: { key: "Comma", primary: true },
   },
   {
     id: "show-shortcut-help",

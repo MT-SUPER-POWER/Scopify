@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- **移除前端自建日志链路**：删除 `repo/frontend/apps/web/lib/web/logger.ts` 及其相关调用路径，页面与请求日志改为直接通过 Electron 侧 `runtime.logging` 落盘，并在上报失败时保底输出控制台日志；同步清理前端日志中转脚本与测试文件，保留桌面端日志功能不变。
+- **移除无意义日志中继配置**：删除 `APP_CFG_DEBUG_LOG_RELAY_*` 在前端 Next 配置中的注入与依赖，连同前端开发时的 `renderer log relay` 配置入口一并清理。
+
+## v1.4.6
+
+### Added
+
+- **新增设置页快捷键入口**：将快捷键体系中的默认 `open-shortcut-settings` 绑定改为 `Cmd/Ctrl + ,`，在渲染端按键监听中直接跳转 `/setting`，无需主进程全局注册与重启。
 
 ## v1.4.5
 

@@ -50,7 +50,6 @@ const frontendDevPort = envNumber(
   process.env.APP_CFG_FRONTEND_DEV_PORT || process.env.FRONTEND_PORT,
   3000,
 );
-const debugLogRelayPort = envNumber(process.env.APP_CFG_DEBUG_LOG_RELAY_PORT, frontendDevPort + 1);
 const isDesktopBuild = process.env.SCOPIFY_BUILD_TARGET === "desktop";
 const nextDistDir =
   process.env.NEXT_DIST_DIR || (process.env.NODE_ENV === "development" ? ".next-dev" : ".next");
@@ -101,7 +100,6 @@ const nextConfig: NextConfig = {
       process.env.APP_CFG_NET_TIMEOUT || String(DEFAULT_WEB_CONFIG.network.timeout),
     APP_CFG_NET_RANDOM_CNIP:
       process.env.APP_CFG_NET_RANDOM_CNIP || String(DEFAULT_WEB_CONFIG.network.randomCNIP),
-    APP_CFG_DEBUG_LOG_RELAY_PORT: String(debugLogRelayPort),
   },
   allowedDevOrigins: ["192.168.3.8", "localhost", "127.0.0.1", "_next"],
 };

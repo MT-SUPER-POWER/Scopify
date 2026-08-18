@@ -12,7 +12,7 @@ import { runtime } from "@/lib/runtime";
 
 import { ApiError, toApiError } from "./apiError";
 import { buildBackendBaseUrl, normalizeBackendConfig } from "./backendUrl";
-import { logger, webConfig } from "./env";
+import { webConfig } from "./env";
 import { reportFailure } from "./errorTracking";
 import { attachMusicSessionCredential, getMusicSessionCredential } from "./musicSessionCredential";
 
@@ -126,9 +126,9 @@ const request = axios.create({
   withCredentials: true,
 });
 
-logger.info("--------------------------------------------------");
-logger.info("Next.js Request Backend URL is", baseURL);
-logger.info("--------------------------------------------------");
+console.info("--------------------------------------------------");
+console.info("Next.js Request Backend URL is", baseURL);
+console.info("--------------------------------------------------");
 
 if (typeof window !== "undefined") {
   window.addEventListener("app-config-updated", (event) => {

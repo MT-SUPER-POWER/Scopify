@@ -3,14 +3,6 @@
 import { useEffect } from "react";
 
 import { reportFailure } from "@/lib/web/errorTracking";
-import { trackRendererEvent } from "@/lib/web/logger";
-
-function getConsoleMessage(args: unknown[]) {
-  const [first] = args;
-  if (typeof first === "string") return first;
-  if (first instanceof Error) return `${first.name}: ${first.message}`;
-  return "Console reported a non-string value";
-}
 
 export function useRendererErrorReporting() {
   useEffect(() => {
@@ -39,35 +31,11 @@ export function useRendererErrorReporting() {
       });
     };
 
-    const originalError = console.error;
-    const originalWarn = console.warn;
-    const trackConsole = (level: "error" | "warn", args: unknown[]) => {
-      trackRendererEvent({
-        event: `console.${level}`,
-        level,
-        message: getConsoleMessage(args),
-        metadata: { args },
-        source: "console",
-      });
-    };
-    const trackedError = (...args: unknown[]) => {
-      originalError(...args);
-      trackConsole("error", args);
-    };
-    const trackedWarn = (...args: unknown[]) => {
-      originalWarn(...args);
-      trackConsole("warn", args);
-    };
-
     window.addEventListener("error", handleError);
     window.addEventListener("unhandledrejection", handleUnhandledRejection);
-    console.error = trackedError;
-    console.warn = trackedWarn;
     return () => {
       window.removeEventListener("error", handleError);
       window.removeEventListener("unhandledrejection", handleUnhandledRejection);
-      if (console.error === trackedError) console.error = originalError;
-      if (console.warn === trackedWarn) console.warn = originalWarn;
     };
   }, []);
 }

@@ -109,7 +109,7 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           void toggleApplicationDeveloperTools();
           return;
         case "open-shortcut-settings":
-          navigateTo("/setting?tab=shortcuts");
+          navigateTo("/setting");
           return;
         case "open-current-track-comments": {
           const track = usePlayerStore.getState().currentSongDetail;

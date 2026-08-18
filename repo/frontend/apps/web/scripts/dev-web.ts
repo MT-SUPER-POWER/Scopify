@@ -53,20 +53,8 @@ async function clearStaleNextDevLock(host: string, port: number) {
 async function main() {
   const port = Number(process.env.FRONTEND_PORT || 3000);
   const host = process.env.FRONTEND_HOST || "127.0.0.1";
-  const logRelayHost = process.env.APP_CFG_DEBUG_LOG_RELAY_HOST || "127.0.0.1";
-  const logRelayPort = Number(process.env.APP_CFG_DEBUG_LOG_RELAY_PORT || port + 1);
 
   await clearStaleNextDevLock(host, port);
-
-  console.log(`Starting renderer log relay on ${logRelayHost}:${logRelayPort}...`);
-  const logRelay = spawn(
-    "bun",
-    ["scripts/dev-log-relay.ts", "--host", logRelayHost, "--port", logRelayPort.toString()],
-    {
-      stdio: "inherit",
-      shell: true,
-    },
-  );
 
   console.log(`Starting Next.js on ${host}:${port}...`);
 
@@ -76,15 +64,7 @@ async function main() {
   });
 
   nextDev.on("close", (code) => {
-    logRelay.kill();
     process.exit(code || 0);
-  });
-
-  logRelay.on("close", (code) => {
-    if (code === 0 || code === null) return;
-    console.error(`Renderer log relay exited unexpectedly with code ${code}.`);
-    nextDev.kill();
-    process.exit(code);
   });
 }
 
