@@ -2,10 +2,7 @@ import { expect, mock, test } from "bun:test";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/api/music";
 
-function requireAction<T extends (...args: unknown[]) => unknown>(
-  action: T | undefined,
-  actionName: string,
-): T {
+function requireAction<T>(action: T, actionName: string): T {
   if (typeof action !== "function") {
     throw new Error(`[test] missing player action: ${actionName}`);
   }
