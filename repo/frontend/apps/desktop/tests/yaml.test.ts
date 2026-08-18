@@ -12,7 +12,7 @@ test("desktop default config yml contains only host-owned settings", () => {
 
   expect(config.app.gpuAcceleration).toBe(true);
   expect(config.app.devTools).toBe(false);
-  expect(config.backend).toEqual({ autoStart: false, port: 3838 });
+  expect(config.backend).toEqual({ autoStart: true, port: 3838 });
   expect(config.frontend.host).toBe("127.0.0.1");
   expect(config.frontend.devPort).toBe(3000);
   expect(config.logging.level).toBe("info");

@@ -9,7 +9,7 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     closeAction: 2,
   },
   backend: {
-    autoStart: false,
+    autoStart: true,
     port: 3838,
   },
   frontend: {

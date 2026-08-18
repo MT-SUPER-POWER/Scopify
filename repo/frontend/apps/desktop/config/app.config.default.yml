@@ -3,7 +3,7 @@ app:
   devTools: false
   closeAction: 2
 backend:
-  autoStart: false
+  autoStart: true
   port: 3838
 frontend:
   devPort: 3000

@@ -99,7 +99,7 @@ export default function HomePage() {
             />
           )}
 
-          {suggestedArtists.length > 0 && <SuggestedArtists artists={suggestedArtists} />}
+          <SuggestedArtists artists={suggestedArtists} />
         </div>
       )}
     </div>
