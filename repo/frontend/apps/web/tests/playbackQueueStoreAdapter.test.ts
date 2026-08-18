@@ -2,6 +2,10 @@ import { expect, mock, test } from "bun:test";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/api/music";
 
+const baselinePlayerState = usePlayerStore.getState();
+const { playQueueIndex, moveQueueItem, removeQueueItem } = baselinePlayerState;
+const initialPlayTrack = baselinePlayerState.playTrack;
+
 function createSong(id: number): SongDetail {
   return {
     id,
@@ -15,7 +19,7 @@ function createSong(id: number): SongDetail {
 }
 
 test("player store applies a queue transition snapshot before loading its selected track", async () => {
-  const originalState = usePlayerStore.getState();
+  const originalState = baselinePlayerState;
   const songs = [createSong(1), createSong(2), createSong(3)];
   const playTrack = mock(async () => true);
 
@@ -33,7 +37,7 @@ test("player store applies a queue transition snapshot before loading its select
   });
 
   try {
-    await usePlayerStore.getState().playQueueIndex(1);
+    await playQueueIndex(1);
 
     expect(usePlayerStore.getState()).toMatchObject({
       historyIndex: 1,
@@ -45,22 +49,14 @@ test("player store applies a queue transition snapshot before loading its select
     expect(playTrack).toHaveBeenCalledWith(songs[1], {});
   } finally {
     usePlayerStore.setState({
-      currentSongDetail: originalState.currentSongDetail,
-      historyIndex: originalState.historyIndex,
-      historyStack: originalState.historyStack,
-      isShuffle: originalState.isShuffle,
-      originalQueue: originalState.originalQueue,
-      playlistId: originalState.playlistId,
-      playTrack: originalState.playTrack,
-      queue: originalState.queue,
-      queueIndex: originalState.queueIndex,
-      repeatMode: originalState.repeatMode,
+      ...originalState,
+      playTrack: initialPlayTrack,
     });
   }
 });
 
 test("player store delegates queue moves to the pure transition while following the loaded track", () => {
-  const originalState = usePlayerStore.getState();
+  const originalState = baselinePlayerState;
   const songs = [createSong(1), createSong(2), createSong(3)];
 
   usePlayerStore.setState({
@@ -75,7 +71,7 @@ test("player store delegates queue moves to the pure transition while following 
   });
 
   try {
-    usePlayerStore.getState().moveQueueItem(0, 2);
+    moveQueueItem(0, 2);
 
     expect(usePlayerStore.getState()).toMatchObject({
       historyIndex: 0,
@@ -86,20 +82,14 @@ test("player store delegates queue moves to the pure transition while following 
     });
   } finally {
     usePlayerStore.setState({
-      currentSongDetail: originalState.currentSongDetail,
-      historyIndex: originalState.historyIndex,
-      historyStack: originalState.historyStack,
-      isShuffle: originalState.isShuffle,
-      originalQueue: originalState.originalQueue,
-      queue: originalState.queue,
-      queueIndex: originalState.queueIndex,
-      repeatMode: originalState.repeatMode,
+      ...originalState,
+      playTrack: initialPlayTrack,
     });
   }
 });
 
 test("removing the current queue item atomically updates the queue before loading its successor", () => {
-  const originalState = usePlayerStore.getState();
+  const originalState = baselinePlayerState;
   const songs = [createSong(1), createSong(2), createSong(3)];
   const playTrack = mock(async () => true);
 
@@ -116,7 +106,7 @@ test("removing the current queue item atomically updates the queue before loadin
   });
 
   try {
-    usePlayerStore.getState().removeQueueItem(1);
+    removeQueueItem(1);
 
     expect(usePlayerStore.getState()).toMatchObject({
       historyIndex: 0,
@@ -128,15 +118,8 @@ test("removing the current queue item atomically updates the queue before loadin
     expect(playTrack).toHaveBeenCalledWith(songs[2]);
   } finally {
     usePlayerStore.setState({
-      currentSongDetail: originalState.currentSongDetail,
-      historyIndex: originalState.historyIndex,
-      historyStack: originalState.historyStack,
-      isShuffle: originalState.isShuffle,
-      originalQueue: originalState.originalQueue,
-      playTrack: originalState.playTrack,
-      queue: originalState.queue,
-      queueIndex: originalState.queueIndex,
-      repeatMode: originalState.repeatMode,
+      ...originalState,
+      playTrack: initialPlayTrack,
     });
   }
 });

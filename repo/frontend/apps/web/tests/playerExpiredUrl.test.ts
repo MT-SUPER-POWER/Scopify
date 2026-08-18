@@ -1,4 +1,4 @@
-import { afterAll, afterEach, expect, mock, test } from "bun:test";
+import { afterAll, afterEach, beforeEach, expect, mock, test } from "bun:test";
 import type { SongDetail } from "@/types/api/music";
 import type { PlayerStore } from "@/types/player";
 
@@ -64,17 +64,26 @@ Object.defineProperty(globalThis, "window", {
 
 const { mergePersistedPlayerState, selectPersistedPlayerState, usePlayerStore } =
   await import("@/store/module/player");
+const baselinePlayerState = usePlayerStore.getState();
+const { playTrack: initialPlayTrack, setIsPlaying, togglePlaying } = baselinePlayerState;
 
-const initialPlayTrack = usePlayerStore.getState().playTrack;
-
-afterEach(() => {
+const resetPlayerStore = (playTrack: PlayerStore["playTrack"] = initialPlayTrack) => {
   usePlayerStore.setState({
+    ...baselinePlayerState,
     currentSongDetail: null,
     currentSongUrl: null,
     isPlaying: false,
     playbackFailureCount: 0,
-    playTrack: initialPlayTrack,
+    playTrack,
   });
+};
+
+beforeEach(() => {
+  resetPlayerStore();
+});
+
+afterEach(() => {
+  resetPlayerStore();
 });
 
 afterAll(() => {
@@ -116,15 +125,10 @@ test("request a fresh playback URL when resuming a restored song", async () => {
   });
 
   try {
-    await usePlayerStore.getState().togglePlaying();
+    await togglePlaying();
     expect(playTrack).toHaveBeenCalledWith(song, { preservePlaybackSession: true });
   } finally {
-    usePlayerStore.setState({
-      currentSongDetail: null,
-      currentSongUrl: null,
-      isPlaying: false,
-      playTrack: initialPlayTrack,
-    });
+    resetPlayerStore(initialPlayTrack);
   }
 });
 
@@ -139,15 +143,10 @@ test("legacy play controls request a fresh URL through setIsPlaying", async () =
   });
 
   try {
-    usePlayerStore.getState().setIsPlaying(true);
+    setIsPlaying(true);
     await Promise.resolve();
     expect(playTrack).toHaveBeenCalledWith(song, { preservePlaybackSession: true });
   } finally {
-    usePlayerStore.setState({
-      currentSongDetail: null,
-      currentSongUrl: null,
-      isPlaying: false,
-      playTrack: initialPlayTrack,
-    });
+    resetPlayerStore(initialPlayTrack);
   }
 });

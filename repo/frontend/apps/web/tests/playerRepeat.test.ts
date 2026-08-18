@@ -19,8 +19,8 @@ function createSong(id: number): SongDetail {
 }
 
 test("natural completion repeats the current song in single-repeat mode", async () => {
-  const originalState = usePlayerStore.getState();
-  const initialPlayTrack = originalState.playTrack;
+  const baselineState = usePlayerStore.getState();
+  const { playNext, playTrack: initialPlayTrack } = baselineState;
   const songs = [createSong(1), createSong(2)];
   const playTrack = mock(async () => true);
 
@@ -35,23 +35,18 @@ test("natural completion repeats the current song in single-repeat mode", async 
   });
 
   try {
-    await usePlayerStore.getState().playNext("ended");
+    await playNext("ended");
 
     expect(playTrack).toHaveBeenCalledWith(songs[0]);
 
     playTrack.mockClear();
-    await usePlayerStore.getState().playNext();
+    await playNext();
 
     expect(playTrack).toHaveBeenCalledWith(songs[1]);
   } finally {
     usePlayerStore.setState({
-      historyIndex: originalState.historyIndex,
-      historyStack: originalState.historyStack,
-      originalQueue: originalState.originalQueue,
+      ...baselineState,
       playTrack: initialPlayTrack,
-      queue: originalState.queue,
-      queueIndex: originalState.queueIndex,
-      repeatMode: originalState.repeatMode,
     });
   }
 });
