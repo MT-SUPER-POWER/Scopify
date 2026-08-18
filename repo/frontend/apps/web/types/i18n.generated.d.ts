@@ -869,6 +869,66 @@ export interface TranslateFn {
    */
   (key: "settings.section.backend", params?: TranslationParams): string;
   /**
+   * zh-CN: 内置后端
+   * zh-TW: 內建後端
+   * en-US: Bundled Backend
+   */
+  (key: "settings.section.localBackend", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动时运行本地后端
+   * zh-TW: 啟動時執行本機後端
+   * en-US: Start the local backend on launch
+   */
+  (key: "settings.localBackend.autoStart.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用 Electron 随应用启动本地后端，减少国内网络访问远端 Vercel 后端的延迟。
+   * zh-TW: 由 Electron 隨應用程式啟動本機後端，降低連線遠端 Vercel 後端的延遲。
+   * en-US: Let Electron launch the local backend to avoid slow remote Vercel requests for some regions.
+   */
+  (key: "settings.localBackend.autoStart.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地后端端口
+   * zh-TW: 本機後端連接埠
+   * en-US: Local backend port
+   */
+  (key: "settings.localBackend.port.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅监听本机 127.0.0.1；端口被占用时不会强行终止其他服务。
+   * zh-TW: 只監聽本機 127.0.0.1；連接埠被占用時不會強制終止其他服務。
+   * en-US: Listens on 127.0.0.1 only; an occupied port will not terminate another service.
+   */
+  (key: "settings.localBackend.port.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未启用
+   * zh-TW: 未啟用
+   * en-US: Disabled
+   */
+  (key: "settings.localBackend.status.disabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动中
+   * zh-TW: 啟動中
+   * en-US: Starting
+   */
+  (key: "settings.localBackend.status.starting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已运行
+   * zh-TW: 已執行
+   * en-US: Running
+   */
+  (key: "settings.localBackend.status.running", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未运行
+   * zh-TW: 未執行
+   * en-US: Stopped
+   */
+  (key: "settings.localBackend.status.stopped", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动失败
+   * zh-TW: 啟動失敗
+   * en-US: Start failed
+   */
+  (key: "settings.localBackend.status.error", params?: TranslationParams): string;
+  /**
    * zh-CN: 传输协议
    * zh-TW: 傳輸協定
    * en-US: Transport Protocol
@@ -3941,21 +4001,21 @@ export interface TranslateFn {
    */
   (key: "home.suggestedArtists", params?: TranslationParams): string;
   /**
-   * zh-CN: 推荐声音歌单
-   * zh-TW: 推薦聲音歌單
-   * en-US: Recommended Voice Lists
+   * zh-CN: 推荐播客声音
+   * zh-TW: 推薦播客聲音
+   * en-US: Recommended Podcast Voices
    */
   (key: "home.recommendedVoiceLists", params?: TranslationParams): string;
   /**
-   * zh-CN: 刷新推荐声音歌单
-   * zh-TW: 重新整理推薦聲音歌單
-   * en-US: Refresh recommended voice lists
+   * zh-CN: 刷新推荐播客声音
+   * zh-TW: 重新整理推薦播客聲音
+   * en-US: Refresh recommended podcast voices
    */
   (key: "home.refreshVoiceLists", params?: TranslationParams): string;
   /**
-   * zh-CN: 声音歌单
-   * zh-TW: 聲音歌單
-   * en-US: Voice List
+   * zh-CN: 播客声音
+   * zh-TW: 播客聲音
+   * en-US: Podcast Voice
    */
   (key: "home.voiceListMeta", params?: TranslationParams): string;
   /**

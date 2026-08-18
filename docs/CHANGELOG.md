@@ -4,8 +4,8 @@
 
 ### Added
 
-- **推荐声音歌单支持独立刷新**：主页「推荐声音歌单」板块标题旁新增刷新按钮，点击可重新向 `/v1/pc/voicelist/rcmd/list` 获取最新随机推荐；接口预取数量调整为 24 条，按 6 个一组展示并支持分页直达。
-- **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的分页导航栏，并调高了各接口的单次预取上限。
+- **推荐播客声音支持独立刷新与文案对齐**：主页「推荐播客声音」板块标题旁新增刷新按钮，点击可重新向 `/v1/pc/voicelist/rcmd/list` 获取最新随机推荐；接口预取数量调整为 24 条，按 6 个一组展示并支持分页直达；将原「推荐声音歌单」文案统一对齐为「推荐播客声音」。
+- **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐播客声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的分页导航栏，并调高了各接口的单次预取上限。
 
 ### Visual
 
