@@ -3,6 +3,13 @@ import { createMDX } from "fumadocs-mdx/next";
 const config = {
   reactStrictMode: true,
   transpilePackages: ["@scopify/ui"],
+  webpack(webpackConfig) {
+    webpackConfig.module.rules.push({
+      test: /\.(mmd|mermaid)$/,
+      type: "asset/source",
+    });
+    return webpackConfig;
+  },
   async rewrites() {
     return [
       {

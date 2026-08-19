@@ -4,6 +4,7 @@
 
 ### Added
 
+- **集成 Mermaid 图表与交互式全屏查看器**：支持在 MDX 中以独立 .mmd / .mermaid 文件形式编写并导入图表，提供全屏模态预览、鼠标滚轮缩放（40%~400%）、鼠标平移拖拽与复制源码能力，并在「产品能力」页面补充了功能图谱。
 - **接入 LLMs 与 Markdown 导出能力**：支持 /llms.txt 结构化大纲索引、/llms-full.txt 全量纯文本文档与 /docs/*.md 单页 Markdown 获取，所有处理端点收敛于 pp/api/llms。
 - **支持文档页面操作与 AI 快捷打开**：在文档页面顶部提供一键复制 Markdown 与跳转打开至 GitHub、ChatGPT、Claude、Cursor 等 AI 工具的交互操作栏，并补全中文本地化词条。
 - **整理 Desktop IPC 文档导航**：在 OpenAPI 下新增与 Netease API 平级的 Desktop IPC 分组，并预留 About、架构、契约、能力版本、通道参考、运行时适配、扩展流程与安全边界页面。
