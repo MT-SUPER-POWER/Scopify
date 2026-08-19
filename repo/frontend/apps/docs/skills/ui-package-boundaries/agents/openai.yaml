@@ -1,4 +1,0 @@
-interface:
-  display_name: "UI Package Boundaries"
-  short_description: "Keep native shadcn primitives and extensions separated"
-  default_prompt: "Use $ui-package-boundaries to place this UI change in the correct layer."
