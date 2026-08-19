@@ -2,7 +2,7 @@
 
 import { ListMusic, Pause, Play, Radio } from "lucide-react";
 import Image from "next/image";
-import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { PlayingIndicator } from "@scopify/ui/scopify/components/playing-indicator";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { getPodcastDestination } from "@/lib/search/podcastDestination";
@@ -59,7 +59,7 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
         )}
         {isActive && isPlaying ? (
           <div className="absolute inset-0 flex items-center justify-center bg-media-overlay">
-            <PlayingAnimation size={24} />
+            <PlayingIndicator size={24} />
           </div>
         ) : null}
         {isActive && isPlaying ? (

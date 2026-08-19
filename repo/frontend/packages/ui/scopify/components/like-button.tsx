@@ -1,10 +1,10 @@
-import type React from "react";
+"use client";
 
 import { Heart } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@scopify/ui/shadcn/lib/utils";
 
 const LIKE_BURST_DIRECTIONS = [0, 60, 120, 180, 240, 300];
 
@@ -16,13 +16,14 @@ export interface LikeButtonProps {
   onLike: () => void;
 }
 
-export const LikeButton: React.FC<LikeButtonProps> = ({
+/** Controlled Scopify like action with product-standard feedback animation. */
+export function LikeButton({
   disabled = false,
   iconClassName,
   liked,
   likedCount,
   onLike,
-}) => {
+}: LikeButtonProps) {
   const hasMountedRef = useRef(false);
   const previousLikedRef = useRef(liked);
   const [playLikedAnimation, setPlayLikedAnimation] = useState(false);
@@ -56,7 +57,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
         onLike();
       }}
       className={cn(
-        "relative flex items-center gap-1.5 text-content-muted transition-colors hover:text-content",
+        "text-content-muted hover:text-content relative flex items-center gap-1.5 transition-colors",
         liked && "text-brand",
         disabled && "pointer-events-none",
       )}
@@ -87,7 +88,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
                 y: Math.sin((deg * Math.PI) / 180) * 10,
               }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="pointer-events-none absolute top-1/2 left-1/2 size-1 rounded-full bg-brand"
+              className="bg-brand pointer-events-none absolute top-1/2 left-1/2 size-1 rounded-full"
               style={{ translateX: "-50%", translateY: "-50%" }}
             />
           ))}
@@ -97,4 +98,4 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
       )}
     </motion.button>
   );
-};
+}

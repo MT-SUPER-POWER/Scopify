@@ -1,13 +1,16 @@
 "use client";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useElementOverflow } from "@/lib/hooks/useElementOverflow";
-import { cn } from "@/lib/utils";
+import { useElementOverflow } from "@scopify/ui/scopify/hooks/use-element-overflow";
+import type { ResponsiveTitleProps } from "@scopify/ui/scopify/types/components";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
+import { cn } from "@scopify/ui/shadcn/lib/utils";
 
-interface ResponsiveHeaderTitleProps {
-  className?: string;
-  title: string;
-}
+export type { ResponsiveTitleProps } from "@scopify/ui/scopify/types/components";
 
 function getTitleFontSizeClass(title: string): string {
   const length = title.length;
@@ -16,7 +19,7 @@ function getTitleFontSizeClass(title: string): string {
   return "text-[clamp(2.5rem,7.5cqw,4.5rem)]";
 }
 
-export function ResponsiveHeaderTitle({ className, title }: ResponsiveHeaderTitleProps) {
+export function ResponsiveTitle({ className, title }: ResponsiveTitleProps) {
   const { elementRef, isOverflowing } = useElementOverflow<HTMLHeadingElement>(title);
 
   const titleElement = (
@@ -24,7 +27,7 @@ export function ResponsiveHeaderTitle({ className, title }: ResponsiveHeaderTitl
       ref={elementRef}
       tabIndex={isOverflowing ? 0 : undefined}
       className={cn(
-        "m-0 w-full truncate leading-none font-black tracking-normal text-content focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-none",
+        "text-content focus-visible:ring-brand/50 m-0 w-full truncate leading-none font-black tracking-normal focus-visible:ring-2 focus-visible:outline-none",
         getTitleFontSizeClass(title),
         className,
       )}

@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import type { PlaylistHeaderSkeletonProps } from "@/types/components/playlist";
 
 export default function PlaylistHeaderSkeleton({

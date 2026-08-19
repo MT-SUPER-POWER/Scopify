@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { AlbumDescriptionDialog } from "@/components/album/AlbumDescriptionDialog";
-import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
+import { ResponsiveTitle } from "@scopify/ui/scopify/components/responsive-title";
 
 import { useI18n } from "@/store/module/i18n";
 import type { AlbumHeaderProps } from "@/types/components/album";
@@ -40,7 +40,7 @@ export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
 
         {/* Album Title */}
         <div className="flex min-w-0 items-center overflow-hidden">
-          <ResponsiveHeaderTitle title={info.title} />
+          <ResponsiveTitle title={info.title} />
         </div>
 
         {/* Description */}

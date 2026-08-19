@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@scopify/ui/shadcn/components/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,

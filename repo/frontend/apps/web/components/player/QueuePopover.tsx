@@ -9,7 +9,12 @@ import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore } from "@/store";

@@ -1,6 +1,6 @@
 "use client";
 
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { RetryState } from "@scopify/ui/scopify/components/retry-state";
 import { useI18n } from "@/store/module/i18n";
 import type { LibraryContentStateProps } from "@/types/components/library";
 import { LibraryLoading } from "./LibraryLoading";
@@ -21,7 +21,7 @@ export function LibraryContentState({
 
   if (isError) {
     return (
-      <NetworkRetryState
+      <RetryState
         title={t("network.offline.title")}
         subtitle={t("network.offline.subtitle")}
         actionLabel={t("network.action.refresh")}

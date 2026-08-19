@@ -6,7 +6,7 @@ import { AllView } from "@/components/search/AllView";
 import { CategoryTabs } from "@/components/search/CategoryTabs";
 import { GridCategoryView } from "@/components/search/GridCategoryView";
 import { AllViewSkeleton, LoadingSkeleton } from "@/components/search/LoadingSkeleton";
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { RetryState } from "@scopify/ui/scopify/components/retry-state";
 import { PodcastsView } from "@/components/search/PodcastsView";
 import { SongsView } from "@/components/search/SongsView";
 import { VoicesView } from "@/components/search/VoicesView";
@@ -93,7 +93,7 @@ export default function SearchPage() {
       <CategoryTabs active={activeCategory} onChange={handleCategoryChange} />
       {hasError && (
         <div className="mb-6">
-          <NetworkRetryState
+          <RetryState
             compact
             title={t("network.offline.title")}
             subtitle={t("network.offline.subtitle")}

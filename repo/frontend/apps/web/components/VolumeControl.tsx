@@ -3,7 +3,7 @@
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
-import { SmoothSlider } from "./SmoothSlider";
+import { MediaSlider } from "@scopify/ui/scopify/components/media-slider";
 
 interface VolumeControlProps {
   initialVolume?: number;
@@ -139,7 +139,7 @@ export const VolumeControl = ({
           {getVolumeIcon()}
         </button>
         <div className="flex min-w-12.5 flex-1 items-center">
-          <SmoothSlider
+          <MediaSlider
             value={isMuted ? 0 : volume}
             onChange={handleVolumeChange}
             orientation={orientation}
@@ -178,7 +178,7 @@ export const VolumeControl = ({
         <div className="absolute bottom-full left-1/2 z-50 -translate-x-1/2 pb-2">
           <div className="rounded-lg border border-border bg-surface-overlay p-3 shadow-floating">
             <div className="mt-2 flex flex-col items-center gap-2">
-              <SmoothSlider
+              <MediaSlider
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
                 orientation={orientation}

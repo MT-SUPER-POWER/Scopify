@@ -1,24 +1,26 @@
 import type { ReactNode } from "react";
+
 import { Badge } from "@scopify/ui/shadcn/components/badge";
-import { cn } from "@/lib/utils";
+import { cn } from "@scopify/ui/shadcn/lib/utils";
 
-export type MediaInfoBadgeTone = "gold" | "red" | "brand" | "neutral";
+export type MediaBadgeTone = "gold" | "red" | "brand" | "neutral";
 
-interface MediaInfoBadgeProps {
+export interface MediaBadgeProps {
   ariaLabel?: string;
   children: ReactNode;
   className?: string;
   title?: string;
-  tone?: MediaInfoBadgeTone;
+  tone?: MediaBadgeTone;
 }
 
-export function MediaInfoBadge({
+/** Compact product-semantic metadata used beside media titles and controls. */
+export function MediaBadge({
   ariaLabel,
   children,
   className,
   title,
   tone = "red",
-}: MediaInfoBadgeProps) {
+}: MediaBadgeProps) {
   return (
     <Badge
       variant="outline"

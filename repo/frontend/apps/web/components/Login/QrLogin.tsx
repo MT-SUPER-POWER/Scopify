@@ -6,7 +6,7 @@ import { RefreshCw } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@scopify/ui/shadcn/components/button";
 import { checkQR, createQR, getQRKey } from "@/lib/api/login";
 import { getUserAccount, getUserDetail } from "@/lib/api/user";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";

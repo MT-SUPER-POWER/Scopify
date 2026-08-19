@@ -1,7 +1,7 @@
 "use client";
 
 import { LogIn } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@scopify/ui/shadcn/components/button";
 import type { TranslationKey } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
 import { openLoginWindowOrFallback } from "@/lib/runtime/login";

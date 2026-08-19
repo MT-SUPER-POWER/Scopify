@@ -3,7 +3,12 @@
 import { Pause, Play, SkipBack, SkipForward, Volume2 } from "lucide-react";
 
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { useI18n } from "@/store/module/i18n";
 import type { DesktopPlaybackTransportControlsProps } from "@/types/components/desktopPlaybackWallpaper";
 

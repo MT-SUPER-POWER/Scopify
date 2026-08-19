@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SongTitle } from "@/components/Marquee";
 // 引入 UI 组件
-import { Button } from "@/components/ui/button";
+import { Button } from "@scopify/ui/shadcn/components/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";

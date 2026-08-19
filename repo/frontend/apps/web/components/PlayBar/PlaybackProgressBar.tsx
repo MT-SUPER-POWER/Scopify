@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 
-import { SmoothSlider } from "@/components/SmoothSlider";
+import { MediaSlider } from "@scopify/ui/scopify/components/media-slider";
 import { formatDuration } from "@/lib/utils";
 import type { PlaybackProgressBarProps } from "@/types/components/player";
 
@@ -36,7 +36,7 @@ export function PlaybackProgressBar({
   );
 
   const slider = (
-    <SmoothSlider
+    <MediaSlider
       ariaLabel={ariaLabel}
       ariaValueText={`${formatDuration(safePositionMs)} / ${formatDuration(safeDurationMs)}`}
       bufferedColor={isFolia ? "var(--desktop-controller-soft-hover)" : undefined}

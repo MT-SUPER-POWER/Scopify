@@ -21,7 +21,12 @@ import { toast } from "sonner";
 import type { PlaylistActionsProps } from "@/types/components/playlist";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";

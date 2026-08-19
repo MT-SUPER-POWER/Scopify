@@ -10,7 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { TrackRowProps } from "@/types/components/playlist";
 
 import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
-import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
+import { MediaTitle } from "@scopify/ui/scopify/components/media-title";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -21,7 +21,7 @@ import { cn, formatDate, formatDuration } from "@/lib/utils";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
-import { LikeButton } from "../ui/LikeButton";
+import { LikeButton } from "@scopify/ui/scopify/components/like-button";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 主组件: 单行数据 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -118,9 +118,9 @@ export const TrackRow = memo(
               />
             </div>
             <div className="flex min-w-0 flex-1 flex-col truncate">
-              <SongTitleWithAlia
+              <MediaTitle
                 name={track.name}
-                alia={track.alia}
+                aliases={track.alia}
                 className={cn(
                   "w-full cursor-pointer text-base font-normal group-hover:underline",
                   isActive ? "text-brand" : "text-content",

@@ -4,7 +4,7 @@ import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
 import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
 import { LibraryEmptyState } from "@/components/library/LibraryEmptyState";
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { RetryState } from "@scopify/ui/scopify/components/retry-state";
 import { useLikedPlaylistQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
@@ -32,7 +32,7 @@ export default function LikedSongsPage() {
   if (likedPlaylistQuery.isError) {
     return (
       <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
-        <NetworkRetryState
+        <RetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
           actionLabel={t("network.action.refresh")}

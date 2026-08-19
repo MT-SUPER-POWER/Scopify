@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LikeButton } from "@/components/ui/LikeButton";
+import { LikeButton } from "@scopify/ui/scopify/components/like-button";
 import { useI18n } from "@/store/module/i18n";
 import type { CommentItemProps } from "@/types/components/comment";
 import { renderEmojiContent } from "./renderEmojiContent";

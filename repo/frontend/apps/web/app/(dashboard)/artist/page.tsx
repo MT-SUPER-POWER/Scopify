@@ -7,7 +7,7 @@ import { ActionBar } from "@/components/artist/ActionBar";
 import { ArtistHero } from "@/components/artist/ArtistHero";
 import { DiscographyGrid } from "@/components/artist/DiscographyGrid";
 import { PopularTracks } from "@/components/artist/PopularTracks";
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { RetryState } from "@scopify/ui/scopify/components/retry-state";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPlay } from "@/hooks/artist/useArtistPlay";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -48,7 +48,7 @@ export default function ArtistPage() {
   if (!artist)
     return (
       <div className="min-h-screen bg-surface-raised p-8">
-        <NetworkRetryState
+        <RetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
           actionLabel={t("network.action.refresh")}
@@ -64,7 +64,7 @@ export default function ArtistPage() {
 
       {isError && (
         <div className="px-6 pt-6 md:px-8">
-          <NetworkRetryState
+          <RetryState
             compact
             title={t("network.offline.title")}
             subtitle={t("network.offline.subtitle")}

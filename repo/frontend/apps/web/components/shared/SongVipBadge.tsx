@@ -1,4 +1,4 @@
-import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
+import { MediaBadge } from "@scopify/ui/scopify/components/media-badge";
 import { isVipSong } from "@/lib/vip";
 
 interface SongVipBadgeProps {
@@ -10,8 +10,8 @@ export function SongVipBadge({ fee, className }: SongVipBadgeProps) {
   if (!isVipSong(fee)) return null;
 
   return (
-    <MediaInfoBadge ariaLabel="VIP" className={className} title="VIP">
+    <MediaBadge ariaLabel="VIP" className={className} title="VIP">
       VIP
-    </MediaInfoBadge>
+    </MediaBadge>
   );
 }

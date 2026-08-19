@@ -16,7 +16,7 @@
     },
     "repo/frontend/apps/desktop": {
       "name": "@scopify/desktop",
-      "version": "1.4.5",
+      "version": "1.4.6",
       "dependencies": {
         "@scopify/desktop-contract": "workspace:*",
         "@xhayper/discord-rpc": "^1.3.4",
@@ -38,7 +38,7 @@
     },
     "repo/frontend/apps/web": {
       "name": "@scopify/web",
-      "version": "1.4.5",
+      "version": "1.4.6",
       "dependencies": {
         "@chenglou/pretext": "^0.0.8",
         "@fontsource/black-ops-one": "^5.3.0",
@@ -136,6 +136,7 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "lucide-react": "^0.468.0",
+        "motion": "^12.42.2",
         "radix-ui": "^1.6.7",
         "shadcn": "^3.8.5",
         "tailwind-merge": "^2.6.0",

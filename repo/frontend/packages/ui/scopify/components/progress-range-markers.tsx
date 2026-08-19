@@ -1,5 +1,18 @@
-import type { ProgressRangeMarkersProps } from "@/types/components/slider";
+export interface ProgressRangeMarker {
+  endPercent: number;
+  startPercent: number;
+}
 
+export type ProgressRangeMarkerAppearance = "glow" | "pin";
+
+export interface ProgressRangeMarkersProps {
+  appearance?: ProgressRangeMarkerAppearance;
+  color: string;
+  orientation?: "horizontal" | "vertical";
+  ranges: readonly ProgressRangeMarker[];
+}
+
+/** Visual range overlays for horizontal or vertical media progress tracks. */
 export function ProgressRangeMarkers({
   appearance = "pin",
   color,
@@ -77,7 +90,7 @@ export function ProgressRangeMarkers({
           className="absolute size-2 rounded-full"
           style={{
             backgroundColor: color,
-            boxShadow: `0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 6px ${color}`,
+            boxShadow: `0 0 0 1px var(--color-background), 0 0 6px ${color}`,
             ...(isVertical
               ? {
                   bottom: 0,

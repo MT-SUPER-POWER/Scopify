@@ -3,7 +3,12 @@
 import { MonitorCog } from "lucide-react";
 import { toast } from "sonner";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";

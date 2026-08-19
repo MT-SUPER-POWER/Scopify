@@ -1,8 +1,13 @@
 "use client";
 
 import { ArrowDownCircle, MoreHorizontal, Pause, Play, Shuffle } from "lucide-react";
-import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { CollectionToggleButton } from "@scopify/ui/scopify/components/collection-toggle-button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { useI18n } from "@/store/module/i18n";
 
 interface AlbumActionsProps {
