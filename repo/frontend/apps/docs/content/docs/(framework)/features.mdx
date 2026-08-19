@@ -1,80 +1,220 @@
 ---
 title: 产品能力
-description: Scopify 当前覆盖的播放、搜索、歌词与桌面体验。
+description: 从内容发现、播放与歌词，到音乐库管理和桌面集成，了解 Scopify 当前提供的完整体验。
 ---
 
-import mainScreenshot from "../../../../../../../docs/img/main.png";
-import playlistScreenshot from "../../../../../../../docs/img/Playlist.png";
-import searchScreenshot from "../../../../../../../docs/img/SearchResult.png";
-import lyricScreenshot from "../../../../../../../docs/img/lyricDynamic.png";
-import lyricEditorScreenshot from "../../../../../../../docs/img/lyricStyleEditor.png";
-import desktopLyricScreenshot from "../../../../../../../docs/img/desktopMusic.png";
+import audioEqualizerScreenshot from "../../../assets/features/audio-equalizer.png";
+import audioQualityScreenshot from "../../../assets/features/audio-quality.png";
+import commentScreenshot from "../../../assets/features/comment.png";
+import desktopLyricScreenshot from "../../../assets/features/desktopMusic.png";
+import discoveryScreenshot from "../../../assets/features/discovery-home.png";
+import discordScreenshot from "../../../assets/features/DiscordPresnet.png";
+import foliaStageScreenshot from "../../../assets/features/lyrics-folia-stage.png";
+import libraryScreenshot from "../../../assets/features/library-liked.png";
+import lyricControllerScreenshot from "../../../assets/features/lyrics-controller.png";
+import lyricEditorScreenshot from "../../../assets/features/lyricStyleEditor.png";
+import playlistScreenshot from "../../../assets/features/Playlist.png";
+import profileScreenshot from "../../../assets/features/profile.png";
+import searchBarScreenshot from "../../../assets/features/SearchWithBar.png";
+import searchModalScreenshot from "../../../assets/features/SearchModal.png";
+import searchScreenshot from "../../../assets/features/SearchResult.png";
+import settingsGeneralScreenshot from "../../../assets/features/settings-general.png";
+import settingsShortcutsScreenshot from "../../../assets/features/settings-shortcuts.png";
+import themeEditorScreenshot from "../../../assets/features/visualThemEditor.png";
+import vipSignScreenshot from "../../../assets/features/VipSign.png";
 import featuresMindmap from "./features-mindmap.mmd";
 
-Scopify 不只是一个接口播放器。产品围绕音乐浏览、搜索、播放队列、沉浸歌词和桌面呈现形成完整体验。
+Scopify 不只是一组音乐页面。它把找音乐、播放、歌词、收藏管理和桌面能力放进同一套交互中。本页按用户要完成的事情整理现有功能，方便快速了解产品，也为后续能力扩展提供固定的归类方式。
+
+<Cards>
+  <Card title="内容发现" href="#内容发现">浏览推荐、歌单、歌手与播客声音。</Card>
+  <Card title="搜索与导航" href="#搜索与导航">从快捷搜索进入分类结果，并用命令快速到达功能。</Card>
+  <Card title="播放与队列" href="#播放与队列">控制进度、音量、播放模式、音质与待播内容。</Card>
+  <Card title="歌词与 Folia" href="#歌词与-folia">进入动态歌词舞台并调整歌词来源与呈现。</Card>
+  <Card title="音频体验" href="#音频体验">选择音质，使用均衡器、ReplayGain 与声音效果。</Card>
+  <Card title="账户与音乐库" href="#账户与音乐库">管理喜欢、收藏、最近播放与个人内容。</Card>
+  <Card title="个性化与效率" href="#个性化与效率">调整主题、语言、快捷键与常用设置。</Card>
+  <Card title="桌面端集成" href="#桌面端集成">使用桌面歌词、Discord 状态与客户端能力。</Card>
+</Cards>
+
+## 内容发现
+
+### 首页与推荐
+
+首页把每日推荐、个性化歌单、活动内容、播客声音和推荐歌手放在一条连续的浏览路径中。用户可以先试听或查看内容，再进入歌单、专辑和歌手页面继续探索。
+
+<figure>
+  <img className="rounded-xl border" src={discoveryScreenshot.src} alt="Scopify 首页的推荐内容、播客声音和播放栏" />
+  <figcaption>首页同时承担内容推荐、快速播放和继续浏览的入口。</figcaption>
+</figure>
+
+### 歌单与评论
+
+<figure>
+  <img className="rounded-xl border" src={playlistScreenshot.src} alt="Scopify 歌单详情页面" />
+  <figcaption>歌单详情集中展示资料、曲目和播放入口。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={commentScreenshot.src} alt="Scopify 音乐评论页面" />
+  <figcaption>评论让歌曲和歌单的浏览过程延伸到社区内容。</figcaption>
+</figure>
+
+## 搜索与导航
+
+### 搜索入口
+
+搜索有三种形态：快捷模态框适合在当前页面直接发起搜索，常驻搜索栏适合连续修改关键词，结果页负责按内容类型承载完整结果。桌面端还提供命令面板，常用页面和操作无需逐层寻找。
+
+<figure>
+  <img className="rounded-xl border" src={searchModalScreenshot.src} alt="Scopify 快捷搜索模态框" />
+  <figcaption>快捷搜索不会打断当前浏览上下文。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={searchBarScreenshot.src} alt="Scopify 搜索页面的常驻搜索栏" />
+  <figcaption>常驻搜索栏用于继续调整关键词。</figcaption>
+</figure>
+
+### 分类结果
+
+<figure>
+  <img className="rounded-xl border" src={searchScreenshot.src} alt="Scopify 分类搜索结果页面" />
+  <figcaption>结果页把歌曲、歌单、专辑和用户等内容统一组织起来。</figcaption>
+</figure>
+
+## 播放与队列
+
+### 播放控制
+
+底部播放栏贯穿主要页面，提供喜欢、评论、上一首、播放暂停、下一首、循环、进度、音量和全屏等常用控制。播放模式、当前音质、输出设备和待播队列也从这里进入，不需要离开正在浏览的内容。
+
+### 待播与上下文
+
+| 能力 | 当前用途 |
+| --- | --- |
+| 播放控制 | 调整进度、音量、播放暂停与上下曲 |
+| 播放模式 | 切换随机、顺序、单曲循环等模式 |
+| 待播队列 | 查看接下来播放的曲目并管理播放顺序 |
+| 播放上下文 | 快速进入评论、歌词、音频设置和全屏舞台 |
+
+## 歌词与 Folia
+
+### Folia 歌词舞台
+
+歌词体验由动态舞台和控制面板组成。舞台负责呈现当前歌曲、歌词动画和背景视觉；控制面板负责音量、音质、均衡器、ReplayGain、歌词来源、歌词匹配和时间轴偏移。需要更细的调整时，可以继续进入 Folia 设置。
+
+<figure>
+  <img className="rounded-xl border" src={foliaStageScreenshot.src} alt="Scopify Folia 动态歌词舞台" />
+  <figcaption>Folia 舞台把封面、背景、播放控制和逐行歌词放在同一画面中。</figcaption>
+</figure>
+
+### 歌词控制
+
+<figure>
+  <img className="rounded-xl border" src={lyricControllerScreenshot.src} alt="Scopify 歌词与播放控制面板" />
+  <figcaption>控制面板集中处理歌词来源、时间轴和播放相关设置。</figcaption>
+</figure>
+
+### 样式与主题
+
+<figure>
+  <img className="rounded-xl border" src={lyricEditorScreenshot.src} alt="Scopify 歌词样式编辑器" />
+  <figcaption>样式编辑器用于调整歌词的排版与呈现。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={themeEditorScreenshot.src} alt="Scopify 歌词视觉主题编辑器" />
+  <figcaption>视觉主题编辑器用于统一背景、色彩和舞台效果。</figcaption>
+</figure>
+
+完整播放舞台与桌面歌词的部分能力来自 [Folia](https://github.com/chthollyphile/folia-major/tree/main) 源码快照，并在 Scopify 中继续适配。
+
+## 音频体验
+
+### 音质选择
+
+Scopify 可以针对播放环境选择标准、较高、无损、Hi-Res、沉浸声和空间音频等可用音质。
+
+<figure>
+  <img className="rounded-xl border" src={audioQualityScreenshot.src} alt="Scopify 播放音质选择面板" />
+  <figcaption>根据账号、曲目和设备选择可用音质。</figcaption>
+</figure>
+
+### 均衡器与响度
+
+均衡器提供 10 个频段、预设与自动余量，并补充低切、高切、驱动、颗粒、磁带抖晃、黑胶噪声、立体声宽度、混响和低频冲击等效果。
+
+<figure>
+  <img className="rounded-xl border" src={audioEqualizerScreenshot.src} alt="Scopify 十段均衡器与声音效果" />
+  <figcaption>均衡器和声音效果可以按当前聆听环境调整。</figcaption>
+</figure>
+
+ReplayGain 支持按曲目或专辑统一响度，适合在跨专辑播放和连续听歌时减少音量突变。
+
+## 账户与音乐库
+
+### 个人音乐库
+
+登录后的个人内容汇集在音乐库中，包括喜欢的音乐、最近播放、播客、收藏和自建歌单。列表保留歌曲音质、会员标识、专辑、发布时间、喜欢状态和时长等信息，并提供播放、随机播放和列表内搜索。
+
+<figure>
+  <img className="rounded-xl border" src={libraryScreenshot.src} alt="Scopify 喜欢的音乐列表" />
+  <figcaption>音乐库将个人内容和常用管理操作放在一起。</figcaption>
+</figure>
+
+### 用户资料与网易乐签
+
+<figure>
+  <img className="rounded-xl border" src={profileScreenshot.src} alt="Scopify 用户资料页面" />
+  <figcaption>用户资料连接个人信息与相关音乐内容。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={vipSignScreenshot.src} alt="Scopify 网易乐签页面" />
+  <figcaption>网易乐签保留为账户相关的特色能力。</figcaption>
+</figure>
+
+## 个性化与效率
+
+### 通用设置
+
+通用设置可以调整界面语言、应用主题、硬件加速、开发者工具和关闭窗口后的行为。
+
+<figure>
+  <img className="rounded-xl border" src={settingsGeneralScreenshot.src} alt="Scopify 通用设置页面" />
+  <figcaption>通用设置管理语言、主题和应用运行方式。</figcaption>
+</figure>
+
+### 快捷键与命令
+
+快捷键设置覆盖播放控制与界面命令，包含打开设置、帮助和命令面板等入口，并允许按使用习惯重新绑定。
+
+<figure>
+  <img className="rounded-xl border" src={settingsShortcutsScreenshot.src} alt="Scopify 快捷键设置页面" />
+  <figcaption>快捷键将播放命令和常用界面入口集中管理。</figcaption>
+</figure>
+
+## 桌面端集成
+
+### 桌面歌词
+
+Electron 桌面端在共享 Web 界面之外提供系统级能力，包括桌面歌词、窗口置顶与穿透、Discord Rich Presence、客户端更新、本地后端配置以及日志诊断。桌面歌词可独立于主窗口显示，Discord 状态则用于同步当前播放信息。
+
+<figure>
+  <img className="rounded-xl border" src={desktopLyricScreenshot.src} alt="Scopify 桌面歌词和全屏音乐效果" />
+  <figcaption>桌面歌词把当前播放内容延伸到主窗口之外。</figcaption>
+</figure>
+
+### Discord 状态与客户端能力
+
+<figure className="mx-auto w-fit">
+  <img className="rounded-xl border" src={discordScreenshot.src} alt="Scopify Discord Rich Presence 状态" />
+  <figcaption className="text-center">Discord Rich Presence 展示当前播放状态。</figcaption>
+</figure>
 
 ## 功能全景
 
+下面的图谱用于快速定位能力归属。新增功能应先判断它解决的是哪一类用户任务，再补充到对应分类中。
+
 <Mermaid chart={featuresMindmap} />
-
-## 核心页面
-
-- 主页面：承载推荐内容、快捷入口与当前用户上下文。
-- 歌单页面：展示歌单资料、歌曲列表与播放入口。
-- 用户页面：展示用户资料、收藏与社交信息。
-- 评论页面：浏览歌曲、歌单等资源的评论内容。
-
-<div className="grid gap-4 md:grid-cols-2">
-  <figure>
-    <img className="rounded-xl border" src={mainScreenshot.src} alt="Scopify 主页面" />
-    <figcaption>主页面</figcaption>
-  </figure>
-  <figure>
-    <img className="rounded-xl border" src={playlistScreenshot.src} alt="Scopify 歌单页面" />
-    <figcaption>歌单页面</figcaption>
-  </figure>
-</div>
-
-## 搜索体验
-
-搜索能力包括搜索模态框、常驻搜索栏和完整结果页面。不同入口共享搜索上下文，让用户可以从快速发现自然过渡到分类结果浏览。
-
-<figure>
-  <img className="rounded-xl border" src={searchScreenshot.src} alt="Scopify 搜索结果页面" />
-  <figcaption>搜索结果页面</figcaption>
-</figure>
-
-## 歌词舞台
-
-歌词是 Scopify 最具辨识度的体验之一：
-
-- 歌词随播放进度动态呈现。
-- 提供歌词效果控制与样式编辑。
-- 支持可视化主题编辑。
-- 支持全屏歌词与桌面音乐呈现。
-- 部分完整播放舞台与桌面歌词能力来自 Folia 源码快照。
-
-<div className="grid gap-4 md:grid-cols-2">
-  <figure>
-    <img className="rounded-xl border" src={lyricScreenshot.src} alt="动态歌词界面" />
-    <figcaption>动态歌词界面</figcaption>
-  </figure>
-  <figure>
-    <img className="rounded-xl border" src={lyricEditorScreenshot.src} alt="歌词样式编辑器" />
-    <figcaption>歌词样式编辑器</figcaption>
-  </figure>
-</div>
-
-<figure>
-  <img className="rounded-xl border" src={desktopLyricScreenshot.src} alt="桌面全屏音乐效果" />
-  <figcaption>桌面全屏音乐效果</figcaption>
-</figure>
-
-## 个性化与集成
-
-- 网易乐签体验。
-- Discord Rich Presence 接入。
-- 主题编辑与歌词视觉效果控制。
-- Web 与桌面端共享音乐体验。
-
-更多歌词动态效果与播放舞台设计可参考 [Folia](https://github.com/chthollyphile/folia-major/tree/main)。
