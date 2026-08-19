@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
-import { RetryState } from "@scopify/ui/scopify/components/retry-state";
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useRecentSongsQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -45,7 +45,7 @@ export default function RecentSongsPage() {
   if (recentSongsQuery.isError) {
     return (
       <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
-        <RetryState
+        <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
           actionLabel={t("network.action.refresh")}

@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GridCard } from "@/components/home/GridCard";
-import { RetryState } from "@scopify/ui/scopify/components/retry-state";
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -80,7 +80,7 @@ export function PodcastRecommendations({
           <RecommendationSkeleton />
         </>
       ) : isError ? (
-        <RetryState
+        <NetworkRetryState
           compact
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}

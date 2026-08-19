@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowDownCircle, MoreHorizontal, Pause, Play, Shuffle } from "lucide-react";
-import { CollectionToggleButton } from "@scopify/ui/scopify/components/collection-toggle-button";
+import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import {
   Tooltip,
   TooltipContent,

@@ -1,0 +1,25 @@
+---
+title: Shadcn 原生组件
+description: 由 @scopify/ui 的 shadcn CLI 版本维护，不承载 Scopify 业务语义。
+---
+
+这一层是内部 UI 库的原始底座。组件源码保持 shadcn CLI 的生成形态，升级、Diff 和回滚都以 CLI 产物为准。
+
+## 当前目录
+
+| 类型 | 组件          |
+| ---- | ------------- |
+| 基础 | Button、Badge |
+| 表单 | Slider        |
+| 反馈 | Skeleton      |
+| 浮层 | Tooltip       |
+
+## 导入规则
+
+每个组件使用独立子路径导入，不提供模糊的总入口：
+
+```tsx
+import { Button } from "@scopify/ui/shadcn/components/button";
+```
+
+若标准 Props 与共享主题 Token 已经可以表达需求，就停留在这一层。

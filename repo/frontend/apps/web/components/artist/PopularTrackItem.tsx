@@ -21,7 +21,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { LikeButton } from "@scopify/ui/scopify/components/like-button";
+import { LikeButton } from "@/components/ui/LikeButton";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { likeSong } from "@/lib/api/playlist";

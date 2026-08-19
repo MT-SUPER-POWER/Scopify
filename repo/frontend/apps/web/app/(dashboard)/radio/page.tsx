@@ -2,7 +2,7 @@
 
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { RadioTracklistTable } from "@/components/radio/RadioTracklistTable";
-import { CollectionToggleButton } from "@scopify/ui/scopify/components/collection-toggle-button";
+import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { useRadioData } from "@/hooks/radio/useRadioData";
 import { useRadioFavorite } from "@/hooks/radio/useRadioFavorite";
 import { useI18n } from "@/store/module/i18n";

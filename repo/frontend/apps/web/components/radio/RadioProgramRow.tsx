@@ -3,7 +3,7 @@
 import { RadioProgramPlaybackBadge } from "@/components/radio/RadioProgramPlaybackBadge";
 import { RadioProgramDescription } from "@/components/radio/RadioProgramDescription";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
-import { MediaTitle } from "@scopify/ui/scopify/components/media-title";
+import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getRadioProgramPlaybackProgress } from "@/lib/radio/programPlaybackProgress";
@@ -67,9 +67,9 @@ export function RadioProgramRow({
               />
             </div>
             <div className="min-w-0 flex-1">
-              <MediaTitle
+              <SongTitleWithAlia
                 name={program.name ?? track.name}
-                aliases={track.alia}
+                alia={track.alia}
                 className={cn(
                   "w-full text-base font-normal group-hover:underline",
                   isActive ? "text-[#1ed760]" : "text-white",

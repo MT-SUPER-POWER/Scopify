@@ -2,7 +2,7 @@
 
 import { Pause, Play } from "lucide-react";
 
-import { PlayingIndicator } from "@scopify/ui/scopify/components/playing-indicator";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { cn } from "@/lib/utils";
 
 interface TrackIndexCellProps {
@@ -28,7 +28,7 @@ export function TrackIndexCell({
         {index + 1}
       </span>
 
-      {isActive && isPlaying && <PlayingIndicator className="h-3 group-hover:hidden" />}
+      {isActive && isPlaying && <PlayingAnimation className="h-3 group-hover:hidden" />}
 
       {isActive && !isPlaying && (
         <Play className="size-4 fill-current text-brand group-hover:hidden" />

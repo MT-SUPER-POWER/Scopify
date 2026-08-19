@@ -1,0 +1,27 @@
+---
+title: UI Library
+description: Scopify 设计基础、组件边界与共享 UI 资产总览。
+---
+
+## 两层组件模型
+
+| 层级    | 职责                         | 使用原则                                 |
+| ------- | ---------------------------- | ---------------------------------------- |
+| Shadcn  | 由 shadcn CLI 维护的原生组件 | 标准 Props 与主题 Token 能解决时直接使用 |
+| Scopify | 产品组件的候选与设计空间     | 当前暂不发布公共组件 API                |
+
+## 组件边界
+
+- 只调整颜色、圆角、阴影或间距：修改主题 Token。
+- 只组合标准 Props：直接消费 `@scopify/ui/shadcn/components/*`。
+- 需要稳定产品语义或新的交互协议：先在应用内验证，成熟后再评审进入 Scopify 层。
+- 依赖路由、API、Store 或业务 i18n：留在业务应用中。
+
+<Cards>
+  <Card title="Shadcn" href="/docs/shadcn">
+    查看由 CLI 版本维护的原生组件。
+  </Card>
+  <Card title="Scopify" href="/docs/scopify">
+    查看 Scopify 组件体系的收录原则与后续规划。
+  </Card>
+</Cards>

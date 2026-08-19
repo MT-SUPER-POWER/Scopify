@@ -1,6 +1,6 @@
 import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import type { SongDetail } from "@/types/api/music";
-import type { ProgressRangeMarker } from "@scopify/ui/scopify/components/progress-range-markers";
+import type { ProgressRangeMarker } from "@/types/components/slider";
 import type { SongStatsEnrichmentStatus } from "@/types/songStats";
 import type { ShortcutCommandId } from "@/types/shortcuts";
 

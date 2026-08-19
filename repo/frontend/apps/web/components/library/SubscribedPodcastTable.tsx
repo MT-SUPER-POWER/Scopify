@@ -2,7 +2,7 @@
 
 import { Headphones, Pause, Play, Radio } from "lucide-react";
 import Image from "next/image";
-import { PlayingIndicator } from "@scopify/ui/scopify/components/playing-indicator";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import {
   Table,
@@ -74,7 +74,7 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
               <TableCell className="rounded-l-md py-1.5 text-center text-xs text-content-subtle tabular-nums">
                 {isActive && isPlaying ? (
                   <div className="flex items-center justify-center group-hover:hidden">
-                    <PlayingIndicator className="h-3.5" />
+                    <PlayingAnimation className="h-3.5" />
                   </div>
                 ) : isActive && !isPlaying ? (
                   <Play className="mx-auto size-3.5 fill-current text-brand group-hover:hidden" />

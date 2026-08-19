@@ -7,21 +7,21 @@ import { useI18n } from "@/store/module/i18n";
 import type { QualityOptionKey } from "@/types/playerBar";
 import { cn } from "@/lib/utils";
 
-import { MediaBadge } from "@scopify/ui/scopify/components/media-badge";
+import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 
 function SvipBadge() {
   return (
-    <MediaBadge tone="gold" title="SVIP" ariaLabel="SVIP">
+    <MediaInfoBadge tone="gold" title="SVIP" ariaLabel="SVIP">
       SVIP
-    </MediaBadge>
+    </MediaInfoBadge>
   );
 }
 
 function VipBadge() {
   return (
-    <MediaBadge tone="red" title="VIP" ariaLabel="VIP">
+    <MediaInfoBadge tone="red" title="VIP" ariaLabel="VIP">
       VIP
-    </MediaBadge>
+    </MediaInfoBadge>
   );
 }
 

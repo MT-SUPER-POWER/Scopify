@@ -1,0 +1,16 @@
+{
+  "title": "Scopify Docs",
+  "pages": [
+    "external:[GitHub Repository](https://github.com/MT-SUPER-POWER/Scopify)",
+    "---Document---",
+    "index",
+    "getting-started",
+    "architecture",
+    "---UI Library---",
+    "ui-library",
+    "shadcn",
+    "scopify",
+    "---API Reference---",
+    "api-reference"
+  ]
+}

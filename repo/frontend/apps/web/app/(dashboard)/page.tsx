@@ -6,7 +6,7 @@ import { HomePageSkeleton } from "@/components/home/HomePageSkeleton";
 import { PersonalizedPlaylists } from "@/components/home/PersonalizedPlaylists";
 import { RecommendedVoiceLists } from "@/components/home/RecommendedVoiceLists";
 import { SuggestedArtists } from "@/components/home/SuggestedArtists";
-import { RetryState } from "@scopify/ui/scopify/components/retry-state";
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
 import { getTimeTheme, useHomeData } from "@/hooks/home/useHomeData";
 import { cn } from "@/lib/utils";
@@ -52,7 +52,7 @@ export default function HomePage() {
             {greetingText}
           </h1>
           <main className="flex flex-1 items-center justify-center pb-28">
-            <RetryState
+            <NetworkRetryState
               title={t("network.offline.title")}
               subtitle={t("network.offline.subtitle")}
               actionLabel={t("network.action.refresh")}
@@ -89,7 +89,7 @@ export default function HomePage() {
           />
 
           {hasError && (
-            <RetryState
+            <NetworkRetryState
               compact
               title={t("network.offline.title")}
               subtitle={t("network.offline.subtitle")}

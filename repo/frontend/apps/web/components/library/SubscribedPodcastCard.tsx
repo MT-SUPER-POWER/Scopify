@@ -2,7 +2,7 @@
 
 import { CalendarDays, Headphones, ListMusic, Pause, Play, Radio, Users } from "lucide-react";
 import Image from "next/image";
-import { PlayingIndicator } from "@scopify/ui/scopify/components/playing-indicator";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatDate, formatNumber } from "@/lib/utils";
@@ -44,7 +44,7 @@ export function SubscribedPodcastCard({
 
         {isActive && isPlaying ? (
           <div className="absolute inset-0 flex items-center justify-center bg-media-overlay">
-            <PlayingIndicator size={24} />
+            <PlayingAnimation size={24} />
           </div>
         ) : null}
 

@@ -1,0 +1,16 @@
+---
+title: Slider 滑块
+description: 用于选择单值或范围值的原生输入控件。
+---
+
+<ComponentPreview name="shadcn-slider" />
+
+## 使用
+
+```tsx
+import { Slider } from "@scopify/ui/shadcn/components/slider";
+
+<Slider defaultValue={[42]} max={100} step={1} />;
+```
+
+如果场景需要缓冲进度、播放区间标记和拖拽提交语义，当前应在应用层组合实现，待接口稳定后再评审进入 Scopify 层。

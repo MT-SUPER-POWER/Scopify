@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { PlayingIndicator } from "@scopify/ui/scopify/components/playing-indicator";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { usePlayerStore } from "@/store";
 import LibItemContextMenu from "./LibItemMenu";
 
@@ -39,7 +39,7 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
             />
             {isCurrentPlaylist && isPlaying && (
               <div className="absolute inset-0 flex items-center justify-center bg-media-overlay">
-                <PlayingIndicator size={16} />
+                <PlayingAnimation size={16} />
               </div>
             )}
           </div>
@@ -65,7 +65,7 @@ export const LibraryItem = ({ id, title, subtitle, coverImg, isCollapsed }: Libr
           />
           {isCurrentPlaylist && isPlaying && (
             <div className="absolute inset-0 flex items-center justify-center bg-media-overlay">
-              <PlayingIndicator size={16} />
+              <PlayingAnimation size={16} />
             </div>
           )}
         </div>

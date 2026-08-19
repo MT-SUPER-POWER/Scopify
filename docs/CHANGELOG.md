@@ -4,6 +4,7 @@
 
 ### Added
 
+- **新增 Scopify Docs 文档工作台**：新增独立 `@scopify/docs` Fumadocs 应用并接入现有 Scopify 产品 Logo；侧栏以 GitHub Repository 为首项，并按 Document、UI Library、API Reference 三个文档域组织内容，将 Shadcn / Scopify 降级为 UI Library 内的资产分类；为当前 5 个 Shadcn 组件补齐可搜索文档、导入示例与交互预览，保留 Scopify 组件体系规划入口，并新增快速开始、架构与 API 规划页面以及 `dev:docs` / `build:docs` 工作区命令。
 - **新增设置页快捷键入口**：将快捷键体系中的默认 `open-shortcut-settings` 绑定改为 `Cmd/Ctrl + ,`，在渲染端按键监听中直接跳转 `/setting`，无需主进程全局注册与重启。
 - **推荐播客声音支持独立刷新与文案对齐**：主页「推荐播客声音」板块标题旁新增刷新按钮，点击可重新向 `/v1/pc/voicelist/rcmd/list` 获取最新随机推荐；接口预取数量调整为 24 条，按 6 个一组展示并支持分页直达；将原「推荐声音歌单」文案统一对齐为「推荐播客声音」。
 - **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐播客声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的分页导航栏，并调高了各接口的单次预取上限。
@@ -100,8 +101,7 @@
 - **契约包规范化为内部组织包名**：将桌面契约包统一收敛为本地 Workspace 组织包名 `@scopify/desktop-contract`，各子应用统一使用 `workspace:*` 声明依赖。
 - **拆分共享 UI 主题层**：新增内部 `@scopify/ui` workspace package，将 shadcn/tweakcn 标准 token、Scopify 产品语义 token 与 Folia 运行时主题模型拆成三个独立入口；Web 端改为消费共享主题接口，为后续迁移基础组件与统一主题编辑能力建立稳定 seam。
 - **固化共享 UI 分层约束**：新增 `ui-package-boundaries` Skill 并接入根项目规范，明确原生 shadcn CLI vendor 层、Scopify 扩展层与应用业务层的职责、依赖方向和迁移决策流程。
-- **建立首批 Scopify 组件生态**：将纯展示且不依赖 Web Store、API、路由或 i18n 的 `MediaBadge`、`LikeButton` 与 `ProgressRangeMarkers` 迁入 `@scopify/ui/scopify/components/*`，业务层保留 VIP、音质等领域判断并统一消费公开组件入口；新增包边界回归测试。
-- **扩展 Scopify 共享组件体系**：通过 UI package 自有 shadcn CLI 补齐原生 Button、Tooltip、Slider 与 Skeleton，并将 `MediaSlider`、`CollectionToggleButton`、`RetryState`、`PlayingIndicator`、`ResponsiveTitle` 与 `MediaTitle` 下沉到共享包；同步收敛组件 Props、溢出检测与 Slider 交互 hook，移除 Web 重复实现。
+- **撤回未成熟的 Scopify 公共组件抽取**：恢复播放、徽标、收藏、重试与标题等组件在 Web 应用内的原有归属，移除 `@scopify/ui/scopify/components/*` 的不稳定公开入口与预览；保留 Shadcn 原生组件、共享主题层和文档站，待组件边界重新设计后再逐项评审。
 - **规范 Docker Compose 镜像版本标识**：为 `docker-compose.yml` 中的后端与前端镜像构建绑定明确的版本环境变量与默认版本号（前端 `1.4.3`，后端 `4.39.0`），避免使用 `latest` 导致版本模糊，并同步更新 `.env` 与 `.env.example`。
 - **设置页后端网络配置解耦与智能清洗**：在设置页新增显式「传输协议（HTTP/HTTPS）」切换；主机输入框支持输入智能清洗，自动剥离粘贴混入的协议、路径与端口并同步回填至对应控件；解耦端口维护并大幅简化底层 URL 解析规范化逻辑。
 

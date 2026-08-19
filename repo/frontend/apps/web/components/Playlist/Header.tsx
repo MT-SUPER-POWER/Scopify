@@ -4,7 +4,7 @@ import Image from "next/image";
 import React from "react";
 
 import { HeaderDescription } from "@/components/shared/HeaderDescription";
-import { ResponsiveTitle } from "@scopify/ui/scopify/components/responsive-title";
+import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import type { PlaylistInfo } from "@/types/playlist";
 
@@ -84,7 +84,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
 
         {/* Title */}
         <div className="mb-3 flex h-16 min-w-0 items-center overflow-hidden md:mb-4 lg:h-20">
-          <ResponsiveTitle title={info.title} />
+          <ResponsiveHeaderTitle title={info.title} />
         </div>
 
         {/* Description */}

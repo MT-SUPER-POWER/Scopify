@@ -2,7 +2,7 @@
 
 import { Pause, Play, Radio } from "lucide-react";
 import Image from "next/image";
-import { PlayingIndicator } from "@scopify/ui/scopify/components/playing-indicator";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
@@ -44,7 +44,7 @@ export function PodcastRow({ index, podcast }: PodcastRowProps) {
           <>
             {isActive && isPlaying ? (
               <div className="flex items-center justify-center group-hover:hidden">
-                <PlayingIndicator className="h-3.5" />
+                <PlayingAnimation className="h-3.5" />
               </div>
             ) : isActive ? (
               <Play className="mx-auto size-3.5 fill-current text-brand group-hover:hidden" />

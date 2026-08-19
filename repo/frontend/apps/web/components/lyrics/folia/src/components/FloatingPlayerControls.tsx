@@ -7,7 +7,7 @@ import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
 import { useI18n } from "@/store/module/i18n";
 import { FoliaTrackTitleNavigator } from "@/components/lyrics/FoliaTrackTitleNavigator";
 import { usePlayerStore } from "@/store/module/player";
-import type { ProgressRangeMarker } from "@scopify/ui/scopify/components/progress-range-markers";
+import type { ProgressRangeMarker } from "@/types/components/slider";
 import ProgressBar from "./ProgressBar";
 import { PlayerState, LyricData, Theme } from "../types";
 import LyricsTimelineModal from "./modal/LyricsTimelineModal";

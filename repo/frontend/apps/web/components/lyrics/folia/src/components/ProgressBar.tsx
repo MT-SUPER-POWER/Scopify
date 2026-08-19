@@ -1,9 +1,7 @@
 import React, { useCallback, useLayoutEffect, useRef } from "react";
 import { MotionValue, useMotionValueEvent } from "framer-motion";
-import {
-  ProgressRangeMarkers,
-  type ProgressRangeMarker,
-} from "@scopify/ui/scopify/components/progress-range-markers";
+import { ProgressRangeMarkers } from "@/components/shared/ProgressRangeMarkers";
+import type { ProgressRangeMarker } from "@/types/components/slider";
 
 interface ProgressBarProps {
   currentTime: MotionValue<number>;

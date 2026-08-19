@@ -1,0 +1,17 @@
+---
+title: Scopify 特色组件
+description: Scopify 产品组件体系的设计入口。
+---
+
+Scopify 特有组件仍在重新梳理边界，当前不发布公共组件 API。已有实现暂时保留在 Web 应用内部，待组件语义、复用范围和稳定接口明确后，再逐项进入 UI Library。
+
+## 收录原则
+
+- 先在真实产品场景中验证，不为了“看起来通用”而抽取。
+- 至少具备稳定语义、清晰 Props 和多个合理复用场景。
+- 不携带路由、API、Store 或业务 i18n 等应用依赖。
+- 仅靠 Shadcn Props 与主题 Token 能解决的需求，不进入 Scopify 层。
+
+## 当前可用资产
+
+当前请使用 [Shadcn 原生组件](/docs/shadcn) 与共享主题 Token。Scopify 组件目录会在方案成熟后重新开放。

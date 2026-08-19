@@ -4,7 +4,7 @@ import { AlbumActions } from "@/components/album/AlbumActions";
 import { AlbumHeader } from "@/components/album/AlbumHeader";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable";
-import { RetryState } from "@scopify/ui/scopify/components/retry-state";
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
@@ -49,7 +49,7 @@ export default function AlbumPage() {
         <div className="mb-6 opacity-70">
           <PlaylistLoading />
         </div>
-        <RetryState
+        <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("album.empty.unavailable")}
           actionLabel={t("network.action.refresh")}
@@ -77,7 +77,7 @@ export default function AlbumPage() {
       />
       {isRefetchError && (
         <div className="relative z-10 px-6">
-          <RetryState
+          <NetworkRetryState
             compact
             title={t("album.status.updateFailed")}
             subtitle={t("album.status.updateFailedDescription")}

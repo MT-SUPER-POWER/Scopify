@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "@scopify/ui/theme.css";
+
+@source "../../../packages/ui/**/*.{ts,tsx}";
+
+@layer components {
+  .component-preview-grid {
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+}

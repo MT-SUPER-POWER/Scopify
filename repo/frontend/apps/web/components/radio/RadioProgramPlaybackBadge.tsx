@@ -1,6 +1,6 @@
 "use client";
 
-import { MediaBadge } from "@scopify/ui/scopify/components/media-badge";
+import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { RadioProgramPlaybackProgress } from "@/types/radio";
@@ -25,7 +25,7 @@ export function RadioProgramPlaybackBadge({ progress }: RadioProgramPlaybackBadg
         : "—";
 
   return (
-    <MediaBadge
+    <MediaInfoBadge
       ariaLabel={label}
       className={cn(
         "h-auto min-w-12 justify-center rounded-sm px-2 py-0.5 text-[11px] leading-none font-medium tabular-nums",
@@ -35,6 +35,6 @@ export function RadioProgramPlaybackBadge({ progress }: RadioProgramPlaybackBadg
       tone={progress.kind === "complete" ? "gold" : "red"}
     >
       {value}
-    </MediaBadge>
+    </MediaInfoBadge>
   );
 }
