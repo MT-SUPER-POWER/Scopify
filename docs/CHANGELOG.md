@@ -4,7 +4,7 @@
 
 ### Added
 
-- **接入完整的 Netease API OpenAPI 文档**：从后端 452 个接口模块生成 OpenAPI Schema，按 15 个领域展示请求参数与响应，并接入 Fumadocs OpenAPI 的在线请求调试能力；文档同时提供生成来源、请求流程与安全边界说明。
+- **简化 Netease API 文档入口**：移除本地生成的接口镜像与请求调试页面，OpenAPI 文档域统一跳转到 Apifox 维护的网易云音乐接口文档。
 - **扩充 Framework 文档**：根据仓库 README 重组产品能力、技术栈、开发启动、系统架构、部署运行、路线图与发布规范，并复用现有产品截图形成可浏览的项目知识入口。
 - **新增 Scopify Docs 文档工作台**：新增独立 `@scopify/docs` Fumadocs 应用并接入现有 Scopify 产品 Logo；侧栏以 GitHub Repository 为首项，并按 Document、UI Library、API Reference 三个文档域组织内容，将 Shadcn / Scopify 降级为 UI Library 内的资产分类；为当前 5 个 Shadcn 组件补齐可搜索文档、导入示例与交互预览，保留 Scopify 组件体系规划入口，并新增快速开始、架构与 API 规划页面以及 `dev:docs` / `build:docs` 工作区命令。
 - **新增设置页快捷键入口**：将快捷键体系中的默认 `open-shortcut-settings` 绑定改为 `Cmd/Ctrl + ,`，在渲染端按键监听中直接跳转 `/setting`，无需主进程全局注册与重启。

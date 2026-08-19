@@ -1,8 +1,12 @@
 {
   "title": "OpenAPI",
-  "description": "接口参考、Schema 与请求调试",
+  "description": "Scopify 契约与外部服务 API 入口",
   "icon": "openapi",
   "root": true,
   "pagesIndex": "api-reference",
-  "pages": ["---API 参考---", "api-reference", "netease-api"]
+  "pages": [
+    "---API 参考---",
+    "api-reference",
+    "external:[Netease API 文档](https://vdoonnridu.apifox.cn/)"
+  ]
 }
