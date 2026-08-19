@@ -1,0 +1,178 @@
+---
+title: 评论
+full: true
+_openapi:
+  preload:
+    - ./openapi/netease-api.json
+  toc:
+    - depth: 2
+      title: 发送/删除评论
+      url: '#发送删除评论'
+    - depth: 2
+      title: comment · add
+      url: '#comment--add'
+    - depth: 2
+      title: 专辑评论
+      url: '#专辑评论'
+    - depth: 2
+      title: comment · delete
+      url: '#comment--delete'
+    - depth: 2
+      title: 电台节目评论
+      url: '#电台节目评论'
+    - depth: 2
+      title: 获取动态评论
+      url: '#获取动态评论'
+    - depth: 2
+      title: 楼层评论
+      url: '#楼层评论'
+    - depth: 2
+      title: 热门评论
+      url: '#热门评论'
+    - depth: 2
+      title: 评论抱一抱列表
+      url: '#评论抱一抱列表'
+    - depth: 2
+      title: 评论统计数据
+      url: '#评论统计数据'
+    - depth: 2
+      title: 给评论点赞
+      url: '#给评论点赞'
+    - depth: 2
+      title: 歌曲评论
+      url: '#歌曲评论'
+    - depth: 2
+      title: mv 评论
+      url: '#mv-评论'
+    - depth: 2
+      title: 新版评论接口
+      url: '#新版评论接口'
+    - depth: 2
+      title: 歌单评论
+      url: '#歌单评论'
+    - depth: 2
+      title: comment · reply
+      url: '#comment--reply'
+    - depth: 2
+      title: 举报评论
+      url: '#举报评论'
+    - depth: 2
+      title: 视频评论
+      url: '#视频评论'
+  structuredData:
+    headings:
+      - content: 发送/删除评论
+        id: 发送删除评论
+      - content: comment · add
+        id: comment--add
+      - content: 专辑评论
+        id: 专辑评论
+      - content: comment · delete
+        id: comment--delete
+      - content: 电台节目评论
+        id: 电台节目评论
+      - content: 获取动态评论
+        id: 获取动态评论
+      - content: 楼层评论
+        id: 楼层评论
+      - content: 热门评论
+        id: 热门评论
+      - content: 评论抱一抱列表
+        id: 评论抱一抱列表
+      - content: 评论统计数据
+        id: 评论统计数据
+      - content: 给评论点赞
+        id: 给评论点赞
+      - content: 歌曲评论
+        id: 歌曲评论
+      - content: mv 评论
+        id: mv-评论
+      - content: 新版评论接口
+        id: 新版评论接口
+      - content: 歌单评论
+        id: 歌单评论
+      - content: comment · reply
+        id: comment--reply
+      - content: 举报评论
+        id: 举报评论
+      - content: 视频评论
+        id: 视频评论
+    contents:
+      - content: 调用此接口,可发送评论或者删除评论 来源模块：module/(comment)/comment.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 发送删除评论
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(comment)/comment_add.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: comment--add
+      - content: 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该专辑的所有评论 ( 不需要 登录 )
+          来源模块：module/(comment)/comment_album.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 专辑评论
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(comment)/comment_delete.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: comment--delete
+      - content: 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该 电台节目 的所有评论 ( 不需要登录 )
+          来源模块：module/(comment)/comment_dj.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台节目评论
+      - content: 登录后调用此接口 , 可以获取动态下评论 来源模块：module/(comment)/comment_event.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 获取动态评论
+      - content: 调用此接口 , 传入资源 parentCommentId 和资源类型 type 和资源 id 参数, 可获得该资源的歌曲楼层评论
+          来源模块：module/(comment)/comment_floor.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 楼层评论
+      - content: 调用此接口 , 传入 type, 资源 id 可获得对应资源热门评论 ( 不需要登录 )
+          来源模块：module/(comment)/comment_hot.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 热门评论
+      - content: 调用此接口,可获取评论抱一抱列表 来源模块：module/(comment)/comment_hug_list.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 评论抱一抱列表
+      - content: 调用此接口 , 传入资源类型和资源 id 列表 , 可批量获取对应资源的评论统计数据 ( 不需要登录 )
+          来源模块：module/(comment)/comment_info_list.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 评论统计数据
+      - content: 调用此接口 , 传入 type, 资源 id, 和评论 id cid 和 是否点赞参数 t 即可给对 应评论点赞 ( 需要登录 )
+          来源模块：module/(comment)/comment_like.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 给评论点赞
+      - content: 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该音乐的所有评论 ( 不需要登录 )
+          来源模块：module/(comment)/comment_music.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 歌曲评论
+      - content: 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该 mv 的所有评论 ( 不需要 登录 )
+          来源模块：module/(comment)/comment_mv.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: mv-评论
+      - content: 调用此接口 , 传入资源类型和资源 id,以及排序方式,可获取对应资源的评论
+          来源模块：module/(comment)/comment_new.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 新版评论接口
+      - content: 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该歌单的所有评论 ( 不需要 登录 )
+          来源模块：module/(comment)/comment_playlist.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 歌单评论
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(comment)/comment_reply.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: comment--reply
+      - content: 登录后调用此接口, 传入歌曲 id 和评论 id, 举报评论
+          来源模块：module/(comment)/comment_report.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 举报评论
+      - content: 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该 视频 的所有评论 ( 不需要登录 )
+          来源模块：module/(comment)/comment_video.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 视频评论
+---
+
+{/* This file was generated by Fumadocs. Do not edit this file directly. Any changes should be made by running the generation command again. */}
+
+export default function Layout(props) {
+  const { APIPage, OpenAPIPage } = props.components ?? {};
+  // "APIPage" is the old name from v10, this allows both for backward compatibility
+  const Comp = OpenAPIPage ?? APIPage;
+  return (
+    <>
+      {props.children}
+      <Comp document="./openapi/netease-api.json" webhooks={[]} operations={[{"path":"/comment","method":"get"},{"path":"/comment/add","method":"get"},{"path":"/comment/album","method":"get"},{"path":"/comment/delete","method":"get"},{"path":"/comment/dj","method":"get"},{"path":"/comment/event","method":"get"},{"path":"/comment/floor","method":"get"},{"path":"/comment/hot","method":"get"},{"path":"/comment/hug/list","method":"get"},{"path":"/comment/info/list","method":"get"},{"path":"/comment/like","method":"get"},{"path":"/comment/music","method":"get"},{"path":"/comment/mv","method":"get"},{"path":"/comment/new","method":"get"},{"path":"/comment/playlist","method":"get"},{"path":"/comment/reply","method":"get"},{"path":"/comment/report","method":"get"},{"path":"/comment/video","method":"get"}]} showTitle showDescription />
+    </>
+  );
+}

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --webpack --port 3001",
+    "generate:api": "bun scripts/generate-netease-schema.ts && bun scripts/generate-netease-api.ts",
     "build": "next build --webpack",
     "start": "next start --port 3001",
     "typecheck": "next typegen && tsc --noEmit",
@@ -14,7 +15,9 @@
     "@scopify/ui": "workspace:*",
     "fumadocs-core": "16.14.4",
     "fumadocs-mdx": "^15.2.3",
-    "fumadocs-ui": "16.14.3"
+    "fumadocs-openapi": "^11.2.4",
+    "fumadocs-ui": "16.14.3",
+    "shiki": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

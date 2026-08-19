@@ -1,0 +1,190 @@
+---
+title: 视频与 MV
+full: true
+_openapi:
+  preload:
+    - ./openapi/netease-api.json
+  toc:
+    - depth: 2
+      title: 歌曲相关视频
+      url: '#歌曲相关视频'
+    - depth: 2
+      title: 将 mlog id 转为视频 id
+      url: '#将-mlog-id-转为视频-id'
+    - depth: 2
+      title: 获取 mlog 播放地址
+      url: '#获取-mlog-播放地址'
+    - depth: 2
+      title: 全部 mv
+      url: '#全部-mv'
+    - depth: 2
+      title: 获取 mv 数据
+      url: '#获取-mv-数据'
+    - depth: 2
+      title: 获取 mv 点赞转发评论数数据
+      url: '#获取-mv-点赞转发评论数数据'
+    - depth: 2
+      title: 网易出品 mv
+      url: '#网易出品-mv'
+    - depth: 2
+      title: 最新 mv
+      url: '#最新-mv'
+    - depth: 2
+      title: 收藏/取消收藏 MV
+      url: '#收藏取消收藏-mv'
+    - depth: 2
+      title: 收藏的 MV 列表
+      url: '#收藏的-mv-列表'
+    - depth: 2
+      title: mv 地址
+      url: '#mv-地址'
+    - depth: 2
+      title: 获取视频分类列表
+      url: '#获取视频分类列表'
+    - depth: 2
+      title: 视频详情
+      url: '#视频详情'
+    - depth: 2
+      title: 获取视频点赞转发评论数数据
+      url: '#获取视频点赞转发评论数数据'
+    - depth: 2
+      title: 获取视频标签/分类下的视频
+      url: '#获取视频标签分类下的视频'
+    - depth: 2
+      title: 获取视频标签列表
+      url: '#获取视频标签列表'
+    - depth: 2
+      title: 收藏视频
+      url: '#收藏视频'
+    - depth: 2
+      title: 获取全部视频列表
+      url: '#获取全部视频列表'
+    - depth: 2
+      title: 获取推荐视频
+      url: '#获取推荐视频'
+    - depth: 2
+      title: 获取视频播放地址
+      url: '#获取视频播放地址'
+  structuredData:
+    headings:
+      - content: 歌曲相关视频
+        id: 歌曲相关视频
+      - content: 将 mlog id 转为视频 id
+        id: 将-mlog-id-转为视频-id
+      - content: 获取 mlog 播放地址
+        id: 获取-mlog-播放地址
+      - content: 全部 mv
+        id: 全部-mv
+      - content: 获取 mv 数据
+        id: 获取-mv-数据
+      - content: 获取 mv 点赞转发评论数数据
+        id: 获取-mv-点赞转发评论数数据
+      - content: 网易出品 mv
+        id: 网易出品-mv
+      - content: 最新 mv
+        id: 最新-mv
+      - content: 收藏/取消收藏 MV
+        id: 收藏取消收藏-mv
+      - content: 收藏的 MV 列表
+        id: 收藏的-mv-列表
+      - content: mv 地址
+        id: mv-地址
+      - content: 获取视频分类列表
+        id: 获取视频分类列表
+      - content: 视频详情
+        id: 视频详情
+      - content: 获取视频点赞转发评论数数据
+        id: 获取视频点赞转发评论数数据
+      - content: 获取视频标签/分类下的视频
+        id: 获取视频标签分类下的视频
+      - content: 获取视频标签列表
+        id: 获取视频标签列表
+      - content: 收藏视频
+        id: 收藏视频
+      - content: 获取全部视频列表
+        id: 获取全部视频列表
+      - content: 获取推荐视频
+        id: 获取推荐视频
+      - content: 获取视频播放地址
+        id: 获取视频播放地址
+    contents:
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(mlog)/mlog_music_rcmd.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 歌曲相关视频
+      - content: 调用此接口 , 传入 mlog id, 可获取 video id，然后通过video/url 获取播放地址
+          来源模块：module/(mlog)/mlog_to_video.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 将-mlog-id-转为视频-id
+      - content: 调用此接口 , 传入 mlog id, 可获取 mlog 播放地址 来源模块：module/(mlog)/mlog_url.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 获取-mlog-播放地址
+      - content: 调用此接口 , 可获取全部 mv 来源模块：module/(mv)/mv_all.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 全部-mv
+      - content: 调用此接口 , 传入 mvid ( 在搜索音乐的时候传 type=1004 获得 ) , 可获取对应 MV 数据 , 数据包含 mv 名字 ,
+          歌手 , 发布时间 , mv 视频地址等数据 , 其中 mv 视频 网易做了防盗链处理 , 可能不能直接播放 , 需要播放的话需要调用 '
+          mv 地址' 接口 来源模块：module/(mv)/mv_detail.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 获取-mv-数据
+      - content: 调用此接口 , 传入 mvid ( 在搜索音乐的时候传 type=1004 获得 ) , 可获取对应 MV 点赞转发评论数数据
+          来源模块：module/(mv)/mv_detail_info.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 获取-mv-点赞转发评论数数据
+      - content: 调用此接口 , 可获取网易出品 mv 来源模块：module/(mv)/mv_exclusive_rcmd.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 网易出品-mv
+      - content: 调用此接口 , 可获取最新 mv 来源模块：module/(mv)/mv_first.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 最新-mv
+      - content: 调用此接口,可收藏/取消收藏 MV 来源模块：module/(mv)/mv_sub.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 收藏取消收藏-mv
+      - content: 调用此接口,可获取收藏的 MV 列表 来源模块：module/(mv)/mv_sublist.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 收藏的-mv-列表
+      - content: 调用此接口 , 传入 mv id,可获取 mv 播放地址 来源模块：module/(mv)/mv_url.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: mv-地址
+      - content: 调用此接口 , 可获取视频分类列表 来源模块：module/(video)/video_category_list.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 获取视频分类列表
+      - content: 调用此接口 , 可获取视频详情 来源模块：module/(video)/video_detail.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 视频详情
+      - content: 调用此接口 , 传入 vid ( 视频 id ) , 可获取对应视频点赞转发评论数数据
+          来源模块：module/(video)/video_detail_info.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 获取视频点赞转发评论数数据
+      - content: 调用此接口 , 传入标签/分类id,可获取到相关的视频,分页参数只能传入 offset
+          来源模块：module/(video)/video_group.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 获取视频标签分类下的视频
+      - content: 调用此接口 , 可获取视频标签列表 来源模块：module/(video)/video_group_list.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 获取视频标签列表
+      - content: 调用此接口,可收藏视频 来源模块：module/(video)/video_sub.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 收藏视频
+      - content: 调用此接口,可获取视频分类列表,分页参数只能传入 offset
+          来源模块：module/(video)/video_timeline_all.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 获取全部视频列表
+      - content: 调用此接口, 可获取推荐视频,分页参数只能传入 offset
+          来源模块：module/(video)/video_timeline_recommend.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 获取推荐视频
+      - content: 调用此接口 , 传入视频 id,可获取视频播放地址 来源模块：module/(video)/video_url.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 获取视频播放地址
+---
+
+{/* This file was generated by Fumadocs. Do not edit this file directly. Any changes should be made by running the generation command again. */}
+
+export default function Layout(props) {
+  const { APIPage, OpenAPIPage } = props.components ?? {};
+  // "APIPage" is the old name from v10, this allows both for backward compatibility
+  const Comp = OpenAPIPage ?? APIPage;
+  return (
+    <>
+      {props.children}
+      <Comp document="./openapi/netease-api.json" webhooks={[]} operations={[{"path":"/mlog/music/rcmd","method":"get"},{"path":"/mlog/to/video","method":"get"},{"path":"/mlog/url","method":"get"},{"path":"/mv/all","method":"get"},{"path":"/mv/detail","method":"get"},{"path":"/mv/detail/info","method":"get"},{"path":"/mv/exclusive/rcmd","method":"get"},{"path":"/mv/first","method":"get"},{"path":"/mv/sub","method":"get"},{"path":"/mv/sublist","method":"get"},{"path":"/mv/url","method":"get"},{"path":"/video/category/list","method":"get"},{"path":"/video/detail","method":"get"},{"path":"/video/detail/info","method":"get"},{"path":"/video/group","method":"get"},{"path":"/video/group/list","method":"get"},{"path":"/video/sub","method":"get"},{"path":"/video/timeline/all","method":"get"},{"path":"/video/timeline/recommend","method":"get"},{"path":"/video/url","method":"get"}]} showTitle showDescription />
+    </>
+  );
+}

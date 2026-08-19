@@ -1,0 +1,176 @@
+---
+title: 登录与会话
+full: true
+_openapi:
+  preload:
+    - ./openapi/netease-api.json
+  toc:
+    - depth: 2
+      title: 发送安全验证码
+      url: '#发送安全验证码'
+    - depth: 2
+      title: 发送验证码
+      url: '#发送验证码'
+    - depth: 2
+      title: 新版发送验证码
+      url: '#新版发送验证码'
+    - depth: 2
+      title: 验证验证码
+      url: '#验证验证码'
+    - depth: 2
+      title: register · anonimous
+      url: '#register--anonimous'
+    - depth: 2
+      title: 注册(修改密码)
+      url: '#注册修改密码'
+    - depth: 2
+      title: login
+      url: '#login'
+    - depth: 2
+      title: 登录
+      url: '#登录'
+    - depth: 2
+      title: login · qr · check
+      url: '#login--qr--check'
+    - depth: 2
+      title: login · qr · create
+      url: '#login--qr--create'
+    - depth: 2
+      title: login · qr · key
+      url: '#login--qr--key'
+    - depth: 2
+      title: login · refresh
+      url: '#login--refresh'
+    - depth: 2
+      title: 登录状态
+      url: '#登录状态'
+    - depth: 2
+      title: logout
+      url: '#logout'
+    - depth: 2
+      title: 初始化昵称
+      url: '#初始化昵称'
+    - depth: 2
+      title: register · checktoken · v2
+      url: '#register--checktoken--v2'
+    - depth: 2
+      title: register · checktoken · v3
+      url: '#register--checktoken--v3'
+    - depth: 2
+      title: register · xeapikey
+      url: '#register--xeapikey'
+  structuredData:
+    headings:
+      - content: 发送安全验证码
+        id: 发送安全验证码
+      - content: 发送验证码
+        id: 发送验证码
+      - content: 新版发送验证码
+        id: 新版发送验证码
+      - content: 验证验证码
+        id: 验证验证码
+      - content: register · anonimous
+        id: register--anonimous
+      - content: 注册(修改密码)
+        id: 注册修改密码
+      - content: login
+        id: login
+      - content: 登录
+        id: 登录
+      - content: login · qr · check
+        id: login--qr--check
+      - content: login · qr · create
+        id: login--qr--create
+      - content: login · qr · key
+        id: login--qr--key
+      - content: login · refresh
+        id: login--refresh
+      - content: 登录状态
+        id: 登录状态
+      - content: logout
+        id: logout
+      - content: 初始化昵称
+        id: 初始化昵称
+      - content: register · checktoken · v2
+        id: register--checktoken--v2
+      - content: register · checktoken · v3
+        id: register--checktoken--v3
+      - content: register · xeapikey
+        id: register--xeapikey
+    contents:
+      - content: 登录后调用此接口, 传入手机号, 可发送安全验证码 来源模块：module/(auth)/captcha_safe_sent.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 发送安全验证码
+      - content: 调用此接口 ,传入手机号码, 可发送验证码 来源模块：module/(auth)/captcha_sent.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 发送验证码
+      - content: 调用此接口 ,传入手机号码, 可发送验证码 来源模块：module/(auth)/captcha_sent_v1.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 新版发送验证码
+      - content: 调用此接口 ,传入手机号码和验证码, 可校验验证码是否正确
+          来源模块：module/(auth)/captcha_verify.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 验证验证码
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(auth)/register_anonimous.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: register--anonimous
+      - content: 调用此接口 ,传入手机号码和验证码,密码,昵称, 可注册网易云音乐账号(同时可修改密码)
+          来源模块：module/(auth)/register_cellphone.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 注册修改密码
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。 来源模块：module/(login)/login.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: login
+      - content: '登录有三个接口,建议使用encodeURIComponent对密码编码或者使用POST请求,避免某些特殊字符无法解析,如(在 url
+          中会被识别为 hash,而不是 query) 不要频繁调登录接口,不然可能会被风控,登录状态还存在就不要重复调登录接口 !
+          因网易增加了网易云盾验证,密码登录暂时不要使用,尽量使用短信验证码登录和二维码登录,否则调用某些接口会触发需要验证的错误 ! 二开作者注:
+          在v4.29.18版本中修复了短信登录的问题, 现在可以正常使用了
+          来源模块：module/(login)/login_cellphone.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。'
+        heading: 登录
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(login)/login_qr_check.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: login--qr--check
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(login)/login_qr_create.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: login--qr--create
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(login)/login_qr_key.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: login--qr--key
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(login)/login_refresh.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: login--refresh
+      - content: 调用此接口,可获取登录状态 来源模块：module/(login)/login_status.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 登录状态
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。 来源模块：module/(login)/logout.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: logout
+      - content: 刚注册的账号(需登录),调用此接口 ,可初始化昵称 来源模块：module/activate_init_profile.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 初始化昵称
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/register_checktoken_v2.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: register--checktoken--v2
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/register_checktoken_v3.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: register--checktoken--v3
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/register_xeapikey.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: register--xeapikey
+---
+
+{/* This file was generated by Fumadocs. Do not edit this file directly. Any changes should be made by running the generation command again. */}
+
+export default function Layout(props) {
+  const { APIPage, OpenAPIPage } = props.components ?? {};
+  // "APIPage" is the old name from v10, this allows both for backward compatibility
+  const Comp = OpenAPIPage ?? APIPage;
+  return (
+    <>
+      {props.children}
+      <Comp document="./openapi/netease-api.json" webhooks={[]} operations={[{"path":"/captcha/safe/sent","method":"get"},{"path":"/captcha/sent","method":"get"},{"path":"/captcha/sent/v1","method":"get"},{"path":"/captcha/verify","method":"get"},{"path":"/register/anonimous","method":"get"},{"path":"/register/cellphone","method":"get"},{"path":"/login","method":"get"},{"path":"/login/cellphone","method":"get"},{"path":"/login/qr/check","method":"get"},{"path":"/login/qr/create","method":"get"},{"path":"/login/qr/key","method":"get"},{"path":"/login/refresh","method":"get"},{"path":"/login/status","method":"get"},{"path":"/logout","method":"get"},{"path":"/activate/init/profile","method":"get"},{"path":"/register/checktoken/v2","method":"get"},{"path":"/register/checktoken/v3","method":"get"},{"path":"/register/xeapikey","method":"get"}]} showTitle showDescription />
+    </>
+  );
+}

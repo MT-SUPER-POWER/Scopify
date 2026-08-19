@@ -1,0 +1,54 @@
+---
+title: About Scopify
+description: 一个基于 Next.js 与 Electron 的跨平台网易云音乐客户端。
+---
+
+Scopify 是一个采用 Spotify 风格界面、连接网易云音乐服务的音乐播放器。项目同时提供 Web 与 Electron 桌面体验，并围绕歌词舞台、个性化主题和桌面播放能力持续演进。
+
+当前主要保证 Windows 桌面端适配；Web 与后端保持独立部署，桌面端可以使用随安装包提供的本地后端，也可以连接远程服务。
+
+<Cards>
+  <Card title="查看产品能力" href="/docs/features">
+    浏览播放、搜索、歌词舞台、个性化与桌面集成能力。
+  </Card>
+  <Card title="开始开发" href="/docs/getting-started">
+    准备 Bun 与 Node.js 环境，启动 Web、Electron 或完整联调环境。
+  </Card>
+  <Card title="了解技术栈" href="/docs/technology">
+    查看 Next.js、Electron、Zustand 与可视化技术的职责。
+  </Card>
+  <Card title="部署 Scopify" href="/docs/deployment">
+    选择 Vercel、Docker Compose 或桌面本地后端模式。
+  </Card>
+</Cards>
+
+## 项目定位
+
+| 维度 | 当前定位 |
+| --- | --- |
+| 产品 | Spotify 风格的网易云音乐客户端 |
+| 运行形态 | Web 应用与 Electron 桌面客户端 |
+| 前端 | Next.js App Router、React、TypeScript |
+| 桌面 | Electron Host + Web Renderer |
+| 后端 | 独立部署的 NetEase API Enhanced |
+| 包管理与编排 | Bun Workspaces + Turborepo |
+| 平台状态 | 目前重点保证 Windows 体验 |
+
+## 文档分区
+
+| 分区       | 内容                                         |
+| ---------- | -------------------------------------------- |
+| Framework  | 项目介绍、快速开始、系统架构与开发流程       |
+| UI Library | 主题基础、Shadcn 原生组件与 Scopify 产品扩展 |
+| OpenAPI    | 接口参考、Schema、请求调试与实际返回值       |
+
+## 项目资源
+
+- [GitHub 仓库](https://github.com/MT-SUPER-POWER/Scopify)
+- [发行版本](https://github.com/MT-SUPER-POWER/Scopify/releases)
+- [版本日志](https://github.com/MT-SUPER-POWER/Scopify/blob/master/docs/CHANGELOG.md)
+- [问题与建议](https://github.com/MT-SUPER-POWER/Scopify/issues)
+
+## 开源许可
+
+Scopify 使用 [GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.html) 开源。项目中的第三方来源与许可边界应同时遵循对应上游项目的要求。

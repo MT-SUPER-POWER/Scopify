@@ -1,0 +1,5 @@
+{
+  "title": "Netease API",
+  "description": "网易云音乐后端 OpenAPI 文档",
+  "pages": ["index", "request-playground", "---接口目录---", "endpoints"]
+}

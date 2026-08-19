@@ -1,0 +1,8 @@
+{
+  "title": "UI Library",
+  "description": "主题、Shadcn 与 Scopify UI",
+  "icon": "uiLibrary",
+  "root": true,
+  "pagesIndex": "ui-library",
+  "pages": ["---UI 组件库---", "ui-library", "shadcn", "scopify"]
+}

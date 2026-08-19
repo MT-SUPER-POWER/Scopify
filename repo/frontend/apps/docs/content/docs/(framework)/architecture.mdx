@@ -1,0 +1,58 @@
+---
+title: 系统架构
+description: Scopify Monorepo 的应用、共享包与部署边界。
+---
+
+## 系统组成
+
+```text
+Scopify/
+├── repo/frontend/apps/web        # Next.js Web 与 Desktop Renderer
+├── repo/frontend/apps/desktop    # Electron 主进程与 Preload
+├── repo/frontend/apps/docs       # Scopify Docs
+├── repo/frontend/packages/ui     # 共享 UI 资产
+├── repo/frontend/packages/desktop-contract
+└── repo/backend/api-enhanced     # 独立后端服务
+```
+
+## 核心边界
+
+- Web 使用 Next.js App Router、Zustand，并通过 HTTP 访问独立后端。
+- Desktop 是 Electron Host，不反向导入 Web 源码。
+- `desktop-contract` 只保存 Web 与 Desktop 之间可版本化的纯 TypeScript 契约。
+- `@scopify/ui` 只提供共享视觉基础与通用交互，不依赖路由、Store、API 或业务 i18n。
+
+## 编排
+
+根目录通过 Bun Workspaces 管理依赖，通过 Turborepo 编排构建、类型检查、测试和开发服务。
+
+## 请求链路
+
+```text
+用户操作
+  └─ Web / Electron Renderer
+       ├─ Zustand：跨页面客户端状态
+       ├─ TanStack Query：服务端数据缓存与同步
+       └─ HTTP Client
+            └─ NetEase API Enhanced
+                 └─ 网易云音乐服务
+```
+
+Web 和 Desktop Renderer 共享同一套产品界面，但 Electron Host 只负责系统能力、窗口生命周期、Preload 契约与打包。两者通过 `desktop-contract` 定义的稳定契约通信。
+
+## UI 分层
+
+| 层级 | 职责 |
+| --- | --- |
+| `@scopify/ui/shadcn` | 由 shadcn CLI 维护的原生基础组件，不进行产品化修改 |
+| `@scopify/ui/scopify` | 基于原生组件形成的通用 Scopify 视觉与交互扩展 |
+| Web 业务组件 | 包含路由、状态、API、i18n 或明确业务语义的组件 |
+
+组件能通过原生 props 与主题 token 实现时，优先直接使用 shadcn 层；只有基础 API 无法表达时，才进入 Scopify 扩展层。
+
+## 部署边界
+
+- Web 前端不依赖后端源码参与构建，只依赖可访问的 API 地址。
+- 后端可以部署到 Vercel、Docker 或其他 Node.js 运行环境。
+- Electron 可以启动内置本地后端，也可以连接独立部署的远程后端。
+- Docs 是独立应用，用于沉淀 Framework、UI Library 和 OpenAPI 内容。

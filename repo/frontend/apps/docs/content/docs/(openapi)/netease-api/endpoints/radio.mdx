@@ -1,0 +1,408 @@
+---
+title: 播客与电台
+full: true
+_openapi:
+  preload:
+    - ./openapi/netease-api.json
+  toc:
+    - depth: 2
+      title: 广播电台 - 分类/地区信息
+      url: '#广播电台---分类地区信息'
+    - depth: 2
+      title: 广播电台 - 我的收藏
+      url: '#广播电台---我的收藏'
+    - depth: 2
+      title: 广播电台 - 电台信息
+      url: '#广播电台---电台信息'
+    - depth: 2
+      title: 广播电台 - 全部电台
+      url: '#广播电台---全部电台'
+    - depth: 2
+      title: 广播电台 - 收藏/取消收藏电台
+      url: '#广播电台---收藏取消收藏电台'
+    - depth: 2
+      title: 电台 banner
+      url: '#电台-banner'
+    - depth: 2
+      title: 电台 - 非热门类型
+      url: '#电台---非热门类型'
+    - depth: 2
+      title: 电台 - 推荐类型
+      url: '#电台---推荐类型'
+    - depth: 2
+      title: 电台 - 分类
+      url: '#电台---分类'
+    - depth: 2
+      title: 电台 - 详情
+      url: '#电台---详情'
+    - depth: 2
+      title: DIFM电台 - 分类
+      url: '#difm电台---分类'
+    - depth: 2
+      title: DIFM电台 - 收藏频道
+      url: '#difm电台---收藏频道'
+    - depth: 2
+      title: DIFM电台 - 取消收藏频道
+      url: '#difm电台---取消收藏频道'
+    - depth: 2
+      title: DIFM电台 - 播放列表
+      url: '#difm电台---播放列表'
+    - depth: 2
+      title: DIFM电台 - 收藏列表
+      url: '#difm电台---收藏列表'
+    - depth: 2
+      title: 热门电台
+      url: '#热门电台'
+    - depth: 2
+      title: 电台 - 付费精选
+      url: '#电台---付费精选'
+    - depth: 2
+      title: 电台个性推荐
+      url: '#电台个性推荐'
+    - depth: 2
+      title: 电台 - 节目
+      url: '#电台---节目'
+    - depth: 2
+      title: 电台 - 节目详情
+      url: '#电台---节目详情'
+    - depth: 2
+      title: 电台 - 节目榜
+      url: '#电台---节目榜'
+    - depth: 2
+      title: 电台 - 24 小时节目榜
+      url: '#电台---24-小时节目榜'
+    - depth: 2
+      title: dj · program · v6
+      url: '#dj--program--v6'
+    - depth: 2
+      title: 电台 - 类别热门电台
+      url: '#电台---类别热门电台'
+    - depth: 2
+      title: 电台 - 推荐
+      url: '#电台---推荐'
+    - depth: 2
+      title: 电台 - 分类推荐
+      url: '#电台---分类推荐'
+    - depth: 2
+      title: 电台 - 订阅
+      url: '#电台---订阅'
+    - depth: 2
+      title: 电台的订阅列表
+      url: '#电台的订阅列表'
+    - depth: 2
+      title: 电台订阅者列表
+      url: '#电台订阅者列表'
+    - depth: 2
+      title: 电台 - 今日优选
+      url: '#电台---今日优选'
+    - depth: 2
+      title: 电台 - 新晋电台榜/热门电台榜
+      url: '#电台---新晋电台榜热门电台榜'
+    - depth: 2
+      title: 电台 - 24 小时主播榜
+      url: '#电台---24-小时主播榜'
+    - depth: 2
+      title: 电台 - 主播新人榜
+      url: '#电台---主播新人榜'
+    - depth: 2
+      title: 电台 - 付费精品
+      url: '#电台---付费精品'
+    - depth: 2
+      title: 电台 - 最热主播榜
+      url: '#电台---最热主播榜'
+    - depth: 2
+      title: 播客删除
+      url: '#播客删除'
+    - depth: 2
+      title: 播客声音详情
+      url: '#播客声音详情'
+    - depth: 2
+      title: 获取声音歌词
+      url: '#获取声音歌词'
+    - depth: 2
+      title: 播客上传声音
+      url: '#播客上传声音'
+    - depth: 2
+      title: 播客列表详情
+      url: '#播客列表详情'
+    - depth: 2
+      title: 播客声音列表
+      url: '#播客声音列表'
+    - depth: 2
+      title: 播客声音搜索
+      url: '#播客声音搜索'
+    - depth: 2
+      title: 我创建的播客声音
+      url: '#我创建的播客声音'
+    - depth: 2
+      title: voicelist · my · subscribed
+      url: '#voicelist--my--subscribed'
+    - depth: 2
+      title: 播客列表
+      url: '#播客列表'
+    - depth: 2
+      title: 播客声音排序
+      url: '#播客声音排序'
+  structuredData:
+    headings:
+      - content: 广播电台 - 分类/地区信息
+        id: 广播电台---分类地区信息
+      - content: 广播电台 - 我的收藏
+        id: 广播电台---我的收藏
+      - content: 广播电台 - 电台信息
+        id: 广播电台---电台信息
+      - content: 广播电台 - 全部电台
+        id: 广播电台---全部电台
+      - content: 广播电台 - 收藏/取消收藏电台
+        id: 广播电台---收藏取消收藏电台
+      - content: 电台 banner
+        id: 电台-banner
+      - content: 电台 - 非热门类型
+        id: 电台---非热门类型
+      - content: 电台 - 推荐类型
+        id: 电台---推荐类型
+      - content: 电台 - 分类
+        id: 电台---分类
+      - content: 电台 - 详情
+        id: 电台---详情
+      - content: DIFM电台 - 分类
+        id: difm电台---分类
+      - content: DIFM电台 - 收藏频道
+        id: difm电台---收藏频道
+      - content: DIFM电台 - 取消收藏频道
+        id: difm电台---取消收藏频道
+      - content: DIFM电台 - 播放列表
+        id: difm电台---播放列表
+      - content: DIFM电台 - 收藏列表
+        id: difm电台---收藏列表
+      - content: 热门电台
+        id: 热门电台
+      - content: 电台 - 付费精选
+        id: 电台---付费精选
+      - content: 电台个性推荐
+        id: 电台个性推荐
+      - content: 电台 - 节目
+        id: 电台---节目
+      - content: 电台 - 节目详情
+        id: 电台---节目详情
+      - content: 电台 - 节目榜
+        id: 电台---节目榜
+      - content: 电台 - 24 小时节目榜
+        id: 电台---24-小时节目榜
+      - content: dj · program · v6
+        id: dj--program--v6
+      - content: 电台 - 类别热门电台
+        id: 电台---类别热门电台
+      - content: 电台 - 推荐
+        id: 电台---推荐
+      - content: 电台 - 分类推荐
+        id: 电台---分类推荐
+      - content: 电台 - 订阅
+        id: 电台---订阅
+      - content: 电台的订阅列表
+        id: 电台的订阅列表
+      - content: 电台订阅者列表
+        id: 电台订阅者列表
+      - content: 电台 - 今日优选
+        id: 电台---今日优选
+      - content: 电台 - 新晋电台榜/热门电台榜
+        id: 电台---新晋电台榜热门电台榜
+      - content: 电台 - 24 小时主播榜
+        id: 电台---24-小时主播榜
+      - content: 电台 - 主播新人榜
+        id: 电台---主播新人榜
+      - content: 电台 - 付费精品
+        id: 电台---付费精品
+      - content: 电台 - 最热主播榜
+        id: 电台---最热主播榜
+      - content: 播客删除
+        id: 播客删除
+      - content: 播客声音详情
+        id: 播客声音详情
+      - content: 获取声音歌词
+        id: 获取声音歌词
+      - content: 播客上传声音
+        id: 播客上传声音
+      - content: 播客列表详情
+        id: 播客列表详情
+      - content: 播客声音列表
+        id: 播客声音列表
+      - content: 播客声音搜索
+        id: 播客声音搜索
+      - content: 我创建的播客声音
+        id: 我创建的播客声音
+      - content: voicelist · my · subscribed
+        id: voicelist--my--subscribed
+      - content: 播客列表
+        id: 播客列表
+      - content: 播客声音排序
+        id: 播客声音排序
+    contents:
+      - content: 调用此接口, 获取广播电台 - 分类/地区信息
+          来源模块：module/(boardcast)/broadcast_category_region_get.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 广播电台---分类地区信息
+      - content: 调用此接口, 获取广播电台 - 我的收藏
+          来源模块：module/(boardcast)/broadcast_channel_collect_list.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 广播电台---我的收藏
+      - content: 调用此接口, 传入电台 id, 获取广播电台 - 电台信息
+          来源模块：module/(boardcast)/broadcast_channel_currentinfo.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 广播电台---电台信息
+      - content: 调用此接口, 获取广播电台 - 全部电台
+          来源模块：module/(boardcast)/broadcast_channel_list.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 广播电台---全部电台
+      - content: 登录后调用此接口, 传入电台 id, 可收藏或取消收藏广播电台
+          来源模块：module/(boardcast)/broadcast_sub.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 广播电台---收藏取消收藏电台
+      - content: 调用此接口,可获取电台 banner 来源模块：module/(dj)/dj_banner.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 电台-banner
+      - content: 登录后调用此接口, 可获得电台非热门类型 来源模块：module/(dj)/dj_category_excludehot.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台---非热门类型
+      - content: 登录后调用此接口, 可获得电台推荐类型 来源模块：module/(dj)/dj_category_recommend.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 电台---推荐类型
+      - content: 登录后调用此接口 , 可获得电台类型 来源模块：module/(dj)/dj_catelist.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 电台---分类
+      - content: 登录后调用此接口 , 传入rid, 可获得对应电台的详情介绍 来源模块：module/(dj)/dj_detail.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 电台---详情
+      - content: 调用此接口, 获取DIFM电台分类 来源模块：module/(dj)/dj_difm_all_style_channel.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: difm电台---分类
+      - content: 调用此接口, 可收藏DIFM频道 来源模块：module/(dj)/dj_difm_channel_subscribe.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: difm电台---收藏频道
+      - content: 调用此接口, 可取消收藏DIFM频道
+          来源模块：module/(dj)/dj_difm_channel_unsubscribe.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: difm电台---取消收藏频道
+      - content: 调用此接口, 获取DIFM播放列表 来源模块：module/(dj)/dj_difm_playing_tracks_list.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: difm电台---播放列表
+      - content: 调用此接口, 获取DIFM电台收藏列表
+          来源模块：module/(dj)/dj_difm_subscribe_channels_get.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: difm电台---收藏列表
+      - content: 调用此接口,可获取热门电台 来源模块：module/(dj)/dj_hot.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 热门电台
+      - content: 可以获取付费精选的电台列表 , 传入 limit 和 offset 可以进行分页
+          来源模块：module/(dj)/dj_paygift.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台---付费精选
+      - content: 调用此接口,可获取电台个性推荐列表 来源模块：module/(dj)/dj_personalize_recommend.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台个性推荐
+      - content: 登录后调用此接口 , 传入rid, 可查看对应电台的电台节目以及对应的 id, 需要 注意的是这个接口返回的 mp3Url 已经无效 , 都为
+          null, 但是通过调用 /song/url 这 个接口 , 传入节目 mainTrackId 仍然能获取到节目音频 , 如
+          /song/url?id=478446370 获取代 码时间的一个节目的音频
+          来源模块：module/(dj)/dj_program.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台---节目
+      - content: 调用此接口传入电台节目 id,可获得电台节目详情 来源模块：module/(dj)/dj_program_detail.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台---节目详情
+      - content: 登录后调用此接口 , 可获得电台节目榜 来源模块：module/(dj)/dj_program_toplist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 电台---节目榜
+      - content: 调用此接口,可获取 24 小时节目榜 来源模块：module/(dj)/dj_program_toplist_hours.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台---24-小时节目榜
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(dj)/dj_program_v6.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: dj--program--v6
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(dj)/dj_radio_hot.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台---类别热门电台
+      - content: 登录后调用此接口 , 可获得推荐电台 来源模块：module/(dj)/dj_recommend.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 电台---推荐
+      - content: 登录后调用此接口 , 传入分类,可获得对应类型电台列表 来源模块：module/(dj)/dj_recommend_type.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台---分类推荐
+      - content: 登录后调用此接口 , 传入rid, 可订阅 dj,dj 的 rid 可通过搜索指定 type='1009' 获取其 id,
+          如/search?keywords= 代码时间 &type=1009 来源模块：module/(dj)/dj_sub.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 电台---订阅
+      - content: 登录后调用此接口 , 可获取订阅的电台列表 来源模块：module/(dj)/dj_sublist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 电台的订阅列表
+      - content: 调用此接口,可获取电台订阅者列表 来源模块：module/(dj)/dj_subscriber.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 电台订阅者列表
+      - content: 登录后调用此接口, 可获得电台今日优选 来源模块：module/(dj)/dj_today_perfered.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 电台---今日优选
+      - content: 登录后调用此接口 , 可获得新晋电台榜/热门电台榜 来源模块：module/(dj)/dj_toplist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 电台---新晋电台榜热门电台榜
+      - content: 调用此接口,可获取 24 小时主播榜 来源模块：module/(dj)/dj_toplist_hours.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 电台---24-小时主播榜
+      - content: 调用此接口,可获取主播新人榜 来源模块：module/(dj)/dj_toplist_newcomer.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 电台---主播新人榜
+      - content: 调用此接口,可获取付费精品电台 来源模块：module/(dj)/dj_toplist_pay.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 电台---付费精品
+      - content: 调用此接口,可获取最热主播榜 来源模块：module/(dj)/dj_toplist_popular.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 电台---最热主播榜
+      - content: 可以删除播客 来源模块：module/(voice)/voice_delete.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 播客删除
+      - content: 获取播客里的声音详情 来源模块：module/(voice)/voice_detail.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 播客声音详情
+      - content: 调用此接口可以获取声音歌词 来源模块：module/(voice)/voice_lyric.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 获取声音歌词
+      - content: '登录后调用此接口,使用''Content-Type'': ''multipart/form-data''上传声音文件
+          formData(name 为songFile),可通过 formData(name 为imgFile)同时上传声音封面。例子在
+          /public/voiceupload.html 访问地址: <a href="/voiceupload.html"
+          target="blank"/voiceupload.html</a
+          来源模块：module/(voice)/voice_upload.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。'
+        heading: 播客上传声音
+      - content: 可以获取播客封面、分类、名称、简介等 来源模块：module/(voice)/voicelist_detail.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 播客列表详情
+      - content: 可以获取播客里的声音 来源模块：module/(voice)/voicelist_list.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 播客声音列表
+      - content: 可以搜索播客里的声音 来源模块：module/(voice)/voicelist_list_search.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 播客声音搜索
+      - content: 登录后调用此接口, 获取我创建的博客声音 来源模块：module/(voice)/voicelist_my_created.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 我创建的播客声音
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(voice)/voicelist_my_subscribed.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: voicelist--my--subscribed
+      - content: 可以获取播客列表 来源模块：module/(voice)/voicelist_search.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 播客列表
+      - content: 调整声音在列表中的顺序, 每个声音都有固定的序号, 例如将 4 的声音移动到 1 后, 原来的 1、2、3 增加为 2、3、4, 其他不变
+          来源模块：module/(voice)/voicelist_trans.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 播客声音排序
+---
+
+{/* This file was generated by Fumadocs. Do not edit this file directly. Any changes should be made by running the generation command again. */}
+
+export default function Layout(props) {
+  const { APIPage, OpenAPIPage } = props.components ?? {};
+  // "APIPage" is the old name from v10, this allows both for backward compatibility
+  const Comp = OpenAPIPage ?? APIPage;
+  return (
+    <>
+      {props.children}
+      <Comp document="./openapi/netease-api.json" webhooks={[]} operations={[{"path":"/broadcast/category/region/get","method":"get"},{"path":"/broadcast/channel/collect/list","method":"get"},{"path":"/broadcast/channel/currentinfo","method":"get"},{"path":"/broadcast/channel/list","method":"get"},{"path":"/broadcast/sub","method":"get"},{"path":"/dj/banner","method":"get"},{"path":"/dj/category/excludehot","method":"get"},{"path":"/dj/category/recommend","method":"get"},{"path":"/dj/catelist","method":"get"},{"path":"/dj/detail","method":"get"},{"path":"/dj/difm/all/style/channel","method":"get"},{"path":"/dj/difm/channel/subscribe","method":"get"},{"path":"/dj/difm/channel/unsubscribe","method":"get"},{"path":"/dj/difm/playing/tracks/list","method":"get"},{"path":"/dj/difm/subscribe/channels/get","method":"get"},{"path":"/dj/hot","method":"get"},{"path":"/dj/paygift","method":"get"},{"path":"/dj/personalize/recommend","method":"get"},{"path":"/dj/program","method":"get"},{"path":"/dj/program/detail","method":"get"},{"path":"/dj/program/toplist","method":"get"},{"path":"/dj/program/toplist/hours","method":"get"},{"path":"/dj/program/v6","method":"get"},{"path":"/dj/radio/hot","method":"get"},{"path":"/dj/recommend","method":"get"},{"path":"/dj/recommend/type","method":"get"},{"path":"/dj/sub","method":"get"},{"path":"/dj/sublist","method":"get"},{"path":"/dj/subscriber","method":"get"},{"path":"/dj/today/perfered","method":"get"},{"path":"/dj/toplist","method":"get"},{"path":"/dj/toplist/hours","method":"get"},{"path":"/dj/toplist/newcomer","method":"get"},{"path":"/dj/toplist/pay","method":"get"},{"path":"/dj/toplist/popular","method":"get"},{"path":"/voice/delete","method":"get"},{"path":"/voice/detail","method":"get"},{"path":"/voice/lyric","method":"get"},{"path":"/voice/upload","method":"get"},{"path":"/voicelist/detail","method":"get"},{"path":"/voicelist/list","method":"get"},{"path":"/voicelist/list/search","method":"get"},{"path":"/voicelist/my/created","method":"get"},{"path":"/voicelist/my/subscribed","method":"get"},{"path":"/voicelist/search","method":"get"},{"path":"/voicelist/trans","method":"get"}]} showTitle showDescription />
+    </>
+  );
+}

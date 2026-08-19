@@ -1,0 +1,75 @@
+---
+title: 产品能力
+description: Scopify 当前覆盖的播放、搜索、歌词与桌面体验。
+---
+
+import mainScreenshot from "../../../../../../../docs/img/main.png";
+import playlistScreenshot from "../../../../../../../docs/img/Playlist.png";
+import searchScreenshot from "../../../../../../../docs/img/SearchResult.png";
+import lyricScreenshot from "../../../../../../../docs/img/lyricDynamic.png";
+import lyricEditorScreenshot from "../../../../../../../docs/img/lyricStyleEditor.png";
+import desktopLyricScreenshot from "../../../../../../../docs/img/desktopMusic.png";
+
+Scopify 不只是一个接口播放器。产品围绕音乐浏览、搜索、播放队列、沉浸歌词和桌面呈现形成完整体验。
+
+## 核心页面
+
+- 主页面：承载推荐内容、快捷入口与当前用户上下文。
+- 歌单页面：展示歌单资料、歌曲列表与播放入口。
+- 用户页面：展示用户资料、收藏与社交信息。
+- 评论页面：浏览歌曲、歌单等资源的评论内容。
+
+<div className="grid gap-4 md:grid-cols-2">
+  <figure>
+    <img className="rounded-xl border" src={mainScreenshot.src} alt="Scopify 主页面" />
+    <figcaption>主页面</figcaption>
+  </figure>
+  <figure>
+    <img className="rounded-xl border" src={playlistScreenshot.src} alt="Scopify 歌单页面" />
+    <figcaption>歌单页面</figcaption>
+  </figure>
+</div>
+
+## 搜索体验
+
+搜索能力包括搜索模态框、常驻搜索栏和完整结果页面。不同入口共享搜索上下文，让用户可以从快速发现自然过渡到分类结果浏览。
+
+<figure>
+  <img className="rounded-xl border" src={searchScreenshot.src} alt="Scopify 搜索结果页面" />
+  <figcaption>搜索结果页面</figcaption>
+</figure>
+
+## 歌词舞台
+
+歌词是 Scopify 最具辨识度的体验之一：
+
+- 歌词随播放进度动态呈现。
+- 提供歌词效果控制与样式编辑。
+- 支持可视化主题编辑。
+- 支持全屏歌词与桌面音乐呈现。
+- 部分完整播放舞台与桌面歌词能力来自 Folia 源码快照。
+
+<div className="grid gap-4 md:grid-cols-2">
+  <figure>
+    <img className="rounded-xl border" src={lyricScreenshot.src} alt="动态歌词界面" />
+    <figcaption>动态歌词界面</figcaption>
+  </figure>
+  <figure>
+    <img className="rounded-xl border" src={lyricEditorScreenshot.src} alt="歌词样式编辑器" />
+    <figcaption>歌词样式编辑器</figcaption>
+  </figure>
+</div>
+
+<figure>
+  <img className="rounded-xl border" src={desktopLyricScreenshot.src} alt="桌面全屏音乐效果" />
+  <figcaption>桌面全屏音乐效果</figcaption>
+</figure>
+
+## 个性化与集成
+
+- 网易乐签体验。
+- Discord Rich Presence 接入。
+- 主题编辑与歌词视觉效果控制。
+- Web 与桌面端共享音乐体验。
+
+更多歌词动态效果与播放舞台设计可参考 [Folia](https://github.com/chthollyphile/folia-major/tree/main)。

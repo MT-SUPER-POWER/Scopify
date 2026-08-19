@@ -1,0 +1,98 @@
+---
+title: 部署与运行
+description: 使用 Vercel、Docker Compose 或桌面本地后端运行 Scopify。
+---
+
+Scopify 将 Web、桌面客户端和后端分开管理。前端构建不依赖后端源码，只需要在运行时能够访问 NetEase API 服务。
+
+## Vercel：Web 与 API 分开部署
+
+建议创建两个 Vercel 项目，先部署 API，再把它的 HTTPS 地址配置给 Web。
+
+### API 项目
+
+将 Root Directory 设置为：
+
+```text
+repo/backend/api-enhanced
+```
+
+如果需要限制跨域来源，在 API 项目中配置：
+
+```bash
+CORS_ALLOW_ORIGIN=https://scopify-web.vercel.app
+```
+
+多个来源使用逗号分隔。未设置时，后端会根据请求 Origin 返回 CORS 响应。
+
+### Web 项目
+
+| Vercel 设置 | 值 |
+| --- | --- |
+| Root Directory | `repo/frontend/apps/web` |
+| Framework Preset | `Next.js` |
+| Install Command | `cd ../../../.. && bun install --frozen-lockfile` |
+| Build Command | 使用 Web 目录 `vercel.json` 中的配置 |
+
+在 Web 项目中设置完整 API 根地址：
+
+```bash
+BACKEND_PUBLIC_URL=https://scopify-api.vercel.app
+```
+
+地址不能包含路径、查询参数或哈希。该变量会在构建时写入浏览器配置，修改后需要重新部署。
+
+## Docker Compose
+
+Docker Compose 适用于本机、局域网和私有服务器：
+
+```bash
+git clone --recurse-submodules https://github.com/MT-SUPER-POWER/Scopify.git
+cd Scopify
+docker compose up -d --build
+```
+
+默认地址：
+
+- Web：`http://127.0.0.1:3000`
+- Backend：`http://127.0.0.1:3838`
+
+根目录 `.env` 可以覆盖端口和浏览器访问的后端地址：
+
+```bash
+FRONTEND_PORT=3000
+BACKEND_PUBLIC_HOST=127.0.0.1
+BACKEND_PUBLIC_PORT=3838
+```
+
+其他设备访问服务器时，`BACKEND_PUBLIC_HOST` 必须使用服务器 IP 或域名，不能继续使用 `127.0.0.1`。
+
+## Electron 后端模式
+
+桌面端支持两种模式：
+
+| 模式 | 适用场景 |
+| --- | --- |
+| 内置本地后端 | 桌面端独立运行，后端随应用启动 |
+| 独立远程后端 | 多端共享服务或连接已部署的 API |
+
+本地后端启动策略保存在桌面配置中：
+
+```yaml
+backend:
+  autoStart: true
+  port: 3838
+```
+
+桌面端会检查端口占用并显示服务状态；设置中的 Ping 可以验证目标接口是否可访问。
+
+## 单独运行后端
+
+```bash
+git submodule update --init --recursive repo/backend/api-enhanced
+cd repo/backend/api-enhanced
+docker build -t scopify-backend .
+docker run -d --name scopify-backend -p 3838:3838 -e HOST=0.0.0.0 -e PORT=3838 scopify-backend
+```
+
+完成部署后，可以在 [OpenAPI](/docs/api-reference) 中查看接口，并使用文档请求面板验证服务响应。

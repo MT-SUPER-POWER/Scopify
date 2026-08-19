@@ -1,0 +1,182 @@
+---
+title: 歌手
+full: true
+_openapi:
+  preload:
+    - ./openapi/netease-api.json
+  toc:
+    - depth: 2
+      title: 获取歌手专辑
+      url: '#获取歌手专辑'
+    - depth: 2
+      title: 获取歌手描述
+      url: '#获取歌手描述'
+    - depth: 2
+      title: 获取歌手详情
+      url: '#获取歌手详情'
+    - depth: 2
+      title: 歌手详情动态
+      url: '#歌手详情动态'
+    - depth: 2
+      title: 歌手粉丝
+      url: '#歌手粉丝'
+    - depth: 2
+      title: 歌手粉丝数量
+      url: '#歌手粉丝数量'
+    - depth: 2
+      title: 歌手分类列表
+      url: '#歌手分类列表'
+    - depth: 2
+      title: 获取歌手 mv
+      url: '#获取歌手-mv'
+    - depth: 2
+      title: 关注歌手新 MV
+      url: '#关注歌手新-mv'
+    - depth: 2
+      title: 关注歌手新歌
+      url: '#关注歌手新歌'
+    - depth: 2
+      title: 关注歌手新作品（歌曲/MV）
+      url: '#关注歌手新作品歌曲mv'
+    - depth: 2
+      title: 关注歌手最近新歌 - 播放全部
+      url: '#关注歌手最近新歌---播放全部'
+    - depth: 2
+      title: 歌手全部歌曲
+      url: '#歌手全部歌曲'
+    - depth: 2
+      title: 收藏/取消收藏歌手
+      url: '#收藏取消收藏歌手'
+    - depth: 2
+      title: 收藏的歌手列表
+      url: '#收藏的歌手列表'
+    - depth: 2
+      title: 歌手热门 50 首歌曲
+      url: '#歌手热门-50-首歌曲'
+    - depth: 2
+      title: 获取歌手视频
+      url: '#获取歌手视频'
+    - depth: 2
+      title: 获取歌手单曲
+      url: '#获取歌手单曲'
+    - depth: 2
+      title: 获取相似歌手
+      url: '#获取相似歌手'
+  structuredData:
+    headings:
+      - content: 获取歌手专辑
+        id: 获取歌手专辑
+      - content: 获取歌手描述
+        id: 获取歌手描述
+      - content: 获取歌手详情
+        id: 获取歌手详情
+      - content: 歌手详情动态
+        id: 歌手详情动态
+      - content: 歌手粉丝
+        id: 歌手粉丝
+      - content: 歌手粉丝数量
+        id: 歌手粉丝数量
+      - content: 歌手分类列表
+        id: 歌手分类列表
+      - content: 获取歌手 mv
+        id: 获取歌手-mv
+      - content: 关注歌手新 MV
+        id: 关注歌手新-mv
+      - content: 关注歌手新歌
+        id: 关注歌手新歌
+      - content: 关注歌手新作品（歌曲/MV）
+        id: 关注歌手新作品歌曲mv
+      - content: 关注歌手最近新歌 - 播放全部
+        id: 关注歌手最近新歌---播放全部
+      - content: 歌手全部歌曲
+        id: 歌手全部歌曲
+      - content: 收藏/取消收藏歌手
+        id: 收藏取消收藏歌手
+      - content: 收藏的歌手列表
+        id: 收藏的歌手列表
+      - content: 歌手热门 50 首歌曲
+        id: 歌手热门-50-首歌曲
+      - content: 获取歌手视频
+        id: 获取歌手视频
+      - content: 获取歌手单曲
+        id: 获取歌手单曲
+      - content: 获取相似歌手
+        id: 获取相似歌手
+    contents:
+      - content: 调用此接口 , 传入歌手 id, 可获得歌手专辑内容 来源模块：module/(artist)/artist_album.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 获取歌手专辑
+      - content: 调用此接口 , 传入歌手 id, 可获得歌手描述 来源模块：module/(artist)/artist_desc.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 获取歌手描述
+      - content: 调用此接口 , 传入歌手 id, 可获得获取歌手详情 来源模块：module/(artist)/artist_detail.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 获取歌手详情
+      - content: 调用后可获取歌手详情动态部分,如是否关注,视频数
+          来源模块：module/(artist)/artist_detail_dynamic.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 歌手详情动态
+      - content: 调用此接口 , 传入歌手 id, 可获取歌手粉丝 来源模块：module/(artist)/artist_fans.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 歌手粉丝
+      - content: 调用此接口 , 传入歌手 id, 可获取歌手粉丝数量
+          来源模块：module/(artist)/artist_follow_count.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 歌手粉丝数量
+      - content: 调用此接口,可获取歌手分类列表 来源模块：module/(artist)/artist_list.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 歌手分类列表
+      - content: '调用此接口 , 传入歌手 id, 可获得歌手 mv 信息 , 具体 mv 播放地址可调 用/mv传入此接口获得的 mvid 来拿到 , 如
+          : /artist/mv?id=6452,/mv?mvid=5461064
+          来源模块：module/(artist)/artist_mv.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。'
+        heading: 获取歌手-mv
+      - content: 登录后调用此接口可获取关注歌手新 MV 来源模块：module/(artist)/artist_new_mv.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 关注歌手新-mv
+      - content: 登录后调用此接口可获取关注歌手新歌 来源模块：module/(artist)/artist_new_song.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 关注歌手新歌
+      - content: 登录后调用此接口可分页获取关注歌手的新歌曲和 MV
+          来源模块：module/(artist)/artist_new_song_mv_list_v2.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 关注歌手新作品歌曲mv
+      - content: 登录后调用此接口可获取所有关注歌手最近的 50 首新歌
+          来源模块：module/(artist)/artist_new_song_playall.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 关注歌手最近新歌---播放全部
+      - content: 调用此接口,可获取歌手全部歌曲 来源模块：module/(artist)/artist_songs.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 歌手全部歌曲
+      - content: 调用此接口,可收藏歌手 来源模块：module/(artist)/artist_sub.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 收藏取消收藏歌手
+      - content: 调用此接口,可获取收藏的歌手列表 来源模块：module/(artist)/artist_sublist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 收藏的歌手列表
+      - content: 调用此接口,可获取歌手热门 50 首歌曲 来源模块：module/(artist)/artist_top_song.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 歌手热门-50-首歌曲
+      - content: 调用此接口 , 传入歌手 id, 可获得歌手视频 来源模块：module/(artist)/artist_video.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 获取歌手视频
+      - content: 调用此接口 , 传入歌手 id, 可获得歌手部分信息和热门歌曲 来源模块：module/(artist)/artists.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 获取歌手单曲
+      - content: 调用此接口 , 传入歌手 id, 可获得相似歌手 来源模块：module/(simi)/simi_artist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 获取相似歌手
+---
+
+{/* This file was generated by Fumadocs. Do not edit this file directly. Any changes should be made by running the generation command again. */}
+
+export default function Layout(props) {
+  const { APIPage, OpenAPIPage } = props.components ?? {};
+  // "APIPage" is the old name from v10, this allows both for backward compatibility
+  const Comp = OpenAPIPage ?? APIPage;
+  return (
+    <>
+      {props.children}
+      <Comp document="./openapi/netease-api.json" webhooks={[]} operations={[{"path":"/artist/album","method":"get"},{"path":"/artist/desc","method":"get"},{"path":"/artist/detail","method":"get"},{"path":"/artist/detail/dynamic","method":"get"},{"path":"/artist/fans","method":"get"},{"path":"/artist/follow/count","method":"get"},{"path":"/artist/list","method":"get"},{"path":"/artist/mv","method":"get"},{"path":"/artist/new/mv","method":"get"},{"path":"/artist/new/song","method":"get"},{"path":"/artist/new/song/mv/list/v2","method":"get"},{"path":"/artist/new/song/playall","method":"get"},{"path":"/artist/songs","method":"get"},{"path":"/artist/sub","method":"get"},{"path":"/artist/sublist","method":"get"},{"path":"/artist/top/song","method":"get"},{"path":"/artist/video","method":"get"},{"path":"/artists","method":"get"},{"path":"/simi/artist","method":"get"}]} showTitle showDescription />
+    </>
+  );
+}

@@ -1,0 +1,1530 @@
+---
+title: 其他接口
+full: true
+_openapi:
+  preload:
+    - ./openapi/netease-api.json
+  toc:
+    - depth: 2
+      title: 获取广告
+      url: '#获取广告'
+    - depth: 2
+      title: 获取免费听时长状态
+      url: '#获取免费听时长状态'
+    - depth: 2
+      title: 看广告领取权益（免费听歌时长 / 云贝等）
+      url: '#看广告领取权益免费听歌时长--云贝等'
+    - depth: 2
+      title: 私人 DJ
+      url: '#私人-dj'
+    - depth: 2
+      title: 检测手机号码是否已注册
+      url: '#检测手机号码是否已注册'
+    - depth: 2
+      title: 更换绑定手机
+      url: '#更换绑定手机'
+    - depth: 2
+      title: 乐签信息
+      url: '#乐签信息'
+    - depth: 2
+      title: 签到进度
+      url: '#签到进度'
+    - depth: 2
+      title: token · fresh
+      url: '#token--fresh'
+    - depth: 2
+      title: 验证接口-二维码生成
+      url: '#验证接口-二维码生成'
+    - depth: 2
+      title: 验证接口-二维码检测
+      url: '#验证接口-二维码检测'
+    - depth: 2
+      title: 抱一抱评论
+      url: '#抱一抱评论'
+    - depth: 2
+      title: 电台排行榜获取
+      url: '#电台排行榜获取'
+    - depth: 2
+      title: djradio · my · radio · recommend
+      url: '#djradio--my--radio--recommend'
+    - depth: 2
+      title: fanscenter · basicinfo · age · get
+      url: '#fanscenter--basicinfo--age--get'
+    - depth: 2
+      title: fanscenter · basicinfo · gender · get
+      url: '#fanscenter--basicinfo--gender--get'
+    - depth: 2
+      title: fanscenter · basicinfo · province · get
+      url: '#fanscenter--basicinfo--province--get'
+    - depth: 2
+      title: fanscenter · overview · get
+      url: '#fanscenter--overview--get'
+    - depth: 2
+      title: fanscenter · trend · list
+      url: '#fanscenter--trend--list'
+    - depth: 2
+      title: 听歌足迹 - 本周/本月收听时长
+      url: '#听歌足迹---本周本月收听时长'
+    - depth: 2
+      title: 听歌足迹 - 周/月/年收听报告
+      url: '#听歌足迹---周月年收听报告'
+    - depth: 2
+      title: 听歌足迹 - 今日收听
+      url: '#听歌足迹---今日收听'
+    - depth: 2
+      title: 听歌足迹 - 总收听时长
+      url: '#听歌足迹---总收听时长'
+    - depth: 2
+      title: 听歌足迹 - 年度听歌足迹
+      url: '#听歌足迹---年度听歌足迹'
+    - depth: 2
+      title: listentogether · accept
+      url: '#listentogether--accept'
+    - depth: 2
+      title: listentogether · end
+      url: '#listentogether--end'
+    - depth: 2
+      title: listentogether · heatbeat
+      url: '#listentogether--heatbeat'
+    - depth: 2
+      title: listentogether · play · command
+      url: '#listentogether--play--command'
+    - depth: 2
+      title: listentogether · room · check
+      url: '#listentogether--room--check'
+    - depth: 2
+      title: listentogether · room · create
+      url: '#listentogether--room--create'
+    - depth: 2
+      title: listentogether · status
+      url: '#listentogether--status'
+    - depth: 2
+      title: listentogether · sync · list · command
+      url: '#listentogether--sync--list--command'
+    - depth: 2
+      title: listentogether · sync · playlist · get
+      url: '#listentogether--sync--playlist--get'
+    - depth: 2
+      title: 通知 - 评论
+      url: '#通知---评论'
+    - depth: 2
+      title: 通知 - @我
+      url: '#通知---我'
+    - depth: 2
+      title: 通知 - 通知
+      url: '#通知---通知'
+    - depth: 2
+      title: 通知 - 私信
+      url: '#通知---私信'
+    - depth: 2
+      title: 私信内容
+      url: '#私信内容'
+    - depth: 2
+      title: 最近联系人
+      url: '#最近联系人'
+    - depth: 2
+      title: 回忆坐标
+      url: '#回忆坐标'
+    - depth: 2
+      title: 账号云豆数
+      url: '#账号云豆数'
+    - depth: 2
+      title: 领取云豆
+      url: '#领取云豆'
+    - depth: 2
+      title: 音乐人数据概况
+      url: '#音乐人数据概况'
+    - depth: 2
+      title: 音乐人播放趋势
+      url: '#音乐人播放趋势'
+    - depth: 2
+      title: 音乐人签到
+      url: '#音乐人签到'
+    - depth: 2
+      title: 音乐人任务
+      url: '#音乐人任务'
+    - depth: 2
+      title: 音乐人任务(新)
+      url: '#音乐人任务新'
+    - depth: 2
+      title: 音乐人黑胶会员任务
+      url: '#音乐人黑胶会员任务'
+    - depth: 2
+      title: 私人 FM 模式选择
+      url: '#私人-fm-模式选择'
+    - depth: 2
+      title: 最近播放-专辑
+      url: '#最近播放-专辑'
+    - depth: 2
+      title: 最近播放-播客
+      url: '#最近播放-播客'
+    - depth: 2
+      title: 最近播放-歌单
+      url: '#最近播放-歌单'
+    - depth: 2
+      title: 最近播放-歌曲
+      url: '#最近播放-歌曲'
+    - depth: 2
+      title: 最近播放-视频
+      url: '#最近播放-视频'
+    - depth: 2
+      title: 最近播放-声音
+      url: '#最近播放-声音'
+    - depth: 2
+      title: 发送私信(带专辑)
+      url: '#发送私信带专辑'
+    - depth: 2
+      title: 发送私信(带歌单)
+      url: '#发送私信带歌单'
+    - depth: 2
+      title: 发送私信(带歌曲)
+      url: '#发送私信带歌曲'
+    - depth: 2
+      title: 发送私信
+      url: '#发送私信'
+    - depth: 2
+      title: 相似 mv
+      url: '#相似-mv'
+    - depth: 2
+      title: 获取相似歌单
+      url: '#获取相似歌单'
+    - depth: 2
+      title: 获取最近 5 个听了这首歌的用户
+      url: '#获取最近-5-个听了这首歌的用户'
+    - depth: 2
+      title: 喜欢音乐
+      url: '#喜欢音乐'
+    - depth: 2
+      title: 喜欢音乐列表
+      url: '#喜欢音乐列表'
+    - depth: 2
+      title: 曲风-专辑
+      url: '#曲风-专辑'
+    - depth: 2
+      title: 曲风-歌手
+      url: '#曲风-歌手'
+    - depth: 2
+      title: 曲风详情
+      url: '#曲风详情'
+    - depth: 2
+      title: 曲风列表
+      url: '#曲风列表'
+    - depth: 2
+      title: 曲风-歌单
+      url: '#曲风-歌单'
+    - depth: 2
+      title: 曲风偏好
+      url: '#曲风偏好'
+    - depth: 2
+      title: 曲风-歌曲
+      url: '#曲风-歌曲'
+    - depth: 2
+      title: 获取热门话题
+      url: '#获取热门话题'
+    - depth: 2
+      title: 新碟上架
+      url: '#新碟上架'
+    - depth: 2
+      title: 热门歌手
+      url: '#热门歌手'
+    - depth: 2
+      title: 排行榜详情
+      url: '#排行榜详情'
+    - depth: 2
+      title: mv 排行
+      url: '#mv-排行'
+    - depth: 2
+      title: 新歌速递
+      url: '#新歌速递'
+    - depth: 2
+      title: 所有榜单
+      url: '#所有榜单'
+    - depth: 2
+      title: 歌手榜
+      url: '#歌手榜'
+    - depth: 2
+      title: 所有榜单内容摘要
+      url: '#所有榜单内容摘要'
+    - depth: 2
+      title: toplist · detail · v2
+      url: '#toplist--detail--v2'
+    - depth: 2
+      title: 获取话题详情
+      url: '#获取话题详情'
+    - depth: 2
+      title: 获取话题详情热门动态
+      url: '#获取话题详情热门动态'
+    - depth: 2
+      title: 收藏的专栏
+      url: '#收藏的专栏'
+    - depth: 2
+      title: 专辑简要百科信息
+      url: '#专辑简要百科信息'
+    - depth: 2
+      title: 歌手简要百科信息
+      url: '#歌手简要百科信息'
+    - depth: 2
+      title: 搜索歌手
+      url: '#搜索歌手'
+    - depth: 2
+      title: 用户贡献内容
+      url: '#用户贡献内容'
+    - depth: 2
+      title: mv 简要百科信息
+      url: '#mv-简要百科信息'
+    - depth: 2
+      title: 歌曲简要百科信息
+      url: '#歌曲简要百科信息'
+    - depth: 2
+      title: 用户贡献条目、积分、云贝数量
+      url: '#用户贡献条目积分云贝数量'
+    - depth: 2
+      title: 根据 nickname 获取 userid
+      url: '#根据-nickname-获取-userid'
+    - depth: 2
+      title: vip 成长值
+      url: '#vip-成长值'
+    - depth: 2
+      title: vip 成长值获取记录
+      url: '#vip-成长值获取记录'
+    - depth: 2
+      title: 领取 vip 成长值
+      url: '#领取-vip-成长值'
+    - depth: 2
+      title: 一键领取所有 vip 成长值
+      url: '#一键领取所有-vip-成长值'
+    - depth: 2
+      title: 获取 VIP 信息
+      url: '#获取-vip-信息'
+    - depth: 2
+      title: 获取 VIP 信息(app 端)
+      url: '#获取-vip-信息app-端'
+    - depth: 2
+      title: 黑胶乐签打卡
+      url: '#黑胶乐签打卡'
+    - depth: 2
+      title: 黑胶乐签详情
+      url: '#黑胶乐签详情'
+    - depth: 2
+      title: 黑胶乐签历史
+      url: '#黑胶乐签历史'
+    - depth: 2
+      title: 黑胶乐签未来打卡信息
+      url: '#黑胶乐签未来打卡信息'
+    - depth: 2
+      title: vip 任务
+      url: '#vip-任务'
+    - depth: 2
+      title: vip · tasks · v1
+      url: '#vip--tasks--v1'
+    - depth: 2
+      title: 黑胶时光机
+      url: '#黑胶时光机'
+    - depth: 2
+      title: content · my · liked · voice
+      url: '#content--my--liked--voice'
+    - depth: 2
+      title: 云贝
+      url: '#云贝'
+    - depth: 2
+      title: yunbei · expense
+      url: '#yunbei--expense'
+    - depth: 2
+      title: 云贝账户信息
+      url: '#云贝账户信息'
+    - depth: 2
+      title: 云贝推歌
+      url: '#云贝推歌'
+    - depth: 2
+      title: 云贝推歌历史记录
+      url: '#云贝推歌历史记录'
+    - depth: 2
+      title: yunbei · receipt
+      url: '#yunbei--receipt'
+    - depth: 2
+      title: 云贝签到
+      url: '#云贝签到'
+    - depth: 2
+      title: 云贝完成任务
+      url: '#云贝完成任务'
+    - depth: 2
+      title: 云贝所有任务
+      url: '#云贝所有任务'
+    - depth: 2
+      title: 云贝 todo 任务
+      url: '#云贝-todo-任务'
+    - depth: 2
+      title: 云贝今日签到信息
+      url: '#云贝今日签到信息'
+    - depth: 2
+      title: api
+      url: '#api'
+    - depth: 2
+      title: batch 批量请求接口
+      url: '#batch-批量请求接口'
+    - depth: 2
+      title: 音乐日历
+      url: '#音乐日历'
+    - depth: 2
+      title: 指定维度音乐排行榜详情
+      url: '#指定维度音乐排行榜详情'
+    - depth: 2
+      title: 指定维度音乐排行榜列表
+      url: '#指定维度音乐排行榜列表'
+    - depth: 2
+      title: 国家编码列表
+      url: '#国家编码列表'
+    - depth: 2
+      title: creator · authinfo · get
+      url: '#creator--authinfo--get'
+    - depth: 2
+      title: 签到
+      url: '#签到'
+    - depth: 2
+      title: decrypt
+      url: '#decrypt'
+    - depth: 2
+      title: 垃圾桶
+      url: '#垃圾桶'
+    - depth: 2
+      title: 多级行政区划数据
+      url: '#多级行政区划数据'
+    - depth: 2
+      title: 听歌足迹 - 歌曲播放排行
+      url: '#听歌足迹---歌曲播放排行'
+    - depth: 2
+      title: 云小编 - 每日抽奖
+      url: '#云小编---每日抽奖'
+    - depth: 2
+      title: 云小编 - 剩余抽奖次数
+      url: '#云小编---剩余抽奖次数'
+    - depth: 2
+      title: 私信和通知接口
+      url: '#私信和通知接口'
+    - depth: 2
+      title: 心动模式/智能播放
+      url: '#心动模式智能播放'
+    - depth: 2
+      title: playmode · song · vector
+      url: '#playmode--song--vector'
+    - depth: 2
+      title: 推荐节目
+      url: '#推荐节目'
+    - depth: 2
+      title: 跑步漫游
+      url: '#跑步漫游'
+    - depth: 2
+      title: 最近听歌列表
+      url: '#最近听歌列表'
+    - depth: 2
+      title: 提交歌曲播放状态
+      url: '#提交歌曲播放状态'
+    - depth: 2
+      title: 云小编 - 领取任务积分
+      url: '#云小编---领取任务积分'
+    - depth: 2
+      title: 云小编 - 活动信息
+      url: '#云小编---活动信息'
+    - depth: 2
+      title: rep · ugc · exam · info · get
+      url: '#rep--ugc--exam--info--get'
+    - depth: 2
+      title: rep · ugc · exam · question · single · get
+      url: '#rep--ugc--exam--question--single--get'
+    - depth: 2
+      title: rep · ugc · exam · result · get
+      url: '#rep--ugc--exam--result--get'
+    - depth: 2
+      title: rep · ugc · exam · start
+      url: '#rep--ugc--exam--start'
+    - depth: 2
+      title: rep · ugc · exam · submit
+      url: '#rep--ugc--exam--submit'
+    - depth: 2
+      title: 云小编 - 领取一日会员
+      url: '#云小编---领取一日会员'
+    - depth: 2
+      title: 云小编 - 获取用户详情
+      url: '#云小编---获取用户详情'
+    - depth: 2
+      title: 云小编 - 每日签到
+      url: '#云小编---每日签到'
+    - depth: 2
+      title: 云小编 - 查询会员任务状态
+      url: '#云小编---查询会员任务状态'
+    - depth: 2
+      title: 资源点赞( MV,电台,视频)
+      url: '#资源点赞-mv电台视频'
+    - depth: 2
+      title: 助眠解压 - 获取标签下资源列表
+      url: '#助眠解压---获取标签下资源列表'
+    - depth: 2
+      title: 助眠解压 - 查看同类推荐
+      url: '#助眠解压---查看同类推荐'
+    - depth: 2
+      title: 助眠解压 - 收藏
+      url: '#助眠解压---收藏'
+    - depth: 2
+      title: 助眠解压 - 收藏列表
+      url: '#助眠解压---收藏列表'
+    - depth: 2
+      title: 助眠解压 - 标签列表
+      url: '#助眠解压---标签列表'
+    - depth: 2
+      title: 助眠解压 - 特定时间场景下的推荐资源
+      url: '#助眠解压---特定时间场景下的推荐资源'
+    - depth: 2
+      title: 设置
+      url: '#设置'
+    - depth: 2
+      title: 分享文本、歌曲、歌单、mv、电台、电台节目到动态
+      url: '#分享文本歌曲歌单mv电台电台节目到动态'
+    - depth: 2
+      title: 乐谱列表
+      url: '#乐谱列表'
+    - depth: 2
+      title: 乐谱内容
+      url: '#乐谱内容'
+    - depth: 2
+      title: 云村星评馆 - 简要评论
+      url: '#云村星评馆---简要评论'
+    - depth: 2
+      title: 年度听歌报告
+      url: '#年度听歌报告'
+    - depth: 2
+      title: 云小编 - 获取任务
+      url: '#云小编---获取任务'
+    - depth: 2
+      title: 云小编 - 提交任务
+      url: '#云小编---提交任务'
+    - depth: 2
+      title: threshold · detail · get
+      url: '#threshold--detail--get'
+    - depth: 2
+      title: v1 · momo · byebye
+      url: '#v1--momo--byebye'
+    - depth: 2
+      title: v1 · artist · songs
+      url: '#v1--artist--songs'
+    - depth: 2
+      title: v1 · pc · page · rcmd · block · resource · refresh
+      url: '#v1--pc--page--rcmd--block--resource--refresh'
+    - depth: 2
+      title: v1 · pc · voicelist · rcmd · list
+      url: '#v1--pc--voicelist--rcmd--list'
+    - depth: 2
+      title: v1 · search · album · pc
+      url: '#v1--search--album--pc'
+    - depth: 2
+      title: v1 · search · artist · pc
+      url: '#v1--search--artist--pc'
+    - depth: 2
+      title: v1 · search · playlist · pc
+      url: '#v1--search--playlist--pc'
+    - depth: 2
+      title: v1 · search · song · pc
+      url: '#v1--search--song--pc'
+    - depth: 2
+      title: v1 · search · default · keyword · pc
+      url: '#v1--search--default--keyword--pc'
+    - depth: 2
+      title: v1 · search · suggest · pc
+      url: '#v1--search--suggest--pc'
+    - depth: 2
+      title: 云贝广告任务 - 完成任务领取云贝
+      url: '#云贝广告任务---完成任务领取云贝'
+    - depth: 2
+      title: 云贝广告任务 - 今日任务状态
+      url: '#云贝广告任务---今日任务状态'
+    - depth: 2
+      title: 云贝广告任务 - 获取推荐歌曲
+      url: '#云贝广告任务---获取推荐歌曲'
+  structuredData:
+    headings:
+      - content: 获取广告
+        id: 获取广告
+      - content: 获取免费听时长状态
+        id: 获取免费听时长状态
+      - content: 看广告领取权益（免费听歌时长 / 云贝等）
+        id: 看广告领取权益免费听歌时长--云贝等
+      - content: 私人 DJ
+        id: 私人-dj
+      - content: 检测手机号码是否已注册
+        id: 检测手机号码是否已注册
+      - content: 更换绑定手机
+        id: 更换绑定手机
+      - content: 乐签信息
+        id: 乐签信息
+      - content: 签到进度
+        id: 签到进度
+      - content: token · fresh
+        id: token--fresh
+      - content: 验证接口-二维码生成
+        id: 验证接口-二维码生成
+      - content: 验证接口-二维码检测
+        id: 验证接口-二维码检测
+      - content: 抱一抱评论
+        id: 抱一抱评论
+      - content: 电台排行榜获取
+        id: 电台排行榜获取
+      - content: djradio · my · radio · recommend
+        id: djradio--my--radio--recommend
+      - content: fanscenter · basicinfo · age · get
+        id: fanscenter--basicinfo--age--get
+      - content: fanscenter · basicinfo · gender · get
+        id: fanscenter--basicinfo--gender--get
+      - content: fanscenter · basicinfo · province · get
+        id: fanscenter--basicinfo--province--get
+      - content: fanscenter · overview · get
+        id: fanscenter--overview--get
+      - content: fanscenter · trend · list
+        id: fanscenter--trend--list
+      - content: 听歌足迹 - 本周/本月收听时长
+        id: 听歌足迹---本周本月收听时长
+      - content: 听歌足迹 - 周/月/年收听报告
+        id: 听歌足迹---周月年收听报告
+      - content: 听歌足迹 - 今日收听
+        id: 听歌足迹---今日收听
+      - content: 听歌足迹 - 总收听时长
+        id: 听歌足迹---总收听时长
+      - content: 听歌足迹 - 年度听歌足迹
+        id: 听歌足迹---年度听歌足迹
+      - content: listentogether · accept
+        id: listentogether--accept
+      - content: listentogether · end
+        id: listentogether--end
+      - content: listentogether · heatbeat
+        id: listentogether--heatbeat
+      - content: listentogether · play · command
+        id: listentogether--play--command
+      - content: listentogether · room · check
+        id: listentogether--room--check
+      - content: listentogether · room · create
+        id: listentogether--room--create
+      - content: listentogether · status
+        id: listentogether--status
+      - content: listentogether · sync · list · command
+        id: listentogether--sync--list--command
+      - content: listentogether · sync · playlist · get
+        id: listentogether--sync--playlist--get
+      - content: 通知 - 评论
+        id: 通知---评论
+      - content: 通知 - @我
+        id: 通知---我
+      - content: 通知 - 通知
+        id: 通知---通知
+      - content: 通知 - 私信
+        id: 通知---私信
+      - content: 私信内容
+        id: 私信内容
+      - content: 最近联系人
+        id: 最近联系人
+      - content: 回忆坐标
+        id: 回忆坐标
+      - content: 账号云豆数
+        id: 账号云豆数
+      - content: 领取云豆
+        id: 领取云豆
+      - content: 音乐人数据概况
+        id: 音乐人数据概况
+      - content: 音乐人播放趋势
+        id: 音乐人播放趋势
+      - content: 音乐人签到
+        id: 音乐人签到
+      - content: 音乐人任务
+        id: 音乐人任务
+      - content: 音乐人任务(新)
+        id: 音乐人任务新
+      - content: 音乐人黑胶会员任务
+        id: 音乐人黑胶会员任务
+      - content: 私人 FM 模式选择
+        id: 私人-fm-模式选择
+      - content: 最近播放-专辑
+        id: 最近播放-专辑
+      - content: 最近播放-播客
+        id: 最近播放-播客
+      - content: 最近播放-歌单
+        id: 最近播放-歌单
+      - content: 最近播放-歌曲
+        id: 最近播放-歌曲
+      - content: 最近播放-视频
+        id: 最近播放-视频
+      - content: 最近播放-声音
+        id: 最近播放-声音
+      - content: 发送私信(带专辑)
+        id: 发送私信带专辑
+      - content: 发送私信(带歌单)
+        id: 发送私信带歌单
+      - content: 发送私信(带歌曲)
+        id: 发送私信带歌曲
+      - content: 发送私信
+        id: 发送私信
+      - content: 相似 mv
+        id: 相似-mv
+      - content: 获取相似歌单
+        id: 获取相似歌单
+      - content: 获取最近 5 个听了这首歌的用户
+        id: 获取最近-5-个听了这首歌的用户
+      - content: 喜欢音乐
+        id: 喜欢音乐
+      - content: 喜欢音乐列表
+        id: 喜欢音乐列表
+      - content: 曲风-专辑
+        id: 曲风-专辑
+      - content: 曲风-歌手
+        id: 曲风-歌手
+      - content: 曲风详情
+        id: 曲风详情
+      - content: 曲风列表
+        id: 曲风列表
+      - content: 曲风-歌单
+        id: 曲风-歌单
+      - content: 曲风偏好
+        id: 曲风偏好
+      - content: 曲风-歌曲
+        id: 曲风-歌曲
+      - content: 获取热门话题
+        id: 获取热门话题
+      - content: 新碟上架
+        id: 新碟上架
+      - content: 热门歌手
+        id: 热门歌手
+      - content: 排行榜详情
+        id: 排行榜详情
+      - content: mv 排行
+        id: mv-排行
+      - content: 新歌速递
+        id: 新歌速递
+      - content: 所有榜单
+        id: 所有榜单
+      - content: 歌手榜
+        id: 歌手榜
+      - content: 所有榜单内容摘要
+        id: 所有榜单内容摘要
+      - content: toplist · detail · v2
+        id: toplist--detail--v2
+      - content: 获取话题详情
+        id: 获取话题详情
+      - content: 获取话题详情热门动态
+        id: 获取话题详情热门动态
+      - content: 收藏的专栏
+        id: 收藏的专栏
+      - content: 专辑简要百科信息
+        id: 专辑简要百科信息
+      - content: 歌手简要百科信息
+        id: 歌手简要百科信息
+      - content: 搜索歌手
+        id: 搜索歌手
+      - content: 用户贡献内容
+        id: 用户贡献内容
+      - content: mv 简要百科信息
+        id: mv-简要百科信息
+      - content: 歌曲简要百科信息
+        id: 歌曲简要百科信息
+      - content: 用户贡献条目、积分、云贝数量
+        id: 用户贡献条目积分云贝数量
+      - content: 根据 nickname 获取 userid
+        id: 根据-nickname-获取-userid
+      - content: vip 成长值
+        id: vip-成长值
+      - content: vip 成长值获取记录
+        id: vip-成长值获取记录
+      - content: 领取 vip 成长值
+        id: 领取-vip-成长值
+      - content: 一键领取所有 vip 成长值
+        id: 一键领取所有-vip-成长值
+      - content: 获取 VIP 信息
+        id: 获取-vip-信息
+      - content: 获取 VIP 信息(app 端)
+        id: 获取-vip-信息app-端
+      - content: 黑胶乐签打卡
+        id: 黑胶乐签打卡
+      - content: 黑胶乐签详情
+        id: 黑胶乐签详情
+      - content: 黑胶乐签历史
+        id: 黑胶乐签历史
+      - content: 黑胶乐签未来打卡信息
+        id: 黑胶乐签未来打卡信息
+      - content: vip 任务
+        id: vip-任务
+      - content: vip · tasks · v1
+        id: vip--tasks--v1
+      - content: 黑胶时光机
+        id: 黑胶时光机
+      - content: content · my · liked · voice
+        id: content--my--liked--voice
+      - content: 云贝
+        id: 云贝
+      - content: yunbei · expense
+        id: yunbei--expense
+      - content: 云贝账户信息
+        id: 云贝账户信息
+      - content: 云贝推歌
+        id: 云贝推歌
+      - content: 云贝推歌历史记录
+        id: 云贝推歌历史记录
+      - content: yunbei · receipt
+        id: yunbei--receipt
+      - content: 云贝签到
+        id: 云贝签到
+      - content: 云贝完成任务
+        id: 云贝完成任务
+      - content: 云贝所有任务
+        id: 云贝所有任务
+      - content: 云贝 todo 任务
+        id: 云贝-todo-任务
+      - content: 云贝今日签到信息
+        id: 云贝今日签到信息
+      - content: api
+        id: api
+      - content: batch 批量请求接口
+        id: batch-批量请求接口
+      - content: 音乐日历
+        id: 音乐日历
+      - content: 指定维度音乐排行榜详情
+        id: 指定维度音乐排行榜详情
+      - content: 指定维度音乐排行榜列表
+        id: 指定维度音乐排行榜列表
+      - content: 国家编码列表
+        id: 国家编码列表
+      - content: creator · authinfo · get
+        id: creator--authinfo--get
+      - content: 签到
+        id: 签到
+      - content: decrypt
+        id: decrypt
+      - content: 垃圾桶
+        id: 垃圾桶
+      - content: 多级行政区划数据
+        id: 多级行政区划数据
+      - content: 听歌足迹 - 歌曲播放排行
+        id: 听歌足迹---歌曲播放排行
+      - content: 云小编 - 每日抽奖
+        id: 云小编---每日抽奖
+      - content: 云小编 - 剩余抽奖次数
+        id: 云小编---剩余抽奖次数
+      - content: 私信和通知接口
+        id: 私信和通知接口
+      - content: 心动模式/智能播放
+        id: 心动模式智能播放
+      - content: playmode · song · vector
+        id: playmode--song--vector
+      - content: 推荐节目
+        id: 推荐节目
+      - content: 跑步漫游
+        id: 跑步漫游
+      - content: 最近听歌列表
+        id: 最近听歌列表
+      - content: 提交歌曲播放状态
+        id: 提交歌曲播放状态
+      - content: 云小编 - 领取任务积分
+        id: 云小编---领取任务积分
+      - content: 云小编 - 活动信息
+        id: 云小编---活动信息
+      - content: rep · ugc · exam · info · get
+        id: rep--ugc--exam--info--get
+      - content: rep · ugc · exam · question · single · get
+        id: rep--ugc--exam--question--single--get
+      - content: rep · ugc · exam · result · get
+        id: rep--ugc--exam--result--get
+      - content: rep · ugc · exam · start
+        id: rep--ugc--exam--start
+      - content: rep · ugc · exam · submit
+        id: rep--ugc--exam--submit
+      - content: 云小编 - 领取一日会员
+        id: 云小编---领取一日会员
+      - content: 云小编 - 获取用户详情
+        id: 云小编---获取用户详情
+      - content: 云小编 - 每日签到
+        id: 云小编---每日签到
+      - content: 云小编 - 查询会员任务状态
+        id: 云小编---查询会员任务状态
+      - content: 资源点赞( MV,电台,视频)
+        id: 资源点赞-mv电台视频
+      - content: 助眠解压 - 获取标签下资源列表
+        id: 助眠解压---获取标签下资源列表
+      - content: 助眠解压 - 查看同类推荐
+        id: 助眠解压---查看同类推荐
+      - content: 助眠解压 - 收藏
+        id: 助眠解压---收藏
+      - content: 助眠解压 - 收藏列表
+        id: 助眠解压---收藏列表
+      - content: 助眠解压 - 标签列表
+        id: 助眠解压---标签列表
+      - content: 助眠解压 - 特定时间场景下的推荐资源
+        id: 助眠解压---特定时间场景下的推荐资源
+      - content: 设置
+        id: 设置
+      - content: 分享文本、歌曲、歌单、mv、电台、电台节目到动态
+        id: 分享文本歌曲歌单mv电台电台节目到动态
+      - content: 乐谱列表
+        id: 乐谱列表
+      - content: 乐谱内容
+        id: 乐谱内容
+      - content: 云村星评馆 - 简要评论
+        id: 云村星评馆---简要评论
+      - content: 年度听歌报告
+        id: 年度听歌报告
+      - content: 云小编 - 获取任务
+        id: 云小编---获取任务
+      - content: 云小编 - 提交任务
+        id: 云小编---提交任务
+      - content: threshold · detail · get
+        id: threshold--detail--get
+      - content: v1 · momo · byebye
+        id: v1--momo--byebye
+      - content: v1 · artist · songs
+        id: v1--artist--songs
+      - content: v1 · pc · page · rcmd · block · resource · refresh
+        id: v1--pc--page--rcmd--block--resource--refresh
+      - content: v1 · pc · voicelist · rcmd · list
+        id: v1--pc--voicelist--rcmd--list
+      - content: v1 · search · album · pc
+        id: v1--search--album--pc
+      - content: v1 · search · artist · pc
+        id: v1--search--artist--pc
+      - content: v1 · search · playlist · pc
+        id: v1--search--playlist--pc
+      - content: v1 · search · song · pc
+        id: v1--search--song--pc
+      - content: v1 · search · default · keyword · pc
+        id: v1--search--default--keyword--pc
+      - content: v1 · search · suggest · pc
+        id: v1--search--suggest--pc
+      - content: 云贝广告任务 - 完成任务领取云贝
+        id: 云贝广告任务---完成任务领取云贝
+      - content: 云贝广告任务 - 今日任务状态
+        id: 云贝广告任务---今日任务状态
+      - content: 云贝广告任务 - 获取推荐歌曲
+        id: 云贝广告任务---获取推荐歌曲
+    contents:
+      - content: 调用此接口, 可获取广告 来源模块：module/(ad)/ad_get.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 获取广告
+      - content: 登录后调用此接口, 获取免费听剩余时长 来源模块：module/(ad)/ad_listening_rights.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 获取免费听时长状态
+      - content: '登录后调用此接口, 领取广告权益。权益类型由广告平台下发的配置决定, 不仅限于 30 分钟免费听歌时长, 还包括"看视频获得最高 2000
+          云贝"等拉新分段权益(rightsGainMethod=6)。除下方常用参数外,
+          权益类型/时长/扩展权益等其余字段会自动从广告下发配置补齐, 无需手动传入。 ! 警告: 通过调取接口出现的任何问题由调用者自行承担
+          来源模块：module/(ad)/ad_listening_rights_gain.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。'
+        heading: 看广告领取权益免费听歌时长--云贝等
+      - content: 调用此接口可以获取私人 DJ 的推荐内容 (包括 DJ 声音和推荐歌曲)
+          来源模块：module/(ad)/aidj_content_rcmd.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 私人-dj
+      - content: 调用此接口 ,可检测手机号码是否已注册
+          来源模块：module/(auth)/cellphone_existence_check.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 检测手机号码是否已注册
+      - content: 调用此接口 ,可更换绑定手机(流程:先发送验证码到原手机号码,再发送验证码到新手机号码然后再调用此接口)
+          来源模块：module/(auth)/rebind.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 更换绑定手机
+      - content: 调用此接口, 可获取乐签信息 来源模块：module/(auth)/sign_happy_info.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 乐签信息
+      - content: 调用此接口 , 可获得签到进度 来源模块：module/(auth)/signin_progress.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 签到进度
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(auth)/token_fresh.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: token--fresh
+      - content: 进行某些操作,如关注用户,可能会触发验证,可调用这个接口生成二维码,使用 app 扫码后可解除验证
+          来源模块：module/(auth)/verify_getQr.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 验证接口-二维码生成
+      - content: 使用此接口,传入/verify/getQr接口返回的qr字符串,可检测二维码扫描状态
+          来源模块：module/(auth)/verify_qrcodestatus.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 验证接口-二维码检测
+      - content: 调用此接口,可抱一抱评论 来源模块：module/(comment)/hug_comment.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 抱一抱评论
+      - content: 调用此接口可以获取电台排行榜 来源模块：module/(dj)/djRadio_top.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 电台排行榜获取
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(dj)/djradio_my_radio_recommend.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: djradio--my--radio--recommend
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(fancenter)/fanscenter_basicinfo_age_get.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: fanscenter--basicinfo--age--get
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(fancenter)/fanscenter_basicinfo_gender_get.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: fanscenter--basicinfo--gender--get
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(fancenter)/fanscenter_basicinfo_province_get.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: fanscenter--basicinfo--province--get
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(fancenter)/fanscenter_overview_get.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: fanscenter--overview--get
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(fancenter)/fanscenter_trend_list.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: fanscenter--trend--list
+      - content: 登录后调用此接口, 获取本周/本月收听时长
+          来源模块：module/(listen_data)/listen_data_realtime_report.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 听歌足迹---本周本月收听时长
+      - content: 登录后调用此接口, 获取周/月/年收听报告
+          来源模块：module/(listen_data)/listen_data_report.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 听歌足迹---周月年收听报告
+      - content: 登录后调用此接口, 获取今日收听
+          来源模块：module/(listen_data)/listen_data_today_song.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 听歌足迹---今日收听
+      - content: 登录后调用此接口, 获取总收听时长; 相关接口可能需要 vip 权限
+          来源模块：module/(listen_data)/listen_data_total.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 听歌足迹---总收听时长
+      - content: 登录后调用此接口, 获取年度听歌足迹
+          来源模块：module/(listen_data)/listen_data_year_report.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 听歌足迹---年度听歌足迹
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_accept.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: listentogether--accept
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_end.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: listentogether--end
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_heatbeat.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: listentogether--heatbeat
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_play_command.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: listentogether--play--command
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_room_check.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: listentogether--room--check
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_room_create.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: listentogether--room--create
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_status.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: listentogether--status
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_sync_list_command.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: listentogether--sync--list--command
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(listen_together)/listentogether_sync_playlist_get.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: listentogether--sync--playlist--get
+      - content: 登录后调用此接口 ,可获取评论 来源模块：module/(msg)/msg_comments.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 通知---评论
+      - content: 登录后调用此接口 ,可获取@我数据 来源模块：module/(msg)/msg_forwards.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 通知---我
+      - content: 登录后调用此接口 ,可获取通知 来源模块：module/(msg)/msg_notices.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 通知---通知
+      - content: 登录后调用此接口 ,可获取私信 来源模块：module/(msg)/msg_private.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 通知---私信
+      - content: 登录后调用此接口 , 可获取私信内容 来源模块：module/(msg)/msg_private_history.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 私信内容
+      - content: 登录后调用此接口 ,可获取最接近联系人 来源模块：module/(msg)/msg_recentcontact.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 最近联系人
+      - content: 可以获取当前歌曲的回忆坐标信息 (见手机 APP 百科页的回忆坐标功能)
+          来源模块：module/(musician)/music_first_listen_info.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 回忆坐标
+      - content: 音乐人登录后调用此接口 , 可获取账号云豆数
+          来源模块：module/(musician)/musician_cloudbean.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 账号云豆数
+      - content: 音乐人登录后调用此接口 , 可领取已完成的音乐人任务的云豆奖励
+          来源模块：module/(musician)/musician_cloudbean_obtain.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 领取云豆
+      - content: 音乐人登录后调用此接口 , 可获取统计数据概况
+          来源模块：module/(musician)/musician_data_overview.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 音乐人数据概况
+      - content: 音乐人登录后调用此接口 , 可获取歌曲播放趋势
+          来源模块：module/(musician)/musician_play_trend.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 音乐人播放趋势
+      - content: 音乐人登录后调用此接口，可以完成“登录音乐人中心”任务，然后通过/musician/cloudbean/obtain接口可以领取相应的云豆。
+          来源模块：module/(musician)/musician_sign.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 音乐人签到
+      - content: 音乐人登录后调用此接口 , 可获取音乐人任务。返回的数据中status字段为任务状态，0 表示任务未开始，10 表示任务正在进行中，20
+          表示任务完成，但未领取云豆，100 表示任务完成，并且已经领取了相应的云豆(貌似只能获取到做过的任务了)
+          来源模块：module/(musician)/musician_tasks.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 音乐人任务
+      - content: 音乐人登录后调用此接口 , 可获取音乐人任务。返回的数据中status字段为任务状态，0 表示任务未开始，10 表示任务正在进行中，20
+          表示任务完成，但未领取云豆，100 表示任务完成，并且已经领取了相应的云豆
+          来源模块：module/(musician)/musician_tasks_new.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 音乐人任务新
+      - content: 音乐人登录后调用此接口 , 可获取音乐人黑胶会员任务。返回的数据中missionStatus字段为任务状态，100 表示任务完成。
+          来源模块：module/(musician)/musician_vip_tasks.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 音乐人黑胶会员任务
+      - content: 调用此接口返回私人 FM 内容, 并可以选择模式
+          来源模块：module/(personal)/personal_fm_mode.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 私人-fm-模式选择
+      - content: 调用此接口 , 可获得最近播放-专辑
+          来源模块：module/(record_recnet)/record_recent_album.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 最近播放-专辑
+      - content: 调用此接口 , 可获得最近播放-播客
+          来源模块：module/(record_recnet)/record_recent_dj.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 最近播放-播客
+      - content: 调用此接口 , 可获得最近播放-歌单
+          来源模块：module/(record_recnet)/record_recent_playlist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 最近播放-歌单
+      - content: 调用此接口 , 可获得最近播放-歌曲
+          来源模块：module/(record_recnet)/record_recent_song.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 最近播放-歌曲
+      - content: 调用此接口 , 可获得最近播放-视频
+          来源模块：module/(record_recnet)/record_recent_video.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 最近播放-视频
+      - content: 调用此接口 , 可获得最近播放-声音
+          来源模块：module/(record_recnet)/record_recent_voice.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 最近播放-声音
+      - content: 登录后调用此接口 , 传入用户 id 和要发送的信息,专辑 id, 可以发送专辑私信,返回内容为消息 id
+          来源模块：module/(send)/send_album.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 发送私信带专辑
+      - content: 登录后调用此接口 , 传入用户 id 和要发送的信息和歌单 id, 可以发送带歌单的私信(注:不能发送重复的歌单)
+          来源模块：module/(send)/send_playlist.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 发送私信带歌单
+      - content: 登录后调用此接口 , 传入用户 id 和要发送的信息,音乐 id, 可以发送音乐私信,返回内容为历史私信
+          来源模块：module/(send)/send_song.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 发送私信带歌曲
+      - content: 登录后调用此接口 , 传入用户 id 和要发送的信息, 可以发送私信,返回内容为历史私信,包含带歌单的私信信息(注:不能发送私信给自己)
+          来源模块：module/(send)/send_text.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 发送私信
+      - content: 调用此接口 , 传入 mvid 可获取相似 mv 来源模块：module/(simi)/simi_mv.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 相似-mv
+      - content: 调用此接口 , 传入歌曲 id, 可获得相似歌单 来源模块：module/(simi)/simi_playlist.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 获取相似歌单
+      - content: 调用此接口 , 传入歌曲 id, 最近 5 个听了这首歌的用户 来源模块：module/(simi)/simi_user.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 获取最近-5-个听了这首歌的用户
+      - content: 调用此接口 , 传入音乐 id, 可喜欢该音乐 来源模块：module/(song)/like.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 喜欢音乐
+      - content: 调用此接口 , 传入用户 id, 可获取已喜欢音乐 id 列表(id 数组)
+          来源模块：module/(song)/likelist.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 喜欢音乐列表
+      - content: 调用此接口可以获取该曲风对应的专辑 来源模块：module/(style)/style_album.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 曲风-专辑
+      - content: 调用此接口可以获取该曲风对应的歌手 来源模块：module/(style)/style_artist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 曲风-歌手
+      - content: 调用此接口可以获取该曲风的描述信息 来源模块：module/(style)/style_detail.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 曲风详情
+      - content: 调用此接口获取曲风列表及其对应的 tagId 来源模块：module/(style)/style_list.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 曲风列表
+      - content: 调用此接口可以获取该曲风对应的歌单 来源模块：module/(style)/style_playlist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 曲风-歌单
+      - content: 登录后调用此接口获取我的曲风偏好 来源模块：module/(style)/style_preference.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 曲风偏好
+      - content: 调用此接口可以获取该曲风对应的歌曲 来源模块：module/(style)/style_song.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 曲风-歌曲
+      - content: 调用此接口 , 可获取热门话题 来源模块：module/(top)/hot_topic.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 获取热门话题
+      - content: 调用此接口 , 可获取新碟上架列表 , 如需具体音乐信息需要调用获取专辑列表接 口 /album , 然后传入 id, 如
+          /album?id=32311 来源模块：module/(top)/top_album.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 新碟上架
+      - content: 调用此接口 , 可获取热门歌手数据 来源模块：module/(top)/top_artists.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 热门歌手
+      - content: '请使用歌单详情接口,传入排行榜 id 获取排行榜详情数据(排行榜也是歌单的一种) 说明 : 调用此接口 , 传入榜单 id,
+          可获取不同排行榜数据(v3.34.0 之后不再支持 idx 参数) 必选参数 : id: 榜单 id,通过所有榜单接口获取 接口地址 :
+          /top/list 调用例子 : /top/list?id=2809577409
+          来源模块：module/(top)/top_list.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。'
+        heading: 排行榜详情
+      - content: 调用此接口 , 可获取 mv 排行 来源模块：module/(top)/top_mv.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: mv-排行
+      - content: 调用此接口 , 可获取新歌速递 来源模块：module/(top)/top_song.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 新歌速递
+      - content: 调用此接口,可获取所有榜单 来源模块：module/(top)/toplist.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 所有榜单
+      - content: 调用此接口 , 可获取排行榜中的歌手榜 来源模块：module/(top)/toplist_artist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 歌手榜
+      - content: 调用此接口,可获取所有榜单内容摘要 来源模块：module/(top)/toplist_detail.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 所有榜单内容摘要
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(top)/toplist_detail_v2.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: toplist--detail--v2
+      - content: 调用此接口 , 可获取话题详情 来源模块：module/(topic)/topic_detail.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 获取话题详情
+      - content: 调用此接口 , 可获取话题详情热门动态 来源模块：module/(topic)/topic_detail_event_hot.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 获取话题详情热门动态
+      - content: 调用此接口,可获取收藏的专栏 来源模块：module/(topic)/topic_sublist.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 收藏的专栏
+      - content: 登录后调用此接口,使用此接口,传入专辑 id,可获取对应的专辑简要百科信息
+          来源模块：module/(ugc)/ugc_album_get.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 专辑简要百科信息
+      - content: 登录后调用此接口,使用此接口,传入歌手 id,可获取对应的歌手简要百科信息
+          来源模块：module/(ugc)/ugc_artist_get.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 歌手简要百科信息
+      - content: 登录后调用此接口,使用此接口,传入歌手名关键字或者歌手 id,可获取搜索到的歌手信息
+          来源模块：module/(ugc)/ugc_artist_search.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 搜索歌手
+      - content: 登录后调用此接口,使用此接口,可获取当前登录用户贡献内容 来源模块：module/(ugc)/ugc_detail.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 用户贡献内容
+      - content: 登录后调用此接口,使用此接口,传入 mv id,可获取对应的 mv 简要百科信息
+          来源模块：module/(ugc)/ugc_mv_get.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: mv-简要百科信息
+      - content: 登录后调用此接口,使用此接口,传入歌曲 id,可获取对应的歌曲简要百科信息
+          来源模块：module/(ugc)/ugc_song_get.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 歌曲简要百科信息
+      - content: 登录后调用此接口,使用此接口,可获取当前登录用户贡献条目、积分、云贝数量
+          来源模块：module/(ugc)/ugc_user_devote.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 用户贡献条目积分云贝数量
+      - content: 使用此接口,传入用户昵称,可获取对应的用户 id,支持批量获取,多个昵称用分号(;)隔开
+          来源模块：module/(user)/get_userids.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 根据-nickname-获取-userid
+      - content: 登录后调用此接口 , 可获取当前会员成长值 来源模块：module/(vip)/vip_growthpoint.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: vip-成长值
+      - content: 登录后调用此接口可获取会员成长值领取记录 来源模块：module/(vip)/vip_growthpoint_details.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: vip-成长值获取记录
+      - content: 登录后调用此接口 , 可获取已完成的会员任务的成长值奖励
+          来源模块：module/(vip)/vip_growthpoint_get.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 领取-vip-成长值
+      - content: 登录后调用此接口 , 一键领取所有已完成的会员任务成长值奖励
+          来源模块：module/(vip)/vip_growthpoint_getall.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 一键领取所有-vip-成长值
+      - content: 登录后调用此接口，可获取当前 VIP 信息。 来源模块：module/(vip)/vip_info.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 获取-vip-信息
+      - content: 登录后调用此接口，可获取当前 VIP 信息。 来源模块：module/(vip)/vip_info_v2.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 获取-vip-信息app-端
+      - content: 登录后调用此接口, 进行黑胶乐签打卡 来源模块：module/(vip)/vip_sign.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 黑胶乐签打卡
+      - content: 登录后调用此接口, 传入时间戳, 获取黑胶乐签详情 来源模块：module/(vip)/vip_sign_detail.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 黑胶乐签详情
+      - content: 登录后调用此接口, 获取黑胶乐签历史 来源模块：module/(vip)/vip_sign_history.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 黑胶乐签历史
+      - content: 登录后调用此接口, 获取黑胶乐签打卡信息 来源模块：module/(vip)/vip_sign_info.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 黑胶乐签未来打卡信息
+      - content: 登录后调用此接口 , 可获取会员任务 来源模块：module/(vip)/vip_tasks.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: vip-任务
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(vip)/vip_tasks_v1.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: vip--tasks--v1
+      - content: 调用此接口 , 可获得黑胶时光机数据 来源模块：module/(vip)/vip_timemachine.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 黑胶时光机
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(voice)/content_my_liked_voice.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: content--my--liked--voice
+      - content: 登录后调用此接口可获取云贝签到信息(连续签到天数,第二天全部可获得的云贝)
+          来源模块：module/(yunbei)/yunbei.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 云贝
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(yunbei)/yunbei_expense.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: yunbei--expense
+      - content: 登录后调用此接口可获取云贝账户信息(账户云贝数) 来源模块：module/(yunbei)/yunbei_info.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 云贝账户信息
+      - content: 登录后调用此接口 , 传入歌曲 id, 可以进行云贝推歌
+          来源模块：module/(yunbei)/yunbei_rcmd_song.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 云贝推歌
+      - content: 登录后调用此接口 , 可以获得云贝推歌历史记录
+          来源模块：module/(yunbei)/yunbei_rcmd_song_history.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 云贝推歌历史记录
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(yunbei)/yunbei_receipt.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: yunbei--receipt
+      - content: 登录后调用此接口可进行云贝签到 来源模块：module/(yunbei)/yunbei_sign.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 云贝签到
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/(yunbei)/yunbei_task_finish.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 云贝完成任务
+      - content: 登录后调用此接口可获取云贝所有任务 来源模块：module/(yunbei)/yunbei_tasks.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 云贝所有任务
+      - content: 登录后调用此接口可获取云贝 todo 任务 来源模块：module/(yunbei)/yunbei_tasks_todo.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 云贝-todo-任务
+      - content: 登录后调用此接口可获取云贝今日签到信息(今日签到获取的云贝数)
+          来源模块：module/(yunbei)/yunbei_today.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 云贝今日签到信息
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。 来源模块：module/api.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: api
+      - content: 登录后调用此接口 ,传入接口和对应原始参数(原始参数非文档里写的参数,需参考源码),可批量请求接口
+          来源模块：module/batch.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: batch-批量请求接口
+      - content: 登录后调用此接口,传入开始和结束时间,可获取音乐日历 来源模块：module/calendar.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 音乐日历
+      - content: 调用此接口,可获取城市榜、城市风格榜等指定维度音乐排行榜详情 来源模块：module/chart_detail.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 指定维度音乐排行榜详情
+      - content: 调用此接口,可获取城市榜、城市风格榜等指定维度音乐排行榜歌曲列表 来源模块：module/chart_song_detail.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 指定维度音乐排行榜列表
+      - content: 调用此接口,可获取国家编码列表 来源模块：module/countries_code_list.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 国家编码列表
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/creator_authinfo_get.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: creator--authinfo--get
+      - content: 调用此接口 , 传入签到类型 ( 可不传 , 默认安卓端签到 ), 可签到 ( 需要登录 ), 其中安卓端签到可获得 3 点经验 ,
+          web/PC 端签到可获得 2 点经验 来源模块：module/daily_signin.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 签到
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。 来源模块：module/decrypt.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: decrypt
+      - content: 调用此接口 , 传入音乐 id, 可把该音乐从私人 FM 中移除至垃圾桶 来源模块：module/fm_trash.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 垃圾桶
+      - content: 调用此接口,可获取多级行政区划数据 来源模块：module/lbs_city_code.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 多级行政区划数据
+      - content: 登录后调用此接口, 获取歌曲播放排行, 返回每首歌的播放次数 (playCount); 默认返回前 20 名 (Top20), 不足则返回全部
+          来源模块：module/listen_data_song_play_rank.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 听歌足迹---歌曲播放排行
+      - content: '登录后调用此接口, 消耗 200 积分进行抽奖, 每日最多抽 3 次 注意: 抽奖失败也消耗每日次数, 请先调用
+          /rep/ugc/user/get 查询可用积分 来源模块：module/middle_play_do_lottery.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。'
+        heading: 云小编---每日抽奖
+      - content: 登录后调用此接口, 获取今日云小编抽奖剩余次数
+          来源模块：module/middle_play_lottery_remain_chance.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 云小编---剩余抽奖次数
+      - content: 登录后调用此接口,可获取私信和通知数量信息 来源模块：module/pl_count.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 私信和通知接口
+      - content: 登录后调用此接口 , 可获取心动模式/智能播放列表
+          来源模块：module/playmode_intelligence_list.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 心动模式智能播放
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/playmode_song_vector.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: playmode--song--vector
+      - content: 调用此接口 , 可获取推荐电台 来源模块：module/program_recommend.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 推荐节目
+      - content: 调用此接口，获取跑步漫游的歌曲信息 来源模块：module/radio_sport_get.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 跑步漫游
+      - content: 调用后可获取最近听歌列表 来源模块：module/recent_listen_list.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 最近听歌列表
+      - content: 调用此接口可提交歌曲播放状态，支持会话追踪和播放模式记录，未传入 sessionId 时后端会自动生成
+          来源模块：module/relay_play_state_submit.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 提交歌曲播放状态
+      - content: 完成任务后调用此接口, 领取云小编任务积分 来源模块：module/rep_ugc_activity_collect.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 云小编---领取任务积分
+      - content: 登录后调用此接口, 查询云小编会员活动信息 来源模块：module/rep_ugc_activity_get.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 云小编---活动信息
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/rep_ugc_exam_info_get.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: rep--ugc--exam--info--get
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/rep_ugc_exam_question_single_get.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: rep--ugc--exam--question--single--get
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/rep_ugc_exam_result_get.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: rep--ugc--exam--result--get
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/rep_ugc_exam_start.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: rep--ugc--exam--start
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/rep_ugc_exam_submit.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: rep--ugc--exam--submit
+      - content: 达成领取条件 (/rep/ugc/user/vip) 后调用此接口, 领取一日会员
+          来源模块：module/rep_ugc_user_collect-vip.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 云小编---领取一日会员
+      - content: 登录后调用此接口, 获取云小编用户详情 来源模块：module/rep_ugc_user_get.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 云小编---获取用户详情
+      - content: 登录后调用此接口, 进行云小编签到, 领取 5 积分, 签到后 /rep/ugc/user/get 返回 data.signed = 1
+          来源模块：module/rep_ugc_user_sign.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 云小编---每日签到
+      - content: 登录后调用此接口, 查询云小编会员任务状态, 当 data.status = 20 时, 可调用
+          /rep/ugc/user/collect-vip 领取会员 来源模块：module/rep_ugc_user_vip.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 云小编---查询会员任务状态
+      - content: 调用此接口 , 可对 MV,电台,视频点赞 来源模块：module/resource_like.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 资源点赞-mv电台视频
+      - content: 调用此接口, 获取标签下资源列表; 接口返回的trackId可以用于请求/song/url/v1接口，用于获取声音的下载地址
+          来源模块：module/sati_resource_list.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 助眠解压---获取标签下资源列表
+      - content: 调用此接口, 查看同类推荐 来源模块：module/sati_resource_list_more.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 助眠解压---查看同类推荐
+      - content: 调用此接口, 收藏声音 来源模块：module/sati_resource_sub.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 助眠解压---收藏
+      - content: 调用此接口, 获取收藏列表 来源模块：module/sati_resource_sub_list.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: 助眠解压---收藏列表
+      - content: 调用此接口, 获取标签列表 来源模块：module/sati_tag_list.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 助眠解压---标签列表
+      - content: 调用此接口, 获取特定时间场景下的推荐资源 来源模块：module/sati_timescene_resources_get.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 助眠解压---特定时间场景下的推荐资源
+      - content: 登录后调用此接口 ,可获取用户设置 来源模块：module/setting.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 设置
+      - content: 登录后调用此接口 ,可以分享文本、歌曲、歌单、mv、电台、电台节目,专辑到动态
+          来源模块：module/share_resource.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 分享文本歌曲歌单mv电台电台节目到动态
+      - content: 调用此接口可以获取歌曲的乐谱列表 来源模块：module/sheet_list.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 乐谱列表
+      - content: 登录后调用此接口获取乐谱的内容 来源模块：module/sheet_preview.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: 乐谱内容
+      - content: 调用此接口可以获取首页推荐的星评馆评论信息 来源模块：module/starpick_comments_summary.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: 云村星评馆---简要评论
+      - content: 登录后调用此接口,使用此接口,可获取当前登录用户年度听歌报告，目前支持 2017-2024 年的报告
+          来源模块：module/summary_annual.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 年度听歌报告
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/thinktank_audit_resource_detail.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 云小编---获取任务
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/thinktank_audit_resource_update.js。服务端兼容 GET 与 POST；本页以
+          GET 查询参数展示。
+        heading: 云小编---提交任务
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/threshold_detail_get.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: threshold--detail--get
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/(test)/momo_byebye.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: v1--momo--byebye
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。 来源模块：module/v1/artist/songs.js。服务端兼容
+          GET 与 POST；本页以 GET 查询参数展示。
+        heading: v1--artist--songs
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/pc/page_rcmd_block_resource_refresh.js。服务端兼容 GET 与
+          POST；本页以 GET 查询参数展示。
+        heading: v1--pc--page--rcmd--block--resource--refresh
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/pc/voicelist_rcmd_list.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: v1--pc--voicelist--rcmd--list
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/search/(tab)/album_pc.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: v1--search--album--pc
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/search/(tab)/artist_pc.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: v1--search--artist--pc
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/search/(tab)/playlist_pc.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: v1--search--playlist--pc
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/search/(tab)/song_pc.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: v1--search--song--pc
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/search/default_keyword_pc.js。服务端兼容 GET 与 POST；本页以 GET
+          查询参数展示。
+        heading: v1--search--default--keyword--pc
+      - content: 该接口来自当前 Netease API Enhanced 后端模块。
+          来源模块：module/v1/search/suggest_pc.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: v1--search--suggest--pc
+      - content: 登录后调用此接口可完成任务并领取云贝。实测仅需传 yunbeiAmount（单次云贝数，客户端从 list 接口的 singleAmount
+          取值，当前为 150）即可成功领取，无需真实听歌/看视频。单日上限 10 次 × 150 = 1500 云贝/天，超限返回 code:400
+          "单日完成任务数已达上限"。建议领取前先调用 /yunbei/task/list/v1 查询今日剩余次数。
+          来源模块：module/yunbei_task_finish_v1.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 云贝广告任务---完成任务领取云贝
+      - content: 登录后调用此接口可查询云贝广告任务（"听歌/看视频得云贝"）今日状态。逆向自云贝任务中心 H5
+          页面（st.music.163.com/yunbei-listen）。返回
+          times（今日已完成次数）、amount（今日累计云贝）、singleAmount（单次可得云贝）。单日上限 10 次。
+          来源模块：module/yunbei_task_list_v1.js。服务端兼容 GET 与 POST；本页以 GET 查询参数展示。
+        heading: 云贝广告任务---今日任务状态
+      - content: 登录后调用此接口可获取云贝广告任务的推荐歌曲列表。返回数组项含
+          songId、songName、artistName、albumUrl、songChorusStartTime、likeFlag、alg（均为
+          algpayrecyunBei）。 来源模块：module/yunbei_task_recommend_song.js。服务端兼容 GET
+          与 POST；本页以 GET 查询参数展示。
+        heading: 云贝广告任务---获取推荐歌曲
+---
+
+{/* This file was generated by Fumadocs. Do not edit this file directly. Any changes should be made by running the generation command again. */}
+
+export default function Layout(props) {
+  const { APIPage, OpenAPIPage } = props.components ?? {};
+  // "APIPage" is the old name from v10, this allows both for backward compatibility
+  const Comp = OpenAPIPage ?? APIPage;
+  return (
+    <>
+      {props.children}
+      <Comp document="./openapi/netease-api.json" webhooks={[]} operations={[{"path":"/ad/get","method":"get"},{"path":"/ad/listening/rights","method":"get"},{"path":"/ad/listening/rights/gain","method":"get"},{"path":"/aidj/content/rcmd","method":"get"},{"path":"/cellphone/existence/check","method":"get"},{"path":"/rebind","method":"get"},{"path":"/sign/happy/info","method":"get"},{"path":"/signin/progress","method":"get"},{"path":"/token/fresh","method":"get"},{"path":"/verify/getQr","method":"get"},{"path":"/verify/qrcodestatus","method":"get"},{"path":"/hug/comment","method":"get"},{"path":"/djRadio/top","method":"get"},{"path":"/djradio/my/radio/recommend","method":"get"},{"path":"/fanscenter/basicinfo/age/get","method":"get"},{"path":"/fanscenter/basicinfo/gender/get","method":"get"},{"path":"/fanscenter/basicinfo/province/get","method":"get"},{"path":"/fanscenter/overview/get","method":"get"},{"path":"/fanscenter/trend/list","method":"get"},{"path":"/listen/data/realtime/report","method":"get"},{"path":"/listen/data/report","method":"get"},{"path":"/listen/data/today/song","method":"get"},{"path":"/listen/data/total","method":"get"},{"path":"/listen/data/year/report","method":"get"},{"path":"/listentogether/accept","method":"get"},{"path":"/listentogether/end","method":"get"},{"path":"/listentogether/heatbeat","method":"get"},{"path":"/listentogether/play/command","method":"get"},{"path":"/listentogether/room/check","method":"get"},{"path":"/listentogether/room/create","method":"get"},{"path":"/listentogether/status","method":"get"},{"path":"/listentogether/sync/list/command","method":"get"},{"path":"/listentogether/sync/playlist/get","method":"get"},{"path":"/msg/comments","method":"get"},{"path":"/msg/forwards","method":"get"},{"path":"/msg/notices","method":"get"},{"path":"/msg/private","method":"get"},{"path":"/msg/private/history","method":"get"},{"path":"/msg/recentcontact","method":"get"},{"path":"/music/first/listen/info","method":"get"},{"path":"/musician/cloudbean","method":"get"},{"path":"/musician/cloudbean/obtain","method":"get"},{"path":"/musician/data/overview","method":"get"},{"path":"/musician/play/trend","method":"get"},{"path":"/musician/sign","method":"get"},{"path":"/musician/tasks","method":"get"},{"path":"/musician/tasks/new","method":"get"},{"path":"/musician/vip/tasks","method":"get"},{"path":"/personal/fm/mode","method":"get"},{"path":"/record/recent/album","method":"get"},{"path":"/record/recent/dj","method":"get"},{"path":"/record/recent/playlist","method":"get"},{"path":"/record/recent/song","method":"get"},{"path":"/record/recent/video","method":"get"},{"path":"/record/recent/voice","method":"get"},{"path":"/send/album","method":"get"},{"path":"/send/playlist","method":"get"},{"path":"/send/song","method":"get"},{"path":"/send/text","method":"get"},{"path":"/simi/mv","method":"get"},{"path":"/simi/playlist","method":"get"},{"path":"/simi/user","method":"get"},{"path":"/like","method":"get"},{"path":"/likelist","method":"get"},{"path":"/style/album","method":"get"},{"path":"/style/artist","method":"get"},{"path":"/style/detail","method":"get"},{"path":"/style/list","method":"get"},{"path":"/style/playlist","method":"get"},{"path":"/style/preference","method":"get"},{"path":"/style/song","method":"get"},{"path":"/hot/topic","method":"get"},{"path":"/top/album","method":"get"},{"path":"/top/artists","method":"get"},{"path":"/top/list","method":"get"},{"path":"/top/mv","method":"get"},{"path":"/top/song","method":"get"},{"path":"/toplist","method":"get"},{"path":"/toplist/artist","method":"get"},{"path":"/toplist/detail","method":"get"},{"path":"/toplist/detail/v2","method":"get"},{"path":"/topic/detail","method":"get"},{"path":"/topic/detail/event/hot","method":"get"},{"path":"/topic/sublist","method":"get"},{"path":"/ugc/album/get","method":"get"},{"path":"/ugc/artist/get","method":"get"},{"path":"/ugc/artist/search","method":"get"},{"path":"/ugc/detail","method":"get"},{"path":"/ugc/mv/get","method":"get"},{"path":"/ugc/song/get","method":"get"},{"path":"/ugc/user/devote","method":"get"},{"path":"/get/userids","method":"get"},{"path":"/vip/growthpoint","method":"get"},{"path":"/vip/growthpoint/details","method":"get"},{"path":"/vip/growthpoint/get","method":"get"},{"path":"/vip/growthpoint/getall","method":"get"},{"path":"/vip/info","method":"get"},{"path":"/vip/info/v2","method":"get"},{"path":"/vip/sign","method":"get"},{"path":"/vip/sign/detail","method":"get"},{"path":"/vip/sign/history","method":"get"},{"path":"/vip/sign/info","method":"get"},{"path":"/vip/tasks","method":"get"},{"path":"/vip/tasks/v1","method":"get"},{"path":"/vip/timemachine","method":"get"},{"path":"/content/my/liked/voice","method":"get"},{"path":"/yunbei","method":"get"},{"path":"/yunbei/expense","method":"get"},{"path":"/yunbei/info","method":"get"},{"path":"/yunbei/rcmd/song","method":"get"},{"path":"/yunbei/rcmd/song/history","method":"get"},{"path":"/yunbei/receipt","method":"get"},{"path":"/yunbei/sign","method":"get"},{"path":"/yunbei/task/finish","method":"get"},{"path":"/yunbei/tasks","method":"get"},{"path":"/yunbei/tasks/todo","method":"get"},{"path":"/yunbei/today","method":"get"},{"path":"/api","method":"get"},{"path":"/batch","method":"get"},{"path":"/calendar","method":"get"},{"path":"/chart/detail","method":"get"},{"path":"/chart/song/detail","method":"get"},{"path":"/countries/code/list","method":"get"},{"path":"/creator/authinfo/get","method":"get"},{"path":"/daily_signin","method":"get"},{"path":"/decrypt","method":"get"},{"path":"/fm_trash","method":"get"},{"path":"/lbs/city/code","method":"get"},{"path":"/listen/data/song/play/rank","method":"get"},{"path":"/middle/play/do/lottery","method":"get"},{"path":"/middle/play/lottery/remain/chance","method":"get"},{"path":"/pl/count","method":"get"},{"path":"/playmode/intelligence/list","method":"get"},{"path":"/playmode/song/vector","method":"get"},{"path":"/program/recommend","method":"get"},{"path":"/radio/sport/get","method":"get"},{"path":"/recent/listen/list","method":"get"},{"path":"/relay/play/state/submit","method":"get"},{"path":"/rep/ugc/activity/collect","method":"get"},{"path":"/rep/ugc/activity/get","method":"get"},{"path":"/rep/ugc/exam/info/get","method":"get"},{"path":"/rep/ugc/exam/question/single/get","method":"get"},{"path":"/rep/ugc/exam/result/get","method":"get"},{"path":"/rep/ugc/exam/start","method":"get"},{"path":"/rep/ugc/exam/submit","method":"get"},{"path":"/rep/ugc/user/collect-vip","method":"get"},{"path":"/rep/ugc/user/get","method":"get"},{"path":"/rep/ugc/user/sign","method":"get"},{"path":"/rep/ugc/user/vip","method":"get"},{"path":"/resource/like","method":"get"},{"path":"/sati/resource/list","method":"get"},{"path":"/sati/resource/list/more","method":"get"},{"path":"/sati/resource/sub","method":"get"},{"path":"/sati/resource/sub/list","method":"get"},{"path":"/sati/tag/list","method":"get"},{"path":"/sati/timescene/resources/get","method":"get"},{"path":"/setting","method":"get"},{"path":"/share/resource","method":"get"},{"path":"/sheet/list","method":"get"},{"path":"/sheet/preview","method":"get"},{"path":"/starpick/comments/summary","method":"get"},{"path":"/summary/annual","method":"get"},{"path":"/thinktank/audit/resource/detail","method":"get"},{"path":"/thinktank/audit/resource/update","method":"get"},{"path":"/threshold/detail/get","method":"get"},{"path":"/v1/momo/byebye","method":"get"},{"path":"/v1/artist/songs","method":"get"},{"path":"/v1/pc/page/rcmd/block/resource/refresh","method":"get"},{"path":"/v1/pc/voicelist/rcmd/list","method":"get"},{"path":"/v1/search/album/pc","method":"get"},{"path":"/v1/search/artist/pc","method":"get"},{"path":"/v1/search/playlist/pc","method":"get"},{"path":"/v1/search/song/pc","method":"get"},{"path":"/v1/search/default/keyword/pc","method":"get"},{"path":"/v1/search/suggest/pc","method":"get"},{"path":"/yunbei/task/finish/v1","method":"get"},{"path":"/yunbei/task/list/v1","method":"get"},{"path":"/yunbei/task/recommend/song","method":"get"}]} showTitle showDescription />
+    </>
+  );
+}

@@ -4,7 +4,9 @@ import type { MDXContent } from "mdx/types";
 import { notFound } from "next/navigation";
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/layouts/docs/page";
 
+import { OpenAPIPage } from "@/components/docs/api-page";
 import { getMDXComponents } from "@/components/mdx";
+import { neteaseOpenAPI } from "@/lib/openapi";
 import { source } from "@/lib/source";
 
 interface DocsRouteProps {
@@ -24,13 +26,18 @@ export default async function DocsRoute({ params }: DocsRouteProps) {
 
   const data = page.data as typeof page.data & CompiledDocsData;
   const Content = data.body;
+  const components = getMDXComponents({
+    OpenAPIPage: async (props) => (
+      <OpenAPIPage {...await neteaseOpenAPI.preloadOpenAPIPage(page)} {...props} />
+    ),
+  });
 
   return (
     <DocsPage toc={data.toc} full={data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <Content components={getMDXComponents()} />
+        <Content components={components} />
       </DocsBody>
     </DocsPage>
   );
