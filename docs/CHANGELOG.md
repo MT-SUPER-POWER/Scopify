@@ -4,8 +4,11 @@
 
 ### Added
 
+- **接入 LLMs 与 Markdown 导出能力**：支持 /llms.txt 结构化大纲索引、/llms-full.txt 全量纯文本文档与 /docs/*.md 单页 Markdown 获取，所有处理端点收敛于 pp/api/llms。
+- **支持文档页面操作与 AI 快捷打开**：在文档页面顶部提供一键复制 Markdown 与跳转打开至 GitHub、ChatGPT、Claude、Cursor 等 AI 工具的交互操作栏，并补全中文本地化词条。
 - **整理 Desktop IPC 文档导航**：在 OpenAPI 下新增与 Netease API 平级的 Desktop IPC 分组，并预留 About、架构、契约、能力版本、通道参考、运行时适配、扩展流程与安全边界页面。
 - **补充 Desktop IPC 文档正文**：记录当前 Renderer、Preload、Main 与 Runtime 的通信架构、共享契约、能力协商、通道分类、扩展流程和安全边界。
+- **拆分 Framework 路线图与发布文档**：路线图只保留产品方向与长期提案，新增独立的发布与 CI/CD 页面，记录 Tag 触发、Renderer artifact、平台矩阵、校验、证明和 GitHub Release 流程。
 - **补全 Netease API 路由命名说明**：记录目录前缀、括号路由组、文件名下划线转换、版本目录、`index.js` 行为与模块 identifier 唯一性。
 - **补充 Netease API 后端模块指南**：在 Netease API 文档分组下新增模块路由映射、统一请求选项、参数处理、测试验证与 Scopify 同步流程。
 - **补充新增接口指南**：将后端模块路由映射、`createOption`、Web 三层 API 架构、认证与错误边界、Apifox 同步和提交前验证清单落到 OpenAPI 文档。

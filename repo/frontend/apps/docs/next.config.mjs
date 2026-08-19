@@ -1,9 +1,28 @@
 import { createMDX } from "fumadocs-mdx/next";
 
-/** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
   transpilePackages: ["@scopify/ui"],
+  async rewrites() {
+    return [
+      {
+        source: "/llms.txt",
+        destination: "/api/llms/index",
+      },
+      {
+        source: "/llms-full.txt",
+        destination: "/api/llms/full",
+      },
+      {
+        source: "/docs.md",
+        destination: "/api/llms/page",
+      },
+      {
+        source: "/docs/:path*.md",
+        destination: "/api/llms/page/:path*",
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX();
