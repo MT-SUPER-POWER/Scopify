@@ -1,0 +1,241 @@
+---
+title: 新增接口指南
+description: 从后端路由、前端数据层到 API 文档，完整实现一个新接口。
+---
+
+新增接口不是只添加一个请求函数。一个完整的接口需要同时明确服务归属、路由命名、参数与响应契约、前端数据层、错误处理、认证边界、文档来源和验证方式。
+
+本页覆盖两类接口：
+
+- **NetEase API Enhanced 接口**：后端模块位于 `repo/backend/api-enhanced/module/`，公开说明维护在 [Apifox](https://vdoonnridu.apifox.cn/)。
+- **Scopify 自有接口**：由 Scopify Web 或其他服务直接提供，契约和说明维护在当前 OpenAPI 文档域。
+
+## 1. 先确定接口归属
+
+开始编码前，先回答三个问题：
+
+| 问题 | 判断方式 |
+| --- | --- |
+| 谁提供接口？ | 网易云上游能力走 API Enhanced；Scopify 自有业务才进入 Scopify API。 |
+| 谁维护契约？ | API Enhanced 接口进入 Apifox；Scopify 自有契约进入本仓库 OpenAPI 文档。 |
+| 是否有副作用？ | 查询使用 Query；签到、点赞、删除、更新等操作使用 Mutation，并明确认证与失败语义。 |
+
+如果只是前端对已有接口的新使用场景，不要重复创建后端接口，先复用已有 API 封装和类型。
+
+## 2. API Enhanced：添加后端模块
+
+API Enhanced 会自动扫描 `module/` 目录并注册路由，不需要手动修改路由表。
+
+### 文件名就是路由
+
+普通模块使用下划线表达路径：
+
+```text
+module/playlist_detail.js       → GET /playlist/detail
+module/user_bindingcellphone.js → GET /user/bindingcellphone
+module/song_url.js              → GET /song/url
+```
+
+`daily_signin.js`、`fm_trash.js`、`personal_fm.js` 是服务端特殊映射，新增接口不要随意复用这些特例名称。新增或修改文件名会改变公开路由，可能破坏已有客户端，因此应优先保持旧路径兼容。
+
+### 模块实现
+
+新模块应照抄同领域文件的结构，只负责把参数转换为上游请求：
+
+```js
+const { createOption } = require('../util/option')
+
+module.exports = (query, request) => {
+  const { id, limit = 20 } = query
+
+  return request(
+    '/api/resource/detail',
+    { id, limit },
+    createOption(query),
+  )
+}
+```
+
+实现时遵循这些边界：
+
+- 使用 `createOption(query)` 生成加密、Cookie、代理、IP、Header 和超时选项。
+- `util/request.js` 是唯一的对外 HTTP 层，不要在模块里另起 Axios 或 `fetch`。
+- 模块只负责参数转换和上游调用，不放 UI 提示、Store 更新或页面跳转。
+- 选择与同目录接口一致的加密配置，不要为了“能请求”关闭默认加密。
+- 必填参数应在模块入口尽早校验，并返回项目已有的错误形式。
+- 不要把 Cookie、Token 或其他凭据写入日志、示例和提交记录。
+
+API Enhanced 服务默认监听 `PORT`（默认 `3000`）；这和 Docs 应用的 `9191` 端口不是同一个服务。
+
+## 3. 前端按三层落地
+
+Web 前端的接口实现必须保持三层边界：
+
+```text
+组件 / 页面
+      ↓
+hooks/<domain>/             Query、Mutation、缓存与副作用
+      ↓
+lib/api/<domain>.ts         纯请求封装
+      ↓
+lib/web/request.ts          Axios 实例、base URL 与通用错误边界
+```
+
+### 3.1 类型层：`types/api/`
+
+请求和响应类型按领域放在 `types/api/`，禁止把长期使用的接口类型散落在页面或组件中：
+
+```ts
+// types/api/playlist.ts
+export interface PlaylistDetailParams {
+  id: number
+  limit?: number
+}
+
+export interface PlaylistDetailResponse {
+  code: number
+  playlist: PlaylistDetail
+  privileges: PlaylistPrivilege[]
+}
+
+export interface PlaylistDetail {
+  id: number
+  name: string
+  trackCount: number
+}
+
+export interface PlaylistPrivilege {
+  id: number
+  playMaxbr: number
+}
+```
+
+类型命名应体现领域和方向，例如 `PlaylistDetailResponse`、`PlaylistDetailParams`。不确定的上游字段使用可选字段或明确的联合类型，不要用大面积 `any` 隐藏契约不稳定。
+
+### 3.2 请求层：`lib/api/`
+
+请求函数是薄封装，只负责调用统一 request 并传递参数：
+
+```ts
+// lib/api/playlist.ts
+import request from '@/lib/web/request'
+import type {
+  PlaylistDetailParams,
+  PlaylistDetailResponse,
+} from '@/types/api/playlist'
+
+export function getPlaylistDetail(params: PlaylistDetailParams) {
+  return request.get<PlaylistDetailResponse>('/playlist/detail', {
+    params,
+  })
+}
+```
+
+请求层不应该：
+
+- 读取 `localStorage`、Cookie 或 Zustand Store；
+- 弹 Toast、改变页面状态或执行路由跳转；
+- 把一个接口拆成多个业务动作；
+- 在 `lib/api/` 内定义请求和响应 `interface`。
+
+### 3.3 数据层：`hooks/`
+
+需要缓存、跨组件共享或处理加载状态时，使用 TanStack Query：
+
+```ts
+// hooks/playlist/usePlaylistDetail.ts
+import { useQuery } from '@tanstack/react-query'
+
+import { getPlaylistDetail } from '@/lib/api/playlist'
+
+export const playlistKeys = {
+  all: ['playlist'] as const,
+  detail: (id: number) => ['playlist', 'detail', id] as const,
+}
+
+export function usePlaylistDetail(id: number) {
+  return useQuery({
+    queryKey: playlistKeys.detail(id),
+    queryFn: () => getPlaylistDetail({ id }),
+    enabled: id > 0,
+    staleTime: 2 * 60 * 1000,
+  })
+}
+```
+
+有副作用的接口使用 `useMutation`，成功后按领域 Query Key 精确失效缓存；不要在组件里直接 `useEffect + useState` 手写请求生命周期。
+
+## 4. 认证、参数与错误边界
+
+新增接口至少要记录这些契约信息：
+
+| 项目 | 要求 |
+| --- | --- |
+| HTTP 方法 | 明确 GET、POST 或其他方法，不因方便把所有操作都做成 GET。 |
+| 路径 | 与现有领域命名一致，避免同义路径和大小写变化。 |
+| 必填参数 | 写出类型、来源、取值范围和缺失时的行为。 |
+| 可选参数 | 写出默认值，以及默认值是否会改变请求成本。 |
+| 响应 | 成功结构、空结果结构和分页字段都要有类型。 |
+| 认证 | 明确是否需要 Cookie、Token 或登录状态。 |
+| 错误 | 区分网络失败、鉴权失败、参数错误和上游业务错误。 |
+| 副作用 | 标记是否会点赞、关注、删除、签到或修改用户数据。 |
+
+认证信息只能由已有的请求基础设施注入。接口文档示例使用脱敏值；不要把真实 Cookie 放到 Markdown、截图、测试快照或环境提交中。
+
+## 5. 同步 API 文档
+
+### NetEase API Enhanced
+
+NetEase API 的公开接口文档统一维护在 [Apifox](https://vdoonnridu.apifox.cn/)。新增后端模块后：
+
+1. 在 Apifox 中补充接口名称、方法、路径和参数。
+2. 添加成功、空结果和常见错误响应示例。
+3. 标明是否需要登录、Cookie 或特殊请求头。
+4. 对有副作用的接口增加警告，避免把真实账号作为示例。
+5. 使用本地或测试账号验证后，再更新前端类型和调用层。
+
+### Scopify 自有 API
+
+Scopify 自有接口的 About、契约说明和使用边界放在当前 OpenAPI 文档域。如果后续引入机器可读 Schema，应将 Schema、生成方式和版本策略一起提交，不要只提交一张没有来源的 JSON 快照。
+
+## 6. 验证清单
+
+### 后端 API Enhanced
+
+```bash
+cd repo/backend/api-enhanced
+pnpm lint
+pnpm test
+```
+
+测试会请求真实网易云上游，可能受到网络、风控和限流影响；单独复现某个用例时使用后端 AGENTS.md 中的 Mocha `--grep` 命令。
+
+### Web 前端
+
+```bash
+bun run typecheck
+bun run lint
+bun run build:web
+```
+
+至少覆盖：
+
+- 无参数、缺失必填参数和非法参数；
+- 未登录、Cookie 失效和权限不足；
+- 空数组、空对象、分页结束和上游错误；
+- Query 缓存 Key 是否包含所有影响结果的参数；
+- Mutation 成功后相关缓存是否失效；
+- Web 与 Electron 是否都能通过 `desktop-contract` 需要的边界。
+
+## 7. 提交前检查清单
+
+- [ ] 已确认这是新增接口，而不是可复用的已有接口。
+- [ ] 已选择正确的后端模块路径，并确认文件名映射出的公开路由。
+- [ ] 模块只负责上游请求，使用了 `createOption(query)` 和统一 request。
+- [ ] 请求、响应和错误类型已放入 `types/api/`。
+- [ ] 请求封装已放入 `lib/api/`，没有混入 UI 或业务状态。
+- [ ] 缓存和副作用已放入对应 `hooks/`，并设计了 Query Key。
+- [ ] 已记录认证、参数默认值、空结果和副作用风险。
+- [ ] NetEase API 已同步到 Apifox；Scopify 自有 API 已同步 OpenAPI 文档。
+- [ ] 后端测试、前端类型检查、Lint 和构建已执行。
+- [ ] 已在 `docs/CHANGELOG.md` 记录所属分类和变更。

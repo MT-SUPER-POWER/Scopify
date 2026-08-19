@@ -4,6 +4,7 @@
 
 ### Added
 
+- **补充新增接口指南**：将后端模块路由映射、`createOption`、Web 三层 API 架构、认证与错误边界、Apifox 同步和提交前验证清单落到 OpenAPI 文档。
 - **简化 Netease API 文档入口**：移除本地生成的接口镜像与请求调试页面，OpenAPI 文档域统一跳转到 Apifox 维护的网易云音乐接口文档。
 - **扩充 Framework 文档**：根据仓库 README 重组产品能力、技术栈、开发启动、系统架构、部署运行、路线图与发布规范，并复用现有产品截图形成可浏览的项目知识入口。
 - **新增 Scopify Docs 文档工作台**：新增独立 `@scopify/docs` Fumadocs 应用并接入现有 Scopify 产品 Logo；侧栏以 GitHub Repository 为首项，并按 Document、UI Library、API Reference 三个文档域组织内容，将 Shadcn / Scopify 降级为 UI Library 内的资产分类；为当前 5 个 Shadcn 组件补齐可搜索文档、导入示例与交互预览，保留 Scopify 组件体系规划入口，并新增快速开始、架构与 API 规划页面以及 `dev:docs` / `build:docs` 工作区命令。
