@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --webpack --port 3001",
+    "dev": "next dev --webpack --port 9191",
     "generate:api": "bun scripts/generate-netease-schema.ts && bun scripts/generate-netease-api.ts",
     "build": "next build --webpack",
-    "start": "next start --port 3001",
+    "start": "next start --port 9191",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint . --max-warnings 0 --no-warn-ignored"
   },

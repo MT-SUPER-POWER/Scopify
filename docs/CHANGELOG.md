@@ -517,6 +517,7 @@
 
 ## Added
 
+- **统一文档服务端口**：将 Scopify Docs 的开发与生产服务默认端口调整为 `9191`，确保 `dev:docs` 与构建后启动使用同一地址。
 - 将 ReplayGain 音频增益迁入 VisualSetting 侧栏第一 Tab 的音频设置快捷区，支持关闭、单曲和专辑模式，持久化选择并在播放链路中平滑应用增益与峰值保护。
 - VisualSetting 侧栏中的 ReplayGain 改为独立一行，避免与音质和均衡器入口挤在同一组。
 
