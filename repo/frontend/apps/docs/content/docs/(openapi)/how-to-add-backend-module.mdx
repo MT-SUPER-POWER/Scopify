@@ -1,5 +1,5 @@
 ---
-title: 新增后端模块
+title: 新增 NetEase API 模块
 description: 在 Netease API Enhanced 中添加一个后端模块并同步到 Scopify。
 ---
 
@@ -25,17 +25,27 @@ pnpm i
 pnpm dev
 ```
 
-## 2. 文件名决定公开路由
+## 2. 路由命名机制：目录前缀 + 文件名
 
-服务端会把模块文件名中的下划线转换成路径分隔符：
+公开路由由 `server.js` 递归扫描 `module/` 目录后计算，不需要单独维护 Express 路由表。最终路径由“普通目录前缀”和“文件名路径”拼接而成：
 
-```text
-module/playlist_detail.js       → GET /playlist/detail
-module/user_bindingcellphone.js → GET /user/bindingcellphone
-module/song_url.js              → GET /song/url
-```
+| 模块文件 | 公开路由 | 命名规则 |
+| --- | --- | --- |
+| `module/playlist_detail.js` | `/playlist/detail` | 文件名中的 `_` 转换为 `/` |
+| `module/(playlist)/playlist_detail.js` | `/playlist/detail` | 括号目录是路由组，只用于归类，不进入 URL |
+| `module/v1/artist/songs.js` | `/v1/artist/songs` | 普通目录名成为 URL 前缀 |
+| `module/v1/search/(tab)/album_pc.js` | `/v1/search/album/pc` | 目录前缀、路由组和文件名规则可以组合使用 |
 
-因此，新增模块前要先把最终 URL 写下来，再决定文件名。不要用同义词创建重复路径，也不要为了“更符合前端命名”随意重命名已有模块。
+### 命名规则
+
+- `.js` 扩展名不会出现在路由中；文件名主体就是最后一段路径。
+- 文件名中的下划线是路径分隔符，因此 `voicelist_rcmd_list.js` 会变成 `voicelist/rcmd/list`，不能把下划线当作普通字符使用。
+- 不带括号的目录会进入公开 URL；只想按领域整理文件、又不想改变 URL 时，使用 `(playlist)`、`(search)` 这样的路由组目录。
+- `module/v1` 中的 `v1` 是实际的版本前缀，新增版本接口应明确决定是否进入对应版本目录。
+- 当前扫描器不会把 `index.js` 折叠成父目录路由；`module/foo/index.js` 会得到 `/foo/index`，不要按 Next.js 的习惯假设它会变成 `/foo`。
+- 模块文件名主体同时也是 Node 模块导出的 identifier，应在所有模块目录中保持唯一，避免 `main.js` 的导出被覆盖。
+
+新增模块前要先确定最终公开 URL，再反推目录和文件名。不要用同义词创建重复路径，也不要为了“更符合前端命名”随意重命名已有模块。前端的 `types/api`、`lib/api` 和 `hooks` 命名可以按业务领域组织，但不能反过来改变后端公开路由。
 
 ### 特殊路由
 
@@ -181,8 +191,9 @@ pnpm test
 
 ## 提交前清单
 
-- [ ] 文件名映射出的公开路由已经确认。
+- [ ] 目录前缀、路由组和文件名映射出的公开路由已经确认。
 - [ ] 没有覆盖或重命名已有公共路径。
+- [ ] 模块文件名主体在所有模块目录中保持唯一。
 - [ ] 模块使用 `createOption(query)` 和统一 `request`。
 - [ ] 没有在模块中添加 UI、Store、路由或自定义 HTTP 客户端。
 - [ ] 必填、可选、认证、分页和副作用参数已经说明。

@@ -1,0 +1,79 @@
+---
+title: 契约
+description: "@scopify/desktop-contract 的类型与接口边界。"
+---
+
+`@scopify/desktop-contract` 是 Renderer 与 Desktop Host 共享的唯一类型来源。它是一个只包含 TypeScript 类型、常量和可序列化数据模型的 workspace package，不依赖 Electron，也不包含业务实现。
+
+## Package 结构
+
+```text
+packages/desktop-contract/src/
+├── bridge.ts                    # DesktopBridge、能力列表、协议版本
+├── backend.ts                   # 本地后端状态
+├── cache.ts                     # 缓存范围、分类与清理请求
+├── audioFeature.ts              # 音频特征传输
+├── playback.ts                  # 播放传输
+├── config.ts                    # Desktop Host 配置
+├── desktopLyrics.ts             # 桌面歌词
+├── desktopPlaybackWallpaper.ts  # 播放背景与控制器
+├── discord.ts                   # Discord Presence
+├── logging.ts                   # Renderer 日志事件
+└── updater.ts                   # 更新状态
+```
+
+`src/index.ts` 统一导出这些模块，应用侧通过 package 根入口消费：
+
+```ts
+import type {
+  DesktopBridge,
+  DesktopBridgeInfo,
+  DesktopHostConfig,
+} from "@scopify/desktop-contract";
+```
+
+## 核心类型
+
+### `DesktopBridge`
+
+`DesktopBridge<TLyrics>` 描述 Preload 暴露给 Renderer 的完整方法集合，包括请求、命令、事件订阅和 MessagePort 传输。新增桌面能力时，先在这里定义公开边界，再实现两端。
+
+### `DesktopBridgeInfo`
+
+```ts
+interface DesktopBridgeInfo {
+  capabilities: DesktopBridgeCapability[];
+  desktopVersion: string;
+  electronVersion: string;
+  protocolVersion: number;
+}
+```
+
+它用于启动时确认宿主版本和能力集合，避免 Renderer 假设某个桌面版本一定支持新能力。
+
+### `Unsubscribe`
+
+```ts
+type Unsubscribe = () => void;
+```
+
+所有 `on*` 监听方法都必须返回取消函数。Runtime 或 React Effect 清理时调用它，避免页面切换后继续接收事件。
+
+## 契约设计规则
+
+- 参数和返回值必须能安全穿过 Electron 的结构化克隆边界。
+- 不把 `BrowserWindow`、`IpcMainEvent`、Node stream 或其他 Main 对象放进契约。
+- 请求、命令和事件要区分返回语义，不用一个模糊的 `any` 方法承载多个动作。
+- 领域类型放在对应文件中，由 `src/index.ts` 导出；不要在 `preload.ts` 内重新声明一份类型。
+- 破坏既有调用方的改动需要升级协议版本；向后兼容的新增能力可以通过 capabilities 协商逐步启用。
+
+## 契约不是实现
+
+`desktop-contract` 不负责打开窗口、读写文件或发起 IPC。实现分别位于：
+
+| 层 | 位置 | 责任 |
+| --- | --- | --- |
+| Contract | `packages/desktop-contract` | 类型、常量和协议边界 |
+| Preload | `apps/desktop/main/preload.ts` | 类型化桥接与 payload 转换 |
+| Main | `apps/desktop/main/module/ipc.ts` | 权限检查、校验和桌面操作 |
+| Runtime | `apps/web/lib/runtime` | Web/Electron 适配和业务入口 |

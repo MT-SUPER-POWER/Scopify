@@ -4,6 +4,9 @@
 
 ### Added
 
+- **整理 Desktop IPC 文档导航**：在 OpenAPI 下新增与 Netease API 平级的 Desktop IPC 分组，并预留 About、架构、契约、能力版本、通道参考、运行时适配、扩展流程与安全边界页面。
+- **补充 Desktop IPC 文档正文**：记录当前 Renderer、Preload、Main 与 Runtime 的通信架构、共享契约、能力协商、通道分类、扩展流程和安全边界。
+- **补全 Netease API 路由命名说明**：记录目录前缀、括号路由组、文件名下划线转换、版本目录、`index.js` 行为与模块 identifier 唯一性。
 - **补充 Netease API 后端模块指南**：在 Netease API 文档分组下新增模块路由映射、统一请求选项、参数处理、测试验证与 Scopify 同步流程。
 - **补充新增接口指南**：将后端模块路由映射、`createOption`、Web 三层 API 架构、认证与错误边界、Apifox 同步和提交前验证清单落到 OpenAPI 文档。
 - **简化 Netease API 文档入口**：移除本地生成的接口镜像与请求调试页面，OpenAPI 文档域统一跳转到 Apifox 维护的网易云音乐接口文档。
@@ -19,6 +22,7 @@
 
 ### Visual
 
+- **扁平化 Desktop IPC 侧栏**：保留 Desktop IPC 分组标题，将 IPC 页面直接列在其下，暂不引入二级导航。
 - **补充文档侧栏底部操作栏**：在 Scopify Docs 侧栏底部加入 GitHub 图标入口，并与主题切换控件分列两端，形成固定的仓库与外观快捷操作区。
 - **重组文档信息架构**：将 Scopify Docs 拆分为 `Framework`、`UI Library`、`OpenAPI` 三个可切换的文档域，每个域维护独立侧边栏，并共享顶部 GitHub 仓库入口。
 - **整理 Folia 侧栏音频与视觉快捷设置**：音质、均衡器和音频增益合并为单行控制；歌词动画与背景行移除独立设置齿轮，在 Folia 模式选择弹层底部增加“更多设置”入口并跳转到对应全局设置页；动画强度仅在实际支持的模式中显示，并移动到随机切换按钮之前。
