@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import scopifyLogo from "../../../../../../docs/img/logo.png";
+import scopifyLogo from "@/assets/logo.png";
 
 export function DocsBrand() {
   return (
