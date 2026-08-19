@@ -1,0 +1,39 @@
+# build and dependencies
+node_modules/
+.next/
+.next-dev/
+out/
+dist/
+build/
+.turbo/
+coverage/
+.vercel/
+
+# isolated submodules & external apps
+repo/backend/
+repo/frontend/apps/mobile/
+
+# auto-generated & lock files
+bun.lock
+pnpm-lock.yaml
+package-lock.json
+*.tsbuildinfo
+repo/frontend/packages/ui/shadcn/**
+
+# AI & tool metadata / skills
+.codegraph/
+.codex/
+.claude/
+.agents/
+.gemini/
+.opencode/
+.superpowers/
+skills/
+
+# markdown files
+*.md
+
+# static docs / licenses
+LICENSE
+tsconfig.json
+tsconfig.*.json
