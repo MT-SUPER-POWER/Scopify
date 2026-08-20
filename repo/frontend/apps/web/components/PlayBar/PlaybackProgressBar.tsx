@@ -46,7 +46,7 @@ export function PlaybackProgressBar({
       fillColor={isFolia ? "var(--desktop-controller-primary)" : undefined}
       hoverFillColor={isFolia ? "var(--desktop-controller-primary)" : undefined}
       markerAppearance="glow"
-      markerColor={isFolia ? "var(--desktop-controller-primary)" : "var(--brand)"}
+      markerColor={isFolia ? "var(--desktop-controller-primary)" : "var(--primary)"}
       onChange={handleChange}
       orientation="horizontal"
       rangeMarkers={rangeMarkers}

@@ -4,5 +4,12 @@
   "icon": "uiLibrary",
   "root": true,
   "pagesIndex": "ui-library",
-  "pages": ["---UI 组件库---", "ui-library", "shadcn", "scopify"]
+  "pages": [
+    "---UI 架构介绍---",
+    "ui-library",
+    "---Shadcn 组件库---",
+    "shadcn",
+    "---Scopify 组件库---",
+    "scopify"
+  ]
 }

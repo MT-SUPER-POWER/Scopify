@@ -65,7 +65,7 @@ export default function RecentSongsPage() {
       playlistInfo={playlistInfo}
       playSourceId="library:recent"
       refetchTracks={recentSongsQuery.refetch}
-      themeColor="var(--page-accent-recent)"
+      themeColor="var(--scopify-page-accent-recent)"
       tracks={tracks}
     />
   );

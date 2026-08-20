@@ -1,27 +1,266 @@
 ---
 title: About
-description: Scopify 设计基础、组件边界与共享 UI 资产总览。
+description: 从 CSS 变量到 Tailwind 类名，理解 Scopify UI Library 的主题是怎样工作的。
 ---
 
-## 两层组件模型
+这套主题机制其实只做两件事：先规定组件能读取哪些变量，再决定当前主题给这些变量什么值。最容易绕进去的地方，是把 CSS 加载、主题切换和 Tailwind 类名注册当成了同一件事。
 
-| 层级    | 职责                         | 使用原则                                 |
-| ------- | ---------------------------- | ---------------------------------------- |
-| Shadcn  | 由 shadcn CLI 维护的原生组件 | 标准 Props 与主题 Token 能解决时直接使用 |
-| Scopify | 产品组件的候选与设计空间     | 当前暂不发布公共组件 API                |
+<Callout title="先记住这句话">
+  Shadcn 组件只认一套约定好的 CSS 变量；`data-theme` 决定当前使用哪组变量值；`@theme inline`
+  再把这些变量变成可以写进 `className` 的 Tailwind 类名。
+</Callout>
 
-## 组件边界
+## Shadcn 认的是一套固定变量
 
-- 只调整颜色、圆角、阴影或间距：修改主题 Token。
-- 只组合标准 Props：直接消费 `@scopify/ui/shadcn/components/*`。
-- 需要稳定产品语义或新的交互协议：先在应用内验证，成熟后再评审进入 Scopify 层。
-- 依赖路由、API、Store 或业务 i18n：留在业务应用中。
+Shadcn 组件不会把某个颜色写死在组件里。它使用的是 `--background`、`--primary`、`--border`、`--ring` 这类语义变量：
+
+```css
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --border: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+}
+```
+
+这些变量名就是 Shadcn 的 Token Contract。组件认变量名，不关心值来自官方默认主题、Scopify 主题，还是以后从编辑器生成的新主题。
+
+因此，所谓“修改 Shadcn 主题”，本质上不是重写 Button、Card 和 Dialog，而是给同一套变量换值。
+
+## `:root` 能提供变量，`data-theme` 负责切换
+
+CSS 变量通常从 `:root` 开始，因为 `:root` 上的变量会向整个页面继承。只有一个主题时，这样写最直接：
+
+```css
+:root {
+  --primary: oklch(0.205 0 0);
+}
+```
+
+问题不在 `:root` 本身，而在于所有值都塞进一个固定的 `:root` 后，第二套、第三套主题没有清楚的归属。继续覆盖同一个选择器，很快就会开始依赖加载顺序和临时脚本。
+
+把每套值放进自己的 `data-theme` 选择器后，主题身份就清楚了：
+
+```css
+[data-theme="shadcn-default"] {
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+}
+
+[data-theme="scopify-default"] {
+  --primary: #1db954;
+  --primary-foreground: #000000;
+}
+```
+
+页面只需要改一个属性：
+
+```html
+<html data-theme="scopify-default" class="dark"></html>
+```
+
+`data-theme` 选中一套主题，`class="dark"` 选中这套主题里的深色模式。切换时，组件和类名都不用改，浏览器会重新计算它们读取到的变量值。
+
+每套明暗配置里还会写 `color-scheme: light` 或 `color-scheme: dark`。它不负责修改我们的 Token，只是告诉浏览器当前页面偏亮还是偏暗，让原生表单控件、滚动条等浏览器自带界面采用合适的配色。
+
+当前 Scopify 还保留了 `:root` 作为默认值，所以没有写 `data-theme` 的旧页面也能正常工作。以后主题切换器统一落地后，显式的 `data-theme` 会成为更清楚的入口。
+
+## `@theme inline` 不是另一套主题
+
+CSS 变量已经有值了，但 Tailwind 还不知道 `surface` 是一个可用的颜色名。`@theme inline` 做的是注册和映射：
+
+```css
+@theme inline {
+  --color-surface: var(--background);
+}
+```
+
+这里有两层变量：
+
+- `--background` 是当前 Shadcn 主题提供的运行时 Token。
+- `--color-surface` 是 Tailwind 的颜色命名空间。注册后，Tailwind 才能识别 `bg-surface`、`text-surface` 等类名。
+
+`inline` 会让生成的工具类直接读取 `var(--background)`。所以 `data-theme` 改掉 `--background` 后，所有使用 `surface` 的类都会一起更新，不需要中间变量。
+
+## 注册一个颜色后，可以写哪些类
+
+只要有这一行：
+
+```css
+--color-surface: var(--background);
+```
+
+在 JSX 或 HTML 中就能使用整组颜色工具类：
+
+| 类名              | 用途               | 它控制的 CSS                          |
+| ----------------- | ------------------ | ------------------------------------- |
+| `bg-surface`      | 元素背景           | `background-color: var(--background)` |
+| `text-surface`    | 文字颜色           | `color: var(--background)`            |
+| `border-surface`  | 边框颜色           | `border-color: var(--background)`     |
+| `divide-surface`  | 子元素之间的分割线 | 子元素的 `border-color`               |
+| `ring-surface`    | 焦点环颜色         | `--tw-ring-color: var(--background)`  |
+| `outline-surface` | 轮廓线颜色         | `outline-color: var(--background)`    |
+
+同一个注册项也能用于 `fill-surface`、`stroke-surface`、`caret-surface` 等颜色工具。我们不需要为每一种 CSS 属性再声明一遍 Token。
+
+## 透明度修饰符也能直接用
+
+Tailwind 会继续处理颜色后面的 `/` 透明度：
+
+```tsx
+<div className="bg-surface/50" />
+<div className="bg-surface/80" />
+<div className="border border-surface/20" />
+```
+
+- `bg-surface/50` 是 50% 不透明度的画布色。
+- `bg-surface/80` 适合半透明面板。
+- `border-surface/20` 可以做较弱的边框。
+
+它改变的是这一次颜色的透明度，不是给整个元素设置 `opacity`，因此元素里的文字和图标不会一起变淡。
+
+## 状态和响应式前缀照常组合
+
+主题只决定颜色从哪里来，不会限制 Tailwind 的 `hover`、`focus`、`active` 或响应式能力：
+
+```tsx
+<div
+  tabIndex={0}
+  className="border-surface/20 bg-surface hover:bg-surface/90 focus:ring-surface active:bg-surface/80 md:bg-surface border focus:ring-2"
+>
+  页面主体内容
+</div>
+```
+
+这里没有任何一处需要知道 `surface` 到底是白色、黑色还是绿色。它直接读取当前主题的 `--background`。
+
+## Scopify 怎样接到 Shadcn 上
+
+主题库以 Shadcn Contract 作为基础。`themes/shadcn/` 里的每个主题只填写 `background`、`foreground`、`primary` 等官方 Token：
+
+```css
+[data-theme="scopify-default"] {
+  --background: #f7f7f7;
+  --foreground: #181818;
+  --primary: #1db954;
+}
+```
+
+`scopify/theme.css` 通过 `@theme inline` 直接复用这些值：
+
+```css
+@theme inline {
+  --color-surface: var(--background);
+  --color-content: var(--foreground);
+  --color-brand: var(--primary);
+}
+```
+
+Shadcn 没有的状态色、遮罩和阴影继续注册到 `--scopify-*`。如果一个主题要支持完整 Scopify UI，就必须同时提供一份完整的 `themes/scopify/同名主题.css`，缺少 Token 时由契约测试报错，不提供兜底值。
+
+## 主题文件之间是什么关系
+
+Docs 和 Web 的 `globals.css` 只加载 `@scopify/ui/theme.css`。它是聚合入口，文件关系如下：
+
+```text
+@scopify/ui/theme.css
+├─ shadcn/theme.css
+│  └─ 注册 bg-primary、text-foreground 等 Shadcn 工具类
+├─ scopify/theme.css
+│  └─ 共用类名直连 Shadcn Token，扩展类名读取 --scopify-* Token
+└─ themes/index.css
+   ├─ shadcn/*.css       必选：每套主题的 Shadcn Token
+   └─ scopify/*.css      完整支持 Scopify 时必选：同 ID 的全部扩展 Token
+```
+
+`themes/index.css` 会在启动时把所有主题加载进浏览器。`data-theme` 只选择哪组规则生效，不会在切换时重新请求 CSS。
+
+## 新增一个 Shadcn 主题
+
+最稳妥的办法是复制 `themes/shadcn/shadcn-default.css`，创建 `themes/shadcn/ocean.css`，然后填写完整的 light / dark Shadcn Token：
+
+```css
+[data-theme="ocean"] {
+  color-scheme: light;
+  --background: #f4f8fb;
+  --foreground: #102331;
+  --primary: #168aad;
+  --primary-foreground: #ffffff;
+  /* 继续补齐 card、popover、muted、border、chart、sidebar 等 Token */
+}
+
+[data-theme="ocean"].dark {
+  color-scheme: dark;
+  --background: #071821;
+  --foreground: #edf8fc;
+  --primary: #5bc0df;
+  --primary-foreground: #071821;
+  /* 同样补齐深色 Token */
+}
+```
+
+在 `themes/index.css` 注册它：
+
+```css
+@import "./shadcn/ocean.css";
+```
+
+到这里已经完成一套 Shadcn 主题。`bg-surface`、`text-content` 和 `bg-brand` 这类共用语义也会直接跟随它，但 Scopify 独有组件仍需要完整扩展文件。
+
+## 新增一个完整 Scopify 主题
+
+先完成 `themes/shadcn/ocean.css`，再复制 `themes/scopify/scopify-default.css` 为 `themes/scopify/ocean.css`。这个文件必须保留并填写全部 `--scopify-*` 扩展 Token：
+
+```css
+[data-theme="ocean"] {
+  --scopify-success: #159947;
+  --scopify-warning: #db8b19;
+  --scopify-overlay: rgb(7 24 33 / 64%);
+  --scopify-elevation-panel: 0 12px 32px rgb(22 138 173 / 16%);
+  /* 继续补齐 theme.css 注册的全部 --scopify-* Token */
+}
+
+[data-theme="ocean"].dark {
+  --scopify-overlay: rgb(0 0 0 / 80%);
+}
+```
+
+把完整扩展文件放在对应 Shadcn 主题之后：
+
+```css
+@import "./shadcn/ocean.css";
+@import "./scopify/ocean.css";
+```
+
+两个文件使用同一个 `data-theme="ocean"`，运行时仍然只切换一次。明暗模式继续由 `dark` class 控制：
+
+```html
+<html data-theme="ocean" class="dark"></html>
+```
+
+主题管理器只把同时拥有这两个文件、并通过完整性检查的主题标记为 Scopify Compatible。以后接入编辑器时，基础面板修改 Shadcn Token，Scopify 面板修改 `--scopify-*` 扩展 Token。
+
+最后可以把整条链路记成四句话：
+
+1. CSS Var 保存真正的值。
+2. `data-theme` 选择哪一组值生效。
+3. `@theme inline` 给这些值注册 Tailwind 名字。
+4. `className` 在组件里消费这些名字。
 
 <Cards>
-  <Card title="Shadcn" href="/docs/shadcn">
-    查看由 CLI 版本维护的原生组件。
+  <Card title="Shadcn" href="/docs/ui-library/shadcn">
+    查看保持上游接口的基础组件。
   </Card>
-  <Card title="Scopify" href="/docs/scopify">
-    查看 Scopify 组件体系的收录原则与后续规划。
+  <Card title="Scopify" href="/docs/ui-library/scopify">
+    查看使用产品语义 Token 的扩展组件。
   </Card>
 </Cards>
+
+## 参考资料
+
+- [Tailwind CSS Colors](https://tailwindcss.com/docs/colors)
+- [Tailwind CSS Theme Variables](https://tailwindcss.com/docs/theme)
+- [Shadcn Theming](https://ui.shadcn.com/docs/theming)
+- [next-themes](https://github.com/pacocoursey/next-themes)

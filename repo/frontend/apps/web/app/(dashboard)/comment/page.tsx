@@ -87,7 +87,7 @@ export default function CommentPage() {
       <div
         className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 scale-110 bg-cover bg-center opacity-60 blur-3xl md:h-125"
         style={{
-          backgroundImage: `linear-gradient(to bottom, var(--image-scrim), var(--surface-raised)), url(${albumCover})`,
+          backgroundImage: `linear-gradient(to bottom, var(--scopify-image-scrim), var(--card)), url(${albumCover})`,
         }}
       />
 

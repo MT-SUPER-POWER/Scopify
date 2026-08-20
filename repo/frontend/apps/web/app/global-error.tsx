@@ -10,7 +10,7 @@ export default function GlobalError({ error, reset }: ErrorFallbackProps) {
   const { locale, t } = useI18n();
 
   return (
-    <html lang={locale} data-theme="scopify" suppressHydrationWarning>
+    <html lang={locale} data-theme="scopify-default" suppressHydrationWarning>
       <body className="fixed inset-0 overflow-hidden antialiased" suppressHydrationWarning>
         <title>{`${t("errorPage.unexpected.title")} | Scopify`}</title>
         <ErrorFallback error={error} reset={reset} />

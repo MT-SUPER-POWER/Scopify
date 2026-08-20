@@ -5,6 +5,9 @@
 ### Added
 
 - **补全 shadcn CLI 原生组件目录**：从当前官方 registry 拉取全部 61 个 UI 组件及 Sidebar 所需 hook，统一落位到 `@scopify/ui/shadcn` 并使用公开包子路径互相引用；文档同步按基础、表单、数据展示、反馈、导航、浮层与对话交互七类补齐独立组件页与可交互的真实组件预览，并参照官方层级补充安装、完整导入、用法、组件结构、常见模式、使用建议和 API 参考。
+- **补充 UI Library 主题架构文档**：重写 `/docs/ui-library` About 页面，用一条实际链路讲清 Shadcn Token Contract、`:root` 与 `data-theme` 的关系、`@theme inline` 生成的颜色工具类、透明度和状态变体，以及 Scopify Token 的适配方式与后续编辑器入口。
+- **新增 shadcn 默认主题基线**：按当前官方 neutral CSS variables 配置新增独立的 light/dark Token Profile，并通过 `@scopify/ui/theme.css` 统一导出，为文档主题对照与后续交互式 Token 预览提供稳定基线。
+- **简化 UI 主题注册与扩展契约**：Shadcn 和 Scopify 共用的类名由 `scopify/theme.css` 直接映射到 Shadcn Token，独有能力只读取主题文件中的 `--scopify-*`；移除中间 Adapter 和扩展兜底层，只有同时提供完整 Shadcn 与 Scopify Profile 的主题才能驱动完整组件库，About 文档同步补充文件关系和新增步骤。
 - **集成 Mermaid 图表与交互式全屏查看器**：支持在 MDX 中以独立 .mmd / .mermaid 文件形式编写并导入图表，提供全屏模态预览、鼠标滚轮缩放（40%~400%）、鼠标平移拖拽与复制源码能力，并在「产品能力」页面补充了功能图谱。
 - **接入 LLMs 与 Markdown 导出能力**：支持 /llms.txt 结构化大纲索引、/llms-full.txt 全量纯文本文档与 /docs/*.md 单页 Markdown 获取，所有处理端点收敛于 pp/api/llms。
 - **支持文档页面操作与 AI 快捷打开**：在文档页面顶部提供一键复制 Markdown 与跳转打开至 GitHub、ChatGPT、Claude、Cursor 等 AI 工具的交互操作栏，并补全中文本地化词条。

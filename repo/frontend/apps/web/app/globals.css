@@ -4,14 +4,14 @@
 @import "@scopify/ui/theme.css";
 
 @theme inline {
-  --font-status-code: "Black Ops One", var(--font-ui);
+  --font-status-code: "Black Ops One", var(--scopify-font-ui);
 }
 
 @layer components {
   .hero-content-transition {
-    background-image: linear-gradient(to bottom, var(--hero-shade), var(--surface-raised));
+    background-image: linear-gradient(to bottom, var(--scopify-hero-shade), var(--card));
     background-repeat: no-repeat;
-    background-size: 100% var(--hero-transition-depth);
+    background-size: 100% var(--scopify-hero-transition-depth);
   }
 }
 
@@ -128,7 +128,7 @@
 
   /* 给 ShadCN 的 DropdownMenu Label 使用的浅色文字样式 */
   .dropdown-menu-label-momo {
-    color: var(--content-muted);
+    color: var(--muted-foreground);
     font-size: 0.75rem; /* Tailwind's text-xs */
     font-weight: 500; /* Tailwind's font-medium */
     padding-left: 0.5rem; /* Tailwind's px-2 */
@@ -186,10 +186,10 @@ img,
 }
 
 .desktop-playback-controller-shell {
-  --desktop-controller-background: var(--surface-base);
-  --desktop-controller-primary: var(--content);
-  --desktop-controller-secondary: var(--content-muted);
-  --desktop-controller-accent: var(--brand);
+  --desktop-controller-background: var(--background);
+  --desktop-controller-primary: var(--foreground);
+  --desktop-controller-secondary: var(--muted-foreground);
+  --desktop-controller-accent: var(--primary);
   --desktop-controller-border: color-mix(
     in srgb,
     var(--desktop-controller-primary) 11%,
@@ -212,7 +212,7 @@ img,
   );
 
   color: var(--desktop-controller-primary);
-  font-family: var(--font-ui);
+  font-family: var(--scopify-font-ui);
 }
 
 .desktop-playback-controller-surface {

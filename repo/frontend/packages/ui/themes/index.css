@@ -1,0 +1,6 @@
+/* Required shadcn-compatible profile values. */
+@import "./shadcn/scopify-default.css";
+@import "./shadcn/shadcn-default.css";
+
+/* Required when the same theme ID supports the full Scopify token contract. */
+@import "./scopify/scopify-default.css";

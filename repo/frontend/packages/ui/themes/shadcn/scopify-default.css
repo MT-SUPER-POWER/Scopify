@@ -1,0 +1,77 @@
+/* Scopify's built-in profile expressed only through the shadcn contract. */
+:root:not([data-theme]),
+[data-theme="scopify-default"] {
+  color-scheme: light;
+
+  --radius: 0.625rem;
+  --background: #f7f7f7;
+  --foreground: #181818;
+  --card: #ffffff;
+  --card-foreground: #181818;
+  --popover: #ffffff;
+  --popover-foreground: #181818;
+  --primary: #1db954;
+  --primary-foreground: #000000;
+  --secondary: #eeeeee;
+  --secondary-foreground: #181818;
+  --muted: #eeeeee;
+  --muted-foreground: #5f5f5f;
+  --accent: #e3e3e3;
+  --accent-foreground: #181818;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgb(0 0 0 / 12%);
+  --input: #dedede;
+  --ring: #1db954;
+  --chart-1: #1db954;
+  --chart-2: #2563eb;
+  --chart-3: #9333ea;
+  --chart-4: #d97706;
+  --chart-5: #dc2626;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #181818;
+  --sidebar-primary: #1db954;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #e3e3e3;
+  --sidebar-accent-foreground: #181818;
+  --sidebar-border: rgb(0 0 0 / 12%);
+  --sidebar-ring: #1db954;
+}
+
+:root:not([data-theme]).dark,
+[data-theme="scopify-default"].dark {
+  color-scheme: dark;
+
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #121212;
+  --card-foreground: #ffffff;
+  --popover: #282828;
+  --popover-foreground: #ffffff;
+  --primary: #1ed760;
+  --primary-foreground: #000000;
+  --secondary: #181818;
+  --secondary-foreground: #ffffff;
+  --muted: #181818;
+  --muted-foreground: #b3b3b3;
+  --accent: #0f0f0f;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgb(255 255 255 / 10%);
+  --input: rgb(255 255 255 / 15%);
+  --ring: #1ed760;
+  --chart-1: #1ed760;
+  --chart-2: #60a5fa;
+  --chart-3: #c084fc;
+  --chart-4: #fbbf24;
+  --chart-5: #f87171;
+  --sidebar: #121212;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #1ed760;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #0f0f0f;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 10%);
+  --sidebar-ring: #1ed760;
+}

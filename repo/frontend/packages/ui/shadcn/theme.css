@@ -1,12 +1,9 @@
 @import "shadcn/tailwind.css";
 
-/* shadcn/tweakcn-compatible token interface; product values belong to scopify/theme.css. */
+/* shadcn/tweakcn-compatible token interface; profile values belong in themes/shadcn/. */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-ui);
-  --font-mono: var(--font-code);
-  --font-serif: var(--font-reading);
   --radius-xs: calc(var(--radius) * 0.2);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

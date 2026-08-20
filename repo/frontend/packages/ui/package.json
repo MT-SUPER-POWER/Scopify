@@ -11,6 +11,7 @@
     "folia",
     "scopify",
     "shadcn",
+    "themes",
     "theme.css"
   ],
   "exports": {
@@ -20,6 +21,10 @@
     "./shadcn/components/*": "./shadcn/components/*.tsx",
     "./shadcn/hooks/*": "./shadcn/hooks/*.ts",
     "./shadcn/lib/*": "./shadcn/lib/*.ts",
+    "./themes/index.css": "./themes/index.css",
+    "./themes/scopify/scopify-default.css": "./themes/scopify/scopify-default.css",
+    "./themes/shadcn/scopify-default.css": "./themes/shadcn/scopify-default.css",
+    "./themes/shadcn/shadcn-default.css": "./themes/shadcn/shadcn-default.css",
     "./theme.css": "./theme.css"
   },
   "scripts": {
