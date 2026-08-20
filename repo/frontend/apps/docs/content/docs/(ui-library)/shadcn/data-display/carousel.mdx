@@ -1,0 +1,84 @@
+---
+title: Carousel 轮播
+description: 在有限视口中逐项浏览横向或纵向内容。
+---
+
+<ComponentPreview name="shadcn-carousel" />
+
+在有限视口中逐项浏览横向或纵向内容。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add carousel
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@scopify/ui/shadcn/components/carousel";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Carousel className="w-full max-w-xs">
+  <CarouselContent>
+    {["每日推荐", "私人雷达", "新歌速递"].map((title, index) => (
+      <CarouselItem key={title}>
+        <div className="bg-muted flex aspect-video items-center justify-center rounded-xl border">
+          <div className="text-center">
+            <p className="text-muted-foreground text-xs">0{index + 1}</p>
+            <p className="font-medium">{title}</p>
+          </div>
+        </div>
+      </CarouselItem>
+    ))}
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+## 组件结构
+
+```text
+CarouselApi
+├── Carousel
+├── CarouselContent
+├── CarouselItem
+├── CarouselPrevious
+├── CarouselNext
+```
+
+## 常见用法
+
+- 浏览推荐歌单或媒体卡片。
+- 提供前后控制。
+- 内容变化时保留清晰的当前位置提示。
+
+## 使用建议
+
+- 组件只接收整理后的展示数据，获取、缓存和业务计算留在应用层。
+- 为加载、空数据和异常状态准备与最终内容尺寸接近的替代视图。
+- 复杂数据在窄屏下应提供滚动、折叠或简化视图。
+
+## API 参考
+
+当前模块公开 `CarouselApi`、`Carousel`、`CarouselContent`、`CarouselItem`、`CarouselPrevious`、`CarouselNext`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Carousel 轮播 文档](https://ui.shadcn.com/docs/components/radix/carousel)；实现差异以本仓库当前 CLI 源码为准。

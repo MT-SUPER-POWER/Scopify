@@ -1,4 +1,15 @@
 {
   "title": "浮层组件",
-  "pages": ["tooltip"]
+  "pages": [
+    "alert-dialog",
+    "command",
+    "context-menu",
+    "dialog",
+    "drawer",
+    "dropdown-menu",
+    "hover-card",
+    "popover",
+    "sheet",
+    "tooltip"
+  ]
 }

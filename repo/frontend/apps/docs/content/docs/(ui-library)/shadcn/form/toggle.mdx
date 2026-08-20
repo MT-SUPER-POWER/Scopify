@@ -1,0 +1,59 @@
+---
+title: Toggle 切换按钮
+description: 以可按下按钮表达单个开关状态。
+---
+
+<ComponentPreview name="shadcn-toggle" />
+
+以可按下按钮表达单个开关状态。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add toggle
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { Toggle, toggleVariants } from "@scopify/ui/shadcn/components/toggle";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Toggle aria-label="切换粗体" defaultPressed variant="outline">
+  <Bold /> 粗体
+</Toggle>
+```
+
+## 组件结构
+
+```text
+Toggle
+```
+
+## 常见用法
+
+- 表达可按下的单一状态。
+- pressed 由消费层管理。
+- 不要替代会立即改变系统设置的 Switch。
+
+## 使用建议
+
+- 每个控件都要有可访问标签，并在错误时同步 aria-invalid 与错误文本。
+- 受控值、校验和提交逻辑由消费层管理，基础组件不耦合具体表单模型。
+- 使用单一状态来源，避免同时传入 value 与 defaultValue。
+
+## API 参考
+
+当前模块公开 `Toggle`、`toggleVariants`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Toggle 切换按钮 文档](https://ui.shadcn.com/docs/components/radix/toggle)；实现差异以本仓库当前 CLI 源码为准。

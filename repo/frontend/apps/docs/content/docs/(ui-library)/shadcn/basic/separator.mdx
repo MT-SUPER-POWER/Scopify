@@ -1,0 +1,70 @@
+---
+title: Separator 分隔线
+description: 在内容区域之间提供视觉或语义分隔。
+---
+
+<ComponentPreview name="shadcn-separator" />
+
+在内容区域之间提供视觉或语义分隔。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add separator
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { Separator } from "@scopify/ui/shadcn/components/separator";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="w-full max-w-sm space-y-4">
+  <div>
+    <p className="font-medium">本周精选</p>
+    <p className="text-muted-foreground text-sm">为你挑选的新音乐</p>
+  </div>
+  <Separator />
+  <div className="flex h-5 items-center gap-4 text-sm">
+    <span>歌曲</span>
+    <Separator orientation="vertical" />
+    <span>专辑</span>
+    <Separator orientation="vertical" />
+    <span>艺人</span>
+  </div>
+</div>
+```
+
+## 组件结构
+
+```text
+Separator
+```
+
+## 常见用法
+
+- 分隔菜单、列表或内容区。
+- 装饰性分隔使用 decorative。
+- 通过 orientation 匹配布局方向。
+
+## 使用建议
+
+- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
+- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
+- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+
+## API 参考
+
+当前模块公开 `Separator`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Separator 分隔线 文档](https://ui.shadcn.com/docs/components/radix/separator)；实现差异以本仓库当前 CLI 源码为准。

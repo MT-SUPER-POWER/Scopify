@@ -5,14 +5,61 @@ description: 触发操作或提交行为的原生按钮。
 
 <ComponentPreview name="shadcn-button" />
 
-## 使用
+触发操作或提交行为的原生按钮。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
 
-```tsx
-import { Button } from "@scopify/ui/shadcn/components/button";
+## 安装
 
-<Button variant="outline" size="sm">
-  播放
-</Button>;
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add button
 ```
 
-支持 `default`、`destructive`、`outline`、`secondary`、`ghost`、`link` 六种视觉变体，以及文本与图标尺寸。
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { Button, buttonVariants } from "@scopify/ui/shadcn/components/button";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="flex flex-wrap items-center justify-center gap-3">
+  <Button>默认按钮</Button>
+  <Button variant="secondary">次要按钮</Button>
+  <Button variant="outline">描边按钮</Button>
+  <Button variant="ghost">幽灵按钮</Button>
+  <Button size="icon" aria-label="通知">
+    <Bell />
+  </Button>
+</div>
+```
+
+## 组件结构
+
+```text
+Button
+```
+
+## 常见用法
+
+- 触发主要、次要和破坏性操作。
+- 使用 size 控制密度。
+- 加载时禁用重复提交并保留明确文本。
+
+## 使用建议
+
+- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
+- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
+- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+
+## API 参考
+
+当前模块公开 `Button`、`buttonVariants`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Button 按钮 文档](https://ui.shadcn.com/docs/components/radix/button)；实现差异以本仓库当前 CLI 源码为准。

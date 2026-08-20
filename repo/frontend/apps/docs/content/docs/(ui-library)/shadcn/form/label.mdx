@@ -1,0 +1,60 @@
+---
+title: Label 标签
+description: 为表单控件提供可访问的文本标签。
+---
+
+<ComponentPreview name="shadcn-label" />
+
+为表单控件提供可访问的文本标签。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add label
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { Label } from "@scopify/ui/shadcn/components/label";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="w-full max-w-sm space-y-2">
+  <Label htmlFor="preview-search">搜索音乐</Label>
+  <Input id="preview-search" placeholder="歌曲、艺人或专辑" />
+</div>
+```
+
+## 组件结构
+
+```text
+Label
+```
+
+## 常见用法
+
+- 通过 htmlFor 关联原生控件。
+- 标签文本保持明确。
+- 不要只用 placeholder 代替标签。
+
+## 使用建议
+
+- 每个控件都要有可访问标签，并在错误时同步 aria-invalid 与错误文本。
+- 受控值、校验和提交逻辑由消费层管理，基础组件不耦合具体表单模型。
+- 使用单一状态来源，避免同时传入 value 与 defaultValue。
+
+## API 参考
+
+当前模块公开 `Label`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Label 标签 文档](https://ui.shadcn.com/docs/components/radix/label)；实现差异以本仓库当前 CLI 源码为准。

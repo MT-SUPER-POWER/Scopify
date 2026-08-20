@@ -1,0 +1,74 @@
+---
+title: Resizable 可调整面板
+description: 允许用户拖动分隔线调整相邻面板尺寸。
+---
+
+<ComponentPreview name="shadcn-resizable" />
+
+允许用户拖动分隔线调整相邻面板尺寸。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add resizable
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@scopify/ui/shadcn/components/resizable";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<ResizablePanelGroup
+  orientation="horizontal"
+  className="min-h-48 w-full max-w-lg rounded-lg border"
+>
+  <ResizablePanel defaultSize={40}>
+    <div className="flex h-full items-center justify-center p-4 font-medium">播放列表</div>
+  </ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel defaultSize={60}>
+    <div className="bg-muted/40 flex h-full items-center justify-center p-4">歌词详情</div>
+  </ResizablePanel>
+</ResizablePanelGroup>
+```
+
+## 组件结构
+
+```text
+ResizableHandle
+├── ResizablePanel
+├── ResizablePanelGroup
+```
+
+## 常见用法
+
+- 拖动调整相邻面板。
+- Handle 提供可见反馈。
+- 设置合理最小尺寸避免内容不可用。
+
+## 使用建议
+
+- 组件只接收整理后的展示数据，获取、缓存和业务计算留在应用层。
+- 为加载、空数据和异常状态准备与最终内容尺寸接近的替代视图。
+- 复杂数据在窄屏下应提供滚动、折叠或简化视图。
+
+## API 参考
+
+当前模块公开 `ResizableHandle`、`ResizablePanel`、`ResizablePanelGroup`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Resizable 可调整面板 文档](https://ui.shadcn.com/docs/components/radix/resizable)；实现差异以本仓库当前 CLI 源码为准。

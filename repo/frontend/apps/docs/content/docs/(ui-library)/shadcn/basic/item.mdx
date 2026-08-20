@@ -1,0 +1,90 @@
+---
+title: Item 列表项
+description: 构建带媒体、说明和操作区域的通用列表项。
+---
+
+<ComponentPreview name="shadcn-item" />
+
+构建带媒体、说明和操作区域的通用列表项。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add item
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Item,
+  ItemMedia,
+  ItemContent,
+  ItemActions,
+  ItemGroup,
+  ItemSeparator,
+  ItemTitle,
+  ItemDescription,
+  ItemHeader,
+  ItemFooter,
+} from "@scopify/ui/shadcn/components/item";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Item variant="outline" className="w-full max-w-md">
+  <ItemMedia variant="icon">
+    <Music2 />
+  </ItemMedia>
+  <ItemContent>
+    <ItemTitle>夜曲</ItemTitle>
+    <ItemDescription>周杰伦 · 十一月的萧邦</ItemDescription>
+  </ItemContent>
+  <ItemActions>
+    <Button size="icon-sm" variant="ghost" aria-label="播放夜曲">
+      <Play />
+    </Button>
+  </ItemActions>
+</Item>
+```
+
+## 组件结构
+
+```text
+Item
+├── ItemMedia
+├── ItemContent
+├── ItemActions
+├── ItemGroup
+├── ItemSeparator
+├── ItemTitle
+├── ItemDescription
+├── ItemHeader
+├── ItemFooter
+```
+
+## 常见用法
+
+- 排列媒体、标题、说明和尾部操作。
+- 用 ItemGroup 组织列表。
+- 交互式条目保持完整点击区域。
+
+## 使用建议
+
+- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
+- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
+- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+
+## API 参考
+
+当前模块公开 `Item`、`ItemMedia`、`ItemContent`、`ItemActions`、`ItemGroup`、`ItemSeparator`、`ItemTitle`、`ItemDescription`、`ItemHeader`、`ItemFooter`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Item 列表项 文档](https://ui.shadcn.com/docs/components/radix/item)；实现差异以本仓库当前 CLI 源码为准。

@@ -5,12 +5,60 @@ description: 在内容加载期间维持布局稳定。
 
 <ComponentPreview name="shadcn-skeleton" />
 
-## 使用
+在内容加载期间维持布局稳定。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add skeleton
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
 
 ```tsx
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
-
-<Skeleton className="h-4 w-48" />;
 ```
 
-骨架布局应在业务层组合；原生组件只负责统一动画、圆角与语义颜色。
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="flex w-full max-w-sm items-center gap-4">
+  <Skeleton className="size-14 rounded-full" />
+  <div className="flex-1 space-y-2.5">
+    <Skeleton className="h-4 w-3/4" />
+    <Skeleton className="h-3 w-full" />
+    <Skeleton className="h-3 w-2/3" />
+  </div>
+</div>
+```
+
+## 组件结构
+
+```text
+Skeleton
+```
+
+## 常见用法
+
+- 为尚未加载的内容保留形状。
+- 匹配最终布局尺寸。
+- 避免对已知进度的任务使用骨架屏。
+
+## 使用建议
+
+- 反馈应紧邻触发它的操作，并使用一致的成功、警告和错误语义。
+- 不要只靠颜色表达状态；同时提供文本、图标或可访问说明。
+- 短时反馈使用通知，必须处理的信息应保留在页面内容中。
+
+## API 参考
+
+当前模块公开 `Skeleton`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Skeleton 骨架屏 文档](https://ui.shadcn.com/docs/components/radix/skeleton)；实现差异以本仓库当前 CLI 源码为准。

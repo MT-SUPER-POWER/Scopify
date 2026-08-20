@@ -1,0 +1,70 @@
+---
+title: Alert 提示
+description: 展示需要用户注意的状态、说明或警告。
+---
+
+<ComponentPreview name="shadcn-alert" />
+
+展示需要用户注意的状态、说明或警告。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add alert
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { Alert, AlertTitle, AlertDescription } from "@scopify/ui/shadcn/components/alert";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="w-full max-w-md space-y-3">
+  <Alert>
+    <CheckCircle2 />
+    <AlertTitle>下载完成</AlertTitle>
+    <AlertDescription>歌曲已保存，可以离线播放。</AlertDescription>
+  </Alert>
+  <Alert variant="destructive">
+    <AlertCircle />
+    <AlertTitle>连接中断</AlertTitle>
+    <AlertDescription>请检查网络连接后重试。</AlertDescription>
+  </Alert>
+</div>
+```
+
+## 组件结构
+
+```text
+Alert
+├── AlertTitle
+├── AlertDescription
+```
+
+## 常见用法
+
+- 展示普通提示、成功状态或破坏性警告。
+- 标题保持简短。
+- 正文补充用户下一步。
+
+## 使用建议
+
+- 反馈应紧邻触发它的操作，并使用一致的成功、警告和错误语义。
+- 不要只靠颜色表达状态；同时提供文本、图标或可访问说明。
+- 短时反馈使用通知，必须处理的信息应保留在页面内容中。
+
+## API 参考
+
+当前模块公开 `Alert`、`AlertTitle`、`AlertDescription`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Alert 提示 文档](https://ui.shadcn.com/docs/components/radix/alert)；实现差异以本仓库当前 CLI 源码为准。

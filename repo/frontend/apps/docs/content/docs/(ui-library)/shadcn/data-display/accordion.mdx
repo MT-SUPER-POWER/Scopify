@@ -1,0 +1,112 @@
+---
+title: Accordion 手风琴
+description: 以互斥或独立展开的区块组织可折叠内容。
+---
+
+<ComponentPreview name="shadcn-accordion" />
+
+以互斥或独立展开的区块组织可折叠内容。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add accordion
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@scopify/ui/shadcn/components/accordion";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Accordion type="single" collapsible defaultValue="lyrics" className="w-full max-w-md">
+  <AccordionItem value="lyrics">
+    <AccordionTrigger>歌词信息</AccordionTrigger>
+    <AccordionContent>歌词由网易云音乐提供，支持逐字时间轴。</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="album">
+    <AccordionTrigger>专辑信息</AccordionTrigger>
+    <AccordionContent>十一月的萧邦 · 2005</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+## 组件结构
+
+```text
+Accordion
+├── AccordionItem
+├── AccordionTrigger
+├── AccordionContent
+```
+
+## 常见用法
+
+- 单项展开并允许再次收起。
+- 多项同时展开。
+- 禁用不可用条目。
+- 放入 Card 构建结构化说明区。
+
+## 变体
+
+### 单项展开
+
+使用 `type="single"` 让同一时间只展开一个条目；增加 `collapsible` 后，当前条目可以再次收起。
+
+```tsx
+<Accordion type="single" collapsible defaultValue="lyrics">
+  <AccordionItem value="lyrics">
+    <AccordionTrigger>歌词信息</AccordionTrigger>
+    <AccordionContent>歌词支持逐字时间轴与桌面歌词。</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+### 多项展开
+
+使用 `type="multiple"` 接收字符串数组，让用户同时对比多个区块。
+
+```tsx
+<Accordion type="multiple" defaultValue={["lyrics", "album"]}>
+  <AccordionItem value="lyrics">...</AccordionItem>
+  <AccordionItem value="album">...</AccordionItem>
+</Accordion>
+```
+
+### 禁用条目
+
+把 `disabled` 放在单个 `AccordionItem` 上，保留条目位置并明确表示当前不可用。
+
+```tsx
+<AccordionItem value="copyright" disabled>
+  <AccordionTrigger>版权信息</AccordionTrigger>
+  <AccordionContent>当前地区暂不可用。</AccordionContent>
+</AccordionItem>
+```
+
+## 使用建议
+
+- 组件只接收整理后的展示数据，获取、缓存和业务计算留在应用层。
+- 为加载、空数据和异常状态准备与最终内容尺寸接近的替代视图。
+- 复杂数据在窄屏下应提供滚动、折叠或简化视图。
+
+## API 参考
+
+当前模块公开 `Accordion`、`AccordionItem`、`AccordionTrigger`、`AccordionContent`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Accordion 手风琴 文档](https://ui.shadcn.com/docs/components/radix/accordion)；实现差异以本仓库当前 CLI 源码为准。

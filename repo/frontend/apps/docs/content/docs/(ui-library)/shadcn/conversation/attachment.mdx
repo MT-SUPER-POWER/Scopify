@@ -1,0 +1,88 @@
+---
+title: Attachment 附件
+description: 展示文件附件的媒体信息、说明和操作。
+---
+
+<ComponentPreview name="shadcn-attachment" />
+
+展示文件附件的媒体信息、说明和操作。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add attachment
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Attachment,
+  AttachmentGroup,
+  AttachmentMedia,
+  AttachmentContent,
+  AttachmentTitle,
+  AttachmentDescription,
+  AttachmentActions,
+  AttachmentAction,
+  AttachmentTrigger,
+} from "@scopify/ui/shadcn/components/attachment";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Attachment>
+  <AttachmentMedia>
+    <FileAudio />
+  </AttachmentMedia>
+  <AttachmentContent>
+    <AttachmentTitle>夜曲.flac</AttachmentTitle>
+    <AttachmentDescription>28.4 MB · 上传完成</AttachmentDescription>
+  </AttachmentContent>
+  <AttachmentActions>
+    <AttachmentAction aria-label="移除附件">
+      <X />
+    </AttachmentAction>
+  </AttachmentActions>
+</Attachment>
+```
+
+## 组件结构
+
+```text
+Attachment
+├── AttachmentGroup
+├── AttachmentMedia
+├── AttachmentContent
+├── AttachmentTitle
+├── AttachmentDescription
+├── AttachmentActions
+├── AttachmentAction
+├── AttachmentTrigger
+```
+
+## 常见用法
+
+- 展示单个文件的名称与大小。
+- 用 AttachmentGroup 组织多个附件。
+- 把下载和移除放入操作区。
+
+## 使用建议
+
+- 消息数据、流式状态和反馈请求保留在消费层，组件只负责展示与交互结构。
+- 为动态新增内容维护稳定的焦点和滚动位置，避免打断正在阅读的用户。
+- 头像、时间和状态是辅助信息，正文应保持最高阅读优先级。
+
+## API 参考
+
+当前模块公开 `Attachment`、`AttachmentGroup`、`AttachmentMedia`、`AttachmentContent`、`AttachmentTitle`、`AttachmentDescription`、`AttachmentActions`、`AttachmentAction`、`AttachmentTrigger`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Attachment 附件 文档](https://ui.shadcn.com/docs/components/radix/attachment)；实现差异以本仓库当前 CLI 源码为准。

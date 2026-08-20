@@ -1,0 +1,79 @@
+---
+title: Hover Card 悬浮卡片
+description: 在悬停或聚焦时补充实体摘要信息。
+---
+
+<ComponentPreview name="shadcn-hover-card" />
+
+在悬停或聚焦时补充实体摘要信息。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add hover-card
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@scopify/ui/shadcn/components/hover-card";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<HoverCard>
+  <HoverCardTrigger asChild>
+    <Button variant="link">@周杰伦</Button>
+  </HoverCardTrigger>
+  <HoverCardContent className="w-72">
+    <div className="flex gap-3">
+      <Avatar>
+        <AvatarFallback>周</AvatarFallback>
+      </Avatar>
+      <div className="space-y-1">
+        <p className="font-medium">周杰伦</p>
+        <p className="text-muted-foreground text-sm">华语流行音乐创作歌手</p>
+        <p className="text-muted-foreground text-xs">热门歌曲 50 首</p>
+      </div>
+    </div>
+  </HoverCardContent>
+</HoverCard>
+```
+
+## 组件结构
+
+```text
+HoverCard
+├── HoverCardTrigger
+├── HoverCardContent
+```
+
+## 常见用法
+
+- 预览艺人或用户摘要。
+- 只承载补充信息。
+- 确保键盘聚焦也能访问内容。
+
+## 使用建议
+
+- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
+- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
+- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+
+## API 参考
+
+当前模块公开 `HoverCard`、`HoverCardTrigger`、`HoverCardContent`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Hover Card 悬浮卡片 文档](https://ui.shadcn.com/docs/components/radix/hover-card)；实现差异以本仓库当前 CLI 源码为准。

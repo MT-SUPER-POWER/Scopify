@@ -1,0 +1,76 @@
+---
+title: Chart 图表
+description: 为 Recharts 提供主题一致的容器、图例和提示层。
+---
+
+<ComponentPreview name="shadcn-chart" />
+
+为 Recharts 提供主题一致的容器、图例和提示层。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add chart
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  ChartStyle,
+} from "@scopify/ui/shadcn/components/chart";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<ChartContainer config={chartConfig} className="h-56 w-full max-w-lg">
+  <BarChart accessibilityLayer data={chartData}>
+    <CartesianGrid vertical={false} />
+    <XAxis dataKey="day" tickLine={false} axisLine={false} />
+    <ChartTooltip content={<ChartTooltipContent />} />
+    <Bar dataKey="plays" fill="var(--color-plays)" radius={6} />
+  </BarChart>
+</ChartContainer>
+```
+
+## 组件结构
+
+```text
+ChartContainer
+├── ChartTooltip
+├── ChartTooltipContent
+├── ChartLegend
+├── ChartLegendContent
+├── ChartStyle
+```
+
+## 常见用法
+
+- 通过 ChartConfig 统一序列颜色与名称。
+- 组合 Tooltip 和 Legend。
+- 让业务层负责数据转换。
+
+## 使用建议
+
+- 组件只接收整理后的展示数据，获取、缓存和业务计算留在应用层。
+- 为加载、空数据和异常状态准备与最终内容尺寸接近的替代视图。
+- 复杂数据在窄屏下应提供滚动、折叠或简化视图。
+
+## API 参考
+
+当前模块公开 `ChartContainer`、`ChartTooltip`、`ChartTooltipContent`、`ChartLegend`、`ChartLegendContent`、`ChartStyle`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Chart 图表 文档](https://ui.shadcn.com/docs/components/radix/chart)；实现差异以本仓库当前 CLI 源码为准。

@@ -1,0 +1,104 @@
+---
+title: Sidebar 侧边栏
+description: 构建可折叠、响应式的应用导航侧栏。
+---
+
+<ComponentPreview name="shadcn-sidebar" />
+
+构建可折叠、响应式的应用导航侧栏。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add sidebar
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInput,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
+} from "@scopify/ui/shadcn/components/sidebar";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+null;
+```
+
+## 组件结构
+
+```text
+Sidebar
+├── SidebarContent
+├── SidebarFooter
+├── SidebarGroup
+├── SidebarGroupAction
+├── SidebarGroupContent
+├── SidebarGroupLabel
+├── SidebarHeader
+├── SidebarInput
+├── SidebarInset
+├── SidebarMenu
+├── SidebarMenuAction
+├── SidebarMenuBadge
+├── SidebarMenuButton
+├── SidebarMenuItem
+├── SidebarMenuSkeleton
+├── SidebarMenuSub
+├── SidebarMenuSubButton
+├── SidebarMenuSubItem
+├── SidebarProvider
+├── SidebarRail
+├── SidebarSeparator
+├── SidebarTrigger
+```
+
+## 常见用法
+
+- 组合头部、分组菜单和页脚。
+- 通过 SidebarProvider 管理折叠状态。
+- 移动端使用内置响应式行为。
+
+## 使用建议
+
+- 当前项、焦点项和禁用项必须在视觉与语义上都能区分。
+- 路由决策留在应用层，基础组件只接收链接、状态与回调。
+- 保证完整键盘路径，并避免将主要入口只放进隐藏菜单。
+
+## API 参考
+
+当前模块公开 `Sidebar`、`SidebarContent`、`SidebarFooter`、`SidebarGroup`、`SidebarGroupAction`、`SidebarGroupContent`、`SidebarGroupLabel`、`SidebarHeader`、`SidebarInput`、`SidebarInset`、`SidebarMenu`、`SidebarMenuAction`、`SidebarMenuBadge`、`SidebarMenuButton`、`SidebarMenuItem`、`SidebarMenuSkeleton`、`SidebarMenuSub`、`SidebarMenuSubButton`、`SidebarMenuSubItem`、`SidebarProvider`、`SidebarRail`、`SidebarSeparator`、`SidebarTrigger`、`useSidebar`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Sidebar 侧边栏 文档](https://ui.shadcn.com/docs/components/radix/sidebar)；实现差异以本仓库当前 CLI 源码为准。

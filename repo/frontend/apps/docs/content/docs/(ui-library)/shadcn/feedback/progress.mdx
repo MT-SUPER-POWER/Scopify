@@ -1,0 +1,63 @@
+---
+title: Progress 进度条
+description: 展示任务或流程的完成进度。
+---
+
+<ComponentPreview name="shadcn-progress" />
+
+展示任务或流程的完成进度。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add progress
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { Progress } from "@scopify/ui/shadcn/components/progress";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="w-full max-w-sm space-y-3">
+  <div className="flex justify-between text-sm">
+    <span>正在下载歌单</span>
+    <span className="text-muted-foreground tabular-nums">68%</span>
+  </div>
+  <Progress value={68} />
+</div>
+```
+
+## 组件结构
+
+```text
+Progress
+```
+
+## 常见用法
+
+- 展示可量化任务进度。
+- 未知时长使用 Spinner。
+- 同时提供可理解的文本状态。
+
+## 使用建议
+
+- 反馈应紧邻触发它的操作，并使用一致的成功、警告和错误语义。
+- 不要只靠颜色表达状态；同时提供文本、图标或可访问说明。
+- 短时反馈使用通知，必须处理的信息应保留在页面内容中。
+
+## API 参考
+
+当前模块公开 `Progress`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Progress 进度条 文档](https://ui.shadcn.com/docs/components/radix/progress)；实现差异以本仓库当前 CLI 源码为准。

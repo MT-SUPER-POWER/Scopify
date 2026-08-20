@@ -4,6 +4,7 @@
 
 ### Added
 
+- **补全 shadcn CLI 原生组件目录**：从当前官方 registry 拉取全部 61 个 UI 组件及 Sidebar 所需 hook，统一落位到 `@scopify/ui/shadcn` 并使用公开包子路径互相引用；文档同步按基础、表单、数据展示、反馈、导航、浮层与对话交互七类补齐独立组件页与可交互的真实组件预览，并参照官方层级补充安装、完整导入、用法、组件结构、常见模式、使用建议和 API 参考。
 - **集成 Mermaid 图表与交互式全屏查看器**：支持在 MDX 中以独立 .mmd / .mermaid 文件形式编写并导入图表，提供全屏模态预览、鼠标滚轮缩放（40%~400%）、鼠标平移拖拽与复制源码能力，并在「产品能力」页面补充了功能图谱。
 - **接入 LLMs 与 Markdown 导出能力**：支持 /llms.txt 结构化大纲索引、/llms-full.txt 全量纯文本文档与 /docs/*.md 单页 Markdown 获取，所有处理端点收敛于 pp/api/llms。
 - **支持文档页面操作与 AI 快捷打开**：在文档页面顶部提供一键复制 Markdown 与跳转打开至 GitHub、ChatGPT、Claude、Cursor 等 AI 工具的交互操作栏，并补全中文本地化词条。

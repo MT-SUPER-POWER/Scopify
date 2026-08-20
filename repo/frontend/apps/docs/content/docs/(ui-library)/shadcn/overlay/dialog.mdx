@@ -1,0 +1,91 @@
+---
+title: Dialog 对话框
+description: 在模态浮层中承载聚焦内容与操作。
+---
+
+<ComponentPreview name="shadcn-dialog" />
+
+在模态浮层中承载聚焦内容与操作。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add dialog
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@scopify/ui/shadcn/components/dialog";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Dialog>
+  <DialogTrigger asChild>
+    <Button>创建歌单</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>创建新歌单</DialogTitle>
+      <DialogDescription>输入名称后即可创建私人歌单。</DialogDescription>
+    </DialogHeader>
+    <Input placeholder="歌单名称" />
+    <DialogFooter>
+      <Button>创建</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+## 组件结构
+
+```text
+Dialog
+├── DialogClose
+├── DialogContent
+├── DialogDescription
+├── DialogFooter
+├── DialogHeader
+├── DialogOverlay
+├── DialogPortal
+├── DialogTitle
+├── DialogTrigger
+```
+
+## 常见用法
+
+- 承载聚焦编辑或创建流程。
+- 使用标题和说明建立语义。
+- 提交完成后由业务层控制关闭。
+
+## 使用建议
+
+- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
+- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
+- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+
+## API 参考
+
+当前模块公开 `Dialog`、`DialogClose`、`DialogContent`、`DialogDescription`、`DialogFooter`、`DialogHeader`、`DialogOverlay`、`DialogPortal`、`DialogTitle`、`DialogTrigger`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Dialog 对话框 文档](https://ui.shadcn.com/docs/components/radix/dialog)；实现差异以本仓库当前 CLI 源码为准。

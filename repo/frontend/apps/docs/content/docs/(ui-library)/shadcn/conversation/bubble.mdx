@@ -1,0 +1,73 @@
+---
+title: Bubble 对话气泡
+description: 以气泡形式组织对话内容与反馈操作。
+---
+
+<ComponentPreview name="shadcn-bubble" />
+
+以气泡形式组织对话内容与反馈操作。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add bubble
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  BubbleGroup,
+  Bubble,
+  BubbleContent,
+  BubbleReactions,
+} from "@scopify/ui/shadcn/components/bubble";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<BubbleGroup className="w-full max-w-md">
+  <Bubble variant="muted">
+    <BubbleContent>帮我推荐一些适合夜晚听的歌。</BubbleContent>
+  </Bubble>
+  <Bubble align="end" variant="tinted">
+    <BubbleContent>已为你整理一份「晚间漫游」歌单，共 20 首。</BubbleContent>
+    <BubbleReactions>👍 3</BubbleReactions>
+  </Bubble>
+</BubbleGroup>
+```
+
+## 组件结构
+
+```text
+BubbleGroup
+├── Bubble
+├── BubbleContent
+├── BubbleReactions
+```
+
+## 常见用法
+
+- 区分用户与助手消息。
+- 在 BubbleReactions 中放置反馈操作。
+- 用 BubbleGroup 聚合连续消息。
+
+## 使用建议
+
+- 消息数据、流式状态和反馈请求保留在消费层，组件只负责展示与交互结构。
+- 为动态新增内容维护稳定的焦点和滚动位置，避免打断正在阅读的用户。
+- 头像、时间和状态是辅助信息，正文应保持最高阅读优先级。
+
+## API 参考
+
+当前模块公开 `BubbleGroup`、`Bubble`、`BubbleContent`、`BubbleReactions`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Bubble 对话气泡 文档](https://ui.shadcn.com/docs/components/radix/bubble)；实现差异以本仓库当前 CLI 源码为准。

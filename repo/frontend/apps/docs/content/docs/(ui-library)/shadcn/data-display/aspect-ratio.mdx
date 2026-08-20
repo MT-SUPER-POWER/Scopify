@@ -1,0 +1,64 @@
+---
+title: Aspect Ratio 固定比例
+description: 让媒体或容器保持指定宽高比。
+---
+
+<ComponentPreview name="shadcn-aspect-ratio" />
+
+让媒体或容器保持指定宽高比。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add aspect-ratio
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { AspectRatio } from "@scopify/ui/shadcn/components/aspect-ratio";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="w-full max-w-sm overflow-hidden rounded-xl">
+  <AspectRatio
+    ratio={16 / 9}
+    className="from-primary/30 to-muted flex items-center justify-center bg-linear-to-br"
+  >
+    <Disc3 className="text-primary size-16" />
+  </AspectRatio>
+</div>
+```
+
+## 组件结构
+
+```text
+AspectRatio
+```
+
+## 常见用法
+
+- 稳定专辑封面与视频占位尺寸。
+- 避免媒体加载引起布局跳动。
+- 通过 ratio 切换横竖构图。
+
+## 使用建议
+
+- 组件只接收整理后的展示数据，获取、缓存和业务计算留在应用层。
+- 为加载、空数据和异常状态准备与最终内容尺寸接近的替代视图。
+- 复杂数据在窄屏下应提供滚动、折叠或简化视图。
+
+## API 参考
+
+当前模块公开 `AspectRatio`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Aspect Ratio 固定比例 文档](https://ui.shadcn.com/docs/components/radix/aspect-ratio)；实现差异以本仓库当前 CLI 源码为准。

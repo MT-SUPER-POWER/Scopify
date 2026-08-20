@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --webpack --port 9191",
     "build": "next build --webpack",
+    "generate:shadcn-guides": "bun scripts/generate-shadcn-component-guides.mjs",
     "start": "next start --port 9191",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint . --max-warnings 0 --no-warn-ignored"
@@ -17,7 +18,10 @@
     "fumadocs-ui": "16.14.3",
     "mermaid": "^11.16.1",
     "next-themes": "^0.4.6",
-    "shiki": "^4.4.3"
+    "react-hook-form": "^7.85.0",
+    "recharts": "3.8.0",
+    "shiki": "^4.4.3",
+    "sonner": "^2.0.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

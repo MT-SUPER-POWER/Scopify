@@ -1,0 +1,74 @@
+---
+title: Marker 标记
+description: 为消息或内容片段提供紧凑的状态标记。
+---
+
+<ComponentPreview name="shadcn-marker" />
+
+为消息或内容片段提供紧凑的状态标记。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add marker
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Marker,
+  MarkerIcon,
+  MarkerContent,
+  markerVariants,
+} from "@scopify/ui/shadcn/components/marker";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="w-full max-w-md space-y-4">
+  <Marker variant="separator">
+    <MarkerContent>今天</MarkerContent>
+  </Marker>
+  <Marker variant="border">
+    <MarkerIcon>
+      <CheckCircle2 />
+    </MarkerIcon>
+    <MarkerContent>已同步 128 首喜欢的歌曲</MarkerContent>
+  </Marker>
+</div>
+```
+
+## 组件结构
+
+```text
+Marker
+├── MarkerIcon
+├── MarkerContent
+```
+
+## 常见用法
+
+- 标记消息状态或上下文。
+- 组合图标和短文本。
+- 通过 variant 表达有限且稳定的语义。
+
+## 使用建议
+
+- 消息数据、流式状态和反馈请求保留在消费层，组件只负责展示与交互结构。
+- 为动态新增内容维护稳定的焦点和滚动位置，避免打断正在阅读的用户。
+- 头像、时间和状态是辅助信息，正文应保持最高阅读优先级。
+
+## API 参考
+
+当前模块公开 `Marker`、`MarkerIcon`、`MarkerContent`、`markerVariants`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Marker 标记 文档](https://ui.shadcn.com/docs/components/radix/marker)；实现差异以本仓库当前 CLI 源码为准。

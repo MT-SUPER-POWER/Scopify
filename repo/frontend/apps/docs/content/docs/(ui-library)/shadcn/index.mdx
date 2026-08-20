@@ -3,16 +3,19 @@ title: Shadcn 原生组件
 description: 由 @scopify/ui 的 shadcn CLI 版本维护，不承载 Scopify 业务语义。
 ---
 
-这一层是内部 UI 库的原始底座。组件源码保持 shadcn CLI 的生成形态，升级、Diff 和回滚都以 CLI 产物为准。
+这一层是内部 UI 库的原始底座。当前收录 61 个 registry UI 组件，源码保持 shadcn CLI 的生成形态，升级、Diff 和回滚都以 CLI 产物为准。
 
 ## 当前目录
 
-| 类型 | 组件          |
-| ---- | ------------- |
-| 基础 | Button、Badge |
-| 表单 | Slider        |
-| 反馈 | Skeleton      |
-| 浮层 | Tooltip       |
+| 类型     | 组件                                                                                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 基础     | Avatar、Badge、Button、Button Group、Card、Direction、Empty、Item、Kbd、Separator                                                                                   |
+| 表单     | Calendar、Checkbox、Combobox、Field、Form、Input、Input Group、Input OTP、Label、Native Select、Radio Group、Select、Slider、Switch、Textarea、Toggle、Toggle Group |
+| 数据展示 | Accordion、Aspect Ratio、Carousel、Chart、Collapsible、Resizable、Scroll Area、Table                                                                                |
+| 反馈     | Alert、Progress、Skeleton、Sonner、Spinner                                                                                                                          |
+| 导航     | Breadcrumb、Menubar、Navigation Menu、Pagination、Sidebar、Tabs                                                                                                     |
+| 浮层     | Alert Dialog、Command、Context Menu、Dialog、Drawer、Dropdown Menu、Hover Card、Popover、Sheet、Tooltip                                                             |
+| 对话交互 | Attachment、Bubble、Marker、Message、Message Scroller                                                                                                               |
 
 ## 导入规则
 
@@ -23,3 +26,5 @@ import { Button } from "@scopify/ui/shadcn/components/button";
 ```
 
 若标准 Props 与共享主题 Token 已经可以表达需求，就停留在这一层。
+
+组件页只记录 CLI 原生入口与用途，主题和 Scopify 业务语义由各自分层负责。

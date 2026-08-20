@@ -1,0 +1,77 @@
+---
+title: Collapsible 折叠区域
+description: 控制单个内容区域的展开与收起。
+---
+
+<ComponentPreview name="shadcn-collapsible" />
+
+控制单个内容区域的展开与收起。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add collapsible
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@scopify/ui/shadcn/components/collapsible";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Collapsible defaultOpen className="w-full max-w-sm space-y-2">
+  <div className="flex items-center justify-between rounded-lg border px-4 py-2">
+    <span className="font-medium">即将播放 · 3</span>
+    <CollapsibleTrigger asChild>
+      <Button variant="ghost" size="icon-sm" aria-label="切换队列">
+        <ChevronsUpDown />
+      </Button>
+    </CollapsibleTrigger>
+  </div>
+  <CollapsibleContent className="bg-muted/50 space-y-1 rounded-lg border p-2 text-sm">
+    <p className="rounded px-2 py-1">晴天 · 周杰伦</p>
+    <p className="rounded px-2 py-1">一路向北 · 周杰伦</p>
+    <p className="rounded px-2 py-1">搁浅 · 周杰伦</p>
+  </CollapsibleContent>
+</Collapsible>
+```
+
+## 组件结构
+
+```text
+Collapsible
+├── CollapsibleTrigger
+├── CollapsibleContent
+```
+
+## 常见用法
+
+- 展开补充详情或高级设置。
+- 触发器提示当前状态。
+- 不要隐藏完成主任务所必需的信息。
+
+## 使用建议
+
+- 组件只接收整理后的展示数据，获取、缓存和业务计算留在应用层。
+- 为加载、空数据和异常状态准备与最终内容尺寸接近的替代视图。
+- 复杂数据在窄屏下应提供滚动、折叠或简化视图。
+
+## API 参考
+
+当前模块公开 `Collapsible`、`CollapsibleTrigger`、`CollapsibleContent`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Collapsible 折叠区域 文档](https://ui.shadcn.com/docs/components/radix/collapsible)；实现差异以本仓库当前 CLI 源码为准。

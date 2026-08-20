@@ -1,0 +1,82 @@
+---
+title: Card 卡片
+description: 组织标题、说明、内容和操作的通用容器。
+---
+
+<ComponentPreview name="shadcn-card" />
+
+组织标题、说明、内容和操作的通用容器。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add card
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+} from "@scopify/ui/shadcn/components/card";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Card className="w-full max-w-sm">
+  <CardHeader>
+    <CardTitle>每日推荐</CardTitle>
+    <CardDescription>根据你的收听偏好生成</CardDescription>
+    <CardAction>
+      <Button size="icon-sm" variant="ghost" aria-label="播放">
+        <Play />
+      </Button>
+    </CardAction>
+  </CardHeader>
+  <CardContent className="text-muted-foreground text-sm">30 首歌曲 · 今天更新</CardContent>
+</Card>
+```
+
+## 组件结构
+
+```text
+Card
+├── CardHeader
+├── CardFooter
+├── CardTitle
+├── CardAction
+├── CardDescription
+├── CardContent
+```
+
+## 常见用法
+
+- 组合标题、说明、正文与页脚。
+- 用 CardAction 放置头部操作。
+- 避免把无关信息塞入同一卡片。
+
+## 使用建议
+
+- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
+- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
+- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+
+## API 参考
+
+当前模块公开 `Card`、`CardHeader`、`CardFooter`、`CardTitle`、`CardAction`、`CardDescription`、`CardContent`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Card 卡片 文档](https://ui.shadcn.com/docs/components/radix/card)；实现差异以本仓库当前 CLI 源码为准。

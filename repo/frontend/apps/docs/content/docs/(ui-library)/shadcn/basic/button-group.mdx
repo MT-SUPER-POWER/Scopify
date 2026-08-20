@@ -1,0 +1,71 @@
+---
+title: Button Group 按钮组
+description: 将相关按钮与控件组合为连续操作区。
+---
+
+<ComponentPreview name="shadcn-button-group" />
+
+将相关按钮与控件组合为连续操作区。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add button-group
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  ButtonGroup,
+  ButtonGroupSeparator,
+  ButtonGroupText,
+  buttonGroupVariants,
+} from "@scopify/ui/shadcn/components/button-group";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<ButtonGroup>
+  <Button variant="outline">上一首</Button>
+  <Button>播放</Button>
+  <ButtonGroupSeparator />
+  <Button variant="outline" size="icon" aria-label="更多操作">
+    <MoreHorizontal />
+  </Button>
+</ButtonGroup>
+```
+
+## 组件结构
+
+```text
+ButtonGroup
+├── ButtonGroupSeparator
+├── ButtonGroupText
+```
+
+## 常见用法
+
+- 合并同级操作。
+- 通过 Separator 分隔不同语义。
+- 切换 orientation 构建纵向工具条。
+
+## 使用建议
+
+- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
+- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
+- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+
+## API 参考
+
+当前模块公开 `ButtonGroup`、`ButtonGroupSeparator`、`ButtonGroupText`、`buttonGroupVariants`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Button Group 按钮组 文档](https://ui.shadcn.com/docs/components/radix/button-group)；实现差异以本仓库当前 CLI 源码为准。

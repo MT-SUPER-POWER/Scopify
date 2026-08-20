@@ -1,0 +1,80 @@
+---
+title: Empty 空状态
+description: 在没有可展示内容时提供结构化提示和操作。
+---
+
+<ComponentPreview name="shadcn-empty" />
+
+在没有可展示内容时提供结构化提示和操作。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add empty
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+  EmptyMedia,
+} from "@scopify/ui/shadcn/components/empty";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Empty className="w-full max-w-md border">
+  <EmptyHeader>
+    <EmptyMedia variant="icon">
+      <ListMusic />
+    </EmptyMedia>
+    <EmptyTitle>播放队列为空</EmptyTitle>
+    <EmptyDescription>从歌曲或歌单中添加音乐开始播放。</EmptyDescription>
+  </EmptyHeader>
+  <EmptyContent>
+    <Button size="sm">浏览推荐</Button>
+  </EmptyContent>
+</Empty>
+```
+
+## 组件结构
+
+```text
+Empty
+├── EmptyHeader
+├── EmptyTitle
+├── EmptyDescription
+├── EmptyContent
+├── EmptyMedia
+```
+
+## 常见用法
+
+- 解释为什么当前没有内容。
+- 给出一个清晰主操作。
+- 通过 EmptyMedia 提供图标或插图。
+
+## 使用建议
+
+- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
+- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
+- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+
+## API 参考
+
+当前模块公开 `Empty`、`EmptyHeader`、`EmptyTitle`、`EmptyDescription`、`EmptyContent`、`EmptyMedia`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Empty 空状态 文档](https://ui.shadcn.com/docs/components/radix/empty)；实现差异以本仓库当前 CLI 源码为准。

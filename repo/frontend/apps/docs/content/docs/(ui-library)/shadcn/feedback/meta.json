@@ -1,4 +1,4 @@
 {
   "title": "反馈组件",
-  "pages": ["skeleton"]
+  "pages": ["alert", "progress", "skeleton", "spinner", "sonner"]
 }

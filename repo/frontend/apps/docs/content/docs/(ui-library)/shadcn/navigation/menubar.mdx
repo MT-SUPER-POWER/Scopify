@@ -1,0 +1,108 @@
+---
+title: Menubar 菜单栏
+description: 构建桌面式顶层菜单和嵌套命令。
+---
+
+<ComponentPreview name="shadcn-menubar" />
+
+构建桌面式顶层菜单和嵌套命令。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add menubar
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  Menubar,
+  MenubarPortal,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarContent,
+  MenubarGroup,
+  MenubarSeparator,
+  MenubarLabel,
+  MenubarItem,
+  MenubarShortcut,
+  MenubarCheckboxItem,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSub,
+  MenubarSubTrigger,
+  MenubarSubContent,
+} from "@scopify/ui/shadcn/components/menubar";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>播放</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>
+        播放 / 暂停 <MenubarShortcut>Space</MenubarShortcut>
+      </MenubarItem>
+      <MenubarItem>下一首</MenubarItem>
+      <MenubarSeparator />
+      <MenubarItem>清空播放队列</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+  <MenubarMenu>
+    <MenubarTrigger>视图</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>全屏播放器</MenubarItem>
+      <MenubarItem>桌面歌词</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
+
+## 组件结构
+
+```text
+Menubar
+├── MenubarPortal
+├── MenubarMenu
+├── MenubarTrigger
+├── MenubarContent
+├── MenubarGroup
+├── MenubarSeparator
+├── MenubarLabel
+├── MenubarItem
+├── MenubarShortcut
+├── MenubarCheckboxItem
+├── MenubarRadioGroup
+├── MenubarRadioItem
+├── MenubarSub
+├── MenubarSubTrigger
+├── MenubarSubContent
+```
+
+## 常见用法
+
+- 构建桌面式应用菜单。
+- 组织嵌套命令和快捷键。
+- 禁用项仍应说明其存在但不可用。
+
+## 使用建议
+
+- 当前项、焦点项和禁用项必须在视觉与语义上都能区分。
+- 路由决策留在应用层，基础组件只接收链接、状态与回调。
+- 保证完整键盘路径，并避免将主要入口只放进隐藏菜单。
+
+## API 参考
+
+当前模块公开 `Menubar`、`MenubarPortal`、`MenubarMenu`、`MenubarTrigger`、`MenubarContent`、`MenubarGroup`、`MenubarSeparator`、`MenubarLabel`、`MenubarItem`、`MenubarShortcut`、`MenubarCheckboxItem`、`MenubarRadioGroup`、`MenubarRadioItem`、`MenubarSub`、`MenubarSubTrigger`、`MenubarSubContent`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Menubar 菜单栏 文档](https://ui.shadcn.com/docs/components/radix/menubar)；实现差异以本仓库当前 CLI 源码为准。

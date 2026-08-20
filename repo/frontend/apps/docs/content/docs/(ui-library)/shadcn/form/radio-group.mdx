@@ -1,0 +1,69 @@
+---
+title: Radio Group 单选组
+description: 在一组互斥选项中选择一个值。
+---
+
+<ComponentPreview name="shadcn-radio-group" />
+
+在一组互斥选项中选择一个值。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add radio-group
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@scopify/ui/shadcn/components/radio-group";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<RadioGroup defaultValue="lossless" className="w-full max-w-xs">
+  {[
+    ["standard", "标准音质"],
+    ["high", "极高音质"],
+    ["lossless", "无损音质"],
+  ].map(([value, label]) => (
+    <div key={value} className="flex items-center gap-3">
+      <RadioGroupItem value={value} id={`quality-${value}`} />
+      <Label htmlFor={`quality-${value}`}>{label}</Label>
+    </div>
+  ))}
+</RadioGroup>
+```
+
+## 组件结构
+
+```text
+RadioGroup
+├── RadioGroupItem
+```
+
+## 常见用法
+
+- 从互斥选项中选择一个。
+- 为组提供可见标签。
+- 默认值和受控值保持单一来源。
+
+## 使用建议
+
+- 每个控件都要有可访问标签，并在错误时同步 aria-invalid 与错误文本。
+- 受控值、校验和提交逻辑由消费层管理，基础组件不耦合具体表单模型。
+- 使用单一状态来源，避免同时传入 value 与 defaultValue。
+
+## API 参考
+
+当前模块公开 `RadioGroup`、`RadioGroupItem`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Radio Group 单选组 文档](https://ui.shadcn.com/docs/components/radix/radio-group)；实现差异以本仓库当前 CLI 源码为准。

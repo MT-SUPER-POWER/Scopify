@@ -1,0 +1,80 @@
+---
+title: Message 消息
+description: 组织消息头像、正文、页眉和页脚区域。
+---
+
+<ComponentPreview name="shadcn-message" />
+
+组织消息头像、正文、页眉和页脚区域。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add message
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import {
+  MessageGroup,
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageFooter,
+  MessageHeader,
+} from "@scopify/ui/shadcn/components/message";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<Message className="w-full max-w-lg">
+  <MessageAvatar className="size-9">
+    <Bot className="size-5" />
+  </MessageAvatar>
+  <MessageContent>
+    <MessageHeader>Scopify 助手</MessageHeader>
+    <Bubble variant="muted">
+      <BubbleContent>根据你的最近播放，推荐从《十一月的萧邦》开始。</BubbleContent>
+    </Bubble>
+    <MessageFooter>刚刚 · 推荐已生成</MessageFooter>
+  </MessageContent>
+</Message>
+```
+
+## 组件结构
+
+```text
+MessageGroup
+├── Message
+├── MessageAvatar
+├── MessageContent
+├── MessageFooter
+├── MessageHeader
+```
+
+## 常见用法
+
+- 组合头像、页眉、正文与页脚。
+- 用 MessageGroup 聚合对话。
+- 流式内容保持布局稳定。
+
+## 使用建议
+
+- 消息数据、流式状态和反馈请求保留在消费层，组件只负责展示与交互结构。
+- 为动态新增内容维护稳定的焦点和滚动位置，避免打断正在阅读的用户。
+- 头像、时间和状态是辅助信息，正文应保持最高阅读优先级。
+
+## API 参考
+
+当前模块公开 `MessageGroup`、`Message`、`MessageAvatar`、`MessageContent`、`MessageFooter`、`MessageHeader`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Message 消息 文档](https://ui.shadcn.com/docs/components/radix/message)；实现差异以本仓库当前 CLI 源码为准。

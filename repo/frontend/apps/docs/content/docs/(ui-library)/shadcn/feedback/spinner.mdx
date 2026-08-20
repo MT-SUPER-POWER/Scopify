@@ -1,0 +1,60 @@
+---
+title: Spinner 加载指示器
+description: 用紧凑动画表示正在处理或等待。
+---
+
+<ComponentPreview name="shadcn-spinner" />
+
+用紧凑动画表示正在处理或等待。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add spinner
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { Spinner } from "@scopify/ui/shadcn/components/spinner";
+```
+
+## 用法
+
+下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+
+```tsx
+<div className="flex items-center gap-3 text-sm">
+  <Spinner className="size-5" />
+  正在加载音乐库…
+</div>
+```
+
+## 组件结构
+
+```text
+Spinner
+```
+
+## 常见用法
+
+- 表示未知时长的等待。
+- 与动作文本组合。
+- 避免页面同时出现多个无上下文的旋转指示器。
+
+## 使用建议
+
+- 反馈应紧邻触发它的操作，并使用一致的成功、警告和错误语义。
+- 不要只靠颜色表达状态；同时提供文本、图标或可访问说明。
+- 短时反馈使用通知，必须处理的信息应保留在页面内容中。
+
+## API 参考
+
+当前模块公开 `Spinner`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+
+完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Spinner 加载指示器 文档](https://ui.shadcn.com/docs/components/radix/spinner)；实现差异以本仓库当前 CLI 源码为准。

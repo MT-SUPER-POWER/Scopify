@@ -1,78 +1,103 @@
 "use client";
 
-import { useState } from "react";
-import { Bell, Sparkles } from "lucide-react";
+import { ShadcnBasicActionPreview } from "@/components/docs/previews/shadcn-basic-action-preview";
+import { ShadcnBasicContentPreview } from "@/components/docs/previews/shadcn-basic-content-preview";
+import { ShadcnConversationPreview } from "@/components/docs/previews/shadcn-conversation-preview";
+import { ShadcnDataRichPreview } from "@/components/docs/previews/shadcn-data-rich-preview";
+import { ShadcnDataStructurePreview } from "@/components/docs/previews/shadcn-data-structure-preview";
+import { ShadcnFeedbackPreview } from "@/components/docs/previews/shadcn-feedback-preview";
+import { ShadcnFormControlPreview } from "@/components/docs/previews/shadcn-form-control-preview";
+import { ShadcnFormFieldPreview } from "@/components/docs/previews/shadcn-form-field-preview";
+import { ShadcnFormInputPreview } from "@/components/docs/previews/shadcn-form-input-preview";
+import { ShadcnFormSelectionPreview } from "@/components/docs/previews/shadcn-form-selection-preview";
+import { ShadcnMessageScrollerPreview } from "@/components/docs/previews/shadcn-message-scroller-preview";
+import { ShadcnNavigationMenuPreview } from "@/components/docs/previews/shadcn-navigation-menu-preview";
+import { ShadcnNavigationPathPreview } from "@/components/docs/previews/shadcn-navigation-path-preview";
+import { ShadcnOverlayDialogPreview } from "@/components/docs/previews/shadcn-overlay-dialog-preview";
+import { ShadcnOverlayFlyoutPreview } from "@/components/docs/previews/shadcn-overlay-flyout-preview";
+import { ShadcnOverlayMenuPreview } from "@/components/docs/previews/shadcn-overlay-menu-preview";
+import { ShadcnSidebarPreview } from "@/components/docs/previews/shadcn-sidebar-preview";
+import type { ShadcnPreviewProps } from "@/types/component-docs";
 
-import { Badge } from "@scopify/ui/shadcn/components/badge";
-import { Button } from "@scopify/ui/shadcn/components/button";
-import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
-import { Slider } from "@scopify/ui/shadcn/components/slider";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@scopify/ui/shadcn/components/tooltip";
-
-import type { ShadcnPreviewName } from "@/types/component-docs";
-
-export function ShadcnPreview({ name }: { name: ShadcnPreviewName }) {
-  const [sliderValue, setSliderValue] = useState([42]);
-
+export function ShadcnPreview({ name }: ShadcnPreviewProps) {
   switch (name) {
-    case "shadcn-button":
-      return (
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Button>默认按钮</Button>
-          <Button variant="secondary">次要按钮</Button>
-          <Button variant="outline">描边按钮</Button>
-          <Button variant="ghost">幽灵按钮</Button>
-          <Button size="icon" aria-label="通知">
-            <Bell />
-          </Button>
-        </div>
-      );
     case "shadcn-badge":
-      return (
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Badge>Default</Badge>
-          <Badge variant="secondary">Secondary</Badge>
-          <Badge variant="outline">Outline</Badge>
-          <Badge variant="destructive">Destructive</Badge>
-        </div>
-      );
+    case "shadcn-button":
+    case "shadcn-button-group":
+    case "shadcn-kbd":
+      return <ShadcnBasicActionPreview name={name} />;
+    case "shadcn-avatar":
+    case "shadcn-card":
+    case "shadcn-direction":
+    case "shadcn-empty":
+    case "shadcn-item":
+    case "shadcn-separator":
+      return <ShadcnBasicContentPreview name={name} />;
+    case "shadcn-input":
+    case "shadcn-input-group":
+    case "shadcn-input-otp":
+    case "shadcn-label":
+    case "shadcn-textarea":
+      return <ShadcnFormInputPreview name={name} />;
+    case "shadcn-checkbox":
+    case "shadcn-combobox":
+    case "shadcn-native-select":
+    case "shadcn-radio-group":
+    case "shadcn-select":
+      return <ShadcnFormSelectionPreview name={name} />;
+    case "shadcn-field":
+    case "shadcn-form":
+      return <ShadcnFormFieldPreview name={name} />;
+    case "shadcn-calendar":
     case "shadcn-slider":
-      return (
-        <div className="w-full max-w-sm space-y-4">
-          <Slider value={sliderValue} onValueChange={setSliderValue} max={100} step={1} />
-          <p className="text-muted-foreground text-center text-sm tabular-nums">
-            当前值：{sliderValue[0]}
-          </p>
-        </div>
-      );
+    case "shadcn-switch":
+    case "shadcn-toggle":
+    case "shadcn-toggle-group":
+      return <ShadcnFormControlPreview name={name} />;
+    case "shadcn-accordion":
+    case "shadcn-aspect-ratio":
+    case "shadcn-carousel":
+    case "shadcn-collapsible":
+      return <ShadcnDataStructurePreview name={name} />;
+    case "shadcn-chart":
+    case "shadcn-resizable":
+    case "shadcn-scroll-area":
+    case "shadcn-table":
+      return <ShadcnDataRichPreview name={name} />;
+    case "shadcn-alert":
+    case "shadcn-progress":
     case "shadcn-skeleton":
-      return (
-        <div className="flex w-full max-w-sm items-center gap-4">
-          <Skeleton className="size-14 rounded-full" />
-          <div className="flex-1 space-y-2.5">
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-3 w-full" />
-            <Skeleton className="h-3 w-2/3" />
-          </div>
-        </div>
-      );
+    case "shadcn-sonner":
+    case "shadcn-spinner":
+      return <ShadcnFeedbackPreview name={name} />;
+    case "shadcn-breadcrumb":
+    case "shadcn-pagination":
+    case "shadcn-tabs":
+      return <ShadcnNavigationPathPreview name={name} />;
+    case "shadcn-menubar":
+    case "shadcn-navigation-menu":
+      return <ShadcnNavigationMenuPreview name={name} />;
+    case "shadcn-sidebar":
+      return <ShadcnSidebarPreview name={name} />;
+    case "shadcn-alert-dialog":
+    case "shadcn-dialog":
+    case "shadcn-drawer":
+    case "shadcn-sheet":
+      return <ShadcnOverlayDialogPreview name={name} />;
+    case "shadcn-command":
+    case "shadcn-context-menu":
+    case "shadcn-dropdown-menu":
+      return <ShadcnOverlayMenuPreview name={name} />;
+    case "shadcn-hover-card":
+    case "shadcn-popover":
     case "shadcn-tooltip":
-      return (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="outline">
-                <Sparkles /> 悬停查看
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent sideOffset={8}>由 Radix 提供无障碍交互</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
+      return <ShadcnOverlayFlyoutPreview name={name} />;
+    case "shadcn-attachment":
+    case "shadcn-bubble":
+    case "shadcn-marker":
+    case "shadcn-message":
+      return <ShadcnConversationPreview name={name} />;
+    case "shadcn-message-scroller":
+      return <ShadcnMessageScrollerPreview name={name} />;
   }
 }
