@@ -17,7 +17,13 @@ export function LandingSonnetStage({ scene }: LandingSonnetStageProps) {
   const prefersReducedMotion = useReducedMotion() ?? false;
   const timeline = useLandingSonnetTimeline(prefersReducedMotion);
   const isPerformance = scene === "performance";
-  const isReveal = scene === "reveal";
+  const isFragments = scene === "fragments";
+  const isInterface = scene === "interface";
+  const isEpilogue = scene === "epilogue";
+  const showText = isPerformance || isFragments;
+  const stageOpacity = isPerformance ? 1 : isFragments ? 0.86 : isInterface ? 0.1 : 0.28;
+  const stageBlur = isInterface ? 18 : isEpilogue ? 5 : 0;
+  const veilOpacity = isPerformance ? 0.05 : isFragments ? 0.14 : isInterface ? 0.72 : 0.54;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#070912]">
@@ -25,21 +31,21 @@ export function LandingSonnetStage({ scene }: LandingSonnetStageProps) {
       <div
         className="absolute inset-0 origin-center transition-[opacity,transform,filter] duration-1000 ease-out max-sm:scale-[0.88]"
         style={{
-          filter: isReveal ? "blur(16px)" : "blur(0px)",
-          opacity: isPerformance ? 1 : isReveal ? 0.12 : 0.32,
-          transform: `scale(${isReveal ? 1.035 : 1})`,
+          filter: `blur(${stageBlur}px)`,
+          opacity: stageOpacity,
+          transform: `scale(${isInterface ? 1.04 : 1})`,
         }}
       >
         <FoliaSonnetRenderer
           coverUrl={foliaStageScreenshot.src}
           reducedMotion={prefersReducedMotion}
-          showText={isPerformance}
+          showText={showText}
           timeline={timeline}
         />
       </div>
       <div
         className="absolute inset-0 transition-colors duration-1000"
-        style={{ backgroundColor: isPerformance ? "rgba(2,3,7,0.05)" : "rgba(2,3,7,0.54)" }}
+        style={{ backgroundColor: `rgba(2,3,7,${veilOpacity})` }}
       />
       <div className="landing-grain absolute inset-0" />
     </div>

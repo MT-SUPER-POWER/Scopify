@@ -7,15 +7,23 @@ import type { LandingScene } from "@/types/marketing";
 export function useLandingScene() {
   const introRef = useRef<HTMLElement | null>(null);
   const performanceRef = useRef<HTMLElement | null>(null);
-  const revealRef = useRef<HTMLElement | null>(null);
+  const fragmentsRef = useRef<HTMLElement | null>(null);
+  const interfaceRef = useRef<HTMLElement | null>(null);
+  const epilogueRef = useRef<HTMLElement | null>(null);
   const [scene, setScene] = useState<LandingScene>("intro");
 
   useEffect(() => {
-    const elements = [introRef.current, performanceRef.current, revealRef.current];
+    const elements = [
+      introRef.current,
+      performanceRef.current,
+      fragmentsRef.current,
+      interfaceRef.current,
+      epilogueRef.current,
+    ];
     if (elements.some((element) => !element)) return;
 
     const ratios = new Map<Element, number>();
-    const scenes: LandingScene[] = ["intro", "performance", "reveal"];
+    const scenes: LandingScene[] = ["intro", "performance", "fragments", "interface", "epilogue"];
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) ratios.set(entry.target, entry.intersectionRatio);
@@ -32,5 +40,5 @@ export function useLandingScene() {
     return () => observer.disconnect();
   }, []);
 
-  return { introRef, performanceRef, revealRef, scene };
+  return { introRef, performanceRef, fragmentsRef, interfaceRef, epilogueRef, scene };
 }

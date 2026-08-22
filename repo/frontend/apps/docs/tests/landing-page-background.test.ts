@@ -6,13 +6,17 @@ const readSource = (relativePath: string) =>
 
 describe("landing page background", () => {
   test("mounts the real Folia Latent shader renderer", async () => {
-    const [pageSource, rendererSource] = await Promise.all([
+    const [pageSource, experienceSource, stageSource, rendererSource] = await Promise.all([
       readSource("app/page.tsx"),
+      readSource("components/marketing/landing-experience.tsx"),
+      readSource("components/marketing/landing-sonnet-stage.tsx"),
       readSource("components/marketing/folia-latent-background.tsx"),
     ]);
 
-    expect(pageSource).toContain("FoliaLatentBackground");
-    expect(pageSource).not.toContain("FoliaFluidBackground");
+    expect(pageSource).toContain("LandingExperience");
+    expect(experienceSource).toContain("LandingSonnetStage");
+    expect(stageSource).toContain("FoliaLatentBackground");
+    expect(`${pageSource}${experienceSource}${stageSource}`).not.toContain("FoliaFluidBackground");
     expect(rendererSource).toContain("MeshGradient");
     expect(rendererSource).toContain("Dithering");
     expect(rendererSource).toContain('shape="warp"');

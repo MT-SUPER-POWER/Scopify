@@ -29,7 +29,7 @@ export interface FoliaLatentTuning {
   overlayOpacity: number;
 }
 
-export type LandingScene = "intro" | "performance" | "reveal";
+export type LandingScene = "intro" | "performance" | "fragments" | "interface" | "epilogue";
 
 export interface LandingSonnetTimeline {
   audioBands: AudioBands;
