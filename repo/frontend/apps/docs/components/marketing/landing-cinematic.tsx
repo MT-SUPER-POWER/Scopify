@@ -7,7 +7,11 @@ import foliaStageScreenshot from "@/assets/features/lyrics-folia-stage.png";
 import { FoliaCinematicRenderer } from "@/components/marketing/folia-cinematic-renderer";
 import { LANDING_CINEMATIC_CHAPTERS } from "@/constants/marketing";
 import { useLandingCinematicTimeline } from "@/hooks/use-landing-cinematic-timeline";
-import { resolveHoldOpacity, resolveSceneProgress } from "@/lib/marketing/folia-cinematic-timeline";
+import {
+  resolveChapterTitleOpacity,
+  resolveHoldOpacity,
+  resolveSceneProgress,
+} from "@/lib/marketing/folia-cinematic-timeline";
 
 export function LandingCinematic() {
   const { containerRef, timeline } = useLandingCinematicTimeline();
@@ -20,7 +24,7 @@ export function LandingCinematic() {
     activeChapter.start,
     activeChapter.end,
   );
-  const chapterReveal = activeIndex === 0 ? 1 : Math.min(1, sceneProgress * 6);
+  const chapterTitleOpacity = resolveChapterTitleOpacity(sceneProgress, activeIndex === 0);
   const desktopOpacity = resolveHoldOpacity(timeline.progress, 0.74, 0.97);
 
   return (
@@ -34,9 +38,14 @@ export function LandingCinematic() {
           <FoliaCinematicRenderer
             timeline={timeline}
             coverUrl={foliaStageScreenshot.src}
+            showText={chapterTitleOpacity < 0.08}
             className="absolute inset-0"
           />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.72),transparent_28%,transparent_72%,rgba(0,0,0,0.72))]" />
+          <div
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgba(0,0,0,0.28)_66%,rgba(0,0,0,0.92)_100%)] transition-opacity duration-300"
+            style={{ opacity: chapterTitleOpacity }}
+          />
           <div
             className="pointer-events-none absolute inset-[8%] overflow-hidden border border-white/20 shadow-[0_40px_120px_rgba(0,0,0,0.7)]"
             style={{
@@ -89,8 +98,8 @@ export function LandingCinematic() {
           key={activeChapter.mode}
           className="pointer-events-none absolute inset-x-10 bottom-[15svh] z-30 sm:inset-x-16 lg:inset-x-24"
           style={{
-            opacity: chapterReveal,
-            transform: `translate3d(0, ${(1 - chapterReveal) * 34}px, 0)`,
+            opacity: chapterTitleOpacity,
+            transform: `translate3d(0, ${(1 - chapterTitleOpacity) * 34}px, 0)`,
           }}
         >
           <p className="mb-3 text-[10px] tracking-[0.28em] text-white/48 uppercase">
@@ -107,7 +116,7 @@ export function LandingCinematic() {
         </div>
 
         <div className="pointer-events-none absolute inset-x-6 bottom-4 z-20 flex h-[4svh] items-center justify-between text-[9px] tracking-[0.22em] text-white/36 uppercase sm:inset-x-10 lg:inset-x-16">
-          <span>Scroll / scrub</span>
+          <span>Scroll / scenes</span>
           <span>{activeChapter.description}</span>
         </div>
       </div>

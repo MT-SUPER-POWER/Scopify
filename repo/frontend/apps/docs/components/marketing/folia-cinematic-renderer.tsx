@@ -31,12 +31,14 @@ const FoliaPartita = dynamic(
 interface FoliaCinematicRendererProps {
   className?: string;
   coverUrl: string;
+  showText: boolean;
   timeline: LandingCinematicTimeline;
 }
 
 export function FoliaCinematicRenderer({
   className = "",
   coverUrl,
+  showText,
   timeline,
 }: FoliaCinematicRendererProps) {
   const sharedProps = {
@@ -49,8 +51,8 @@ export function FoliaCinematicRenderer({
     background: { transparent: true },
     coverUrl,
     seed: `scopify-landing-${timeline.mode}`,
-    showText: true,
-    paused: true,
+    showText,
+    paused: timeline.mode !== "sonnet",
     staticMode: false,
     isPreviewMode: true,
     isPlayerChromeHidden: true,

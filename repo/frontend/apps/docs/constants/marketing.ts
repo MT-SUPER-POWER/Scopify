@@ -20,6 +20,7 @@ export const LANDING_FOLIA_THEME: Theme = {
 };
 
 export const LANDING_CINEMATIC_DURATION = 30;
+export const LANDING_SONNET_LOOP_DURATION = 10;
 
 export const LANDING_CINEMATIC_COPY = [
   { text: "让声音，显形。", start: 0, end: 3.3 },

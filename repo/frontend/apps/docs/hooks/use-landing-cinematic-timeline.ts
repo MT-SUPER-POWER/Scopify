@@ -3,12 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMotionValue } from "framer-motion";
 
-import { LANDING_CINEMATIC_DURATION } from "@/constants/marketing";
 import {
   clampProgress,
   LANDING_CINEMATIC_LINES,
   resolveCinematicMode,
   resolveCurrentLineIndex,
+  resolvePlaybackTime,
   resolveVisualBeat,
 } from "@/lib/marketing/folia-cinematic-timeline";
 
@@ -24,6 +24,7 @@ export function useLandingCinematicTimeline() {
   const [progress, setProgress] = useState(0);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const lineIndexRef = useRef(0);
+  const progressRef = useRef(0);
 
   const audioBands = useMemo(
     () => ({ bass, lowMid, mid, vocal, treble }),
@@ -33,7 +34,7 @@ export function useLandingCinematicTimeline() {
   useEffect(() => {
     let animationFrame = 0;
 
-    const update = () => {
+    const updateScrollProgress = () => {
       animationFrame = 0;
       const container = containerRef.current;
       if (!container) return;
@@ -41,27 +42,12 @@ export function useLandingCinematicTimeline() {
       const rect = container.getBoundingClientRect();
       const travel = Math.max(1, container.offsetHeight - window.innerHeight);
       const nextProgress = clampProgress(-rect.top / travel);
-      const time = nextProgress * LANDING_CINEMATIC_DURATION;
-      const beat = resolveVisualBeat(time);
-      const nextLineIndex = resolveCurrentLineIndex(time);
-
-      currentTime.set(time);
-      audioPower.set(beat.power);
-      bass.set(beat.bass);
-      lowMid.set(beat.lowMid);
-      mid.set(beat.mid);
-      vocal.set(beat.vocal);
-      treble.set(beat.treble);
+      progressRef.current = nextProgress;
       setProgress(nextProgress);
-
-      if (nextLineIndex !== lineIndexRef.current) {
-        lineIndexRef.current = nextLineIndex;
-        setCurrentLineIndex(nextLineIndex);
-      }
     };
 
     const scheduleUpdate = () => {
-      if (!animationFrame) animationFrame = requestAnimationFrame(update);
+      if (!animationFrame) animationFrame = requestAnimationFrame(updateScrollProgress);
     };
 
     scheduleUpdate();
@@ -72,6 +58,38 @@ export function useLandingCinematicTimeline() {
       window.removeEventListener("resize", scheduleUpdate);
       if (animationFrame) cancelAnimationFrame(animationFrame);
     };
+  }, []);
+
+  useEffect(() => {
+    let animationFrame = 0;
+    const startedAt = performance.now();
+
+    const updatePlayback = (now: number) => {
+      const nextProgress = progressRef.current;
+      const mode = resolveCinematicMode(nextProgress);
+      const elapsedTime = (now - startedAt) / 1000;
+      const time = resolvePlaybackTime(mode, nextProgress, elapsedTime);
+      const beat = resolveVisualBeat(time);
+      const nextLineIndex = resolveCurrentLineIndex(time);
+
+      currentTime.set(time);
+      audioPower.set(beat.power);
+      bass.set(beat.bass);
+      lowMid.set(beat.lowMid);
+      mid.set(beat.mid);
+      vocal.set(beat.vocal);
+      treble.set(beat.treble);
+
+      if (nextLineIndex !== lineIndexRef.current) {
+        lineIndexRef.current = nextLineIndex;
+        setCurrentLineIndex(nextLineIndex);
+      }
+
+      animationFrame = requestAnimationFrame(updatePlayback);
+    };
+
+    animationFrame = requestAnimationFrame(updatePlayback);
+    return () => cancelAnimationFrame(animationFrame);
   }, [audioPower, bass, currentTime, lowMid, mid, treble, vocal]);
 
   return {

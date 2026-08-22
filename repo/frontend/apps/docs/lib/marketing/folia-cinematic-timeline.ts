@@ -1,6 +1,10 @@
 import type { Line } from "@folia/types";
 
-import { LANDING_CINEMATIC_COPY } from "@/constants/marketing";
+import {
+  LANDING_CINEMATIC_COPY,
+  LANDING_CINEMATIC_DURATION,
+  LANDING_SONNET_LOOP_DURATION,
+} from "@/constants/marketing";
 import type { FoliaCinematicMode } from "@/types/marketing";
 
 export const clampProgress = (value: number) => Math.min(1, Math.max(0, value));
@@ -11,6 +15,15 @@ export const resolveCinematicMode = (progress: number): FoliaCinematicMode => {
   return "partita";
 };
 
+export const resolvePlaybackTime = (
+  mode: FoliaCinematicMode,
+  progress: number,
+  elapsedTime: number,
+) =>
+  mode === "sonnet"
+    ? elapsedTime % LANDING_SONNET_LOOP_DURATION
+    : progress * LANDING_CINEMATIC_DURATION;
+
 export const resolveSceneProgress = (progress: number, start: number, end: number) =>
   clampProgress((progress - start) / (end - start));
 
@@ -19,6 +32,12 @@ export const resolveHoldOpacity = (progress: number, start: number, end: number)
   const fadeIn = clampProgress(local / 0.16);
   const fadeOut = clampProgress((1 - local) / 0.18);
   return Math.min(fadeIn, fadeOut);
+};
+
+export const resolveChapterTitleOpacity = (sceneProgress: number, isFirstChapter: boolean) => {
+  const entrance = isFirstChapter ? 1 : clampProgress(sceneProgress / 0.06);
+  const exit = clampProgress((0.32 - sceneProgress) / 0.12);
+  return Math.min(entrance, exit);
 };
 
 const buildWords = (text: string, startTime: number, endTime: number) => {
