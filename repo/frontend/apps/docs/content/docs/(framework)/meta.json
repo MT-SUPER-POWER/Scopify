@@ -5,7 +5,7 @@
   "root": true,
   "pagesIndex": "index",
   "pages": [
-    "---认识 Scopify---",
+    "---介绍---",
     "index",
     "features",
     "technology",
@@ -13,6 +13,7 @@
     "getting-started",
     "architecture",
     "deployment",
-    "roadmap"
+    "roadmap",
+    "release"
   ]
 }

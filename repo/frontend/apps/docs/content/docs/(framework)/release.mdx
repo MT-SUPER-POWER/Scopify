@@ -1,0 +1,136 @@
+---
+title: 发布与 CI/CD
+description: Scopify 从版本 Tag 到桌面安装包和 GitHub Release 的完整交付流程。
+---
+
+Scopify 的发布不是一次本地打包命令，而是一条由 GitHub Actions 驱动的交付流水线。它负责校验版本、构建不可变 Renderer、在 Windows 与 macOS 上打包 Electron、校验产物、生成证明并创建 GitHub Release。
+
+## 发布入口
+
+Release workflow 由推送 `v*` Tag 触发：
+
+```text
+git push origin v1.4.6
+          ↓
+Build and Release workflow
+          ↓
+Renderer artifact ──────┐
+                        ├─ Windows package
+                        └─ macOS package
+                                  ↓
+                         Checksums + Attestation
+                                  ↓
+                         GitHub Release
+```
+
+同一个 Tag 使用同一个 concurrency group，避免同一引用被并发发布。带有 `-` 的 Tag（例如 `v1.4.6-beta.1`）会被标记为 prerelease，不会覆盖 latest release。
+
+## 版本与 Changelog
+
+Scopify 使用 `x.y.z` 版本格式：
+
+| 位置 | 含义 |
+| --- | --- |
+| `x` | 重大更新，可能包含不兼容修改 |
+| `y` | 向后兼容的新功能 |
+| `z` | Bug 修复与小型改进 |
+
+发布 Tag 前必须保证：
+
+1. 根 `package.json`、桌面应用和需要发布的 workspace package 版本与 Tag 一致；
+2. `docs/CHANGELOG.md` 存在完全匹配的版本标题，例如 `## v1.4.6`；
+3. 版本标题下有该版本的完整变更内容。
+
+Release job 会根据 `GITHUB_REF_NAME` 查找同名 `## vX.Y.Z` 标题，并截取到下一个版本标题作为 GitHub Release Notes。找不到标题时，发布任务会主动失败，不会创建空 Release。
+
+## CI/CD 阶段
+
+### 1. 构建不可变 Renderer
+
+`renderer` job 在 Ubuntu 上执行：
+
+- Node.js 24；
+- Bun 1.3.11；
+- `bun install --frozen-lockfile`；
+- `.github/scripts/verify-release-version.ts` 校验 Tag 与 workspace 版本；
+- `bun run sync:renderer` 构建并同步桌面 Renderer；
+- `verify-renderer.ts` 校验 manifest 和 source revision；
+- 将 Renderer 打成 `renderer-<commit>.tar.gz`，并生成 SHA-256 文件；
+- 上传保留 14 天的不可变 artifact。
+
+Renderer 只构建一次。后续平台打包任务必须下载并校验这个 artifact，不能重新构建一份可能不同的 Renderer。
+
+### 2. Windows / macOS 矩阵打包
+
+`package` job 依赖 Renderer job，并按平台并行：
+
+| 平台 | Runner | 主要产物 |
+| --- | --- | --- |
+| Windows | `windows-latest` | `.exe`、`.blockmap`、`latest.yml` |
+| macOS | `macos-latest` | `.dmg`、`.zip`、`.blockmap`、`latest-mac.yml` |
+
+每个平台都会：
+
+1. 只初始化 `repo/backend/api-enhanced` 后端 submodule；
+2. 使用 Node.js 24、pnpm 9.15.4 和 Bun 1.3.11 安装依赖；
+3. 安装本地后端依赖，准备 Electron 分发目录；
+4. 下载并校验 Renderer artifact，然后解包到桌面构建目录；
+5. 构建 Electron Host；
+6. 使用 `package:win` 或 `package:mac` 打包，明确保持 `--publish never`；
+7. 检查所有平台必需文件存在，再上传平台 artifact。
+
+Windows runner 会开启 Developer Mode，以支持 Electron 构建过程中需要的 symlink。
+
+### 3. 校验并发布 Release
+
+`release` job 只有在 Renderer 和所有平台 package 都成功后才会运行：
+
+- 下载 Windows / macOS 产物；
+- 生成统一的 `SHA256SUMS.txt`；
+- 对 Release binaries 执行 artifact attestation；
+- 从 `docs/CHANGELOG.md` 提取 Release Notes；
+- 使用 `gh release create` 创建并发布 GitHub Release。
+
+CI 的平台打包阶段不会直接发布到 GitHub。发布动作集中在最后一个 job，保证只有经过完整校验的产物才会进入 Release。
+
+## 本地发布前检查
+
+推送 Tag 前，建议先验证完整运行环境：
+
+```bash
+docker compose config --quiet
+docker compose up -d --build
+```
+
+随后检查：
+
+- Web 地址是否可以访问；
+- 后端地址（例如 `http://127.0.0.1:3838`）是否可用；
+- `docs/CHANGELOG.md` 是否有目标版本标题；
+- workspace 版本是否已经同步；
+- 桌面端 Renderer、Electron Host 和本地后端资源是否能一起构建。
+
+本地脚本 `build:win` / `build:mac` 用于生成不发布的安装包；`release:win` / `release:mac` 是带 Electron Builder publish 行为的独立路径，不应代替 CI 的集中式 Release workflow。
+
+## 失败排查
+
+| 失败位置 | 常见原因 |
+| --- | --- |
+| Verify release tag and workspace versions | Tag 与 package 版本不一致 |
+| Verify Renderer manifest and content | Renderer 没有按当前 commit 同步或 manifest 不完整 |
+| Verify archive checksum | 下载的 Renderer artifact 被替换或损坏 |
+| Verify platform release outputs | Electron 打包缺少 exe、dmg、yml 或 blockmap |
+| Extract changelog | `docs/CHANGELOG.md` 缺少精确的 `## <tag>` 标题 |
+| Create release | GitHub token 权限、Tag 状态或 Release API 失败 |
+
+## 发布边界
+
+- 发布版本的事实来源是 Git Tag 和对应的 `docs/CHANGELOG.md` 段落；
+- 桌面安装包包含可选的本地后端，因此 CI 需要初始化后端 submodule；
+- Renderer artifact 必须可追溯到 `github.sha`，平台打包不能偷偷替换它；
+- Release job 负责发布，package job 只负责构建和上传；
+- 提交代码前仍需遵守根目录 `AGENTS.md`、共享 UI 边界和桌面契约边界。
+
+## 许可与贡献
+
+项目采用 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html)。参与发布相关修改前，请先阅读仓库根目录的 `AGENTS.md` 和 `docs/structure.md`，确保应用层、共享 UI 与桌面契约的边界保持清晰。

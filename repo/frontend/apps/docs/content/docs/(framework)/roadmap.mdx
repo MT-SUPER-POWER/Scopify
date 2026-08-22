@@ -1,6 +1,6 @@
 ---
-title: 路线图与发布
-description: Scopify 当前待办、长期提案、版本规则与 Release 检查项。
+title: 路线图
+description: Scopify 当前产品方向与长期提案。
 ---
 
 ## 当前路线图
@@ -20,36 +20,3 @@ description: Scopify 当前待办、长期提案、版本规则与 Release 检�
 - [ ] 接入 QQ、AMLLDB、酷狗等多源歌词匹配。
 
 路线图表示当前方向，不代表固定交付承诺。新的设计想法、缺陷和实现建议可以通过 [GitHub Issues](https://github.com/MT-SUPER-POWER/Scopify/issues) 讨论。
-
-## 版本号规则
-
-Scopify 使用 `x.y.z` 版本格式：
-
-| 位置 | 含义 |
-| --- | --- |
-| `x` | 重大更新，可能包含不兼容修改 |
-| `y` | 向后兼容的新功能 |
-| `z` | Bug 修复与小型改进 |
-
-## Release 检查
-
-发布 Tag 前建议验证容器配置与完整运行环境：
-
-```bash
-docker compose config --quiet
-docker compose up -d --build
-```
-
-随后检查 Web 与后端地址是否可以正常访问。GitHub Actions 会在推送 `v*` Tag 时构建安装包，并从 `docs/CHANGELOG.md` 中提取同名版本标题作为 Release Notes。
-
-例如发布 `v1.0.5` 前，版本日志中应存在：
-
-```md
-## v1.0.5
-```
-
-桌面打包流程会递归获取后端 submodule，用于准备可选的内置后端资源。
-
-## 许可与贡献
-
-项目采用 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html)。提交代码前请先阅读仓库根目录的 `AGENTS.md` 和 `docs/structure.md`，确保应用层、共享 UI 与桌面契约的边界保持清晰。
