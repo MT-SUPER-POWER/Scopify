@@ -4,6 +4,7 @@
 @import "@scopify/ui/theme.css";
 
 @source "../../../packages/ui/**/*.{ts,tsx}";
+@source "../../web/components/lyrics/folia/src/**/*.{ts,tsx}";
 
 /* 覆写 Fumadocs 主题色为 Scopify 绿色系 */
 @theme {

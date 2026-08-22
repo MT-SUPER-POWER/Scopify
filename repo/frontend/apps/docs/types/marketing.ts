@@ -1,4 +1,6 @@
-import type { StaticImageData } from "next/image";
+import type { MotionValue } from "framer-motion";
+
+import type { AudioBands, Line } from "@folia/types";
 
 export interface FoliaFluidTheme {
   accentColor: string;
@@ -27,11 +29,23 @@ export interface FoliaLatentTuning {
   overlayOpacity: number;
 }
 
-export interface LandingStoryContent {
-  align: "left" | "right";
+export type FoliaCinematicMode = "sonnet" | "diorama" | "partita";
+
+export interface LandingCinematicTimeline {
+  audioBands: AudioBands;
+  audioPower: MotionValue<number>;
+  currentLineIndex: number;
+  currentTime: MotionValue<number>;
+  lines: Line[];
+  mode: FoliaCinematicMode;
+  progress: number;
+}
+
+export interface LandingCinematicChapter {
   description: string;
+  end: number;
   eyebrow: string;
-  image: StaticImageData;
-  imageAlt: string;
+  mode: FoliaCinematicMode;
+  start: number;
   title: string;
 }

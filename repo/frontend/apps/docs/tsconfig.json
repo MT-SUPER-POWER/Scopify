@@ -15,7 +15,13 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
+      "@/lib/i18n": ["./types/folia-i18n.ts"],
+      "@/lib/lyrics/folia/*": ["../web/lib/lyrics/folia/*"],
+      "@/store/module/i18n": ["./lib/marketing/folia-i18n-adapter.ts"],
+      "@/types/i18n.generated": ["./types/folia-i18n.ts"],
+      "@/components/lyrics/folia/src/*": ["../web/components/lyrics/folia/src/*"],
       "@/*": ["./*"],
+      "@folia/*": ["../web/components/lyrics/folia/src/*"],
       "@scopify/ui": ["../../packages/ui/src"],
       "@scopify/ui/*": ["../../packages/ui/src/*"]
     }

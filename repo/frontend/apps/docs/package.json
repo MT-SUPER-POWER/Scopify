@@ -15,17 +15,25 @@
     "lint": "eslint . --max-warnings 0 --no-warn-ignored"
   },
   "dependencies": {
+    "@chenglou/pretext": "^0.0.8",
+    "@paper-design/shaders": "^0.0.80",
     "@paper-design/shaders-react": "^0.0.80",
+    "@react-three/fiber": "^9.6.1",
     "@scopify/ui": "workspace:*",
+    "framer-motion": "12.42.2",
     "fumadocs-core": "16.14.4",
     "fumadocs-mdx": "^15.2.3",
     "fumadocs-ui": "16.14.3",
     "mermaid": "^11.16.1",
     "next-themes": "^0.4.6",
+    "pixi.js": "^8.19.0",
+    "react-colorful": "^5.8.0",
     "react-hook-form": "^7.85.0",
     "recharts": "3.8.0",
     "shiki": "^4.4.3",
-    "sonner": "^2.0.8"
+    "sonner": "^2.0.8",
+    "three": "^0.185.1",
+    "twgl.js": "^7.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -34,6 +42,7 @@
     "@types/node": "^20.19.43",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.185.1",
     "eslint": "^9.39.5",
     "eslint-config-next": "16.1.6",
     "lucide-react": "^1.26.0",

@@ -23,7 +23,9 @@ import { ShadcnExample } from "@/components/docs/shadcn-example";
 import { Mermaid } from "@/components/mdx/mermaid";
 import { ThemeWorkbench } from "@/components/theme-lab/theme-workbench";
 
-export function getMDXComponents(components?: MDXComponents) {
+export function getMDXComponents(components?: MDXComponents): MDXComponents {
+  // React Three Fiber augments JSX intrinsic elements for Folia's Diorama canvas. The MDX runtime
+  // still receives the same component map, but its index signature cannot represent those elements.
   return {
     ...defaultMdxComponents,
     Button,
@@ -45,7 +47,7 @@ export function getMDXComponents(components?: MDXComponents) {
     TabsTrigger,
     ThemeWorkbench,
     ...components,
-  } satisfies MDXComponents;
+  } as unknown as MDXComponents;
 }
 
 export const useMDXComponents = getMDXComponents;
