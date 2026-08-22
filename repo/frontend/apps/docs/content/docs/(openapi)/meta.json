@@ -1,6 +1,6 @@
 {
   "title": "OpenAPI",
-  "description": "Scopify 契约与外部服务 API 入口",
+  "description": "Scopify IPC 和 API",
   "icon": "openapi",
   "root": true,
   "pagesIndex": "api-reference",
