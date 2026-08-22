@@ -29,23 +29,12 @@ export interface FoliaLatentTuning {
   overlayOpacity: number;
 }
 
-export type FoliaCinematicMode = "sonnet" | "diorama" | "partita";
+export type LandingScene = "intro" | "performance" | "reveal";
 
-export interface LandingCinematicTimeline {
+export interface LandingSonnetTimeline {
   audioBands: AudioBands;
   audioPower: MotionValue<number>;
   currentLineIndex: number;
   currentTime: MotionValue<number>;
   lines: Line[];
-  mode: FoliaCinematicMode;
-  progress: number;
-}
-
-export interface LandingCinematicChapter {
-  description: string;
-  end: number;
-  eyebrow: string;
-  mode: FoliaCinematicMode;
-  start: number;
-  title: string;
 }

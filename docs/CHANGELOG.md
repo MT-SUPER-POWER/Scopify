@@ -32,6 +32,7 @@
 
 ### Visual
 
+- **将公开落地页重做为单一 Sonnet 数字作品**：删除临时 Header、时间码、章节刻度、多模式切换与超长 Sticky，改为三屏原生滚动；Folia 全程自主播放，结尾自然显露真实软件界面与项目入口。
 - **将公开落地页收敛为 Folia 电影分镜**：滚动时间轴直接驱动真实的商籁、镜台与云阶渲染器，让歌词、镜头与桌面界面按同一段无声节奏推进。
 - **新增 Scopify 公开落地页**：将文档站根路由改为沉浸式产品入口，复用 Folia「隐现」背景的 MeshGradient 与 Dithering 双层动态 shader，并以真实的 Scopify 主界面、动态歌词舞台和桌面音乐壁纸截图串联产品叙事；文档作为主要行动入口，GitHub 作为次要入口。
 - **按 tweakcn 源码重做 Shadcn Theme Lab**：重新对齐独立编辑器的顶部导航、主题预设栏、操作栏、可调整左右分栏、颜色分组、Hex 单行编辑器和 Cards 预览画布；Shadcn Default Profile 同步转换为等价的 sRGB Hex，主题读取、保存与导出保持 Hex，并在 Shadcn、Scopify 概览页补充实验室跳转入口。
