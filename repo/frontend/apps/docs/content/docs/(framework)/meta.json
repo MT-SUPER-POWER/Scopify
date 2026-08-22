@@ -8,12 +8,13 @@
     "---介绍---",
     "index",
     "features",
+    "shortcuts",
     "technology",
     "---开发与交付---",
     "getting-started",
     "architecture",
-    "deployment",
     "roadmap",
+    "deployment",
     "release"
   ]
 }

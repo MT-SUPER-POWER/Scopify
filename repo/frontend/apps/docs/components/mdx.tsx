@@ -2,6 +2,8 @@ import type { MDXComponents } from "mdx/types";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 
 import { ComponentPreview } from "@/components/docs/component-preview";
+import { Button } from "@scopify/ui/shadcn/components/button";
+import { Kbd, KbdGroup } from "@scopify/ui/shadcn/components/kbd";
 import {
   ShadcnComponentSource,
   ShadcnOfficialPreview,
@@ -24,8 +26,11 @@ import { ThemeWorkbench } from "@/components/theme-lab/theme-workbench";
 export function getMDXComponents(components?: MDXComponents) {
   return {
     ...defaultMdxComponents,
+    Button,
     CodeTabs,
     ComponentPreview,
+    Kbd,
+    KbdGroup,
     Mermaid,
     ShadcnButtonExample,
     ShadcnCodeExample,

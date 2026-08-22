@@ -11,7 +11,7 @@
 - **新增 shadcn 默认主题基线**：按当前官方 neutral CSS variables 配置新增独立的 light/dark Token Profile，并通过 `@scopify/ui/theme.css` 统一导出，为文档主题对照与后续交互式 Token 预览提供稳定基线。
 - **简化 UI 主题注册与扩展契约**：Shadcn 和 Scopify 共用的类名由 `scopify/theme.css` 直接映射到 Shadcn Token，独有能力只读取主题文件中的 `--scopify-*`；移除中间 Adapter 和扩展兜底层，只有同时提供完整 Shadcn 与 Scopify Profile 的主题才能驱动完整组件库，About 文档同步补充文件关系和新增步骤。
 - **集成 Mermaid 图表与交互式全屏查看器**：支持在 MDX 中以独立 .mmd / .mermaid 文件形式编写并导入图表，提供全屏模态预览、鼠标滚轮缩放（40%~400%）、鼠标平移拖拽与复制源码能力，并在「产品能力」页面补充了功能图谱。
-- **接入 LLMs 与 Markdown 导出能力**：支持 /llms.txt 结构化大纲索引、/llms-full.txt 全量纯文本文档与 /docs/*.md 单页 Markdown 获取，所有处理端点收敛于 pp/api/llms。
+- **接入 LLMs 与 Markdown 导出能力**：支持 `/llms.txt` 结构化大纲索引、`/llms-full.txt` 全量纯文本文档与 `/docs/*.md` 单页 Markdown 获取，所有处理端点收敛于 `/api/llms`。
 - **支持文档页面操作与 AI 快捷打开**：在文档页面顶部提供一键复制 Markdown 与跳转打开至 GitHub、ChatGPT、Claude、Cursor 等 AI 工具的交互操作栏，并补全中文本地化词条。
 - **整理 Desktop IPC 文档导航**：在 OpenAPI 下新增与 Netease API 平级的 Desktop IPC 分组，并预留 About、架构、契约、能力版本、通道参考、运行时适配、扩展流程与安全边界页面。
 - **补充 Desktop IPC 文档正文**：记录当前 Renderer、Preload、Main 与 Runtime 的通信架构、共享契约、能力协商、通道分类、扩展流程和安全边界。
