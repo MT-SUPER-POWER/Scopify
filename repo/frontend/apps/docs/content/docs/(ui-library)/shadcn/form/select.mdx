@@ -1,86 +1,145 @@
 ---
-title: Select 选择器
-description: 通过弹出选项列表选择一个值。
+title: "Select 选择器"
+description: "通过弹出选项列表选择一个值。"
 ---
 
-<ComponentPreview name="shadcn-select" />
+<ShadcnOfficialPreview styleName="radix-nova" name="select-demo"  />
 
-通过弹出选项列表选择一个值。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add select
+npx shadcn@latest add select
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="select"
+  title="components/ui/select.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "@scopify/ui/shadcn/components/select";
+} from "@scopify/ui/shadcn/components/select"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
-<Select defaultValue="daily">
-  <SelectTrigger className="w-full max-w-xs">
-    <SelectValue placeholder="选择歌单" />
+```tsx showLineNumbers
+<Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Theme" />
   </SelectTrigger>
   <SelectContent>
-    <SelectItem value="daily">每日推荐</SelectItem>
-    <SelectItem value="liked">我喜欢的音乐</SelectItem>
-    <SelectItem value="recent">最近播放</SelectItem>
+    <SelectGroup>
+      <SelectItem value="light">Light</SelectItem>
+      <SelectItem value="dark">Dark</SelectItem>
+      <SelectItem value="system">System</SelectItem>
+    </SelectGroup>
   </SelectContent>
 </Select>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Select`:
 
 ```text
 Select
-├── SelectContent
-├── SelectGroup
-├── SelectItem
-├── SelectLabel
-├── SelectScrollDownButton
-├── SelectScrollUpButton
-├── SelectSeparator
 ├── SelectTrigger
-├── SelectValue
+│   └── SelectValue
+└── SelectContent
+    ├── SelectGroup
+    │   ├── SelectLabel
+    │   ├── SelectItem
+    │   └── SelectItem
+    ├── SelectSeparator
+    └── SelectGroup
+        ├── SelectLabel
+        ├── SelectItem
+        └── SelectItem
 ```
 
-## 常见用法
+## Align Item With Trigger
 
-- 从有限选项中选择一个值。
-- 使用 Group 和 Label 分类。
-- 错误状态同时设置 aria-invalid。
+Use the `position` prop on `SelectContent` to control alignment. When `position="item-aligned"` (default), the popup positions so the selected item appears over the trigger. When `position="popper"`, the popup aligns to the trigger edge.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="select-align-item"  />
 
-- 每个控件都要有可访问标签，并在错误时同步 aria-invalid 与错误文本。
-- 受控值、校验和提交逻辑由消费层管理，基础组件不耦合具体表单模型。
-- 使用单一状态来源，避免同时传入 value 与 defaultValue。
+## Groups
 
-## API 参考
+Use `SelectGroup`, `SelectLabel`, and `SelectSeparator` to organize items.
 
-当前模块公开 `Select`、`SelectContent`、`SelectGroup`、`SelectItem`、`SelectLabel`、`SelectScrollDownButton`、`SelectScrollUpButton`、`SelectSeparator`、`SelectTrigger`、`SelectValue`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="select-groups"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Select 选择器 文档](https://ui.shadcn.com/docs/components/radix/select)；实现差异以本仓库当前 CLI 源码为准。
+## Scrollable
+
+A select with many items that scrolls.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="select-scrollable"  />
+
+## Disabled
+
+<ShadcnOfficialPreview styleName="radix-nova" name="select-disabled"  />
+
+## Invalid
+
+Add the `data-invalid` attribute to the `Field` component and the `aria-invalid` attribute to the `SelectTrigger` component to show an error state.
+
+```tsx showLineNumbers /data-invalid/ /aria-invalid/
+<Field data-invalid>
+  <FieldLabel>Fruit</FieldLabel>
+  <SelectTrigger aria-invalid>
+    <SelectValue />
+  </SelectTrigger>
+</Field>
+```
+
+<ShadcnOfficialPreview styleName="radix-nova" name="select-invalid"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="select-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix UI Select](https://www.radix-ui.com/docs/primitives/components/select#api-reference) documentation.

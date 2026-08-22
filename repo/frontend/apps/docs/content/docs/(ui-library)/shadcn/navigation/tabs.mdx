@@ -1,81 +1,114 @@
 ---
-title: Tabs 标签页
-description: 在同一上下文中切换多个内容面板。
+title: "Tabs 标签页"
+description: "在同一上下文中切换多个内容面板。"
 ---
 
-<ComponentPreview name="shadcn-tabs" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="tabs-demo"
+  previewClassName="h-96"
+ />
 
-在同一上下文中切换多个内容面板。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add tabs
+npx shadcn@latest add tabs
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-  tabsListVariants,
-} from "@scopify/ui/shadcn/components/tabs";
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
 ```
 
-## 用法
+<Step>Copy and paste the following code into your project.</Step>
 
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+<ShadcnComponentSource
+  name="tabs"
+  title="components/ui/tabs.tsx"
+  styleName="radix-nova"
+ />
 
-```tsx
-<Tabs defaultValue="songs" className="w-full max-w-md">
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@scopify/ui/shadcn/components/tabs"
+```
+
+```tsx showLineNumbers
+<Tabs defaultValue="account" className="w-[400px]">
   <TabsList>
-    <TabsTrigger value="songs">歌曲</TabsTrigger>
-    <TabsTrigger value="albums">专辑</TabsTrigger>
-    <TabsTrigger value="artists">艺人</TabsTrigger>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger>
   </TabsList>
-  <TabsContent value="songs" className="rounded-lg border p-4 text-sm">
-    128 首已收藏歌曲
-  </TabsContent>
-  <TabsContent value="albums" className="rounded-lg border p-4 text-sm">
-    24 张已收藏专辑
-  </TabsContent>
-  <TabsContent value="artists" className="rounded-lg border p-4 text-sm">
-    16 位关注艺人
-  </TabsContent>
+  <TabsContent value="account">Make changes to your account here.</TabsContent>
+  <TabsContent value="password">Change your password here.</TabsContent>
 </Tabs>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build `Tabs`:
 
 ```text
 Tabs
 ├── TabsList
-├── TabsTrigger
+│   ├── TabsTrigger
+│   └── TabsTrigger
 ├── TabsContent
+└── TabsContent
 ```
 
-## 常见用法
+## Line
 
-- 切换同一上下文的并列视图。
-- 标签保持短小。
-- 不要用 Tabs 模拟前后步骤流程。
+Use the `variant="line"` prop on `TabsList` for a line style.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="tabs-line"  />
 
-- 当前项、焦点项和禁用项必须在视觉与语义上都能区分。
-- 路由决策留在应用层，基础组件只接收链接、状态与回调。
-- 保证完整键盘路径，并避免将主要入口只放进隐藏菜单。
+## Vertical
 
-## API 参考
+Use `orientation="vertical"` for vertical tabs.
 
-当前模块公开 `Tabs`、`TabsList`、`TabsTrigger`、`TabsContent`、`tabsListVariants`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="tabs-vertical"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Tabs 标签页 文档](https://ui.shadcn.com/docs/components/radix/tabs)；实现差异以本仓库当前 CLI 源码为准。
+## Disabled
+
+<ShadcnOfficialPreview styleName="radix-nova" name="tabs-disabled"  />
+
+## Icons
+
+<ShadcnOfficialPreview styleName="radix-nova" name="tabs-icons"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="tabs-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix Tabs](https://www.radix-ui.com/docs/primitives/components/tabs#api-reference) documentation.

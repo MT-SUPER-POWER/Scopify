@@ -1,91 +1,129 @@
 ---
-title: Drawer 抽屉
-description: 从屏幕边缘滑入适合触控交互的内容面板。
+title: "Drawer 抽屉"
+description: "从屏幕边缘滑入适合触控交互的内容面板。"
 ---
 
-<ComponentPreview name="shadcn-drawer" />
+<ShadcnOfficialPreview styleName="radix-nova" name="drawer-demo"  />
 
-从屏幕边缘滑入适合触控交互的内容面板。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+## About
 
-## 安装
+Drawer is built on top of [Vaul](https://github.com/emilkowalski/vaul) by [emilkowalski](https://twitter.com/emilkowalski).
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add drawer
+npx shadcn@latest add drawer
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install vaul
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="drawer"
+  title="components/ui/drawer.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Drawer,
-  DrawerPortal,
-  DrawerOverlay,
-  DrawerTrigger,
   DrawerClose,
   DrawerContent,
-  DrawerHeader,
-  DrawerFooter,
-  DrawerTitle,
   DrawerDescription,
-} from "@scopify/ui/shadcn/components/drawer";
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@scopify/ui/shadcn/components/drawer"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <Drawer>
-  <DrawerTrigger asChild>
-    <Button variant="outline">打开播放队列</Button>
-  </DrawerTrigger>
+  <DrawerTrigger>Open</DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>当前播放队列</DrawerTitle>
-      <DrawerDescription>接下来将播放 12 首歌曲。</DrawerDescription>
+      <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+      <DrawerDescription>This action cannot be undone.</DrawerDescription>
     </DrawerHeader>
-    <div className="mx-auto w-full max-w-sm px-4 py-6 text-sm">晴天 · 周杰伦</div>
     <DrawerFooter>
-      <Button>开始播放</Button>
+      <Button>Submit</Button>
+      <DrawerClose>
+        <Button variant="outline">Cancel</Button>
+      </DrawerClose>
     </DrawerFooter>
   </DrawerContent>
 </Drawer>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Drawer`:
 
 ```text
 Drawer
-├── DrawerPortal
-├── DrawerOverlay
 ├── DrawerTrigger
-├── DrawerClose
-├── DrawerContent
-├── DrawerHeader
-├── DrawerFooter
-├── DrawerTitle
-├── DrawerDescription
+└── DrawerContent
+    ├── DrawerHeader
+    │   ├── DrawerTitle
+    │   └── DrawerDescription
+    └── DrawerFooter
 ```
 
-## 常见用法
+## Scrollable Content
 
-- 在移动端承载轻量任务。
-- 从边缘展示上下文内容。
-- 保持关闭入口和拖动行为清晰。
+Keep actions visible while the content scrolls.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="drawer-scrollable-content"  />
 
-- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
-- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
-- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+## Sides
 
-## API 参考
+Use the `direction` prop to set the side of the drawer. Available options are `top`, `right`, `bottom`, and `left`.
 
-当前模块公开 `Drawer`、`DrawerPortal`、`DrawerOverlay`、`DrawerTrigger`、`DrawerClose`、`DrawerContent`、`DrawerHeader`、`DrawerFooter`、`DrawerTitle`、`DrawerDescription`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="drawer-sides"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Drawer 抽屉 文档](https://ui.shadcn.com/docs/components/radix/drawer)；实现差异以本仓库当前 CLI 源码为准。
+## Responsive Dialog
+
+You can combine the `Dialog` and `Drawer` components to create a responsive dialog. This renders a `Dialog` component on desktop and a `Drawer` on mobile.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="drawer-dialog"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="drawer-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Vaul documentation](https://vaul.emilkowal.ski/getting-started) for the full API reference.

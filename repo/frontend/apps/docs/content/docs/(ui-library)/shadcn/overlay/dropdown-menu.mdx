@@ -1,100 +1,204 @@
 ---
-title: Dropdown Menu 下拉菜单
-description: 从触发器展开一组操作、选项或子菜单。
+title: "Dropdown Menu 下拉菜单"
+description: "从触发器展开一组操作、选项或子菜单。"
 ---
 
-<ComponentPreview name="shadcn-dropdown-menu" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="dropdown-menu-demo"
+  description="A dropdown menu with icons, shortcuts and sub menu items."
+ />
 
-从触发器展开一组操作、选项或子菜单。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add dropdown-menu
+npx shadcn@latest add dropdown-menu
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="dropdown-menu"
+  title="components/ui/dropdown-menu.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Button } from "@scopify/ui/shadcn/components/button"
 import {
   DropdownMenu,
-  DropdownMenuPortal,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuLabel,
   DropdownMenuItem,
-  DropdownMenuCheckboxItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
-} from "@scopify/ui/shadcn/components/dropdown-menu";
+  DropdownMenuTrigger,
+} from "@scopify/ui/shadcn/components/dropdown-menu"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <Button variant="outline">
-      <MoreHorizontal /> 更多操作
-    </Button>
+    <Button variant="outline">Open</Button>
   </DropdownMenuTrigger>
-  <DropdownMenuContent align="end">
-    <DropdownMenuLabel>歌曲操作</DropdownMenuLabel>
-    <DropdownMenuItem>下一首播放</DropdownMenuItem>
-    <DropdownMenuItem>收藏到歌单</DropdownMenuItem>
+  <DropdownMenuContent>
+    <DropdownMenuGroup>
+      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuItem>Profile</DropdownMenuItem>
+      <DropdownMenuItem>Billing</DropdownMenuItem>
+    </DropdownMenuGroup>
     <DropdownMenuSeparator />
-    <DropdownMenuItem variant="destructive">从队列移除</DropdownMenuItem>
+    <DropdownMenuGroup>
+      <DropdownMenuItem>Team</DropdownMenuItem>
+      <DropdownMenuItem>Subscription</DropdownMenuItem>
+    </DropdownMenuGroup>
   </DropdownMenuContent>
 </DropdownMenu>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `DropdownMenu`:
 
 ```text
 DropdownMenu
-├── DropdownMenuPortal
 ├── DropdownMenuTrigger
-├── DropdownMenuContent
-├── DropdownMenuGroup
-├── DropdownMenuLabel
-├── DropdownMenuItem
-├── DropdownMenuCheckboxItem
-├── DropdownMenuRadioGroup
-├── DropdownMenuRadioItem
-├── DropdownMenuSeparator
-├── DropdownMenuShortcut
-├── DropdownMenuSub
-├── DropdownMenuSubTrigger
-├── DropdownMenuSubContent
+└── DropdownMenuContent
+    ├── DropdownMenuGroup
+    │   ├── DropdownMenuLabel
+    │   ├── DropdownMenuItem
+    │   └── DropdownMenuItem
+    ├── DropdownMenuSeparator
+    ├── DropdownMenuGroup
+    │   ├── DropdownMenuLabel
+    │   ├── DropdownMenuCheckboxItem
+    │   └── DropdownMenuCheckboxItem
+    ├── DropdownMenuSeparator
+    ├── DropdownMenuGroup
+    │   ├── DropdownMenuLabel
+    │   └── DropdownMenuRadioGroup
+    │       ├── DropdownMenuRadioItem
+    │       └── DropdownMenuRadioItem
+    └── DropdownMenuSub
+        ├── DropdownMenuSubTrigger
+        └── DropdownMenuSubContent
+            └── DropdownMenuGroup
+                ├── DropdownMenuLabel
+                ├── DropdownMenuItem
+                └── DropdownMenuItem
 ```
 
-## 常见用法
+## Basic
 
-- 组织触发器相关操作。
-- 用分组与分隔线降低扫描成本。
-- 复选或单选项保持状态可见。
+A basic dropdown menu with labels and separators.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-basic"  />
 
-- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
-- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
-- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+## Submenu
 
-## API 参考
+Use `DropdownMenuSub` to nest secondary actions.
 
-当前模块公开 `DropdownMenu`、`DropdownMenuPortal`、`DropdownMenuTrigger`、`DropdownMenuContent`、`DropdownMenuGroup`、`DropdownMenuLabel`、`DropdownMenuItem`、`DropdownMenuCheckboxItem`、`DropdownMenuRadioGroup`、`DropdownMenuRadioItem`、`DropdownMenuSeparator`、`DropdownMenuShortcut`、`DropdownMenuSub`、`DropdownMenuSubTrigger`、`DropdownMenuSubContent`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-submenu"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Dropdown Menu 下拉菜单 文档](https://ui.shadcn.com/docs/components/radix/dropdown-menu)；实现差异以本仓库当前 CLI 源码为准。
+## Shortcuts
+
+Add `DropdownMenuShortcut` to show keyboard hints.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-shortcuts"  />
+
+## Icons
+
+Combine icons with labels for quick scanning.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-icons"  />
+
+## Checkboxes
+
+Use `DropdownMenuCheckboxItem` for toggles.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-checkboxes"  />
+
+## Checkboxes Icons
+
+Add icons to checkbox items.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="dropdown-menu-checkboxes-icons"
+ />
+
+## Radio Group
+
+Use `DropdownMenuRadioGroup` for exclusive choices.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-radio-group"  />
+
+## Radio Icons
+
+Show radio options with icons.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-radio-icons"  />
+
+## Destructive
+
+Use `variant="destructive"` for irreversible actions.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-destructive"  />
+
+## Avatar
+
+An account switcher dropdown triggered by an avatar.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-avatar"  />
+
+## Complex
+
+A richer example combining groups, icons, and submenus.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dropdown-menu-complex"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="dropdown-menu-rtl"
+  direction="rtl"
+ />
+
+## API Reference
+
+See the [Radix UI documentation](https://www.radix-ui.com/docs/primitives/components/dropdown-menu) for the full API reference.

@@ -1,65 +1,124 @@
 ---
-title: Kbd 键盘按键
-description: 以内联样式展示快捷键或键盘输入提示。
+title: "Kbd 键盘按键"
+description: "以内联样式展示快捷键或键盘输入提示。"
 ---
 
-<ComponentPreview name="shadcn-kbd" />
+<ShadcnOfficialPreview styleName="radix-nova" name="kbd-demo"  />
 
-以内联样式展示快捷键或键盘输入提示。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add kbd
+npx shadcn@latest add kbd
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="kbd"
+  title="components/ui/kbd.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
 
 ```tsx
-import { Kbd, KbdGroup } from "@scopify/ui/shadcn/components/kbd";
+import { Kbd } from "@scopify/ui/shadcn/components/kbd"
 ```
-
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
 
 ```tsx
-<div className="text-muted-foreground flex items-center gap-3 text-sm">
-  打开搜索
-  <KbdGroup>
-    <Kbd>Ctrl</Kbd>
-    <span>+</span>
-    <Kbd>K</Kbd>
-  </KbdGroup>
-</div>
+<Kbd>Ctrl</Kbd>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build `Kbd` and `KbdGroup`:
 
 ```text
 Kbd
-├── KbdGroup
+KbdGroup
+├── Kbd
+└── Kbd
 ```
 
-## 常见用法
+## Group
 
-- 展示单键或组合快捷键。
-- 用 KbdGroup 组织组合键。
-- 文本描述同时说明快捷操作含义。
+Use the `KbdGroup` component to group keyboard keys together.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="kbd-group"  />
 
-- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
-- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
-- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+## Button
 
-## API 参考
+Use the `Kbd` component inside a `Button` component to display a keyboard key inside a button.
 
-当前模块公开 `Kbd`、`KbdGroup`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="kbd-button"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Kbd 键盘按键 文档](https://ui.shadcn.com/docs/components/radix/kbd)；实现差异以本仓库当前 CLI 源码为准。
+## Tooltip
+
+You can use the `Kbd` component inside a `Tooltip` component to display a tooltip with a keyboard key.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="kbd-tooltip"  />
+
+## Input Group
+
+You can use the `Kbd` component inside a `InputGroupAddon` component to display a keyboard key inside an input group.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="kbd-input-group"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="kbd-rtl" direction="rtl"  />
+
+## API Reference
+
+### Kbd
+
+Use the `Kbd` component to display a keyboard key.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | ``      |
+
+```tsx
+<Kbd>Ctrl</Kbd>
+```
+
+### KbdGroup
+
+Use the `KbdGroup` component to group `Kbd` components together.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | ``      |
+
+```tsx
+<KbdGroup>
+  <Kbd>Ctrl</Kbd>
+  <Kbd>B</Kbd>
+</KbdGroup>
+```

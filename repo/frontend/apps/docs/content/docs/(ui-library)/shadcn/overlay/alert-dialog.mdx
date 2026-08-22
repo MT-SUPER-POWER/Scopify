@@ -1,26 +1,61 @@
 ---
-title: Alert Dialog 确认对话框
-description: 在继续高风险或不可逆操作前请求明确确认。
+title: "Alert Dialog 确认对话框"
+description: "在继续高风险或不可逆操作前请求明确确认。"
 ---
 
-<ComponentPreview name="shadcn-alert-dialog" />
+<ShadcnOfficialPreview
+  name="alert-dialog-demo"
+  styleName="radix-nova"
+  previewClassName="h-56"
+ />
 
-在继续高风险或不可逆操作前请求明确确认。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add alert-dialog
+npx shadcn@latest add alert-dialog
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="alert-dialog"
+  title="components/ui/alert-dialog.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,67 +64,118 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogOverlay,
-  AlertDialogPortal,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@scopify/ui/shadcn/components/alert-dialog";
+} from "@scopify/ui/shadcn/components/alert-dialog"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <AlertDialog>
   <AlertDialogTrigger asChild>
-    <Button variant="destructive">清空播放队列</Button>
+    <Button variant="outline">Show Dialog</Button>
   </AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
-      <AlertDialogTitle>确认清空播放队列？</AlertDialogTitle>
-      <AlertDialogDescription>此操作会移除队列中的全部歌曲。</AlertDialogDescription>
+      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        from our servers.
+      </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
-      <AlertDialogCancel>取消</AlertDialogCancel>
-      <AlertDialogAction>确认清空</AlertDialogAction>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction>Continue</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build an `AlertDialog`:
 
 ```text
 AlertDialog
-├── AlertDialogAction
-├── AlertDialogCancel
-├── AlertDialogContent
-├── AlertDialogDescription
-├── AlertDialogFooter
-├── AlertDialogHeader
-├── AlertDialogMedia
-├── AlertDialogOverlay
-├── AlertDialogPortal
-├── AlertDialogTitle
 ├── AlertDialogTrigger
+└── AlertDialogContent
+    ├── AlertDialogHeader
+    │   ├── AlertDialogMedia
+    │   ├── AlertDialogTitle
+    │   └── AlertDialogDescription
+    └── AlertDialogFooter
+        ├── AlertDialogCancel
+        └── AlertDialogAction
 ```
 
-## 常见用法
+## Basic
 
-- 确认删除或退出等高风险操作。
-- 明确区分确认与取消。
-- 在说明中交代操作后果。
+A basic alert dialog with a title, description, and cancel and continue buttons.
 
-## 使用建议
+<ShadcnOfficialPreview
+  name="alert-dialog-basic"
+  styleName="radix-nova"
+  previewClassName="h-56"
+ />
 
-- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
-- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
-- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+## Small
 
-## API 参考
+Use the `size="sm"` prop to make the alert dialog smaller.
 
-当前模块公开 `AlertDialog`、`AlertDialogAction`、`AlertDialogCancel`、`AlertDialogContent`、`AlertDialogDescription`、`AlertDialogFooter`、`AlertDialogHeader`、`AlertDialogMedia`、`AlertDialogOverlay`、`AlertDialogPortal`、`AlertDialogTitle`、`AlertDialogTrigger`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview
+  name="alert-dialog-small"
+  styleName="radix-nova"
+  previewClassName="h-56"
+ />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Alert Dialog 确认对话框 文档](https://ui.shadcn.com/docs/components/radix/alert-dialog)；实现差异以本仓库当前 CLI 源码为准。
+## Media
+
+Use the `AlertDialogMedia` component to add a media element such as an icon or image to the alert dialog.
+
+<ShadcnOfficialPreview
+  name="alert-dialog-media"
+  styleName="radix-nova"
+  previewClassName="h-56"
+ />
+
+## Small with Media
+
+Use the `size="sm"` prop to make the alert dialog smaller and the `AlertDialogMedia` component to add a media element such as an icon or image to the alert dialog.
+
+<ShadcnOfficialPreview
+  name="alert-dialog-small-media"
+  styleName="radix-nova"
+  previewClassName="h-56"
+ />
+
+## Destructive
+
+Use the `AlertDialogAction` component to add a destructive action button to the alert dialog.
+
+<ShadcnOfficialPreview
+  name="alert-dialog-destructive"
+  styleName="radix-nova"
+  previewClassName="h-56"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="alert-dialog-rtl"
+  direction="rtl"
+  previewClassName="h-56"
+ />
+
+## API Reference
+
+### size
+
+Use the `size` prop on the `AlertDialogContent` component to control the size of the alert dialog. It accepts the following values:
+
+| Prop   | Type                | Default     |
+| ------ | ------------------- | ----------- |
+| `size` | `"default" \| "sm"` | `"default"` |
+
+For more information about the other components and their props, see the [Radix UI documentation](https://www.radix-ui.com/primitives/docs/components/alert-dialog#api-reference).

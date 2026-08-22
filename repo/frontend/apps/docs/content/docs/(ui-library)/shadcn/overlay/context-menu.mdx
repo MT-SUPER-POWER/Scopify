@@ -1,99 +1,170 @@
 ---
-title: Context Menu 上下文菜单
-description: 在右键或长按位置显示相关操作。
+title: "Context Menu 上下文菜单"
+description: "在右键或长按位置显示相关操作。"
 ---
 
-<ComponentPreview name="shadcn-context-menu" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="context-menu-demo"
+  description="A context menu with sub menu items."
+ />
 
-在右键或长按位置显示相关操作。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add context-menu
+npx shadcn@latest add context-menu
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="context-menu"
+  title="components/ui/context-menu.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   ContextMenu,
-  ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuCheckboxItem,
-  ContextMenuRadioItem,
-  ContextMenuLabel,
-  ContextMenuSeparator,
-  ContextMenuShortcut,
-  ContextMenuGroup,
-  ContextMenuPortal,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuRadioGroup,
-} from "@scopify/ui/shadcn/components/context-menu";
+  ContextMenuTrigger,
+} from "@scopify/ui/shadcn/components/context-menu"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <ContextMenu>
-  <ContextMenuTrigger className="bg-muted/40 flex h-40 w-full max-w-sm items-center justify-center rounded-xl border border-dashed text-sm">
-    在此区域右键
-  </ContextMenuTrigger>
+  <ContextMenuTrigger>Right click here</ContextMenuTrigger>
   <ContextMenuContent>
-    <ContextMenuItem>立即播放</ContextMenuItem>
-    <ContextMenuItem>
-      添加到队列 <ContextMenuShortcut>⌘↵</ContextMenuShortcut>
-    </ContextMenuItem>
-    <ContextMenuSeparator />
-    <ContextMenuItem>查看歌曲详情</ContextMenuItem>
+    <ContextMenuItem>Profile</ContextMenuItem>
+    <ContextMenuItem>Billing</ContextMenuItem>
+    <ContextMenuItem>Team</ContextMenuItem>
+    <ContextMenuItem>Subscription</ContextMenuItem>
   </ContextMenuContent>
 </ContextMenu>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `ContextMenu`:
 
 ```text
 ContextMenu
 ├── ContextMenuTrigger
-├── ContextMenuContent
-├── ContextMenuItem
-├── ContextMenuCheckboxItem
-├── ContextMenuRadioItem
-├── ContextMenuLabel
-├── ContextMenuSeparator
-├── ContextMenuShortcut
-├── ContextMenuGroup
-├── ContextMenuPortal
-├── ContextMenuSub
-├── ContextMenuSubContent
-├── ContextMenuSubTrigger
-├── ContextMenuRadioGroup
+└── ContextMenuContent
+    ├── ContextMenuGroup
+    │   ├── ContextMenuLabel
+    │   ├── ContextMenuItem
+    │   └── ContextMenuItem
+    ├── ContextMenuSeparator
+    ├── ContextMenuGroup
+    │   ├── ContextMenuLabel
+    │   ├── ContextMenuCheckboxItem
+    │   └── ContextMenuCheckboxItem
+    ├── ContextMenuSeparator
+    ├── ContextMenuGroup
+    │   ├── ContextMenuLabel
+    │   └── ContextMenuRadioGroup
+    │       ├── ContextMenuRadioItem
+    │       └── ContextMenuRadioItem
+    └── ContextMenuSub
+        ├── ContextMenuSubTrigger
+        └── ContextMenuSubContent
+            └── ContextMenuGroup
+                ├── ContextMenuItem
+                └── ContextMenuItem
 ```
 
-## 常见用法
+## Basic
 
-- 在右键目标附近提供相关操作。
-- 支持复选与单选项。
-- 关键操作不要只藏在上下文菜单中。
+A simple context menu with a few actions.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="context-menu-basic"  />
 
-- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
-- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
-- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+## Submenu
 
-## API 参考
+Use `ContextMenuSub` to nest secondary actions.
 
-当前模块公开 `ContextMenu`、`ContextMenuTrigger`、`ContextMenuContent`、`ContextMenuItem`、`ContextMenuCheckboxItem`、`ContextMenuRadioItem`、`ContextMenuLabel`、`ContextMenuSeparator`、`ContextMenuShortcut`、`ContextMenuGroup`、`ContextMenuPortal`、`ContextMenuSub`、`ContextMenuSubContent`、`ContextMenuSubTrigger`、`ContextMenuRadioGroup`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="context-menu-submenu"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Context Menu 上下文菜单 文档](https://ui.shadcn.com/docs/components/radix/context-menu)；实现差异以本仓库当前 CLI 源码为准。
+## Shortcuts
+
+Add `ContextMenuShortcut` to show keyboard hints.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="context-menu-shortcuts"  />
+
+## Groups
+
+Group related actions and separate them with dividers.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="context-menu-groups"  />
+
+## Icons
+
+Combine icons with labels for quick scanning.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="context-menu-icons"  />
+
+## Checkboxes
+
+Use `ContextMenuCheckboxItem` for toggles.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="context-menu-checkboxes"  />
+
+## Radio
+
+Use `ContextMenuRadioItem` for exclusive choices.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="context-menu-radio"  />
+
+## Destructive
+
+Use `variant="destructive"` to style the menu item as destructive.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="context-menu-destructive"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="context-menu-rtl"
+  direction="rtl"
+ />
+
+## API Reference
+
+See the [Radix UI](https://www.radix-ui.com/docs/primitives/components/context-menu#api-reference) documentation for more information.

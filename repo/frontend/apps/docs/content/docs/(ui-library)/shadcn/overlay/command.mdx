@@ -1,91 +1,151 @@
 ---
-title: Command 命令面板
-description: 提供可搜索的命令、选项或快捷操作列表。
+title: "Command 命令面板"
+description: "提供可搜索的命令、选项或快捷操作列表。"
 ---
 
-<ComponentPreview name="shadcn-command" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="command-demo"
+  align="start"
+  previewClassName="h-[24.5rem]"
+ />
 
-提供可搜索的命令、选项或快捷操作列表。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+## About
 
-## 安装
+The `<Command />` component uses the [`cmdk`](https://github.com/dip/cmdk) component by [Dip](https://www.dip.org/).
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add command
+npx shadcn@latest add command
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install cmdk
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="command"
+  title="components/ui/command.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Command,
   CommandDialog,
-  CommandInput,
-  CommandList,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
-  CommandShortcut,
+  CommandList,
   CommandSeparator,
-} from "@scopify/ui/shadcn/components/command";
+  CommandShortcut,
+} from "@scopify/ui/shadcn/components/command"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
-<Command className="w-full max-w-md rounded-lg border shadow-sm">
-  <CommandInput placeholder="搜索命令或音乐" />
+```tsx showLineNumbers
+<Command className="max-w-sm rounded-lg border">
+  <CommandInput placeholder="Type a command or search..." />
   <CommandList>
-    <CommandEmpty>没有匹配结果</CommandEmpty>
-    <CommandGroup heading="快捷操作">
-      <CommandItem>
-        <Search /> 搜索音乐 <CommandShortcut>⌘K</CommandShortcut>
-      </CommandItem>
-      <CommandItem>
-        <ListMusic /> 打开播放队列
-      </CommandItem>
-      <CommandItem>
-        <Mic2 /> 开启桌面歌词
-      </CommandItem>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Suggestions">
+      <CommandItem>Calendar</CommandItem>
+      <CommandItem>Search Emoji</CommandItem>
+      <CommandItem>Calculator</CommandItem>
+    </CommandGroup>
+    <CommandSeparator />
+    <CommandGroup heading="Settings">
+      <CommandItem>Profile</CommandItem>
+      <CommandItem>Billing</CommandItem>
+      <CommandItem>Settings</CommandItem>
     </CommandGroup>
   </CommandList>
 </Command>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Command`:
 
 ```text
 Command
-├── CommandDialog
 ├── CommandInput
-├── CommandList
-├── CommandEmpty
-├── CommandGroup
-├── CommandItem
-├── CommandShortcut
-├── CommandSeparator
+└── CommandList
+    ├── CommandEmpty
+    ├── CommandGroup
+    │   ├── CommandItem
+    │   └── CommandItem
+    ├── CommandSeparator
+    └── CommandGroup
+        ├── CommandItem
+        └── CommandItem
 ```
 
-## 常见用法
+## Basic
 
-- 构建命令面板或快速跳转。
-- 按组组织命令。
-- 为常用操作展示快捷键。
+A simple command menu in a dialog.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="command-basic"  />
 
-- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
-- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
-- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+## Shortcuts
 
-## API 参考
+<ShadcnOfficialPreview styleName="radix-nova" name="command-shortcuts"  />
 
-当前模块公开 `Command`、`CommandDialog`、`CommandInput`、`CommandList`、`CommandEmpty`、`CommandGroup`、`CommandItem`、`CommandShortcut`、`CommandSeparator`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+## Groups
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Command 命令面板 文档](https://ui.shadcn.com/docs/components/radix/command)；实现差异以本仓库当前 CLI 源码为准。
+A command menu with groups, icons and separators.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="command-groups"  />
+
+## Scrollable
+
+Scrollable command menu with multiple items.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="command-scrollable"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="command-rtl"
+  direction="rtl"
+  align="start"
+  previewClassName="h-[24.5rem]"
+ />
+
+## API Reference
+
+See the [cmdk](https://github.com/dip/cmdk) documentation for more information.

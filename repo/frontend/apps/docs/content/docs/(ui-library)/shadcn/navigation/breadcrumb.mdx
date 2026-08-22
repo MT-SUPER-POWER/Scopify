@@ -1,85 +1,200 @@
 ---
-title: Breadcrumb 面包屑
-description: 展示当前页面在层级路径中的位置。
+title: "Breadcrumb 面包屑"
+description: "展示当前页面在层级路径中的位置。"
 ---
 
-<ComponentPreview name="shadcn-breadcrumb" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="breadcrumb-demo"
+  previewClassName="p-2"
+ />
 
-展示当前页面在层级路径中的位置。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add breadcrumb
+npx shadcn@latest add breadcrumb
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  styleName="radix-nova"
+  name="breadcrumb"
+  title="components/ui/breadcrumb.tsx"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-  BreadcrumbEllipsis,
-} from "@scopify/ui/shadcn/components/breadcrumb";
+} from "@scopify/ui/shadcn/components/breadcrumb"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <Breadcrumb>
   <BreadcrumbList>
     <BreadcrumbItem>
-      <BreadcrumbLink href="#library">音乐库</BreadcrumbLink>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
-      <BreadcrumbLink href="#playlists">歌单</BreadcrumbLink>
+      <BreadcrumbLink href="/components">Components</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
-      <BreadcrumbPage>每日推荐</BreadcrumbPage>
+      <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
     </BreadcrumbItem>
   </BreadcrumbList>
 </Breadcrumb>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Breadcrumb`:
 
 ```text
 Breadcrumb
-├── BreadcrumbList
-├── BreadcrumbItem
-├── BreadcrumbLink
-├── BreadcrumbPage
-├── BreadcrumbSeparator
-├── BreadcrumbEllipsis
+└── BreadcrumbList
+    ├── BreadcrumbItem
+    │   └── BreadcrumbLink
+    ├── BreadcrumbSeparator
+    ├── BreadcrumbItem
+    │   └── BreadcrumbLink
+    ├── BreadcrumbSeparator
+    └── BreadcrumbItem
+        └── BreadcrumbPage
 ```
 
-## 常见用法
+## Basic
 
-- 表达稳定的页面层级。
-- 折叠过长的中间路径。
-- 当前页使用 BreadcrumbPage 而不是链接。
+A basic breadcrumb with a home link and a components link.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="breadcrumb-basic"  />
 
-- 当前项、焦点项和禁用项必须在视觉与语义上都能区分。
-- 路由决策留在应用层，基础组件只接收链接、状态与回调。
-- 保证完整键盘路径，并避免将主要入口只放进隐藏菜单。
+## Custom separator
 
-## API 参考
+Use a custom component as `children` for `<BreadcrumbSeparator />` to create a custom separator.
 
-当前模块公开 `Breadcrumb`、`BreadcrumbList`、`BreadcrumbItem`、`BreadcrumbLink`、`BreadcrumbPage`、`BreadcrumbSeparator`、`BreadcrumbEllipsis`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="breadcrumb-separator"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Breadcrumb 面包屑 文档](https://ui.shadcn.com/docs/components/radix/breadcrumb)；实现差异以本仓库当前 CLI 源码为准。
+## Dropdown
+
+You can compose `<BreadcrumbItem />` with a `<DropdownMenu />` to create a dropdown in the breadcrumb.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="breadcrumb-dropdown"  />
+
+## Collapsed
+
+We provide a `<BreadcrumbEllipsis />` component to show a collapsed state when the breadcrumb is too long.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="breadcrumb-ellipsis"
+  previewClassName="p-2"
+ />
+
+## Link component
+
+To use a custom link component from your routing library, you can use the `asChild` prop on `<BreadcrumbLink />`.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="breadcrumb-link"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="breadcrumb-rtl"
+  direction="rtl"
+  previewClassName="p-2"
+ />
+
+## API Reference
+
+### Breadcrumb
+
+The `Breadcrumb` component is the root navigation element that wraps all breadcrumb components.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbList
+
+The `BreadcrumbList` component displays the ordered list of breadcrumb items.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbItem
+
+The `BreadcrumbItem` component wraps individual breadcrumb items.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbLink
+
+The `BreadcrumbLink` component displays a clickable link in the breadcrumb.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbPage
+
+The `BreadcrumbPage` component displays the current page in the breadcrumb (non-clickable).
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbSeparator
+
+The `BreadcrumbSeparator` component displays a separator between breadcrumb items. You can pass custom children to override the default separator icon.
+
+| Prop        | Type              | Default |
+| ----------- | ----------------- | ------- |
+| `children`  | `React.ReactNode` | -       |
+| `className` | `string`          | -       |
+
+### BreadcrumbEllipsis
+
+The `BreadcrumbEllipsis` component displays an ellipsis indicator for collapsed breadcrumb items.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |

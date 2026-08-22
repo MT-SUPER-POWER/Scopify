@@ -1,90 +1,298 @@
 ---
-title: Item 列表项
-description: 构建带媒体、说明和操作区域的通用列表项。
+title: "Item 列表项"
+description: "构建带媒体、说明和操作区域的通用列表项。"
 ---
 
-<ComponentPreview name="shadcn-item" />
+<ShadcnOfficialPreview styleName="radix-nova" name="item-demo"  />
 
-构建带媒体、说明和操作区域的通用列表项。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+The `Item` component is a straightforward flex container that can house nearly any type of content. Use it to display a title, description, and actions. Group it with the `ItemGroup` component to create a list of items.
 
-## 安装
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add item
+npx shadcn@latest add item
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="item"
+  title="components/ui/item.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Item,
-  ItemMedia,
-  ItemContent,
   ItemActions,
-  ItemGroup,
-  ItemSeparator,
-  ItemTitle,
+  ItemContent,
   ItemDescription,
-  ItemHeader,
-  ItemFooter,
-} from "@scopify/ui/shadcn/components/item";
+  ItemMedia,
+  ItemTitle,
+} from "@scopify/ui/shadcn/components/item"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
-<Item variant="outline" className="w-full max-w-md">
+```tsx showLineNumbers
+<Item>
   <ItemMedia variant="icon">
-    <Music2 />
+    <Icon />
   </ItemMedia>
   <ItemContent>
-    <ItemTitle>夜曲</ItemTitle>
-    <ItemDescription>周杰伦 · 十一月的萧邦</ItemDescription>
+    <ItemTitle>Title</ItemTitle>
+    <ItemDescription>Description</ItemDescription>
   </ItemContent>
   <ItemActions>
-    <Button size="icon-sm" variant="ghost" aria-label="播放夜曲">
-      <Play />
-    </Button>
+    <Button>Action</Button>
   </ItemActions>
 </Item>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build an `Item`:
 
 ```text
-Item
-├── ItemMedia
-├── ItemContent
-├── ItemActions
-├── ItemGroup
-├── ItemSeparator
-├── ItemTitle
-├── ItemDescription
-├── ItemHeader
-├── ItemFooter
+ItemGroup
+└── Item
+    ├── ItemHeader
+    ├── ItemMedia
+    ├── ItemContent
+    │   ├── ItemTitle
+    │   └── ItemDescription
+    ├── ItemActions
+    └── ItemFooter
 ```
 
-## 常见用法
+## Item vs Field
 
-- 排列媒体、标题、说明和尾部操作。
-- 用 ItemGroup 组织列表。
-- 交互式条目保持完整点击区域。
+Use `Field` if you need to display a form input such as a checkbox, input, radio, or select.
 
-## 使用建议
+If you only need to display content such as a title, description, and actions, use `Item`.
 
-- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
-- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
-- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+## Variant
 
-## API 参考
+Use the `variant` prop to change the visual style of the item.
 
-当前模块公开 `Item`、`ItemMedia`、`ItemContent`、`ItemActions`、`ItemGroup`、`ItemSeparator`、`ItemTitle`、`ItemDescription`、`ItemHeader`、`ItemFooter`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="item-variant"
+  previewClassName="h-96"
+ />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Item 列表项 文档](https://ui.shadcn.com/docs/components/radix/item)；实现差异以本仓库当前 CLI 源码为准。
+## Size
+
+Use the `size` prop to change the size of the item. Available sizes are `default`, `sm`, and `xs`.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="item-size"
+  previewClassName="h-96"
+ />
+
+## Icon
+
+Use `ItemMedia` with `variant="icon"` to display an icon.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="item-icon"  />
+
+## Avatar
+
+You can use `ItemMedia` with `variant="avatar"` to display an avatar.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="item-avatar"  />
+
+## Image
+
+Use `ItemMedia` with `variant="image"` to display an image.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="item-image"  />
+
+## Group
+
+Use `ItemGroup` to group related items together.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="item-group"
+  previewClassName="h-96"
+ />
+
+## Header
+
+Use `ItemHeader` to add a header above the item content.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="item-header"
+  previewClassName="h-96"
+ />
+
+## Link
+
+Use the `asChild` prop to render the item as a link. The hover and focus states will be applied to the anchor element.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="item-link"  />
+
+```tsx showLineNumbers
+<Item asChild>
+  <a href="/dashboard">
+    <ItemMedia variant="icon">
+      <HomeIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Dashboard</ItemTitle>
+      <ItemDescription>Overview of your account and activity.</ItemDescription>
+    </ItemContent>
+  </a>
+</Item>
+```
+
+## Dropdown
+
+<ShadcnOfficialPreview styleName="radix-nova" name="item-dropdown"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="item-rtl" direction="rtl"  />
+
+## API Reference
+
+### Item
+
+The main component for displaying content with media, title, description, and actions.
+
+| Prop      | Type                                | Default     |
+| --------- | ----------------------------------- | ----------- |
+| `variant` | `"default" \| "outline" \| "muted"` | `"default"` |
+| `size`    | `"default" \| "sm" \| "xs"`         | `"default"` |
+| `asChild` | `boolean`                           | `false`     |
+
+### ItemGroup
+
+A container that groups related items together with consistent styling.
+
+```tsx
+<ItemGroup>
+  <Item />
+  <Item />
+</ItemGroup>
+```
+
+### ItemSeparator
+
+A separator between items in a group.
+
+```tsx
+<ItemGroup>
+  <Item />
+  <ItemSeparator />
+  <Item />
+</ItemGroup>
+```
+
+### ItemMedia
+
+Use `ItemMedia` to display media content such as icons, images, or avatars.
+
+| Prop      | Type                             | Default     |
+| --------- | -------------------------------- | ----------- |
+| `variant` | `"default" \| "icon" \| "image"` | `"default"` |
+
+```tsx
+<ItemMedia variant="icon">
+  <Icon />
+</ItemMedia>
+```
+
+```tsx
+<ItemMedia variant="image">
+  <img src="..." alt="..." />
+</ItemMedia>
+```
+
+### ItemContent
+
+Wraps the title and description of the item.
+
+```tsx
+<ItemContent>
+  <ItemTitle>Title</ItemTitle>
+  <ItemDescription>Description</ItemDescription>
+</ItemContent>
+```
+
+### ItemTitle
+
+Displays the title of the item.
+
+```tsx
+<ItemTitle>Item Title</ItemTitle>
+```
+
+### ItemDescription
+
+Displays the description of the item.
+
+```tsx
+<ItemDescription>Item description</ItemDescription>
+```
+
+### ItemActions
+
+Container for action buttons or other interactive elements.
+
+```tsx
+<ItemActions>
+  <Button>Action</Button>
+</ItemActions>
+```
+
+### ItemHeader
+
+Displays a header above the item content.
+
+```tsx
+<Item>
+  <ItemHeader>Header</ItemHeader>
+  <ItemContent>...</ItemContent>
+</Item>
+```
+
+### ItemFooter
+
+Displays a footer below the item content.
+
+```tsx
+<Item>
+  <ItemContent>...</ItemContent>
+  <ItemFooter>Footer</ItemFooter>
+</Item>
+```

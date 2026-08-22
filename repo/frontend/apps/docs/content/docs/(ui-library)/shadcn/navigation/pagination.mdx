@@ -1,87 +1,214 @@
 ---
-title: Pagination 分页
-description: 在分段数据或页面之间前后跳转。
+title: "Pagination 分页"
+description: "在分段数据或页面之间前后跳转。"
 ---
 
-<ComponentPreview name="shadcn-pagination" />
+<ShadcnOfficialPreview styleName="radix-nova" name="pagination-demo"  />
 
-在分段数据或页面之间前后跳转。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add pagination
+npx shadcn@latest add pagination
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="pagination"
+  title="components/ui/pagination.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Pagination,
   PaginationContent,
-  PaginationLink,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
   PaginationEllipsis,
-} from "@scopify/ui/shadcn/components/pagination";
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@scopify/ui/shadcn/components/pagination"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <Pagination>
   <PaginationContent>
     <PaginationItem>
-      <PaginationPrevious href="#previous" />
+      <PaginationPrevious href="#" />
     </PaginationItem>
-    {[1, 2, 3].map((page) => (
-      <PaginationItem key={page}>
-        <PaginationLink href={`#page-${page}`} isActive={page === 2}>
-          {page}
-        </PaginationLink>
-      </PaginationItem>
-    ))}
     <PaginationItem>
-      <PaginationNext href="#next" />
+      <PaginationLink href="#">1</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#" isActive>
+        2
+      </PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#">3</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="#" />
     </PaginationItem>
   </PaginationContent>
 </Pagination>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Pagination`:
 
 ```text
 Pagination
-├── PaginationContent
-├── PaginationLink
-├── PaginationItem
-├── PaginationPrevious
-├── PaginationNext
-├── PaginationEllipsis
+└── PaginationContent
+    ├── PaginationItem
+    │   └── PaginationPrevious
+    ├── PaginationItem
+    │   └── PaginationLink
+    ├── PaginationItem
+    │   └── PaginationEllipsis
+    └── PaginationItem
+        └── PaginationNext
 ```
 
-## 常见用法
+## Simple
 
-- 在数据页之间前后跳转。
-- 标记当前页。
-- 页数很多时使用省略项而不是渲染全部页码。
+A simple pagination with only page numbers.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="pagination-simple"  />
 
-- 当前项、焦点项和禁用项必须在视觉与语义上都能区分。
-- 路由决策留在应用层，基础组件只接收链接、状态与回调。
-- 保证完整键盘路径，并避免将主要入口只放进隐藏菜单。
+## Icons Only
 
-## API 参考
+Use just the previous and next buttons without page numbers. This is useful for data tables with a rows per page selector.
 
-当前模块公开 `Pagination`、`PaginationContent`、`PaginationLink`、`PaginationItem`、`PaginationPrevious`、`PaginationNext`、`PaginationEllipsis`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="pagination-icons-only"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Pagination 分页 文档](https://ui.shadcn.com/docs/components/radix/pagination)；实现差异以本仓库当前 CLI 源码为准。
+## Next.js
+
+By default the `<PaginationLink />` component will render an `<a />` tag.
+
+To use the Next.js `<Link />` component, make the following updates to `pagination.tsx`.
+
+```diff showLineNumbers /typeof Link/ {1}
++ import Link from "next/link"
+
+- type PaginationLinkProps = ... & React.ComponentProps<"a">
++ type PaginationLinkProps = ... & React.ComponentProps<typeof Link>
+
+const PaginationLink = ({...props }: ) => (
+  <PaginationItem>
+-   <a>
++   <Link>
+      // ...
+-   </a>
++   </Link>
+  </PaginationItem>
+)
+
+```
+
+<Callout className="mt-6">
+
+**Note:** We are making updates to the cli to automatically do this for you.
+
+</Callout>
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="pagination-rtl"
+  direction="rtl"
+ />
+
+## Changelog
+
+### RTL Support
+
+If you're upgrading from a previous version of the `Pagination` component, you'll need to apply the following updates to add the `text` prop:
+
+<Steps>
+
+<Step>Update `PaginationPrevious`.</Step>
+
+```diff
+  function PaginationPrevious({
+    className,
++   text = "Previous",
+    ...props
+- }: React.ComponentProps<typeof PaginationLink>) {
++ }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+    return (
+      <PaginationLink
+        aria-label="Go to previous page"
+        size="default"
+        className={cn("cn-pagination-previous", className)}
+        {...props}
+      >
+        <ChevronLeftIcon />
+        <span className="cn-pagination-previous-text hidden sm:block">
+-         Previous
++         {text}
+        </span>
+      </PaginationLink>
+    )
+  }
+```
+
+<Step>Update `PaginationNext`.</Step>
+
+```diff
+  function PaginationNext({
+    className,
++   text = "Next",
+    ...props
+- }: React.ComponentProps<typeof PaginationLink>) {
++ }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+    return (
+      <PaginationLink
+        aria-label="Go to next page"
+        size="default"
+        className={cn("cn-pagination-next", className)}
+        {...props}
+      >
+-       <span className="cn-pagination-next-text hidden sm:block">Next</span>
++       <span className="cn-pagination-next-text hidden sm:block">{text}</span>
+        <ChevronRightIcon />
+      </PaginationLink>
+    )
+  }
+```
+
+</Steps>

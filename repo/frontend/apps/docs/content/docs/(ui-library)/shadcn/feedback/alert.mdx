@@ -1,70 +1,169 @@
 ---
-title: Alert 提示
-description: 展示需要用户注意的状态、说明或警告。
+title: "Alert 提示"
+description: "展示需要用户注意的状态、说明或警告。"
 ---
 
-<ComponentPreview name="shadcn-alert" />
+<ShadcnOfficialPreview
+  name="alert-demo"
+  styleName="radix-nova"
+  previewClassName="h-auto sm:h-72 p-6"
+ />
 
-展示需要用户注意的状态、说明或警告。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add alert
+npx shadcn@latest add alert
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
-import { Alert, AlertTitle, AlertDescription } from "@scopify/ui/shadcn/components/alert";
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="alert"
+  title="components/ui/alert.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@scopify/ui/shadcn/components/alert"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
-<div className="w-full max-w-md space-y-3">
-  <Alert>
-    <CheckCircle2 />
-    <AlertTitle>下载完成</AlertTitle>
-    <AlertDescription>歌曲已保存，可以离线播放。</AlertDescription>
-  </Alert>
-  <Alert variant="destructive">
-    <AlertCircle />
-    <AlertTitle>连接中断</AlertTitle>
-    <AlertDescription>请检查网络连接后重试。</AlertDescription>
-  </Alert>
-</div>
+```tsx showLineNumbers
+<Alert>
+  <InfoIcon />
+  <AlertTitle>Heads up!</AlertTitle>
+  <AlertDescription>
+    You can add components and dependencies to your app using the cli.
+  </AlertDescription>
+  <AlertAction>
+    <Button variant="outline">Enable</Button>
+  </AlertAction>
+</Alert>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build an `Alert`:
 
 ```text
 Alert
+├── Icon
 ├── AlertTitle
 ├── AlertDescription
+└── AlertAction
 ```
 
-## 常见用法
+## Basic
 
-- 展示普通提示、成功状态或破坏性警告。
-- 标题保持简短。
-- 正文补充用户下一步。
+A basic alert with an icon, title and description.
 
-## 使用建议
+<ShadcnOfficialPreview
+  name="alert-basic"
+  styleName="radix-nova"
+  previewClassName="h-auto sm:h-72 p-6"
+ />
 
-- 反馈应紧邻触发它的操作，并使用一致的成功、警告和错误语义。
-- 不要只靠颜色表达状态；同时提供文本、图标或可访问说明。
-- 短时反馈使用通知，必须处理的信息应保留在页面内容中。
+## Destructive
 
-## API 参考
+Use `variant="destructive"` to create a destructive alert.
 
-当前模块公开 `Alert`、`AlertTitle`、`AlertDescription`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview
+  name="alert-destructive"
+  styleName="radix-nova"
+  previewClassName="h-auto sm:h-72 p-6"
+ />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Alert 提示 文档](https://ui.shadcn.com/docs/components/radix/alert)；实现差异以本仓库当前 CLI 源码为准。
+## Action
+
+Use `AlertAction` to add a button or other action element to the alert.
+
+<ShadcnOfficialPreview
+  name="alert-action"
+  styleName="radix-nova"
+  previewClassName="h-auto sm:h-72 p-6"
+ />
+
+## Custom Colors
+
+You can customize the alert colors by adding custom classes such as `bg-amber-50 dark:bg-amber-950` to the `Alert` component.
+
+<ShadcnOfficialPreview
+  name="alert-colors"
+  styleName="radix-nova"
+  previewClassName="h-auto sm:h-72 p-6"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="alert-rtl"
+  direction="rtl"
+  previewClassName="h-auto sm:h-72 p-6"
+ />
+
+## API Reference
+
+### Alert
+
+The `Alert` component displays a callout for user attention.
+
+| Prop      | Type                         | Default     |
+| --------- | ---------------------------- | ----------- |
+| `variant` | `"default" \| "destructive"` | `"default"` |
+
+### AlertTitle
+
+The `AlertTitle` component displays the title of the alert.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### AlertDescription
+
+The `AlertDescription` component displays the description or content of the alert.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### AlertAction
+
+The `AlertAction` component displays an action element (like a button) positioned absolutely in the top-right corner of the alert.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |

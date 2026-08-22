@@ -1,60 +1,199 @@
 ---
-title: Input 输入框
-description: 接收单行文本、数字或其他原生输入值。
+title: "Input 输入框"
+description: "接收单行文本、数字或其他原生输入值。"
 ---
 
-<ComponentPreview name="shadcn-input" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-demo"
+  previewClassName="*:max-w-xs"
+ />
 
-接收单行文本、数字或其他原生输入值。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add input
+npx shadcn@latest add input
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="input"
+  title="components/ui/input.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
 
 ```tsx
-import { Input } from "@scopify/ui/shadcn/components/input";
+import { Input } from "@scopify/ui/shadcn/components/input"
 ```
-
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
 
 ```tsx
-<div className="w-full max-w-sm space-y-2">
-  <Label htmlFor="preview-email">邮箱</Label>
-  <Input id="preview-email" type="email" placeholder="listener@scopify.app" />
-</div>
+<Input />
 ```
 
-## 组件结构
+## Basic
 
-```text
-Input
-```
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-basic"
+  previewClassName="*:max-w-xs"
+ />
 
-## 常见用法
+## Field
 
-- 接收文本、数字或邮箱。
-- 使用正确的 type 与 autocomplete。
-- 校验状态由 Field 统一表达。
+Use `Field`, `FieldLabel`, and `FieldDescription` to create an input with a
+label and description.
 
-## 使用建议
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-field"
+  previewClassName="*:max-w-xs"
+ />
 
-- 每个控件都要有可访问标签，并在错误时同步 aria-invalid 与错误文本。
-- 受控值、校验和提交逻辑由消费层管理，基础组件不耦合具体表单模型。
-- 使用单一状态来源，避免同时传入 value 与 defaultValue。
+## Field Group
 
-## API 参考
+Use `FieldGroup` to show multiple `Field` blocks and to build forms.
 
-当前模块公开 `Input`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-fieldgroup"
+  previewClassName="*:max-w-xs"
+ />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Input 输入框 文档](https://ui.shadcn.com/docs/components/radix/input)；实现差异以本仓库当前 CLI 源码为准。
+## Disabled
+
+Use the `disabled` prop to disable the input. To style the disabled state, add the `data-disabled` attribute to the `Field` component.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-disabled"
+  previewClassName="*:max-w-xs"
+ />
+
+## Invalid
+
+Use the `aria-invalid` prop to mark the input as invalid. To style the invalid state, add the `data-invalid` attribute to the `Field` component.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-invalid"
+  previewClassName="*:max-w-xs"
+ />
+
+## File
+
+Use the `type="file"` prop to create a file input.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-file"
+  previewClassName="*:max-w-xs"
+ />
+
+## Inline
+
+Use `Field` with `orientation="horizontal"` to create an inline input.
+Pair with `Button` to create a search input with a button.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-inline"
+  previewClassName="*:max-w-xs"
+ />
+
+## Grid
+
+Use a grid layout to place multiple inputs side by side.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-grid"
+  previewClassName="p-6"
+ />
+
+## Required
+
+Use the `required` attribute to indicate required inputs.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-required"
+  previewClassName="*:max-w-xs"
+ />
+
+## Badge
+
+Use `Badge` in the label to highlight a recommended field.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-badge"
+  previewClassName="*:max-w-xs"
+ />
+
+## Input Group
+
+To add icons, text, or buttons inside an input, use the `InputGroup` component. See the [Input Group](/docs/components/input-group) component for more examples.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-input-group"
+  previewClassName="*:max-w-xs"
+ />
+
+## Button Group
+
+To add buttons to an input, use the `ButtonGroup` component. See the [Button Group](/docs/components/button-group) component for more examples.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-button-group"
+  previewClassName="*:max-w-xs"
+ />
+
+## Form
+
+A full form example with multiple inputs, a select, and a button.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-form"
+  previewClassName="h-[32rem]"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-rtl"
+  direction="rtl"
+  previewClassName="*:max-w-xs"
+ />

@@ -1,79 +1,139 @@
 ---
-title: Hover Card 悬浮卡片
-description: 在悬停或聚焦时补充实体摘要信息。
+title: "Hover Card 悬浮卡片"
+description: "在悬停或聚焦时补充实体摘要信息。"
 ---
 
-<ComponentPreview name="shadcn-hover-card" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="hover-card-demo"
+  previewClassName="h-80"
+ />
 
-在悬停或聚焦时补充实体摘要信息。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add hover-card
+npx shadcn@latest add hover-card
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="hover-card"
+  title="components/ui/hover-card.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   HoverCard,
-  HoverCardTrigger,
   HoverCardContent,
-} from "@scopify/ui/shadcn/components/hover-card";
+  HoverCardTrigger,
+} from "@scopify/ui/shadcn/components/hover-card"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <HoverCard>
-  <HoverCardTrigger asChild>
-    <Button variant="link">@周杰伦</Button>
-  </HoverCardTrigger>
-  <HoverCardContent className="w-72">
-    <div className="flex gap-3">
-      <Avatar>
-        <AvatarFallback>周</AvatarFallback>
-      </Avatar>
-      <div className="space-y-1">
-        <p className="font-medium">周杰伦</p>
-        <p className="text-muted-foreground text-sm">华语流行音乐创作歌手</p>
-        <p className="text-muted-foreground text-xs">热门歌曲 50 首</p>
-      </div>
-    </div>
+  <HoverCardTrigger>Hover</HoverCardTrigger>
+  <HoverCardContent>
+    The React Framework – created and maintained by @vercel.
   </HoverCardContent>
 </HoverCard>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `HoverCard`:
 
 ```text
 HoverCard
 ├── HoverCardTrigger
-├── HoverCardContent
+└── HoverCardContent
 ```
 
-## 常见用法
+## Trigger Delays
 
-- 预览艺人或用户摘要。
-- 只承载补充信息。
-- 确保键盘聚焦也能访问内容。
+Use `openDelay` and `closeDelay` on the `HoverCard` to control when the card opens and
+closes.
 
-## 使用建议
+```tsx showLineNumbers
+<HoverCard openDelay={100} closeDelay={200}>
+  <HoverCardTrigger>Hover</HoverCardTrigger>
+  <HoverCardContent>Content</HoverCardContent>
+</HoverCard>
+```
 
-- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
-- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
-- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+## Positioning
 
-## API 参考
+Use the `side` and `align` props on `HoverCardContent` to control placement.
 
-当前模块公开 `HoverCard`、`HoverCardTrigger`、`HoverCardContent`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+```tsx showLineNumbers
+<HoverCard>
+  <HoverCardTrigger>Hover</HoverCardTrigger>
+  <HoverCardContent side="top" align="start">
+    Content
+  </HoverCardContent>
+</HoverCard>
+```
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Hover Card 悬浮卡片 文档](https://ui.shadcn.com/docs/components/radix/hover-card)；实现差异以本仓库当前 CLI 源码为准。
+## Basic
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="hover-card-demo"
+  previewClassName="h-80"
+ />
+
+## Sides
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="hover-card-sides"
+  previewClassName="h-[22rem]"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="hover-card-rtl"
+  direction="rtl"
+  previewClassName="h-80"
+ />
+
+## API Reference
+
+See the [Radix UI](https://www.radix-ui.com/docs/primitives/components/hover-card#api-reference) documentation for more information.

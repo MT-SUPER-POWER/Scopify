@@ -1,96 +1,142 @@
 ---
-title: Table 表格
-description: 展示具有表头、行、单元格和说明的数据集合。
+title: "Table 表格"
+description: "展示具有表头、行、单元格和说明的数据集合。"
 ---
 
-<ComponentPreview name="shadcn-table" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="table-demo"
+  previewClassName="h-[30rem]"
+ />
 
-展示具有表头、行、单元格和说明的数据集合。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add table
+npx shadcn@latest add table
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="table"
+  title="components/ui/table.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
   TableCaption,
-} from "@scopify/ui/shadcn/components/table";
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@scopify/ui/shadcn/components/table"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
-<div className="w-full max-w-lg rounded-lg border">
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead>歌曲</TableHead>
-        <TableHead>艺人</TableHead>
-        <TableHead className="text-right">时长</TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      {[
-        ["夜曲", "周杰伦", "03:46"],
-        ["晴天", "周杰伦", "04:29"],
-        ["一路向北", "周杰伦", "04:55"],
-      ].map(([song, artist, duration]) => (
-        <TableRow key={song}>
-          <TableCell className="font-medium">{song}</TableCell>
-          <TableCell>{artist}</TableCell>
-          <TableCell className="text-right tabular-nums">{duration}</TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
-</div>
+```tsx showLineNumbers
+<Table>
+  <TableCaption>A list of your recent invoices.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[100px]">Invoice</TableHead>
+      <TableHead>Status</TableHead>
+      <TableHead>Method</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="font-medium">INV001</TableCell>
+      <TableCell>Paid</TableCell>
+      <TableCell>Credit Card</TableCell>
+      <TableCell className="text-right">$250.00</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Table`:
 
 ```text
 Table
-├── TableHeader
-├── TableBody
-├── TableFooter
-├── TableHead
-├── TableRow
-├── TableCell
 ├── TableCaption
+├── TableHeader
+│   └── TableRow
+│       ├── TableHead
+│       ├── TableHead
+│       ├── TableHead
+│       └── TableHead
+├── TableBody
+│   ├── TableRow
+│   │   ├── TableCell
+│   │   ├── TableCell
+│   │   ├── TableCell
+│   │   └── TableCell
+│   └── TableRow
+│       ├── TableCell
+│       ├── TableCell
+│       ├── TableCell
+│       └── TableCell
+└── TableFooter
 ```
 
-## 常见用法
+## Footer
 
-- 组织具有明确列关系的数据。
-- 使用 Caption 补充表意。
-- 窄屏时规划滚动或替代布局。
+Use the `<TableFooter />` component to add a footer to the table.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="table-footer"  />
 
-- 组件只接收整理后的展示数据，获取、缓存和业务计算留在应用层。
-- 为加载、空数据和异常状态准备与最终内容尺寸接近的替代视图。
-- 复杂数据在窄屏下应提供滚动、折叠或简化视图。
+## Actions
 
-## API 参考
+A table showing actions for each row using a `<DropdownMenu />` component.
 
-当前模块公开 `Table`、`TableHeader`、`TableBody`、`TableFooter`、`TableHead`、`TableRow`、`TableCell`、`TableCaption`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="table-actions"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Table 表格 文档](https://ui.shadcn.com/docs/components/radix/table)；实现差异以本仓库当前 CLI 源码为准。
+## Data Table
+
+You can use the `<Table />` component to build more complex data tables. Combine it with [@tanstack/react-table](https://tanstack.com/table/latest) to create tables with sorting, filtering and pagination.
+
+See the [Data Table](/docs/components/data-table) documentation for more information.
+
+You can also see an example of a data table in the [Tasks](/examples/tasks) demo.
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="table-rtl"
+  direction="rtl"
+  previewClassName="h-auto"
+ />

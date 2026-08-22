@@ -1,60 +1,122 @@
 ---
-title: Sonner 消息通知
-description: 通过 Toaster 承载非阻塞的短时消息通知。
+title: "Sonner 消息通知"
+description: "通过 Toaster 承载非阻塞的短时消息通知。"
 ---
 
-<ComponentPreview name="shadcn-sonner" />
+<ShadcnOfficialPreview styleName="radix-nova" name="sonner-demo"  />
 
-通过 Toaster 承载非阻塞的短时消息通知。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+## About
 
-## 安装
+Sonner is built and maintained by [emilkowalski](https://twitter.com/emilkowalski).
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Run the following command:</Step>
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add sonner
+npx shadcn@latest add sonner
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+<Step>Add the Toaster component</Step>
 
-## 导入
+```tsx title="app/layout.tsx" {1,9} showLineNumbers
+import { Toaster } from "@scopify/ui/shadcn/components/sonner"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head />
+      <body>
+        <main>{children}</main>
+        <Toaster />
+      </body>
+    </html>
+  )
+}
+```
+
+</Steps>
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install sonner next-themes
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="sonner"
+  title="components/ui/sonner.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Add the Toaster component</Step>
+
+```tsx showLineNumbers title="app/layout.tsx" {1,8}
+import { Toaster } from "@scopify/ui/shadcn/components/sonner"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head />
+      <body>
+        <Toaster />
+        <main>{children}</main>
+      </body>
+    </html>
+  )
+}
+```
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
 
 ```tsx
-import { Toaster } from "@scopify/ui/shadcn/components/sonner";
+import { toast } from "sonner"
 ```
-
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
 
 ```tsx
-<>
-  <Button onClick={() => toast.success("已添加到我喜欢的音乐")}>显示通知</Button>
-  <Toaster position="bottom-center" richColors />
-</>
+toast("Event has been created.")
 ```
 
-## 组件结构
+## Types
 
-```text
-Toaster
-```
+<ShadcnOfficialPreview styleName="radix-nova" name="sonner-types"  />
 
-## 常见用法
+## Description
 
-- 反馈保存、添加或失败结果。
-- 消息保持短暂且非阻塞。
-- 重要错误仍需在页面内保留。
+<ShadcnOfficialPreview styleName="radix-nova" name="sonner-description"  />
 
-## 使用建议
+## Position
 
-- 反馈应紧邻触发它的操作，并使用一致的成功、警告和错误语义。
-- 不要只靠颜色表达状态；同时提供文本、图标或可访问说明。
-- 短时反馈使用通知，必须处理的信息应保留在页面内容中。
+Use the `position` prop to change the position of the toast.
 
-## API 参考
+<ShadcnOfficialPreview styleName="radix-nova" name="sonner-position"  />
 
-当前模块公开 `Toaster`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+## API Reference
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Sonner 消息通知 文档](https://ui.shadcn.com/docs/components/radix/sonner)；实现差异以本仓库当前 CLI 源码为准。
+See the [Sonner API Reference](https://sonner.emilkowal.ski/getting-started) for more information.

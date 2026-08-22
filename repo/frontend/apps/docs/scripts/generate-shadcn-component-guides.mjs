@@ -190,7 +190,7 @@ function collectPreviewCode() {
         if (returned) {
           let code = returned.getText(sourceFile).trim();
           if (code.startsWith("(") && code.endsWith(")")) code = code.slice(1, -1).trim();
-          result.set(node.expression.text.slice("shadcn-".length), code);
+          result.set(node.expression.text.slice("shadcn-".length), { code, file });
         }
       }
       ts.forEachChild(node, visit);
@@ -201,7 +201,7 @@ function collectPreviewCode() {
         if (returned) {
           let code = returned.getText(sourceFile).trim();
           if (code.startsWith("(") && code.endsWith(")")) code = code.slice(1, -1).trim();
-          result.set(slug, code);
+          result.set(slug, { code, file });
         }
       }
     }
@@ -249,13 +249,14 @@ for (const file of componentFiles) {
   const title = current.match(/^title:\s*(.+)$/m)?.[1]?.trim();
   const description = current.match(/^description:\s*(.+)$/m)?.[1]?.trim();
   const slug = current.match(/name="shadcn-([^"]+)"/)?.[1];
-  if (!frontmatter || !title || !description || !slug)
-    throw new Error(`Invalid component page: ${file}`);
+  if (!frontmatter || !title || !description) throw new Error(`Invalid component page: ${file}`);
+  if (!slug) continue;
+  if (slug === "button") continue;
   if (!patterns[slug]) throw new Error(`Missing patterns for ${slug}`);
   const group = path.relative(contentRoot, file).split(path.sep)[0];
   const exports = collectExports(slug);
-  const code = previewCode.get(slug);
-  if (!code) throw new Error(`Missing preview code for ${slug}`);
+  const preview = previewCode.get(slug);
+  if (!preview) throw new Error(`Missing preview code for ${slug}`);
   const patternList = patterns[slug]
     .split("；")
     .map((item) => `- ${item}。`)
@@ -263,9 +264,10 @@ for (const file of componentFiles) {
   const adviceList = adviceByGroup[group].map((item) => `- ${item}`).join("\n");
   const exportList = exports.map((name) => `\`${name.replace(/^type\s+/, "")}\``).join("、");
   const officialUrl = `https://ui.shadcn.com/docs/components/radix/${slug}`;
+  const code = preview.code;
   const body = `${frontmatter}
 
-<ComponentPreview name="shadcn-${slug}" />
+<ShadcnComponentExample name="shadcn-${slug}" />
 
 ${description}上方示例直接渲染 \`@scopify/ui\` 中的真实组件，可以操作并观察其状态变化。
 
@@ -290,9 +292,7 @@ ${formatImport(slug, exports)}
 
 下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
 
-\`\`\`tsx
-${code}
-\`\`\`
+<ShadcnCodeExample code={String.raw\`${code}\`} />
 
 ## 组件结构
 

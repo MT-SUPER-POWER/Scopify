@@ -7,7 +7,10 @@
     "dev": "next dev --webpack --port 9191",
     "build": "next build --webpack",
     "generate:shadcn-guides": "bun scripts/generate-shadcn-component-guides.mjs",
+    "sync:shadcn-docs": "bun scripts/sync-shadcn-component-docs.mjs",
+    "sync:shadcn-reference": "bun scripts/sync-shadcn-reference-data.mjs",
     "start": "next start --port 9191",
+    "test": "bun test tests",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint . --max-warnings 0 --no-warn-ignored"
   },
@@ -25,6 +28,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
+    "@types/bun": "^1.3.14",
     "@types/mdx": "^2.0.13",
     "@types/node": "^20.19.43",
     "@types/react": "^19.2.17",

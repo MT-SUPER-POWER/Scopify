@@ -1,3 +1,42 @@
+import type { ReactNode } from "react";
+
+export interface ShadcnExampleProps {
+  children?: ReactNode;
+  className?: string;
+  code: string;
+  label?: string;
+  lang?: string;
+  name?: ShadcnPreviewName;
+  align?: "center" | "start" | "end";
+  direction?: "ltr" | "rtl";
+  hideCode?: boolean;
+  previewClassName?: string;
+}
+
+export interface ShadcnCodeExampleProps {
+  code: string;
+  lang?: string;
+}
+
+export type ShadcnButtonExampleName =
+  | "basic"
+  | "variants"
+  | "sizes"
+  | "icons"
+  | "loading"
+  | "disabled"
+  | "group"
+  | "link"
+  | "controlled";
+
+export interface ShadcnButtonExampleProps {
+  example: ShadcnButtonExampleName;
+}
+
+export interface ShadcnComponentExampleProps {
+  name: ShadcnPreviewName;
+}
+
 export type ShadcnPreviewName =
   | "shadcn-accordion"
   | "shadcn-alert"

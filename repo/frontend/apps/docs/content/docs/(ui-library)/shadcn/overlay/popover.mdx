@@ -1,83 +1,115 @@
 ---
-title: Popover 弹出层
-description: 在触发器附近承载轻量交互内容。
+title: "Popover 弹出层"
+description: "在触发器附近承载轻量交互内容。"
 ---
 
-<ComponentPreview name="shadcn-popover" />
+<ShadcnOfficialPreview styleName="radix-nova" name="popover-demo"  />
 
-在触发器附近承载轻量交互内容。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add popover
+npx shadcn@latest add popover
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="popover"
+  title="components/ui/popover.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
-  PopoverAnchor,
+  PopoverDescription,
   PopoverHeader,
   PopoverTitle,
-  PopoverDescription,
-} from "@scopify/ui/shadcn/components/popover";
+  PopoverTrigger,
+} from "@scopify/ui/shadcn/components/popover"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <Popover>
   <PopoverTrigger asChild>
-    <Button variant="outline">
-      <Info /> 音质说明
-    </Button>
+    <Button variant="outline">Open Popover</Button>
   </PopoverTrigger>
   <PopoverContent>
     <PopoverHeader>
-      <PopoverTitle>无损音质</PopoverTitle>
-      <PopoverDescription>最高 24 bit / 192 kHz，播放时将消耗更多流量。</PopoverDescription>
+      <PopoverTitle>Title</PopoverTitle>
+      <PopoverDescription>Description text here.</PopoverDescription>
     </PopoverHeader>
   </PopoverContent>
 </Popover>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Popover`:
 
 ```text
 Popover
 ├── PopoverTrigger
-├── PopoverContent
-├── PopoverAnchor
-├── PopoverHeader
-├── PopoverTitle
-├── PopoverDescription
+└── PopoverContent
 ```
 
-## 常见用法
+## Basic
 
-- 在触发器附近放置轻量表单或设置。
-- 用 Anchor 控制定位。
-- 内容复杂时改用 Dialog 或 Sheet。
+A simple popover with a header, title, and description.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="popover-basic"  />
 
-- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
-- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
-- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+## Align
 
-## API 参考
+Use the `align` prop on `PopoverContent` to control the horizontal alignment.
 
-当前模块公开 `Popover`、`PopoverTrigger`、`PopoverContent`、`PopoverAnchor`、`PopoverHeader`、`PopoverTitle`、`PopoverDescription`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="popover-alignments"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Popover 弹出层 文档](https://ui.shadcn.com/docs/components/radix/popover)；实现差异以本仓库当前 CLI 源码为准。
+## With Form
+
+A popover with form fields inside.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="popover-form"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="popover-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix UI Popover](https://www.radix-ui.com/docs/primitives/components/popover#api-reference) documentation.

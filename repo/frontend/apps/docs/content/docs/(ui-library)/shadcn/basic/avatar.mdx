@@ -1,78 +1,233 @@
 ---
-title: Avatar 头像
-description: 展示用户或实体的头像、回退内容与状态。
+title: "Avatar 头像"
+description: "展示用户或实体的头像、回退内容与状态。"
 ---
 
-<ComponentPreview name="shadcn-avatar" />
+<ShadcnOfficialPreview styleName="radix-nova" name="avatar-demo"  />
 
-展示用户或实体的头像、回退内容与状态。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add avatar
+npx shadcn@latest add avatar
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-  AvatarBadge,
-  AvatarGroup,
-  AvatarGroupCount,
-} from "@scopify/ui/shadcn/components/avatar";
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
 ```
 
-## 用法
+<Step>Copy and paste the following code into your project.</Step>
 
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+<ShadcnComponentSource styleName="radix-nova"
+  name="avatar"
+  title="components/ui/avatar.tsx"
 
-```tsx
-<div className="flex items-center gap-4">
-  <Avatar className="size-14">
-    <AvatarFallback>SC</AvatarFallback>
-    <AvatarBadge className="bg-emerald-500" />
-  </Avatar>
-  <div>
-    <p className="font-medium">Scopify Listener</p>
-    <p className="text-muted-foreground text-sm">正在播放音乐</p>
-  </div>
-</div>
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Avatar, AvatarFallback, AvatarImage } from "@scopify/ui/shadcn/components/avatar"
 ```
 
-## 组件结构
+```tsx showLineNumbers
+<Avatar>
+  <AvatarImage src="https://github.com/shadcn.png" />
+  <AvatarFallback>CN</AvatarFallback>
+</Avatar>
+```
+
+## Composition
+
+Use the following composition to build an `Avatar`:
 
 ```text
 Avatar
 ├── AvatarImage
 ├── AvatarFallback
-├── AvatarBadge
-├── AvatarGroup
-├── AvatarGroupCount
+└── AvatarBadge
 ```
 
-## 常见用法
+Use the following composition to build an `AvatarGroup`:
 
-- 组合图片与文字回退。
-- 叠加在线状态。
-- 使用 AvatarGroup 展示协作者并限制可见数量。
+```text
+AvatarGroup
+├── Avatar
+│   ├── AvatarImage
+│   ├── AvatarFallback
+│   └── AvatarBadge
+├── Avatar
+│   ├── AvatarImage
+│   ├── AvatarFallback
+│   └── AvatarBadge
+└── AvatarGroupCount
+```
 
-## 使用建议
+## Basic
 
-- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
-- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
-- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+A basic avatar component with an image and a fallback.
 
-## API 参考
+<ShadcnOfficialPreview styleName="radix-nova" name="avatar-basic"  />
 
-当前模块公开 `Avatar`、`AvatarImage`、`AvatarFallback`、`AvatarBadge`、`AvatarGroup`、`AvatarGroupCount`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+## Badge
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Avatar 头像 文档](https://ui.shadcn.com/docs/components/radix/avatar)；实现差异以本仓库当前 CLI 源码为准。
+Use the `AvatarBadge` component to add a badge to the avatar. The badge is positioned at the bottom right of the avatar.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="avatar-badge"  />
+
+Use the `className` prop to add custom styles to the badge such as custom colors, sizes, etc.
+
+```tsx showLineNumbers
+<Avatar>
+  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+  <AvatarFallback>CN</AvatarFallback>
+  <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+</Avatar>
+```
+
+## Badge with Icon
+
+You can also use an icon inside `<AvatarBadge>`.
+
+<ShadcnOfficialPreview
+  name="avatar-badge-icon"
+  styleName="radix-nova"
+
+ />
+
+## Avatar Group
+
+Use the `AvatarGroup` component to add a group of avatars.
+
+<ShadcnOfficialPreview
+  name="avatar-group"
+  styleName="radix-nova"
+
+ />
+
+## Avatar Group Count
+
+Use `<AvatarGroupCount>` to add a count to the group.
+
+<ShadcnOfficialPreview
+  name="avatar-group-count"
+  styleName="radix-nova"
+
+ />
+
+## Avatar Group with Icon
+
+You can also use an icon inside `<AvatarGroupCount>`.
+
+<ShadcnOfficialPreview
+  name="avatar-group-count-icon"
+  styleName="radix-nova"
+
+ />
+
+## Sizes
+
+Use the `size` prop to change the size of the avatar.
+
+<ShadcnOfficialPreview
+  name="avatar-size"
+  styleName="radix-nova"
+
+ />
+
+## Dropdown
+
+You can use the `Avatar` component as a trigger for a dropdown menu.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="avatar-dropdown"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="avatar-rtl"
+  direction="rtl"
+  previewClassName="h-72"
+ />
+
+## API Reference
+
+### Avatar
+
+The `Avatar` component is the root component that wraps the avatar image and fallback.
+
+| Prop        | Type                        | Default     |
+| ----------- | --------------------------- | ----------- |
+| `size`      | `"default" \| "sm" \| "lg"` | `"default"` |
+| `className` | `string`                    | -           |
+
+### AvatarImage
+
+The `AvatarImage` component displays the avatar image. It accepts all Radix UI Avatar Image props.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `src`       | `string` | -       |
+| `alt`       | `string` | -       |
+| `className` | `string` | -       |
+
+### AvatarFallback
+
+The `AvatarFallback` component displays a fallback when the image fails to load. It accepts all Radix UI Avatar Fallback props.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### AvatarBadge
+
+The `AvatarBadge` component displays a badge indicator on the avatar, typically positioned at the bottom right.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### AvatarGroup
+
+The `AvatarGroup` component displays a group of avatars with overlapping styling.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### AvatarGroupCount
+
+The `AvatarGroupCount` component displays a count indicator in an avatar group, typically showing the number of additional avatars.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+For more information about Radix UI Avatar props, see the [Radix UI documentation](https://www.radix-ui.com/primitives/docs/components/avatar#api-reference).

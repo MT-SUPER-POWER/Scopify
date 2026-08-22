@@ -1,68 +1,132 @@
 ---
-title: Toggle Group 切换组
-description: 组织单选或多选的切换按钮集合。
+title: "Toggle Group 切换组"
+description: "组织单选或多选的切换按钮集合。"
 ---
 
-<ComponentPreview name="shadcn-toggle-group" />
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-demo"  />
 
-组织单选或多选的切换按钮集合。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add toggle-group
+npx shadcn@latest add toggle-group
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
-import { ToggleGroup, ToggleGroupItem } from "@scopify/ui/shadcn/components/toggle-group";
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
 ```
 
-## 用法
+<Step>Copy and paste the following code into your project.</Step>
 
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+<ShadcnComponentSource
+  name="toggle-group"
+  title="components/ui/toggle-group.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
 
 ```tsx
-<ToggleGroup type="single" defaultValue="playlist" variant="outline">
-  <ToggleGroupItem value="playlist" aria-label="歌单视图">
-    <ListMusic />
-  </ToggleGroupItem>
-  <ToggleGroupItem value="lyrics" aria-label="歌词视图">
-    <Mic2 />
-  </ToggleGroupItem>
-  <ToggleGroupItem value="radio" aria-label="播客视图">
-    <Radio />
-  </ToggleGroupItem>
+import { ToggleGroup, ToggleGroupItem } from "@scopify/ui/shadcn/components/toggle-group"
+```
+
+```tsx
+<ToggleGroup type="single">
+  <ToggleGroupItem value="a">A</ToggleGroupItem>
+  <ToggleGroupItem value="b">B</ToggleGroupItem>
+  <ToggleGroupItem value="c">C</ToggleGroupItem>
 </ToggleGroup>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `ToggleGroup`:
 
 ```text
 ToggleGroup
 ├── ToggleGroupItem
+└── ToggleGroupItem
 ```
 
-## 常见用法
+## Outline
 
-- 组织单选或多选切换项。
-- 用 type 明确选择模式。
-- 图标按钮提供可访问名称。
+Use `variant="outline"` for an outline style.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-outline"  />
 
-- 每个控件都要有可访问标签，并在错误时同步 aria-invalid 与错误文本。
-- 受控值、校验和提交逻辑由消费层管理，基础组件不耦合具体表单模型。
-- 使用单一状态来源，避免同时传入 value 与 defaultValue。
+## Size
 
-## API 参考
+Use the `size` prop to change the size of the toggle group.
 
-当前模块公开 `ToggleGroup`、`ToggleGroupItem`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-sizes"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Toggle Group 切换组 文档](https://ui.shadcn.com/docs/components/radix/toggle-group)；实现差异以本仓库当前 CLI 源码为准。
+## Spacing
+
+Use `spacing` to add spacing between toggle group items.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-spacing"  />
+
+## Vertical
+
+Use `orientation="vertical"` for vertical toggle groups.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-vertical"  />
+
+## Disabled
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-disabled"  />
+
+## Custom
+
+A custom toggle group example.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="toggle-group-font-weight-selector"
+  previewClassName="*:data-[slot=field]:max-w-xs"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="toggle-group-rtl"
+  direction="rtl"
+ />
+
+## API Reference
+
+See the [Radix Toggle Group](https://www.radix-ui.com/docs/primitives/components/toggle-group#api-reference) documentation.
+
+## Changelog
+
+### 2026-05-17 Default Spacing
+
+Changed the default `spacing` from `0` to `2` so toggle groups render with space between items by default. Use `spacing={0}` for connected items.

@@ -3,7 +3,7 @@ title: Form 表单
 description: 连接 React Hook Form 的字段状态与可访问语义。
 ---
 
-<ComponentPreview name="shadcn-form" />
+<ShadcnComponentExample name="shadcn-form" />
 
 连接 React Hook Form 的字段状态与可访问语义。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
 
@@ -37,30 +37,28 @@ import {
 
 下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
 
-```tsx
-<Form {...form}>
-  <form className="w-full max-w-sm space-y-4" onSubmit={form.handleSubmit(() => undefined)}>
-    <FormField
-      control={form.control}
-      name="playlist"
-      rules={{ required: "请输入歌单名称" }}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>歌单名称</FormLabel>
-          <FormControl>
-            <Input {...field} />
-          </FormControl>
-          <FormDescription>使用 React Hook Form 管理字段状态。</FormDescription>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-    <Button type="submit" size="sm">
-      保存歌单
-    </Button>
-  </form>
-</Form>
-```
+<ShadcnCodeExample code={String.raw`<Form {...form}>
+          <form className="w-full max-w-sm space-y-4" onSubmit={form.handleSubmit(() => undefined)}>
+            <FormField
+              control={form.control}
+              name="playlist"
+              rules={{ required: "请输入歌单名称" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>歌单名称</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormDescription>使用 React Hook Form 管理字段状态。</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" size="sm">
+              保存歌单
+            </Button>
+          </form>
+        </Form>`} />
 
 ## 组件结构
 

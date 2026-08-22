@@ -1,88 +1,300 @@
 ---
-title: Attachment 附件
-description: 展示文件附件的媒体信息、说明和操作。
+title: "Attachment 附件"
+description: "展示文件附件的媒体信息、说明和操作。"
 ---
 
-<ComponentPreview name="shadcn-attachment" />
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="attachment-demo"
+  previewClassName="h-auto theme-blue bg-surface dark:bg-background"
+ />
 
-展示文件附件的媒体信息、说明和操作。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+The `Attachment` component displays a file or image attachment, its media, name, and metadata, with optional actions and upload state. Use it for files and images in chat composers, message threads, and upload lists.
 
-## 安装
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add attachment
+npx shadcn@latest add attachment
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the required shadcn/ui dependencies:</Step>
+
+```bash
+npx shadcn@latest add button
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="attachment"
+  title="components/ui/attachment.tsx"
+  styleName="radix-rhea"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
 
 ```tsx
 import {
   Attachment,
-  AttachmentGroup,
-  AttachmentMedia,
-  AttachmentContent,
-  AttachmentTitle,
-  AttachmentDescription,
-  AttachmentActions,
   AttachmentAction,
-  AttachmentTrigger,
-} from "@scopify/ui/shadcn/components/attachment";
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@scopify/ui/shadcn/components/attachment"
 ```
-
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
 
 ```tsx
 <Attachment>
   <AttachmentMedia>
-    <FileAudio />
+    <FileTextIcon />
   </AttachmentMedia>
   <AttachmentContent>
-    <AttachmentTitle>夜曲.flac</AttachmentTitle>
-    <AttachmentDescription>28.4 MB · 上传完成</AttachmentDescription>
+    <AttachmentTitle>sales-dashboard.pdf</AttachmentTitle>
+    <AttachmentDescription>PDF · 2.4 MB</AttachmentDescription>
   </AttachmentContent>
   <AttachmentActions>
-    <AttachmentAction aria-label="移除附件">
-      <X />
+    <AttachmentAction aria-label="Remove sales-dashboard.pdf">
+      <XIcon />
     </AttachmentAction>
   </AttachmentActions>
 </Attachment>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build an attachment:
 
 ```text
 Attachment
-├── AttachmentGroup
 ├── AttachmentMedia
 ├── AttachmentContent
-├── AttachmentTitle
-├── AttachmentDescription
+│   ├── AttachmentTitle
+│   └── AttachmentDescription
 ├── AttachmentActions
-├── AttachmentAction
-├── AttachmentTrigger
+│   └── AttachmentAction
+└── AttachmentTrigger
 ```
 
-## 常见用法
+Use `AttachmentGroup` to lay out multiple attachments in a scrollable row:
 
-- 展示单个文件的名称与大小。
-- 用 AttachmentGroup 组织多个附件。
-- 把下载和移除放入操作区。
+```text
+AttachmentGroup
+├── Attachment
+└── Attachment
+```
 
-## 使用建议
+## Features
 
-- 消息数据、流式状态和反馈请求保留在消费层，组件只负责展示与交互结构。
-- 为动态新增内容维护稳定的焦点和滚动位置，避免打断正在阅读的用户。
-- 头像、时间和状态是辅助信息，正文应保持最高阅读优先级。
+- Icon and image media through `AttachmentMedia`
+- Upload states: `idle`, `uploading`, `processing`, `error`, and `done` with built-in styling and a shimmer while in progress
+- Three sizes and horizontal or vertical orientation
+- A full-card `AttachmentTrigger` that opens a link or dialog while the actions stay independently clickable
+- Scrollable, snapping `AttachmentGroup` with an edge fade
+- Customizable styling through the `className` prop on every part
 
-## API 参考
+## Image
 
-当前模块公开 `Attachment`、`AttachmentGroup`、`AttachmentMedia`、`AttachmentContent`、`AttachmentTitle`、`AttachmentDescription`、`AttachmentActions`、`AttachmentAction`、`AttachmentTrigger`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+Set `variant="image"` on `AttachmentMedia` and render an `<img>` inside it. Use `orientation="vertical"` to stack the media above the content.
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Attachment 附件 文档](https://ui.shadcn.com/docs/components/radix/attachment)；实现差异以本仓库当前 CLI 源码为准。
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="attachment-image"
+  previewClassName="h-auto theme-blue bg-surface dark:bg-background"
+ />
+
+## States
+
+Set `state` to reflect the upload lifecycle. `uploading` and `processing` shimmer the title, and `error` switches to a destructive treatment.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="attachment-states"
+  previewClassName="h-auto theme-blue bg-surface dark:bg-background"
+ />
+
+## Sizes
+
+Use `size` to switch between `default`, `sm`, and `xs`.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="attachment-sizes"
+  previewClassName="h-auto theme-blue bg-surface dark:bg-background"
+ />
+
+## Group
+
+Wrap attachments in `AttachmentGroup` to lay them out in a horizontally scrollable, snapping row with an edge fade.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="attachment-group"
+  previewClassName="h-auto theme-blue bg-surface dark:bg-background"
+ />
+
+## Trigger
+
+Add an `AttachmentTrigger` to make the whole card open a link or dialog. It fills the card behind the actions, so the actions stay clickable.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="attachment-trigger"
+  previewClassName="h-auto theme-blue bg-surface dark:bg-background"
+ />
+
+```tsx showLineNumbers
+<Dialog>
+  <Attachment>
+    {/* media, content, actions */}
+    <DialogTrigger asChild>
+      <AttachmentTrigger aria-label="Preview research-summary.pdf" />
+    </DialogTrigger>
+  </Attachment>
+  <DialogContent>{/* ... */}</DialogContent>
+</Dialog>
+```
+
+## Accessibility
+
+`AttachmentAction` renders a `Button`, and `AttachmentTrigger` renders a real `<button>` (or your element via `asChild`). Follow the guidance below so both are operable and announced.
+
+### Label icon-only actions
+
+`AttachmentAction` is usually icon-only, so give each one an `aria-label` describing the action and its target.
+
+```tsx showLineNumbers
+<AttachmentAction aria-label="Remove sales-dashboard.pdf">
+  <XIcon />
+</AttachmentAction>
+```
+
+### Label the trigger
+
+`AttachmentTrigger` covers the card with no text of its own, so give it an `aria-label` for what activating it does.
+
+```tsx showLineNumbers
+<AttachmentTrigger asChild>
+  <a
+    href={url}
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Open workspace.png"
+  />
+</AttachmentTrigger>
+```
+
+The trigger sits behind the actions in the stacking order, so an `AttachmentAction` and the `AttachmentTrigger` never trap each other — both remain separately focusable and clickable.
+
+### Keyboard scrolling
+
+An `AttachmentGroup` scrolls horizontally. When its attachments are interactive: a trigger or actions, keyboard users reach off-screen items by tabbing to them. For a row of presentational attachments, make the group itself focusable and scrollable by adding `tabIndex={0}`, `role="group"`, and an `aria-label`.
+
+### Meaning beyond color
+
+The `error` state uses a destructive color. Keep the failure reason in `AttachmentDescription` so the state is not conveyed by color alone.
+
+## API Reference
+
+### Attachment
+
+The root attachment container.
+
+| Prop          | Type                                                         | Default        | Description                                       |
+| ------------- | ------------------------------------------------------------ | -------------- | ------------------------------------------------- |
+| `state`       | `"idle" \| "uploading" \| "processing" \| "error" \| "done"` | `"done"`       | The upload state. Drives styling and the shimmer. |
+| `size`        | `"default" \| "sm" \| "xs"`                                  | `"default"`    | The attachment size.                              |
+| `orientation` | `"horizontal" \| "vertical"`                                 | `"horizontal"` | Lay the media beside or above the content.        |
+| `className`   | `string`                                                     | -              | Additional classes to apply to the root element.  |
+
+### AttachmentMedia
+
+The media slot for an icon or image preview.
+
+| Prop        | Type                | Default  | Description                                    |
+| ----------- | ------------------- | -------- | ---------------------------------------------- |
+| `variant`   | `"icon" \| "image"` | `"icon"` | Whether the media holds an icon or an `<img>`. |
+| `className` | `string`            | -        | Additional classes to apply to the media slot. |
+
+### AttachmentContent
+
+Wraps the title and description.
+
+| Prop        | Type     | Default | Description                                      |
+| ----------- | -------- | ------- | ------------------------------------------------ |
+| `className` | `string` | -       | Additional classes to apply to the content slot. |
+
+### AttachmentTitle
+
+The attachment name. Shimmers while the attachment is `uploading` or `processing`.
+
+| Prop        | Type     | Default | Description                               |
+| ----------- | -------- | ------- | ----------------------------------------- |
+| `className` | `string` | -       | Additional classes to apply to the title. |
+
+### AttachmentDescription
+
+Secondary metadata such as the file type, size, or upload status.
+
+| Prop        | Type     | Default | Description                                     |
+| ----------- | -------- | ------- | ----------------------------------------------- |
+| `className` | `string` | -       | Additional classes to apply to the description. |
+
+### AttachmentActions
+
+A container for one or more actions, aligned to the end of the attachment.
+
+| Prop        | Type     | Default | Description                                 |
+| ----------- | -------- | ------- | ------------------------------------------- |
+| `className` | `string` | -       | Additional classes to apply to the actions. |
+
+### AttachmentAction
+
+An action button. Renders a [`Button`](/docs/components/button) and accepts all of its props.
+
+| Prop       | Type                                  | Default     | Description                              |
+| ---------- | ------------------------------------- | ----------- | ---------------------------------------- |
+| `size`     | `Button["size"]`                      | `"icon-xs"` | The button size.                         |
+| `...props` | `React.ComponentProps<typeof Button>` | -           | Props spread to the underlying `Button`. |
+
+### AttachmentTrigger
+
+A full-card overlay that activates the attachment. Renders a `<button>` by default.
+
+| Prop       | Type                             | Default | Description                                  |
+| ---------- | -------------------------------- | ------- | -------------------------------------------- |
+| `asChild`  | `boolean`                        | `false` | Render as the child element, such as a link. |
+| `...props` | `React.ComponentProps<"button">` | -       | Props spread to the trigger element.         |
+
+### AttachmentGroup
+
+Lays out attachments in a horizontally scrollable, snapping row.
+
+| Prop        | Type     | Default | Description                               |
+| ----------- | -------- | ------- | ----------------------------------------- |
+| `className` | `string` | -       | Additional classes to apply to the group. |

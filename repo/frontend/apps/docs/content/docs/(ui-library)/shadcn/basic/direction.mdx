@@ -1,66 +1,90 @@
 ---
-title: Direction 文本方向
-description: 为组件树提供 LTR 或 RTL 文本方向上下文。
+title: "Direction 文本方向"
+description: "为组件树提供 LTR 或 RTL 文本方向上下文。"
 ---
 
-<ComponentPreview name="shadcn-direction" />
+The `DirectionProvider` component is used to set the text direction (`ltr` or `rtl`) for your application. This is essential for supporting right-to-left languages like Arabic, Hebrew, and Persian.
 
-为组件树提供 LTR 或 RTL 文本方向上下文。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+Here's a preview of the component in RTL mode. Use the language selector to switch the language. To see more examples, look for the RTL section on components pages.
 
-## 安装
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="card-rtl"
+  direction="rtl"
+  previewClassName="h-auto"
+  hideCode
+ />
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add direction
+npx shadcn@latest add direction
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
-import { DirectionProvider, useDirection } from "@scopify/ui/shadcn/components/direction";
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
 ```
 
-## 用法
+<Step>Copy and paste the following code into your project.</Step>
 
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+<ShadcnComponentSource
+  name="direction"
+  title="components/ui/direction.tsx"
+  styleName="radix-nova"
+ />
 
-```tsx
-<DirectionProvider dir="rtl">
-  <div dir="rtl" className="bg-muted w-full max-w-sm rounded-lg border p-4">
-    <div className="flex items-center gap-2 font-medium">
-      <Disc3 />
-      从右向左的内容
-    </div>
-    <p className="text-muted-foreground mt-2 text-sm">方向上下文会传递给支持 RTL 的组件。</p>
-    <ArrowLeft className="mt-3" />
-  </div>
-</DirectionProvider>
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { DirectionProvider } from "@scopify/ui/shadcn/components/direction"
 ```
 
-## 组件结构
-
-```text
-DirectionProvider
+```tsx showLineNumbers
+<html dir="rtl">
+  <body>
+    <DirectionProvider direction="rtl">
+      {/* Your app content */}
+    </DirectionProvider>
+  </body>
+</html>
 ```
 
-## 常见用法
+## useDirection
 
-- 在局部组件树切换 LTR 与 RTL。
-- 用于验证双向布局。
-- 不要替代文档根节点的语言声明。
+The `useDirection` hook is used to get the current direction of the application.
 
-## 使用建议
+```tsx showLineNumbers
+import { useDirection } from "@scopify/ui/shadcn/components/direction"
 
-- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
-- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
-- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
-
-## API 参考
-
-当前模块公开 `DirectionProvider`、`useDirection`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
-
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Direction 文本方向 文档](https://ui.shadcn.com/docs/components/radix/direction)；实现差异以本仓库当前 CLI 源码为准。
+function MyComponent() {
+  const direction = useDirection()
+  return <div>Current direction: {direction}</div>
+}
+```

@@ -1,80 +1,240 @@
 ---
-title: Empty 空状态
-description: 在没有可展示内容时提供结构化提示和操作。
+title: "Empty 空状态"
+description: "在没有可展示内容时提供结构化提示和操作。"
 ---
 
-<ComponentPreview name="shadcn-empty" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="empty-demo"
+  previewClassName="h-96 p-0"
+ />
 
-在没有可展示内容时提供结构化提示和操作。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add empty
+npx shadcn@latest add empty
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="empty"
+  title="components/ui/empty.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
 
 ```tsx
 import {
   Empty,
-  EmptyHeader,
-  EmptyTitle,
-  EmptyDescription,
   EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
   EmptyMedia,
-} from "@scopify/ui/shadcn/components/empty";
+  EmptyTitle,
+} from "@scopify/ui/shadcn/components/empty"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
 ```tsx
-<Empty className="w-full max-w-md border">
+<Empty>
   <EmptyHeader>
     <EmptyMedia variant="icon">
-      <ListMusic />
+      <Icon />
     </EmptyMedia>
-    <EmptyTitle>播放队列为空</EmptyTitle>
-    <EmptyDescription>从歌曲或歌单中添加音乐开始播放。</EmptyDescription>
+    <EmptyTitle>No data</EmptyTitle>
+    <EmptyDescription>No data found</EmptyDescription>
   </EmptyHeader>
   <EmptyContent>
-    <Button size="sm">浏览推荐</Button>
+    <Button>Add data</Button>
   </EmptyContent>
 </Empty>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build an `Empty` state:
 
 ```text
 Empty
 ├── EmptyHeader
-├── EmptyTitle
-├── EmptyDescription
-├── EmptyContent
-├── EmptyMedia
+│   ├── EmptyMedia
+│   ├── EmptyTitle
+│   └── EmptyDescription
+└── EmptyContent
 ```
 
-## 常见用法
+## Outline
 
-- 解释为什么当前没有内容。
-- 给出一个清晰主操作。
-- 通过 EmptyMedia 提供图标或插图。
+Use the `border` utility class to create an outline empty state.
 
-## 使用建议
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="empty-outline"
+  previewClassName="h-96 p-6 md:p-10"
+ />
 
-- 优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。
-- 只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。
-- 交互元素必须保留键盘焦点、禁用态和清晰的可访问名称。
+## Background
 
-## API 参考
+Use the `bg-*` and `bg-gradient-*` utilities to add a background to the empty state.
 
-当前模块公开 `Empty`、`EmptyHeader`、`EmptyTitle`、`EmptyDescription`、`EmptyContent`、`EmptyMedia`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="empty-background"
+  previewClassName="h-96 p-0"
+ />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Empty 空状态 文档](https://ui.shadcn.com/docs/components/radix/empty)；实现差异以本仓库当前 CLI 源码为准。
+## Avatar
+
+Use the `EmptyMedia` component to display an avatar in the empty state.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="empty-avatar"
+  previewClassName="h-96 p-0"
+ />
+
+## Avatar Group
+
+Use the `EmptyMedia` component to display an avatar group in the empty state.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="empty-avatar-group"
+  previewClassName="h-96 p-0"
+ />
+
+## InputGroup
+
+You can add an `InputGroup` component to the `EmptyContent` component.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="empty-input-group"
+  previewClassName="h-96 p-0"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="empty-rtl" direction="rtl"  />
+
+## API Reference
+
+### Empty
+
+The main component of the empty state. Wraps the `EmptyHeader` and `EmptyContent` components.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` |         |
+
+```tsx
+<Empty>
+  <EmptyHeader />
+  <EmptyContent />
+</Empty>
+```
+
+### EmptyHeader
+
+The `EmptyHeader` component wraps the empty media, title, and description.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` |         |
+
+```tsx
+<EmptyHeader>
+  <EmptyMedia />
+  <EmptyTitle />
+  <EmptyDescription />
+</EmptyHeader>
+```
+
+### EmptyMedia
+
+Use the `EmptyMedia` component to display the media of the empty state such as an icon or an image. You can also use it to display other components such as an avatar.
+
+| Prop        | Type                  | Default   |
+| ----------- | --------------------- | --------- |
+| `variant`   | `"default" \| "icon"` | `default` |
+| `className` | `string`              |           |
+
+```tsx
+<EmptyMedia variant="icon">
+  <Icon />
+</EmptyMedia>
+```
+
+```tsx
+<EmptyMedia>
+  <Avatar>
+    <AvatarImage src="..." />
+    <AvatarFallback>CN</AvatarFallback>
+  </Avatar>
+</EmptyMedia>
+```
+
+### EmptyTitle
+
+Use the `EmptyTitle` component to display the title of the empty state.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` |         |
+
+```tsx
+<EmptyTitle>No data</EmptyTitle>
+```
+
+### EmptyDescription
+
+Use the `EmptyDescription` component to display the description of the empty state.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` |         |
+
+```tsx
+<EmptyDescription>You do not have any notifications.</EmptyDescription>
+```
+
+### EmptyContent
+
+Use the `EmptyContent` component to display the content of the empty state such as a button, input or a link.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` |         |
+
+```tsx
+<EmptyContent>
+  <Button>Add Project</Button>
+</EmptyContent>
+```

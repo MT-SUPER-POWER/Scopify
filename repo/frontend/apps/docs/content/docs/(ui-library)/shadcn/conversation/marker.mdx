@@ -1,74 +1,275 @@
 ---
-title: Marker 标记
-description: 为消息或内容片段提供紧凑的状态标记。
+title: "Marker 标记"
+description: "为消息或内容片段提供紧凑的状态标记。"
 ---
 
-<ComponentPreview name="shadcn-marker" />
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="marker-demo"
+  previewClassName="h-auto theme-blue"
+ />
 
-为消息或内容片段提供紧凑的状态标记。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+The `Marker` component displays inline conversation markers such as status updates, system notes, bordered rows, and labeled separators. Compose it with [`Message`](/docs/components/message) in a conversation thread.
 
-## 安装
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add marker
+npx shadcn@latest add marker
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
-import {
-  Marker,
-  MarkerIcon,
-  MarkerContent,
-  markerVariants,
-} from "@scopify/ui/shadcn/components/marker";
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="marker"
+  title="components/ui/marker.tsx"
+  styleName="radix-rhea"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Marker, MarkerContent, MarkerIcon } from "@scopify/ui/shadcn/components/marker"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
-<div className="w-full max-w-md space-y-4">
-  <Marker variant="separator">
-    <MarkerContent>今天</MarkerContent>
-  </Marker>
-  <Marker variant="border">
-    <MarkerIcon>
-      <CheckCircle2 />
-    </MarkerIcon>
-    <MarkerContent>已同步 128 首喜欢的歌曲</MarkerContent>
-  </Marker>
-</div>
+```tsx showLineNumbers
+<Marker>
+  <MarkerIcon>
+    <CheckIcon />
+  </MarkerIcon>
+  <MarkerContent>Explored 4 files</MarkerContent>
+</Marker>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a marker:
 
 ```text
 Marker
 ├── MarkerIcon
-├── MarkerContent
+└── MarkerContent
 ```
 
-## 常见用法
+## Features
 
-- 标记消息状态或上下文。
-- 组合图标和短文本。
-- 通过 variant 表达有限且稳定的语义。
+- Inline marker, bordered row, and labeled separator variants
+- Decorative icon slot that is hidden from assistive tech
+- Polymorphic root via `asChild` for link and button markers
+- Pairs with the [`shimmer`](/docs/utils/shimmer) utility for streaming status text
+- Customizable styling through the `className` prop on every part
 
-## 使用建议
+## Variants
 
-- 消息数据、流式状态和反馈请求保留在消费层，组件只负责展示与交互结构。
-- 为动态新增内容维护稳定的焦点和滚动位置，避免打断正在阅读的用户。
-- 头像、时间和状态是辅助信息，正文应保持最高阅读优先级。
+Use `variant` to switch between an inline marker, bordered row, and labeled separator.
 
-## API 参考
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="marker-variants"
+  previewClassName="h-auto theme-blue"
+ />
 
-当前模块公开 `Marker`、`MarkerIcon`、`MarkerContent`、`markerVariants`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+| Variant     | Description                                          |
+| ----------- | ---------------------------------------------------- |
+| `default`   | An inline marker for status, notes, and actions.     |
+| `border`    | A default marker with a bottom border under the row. |
+| `separator` | A centered label with divider lines on each side.    |
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Marker 标记 文档](https://ui.shadcn.com/docs/components/radix/marker)；实现差异以本仓库当前 CLI 源码为准。
+## Status
+
+Set `role="status"` and include a [`Spinner`](/docs/components/spinner) for streaming or in-progress markers so updates are announced.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="marker-status"
+  previewClassName="h-auto theme-blue"
+ />
+
+## Shimmer
+
+Add the [`shimmer`](/docs/utils/shimmer) utility class to `MarkerContent` for an animated streaming-text effect. The utility ships with the `shadcn` package — see the shimmer docs for installation.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="marker-shimmer"
+  previewClassName="h-auto theme-blue"
+ />
+
+## Separator
+
+Use the `separator` variant for labeled dividers, such as dates or section breaks, in a conversation.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="marker-separator"
+  previewClassName="h-auto theme-blue"
+ />
+
+## Border
+
+Use the `border` variant for status rows that should keep the default marker alignment while separating the next row.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="marker-border"
+  previewClassName="h-auto theme-blue"
+ />
+
+## With Icon
+
+Use `MarkerIcon` to render an icon alongside the content. Use `flex-col` to stack the icon above the content.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="marker-icon"
+  previewClassName="h-auto theme-blue"
+ />
+
+## Links and Buttons
+
+Turn a marker into a link or button with the `asChild` prop on `Marker`.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="marker-link-button"
+  previewClassName="h-auto theme-blue"
+ />
+
+```tsx showLineNumbers
+import { Marker, MarkerContent } from "@scopify/ui/shadcn/components/marker"
+
+export function MarkerLinkDemo() {
+  return (
+    <Marker asChild>
+      <a href="#">
+        <MarkerContent>View the pull request</MarkerContent>
+      </a>
+    </Marker>
+  )
+}
+```
+
+## Accessibility
+
+`Marker` is presentational by default. The correct semantics depend on how you use it, so choose the role based on intent rather than relying on a single default.
+
+### Status and Progress
+
+For streaming or progress markers such as "Thinking..." or a running tool, set `role="status"` so assistive tech announces the update as it appears. `Marker` forwards `role` to the underlying element.
+
+```tsx showLineNumbers
+<Marker role="status">
+  <MarkerIcon>
+    <Spinner />
+  </MarkerIcon>
+  <MarkerContent>Compacting conversation</MarkerContent>
+</Marker>
+```
+
+### Labeled Separators
+
+A separator that carries text, such as a date or a section label, needs no role. The divider lines are decorative CSS pseudo-elements, and the text is announced as ordinary content.
+
+```tsx showLineNumbers
+<Marker variant="separator">
+  <MarkerContent>Today</MarkerContent>
+</Marker>
+```
+
+<Callout>
+  **Note:** Do not add `role="separator"` to a labeled divider. A separator
+  takes its accessible name from `aria-label`, not from its text, and its
+  contents are treated as presentational, so the visible label would not be
+  announced. Reserve `role="separator"` for a divider with no meaningful text.
+</Callout>
+
+### Bordered Markers
+
+A bordered marker keeps the same semantics as the default marker. The bottom border is decorative, so choose `role="status"`, `asChild`, or no role based on the marker's purpose.
+
+```tsx showLineNumbers
+<Marker variant="border">
+  <MarkerIcon>
+    <FileTextIcon />
+  </MarkerIcon>
+  <MarkerContent>Opened implementation notes</MarkerContent>
+</Marker>
+```
+
+### Decorative Icons
+
+`MarkerIcon` is decorative and hidden from assistive tech with `aria-hidden`, so the adjacent `MarkerContent` carries the meaning. For an icon-only marker, provide an `aria-label` or visible text so it is not announced as empty.
+
+```tsx showLineNumbers
+<Marker aria-label="Synced">
+  <MarkerIcon>
+    <CheckIcon />
+  </MarkerIcon>
+</Marker>
+```
+
+### Interactive Markers
+
+When a marker links or triggers an action, render it as a real `<button>` or `<a>` with the `asChild` prop so it is focusable and exposes the correct role. The accessible name comes from the marker text.
+
+```tsx showLineNumbers
+<Marker asChild>
+  <a href="/files">
+    <MarkerIcon>
+      <FileTextIcon />
+    </MarkerIcon>
+    <MarkerContent>Explored 4 files</MarkerContent>
+  </a>
+</Marker>
+```
+
+## API Reference
+
+### Marker
+
+The root marker element. The file also exports `markerVariants` for composing the marker styles into custom components.
+
+| Prop        | Type                                   | Default     | Description                                      |
+| ----------- | -------------------------------------- | ----------- | ------------------------------------------------ |
+| `variant`   | `"default" \| "border" \| "separator"` | `"default"` | The marker layout.                               |
+| `asChild`   | `boolean`                              | `false`     | Render as the child element, such as a link.     |
+| `className` | `string`                               | -           | Additional classes to apply to the root element. |
+
+### MarkerIcon
+
+A decorative icon slot. Hidden from assistive tech with `aria-hidden`.
+
+| Prop        | Type     | Default | Description                                   |
+| ----------- | -------- | ------- | --------------------------------------------- |
+| `className` | `string` | -       | Additional classes to apply to the icon slot. |
+
+### MarkerContent
+
+The marker text content.
+
+| Prop        | Type     | Default | Description                                      |
+| ----------- | -------- | ------- | ------------------------------------------------ |
+| `className` | `string` | -       | Additional classes to apply to the content slot. |

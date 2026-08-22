@@ -1,108 +1,158 @@
 ---
-title: Menubar 菜单栏
-description: 构建桌面式顶层菜单和嵌套命令。
+title: "Menubar 菜单栏"
+description: "构建桌面式顶层菜单和嵌套命令。"
 ---
 
-<ComponentPreview name="shadcn-menubar" />
+<ShadcnOfficialPreview styleName="radix-nova" name="menubar-demo"  />
 
-构建桌面式顶层菜单和嵌套命令。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add menubar
+npx shadcn@latest add menubar
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="menubar"
+  title="components/ui/menubar.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Menubar,
-  MenubarPortal,
-  MenubarMenu,
-  MenubarTrigger,
   MenubarContent,
   MenubarGroup,
-  MenubarSeparator,
-  MenubarLabel,
   MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
   MenubarShortcut,
-  MenubarCheckboxItem,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSub,
-  MenubarSubTrigger,
-  MenubarSubContent,
-} from "@scopify/ui/shadcn/components/menubar";
+  MenubarTrigger,
+} from "@scopify/ui/shadcn/components/menubar"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
+```tsx showLineNumbers
 <Menubar>
   <MenubarMenu>
-    <MenubarTrigger>播放</MenubarTrigger>
+    <MenubarTrigger>File</MenubarTrigger>
     <MenubarContent>
-      <MenubarItem>
-        播放 / 暂停 <MenubarShortcut>Space</MenubarShortcut>
-      </MenubarItem>
-      <MenubarItem>下一首</MenubarItem>
+      <MenubarGroup>
+        <MenubarItem>
+          New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+        </MenubarItem>
+        <MenubarItem>New Window</MenubarItem>
+      </MenubarGroup>
       <MenubarSeparator />
-      <MenubarItem>清空播放队列</MenubarItem>
-    </MenubarContent>
-  </MenubarMenu>
-  <MenubarMenu>
-    <MenubarTrigger>视图</MenubarTrigger>
-    <MenubarContent>
-      <MenubarItem>全屏播放器</MenubarItem>
-      <MenubarItem>桌面歌词</MenubarItem>
+      <MenubarGroup>
+        <MenubarItem>Share</MenubarItem>
+        <MenubarItem>Print</MenubarItem>
+      </MenubarGroup>
     </MenubarContent>
   </MenubarMenu>
 </Menubar>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Menubar`:
 
 ```text
 Menubar
-├── MenubarPortal
 ├── MenubarMenu
-├── MenubarTrigger
-├── MenubarContent
-├── MenubarGroup
-├── MenubarSeparator
-├── MenubarLabel
-├── MenubarItem
-├── MenubarShortcut
-├── MenubarCheckboxItem
-├── MenubarRadioGroup
-├── MenubarRadioItem
-├── MenubarSub
-├── MenubarSubTrigger
-├── MenubarSubContent
+│   ├── MenubarTrigger
+│   └── MenubarContent
+│       ├── MenubarGroup
+│       │   ├── MenubarLabel
+│       │   ├── MenubarItem
+│       │   └── MenubarItem
+│       ├── MenubarSeparator
+│       ├── MenubarGroup
+│       │   ├── MenubarLabel
+│       │   ├── MenubarCheckboxItem
+│       │   └── MenubarCheckboxItem
+│       ├── MenubarSeparator
+│       ├── MenubarGroup
+│       │   ├── MenubarLabel
+│       │   └── MenubarRadioGroup
+│       │       ├── MenubarRadioItem
+│       │       └── MenubarRadioItem
+│       └── MenubarSub
+│           ├── MenubarSubTrigger
+│           └── MenubarSubContent
+│               └── MenubarGroup
+│                   ├── MenubarLabel
+│                   ├── MenubarItem
+│                   └── MenubarItem
+└── MenubarMenu
+    ├── MenubarTrigger
+    └── MenubarContent
+        └── MenubarGroup
+            ├── MenubarLabel
+            ├── MenubarItem
+            └── MenubarItem
 ```
 
-## 常见用法
+## Checkbox
 
-- 构建桌面式应用菜单。
-- 组织嵌套命令和快捷键。
-- 禁用项仍应说明其存在但不可用。
+Use `MenubarCheckboxItem` for toggleable options.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="menubar-checkbox"  />
 
-- 当前项、焦点项和禁用项必须在视觉与语义上都能区分。
-- 路由决策留在应用层，基础组件只接收链接、状态与回调。
-- 保证完整键盘路径，并避免将主要入口只放进隐藏菜单。
+## Radio
 
-## API 参考
+Use `MenubarRadioGroup` and `MenubarRadioItem` for single-select options.
 
-当前模块公开 `Menubar`、`MenubarPortal`、`MenubarMenu`、`MenubarTrigger`、`MenubarContent`、`MenubarGroup`、`MenubarSeparator`、`MenubarLabel`、`MenubarItem`、`MenubarShortcut`、`MenubarCheckboxItem`、`MenubarRadioGroup`、`MenubarRadioItem`、`MenubarSub`、`MenubarSubTrigger`、`MenubarSubContent`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="menubar-radio"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Menubar 菜单栏 文档](https://ui.shadcn.com/docs/components/radix/menubar)；实现差异以本仓库当前 CLI 源码为准。
+## Submenu
+
+Use `MenubarSub`, `MenubarSubTrigger`, and `MenubarSubContent` for nested menus.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="menubar-submenu"  />
+
+## With Icons
+
+<ShadcnOfficialPreview styleName="radix-nova" name="menubar-icons"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="menubar-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix UI Menubar](https://www.radix-ui.com/docs/primitives/components/menubar#api-reference) documentation.

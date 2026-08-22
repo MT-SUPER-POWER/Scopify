@@ -1,80 +1,246 @@
 ---
-title: Message 消息
-description: 组织消息头像、正文、页眉和页脚区域。
+title: "Message 消息"
+description: "组织消息头像、正文、页眉和页脚区域。"
 ---
 
-<ComponentPreview name="shadcn-message" />
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="message-demo"
+  previewClassName="h-auto theme-blue"
+ />
 
-组织消息头像、正文、页眉和页脚区域。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+The `Message` component lays out a single message in a conversation. It handles the avatar, alignment, header, and footer around the message surface.
 
-## 安装
+For AI apps, you can render reasoning steps, tool calls and assistant messages using the `Message` component.
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add message
+npx shadcn@latest add message
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
-import {
-  MessageGroup,
-  Message,
-  MessageAvatar,
-  MessageContent,
-  MessageFooter,
-  MessageHeader,
-} from "@scopify/ui/shadcn/components/message";
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="message"
+  title="components/ui/message.tsx"
+  styleName="radix-rhea"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Avatar, AvatarFallback, AvatarImage } from "@scopify/ui/shadcn/components/avatar"
+import { Bubble, BubbleContent } from "@scopify/ui/shadcn/components/bubble"
+import { Message, MessageAvatar, MessageContent } from "@scopify/ui/shadcn/components/message"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
-<Message className="w-full max-w-lg">
-  <MessageAvatar className="size-9">
-    <Bot className="size-5" />
+```tsx showLineNumbers
+<Message>
+  <MessageAvatar>
+    <Avatar>
+      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+      <AvatarFallback>CN</AvatarFallback>
+    </Avatar>
   </MessageAvatar>
   <MessageContent>
-    <MessageHeader>Scopify 助手</MessageHeader>
-    <Bubble variant="muted">
-      <BubbleContent>根据你的最近播放，推荐从《十一月的萧邦》开始。</BubbleContent>
+    <Bubble>
+      <BubbleContent>How can I help you today?</BubbleContent>
     </Bubble>
-    <MessageFooter>刚刚 · 推荐已生成</MessageFooter>
   </MessageContent>
 </Message>
 ```
 
-## 组件结构
+**Note:** `Message` owns the row layout—avatar, alignment, header, and footer.
+Render the visible message surface inside it with
+[`Bubble`](/docs/components/bubble). For the scroll container around a
+conversation, use [`MessageScroller`](/docs/components/message-scroller).
+
+## Composition
+
+Use the following composition to build a message:
+
+```text
+Message
+├── MessageAvatar
+└── MessageContent
+    ├── MessageHeader
+    ├── Bubble
+    └── MessageFooter
+```
+
+Use `MessageGroup` to stack consecutive messages from the same sender:
 
 ```text
 MessageGroup
 ├── Message
-├── MessageAvatar
-├── MessageContent
-├── MessageFooter
-├── MessageHeader
+└── Message
 ```
 
-## 常见用法
+## Features
 
-- 组合头像、页眉、正文与页脚。
-- 用 MessageGroup 聚合对话。
-- 流式内容保持布局稳定。
+- Start and end alignment for sender and receiver rows via the `align` prop
+- Avatar slot that anchors to the bottom of the message and stays clear of the footer
+- Header and footer slots for sender names, status, and message actions
+- Footer follows the message side; actions stay aligned on `align="end"` rows
+- Group wrapper for stacking consecutive messages from the same sender
+- Customizable styling through the `className` prop on every part
 
-## 使用建议
+## Avatar
 
-- 消息数据、流式状态和反馈请求保留在消费层，组件只负责展示与交互结构。
-- 为动态新增内容维护稳定的焦点和滚动位置，避免打断正在阅读的用户。
-- 头像、时间和状态是辅助信息，正文应保持最高阅读优先级。
+Use `MessageAvatar` to render an avatar next to the message. Set `align="end"` on the message to align the avatar to the end of the message.
 
-## API 参考
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="message-avatar"
+  previewClassName="h-auto theme-blue"
+ />
 
-当前模块公开 `MessageGroup`、`Message`、`MessageAvatar`、`MessageContent`、`MessageFooter`、`MessageHeader`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+| align   | Description                                         |
+| ------- | --------------------------------------------------- |
+| `start` | Align the message to the start of the conversation. |
+| `end`   | Align the message to the end of the conversation.   |
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Message 消息 文档](https://ui.shadcn.com/docs/components/radix/message)；实现差异以本仓库当前 CLI 源码为准。
+## Group
+
+Use `MessageGroup` to stack consecutive messages from the same sender. Render an empty `MessageAvatar` on the earlier messages to keep them aligned with the avatar on the last one.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="message-group"
+  previewClassName="h-auto theme-blue"
+ />
+
+## Header and Footer
+
+Use `MessageHeader` for a sender name and `MessageFooter` for metadata such as a delivery or read status.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="message-header-footer"
+  previewClassName="h-auto theme-blue"
+ />
+
+## Actions
+
+Place message-level actions in `MessageFooter`, such as copy, retry, or feedback buttons.
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="message-actions"
+  previewClassName="h-auto theme-blue"
+ />
+
+## Attachment
+
+<ShadcnOfficialPreview
+  styleName="radix-rhea"
+  name="message-attachment"
+  previewClassName="h-auto theme-blue"
+ />
+
+## Accessibility
+
+`Message` is a presentational layout wrapper. Accessibility comes from the content you place inside it.
+
+### Label icon-only actions
+
+Action buttons in `MessageFooter` are usually icon-only, so give each one an `aria-label`.
+
+```tsx showLineNumbers
+<MessageFooter>
+  <Button variant="ghost" size="icon" aria-label="Copy">
+    <CopyIcon />
+  </Button>
+</MessageFooter>
+```
+
+### Status updates
+
+For in-progress messages, use a [`Marker`](/docs/components/marker) with `role="status"` so assistive tech announces the update as it appears.
+
+```tsx showLineNumbers
+<Message>
+  <Marker role="status">
+    <MarkerIcon>
+      <Spinner />
+    </MarkerIcon>
+    <MarkerContent>Checking the logs...</MarkerContent>
+  </Marker>
+</Message>
+```
+
+## API Reference
+
+### Message
+
+The message row wrapper.
+
+| Prop        | Type               | Default   | Description                                       |
+| ----------- | ------------------ | --------- | ------------------------------------------------- |
+| `align`     | `"start" \| "end"` | `"start"` | The alignment of the message in the conversation. |
+| `className` | `string`           | -         | Additional classes to apply to the row.           |
+
+### MessageGroup
+
+Groups consecutive messages from the same sender.
+
+| Prop        | Type     | Default | Description                                    |
+| ----------- | -------- | ------- | ---------------------------------------------- |
+| `className` | `string` | -       | Additional classes to apply to the group root. |
+
+### MessageAvatar
+
+The avatar slot, aligned to the bottom of the message. When the message has a `MessageFooter`, the avatar shifts up to stay aligned with the message surface instead of the footer.
+
+| Prop        | Type     | Default | Description                                     |
+| ----------- | -------- | ------- | ----------------------------------------------- |
+| `className` | `string` | -       | Additional classes to apply to the avatar slot. |
+
+### MessageContent
+
+Wraps the header, message surface, and footer.
+
+| Prop        | Type     | Default | Description                                      |
+| ----------- | -------- | ------- | ------------------------------------------------ |
+| `className` | `string` | -       | Additional classes to apply to the content slot. |
+
+### MessageHeader
+
+Displays content above the message, such as a sender name. Stays aligned to the start regardless of `align`.
+
+| Prop        | Type     | Default | Description                                |
+| ----------- | -------- | ------- | ------------------------------------------ |
+| `className` | `string` | -       | Additional classes to apply to the header. |
+
+### MessageFooter
+
+Displays content below the message, such as status or actions. Aligns to the message side.
+
+| Prop        | Type     | Default | Description                                |
+| ----------- | -------- | ------- | ------------------------------------------ |
+| `className` | `string` | -       | Additional classes to apply to the footer. |

@@ -1,74 +1,143 @@
 ---
-title: Tooltip 文字提示
-description: 为聚焦或悬停目标补充简短说明。
+title: "Tooltip 文字提示"
+description: "为聚焦或悬停目标补充简短说明。"
 ---
 
-<ComponentPreview name="shadcn-tooltip" />
+<ShadcnOfficialPreview styleName="radix-nova" name="tooltip-demo"  />
 
-为聚焦或悬停目标补充简短说明。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Run the following command:</Step>
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add tooltip
+npx shadcn@latest add tooltip
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+<Step>Add the `TooltipProvider` to the root of your app.</Step>
 
-## 导入
+```tsx title="app/layout.tsx" showLineNumbers {1,7}
+import { TooltipProvider } from "@scopify/ui/shadcn/components/tooltip"
 
-```tsx
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+</Steps>
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="tooltip"
+  title="components/ui/tooltip.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+<Step>Add the `TooltipProvider` to the root of your app.</Step>
+
+```tsx title="app/layout.tsx" showLineNumbers {1,7}
+import { TooltipProvider } from "@scopify/ui/shadcn/components/tooltip"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
 import {
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
-  TooltipProvider,
-} from "@scopify/ui/shadcn/components/tooltip";
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip"
 ```
 
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
-
-```tsx
-<TooltipProvider>
-  <Tooltip>
-    <TooltipTrigger asChild>
-      <Button variant="outline">
-        <Sparkles /> 悬停查看
-      </Button>
-    </TooltipTrigger>
-    <TooltipContent sideOffset={8}>由 Radix 提供无障碍交互</TooltipContent>
-  </Tooltip>
-</TooltipProvider>
+```tsx showLineNumbers
+<Tooltip>
+  <TooltipTrigger>Hover</TooltipTrigger>
+  <TooltipContent>
+    <p>Add to library</p>
+  </TooltipContent>
+</Tooltip>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `Tooltip`:
 
 ```text
 Tooltip
 ├── TooltipTrigger
-├── TooltipContent
-├── TooltipProvider
+└── TooltipContent
 ```
 
-## 常见用法
+## Side
 
-- 解释不熟悉的图标或缩写。
-- 内容保持一句话。
-- 关键信息不能只在悬停时出现。
+Use the `side` prop to change the position of the tooltip.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="tooltip-sides"  />
 
-- 打开后应把焦点移动到浮层，关闭时恢复到触发器。
-- 标题与说明用于建立可访问语义；危险操作要明确描述后果。
-- 轻量补充用 Popover，聚焦任务用 Dialog，边缘工作区用 Sheet 或 Drawer。
+## With Keyboard Shortcut
 
-## API 参考
+<ShadcnOfficialPreview styleName="radix-nova" name="tooltip-keyboard"  />
 
-当前模块公开 `Tooltip`、`TooltipTrigger`、`TooltipContent`、`TooltipProvider`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+## Disabled Button
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Tooltip 文字提示 文档](https://ui.shadcn.com/docs/components/radix/tooltip)；实现差异以本仓库当前 CLI 源码为准。
+Show a tooltip on a disabled button by wrapping it with a span.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="tooltip-disabled"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="tooltip-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix Tooltip](https://www.radix-ui.com/docs/primitives/components/tooltip#api-reference) documentation.

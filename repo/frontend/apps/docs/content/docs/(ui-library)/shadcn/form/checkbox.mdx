@@ -1,63 +1,133 @@
 ---
-title: Checkbox 复选框
-description: 表示可独立切换或批量选择的布尔选项。
+title: "Checkbox 复选框"
+description: "表示可独立切换或批量选择的布尔选项。"
 ---
 
-<ComponentPreview name="shadcn-checkbox" />
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="checkbox-demo"
+  previewClassName="h-80"
+ />
 
-表示可独立切换或批量选择的布尔选项。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add checkbox
+npx shadcn@latest add checkbox
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="checkbox"
+  title="components/ui/checkbox.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
 
 ```tsx
-import { Checkbox } from "@scopify/ui/shadcn/components/checkbox";
+import { Checkbox } from "@scopify/ui/shadcn/components/checkbox"
 ```
-
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
 
 ```tsx
-<div className="flex items-start gap-3">
-  <Checkbox id="preview-download" defaultChecked />
-  <div className="grid gap-1.5">
-    <Label htmlFor="preview-download">自动下载喜欢的歌曲</Label>
-    <p className="text-muted-foreground text-sm">仅在 Wi-Fi 环境下执行</p>
-  </div>
-</div>
+<Checkbox />
 ```
 
-## 组件结构
+## Checked State
 
-```text
-Checkbox
+Use `defaultChecked` for uncontrolled checkboxes, or `checked` and
+`onCheckedChange` to control the state.
+
+```tsx showLineNumbers
+import * as React from "react"
+
+export function Example() {
+  const [checked, setChecked] = React.useState(false)
+
+  return <Checkbox checked={checked} onCheckedChange={setChecked} />
+}
 ```
 
-## 常见用法
+## Invalid State
 
-- 切换独立布尔选项。
-- 表达全选时的 indeterminate 状态。
-- 始终配套可点击标签。
+Set `aria-invalid` on the checkbox and `data-invalid` on the field wrapper to
+show the invalid styles.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-invalid"  />
 
-- 每个控件都要有可访问标签，并在错误时同步 aria-invalid 与错误文本。
-- 受控值、校验和提交逻辑由消费层管理，基础组件不耦合具体表单模型。
-- 使用单一状态来源，避免同时传入 value 与 defaultValue。
+## Basic
 
-## API 参考
+Pair the checkbox with `Field` and `FieldLabel` for proper layout and labeling.
 
-当前模块公开 `Checkbox`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-basic"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Checkbox 复选框 文档](https://ui.shadcn.com/docs/components/radix/checkbox)；实现差异以本仓库当前 CLI 源码为准。
+## Description
+
+Use `FieldContent` and `FieldDescription` for helper text.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-description"  />
+
+## Disabled
+
+Use the `disabled` prop to prevent interaction and add the `data-disabled` attribute to the `<Field>` component for disabled styles.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-disabled"  />
+
+## Group
+
+Use multiple fields to create a checkbox list.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-group"  />
+
+## Table
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="checkbox-table"
+  previewClassName="p-4 md:p-8"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="checkbox-rtl"
+  direction="rtl"
+  previewClassName="h-80"
+ />
+
+## API Reference
+
+See the [Radix UI](https://www.radix-ui.com/docs/primitives/components/checkbox#api-reference) documentation for more information.

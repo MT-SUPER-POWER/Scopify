@@ -1,60 +1,111 @@
 ---
-title: Spinner 加载指示器
-description: 用紧凑动画表示正在处理或等待。
+title: "Spinner 加载指示器"
+description: "用紧凑动画表示正在处理或等待。"
 ---
 
-<ComponentPreview name="shadcn-spinner" />
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-demo"  />
 
-用紧凑动画表示正在处理或等待。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add spinner
+npx shadcn@latest add spinner
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="spinner"
+  title="components/ui/spinner.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
 
 ```tsx
-import { Spinner } from "@scopify/ui/shadcn/components/spinner";
+import { Spinner } from "@scopify/ui/shadcn/components/spinner"
 ```
-
-## 用法
-
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
 
 ```tsx
-<div className="flex items-center gap-3 text-sm">
-  <Spinner className="size-5" />
-  正在加载音乐库…
-</div>
+<Spinner />
 ```
 
-## 组件结构
+## Customization
 
-```text
-Spinner
+You can replace the default spinner icon with any other icon by editing the `Spinner` component.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-custom"  />
+
+```tsx showLineNumbers title="components/ui/spinner.tsx"
+import { LoaderIcon } from "lucide-react"
+
+import { cn } from "@scopify/ui/shadcn/lib/utils"
+
+function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
+  return (
+    <LoaderIcon
+      role="status"
+      aria-label="Loading"
+      className={cn("size-4 animate-spin", className)}
+      {...props}
+    />
+  )
+}
+
+export { Spinner }
 ```
 
-## 常见用法
+## Size
 
-- 表示未知时长的等待。
-- 与动作文本组合。
-- 避免页面同时出现多个无上下文的旋转指示器。
+Use the `size-*` utility class to change the size of the spinner.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-size"  />
 
-- 反馈应紧邻触发它的操作，并使用一致的成功、警告和错误语义。
-- 不要只靠颜色表达状态；同时提供文本、图标或可访问说明。
-- 短时反馈使用通知，必须处理的信息应保留在页面内容中。
+## Button
 
-## API 参考
+Add a spinner to a button to indicate a loading state. Place the `<Spinner />` before the label with `data-icon="inline-start"` for a start position, or after the label with `data-icon="inline-end"` for an end position.
 
-当前模块公开 `Spinner`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-button"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Spinner 加载指示器 文档](https://ui.shadcn.com/docs/components/radix/spinner)；实现差异以本仓库当前 CLI 源码为准。
+## Badge
+
+Add a spinner to a badge to indicate a loading state. Place the `<Spinner />` before the label with `data-icon="inline-start"` for a start position, or after the label with `data-icon="inline-end"` for an end position.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-badge"  />
+
+## Input Group
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-input-group"  />
+
+## Empty
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-empty"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-rtl" direction="rtl"  />

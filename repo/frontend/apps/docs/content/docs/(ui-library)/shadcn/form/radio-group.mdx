@@ -1,69 +1,124 @@
 ---
-title: Radio Group 单选组
-description: 在一组互斥选项中选择一个值。
+title: "Radio Group 单选组"
+description: "在一组互斥选项中选择一个值。"
 ---
 
-<ComponentPreview name="shadcn-radio-group" />
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-demo"  />
 
-在一组互斥选项中选择一个值。上方示例直接渲染 `@scopify/ui` 中的真实组件，可以操作并观察其状态变化。
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
 
-## 安装
+## Installation
 
-该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
 
 ```bash
-cd repo/frontend/packages/ui
-bunx shadcn@latest add radio-group
+npx shadcn@latest add radio-group
 ```
 
-CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+</TabsContent>
 
-## 导入
+<TabsContent value="manual">
 
-```tsx
-import { RadioGroup, RadioGroupItem } from "@scopify/ui/shadcn/components/radio-group";
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
 ```
 
-## 用法
+<Step>Copy and paste the following code into your project.</Step>
 
-下面是上方交互预览的核心结构。业务状态、路由、请求和 i18n 仍由消费层提供。
+<ShadcnComponentSource
+  name="radio-group"
+  title="components/ui/radio-group.tsx"
+  styleName="radix-nova"
+ />
 
-```tsx
-<RadioGroup defaultValue="lossless" className="w-full max-w-xs">
-  {[
-    ["standard", "标准音质"],
-    ["high", "极高音质"],
-    ["lossless", "无损音质"],
-  ].map(([value, label]) => (
-    <div key={value} className="flex items-center gap-3">
-      <RadioGroupItem value={value} id={`quality-${value}`} />
-      <Label htmlFor={`quality-${value}`}>{label}</Label>
-    </div>
-  ))}
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Label } from "@scopify/ui/shadcn/components/label"
+import { RadioGroup, RadioGroupItem } from "@scopify/ui/shadcn/components/radio-group"
+```
+
+```tsx showLineNumbers
+<RadioGroup defaultValue="option-one">
+  <div className="flex items-center gap-3">
+    <RadioGroupItem value="option-one" id="option-one" />
+    <Label htmlFor="option-one">Option One</Label>
+  </div>
+  <div className="flex items-center gap-3">
+    <RadioGroupItem value="option-two" id="option-two" />
+    <Label htmlFor="option-two">Option Two</Label>
+  </div>
 </RadioGroup>
 ```
 
-## 组件结构
+## Composition
+
+Use the following composition to build a `RadioGroup`:
 
 ```text
 RadioGroup
 ├── RadioGroupItem
+└── RadioGroupItem
 ```
 
-## 常见用法
+## Description
 
-- 从互斥选项中选择一个。
-- 为组提供可见标签。
-- 默认值和受控值保持单一来源。
+Radio group items with a description using the `Field` component.
 
-## 使用建议
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-description"  />
 
-- 每个控件都要有可访问标签，并在错误时同步 aria-invalid 与错误文本。
-- 受控值、校验和提交逻辑由消费层管理，基础组件不耦合具体表单模型。
-- 使用单一状态来源，避免同时传入 value 与 defaultValue。
+## Choice Card
 
-## API 参考
+Use `FieldLabel` to wrap the entire `Field` for a clickable card-style selection.
 
-当前模块公开 `RadioGroup`、`RadioGroupItem`。实际 props 继承自对应的 Radix primitive 或原生 HTML 元素，并叠加 shadcn 的样式与 slot 约定。
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-choice-card"  />
 
-完整的交互模式、可访问性说明和底层 props 请查看 [shadcn/ui Radio Group 单选组 文档](https://ui.shadcn.com/docs/components/radix/radio-group)；实现差异以本仓库当前 CLI 源码为准。
+## Fieldset
+
+Use `FieldSet` and `FieldLegend` to group radio items with a label and description.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-fieldset"  />
+
+## Disabled
+
+Use the `disabled` prop on `RadioGroupItem` to disable individual items.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-disabled"  />
+
+## Invalid
+
+Use `aria-invalid` on `RadioGroupItem` and `data-invalid` on `Field` to show validation errors.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-invalid"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="radio-group-rtl"
+  direction="rtl"
+ />
+
+## API Reference
+
+See the [Radix UI Radio Group](https://www.radix-ui.com/docs/primitives/components/radio-group#api-reference) documentation.
