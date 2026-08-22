@@ -4,6 +4,8 @@
 
 ### Added
 
+- **新增 Shadcn 主题工作台验证原型**：新增顶层 `/theme-editor` 全屏页面，按 tweakcn 的编辑器结构提供左右分栏、Token 实时编辑、组件画布、内存主题保存与标准 CSS 导出；该页面不经过 Docs 内容映射或 Fumadocs 布局，主题选择模态仅出现在 Shadcn 与 Scopify UI Library 页面，并通过局部作用域只改变组件示例，不影响 Docs 外壳、其他文档栏目与 Scopify Web。
+- **新增 UI Library 主题实验台**：Shadcn 文档可实时编辑标准 Token 并导出单份主题 CSS；Scopify 文档将 Shadcn 基础与 `--scopify-*` 扩展分开编辑和导出，两套实验台都支持浅色、深色、隔离组件预览、重置、复制与 CSS 下载。
 - **补全 shadcn CLI 原生组件目录**：从当前官方 registry 拉取全部 61 个 UI 组件及 Sidebar 所需 hook，统一落位到 `@scopify/ui/shadcn` 并使用公开包子路径互相引用；文档同步按基础、表单、数据展示、反馈、导航、浮层与对话交互七类补齐独立组件页与可交互的真实组件预览，并参照官方层级补充安装、完整导入、用法、组件结构、常见模式、使用建议和 API 参考。
 - **补充 UI Library 主题架构文档**：重写 `/docs/ui-library` About 页面，用一条实际链路讲清 Shadcn Token Contract、`:root` 与 `data-theme` 的关系、`@theme inline` 生成的颜色工具类、透明度和状态变体，以及 Scopify Token 的适配方式与后续编辑器入口。
 - **新增 shadcn 默认主题基线**：按当前官方 neutral CSS variables 配置新增独立的 light/dark Token Profile，并通过 `@scopify/ui/theme.css` 统一导出，为文档主题对照与后续交互式 Token 预览提供稳定基线。
@@ -30,6 +32,7 @@
 
 ### Visual
 
+- **按 tweakcn 源码重做 Shadcn Theme Lab**：重新对齐独立编辑器的顶部导航、主题预设栏、操作栏、可调整左右分栏、颜色分组、Hex 单行编辑器和 Cards 预览画布；Shadcn Default Profile 同步转换为等价的 sRGB Hex，主题读取、保存与导出保持 Hex，并在 Shadcn、Scopify 概览页补充实验室跳转入口。
 - **重编产品能力主文档**：按内容发现、搜索与导航、播放与队列、歌词与 Folia、音频体验、账户与音乐库、个性化与效率、桌面端集成八类能力重组产品说明；每类能力再按具体功能划分二级标题，产品截图统一改为单列展示，窄幅 Discord 状态图单独居中，并同步更新 README 功能总览与功能图谱。
 - **扁平化 Desktop IPC 侧栏**：保留 Desktop IPC 分组标题，将 IPC 页面直接列在其下，暂不引入二级导航。
 - **补充文档侧栏底部操作栏**：在 Scopify Docs 侧栏底部加入 GitHub 图标入口，并与主题切换控件分列两端，形成固定的仓库与外观快捷操作区。

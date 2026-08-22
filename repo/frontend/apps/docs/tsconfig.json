@@ -28,5 +28,5 @@
     ".next/dev/types/**/*.ts",
     ".source/**/*.ts"
   ],
-  "exclude": ["node_modules", ".next"]
+  "exclude": ["node_modules", ".next", "docs/references"]
 }

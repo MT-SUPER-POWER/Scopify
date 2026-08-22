@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { RootProvider } from "fumadocs-ui/provider/next";
 
 import scopifyLogo from "@/assets/logo.png";
+import { ThemePrototypeProvider } from "@/components/theme-prototype/theme-prototype-provider";
 import { DOCS_UI_TRANSLATIONS } from "@/constants/docs-translations";
 
 import "./globals.css";
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
         <RootProvider i18n={{ locale: "zh-CN", translations: DOCS_UI_TRANSLATIONS }}>
-          {children}
+          <ThemePrototypeProvider>{children}</ThemePrototypeProvider>
         </RootProvider>
       </body>
     </html>

@@ -5,6 +5,12 @@ description: Scopify 产品组件体系的设计入口。
 
 Scopify 特有组件仍在重新梳理边界，当前不发布公共组件 API。已有实现暂时保留在 Web 应用内部，待组件语义、复用范围和稳定接口明确后，再逐项进入 UI Library。
 
+<Cards>
+  <Card title="进入 UI Theme Lab" href="/theme-editor">
+    先从共享的 Shadcn 基础 Token 查看主题效果；Scopify 扩展 Token 会在同一实验室继续接入。
+  </Card>
+</Cards>
+
 ## 收录原则
 
 - 先在真实产品场景中验证，不为了“看起来通用”而抽取。
@@ -15,3 +21,5 @@ Scopify 特有组件仍在重新梳理边界，当前不发布公共组件 API�
 ## 当前可用资产
 
 当前请使用 [Shadcn 原生组件](/docs/shadcn) 与共享主题 Token。Scopify 组件目录会在方案成熟后重新开放。
+
+可以先在 [Scopify 主题实验台](/docs/scopify/theme) 调整产品 Token。实验台把 Shadcn 基础和 `--scopify-*` 扩展分开编辑，并按照主题目录结构分别导出两个 CSS 文件。

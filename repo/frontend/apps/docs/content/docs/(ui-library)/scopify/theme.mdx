@@ -1,0 +1,11 @@
+---
+title: 主题实验台
+description: 分开调整 Shadcn 基础与 Scopify 扩展 Token，并导出完整主题文件。
+full: true
+---
+
+一套完整 Scopify 主题由两个同 ID 文件组成。`Shadcn 基础`控制通用组件，`Scopify 扩展`控制状态色、遮罩、产品场景和阴影等额外能力。两部分不会混进同一个文件。
+
+<ThemeWorkbench scope="scopify" />
+
+下载后分别放入 `packages/ui/themes/shadcn/` 和 `packages/ui/themes/scopify/`，并在 `themes/index.css` 中导入。两个文件使用相同的 `data-theme`，运行时只需要切换一次主题 ID。

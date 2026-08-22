@@ -1,4 +1,4 @@
-/* Optional Scopify extensions for the built-in product profile. */
+/* Required Scopify extensions for the built-in product profile. */
 :root:not([data-theme]),
 [data-theme="scopify-default"] {
   --scopify-font-ui: Arial, "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
