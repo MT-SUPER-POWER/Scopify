@@ -3,6 +3,10 @@ import type { PaperShaderElement } from "@paper-design/shaders";
 import { Dithering, MeshGradient } from "@paper-design/shaders-react";
 import type { MotionValue } from "framer-motion";
 import {
+  LATENT_SHADER_STALL_TIMEOUT_MS,
+  shouldRestartLatentShader,
+} from "@/lib/lyrics/folia/latentShaderHealth";
+import {
   DEFAULT_LATENT_BACKGROUND_TUNING,
   type AudioBands,
   type LatentBackgroundColorSource,
@@ -25,6 +29,7 @@ interface LatentBackgroundProps {
 }
 
 const MAX_SHADER_PIXELS = 1280 * 720;
+const MAX_SHADER_RECOVERY_ATTEMPTS = 2;
 const PAUSED_SPEED_SCALE = 0.12;
 const normalizeAudio = (value: number) => Math.min(1, Math.max(0, value / 255));
 const clampShaderSpeed = (value: number) => Math.min(2, Math.max(0, value));
@@ -114,6 +119,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
   const meshLayerRef = useRef<HTMLDivElement | null>(null);
   const pausedRef = useRef(paused);
   const [coverColors, setCoverColors] = useState<string[]>([]);
+  const [shaderRecoveryEpoch, setShaderRecoveryEpoch] = useState(0);
   const tuning = tuningOverride ?? DEFAULT_LATENT_BACKGROUND_TUNING;
   const showDithering = tuning.displayMode !== "mesh";
   const showMesh = tuning.displayMode !== "dithering";
@@ -162,6 +168,9 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
     let smoothedBeatSpeed = 0;
     let previousBeatEnergy = 0;
     let latentOnsetPulse = 0;
+    let lastMeshFrame: number | null = null;
+    let lastMeshProgressAt = performance.now();
+    let meshRecoveryAttempts = 0;
 
     // Keep audio-rate changes inside the shader/DOM layer so React only rerenders on palette changes.
     const updateAudioResponse = () => {
@@ -212,18 +221,62 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
       currentDitheringMount?.setUniforms({
         u_pxSize: Math.max(0.5, tuning.ditheringSize - smoothedBass * tuning.ditheringSize * 0.34),
       });
-      currentMeshMount?.setSpeed(
-        resolveLatentShaderSpeed(
-          tuning.meshSpeed,
-          tuning.meshAudioSpeed,
-          smoothedBeatSpeed,
-          isPaused,
-        ),
+      const currentMeshSpeed = resolveLatentShaderSpeed(
+        tuning.meshSpeed,
+        tuning.meshAudioSpeed,
+        smoothedBeatSpeed,
+        isPaused,
       );
+      currentMeshMount?.setSpeed(currentMeshSpeed);
       currentMeshMount?.setUniforms({
         u_distortion: tuning.meshDistortion + smoothedPower * 0.62,
         u_swirl: tuning.meshSwirl + smoothedMid * 0.38,
       });
+
+      const meshLayer = meshLayerRef.current;
+      const currentMeshFrame = currentMeshMount?.getCurrentFrame();
+      if (meshLayer && currentMeshFrame !== undefined) {
+        const now = performance.now();
+
+        if (lastMeshFrame === null || currentMeshFrame < lastMeshFrame) {
+          lastMeshProgressAt = now;
+        } else if (currentMeshFrame > lastMeshFrame) {
+          lastMeshProgressAt = now;
+          meshRecoveryAttempts = 0;
+        } else if (
+          meshRecoveryAttempts < MAX_SHADER_RECOVERY_ATTEMPTS &&
+          !isPaused &&
+          document.visibilityState === "visible" &&
+          now - lastMeshProgressAt >= LATENT_SHADER_STALL_TIMEOUT_MS
+        ) {
+          const bounds = meshLayer.getBoundingClientRect();
+          const layerVisible =
+            bounds.width > 0 &&
+            bounds.height > 0 &&
+            bounds.right > 0 &&
+            bounds.bottom > 0 &&
+            bounds.left < window.innerWidth &&
+            bounds.top < window.innerHeight;
+
+          if (
+            shouldRestartLatentShader(
+              currentMeshFrame,
+              lastMeshFrame,
+              lastMeshProgressAt,
+              now,
+              isPaused,
+              document.visibilityState === "visible",
+              layerVisible,
+            )
+          ) {
+            meshRecoveryAttempts += 1;
+            lastMeshProgressAt = now;
+            setShaderRecoveryEpoch((epoch) => epoch + 1);
+          }
+        }
+
+        lastMeshFrame = currentMeshFrame;
+      }
 
       if (ditheringLayerRef.current) {
         ditheringLayerRef.current.style.opacity = showMesh
@@ -255,6 +308,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
           style={{ transform: "scale(1.025)", transformOrigin: "center" }}
         >
           <MeshGradient
+            key={`latent-mesh-${shaderRecoveryEpoch}`}
             ref={meshRef}
             width="100%"
             height="100%"
@@ -286,6 +340,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
           }}
         >
           <Dithering
+            key={`latent-dithering-${shaderRecoveryEpoch}`}
             ref={ditheringRef}
             width="100%"
             height="100%"

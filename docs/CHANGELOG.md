@@ -61,6 +61,7 @@
 
 ### Fixed
 
+- **修复 Folia 隐现流体切歌后停帧**：增加可见状态检测与自动重挂载，解决跨歌单右键切歌时 WebGL 流体停滞的问题。
 - **修复 Electron 内置后端未就绪时主页面提前加载**：桌面端启用本地后端自动启动时，启动页会等待后端健康检查确认运行后再创建主窗口；启动失败时提供重试或退出，不再让首屏请求直接落入错误页；使用自定义后端时不增加启动门槛。
 - **修复 Release 打包工作流子模块更新失败**：将 `release.yml` 中 `package` 任务的 `actions/checkout` 切换为 `submodules: false`，并显式仅初始化 `repo/backend/api-enhanced` 子模块，避免 `frontend/apps/mobile` 缺失提交导致 GitHub Actions 打包终止。
 - **修复桌面打包与 CI 的子模块与主题硬编码问题**：将 `ci.yml` 与 `release.yml` 的 `checkout` 明确禁用子模块递归，确保打包流程只初始化后端子模块；同时将 `AudioEqualizerPanel` 的危险色按钮从硬编码 `red` 类名改为语义化 `destructive` 主题 token，通过 `lint:theme` 检查。
