@@ -1,0 +1,61 @@
+---
+title: 运行时适配
+description: Web fallback 与 Electron runtime adapter 的使用边界。
+---
+
+Web 应用同时运行在普通浏览器和 Electron Renderer 中。Runtime adapter 把这两个宿主统一成同一个 `WebRuntime`，让业务组件不需要判断 Electron 环境。
+
+## 组合入口
+
+`apps/web/lib/runtime/index.ts` 是唯一允许发现 Preload bridge 的 composition root：
+
+```ts
+export function createRuntimeForWindow(rendererWindow: Pick<Window, "electronAPI"> | undefined) {
+  if (rendererWindow?.electronAPI) return createElectronRuntime(rendererWindow.electronAPI);
+  return createBrowserRuntime();
+}
+```
+
+业务代码使用导出的 `runtime`：
+
+```ts
+import { runtime } from "@/lib/runtime";
+
+const backend = await runtime.backend.getStatus();
+const unsubscribe = runtime.updates.onStatusChanged((status) => {
+  // 更新页面状态
+});
+
+return () => unsubscribe();
+```
+
+## 两种适配器
+
+| Runtime | 创建方式 | 主要行为 |
+| --- | --- | --- |
+| `desktop` | `createElectronRuntime(window.electronAPI)` | 将意图映射为 `DesktopBridge` 方法和 IPC channel |
+| `browser` | `createBrowserRuntime()` | 使用 Web 存储或浏览器 API；桌面专属能力返回 unsupported、空值或安全 no-op |
+
+`WebRuntime` 通过领域模块组织能力：`app`、`auth`、`backend`、`cache`、`config`、`desktopLyrics`、`desktopPlaybackWallpaper`、`discord`、`logging`、`media`、`navigation`、`playback`、`updates`、`videoExport` 和 `window`。
+
+## 为什么不能直接使用 `window.electronAPI`
+
+直接访问 Preload bridge 会把 Electron 细节扩散到组件中：
+
+```ts
+// ❌ 不要在业务组件中这样写
+await window.electronAPI?.getBackendStatus();
+```
+
+正确做法是：
+
+```ts
+// ✅ 业务组件只依赖 Runtime 意图接口
+await runtime.backend.getStatus();
+```
+
+这样可以在浏览器测试中替换 Runtime，也可以在协议变化时只修改 Electron adapter，而不需要修改所有业务组件。
+
+## Browser fallback 的边界
+
+Browser adapter 不能伪造桌面能力。对于更新安装、桌面歌词、系统媒体控制、窗口写文件等能力，应返回明确的 unsupported 状态、`false`、`null` 或 no-op；调用方必须把这些结果当成正常环境差异处理，而不是把浏览器当作 Electron 失败。

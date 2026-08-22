@@ -2,7 +2,12 @@
 
 import { Heart } from "lucide-react";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { cn } from "@/lib/utils";
 import type { CollectionToggleButtonProps } from "@/types/components/collection";
 

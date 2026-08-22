@@ -41,6 +41,7 @@ Scopify/
 │   │   │   │   ├── constants/       # 静态配置与枚举
 │   │   │   │   ├── tests/           # Web 测试
 │   │   │   │   └── scripts/         # Web 构建/开发脚本
+│   │   │   ├── docs/                # Fumadocs UI 组件文档与交互预览
 │   │   │   ├── desktop/             # Electron host，不反向 import Web 源码
 │   │   │   │   ├── main/            # 主进程与 preload
 │   │   │   │   ├── renderer/        # 构建生成的静态制品插槽（不提交）

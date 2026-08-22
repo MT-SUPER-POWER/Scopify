@@ -1,0 +1,88 @@
+---
+title: "Separator 分隔线"
+description: "在内容区域之间提供视觉或语义分隔。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="separator-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add separator
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="separator"
+  title="components/ui/separator.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Separator } from "@scopify/ui/shadcn/components/separator"
+```
+
+```tsx showLineNumbers
+<Separator />
+```
+
+## Vertical
+
+Use `orientation="vertical"` for a vertical separator.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="separator-vertical"  />
+
+## Menu
+
+Vertical separators between menu items with descriptions.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="separator-menu"  />
+
+## List
+
+Horizontal separators between list items.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="separator-list"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="separator-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix UI Separator](https://www.radix-ui.com/docs/primitives/components/separator#api-reference) documentation.

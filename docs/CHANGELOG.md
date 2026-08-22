@@ -4,6 +4,24 @@
 
 ### Added
 
+- **新增 Shadcn 主题工作台验证原型**：新增顶层 `/theme-editor` 全屏页面，按 tweakcn 的编辑器结构提供左右分栏、Token 实时编辑、组件画布、内存主题保存与标准 CSS 导出；该页面不经过 Docs 内容映射或 Fumadocs 布局，主题选择模态仅出现在 Shadcn 与 Scopify UI Library 页面，并通过局部作用域只改变组件示例，不影响 Docs 外壳、其他文档栏目与 Scopify Web。
+- **新增 UI Library 主题实验台**：Shadcn 文档可实时编辑标准 Token 并导出单份主题 CSS；Scopify 文档将 Shadcn 基础与 `--scopify-*` 扩展分开编辑和导出，两套实验台都支持浅色、深色、隔离组件预览、重置、复制与 CSS 下载。
+- **补全 shadcn CLI 原生组件目录**：从当前官方 registry 拉取全部 61 个 UI 组件及 Sidebar 所需 hook，统一落位到 `@scopify/ui/shadcn` 并使用公开包子路径互相引用；文档同步按基础、表单、数据展示、反馈、导航、浮层与对话交互七类补齐独立组件页与可交互的真实组件预览，并参照官方层级补充安装、完整导入、用法、组件结构、常见模式、使用建议和 API 参考。
+- **补充 UI Library 主题架构文档**：重写 `/docs/ui-library` About 页面，用一条实际链路讲清 Shadcn Token Contract、`:root` 与 `data-theme` 的关系、`@theme inline` 生成的颜色工具类、透明度和状态变体，以及 Scopify Token 的适配方式与后续编辑器入口。
+- **新增 shadcn 默认主题基线**：按当前官方 neutral CSS variables 配置新增独立的 light/dark Token Profile，并通过 `@scopify/ui/theme.css` 统一导出，为文档主题对照与后续交互式 Token 预览提供稳定基线。
+- **简化 UI 主题注册与扩展契约**：Shadcn 和 Scopify 共用的类名由 `scopify/theme.css` 直接映射到 Shadcn Token，独有能力只读取主题文件中的 `--scopify-*`；移除中间 Adapter 和扩展兜底层，只有同时提供完整 Shadcn 与 Scopify Profile 的主题才能驱动完整组件库，About 文档同步补充文件关系和新增步骤。
+- **集成 Mermaid 图表与交互式全屏查看器**：支持在 MDX 中以独立 .mmd / .mermaid 文件形式编写并导入图表，提供全屏模态预览、鼠标滚轮缩放（40%~400%）、鼠标平移拖拽与复制源码能力，并在「产品能力」页面补充了功能图谱。
+- **接入 LLMs 与 Markdown 导出能力**：支持 `/llms.txt` 结构化大纲索引、`/llms-full.txt` 全量纯文本文档与 `/docs/*.md` 单页 Markdown 获取，所有处理端点收敛于 `/api/llms`。
+- **支持文档页面操作与 AI 快捷打开**：在文档页面顶部提供一键复制 Markdown 与跳转打开至 GitHub、ChatGPT、Claude、Cursor 等 AI 工具的交互操作栏，并补全中文本地化词条。
+- **整理 Desktop IPC 文档导航**：在 OpenAPI 下新增与 Netease API 平级的 Desktop IPC 分组，并预留 About、架构、契约、能力版本、通道参考、运行时适配、扩展流程与安全边界页面。
+- **补充 Desktop IPC 文档正文**：记录当前 Renderer、Preload、Main 与 Runtime 的通信架构、共享契约、能力协商、通道分类、扩展流程和安全边界。
+- **拆分 Framework 路线图与发布文档**：路线图只保留产品方向与长期提案，新增独立的发布与 CI/CD 页面，记录 Tag 触发、Renderer artifact、平台矩阵、校验、证明和 GitHub Release 流程。
+- **补全 Netease API 路由命名说明**：记录目录前缀、括号路由组、文件名下划线转换、版本目录、`index.js` 行为与模块 identifier 唯一性。
+- **补充 Netease API 后端模块指南**：在 Netease API 文档分组下新增模块路由映射、统一请求选项、参数处理、测试验证与 Scopify 同步流程。
+- **补充新增接口指南**：将后端模块路由映射、`createOption`、Web 三层 API 架构、认证与错误边界、Apifox 同步和提交前验证清单落到 OpenAPI 文档。
+- **简化 Netease API 文档入口**：移除本地生成的接口镜像与请求调试页面，OpenAPI 文档域统一跳转到 Apifox 维护的网易云音乐接口文档。
+- **扩充 Framework 文档**：根据仓库 README 重组产品能力、技术栈、开发启动、系统架构、部署运行、路线图与发布规范，并复用现有产品截图形成可浏览的项目知识入口。
+- **新增 Scopify Docs 文档工作台**：新增独立 `@scopify/docs` Fumadocs 应用并接入现有 Scopify 产品 Logo；侧栏以 GitHub Repository 为首项，并按 Document、UI Library、API Reference 三个文档域组织内容，将 Shadcn / Scopify 降级为 UI Library 内的资产分类；为当前 5 个 Shadcn 组件补齐可搜索文档、导入示例与交互预览，保留 Scopify 组件体系规划入口，并新增快速开始、架构与 API 规划页面以及 `dev:docs` / `build:docs` 工作区命令。
 - **新增设置页快捷键入口**：将快捷键体系中的默认 `open-shortcut-settings` 绑定改为 `Cmd/Ctrl + ,`，在渲染端按键监听中直接跳转 `/setting`，无需主进程全局注册与重启。
 - **推荐播客声音支持独立刷新与文案对齐**：主页「推荐播客声音」板块标题旁新增刷新按钮，点击可重新向 `/v1/pc/voicelist/rcmd/list` 获取最新随机推荐；接口预取数量调整为 24 条，按 6 个一组展示并支持分页直达；将原「推荐声音歌单」文案统一对齐为「推荐播客声音」。
 - **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐播客声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的分页导航栏，并调高了各接口的单次预取上限。
@@ -14,6 +32,11 @@
 
 ### Visual
 
+- **按 tweakcn 源码重做 Shadcn Theme Lab**：重新对齐独立编辑器的顶部导航、主题预设栏、操作栏、可调整左右分栏、颜色分组、Hex 单行编辑器和 Cards 预览画布；Shadcn Default Profile 同步转换为等价的 sRGB Hex，主题读取、保存与导出保持 Hex，并在 Shadcn、Scopify 概览页补充实验室跳转入口。
+- **重编产品能力主文档**：按内容发现、搜索与导航、播放与队列、歌词与 Folia、音频体验、账户与音乐库、个性化与效率、桌面端集成八类能力重组产品说明；每类能力再按具体功能划分二级标题，产品截图统一改为单列展示，窄幅 Discord 状态图单独居中，并同步更新 README 功能总览与功能图谱。
+- **扁平化 Desktop IPC 侧栏**：保留 Desktop IPC 分组标题，将 IPC 页面直接列在其下，暂不引入二级导航。
+- **补充文档侧栏底部操作栏**：在 Scopify Docs 侧栏底部加入 GitHub 图标入口，并与主题切换控件分列两端，形成固定的仓库与外观快捷操作区。
+- **重组文档信息架构**：将 Scopify Docs 拆分为 `Framework`、`UI Library`、`OpenAPI` 三个可切换的文档域，每个域维护独立侧边栏，并共享顶部 GitHub 仓库入口。
 - **整理 Folia 侧栏音频与视觉快捷设置**：音质、均衡器和音频增益合并为单行控制；歌词动画与背景行移除独立设置齿轮，在 Folia 模式选择弹层底部增加“更多设置”入口并跳转到对应全局设置页；动画强度仅在实际支持的模式中显示，并移动到随机切换按钮之前。
 - **统一 Folia 动画参数卡片边界**：将浮名等 7 类动画参数面板写死的白色描边改为跟随 Folia 次要色 token，恢复浅色主题下缺失的圆角边框，并保持深色与自定义主题一致。
 - **恢复 Folia 全局背景与歌词动画的展开式选择**：全局背景类型和动画模式重新使用原有的预设选项组，直接展示全部模式及当前选中高光；各模式内部的局部参数继续使用紧凑按钮，避免全局选择也被压缩成单个下拉入口。
@@ -37,6 +60,7 @@
 
 ### Fixed
 
+- **修复 Electron 内置后端未就绪时主页面提前加载**：桌面端启用本地后端自动启动时，启动页会等待后端健康检查确认运行后再创建主窗口；启动失败时提供重试或退出，不再让首屏请求直接落入错误页；使用自定义后端时不增加启动门槛。
 - **修复 Release 打包工作流子模块更新失败**：将 `release.yml` 中 `package` 任务的 `actions/checkout` 切换为 `submodules: false`，并显式仅初始化 `repo/backend/api-enhanced` 子模块，避免 `frontend/apps/mobile` 缺失提交导致 GitHub Actions 打包终止。
 - **修复桌面打包与 CI 的子模块与主题硬编码问题**：将 `ci.yml` 与 `release.yml` 的 `checkout` 明确禁用子模块递归，确保打包流程只初始化后端子模块；同时将 `AudioEqualizerPanel` 的危险色按钮从硬编码 `red` 类名改为语义化 `destructive` 主题 token，通过 `lint:theme` 检查。
 - **修复内置后端 Logo 被压成单行**：转发后端 stdout/stderr 时保留多行输出和 Logo 内部排版，并让多行日志的 `[backend]` 标记独占一行，同时清理终端控制字符，避免启动 Logo 在日志中变成一串方块或横向乱码。
@@ -100,6 +124,7 @@
 - **契约包规范化为内部组织包名**：将桌面契约包统一收敛为本地 Workspace 组织包名 `@scopify/desktop-contract`，各子应用统一使用 `workspace:*` 声明依赖。
 - **拆分共享 UI 主题层**：新增内部 `@scopify/ui` workspace package，将 shadcn/tweakcn 标准 token、Scopify 产品语义 token 与 Folia 运行时主题模型拆成三个独立入口；Web 端改为消费共享主题接口，为后续迁移基础组件与统一主题编辑能力建立稳定 seam。
 - **固化共享 UI 分层约束**：新增 `ui-package-boundaries` Skill 并接入根项目规范，明确原生 shadcn CLI vendor 层、Scopify 扩展层与应用业务层的职责、依赖方向和迁移决策流程。
+- **撤回未成熟的 Scopify 公共组件抽取**：恢复播放、徽标、收藏、重试与标题等组件在 Web 应用内的原有归属，移除 `@scopify/ui/scopify/components/*` 的不稳定公开入口与预览；保留 Shadcn 原生组件、共享主题层和文档站，待组件边界重新设计后再逐项评审。
 - **规范 Docker Compose 镜像版本标识**：为 `docker-compose.yml` 中的后端与前端镜像构建绑定明确的版本环境变量与默认版本号（前端 `1.4.3`，后端 `4.39.0`），避免使用 `latest` 导致版本模糊，并同步更新 `.env` 与 `.env.example`。
 - **设置页后端网络配置解耦与智能清洗**：在设置页新增显式「传输协议（HTTP/HTTPS）」切换；主机输入框支持输入智能清洗，自动剥离粘贴混入的协议、路径与端口并同步回填至对应控件；解耦端口维护并大幅简化底层 URL 解析规范化逻辑。
 
@@ -511,6 +536,7 @@
 
 ## Added
 
+- **统一文档服务端口**：将 Scopify Docs 的开发与生产服务默认端口调整为 `9191`，确保 `dev:docs` 与构建后启动使用同一地址。
 - 将 ReplayGain 音频增益迁入 VisualSetting 侧栏第一 Tab 的音频设置快捷区，支持关闭、单曲和专辑模式，持久化选择并在播放链路中平滑应用增益与峰值保护。
 - VisualSetting 侧栏中的 ReplayGain 改为独立一行，避免与音质和均衡器入口挤在同一组。
 

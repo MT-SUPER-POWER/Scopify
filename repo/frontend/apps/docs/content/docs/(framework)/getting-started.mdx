@@ -1,0 +1,57 @@
+---
+title: 快速开始
+description: 配置 Scopify 本地环境并启动需要的应用。
+---
+
+## 环境要求
+
+- Bun 1.3.11 或更高版本
+- Node.js 20 或更高版本
+
+建议使用支持现代 Node.js 与 Bun 的 Windows 开发环境。首次克隆时需要递归获取后端子模块：
+
+```bash
+git clone --recurse-submodules https://github.com/MT-SUPER-POWER/Scopify.git
+cd Scopify
+```
+
+已经克隆仓库时，可以单独补齐后端：
+
+```bash
+git submodule update --init --recursive repo/backend/api-enhanced
+```
+
+## 安装依赖
+
+```bash
+bun install
+```
+
+## 启动方式
+
+```bash
+bun run dev          # Web + Electron
+bun run dev:web      # 仅 Web
+bun run dev:desktop  # 仅 Electron
+bun run dev:full     # Web + Electron + 后端
+bun run dev:docs     # 文档站
+```
+
+Web 与 Electron 的应用源码位于 `repo/frontend/apps/`，共享包位于 `repo/frontend/packages/`；后端位于 `repo/backend/api-enhanced/`，保持独立部署。
+
+## 构建与打包
+
+```bash
+bun run build:web      # 构建 Web
+bun run build:desktop  # 构建 Renderer 与 Electron 主进程
+bun run build:win      # 生成 Windows 安装包
+bun run build:mac      # 生成 macOS 安装包
+```
+
+生产 Web 使用 `bun run build:web` 构建，并从 `repo/frontend/apps/web` 启动 Next.js 服务。Electron 的静态 Renderer 是独立构建目标，不用于普通 Web 部署。
+
+## 开始阅读
+
+- 如果你准备修改产品能力，先阅读[系统架构](/docs/architecture)。
+- 如果你准备使用共享组件，进入 [UI Library](/docs/ui-library)。
+- 如果你准备联调后端，进入 [OpenAPI](/docs/api-reference)。

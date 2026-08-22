@@ -1,0 +1,199 @@
+---
+title: "Input 输入框"
+description: "接收单行文本、数字或其他原生输入值。"
+---
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-demo"
+  previewClassName="*:max-w-xs"
+ />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add input
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="input"
+  title="components/ui/input.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Input } from "@scopify/ui/shadcn/components/input"
+```
+
+```tsx
+<Input />
+```
+
+## Basic
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-basic"
+  previewClassName="*:max-w-xs"
+ />
+
+## Field
+
+Use `Field`, `FieldLabel`, and `FieldDescription` to create an input with a
+label and description.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-field"
+  previewClassName="*:max-w-xs"
+ />
+
+## Field Group
+
+Use `FieldGroup` to show multiple `Field` blocks and to build forms.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-fieldgroup"
+  previewClassName="*:max-w-xs"
+ />
+
+## Disabled
+
+Use the `disabled` prop to disable the input. To style the disabled state, add the `data-disabled` attribute to the `Field` component.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-disabled"
+  previewClassName="*:max-w-xs"
+ />
+
+## Invalid
+
+Use the `aria-invalid` prop to mark the input as invalid. To style the invalid state, add the `data-invalid` attribute to the `Field` component.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-invalid"
+  previewClassName="*:max-w-xs"
+ />
+
+## File
+
+Use the `type="file"` prop to create a file input.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-file"
+  previewClassName="*:max-w-xs"
+ />
+
+## Inline
+
+Use `Field` with `orientation="horizontal"` to create an inline input.
+Pair with `Button` to create a search input with a button.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-inline"
+  previewClassName="*:max-w-xs"
+ />
+
+## Grid
+
+Use a grid layout to place multiple inputs side by side.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-grid"
+  previewClassName="p-6"
+ />
+
+## Required
+
+Use the `required` attribute to indicate required inputs.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-required"
+  previewClassName="*:max-w-xs"
+ />
+
+## Badge
+
+Use `Badge` in the label to highlight a recommended field.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-badge"
+  previewClassName="*:max-w-xs"
+ />
+
+## Input Group
+
+To add icons, text, or buttons inside an input, use the `InputGroup` component. See the [Input Group](/docs/components/input-group) component for more examples.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-input-group"
+  previewClassName="*:max-w-xs"
+ />
+
+## Button Group
+
+To add buttons to an input, use the `ButtonGroup` component. See the [Button Group](/docs/components/button-group) component for more examples.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-button-group"
+  previewClassName="*:max-w-xs"
+ />
+
+## Form
+
+A full form example with multiple inputs, a select, and a button.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-form"
+  previewClassName="h-[32rem]"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="input-rtl"
+  direction="rtl"
+  previewClassName="*:max-w-xs"
+ />

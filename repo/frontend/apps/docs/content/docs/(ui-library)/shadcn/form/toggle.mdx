@@ -1,0 +1,90 @@
+---
+title: "Toggle 切换按钮"
+description: "以可按下按钮表达单个开关状态。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add toggle
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="toggle"
+  title="components/ui/toggle.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Toggle } from "@scopify/ui/shadcn/components/toggle"
+```
+
+```tsx
+<Toggle>Toggle</Toggle>
+```
+
+## Outline
+
+Use `variant="outline"` for an outline style.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-outline"  />
+
+## With Text
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-text"  />
+
+## Size
+
+Use the `size` prop to change the size of the toggle.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-sizes"  />
+
+## Disabled
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-disabled"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix Toggle](https://www.radix-ui.com/docs/primitives/components/toggle#api-reference) documentation.

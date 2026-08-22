@@ -20,7 +20,7 @@ export function ArtistHero({ artist }: Props) {
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-2 p-6 md:p-8">
         {artist.isVerified && (
           <div className="flex items-center gap-2 text-sm font-medium text-content md:text-base">
-            <BadgeCheck className="size-5 text-brand" fill="var(--overlay-foreground)" />
+            <BadgeCheck className="size-5 text-brand" fill="var(--scopify-overlay-foreground)" />
             <span>{t("artist.hero.verified")}</span>
           </div>
         )}

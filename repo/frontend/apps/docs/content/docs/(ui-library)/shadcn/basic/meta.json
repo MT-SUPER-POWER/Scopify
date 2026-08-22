@@ -1,0 +1,15 @@
+{
+  "title": "基础组件",
+  "pages": [
+    "button",
+    "badge",
+    "button-group",
+    "avatar",
+    "card",
+    "empty",
+    "item",
+    "kbd",
+    "separator",
+    "direction"
+  ]
+}

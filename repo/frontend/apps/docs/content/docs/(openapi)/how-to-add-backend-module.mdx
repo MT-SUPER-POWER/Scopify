@@ -1,0 +1,203 @@
+---
+title: 新增 NetEase API 模块
+description: 在 Netease API Enhanced 中添加一个后端模块并同步到 Scopify。
+---
+
+NetEase API Enhanced 使用“一个模块对应一个接口”的方式组织后端能力。新增接口的核心动作是：在 `repo/backend/api-enhanced/module/` 下新增模块文件，服务启动时会自动扫描并挂载路由，不需要额外维护 Express 路由表。
+
+这篇文章只描述后端模块扩展。Scopify Web 接入模块后的 `types/api`、`lib/api`、`hooks` 三层实现，请阅读 [Scopify 新增接口指南](/docs/how-to-implement-new-api)。
+
+## 1. 准备工作
+
+开始前先确认：
+
+- 上游网易云接口已经存在，或已经明确请求路径、参数和加密方式；
+- `module/` 下没有同名或同路径模块；
+- 新接口不会通过改名破坏已经被 Scopify 使用的旧路径；
+- 已确定是否需要登录 Cookie、匿名令牌、代理或真实 IP 参数；
+- 该接口的成功、空结果和错误响应可以在 Apifox 中说明。
+
+后端目录使用 `pnpm`：
+
+```bash
+cd repo/backend/api-enhanced
+pnpm i
+pnpm dev
+```
+
+## 2. 路由命名机制：目录前缀 + 文件名
+
+公开路由由 `server.js` 递归扫描 `module/` 目录后计算，不需要单独维护 Express 路由表。最终路径由“普通目录前缀”和“文件名路径”拼接而成：
+
+| 模块文件 | 公开路由 | 命名规则 |
+| --- | --- | --- |
+| `module/playlist_detail.js` | `/playlist/detail` | 文件名中的 `_` 转换为 `/` |
+| `module/(playlist)/playlist_detail.js` | `/playlist/detail` | 括号目录是路由组，只用于归类，不进入 URL |
+| `module/v1/artist/songs.js` | `/v1/artist/songs` | 普通目录名成为 URL 前缀 |
+| `module/v1/search/(tab)/album_pc.js` | `/v1/search/album/pc` | 目录前缀、路由组和文件名规则可以组合使用 |
+
+### 命名规则
+
+- `.js` 扩展名不会出现在路由中；文件名主体就是最后一段路径。
+- 文件名中的下划线是路径分隔符，因此 `voicelist_rcmd_list.js` 会变成 `voicelist/rcmd/list`，不能把下划线当作普通字符使用。
+- 不带括号的目录会进入公开 URL；只想按领域整理文件、又不想改变 URL 时，使用 `(playlist)`、`(search)` 这样的路由组目录。
+- `module/v1` 中的 `v1` 是实际的版本前缀，新增版本接口应明确决定是否进入对应版本目录。
+- 当前扫描器不会把 `index.js` 折叠成父目录路由；`module/foo/index.js` 会得到 `/foo/index`，不要按 Next.js 的习惯假设它会变成 `/foo`。
+- 模块文件名主体同时也是 Node 模块导出的 identifier，应在所有模块目录中保持唯一，避免 `main.js` 的导出被覆盖。
+
+新增模块前要先确定最终公开 URL，再反推目录和文件名。不要用同义词创建重复路径，也不要为了“更符合前端命名”随意重命名已有模块。前端的 `types/api`、`lib/api` 和 `hooks` 命名可以按业务领域组织，但不能反过来改变后端公开路由。
+
+### 特殊路由
+
+以下接口不是普通文件名转换，而是在服务端使用特殊映射：
+
+```text
+daily_signin.js → /daily_signin
+fm_trash.js     → /fm_trash
+personal_fm.js  → /personal_fm
+```
+
+新增接口不要复用这些特例名称。若确实需要修改特殊路由，必须同时检查 `server.js` 的 special 映射和已有客户端调用。
+
+## 3. 编写模块函数
+
+模块的标准形态是：
+
+```js
+module.exports = (query, request) =>
+  request(path, data, createOption(query))
+```
+
+一个带参数的示例：
+
+```js
+// module/resource_detail.js
+const { createOption } = require('../util/option')
+
+module.exports = (query, request) => {
+  const { id, limit = 20 } = query
+
+  return request(
+    '/api/resource/detail',
+    { id, limit },
+    createOption(query),
+  )
+}
+```
+
+模块只做三件事：读取 query、组装上游参数、调用统一 request。不要在模块中添加 UI、前端 Store、页面跳转或 Toast。
+
+## 4. 使用统一请求选项
+
+`createOption(query)` 位于 `util/option.js`，负责把调用方参数转换为统一请求选项，包括：
+
+- 加密方式：`api`、`eapi`、`weapi`、`linuxapi`、`xeapi`；
+- Cookie 和匿名令牌；
+- 代理、真实 IP 和随机 CN IP；
+- 请求 Header 和超时；
+- 其他网易云上游需要的请求配置。
+
+选择加密方式时，优先照抄同目录、同类上游接口。不要在单个模块中直接创建 Axios、`fetch` 或自定义代理；`util/request.js` 是唯一的对外 HTTP 层。
+
+如果接口必须固定某种选项，仍然要通过项目已有的 `createOption` 和 request 链路表达，不要绕过统一基础设施。
+
+## 5. 参数与返回值
+
+### 参数
+
+模块入口需要明确：
+
+| 参数类型 | 处理方式 |
+| --- | --- |
+| 必填参数 | 尽早校验缺失和非法值，沿用项目已有错误格式 |
+| 可选参数 | 设置与上游一致的默认值，并记录默认行为 |
+| Cookie / Token | 从 query 传入统一选项，不写死在模块或日志中 |
+| 分页参数 | 说明 `limit`、`offset`、游标和分页结束条件 |
+| 副作用参数 | 明确点赞、删除、关注、签到等操作风险 |
+
+不要为了让接口“看起来通用”而接受无关参数，也不要吞掉上游错误后返回一个虚假的成功响应。
+
+### 返回值
+
+模块通常直接返回 `request(...)` 的结果，让统一请求层保留上游响应结构。需要包装结果时，应有明确的兼容理由，并同步更新：
+
+1. 后端测试断言；
+2. Scopify 的 `types/api/<domain>.ts`；
+3. Apifox 的成功、空结果和错误示例；
+4. 使用该接口的 Query 或 Mutation。
+
+## 6. 不需要注册路由
+
+新建 `module/xxx.js` 后，服务启动时会自动扫描并挂载路由：
+
+```text
+新增 module/album_new.js
+        ↓
+服务启动扫描 module/
+        ↓
+自动提供 GET /album/new
+```
+
+除非是在修改特殊路由映射，否则不要再去 `server.js` 添加一份手动注册。手动注册会造成重复路由、路径不一致和后续维护分叉。
+
+## 7. 本地验证
+
+先启动后端：
+
+```bash
+cd repo/backend/api-enhanced
+pnpm dev
+```
+
+确认模块可被加载，并使用本地服务验证公开路径：
+
+```bash
+curl "http://127.0.0.1:3000/resource/detail?id=1&limit=20"
+```
+
+至少检查以下情况：
+
+- 正常参数能够返回成功结构；
+- 缺失必填参数返回可识别错误；
+- 未登录或 Cookie 失效时行为符合预期；
+- 空结果、分页结束和上游错误不会被误判为成功；
+- 真实 Cookie、Token 和完整用户信息没有出现在日志或提交中。
+
+## 8. 测试与代码质量
+
+后端使用 pnpm 执行检查：
+
+```bash
+cd repo/backend/api-enhanced
+pnpm lint
+pnpm test
+```
+
+测试会请求真实网易云上游，可能受到网络、风控和限流影响。只复现单个用例时，可以使用后端 `AGENTS.md` 中的 Mocha `--grep` 命令，避免每次运行全部测试。
+
+如果新增模块改变了公共响应结构，应补充对应测试；如果只是新增一个标准转发模块，也至少验证路径、参数映射和错误传播。
+
+## 9. 同步 Scopify 与文档
+
+后端模块完成后，还需要完成应用侧和文档侧同步：
+
+1. 在 Scopify 的 `types/api/<domain>.ts` 定义请求与响应类型。
+2. 在 `lib/api/<domain>.ts` 添加纯请求函数。
+3. 在 `hooks/<domain>/` 添加 Query 或 Mutation，并设计 Query Key。
+4. 在业务组件中消费 Hook，不要把请求生命周期写进组件。
+5. 在 [Apifox](https://vdoonnridu.apifox.cn/) 补充方法、路径、参数、响应和认证说明。
+6. 对删除、点赞、关注、签到等副作用接口增加风险提示。
+7. 在 `docs/CHANGELOG.md` 记录接口所属分类和变更。
+
+## 提交前清单
+
+- [ ] 目录前缀、路由组和文件名映射出的公开路由已经确认。
+- [ ] 没有覆盖或重命名已有公共路径。
+- [ ] 模块文件名主体在所有模块目录中保持唯一。
+- [ ] 模块使用 `createOption(query)` 和统一 `request`。
+- [ ] 没有在模块中添加 UI、Store、路由或自定义 HTTP 客户端。
+- [ ] 必填、可选、认证、分页和副作用参数已经说明。
+- [ ] 正常、空结果、非法参数和上游错误已经验证。
+- [ ] `pnpm lint` 和 `pnpm test` 已执行。
+- [ ] Scopify 三层 API 已同步，Apifox 文档已更新。
+- [ ] 真实凭据没有进入日志、示例、截图或提交记录。

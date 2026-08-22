@@ -49,7 +49,10 @@ export function AboutSection({ artist }: Props) {
             <div className="flex flex-col gap-1 pb-1">
               {artist.isVerified && (
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-overlay-foreground">
-                  <BadgeCheck className="size-4 text-brand" fill="var(--overlay-foreground)" />
+                  <BadgeCheck
+                    className="size-4 text-brand"
+                    fill="var(--scopify-overlay-foreground)"
+                  />
                   <span>{t("artist.hero.verified")}</span>
                 </div>
               )}

@@ -1,0 +1,22 @@
+{
+  "title": "表单组件",
+  "pages": [
+    "input",
+    "textarea",
+    "label",
+    "field",
+    "form",
+    "input-group",
+    "input-otp",
+    "checkbox",
+    "radio-group",
+    "select",
+    "native-select",
+    "combobox",
+    "calendar",
+    "slider",
+    "switch",
+    "toggle",
+    "toggle-group"
+  ]
+}

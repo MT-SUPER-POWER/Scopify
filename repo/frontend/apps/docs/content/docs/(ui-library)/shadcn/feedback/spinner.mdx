@@ -1,0 +1,111 @@
+---
+title: "Spinner 加载指示器"
+description: "用紧凑动画表示正在处理或等待。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add spinner
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="spinner"
+  title="components/ui/spinner.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Spinner } from "@scopify/ui/shadcn/components/spinner"
+```
+
+```tsx
+<Spinner />
+```
+
+## Customization
+
+You can replace the default spinner icon with any other icon by editing the `Spinner` component.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-custom"  />
+
+```tsx showLineNumbers title="components/ui/spinner.tsx"
+import { LoaderIcon } from "lucide-react"
+
+import { cn } from "@scopify/ui/shadcn/lib/utils"
+
+function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
+  return (
+    <LoaderIcon
+      role="status"
+      aria-label="Loading"
+      className={cn("size-4 animate-spin", className)}
+      {...props}
+    />
+  )
+}
+
+export { Spinner }
+```
+
+## Size
+
+Use the `size-*` utility class to change the size of the spinner.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-size"  />
+
+## Button
+
+Add a spinner to a button to indicate a loading state. Place the `<Spinner />` before the label with `data-icon="inline-start"` for a start position, or after the label with `data-icon="inline-end"` for an end position.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-button"  />
+
+## Badge
+
+Add a spinner to a badge to indicate a loading state. Place the `<Spinner />` before the label with `data-icon="inline-start"` for a start position, or after the label with `data-icon="inline-end"` for an end position.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-badge"  />
+
+## Input Group
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-input-group"  />
+
+## Empty
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-empty"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="spinner-rtl" direction="rtl"  />

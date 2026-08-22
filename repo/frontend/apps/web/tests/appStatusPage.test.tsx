@@ -12,7 +12,7 @@ describe("AppStatusPage", () => {
     const globalStyles = await Bun.file("app/globals.css").text();
 
     expect(globalStyles).toContain('@import "@fontsource/black-ops-one/400.css"');
-    expect(globalStyles).toContain('--font-status-code: "Black Ops One", var(--font-ui)');
+    expect(globalStyles).toContain('--font-status-code: "Black Ops One", var(--scopify-font-ui)');
   });
 
   test("uses a clean token-backed text layout with retry and home actions", () => {

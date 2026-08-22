@@ -1,0 +1,132 @@
+---
+title: "Toggle Group 切换组"
+description: "组织单选或多选的切换按钮集合。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add toggle-group
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="toggle-group"
+  title="components/ui/toggle-group.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { ToggleGroup, ToggleGroupItem } from "@scopify/ui/shadcn/components/toggle-group"
+```
+
+```tsx
+<ToggleGroup type="single">
+  <ToggleGroupItem value="a">A</ToggleGroupItem>
+  <ToggleGroupItem value="b">B</ToggleGroupItem>
+  <ToggleGroupItem value="c">C</ToggleGroupItem>
+</ToggleGroup>
+```
+
+## Composition
+
+Use the following composition to build a `ToggleGroup`:
+
+```text
+ToggleGroup
+├── ToggleGroupItem
+└── ToggleGroupItem
+```
+
+## Outline
+
+Use `variant="outline"` for an outline style.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-outline"  />
+
+## Size
+
+Use the `size` prop to change the size of the toggle group.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-sizes"  />
+
+## Spacing
+
+Use `spacing` to add spacing between toggle group items.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-spacing"  />
+
+## Vertical
+
+Use `orientation="vertical"` for vertical toggle groups.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-vertical"  />
+
+## Disabled
+
+<ShadcnOfficialPreview styleName="radix-nova" name="toggle-group-disabled"  />
+
+## Custom
+
+A custom toggle group example.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="toggle-group-font-weight-selector"
+  previewClassName="*:data-[slot=field]:max-w-xs"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="toggle-group-rtl"
+  direction="rtl"
+ />
+
+## API Reference
+
+See the [Radix Toggle Group](https://www.radix-ui.com/docs/primitives/components/toggle-group#api-reference) documentation.
+
+## Changelog
+
+### 2026-05-17 Default Spacing
+
+Changed the default `spacing` from `0` to `2` so toggle groups render with space between items by default. Use `spacing={0}` for connected items.

@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { cn } from "@/lib/utils";
 
 // ==========================================

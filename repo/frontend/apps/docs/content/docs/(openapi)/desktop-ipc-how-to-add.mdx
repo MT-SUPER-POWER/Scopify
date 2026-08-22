@@ -1,0 +1,108 @@
+---
+title: 如何新增 IPC
+description: 从契约、Preload 到 Main handler 的扩展流程。
+---
+
+新增 Desktop IPC 必须沿着“契约 → Preload → Main → Runtime → 测试 → 文档”的顺序完成。不要只在 `ipc.ts` 里注册一个 channel，就把它当成完成。
+
+## 1. 先确认是否真的需要 IPC
+
+只有需要 Electron 权限、主进程资源或跨窗口通信时才新增 IPC。普通 HTTP 请求、缓存策略、组件交互和 Web 状态不属于 Desktop IPC。
+
+## 2. 在 Contract 定义类型
+
+在 `repo/frontend/packages/desktop-contract/src/` 下新增领域类型，或扩展已有领域文件：
+
+```ts
+// src/desktopNotifications.ts
+export interface DesktopNotificationRequest {
+  title: string;
+  body: string;
+}
+```
+
+然后从 `src/index.ts` 导出。若需要能力协商，在 `bridge.ts` 的 `DesktopBridgeCapability` 中增加 capability，并在 `DesktopBridge` 中定义方法或事件。
+
+## 3. 约定 channel 名称和传输方式
+
+先决定方法语义：
+
+| 需求 | 选择 |
+| --- | --- |
+| 请求一个结果 | `ipcRenderer.invoke` + `ipcMain.handle` |
+| 发送一次命令 | `ipcRenderer.send` + `ipcMain.on` |
+| 订阅状态 | Main `webContents.send` + Preload `on` |
+| 高频连续数据 | `MessageChannel` / `MessagePort` |
+
+channel 使用 `<domain>:<action>`，例如 `desktop-notification:show`。查询和变更要区分动作，事件使用 `status-changed`、`model-changed` 等明确后缀。
+
+## 4. 实现 Preload 映射
+
+在 `apps/desktop/main/preload.ts` 的 `electronAPI` 中实现 Contract 方法：
+
+```ts
+showNotification: (request) =>
+  ipcRenderer.invoke("desktop-notification:show", request),
+```
+
+Preload 只做桥接和类型转换，不在这里执行业务逻辑，也不把 `ipcRenderer`、Electron event 或 Node 对象暴露给 Renderer。
+
+## 5. 注册 Main handler
+
+在 `apps/desktop/main/module/ipc.ts` 注册对应 handler：
+
+```ts
+ipcMain.handle("desktop-notification:show", (event, request: unknown) => {
+  if (!isMainRenderer(event, mainWindow) || !isNotificationRequest(request)) {
+    return false;
+  }
+
+  return notificationController.show(request);
+});
+```
+
+handler 必须：
+
+- 校验发送者是否为主 Renderer；
+- 将外部输入视为 `unknown` 并做运行时校验；
+- 调用已有的 Main domain controller，而不是把业务逻辑堆进 IPC 注册文件；
+- 返回稳定、可序列化的结果。
+
+## 6. 接入 Web Runtime
+
+在 `apps/web/lib/runtime/types.ts` 增加意图层接口，并分别更新：
+
+- `adapters/electron.ts`：调用新的 `DesktopBridge` 方法；
+- `adapters/browser.ts`：提供浏览器 fallback 或明确 unsupported 结果；
+- `WebRuntime`：挂载新的领域模块。
+
+业务组件只消费 `runtime.notifications.show(...)` 这样的接口，不直接读取 `window.electronAPI`。
+
+## 7. 更新能力和协议版本
+
+在 Main 的 `bridge:get-info` 返回列表中加入新 capability，并保持它与 `DesktopBridgeCapability` 一致。
+
+只有删除方法、改变参数语义、改变返回结构或破坏旧 Renderer 时才升级 `DESKTOP_BRIDGE_PROTOCOL_VERSION`。新增可选能力优先通过 capability 协商保持兼容。
+
+## 8. 测试和文档
+
+至少覆盖：
+
+- Contract 类型检查；
+- Preload 方法是否调用正确 channel；
+- Main handler 的 sender 和 payload 校验；
+- Electron adapter 与 Browser fallback 的行为；
+- 成功、失败、unsupported 和取消场景；
+- 事件订阅是否能正确取消，高频 MessagePort 是否能关闭和重连。
+
+最后更新本组 Desktop IPC 文档和 `docs/CHANGELOG.md`，并在提交前执行 Web、Desktop 和 `desktop-contract` 的类型检查。
+
+## 扩展清单
+
+- [ ] 已确认需求必须经过 Desktop IPC。
+- [ ] Contract 类型和 capability 已定义并导出。
+- [ ] channel 名称、传输方式和返回语义已确定。
+- [ ] Preload 映射已实现，未暴露原始 Electron 对象。
+- [ ] Main handler 已做 sender 和 payload 校验。
+- [ ] Electron / Browser Runtime 都已接入。
+- [ ] 测试、文档和变更记录已同步。

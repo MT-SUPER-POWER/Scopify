@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "@scopify/ui/theme.css";
+
+@source "../../../packages/ui/**/*.{ts,tsx}";
+
+/* 覆写 Fumadocs 主题色为 Scopify 绿色系 */
+@theme {
+  --color-fd-primary: #1db954;
+  --color-fd-primary-foreground: #000000;
+  --color-fd-ring: #1db954;
+}
+.dark {
+  --color-fd-primary: #1ed760;
+  --color-fd-primary-foreground: #000000;
+  --color-fd-ring: #1ed760;
+}
+
+@layer components {
+  .component-preview-grid {
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+}

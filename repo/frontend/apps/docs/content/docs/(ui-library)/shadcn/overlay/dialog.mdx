@@ -1,0 +1,130 @@
+---
+title: "Dialog 对话框"
+description: "在模态浮层中承载聚焦内容与操作。"
+---
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="dialog-demo"
+  description="A dialog for editing profile details."
+ />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add dialog
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="dialog"
+  title="components/ui/dialog.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@scopify/ui/shadcn/components/dialog"
+```
+
+```tsx showLineNumbers
+<Dialog>
+  <DialogTrigger>Open</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Are you absolutely sure?</DialogTitle>
+      <DialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>
+```
+
+## Composition
+
+Use the following composition to build a `Dialog`:
+
+```text
+Dialog
+├── DialogTrigger
+└── DialogContent
+    ├── DialogHeader
+    │   ├── DialogTitle
+    │   └── DialogDescription
+    └── DialogFooter
+```
+
+## Custom Close Button
+
+Replace the default close control with your own button.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dialog-close-button"  />
+
+## No Close Button
+
+Use `showCloseButton={false}` to hide the close button.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dialog-no-close-button"  />
+
+## Sticky Footer
+
+Keep actions visible while the content scrolls.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dialog-sticky-footer"  />
+
+## Scrollable Content
+
+Long content can scroll while the header stays in view.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dialog-scrollable-content"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="dialog-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix UI](https://www.radix-ui.com/docs/primitives/components/dialog#api-reference) documentation for more information.

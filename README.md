@@ -4,14 +4,13 @@
 <h2> Scopify </h2>
 <p> 一个仿 Spotify UI 的音乐播放器 </p>
 
-[后端 API](https://vdoonnridu.apifox.cn/) | [发行版](https://github.com/MT-SUPER-POWER/Scopify/releases) | [版本日志](https://github.com/MT-SUPER-POWER/Scopify/blob/master/docs/CHANGELOG.md)
-
-<br/>
+[后端 API](https://vdoonnridu.apifox.cn/) | [发行版](https://github.com/MT-SUPER-POWER/Scopify/releases) | [版本日志](https://github.com/MT-SUPER-POWER/Scopify/blob/master/docs/CHANGELOG.md) | [开发文档]()
 
 [![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers)
 [![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases)
 [![license](https://img.shields.io/github/license/mt-super-power/scopify)](https://github.com/mt-super-power/scopify/blob/master/license)
 [![Issues](https://img.shields.io/github/issues/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/issues)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D24-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MT-SUPER-POWER/Scopify)
 
 </div>
@@ -20,9 +19,9 @@
 
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
 
-- 本项目主要技术链为 [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [ShadCN UI](https://ui.shadcn.com/) + [Electron](https://www.electronjs.org/zh/docs/latest/)
-- Node.js 版本要求：>= 20，包管理器：bun >= 1.3.11
-- 支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配
+- 本项目主要技术链为 [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [ShadCN UI](https://ui.shadcn.com/) + [Electron](https://www.electronjs.org/zh/docs/latest/) + [Nodejs](https://nodejs.org/zh-cn/) + [Turborepo](https://turbo.build/)
+- Node.js 版本要求：>= 24，包管理器：bun >= 1.3.11，pnpm >= 10.0.0
+- 支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配，App 开发中
 
 ## 技术栈总览
 
@@ -220,142 +219,82 @@ GitHub Actions 会在推送 `v*` tag 时构建安装包；桌面打包 job 会�
 
 ## 功能
 
+Scopify 的能力围绕八类使用场景展开。完整说明和更多截图见 [产品能力文档](repo/frontend/apps/docs/content/docs/%28framework%29/features.mdx)。
+
+| 分类 | 主要能力 |
+| --- | --- |
+| 内容发现 | 每日与个性化推荐、歌单、专辑、歌手、播客声音和评论 |
+| 搜索与导航 | 快捷搜索、常驻搜索栏、分类结果页和命令面板 |
+| 播放与队列 | 播放控制、进度与音量、播放模式、输出设备和待播队列 |
+| 歌词与 Folia | 动态歌词舞台、歌词来源与匹配、时间轴校准、样式和视觉主题 |
+| 音频体验 | 多档音质、十段均衡器、ReplayGain 和声音效果 |
+| 账户与音乐库 | 喜欢、收藏、最近播放、自建歌单、用户资料和网易乐签 |
+| 个性化与效率 | 语言、主题、快捷键、命令面板和应用运行设置 |
+| 桌面端集成 | 桌面歌词、Discord 状态、客户端更新、本地后端和日志诊断 |
+
 ```mermaid
 mindmap
   root((Scopify 功能图谱))
-    核心页面
-      主页面
-      单页展示
-      歌单页面
-      用户页面
-      评论页面
-    搜索能力
-      搜索模态界面
-      一般搜索
-      搜索结果页
-    歌词体验
-      歌词界面
-      歌词动态效果
-      歌词效果控制
-      歌词样式编辑
-      主题编辑
-      全屏音乐歌词
-    个性化功能
-      网易乐签
-      Discord 接入
+    内容发现
+      推荐与播客声音
+      歌单专辑与歌手
+    搜索与导航
+      快捷搜索与分类结果
+      命令面板
+    播放与队列
+      播放控制与模式
+      待播队列与输出设备
+    歌词与 Folia
+      动态歌词舞台
+      样式与视觉主题
+    音频体验
+      音质与均衡器
+      ReplayGain 与声音效果
+    账户与音乐库
+      喜欢收藏与最近播放
+      用户与网易乐签
+    个性化与效率
+      语言主题与快捷键
+    桌面端集成
+      桌面歌词与 Discord 状态
+      更新后端与日志诊断
 ```
 
-## 单页展示
-
-> 还有很多细节要打磨，目前只是初定设计，如果你有任何特别好的想法，请务必提 issue 或者 PR 来告诉我。
-
 <details>
-<summary> 主页面 </summary>
+<summary>内容发现</summary>
 
-![主页面](/docs/img/main.png)
+![Scopify 首页](repo/frontend/apps/docs/assets/features/discovery-home.png)
 
 </details>
 
 <details>
-<summary> 歌单页面 </summary>
+<summary>歌词与 Folia</summary>
 
-![发现页面](/docs/img/Playlist.png)
-
-</details>
-
-<details>
-<summary> 用户页面 </summary>
-
-![用户页面](/docs/img/profile.png)
+![Scopify Folia 动态歌词舞台](repo/frontend/apps/docs/assets/features/lyrics-folia-stage.png)
 
 </details>
 
 <details>
-<summary> 评论页面 </summary>
+<summary>音频体验</summary>
 
-![发现页面](/docs/img/comment.png)
-
-</details>
-
-<details>
-<summary> 搜索模态界面 </summary>
-
-![搜索页面](/docs/img/SearchModal.png)
+![Scopify 十段均衡器与声音效果](repo/frontend/apps/docs/assets/features/audio-equalizer.png)
 
 </details>
 
 <details>
-<summary> 一般搜索效果 </summary>
+<summary>账户与音乐库</summary>
 
-![搜索页面](/docs/img/SearchWithBar.png)
-
-</details>
-
-<details>
-<summary> 搜索结果页面</summary>
-
-![搜索页面](/docs/img/SearchResult.png)
+![Scopify 喜欢的音乐列表](repo/frontend/apps/docs/assets/features/library-liked.png)
 
 </details>
 
 <details>
-<summary> 网易乐签页面 </summary>
+<summary>个性化与效率</summary>
 
-![网易乐签页面](/docs/img/VipSign.png)
-
-</details>
-
-<br/>
-
-<!-- TODO: 带补充歌词界面相关的图片 -->
-
-> [!note]
->
-> 更多的歌词动态效果可以查看这个项目：[GitHub - Folia](https://github.com/chthollyphile/folia-major/tree/main)
-
-<details>
-<summary> 歌词界面 </summary>
-
-![歌词动态效果](/docs/img/lyricDynamic.png)
-
-![歌词效果控制界面](/docs/img/lyricPanelController.png)
-
-![歌词样式编辑页面](/docs/img/lyricStyleEditor.png)
-
-![主题编辑页面](/docs/img/visualThemEditor.png)
+![Scopify 快捷键设置](repo/frontend/apps/docs/assets/features/settings-shortcuts.png)
 
 </details>
 
-<details>
-<summary> 全屏音乐歌词 </summary>
-
-![桌面音乐效果](/docs/img/desktopMusic.png)
-
-</details>
-
-<details>
-<summary> Discord 接入 </summary>
-
-![Discord接入效果](/docs/img/DiscordPresnet.png)
-
-</details>
-
-## TODO
-
-- [ ] 云盘功能
-- [ ] 设备管理区域
-- [ ] 编辑歌单的部分还要做一个 Tag 的编辑功能
-- [ ] 系统消息机制的完善
-- [ ] 用户个人信息的编辑
-  - [ ] 昵称检测 API(`/nickname/check`) 接入，提前告知用户是否可以修改为该昵称
-- [ ] 好友功能的完善
-  - [ ] Followers 和 Followings 的 Modal 展示
-- [ ] 对正在播放的歌曲再次播放的话，可以重新请求（解决有些的时候的 bug 问题）
-
-### 提案
-
-- [ ] 本地音乐库管理(离线歌单)
-- [ ] 接入 QQ、AMLLDB、酷狗等多源歌词匹配
 
 ## 版本号规则
 

@@ -1,0 +1,45 @@
+---
+title: About
+description: Scopify Web Renderer 与 Electron Desktop Host 之间的类型化通信契约。
+---
+
+
+<Callout title="注意" type="warning">
+  完成 `package/ui` 组件拆分的工作之后，我们就不再需要 IPC 模块了，web 和 electron 会彻底解耦
+</Callout>
+
+
+以下内容按当前代码记录，属于现阶段 Desktop Host 的通信契约。Web/Electron 解耦方案落地后，应重新评估并移除不再适用的 IPC 入口。
+
+Desktop IPC 是 Scopify 桌面端的内部通信层，负责把 Renderer 中的产品行为安全地交给 Electron Main 执行，再把结果或事件返回给 Renderer。
+
+它不是 NetEase API，也不是 UI 组件库，而是桌面宿主能力的边界：窗口控制、缓存、登录、更新、歌词窗口、播放传输和文件导出等能力都通过这条边界暴露。
+
+## 文档范围
+
+| 文档 | 说明 |
+| --- | --- |
+| 架构 | Renderer、Preload、IPC 和 Main domain module 的调用链 |
+| 契约 | `@scopify/desktop-contract` 的类型、方法和事件边界 |
+| 能力与版本 | 协议版本、能力列表和兼容性策略 |
+| 通道参考 | 按业务域整理请求、事件和高频传输通道 |
+| 运行时适配 | Electron 与普通 Web 浏览器的统一 Runtime seam |
+| 如何新增 IPC | 从类型定义到 Main handler 的完整扩展流程 |
+| 安全边界 | `contextBridge`、来源校验和 payload 校验规范 |
+
+## 当前契约
+
+- `@scopify/desktop-contract` 当前协议版本为 `20`。
+- Preload 只暴露类型化的 `electronAPI`，不会把原始 `ipcRenderer` 交给页面。
+- Web 业务代码默认依赖 `@/lib/runtime`，不直接依赖 Electron API。
+- 同一套业务代码可以运行在 `browser` 和 `desktop` 两种 Runtime 中；桌面专属能力在浏览器环境中返回明确的 unsupported 或 no-op 结果。
+
+## 什么时候使用 Desktop IPC
+
+当行为需要 Electron 主进程权限或桌面资源时使用 IPC，例如打开系统目录选择器、切换全屏、写入本地文件、控制托盘和更新安装。
+
+如果只是请求 NetEase API、读写普通 Web 状态或渲染 UI，不应该新增 IPC；这些能力应留在 Web API、Hook、Store 或 `@scopify/ui` 中。
+
+## 一条原则
+
+**先定义跨进程契约，再实现传输；先经过 Runtime，再触碰宿主。**

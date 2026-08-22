@@ -24,7 +24,7 @@ import {
 } from "@/components/shared/NavigationScrollProvider";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { TracklistResizeHandle } from "@/components/shared/TracklistResizeHandle";
-import { Button } from "@/components/ui/button";
+import { Button } from "@scopify/ui/shadcn/components/button";
 import {
   Table,
   TableBody,

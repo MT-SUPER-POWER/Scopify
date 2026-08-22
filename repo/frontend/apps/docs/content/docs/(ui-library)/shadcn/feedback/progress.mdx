@@ -1,0 +1,82 @@
+---
+title: "Progress 进度条"
+description: "展示任务或流程的完成进度。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="progress-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add progress
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="progress"
+  title="components/ui/progress.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Progress } from "@scopify/ui/shadcn/components/progress"
+```
+
+```tsx showLineNumbers
+<Progress value={33} />
+```
+
+## Label
+
+Use a `Field` component to add a label to the progress bar.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="progress-label"  />
+
+## Controlled
+
+A progress bar that can be controlled by a slider.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="progress-controlled"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="progress-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix UI Progress](https://www.radix-ui.com/docs/primitives/components/progress#api-reference) documentation.

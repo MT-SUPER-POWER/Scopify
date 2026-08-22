@@ -6,7 +6,7 @@ import {
   LoadingPlayerBarSkeleton,
   LoadingSidebarSkeleton,
 } from "@/components/MainLayout/LoadingChrome";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { cn } from "@/lib/utils";
 
 interface MainLayoutSkeletonProps {

@@ -6,7 +6,12 @@ import { toast } from "sonner";
 
 import type { DesktopPlaybackWallpaperModel } from "@scopify/desktop-contract";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { getDesktopPlaybackWallpaperToggleUpdate } from "@/lib/desktopPlaybackWallpaper/toggle";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";

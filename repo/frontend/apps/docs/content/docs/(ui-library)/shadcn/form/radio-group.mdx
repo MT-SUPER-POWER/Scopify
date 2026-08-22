@@ -1,0 +1,124 @@
+---
+title: "Radio Group 单选组"
+description: "在一组互斥选项中选择一个值。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add radio-group
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="radio-group"
+  title="components/ui/radio-group.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import { Label } from "@scopify/ui/shadcn/components/label"
+import { RadioGroup, RadioGroupItem } from "@scopify/ui/shadcn/components/radio-group"
+```
+
+```tsx showLineNumbers
+<RadioGroup defaultValue="option-one">
+  <div className="flex items-center gap-3">
+    <RadioGroupItem value="option-one" id="option-one" />
+    <Label htmlFor="option-one">Option One</Label>
+  </div>
+  <div className="flex items-center gap-3">
+    <RadioGroupItem value="option-two" id="option-two" />
+    <Label htmlFor="option-two">Option Two</Label>
+  </div>
+</RadioGroup>
+```
+
+## Composition
+
+Use the following composition to build a `RadioGroup`:
+
+```text
+RadioGroup
+├── RadioGroupItem
+└── RadioGroupItem
+```
+
+## Description
+
+Radio group items with a description using the `Field` component.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-description"  />
+
+## Choice Card
+
+Use `FieldLabel` to wrap the entire `Field` for a clickable card-style selection.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-choice-card"  />
+
+## Fieldset
+
+Use `FieldSet` and `FieldLegend` to group radio items with a label and description.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-fieldset"  />
+
+## Disabled
+
+Use the `disabled` prop on `RadioGroupItem` to disable individual items.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-disabled"  />
+
+## Invalid
+
+Use `aria-invalid` on `RadioGroupItem` and `data-invalid` on `Field` to show validation errors.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="radio-group-invalid"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="radio-group-rtl"
+  direction="rtl"
+ />
+
+## API Reference
+
+See the [Radix UI Radio Group](https://www.radix-ui.com/docs/primitives/components/radio-group#api-reference) documentation.

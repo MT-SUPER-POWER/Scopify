@@ -1,0 +1,122 @@
+---
+title: "Sonner 消息通知"
+description: "通过 Toaster 承载非阻塞的短时消息通知。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="sonner-demo"  />
+
+## About
+
+Sonner is built and maintained by [emilkowalski](https://twitter.com/emilkowalski).
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Run the following command:</Step>
+
+```bash
+npx shadcn@latest add sonner
+```
+
+<Step>Add the Toaster component</Step>
+
+```tsx title="app/layout.tsx" {1,9} showLineNumbers
+import { Toaster } from "@scopify/ui/shadcn/components/sonner"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head />
+      <body>
+        <main>{children}</main>
+        <Toaster />
+      </body>
+    </html>
+  )
+}
+```
+
+</Steps>
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install sonner next-themes
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="sonner"
+  title="components/ui/sonner.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Add the Toaster component</Step>
+
+```tsx showLineNumbers title="app/layout.tsx" {1,8}
+import { Toaster } from "@scopify/ui/shadcn/components/sonner"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head />
+      <body>
+        <Toaster />
+        <main>{children}</main>
+      </body>
+    </html>
+  )
+}
+```
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { toast } from "sonner"
+```
+
+```tsx
+toast("Event has been created.")
+```
+
+## Types
+
+<ShadcnOfficialPreview styleName="radix-nova" name="sonner-types"  />
+
+## Description
+
+<ShadcnOfficialPreview styleName="radix-nova" name="sonner-description"  />
+
+## Position
+
+Use the `position` prop to change the position of the toast.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="sonner-position"  />
+
+## API Reference
+
+See the [Sonner API Reference](https://sonner.emilkowal.ski/getting-started) for more information.

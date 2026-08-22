@@ -1,0 +1,13 @@
+{
+  "title": "数据展示",
+  "pages": [
+    "accordion",
+    "aspect-ratio",
+    "carousel",
+    "chart",
+    "collapsible",
+    "resizable",
+    "scroll-area",
+    "table"
+  ]
+}

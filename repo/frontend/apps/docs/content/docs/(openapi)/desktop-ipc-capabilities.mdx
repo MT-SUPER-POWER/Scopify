@@ -1,0 +1,67 @@
+---
+title: 能力与版本
+description: IPC 协议版本、能力协商与兼容性策略。
+---
+
+Desktop Host 通过 `bridge:get-info` 返回 `DesktopBridgeInfo`。Renderer 可以据此知道当前宿主版本、Electron 版本、协议版本和已实现的能力。
+
+当前协议常量为：
+
+```ts
+DESKTOP_BRIDGE_PROTOCOL_VERSION = 20
+```
+
+## 当前能力
+
+| Capability | 领域 |
+| --- | --- |
+| `app-lifecycle` | 退出、重启与应用生命周期 |
+| `backend` | 内置后端状态 |
+| `audio-feature-transport` | 音频特征帧 MessagePort |
+| `cache` | 页面与播放缓存 |
+| `config` | Desktop Host 配置 |
+| `developer-tools` | 开发者工具开关 |
+| `desktop-icons` | 桌面图标可见性 |
+| `desktop-lyrics` | 桌面歌词窗口与命令 |
+| `desktop-playback-wallpaper` | 播放背景与控制器 |
+| `discord-presence` | Discord Presence |
+| `login` | 登录窗口与 Cookie |
+| `logs` / `renderer-logging` | 日志目录与 Renderer 日志 |
+| `media-controls` | 系统媒体控制 |
+| `navigation` | 主窗口导航 |
+| `playback-transport` | 播放传输 MessagePort |
+| `updates` | 检查、下载与安装更新 |
+| `video-export` | 捕获窗口和写出视频文件 |
+| `window-controls` | 最小化与全屏 |
+
+## 能力检查
+
+能力检查应集中在 Runtime composition root 或对应 adapter，不要让每个业务组件直接读取 `window.electronAPI`：
+
+```ts
+const bridgeInfo = await window.electronAPI?.getBridgeInfo();
+
+if (!bridgeInfo?.capabilities.includes("desktop-lyrics")) {
+  // 隐藏入口，或展示“当前宿主不支持”的状态
+}
+```
+
+业务层更推荐调用 `runtime.desktopLyrics`，由 Electron adapter 和 Browser adapter 分别决定真实实现或 unsupported 结果。
+
+## 版本策略
+
+### 可以不升级协议版本的改动
+
+- 增加一个可选字段；
+- 增加一个新的 capability 和对应方法；
+- 增加不会改变旧返回结构的事件；
+- 修复 Main 内部实现但不改变契约。
+
+### 必须升级协议版本的改动
+
+- 删除或重命名已有方法；
+- 改变参数必填性或返回值含义；
+- 改变事件 payload 的结构；
+- 改变传输方式导致旧 Renderer 无法继续工作。
+
+升级后仍应在 adapter 中提供兼容分支，或让旧 Renderer 得到可识别的 unsupported 结果，而不是在启动时直接崩溃。

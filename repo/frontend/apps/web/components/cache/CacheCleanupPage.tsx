@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@scopify/ui/shadcn/components/button";
 import { CACHE_SCOPE_CATEGORIES, getCacheSelectionKey } from "@/constants/cache";
 import { formatCacheSize } from "@/lib/cache/presentation";
 import { getCacheScopeSelectionState } from "@/lib/cache/cacheSelection";

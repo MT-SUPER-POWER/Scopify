@@ -1,0 +1,4 @@
+{
+  "title": "对话交互组件",
+  "pages": ["attachment", "bubble", "marker", "message", "message-scroller"]
+}

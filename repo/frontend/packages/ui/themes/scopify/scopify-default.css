@@ -1,0 +1,70 @@
+/* Required Scopify extensions for the built-in product profile. */
+:root:not([data-theme]),
+[data-theme="scopify-default"] {
+  --scopify-font-ui: Arial, "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  --scopify-font-code: Consolas, "SFMono-Regular", "Liberation Mono", monospace;
+  --scopify-font-reading: Georgia, "Noto Serif SC", serif;
+  --scopify-surface-inverse: #121212;
+  --scopify-content-subtle: #777777;
+  --scopify-brand-hover: #169c46;
+  --scopify-success: #15803d;
+  --scopify-success-foreground: #ffffff;
+  --scopify-info: #2563eb;
+  --scopify-info-foreground: #ffffff;
+  --scopify-warning: #b45309;
+  --scopify-warning-foreground: #ffffff;
+  --scopify-danger-foreground: #ffffff;
+  --scopify-overlay: rgb(0 0 0 / 56%);
+  --scopify-overlay-foreground: #ffffff;
+  --scopify-media-overlay: rgb(0 0 0 / 40%);
+  --scopify-image-scrim: rgb(0 0 0 / 25%);
+  --scopify-hero-shade: rgb(255 255 255 / 18%);
+  --scopify-hero-transition-depth: 10rem;
+  --scopify-calendar-surface: #ffffff;
+  --scopify-calendar-surface-muted: #f0f0f0;
+  --scopify-calendar-ink: #2a2a2a;
+  --scopify-calendar-accent: #e34242;
+  --scopify-calendar-accent-hover: #c42b2b;
+  --scopify-calendar-divider: rgb(0 0 0 / 10%);
+  --scopify-calendar-shadow: 4px 0 10px rgb(0 0 0 / 30%);
+  --scopify-qr-surface: #ffffff;
+  --scopify-home-atmosphere-night: #312e81;
+  --scopify-home-atmosphere-dawn: #fda4af;
+  --scopify-home-atmosphere-morning: #7dd3fc;
+  --scopify-home-atmosphere-afternoon: #0ea5e9;
+  --scopify-home-atmosphere-daylight: #22d3ee;
+  --scopify-home-atmosphere-sunset: #fb923c;
+  --scopify-home-atmosphere-evening: #7e22ce;
+  --scopify-home-atmosphere-late-night: #0f172a;
+  --scopify-page-accent-recent: #3b6b61;
+  --scopify-skeleton: rgb(0 0 0 / 18%);
+  --scopify-skeleton-subtle: rgb(0 0 0 / 12%);
+  --scopify-scrollbar-thumb: rgb(0 0 0 / 22%);
+  --scopify-scrollbar-thumb-hover: rgb(0 0 0 / 36%);
+  --scopify-elevation-panel: 0 8px 24px rgb(0 0 0 / 12%);
+  --scopify-elevation-floating: 0 18px 48px rgb(0 0 0 / 18%);
+  --scopify-elevation-brand: 0 8px 24px rgb(29 185 84 / 28%);
+}
+
+:root:not([data-theme]).dark,
+[data-theme="scopify-default"].dark {
+  --scopify-surface-inverse: #ffffff;
+  --scopify-content-subtle: #727272;
+  --scopify-brand-hover: #3be477;
+  --scopify-success: #1ed760;
+  --scopify-success-foreground: #000000;
+  --scopify-info: #60a5fa;
+  --scopify-info-foreground: #061527;
+  --scopify-warning: #f59e0b;
+  --scopify-warning-foreground: #1c1407;
+  --scopify-danger-foreground: #ffffff;
+  --scopify-overlay: rgb(0 0 0 / 80%);
+  --scopify-hero-shade: rgb(0 0 0 / 20%);
+  --scopify-skeleton: rgb(255 255 255 / 8%);
+  --scopify-skeleton-subtle: rgb(255 255 255 / 6%);
+  --scopify-scrollbar-thumb: rgb(255 255 255 / 18%);
+  --scopify-scrollbar-thumb-hover: rgb(255 255 255 / 30%);
+  --scopify-elevation-panel: 0 8px 24px rgb(0 0 0 / 30%);
+  --scopify-elevation-floating: 0 18px 48px rgb(0 0 0 / 56%);
+  --scopify-elevation-brand: 0 8px 24px rgb(30 215 96 / 30%);
+}

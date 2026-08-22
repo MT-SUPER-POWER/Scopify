@@ -1,0 +1,162 @@
+---
+title: "Accordion 手风琴"
+description: "以互斥或独立展开的区块组织可折叠内容。"
+---
+
+<ShadcnOfficialPreview
+  name="accordion-demo"
+  styleName="radix-nova"
+  align="start"
+  previewClassName="*:data-[slot=accordion]:max-w-sm h-[300px]"
+ />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add accordion
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="accordion"
+  title="components/ui/accordion.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx showLineNumbers
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@scopify/ui/shadcn/components/accordion"
+```
+
+```tsx showLineNumbers
+<Accordion type="single" collapsible defaultValue="item-1">
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Is it accessible?</AccordionTrigger>
+    <AccordionContent>
+      Yes. It adheres to the WAI-ARIA design pattern.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+## Composition
+
+Use the following composition to build an `Accordion`:
+
+```text
+Accordion
+├── AccordionItem
+│   ├── AccordionTrigger
+│   └── AccordionContent
+└── AccordionItem
+    ├── AccordionTrigger
+    └── AccordionContent
+```
+
+## Basic
+
+A basic accordion that shows one item at a time. The first item is open by default.
+
+<ShadcnOfficialPreview
+  name="accordion-basic"
+  styleName="radix-nova"
+  align="start"
+  previewClassName="*:data-[slot=accordion]:max-w-sm h-[300px]"
+ />
+
+## Multiple
+
+Use `type="multiple"` to allow multiple items to be open at the same time.
+
+<ShadcnOfficialPreview
+  name="accordion-multiple"
+  styleName="radix-nova"
+  align="start"
+  previewClassName="*:data-[slot=accordion]:max-w-sm h-[36rem] md:h-[30rem]"
+ />
+
+## Disabled
+
+Use the `disabled` prop on `AccordionItem` to disable individual items.
+
+<ShadcnOfficialPreview
+  name="accordion-disabled"
+  styleName="radix-nova"
+  align="start"
+  previewClassName="*:data-[slot=accordion]:max-w-sm h-[300px]"
+ />
+
+## Borders
+
+Add `border` to the `Accordion` and `border-b last:border-b-0` to the `AccordionItem` to add borders to the items.
+
+<ShadcnOfficialPreview
+  name="accordion-borders"
+  styleName="radix-nova"
+  align="start"
+  previewClassName="*:data-[slot=accordion]:max-w-sm h-96 md:h-80"
+ />
+
+## Card
+
+Wrap the `Accordion` in a `Card` component.
+
+<ShadcnOfficialPreview
+  name="accordion-card"
+  styleName="radix-nova"
+  align="start"
+  previewClassName="*:data-[slot=accordion]:max-w-sm h-[32rem] md:h-[28rem]"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="accordion-rtl"
+  align="start"
+  direction="rtl"
+ />
+
+## API Reference
+
+See the [Radix UI](https://www.radix-ui.com/primitives/docs/components/accordion#api-reference) documentation for more information.

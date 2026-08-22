@@ -42,6 +42,7 @@ import {
 } from "./module/audioFeatureBroker/ipc.js";
 import initializeLoginWindow from "./module/login.js";
 import { applyElectronProxy } from "./module/proxy.js";
+import { ensureStartupBackend } from "./module/startupBackend.js";
 import { initThumbarButtons } from "./module/thumbarButtons.js";
 import initTray, { trayWindow } from "./module/tray.js";
 import { initializeUpdater, scheduleStartupUpdateCheck } from "./module/updater.js";
@@ -54,6 +55,7 @@ const __dirname = dirname(__filename);
 let splashWindow: BrowserWindowType | null = null;
 let mainWindow: BrowserWindowType | null = null;
 let mainWindowReleased = false;
+let isCreatingWindow = false;
 let isQuitting = false;
 let desktopPlaybackWallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | null = null;
 let desktopPlaybackControllerWindow: DesktopPlaybackControllerWindow | null = null;
@@ -120,7 +122,7 @@ async function revealMainWindow() {
   }
 }
 
-function createWindow() {
+function createSplashWindow() {
   mainWindowReleased = false;
   splashShownAtMs = 0;
   splashReady = new Promise((resolve) => {
@@ -159,7 +161,9 @@ function createWindow() {
     resolveSplashReady?.();
     resolveSplashReady = null;
   });
+}
 
+function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -263,6 +267,58 @@ function createWindow() {
   });
 }
 
+async function createWindow() {
+  if (mainWindow || isCreatingWindow) return;
+
+  isCreatingWindow = true;
+  createSplashWindow();
+
+  try {
+    const backendConfig = loadDesktopHostConfig().backend;
+
+    while (true) {
+      const startupBackend = await ensureStartupBackend(backendConfig, (config) =>
+        backendController.reconcile(config),
+      );
+
+      if (startupBackend.ready) {
+        if (startupBackend.message) {
+          logger.warn(
+            "[backend] custom backend startup reconciliation failed:",
+            startupBackend.message,
+          );
+        }
+        break;
+      }
+
+      logger.error("[backend] managed backend startup gate failed:", startupBackend.message);
+      const result = await dialog.showMessageBox({
+        buttons: ["重试", "退出"],
+        cancelId: 1,
+        defaultId: 0,
+        detail: `${startupBackend.message ?? "本地后端未能启动。"}\n\nScopify 尚未加载主页面，以避免首屏请求全部失败。请检查端口占用和桌面端日志后重试。`,
+        message: "内置本地后端尚未就绪",
+        noLink: true,
+        title: "Scopify 启动失败",
+        type: "error",
+      });
+
+      if (result.response === 0) continue;
+
+      destroySplashWindow();
+      app.quit();
+      return;
+    }
+
+    createMainWindow();
+  } catch (error) {
+    destroySplashWindow();
+    throw error;
+  } finally {
+    isCreatingWindow = false;
+  }
+}
+
 const discordPresenceController = createDiscordPresenceController({
   getApplicationId: () => loadDesktopHostConfig().discord.applicationId,
   isEnabled: () => loadDesktopHostConfig().discord.enabled,
@@ -362,12 +418,8 @@ if (!gotTheLock) {
       logger.error("[proxy] failed to apply startup proxy config:", error);
     });
 
-    void backendController.reconcile(loadDesktopHostConfig().backend).catch((error) => {
-      logger.error("[backend] failed to reconcile local backend:", error);
-    });
-
     try {
-      createWindow();
+      await createWindow();
     } catch (err) {
       logger.error("Failed to create main window:", err);
     }
@@ -386,7 +438,9 @@ if (!gotTheLock) {
 
     app.on("activate", () => {
       if (mainWindow !== null) return;
-      createWindow();
+      void createWindow().catch((error) => {
+        logger.error("Failed to recreate main window:", error);
+      });
     });
   });
 

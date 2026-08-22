@@ -1,0 +1,305 @@
+---
+title: Button 按钮
+description: 触发操作、提交行为或导航的原生按钮。
+---
+
+<ComponentPreview name="shadcn-button" />
+
+Button 是 Scopify UI 中最常用的操作入口。下面的示例会放在对应的 API 说明之后，直接渲染 `@scopify/ui` 中的真实组件，并展示可以复制的实现代码。
+
+## 安装
+
+该组件已经通过 shadcn CLI 安装在共享 UI 包。需要与上游重新同步时，在仓库根目录运行：
+
+```bash
+cd repo/frontend/packages/ui
+bunx shadcn@latest add button
+```
+
+CLI 文件属于 `shadcn/` vendor 层；产品特有扩展应放在 `scopify/`，不要直接改写原生实现。
+
+## 导入
+
+```tsx
+import { Button, buttonVariants } from "@scopify/ui/shadcn/components/button";
+```
+
+`Button` 用于交互按钮，`buttonVariants` 用于需要保留链接语义的 `<a>` 元素或其他原生元素。
+
+## 基础用法
+
+<ShadcnExample code={String.raw`import { Button } from "@scopify/ui/shadcn/components/button";
+
+<div className="flex flex-wrap items-center gap-2">
+  <Button>保存歌单</Button>
+  <Button variant="secondary">稍后处理</Button>
+  <Button variant="outline">取消</Button>
+</div>`}>
+  <ShadcnButtonExample example="basic" />
+</ShadcnExample>
+
+按钮的业务状态、请求、路由和 i18n 由消费层管理；组件只负责统一的视觉变体、尺寸和可访问交互基础。
+
+## 变体
+
+`variant` 表达按钮的视觉和操作语义。不要仅为了换颜色而新增变体，颜色应由主题 Token 统一提供。
+
+| 变体 | 适用场景 |
+| --- | --- |
+| `default` | 当前区域的主要操作 |
+| `destructive` | 删除、移除或不可逆的危险操作 |
+| `outline` | 次级操作或需要保留边界的操作 |
+| `secondary` | 与主要操作同组的低优先级操作 |
+| `ghost` | 工具栏、卡片操作或低干扰入口 |
+| `link` | 看起来像链接但仍需按钮行为的操作 |
+
+<ShadcnExample code={String.raw`import { Button } from "@scopify/ui/shadcn/components/button";
+
+<div className="flex flex-wrap items-center gap-2">
+  <Button>默认</Button>
+  <Button variant="destructive">危险</Button>
+  <Button variant="outline">描边</Button>
+  <Button variant="secondary">次要</Button>
+  <Button variant="ghost">幽灵</Button>
+  <Button variant="link">链接</Button>
+</div>`}>
+  <ShadcnButtonExample example="variants" />
+</ShadcnExample>
+
+危险操作应使用清晰的动作文本；不要只依靠 `destructive` 的颜色向用户传达后果。
+
+## 尺寸
+
+`size` 控制按钮的密度。文本按钮支持 `xs`、`sm`、`default` 和 `lg`；图标按钮支持 `icon-xs`、`icon-sm`、`icon` 和 `icon-lg`。
+
+<ShadcnExample code={String.raw`import { Button } from "@scopify/ui/shadcn/components/button";
+import { Plus } from "lucide-react";
+
+<div className="flex flex-wrap items-center gap-2">
+  <Button size="xs">超小</Button>
+  <Button size="sm">小</Button>
+  <Button>默认</Button>
+  <Button size="lg">大</Button>
+  <Button size="icon" aria-label="添加">
+    <Plus />
+  </Button>
+</div>`}>
+  <ShadcnButtonExample example="sizes" />
+</ShadcnExample>
+
+<ShadcnExample code={String.raw`import { Bell } from "lucide-react";
+import { Button } from "@scopify/ui/shadcn/components/button";
+
+<Button size="icon" variant="ghost" aria-label="打开通知">
+  <Bell />
+</Button>`}>
+  <ShadcnButtonExample example="icons" />
+</ShadcnExample>
+
+组件会为没有显式尺寸类的 SVG 设置默认大小；如果图标需要特殊尺寸，可以在图标上显式传入 `size-*` 类。
+
+## 图标与加载状态
+
+图标放在文本前面表示动作开始，放在文本后面表示动作继续或导航。Button 会处理图标的间距和收缩行为：
+
+<ShadcnExample code={String.raw`import { ArrowRight, Bell, Download } from "lucide-react";
+import { Button } from "@scopify/ui/shadcn/components/button";
+
+<div className="flex flex-wrap items-center gap-2">
+  <Button>
+    <Download />
+    下载
+  </Button>
+  <Button variant="outline">
+    下一步
+    <ArrowRight />
+  </Button>
+  <Button size="icon" variant="ghost" aria-label="打开通知">
+    <Bell />
+  </Button>
+</div>`}>
+  <ShadcnButtonExample example="icons" />
+</ShadcnExample>
+
+加载时保留动作文本，并同时禁用按钮，避免重复提交：
+
+<ShadcnExample code={String.raw`import { LoaderCircle } from "lucide-react";
+import { Button } from "@scopify/ui/shadcn/components/button";
+
+<Button disabled aria-busy="true">
+  <LoaderCircle className="animate-spin" />
+  保存中
+</Button>`}>
+  <ShadcnButtonExample example="loading" />
+</ShadcnExample>
+
+如果加载过程较长，可以在消费层把 `aria-busy` 或状态说明放在按钮附近；不要让用户只能通过旋转图标判断状态。
+
+## 禁用状态
+
+`disabled` 会阻止交互、关闭指针事件并降低视觉强调：
+
+<ShadcnExample code={String.raw`import { Button } from "@scopify/ui/shadcn/components/button";
+
+<Button disabled>暂不可用</Button>`}>
+  <ShadcnButtonExample example="disabled" />
+</ShadcnExample>
+
+禁用前应确认用户能理解原因。如果操作只是暂时不可用，优先在按钮附近解释条件；如果用户仍需要查看或复制内容，不要为了防止操作而禁用整个内容区域。
+
+## 按钮组
+
+多个同级动作可以使用 `ButtonGroup` 组合。按钮组负责布局与分隔，不负责决定哪个动作是主要动作：
+
+<ShadcnExample code={String.raw`import { MoreHorizontal } from "lucide-react";
+import { Button } from "@scopify/ui/shadcn/components/button";
+import {
+  ButtonGroup,
+  ButtonGroupSeparator,
+} from "@scopify/ui/shadcn/components/button-group";
+
+<ButtonGroup>
+  <Button variant="outline" size="sm">
+    上一首
+  </Button>
+  <Button size="sm">播放</Button>
+  <ButtonGroupSeparator />
+  <Button variant="outline" size="icon-sm" aria-label="更多操作">
+    <MoreHorizontal />
+  </Button>
+</ButtonGroup>`}>
+  <ShadcnButtonExample example="group" />
+</ShadcnExample>
+
+如果一组按钮代表互斥选择，应考虑 `ToggleGroup`；如果是菜单入口，应考虑 `DropdownMenu`，不要把所有操作都挤在同一个按钮组中。
+
+## 作为链接使用
+
+导航到其他 URL 时应保留 `<a>` 的链接语义，而不是用按钮模拟链接。`asChild` 会通过 Radix Slot 将 Button 的样式合并到子元素上：
+
+<ShadcnExample code={String.raw`import {
+  Button,
+  buttonVariants,
+} from "@scopify/ui/shadcn/components/button";
+
+<div className="flex flex-wrap items-center gap-3">
+  <Button asChild variant="outline">
+    <a href="/docs/ui-library/shadcn/basic/card">查看 Card 文档</a>
+  </Button>
+  <a
+    className={buttonVariants({ variant: "link", size: "sm" })}
+    href="/library"
+  >
+    打开媒体库
+  </a>
+</div>`}>
+  <ShadcnButtonExample example="link" />
+</ShadcnExample>
+
+使用链接时保留 `href`、浏览器打开新标签页和复制链接地址等原生行为；只有会改变当前状态或提交数据的动作才使用 `<Button>`。
+
+## 受控交互
+
+Button 本身不管理点击次数、请求状态或成功结果。由消费层管理这些状态：
+
+<ShadcnExample
+  code={String.raw`"use client";
+
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
+import { Button } from "@scopify/ui/shadcn/components/button";
+
+export function SaveButton() {
+  const [isSaving, setIsSaving] = useState(false);
+
+  function handleSave() {
+    setIsSaving(true);
+    window.setTimeout(() => setIsSaving(false), 800);
+  }
+
+  return (
+    <Button
+      className="min-w-28"
+      disabled={isSaving}
+      aria-busy={isSaving}
+      onClick={handleSave}
+    >
+      {isSaving ? <LoaderCircle className="animate-spin" /> : null}
+      {isSaving ? "保存中" : "保存歌单"}
+    </Button>
+  );
+}`}
+>
+  <ShadcnButtonExample example="controlled" />
+</ShadcnExample>
+
+不要同时为同一个状态混用 `disabled`、CSS 隐藏和多个本地 loading 标记；保持一个清晰的状态来源，并让按钮在请求期间保持稳定尺寸，避免布局跳动。
+
+## 可访问性
+
+- 文本按钮应使用描述动作的名称，例如“保存歌单”，而不是只写“确定”或“点击这里”。
+- 纯图标按钮必须提供 `aria-label`；`title` 可以作为补充，但不能替代可访问名称。
+- 交互按钮必须保持键盘可达和清晰的 `:focus-visible` 状态，不要通过 `outline-none` 覆盖组件默认焦点样式。
+- 提交表单的按钮显式设置 `type="submit"`；表单中的非提交操作设置 `type="button"`，避免意外触发表单提交。
+- 需要导航时使用链接，不要用 `onClick` 加路由跳转伪装成链接。
+- 不要只通过颜色区分危险、成功或禁用状态，同时提供文本或其他语义提示。
+
+## Scopify 实现说明
+
+当前实现来自 `packages/ui/shadcn/components/button.tsx`，公开 `Button` 和 `buttonVariants`。它保留 shadcn CLI 的 vendor 形态，并使用共享主题 Token：
+
+- `default`、`secondary`、`outline`、`ghost` 和 `link` 读取 `primary`、`secondary`、`accent`、`background` 等 Shadcn Token。
+- `destructive` 读取 `destructive` Token，并在深色模式使用对应的暗色覆盖。
+- 焦点环读取 `ring`，无效状态读取 `destructive`。
+- `data-slot="button"`、`data-variant` 和 `data-size` 可供调试、测试或下游样式选择器使用。
+- `asChild` 使用 `radix-ui` 的 Slot；当子元素是链接时，样式由 Button 提供，语义由链接保留。
+
+如果需要音乐播放器、媒体库或产品业务专属的按钮语义，优先在消费层组合 `Button`；只有标准变体和主题 Token 都无法表达需求时，才新增 `packages/ui/scopify/` 层的扩展。
+
+## API 参考
+
+### Button Props
+
+`Button` 同时接受原生 `button` 属性、变体属性和 `asChild`：
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `variant` | `default` \| `destructive` \| `outline` \| `secondary` \| `ghost` \| `link` | `default` | 视觉和操作语义 |
+| `size` | `default` \| `xs` \| `sm` \| `lg` \| `icon` \| `icon-xs` \| `icon-sm` \| `icon-lg` | `default` | 文本或图标按钮尺寸 |
+| `asChild` | `boolean` | `false` | 通过 Slot 将样式应用到子元素 |
+| `disabled` | `boolean` | `false` | 禁止按钮交互并应用禁用态 |
+| `type` | `button` \| `submit` \| `reset` | 浏览器默认值 | 原生按钮类型，表单中建议显式设置 |
+| `className` | `string` | — | 追加 Tailwind 类名 |
+
+其余属性继承自 React 的 `ComponentProps<"button">`，例如 `onClick`、`name`、`value`、`form`、`aria-*` 和 `data-*`。
+
+### buttonVariants
+
+`buttonVariants` 是由 Class Variance Authority 生成的类名函数：
+
+```tsx
+const className = buttonVariants({
+  size: "sm",
+  variant: "outline",
+});
+```
+
+它适合普通 `<a>` 或需要把按钮视觉样式应用到其他元素的场景。它只生成样式，不提供按钮行为、焦点管理或链接属性。
+
+<a id="button-api" />
+
+## 相关组件
+
+- [Button Group](./button-group) — 组织多个同级按钮和分隔线。
+- [Toggle](../form/toggle) — 表达单个可按下状态。
+- [Toggle Group](../form/toggle-group) — 表达互斥或多选切换。
+- [Dropdown Menu](../overlay/dropdown-menu) — 承载触发器相关的更多操作。
+- [Dialog](../overlay/dialog) — 承载需要聚焦处理的编辑或确认流程。
+
+<a id="button-links" />
+
+## 参考资料
+
+- [shadcn/ui Button](https://ui.shadcn.com/docs/components/radix/button) — 上游组件行为与示例。
+- [HTML button 元素](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/button) — 原生按钮语义和属性。
+- [HTML a 元素](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Reference/Elements/a) — 导航链接语义和浏览器行为。

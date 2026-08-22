@@ -1,0 +1,101 @@
+---
+title: "Badge 徽标"
+description: "展示状态、分类或短标签的原生徽标。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="badge-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add badge
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  styleName="radix-nova"
+  name="badge"
+  title="components/ui/badge.tsx"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Badge } from "@scopify/ui/shadcn/components/badge"
+```
+
+```tsx
+<Badge variant="default | outline | secondary | destructive">Badge</Badge>
+```
+
+## Variants
+
+Use the `variant` prop to change the variant of the badge.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="badge-variants"  />
+
+## With Icon
+
+You can render an icon inside the badge. Use `data-icon="inline-start"` to render the icon on the left and `data-icon="inline-end"` to render the icon on the right.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="badge-icon"  />
+
+## With Spinner
+
+You can render a spinner inside the badge. Remember to add the `data-icon="inline-start"` or `data-icon="inline-end"` prop to the spinner.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="badge-spinner"  />
+
+## Link
+
+Use the `asChild` prop to render a link as a badge.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="badge-link"  />
+
+## Custom Colors
+
+You can customize the colors of a badge by adding custom classes such as `bg-green-50 dark:bg-green-800` to the `Badge` component.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="badge-colors"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="badge-rtl" direction="rtl"  />
+
+## API Reference
+
+### Badge
+
+The `Badge` component displays a badge or a component that looks like a badge.
+
+| Prop        | Type                                                                          | Default     |
+| ----------- | ----------------------------------------------------------------------------- | ----------- |
+| `variant`   | `"default" \| "secondary" \| "destructive" \| "outline" \| "ghost" \| "link"` | `"default"` |
+| `className` | `string`                                                                      | -           |

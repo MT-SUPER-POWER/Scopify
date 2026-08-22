@@ -11,6 +11,7 @@
     "folia",
     "scopify",
     "shadcn",
+    "themes",
     "theme.css"
   ],
   "exports": {
@@ -18,7 +19,12 @@
     "./scopify/theme.css": "./scopify/theme.css",
     "./shadcn/theme.css": "./shadcn/theme.css",
     "./shadcn/components/*": "./shadcn/components/*.tsx",
+    "./shadcn/hooks/*": "./shadcn/hooks/*.ts",
     "./shadcn/lib/*": "./shadcn/lib/*.ts",
+    "./themes/index.css": "./themes/index.css",
+    "./themes/scopify/scopify-default.css": "./themes/scopify/scopify-default.css",
+    "./themes/shadcn/scopify-default.css": "./themes/shadcn/scopify-default.css",
+    "./themes/shadcn/shadcn-default.css": "./themes/shadcn/shadcn-default.css",
     "./theme.css": "./theme.css"
   },
   "scripts": {
@@ -26,13 +32,28 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@base-ui/react": "^1.7.0",
+    "@hookform/resolvers": "^5.9.1",
+    "@shadcn/react": "^0.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.468.0",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.4.0",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.5.0",
+    "lucide-react": "^1.33.0",
+    "next-themes": "^0.4.6",
     "radix-ui": "^1.6.7",
+    "react-day-picker": "^10.0.1",
+    "react-hook-form": "^7.85.0",
+    "react-resizable-panels": "^4",
+    "recharts": "3.8.0",
     "shadcn": "^3.8.5",
+    "sonner": "^2.0.8",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^1.1.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/bun": "latest",

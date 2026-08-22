@@ -1,0 +1,104 @@
+---
+title: "Textarea 多行输入框"
+description: "接收较长的多行文本内容。"
+---
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="textarea-demo"
+  previewClassName="*:max-w-xs"
+ />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add textarea
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="textarea"
+  title="components/ui/textarea.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Textarea } from "@scopify/ui/shadcn/components/textarea"
+```
+
+```tsx
+<Textarea />
+```
+
+## Field
+
+Use `Field`, `FieldLabel`, and `FieldDescription` to create a textarea with a label and description.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="textarea-field"
+  previewClassName="*:max-w-xs"
+ />
+
+## Disabled
+
+Use the `disabled` prop to disable the textarea. To style the disabled state, add the `data-disabled` attribute to the `Field` component.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="textarea-disabled"
+  previewClassName="*:max-w-xs"
+ />
+
+## Invalid
+
+Use the `aria-invalid` prop to mark the textarea as invalid. To style the invalid state, add the `data-invalid` attribute to the `Field` component.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="textarea-invalid"
+  previewClassName="*:max-w-xs"
+ />
+
+## Button
+
+Pair with `Button` to create a textarea with a submit button.
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="textarea-button"
+  previewClassName="*:max-w-xs"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="textarea-rtl" direction="rtl"  />

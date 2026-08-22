@@ -1,0 +1,93 @@
+---
+title: "Label 标签"
+description: "为表单控件提供可访问的文本标签。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="label-demo"  />
+
+<Callout>
+  For form fields, use the [Field](/docs/ui-library/shadcn/field) component which
+  includes built-in label, description, and error handling.
+</Callout>
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add label
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="label"
+  title="components/ui/label.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Label } from "@scopify/ui/shadcn/components/label"
+```
+
+```tsx
+<Label htmlFor="email">Your email address</Label>
+```
+
+## Label in Field
+
+For form fields, use the [Field](/docs/ui-library/shadcn/field) component which
+includes built-in `FieldLabel`, `FieldDescription`, and `FieldError` components.
+
+```tsx
+<Field>
+  <FieldLabel htmlFor="email">Your email address</FieldLabel>
+  <Input id="email" />
+</Field>
+```
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="field-demo"
+  previewClassName="h-[44rem]"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="label-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix UI Label](https://www.radix-ui.com/docs/primitives/components/label#api-reference) documentation for more information.

@@ -1,0 +1,133 @@
+---
+title: "Checkbox 复选框"
+description: "表示可独立切换或批量选择的布尔选项。"
+---
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="checkbox-demo"
+  previewClassName="h-80"
+ />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add checkbox
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="checkbox"
+  title="components/ui/checkbox.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Checkbox } from "@scopify/ui/shadcn/components/checkbox"
+```
+
+```tsx
+<Checkbox />
+```
+
+## Checked State
+
+Use `defaultChecked` for uncontrolled checkboxes, or `checked` and
+`onCheckedChange` to control the state.
+
+```tsx showLineNumbers
+import * as React from "react"
+
+export function Example() {
+  const [checked, setChecked] = React.useState(false)
+
+  return <Checkbox checked={checked} onCheckedChange={setChecked} />
+}
+```
+
+## Invalid State
+
+Set `aria-invalid` on the checkbox and `data-invalid` on the field wrapper to
+show the invalid styles.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-invalid"  />
+
+## Basic
+
+Pair the checkbox with `Field` and `FieldLabel` for proper layout and labeling.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-basic"  />
+
+## Description
+
+Use `FieldContent` and `FieldDescription` for helper text.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-description"  />
+
+## Disabled
+
+Use the `disabled` prop to prevent interaction and add the `data-disabled` attribute to the `<Field>` component for disabled styles.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-disabled"  />
+
+## Group
+
+Use multiple fields to create a checkbox list.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="checkbox-group"  />
+
+## Table
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="checkbox-table"
+  previewClassName="p-4 md:p-8"
+ />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="checkbox-rtl"
+  direction="rtl"
+  previewClassName="h-80"
+ />
+
+## API Reference
+
+See the [Radix UI](https://www.radix-ui.com/docs/primitives/components/checkbox#api-reference) documentation for more information.

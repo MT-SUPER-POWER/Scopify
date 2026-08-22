@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" data-theme="scopify" suppressHydrationWarning>
+    <html lang="zh-CN" data-theme="scopify-default" suppressHydrationWarning>
       <body
         className={cn(
           "fixed inset-0 flex overflow-hidden antialiased",

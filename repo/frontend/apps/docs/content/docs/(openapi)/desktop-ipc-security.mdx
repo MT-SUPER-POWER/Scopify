@@ -1,0 +1,81 @@
+---
+title: 安全边界
+description: contextBridge、来源校验与 payload 校验规范。
+---
+
+Desktop IPC 是 Renderer 进入本机能力的安全边界。Renderer 中的代码即使是内部业务代码，也必须按不可信输入处理；Preload 和 Main 负责缩小权限、验证来源和约束参数。
+
+## 信任边界
+
+```text
+Renderer（不持有 Node 权限）
+        │  只拿到最小化 electronAPI
+        ▼
+Preload + contextBridge（桥接边界）
+        │  sender / payload / capability 校验
+        ▼
+Electron Main（文件、窗口、Cookie、更新等高权限操作）
+```
+
+## 必须遵守的规则
+
+### 只暴露类型化 API
+
+`preload.ts` 使用 `contextBridge.exposeInMainWorld` 暴露 `DesktopBridge`。禁止把原始 `ipcRenderer`、`ipcMain`、`BrowserWindow`、Node `fs` 或 Electron event 传入 Renderer。
+
+### 校验发送者
+
+需要主窗口权限的 handler 使用 `isMainRenderer(event, mainWindow)`，确认请求来自当前主 Renderer。来源不正确时返回 `false`、`null` 或抛出明确的授权错误，不执行桌面操作。
+
+### 校验 payload
+
+IPC 参数来自跨边界调用，不能只依赖 TypeScript：
+
+- 文件路径、窗口尺寸、缓存 scope、缓存 category 都要运行时验证；
+- `unknown` 先验证，再传给 Controller；
+- 数值需要检查类型、整数性、上下限和正负；
+- 枚举值使用白名单，不接受任意字符串。
+
+当前实现示例包括 `isVideoExportSize`、`isVideoExportSaveRequest`、`isCacheScope`、`isCacheCategoryForScope` 和 `isRendererLogEvent`。
+
+### 限制文件和 Origin 操作
+
+- 文件选择必须通过 Main 的系统 dialog，不让 Renderer 直接决定任意写入流程；
+- 视频写入校验文件路径字符串和 `ArrayBuffer`，并由 Main 执行写文件；
+- 后端 Origin 只允许 `http:` 或 `https:`，拒绝 `file:`、`javascript:` 等协议；
+- 保存 Cookie 时只持久化必要字段，不把 Cookie、Token 或完整用户信息写入日志。
+
+### 事件必须可取消
+
+每个 Preload 事件订阅都返回 `removeListener` 封装的取消函数。页面卸载、组件 unmount 或 MessagePort 关闭时必须清理监听器，避免旧页面继续响应命令。
+
+### 能力必须显式协商
+
+Renderer 不应通过“调用后报错”探测能力。启动时读取 `DesktopBridgeInfo.capabilities`，对可选功能做 capability 检查，并在不支持时展示降级状态。
+
+## 常见错误
+
+```ts
+// ❌ 把原始 ipcRenderer 暴露给页面
+contextBridge.exposeInMainWorld("electronAPI", { ipcRenderer });
+
+// ❌ 只写 TypeScript 类型，不做运行时校验
+ipcMain.handle("file:write", (_event, request: FileWriteRequest) =>
+  writeFile(request.path, request.data),
+);
+
+// ❌ 让业务组件直接拼接 channel
+window.electronAPI?.ipcRenderer.invoke("cache:get", key);
+```
+
+正确做法是增加一个最小化的 Contract 方法，在 Preload 中映射，在 Main 中完成 sender 和 payload 校验，再由 Runtime 暴露意图层接口。
+
+## 安全审查清单
+
+- [ ] Renderer 没有拿到原始 Electron / Node 对象。
+- [ ] 所有高权限 handler 都校验了 sender。
+- [ ] 所有外部 payload 都有运行时验证。
+- [ ] 文件、窗口尺寸、缓存范围和 Origin 都有边界限制。
+- [ ] Cookie、Token 和用户隐私不会进入日志或错误信息。
+- [ ] 事件订阅和 MessagePort 都能取消、关闭和重连。
+- [ ] 新 capability 在不支持的宿主上有明确降级行为。

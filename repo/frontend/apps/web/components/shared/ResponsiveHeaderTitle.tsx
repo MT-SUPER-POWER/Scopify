@@ -1,6 +1,11 @@
 "use client";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { useElementOverflow } from "@/lib/hooks/useElementOverflow";
 import { cn } from "@/lib/utils";
 

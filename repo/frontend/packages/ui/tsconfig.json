@@ -10,7 +10,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@scopify/ui/*": ["./*"]
     }
   },
   "include": ["folia/**/*.ts", "shadcn/**/*.ts", "shadcn/**/*.tsx", "tests/**/*.ts"]

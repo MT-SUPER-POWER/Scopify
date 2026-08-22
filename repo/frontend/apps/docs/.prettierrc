@@ -1,0 +1,18 @@
+{
+  "tabWidth": 2,
+  "printWidth": 100,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindFunctions": ["cn", "cva", "clsx"],
+  "overrides": [
+    {
+      "files": ["repo/frontend/apps/web/**"],
+      "options": {
+        "tailwindStylesheet": "./repo/frontend/apps/web/app/globals.css",
+        "tailwindFunctions": ["cn", "cva", "clsx"]
+      }
+    }
+  ]
+}

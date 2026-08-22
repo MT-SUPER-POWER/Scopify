@@ -1,0 +1,341 @@
+---
+title: 新增 Scopify 前端接口指南
+description: 按 Scopify API 三层规范扩展一个新的前端接口能力。
+---
+
+Scopify 新增接口的中心原则是：**请求、类型、数据管理和 UI 业务分层，各自只做一件事**。
+
+这篇文档描述的是 Scopify 应用如何接入和扩展一个接口，不是要求每次都去修改 NetEase API Enhanced。网易云已有接口优先复用；只有确实需要新的上游能力时，才再处理后端扩展，并把接口说明同步到 [Apifox](https://vdoonnridu.apifox.cn/)。
+
+## 三层架构
+
+```text
+组件 / 页面
+      ↓
+hooks/<domain>/             数据获取、缓存、状态同步与副作用
+      ↓
+lib/api/<domain>.ts         纯请求函数，只负责发请求
+      ↓
+lib/web/request.ts          Axios 实例、base URL 与通用请求能力
+
+types/api/<domain>.ts        独立的请求、响应和领域类型
+```
+
+| 层级 | 目录 | 负责什么 | 不负责什么 |
+| --- | --- | --- | --- |
+| 类型层 | `types/api/` | 请求参数、响应结构、领域类型 | 发请求、缓存、Toast、UI |
+| 请求层 | `lib/api/` | 组装路径和参数，调用统一 request | 业务判断、Store、路由、UI |
+| 数据层 | `hooks/` | Query、Mutation、缓存、加载和错误状态 | JSX、页面布局、视觉交互 |
+| 业务层 | `components/`、`app/` | 组合 Hook、处理用户交互和页面展示 | 重复实现请求生命周期 |
+
+## 1. 先确认是否真的需要新增接口
+
+开始编码前先检查：
+
+- `lib/api/` 是否已经存在同路径或同领域的请求函数；
+- `types/api/` 是否已有可复用的响应类型；
+- 是否只是已有接口的另一种筛选、分页或展示方式；
+- 是否可以通过现有参数、Query Key 和 Hook 扩展完成。
+
+如果已有接口可以满足需求，扩展现有函数或 Hook，不要创建同义接口。只有当数据来源、权限边界或返回契约确实不同，才创建新的接口。
+
+## 2. 先写清楚接口契约
+
+新增接口至少需要确定以下内容：
+
+| 项目 | 要求 |
+| --- | --- |
+| 方法与路径 | 明确 GET、POST 等方法以及完整路径 |
+| 参数 | 区分必填、可选、默认值和取值范围 |
+| 响应 | 描述成功、空结果、分页和字段可选性 |
+| 认证 | 明确是否依赖登录、Cookie、Token 或权限 |
+| 错误 | 区分网络错误、参数错误、鉴权错误和业务错误 |
+| 副作用 | 标记点赞、关注、删除、签到等会修改数据的操作 |
+| 缓存 | 判断是否可缓存，以及哪些参数会影响 Query Key |
+
+如果接口来自 NetEase API Enhanced，后端模块和上游文档由外部服务维护；Scopify 只负责自己的类型、请求封装和数据使用方式。
+
+## 3. 类型层：`types/api/`
+
+所有长期使用的请求和响应类型放在 `types/api/<domain>.ts`，按领域组织，不要把类型散落在页面、组件或 Hook 内。
+
+推荐结构：
+
+```text
+types/api/
+├── user.ts
+├── playlist.ts
+├── music.ts
+├── comment.ts
+├── vipSign.ts
+└── index.ts
+```
+
+以签到领域为例：
+
+```ts
+// types/api/vipSign.ts
+export interface VipSignParams {
+  cookie?: string
+}
+
+export interface VipSignSongInfo {
+  songId: number
+  songName: string
+  artistName: string
+  album: string
+  cover: string
+  artistIds: number[]
+}
+
+export interface VipSignDetail {
+  recordId: number
+  userId: number
+  time: number
+  today?: boolean
+  songInfo?: VipSignSongInfo
+}
+
+export interface VipSignInfoResponse {
+  code: number
+  data: VipSignDetail[]
+  message: string
+}
+```
+
+类型规范：
+
+- 使用体现领域和方向的名字，例如 `VipSignParams`、`VipSignInfoResponse`；
+- 不确定的上游字段使用可选属性或明确联合类型；
+- 不要用大面积 `any` 隐藏接口不稳定；
+- `lib/api/`、Hook 和组件不能定义应该共享的接口类型；
+- 类型只描述数据，不读取 Store、不发请求、不执行转换副作用。
+
+## 4. 请求层：`lib/api/`
+
+`lib/api/` 是薄封装层，只负责调用 `@/lib/web/request`。一个领域的请求放在同一个文件中：
+
+```ts
+// lib/api/user.ts
+import request from "@/lib/web/request";
+import type {
+  VipSignInfoResponse,
+  VipSignParams,
+} from "@/types/api/vipSign";
+
+/** POST /vip/sign */
+export function vipSign(params: VipSignParams = {}) {
+  return request.post("/vip/sign", {}, { params, noRetry: true });
+}
+
+/** GET /vip/sign/info */
+export function vipSignInfo(params: VipSignParams = {}) {
+  return request.get<VipSignInfoResponse>("/vip/sign/info", {
+    params,
+    noRetry: true,
+  });
+}
+```
+
+请求层可以做：
+
+- 选择 HTTP 方法和接口路径；
+- 传递 query、body、headers 和请求选项；
+- 指定已经存在的响应类型；
+- 复用统一的 retry、timeout 和认证配置。
+
+请求层不可以做：
+
+- 读取 `localStorage`、Cookie 或 Zustand Store；
+- 弹 Toast、跳转页面或改变 UI 状态；
+- 判断“今天是否已经签到”这类业务语义；
+- 把一个接口拆成多个业务动作；
+- 在 `lib/api/` 内定义长期使用的 `interface`。
+
+反例：
+
+```ts
+// ❌ 不要把业务逻辑塞进 lib/api/
+export async function doVipSign() {
+  const cookie = getCookie();
+  const response = await request.post("/vip/sign", { cookie });
+
+  if (response.code === 200) {
+    toast.success("签到成功");
+  }
+
+  return response;
+}
+```
+
+## 5. 数据层：`hooks/`
+
+需要缓存、跨组件共享、加载状态或自动刷新时，使用 TanStack Query。Hook 负责把请求函数转换成页面可用的数据状态：
+
+```ts
+// hooks/vipSign/useVipSign.ts
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { vipSign, vipSignInfo } from "@/lib/api/user";
+
+export const vipSignKeys = {
+  all: ["vipSign"] as const,
+  info: () => [...vipSignKeys.all, "info"] as const,
+};
+
+export function useVipSign(cookie?: string) {
+  const queryClient = useQueryClient();
+
+  const infoQuery = useQuery({
+    queryKey: vipSignKeys.info(),
+    queryFn: () => vipSignInfo({ cookie }),
+    staleTime: 2 * 60 * 1000,
+  });
+
+  const signMutation = useMutation({
+    mutationFn: () => vipSign({ cookie }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: vipSignKeys.info() });
+    },
+  });
+
+  return {
+    signRecords: infoQuery.data?.data ?? [],
+    isLoading: infoQuery.isLoading,
+    error: infoQuery.error,
+    isSigning: signMutation.isPending,
+    doSign: signMutation.mutateAsync,
+  };
+}
+```
+
+### Query 和 Mutation 的选择
+
+| 场景 | 选择 | 原因 |
+| --- | --- | --- |
+| 需要缓存的查询数据 | `useQuery` | 自动管理缓存、加载和错误 |
+| 跨组件共享服务端数据 | `useQuery` | 保持单一数据源 |
+| 需要自动刷新 | `useQuery` | 支持 `staleTime` 和 refetch 策略 |
+| 签到、点赞、删除、更新 | `useMutation` | 表达有副作用的操作 |
+| 播放进度、音量等高频本地状态 | Zustand | 不需要服务端缓存 |
+| 纯表单草稿 | 表单状态 | 提交时再调用 Mutation |
+
+### Query Key 规则
+
+Query Key 必须包含所有影响返回结果的参数：
+
+```ts
+export const playlistKeys = {
+  all: ["playlist"] as const,
+  detail: (id: number) => ["playlist", "detail", id] as const,
+  tracks: (id: number, page: number) =>
+    ["playlist", "tracks", id, page] as const,
+};
+```
+
+Mutation 成功后只失效相关领域的 Key，不要无差别清空全部缓存。组件只消费 Hook 返回的 `data`、`isLoading`、`error` 和操作函数，不要重复实现请求生命周期。
+
+## 6. 错误处理与副作用
+
+Hook 层统一处理业务错误和缓存失效，API 层保持纯请求：
+
+```ts
+const { mutateAsync } = useMutation({
+  mutationFn: signApi,
+  onSuccess: (data) => {
+    void queryClient.invalidateQueries({ queryKey: vipSignKeys.info() });
+
+    if (data.code === 200) {
+      toast.success("签到成功");
+    } else {
+      toast.error(data.message);
+    }
+  },
+  onError: (error) => {
+    toast.error(error instanceof Error ? error.message : "请求失败");
+  },
+});
+```
+
+需要特别检查：
+
+- 未登录、Cookie 失效和权限不足；
+- 空数组、空对象、分页结束和字段缺失；
+- 网络失败、超时、重试和上游业务错误；
+- 成功后哪些 Query 必须重新获取；
+- 是否会改变用户数据，以及 UI 是否需要二次确认。
+
+真实 Cookie、Token 和用户信息只能由现有认证/请求基础设施注入，不要写进文档、截图、测试快照或提交记录。
+
+## 7. 组件层如何使用
+
+页面或业务组件只负责组合 Hook 与展示状态：
+
+```tsx
+export function VipSignPanel() {
+  const { signRecords, isLoading, isSigning, doSign } = useVipSign();
+
+  if (isLoading) return <Skeleton />;
+
+  return (
+    <section>
+      <Button disabled={isSigning} onClick={() => void doSign()}>
+        今日签到
+      </Button>
+      <SignRecordList records={signRecords} />
+    </section>
+  );
+}
+```
+
+组件不要直接 `useEffect + useState` 请求接口：
+
+```tsx
+// ❌ 不要在组件内手写请求生命周期
+useEffect(() => {
+  vipSignInfo().then((response) => setRecords(response.data));
+}, []);
+```
+
+如果组件需要路由、Store、API 或业务 i18n，它属于 Web 业务层，不应移动到共享 UI package。
+
+## 8. 文档与外部服务同步
+
+### NetEase API Enhanced
+
+NetEase API 的公开接口说明统一维护在 [Apifox](https://vdoonnridu.apifox.cn/)。只有在确认上游确实缺少能力时，才新增后端模块；前端实现仍然遵循本页的 `types/api`、`lib/api`、`hooks` 三层结构。
+
+新增或修改上游接口后，在 Apifox 补充：
+
+1. 方法、路径和参数说明；
+2. 成功、空结果和常见错误响应；
+3. 登录、Cookie、Token 和特殊 Header 要求；
+4. 删除、点赞、关注、签到等副作用警告；
+5. 脱敏后的请求示例。
+
+### Scopify 自有 API
+
+Scopify 自有接口的契约说明放在当前 OpenAPI 文档域。如果后续引入机器可读 Schema，应同时提交 Schema 来源、生成方式和版本策略，不要只提交一张没有来源的 JSON 快照。
+
+## 9. 验证与提交清单
+
+Web 前端至少执行：
+
+```bash
+bun run typecheck
+bun run lint
+bun run build:web
+```
+
+提交前逐项确认：
+
+- [ ] 已确认没有可复用的既有 API、类型或 Hook。
+- [ ] 请求/响应类型已放入 `types/api/<domain>.ts`。
+- [ ] 请求函数已放入 `lib/api/<domain>.ts`，且没有业务逻辑。
+- [ ] Query、Mutation、缓存 Key 和副作用已放入对应 `hooks/`。
+- [ ] 组件只负责展示和用户交互，没有重复请求生命周期。
+- [ ] 已覆盖空结果、鉴权失败、网络失败和上游错误。
+- [ ] 已确认真实凭据不会进入文档、日志、截图和提交记录。
+- [ ] NetEase API 已同步 Apifox；Scopify 自有 API 已同步 OpenAPI 文档。
+- [ ] 类型检查、Lint、构建和相关测试已通过。
+- [ ] 已在 `docs/CHANGELOG.md` 记录所属分类和变更。

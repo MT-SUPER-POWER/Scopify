@@ -1,0 +1,47 @@
+---
+title: 技术栈
+description: Scopify 使用的前端、桌面、状态、动画与工程化技术。
+---
+
+## 核心技术
+
+| 技术 | 在 Scopify 中的职责 |
+| --- | --- |
+| Next.js + React | Web 应用、Electron Renderer 与路由渲染 |
+| TypeScript | 前端、桌面契约和共享包的类型系统 |
+| Electron | 桌面窗口、系统能力、Preload 与安装包 |
+| Tailwind CSS | 主题 token、布局与组件样式 |
+| shadcn/ui | 上游原生基础组件 |
+| Zustand | 播放器与跨页面客户端状态 |
+| Axios + TanStack Query | 请求封装、缓存和服务端状态同步 |
+| Framer Motion | 页面与交互动画 |
+| TanStack Virtual | 长列表与歌曲列表虚拟化 |
+| WebGL | 歌词舞台与视觉效果 |
+| Bun Workspaces + Turborepo | Monorepo 依赖与任务编排 |
+| Docker | Web 与后端的容器化部署 |
+
+## 为什么同时提供 Web 与 Electron
+
+Web 负责快速访问和独立部署；Electron 在同一套 Renderer 体验上补充窗口管理、本地后端、桌面歌词和操作系统集成。Renderer 不直接依赖 Electron 主进程源码，所有跨边界能力通过类型化契约暴露。
+
+## 状态与数据
+
+- Zustand 管理播放状态、用户交互状态等客户端状态。
+- TanStack Query 管理来自后端的数据生命周期、缓存与刷新。
+- API Client 负责统一 base URL、请求参数和错误边界。
+- `desktop-contract` 管理 Web 与 Electron 之间的可版本化 IPC 契约。
+
+## 共享 UI
+
+共享视觉资产统一由 `@scopify/ui` 管理：
+
+1. `shadcn/` 保持 CLI 生成的原生组件形态。
+2. `scopify/` 保存无法仅靠 props 和 token 表达的通用扩展。
+3. 路由、Store、API 与业务 i18n 相关组件继续留在应用层。
+
+具体组件与实时预览请进入 [UI Library](/docs/ui-library)。
+
+## 上游项目
+
+- [Folia](https://github.com/chthollyphile/folia-major/tree/main)：完整播放舞台与桌面歌词展示源码快照，采用 AGPL-3.0。
+- [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)：网易云音乐后端能力。

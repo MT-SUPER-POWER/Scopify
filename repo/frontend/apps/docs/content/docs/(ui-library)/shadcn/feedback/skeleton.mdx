@@ -1,0 +1,84 @@
+---
+title: "Skeleton 骨架屏"
+description: "在内容加载期间维持布局稳定。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="skeleton-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add skeleton
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="skeleton"
+  title="components/ui/skeleton.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Skeleton } from "@scopify/ui/shadcn/components/skeleton"
+```
+
+```tsx
+<Skeleton className="h-[20px] w-[100px] rounded-full" />
+```
+
+## Avatar
+
+<ShadcnOfficialPreview styleName="radix-nova" name="skeleton-avatar"  />
+
+## Card
+
+<ShadcnOfficialPreview
+  styleName="radix-nova"
+  name="skeleton-card"
+  previewClassName="h-80"
+ />
+
+## Text
+
+<ShadcnOfficialPreview styleName="radix-nova" name="skeleton-text"  />
+
+## Form
+
+<ShadcnOfficialPreview styleName="radix-nova" name="skeleton-form"  />
+
+## Table
+
+<ShadcnOfficialPreview styleName="radix-nova" name="skeleton-table"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="skeleton-rtl" direction="rtl"  />

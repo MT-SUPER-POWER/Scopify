@@ -1,0 +1,5 @@
+.source/
+node_modules/
+.next/
+.vscode/
+docs/references/

@@ -1,0 +1,20 @@
+{
+  "title": "Framework",
+  "description": "Scopify 项目与开发框架",
+  "icon": "framework",
+  "root": true,
+  "pagesIndex": "index",
+  "pages": [
+    "---介绍---",
+    "index",
+    "features",
+    "shortcuts",
+    "technology",
+    "---开发与交付---",
+    "getting-started",
+    "architecture",
+    "roadmap",
+    "deployment",
+    "release"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "title": "OpenAPI",
+  "description": "Scopify IPC 和 API",
+  "icon": "openapi",
+  "root": true,
+  "pagesIndex": "api-reference",
+  "pages": [
+    "---API 介绍---",
+    "api-reference",
+    "how-to-implement-new-api",
+    "---Netease API---",
+    "external:[Scopify APIFOX 文档](https://vdoonnridu.apifox.cn/)",
+    "external:[Netease API 文档](https://docs-neteasecloudmusicapi.focalors.ltd/#/)",
+    "how-to-add-backend-module",
+    "---Desktop IPC---",
+    "desktop-ipc-about",
+    "desktop-ipc-architecture",
+    "desktop-ipc-contract",
+    "desktop-ipc-capabilities",
+    "desktop-ipc-channels",
+    "desktop-ipc-runtime-adapter",
+    "desktop-ipc-how-to-add",
+    "desktop-ipc-security"
+  ]
+}

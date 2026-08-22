@@ -1,0 +1,98 @@
+---
+title: "Switch 开关"
+description: "切换立即生效的开启或关闭状态。"
+---
+
+<ShadcnOfficialPreview styleName="radix-nova" name="switch-demo"  />
+
+<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add switch
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="mb-0 pt-2">
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install radix-ui
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ShadcnComponentSource
+  name="switch"
+  title="components/ui/switch.tsx"
+  styleName="radix-nova"
+ />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+import { Switch } from "@scopify/ui/shadcn/components/switch"
+```
+
+```tsx
+<Switch />
+```
+
+## Description
+
+<ShadcnOfficialPreview styleName="radix-nova" name="switch-description"  />
+
+## Choice Card
+
+Card-style selection where `FieldLabel` wraps the entire `Field` for a clickable card pattern.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="switch-choice-card"  />
+
+## Disabled
+
+Add the `disabled` prop to the `Switch` component to disable the switch. Add the `data-disabled` prop to the `Field` component for styling.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="switch-disabled"  />
+
+## Invalid
+
+Add the `aria-invalid` prop to the `Switch` component to indicate an invalid state. Add the `data-invalid` prop to the `Field` component for styling.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="switch-invalid"  />
+
+## Size
+
+Use the `size` prop to change the size of the switch.
+
+<ShadcnOfficialPreview styleName="radix-nova" name="switch-sizes"  />
+
+## RTL
+
+To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl).
+
+<ShadcnOfficialPreview styleName="radix-nova" name="switch-rtl" direction="rtl"  />
+
+## API Reference
+
+See the [Radix Switch](https://www.radix-ui.com/docs/primitives/components/switch#api-reference) documentation.
