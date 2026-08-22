@@ -32,6 +32,7 @@
 
 ### Visual
 
+- **新增 Scopify 公开落地页**：将文档站根路由改为沉浸式产品入口，复用 Folia「隐现」背景的 MeshGradient 与 Dithering 双层动态 shader，并以真实的 Scopify 主界面、动态歌词舞台和桌面音乐壁纸截图串联产品叙事；文档作为主要行动入口，GitHub 作为次要入口。
 - **按 tweakcn 源码重做 Shadcn Theme Lab**：重新对齐独立编辑器的顶部导航、主题预设栏、操作栏、可调整左右分栏、颜色分组、Hex 单行编辑器和 Cards 预览画布；Shadcn Default Profile 同步转换为等价的 sRGB Hex，主题读取、保存与导出保持 Hex，并在 Shadcn、Scopify 概览页补充实验室跳转入口。
 - **重编产品能力主文档**：按内容发现、搜索与导航、播放与队列、歌词与 Folia、音频体验、账户与音乐库、个性化与效率、桌面端集成八类能力重组产品说明；每类能力再按具体功能划分二级标题，产品截图统一改为单列展示，窄幅 Discord 状态图单独居中，并同步更新 README 功能总览与功能图谱。
 - **扁平化 Desktop IPC 侧栏**：保留 Desktop IPC 分组标题，将 IPC 页面直接列在其下，暂不引入二级导航。
