@@ -18,6 +18,25 @@
   --color-fd-ring: #1ed760;
 }
 
+body {
+  --docs-font-mono:
+    var(--font-docs-mono), "SFMono-Regular", "Cascadia Code", "Liberation Mono", monospace;
+}
+
+.prose :where(code),
+.shiki {
+  font-family: var(--docs-font-mono);
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1;
+  font-variant-ligatures: contextual;
+}
+
+.shiki [role="region"] {
+  font-size: 0.875rem;
+  line-height: 1.625;
+}
+
 @layer components {
   .component-preview-grid {
     background-image:

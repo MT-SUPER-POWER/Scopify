@@ -10,7 +10,7 @@
     "sync:shadcn-docs": "bun scripts/sync-shadcn-component-docs.mjs",
     "sync:shadcn-reference": "bun scripts/sync-shadcn-reference-data.mjs",
     "start": "next start --port 9191",
-    "test": "bun test tests",
+    "test": "bun test ./tests",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint . --max-warnings 0 --no-warn-ignored"
   },
@@ -47,6 +47,7 @@
     "eslint-config-next": "16.1.6",
     "lucide-react": "^1.26.0",
     "next": "16.1.6",
+    "prettier": "^3.9.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tailwindcss": "^4.3.3",

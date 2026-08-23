@@ -1,10 +1,16 @@
-import { SCOPIFY_THEME_TOKENS, SHADCN_THEME_TOKENS } from "@/constants/theme-lab";
+import {
+  BUILT_IN_THEME_SOURCES,
+  SCOPIFY_THEME_TOKENS,
+  SHADCN_THEME_TOKENS,
+} from "@/constants/theme-lab";
 import type {
   ThemeCssArtifact,
   ThemeDraft,
   ThemeLabScope,
   ThemeMode,
   ThemePreviewStyle,
+  ThemeProfileReader,
+  ThemePrototypeRecord,
   ThemeTokenDefinition,
   ThemeTokenValues,
 } from "@/types/theme-lab";
@@ -157,6 +163,16 @@ export function readThemeProfile(
   };
 
   return { dark: readMode("dark"), light: readMode("light") };
+}
+
+export function createBuiltInThemeRecords(
+  readProfile: ThemeProfileReader = readThemeProfile,
+): ThemePrototypeRecord[] {
+  return BUILT_IN_THEME_SOURCES.map(({ definitions, id, name }) => ({
+    draft: readProfile(id, definitions),
+    id,
+    name,
+  }));
 }
 
 export function createPreviewStyle(values: ThemeTokenValues, mode: ThemeMode): ThemePreviewStyle {

@@ -2,7 +2,12 @@ import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
 
 import { SCOPIFY_THEME_TOKENS, SHADCN_THEME_TOKENS } from "@/constants/theme-lab";
-import { generateThemeArtifacts, normalizeColorToHex, normalizeThemeId } from "@/lib/theme-lab";
+import {
+  createBuiltInThemeRecords,
+  generateThemeArtifacts,
+  normalizeColorToHex,
+  normalizeThemeId,
+} from "@/lib/theme-lab";
 import type { ThemeDraft, ThemeTokenDefinition, ThemeTokenValues } from "@/types/theme-lab";
 
 const valuesFor = (definitions: readonly ThemeTokenDefinition[], suffix: string) =>
@@ -16,6 +21,25 @@ const draft: ThemeDraft = {
 };
 
 describe("theme lab", () => {
+  test("registers both built-in theme profiles", () => {
+    const requestedProfiles: Array<{ id: string; tokenNames: string[] }> = [];
+    const records = createBuiltInThemeRecords((id, definitions) => {
+      requestedProfiles.push({
+        id,
+        tokenNames: definitions.map(({ name }) => name),
+      });
+
+      return {
+        dark: valuesFor(definitions, "dark"),
+        light: valuesFor(definitions, "light"),
+      };
+    });
+
+    expect(records.map(({ id }) => id)).toEqual(["shadcn-default", "scopify-default"]);
+    expect(requestedProfiles[1]?.tokenNames).toContain("--background");
+    expect(requestedProfiles[1]?.tokenNames).toContain("--scopify-success");
+  });
+
   test("normalizes a safe data-theme id", () => {
     expect(normalizeThemeId("  Ocean / Night  ")).toBe("ocean-night");
     expect(normalizeThemeId("***")).toBe("custom-theme");
