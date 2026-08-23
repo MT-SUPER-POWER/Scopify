@@ -1,4 +1,5 @@
 import type { MotionValue } from "framer-motion";
+import type { RefObject } from "react";
 
 import type { AudioBands, Line } from "@folia/types";
 
@@ -37,4 +38,9 @@ export interface LandingFoliaTimeline {
   currentLineIndex: number;
   currentTime: MotionValue<number>;
   lines: Line[];
+}
+
+export interface LandingEpilogueProps {
+  active: boolean;
+  sectionRef: RefObject<HTMLElement | null>;
 }
