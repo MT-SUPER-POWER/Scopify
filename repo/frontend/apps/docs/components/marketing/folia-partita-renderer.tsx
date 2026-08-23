@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 import { LANDING_FOLIA_THEME } from "@/constants/marketing";
-import type { LandingFoliaTimeline } from "@/types/marketing";
+import type { LandingPartitaTimeline } from "@/types/marketing";
 
 const FoliaPartita = dynamic(
   () =>
@@ -16,7 +16,7 @@ const FoliaPartita = dynamic(
 interface FoliaPartitaRendererProps {
   coverUrl: string;
   reducedMotion: boolean;
-  timeline: LandingFoliaTimeline;
+  timeline: LandingPartitaTimeline;
 }
 
 export function FoliaPartitaRenderer({
@@ -25,7 +25,7 @@ export function FoliaPartitaRenderer({
   timeline,
 }: FoliaPartitaRendererProps) {
   return (
-    <div className="absolute inset-0 overflow-hidden" data-folia-landing-mode="partita">
+    <div className="absolute inset-0 overflow-hidden" data-folia-landing-mode="partita-slogan">
       <FoliaPartita
         currentTime={timeline.currentTime}
         currentLineIndex={timeline.currentLineIndex}
@@ -37,14 +37,14 @@ export function FoliaPartitaRenderer({
         coverUrl={coverUrl}
         seed="scopify-landing-partita"
         showText
-        paused={reducedMotion}
-        staticMode={reducedMotion}
+        paused={reducedMotion || timeline.isSettled}
+        staticMode={reducedMotion || timeline.isSettled}
         isPreviewMode
         isPlayerChromeHidden
         hideTranslationSubtitle
         showSubtitleTranslation={false}
         subtitleContentMode="none"
-        lyricsFontScale={1.06}
+        lyricsFontScale={1.3}
         partitaTuning={{
           showGuideLines: true,
           useSemanticLayout: true,

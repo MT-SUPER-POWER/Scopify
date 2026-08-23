@@ -21,6 +21,8 @@ export const LANDING_FOLIA_THEME: Theme = {
 };
 
 export const LANDING_SONNET_LOOP_DURATION = 16;
+export const LANDING_PARTITA_ANIMATION_DURATION = 3.8;
+export const LANDING_PARTITA_SLOGAN = "让声音，显形。";
 
 export const LANDING_SONNET_COPY = [
   { text: "声音经过这里。", start: 0, end: 3.2 },

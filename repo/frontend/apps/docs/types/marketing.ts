@@ -40,6 +40,10 @@ export interface LandingFoliaTimeline {
   lines: Line[];
 }
 
+export interface LandingPartitaTimeline extends LandingFoliaTimeline {
+  isSettled: boolean;
+}
+
 export interface LandingEpilogueProps {
   active: boolean;
   sectionRef: RefObject<HTMLElement | null>;

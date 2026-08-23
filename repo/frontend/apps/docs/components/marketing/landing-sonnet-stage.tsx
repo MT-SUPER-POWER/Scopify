@@ -1,12 +1,13 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 import foliaStageScreenshot from "@/assets/features/lyrics-folia-stage.png";
 import { FoliaLatentBackground } from "@/components/marketing/folia-latent-background";
 import { FoliaPartitaRenderer } from "@/components/marketing/folia-partita-renderer";
 import { FoliaSonnetRenderer } from "@/components/marketing/folia-sonnet-renderer";
 import { LANDING_FOLIA_THEME } from "@/constants/marketing";
+import { useLandingPartitaTimeline } from "@/hooks/use-landing-partita-timeline";
 import { useLandingSonnetTimeline } from "@/hooks/use-landing-sonnet-timeline";
 import type { LandingScene } from "@/types/marketing";
 
@@ -18,6 +19,7 @@ export function LandingSonnetStage({ scene }: LandingSonnetStageProps) {
   const prefersReducedMotion = useReducedMotion() ?? false;
   const timeline = useLandingSonnetTimeline(prefersReducedMotion);
   const isIntro = scene === "intro";
+  const partitaTimeline = useLandingPartitaTimeline(isIntro, prefersReducedMotion);
   const isPerformance = scene === "performance";
   const isFragments = scene === "fragments";
   const isInterface = scene === "interface";
@@ -50,23 +52,21 @@ export function LandingSonnetStage({ scene }: LandingSonnetStageProps) {
         className="absolute inset-0 transition-colors duration-1000"
         style={{ backgroundColor: `rgba(2,3,7,${veilOpacity})` }}
       />
-      <AnimatePresence>
-        {isIntro && (
-          <motion.div
-            className="absolute inset-0 z-20 origin-center max-sm:scale-[0.84]"
-            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 0.96, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.025 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <FoliaPartitaRenderer
-              coverUrl={foliaStageScreenshot.src}
-              reducedMotion={prefersReducedMotion}
-              timeline={timeline}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div
+        aria-hidden={!isIntro}
+        className="absolute inset-0 z-20 origin-center max-sm:scale-[0.84]"
+        initial={
+          prefersReducedMotion || partitaTimeline.isSettled ? false : { opacity: 0, scale: 0.97 }
+        }
+        animate={{ opacity: isIntro ? 0.96 : 0, scale: isIntro ? 1 : 1.025 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <FoliaPartitaRenderer
+          coverUrl={foliaStageScreenshot.src}
+          reducedMotion={prefersReducedMotion}
+          timeline={partitaTimeline}
+        />
+      </motion.div>
       <div
         className="absolute inset-0 z-10 origin-center transition-[opacity,transform,filter] duration-1000 ease-out max-sm:scale-[0.88]"
         style={{
