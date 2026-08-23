@@ -2,75 +2,86 @@
 
 import type { RefObject } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 import desktopScreenshot from "@/assets/features/desktopMusic.png";
 import foliaScreenshot from "@/assets/features/lyricDynamic.png";
 import mainScreenshot from "@/assets/features/main.png";
 
 interface LandingInterfaceProps {
-  active: boolean;
   sectionRef: RefObject<HTMLElement | null>;
 }
 
 const frameClass =
-  "relative overflow-hidden rounded-[1.1rem] border border-white/12 bg-black/55 shadow-[0_30px_110px_rgba(0,0,0,0.42)] sm:rounded-[1.45rem]";
+  "relative aspect-[4/5] overflow-hidden rounded-[1.1rem] border border-white/12 bg-black/55 shadow-[0_30px_110px_rgba(0,0,0,0.42)] sm:aspect-video sm:rounded-[1.45rem]";
 
-export function LandingInterface({ active, sectionRef }: LandingInterfaceProps) {
+const interfaceFrames = [
+  {
+    alt: "Scopify 主界面",
+    index: "01",
+    label: "主界面",
+    objectPosition: "34% center",
+    src: mainScreenshot,
+  },
+  {
+    alt: "Scopify 桌面 Folia 界面",
+    index: "02",
+    label: "桌面 Folia",
+    objectPosition: "center",
+    src: desktopScreenshot,
+  },
+  {
+    alt: "Scopify 动态歌词界面",
+    index: "03",
+    label: "动态歌词",
+    objectPosition: "center",
+    src: foliaScreenshot,
+  },
+] as const;
+
+export function LandingInterface({ sectionRef }: LandingInterfaceProps) {
+  const prefersReducedMotion = useReducedMotion() ?? false;
+
   return (
     <section
       ref={sectionRef}
       aria-label="Scopify 真实界面"
-      className="relative min-h-[154svh] overflow-hidden bg-[#070912]/78 px-[5vw] py-[9svh] sm:min-h-[118svh]"
+      className="relative overflow-hidden bg-[#070912]/82"
     >
-      <motion.h2
-        className="landing-display mb-[7svh] max-w-5xl text-[clamp(2.9rem,7vw,7.8rem)] leading-[0.92] font-light tracking-[-0.065em] text-balance"
-        initial={false}
-        animate={{ opacity: active ? 1 : 0, y: active ? 0 : 38 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      >
-        不是概念图。
-        <br />
-        它已经在 Scopify 里。
-      </motion.h2>
-
-      <motion.div
-        className="grid h-[104svh] grid-cols-1 grid-rows-[1.25fr_1fr_1fr] gap-3 sm:h-[72svh] sm:grid-cols-12 sm:grid-rows-2 sm:gap-4"
-        initial={false}
-        animate={{ opacity: active ? 1 : 0, y: active ? 0 : 60 }}
-        transition={{ duration: 1.15, delay: active ? 0.16 : 0, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className={`${frameClass} sm:col-span-8 sm:row-span-2`}>
-          <Image
-            src={mainScreenshot}
-            alt="Scopify 主界面"
-            fill
-            className="object-cover object-center"
-            placeholder="blur"
-            sizes="(min-width: 640px) 60vw, 90vw"
-          />
-        </div>
-        <div className={`${frameClass} sm:col-span-4`}>
-          <Image
-            src={desktopScreenshot}
-            alt="Scopify 桌面 Folia 界面"
-            fill
-            className="object-cover object-center"
-            placeholder="blur"
-            sizes="(min-width: 640px) 30vw, 90vw"
-          />
-        </div>
-        <div className={`${frameClass} sm:col-span-4`}>
-          <Image
-            src={foliaScreenshot}
-            alt="Scopify 动态歌词界面"
-            fill
-            className="object-cover object-center"
-            placeholder="blur"
-            sizes="(min-width: 640px) 30vw, 90vw"
-          />
-        </div>
-      </motion.div>
+      {interfaceFrames.map((frame) => (
+        <article
+          key={frame.index}
+          className="relative flex min-h-svh items-center px-[5vw] py-[7svh]"
+        >
+          <motion.div
+            className="mx-auto w-full max-w-[78rem]"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ amount: 0.35 }}
+            transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <header className="mb-5 flex items-end justify-between border-b border-white/12 pb-4">
+              <h2 className="landing-display text-[clamp(1.9rem,3.2vw,3.8rem)] leading-none font-light tracking-[-0.055em]">
+                {frame.label}
+              </h2>
+              <span className="pb-1 text-[0.62rem] font-medium tracking-[0.24em] text-white/38">
+                {frame.index} / 03
+              </span>
+            </header>
+            <div className={frameClass}>
+              <Image
+                src={frame.src}
+                alt={frame.alt}
+                fill
+                className="object-cover sm:object-contain"
+                style={{ objectPosition: frame.objectPosition }}
+                placeholder="blur"
+                sizes="(min-width: 640px) 88vw, 90vw"
+              />
+            </div>
+          </motion.div>
+        </article>
+      ))}
     </section>
   );
 }

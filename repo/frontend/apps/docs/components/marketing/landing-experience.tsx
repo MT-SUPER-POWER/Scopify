@@ -19,7 +19,7 @@ export function LandingExperience() {
         <LandingIntro sectionRef={introRef} />
         <LandingPerformance sectionRef={performanceRef} active={scene === "performance"} />
         <LandingFragments sectionRef={fragmentsRef} active={scene === "fragments"} />
-        <LandingInterface sectionRef={interfaceRef} active={scene === "interface"} />
+        <LandingInterface sectionRef={interfaceRef} />
         <LandingEpilogue sectionRef={epilogueRef} active={scene === "epilogue"} />
       </div>
     </div>
