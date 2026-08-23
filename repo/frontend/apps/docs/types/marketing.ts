@@ -31,7 +31,7 @@ export interface FoliaLatentTuning {
 
 export type LandingScene = "intro" | "performance" | "fragments" | "interface" | "epilogue";
 
-export interface LandingSonnetTimeline {
+export interface LandingFoliaTimeline {
   audioBands: AudioBands;
   audioPower: MotionValue<number>;
   currentLineIndex: number;

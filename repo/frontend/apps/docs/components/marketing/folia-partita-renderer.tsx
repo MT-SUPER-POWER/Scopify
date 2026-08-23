@@ -5,28 +5,28 @@ import dynamic from "next/dynamic";
 import { LANDING_FOLIA_THEME } from "@/constants/marketing";
 import type { LandingFoliaTimeline } from "@/types/marketing";
 
-const FoliaSonnet = dynamic(
+const FoliaPartita = dynamic(
   () =>
-    import("@folia/components/visualizer/sonnet/VisualizerSonnet").then((module) => module.default),
+    import("@folia/components/visualizer/partita/VisualizerPartita").then(
+      (module) => module.default,
+    ),
   { ssr: false },
 );
 
-interface FoliaSonnetRendererProps {
+interface FoliaPartitaRendererProps {
   coverUrl: string;
   reducedMotion: boolean;
-  showText: boolean;
   timeline: LandingFoliaTimeline;
 }
 
-export function FoliaSonnetRenderer({
+export function FoliaPartitaRenderer({
   coverUrl,
   reducedMotion,
-  showText,
   timeline,
-}: FoliaSonnetRendererProps) {
+}: FoliaPartitaRendererProps) {
   return (
-    <div className="absolute inset-0 overflow-hidden" data-folia-landing-mode="sonnet">
-      <FoliaSonnet
+    <div className="absolute inset-0 overflow-hidden" data-folia-landing-mode="partita">
+      <FoliaPartita
         currentTime={timeline.currentTime}
         currentLineIndex={timeline.currentLineIndex}
         lines={timeline.lines}
@@ -35,8 +35,8 @@ export function FoliaSonnetRenderer({
         audioBands={timeline.audioBands}
         background={{ transparent: true }}
         coverUrl={coverUrl}
-        seed="scopify-landing-sonnet"
-        showText={showText}
+        seed="scopify-landing-partita"
+        showText
         paused={reducedMotion}
         staticMode={reducedMotion}
         isPreviewMode
@@ -44,7 +44,13 @@ export function FoliaSonnetRenderer({
         hideTranslationSubtitle
         showSubtitleTranslation={false}
         subtitleContentMode="none"
-        lyricsFontScale={0.84}
+        lyricsFontScale={1.06}
+        partitaTuning={{
+          showGuideLines: true,
+          useSemanticLayout: true,
+          staggerMin: 28,
+          staggerMax: 88,
+        }}
         songTitle="Scopify"
         songArtist="Folia"
       />
