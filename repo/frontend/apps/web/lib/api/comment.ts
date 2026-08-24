@@ -25,6 +25,10 @@ export function getPlaylistComments(params: MusicCommentParams) {
   return request.get<SongComment>("/comment/playlist", { params });
 }
 
+export function getAlbumComments(params: MusicCommentParams) {
+  return request.get<SongComment>("/comment/album", { params });
+}
+
 export function getVoiceComments(params: MusicCommentParams) {
   return request.get<SongComment>("/comment/dj", { params });
 }
@@ -56,7 +60,7 @@ export function addResourceComment(
  *
  * @param id 歌曲id
  * @param t 0 删除 1 发送, 2 回复
- * @param type 资源类型 0歌曲 2歌单 4电台节目 7电台/VoiceList
+ * @param type 资源类型 0歌曲 2歌单 3专辑 4电台节目 7电台/VoiceList
  * @param commentId 被操作的评论id
  */
 export function delComments(
@@ -97,7 +101,7 @@ export function replyComments(
  * @param id 资源id
  * @param cid 评论id
  * @param t 是否点赞 1点赞 0取消
- * @param type 资源类型 0歌曲 2歌单 4电台节目 7电台/VoiceList
+ * @param type 资源类型 0歌曲 2歌单 3专辑 4电台节目 7电台/VoiceList
  */
 export function toggleLikeComments(
   id: string | number,

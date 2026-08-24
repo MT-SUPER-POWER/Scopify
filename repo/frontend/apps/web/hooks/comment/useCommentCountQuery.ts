@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import {
+  getAlbumComments,
   getMusicComments,
   getNewComments,
   getPlaylistComments,
@@ -26,11 +27,13 @@ async function fetchCommentCount(kind: CommentResourceKind, resourceId: string) 
     if (typeof total === "number" && total >= 0) return total;
   } else {
     const params = { id: resourceId, limit: 1, offset: 0 };
-    const response = await (kind === "playlist"
-      ? getPlaylistComments(params)
-      : kind === "voice"
-        ? getVoiceComments(params)
-        : getMusicComments(params));
+    const response = await (kind === "album"
+      ? getAlbumComments(params)
+      : kind === "playlist"
+        ? getPlaylistComments(params)
+        : kind === "voice"
+          ? getVoiceComments(params)
+          : getMusicComments(params));
     const total = response.data?.total;
     if (typeof total === "number" && total >= 0) return total;
   }

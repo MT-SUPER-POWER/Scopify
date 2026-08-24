@@ -23,3 +23,12 @@ export interface AlbumSubscriptionMutation {
   id: number | string;
   subscribe: boolean;
 }
+
+export interface AlbumActionsProps {
+  albumId: string;
+  isAlbumCollected: boolean;
+  isPlaying: boolean;
+  isTogglingAlbumSubscribe: boolean;
+  onPlay: () => void;
+  onToggleSubscribe: () => void;
+}

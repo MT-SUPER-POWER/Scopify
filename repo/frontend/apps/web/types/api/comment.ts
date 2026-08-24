@@ -3,6 +3,7 @@ import type { NeteaseComment } from "@/types/api/music";
 export const COMMENT_RESOURCE_TYPE = {
   song: 0,
   playlist: 2,
+  album: 3,
   voice: 4,
   "voice-list": 7,
 } as const;

@@ -5,9 +5,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { getAritstDetail } from "@/lib/api/artist";
+import { getAlbumDetail } from "@/lib/api/album";
 import {
   addResourceComment,
   delComments,
+  getAlbumComments,
   getMusicComments,
   getNewComments,
   getPlaylistComments,
@@ -84,6 +86,21 @@ async function getPlaylistHeader(resourceId: string): Promise<CommentResourceHea
   };
 }
 
+async function getAlbumHeader(resourceId: string): Promise<CommentResourceHeaderData> {
+  const response = await getAlbumDetail(resourceId);
+  const album = response.data?.album;
+  const artists = album?.artists ?? (album?.artist ? [album.artist] : []);
+  return {
+    artists: artists.map((artist) => ({
+      avatarUrl: artist.picUrl ?? artist.img1v1Url ?? "",
+      id: artist.id ?? "",
+      name: artist.name ?? "",
+    })),
+    coverUrl: album?.picUrl ?? album?.blurPicUrl ?? FALLBACK_COVER,
+    title: album?.name ?? "",
+  };
+}
+
 async function getVoiceHeader(resourceId: string): Promise<CommentResourceHeaderData> {
   try {
     const response = await getRadioProgramDetail(resourceId);
@@ -123,6 +140,8 @@ async function getVoiceListHeader(resourceId: string): Promise<CommentResourceHe
 
 function getResourceHeader(kind: CommentResourceKind, resourceId: string) {
   switch (kind) {
+    case "album":
+      return getAlbumHeader(resourceId);
     case "playlist":
       return getPlaylistHeader(resourceId);
     case "voice":
@@ -185,11 +204,13 @@ export function useCommentData() {
               )
             : normalizeLegacyComments(
                 (
-                  await (resource.kind === "playlist"
-                    ? getPlaylistComments(params)
-                    : resource.kind === "voice"
-                      ? getVoiceComments(params)
-                      : getMusicComments(params))
+                  await (resource.kind === "album"
+                    ? getAlbumComments(params)
+                    : resource.kind === "playlist"
+                      ? getPlaylistComments(params)
+                      : resource.kind === "voice"
+                        ? getVoiceComments(params)
+                        : getMusicComments(params))
                 ).data,
               );
 

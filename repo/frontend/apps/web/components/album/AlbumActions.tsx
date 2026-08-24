@@ -1,24 +1,24 @@
 "use client";
 
-import { ArrowDownCircle, MoreHorizontal, Pause, Play, Shuffle } from "lucide-react";
+import { Badge } from "@scopify/ui/shadcn/components/badge";
+import { ArrowDownCircle, MessageCircle, MoreHorizontal, Pause, Play, Shuffle } from "lucide-react";
+
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
+import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
+import { getCommentHref } from "@/lib/comment/commentResource";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { formatCompactCount } from "@/lib/utils";
+import { useI18n } from "@/store/module/i18n";
+import type { AlbumActionsProps } from "@/types/album";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
-import { useI18n } from "@/store/module/i18n";
-
-interface AlbumActionsProps {
-  isPlaying: boolean;
-  isAlbumCollected: boolean;
-  isTogglingAlbumSubscribe: boolean;
-  onPlay: () => void;
-  onToggleSubscribe: () => void;
-}
 
 export function AlbumActions({
+  albumId,
   isPlaying,
   isAlbumCollected,
   isTogglingAlbumSubscribe,
@@ -26,7 +26,13 @@ export function AlbumActions({
   onToggleSubscribe,
 }: AlbumActionsProps) {
   const { t } = useI18n();
+  const smartRouter = useSmartRouter();
+  const { data: commentCount } = useCommentCountQuery("album", albumId);
   const playLabel = t(isPlaying ? "ui.pause" : "ui.play");
+  const commentLabel =
+    commentCount === undefined
+      ? t("album.action.comments")
+      : t("album.action.commentsWithCount", { count: formatCompactCount(commentCount) });
 
   return (
     <TooltipProvider>
@@ -48,6 +54,30 @@ export function AlbumActions({
           </TooltipTrigger>
           <TooltipContent side="top" sideOffset={8}>
             {playLabel}
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label={commentLabel}
+              onClick={() => smartRouter.push(getCommentHref("album", albumId))}
+              className="relative inline-flex size-8 cursor-pointer items-center justify-center text-content-muted transition-colors hover:text-content focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:outline-none"
+            >
+              <MessageCircle className="size-8" />
+              {commentCount !== undefined && (
+                <Badge
+                  variant="outline"
+                  className="pointer-events-none absolute top-0 right-0 h-4 min-w-4 translate-x-1/2 -translate-y-1/3 border-border bg-surface-overlay px-1 text-[9px] leading-none text-content-muted tabular-nums shadow-panel backdrop-blur-sm"
+                >
+                  {formatCompactCount(commentCount)}
+                </Badge>
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {commentLabel}
           </TooltipContent>
         </Tooltip>
 

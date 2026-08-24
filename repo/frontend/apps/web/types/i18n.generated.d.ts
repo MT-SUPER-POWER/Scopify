@@ -905,9 +905,9 @@ export interface TranslateFn {
    */
   (key: "settings.localBackend.autoStart.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 使用 Electron 随应用启动本地后端，减少国内网络访问远端 Vercel 后端的延迟。
-   * zh-TW: 由 Electron 隨應用程式啟動本機後端，降低連線遠端 Vercel 後端的延遲。
-   * en-US: Let Electron launch the local backend to avoid slow remote Vercel requests for some regions.
+   * zh-CN: 使用 Electron 随应用启动本地后端；网络设置中的 API 地址保持不变，可按需手动切换。
+   * zh-TW: 由 Electron 隨應用程式啟動本機後端；網路設定中的 API 位址維持不變，可按需手動切換。
+   * en-US: Let Electron launch the local backend; the API target in Network settings stays unchanged and can be switched manually.
    */
   (key: "settings.localBackend.autoStart.sublabel", params?: TranslationParams): string;
   /**
@@ -3149,6 +3149,12 @@ export interface TranslateFn {
    */
   (key: "comments.page.playlistTag", params?: TranslationParams): string;
   /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Album
+   */
+  (key: "comments.page.albumTag", params?: TranslationParams): string;
+  /**
    * zh-CN: 声音
    * zh-TW: 聲音
    * en-US: Voice
@@ -3658,6 +3664,18 @@ export interface TranslateFn {
    * en-US: Shuffle play
    */
   (key: "album.action.shuffle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看评论
+   * zh-TW: 查看評論
+   * en-US: View comments
+   */
+  (key: "album.action.comments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看评论（{{count}}）
+   * zh-TW: 查看評論（{{count}}）
+   * en-US: View comments ({{count}})
+   */
+  (key: "album.action.commentsWithCount", params?: TranslationParams): string;
   /**
    * zh-CN: 下载
    * zh-TW: 下載

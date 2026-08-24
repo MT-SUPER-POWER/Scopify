@@ -89,6 +89,7 @@ export default function AlbumPage() {
       )}
       <div className="hero-content-transition relative z-10 flex flex-1 flex-col">
         <AlbumActions
+          albumId={albumId}
           isPlaying={isPlaying}
           isAlbumCollected={isAlbumCollected}
           isTogglingAlbumSubscribe={isTogglingAlbumSubscribe}

@@ -11,6 +11,7 @@ describe("comment resources", () => {
   test("keeps legacy song links and builds typed resource links", () => {
     expect(getCommentHref("song", 42)).toBe("/comment?songId=42");
     expect(getCommentHref("playlist", 7)).toBe("/comment?resource=playlist&id=7");
+    expect(getCommentHref("album", 8)).toBe("/comment?resource=album&id=8");
     expect(getCommentHref("voice", 9)).toBe("/comment?resource=voice&id=9");
     expect(getCommentHref("voice-list", 11)).toBe("/comment?resource=voice-list&id=11");
   });
@@ -25,6 +26,11 @@ describe("comment resources", () => {
       id: "11",
       kind: "voice-list",
       type: 7,
+    });
+    expect(resolveCommentResource("album", "8", null)).toEqual({
+      id: "8",
+      kind: "album",
+      type: 3,
     });
     expect(resolveCommentResource("video", "11", null)).toBeNull();
   });
