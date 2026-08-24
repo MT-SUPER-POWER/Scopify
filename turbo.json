@@ -20,16 +20,24 @@
       "dependsOn": ["^build"],
       "outputs": ["out/**"]
     },
+    "build:host": {
+      "dependsOn": ["^build"],
+      "outputs": ["build/desktop/app/out/**"]
+    },
     "sync:renderer": {
       "dependsOn": ["@scopify/web#build:desktop"],
       "cache": false
     },
+    "@scopify/desktop#build": {
+      "dependsOn": ["sync:renderer", "^build"],
+      "outputs": ["build/desktop/app/out/**"]
+    },
     "build:win": {
-      "dependsOn": ["sync:renderer", "build"],
+      "dependsOn": ["build"],
       "cache": false
     },
     "build:mac": {
-      "dependsOn": ["sync:renderer", "build"],
+      "dependsOn": ["build"],
       "cache": false
     },
     "package:win": {
@@ -39,11 +47,11 @@
       "cache": false
     },
     "release:win": {
-      "dependsOn": ["sync:renderer", "build"],
+      "dependsOn": ["build"],
       "cache": false
     },
     "release:mac": {
-      "dependsOn": ["sync:renderer", "build"],
+      "dependsOn": ["build"],
       "cache": false
     },
     "dev": {

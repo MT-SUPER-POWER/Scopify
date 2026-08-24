@@ -113,10 +113,8 @@ jobs:
         with:
           node-version: 24
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.15.4
+      - name: Prepare pinned pnpm
+        run: corepack prepare pnpm@9.15.4 --activate
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -132,7 +130,7 @@ jobs:
 
       - name: Install local backend dependencies
         working-directory: repo/backend/api-enhanced
-        run: pnpm install --frozen-lockfile
+        run: corepack pnpm install --frozen-lockfile
 
       - name: Prepare Electron distribution
         shell: bash
@@ -161,7 +159,7 @@ jobs:
         run: bun repo/frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
 
       - name: Build Electron host
-        run: bunx turbo run build --filter=@scopify/desktop
+        run: bunx turbo run build:host --filter=@scopify/desktop
 
       - name: Package Electron without publishing
         run: bunx turbo run ${{ matrix.package-script }} --filter=@scopify/desktop
