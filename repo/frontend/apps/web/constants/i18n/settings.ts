@@ -98,7 +98,7 @@ export const settingsMessages = defineMessages(
     "settings.section.localBackend": "内置后端",
     "settings.localBackend.autoStart.label": "启动时运行本地后端",
     "settings.localBackend.autoStart.sublabel":
-      "使用 Electron 随应用启动本地后端，减少国内网络访问远端 Vercel 后端的延迟。",
+      "使用 Electron 随应用启动本地后端；网络设置中的 API 地址保持不变，可按需手动切换。",
     "settings.localBackend.port.label": "本地后端端口",
     "settings.localBackend.port.sublabel":
       "仅监听本机 127.0.0.1；端口被占用时不会强行终止其他服务。",
@@ -336,7 +336,7 @@ export const settingsMessages = defineMessages(
     "settings.section.localBackend": "內建後端",
     "settings.localBackend.autoStart.label": "啟動時執行本機後端",
     "settings.localBackend.autoStart.sublabel":
-      "由 Electron 隨應用程式啟動本機後端，降低連線遠端 Vercel 後端的延遲。",
+      "由 Electron 隨應用程式啟動本機後端；網路設定中的 API 位址維持不變，可按需手動切換。",
     "settings.localBackend.port.label": "本機後端連接埠",
     "settings.localBackend.port.sublabel":
       "只監聽本機 127.0.0.1；連接埠被占用時不會強制終止其他服務。",
@@ -581,7 +581,7 @@ export const settingsMessages = defineMessages(
     "settings.section.localBackend": "Bundled Backend",
     "settings.localBackend.autoStart.label": "Start the local backend on launch",
     "settings.localBackend.autoStart.sublabel":
-      "Let Electron launch the local backend to avoid slow remote Vercel requests for some regions.",
+      "Let Electron launch the local backend; the API target in Network settings stays unchanged and can be switched manually.",
     "settings.localBackend.port.label": "Local backend port",
     "settings.localBackend.port.sublabel":
       "Listens on 127.0.0.1 only; an occupied port will not terminate another service.",

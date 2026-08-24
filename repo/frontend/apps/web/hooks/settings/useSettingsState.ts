@@ -14,6 +14,7 @@ import {
 } from "@/lib/cache/cacheManagement";
 import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
+import { buildSavedSettingsConfig } from "@/lib/settings/buildSavedSettingsConfig";
 import {
   cleanBackendHostInput,
   isValidBackendHost,
@@ -419,60 +420,6 @@ export function useSettingsState() {
     key: K,
     value: DesktopHostConfig[S][K],
   ) => {
-    if (section === "backend" && key === "autoStart" && typeof value === "boolean") {
-      setConfig((current) => {
-        if (!current?.desktop) return current;
-        return {
-          ...current,
-          desktop: {
-            ...current.desktop,
-            backend: { ...current.desktop.backend, autoStart: value },
-          },
-          ...(value
-            ? {
-                web: {
-                  ...current.web,
-                  backend: {
-                    ...current.web.backend,
-                    host: "127.0.0.1",
-                    port: current.desktop.backend.port,
-                    protocol: "http" as const,
-                  },
-                },
-              }
-            : {}),
-        };
-      });
-      return;
-    }
-
-    if (section === "backend" && key === "port" && typeof value === "number") {
-      setConfig((current) => {
-        if (!current?.desktop) return current;
-        return {
-          ...current,
-          desktop: {
-            ...current.desktop,
-            backend: { ...current.desktop.backend, port: value },
-          },
-          ...(current.desktop.backend.autoStart
-            ? {
-                web: {
-                  ...current.web,
-                  backend: {
-                    ...current.web.backend,
-                    host: "127.0.0.1",
-                    port: value,
-                    protocol: "http" as const,
-                  },
-                },
-              }
-            : {}),
-        };
-      });
-      return;
-    }
-
     setConfig((current) =>
       current?.desktop
         ? {
@@ -524,21 +471,10 @@ export function useSettingsState() {
       return;
     }
 
-    const backendToUse = config.desktop?.backend.autoStart
-      ? {
-          ...config.web.backend,
-          host: "127.0.0.1",
-          port: config.desktop.backend.port,
-          protocol: "http" as const,
-        }
-      : config.web.backend;
-    const resolvedBackend = validateBackendConfig(config.web.app.locale, backendToUse);
+    const resolvedBackend = validateBackendConfig(config.web.app.locale, config.web.backend);
     if (!resolvedBackend) return;
 
-    const nextWebConfig: WebConfig = {
-      ...config.web,
-      backend: resolvedBackend.backend,
-    };
+    const nextWebConfig = buildSavedSettingsConfig(config, resolvedBackend.backend).web;
 
     setIsSaving(true);
     try {

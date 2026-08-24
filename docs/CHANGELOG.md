@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.4.6
+## v1.4.7
 
 ### Added
 
@@ -22,13 +22,6 @@
 - **简化 Netease API 文档入口**：移除本地生成的接口镜像与请求调试页面，OpenAPI 文档域统一跳转到 Apifox 维护的网易云音乐接口文档。
 - **扩充 Framework 文档**：根据仓库 README 重组产品能力、技术栈、开发启动、系统架构、部署运行、路线图与发布规范，并复用现有产品截图形成可浏览的项目知识入口。
 - **新增 Scopify Docs 文档工作台**：新增独立 `@scopify/docs` Fumadocs 应用并接入现有 Scopify 产品 Logo；侧栏以 GitHub Repository 为首项，并按 Document、UI Library、API Reference 三个文档域组织内容，将 Shadcn / Scopify 降级为 UI Library 内的资产分类；为当前 5 个 Shadcn 组件补齐可搜索文档、导入示例与交互预览，保留 Scopify 组件体系规划入口，并新增快速开始、架构与 API 规划页面以及 `dev:docs` / `build:docs` 工作区命令。
-- **新增设置页快捷键入口**：将快捷键体系中的默认 `open-shortcut-settings` 绑定改为 `Cmd/Ctrl + ,`，在渲染端按键监听中直接跳转 `/setting`，无需主进程全局注册与重启。
-- **推荐播客声音支持独立刷新与文案对齐**：主页「推荐播客声音」板块标题旁新增刷新按钮，点击可重新向 `/v1/pc/voicelist/rcmd/list` 获取最新随机推荐；接口预取数量调整为 24 条，按 6 个一组展示并支持分页直达；将原「推荐声音歌单」文案统一对齐为「推荐播客声音」。
-- **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐播客声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的分页导航栏，并调高了各接口的单次预取上限。
-- **新增 Electron 内置后端生命周期管理**：桌面端可选自动启动随安装包提供的本地 API，并支持自定义端口、检测端口占用、识别外部已运行后端及通过 IPC 将状态同步到设置页。
-- **默认启用 Electron 内置后端**：新安装的桌面端默认启动本地 API，仍可在桌面端设置中关闭并切换到独立后端。
-- **调整本地后端启动控制位置**：将自动启动开关、端口与运行状态提示归入桌面端设置，网络设置专注于后端连接地址和 Ping 检测。
-- **重构桌面端日志生命周期**：当前运行日志固定写入 `main.log`，启动时将上一轮日志按本地时间归档到 `archive/YYYY-MM-DD/`；分片超过单文件上限后保留历史文件，不再覆盖为 `.old.log`，并自动标记异常中断会话。
 
 ### Visual
 
@@ -45,6 +38,41 @@
 - **扁平化 Desktop IPC 侧栏**：保留 Desktop IPC 分组标题，将 IPC 页面直接列在其下，暂不引入二级导航。
 - **补充文档侧栏底部操作栏**：在 Scopify Docs 侧栏底部加入 GitHub 图标入口，并与主题切换控件分列两端，形成固定的仓库与外观快捷操作区。
 - **重组文档信息架构**：将 Scopify Docs 拆分为 `Framework`、`UI Library`、`OpenAPI` 三个可切换的文档域，每个域维护独立侧边栏，并共享顶部 GitHub 仓库入口。
+
+### Quality
+
+- **规范 Tailwind CSS 类名顺序与收紧 CI / Husky Lint 拦截规则**：为 Prettier 与 ESLint 补充 `tailwindStylesheet` 和 `tailwindFunctions` 配置，统一修复全仓类名顺序和无意义任意值警告；将 ESLint 警告阈值设为 `--max-warnings 0`，并在 `lint-staged` 与 CI/CD 中开启严格拦截，确保代码提交和持续集成中存在任何 Warning 或 Error 时自动中断。
+- **撤回未成熟的 Scopify 公共组件抽取**：恢复播放、徽标、收藏、重试与标题等组件在 Web 应用内的原有归属，移除 `@scopify/ui/scopify/components/*` 的不稳定公开入口与预览；保留 Shadcn 原生组件、共享主题层和文档站，待组件边界重新设计后再逐项评审。
+- **统一文档服务端口**：将 Scopify Docs 的开发与生产服务默认端口调整为 `9191`，确保 `dev:docs` 与构建后启动使用同一地址。
+
+### Fixed
+
+- **修复桌面内置后端启动被 npm 版本检查阻塞**：安装包中的本地 API 不再等待 npm registry 版本查询；开发环境仍保留检查，避免网络波动导致后端未监听端口即超时失败。
+- **修复自动启动本地后端覆盖自定义 API 地址**：本地后端的自动启动与端口只管理桌面进程生命周期，保存网络设置时会保留用户配置的协议、主机与端口。
+- **修复 Sidebar 文档生产构建缺少 Image 映射**：为官方 MDX 内容注册 Next Image 组件，避免包含图片示例的 Shadcn Sidebar 页面在静态预渲染阶段中断构建。
+- **修复 Docs 代码示例缩进丢失与字体回退**：MDX 内嵌的 TS/TSX 示例在进入动态高亮前统一恢复标准格式，避免 JSX 属性模板编译后子节点全部顶格；文档代码块改用独立加载的 Geist Mono，并统一为更清晰的 14px 字号与行高，不影响 Scopify Web 或 UI 主题 Token；测试入口同步收紧到 Docs 自身测试目录，避免误执行参考源码中的上游测试。
+- **修复主题选择器遗漏 Scopify 默认主题**：将 `shadcn-default` 与 `scopify-default` 统一注册为内置主题；Scopify 默认主题会同时读取 Shadcn 基础 Token 和 Scopify 扩展 Token，确保 UI Library 的局部主题切换展示完整主题能力。
+- **修复落地页 Sonnet 拖动与内容重叠**：商籁改用独立的无声播放时钟持续循环，滚动只负责切换章节；章节标题在 Folia 接管画面前自动退场，桌面截图显影时不再与大字争夺视觉焦点。
+- **修复 Folia 隐现流体切歌后停帧**：增加可见状态检测与自动重挂载，解决跨歌单右键切歌时 WebGL 流体停滞的问题。
+- **修复 Electron 内置后端未就绪时主页面提前加载**：桌面端启用本地后端自动启动时，启动页会等待后端健康检查确认运行后再创建主窗口；启动失败时提供重试或退出，不再让首屏请求直接落入错误页；使用自定义后端时不增加启动门槛。
+- **修复桌面打包与 CI 的子模块与主题硬编码问题**：将 `ci.yml` 与 `release.yml` 的 `checkout` 明确禁用子模块递归，确保打包流程只初始化后端子模块；同时将 `AudioEqualizerPanel` 的危险色按钮从硬编码 `red` 类名改为语义化 `destructive` 主题 token，通过 `lint:theme` 检查。
+- **修复播放器状态 Store 单测在 CI 中偶发缺失 Action 的问题**：`playerExpiredUrl.test.ts`、`playerRepeat.test.ts` 与 `playbackQueueStoreAdapter.test.ts` 改为固定基线 actions 并复用 `setState` 基线快照，避免直接依赖 `usePlayerStore.getState()` 带来的并发污染，确保 `togglePlaying`、`setIsPlaying` 与 `playNext` 在测试运行中始终可调用。
+- **修复播放器状态 Store 单测在 CI 中 `getInitialState` 兼容性问题**：将三处测试改回 `usePlayerStore.getState()` 并通过 action 存在校验与回滚保护，避免 GitHub Actions 环境下 `getInitialState` 不存在导致 CI 直接报错。
+
+## v1.4.6
+
+### Added
+
+- **新增设置页快捷键入口**：将快捷键体系中的默认 `open-shortcut-settings` 绑定改为 `Cmd/Ctrl + ,`，在渲染端按键监听中直接跳转 `/setting`，无需主进程全局注册与重启。
+- **推荐播客声音支持独立刷新与文案对齐**：主页「推荐播客声音」板块标题旁新增刷新按钮，点击可重新向 `/v1/pc/voicelist/rcmd/list` 获取最新随机推荐；接口预取数量调整为 24 条，按 6 个一组展示并支持分页直达；将原「推荐声音歌单」文案统一对齐为「推荐播客声音」。
+- **首页全板块展开支持分页直达**：主页问候快捷横条（`HomeGreetingSection`）、专属推荐歌单（`PersonalizedPlaylists`）、推荐歌手（`SuggestedArtists`）和推荐播客声音（`RecommendedVoiceLists`）在展开状态下均支持带有 `[1] [2] [3]...` 数字页码直达和左右箭头的分页导航栏，并调高了各接口的单次预取上限。
+- **新增 Electron 内置后端生命周期管理**：桌面端可选自动启动随安装包提供的本地 API，并支持自定义端口、检测端口占用、识别外部已运行后端及通过 IPC 将状态同步到设置页。
+- **默认启用 Electron 内置后端**：新安装的桌面端默认启动本地 API，仍可在桌面端设置中关闭并切换到独立后端。
+- **调整本地后端启动控制位置**：将自动启动开关、端口与运行状态提示归入桌面端设置，网络设置专注于后端连接地址和 Ping 检测。
+- **重构桌面端日志生命周期**：当前运行日志固定写入 `main.log`，启动时将上一轮日志按本地时间归档到 `archive/YYYY-MM-DD/`；分片超过单文件上限后保留历史文件，不再覆盖为 `.old.log`，并自动标记异常中断会话。
+
+### Visual
+
 - **整理 Folia 侧栏音频与视觉快捷设置**：音质、均衡器和音频增益合并为单行控制；歌词动画与背景行移除独立设置齿轮，在 Folia 模式选择弹层底部增加“更多设置”入口并跳转到对应全局设置页；动画强度仅在实际支持的模式中显示，并移动到随机切换按钮之前。
 - **统一 Folia 动画参数卡片边界**：将浮名等 7 类动画参数面板写死的白色描边改为跟随 Folia 次要色 token，恢复浅色主题下缺失的圆角边框，并保持深色与自定义主题一致。
 - **恢复 Folia 全局背景与歌词动画的展开式选择**：全局背景类型和动画模式重新使用原有的预设选项组，直接展示全部模式及当前选中高光；各模式内部的局部参数继续使用紧凑按钮，避免全局选择也被压缩成单个下拉入口。
@@ -61,21 +89,13 @@
 ### Quality
 
 - **收敛前端内联标签并消除硬编码样式**：重构 `MediaInfoBadge` 消除散落在各处的独立内联 `<span>` 硬编码，统一复用 `@scopify/ui` 导出的 `Badge` 原生组件与设计 Token，保证跨平台与暗黑模式下的边框、圆角与字号规范统一。
-- **规范 Tailwind CSS 类名顺序与收紧 CI / Husky Lint 拦截规则**：为 Prettier 与 ESLint 补充 `tailwindStylesheet` 和 `tailwindFunctions` 配置，统一修复全仓类名顺序和无意义任意值警告；将 ESLint 警告阈值设为 `--max-warnings 0`，并在 `lint-staged` 与 CI/CD 中开启严格拦截，确保代码提交和持续集成中存在任何 Warning 或 Error 时自动中断。
 - **解耦主页各业务板块组件与修正数据流向**：将主页内联的问候横条与推荐歌手板块分别抽离为独立的 `HomeGreetingSection` 与 `SuggestedArtists` 组件；完善各板块 Props 类型至 `types/components/home.ts`；「为 {{name}} 推荐」板块准确绑定至登录用户个性化推荐接口（`/recommend/resource`，未登录自动回退至 `/personalized`），顶部问候横条绑定至公共推荐池（`/personalized`）。
 - **补充日志轮转边界测试**：覆盖启动归档、异常退出标记、同毫秒重名规避和归档清理不影响 `main.log` 等场景。
 
 
 ### Fixed
 
-- **修复 Sidebar 文档生产构建缺少 Image 映射**：为官方 MDX 内容注册 Next Image 组件，避免包含图片示例的 Shadcn Sidebar 页面在静态预渲染阶段中断构建。
-- **修复 Docs 代码示例缩进丢失与字体回退**：MDX 内嵌的 TS/TSX 示例在进入动态高亮前统一恢复标准格式，避免 JSX 属性模板编译后子节点全部顶格；文档代码块改用独立加载的 Geist Mono，并统一为更清晰的 14px 字号与行高，不影响 Scopify Web 或 UI 主题 Token；测试入口同步收紧到 Docs 自身测试目录，避免误执行参考源码中的上游测试。
-- **修复主题选择器遗漏 Scopify 默认主题**：将 `shadcn-default` 与 `scopify-default` 统一注册为内置主题；Scopify 默认主题会同时读取 Shadcn 基础 Token 和 Scopify 扩展 Token，确保 UI Library 的局部主题切换展示完整主题能力。
-- **修复落地页 Sonnet 拖动与内容重叠**：商籁改用独立的无声播放时钟持续循环，滚动只负责切换章节；章节标题在 Folia 接管画面前自动退场，桌面截图显影时不再与大字争夺视觉焦点。
-- **修复 Folia 隐现流体切歌后停帧**：增加可见状态检测与自动重挂载，解决跨歌单右键切歌时 WebGL 流体停滞的问题。
-- **修复 Electron 内置后端未就绪时主页面提前加载**：桌面端启用本地后端自动启动时，启动页会等待后端健康检查确认运行后再创建主窗口；启动失败时提供重试或退出，不再让首屏请求直接落入错误页；使用自定义后端时不增加启动门槛。
 - **修复 Release 打包工作流子模块更新失败**：将 `release.yml` 中 `package` 任务的 `actions/checkout` 切换为 `submodules: false`，并显式仅初始化 `repo/backend/api-enhanced` 子模块，避免 `frontend/apps/mobile` 缺失提交导致 GitHub Actions 打包终止。
-- **修复桌面打包与 CI 的子模块与主题硬编码问题**：将 `ci.yml` 与 `release.yml` 的 `checkout` 明确禁用子模块递归，确保打包流程只初始化后端子模块；同时将 `AudioEqualizerPanel` 的危险色按钮从硬编码 `red` 类名改为语义化 `destructive` 主题 token，通过 `lint:theme` 检查。
 - **修复内置后端 Logo 被压成单行**：转发后端 stdout/stderr 时保留多行输出和 Logo 内部排版，并让多行日志的 `[backend]` 标记独占一行，同时清理终端控制字符，避免启动 Logo 在日志中变成一串方块或横向乱码。
 - **修复 electron-log 文件写入失败**：内置文件 transform 完成格式化后会传递字符串，改为对最终日志文本进行清理，避免错误调用 `data.map` 导致 `main.log` 始终为空。
 - **修复桌面日志中的终端控制字符与 Logo 排版**：文件日志最终落盘前会清除 ANSI 颜色码，并将回车控制符还原为换行，避免彩色字体残留或后端 Logo 被压成不完整的一行。
@@ -88,8 +108,6 @@
 - **修复全局歌词偏移模态在浅色主题下不可读**：模态 Portal 显式接入 Folia 背景、正文、辅助与强调色 token，并让遮罩、卡片描边、刻度文字和中心指示线随当前主题变化，避免雪白主题下出现白字白底。
 - **修复 Folia 背景类型回退英文**：为通用、莫奈、漫游与隐现背景的注册项补齐 `folia.` 翻译命名空间，使展开式背景选择正确显示当前语言文案；嵌入与空背景继续沿用已有的正确翻译键。
 - **补齐 Monet 漫游背景新增效果翻译**：补充背景漂移、漂移幅度和流动光带的简体中文、繁体中文与英文文案，避免原始 i18n key 撑出 Folia 设置面板。
-- **修复播放器状态 Store 单测在 CI 中偶发缺失 Action 的问题**：`playerExpiredUrl.test.ts`、`playerRepeat.test.ts` 与 `playbackQueueStoreAdapter.test.ts` 改为固定基线 actions 并复用 `setState` 基线快照，避免直接依赖 `usePlayerStore.getState()` 带来的并发污染，确保 `togglePlaying`、`setIsPlaying` 与 `playNext` 在测试运行中始终可调用。
-- **修复播放器状态 Store 单测在 CI 中 `getInitialState` 兼容性问题**：将三处测试改回 `usePlayerStore.getState()` 并通过 action 存在校验与回滚保护，避免 GitHub Actions 环境下 `getInitialState` 不存在导致 CI 直接报错。
 
 
 
@@ -137,7 +155,6 @@
 - **契约包规范化为内部组织包名**：将桌面契约包统一收敛为本地 Workspace 组织包名 `@scopify/desktop-contract`，各子应用统一使用 `workspace:*` 声明依赖。
 - **拆分共享 UI 主题层**：新增内部 `@scopify/ui` workspace package，将 shadcn/tweakcn 标准 token、Scopify 产品语义 token 与 Folia 运行时主题模型拆成三个独立入口；Web 端改为消费共享主题接口，为后续迁移基础组件与统一主题编辑能力建立稳定 seam。
 - **固化共享 UI 分层约束**：新增 `ui-package-boundaries` Skill 并接入根项目规范，明确原生 shadcn CLI vendor 层、Scopify 扩展层与应用业务层的职责、依赖方向和迁移决策流程。
-- **撤回未成熟的 Scopify 公共组件抽取**：恢复播放、徽标、收藏、重试与标题等组件在 Web 应用内的原有归属，移除 `@scopify/ui/scopify/components/*` 的不稳定公开入口与预览；保留 Shadcn 原生组件、共享主题层和文档站，待组件边界重新设计后再逐项评审。
 - **规范 Docker Compose 镜像版本标识**：为 `docker-compose.yml` 中的后端与前端镜像构建绑定明确的版本环境变量与默认版本号（前端 `1.4.3`，后端 `4.39.0`），避免使用 `latest` 导致版本模糊，并同步更新 `.env` 与 `.env.example`。
 - **设置页后端网络配置解耦与智能清洗**：在设置页新增显式「传输协议（HTTP/HTTPS）」切换；主机输入框支持输入智能清洗，自动剥离粘贴混入的协议、路径与端口并同步回填至对应控件；解耦端口维护并大幅简化底层 URL 解析规范化逻辑。
 
@@ -549,7 +566,6 @@
 
 ## Added
 
-- **统一文档服务端口**：将 Scopify Docs 的开发与生产服务默认端口调整为 `9191`，确保 `dev:docs` 与构建后启动使用同一地址。
 - 将 ReplayGain 音频增益迁入 VisualSetting 侧栏第一 Tab 的音频设置快捷区，支持关闭、单曲和专辑模式，持久化选择并在播放链路中平滑应用增益与峰值保护。
 - VisualSetting 侧栏中的 ReplayGain 改为独立一行，避免与音质和均衡器入口挤在同一组。
 
