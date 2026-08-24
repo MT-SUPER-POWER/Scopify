@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import defaultMdxComponents from "fumadocs-ui/mdx";
+import Image from "next/image";
 
 import { ComponentPreview } from "@/components/docs/component-preview";
 import { Button } from "@scopify/ui/shadcn/components/button";
@@ -19,16 +20,19 @@ import {
 import { ShadcnButtonExample } from "@/components/docs/previews/shadcn-button-examples";
 import { ShadcnCodeExample } from "@/components/docs/shadcn-code-example";
 import { ShadcnComponentExample } from "@/components/docs/shadcn-component-example";
-import { ShadcnExample } from "@/components/docs/shadcn-example";
+import { ShadcnMdxExample } from "@/components/docs/shadcn-mdx-example";
 import { Mermaid } from "@/components/mdx/mermaid";
 import { ThemeWorkbench } from "@/components/theme-lab/theme-workbench";
 
-export function getMDXComponents(components?: MDXComponents) {
+export function getMDXComponents(components?: MDXComponents): MDXComponents {
+  // React Three Fiber augments JSX intrinsic elements for Folia's Diorama canvas. The MDX runtime
+  // still receives the same component map, but its index signature cannot represent those elements.
   return {
     ...defaultMdxComponents,
     Button,
     CodeTabs,
     ComponentPreview,
+    Image,
     Kbd,
     KbdGroup,
     Mermaid,
@@ -37,7 +41,7 @@ export function getMDXComponents(components?: MDXComponents) {
     ShadcnComponentExample,
     ShadcnComponentSource,
     ShadcnOfficialPreview,
-    ShadcnExample,
+    ShadcnExample: ShadcnMdxExample,
     Step,
     Steps,
     TabsContent,
@@ -45,7 +49,7 @@ export function getMDXComponents(components?: MDXComponents) {
     TabsTrigger,
     ThemeWorkbench,
     ...components,
-  } satisfies MDXComponents;
+  } as unknown as MDXComponents;
 }
 
 export const useMDXComponents = getMDXComponents;

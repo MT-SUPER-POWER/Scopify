@@ -3,9 +3,9 @@
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { SHADCN_THEME_TOKENS, THEME_SOURCE_IDS } from "@/constants/theme-lab";
+import { THEME_SOURCE_IDS } from "@/constants/theme-lab";
 import { ThemePrototypeContext } from "@/lib/theme-prototype-context";
-import { normalizeThemeId, readThemeProfile } from "@/lib/theme-lab";
+import { createBuiltInThemeRecords, normalizeThemeId } from "@/lib/theme-lab";
 import type { ThemeDraft, ThemeMode, ThemePrototypeRecord } from "@/types/theme-lab";
 
 export function ThemePrototypeProvider({ children }: { children: ReactNode }) {
@@ -15,8 +15,7 @@ export function ThemePrototypeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
-      const draft = readThemeProfile(THEME_SOURCE_IDS.shadcn, SHADCN_THEME_TOKENS);
-      setThemes([{ draft, id: THEME_SOURCE_IDS.shadcn, name: "Shadcn Default" }]);
+      setThemes(createBuiltInThemeRecords());
     });
 
     return () => cancelAnimationFrame(frame);

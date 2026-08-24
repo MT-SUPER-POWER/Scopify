@@ -792,6 +792,8 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
     hideTranslationSubtitle = false,
     showSubtitleTranslation = true,
     subtitleContentMode,
+    paused = false,
+    staticMode = false,
   } = props;
   const { t } = useI18n();
   const [windowHeight, setWindowHeight] = useState(800);
@@ -1053,8 +1055,8 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
     >
       <motion.div
         className="pointer-events-none relative z-10 flex h-[70vh] w-full items-center justify-center p-8 will-change-transform"
-        animate={lyricContainerFloat.animate}
-        transition={lyricContainerFloat.transition}
+        animate={paused || staticMode ? { y: 0, scale: 1 } : lyricContainerFloat.animate}
+        transition={paused || staticMode ? { duration: 0 } : lyricContainerFloat.transition}
       >
         <AnimatePresence mode="popLayout">
           {showText && activeLine && activeLineRenderProfile && (

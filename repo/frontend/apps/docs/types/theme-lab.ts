@@ -16,12 +16,23 @@ export interface ThemeTokenDefinition {
   shared?: boolean;
 }
 
+export interface ThemeSourceDefinition {
+  definitions: readonly ThemeTokenDefinition[];
+  id: string;
+  name: string;
+}
+
 export type ThemeTokenValues = Record<ThemeTokenName, string>;
 
 export interface ThemeDraft {
   dark: ThemeTokenValues;
   light: ThemeTokenValues;
 }
+
+export type ThemeProfileReader = (
+  themeId: string,
+  definitions: readonly ThemeTokenDefinition[],
+) => ThemeDraft;
 
 export interface ThemeCssArtifact {
   css: string;

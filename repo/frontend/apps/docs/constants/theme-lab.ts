@@ -1,4 +1,8 @@
-import type { ThemeTokenDefinition, ThemeTokenKind } from "@/types/theme-lab";
+import type {
+  ThemeSourceDefinition,
+  ThemeTokenDefinition,
+  ThemeTokenKind,
+} from "@/types/theme-lab";
 
 const token = (
   name: ThemeTokenDefinition["name"],
@@ -95,3 +99,16 @@ export const THEME_SOURCE_IDS = {
   scopify: "scopify-default",
   shadcn: "shadcn-default",
 } as const;
+
+export const BUILT_IN_THEME_SOURCES = [
+  {
+    definitions: SHADCN_THEME_TOKENS,
+    id: THEME_SOURCE_IDS.shadcn,
+    name: "Shadcn Default",
+  },
+  {
+    definitions: [...SHADCN_THEME_TOKENS, ...SCOPIFY_THEME_TOKENS],
+    id: THEME_SOURCE_IDS.scopify,
+    name: "Scopify Default",
+  },
+] as const satisfies readonly ThemeSourceDefinition[];

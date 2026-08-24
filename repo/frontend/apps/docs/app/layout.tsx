@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { RootProvider } from "fumadocs-ui/provider/next";
 
@@ -7,6 +8,12 @@ import { ThemePrototypeProvider } from "@/components/theme-prototype/theme-proto
 import { DOCS_UI_TRANSLATIONS } from "@/constants/docs-translations";
 
 import "./globals.css";
+
+const docsMonoFont = Geist_Mono({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-docs-mono",
+});
 
 export const metadata: Metadata = {
   title: { default: "Scopify Docs", template: "%s · Scopify Docs" },
@@ -19,7 +26,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body className="flex min-h-screen flex-col">
+      <body className={`${docsMonoFont.variable} flex min-h-screen flex-col`}>
         <RootProvider i18n={{ locale: "zh-CN", translations: DOCS_UI_TRANSLATIONS }}>
           <ThemePrototypeProvider>{children}</ThemePrototypeProvider>
         </RootProvider>
