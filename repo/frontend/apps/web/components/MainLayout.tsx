@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { useBackendStartup } from "@/lib/hooks/useBackendStartup";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
@@ -15,7 +14,6 @@ import { runtime } from "@/lib/runtime";
 import { DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH } from "@/constants/desktopPlaybackController";
 // lib
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
 import { useSearchStore } from "@/store/module/search";
 // status store
 import { useUiStore } from "@/store/module/ui";
@@ -211,31 +209,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
  * MainLayout: 播放器的子组件 - 支持懒加载 + 骨架屏
  */
 export default function MainLayout({ children }: { children?: ReactNode }) {
-  const { t } = useI18n();
-  const backendStartup = useBackendStartup();
   const isHydrated = useStoreHydration();
   const pathname = usePathname();
   const HydrationPlaceholder = getDashboardLoadingPlaceholder(pathname);
-
-  if (backendStartup.state === "starting") {
-    return (
-      <MainLayoutSkeleton
-        title={t("layout.startingTitle")}
-        description={t("layout.startingDescription")}
-      />
-    );
-  }
-
-  if (backendStartup.state === "failed") {
-    return (
-      <MainLayoutSkeleton
-        title={t("layout.failedTitle")}
-        description={backendStartup.message ?? t("layout.failedDescription")}
-        actionLabel={t("layout.restartApp")}
-        onAction={() => runtime.app.relaunch()}
-      />
-    );
-  }
 
   // Store 正在从 localStorage 进行异步水合时，显示静默骨架屏，避免闪烁未登录 UI
   if (!isHydrated) {

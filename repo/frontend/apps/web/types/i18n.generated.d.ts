@@ -1739,35 +1739,23 @@ export interface TranslateFn {
    */
   (key: "appClose.remember", params?: TranslationParams): string;
   /**
-   * zh-CN: 正在启动本地服务
-   * zh-TW: 正在啟動本地服務
-   * en-US: Starting Local Service
+   * zh-CN: 本地后端暂不可用
+   * zh-TW: 本機後端暫時無法使用
+   * en-US: Local Backend Unavailable
    */
-  (key: "layout.startingTitle", params?: TranslationParams): string;
+  (key: "layout.backendUnavailableTitle", params?: TranslationParams): string;
   /**
-   * zh-CN: Scopify 正在等待 Electron 后端就绪，完成后会自动进入。
-   * zh-TW: Scopify 正在等待 Electron 後端就緒，完成後會自動進入。
-   * en-US: Scopify is waiting for the Electron backend to become ready.
+   * zh-CN: 音乐服务暂时不可用，你仍可进入设置调整或重新启动本地后端。
+   * zh-TW: 音樂服務暫時無法使用，你仍可進入設定調整或重新啟動本機後端。
+   * en-US: Music services are temporarily unavailable. You can still open settings to adjust or restart the local backend.
    */
-  (key: "layout.startingDescription", params?: TranslationParams): string;
+  (key: "layout.backendUnavailableDescription", params?: TranslationParams): string;
   /**
-   * zh-CN: 本地服务启动失败
-   * zh-TW: 本地服務啟動失敗
-   * en-US: Local Service Failed to Start
+   * zh-CN: 打开后端设置
+   * zh-TW: 開啟後端設定
+   * en-US: Open Backend Settings
    */
-  (key: "layout.failedTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 后端未能按预期启动，请重启应用后再试。
-   * zh-TW: 後端未能按預期啟動，請重新啟動應用後再試。
-   * en-US: The backend did not start as expected. Please restart the app and try again.
-   */
-  (key: "layout.failedDescription", params?: TranslationParams): string;
-  /**
-   * zh-CN: 重新启动应用
-   * zh-TW: 重新啟動應用
-   * en-US: Restart Application
-   */
-  (key: "layout.restartApp", params?: TranslationParams): string;
+  (key: "layout.openBackendSettings", params?: TranslationParams): string;
   /**
    * zh-CN: 播放
    * zh-TW: 播放

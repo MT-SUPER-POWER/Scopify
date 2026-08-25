@@ -1,6 +1,11 @@
 import type { LyricDisplayLine, LyricWord } from "@/types/lyrics";
 import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
 
+/** Positive offsets delay lyrics; negative offsets advance them. */
+export function applyLyricOffsetMs(playbackTimeMs: number, lyricOffsetMs: number): number {
+  return playbackTimeMs - lyricOffsetMs;
+}
+
 export function findActiveLyricLineIndex(lines: LyricDisplayLine[], currentTimeMs: number): number {
   for (let index = lines.length - 1; index >= 0; index -= 1) {
     if (currentTimeMs >= lines[index].startTimeMs) return index;

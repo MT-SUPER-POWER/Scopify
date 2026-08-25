@@ -3,6 +3,9 @@
 @import "@fontsource/black-ops-one/400.css";
 @import "@scopify/ui/theme.css";
 
+@source "../../../packages/ui/shadcn/components";
+@source "../../../packages/ui/scopify/components";
+
 @theme inline {
   --font-status-code: "Black Ops One", var(--scopify-font-ui);
 }

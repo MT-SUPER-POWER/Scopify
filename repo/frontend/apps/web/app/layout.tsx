@@ -4,6 +4,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 import { I18nProvider } from "@/components/i18n-provider";
+import { BackendStatusNotifier } from "@/components/backend/BackendStatusNotifier";
 import { DesktopPlaybackControllerCommandHandler } from "@/components/desktopWallpaper/DesktopPlaybackControllerCommandHandler";
 import { FoliaStageStoreSync } from "@/components/lyrics/FoliaStageStoreSync";
 import { QueryProvider } from "@/components/shared/QueryProvider";
@@ -46,6 +47,7 @@ export default function RootLayout({
         >
           <I18nProvider>
             <CompanionPlaybackProjectionProvider>
+              <BackendStatusNotifier />
               <DesktopPlaybackControllerCommandHandler />
               <FoliaStageStoreSync />
               <QueryProvider>{children}</QueryProvider>

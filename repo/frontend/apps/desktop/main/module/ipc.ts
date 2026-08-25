@@ -24,6 +24,8 @@ import {
 import { loginWindow } from "./login.js";
 import { assertSafeCacheRoot, createPageCacheStore, migrateCacheRoot } from "./pageCache.js";
 import { applyElectronProxy } from "./proxy.js";
+import { getRememberedAppCloseAction, isAppCloseAction } from "./appCloseAction.js";
+import { isAppCloseWindowSender } from "./appCloseWindow.js";
 import type { createDiscordPresenceController } from "./discordPresence.js";
 import { updateThumbarButtons } from "./thumbarButtons.js";
 import { trayWindow } from "./tray.js";
@@ -382,8 +384,25 @@ export function registerIpcHandlers(
     mainWindow.webContents.send("navigate-to", path);
   });
 
-  ipcMain.on("app-close-action", (event, action) => {
-    if (action !== "minimize" && action !== "exit" && action !== "cancel") return;
+  ipcMain.on("app-close-action", (event, action: unknown, remember: unknown) => {
+    if (!isAppCloseWindowSender(event.sender.id)) {
+      logger.warn("[app-close] rejected action from an unexpected renderer");
+      return;
+    }
+    if (!isAppCloseAction(action) || typeof remember !== "boolean") return;
+
+    const rememberedAction = getRememberedAppCloseAction(action, remember);
+    if (rememberedAction !== null) {
+      try {
+        const config = loadDesktopHostConfig();
+        saveDesktopHostConfig({
+          ...config,
+          app: { ...config.app, closeAction: rememberedAction },
+        });
+      } catch (error) {
+        logger.error("[app-close] failed to persist the remembered action", error);
+      }
+    }
 
     if (action === "minimize" || action === "cancel") {
       const actionWindow = BrowserWindow.fromWebContents(event.sender);

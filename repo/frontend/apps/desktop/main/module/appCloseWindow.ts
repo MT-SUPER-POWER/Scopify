@@ -10,6 +10,10 @@ function getAppCloseWindow() {
   return appCloseWindow && !appCloseWindow.isDestroyed() ? appCloseWindow : null;
 }
 
+export function isAppCloseWindowSender(senderId: number) {
+  return getAppCloseWindow()?.webContents.id === senderId;
+}
+
 export function showAppCloseWindow(parent: BrowserWindow, rendererBaseUrl: string) {
   const existingWindow = getAppCloseWindow();
   if (existingWindow) {

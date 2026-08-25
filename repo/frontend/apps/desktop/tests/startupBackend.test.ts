@@ -1,89 +1,32 @@
-import { describe, expect, mock, test } from "bun:test";
+import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import type { DesktopBackendStatus, DesktopHostConfig } from "@scopify/desktop-contract";
-
-import { ensureStartupBackend } from "@/main/module/startupBackend";
-
-const managedConfig: DesktopHostConfig["backend"] = { autoStart: true, port: 3838 };
-const customConfig: DesktopHostConfig["backend"] = { autoStart: false, port: 3838 };
 const mainSource = readFileSync(resolve(import.meta.dir, "../main/main.ts"), "utf8");
 
-function backendStatus(
-  state: DesktopBackendStatus["state"],
-  error: string | null = null,
-): DesktopBackendStatus {
-  return {
-    error,
-    host: "127.0.0.1",
-    managed: state === "running",
-    origin: "http://127.0.0.1:3838",
-    pid: state === "running" ? 1234 : null,
-    port: 3838,
-    source: state === "running" ? "managed" : null,
-    state,
-  };
-}
+test("starts the managed backend without delaying the main window", () => {
+  const createWindowIndex = mainSource.indexOf("async function createWindow()");
+  const createWindowSource = mainSource.slice(createWindowIndex);
+  const reconcileMatch = createWindowSource.match(/void backendController\s*\.reconcile/);
+  const reconcileIndex = reconcileMatch?.index ?? -1;
+  const mainWindowIndex = mainSource.indexOf("createMainWindow();", createWindowIndex);
 
-describe("ensureStartupBackend", () => {
-  test("opens the app after the managed backend reports running", async () => {
-    const reconcile = mock(async () => backendStatus("running"));
-
-    await expect(ensureStartupBackend(managedConfig, reconcile)).resolves.toEqual({
-      message: null,
-      ready: true,
-    });
-    expect(reconcile).toHaveBeenCalledWith(managedConfig);
-  });
-
-  test("blocks the app when the managed backend fails to start", async () => {
-    const reconcile = mock(async () => backendStatus("error", "port is occupied"));
-
-    await expect(ensureStartupBackend(managedConfig, reconcile)).resolves.toEqual({
-      message: "port is occupied",
-      ready: false,
-    });
-  });
-
-  test("blocks the app when managed backend reconciliation throws", async () => {
-    const reconcile = mock(async () => {
-      throw new Error("backend process crashed");
-    });
-
-    await expect(ensureStartupBackend(managedConfig, reconcile)).resolves.toEqual({
-      message: "backend process crashed",
-      ready: false,
-    });
-  });
-
-  test("does not gate startup when a custom backend is configured", async () => {
-    const reconcile = mock(async () => backendStatus("disabled"));
-
-    await expect(ensureStartupBackend(customConfig, reconcile)).resolves.toEqual({
-      message: null,
-      ready: true,
-    });
-  });
-
-  test("does not block a custom backend when desktop reconciliation throws", async () => {
-    const reconcile = mock(async () => {
-      throw new Error("desktop backend controller failed");
-    });
-
-    await expect(ensureStartupBackend(customConfig, reconcile)).resolves.toEqual({
-      message: "desktop backend controller failed",
-      ready: true,
-    });
-  });
+  expect(createWindowIndex).toBeGreaterThan(-1);
+  expect(reconcileIndex).toBeGreaterThan(-1);
+  expect(mainWindowIndex - createWindowIndex).toBeGreaterThan(reconcileIndex);
+  expect(mainSource.slice(createWindowIndex, mainWindowIndex)).not.toMatch(
+    /await\s+backendController\s*\.reconcile/,
+  );
 });
 
-test("creates the main window only after the startup backend gate passes", () => {
-  const gateIndex = mainSource.indexOf("await ensureStartupBackend");
-  const readyIndex = mainSource.indexOf("if (startupBackend.ready)", gateIndex);
-  const mainWindowIndex = mainSource.indexOf("createMainWindow();", readyIndex);
+test("does not block or quit when the startup backend is unavailable", () => {
+  const createWindowIndex = mainSource.indexOf("async function createWindow()");
+  const createWindowEnd = mainSource.indexOf("const discordPresenceController", createWindowIndex);
+  const createWindowSource = mainSource.slice(createWindowIndex, createWindowEnd);
 
-  expect(gateIndex).toBeGreaterThan(-1);
-  expect(readyIndex).toBeGreaterThan(gateIndex);
-  expect(mainWindowIndex).toBeGreaterThan(readyIndex);
+  expect(createWindowIndex).toBeGreaterThan(-1);
+  expect(createWindowEnd).toBeGreaterThan(createWindowIndex);
+  expect(createWindowSource).not.toContain("dialog.showMessageBox");
+  expect(createWindowSource).not.toContain("app.quit()");
+  expect(createWindowSource).not.toContain("while (true)");
 });

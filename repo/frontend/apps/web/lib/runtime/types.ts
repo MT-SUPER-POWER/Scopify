@@ -39,7 +39,7 @@ export type AppCloseAction = "exit" | "minimize" | "cancel";
 export interface RuntimeAppLifecycle {
   exit(): void;
   relaunch(): void;
-  submitCloseAction(action: AppCloseAction): void;
+  submitCloseAction(action: AppCloseAction, remember: boolean): void;
 }
 
 export interface RuntimeAuthentication {

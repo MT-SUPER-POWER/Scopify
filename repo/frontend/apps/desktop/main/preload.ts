@@ -167,8 +167,8 @@ const electronAPI: DesktopBridge = {
   minimizeApp: () => {
     ipcRenderer.send("minimize-to-tray");
   },
-  sendAppCloseAction: (action: "minimize" | "exit" | "cancel") => {
-    ipcRenderer.send("app-close-action", action);
+  sendAppCloseAction: (action: "minimize" | "exit" | "cancel", remember: boolean) => {
+    ipcRenderer.send("app-close-action", action, remember);
   },
   selectDirectory: (defaultPath?: string) =>
     ipcRenderer.invoke("dialog:select-directory", defaultPath),

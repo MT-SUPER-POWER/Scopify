@@ -8,26 +8,33 @@ import type { LyricData, LyricDisplayLine } from "@/types/lyrics";
 
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackPositionMs, usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
-import { findActiveLyricLineIndex, getWordProgress } from "@/lib/lyrics/timeline";
+import {
+  applyLyricOffsetMs,
+  findActiveLyricLineIndex,
+  getWordProgress,
+} from "@/lib/lyrics/timeline";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
+import { useLyricStageStore } from "@/store/module/lyrics";
 
 /** Electron-only transparent companion supplied by the shared desktop IPC contract. */
 export function DesktopLyricView() {
   const { t } = useI18n();
   const [preferences, setPreferences] = useState<DesktopLyricPreferences | null>(null);
   const projection = usePlaybackProjection<LyricData>();
-  const currentTimeMs = usePlaybackPositionMs();
+  const playbackTimeMs = usePlaybackPositionMs();
+  const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
+  const currentLyricTimeMs = applyLyricOffsetMs(playbackTimeMs, lyricOffsetMs);
   const playbackCommands = usePlaybackCommands();
   const { activeLine, nextLine } = useMemo(() => {
     const lines = projection.lyrics?.lines ?? [];
-    const activeIndex = findActiveLyricLineIndex(lines, currentTimeMs);
+    const activeIndex = findActiveLyricLineIndex(lines, currentLyricTimeMs);
     return {
       activeLine: activeIndex >= 0 ? lines[activeIndex] : null,
       nextLine: activeIndex >= 0 ? (lines[activeIndex + 1] ?? null) : (lines[0] ?? null),
     };
-  }, [currentTimeMs, projection.lyrics]);
+  }, [currentLyricTimeMs, projection.lyrics]);
 
   useEffect(() => {
     document.documentElement.classList.add("desktop-lyrics-html");
@@ -95,7 +102,7 @@ export function DesktopLyricView() {
 
         <div className="flex h-34 flex-col justify-center px-4">
           <CompactLyricLine
-            currentTimeMs={currentTimeMs}
+            currentTimeMs={currentLyricTimeMs}
             line={activeLine}
             onSeek={(positionMs) => void playbackCommands.seek(positionMs)}
             showTranslation={true}

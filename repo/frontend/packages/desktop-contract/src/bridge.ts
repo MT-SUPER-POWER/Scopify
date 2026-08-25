@@ -24,7 +24,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 20;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 21;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -137,7 +137,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   quitAndInstallUpdate(): void;
   relaunchApp(): void;
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
-  sendAppCloseAction(action: "exit" | "minimize" | "cancel"): void;
+  sendAppCloseAction(action: "exit" | "minimize" | "cancel", remember: boolean): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;
   setDesktopPlaybackControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showDesktopPlaybackController(): Promise<DesktopPlaybackControllerOpenResult>;

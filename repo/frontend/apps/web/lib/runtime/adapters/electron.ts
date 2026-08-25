@@ -11,7 +11,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
     app: {
       exit: () => bridge.exitApp(),
       relaunch: () => bridge.relaunchApp(),
-      submitCloseAction: (action) => bridge.sendAppCloseAction(action),
+      submitCloseAction: (action, remember) => bridge.sendAppCloseAction(action, remember),
     },
     audioFeature: {
       connect: (role, connectionId, onFrame, onClose) =>

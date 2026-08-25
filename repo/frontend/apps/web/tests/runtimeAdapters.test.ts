@@ -481,6 +481,8 @@ describe("electron runtime adapter", () => {
         calls.push("open-log-directory");
         return true;
       },
+      sendAppCloseAction: (action, remember) =>
+        calls.push(`app-close:${action}:${String(remember)}`),
       selectDirectory: async (defaultPath) => {
         calls.push(`select-directory:${defaultPath ?? "none"}`);
         return "D:\\CustomCache";
@@ -506,6 +508,7 @@ describe("electron runtime adapter", () => {
     expect(await runtime.logging.openDirectory()).toBeTrue();
     expect(await runtime.config.selectDirectory("C:\\DefaultCache")).toBe("D:\\CustomCache");
     expect(await runtime.window.toggleDeveloperTools()).toBeTrue();
+    runtime.app.submitCloseAction("minimize", true);
 
     expect(calls).toEqual([
       "open-login",
@@ -518,6 +521,7 @@ describe("electron runtime adapter", () => {
       "open-log-directory",
       "select-directory:C:\\DefaultCache",
       "toggle-developer-tools",
+      "app-close:minimize:true",
     ]);
   });
 
