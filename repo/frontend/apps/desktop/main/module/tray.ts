@@ -12,8 +12,7 @@ let tray: Tray | null = null;
 let lastBlurTime = 0;
 
 function createTrayWindow() {
-  // 移除 parent: mainWindow，让托盘菜单独立存在，不依赖主窗口的生死
-  trayWindow = new BrowserWindow({
+  const window = new BrowserWindow({
     width: TRAY_WIDTH,
     height: TRAY_HEIGHT,
     show: false,
@@ -37,20 +36,24 @@ function createTrayWindow() {
   const devBase = `http://${desktopConfig.frontend.host}:${desktopConfig.frontend.devPort}`;
   const trayUrl = useStaticRenderer ? "app://-/tray/" : `${devBase}/tray`;
 
-  trayWindow.loadURL(trayUrl);
-  trayWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
+  trayWindow = window;
+  void window.loadURL(trayUrl).catch((error) => {
+    if (!window.isDestroyed()) console.error("[tray] failed to load", error);
+  });
+  window.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
     console.error("[tray] did-fail-load", { code, desc, validatedURL });
   });
 
-  trayWindow.on("blur", () => {
+  window.on("blur", () => {
     lastBlurTime = Date.now();
-    trayWindow?.hide();
+    if (!window.isDestroyed()) window.destroy();
   });
 
-  // 核心修复：窗口被销毁时，将外部变量置空释放内存
-  trayWindow.on("closed", () => {
-    trayWindow = null;
+  window.on("closed", () => {
+    if (trayWindow === window) trayWindow = null;
   });
+
+  return window;
 }
 
 function initTray(mainWindow: Electron.BrowserWindow) {
@@ -60,26 +63,19 @@ function initTray(mainWindow: Electron.BrowserWindow) {
   tray = new Tray(__iconTray);
   tray.setToolTip("Scopify");
 
-  createTrayWindow();
-
   tray.on("right-click", (_event, trayBounds) => {
-    // 如果窗口被销毁了（比如主动调用了 close），重新创建一个
-    if (!trayWindow) {
-      createTrayWindow();
-    }
-
-    // 下面都是你原来的逻辑，唯一需要注意的是 trayWindow 此时一定是非 null 的 (加 ! 断言)
     const timeSinceLastBlur = Date.now() - lastBlurTime;
+    const existingWindow = trayWindow && !trayWindow.isDestroyed() ? trayWindow : null;
 
-    if (trayWindow?.isVisible() || timeSinceLastBlur < 100) {
-      trayWindow?.hide();
+    if (existingWindow?.isVisible()) {
+      existingWindow.destroy();
+      return;
+    }
+    if (timeSinceLastBlur < 100) {
       return;
     }
 
-    const currentTrayWindow = trayWindow;
-    if (!currentTrayWindow || currentTrayWindow.isDestroyed()) {
-      return;
-    }
+    const currentTrayWindow = existingWindow ?? createTrayWindow();
 
     const windowBounds = currentTrayWindow.getBounds();
     const currentDisplay = screen.getDisplayNearestPoint(trayBounds);
@@ -106,7 +102,7 @@ function initTray(mainWindow: Electron.BrowserWindow) {
     currentTrayWindow.setOpacity(0);
     currentTrayWindow.setPosition(x, y, false);
     currentTrayWindow.show();
-    currentTrayWindow.focus(); // 防止被 win 的托盘菜单栏盖住
+    currentTrayWindow.focus();
 
     setTimeout(() => {
       if (currentTrayWindow && !currentTrayWindow.isDestroyed() && currentTrayWindow.isVisible()) {
@@ -127,6 +123,8 @@ function initTray(mainWindow: Electron.BrowserWindow) {
 
   // 妥善清理 Tray，避免退出时系统托盘留下残影
   app.on("before-quit", () => {
+    if (trayWindow && !trayWindow.isDestroyed()) trayWindow.destroy();
+    trayWindow = null;
     if (tray) {
       tray.destroy();
       tray = null;

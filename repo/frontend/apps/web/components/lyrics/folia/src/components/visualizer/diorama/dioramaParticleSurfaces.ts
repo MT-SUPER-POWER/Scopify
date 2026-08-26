@@ -40,7 +40,16 @@ export interface DioramaStructuredSurface {
 }
 
 const surfaceCache = new Map<string, DioramaStructuredSurface>();
+export const DIORAMA_SURFACE_CACHE_LIMIT = 24;
 const TWO_PI = Math.PI * 2;
+
+export function clearDioramaStructuredSurfaceCache() {
+  surfaceCache.clear();
+}
+
+export function getDioramaStructuredSurfaceCacheSize() {
+  return surfaceCache.size;
+}
 
 const BOX_HALF = 0.55;
 const CYLINDER_RADIUS = 0.58;
@@ -217,7 +226,11 @@ export const buildDioramaStructuredSurface = (
   const stretchKey = Math.round(Math.max(0.2, stretchY) * 4) / 4;
   const cacheKey = `${kind}:${budget}:${stretchKey}`;
   const cached = surfaceCache.get(cacheKey);
-  if (cached) return cached;
+  if (cached) {
+    surfaceCache.delete(cacheKey);
+    surfaceCache.set(cacheKey, cached);
+    return cached;
+  }
 
   const out: Lattice = { positions: [], normals: [], spacing: 0 };
   if (kind === "box") buildBoxSurface(budget, stretchKey, out);
@@ -241,6 +254,11 @@ export const buildDioramaStructuredSurface = (
     // Into the unit space the shader reads the field in (position / radius).
     spacing: out.spacing / radius,
   };
+  while (surfaceCache.size >= DIORAMA_SURFACE_CACHE_LIMIT) {
+    const oldestKey = surfaceCache.keys().next().value;
+    if (oldestKey === undefined) break;
+    surfaceCache.delete(oldestKey);
+  }
   surfaceCache.set(cacheKey, surface);
   return surface;
 };

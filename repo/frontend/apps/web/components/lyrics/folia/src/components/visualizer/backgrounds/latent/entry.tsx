@@ -1,13 +1,14 @@
-import React from "react";
+import React, { lazy } from "react";
 import { Layers } from "lucide-react";
 import {
   DEFAULT_LATENT_BACKGROUND_TUNING,
   type LatentBackgroundDisplayMode,
 } from "../../../../types";
-import LatentBackground from "./LatentBackground";
 import LatentBackgroundSettingsCard from "./LatentBackgroundSettingsCard";
 import { defineVisualizerBackground } from "../definition";
 import { QuickControlChip, QuickControlToggle } from "../../../shared/QuickControlChip";
+
+const LatentBackground = lazy(() => import("./LatentBackground"));
 
 // src/components/visualizer/backgrounds/latent/entry.tsx
 // Registers the cover-colored, audio-reactive Latent shell background.

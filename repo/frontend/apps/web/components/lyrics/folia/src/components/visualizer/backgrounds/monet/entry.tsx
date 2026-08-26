@@ -1,10 +1,11 @@
-import React from "react";
+import React, { lazy } from "react";
 import { Maximize2, PanelLeft } from "lucide-react";
 import { DEFAULT_MONET_BACKGROUND_TUNING } from "../../../../types";
 import { MonetBackgroundSettingsCard } from "./MonetBackgroundSettingsCard";
-import MonetBackgroundLayer from "./MonetBackgroundLayer";
 import { defineVisualizerBackground } from "../definition";
 import { QuickControlChip } from "../../../shared/QuickControlChip";
+
+const MonetBackgroundLayer = lazy(() => import("./MonetBackgroundLayer"));
 
 // src/components/visualizer/backgrounds/monet/entry.tsx
 // Registers the Monet image-treatment shell background.

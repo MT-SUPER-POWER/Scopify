@@ -1,7 +1,8 @@
-import React from "react";
-import UrlBackgroundLayer from "./UrlBackgroundLayer";
+import React, { lazy } from "react";
 import { UrlBackgroundSettingsCard } from "./UrlBackgroundSettingsCard";
 import { defineVisualizerBackground } from "../definition";
+
+const UrlBackgroundLayer = lazy(() => import("./UrlBackgroundLayer"));
 
 // src/components/visualizer/backgrounds/url/entry.tsx
 // Registers the embedded webpage shell background.

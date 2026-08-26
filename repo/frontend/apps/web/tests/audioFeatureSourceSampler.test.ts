@@ -7,6 +7,11 @@ import {
   getAudioFeatureSource,
   registerAudioFeatureSource,
 } from "@/lib/audioFeature/source";
+import {
+  publishLocalAudioFeatures,
+  subscribeLocalAudioFeatureDemand,
+  subscribeLocalAudioFeatures,
+} from "@/lib/audioFeature/localBus";
 import type { AudioFeatureSource } from "@/types/audioFeaturePublisher";
 
 class ManualIntervalTimer {
@@ -66,6 +71,22 @@ function bands() {
 }
 
 describe("AudioFeatureSourceSampler", () => {
+  test("starts local sampling on the first lyric subscriber and stops after the last one", () => {
+    const demand: boolean[] = [];
+    const received: number[] = [];
+    const unsubscribeDemand = subscribeLocalAudioFeatureDemand((active) => demand.push(active));
+    const unsubscribeFirst = subscribeLocalAudioFeatures((frame) => received.push(frame.power));
+    const unsubscribeSecond = subscribeLocalAudioFeatures((frame) => received.push(frame.bass));
+
+    publishLocalAudioFeatures(bands());
+    unsubscribeFirst();
+    unsubscribeSecond();
+    unsubscribeDemand();
+
+    expect(demand).toEqual([false, true, false]);
+    expect(received).toEqual([60, 24]);
+  });
+
   test("samples the analyser source every 33ms and sends only connected projection identities", () => {
     const timer = new ManualIntervalTimer();
     const frames: AudioFeaturePublishedFrame[] = [];

@@ -1,10 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { lazy, Suspense } from "react";
 
 import { useUiStore } from "@/store/module/ui";
 
-import { LyricStage } from "./LyricStage";
+const LyricStage = lazy(() =>
+  import("./LyricStage").then((module) => ({ default: module.LyricStage })),
+);
 
 const lyricStageEnterTransition = {
   type: "spring" as const,
@@ -34,7 +37,9 @@ export function LyricStageMount() {
           exit={{ y: "100%", scale: 0.985, transition: lyricStageExitTransition }}
           className="fixed inset-0 z-100"
         >
-          <LyricStage onClose={closeLyrics} />
+          <Suspense fallback={null}>
+            <LyricStage onClose={closeLyrics} />
+          </Suspense>
         </motion.div>
       ) : null}
     </AnimatePresence>

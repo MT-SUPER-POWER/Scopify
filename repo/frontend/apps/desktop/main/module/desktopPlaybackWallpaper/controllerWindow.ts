@@ -21,7 +21,6 @@ export interface DesktopPlaybackControllerWindow {
   close(): boolean;
   dispose(): void;
   getWindow(): BrowserWindow | null;
-  prepare(): void;
   setLayout(layout: DesktopPlaybackControllerLayout): boolean;
   show(): Promise<DesktopPlaybackControllerOpenResult>;
 }
@@ -110,10 +109,6 @@ export function createDesktopPlaybackControllerWindow(
     },
 
     getWindow,
-
-    prepare() {
-      ensureWindow();
-    },
 
     setLayout(layout) {
       const window = getWindow();

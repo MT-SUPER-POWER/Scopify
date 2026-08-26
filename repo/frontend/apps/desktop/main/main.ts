@@ -192,11 +192,9 @@ function createMainWindow() {
   setupWindowModules(mainWindow);
 
   mainWindow.webContents.once("did-finish-load", () => {
+    notifyMainWindowVisibility();
     void revealMainWindow();
-    setTimeout(() => {
-      desktopPlaybackControllerWindow?.prepare();
-      desktopPlaybackWallpaperDriver?.prepare();
-    }, 500);
+    setTimeout(() => desktopPlaybackWallpaperDriver?.prepare(), 500);
   });
 
   if (useStaticRenderer) {
@@ -242,6 +240,11 @@ function createMainWindow() {
     mainWindow?.webContents.send("window-full-screen-changed", { isFullScreen: false });
   });
 
+  mainWindow.on("show", notifyMainWindowVisibility);
+  mainWindow.on("hide", notifyMainWindowVisibility);
+  mainWindow.on("minimize", notifyMainWindowVisibility);
+  mainWindow.on("restore", notifyMainWindowVisibility);
+
   mainWindow.on("close", (e: Electron.Event) => {
     if (isQuitting) return;
 
@@ -264,6 +267,14 @@ function createMainWindow() {
     mainWindowReleased = false;
     mainWindow = null;
   });
+}
+
+function notifyMainWindowVisibility() {
+  if (!mainWindow || mainWindow.isDestroyed() || mainWindow.webContents.isDestroyed()) return;
+  mainWindow.webContents.send(
+    "window-visibility-changed",
+    mainWindow.isVisible() && !mainWindow.isMinimized(),
+  );
 }
 
 async function createWindow() {

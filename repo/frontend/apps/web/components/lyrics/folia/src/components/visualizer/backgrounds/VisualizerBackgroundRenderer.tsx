@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import {
   DEFAULT_VISUALIZER_BACKGROUND_MODE,
   getVisualizerBackgroundRegistryEntry,
@@ -14,7 +14,9 @@ const VisualizerBackgroundRenderer: React.FC<VisualizerBackgroundRenderProps> = 
   }
 
   const mode = props.config?.mode ?? DEFAULT_VISUALIZER_BACKGROUND_MODE;
-  return getVisualizerBackgroundRegistryEntry(mode).render(props);
+  return (
+    <Suspense fallback={null}>{getVisualizerBackgroundRegistryEntry(mode).render(props)}</Suspense>
+  );
 };
 
 export default VisualizerBackgroundRenderer;

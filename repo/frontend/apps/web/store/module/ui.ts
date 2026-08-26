@@ -30,8 +30,12 @@ export const useUiStore = create<UiStore>()(
       name: "ui-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        isLyricsOpen: state.isLyricsOpen,
         isCollapsed: state.isCollapsed,
+      }),
+      merge: (persistedState, currentState) => ({
+        ...currentState,
+        ...(persistedState as Partial<UiStore>),
+        isLyricsOpen: false,
       }),
     },
   ),

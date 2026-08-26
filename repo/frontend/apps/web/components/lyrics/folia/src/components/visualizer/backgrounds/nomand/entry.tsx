@@ -1,10 +1,11 @@
-import React from "react";
+import React, { lazy } from "react";
 import { Layers } from "lucide-react";
 import { DEFAULT_NOMAND_BACKGROUND_TUNING } from "../../../../types";
-import NomandBackgroundLayer from "./NomandBackgroundLayer";
 import NomandBackgroundSettingsCard from "./NomandBackgroundSettingsCard";
 import { defineVisualizerBackground } from "../definition";
 import { QuickControlToggle } from "../../../shared/QuickControlChip";
+
+const NomandBackgroundLayer = lazy(() => import("./NomandBackgroundLayer"));
 
 // src/components/visualizer/backgrounds/nomand/entry.tsx
 // Registers the Paper image-effect shell background.

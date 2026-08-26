@@ -18,6 +18,7 @@ import {
   updateActiveSegmentLines,
 } from "./dioramaSequencer";
 import { pickTransitionOffset, TRANSITION_DURATION } from "./dioramaTransition";
+import { clearDioramaStructuredSurfaceCache } from "./dioramaParticleSurfaces";
 
 // src/components/visualizer/diorama/VisualizerDiorama.tsx
 // A 3D "flythrough" style: lyric lines are actual staged text objects along a winding path in world
@@ -117,6 +118,8 @@ const VisualizerDiorama: React.FC<VisualizerDioramaProps> = (props) => {
     dioramaTuning,
   } = props;
   const { t } = useI18n();
+
+  useEffect(() => () => clearDioramaStructuredSurfaceCache(), []);
 
   const { activeLine, recentCompletedLine, nextLines } = useVisualizerRuntime({
     currentTime,

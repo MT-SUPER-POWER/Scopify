@@ -15,6 +15,7 @@ import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentat
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePlaybackWakeLock } from "@/hooks/player/usePlaybackWakeLock";
+import { useRuntimeWindowVisibility } from "@/hooks/useRuntimeWindowVisibility";
 import { usePlayerStore } from "@/store/module/player";
 import type { DesktopLyricCommand } from "@/types/desktopLyric";
 
@@ -28,16 +29,19 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const [isBorderVisible, setIsBorderVisible] = useState(false);
   const [isPlayerChromeHidden, setIsPlayerChromeHidden] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
   const [themeLibraryRequestId, setThemeLibraryRequestId] = useState(0);
   const [isTransparent, setIsTransparent] = useState(false);
+  const isWindowVisible = useRuntimeWindowVisibility();
+  const isMainSurfaceActive = !isVisualSettingsOpen && isWindowVisible;
   const appearance = useFoliaPresentationAppearance();
-  const bridge = useFoliaPlaybackBridge();
+  const bridge = useFoliaPlaybackBridge(isMainSurfaceActive);
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
-  usePlaybackWakeLock(bridge.isPlaying);
+  usePlaybackWakeLock(bridge.isPlaying && isWindowVisible);
   const { assets, isDaylight, settings, theme } = appearance;
   const stageStyle = useMemo(
     () =>
@@ -140,58 +144,65 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
       } ${isBorderVisible ? "border border-white/30" : ""}`}
       style={stageStyle}
     >
-      <FoliaPresentationSurface
-        appearance={appearance}
-        bridge={bridge}
-        isPlayerChromeHidden={isPlayerChromeHidden}
-        layers={{ background: !isTransparent, lyrics: true }}
-        onBack={onClose}
-        onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
-        track={
-          currentSong
-            ? {
-                albumTitle: currentSong.al.name,
-                artistNames: currentSong.ar.map((artist) => artist.name),
-                artworkUrl: currentSong.al.picUrl,
-                durationMs: playback.durationMs,
-                id: currentSong.id,
-                title: currentSong.name,
-              }
-            : null
-        }
-      />
+      {!isVisualSettingsOpen && isWindowVisible ? (
+        <FoliaPresentationSurface
+          appearance={appearance}
+          bridge={bridge}
+          isPlayerChromeHidden={isPlayerChromeHidden}
+          layers={{ background: !isTransparent, lyrics: true }}
+          onBack={onClose}
+          onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
+          track={
+            currentSong
+              ? {
+                  albumTitle: currentSong.al.name,
+                  artistNames: currentSong.ar.map((artist) => artist.name),
+                  artworkUrl: currentSong.al.picUrl,
+                  durationMs: playback.durationMs,
+                  id: currentSong.id,
+                  title: currentSong.name,
+                }
+              : null
+          }
+        />
+      ) : null}
 
-      <FloatingPlayerControls
-        currentSong={currentSong ? { name: currentSong.name } : null}
-        playerState={playerState}
-        currentTime={bridge.currentTime}
-        lyricCurrentTime={bridge.lyricCurrentTime}
-        duration={bridge.durationSeconds}
-        loopMode={repeatMode}
-        currentView="player"
-        audioSrc={currentSongUrl}
-        canTogglePlay={playback.canControl}
-        lyrics={bridge.lyrics}
-        onSeek={seekToSeconds}
-        onTogglePlay={() => void commands.toggle()}
-        onToggleLoop={cycleRepeatMode}
-        onNavigateToPlayer={() => undefined}
-        primaryColor={theme.primaryColor}
-        secondaryColor={theme.secondaryColor}
-        theme={theme}
-        isDaylight={isDaylight}
-        isHidden={isPlayerChromeHidden}
-        controlsDisabled={!playback.canControl}
-      />
+      {isWindowVisible ? (
+        <FloatingPlayerControls
+          currentSong={currentSong ? { name: currentSong.name } : null}
+          playerState={playerState}
+          currentTime={bridge.currentTime}
+          lyricCurrentTime={bridge.lyricCurrentTime}
+          duration={bridge.durationSeconds}
+          loopMode={repeatMode}
+          currentView="player"
+          audioSrc={currentSongUrl}
+          canTogglePlay={playback.canControl}
+          lyrics={bridge.lyrics}
+          onSeek={seekToSeconds}
+          onTogglePlay={() => void commands.toggle()}
+          onToggleLoop={cycleRepeatMode}
+          onNavigateToPlayer={() => undefined}
+          primaryColor={theme.primaryColor}
+          secondaryColor={theme.secondaryColor}
+          theme={theme}
+          isDaylight={isDaylight}
+          isHidden={isPlayerChromeHidden}
+          controlsDisabled={!playback.canControl}
+        />
+      ) : null}
 
-      <FoliaStageSettings
-        assets={assets}
-        isChromeHidden={isPlayerChromeHidden}
-        isOpen={isSettingsOpen}
-        onOpenChange={setIsSettingsOpen}
-        theme={theme}
-        themeLibraryRequestId={themeLibraryRequestId}
-      />
+      {isWindowVisible ? (
+        <FoliaStageSettings
+          assets={assets}
+          isChromeHidden={isPlayerChromeHidden}
+          isOpen={isSettingsOpen}
+          onOpenChange={setIsSettingsOpen}
+          onVisualSettingsOpenChange={setIsVisualSettingsOpen}
+          theme={theme}
+          themeLibraryRequestId={themeLibraryRequestId}
+        />
+      ) : null}
     </section>
   );
 }

@@ -1,7 +1,12 @@
+import { lazy } from "react";
+
 import { DEFAULT_PENDOLO_TUNING } from "@/components/lyrics/folia/src/types";
 import { defineVisualizer } from "@/components/lyrics/folia/src/components/visualizer/definition";
 import PendoloSettingsPanel from "@/components/lyrics/folia/src/components/visualizer/pendolo/PendoloSettingsPanel";
-import VisualizerPendolo from "@/components/lyrics/folia/src/components/visualizer/pendolo/VisualizerPendolo";
+
+const VisualizerPendolo = lazy(
+  () => import("@/components/lyrics/folia/src/components/visualizer/pendolo/VisualizerPendolo"),
+);
 
 // src/components/visualizer/pendolo/entry.tsx
 

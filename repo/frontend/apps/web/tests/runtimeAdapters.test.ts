@@ -219,6 +219,7 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     onDesktopPlaybackWallpaperModelChanged: () => NOOP,
     onDiscordPresenceStatusChanged: () => NOOP,
     onFullScreenChanged: () => NOOP,
+    onWindowVisibilityChanged: () => NOOP,
     onNavigate: () => NOOP,
     onUpdateStatusChanged: () => NOOP,
     onBackendStatusChanged: () => NOOP,
@@ -545,6 +546,27 @@ describe("electron runtime adapter", () => {
 
     expect(subscribed).toBeTrue();
     expect(paths).toEqual(["/album?id=1"]);
+    expect(unsubscribed).toBeTrue();
+  });
+
+  test("forwards host visibility changes without throttling playback", () => {
+    let unsubscribed = false;
+    const bridge = createBridge({
+      onWindowVisibilityChanged: (callback) => {
+        callback(false);
+        return () => {
+          unsubscribed = true;
+        };
+      },
+    });
+    const visibility: boolean[] = [];
+
+    const unsubscribe = createElectronRuntime(bridge).window.onVisibilityChanged((visible) =>
+      visibility.push(visible),
+    );
+    unsubscribe();
+
+    expect(visibility).toEqual([false]);
     expect(unsubscribed).toBeTrue();
   });
 

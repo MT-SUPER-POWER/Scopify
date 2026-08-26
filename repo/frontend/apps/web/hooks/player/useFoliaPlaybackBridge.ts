@@ -14,11 +14,12 @@ import {
 } from "@/hooks/player/usePlaybackProjection";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
+import { subscribeLocalAudioFeatures } from "@/lib/audioFeature/localBus";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
 const EMPTY_CHORUS_RANGES: LyricChorusRange[] = [];
 
-export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
+export function useFoliaPlaybackBridge(active = true): FoliaPlaybackBridge {
   const playbackStore = usePlaybackProjectionStore<LyricData>();
   const playback = usePlaybackProjection<LyricData>();
   const isPlaying = playback.isPlaying;
@@ -49,9 +50,9 @@ export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
   );
 
   useEffect(() => {
-    const onAudioBands = (event: Event) => {
-      const bands = (event as CustomEvent<LyricAudioBands>).detail;
-      if (!bands) return;
+    if (!active) return;
+
+    return subscribeLocalAudioFeatures((bands: LyricAudioBands) => {
       bass.set(bands.bass);
       lowMid.set(bands.lowMid);
       mid.set(bands.mid);
@@ -59,17 +60,12 @@ export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
       treble.set(bands.treble);
       audioPower.set(bands.power);
       spectrum.set(Uint8Array.from(bands.spectrum));
-    };
-
-    window.addEventListener("player-audio-bands", onAudioBands);
-    return () => {
-      window.removeEventListener("player-audio-bands", onAudioBands);
-    };
-  }, [audioPower, bass, lowMid, mid, spectrum, treble, vocal]);
+    });
+  }, [active, audioPower, bass, lowMid, mid, spectrum, treble, vocal]);
 
   useEffect(() => {
     let animationFrame = 0;
-    const tick = () => {
+    const sample = () => {
       const nextTime = playbackStore.samplePositionMs() / 1_000;
       currentTime.set(nextTime);
       const effectiveLyricTime = nextTime - lyricOffsetMs / 1_000;
@@ -82,12 +78,17 @@ export function useFoliaPlaybackBridge(): FoliaPlaybackBridge {
         currentLineIndexRef.current = nextLineIndex;
         setCurrentLineIndex(nextLineIndex);
       }
+    };
+    const tick = () => {
+      sample();
       animationFrame = requestAnimationFrame(tick);
     };
 
+    sample();
+    if (!active) return;
     animationFrame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animationFrame);
-  }, [currentTime, lyricCurrentTime, lyricOffsetMs, lyrics, playbackStore]);
+  }, [active, currentTime, lyricCurrentTime, lyricOffsetMs, lyrics, playbackStore]);
 
   return {
     audioBands,

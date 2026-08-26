@@ -62,8 +62,9 @@ export interface BrowserRuntimeEnvironment {
     readonly documentElement: { requestFullscreen?(): Promise<void> };
     exitFullscreen?(): Promise<void>;
     readonly fullscreenElement: Element | null;
-    addEventListener(type: "fullscreenchange", callback: () => void): void;
-    removeEventListener(type: "fullscreenchange", callback: () => void): void;
+    readonly visibilityState?: DocumentVisibilityState;
+    addEventListener(type: "fullscreenchange" | "visibilitychange", callback: () => void): void;
+    removeEventListener(type: "fullscreenchange" | "visibilitychange", callback: () => void): void;
   };
   readonly cacheStorage?: BrowserCacheStorage;
   readonly legacyPlaybackStorage?: LegacyBrowserPlaybackStorage;
@@ -454,6 +455,14 @@ export function createBrowserRuntime(
         const onChange = () => callback(Boolean(doc.fullscreenElement));
         doc.addEventListener("fullscreenchange", onChange);
         return () => doc.removeEventListener("fullscreenchange", onChange);
+      },
+      onVisibilityChanged: (callback) => {
+        const doc = environment.document;
+        if (!doc) return NOOP;
+        const onChange = () => callback(doc.visibilityState !== "hidden");
+        onChange();
+        doc.addEventListener("visibilitychange", onChange);
+        return () => doc.removeEventListener("visibilitychange", onChange);
       },
       setFullscreen: async (fullscreen) => {
         const doc = environment.document;

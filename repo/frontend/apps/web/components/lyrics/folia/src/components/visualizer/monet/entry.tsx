@@ -1,8 +1,9 @@
-import React from "react";
+import React, { lazy } from "react";
 import { DEFAULT_MONET_TUNING } from "../../../types";
 import { defineVisualizer } from "../definition";
-import VisualizerMonet from "./VisualizerMonet";
 import { MonetSettingsPanel } from "./MonetSettingsPanel";
+
+const VisualizerMonet = lazy(() => import("./VisualizerMonet"));
 
 // src/components/visualizer/monet/entry.tsx
 // Registers the Monet poster visualizer and its mode-owned settings panel.

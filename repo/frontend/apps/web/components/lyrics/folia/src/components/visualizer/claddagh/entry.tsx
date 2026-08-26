@@ -1,8 +1,9 @@
-import React from "react";
+import React, { lazy } from "react";
 import { DEFAULT_CLADDAGH_TUNING } from "../../../types";
 import { defineVisualizer } from "../definition";
 import { CladdaghSettingsPanel } from "../settingsPanels";
-import VisualizerCladdagh from "./VisualizerCladdagh";
+
+const VisualizerCladdagh = lazy(() => import("./VisualizerCladdagh"));
 
 // src/components/visualizer/claddagh/entry.tsx
 

@@ -25,6 +25,7 @@ export function FoliaStageSettings({
   isChromeHidden,
   isOpen,
   onOpenChange,
+  onVisualSettingsOpenChange,
   theme,
   themeLibraryRequestId,
 }: FoliaStageSettingsProps) {
@@ -60,9 +61,21 @@ export function FoliaStageSettings({
     setIsThemeLibraryOpen(true);
   }, [themeLibraryRequestId]);
 
+  useEffect(
+    () => () => {
+      onVisualSettingsOpenChange(false);
+    },
+    [onVisualSettingsOpenChange],
+  );
+
+  const setVisualSettingsOpen = (open: boolean) => {
+    setIsVisualSettingsOpen(open);
+    onVisualSettingsOpenChange(open);
+  };
+
   const openVisualSettings = (section: FoliaStageEditSection) => {
     setActiveSection(section);
-    setIsVisualSettingsOpen(true);
+    setVisualSettingsOpen(true);
   };
 
   return (
@@ -183,7 +196,7 @@ export function FoliaStageSettings({
       <FoliaVisualSettingsDialog
         assets={assets}
         isOpen={isVisualSettingsOpen}
-        onClose={() => setIsVisualSettingsOpen(false)}
+        onClose={() => setVisualSettingsOpen(false)}
         onOpenFontPicker={setFontPickerTarget}
         onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
         onSectionChange={setActiveSection}

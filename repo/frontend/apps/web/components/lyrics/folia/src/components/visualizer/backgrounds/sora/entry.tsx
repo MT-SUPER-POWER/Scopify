@@ -1,8 +1,9 @@
-import React from "react";
+import React, { lazy } from "react";
 import { DEFAULT_SORA_BACKGROUND_TUNING } from "../../../../types";
 import SoraBackgroundSettingsCard from "./SoraBackgroundSettingsCard";
-import SoraBackground from "./SoraBackground";
 import { defineVisualizerBackground } from "../definition";
+
+const SoraBackground = lazy(() => import("./SoraBackground"));
 
 // src/components/visualizer/backgrounds/sora/entry.tsx
 // Registers the shader-based starfield background.

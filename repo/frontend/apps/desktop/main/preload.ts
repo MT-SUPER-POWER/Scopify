@@ -158,6 +158,11 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.on("window-full-screen-changed", listener);
     return () => ipcRenderer.removeListener("window-full-screen-changed", listener);
   },
+  onWindowVisibilityChanged: (callback) => {
+    const listener = (_event: Electron.IpcRendererEvent, isVisible: boolean) => callback(isVisible);
+    ipcRenderer.on("window-visibility-changed", listener);
+    return () => ipcRenderer.removeListener("window-visibility-changed", listener);
+  },
   openLoginWindow: () => {
     ipcRenderer.send("open-login-window");
   },

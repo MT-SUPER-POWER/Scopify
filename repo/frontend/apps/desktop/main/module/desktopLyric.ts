@@ -71,7 +71,8 @@ function applyPreferences(window: BrowserWindow) {
 
 function closeDesktopLyricWindow() {
   if (!isWindowAlive(desktopLyricWindow)) return false;
-  desktopLyricWindow.close();
+  desktopLyricWindow.destroy();
+  desktopLyricWindow = null;
   return true;
 }
 
@@ -305,7 +306,7 @@ function showDesktopLyricWindow() {
 
 function toggleDesktopLyricWindow() {
   if (isWindowAlive(desktopLyricWindow) && desktopLyricWindow.isVisible()) {
-    desktopLyricWindow.hide();
+    closeDesktopLyricWindow();
     return false;
   }
 

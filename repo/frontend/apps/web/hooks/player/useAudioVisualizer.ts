@@ -16,10 +16,13 @@ import {
   createAnalyserAudioFeatureSource,
   registerAudioFeatureSource,
 } from "@/lib/audioFeature/source";
+import {
+  publishLocalAudioFeatures,
+  subscribeLocalAudioFeatureDemand,
+} from "@/lib/audioFeature/localBus";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { usePlayerStore } from "@/store/module/player";
 import type { AudioFeatureSource } from "@/types/audioFeaturePublisher";
-import type { LyricAudioBands } from "@/types/lyrics";
 import type { SongDetail } from "@/types/api/music";
 import type { ReplayGainMode } from "@/types/player";
 
@@ -62,11 +65,7 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
     let audioFeatureSource: AudioFeatureSource | null = null;
     let unregisterAudioFeatureSource: (() => void) | undefined;
 
-    const broadcast = (bands: LyricAudioBands) => {
-      window.dispatchEvent(
-        new CustomEvent<LyricAudioBands>("player-audio-bands", { detail: bands }),
-      );
-    };
+    let localSamplingActive = false;
 
     const prepare = () => {
       if (analyser || didFail) return;
@@ -122,10 +121,11 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
     };
 
     const tick = () => {
+      if (!localSamplingActive) return;
       const bands = audioFeatureSource?.readBands();
       if (!bands) {
         const breath = (Math.sin(Date.now() / 2_000) + 1) * 20;
-        broadcast({
+        publishLocalAudioFeatures({
           bass: breath,
           lowMid: breath,
           mid: breath,
@@ -135,17 +135,35 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
           vocal: breath,
         });
       } else {
-        broadcast(bands);
+        publishLocalAudioFeatures(bands);
       }
       animationFrame = window.requestAnimationFrame(tick);
     };
 
+    const stopLocalSampling = () => {
+      if (!localSamplingActive) return;
+      localSamplingActive = false;
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+    };
+
+    const startLocalSampling = () => {
+      if (localSamplingActive) return;
+      localSamplingActive = true;
+      animationFrame = window.requestAnimationFrame(tick);
+    };
+
+    const unsubscribeDemand = subscribeLocalAudioFeatureDemand((active) => {
+      if (active) startLocalSampling();
+      else stopLocalSampling();
+    });
+
     audio.addEventListener("play", onPlay);
     if (!audio.paused) onPlay();
-    animationFrame = window.requestAnimationFrame(tick);
     return () => {
       audio.removeEventListener("play", onPlay);
-      window.cancelAnimationFrame(animationFrame);
+      unsubscribeDemand();
+      stopLocalSampling();
       unregisterAudioFeatureSource?.();
     };
   }, [audioRef]);

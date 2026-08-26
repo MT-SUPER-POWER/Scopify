@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { type VisualizerMode } from "../../types";
 import { type VisualizerSharedProps } from "./definition";
 import { getVisualizerRegistryEntry } from "./registry";
@@ -27,7 +27,7 @@ const VisualizerRenderer: React.FC<VisualizerRendererProps> = ({ mode, ...props 
 
   return (
     <>
-      {getVisualizerRegistryEntry(mode).render(resolvedProps)}
+      <Suspense fallback={null}>{getVisualizerRegistryEntry(mode).render(resolvedProps)}</Suspense>
       <VisualizerHarmonyOverlay
         currentTime={resolvedProps.currentTime}
         lines={resolvedProps.lines}

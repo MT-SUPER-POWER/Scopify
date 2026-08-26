@@ -126,6 +126,7 @@ export interface FoliaStageSettingsProps {
   isChromeHidden: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  onVisualSettingsOpenChange: (open: boolean) => void;
   theme: Theme;
   themeLibraryRequestId: number;
 }

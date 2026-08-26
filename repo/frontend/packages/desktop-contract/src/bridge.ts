@@ -24,7 +24,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 21;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 22;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -126,6 +126,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   ): Unsubscribe;
   onDiscordPresenceStatusChanged(callback: (status: DiscordPresenceStatus) => void): Unsubscribe;
   onFullScreenChanged(callback: (isFullScreen: boolean) => void): Unsubscribe;
+  onWindowVisibilityChanged(callback: (isVisible: boolean) => void): Unsubscribe;
   onNavigate(callback: (path: string) => void): Unsubscribe;
   onUpdateStatusChanged(callback: (status: AppUpdateState) => void): Unsubscribe;
   onBackendStatusChanged(callback: (status: DesktopBackendStatus) => void): Unsubscribe;

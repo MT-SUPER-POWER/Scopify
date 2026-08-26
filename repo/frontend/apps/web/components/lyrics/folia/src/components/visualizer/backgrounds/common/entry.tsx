@@ -1,11 +1,12 @@
-import React from "react";
+import React, { lazy } from "react";
 import { motion } from "framer-motion";
 import { Cone } from "lucide-react";
 import { defineVisualizerBackground } from "../definition";
 import { QuickControlToggle } from "../../../shared/QuickControlChip";
 import CommonBackgroundSettingsCard from "./CommonBackgroundSettingsCard";
-import FluidBackground from "./FluidBackground";
-import GeometricBackground from "./GeometricBackground";
+
+const FluidBackground = lazy(() => import("./FluidBackground"));
+const GeometricBackground = lazy(() => import("./GeometricBackground"));
 
 // src/components/visualizer/backgrounds/common/entry.tsx
 // Registers the built-in cover-color and geometric shell background.

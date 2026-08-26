@@ -1,7 +1,8 @@
-import React from "react";
+import React, { lazy } from "react";
 import { defineVisualizer } from "../definition";
 import { PartitaSettingsPanel } from "../settingsPanels";
-import VisualizerPartita from "./VisualizerPartita";
+
+const VisualizerPartita = lazy(() => import("./VisualizerPartita"));
 
 // src/components/visualizer/partita/entry.tsx
 // Registers Partita and its preview tuning panel.
