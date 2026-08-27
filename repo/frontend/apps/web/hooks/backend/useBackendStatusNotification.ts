@@ -1,25 +1,33 @@
 "use client";
 
 import type { DesktopBackendStatus } from "@scopify/desktop-contract";
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 import { translate } from "@/lib/i18n";
+import { refetchFailedActiveQueries } from "@/lib/query/backendRecovery";
 import { runtime } from "@/lib/runtime";
 import { useI18nStore } from "@/store/module/i18n";
 
 const BACKEND_ERROR_TOAST_ID = "desktop-backend-unavailable";
 
 export function useBackendStatusNotification() {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const lastFailureRef = useRef<string | null>(null);
+  const lastStateRef = useRef<DesktopBackendStatus["state"] | null>(null);
 
   const handleStatus = useCallback(
     (status: DesktopBackendStatus) => {
+      const previousState = lastStateRef.current;
+      lastStateRef.current = status.state;
+
       if (status.state !== "error") {
         lastFailureRef.current = null;
-        if (status.state === "running") toast.dismiss(BACKEND_ERROR_TOAST_ID);
+        if (status.state === "running") {
+          toast.dismiss(BACKEND_ERROR_TOAST_ID);
+          if (previousState !== "running") void refetchFailedActiveQueries(queryClient);
+        }
         return;
       }
 
@@ -33,14 +41,14 @@ export function useBackendStatusNotification() {
       toast.error(translate(locale, "layout.backendUnavailableTitle"), {
         action: {
           label: translate(locale, "layout.openBackendSettings"),
-          onClick: () => router.push("/setting"),
+          onClick: () => runtime.navigation.navigateMainWindow("/setting"),
         },
         description: message,
         duration: 12_000,
         id: BACKEND_ERROR_TOAST_ID,
       });
     },
-    [router],
+    [queryClient],
   );
 
   useEffect(() => {

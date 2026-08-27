@@ -47,10 +47,12 @@ export default function RootLayout({
         >
           <I18nProvider>
             <CompanionPlaybackProjectionProvider>
-              <BackendStatusNotifier />
               <DesktopPlaybackControllerCommandHandler />
               <FoliaStageStoreSync />
-              <QueryProvider>{children}</QueryProvider>
+              <QueryProvider>
+                <BackendStatusNotifier />
+                {children}
+              </QueryProvider>
               <Toaster position="top-center" duration={3000} />
             </CompanionPlaybackProjectionProvider>
           </I18nProvider>

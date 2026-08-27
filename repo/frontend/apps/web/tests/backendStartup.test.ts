@@ -9,6 +9,10 @@ const notificationSource = readFileSync(
   resolve(appRoot, "hooks/backend/useBackendStatusNotification.ts"),
   "utf8",
 );
+const notifierComponentSource = readFileSync(
+  resolve(appRoot, "components/backend/BackendStatusNotifier.tsx"),
+  "utf8",
+);
 
 test("keeps the dashboard available while the backend starts or fails", () => {
   expect(mainLayoutSource).not.toContain("useBackendStartup");
@@ -22,5 +26,7 @@ test("mounts a non-blocking backend status notification", () => {
   expect(notificationSource).toMatch(/runtime\.backend\s*\.getStatus\(\)/);
   expect(notificationSource).toContain("runtime.backend.onStatusChanged");
   expect(notificationSource).toContain("toast.error");
-  expect(notificationSource).toContain('router.push("/setting")');
+  expect(notificationSource).toContain('runtime.navigation.navigateMainWindow("/setting")');
+  expect(notificationSource).toContain("refetchFailedActiveQueries");
+  expect(notifierComponentSource).toContain("isDesktopAuxiliaryRoute");
 });

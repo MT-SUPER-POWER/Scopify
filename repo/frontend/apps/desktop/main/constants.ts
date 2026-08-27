@@ -89,6 +89,9 @@ const _nativeWindowMac = nativeImage.createFromPath(join(__iconsetDir, "icon_128
 /** macOS Dock 图标用 512×512 PNG（旧方案已验证可用）*/
 const _nativeDockMac = nativeImage.createFromPath(join(__iconsetDir, "icon_512x512.png"));
 
+/** 通知区域使用专门的小尺寸 PNG，避免 Windows 从单层 256px ICO 缩放失败。 */
+const _nativeTray = nativeImage.createFromPath(join(__iconsetDir, "icon_32x32.png"));
+
 // ─── 按用途导出（消费方只关心用途，不关心格式）───
 
 /** 窗口图标：macOS 用 128×128 PNG，其他平台用 .ico */
@@ -98,7 +101,7 @@ export const __iconWindow = process.platform === "darwin" ? _nativeWindowMac : _
 export const __iconDock = _nativeDockMac;
 
 /** 系统托盘图标（Windows 任务栏通知区域） */
-export const __iconTray = _nativeIco;
+export const __iconTray = _nativeTray;
 
 if (_nativeIco.isEmpty()) {
   log.error(`[Resource] Failed to load ico icon from: ${__iconIcoPath}`);
@@ -113,6 +116,12 @@ if (_nativeWindowMac.isEmpty()) {
 if (_nativeDockMac.isEmpty()) {
   log.error(
     `[Resource] Failed to load macOS dock icon from: ${join(__iconsetDir, "icon_512x512.png")}`,
+  );
+}
+
+if (_nativeTray.isEmpty()) {
+  log.error(
+    `[Resource] Failed to load system tray icon from: ${join(__iconsetDir, "icon_32x32.png")}`,
   );
 }
 
