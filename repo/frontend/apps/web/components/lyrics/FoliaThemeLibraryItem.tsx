@@ -16,7 +16,7 @@ export function FoliaThemeLibraryItem({
 
   return (
     <button
-      className={`relative flex w-full items-center rounded-2xl border text-left transition ${collapsed ? "justify-center p-1.5" : "gap-3 p-2.5"}`}
+      className={`relative flex items-center rounded-2xl border text-left transition ${collapsed ? "mx-auto size-12 justify-center overflow-visible p-1" : "w-full gap-3 p-2.5"}`}
       onClick={onSelect}
       style={{
         backgroundColor: selected ? `${theme.dark.accentColor}18` : "transparent",
@@ -39,12 +39,6 @@ export function FoliaThemeLibraryItem({
           <i className="size-2 rounded-full" style={{ backgroundColor: theme.light.accentColor }} />
           <i className="size-2 rounded-full" style={{ backgroundColor: theme.dark.accentColor }} />
         </span>
-      ) : null}
-      {isApplied ? (
-        <i
-          className="absolute right-1.5 bottom-1.5 size-2 rounded-full border border-white/70"
-          style={{ backgroundColor: theme.dark.accentColor }}
-        />
       ) : null}
     </button>
   );

@@ -66,6 +66,17 @@ the browser.
    overflow in the 64px panel. Removed the custom overlay and retained the persistent badge plus native
    title. Final evidence is `13-single-disc-final.png`; client and scroll dimensions match and the
    collapsed panel contains one button.
+8. Compact-library clarification (`codex-clipboard-1ae01437-ab78-46bf-a808-646a75be664b.png`):
+   P1 the single-record interpretation hid the rest of the theme library, and the fully collapsed
+   resize handle was too subtle. Fixed by retaining every theme as an icon-only record, restoring a
+   dedicated expand action, and enlarging the collapsed separator to a 4px rail with a 12 × 40px grip.
+   Final evidence is `16-compact-all-themes-handle-final.png`; the 64px panel exposes all themes,
+   remains draggable, has no horizontal overflow, and reports no browser errors.
+9. Final compact-sidebar correction (`codex-clipboard-ce70ce0b-a8d1-48b5-90c5-03ccd438d143.png`):
+   fixed each collapsed theme item to a complete 48px button, removed the applied-theme corner dot,
+   restored the same standard resize handle used by the right panel, and removed the forced-collapse
+   loop so dragging right naturally expands the library. Automated DOM/browser acceptance was omitted
+   at the user's request; manual acceptance is pending.
 
 ## Follow-up polish
 
@@ -73,4 +84,7 @@ the browser.
 - P3: consider a fullscreen-preview action after the workbench interaction settles.
 - Intentional difference: AI/content editing tabs from Folia are outside this version's scope.
 
-final result: passed
+final result: blocked
+
+Blocker: the user requested manual acceptance instead of automated DOM/browser verification for the
+latest compact-sidebar correction.

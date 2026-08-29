@@ -78,21 +78,12 @@ export function FoliaThemeWorkbenchLayout({
         defaultSize="18%"
         maxSize="320px"
         minSize="176px"
-        onResize={(size) => {
-          if (size.inPixels <= 80) {
-            setCollapsed(true);
-            return;
-          }
-          if (collapsed) requestAnimationFrame(() => libraryPanel?.collapse());
-        }}
+        onResize={(size) => setCollapsed(size.inPixels <= 80)}
         panelRef={setLibraryPanel}
       >
-        <div className={`h-full min-h-0 ${collapsed ? "pr-0" : "pr-2"}`}>{library}</div>
+        <div className={`h-full min-h-0 ${collapsed ? "pr-1" : "pr-2"}`}>{library}</div>
       </ResizablePanel>
-      <ResizableHandle
-        className={collapsed ? "mx-0 bg-transparent" : "mx-1 bg-white/10"}
-        withHandle={!collapsed}
-      />
+      <ResizableHandle className="mx-1 bg-white/10" withHandle />
       <ResizablePanel defaultSize="82%" minSize="52%">
         <div className="h-full min-h-0 pl-2">{editor}</div>
       </ResizablePanel>
