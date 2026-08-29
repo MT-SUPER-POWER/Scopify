@@ -89,6 +89,7 @@ export function usePlaylist(playlistIdOverride?: null | string) {
       creatorAvatar: rawDetail.creator?.avatarUrl ?? "",
       likes: rawDetail.subscribedCount ?? 0,
       totalSongs: rawDetail.trackCount ?? 0,
+      subscribed: rawDetail.subscribed ?? false,
     };
   }, [dailyDate, isDailyRecommend, rawDetail, t]);
 

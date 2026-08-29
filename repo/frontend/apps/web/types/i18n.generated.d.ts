@@ -2801,6 +2801,30 @@ export interface TranslateFn {
    */
   (key: "playlist.page.invalidUrl", params?: TranslationParams): string;
   /**
+   * zh-CN: 收藏歌单
+   * zh-TW: 收藏歌單
+   * en-US: Subscribe to playlist
+   */
+  (key: "playlist.actions.subscribe", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏
+   * zh-TW: 取消收藏
+   * en-US: Unsubscribe
+   */
+  (key: "playlist.actions.unsubscribe", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已收藏歌单
+   * zh-TW: 已收藏歌單
+   * en-US: Subscribed to playlist
+   */
+  (key: "playlist.actions.subscribeSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消收藏
+   * zh-TW: 已取消收藏
+   * en-US: Unsubscribed from playlist
+   */
+  (key: "playlist.actions.unsubscribeSuccess", params?: TranslationParams): string;
+  /**
    * zh-CN: 最近搜索
    * zh-TW: 最近搜尋
    * en-US: Recent Searches
@@ -3256,6 +3280,42 @@ export interface TranslateFn {
    * en-US: Delete
    */
   (key: "comments.item.delete", params?: TranslationParams): string;
+  /**
+   * zh-CN: IP属地: {{location}}
+   * zh-TW: IP屬地: {{location}}
+   * en-US: IP: {{location}}
+   */
+  (key: "comments.item.ipLocation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 排序
+   * zh-TW: 排序
+   * en-US: Sort
+   */
+  (key: "comments.sort.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认排序
+   * zh-TW: 預設排序
+   * en-US: Default
+   */
+  (key: "comments.sort.default", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最新发布
+   * zh-TW: 最新發佈
+   * en-US: Latest
+   */
+  (key: "comments.sort.latest", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最早发布
+   * zh-TW: 最早發佈
+   * en-US: Oldest
+   */
+  (key: "comments.sort.oldest", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点赞最多
+   * zh-TW: 按讚最多
+   * en-US: Most Liked
+   */
+  (key: "comments.sort.mostLiked", params?: TranslationParams): string;
   /**
    * zh-CN: 播放队列
    * zh-TW: 播放佇列
@@ -16372,5 +16432,377 @@ export interface TranslateFn {
    * en-US: Restart and install
    */
   (key: "notifications.updater.install", params?: TranslationParams): string;
+  /**
+   * zh-CN: 私人电台
+   * zh-TW: 私人電台
+   * en-US: Personal Radio
+   */
+  (key: "personalFm.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 私人 FM 模式
+   * zh-TW: 私人 FM 模式
+   * en-US: Personal FM mode
+   */
+  (key: "personalFm.settings.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击场景即可直接切到场景模式
+   * zh-TW: 點擊場景即可直接切到場景模式
+   * en-US: Choose a scene to switch the radio mode immediately.
+   */
+  (key: "personalFm.settings.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 模式
+   * zh-TW: 模式
+   * en-US: Mode
+   */
+  (key: "personalFm.settings.modeLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景
+   * zh-TW: 場景
+   * en-US: Scene
+   */
+  (key: "personalFm.settings.sceneLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在生成私人 FM…
+   * zh-TW: 正在生成私人 FM…
+   * en-US: Generating Personal FM…
+   */
+  (key: "personalFm.status.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这个私人 FM 模式暂时没有返回歌曲
+   * zh-TW: 這個私人 FM 模式暫時沒有返回歌曲
+   * en-US: This Personal FM mode returned no songs
+   */
+  (key: "personalFm.error.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 私人 FM 加载失败，请稍后重试
+   * zh-TW: 私人 FM 載入失敗，請稍後重試
+   * en-US: Personal FM failed to load. Try again later.
+   */
+  (key: "personalFm.error.loadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 私人 FM · 动态队列
+   * zh-TW: 私人 FM · 動態隊列
+   * en-US: Personal FM · Dynamic queue
+   */
+  (key: "personalFm.queue.dynamic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不再推荐
+   * zh-TW: 不再推薦
+   * en-US: Recommend less
+   */
+  (key: "personalFm.action.dislike", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时无法减少这首歌的推荐
+   * zh-TW: 暫時無法減少這首歌的推薦
+   * en-US: Could not reduce recommendations for this song
+   */
+  (key: "personalFm.action.dislikeFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认
+   * zh-TW: 預設
+   * en-US: Default
+   */
+  (key: "personalFm.mode.default", params?: TranslationParams): string;
+  /**
+   * zh-CN: 熟悉
+   * zh-TW: 熟悉
+   * en-US: Familiar
+   */
+  (key: "personalFm.mode.familiar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 探索
+   * zh-TW: 探索
+   * en-US: Explore
+   */
+  (key: "personalFm.mode.explore", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景
+   * zh-TW: 場景
+   * en-US: Scene
+   */
+  (key: "personalFm.mode.scene", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拼图
+   * zh-TW: 拼圖
+   * en-US: Puzzle
+   */
+  (key: "personalFm.mode.puzzle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 情绪
+   * zh-TW: 情緒
+   * en-US: Mood
+   */
+  (key: "personalFm.category.mood", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景
+   * zh-TW: 場景
+   * en-US: Scene
+   */
+  (key: "personalFm.category.activity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 曲风
+   * zh-TW: 曲風
+   * en-US: Genre
+   */
+  (key: "personalFm.category.genre", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语种
+   * zh-TW: 語種
+   * en-US: Language
+   */
+  (key: "personalFm.category.language", params?: TranslationParams): string;
+  /**
+   * zh-CN: 伤感
+   * zh-TW: 傷感
+   * en-US: Melancholy
+   */
+  (key: "personalFm.scene.nightEmo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 治愈
+   * zh-TW: 治癒
+   * en-US: Healing
+   */
+  (key: "personalFm.scene.cure", params?: TranslationParams): string;
+  /**
+   * zh-CN: 欢快
+   * zh-TW: 歡快
+   * en-US: Cheerful
+   */
+  (key: "personalFm.scene.cheerful", params?: TranslationParams): string;
+  /**
+   * zh-CN: 抒情
+   * zh-TW: 抒情
+   * en-US: Lyrical
+   */
+  (key: "personalFm.scene.lyrical", params?: TranslationParams): string;
+  /**
+   * zh-CN: 励志
+   * zh-TW: 勵志
+   * en-US: Inspirational
+   */
+  (key: "personalFm.scene.inspirational", params?: TranslationParams): string;
+  /**
+   * zh-CN: 放松
+   * zh-TW: 放鬆
+   * en-US: Relax
+   */
+  (key: "personalFm.scene.relax", params?: TranslationParams): string;
+  /**
+   * zh-CN: 情歌
+   * zh-TW: 情歌
+   * en-US: Love Songs
+   */
+  (key: "personalFm.scene.sweet", params?: TranslationParams): string;
+  /**
+   * zh-CN: 运动
+   * zh-TW: 運動
+   * en-US: Workout
+   */
+  (key: "personalFm.scene.exercise", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专注
+   * zh-TW: 專注
+   * en-US: Focus
+   */
+  (key: "personalFm.scene.focus", params?: TranslationParams): string;
+  /**
+   * zh-CN: 睡眠
+   * zh-TW: 睡眠
+   * en-US: Sleep
+   */
+  (key: "personalFm.scene.sleep", params?: TranslationParams): string;
+  /**
+   * zh-CN: 洗澡
+   * zh-TW: 洗澡
+   * en-US: Shower
+   */
+  (key: "personalFm.scene.shower", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通勤
+   * zh-TW: 通勤
+   * en-US: Commute
+   */
+  (key: "personalFm.scene.commute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 咖啡馆
+   * zh-TW: 咖啡館
+   * en-US: Coffee Shop
+   */
+  (key: "personalFm.scene.coffeeShop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 游戏
+   * zh-TW: 遊戲
+   * en-US: Gaming
+   */
+  (key: "personalFm.scene.gaming", params?: TranslationParams): string;
+  /**
+   * zh-CN: 舞蹈
+   * zh-TW: 舞蹈
+   * en-US: Dance
+   */
+  (key: "personalFm.scene.dance", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雨天
+   * zh-TW: 雨天
+   * en-US: Rainy Day
+   */
+  (key: "personalFm.scene.rainy", params?: TranslationParams): string;
+  /**
+   * zh-CN: R&B
+   * zh-TW: R&B
+   * en-US: R&B
+   */
+  (key: "personalFm.scene.rhythmBlues", params?: TranslationParams): string;
+  /**
+   * zh-CN: 说唱
+   * zh-TW: 說唱
+   * en-US: Rap
+   */
+  (key: "personalFm.scene.rap", params?: TranslationParams): string;
+  /**
+   * zh-CN: K-Pop
+   * zh-TW: K-Pop
+   * en-US: K-Pop
+   */
+  (key: "personalFm.scene.kPop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 电子
+   * zh-TW: 電子
+   * en-US: Electronic
+   */
+  (key: "personalFm.scene.electronic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 摇滚
+   * zh-TW: 搖滾
+   * en-US: Rock
+   */
+  (key: "personalFm.scene.rock", params?: TranslationParams): string;
+  /**
+   * zh-CN: 民谣
+   * zh-TW: 民謠
+   * en-US: Folk
+   */
+  (key: "personalFm.scene.folk", params?: TranslationParams): string;
+  /**
+   * zh-CN: 古典
+   * zh-TW: 古典
+   * en-US: Classical
+   */
+  (key: "personalFm.scene.classical", params?: TranslationParams): string;
+  /**
+   * zh-CN: 爵士
+   * zh-TW: 爵士
+   * en-US: Jazz
+   */
+  (key: "personalFm.scene.jazz", params?: TranslationParams): string;
+  /**
+   * zh-CN: 蓝调
+   * zh-TW: 藍調
+   * en-US: Blues
+   */
+  (key: "personalFm.scene.blues", params?: TranslationParams): string;
+  /**
+   * zh-CN: 放克
+   * zh-TW: 放克
+   * en-US: Funk
+   */
+  (key: "personalFm.scene.funk", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乡村
+   * zh-TW: 鄉村
+   * en-US: Country
+   */
+  (key: "personalFm.scene.country", params?: TranslationParams): string;
+  /**
+   * zh-CN: 轻音乐
+   * zh-TW: 輕音樂
+   * en-US: Light Music
+   */
+  (key: "personalFm.scene.lightMusic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 国风
+   * zh-TW: 國風
+   * en-US: Guofeng
+   */
+  (key: "personalFm.scene.guofeng", params?: TranslationParams): string;
+  /**
+   * zh-CN: 慢摇
+   * zh-TW: 慢搖
+   * en-US: Slow DJ
+   */
+  (key: "personalFm.scene.slowDj", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐剧
+   * zh-TW: 音樂劇
+   * en-US: Musical
+   */
+  (key: "personalFm.scene.musical", params?: TranslationParams): string;
+  /**
+   * zh-CN: ACG
+   * zh-TW: ACG
+   * en-US: ACG
+   */
+  (key: "personalFm.scene.acg", params?: TranslationParams): string;
+  /**
+   * zh-CN: 经典
+   * zh-TW: 經典
+   * en-US: Classics
+   */
+  (key: "personalFm.scene.classics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 宝藏原创
+   * zh-TW: 寶藏原創
+   * en-US: Indie Original
+   */
+  (key: "personalFm.scene.indieOriginal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 影视原声
+   * zh-TW: 影視原聲
+   * en-US: Soundtrack
+   */
+  (key: "personalFm.scene.soundtrack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 华语
+   * zh-TW: 華語
+   * en-US: Mandarin
+   */
+  (key: "personalFm.scene.mandarin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 欧美
+   * zh-TW: 歐美
+   * en-US: Western
+   */
+  (key: "personalFm.scene.western", params?: TranslationParams): string;
+  /**
+   * zh-CN: 粤语
+   * zh-TW: 粵語
+   * en-US: Cantonese
+   */
+  (key: "personalFm.scene.cantonese", params?: TranslationParams): string;
+  /**
+   * zh-CN: 日语
+   * zh-TW: 日語
+   * en-US: Japanese
+   */
+  (key: "personalFm.scene.japanese", params?: TranslationParams): string;
+  /**
+   * zh-CN: 法语
+   * zh-TW: 法語
+   * en-US: French
+   */
+  (key: "personalFm.scene.french", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拉丁
+   * zh-TW: 拉丁
+   * en-US: Latin
+   */
+  (key: "personalFm.scene.latin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全球
+   * zh-TW: 全球
+   * en-US: Global
+   */
+  (key: "personalFm.scene.global", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }

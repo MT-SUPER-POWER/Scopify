@@ -123,6 +123,23 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
   };
 
   return {
+    appendQueueItems(
+      snapshot: PlaybackQueueSnapshot<T>,
+      songs: readonly T[],
+    ): PlaybackQueueTransition<T> {
+      if (songs.length === 0) return noChange(snapshot);
+
+      const appendedSongs = snapshot.isShuffle ? shuffle(songs) : [...songs];
+      return {
+        effect: NO_EFFECT,
+        snapshot: {
+          ...snapshot,
+          originalQueue: [...snapshot.originalQueue, ...songs],
+          queue: [...snapshot.queue, ...appendedSongs],
+        },
+      };
+    },
+
     moveQueueItem(
       snapshot: PlaybackQueueSnapshot<T>,
       context: PlaybackQueueRuntimeContext<T>,

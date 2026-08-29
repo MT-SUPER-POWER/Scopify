@@ -26,6 +26,7 @@ import { isPlaybackSourceCurrent, waitForPlaybackSource } from "@/lib/player/pla
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { runtime } from "@/lib/runtime";
 import { usePlayerStore } from "@/store/module/player";
+import { usePersonalFmStore } from "@/store/module/personalFm";
 import { useTimeStore } from "@/store/module/time";
 import { useUserStore } from "@/store/module/user";
 import type {
@@ -224,8 +225,8 @@ export function PlaybackAuthorityProvider({
           );
         });
       },
-      next: () => usePlayerStore.getState().playNext(),
-      onEnded: () => usePlayerStore.getState().playNext("ended"),
+      next: () => usePersonalFmStore.getState().advance(),
+      onEnded: () => usePersonalFmStore.getState().advance("ended"),
       onPhaseChange: (phase) => {
         if (phase === "playing") {
           runtime.media.setPlaying(true);

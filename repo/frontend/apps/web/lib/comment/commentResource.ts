@@ -46,3 +46,29 @@ export function normalizeNewComments(data: NewCommentResponse | undefined) {
 function isCommentResourceKind(value: null | string): value is CommentResourceKind {
   return value !== null && value in COMMENT_RESOURCE_TYPE;
 }
+
+export function resolveCommentIpLocation(
+  comment:
+    | {
+        ipLocation?: { ip?: string; location?: string } | string | null;
+        location?: string | null;
+      }
+    | undefined,
+): string | undefined {
+  if (!comment) return undefined;
+  const raw = comment.ipLocation ?? comment.location;
+  if (!raw) return undefined;
+
+  let loc = "";
+  if (typeof raw === "string") {
+    loc = raw;
+  } else if (typeof raw === "object") {
+    loc = raw.location ?? raw.ip ?? "";
+  }
+
+  const cleaned = loc
+    .trim()
+    .replace(/^IP属地[：:]\s*/i, "")
+    .replace(/^IP[：:]\s*/i, "");
+  return cleaned.length > 0 ? cleaned : undefined;
+}

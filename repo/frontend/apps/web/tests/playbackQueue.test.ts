@@ -13,6 +13,7 @@ const a: Track = { id: 1, title: "A" };
 const aDuplicate: Track = { id: 1, title: "A duplicate" };
 const b: Track = { id: 2, title: "B" };
 const c: Track = { id: 3, title: "C" };
+const d: Track = { id: 4, title: "D" };
 
 const queue = createPlaybackQueue<Track>((tracks) => [...tracks].reverse());
 
@@ -109,6 +110,20 @@ describe("playback queue", () => {
     expect(result.snapshot.queueIndex).toBe(0);
     expect(result.snapshot.historyStack).toEqual([0]);
     expect(result.snapshot.playlistId).toBe("playlist-1");
+    expect(result.effect).toEqual({ type: "none" });
+  });
+
+  test("appends generated tracks without resetting the current index or history", () => {
+    const result = queue.appendQueueItems(
+      snapshot({ historyIndex: 1, historyStack: [0, 1], queueIndex: 1 }),
+      [d],
+    );
+
+    expect(result.snapshot.queue).toEqual([a, b, c, d]);
+    expect(result.snapshot.originalQueue).toEqual([a, b, c, d]);
+    expect(result.snapshot.queueIndex).toBe(1);
+    expect(result.snapshot.historyIndex).toBe(1);
+    expect(result.snapshot.historyStack).toEqual([0, 1]);
     expect(result.effect).toEqual({ type: "none" });
   });
 

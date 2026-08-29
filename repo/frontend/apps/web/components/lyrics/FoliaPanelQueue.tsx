@@ -4,26 +4,31 @@ import { ListEnd, ListPlus, Shuffle, Trash2 } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 
 import { usePlayerStore } from "@/store/module/player";
+import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 
 export function FoliaPanelQueue() {
   const { t } = useI18n();
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const queue = usePlayerStore((state) => state.queue);
+  const playbackSourceId = usePlayerStore((state) => state.playlistId);
+  const isPersonalFm = isPersonalFmPlaybackSource(playbackSourceId);
 
   return (
     <div className="flex flex-col select-none">
       <div className="flex shrink-0 items-center justify-between px-2 pb-2">
         <span className="text-xs font-medium opacity-60">
-          {t("folia.queue.title")} ({queue.length})
+          {isPersonalFm ? t("personalFm.queue.dynamic") : t("folia.queue.title")} ({queue.length})
         </span>
-        <button
-          type="button"
-          title={String(t("folia.queue.shuffle"))}
-          onClick={() => usePlayerStore.getState().toggleShuffle()}
-          className="rounded-md p-1.5 opacity-60 hover:bg-white/10 hover:opacity-100"
-        >
-          <Shuffle size={14} />
-        </button>
+        {!isPersonalFm ? (
+          <button
+            type="button"
+            title={String(t("folia.queue.shuffle"))}
+            onClick={() => usePlayerStore.getState().toggleShuffle()}
+            className="rounded-md p-1.5 opacity-60 hover:bg-white/10 hover:opacity-100"
+          >
+            <Shuffle size={14} />
+          </button>
+        ) : null}
       </div>
       <div className="space-y-1">
         {queue.length === 0 ? (
@@ -48,26 +53,28 @@ export function FoliaPanelQueue() {
                   {song.ar?.map((artist) => artist.name).join(", ")}
                 </span>
               </span>
-              <span className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
-                <QueueAction
-                  title={String(t("folia.queue.playNext"))}
-                  onClick={() => usePlayerStore.getState().moveQueueItemToNext(index)}
-                >
-                  <ListPlus size={13} />
-                </QueueAction>
-                <QueueAction
-                  title={String(t("folia.queue.moveToEnd"))}
-                  onClick={() => usePlayerStore.getState().moveQueueItem(index, queue.length - 1)}
-                >
-                  <ListEnd size={13} />
-                </QueueAction>
-                <QueueAction
-                  title={String(t("folia.queue.remove"))}
-                  onClick={() => usePlayerStore.getState().removeQueueItem(index)}
-                >
-                  <Trash2 size={13} />
-                </QueueAction>
-              </span>
+              {!isPersonalFm ? (
+                <span className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+                  <QueueAction
+                    title={String(t("folia.queue.playNext"))}
+                    onClick={() => usePlayerStore.getState().moveQueueItemToNext(index)}
+                  >
+                    <ListPlus size={13} />
+                  </QueueAction>
+                  <QueueAction
+                    title={String(t("folia.queue.moveToEnd"))}
+                    onClick={() => usePlayerStore.getState().moveQueueItem(index, queue.length - 1)}
+                  >
+                    <ListEnd size={13} />
+                  </QueueAction>
+                  <QueueAction
+                    title={String(t("folia.queue.remove"))}
+                    onClick={() => usePlayerStore.getState().removeQueueItem(index)}
+                  >
+                    <Trash2 size={13} />
+                  </QueueAction>
+                </span>
+              ) : null}
             </div>
           ))
         )}

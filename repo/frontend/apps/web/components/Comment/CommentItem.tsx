@@ -8,9 +8,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LikeButton } from "@/components/ui/LikeButton";
+import { resolveCommentIpLocation } from "@/lib/comment/commentResource";
 import { useI18n } from "@/store/module/i18n";
 import type { CommentItemProps } from "@/types/components/comment";
 import { renderEmojiContent } from "./renderEmojiContent";
+
+function ReplyArrowIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M13.5 4.5L20 10l-6.5 5.5V12C7.5 12 4.5 15 3 19.5c1.2-6 5-10 10.5-10.5V4.5z" />
+    </svg>
+  );
+}
 
 export const CommentItem: React.FC<CommentItemProps> = ({
   comment,
@@ -24,6 +41,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
 }) => {
   const { t } = useI18n();
   const isOwnComment = String(comment.user.userId) === String(currentUserId ?? "");
+  const ipLocation = resolveCommentIpLocation(comment);
 
   return (
     <div className="group flex gap-4">
@@ -43,7 +61,6 @@ export const CommentItem: React.FC<CommentItemProps> = ({
             <span className="cursor-pointer text-sm font-bold select-text hover:underline">
               {comment.user.nickname}
             </span>
-            <span className="ml-2 text-xs text-content-muted">{comment.timeStr}</span>
           </button>
         </div>
 
@@ -70,17 +87,26 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         )}
 
         <div className="mt-3 flex items-center justify-between">
-          <div className="flex gap-4 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="flex items-center text-xs text-content-muted">
+            <span>{comment.timeStr}</span>
+            {ipLocation && (
+              <>
+                <span className="mx-1.5">·</span>
+                <span>{t("comments.item.ipLocation", { location: ipLocation })}</span>
+              </>
+            )}
+          </div>
+
+          <div className="flex items-center gap-5 text-content-muted">
             <button
               type="button"
               onClick={() => onReply?.(comment.commentId)}
-              className="text-xs font-semibold text-content-muted transition-colors hover:text-content"
+              title={t("common.action.reply")}
+              className="cursor-pointer rounded transition-colors outline-none hover:text-content focus-visible:ring-2 focus-visible:ring-brand"
             >
-              {t("common.action.reply")}
+              <ReplyArrowIcon className="size-4" />
             </button>
-          </div>
 
-          <div className="flex items-center gap-6 text-content-muted">
             <LikeButton
               liked={comment.liked}
               likedCount={comment.likedCount}

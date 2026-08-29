@@ -1,7 +1,6 @@
-"use client";
-
-import { Headphones, Pause, Play, Radio } from "lucide-react";
+import { ChevronDown, ChevronUp, Headphones, Pause, Play, Radio } from "lucide-react";
 import Image from "next/image";
+import { useCallback, useMemo, useState } from "react";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import {
@@ -19,38 +18,148 @@ import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SubscribedPodcastTableProps } from "@/types/components/library";
 
+type PodcastSortKey = "title" | "playCount" | "voiceCount" | "updatedAt";
+
+interface PodcastSortState {
+  key: PodcastSortKey | null;
+  order: "asc" | "desc" | null;
+}
+
 export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps) {
   const { t } = useI18n();
   const router = useSmartRouter();
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
+  const [sortState, setSortState] = useState<PodcastSortState>({ key: null, order: null });
 
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
 
+  const handleToggleSort = useCallback((key: PodcastSortKey) => {
+    setSortState((current) => {
+      if (current.key !== key) {
+        const defaultOrder = key === "title" ? "asc" : "desc";
+        return { key, order: defaultOrder };
+      }
+      const firstOrder = key === "title" ? "asc" : "desc";
+      const secondOrder = key === "title" ? "desc" : "asc";
+
+      if (current.order === firstOrder) {
+        return { key, order: secondOrder };
+      }
+      return { key: null, order: null };
+    });
+  }, []);
+
+  const handleResetSort = useCallback(() => {
+    setSortState({ key: null, order: null });
+  }, []);
+
+  const sortedPodcasts = useMemo(() => {
+    const { key, order } = sortState;
+    if (!key || !order) return podcasts;
+
+    return [...podcasts].sort((a, b) => {
+      let comparison = 0;
+      switch (key) {
+        case "title":
+          comparison = (a.name || "").localeCompare(b.name || "", undefined, {
+            numeric: true,
+            sensitivity: "base",
+          });
+          break;
+        case "playCount":
+          comparison = (a.playCount ?? 0) - (b.playCount ?? 0);
+          break;
+        case "voiceCount":
+          comparison = (a.programCount ?? 0) - (b.programCount ?? 0);
+          break;
+        case "updatedAt": {
+          const timeA = a.lastProgramCreateTime ?? a.createTime ?? 0;
+          const timeB = b.lastProgramCreateTime ?? b.createTime ?? 0;
+          comparison = timeA - timeB;
+          break;
+        }
+      }
+      return order === "asc" ? comparison : -comparison;
+    });
+  }, [podcasts, sortState]);
+
   return (
     <Table containerClassName="overflow-x-auto" className="w-full table-fixed text-content-muted">
       <TableHeader className="border-b border-content/5">
         <TableRow className="border-none hover:bg-transparent">
-          <TableHead className="w-12 text-center text-content-muted">#</TableHead>
-          <TableHead className="text-content-muted">{t("library.podcasts.column.title")}</TableHead>
-          <TableHead className="hidden w-56 text-content-muted lg:table-cell">
+          <TableHead
+            className="w-12 cursor-pointer text-center text-content-muted transition-colors hover:text-content"
+            onClick={handleResetSort}
+            title={sortState.key ? "点击恢复默认排序" : undefined}
+          >
+            #
+          </TableHead>
+          <TableHead
+            className="cursor-pointer text-content-muted transition-colors select-none hover:text-content"
+            onClick={() => handleToggleSort("title")}
+          >
+            <div className="flex items-center gap-1">
+              {t("library.podcasts.column.title")}
+              {sortState.key === "title" && sortState.order === "asc" && (
+                <ChevronUp className="size-3.5" />
+              )}
+              {sortState.key === "title" && sortState.order === "desc" && (
+                <ChevronDown className="size-3.5" />
+              )}
+            </div>
+          </TableHead>
+          <TableHead className="hidden w-56 text-content-muted select-none lg:table-cell">
             {t("library.podcasts.recentPlay")}
           </TableHead>
-          <TableHead className="hidden w-28 text-right text-content-muted sm:table-cell">
-            {t("library.podcasts.column.playCount")}
+          <TableHead
+            className="hidden w-28 cursor-pointer text-right text-content-muted transition-colors select-none hover:text-content sm:table-cell"
+            onClick={() => handleToggleSort("playCount")}
+          >
+            <div className="flex items-center justify-end gap-1">
+              {t("library.podcasts.column.playCount")}
+              {sortState.key === "playCount" && sortState.order === "asc" && (
+                <ChevronUp className="size-3.5" />
+              )}
+              {sortState.key === "playCount" && sortState.order === "desc" && (
+                <ChevronDown className="size-3.5" />
+              )}
+            </div>
           </TableHead>
-          <TableHead className="hidden w-24 text-right text-content-muted sm:table-cell">
-            {t("library.podcasts.column.voiceCount")}
+          <TableHead
+            className="hidden w-24 cursor-pointer text-right text-content-muted transition-colors select-none hover:text-content sm:table-cell"
+            onClick={() => handleToggleSort("voiceCount")}
+          >
+            <div className="flex items-center justify-end gap-1">
+              {t("library.podcasts.column.voiceCount")}
+              {sortState.key === "voiceCount" && sortState.order === "asc" && (
+                <ChevronUp className="size-3.5" />
+              )}
+              {sortState.key === "voiceCount" && sortState.order === "desc" && (
+                <ChevronDown className="size-3.5" />
+              )}
+            </div>
           </TableHead>
-          <TableHead className="hidden w-28 text-right text-content-muted lg:table-cell">
-            {t("library.podcasts.column.updatedAt")}
+          <TableHead
+            className="hidden w-28 cursor-pointer text-right text-content-muted transition-colors select-none hover:text-content lg:table-cell"
+            onClick={() => handleToggleSort("updatedAt")}
+          >
+            <div className="flex items-center justify-end gap-1">
+              {t("library.podcasts.column.updatedAt")}
+              {sortState.key === "updatedAt" && sortState.order === "asc" && (
+                <ChevronUp className="size-3.5" />
+              )}
+              {sortState.key === "updatedAt" && sortState.order === "desc" && (
+                <ChevronDown className="size-3.5" />
+              )}
+            </div>
           </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {podcasts.map((podcast, index) => {
+        {sortedPodcasts.map((podcast, index) => {
           const categories = [podcast.category, podcast.secondCategory].filter(Boolean).join(" · ");
           const isLoading = loadingPodcastId === podcast.id;
           const lastUpdatedAt = podcast.lastProgramCreateTime ?? podcast.createTime;

@@ -2,6 +2,7 @@
 
 import {
   Heart,
+  Loader2,
   Pause,
   Play,
   Repeat,
@@ -10,6 +11,7 @@ import {
   Shuffle,
   SkipBack,
   SkipForward,
+  Trash2,
   Volume1,
   Volume2,
   VolumeX,
@@ -76,14 +78,29 @@ export function FoliaPanelControls({
           >
             <Heart size={20} fill={model.isLiked ? "currentColor" : "none"} />
           </IconButton>
-          <IconButton
-            active={model.isShuffle}
-            theme={theme}
-            title={String(t("folia.queue.shuffle"))}
-            onClick={model.toggleShuffle}
-          >
-            <Shuffle size={20} />
-          </IconButton>
+          {model.isPersonalFm ? (
+            <IconButton
+              disabled={model.isDislikingPersonalFm}
+              theme={theme}
+              title={String(t("personalFm.action.dislike"))}
+              onClick={model.dislikePersonalFm}
+            >
+              {model.isDislikingPersonalFm ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                <Trash2 size={20} />
+              )}
+            </IconButton>
+          ) : (
+            <IconButton
+              active={model.isShuffle}
+              theme={theme}
+              title={String(t("folia.queue.shuffle"))}
+              onClick={model.toggleShuffle}
+            >
+              <Shuffle size={20} />
+            </IconButton>
+          )}
         </div>
       </div>
 
@@ -147,12 +164,14 @@ export function FoliaPanelControls({
 function IconButton({
   active = false,
   children,
+  disabled = false,
   onClick,
   theme,
   title,
 }: {
   active?: boolean;
   children: React.ReactNode;
+  disabled?: boolean;
   onClick: () => void;
   theme: Theme;
   title: string;
@@ -162,8 +181,9 @@ function IconButton({
     <button
       type="button"
       title={title}
+      disabled={disabled}
       onClick={onClick}
-      className={`flex h-12 items-center justify-center rounded-xl transition-colors ${
+      className={`flex h-12 items-center justify-center rounded-xl transition-colors disabled:cursor-wait disabled:opacity-40 ${
         isDaylight ? "hover:bg-black/10" : "hover:bg-white/10"
       }`}
       style={{

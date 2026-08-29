@@ -29,6 +29,7 @@ import { foliaMessages } from "./folia";
 import { shortcutsMessages } from "./shortcuts";
 import { libraryMessages } from "./library";
 import { updaterMessages } from "./updater";
+import { personalFmMessages } from "./personalFm";
 
 export const messages = {
   "zh-CN": {
@@ -63,6 +64,7 @@ export const messages = {
     ...shortcutsMessages["zh-CN"],
     ...libraryMessages["zh-CN"],
     ...updaterMessages["zh-CN"],
+    ...personalFmMessages["zh-CN"],
   },
   "zh-TW": {
     ...commonMessages["zh-TW"],
@@ -96,6 +98,7 @@ export const messages = {
     ...shortcutsMessages["zh-TW"],
     ...libraryMessages["zh-TW"],
     ...updaterMessages["zh-TW"],
+    ...personalFmMessages["zh-TW"],
   },
   "en-US": {
     ...commonMessages["en-US"],
@@ -129,5 +132,6 @@ export const messages = {
     ...shortcutsMessages["en-US"],
     ...libraryMessages["en-US"],
     ...updaterMessages["en-US"],
+    ...personalFmMessages["en-US"],
   },
 } as const;

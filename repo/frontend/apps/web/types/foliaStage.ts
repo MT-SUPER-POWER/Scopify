@@ -27,7 +27,7 @@ import type { FoliaStageTheme, FoliaThemeVariant } from "@scopify/ui/folia";
 export type { FoliaStageTheme, FoliaThemeColors, FoliaThemeVariant } from "@scopify/ui/folia";
 
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
-export type FoliaPanelTab = "controls" | "queue" | "settings";
+export type FoliaPanelTab = "controls" | "fm" | "queue" | "settings";
 
 export interface FoliaQuickEffectPickerPosition {
   left: number;

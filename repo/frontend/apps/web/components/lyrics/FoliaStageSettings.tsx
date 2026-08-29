@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Disc, ListMusic, Settings2, SlidersHorizontal, X } from "lucide-react";
+import { Disc, ListMusic, RadioTower, Settings2, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 
@@ -9,6 +9,7 @@ import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
 import { FoliaAudioEqualizerDialog } from "@/components/lyrics/FoliaAudioEqualizerDialog";
 import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
 import { FoliaPanelSettings } from "@/components/lyrics/FoliaPanelSettings";
+import { FoliaPersonalFmControlsTab } from "@/components/lyrics/FoliaPersonalFmControlsTab";
 import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
 import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
 import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
@@ -19,10 +20,10 @@ import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaStageSettingsProps } from "@/types/components/lyrics";
 import type { FoliaPanelTab, FoliaStageEditSection } from "@/types/foliaStage";
+import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 
 export function FoliaStageSettings({
   assets,
-  isChromeHidden,
   isOpen,
   onOpenChange,
   onVisualSettingsOpenChange,
@@ -31,6 +32,7 @@ export function FoliaStageSettings({
 }: FoliaStageSettingsProps) {
   const { t } = useI18n();
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const isPersonalFm = isPersonalFmPlaybackSource(currentSong?.source);
   const sonnetPerformanceWarningOpen = useLyricStageStore(
     (state) => state.sonnetPerformanceWarningOpen,
   );
@@ -61,6 +63,10 @@ export function FoliaStageSettings({
     setIsThemeLibraryOpen(true);
   }, [themeLibraryRequestId]);
 
+  useEffect(() => {
+    if (!isPersonalFm && activeTab === "fm") setActiveTab("queue");
+  }, [activeTab, isPersonalFm]);
+
   useEffect(
     () => () => {
       onVisualSettingsOpenChange(false);
@@ -77,6 +83,13 @@ export function FoliaStageSettings({
     setActiveSection(section);
     setVisualSettingsOpen(true);
   };
+
+  const panelTabs = [
+    ["controls", SlidersHorizontal, "folia.panel.controls"],
+    ["queue", ListMusic, "folia.queue.title"],
+    ...(isPersonalFm ? ([["fm", RadioTower, "personalFm.title"]] as const) : []),
+    ["settings", Settings2, "folia.options.visualSettings"],
+  ] as const;
 
   return (
     <>
@@ -130,13 +143,7 @@ export function FoliaStageSettings({
               {/* Tab 切换栏 — 固定，不滚动 */}
               <div className="shrink-0 px-5 pb-3">
                 <div className={`flex rounded-xl p-1 ${isDaylight ? "bg-black/5" : "bg-black/20"}`}>
-                  {(
-                    [
-                      ["controls", SlidersHorizontal, "folia.panel.controls"],
-                      ["queue", ListMusic, "folia.queue.title"],
-                      ["settings", Settings2, "folia.options.visualSettings"],
-                    ] as const
-                  ).map(([tab, Icon, label]) => (
+                  {panelTabs.map(([tab, Icon, label]) => (
                     <button
                       key={tab}
                       type="button"
@@ -170,6 +177,9 @@ export function FoliaStageSettings({
                       />
                     ) : null}
                     {activeTab === "queue" ? <FoliaPanelQueue /> : null}
+                    {activeTab === "fm" && isPersonalFm ? (
+                      <FoliaPersonalFmControlsTab theme={theme} />
+                    ) : null}
                     {activeTab === "settings" ? (
                       <FoliaPanelSettings
                         onOpenSettings={openVisualSettings}
@@ -232,7 +242,7 @@ export function FoliaStageSettings({
         onDontShowAgainChange={setSonnetPerformanceWarningDontShowAgain}
       />
 
-      {!isOpen && !isChromeHidden ? (
+      {!isOpen ? (
         <motion.button
           type="button"
           title={String(t("folia.options.visualSettings"))}

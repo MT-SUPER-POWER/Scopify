@@ -1,15 +1,24 @@
 "use client";
 
-import { Loader2, MessageCircle, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { ArrowUpDown, Check, Loader2, MessageCircle, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CommentHeader } from "@/components/Comment/CommentHeader";
 import { CommentInputBox } from "@/components/Comment/CommentInputBox";
 import { CommentItem } from "@/components/Comment/CommentItem";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCommentData } from "@/hooks/comment/useCommentData";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+
+type CommentSortType = "default" | "latest" | "oldest" | "mostLiked";
 
 export default function CommentPage() {
   const { t } = useI18n();
@@ -19,6 +28,8 @@ export default function CommentPage() {
   const observerTarget = useRef<HTMLDivElement>(null);
   const inputPanelRef = useRef<HTMLDivElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
+  const [activeTab, setActiveTab] = useState<"hot" | "latest">("hot");
+  const [commentSort, setCommentSort] = useState<CommentSortType>("default");
 
   const {
     resourceId,
@@ -40,7 +51,13 @@ export default function CommentPage() {
   } = useCommentData();
 
   useEffect(() => {
-    if (!observerTarget.current) return;
+    if (!isLoading && hotComments.length === 0) {
+      setActiveTab("latest");
+    }
+  }, [hotComments.length, isLoading]);
+
+  useEffect(() => {
+    if (!observerTarget.current || activeTab !== "latest") return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -53,7 +70,50 @@ export default function CommentPage() {
 
     observer.observe(observerTarget.current);
     return () => observer.disconnect();
-  }, [hasMore, isLoading, loadMore]);
+  }, [activeTab, hasMore, isLoading, loadMore]);
+
+  const sortedHotComments = useMemo(() => {
+    if (commentSort === "default" || commentSort === "mostLiked") {
+      return [...hotComments].sort((a, b) => b.likedCount - a.likedCount);
+    }
+    if (commentSort === "latest") {
+      return [...hotComments].sort((a, b) => {
+        const timeA = a.time ?? (a.timeStr ? new Date(a.timeStr).getTime() : 0);
+        const timeB = b.time ?? (b.timeStr ? new Date(b.timeStr).getTime() : 0);
+        return timeB - timeA;
+      });
+    }
+    if (commentSort === "oldest") {
+      return [...hotComments].sort((a, b) => {
+        const timeA = a.time ?? (a.timeStr ? new Date(a.timeStr).getTime() : 0);
+        const timeB = b.time ?? (b.timeStr ? new Date(b.timeStr).getTime() : 0);
+        return timeA - timeB;
+      });
+    }
+    return hotComments;
+  }, [hotComments, commentSort]);
+
+  const sortedComments = useMemo(() => {
+    if (commentSort === "default") return comments;
+    if (commentSort === "mostLiked") {
+      return [...comments].sort((a, b) => b.likedCount - a.likedCount);
+    }
+    if (commentSort === "latest") {
+      return [...comments].sort((a, b) => {
+        const timeA = a.time ?? (a.timeStr ? new Date(a.timeStr).getTime() : 0);
+        const timeB = b.time ?? (b.timeStr ? new Date(b.timeStr).getTime() : 0);
+        return timeB - timeA;
+      });
+    }
+    if (commentSort === "oldest") {
+      return [...comments].sort((a, b) => {
+        const timeA = a.time ?? (a.timeStr ? new Date(a.timeStr).getTime() : 0);
+        const timeB = b.time ?? (b.timeStr ? new Date(b.timeStr).getTime() : 0);
+        return timeA - timeB;
+      });
+    }
+    return comments;
+  }, [comments, commentSort]);
 
   useEffect(() => {
     if (!isInputOpen) return;
@@ -103,75 +163,141 @@ export default function CommentPage() {
 
       <div className="hero-content-transition relative z-10 flex flex-col px-6 pt-6 md:px-8 md:pt-8 lg:px-10 xl:px-12">
         <div className="w-full pb-10">
-          <div className="mb-8 flex items-end justify-between">
-            <h2 className="flex items-baseline gap-2 text-xl font-bold">
-              {t("comments.page.allComments")}
-              {commentHeaderInfo.total > 0 && (
-                <span className="text-sm font-normal text-content-muted">
-                  ({commentHeaderInfo.total.toLocaleString()})
-                </span>
+          <Tabs
+            value={activeTab}
+            onValueChange={(val) => setActiveTab(val as "hot" | "latest")}
+            className="w-full"
+          >
+            <div className="mb-6 flex items-center justify-between border-b border-border pb-3">
+              <TabsList className="h-9 w-auto bg-surface-elevated/60 p-1">
+                {hotComments.length > 0 && (
+                  <TabsTrigger
+                    value="hot"
+                    className="px-4 text-xs font-semibold data-[state=active]:bg-surface-raised data-[state=active]:text-content"
+                  >
+                    {t("comments.page.hotComments")}
+                    <span className="ml-1.5 text-xs text-content-muted">
+                      ({hotComments.length})
+                    </span>
+                  </TabsTrigger>
+                )}
+                <TabsTrigger
+                  value="latest"
+                  className="px-4 text-xs font-semibold data-[state=active]:bg-surface-raised data-[state=active]:text-content"
+                >
+                  {t("comments.page.latestComments")}
+                  {commentHeaderInfo.total > 0 && (
+                    <span className="ml-1.5 text-xs text-content-muted">
+                      ({commentHeaderInfo.total.toLocaleString()})
+                    </span>
+                  )}
+                </TabsTrigger>
+              </TabsList>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-border/40 bg-surface-elevated/60 px-3 py-1.5 text-xs font-medium text-content-muted transition-colors hover:bg-surface-elevated hover:text-content"
+                  >
+                    <ArrowUpDown className="size-3.5" />
+                    <span>
+                      {commentSort === "default"
+                        ? t("comments.sort.default")
+                        : commentSort === "latest"
+                          ? t("comments.sort.latest")
+                          : commentSort === "oldest"
+                            ? t("comments.sort.oldest")
+                            : t("comments.sort.mostLiked")}
+                    </span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-36">
+                  <DropdownMenuItem
+                    onClick={() => setCommentSort("default")}
+                    className="flex cursor-pointer items-center justify-between text-xs"
+                  >
+                    {t("comments.sort.default")}
+                    {commentSort === "default" && <Check className="size-3.5 text-brand" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setCommentSort("latest")}
+                    className="flex cursor-pointer items-center justify-between text-xs"
+                  >
+                    {t("comments.sort.latest")}
+                    {commentSort === "latest" && <Check className="size-3.5 text-brand" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setCommentSort("oldest")}
+                    className="flex cursor-pointer items-center justify-between text-xs"
+                  >
+                    {t("comments.sort.oldest")}
+                    {commentSort === "oldest" && <Check className="size-3.5 text-brand" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setCommentSort("mostLiked")}
+                    className="flex cursor-pointer items-center justify-between text-xs"
+                  >
+                    {t("comments.sort.mostLiked")}
+                    {commentSort === "mostLiked" && <Check className="size-3.5 text-brand" />}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {hotComments.length > 0 && (
+              <TabsContent value="hot" className="mt-0 focus-visible:outline-none">
+                <div className="space-y-6">
+                  {sortedHotComments.map((comment) => (
+                    <CommentItem
+                      key={`hot-${comment.commentId}`}
+                      comment={comment}
+                      isHot
+                      currentUserId={currentUserId}
+                      onLike={handleLike}
+                      onDelete={handleDelete}
+                      onReply={handleReply}
+                      onReport={(id) => console.log("report", id)}
+                      onRouterClick={(url) => smartRouter.push(url)}
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+            )}
+
+            <TabsContent value="latest" className="mt-0 focus-visible:outline-none">
+              {sortedComments.length === 0 && !isLoading ? (
+                <div className="py-20 text-center text-content-subtle">
+                  {t("comments.page.noComments")}
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {sortedComments.map((comment) => (
+                    <CommentItem
+                      key={`latest-${comment.commentId}`}
+                      comment={comment}
+                      currentUserId={currentUserId}
+                      onLike={handleLike}
+                      onDelete={handleDelete}
+                      onReply={handleReply}
+                      onReport={(id) => console.log("report", id)}
+                      onRouterClick={(url) => smartRouter.push(url)}
+                    />
+                  ))}
+                </div>
               )}
-            </h2>
-          </div>
 
-          {hotComments.length > 0 && (
-            <section className="mb-10">
-              <h3 className="mb-6 border-b border-border pb-2 text-lg font-bold">
-                {t("comments.page.hotComments")}
-              </h3>
-              <div className="space-y-6">
-                {hotComments.map((comment) => (
-                  <CommentItem
-                    key={`hot-${comment.commentId}`}
-                    comment={comment}
-                    isHot
-                    currentUserId={currentUserId}
-                    onLike={handleLike}
-                    onDelete={handleDelete}
-                    onReply={handleReply}
-                    onReport={(id) => console.log("report", id)}
-                    onRouterClick={(url) => smartRouter.push(url)}
-                  />
-                ))}
+              <div ref={observerTarget} className="flex items-center justify-center py-8">
+                {isLoading ? (
+                  <Loader2 className="size-6 animate-spin text-brand" />
+                ) : hasMore ? (
+                  <span className="text-sm text-content-muted">{t("comments.page.loadMore")}</span>
+                ) : (
+                  <span className="text-sm text-content-muted">{t("comments.page.end")}</span>
+                )}
               </div>
-            </section>
-          )}
-
-          <section>
-            <h3 className="mb-6 border-b border-border pb-2 text-lg font-bold">
-              {t("comments.page.latestComments")}
-            </h3>
-            {comments.length === 0 && !isLoading ? (
-              <div className="py-20 text-center text-content-subtle">
-                {t("comments.page.noComments")}
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {comments.map((comment) => (
-                  <CommentItem
-                    key={`latest-${comment.commentId}`}
-                    comment={comment}
-                    currentUserId={currentUserId}
-                    onLike={handleLike}
-                    onDelete={handleDelete}
-                    onReply={handleReply}
-                    onReport={(id) => console.log("report", id)}
-                    onRouterClick={(url) => smartRouter.push(url)}
-                  />
-                ))}
-              </div>
-            )}
-          </section>
-
-          <div ref={observerTarget} className="flex items-center justify-center py-8">
-            {isLoading ? (
-              <Loader2 className="size-6 animate-spin text-brand" />
-            ) : hasMore ? (
-              <span className="text-sm text-content-muted">{t("comments.page.loadMore")}</span>
-            ) : (
-              <span className="text-sm text-content-muted">{t("comments.page.end")}</span>
-            )}
-          </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 

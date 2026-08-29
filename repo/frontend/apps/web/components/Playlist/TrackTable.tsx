@@ -468,7 +468,9 @@ export default function TracklistTable({
               )}
             >
               <TableRow className="border-none hover:bg-transparent">
-                <TableHead className="pl-4 text-left text-content-muted">#</TableHead>
+                <TableHead className="pl-4 text-left text-content-muted">
+                  <span className="flex size-4 items-center justify-center">#</span>
+                </TableHead>
                 <TableHead
                   className="group/head relative cursor-pointer text-content-muted transition-colors select-none hover:text-content"
                   onClick={titleColumn.getToggleSortingHandler()}

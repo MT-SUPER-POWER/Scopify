@@ -22,6 +22,7 @@ export interface PlaylistActionsProps {
   onSearchClose: () => void;
   onSearchOpen: () => void;
   playlistId: null | string;
+  playlistInfo?: PlaylistInfo | null;
   playSourceId?: null | string;
   searchOpen: boolean;
   searchQuery: string;

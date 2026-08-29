@@ -55,6 +55,10 @@ export const playlistMessages = defineMessages(
     "playlist.meta.unknown": "未知",
     "playlist.meta.unknownDate": "未知日期",
     "playlist.page.invalidUrl": "无效的歌单地址",
+    "playlist.actions.subscribe": "收藏歌单",
+    "playlist.actions.unsubscribe": "取消收藏",
+    "playlist.actions.subscribeSuccess": "已收藏歌单",
+    "playlist.actions.unsubscribeSuccess": "已取消收藏",
   },
   {
     "playlist.form.editTitle": "編輯歌單信息",
@@ -110,6 +114,10 @@ export const playlistMessages = defineMessages(
     "playlist.meta.unknown": "未知",
     "playlist.meta.unknownDate": "未知日期",
     "playlist.page.invalidUrl": "無效的歌單網址",
+    "playlist.actions.subscribe": "收藏歌單",
+    "playlist.actions.unsubscribe": "取消收藏",
+    "playlist.actions.subscribeSuccess": "已收藏歌單",
+    "playlist.actions.unsubscribeSuccess": "已取消收藏",
   },
   {
     "playlist.form.editTitle": "Edit Playlist Information",
@@ -168,5 +176,9 @@ export const playlistMessages = defineMessages(
     "playlist.meta.unknown": "Unknown",
     "playlist.meta.unknownDate": "Unknown Date",
     "playlist.page.invalidUrl": "Invalid playlist URL",
+    "playlist.actions.subscribe": "Subscribe to playlist",
+    "playlist.actions.unsubscribe": "Unsubscribe",
+    "playlist.actions.subscribeSuccess": "Subscribed to playlist",
+    "playlist.actions.unsubscribeSuccess": "Unsubscribed from playlist",
   },
 );

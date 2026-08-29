@@ -76,6 +76,7 @@ export function PlaylistContent({
               commentResourceId={commentResourceId}
               commentResourceKind={commentResourceKind}
               playlistId={playlistId}
+              playlistInfo={dynamicPlaylistInfo}
               playSourceId={playSourceId}
               isDaily={isDailyRecommend}
               dailyDate={dailyDate}

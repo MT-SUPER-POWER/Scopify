@@ -18,6 +18,7 @@ export interface PlaylistInfo {
   createTimeLabel?: string;
   likesLabel?: string;
   totalSongsLabel?: string;
+  subscribed?: boolean | null;
 }
 
 export interface PlaylistStickyControlsOptions {

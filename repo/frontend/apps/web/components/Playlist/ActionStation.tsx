@@ -27,15 +27,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
+import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
+import { subscribePlaylist } from "@/lib/api/playlist";
+import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { cn, formatCompactCount } from "@/lib/utils";
-import { usePlayerStore } from "@/store";
+import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import { useQueryClient } from "@tanstack/react-query";
 
 function formatDateKey(date: Date) {
   const year = date.getFullYear();
@@ -54,11 +58,14 @@ function getHistoryRequestErrorMessage(error: unknown, fallback: string) {
 
 export default function PlaylistActions(props: PlaylistActionsProps) {
   const { locale, t } = useI18n();
+  const queryClient = useQueryClient();
+  const requireLogin = useRequireLoginAction();
   const {
     actionSlot,
     commentResourceId,
     commentResourceKind,
     playlistId,
+    playlistInfo,
     playSourceId,
     isDaily,
     isSticky = false,
@@ -71,6 +78,46 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     inputRef,
     tracks,
   } = props;
+
+  const currentUserId = useUserStore((s) => s.user?.userId);
+  const isOwnPlaylist = Boolean(
+    currentUserId &&
+    playlistInfo?.creatorID &&
+    String(currentUserId) === String(playlistInfo.creatorID),
+  );
+  const canSubscribe =
+    !isDaily && !playlistInfo?.isSpecial && !isOwnPlaylist && Boolean(playlistId);
+  const [isSubscribed, setIsSubscribed] = useState(Boolean(playlistInfo?.subscribed));
+  const [isTogglingSubscribe, setIsTogglingSubscribe] = useState(false);
+
+  useEffect(() => {
+    setIsSubscribed(Boolean(playlistInfo?.subscribed));
+  }, [playlistInfo?.subscribed]);
+
+  const handleToggleSubscribe = () => {
+    if (!playlistId) return;
+    requireLogin(async () => {
+      try {
+        setIsTogglingSubscribe(true);
+        const nextSubscribed = !isSubscribed;
+        await subscribePlaylist(nextSubscribed ? 1 : 2, playlistId);
+        setIsSubscribed(nextSubscribed);
+        toast.success(
+          nextSubscribed
+            ? t("playlist.actions.subscribeSuccess")
+            : t("playlist.actions.unsubscribeSuccess"),
+        );
+        void Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
+          queryClient.invalidateQueries({ queryKey: ["playlist", playlistId] }),
+        ]);
+      } catch {
+        toast.error(t("playlist.table.operationFailed"));
+      } finally {
+        setIsTogglingSubscribe(false);
+      }
+    });
+  };
 
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const pathname = usePathname();
@@ -199,6 +246,16 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
           </Tooltip>
 
           {actionSlot}
+
+          {canSubscribe && (
+            <CollectionToggleButton
+              isCollected={isSubscribed}
+              isLoading={isTogglingSubscribe}
+              onToggle={handleToggleSubscribe}
+              subscribeLabel={t("playlist.actions.subscribe")}
+              unsubscribeLabel={t("playlist.actions.unsubscribe")}
+            />
+          )}
 
           <Tooltip>
             <TooltipTrigger asChild>

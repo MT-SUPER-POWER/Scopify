@@ -4,6 +4,7 @@ import {
   getCommentHref,
   normalizeLegacyComments,
   normalizeNewComments,
+  resolveCommentIpLocation,
   resolveCommentResource,
 } from "@/lib/comment/commentResource";
 
@@ -52,5 +53,17 @@ describe("comment resources", () => {
         data: { comments: [], cursor: "next", hasMore: false, totalCount: 5 },
       }),
     ).toEqual({ comments: [], cursor: "next", hasMore: false, hotComments: [], total: 5 });
+  });
+
+  test("resolves and cleans ipLocation strings from various comment shapes", () => {
+    expect(resolveCommentIpLocation(undefined)).toBeUndefined();
+    expect(resolveCommentIpLocation({ ipLocation: null })).toBeUndefined();
+    expect(resolveCommentIpLocation({ ipLocation: "" })).toBeUndefined();
+    expect(resolveCommentIpLocation({ ipLocation: "广东" })).toBe("广东");
+    expect(resolveCommentIpLocation({ ipLocation: "IP属地: 浙江" })).toBe("浙江");
+    expect(resolveCommentIpLocation({ ipLocation: "IP属地：北京" })).toBe("北京");
+    expect(resolveCommentIpLocation({ ipLocation: { location: "中国香港" } })).toBe("中国香港");
+    expect(resolveCommentIpLocation({ ipLocation: { ip: "IP属地: 上海" } })).toBe("上海");
+    expect(resolveCommentIpLocation({ location: "四川" })).toBe("四川");
   });
 });

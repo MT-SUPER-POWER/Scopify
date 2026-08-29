@@ -171,9 +171,16 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
   };
 };
 
+export interface CommentIpLocation {
+  ip?: string;
+  location?: string;
+  userId?: number;
+}
+
 interface NeteaseReply {
   user: NeteaseUser;
   content: string;
+  ipLocation?: CommentIpLocation | string | null;
 }
 
 export interface NeteaseComment {
@@ -181,9 +188,12 @@ export interface NeteaseComment {
   user: NeteaseUser;
   content: string;
   timeStr: string;
+  time?: number;
   likedCount: number;
   liked: boolean;
   beReplied: NeteaseReply[];
+  ipLocation?: CommentIpLocation | string | null;
+  location?: string | null;
 }
 
 export interface SongComment {

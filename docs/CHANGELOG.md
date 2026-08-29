@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.4.9
+
+### Added
+
+- **接入私人电台沉浸播放**：侧边栏新增单行“私人电台”入口，登录后直接生成动态推荐队列并打开 Folia 沉浸播放；播放接近队尾时自动补充歌曲，Folia 浮层在私人电台期间保留歌词队列并新增独立电台 tab，以无滚动条的 segmented control 滑动轨道提供默认、熟悉、探索、拼图及情绪、场景、曲风、语种模式选择，其中长曲风采用双排横向轨道，支持触屏/鼠标手拖和滚轮横向滚动，并以浅色浮层胶囊和阴影联动选中状态；第一个控制 tab 在私人电台期间用“不再推荐”替换随机播放，提交反馈成功后自动切到下一首。
+- **歌单操作区支持收藏他人歌单**：在歌单详情页 Action Station 中为非当前用户创建的第三方歌单提供收藏 / 取消收藏切换按钮（官方日推等特殊歌单自动排除），收藏状态实时联动侧边栏与缓存。
+- **播客单集页与播客资料库全量多维排序**：在电台/播客节目表格（`RadioTracklistTable`）中支持标题、发布时间、播放量、节目时长、收听进度的全量多列排序与 `#` 一键重置默认顺序；并在播客资料库（`SubscribedPodcastTable`）中支持播客标题、总播放量、节目期数、更新时间的点击排序。
+- **评论区支持多维排序模式**：评论区顶部新增排序控制器，支持“默认排序 / 最新发布 / 最早发布（远古神评） / 点赞最多”模式无缝切换。
+
+### Visual
+
+- **协调侧边栏导航与私人电台视觉表现**：统一资料库各页面项使用中性灰色路由激活高亮（`bg-content/10 text-content`），解耦路由导航与音频播放源状态；私人电台在播放期间通过绿色文本与跳动音频声波（`PlayingAnimation`）标识活跃状态，折叠与展开态均保持语义清晰且互不冲突。
+- **优化评论底部操作栏与展示 IP 属地**：解析并展示评论中的地理属地信息，置于评论卡片底部左侧与常驻的“回复”按钮同行展示，移除原先仅悬停才显示的回复按钮。
+- **评论区支持“精彩评论”与“最新评论”Tabs 分页切换**：将长列表纵向堆叠的精彩评论与最新评论重构为现代化 Tabs 选项卡，附带各自评论数量指示，并支持平滑切换与针对最新评论的独立无限滚动加载。
+
+### Fixed
+
+- **修复歌单与播客表格表头 `#` 与序号列未居中对齐问题**：在 `TrackTable` 与 `RadioTracklistTable` 中为表头 `#` 元素补充统一的 `size-4` 居中容器，使表头 `#` 符号与数据行序号/播放控件中心轴线精确对齐。
+
 ## v1.4.8
 
 ### Added
@@ -110,7 +129,6 @@
 - **解耦主页各业务板块组件与修正数据流向**：将主页内联的问候横条与推荐歌手板块分别抽离为独立的 `HomeGreetingSection` 与 `SuggestedArtists` 组件；完善各板块 Props 类型至 `types/components/home.ts`；「为 {{name}} 推荐」板块准确绑定至登录用户个性化推荐接口（`/recommend/resource`，未登录自动回退至 `/personalized`），顶部问候横条绑定至公共推荐池（`/personalized`）。
 - **补充日志轮转边界测试**：覆盖启动归档、异常退出标记、同毫秒重名规避和归档清理不影响 `main.log` 等场景。
 
-
 ### Fixed
 
 - **修复 Release 打包工作流子模块更新失败**：将 `release.yml` 中 `package` 任务的 `actions/checkout` 切换为 `submodules: false`，并显式仅初始化 `repo/backend/api-enhanced` 子模块，避免 `frontend/apps/mobile` 缺失提交导致 GitHub Actions 打包终止。
@@ -149,7 +167,6 @@
 - **清理 GitHub Packages 发布工作流与配置**：移除 `.github/workflows/publish-package.yml`，将 `@scopify/desktop-contract` 标记为 `private: true` 并移除 `publishConfig`，收敛桌面契约包仅作为内部 Monorepo workspace 模块维护。
 - **完善 Commit 阶段代码质量门禁**：在 `lint-staged` 中补充 Web 源码的 ESLint 自动检查与修复（`eslint --fix`），在 `.husky/pre-commit` 钩子中补充毫秒级架构边界检查（`bun run lint:architecture`），并在 `scripts/check-architecture.ts` 中补齐 `.next-dev` / `.turbo` 忽略目录，确保本地提交阶段与 CI 质量门禁一致。
 
-
 ## v1.4.4
 
 ### Added
@@ -180,7 +197,6 @@
 - **修复歌单跳转时头部骨架屏隐形与排版跳动问题**：为 `PlaylistHeaderSkeleton` 中的骨架占位显式应用 `bg-skeleton` 语义 token，并将基础 `Skeleton` 默认背景色调整为 `bg-skeleton`，解决暗色模式下回退到 sunken 背景色导致骨架屏完全“隐形”的视觉缺陷；同步重构头部骨架屏的封面尺寸与外层内边距，使其与真实 `PlaylistHeader` 和 `ActionStation` 严格像素级对齐，消除加载完成替换时的 CLS 抖动。
 - **修复添加/删除歌单单曲后侧边栏封面与歌单内容不同步问题**：重构 `usePlaylistTrackMutation`，在单曲增删操作成功后自动通过 TanStack Query 精确失效目标歌单内容缓存、用户歌单缓存及喜欢音乐缓存，自动触发侧边栏歌单实时静默拉取最新封面（`coverImgUrl`）与歌曲数（`trackCount`），并清理散落在各 UI 触发点（右键菜单、歌曲列表、歌手页等）的冗余手动缓存清理代码。
 - **修复设置页后端地址规范化时丢失自定义端口的问题**：重构 `normalizeBackendConfig` 解析逻辑，当主机输入框填写带 `http://` 协议前缀（但未内联端口）或填写本地回环地址（`127.0.0.1`/`localhost`）时，正确继承并保留端口输入框中的自定义端口（如 `3838`），并确保本地地址智能回退为 HTTP 协议，避免端口被误置为 80 或协议误判为 HTTPS。
-
 
 ## v1.4.3
 

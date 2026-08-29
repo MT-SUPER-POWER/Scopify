@@ -26,6 +26,7 @@ export interface PlayTrackOptions {
 export type PlayQueueIndexOptions = PlayTrackOptions;
 
 export interface PlayerStore {
+  appendQueueItems: (songs: SongDetail[]) => void;
   currentSongDetail: SongDetail | null;
   currentSongUrl: string | null;
   changeMusicQuality: (quality: MusicQuality) => Promise<void>;

@@ -140,6 +140,12 @@ export function mergePersistedPlayerState(
 export const usePlayerStore = create<PlayerStore>()(
   persist(
     (set, get) => ({
+      appendQueueItems: (songs) => {
+        const snapshot = createPlayerQueueSnapshot(get());
+        const transition = playbackQueue.appendQueueItems(snapshot, songs);
+        if (transition.snapshot === snapshot) return;
+        set(selectPlayerQueueState(transition.snapshot));
+      },
       volume: 100,
       isPlaying: false,
       currentSongDetail: null,
