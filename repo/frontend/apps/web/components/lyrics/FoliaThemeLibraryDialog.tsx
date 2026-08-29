@@ -1,15 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Palette } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { useI18n } from "@/store/module/i18n";
 
-import { FoliaThemeEditor } from "@/components/lyrics/FoliaThemeEditor";
-import { FoliaThemeLibraryList } from "@/components/lyrics/FoliaThemeLibraryList";
-import { getFoliaStageTheme } from "@scopify/ui/folia";
-import { useLyricStageStore } from "@/store/module/lyrics";
+import { FoliaThemeUnsavedDialog } from "@/components/lyrics/FoliaThemeUnsavedDialog";
+import { FoliaThemeWorkbenchHeader } from "@/components/lyrics/FoliaThemeWorkbenchHeader";
+import { FoliaThemeWorkbenchLayout } from "@/components/lyrics/FoliaThemeWorkbenchLayout";
+import { useFoliaThemeWorkbench } from "@/hooks/lyrics/useFoliaThemeWorkbench";
+import { useI18n } from "@/store/module/i18n";
 import type { FoliaThemeLibraryDialogProps } from "@/types/components/lyrics";
+import { getFoliaThemeColors } from "@scopify/ui/folia";
 
 export function FoliaThemeLibraryDialog({
   assets,
@@ -18,88 +17,76 @@ export function FoliaThemeLibraryDialog({
   theme,
 }: FoliaThemeLibraryDialogProps) {
   const { t } = useI18n();
-  const themeId = useLyricStageStore((state) => state.themeId);
-  const themes = useLyricStageStore((state) => state.themes);
-  const [selectedThemeId, setSelectedThemeId] = useState(themeId);
+  const model = useFoliaThemeWorkbench(isOpen, onClose);
+  const draftColors = getFoliaThemeColors(model.draftTheme, model.themeVariant);
+  const workbenchTheme = { ...theme, ...draftColors };
   const isDaylight = theme.name === "snow";
-
-  useEffect(() => {
-    if (isOpen) setSelectedThemeId(themeId);
-  }, [isOpen, themeId]);
-
-  useEffect(() => {
-    if (!themes.some((item) => item.id === selectedThemeId)) {
-      setSelectedThemeId(themes[0]?.id ?? themeId);
-    }
-  }, [selectedThemeId, themeId, themes]);
-
-  const selectedTheme = useMemo(
-    () => getFoliaStageTheme(themes, selectedThemeId),
-    [selectedThemeId, themes],
-  );
   const overlayBackground = isDaylight ? "rgba(255,255,255,0.72)" : "rgba(0,0,0,0.65)";
-  const surfaceClass = isDaylight ? "border-black/5 bg-white/70" : "border-white/10 bg-zinc-950/88";
+  const surfaceClass = isDaylight ? "border-black/5 bg-white/76" : "border-white/10 bg-zinc-950/90";
 
   return (
-    <AnimatePresence>
-      {isOpen ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onPointerDown={onClose}
-          className="fixed inset-0 z-150 p-3 backdrop-blur-xl sm:p-5"
-          style={{ backgroundColor: overlayBackground }}
-        >
-          <motion.section
-            role="dialog"
-            aria-modal="true"
-            aria-label={String(t("folia.options.themeLibrary"))}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.24, ease: "easeOut" }}
-            onPointerDown={(event) => event.stopPropagation()}
-            className={`mx-auto flex h-full max-w-7xl flex-col overflow-hidden rounded-[32px] border shadow-[0_24px_80px_rgba(0,0,0,0.28)] ${surfaceClass}`}
+    <>
+      <AnimatePresence>
+        {isOpen ? (
+          <motion.div
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-150 p-3 backdrop-blur-xl sm:p-5"
+            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            onPointerDown={model.requestClose}
+            style={{ backgroundColor: overlayBackground }}
           >
-            <header className="flex shrink-0 items-center gap-3 border-b border-white/10 p-4 sm:px-6">
-              <button
-                type="button"
-                title={String(t("folia.ui.close"))}
-                onClick={onClose}
-                className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:bg-white/10"
-                style={{ color: theme.primaryColor }}
-              >
-                <ChevronDown size={18} />
-              </button>
-              <Palette size={18} style={{ color: theme.accentColor }} />
-              <div className="min-w-0">
-                <h2
-                  className="truncate text-lg font-semibold"
-                  style={{ color: theme.primaryColor }}
-                >
-                  {t("folia.options.themeLibrary")}
-                </h2>
-                <p className="text-xs opacity-55" style={{ color: theme.secondaryColor }}>
-                  {t("folia.options.themeLibraryDesc")}
-                </p>
+            <motion.section
+              animate={{ opacity: 1, y: 0 }}
+              aria-label={String(t("folia.options.themeLibrary"))}
+              aria-modal="true"
+              className={`mx-auto flex h-full max-w-360 flex-col overflow-hidden rounded-[32px] border shadow-[0_24px_80px_rgba(0,0,0,0.28)] ${surfaceClass}`}
+              exit={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 40 }}
+              onPointerDown={(event) => event.stopPropagation()}
+              role="dialog"
+              transition={{ duration: 0.24, ease: "easeOut" }}
+            >
+              <FoliaThemeWorkbenchHeader
+                activeThemeId={model.activeThemeId}
+                draftTheme={model.draftTheme}
+                isDirty={model.isDirty}
+                onClose={model.requestClose}
+                onReset={model.resetDraft}
+                onSaveAndApply={model.saveAndApply}
+                saveState={model.saveState}
+                selectedThemeId={model.selectedThemeId}
+                theme={workbenchTheme}
+              />
+              <div className="min-h-0 flex-1 p-4 sm:p-5">
+                <FoliaThemeWorkbenchLayout
+                  activeThemeId={model.activeThemeId}
+                  assets={assets}
+                  draftTheme={model.draftTheme}
+                  isDirty={model.isDirty}
+                  onDeleteTheme={model.deleteSelectedTheme}
+                  onDraftChange={model.setDraftTheme}
+                  onSelectTheme={model.requestSelectTheme}
+                  selectedTheme={model.selectedTheme}
+                  selectedThemeId={model.selectedThemeId}
+                  themeEditorContext={{
+                    isApplied: model.selectedThemeId === model.activeThemeId,
+                    isDirty: model.isDirty,
+                    saveState: model.saveState,
+                    variant: model.themeVariant,
+                  }}
+                />
               </div>
-            </header>
-
-            <div className="grid min-h-0 flex-1 gap-4 p-4 sm:p-6 lg:grid-cols-[230px_minmax(0,1fr)]">
-              <FoliaThemeLibraryList
-                onSelectTheme={setSelectedThemeId}
-                selectedThemeId={selectedThemeId}
-              />
-              <FoliaThemeEditor
-                assets={assets}
-                onSelectTheme={setSelectedThemeId}
-                selectedTheme={selectedTheme}
-              />
-            </div>
-          </motion.section>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
+            </motion.section>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+      <FoliaThemeUnsavedDialog
+        onCancel={() => model.setPendingAction(null)}
+        onDiscard={() => model.completePendingAction(false)}
+        onSave={() => model.completePendingAction(true)}
+        open={model.pendingAction !== null}
+      />
+    </>
   );
 }

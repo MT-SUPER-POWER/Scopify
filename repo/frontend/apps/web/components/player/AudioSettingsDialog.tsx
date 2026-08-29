@@ -1,9 +1,10 @@
 "use client";
 
-import { AudioLines, SlidersHorizontal, Waves, X } from "lucide-react";
+import { AudioLines, SlidersHorizontal, Speaker, Waves, X } from "lucide-react";
 
 import { AudioEqualizerPanel } from "@/components/player/AudioEqualizerPanel";
 import { AudioQualityDialog } from "@/components/player/AudioQualityDialog";
+import { AudioOutputDevicePanel } from "@/components/player/AudioOutputDevicePanel";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -57,7 +58,7 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
         </div>
 
         {/* Tab switcher — segment control style */}
-        <div className="mx-4 mt-3 grid grid-cols-2 rounded-lg bg-muted/60 p-0.5" role="tablist">
+        <div className="mx-4 mt-3 grid grid-cols-3 rounded-lg bg-muted/60 p-0.5" role="tablist">
           <AudioSettingsTabButton
             active={activeTab === "quality"}
             icon={<Waves className="size-3.5" />}
@@ -70,11 +71,19 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
             label={t("audioSettings.equalizerTab")}
             onClick={() => setActiveTab("equalizer")}
           />
+          <AudioSettingsTabButton
+            active={activeTab === "output"}
+            icon={<Speaker className="size-3.5" />}
+            label={t("audioSettings.outputTab")}
+            onClick={() => setActiveTab("output")}
+          />
         </div>
 
         <ScrollArea className="max-h-[min(80vh,34rem)] px-4 py-3" viewportClassName="pr-1">
           <div className="min-w-0" role="tabpanel">
-            {activeTab === "quality" ? <AudioQualityDialog /> : <AudioEqualizerPanel />}
+            {activeTab === "quality" ? <AudioQualityDialog /> : null}
+            {activeTab === "equalizer" ? <AudioEqualizerPanel /> : null}
+            {activeTab === "output" ? <AudioOutputDevicePanel /> : null}
           </div>
         </ScrollArea>
       </PopoverContent>

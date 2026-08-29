@@ -13,7 +13,10 @@ import {
   DEFAULT_PENDOLO_TUNING,
   DEFAULT_PARTITA_TUNING,
   DEFAULT_SONNET_TUNING,
+  DEFAULT_TEMPERA_TUNING,
   DEFAULT_TILT_TUNING,
+  TEMPERA_MAX_LAYER_IMAGES,
+  type TemperaLayerImage,
 } from "@/components/lyrics/folia/src/types";
 import {
   createBuiltinFoliaStageThemes,
@@ -96,6 +99,16 @@ const NUMERIC_RANGES = {
   "tunings.sonnet.postProcessVignette": [0, 2],
   "tunings.sonnet.textureResolution": [0.5, 4],
   "tunings.sonnet.typographyMotion": [0, 2],
+  "tunings.tempera.cameraIntensity": [0, 2],
+  "tunings.tempera.glyphMotion": [0, 2],
+  "tunings.tempera.glyphSettleStretch": [0, 1],
+  "tunings.tempera.layerImageFrequency": [0, 1],
+  "tunings.tempera.postProcessContrast": [0, 1],
+  "tunings.tempera.postProcessGrain": [0, 1],
+  "tunings.tempera.postProcessLensDistortion": [0, 2],
+  "tunings.tempera.postProcessRgbShift": [0, 1],
+  "tunings.tempera.postProcessVignette": [0, 2],
+  "tunings.tempera.textureResolution": [0.5, 4],
   "tunings.tilt.splitProbability": [0, 1],
   "tunings.tilt.tiltStyleProbability": [0, 1],
   visualizerOpacity: [0.2, 1],
@@ -123,6 +136,8 @@ const STRING_ENUMS = {
     "partita",
     "pendolo",
     "sonnet",
+    "still",
+    "tempera",
     "tilt",
   ],
   subtitleContentMode: ["translation", "romanization", "none"],
@@ -136,6 +151,8 @@ const STRING_ENUMS = {
   "tunings.monet.portraitSource": ["cover", "custom"],
   "tunings.monet.portraitStyle": ["square", "rectangular"],
   "tunings.sonnet.outerFrameMode": ["none", "frame", "full"],
+  "tunings.tempera.colorMode": ["duo", "mono", "gradient"],
+  "tunings.tempera.layerImageDepth": ["back", "front"],
   "tunings.tilt.colorScheme": ["default", "swap", "accentAll", "primaryAll"],
 } as const satisfies Record<string, readonly string[]>;
 
@@ -190,6 +207,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
       partita: structuredClone(DEFAULT_PARTITA_TUNING),
       pendolo: structuredClone(DEFAULT_PENDOLO_TUNING),
       sonnet: structuredClone(DEFAULT_SONNET_TUNING),
+      tempera: structuredClone(DEFAULT_TEMPERA_TUNING),
       tilt: structuredClone(DEFAULT_TILT_TUNING),
     },
     visualizerOpacity: 1,
@@ -270,6 +288,14 @@ function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string):
     return (Array.isArray(candidate) ? candidate.flatMap(normalizeUrlBackgroundItem) : schema) as T;
   }
 
+  if (path === "tunings.tempera.layerImages") {
+    return (
+      Array.isArray(candidate)
+        ? candidate.flatMap(normalizeTemperaLayerImage).slice(0, TEMPERA_MAX_LAYER_IMAGES)
+        : schema
+    ) as T;
+  }
+
   if (typeof schema === "number") {
     if (typeof candidate !== "number" || !Number.isFinite(candidate)) return schema;
     const range = NUMERIC_RANGES[path as keyof typeof NUMERIC_RANGES];
@@ -319,6 +345,40 @@ function normalizeUrlBackgroundItem(candidate: unknown) {
     return [];
   }
   return [{ id: candidate.id, note: candidate.note, url: candidate.url }];
+}
+
+function normalizeTemperaLayerImage(candidate: unknown): TemperaLayerImage[] {
+  if (
+    !isRecord(candidate) ||
+    typeof candidate.id !== "string" ||
+    typeof candidate.name !== "string"
+  ) {
+    return [];
+  }
+  const aligns = ["left", "center", "right", "free"] as const;
+  const verticalAligns = ["top", "center", "bottom", "free"] as const;
+  return [
+    {
+      align: aligns.includes(candidate.align as (typeof aligns)[number])
+        ? (candidate.align as TemperaLayerImage["align"])
+        : "free",
+      id: candidate.id,
+      name: candidate.name,
+      opacity:
+        typeof candidate.opacity === "number" && Number.isFinite(candidate.opacity)
+          ? Math.min(1, Math.max(0, candidate.opacity))
+          : 1,
+      scale:
+        typeof candidate.scale === "number" && Number.isFinite(candidate.scale)
+          ? Math.min(1.5, Math.max(0.15, candidate.scale))
+          : 0.7,
+      verticalAlign: verticalAligns.includes(
+        candidate.verticalAlign as (typeof verticalAligns)[number],
+      )
+        ? (candidate.verticalAlign as TemperaLayerImage["verticalAlign"])
+        : "bottom",
+    },
+  ];
 }
 
 function withLegacyAliases(candidate: unknown): unknown {

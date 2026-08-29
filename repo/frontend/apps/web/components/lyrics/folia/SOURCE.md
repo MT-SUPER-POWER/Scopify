@@ -39,13 +39,16 @@ the original full-copy baseline:
 - `35de348f` and `37cb1a4d` — adapt the v0.7 Electron export fixes to Scopify's
   Desktop Contract: current-display DPI sizing, Canvas crop output, capture
   cleanup, and exact restoration of window bounds and presentation state.
+- `34e6d2258225610a178dde6ed1c406b699336c8a` — review Folia v0.7.0 and add the
+  complete Tempera / 凝彩 Pixi visualizer, user image pool, Still mode, and the
+  shared Pixi resource-lifecycle helper required by the new renderer set.
 
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
 ## Included
 
-- all eleven registered lyric visualizers and their tuning panels
+- all thirteen registered lyric visualizers and their tuning panels
 - all six registered visualizer backgrounds and their settings panels
 - shared renderer, shell, subtitle, timing, font, color, and lyric helpers
 - Folia's top-level theme CSS-variable builder (`buildAppStyle.ts`)
@@ -76,6 +79,9 @@ Scopify is also distributed under AGPL-3.0.
 - Sonnet keeps Folia's lazy Pixi v8 runtime and full scene/tuning implementation;
   Scopify adapts its i18n keys, persists its tuning bundle, and owns the one-time
   performance-warning dialog at the host boundary.
+- Tempera keeps Folia's lazy Pixi runtime and deterministic composition engine;
+  Scopify persists image blobs in the existing `scopify-folia-stage` asset store
+  and keeps only normalized placement descriptors in the synced tuning bundle.
 
 `.vendor-closure.ps1` records and reproduces the source dependency closure. Any
 upstream refresh must record the reviewed commit above and review every host

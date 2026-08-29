@@ -77,6 +77,18 @@ const devBase = `http://${desktopConfig.frontend.host}:${desktopConfig.frontend.
 const rendererBaseUrl = useStaticRenderer ? "app://-/" : devBase;
 const gotTheLock = app.requestSingleInstanceLock();
 
+function appendChromiumFeature(featureName: string) {
+  const enabledFeatures = app.commandLine.getSwitchValue("enable-features");
+  app.commandLine.appendSwitch(
+    "enable-features",
+    enabledFeatures ? `${enabledFeatures},${featureName}` : featureName,
+  );
+}
+
+if (process.platform === "win32" || process.platform === "darwin") {
+  appendChromiumFeature("ReleaseVideoSourceProviderIfNotInUse");
+}
+
 logger.info("--------------------------------------------------");
 logger.info("Fronted Base URL is", devBase);
 logger.info("--------------------------------------------------");

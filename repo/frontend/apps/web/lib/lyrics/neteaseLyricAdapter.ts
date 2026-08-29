@@ -9,6 +9,7 @@ import type {
 } from "@/types/lyrics";
 
 import { buildSyntheticTimedWords } from "./syntheticWordTiming";
+import { extractAwlrcContainer, parseAwlrcText } from "./awlrc";
 
 const LRC_TIME_TAG = /\[(\d{1,3}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g;
 const LRC_METADATA_TAG = /^\[([a-zA-Z]+):\s*(.*?)\]\s*$/;
@@ -30,27 +31,47 @@ export function adaptNeteaseLyric(lyric: NeteaseLyric): LyricData {
   const metadata = createMetadata();
   const yrc = lyricText(lyric.yrc?.lyric);
   const lrc = lyricText(lyric.lrc?.lyric);
+  const awlrc = extractAwlrcContainer(lrc);
+  const awlrcTrack = awlrc?.awlrc ?? (/^\[[^\]]+\]<\d+,\d+(?:,\d+)?>/m.test(lrc) ? lrc : "");
   const yrcLines = yrc ? parseYrcText(yrc, metadata) : [];
-  const source = yrcLines.length > 0 ? "yrc" : lrc ? "lrc" : "none";
-  const primaryLines = source === "yrc" ? yrcLines : lrc ? parseLrcText(lrc, metadata) : [];
+  const awlrcLines = awlrcTrack
+    ? parseAwlrcText(awlrcTrack, awlrc?.tlrc, awlrc?.rlrc, metadata)
+    : [];
+  const source =
+    awlrcLines.length > 0 ? "awlrc" : yrcLines.length > 0 ? "yrc" : lrc ? "lrc" : "none";
+  const primaryLines =
+    source === "awlrc"
+      ? awlrcLines
+      : source === "yrc"
+        ? yrcLines
+        : lrc
+          ? parseLrcText(lrc, metadata)
+          : [];
 
   const translationSource =
-    source === "yrc"
-      ? firstLyricText(lyric.ytlrc?.lyric, lyric.tlyric?.lyric)
-      : firstLyricText(lyric.tlyric?.lyric, lyric.ytlrc?.lyric);
+    source === "awlrc"
+      ? ""
+      : source === "yrc"
+        ? firstLyricText(lyric.ytlrc?.lyric, lyric.tlyric?.lyric)
+        : firstLyricText(lyric.tlyric?.lyric, lyric.ytlrc?.lyric);
   const romanizationSource =
-    source === "yrc"
-      ? firstLyricText(lyric.yromalrc?.lyric, lyric.romalrc?.lyric)
-      : firstLyricText(lyric.romalrc?.lyric, lyric.yromalrc?.lyric);
+    source === "awlrc"
+      ? ""
+      : source === "yrc"
+        ? firstLyricText(lyric.yromalrc?.lyric, lyric.romalrc?.lyric)
+        : firstLyricText(lyric.romalrc?.lyric, lyric.yromalrc?.lyric);
 
   return {
     isPureMusic: isPureMusic(lyric),
-    isWordByWord: source === "yrc",
-    lines: withAlignedText(
-      primaryLines,
-      translationSource ? parseTimedText(translationSource) : [],
-      romanizationSource ? parseTimedText(romanizationSource) : [],
-    ),
+    isWordByWord: source === "awlrc" || source === "yrc",
+    lines:
+      source === "awlrc"
+        ? primaryLines
+        : withAlignedText(
+            primaryLines,
+            translationSource ? parseTimedText(translationSource) : [],
+            romanizationSource ? parseTimedText(romanizationSource) : [],
+          ),
     metadata,
     raw: lyric,
     source,

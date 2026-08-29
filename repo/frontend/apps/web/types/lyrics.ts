@@ -25,6 +25,13 @@ export interface ImportedLyricOverride {
   lyric: NeteaseLyric;
 }
 
+export interface AwlrcContainerTracks {
+  awlrc?: string;
+  lrc?: string;
+  rlrc?: string;
+  tlrc?: string;
+}
+
 /** The active source selected in the Folia-compatible lyrics tab. */
 export type LyricSourceSelection = "imported" | "online";
 
@@ -121,7 +128,7 @@ export interface LyricTimedCredit {
 }
 
 /** The timing format selected as the primary display source. */
-export type LyricTimingSource = "lrc" | "none" | "yrc";
+export type LyricTimingSource = "awlrc" | "lrc" | "none" | "yrc";
 
 /** A Stage frame that can be rendered by any registered visualizer. */
 export interface LyricVisualizerFrame {

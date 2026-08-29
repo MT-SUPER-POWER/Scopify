@@ -22,6 +22,7 @@ import {
   type PendoloTuning,
   type SonnetTuning,
   type SubtitleContentMode,
+  type TemperaTuning,
   type Theme,
   type TiltTuning,
   type DioramaTuning,
@@ -119,6 +120,8 @@ interface VisPlaygroundSettingsPanelProps {
   onPendoloTuningChange?: (patch: Partial<PendoloTuning>) => void;
   sonnetTuning?: SonnetTuning;
   onSonnetTuningChange?: (patch: Partial<SonnetTuning>) => void;
+  temperaTuning?: TemperaTuning;
+  onTemperaTuningChange?: (patch: Partial<TemperaTuning>) => void;
   cappellaTuning: CappellaTuning;
   cappellaCustomEmojiImages: CappellaEmojiImage[];
   onCappellaTuningChange?: (patch: Partial<CappellaTuning>) => void;
@@ -416,6 +419,8 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
     onPendoloTuningChange,
     sonnetTuning,
     onSonnetTuningChange,
+    temperaTuning,
+    onTemperaTuningChange,
     monetPortraitImage,
     onUploadMonetPortraitImage,
     onClearMonetPortraitImage,
@@ -764,6 +769,8 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               onPendoloTuningChange,
               sonnetTuning,
               onSonnetTuningChange,
+              temperaTuning,
+              onTemperaTuningChange,
               monetPortraitImage,
               onUploadMonetPortraitImage,
               onClearMonetPortraitImage,

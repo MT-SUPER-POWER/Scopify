@@ -85,6 +85,49 @@ test("falls back to LRC and keeps the complete raw response", () => {
   expect(pruneNeteaseLyric(lyric)).toBe(lyric);
 });
 
+test("decodes AWLRC containers with word timing, translation, and romanization", () => {
+  const encode = (value: string) => Buffer.from(value, "utf8").toString("base64");
+  const awlrc = [
+    "[ti:AWLRC Song]",
+    "[ar:Artist]",
+    "[00:01.97]<0,400>原<400,600>文",
+    "[00:03.000]<0,500>下<500,500>句",
+  ].join("\n");
+  const translation = "[00:01.97]Translation\n[00:03.000]Next";
+  const romanization = "[00:01.97]yuan wen\n[00:03.000]xia ju";
+  const container = `[awlrc:awlrc:${encode(awlrc)},tlrc:${encode(translation)},rlrc:${encode(romanization)}]`;
+
+  const result = adaptNeteaseLyric({
+    code: 200,
+    lrc: { lyric: `[00:01.000]fallback\n${container}`, version: 1 },
+  });
+
+  expect(result.source).toBe("awlrc");
+  expect(result.isWordByWord).toBe(true);
+  expect(result.metadata).toMatchObject({ artist: "Artist", title: "AWLRC Song" });
+  expect(result.lines[0]).toEqual({
+    endTimeMs: 2097,
+    romanization: "yuan wen",
+    startTimeMs: 1097,
+    text: "原文",
+    translation: "Translation",
+    words: [
+      { endTimeMs: 1497, startTimeMs: 1097, text: "原" },
+      { endTimeMs: 2097, startTimeMs: 1497, text: "文" },
+    ],
+  });
+});
+
+test("accepts a raw .awlrc word-timed track", () => {
+  const result = adaptNeteaseLyric({
+    code: 200,
+    lrc: { lyric: "[00:01.000]<0,250,0>A<250,250,0>B", version: 1 },
+  });
+
+  expect(result.source).toBe("awlrc");
+  expect(result.lines[0]).toMatchObject({ endTimeMs: 1500, startTimeMs: 1000, text: "AB" });
+});
+
 test("synthesizes staggered CJK word timing for line-timed LRC visualizers", () => {
   const result = adaptLyricDataToFolia(
     adaptNeteaseLyric({

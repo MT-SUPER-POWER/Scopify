@@ -30,13 +30,23 @@ interface VisualizerShellProps {
   audioBands: AudioBands;
   sharedProps?: VisualizerShellSharedProps;
   visualizerOpacity?: number;
+  renderBackground?: boolean;
   children: React.ReactNode;
   className?: string;
 }
 
 const VisualizerShell = forwardRef<HTMLDivElement, VisualizerShellProps>(
   (
-    { theme, audioPower, audioBands, sharedProps, visualizerOpacity = 1, children, className = "" },
+    {
+      theme,
+      audioPower,
+      audioBands,
+      sharedProps,
+      visualizerOpacity = 1,
+      renderBackground = true,
+      children,
+      className = "",
+    },
     ref,
   ) => {
     const { t } = useI18n();
@@ -106,17 +116,19 @@ const VisualizerShell = forwardRef<HTMLDivElement, VisualizerShellProps>(
           </motion.button>
         )}
 
-        <VisualizerBackgroundRenderer
-          config={sharedProps?.background}
-          theme={theme}
-          isDaylight={resolvedIsDaylight}
-          coverUrl={resolvedCoverUrl}
-          audioPower={audioPower}
-          audioBands={audioBands}
-          seed={sharedProps?.seed}
-          staticMode={resolvedStaticMode || resolvedBackgroundStaticMode}
-          paused={resolvedPaused}
-        />
+        {renderBackground ? (
+          <VisualizerBackgroundRenderer
+            config={sharedProps?.background}
+            theme={theme}
+            isDaylight={resolvedIsDaylight}
+            coverUrl={resolvedCoverUrl}
+            audioPower={audioPower}
+            audioBands={audioBands}
+            seed={sharedProps?.seed}
+            staticMode={resolvedStaticMode || resolvedBackgroundStaticMode}
+            paused={resolvedPaused}
+          />
+        ) : null}
 
         {children}
       </div>
