@@ -124,8 +124,8 @@ export function RadioTracklistTable({
           break;
         }
         case "playCount": {
-          const countA = a.program.listenerCount ?? a.program.score ?? 0;
-          const countB = b.program.listenerCount ?? b.program.score ?? 0;
+          const countA = a.program.listenerCount ?? 0;
+          const countB = b.program.listenerCount ?? 0;
           comparison = countA - countB;
           break;
         }
