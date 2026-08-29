@@ -21,10 +21,11 @@ export function FoliaPersonalFmSettingsCard({
 
   return (
     <section
-      className="rounded-3xl border p-4"
+      className="max-w-full min-w-0 overflow-hidden rounded-3xl border p-4"
       style={{
         backgroundColor: controlCardBg,
         borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+        width: "min(22.5rem, 100%)",
       }}
     >
       <FoliaPersonalFmModeMatrix theme={theme} />

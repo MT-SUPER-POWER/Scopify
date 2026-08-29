@@ -29,6 +29,7 @@ test("Folia adds a grouped mode matrix without removing the queue tab", () => {
   expect(stageSettingsSource).toContain('activeTab === "queue" ? <FoliaPanelQueue /> : null');
   expect(stageSettingsSource).toContain("<FoliaPersonalFmControlsTab");
   expect(controlsTabSource).toContain("<FoliaPersonalFmModeMatrix");
+  expect(controlsTabSource).toContain('width: "min(17.5rem, 100%)"');
   expect(controlsTabSource).not.toContain("controls.previous");
   expect(controlsTabSource).not.toContain("controls.togglePlay");
   expect(controlsTabSource).not.toContain("controls.dislike");

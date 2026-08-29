@@ -18,6 +18,8 @@
 ### Fixed
 
 - **修复歌单与播客表格表头 `#` 与序号列未居中对齐问题**：在 `TrackTable` 与 `RadioTracklistTable` 中为表头 `#` 元素补充统一的 `size-4` 居中容器，使表头 `#` 符号与数据行序号/播放控件中心轴线精确对齐。
+- **修复 Folia 沉浸设置面板运行期引用异常**：补全 `FoliaStageSettings` 中 `isChromeHidden` 属性解构与抽屉顶部封面预览所需的当前歌曲选择器，修复在私人电台或任意模式下点击 Visual Settings 面板时报 `ReferenceError` 的问题。
+- **修复播客节目表格排序字段属性读取**：纠正 `RadioTracklistTable` 播放量排序比对逻辑中使用的属性，统一对齐 `RadioProgram` 标准字段 `listenerCount`。
 
 ## v1.4.8
 
