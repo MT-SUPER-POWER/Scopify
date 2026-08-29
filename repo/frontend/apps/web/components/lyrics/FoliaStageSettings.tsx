@@ -24,6 +24,7 @@ import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 
 export function FoliaStageSettings({
   assets,
+  isChromeHidden,
   isOpen,
   onOpenChange,
   onVisualSettingsOpenChange,
@@ -242,7 +243,7 @@ export function FoliaStageSettings({
         onDontShowAgainChange={setSonnetPerformanceWarningDontShowAgain}
       />
 
-      {!isOpen ? (
+      {!isOpen && !isChromeHidden ? (
         <motion.button
           type="button"
           title={String(t("folia.options.visualSettings"))}

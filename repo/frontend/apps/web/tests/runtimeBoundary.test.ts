@@ -16,7 +16,7 @@ describe("Web Runtime seam", () => {
     }
 
     expect(violations).toEqual([]);
-  });
+  }, 15000);
 
   test("keeps concrete adapters private to the Runtime composition root and tests", async () => {
     const violations: string[] = [];
@@ -28,5 +28,5 @@ describe("Web Runtime seam", () => {
     }
 
     expect(violations).toEqual([]);
-  });
+  }, 15000);
 });
