@@ -1,6 +1,6 @@
 {
   "name": "@scopify/desktop",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "private": true,
   "description": "Scopify Electron desktop host",
   "author": {
