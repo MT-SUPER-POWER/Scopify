@@ -32,6 +32,7 @@ export function FoliaStageSettings({
   themeLibraryRequestId,
 }: FoliaStageSettingsProps) {
   const { t } = useI18n();
+  const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));
   const sonnetPerformanceWarningOpen = useLyricStageStore(
     (state) => state.sonnetPerformanceWarningOpen,
