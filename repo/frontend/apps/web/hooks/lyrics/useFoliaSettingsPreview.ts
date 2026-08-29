@@ -9,7 +9,7 @@ import {
   FOLIA_SETTINGS_PREVIEW_LINES,
 } from "@/constants/lyricsPreview";
 
-export function useFoliaSettingsPreview(paused = false) {
+export function useFoliaSettingsPreview(paused = false, restartToken = 0) {
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const audioPower = useMotionValue(0.45);
   const bass = useMotionValue(0.36);
@@ -21,7 +21,12 @@ export function useFoliaSettingsPreview(paused = false) {
   const lyricCurrentTime = useMotionValue(0);
 
   useEffect(() => {
-    const baseTime = currentTime.get();
+    const baseTime = restartToken > 0 ? 0 : currentTime.get();
+    if (restartToken > 0) {
+      currentTime.set(0);
+      lyricCurrentTime.set(0);
+      setCurrentLineIndex(0);
+    }
     const startedAt = performance.now();
     let animationFrame = 0;
 
@@ -49,7 +54,18 @@ export function useFoliaSettingsPreview(paused = false) {
 
     animationFrame = requestAnimationFrame(update);
     return () => cancelAnimationFrame(animationFrame);
-  }, [audioPower, bass, currentTime, lowMid, lyricCurrentTime, mid, paused, treble, vocal]);
+  }, [
+    audioPower,
+    bass,
+    currentTime,
+    lowMid,
+    lyricCurrentTime,
+    mid,
+    paused,
+    restartToken,
+    treble,
+    vocal,
+  ]);
 
   return {
     audioBands: { bass, lowMid, mid, treble, vocal },

@@ -3,6 +3,7 @@
 import { Pause, Play, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "@/store/module/i18n";
+import { FoliaThemePreviewToolbar } from "@/components/lyrics/FoliaThemePreviewToolbar";
 
 import VisPlaygroundPreviewHotspots from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundPreviewHotspots";
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
@@ -16,41 +17,56 @@ export function FoliaSettingsPreview({
   assets,
   onSectionChange,
   theme,
+  themeEditorContext,
 }: FoliaSettingsPreviewProps) {
   const { t } = useI18n();
   const [isPreviewPaused, setIsPreviewPaused] = useState(false);
-  const preview = useFoliaSettingsPreview(isPreviewPaused);
+  const [previewRestartToken, setPreviewRestartToken] = useState(0);
+  const preview = useFoliaSettingsPreview(isPreviewPaused, previewRestartToken);
   const settings = useLyricStageStore();
   const isDaylight = theme.name === "snow";
   const modeLabel = getVisualizerModeLabel(settings.mode, t);
 
   return (
     <div
-      className="relative min-h-80 overflow-hidden rounded-[28px] border border-white/10 bg-black/20"
+      className="relative h-full min-h-80 overflow-hidden rounded-[28px] border border-white/10 bg-black/20"
       style={{ backgroundColor: theme.backgroundColor }}
     >
-      <div
-        className="absolute top-4 left-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs tracking-[0.22em] uppercase backdrop-blur-md"
-        style={{ color: "rgba(255,255,255,0.78)" }}
-      >
-        <Sparkles size={13} />
-        <span>{t("folia.ui.livePreview")}</span>
-        <button
-          aria-label={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
-          className="ml-1 rounded-full p-1 transition-colors hover:bg-white/15"
-          onClick={() => setIsPreviewPaused((paused) => !paused)}
-          title={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
-          type="button"
-        >
-          {isPreviewPaused ? <Play size={12} fill="currentColor" /> : <Pause size={12} />}
-        </button>
-      </div>
-      <div
-        className="absolute top-4 right-4 z-40 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs backdrop-blur-md"
-        style={{ color: "rgba(255,255,255,0.78)" }}
-      >
-        {modeLabel}
-      </div>
+      {themeEditorContext ? (
+        <FoliaThemePreviewToolbar
+          context={themeEditorContext}
+          isPaused={isPreviewPaused}
+          modeLabel={modeLabel}
+          onPauseChange={setIsPreviewPaused}
+          onRestart={() => setPreviewRestartToken((current) => current + 1)}
+          theme={theme}
+        />
+      ) : (
+        <>
+          <div
+            className="absolute top-4 left-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs tracking-[0.22em] uppercase backdrop-blur-md"
+            style={{ color: "rgba(255,255,255,0.78)" }}
+          >
+            <Sparkles size={13} />
+            <span>{t("folia.ui.livePreview")}</span>
+            <button
+              aria-label={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
+              className="ml-1 rounded-full p-1 transition-colors hover:bg-white/15"
+              onClick={() => setIsPreviewPaused((paused) => !paused)}
+              title={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
+              type="button"
+            >
+              {isPreviewPaused ? <Play size={12} fill="currentColor" /> : <Pause size={12} />}
+            </button>
+          </div>
+          <div
+            className="absolute top-4 right-4 z-40 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs backdrop-blur-md"
+            style={{ color: "rgba(255,255,255,0.78)" }}
+          >
+            {modeLabel}
+          </div>
+        </>
+      )}
 
       <div className="absolute inset-0">
         <VisualizerRenderer

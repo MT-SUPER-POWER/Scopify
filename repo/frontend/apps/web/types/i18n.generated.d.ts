@@ -10250,6 +10250,90 @@ export interface TranslateFn {
    */
   (key: "folia.options.themeName", params?: TranslationParams): string;
   /**
+   * zh-CN: 有未保存修改
+   * zh-TW: 有未保存修改
+   * en-US: Unsaved changes
+   */
+  (key: "folia.options.themeEditingUnsaved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已保存
+   * zh-TW: 已保存
+   * en-US: Saved
+   */
+  (key: "folia.options.themeSaved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前应用
+   * zh-TW: 目前套用
+   * en-US: Applied
+   */
+  (key: "folia.options.themeApplied", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览已保存主题
+   * zh-TW: 預覽已保存主題
+   * en-US: Previewing saved theme
+   */
+  (key: "folia.options.themePreviewingSaved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑中
+   * zh-TW: 編輯中
+   * en-US: Editing
+   */
+  (key: "folia.options.themeEditing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览
+   * zh-TW: 預覽
+   * en-US: Preview
+   */
+  (key: "folia.options.themePreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题主色组
+   * zh-TW: 主題主色組
+   * en-US: Theme palette
+   */
+  (key: "folia.options.themePalette", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新播放预览
+   * zh-TW: 重新播放預覽
+   * en-US: Restart preview
+   */
+  (key: "folia.options.restartPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 展开主题库
+   * zh-TW: 展開主題庫
+   * en-US: Expand theme library
+   */
+  (key: "folia.options.expandThemeLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收起主题库
+   * zh-TW: 收起主題庫
+   * en-US: Collapse theme library
+   */
+  (key: "folia.options.collapseThemeLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保留未保存的主题修改？
+   * zh-TW: 保留未保存的主題修改？
+   * en-US: Keep your unsaved theme changes?
+   */
+  (key: "folia.options.themeUnsavedTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换主题或关闭编辑器前，请保存当前修改，或明确放弃它们。
+   * zh-TW: 切換主題或關閉編輯器前，請保存目前修改，或明確放棄它們。
+   * en-US: Save the current edits before switching themes or closing, or explicitly discard them.
+   */
+  (key: "folia.options.themeUnsavedDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 放弃修改
+   * zh-TW: 放棄修改
+   * en-US: Discard changes
+   */
+  (key: "folia.options.themeDiscardChanges", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存修改
+   * zh-TW: 保存修改
+   * en-US: Save changes
+   */
+  (key: "folia.options.themeSaveChanges", params?: TranslationParams): string;
+  /**
    * zh-CN: 手动导入 AI 主题
    * zh-TW: 手動導入 AI 主題
    * en-US: Manual Import AI Theme

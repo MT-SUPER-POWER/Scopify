@@ -145,6 +145,7 @@ export interface FoliaSettingsPreviewProps {
   assets: FoliaStageAssets;
   onSectionChange: (section: FoliaStageEditSection) => void;
   theme: Theme;
+  themeEditorContext?: FoliaThemePreviewContext;
 }
 
 export interface FoliaVisualSettingsDialogProps {
@@ -166,8 +167,12 @@ export interface FoliaThemeColorEditorProps {
 
 export interface FoliaThemeEditorProps {
   assets: FoliaStageAssets;
+  draftTheme: FoliaStageTheme;
+  onDeleteTheme: () => void;
+  onDraftChange: (theme: FoliaStageTheme) => void;
   onSelectTheme: (id: string) => void;
   selectedTheme: FoliaStageTheme;
+  themeEditorContext: FoliaThemePreviewContext;
 }
 
 export interface FoliaThemeLibraryDialogProps {
@@ -178,8 +183,94 @@ export interface FoliaThemeLibraryDialogProps {
 }
 
 export interface FoliaThemeLibraryListProps {
+  activeThemeId: string;
+  collapsed: boolean;
+  isDirty: boolean;
   onSelectTheme: (id: string) => void;
+  onToggleCollapsed: () => void;
   selectedThemeId: string;
+}
+
+export interface FoliaThemePreviewContext {
+  isApplied: boolean;
+  isDirty: boolean;
+  saveState: FoliaThemeSaveState;
+  variant: FoliaThemeVariant;
+}
+
+export type FoliaThemeSaveState = "idle" | "saved";
+
+export type FoliaThemePendingAction = { kind: "close" } | { kind: "select"; themeId: string };
+
+export interface FoliaThemeLibraryPanelHandle {
+  collapse: () => void;
+  expand: () => void;
+  isCollapsed: () => boolean;
+}
+
+export interface FoliaThemeLibraryItemProps {
+  activeThemeId: string;
+  collapsed: boolean;
+  onSelect: () => void;
+  selected: boolean;
+  theme: FoliaStageTheme;
+}
+
+export interface FoliaThemeWorkbenchHeaderProps {
+  activeThemeId: string;
+  draftTheme: FoliaStageTheme;
+  isDirty: boolean;
+  onClose: () => void;
+  onReset: () => void;
+  onSaveAndApply: () => void;
+  saveState: FoliaThemeSaveState;
+  selectedThemeId: string;
+  theme: Theme;
+}
+
+export interface FoliaThemeWorkbenchLayoutProps {
+  activeThemeId: string;
+  assets: FoliaStageAssets;
+  draftTheme: FoliaStageTheme;
+  isDirty: boolean;
+  onDeleteTheme: () => void;
+  onDraftChange: (theme: FoliaStageTheme) => void;
+  onSelectTheme: (id: string) => void;
+  selectedTheme: FoliaStageTheme;
+  selectedThemeId: string;
+  themeEditorContext: FoliaThemePreviewContext;
+}
+
+export interface FoliaThemeUnsavedDialogProps {
+  onCancel: () => void;
+  onDiscard: () => void;
+  onSave: () => void;
+  open: boolean;
+}
+
+export type FoliaThemeEditorTab = "edit" | "import-export";
+
+export interface FoliaThemeEditorPanelProps {
+  draftTheme: FoliaStageTheme;
+  onDeleteTheme: () => void;
+  onDraftChange: (theme: FoliaStageTheme) => void;
+  onSelectTheme: (id: string) => void;
+  selectedTheme: FoliaStageTheme;
+}
+
+export interface FoliaThemeIdentityControlsProps {
+  draftTheme: FoliaStageTheme;
+  onDeleteTheme: () => void;
+  onDraftChange: (theme: FoliaStageTheme) => void;
+}
+
+export interface FoliaThemePreviewToolbarProps {
+  context: FoliaThemePreviewContext;
+  isPaused: boolean;
+  modeLabel: string;
+  onPauseChange: (paused: boolean) => void;
+  onRestart: () => void;
+  theme: Theme;
 }
 
 export interface FoliaThemeJsonTransferProps {
