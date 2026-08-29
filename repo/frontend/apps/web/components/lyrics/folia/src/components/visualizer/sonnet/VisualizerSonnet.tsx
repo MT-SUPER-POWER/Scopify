@@ -42,7 +42,6 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
     subtitleOverlayBackground,
     background,
     sonnetTuning = DEFAULT_SONNET_TUNING,
-    background,
   } = props;
   const transparentBackground = background?.transparent ?? false;
   const { t } = useI18n();
