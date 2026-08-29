@@ -460,7 +460,7 @@ export default function TracklistTable({
               style={stickyHeaderTop === undefined ? undefined : { top: stickyHeaderTop }}
               className={cn(
                 "sticky top-0 z-10",
-                "[&_[data-slot=table-head]]:h-9",
+                "**:data-[slot=table-head]:h-9",
                 isTableHeaderSticky
                   ? "bg-surface-raised/95 shadow-panel backdrop-blur-sm"
                   : "bg-transparent shadow-none",
