@@ -5267,6 +5267,144 @@ export interface TranslateFn {
    */
   (key: "audioSettings.equalizerTab", params?: TranslationParams): string;
   /**
+   * zh-CN: 输出设备
+   * zh-TW: 輸出裝置
+   * en-US: Output
+   */
+  (key: "audioSettings.outputTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频输出设备
+   * zh-TW: 音訊輸出裝置
+   * en-US: Audio output device
+   */
+  (key: "audioSettings.outputTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择耳机、音箱或虚拟声卡作为当前播放器的输出。
+   * zh-TW: 選擇耳機、喇叭或虛擬音效卡作為目前播放器的輸出。
+   * en-US: Choose headphones, speakers, or a virtual audio device for playback.
+   */
+  (key: "audioSettings.outputDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 系统默认设备
+   * zh-TW: 系統預設裝置
+   * en-US: System default
+   */
+  (key: "audioSettings.outputDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频设备 {{index}}
+   * zh-TW: 音訊裝置 {{index}}
+   * en-US: Audio device {{index}}
+   */
+  (key: "audioSettings.outputUnnamed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新设备列表
+   * zh-TW: 重新整理裝置清單
+   * en-US: Refresh device list
+   */
+  (key: "audioSettings.outputRefresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在读取音频设备…
+   * zh-TW: 正在讀取音訊裝置…
+   * en-US: Loading audio devices…
+   */
+  (key: "audioSettings.outputLoading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前环境不支持选择音频输出设备。
+   * zh-TW: 目前環境不支援選擇音訊輸出裝置。
+   * en-US: Audio output selection is not supported in this environment.
+   */
+  (key: "audioSettings.outputUnsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法读取音频输出设备。
+   * zh-TW: 無法讀取音訊輸出裝置。
+   * en-US: Could not load audio output devices.
+   */
+  (key: "audioSettings.outputLoadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法切换到所选音频设备。
+   * zh-TW: 無法切換到所選音訊裝置。
+   * en-US: Could not switch to the selected audio device.
+   */
+  (key: "audioSettings.outputSelectFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频输入与输出
+   * zh-TW: 音訊輸入與輸出
+   * en-US: Audio input and output
+   */
+  (key: "audioSettings.devicesTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首选输入设备
+   * zh-TW: 偏好輸入裝置
+   * en-US: Preferred input device
+   */
+  (key: "audioSettings.inputTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 供录音、语音或其他需要麦克风的功能使用。
+   * zh-TW: 供錄音、語音或其他需要麥克風的功能使用。
+   * en-US: Used by recording, voice, and other microphone features.
+   */
+  (key: "audioSettings.inputDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 系统默认输入设备
+   * zh-TW: 系統預設輸入裝置
+   * en-US: System default input
+   */
+  (key: "audioSettings.inputDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入设备 {{index}}
+   * zh-TW: 輸入裝置 {{index}}
+   * en-US: Input device {{index}}
+   */
+  (key: "audioSettings.inputUnnamed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入设备权限
+   * zh-TW: 輸入裝置權限
+   * en-US: Input device access
+   */
+  (key: "audioSettings.inputAccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅在你主动检测时访问麦克风，并会立即释放设备。
+   * zh-TW: 僅在你主動檢測時存取麥克風，並會立即釋放裝置。
+   * en-US: The microphone is accessed only when you run this check and is released immediately.
+   */
+  (key: "audioSettings.inputAccessDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 检测输入设备
+   * zh-TW: 檢測輸入裝置
+   * en-US: Check input device
+   */
+  (key: "audioSettings.inputTest", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在检测…
+   * zh-TW: 正在檢測…
+   * en-US: Checking…
+   */
+  (key: "audioSettings.inputTesting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选输入设备可用，设备名称已刷新。
+   * zh-TW: 所選輸入裝置可用，裝置名稱已更新。
+   * en-US: The selected input is available and device names were refreshed.
+   */
+  (key: "audioSettings.inputVerified", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法访问所选输入设备，请检查系统权限或设备状态。
+   * zh-TW: 無法存取所選輸入裝置，請檢查系統權限或裝置狀態。
+   * en-US: Could not access the selected input. Check system permissions and device status.
+   */
+  (key: "audioSettings.inputAccessFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设备列表
+   * zh-TW: 裝置清單
+   * en-US: Device list
+   */
+  (key: "audioSettings.devicesRefresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新扫描新连接或已移除的音频设备。
+   * zh-TW: 重新掃描新連接或已移除的音訊裝置。
+   * en-US: Scan again for newly connected or removed audio devices.
+   */
+  (key: "audioSettings.devicesRefreshDescription", params?: TranslationParams): string;
+  /**
    * zh-CN: 音频增益
    * zh-TW: 音訊增益
    * en-US: Audio gain
@@ -6502,6 +6640,18 @@ export interface TranslateFn {
    * en-US: Sonnet
    */
   (key: "folia.ui.visualizerSonnet", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静止
+   * zh-TW: 靜止
+   * en-US: Still
+   */
+  (key: "folia.ui.visualizerStill", params?: TranslationParams): string;
+  /**
+   * zh-CN: 凝彩
+   * zh-TW: 凝彩
+   * en-US: Tempera
+   */
+  (key: "folia.ui.visualizerTempera", params?: TranslationParams): string;
   /**
    * zh-CN: 心象参数
    * zh-TW: 心象參數
@@ -9133,6 +9283,345 @@ export interface TranslateFn {
    * en-US: Off
    */
   (key: "folia.options.sonnetToggleOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 凝彩参数
+   * zh-TW: 凝彩參數
+   * en-US: Tempera settings
+   */
+  (key: "folia.options.temperaSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整凝彩的色块构图、镜头运动与渲染质量。
+   * zh-TW: 調整凝彩的色塊構圖、鏡頭運動與渲染品質。
+   * en-US: Tune Tempera's block compositions, camera motion, and rendering quality.
+   */
+  (key: "folia.options.temperaSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态与调色
+   * zh-TW: 動態與調色
+   * en-US: Motion and color
+   */
+  (key: "folia.options.temperaMotionSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示内容
+   * zh-TW: 顯示內容
+   * en-US: Visible elements
+   */
+  (key: "folia.options.temperaDisplaySection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 渲染质量
+   * zh-TW: 渲染品質
+   * en-US: Rendering quality
+   */
+  (key: "folia.options.temperaQualitySection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜头运动强度
+   * zh-TW: 鏡頭運動強度
+   * en-US: Camera intensity
+   */
+  (key: "folia.options.temperaCameraIntensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 逐字动势
+   * zh-TW: 逐字動勢
+   * en-US: Glyph motion
+   */
+  (key: "folia.options.temperaGlyphMotion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 逐字入场时序
+   * zh-TW: 逐字入場時序
+   * en-US: Entrance pacing
+   */
+  (key: "folia.options.temperaGlyphSettleStretch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 0 让文字快速落位，1 让文字持续运动到歌词结束。
+   * zh-TW: 0 讓文字快速落位，1 讓文字持續運動到歌詞結束。
+   * en-US: 0 settles text quickly; 1 keeps it moving until the lyric ends.
+   */
+  (key: "folia.options.temperaGlyphSettleStretchHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 色彩模式
+   * zh-TW: 色彩模式
+   * en-US: Color mode
+   */
+  (key: "folia.options.temperaColorMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题双色
+   * zh-TW: 主題雙色
+   * en-US: Theme duo
+   */
+  (key: "folia.options.temperaColorModeDuo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 黑白灰
+   * zh-TW: 黑白灰
+   * en-US: Monochrome
+   */
+  (key: "folia.options.temperaColorModeMono", params?: TranslationParams): string;
+  /**
+   * zh-CN: 封面渐变
+   * zh-TW: 封面漸變
+   * en-US: Cover gradient
+   */
+  (key: "folia.options.temperaColorModeGradient", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纹理分辨率
+   * zh-TW: 紋理解析度
+   * en-US: Texture resolution
+   */
+  (key: "folia.options.temperaTextureResolution", params?: TranslationParams): string;
+  /**
+   * zh-CN: 提高纹理分辨率会增加 GPU 显存占用和渲染负载。
+   * zh-TW: 提高紋理解析度會增加 GPU 記憶體佔用和渲染負載。
+   * en-US: Higher texture resolution increases GPU memory use and rendering load.
+   */
+  (key: "folia.options.temperaTexturePerformanceWarning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 色块场景
+   * zh-TW: 色塊場景
+   * en-US: Color blocks
+   */
+  (key: "folia.options.temperaShowBlocks", params?: TranslationParams): string;
+  /**
+   * zh-CN: 装饰元素
+   * zh-TW: 裝飾元素
+   * en-US: Decorations
+   */
+  (key: "folia.options.temperaShowDecor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字动态反色
+   * zh-TW: 文字動態反色
+   * en-US: Dynamic text inversion
+   */
+  (key: "folia.options.temperaTextInversion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画布图片
+   * zh-TW: 畫布圖片
+   * en-US: Canvas images
+   */
+  (key: "folia.options.temperaImageSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加图片
+   * zh-TW: 加入圖片
+   * en-US: Add image
+   */
+  (key: "folia.options.temperaAddLayerImage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清空全部
+   * zh-TW: 清空全部
+   * en-US: Clear all
+   */
+  (key: "folia.options.temperaClearLayerImages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每个分镜会从图片池里随机取一张，位置由对齐倾向决定。
+   * zh-TW: 每個分鏡會從圖片池隨機取一張，位置由對齊傾向決定。
+   * en-US: Each shot picks one image from the pool; alignment guides its placement.
+   */
+  (key: "folia.options.temperaLayerImageHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 出现频率
+   * zh-TW: 出現頻率
+   * en-US: Appearance rate
+   */
+  (key: "folia.options.temperaLayerImageFrequency", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不限
+   * zh-TW: 不限
+   * en-US: Any
+   */
+  (key: "folia.options.temperaLayerAlignFree", params?: TranslationParams): string;
+  /**
+   * zh-CN: 偏左
+   * zh-TW: 偏左
+   * en-US: Left
+   */
+  (key: "folia.options.temperaLayerAlignLeft", params?: TranslationParams): string;
+  /**
+   * zh-CN: 居中
+   * zh-TW: 置中
+   * en-US: Center
+   */
+  (key: "folia.options.temperaLayerAlignCenter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 偏右
+   * zh-TW: 偏右
+   * en-US: Right
+   */
+  (key: "folia.options.temperaLayerAlignRight", params?: TranslationParams): string;
+  /**
+   * zh-CN: 顶部
+   * zh-TW: 頂部
+   * en-US: Top
+   */
+  (key: "folia.options.temperaLayerAlignTop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 中部
+   * zh-TW: 中部
+   * en-US: Middle
+   */
+  (key: "folia.options.temperaLayerAlignMiddle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 底部
+   * zh-TW: 底部
+   * en-US: Bottom
+   */
+  (key: "folia.options.temperaLayerAlignBottom", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{vertical}} · {{horizontal}}
+   * zh-TW: {{vertical}} · {{horizontal}}
+   * en-US: {{vertical}} · {{horizontal}}
+   */
+  (key: "folia.options.temperaLayerAlignPosition", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击预览中的九宫格指定位置
+   * zh-TW: 點擊預覽中的九宮格指定位置
+   * en-US: Choose a position on the 3x3 preview grid
+   */
+  (key: "folia.options.temperaLayerAlignGridHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纵向随机
+   * zh-TW: 縱向隨機
+   * en-US: Random vertically
+   */
+  (key: "folia.options.temperaLayerAlignVerticalRandom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 横向随机
+   * zh-TW: 橫向隨機
+   * en-US: Random horizontally
+   */
+  (key: "folia.options.temperaLayerAlignHorizontalRandom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 移除图片
+   * zh-TW: 移除圖片
+   * en-US: Remove image
+   */
+  (key: "folia.options.temperaRemoveLayerImage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 大小
+   * zh-TW: 大小
+   * en-US: Size
+   */
+  (key: "folia.options.temperaLayerImageScale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不透明度
+   * zh-TW: 不透明度
+   * en-US: Opacity
+   */
+  (key: "folia.options.temperaLayerImageOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 图层位置
+   * zh-TW: 圖層位置
+   * en-US: Layer position
+   */
+  (key: "folia.options.temperaLayerImageDepth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存
+   * zh-TW: 儲存
+   * en-US: Save
+   */
+  (key: "folia.options.temperaLayerImageSave", params?: TranslationParams): string;
+  /**
+   * zh-CN: 改动会在关闭本窗口时写入。
+   * zh-TW: 改動會在關閉本視窗時寫入。
+   * en-US: Changes are saved when this window closes.
+   */
+  (key: "folia.options.temperaLayerImageSaveHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 也可以把文件拖到这里
+   * zh-TW: 也可以把檔案拖到這裡
+   * en-US: Or drop files here
+   */
+  (key: "folia.options.temperaLayerImageDropHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有图片。加入立绘、Logo 或纹理后，每个分镜会随机取用。
+   * zh-TW: 還沒有圖片。加入立繪、Logo 或紋理後，每個分鏡會隨機取用。
+   * en-US: No images yet. Add character art, a logo, or a texture for shots to use.
+   */
+  (key: "folia.options.temperaLayerImageEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词之后
+   * zh-TW: 歌詞之後
+   * en-US: Behind lyric
+   */
+  (key: "folia.options.temperaLayerImageBack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词之前
+   * zh-TW: 歌詞之前
+   * en-US: In front
+   */
+  (key: "folia.options.temperaLayerImageFront", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景转场
+   * zh-TW: 場景轉場
+   * en-US: Scene transitions
+   */
+  (key: "folia.options.temperaEnableTransitions", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后处理
+   * zh-TW: 後處理
+   * en-US: Post-processing
+   */
+  (key: "folia.options.temperaPostProcessSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整体后处理滤镜
+   * zh-TW: 整體後處理濾鏡
+   * en-US: Scene post-process filter
+   */
+  (key: "folia.options.temperaPostProcessEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后处理纹理压缩
+   * zh-TW: 後處理紋理壓縮
+   * en-US: Post-process texture compression
+   */
+  (key: "folia.options.temperaPostProcessTextureCompression", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在 1x 纹理上运行后处理，降低 GPU 和显存压力。
+   * zh-TW: 在 1x 紋理上運行後處理，降低 GPU 和記憶體壓力。
+   * en-US: Run post-processing on a 1x texture to reduce GPU and memory load.
+   */
+  (
+    key: "folia.options.temperaPostProcessTextureCompressionHint",
+    params?: TranslationParams,
+  ): string;
+  /**
+   * zh-CN: 胶片颗粒
+   * zh-TW: 膠片顆粒
+   * en-US: Film grain
+   */
+  (key: "folia.options.temperaPostProcessGrain", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对比度增强
+   * zh-TW: 對比度增強
+   * en-US: Contrast boost
+   */
+  (key: "folia.options.temperaPostProcessContrast", params?: TranslationParams): string;
+  /**
+   * zh-CN: RGB 色差
+   * zh-TW: RGB 色差
+   * en-US: RGB shift
+   */
+  (key: "folia.options.temperaPostProcessRgbShift", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暗角
+   * zh-TW: 暗角
+   * en-US: Vignette
+   */
+  (key: "folia.options.temperaPostProcessVignette", params?: TranslationParams): string;
+  /**
+   * zh-CN: 透镜扭曲
+   * zh-TW: 透鏡扭曲
+   * en-US: Lens distortion
+   */
+  (key: "folia.options.temperaPostProcessLensDistortion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启
+   * zh-TW: 開啟
+   * en-US: On
+   */
+  (key: "folia.options.temperaToggleOn", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Off
+   */
+  (key: "folia.options.temperaToggleOff", params?: TranslationParams): string;
   /**
    * zh-CN: 商籁性能警告
    * zh-TW: 商籟效能警告

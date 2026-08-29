@@ -46,6 +46,13 @@ while ($foliaQueue.Count -gt 0) {
     ) {
       continue
     }
+    if (
+      $foliaSpec -eq "../../../services/temperaLayerImages" -and
+      $foliaCurrent.StartsWith($foliaVisualizerRoot, [System.StringComparison]::OrdinalIgnoreCase)
+    ) {
+      # Scopify owns the IndexedDB adapter for Tempera images at this host boundary.
+      continue
+    }
     if (-not $foliaSpec.StartsWith(".")) {
       $foliaPackage = $foliaSpec
       if ($foliaPackage.StartsWith("@")) {

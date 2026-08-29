@@ -65,7 +65,7 @@ export function FoliaLyricsControls({
               <Upload size={14} />
             </button>
             <input
-              accept=".lrc,.yrc,.txt"
+              accept=".awlrc,.lrc,.yrc,.txt"
               className="hidden"
               onChange={(event) => {
                 const file = event.currentTarget.files?.[0];

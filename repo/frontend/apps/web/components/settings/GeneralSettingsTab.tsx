@@ -5,6 +5,7 @@ import { useI18n } from "@/store/module/i18n";
 import { APP_LOCALES, type AppLocale } from "@/types/config";
 import type { GeneralSettingsTabProps } from "@/types/components/settings";
 import { AppearanceModeControl } from "./AppearanceModeControl";
+import { AudioDeviceSettingsSection } from "./AudioDeviceSettingsSection";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
 
 export function GeneralSettingsTab({
@@ -92,35 +93,38 @@ export function GeneralSettingsTab({
           ) : null}
         </SettingSection>
       </div>
-      {process.env.NODE_ENV !== "production" && config.desktop ? (
-        <SettingSection title={t("settings.section.frontend")}>
-          <SettingRow
-            label={t("settings.frontendHost.label")}
-            sublabel={t("settings.frontendHost.sublabel")}
-            requiresRestart
-            control={
-              <SettingInput
-                value={config.desktop.frontend.host}
-                onChange={(value) => onDesktopChange("frontend", "host", value)}
-                align="right"
-              />
-            }
-          />
+      <div className="flex flex-col gap-10">
+        <AudioDeviceSettingsSection />
+        {process.env.NODE_ENV !== "production" && config.desktop ? (
+          <SettingSection title={t("settings.section.frontend")}>
+            <SettingRow
+              label={t("settings.frontendHost.label")}
+              sublabel={t("settings.frontendHost.sublabel")}
+              requiresRestart
+              control={
+                <SettingInput
+                  value={config.desktop.frontend.host}
+                  onChange={(value) => onDesktopChange("frontend", "host", value)}
+                  align="right"
+                />
+              }
+            />
 
-          <SettingRow
-            label={t("settings.frontendPort.label")}
-            sublabel={t("settings.frontendPort.sublabel")}
-            requiresRestart
-            control={
-              <SettingInput
-                type="number"
-                value={config.desktop.frontend.devPort}
-                onChange={(value) => onDesktopChange("frontend", "devPort", Number(value))}
-              />
-            }
-          />
-        </SettingSection>
-      ) : null}
+            <SettingRow
+              label={t("settings.frontendPort.label")}
+              sublabel={t("settings.frontendPort.sublabel")}
+              requiresRestart
+              control={
+                <SettingInput
+                  type="number"
+                  value={config.desktop.frontend.devPort}
+                  onChange={(value) => onDesktopChange("frontend", "devPort", Number(value))}
+                />
+              }
+            />
+          </SettingSection>
+        ) : null}
+      </div>
     </div>
   );
 }

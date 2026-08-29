@@ -31,13 +31,16 @@ the original full-copy baseline:
 - `40d31e906af97e08cbeb113c80feb5c83b69fd05` — make Sonnet preserve its designed
   role hierarchy in automatic mode while honoring the Lyric Stage theme's
   manual global font-weight override from Folia v0.6.16.
+- `34e6d2258225610a178dde6ed1c406b699336c8a` — review Folia v0.7.0 and add the
+  complete Tempera / 凝彩 Pixi visualizer, user image pool, Still mode, and the
+  shared Pixi resource-lifecycle helper required by the new renderer set.
 
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
 ## Included
 
-- all eleven registered lyric visualizers and their tuning panels
+- all thirteen registered lyric visualizers and their tuning panels
 - all six registered visualizer backgrounds and their settings panels
 - shared renderer, shell, subtitle, timing, font, color, and lyric helpers
 - Folia's top-level theme CSS-variable builder (`buildAppStyle.ts`)
@@ -68,6 +71,9 @@ Scopify is also distributed under AGPL-3.0.
 - Sonnet keeps Folia's lazy Pixi v8 runtime and full scene/tuning implementation;
   Scopify adapts its i18n keys, persists its tuning bundle, and owns the one-time
   performance-warning dialog at the host boundary.
+- Tempera keeps Folia's lazy Pixi runtime and deterministic composition engine;
+  Scopify persists image blobs in the existing `scopify-folia-stage` asset store
+  and keeps only normalized placement descriptors in the synced tuning bundle.
 
 `.vendor-closure.ps1` records and reproduces the source dependency closure. Any
 upstream refresh must record the reviewed commit above and review every host

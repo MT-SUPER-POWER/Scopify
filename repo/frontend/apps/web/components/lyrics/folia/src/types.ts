@@ -553,6 +553,72 @@ export const DEFAULT_SONNET_TUNING: SonnetTuning = {
   postProcessLensDispersion: 0.6,
 };
 
+export type TemperaColorMode = "duo" | "mono" | "gradient";
+export type TemperaLayerImageAlign = "left" | "center" | "right" | "free";
+export type TemperaLayerImageVerticalAlign = "top" | "center" | "bottom" | "free";
+
+export interface TemperaLayerImage {
+  id: string;
+  name: string;
+  align: TemperaLayerImageAlign;
+  verticalAlign: TemperaLayerImageVerticalAlign;
+  scale: number;
+  opacity: number;
+}
+
+export const TEMPERA_MAX_LAYER_IMAGES = 16;
+
+export const DEFAULT_TEMPERA_LAYER_IMAGE: Omit<TemperaLayerImage, "id" | "name"> = {
+  align: "free",
+  verticalAlign: "bottom",
+  scale: 0.7,
+  opacity: 1,
+};
+
+export interface TemperaTuning {
+  cameraIntensity: number;
+  glyphMotion: number;
+  glyphSettleStretch: number;
+  colorMode: TemperaColorMode;
+  showBlocks: boolean;
+  showDecor: boolean;
+  textInversion: boolean;
+  layerImages: TemperaLayerImage[];
+  layerImageDepth: "back" | "front";
+  layerImageFrequency: number;
+  enableTransitions: boolean;
+  textureResolution: number;
+  postProcessEnabled: boolean;
+  postProcessTextureCompression: boolean;
+  postProcessGrain: number;
+  postProcessContrast: number;
+  postProcessRgbShift: number;
+  postProcessVignette: number;
+  postProcessLensDistortion: number;
+}
+
+export const DEFAULT_TEMPERA_TUNING: TemperaTuning = {
+  cameraIntensity: 1,
+  glyphMotion: 1,
+  glyphSettleStretch: 0.5,
+  colorMode: "duo",
+  showBlocks: true,
+  showDecor: true,
+  textInversion: true,
+  layerImages: [],
+  layerImageDepth: "back",
+  layerImageFrequency: 0.6,
+  enableTransitions: true,
+  textureResolution: 1.5,
+  postProcessEnabled: true,
+  postProcessTextureCompression: false,
+  postProcessGrain: 0.2,
+  postProcessContrast: 0,
+  postProcessRgbShift: 0,
+  postProcessVignette: 0.85,
+  postProcessLensDistortion: 0.3,
+};
+
 // Diorama's camera STYLE (calm/standard/chaotic) is not part of its tuning: like every other
 // visualizer it follows theme.animationIntensity (the player-panel intensity chip / AI themes), so
 // the theme system stays the single source of truth. The tuning only carries diorama-specific knobs.

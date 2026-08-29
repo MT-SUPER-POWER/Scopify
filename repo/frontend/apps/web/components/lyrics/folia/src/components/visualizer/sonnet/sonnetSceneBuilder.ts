@@ -60,10 +60,16 @@ export interface SonnetSceneBuildOptions {
   tuning: SonnetTuning;
   lyricsFontScale: number;
   staticMode: boolean;
+  transparentBackground: boolean;
 }
 
 const colorNumber = (pixi: PixiModule, color: string) =>
   pixi.Color.shared.setValue(color).toNumber();
+
+export const shouldDrawSonnetSceneBackdrop = (
+  showBackgroundMg: boolean,
+  transparentBackground: boolean,
+) => showBackgroundMg && !transparentBackground;
 
 export const buildSonnetScene = (
   pixi: PixiModule,
@@ -94,11 +100,13 @@ export const buildSonnetScene = (
   const postProcessFilters: import("pixi.js").Filter[] = [];
   if (showBackgroundMg) {
     const density = Math.round(4 + options.tuning.mgDensity * 5);
-    sceneBackgroundLayer.addChild(
-      new Graphics()
-        .rect(0, 0, width, height)
-        .fill({ color: colorNumber(pixi, options.theme.backgroundColor), alpha: 0.1 }),
-    );
+    if (shouldDrawSonnetSceneBackdrop(showBackgroundMg, options.transparentBackground)) {
+      sceneBackgroundLayer.addChild(
+        new Graphics()
+          .rect(0, 0, width, height)
+          .fill({ color: colorNumber(pixi, options.theme.backgroundColor), alpha: 0.1 }),
+      );
+    }
 
     for (let index = 0; index < density; index += 1) {
       const x = (((sceneSeed + index * 97) % 997) / 997) * width;

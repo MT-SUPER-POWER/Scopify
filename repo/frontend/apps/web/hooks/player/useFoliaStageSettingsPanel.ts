@@ -12,6 +12,7 @@ import {
   DEFAULT_PENDOLO_TUNING,
   DEFAULT_PARTITA_TUNING,
   DEFAULT_SONNET_TUNING,
+  DEFAULT_TEMPERA_TUNING,
   DEFAULT_TILT_TUNING,
   type Theme,
 } from "@/components/lyrics/folia/src/types";
@@ -170,6 +171,7 @@ export function useFoliaStageSettingsPanel(
     monetTuning: settings.tunings.monet ?? DEFAULT_MONET_TUNING,
     pendoloTuning: settings.tunings.pendolo ?? DEFAULT_PENDOLO_TUNING,
     sonnetTuning: settings.tunings.sonnet ?? DEFAULT_SONNET_TUNING,
+    temperaTuning: settings.tunings.tempera ?? DEFAULT_TEMPERA_TUNING,
     onCappellaTuningChange: (patch: Partial<typeof DEFAULT_CAPPELLA_TUNING>) =>
       settings.patchTuning("cappella", patch),
     onClearCappellaCustomAvatar: assets.clearCappellaCustomAvatar,
@@ -202,6 +204,8 @@ export function useFoliaStageSettingsPanel(
       settings.patchTuning("pendolo", patch),
     onSonnetTuningChange: (patch: Partial<typeof DEFAULT_SONNET_TUNING>) =>
       settings.patchTuning("sonnet", patch),
+    onTemperaTuningChange: (patch: Partial<typeof DEFAULT_TEMPERA_TUNING>) =>
+      settings.patchTuning("tempera", patch),
     onResetCommonSettings: () =>
       settings.patchSettings({ fontScale: 1, fontStyle: "sans", visualizerOpacity: 1 }),
     onResetMonetTuning: () => settings.resetTuning("monet"),

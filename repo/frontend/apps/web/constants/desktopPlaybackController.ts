@@ -18,6 +18,8 @@ export const DESKTOP_FOLIA_VISUALIZER_OPTIONS = [
   { labelKey: "folia.ui.visualizerCappella", value: "cappella" },
   { labelKey: "folia.ui.visualizerDiorama", value: "diorama" },
   { labelKey: "folia.ui.visualizerSonnet", value: "sonnet" },
+  { labelKey: "folia.ui.visualizerStill", value: "still" },
+  { labelKey: "folia.ui.visualizerTempera", value: "tempera" },
 ] as const satisfies readonly { labelKey: string; value: LyricVisualizerMode }[];
 
 export const DESKTOP_FOLIA_BACKGROUND_OPTIONS = [

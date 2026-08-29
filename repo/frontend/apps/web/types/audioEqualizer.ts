@@ -3,7 +3,7 @@ export type AudioEqualizerCustomSlotId = "custom-1" | "custom-2" | "custom-3";
 export type AudioEqualizerUserPresetId = `user:${string}`;
 export type AudioEqualizerModeId =
   AudioEqualizerPresetId | AudioEqualizerCustomSlotId | AudioEqualizerUserPresetId;
-export type AudioSettingsTab = "equalizer" | "quality";
+export type AudioSettingsTab = "equalizer" | "output" | "quality";
 export type AudioEffectId =
   "highpass" | "lowpass" | "drive" | "crush" | "wow" | "noise" | "width" | "space" | "punch";
 export type AudioEffectSettings = Record<AudioEffectId, number>;

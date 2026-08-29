@@ -6,6 +6,7 @@ import type {
   StoredCustomLyricsFont,
   StoredMonetBackgroundImage,
   StoredMonetPortraitImage,
+  TemperaLayerImage,
 } from "@/components/lyrics/folia/src/types";
 import type { FoliaStoredAssets, StoredUploadedFoliaFont } from "@/types/foliaAssets";
 
@@ -21,6 +22,14 @@ const SUPPORTED_IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".
 const SUPPORTED_FONT_EXTENSIONS = [".woff2", ".woff", ".ttf", ".otf"];
 const MAX_FONT_SIZE_BYTES = 50 * 1024 * 1024;
 const registeredFontIds = new Set<string>();
+
+export interface StoredTemperaLayerImage {
+  blob: Blob;
+  id: string;
+  mimeType: string;
+  name: string;
+  thumbnail?: Blob;
+}
 
 export async function loadFoliaStoredAssets(): Promise<FoliaStoredAssets> {
   const [avatarPack, backgroundImage, emojiPack, portraitImage, uploadedFont] = await Promise.all([
@@ -82,6 +91,31 @@ export const clearCappellaAvatarPack = () => del(ASSET_KEYS.avatar, assetStore);
 export const clearCappellaEmojiPack = () => del(ASSET_KEYS.emoji, assetStore);
 export const clearMonetBackgroundImage = () => del(ASSET_KEYS.background, assetStore);
 export const clearMonetPortraitImage = () => del(ASSET_KEYS.portrait, assetStore);
+
+const temperaAssetKey = (id: string) => `tempera-layer-image:${id}`;
+
+export const getTemperaLayerImage = (id: string) =>
+  get<StoredTemperaLayerImage>(temperaAssetKey(id), assetStore);
+
+export const saveTemperaLayerImage = (image: StoredTemperaLayerImage) =>
+  set(temperaAssetKey(image.id), image, assetStore);
+
+export const clearTemperaLayerImage = (id: string) => del(temperaAssetKey(id), assetStore);
+
+export async function loadTemperaLayerImageBlobs(
+  placements: Pick<TemperaLayerImage, "id">[],
+  thumbnail = false,
+) {
+  const blobs = new Map<string, Blob>();
+  await Promise.all(
+    placements.map(async ({ id }) => {
+      const stored = await getTemperaLayerImage(id).catch(() => undefined);
+      const blob = thumbnail ? (stored?.thumbnail ?? stored?.blob) : stored?.blob;
+      if (blob) blobs.set(id, blob);
+    }),
+  );
+  return blobs;
+}
 
 export function validateFoliaFontFile(file: File): string | null {
   const hasSupportedExtension = SUPPORTED_FONT_EXTENSIONS.some((extension) =>
