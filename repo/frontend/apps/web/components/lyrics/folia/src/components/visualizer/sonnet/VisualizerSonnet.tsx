@@ -40,8 +40,10 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
     subtitleFontScale,
     subtitleOverlayOpacity,
     subtitleOverlayBackground,
+    background,
     sonnetTuning = DEFAULT_SONNET_TUNING,
   } = props;
+  const transparentBackground = background?.transparent ?? false;
   const { t } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<SonnetPixiRuntime | null>(null);
@@ -135,6 +137,7 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
           audioBands,
           lyricsFontScale,
           staticMode,
+          transparentBackground,
           paused: pausedRef.current,
           songTitle: metadata.title,
           songArtist: metadata.artist,
@@ -170,7 +173,15 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
       }
       host.replaceChildren();
     };
-  }, [currentTime, lyricsFontScale, program, sonnetTuning, staticMode, theme]);
+  }, [
+    currentTime,
+    lyricsFontScale,
+    program,
+    sonnetTuning,
+    staticMode,
+    theme,
+    transparentBackground,
+  ]);
 
   useEffect(() => {
     runtimeRef.current?.setSongMetadata(latestSongMetadataRef.current);

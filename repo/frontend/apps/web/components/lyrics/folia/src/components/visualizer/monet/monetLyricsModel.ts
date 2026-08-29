@@ -1,4 +1,9 @@
-import { layoutWithLines, prepareWithSegments } from "@chenglou/pretext";
+import { clearCache, layoutWithLines, prepareWithSegments } from "@chenglou/pretext";
+import {
+  measureRichInlineStats,
+  prepareRichInline,
+  type RichInlineItem,
+} from "@chenglou/pretext/rich-inline";
 import type { Line } from "../../../types";
 import {
   buildLineGraphemeTimeline,
@@ -53,6 +58,7 @@ export interface MonetMeasuredLineLayout {
   lineHeightPx: number;
   translationLineHeightPx: number;
   isTextClipped: boolean;
+  isTextOverflowingWidth: boolean;
   isTranslationClipped: boolean;
 }
 
@@ -80,11 +86,19 @@ interface MeasureMonetLineLayoutOptions {
 
 const ROOT_FONT_PX = 16;
 const VIEWPORT_WIDTH_FALLBACK_PX = 1280;
-const MONET_ACTIVE_TEXT_LINE_LIMIT = 3;
+const MONET_ACTIVE_TEXT_LINE_LIMIT = 14;
 const MONET_INACTIVE_TEXT_LINE_LIMIT = 2;
 const MONET_TRANSLATION_LINE_LIMIT = 2;
 const MONET_MIN_MEASURE_WIDTH_PX = 180;
 const MONET_GRAPHEME_OFFSETS_CACHE_LIMIT = 420;
+const MONET_LARGE_SCREEN_MIN_PX = 1536;
+const MONET_LARGE_SCREEN_FULL_PX = 2200;
+const MONET_LARGE_SCREEN_MAX_SCALE = 1.16;
+export const MONET_RAIL_BASE_MAX_WIDTH_PX = 780;
+export const MONET_RAIL_BASE_MAX_HEIGHT_PX = 520;
+export const MONET_ROW_BASE_MAX_WIDTH_PX = 1520;
+export const MONET_PORTRAIT_BASE_MAX_PX = 430;
+export const MONET_PORTRAIT_INNER_BASE_MAX_PX = 380;
 
 const monetGraphemeOffsetsCache = new Map<string, number[]>();
 
@@ -109,6 +123,23 @@ export const resolveClampFontPx = (minRem: number, preferredVw: number, maxRem: 
   );
 };
 
+export const resolveMonetLargeScreenScale = (containerWidthPx?: number): number => {
+  const referenceWidth =
+    containerWidthPx && containerWidthPx > 0
+      ? containerWidthPx
+      : typeof window !== "undefined"
+        ? window.innerWidth
+        : VIEWPORT_WIDTH_FALLBACK_PX;
+  if (referenceWidth <= MONET_LARGE_SCREEN_MIN_PX) return 1;
+
+  const progress = Math.min(
+    1,
+    (referenceWidth - MONET_LARGE_SCREEN_MIN_PX) /
+      (MONET_LARGE_SCREEN_FULL_PX - MONET_LARGE_SCREEN_MIN_PX),
+  );
+  return 1 + (MONET_LARGE_SCREEN_MAX_SCALE - 1) * progress;
+};
+
 export const splitMonetGraphemes = (text: string): string[] => {
   if (!text) {
     return [];
@@ -125,13 +156,37 @@ const measureTextLineCount = (
   maxWidthPx: number,
   lineHeightPx: number,
 ): number => {
-  const prepared = prepareWithSegments(text || " ", fontSpec);
+  const prepared = prepareWithSegments(text || " ", fontSpec, { whiteSpace: "pre-wrap" });
   const layout = layoutWithLines(
     prepared,
     Math.max(maxWidthPx, MONET_MIN_MEASURE_WIDTH_PX),
     lineHeightPx,
   );
   return Math.max(layout.lines.length, 1);
+};
+
+const measureLyricLineStats = (
+  line: Line,
+  fontSpec: string,
+  maxWidthPx: number,
+): { lineCount: number; maxLineWidthPx: number } => {
+  const items: RichInlineItem[] = buildMonetDisplayTokens(line).map((token) => ({
+    text: token.text,
+    font: fontSpec,
+    break: token.timed ? "never" : "normal",
+  }));
+  if (items.length === 0) return { lineCount: 1, maxLineWidthPx: 0 };
+
+  const { lineCount, maxLineWidth } = measureRichInlineStats(
+    prepareRichInline(items),
+    Math.max(maxWidthPx, MONET_MIN_MEASURE_WIDTH_PX),
+  );
+  return { lineCount: Math.max(lineCount, 1), maxLineWidthPx: maxLineWidth };
+};
+
+export const clearMonetMeasurementCaches = () => {
+  monetGraphemeOffsetsCache.clear();
+  clearCache();
 };
 
 const measureTextWidthAtPx = (text: string, fontPx: number, fontSpec: string): number => {
@@ -389,7 +444,11 @@ export const measureMonetLineLayout = ({
   const translationPaddingBottomPx = Math.max(translationFontPx * 0.18, 5);
   const fontSpec = `600 ${fontPx}px ${fontStack}`;
   const translationFontSpec = `500 ${translationFontPx}px ${translationFontStack ?? fontStack}`;
-  const textLineCount = measureTextLineCount(line.fullText, fontSpec, maxWidthPx, lineHeightPx);
+  const { lineCount: textLineCount, maxLineWidthPx } = measureLyricLineStats(
+    line,
+    fontSpec,
+    maxWidthPx,
+  );
   const textLimit =
     status === "active" ? MONET_ACTIVE_TEXT_LINE_LIMIT : MONET_INACTIVE_TEXT_LINE_LIMIT;
   const visibleTextLineCount = Math.min(textLineCount, textLimit);
@@ -428,6 +487,7 @@ export const measureMonetLineLayout = ({
     lineHeightPx,
     translationLineHeightPx,
     isTextClipped: textLineCount > visibleTextLineCount,
+    isTextOverflowingWidth: maxLineWidthPx > maxWidthPx,
     isTranslationClipped: rawTranslationLineCount > translationLineCount,
   };
 };

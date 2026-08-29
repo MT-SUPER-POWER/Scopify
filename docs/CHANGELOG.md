@@ -17,6 +17,7 @@
 
 ### Fixed
 
+- **补齐 Folia v0.7 P0 正确性修复**：Monet 改用与 DOM 一致的原子 token 换行测量，远程字体加载后主动清理测量缓存并按实际容器宽度响应式布局，同时修复长词、活跃多行歌词、下沉字形扫光和失效 Blob 封面的裁剪/刷新问题；Sonnet 透明模式不再绘制主场景底色，隐藏 Pixi 场景在离开可见集时释放 GPU 资源；桌面视频导出按当前显示器 DPI 调整窗口，以原生捕获流经 Canvas 居中裁剪到目标分辨率，消除黑边并完整恢复原窗口位置、最大化和全屏状态。
 - **修复歌单与播客表格表头 `#` 与序号列未居中对齐问题**：在 `TrackTable` 与 `RadioTracklistTable` 中为表头 `#` 元素补充统一的 `size-4` 居中容器，使表头 `#` 符号与数据行序号/播放控件中心轴线精确对齐。
 - **修复 Folia 沉浸设置面板运行期引用异常**：补全 `FoliaStageSettings` 中 `isChromeHidden` 属性解构与抽屉顶部封面预览所需的当前歌曲选择器，修复在私人电台或任意模式下点击 Visual Settings 面板时报 `ReferenceError` 的问题。
 - **修复播客节目表格排序字段属性读取**：纠正 `RadioTracklistTable` 播放量排序比对逻辑中使用的属性，统一对齐 `RadioProgram` 标准字段 `listenerCount`。

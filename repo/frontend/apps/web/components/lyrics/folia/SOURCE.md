@@ -31,6 +31,14 @@ the original full-copy baseline:
 - `40d31e906af97e08cbeb113c80feb5c83b69fd05` — make Sonnet preserve its designed
   role hierarchy in automatic mode while honoring the Lyric Stage theme's
   manual global font-weight override from Folia v0.6.16.
+- `47d5eaad` through `b68fa68e` — backport Monet's v0.7 correctness fixes for
+  atomic token measurement, late web-font invalidation, container-aware sizing,
+  active-line height, long-glyph sweep clipping, and Blob portrait replacement.
+- `19e120e8` and `2cefc8fc` — preserve Sonnet transparency and release retained
+  Pixi display resources when cached scenes leave the visible set.
+- `35de348f` and `37cb1a4d` — adapt the v0.7 Electron export fixes to Scopify's
+  Desktop Contract: current-display DPI sizing, Canvas crop output, capture
+  cleanup, and exact restoration of window bounds and presentation state.
 
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.

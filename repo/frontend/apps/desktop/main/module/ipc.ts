@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { writeFile } from "node:fs/promises";
-import { app, BrowserWindow, dialog, ipcMain, session, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, screen, session, shell } from "electron";
 import {
   DESKTOP_BRIDGE_PROTOCOL_VERSION,
   type DesktopHostConfig,
@@ -41,6 +41,13 @@ import {
   readMusicSessionCookie,
   saveMusicSessionCookie,
 } from "./musicCookieStore.js";
+import { resolveVideoExportWindowBounds } from "./videoExportWindow.js";
+
+interface VideoExportWindowRestoreState {
+  bounds: Electron.Rectangle;
+  isFullScreen: boolean;
+  isMaximized: boolean;
+}
 
 function createConfiguredPageCacheStore() {
   const config = loadDesktopHostConfig();
@@ -60,7 +67,7 @@ export function registerIpcHandlers(
   backendController: DesktopBackendController,
 ) {
   let hasAuthorizedDeveloperToolsOpen = false;
-  let videoExportWindowBounds: Electron.Rectangle | null = null;
+  let videoExportWindowRestoreState: VideoExportWindowRestoreState | null = null;
   mainWindow?.webContents.on("devtools-opened", () => {
     const isAllowed = hasAuthorizedDeveloperToolsOpen && loadDesktopHostConfig().app.devTools;
     hasAuthorizedDeveloperToolsOpen = false;
@@ -180,18 +187,38 @@ export function registerIpcHandlers(
   ipcMain.handle("video-export:prepare-window", (event, size: unknown) => {
     if (!isMainRenderer(event, mainWindow) || !mainWindow || mainWindow.isDestroyed()) return false;
     if (!isVideoExportSize(size)) return false;
-    if (!videoExportWindowBounds) videoExportWindowBounds = mainWindow.getBounds();
+    if (!videoExportWindowRestoreState) {
+      videoExportWindowRestoreState = {
+        bounds: mainWindow.getBounds(),
+        isFullScreen: mainWindow.isFullScreen(),
+        isMaximized: mainWindow.isMaximized(),
+      };
+    }
     if (mainWindow.isFullScreen()) mainWindow.setFullScreen(false);
-    mainWindow.setContentSize(size.width, size.height, false);
-    mainWindow.center();
+    if (mainWindow.isMaximized()) mainWindow.unmaximize();
+    const currentBounds = mainWindow.getBounds();
+    const display = screen.getDisplayMatching(videoExportWindowRestoreState.bounds);
+    mainWindow.setBounds(
+      resolveVideoExportWindowBounds({
+        currentBounds,
+        workArea: display.workArea,
+        scaleFactor: display.scaleFactor,
+        target: size,
+      }),
+      false,
+    );
+    mainWindow.focus();
     return true;
   });
 
   ipcMain.handle("video-export:restore-window", (event) => {
     if (!isMainRenderer(event, mainWindow) || !mainWindow || mainWindow.isDestroyed()) return false;
-    if (videoExportWindowBounds) {
-      mainWindow.setBounds(videoExportWindowBounds, false);
-      videoExportWindowBounds = null;
+    if (videoExportWindowRestoreState) {
+      const restoreState = videoExportWindowRestoreState;
+      videoExportWindowRestoreState = null;
+      mainWindow.setBounds(restoreState.bounds, false);
+      if (restoreState.isFullScreen) mainWindow.setFullScreen(true);
+      else if (restoreState.isMaximized) mainWindow.maximize();
     }
     return true;
   });

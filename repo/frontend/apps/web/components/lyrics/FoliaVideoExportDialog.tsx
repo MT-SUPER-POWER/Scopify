@@ -6,14 +6,16 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { useI18n } from "@/store/module/i18n";
+import { createCroppedVideoStream } from "@/lib/lyrics/videoExportCapture";
 import { runtime } from "@/lib/runtime";
 import type { FoliaVideoExportDialogProps } from "@/types/components/lyrics";
+import type { VideoExportPreset } from "@/types/videoExport";
 
 const PRESETS = [
   { id: "720p", width: 1280, height: 720 },
   { id: "1080p", width: 1920, height: 1080 },
   { id: "portrait", width: 1080, height: 1920 },
-] as const;
+] as const satisfies readonly VideoExportPreset[];
 
 type ExportStatus = "idle" | "preparing" | "recording" | "finalizing" | "done" | "error";
 
@@ -39,6 +41,7 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
   const [message, setMessage] = useState("");
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamsRef = useRef<MediaStream[]>([]);
+  const croppedStreamCleanupRef = useRef<(() => void) | null>(null);
   const timerRef = useRef<number | null>(null);
   const cancelledRef = useRef(false);
   const playbackRestoreRef = useRef<{
@@ -54,6 +57,8 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
     timerRef.current = null;
     streamsRef.current.forEach(stopStream);
     streamsRef.current = [];
+    croppedStreamCleanupRef.current?.();
+    croppedStreamCleanupRef.current = null;
     recorderRef.current = null;
     const playback = playbackRestoreRef.current;
     if (playback && (cancelledRef.current || playback.paused)) {
@@ -110,28 +115,27 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
       await new Promise((resolve) => window.setTimeout(resolve, 450));
       const source = await runtime.videoExport.getCaptureSource();
       if (!source) throw new Error(t("folia.videoExport.captureFailed"));
-      const videoStream = await navigator.mediaDevices.getUserMedia({
+      const sourceVideoStream = await navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
           mandatory: {
             chromeMediaSource: "desktop",
             chromeMediaSourceId: source.id,
-            minWidth: preset.width,
-            maxWidth: preset.width,
-            minHeight: preset.height,
-            maxHeight: preset.height,
             maxFrameRate: 60,
           },
         } as unknown as MediaTrackConstraints,
       });
+      streamsRef.current = [sourceVideoStream];
+      const croppedVideo = createCroppedVideoStream(sourceVideoStream, preset);
+      croppedStreamCleanupRef.current = croppedVideo.cleanup;
       const audioStream = audio.captureStream();
       if (audioStream.getAudioTracks().length === 0)
         throw new Error(t("folia.videoExport.audioFailed"));
       const combined = new MediaStream([
-        ...videoStream.getVideoTracks(),
+        ...croppedVideo.stream.getVideoTracks(),
         ...audioStream.getAudioTracks(),
       ]);
-      streamsRef.current = [videoStream, combined, audioStream];
+      streamsRef.current.push(croppedVideo.stream, combined, audioStream);
       const chunks: Blob[] = [];
       const recorder = new MediaRecorder(combined, {
         mimeType: format.mimeType,

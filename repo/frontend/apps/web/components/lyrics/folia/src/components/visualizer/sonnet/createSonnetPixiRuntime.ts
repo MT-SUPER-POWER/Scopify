@@ -1,5 +1,6 @@
 import type { MotionValue } from "framer-motion";
 import type { AudioBands, SonnetTuning, Theme } from "../../../types";
+import { setPixiDisplayTreeVisibility } from "../pixiDisplayResources";
 import type { SonnetProgram } from "./types";
 import { findSonnetParagraphIndexAtTime } from "./sonnetProgram";
 import {
@@ -59,6 +60,7 @@ export interface SonnetRuntimeOptions {
   audioBands?: AudioBands;
   lyricsFontScale: number;
   staticMode: boolean;
+  transparentBackground: boolean;
   paused: boolean;
   songTitle?: string | null;
   songArtist?: string | null;
@@ -349,6 +351,7 @@ export class SonnetPixiRuntime {
         tuning: this.options.tuning,
         lyricsFontScale: this.options.lyricsFontScale,
         staticMode: this.options.staticMode,
+        transparentBackground: this.options.transparentBackground,
       },
       this.iconTextures,
       this.options.program.paragraphs[index],
@@ -646,10 +649,11 @@ export class SonnetPixiRuntime {
       const isActive = index === paragraphIndex;
 
       // Strict visibility: only the active scene is ever drawn. Zero overlap between scenes.
-      scene.container.visible = isActive;
+      setPixiDisplayTreeVisibility(scene.container, isActive);
       if (!isActive) {
-        const previousShot = scene.shots[scene.activeShotIndex];
-        if (previousShot) unloadSonnetDisplayTree(previousShot.container);
+        scene.shots.forEach((shot) => {
+          shot.container.visible = false;
+        });
         scene.activeShotIndex = -1;
         return;
       }
@@ -706,15 +710,11 @@ export class SonnetPixiRuntime {
           : paragraphTransitionFrame;
       scene.shots.forEach((shot, shotIndex) => {
         const isShotActive = shotIndex === visibleShotIndex;
-        shot.container.visible = isShotActive;
+        setPixiDisplayTreeVisibility(shot.container, isShotActive);
         if (!isShotActive) return;
         this.updateShot(shot, time, width, height, 0);
       });
-      if (scene.activeShotIndex !== visibleShotIndex) {
-        const previousShot = scene.shots[scene.activeShotIndex];
-        if (previousShot) unloadSonnetDisplayTree(previousShot.container);
-        scene.activeShotIndex = visibleShotIndex;
-      }
+      scene.activeShotIndex = visibleShotIndex;
       // Publish the active shot so the dev overlay's Sonnet tab can inspect it.
       sonnetDebugState.activeShot = scene.shots[visibleShotIndex]?.debugInfo ?? null;
       sonnetDebugState.paragraphIndex = index;
