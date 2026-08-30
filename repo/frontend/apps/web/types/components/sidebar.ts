@@ -7,3 +7,13 @@ export interface SidebarConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
 }
+
+export interface SidebarLibraryItemProps {
+  coverImg: string;
+  hasContextMenu?: boolean;
+  href?: string;
+  id: string | number;
+  isCollapsed?: boolean;
+  subtitle: string;
+  title: string;
+}

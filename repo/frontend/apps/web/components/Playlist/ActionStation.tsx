@@ -69,9 +69,11 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     playSourceId,
     isDaily,
     isSticky = false,
+    onPlayToggle,
     dailyDate,
     searchOpen,
     searchQuery,
+    showShuffle = true,
     onSearchChange,
     onSearchOpen,
     onSearchClose,
@@ -226,8 +228,8 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               <button
                 type="button"
                 aria-label={playbackActionLabel}
-                onClick={handlePlayToggle}
-                disabled={!currentSongDetail && !tracks.length}
+                onClick={onPlayToggle ?? handlePlayToggle}
+                disabled={!onPlayToggle && !currentSongDetail && !tracks.length}
                 className={cn(
                   "flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50",
                   isSticky && "size-12",
@@ -257,30 +259,32 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             />
           )}
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                aria-label={shuffleActionLabel}
-                onClick={toggleShuffle}
-                className="relative inline-flex cursor-pointer items-center justify-center"
-              >
-                <Shuffle
-                  className={cn(
-                    isSticky ? "size-7" : "size-8",
-                    "transition-colors",
-                    isShuffle ? "text-brand" : "text-content-muted hover:text-content",
+          {showShuffle && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={shuffleActionLabel}
+                  onClick={toggleShuffle}
+                  className="relative inline-flex cursor-pointer items-center justify-center"
+                >
+                  <Shuffle
+                    className={cn(
+                      isSticky ? "size-7" : "size-8",
+                      "transition-colors",
+                      isShuffle ? "text-brand" : "text-content-muted hover:text-content",
+                    )}
+                  />
+                  {isShuffle && (
+                    <span className="absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-brand" />
                   )}
-                />
-                {isShuffle && (
-                  <span className="absolute -bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-brand" />
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top" sideOffset={8}>
-              {shuffleActionLabel}
-            </TooltipContent>
-          </Tooltip>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={8}>
+                {shuffleActionLabel}
+              </TooltipContent>
+            </Tooltip>
+          )}
 
           {commentResourceKind && commentResourceId && (
             <Tooltip>
