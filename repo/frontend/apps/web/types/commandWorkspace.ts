@@ -14,6 +14,10 @@ export interface CommandWorkspaceQueueProps {
   onClose?(): void;
 }
 
+export interface CommandWorkspaceNowPlayingProps {
+  onClose?(): void;
+}
+
 export type CommandWorkspaceFilterId =
   "song" | "artist" | "album" | "playlist" | "podcast" | "episode";
 

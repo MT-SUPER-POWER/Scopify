@@ -1,8 +1,15 @@
 "use client";
 
-import { GripVertical, ListPlus, Music, Play, Trash2 } from "lucide-react";
+import { Disc, GripVertical, MoreHorizontal, Music, Pause, Play, Trash2, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type DragEvent, useState } from "react";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
@@ -15,12 +22,14 @@ interface DropTarget {
 
 export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
   const router = useRouter();
+  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
   const moveQueueItem = usePlayerStore((state) => state.moveQueueItem);
-  const moveQueueItemToNext = usePlayerStore((state) => state.moveQueueItemToNext);
   const playQueueIndex = usePlayerStore((state) => state.playQueueIndex);
   const queue = usePlayerStore((state) => state.queue);
   const queueIndex = usePlayerStore((state) => state.queueIndex);
   const removeQueueItem = usePlayerStore((state) => state.removeQueueItem);
+  const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dropTarget, setDropTarget] = useState<DropTarget | null>(null);
@@ -28,6 +37,14 @@ export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
   if (queue.length === 0) {
     return <p className="px-5 py-12 text-center text-sm text-zinc-500">播放队列为空。</p>;
   }
+
+  const handleTogglePlay = (targetIndex: number) => {
+    if (targetIndex === queueIndex) {
+      setIsPlaying(!isPlaying);
+    } else {
+      void playQueueIndex(targetIndex);
+    }
+  };
 
   const handleDragStart = (event: DragEvent<HTMLDivElement>, index: number) => {
     event.dataTransfer.effectAllowed = "move";
@@ -120,7 +137,8 @@ export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
         className="min-h-[min(58vh,36rem)] space-y-0.5 px-2.5 py-2"
       >
         {queue.map((track, index) => {
-          const isCurrent = index === queueIndex;
+          const isCurrent = index === queueIndex || (!!currentSong && track.id === currentSong.id);
+          const isCurrentPlaying = isCurrent && isPlaying;
           const isDragging = draggedIndex === index;
           const isTargetBefore =
             dropTarget?.index === index &&
@@ -155,22 +173,26 @@ export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
                 <span className="cursor-grab text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100 hover:text-zinc-300 active:cursor-grabbing">
                   <GripVertical className="size-3.5" />
                 </span>
-                <span
-                  className={cn(
-                    "text-xs text-zinc-500 tabular-nums transition-opacity group-hover:hidden",
-                    isCurrent && "font-semibold text-brand",
-                  )}
-                >
-                  {index + 1}
-                </span>
+                {isCurrentPlaying ? (
+                  <PlayingAnimation size={14} className="group-hover:hidden" />
+                ) : (
+                  <span
+                    className={cn(
+                      "text-xs tabular-nums transition-opacity group-hover:hidden",
+                      isCurrent ? "font-semibold text-brand" : "text-zinc-500",
+                    )}
+                  >
+                    {index + 1}
+                  </span>
+                )}
               </div>
 
               {/* 封面图片 */}
               <button
                 type="button"
-                onClick={() => void playQueueIndex(index)}
+                onClick={() => handleTogglePlay(index)}
                 className="relative size-10 shrink-0 overflow-hidden rounded-md bg-white/8 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
-                title={isCurrent ? "当前正在播放" : `播放 ${track.name}`}
+                title={isCurrent ? (isPlaying ? "暂停" : "继续播放") : `播放 ${track.name}`}
               >
                 {coverUrl ? (
                   <img
@@ -184,23 +206,25 @@ export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
                     <Music className="size-4" />
                   </div>
                 )}
-                {isCurrent ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                    <Play className="size-3.5 fill-white text-white" />
-                  </div>
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                    <Play className="size-3.5 fill-white text-white" />
-                  </div>
-                )}
+                {/* 封面仅在 hover 时展示操作按钮 */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 transition-opacity group-hover:opacity-100">
+                  {isCurrentPlaying ? (
+                    <Pause className="size-4 fill-white text-white" />
+                  ) : (
+                    <Play className="size-4 translate-x-0.5 fill-white text-white" />
+                  )}
+                </div>
               </button>
 
               {/* 歌曲信息、歌手与专辑跳转 */}
               <div className="min-w-0 flex-1">
                 <button
                   type="button"
-                  onClick={() => void playQueueIndex(index)}
-                  className="block w-full truncate text-left text-sm font-medium text-white hover:text-brand hover:underline"
+                  onClick={() => handleTogglePlay(index)}
+                  className={cn(
+                    "block w-full truncate text-left text-sm font-medium transition-colors hover:underline",
+                    isCurrent ? "font-semibold text-brand" : "text-white hover:text-brand",
+                  )}
                 >
                   {track.name}
                 </button>
@@ -245,38 +269,52 @@ export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
                           {track.al.name}
                         </button>
                       ) : (
-                        <span className="max-w-35 truncate text-zinc-400">
-                          {track.al.name}
-                        </span>
+                        <span className="max-w-35 truncate text-zinc-400">{track.al.name}</span>
                       )}
                     </>
                   ) : null}
                 </div>
               </div>
 
-              {/* 时长与悬浮操作 */}
-              <span className="shrink-0 text-xs text-zinc-500 tabular-nums">
-                {formatDuration(track.dt)}
-              </span>
-              <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100">
-                <button
-                  type="button"
-                  onClick={() => moveQueueItemToNext(index)}
-                  className="rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white"
-                  title="下一首播放"
-                  aria-label="下一首播放"
-                >
-                  <ListPlus className="size-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => removeQueueItem(index)}
-                  className="rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-red-300"
-                  title="从队列移除"
-                  aria-label="从队列移除"
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
+              {/* 时长与更多选项 */}
+              <div className="flex shrink-0 items-center gap-1.5">
+                <span className="text-xs text-zinc-500 tabular-nums">
+                  {formatDuration(track.dt)}
+                </span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={(event) => event.stopPropagation()}
+                      className="flex size-7 items-center justify-center rounded-md text-zinc-400 opacity-0 transition-all group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-white/10 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white data-[state=open]:opacity-100"
+                      title="更多选项"
+                      aria-label={`更多选项: ${track.name}`}
+                    >
+                      <MoreHorizontal className="size-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-36 border-zinc-800 bg-zinc-900/95 text-zinc-200 backdrop-blur-xl"
+                  >
+                    <DropdownMenuItem onClick={() => removeQueueItem(index)} variant="destructive">
+                      <Trash2 className="size-4" />
+                      <span>从队列移除</span>
+                    </DropdownMenuItem>
+                    {track.al?.id ? (
+                      <DropdownMenuItem onClick={() => navigateToAlbum(track.al.id)}>
+                        <Disc className="size-4" />
+                        <span>查看专辑</span>
+                      </DropdownMenuItem>
+                    ) : null}
+                    {track.ar?.[0]?.id ? (
+                      <DropdownMenuItem onClick={() => navigateToArtist(track.ar[0].id)}>
+                        <User className="size-4" />
+                        <span>查看歌手</span>
+                      </DropdownMenuItem>
+                    ) : null}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           );

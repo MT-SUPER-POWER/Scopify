@@ -1,7 +1,9 @@
 "use client";
 
-import { ListPlus, Play, Plus } from "lucide-react";
+import { ListPlus, Pause, Play, Plus } from "lucide-react";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { cn } from "@/lib/utils";
+import { usePlayerStore } from "@/store";
 import type { CommandWorkspaceSearchItem } from "@/types/commandWorkspace";
 
 interface CommandWorkspaceSearchResultListProps {
@@ -19,6 +21,10 @@ export function CommandWorkspaceSearchResultList({
   onSelect,
   selectedIndex,
 }: CommandWorkspaceSearchResultListProps) {
+  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
+
   if (items.length === 0) {
     return <p className="px-5 py-10 text-center text-sm text-zinc-500">没有找到匹配内容。</p>;
   }
@@ -29,24 +35,52 @@ export function CommandWorkspaceSearchResultList({
         const isPlayable =
           item.kind === "song" ||
           (item.kind === "voice" && !!item.entity.mainSong && item.entity.isPlayable !== false);
+        const isCurrent =
+          !!currentSong &&
+          ((item.kind === "song" && item.entity.id === currentSong.id) ||
+            (item.kind === "voice" && item.entity.mainSong?.id === currentSong.id));
+        const isCurrentPlaying = isCurrent && isPlaying;
+
+        const handleToggleOrSelect = () => {
+          if (isCurrent && isPlayable) {
+            setIsPlaying(!isPlaying);
+          } else {
+            onSelect(item);
+          }
+        };
+
         return (
           <div
             key={`${item.kind}-${item.entity.id}`}
             className={cn(
               "group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors",
-              selectedIndex === index ? "bg-white/10" : "hover:bg-white/6",
+              isCurrent
+                ? "bg-white/10"
+                : selectedIndex === index
+                  ? "bg-white/10"
+                  : "hover:bg-white/6",
             )}
           >
             <button
               type="button"
-              onClick={() => onSelect(item)}
+              onClick={handleToggleOrSelect}
               className="flex min-w-0 flex-1 items-center gap-3 text-left"
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/8 text-xs font-semibold text-zinc-300">
-                {getKindLabel(item)}
+              <span
+                className={cn(
+                  "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+                  isCurrent ? "bg-brand/20 text-brand" : "bg-white/8 text-zinc-300",
+                )}
+              >
+                {isCurrentPlaying ? <PlayingAnimation size={14} /> : getKindLabel(item)}
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-sm font-medium text-white">
+                <span
+                  className={cn(
+                    "block truncate text-sm font-medium transition-colors hover:underline",
+                    isCurrent ? "font-semibold text-brand" : "text-white",
+                  )}
+                >
                   {getTitle(item)}
                 </span>
                 <span className="block truncate text-xs text-zinc-400">{getSubtitle(item)}</span>
@@ -74,11 +108,20 @@ export function CommandWorkspaceSearchResultList({
             ) : null}
             <button
               type="button"
-              onClick={() => onSelect(item)}
-              className="shrink-0 rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white"
-              title={isPlayable ? "播放" : "查看曲目"}
+              onClick={handleToggleOrSelect}
+              className={cn(
+                "shrink-0 rounded p-1.5 transition-colors hover:bg-white/10",
+                isCurrent ? "text-brand hover:text-brand" : "text-zinc-400 hover:text-white",
+              )}
+              title={
+                isCurrent ? (isPlaying ? "暂停" : "继续播放") : isPlayable ? "播放" : "查看曲目"
+              }
             >
-              <Play className="size-3.5" />
+              {isCurrentPlaying ? (
+                <Pause className="size-3.5 fill-current" />
+              ) : (
+                <Play className="size-3.5 fill-current" />
+              )}
             </button>
           </div>
         );

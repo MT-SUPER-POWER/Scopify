@@ -1,8 +1,10 @@
 "use client";
 
-import { ListPlus, Play, Plus } from "lucide-react";
+import { ListPlus, Pause, Play, Plus } from "lucide-react";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatDuration } from "@/lib/utils";
+import { cn, formatDuration } from "@/lib/utils";
+import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/api/music";
 import type { CommandWorkspaceTrackList as CommandWorkspaceTrackListModel } from "@/types/commandWorkspace";
 
@@ -19,6 +21,18 @@ export function CommandWorkspaceTrackList({
   onPlay,
   trackList,
 }: CommandWorkspaceTrackListProps) {
+  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
+
+  const handleTrackClick = (track: SongDetail, index: number) => {
+    if (currentSong && currentSong.id === track.id) {
+      setIsPlaying(!isPlaying);
+    } else {
+      onPlay(index);
+    }
+  };
+
   return (
     <ScrollArea className="h-[min(58vh,36rem)]">
       <div className="space-y-0.5 px-2.5 py-2">
@@ -38,43 +52,74 @@ export function CommandWorkspaceTrackList({
             播放全部
           </button>
         </div>
-        {trackList.tracks.map((track, index) => (
-          <div
-            key={`${track.voiceId ?? "song"}-${track.id}-${index}`}
-            className="group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors hover:bg-white/6"
-          >
-            <span className="w-5 text-right text-xs text-zinc-500 tabular-nums">{index + 1}</span>
-            <button
-              type="button"
-              onClick={() => onPlay(index)}
-              className="min-w-0 flex-1 text-left"
+        {trackList.tracks.map((track, index) => {
+          const isCurrent = currentSong && track.id === currentSong.id;
+          const isCurrentPlaying = isCurrent && isPlaying;
+
+          return (
+            <div
+              key={`${track.voiceId ?? "song"}-${track.id}-${index}`}
+              className={cn(
+                "group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors",
+                isCurrent ? "bg-white/10" : "hover:bg-white/6",
+              )}
             >
-              <span className="block truncate text-sm font-medium text-white">{track.name}</span>
-              <span className="block truncate text-xs text-zinc-400">
-                {track.ar.map((artist) => artist.name).join(" / ")}
-              </span>
-            </button>
-            <span className="text-xs text-zinc-500 tabular-nums">{formatDuration(track.dt)}</span>
-            <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100">
+              <div className="flex w-5 shrink-0 items-center justify-end">
+                {isCurrentPlaying ? (
+                  <>
+                    <PlayingAnimation size={14} className="group-hover:hidden" />
+                    <Pause className="hidden size-3.5 fill-white text-white group-hover:block" />
+                  </>
+                ) : (
+                  <span
+                    className={cn(
+                      "text-xs tabular-nums",
+                      isCurrent ? "font-semibold text-brand" : "text-zinc-500",
+                    )}
+                  >
+                    {index + 1}
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
-                onClick={() => onAppend(track)}
-                className="rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white"
-                title="加入队列"
+                onClick={() => handleTrackClick(track, index)}
+                className="min-w-0 flex-1 text-left"
               >
-                <Plus className="size-3.5" />
+                <span
+                  className={cn(
+                    "block truncate text-sm font-medium transition-colors hover:underline",
+                    isCurrent ? "font-semibold text-brand" : "text-white hover:text-brand",
+                  )}
+                >
+                  {track.name}
+                </span>
+                <span className="block truncate text-xs text-zinc-400">
+                  {track.ar.map((artist) => artist.name).join(" / ")}
+                </span>
               </button>
-              <button
-                type="button"
-                onClick={() => onInsertNext(track)}
-                className="rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white"
-                title="下一首播放"
-              >
-                <ListPlus className="size-3.5" />
-              </button>
+              <span className="text-xs text-zinc-500 tabular-nums">{formatDuration(track.dt)}</span>
+              <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100">
+                <button
+                  type="button"
+                  onClick={() => onAppend(track)}
+                  className="rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white"
+                  title="加入队列"
+                >
+                  <Plus className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onInsertNext(track)}
+                  className="rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white"
+                  title="下一首播放"
+                >
+                  <ListPlus className="size-3.5" />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </ScrollArea>
   );
