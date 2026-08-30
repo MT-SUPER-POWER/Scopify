@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import {
   Bell,
   ChevronRight,
@@ -32,8 +32,12 @@ import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { VipSignDetail } from "@/types/api/vipSign";
+import type { ProfileMenuProps } from "@/types/components/profileMenu";
 
-export function ProfileMenu({ children }: { children?: React.ReactNode }) {
+const menuItemClassName =
+  "group cursor-pointer rounded-lg px-2.5 py-2.25 text-sm font-medium text-content-muted transition-colors hover:bg-accent hover:text-content focus:bg-accent focus:text-content";
+
+export function ProfileMenu({ children }: ProfileMenuProps) {
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
   const user = useUserStore((state) => state.user);
@@ -57,8 +61,8 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 未签到执行 POST /vip/sign，已签到则 GET /vip/sign/detail 查看详情。
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  const handleVipSign = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleVipSign = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     if (isSignLoading || isSigning) return;
     setProfileMenuOpen(false);
 
@@ -100,17 +104,12 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
     smartRouter.replace("/");
   };
 
-  const ProfileCallback = (id: "download" | "about") => {
-    switch (id) {
-      case "download":
-        window.location.replace("https://github.com/MT-SUPER-POWER/Scopify/releases");
-        break;
-      case "about":
-        smartRouter.push("/me");
-        break;
-      default:
-        console.log(`Selected ${id} -- 功能待开发`);
-    }
+  const handleDownloadClick = () => {
+    window.location.assign("https://github.com/MT-SUPER-POWER/Scopify/releases");
+  };
+
+  const handleAboutClick = () => {
+    smartRouter.push("/me");
   };
 
   return (
@@ -123,20 +122,20 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className="w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-border bg-surface-overlay/95 p-2 text-content shadow-floating backdrop-blur-2xl transition-all"
+          className="w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-border/80 bg-surface-overlay/95 p-1.5 text-content shadow-floating backdrop-blur-xl"
           align="end"
           side="bottom"
           sideOffset={8}
         >
-          <DropdownMenuGroup className="space-y-0.5">
-            {/* 顶部用户资料卡片 */}
+          <DropdownMenuGroup className="space-y-1">
+            {/* 个人资料：融入菜单本身，而非再叠一层卡片。 */}
             {isLoggedIn && user ? (
               <DropdownMenuItem
                 asChild
-                className="group mb-1.5 cursor-pointer rounded-xl border border-border bg-surface-elevated p-2.5 shadow-xs transition-all hover:border-content/20 hover:bg-accent focus:bg-accent"
+                className="group cursor-pointer rounded-xl p-2.5 transition-colors hover:bg-accent focus:bg-accent"
               >
                 <Link href={`/profile?userId=${userId}`} className="flex items-center gap-3">
-                  <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-brand/40 transition-transform group-hover:scale-105">
+                  <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-1 ring-border transition-all group-hover:scale-105 group-hover:ring-brand/40">
                     {user.avatarUrl ? (
                       <Image
                         src={user.avatarUrl}
@@ -152,9 +151,9 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex min-w-0 items-center justify-between gap-1">
+                    <div className="flex min-w-0 items-center justify-between gap-2">
                       <div className="flex min-w-0 items-center gap-1.5">
-                        <span className="truncate text-sm font-bold text-content transition-colors group-hover:text-brand">
+                        <span className="truncate text-sm font-semibold text-content transition-colors group-hover:text-brand">
                           {user.nickname || t("profile.menu.profile")}
                         </span>
                         <UserVipBadge vipType={user.vipType} />
@@ -188,18 +187,18 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
                   runtime.isDesktop ? "/setting?tab=desktop#app-updater" : "/setting",
                 )
               }
-              className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content md:hidden"
+              className={`${menuItemClassName} md:hidden`}
             >
               <Bell className="mr-3 size-4 shrink-0 text-content-muted" />
               <span>{t("profile.menu.notifications")}</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content md:hidden">
+            <DropdownMenuItem className={`${menuItemClassName} md:hidden`}>
               <Users className="mr-3 size-4 shrink-0 text-content-muted" />
               <span>{t("profile.menu.friends")}</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-1 bg-border md:hidden" />
+            <DropdownMenuSeparator className="my-1.5 bg-border md:hidden" />
 
-            {/* 网易乐签 */}
+            {/* 签到是轻量状态，不压过主要导航。 */}
             {isLoggedIn && (
               <VipSignMenuCard
                 actionLabel={
@@ -217,7 +216,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             {/* 设置 */}
             <DropdownMenuItem
               onSelect={() => smartRouter.push("/setting")}
-              className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content"
+              className={menuItemClassName}
             >
               <Settings className="mr-3 size-4 shrink-0 text-content-muted" />
               <span>{t("profile.menu.settings")}</span>
@@ -225,20 +224,14 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
 
             {/* 下载桌面端 */}
             {!runtime.isDesktop && (
-              <DropdownMenuItem
-                className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content"
-                onSelect={() => ProfileCallback("download")}
-              >
+              <DropdownMenuItem className={menuItemClassName} onSelect={handleDownloadClick}>
                 <Download className="mr-3 size-4 shrink-0 text-content-muted" />
                 <span>{t("profile.menu.download")}</span>
               </DropdownMenuItem>
             )}
 
             {/* 关于我 */}
-            <DropdownMenuItem
-              className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content"
-              onSelect={() => ProfileCallback("about")}
-            >
+            <DropdownMenuItem className={menuItemClassName} onSelect={handleAboutClick}>
               <Coffee className="mr-3 size-4 shrink-0 text-content-muted" />
               <span>{t("profile.menu.aboutMe")}</span>
             </DropdownMenuItem>
@@ -249,7 +242,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             {isLoggedIn ? (
               <DropdownMenuItem
                 onSelect={handleLogoutClick}
-                className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
+                className="cursor-pointer rounded-lg px-2.5 py-2.25 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
               >
                 <LogOut className="mr-3 size-4 shrink-0 text-destructive" />
                 <span>{t("common.action.logout")}</span>
@@ -257,7 +250,7 @@ export function ProfileMenu({ children }: { children?: React.ReactNode }) {
             ) : (
               <DropdownMenuItem
                 onSelect={handleLoginClick}
-                className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-brand transition-colors hover:bg-brand/10 hover:text-brand-hover focus:bg-brand/10 focus:text-brand-hover"
+                className="cursor-pointer rounded-lg px-2.5 py-2.25 text-sm font-medium text-brand transition-colors hover:bg-brand/10 hover:text-brand-hover focus:bg-brand/10 focus:text-brand-hover"
               >
                 <LogIn className="mr-3 size-4 shrink-0 text-brand" />
                 <span>{t("common.action.login")}</span>

@@ -47,9 +47,9 @@ export function getFansCnt(id: number | string) {
 /**
  * 获取歌手热门歌曲
  */
-export function getArtistTopSongs(id: number | string) {
+export function getArtistTopSongs(id: number | string, limit = 200) {
   return request.get<ArtistTopSongsResponse>("/v1/artist/songs", {
-    params: { id },
+    params: { id, limit },
   });
 }
 

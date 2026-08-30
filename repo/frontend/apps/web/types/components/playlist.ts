@@ -18,6 +18,7 @@ export interface PlaylistActionsProps {
   inputRef: RefObject<HTMLInputElement | null>;
   isDaily: boolean;
   isSticky?: boolean;
+  onPlayToggle?: () => void;
   onSearchChange: (query: string) => void;
   onSearchClose: () => void;
   onSearchOpen: () => void;
@@ -26,6 +27,7 @@ export interface PlaylistActionsProps {
   playSourceId?: null | string;
   searchOpen: boolean;
   searchQuery: string;
+  showShuffle?: boolean;
   tracks: SongDetail[];
 }
 
@@ -38,12 +40,15 @@ export interface PlaylistContentProps {
   hideAlbumColumn?: boolean;
   isDailyRecommend: boolean;
   isLoading: boolean;
+  onPlayToggle?: () => void;
+  onTrackPlay?: (track: SongDetail) => void;
   playlistId: null | string;
   playlistInfo: PlaylistInfo | null;
   playSourceId?: null | string;
   readonly?: boolean;
   refetchTracks: () => void | Promise<unknown>;
   setTracks?: (tracks: SongDetail[]) => void;
+  showShuffle?: boolean;
   themeColor: null | string;
   tracks: SongDetail[];
 }
@@ -67,6 +72,7 @@ export interface TracklistTableProps {
   hideLikeColumn?: boolean;
   inputRef?: RefObject<HTMLInputElement | null>;
   onEmptyAction?: () => void;
+  onPlayTrack?: (track: SongDetail) => void;
   onTracksChange?: (tracks: SongDetail[]) => void;
   onSearchChange?: (v: string) => void;
   onSearchClose?: () => void;

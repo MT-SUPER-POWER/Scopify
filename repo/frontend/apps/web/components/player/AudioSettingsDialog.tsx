@@ -1,6 +1,6 @@
 "use client";
 
-import { AudioLines, SlidersHorizontal, Speaker, Waves, X } from "lucide-react";
+import { SlidersHorizontal, Speaker, Waves, X } from "lucide-react";
 
 import { AudioEqualizerPanel } from "@/components/player/AudioEqualizerPanel";
 import { AudioQualityDialog } from "@/components/player/AudioQualityDialog";
@@ -10,10 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useI18n } from "@/store/module/i18n";
-
-interface AudioSettingsDialogProps {
-  children: React.ReactNode;
-}
+import type { AudioSettingsDialogProps } from "@/types/components/audioSettingsDialog";
 
 export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
   const { t } = useI18n();
@@ -39,44 +36,35 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
         className="w-md max-w-[calc(100vw-2rem)] overflow-hidden border bg-popover p-0 text-popover-foreground shadow-floating"
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
-        {/* Header */}
-        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b bg-popover/95 px-4 py-3 backdrop-blur-sm">
-          <div>
-            <h3 className="flex items-center gap-2 text-base font-semibold">
-              <AudioLines className="size-4" />
-              {t("audioSettings.title")}
-            </h3>
+        <div className="flex items-center gap-2 px-4 pt-3">
+          <div className="grid flex-1 grid-cols-3 rounded-lg bg-muted/60 p-0.5" role="tablist">
+            <AudioSettingsTabButton
+              active={activeTab === "quality"}
+              icon={<Waves className="size-3.5" />}
+              label={t("audioSettings.qualityTab")}
+              onClick={() => setActiveTab("quality")}
+            />
+            <AudioSettingsTabButton
+              active={activeTab === "equalizer"}
+              icon={<SlidersHorizontal className="size-3.5" />}
+              label={t("audioSettings.equalizerTab")}
+              onClick={() => setActiveTab("equalizer")}
+            />
+            <AudioSettingsTabButton
+              active={activeTab === "output"}
+              icon={<Speaker className="size-3.5" />}
+              label={t("audioSettings.outputTab")}
+              onClick={() => setActiveTab("output")}
+            />
           </div>
           <button
-            type="button"
             aria-label={t("audioSettings.close")}
-            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+            className="shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             onClick={closeDialog}
+            type="button"
           >
             <X className="size-4" />
           </button>
-        </div>
-
-        {/* Tab switcher — segment control style */}
-        <div className="mx-4 mt-3 grid grid-cols-3 rounded-lg bg-muted/60 p-0.5" role="tablist">
-          <AudioSettingsTabButton
-            active={activeTab === "quality"}
-            icon={<Waves className="size-3.5" />}
-            label={t("audioSettings.qualityTab")}
-            onClick={() => setActiveTab("quality")}
-          />
-          <AudioSettingsTabButton
-            active={activeTab === "equalizer"}
-            icon={<SlidersHorizontal className="size-3.5" />}
-            label={t("audioSettings.equalizerTab")}
-            onClick={() => setActiveTab("equalizer")}
-          />
-          <AudioSettingsTabButton
-            active={activeTab === "output"}
-            icon={<Speaker className="size-3.5" />}
-            label={t("audioSettings.outputTab")}
-            onClick={() => setActiveTab("output")}
-          />
         </div>
 
         <ScrollArea className="max-h-[min(80vh,34rem)] px-4 py-3" viewportClassName="pr-1">

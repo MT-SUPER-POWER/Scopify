@@ -17090,9 +17090,9 @@ export interface TranslateFn {
    */
   (key: "personalFm.error.loadFailed", params?: TranslationParams): string;
   /**
-   * zh-CN: 私人 FM · 动态队列
-   * zh-TW: 私人 FM · 動態隊列
-   * en-US: Personal FM · Dynamic queue
+   * zh-CN: 私人 FM
+   * zh-TW: 私人 FM
+   * en-US: Personal FM
    */
   (key: "personalFm.queue.dynamic", params?: TranslationParams): string;
   /**

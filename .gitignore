@@ -80,3 +80,6 @@ docs/research/**
 docs/adr/**
 docs/task/**
 .env*
+
+# Config
+repo/frontend/apps/desktop/config/app.config.yml

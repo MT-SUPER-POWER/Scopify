@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import { PersonalFmNavigationItem } from "@/components/Siderbar/PersonalFmNavigationItem";
 
 const libraryItems = [
   { href: "/liked", icon: Heart, labelKey: "sidebar.library.likedMusic" },
@@ -51,7 +50,6 @@ export function LibraryNavigation({ isCollapsed }: LibraryNavigationProps) {
             </Link>
           );
         })}
-        <PersonalFmNavigationItem isCollapsed />
       </nav>
     );
   }
@@ -86,8 +84,6 @@ export function LibraryNavigation({ isCollapsed }: LibraryNavigationProps) {
           </Link>
         );
       })}
-
-      <PersonalFmNavigationItem isCollapsed={false} />
     </nav>
   );
 }

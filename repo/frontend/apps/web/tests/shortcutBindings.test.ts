@@ -22,6 +22,11 @@ describe("shortcut bindings", () => {
       "Shift",
       "P",
     ]);
+    expect(getShortcutBindingParts({ key: "Period", primary: true, shift: true })).toEqual([
+      "Ctrl",
+      "Shift",
+      ".",
+    ]);
   });
 
   test("finds conflicts against effective bindings", () => {

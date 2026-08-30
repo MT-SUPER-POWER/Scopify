@@ -27,6 +27,7 @@ import Link from "next/link";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
 import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
 import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
+import { PersonalFmControlPanel } from "@/components/player/PersonalFmControlPanel";
 import { QueuePopover } from "@/components/player/QueuePopover";
 import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
@@ -558,6 +559,8 @@ export const PlayerBar = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
+          {!isLyricStageBar && <PersonalFmControlPanel />}
 
           {/* 播放列表浮层 */}
           <div className="hidden md:block">

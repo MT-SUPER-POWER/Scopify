@@ -3,12 +3,13 @@
 import { MoreHorizontal, Settings } from "lucide-react";
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
+import type { UserActionBarProps } from "@/types/components/userActionBar";
 
-export function ActionBar({ isSelf, onEdit }: { isSelf?: boolean; onEdit?: () => void }) {
+export function ActionBar({ isSelf, onEdit }: UserActionBarProps) {
   const [isFollowing, setIsFollowing] = useState(false);
 
   return (
-    <div className="flex items-center gap-6 p-6">
+    <div className="flex items-center gap-5 px-6 py-4">
       {isSelf ? (
         <button
           type="button"

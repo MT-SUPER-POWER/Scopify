@@ -69,6 +69,7 @@ export default function TracklistTable({
   hideDateColumn = false,
   hideLikeColumn = false,
   onEmptyAction,
+  onPlayTrack,
   onTracksChange,
   dailyRecommendationMode,
   playSourceId,
@@ -342,6 +343,11 @@ export default function TracklistTable({
 
   const handlePlay = useCallback(
     (track: SongDetail) => {
+      if (onPlayTrack) {
+        onPlayTrack(track);
+        return;
+      }
+
       const isCurrent = currentSongDetail?.id === track.id && isCurrentQueue;
       if (isCurrent) setIsPlaying(!isPlaying);
       else {
@@ -361,6 +367,7 @@ export default function TracklistTable({
       isDailyRecommendationPage,
       dailyQueueId,
       isCurrentQueue,
+      onPlayTrack,
     ],
   );
 

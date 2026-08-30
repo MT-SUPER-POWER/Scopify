@@ -7,8 +7,8 @@ import FloatingPlayerControls from "@/components/lyrics/folia/src/components/Flo
 import { PlayerState } from "@/components/lyrics/folia/src/types";
 import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
 import {
-  FOLIA_STAGE_SETTINGS_OPEN_EVENT,
-  FOLIA_STAGE_SETTINGS_PENDING_KEY,
+  FOLIA_THEME_LIBRARY_OPEN_EVENT,
+  FOLIA_THEME_LIBRARY_PENDING_KEY,
 } from "@/constants/desktopPlaybackController";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
@@ -65,26 +65,26 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
     });
 
   useEffect(() => {
-    const openSettings = () => {
+    const openThemeLibrary = () => {
       try {
-        window.sessionStorage.removeItem(FOLIA_STAGE_SETTINGS_PENDING_KEY);
+        window.sessionStorage.removeItem(FOLIA_THEME_LIBRARY_PENDING_KEY);
       } catch {
-        // Opening the settings panel does not depend on session storage cleanup.
+        // Opening the theme library does not depend on session storage cleanup.
       }
       setIsSettingsOpen(true);
       setThemeLibraryRequestId((requestId) => requestId + 1);
     };
 
     try {
-      if (window.sessionStorage.getItem(FOLIA_STAGE_SETTINGS_PENDING_KEY) === "1") {
-        openSettings();
+      if (window.sessionStorage.getItem(FOLIA_THEME_LIBRARY_PENDING_KEY) === "1") {
+        openThemeLibrary();
       }
     } catch {
       // The live event below remains available when session storage is blocked.
     }
 
-    window.addEventListener(FOLIA_STAGE_SETTINGS_OPEN_EVENT, openSettings);
-    return () => window.removeEventListener(FOLIA_STAGE_SETTINGS_OPEN_EVENT, openSettings);
+    window.addEventListener(FOLIA_THEME_LIBRARY_OPEN_EVENT, openThemeLibrary);
+    return () => window.removeEventListener(FOLIA_THEME_LIBRARY_OPEN_EVENT, openThemeLibrary);
   }, []);
 
   useEffect(() => {
@@ -144,7 +144,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
       } ${isBorderVisible ? "border border-white/30" : ""}`}
       style={stageStyle}
     >
-      {!isVisualSettingsOpen && isWindowVisible ? (
+      {isWindowVisible ? (
         <FoliaPresentationSurface
           appearance={appearance}
           bridge={bridge}
