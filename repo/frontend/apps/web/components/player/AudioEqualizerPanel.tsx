@@ -132,13 +132,13 @@ export function AudioEqualizerPanel() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 rounded-2xl border border-border bg-muted/20 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-muted/20 p-3">
         <button
           type="button"
           aria-pressed={draft.enabled}
           onClick={() => setEnabled(!draft.enabled)}
           className={cn(
-            "flex h-9 items-center gap-2 rounded-xl border border-current/10 bg-current/[0.035] px-3 text-xs font-semibold transition-all hover:bg-current/[0.07]",
+            "flex h-9 shrink-0 items-center gap-2 rounded-xl border border-current/10 bg-current/[0.035] px-3 text-xs font-semibold whitespace-nowrap transition-all hover:bg-current/[0.07]",
             draft.enabled && "border-primary/40 text-primary shadow-sm",
           )}
         >
@@ -146,15 +146,15 @@ export function AudioEqualizerPanel() {
           {t(draft.enabled ? "audioEqualizer.enabled" : "audioEqualizer.disabled")}
         </button>
 
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="hidden text-[10px] font-semibold tracking-[0.16em] uppercase opacity-45 sm:inline">
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
+          <span className="shrink-0 text-xs font-medium whitespace-nowrap text-muted-foreground">
             {t("audioEqualizer.presetLabel")}
           </span>
           <Select
             value={draft.preset}
             onValueChange={(val) => applyPreset(val as AudioEqualizerModeId)}
           >
-            <SelectTrigger className="h-9 min-w-0 flex-1 rounded-xl border-current/10 bg-current/[0.035] text-xs font-semibold sm:w-[166px] sm:flex-none">
+            <SelectTrigger className="h-9 w-36 max-w-full min-w-0 flex-1 rounded-xl border-current/10 bg-current/[0.035] text-xs font-semibold">
               <SelectValue placeholder={t("audioEqualizer.presetLabel")} />
             </SelectTrigger>
             <SelectContent position="popper" sideOffset={6} style={{ zIndex: 2100 }}>

@@ -15,9 +15,3 @@ export interface AudioOutputStore {
   setSelectedInputDeviceId: (deviceId: string) => void;
   setSelectedDeviceId: (deviceId: string) => void;
 }
-
-export interface AudioOutputOptionProps {
-  active: boolean;
-  label: string;
-  onClick: () => void;
-}
