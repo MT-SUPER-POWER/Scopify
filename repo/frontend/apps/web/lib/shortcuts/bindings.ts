@@ -20,17 +20,19 @@ export function getEffectiveShortcutBinding(
 }
 
 export function getShortcutBindingLabel(binding: ShortcutBinding | null): string {
-  if (!binding) return "";
+  return getShortcutBindingParts(binding).join(" + ");
+}
+
+export function getShortcutBindingParts(binding: ShortcutBinding | null): string[] {
+  if (!binding) return [];
 
   const modifier = isMacPlatform() ? "Cmd" : "Ctrl";
-  const parts = [
+  return [
     binding.primary ? modifier : null,
     binding.alt ? "Alt" : null,
     binding.shift ? "Shift" : null,
     getKeyLabel(binding.key),
   ].filter((part): part is string => Boolean(part));
-
-  return parts.join(" + ");
 }
 
 export function getShortcutBindingFromEvent(event: KeyboardEvent): ShortcutBinding | null {

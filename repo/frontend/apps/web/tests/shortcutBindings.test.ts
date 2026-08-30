@@ -3,6 +3,7 @@ import {
   areShortcutBindingsEqual,
   findShortcutConflict,
   getEffectiveShortcutBinding,
+  getShortcutBindingParts,
   isShortcutBindingMatch,
 } from "@/lib/shortcuts/bindings";
 
@@ -13,6 +14,14 @@ describe("shortcut bindings", () => {
 
   test("honors a disabled command override", () => {
     expect(getEffectiveShortcutBinding("open-search", { "open-search": null })).toBeNull();
+  });
+
+  test("splits each modifier into an individual keycap", () => {
+    expect(getShortcutBindingParts({ key: "KeyP", primary: true, shift: true })).toEqual([
+      "Ctrl",
+      "Shift",
+      "P",
+    ]);
   });
 
   test("finds conflicts against effective bindings", () => {

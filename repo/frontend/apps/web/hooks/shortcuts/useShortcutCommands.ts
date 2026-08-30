@@ -127,6 +127,11 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           ui.setIsShortcutHelpOpen(!ui.isShortcutHelpOpen);
           return;
         case "open-command-palette":
+          if (ui.isSearchOpen) {
+            useSearchStore.getState().setQuery("");
+            ui.setIsSearchOpen(false);
+            return;
+          }
           useSearchStore.getState().setQuery("> ");
           ui.setIsSearchOpen(true);
       }

@@ -34,7 +34,6 @@ export function useInWindowShortcuts({
         event.code === "Escape" &&
         ui.isLyricsOpen &&
         !ui.isSearchOpen &&
-        !ui.isCommandPaletteOpen &&
         !ui.isShortcutHelpOpen
       ) {
         event.preventDefault();

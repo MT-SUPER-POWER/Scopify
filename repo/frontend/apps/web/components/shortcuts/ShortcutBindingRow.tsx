@@ -1,9 +1,11 @@
 "use client";
 
-import { CircleOff, RotateCcw } from "lucide-react";
+import { CircleOff, Pencil, RotateCcw } from "lucide-react";
 import { useState } from "react";
+import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon";
+import { ShortcutKeycaps } from "@/components/shortcuts/ShortcutKeycaps";
 import { SHORTCUT_COMMANDS } from "@/constants/shortcuts";
-import { getShortcutBindingFromEvent, getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
+import { getShortcutBindingFromEvent } from "@/lib/shortcuts/bindings";
 import { useI18n } from "@/store/module/i18n";
 import type { ShortcutBindingRowProps } from "@/types/components/shortcuts";
 
@@ -45,26 +47,30 @@ export function ShortcutBindingRow({
   return (
     <div className="grid gap-3 border-b border-border py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-foreground">{t(command.labelKey)}</p>
+        <div className="flex min-w-0 items-center gap-3">
+          <ShortcutCommandIcon
+            commandId={command.id}
+            className="size-4 shrink-0 text-muted-foreground"
+          />
+          <p className="truncate text-sm leading-5 font-medium text-foreground">
+            {t(command.labelKey)}
+          </p>
+        </div>
         {error ? <p className="mt-1 text-xs text-danger">{error}</p> : null}
       </div>
       <div className="flex w-full shrink-0 items-center justify-end gap-2 sm:w-68">
-        <button
-          type="button"
-          onClick={() => {
-            setError(null);
-            setIsRecording(true);
-          }}
-          onKeyDown={handleKeyDown}
-          onBlur={() => setIsRecording(false)}
-          className="flex-1 truncate rounded border border-border bg-muted px-3 py-1.5 text-center text-sm text-foreground transition-colors hover:border-foreground/30 focus-visible:border-brand focus-visible:outline-none"
-        >
-          {isRecording
-            ? t("shortcuts.recording")
-            : binding
-              ? getShortcutBindingLabel(binding)
-              : t("shortcuts.unassigned")}
-        </button>
+        <div className="flex min-h-8 flex-1 items-center justify-end px-3 text-right text-sm text-foreground">
+          {isRecording ? (
+            <span className="animate-pulse text-muted-foreground" aria-live="polite">
+              {t("shortcuts.recording")}
+            </span>
+          ) : binding ? (
+            <ShortcutKeycaps binding={binding} />
+          ) : (
+            t("shortcuts.unassigned")
+          )}
+        </div>
+        {/* 快捷键相关控制按钮 */}
         <button
           type="button"
           title={t("shortcuts.disable")}
@@ -89,6 +95,20 @@ export function ShortcutBindingRow({
           className="flex size-8 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-30"
         >
           <RotateCcw className="size-4" />
+        </button>
+        <button
+          type="button"
+          title={t("shortcuts.edit")}
+          aria-label={t("shortcuts.edit")}
+          onClick={() => {
+            setError(null);
+            setIsRecording(true);
+          }}
+          onKeyDown={handleKeyDown}
+          onBlur={() => setIsRecording(false)}
+          className="flex size-8 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+        >
+          <Pencil className="size-4" />
         </button>
       </div>
     </div>

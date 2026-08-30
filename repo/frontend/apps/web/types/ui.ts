@@ -10,8 +10,6 @@ export interface UiStore {
   isQueueOpen: boolean;
   setIsQueueOpen: (open: boolean) => void;
   toggleQueue: () => void;
-  isCommandPaletteOpen: boolean;
-  setIsCommandPaletteOpen: (open: boolean) => void;
   isShortcutHelpOpen: boolean;
   setIsShortcutHelpOpen: (open: boolean) => void;
   isFullscreen: boolean;

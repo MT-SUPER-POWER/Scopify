@@ -1,19 +1,35 @@
 ﻿"use client";
 
-import { Keyboard, X } from "lucide-react";
+import { X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
+import { ShortcutHelpSection } from "@/components/shortcuts/ShortcutHelpSection";
 import { SHORTCUT_GROUP_LABEL_KEYS, SHORTCUT_GROUPS } from "@/constants/shortcuts";
-import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
+import type { ShortcutCommandId } from "@/types/shortcuts";
+import type { ShortcutHelpCommand } from "@/types/components/shortcuts";
+
+const RECOMMENDED_COMMAND_IDS = [
+  "open-command-palette",
+  "open-search",
+  "toggle-playback",
+  "toggle-queue",
+] as const satisfies readonly ShortcutCommandId[];
 
 export function KeyboardShortcutHelp() {
   const { t } = useI18n();
   const isOpen = useUiStore((state) => state.isShortcutHelpOpen);
   const setIsOpen = useUiStore((state) => state.setIsShortcutHelpOpen);
   const { commands } = useShortcutRegistry();
+  const visibleCommands = commands.filter(
+    (command): command is ShortcutHelpCommand => command.binding !== null,
+  );
+  const recommendedCommands = RECOMMENDED_COMMAND_IDS.flatMap((id) => {
+    const command = visibleCommands.find((candidate) => candidate.id === id);
+    return command ? [command] : [];
+  });
 
   useEffect(() => {
     if (!isOpen) return;
@@ -33,57 +49,53 @@ export function KeyboardShortcutHelp() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-120 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-120 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
           onMouseDown={() => setIsOpen(false)}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            className="w-full max-w-2xl rounded-lg border border-border bg-surface-overlay p-5 shadow-2xl"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+            className="relative h-[min(78dvh,720px)] max-h-[calc(100dvh-2rem)] w-full max-w-[806px] [scrollbar-color:#4a4a4a_transparent] [scrollbar-gutter:stable] overflow-y-auto rounded-2xl border border-white/8 bg-[#111] px-5 pt-[18px] pb-10 text-[#d2d2d2] shadow-[0_28px_80px_rgba(0,0,0,0.52)] sm:px-[72px] [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-[5px] [&::-webkit-scrollbar-thumb]:border-[#111] [&::-webkit-scrollbar-thumb]:bg-[#4a4a4a]"
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-foreground">
-                <Keyboard className="size-5 text-brand" />
-                <h2 className="text-lg font-bold">{t("shortcuts.help.title")}</h2>
+            <header>
+              <div>
+                <h2 className="text-[22px] leading-7 font-semibold tracking-[-0.02em] text-[#d2d2d2]">
+                  {t("shortcuts.help.panelTitle")}
+                </h2>
+                <p className="mt-1 text-[15px] leading-5 text-[#7f7f7f]">
+                  {t("shortcuts.help.subtitle")}
+                </p>
               </div>
               <button
                 type="button"
                 title={t("common.action.close")}
                 aria-label={t("common.action.close")}
                 onClick={() => setIsOpen(false)}
-                className="flex size-8 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                className="absolute top-4 right-6 flex size-8 items-center justify-center rounded text-[#bababa] transition-colors hover:bg-white/8 hover:text-white"
               >
-                <X className="size-4" />
+                <X className="size-[18px] stroke-[1.5]" />
               </button>
-            </div>
-            <div className="mt-5 grid gap-5 sm:grid-cols-2">
+            </header>
+            <div className="mt-6 max-w-[620px] space-y-4">
+              {recommendedCommands.length > 0 ? (
+                <ShortcutHelpSection
+                  commands={recommendedCommands}
+                  title={t("shortcuts.help.recommended")}
+                />
+              ) : null}
               {SHORTCUT_GROUPS.map((group) => {
-                const groupCommands = commands.filter(
-                  (command) => command.group === group && command.binding,
-                );
+                const groupCommands = visibleCommands.filter((command) => command.group === group);
                 if (!groupCommands.length) return null;
 
                 return (
-                  <section key={group}>
-                    <h3 className="text-xs font-semibold text-muted-foreground uppercase">
-                      {t(SHORTCUT_GROUP_LABEL_KEYS[group])}
-                    </h3>
-                    <div className="mt-2 space-y-2">
-                      {groupCommands.map((command) => (
-                        <div
-                          key={command.id}
-                          className="flex items-center justify-between gap-3 text-sm"
-                        >
-                          <span className="truncate text-foreground">{t(command.labelKey)}</span>
-                          <kbd className="shrink-0 rounded border border-border bg-muted px-2 py-1 text-xs text-foreground">
-                            {getShortcutBindingLabel(command.binding)}
-                          </kbd>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
+                  <ShortcutHelpSection
+                    key={group}
+                    commands={groupCommands}
+                    title={t(SHORTCUT_GROUP_LABEL_KEYS[group])}
+                  />
                 );
               })}
             </div>

@@ -16376,6 +16376,12 @@ export interface TranslateFn {
    */
   (key: "shortcuts.conflict", params?: TranslationParams): string;
   /**
+   * zh-CN: 修改快捷键
+   * zh-TW: 修改快速鍵
+   * en-US: Edit shortcut
+   */
+  (key: "shortcuts.edit", params?: TranslationParams): string;
+  /**
    * zh-CN: 禁用快捷键
    * zh-TW: 停用快速鍵
    * en-US: Disable shortcut
@@ -16531,6 +16537,24 @@ export interface TranslateFn {
    * en-US: Keyboard Shortcut Help
    */
   (key: "shortcuts.help.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快捷键
+   * zh-TW: 快速鍵
+   * en-US: Shortcuts
+   */
+  (key: "shortcuts.help.panelTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 用于快速导航与控制的键盘快捷键。
+   * zh-TW: 用於快速導覽與控制的鍵盤快速鍵。
+   * en-US: Keyboard shortcuts for quick navigation and control.
+   */
+  (key: "shortcuts.help.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 常用
+   * zh-TW: 常用
+   * en-US: Recommended
+   */
+  (key: "shortcuts.help.recommended", params?: TranslationParams): string;
   /**
    * zh-CN: 搜索命令
    * zh-TW: 搜尋命令

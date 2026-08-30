@@ -20,7 +20,7 @@ import { useUiStore } from "@/store/module/ui";
 import Header from "../components/Header";
 import { LyricStageMount } from "../components/lyrics/LyricStageMount";
 import { PlayerBar } from "../components/PlayerBar";
-import { SearchModal } from "../components/SearchModal";
+import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
 // self components
 import MainLayoutSkeleton from "./MainLayout/Skeleton";
 import { Sidebar } from "./Sidebar";
@@ -131,7 +131,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       )}
     >
       {/* 全局工具注册 */}
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <CommandWorkspaceModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <KeyboardShortcutHelp />
       <LyricStageMount />
 
