@@ -1655,6 +1655,57 @@ export interface TranslateFn {
    */
   (key: "settings.section.desktopLyrics", params?: TranslationParams): string;
   /**
+   * zh-CN: 开启桌面歌词
+   * zh-TW: 開啟桌面歌詞
+   * en-US: Enable Desktop Lyrics
+   */
+  (key: "settings.desktopLyrics.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在桌面上显示浮动的独立歌词窗口。
+   * zh-TW: 在桌面上顯示浮動的獨立歌詞視窗。
+   * en-US: Show a standalone floating lyrics window on your desktop.
+   */
+  (key: "settings.desktopLyrics.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 副歌词是否打开
+   * zh-TW: 副歌詞是否開啟
+   * en-US: Show Secondary Lyrics
+   */
+  (key: "settings.desktopLyrics.showSecondaryLyric.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在主歌词下方同步显示翻译或注音歌词。
+   * zh-TW: 在主歌詞下方同步顯示翻譯或注音歌詞。
+   * en-US: Show translated or romanized lyrics below the main lyric line.
+   */
+  (key: "settings.desktopLyrics.showSecondaryLyric.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏 Windows 桌面图标
+   * zh-TW: 隱藏 Windows 桌面圖示
+   * en-US: Hide Windows Desktop Icons
+   */
+  (key: "settings.desktopLyrics.hideDesktopIcons.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 一键清爽桌面，隐藏桌面所有图标以获得无干扰的听歌与视觉体验。
+   * zh-TW: 一鍵清爽桌面，隱藏桌面所有圖示以獲得無干擾的聽歌與視覺體驗。
+   * en-US: Clean desktop at one click, hiding all desktop icons for an undisturbed listening experience.
+   */
+  (key: "settings.desktopLyrics.hideDesktopIcons.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面歌词播放音乐时防止休眠
+   * zh-TW: 桌面歌詞播放音樂時防止休眠
+   * en-US: Prevent Sleep During Playback
+   */
+  (key: "settings.desktopLyrics.preventSleepOnPlayback.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启桌面歌词并播放音乐时，阻止操作系统与显示器进入休眠。
+   * zh-TW: 開啟桌面歌詞並播放音樂時，阻止作業系統與顯示器進入休眠。
+   * en-US: Prevent operating system and display sleep while desktop lyrics are active and music is playing.
+   */
+  (
+    key: "settings.desktopLyrics.preventSleepOnPlayback.sublabel",
+    params?: TranslationParams,
+  ): string;
+  /**
    * zh-CN: 桌面歌词测试
    * zh-TW: 桌面歌詞測試
    * en-US: Desktop Lyrics Test
@@ -16471,6 +16522,18 @@ export interface TranslateFn {
    * en-US: Open/Close Lyric Stage
    */
   (key: "shortcuts.command.toggleLyricStage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭 Folia 设置
+   * zh-TW: 開啟/關閉 Folia 設定
+   * en-US: Open/Close Folia Settings
+   */
+  (key: "shortcuts.command.openFoliaSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭 Folia 主题库
+   * zh-TW: 開啟/關閉 Folia 主題庫
+   * en-US: Open/Close Folia Theme Library
+   */
+  (key: "shortcuts.command.openFoliaThemeLibrary", params?: TranslationParams): string;
   /**
    * zh-CN: 切换侧边栏
    * zh-TW: 切換側欄

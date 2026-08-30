@@ -105,7 +105,7 @@ export function DesktopLyricView() {
             currentTimeMs={currentLyricTimeMs}
             line={activeLine}
             onSeek={(positionMs) => void playbackCommands.seek(positionMs)}
-            showTranslation={true}
+            showTranslation={preferences?.showSecondaryLyric ?? true}
           />
           {nextLine ? (
             <p className="mt-3 text-center text-sm text-white/45">{nextLine.text}</p>

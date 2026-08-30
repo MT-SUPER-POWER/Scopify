@@ -228,6 +228,16 @@ export const settingsMessages = defineMessages(
     "settings.cache.category.lyric-source": "歌词来源选择",
     "settings.cache.category.other": "其他缓存数据",
     "settings.section.desktopLyrics": "桌面歌词",
+    "settings.desktopLyrics.enabled.label": "开启桌面歌词",
+    "settings.desktopLyrics.enabled.sublabel": "在桌面上显示浮动的独立歌词窗口。",
+    "settings.desktopLyrics.showSecondaryLyric.label": "副歌词是否打开",
+    "settings.desktopLyrics.showSecondaryLyric.sublabel": "在主歌词下方同步显示翻译或注音歌词。",
+    "settings.desktopLyrics.hideDesktopIcons.label": "隐藏 Windows 桌面图标",
+    "settings.desktopLyrics.hideDesktopIcons.sublabel":
+      "一键清爽桌面，隐藏桌面所有图标以获得无干扰的听歌与视觉体验。",
+    "settings.desktopLyrics.preventSleepOnPlayback.label": "桌面歌词播放音乐时防止休眠",
+    "settings.desktopLyrics.preventSleepOnPlayback.sublabel":
+      "开启桌面歌词并播放音乐时，阻止操作系统与显示器进入休眠。",
     "settings.desktopLyrics.test.label": "桌面歌词测试",
     "settings.desktopLyrics.test.sublabel": "测试独立桌面歌词悬浮窗口的开/关显示与悬浮功能。",
     "settings.desktopLyrics.test.button": "开/关桌面歌词",
@@ -467,6 +477,16 @@ export const settingsMessages = defineMessages(
     "settings.cache.category.lyric-source": "歌詞來源選擇",
     "settings.cache.category.other": "其他快取資料",
     "settings.section.desktopLyrics": "桌面歌詞",
+    "settings.desktopLyrics.enabled.label": "開啟桌面歌詞",
+    "settings.desktopLyrics.enabled.sublabel": "在桌面上顯示浮動的獨立歌詞視窗。",
+    "settings.desktopLyrics.showSecondaryLyric.label": "副歌詞是否開啟",
+    "settings.desktopLyrics.showSecondaryLyric.sublabel": "在主歌詞下方同步顯示翻譯或注音歌詞。",
+    "settings.desktopLyrics.hideDesktopIcons.label": "隱藏 Windows 桌面圖示",
+    "settings.desktopLyrics.hideDesktopIcons.sublabel":
+      "一鍵清爽桌面，隱藏桌面所有圖示以獲得無干擾的聽歌與視覺體驗。",
+    "settings.desktopLyrics.preventSleepOnPlayback.label": "桌面歌詞播放音樂時防止休眠",
+    "settings.desktopLyrics.preventSleepOnPlayback.sublabel":
+      "開啟桌面歌詞並播放音樂時，阻止作業系統與顯示器進入休眠。",
     "settings.desktopLyrics.test.label": "桌面歌詞測試",
     "settings.desktopLyrics.test.sublabel": "測試獨立桌面歌詞懸浮視窗的開/關顯示與懸浮功能。",
     "settings.desktopLyrics.test.button": "開/關桌面歌詞",
@@ -731,6 +751,18 @@ export const settingsMessages = defineMessages(
     "settings.cache.category.lyric-source": "Lyric source choices",
     "settings.cache.category.other": "Other cached data",
     "settings.section.desktopLyrics": "Desktop Lyrics",
+    "settings.desktopLyrics.enabled.label": "Enable Desktop Lyrics",
+    "settings.desktopLyrics.enabled.sublabel":
+      "Show a standalone floating lyrics window on your desktop.",
+    "settings.desktopLyrics.showSecondaryLyric.label": "Show Secondary Lyrics",
+    "settings.desktopLyrics.showSecondaryLyric.sublabel":
+      "Show translated or romanized lyrics below the main lyric line.",
+    "settings.desktopLyrics.hideDesktopIcons.label": "Hide Windows Desktop Icons",
+    "settings.desktopLyrics.hideDesktopIcons.sublabel":
+      "Clean desktop at one click, hiding all desktop icons for an undisturbed listening experience.",
+    "settings.desktopLyrics.preventSleepOnPlayback.label": "Prevent Sleep During Playback",
+    "settings.desktopLyrics.preventSleepOnPlayback.sublabel":
+      "Prevent operating system and display sleep while desktop lyrics are active and music is playing.",
     "settings.desktopLyrics.test.label": "Desktop Lyrics Test",
     "settings.desktopLyrics.test.sublabel":
       "Test opening or closing the standalone floating desktop lyrics window.",
