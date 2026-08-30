@@ -14,6 +14,7 @@ import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjecti
 import { useLikedVoicesQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaybackAuthority } from "@/hooks/player/usePlaybackAuthority";
 import { useDiscordPresence } from "@/hooks/player/useDiscordPresence";
+import { useMediaSession } from "@/hooks/player/useMediaSession";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { createCompositePlaybackAuthorityTransport } from "@/lib/playbackProjection/compositeTransport";
 import { systemPlaybackClock } from "@/lib/playbackProjection/clock";
@@ -103,6 +104,11 @@ export function PlaybackAuthorityProvider({
     [currentSongDetail, isPlayingIntent],
   );
   useDiscordPresence(discordPresence);
+  useMediaSession({
+    audioRef,
+    currentSongDetail,
+    isPlaying: isPlayingIntent,
+  });
   const lyricVersion = useMemo(() => {
     if (!rawLyric || !currentSongDetail) return null;
     return [

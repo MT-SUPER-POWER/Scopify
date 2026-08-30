@@ -404,6 +404,10 @@ if (!gotTheLock) {
   app.whenReady().then(async () => {
     logger.info("Scopify ready, creating window...");
 
+    if (process.platform === "win32") {
+      app.setAppUserModelId("com.momo.scopify");
+    }
+
     // autoHideMenuBar still reveals Electron's native menu when Alt is pressed on Windows.
     if (process.platform === "win32") Menu.setApplicationMenu(null);
 
