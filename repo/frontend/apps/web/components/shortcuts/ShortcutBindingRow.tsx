@@ -45,7 +45,7 @@ export function ShortcutBindingRow({
   };
 
   return (
-    <div className="grid gap-3 border-b border-border py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+    <div className="grid gap-3 py-2.5 first:pt-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <div className="min-w-0">
         <div className="flex min-w-0 items-center gap-3">
           <ShortcutCommandIcon
