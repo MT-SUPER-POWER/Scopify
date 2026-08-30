@@ -54,10 +54,12 @@ export function AudioDeviceSettingsSection() {
   return (
     <SettingSection title={t("audioSettings.devicesTitle")}>
       <SettingRow
+        isColumn
         label={t("audioSettings.outputTitle")}
         sublabel={t("audioSettings.outputDescription")}
         control={
           <SettingSelect
+            className="w-full"
             disabled={!isSupported || isLoading}
             onChange={(value) => void selectOutput(value)}
             value={selectedOutputDeviceId || "default"}
@@ -76,10 +78,12 @@ export function AudioDeviceSettingsSection() {
         }
       />
       <SettingRow
+        isColumn
         label={t("audioSettings.inputTitle")}
         sublabel={t("audioSettings.inputDescription")}
         control={
           <SettingSelect
+            className="w-full"
             disabled={isLoading}
             onChange={(value) => {
               setSelectedInputDeviceId(value);
@@ -109,12 +113,12 @@ export function AudioDeviceSettingsSection() {
         }
         control={
           <button
-            className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content disabled:cursor-wait disabled:opacity-50"
+            className="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded border border-input px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content hover:bg-accent disabled:cursor-wait disabled:opacity-50"
             disabled={isTestingInput}
             onClick={() => void verifyInput()}
             type="button"
           >
-            <ShieldCheck className="size-4" />
+            <ShieldCheck className={inputVerified ? "size-4 text-success" : "size-4"} />
             {isTestingInput ? t("audioSettings.inputTesting") : t("audioSettings.inputTest")}
           </button>
         }
@@ -125,7 +129,7 @@ export function AudioDeviceSettingsSection() {
         control={
           <button
             aria-label={t("audioSettings.outputRefresh")}
-            className="rounded border border-input p-2 text-foreground transition-colors hover:border-content disabled:cursor-wait disabled:opacity-50"
+            className="shrink-0 cursor-pointer rounded border border-input p-2 text-foreground transition-colors hover:border-content hover:bg-accent disabled:cursor-wait disabled:opacity-50"
             disabled={isLoading}
             onClick={() => void refresh()}
             title={t("audioSettings.outputRefresh")}

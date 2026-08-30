@@ -16,7 +16,7 @@ import { useI18n } from "@/store/module/i18n";
 import type { SaveConfirmModalProps } from "@/types/components/settings";
 
 const selectClass =
-  "border-input text-foreground hover:border-content focus:ring-ring cursor-pointer appearance-none rounded border bg-transparent py-2 pr-10 pl-4 text-sm font-medium transition-colors outline-none focus:ring-1";
+  "w-full border-input text-foreground hover:border-content focus:ring-ring cursor-pointer appearance-none rounded border bg-transparent py-2 pr-10 pl-4 text-sm font-medium transition-colors outline-none focus:ring-1";
 
 export function Toggle({ enabled, onChange }: { enabled: boolean; onChange: () => void }) {
   return (
@@ -87,12 +87,14 @@ export function SettingRow({
   control,
   isColumn = false,
   requiresRestart = false,
+  className,
 }: {
   label: React.ReactNode;
   sublabel?: string;
   control: React.ReactNode;
   isColumn?: boolean;
   requiresRestart?: boolean;
+  className?: string;
 }) {
   const { t } = useI18n();
 
@@ -100,10 +102,11 @@ export function SettingRow({
     <div
       className={cn(
         "mb-6 flex w-full",
-        isColumn ? "flex-col items-start gap-3" : "items-center justify-between",
+        isColumn ? "flex-col items-start gap-3" : "items-center justify-between gap-6",
+        className,
       )}
     >
-      <div className={cn("flex flex-col gap-1", !isColumn && "max-w-[75%]")}>
+      <div className={cn("flex flex-col gap-1", isColumn ? "w-full" : "min-w-0 flex-1")}>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-base font-medium text-foreground">{label}</span>
           {requiresRestart ? (
@@ -114,10 +117,12 @@ export function SettingRow({
           ) : null}
         </div>
         {sublabel ? (
-          <span className="text-sm leading-relaxed text-muted-foreground">{sublabel}</span>
+          <span className="text-sm leading-relaxed break-words text-muted-foreground">
+            {sublabel}
+          </span>
         ) : null}
       </div>
-      {control}
+      <div className={cn(isColumn ? "w-full" : "shrink-0")}>{control}</div>
     </div>
   );
 }
@@ -147,7 +152,13 @@ export function SettingSelect({
   disabled?: boolean;
 }) {
   return (
-    <div className={cn("relative", className, disabled && "cursor-not-allowed opacity-40")}>
+    <div
+      className={cn(
+        "relative",
+        className ?? "w-fit min-w-30",
+        disabled && "cursor-not-allowed opacity-40",
+      )}
+    >
       <select
         className={cn(selectClass, disabled && "pointer-events-none")}
         value={value}
