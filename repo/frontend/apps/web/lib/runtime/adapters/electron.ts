@@ -1,4 +1,4 @@
-import type { DesktopBridge } from "@scopify/desktop-contract";
+import type { DesktopBridge, DesktopHostConfig } from "@scopify/desktop-contract";
 
 import type { LyricData } from "@/types/lyrics";
 
@@ -7,6 +7,8 @@ import type { WebRuntime } from "../types";
 export type ScopifyDesktopBridge = DesktopBridge<LyricData>;
 
 export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime {
+  let cachedHostConfig: DesktopHostConfig | null = null;
+
   return {
     app: {
       exit: () => bridge.exitApp(),
@@ -52,19 +54,33 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       },
       statsAll: () => bridge.getCacheStats(),
       clearSelected: (request) => bridge.clearCache(request),
-      getPreferences: async () => (await bridge.getHostConfig()).cache,
+      getPreferences: async () => {
+        if (!cachedHostConfig) {
+          cachedHostConfig = await bridge.getHostConfig();
+        }
+        return cachedHostConfig.cache;
+      },
       savePreferences: async (preferences) => {
-        const config = await bridge.getHostConfig();
+        const config = cachedHostConfig ?? (await bridge.getHostConfig());
         const saved = await bridge.updateHostConfig({
           ...config,
           cache: { ...config.cache, page: preferences.page, playback: preferences.playback },
         });
+        cachedHostConfig = saved;
         return saved.cache;
       },
     },
     config: {
-      loadHostConfig: () => bridge.getHostConfig(),
-      saveHostConfig: (config) => bridge.updateHostConfig(config),
+      loadHostConfig: async () => {
+        const config = await bridge.getHostConfig();
+        cachedHostConfig = config;
+        return config;
+      },
+      saveHostConfig: async (config) => {
+        const saved = await bridge.updateHostConfig(config);
+        cachedHostConfig = saved;
+        return saved;
+      },
       selectDirectory: (defaultPath) => bridge.selectDirectory(defaultPath),
     },
     desktopIcons: {

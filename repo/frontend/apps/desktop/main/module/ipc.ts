@@ -244,9 +244,7 @@ export function registerIpcHandlers(
   });
 
   ipcMain.handle("config:get-host", () => {
-    const config = loadDesktopHostConfig();
-    logger.info("[IPC] config:get-host", config);
-    return config;
+    return loadDesktopHostConfig();
   });
 
   ipcMain.handle("config:update-host", async (event, newConfig: DesktopHostConfig) => {
