@@ -24,7 +24,7 @@ export function CommandWorkspaceSearchResultList({
   }
 
   return (
-    <div className="py-2">
+    <div className="space-y-0.5 px-2.5 py-2">
       {items.slice(0, 40).map((item, index) => {
         const isPlayable =
           item.kind === "song" ||
@@ -33,7 +33,7 @@ export function CommandWorkspaceSearchResultList({
           <div
             key={`${item.kind}-${item.entity.id}`}
             className={cn(
-              "group flex items-center gap-3 px-5 py-2.5 transition-colors",
+              "group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors",
               selectedIndex === index ? "bg-white/10" : "hover:bg-white/6",
             )}
           >

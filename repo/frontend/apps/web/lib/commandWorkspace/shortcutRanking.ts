@@ -1,16 +1,13 @@
-import type { ShortcutCommandId, ShortcutUsageCounts } from "@/types/shortcuts";
-
-export function rankCommandWorkspaceShortcuts<T extends { id: ShortcutCommandId }>(
-  commands: readonly T[],
-  usageCounts: ShortcutUsageCounts,
+export function rankCommandWorkspaceEntries<T>(
+  entries: readonly T[],
+  getUsageCount: (entry: T) => number,
 ) {
-  return commands
-    .map((command, index) => ({ command, index }))
+  return entries
+    .map((entry, index) => ({ entry, index }))
     .sort((left, right) => {
-      const usageDifference =
-        (usageCounts[right.command.id] ?? 0) - (usageCounts[left.command.id] ?? 0);
+      const usageDifference = getUsageCount(right.entry) - getUsageCount(left.entry);
 
       return usageDifference || left.index - right.index;
     })
-    .map(({ command }) => command);
+    .map(({ entry }) => entry);
 }

@@ -21,8 +21,8 @@ export function CommandWorkspaceTrackList({
 }: CommandWorkspaceTrackListProps) {
   return (
     <ScrollArea className="h-[min(58vh,36rem)]">
-      <div className="py-2">
-        <div className="flex items-start justify-between gap-4 px-5 py-3">
+      <div className="space-y-0.5 px-2.5 py-2">
+        <div className="flex items-start justify-between gap-4 px-3.5 py-2.5">
           <div className="min-w-0">
             <h3 className="truncate text-base font-bold text-white">{trackList.title}</h3>
             {trackList.description ? (
@@ -41,7 +41,7 @@ export function CommandWorkspaceTrackList({
         {trackList.tracks.map((track, index) => (
           <div
             key={`${track.voiceId ?? "song"}-${track.id}-${index}`}
-            className="group flex items-center gap-3 px-5 py-2.5 hover:bg-white/6"
+            className="group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors hover:bg-white/6"
           >
             <span className="w-5 text-right text-xs text-zinc-500 tabular-nums">{index + 1}</span>
             <button

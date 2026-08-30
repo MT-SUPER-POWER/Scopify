@@ -4,13 +4,14 @@ import { type KeyboardEvent, useMemo, useRef, useState } from "react";
 import { CommandWorkspaceIcon } from "@/components/commandWorkspace/CommandWorkspaceIcon";
 import { CommandWorkspaceRootInput } from "@/components/commandWorkspace/CommandWorkspaceRootInput";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { rankCommandWorkspaceShortcuts } from "@/lib/commandWorkspace/shortcutRanking";
+import { rankCommandWorkspaceEntries } from "@/lib/commandWorkspace/shortcutRanking";
 import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { useShortcutStore } from "@/store/module/shortcuts";
 import { useI18n } from "@/store/module/i18n";
-import type { CommandWorkspacePage } from "@/types/commandWorkspace";
+import { cn } from "@/lib/utils";
+import type { CommandWorkspacePage, CommandWorkspaceRootPage } from "@/types/commandWorkspace";
 import type { ShortcutCommandId } from "@/types/shortcuts";
 
 interface CommandWorkspaceRootProps {
@@ -47,30 +48,42 @@ export function CommandWorkspaceRoot({
   const [selectedIndex, setSelectedIndex] = useState(0);
   const commands = useShortcutRegistry().commands;
   const executeShortcut = useShortcutCommands();
+  const commandWorkspaceUsageCounts = useShortcutStore(
+    (state) => state.commandWorkspaceUsageCounts,
+  );
+  const incrementCommandWorkspaceUsage = useShortcutStore(
+    (state) => state.incrementCommandWorkspaceUsage,
+  );
   const incrementUsage = useShortcutStore((state) => state.incrementUsage);
   const usageCounts = useShortcutStore((state) => state.usageCounts);
   const items = useMemo(
     () =>
-      [
-        ...WORKSPACE_COMMANDS.map((command) => ({ ...command, type: "workspace" as const })),
-        ...rankCommandWorkspaceShortcuts(
-          commands
+      rankCommandWorkspaceEntries(
+        [
+          ...WORKSPACE_COMMANDS.map((command) => ({
+            ...command,
+            type: "workspace" as const,
+            usageCount: commandWorkspaceUsageCounts[command.page] ?? 0,
+          })),
+          ...commands
             .filter((command) => (command.scope ?? "global") === "global")
             .filter(
               (command) => command.id !== "open-command-palette" && command.id !== "open-search",
-            ),
-          usageCounts,
-        ).map((command) => ({
-          binding: command.binding,
-          id: command.id,
-          label: t(command.labelKey),
-          summary: "快捷操作",
-          type: "shortcut" as const,
-        })),
-      ].filter((command) =>
+            )
+            .map((command) => ({
+              binding: command.binding,
+              id: command.id,
+              label: t(command.labelKey),
+              summary: "快捷操作",
+              type: "shortcut" as const,
+              usageCount: usageCounts[command.id] ?? 0,
+            })),
+        ],
+        (command) => command.usageCount,
+      ).filter((command) =>
         command.label.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
       ),
-    [commands, query, t, usageCounts],
+    [commandWorkspaceUsageCounts, commands, query, t, usageCounts],
   );
 
   const runShortcut = (commandId: ShortcutCommandId) => {
@@ -79,11 +92,16 @@ export function CommandWorkspaceRoot({
     onClose();
   };
 
+  const runWorkspacePage = (page: CommandWorkspaceRootPage) => {
+    incrementCommandWorkspaceUsage(page);
+    onOpenPage(page);
+  };
+
   const runSelected = () => {
     const selected = items[selectedIndex];
     if (!selected) return;
     if (selected.type === "workspace") {
-      onOpenPage(selected.page);
+      runWorkspacePage(selected.page);
       return;
     }
     runShortcut(selected.id as ShortcutCommandId);
@@ -124,21 +142,20 @@ export function CommandWorkspaceRoot({
       />
       <div className="mx-5 h-px bg-white/8" />
       <ScrollArea className="h-[min(52vh,32rem)]">
-        <div className="py-2">
+        <div className="space-y-0.5 px-2.5 py-2">
           {items.map((item, index) => (
             <button
               key={item.id}
               type="button"
               onClick={() => {
                 setSelectedIndex(index);
-                if (item.type === "workspace") onOpenPage(item.page);
+                if (item.type === "workspace") runWorkspacePage(item.page);
                 else runShortcut(item.id as ShortcutCommandId);
               }}
-              className={
-                selectedIndex === index
-                  ? "flex w-full items-center gap-3 bg-white/10 px-5 py-3 text-left"
-                  : "flex w-full items-center gap-3 px-5 py-3 text-left hover:bg-white/6"
-              }
+              className={cn(
+                "flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-left transition-colors",
+                selectedIndex === index ? "bg-white/10" : "hover:bg-white/6",
+              )}
             >
               <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-white/8 text-zinc-300">
                 <CommandWorkspaceIcon id={item.id} />

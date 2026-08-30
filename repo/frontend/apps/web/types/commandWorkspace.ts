@@ -3,6 +3,16 @@ import type { Album, Artist, Category, Playlist, Podcast, Song, Voice } from "@/
 
 export type CommandWorkspacePage =
   "root" | "search" | "queue" | "now-playing" | "settings" | "track-list";
+export type CommandWorkspaceRootPage = Exclude<CommandWorkspacePage, "root" | "track-list">;
+export type CommandWorkspaceUsageCounts = Partial<Record<CommandWorkspaceRootPage, number>>;
+
+export interface CommandWorkspaceSettingsProps {
+  onClose(): void;
+}
+
+export interface CommandWorkspaceQueueProps {
+  onClose?(): void;
+}
 
 export type CommandWorkspaceFilterId =
   "song" | "artist" | "album" | "playlist" | "podcast" | "episode";

@@ -84,7 +84,7 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
         />
       ) : null}
       {page === "search" ? <CommandWorkspaceSearch onOpenTrackList={handleOpenTrackList} /> : null}
-      {page === "queue" ? <CommandWorkspaceQueue /> : null}
+      {page === "queue" ? <CommandWorkspaceQueue onClose={onClose} /> : null}
       {page === "now-playing" ? <CommandWorkspaceNowPlaying /> : null}
       {page === "settings" ? <CommandWorkspaceSettings onClose={onClose} /> : null}
       {page === "track-list" && trackList ? (

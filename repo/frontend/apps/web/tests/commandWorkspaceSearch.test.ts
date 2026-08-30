@@ -57,7 +57,7 @@ test("shows the recorded @ token beside a categorized recent search", () => {
 
   expect(markup).toContain("Sorrow");
   expect(markup).toContain("@artist");
-  expect(markup).toContain("absolute top-1/2 right-5");
+  expect(markup).toContain("absolute top-1/2 right-3.5");
   expect(markup).toContain("group-hover:opacity-0");
 });
 

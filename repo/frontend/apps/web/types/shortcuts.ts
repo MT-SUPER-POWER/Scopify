@@ -1,4 +1,8 @@
 import type { TranslationKey } from "@/lib/i18n";
+import type {
+  CommandWorkspaceRootPage,
+  CommandWorkspaceUsageCounts,
+} from "@/types/commandWorkspace";
 
 export type ShortcutCommandId =
   | "toggle-playback"
@@ -54,8 +58,10 @@ export type ShortcutOverrides = Partial<Record<ShortcutCommandId, ShortcutBindin
 export type ShortcutUsageCounts = Partial<Record<ShortcutCommandId, number>>;
 
 export interface ShortcutStoreState {
+  commandWorkspaceUsageCounts: CommandWorkspaceUsageCounts;
   overrides: ShortcutOverrides;
   usageCounts: ShortcutUsageCounts;
+  incrementCommandWorkspaceUsage: (page: CommandWorkspaceRootPage) => void;
   setOverride: (commandId: ShortcutCommandId, binding: ShortcutBinding | null) => void;
   resetOverride: (commandId: ShortcutCommandId) => void;
   resetAllOverrides: () => void;

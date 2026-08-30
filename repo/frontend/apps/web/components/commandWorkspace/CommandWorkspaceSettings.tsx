@@ -1,61 +1,124 @@
 "use client";
 
-import { MonitorCog, Settings2, Sparkles } from "lucide-react";
+import { MonitorCog, Palette, Settings2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useUiStore } from "@/store/module/ui";
+import { useEffect, useMemo, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
+import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
+import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
+import { runtime } from "@/lib/runtime";
+import { cn } from "@/lib/utils";
+import type { CommandWorkspaceSettingsProps } from "@/types/commandWorkspace";
+import type { ShortcutCommandId } from "@/types/shortcuts";
 
-interface CommandWorkspaceSettingsProps {
-  onClose(): void;
+interface SettingsItem {
+  id: string;
+  icon: typeof Settings2;
+  label: string;
+  summary: string;
+  shortcutId?: ShortcutCommandId;
+  action: () => void;
 }
 
 export function CommandWorkspaceSettings({ onClose }: CommandWorkspaceSettingsProps) {
   const router = useRouter();
-  const openLyrics = useUiStore((state) => state.setIsLyricsOpen);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const executeShortcut = useShortcutCommands();
+  const commands = useShortcutRegistry().commands;
 
-  return (
-    <div className="space-y-2 p-3">
-      <button
-        type="button"
-        onClick={() => {
+  useEffect(() => {
+    setIsDesktop(runtime.isDesktop);
+  }, []);
+
+  const items: SettingsItem[] = useMemo(() => {
+    const list: SettingsItem[] = [
+      {
+        action: () => {
           router.push("/setting", { scroll: false });
           onClose();
-        }}
-        className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-zinc-200 hover:bg-white/8 hover:text-white"
-      >
-        <Settings2 className="size-4 text-zinc-300" />
-        <span>
-          <span className="block text-sm font-medium">应用设置</span>
-          <span className="text-xs text-zinc-500">账户、播放、快捷键与网络</span>
-        </span>
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          openLyrics(true);
+        },
+        icon: Settings2,
+        id: "app-settings",
+        label: "应用设置",
+        summary: "账户、播放、快捷键与网络",
+      },
+      {
+        action: () => {
+          executeShortcut("open-folia-settings");
           onClose();
-        }}
-        className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-zinc-200 hover:bg-white/8 hover:text-white"
-      >
-        <Sparkles className="size-4 text-zinc-300" />
-        <span>
-          <span className="block text-sm font-medium">Folia 舞台</span>
-          <span className="text-xs text-zinc-500">打开沉浸歌词和视觉设置</span>
-        </span>
-      </button>
-      <button
-        type="button"
-        onClick={() => {
+        },
+        icon: Sparkles,
+        id: "folia-settings",
+        label: "Folia 视觉设置",
+        shortcutId: "open-folia-settings",
+        summary: "歌词、外观和舞台效果",
+      },
+      {
+        action: () => {
+          executeShortcut("open-folia-theme-library");
+          onClose();
+        },
+        icon: Palette,
+        id: "folia-theme-library",
+        label: "Folia 主题库",
+        shortcutId: "open-folia-theme-library",
+        summary: "浏览、应用和管理视觉主题",
+      },
+    ];
+
+    if (isDesktop) {
+      list.push({
+        action: () => {
           router.push("/setting?tab=desktop", { scroll: false });
           onClose();
-        }}
-        className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-zinc-200 hover:bg-white/8 hover:text-white"
-      >
-        <MonitorCog className="size-4 text-zinc-300" />
-        <span>
-          <span className="block text-sm font-medium">桌面播放</span>
-          <span className="text-xs text-zinc-500">壁纸、图标与桌面播放偏好</span>
-        </span>
-      </button>
-    </div>
+        },
+        icon: MonitorCog,
+        id: "desktop-playback",
+        label: "桌面播放",
+        summary: "壁纸、图标与桌面播放偏好",
+      });
+    }
+
+    return list;
+  }, [executeShortcut, isDesktop, onClose, router]);
+
+  return (
+    <ScrollArea className="h-[min(52vh,32rem)]">
+      <div className="space-y-0.5 px-2.5 py-2">
+        {items.map((item, index) => {
+          const Icon = item.icon;
+          const shortcut = item.shortcutId ? commands.find((c) => c.id === item.shortcutId) : null;
+          const bindingLabel = shortcut?.binding ? getShortcutBindingLabel(shortcut.binding) : null;
+
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onMouseEnter={() => setSelectedIndex(index)}
+              onClick={item.action}
+              className={cn(
+                "flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-left transition-colors",
+                selectedIndex === index ? "bg-white/10" : "hover:bg-white/6",
+              )}
+            >
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-white/8 text-zinc-300">
+                <Icon className="size-4" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-white">{item.label}</span>
+                <span className="block truncate text-xs text-zinc-500">{item.summary}</span>
+              </span>
+              {bindingLabel ? (
+                <kbd className="rounded-md border border-white/15 bg-white/8 px-2 py-1 font-mono text-xs leading-none text-zinc-200 shadow-sm">
+                  {bindingLabel}
+                </kbd>
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+    </ScrollArea>
   );
 }

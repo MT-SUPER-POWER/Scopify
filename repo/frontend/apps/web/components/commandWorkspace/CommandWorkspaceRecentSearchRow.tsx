@@ -1,5 +1,6 @@
 import { Clock3, Trash2 } from "lucide-react";
 import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspace/search";
+import { cn } from "@/lib/utils";
 import type { SearchRecentEntry } from "@/types/search";
 
 interface CommandWorkspaceRecentSearchRowProps {
@@ -19,11 +20,10 @@ export function CommandWorkspaceRecentSearchRow({
 
   return (
     <div
-      className={
-        selected
-          ? "group relative flex items-center gap-3 bg-white/10 px-5 py-2.5"
-          : "group relative flex items-center gap-3 px-5 py-2.5 hover:bg-white/6"
-      }
+      className={cn(
+        "group relative flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors",
+        selected ? "bg-white/10" : "hover:bg-white/6",
+      )}
     >
       <Clock3 className="size-4 text-zinc-500" />
       <button
@@ -41,7 +41,7 @@ export function CommandWorkspaceRecentSearchRow({
       <button
         type="button"
         onClick={() => onRemove(item)}
-        className="absolute top-1/2 right-5 -translate-y-1/2 rounded p-1 text-zinc-600 opacity-0 transition group-hover:opacity-100 hover:bg-white/10 hover:text-white"
+        className="absolute top-1/2 right-3.5 -translate-y-1/2 rounded p-1 text-zinc-600 opacity-0 transition group-hover:opacity-100 hover:bg-white/10 hover:text-white"
         aria-label={`移除 ${item.keyword}`}
       >
         <Trash2 className="size-3.5" />
