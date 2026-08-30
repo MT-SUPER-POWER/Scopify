@@ -34,7 +34,7 @@ export function useArtistData(artistId: null | string) {
   }, [artistDetailQuery.data, followCountQuery.data, t]);
 
   const popularTracks = useMemo(
-    () => (topSongsQuery.data?.songs ?? []).slice(0, 20).map(pruneSongDetail),
+    () => (topSongsQuery.data?.songs ?? []).map(pruneSongDetail),
     [topSongsQuery.data],
   );
 
@@ -69,6 +69,7 @@ export function useArtistData(artistId: null | string) {
       topSongsQuery.isError ||
       albumsQuery.isError,
     isLoading: artistDetailQuery.isLoading,
+    isPopularTracksLoading: topSongsQuery.isLoading,
     isRefreshing:
       artistDetailQuery.isFetching ||
       followCountQuery.isFetching ||
