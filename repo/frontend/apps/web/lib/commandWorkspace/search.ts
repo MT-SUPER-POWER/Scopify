@@ -1,3 +1,5 @@
+import { COMMAND_WORKSPACE_SEARCH_FILTERS } from "@/constants/commandWorkspace";
+import { buildSearchUrl } from "@/lib/search/searchCategory";
 import type {
   CommandWorkspaceSearchFilter,
   CommandWorkspaceSearchItem,
@@ -8,13 +10,15 @@ export function buildCommandWorkspaceSearchHref(
   keywords: string,
   filter: CommandWorkspaceSearchFilter | null,
 ) {
-  const params = new URLSearchParams({ keywords });
-  if (filter) params.set("tab", filter.category);
-  return `/search?${params.toString()}`;
+  return buildSearchUrl(keywords, filter?.category ?? "All");
 }
 
 export function getCommandWorkspaceCategory(filter: CommandWorkspaceSearchFilter | null): Category {
   return filter?.category ?? "All";
+}
+
+export function getCommandWorkspaceSearchFilterForCategory(category: Category) {
+  return COMMAND_WORKSPACE_SEARCH_FILTERS.find((filter) => filter.category === category) ?? null;
 }
 
 export function getCommandWorkspaceSearchItems(

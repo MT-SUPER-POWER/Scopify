@@ -19,7 +19,12 @@ interface CommandWorkspaceRootProps {
 }
 
 const WORKSPACE_COMMANDS = [
-  { id: "search", label: "搜索", page: "search", summary: "在面板内查找并操作音乐" },
+  {
+    id: "search",
+    label: "搜索",
+    page: "search",
+    summary: "查找歌曲、歌手、专辑、歌单、播客与声音",
+  },
   {
     id: "now-playing",
     label: "正在播放",
@@ -139,7 +144,9 @@ export function CommandWorkspaceRoot({
                 <span className="block truncate text-xs text-zinc-500">{item.summary}</span>
               </span>
               {"binding" in item && item.binding ? (
-                <kbd className="text-xs text-zinc-500">{getShortcutBindingLabel(item.binding)}</kbd>
+                <kbd className="rounded-md border border-white/15 bg-white/8 px-2 py-1 font-mono text-xs leading-none text-zinc-200 shadow-sm">
+                  {getShortcutBindingLabel(item.binding)}
+                </kbd>
               ) : null}
             </button>
           ))}

@@ -4,10 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CommandWorkspaceQueryInput } from "@/components/commandWorkspace/CommandWorkspaceQueryInput";
 import { CommandWorkspaceDirectSearchResults } from "@/components/commandWorkspace/CommandWorkspaceDirectSearchResults";
 import { useCommandWorkspaceSuggestions } from "@/hooks/commandWorkspace/useCommandWorkspaceSuggestions";
-import { buildCommandWorkspaceSearchHref } from "@/lib/commandWorkspace/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { useSearchStore } from "@/store/module/search";
 import type { CommandWorkspaceSearchFilter } from "@/types/commandWorkspace";
+import type { SearchRecentEntry } from "@/types/search";
 
 interface CommandWorkspaceDirectSearchProps {
   initialQuery: string;
@@ -35,23 +36,25 @@ export function CommandWorkspaceDirectSearch({
   const candidates = query ? suggestions.map((item) => item.keyword) : recent.slice(0, 8);
 
   useEffect(() => {
-    setQuery(initialQuery);
-    setFilter(null);
-    setSelectedIndex(0);
-    window.setTimeout(() => inputRef.current?.focus(), 50);
-  }, [initialQuery]);
+    const focusTimeout = window.setTimeout(() => inputRef.current?.focus(), 50);
+    return () => window.clearTimeout(focusTimeout);
+  }, []);
 
   const submit = useCallback(
-    (candidate: string) => {
-      const keyword = candidate.trim();
+    (candidate: SearchRecentEntry | string) => {
+      const entry: SearchRecentEntry =
+        typeof candidate === "string"
+          ? { category: filter?.category ?? "All", keyword: candidate }
+          : candidate;
+      const keyword = entry.keyword.trim();
       if (!keyword) return;
       if (keyword.startsWith(">")) {
         onEnterCommand();
         return;
       }
       setGlobalQuery(keyword);
-      addRecent(keyword);
-      router.replace(buildCommandWorkspaceSearchHref(keyword, filter));
+      addRecent({ ...entry, keyword });
+      router.replace(buildSearchUrl(keyword, entry.category));
       onClose();
     },
     [addRecent, filter, onClose, onEnterCommand, router, setGlobalQuery],
@@ -64,7 +67,6 @@ export function CommandWorkspaceDirectSearch({
     }
     setQuery(nextQuery);
     setSelectedIndex(0);
-    setGlobalQuery(nextQuery);
   };
 
   return (

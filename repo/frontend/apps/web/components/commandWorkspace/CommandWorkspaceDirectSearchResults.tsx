@@ -1,16 +1,18 @@
 "use client";
 
-import { Clock3, CornerDownLeft, Search, Trash2 } from "lucide-react";
+import { CornerDownLeft, Search } from "lucide-react";
+import { CommandWorkspaceRecentSearchRow } from "@/components/commandWorkspace/CommandWorkspaceRecentSearchRow";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { CommandWorkspaceSearchSuggestion } from "@/types/commandWorkspace";
+import type { SearchRecentEntry } from "@/types/search";
 
 interface CommandWorkspaceDirectSearchResultsProps {
   isLoading: boolean;
   onClearRecent(): void;
-  onRemoveRecent(item: string): void;
-  onSubmit(candidate: string): void;
+  onRemoveRecent(item: SearchRecentEntry): void;
+  onSubmit(candidate: SearchRecentEntry | string): void;
   query: string;
-  recent: string[];
+  recent: SearchRecentEntry[];
   selectedIndex: number;
   suggestions: CommandWorkspaceSearchSuggestion[];
 }
@@ -41,31 +43,13 @@ export function CommandWorkspaceDirectSearchResults({
               </button>
             </div>
             {recent.slice(0, 8).map((item, index) => (
-              <div
-                key={item}
-                className={
-                  selectedIndex === index
-                    ? "group flex items-center gap-3 bg-white/10 px-5 py-2.5"
-                    : "group flex items-center gap-3 px-5 py-2.5 hover:bg-white/6"
-                }
-              >
-                <Clock3 className="size-4 text-zinc-500" />
-                <button
-                  type="button"
-                  onClick={() => onSubmit(item)}
-                  className="min-w-0 flex-1 truncate text-left text-sm text-zinc-200"
-                >
-                  {item}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onRemoveRecent(item)}
-                  className="rounded p-1 text-zinc-600 opacity-0 transition group-hover:opacity-100 hover:bg-white/10 hover:text-white"
-                  aria-label={`移除 ${item}`}
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
-              </div>
+              <CommandWorkspaceRecentSearchRow
+                key={`${item.category}-${item.keyword}`}
+                item={item}
+                onRemove={onRemoveRecent}
+                onSubmit={onSubmit}
+                selected={selectedIndex === index}
+              />
             ))}
           </section>
         ) : null}

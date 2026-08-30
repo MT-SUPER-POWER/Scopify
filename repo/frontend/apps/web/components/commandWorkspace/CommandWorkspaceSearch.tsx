@@ -109,14 +109,14 @@ export function CommandWorkspaceSearch({ onOpenTrackList }: CommandWorkspaceSear
             selectItem(items[selectedIndex]);
           }
         }}
-        placeholder="在工作区内搜索音乐"
+        placeholder="搜索歌曲、歌手、专辑、歌单、播客与声音"
         query={query}
       />
       <div className="mx-5 h-px bg-white/8" />
       <ScrollArea className="h-[min(52vh,32rem)]">
         {!query.trim() ? (
           <p className="px-5 py-10 text-center text-sm text-zinc-500">
-            输入关键词，或先用 @ 选择分类。
+            输入关键词，或用 @ 筛选歌曲、歌手、专辑、歌单、播客与声音。
           </p>
         ) : search.loading ? (
           <div className="flex items-center justify-center gap-2 py-10 text-sm text-zinc-400">
@@ -135,7 +135,7 @@ export function CommandWorkspaceSearch({ onOpenTrackList }: CommandWorkspaceSear
       </ScrollArea>
       <footer className="flex items-center gap-2 border-t border-white/10 bg-black/20 px-5 py-3 text-xs text-zinc-400">
         <CornerDownLeft className="size-3.5 text-zinc-300" />
-        Enter 播放歌曲 / 查看曲目
+        Enter 播放歌曲 / 查看详情
         <span className="ml-auto">+ 加入队列</span>
       </footer>
     </>
