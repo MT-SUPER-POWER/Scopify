@@ -13,6 +13,8 @@ export type ShortcutCommandId =
   | "seek-forward-1s"
   | "open-search"
   | "toggle-lyric-stage"
+  | "open-folia-settings"
+  | "open-folia-theme-library"
   | "toggle-sidebar"
   | "open-shortcut-settings"
   | "toggle-queue"

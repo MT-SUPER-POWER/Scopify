@@ -9,7 +9,6 @@ import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaGlobalSettingsCard } from "@/components/lyrics/FoliaGlobalSettingsCard";
 import { FoliaHarmonySettingsCard } from "@/components/lyrics/FoliaHarmonySettingsCard";
 import { FoliaThemeQuickPicker } from "@/components/lyrics/FoliaThemeQuickPicker";
-import { FoliaPersonalFmSettingsCard } from "@/components/lyrics/FoliaPersonalFmSettingsCard";
 import VisPlaygroundSettingsPanel from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundSettingsPanel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
@@ -108,10 +107,6 @@ export function FoliaVisualSettingsDialog({
               />
               <ScrollArea className="h-full min-h-0">
                 <div className="space-y-4 pr-1 pb-6">
-                  <FoliaPersonalFmSettingsCard
-                    controlCardBg={panelProps.controlCardBg}
-                    theme={theme}
-                  />
                   <VisPlaygroundSettingsPanel
                     {...panelProps}
                     commonControl={

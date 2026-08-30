@@ -85,6 +85,18 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyM", primary: true, shift: true },
   },
   {
+    id: "open-folia-settings",
+    group: "interface",
+    labelKey: "shortcuts.command.openFoliaSettings",
+    defaultBinding: { key: "Comma", primary: true, shift: true },
+  },
+  {
+    id: "open-folia-theme-library",
+    group: "interface",
+    labelKey: "shortcuts.command.openFoliaThemeLibrary",
+    defaultBinding: { key: "Period", primary: true, shift: true },
+  },
+  {
     id: "toggle-sidebar",
     group: "interface",
     labelKey: "shortcuts.command.toggleSidebar",

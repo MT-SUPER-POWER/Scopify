@@ -9,6 +9,7 @@ const KEY_LABELS: Record<string, string> = {
   ArrowRight: "Right",
   Slash: "/",
   Comma: ",",
+  Period: ".",
 };
 
 export function getEffectiveShortcutBinding(

@@ -10,6 +10,10 @@ const controlsTabSource = readFileSync(
   fileURLToPath(new URL("../components/lyrics/FoliaPersonalFmControlsTab.tsx", import.meta.url)),
   "utf8",
 );
+const visualSettingsSource = readFileSync(
+  fileURLToPath(new URL("../components/lyrics/FoliaVisualSettingsDialog.tsx", import.meta.url)),
+  "utf8",
+);
 const modeMatrixSource = readFileSync(
   fileURLToPath(new URL("../components/lyrics/FoliaPersonalFmModeMatrix.tsx", import.meta.url)),
   "utf8",
@@ -47,4 +51,8 @@ test("Folia puts Personal FM dislike in the first controls tab", () => {
   expect(playerControlsSource).toContain('t("personalFm.action.dislike")');
   expect(playerControlsSource).toContain("<Trash2");
   expect(playerControlsSource).toContain("<Shuffle");
+});
+
+test("Folia keeps Personal FM controls out of global visual settings", () => {
+  expect(visualSettingsSource).not.toContain("FoliaPersonalFmSettingsCard");
 });

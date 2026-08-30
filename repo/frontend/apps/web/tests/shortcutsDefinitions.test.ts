@@ -56,6 +56,22 @@ describe("shortcut definitions", () => {
     ).toBeNull();
   });
 
+  test("registers distinct non-conflicting shortcuts for Folia settings and the theme library", () => {
+    const foliaSettings = getShortcut("open-folia-settings");
+    const foliaThemeLibrary = getShortcut("open-folia-theme-library");
+
+    expect(foliaSettings.defaultBinding).toEqual({ key: "Comma", primary: true, shift: true });
+    expect(foliaThemeLibrary.defaultBinding).toEqual({
+      key: "Period",
+      primary: true,
+      shift: true,
+    });
+    expect(findShortcutConflict(foliaSettings.id, foliaSettings.defaultBinding, {})).toBeNull();
+    expect(
+      findShortcutConflict(foliaThemeLibrary.id, foliaThemeLibrary.defaultBinding, {}),
+    ).toBeNull();
+  });
+
   test("limits desktop-controller registration to controls available in that window", () => {
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).toEqual(
       expect.arrayContaining([

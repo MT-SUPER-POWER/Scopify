@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Disc, ListMusic, RadioTower, Settings2, SlidersHorizontal, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
@@ -16,6 +16,12 @@ import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDi
 import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/FoliaSonnetPerformanceWarningDialog";
 import { FoliaVisualSettingsDialog } from "@/components/lyrics/FoliaVisualSettingsDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  FOLIA_THEME_LIBRARY_PENDING_KEY,
+  FOLIA_THEME_LIBRARY_TOGGLE_EVENT,
+  FOLIA_VISUAL_SETTINGS_OPEN_EVENT,
+  FOLIA_VISUAL_SETTINGS_PENDING_KEY,
+} from "@/constants/desktopPlaybackController";
 import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaStageSettingsProps } from "@/types/components/lyrics";
@@ -57,12 +63,110 @@ export function FoliaStageSettings({
   const [isEqualizerOpen, setIsEqualizerOpen] = useState(false);
   const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
   const [isThemeLibraryOpen, setIsThemeLibraryOpen] = useState(false);
+  const isVisualSettingsOpenRef = useRef(false);
+  const isThemeLibraryOpenRef = useRef(false);
+
+  const setVisualSettingsOpen = useCallback(
+    (open: boolean) => {
+      isVisualSettingsOpenRef.current = open;
+      setIsVisualSettingsOpen(open);
+      onVisualSettingsOpenChange(open);
+    },
+    [onVisualSettingsOpenChange],
+  );
+
+  const setThemeLibraryOpen = useCallback((open: boolean) => {
+    isThemeLibraryOpenRef.current = open;
+    setIsThemeLibraryOpen(open);
+  }, []);
+
+  const openVisualSettings = (section: FoliaStageEditSection) => {
+    setActiveSection(section);
+    setVisualSettingsOpen(true);
+  };
 
   useEffect(() => {
     if (themeLibraryRequestId <= 0) return;
     setActiveTab("settings");
-    setIsThemeLibraryOpen(true);
-  }, [themeLibraryRequestId]);
+    setThemeLibraryOpen(true);
+  }, [setThemeLibraryOpen, themeLibraryRequestId]);
+
+  useEffect(() => {
+    const clearThemeLibraryShortcutPendingState = () => {
+      try {
+        window.sessionStorage.removeItem(FOLIA_THEME_LIBRARY_PENDING_KEY);
+      } catch {
+        // Opening the theme library does not depend on session storage cleanup.
+      }
+    };
+
+    const openThemeLibraryFromShortcut = () => {
+      clearThemeLibraryShortcutPendingState();
+      setActiveTab("settings");
+      setThemeLibraryOpen(true);
+    };
+
+    const toggleThemeLibraryFromShortcut = () => {
+      clearThemeLibraryShortcutPendingState();
+      if (isThemeLibraryOpenRef.current) {
+        setThemeLibraryOpen(false);
+        return;
+      }
+      openThemeLibraryFromShortcut();
+    };
+
+    try {
+      if (window.sessionStorage.getItem(FOLIA_THEME_LIBRARY_PENDING_KEY) === "1") {
+        openThemeLibraryFromShortcut();
+      }
+    } catch {
+      // The live event below remains available when session storage is blocked.
+    }
+
+    window.addEventListener(FOLIA_THEME_LIBRARY_TOGGLE_EVENT, toggleThemeLibraryFromShortcut);
+    return () =>
+      window.removeEventListener(FOLIA_THEME_LIBRARY_TOGGLE_EVENT, toggleThemeLibraryFromShortcut);
+  }, [setThemeLibraryOpen]);
+
+  useEffect(() => {
+    const clearVisualSettingsShortcutPendingState = () => {
+      try {
+        window.sessionStorage.removeItem(FOLIA_VISUAL_SETTINGS_PENDING_KEY);
+      } catch {
+        // Opening the visual settings does not depend on session storage cleanup.
+      }
+    };
+
+    const openVisualSettingsFromShortcut = () => {
+      clearVisualSettingsShortcutPendingState();
+      setActiveSection("common");
+      setVisualSettingsOpen(true);
+    };
+
+    const toggleVisualSettingsFromShortcut = () => {
+      clearVisualSettingsShortcutPendingState();
+      if (isVisualSettingsOpenRef.current) {
+        setVisualSettingsOpen(false);
+        return;
+      }
+      openVisualSettingsFromShortcut();
+    };
+
+    try {
+      if (window.sessionStorage.getItem(FOLIA_VISUAL_SETTINGS_PENDING_KEY) === "1") {
+        openVisualSettingsFromShortcut();
+      }
+    } catch {
+      // The live event below remains available when session storage is blocked.
+    }
+
+    window.addEventListener(FOLIA_VISUAL_SETTINGS_OPEN_EVENT, toggleVisualSettingsFromShortcut);
+    return () =>
+      window.removeEventListener(
+        FOLIA_VISUAL_SETTINGS_OPEN_EVENT,
+        toggleVisualSettingsFromShortcut,
+      );
+  }, [setVisualSettingsOpen]);
 
   useEffect(() => {
     if (!isPersonalFm && activeTab === "fm") setActiveTab("queue");
@@ -74,16 +178,6 @@ export function FoliaStageSettings({
     },
     [onVisualSettingsOpenChange],
   );
-
-  const setVisualSettingsOpen = (open: boolean) => {
-    setIsVisualSettingsOpen(open);
-    onVisualSettingsOpenChange(open);
-  };
-
-  const openVisualSettings = (section: FoliaStageEditSection) => {
-    setActiveSection(section);
-    setVisualSettingsOpen(true);
-  };
 
   const panelTabs = [
     ["controls", SlidersHorizontal, "folia.panel.controls"],
@@ -184,7 +278,7 @@ export function FoliaStageSettings({
                     {activeTab === "settings" ? (
                       <FoliaPanelSettings
                         onOpenSettings={openVisualSettings}
-                        onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
+                        onOpenThemeLibrary={() => setThemeLibraryOpen(true)}
                         theme={theme}
                       />
                     ) : null}
@@ -209,7 +303,7 @@ export function FoliaStageSettings({
         isOpen={isVisualSettingsOpen}
         onClose={() => setVisualSettingsOpen(false)}
         onOpenFontPicker={setFontPickerTarget}
-        onOpenThemeLibrary={() => setIsThemeLibraryOpen(true)}
+        onOpenThemeLibrary={() => setThemeLibraryOpen(true)}
         onSectionChange={setActiveSection}
         section={activeSection}
         theme={theme}
@@ -230,7 +324,7 @@ export function FoliaStageSettings({
       <FoliaThemeLibraryDialog
         assets={assets}
         isOpen={isThemeLibraryOpen}
-        onClose={() => setIsThemeLibraryOpen(false)}
+        onClose={() => setThemeLibraryOpen(false)}
         theme={theme}
       />
 
