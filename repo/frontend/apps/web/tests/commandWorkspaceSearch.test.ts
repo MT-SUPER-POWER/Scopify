@@ -15,6 +15,10 @@ const directSearchSource = readFileSync(
   resolve(import.meta.dir, "../components/commandWorkspace/CommandWorkspaceDirectSearch.tsx"),
   "utf8",
 );
+const headerSearchSource = readFileSync(
+  resolve(import.meta.dir, "../components/SearchContents/HeaderSearch.tsx"),
+  "utf8",
+);
 
 test("keeps plain command-workspace searches on the existing all-results route", () => {
   expect(buildCommandWorkspaceSearchHref("Jay Chou", null)).toBe("/search?keywords=Jay+Chou");
@@ -53,4 +57,10 @@ test("shows the recorded @ token beside a categorized recent search", () => {
 
   expect(markup).toContain("Sorrow");
   expect(markup).toContain("@artist");
+  expect(markup).toContain("absolute top-1/2 right-5");
+  expect(markup).toContain("group-hover:opacity-0");
+});
+
+test("clears header search selection when the pointer leaves a result row", () => {
+  expect(headerSearchSource).toContain("onMouseLeave={() => setSelectedIndex(-1)}");
 });

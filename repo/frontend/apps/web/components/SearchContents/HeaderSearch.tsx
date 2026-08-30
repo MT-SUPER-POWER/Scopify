@@ -295,8 +295,9 @@ export default function HeaderSearch() {
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => handleSearch(item)}
                       onMouseEnter={() => setSelectedIndex(i)}
+                      onMouseLeave={() => setSelectedIndex(-1)}
                       className={cn(
-                        "group/item flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-accent",
+                        "group/item relative flex cursor-pointer items-center gap-3 px-5 py-3 transition-colors hover:bg-accent",
                         selectedIndex === i && "bg-accent",
                       )}
                     >
@@ -306,23 +307,21 @@ export default function HeaderSearch() {
                           {item.keyword}
                         </span>
                       </div>
-                      <div className="flex shrink-0 items-center gap-2">
-                        {filter ? (
-                          <kbd className="rounded-md border border-border bg-surface-elevated px-1.5 py-0.5 font-mono text-[11px] text-content-muted">
-                            {filter.token}
-                          </kbd>
-                        ) : null}
-                        <button
-                          onMouseDown={(e) => e.stopPropagation()}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeRecent(item);
-                          }}
-                          className="rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-accent"
-                        >
-                          <X className="size-3.5 text-content-subtle hover:text-content" />
-                        </button>
-                      </div>
+                      {filter ? (
+                        <kbd className="ml-auto rounded-md border border-border bg-surface-elevated px-1.5 py-0.5 font-mono text-[11px] text-content-muted transition-opacity group-hover/item:opacity-0">
+                          {filter.token}
+                        </kbd>
+                      ) : null}
+                      <button
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeRecent(item);
+                        }}
+                        className="absolute top-1/2 right-5 -translate-y-1/2 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-accent"
+                      >
+                        <X className="size-3.5 text-content-subtle hover:text-content" />
+                      </button>
                     </motion.div>
                   );
                 })}
@@ -353,6 +352,7 @@ export default function HeaderSearch() {
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => handleSearch(item.keyword)}
                     onMouseEnter={() => setSelectedIndex(i)}
+                    onMouseLeave={() => setSelectedIndex(-1)}
                     className={cn(
                       "flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-accent",
                       selectedIndex === i && "bg-accent",
