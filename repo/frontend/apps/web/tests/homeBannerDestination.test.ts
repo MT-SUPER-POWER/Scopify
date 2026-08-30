@@ -1,6 +1,17 @@
 import { expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { resolveBannerDestination } from "@/lib/home/resolveBannerDestination";
+
+const carouselSource = readFileSync(
+  fileURLToPath(new URL("../components/home/FeaturedActivitiesCarousel.tsx", import.meta.url)),
+  "utf8",
+);
+const bannerCardSource = readFileSync(
+  fileURLToPath(new URL("../components/home/ActivityBannerCard.tsx", import.meta.url)),
+  "utf8",
+);
 
 test("maps an Orpheus album banner to the local album page", () => {
   expect(
@@ -33,4 +44,15 @@ test("keeps an activity banner as an external link", () => {
     href: "https://y.music.163.com/g/yida/act/daben?page=example",
     isExternal: true,
   });
+});
+
+test("Featured Activities carousel presents center card prominently with focal scale and side navigation", () => {
+  expect(carouselSource).toContain("isCenter");
+  expect(carouselSource).toContain("var(--banner-width)");
+  expect(carouselSource).toContain("scale-[1.05]");
+  expect(carouselSource).toContain(
+    "onClickSide={isLeft ? goToPrevious : isRight ? goToNext : undefined}",
+  );
+  expect(bannerCardSource).toContain("aspect-[2.4/1]");
+  expect(bannerCardSource).toContain("onClickSide");
 });

@@ -37,7 +37,9 @@ const personalFmPlaylistHookSource = readFileSync(
 
 test("Personal FM is presented as a virtual playlist instead of a library navigation item", () => {
   expect(libraryNavigationSource).not.toContain("PersonalFmNavigationItem");
-  expect(sidebarLibrarySource).toContain("<PersonalFmPlaylistItem isCollapsed={isCollapsed} />");
+  expect(sidebarLibrarySource).toContain(
+    "{isLoggedIn && <PersonalFmPlaylistItem isCollapsed={isCollapsed} />}",
+  );
   expect(personalFmItemSource).toContain('href="/personal-fm"');
   expect(personalFmItemSource).toContain("hasContextMenu={false}");
   expect(personalFmItemSource).toContain("getPersonalFmSelectionLabel(selection, t)");

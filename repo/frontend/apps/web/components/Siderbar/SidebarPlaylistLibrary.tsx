@@ -155,7 +155,7 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
         viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
       >
         <div className={cn("w-full min-w-0 space-y-1", isCollapsed ? "pb-2" : "pb-4")}>
-          <PersonalFmPlaylistItem isCollapsed={isCollapsed} />
+          {isLoggedIn && <PersonalFmPlaylistItem isCollapsed={isCollapsed} />}
           {content}
         </div>
       </ScrollArea>
