@@ -16,6 +16,8 @@ export type ShortcutCommandId =
   | "toggle-sidebar"
   | "open-shortcut-settings"
   | "toggle-queue"
+  | "toggle-audio-settings"
+  | "toggle-desktop-controller"
   | "show-shortcut-help"
   | "open-command-palette"
   | "toggle-mute"

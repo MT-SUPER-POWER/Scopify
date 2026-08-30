@@ -97,6 +97,18 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyJ", primary: true },
   },
   {
+    id: "toggle-audio-settings",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleAudioSettings",
+    defaultBinding: { key: "KeyA", primary: true, alt: true },
+  },
+  {
+    id: "toggle-desktop-controller",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleDesktopController",
+    defaultBinding: { key: "KeyD", primary: true, alt: true },
+  },
+  {
     id: "toggle-fullscreen",
     group: "interface",
     labelKey: "shortcuts.command.toggleFullscreen",
@@ -163,4 +175,7 @@ export const DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS = [
   "seek-backward-1s",
   "seek-forward-1s",
   "open-current-track-comments",
+  "open-shortcut-settings",
+  "toggle-queue",
+  "toggle-audio-settings",
 ] as const satisfies readonly ShortcutCommandId[];

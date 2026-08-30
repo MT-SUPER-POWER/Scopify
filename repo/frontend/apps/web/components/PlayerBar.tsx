@@ -554,7 +554,7 @@ export const PlayerBar = ({
                 </TooltipTrigger>
               </AudioSettingsDialog>
               <TooltipContent side="top" sideOffset={8}>
-                {t("audioSettings.title")}
+                <ShortcutHint commandId="toggle-audio-settings" label={t("audioSettings.title")} />
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

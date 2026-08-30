@@ -40,6 +40,22 @@ describe("shortcut definitions", () => {
     expect(findShortcutConflict(developerTools.id, developerTools.defaultBinding, {})).toBeNull();
   });
 
+  test("registers audio settings, queue, and desktop controller shortcuts with valid defaults", () => {
+    const audioSettings = getShortcut("toggle-audio-settings");
+    const queue = getShortcut("toggle-queue");
+    const desktopController = getShortcut("toggle-desktop-controller");
+
+    expect(audioSettings.defaultBinding).toEqual({ key: "KeyA", primary: true, alt: true });
+    expect(queue.defaultBinding).toEqual({ key: "KeyJ", primary: true });
+    expect(desktopController.defaultBinding).toEqual({ key: "KeyD", primary: true, alt: true });
+
+    expect(findShortcutConflict(audioSettings.id, audioSettings.defaultBinding, {})).toBeNull();
+    expect(findShortcutConflict(queue.id, queue.defaultBinding, {})).toBeNull();
+    expect(
+      findShortcutConflict(desktopController.id, desktopController.defaultBinding, {}),
+    ).toBeNull();
+  });
+
   test("limits desktop-controller registration to controls available in that window", () => {
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).toEqual(
       expect.arrayContaining([
@@ -48,6 +64,9 @@ describe("shortcut definitions", () => {
         "open-current-track-comments",
         "previous-track",
         "next-track",
+        "toggle-queue",
+        "toggle-audio-settings",
+        "open-shortcut-settings",
       ]),
     );
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).not.toContain("toggle-sidebar");

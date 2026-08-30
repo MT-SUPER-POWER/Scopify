@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
@@ -46,7 +47,10 @@ export function DesktopPlaybackControllerLauncher() {
           </button>
         </TooltipTrigger>
         <TooltipContent side="top" sideOffset={8}>
-          {t("desktopPlaybackController.open")}
+          <ShortcutHint
+            commandId="toggle-desktop-controller"
+            label={t("desktopPlaybackController.open")}
+          />
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -16484,6 +16484,18 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.toggleQueue", params?: TranslationParams): string;
   /**
+   * zh-CN: 打开/关闭音频设置
+   * zh-TW: 開啟/關閉音訊設定
+   * en-US: Open/Close Audio Settings
+   */
+  (key: "shortcuts.command.toggleAudioSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭桌面音乐控制器
+   * zh-TW: 開啟/關閉桌面音樂控制器
+   * en-US: Open/Close Desktop Controller
+   */
+  (key: "shortcuts.command.toggleDesktopController", params?: TranslationParams): string;
+  /**
    * zh-CN: 切换全屏
    * zh-TW: 切換全螢幕
    * en-US: Toggle Fullscreen

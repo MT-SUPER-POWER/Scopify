@@ -1,6 +1,5 @@
 import {
   AudioLines,
-  CircleHelp,
   Code2,
   Command,
   FastForward,
@@ -9,6 +8,7 @@ import {
   ListMusic,
   Maximize2,
   MessageCircle,
+  MonitorCog,
   PanelLeft,
   PlayCircle,
   Rewind,
@@ -16,6 +16,7 @@ import {
   Settings2,
   SkipBack,
   SkipForward,
+  SlidersHorizontal,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -47,6 +48,8 @@ export function ShortcutCommandIcon({ className = "size-4", commandId }: Shortcu
   if (commandId === "toggle-sidebar") return <PanelLeft className={className} />;
   if (commandId === "open-shortcut-settings") return <Settings2 className={className} />;
   if (commandId === "toggle-queue") return <ListMusic className={className} />;
+  if (commandId === "toggle-audio-settings") return <SlidersHorizontal className={className} />;
+  if (commandId === "toggle-desktop-controller") return <MonitorCog className={className} />;
   if (commandId === "show-shortcut-help") return <Keyboard className={className} />;
   if (commandId === "toggle-fullscreen") return <Maximize2 className={className} />;
   if (commandId === "toggle-developer-tools") return <Code2 className={className} />;

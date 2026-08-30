@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import {
   Tooltip,
   TooltipContent,
@@ -326,7 +327,7 @@ export const QueuePopover = () => {
             </TooltipTrigger>
           </PopoverTrigger>
           <TooltipContent side="top" sideOffset={8}>
-            {t("queue.triggerTitle")}
+            <ShortcutHint commandId="toggle-queue" label={t("queue.triggerTitle")} />
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

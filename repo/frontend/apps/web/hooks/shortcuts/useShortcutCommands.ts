@@ -13,6 +13,8 @@ import { getCommentHref } from "@/lib/comment/commentResource";
 import { usePlayerStore } from "@/store/module/player";
 import { useUiStore } from "@/store/module/ui";
 import { useSearchStore } from "@/store/module/search";
+import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
+import { runtime } from "@/lib/runtime";
 import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts";
 
 const VOLUME_STEP = 5;
@@ -101,6 +103,20 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           return;
         case "toggle-queue":
           ui.toggleQueue();
+          return;
+        case "toggle-audio-settings": {
+          const eq = useAudioEqualizerStore.getState();
+          if (eq.isDialogOpen) {
+            eq.closeDialog();
+          } else {
+            eq.openDialog("quality");
+          }
+          return;
+        }
+        case "toggle-desktop-controller":
+          if (runtime.isDesktop) {
+            void runtime.desktopPlaybackWallpaper.showController();
+          }
           return;
         case "toggle-fullscreen":
           void toggleApplicationFullscreen();

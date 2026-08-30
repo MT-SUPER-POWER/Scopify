@@ -2,6 +2,13 @@
 
 import { Paintbrush } from "lucide-react";
 
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { DesktopPlaybackFoliaModeControls } from "@/components/desktopWallpaper/DesktopPlaybackFoliaModeControls";
 import { DesktopPlaybackThemeControls } from "@/components/desktopWallpaper/DesktopPlaybackThemeControls";
 import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/FoliaSonnetPerformanceWarningDialog";
@@ -38,15 +45,26 @@ export function DesktopPlaybackAppearanceControls({
           <div className="text-[10px] font-semibold tracking-[0.12em] text-content-muted uppercase">
             {t("desktopPlaybackController.themeSwitch")}
           </div>
-          <button
-            type="button"
-            aria-label={t("desktopPlaybackController.openMainSettings")}
-            className="desktop-controller-soft-button -my-1 flex size-8 items-center justify-center rounded-full transition"
-            title={t("desktopPlaybackController.openMainSettings")}
-            onClick={onOpenMainSettings}
-          >
-            <Paintbrush className="size-4" />
-          </button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={t("desktopPlaybackController.openMainSettings")}
+                  className="desktop-controller-soft-button -my-1 flex size-8 items-center justify-center rounded-full transition"
+                  onClick={onOpenMainSettings}
+                >
+                  <Paintbrush className="size-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={8}>
+                <ShortcutHint
+                  commandId="open-shortcut-settings"
+                  label={t("desktopPlaybackController.openMainSettings")}
+                />
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <DesktopPlaybackThemeControls />
       </div>
