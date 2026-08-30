@@ -4,6 +4,7 @@ import { type KeyboardEvent, useMemo, useRef, useState } from "react";
 import { CommandWorkspaceIcon } from "@/components/commandWorkspace/CommandWorkspaceIcon";
 import { CommandWorkspaceRootInput } from "@/components/commandWorkspace/CommandWorkspaceRootInput";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { rankCommandWorkspaceShortcuts } from "@/lib/commandWorkspace/shortcutRanking";
 import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
@@ -47,26 +48,29 @@ export function CommandWorkspaceRoot({
   const commands = useShortcutRegistry().commands;
   const executeShortcut = useShortcutCommands();
   const incrementUsage = useShortcutStore((state) => state.incrementUsage);
+  const usageCounts = useShortcutStore((state) => state.usageCounts);
   const items = useMemo(
     () =>
       [
         ...WORKSPACE_COMMANDS.map((command) => ({ ...command, type: "workspace" as const })),
-        ...commands
-          .filter((command) => (command.scope ?? "global") === "global")
-          .filter(
-            (command) => command.id !== "open-command-palette" && command.id !== "open-search",
-          )
-          .map((command) => ({
-            binding: command.binding,
-            id: command.id,
-            label: t(command.labelKey),
-            summary: "快捷操作",
-            type: "shortcut" as const,
-          })),
+        ...rankCommandWorkspaceShortcuts(
+          commands
+            .filter((command) => (command.scope ?? "global") === "global")
+            .filter(
+              (command) => command.id !== "open-command-palette" && command.id !== "open-search",
+            ),
+          usageCounts,
+        ).map((command) => ({
+          binding: command.binding,
+          id: command.id,
+          label: t(command.labelKey),
+          summary: "快捷操作",
+          type: "shortcut" as const,
+        })),
       ].filter((command) =>
         command.label.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
       ),
-    [commands, query, t],
+    [commands, query, t, usageCounts],
   );
 
   const runShortcut = (commandId: ShortcutCommandId) => {

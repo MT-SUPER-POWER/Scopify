@@ -51,10 +51,11 @@ export interface ShortcutCommandExecutorOptions {
 }
 
 export type ShortcutOverrides = Partial<Record<ShortcutCommandId, ShortcutBinding | null>>;
+export type ShortcutUsageCounts = Partial<Record<ShortcutCommandId, number>>;
 
 export interface ShortcutStoreState {
   overrides: ShortcutOverrides;
-  usageCounts: Partial<Record<ShortcutCommandId, number>>;
+  usageCounts: ShortcutUsageCounts;
   setOverride: (commandId: ShortcutCommandId, binding: ShortcutBinding | null) => void;
   resetOverride: (commandId: ShortcutCommandId) => void;
   resetAllOverrides: () => void;
