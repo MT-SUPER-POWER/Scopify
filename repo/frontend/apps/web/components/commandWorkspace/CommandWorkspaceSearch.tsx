@@ -4,6 +4,7 @@ import { CornerDownLeft, LoaderCircle } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { CommandWorkspaceQueryInput } from "@/components/commandWorkspace/CommandWorkspaceQueryInput";
 import { CommandWorkspaceSearchResultList } from "@/components/commandWorkspace/CommandWorkspaceSearchResultList";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   getCommandWorkspaceCategory,
   getCommandWorkspaceSearchItems,
@@ -112,7 +113,7 @@ export function CommandWorkspaceSearch({ onOpenTrackList }: CommandWorkspaceSear
         query={query}
       />
       <div className="mx-5 h-px bg-white/8" />
-      <div className="max-h-[52vh] overflow-y-auto">
+      <ScrollArea className="h-[min(52vh,32rem)]">
         {!query.trim() ? (
           <p className="px-5 py-10 text-center text-sm text-zinc-500">
             输入关键词，或先用 @ 选择分类。
@@ -131,7 +132,7 @@ export function CommandWorkspaceSearch({ onOpenTrackList }: CommandWorkspaceSear
             onInsertNext={insertItemNext}
           />
         )}
-      </div>
+      </ScrollArea>
       <footer className="flex items-center gap-2 border-t border-white/10 bg-black/20 px-5 py-3 text-xs text-zinc-400">
         <CornerDownLeft className="size-3.5 text-zinc-300" />
         Enter 播放歌曲 / 查看曲目

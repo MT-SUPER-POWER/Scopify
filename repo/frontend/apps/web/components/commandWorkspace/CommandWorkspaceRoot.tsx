@@ -3,6 +3,7 @@
 import { type KeyboardEvent, useMemo, useRef, useState } from "react";
 import { CommandWorkspaceIcon } from "@/components/commandWorkspace/CommandWorkspaceIcon";
 import { CommandWorkspaceRootInput } from "@/components/commandWorkspace/CommandWorkspaceRootInput";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
@@ -113,38 +114,40 @@ export function CommandWorkspaceRoot({
         query={query}
       />
       <div className="mx-5 h-px bg-white/8" />
-      <div className="max-h-[52vh] overflow-y-auto py-2">
-        {items.map((item, index) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => {
-              setSelectedIndex(index);
-              if (item.type === "workspace") onOpenPage(item.page);
-              else runShortcut(item.id as ShortcutCommandId);
-            }}
-            className={
-              selectedIndex === index
-                ? "flex w-full items-center gap-3 bg-white/10 px-5 py-3 text-left"
-                : "flex w-full items-center gap-3 px-5 py-3 text-left hover:bg-white/6"
-            }
-          >
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-white/8 text-zinc-300">
-              <CommandWorkspaceIcon id={item.id} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-medium text-white">{item.label}</span>
-              <span className="block truncate text-xs text-zinc-500">{item.summary}</span>
-            </span>
-            {"binding" in item && item.binding ? (
-              <kbd className="text-xs text-zinc-500">{getShortcutBindingLabel(item.binding)}</kbd>
-            ) : null}
-          </button>
-        ))}
-        {items.length === 0 ? (
-          <p className="px-5 py-10 text-center text-sm text-zinc-500">没有匹配的命令。</p>
-        ) : null}
-      </div>
+      <ScrollArea className="h-[min(52vh,32rem)]">
+        <div className="py-2">
+          {items.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => {
+                setSelectedIndex(index);
+                if (item.type === "workspace") onOpenPage(item.page);
+                else runShortcut(item.id as ShortcutCommandId);
+              }}
+              className={
+                selectedIndex === index
+                  ? "flex w-full items-center gap-3 bg-white/10 px-5 py-3 text-left"
+                  : "flex w-full items-center gap-3 px-5 py-3 text-left hover:bg-white/6"
+              }
+            >
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-white/8 text-zinc-300">
+                <CommandWorkspaceIcon id={item.id} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-white">{item.label}</span>
+                <span className="block truncate text-xs text-zinc-500">{item.summary}</span>
+              </span>
+              {"binding" in item && item.binding ? (
+                <kbd className="text-xs text-zinc-500">{getShortcutBindingLabel(item.binding)}</kbd>
+              ) : null}
+            </button>
+          ))}
+          {items.length === 0 ? (
+            <p className="px-5 py-10 text-center text-sm text-zinc-500">没有匹配的命令。</p>
+          ) : null}
+        </div>
+      </ScrollArea>
       <footer className="flex items-center gap-2 border-t border-white/10 bg-black/20 px-5 py-3 text-xs text-zinc-400">
         <kbd className="rounded border border-white/15 bg-white/8 px-1.5 py-0.5 text-zinc-200">
           ?
