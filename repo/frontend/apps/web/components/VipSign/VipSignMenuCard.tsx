@@ -1,5 +1,4 @@
-import { CalendarDays, Check, Flame } from "lucide-react";
-import Image from "next/image";
+import { CalendarDays, CheckCircle2, Circle, Flame } from "lucide-react";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -18,77 +17,55 @@ export function VipSignMenuCard({
   const recentRecords = useMemo(() => signHistory?.signInfoList.slice(-4) ?? [], [signHistory]);
 
   return (
-    <section className="relative my-2 overflow-hidden rounded-xl border border-border bg-surface-elevated p-3 shadow-xs transition-all hover:border-content/20">
-      {/* 顶部标题与奖励提示 */}
-      <div className="flex items-center justify-between gap-2 px-0.5">
+    <section className="my-1.5 rounded-xl bg-surface-elevated/60 p-2.5">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-1.5">
-          <CalendarDays className="size-4 shrink-0 text-brand" />
-          <span className="truncate text-xs font-bold text-content">
+          <CalendarDays className="size-3.5 shrink-0 text-content-muted" />
+          <span className="truncate text-xs font-semibold text-content">
             {t("profile.menu.vipSign")}
           </span>
+          {signHistory?.subText && (
+            <span className="flex min-w-0 items-center gap-1 truncate text-[11px] text-content-muted">
+              <Flame className="size-3 shrink-0 text-warning" />
+              {signHistory.subText}
+            </span>
+          )}
         </div>
-        {signHistory?.subText && (
-          <span className="flex shrink-0 items-center gap-1 truncate text-[11px] text-content-muted">
-            <Flame className="size-3 text-warning" />
-            {signHistory.subText}
-          </span>
-        )}
+        <button
+          type="button"
+          onClick={onAction}
+          disabled={isLoading || isSigning}
+          className={cn(
+            "h-7 shrink-0 rounded-md px-2.5 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-hidden disabled:cursor-wait disabled:opacity-60",
+            hasSignedToday
+              ? "bg-surface-sunken text-content-muted hover:bg-accent hover:text-content"
+              : "bg-brand text-brand-foreground hover:bg-brand-hover",
+          )}
+        >
+          {isLoading || isSigning ? "..." : actionLabel}
+        </button>
       </div>
 
-      {/* 4天签到进度连线图 */}
-      <div className="relative my-3 flex flex-col gap-1.5">
-        {/* 日期 Label 行 */}
-        <div className="flex w-full items-center justify-evenly text-center">
-          {recentRecords.map((record) => (
-            <span
-              key={`label-${record.dayText}-${record.signTime}`}
-              className={cn(
-                "w-8 text-center text-[10px] font-medium transition-colors",
-                record.today ? "font-bold text-brand" : "text-content-muted",
-              )}
-            >
-              {record.today ? "今天" : record.dayText}
-            </span>
-          ))}
-        </div>
-
-        {/* 圆圈 Node 行（背景居中横线被实心节点遮挡） */}
-        <div className="relative flex w-full items-center justify-evenly">
-          {/* 背景居中虚线 - top-1/2 垂直精准对齐圆圈中心 */}
-          <div className="pointer-events-none absolute inset-x-6 top-1/2 z-0 h-px -translate-y-1/2 border-t border-dashed border-border" />
-
+      {recentRecords.length > 0 && (
+        <div className="mt-2.5 flex items-center justify-around rounded-lg bg-content/5 px-2.5 py-1.5">
           {recentRecords.map((record) => {
-            const nodeElement = (
-              <div
-                className={cn(
-                  "relative z-10 flex size-8 items-center justify-center rounded-full bg-surface-sunken text-[10px] font-semibold shadow-xs transition-all",
-                  record.sign
-                    ? "border border-brand/50 text-brand ring-2 ring-brand/20"
-                    : record.today
-                      ? "animate-pulse border-2 border-brand text-brand ring-2 ring-brand/20"
-                      : "border border-border text-content-muted",
-                )}
-              >
-                {record.sign && record.songCoverUrl ? (
-                  <Image
-                    fill
-                    sizes="32px"
-                    src={record.songCoverUrl}
-                    alt=""
-                    className="rounded-full object-cover"
-                  />
-                ) : record.today ? (
-                  <span className="text-[11px] font-bold">今</span>
+            const status = (
+              <>
+                {record.sign ? (
+                  <CheckCircle2 className="size-3.5 text-brand" aria-hidden="true" />
                 ) : (
-                  <span>{record.dayText.replace("日", "")}</span>
+                  <Circle className="size-3.5 text-content-subtle" aria-hidden="true" />
                 )}
-
-                {record.sign && (
-                  <span className="absolute -right-0.5 -bottom-0.5 flex size-3.5 items-center justify-center rounded-full bg-brand text-brand-foreground ring-2 ring-surface-elevated">
-                    <Check className="size-2.5 stroke-3" />
-                  </span>
-                )}
-              </div>
+                <span
+                  className={cn(
+                    "text-[11px]",
+                    record.sign ? "text-content" : "text-content-muted",
+                    record.today && "font-semibold",
+                  )}
+                >
+                  {record.today ? "今日" : record.dayText}
+                </span>
+              </>
             );
 
             if (record.sign) {
@@ -100,10 +77,10 @@ export function VipSignMenuCard({
                     event.stopPropagation();
                     onSelectSignDay?.(record.signTime);
                   }}
-                  className="relative z-10 cursor-pointer transition-transform hover:scale-110 focus:outline-hidden active:scale-95"
+                  className="flex min-w-0 cursor-pointer items-center gap-1 rounded-sm px-1 py-0.5 transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-hidden"
                   title={`${record.dayText} 签到详情`}
                 >
-                  {nodeElement}
+                  {status}
                 </button>
               );
             }
@@ -115,39 +92,22 @@ export function VipSignMenuCard({
                   type="button"
                   onClick={onAction}
                   disabled={isLoading || isSigning}
-                  className="relative z-10 cursor-pointer transition-transform hover:scale-110 focus:outline-hidden active:scale-95 disabled:cursor-wait disabled:opacity-60"
+                  className="flex min-w-0 cursor-pointer items-center gap-1 rounded-sm px-1 py-0.5 transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-hidden disabled:cursor-wait disabled:opacity-60"
                   title={actionLabel}
                 >
-                  {nodeElement}
+                  {status}
                 </button>
               );
             }
 
             return (
-              <div key={record.dayText} className="relative z-10" aria-label={record.dayText}>
-                {nodeElement}
+              <div key={record.dayText} className="flex min-w-0 items-center gap-1 px-1 py-0.5">
+                {status}
               </div>
             );
           })}
         </div>
-      </div>
-
-      {/* 底部居中打卡/签到按钮 */}
-      <div className="flex justify-center pt-0.5">
-        <button
-          type="button"
-          onClick={onAction}
-          disabled={isLoading || isSigning}
-          className={cn(
-            "flex h-7.5 w-full max-w-[150px] items-center justify-center gap-1 rounded-full text-xs font-bold transition-all active:scale-95 disabled:cursor-wait disabled:opacity-60",
-            hasSignedToday
-              ? "border border-border bg-surface-sunken text-content hover:border-content/30 hover:bg-accent"
-              : "hover:scale-1.03 bg-brand text-brand-foreground shadow-brand hover:bg-brand-hover",
-          )}
-        >
-          {isLoading || isSigning ? "..." : actionLabel}
-        </button>
-      </div>
+      )}
     </section>
   );
 }

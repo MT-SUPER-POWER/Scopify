@@ -80,11 +80,11 @@ export default function ProfilePage() {
           onEdit={() => void requireLoginAction(() => setEditOpen(true))}
         />
 
-        <div className="mx-auto w-full max-w-7xl px-6 py-8">
-          <div className="space-y-12">
+        <div className="mx-auto w-full max-w-7xl px-6 pt-5 pb-8">
+          <div className="space-y-10">
             {!isSelf ? (
               <section>
-                <h2 className="mb-6 text-2xl font-bold">
+                <h2 className="mb-4 text-2xl font-bold">
                   {t("profile.page.publicPlaylists") || "公开歌单"}
                 </h2>
                 {playlists.length > 0 ? (
@@ -101,7 +101,7 @@ export default function ProfilePage() {
             ) : (
               <>
                 <section>
-                  <h2 className="mb-6 text-2xl font-bold">
+                  <h2 className="mb-4 text-2xl font-bold">
                     {t("profile.page.recentSongs") || "最近播放歌曲"}
                   </h2>
                   {recentSongs.length > 0 ? (
@@ -119,7 +119,7 @@ export default function ProfilePage() {
                 </section>
 
                 <section>
-                  <h2 className="mb-6 text-2xl font-bold">
+                  <h2 className="mb-4 text-2xl font-bold">
                     {t("profile.page.recentPlaylists") || "最近播放歌单"}
                   </h2>
                   {recentPlaylists.length > 0 ? (

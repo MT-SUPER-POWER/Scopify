@@ -106,9 +106,6 @@ export function UserHero({ userInfo, playlistCount }: Props) {
               {t("profile.hero.joined", { date: formatDate(userInfo.createTime) })}
             </span>
           )}
-          <div className="flex scale-90 items-center justify-center">
-            <UserVipBadge vipType={userInfo.vipType} />
-          </div>
         </div>
 
         <div className="mb-2 flex min-w-0 items-center gap-3 md:mb-4">
@@ -118,6 +115,10 @@ export function UserHero({ userInfo, playlistCount }: Props) {
           >
             {userInfo.nickname}
           </h1>
+          <UserVipBadge
+            vipType={userInfo.vipType}
+            className="h-5 shrink-0 rounded-sm px-1.5 text-[11px] font-bold"
+          />
         </div>
 
         {userInfo.signature && (
