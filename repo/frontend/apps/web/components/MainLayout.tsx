@@ -8,8 +8,10 @@ import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
+import { DesktopPlaybackWallpaperRenderer } from "@/components/desktopWallpaper/DesktopPlaybackWallpaperRenderer";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
+import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
 import { runtime } from "@/lib/runtime";
 import { DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH } from "@/constants/desktopPlaybackController";
 // lib
@@ -81,6 +83,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
+  const wallpaperPresentation = useDesktopPlaybackWallpaperPresentation();
 
   useEffect(() => {
     return runtime.window.onFullscreenChanged(setIsFullscreen);
@@ -121,6 +124,19 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       panelElement.style.willChange = "";
     };
   }, [isCollapsed, isMounted, sidebarPanelRef]);
+
+  if (wallpaperPresentation.active && wallpaperPresentation.model) {
+    return (
+      <PlaybackMediaRuntimeProvider>
+        <main
+          data-desktop-playback-wallpaper-root
+          className="relative h-screen w-screen overflow-hidden bg-transparent"
+        >
+          <DesktopPlaybackWallpaperRenderer model={wallpaperPresentation.model} />
+        </main>
+      </PlaybackMediaRuntimeProvider>
+    );
+  }
 
   const content = (
     <div

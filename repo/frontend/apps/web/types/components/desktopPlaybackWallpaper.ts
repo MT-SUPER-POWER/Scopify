@@ -56,3 +56,7 @@ export interface DesktopPlaybackWallpaperControlsProps {
   onDesktopIconVisibilityChange(visible: boolean): Promise<void>;
   onRetry(): Promise<void>;
 }
+
+export interface DesktopPlaybackWallpaperRendererProps {
+  model: DesktopPlaybackWallpaperModel;
+}

@@ -11,6 +11,10 @@ export let trayWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let lastBlurTime = 0;
 
+interface TrayOptions {
+  onMainWindowRequested?(): Promise<void> | void;
+}
+
 function createTrayWindow() {
   const window = new BrowserWindow({
     width: TRAY_WIDTH,
@@ -56,7 +60,7 @@ function createTrayWindow() {
   return window;
 }
 
-function initTray(mainWindow: Electron.BrowserWindow) {
+function initTray(mainWindow: Electron.BrowserWindow, options: TrayOptions = {}) {
   // 如果已经初始化过，不要重复创建
   if (tray) return;
 
@@ -112,6 +116,12 @@ function initTray(mainWindow: Electron.BrowserWindow) {
   });
 
   tray.on("double-click", () => {
+    if (options.onMainWindowRequested) {
+      void Promise.resolve(options.onMainWindowRequested()).catch((error) => {
+        console.error("[tray] failed to reveal the main window", error);
+      });
+      return;
+    }
     if (mainWindow && !mainWindow.isDestroyed()) {
       if (mainWindow.isVisible()) {
         mainWindow.focus();

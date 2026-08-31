@@ -127,7 +127,7 @@ describe("desktop playback wallpaper state machine", () => {
 });
 
 describe("desktop playback wallpaper capability", () => {
-  test("authorizes the main, DockMenu, and dedicated controller renderers only", () => {
+  test("authorizes only the main, tray, and controller renderers", () => {
     const allowed = {
       controllerWindowId: 30,
       mainWindowId: 10,
@@ -138,12 +138,8 @@ describe("desktop playback wallpaper capability", () => {
     expect(isDesktopPlaybackWallpaperControlSender(20, allowed)).toBeTrue();
     expect(isDesktopPlaybackWallpaperControlSender(30, allowed)).toBeTrue();
     expect(isDesktopPlaybackWallpaperControlSender(40, allowed)).toBeFalse();
-    expect(
-      isDesktopPlaybackWallpaperModelReader(40, { ...allowed, wallpaperWindowId: 40 }),
-    ).toBeTrue();
-    expect(
-      isDesktopPlaybackWallpaperModelReader(50, { ...allowed, wallpaperWindowId: 40 }),
-    ).toBeFalse();
+    expect(isDesktopPlaybackWallpaperModelReader(30, allowed)).toBeTrue();
+    expect(isDesktopPlaybackWallpaperModelReader(50, allowed)).toBeFalse();
   });
 
   test("persists one atomic intent and exposes the settled driver status", async () => {
@@ -369,7 +365,7 @@ describe("desktop playback wallpaper PowerShell scripts", () => {
   });
 });
 
-test("desktop wallpaper driver does not reject packaged Windows runtimes", () => {
+test("desktop wallpaper driver reuses the main window instead of creating a Replica", () => {
   const driverSource = readFileSync(
     fileURLToPath(
       new URL("../main/module/desktopPlaybackWallpaper/electronDriver.ts", import.meta.url),
@@ -378,5 +374,21 @@ test("desktop wallpaper driver does not reject packaged Windows runtimes", () =>
   );
 
   expect(driverSource).not.toContain("packaged-driver-unsupported");
-  expect(driverSource).not.toContain('process.platform === "win32" && !app.isPackaged');
+  expect(driverSource).not.toContain("new BrowserWindow");
+  expect(driverSource).not.toContain("loadURL(");
+  expect(driverSource).toContain("createNativeWallpaperHost");
+  expect(driverSource).not.toContain("attachWindowsDesktopSurface");
+});
+
+test("production wallpaper hosting uses the resident native helper instead of PowerShell", () => {
+  const hostSource = readFileSync(
+    fileURLToPath(
+      new URL("../main/module/desktopPlaybackWallpaper/nativeWallpaperHost.ts", import.meta.url),
+    ),
+    "utf8",
+  );
+
+  expect(hostSource).toContain('"scopify-wallpaper-helper.exe"');
+  expect(hostSource).toContain('["attach", "--hwnd", hwnd.toString(), "--zguard"]');
+  expect(hostSource).not.toContain("powershell.exe");
 });
