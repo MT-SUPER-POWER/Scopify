@@ -85,6 +85,18 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyM", primary: true, shift: true },
   },
   {
+    id: "open-folia-settings",
+    group: "interface",
+    labelKey: "shortcuts.command.openFoliaSettings",
+    defaultBinding: { key: "Comma", primary: true, shift: true },
+  },
+  {
+    id: "open-folia-theme-library",
+    group: "interface",
+    labelKey: "shortcuts.command.openFoliaThemeLibrary",
+    defaultBinding: { key: "Period", primary: true, shift: true },
+  },
+  {
     id: "toggle-sidebar",
     group: "interface",
     labelKey: "shortcuts.command.toggleSidebar",
@@ -95,6 +107,24 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     group: "interface",
     labelKey: "shortcuts.command.toggleQueue",
     defaultBinding: { key: "KeyJ", primary: true },
+  },
+  {
+    id: "toggle-audio-settings",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleAudioSettings",
+    defaultBinding: { key: "KeyA", primary: true, alt: true },
+  },
+  {
+    id: "toggle-desktop-controller",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleDesktopController",
+    defaultBinding: { key: "KeyD", primary: true, alt: true },
+  },
+  {
+    id: "toggle-desktop-music-mode",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleDesktopMusicMode",
+    defaultBinding: { key: "KeyP", primary: true, alt: true },
   },
   {
     id: "toggle-fullscreen",
@@ -163,4 +193,8 @@ export const DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS = [
   "seek-backward-1s",
   "seek-forward-1s",
   "open-current-track-comments",
+  "open-shortcut-settings",
+  "toggle-queue",
+  "toggle-audio-settings",
+  "toggle-desktop-music-mode",
 ] as const satisfies readonly ShortcutCommandId[];

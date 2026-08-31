@@ -14,6 +14,7 @@ import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjecti
 import { useLikedVoicesQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaybackAuthority } from "@/hooks/player/usePlaybackAuthority";
 import { useDiscordPresence } from "@/hooks/player/useDiscordPresence";
+import { useMediaSession } from "@/hooks/player/useMediaSession";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { createCompositePlaybackAuthorityTransport } from "@/lib/playbackProjection/compositeTransport";
 import { systemPlaybackClock } from "@/lib/playbackProjection/clock";
@@ -103,6 +104,11 @@ export function PlaybackAuthorityProvider({
     [currentSongDetail, isPlayingIntent],
   );
   useDiscordPresence(discordPresence);
+  useMediaSession({
+    audioRef,
+    currentSongDetail,
+    isPlaying: isPlayingIntent,
+  });
   const lyricVersion = useMemo(() => {
     if (!rawLyric || !currentSongDetail) return null;
     return [
@@ -225,6 +231,8 @@ export function PlaybackAuthorityProvider({
           );
         });
       },
+      moveQueueItem: (fromIndex, toIndex) =>
+        usePlayerStore.getState().moveQueueItem(fromIndex, toIndex),
       next: () => usePersonalFmStore.getState().advance(),
       onEnded: () => usePersonalFmStore.getState().advance("ended"),
       onPhaseChange: (phase) => {
@@ -247,7 +255,9 @@ export function PlaybackAuthorityProvider({
         }
       },
       onVolumeChange: (nextVolume) => usePlayerStore.getState().setVolume(nextVolume),
+      playQueueIndex: (index) => usePlayerStore.getState().playQueueIndex(index),
       previous: () => usePlayerStore.getState().playPrev(),
+      removeQueueItem: (index) => usePlayerStore.getState().removeQueueItem(index),
       toggleLike: async () => {
         const currentTrack = usePlayerStore.getState().currentSongDetail;
         const nextLiked = await toggleCurrentSongLike(liked);

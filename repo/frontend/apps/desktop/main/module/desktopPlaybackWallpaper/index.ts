@@ -25,12 +25,12 @@ import { createDesktopPlaybackWallpaperPreferencesRepository } from "./preferenc
 const PREFERENCES_FILE = "desktop-playback-wallpaper.json";
 
 let capability: DesktopPlaybackWallpaperCapability | null = null;
+let initializationPromise: Promise<DesktopPlaybackWallpaperModel> | null = null;
 let controllerHost: DesktopPlaybackControllerHost | null = null;
 let mainWindow: BrowserWindow | null = null;
 let ipcRegistered = false;
 let quitCleanupRegistered = false;
 let getControllerWindow: () => BrowserWindow | null = () => null;
-let getWallpaperWindow: () => BrowserWindow | null = () => null;
 
 interface DesktopPlaybackControllerHost extends DesktopPlaybackControllerLauncher {
   setLayout(layout: DesktopPlaybackControllerLayout): boolean;
@@ -40,7 +40,6 @@ export interface DesktopPlaybackWallpaperCapabilityHostOptions {
   controller?: DesktopPlaybackControllerHost;
   driver?: DesktopPlaybackWallpaperDriver;
   getControllerWindow?: () => BrowserWindow | null;
-  getWallpaperWindow?: () => BrowserWindow | null;
   preferencesFilePath?: string;
 }
 
@@ -51,7 +50,6 @@ export function initializeDesktopPlaybackWallpaperCapability(
   mainWindow = nextMainWindow;
   controllerHost = options.controller ?? controllerHost;
   getControllerWindow = options.getControllerWindow ?? getControllerWindow;
-  getWallpaperWindow = options.getWallpaperWindow ?? getWallpaperWindow;
 
   if (!capability) {
     const preferences = createDesktopPlaybackWallpaperPreferencesRepository({
@@ -65,7 +63,7 @@ export function initializeDesktopPlaybackWallpaperCapability(
       preferences,
     });
     capability.subscribe(broadcastModel);
-    void capability.initialize();
+    initializationPromise = capability.initialize();
   }
 
   registerIpcHandlers();
@@ -75,11 +73,17 @@ export function initializeDesktopPlaybackWallpaperCapability(
     app.once("will-quit", () => {
       void capability?.dispose();
       capability = null;
+      initializationPromise = null;
       controllerHost = null;
     });
   }
 
   return capability;
+}
+
+export function waitForDesktopPlaybackWallpaperInitialization() {
+  if (initializationPromise) return initializationPromise;
+  return Promise.resolve(capability?.getModel() ?? null);
 }
 
 function createFoundationDriver(platform: NodeJS.Platform): DesktopPlaybackWallpaperDriver {
@@ -183,7 +187,6 @@ function requireModelReader(event: IpcMainInvokeEvent, channel: string) {
       controllerWindowId: getWindowId(getControllerWindow()),
       mainWindowId: getWindowId(mainWindow),
       trayWindowId: getWindowId(trayWindow),
-      wallpaperWindowId: getWindowId(getWallpaperWindow()),
     })
   ) {
     return;
@@ -206,7 +209,6 @@ function broadcastModel(model: DesktopPlaybackWallpaperModel) {
   sendModel(mainWindow, model);
   sendModel(trayWindow, model);
   sendModel(getControllerWindow(), model);
-  sendModel(getWallpaperWindow(), model);
 }
 
 function sendModel(window: BrowserWindow | null, model: DesktopPlaybackWallpaperModel) {

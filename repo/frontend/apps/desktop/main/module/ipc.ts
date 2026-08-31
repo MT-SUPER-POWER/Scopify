@@ -41,6 +41,7 @@ import {
   readMusicSessionCookie,
   saveMusicSessionCookie,
 } from "./musicCookieStore.js";
+import { onDesktopLyricPlaybackStateChanged } from "./desktopLyric.js";
 import { resolveVideoExportWindowBounds } from "./videoExportWindow.js";
 
 interface VideoExportWindowRestoreState {
@@ -151,6 +152,7 @@ export function registerIpcHandlers(
     if (mainWindow) {
       updateThumbarButtons(mainWindow, isPlaying);
     }
+    onDesktopLyricPlaybackStateChanged(isPlaying);
   });
 
   ipcMain.handle("discord-presence:get-status", () => discordPresence.getStatus());
@@ -244,9 +246,7 @@ export function registerIpcHandlers(
   });
 
   ipcMain.handle("config:get-host", () => {
-    const config = loadDesktopHostConfig();
-    logger.info("[IPC] config:get-host", config);
-    return config;
+    return loadDesktopHostConfig();
   });
 
   ipcMain.handle("config:update-host", async (event, newConfig: DesktopHostConfig) => {

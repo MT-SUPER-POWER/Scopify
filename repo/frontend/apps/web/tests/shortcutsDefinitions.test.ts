@@ -40,6 +40,43 @@ describe("shortcut definitions", () => {
     expect(findShortcutConflict(developerTools.id, developerTools.defaultBinding, {})).toBeNull();
   });
 
+  test("registers audio settings, queue, and both desktop entry points with valid defaults", () => {
+    const audioSettings = getShortcut("toggle-audio-settings");
+    const queue = getShortcut("toggle-queue");
+    const desktopController = getShortcut("toggle-desktop-controller");
+    const desktopMusicMode = getShortcut("toggle-desktop-music-mode");
+
+    expect(audioSettings.defaultBinding).toEqual({ key: "KeyA", primary: true, alt: true });
+    expect(queue.defaultBinding).toEqual({ key: "KeyJ", primary: true });
+    expect(desktopController.defaultBinding).toEqual({ key: "KeyD", primary: true, alt: true });
+    expect(desktopMusicMode.defaultBinding).toEqual({ key: "KeyP", primary: true, alt: true });
+
+    expect(findShortcutConflict(audioSettings.id, audioSettings.defaultBinding, {})).toBeNull();
+    expect(findShortcutConflict(queue.id, queue.defaultBinding, {})).toBeNull();
+    expect(
+      findShortcutConflict(desktopController.id, desktopController.defaultBinding, {}),
+    ).toBeNull();
+    expect(
+      findShortcutConflict(desktopMusicMode.id, desktopMusicMode.defaultBinding, {}),
+    ).toBeNull();
+  });
+
+  test("registers distinct non-conflicting shortcuts for Folia settings and the theme library", () => {
+    const foliaSettings = getShortcut("open-folia-settings");
+    const foliaThemeLibrary = getShortcut("open-folia-theme-library");
+
+    expect(foliaSettings.defaultBinding).toEqual({ key: "Comma", primary: true, shift: true });
+    expect(foliaThemeLibrary.defaultBinding).toEqual({
+      key: "Period",
+      primary: true,
+      shift: true,
+    });
+    expect(findShortcutConflict(foliaSettings.id, foliaSettings.defaultBinding, {})).toBeNull();
+    expect(
+      findShortcutConflict(foliaThemeLibrary.id, foliaThemeLibrary.defaultBinding, {}),
+    ).toBeNull();
+  });
+
   test("limits desktop-controller registration to controls available in that window", () => {
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).toEqual(
       expect.arrayContaining([
@@ -48,6 +85,10 @@ describe("shortcut definitions", () => {
         "open-current-track-comments",
         "previous-track",
         "next-track",
+        "toggle-queue",
+        "toggle-audio-settings",
+        "open-shortcut-settings",
+        "toggle-desktop-music-mode",
       ]),
     );
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).not.toContain("toggle-sidebar");

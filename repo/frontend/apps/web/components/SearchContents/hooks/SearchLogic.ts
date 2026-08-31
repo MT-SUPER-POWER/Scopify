@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { getStoredMusicCookie } from "@/lib/web/auth";
 import { useSearchStore } from "@/store/module/search";
+import type { SearchRecentEntry } from "@/types/search";
 import type { SuggestItem } from "../SearchHelper";
 
 interface UseSearchLogicProps {
@@ -80,22 +82,26 @@ export function useSearchLogic({ inputRef, onClose, isActive = true }: UseSearch
   // 2. 行为拦截与处理 (单击/双击)
   // ─────────────────────────────────────────────────────────────────
   const handleSearch = useCallback(
-    (keyword?: string) => {
-      const trimmed = (keyword ?? localValue).trim();
+    (candidate?: SearchRecentEntry | string) => {
+      const entry: SearchRecentEntry =
+        typeof candidate === "string"
+          ? { category: "All", keyword: candidate }
+          : (candidate ?? { category: "All", keyword: localValue });
+      const trimmed = entry.keyword.trim();
       const query = trimmed || placeholder;
       if (!query) return;
-      if (trimmed) addRecent(trimmed);
+      if (trimmed) addRecent({ ...entry, keyword: query });
 
       inputRef.current?.blur();
-      smartRouter.replace(`/search?keywords=${encodeURIComponent(query)}`);
+      smartRouter.replace(buildSearchUrl(query, entry.category));
       onClose?.();
     },
     [localValue, placeholder, addRecent, smartRouter, onClose, inputRef],
   );
 
   const handleSelect = useCallback(
-    (keyword: string) => {
-      setLocalValue(keyword);
+    (candidate: SearchRecentEntry | string) => {
+      setLocalValue(typeof candidate === "string" ? candidate : candidate.keyword);
       setTimeout(() => inputRef.current?.focus(), 0);
     },
     [inputRef],
@@ -104,14 +110,14 @@ export function useSearchLogic({ inputRef, onClose, isActive = true }: UseSearch
   const clickTimeoutRef = useRef<number | null>(null);
 
   const handleItemClick = useCallback(
-    (keyword: string) => {
+    (candidate: SearchRecentEntry | string) => {
       if (clickTimeoutRef.current) {
         window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
-        handleSearch(keyword);
+        handleSearch(candidate);
       } else {
         clickTimeoutRef.current = window.setTimeout(() => {
-          handleSelect(keyword);
+          handleSelect(candidate);
           clickTimeoutRef.current = null;
         }, 250);
       }

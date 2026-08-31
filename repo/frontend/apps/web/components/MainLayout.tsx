@@ -8,10 +8,15 @@ import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
+import { DesktopPlaybackWallpaperRenderer } from "@/components/desktopWallpaper/DesktopPlaybackWallpaperRenderer";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
+import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
 import { runtime } from "@/lib/runtime";
-import { DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH } from "@/constants/desktopPlaybackController";
+import {
+  DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH,
+  DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH,
+} from "@/constants/desktopPlaybackController";
 // lib
 import { cn } from "@/lib/utils";
 import { useSearchStore } from "@/store/module/search";
@@ -20,7 +25,7 @@ import { useUiStore } from "@/store/module/ui";
 import Header from "../components/Header";
 import { LyricStageMount } from "../components/lyrics/LyricStageMount";
 import { PlayerBar } from "../components/PlayerBar";
-import { SearchModal } from "../components/SearchModal";
+import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
 // self components
 import MainLayoutSkeleton from "./MainLayout/Skeleton";
 import { Sidebar } from "./Sidebar";
@@ -57,7 +62,11 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   // 监听来自 Electron 主进程的导航请求
   useEffect(() => {
     return runtime.navigation.onNavigate((path) => {
-      if (path === DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH) return;
+      if (
+        path === DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH ||
+        path === DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH
+      )
+        return;
       router.push(path, { scroll: false });
     });
   }, [router]);
@@ -81,6 +90,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
+  const wallpaperPresentation = useDesktopPlaybackWallpaperPresentation();
 
   useEffect(() => {
     return runtime.window.onFullscreenChanged(setIsFullscreen);
@@ -122,6 +132,19 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     };
   }, [isCollapsed, isMounted, sidebarPanelRef]);
 
+  if (wallpaperPresentation.active && wallpaperPresentation.model) {
+    return (
+      <PlaybackMediaRuntimeProvider>
+        <main
+          data-desktop-playback-wallpaper-root
+          className="relative h-screen w-screen overflow-hidden bg-transparent"
+        >
+          <DesktopPlaybackWallpaperRenderer model={wallpaperPresentation.model} />
+        </main>
+      </PlaybackMediaRuntimeProvider>
+    );
+  }
+
   const content = (
     <div
       className={cn(
@@ -131,7 +154,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       )}
     >
       {/* 全局工具注册 */}
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <CommandWorkspaceModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <KeyboardShortcutHelp />
       <LyricStageMount />
 

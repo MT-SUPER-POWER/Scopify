@@ -16,20 +16,21 @@
   "main": "out/main/main.js",
   "scripts": {
     "electron:ensure": "bun run install-electron --no",
-    "predev": "bun run electron:ensure",
+    "predev": "bun run electron:ensure && bun run wallpaper:build",
     "dev": "electron-vite dev",
+    "wallpaper:build": "bun scripts/build-wallpaper-helper.ts",
     "sync:renderer": "bun scripts/sync-renderer.ts",
     "backend:prepare": "bun scripts/prepare-backend-resource.ts",
-    "build": "electron-vite build && bun scripts/prepare-packaged-app.ts && bun run check:runtime-bundle",
-    "build:host": "electron-vite build && bun scripts/prepare-packaged-app.ts && bun run check:runtime-bundle",
+    "build": "bun run wallpaper:build && electron-vite build && bun scripts/prepare-packaged-app.ts && bun run check:runtime-bundle",
+    "build:host": "bun run wallpaper:build && electron-vite build && bun scripts/prepare-packaged-app.ts && bun run check:runtime-bundle",
     "check:runtime-bundle": "bun scripts/check-runtime-bundle.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test tests",
-    "package:win": "bun run electron:ensure && bun run backend:prepare && electron-builder --win --publish never",
+    "package:win": "bun run electron:ensure && bun run wallpaper:build && bun run backend:prepare && electron-builder --win --publish never",
     "package:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish never",
-    "release:win": "bun run electron:ensure && bun run backend:prepare && electron-builder --win --publish always",
+    "release:win": "bun run electron:ensure && bun run wallpaper:build && bun run backend:prepare && electron-builder --win --publish always",
     "release:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish always",
-    "build:win": "bun run electron:ensure && bun run backend:prepare && electron-builder --win --publish never",
+    "build:win": "bun run electron:ensure && bun run wallpaper:build && bun run backend:prepare && electron-builder --win --publish never",
     "build:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish never"
   },
   "dependencies": {
@@ -82,7 +83,7 @@
         "from": "prototypes/desktop-wallpaper-host-spike",
         "to": "desktop-wallpaper-host-spike",
         "filter": [
-          "**/*.ps1"
+          "system-wallpaper.ps1"
         ]
       },
       {
@@ -101,6 +102,12 @@
       "!**/*.map"
     ],
     "win": {
+      "extraResources": [
+        {
+          "from": "native/wallpaper-helper/target/release/scopify-wallpaper-helper.exe",
+          "to": "scopify-wallpaper-helper.exe"
+        }
+      ],
       "target": [
         "nsis"
       ],

@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import TracklistTable from "@/components/Playlist/TrackTable";
 import { EditUserProfileDialog } from "@/components/profile/EditUserProfileDialog";
 import { PublicPlaylistGrid } from "@/components/profile/PublicPlaylistGrid";
 import { UserActionBar } from "@/components/profile/UserActionBar";
@@ -27,8 +26,15 @@ export default function ProfilePage() {
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileOverride, setProfileOverride] = useState<NeteaseUser | null>(null);
 
-  const { userInfo, playlists, recentSongs, recentPlaylists, themeColor, isLoading, isSelf } =
-    useUserData(uid);
+  const {
+    userInfo,
+    playlists,
+    recentPlaybackPlaylist,
+    recentPlaylists,
+    themeColor,
+    isLoading,
+    isSelf,
+  } = useUserData(uid);
 
   if (!uid)
     return (
@@ -80,17 +86,19 @@ export default function ProfilePage() {
           onEdit={() => void requireLoginAction(() => setEditOpen(true))}
         />
 
-        <div className="mx-auto w-full max-w-7xl px-6 py-8">
-          <div className="space-y-12">
+        <div className="mx-auto w-full max-w-7xl px-6 pt-5 pb-8">
+          <div className="space-y-10">
             {!isSelf ? (
               <section>
-                <h2 className="mb-6 text-2xl font-bold">
+                <h2 className="mb-4 text-2xl font-bold">
                   {t("profile.page.publicPlaylists") || "公开歌单"}
                 </h2>
                 {playlists.length > 0 ? (
                   <PublicPlaylistGrid
                     playlists={playlists}
-                    onClickPlaylist={(id) => router.push(`/playlist?id=${id}`)}
+                    onClickPlaylist={(playlist) =>
+                      router.push(playlist.href ?? `/playlist?id=${playlist.id}`)
+                    }
                   />
                 ) : (
                   <div className="py-12 text-center text-content/40">
@@ -101,31 +109,19 @@ export default function ProfilePage() {
             ) : (
               <>
                 <section>
-                  <h2 className="mb-6 text-2xl font-bold">
-                    {t("profile.page.recentSongs") || "最近播放歌曲"}
-                  </h2>
-                  {recentSongs.length > 0 ? (
-                    <TracklistTable
-                      tracks={recentSongs}
-                      disableVirtualization
-                      hideDateColumn
-                      readonly
-                    />
-                  ) : (
-                    <div className="py-4 text-sm text-content/40">
-                      {t("profile.page.noRecentSongs") || "暂无最近播放歌曲"}
-                    </div>
-                  )}
-                </section>
-
-                <section>
-                  <h2 className="mb-6 text-2xl font-bold">
+                  <h2 className="mb-4 text-2xl font-bold">
                     {t("profile.page.recentPlaylists") || "最近播放歌单"}
                   </h2>
-                  {recentPlaylists.length > 0 ? (
+                  {recentPlaybackPlaylist || recentPlaylists.length > 0 ? (
                     <PublicPlaylistGrid
-                      playlists={recentPlaylists}
-                      onClickPlaylist={(id) => router.push(`/playlist?id=${id}`)}
+                      playlists={
+                        recentPlaybackPlaylist
+                          ? [recentPlaybackPlaylist, ...recentPlaylists]
+                          : recentPlaylists
+                      }
+                      onClickPlaylist={(playlist) =>
+                        router.push(playlist.href ?? `/playlist?id=${playlist.id}`)
+                      }
                     />
                   ) : (
                     <div className="py-4 text-sm text-content/40">

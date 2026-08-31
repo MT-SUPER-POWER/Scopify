@@ -1,4 +1,4 @@
-import { useState } from "react";
+import Link from "next/link";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
 import type { ArtistInfo } from "@/types/artist";
@@ -12,8 +12,7 @@ interface Props {
 
 export function PopularTracks({ tracks, queue, artist }: Props) {
   const { t } = useI18n();
-  const [expanded, setExpanded] = useState(false);
-  const visibleTracks = expanded ? tracks : tracks.slice(0, 10);
+  const visibleTracks = tracks.slice(0, 10);
   // DEBUG: 歌手热门歌曲队列
   // console.log("Popular Track:", tracks);
 
@@ -32,13 +31,12 @@ export function PopularTracks({ tracks, queue, artist }: Props) {
             />
           ))}
           {tracks.length > 10 && (
-            <button
-              type="button"
-              onClick={() => setExpanded((value) => !value)}
+            <Link
+              href={`/artist/songs?id=${artist.id}`}
               className="mt-4 w-fit rounded-full border border-content/10 px-4 py-2 text-sm font-semibold text-content-muted transition hover:border-content/30 hover:text-content"
             >
-              {expanded ? t("common.action.showLess") : t("common.action.showAll")}
-            </button>
+              {t("common.action.showAll")}
+            </Link>
           )}
         </div>
       ) : (

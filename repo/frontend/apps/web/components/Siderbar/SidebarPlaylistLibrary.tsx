@@ -12,6 +12,7 @@ import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { CollapsibleLibraryGroup } from "./CollapsibleLibraryGroup";
 import { LibraryItem } from "./LibraryItem";
+import { PersonalFmPlaylistItem } from "./PersonalFmPlaylistItem";
 import { SidebarLibraryStateCard } from "./SidebarLibraryStateCard";
 
 interface SidebarPlaylistLibraryProps {
@@ -154,6 +155,7 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
         viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
       >
         <div className={cn("w-full min-w-0 space-y-1", isCollapsed ? "pb-2" : "pb-4")}>
+          {isLoggedIn && <PersonalFmPlaylistItem isCollapsed={isCollapsed} />}
           {content}
         </div>
       </ScrollArea>

@@ -1655,6 +1655,57 @@ export interface TranslateFn {
    */
   (key: "settings.section.desktopLyrics", params?: TranslationParams): string;
   /**
+   * zh-CN: 开启桌面歌词
+   * zh-TW: 開啟桌面歌詞
+   * en-US: Enable Desktop Lyrics
+   */
+  (key: "settings.desktopLyrics.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在桌面上显示浮动的独立歌词窗口。
+   * zh-TW: 在桌面上顯示浮動的獨立歌詞視窗。
+   * en-US: Show a standalone floating lyrics window on your desktop.
+   */
+  (key: "settings.desktopLyrics.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 副歌词是否打开
+   * zh-TW: 副歌詞是否開啟
+   * en-US: Show Secondary Lyrics
+   */
+  (key: "settings.desktopLyrics.showSecondaryLyric.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在主歌词下方同步显示翻译或注音歌词。
+   * zh-TW: 在主歌詞下方同步顯示翻譯或注音歌詞。
+   * en-US: Show translated or romanized lyrics below the main lyric line.
+   */
+  (key: "settings.desktopLyrics.showSecondaryLyric.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏 Windows 桌面图标
+   * zh-TW: 隱藏 Windows 桌面圖示
+   * en-US: Hide Windows Desktop Icons
+   */
+  (key: "settings.desktopLyrics.hideDesktopIcons.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 一键清爽桌面，隐藏桌面所有图标以获得无干扰的听歌与视觉体验。
+   * zh-TW: 一鍵清爽桌面，隱藏桌面所有圖示以獲得無干擾的聽歌與視覺體驗。
+   * en-US: Clean desktop at one click, hiding all desktop icons for an undisturbed listening experience.
+   */
+  (key: "settings.desktopLyrics.hideDesktopIcons.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面歌词播放音乐时防止休眠
+   * zh-TW: 桌面歌詞播放音樂時防止休眠
+   * en-US: Prevent Sleep During Playback
+   */
+  (key: "settings.desktopLyrics.preventSleepOnPlayback.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启桌面歌词并播放音乐时，阻止操作系统与显示器进入休眠。
+   * zh-TW: 開啟桌面歌詞並播放音樂時，阻止作業系統與顯示器進入休眠。
+   * en-US: Prevent operating system and display sleep while desktop lyrics are active and music is playing.
+   */
+  (
+    key: "settings.desktopLyrics.preventSleepOnPlayback.sublabel",
+    params?: TranslationParams,
+  ): string;
+  /**
    * zh-CN: 桌面歌词测试
    * zh-TW: 桌面歌詞測試
    * en-US: Desktop Lyrics Test
@@ -16376,6 +16427,12 @@ export interface TranslateFn {
    */
   (key: "shortcuts.conflict", params?: TranslationParams): string;
   /**
+   * zh-CN: 修改快捷键
+   * zh-TW: 修改快速鍵
+   * en-US: Edit shortcut
+   */
+  (key: "shortcuts.edit", params?: TranslationParams): string;
+  /**
    * zh-CN: 禁用快捷键
    * zh-TW: 停用快速鍵
    * en-US: Disable shortcut
@@ -16466,6 +16523,18 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.toggleLyricStage", params?: TranslationParams): string;
   /**
+   * zh-CN: 打开/关闭 Folia 设置
+   * zh-TW: 開啟/關閉 Folia 設定
+   * en-US: Open/Close Folia Settings
+   */
+  (key: "shortcuts.command.openFoliaSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭 Folia 主题库
+   * zh-TW: 開啟/關閉 Folia 主題庫
+   * en-US: Open/Close Folia Theme Library
+   */
+  (key: "shortcuts.command.openFoliaThemeLibrary", params?: TranslationParams): string;
+  /**
    * zh-CN: 切换侧边栏
    * zh-TW: 切換側欄
    * en-US: Toggle Sidebar
@@ -16477,6 +16546,24 @@ export interface TranslateFn {
    * en-US: Open/Close Queue
    */
   (key: "shortcuts.command.toggleQueue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭音频设置
+   * zh-TW: 開啟/關閉音訊設定
+   * en-US: Open/Close Audio Settings
+   */
+  (key: "shortcuts.command.toggleAudioSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开/关闭桌面音乐控制器
+   * zh-TW: 開啟/關閉桌面音樂控制器
+   * en-US: Open/Close Desktop Controller
+   */
+  (key: "shortcuts.command.toggleDesktopController", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启/关闭桌面音乐壁纸
+   * zh-TW: 開啟/關閉桌面音樂桌布
+   * en-US: Enable/Disable Desktop Music Wallpaper
+   */
+  (key: "shortcuts.command.toggleDesktopMusicMode", params?: TranslationParams): string;
   /**
    * zh-CN: 切换全屏
    * zh-TW: 切換全螢幕
@@ -16531,6 +16618,24 @@ export interface TranslateFn {
    * en-US: Keyboard Shortcut Help
    */
   (key: "shortcuts.help.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快捷键
+   * zh-TW: 快速鍵
+   * en-US: Shortcuts
+   */
+  (key: "shortcuts.help.panelTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 用于快速导航与控制的键盘快捷键。
+   * zh-TW: 用於快速導覽與控制的鍵盤快速鍵。
+   * en-US: Keyboard shortcuts for quick navigation and control.
+   */
+  (key: "shortcuts.help.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 常用
+   * zh-TW: 常用
+   * en-US: Recommended
+   */
+  (key: "shortcuts.help.recommended", params?: TranslationParams): string;
   /**
    * zh-CN: 搜索命令
    * zh-TW: 搜尋命令
@@ -17054,9 +17159,9 @@ export interface TranslateFn {
    */
   (key: "personalFm.error.loadFailed", params?: TranslationParams): string;
   /**
-   * zh-CN: 私人 FM · 动态队列
-   * zh-TW: 私人 FM · 動態隊列
-   * en-US: Personal FM · Dynamic queue
+   * zh-CN: 私人 FM
+   * zh-TW: 私人 FM
+   * en-US: Personal FM
    */
   (key: "personalFm.queue.dynamic", params?: TranslationParams): string;
   /**

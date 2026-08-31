@@ -82,3 +82,9 @@ export interface PlayerStore {
   toggleShuffle: () => void;
   volume: number;
 }
+
+export interface UseMediaSessionOptions {
+  audioRef: { current: HTMLAudioElement | null };
+  currentSongDetail: SongDetail | null;
+  isPlaying: boolean;
+}

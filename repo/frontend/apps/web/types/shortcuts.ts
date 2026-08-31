@@ -1,4 +1,8 @@
 import type { TranslationKey } from "@/lib/i18n";
+import type {
+  CommandWorkspaceRootPage,
+  CommandWorkspaceUsageCounts,
+} from "@/types/commandWorkspace";
 
 export type ShortcutCommandId =
   | "toggle-playback"
@@ -13,9 +17,14 @@ export type ShortcutCommandId =
   | "seek-forward-1s"
   | "open-search"
   | "toggle-lyric-stage"
+  | "open-folia-settings"
+  | "open-folia-theme-library"
   | "toggle-sidebar"
   | "open-shortcut-settings"
   | "toggle-queue"
+  | "toggle-audio-settings"
+  | "toggle-desktop-controller"
+  | "toggle-desktop-music-mode"
   | "show-shortcut-help"
   | "open-command-palette"
   | "toggle-mute"
@@ -47,10 +56,13 @@ export interface ShortcutCommandExecutorOptions {
 }
 
 export type ShortcutOverrides = Partial<Record<ShortcutCommandId, ShortcutBinding | null>>;
+export type ShortcutUsageCounts = Partial<Record<ShortcutCommandId, number>>;
 
 export interface ShortcutStoreState {
+  commandWorkspaceUsageCounts: CommandWorkspaceUsageCounts;
   overrides: ShortcutOverrides;
-  usageCounts: Partial<Record<ShortcutCommandId, number>>;
+  usageCounts: ShortcutUsageCounts;
+  incrementCommandWorkspaceUsage: (page: CommandWorkspaceRootPage) => void;
   setOverride: (commandId: ShortcutCommandId, binding: ShortcutBinding | null) => void;
   resetOverride: (commandId: ShortcutCommandId) => void;
   resetAllOverrides: () => void;

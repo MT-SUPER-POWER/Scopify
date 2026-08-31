@@ -3,8 +3,10 @@
 import { useMemo } from "react";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
+import { ListeningReportPanel } from "@/components/listeningReport/ListeningReportPanel";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useRecentSongsQuery } from "@/hooks/library/useLibraryQueries";
+import { useListeningReportSummary } from "@/hooks/listeningReport/useListeningReportSummary";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
@@ -15,6 +17,7 @@ export default function RecentSongsPage() {
   const isLoggedIn = useLoginStatus();
   const router = useSmartRouter();
   const recentSongsQuery = useRecentSongsQuery();
+  const listeningReport = useListeningReportSummary();
   const tracks = useMemo(() => recentSongsQuery.data ?? [], [recentSongsQuery.data]);
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (recentSongsQuery.isLoading) return null;
@@ -65,6 +68,7 @@ export default function RecentSongsPage() {
       playlistInfo={playlistInfo}
       playSourceId="library:recent"
       refetchTracks={recentSongsQuery.refetch}
+      reportSlot={<ListeningReportPanel {...listeningReport} />}
       themeColor="var(--scopify-page-accent-recent)"
       tracks={tracks}
     />

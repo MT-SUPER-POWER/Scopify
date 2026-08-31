@@ -4,9 +4,7 @@ export interface DesktopPlaybackWallpaperControlSenderIds {
   trayWindowId?: number | null;
 }
 
-export interface DesktopPlaybackWallpaperModelReaderIds extends DesktopPlaybackWallpaperControlSenderIds {
-  wallpaperWindowId?: number | null;
-}
+export type DesktopPlaybackWallpaperModelReaderIds = DesktopPlaybackWallpaperControlSenderIds;
 
 export function isDesktopPlaybackWallpaperControlSender(
   senderId: number,
@@ -21,8 +19,5 @@ export function isDesktopPlaybackWallpaperModelReader(
   senderId: number,
   allowed: DesktopPlaybackWallpaperModelReaderIds,
 ) {
-  return (
-    isDesktopPlaybackWallpaperControlSender(senderId, allowed) ||
-    allowed.wallpaperWindowId === senderId
-  );
+  return isDesktopPlaybackWallpaperControlSender(senderId, allowed);
 }

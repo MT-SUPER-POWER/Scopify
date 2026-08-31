@@ -2,7 +2,6 @@ const DESKTOP_AUXILIARY_PATHS = new Set([
   "/app-close",
   "/desktop-lyrics",
   "/desktop-playback-controller",
-  "/desktop-wallpaper",
   "/desktop-wallpaper-spike",
   "/login",
   "/tray",

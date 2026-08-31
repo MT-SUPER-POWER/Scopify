@@ -9,6 +9,9 @@ export type DesktopLyricCommand =
 export interface DesktopLyricPreferences {
   alwaysOnTop: boolean;
   clickThrough: boolean;
+  enabled?: boolean;
+  preventSleepOnPlayback?: boolean;
+  showSecondaryLyric?: boolean;
   skipTaskbar: boolean;
 }
 

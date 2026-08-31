@@ -4,11 +4,14 @@ import { Clock, Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchDefault, searchSuggest } from "@/lib/api/search";
+import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspace/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { cn } from "@/lib/utils";
 import { getStoredMusicCookie } from "@/lib/web/auth";
 import { useI18n } from "@/store/module/i18n";
 import { useSearchStore } from "@/store/module/search";
+import type { SearchRecentEntry } from "@/types/search";
 import { HighlightText, type SuggestItem, SuggestTag } from "./SearchHelper";
 
 const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
@@ -125,18 +128,22 @@ export default function HeaderSearch() {
   }, []);
 
   const handleSearch = useCallback(
-    (keyword?: string) => {
-      const trimmed = (keyword ?? localValue).trim();
+    (candidate?: SearchRecentEntry | string) => {
+      const entry: SearchRecentEntry =
+        typeof candidate === "string"
+          ? { category: "All", keyword: candidate }
+          : (candidate ?? { category: "All", keyword: localValue });
+      const trimmed = entry.keyword.trim();
       const query = trimmed || placeholder;
       if (!query) return;
       setLocalValue(query);
       setGlobalQuery(query);
-      addRecent(query);
+      if (trimmed) addRecent({ ...entry, keyword: query });
       setSelectedIndex(-1);
       setOpen(false);
       setFocused(false);
       inputRef.current?.blur();
-      smartRouter.replace(`/search?keywords=${encodeURIComponent(query)}`);
+      smartRouter.replace(buildSearchUrl(query, entry.category));
     },
     [localValue, placeholder, addRecent, setGlobalQuery, smartRouter],
   );
@@ -258,14 +265,14 @@ export default function HeaderSearch() {
             className={cn(
               "absolute inset-x-0 top-full z-50 overflow-hidden",
               GLASS,
-              "rounded-t-none rounded-b-2xl border-t-0 pt-2",
+              "space-y-1 rounded-t-none rounded-b-2xl border-t-0 p-2",
             )}
           >
             {/* 最近搜索 */}
             {showRecent && (
-              <>
-                <div className="flex items-center justify-between px-5 pt-2 pb-1">
-                  <span className="mb-1 text-[11px] font-semibold tracking-widest text-content-subtle uppercase">
+              <div className="space-y-0.5">
+                <div className="flex items-center justify-between px-2.5 py-1">
+                  <span className="text-[11px] font-semibold tracking-widest text-content-subtle uppercase">
                     {t("search.modal.recentSearches")}
                   </span>
                   <button
@@ -276,37 +283,48 @@ export default function HeaderSearch() {
                     {t("common.action.clearAll")}
                   </button>
                 </div>
-                {recentList.slice(0, 8).map((item: string, i: number) => (
-                  <motion.div
-                    key={item}
-                    initial={{ opacity: 0, x: -4 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.02 }}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => handleSearch(item)}
-                    onMouseEnter={() => setSelectedIndex(i)}
-                    className={cn(
-                      "group/item flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-accent",
-                      selectedIndex === i && "bg-accent",
-                    )}
-                  >
-                    <div className="flex min-w-0 items-center gap-3">
-                      <Clock className="size-4 shrink-0 text-content-subtle" />
-                      <span className="truncate text-[15px] text-content-muted">{item}</span>
-                    </div>
-                    <button
-                      onMouseDown={(e) => e.stopPropagation()}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeRecent(item);
-                      }}
-                      className="shrink-0 rounded-full p-1.5 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-accent"
+                {recentList.slice(0, 8).map((item, i) => {
+                  const filter = getCommandWorkspaceSearchFilterForCategory(item.category);
+
+                  return (
+                    <motion.div
+                      key={`${item.category}-${item.keyword}`}
+                      initial={{ opacity: 0, x: -4 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.02 }}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handleSearch(item)}
+                      onMouseEnter={() => setSelectedIndex(i)}
+                      onMouseLeave={() => setSelectedIndex(-1)}
+                      className={cn(
+                        "group/item relative flex cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2 transition-colors hover:bg-accent",
+                        selectedIndex === i && "bg-accent",
+                      )}
                     >
-                      <X className="size-3.5 text-content-subtle hover:text-content" />
-                    </button>
-                  </motion.div>
-                ))}
-              </>
+                      <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                        <Clock className="size-4 shrink-0 text-content-subtle" />
+                        <span className="truncate text-sm text-content-muted">{item.keyword}</span>
+                      </div>
+                      {filter ? (
+                        <kbd className="ml-auto rounded-md border border-border bg-surface-elevated px-1.5 py-0.5 font-mono text-[11px] text-content-muted transition-opacity group-hover/item:opacity-0">
+                          {filter.token}
+                        </kbd>
+                      ) : null}
+                      <button
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeRecent(item);
+                        }}
+                        className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1 opacity-0 transition-all group-hover/item:opacity-100 hover:bg-surface-elevated"
+                        aria-label={`移除 ${item.keyword}`}
+                      >
+                        <X className="size-3.5 text-content-subtle hover:text-content" />
+                      </button>
+                    </motion.div>
+                  );
+                })}
+              </div>
             )}
 
             {/* 加载状态 */}
@@ -318,9 +336,9 @@ export default function HeaderSearch() {
 
             {/* 建议列表 */}
             {showSuggests && (
-              <>
-                <div className="px-5 pb-1">
-                  <span className="text-xs font-semibold tracking-widest text-content-subtle uppercase">
+              <div className="space-y-0.5">
+                <div className="px-2.5 py-1">
+                  <span className="text-[11px] font-semibold tracking-widest text-content-subtle uppercase">
                     {t("search.modal.relatedSuggestions")}
                   </span>
                 </div>
@@ -333,21 +351,22 @@ export default function HeaderSearch() {
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => handleSearch(item.keyword)}
                     onMouseEnter={() => setSelectedIndex(i)}
+                    onMouseLeave={() => setSelectedIndex(-1)}
                     className={cn(
-                      "flex cursor-pointer items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-accent",
+                      "flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2.5 py-2 transition-colors hover:bg-accent",
                       selectedIndex === i && "bg-accent",
                     )}
                   >
-                    <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex min-w-0 items-center gap-2.5">
                       <Search className="size-4 shrink-0 text-content-subtle" />
-                      <span className="truncate text-base">
+                      <span className="truncate text-sm text-content">
                         <HighlightText raw={item.highLightInfo} />
                       </span>
                     </div>
                     <SuggestTag item={item} />
                   </motion.div>
                 ))}
-              </>
+              </div>
             )}
 
             {/* 空状态 */}

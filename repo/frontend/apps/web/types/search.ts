@@ -98,3 +98,8 @@ export const CATEGORIES = [
   "Voices",
 ] as const;
 export type Category = (typeof CATEGORIES)[number];
+
+export interface SearchRecentEntry {
+  category: Category;
+  keyword: string;
+}

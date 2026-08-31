@@ -1,16 +1,18 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { normalizeSearchRecentEntries, upsertSearchRecentEntry } from "@/lib/search/searchHistory";
+import type { SearchRecentEntry } from "@/types/search";
 
 interface SearchStore {
   query: string;
   isSearching: boolean;
-  recent: string[];
-  removeRecent: (q: string) => void;
+  recent: SearchRecentEntry[];
+  removeRecent: (entry: SearchRecentEntry) => void;
   placeholder: string;
   setQuery: (q: string) => void;
   setIsSearching: (b: boolean) => void;
   setPlaceholder: (p: string) => void;
-  addRecent: (q: string) => void;
+  addRecent: (entry: SearchRecentEntry) => void;
   clearQuery: () => void;
   clearRecent: () => void;
 }
@@ -25,25 +27,15 @@ export const useSearchStore = create<SearchStore>()(
       setQuery: (q: string) => set({ query: q }),
       setIsSearching: (b) => set({ isSearching: b }),
       setPlaceholder: (p: string) => set({ placeholder: p }),
-      addRecent: (q: string) => {
-        const list = get().recent.slice();
-        if (!q) return;
-        // keep uniqueness and cap to 20
-        const idx = list.indexOf(q);
-        if (idx !== -1) list.splice(idx, 1);
-        list.unshift(q);
-        if (list.length > 20) list.length = 20;
-        set({ recent: list });
+      addRecent: (entry) => {
+        set({ recent: upsertSearchRecentEntry(get().recent, entry) });
       },
       clearQuery: () => set({ query: "" }),
       clearRecent: () => set({ recent: [] }),
-      removeRecent: (q: string) => {
-        const list = get().recent.slice();
-        const idx = list.indexOf(q);
-        if (idx !== -1) {
-          list.splice(idx, 1);
-          set({ recent: list });
-        }
+      removeRecent: (entry) => {
+        set({
+          recent: get().recent.filter((item) => item.keyword !== entry.keyword),
+        });
       },
     }),
     {
@@ -54,6 +46,11 @@ export const useSearchStore = create<SearchStore>()(
         recent: state.recent,
         placeholder: state.placeholder,
       }),
+      version: 1,
+      migrate: (persistedState) => {
+        const state = persistedState as Partial<SearchStore>;
+        return { ...state, recent: normalizeSearchRecentEntries(state.recent) };
+      },
     },
   ),
 );

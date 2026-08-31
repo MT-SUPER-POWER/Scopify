@@ -23,7 +23,7 @@ import type {
   SubscribedVoiceList,
 } from "@/types/api/voicelist";
 import type { RadioDetail } from "@/types/api/radio";
-import type { RecentSongHistoryEntry } from "@/types/api/user";
+import { getRecentSong, getRecentSongEntries } from "@/types/api/user";
 import type { LibraryMediaItem } from "@/types/library";
 import type { Artist, Song, Voice } from "@/types/search";
 
@@ -36,10 +36,6 @@ function findLikedPlaylist(playlists: RawNeteasePlaylist[], userId: number) {
     playlists.find((playlist) => playlist.creator?.userId === userId) ??
     playlists[0]
   );
-}
-
-function getRecentSong(entry: RecentSongHistoryEntry) {
-  return entry.data ?? entry.resourceInfo?.songData ?? entry.song;
 }
 
 function toCreatedPodcastItem(voiceList: CreatedVoiceList): LibraryMediaItem {
@@ -209,7 +205,7 @@ export function useRecentSongsQuery() {
     queryKey: musicQueryKeys.library.recentSongs(userId ?? 0),
     queryFn: async (): Promise<SongDetail[]> => {
       const response = await getRecentSongs(100);
-      const entries = response.data.data?.list ?? response.data.list ?? [];
+      const entries = getRecentSongEntries(response.data);
       return entries.flatMap((entry) => {
         const song = getRecentSong(entry);
         return song ? [pruneSongDetail(song)] : [];

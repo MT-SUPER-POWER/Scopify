@@ -6,6 +6,8 @@ import type { Artist, Voice } from "@/types/search";
 export interface ActivityBannerCardProps {
   banner: NeteaseBanner;
   imageAlt: string;
+  isCenter?: boolean;
+  onClickSide?: () => void;
 }
 
 export interface CarouselDotNavigationProps {

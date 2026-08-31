@@ -40,8 +40,11 @@ export interface RawNeteasePlaylist {
   subscribed?: boolean | null;
   subscribedCount?: number;
   specialType?: number;
+  songCount?: number;
   tags?: string[];
   trackCount?: number;
+  trackIds?: unknown[];
+  trackNumber?: number;
   tracks?: RawSongDetail[];
 }
 
@@ -75,7 +78,7 @@ export const prunePlaylist = (raw: null | RawNeteasePlaylist | undefined): Netea
     createTime: raw.createTime ?? 0,
     coverImgUrl: raw.coverImgUrl ?? raw.picUrl ?? "",
     description: raw.description ?? "",
-    trackCount: raw.trackCount ?? 0,
+    trackCount: getPlaylistTrackCount(raw),
     playCount: raw.playCount ?? 0,
     privacy: raw.privacy === 10 ? 10 : 0,
     subscribed: Boolean(raw.subscribed),
@@ -87,6 +90,20 @@ export const prunePlaylist = (raw: null | RawNeteasePlaylist | undefined): Netea
     },
   };
 };
+
+/**
+ * 最近播放记录中的歌单并不总是使用 `trackCount`，因此需要兼容客户端返回的替代字段。
+ */
+export function getPlaylistTrackCount(playlist: null | RawNeteasePlaylist | undefined): number {
+  if (!playlist) return 0;
+
+  const declaredCount = [playlist.trackCount, playlist.songCount, playlist.trackNumber].find(
+    (value): value is number => typeof value === "number" && Number.isFinite(value) && value > 0,
+  );
+  if (declaredCount !== undefined) return declaredCount;
+
+  return playlist.trackIds?.length ?? playlist.tracks?.length ?? 0;
+}
 
 export interface RecommendPlaylist {
   id: number;

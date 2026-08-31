@@ -33,11 +33,19 @@ test.each(["release:win", "release:mac"] as const)(
   },
 );
 
-test("desktop packaging includes the wallpaper PowerShell hosts as resources", () => {
+test("desktop packaging keeps only the optional system-wallpaper PowerShell fallback", () => {
   expect(desktopPackage.build.extraResources).toContainEqual({
-    filter: ["**/*.ps1"],
+    filter: ["system-wallpaper.ps1"],
     from: "prototypes/desktop-wallpaper-host-spike",
     to: "desktop-wallpaper-host-spike",
+  });
+});
+
+test("Windows packaging builds and ships the native WorkerW helper", () => {
+  expect(desktopPackage.scripts["package:win"]).toContain("wallpaper:build");
+  expect(desktopPackage.build.win.extraResources).toContainEqual({
+    from: "native/wallpaper-helper/target/release/scopify-wallpaper-helper.exe",
+    to: "scopify-wallpaper-helper.exe",
   });
 });
 

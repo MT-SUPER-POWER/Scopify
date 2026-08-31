@@ -76,7 +76,11 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
   const duplicateCustomPreset = useAudioEqualizerStore((state) => state.duplicateCustomPreset);
   const renameCustomPreset = useAudioEqualizerStore((state) => state.renameCustomPreset);
   const accentColor = theme.accentColor;
+  const isDaylight = theme.name === "snow";
   const primaryColor = theme.primaryColor;
+  const mutedTextColor = `color-mix(in srgb, ${primaryColor} ${isDaylight ? "62%" : "68%"}, transparent)`;
+  const subtleTextColor = `color-mix(in srgb, ${primaryColor} ${isDaylight ? "48%" : "54%"}, transparent)`;
+  const sliderTrackColor = `color-mix(in srgb, ${primaryColor} ${isDaylight ? "16%" : "22%"}, transparent)`;
   const activeCustomPreset = isUserPresetId(draft.preset)
     ? (draft.customPresets.find((preset) => preset.id === draft.preset) ?? null)
     : null;
@@ -138,7 +142,7 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
   const commitDraft = () => commitSettings(draftRef.current);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" style={{ color: primaryColor }}>
       <div
         className="flex flex-col gap-3 rounded-2xl border p-3 sm:flex-row sm:items-center sm:justify-between"
         style={surfaceStyle}
@@ -269,7 +273,10 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
 
       {/* EQ bands */}
       <div className="rounded-2xl border p-4" style={surfaceStyle}>
-        <div className="mb-3 flex items-center justify-between text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
+        <div
+          className="mb-3 flex items-center justify-between text-[10px] font-semibold tracking-widest uppercase"
+          style={{ color: mutedTextColor }}
+        >
           <span>{t("audioEqualizer.bandGain")}</span>
           <span>
             {t("folia.audioEqualizer.autoHeadroom")} −{headroomDb} dB · +12 / −12 dB
@@ -281,8 +288,8 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
             return (
               <label key={band.frequency} className="flex flex-col items-center gap-1.5">
                 <span
-                  className={cn("text-[10px] font-semibold text-muted-foreground tabular-nums")}
-                  style={{ color: gain !== 0 ? accentColor : undefined }}
+                  className="text-[10px] font-semibold tabular-nums"
+                  style={{ color: gain !== 0 ? accentColor : mutedTextColor }}
                 >
                   {gain > 0 ? "+" : ""}
                   {gain}
@@ -300,23 +307,37 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
                   onPointerCancel={commitDraft}
                   onKeyUp={commitDraft}
                   onBlur={commitDraft}
-                  className="h-24 w-1.5 cursor-pointer appearance-none rounded-full bg-border accent-primary"
-                  style={{ accentColor, direction: "rtl", writingMode: "vertical-lr" }}
+                  className="h-24 w-1.5 cursor-pointer appearance-none rounded-full"
+                  style={{
+                    accentColor,
+                    backgroundColor: sliderTrackColor,
+                    direction: "rtl",
+                    writingMode: "vertical-lr",
+                  }}
                 />
-                <span className="text-[10px] font-semibold text-muted-foreground tabular-nums">
+                <span
+                  className="text-[10px] font-semibold tabular-nums"
+                  style={{ color: mutedTextColor }}
+                >
                   {band.label}
                 </span>
               </label>
             );
           })}
         </div>
-        <div className="mt-2 text-center text-[9px] tracking-widest text-muted-foreground uppercase">
+        <div
+          className="mt-2 text-center text-[9px] tracking-widest uppercase"
+          style={{ color: subtleTextColor }}
+        >
           Hz
         </div>
       </div>
 
       <div className="rounded-2xl border p-4" style={surfaceStyle}>
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+        <div
+          className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold tracking-[0.18em] uppercase"
+          style={{ color: mutedTextColor }}
+        >
           <span className="flex items-center gap-1.5">
             <Waves size={13} />
             {t("audioEqualizer.effects")}
@@ -329,20 +350,20 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
             return (
               <label key={control.id} className="flex flex-col gap-1">
                 <span className="flex items-baseline justify-between gap-2">
-                  <span className="text-[11px] font-semibold text-muted-foreground">
+                  <span className="text-[11px] font-semibold" style={{ color: mutedTextColor }}>
                     {t(`audioEqualizer.effect.${control.id}`)}
                   </span>
                   <span
-                    className="text-[10px] font-semibold text-muted-foreground tabular-nums"
-                    style={{ color: value !== control.neutral ? accentColor : undefined }}
+                    className="text-[10px] font-semibold tabular-nums"
+                    style={{ color: value !== control.neutral ? accentColor : mutedTextColor }}
                   >
                     {formatEffectValue(control, value)}
                   </span>
                 </span>
                 <input
                   aria-label={t(`audioEqualizer.effect.${control.id}`)}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-border accent-primary"
-                  style={{ accentColor }}
+                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full"
+                  style={{ accentColor, backgroundColor: sliderTrackColor }}
                   max={1000}
                   min={0}
                   onChange={(event) =>

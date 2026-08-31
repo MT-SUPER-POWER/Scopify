@@ -26,6 +26,15 @@
       "@/*": [
         "./*"
       ],
+      "@scopify/desktop-contract": [
+        "../../packages/desktop-contract/src/index.ts"
+      ],
+      "@scopify/ui": [
+        "../../packages/ui/src/index.ts"
+      ],
+      "@scopify/ui/*": [
+        "../../packages/ui/src/*"
+      ],
       "@components/*": [
         "./components/*"
       ],

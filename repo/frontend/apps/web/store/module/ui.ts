@@ -9,7 +9,6 @@ export const useUiStore = create<UiStore>()(
       isCollapsed: false,
       isLyricsOpen: false,
       isQueueOpen: false,
-      isCommandPaletteOpen: false,
       isShortcutHelpOpen: false,
       isFullscreen: false,
 
@@ -22,7 +21,6 @@ export const useUiStore = create<UiStore>()(
       toggleSidebar: () => set((state) => ({ isCollapsed: !state.isCollapsed })),
       setIsQueueOpen: (open) => set({ isQueueOpen: open }),
       toggleQueue: () => set((state) => ({ isQueueOpen: !state.isQueueOpen })),
-      setIsCommandPaletteOpen: (open) => set({ isCommandPaletteOpen: open }),
       setIsShortcutHelpOpen: (open) => set({ isShortcutHelpOpen: open }),
       setIsFullscreen: (fullscreen) => set({ isFullscreen: fullscreen }),
     }),

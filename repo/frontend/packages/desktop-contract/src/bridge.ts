@@ -24,7 +24,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 22;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 23;
 
 export interface DesktopVideoExportSource {
   id: string;

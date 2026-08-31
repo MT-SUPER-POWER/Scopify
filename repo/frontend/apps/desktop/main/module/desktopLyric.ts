@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, type IpcMainInvokeEvent } from "electron";
+import { app, BrowserWindow, ipcMain, powerSaveBlocker, type IpcMainInvokeEvent } from "electron";
 import fs from "node:fs";
 import { join } from "node:path";
 
@@ -16,6 +16,9 @@ const PREFERENCES_FILE = "desktop-lyric.json";
 const DEFAULT_PREFERENCES: DesktopLyricPreferences = {
   alwaysOnTop: true,
   clickThrough: false,
+  enabled: false,
+  preventSleepOnPlayback: true,
+  showSecondaryLyric: true,
   skipTaskbar: true,
 };
 
@@ -24,6 +27,8 @@ let desktopLyricWindow: BrowserWindow | null = null;
 let desktopLyricUrl: null | string = null;
 let preferences: DesktopLyricPreferences | null = null;
 let ipcRegistered = false;
+let powerSaveBlockerId: number | null = null;
+let isPlaybackPlaying = false;
 
 export interface DesktopLyricCompanionOptions {
   rendererBaseUrl: string;
@@ -69,16 +74,46 @@ function applyPreferences(window: BrowserWindow) {
   });
 }
 
+function updatePowerSaveBlocker() {
+  const currentPreferences = getPreferences();
+  const shouldPreventSleep =
+    Boolean(currentPreferences.preventSleepOnPlayback) &&
+    isWindowAlive(desktopLyricWindow) &&
+    isPlaybackPlaying;
+
+  if (shouldPreventSleep) {
+    if (powerSaveBlockerId === null || !powerSaveBlocker.isStarted(powerSaveBlockerId)) {
+      powerSaveBlockerId = powerSaveBlocker.start("prevent-display-sleep");
+    }
+  } else {
+    if (powerSaveBlockerId !== null) {
+      if (powerSaveBlocker.isStarted(powerSaveBlockerId)) {
+        powerSaveBlocker.stop(powerSaveBlockerId);
+      }
+      powerSaveBlockerId = null;
+    }
+  }
+}
+
+export function onDesktopLyricPlaybackStateChanged(isPlaying: boolean) {
+  isPlaybackPlaying = isPlaying;
+  updatePowerSaveBlocker();
+}
+
 function closeDesktopLyricWindow() {
   if (!isWindowAlive(desktopLyricWindow)) return false;
   desktopLyricWindow.destroy();
   desktopLyricWindow = null;
+  updatePowerSaveBlocker();
   return true;
 }
 
 function getPreferences(): DesktopLyricPreferences {
   preferences ??= readPreferences();
-  return preferences;
+  return {
+    ...preferences,
+    enabled: isWindowAlive(desktopLyricWindow),
+  };
 }
 
 function isDesktopLyricCommand(value: unknown): value is DesktopLyricCommand {
@@ -110,11 +145,16 @@ function isDesktopLyricPreferencesUpdate(value: unknown): value is DesktopLyricP
   const keys = Object.keys(value);
   if (keys.length === 0) return false;
 
-  return keys.every(
-    (key) =>
-      (key === "alwaysOnTop" || key === "skipTaskbar" || key === "clickThrough") &&
-      typeof value[key] === "boolean",
-  );
+  const validKeys = new Set([
+    "alwaysOnTop",
+    "clickThrough",
+    "enabled",
+    "preventSleepOnPlayback",
+    "showSecondaryLyric",
+    "skipTaskbar",
+  ]);
+
+  return keys.every((key) => validKeys.has(key) && typeof value[key] === "boolean");
 }
 
 function isDesktopLyricWindowSender(event: Electron.IpcMainEvent | IpcMainInvokeEvent) {
@@ -156,6 +196,15 @@ function readPreferences(): DesktopLyricPreferences {
         typeof parsed.clickThrough === "boolean"
           ? parsed.clickThrough
           : DEFAULT_PREFERENCES.clickThrough,
+      enabled: typeof parsed.enabled === "boolean" ? parsed.enabled : DEFAULT_PREFERENCES.enabled,
+      preventSleepOnPlayback:
+        typeof parsed.preventSleepOnPlayback === "boolean"
+          ? parsed.preventSleepOnPlayback
+          : DEFAULT_PREFERENCES.preventSleepOnPlayback,
+      showSecondaryLyric:
+        typeof parsed.showSecondaryLyric === "boolean"
+          ? parsed.showSecondaryLyric
+          : DEFAULT_PREFERENCES.showSecondaryLyric,
       skipTaskbar:
         typeof parsed.skipTaskbar === "boolean"
           ? parsed.skipTaskbar
@@ -287,6 +336,7 @@ function showDesktopLyricWindow() {
   desktopLyricWindow.once("ready-to-show", () => {
     desktopLyricWindow?.show();
     desktopLyricWindow?.webContents.send("desktop-lyric:preferences", getPreferences());
+    updatePowerSaveBlocker();
   });
 
   desktopLyricWindow.webContents.on("did-fail-load", (_event, code, desc, validatedUrl) => {
@@ -295,6 +345,7 @@ function showDesktopLyricWindow() {
 
   desktopLyricWindow.on("closed", () => {
     desktopLyricWindow = null;
+    updatePowerSaveBlocker();
   });
 
   desktopLyricWindow.loadURL(desktopLyricUrl).catch((error) => {
@@ -323,6 +374,7 @@ function updatePreferences(update: DesktopLyricPreferencesUpdate) {
     applyPreferences(desktopLyricWindow);
     desktopLyricWindow.webContents.send("desktop-lyric:preferences", nextPreferences);
   }
+  updatePowerSaveBlocker();
 
   return nextPreferences;
 }

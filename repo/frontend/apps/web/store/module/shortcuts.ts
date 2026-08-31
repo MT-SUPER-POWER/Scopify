@@ -5,8 +5,16 @@ import type { ShortcutStoreState } from "@/types/shortcuts";
 export const useShortcutStore = create<ShortcutStoreState>()(
   persist(
     (set) => ({
+      commandWorkspaceUsageCounts: {},
       overrides: {},
       usageCounts: {},
+      incrementCommandWorkspaceUsage: (page) =>
+        set((state) => ({
+          commandWorkspaceUsageCounts: {
+            ...state.commandWorkspaceUsageCounts,
+            [page]: (state.commandWorkspaceUsageCounts[page] ?? 0) + 1,
+          },
+        })),
       setOverride: (commandId, binding) =>
         set((state) => ({
           overrides: { ...state.overrides, [commandId]: binding },

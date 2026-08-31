@@ -22,6 +22,7 @@ export function useInWindowShortcuts({
   scope = "global",
 }: InWindowShortcutsOptions = {}) {
   const overrides = useShortcutStore((state) => state.overrides);
+  const incrementUsage = useShortcutStore((state) => state.incrementUsage);
   const defaultExecuteShortcutCommand = useShortcutCommands();
   const executeShortcutCommand = executeCommand ?? defaultExecuteShortcutCommand;
 
@@ -34,7 +35,6 @@ export function useInWindowShortcuts({
         event.code === "Escape" &&
         ui.isLyricsOpen &&
         !ui.isSearchOpen &&
-        !ui.isCommandPaletteOpen &&
         !ui.isShortcutHelpOpen
       ) {
         event.preventDefault();
@@ -54,12 +54,13 @@ export function useInWindowShortcuts({
       if (!canHandleShortcutInCurrentFocus(command.id, event.target)) return;
 
       event.preventDefault();
+      incrementUsage(command.id);
       executeShortcutCommand(command.id);
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [commandIds, executeShortcutCommand, overrides, scope]);
+  }, [commandIds, executeShortcutCommand, incrementUsage, overrides, scope]);
 }
 
 function canHandleShortcutInCurrentFocus(commandId: ShortcutCommandId, target: EventTarget | null) {
@@ -67,6 +68,7 @@ function canHandleShortcutInCurrentFocus(commandId: ShortcutCommandId, target: E
   if (
     commandId === "open-search" ||
     commandId === "open-command-palette" ||
+    commandId === "toggle-desktop-music-mode" ||
     commandId === "focus-playlist-search" ||
     commandId === "toggle-mute"
   )

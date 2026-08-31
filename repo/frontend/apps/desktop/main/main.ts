@@ -23,11 +23,15 @@ import { registerIpcHandlers } from "./module/ipc.js";
 import { createDesktopBackendController } from "./module/backend.js";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "./module/desktopLyric.js";
 import { initializeDesktopIconVisibilityCapability } from "./module/desktopIcons/index.js";
-import { initializeDesktopPlaybackWallpaperCapability } from "./module/desktopPlaybackWallpaper/index.js";
+import {
+  initializeDesktopPlaybackWallpaperCapability,
+  waitForDesktopPlaybackWallpaperInitialization,
+} from "./module/desktopPlaybackWallpaper/index.js";
 import {
   createElectronDesktopPlaybackWallpaperDriver,
   type ElectronDesktopPlaybackWallpaperDriver,
 } from "./module/desktopPlaybackWallpaper/electronDriver.js";
+import type { DesktopPlaybackWallpaperCapability } from "./module/desktopPlaybackWallpaper/capability.js";
 import {
   createDesktopPlaybackControllerWindow,
   type DesktopPlaybackControllerWindow,
@@ -57,6 +61,7 @@ let mainWindowReleased = false;
 let isCreatingWindow = false;
 let isQuitting = false;
 let desktopPlaybackWallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | null = null;
+let desktopPlaybackWallpaperCapability: DesktopPlaybackWallpaperCapability | null = null;
 let desktopPlaybackControllerWindow: DesktopPlaybackControllerWindow | null = null;
 let playbackBrokerIpcHost: PlaybackBrokerIpcHost | null = null;
 let audioFeatureBrokerIpcHost: AudioFeatureBrokerIpcHost | null = null;
@@ -204,9 +209,21 @@ function createMainWindow() {
   setupWindowModules(mainWindow);
 
   mainWindow.webContents.once("did-finish-load", () => {
-    notifyMainWindowVisibility();
-    void revealMainWindow();
-    setTimeout(() => desktopPlaybackWallpaperDriver?.prepare(), 500);
+    void waitForDesktopPlaybackWallpaperInitialization()
+      .catch((error) => {
+        logger.error("[desktop-playback-wallpaper] initialization failed", error);
+        return null;
+      })
+      .then(() => {
+        notifyMainWindowVisibility();
+        if (desktopPlaybackWallpaperDriver?.isWallpaperActive()) {
+          mainWindowReleased = true;
+          destroySplashWindow();
+          if (process.platform === "win32" && mainWindow) initThumbarButtons(mainWindow);
+          return;
+        }
+        return revealMainWindow();
+      });
   });
 
   if (useStaticRenderer) {
@@ -335,7 +352,13 @@ const discordPresenceController = createDiscordPresenceController({
 
 function setupWindowModules(win: BrowserWindowType) {
   desktopPlaybackWallpaperDriver ??= createElectronDesktopPlaybackWallpaperDriver({
-    rendererBaseUrl,
+    mainWindow: win,
+    onHostLost: (diagnostic) => {
+      logger.error("[desktop-playback-wallpaper] native host lost", { diagnostic });
+      void desktopPlaybackWallpaperCapability
+        ?.configure({ enabled: false })
+        .catch((error) => logger.error("[desktop-playback-wallpaper] recovery failed", error));
+    },
   });
   desktopPlaybackControllerWindow ??= createDesktopPlaybackControllerWindow({
     rendererBaseUrl,
@@ -347,21 +370,19 @@ function setupWindowModules(win: BrowserWindowType) {
   initializeDesktopLyricCompanion(win, {
     rendererBaseUrl,
   });
-  initializeDesktopPlaybackWallpaperCapability(win, {
+  desktopPlaybackWallpaperCapability = initializeDesktopPlaybackWallpaperCapability(win, {
     controller: desktopPlaybackControllerWindow,
     driver: desktopPlaybackWallpaperDriver,
     getControllerWindow: desktopPlaybackControllerWindow.getWindow,
-    getWallpaperWindow: desktopPlaybackWallpaperDriver.getWindow,
   });
   playbackBrokerIpcHost ??= initializePlaybackBrokerIpc({
     // Main owns the only media element and is therefore the only Authority.
-    // Companion, tray and wallpaper windows remain read-only Replicas.
+    // Auxiliary companions remain read-only Replicas; the wallpaper is the Main itself.
     getAuthorityWindow: () => mainWindow,
     getReplicaWindows: () => [
       mainWindow,
       getDesktopLyricWindow(),
       desktopPlaybackControllerWindow?.getWindow() ?? null,
-      desktopPlaybackWallpaperDriver?.getWindow() ?? null,
       trayWindow,
     ],
     onAuthorityConnected: (senderId) => {
@@ -371,16 +392,23 @@ function setupWindowModules(win: BrowserWindowType) {
   });
   audioFeatureBrokerIpcHost ??= initializeAudioFeatureBrokerIpc({
     getPublisherWindow: () => mainWindow,
-    getSubscriberWindows: () => [
-      desktopPlaybackWallpaperDriver?.getWindow() ?? null,
-      desktopPlaybackControllerWindow?.getWindow() ?? null,
-    ],
+    getSubscriberWindows: () => [desktopPlaybackControllerWindow?.getWindow() ?? null],
     onRejected: (message) => logger.warn(`[audio-feature-broker] ${message}`),
   });
   initializeUpdater(win, desktopConfig.updater);
 
   if (process.platform !== "darwin") {
-    initTray(win);
+    initTray(win, {
+      onMainWindowRequested: async () => {
+        if (desktopPlaybackWallpaperDriver?.isWallpaperActive()) {
+          await desktopPlaybackWallpaperCapability?.configure({ enabled: false });
+          return;
+        }
+        if (win.isMinimized()) win.restore();
+        win.show();
+        win.focus();
+      },
+    });
   }
 
   initializeLoginWindow(win);
@@ -403,6 +431,10 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     logger.info("Scopify ready, creating window...");
+
+    if (process.platform === "win32") {
+      app.setAppUserModelId("com.momo.scopify");
+    }
 
     // autoHideMenuBar still reveals Electron's native menu when Alt is pressed on Windows.
     if (process.platform === "win32") Menu.setApplicationMenu(null);
@@ -466,6 +498,7 @@ if (!gotTheLock) {
     void backendController.dispose();
     desktopPlaybackControllerWindow?.dispose();
     desktopPlaybackControllerWindow = null;
+    desktopPlaybackWallpaperCapability = null;
   });
 
   process.on("uncaughtException", (err) => {

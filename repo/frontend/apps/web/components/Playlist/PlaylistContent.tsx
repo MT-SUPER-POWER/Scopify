@@ -21,12 +21,16 @@ export function PlaylistContent({
   hideAlbumColumn,
   isDailyRecommend,
   isLoading,
+  onPlayToggle,
+  onTrackPlay,
   playlistId,
   playlistInfo,
   playSourceId,
   readonly = false,
   refetchTracks,
+  reportSlot,
   setTracks,
+  showShuffle,
   themeColor,
   tracks,
 }: PlaylistContentProps) {
@@ -80,8 +84,10 @@ export function PlaylistContent({
               playSourceId={playSourceId}
               isDaily={isDailyRecommend}
               dailyDate={dailyDate}
+              onPlayToggle={onPlayToggle}
               searchOpen={searchOpen}
               searchQuery={searchQuery}
+              showShuffle={showShuffle}
               onSearchChange={setSearchQuery}
               onSearchOpen={handleSearchOpen}
               onSearchClose={handleSearchClose}
@@ -91,6 +97,7 @@ export function PlaylistContent({
           </>
         )}
         <div className="min-w-0 flex-1 pb-10">
+          {!isLoading && reportSlot}
           {isLoading ? (
             <PlaylistLoading />
           ) : contentSlot ? (
@@ -106,6 +113,7 @@ export function PlaylistContent({
               hideAlbumColumn={hideAlbumColumn}
               emptyActionLabel={t("common.action.reload")}
               onEmptyAction={handleRefreshTracks}
+              onPlayTrack={onTrackPlay}
               onTracksChange={setTracks}
               playSourceId={playSourceId}
               readonly={readonly}
