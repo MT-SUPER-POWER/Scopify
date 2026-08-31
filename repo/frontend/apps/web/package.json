@@ -70,6 +70,7 @@
     "@radix-ui/react-toast": "^1.2.21",
     "@tabler/icons-react": "^3.45.0",
     "@tailwindcss/postcss": "^4.3.3",
+    "@tanstack/react-query-devtools": "5.101.4",
     "@tanstack/react-virtual": "^3.14.8",
     "@types/bun": "latest",
     "@types/colorthief": "^2.6.1",
