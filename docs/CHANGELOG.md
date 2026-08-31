@@ -52,6 +52,7 @@
 
 ### Fixed
 
+- **修复 Next.js Turbopack 在 Bun Monorepo 下的工作区根路径推断错误**：在 `next.config.ts` 中显式指定 `turbopack.root` 为仓库根目录，并在 `tsconfig.json` 中配置 `@scopify/desktop-contract` 与 `@scopify/ui` 源码路径映射，解决 Next.js 16 将工作区错误推断为 `app/` 目录导致开发服务（`bun run dev:web`）启动失败的问题。
 - **WorkerW 壁纸完整覆盖显示器**：主窗口挂入 WorkerW 时会移除普通窗口遗留的 caption、thick frame、系统菜单及边缘扩展样式，并通过 `SWP_FRAMECHANGED` 立即重算非客户区；Electron 同时校验实际 content bounds 必须与显示器 bounds 完全一致，修复桌面顶部约 31px、左右约 7px 的未填充边缘。
 - **播放队列控制与排序**：播放栏队列现支持拖拽调整；当前曲目改走真实播放切换，不再以本地状态覆写实际媒体；移除歌曲和拖拽排序统一委托播放队列状态机。命令工作区的选曲、暂停、移除和重排则改为经由播放 Authority 执行，桌面副窗口不再只修改自身的临时状态。
 - **未登录隐藏私人电台入口与保护详情页**：未登录状态下侧边栏歌单区不再显示私人电台项；直接访问 `/personal-fm` 路由时展示统一的登录提示引导，避免未登录时呈现空歌单与报错状态。

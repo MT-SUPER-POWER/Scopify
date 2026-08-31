@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 import { DEFAULT_WEB_CONFIG } from "./types/config";
@@ -77,6 +78,9 @@ export const WEB_IMAGE_REMOTE_PATTERNS = [
 ] satisfies NonNullable<NextConfig["images"]>["remotePatterns"];
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: path.resolve(import.meta.dirname ?? process.cwd(), "../../../.."),
+  },
   transpilePackages: ["@scopify/desktop-contract", "@scopify/ui"],
   images: {
     remotePatterns: WEB_IMAGE_REMOTE_PATTERNS,
