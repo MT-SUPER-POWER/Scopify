@@ -10,6 +10,10 @@ import type { FoliaPlaybackBridge } from "@/types/foliaStage";
 import type { LyricData } from "@/types/lyrics";
 import type { PlaybackPresentationTrack } from "@/types/playbackProjection";
 
+export interface DesktopPlaybackControllerShortcutHandlerProps {
+  onClose(): void;
+}
+
 export type DesktopPlaybackControllerTab = "appearance" | "wallpaper";
 
 export interface DesktopWallpaperFoliaPlaybackState {

@@ -16,6 +16,7 @@ import {
 import { toggleApplicationDeveloperTools } from "@/lib/shortcuts/developerTools";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { getCommentHref } from "@/lib/comment/commentResource";
+import { getDesktopPlaybackWallpaperToggleUpdate } from "@/lib/desktopPlaybackWallpaper/toggle";
 import { usePlayerStore } from "@/store/module/player";
 import { useUiStore } from "@/store/module/ui";
 import { useSearchStore } from "@/store/module/search";
@@ -139,6 +140,18 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
         case "toggle-desktop-controller":
           if (runtime.isDesktop) {
             void runtime.desktopPlaybackWallpaper.showController();
+          }
+          return;
+        case "toggle-desktop-music-mode":
+          if (runtime.isDesktop) {
+            void runtime.desktopPlaybackWallpaper
+              .getModel()
+              .then((model) =>
+                runtime.desktopPlaybackWallpaper.configure(
+                  getDesktopPlaybackWallpaperToggleUpdate(model.preferences),
+                ),
+              )
+              .catch(() => undefined);
           }
           return;
         case "toggle-fullscreen":

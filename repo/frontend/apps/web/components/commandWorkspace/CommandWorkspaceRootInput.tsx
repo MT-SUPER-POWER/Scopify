@@ -1,12 +1,5 @@
 import { Command } from "lucide-react";
-import type { KeyboardEvent, RefObject } from "react";
-
-interface CommandWorkspaceRootInputProps {
-  inputRef: RefObject<HTMLInputElement | null>;
-  onChange(query: string): void;
-  onKeyDown(event: KeyboardEvent<HTMLInputElement>): void;
-  query: string;
-}
+import type { CommandWorkspaceRootInputProps } from "@/types/commandWorkspace";
 
 export function CommandWorkspaceRootInput({
   inputRef,

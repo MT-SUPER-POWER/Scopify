@@ -7,14 +7,11 @@ import { useCommandWorkspaceSuggestions } from "@/hooks/commandWorkspace/useComm
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { useSearchStore } from "@/store/module/search";
-import type { CommandWorkspaceSearchFilter } from "@/types/commandWorkspace";
+import type {
+  CommandWorkspaceDirectSearchProps,
+  CommandWorkspaceSearchFilter,
+} from "@/types/commandWorkspace";
 import type { SearchRecentEntry } from "@/types/search";
-
-interface CommandWorkspaceDirectSearchProps {
-  initialQuery: string;
-  onClose(): void;
-  onEnterCommand(): void;
-}
 
 export function CommandWorkspaceDirectSearch({
   initialQuery,

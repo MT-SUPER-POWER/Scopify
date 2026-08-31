@@ -24,10 +24,13 @@ export interface PlaybackProjectionExternalStore<TLyrics = unknown> {
 }
 
 export interface PlaybackCommands {
+  moveQueueItem(fromIndex: number, toIndex: number): Promise<PlaybackCommandReceipt>;
   next(): Promise<PlaybackCommandReceipt>;
   pause(): Promise<PlaybackCommandReceipt>;
   play(): Promise<PlaybackCommandReceipt>;
+  playQueueIndex(index: number): Promise<PlaybackCommandReceipt>;
   previous(): Promise<PlaybackCommandReceipt>;
+  removeQueueItem(index: number): Promise<PlaybackCommandReceipt>;
   seek(positionMs: number): Promise<PlaybackCommandReceipt>;
   setVolume(volume: number): Promise<PlaybackCommandReceipt>;
   toggle(): Promise<PlaybackCommandReceipt>;

@@ -4,15 +4,10 @@ import { ListPlus, Pause, Play, Plus } from "lucide-react";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import type { CommandWorkspaceSearchItem } from "@/types/commandWorkspace";
-
-interface CommandWorkspaceSearchResultListProps {
-  items: CommandWorkspaceSearchItem[];
-  onAppend(item: CommandWorkspaceSearchItem): void;
-  onInsertNext(item: CommandWorkspaceSearchItem): void;
-  onSelect(item: CommandWorkspaceSearchItem): void;
-  selectedIndex: number;
-}
+import type {
+  CommandWorkspaceSearchItem,
+  CommandWorkspaceSearchResultListProps,
+} from "@/types/commandWorkspace";
 
 export function CommandWorkspaceSearchResultList({
   items,

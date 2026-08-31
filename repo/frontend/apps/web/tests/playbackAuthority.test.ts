@@ -389,6 +389,41 @@ describe("PlaybackAuthority clock and timeline", () => {
 });
 
 describe("PlaybackAuthority commands", () => {
+  test("routes queue mutations through the Authority even before a track is selected", async () => {
+    const operations: string[] = [];
+    const { authority } = createFixture({
+      callbacks: {
+        moveQueueItem: (fromIndex, toIndex) => {
+          operations.push(`move:${fromIndex}:${toIndex}`);
+        },
+        playQueueIndex: (index) => {
+          operations.push(`play:${index}`);
+        },
+        removeQueueItem: (index) => {
+          operations.push(`remove:${index}`);
+        },
+      },
+    });
+    authority.start(createState({ canControl: false, track: null }));
+
+    await expect(
+      authority.dispatch({ commandId: "queue-play", index: 2, type: "play-queue-index" }),
+    ).resolves.toEqual({ commandId: "queue-play", status: "accepted" });
+    await expect(
+      authority.dispatch({
+        commandId: "queue-move",
+        fromIndex: 2,
+        toIndex: 0,
+        type: "move-queue-item",
+      }),
+    ).resolves.toEqual({ commandId: "queue-move", status: "accepted" });
+    await expect(
+      authority.dispatch({ commandId: "queue-remove", index: 1, type: "remove-queue-item" }),
+    ).resolves.toEqual({ commandId: "queue-remove", status: "accepted" });
+
+    expect(operations).toEqual(["play:2", "move:2:0", "remove:1"]);
+  });
+
   test("returns to a paused phase when the media host rejects play", async () => {
     const clock = new FakeClock(1_000);
     const scheduler = new FakeScheduler(clock);

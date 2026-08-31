@@ -1,20 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import type { CommandWorkspacePage } from "@/types/commandWorkspace";
-
-interface UseCommandWorkspaceNavigationOptions {
-  onBack(): void;
-  onRoot(): void;
-  onToggleHelp(): void;
-  page: CommandWorkspacePage;
-}
+import type { UseCommandWorkspaceNavigationOptions } from "@/types/commandWorkspace";
 
 export function useCommandWorkspaceNavigation({
   onBack,
   onRoot,
   onToggleHelp,
-  page,
 }: UseCommandWorkspaceNavigationOptions) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -37,5 +29,5 @@ export function useCommandWorkspaceNavigation({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onBack, onRoot, onToggleHelp, page]);
+  }, [onBack, onRoot, onToggleHelp]);
 }

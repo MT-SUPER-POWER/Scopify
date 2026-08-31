@@ -8,6 +8,8 @@ export const FOLIA_VISUAL_SETTINGS_OPEN_EVENT = "scopify:folia-visual-settings-o
 export const FOLIA_VISUAL_SETTINGS_PENDING_KEY = "scopify:folia-visual-settings-pending";
 export const DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH =
   "/?desktopPlaybackController=edit-folia-theme";
+export const DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH =
+  "/?desktopPlaybackController=open-folia-visual-settings";
 
 export const DESKTOP_FOLIA_VISUALIZER_OPTIONS = [
   { labelKey: "folia.ui.visualizerClassic", value: "classic" },

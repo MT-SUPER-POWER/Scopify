@@ -12,12 +12,11 @@ import { CommandWorkspaceTrackList } from "@/components/commandWorkspace/Command
 import { useCommandWorkspacePlayback } from "@/hooks/commandWorkspace/useCommandWorkspacePlayback";
 import { useCommandWorkspaceNavigation } from "@/hooks/commandWorkspace/useCommandWorkspaceNavigation";
 import { useCommandWorkspaceTrackList } from "@/hooks/commandWorkspace/useCommandWorkspaceTrackList";
-import type { CommandWorkspacePage, CommandWorkspaceSearchItem } from "@/types/commandWorkspace";
-
-interface CommandWorkspaceCommandProps {
-  onClose(): void;
-  onLeaveCommand(): void;
-}
+import type {
+  CommandWorkspaceCommandProps,
+  CommandWorkspacePage,
+  CommandWorkspaceSearchItem,
+} from "@/types/commandWorkspace";
 
 export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWorkspaceCommandProps) {
   const [page, setPage] = useState<CommandWorkspacePage>("root");
@@ -48,7 +47,6 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
     onBack: goBack,
     onRoot: returnToRoot,
     onToggleHelp: () => setIsHelpOpen((isOpen) => !isOpen),
-    page,
   });
 
   const handleOpenTrackList = async (item: CommandWorkspaceSearchItem) => {

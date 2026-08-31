@@ -9,6 +9,7 @@ import {
   Maximize2,
   MessageCircle,
   MonitorCog,
+  Monitor,
   PanelLeft,
   PlayCircle,
   Rewind,
@@ -50,6 +51,7 @@ export function ShortcutCommandIcon({ className = "size-4", commandId }: Shortcu
   if (commandId === "toggle-queue") return <ListMusic className={className} />;
   if (commandId === "toggle-audio-settings") return <SlidersHorizontal className={className} />;
   if (commandId === "toggle-desktop-controller") return <MonitorCog className={className} />;
+  if (commandId === "toggle-desktop-music-mode") return <Monitor className={className} />;
   if (commandId === "show-shortcut-help") return <Keyboard className={className} />;
   if (commandId === "toggle-fullscreen") return <Maximize2 className={className} />;
   if (commandId === "toggle-developer-tools") return <Code2 className={className} />;

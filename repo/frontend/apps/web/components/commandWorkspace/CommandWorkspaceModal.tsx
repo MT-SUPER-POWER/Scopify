@@ -5,11 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { CommandWorkspaceCommand } from "@/components/commandWorkspace/CommandWorkspaceCommand";
 import { CommandWorkspaceDirectSearch } from "@/components/commandWorkspace/CommandWorkspaceDirectSearch";
 import { useSearchStore } from "@/store/module/search";
-
-interface CommandWorkspaceModalProps {
-  isOpen: boolean;
-  onClose(): void;
-}
+import type { CommandWorkspaceModalProps } from "@/types/commandWorkspace";
 
 export function CommandWorkspaceModal({ isOpen, onClose }: CommandWorkspaceModalProps) {
   const persistedQuery = useSearchStore((state) => state.query);

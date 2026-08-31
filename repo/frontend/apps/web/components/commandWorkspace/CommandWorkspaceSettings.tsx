@@ -2,24 +2,17 @@
 
 import { MonitorCog, Palette, Settings2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
-import type { CommandWorkspaceSettingsProps } from "@/types/commandWorkspace";
-import type { ShortcutCommandId } from "@/types/shortcuts";
-
-interface SettingsItem {
-  id: string;
-  icon: typeof Settings2;
-  label: string;
-  summary: string;
-  shortcutId?: ShortcutCommandId;
-  action: () => void;
-}
+import type {
+  CommandWorkspaceSettingsItem,
+  CommandWorkspaceSettingsProps,
+} from "@/types/commandWorkspace";
 
 export function CommandWorkspaceSettings({ onClose }: CommandWorkspaceSettingsProps) {
   const router = useRouter();
@@ -27,16 +20,22 @@ export function CommandWorkspaceSettings({ onClose }: CommandWorkspaceSettingsPr
   const [selectedIndex, setSelectedIndex] = useState(0);
   const executeShortcut = useShortcutCommands();
   const commands = useShortcutRegistry().commands;
+  const navigate = useCallback(
+    (path: string) => {
+      router.push(path, { scroll: false });
+    },
+    [router],
+  );
 
   useEffect(() => {
     setIsDesktop(runtime.isDesktop);
   }, []);
 
-  const items: SettingsItem[] = useMemo(() => {
-    const list: SettingsItem[] = [
+  const items: CommandWorkspaceSettingsItem[] = useMemo(() => {
+    const list: CommandWorkspaceSettingsItem[] = [
       {
         action: () => {
-          router.push("/setting", { scroll: false });
+          navigate("/setting");
           onClose();
         },
         icon: Settings2,
@@ -71,7 +70,7 @@ export function CommandWorkspaceSettings({ onClose }: CommandWorkspaceSettingsPr
     if (isDesktop) {
       list.push({
         action: () => {
-          router.push("/setting?tab=desktop", { scroll: false });
+          navigate("/setting?tab=desktop");
           onClose();
         },
         icon: MonitorCog,
@@ -82,7 +81,7 @@ export function CommandWorkspaceSettings({ onClose }: CommandWorkspaceSettingsPr
     }
 
     return list;
-  }, [executeShortcut, isDesktop, onClose, router]);
+  }, [executeShortcut, isDesktop, navigate, onClose]);
 
   return (
     <ScrollArea className="h-[min(52vh,32rem)]">

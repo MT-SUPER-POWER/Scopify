@@ -79,6 +79,8 @@ export type PlaybackCommand =
   | { commandId: string; type: "toggle" }
   | { commandId: string; type: "play" | "pause" }
   | { commandId: string; type: "previous" | "next" }
+  | { commandId: string; index: number; type: "play-queue-index" | "remove-queue-item" }
+  | { commandId: string; fromIndex: number; toIndex: number; type: "move-queue-item" }
   | { commandId: string; positionMs: number; type: "seek" }
   | { commandId: string; type: "set-volume"; volume: number }
   | { commandId: string; type: "toggle-like" };
@@ -263,6 +265,13 @@ export function validatePlaybackCommand(value: unknown): PlaybackCommandValidati
     case "next":
     case "toggle-like":
       validPayload = true;
+      break;
+    case "play-queue-index":
+    case "remove-queue-item":
+      validPayload = isNonNegativeInteger(value.index);
+      break;
+    case "move-queue-item":
+      validPayload = isNonNegativeInteger(value.fromIndex) && isNonNegativeInteger(value.toIndex);
       break;
     case "seek":
       validPayload = isFiniteNumber(value.positionMs) && value.positionMs >= 0;

@@ -319,7 +319,14 @@ export class PlaybackAuthority<TLyrics = unknown> {
     if (commandEpoch !== this.commandEpoch) {
       return this.unavailable(command, "command-superseded");
     }
-    if (!this.started || !this.state?.canControl) {
+    if (
+      !this.started ||
+      !this.state ||
+      (!this.state.canControl &&
+        command.type !== "play-queue-index" &&
+        command.type !== "move-queue-item" &&
+        command.type !== "remove-queue-item")
+    ) {
       return {
         commandId: command.commandId,
         reason: "authority-not-available",
@@ -356,6 +363,24 @@ export class PlaybackAuthority<TLyrics = unknown> {
             return this.unavailable(command, "next-command-not-configured");
           }
           await this.options.callbacks.next();
+          break;
+        case "play-queue-index":
+          if (!this.options.callbacks?.playQueueIndex) {
+            return this.unavailable(command, "play-queue-index-command-not-configured");
+          }
+          await this.options.callbacks.playQueueIndex(command.index);
+          break;
+        case "move-queue-item":
+          if (!this.options.callbacks?.moveQueueItem) {
+            return this.unavailable(command, "move-queue-item-command-not-configured");
+          }
+          await this.options.callbacks.moveQueueItem(command.fromIndex, command.toIndex);
+          break;
+        case "remove-queue-item":
+          if (!this.options.callbacks?.removeQueueItem) {
+            return this.unavailable(command, "remove-queue-item-command-not-configured");
+          }
+          await this.options.callbacks.removeQueueItem(command.index);
           break;
         case "seek":
           if (!isFiniteNonNegative(command.positionMs)) {

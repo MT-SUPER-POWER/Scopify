@@ -6,8 +6,11 @@ import { DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS } from "@/constants/sh
 import { useInWindowShortcuts } from "@/hooks/shortcuts/useInWindowShortcuts";
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { runtime } from "@/lib/runtime";
+import type { DesktopPlaybackControllerShortcutHandlerProps } from "@/types/desktopPlaybackWallpaper";
 
-export function useDesktopPlaybackControllerShortcuts(onClose: () => void) {
+export function useDesktopPlaybackControllerShortcuts({
+  onClose,
+}: DesktopPlaybackControllerShortcutHandlerProps) {
   const executeCommand = useShortcutCommands({
     navigateTo: runtime.navigation.navigateMainWindow,
   });

@@ -66,12 +66,15 @@ export interface PlaybackAuthorityStatePatch<TLyrics = unknown> {
 
 export interface PlaybackAuthorityCallbacks {
   ensureSource?(): boolean | Promise<boolean>;
+  moveQueueItem?(fromIndex: number, toIndex: number): Promise<void> | void;
   next?(): Promise<void> | void;
   onEnded?(): Promise<void> | void;
   onError?(message: string | null): Promise<void> | void;
   onPhaseChange?(phase: PlaybackSessionState["phase"]): void;
   onVolumeChange?(volume: number): void;
+  playQueueIndex?(index: number): Promise<void> | void;
   previous?(): Promise<void> | void;
+  removeQueueItem?(index: number): Promise<void> | void;
   toggleLike?(): boolean | Promise<boolean | void> | void;
 }
 

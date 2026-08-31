@@ -6,14 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/api/music";
-import type { CommandWorkspaceTrackList as CommandWorkspaceTrackListModel } from "@/types/commandWorkspace";
-
-interface CommandWorkspaceTrackListProps {
-  onAppend(track: SongDetail): void;
-  onInsertNext(track: SongDetail): void;
-  onPlay(index: number): void;
-  trackList: CommandWorkspaceTrackListModel;
-}
+import type { CommandWorkspaceTrackListProps } from "@/types/commandWorkspace";
 
 export function CommandWorkspaceTrackList({
   onAppend,

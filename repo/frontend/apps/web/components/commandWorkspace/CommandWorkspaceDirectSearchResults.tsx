@@ -4,19 +4,7 @@ import { CornerDownLeft, Search } from "lucide-react";
 import { CommandWorkspaceRecentSearchRow } from "@/components/commandWorkspace/CommandWorkspaceRecentSearchRow";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import type { CommandWorkspaceSearchSuggestion } from "@/types/commandWorkspace";
-import type { SearchRecentEntry } from "@/types/search";
-
-interface CommandWorkspaceDirectSearchResultsProps {
-  isLoading: boolean;
-  onClearRecent(): void;
-  onRemoveRecent(item: SearchRecentEntry): void;
-  onSubmit(candidate: SearchRecentEntry | string): void;
-  query: string;
-  recent: SearchRecentEntry[];
-  selectedIndex: number;
-  suggestions: CommandWorkspaceSearchSuggestion[];
-}
+import type { CommandWorkspaceDirectSearchResultsProps } from "@/types/commandWorkspace";
 
 export function CommandWorkspaceDirectSearchResults({
   isLoading,

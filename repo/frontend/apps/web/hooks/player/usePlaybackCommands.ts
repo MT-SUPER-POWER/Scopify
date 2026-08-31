@@ -12,10 +12,29 @@ export function usePlaybackCommands(): PlaybackCommands {
 
   return useMemo(
     () => ({
+      moveQueueItem: (fromIndex, toIndex) =>
+        store.dispatch({
+          commandId: createCommandId("move-queue-item"),
+          fromIndex,
+          toIndex,
+          type: "move-queue-item",
+        }),
       next: () => store.dispatch({ commandId: createCommandId("next"), type: "next" }),
       pause: () => store.dispatch({ commandId: createCommandId("pause"), type: "pause" }),
       play: () => store.dispatch({ commandId: createCommandId("play"), type: "play" }),
+      playQueueIndex: (index) =>
+        store.dispatch({
+          commandId: createCommandId("play-queue-index"),
+          index,
+          type: "play-queue-index",
+        }),
       previous: () => store.dispatch({ commandId: createCommandId("previous"), type: "previous" }),
+      removeQueueItem: (index) =>
+        store.dispatch({
+          commandId: createCommandId("remove-queue-item"),
+          index,
+          type: "remove-queue-item",
+        }),
       seek: (positionMs) =>
         store.dispatch({ commandId: createCommandId("seek"), positionMs, type: "seek" }),
       setVolume: (volume) =>

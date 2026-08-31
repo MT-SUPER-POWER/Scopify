@@ -16,6 +16,7 @@ const getPlayerActions = () => {
     moveQueueItem: requireAction(state.moveQueueItem, "moveQueueItem"),
     removeQueueItem: requireAction(state.removeQueueItem, "removeQueueItem"),
     playTrack: requireAction(state.playTrack, "playTrack"),
+    togglePlaying: requireAction(state.togglePlaying, "togglePlaying"),
   };
 };
 
@@ -100,6 +101,30 @@ test("player store delegates queue moves to the pure transition while following 
       ...originalState,
       playTrack: initialPlayTrack,
     });
+  }
+});
+
+test("player store toggles an already-loaded current track without reloading its queue item", async () => {
+  const originalState = usePlayerStore.getState();
+  const { togglePlaying } = getPlayerActions();
+  const song = createSong(1);
+
+  usePlayerStore.setState({
+    currentSongDetail: song,
+    currentSongUrl: "https://audio.example.test/song-1.mp3",
+    isPlaying: true,
+    queue: [song],
+    queueIndex: 0,
+  });
+
+  try {
+    await togglePlaying();
+    expect(usePlayerStore.getState().isPlaying).toBeFalse();
+
+    await togglePlaying();
+    expect(usePlayerStore.getState().isPlaying).toBeTrue();
+  } finally {
+    usePlayerStore.setState(originalState, true);
   }
 });
 

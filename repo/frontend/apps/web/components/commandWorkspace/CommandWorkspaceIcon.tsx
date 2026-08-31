@@ -1,9 +1,6 @@
 import { ListMusic, PlayCircle, Search, Settings2 } from "lucide-react";
 import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon";
-
-interface CommandWorkspaceIconProps {
-  id: string;
-}
+import type { CommandWorkspaceIconProps } from "@/types/commandWorkspace";
 
 export function CommandWorkspaceIcon({ id }: CommandWorkspaceIconProps) {
   if (id === "search") return <Search className="size-4" />;

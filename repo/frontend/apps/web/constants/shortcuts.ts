@@ -121,6 +121,12 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyD", primary: true, alt: true },
   },
   {
+    id: "toggle-desktop-music-mode",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleDesktopMusicMode",
+    defaultBinding: { key: "KeyP", primary: true, alt: true },
+  },
+  {
     id: "toggle-fullscreen",
     group: "interface",
     labelKey: "shortcuts.command.toggleFullscreen",
@@ -190,4 +196,5 @@ export const DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS = [
   "open-shortcut-settings",
   "toggle-queue",
   "toggle-audio-settings",
+  "toggle-desktop-music-mode",
 ] as const satisfies readonly ShortcutCommandId[];

@@ -40,19 +40,24 @@ describe("shortcut definitions", () => {
     expect(findShortcutConflict(developerTools.id, developerTools.defaultBinding, {})).toBeNull();
   });
 
-  test("registers audio settings, queue, and desktop controller shortcuts with valid defaults", () => {
+  test("registers audio settings, queue, and both desktop entry points with valid defaults", () => {
     const audioSettings = getShortcut("toggle-audio-settings");
     const queue = getShortcut("toggle-queue");
     const desktopController = getShortcut("toggle-desktop-controller");
+    const desktopMusicMode = getShortcut("toggle-desktop-music-mode");
 
     expect(audioSettings.defaultBinding).toEqual({ key: "KeyA", primary: true, alt: true });
     expect(queue.defaultBinding).toEqual({ key: "KeyJ", primary: true });
     expect(desktopController.defaultBinding).toEqual({ key: "KeyD", primary: true, alt: true });
+    expect(desktopMusicMode.defaultBinding).toEqual({ key: "KeyP", primary: true, alt: true });
 
     expect(findShortcutConflict(audioSettings.id, audioSettings.defaultBinding, {})).toBeNull();
     expect(findShortcutConflict(queue.id, queue.defaultBinding, {})).toBeNull();
     expect(
       findShortcutConflict(desktopController.id, desktopController.defaultBinding, {}),
+    ).toBeNull();
+    expect(
+      findShortcutConflict(desktopMusicMode.id, desktopMusicMode.defaultBinding, {}),
     ).toBeNull();
   });
 
@@ -83,6 +88,7 @@ describe("shortcut definitions", () => {
         "toggle-queue",
         "toggle-audio-settings",
         "open-shortcut-settings",
+        "toggle-desktop-music-mode",
       ]),
     );
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).not.toContain("toggle-sidebar");

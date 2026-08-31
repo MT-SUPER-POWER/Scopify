@@ -1,14 +1,11 @@
 "use client";
 
 import { useDesktopPlaybackControllerShortcuts } from "@/hooks/desktopWallpaper/useDesktopPlaybackControllerShortcuts";
-
-interface DesktopPlaybackControllerShortcutHandlerProps {
-  onClose(): void;
-}
+import type { DesktopPlaybackControllerShortcutHandlerProps } from "@/types/desktopPlaybackWallpaper";
 
 export function DesktopPlaybackControllerShortcutHandler({
   onClose,
 }: DesktopPlaybackControllerShortcutHandlerProps) {
-  useDesktopPlaybackControllerShortcuts(onClose);
+  useDesktopPlaybackControllerShortcuts({ onClose });
   return null;
 }

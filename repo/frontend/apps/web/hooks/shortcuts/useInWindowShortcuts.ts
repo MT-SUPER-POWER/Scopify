@@ -68,6 +68,7 @@ function canHandleShortcutInCurrentFocus(commandId: ShortcutCommandId, target: E
   if (
     commandId === "open-search" ||
     commandId === "open-command-palette" ||
+    commandId === "toggle-desktop-music-mode" ||
     commandId === "focus-playlist-search" ||
     commandId === "toggle-mute"
   )

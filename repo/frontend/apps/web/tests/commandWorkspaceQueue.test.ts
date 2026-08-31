@@ -2,10 +2,16 @@ import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const source = readFileSync(
-  resolve(import.meta.dir, "../components/commandWorkspace/CommandWorkspaceQueue.tsx"),
-  "utf8",
-);
+const source = [
+  "CommandWorkspaceQueue.tsx",
+  "CommandWorkspaceQueueItem.tsx",
+  "CommandWorkspaceQueueItemMetadata.tsx",
+  "CommandWorkspaceQueueItemMenu.tsx",
+]
+  .map((file) =>
+    readFileSync(resolve(import.meta.dir, "../components/commandWorkspace", file), "utf8"),
+  )
+  .join("\n");
 
 test("supports drag and drop reordering and removes discrete up/down buttons", () => {
   expect(source).toContain("draggable");
@@ -20,17 +26,18 @@ test("supports drag and drop reordering and removes discrete up/down buttons", (
 
 test("displays album cover art and links for artists and albums", () => {
   expect(source).toContain("track.al?.picUrl");
-  expect(source).toContain("navigateToArtist(artist.id)");
-  expect(source).toContain("navigateToAlbum(track.al.id)");
+  expect(source).toContain("onNavigateArtist(artist.id)");
+  expect(source).toContain("onNavigateAlbum(track.al.id)");
   expect(source).toContain("formatDuration(track.dt)");
 });
 
 test("synchronizes playback state and toggles play and pause on current track", () => {
-  expect(source).toContain("handleTogglePlay");
+  expect(source).toContain("onPlay(index)");
   expect(source).toContain("isCurrentPlaying");
   expect(source).toContain("PlayingAnimation");
   expect(source).toContain("Pause");
-  expect(source).toContain("setIsPlaying(!isPlaying)");
+  expect(source).toContain("playbackCommands.toggle()");
+  expect(source).toContain("playbackCommands.playQueueIndex(targetIndex)");
 });
 
 test("provides clean more options dropdown menu instead of loose action buttons", () => {

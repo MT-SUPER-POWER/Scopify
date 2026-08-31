@@ -16559,6 +16559,12 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.toggleDesktopController", params?: TranslationParams): string;
   /**
+   * zh-CN: 开启/关闭桌面音乐壁纸
+   * zh-TW: 開啟/關閉桌面音樂桌布
+   * en-US: Enable/Disable Desktop Music Wallpaper
+   */
+  (key: "shortcuts.command.toggleDesktopMusicMode", params?: TranslationParams): string;
+  /**
    * zh-CN: 切换全屏
    * zh-TW: 切換全螢幕
    * en-US: Toggle Fullscreen

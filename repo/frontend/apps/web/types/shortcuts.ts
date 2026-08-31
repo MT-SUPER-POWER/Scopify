@@ -24,6 +24,7 @@ export type ShortcutCommandId =
   | "toggle-queue"
   | "toggle-audio-settings"
   | "toggle-desktop-controller"
+  | "toggle-desktop-music-mode"
   | "show-shortcut-help"
   | "open-command-palette"
   | "toggle-mute"

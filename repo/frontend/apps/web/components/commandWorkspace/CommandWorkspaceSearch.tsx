@@ -14,13 +14,10 @@ import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { useCommandWorkspacePlayback } from "@/hooks/commandWorkspace/useCommandWorkspacePlayback";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import type {
+  CommandWorkspaceSearchProps,
   CommandWorkspaceSearchFilter,
   CommandWorkspaceSearchItem,
 } from "@/types/commandWorkspace";
-
-interface CommandWorkspaceSearchProps {
-  onOpenTrackList(item: CommandWorkspaceSearchItem): void;
-}
 
 export function CommandWorkspaceSearch({ onOpenTrackList }: CommandWorkspaceSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);

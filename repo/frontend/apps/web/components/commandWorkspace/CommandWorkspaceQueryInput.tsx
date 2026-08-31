@@ -1,21 +1,13 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { type KeyboardEvent, type RefObject, useMemo, useState } from "react";
+import { type KeyboardEvent, useMemo, useState } from "react";
 import { CommandWorkspaceFilterPicker } from "@/components/commandWorkspace/CommandWorkspaceFilterPicker";
 import { COMMAND_WORKSPACE_SEARCH_FILTERS } from "@/constants/commandWorkspace";
-import type { CommandWorkspaceSearchFilter } from "@/types/commandWorkspace";
-
-interface CommandWorkspaceQueryInputProps {
-  autoFocus?: boolean;
-  filter: CommandWorkspaceSearchFilter | null;
-  inputRef?: RefObject<HTMLInputElement | null>;
-  onFilterChange(filter: CommandWorkspaceSearchFilter | null): void;
-  onKeyDown?(event: KeyboardEvent<HTMLInputElement>): void;
-  onQueryChange(query: string): void;
-  placeholder: string;
-  query: string;
-}
+import type {
+  CommandWorkspaceQueryInputProps,
+  CommandWorkspaceSearchFilter,
+} from "@/types/commandWorkspace";
 
 export function CommandWorkspaceQueryInput({
   autoFocus = false,

@@ -140,6 +140,9 @@ export function usePlaybackAuthority<TLyrics = unknown>({
       get ensureSource() {
         return callbacksRef.current?.ensureSource;
       },
+      get moveQueueItem() {
+        return callbacksRef.current?.moveQueueItem;
+      },
       get next() {
         return callbacksRef.current?.next;
       },
@@ -155,8 +158,14 @@ export function usePlaybackAuthority<TLyrics = unknown>({
       get onVolumeChange() {
         return callbacksRef.current?.onVolumeChange;
       },
+      get playQueueIndex() {
+        return callbacksRef.current?.playQueueIndex;
+      },
       get previous() {
         return callbacksRef.current?.previous;
+      },
+      get removeQueueItem() {
+        return callbacksRef.current?.removeQueueItem;
       },
       get toggleLike() {
         return callbacksRef.current?.toggleLike;

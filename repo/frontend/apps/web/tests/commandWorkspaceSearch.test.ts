@@ -45,6 +45,11 @@ test("keeps a selected @ filter while drafting a direct search", () => {
   expect(directSearchSource).not.toContain("setFilter(null);");
 });
 
+test("keeps confirmed direct searches on the main workspace router", () => {
+  expect(directSearchSource).toContain("router.replace(buildSearchUrl(keyword, entry.category));");
+  expect(directSearchSource).not.toContain("onNavigate");
+});
+
 test("shows the recorded @ token beside a categorized recent search", () => {
   const markup = renderToStaticMarkup(
     createElement(CommandWorkspaceRecentSearchRow, {

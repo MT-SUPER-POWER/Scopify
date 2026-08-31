@@ -1,14 +1,7 @@
 import { Clock3, Trash2 } from "lucide-react";
 import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspace/search";
 import { cn } from "@/lib/utils";
-import type { SearchRecentEntry } from "@/types/search";
-
-interface CommandWorkspaceRecentSearchRowProps {
-  item: SearchRecentEntry;
-  onRemove(item: SearchRecentEntry): void;
-  onSubmit(item: SearchRecentEntry): void;
-  selected: boolean;
-}
+import type { CommandWorkspaceRecentSearchRowProps } from "@/types/commandWorkspace";
 
 export function CommandWorkspaceRecentSearchRow({
   item,

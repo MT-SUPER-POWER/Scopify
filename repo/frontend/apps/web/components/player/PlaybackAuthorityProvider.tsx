@@ -231,6 +231,8 @@ export function PlaybackAuthorityProvider({
           );
         });
       },
+      moveQueueItem: (fromIndex, toIndex) =>
+        usePlayerStore.getState().moveQueueItem(fromIndex, toIndex),
       next: () => usePersonalFmStore.getState().advance(),
       onEnded: () => usePersonalFmStore.getState().advance("ended"),
       onPhaseChange: (phase) => {
@@ -253,7 +255,9 @@ export function PlaybackAuthorityProvider({
         }
       },
       onVolumeChange: (nextVolume) => usePlayerStore.getState().setVolume(nextVolume),
+      playQueueIndex: (index) => usePlayerStore.getState().playQueueIndex(index),
       previous: () => usePlayerStore.getState().playPrev(),
+      removeQueueItem: (index) => usePlayerStore.getState().removeQueueItem(index),
       toggleLike: async () => {
         const currentTrack = usePlayerStore.getState().currentSongDetail;
         const nextLiked = await toggleCurrentSongLike(liked);

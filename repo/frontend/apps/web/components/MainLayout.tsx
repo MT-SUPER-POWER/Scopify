@@ -13,7 +13,10 @@ import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRou
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
 import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
 import { runtime } from "@/lib/runtime";
-import { DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH } from "@/constants/desktopPlaybackController";
+import {
+  DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH,
+  DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH,
+} from "@/constants/desktopPlaybackController";
 // lib
 import { cn } from "@/lib/utils";
 import { useSearchStore } from "@/store/module/search";
@@ -59,7 +62,11 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   // 监听来自 Electron 主进程的导航请求
   useEffect(() => {
     return runtime.navigation.onNavigate((path) => {
-      if (path === DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH) return;
+      if (
+        path === DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH ||
+        path === DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH
+      )
+        return;
       router.push(path, { scroll: false });
     });
   }, [router]);
