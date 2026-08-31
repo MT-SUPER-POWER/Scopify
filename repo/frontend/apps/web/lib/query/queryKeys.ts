@@ -31,6 +31,11 @@ export const musicQueryKeys = {
     subscribedPodcasts: (userId: number) =>
       ["library", "podcasts", "subscribed", "v2", userId] as const,
   },
+  listeningReport: {
+    realtime: (userId: number, period: "month" | "week") =>
+      ["listening-report", "realtime", userId, period] as const,
+    total: (userId: number) => ["listening-report", "total", userId] as const,
+  },
   comment: {
     count: (kind: CommentResourceKind | "unknown", resourceId: string) =>
       ["comment", "count", kind, resourceId] as const,

@@ -4,9 +4,11 @@ import type { NeteaseUser } from "@/types/api/user";
 export type { NeteaseUser };
 
 export interface UserPlaylist {
-  id: number;
-  name: string;
   coverImgUrl: string;
+  href?: string;
+  id: number;
+  isVirtual?: boolean;
+  name: string;
   trackCount: number;
   playCount: number;
   creator?: { nickname: string; userId: number };

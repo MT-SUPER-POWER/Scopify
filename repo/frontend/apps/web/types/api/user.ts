@@ -14,6 +14,7 @@ export interface RecentSongsResponse {
   code: number;
   data?: {
     list?: RecentSongHistoryEntry[];
+    total?: number;
   };
   list?: RecentSongHistoryEntry[];
 }
@@ -27,8 +28,29 @@ export interface UserRecordResponse {
 export interface RecentPlaylistsResponse {
   code: number;
   data?: {
-    list?: Array<{ data?: RawNeteasePlaylist }>;
+    list?: RecentPlaylistHistoryEntry[];
+    total?: number;
   };
+}
+
+export interface RecentPlaylistHistoryEntry {
+  data?: RawNeteasePlaylist;
+  playTime?: number;
+}
+
+export function getRecentSong(entry: RecentSongHistoryEntry) {
+  return entry.data ?? entry.resourceInfo?.songData ?? entry.song;
+}
+
+export function getRecentSongEntries(response: RecentSongsResponse): RecentSongHistoryEntry[] {
+  return response.data?.list ?? response.list ?? [];
+}
+
+export function getRecentSongHistoryCount(response: RecentSongsResponse): number {
+  const total = response.data?.total;
+  return typeof total === "number" && Number.isFinite(total) && total >= 0
+    ? total
+    : getRecentSongEntries(response).length;
 }
 
 export interface IUserDetail {
@@ -240,6 +262,7 @@ export interface NeteaseUser {
   backgroundUrl?: string;
   level?: number;
   listenSongs?: number;
+  listenDurationSeconds?: number;
   createDays?: number;
   createTime?: number;
   province?: number;

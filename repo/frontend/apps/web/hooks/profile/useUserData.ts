@@ -2,17 +2,25 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   getRecentPlaylists,
-  getRecentSongsByID,
+  getRecentSongs,
   getUserDetailInfo,
   getUserPlaylists,
 } from "@/lib/api/user";
+import { getTotalListeningDuration } from "@/lib/api/listeningReport";
 import { translate } from "@/lib/i18n";
+import { getListeningDurationSeconds } from "@/lib/listeningReport/normalize";
 import { getMainColorFromImage } from "@/lib/utils";
 import { useI18nStore } from "@/store/module/i18n";
 import { useUserStore } from "@/store/module/user";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
-import type { RawNeteasePlaylist } from "@/types/api/playlist";
-import { type NeteaseUser, pruneUser } from "@/types/api/user";
+import { pruneSongDetail } from "@/types/api/music";
+import { getPlaylistTrackCount, type RawNeteasePlaylist } from "@/types/api/playlist";
+import {
+  getRecentSong,
+  getRecentSongEntries,
+  getRecentSongHistoryCount,
+  type NeteaseUser,
+  pruneUser,
+} from "@/types/api/user";
 import type { UserPlaylist } from "@/types/profile";
 
 function toUserPlaylist(playlist: RawNeteasePlaylist): UserPlaylist {
@@ -27,7 +35,7 @@ function toUserPlaylist(playlist: RawNeteasePlaylist): UserPlaylist {
     id: playlist.id ?? 0,
     name: playlist.name ?? "",
     coverImgUrl: playlist.coverImgUrl ?? playlist.picUrl ?? "",
-    trackCount: playlist.trackCount ?? 0,
+    trackCount: getPlaylistTrackCount(playlist),
     playCount: playlist.playCount ?? 0,
     creator,
   };
@@ -38,7 +46,7 @@ export function useUserData(uid: string | null) {
 
   const [userInfo, setUserInfo] = useState<NeteaseUser | null>(null);
   const [playlists, setPlaylists] = useState<UserPlaylist[]>([]);
-  const [recentSongs, setRecentSongs] = useState<SongDetail[]>([]);
+  const [recentPlaybackPlaylist, setRecentPlaybackPlaylist] = useState<UserPlaylist | null>(null);
   const [recentPlaylists, setRecentPlaylists] = useState<UserPlaylist[]>([]);
   const [themeColor, setThemeColor] = useState("#535353");
   const [isLoading, setIsLoading] = useState(true);
@@ -52,7 +60,7 @@ export function useUserData(uid: string | null) {
       setIsLoading(true);
     }); // 确保在当前事件循环结束后才显示加载状态，避免闪烁
 
-    const songsRequest = isSelf ? getRecentSongsByID(Number(uid)) : Promise.resolve(null);
+    const songsRequest = isSelf ? getRecentSongs(100) : Promise.resolve(null);
     const recentPlaylistsRequest = isSelf ? getRecentPlaylists(10) : Promise.resolve(null);
 
     Promise.allSettled([
@@ -109,10 +117,25 @@ export function useUserData(uid: string | null) {
           );
         }
 
-        // ── 自己专属：最近播放歌曲 ──
-        if (isSelf && songsRes.status === "fulfilled") {
-          const rawSongs = songsRes.value?.data.weekData ?? [];
-          setRecentSongs(rawSongs.slice(0, 15).map((item) => pruneSongDetail(item.song)));
+        // ── 自己专属：最近播放虚拟歌单 ──
+        if (isSelf && songsRes.status === "fulfilled" && songsRes.value) {
+          const response = songsRes.value.data;
+          const recentEntries = getRecentSongEntries(response);
+          const firstSong = getRecentSong(recentEntries[0] ?? {});
+
+          if (recentEntries.length > 0) {
+            setRecentPlaybackPlaylist({
+              coverImgUrl: firstSong ? pruneSongDetail(firstSong).al.picUrl : "",
+              href: "/recent",
+              id: 0,
+              isVirtual: true,
+              name: translate(useI18nStore.getState().locale, "library.title.recent"),
+              playCount: 0,
+              trackCount: getRecentSongHistoryCount(response),
+            });
+          } else {
+            setRecentPlaybackPlaylist(null);
+          }
         }
 
         // ── 自己专属：最近播放歌单 ──
@@ -122,11 +145,32 @@ export function useUserData(uid: string | null) {
             rawPlaylists.slice(0, 10).flatMap(({ data }) => (data ? [toUserPlaylist(data)] : [])),
           );
         }
+
+        if (isSelf) {
+          void getTotalListeningDuration()
+            .then((response) => {
+              const seconds = getListeningDurationSeconds(response.data);
+              if (seconds === null) return;
+
+              setUserInfo((current) =>
+                current ? { ...current, listenDurationSeconds: seconds } : current,
+              );
+            })
+            .catch(() => {});
+        }
       })
       .finally(() => {
         setIsLoading(false);
       });
   }, [uid, isSelf]);
 
-  return { userInfo, playlists, recentSongs, recentPlaylists, themeColor, isLoading, isSelf };
+  return {
+    userInfo,
+    playlists,
+    recentPlaybackPlaylist,
+    recentPlaylists,
+    themeColor,
+    isLoading,
+    isSelf,
+  };
 }

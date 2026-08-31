@@ -47,6 +47,7 @@ export interface PlaylistContentProps {
   playSourceId?: null | string;
   readonly?: boolean;
   refetchTracks: () => void | Promise<unknown>;
+  reportSlot?: ReactNode;
   setTracks?: (tracks: SongDetail[]) => void;
   showShuffle?: boolean;
   themeColor: null | string;
