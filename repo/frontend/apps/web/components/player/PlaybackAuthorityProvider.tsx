@@ -14,6 +14,7 @@ import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjecti
 import { useLikedVoicesQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaybackAuthority } from "@/hooks/player/usePlaybackAuthority";
 import { useDiscordPresence } from "@/hooks/player/useDiscordPresence";
+import { useListeningScrobble } from "@/hooks/player/useListeningScrobble";
 import { useMediaSession } from "@/hooks/player/useMediaSession";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { createCompositePlaybackAuthorityTransport } from "@/lib/playbackProjection/compositeTransport";
@@ -26,6 +27,7 @@ import { buildDiscordPresenceArtist } from "@/lib/player/discordPresence";
 import { isPlaybackSourceCurrent, waitForPlaybackSource } from "@/lib/player/playbackSource";
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { runtime } from "@/lib/runtime";
+import { toScrobbleSourceId } from "@/lib/player/listeningScrobble";
 import { usePlayerStore } from "@/store/module/player";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { useTimeStore } from "@/store/module/time";
@@ -58,6 +60,7 @@ export function PlaybackAuthorityProvider({
   const rawLyric = usePlayerStore((state) => state.lyric);
   const playbackLoadRevision = usePlayerStore((state) => state.playbackLoadRevision);
   const playbackSessionRevision = usePlayerStore((state) => state.playbackSessionRevision);
+  const playlistId = usePlayerStore((state) => state.playlistId);
   const sourceChangeMode = usePlayerStore((state) => state.sourceChangeMode);
   const volume = usePlayerStore((state) => state.volume);
   const likeListIds = useUserStore((state) => state.likeListIDs);
@@ -147,6 +150,21 @@ export function PlaybackAuthorityProvider({
   }
   const sessionReason = sessionIdentityRef.current.reason;
   const resumePositionMs = sessionReason === "resume" ? useTimeStore.getState().currentTime : 0;
+  const scrobbleSession = useMemo(
+    () =>
+      currentSongDetail
+        ? {
+            artist: currentSongDetail.ar.map((artist) => artist.name).join(" / "),
+            key: sessionKey,
+            songId: currentSongDetail.id,
+            sourceId: toScrobbleSourceId(playlistId),
+            title: currentSongDetail.name,
+            totalSeconds: Math.ceil(currentSongDetail.dt / 1_000),
+          }
+        : null,
+    [currentSongDetail, playlistId, sessionKey],
+  );
+  useListeningScrobble({ audioRef, session: scrobbleSession });
 
   const [localTransport] = useState(() => createInProcessPlaybackTransport<LyricData>());
   const [localReplica] = useState(() =>
