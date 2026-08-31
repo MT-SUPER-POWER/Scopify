@@ -2,19 +2,24 @@ import type {
   ListeningReportRequest,
   ListeningReportResponse,
   RealtimeListeningReportPeriod,
+  SongPlayRankResponse,
+  TodayListeningSongsResponse,
 } from "@/types/api/listeningReport";
 import request, { requestConfig } from "../web/request";
 
 /** 获取累计听歌时长。 */
 export function getTotalListeningDuration() {
-  return request.get<ListeningReportResponse>("/listen/data/total");
+  return request.get<ListeningReportResponse>(
+    "/listen/data/total",
+    requestConfig({ requiresMusicSession: true }),
+  );
 }
 
 /** 获取正在进行的周/月听歌时长报告。 */
 export function getRealtimeListeningReport(type: RealtimeListeningReportPeriod) {
   return request.get<ListeningReportResponse>(
     "/listen/data/realtime/report",
-    requestConfig({ params: { type } }),
+    requestConfig({ params: { type }, requiresMusicSession: true }),
   );
 }
 
@@ -22,18 +27,24 @@ export function getRealtimeListeningReport(type: RealtimeListeningReportPeriod) 
 export function getListeningReport({ endTime, type }: ListeningReportRequest) {
   return request.get<ListeningReportResponse>(
     "/listen/data/report",
-    requestConfig({ params: { endTime, type } }),
+    requestConfig({ params: { endTime, type }, requiresMusicSession: true }),
   );
 }
 
 /** 获取年度听歌足迹。 */
 export function getYearListeningReport() {
-  return request.get<ListeningReportResponse>("/listen/data/year/report");
+  return request.get<ListeningReportResponse>(
+    "/listen/data/year/report",
+    requestConfig({ requiresMusicSession: true }),
+  );
 }
 
 /** 获取今日收听歌曲排行。 */
 export function getTodayListeningSongs() {
-  return request.get<ListeningReportResponse>("/listen/data/today/song");
+  return request.get<TodayListeningSongsResponse>(
+    "/listen/data/today/song",
+    requestConfig({ requiresMusicSession: true }),
+  );
 }
 
 /** 获取周/月歌曲播放排行。 */
@@ -43,8 +54,8 @@ export function getListeningSongPlayRank({
 }: Omit<ListeningReportRequest, "type"> & {
   type: RealtimeListeningReportPeriod;
 }) {
-  return request.get<ListeningReportResponse>(
+  return request.get<SongPlayRankResponse>(
     "/listen/data/song/play/rank",
-    requestConfig({ params: { endTime, type } }),
+    requestConfig({ params: { endTime, type }, requiresMusicSession: true }),
   );
 }

@@ -32,8 +32,13 @@ export const musicQueryKeys = {
       ["library", "podcasts", "subscribed", "v2", userId] as const,
   },
   listeningReport: {
+    period: (userId: number, period: "month" | "week" | "year", endTime?: number) =>
+      ["listening-report", "period", userId, period, endTime ?? 0] as const,
     realtime: (userId: number, period: "month" | "week") =>
       ["listening-report", "realtime", userId, period] as const,
+    songRank: (userId: number, period: "month" | "week", endTime?: number) =>
+      ["listening-report", "song-rank", userId, period, endTime ?? 0] as const,
+    todaySongs: (userId: number) => ["listening-report", "today-songs", userId] as const,
     total: (userId: number) => ["listening-report", "total", userId] as const,
   },
   comment: {

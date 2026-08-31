@@ -6,6 +6,12 @@ const DURATION_FIELDS = [
   "totalSeconds",
   "time",
   "total",
+  "listenDuration",
+  "totalDuration",
+  "totalListeningTime",
+  "totalPlayTime",
+  "playTime",
+  "sumTime",
 ] as const;
 
 type UnknownRecord = Record<string, unknown>;
@@ -15,10 +21,18 @@ function isRecord(value: unknown): value is UnknownRecord {
 }
 
 function toDurationSeconds(value: unknown): number | null {
-  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) return null;
+  let numValue = value;
+  if (typeof numValue === "string") {
+    const parsed = Number(numValue);
+    if (Number.isFinite(parsed)) {
+      numValue = parsed;
+    }
+  }
+
+  if (typeof numValue !== "number" || !Number.isFinite(numValue) || numValue < 0) return null;
 
   // 听歌足迹接口通常以秒返回时长；若后端改为毫秒，则避免把很长的累计时长直接展示成天文数字。
-  return Math.round(value > 2_000_000_000 ? value / 1_000 : value);
+  return Math.round(numValue > 2_000_000_000 ? numValue / 1_000 : numValue);
 }
 
 /** 从听歌足迹的差异化响应里提取以秒为单位的时长。 */
@@ -41,12 +55,6 @@ export function getListeningDurationSeconds(response: unknown): number | null {
 }
 
 export function formatListeningDuration(seconds: number): string {
-  const totalMinutes = Math.floor(Math.max(seconds, 0) / 60);
-  const days = Math.floor(totalMinutes / (24 * 60));
-  const hours = Math.floor((totalMinutes % (24 * 60)) / 60);
-  const minutes = totalMinutes % 60;
-
-  if (days > 0) return `${days} 天 ${hours} 小时`;
-  if (hours > 0) return `${hours} 小时 ${minutes} 分钟`;
-  return `${minutes} 分钟`;
+  const hours = Math.floor(Math.max(seconds, 0) / 3600);
+  return `${hours.toLocaleString()} 小时`;
 }
