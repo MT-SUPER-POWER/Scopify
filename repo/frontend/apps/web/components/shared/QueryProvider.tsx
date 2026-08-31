@@ -6,6 +6,7 @@ import {
   QueryCache,
   QueryClient,
 } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -55,6 +56,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
+      <ReactQueryDevtools initialIsOpen={false} />
     </PersistQueryClientProvider>
   );
 }
