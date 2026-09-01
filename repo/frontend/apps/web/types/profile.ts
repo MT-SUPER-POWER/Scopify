@@ -5,11 +5,21 @@ export type { NeteaseUser };
 
 export interface UserPlaylist {
   coverImgUrl: string;
+  creator?: { nickname: string; userId: number };
   href?: string;
   id: number;
   isVirtual?: boolean;
+  lastSong?: {
+    artists?: string;
+    id?: number;
+    name?: string;
+  };
   name: string;
-  trackCount: number;
   playCount: number;
-  creator?: { nickname: string; userId: number };
+  playTime?: number;
+  terminal?: {
+    os?: string;
+    osText?: string;
+  };
+  trackCount: number;
 }

@@ -3500,6 +3500,12 @@ export interface TranslateFn {
    */
   (key: "profile.page.playlistSongCount", params?: TranslationParams): string;
   /**
+   * zh-CN: by {{name}}
+   * zh-TW: by {{name}}
+   * en-US: by {{name}}
+   */
+  (key: "profile.page.byCreator", params?: TranslationParams): string;
+  /**
    * zh-CN: 无法加载用户信息
    * zh-TW: 無法載入使用者資訊
    * en-US: Unable to load user information
@@ -16684,6 +16690,360 @@ export interface TranslateFn {
    * en-US: Playback History
    */
   (key: "library.meta.playbackHistory", params?: TranslationParams): string;
+  /**
+   * zh-CN: 听歌足迹
+   * zh-TW: 聽歌足跡
+   * en-US: Listening report
+   */
+  (key: "library.listeningReport.entry", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回最近播放
+   * zh-TW: 返回最近播放
+   * en-US: Back to recently played
+   */
+  (key: "library.listeningReport.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: LISTENING REPORT
+   * zh-TW: LISTENING REPORT
+   * en-US: LISTENING REPORT
+   */
+  (key: "library.listeningReport.eyebrow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 你的每一段收听，都有回响。
+   * zh-TW: 你的每一段收聽，都有回響。
+   * en-US: Every listening moment leaves an echo.
+   */
+  (key: "library.listeningReport.pageLabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本周听歌足迹
+   * zh-TW: 本週聽歌足跡
+   * en-US: This week's listening
+   */
+  (key: "library.listeningReport.title.week", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本月听歌足迹
+   * zh-TW: 本月聽歌足跡
+   * en-US: This month's listening
+   */
+  (key: "library.listeningReport.title.month", params?: TranslationParams): string;
+  /**
+   * zh-CN: 年度听歌足迹
+   * zh-TW: 年度聽歌足跡
+   * en-US: This year's listening
+   */
+  (key: "library.listeningReport.title.year", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从你的真实播放记录中，回看这一段时间的音乐陪伴。
+   * zh-TW: 從你的真實播放記錄中，回看這一段時間的音樂陪伴。
+   * en-US: Look back on the music that kept you company this period.
+   */
+  (key: "library.listeningReport.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 周
+   * zh-TW: 週
+   * en-US: Week
+   */
+  (key: "library.listeningReport.period.week", params?: TranslationParams): string;
+  /**
+   * zh-CN: 月
+   * zh-TW: 月
+   * en-US: Month
+   */
+  (key: "library.listeningReport.period.month", params?: TranslationParams): string;
+  /**
+   * zh-CN: 年
+   * zh-TW: 年
+   * en-US: Year
+   */
+  (key: "library.listeningReport.period.year", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本周概览
+   * zh-TW: 本週概覽
+   * en-US: This week at a glance
+   */
+  (key: "library.listeningReport.current.week", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本月概览
+   * zh-TW: 本月概覽
+   * en-US: This month at a glance
+   */
+  (key: "library.listeningReport.current.month", params?: TranslationParams): string;
+  /**
+   * zh-CN: 年度概览
+   * zh-TW: 年度概覽
+   * en-US: This year at a glance
+   */
+  (key: "library.listeningReport.current.year", params?: TranslationParams): string;
+  /**
+   * zh-CN: 数据来自网易云音乐听歌足迹
+   * zh-TW: 資料來自網易雲音樂聽歌足跡
+   * en-US: Synced from NetEase Cloud Music listening history
+   */
+  (key: "library.listeningReport.source", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新数据
+   * zh-TW: 重新整理資料
+   * en-US: Refresh
+   */
+  (key: "library.listeningReport.refresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 听歌时长
+   * zh-TW: 聽歌時長
+   * en-US: Listening time
+   */
+  (key: "library.listeningReport.metric.duration", params?: TranslationParams): string;
+  /**
+   * zh-CN: 听过歌曲
+   * zh-TW: 聽過歌曲
+   * en-US: Songs played
+   */
+  (key: "library.listeningReport.metric.songs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放次数
+   * zh-TW: 播放次數
+   * en-US: Play count
+   */
+  (key: "library.listeningReport.metric.plays", params?: TranslationParams): string;
+  /**
+   * zh-CN: 活跃天数
+   * zh-TW: 活躍天數
+   * en-US: Active days
+   */
+  (key: "library.listeningReport.metric.activeDays", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{hours}} 小时 {{minutes}} 分钟
+   * zh-TW: {{hours}} 小時 {{minutes}} 分鐘
+   * en-US: {{hours}}h {{minutes}}m
+   */
+  (key: "library.listeningReport.durationValue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这个周期还没有可展示的听歌数据。
+   * zh-TW: 這個週期還沒有可展示的聽歌資料。
+   * en-US: There is no listening data to show for this period yet.
+   */
+  (key: "library.listeningReport.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本期高频单曲
+   * zh-TW: 本期高頻單曲
+   * en-US: Most played song
+   */
+  (key: "library.listeningReport.topSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 钟爱歌手
+   * zh-TW: 鍾愛歌手
+   * en-US: Top artist
+   */
+  (key: "library.listeningReport.topArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 偏爱风格
+   * zh-TW: 偏愛風格
+   * en-US: Favorite style
+   */
+  (key: "library.listeningReport.topStyle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择月份
+   * zh-TW: 選擇月份
+   * en-US: Select month
+   */
+  (key: "library.listeningReport.monthSelect", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上个月
+   * zh-TW: 上個月
+   * en-US: Previous month
+   */
+  (key: "library.listeningReport.previousMonth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下个月
+   * zh-TW: 下個月
+   * en-US: Next month
+   */
+  (key: "library.listeningReport.nextMonth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本月
+   * zh-TW: 本月
+   * en-US: This month
+   */
+  (key: "library.listeningReport.currentMonth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部月份
+   * zh-TW: 全部月份
+   * en-US: All months
+   */
+  (key: "library.listeningReport.allMonths", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐人格
+   * zh-TW: 音樂人格
+   * en-US: Music Persona
+   */
+  (key: "library.listeningReport.metric.persona", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐探索者
+   * zh-TW: 音樂探索者
+   * en-US: Music Explorer
+   */
+  (key: "library.listeningReport.metric.personaDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 天
+   * zh-TW: 天
+   * en-US: days
+   */
+  (key: "library.listeningReport.metric.daysUnit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首
+   * zh-TW: 首
+   * en-US: songs
+   */
+  (key: "library.listeningReport.metric.songsUnit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 分钟
+   * zh-TW: 分鐘
+   * en-US: mins
+   */
+  (key: "library.listeningReport.metric.minutesUnit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 小时
+   * zh-TW: 小時
+   * en-US: hrs
+   */
+  (key: "library.listeningReport.metric.hoursUnit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每日收听趋势
+   * zh-TW: 每日收聽趨勢
+   * en-US: Daily Listening Activity
+   */
+  (key: "library.listeningReport.chart.dailyActivity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 记录每一天的专注与沉浸
+   * zh-TW: 記錄每一天的專注與沉浸
+   * en-US: Every day of focus and immersion
+   */
+  (key: "library.listeningReport.chart.dailySubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 24小时作息偏好
+   * zh-TW: 24小時作息偏好
+   * en-US: 24h Listening Habit
+   */
+  (key: "library.listeningReport.chart.timeOfDay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐在你的日常时段流动
+   * zh-TW: 音樂在你的日常時段流動
+   * en-US: When music flowed through your day
+   */
+  (key: "library.listeningReport.chart.timeOfDaySubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 峰值
+   * zh-TW: 峰值
+   * en-US: Peak
+   */
+  (key: "library.listeningReport.chart.peak", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清晨 (05:00 - 08:00)
+   * zh-TW: 清晨 (05:00 - 08:00)
+   * en-US: Early Morning (05:00 - 08:00)
+   */
+  (key: "library.listeningReport.timeOfDay.early_morning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 早晨 (08:00 - 11:00)
+   * zh-TW: 早晨 (08:00 - 11:00)
+   * en-US: Morning (08:00 - 11:00)
+   */
+  (key: "library.listeningReport.timeOfDay.morning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 中午 (11:00 - 14:00)
+   * zh-TW: 中午 (11:00 - 14:00)
+   * en-US: Noon (11:00 - 14:00)
+   */
+  (key: "library.listeningReport.timeOfDay.noon", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下午 (14:00 - 18:00)
+   * zh-TW: 下午 (14:00 - 18:00)
+   * en-US: Afternoon (14:00 - 18:00)
+   */
+  (key: "library.listeningReport.timeOfDay.afternoon", params?: TranslationParams): string;
+  /**
+   * zh-CN: 夜晚 (18:00 - 23:00)
+   * zh-TW: 夜晚 (18:00 - 23:00)
+   * en-US: Evening (18:00 - 23:00)
+   */
+  (key: "library.listeningReport.timeOfDay.night", params?: TranslationParams): string;
+  /**
+   * zh-CN: 深夜 (23:00 - 05:00)
+   * zh-TW: 深夜 (23:00 - 05:00)
+   * en-US: Late Night (23:00 - 05:00)
+   */
+  (key: "library.listeningReport.timeOfDay.deep_night", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高频单曲 Top 榜
+   * zh-TW: 高頻單曲 Top 榜
+   * en-US: Top Songs
+   */
+  (key: "library.listeningReport.topSongsRank", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在这个时间段里无限循环的声音
+   * zh-TW: 在這個時間段裡無限循環的聲音
+   * en-US: Your most replayed sounds this period
+   */
+  (key: "library.listeningReport.topSongsSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最爱歌手
+   * zh-TW: 最愛歌手
+   * en-US: Top Artists
+   */
+  (key: "library.listeningReport.topArtistsRank", params?: TranslationParams): string;
+  /**
+   * zh-CN: 陪伴你最久的声音创作者
+   * zh-TW: 陪伴你最久的聲音創作者
+   * en-US: Creators who kept you company
+   */
+  (key: "library.listeningReport.topArtistsSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐品味画像
+   * zh-TW: 音樂品味畫像
+   * en-US: Taste Profile
+   */
+  (key: "library.listeningReport.tasteBreakdown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 曲风、语言与时代偏好
+   * zh-TW: 曲風、語言與時代偏好
+   * en-US: Genres, languages, and eras
+   */
+  (key: "library.listeningReport.tasteSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 曲风流派
+   * zh-TW: 曲風流派
+   * en-US: Genres
+   */
+  (key: "library.listeningReport.genres", params?: TranslationParams): string;
+  /**
+   * zh-CN: 语种偏好
+   * zh-TW: 語種偏好
+   * en-US: Languages
+   */
+  (key: "library.listeningReport.languages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 年代跨度
+   * zh-TW: 年代跨度
+   * en-US: Eras
+   */
+  (key: "library.listeningReport.eras", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今日收听轨迹
+   * zh-TW: 今日收聽軌跡
+   * en-US: Today's Listening Timeline
+   */
+  (key: "library.listeningReport.todayFeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今天实时记录的听歌瞬间
+   * zh-TW: 今天即時記錄的聽歌瞬間
+   * en-US: Real-time records from today
+   */
+  (key: "library.listeningReport.todayFeedSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "library.listeningReport.playAction", params?: TranslationParams): string;
   /**
    * zh-CN: 还没有喜欢的音乐
    * zh-TW: 還沒有喜歡的音樂

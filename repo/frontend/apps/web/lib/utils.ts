@@ -67,6 +67,29 @@ export const formatDate = (timestamp: number) => {
   });
 };
 
+/**
+ * 时间戳转相对时间（如：刚刚、5分钟前、2小时前、3天前、05-20）
+ */
+export const formatRelativeTime = (timestamp?: number) => {
+  if (!timestamp || !Number.isFinite(timestamp)) return null;
+  const now = Date.now();
+  const diff = now - timestamp;
+  if (diff < 0) return null;
+
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (minutes < 1) return "刚刚";
+  if (minutes < 60) return `${minutes}分钟前`;
+  if (hours < 24) return `${hours}小时前`;
+  if (days < 30) return `${days}天前`;
+
+  const date = new Date(timestamp);
+  return `${date.getMonth() + 1}月${date.getDate()}日`;
+};
+
 // TODO: 未来适配国际版本的计数模式
 export const formatPlayCount = (count: number) => {
   // 亿及以上 (100,000,000)

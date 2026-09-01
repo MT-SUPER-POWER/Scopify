@@ -46,6 +46,12 @@ export interface RawNeteasePlaylist {
   trackIds?: unknown[];
   trackNumber?: number;
   tracks?: RawSongDetail[];
+  lastSong?: {
+    al?: { id?: number; name?: string; picUrl?: string };
+    ar?: Array<{ id?: number; name?: string }>;
+    id?: number;
+    name?: string;
+  };
 }
 
 export interface UserPlaylistResponse {

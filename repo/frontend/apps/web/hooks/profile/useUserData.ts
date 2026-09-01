@@ -23,7 +23,14 @@ import {
 } from "@/types/api/user";
 import type { UserPlaylist } from "@/types/profile";
 
-function toUserPlaylist(playlist: RawNeteasePlaylist): UserPlaylist {
+function toUserPlaylist(
+  playlist: RawNeteasePlaylist,
+  extra?: {
+    lastSong?: RawNeteasePlaylist["lastSong"];
+    playTime?: number;
+    terminal?: { os?: string; osText?: string };
+  },
+): UserPlaylist {
   const creator = playlist.creator
     ? {
         nickname: playlist.creator.nickname ?? "",
@@ -31,13 +38,28 @@ function toUserPlaylist(playlist: RawNeteasePlaylist): UserPlaylist {
       }
     : undefined;
 
+  const targetLastSong = extra?.lastSong ?? playlist.lastSong;
+  const artists = targetLastSong?.ar
+    ?.map((a) => a.name)
+    .filter(Boolean)
+    .join(" / ");
+
   return {
-    id: playlist.id ?? 0,
-    name: playlist.name ?? "",
     coverImgUrl: playlist.coverImgUrl ?? playlist.picUrl ?? "",
-    trackCount: getPlaylistTrackCount(playlist),
-    playCount: playlist.playCount ?? 0,
     creator,
+    id: playlist.id ?? 0,
+    lastSong: targetLastSong
+      ? {
+          artists,
+          id: targetLastSong.id,
+          name: targetLastSong.name,
+        }
+      : undefined,
+    name: playlist.name ?? "",
+    playCount: playlist.playCount ?? 0,
+    playTime: extra?.playTime,
+    terminal: extra?.terminal,
+    trackCount: getPlaylistTrackCount(playlist),
   };
 }
 
@@ -62,15 +84,18 @@ export function useUserData(uid: string | null) {
 
     const songsRequest = isSelf ? getRecentSongs(100) : Promise.resolve(null);
     const recentPlaylistsRequest = isSelf ? getRecentPlaylists(10) : Promise.resolve(null);
+    const listeningDurationRequest = isSelf ? getTotalListeningDuration() : Promise.resolve(null);
 
     Promise.allSettled([
       getUserDetailInfo({ uid }),
       getUserPlaylists({ uid }),
       songsRequest,
       recentPlaylistsRequest,
+      listeningDurationRequest,
     ] as const)
       .then((results) => {
-        const [detailRes, playlistsRes, songsRes, recentPlaylistsRes] = results;
+        const [detailRes, playlistsRes, songsRes, recentPlaylistsRes, listeningDurationRes] =
+          results;
 
         // ── 用户基础信息 ──
         if (detailRes.status === "fulfilled") {
@@ -92,6 +117,17 @@ export function useUserData(uid: string | null) {
             info.eventCount = raw.eventCount;
             info.playlistCount = raw.playlistCount;
 
+            if (
+              listeningDurationRes &&
+              listeningDurationRes.status === "fulfilled" &&
+              listeningDurationRes.value
+            ) {
+              const seconds = getListeningDurationSeconds(listeningDurationRes.value.data);
+              if (seconds !== null) {
+                info.listenDurationSeconds = seconds;
+              }
+            }
+
             setUserInfo(info);
             if (info.avatarUrl) {
               getMainColorFromImage(info.avatarUrl)
@@ -109,7 +145,9 @@ export function useUserData(uid: string | null) {
         if (playlistsRes.status === "fulfilled") {
           const raw = playlistsRes.value.data?.playlist ?? [];
           setPlaylists(
-            raw.filter((playlist) => playlist.creator?.userId === Number(uid)).map(toUserPlaylist),
+            raw
+              .filter((playlist) => playlist.creator?.userId === Number(uid))
+              .map((item) => toUserPlaylist(item)),
           );
         } else {
           toast.error(
@@ -142,21 +180,23 @@ export function useUserData(uid: string | null) {
         if (isSelf && recentPlaylistsRes.status === "fulfilled") {
           const rawPlaylists = recentPlaylistsRes.value?.data.data?.list ?? [];
           setRecentPlaylists(
-            rawPlaylists.slice(0, 10).flatMap(({ data }) => (data ? [toUserPlaylist(data)] : [])),
+            rawPlaylists.slice(0, 10).flatMap((item) =>
+              item.data
+                ? [
+                    toUserPlaylist(item.data, {
+                      lastSong: item.data.lastSong,
+                      playTime: item.playTime,
+                      terminal: item.multiTerminalInfo
+                        ? {
+                            os: item.os,
+                            osText: item.multiTerminalInfo.osText,
+                          }
+                        : undefined,
+                    }),
+                  ]
+                : [],
+            ),
           );
-        }
-
-        if (isSelf) {
-          void getTotalListeningDuration()
-            .then((response) => {
-              const seconds = getListeningDurationSeconds(response.data);
-              if (seconds === null) return;
-
-              setUserInfo((current) =>
-                current ? { ...current, listenDurationSeconds: seconds } : current,
-              );
-            })
-            .catch(() => {});
         }
       })
       .finally(() => {

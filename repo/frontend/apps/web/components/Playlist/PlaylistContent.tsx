@@ -28,7 +28,6 @@ export function PlaylistContent({
   playSourceId,
   readonly = false,
   refetchTracks,
-  reportSlot,
   setTracks,
   showShuffle,
   themeColor,
@@ -97,7 +96,6 @@ export function PlaylistContent({
           </>
         )}
         <div className="min-w-0 flex-1 pb-10">
-          {!isLoading && reportSlot}
           {isLoading ? (
             <PlaylistLoading />
           ) : contentSlot ? (

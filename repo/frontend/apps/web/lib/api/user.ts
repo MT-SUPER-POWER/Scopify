@@ -60,13 +60,16 @@ export function getRecentSongsByID(uid: number, type = 1, limit = 10) {
 export function getRecentPlaylists(limit = 10) {
   return request.get<RecentPlaylistsResponse>(
     "/record/recent/playlist",
-    requestConfig({ params: { limit } }),
+    requestConfig({ params: { limit }, requiresMusicSession: true }),
   );
 }
 
 // 最近播放-专辑
 export function getRecentAlbums(limit = 100) {
-  return request.get("/record/recent/album", requestConfig({ params: { limit } }));
+  return request.get(
+    "/record/recent/album",
+    requestConfig({ params: { limit }, requiresMusicSession: true }),
+  );
 }
 
 // 获取用户关注列表

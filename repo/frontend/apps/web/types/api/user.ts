@@ -35,7 +35,15 @@ export interface RecentPlaylistsResponse {
 
 export interface RecentPlaylistHistoryEntry {
   data?: RawNeteasePlaylist;
+  multiTerminalInfo?: {
+    icon?: string;
+    os?: string;
+    osText?: string;
+  };
+  os?: string;
   playTime?: number;
+  resourceId?: string;
+  resourceType?: string;
 }
 
 export function getRecentSong(entry: RecentSongHistoryEntry) {
