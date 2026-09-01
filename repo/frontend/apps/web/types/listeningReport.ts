@@ -105,3 +105,28 @@ export interface ListeningReportKeySection {
   type?: string;
   valueA?: string;
 }
+
+export interface ListeningReportHeaderProps {
+  isRefetching: boolean;
+  onPeriodChange: (period: ListeningReportPeriod) => void;
+  onRefresh: () => void;
+  onSelectMonth: (month: import("@/lib/listeningReport/dateHelpers").MonthOption) => void;
+  onSelectWeek: (week: import("@/lib/listeningReport/dateHelpers").WeekOption) => void;
+  period: ListeningReportPeriod;
+  selectedMonthKey: string;
+  selectedWeekKey: string;
+}
+
+export interface ListeningReportStoryHeroProps {
+  isRefetching: boolean;
+  onPeriodChange: (period: ListeningReportPeriod) => void;
+  onRefresh: () => void;
+  onSelectMonth: (month: import("@/lib/listeningReport/dateHelpers").MonthOption) => void;
+  onSelectWeek: (week: import("@/lib/listeningReport/dateHelpers").WeekOption) => void;
+  period: ListeningReportPeriod;
+  selectedMonth: import("@/lib/listeningReport/dateHelpers").MonthOption;
+  selectedMonthKey: string;
+  selectedWeek: import("@/lib/listeningReport/dateHelpers").WeekOption;
+  selectedWeekKey: string;
+  summary: ListeningReportSummary;
+}

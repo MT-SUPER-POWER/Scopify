@@ -38,12 +38,16 @@ export function useListeningReportQuery(period: ListeningReportPeriod, endTime?:
 }
 
 /** Loads the top 20 song play ranking for the specified period and endTime. */
-export function useListeningSongRankQuery(period: RealtimeListeningReportPeriod, endTime?: number) {
+export function useListeningSongRankQuery(
+  period: RealtimeListeningReportPeriod,
+  endTime?: number,
+  enabled = true,
+) {
   const isLoggedIn = useLoginStatus();
   const userId = useUserStore((state) => state.user?.userId ?? 0);
 
   return useQuery({
-    enabled: isLoggedIn,
+    enabled: isLoggedIn && enabled,
     queryKey: musicQueryKeys.listeningReport.songRank(userId, period, endTime),
     queryFn: async (): Promise<SongPlayRankItem[]> => {
       const response = await getListeningSongPlayRank({ endTime, type: period });
