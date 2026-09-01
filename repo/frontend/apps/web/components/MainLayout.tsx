@@ -3,12 +3,12 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { usePathname, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
-import { DesktopPlaybackWallpaperRenderer } from "@/components/desktopWallpaper/DesktopPlaybackWallpaperRenderer";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
 import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
@@ -29,6 +29,17 @@ import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWork
 // self components
 import MainLayoutSkeleton from "./MainLayout/Skeleton";
 import { Sidebar } from "./Sidebar";
+
+// The wallpaper renderer brings the entire Folia visualizer graph into the
+// bundle. It is only used by the dedicated desktop-wallpaper window, so keep
+// it out of every dashboard route until that window actually activates it.
+const DesktopPlaybackWallpaperRenderer = dynamic(
+  () =>
+    import("@/components/desktopWallpaper/DesktopPlaybackWallpaperRenderer").then((module) => ({
+      default: module.DesktopPlaybackWallpaperRenderer,
+    })),
+  { ssr: false },
+);
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

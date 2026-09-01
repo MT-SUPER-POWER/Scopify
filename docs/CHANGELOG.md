@@ -47,6 +47,8 @@
 
 ### Quality
 
+- **原生 TanStack Query 调试球四角吸附**：开发期 Query 调试器保留官方球体与官方表格面板；球体拖动后只会吸附到四个角落并记住位置，点击后面板会依据上/下边缘向视口内部展开，避免不同角落下的内容溢出屏幕，并为官方收起控制补足明确标签与更大的点击区域。
+- **开发期 Next 缓存隔离与按需视觉模块加载**：开发启动脚本现在与 Next 配置一致地在 `.next-dev` 中检查和清理陈旧锁文件，避免误判 `.next` 中的生产构建锁并降低开发服务重复启动的风险；桌面壁纸专用的 Folia 渲染器改为仅在壁纸窗口激活时动态加载，避免普通 Dashboard 路由在开发期编译完整视觉引擎依赖图。
 - **桌面壁纸原生宿主与单 Renderer 架构**：新增 AGPL-3.0 原生 `scopify-wallpaper-helper.exe`，负责 WorkerW attach/detach、心跳、Z-order 守卫与 Explorer 重挂；Electron 仅编排 helper 生命周期，生产壁纸路径不再运行 PowerShell attach 脚本，并移除 `/desktop-wallpaper`、桌面 command workspace 及相关跨窗口播放投影。
 - **记录主窗口命令工作区改造方案**：明确普通搜索保留完整结果页、受控 `@` token 直达分类 Tab、`> 搜索` 在工作区内完成播放与队列操作，并将桌面宿主接入延后至主窗口能力验证之后。
 

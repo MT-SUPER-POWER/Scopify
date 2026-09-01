@@ -440,3 +440,19 @@ img,
 .animate-view-enter {
   animation: viewFadeIn 0.2s ease-out forwards;
 }
+
+/* Keep the native Query Devtools close tab discoverable above app chrome. */
+.tsqd-minimize-btn {
+  min-width: 3.5rem;
+  min-height: 2rem;
+}
+
+.tsqd-minimize-btn::after {
+  margin-left: 0.25rem;
+  content: "收起";
+  font-size: 0.75rem;
+}
+
+.tsqd-text-logo-container {
+  cursor: pointer;
+}

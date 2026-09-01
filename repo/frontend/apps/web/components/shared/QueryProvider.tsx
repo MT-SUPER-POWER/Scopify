@@ -6,12 +6,12 @@ import {
   QueryCache,
   QueryClient,
 } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { pageTtlMs } from "@/lib/cache/pageCache";
+import { QueryDevtools } from "@/components/shared/QueryDevtools";
 import { useRendererErrorReporting } from "@/lib/hooks/useRendererErrorReporting";
 import { queryPersister } from "@/lib/query/persister";
 import { MUSIC_SESSION_EXPIRED_EVENT } from "@/lib/query/session";
@@ -56,7 +56,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      <QueryDevtools />
     </PersistQueryClientProvider>
   );
 }
