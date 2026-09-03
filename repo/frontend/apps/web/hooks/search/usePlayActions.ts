@@ -7,7 +7,6 @@ import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
 import type { Album, Playlist, Song } from "@/types/search";
-import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -52,8 +51,7 @@ export function usePlayActions() {
       if (loadingPlayId === key) return;
       setLoadingPlayId(key);
       try {
-        const cookie = getMusicSessionCredential() ?? "";
-        const res = await getPlaylistAllTracks({ id: playlist.id, cookie });
+        const res = await getPlaylistAllTracks({ id: playlist.id });
         const tracks: SongDetail[] = (res.data.songs ?? []).map(pruneSongDetail);
         if (!tracks.length) {
           toast.error(translate(useI18nStore.getState().locale, "sidebar.lib.noTracks"));

@@ -83,10 +83,11 @@ export function getUserFollowers(uid: number, limit = 30, offset = 0) {
 }
 
 // 获取用户账号信息
-export const getUserAccount = (cookie?: string) => {
-  return request.get<UserAccountResponse>("/user/account", {
-    params: { cookie: cookie },
-  });
+export const getUserAccount = () => {
+  return request.get<UserAccountResponse>(
+    "/user/account",
+    requestConfig({ requiresMusicSession: true }),
+  );
 };
 
 // 获取用户详情
@@ -138,27 +139,34 @@ import type {
 } from "@/types/api/vipSign";
 
 /** 网易乐签 - VIP签到 POST /vip/sign */
-export function vipSign(cookie?: string) {
-  return request.post<VipSignResponse>("/vip/sign", {}, requestConfig({ params: { cookie } }));
+export function vipSign() {
+  return request.post<VipSignResponse>(
+    "/vip/sign",
+    {},
+    requestConfig({ requiresMusicSession: true }),
+  );
 }
 
 /** 网易乐签 - 签到信息 GET /vip/sign/info */
-export function vipSignInfo(cookie?: string) {
-  return request.get<VipSignInfoResponse>("/vip/sign/info", requestConfig({ params: { cookie } }));
+export function vipSignInfo() {
+  return request.get<VipSignInfoResponse>(
+    "/vip/sign/info",
+    requestConfig({ requiresMusicSession: true }),
+  );
 }
 
 /** 网易乐签 - 指定日期详情 GET /vip/sign/detail */
-export function vipSignDetail(timestamp: number, cookie?: string) {
+export function vipSignDetail(timestamp: number) {
   return request.get<VipSignDetailResponse>(
     "/vip/sign/detail",
-    requestConfig({ params: { cookie, timestamp } }),
+    requestConfig({ params: { timestamp }, requiresMusicSession: true }),
   );
 }
 
 /** 网易乐签 - 七日打卡状态 GET /vip/sign/history?type=1 */
-export function vipSignHistory(cookie?: string) {
+export function vipSignHistory() {
   return request.get<VipSignHistoryResponse>(
     "/vip/sign/history",
-    requestConfig({ params: { cookie, type: 1 } }),
+    requestConfig({ params: { type: 1 }, requiresMusicSession: true }),
   );
 }

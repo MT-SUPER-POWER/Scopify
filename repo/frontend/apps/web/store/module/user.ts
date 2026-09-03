@@ -3,6 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { logout } from "@/lib/api/login";
 import { runtime } from "@/lib/runtime";
 import { clearLoginStatus } from "@/lib/web/auth";
+import { getBackendBaseUrl } from "@/lib/web/request";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
 import { type NeteasePlaylist, type RawNeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
 import type { NeteaseUserAlbum } from "@/types/api/release";
@@ -42,7 +43,6 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       user: null,
       loginType: null,
-      cookie: "",
       searchValue: "",
       searchType: 0,
       collectedAlbumIds: new Set(),
@@ -113,6 +113,7 @@ export const useUserStore = create<UserStore>()(
         } catch (error) {
           console.error("登出失败:", error);
         } finally {
+          await runtime.auth.clearMusicSession(getBackendBaseUrl());
           useUserStore.getState().clearSession();
           window.location.reload();
         }

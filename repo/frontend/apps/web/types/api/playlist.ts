@@ -151,7 +151,6 @@ export interface PlaylistTracksResponse {
 }
 
 export interface PlaylistAllTracksParams {
-  cookie?: string;
   id: number | string;
   limit?: number;
   offset?: number;
@@ -159,7 +158,6 @@ export interface PlaylistAllTracksParams {
 }
 
 export interface PlaylistDetailParams {
-  cookie?: string;
   id: number | string;
   requiresMusicSession?: boolean;
 }

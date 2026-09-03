@@ -1,9 +1,5 @@
 import { createBrowserRuntime } from "./adapters/browser";
 import { createElectronRuntime } from "./adapters/electron";
-import {
-  getMusicSessionCredential,
-  saveMusicSessionCredential,
-} from "@/lib/web/musicSessionCredential";
 
 export type * from "./types";
 
@@ -14,17 +10,5 @@ export function createRuntimeForWindow(rendererWindow: Pick<Window, "electronAPI
 }
 
 const runtime = createRuntimeForWindow(typeof window === "undefined" ? undefined : window);
-if (typeof window !== "undefined") {
-  getMusicSessionCredential();
-
-  const electronCookie = window.electronAPI?.getMusicCookie?.();
-  if (
-    !getMusicSessionCredential() &&
-    typeof electronCookie === "string" &&
-    electronCookie.length > 0
-  ) {
-    saveMusicSessionCredential(electronCookie);
-  }
-}
 
 export { runtime };

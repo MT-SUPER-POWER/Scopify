@@ -8,7 +8,6 @@ export interface AlbumDetailResponse {
 }
 
 export interface AlbumSublistParams {
-  cookie?: string;
   limit?: number;
   offset?: number;
 }

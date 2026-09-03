@@ -9,7 +9,7 @@ import type {
   QrKeyResponse,
 } from "@/types/api/login";
 
-import request from "../web/request";
+import request, { requestConfig } from "../web/request";
 
 /**
  * 手机号登录
@@ -24,12 +24,16 @@ export function loginByCellphone(params: CellphoneLoginParams) {
  * 退出当前的登录状态
  */
 export function logout() {
-  return request.get<ApiCodeResponse>("/logout");
+  return request.get<ApiCodeResponse>("/logout", requestConfig({ requiresMusicSession: true }));
 }
 
-// 获取当前登录状态（可传入 cookie）
-export function getLoginStatus(cookie = "") {
-  return request.post<LoginStatusResponse>("/login/status", { cookie });
+// 获取 CookieJar 当前对应的账号状态。
+export function getLoginStatus() {
+  return request.post<LoginStatusResponse>(
+    "/login/status",
+    {},
+    requestConfig({ requiresMusicSession: true }),
+  );
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 二维码登录 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

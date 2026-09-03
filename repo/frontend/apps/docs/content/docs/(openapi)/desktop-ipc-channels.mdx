@@ -7,26 +7,26 @@ description: 按领域整理 Desktop IPC 的方法、事件与传输方式。
 
 ## 请求与命令
 
-| 领域 | Contract 方法 | 典型 channel / 传输 | 语义 |
-| --- | --- | --- | --- |
-| Bridge | `getBridgeInfo` | `bridge:get-info` / `invoke` | 获取能力与版本 |
-| Backend | `getBackendStatus`、`onBackendStatusChanged` | `backend:get-status`、`backend:status-changed` | 查询和订阅内置后端状态 |
-| App / Window | `exitApp`、`relaunchApp`、`minimizeApp`、`sendAppCloseAction`、`enterFullScreen`、`exitFullScreen` | `send` | 执行窗口和应用命令 |
-| Navigation | `navigateTo`、`onNavigate` | `navigate-main-window`、`navigate-to` | 主窗口导航与反向通知 |
-| Media controls | `setPlayerPlaying`、`onControlAudio` | `player-state-changed`、`control-audio` / `send` + `on` | 同步播放状态和系统媒体按键 |
-| Config | `getHostConfig`、`updateHostConfig`、`selectDirectory` | `config:*`、`dialog:select-directory` / `invoke` | 读取和保存宿主配置 |
-| Auth | `openLoginWindow`、`loginSuccess`、`setCookie`、`getMusicCookie` | `send`、`set-music-cookie`、`get-music-cookie` | 登录窗口与会话 Cookie |
-| Cache | `get*`、`set*`、`delete*`、`clear*`、`get*Stats` | `cache:*` / `invoke` | 页面、播放和分类缓存 |
-| Updates | `getUpdateStatus`、`checkForUpdates`、`downloadUpdate`、`quitAndInstallUpdate` | `updater:*` | 更新生命周期 |
-| Logs | `writeLog`、`getLogDirectory`、`openCurrentLog`、`openLogDirectory` | `logger:*` / `invoke` | Renderer 日志和日志目录 |
-| Lyrics | `openDesktopLyric`、`closeDesktopLyric`、`toggleDesktopLyric`、`sendDesktopLyricCommand` | `desktop-lyric:*` | 桌面歌词控制与命令 |
-| Playback wallpaper | `getDesktopPlaybackWallpaperModel`、`updateDesktopPlaybackWallpaperPreferences`、`retryDesktopPlaybackWallpaper` | `desktop-playback-wallpaper:*` | 播放背景状态和配置 |
-| Playback controller | `showDesktopPlaybackController`、`closeDesktopPlaybackController`、`setDesktopPlaybackControllerLayout` | `desktop-playback-controller:*` | 播放控制器窗口 |
-| Icons | `getDesktopIconVisibility`、`setDesktopIconVisibility` | `desktop-icons:*` | 桌面图标可见性 |
-| Discord | `getDiscordPresenceStatus`、`testDiscordPresenceConnection`、`publishDiscordPresenceSnapshot` | `discord-presence:*` | Presence 状态与发布 |
-| Video export | `getVideoExportCaptureSource`、`prepareVideoExportWindow`、`selectVideoExportFile`、`writeVideoExportFile` | `video-export:*` / `invoke` | 捕获、选择路径与写文件 |
-| Audio feature transport | `connectAudioFeatureTransport`、`publishAudioFeatureFrame` | `audio-feature-transport:connect` / MessagePort | 高频音频特征帧 |
-| Playback transport | `connectPlaybackTransport`、`sendPlaybackTransportPayload` | `playback-transport:connect` / MessagePort | 播放状态、歌词和跨窗口传输 |
+| 领域                    | Contract 方法                                                                                                    | 典型 channel / 传输                                     | 语义                                 |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------ |
+| Bridge                  | `getBridgeInfo`                                                                                                  | `bridge:get-info` / `invoke`                            | 获取能力与版本                       |
+| Backend                 | `getBackendStatus`、`onBackendStatusChanged`                                                                     | `backend:get-status`、`backend:status-changed`          | 查询和订阅内置后端状态               |
+| App / Window            | `exitApp`、`relaunchApp`、`minimizeApp`、`sendAppCloseAction`、`enterFullScreen`、`exitFullScreen`               | `send`                                                  | 执行窗口和应用命令                   |
+| Navigation              | `navigateTo`、`onNavigate`                                                                                       | `navigate-main-window`、`navigate-to`                   | 主窗口导航与反向通知                 |
+| Media controls          | `setPlayerPlaying`、`onControlAudio`                                                                             | `player-state-changed`、`control-audio` / `send` + `on` | 同步播放状态和系统媒体按键           |
+| Config                  | `getHostConfig`、`updateHostConfig`、`selectDirectory`                                                           | `config:*`、`dialog:select-directory` / `invoke`        | 读取和保存宿主配置                   |
+| Auth                    | `openLoginWindow`、`loginSuccess`、`setCookie`；`getMusicCookie` 仅供旧版迁移                                    | `send`、`set-music-cookie`、`get-music-cookie`          | 登录窗口、CookieJar 导入与旧凭据兼容 |
+| Cache                   | `get*`、`set*`、`delete*`、`clear*`、`get*Stats`                                                                 | `cache:*` / `invoke`                                    | 页面、播放和分类缓存                 |
+| Updates                 | `getUpdateStatus`、`checkForUpdates`、`downloadUpdate`、`quitAndInstallUpdate`                                   | `updater:*`                                             | 更新生命周期                         |
+| Logs                    | `writeLog`、`getLogDirectory`、`openCurrentLog`、`openLogDirectory`                                              | `logger:*` / `invoke`                                   | Renderer 日志和日志目录              |
+| Lyrics                  | `openDesktopLyric`、`closeDesktopLyric`、`toggleDesktopLyric`、`sendDesktopLyricCommand`                         | `desktop-lyric:*`                                       | 桌面歌词控制与命令                   |
+| Playback wallpaper      | `getDesktopPlaybackWallpaperModel`、`updateDesktopPlaybackWallpaperPreferences`、`retryDesktopPlaybackWallpaper` | `desktop-playback-wallpaper:*`                          | 播放背景状态和配置                   |
+| Playback controller     | `showDesktopPlaybackController`、`closeDesktopPlaybackController`、`setDesktopPlaybackControllerLayout`          | `desktop-playback-controller:*`                         | 播放控制器窗口                       |
+| Icons                   | `getDesktopIconVisibility`、`setDesktopIconVisibility`                                                           | `desktop-icons:*`                                       | 桌面图标可见性                       |
+| Discord                 | `getDiscordPresenceStatus`、`testDiscordPresenceConnection`、`publishDiscordPresenceSnapshot`                    | `discord-presence:*`                                    | Presence 状态与发布                  |
+| Video export            | `getVideoExportCaptureSource`、`prepareVideoExportWindow`、`selectVideoExportFile`、`writeVideoExportFile`       | `video-export:*` / `invoke`                             | 捕获、选择路径与写文件               |
+| Audio feature transport | `connectAudioFeatureTransport`、`publishAudioFeatureFrame`                                                       | `audio-feature-transport:connect` / MessagePort         | 高频音频特征帧                       |
+| Playback transport      | `connectPlaybackTransport`、`sendPlaybackTransportPayload`                                                       | `playback-transport:connect` / MessagePort              | 播放状态、歌词和跨窗口传输           |
 
 ## 事件订阅
 

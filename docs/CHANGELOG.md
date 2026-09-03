@@ -12,6 +12,7 @@
 
 ### Quality
 
+- **统一 Web/Desktop 网易云 CookieJar 会话**：Electron 现可解析聚合 `Set-Cookie`，按路径和过期时间将完整登录字段写入 Chromium 持久化 Session，并在启动时从旧 safeStorage 恢复；Web 通过 Backend 原生 `Set-Cookie` 建立会话，旧 localStorage 凭据仅经 `/login/refresh` POST 一次完成迁移。统一请求层不再向普通接口附加 `params.cookie`，歌曲、评论、推荐、歌单、搜索、乐签和登录状态调用均改为自动携带 CookieJar，同时新增可选实时测试验证 VIP 音源不是 30 秒试听。
 - **重整 Electron Main 进程业务结构**：参考 SPlayer-Next 的职责划分，将原本扁平的 `main/module` 按 `core`、`ipc`、`window`、`services`、`capabilities`、`store` 与 `utils` 重新归类；把 565 行集中式 IPC 拆为按能力注册的 TypeScript adapter，将入口收敛为显式 `initializeApplication`，并补充 Main 进程架构、启动顺序、IPC 授权、模块归属及未来原生音频引擎依赖原则的维护文档。
 - **重构喜欢链路与补全 Mutation 单元测试**：重构 `TrackRow`、`SongItem`、`PopularTrackItem`、`SongContextMenu`、`toggleCurrentSongLike` 及 `PlaybackAuthorityProvider` 统一收敛至标准 Mutation 管道，并新增 `songLikeMutation.test.tsx` 验证乐观更新、错误回滚与多 Query 缓存失效机制。
 

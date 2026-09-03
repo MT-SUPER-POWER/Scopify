@@ -45,6 +45,7 @@ import {
 } from "../capabilities/audioFeatureBroker/ipc.js";
 import { initializeLoginWindow } from "../window/login.js";
 import { applyElectronProxy } from "../utils/proxy.js";
+import { restoreMusicSessionCookies } from "../utils/musicCookieStore.js";
 import { initThumbarButtons } from "../utils/thumbarButtons.js";
 import { initTray, trayWindow } from "../window/tray.js";
 import { initializeUpdater, scheduleStartupUpdateCheck } from "../services/updater.js";
@@ -463,6 +464,11 @@ export function initializeApplication() {
 
       await applyElectronProxy(desktopConfig).catch((error) => {
         logger.error("[proxy] failed to apply startup proxy config:", error);
+      });
+
+      const backendOrigin = `http://127.0.0.1:${desktopConfig.backend.port}`;
+      await restoreMusicSessionCookies(backendOrigin).catch((error) => {
+        logger.warn("[session] failed to restore the legacy music session", error);
       });
 
       try {

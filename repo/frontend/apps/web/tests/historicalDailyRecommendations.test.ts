@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, test } from "bun:test";
 
 import {
   dislikeDailyRecommend,
@@ -7,44 +7,14 @@ import {
 } from "@/lib/api/playlist";
 import request from "@/lib/web/request";
 
-class MemoryStorage {
-  readonly values = new Map<string, string>();
-
-  getItem(key: string) {
-    return this.values.get(key) ?? null;
-  }
-}
-
 const originalAdapter = request.defaults.adapter;
-const originalLocalStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
-const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
-
-function restoreGlobal(
-  name: "localStorage" | "window",
-  descriptor: PropertyDescriptor | undefined,
-) {
-  if (descriptor) Object.defineProperty(globalThis, name, descriptor);
-  else Reflect.deleteProperty(globalThis, name);
-}
 
 describe("historical daily recommendations", () => {
-  beforeEach(() => {
-    const storage = new MemoryStorage();
-    storage.values.set("music_cookie", "MUSIC_U=vip-session; __csrf=csrf-token");
-    Object.defineProperty(globalThis, "localStorage", { configurable: true, value: storage });
-    Object.defineProperty(globalThis, "window", {
-      configurable: true,
-      value: { localStorage: storage },
-    });
-  });
-
   afterEach(() => {
     request.defaults.adapter = originalAdapter;
-    restoreGlobal("localStorage", originalLocalStorage);
-    restoreGlobal("window", originalWindow);
   });
 
-  test("attaches the session credential to the calendar-date request", async () => {
+  test("keeps session credentials out of the calendar-date request parameters", async () => {
     let capturedParams: Record<string, unknown> | undefined;
     request.defaults.adapter = async (config) => {
       capturedParams = config.params as Record<string, unknown>;
@@ -59,12 +29,10 @@ describe("historical daily recommendations", () => {
 
     await getHistoricalDailyRecommendations();
 
-    expect(capturedParams).toMatchObject({
-      cookie: "MUSIC_U=vip-session; __csrf=csrf-token",
-    });
+    expect(capturedParams).not.toHaveProperty("cookie");
   });
 
-  test("attaches the session credential to a selected-date request", async () => {
+  test("keeps only the selected date in authenticated business parameters", async () => {
     let capturedParams: Record<string, unknown> | undefined;
     request.defaults.adapter = async (config) => {
       capturedParams = config.params as Record<string, unknown>;
@@ -79,13 +47,11 @@ describe("historical daily recommendations", () => {
 
     await getHistoricalDailyRecommendationDetail("2026-08-03");
 
-    expect(capturedParams).toMatchObject({
-      cookie: "MUSIC_U=vip-session; __csrf=csrf-token",
-      date: "2026-08-03",
-    });
+    expect(capturedParams).toMatchObject({ date: "2026-08-03" });
+    expect(capturedParams).not.toHaveProperty("cookie");
   });
 
-  test("attaches the session credential to authenticated daily actions", async () => {
+  test("keeps session credentials out of authenticated daily actions", async () => {
     let capturedParams: Record<string, unknown> | undefined;
     request.defaults.adapter = async (config) => {
       capturedParams = config.params as Record<string, unknown>;
@@ -100,9 +66,7 @@ describe("historical daily recommendations", () => {
 
     await dislikeDailyRecommend(123);
 
-    expect(capturedParams).toMatchObject({
-      cookie: "MUSIC_U=vip-session; __csrf=csrf-token",
-      id: 123,
-    });
+    expect(capturedParams).toMatchObject({ id: 123 });
+    expect(capturedParams).not.toHaveProperty("cookie");
   });
 });

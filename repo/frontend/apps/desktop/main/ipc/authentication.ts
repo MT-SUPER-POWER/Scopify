@@ -1,7 +1,8 @@
-import { ipcMain, session } from "electron";
+import { ipcMain } from "electron";
 import { logger } from "../constants.js";
 import {
-  clearMusicSessionCookie,
+  clearInstalledMusicSessionCookies,
+  installMusicSessionCookies,
   readMusicSessionCookie,
   saveMusicSessionCookie,
 } from "../utils/musicCookieStore.js";
@@ -10,20 +11,14 @@ import {
 export function registerAuthenticationIpc() {
   ipcMain.handle("set-music-cookie", async (_event, cookieStr: string, backendOrigin: string) => {
     try {
-      const musicUMatch = cookieStr.match(/MUSIC_U=([^;]+)/);
-      const value = musicUMatch ? musicUMatch[1] : cookieStr;
-      const persistedValue = musicUMatch ? `MUSIC_U=${value}` : value;
-      if (!value) clearMusicSessionCookie();
-      else saveMusicSessionCookie(persistedValue);
-
-      await session.defaultSession.cookies.set({
-        url: parseAllowedBackendOrigin(backendOrigin),
-        name: "MUSIC_U",
-        value,
-        path: "/",
-        sameSite: "no_restriction",
-        expirationDate: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 60,
-      });
+      const value = cookieStr.trim();
+      if (!value) {
+        await clearInstalledMusicSessionCookies(backendOrigin);
+        return true;
+      }
+      const installed = await installMusicSessionCookies(value, backendOrigin);
+      if (!installed) return false;
+      saveMusicSessionCookie(value);
       logger.info("[IPC] set-music-cookie success");
       return true;
     } catch (error) {
@@ -31,15 +26,8 @@ export function registerAuthenticationIpc() {
       throw error;
     }
   });
+  // 仅供旧 Renderer 完成升级迁移；新请求不得读取凭据或手动注入 Cookie。
   ipcMain.on("get-music-cookie", (event) => {
     event.returnValue = readMusicSessionCookie();
   });
-}
-
-function parseAllowedBackendOrigin(value: string) {
-  const url = new URL(value);
-  if (url.protocol !== "http:" && url.protocol !== "https:") {
-    throw new Error("Backend origin must use HTTP or HTTPS.");
-  }
-  return url.origin;
 }

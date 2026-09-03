@@ -14,7 +14,6 @@ import type {
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import { pruneRecommendPlaylist } from "@/types/api/playlist";
 import type { Artist, Song, Voice } from "@/types/search";
-import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import {
   useHomeUserProfileQuery,
   useHotArtistsQuery,
@@ -246,8 +245,7 @@ export function useHomeData() {
       if (loadingPlayId === key) return;
       setLoadingPlayId(key);
       try {
-        const cookie = getMusicSessionCredential() ?? "";
-        const res = await getPlaylistAllTracks({ id, cookie });
+        const res = await getPlaylistAllTracks({ id });
         const tracks: SongDetail[] = (res.data.songs ?? []).map(pruneSongDetail);
         if (!tracks.length) {
           toast.error(t("home.toast.playlistEmpty"));

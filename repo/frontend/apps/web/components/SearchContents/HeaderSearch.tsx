@@ -8,7 +8,6 @@ import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspa
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { cn } from "@/lib/utils";
-import { getStoredMusicCookie } from "@/lib/web/auth";
 import { useI18n } from "@/store/module/i18n";
 import { useSearchStore } from "@/store/module/search";
 import type { SearchRecentEntry } from "@/types/search";
@@ -73,7 +72,7 @@ export default function HeaderSearch() {
     setLoading(true);
     const t = setTimeout(async () => {
       try {
-        const res = await searchSuggest(localValue.trim(), getStoredMusicCookie());
+        const res = await searchSuggest(localValue.trim());
         setSuggests(res.data?.data?.suggests ?? []);
         setSelectedIndex(-1);
       } catch {
@@ -91,7 +90,7 @@ export default function HeaderSearch() {
     let isActive = true;
     const fetchHot = async () => {
       try {
-        const res = await searchDefault(getStoredMusicCookie());
+        const res = await searchDefault();
         if (!isActive) return;
         const kws = res.data?.data.algWords.map((w: { keyword: string }) => w.keyword) || [];
         if (!kws.length) return;

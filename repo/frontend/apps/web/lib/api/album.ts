@@ -5,19 +5,21 @@ import type {
   AlbumSubscribeResponse,
 } from "@/types/api/album";
 
-import request, { requestData } from "@/lib/web/request";
+import request, { requestConfig, requestData } from "@/lib/web/request";
 
 // 获取已收藏专辑列表
 export const getUserAlbumSublist = (params?: AlbumSublistParams) => {
-  return request<AlbumSublistResponse>({
-    method: "get",
-    params: {
-      cookie: params?.cookie,
-      limit: params?.limit ?? 25,
-      offset: params?.offset ?? 0,
-    },
-    url: "/album/sublist",
-  });
+  return request<AlbumSublistResponse>(
+    requestConfig({
+      method: "get",
+      params: {
+        limit: params?.limit ?? 25,
+        offset: params?.offset ?? 0,
+      },
+      requiresMusicSession: true,
+      url: "/album/sublist",
+    }),
+  );
 };
 
 // 获取专辑详情
@@ -45,6 +47,7 @@ export function subscribeAlbum(id: number | string, subscribe: boolean) {
       id,
       t: subscribe ? 1 : 0,
     },
+    requiresMusicSession: true,
     url: "/album/sub",
   });
 }

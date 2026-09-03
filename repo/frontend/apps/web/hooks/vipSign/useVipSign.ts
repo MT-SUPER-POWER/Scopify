@@ -5,7 +5,6 @@ import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { vipSign, vipSignDetail, vipSignHistory } from "@/lib/api/user";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { getVipSignTodayRecord, hasVipSignedToday } from "@/lib/vipSign";
 import { useUserStore } from "@/store";
 import type { VipSignDetail, VipSignHistoryResponse } from "@/types/api/vipSign";
@@ -32,18 +31,13 @@ export function useVipSign() {
   const queryClient = useQueryClient();
   const userId = useUserStore((state) => state.user?.userId);
 
-  const getCookie = useCallback(() => {
-    return getMusicSessionCredential();
-  }, []);
-
   // ─────────────────────────────────────────────────────────
   // /vip/sign/history?type=1 返回七日月历，sign 是当天的权威签到状态。
   // ─────────────────────────────────────────────────────────
   const { data: signHistory, isLoading } = useQuery<VipSignHistoryResponse>({
     queryKey: vipSignKeys.history(userId),
     queryFn: async () => {
-      const cookie = getCookie();
-      const res = await vipSignHistory(cookie);
+      const res = await vipSignHistory();
       return res.data;
     },
     enabled: isLoggedIn && userId !== undefined,
@@ -64,14 +58,13 @@ export function useVipSign() {
       if (!signTime) return undefined;
 
       try {
-        const cookie = getCookie();
-        const res = await vipSignDetail(signTime, cookie);
+        const res = await vipSignDetail(signTime);
         return res.data.data;
       } catch {
         return undefined;
       }
     },
-    [getCookie],
+    [],
   );
 
   const fetchTodayRecord = useCallback(() => {
@@ -84,8 +77,7 @@ export function useVipSign() {
   // ─────────────────────────────────────────────────────────
   const { mutateAsync: signMutation, isPending: isSigning } = useMutation({
     mutationFn: async () => {
-      const cookie = getCookie();
-      const res = await vipSign(cookie);
+      const res = await vipSign();
       return res.data;
     },
     onSuccess: async (data) => {

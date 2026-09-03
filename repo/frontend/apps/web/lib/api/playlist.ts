@@ -44,20 +44,17 @@ export function getUserPlaylistByID(uid: number, limit = 30, offset = 0) {
  * @param id 歌单 id
  * @param limit 限制获取歌曲的数量，默认值为当前歌单的歌曲数量
  * @param offset 偏移量，默认 0
- * @param cookie 请求推荐歌单数据的时候
  * @returns 歌曲列表数据
  */
 export function getPlaylistAllTracks({
   id,
   limit,
   offset,
-  cookie,
   requiresMusicSession,
 }: PlaylistAllTracksParams) {
-  // DEBUG: 后期如果拿不到数据，在这里试试看带上 cookie
   return request.get<PlaylistTracksResponse>(
     "/playlist/track/all",
-    requestConfig({ params: { cookie, id, limit, offset }, requiresMusicSession }),
+    requestConfig({ params: { id, limit, offset }, requiresMusicSession }),
   );
 }
 
@@ -167,16 +164,19 @@ export function getPersonalizePlaylists(limit = 100) {
   return request.get<PersonalizedPlaylistsResponse>("/personalized", { params: { limit } });
 }
 
-export function getPlaylsitDetail({ id, cookie, requiresMusicSession }: PlaylistDetailParams) {
+export function getPlaylsitDetail({ id, requiresMusicSession }: PlaylistDetailParams) {
   return request.get<PlaylistDetailResponse>(
     "/playlist/detail",
-    requestConfig({ params: { id, cookie }, requiresMusicSession }),
+    requestConfig({ params: { id }, requiresMusicSession }),
   );
 }
 
 // 获取每日推荐歌单
-export function getRecommendedPlaylists(cookie?: string) {
-  return request.get<RecommendedPlaylistsResponse>("/recommend/resource", { params: { cookie } });
+export function getRecommendedPlaylists() {
+  return request.get<RecommendedPlaylistsResponse>(
+    "/recommend/resource",
+    requestConfig({ requiresMusicSession: true }),
+  );
 }
 
 // 不喜欢某一首每日推荐

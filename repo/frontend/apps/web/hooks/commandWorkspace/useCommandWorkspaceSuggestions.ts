@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
-import { getStoredMusicCookie } from "@/lib/web/auth";
 import type { CommandWorkspaceSearchSuggestion } from "@/types/commandWorkspace";
 
 export function useCommandWorkspaceSuggestions(query: string) {
@@ -21,7 +20,7 @@ export function useCommandWorkspaceSuggestions(query: string) {
     setIsLoading(true);
     const timeout = window.setTimeout(async () => {
       try {
-        const response = await searchSuggest(keyword, getStoredMusicCookie());
+        const response = await searchSuggest(keyword);
         if (isCurrentRequest) setSuggestions(getSuggestions(response.data?.data?.suggests));
       } catch {
         if (isCurrentRequest) setSuggestions([]);

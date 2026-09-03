@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
-import { getStoredMusicCookie } from "@/lib/web/auth";
 import { useSearchStore } from "@/store/module/search";
 import type { SearchRecentEntry } from "@/types/search";
 import type { SuggestItem } from "../SearchHelper";
@@ -64,7 +63,7 @@ export function useSearchLogic({ inputRef, onClose, isActive = true }: UseSearch
     setLoading(true);
     const t = setTimeout(async () => {
       try {
-        const res = await searchSuggest(localValue.trim(), getStoredMusicCookie());
+        const res = await searchSuggest(localValue.trim());
         const newSuggests = res.data?.data?.suggests ?? [];
         setSuggests(newSuggests);
         setSelectedIndex(newSuggests.length > 0 ? 0 : -1);

@@ -105,6 +105,17 @@ WebRuntime.cache.get
 维护时从 IPC 频道开始，先找到 `ipc/` 下对应 adapter，再进入实际能力模块；不要在
 `preload.ts` 中加入业务分支。
 
+## 音乐登录会话
+
+Browser 与 Desktop 都以 Chromium CookieJar 作为 Backend Session 的最终来源。二维码登录
+响应的 `Set-Cookie` 会由浏览器自动保存；Desktop 也可以通过 `set-music-cookie` 把聚合
+Cookie 按路径、过期时间和安全属性导入 `session.defaultSession.cookies`。普通 API 不读取
+Cookie，也不允许在 query/body 中手工附加凭据。
+
+旧版 localStorage/safeStorage 凭据只用于一次性迁移：Web 通过 `/login/refresh` POST 换取
+`Set-Cookie`，Desktop 在创建 Renderer 前恢复到 CookieJar。`get-music-cookie` 是旧 Renderer
+兼容通道，不得在新代码中使用。
+
 ## TypeScript 与依赖规则
 
 - Main 源码统一使用 TypeScript、ES module 和命名导出；避免 CommonJS 与默认导出。

@@ -7,11 +7,6 @@ import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
 import { getPersonalizePlaylists, getRecommendedPlaylists } from "@/lib/api/playlist";
 import { getUserDetail } from "@/lib/api/user";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
-
-function getMusicCookie() {
-  return getMusicSessionCredential();
-}
 
 export function usePersonalizedPlaylistsQuery(limit = 100) {
   return useQuery({
@@ -22,12 +17,10 @@ export function usePersonalizedPlaylistsQuery(limit = 100) {
 }
 
 export function useRecommendedPlaylistsQuery(enabled: boolean) {
-  const cookie = getMusicCookie();
-
   return useQuery({
     enabled,
     meta: { scope: "account" },
-    queryFn: async () => (await getRecommendedPlaylists(cookie)).data,
+    queryFn: async () => (await getRecommendedPlaylists()).data,
     queryKey: musicQueryKeys.home.recommendedPlaylists(),
   });
 }

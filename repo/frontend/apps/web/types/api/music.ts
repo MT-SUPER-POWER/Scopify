@@ -7,7 +7,6 @@ export interface SongUrlMatchResponse {
 }
 
 export interface SongUrlMatchParams {
-  cookie?: string;
   id: number | string;
   source?: string;
 }

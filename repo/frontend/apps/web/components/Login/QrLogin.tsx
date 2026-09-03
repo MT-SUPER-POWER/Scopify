@@ -11,17 +11,10 @@ import { checkQR, createQR, getQRKey } from "@/lib/api/login";
 import { getUserAccount, getUserDetail } from "@/lib/api/user";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
-import { saveMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { getBackendBaseUrl } from "@/lib/web/request";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-// import { saveMusicCookie } from '@/app/actions/cookie';
-
-export type QrStatus = "loading" | "waiting" | "scanned" | "expired" | "success";
-
-interface QrLoginProps {
-  onSuccess?: () => void;
-}
+import type { QrLoginProps, QrStatus } from "@/types/login";
 
 // 封装一个 Promise 版的 delay 函数
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -87,14 +80,14 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             setQrStatus("success");
             setQrStatusText(t("login.qr.success"));
 
-            // NOTE: 登录时 cookie 存储的位置
             const rawCookie = statusRes.data.cookie ?? "";
-            saveMusicSessionCredential(rawCookie);
+            // Browser 由二维码响应的 Set-Cookie 建立会话；Desktop 同步导入完整 Cookie 集合，
+            // 以规避自定义 app:// Origin 下的第三方 Cookie 限制。
+            if (runtime.isDesktop && rawCookie) {
+              await runtime.auth.importMusicSession(rawCookie, getBackendBaseUrl());
+            }
 
-            // 1. 调用主进程注入 Cookie (Electron 环境)
-            await runtime.auth.persistMusicCookie(rawCookie, getBackendBaseUrl());
-
-            // 强制带上 cookie 发起用户信息请求
+            // 使用刚建立的 CookieJar 会话确认账号身份。
             const loginRes = await getUserAccount();
 
             if (loginRes.data.code !== 200) {

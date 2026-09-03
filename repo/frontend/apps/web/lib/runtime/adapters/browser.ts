@@ -344,14 +344,13 @@ export function createBrowserRuntime(
       publish: () => false,
     },
     auth: {
+      // The Backend logout response expires Browser cookies; JavaScript must not read HttpOnly data.
+      clearMusicSession: async () => true,
       completeLogin: () => false,
+      // Browser sessions are established by Backend Set-Cookie responses. JavaScript cannot safely
+      // write cookies for a different Backend origin, so manual import is Desktop-only for now.
+      importMusicSession: async () => false,
       openLoginWindow: () => false,
-      persistMusicCookie: async (cookie) => {
-        if (!environment.document) return false;
-        const musicUMatch = /MUSIC_U=([^;]+)/.exec(cookie);
-        environment.document.cookie = `MUSIC_U=${musicUMatch?.[1] ?? ""}; path=/; max-age=${60 * 60 * 24 * 30}`;
-        return true;
-      },
     },
     cache: {
       clear: async () => {

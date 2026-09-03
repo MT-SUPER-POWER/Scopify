@@ -5,18 +5,15 @@ import type {
   NewCommentResponse,
 } from "@/types/api/comment";
 import type { SongComment } from "@/types/api/music";
-import request from "../web/request";
-import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
+import request, { requestConfig } from "../web/request";
 
 export async function getMusicComments(params: MusicCommentParams) {
-  const cookie = getMusicSessionCredential() ?? "";
   return request.get<SongComment>("/comment/music", {
     params: {
       id: params.id,
       limit: params.limit,
       offset: params.offset,
       before: params.before,
-      cookie: cookie,
     },
   });
 }
@@ -51,9 +48,10 @@ export function addResourceComment(
   content: string,
   type: CommentResourceType,
 ) {
-  return request.get("/comment/add", {
-    params: { id, content, type },
-  });
+  return request.get(
+    "/comment/add",
+    requestConfig({ params: { id, content, type }, requiresMusicSession: true }),
+  );
 }
 
 /**
@@ -68,9 +66,13 @@ export function delComments(
   commentId: string | number,
   type: CommentResourceType = 0,
 ) {
-  return request.get("/comment", {
-    params: { id: resourceId, t: 0, type, commentId },
-  });
+  return request.get(
+    "/comment",
+    requestConfig({
+      params: { id: resourceId, t: 0, type, commentId },
+      requiresMusicSession: true,
+    }),
+  );
 }
 
 /**
@@ -85,15 +87,13 @@ export function replyComments(
   content: string,
   type: CommentResourceType = 0,
 ) {
-  return request.get("/comment", {
-    params: {
-      id: resourceId,
-      t: 2,
-      type,
-      commentId: commentId,
-      content: content,
-    },
-  });
+  return request.get(
+    "/comment",
+    requestConfig({
+      params: { id: resourceId, t: 2, type, commentId, content },
+      requiresMusicSession: true,
+    }),
+  );
 }
 
 /**
@@ -109,8 +109,8 @@ export function toggleLikeComments(
   t: 1 | 0,
   type: CommentResourceType,
 ) {
-  const cookie = getMusicSessionCredential() ?? "";
-  return request.get("/comment/like", {
-    params: { id, cid, t, type, cookie },
-  });
+  return request.get(
+    "/comment/like",
+    requestConfig({ params: { id, cid, t, type }, requiresMusicSession: true }),
+  );
 }

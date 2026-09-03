@@ -12,12 +12,8 @@ import request from "../web/request";
  * 搜索建议
  * @return res.data.showKeyword
  */
-export function searchDefault(cookie?: string) {
-  return request.get("/v1/search/default/keyword/pc", {
-    params: {
-      cookie,
-    },
-  });
+export function searchDefault() {
+  return request.get("/v1/search/default/keyword/pc");
 }
 
 /**
@@ -30,11 +26,10 @@ export function searchHot() {
 /**
  * 输入一点内容就下拉的搜索意见栏
  */
-export function searchSuggest(keyword: string, cookie?: string) {
+export function searchSuggest(keyword: string) {
   return request.get("/search/suggest/pc", {
     params: {
       keyword: keyword,
-      cookie,
     },
   });
 }

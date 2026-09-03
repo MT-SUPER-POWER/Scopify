@@ -43,9 +43,10 @@ export interface RuntimeAppLifecycle {
 }
 
 export interface RuntimeAuthentication {
+  clearMusicSession(backendOrigin: string): Promise<boolean>;
   completeLogin(): boolean;
+  importMusicSession(cookie: string, backendOrigin: string): Promise<boolean>;
   openLoginWindow(): boolean;
-  persistMusicCookie(cookie: string, backendOrigin: string): Promise<boolean>;
 }
 
 /** Bounded high-frequency audio feature transport; payload delivery is best-effort. */

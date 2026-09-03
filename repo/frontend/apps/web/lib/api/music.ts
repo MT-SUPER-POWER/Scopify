@@ -9,12 +9,6 @@ import type {
   SongChorusResponse,
 } from "@/types/api/music";
 import request from "../web/request";
-import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
-
-// 获取 cookie 的辅助函数
-const getCookie = () => {
-  return getMusicSessionCredential() ?? "";
-};
 
 export async function greySongUrlMatch(
   id: number | string,
@@ -22,8 +16,6 @@ export async function greySongUrlMatch(
 ): Promise<SongUrlMatchResponse> {
   const params: SongUrlMatchParams = { id };
   if (source) params.source = source;
-  const cookie = getCookie();
-  if (cookie) params.cookie = cookie;
 
   const response = await request.get<SongUrlMatchResponse>("/song/url/match", {
     params,
@@ -61,9 +53,8 @@ export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
  * GET /song/music/detail?id={id}
  */
 export async function getSongMusicDetail(id: number | string) {
-  const cookie = getCookie();
   return request.get<SongMusicDetailResponse>("/song/music/detail", {
-    params: { id, ...(cookie ? { cookie } : {}) },
+    params: { id },
   });
 }
 
@@ -74,9 +65,8 @@ export async function getSongMusicDetail(id: number | string) {
  * @param level 播放音质等级
  */
 export async function getSongUrlV1(id: number | string, level: MusicQualityLevel = "exhigh") {
-  const cookie = getCookie();
   return request.get<SongUrlV1Response>("/song/url/v1", {
-    params: { id, level, ...(cookie ? { cookie } : {}) },
+    params: { id, level },
   });
 }
 
@@ -85,9 +75,8 @@ export async function getSongUrlV1(id: number | string, level: MusicQualityLevel
  * GET /check/music?id={id}&br={br}
  */
 export async function checkMusicAvailable(id: number | string, br?: number) {
-  const cookie = getCookie();
   return request.get<CheckMusicResponse>("/check/music", {
-    params: { id, ...(br ? { br } : {}), ...(cookie ? { cookie } : {}) },
+    params: { id, ...(br ? { br } : {}) },
   });
 }
 

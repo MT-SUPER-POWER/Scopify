@@ -377,7 +377,7 @@ describe("browser runtime adapter", () => {
     }
   });
 
-  test("persists the music cookie through the browser adapter", async () => {
+  test("leaves cross-origin session import to Backend Set-Cookie in the browser", async () => {
     const document = {
       addEventListener: NOOP,
       cookie: "",
@@ -389,10 +389,9 @@ describe("browser runtime adapter", () => {
     const runtime = createBrowserRuntime({ document });
 
     expect(
-      await runtime.auth.persistMusicCookie("MUSIC_U=abc123; __csrf=secret", "http://localhost"),
-    ).toBeTrue();
-    expect(document.cookie).toContain("MUSIC_U=abc123");
-    expect(document.cookie).not.toContain("__csrf");
+      await runtime.auth.importMusicSession("MUSIC_U=abc123; __csrf=secret", "http://localhost"),
+    ).toBeFalse();
+    expect(document.cookie).toBe("");
   });
 });
 
@@ -497,10 +496,11 @@ describe("electron runtime adapter", () => {
     const runtime = createElectronRuntime(bridge);
 
     expect(runtime.isDesktop).toBeTrue();
+    expect(await runtime.auth.clearMusicSession("http://127.0.0.1:3838")).toBeTrue();
     expect(runtime.auth.openLoginWindow()).toBeTrue();
     expect(runtime.auth.completeLogin()).toBeTrue();
     expect(
-      await runtime.auth.persistMusicCookie("MUSIC_U=abc", "http://127.0.0.1:3838"),
+      await runtime.auth.importMusicSession("MUSIC_U=abc", "http://127.0.0.1:3838"),
     ).toBeTrue();
     expect(runtime.navigation.navigateMainWindow("/setting")).toBeTrue();
     runtime.media.setPlaying(true);
@@ -512,6 +512,7 @@ describe("electron runtime adapter", () => {
     runtime.app.submitCloseAction("minimize", true);
 
     expect(calls).toEqual([
+      "cookie:@http://127.0.0.1:3838",
       "open-login",
       "login-success",
       "cookie:MUSIC_U=abc@http://127.0.0.1:3838",

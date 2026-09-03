@@ -3,7 +3,6 @@ import { getArtistTopSongs } from "@/lib/api/artist";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { getRadioPrograms } from "@/lib/api/radio";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
-import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import type {
   CommandWorkspaceSearchItem,
@@ -28,7 +27,6 @@ export async function loadCommandWorkspaceTrackList(
       };
     case "playlist": {
       const response = await getPlaylistAllTracks({
-        cookie: getMusicSessionCredential() ?? "",
         id: item.entity.id,
       });
       return {

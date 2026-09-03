@@ -14,7 +14,7 @@ import { ApiError, toApiError } from "./apiError";
 import { buildBackendBaseUrl, normalizeBackendConfig } from "./backendUrl";
 import { webConfig } from "./env";
 import { reportFailure } from "./errorTracking";
-import { attachMusicSessionCredential, getMusicSessionCredential } from "./musicSessionCredential";
+import { migrateLegacyMusicSession } from "./musicSessionCredential";
 
 function loadInitialBackendConfig(): WebConfig["backend"] {
   if (typeof window === "undefined") return webConfig.backend;
@@ -137,26 +137,28 @@ if (typeof window !== "undefined") {
   });
 }
 
-request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRequestConfig) => {
-  if (!baseURL) throw new Error("BACKEND_URL is not configured.");
+request.interceptors.request.use(
+  async (config: InternalAxiosRequestConfig & ScopifyRequestConfig) => {
+    if (!baseURL) throw new Error("BACKEND_URL is not configured.");
 
-  const networkConfig = getNetworkConfig();
-  config.baseURL = baseURL;
-  config.timeout = networkConfig.timeout;
-  config.traceId ??= createRequestTraceId();
-  const requestParams = isRecord(config.params) ? config.params : {};
-  const sessionParams = config.requiresMusicSession
-    ? attachMusicSessionCredential(requestParams, getMusicSessionCredential())
-    : requestParams;
-  config.params = {
-    ...sessionParams,
-    timestamp: Date.now(),
-    ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
-    randomCNIP: networkConfig.randomCNIP,
-  };
+    const networkConfig = getNetworkConfig();
+    config.baseURL = baseURL;
+    config.timeout = networkConfig.timeout;
+    config.traceId ??= createRequestTraceId();
+    if (config.requiresMusicSession) {
+      await migrateLegacyMusicSession(baseURL, networkConfig.timeout);
+    }
+    const requestParams = isRecord(config.params) ? config.params : {};
+    config.params = {
+      ...requestParams,
+      timestamp: Date.now(),
+      ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
+      randomCNIP: networkConfig.randomCNIP,
+    };
 
-  return config;
-});
+    return config;
+  },
+);
 
 request.interceptors.response.use((response) => {
   const responseData = response.data as null | { code?: unknown; message?: unknown; msg?: unknown };

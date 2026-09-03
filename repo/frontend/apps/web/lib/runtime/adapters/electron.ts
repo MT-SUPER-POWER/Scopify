@@ -21,6 +21,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       publish: (frame) => bridge.publishAudioFeatureFrame(frame),
     },
     auth: {
+      clearMusicSession: (backendOrigin) => bridge.setCookie("", backendOrigin),
       completeLogin: () => {
         bridge.loginSuccess();
         return true;
@@ -29,7 +30,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
         bridge.openLoginWindow();
         return true;
       },
-      persistMusicCookie: (cookie, backendOrigin) => bridge.setCookie(cookie, backendOrigin),
+      importMusicSession: (cookie, backendOrigin) => bridge.setCookie(cookie, backendOrigin),
     },
     backend: {
       getStatus: () => bridge.getBackendStatus(),
