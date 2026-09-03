@@ -278,7 +278,7 @@ export function PlaybackAuthorityProvider({
       removeQueueItem: (index) => usePlayerStore.getState().removeQueueItem(index),
       toggleLike: async () => {
         const currentTrack = usePlayerStore.getState().currentSongDetail;
-        const nextLiked = await toggleCurrentSongLike(liked);
+        const nextLiked = await toggleCurrentSongLike(liked, queryClient);
         if (currentTrack?.voiceId !== undefined) {
           if (userId) {
             void queryClient.invalidateQueries({

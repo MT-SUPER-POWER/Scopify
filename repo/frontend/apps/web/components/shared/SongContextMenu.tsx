@@ -17,8 +17,6 @@ import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-
 import {
   ContextMenu,
   ContextMenuContent,
@@ -31,10 +29,9 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
+import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
 import { useVoiceLike } from "@/hooks/voice/useVoiceLike";
-import { likeSong } from "@/lib/api/playlist";
-import { clearPageCache } from "@/lib/cache/pageCache";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { formatCompactCount } from "@/lib/utils";
@@ -77,7 +74,7 @@ export function SongContextMenu({
   const { t } = useI18n();
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const songStats = useSongStatsEnrichment(song, isContextMenuOpen);
-  const queryClient = useQueryClient();
+  const songLikeMutation = useSongLikeMutation();
   const isLogin = useLoginStatus();
   const likedList = useUserStore((s) => s.likeListIDs);
   const { isLiked: isLikedVoice, toggleLike: toggleVoiceLike } = useVoiceLike(song.voiceId ?? null);
@@ -99,28 +96,9 @@ export function SongContextMenu({
         await toggleVoiceLike();
         return;
       }
-
-      const nextLiked = !isLiked;
-      try {
-        await likeSong(song.id, nextLiked);
-        const store = useUserStore.getState();
-        const current = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
-        store.setLikeListIDs(
-          nextLiked ? [...current, song.id] : current.filter((id: number) => id !== song.id),
-        );
-        void clearPageCache();
-        toast.success(
-          nextLiked ? t("playlist.track.likedAdded") : t("playlist.track.likedRemoved"),
-        );
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
-          queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
-        ]);
-      } catch {
-        toast.error(t("playlist.table.operationFailed"));
-      }
+      songLikeMutation.mutate({ like: !isLiked, songId: song.id });
     },
-    [isLiked, queryClient, song.id, song.voiceId, t, toggleVoiceLike],
+    [isLiked, song.id, song.voiceId, songLikeMutation, toggleVoiceLike],
   );
 
   const handleAddToQueue = useCallback(() => {

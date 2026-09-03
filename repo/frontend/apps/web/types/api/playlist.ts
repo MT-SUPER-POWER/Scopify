@@ -210,6 +210,12 @@ export interface PlaylistTrackMutationVariables {
   trackId: number | string;
 }
 
+export interface SongLikeMutationVariables {
+  like: boolean;
+  silentToast?: boolean;
+  songId: number | string;
+}
+
 export interface LikeListResponse {
   code: number;
   ids?: number[];

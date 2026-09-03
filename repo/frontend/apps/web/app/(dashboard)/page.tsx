@@ -47,7 +47,7 @@ export default function HomePage() {
       />
 
       {isUnavailable ? (
-        <div className="relative z-10 flex min-h-screen flex-col p-6 pt-20">
+        <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-400 flex-col p-6 pt-20">
           <h1 className="text-3xl leading-none font-bold tracking-tight text-content">
             {greetingText}
           </h1>
@@ -64,7 +64,7 @@ export default function HomePage() {
       ) : isLoading && playlists.length === 0 ? (
         <HomePageSkeleton />
       ) : (
-        <div className="relative z-10 animate-in space-y-10 p-6 pt-20 duration-500 fade-in">
+        <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-10 p-6 pt-20 duration-500 fade-in">
           <HomeGreetingSection
             dateInfo={dateInfo}
             greeting={greetingText}

@@ -4,22 +4,17 @@
 
 import { Disc3 } from "lucide-react";
 import { forwardRef, memo, useCallback } from "react";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 import type { TrackRowProps } from "@/types/components/playlist";
 
+import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { likeSong } from "@/lib/api/playlist";
-import { clearPageCache } from "@/lib/cache/pageCache";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatDate, formatDuration } from "@/lib/utils";
-import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
 
 import { LikeButton } from "../ui/LikeButton";
 
@@ -50,36 +45,14 @@ export const TrackRow = memo(
     },
     ref,
   ) {
-    const { t } = useI18n();
-    const queryClient = useQueryClient();
+    const songLikeMutation = useSongLikeMutation();
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     const handleLike = useCallback(
-      async (nextLiked: boolean) => {
-        try {
-          await likeSong(track.id, nextLiked);
-          const store = useUserStore.getState();
-          const current = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
-
-          // 1. 本地乐观更新
-          store.setLikeListIDs(
-            nextLiked ? [...current, track.id] : current.filter((id: number) => id !== track.id),
-          );
-          void clearPageCache();
-          toast.success(
-            nextLiked ? t("playlist.track.likedAdded") : t("playlist.track.likedRemoved"),
-          );
-
-          // 2. 触发全局 TanStack Query 缓存失效
-          await Promise.all([
-            queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
-            queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
-          ]);
-        } catch (error) {
-          console.error("Failed to toggle like:", error);
-        }
+      (nextLiked: boolean) => {
+        songLikeMutation.mutate({ like: nextLiked, songId: track.id });
       },
-      [queryClient, track, t],
+      [songLikeMutation, track.id],
     );
     const smartRouter = useSmartRouter();
     return (

@@ -114,7 +114,7 @@ export function FeaturedActivitiesCarousel() {
           </div>
         ) : (
           <div
-            className="group/activity-carousel relative -mx-2 cursor-grab touch-pan-y overflow-hidden p-2 select-none [--banner-width:82%] active:cursor-grabbing sm:[--banner-width:68%] md:[--banner-width:56%] lg:[--banner-width:52%]"
+            className="group/activity-carousel relative -mx-2 cursor-grab touch-pan-y overflow-hidden p-2 select-none [--banner-width:85%] active:cursor-grabbing sm:[--banner-width:min(540px,75vw)] md:[--banner-width:min(540px,65vw)] lg:[--banner-width:540px]"
             onClickCapture={suppressClickAfterSwipe}
             {...swipeHandlers}
           >
@@ -192,15 +192,15 @@ export function FeaturedActivitiesCarousel() {
       ) : (
         <div className="flex items-center justify-center gap-4 overflow-hidden py-6">
           <div
-            className="scale-0.85 aspect-[2.4/1] w-[20%] shrink-0 animate-pulse rounded-xl bg-skeleton opacity-50"
+            className="scale-0.85 aspect-[2.4/1] w-[20%] max-w-45 shrink-0 animate-pulse rounded-xl bg-skeleton opacity-50"
             aria-hidden="true"
           />
           <div
-            className="sm:scale-1.04 aspect-[2.4/1] w-[52%] shrink-0 scale-100 animate-pulse rounded-xl bg-skeleton opacity-100 shadow-xl"
+            className="sm:scale-1.04 aspect-[2.4/1] w-135 max-w-[85vw] shrink-0 scale-100 animate-pulse rounded-xl bg-skeleton opacity-100 shadow-xl"
             aria-hidden="true"
           />
           <div
-            className="scale-0.85 aspect-[2.4/1] w-[20%] shrink-0 animate-pulse rounded-xl bg-skeleton opacity-50"
+            className="scale-0.85 aspect-[2.4/1] w-[20%] max-w-45 shrink-0 animate-pulse rounded-xl bg-skeleton opacity-50"
             aria-hidden="true"
           />
         </div>

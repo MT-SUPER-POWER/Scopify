@@ -6,7 +6,6 @@ import Link from "next/link";
 import { memo, useCallback, useMemo, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 import type { ArtistInfo } from "@/types/artist";
 
@@ -24,7 +23,7 @@ import {
 import { LikeButton } from "@/components/ui/LikeButton";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
-import { likeSong } from "@/lib/api/playlist";
+import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
@@ -109,7 +108,7 @@ export const PopularTrackItem = memo(
     const playlists = useUserStore((s) => s.playlist);
     const isLoggedIn = useLoginStatus();
     const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
-    const queryClient = useQueryClient();
+    const songLikeMutation = useSongLikeMutation();
 
     // ── derived ──
     const isActive = currentSongDetail?.id === track.id;
@@ -141,28 +140,10 @@ export const PopularTrackItem = memo(
     }, [isActive, isPlaying, setIsPlaying, handlePlay]);
 
     const handleLike = useCallback(
-      async (next: boolean) => {
-        try {
-          await likeSong(track.id, next);
-          const store = useUserStore.getState();
-          // 规范化为 number[] 再更新
-          const cur = Array.isArray(store.likeListIDs)
-            ? store.likeListIDs.map((id) => Number(id))
-            : [];
-          const idNum = Number(track.id);
-          const nextList: number[] = next ? [...cur, idNum] : cur.filter((id) => id !== idNum);
-          store.setLikeListIDs(nextList);
-          void clearPageCache();
-          toast.success(next ? t("artist.track.likedAdded") : t("artist.track.likedRemoved"));
-          await Promise.all([
-            queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
-            queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
-          ]);
-        } catch {
-          toast.error(t("artist.track.operationFailed"));
-        }
+      (next: boolean) => {
+        songLikeMutation.mutate({ like: next, songId: track.id });
       },
-      [queryClient, track.id, t],
+      [songLikeMutation, track.id],
     );
 
     const handleAddToQueue = useCallback(() => {

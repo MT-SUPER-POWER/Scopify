@@ -86,7 +86,7 @@ export function HomeGreetingSection({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -direction * 16 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="grid grid-cols-2 gap-3 lg:grid-cols-3"
+              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3"
             >
               {(page === 0 || !isOpen) && (
                 <div

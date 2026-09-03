@@ -42,7 +42,7 @@ export function BannerItemSkeleton() {
 // ==========================================
 export function HomePageSkeleton() {
   return (
-    <div className="relative z-10 animate-in space-y-10 p-6 pt-20 duration-500 fade-in">
+    <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-10 p-6 pt-20 duration-500 fade-in">
       {/* 1. 欢迎语 + 快速访问 */}
       <section className="space-y-6">
         {/* 标题模拟 */}
@@ -51,7 +51,7 @@ export function HomePageSkeleton() {
           <Skeleton className="size-8 rounded-full bg-skeleton" />
         </div>
         {/* Banner 网格模拟 */}
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
           {[1, 2, 3, 4, 5, 6].map((id) => (
             <BannerItemSkeleton key={id} />
           ))}
@@ -61,7 +61,7 @@ export function HomePageSkeleton() {
       {/* 2. 推荐歌单 */}
       <section className="space-y-6">
         <Skeleton className="h-8 w-64 bg-skeleton" />
-        <div className="grid grid-cols-3 gap-6 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((id) => (
             <GridCardSkeleton key={id} />
           ))}
@@ -71,7 +71,7 @@ export function HomePageSkeleton() {
       {/* 3. 推荐歌手 */}
       <section className="space-y-6">
         <Skeleton className="h-8 w-32 bg-skeleton" />
-        <div className="grid grid-cols-3 gap-6 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-6">
           {[1, 2, 3, 4, 5].map((id) => (
             <GridCardSkeleton key={id} isArtist />
           ))}

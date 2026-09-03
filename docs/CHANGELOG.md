@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.5.1
+
+### Fixed
+
+- **歌曲喜欢/取消喜欢 Mutation 与多端缓存失效**：新增统一的 `useSongLikeMutation`，彻底替代各处散落的 `likeSong` 直接调用；在触发喜欢或取消喜欢后，自动乐观更新本地状态并在成功后自动触发红心歌单元数据（`liked-playlist`）、侧边栏歌单列表（`playlists`，触发 `LibItem` 重新请求并刷新红心歌单封面图与歌曲数）以及当前打开歌单详情与歌曲列表（`playlist.content`）的缓存失效，解决喜欢/取消喜欢后侧边栏封面与歌单内容未及时更新的问题。
+
+### Visual
+
+- **首页对齐搜索页固定宽度布局**：为首页（`HomePage`）正常内容、骨架屏（`HomePageSkeleton`）及网络异常重试容器添加 `mx-auto w-full max-w-400` 居中限制，外层背景与昼夜渐变层保持全宽满屏铺满，彻底解决超宽屏下首页各板块组件被过度拉伸的问题。
+
+### Quality
+
+- **重构喜欢链路与补全 Mutation 单元测试**：重构 `TrackRow`、`SongItem`、`PopularTrackItem`、`SongContextMenu`、`toggleCurrentSongLike` 及 `PlaybackAuthorityProvider` 统一收敛至标准 Mutation 管道，并新增 `songLikeMutation.test.tsx` 验证乐观更新、错误回滚与多 Query 缓存失效机制。
+
 ## v1.5.0
 
 ### Added

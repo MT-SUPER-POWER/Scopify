@@ -9,7 +9,6 @@ import Link from "next/link";
 import { memo, useCallback, useMemo } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import {
@@ -25,8 +24,7 @@ import {
 } from "@/components/ui/context-menu";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
-import { likeSong } from "@/lib/api/playlist";
-import { clearPageCache } from "@/lib/cache/pageCache";
+import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
@@ -120,7 +118,7 @@ interface SongItemProps {
 export const SongItem = memo(
   function SongItem({ song, index, songs }: SongItemProps) {
     const { t } = useI18n();
-    const queryClient = useQueryClient();
+    const songLikeMutation = useSongLikeMutation();
     const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
     // ── store ──
     const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
@@ -161,28 +159,10 @@ export const SongItem = memo(
     }, [isActive, isPlaying, handlePlay, setIsPlaying]);
 
     const handleLike = useCallback(
-      async (nextLiked: boolean) => {
-        try {
-          await likeSong(song.id, nextLiked);
-          const store = useUserStore.getState();
-          const current = Array.isArray(store.likeListIDs) ? store.likeListIDs : [];
-          store.setLikeListIDs(
-            nextLiked ? [...current, song.id] : current.filter((id: number) => id !== song.id),
-          );
-          void clearPageCache();
-          toast.success(
-            nextLiked ? t("playlist.table.likedAdded") : t("playlist.table.likedRemoved"),
-          );
-          await Promise.all([
-            queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
-            queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
-          ]);
-        } catch (error) {
-          console.error("Failed to toggle like:", error);
-          // toast.error("操作失败，请稍后再试");
-        }
+      (nextLiked: boolean) => {
+        songLikeMutation.mutate({ like: nextLiked, songId: song.id });
       },
-      [queryClient, song.id, t],
+      [songLikeMutation, song.id],
     );
 
     const handleAddToQueue = useCallback(() => {

@@ -66,7 +66,7 @@ export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: Sugg
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -direction * 16 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="grid grid-cols-3 gap-6 md:grid-cols-4 lg:grid-cols-5"
+              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-6"
             >
               {visibleArtists.map((artist) => (
                 <GridCard
