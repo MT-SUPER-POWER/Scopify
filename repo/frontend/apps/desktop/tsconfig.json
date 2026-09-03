@@ -11,16 +11,20 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "types": ["bun", "node", "electron"],
+    "types": ["bun", "node", "electron", "electron-vite/node"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@main/*": ["./electron/main/*"],
+      "@preload/*": ["./electron/preload/*"],
+      "@scopify/audio-engine": ["native/audio-engine"],
+      "@scopify/wallpaper-helper": ["native/wallpaper-helper"]
     }
   },
   "include": [
     "electron.vite.config.ts",
     "lib/**/*.ts",
-    "main/**/*.ts",
+    "electron/**/*.ts",
     "scripts/**/*.ts",
     "tests/**/*.ts",
     "types/**/*.ts"

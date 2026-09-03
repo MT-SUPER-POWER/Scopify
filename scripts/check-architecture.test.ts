@@ -31,14 +31,17 @@ describe("Web Runtime boundary", () => {
 
 describe("Desktop ownership boundary", () => {
   test("rejects package and relative imports into Web", () => {
-    const desktopFile = resolve(repositoryRoot, "repo/frontend/apps/desktop/main/main.ts");
+    const desktopFile = resolve(
+      repositoryRoot,
+      "repo/frontend/apps/desktop/electron/main/index.ts",
+    );
     const violations = findForbiddenDesktopImports(
       repositoryRoot,
       desktopFile,
       [
         'import web from "@scopify/web";',
-        'import page from "../../web/app/page";',
-        'export { thing } from "../../../repo/frontend/apps/web/lib/thing";',
+        'import page from "../../../web/app/page";',
+        'export { thing } from "../../../../repo/frontend/apps/web/lib/thing";',
       ].join("\n"),
     );
 
@@ -46,7 +49,10 @@ describe("Desktop ownership boundary", () => {
   });
 
   test("allows the versioned Desktop contract", () => {
-    const desktopFile = resolve(repositoryRoot, "repo/frontend/apps/desktop/main/preload.ts");
+    const desktopFile = resolve(
+      repositoryRoot,
+      "repo/frontend/apps/desktop/electron/preload/index.ts",
+    );
     expect(
       findForbiddenDesktopImports(
         repositoryRoot,

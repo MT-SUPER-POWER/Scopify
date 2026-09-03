@@ -17,10 +17,10 @@ Desktop IPC 将 Renderer 和 Electron Main 隔离成两个运行时。Renderer �
 window.electronAPI
       │  contextBridge
       ▼
-apps/desktop/main/preload.ts
+apps/desktop/electron/preload/index.ts
       │  invoke / send / postMessage
       ▼
-apps/desktop/main/ipc/<capability>.ts
+apps/desktop/electron/main/ipc/<capability>.ts
       │
       ▼
 Electron Main 的桌面领域模块

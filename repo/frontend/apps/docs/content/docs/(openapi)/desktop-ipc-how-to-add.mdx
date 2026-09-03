@@ -38,7 +38,7 @@ channel 使用 `<domain>:<action>`，例如 `desktop-notification:show`。查询
 
 ## 4. 实现 Preload 映射
 
-在 `apps/desktop/main/preload.ts` 的 `electronAPI` 中实现 Contract 方法：
+在 `apps/desktop/electron/preload/index.ts` 的 `electronAPI` 中实现 Contract 方法：
 
 ```ts
 showNotification: (request) =>
@@ -49,7 +49,7 @@ Preload 只做桥接和类型转换，不在这里执行业务逻辑，也不把
 
 ## 5. 注册 Main handler
 
-在 `apps/desktop/main/ipc/<capability>.ts` 注册对应 handler，并从 `ipc/index.ts` 组装：
+在 `apps/desktop/electron/main/ipc/<capability>.ts` 注册对应 handler，并从 `ipc/index.ts` 组装：
 
 ```ts
 ipcMain.handle("desktop-notification:show", (event, request: unknown) => {

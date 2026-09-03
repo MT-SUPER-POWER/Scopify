@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { resolveVideoExportWindowBounds } from "../main/window/videoExportWindow";
+import { resolveVideoExportWindowBounds } from "@main/window/videoExportWindow";
 
 describe("video export window sizing", () => {
   test("uses physical-pixel sizing and stays on the current display", () => {

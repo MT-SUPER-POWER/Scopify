@@ -2,24 +2,28 @@ import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { getRememberedAppCloseAction } from "../main/window/appCloseAction";
+import { getRememberedAppCloseAction } from "@main/window/appCloseAction";
 
 const coreSource = readFileSync(
-  fileURLToPath(new URL("../main/core/index.ts", import.meta.url)),
+  fileURLToPath(new URL("../electron/main/core/index.ts", import.meta.url)),
+  "utf8",
+);
+const mainWindowSource = readFileSync(
+  fileURLToPath(new URL("../electron/main/window/mainWindow.ts", import.meta.url)),
   "utf8",
 );
 const appCloseWindowSource = readFileSync(
-  fileURLToPath(new URL("../main/window/appCloseWindow.ts", import.meta.url)),
+  fileURLToPath(new URL("../electron/main/window/appCloseWindow.ts", import.meta.url)),
   "utf8",
 );
 const ipcSource = readFileSync(
-  fileURLToPath(new URL("../main/ipc/application.ts", import.meta.url)),
+  fileURLToPath(new URL("../electron/main/ipc/application.ts", import.meta.url)),
   "utf8",
 );
 
 test("main-window close confirmation does not depend on the main renderer", () => {
   expect(coreSource).not.toContain('webContents.send("app-close-confirm")');
-  expect(coreSource).toContain("showAppCloseWindow");
+  expect(mainWindowSource).toContain("showAppCloseWindow");
   expect(appCloseWindowSource).toContain('const APP_CLOSE_ROUTE = "/app-close"');
   expect(appCloseWindowSource).toContain("new BrowserWindow");
   expect(appCloseWindowSource).toContain("loadURL(closeUrl)");

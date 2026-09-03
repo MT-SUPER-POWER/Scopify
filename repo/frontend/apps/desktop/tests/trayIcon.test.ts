@@ -7,7 +7,7 @@ function readWorkspaceFile(relativePath: string) {
 }
 
 test("uses a notification-area-sized Scopify image for the system tray", () => {
-  const constantsSource = readWorkspaceFile("../main/constants.ts");
+  const constantsSource = readWorkspaceFile("../electron/main/constants.ts");
   const icon = readFileSync(
     fileURLToPath(new URL("../resources/icon.iconset/icon_32x32.png", import.meta.url)),
   );

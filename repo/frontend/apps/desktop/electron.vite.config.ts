@@ -4,14 +4,6 @@ import { resolveElectronOutputDirectory } from "./lib/runtimePaths";
 
 const root = __dirname;
 
-// electron-vite's isolated-entry progress reporter assumes an interactive TTY.
-// Keep CI and other captured-output builds functional without weakening sandboxing.
-Object.assign(process.stdout, {
-  clearLine: process.stdout.clearLine ?? (() => true),
-  cursorTo: process.stdout.cursorTo ?? (() => true),
-  moveCursor: process.stdout.moveCursor ?? (() => true),
-});
-
 export default defineConfig(({ command }) => {
   const runtimeOutDir = resolveElectronOutputDirectory(root, command);
 
@@ -20,6 +12,7 @@ export default defineConfig(({ command }) => {
       resolve: {
         alias: {
           "@": root,
+          "@main": resolve(root, "electron/main"),
         },
       },
       build: {
@@ -28,7 +21,7 @@ export default defineConfig(({ command }) => {
         externalizeDeps: false,
         rollupOptions: {
           input: {
-            main: resolve(root, "main/main.ts"),
+            main: resolve(root, "electron/main/index.ts"),
           },
           external: ["bufferutil", "utf-8-validate"],
           output: {
@@ -39,19 +32,13 @@ export default defineConfig(({ command }) => {
       },
     },
     preload: {
-      resolve: {
-        alias: {
-          "@": root,
-        },
-      },
       build: {
         externalizeDeps: false,
-        isolatedEntries: true,
         outDir: runtimeOutDir,
         emptyOutDir: false,
         rollupOptions: {
           input: {
-            preload: resolve(root, "main/preload.ts"),
+            preload: resolve(root, "electron/preload/index.ts"),
           },
           output: {
             entryFileNames: "[name].js",

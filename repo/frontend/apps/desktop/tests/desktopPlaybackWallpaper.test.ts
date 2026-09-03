@@ -11,22 +11,22 @@ import type {
 import {
   createDesktopPlaybackWallpaperCapability,
   type DesktopPlaybackWallpaperDriver,
-} from "@/main/capabilities/desktopPlaybackWallpaper/capability";
+} from "@main/capabilities/desktopPlaybackWallpaper/capability";
 import {
   isDesktopPlaybackWallpaperControlSender,
   isDesktopPlaybackWallpaperModelReader,
-} from "@/main/capabilities/desktopPlaybackWallpaper/authorization";
+} from "@main/capabilities/desktopPlaybackWallpaper/authorization";
 import {
   parseSystemWallpaperResult,
   shouldUseDesktopPlaybackWallpaperSystemFallback,
-} from "@/main/capabilities/desktopPlaybackWallpaper/fallbackPolicy";
-import type { DesktopPlaybackWallpaperPreferencesRepository } from "@/main/capabilities/desktopPlaybackWallpaper/preferences";
+} from "@main/capabilities/desktopPlaybackWallpaper/fallbackPolicy";
+import type { DesktopPlaybackWallpaperPreferencesRepository } from "@main/capabilities/desktopPlaybackWallpaper/preferences";
 import {
   createDesktopPlaybackWallpaperModel,
   transitionDesktopPlaybackWallpaper,
-} from "@/main/capabilities/desktopPlaybackWallpaper/stateMachine";
-import { desktopSurfaceHostCoversExactBounds } from "@/main/capabilities/desktopPlaybackWallpaper/desktopSurfaceBounds";
-import { resolveDesktopPlaybackWallpaperScriptPath } from "@/main/capabilities/desktopPlaybackWallpaper/scriptPaths";
+} from "@main/capabilities/desktopPlaybackWallpaper/stateMachine";
+import { desktopSurfaceHostCoversExactBounds } from "@main/capabilities/desktopPlaybackWallpaper/desktopSurfaceBounds";
+import { resolveDesktopPlaybackWallpaperScriptPath } from "@main/capabilities/desktopPlaybackWallpaper/scriptPaths";
 import {
   applyDesktopPlaybackWallpaperPreferencesUpdate,
   normalizeDesktopPlaybackWallpaperPreferences,
@@ -368,7 +368,10 @@ describe("desktop playback wallpaper PowerShell scripts", () => {
 test("desktop wallpaper driver reuses the main window instead of creating a Replica", () => {
   const driverSource = readFileSync(
     fileURLToPath(
-      new URL("../main/capabilities/desktopPlaybackWallpaper/electronDriver.ts", import.meta.url),
+      new URL(
+        "../electron/main/capabilities/desktopPlaybackWallpaper/electronDriver.ts",
+        import.meta.url,
+      ),
     ),
     "utf8",
   );
@@ -384,7 +387,7 @@ test("production wallpaper hosting uses the resident native helper instead of Po
   const hostSource = readFileSync(
     fileURLToPath(
       new URL(
-        "../main/capabilities/desktopPlaybackWallpaper/nativeWallpaperHost.ts",
+        "../electron/main/capabilities/desktopPlaybackWallpaper/nativeWallpaperHost.ts",
         import.meta.url,
       ),
     ),

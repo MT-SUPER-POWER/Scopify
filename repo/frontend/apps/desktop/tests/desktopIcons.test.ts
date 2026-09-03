@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { parseWindowsDesktopIconVisibilityResult } from "../main/capabilities/desktopIcons/result";
+import { parseWindowsDesktopIconVisibilityResult } from "@main/capabilities/desktopIcons/result";
 
 describe("Windows desktop icon visibility result", () => {
   test("accepts a confirmed Explorer visibility state", () => {

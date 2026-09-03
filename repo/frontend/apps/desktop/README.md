@@ -8,4 +8,4 @@ import implementation files from `apps/web`; local and CI builds copy a verified
 static Web build into this directory before packaging.
 
 Main-process architecture, lifecycle, and contribution rules are documented in
-[`main/README.md`](./main/README.md).
+[`electron/main/README.md`](./electron/main/README.md).

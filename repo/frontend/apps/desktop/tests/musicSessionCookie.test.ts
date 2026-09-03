@@ -3,7 +3,7 @@ import { expect, test } from "bun:test";
 import {
   createSessionCookieHeader,
   parseMusicSessionCookieBundle,
-} from "@/main/utils/musicSessionCookie";
+} from "@main/utils/musicSessionCookie";
 
 test("normalizes an aggregated Set-Cookie bundle into path-aware session cookies", () => {
   const cookies = parseMusicSessionCookieBundle(

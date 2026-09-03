@@ -8,7 +8,7 @@ import {
   parseAudioFeatureConnectionRequest,
   type AudioFeatureBrokerPort,
   type AudioFeatureBrokerScheduler,
-} from "@/main/capabilities/audioFeatureBroker";
+} from "@main/capabilities/audioFeatureBroker";
 
 class MemoryAudioFeaturePort implements AudioFeatureBrokerPort {
   readonly posted: unknown[] = [];

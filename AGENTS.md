@@ -43,7 +43,7 @@ Scopify/
 │   │   │   │   └── scripts/         # Web 构建/开发脚本
 │   │   │   ├── docs/                # Fumadocs UI 组件文档与交互预览
 │   │   │   ├── desktop/             # Electron host，不反向 import Web 源码
-│   │   │   │   ├── main/            # 主进程与 preload
+│   │   │   │   ├── electron/        # Electron 宿主源码（main/ 与 preload/）
 │   │   │   │   ├── renderer/        # 构建生成的静态制品插槽（不提交）
 │   │   │   │   ├── config/          # 桌面配置
 │   │   │   │   ├── resources/       # 打包资源

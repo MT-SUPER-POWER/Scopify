@@ -4,7 +4,7 @@ import type { BrowserWindow, IpcMainEvent } from "electron";
 import {
   createOwnedAudioFeatureConnectionId,
   parseAudioFeatureConnectionRequest,
-} from "@/main/capabilities/audioFeatureBroker/connectionRequest";
+} from "@main/capabilities/audioFeatureBroker/connectionRequest";
 
 type IpcListener = (event: IpcMainEvent, input: unknown) => void;
 type PortListener = (...args: unknown[]) => void;
@@ -80,10 +80,11 @@ class FakeMessagePort {
 }
 
 const ipcMain = new FakeIpcMain();
-mock.module("electron", () => ({ ipcMain }));
+const fakeApp = { isPackaged: false, getPath: () => "" };
+mock.module("electron", () => ({ ipcMain, app: fakeApp }));
 
 const { initializeAudioFeatureBrokerIpc, AUDIO_FEATURE_CONNECT_CHANNEL } =
-  await import("@/main/capabilities/audioFeatureBroker/ipc");
+  await import("@main/capabilities/audioFeatureBroker/ipc");
 
 describe("audio-feature broker IPC connection validation", () => {
   test("accepts only bounded publisher and subscriber connection requests", () => {

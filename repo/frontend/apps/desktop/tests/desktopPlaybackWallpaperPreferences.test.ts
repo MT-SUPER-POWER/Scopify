@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { createDesktopPlaybackWallpaperPreferencesRepository } from "@/main/capabilities/desktopPlaybackWallpaper/preferences";
+import { createDesktopPlaybackWallpaperPreferencesRepository } from "@main/capabilities/desktopPlaybackWallpaper/preferences";
 
 const tempDirectories: string[] = [];
 

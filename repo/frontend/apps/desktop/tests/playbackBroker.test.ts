@@ -8,7 +8,7 @@ import {
   type PlaybackCommandReceipt,
 } from "@scopify/desktop-contract";
 
-import { createPlaybackBroker, type PlaybackBrokerPort } from "@/main/capabilities/playbackBroker";
+import { createPlaybackBroker, type PlaybackBrokerPort } from "@main/capabilities/playbackBroker";
 
 class MemoryPlaybackPort implements PlaybackBrokerPort {
   readonly posted: unknown[] = [];
