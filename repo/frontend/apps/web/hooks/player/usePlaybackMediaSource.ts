@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, type MutableRefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import { isPlaybackSourceCurrent } from "@/lib/player/playbackSource";
+import type { HtmlAudioEngineAdapter } from "@/lib/player/adapters/htmlAudioEngineAdapter";
 import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
 import type { PlaybackMediaSourceState } from "@/types/playbackMedia";
@@ -17,7 +17,7 @@ export function shouldWarmPlaybackUrl(input: {
 
 /** Owns source replacement and its revision guards for the sole in-page media element. */
 export function usePlaybackMediaSource(
-  audioRef: MutableRefObject<HTMLAudioElement | null>,
+  audioEngine: HtmlAudioEngineAdapter | null,
 ): PlaybackMediaSourceState {
   const isMediaSourceLoadingRef = useRef(false);
   const mediaSourceLoadRevisionRef = useRef(-1);
@@ -29,17 +29,16 @@ export function usePlaybackMediaSource(
   const sourceChangeMode = usePlayerStore((state) => state.sourceChangeMode);
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    if (!audioEngine) return;
 
     const capturePreservedPosition = () => {
-      const hasSource = Boolean(audio.currentSrc || audio.getAttribute("src"));
+      const sample = audioEngine.getMediaSample();
       if (
         sourceChangeMode === "preserve-position" &&
-        hasSource &&
-        Number.isFinite(audio.currentTime)
+        audioEngine.hasSource() &&
+        Number.isFinite(sample.positionMs)
       ) {
-        useTimeStore.getState().setCurrentTime(Math.max(0, audio.currentTime * 1_000));
+        useTimeStore.getState().setCurrentTime(Math.max(0, sample.positionMs));
       }
     };
 
@@ -47,8 +46,7 @@ export function usePlaybackMediaSource(
       capturePreservedPosition();
       isMediaSourceLoadingRef.current = currentSongDetail !== null;
       mediaSourceLoadRevisionRef.current = -1;
-      audio.removeAttribute("src");
-      audio.load();
+      audioEngine.clearSource(playbackLoadRevision);
       useTimeStore.getState().setBufferedTime(0);
       if (!currentSongDetail) {
         useTimeStore.getState().setCurrentTime(0);
@@ -57,15 +55,17 @@ export function usePlaybackMediaSource(
       return;
     }
 
-    if (audio.src !== currentSongUrl) {
+    if (
+      mediaSourceLoadRevisionRef.current !== playbackLoadRevision ||
+      !audioEngine.isCurrentSource(currentSongUrl)
+    ) {
       capturePreservedPosition();
       isMediaSourceLoadingRef.current = true;
       mediaSourceLoadRevisionRef.current = playbackLoadRevision;
-      audio.src = currentSongUrl;
-      audio.load();
+      audioEngine.setRemoteSource(currentSongUrl, playbackLoadRevision);
     }
     void usePlayerStore.getState().fetchCurrentLyric();
-  }, [audioRef, currentSongDetail, currentSongUrl, playbackLoadRevision, sourceChangeMode]);
+  }, [audioEngine, currentSongDetail, currentSongUrl, playbackLoadRevision, sourceChangeMode]);
 
   // Restored songs deliberately do not persist expiring CDN URLs. Warm one
   // while paused so the next user gesture can invoke play() against a source.
@@ -84,14 +84,15 @@ export function usePlaybackMediaSource(
     void refreshCurrentTrackUrl();
   }, [currentSongDetail, currentSongUrl, refreshCurrentTrackUrl]);
 
-  const isActiveMediaSource = useCallback((audio: HTMLAudioElement) => {
+  const isActiveMediaSource = useCallback(() => {
+    if (!audioEngine) return false;
     const player = usePlayerStore.getState();
     return Boolean(
       player.currentSongUrl &&
       mediaSourceLoadRevisionRef.current === player.playbackLoadRevision &&
-      isPlaybackSourceCurrent(audio, player.currentSongUrl),
+      audioEngine.isCurrentSource(player.currentSongUrl),
     );
-  }, []);
+  }, [audioEngine]);
 
   const isPlaybackSessionCurrent = useCallback((sessionKey: string | null) => {
     if (!sessionKey) return false;
@@ -100,10 +101,13 @@ export function usePlaybackMediaSource(
     return songId !== undefined && `${player.playbackSessionRevision}:${songId}` === sessionKey;
   }, []);
 
-  return {
-    isActiveMediaSource,
-    isMediaSourceLoadingRef,
-    isPlaybackSessionCurrent,
-    mediaSourceLoadRevisionRef,
-  };
+  return useMemo(
+    () => ({
+      isActiveMediaSource,
+      isMediaSourceLoadingRef,
+      isPlaybackSessionCurrent,
+      mediaSourceLoadRevisionRef,
+    }),
+    [isActiveMediaSource, isPlaybackSessionCurrent],
+  );
 }

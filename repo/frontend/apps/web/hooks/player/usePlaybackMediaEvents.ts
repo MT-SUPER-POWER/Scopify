@@ -1,14 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
+import type {
+  HtmlAudioEngineAdapter,
+  HtmlAudioMediaEvent,
+} from "@/lib/player/adapters/htmlAudioEngineAdapter";
 import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
 import type { PlaybackMediaEventHandlers, PlaybackMediaSourceState } from "@/types/playbackMedia";
 
-/** Keeps media DOM events out of layout code while retaining source/revision rejection. */
+/**
+ * Projects HtmlAudioEngineAdapter events into existing UI stores while the
+ * Zustand player remains the playback-session authority. DOM events are no
+ * longer bound in JSX, preventing a second source/error event path.
+ */
 export function usePlaybackMediaEvents(
   source: PlaybackMediaSourceState,
+  audioEngine: HtmlAudioEngineAdapter | null,
 ): PlaybackMediaEventHandlers {
   const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id);
   const failedSourceRetrySessionKeyRef = useRef<string | null>(null);
@@ -19,21 +28,17 @@ export function usePlaybackMediaEvents(
     failedSourceRetrySessionKeyRef.current = null;
   }, [currentSongId]);
 
-  const onError = useCallback<NonNullable<PlaybackMediaEventHandlers["onError"]>>(
-    (event) => {
-      const audio = event.currentTarget;
+  useEffect(() => {
+    if (!audioEngine) return;
+
+    const handleSourceError = (mediaEvent: HtmlAudioMediaEvent) => {
       const player = usePlayerStore.getState();
       const songId = player.currentSongDetail?.id ?? null;
       const failureSessionKey =
         songId !== null ? `${player.playbackSessionRevision}:${songId}` : null;
-      let sourceHost: string | null = null;
-      try {
-        sourceHost = new URL(audio.currentSrc || audio.src).host || null;
-      } catch {
-        // Keep expiring URLs and their query parameters out of logs.
-      }
+      const sourceHost = audioEngine.getSourceHost();
 
-      if (!source.isActiveMediaSource(audio)) {
+      if (!source.isActiveMediaSource()) {
         console.warn("[player] Ignored an error from an obsolete media source", {
           songId,
           sourceHost,
@@ -42,10 +47,10 @@ export function usePlaybackMediaEvents(
       }
 
       console.error("[player] Media playback failed", {
-        errorCode: audio.error?.code ?? null,
-        errorMessage: audio.error?.message ?? null,
-        networkState: audio.networkState,
-        readyState: audio.readyState,
+        errorCode: mediaEvent.errorCode,
+        errorMessage: mediaEvent.errorMessage,
+        networkState: mediaEvent.networkState,
+        readyState: mediaEvent.readyState,
         songId,
         sourceHost,
       });
@@ -90,53 +95,53 @@ export function usePlaybackMediaEvents(
             refreshingFailedSourceSessionKeyRef.current = null;
           }
         });
-    },
-    [source],
-  );
+    };
 
-  return useMemo(
-    () => ({
-      onCanPlay: (event) => {
-        if (!source.isActiveMediaSource(event.currentTarget)) return;
-        source.isMediaSourceLoadingRef.current = false;
-      },
-      onDurationChange: (event) => {
-        if (!source.isActiveMediaSource(event.currentTarget)) return;
-        const duration = event.currentTarget.duration;
-        if (Number.isFinite(duration) && duration > 0) {
-          useTimeStore.getState().setTotalTime(duration * 1_000);
+    return audioEngine.subscribeMedia((event) => {
+      if (!source.isActiveMediaSource()) return;
+
+      switch (event.type) {
+        case "can-play":
+          source.isMediaSourceLoadingRef.current = false;
+          return;
+        case "duration-change":
+          if (event.sample.durationMs > 0) {
+            useTimeStore.getState().setTotalTime(event.sample.durationMs);
+          }
+          return;
+        case "error":
+          handleSourceError(event);
+          return;
+        case "pause":
+          if (!source.isMediaSourceLoadingRef.current) {
+            useTimeStore.getState().setCurrentTime(event.sample.positionMs);
+          }
+          return;
+        case "playing":
+          source.isMediaSourceLoadingRef.current = false;
+          failedSourceRetrySessionKeyRef.current = null;
+          return;
+        case "progress":
+          useTimeStore.getState().setBufferedTime(event.bufferedPositionMs);
+          return;
+        case "time-update": {
+          if (event.sample.paused) return;
+          const now = Date.now();
+          if (now - lastStoreWriteRef.current <= 3_000) return;
+          useTimeStore.getState().setCurrentTime(event.sample.positionMs);
+          lastStoreWriteRef.current = now;
+          return;
         }
-      },
-      onError,
-      onPause: (event) => {
-        if (!source.isActiveMediaSource(event.currentTarget)) return;
-        if (source.isMediaSourceLoadingRef.current) return;
-        const positionMs = event.currentTarget.currentTime * 1_000;
-        if (Number.isFinite(positionMs))
-          useTimeStore.getState().setCurrentTime(Math.max(0, positionMs));
-      },
-      onPlaying: (event) => {
-        if (!source.isActiveMediaSource(event.currentTarget)) return;
-        source.isMediaSourceLoadingRef.current = false;
-        failedSourceRetrySessionKeyRef.current = null;
-      },
-      onProgress: (event) => {
-        const audio = event.currentTarget;
-        if (!source.isActiveMediaSource(audio) || audio.buffered.length === 0) return;
-        useTimeStore
-          .getState()
-          .setBufferedTime(audio.buffered.end(audio.buffered.length - 1) * 1_000);
-      },
-      onTimeUpdate: (event) => {
-        const audio = event.currentTarget;
-        if (!source.isActiveMediaSource(audio) || audio.paused) return;
-        const currentTimeMs = audio.currentTime * 1_000;
-        const now = Date.now();
-        if (now - lastStoreWriteRef.current <= 3_000) return;
-        useTimeStore.getState().setCurrentTime(currentTimeMs);
-        lastStoreWriteRef.current = now;
-      },
-    }),
-    [onError, source],
-  );
+        case "ended":
+        case "load-start":
+        case "rate-change":
+        case "waiting":
+          return;
+      }
+    });
+  }, [audioEngine, source]);
+
+  // Media subscriptions are managed above; retain this return shape to keep
+  // the rendered <audio> compatible while consumers migrate away from JSX.
+  return {};
 }

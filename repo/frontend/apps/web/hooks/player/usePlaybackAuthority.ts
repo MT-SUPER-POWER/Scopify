@@ -2,14 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { PLAYBACK_VOLUME_MAX } from "@scopify/desktop-contract";
-
+import { createHtmlAudioPlaybackMediaPort } from "@/lib/player/adapters/htmlAudioEngineAdapter";
 import { PlaybackAuthority } from "@/lib/playbackProjection/authority";
 import type {
   PlaybackAuthorityCallbacks,
-  PlaybackAuthorityMediaEvent,
   PlaybackAuthorityScheduler,
-  PlaybackMediaPort,
   UsePlaybackAuthorityOptions,
 } from "@/types/playbackAuthority";
 import type { PlaybackClock } from "@/types/playbackProjection";
@@ -23,65 +20,7 @@ const browserScheduler: PlaybackAuthorityScheduler = {
   setInterval: (callback, intervalMs) => globalThis.setInterval(callback, intervalMs),
 };
 
-const MEDIA_EVENT_MAP: ReadonlyArray<
-  readonly [keyof HTMLMediaElementEventMap, PlaybackAuthorityMediaEvent]
-> = [
-  ["loadstart", "load-start"],
-  ["playing", "playing"],
-  ["pause", "pause"],
-  ["waiting", "waiting"],
-  ["stalled", "waiting"],
-  ["canplay", "can-play"],
-  ["ended", "ended"],
-  ["error", "error"],
-  ["durationchange", "duration-change"],
-  ["loadedmetadata", "duration-change"],
-  ["ratechange", "rate-change"],
-];
-
-function finiteNonNegative(value: number): number {
-  return Number.isFinite(value) && value >= 0 ? value : 0;
-}
-
-export function createHtmlAudioPlaybackMediaPort(
-  audio: HTMLAudioElement,
-  acceptEvent?: (event: PlaybackAuthorityMediaEvent) => boolean,
-): PlaybackMediaPort {
-  return {
-    getSample: () => ({
-      durationMs: finiteNonNegative(audio.duration * 1_000),
-      ended: audio.ended,
-      errorMessage: audio.error?.message ?? null,
-      paused: audio.paused,
-      playbackRate: finiteNonNegative(audio.playbackRate),
-      positionMs: finiteNonNegative(audio.currentTime * 1_000),
-      volume: audio.volume * PLAYBACK_VOLUME_MAX,
-    }),
-    pause: () => audio.pause(),
-    play: () => audio.play(),
-    seek: (positionMs) => {
-      audio.currentTime = finiteNonNegative(positionMs) / 1_000;
-    },
-    setVolume: (volume) => {
-      audio.volume = Math.max(0, Math.min(PLAYBACK_VOLUME_MAX, volume)) / PLAYBACK_VOLUME_MAX;
-    },
-    subscribe: (listener) => {
-      const subscriptions = MEDIA_EVENT_MAP.map(([domEvent, authorityEvent]) => {
-        const handleEvent = () => {
-          if (!acceptEvent || acceptEvent(authorityEvent)) listener(authorityEvent);
-        };
-        audio.addEventListener(domEvent, handleEvent);
-        return [domEvent, handleEvent] as const;
-      });
-
-      return () => {
-        for (const [domEvent, handleEvent] of subscriptions) {
-          audio.removeEventListener(domEvent, handleEvent);
-        }
-      };
-    },
-  };
-}
+export { createHtmlAudioPlaybackMediaPort } from "@/lib/player/adapters/htmlAudioEngineAdapter";
 
 /**
  * Adapts the main Renderer audio element to PlaybackAuthority without importing
@@ -102,6 +41,7 @@ export function createHtmlAudioPlaybackMediaPort(
  */
 export function usePlaybackAuthority<TLyrics = unknown>({
   acceptMediaEvent,
+  audioEngine,
   audioRef,
   callbacks,
   clock = browserClock,
@@ -133,8 +73,7 @@ export function usePlaybackAuthority<TLyrics = unknown>({
   );
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    if (!audioRef.current || !audioEngine) return;
 
     const callbackAdapter: PlaybackAuthorityCallbacks = {
       get ensureSource() {
@@ -177,7 +116,7 @@ export function usePlaybackAuthority<TLyrics = unknown>({
       healthAnchorIntervalMs,
       identityFactory,
       media: createHtmlAudioPlaybackMediaPort(
-        audio,
+        audioEngine,
         (event) => acceptMediaEventRef.current?.(event) ?? true,
       ),
       publish: transport.publish,
@@ -212,7 +151,7 @@ export function usePlaybackAuthority<TLyrics = unknown>({
       authority.stop();
       setAuthoritySnapshot((current) => (current === authority ? null : current));
     };
-  }, [audioRef, clock, healthAnchorIntervalMs, identityFactory, scheduler, transport]);
+  }, [audioEngine, audioRef, clock, healthAnchorIntervalMs, identityFactory, scheduler, transport]);
 
   useEffect(() => {
     const authority = authorityRef.current;

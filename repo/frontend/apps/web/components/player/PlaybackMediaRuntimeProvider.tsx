@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { useAudioVisualizer } from "@/hooks/player/useAudioVisualizer";
+import { useHtmlAudioEngineAdapter } from "@/hooks/player/useHtmlAudioEngineAdapter";
 import { usePlaybackMediaEvents } from "@/hooks/player/usePlaybackMediaEvents";
 import { usePlaybackMediaSource } from "@/hooks/player/usePlaybackMediaSource";
 import type { PlaybackMediaRuntimeProviderProps } from "@/types/playbackMedia";
@@ -18,8 +19,9 @@ import { PlaybackAuthorityProvider } from "./PlaybackAuthorityProvider";
 export function PlaybackMediaRuntimeProvider({ children }: PlaybackMediaRuntimeProviderProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const selectedOutputDeviceId = useAudioOutputStore((state) => state.selectedDeviceId);
-  const source = usePlaybackMediaSource(audioRef);
-  const eventHandlers = usePlaybackMediaEvents(source);
+  const audioEngine = useHtmlAudioEngineAdapter(audioRef);
+  const source = usePlaybackMediaSource(audioEngine);
+  const eventHandlers = usePlaybackMediaEvents(source, audioEngine);
   useAudioVisualizer(audioRef);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export function PlaybackMediaRuntimeProvider({ children }: PlaybackMediaRuntimeP
   return (
     <PlaybackAuthorityProvider
       audioRef={audioRef}
+      audioEngine={audioEngine}
       isMediaSourceLoadingRef={source.isMediaSourceLoadingRef}
       mediaSourceLoadRevisionRef={source.mediaSourceLoadRevisionRef}
     >

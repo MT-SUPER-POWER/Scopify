@@ -41,6 +41,7 @@
     "@react-three/fiber": "^9.6.1",
     "@react-three/postprocessing": "^3.0.4",
     "@scopify/desktop-contract": "workspace:*",
+    "@scopify/playback-core": "workspace:*",
     "@scopify/ui": "workspace:*",
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-query-persist-client": "^5.101.4",

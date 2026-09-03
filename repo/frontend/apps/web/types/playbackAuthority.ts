@@ -8,6 +8,7 @@ import type {
 import type { ReactNode, RefObject } from "react";
 
 import type { PlaybackClock, PlaybackProjectionSource } from "@/types/playbackProjection";
+import type { HtmlAudioEngineAdapter } from "@/lib/player/adapters/htmlAudioEngineAdapter";
 
 export type PlaybackAuthorityMediaEvent =
   | "can-play"
@@ -80,6 +81,8 @@ export interface PlaybackAuthorityCallbacks {
 
 export interface PlaybackAuthorityProviderProps {
   audioRef: RefObject<HTMLAudioElement | null>;
+  /** Phase-one Web adapter; future Native implementations supply the same port seam. */
+  audioEngine: HtmlAudioEngineAdapter | null;
   children: ReactNode;
   isMediaSourceLoadingRef: RefObject<boolean>;
   mediaSourceLoadRevisionRef: RefObject<number>;
@@ -133,6 +136,7 @@ export interface UsePlaybackAuthorityOptions<TLyrics = unknown> {
   healthAnchorIntervalMs?: number;
   identityFactory?: PlaybackAuthorityIdentityFactory;
   initialState: PlaybackSessionState<TLyrics>;
+  audioEngine: HtmlAudioEngineAdapter | null;
   resumePositionMs?: number;
   scheduler?: PlaybackAuthorityScheduler;
   sessionKey: string;

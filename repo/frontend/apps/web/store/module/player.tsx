@@ -2,23 +2,20 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { PLAYER_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
-import { getLyric, getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
+import { getLyric } from "@/lib/api/music";
 import {
-  clearCachedPlayUrl,
   getCachedLyric,
-  getCachedPlayUrl,
   getCachedReplayGain,
   getImportedLyricOverride,
   getLyricMatchOverride,
   getLyricSourceSelection,
   setCachedLyric,
-  setCachedPlayUrl,
-  setCachedReplayGain,
 } from "@/lib/cache/playbackCache";
 import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { isPlaybackLoadCurrent } from "@/lib/player/playbackLoad";
 import { createPlaybackQueue, type PlaybackQueueSnapshot } from "@/lib/player/playbackQueue";
+import { webNeteasePlayableSourceResolver } from "@/lib/player/adapters/neteasePlayableSourceAdapter";
 import { getVoiceNeteaseLyric } from "@/lib/lyrics/voiceLyric";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
@@ -368,7 +365,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const refreshRevision = get().playbackLoadRevision;
         const refreshIdentity = { revision: refreshRevision, trackId: songId };
         try {
-          await clearCachedPlayUrl(songId, musicQuality);
+          await webNeteasePlayableSourceResolver.invalidate(songId, musicQuality);
         } catch (error) {
           if (!isPlaybackLoadCurrent(get(), refreshIdentity)) return { status: "superseded" };
           console.error("清理过期播放地址失败", error);
@@ -429,107 +426,57 @@ export const usePlayerStore = create<PlayerStore>()(
 
         try {
           const { musicQuality } = get();
-          const level = UI_QUALITY_TO_LEVEL[musicQuality] || "exhigh";
+          const lyricResult = (async () => {
+            if (song.voiceId !== undefined) {
+              return {
+                lyric: await getVoiceLyricForPlayback(song),
+                shouldCache: false,
+              };
+            }
 
-          // ── 1. Try cache ────────────────────────────────────────────────
-          const [cachedUrl, cachedReplayGain, cachedLyric, storedLyric] = await Promise.all([
-            getCachedPlayUrl(song.id, musicQuality),
-            getCachedReplayGain(song.id),
-            song.voiceId === undefined ? getCachedLyric(song.id) : Promise.resolve(null),
-            song.voiceId === undefined ? getStoredLyricSource(song.id) : Promise.resolve(null),
+            const [storedLyric, cachedLyric] = await Promise.all([
+              getStoredLyricSource(song.id),
+              getCachedLyric(song.id),
+            ]);
+            if (storedLyric || cachedLyric) {
+              return { lyric: storedLyric ?? cachedLyric, shouldCache: false };
+            }
+
+            return {
+              lyric: (await getLyric(song.id)).data,
+              shouldCache: true,
+            };
+          })();
+          const [sourceResolution, resolvedLyric] = await Promise.all([
+            webNeteasePlayableSourceResolver.resolve(song.id, musicQuality),
+            lyricResult,
           ]);
           if (!isCurrentPlaybackLoad()) return false;
-          const matchedLyric = storedLyric ?? cachedLyric;
+          // The resolver persists ReplayGain together with a newly resolved URL.
+          // Read it afterwards so first playback and cache hits share one path.
+          const cachedReplayGain = await getCachedReplayGain(song.id);
+          if (!isCurrentPlaybackLoad()) return false;
           const cachedSong =
             cachedReplayGain !== null && Number.isFinite(cachedReplayGain)
               ? { ...song, replayGain: cachedReplayGain, replayGainTrackGain: cachedReplayGain }
               : song;
-
-          if (cachedUrl) {
-            // URL 缓存命中
-            if (matchedLyric) {
-              // 歌词也命中 → 完全短路，无需 API 请求
-              console.log("[Cache] HIT: URL + lyric for song", song.id);
-              useTimeStore.getState().setTotalTime(song.dt ?? 0);
-              set({
-                currentSongDetail: cachedSong,
-                currentSongUrl: cachedUrl,
-                ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
-                lyric: matchedLyric,
-                playbackFailureCount: 0,
-              });
-              return true;
-            }
-            // 仅 URL 命中 → 设置 URL，只请求歌词
-            console.log(
-              "[Cache] PARTIAL: URL hit (",
-              musicQuality,
-              "), lyric miss for song",
-              song.id,
+          if (sourceResolution.status !== "resolved" || sourceResolution.source.kind !== "remote") {
+            throw new Error(
+              sourceResolution.status === "resolved"
+                ? "Playback source is not supported by the HTML audio adapter"
+                : sourceResolution.reason,
             );
-            set({ currentSongDetail: cachedSong, currentSongUrl: cachedUrl });
-            const lyricData =
-              song.voiceId === undefined
-                ? storedLyric
-                  ? storedLyric
-                  : (await getLyric(song.id)).data
-                : await getVoiceLyricForPlayback(song);
-            if (lyricData && song.voiceId === undefined && !storedLyric) {
-              await setCachedLyric(song.id, lyricData);
-            }
-            if (!isCurrentPlaybackLoad()) return false;
-            useTimeStore.getState().setTotalTime(song.dt ?? 0);
-            set({
-              currentSongDetail: cachedSong,
-              ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
-              lyric: lyricData ?? null,
-              playbackFailureCount: 0,
-            });
-            return true;
           }
-
-          // ── 2. Cache miss → fetch both ─────────────────────────────────
-          console.log("[Cache] MISS: fetching URL + lyric for song", song.id);
-          const [urlRes, lyricData] = await Promise.all([
-            getSongUrlWithQuality(song.id, level),
-            song.voiceId === undefined
-              ? storedLyric
-                ? Promise.resolve(storedLyric)
-                : getLyric(song.id).then((response) => response.data)
-              : getVoiceLyricForPlayback(song),
-          ]);
-          if (!isCurrentPlaybackLoad()) return false;
-          const url = urlRes.data;
-
-          if (!url) {
-            throw new Error("Playback URL is empty");
-          }
-
-          // 写入缓存
-          console.log("[Cache] WRITE: URL + lyric for song", song.id);
-          // URL and lyric share one cache record. Serialize the writes so each
-          // update merges the latest record instead of racing and dropping data.
-          await setCachedPlayUrl(song.id, musicQuality, url);
-          if (urlRes.replayGainTrackGain != null) {
-            await setCachedReplayGain(song.id, urlRes.replayGainTrackGain);
-          }
-          if (lyricData && song.voiceId === undefined && !storedLyric) {
-            await setCachedLyric(song.id, lyricData);
+          if (resolvedLyric.lyric && resolvedLyric.shouldCache) {
+            await setCachedLyric(song.id, resolvedLyric.lyric);
           }
           if (!isCurrentPlaybackLoad()) return false;
           useTimeStore.getState().setTotalTime(song.dt ?? 0);
           set({
-            currentSongDetail:
-              urlRes.replayGainTrackGain != null
-                ? {
-                    ...song,
-                    replayGain: urlRes.replayGainTrackGain,
-                    replayGainTrackGain: urlRes.replayGainTrackGain,
-                  }
-                : song,
-            currentSongUrl: url,
+            currentSongDetail: cachedSong,
+            currentSongUrl: sourceResolution.source.url,
             ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
-            lyric: lyricData ?? null,
+            lyric: resolvedLyric.lyric ?? null,
             playbackFailureCount: 0,
           });
           return true;

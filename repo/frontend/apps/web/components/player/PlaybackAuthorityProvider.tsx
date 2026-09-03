@@ -24,7 +24,6 @@ import { createInProcessPlaybackTransport } from "@/lib/playbackProjection/inPro
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { buildDiscordPresenceArtist } from "@/lib/player/discordPresence";
-import { isPlaybackSourceCurrent, waitForPlaybackSource } from "@/lib/player/playbackSource";
 import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { runtime } from "@/lib/runtime";
 import { toScrobbleSourceId } from "@/lib/player/listeningScrobble";
@@ -50,6 +49,7 @@ interface SessionIdentity {
 /** Owns the main Renderer's Authority, local Replica and Electron transport fan-out. */
 export function PlaybackAuthorityProvider({
   audioRef,
+  audioEngine,
   children,
   isMediaSourceLoadingRef,
   mediaSourceLoadRevisionRef,
@@ -212,22 +212,21 @@ export function PlaybackAuthorityProvider({
 
   const authority = usePlaybackAuthority<LyricData>({
     acceptMediaEvent: () => {
-      const audio = audioRef.current;
       const player = usePlayerStore.getState();
       return Boolean(
-        audio &&
+        audioEngine &&
         player.currentSongUrl &&
         mediaSourceLoadRevisionRef.current === player.playbackLoadRevision &&
-        isPlaybackSourceCurrent(audio, player.currentSongUrl),
+        audioEngine.isCurrentSource(player.currentSongUrl),
       );
     },
+    audioEngine,
     audioRef,
     callbacks: {
       ensureSource: async () => {
-        const audio = audioRef.current;
         const initialPlayer = usePlayerStore.getState();
         const activeTrack = initialPlayer.currentSongDetail;
-        if (!audio || !activeTrack) return false;
+        if (!audioEngine || !activeTrack) return false;
         const activeTrackId = activeTrack.id;
 
         let sourceUrl = initialPlayer.currentSongUrl;
@@ -240,7 +239,7 @@ export function PlaybackAuthorityProvider({
 
         const expectedSourceUrl = sourceUrl;
         const expectedLoadRevision = usePlayerStore.getState().playbackLoadRevision;
-        return waitForPlaybackSource(audio, expectedSourceUrl, () => {
+        return audioEngine.waitForSource(expectedSourceUrl, () => {
           const currentPlayer = usePlayerStore.getState();
           return (
             currentPlayer.currentSongDetail?.id === activeTrackId &&
@@ -306,7 +305,7 @@ export function PlaybackAuthorityProvider({
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!authority || !audio || !currentSongUrl) return;
+    if (!authority || !audio || !audioEngine || !currentSongUrl) return;
     let disposed = false;
 
     const applyPlaybackIntent = () => {
@@ -329,13 +328,15 @@ export function PlaybackAuthorityProvider({
         });
     };
 
-    audio.addEventListener("canplay", applyPlaybackIntent);
+    const unsubscribe = audioEngine.subscribeMedia((event) => {
+      if (event.type === "can-play") applyPlaybackIntent();
+    });
     applyPlaybackIntent();
     return () => {
       disposed = true;
-      audio.removeEventListener("canplay", applyPlaybackIntent);
+      unsubscribe();
     };
-  }, [audioRef, authority, currentSongUrl, isPlayingIntent, sessionKey]);
+  }, [audioEngine, audioRef, authority, currentSongUrl, isPlayingIntent, sessionKey]);
 
   const correctedSourceLoadRevisionRef = useRef<number | null>(null);
   useEffect(() => {
@@ -343,6 +344,7 @@ export function PlaybackAuthorityProvider({
     if (
       !authority ||
       !audio ||
+      !audioEngine ||
       !currentSongUrl ||
       sourceChangeMode !== "preserve-position" ||
       correctedSourceLoadRevisionRef.current === playbackLoadRevision
@@ -357,7 +359,7 @@ export function PlaybackAuthorityProvider({
         mediaSourceLoadRevisionRef.current !== playbackLoadRevision ||
         player.playbackLoadRevision !== playbackLoadRevision ||
         player.currentSongUrl !== currentSongUrl ||
-        !isPlaybackSourceCurrent(audio, currentSongUrl)
+        !audioEngine.isCurrentSource(currentSongUrl)
       ) {
         return;
       }
@@ -373,15 +375,19 @@ export function PlaybackAuthorityProvider({
       if (correctedSourceLoadRevisionRef.current === playbackLoadRevision) return;
     }
 
+    let unsubscribe: (() => void) | null = null;
     const handleCanPlay = () => {
       applyCheckpoint();
       if (correctedSourceLoadRevisionRef.current === playbackLoadRevision) {
-        audio.removeEventListener("canplay", handleCanPlay);
+        unsubscribe?.();
       }
     };
-    audio.addEventListener("canplay", handleCanPlay);
-    return () => audio.removeEventListener("canplay", handleCanPlay);
+    unsubscribe = audioEngine.subscribeMedia((event) => {
+      if (event.type === "can-play") handleCanPlay();
+    });
+    return () => unsubscribe?.();
   }, [
+    audioEngine,
     audioRef,
     authority,
     currentSongUrl,
