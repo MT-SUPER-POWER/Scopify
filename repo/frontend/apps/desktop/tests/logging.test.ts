@@ -1,15 +1,23 @@
-import { afterEach, describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import fs from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import {
+
+mock.module("electron", () => ({
+  app: {
+    isPackaged: false,
+    getPath: () => "test-user-data",
+  },
+}));
+
+const {
   archiveLogFile,
   cleanArchivedLogs,
   getCurrentLogPath,
   prepareLogSession,
   sanitizeLogData,
   sanitizeLogText,
-} from "@/main/utils/logging";
+} = await import("@main/utils/logger");
 
 let temporaryDirectory: string | null = null;
 

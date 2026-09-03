@@ -12,8 +12,14 @@
 
 ### Quality
 
+- **移除已退役的桌面壁纸 Main 原型**：删除未被入口、测试或打包引用的 `electron/main/prototypes` TypeScript spike；正式桌面挂载继续由 Rust `native/wallpaper-helper` 与 `desktopPlaybackWallpaper` capability 负责，保留仍被系统壁纸 fallback 使用的顶层 PowerShell 资源。
+- **重构桌面端日志体系并对齐 SPlayer 优秀架构**：参考 SPlayer-Next 实践将原本分裂的 `utils/logging.ts` 与 `constants.ts` 中的日志逻辑整合为单一模块 `electron/main/utils/logger.ts`；在保留会话异常退出标记检测、按时间戳会话归档隔离、子进程终端 ANSI 正则清洗及 IPC 打开日志等优良特性的同时，引入 Scoped Loggers（`coreLog`、`trayLog`、`ipcLog`、`backendLog` 等）、彩色终端样式（`useStyles: true`）与全局异常捕获；在配置契约中补齐 `logging.dir`，实现生产环境默认 C 盘 AppData、开发模式本地 `logs/` 与支持自定义目录的配置驱动架构，并在启动入口 `core/index.ts` 显式调用零参数 `initLogger()` 彻底解耦。
+- **收敛 Electron Core 为生命周期编排入口**：将 539 行 Core 中的 Renderer 加载、Splash 时序、主窗口策略和桌面能力组装分别迁入 `services/rendererHost`、`window/splash`、`window/mainWindow` 与 `core/capabilityHost`，`core/index.ts` 仅保留单实例、启动顺序、顶层资源创建和退出清理，降低维护 Main 进程时的上下文负担。
+- **重构 Electron 宿主目录为 electron/main 与 electron/preload 并引入 @ 别名**：参考 SPlayer-Next 架构方案，将原本混放的 `apps/desktop/main` 迁移并拆分为 `electron/main`（主进程业务逻辑与入口 `index.ts`）与 `electron/preload`（Preload 桥接脚本 `index.ts`）；配置 `@main/*` 与 `@preload/*` 路径别名并保留全局 `@/*`，全面消除主进程内部与测试中深层相对引用（`../../constants.js`、`../../../types/...` 等），简化宿主代码结构与引用复杂度。
+- **精简 Electron Vite 单入口配置**：移除单一 Preload 不需要的 `isolatedEntries`、对应的非交互终端 stdout monkey-patch，以及未被 Preload 使用的路径 alias；保留开发/打包输出隔离、自包含沙箱 Preload、固定入口文件名和可选原生依赖 external 等实际构建契约。
 - **统一 Web/Desktop 网易云 CookieJar 会话**：Electron 现可解析聚合 `Set-Cookie`，按路径和过期时间将完整登录字段写入 Chromium 持久化 Session，并在启动时从旧 safeStorage 恢复；Web 通过 Backend 原生 `Set-Cookie` 建立会话，旧 localStorage 凭据仅经 `/login/refresh` POST 一次完成迁移。统一请求层不再向普通接口附加 `params.cookie`，歌曲、评论、推荐、歌单、搜索、乐签和登录状态调用均改为自动携带 CookieJar，同时新增可选实时测试验证 VIP 音源不是 30 秒试听。
 - **重整 Electron Main 进程业务结构**：参考 SPlayer-Next 的职责划分，将原本扁平的 `main/module` 按 `core`、`ipc`、`window`、`services`、`capabilities`、`store` 与 `utils` 重新归类；把 565 行集中式 IPC 拆为按能力注册的 TypeScript adapter，将入口收敛为显式 `initializeApplication`，并补充 Main 进程架构、启动顺序、IPC 授权、模块归属及未来原生音频引擎依赖原则的维护文档。
+- **补充 SPlayer 能力架构调研**：基于固定源码快照拆解 SPlayer-Next 的 MCP 接入、插件运行时与原生 Audio Engine，并对照 Scopify 现有 `WebRuntime`、`desktop-contract`、`PlaybackAuthority` 和 Web Audio 链路，记录可复用的 module/interface/seam、已核实的实现债务、目标架构与分阶段落地门槛。
 - **重构喜欢链路与补全 Mutation 单元测试**：重构 `TrackRow`、`SongItem`、`PopularTrackItem`、`SongContextMenu`、`toggleCurrentSongLike` 及 `PlaybackAuthorityProvider` 统一收敛至标准 Mutation 管道，并新增 `songLikeMutation.test.tsx` 验证乐观更新、错误回滚与多 Query 缓存失效机制。
 
 ## v1.5.0

@@ -15,6 +15,7 @@ test("desktop default config yml contains only host-owned settings", () => {
   expect(config.backend).toEqual({ autoStart: true, port: 3838 });
   expect(config.frontend.host).toBe("127.0.0.1");
   expect(config.frontend.devPort).toBe(3000);
+  expect(config.logging.dir).toBe("");
   expect(config.logging.level).toBe("info");
   expect(config.logging.maxSizeMB).toBe(16);
   expect(config.cache.dir).toBe("");

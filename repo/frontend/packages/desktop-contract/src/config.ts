@@ -41,6 +41,7 @@ export interface DesktopHostConfig {
     host: string;
   };
   logging: {
+    dir: string;
     format: string;
     keepDays: number;
     level: DesktopLogLevel;

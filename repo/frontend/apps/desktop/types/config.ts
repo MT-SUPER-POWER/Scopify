@@ -17,6 +17,7 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     host: "127.0.0.1",
   },
   logging: {
+    dir: "",
     level: "info",
     format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}",
     keepDays: 7,
@@ -145,6 +146,7 @@ export const desktopHostConfigSchema = z.preprocess(
       logging: z.preprocess(
         toRecord,
         z.object({
+          dir: trimmedString(DEFAULT_DESKTOP_HOST_CONFIG.logging.dir, true),
           level: z
             .enum(["debug", "info", "warn", "error"])
             .catch(DEFAULT_DESKTOP_HOST_CONFIG.logging.level),
