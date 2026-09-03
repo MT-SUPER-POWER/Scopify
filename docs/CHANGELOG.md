@@ -12,6 +12,7 @@
 
 ### Quality
 
+- **重整 Electron Main 进程业务结构**：参考 SPlayer-Next 的职责划分，将原本扁平的 `main/module` 按 `core`、`ipc`、`window`、`services`、`capabilities`、`store` 与 `utils` 重新归类；把 565 行集中式 IPC 拆为按能力注册的 TypeScript adapter，将入口收敛为显式 `initializeApplication`，并补充 Main 进程架构、启动顺序、IPC 授权、模块归属及未来原生音频引擎依赖原则的维护文档。
 - **重构喜欢链路与补全 Mutation 单元测试**：重构 `TrackRow`、`SongItem`、`PopularTrackItem`、`SongContextMenu`、`toggleCurrentSongLike` 及 `PlaybackAuthorityProvider` 统一收敛至标准 Mutation 管道，并新增 `songLikeMutation.test.tsx` 验证乐观更新、错误回滚与多 Query 缓存失效机制。
 
 ## v1.5.0
@@ -259,7 +260,7 @@
 - **移除登录页重复的未登录提示**：删除登录页根据 `reason` 参数渲染的紧凑登录提示卡片，并停止各未登录业务入口向 `/login` 传递已无用途的原因参数，避免从非 ProfileMenu 入口进入登录页时出现多余槽位。
 - **移除前端自建日志链路**：删除 `repo/frontend/apps/web/lib/web/logger.ts` 及其相关调用路径，页面与请求日志改为直接通过 Electron 侧 `runtime.logging` 落盘，并在上报失败时保底输出控制台日志；同步清理前端日志中转脚本与测试文件，保留桌面端日志功能不变。
 - **移除无意义日志中继配置**：删除 `APP_CFG_DEBUG_LOG_RELAY_*` 在前端 Next 配置中的注入与依赖，连同前端开发时的 `renderer log relay` 配置入口一并清理。
-- **修复桌面端版本更新后登录状态丢失**：主进程新增 `music_cookie` 持久化文件存储（`repo/frontend/apps/desktop/main/module/musicCookieStore.ts`），在 `set-music-cookie` 时同步落盘并提供 `get-music-cookie` 同步读取通道；Web 侧 `musicSessionCredential` 支持 Electron 回填到 `localStorage`，兼容保持 Web `localStorage` 为主的现有方案，实现桌面端升级后自动恢复登录态。
+- **修复桌面端版本更新后登录状态丢失**：主进程新增 `music_cookie` 持久化文件存储（`repo/frontend/apps/desktop/main/utils/musicCookieStore.ts`），在 `set-music-cookie` 时同步落盘并提供 `get-music-cookie` 同步读取通道；Web 侧 `musicSessionCredential` 支持 Electron 回填到 `localStorage`，兼容保持 Web `localStorage` 为主的现有方案，实现桌面端升级后自动恢复登录态。
 - **降低 LoFi 预设默认驱动**：将二段效果台的 LoFi 驱动从 28% 调整为 5%，保留颗粒、摆动与噪声质感，同时减少默认预设的过载失真。
 - **修复 ReplayGain 无效与均衡器破音**：保留 `/song/url/v1` 返回的单曲增益 dB 并随播放地址缓存写入当前歌曲，新增独立 Folia 音频增益控件显示真实 `T/A dB` 或不可用状态；音频链拆分为带自动余量的十段 EQ 与独立二段效果台，恢复驱动、颗粒、噪声、颤动、空间等创意控制，同时让零值真正直通、采用安全干湿混合并在末端防削波，所有滑块拖动实时生效。
 - **修复全局歌词偏移模态在浅色主题下不可读**：模态 Portal 显式接入 Folia 背景、正文、辅助与强调色 token，并让遮罩、卡片描边、刻度文字和中心指示线随当前主题变化，避免雪白主题下出现白字白底。

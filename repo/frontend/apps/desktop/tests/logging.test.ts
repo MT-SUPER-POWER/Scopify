@@ -9,7 +9,7 @@ import {
   prepareLogSession,
   sanitizeLogData,
   sanitizeLogText,
-} from "@/main/logging";
+} from "@/main/utils/logging";
 
 let temporaryDirectory: string | null = null;
 

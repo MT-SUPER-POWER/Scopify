@@ -3,7 +3,7 @@ import { describe, expect, test } from "bun:test";
 import {
   DESKTOP_PLAYBACK_CONTROLLER_SIZES,
   resolveDesktopPlaybackControllerBounds,
-} from "../main/module/desktopPlaybackWallpaper/controllerLayout";
+} from "../main/capabilities/desktopPlaybackWallpaper/controllerLayout";
 
 describe("desktop playback controller layout", () => {
   test("keeps the compact card anchored when it already fits the work area", () => {

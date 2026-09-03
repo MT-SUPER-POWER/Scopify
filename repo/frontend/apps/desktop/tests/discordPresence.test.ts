@@ -6,7 +6,7 @@ import {
   getDiscordActivityKey,
   normalizeDiscordApplicationId,
   normalizeDiscordImageUrl,
-} from "@/main/module/discordPresence";
+} from "@/main/services/discordPresence";
 
 describe("Discord Rich Presence", () => {
   test("accepts Discord snowflakes and rejects malformed IDs", () => {

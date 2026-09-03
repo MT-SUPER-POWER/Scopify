@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { formatBackendChildOutput, formatBackendLogEntry } from "@/main/module/backendOutput";
+import { formatBackendChildOutput, formatBackendLogEntry } from "@/main/services/backendOutput";
 
 test("preserves multiline backend output while removing terminal controls", () => {
   expect(

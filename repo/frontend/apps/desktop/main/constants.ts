@@ -3,14 +3,14 @@ import { fileURLToPath } from "node:url";
 import { app, nativeImage } from "electron";
 import log from "electron-log";
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
-import { appConfigDefaultPath, appConfigPath, loadDesktopHostConfig } from "./config.js";
+import { appConfigDefaultPath, appConfigPath, loadDesktopHostConfig } from "./store/index.js";
 import {
   archiveLogFile,
   cleanArchivedLogs,
   getCurrentLogPath,
   prepareLogSession,
   sanitizeLogData,
-} from "./logging.js";
+} from "./utils/logging.js";
 
 // ━━━━━━━━━━━━━━━━ ESM 路径兼容 ━━━━━━━━━━━━━━━━
 const __filename = fileURLToPath(import.meta.url);

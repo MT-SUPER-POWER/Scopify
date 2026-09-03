@@ -1,7 +1,7 @@
 import { BrowserWindow, ipcMain, type IpcMainInvokeEvent } from "electron";
 
 import { logger } from "../../constants.js";
-import { trayWindow } from "../tray.js";
+import { trayWindow } from "../../window/tray.js";
 import { getWindowsDesktopIconVisibility, setWindowsDesktopIconVisibility } from "./windows.js";
 
 let ipcRegistered = false;

@@ -4,7 +4,7 @@ import type { BrowserWindow, IpcMainEvent } from "electron";
 import {
   createOwnedPlaybackConnectionId,
   parsePlaybackConnectionRequest,
-} from "@/main/module/playbackBroker/connectionRequest";
+} from "@/main/capabilities/playbackBroker/connectionRequest";
 
 type IpcListener = (event: IpcMainEvent, input: unknown) => void;
 type PortListener = (...args: unknown[]) => void;
@@ -79,7 +79,7 @@ const ipcMain = new FakeIpcMain();
 mock.module("electron", () => ({ ipcMain }));
 
 const { initializePlaybackBrokerIpc, PLAYBACK_CONNECT_CHANNEL } =
-  await import("@/main/module/playbackBroker/ipc");
+  await import("@/main/capabilities/playbackBroker/ipc");
 
 describe("playback broker IPC connection validation", () => {
   test("accepts only bounded role-tagged connection requests", () => {

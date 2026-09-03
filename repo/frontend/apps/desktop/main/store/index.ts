@@ -4,7 +4,7 @@ import { app } from "electron";
 import * as yaml from "js-yaml";
 
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
-import { DEFAULT_DESKTOP_HOST_CONFIG, normalizeDesktopHostConfig } from "../types/config.js";
+import { DEFAULT_DESKTOP_HOST_CONFIG, normalizeDesktopHostConfig } from "../../types/config.js";
 
 const resourceConfigDir = app?.isPackaged
   ? join(process.resourcesPath, "config")

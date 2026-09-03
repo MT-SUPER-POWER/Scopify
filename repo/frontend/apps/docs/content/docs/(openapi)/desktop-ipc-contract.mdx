@@ -71,9 +71,9 @@ type Unsubscribe = () => void;
 
 `desktop-contract` 不负责打开窗口、读写文件或发起 IPC。实现分别位于：
 
-| 层 | 位置 | 责任 |
-| --- | --- | --- |
-| Contract | `packages/desktop-contract` | 类型、常量和协议边界 |
-| Preload | `apps/desktop/main/preload.ts` | 类型化桥接与 payload 转换 |
-| Main | `apps/desktop/main/module/ipc.ts` | 权限检查、校验和桌面操作 |
-| Runtime | `apps/web/lib/runtime` | Web/Electron 适配和业务入口 |
+| 层       | 位置                           | 责任                                   |
+| -------- | ------------------------------ | -------------------------------------- |
+| Contract | `packages/desktop-contract`    | 类型、常量和协议边界                   |
+| Preload  | `apps/desktop/main/preload.ts` | 类型化桥接与 payload 转换              |
+| Main     | `apps/desktop/main/ipc/`       | 按能力完成权限检查、校验和桌面操作适配 |
+| Runtime  | `apps/web/lib/runtime`         | Web/Electron 适配和业务入口            |

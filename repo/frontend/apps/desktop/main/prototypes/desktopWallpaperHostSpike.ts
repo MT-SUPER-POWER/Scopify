@@ -1,7 +1,7 @@
 import { app, BrowserWindow, screen } from "electron";
 
 import { __iconWindow, __preloadScript, logger } from "../constants.js";
-import { attachWindowsDesktopSurface } from "../module/desktopPlaybackWallpaper/windowsDesktopSurfaceHost.js";
+import { attachWindowsDesktopSurface } from "../capabilities/desktopPlaybackWallpaper/windowsDesktopSurfaceHost.js";
 import {
   applySystemWallpaperFallbackSpike,
   initializeSystemWallpaperFallbackSpike,

@@ -2,13 +2,16 @@ import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-const mainSource = readFileSync(fileURLToPath(new URL("../main/main.ts", import.meta.url)), "utf8");
+const coreSource = readFileSync(
+  fileURLToPath(new URL("../main/core/index.ts", import.meta.url)),
+  "utf8",
+);
 const desktopLyricSource = readFileSync(
-  fileURLToPath(new URL("../main/module/desktopLyric.ts", import.meta.url)),
+  fileURLToPath(new URL("../main/window/desktopLyric.ts", import.meta.url)),
   "utf8",
 );
 const traySource = readFileSync(
-  fileURLToPath(new URL("../main/module/tray.ts", import.meta.url)),
+  fileURLToPath(new URL("../main/window/tray.ts", import.meta.url)),
   "utf8",
 );
 
@@ -21,7 +24,7 @@ test("does not create the desktop lyric renderer during application startup", ()
     initializeStart,
   );
 
-  expect(mainSource).toContain("initializeDesktopLyricCompanion(win");
+  expect(coreSource).toContain("initializeDesktopLyricCompanion(win");
   expect(initializeStart).toBeGreaterThan(-1);
   expect(getWindowStart).toBeGreaterThan(initializeStart);
   expect(desktopLyricSource.slice(initializeStart, getWindowStart)).not.toContain(
@@ -35,7 +38,7 @@ test("destroys and releases the desktop lyric renderer when lyrics are disabled"
 });
 
 test("does not pre-create optional companion renderers at startup", () => {
-  expect(mainSource).not.toContain("desktopPlaybackControllerWindow?.prepare()");
+  expect(coreSource).not.toContain("desktopPlaybackControllerWindow?.prepare()");
 
   const initTrayStart = traySource.indexOf("function initTray");
   const rightClickStart = traySource.indexOf('tray.on("right-click"', initTrayStart);
@@ -53,7 +56,7 @@ test("releases the tray renderer after its popup loses focus", () => {
 });
 
 test("reports main-window visibility so hidden lyric surfaces can suspend", () => {
-  expect(mainSource).toContain('mainWindow.on("hide", notifyMainWindowVisibility)');
-  expect(mainSource).toContain('mainWindow.on("minimize", notifyMainWindowVisibility)');
-  expect(mainSource).toContain('"window-visibility-changed"');
+  expect(coreSource).toContain('mainWindow.on("hide", notifyMainWindowVisibility)');
+  expect(coreSource).toContain('mainWindow.on("minimize", notifyMainWindowVisibility)');
+  expect(coreSource).toContain('"window-visibility-changed"');
 });

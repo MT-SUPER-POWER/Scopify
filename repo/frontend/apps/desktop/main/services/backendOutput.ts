@@ -1,4 +1,4 @@
-import { sanitizeLogText } from "../logging.js";
+import { sanitizeLogText } from "../utils/logging.js";
 
 /** Formats one child-process output chunk without flattening multiline messages. */
 export function formatBackendChildOutput(value: Buffer) {

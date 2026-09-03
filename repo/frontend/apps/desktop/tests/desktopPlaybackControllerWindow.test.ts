@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const controllerWindowSource = readFileSync(
   fileURLToPath(
-    new URL("../main/module/desktopPlaybackWallpaper/controllerWindow.ts", import.meta.url),
+    new URL("../main/capabilities/desktopPlaybackWallpaper/controllerWindow.ts", import.meta.url),
   ),
   "utf8",
 );

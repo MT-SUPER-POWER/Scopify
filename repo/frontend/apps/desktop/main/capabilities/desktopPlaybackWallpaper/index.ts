@@ -9,7 +9,7 @@ import type {
 
 import { parseDesktopPlaybackWallpaperPreferencesUpdate } from "../../../types/desktopPlaybackWallpaper.js";
 import { logger } from "../../constants.js";
-import { trayWindow } from "../tray.js";
+import { trayWindow } from "../../window/tray.js";
 import {
   isDesktopPlaybackWallpaperControlSender,
   isDesktopPlaybackWallpaperModelReader,

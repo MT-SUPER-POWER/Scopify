@@ -8,9 +8,9 @@ function readWorkspaceFile(relativePath: string) {
 
 test("controller and tray isolate rounded content from transparent host windows", () => {
   const controllerWindowSource = readWorkspaceFile(
-    "../main/module/desktopPlaybackWallpaper/controllerWindow.ts",
+    "../main/capabilities/desktopPlaybackWallpaper/controllerWindow.ts",
   );
-  const trayWindowSource = readWorkspaceFile("../main/module/tray.ts");
+  const trayWindowSource = readWorkspaceFile("../main/window/tray.ts");
   const controllerPageSource = readWorkspaceFile(
     "../../web/components/desktopWallpaper/DesktopPlaybackController.tsx",
   );
@@ -25,7 +25,7 @@ test("controller and tray isolate rounded content from transparent host windows"
 });
 
 test("close confirmation uses its own rounded surface instead of a modal card over the main window", () => {
-  const appCloseWindowSource = readWorkspaceFile("../main/module/appCloseWindow.ts");
+  const appCloseWindowSource = readWorkspaceFile("../main/window/appCloseWindow.ts");
   const appClosePageSource = readWorkspaceFile("../../web/app/app-close/page.tsx");
 
   expect(appCloseWindowSource).toContain('backgroundColor: "#00000000"');

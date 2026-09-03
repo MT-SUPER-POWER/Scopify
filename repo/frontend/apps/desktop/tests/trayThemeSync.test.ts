@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const traySource = readFileSync(
-  fileURLToPath(new URL("../main/module/tray.ts", import.meta.url)),
+  fileURLToPath(new URL("../main/window/tray.ts", import.meta.url)),
   "utf8",
 );
 

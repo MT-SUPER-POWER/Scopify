@@ -6,7 +6,7 @@ const TRAY_HEIGHT = 380;
 const X_OFFSET = 15;
 const Y_OFFSET = 4;
 
-// 提升到模块作用域，防止被垃圾回收
+// Electron 原生对象必须保留强引用，否则垃圾回收会让托盘和窗口提前失效。
 export let trayWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let lastBlurTime = 0;
@@ -60,7 +60,8 @@ function createTrayWindow() {
   return window;
 }
 
-function initTray(mainWindow: Electron.BrowserWindow, options: TrayOptions = {}) {
+/** 初始化系统托盘和按需创建的托盘窗口。重复调用保持幂等。 */
+export function initTray(mainWindow: BrowserWindow, options: TrayOptions = {}) {
   // 如果已经初始化过，不要重复创建
   if (tray) return;
 
@@ -141,5 +142,3 @@ function initTray(mainWindow: Electron.BrowserWindow, options: TrayOptions = {})
     }
   });
 }
-
-export default initTray;

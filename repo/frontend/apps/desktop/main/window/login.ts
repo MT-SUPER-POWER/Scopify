@@ -1,8 +1,14 @@
 import fs from "node:fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
-import { __iconIcoPath, __iconWindow, __preloadScript, desktopConfig } from "../constants.js";
+import {
+  __iconIcoPath,
+  __iconWindow,
+  __preloadScript,
+  desktopConfig,
+  logger,
+} from "../constants.js";
 
-// 检查图标文件是否存在
+// 在启动阶段尽早暴露资源打包错误，但不阻断主窗口启动。
 fs.access(__iconIcoPath).catch(() => {
   console.warn("Warning: Icon file not found at", __iconIcoPath);
 });
@@ -11,12 +17,10 @@ fs.access(__preloadScript).catch(() => {
   console.warn("Warning: Preload script file not found at", __preloadScript);
 });
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+export let loginWindow: BrowserWindow | null = null;
 
-export let loginWindow: BrowserWindow | null = null; // 登录窗口实例
-
-export const createLoginWindow = async (mainWin: BrowserWindow) => {
-  // 如果登录窗口已存在，则聚焦并返回
+/** 创建登录窗口；重复调用复用已有实例，保证同一时间只有一个登录会话。 */
+export function createLoginWindow(mainWin: BrowserWindow) {
   if (loginWindow && !loginWindow.isDestroyed()) {
     loginWindow.focus();
     return;
@@ -25,12 +29,13 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
   loginWindow = new BrowserWindow({
     width: 450,
     height: 600,
-    icon: __iconWindow, // 设置应用图标
+    icon: __iconWindow,
     resizable: false,
     title: "Login - Scopify",
     autoHideMenuBar: true,
-    parent: mainWin, // 设置父窗口
-    modal: process.platform !== "darwin", // macOS 下设为 false 避免变成无边框的 sheet
+    parent: mainWin,
+    // macOS modal 会变成原生 sheet，与当前登录页的独立窗口布局不兼容。
+    modal: process.platform !== "darwin",
     webPreferences: {
       preload: __preloadScript,
       nodeIntegration: false,
@@ -42,7 +47,9 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
   const devBase = `http://${desktopConfig.frontend.host}:${desktopConfig.frontend.devPort}`;
   const loginUrl = useStaticRenderer ? "app://-/login/" : `${devBase}/login`;
 
-  loginWindow.loadURL(loginUrl);
+  void loginWindow
+    .loadURL(loginUrl)
+    .catch((error) => logger.error("[login] failed to load login window", error));
 
   loginWindow.webContents.on("before-input-event", (event, input) => {
     const isDevToolsKey =
@@ -62,12 +69,13 @@ export const createLoginWindow = async (mainWin: BrowserWindow) => {
   loginWindow?.on("closed", () => {
     loginWindow = null;
   });
-};
+}
 
 /**
- * 初始化登录窗口相关的IPC监听
+ * 注册登录窗口的打开与关闭命令。
+ * 调用者必须保证只初始化一次，避免重复监听同一 IPC 频道。
  */
-export function initializeLoginWindow(mainWindow: Electron.BrowserWindow) {
+export function initializeLoginWindow(mainWindow: BrowserWindow) {
   ipcMain.on("open-login-window", (_event) => {
     createLoginWindow(mainWindow);
     loginWindow?.show();
@@ -75,9 +83,6 @@ export function initializeLoginWindow(mainWindow: Electron.BrowserWindow) {
   });
 
   ipcMain.on("close-login-window", () => {
-    console.log("[Main] Received close-login-window IPC message");
     loginWindow?.close();
   });
 }
-
-export default initializeLoginWindow;

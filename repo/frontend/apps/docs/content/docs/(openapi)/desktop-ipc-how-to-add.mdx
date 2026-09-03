@@ -3,7 +3,7 @@ title: 如何新增 IPC
 description: 从契约、Preload 到 Main handler 的扩展流程。
 ---
 
-新增 Desktop IPC 必须沿着“契约 → Preload → Main → Runtime → 测试 → 文档”的顺序完成。不要只在 `ipc.ts` 里注册一个 channel，就把它当成完成。
+新增 Desktop IPC 必须沿着“契约 → Preload → Main → Runtime → 测试 → 文档”的顺序完成。不要只注册一个 channel，就把它当成完成。
 
 ## 1. 先确认是否真的需要 IPC
 
@@ -27,12 +27,12 @@ export interface DesktopNotificationRequest {
 
 先决定方法语义：
 
-| 需求 | 选择 |
-| --- | --- |
+| 需求         | 选择                                    |
+| ------------ | --------------------------------------- |
 | 请求一个结果 | `ipcRenderer.invoke` + `ipcMain.handle` |
-| 发送一次命令 | `ipcRenderer.send` + `ipcMain.on` |
-| 订阅状态 | Main `webContents.send` + Preload `on` |
-| 高频连续数据 | `MessageChannel` / `MessagePort` |
+| 发送一次命令 | `ipcRenderer.send` + `ipcMain.on`       |
+| 订阅状态     | Main `webContents.send` + Preload `on`  |
+| 高频连续数据 | `MessageChannel` / `MessagePort`        |
 
 channel 使用 `<domain>:<action>`，例如 `desktop-notification:show`。查询和变更要区分动作，事件使用 `status-changed`、`model-changed` 等明确后缀。
 
@@ -49,7 +49,7 @@ Preload 只做桥接和类型转换，不在这里执行业务逻辑，也不把
 
 ## 5. 注册 Main handler
 
-在 `apps/desktop/main/module/ipc.ts` 注册对应 handler：
+在 `apps/desktop/main/ipc/<capability>.ts` 注册对应 handler，并从 `ipc/index.ts` 组装：
 
 ```ts
 ipcMain.handle("desktop-notification:show", (event, request: unknown) => {
