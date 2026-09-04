@@ -16,6 +16,7 @@
 
 ### Quality
 
+- **引入主进程可信 PlaybackGateway 与 Broker 观测扩展**：在 PlaybackBroker 中增加状态快照获取与订阅机制，新增主进程专属的 PlaybackGateway 与内存 MessagePort 副本（MainPlaybackReplica），实现统一命令排队、防碰撞与全链路异步真实回执确认。
 - **规范 WebRuntime 宿主适配器与 MCP 安全契约**：在 `@scopify/desktop-contract` 中定义非敏感的 MCP 状态与桥接契约，WebRuntime 扩充统一的 `mcp` 宿主接口，Browser 适配器默认安全返回 null，Electron 适配器通过 DesktopBridge 委派，双端均通过单向契约实现隔离与测试覆盖。
 - **建立可演进的跨端播放平台边界**：新增运行时无关的 `@scopify/playback-core`，收敛 Queue、Resolver、PlaybackSession 与 AudioEngineAdapter 契约；Web 将 HTMLAudioElement 和网易云播放 URL/ReplayGain 解析分别收进 Adapter，Main 将 Playback Broker、可信 Gateway 与 MCP 分层，公开快照不再携带 Cookie、播放 URL或本地路径。
 - **移除已退役的桌面壁纸 Main 原型**：删除未被入口、测试或打包引用的 `electron/main/prototypes` TypeScript spike；正式桌面挂载继续由 Rust `native/wallpaper-helper` 与 `desktopPlaybackWallpaper` capability 负责，保留仍被系统壁纸 fallback 使用的顶层 PowerShell 资源。

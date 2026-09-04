@@ -1,6 +1,6 @@
 import type { MessageEvent, MessagePortMain } from "electron";
 
-import type { PlaybackBrokerPort, PlaybackBrokerPortMessageListener } from "./port.js";
+import type { PlaybackBrokerPort, PlaybackBrokerPortMessageListener } from "./port";
 
 /** Adapts Electron's event-emitter-shaped MessagePortMain to the broker's narrow port seam. */
 export function adaptElectronPlaybackPort(port: MessagePortMain): PlaybackBrokerPort {

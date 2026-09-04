@@ -1,11 +1,15 @@
 import { ipcMain, type BrowserWindow, type IpcMainEvent } from "electron";
 
-import { adaptElectronPlaybackPort } from "./electronPort.js";
-import { createPlaybackBroker, type PlaybackBrokerDiagnostics } from "./index.js";
+import { adaptElectronPlaybackPort } from "@main/capabilities/playbackBroker/electronPort";
+import {
+  createPlaybackBroker,
+  type PlaybackBroker,
+  type PlaybackBrokerDiagnostics,
+} from "@main/capabilities/playbackBroker/index";
 import {
   createOwnedPlaybackConnectionId,
   parsePlaybackConnectionRequest,
-} from "./connectionRequest.js";
+} from "@main/capabilities/playbackBroker/connectionRequest";
 
 export const PLAYBACK_CONNECT_CHANNEL = "playback-transport:connect";
 
@@ -17,16 +21,26 @@ export interface PlaybackBrokerIpcOptions {
   onRejected?(message: string): void;
 }
 
-export interface PlaybackBrokerIpcHost {
+/**
+ * Electron adapter for an already-created PlaybackBroker.
+ *
+ * The adapter only owns its `ipcMain` listener. The composition root owns the
+ * Broker and can attach other trusted transports (such as the Main gateway)
+ * without coupling them to Electron IPC.
+ */
+export interface PlaybackBrokerIpcBinding {
   dispose(): void;
+}
+
+/** @deprecated Prefer `PlaybackBrokerIpcBinding` plus a separately owned Broker. */
+export interface PlaybackBrokerIpcHost extends PlaybackBrokerIpcBinding {
   getDiagnostics(): PlaybackBrokerDiagnostics;
 }
 
-export function initializePlaybackBrokerIpc(
+export function bindPlaybackBrokerIpc(
+  broker: PlaybackBroker,
   options: PlaybackBrokerIpcOptions,
-): PlaybackBrokerIpcHost {
-  const broker = createPlaybackBroker();
-
+): PlaybackBrokerIpcBinding {
   const onConnect = (event: IpcMainEvent, input: unknown) => {
     const request = parsePlaybackConnectionRequest(input);
     const port = event.ports[0];
@@ -78,6 +92,24 @@ export function initializePlaybackBrokerIpc(
   return {
     dispose() {
       ipcMain.removeListener(PLAYBACK_CONNECT_CHANNEL, onConnect);
+    },
+  };
+}
+
+/**
+ * Compatibility composition helper for existing callers. New Main-process
+ * composition roots should create the Broker once, bind Electron IPC with
+ * `bindPlaybackBrokerIpc`, then attach any internal consumers directly.
+ */
+export function initializePlaybackBrokerIpc(
+  options: PlaybackBrokerIpcOptions,
+): PlaybackBrokerIpcHost {
+  const broker = createPlaybackBroker();
+  const binding = bindPlaybackBrokerIpc(broker, options);
+
+  return {
+    dispose() {
+      binding.dispose();
       broker.dispose();
     },
     getDiagnostics: broker.getDiagnostics,

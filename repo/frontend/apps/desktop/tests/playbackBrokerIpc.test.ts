@@ -79,10 +79,25 @@ const ipcMain = new FakeIpcMain();
 const fakeApp = { isPackaged: false, getPath: () => "" };
 mock.module("electron", () => ({ ipcMain, app: fakeApp }));
 
-const { initializePlaybackBrokerIpc, PLAYBACK_CONNECT_CHANNEL } =
+const { bindPlaybackBrokerIpc, initializePlaybackBrokerIpc, PLAYBACK_CONNECT_CHANNEL } =
   await import("@main/capabilities/playbackBroker/ipc");
+const { createPlaybackBroker } = await import("@main/capabilities/playbackBroker");
 
 describe("playback broker IPC connection validation", () => {
+  test("can detach the Electron IPC adapter without disposing the caller-owned Broker", () => {
+    const broker = createPlaybackBroker();
+    const binding = bindPlaybackBrokerIpc(broker, {
+      getAuthorityWindow: () => null,
+      getReplicaWindows: () => [],
+    });
+
+    binding.dispose();
+
+    expect(broker.getDiagnostics().disposed).toBeFalse();
+    expect(() => broker.registerReplica("still-active", createMemoryBrokerPort())).not.toThrow();
+    broker.dispose();
+  });
+
   test("accepts only bounded role-tagged connection requests", () => {
     expect(
       parsePlaybackConnectionRequest({ connectionId: "main-authority", role: "authority" }),
@@ -184,4 +199,13 @@ function createWindow(webContentsId: number): BrowserWindow {
       isDestroyed: () => false,
     },
   } as unknown as BrowserWindow;
+}
+
+function createMemoryBrokerPort() {
+  return {
+    close() {},
+    onClose: () => () => undefined,
+    onMessage: () => () => undefined,
+    postMessage() {},
+  };
 }

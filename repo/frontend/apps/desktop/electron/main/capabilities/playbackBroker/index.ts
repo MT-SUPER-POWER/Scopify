@@ -10,7 +10,7 @@ import {
   validatePlaybackMessage,
 } from "@scopify/desktop-contract";
 
-import type { PlaybackBrokerPort } from "./port.js";
+import type { PlaybackBrokerPort } from "./port";
 
 const MAXIMUM_REMEMBERED_COMMAND_IDS = 2_048;
 const DEFAULT_COMMAND_RECEIPT_TIMEOUT_MS = 20_000;
@@ -61,12 +61,27 @@ export interface PlaybackBrokerDiagnostics {
   replicaReplacements: number;
 }
 
-export interface PlaybackBroker {
+export interface PlaybackBroker<TLyrics = unknown> {
   dispose(): void;
+  /**
+   * Returns the last coherent Authority state known to the broker.
+   *
+   * The returned value is a clone. Callers cannot mutate the replay state that
+   * will be sent to late-joining replicas.
+   */
+  getBootstrap(): PlaybackBootstrap<TLyrics> | null;
   getDiagnostics(): PlaybackBrokerDiagnostics;
   registerAuthority(authorityId: string, port: PlaybackBrokerPort): () => void;
   registerReplica(replicaId: string, port: PlaybackBrokerPort): () => void;
+  /**
+   * Observes changes to the coherent Authority state. This deliberately has no
+   * transport payload: consumers must read `getBootstrap()` so authority loss
+   * and a newly accepted bootstrap have one consistent read path.
+   */
+  subscribe(listener: PlaybackBrokerStateListener): () => void;
 }
+
+export type PlaybackBrokerStateListener = () => void;
 
 export interface PlaybackBrokerOptions {
   commandReceiptTimeoutMs?: number;
@@ -90,7 +105,7 @@ type ReplicaDisconnectReason = "disposed" | "disconnected" | "replaced" | "trans
 
 export function createPlaybackBroker<TLyrics = unknown>(
   options: PlaybackBrokerOptions = {},
-): PlaybackBroker {
+): PlaybackBroker<TLyrics> {
   const commandReceiptTimeoutMs =
     options.commandReceiptTimeoutMs ?? DEFAULT_COMMAND_RECEIPT_TIMEOUT_MS;
   if (
@@ -117,6 +132,7 @@ export function createPlaybackBroker<TLyrics = unknown>(
   const rememberedCommandIds = new Set<string>();
   const rememberedCommandOrder: string[] = [];
   const rejectionCounts = createRejectionCounts();
+  const stateListeners = new Set<PlaybackBrokerStateListener>();
 
   const counters = {
     acceptedMessages: 0,
@@ -246,6 +262,7 @@ export function createPlaybackBroker<TLyrics = unknown>(
         disconnectReplica(replica, "transport-error", true);
       }
     }
+    notifyStateListeners();
   }
 
   function handleCommandReceipt(connection: PortConnection, receipt: PlaybackCommandReceipt) {
@@ -370,6 +387,7 @@ export function createPlaybackBroker<TLyrics = unknown>(
           ? "playback-broker-disposed"
           : "playback-authority-disconnected",
     );
+    notifyStateListeners();
   }
 
   function disconnectReplica(
@@ -471,6 +489,29 @@ export function createPlaybackBroker<TLyrics = unknown>(
     for (const replica of [...replicas.values()]) {
       disconnectReplica(replica, "disposed", true);
     }
+    stateListeners.clear();
+  }
+
+  function getBootstrap(): PlaybackBootstrap<TLyrics> | null {
+    if (!bootstrap) return null;
+    return structuredClone(bootstrap);
+  }
+
+  function subscribe(listener: PlaybackBrokerStateListener) {
+    stateListeners.add(listener);
+    return once(() => stateListeners.delete(listener));
+  }
+
+  function notifyStateListeners() {
+    for (const listener of [...stateListeners]) {
+      try {
+        listener();
+      } catch {
+        // A Main-process observer must not break the reliable Renderer
+        // transport. Observers can read the current state again on their next
+        // notification.
+      }
+    }
   }
 
   function getDiagnostics(): PlaybackBrokerDiagnostics {
@@ -494,7 +535,7 @@ export function createPlaybackBroker<TLyrics = unknown>(
     if (disposed) throw new Error("The playback broker is disposed.");
   }
 
-  return { dispose, getDiagnostics, registerAuthority, registerReplica };
+  return { dispose, getBootstrap, getDiagnostics, registerAuthority, registerReplica, subscribe };
 }
 
 function synthesizeBootstrap<TLyrics>(
@@ -583,5 +624,5 @@ function once(action: () => void) {
   };
 }
 
-export { adaptElectronPlaybackPort } from "./electronPort.js";
-export type { PlaybackBrokerPort } from "./port.js";
+export { adaptElectronPlaybackPort } from "./electronPort";
+export type { PlaybackBrokerPort } from "./port";
