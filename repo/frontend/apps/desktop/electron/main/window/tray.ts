@@ -3,7 +3,7 @@ import { __iconTray, __preloadScript, desktopConfig } from "@main/constants";
 import { trayLog } from "@main/utils/logger";
 
 const TRAY_WIDTH = 240;
-const TRAY_HEIGHT = 380;
+const TRAY_HEIGHT = 420;
 const X_OFFSET = 15;
 const Y_OFFSET = 4;
 
@@ -11,6 +11,10 @@ const Y_OFFSET = 4;
 export let trayWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let lastBlurTime = 0;
+
+export function getTrayWindow(): BrowserWindow | null {
+  return trayWindow && !trayWindow.isDestroyed() ? trayWindow : null;
+}
 
 interface TrayOptions {
   onMainWindowRequested?(): Promise<void> | void;
@@ -64,6 +68,63 @@ function createTrayWindow() {
   return window;
 }
 
+function toggleTrayWindow(trayBounds?: Electron.Rectangle) {
+  const timeSinceLastBlur = Date.now() - lastBlurTime;
+  const existingWindow = trayWindow && !trayWindow.isDestroyed() ? trayWindow : null;
+
+  if (existingWindow?.isVisible()) {
+    existingWindow.destroy();
+    return;
+  }
+  if (timeSinceLastBlur < 100) {
+    return;
+  }
+
+  const currentTrayWindow = existingWindow ?? createTrayWindow();
+
+  const windowBounds = currentTrayWindow.getBounds();
+  const fallbackPoint = screen.getCursorScreenPoint();
+  const targetPoint = trayBounds ?? fallbackPoint;
+  const currentDisplay = screen.getDisplayNearestPoint(targetPoint);
+  const workArea = currentDisplay.workArea;
+  const maxRight = workArea.x + workArea.width;
+
+  const bounds = trayBounds ?? {
+    x: fallbackPoint.x,
+    y: fallbackPoint.y,
+    width: 0,
+    height: 0,
+  };
+
+  let x = Math.round(bounds.x) + X_OFFSET;
+  if (x + windowBounds.width > maxRight) {
+    x = Math.round(bounds.x + bounds.width - windowBounds.width) - X_OFFSET;
+  }
+  if (x < workArea.x) x = workArea.x + 10;
+
+  let y: number;
+  if (bounds.y > currentDisplay.bounds.height / 2) {
+    y = bounds.y - windowBounds.height - Y_OFFSET;
+  } else {
+    y = bounds.y + bounds.height + Y_OFFSET;
+  }
+  if (y < workArea.y) y = workArea.y + 10;
+  if (y + windowBounds.height > workArea.y + workArea.height) {
+    y = workArea.y + workArea.height - windowBounds.height - 10;
+  }
+
+  currentTrayWindow.setOpacity(0);
+  currentTrayWindow.setPosition(x, y, false);
+  currentTrayWindow.show();
+  currentTrayWindow.focus();
+
+  setTimeout(() => {
+    if (currentTrayWindow && !currentTrayWindow.isDestroyed() && currentTrayWindow.isVisible()) {
+      currentTrayWindow.setOpacity(1);
+    }
+  }, 20);
+}
+
 /** 初始化系统托盘和按需创建的托盘窗口。重复调用保持幂等。 */
 export function initTray(mainWindow: BrowserWindow, options: TrayOptions = {}) {
   // 如果已经初始化过，不要重复创建
@@ -73,54 +134,17 @@ export function initTray(mainWindow: BrowserWindow, options: TrayOptions = {}) {
   tray.setToolTip("Scopify");
 
   tray.on("right-click", (_event, trayBounds) => {
-    const timeSinceLastBlur = Date.now() - lastBlurTime;
-    const existingWindow = trayWindow && !trayWindow.isDestroyed() ? trayWindow : null;
+    toggleTrayWindow(trayBounds);
+  });
 
-    if (existingWindow?.isVisible()) {
-      existingWindow.destroy();
-      return;
-    }
-    if (timeSinceLastBlur < 100) {
-      return;
-    }
-
-    const currentTrayWindow = existingWindow ?? createTrayWindow();
-
-    const windowBounds = currentTrayWindow.getBounds();
-    const currentDisplay = screen.getDisplayNearestPoint(trayBounds);
-    const workArea = currentDisplay.workArea;
-    const maxRight = workArea.x + workArea.width;
-
-    let x = Math.round(trayBounds.x) + X_OFFSET;
-    if (x + windowBounds.width > maxRight) {
-      x = Math.round(trayBounds.x + trayBounds.width - windowBounds.width) - X_OFFSET;
-    }
-    if (x < workArea.x) x = workArea.x + 10;
-
-    let y: number;
-    if (trayBounds.y > currentDisplay.bounds.height / 2) {
-      y = trayBounds.y - windowBounds.height - Y_OFFSET;
-    } else {
-      y = trayBounds.y + trayBounds.height + Y_OFFSET;
-    }
-    if (y < workArea.y) y = workArea.y + 10;
-    if (y + windowBounds.height > workArea.y + workArea.height) {
-      y = workArea.y + workArea.height - windowBounds.height - 10;
-    }
-
-    currentTrayWindow.setOpacity(0);
-    currentTrayWindow.setPosition(x, y, false);
-    currentTrayWindow.show();
-    currentTrayWindow.focus();
-
-    setTimeout(() => {
-      if (currentTrayWindow && !currentTrayWindow.isDestroyed() && currentTrayWindow.isVisible()) {
-        currentTrayWindow.setOpacity(1);
-      }
-    }, 20);
+  tray.on("click", (_event, trayBounds) => {
+    toggleTrayWindow(trayBounds);
   });
 
   tray.on("double-click", () => {
+    if (trayWindow && !trayWindow.isDestroyed()) {
+      trayWindow.destroy();
+    }
     if (options.onMainWindowRequested) {
       void Promise.resolve(options.onMainWindowRequested()).catch((error) => {
         trayLog.error("failed to reveal the main window", error);
@@ -128,6 +152,7 @@ export function initTray(mainWindow: BrowserWindow, options: TrayOptions = {}) {
       return;
     }
     if (mainWindow && !mainWindow.isDestroyed()) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
       if (mainWindow.isVisible()) {
         mainWindow.focus();
       } else {

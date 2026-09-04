@@ -9,7 +9,7 @@ import type {
 
 import { parseDesktopPlaybackWallpaperPreferencesUpdate } from "@/types/desktopPlaybackWallpaper";
 import { wallpaperLog } from "@main/utils/logger";
-import { trayWindow } from "@main/window/tray";
+import { getTrayWindow, trayWindow } from "@main/window/tray";
 import {
   isDesktopPlaybackWallpaperControlSender,
   isDesktopPlaybackWallpaperModelReader,
@@ -147,6 +147,29 @@ function registerIpcHandlers() {
     return true;
   });
 
+  ipcMain.handle("desktop-playback-controller:is-open", (event) => {
+    requireModelReader(event, "desktop-playback-controller:is-open");
+    const controllerWindow = getControllerWindow();
+    return Boolean(controllerWindow && !controllerWindow.isDestroyed());
+  });
+
+  ipcMain.handle("desktop-playback-controller:toggle", async (event) => {
+    requireControlSender(event, "desktop-playback-controller:toggle");
+    const controllerWindow = getControllerWindow();
+    if (controllerWindow && !controllerWindow.isDestroyed()) {
+      if (controllerWindow.isMinimized()) {
+        controllerWindow.restore();
+        controllerWindow.show();
+        controllerWindow.focus();
+        return true;
+      }
+      controllerWindow.close();
+      return false;
+    }
+    const result = await requireCapability().showController();
+    return result.opened;
+  });
+
   ipcMain.handle("desktop-playback-controller:set-layout", (event, input: unknown) => {
     requireControllerSender(event, "desktop-playback-controller:set-layout");
     if (!isDesktopPlaybackControllerLayout(input)) {
@@ -167,7 +190,7 @@ function isControlSender(senderId: number) {
   return isDesktopPlaybackWallpaperControlSender(senderId, {
     controllerWindowId: getWindowId(getControllerWindow()),
     mainWindowId: getWindowId(mainWindow),
-    trayWindowId: getWindowId(trayWindow),
+    trayWindowId: getWindowId(getTrayWindow()),
   });
 }
 
@@ -192,7 +215,7 @@ function requireModelReader(event: IpcMainInvokeEvent, channel: string) {
     isDesktopPlaybackWallpaperModelReader(event.sender.id, {
       controllerWindowId: getWindowId(getControllerWindow()),
       mainWindowId: getWindowId(mainWindow),
-      trayWindowId: getWindowId(trayWindow),
+      trayWindowId: getWindowId(getTrayWindow()),
     })
   ) {
     return;
@@ -215,7 +238,7 @@ function isDesktopPlaybackControllerLayout(
 
 function broadcastModel(model: DesktopPlaybackWallpaperModel) {
   sendModel(mainWindow, model);
-  sendModel(trayWindow, model);
+  sendModel(getTrayWindow(), model);
   sendModel(getControllerWindow(), model);
 }
 

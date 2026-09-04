@@ -39,9 +39,11 @@ export interface DesktopPlaybackWallpaperControllerState {
   configure(
     update: DesktopPlaybackWallpaperPreferencesUpdate,
   ): Promise<DesktopPlaybackWallpaperModel | null>;
+  isControllerOpen(): Promise<boolean>;
   isPending: boolean;
   model: DesktopPlaybackWallpaperModel | null;
   retry(): Promise<DesktopPlaybackWallpaperModel | null>;
   setLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showController(): Promise<boolean>;
+  toggleController(): Promise<boolean>;
 }

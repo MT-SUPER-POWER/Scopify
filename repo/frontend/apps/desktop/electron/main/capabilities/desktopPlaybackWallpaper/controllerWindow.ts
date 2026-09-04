@@ -130,10 +130,21 @@ export function createDesktopPlaybackControllerWindow(
       const window = ensureWindow();
       const loaded = await loadPromise;
       if (!loaded || window.isDestroyed() || controllerWindow !== window) {
+        if (window && !window.isDestroyed()) {
+          window.destroy();
+        }
+        controllerWindow = null;
+        loadPromise = null;
         return { opened: false, reason: "failed" };
       }
 
-      if (!window.isVisible()) window.center();
+      if (window.isMinimized()) {
+        window.restore();
+      }
+      if (!window.isVisible()) {
+        window.center();
+      }
+      window.setAlwaysOnTop(true, "floating");
       window.show();
       window.focus();
       return { opened: true };

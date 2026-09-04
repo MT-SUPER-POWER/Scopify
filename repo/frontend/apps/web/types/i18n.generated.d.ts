@@ -4742,21 +4742,15 @@ export interface TranslateFn {
    */
   (key: "tray.unlike", params?: TranslationParams): string;
   /**
-   * zh-CN: 桌面歌词
-   * zh-TW: 桌面歌詞
-   * en-US: Desktop Lyrics
-   */
-  (key: "tray.openDesktopLyrics", params?: TranslationParams): string;
-  /**
-   * zh-CN: 音乐桌面壁纸
-   * zh-TW: 音樂桌面桌布
-   * en-US: Desktop Music Wallpaper
+   * zh-CN: 桌面动态壁纸
+   * zh-TW: 桌面動態桌布
+   * en-US: Live Desktop Wallpaper
    */
   (key: "tray.desktopWallpaper", params?: TranslationParams): string;
   /**
-   * zh-CN: 桌面音乐
-   * zh-TW: 桌面音樂
-   * en-US: Desktop Music
+   * zh-CN: 悬浮控制器
+   * zh-TW: 懸浮控制器
+   * en-US: Floating Controller
    */
   (key: "tray.openDesktopController", params?: TranslationParams): string;
   /**

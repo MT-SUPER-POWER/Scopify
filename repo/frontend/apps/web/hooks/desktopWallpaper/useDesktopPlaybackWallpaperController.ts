@@ -58,6 +58,7 @@ export function useDesktopPlaybackWallpaperController(): DesktopPlaybackWallpape
   return {
     closeController: () => runtime.desktopPlaybackWallpaper.closeController(),
     configure,
+    isControllerOpen: () => runtime.desktopPlaybackWallpaper.isControllerOpen(),
     isPending,
     model,
     retry,
@@ -66,5 +67,6 @@ export function useDesktopPlaybackWallpaperController(): DesktopPlaybackWallpape
       const result = await runtime.desktopPlaybackWallpaper.showController();
       return result.opened;
     },
+    toggleController: () => runtime.desktopPlaybackWallpaper.toggleController(),
   };
 }

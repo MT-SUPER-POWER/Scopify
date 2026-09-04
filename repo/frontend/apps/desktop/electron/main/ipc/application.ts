@@ -3,7 +3,7 @@ import { loadDesktopHostConfig, saveDesktopHostConfig } from "@main/store";
 import { ipcLog } from "@main/utils/logger";
 import { getRememberedAppCloseAction, isAppCloseAction } from "@main/window/appCloseAction";
 import { isAppCloseWindowSender } from "@main/window/appCloseWindow";
-import { trayWindow } from "@main/window/tray";
+import { getTrayWindow, trayWindow } from "@main/window/tray";
 
 /** 注册应用重启、退出以及“关闭窗口”决策的命令接口。 */
 export function registerApplicationIpc(mainWindow: BrowserWindow | null) {
@@ -42,6 +42,6 @@ export function registerApplicationIpc(mainWindow: BrowserWindow | null) {
   ipcMain.on("exit-app", () => app.quit());
   ipcMain.on("minimize-to-tray", () => {
     mainWindow?.hide();
-    trayWindow?.hide();
+    getTrayWindow()?.hide();
   });
 }

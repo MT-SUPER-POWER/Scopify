@@ -33,7 +33,7 @@ import { registerIpcHandlers } from "@main/ipc";
 import { initializeUpdater } from "@main/services/updater";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "@main/window/desktopLyric";
 import { initializeLoginWindow } from "@main/window/login";
-import { initTray, trayWindow } from "@main/window/tray";
+import { getTrayWindow, initTray, trayWindow } from "@main/window/tray";
 
 /** Owns every capability whose lifetime is attached to the main BrowserWindow. */
 export function createWindowCapabilityHost(options: WindowCapabilityHostOptions) {
@@ -86,7 +86,7 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
         options.getMainWindow(),
         getDesktopLyricWindow(),
         controllerWindow?.getWindow() ?? null,
-        trayWindow,
+        getTrayWindow(),
       ],
       onAuthorityConnected: (senderId) => {
         brokerLog.info("[playback] main renderer authority connected", { senderId });

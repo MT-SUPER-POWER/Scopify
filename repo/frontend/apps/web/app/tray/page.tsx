@@ -4,7 +4,6 @@
 
 import {
   Heart,
-  MicVocal,
   Minimize,
   MonitorCog,
   Pause,
@@ -13,6 +12,7 @@ import {
   Settings,
   SkipBack,
   SkipForward,
+  Wallpaper,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -49,15 +49,25 @@ export default function TrayPage() {
     void playbackCommands.setVolume(newVolume);
   };
   const toggleLike = () => void playbackCommands.toggleLike();
-  const openDesktopPlaybackController = async () => {
+  const [controllerOpen, setControllerOpen] = useState(false);
+
+  useEffect(() => {
+    if (isDesktop) {
+      void runtime.desktopPlaybackWallpaper.isControllerOpen().then((open) => {
+        setControllerOpen(open);
+      });
+    }
+  }, [isDesktop]);
+
+  const toggleDesktopPlaybackController = async () => {
     try {
-      if (!(await wallpaper.showController())) {
-        toast.error(t("desktopPlaybackController.openFailed"));
-      }
+      const next = await runtime.desktopPlaybackWallpaper.toggleController();
+      setControllerOpen(next);
     } catch {
       toast.error(t("desktopPlaybackController.openFailed"));
     }
   };
+
   const setDesktopPlaybackWallpaperEnabled = async (enabled: boolean) => {
     try {
       await wallpaper.configure({ enabled });
@@ -166,25 +176,41 @@ export default function TrayPage() {
 
           <Separator className="my-1.5 bg-border" />
 
-          <Button variant="ghost" className={menuItemClass}>
-            <MicVocal className={iconClass} />
-            {t("tray.openDesktopLyrics")}
-          </Button>
-
-          <div className="flex h-10 items-center rounded-md px-3 text-content-muted transition-colors hover:bg-surface-elevated hover:text-content">
-            <button
-              type="button"
-              className="flex min-w-0 flex-1 items-center"
-              onClick={() => void openDesktopPlaybackController()}
-            >
-              <MonitorCog className={iconClass} />
-              <span className="truncate">{t("desktopPlaybackController.open")}</span>
-            </button>
+          {/* 桌面动态壁纸 */}
+          <div
+            className="flex h-9 w-full cursor-pointer items-center justify-between rounded-md px-3 font-normal text-content-muted transition-colors hover:bg-surface-elevated hover:text-content"
+            onClick={() => {
+              if (!wallpaper.model || wallpaper.isPending) return;
+              void setDesktopPlaybackWallpaperEnabled(!wallpaper.model.preferences.enabled);
+            }}
+          >
+            <div className="mr-2 flex min-w-0 flex-1 items-center">
+              <Wallpaper className={iconClass} />
+              <span className="truncate">{t("tray.desktopWallpaper")}</span>
+            </div>
             <Switch
-              aria-label={t("desktopPlaybackController.wallpaper")}
+              aria-label={t("tray.desktopWallpaper")}
               checked={wallpaper.model?.preferences.enabled ?? false}
               disabled={!wallpaper.model || wallpaper.isPending}
               onCheckedChange={(enabled) => void setDesktopPlaybackWallpaperEnabled(enabled)}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+
+          {/* 桌面音乐控制器 */}
+          <div
+            className="flex h-9 w-full cursor-pointer items-center justify-between rounded-md px-3 font-normal text-content-muted transition-colors hover:bg-surface-elevated hover:text-content"
+            onClick={() => void toggleDesktopPlaybackController()}
+          >
+            <div className="mr-2 flex min-w-0 flex-1 items-center">
+              <MonitorCog className={iconClass} />
+              <span className="truncate">{t("tray.openDesktopController")}</span>
+            </div>
+            <Switch
+              aria-label={t("tray.openDesktopController")}
+              checked={controllerOpen}
+              onCheckedChange={() => void toggleDesktopPlaybackController()}
+              onClick={(e) => e.stopPropagation()}
             />
           </div>
 

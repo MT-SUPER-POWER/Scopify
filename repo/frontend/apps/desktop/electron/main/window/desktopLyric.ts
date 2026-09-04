@@ -10,6 +10,7 @@ import type {
 
 import { __iconWindow, __preloadScript } from "@main/constants";
 import { windowLog } from "@main/utils/logger";
+import { getTrayWindow } from "@main/window/tray";
 
 const DESKTOP_LYRIC_ROUTE = "/desktop-lyrics";
 const PREFERENCES_FILE = "desktop-lyric.json";
@@ -170,6 +171,12 @@ function isMainWindowSender(event: Electron.IpcMainEvent | IpcMainInvokeEvent) {
   return isWindowAlive(mainWindow) && event.sender.id === mainWindow.webContents.id;
 }
 
+function isAuthorizedCompanionSender(event: Electron.IpcMainEvent | IpcMainInvokeEvent) {
+  if (isMainWindowSender(event)) return true;
+  const tray = getTrayWindow();
+  return isWindowAlive(tray) && event.sender.id === tray.webContents.id;
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -225,7 +232,7 @@ function registerIpcHandlers() {
   ipcRegistered = true;
 
   ipcMain.handle("desktop-lyric:open", (event) => {
-    if (!isMainWindowSender(event)) {
+    if (!isAuthorizedCompanionSender(event)) {
       rejectUnexpectedSender("desktop-lyric:open");
       return false;
     }
@@ -234,7 +241,7 @@ function registerIpcHandlers() {
   });
 
   ipcMain.handle("desktop-lyric:toggle", (event) => {
-    if (!isMainWindowSender(event)) {
+    if (!isAuthorizedCompanionSender(event)) {
       rejectUnexpectedSender("desktop-lyric:toggle");
       return false;
     }
@@ -242,7 +249,7 @@ function registerIpcHandlers() {
   });
 
   ipcMain.handle("desktop-lyric:close", (event) => {
-    if (!isMainWindowSender(event) && !isDesktopLyricWindowSender(event)) {
+    if (!isAuthorizedCompanionSender(event) && !isDesktopLyricWindowSender(event)) {
       rejectUnexpectedSender("desktop-lyric:close");
       return false;
     }
