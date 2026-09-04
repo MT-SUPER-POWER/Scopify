@@ -35,6 +35,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
     backend: {
       getStatus: () => bridge.getBackendStatus(),
       onStatusChanged: (callback) => bridge.onBackendStatusChanged(callback),
+      restart: () => bridge.restartBackend(),
     },
     cache: {
       clear: () => bridge.clearPageCache(),
@@ -107,10 +108,12 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       closeController: () => bridge.closeDesktopPlaybackController(),
       configure: (update) => bridge.updateDesktopPlaybackWallpaperPreferences(update),
       getModel: () => bridge.getDesktopPlaybackWallpaperModel(),
+      isControllerOpen: () => bridge.isDesktopPlaybackControllerOpen(),
       onModelChanged: (callback) => bridge.onDesktopPlaybackWallpaperModelChanged(callback),
       retry: () => bridge.retryDesktopPlaybackWallpaper(),
       setControllerLayout: (layout) => bridge.setDesktopPlaybackControllerLayout(layout),
       showController: () => bridge.showDesktopPlaybackController(),
+      toggleController: () => bridge.toggleDesktopPlaybackController(),
     },
     isDesktop: true,
     kind: "desktop",
@@ -121,9 +124,11 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       write: (event) => bridge.writeLog(event),
     },
     mcp: {
+      getClientConfiguration: () => bridge.getMcpClientConfiguration(),
       getStatus: () => bridge.getMcpStatus(),
       restart: () => bridge.restartMcp(),
       rotateCredential: () => bridge.rotateMcpCredential(),
+      testConnection: () => bridge.testMcpConnection(),
     },
     media: {
       onCommand: (callback) => bridge.onControlAudio(callback),

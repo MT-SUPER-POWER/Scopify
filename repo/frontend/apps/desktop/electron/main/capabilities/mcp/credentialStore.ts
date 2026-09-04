@@ -3,7 +3,7 @@ import { randomBytes, timingSafeEqual } from "node:crypto";
 export interface McpCredentialStore {
   /** Returns the current raw token only inside Electron Main. */
   getOrCreate(): Promise<string>;
-  /** Creates a new token; callers must reveal it at most once to the user. */
+  /** Creates and persists a new token, immediately invalidating the old one. */
   rotate(): Promise<string>;
   verify(candidate: string | null): Promise<boolean>;
 }

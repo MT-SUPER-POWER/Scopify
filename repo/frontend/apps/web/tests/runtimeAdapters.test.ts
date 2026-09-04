@@ -147,6 +147,8 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     openDesktopLyric: async () => true,
     toggleDesktopLyric: async () => true,
     closeDesktopPlaybackController: async () => true,
+    isDesktopPlaybackControllerOpen: async () => true,
+    toggleDesktopPlaybackController: async () => true,
     connectAudioFeatureTransport: () => NOOP,
     connectPlaybackTransport: () => NOOP,
     deletePageCache: async () => true,
@@ -181,6 +183,15 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
       protocolVersion: DESKTOP_BRIDGE_PROTOCOL_VERSION,
     }),
     getLogDirectory: async () => "logs",
+    getMcpClientConfiguration: async () => ({
+      mcpServers: {
+        scopify: {
+          headers: { Authorization: "Bearer test-mcp-token" },
+          type: "http",
+          url: "http://127.0.0.1:31927/mcp",
+        },
+      },
+    }),
     getMcpStatus: async () => ({ enabled: false, port: null, state: "stopped" }),
     openCurrentLog: async () => true,
     openLogDirectory: async () => true,
@@ -243,11 +254,17 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     relaunchApp: NOOP,
     retryDesktopPlaybackWallpaper: async () => WALLPAPER_MODEL,
     restartMcp: async () => ({ enabled: false, port: null, state: "stopped" }),
+    restartBackend: async () => BACKEND_STATUS,
     rotateMcpCredential: async () => ({
-      headers: { Authorization: "Bearer test-mcp-token" },
-      transport: "streamable-http",
-      url: "http://127.0.0.1:31927/mcp",
+      mcpServers: {
+        scopify: {
+          headers: { Authorization: "Bearer test-mcp-token" },
+          type: "http",
+          url: "http://127.0.0.1:31927/mcp",
+        },
+      },
     }),
+    testMcpConnection: async () => ({ latencyMs: 1, success: true, toolCount: 9 }),
     sendAppCloseAction: NOOP,
     sendDesktopLyricCommand: NOOP,
     setDesktopPlaybackControllerLayout: async () => true,
@@ -299,11 +316,15 @@ describe("browser runtime adapter", () => {
     expect((await runtime.desktopPlaybackWallpaper.getModel()).status.state).toBe("unsupported");
     expect((await runtime.desktopPlaybackWallpaper.showController()).opened).toBeFalse();
     expect(await runtime.desktopPlaybackWallpaper.setControllerLayout("expanded")).toBeFalse();
+    expect(await runtime.desktopPlaybackWallpaper.isControllerOpen()).toBeFalse();
+    expect(await runtime.desktopPlaybackWallpaper.toggleController()).toBeFalse();
     expect((await runtime.desktopIcons.getVisibility()).supported).toBeFalse();
     expect(runtime.audioFeature.publish(AUDIO_FEATURE_FRAME)).toBeFalse();
     expect(await runtime.mcp.getStatus()).toBeNull();
+    expect(await runtime.mcp.getClientConfiguration()).toBeNull();
     expect(await runtime.mcp.restart()).toBeNull();
     expect(await runtime.mcp.rotateCredential()).toBeNull();
+    expect(await runtime.mcp.testConnection()).toBeNull();
   });
 
   test("owns browser cache expiry and namespace invalidation", async () => {
@@ -654,6 +675,18 @@ describe("electron runtime adapter", () => {
   test("keeps MCP administration behind the runtime seam", async () => {
     const calls: string[] = [];
     const bridge = createBridge({
+      getMcpClientConfiguration: async () => {
+        calls.push("get-mcp-client-configuration");
+        return {
+          mcpServers: {
+            scopify: {
+              headers: { Authorization: "Bearer existing-mcp-token" },
+              type: "http",
+              url: "http://127.0.0.1:31927/mcp",
+            },
+          },
+        };
+      },
       getMcpStatus: async () => {
         calls.push("get-mcp-status");
         return { enabled: true, port: 31927, state: "listening" };
@@ -665,10 +698,18 @@ describe("electron runtime adapter", () => {
       rotateMcpCredential: async () => {
         calls.push("rotate-mcp-credential");
         return {
-          headers: { Authorization: "Bearer fresh-mcp-token" },
-          transport: "streamable-http",
-          url: "http://127.0.0.1:31927/mcp",
+          mcpServers: {
+            scopify: {
+              headers: { Authorization: "Bearer fresh-mcp-token" },
+              type: "http",
+              url: "http://127.0.0.1:31927/mcp",
+            },
+          },
         };
+      },
+      testMcpConnection: async () => {
+        calls.push("test-mcp-connection");
+        return { latencyMs: 12, success: true, toolCount: 9 };
       },
     });
     const runtime = createElectronRuntime(bridge);
@@ -678,12 +719,34 @@ describe("electron runtime adapter", () => {
       port: 31927,
       state: "listening",
     });
+    expect(await runtime.mcp.getClientConfiguration()).toMatchObject({
+      mcpServers: {
+        scopify: {
+          headers: { Authorization: "Bearer existing-mcp-token" },
+        },
+      },
+    });
     expect(await runtime.mcp.restart()).toMatchObject({ state: "listening" });
     expect(await runtime.mcp.rotateCredential()).toMatchObject({
-      transport: "streamable-http",
-      url: "http://127.0.0.1:31927/mcp",
+      mcpServers: {
+        scopify: {
+          type: "http",
+          url: "http://127.0.0.1:31927/mcp",
+        },
+      },
     });
-    expect(calls).toEqual(["get-mcp-status", "restart-mcp", "rotate-mcp-credential"]);
+    expect(await runtime.mcp.testConnection()).toEqual({
+      latencyMs: 12,
+      success: true,
+      toolCount: 9,
+    });
+    expect(calls).toEqual([
+      "get-mcp-status",
+      "get-mcp-client-configuration",
+      "restart-mcp",
+      "rotate-mcp-credential",
+      "test-mcp-connection",
+    ]);
   });
 
   test("routes Discord connection tests through the desktop bridge", async () => {

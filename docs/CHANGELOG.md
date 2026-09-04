@@ -4,18 +4,28 @@
 
 ### Added
 
-- **本地 MCP 播放控制与设置**：桌面端新增仅监听 loopback 的 Streamable HTTP MCP 服务，通过 Main Playback Gateway 等待 Renderer 真实回执；配置新增开关、端口和播放读取/控制权限，设置页可查看状态、重启服务、轮换安全凭据并复制一次性客户端配置，Web 环境安全地保持不可用。
+- **内置后端手动重启**：桌面设置新增“重启内置后端”操作，通过 Main Backend Controller 停止并重新拉起 Scopify 管理的后端进程；外部后端与未启用状态不会被强制接管。
+- **规范 MCP 客户端配置为标准 mcpServers 结构**：将设置页中生成的 MCP 客户端配置与复制标准调整为标准的 `mcpServers.scopify` 格式（包含 `type: "http"`、`url` 与 `headers.Authorization`），使导出的配置与复制内容可直接无缝粘贴至 Cursor、Claude Desktop 等客户端的 `mcp.json` 中使用。
+- **托盘桌面伴随能力独立开关与双向状态同步**：系统托盘菜单（Tray）全面升级三大桌面伴随功能（桌面歌词、音乐桌面壁纸、桌面音乐），每一项均配备专属的 Switch 开关按钮并支持通过整行或开关点击双向切换；在托盘呼出时自动精确查询主进程窗口存活与壁纸运行状态，实现即时双向同步。
+- **用户菜单补充“音乐足迹”入口**：在用户头像下拉菜单（ProfileMenu）中补充“音乐足迹”导航项，使用 Footprints 图标，点击后平滑跳转至最近收听报告页面（/recent/report），支持已登录用户直接查看其周度/月度听歌足迹与收听统计。
+- **MCP 细粒度受控能力配置**：在 `@scopify/desktop-contract`、桌面配置校验与主进程 `McpAuthorization` 中引入细粒度权限模型；将原本粗粒度的读取/控制两项开关解耦为统一归属于 `playback` 工具的 9 项细粒度能力（2 项状态读取与 7 项控制操作），保持对历史配置的双向兼容。
+- **本地 MCP 播放控制与设置**：桌面端新增仅监听 loopback 的 Streamable HTTP MCP 服务，通过 Main Playback Gateway 等待 Renderer 真实回执；设置页可执行真实协议连接测试、重新查看最近一次有效客户端 JSON，并在生成新凭据后立即废止旧 Token，连接地址统一收进可复制的悬浮配置面板。
 - **Windows Native Audio Host**：新增 Rust/NAPI 原生音频 Host，基于 Rodio/CPAL 支持本地与 HTTPS 音源的加载、播放、暂停、停止、Seek、音量、状态和错误事件；补齐双 token/请求 revision 淘汰、NAPI 构建与 Windows 打包资源路径，正式切换 Adapter 前继续安全使用 HTML Audio。
 - **私人 FM 右键减少推荐**：私人 FM 虚拟歌单中的歌曲右键菜单现可执行“不喜欢 / 减少推荐”；操作通过歌单组件契约透传至既有的私人 FM 负反馈流程，不影响普通歌单与日推菜单。
 
 ### Fixed
 
+- **修复系统托盘单击唤出与伴随窗口控制权限**：解决 Windows 系统托盘图标仅监听右键导致左键单击无法唤出托盘窗口的问题，现支持单击与右键双向呼出；补齐托盘对桌面歌词的 IPC 调用授权与最小化还原逻辑，双击托盘图标在还原主视窗时自动同步销毁托盘临时窗口。
+- **修复桌面音乐控制器最小化后无法主动唤出问题**：在 `controllerWindow.show()` 中增加窗口最小化检测与 `window.restore()` 还原，重新应用 `setAlwaysOnTop(true, "floating")`、`show()` 与 `focus()`，并对加载失败的悬挂实例进行即时销毁清理，确保从托盘或界面中能可靠地唤出悬浮遥控器小窗口。
 - **统一当前歌曲喜欢 Mutation 链路**：PlayBar、命令工作区、快捷键、桌面歌词与 Folia 的 `toggle-like` 命令不再绕过 TanStack Mutation 直接调用喜欢接口；喜欢和取消喜欢都会先清理页面缓存，再精确刷新当前用户的 liked-playlist 与 playlists Query，使侧边栏 LibItem 的封面和歌曲数重新获取，声音收藏继续走独立的 Voice Mutation。
 - **歌单曲目删除权限收敛**：歌单行右键的“从歌单移除”现在只会在已登录用户查看自己创建的真实歌单时出现并创建删除回调；匿名访问、他人歌单、日推/历史日推及其他虚拟歌单均会安全地隐藏该操作。
 - **歌曲喜欢/取消喜欢 Mutation 与多端缓存失效**：新增统一的 `useSongLikeMutation`，彻底替代各处散落的 `likeSong` 直接调用；在触发喜欢或取消喜欢后，自动乐观更新本地状态并在成功后自动触发红心歌单元数据（`liked-playlist`）、侧边栏歌单列表（`playlists`，触发 `LibItem` 重新请求并刷新红心歌单封面图与歌曲数）以及当前打开歌单详情与歌曲列表（`playlist.content`）的缓存失效，解决喜欢/取消喜欢后侧边栏封面与歌单内容未及时更新的问题。
 
 ### Visual
 
+- **统一 MCP 客户端凭据单按钮入口与内嵌重新生成**：重构设置页客户端凭据控制项（`McpCredentialControls`），外部收敛为统一对齐的单一“查看配置”按钮并恢复标准水平行排版，彻底消除多按钮并列造成的视觉突兀；将“重新生成凭据”操作收进配置预览浮动卡片（`McpClientConfigurationPreview`）内部，与“复制客户端配置”并排协作，支持在面板内直接轮换刷新。
+- **托盘三大桌面伴随能力交互规范化**：系统托盘菜单中的“桌面歌词”、“音乐桌面壁纸”与“桌面音乐”全面采用统一的图标 + 标题 + Switch 开关交互，解耦原本挤在单行且语义混淆的壁纸与遥控小窗口选项，统一尺寸与悬浮高亮效果。
+- **MCP 受控权限二级弹窗重构**：参考 `Ctrl + /` 快捷键帮助界面的沉浸式深色遮罩与排版风格重写受控能力二级模态框（`McpCapabilitiesModal`），使用 React Portal 直接挂载至 `document.body` 确保遮罩层完整覆盖全局 Header 与主视窗；内容统合为单一的 `音频播放工具 (playback)` 受控操作列表，提供流畅的进出场动效、全部开启/关闭快捷按钮与 ESC 快速退出交互。
 - **首页对齐搜索页固定宽度布局**：为首页（`HomePage`）正常内容、骨架屏（`HomePageSkeleton`）及网络异常重试容器添加 `mx-auto w-full max-w-400` 居中限制，外层背景与昼夜渐变层保持全宽满屏铺满，彻底解决超宽屏下首页各板块组件被过度拉伸的问题。
 
 ### Quality

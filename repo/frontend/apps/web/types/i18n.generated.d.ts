@@ -491,6 +491,174 @@ export interface TranslateFn {
    */
   (key: "settings.mcp.control.sublabel", params?: TranslationParams): string;
   /**
+   * zh-CN: 受控能力与工具权限
+   * zh-TW: 受控能力與工具權限
+   * en-US: Controlled Capabilities & Tools
+   */
+  (key: "settings.mcp.capabilities.manage.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 单独配置各音频受控操作权限。
+   * zh-TW: 單獨設定各音訊受控操作權限。
+   * en-US: Individually configure playback tool permissions.
+   */
+  (key: "settings.mcp.capabilities.manage.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配置权限
+   * zh-TW: 設定權限
+   * en-US: Configure Permissions
+   */
+  (key: "settings.mcp.capabilities.manage.button", params?: TranslationParams): string;
+  /**
+   * zh-CN: 受控能力与工具权限
+   * zh-TW: 受控能力與工具權限
+   * en-US: Controlled Capabilities & Tools
+   */
+  (key: "settings.mcp.modal.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 单独开启或关闭受控工具与播放权限。
+   * zh-TW: 單獨開啟或關閉受控工具與播放權限。
+   * en-US: Individually grant or revoke tools and playback controls.
+   */
+  (key: "settings.mcp.modal.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部开启
+   * zh-TW: 全部開啟
+   * en-US: Enable All
+   */
+  (key: "settings.mcp.modal.enableAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部关闭
+   * zh-TW: 全部關閉
+   * en-US: Disable All
+   */
+  (key: "settings.mcp.modal.disableAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频播放工具 (playback)
+   * zh-TW: 音訊播放工具 (playback)
+   * en-US: Audio Playback Tools (playback)
+   */
+  (key: "settings.mcp.modal.group.playback", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配置 MCP 音频播放工具所允许的状态读取与控制操作。
+   * zh-TW: 設定 MCP 音訊播放工具所允許的狀態讀取與控制操作。
+   * en-US: Configure permitted read and control operations for the MCP playback tool.
+   */
+  (key: "settings.mcp.modal.group.playback.desc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完成
+   * zh-TW: 完成
+   * en-US: Done
+   */
+  (key: "settings.mcp.modal.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 读取播放状态
+   * zh-TW: 讀取播放狀態
+   * en-US: Get Playback Status
+   */
+  (key: "settings.mcp.capability.readStatus.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 get_playback_status。允许获取播放状态、进度、总时长和音量。
+   * zh-TW: 對應工具 get_playback_status。允許取得播放狀態、進度、總時長與音量。
+   * en-US: Tool get_playback_status. Allows reading state, position, duration, and volume.
+   */
+  (key: "settings.mcp.capability.readStatus.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 读取当前曲目
+   * zh-TW: 讀取目前曲目
+   * en-US: Get Now Playing
+   */
+  (key: "settings.mcp.capability.readTrack.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 get_now_playing。允许获取当前曲目标题、歌手、专辑与封面。
+   * zh-TW: 對應工具 get_now_playing。允許取得目前曲目標題、歌手、專輯與封面。
+   * en-US: Tool get_now_playing. Allows reading current track title, artist, album, and artwork.
+   */
+  (key: "settings.mcp.capability.readTrack.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放音乐
+   * zh-TW: 播放音樂
+   * en-US: Play Music
+   */
+  (key: "settings.mcp.capability.controlPlay.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 play。允许 AI 恢复音乐播放。
+   * zh-TW: 對應工具 play。允許 AI 恢復音樂播放。
+   * en-US: Tool play. Allows AI to resume playback.
+   */
+  (key: "settings.mcp.capability.controlPlay.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停播放
+   * zh-TW: 暫停播放
+   * en-US: Pause Playback
+   */
+  (key: "settings.mcp.capability.controlPause.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 pause。允许 AI 暂停当前播放。
+   * zh-TW: 對應工具 pause。允許 AI 暫停目前播放。
+   * en-US: Tool pause. Allows AI to pause playback.
+   */
+  (key: "settings.mcp.capability.controlPause.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放 / 暂停切换
+   * zh-TW: 播放 / 暫停切換
+   * en-US: Toggle Playback
+   */
+  (key: "settings.mcp.capability.controlToggle.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 toggle_playback。允许 AI 切换播放与暂停状态。
+   * zh-TW: 對應工具 toggle_playback。允許 AI 切換播放與暫停狀態。
+   * en-US: Tool toggle_playback. Allows AI to toggle between play and pause.
+   */
+  (key: "settings.mcp.capability.controlToggle.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一曲
+   * zh-TW: 下一首
+   * en-US: Next Track
+   */
+  (key: "settings.mcp.capability.controlNext.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 next_track。允许 AI 切换至下一首曲目。
+   * zh-TW: 對應工具 next_track。允許 AI 切換至下一首曲目。
+   * en-US: Tool next_track. Allows AI to play the next track.
+   */
+  (key: "settings.mcp.capability.controlNext.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一曲
+   * zh-TW: 上一首
+   * en-US: Previous Track
+   */
+  (key: "settings.mcp.capability.controlPrevious.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 previous_track。允许 AI 切换至上一首曲目。
+   * zh-TW: 對應工具 previous_track。允許 AI 切換至上一首曲目。
+   * en-US: Tool previous_track. Allows AI to play the previous track.
+   */
+  (key: "settings.mcp.capability.controlPrevious.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 进度跳转
+   * zh-TW: 進度跳轉
+   * en-US: Seek Position
+   */
+  (key: "settings.mcp.capability.controlSeek.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 seek。允许 AI 跳转到指定的毫秒播放进度。
+   * zh-TW: 對應工具 seek。允許 AI 跳轉至指定的毫秒播放進度。
+   * en-US: Tool seek. Allows AI to seek to an absolute millisecond position.
+   */
+  (key: "settings.mcp.capability.controlSeek.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音量调节
+   * zh-TW: 音量調整
+   * en-US: Set Volume
+   */
+  (key: "settings.mcp.capability.controlVolume.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应工具 set_volume。允许 AI 设置 0 至 100 范围内的播放音量。
+   * zh-TW: 對應工具 set_volume。允許 AI 設定 0 至 100 範圍內的播放音量。
+   * en-US: Tool set_volume. Allows AI to set player volume from 0 to 100.
+   */
+  (key: "settings.mcp.capability.controlVolume.sublabel", params?: TranslationParams): string;
+  /**
    * zh-CN: 服务状态
    * zh-TW: 服務狀態
    * en-US: Service status
@@ -545,6 +713,60 @@ export interface TranslateFn {
    */
   (key: "settings.mcp.endpoint.sublabel", params?: TranslationParams): string;
   /**
+   * zh-CN: 测试 MCP 连接
+   * zh-TW: 測試 MCP 連線
+   * en-US: Test MCP connection
+   */
+  (key: "settings.mcp.test.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送真实的 initialize 与 tools/list 请求，确认本地 MCP 可用。
+   * zh-TW: 傳送真實的 initialize 與 tools/list 請求，確認本機 MCP 可用。
+   * en-US: Sends real initialize and tools/list requests to verify that local MCP is usable.
+   */
+  (key: "settings.mcp.test.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请先启用并保存 MCP 配置，再测试连接。
+   * zh-TW: 請先啟用並儲存 MCP 設定，再測試連線。
+   * en-US: Enable and save MCP before testing the connection.
+   */
+  (key: "settings.mcp.test.notReady", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接可用 · {{latency}} ms · {{tools}} 个工具
+   * zh-TW: 連線可用 · {{latency}} ms · {{tools}} 個工具
+   * en-US: Connected · {{latency}} ms · {{tools}} tools
+   */
+  (key: "settings.mcp.test.success", params?: TranslationParams): string;
+  /**
+   * zh-CN: MCP 连接测试通过
+   * zh-TW: MCP 連線測試通過
+   * en-US: MCP connection test passed
+   */
+  (key: "settings.mcp.test.successToast", params?: TranslationParams): string;
+  /**
+   * zh-CN: MCP 连接测试失败，请检查服务配置。
+   * zh-TW: MCP 連線測試失敗，請檢查服務設定。
+   * en-US: MCP connection test failed. Check the service configuration.
+   */
+  (key: "settings.mcp.test.failed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 连接失败
+   * zh-TW: 連線失敗
+   * en-US: Connection failed
+   */
+  (key: "settings.mcp.test.resultFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 测试连接
+   * zh-TW: 測試連線
+   * en-US: Test connection
+   */
+  (key: "settings.mcp.test.button", params?: TranslationParams): string;
+  /**
+   * zh-CN: 测试中...
+   * zh-TW: 測試中...
+   * en-US: Testing...
+   */
+  (key: "settings.mcp.test.testing", params?: TranslationParams): string;
+  /**
    * zh-CN: 重启服务
    * zh-TW: 重新啟動服務
    * en-US: Restart service
@@ -581,15 +803,27 @@ export interface TranslateFn {
    */
   (key: "settings.mcp.credential.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 凭据由桌面端安全存储。轮换后，旧凭据会立即失效。
-   * zh-TW: 憑據由桌面版安全儲存。輪換後，舊憑據會立即失效。
-   * en-US: The Desktop app stores credentials securely. Rotating invalidates the previous credential immediately.
+   * zh-CN: 查看并复制 MCP 客户端配置，或在需要时重新生成凭据。
+   * zh-TW: 查看並複製 MCP 用戶端設定，或在需要時重新產生憑據。
+   * en-US: View and copy client configuration, or regenerate credentials when needed.
    */
   (key: "settings.mcp.credential.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 生成并轮换凭据
-   * zh-TW: 產生並輪換憑據
-   * en-US: Generate and rotate credential
+   * zh-CN: 查看配置
+   * zh-TW: 查看設定
+   * en-US: View configuration
+   */
+  (key: "settings.mcp.credential.reveal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法读取最近的 MCP 客户端配置
+   * zh-TW: 無法讀取最近的 MCP 用戶端設定
+   * en-US: Could not read the latest MCP client configuration
+   */
+  (key: "settings.mcp.credential.revealFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新生成凭据
+   * zh-TW: 重新產生憑據
+   * en-US: Regenerate credential
    */
   (key: "settings.mcp.credential.rotate", params?: TranslationParams): string;
   /**
@@ -605,9 +839,15 @@ export interface TranslateFn {
    */
   (key: "settings.mcp.credential.failed", params?: TranslationParams): string;
   /**
-   * zh-CN: 此配置含有访问凭据。请复制到可信客户端，关闭此页面后不会再次显示。
-   * zh-TW: 此設定含有存取憑據。請複製到可信任的用戶端，關閉此頁面後不會再次顯示。
-   * en-US: This configuration contains an access credential. Copy it to a trusted client; it is not shown again after leaving this page.
+   * zh-CN: MCP 客户端 JSON
+   * zh-TW: MCP 用戶端 JSON
+   * en-US: MCP client JSON
+   */
+  (key: "settings.mcp.credential.previewTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这是当前有效配置，可以稍后再次查看。生成新凭据后，此 Token 会立即失效。
+   * zh-TW: 這是目前有效設定，可以稍後再次查看。產生新憑據後，此 Token 會立即失效。
+   * en-US: This is the current valid configuration and can be viewed again later. Generating a new credential invalidates this token immediately.
    */
   (key: "settings.mcp.credential.revealedWarning", params?: TranslationParams): string;
   /**
@@ -1120,6 +1360,42 @@ export interface TranslateFn {
    * en-US: Listens on 127.0.0.1 only; an occupied port will not terminate another service.
    */
   (key: "settings.localBackend.port.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启内置后端
+   * zh-TW: 重新啟動內建後端
+   * en-US: Restart bundled backend
+   */
+  (key: "settings.localBackend.restart.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 停止并重新启动由 Scopify 管理的本地后端。
+   * zh-TW: 停止並重新啟動由 Scopify 管理的本機後端。
+   * en-US: Stops and starts the local backend managed by Scopify.
+   */
+  (key: "settings.localBackend.restart.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启后端
+   * zh-TW: 重新啟動後端
+   * en-US: Restart backend
+   */
+  (key: "settings.localBackend.restart.button", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启中...
+   * zh-TW: 重新啟動中...
+   * en-US: Restarting...
+   */
+  (key: "settings.localBackend.restart.restarting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内置后端已重启
+   * zh-TW: 內建後端已重新啟動
+   * en-US: Bundled backend restarted
+   */
+  (key: "settings.localBackend.restart.success", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法重启内置后端
+   * zh-TW: 無法重新啟動內建後端
+   * en-US: Could not restart the bundled backend
+   */
+  (key: "settings.localBackend.restart.failed", params?: TranslationParams): string;
   /**
    * zh-CN: 未启用
    * zh-TW: 未啟用
@@ -3632,6 +3908,12 @@ export interface TranslateFn {
    */
   (key: "profile.menu.viewMonthlySign", params?: TranslationParams): string;
   /**
+   * zh-CN: 音乐足迹
+   * zh-TW: 音樂足跡
+   * en-US: Music Footprint
+   */
+  (key: "profile.menu.listeningReport", params?: TranslationParams): string;
+  /**
    * zh-CN: 设置
    * zh-TW: 設定
    * en-US: Settings
@@ -4460,11 +4742,23 @@ export interface TranslateFn {
    */
   (key: "tray.unlike", params?: TranslationParams): string;
   /**
-   * zh-CN: 打开桌面歌词
-   * zh-TW: 打開桌面歌詞
-   * en-US: Open Desktop Lyrics
+   * zh-CN: 桌面歌词
+   * zh-TW: 桌面歌詞
+   * en-US: Desktop Lyrics
    */
   (key: "tray.openDesktopLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐桌面壁纸
+   * zh-TW: 音樂桌面桌布
+   * en-US: Desktop Music Wallpaper
+   */
+  (key: "tray.desktopWallpaper", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面音乐
+   * zh-TW: 桌面音樂
+   * en-US: Desktop Music
+   */
+  (key: "tray.openDesktopController", params?: TranslationParams): string;
   /**
    * zh-CN: 设置
    * zh-TW: 設定

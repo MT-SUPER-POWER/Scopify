@@ -70,7 +70,7 @@ export function createMcpPlaybackToolFacade(
   }
 
   function getPlaybackStatus(): McpPlaybackReadResult<McpPlaybackStatus> {
-    if (!authorization.allows("playback.read")) return denied("playback.read");
+    if (!authorization.allows("playback.read.status")) return denied("playback.read.status");
     const current = snapshot();
     if (!current) return { ...unavailableStatus(), success: true };
     return {
@@ -86,7 +86,7 @@ export function createMcpPlaybackToolFacade(
   }
 
   function getNowPlaying(): McpPlaybackReadResult<McpNowPlaying> {
-    if (!authorization.allows("playback.read")) return denied("playback.read");
+    if (!authorization.allows("playback.read.track")) return denied("playback.read.track");
     const current = snapshot();
     if (!current) {
       return {
@@ -109,10 +109,11 @@ export function createMcpPlaybackToolFacade(
   }
 
   async function control(
+    capability: McpCapability,
     action: () => Promise<PlaybackCommandReceipt>,
   ): Promise<McpPlaybackControlResult> {
-    if (!authorization.allows("playback.control")) {
-      return { capability: "playback.control", reason: "capability-denied", success: false };
+    if (!authorization.allows(capability)) {
+      return { capability, reason: "capability-denied", success: false };
     }
     const receipt = await action();
     return { receipt, success: receipt.status === "accepted" };
@@ -121,13 +122,13 @@ export function createMcpPlaybackToolFacade(
   return {
     getNowPlaying,
     getPlaybackStatus,
-    nextTrack: () => control(() => playback.next()),
-    pause: () => control(() => playback.pause()),
-    play: () => control(() => playback.play()),
-    previousTrack: () => control(() => playback.previous()),
-    seek: (positionMs) => control(() => playback.seek(positionMs)),
-    setVolume: (volume) => control(() => playback.setVolume(volume)),
-    togglePlayback: () => control(() => playback.toggle()),
+    nextTrack: () => control("playback.control.next", () => playback.next()),
+    pause: () => control("playback.control.pause", () => playback.pause()),
+    play: () => control("playback.control.play", () => playback.play()),
+    previousTrack: () => control("playback.control.previous", () => playback.previous()),
+    seek: (positionMs) => control("playback.control.seek", () => playback.seek(positionMs)),
+    setVolume: (volume) => control("playback.control.volume", () => playback.setVolume(volume)),
+    togglePlayback: () => control("playback.control.toggle", () => playback.toggle()),
   };
 }
 

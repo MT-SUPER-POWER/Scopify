@@ -138,6 +138,20 @@ describe("MCP HTTP security and runtime lifecycle", () => {
     expect(started).toMatchObject({ enabled: true, state: "listening" });
     expect(started.port).toBeGreaterThan(0);
 
+    expect(await runtime.getClientConfiguration()).toEqual({
+      mcpServers: {
+        scopify: {
+          headers: { Authorization: "Bearer token-1" },
+          type: "http",
+          url: `http://127.0.0.1:${started.port}/mcp`,
+        },
+      },
+    });
+    await expect(runtime.testConnection()).resolves.toMatchObject({
+      success: true,
+      toolCount: 9,
+    });
+
     const initialized = await fetch(`http://127.0.0.1:${started.port}/mcp`, {
       body: JSON.stringify({
         id: 1,
@@ -210,14 +224,30 @@ describe("MCP HTTP security and runtime lifecycle", () => {
 
     const client = await runtime.rotateCredential();
     expect(client).toEqual({
-      headers: { Authorization: "Bearer token-2" },
-      transport: "streamable-http",
-      url: `http://127.0.0.1:${started.port}/mcp`,
+      mcpServers: {
+        scopify: {
+          headers: { Authorization: "Bearer token-2" },
+          type: "http",
+          url: `http://127.0.0.1:${started.port}/mcp`,
+        },
+      },
     });
     expect(await credentials.verify("token-1")).toBeFalse();
     expect(await credentials.verify("token-2")).toBeTrue();
+    expect(await runtime.getClientConfiguration()).toMatchObject({
+      mcpServers: {
+        scopify: {
+          headers: { Authorization: "Bearer token-2" },
+        },
+      },
+    });
 
     await runtime.stop();
     expect(runtime.getStatus()).toEqual({ enabled: false, port: null, state: "stopped" });
+    await expect(runtime.testConnection()).resolves.toEqual({
+      error: { code: "MCP_NOT_LISTENING", message: "MCP is not listening." },
+      latencyMs: 0,
+      success: false,
+    });
   });
 });

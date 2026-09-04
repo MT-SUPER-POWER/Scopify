@@ -6,13 +6,17 @@ import { isMainRenderer } from "./sender";
 
 /**
  * Restricted Renderer control plane for the MCP capability. The returned
- * client configuration is the only intentional one-time secret reveal; the
- * status endpoint never exposes the bearer token.
+ * client configuration is exposed only through explicit view/rotation
+ * actions; status and connection-test results never contain the bearer token.
  */
 export function registerMcpIpc(mainWindow: BrowserWindow | null, runtime: McpRuntime) {
   ipcMain.handle("mcp:get-status", (event) => {
     assertMainRenderer(event, mainWindow);
     return runtime.getStatus();
+  });
+  ipcMain.handle("mcp:get-client-configuration", async (event) => {
+    assertMainRenderer(event, mainWindow);
+    return runtime.getClientConfiguration();
   });
   ipcMain.handle("mcp:restart", async (event) => {
     assertMainRenderer(event, mainWindow);
@@ -21,6 +25,10 @@ export function registerMcpIpc(mainWindow: BrowserWindow | null, runtime: McpRun
   ipcMain.handle("mcp:rotate-credential", async (event) => {
     assertMainRenderer(event, mainWindow);
     return runtime.rotateCredential();
+  });
+  ipcMain.handle("mcp:test-connection", async (event) => {
+    assertMainRenderer(event, mainWindow);
+    return runtime.testConnection();
   });
 }
 

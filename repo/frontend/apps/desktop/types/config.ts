@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { DEFAULT_DESKTOP_MCP_CONFIG, type DesktopHostConfig } from "@scopify/desktop-contract";
+import {
+  DEFAULT_DESKTOP_MCP_CONFIG,
+  MCP_CAPABILITY_VALUES,
+  type DesktopHostConfig,
+  type McpCapability,
+} from "@scopify/desktop-contract";
 
 export const ELECTRON_PROXY_MODES = ["system", "direct", "custom"] as const;
 export const DEFAULT_DESKTOP_HOST_CONFIG = {
@@ -94,6 +99,8 @@ function trimmedString(defaultValue: string, allowEmpty = false) {
   }, z.string().default(defaultValue));
 }
 
+const knownMcpCapabilities = new Set<string>(MCP_CAPABILITY_VALUES);
+
 /**
  * MCP is local-only. Keep its public policy in YAML, while the access token
  * remains exclusively in Electron safe storage. Unknown capability names are
@@ -103,8 +110,8 @@ function normalizeMcpConfig(value: unknown): Record<string, unknown> {
   const mcp = toRecord(value);
   const capabilityValues = Array.isArray(mcp.capabilities) ? mcp.capabilities : null;
   const capabilities = capabilityValues?.filter(
-    (capability): capability is "playback.read" | "playback.control" =>
-      capability === "playback.read" || capability === "playback.control",
+    (capability): capability is McpCapability =>
+      typeof capability === "string" && knownMcpCapabilities.has(capability),
   );
 
   return {
@@ -187,7 +194,7 @@ export const desktopHostConfigSchema = z.preprocess(
         normalizeMcpConfig,
         z.object({
           capabilities: z
-            .array(z.enum(["playback.read", "playback.control"]))
+            .array(z.enum(MCP_CAPABILITY_VALUES))
             .default([...DEFAULT_DESKTOP_HOST_CONFIG.mcp.capabilities]),
           enabled: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.mcp.enabled),
           port: portNumber(DEFAULT_DESKTOP_HOST_CONFIG.mcp.port),

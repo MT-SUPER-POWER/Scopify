@@ -2,7 +2,9 @@ import type {
   DesktopBackendStatus,
   DesktopHostConfig,
   DiscordPresenceStatus,
+  McpCapability,
   McpClientConfiguration,
+  McpConnectionTestResult,
   McpStatus,
 } from "@scopify/desktop-contract";
 import type {
@@ -87,13 +89,31 @@ export interface McpSettingsSectionProps {
 
 export interface McpCredentialControlsProps {
   clientConfiguration: McpClientConfiguration | null;
-  isListening: boolean;
+  isRevealingCredential: boolean;
   isRotatingCredential: boolean;
+  onRevealCredential(): Promise<McpClientConfiguration | null>;
   onRotateCredential(): Promise<McpClientConfiguration | null>;
 }
 
-export interface McpRuntimeStatusProps {
+export interface McpClientConfigurationPreviewProps {
+  configuration: McpClientConfiguration;
+  isRotating?: boolean;
+  onCopy(): Promise<void>;
+  onRotate?(): Promise<void>;
+}
+
+export interface McpRuntimeControlsProps {
+  canTestConnection: boolean;
+  connectionTestResult: McpConnectionTestResult | null;
   isRestarting: boolean;
+  isTestingConnection: boolean;
   onRestart(): Promise<McpStatus | null>;
-  status: McpStatus | null;
+  onTestConnection(): Promise<McpConnectionTestResult | null>;
+}
+
+export interface McpCapabilitiesModalProps {
+  capabilities: McpCapability[];
+  onCapabilitiesChange(capabilities: McpCapability[]): void;
+  onClose(): void;
+  open: boolean;
 }

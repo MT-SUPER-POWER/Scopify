@@ -107,7 +107,7 @@ describe("MCP playback tool facade", () => {
     );
 
     await expect(tools.play()).resolves.toEqual({
-      capability: "playback.control",
+      capability: "playback.control.play",
       reason: "capability-denied",
       success: false,
     });
@@ -117,15 +117,60 @@ describe("MCP playback tool facade", () => {
     const tools = createMcpPlaybackToolFacade(createGateway(), createMcpAuthorization([]));
 
     expect(tools.getPlaybackStatus()).toEqual({
-      capability: "playback.read",
+      capability: "playback.read.status",
       reason: "capability-denied",
       success: false,
     });
     expect(tools.getNowPlaying()).toEqual({
-      capability: "playback.read",
+      capability: "playback.read.track",
       reason: "capability-denied",
       success: false,
     });
+  });
+
+  test("enforces granular permissions individually", async () => {
+    const tools = createMcpPlaybackToolFacade(
+      createGateway(),
+      createMcpAuthorization(["playback.read.status", "playback.control.play"]),
+    );
+
+    // Allowed status read and play
+    expect(tools.getPlaybackStatus().success).toBe(true);
+    await expect(tools.play()).resolves.toMatchObject({ success: true });
+
+    // Denied now playing and pause
+    expect(tools.getNowPlaying()).toEqual({
+      capability: "playback.read.track",
+      reason: "capability-denied",
+      success: false,
+    });
+    await expect(tools.pause()).resolves.toEqual({
+      capability: "playback.control.pause",
+      reason: "capability-denied",
+      success: false,
+    });
+    await expect(tools.seek(1000)).resolves.toEqual({
+      capability: "playback.control.seek",
+      reason: "capability-denied",
+      success: false,
+    });
+  });
+
+  test("inherits permissions from legacy coarse groups", async () => {
+    const tools = createMcpPlaybackToolFacade(
+      createGateway(),
+      createMcpAuthorization(["playback.read", "playback.control"]),
+    );
+
+    expect(tools.getPlaybackStatus().success).toBe(true);
+    expect(tools.getNowPlaying().success).toBe(true);
+    await expect(tools.play()).resolves.toMatchObject({ success: true });
+    await expect(tools.pause()).resolves.toMatchObject({ success: true });
+    await expect(tools.nextTrack()).resolves.toMatchObject({ success: true });
+    await expect(tools.previousTrack()).resolves.toMatchObject({ success: true });
+    await expect(tools.togglePlayback()).resolves.toMatchObject({ success: true });
+    await expect(tools.seek(5000)).resolves.toMatchObject({ success: true });
+    await expect(tools.setVolume(50)).resolves.toMatchObject({ success: true });
   });
 
   test("maps gateway receipts without claiming a command succeeded early", async () => {

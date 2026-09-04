@@ -4,6 +4,7 @@ import type {
   DesktopBackendStatus,
   DesktopIconVisibilityState,
   McpClientConfiguration,
+  McpConnectionTestResult,
   McpStatus,
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
@@ -92,6 +93,7 @@ export interface RuntimeConfiguration {
 export interface RuntimeBackend {
   getStatus(): Promise<DesktopBackendStatus>;
   onStatusChanged(callback: (status: DesktopBackendStatus) => void): RuntimeUnsubscribe;
+  restart(): Promise<DesktopBackendStatus>;
 }
 
 export interface RuntimeDesktopLyrics {
@@ -122,10 +124,12 @@ export interface RuntimeDesktopPlaybackWallpaper {
     update: DesktopPlaybackWallpaperPreferencesUpdate,
   ): Promise<DesktopPlaybackWallpaperModel>;
   getModel(): Promise<DesktopPlaybackWallpaperModel>;
+  isControllerOpen(): Promise<boolean>;
   onModelChanged(callback: (model: DesktopPlaybackWallpaperModel) => void): RuntimeUnsubscribe;
   retry(): Promise<DesktopPlaybackWallpaperModel>;
   setControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showController(): Promise<DesktopPlaybackControllerOpenResult>;
+  toggleController(): Promise<boolean>;
 }
 
 export interface RuntimeLogging {
@@ -136,14 +140,15 @@ export interface RuntimeLogging {
 }
 
 /**
- * The Renderer can observe and explicitly administer the local MCP runtime,
- * but never reads its long-lived credential. A client configuration is only
- * returned from the explicit rotation action.
+ * The Renderer can explicitly test and administer the local MCP runtime.
+ * Credential material is returned only from explicit view/rotation actions.
  */
 export interface RuntimeMcp {
+  getClientConfiguration(): Promise<McpClientConfiguration | null>;
   getStatus(): Promise<McpStatus | null>;
   restart(): Promise<McpStatus | null>;
   rotateCredential(): Promise<McpClientConfiguration | null>;
+  testConnection(): Promise<McpConnectionTestResult | null>;
 }
 
 export interface RuntimeMediaControls {

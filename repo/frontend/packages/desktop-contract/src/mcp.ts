@@ -12,7 +12,51 @@ export interface DesktopMcpConfig {
 }
 
 /** Capabilities are checked by the Main process for every tool invocation. */
-export type McpCapability = "playback.read" | "playback.control";
+export const MCP_CAPABILITY_VALUES = [
+  // Coarse permission groups (backwards compatible)
+  "playback.read",
+  "playback.control",
+  // Granular MCP inspection tools
+  "playback.read.status",
+  "playback.read.track",
+  // Granular Gateway playback operations
+  "playback.control.play",
+  "playback.control.pause",
+  "playback.control.toggle",
+  "playback.control.next",
+  "playback.control.previous",
+  "playback.control.seek",
+  "playback.control.volume",
+] as const;
+
+export type McpCapability = (typeof MCP_CAPABILITY_VALUES)[number];
+
+export const MCP_PLAYBACK_CAPABILITIES = [
+  "playback.read.status",
+  "playback.read.track",
+  "playback.control.play",
+  "playback.control.pause",
+  "playback.control.toggle",
+  "playback.control.next",
+  "playback.control.previous",
+  "playback.control.seek",
+  "playback.control.volume",
+] as const satisfies readonly McpCapability[];
+
+export const MCP_READ_CAPABILITIES = [
+  "playback.read.status",
+  "playback.read.track",
+] as const satisfies readonly McpCapability[];
+
+export const MCP_GATEWAY_CAPABILITIES = [
+  "playback.control.play",
+  "playback.control.pause",
+  "playback.control.toggle",
+  "playback.control.next",
+  "playback.control.previous",
+  "playback.control.seek",
+  "playback.control.volume",
+] as const satisfies readonly McpCapability[];
 
 export const DEFAULT_DESKTOP_MCP_CONFIG = {
   capabilities: ["playback.read"],
@@ -35,11 +79,31 @@ export type McpStatus =
       state: "error";
     };
 
-/** A one-time credential reveal returned only after an explicit user action. */
-export interface McpClientConfiguration {
+/** A single MCP server entry formatted for standard mcp.json / Claude / Cursor configuration. */
+export interface McpServerHttpConfig {
   headers: {
     Authorization: string;
   };
-  transport: "streamable-http";
+  type: "http";
   url: string;
 }
+
+/** Standard mcpServers bundle for one-click copy into mcp.json */
+export interface McpClientConfiguration {
+  mcpServers: {
+    scopify: McpServerHttpConfig;
+  };
+}
+
+/** Result of a real initialize + tools/list probe against the loopback server. */
+export type McpConnectionTestResult =
+  | {
+      latencyMs: number;
+      success: true;
+      toolCount: number;
+    }
+  | {
+      error: { code: string; message: string };
+      latencyMs: number;
+      success: false;
+    };

@@ -14,6 +14,7 @@ import type {
   AudioFeatureFrameV1,
   AudioFeatureTransportRole,
   McpClientConfiguration,
+  McpConnectionTestResult,
   McpStatus,
   PlaybackTransportPayload,
   PlaybackTransportRole,
@@ -127,8 +128,13 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.send("relaunch-app");
   },
   restartMcp: (): Promise<McpStatus> => ipcRenderer.invoke("mcp:restart"),
+  restartBackend: (): Promise<DesktopBackendStatus> => ipcRenderer.invoke("backend:restart"),
+  getMcpClientConfiguration: (): Promise<McpClientConfiguration> =>
+    ipcRenderer.invoke("mcp:get-client-configuration"),
   rotateMcpCredential: (): Promise<McpClientConfiguration> =>
     ipcRenderer.invoke("mcp:rotate-credential"),
+  testMcpConnection: (): Promise<McpConnectionTestResult> =>
+    ipcRenderer.invoke("mcp:test-connection"),
   getBridgeInfo: () => ipcRenderer.invoke("bridge:get-info"),
   getDiscordPresenceStatus: () => ipcRenderer.invoke("discord-presence:get-status"),
   testDiscordPresenceConnection: () => ipcRenderer.invoke("discord-presence:test-connection"),
@@ -251,6 +257,8 @@ const electronAPI: DesktopBridge = {
   openDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:open"),
   toggleDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:toggle"),
   closeDesktopPlaybackController: () => ipcRenderer.invoke("desktop-playback-controller:close"),
+  isDesktopPlaybackControllerOpen: () => ipcRenderer.invoke("desktop-playback-controller:is-open"),
+  toggleDesktopPlaybackController: () => ipcRenderer.invoke("desktop-playback-controller:toggle"),
   setDesktopPlaybackControllerLayout: (layout: DesktopPlaybackControllerLayout) =>
     ipcRenderer.invoke("desktop-playback-controller:set-layout", layout),
   getDesktopLyricPreferences: () => ipcRenderer.invoke("desktop-lyric:get-preferences"),

@@ -1,6 +1,7 @@
 import type {
   DesktopMcpConfig,
   McpClientConfiguration,
+  McpConnectionTestResult,
   McpStatus,
 } from "@scopify/desktop-contract";
 
@@ -18,12 +19,14 @@ export interface McpRuntime {
   configure(config: DesktopMcpConfig): Promise<McpStatus>;
   dispose(): Promise<void>;
   getAuditLog(): McpAuditLog;
+  getClientConfiguration(): Promise<McpClientConfiguration>;
   getStatus(): McpStatus;
   restart(): Promise<McpStatus>;
   rotateCredential(): Promise<McpClientConfiguration>;
   start(config: DesktopMcpConfig): Promise<McpStatus>;
   stop(): Promise<void>;
   subscribe(listener: (status: McpStatus) => void): () => void;
+  testConnection(): Promise<McpConnectionTestResult>;
 }
 
 export interface CreateMcpRuntimeOptions {
@@ -144,6 +147,13 @@ export function createMcpRuntime(options: CreateMcpRuntimeOptions): McpRuntime {
     getAuditLog() {
       return auditLog;
     },
+    getClientConfiguration() {
+      return enqueue(async () => {
+        const port = configuredPort(activeConfig, status);
+        const token = await credentials.getOrCreate();
+        return clientConfiguration(token, port);
+      });
+    },
     getStatus,
     restart() {
       return enqueue(async () => {
@@ -154,18 +164,9 @@ export function createMcpRuntime(options: CreateMcpRuntimeOptions): McpRuntime {
     },
     rotateCredential() {
       return enqueue(async () => {
-        const current = getStatus();
-        if (current.state !== "listening") {
-          throw new Error("MCP must be listening before a client configuration can be created.");
-        }
+        const port = configuredPort(activeConfig, status);
         const token = await credentials.rotate();
-        // This raw bearer token is returned only from the explicit rotation
-        // action. It is not retained in status, audit records, or host config.
-        return {
-          headers: { Authorization: `Bearer ${token}` },
-          transport: "streamable-http",
-          url: `http://127.0.0.1:${current.port}/mcp`,
-        };
+        return clientConfiguration(token, port);
       });
     },
     start(config) {
@@ -175,7 +176,126 @@ export function createMcpRuntime(options: CreateMcpRuntimeOptions): McpRuntime {
       return enqueue(stopInternal);
     },
     subscribe,
+    testConnection() {
+      return enqueue(async () => {
+        const current = getStatus();
+        if (current.state !== "listening") {
+          return {
+            error: { code: "MCP_NOT_LISTENING", message: "MCP is not listening." },
+            latencyMs: 0,
+            success: false,
+          };
+        }
+        return testLoopbackConnection(
+          `http://127.0.0.1:${current.port}/mcp`,
+          await credentials.getOrCreate(),
+        );
+      });
+    },
   };
+}
+
+function configuredPort(config: DesktopMcpConfig | null, status: McpStatus) {
+  if (status.state === "listening" || status.state === "starting" || status.state === "error") {
+    return status.port;
+  }
+  if (config) return config.port;
+  throw new Error("MCP has not been configured yet.");
+}
+
+function clientConfiguration(token: string, port: number): McpClientConfiguration {
+  return {
+    mcpServers: {
+      scopify: {
+        headers: { Authorization: `Bearer ${token}` },
+        type: "http",
+        url: `http://127.0.0.1:${port}/mcp`,
+      },
+    },
+  };
+}
+
+const MCP_PROTOCOL_VERSION = "2025-11-25";
+
+async function testLoopbackConnection(
+  url: string,
+  token: string,
+): Promise<McpConnectionTestResult> {
+  const startedAtMs = Date.now();
+  const signal = AbortSignal.timeout(5_000);
+  let sessionId: string | null = null;
+  const baseHeaders = {
+    accept: "application/json, text/event-stream",
+    authorization: `Bearer ${token}`,
+    "content-type": "application/json",
+  };
+
+  try {
+    const initialized = await fetch(url, {
+      body: JSON.stringify({
+        id: 1,
+        jsonrpc: "2.0",
+        method: "initialize",
+        params: {
+          capabilities: {},
+          clientInfo: { name: "scopify-settings", version: "1.0" },
+          protocolVersion: MCP_PROTOCOL_VERSION,
+        },
+      }),
+      headers: baseHeaders,
+      method: "POST",
+      signal,
+    });
+    sessionId = initialized.headers.get("mcp-session-id");
+    if (!initialized.ok || !sessionId) throw new Error("initialize-failed");
+
+    const sessionHeaders = {
+      ...baseHeaders,
+      "mcp-protocol-version": MCP_PROTOCOL_VERSION,
+      "mcp-session-id": sessionId,
+    };
+    const acknowledged = await fetch(url, {
+      body: JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }),
+      headers: sessionHeaders,
+      method: "POST",
+      signal,
+    });
+    if (!acknowledged.ok) throw new Error("initialized-notification-failed");
+
+    const listed = await fetch(url, {
+      body: JSON.stringify({ id: 2, jsonrpc: "2.0", method: "tools/list", params: {} }),
+      headers: sessionHeaders,
+      method: "POST",
+      signal,
+    });
+    const body = (await listed.json().catch(() => null)) as {
+      result?: { tools?: unknown[] };
+    } | null;
+    if (!listed.ok || !Array.isArray(body?.result?.tools)) throw new Error("tools-list-failed");
+
+    return {
+      latencyMs: Math.max(0, Date.now() - startedAtMs),
+      success: true,
+      toolCount: body.result.tools.length,
+    };
+  } catch {
+    return {
+      error: { code: "MCP_CONNECTION_FAILED", message: "MCP connection test failed." },
+      latencyMs: Math.max(0, Date.now() - startedAtMs),
+      success: false,
+    };
+  } finally {
+    if (sessionId) {
+      await fetch(url, {
+        headers: {
+          ...baseHeaders,
+          "mcp-protocol-version": MCP_PROTOCOL_VERSION,
+          "mcp-session-id": sessionId,
+        },
+        method: "DELETE",
+      }).catch(() => {});
+    }
+  }
 }
 
 function cloneConfig(config: DesktopMcpConfig): DesktopMcpConfig {

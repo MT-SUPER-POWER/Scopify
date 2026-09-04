@@ -174,3 +174,24 @@ test("normalizing an explicitly empty MCP capability list preserves no permissio
     port: 31927,
   });
 });
+
+test("normalizing granular MCP capabilities preserves tool-level permissions", () => {
+  const config = normalizeDesktopHostConfig({
+    mcp: {
+      capabilities: [
+        "playback.read.status",
+        "playback.control.play",
+        "playback.control.seek",
+        "invalid.capability",
+      ],
+      enabled: true,
+      port: 31927,
+    },
+  });
+
+  expect(config.mcp).toEqual({
+    capabilities: ["playback.read.status", "playback.control.play", "playback.control.seek"],
+    enabled: true,
+    port: 31927,
+  });
+});

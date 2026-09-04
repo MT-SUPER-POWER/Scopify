@@ -338,6 +338,7 @@ export function createBrowserRuntime(
     backend: {
       getStatus: async () => unsupportedBackendStatus(),
       onStatusChanged: () => NOOP,
+      restart: async () => unsupportedBackendStatus(),
     },
     audioFeature: {
       connect: () => NOOP,
@@ -407,10 +408,12 @@ export function createBrowserRuntime(
       closeController: async () => false,
       configure: async () => unsupportedDesktopPlaybackWallpaperModel(),
       getModel: async () => unsupportedDesktopPlaybackWallpaperModel(),
+      isControllerOpen: async () => false,
       onModelChanged: () => NOOP,
       retry: async () => unsupportedDesktopPlaybackWallpaperModel(),
       setControllerLayout: async () => false,
       showController: async () => ({ opened: false, reason: "unsupported" }),
+      toggleController: async () => false,
     },
     isDesktop: false,
     kind: "browser",
@@ -423,9 +426,11 @@ export function createBrowserRuntime(
     // An MCP listener is an Electron Main capability. Browser callers receive
     // explicit null results rather than attempting a network-side fallback.
     mcp: {
+      getClientConfiguration: async () => null,
       getStatus: async () => null,
       restart: async () => null,
       rotateCredential: async () => null,
+      testConnection: async () => null,
     },
     media: {
       onCommand: () => NOOP,

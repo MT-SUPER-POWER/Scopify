@@ -17,7 +17,7 @@ import type { DesktopHostConfig } from "./config";
 import type { DesktopBackendStatus } from "./backend";
 import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "./discord";
 import type { PlaybackTransportPayload, PlaybackTransportRole } from "./playback";
-import type { McpClientConfiguration, McpStatus } from "./mcp";
+import type { McpClientConfiguration, McpConnectionTestResult, McpStatus } from "./mcp";
 import type {
   CacheCategory,
   CacheScope,
@@ -25,7 +25,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 23;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 24;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -84,6 +84,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   openDesktopLyric(): Promise<boolean>;
   toggleDesktopLyric(): Promise<boolean>;
   closeDesktopPlaybackController(): Promise<boolean>;
+  isDesktopPlaybackControllerOpen(): Promise<boolean>;
+  toggleDesktopPlaybackController(): Promise<boolean>;
   connectAudioFeatureTransport(
     role: AudioFeatureTransportRole,
     connectionId: string,
@@ -106,6 +108,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   getHostConfig(): Promise<DesktopHostConfig>;
   getBridgeInfo(): Promise<DesktopBridgeInfo>;
   getLogDirectory(): Promise<string>;
+  getMcpClientConfiguration(): Promise<McpClientConfiguration>;
   getMcpStatus(): Promise<McpStatus>;
   openCurrentLog(): Promise<boolean>;
   openLogDirectory(): Promise<boolean>;
@@ -141,7 +144,9 @@ export interface DesktopBridge<TLyrics = unknown> {
   quitAndInstallUpdate(): void;
   relaunchApp(): void;
   restartMcp(): Promise<McpStatus>;
+  restartBackend(): Promise<DesktopBackendStatus>;
   rotateMcpCredential(): Promise<McpClientConfiguration>;
+  testMcpConnection(): Promise<McpConnectionTestResult>;
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
   sendAppCloseAction(action: "exit" | "minimize" | "cancel", remember: boolean): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;

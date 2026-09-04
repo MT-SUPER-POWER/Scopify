@@ -44,3 +44,28 @@ test("saving settings preserves a custom API target when the local backend auto-
     protocol: "https",
   });
 });
+
+test("saving settings preserves granular MCP tool capabilities", () => {
+  const desktop = settingsWithManagedLocalBackend.desktop;
+  if (!desktop) throw new Error("Expected desktop settings to be defined");
+
+  const configWithGranularMcp: SettingsConfig = {
+    ...settingsWithManagedLocalBackend,
+    desktop: {
+      ...desktop,
+      mcp: {
+        capabilities: ["playback.read.status", "playback.control.play", "playback.control.seek"],
+        enabled: true,
+        port: 31927,
+      },
+    },
+  };
+
+  const saved = buildSavedSettingsConfig(configWithGranularMcp, configWithGranularMcp.web.backend);
+
+  expect(saved.desktop?.mcp?.capabilities).toEqual([
+    "playback.read.status",
+    "playback.control.play",
+    "playback.control.seek",
+  ]);
+});

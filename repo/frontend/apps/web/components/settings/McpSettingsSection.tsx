@@ -1,27 +1,20 @@
 "use client";
 
-import type { McpCapability } from "@scopify/desktop-contract";
+import { SlidersHorizontal } from "lucide-react";
+import { useState } from "react";
 import { useMcpSettings } from "@/hooks/settings/useMcpSettings";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import type { McpSettingsSectionProps } from "@/types/components/settings";
+import { McpCapabilitiesModal } from "./McpCapabilitiesModal";
 import { McpCredentialControls } from "./McpCredentialControls";
-import { McpRuntimeStatus } from "./McpRuntimeStatus";
+import { McpRuntimeControls } from "./McpRuntimeControls";
 import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
-
-function updateCapability(
-  capabilities: McpCapability[],
-  capability: McpCapability,
-): McpCapability[] {
-  return capabilities.includes(capability)
-    ? capabilities.filter((value) => value !== capability)
-    : [...capabilities, capability];
-}
 
 /**
  * Controls the public local MCP policy and its deliberately limited runtime
- * operations. Credential text exists only after an explicit rotate action and
- * is never copied into the desktop YAML configuration.
+ * operations. Credential text exists only after an explicit view/rotate action
+ * and is never copied into the desktop YAML configuration.
  */
 export function McpSettingsSection({
   config,
@@ -29,19 +22,21 @@ export function McpSettingsSection({
   statusRefreshKey,
 }: McpSettingsSectionProps) {
   const { t } = useI18n();
+  const [isCapabilitiesModalOpen, setIsCapabilitiesModalOpen] = useState(false);
   const {
     clientConfiguration,
+    connectionTestResult,
+    isRevealingCredential,
     isRestarting,
     isRotatingCredential,
+    isTestingConnection,
+    revealCredential,
     restart,
     rotateCredential,
     status,
+    testConnection,
   } = useMcpSettings(statusRefreshKey);
   const isListening = status?.state === "listening";
-
-  const toggleCapability = (capability: McpCapability) => {
-    onChange("mcp", "capabilities", updateCapability(config.capabilities, capability));
-  };
 
   if (!runtime.isDesktop) return null;
 
@@ -57,6 +52,7 @@ export function McpSettingsSection({
           />
         }
       />
+      {/* 监听端口 */}
       <SettingRow
         label={t("settings.mcp.port.label")}
         sublabel={t("settings.mcp.port.sublabel")}
@@ -68,31 +64,43 @@ export function McpSettingsSection({
           />
         }
       />
+      {/* 受控能力与工具权限*/}
       <SettingRow
-        label={t("settings.mcp.read.label")}
-        sublabel={t("settings.mcp.read.sublabel")}
+        label={t("settings.mcp.capabilities.manage.label")}
+        sublabel={t("settings.mcp.capabilities.manage.sublabel")}
         control={
-          <Toggle
-            enabled={config.capabilities.includes("playback.read")}
-            onChange={() => toggleCapability("playback.read")}
-          />
+          <button
+            type="button"
+            onClick={() => setIsCapabilitiesModalOpen(true)}
+            className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content"
+          >
+            <SlidersHorizontal className="size-4" />
+            {t("settings.mcp.capabilities.manage.button")}
+          </button>
         }
       />
-      <SettingRow
-        label={t("settings.mcp.control.label")}
-        sublabel={t("settings.mcp.control.sublabel")}
-        control={
-          <Toggle
-            enabled={config.capabilities.includes("playback.control")}
-            onChange={() => toggleCapability("playback.control")}
-          />
-        }
+      {/* 测试 MCP 连接 */}
+      <McpCapabilitiesModal
+        capabilities={config.capabilities}
+        onCapabilitiesChange={(capabilities) => onChange("mcp", "capabilities", capabilities)}
+        onClose={() => setIsCapabilitiesModalOpen(false)}
+        open={isCapabilitiesModalOpen}
       />
-      <McpRuntimeStatus isRestarting={isRestarting} onRestart={restart} status={status} />
+      {/* 重启服务 */}
+      <McpRuntimeControls
+        canTestConnection={isListening}
+        connectionTestResult={connectionTestResult}
+        isRestarting={isRestarting}
+        isTestingConnection={isTestingConnection}
+        onRestart={restart}
+        onTestConnection={testConnection}
+      />
+      {/* 客户端凭据 */}
       <McpCredentialControls
         clientConfiguration={clientConfiguration}
-        isListening={isListening}
+        isRevealingCredential={isRevealingCredential}
         isRotatingCredential={isRotatingCredential}
+        onRevealCredential={revealCredential}
         onRotateCredential={rotateCredential}
       />
     </SettingSection>
