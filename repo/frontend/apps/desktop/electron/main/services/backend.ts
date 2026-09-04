@@ -36,6 +36,7 @@ export interface DesktopBackendController {
   getStatus(): DesktopBackendStatus;
   onStatusChanged(callback: (status: DesktopBackendStatus) => void): () => void;
   reconcile(config: DesktopHostConfig["backend"]): Promise<DesktopBackendStatus>;
+  restart(config: DesktopHostConfig["backend"]): Promise<DesktopBackendStatus>;
 }
 
 function backendOrigin(port: number) {
@@ -314,6 +315,34 @@ export function createDesktopBackendController(
         return status;
       }
 
+      return startManagedChild(config.port, currentGeneration);
+    },
+    async restart(config) {
+      const currentGeneration = ++generation;
+      if (disposed) return status;
+      if (!config.autoStart) {
+        await stopManagedChild();
+        setStatus(createStatus("disabled", config.port));
+        return status;
+      }
+
+      await stopManagedChild();
+      const probe = await probeBackend(config.port);
+      if (currentGeneration !== generation || disposed) return status;
+      if (probe.reachable) {
+        setStatus(
+          createStatus("running", config.port, {
+            managed: false,
+            source: "external",
+          }),
+        );
+        return status;
+      }
+      if (probe.occupied) {
+        const error = `端口 ${config.port} 已被其他服务占用，无法重启内置后端。`;
+        setStatus(createStatus("error", config.port, { error }));
+        return status;
+      }
       return startManagedChild(config.port, currentGeneration);
     },
   };
