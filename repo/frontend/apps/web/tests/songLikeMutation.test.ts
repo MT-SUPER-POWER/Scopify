@@ -1,14 +1,28 @@
-import { QueryClient } from "@tanstack/react-query";
+import { MutationObserver, QueryClient } from "@tanstack/react-query";
 import { beforeEach, expect, mock, test } from "bun:test";
 
 import { usePlayerStore } from "@/store/module/player";
 import { useUserStore } from "@/store/module/user";
-import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
+import { createSongLikeMutationOptions } from "@/lib/playlist/songLikeMutation";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 // 单元测试：测试喜欢/取消喜欢的状态同步与 Query 缓存失效
 
 beforeEach(() => {
-  useUserStore.setState({ likeListIDs: [100, 200] });
+  useUserStore.setState({
+    likeListIDs: [100, 200],
+    user: {
+      avatarUrl: "",
+      backgroundUrl: "",
+      createTime: 0,
+      followeds: 0,
+      follows: 0,
+      nickname: "Tester",
+      signature: "",
+      userId: 42,
+      vipType: 0,
+    },
+  });
   usePlayerStore.setState({
     currentSongDetail: {
       al: { id: 1, name: "Album", picUrl: "https://example.com/cover.jpg" },
@@ -22,10 +36,31 @@ beforeEach(() => {
   });
 });
 
-test("toggleCurrentSongLike updates store likeListIDs and invalidates queries", async () => {
+test("song like mutation updates store likeListIDs and invalidates queries", async () => {
   const queryClient = new QueryClient();
-  const likedPlaylistKey = ["library", "liked-playlist"];
-  const userPlaylistsKey = ["library", "playlists"];
+  const libraryRefreshOperations: string[] = [];
+  const mutation = new MutationObserver(
+    queryClient,
+    createSongLikeMutationOptions(
+      queryClient,
+      {
+        failure: "failed",
+        liked: "liked",
+        unliked: "unliked",
+      },
+      {
+        clearPageCache: async () => {
+          libraryRefreshOperations.push("clear-page-cache");
+        },
+        mutateSong: async (_songId, like) => {
+          libraryRefreshOperations.push(`remote:${like ? "like" : "unlike"}`);
+          return { data: { code: 200 } };
+        },
+      },
+    ),
+  );
+  const likedPlaylistKey = musicQueryKeys.library.likedPlaylist(42);
+  const userPlaylistsKey = musicQueryKeys.library.playlists(42);
   const playlistContentKey = ["playlist", "content"];
 
   queryClient.setQueryData(likedPlaylistKey, { id: 123, name: "我喜欢的音乐" });
@@ -41,9 +76,8 @@ test("toggleCurrentSongLike updates store likeListIDs and invalidates queries", 
   }) as unknown as typeof fetch;
 
   try {
-    const isNowLiked = await toggleCurrentSongLike(false, queryClient);
+    await mutation.mutate({ like: true, silentToast: true, songId: 300 });
 
-    expect(isNowLiked).toBeTrue();
     expect(useUserStore.getState().likeListIDs).toContain(300);
 
     expect(queryClient.getQueryState(likedPlaylistKey)?.isInvalidated).toBeTrue();
@@ -51,9 +85,14 @@ test("toggleCurrentSongLike updates store likeListIDs and invalidates queries", 
     expect(queryClient.getQueryState(playlistContentKey)?.isInvalidated).toBeTrue();
 
     // Toggle unlike
-    const isNowUnliked = await toggleCurrentSongLike(false, queryClient);
-    expect(isNowUnliked).toBeFalse();
+    await mutation.mutate({ like: false, silentToast: true, songId: 300 });
     expect(useUserStore.getState().likeListIDs).not.toContain(300);
+    expect(libraryRefreshOperations).toEqual([
+      "remote:like",
+      "clear-page-cache",
+      "remote:unlike",
+      "clear-page-cache",
+    ]);
   } finally {
     globalThis.fetch = originalFetch;
   }

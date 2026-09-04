@@ -1,30 +1,24 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
-import type {
-  PlaybackCommand,
-  PlaybackSessionState,
-  PlaybackTimelineDiscontinuityReason,
-} from "@scopify/desktop-contract";
+import type { PlaybackCommand, PlaybackSessionState } from "@scopify/desktop-contract";
 
 import { PlaybackAudioFeaturePublisher } from "@/components/player/PlaybackAudioFeaturePublisher";
 import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjectionProvider";
-import { useLikedVoicesQuery } from "@/hooks/library/useLibraryQueries";
+import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { usePlaybackAuthority } from "@/hooks/player/usePlaybackAuthority";
 import { useDiscordPresence } from "@/hooks/player/useDiscordPresence";
 import { useListeningScrobble } from "@/hooks/player/useListeningScrobble";
 import { useMediaSession } from "@/hooks/player/useMediaSession";
+import { useVoiceLike } from "@/hooks/voice/useVoiceLike";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { createCompositePlaybackAuthorityTransport } from "@/lib/playbackProjection/compositeTransport";
 import { systemPlaybackClock } from "@/lib/playbackProjection/clock";
 import { createElectronPlaybackAuthorityTransport } from "@/lib/playbackProjection/electronTransport";
 import { createInProcessPlaybackTransport } from "@/lib/playbackProjection/inProcessTransport";
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
-import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { buildDiscordPresenceArtist } from "@/lib/player/discordPresence";
-import { toggleCurrentSongLike } from "@/lib/player/toggleCurrentSongLike";
 import { runtime } from "@/lib/runtime";
 import { toScrobbleSourceId } from "@/lib/player/listeningScrobble";
 import { usePlayerStore } from "@/store/module/player";
@@ -34,17 +28,12 @@ import { useUserStore } from "@/store/module/user";
 import type {
   InProcessProjectionConnection,
   PlaybackAuthorityProviderProps,
+  PlaybackAuthoritySessionIdentity,
 } from "@/types/playbackAuthority";
 import type { LyricData } from "@/types/lyrics";
 import type { PlaybackProjectionSource } from "@/types/playbackProjection";
 
 const DEFAULT_AUTHORITY_CONNECTION_ID = "main-renderer-playback-authority";
-
-interface SessionIdentity {
-  key: string;
-  reason: Extract<PlaybackTimelineDiscontinuityReason, "replay" | "resume" | "track-change">;
-  trackId: number | string | null;
-}
 
 /** Owns the main Renderer's Authority, local Replica and Electron transport fan-out. */
 export function PlaybackAuthorityProvider({
@@ -64,9 +53,8 @@ export function PlaybackAuthorityProvider({
   const sourceChangeMode = usePlayerStore((state) => state.sourceChangeMode);
   const volume = usePlayerStore((state) => state.volume);
   const likeListIds = useUserStore((state) => state.likeListIDs);
-  const userId = useUserStore((state) => state.user?.userId);
-  const queryClient = useQueryClient();
-  const likedVoices = useLikedVoicesQuery(currentSongDetail?.voiceId !== undefined);
+  const songLikeMutation = useSongLikeMutation();
+  const voiceLike = useVoiceLike(currentSongDetail?.voiceId ?? null);
 
   const lyrics = useMemo(() => (rawLyric ? adaptNeteaseLyric(rawLyric) : null), [rawLyric]);
   const track = useMemo(
@@ -84,12 +72,10 @@ export function PlaybackAuthorityProvider({
   );
   const liked = useMemo(() => {
     if (!currentSongDetail) return false;
-    if (currentSongDetail.voiceId !== undefined) {
-      return Boolean(likedVoices.data?.some((voice) => voice.id === currentSongDetail.voiceId));
-    }
+    if (currentSongDetail.voiceId !== undefined) return voiceLike.isLiked;
     if (!Array.isArray(likeListIds)) return false;
     return likeListIds.some((id) => Number(id) === currentSongDetail.id);
-  }, [currentSongDetail, likeListIds, likedVoices.data]);
+  }, [currentSongDetail, likeListIds, voiceLike.isLiked]);
   const discordPresence = useMemo(
     () => ({
       album: currentSongDetail?.al.name ?? "",
@@ -137,7 +123,7 @@ export function PlaybackAuthorityProvider({
   );
   const trackId = currentSongDetail?.id ?? null;
   const sessionKey = `${playbackSessionRevision}:${trackId ?? "none"}`;
-  const sessionIdentityRef = useRef<SessionIdentity | null>(null);
+  const sessionIdentityRef = useRef<PlaybackAuthoritySessionIdentity | null>(null);
   if (sessionIdentityRef.current?.key !== sessionKey) {
     const previousIdentity = sessionIdentityRef.current;
     const reason =
@@ -277,22 +263,23 @@ export function PlaybackAuthorityProvider({
       removeQueueItem: (index) => usePlayerStore.getState().removeQueueItem(index),
       toggleLike: async () => {
         const currentTrack = usePlayerStore.getState().currentSongDetail;
-        const nextLiked = await toggleCurrentSongLike(liked, queryClient);
+        if (!currentTrack) return false;
         if (currentTrack?.voiceId !== undefined) {
-          if (userId) {
-            void queryClient.invalidateQueries({
-              queryKey: musicQueryKeys.library.likedVoices(userId),
-            });
-          }
-          return nextLiked;
+          const wasLiked = voiceLike.isLiked;
+          const didUpdate = await voiceLike.toggleLike();
+          return didUpdate ? !wasLiked : wasLiked;
         }
-        const activeTrackId = usePlayerStore.getState().currentSongDetail?.id;
-        const nextLikeListIds = useUserStore.getState().likeListIDs;
-        return (
-          activeTrackId !== undefined &&
-          Array.isArray(nextLikeListIds) &&
-          nextLikeListIds.some((id) => Number(id) === activeTrackId)
-        );
+        const currentLikeListIds = useUserStore.getState().likeListIDs;
+        const isCurrentlyLiked =
+          Array.isArray(currentLikeListIds) &&
+          currentLikeListIds.some((id) => Number(id) === currentTrack.id);
+        const nextLiked = !isCurrentlyLiked;
+        await songLikeMutation.mutateAsync({
+          like: nextLiked,
+          silentToast: true,
+          songId: currentTrack.id,
+        });
+        return nextLiked;
       },
     },
     clock: systemPlaybackClock,

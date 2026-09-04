@@ -33,3 +33,18 @@ export interface DailyRecommendationRequest {
   cacheDate: string;
   dailyDate: null | string;
 }
+
+export interface SongLikeMutationContext {
+  previousLikeListIDs: number[];
+}
+
+export interface SongLikeMutationMessages {
+  failure: string;
+  liked: string;
+  unliked: string;
+}
+
+export interface SongLikeMutationDependencies {
+  clearPageCache(): Promise<unknown>;
+  mutateSong(songId: number | string, like: boolean): Promise<unknown>;
+}

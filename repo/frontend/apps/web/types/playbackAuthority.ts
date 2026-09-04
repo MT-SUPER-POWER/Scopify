@@ -33,6 +33,12 @@ export interface PlaybackAuthorityIdentity {
   readonly sessionId: string;
 }
 
+export interface PlaybackAuthoritySessionIdentity {
+  key: string;
+  reason: Extract<PlaybackTimelineDiscontinuityReason, "replay" | "resume" | "track-change">;
+  trackId: number | string | null;
+}
+
 export interface PlaybackAuthorityStatePatch<TLyrics = unknown> {
   canControl?: boolean;
   liked?: boolean;

@@ -10,6 +10,7 @@
 
 ### Fixed
 
+- **统一当前歌曲喜欢 Mutation 链路**：PlayBar、命令工作区、快捷键、桌面歌词与 Folia 的 `toggle-like` 命令不再绕过 TanStack Mutation 直接调用喜欢接口；喜欢和取消喜欢都会先清理页面缓存，再精确刷新当前用户的 liked-playlist 与 playlists Query，使侧边栏 LibItem 的封面和歌曲数重新获取，声音收藏继续走独立的 Voice Mutation。
 - **歌单曲目删除权限收敛**：歌单行右键的“从歌单移除”现在只会在已登录用户查看自己创建的真实歌单时出现并创建删除回调；匿名访问、他人歌单、日推/历史日推及其他虚拟歌单均会安全地隐藏该操作。
 - **歌曲喜欢/取消喜欢 Mutation 与多端缓存失效**：新增统一的 `useSongLikeMutation`，彻底替代各处散落的 `likeSong` 直接调用；在触发喜欢或取消喜欢后，自动乐观更新本地状态并在成功后自动触发红心歌单元数据（`liked-playlist`）、侧边栏歌单列表（`playlists`，触发 `LibItem` 重新请求并刷新红心歌单封面图与歌曲数）以及当前打开歌单详情与歌曲列表（`playlist.content`）的缓存失效，解决喜欢/取消喜欢后侧边栏封面与歌单内容未及时更新的问题。
 
