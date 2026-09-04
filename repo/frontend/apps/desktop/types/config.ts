@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import { DEFAULT_DESKTOP_MCP_CONFIG, type DesktopHostConfig } from "@scopify/desktop-contract";
 
 export const ELECTRON_PROXY_MODES = ["system", "direct", "custom"] as const;
 export const DEFAULT_DESKTOP_HOST_CONFIG = {
@@ -22,6 +22,10 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}",
     keepDays: 7,
     maxSizeMB: 16,
+  },
+  mcp: {
+    ...DEFAULT_DESKTOP_MCP_CONFIG,
+    capabilities: [...DEFAULT_DESKTOP_MCP_CONFIG.capabilities],
   },
   network: {
     proxyMode: "system",
@@ -54,7 +58,7 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
 } as const satisfies DesktopHostConfig;
 
 function toRecord(value: unknown): Record<string, unknown> {
-  return z.record(z.unknown()).safeParse(value).data ?? {};
+  return z.record(z.string(), z.unknown()).safeParse(value).data ?? {};
 }
 
 function normalizedBoolean(defaultValue: boolean) {
@@ -88,6 +92,30 @@ function trimmedString(defaultValue: string, allowEmpty = false) {
     const trimmed = value.trim();
     return allowEmpty || trimmed ? trimmed : undefined;
   }, z.string().default(defaultValue));
+}
+
+/**
+ * MCP is local-only. Keep its public policy in YAML, while the access token
+ * remains exclusively in Electron safe storage. Unknown capability names are
+ * removed rather than letting an older config grant a future permission.
+ */
+function normalizeMcpConfig(value: unknown): Record<string, unknown> {
+  const mcp = toRecord(value);
+  const capabilityValues = Array.isArray(mcp.capabilities) ? mcp.capabilities : null;
+  const capabilities = capabilityValues?.filter(
+    (capability): capability is "playback.read" | "playback.control" =>
+      capability === "playback.read" || capability === "playback.control",
+  );
+
+  return {
+    // A missing field comes from older config and keeps the safe read-only
+    // default. A supplied list is filtered fail-closed, including an empty one.
+    capabilities: capabilities
+      ? [...new Set(capabilities)]
+      : [...DEFAULT_DESKTOP_HOST_CONFIG.mcp.capabilities],
+    enabled: mcp.enabled,
+    port: mcp.port,
+  };
 }
 
 function normalizeCacheConfig(value: unknown): Record<string, unknown> {
@@ -153,6 +181,16 @@ export const desktopHostConfigSchema = z.preprocess(
           format: trimmedString(DEFAULT_DESKTOP_HOST_CONFIG.logging.format, true),
           keepDays: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.logging.keepDays),
           maxSizeMB: positiveNumber(DEFAULT_DESKTOP_HOST_CONFIG.logging.maxSizeMB),
+        }),
+      ),
+      mcp: z.preprocess(
+        normalizeMcpConfig,
+        z.object({
+          capabilities: z
+            .array(z.enum(["playback.read", "playback.control"]))
+            .default([...DEFAULT_DESKTOP_HOST_CONFIG.mcp.capabilities]),
+          enabled: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.mcp.enabled),
+          port: portNumber(DEFAULT_DESKTOP_HOST_CONFIG.mcp.port),
         }),
       ),
       network: z.preprocess(

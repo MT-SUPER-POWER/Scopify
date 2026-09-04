@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import { app, ipcMain, type BrowserWindow } from "electron";
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
+import type { McpRuntime } from "@main/capabilities/mcp";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "@main/store";
 import { cleanOldLogs, configureLogging, logger } from "@main/constants";
 import type { DesktopBackendController } from "@main/services/backend";
@@ -12,8 +13,8 @@ import {
 } from "@main/services/pageCache";
 import { configureUpdater } from "@main/services/updater";
 import { applyElectronProxy } from "@main/utils/proxy";
-import { configuredCacheRoot } from "./cache.js";
-import { isMainRenderer } from "./sender.js";
+import { configuredCacheRoot } from "./cache";
+import { isMainRenderer } from "./sender";
 
 /**
  * 注册 Desktop Host 配置接口，并在保存后统一协调所有受配置影响的能力。
@@ -23,6 +24,7 @@ export function registerConfigurationIpc(
   mainWindow: BrowserWindow | null,
   backendController: DesktopBackendController,
   discordPresence: ReturnType<typeof createDiscordPresenceController>,
+  mcpRuntime: McpRuntime,
 ) {
   let hasAuthorizedDeveloperToolsOpen = false;
   mainWindow?.webContents.on("devtools-opened", () => {
@@ -53,6 +55,7 @@ export function registerConfigurationIpc(
       mainWindow.webContents.closeDevTools();
     }
     configureUpdater(savedConfig.updater);
+    await mcpRuntime.configure(savedConfig.mcp);
     await backendController.reconcile(savedConfig.backend);
     void discordPresence.refresh();
     await applyElectronProxy(savedConfig).catch((error) => {

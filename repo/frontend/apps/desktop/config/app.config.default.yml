@@ -14,6 +14,11 @@ logging:
   format: "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}"
   keepDays: 7
   maxSizeMB: 16
+mcp:
+  enabled: false
+  port: 31927
+  capabilities:
+    - playback.read
 network:
   proxyMode: system
   proxyUrl: ""

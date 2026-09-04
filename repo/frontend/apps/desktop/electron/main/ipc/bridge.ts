@@ -18,6 +18,7 @@ const CAPABILITIES = [
   "login",
   "logs",
   "media-controls",
+  "mcp",
   "navigation",
   "playback-transport",
   "renderer-logging",

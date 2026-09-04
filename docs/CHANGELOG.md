@@ -4,6 +4,7 @@
 
 ### Added
 
+- **本地 MCP 播放控制与设置**：桌面端新增仅监听 loopback 的 Streamable HTTP MCP 服务，通过 Main Playback Gateway 等待 Renderer 真实回执；配置新增开关、端口和播放读取/控制权限，设置页可查看状态、重启服务、轮换安全凭据并复制一次性客户端配置，Web 环境安全地保持不可用。
 - **Windows Native Audio Host**：新增 Rust/NAPI 原生音频 Host，基于 Rodio/CPAL 支持本地与 HTTPS 音源的加载、播放、暂停、停止、Seek、音量、状态和错误事件；补齐双 token/请求 revision 淘汰、NAPI 构建与 Windows 打包资源路径，正式切换 Adapter 前继续安全使用 HTML Audio。
 
 ### Fixed

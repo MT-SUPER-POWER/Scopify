@@ -1,7 +1,12 @@
-import type { BrowserWindow } from "electron";
+import { app, type BrowserWindow } from "electron";
 
 import type { WindowCapabilityHostOptions } from "@/types/electronCapabilityHost";
 import { initializeAudioFeatureBrokerIpc } from "@main/capabilities/audioFeatureBroker/ipc";
+import {
+  createElectronMcpCredentialStore,
+  createMcpRuntime,
+  type McpRuntime,
+} from "@main/capabilities/mcp";
 import { initializeDesktopIconVisibilityCapability } from "@main/capabilities/desktopIcons";
 import {
   initializeDesktopPlaybackWallpaperCapability,
@@ -16,7 +21,12 @@ import {
   createElectronDesktopPlaybackWallpaperDriver,
   type ElectronDesktopPlaybackWallpaperDriver,
 } from "@main/capabilities/desktopPlaybackWallpaper/electronDriver";
-import { initializePlaybackBrokerIpc } from "@main/capabilities/playbackBroker/ipc";
+import { createPlaybackBroker, type PlaybackBroker } from "@main/capabilities/playbackBroker";
+import {
+  bindPlaybackBrokerIpc,
+  type PlaybackBrokerIpcBinding,
+} from "@main/capabilities/playbackBroker/ipc";
+import { createPlaybackGateway, type PlaybackGateway } from "@main/capabilities/playbackGateway";
 import { desktopConfig, logger } from "@main/constants";
 import { registerIpcHandlers } from "@main/ipc";
 import { initializeUpdater } from "@main/services/updater";
@@ -29,7 +39,10 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
   let wallpaperDriver: ElectronDesktopPlaybackWallpaperDriver | null = null;
   let wallpaperCapability: DesktopPlaybackWallpaperCapability | null = null;
   let controllerWindow: DesktopPlaybackControllerWindow | null = null;
-  let playbackBroker: ReturnType<typeof initializePlaybackBrokerIpc> | null = null;
+  let playbackBroker: PlaybackBroker | null = null;
+  let playbackBrokerIpc: PlaybackBrokerIpcBinding | null = null;
+  let playbackGateway: PlaybackGateway | null = null;
+  let mcpRuntime: McpRuntime | null = null;
   let audioFeatureBroker: ReturnType<typeof initializeAudioFeatureBrokerIpc> | null = null;
 
   function attach(window: BrowserWindow) {
@@ -46,7 +59,15 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
       rendererBaseUrl: options.rendererBaseUrl,
     });
 
-    registerIpcHandlers(window, options.discordPresence, options.backendController);
+    playbackBroker ??= createPlaybackBroker();
+    playbackGateway ??= createPlaybackGateway(playbackBroker);
+    mcpRuntime ??= createMcpRuntime({
+      credentials: createElectronMcpCredentialStore(),
+      playback: playbackGateway,
+      version: app.getVersion(),
+    });
+
+    registerIpcHandlers(window, options.discordPresence, options.backendController, mcpRuntime);
     initializeDesktopIconVisibilityCapability(window, {
       getControllerWindow: controllerWindow.getWindow,
     });
@@ -56,7 +77,7 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
       driver: wallpaperDriver,
       getControllerWindow: controllerWindow.getWindow,
     });
-    playbackBroker ??= initializePlaybackBrokerIpc({
+    playbackBrokerIpc ??= bindPlaybackBrokerIpc(playbackBroker, {
       getAuthorityWindow: options.getMainWindow,
       getReplicaWindows: () => [
         options.getMainWindow(),
@@ -69,6 +90,7 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
       },
       onRejected: (message) => logger.warn(`[playback-broker] ${message}`),
     });
+    void mcpRuntime.start(desktopConfig.mcp);
     audioFeatureBroker ??= initializeAudioFeatureBrokerIpc({
       getPublisherWindow: options.getMainWindow,
       getSubscriberWindows: () => [controllerWindow?.getWindow() ?? null],
@@ -94,7 +116,16 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
 
   return {
     attach,
-    dispose() {
+    async dispose() {
+      playbackBrokerIpc?.dispose();
+      playbackBrokerIpc = null;
+      const activeMcpRuntime = mcpRuntime;
+      mcpRuntime = null;
+      // Stop accepting MCP work before releasing the Gateway/Broker that its
+      // handlers depend on. The application shutdown coordinator awaits this.
+      await activeMcpRuntime?.dispose();
+      playbackGateway?.dispose();
+      playbackGateway = null;
       playbackBroker?.dispose();
       playbackBroker = null;
       audioFeatureBroker?.dispose();

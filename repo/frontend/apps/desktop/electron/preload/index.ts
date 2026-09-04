@@ -13,6 +13,8 @@ import type {
   AudioFeatureAck,
   AudioFeatureFrameV1,
   AudioFeatureTransportRole,
+  McpClientConfiguration,
+  McpStatus,
   PlaybackTransportPayload,
   PlaybackTransportRole,
 } from "@scopify/desktop-contract";
@@ -123,6 +125,9 @@ const electronAPI: DesktopBridge = {
   relaunchApp: () => {
     ipcRenderer.send("relaunch-app");
   },
+  restartMcp: (): Promise<McpStatus> => ipcRenderer.invoke("mcp:restart"),
+  rotateMcpCredential: (): Promise<McpClientConfiguration> =>
+    ipcRenderer.invoke("mcp:rotate-credential"),
   getBridgeInfo: () => ipcRenderer.invoke("bridge:get-info"),
   getDiscordPresenceStatus: () => ipcRenderer.invoke("discord-presence:get-status"),
   testDiscordPresenceConnection: () => ipcRenderer.invoke("discord-presence:test-connection"),
@@ -185,6 +190,7 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.invoke("video-export:write-file", filePath, data),
   getHostConfig: () => ipcRenderer.invoke("config:get-host"),
   getLogDirectory: () => ipcRenderer.invoke("logger:get-directory"),
+  getMcpStatus: (): Promise<McpStatus> => ipcRenderer.invoke("mcp:get-status"),
   openCurrentLog: () => ipcRenderer.invoke("logger:open-current"),
   openLogDirectory: () => ipcRenderer.invoke("logger:open-directory"),
   getDesktopIconVisibility: () => ipcRenderer.invoke("desktop-icons:get-visibility"),
