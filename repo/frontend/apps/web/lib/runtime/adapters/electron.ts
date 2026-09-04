@@ -120,6 +120,11 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       openDirectory: () => bridge.openLogDirectory(),
       write: (event) => bridge.writeLog(event),
     },
+    mcp: {
+      getStatus: () => bridge.getMcpStatus(),
+      restart: () => bridge.restartMcp(),
+      rotateCredential: () => bridge.rotateMcpCredential(),
+    },
     media: {
       onCommand: (callback) => bridge.onControlAudio(callback),
       setPlaying: (isPlaying) => bridge.setPlayerPlaying(isPlaying),

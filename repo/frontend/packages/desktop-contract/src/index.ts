@@ -8,6 +8,7 @@ export * from "./desktopLyrics";
 export * from "./desktopPlaybackWallpaper";
 export * from "./discord";
 export * from "./logging";
+export * from "./mcp";
 export * from "./playback";
 export * from "./rendererArtifact";
 export * from "./updater";

@@ -17,6 +17,7 @@ import type { DesktopHostConfig } from "./config";
 import type { DesktopBackendStatus } from "./backend";
 import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "./discord";
 import type { PlaybackTransportPayload, PlaybackTransportRole } from "./playback";
+import type { McpClientConfiguration, McpStatus } from "./mcp";
 import type {
   CacheCategory,
   CacheScope,
@@ -51,6 +52,7 @@ export type DesktopBridgeCapability =
   | "login"
   | "logs"
   | "media-controls"
+  | "mcp"
   | "navigation"
   | "playback-transport"
   | "renderer-logging"
@@ -104,6 +106,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   getHostConfig(): Promise<DesktopHostConfig>;
   getBridgeInfo(): Promise<DesktopBridgeInfo>;
   getLogDirectory(): Promise<string>;
+  getMcpStatus(): Promise<McpStatus>;
   openCurrentLog(): Promise<boolean>;
   openLogDirectory(): Promise<boolean>;
   getDesktopIconVisibility(): Promise<DesktopIconVisibilityState>;
@@ -137,6 +140,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   toggleDeveloperTools(): Promise<boolean>;
   quitAndInstallUpdate(): void;
   relaunchApp(): void;
+  restartMcp(): Promise<McpStatus>;
+  rotateMcpCredential(): Promise<McpClientConfiguration>;
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
   sendAppCloseAction(action: "exit" | "minimize" | "cancel", remember: boolean): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;

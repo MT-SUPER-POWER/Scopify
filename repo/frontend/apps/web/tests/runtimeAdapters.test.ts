@@ -73,7 +73,8 @@ const HOST_CONFIG: DesktopHostConfig = {
   },
   discord: { applicationId: "1536959813114658836", enabled: true },
   frontend: { devPort: 3000, host: "127.0.0.1" },
-  logging: { format: "", keepDays: 7, level: "info", maxSizeMB: 16 },
+  logging: { dir: "", format: "", keepDays: 7, level: "info", maxSizeMB: 16 },
+  mcp: { capabilities: ["playback.read"], enabled: false, port: 31927 },
   network: { proxyMode: "system", proxyUrl: "" },
   updater: { autoDownload: false, checkOnStartup: true },
 };
@@ -180,6 +181,7 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
       protocolVersion: DESKTOP_BRIDGE_PROTOCOL_VERSION,
     }),
     getLogDirectory: async () => "logs",
+    getMcpStatus: async () => ({ enabled: false, port: null, state: "stopped" }),
     openCurrentLog: async () => true,
     openLogDirectory: async () => true,
     getDesktopLyricPreferences: async () => null,
@@ -240,6 +242,12 @@ function createBridge(overrides: Partial<DesktopBridge<LyricData>> = {}): Deskto
     quitAndInstallUpdate: NOOP,
     relaunchApp: NOOP,
     retryDesktopPlaybackWallpaper: async () => WALLPAPER_MODEL,
+    restartMcp: async () => ({ enabled: false, port: null, state: "stopped" }),
+    rotateMcpCredential: async () => ({
+      headers: { Authorization: "Bearer test-mcp-token" },
+      transport: "streamable-http",
+      url: "http://127.0.0.1:31927/mcp",
+    }),
     sendAppCloseAction: NOOP,
     sendDesktopLyricCommand: NOOP,
     setDesktopPlaybackControllerLayout: async () => true,
@@ -293,6 +301,9 @@ describe("browser runtime adapter", () => {
     expect(await runtime.desktopPlaybackWallpaper.setControllerLayout("expanded")).toBeFalse();
     expect((await runtime.desktopIcons.getVisibility()).supported).toBeFalse();
     expect(runtime.audioFeature.publish(AUDIO_FEATURE_FRAME)).toBeFalse();
+    expect(await runtime.mcp.getStatus()).toBeNull();
+    expect(await runtime.mcp.restart()).toBeNull();
+    expect(await runtime.mcp.rotateCredential()).toBeNull();
   });
 
   test("owns browser cache expiry and namespace invalidation", async () => {
@@ -638,6 +649,41 @@ describe("electron runtime adapter", () => {
       visible: false,
     });
     expect(calls).toEqual(["get-icons", "set-icons:false"]);
+  });
+
+  test("keeps MCP administration behind the runtime seam", async () => {
+    const calls: string[] = [];
+    const bridge = createBridge({
+      getMcpStatus: async () => {
+        calls.push("get-mcp-status");
+        return { enabled: true, port: 31927, state: "listening" };
+      },
+      restartMcp: async () => {
+        calls.push("restart-mcp");
+        return { enabled: true, port: 31927, state: "listening" };
+      },
+      rotateMcpCredential: async () => {
+        calls.push("rotate-mcp-credential");
+        return {
+          headers: { Authorization: "Bearer fresh-mcp-token" },
+          transport: "streamable-http",
+          url: "http://127.0.0.1:31927/mcp",
+        };
+      },
+    });
+    const runtime = createElectronRuntime(bridge);
+
+    expect(await runtime.mcp.getStatus()).toEqual({
+      enabled: true,
+      port: 31927,
+      state: "listening",
+    });
+    expect(await runtime.mcp.restart()).toMatchObject({ state: "listening" });
+    expect(await runtime.mcp.rotateCredential()).toMatchObject({
+      transport: "streamable-http",
+      url: "http://127.0.0.1:31927/mcp",
+    });
+    expect(calls).toEqual(["get-mcp-status", "restart-mcp", "rotate-mcp-credential"]);
   });
 
   test("routes Discord connection tests through the desktop bridge", async () => {

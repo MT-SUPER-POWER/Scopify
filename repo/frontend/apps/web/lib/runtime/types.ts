@@ -3,6 +3,8 @@ import type {
   AudioFeatureTransportRole,
   DesktopBackendStatus,
   DesktopIconVisibilityState,
+  McpClientConfiguration,
+  McpStatus,
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
   DesktopPlaybackWallpaperModel,
@@ -133,6 +135,17 @@ export interface RuntimeLogging {
   write(event: RendererLogEvent): Promise<boolean>;
 }
 
+/**
+ * The Renderer can observe and explicitly administer the local MCP runtime,
+ * but never reads its long-lived credential. A client configuration is only
+ * returned from the explicit rotation action.
+ */
+export interface RuntimeMcp {
+  getStatus(): Promise<McpStatus | null>;
+  restart(): Promise<McpStatus | null>;
+  rotateCredential(): Promise<McpClientConfiguration | null>;
+}
+
 export interface RuntimeMediaControls {
   onCommand(callback: (command: MediaControlCommand) => void): RuntimeUnsubscribe;
   setPlaying(isPlaying: boolean): void;
@@ -195,6 +208,7 @@ export interface WebRuntime {
   readonly isDesktop: boolean;
   readonly kind: RuntimeKind;
   readonly logging: RuntimeLogging;
+  readonly mcp: RuntimeMcp;
   readonly media: RuntimeMediaControls;
   readonly navigation: RuntimeNavigation;
   readonly playback: RuntimePlaybackTransport;

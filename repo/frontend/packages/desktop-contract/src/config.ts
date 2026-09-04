@@ -1,3 +1,5 @@
+import type { DesktopMcpConfig } from "./mcp";
+
 export type DesktopCloseAction = 0 | 1 | 2;
 export type DesktopLogLevel = "debug" | "error" | "info" | "warn";
 export type DesktopProxyMode = "custom" | "direct" | "system";
@@ -47,6 +49,11 @@ export interface DesktopHostConfig {
     level: DesktopLogLevel;
     maxSizeMB: number;
   };
+  /**
+   * Public MCP listener policy. Credentials are deliberately excluded: the
+   * Electron Main process owns them through secure storage.
+   */
+  mcp: DesktopMcpConfig;
   network: {
     proxyMode: DesktopProxyMode;
     proxyUrl: string;

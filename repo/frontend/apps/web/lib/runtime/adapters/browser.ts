@@ -420,6 +420,13 @@ export function createBrowserRuntime(
       openDirectory: async () => false,
       write: async () => false,
     },
+    // An MCP listener is an Electron Main capability. Browser callers receive
+    // explicit null results rather than attempting a network-side fallback.
+    mcp: {
+      getStatus: async () => null,
+      restart: async () => null,
+      rotateCredential: async () => null,
+    },
     media: {
       onCommand: () => NOOP,
       setPlaying: NOOP,
