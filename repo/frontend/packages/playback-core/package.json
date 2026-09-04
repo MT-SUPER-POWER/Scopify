@@ -1,0 +1,21 @@
+{
+  "name": "@scopify/playback-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runtime-neutral playback queue, source resolution, and session orchestration for Scopify",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test tests --isolate",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  }
+}
