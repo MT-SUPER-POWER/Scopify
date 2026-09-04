@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Coffee,
   Download,
+  Footprints,
   LogIn,
   LogOut,
   Settings,
@@ -211,6 +212,17 @@ export function ProfileMenu({ children }: ProfileMenuProps) {
                 onSelectSignDay={handleSelectVipSignDay}
                 signHistory={signHistory}
               />
+            )}
+
+            {/* 音乐足迹 */}
+            {isLoggedIn && (
+              <DropdownMenuItem
+                onSelect={() => smartRouter.push("/recent/report")}
+                className={menuItemClassName}
+              >
+                <Footprints className="mr-3 size-4 shrink-0 text-content-muted" />
+                <span>{t("profile.menu.listeningReport")}</span>
+              </DropdownMenuItem>
             )}
 
             {/* 设置 */}
