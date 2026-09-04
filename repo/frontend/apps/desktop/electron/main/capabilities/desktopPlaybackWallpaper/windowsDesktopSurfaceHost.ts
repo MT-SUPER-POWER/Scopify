@@ -2,8 +2,8 @@ import { spawn } from "node:child_process";
 import { app, type BrowserWindow, type Rectangle } from "electron";
 import { z } from "zod";
 
-import { desktopSurfaceHostCoversExactBounds } from "./desktopSurfaceBounds.js";
-import { resolveDesktopPlaybackWallpaperScriptPath } from "./scriptPaths.js";
+import { desktopSurfaceHostCoversExactBounds } from "./desktopSurfaceBounds";
+import { resolveDesktopPlaybackWallpaperScriptPath } from "./scriptPaths";
 
 const WINDOWS_DESKTOP_SURFACE_HOST_RESULT_SCHEMA = z.object({
   ActualBottom: z.number(),

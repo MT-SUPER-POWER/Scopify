@@ -4,11 +4,11 @@ import type {
   DesktopPlaybackWallpaperSystemFallback,
   SystemWallpaperFallbackOperationResult,
 } from "@/types/systemWallpaperFallback";
-import { logger } from "@main/constants";
-import type { DesktopPlaybackWallpaperDriver } from "./capability.js";
-import { shouldUseDesktopPlaybackWallpaperSystemFallback } from "./fallbackPolicy.js";
-import { createNativeWallpaperHost } from "./nativeWallpaperHost.js";
-import { createWindowsSystemWallpaperFallback } from "./systemWallpaperFallback.js";
+import { wallpaperLog } from "@main/utils/logger";
+import type { DesktopPlaybackWallpaperDriver } from "./capability";
+import { shouldUseDesktopPlaybackWallpaperSystemFallback } from "./fallbackPolicy";
+import { createNativeWallpaperHost } from "./nativeWallpaperHost";
+import { createWindowsSystemWallpaperFallback } from "./systemWallpaperFallback";
 
 const WALLPAPER_PRESENTATION_READY_SELECTOR =
   '[data-desktop-playback-wallpaper-content-ready="true"]';
@@ -68,7 +68,7 @@ export function createElectronDesktopPlaybackWallpaperDriver(
 
     if (wasAttached && !(await nativeHost.detach(signal))) {
       const error = "The native wallpaper helper could not detach the main window.";
-      logger.error(`[desktop-playback-wallpaper] ${error}`);
+      wallpaperLog.error(`[desktop-playback-wallpaper] ${error}`);
       return { error, success: false } as const;
     }
 
@@ -206,7 +206,7 @@ export function createElectronDesktopPlaybackWallpaperDriver(
           preferences,
           signal,
         );
-        logger.info("[desktop-playback-wallpaper] main window fallback settled", {
+        wallpaperLog.info("[desktop-playback-wallpaper] main window fallback settled", {
           elapsedMs: Date.now() - reconcileStartedAt,
           enabled: preferences.systemWallpaperFallback,
           success: fallbackResult.success,
@@ -217,7 +217,7 @@ export function createElectronDesktopPlaybackWallpaperDriver(
           return toFallbackFault(fallbackResult);
         }
 
-        logger.info("[desktop-playback-wallpaper] main window attached to Windows desktop", {
+        wallpaperLog.info("[desktop-playback-wallpaper] main window attached to Windows desktop", {
           displayId: nextProfile.displayId,
           elapsedMs: Date.now() - reconcileStartedAt,
           host: attachResult,

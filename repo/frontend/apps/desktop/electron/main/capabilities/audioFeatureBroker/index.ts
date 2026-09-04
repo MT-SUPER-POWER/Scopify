@@ -1,13 +1,13 @@
 import type { AudioFeatureAck, AudioFeatureFrameV1 } from "@scopify/desktop-contract";
 import { isAudioFeatureAck, isAudioFeatureFrame } from "@scopify/desktop-contract";
 
-import type { AudioFeatureBrokerPort } from "./port.js";
+import type { AudioFeatureBrokerPort } from "./port";
 
-export type { AudioFeatureBrokerPort } from "./port.js";
+export type { AudioFeatureBrokerPort } from "./port";
 export {
   createOwnedAudioFeatureConnectionId,
   parseAudioFeatureConnectionRequest,
-} from "./connectionRequest.js";
+} from "./connectionRequest";
 
 const DEFAULT_ACK_TIMEOUT_MS = 1_000;
 const MAXIMUM_ACK_TIMEOUT_MS = 60_000;

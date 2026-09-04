@@ -9,9 +9,9 @@ import type {
   SystemWallpaperFallbackOperationResult,
   WindowsSystemWallpaperFallbackOptions,
 } from "@/types/systemWallpaperFallback";
-import { logger } from "@main/constants";
-import { parseSystemWallpaperResult } from "./fallbackPolicy.js";
-import { resolveDesktopPlaybackWallpaperScriptPath } from "./scriptPaths.js";
+import { wallpaperLog } from "@main/utils/logger";
+import { parseSystemWallpaperResult } from "./fallbackPolicy";
+import { resolveDesktopPlaybackWallpaperScriptPath } from "./scriptPaths";
 
 const BACKGROUND_CAPTURE_EVENT = "desktop-playback-wallpaper:capture-background";
 const CAPTURE_READY_SELECTOR = '[data-desktop-playback-wallpaper-content-ready="true"]';
@@ -239,9 +239,9 @@ function logOperation(
 ) {
   const payload = { reason, result };
   if (result.success) {
-    logger.info(`[desktop-playback-wallpaper] system fallback ${operation}`, payload);
+    wallpaperLog.info(`[desktop-playback-wallpaper] system fallback ${operation}`, payload);
   } else {
-    logger.error(`[desktop-playback-wallpaper] system fallback ${operation} failed`, payload);
+    wallpaperLog.error(`[desktop-playback-wallpaper] system fallback ${operation} failed`, payload);
   }
 }
 

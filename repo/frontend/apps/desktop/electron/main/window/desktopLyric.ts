@@ -8,7 +8,8 @@ import type {
   DesktopLyricPreferencesUpdate,
 } from "@scopify/desktop-contract";
 
-import { __iconWindow, __preloadScript, logger } from "@main/constants";
+import { __iconWindow, __preloadScript } from "@main/constants";
+import { windowLog } from "@main/utils/logger";
 
 const DESKTOP_LYRIC_ROUTE = "/desktop-lyrics";
 const PREFERENCES_FILE = "desktop-lyric.json";
@@ -213,7 +214,7 @@ function readPreferences(): DesktopLyricPreferences {
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
     if (code !== "ENOENT") {
-      logger.warn("[desktop-lyric] failed to read preferences", error);
+      windowLog.warn("[desktop-lyric] failed to read preferences", error);
     }
     return { ...DEFAULT_PREFERENCES };
   }
@@ -262,7 +263,7 @@ function registerIpcHandlers() {
       return null;
     }
     if (!isDesktopLyricPreferencesUpdate(update)) {
-      logger.warn("[desktop-lyric] rejected invalid preferences update");
+      windowLog.warn("[desktop-lyric] rejected invalid preferences update");
       return null;
     }
     return updatePreferences(update);
@@ -274,7 +275,7 @@ function registerIpcHandlers() {
       return;
     }
     if (!isDesktopLyricCommand(command)) {
-      logger.warn("[desktop-lyric] rejected invalid command");
+      windowLog.warn("[desktop-lyric] rejected invalid command");
       return;
     }
     if (applyMainWindowCommand(command)) return;
@@ -285,7 +286,7 @@ function registerIpcHandlers() {
 }
 
 function rejectUnexpectedSender(channel: string) {
-  logger.warn(`[desktop-lyric] rejected IPC from an unexpected renderer: ${channel}`);
+  windowLog.warn(`[desktop-lyric] rejected IPC from an unexpected renderer: ${channel}`);
 }
 
 function savePreferences(nextPreferences: DesktopLyricPreferences) {
@@ -293,7 +294,7 @@ function savePreferences(nextPreferences: DesktopLyricPreferences) {
     fs.mkdirSync(app.getPath("userData"), { recursive: true });
     fs.writeFileSync(preferencesPath(), JSON.stringify(nextPreferences), "utf-8");
   } catch (error) {
-    logger.error("[desktop-lyric] failed to save preferences", error);
+    windowLog.error("[desktop-lyric] failed to save preferences", error);
   }
 }
 
@@ -340,7 +341,7 @@ function showDesktopLyricWindow() {
   });
 
   desktopLyricWindow.webContents.on("did-fail-load", (_event, code, desc, validatedUrl) => {
-    logger.error("[desktop-lyric] companion failed to load", { code, desc, validatedUrl });
+    windowLog.error("[desktop-lyric] companion failed to load", { code, desc, validatedUrl });
   });
 
   desktopLyricWindow.on("closed", () => {
@@ -349,7 +350,7 @@ function showDesktopLyricWindow() {
   });
 
   desktopLyricWindow.loadURL(desktopLyricUrl).catch((error) => {
-    logger.error("[desktop-lyric] failed to load companion", error);
+    windowLog.error("[desktop-lyric] failed to load companion", error);
   });
 
   return desktopLyricWindow;

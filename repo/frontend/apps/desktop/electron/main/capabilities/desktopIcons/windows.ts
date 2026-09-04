@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { app } from "electron";
 import type { DesktopIconVisibilityState } from "@scopify/desktop-contract";
 
-import { parseWindowsDesktopIconVisibilityResult } from "./result.js";
+import { parseWindowsDesktopIconVisibilityResult } from "./result";
 
 type DesktopIconAction = "Get" | "Hide" | "Show";
 

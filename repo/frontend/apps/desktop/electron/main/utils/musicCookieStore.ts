@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync, unlinkSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { app, safeStorage, session } from "electron";
-import { parseMusicSessionCookieBundle } from "./musicSessionCookie.js";
+import { parseMusicSessionCookieBundle } from "./musicSessionCookie";
 
 const MUSIC_SESSION_COOKIE_STORE_FILE = "scopify-music-session.json";
 const MUSIC_SESSION_COOKIE_STORE_VERSION = 1;

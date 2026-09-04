@@ -1,11 +1,11 @@
 import { ipcMain, type BrowserWindow } from "electron";
-import { logger } from "@main/constants";
+import { ipcLog } from "@main/utils/logger";
 import { loginWindow } from "@main/window/login";
 
 /** 注册主窗口导航、外观和登录完成后的窗口协调命令。 */
 export function registerWindowIpc(mainWindow: BrowserWindow | null) {
   ipcMain.on("login-success", () => {
-    logger.info("[IPC] login success");
+    ipcLog.info("[IPC] login success");
     loginWindow?.close();
     mainWindow?.reload();
   });

@@ -27,7 +27,8 @@ import {
   type PlaybackBrokerIpcBinding,
 } from "@main/capabilities/playbackBroker/ipc";
 import { createPlaybackGateway, type PlaybackGateway } from "@main/capabilities/playbackGateway";
-import { desktopConfig, logger } from "@main/constants";
+import { desktopConfig } from "@main/constants";
+import { brokerLog, wallpaperLog } from "@main/utils/logger";
 import { registerIpcHandlers } from "@main/ipc";
 import { initializeUpdater } from "@main/services/updater";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "@main/window/desktopLyric";
@@ -49,10 +50,12 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
     wallpaperDriver ??= createElectronDesktopPlaybackWallpaperDriver({
       mainWindow: window,
       onHostLost: (diagnostic) => {
-        logger.error("[desktop-playback-wallpaper] native host lost", { diagnostic });
+        wallpaperLog.error("[desktop-playback-wallpaper] native host lost", { diagnostic });
         void wallpaperCapability
           ?.configure({ enabled: false })
-          .catch((error) => logger.error("[desktop-playback-wallpaper] recovery failed", error));
+          .catch((error) =>
+            wallpaperLog.error("[desktop-playback-wallpaper] recovery failed", error),
+          );
       },
     });
     controllerWindow ??= createDesktopPlaybackControllerWindow({
@@ -86,15 +89,15 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
         trayWindow,
       ],
       onAuthorityConnected: (senderId) => {
-        logger.info("[playback] main renderer authority connected", { senderId });
+        brokerLog.info("[playback] main renderer authority connected", { senderId });
       },
-      onRejected: (message) => logger.warn(`[playback-broker] ${message}`),
+      onRejected: (message) => brokerLog.warn(`[playback-broker] ${message}`),
     });
     void mcpRuntime.start(desktopConfig.mcp);
     audioFeatureBroker ??= initializeAudioFeatureBrokerIpc({
       getPublisherWindow: options.getMainWindow,
       getSubscriberWindows: () => [controllerWindow?.getWindow() ?? null],
-      onRejected: (message) => logger.warn(`[audio-feature-broker] ${message}`),
+      onRejected: (message) => brokerLog.warn(`[audio-feature-broker] ${message}`),
     });
     initializeUpdater(window, desktopConfig.updater);
 

@@ -27,6 +27,11 @@ test("desktop default config yml contains only host-owned settings", () => {
   });
   expect(config.cache.playback.maxSizeMB).toBe(64);
   expect(config.discord).toEqual({ applicationId: "1536959813114658836", enabled: true });
+  expect(config.mcp).toEqual({
+    capabilities: ["playback.read"],
+    enabled: false,
+    port: 31927,
+  });
   expect(config.updater.checkOnStartup).toBe(true);
   expect(config.updater.autoDownload).toBe(false);
   expect(parsed).toHaveProperty("backend");
@@ -128,4 +133,44 @@ test("normalizing Discord config accepts an application ID and boolean strings",
   });
 
   expect(config.discord).toEqual({ applicationId: "123456789012345678", enabled: true });
+});
+
+test("normalizing MCP config permits only known capabilities and valid local ports", () => {
+  const config = normalizeDesktopHostConfig({
+    mcp: {
+      capabilities: ["playback.control", "unknown", "playback.read", "playback.read"],
+      enabled: "true",
+      port: "32123",
+    },
+  });
+
+  expect(config.mcp).toEqual({
+    capabilities: ["playback.control", "playback.read"],
+    enabled: true,
+    port: 32123,
+  });
+});
+
+test("normalizing unknown MCP capabilities fails closed", () => {
+  const config = normalizeDesktopHostConfig({
+    mcp: { capabilities: ["unknown"], enabled: "not-a-boolean", port: 70000 },
+  });
+
+  expect(config.mcp).toEqual({
+    capabilities: [],
+    enabled: false,
+    port: 31927,
+  });
+});
+
+test("normalizing an explicitly empty MCP capability list preserves no permissions", () => {
+  const config = normalizeDesktopHostConfig({
+    mcp: { capabilities: [], enabled: true, port: 31927 },
+  });
+
+  expect(config.mcp).toEqual({
+    capabilities: [],
+    enabled: true,
+    port: 31927,
+  });
 });

@@ -3,7 +3,7 @@ import { app, ipcMain, type BrowserWindow } from "electron";
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
 import type { McpRuntime } from "@main/capabilities/mcp";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "@main/store";
-import { cleanOldLogs, configureLogging, logger } from "@main/constants";
+import { cleanOldLogs, configureLogging } from "@main/constants";
 import type { DesktopBackendController } from "@main/services/backend";
 import type { createDiscordPresenceController } from "@main/services/discordPresence";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@main/services/pageCache";
 import { configureUpdater } from "@main/services/updater";
 import { applyElectronProxy } from "@main/utils/proxy";
+import { ipcLog } from "@main/utils/logger";
 import { configuredCacheRoot } from "./cache";
 import { isMainRenderer } from "./sender";
 
@@ -36,7 +37,7 @@ export function registerConfigurationIpc(
   ipcMain.handle("config:get-host", () => loadDesktopHostConfig());
   ipcMain.handle("config:update-host", async (event, newConfig: DesktopHostConfig) => {
     if (!isMainRenderer(event, mainWindow)) throw new Error("Unauthorized config update.");
-    logger.info("[IPC] config:update-host", newConfig);
+    ipcLog.info("[IPC] config:update-host", newConfig);
     const currentConfig = loadDesktopHostConfig();
     // 先实例化旧缓存，让历史 music-pages 目录在迁移根目录之前完成升级。
     createPageCacheStore({
@@ -59,7 +60,7 @@ export function registerConfigurationIpc(
     await backendController.reconcile(savedConfig.backend);
     void discordPresence.refresh();
     await applyElectronProxy(savedConfig).catch((error) => {
-      logger.error("[IPC] failed to apply proxy after config update:", error);
+      ipcLog.error("[IPC] failed to apply proxy after config update:", error);
     });
     return savedConfig;
   });

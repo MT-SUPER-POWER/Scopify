@@ -1,12 +1,7 @@
 import fs from "node:fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
-import {
-  __iconIcoPath,
-  __iconWindow,
-  __preloadScript,
-  desktopConfig,
-  logger,
-} from "@main/constants";
+import { __iconIcoPath, __iconWindow, __preloadScript, desktopConfig } from "@main/constants";
+import { windowLog } from "@main/utils/logger";
 
 // 在启动阶段尽早暴露资源打包错误，但不阻断主窗口启动。
 fs.access(__iconIcoPath).catch(() => {
@@ -49,7 +44,7 @@ export function createLoginWindow(mainWin: BrowserWindow) {
 
   void loginWindow
     .loadURL(loginUrl)
-    .catch((error) => logger.error("[login] failed to load login window", error));
+    .catch((error) => windowLog.error("[login] failed to load login window", error));
 
   loginWindow.webContents.on("before-input-event", (event, input) => {
     const isDevToolsKey =

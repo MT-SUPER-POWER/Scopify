@@ -9,7 +9,6 @@ import {
   getCurrentLogFilePath,
   getLogDirectory,
   ipcLog,
-  logger,
   logsDir,
   resolveLogsDir,
   trayLog,
@@ -73,23 +72,23 @@ export const __iconDock = _nativeDockMac;
 export const __iconTray = _nativeTray;
 
 if (_nativeIco.isEmpty()) {
-  logger.error(`[Resource] Failed to load ico icon from: ${__iconIcoPath}`);
+  coreLog.error(`[Resource] Failed to load ico icon from: ${__iconIcoPath}`);
 }
 
 if (_nativeWindowMac.isEmpty()) {
-  logger.error(
+  coreLog.error(
     `[Resource] Failed to load macOS window icon from: ${join(__iconsetDir, "icon_128x128.png")}`,
   );
 }
 
 if (_nativeDockMac.isEmpty()) {
-  logger.error(
+  coreLog.error(
     `[Resource] Failed to load macOS dock icon from: ${join(__iconsetDir, "icon_512x512.png")}`,
   );
 }
 
 if (_nativeTray.isEmpty()) {
-  logger.error(
+  coreLog.error(
     `[Resource] Failed to load system tray icon from: ${join(__iconsetDir, "icon_32x32.png")}`,
   );
 }
@@ -107,16 +106,16 @@ export const prev = nativeImage.createFromPath(join(__picDir, "tray/prev.png"));
 export const play = nativeImage.createFromPath(join(__picDir, "tray/play.png"));
 
 if (next.isEmpty()) {
-  logger.error(`[Thumbar] Failed to load next icon: ${join(__picDir, "tray/next.png")}`);
+  coreLog.error(`[Thumbar] Failed to load next icon: ${join(__picDir, "tray/next.png")}`);
 }
 if (pause.isEmpty()) {
-  logger.error(`[Thumbar] Failed to load pause icon: ${join(__picDir, "tray/pause.png")}`);
+  coreLog.error(`[Thumbar] Failed to load pause icon: ${join(__picDir, "tray/pause.png")}`);
 }
 if (prev.isEmpty()) {
-  logger.error(`[Thumbar] Failed to load prev icon: ${join(__picDir, "tray/prev.png")}`);
+  coreLog.error(`[Thumbar] Failed to load prev icon: ${join(__picDir, "tray/prev.png")}`);
 }
 if (play.isEmpty()) {
-  logger.error(`[Thumbar] Failed to load play icon: ${join(__picDir, "tray/play.png")}`);
+  coreLog.error(`[Thumbar] Failed to load play icon: ${join(__picDir, "tray/play.png")}`);
 }
 
 export {
@@ -127,7 +126,6 @@ export {
   getCurrentLogFilePath,
   getLogDirectory,
   ipcLog,
-  logger,
   logsDir,
   resolveLogsDir,
   trayLog,

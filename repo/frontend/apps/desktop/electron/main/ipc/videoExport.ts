@@ -2,7 +2,7 @@ import { writeFile } from "node:fs/promises";
 import { dialog, ipcMain, screen, type BrowserWindow } from "electron";
 import type { DesktopVideoExportSaveRequest } from "@scopify/desktop-contract";
 import { resolveVideoExportWindowBounds } from "@main/window/videoExportWindow";
-import { isMainRenderer } from "./sender.js";
+import { isMainRenderer } from "./sender";
 
 /**
  * 注册视频导出期间的主窗口整形和文件写入能力。

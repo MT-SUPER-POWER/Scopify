@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { logger } from "@main/constants";
+import { ipcLog } from "@main/utils/logger";
 import {
   clearInstalledMusicSessionCookies,
   installMusicSessionCookies,
@@ -19,10 +19,10 @@ export function registerAuthenticationIpc() {
       const installed = await installMusicSessionCookies(value, backendOrigin);
       if (!installed) return false;
       saveMusicSessionCookie(value);
-      logger.info("[IPC] set-music-cookie success");
+      ipcLog.info("[IPC] set-music-cookie success");
       return true;
     } catch (error) {
-      logger.error("[IPC] set-music-cookie failed", error);
+      ipcLog.error("[IPC] set-music-cookie failed", error);
       throw error;
     }
   });

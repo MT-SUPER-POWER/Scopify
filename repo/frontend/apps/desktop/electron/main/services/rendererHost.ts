@@ -5,7 +5,8 @@ import serve from "electron-serve";
 
 import { verifyRendererArtifact } from "@/lib/rendererArtifact";
 import type { DesktopRendererHost } from "@/types/electronWindow";
-import { __rendererDir, desktopConfig, logger } from "@main/constants";
+import { __rendererDir, desktopConfig } from "@main/constants";
+import { rendererLog } from "@main/utils/logger";
 
 /** Owns the difference between the development server and the verified packaged Renderer. */
 export function createDesktopRendererHost(): DesktopRendererHost {
@@ -18,7 +19,7 @@ export function createDesktopRendererHost(): DesktopRendererHost {
     async load(window) {
       if (!serveStaticRenderer) {
         window.webContents.on("did-fail-load", (_event, code, description) => {
-          logger.error("[renderer] development page failed to load", { code, description });
+          rendererLog.error("[renderer] development page failed to load", { code, description });
           if (!window.isDestroyed()) window.webContents.reloadIgnoringCache();
         });
         await window.loadURL(developmentUrl);
@@ -28,7 +29,10 @@ export function createDesktopRendererHost(): DesktopRendererHost {
       try {
         await serveStaticRenderer(window);
       } catch (error) {
-        logger.error("[renderer] app protocol failed; loading the static entry directly", error);
+        rendererLog.error(
+          "[renderer] app protocol failed; loading the static entry directly",
+          error,
+        );
         if (!window.isDestroyed()) await window.loadFile(join(__rendererDir, "index.html"));
       }
     },

@@ -2,7 +2,7 @@ import { type ProxyConfig, session } from "electron";
 
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
 
-import { logger } from "@main/constants";
+import { proxyLog } from "@main/utils/logger";
 
 function buildProxyConfig(config: DesktopHostConfig): ProxyConfig {
   const { proxyMode, proxyUrl } = config.network;
@@ -23,7 +23,7 @@ function buildProxyConfig(config: DesktopHostConfig): ProxyConfig {
 
 export async function applyElectronProxy(config: DesktopHostConfig) {
   const proxyConfig = buildProxyConfig(config);
-  logger.info("[proxy] applying Electron proxy:", proxyConfig);
+  proxyLog.info("[proxy] applying Electron proxy:", proxyConfig);
 
   await session.defaultSession.setProxy(proxyConfig);
   await session.defaultSession.forceReloadProxyConfig();

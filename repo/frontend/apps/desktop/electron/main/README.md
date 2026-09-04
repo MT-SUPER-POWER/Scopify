@@ -86,6 +86,9 @@ Discord Rich Presence、页面缓存和自动更新。调用者通过这些模�
 这里保存具有自己 Interface、状态和测试面的深模块：
 
 - `playbackBroker/`：在 Authority 与 Replica 窗口间路由可靠播放消息；
+- `playbackGateway/`：供 Main 与 MCP 使用的可信播放入口，等待 Authority 真实回执；
+- `mcp/`：本机 MCP HTTP、安全凭据、协议 Session 和播放 Tool Facade；
+- `nativeAudio/`：可选 Windows NAPI 音频模块的 Host 与安全状态投影；
 - `audioFeatureBroker/`：传输有背压约束的高频音频特征；
 - `desktopIcons/`：隐藏和恢复 Windows 桌面图标；
 - `desktopPlaybackWallpaper/`：桌面播放壁纸状态机、Electron driver 与原生 host。

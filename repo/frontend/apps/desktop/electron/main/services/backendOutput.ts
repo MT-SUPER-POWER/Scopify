@@ -1,4 +1,4 @@
-import { sanitizeLogText } from "@main/utils/logger";
+import { sanitizeLogText } from "@main/utils/logText";
 
 /** Formats one child-process output chunk without flattening multiline messages. */
 export function formatBackendChildOutput(value: Buffer) {

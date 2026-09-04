@@ -9,14 +9,14 @@ import {
   applyDesktopPlaybackWallpaperPreferencesUpdate,
   cloneDesktopPlaybackWallpaperPreferences,
 } from "@/types/desktopPlaybackWallpaper";
-import type { DesktopPlaybackWallpaperPreferencesRepository } from "./preferences.js";
+import type { DesktopPlaybackWallpaperPreferencesRepository } from "./preferences";
 import {
   cloneDesktopPlaybackWallpaperModel,
   createDesktopPlaybackWallpaperModel,
   getInactiveDesktopPlaybackWallpaperStatus,
   transitionDesktopPlaybackWallpaper,
   type DesktopPlaybackWallpaperSettledStatus,
-} from "./stateMachine.js";
+} from "./stateMachine";
 
 export type DesktopPlaybackWallpaperReconcileReason = "configure" | "initialize" | "retry";
 

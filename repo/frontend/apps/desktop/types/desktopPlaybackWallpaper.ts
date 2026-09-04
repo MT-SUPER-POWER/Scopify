@@ -8,7 +8,7 @@ import { z } from "zod";
 const FULLSCREEN_POLICIES = ["keep-running", "pause", "stop"] as const;
 
 function toRecord(value: unknown): Record<string, unknown> {
-  return z.record(z.unknown()).safeParse(value).data ?? {};
+  return z.record(z.string(), z.unknown()).safeParse(value).data ?? {};
 }
 
 function normalizedBoolean(defaultValue: boolean) {

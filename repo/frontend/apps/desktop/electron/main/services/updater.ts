@@ -5,7 +5,7 @@ import type {
   AppUpdateStatePatch,
   DesktopHostConfig,
 } from "@scopify/desktop-contract";
-import { logger } from "@main/constants";
+import { updaterLog } from "@main/utils/logger";
 
 const { autoUpdater } = electronUpdater;
 
@@ -48,7 +48,7 @@ export function configureUpdater(config: DesktopHostConfig["updater"]) {
 
   if (updaterConfig.autoDownload && state.status === "available") {
     void downloadUpdate().catch((error) => {
-      logger.warn("[updater] automatic download failed:", error);
+      updaterLog.warn("[updater] automatic download failed:", error);
     });
   }
 }
@@ -81,7 +81,7 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
 
     if (updaterConfig.autoDownload) {
       void downloadUpdate().catch((error) => {
-        logger.warn("[updater] automatic download failed:", error);
+        updaterLog.warn("[updater] automatic download failed:", error);
       });
     }
   });
@@ -111,7 +111,7 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
   );
   autoUpdater.on("error", (error) => {
     const message = error instanceof Error ? error.message : String(error);
-    logger.warn("[updater] update error:", message);
+    updaterLog.warn("[updater] update error:", message);
     setState({
       status: "error",
       percent: undefined,
@@ -141,7 +141,7 @@ export async function checkForUpdates(): Promise<AppUpdateState> {
     await autoUpdater.checkForUpdates();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    logger.warn("[updater] check failed:", message);
+    updaterLog.warn("[updater] check failed:", message);
     setState({
       status: "error",
       percent: undefined,
@@ -172,7 +172,7 @@ export async function downloadUpdate(): Promise<AppUpdateState> {
     await autoUpdater.downloadUpdate();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    logger.warn("[updater] download failed:", message);
+    updaterLog.warn("[updater] download failed:", message);
     setState({ status: "error", percent: undefined, message });
   }
 
@@ -186,7 +186,7 @@ export function quitAndInstallUpdate() {
 
 export function scheduleStartupUpdateCheck(delayMs = 5000) {
   if (!updaterConfig.checkOnStartup) {
-    logger.info("[updater] startup check disabled by user preference");
+    updaterLog.info("[updater] startup check disabled by user preference");
     return;
   }
 

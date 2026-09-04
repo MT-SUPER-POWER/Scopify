@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "@main/store";
-import { logger } from "@main/constants";
+import { ipcLog } from "@main/utils/logger";
 import { getRememberedAppCloseAction, isAppCloseAction } from "@main/window/appCloseAction";
 import { isAppCloseWindowSender } from "@main/window/appCloseWindow";
 import { trayWindow } from "@main/window/tray";
@@ -8,13 +8,13 @@ import { trayWindow } from "@main/window/tray";
 /** 注册应用重启、退出以及“关闭窗口”决策的命令接口。 */
 export function registerApplicationIpc(mainWindow: BrowserWindow | null) {
   ipcMain.on("relaunch-app", () => {
-    logger.info("[IPC] relaunch requested");
+    ipcLog.info("[IPC] relaunch requested");
     app.relaunch();
     app.quit();
   });
   ipcMain.on("app-close-action", (event, action: unknown, remember: unknown) => {
     if (!isAppCloseWindowSender(event.sender.id)) {
-      logger.warn("[app-close] rejected action from an unexpected renderer");
+      ipcLog.warn("[app-close] rejected action from an unexpected renderer");
       return;
     }
     if (!isAppCloseAction(action) || typeof remember !== "boolean") return;
@@ -28,7 +28,7 @@ export function registerApplicationIpc(mainWindow: BrowserWindow | null) {
           app: { ...config.app, closeAction: rememberedAction },
         });
       } catch (error) {
-        logger.error("[app-close] failed to persist the remembered action", error);
+        ipcLog.error("[app-close] failed to persist the remembered action", error);
       }
     }
     if (action === "minimize" || action === "cancel") {

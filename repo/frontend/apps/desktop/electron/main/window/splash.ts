@@ -1,6 +1,7 @@
 import { BrowserWindow } from "electron";
 
-import { __iconWindow, __splashHtmlPath, logger } from "@main/constants";
+import { __iconWindow, __splashHtmlPath } from "@main/constants";
+import { windowLog } from "@main/utils/logger";
 
 const MINIMUM_VISIBLE_MS = 900;
 const READY_TIMEOUT_MS = 1_500;
@@ -52,11 +53,11 @@ export function createSplashWindowController() {
       settleReady();
     });
     activeWindow.webContents.once("did-fail-load", (_event, code, description) => {
-      logger.error("[splash] failed to load", { code, description });
+      windowLog.error("[splash] failed to load", { code, description });
       settleReady();
     });
     void activeWindow.loadFile(__splashHtmlPath).catch((error) => {
-      logger.error("[splash] failed to load", error);
+      windowLog.error("[splash] failed to load", error);
       settleReady();
     });
   }

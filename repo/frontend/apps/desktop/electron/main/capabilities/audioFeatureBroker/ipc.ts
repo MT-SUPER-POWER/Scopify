@@ -1,11 +1,11 @@
 import { ipcMain, type BrowserWindow, type IpcMainEvent } from "electron";
 
-import { adaptElectronAudioFeaturePort } from "./electronPort.js";
-import { createAudioFeatureBroker, type AudioFeatureBrokerDiagnostics } from "./index.js";
+import { adaptElectronAudioFeaturePort } from "./electronPort";
+import { createAudioFeatureBroker, type AudioFeatureBrokerDiagnostics } from "./index";
 import {
   createOwnedAudioFeatureConnectionId,
   parseAudioFeatureConnectionRequest,
-} from "./connectionRequest.js";
+} from "./connectionRequest";
 
 export const AUDIO_FEATURE_CONNECT_CHANNEL = "audio-feature-transport:connect";
 

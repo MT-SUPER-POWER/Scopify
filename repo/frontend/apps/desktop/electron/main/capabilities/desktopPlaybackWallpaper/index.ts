@@ -8,19 +8,19 @@ import type {
 } from "@scopify/desktop-contract";
 
 import { parseDesktopPlaybackWallpaperPreferencesUpdate } from "@/types/desktopPlaybackWallpaper";
-import { logger } from "@main/constants";
+import { wallpaperLog } from "@main/utils/logger";
 import { trayWindow } from "@main/window/tray";
 import {
   isDesktopPlaybackWallpaperControlSender,
   isDesktopPlaybackWallpaperModelReader,
-} from "./authorization.js";
+} from "./authorization";
 import {
   createDesktopPlaybackWallpaperCapability,
   type DesktopPlaybackControllerLauncher,
   type DesktopPlaybackWallpaperCapability,
   type DesktopPlaybackWallpaperDriver,
-} from "./capability.js";
-import { createDesktopPlaybackWallpaperPreferencesRepository } from "./preferences.js";
+} from "./capability";
+import { createDesktopPlaybackWallpaperPreferencesRepository } from "./preferences";
 
 const PREFERENCES_FILE = "desktop-playback-wallpaper.json";
 
@@ -54,12 +54,14 @@ export function initializeDesktopPlaybackWallpaperCapability(
   if (!capability) {
     const preferences = createDesktopPlaybackWallpaperPreferencesRepository({
       filePath: options.preferencesFilePath ?? join(app.getPath("userData"), PREFERENCES_FILE),
-      onError: (message, error) => logger.error(`[desktop-playback-wallpaper] ${message}`, error),
+      onError: (message, error) =>
+        wallpaperLog.error(`[desktop-playback-wallpaper] ${message}`, error),
     });
     capability = createDesktopPlaybackWallpaperCapability({
       controller: options.controller,
       driver: options.driver ?? createFoundationDriver(process.platform),
-      onError: (message, error) => logger.error(`[desktop-playback-wallpaper] ${message}`, error),
+      onError: (message, error) =>
+        wallpaperLog.error(`[desktop-playback-wallpaper] ${message}`, error),
       preferences,
     });
     capability.subscribe(broadcastModel);
@@ -171,13 +173,17 @@ function isControlSender(senderId: number) {
 
 function requireControlSender(event: IpcMainInvokeEvent, channel: string) {
   if (isControlSender(event.sender.id)) return;
-  logger.warn(`[desktop-playback-wallpaper] rejected IPC from an unexpected renderer: ${channel}`);
+  wallpaperLog.warn(
+    `[desktop-playback-wallpaper] rejected IPC from an unexpected renderer: ${channel}`,
+  );
   throw new Error("The renderer is not authorized to control desktop playback wallpaper.");
 }
 
 function requireControllerSender(event: IpcMainInvokeEvent, channel: string) {
   if (event.sender.id === getWindowId(getControllerWindow())) return;
-  logger.warn(`[desktop-playback-wallpaper] rejected IPC from an unexpected renderer: ${channel}`);
+  wallpaperLog.warn(
+    `[desktop-playback-wallpaper] rejected IPC from an unexpected renderer: ${channel}`,
+  );
   throw new Error("Only the desktop playback controller may perform this action.");
 }
 
@@ -191,7 +197,9 @@ function requireModelReader(event: IpcMainInvokeEvent, channel: string) {
   ) {
     return;
   }
-  logger.warn(`[desktop-playback-wallpaper] rejected IPC from an unexpected renderer: ${channel}`);
+  wallpaperLog.warn(
+    `[desktop-playback-wallpaper] rejected IPC from an unexpected renderer: ${channel}`,
+  );
   throw new Error("The renderer is not authorized to read desktop playback wallpaper state.");
 }
 

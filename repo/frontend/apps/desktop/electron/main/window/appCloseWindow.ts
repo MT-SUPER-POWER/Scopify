@@ -1,6 +1,7 @@
 import { BrowserWindow } from "electron";
 
-import { __iconWindow, __preloadScript, logger } from "@main/constants";
+import { __iconWindow, __preloadScript } from "@main/constants";
+import { windowLog } from "@main/utils/logger";
 
 const APP_CLOSE_ROUTE = "/app-close";
 
@@ -51,7 +52,7 @@ export function showAppCloseWindow(parent: BrowserWindow, rendererBaseUrl: strin
   appCloseWindow = window;
   window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   window.webContents.on("did-fail-load", (_event, code, description, validatedURL) => {
-    logger.error("[app-close] failed to load", { code, description, validatedURL });
+    windowLog.error("[app-close] failed to load", { code, description, validatedURL });
   });
   window.on("closed", () => {
     if (appCloseWindow === window) appCloseWindow = null;
@@ -67,7 +68,7 @@ export function showAppCloseWindow(parent: BrowserWindow, rendererBaseUrl: strin
       window.focus();
     })
     .catch((error) => {
-      logger.error("[app-close] load failed", error);
+      windowLog.error("[app-close] load failed", error);
     });
 }
 

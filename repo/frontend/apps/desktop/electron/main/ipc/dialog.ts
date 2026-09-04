@@ -1,5 +1,5 @@
 import { dialog, ipcMain, type BrowserWindow } from "electron";
-import { isMainRenderer } from "./sender.js";
+import { isMainRenderer } from "./sender";
 
 /** 注册需要原生系统对话框的通用选择能力。 */
 export function registerDialogIpc(mainWindow: BrowserWindow | null) {

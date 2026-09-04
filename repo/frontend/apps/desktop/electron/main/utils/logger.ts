@@ -5,6 +5,9 @@ import log from "electron-log";
 
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
 import { loadDesktopHostConfig } from "@main/store";
+import { sanitizeLogData } from "@main/utils/logText";
+
+export { sanitizeLogData, sanitizeLogText } from "@main/utils/logText";
 
 export const CURRENT_LOG_FILE_NAME = "main.log";
 export const ARCHIVE_LOG_DIRECTORY_NAME = "archive";
@@ -12,8 +15,6 @@ export const SESSION_SHUTDOWN_MARKER = "[session] shutdown";
 
 const RECOVERY_MARKER = "[session] previous session ended unexpectedly";
 const RECENT_LOG_TAIL_BYTES = 4096;
-const ANSI_ESCAPE_SEQUENCE_PATTERN =
-  /(?:\u001B\][\s\S]*?(?:\u0007|\u001B\\)|\u001B\[[0-?]*[ -/]*[@-~]|\u001B[@-_])/g;
 
 /** 是否处于开发环境 */
 export const isDev = !app.isPackaged || process.env.NODE_ENV === "development";
@@ -44,24 +45,6 @@ function pad(value: number, length = 2): string {
 /** 获取当前会话日志绝对路径 */
 export function getCurrentLogPath(baseLogsDir: string): string {
   return join(baseLogsDir, CURRENT_LOG_FILE_NAME);
-}
-
-/**
- * 剔除终端色彩控制字符并将回车符转为换行，保护日志文件不被子进程乱码污染
- */
-export function sanitizeLogText(text: string): string {
-  return text.replace(ANSI_ESCAPE_SEQUENCE_PATTERN, "").replace(/\r\n?/g, "\n");
-}
-
-/**
- * 清洗 electron-log 文件转换链传入的标量或数组数据
- */
-export function sanitizeLogData(data: unknown): unknown {
-  if (typeof data === "string") return sanitizeLogText(data);
-  if (Array.isArray(data)) {
-    return data.map((item) => (typeof item === "string" ? sanitizeLogText(item) : item));
-  }
-  return data;
 }
 
 export function formatLogTimestamp(date: Date): string {
@@ -212,7 +195,7 @@ export function getCurrentLogFilePath(): string {
 export function cleanOldLogs(): number {
   const deletedCount = cleanArchivedLogs(logsDir, activeLoggingConfig.keepDays);
   if (deletedCount > 0) {
-    log.info(`[logger] deleted ${deletedCount} expired archived log(s)`);
+    coreLog.info(`[logger] deleted ${deletedCount} expired archived log(s)`);
   }
   return deletedCount;
 }
@@ -285,6 +268,5 @@ export const rendererLog = log.scope("renderer");
 export const updaterLog = log.scope("updater");
 export const discordLog = log.scope("discord");
 export const sessionLog = log.scope("session");
-
-/** 兼容旧代码的默认 logger 别名 */
-export const logger = log;
+export const proxyLog = log.scope("proxy");
+export const desktopIconsLog = log.scope("desktop-icons");

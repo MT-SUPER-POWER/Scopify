@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { app, type BrowserWindow } from "electron";
 import { z } from "zod";
 
-import { logger } from "@main/constants";
+import { wallpaperLog } from "@main/utils/logger";
 
 const ATTACH_TIMEOUT_MS = 10_000;
 const DETACH_TIMEOUT_MS = 5_000;
@@ -79,7 +79,7 @@ export function createNativeWallpaperHost(
     stopHeartbeatMonitor();
     heartbeatTimer = setInterval(() => {
       if (!child || Date.now() - lastEventAt <= HEARTBEAT_TIMEOUT_MS) return;
-      logger.warn("[desktop-playback-wallpaper] native helper heartbeat timed out");
+      wallpaperLog.warn("[desktop-playback-wallpaper] native helper heartbeat timed out");
       void detach().finally(() => {
         intentionalShutdown = false;
         reportLost("The native wallpaper helper stopped responding.");
@@ -155,7 +155,7 @@ export function createNativeWallpaperHost(
           try {
             handleEvent(JSON.parse(line));
           } catch {
-            logger.warn("[desktop-playback-wallpaper] native helper returned invalid JSON", {
+            wallpaperLog.warn("[desktop-playback-wallpaper] native helper returned invalid JSON", {
               line,
             });
           }
@@ -165,7 +165,8 @@ export function createNativeWallpaperHost(
     });
     activeChild.stderr.on("data", (chunk: string) => {
       const message = chunk.trim();
-      if (message) logger.warn("[desktop-playback-wallpaper] native helper stderr", { message });
+      if (message)
+        wallpaperLog.warn("[desktop-playback-wallpaper] native helper stderr", { message });
     });
     activeChild.on("error", (error) => {
       if (child !== activeChild) return;

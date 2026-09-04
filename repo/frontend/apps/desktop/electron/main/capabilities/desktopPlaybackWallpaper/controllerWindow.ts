@@ -5,11 +5,12 @@ import type {
   DesktopPlaybackControllerOpenResult,
 } from "@scopify/desktop-contract";
 
-import { __iconWindow, __preloadScript, logger } from "@main/constants";
+import { __iconWindow, __preloadScript } from "@main/constants";
+import { wallpaperLog } from "@main/utils/logger";
 import {
   DESKTOP_PLAYBACK_CONTROLLER_SIZES,
   resolveDesktopPlaybackControllerBounds,
-} from "./controllerLayout.js";
+} from "./controllerLayout";
 
 const DESKTOP_PLAYBACK_CONTROLLER_ROUTE = "/desktop-playback-controller";
 
@@ -68,7 +69,7 @@ export function createDesktopPlaybackControllerWindow(
     window.setAlwaysOnTop(true, "floating");
     window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
     window.webContents.on("did-fail-load", (_event, code, description, validatedURL) => {
-      logger.error("[desktop-playback-controller] failed to load", {
+      wallpaperLog.error("[desktop-playback-controller] failed to load", {
         code,
         description,
         validatedURL,
@@ -85,7 +86,7 @@ export function createDesktopPlaybackControllerWindow(
       .loadURL(controllerUrl)
       .then(() => true)
       .catch((error) => {
-        logger.error("[desktop-playback-controller] load failed", error);
+        wallpaperLog.error("[desktop-playback-controller] load failed", error);
         return false;
       });
     return window;

@@ -1,8 +1,9 @@
 import { app, BrowserWindow } from "electron";
 
 import type { MainWindowOptions } from "@/types/electronWindow";
-import { __iconWindow, __preloadScript, logger } from "@main/constants";
+import { __iconWindow, __preloadScript } from "@main/constants";
 import { loadDesktopHostConfig } from "@main/store";
+import { rendererLog } from "@main/utils/logger";
 import { showAppCloseWindow } from "@main/window/appCloseWindow";
 
 /** Create the main window and keep all BrowserWindow-specific policy local to this module. */
@@ -36,7 +37,7 @@ export function createMainWindow(options: MainWindowOptions) {
 
   window.webContents.once("did-finish-load", () => {
     void Promise.resolve(options.onRendererReady(window)).catch((error) => {
-      logger.error("[renderer] post-load initialization failed", error);
+      rendererLog.error("[renderer] post-load initialization failed", error);
     });
   });
   window.webContents.on("before-input-event", (event, input) => {
@@ -75,7 +76,7 @@ export function createMainWindow(options: MainWindowOptions) {
 
   void options.renderer
     .load(window)
-    .catch((error) => logger.error("[renderer] failed to load main window", error));
+    .catch((error) => rendererLog.error("[renderer] failed to load main window", error));
   return window;
 }
 

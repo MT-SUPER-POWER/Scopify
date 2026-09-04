@@ -9,7 +9,7 @@ import type {
   DesktopBackendState,
   DesktopHostConfig,
 } from "@scopify/desktop-contract";
-import { formatBackendChildOutput, formatBackendLogEntry } from "./backendOutput.js";
+import { formatBackendChildOutput, formatBackendLogEntry } from "./backendOutput";
 
 const BACKEND_HOST = "127.0.0.1";
 const BACKEND_START_TIMEOUT_MS = 20_000;

@@ -1,7 +1,7 @@
 import { ipcMain, shell, type BrowserWindow } from "electron";
 import type { RendererLogEvent } from "@scopify/desktop-contract";
 import { getCurrentLogFilePath, getLogDirectory, ipcLog, rendererLog } from "@main/utils/logger";
-import { isMainRenderer } from "./sender.js";
+import { isMainRenderer } from "./sender";
 
 /** 注册 Renderer 日志写入与日志文件打开能力。 */
 export function registerLoggingIpc(mainWindow: BrowserWindow | null) {

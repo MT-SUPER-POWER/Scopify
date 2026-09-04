@@ -1,8 +1,8 @@
 import { BrowserWindow, ipcMain, type IpcMainInvokeEvent } from "electron";
 
-import { logger } from "@main/constants";
+import { desktopIconsLog } from "@main/utils/logger";
 import { trayWindow } from "@main/window/tray";
-import { getWindowsDesktopIconVisibility, setWindowsDesktopIconVisibility } from "./windows.js";
+import { getWindowsDesktopIconVisibility, setWindowsDesktopIconVisibility } from "./windows";
 
 let ipcRegistered = false;
 let mainWindow: BrowserWindow | null = null;
@@ -25,7 +25,7 @@ export function initializeDesktopIconVisibilityCapability(
     assertAuthorized(event);
     const state = await getWindowsDesktopIconVisibility();
     if (state.diagnostic) {
-      logger.warn("[desktop-icons] visibility query did not fully succeed", state);
+      desktopIconsLog.warn("[desktop-icons] visibility query did not fully succeed", state);
     }
     return state;
   });
@@ -38,7 +38,7 @@ export function initializeDesktopIconVisibilityCapability(
 
     const state = await setWindowsDesktopIconVisibility(visible);
     if (state.diagnostic) {
-      logger.warn("[desktop-icons] visibility update did not fully succeed", {
+      desktopIconsLog.warn("[desktop-icons] visibility update did not fully succeed", {
         requestedVisible: visible,
         ...state,
       });
@@ -56,7 +56,7 @@ function assertAuthorized(event: IpcMainInvokeEvent) {
     return;
   }
 
-  logger.warn("[desktop-icons] rejected unauthorized renderer", {
+  desktopIconsLog.warn("[desktop-icons] rejected unauthorized renderer", {
     senderId: event.sender.id,
   });
   throw new Error("Renderer is not authorized to control desktop icons.");
