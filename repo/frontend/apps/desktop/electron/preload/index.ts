@@ -17,6 +17,7 @@ import type {
   McpStatus,
   PlaybackTransportPayload,
   PlaybackTransportRole,
+  RendererLogEvent,
 } from "@scopify/desktop-contract";
 
 type ElectronRendererMessagePort = MessagePort & {
@@ -295,5 +296,26 @@ const electronAPI: DesktopBridge = {
 try {
   contextBridge.exposeInMainWorld("electronAPI", electronAPI);
 } catch (error) {
-  console.error("[Preload] Error:", error);
+  try {
+    const metadata =
+      error instanceof Error
+        ? {
+            error: {
+              message: error.message,
+              name: error.name,
+              ...(error.stack ? { stack: error.stack } : {}),
+            },
+          }
+        : { error: String(error) };
+    ipcRenderer.send("logger:preload-error", {
+      event: "preload.bridge_expose_failed",
+      level: "error",
+      message: "Failed to expose Electron bridge from preload",
+      metadata,
+      source: "runtime",
+      timestamp: new Date().toISOString(),
+    } satisfies RendererLogEvent);
+  } catch {
+    // The IPC transport itself may be unavailable; there is no reliable Main sink left.
+  }
 }

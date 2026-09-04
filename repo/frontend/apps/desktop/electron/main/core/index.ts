@@ -1,6 +1,6 @@
 import { app, dialog, Menu, type BrowserWindow } from "electron";
 
-import { __iconDock, desktopConfig } from "@main/constants";
+import { __iconDock, desktopConfig, validateDesktopResources } from "@main/constants";
 import {
   backendLog,
   coreLog,
@@ -19,6 +19,7 @@ import { restoreMusicSessionCookies } from "@main/utils/musicCookieStore";
 import { applyElectronProxy } from "@main/utils/proxy";
 import { startProcessMemoryMonitor } from "@main/utils/processMemory";
 import { initThumbarButtons } from "@main/utils/thumbarButtons";
+import { registerLoggingIpc } from "@main/ipc/logging";
 import { disposeAppCloseWindow } from "@main/window/appCloseWindow";
 import { createMainWindow, notifyMainWindowVisibility } from "@main/window/mainWindow";
 import { createSplashWindowController } from "@main/window/splash";
@@ -193,6 +194,10 @@ export function initializeApplication() {
   if (initialized) return;
   initialized = true;
   initLogger();
+  validateDesktopResources();
+  // Preload scripts can run before the main BrowserWindow is attached. Keep the
+  // bridge-exposure failure path connected to the Main log from the first window onward.
+  registerLoggingIpc(null);
   configureChromium();
 
   if (!app.requestSingleInstanceLock()) {

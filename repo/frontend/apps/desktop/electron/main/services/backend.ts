@@ -230,7 +230,7 @@ export function createDesktopBackendController(
       });
       nextChild.stderr.on("data", (data: Buffer) => {
         const message = formatBackendChildOutput(data);
-        if (message) options.log.warn("%s", formatBackendLogEntry(message));
+        if (message) options.log.error("%s", formatBackendLogEntry(message));
       });
       nextChild.once("error", (error) => {
         if (child !== nextChild) return;

@@ -32,6 +32,35 @@ function createLogsDirectory() {
 }
 
 describe("desktop log lifecycle", () => {
+  test("keeps Electron runtime sources off raw console references", () => {
+    const runtimeRoots = [
+      join(import.meta.dir, "../electron/main"),
+      join(import.meta.dir, "../electron/preload"),
+    ];
+    const loggerSourcePath = join(import.meta.dir, "../electron/main/utils/logger.ts");
+    const directConsoleCalls: string[] = [];
+
+    const visit = (directory: string) => {
+      for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+        const entryPath = join(directory, entry.name);
+        if (entry.isDirectory()) {
+          visit(entryPath);
+          continue;
+        }
+        if (!entry.isFile() || !entry.name.endsWith(".ts")) continue;
+        if (entryPath === loggerSourcePath) continue;
+
+        const source = fs.readFileSync(entryPath, "utf8");
+        if (/\bconsole\b/.test(source)) {
+          directConsoleCalls.push(entryPath);
+        }
+      }
+    };
+
+    runtimeRoots.forEach(visit);
+    expect(directConsoleCalls).toEqual([]);
+  });
+
   test("sanitizes terminal control sequences without flattening carriage-return output", () => {
     expect(sanitizeLogText("\u001b[32mScopify\u001b[0m\rBackend\n")).toBe("Scopify\nBackend\n");
   });

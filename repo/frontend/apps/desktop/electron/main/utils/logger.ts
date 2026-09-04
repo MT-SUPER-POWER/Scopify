@@ -204,6 +204,15 @@ export function cleanOldLogs(): number {
  * 配置并更新日志传输规则
  */
 export function configureLogging(loggingConfig: DesktopHostConfig["logging"]): void {
+  const nextLogsDir = resolveLogsDir(loggingConfig.dir);
+  if (nextLogsDir !== logsDir) {
+    fs.mkdirSync(nextLogsDir, { recursive: true });
+    const nextLogPath = getCurrentLogPath(nextLogsDir);
+    archiveLogFile(nextLogPath, nextLogsDir);
+    logsDir = nextLogsDir;
+    currentLogPath = nextLogPath;
+  }
+
   activeLoggingConfig = loggingConfig;
 
   // 文件输出配置
@@ -259,6 +268,7 @@ export function initLogger(customConfig?: DesktopHostConfig["logging"]): void {
 
 export const coreLog = log.scope("core");
 export const ipcLog = log.scope("ipc");
+export const loginLog = log.scope("login");
 export const trayLog = log.scope("tray");
 export const windowLog = log.scope("window");
 export const backendLog = log.scope("backend");

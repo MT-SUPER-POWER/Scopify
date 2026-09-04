@@ -1,5 +1,6 @@
 import { app, BrowserWindow, screen, Tray } from "electron";
 import { __iconTray, __preloadScript, desktopConfig } from "@main/constants";
+import { trayLog } from "@main/utils/logger";
 
 const TRAY_WIDTH = 240;
 const TRAY_HEIGHT = 380;
@@ -42,10 +43,13 @@ function createTrayWindow() {
 
   trayWindow = window;
   void window.loadURL(trayUrl).catch((error) => {
-    if (!window.isDestroyed()) console.error("[tray] failed to load", error);
+    trayLog.error("failed to load", {
+      destroyed: window.isDestroyed(),
+      error,
+    });
   });
   window.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
-    console.error("[tray] did-fail-load", { code, desc, validatedURL });
+    trayLog.error("did-fail-load", { code, desc, validatedURL });
   });
 
   window.on("blur", () => {
@@ -119,7 +123,7 @@ export function initTray(mainWindow: BrowserWindow, options: TrayOptions = {}) {
   tray.on("double-click", () => {
     if (options.onMainWindowRequested) {
       void Promise.resolve(options.onMainWindowRequested()).catch((error) => {
-        console.error("[tray] failed to reveal the main window", error);
+        trayLog.error("failed to reveal the main window", error);
       });
       return;
     }

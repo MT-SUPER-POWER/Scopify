@@ -71,26 +71,29 @@ export const __iconDock = _nativeDockMac;
 /** 系统托盘图标（Windows 任务栏通知区域） */
 export const __iconTray = _nativeTray;
 
-if (_nativeIco.isEmpty()) {
-  coreLog.error(`[Resource] Failed to load ico icon from: ${__iconIcoPath}`);
-}
+/** Validate native resources after Main logging has been initialized. */
+export function validateDesktopResources() {
+  if (_nativeIco.isEmpty()) {
+    coreLog.error(`[Resource] Failed to load ico icon from: ${__iconIcoPath}`);
+  }
 
-if (_nativeWindowMac.isEmpty()) {
-  coreLog.error(
-    `[Resource] Failed to load macOS window icon from: ${join(__iconsetDir, "icon_128x128.png")}`,
-  );
-}
+  if (_nativeWindowMac.isEmpty()) {
+    coreLog.error(
+      `[Resource] Failed to load macOS window icon from: ${join(__iconsetDir, "icon_128x128.png")}`,
+    );
+  }
 
-if (_nativeDockMac.isEmpty()) {
-  coreLog.error(
-    `[Resource] Failed to load macOS dock icon from: ${join(__iconsetDir, "icon_512x512.png")}`,
-  );
-}
+  if (_nativeDockMac.isEmpty()) {
+    coreLog.error(
+      `[Resource] Failed to load macOS dock icon from: ${join(__iconsetDir, "icon_512x512.png")}`,
+    );
+  }
 
-if (_nativeTray.isEmpty()) {
-  coreLog.error(
-    `[Resource] Failed to load system tray icon from: ${join(__iconsetDir, "icon_32x32.png")}`,
-  );
+  if (_nativeTray.isEmpty()) {
+    coreLog.error(
+      `[Resource] Failed to load system tray icon from: ${join(__iconsetDir, "icon_32x32.png")}`,
+    );
+  }
 }
 
 export const __preloadScript = join(__dirname, "../main/preload.js");

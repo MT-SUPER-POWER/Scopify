@@ -1,15 +1,15 @@
 import fs from "node:fs/promises";
 import { app, BrowserWindow, ipcMain } from "electron";
 import { __iconIcoPath, __iconWindow, __preloadScript, desktopConfig } from "@main/constants";
-import { windowLog } from "@main/utils/logger";
+import { loginLog } from "@main/utils/logger";
 
 // 在启动阶段尽早暴露资源打包错误，但不阻断主窗口启动。
 fs.access(__iconIcoPath).catch(() => {
-  console.warn("Warning: Icon file not found at", __iconIcoPath);
+  loginLog.warn("icon file not found", { path: __iconIcoPath });
 });
 
 fs.access(__preloadScript).catch(() => {
-  console.warn("Warning: Preload script file not found at", __preloadScript);
+  loginLog.warn("preload script file not found", { path: __preloadScript });
 });
 
 export let loginWindow: BrowserWindow | null = null;
@@ -44,7 +44,7 @@ export function createLoginWindow(mainWin: BrowserWindow) {
 
   void loginWindow
     .loadURL(loginUrl)
-    .catch((error) => windowLog.error("[login] failed to load login window", error));
+    .catch((error) => loginLog.error("failed to load login window", error));
 
   loginWindow.webContents.on("before-input-event", (event, input) => {
     const isDevToolsKey =
@@ -58,7 +58,7 @@ export function createLoginWindow(mainWin: BrowserWindow) {
   });
 
   loginWindow.webContents.on("did-fail-load", (_event, code, desc, validatedURL) => {
-    console.error("[login] did-fail-load", { code, desc, validatedURL });
+    loginLog.error("did-fail-load", { code, desc, validatedURL });
   });
 
   loginWindow?.on("closed", () => {

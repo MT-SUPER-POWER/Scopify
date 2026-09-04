@@ -20,6 +20,7 @@
 
 ### Quality
 
+- **收敛 Electron 全链路日志**：Main 的托盘/登录窗口不再直接调用 `console.*`，Renderer 控制台日志在保留 DevTools 输出的同时转发至 `electron-log`，preload Bridge 暴露失败增加最早期 IPC 兜底，并保留事件、来源、追踪 ID 等结构化字段；同时延后原生资源校验到日志初始化之后，避免启动早期日志落入错误目录。
 - **完成 Electron Main Scoped Logger 迁移**：将残留在 Core、IPC、Window、Renderer、Updater、桌面壁纸、桌面图标与代理模块中的默认 `logger.*` 调用全部替换为职责明确的 scoped logger，并移除兼容旧代码的无 scope 别名，防止新增日志继续退回默认通道。
 - **记录 Electron 各进程内存工作集**：主窗口 Renderer 就绪后立即采样，并按一分钟周期将 Main、Renderer、GPU、Utility 与各命名窗口的工作集写入 Core 日志；应用退出时同步释放采样定时器，为版本间内存表现量化和防劣化对比提供稳定基线。
 - **引入主进程可信 PlaybackGateway 与 Broker 观测扩展**：在 PlaybackBroker 中增加状态快照获取与订阅机制，新增主进程专属的 PlaybackGateway 与内存 MessagePort 副本（MainPlaybackReplica），实现统一命令排队、防碰撞与全链路异步真实回执确认。

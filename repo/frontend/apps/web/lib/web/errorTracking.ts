@@ -1,5 +1,6 @@
 import { isApiError } from "@/lib/web/apiError";
 import { runtime } from "@/lib/runtime";
+import { writeNativeRendererConsoleError } from "@/lib/runtime/consoleBridge";
 import type { LogMetadata, LogValue, RendererLogSource } from "@/types/logging";
 
 const MAX_ARRAY_LENGTH = 20;
@@ -95,7 +96,11 @@ function writeFailureEvent(
       ...(traceId ? { traceId } : {}),
     })
     .catch(() => {
-      console.error(`[renderer] failed to write log event: ${event}`, message, metadata);
+      writeNativeRendererConsoleError(
+        `[renderer] failed to write log event: ${event}`,
+        message,
+        metadata,
+      );
     });
 }
 
