@@ -133,6 +133,7 @@ export function useSettingsState() {
   const [backendPingResult, setBackendPingResult] = useState<BackendPingResult | null>(null);
   const [isTestingDiscord, setIsTestingDiscord] = useState(false);
   const [discordStatus, setDiscordStatus] = useState<DiscordPresenceStatus | null>(null);
+  const [mcpStatusRefreshKey, setMcpStatusRefreshKey] = useState(0);
   const [backendStatus, setBackendStatus] = useState<DesktopBackendStatus | null>(null);
   const [cacheStats, setCacheStats] = useState<Awaited<ReturnType<typeof getCacheStats>> | null>(
     null,
@@ -491,6 +492,9 @@ export function useSettingsState() {
       const nextConfig = { desktop: savedDesktopConfig, web: nextWebConfig };
       setOriginalConfig(nextConfig);
       setConfig(nextConfig);
+      // Main reconciles MCP while saving host settings. Re-read its actual
+      // status so the UI reports a port conflict rather than the stale state.
+      if (runtime.isDesktop) setMcpStatusRefreshKey((current) => current + 1);
       setIsModalOpen(false);
       toast.success(translate(nextWebConfig.app.locale, "settings.saveSuccess"));
 
@@ -550,5 +554,6 @@ export function useSettingsState() {
     discordStatus,
     isTestingDiscord,
     handleTestDiscord,
+    mcpStatusRefreshKey,
   };
 }

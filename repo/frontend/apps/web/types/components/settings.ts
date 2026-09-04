@@ -2,6 +2,8 @@ import type {
   DesktopBackendStatus,
   DesktopHostConfig,
   DiscordPresenceStatus,
+  McpClientConfiguration,
+  McpStatus,
 } from "@scopify/desktop-contract";
 import type {
   DesktopSettingsChangeHandler,
@@ -65,6 +67,7 @@ export interface DesktopSettingsTabProps {
   config: DesktopHostConfig;
   discordStatus: DiscordPresenceStatus | null;
   isTestingDiscord: boolean;
+  mcpStatusRefreshKey: number;
   onChange: DesktopSettingsChangeHandler;
   onTestDiscord: () => Promise<void>;
 }
@@ -72,4 +75,25 @@ export interface DesktopSettingsTabProps {
 export interface AppUpdaterSectionProps {
   config: DesktopHostConfig;
   onChange: DesktopSettingsChangeHandler;
+}
+
+/** Props for the Electron-only local MCP management section. */
+export interface McpSettingsSectionProps {
+  config: DesktopHostConfig["mcp"];
+  onChange: DesktopSettingsChangeHandler;
+  /** Increments after the Main process has reconciled a saved MCP policy. */
+  statusRefreshKey: number;
+}
+
+export interface McpCredentialControlsProps {
+  clientConfiguration: McpClientConfiguration | null;
+  isListening: boolean;
+  isRotatingCredential: boolean;
+  onRotateCredential(): Promise<McpClientConfiguration | null>;
+}
+
+export interface McpRuntimeStatusProps {
+  isRestarting: boolean;
+  onRestart(): Promise<McpStatus | null>;
+  status: McpStatus | null;
 }

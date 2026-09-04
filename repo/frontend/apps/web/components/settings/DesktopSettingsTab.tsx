@@ -9,6 +9,7 @@ import type { DesktopSettingsTabProps } from "@/types/components/settings";
 import { AppUpdaterSection } from "./AppUpdaterSection";
 import { DesktopLyricSection } from "./DesktopLyricSection";
 import { LocalBackendSettingsSection } from "./LocalBackendSettingsSection";
+import { McpSettingsSection } from "./McpSettingsSection";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
 
 export function DesktopSettingsTab({
@@ -16,6 +17,7 @@ export function DesktopSettingsTab({
   config,
   discordStatus,
   isTestingDiscord,
+  mcpStatusRefreshKey,
   onChange,
   onTestDiscord,
 }: DesktopSettingsTabProps) {
@@ -187,6 +189,11 @@ export function DesktopSettingsTab({
         />
       </SettingSection>
       <DesktopLyricSection />
+      <McpSettingsSection
+        config={config.mcp}
+        onChange={onChange}
+        statusRefreshKey={mcpStatusRefreshKey}
+      />
       <AppUpdaterSection config={config} onChange={onChange} />
     </div>
   );

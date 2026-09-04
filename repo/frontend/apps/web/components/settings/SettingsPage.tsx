@@ -85,6 +85,7 @@ const SettingsPage = () => {
                 config={settings.config.desktop}
                 discordStatus={settings.discordStatus}
                 isTestingDiscord={settings.isTestingDiscord}
+                mcpStatusRefreshKey={settings.mcpStatusRefreshKey}
                 onChange={settings.handleDesktopChange}
                 onTestDiscord={settings.handleTestDiscord}
               />

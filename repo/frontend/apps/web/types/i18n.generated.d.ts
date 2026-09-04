@@ -437,6 +437,204 @@ export interface TranslateFn {
    */
   (key: "settings.section.discord", params?: TranslationParams): string;
   /**
+   * zh-CN: MCP 连接
+   * zh-TW: MCP 連線
+   * en-US: MCP Connection
+   */
+  (key: "settings.section.mcp", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启用本地 MCP
+   * zh-TW: 啟用本機 MCP
+   * en-US: Enable local MCP
+   */
+  (key: "settings.mcp.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅在本机 127.0.0.1 上监听，允许已授权的 AI 客户端控制播放器。
+   * zh-TW: 僅在本機 127.0.0.1 上監聽，允許已授權的 AI 用戶端控制播放器。
+   * en-US: Listens only on 127.0.0.1 and lets authorized AI clients control playback.
+   */
+  (key: "settings.mcp.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 监听端口
+   * zh-TW: 監聽連接埠
+   * en-US: Listening port
+   */
+  (key: "settings.mcp.port.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 端口被占用时服务不会启动，也不会影响播放器本身。
+   * zh-TW: 連接埠被占用時服務不會啟動，也不會影響播放器本身。
+   * en-US: A port conflict prevents MCP from starting but never affects playback itself.
+   */
+  (key: "settings.mcp.port.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 允许读取播放状态
+   * zh-TW: 允許讀取播放狀態
+   * en-US: Allow playback reads
+   */
+  (key: "settings.mcp.read.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 允许读取当前歌曲、进度和播放状态，不会提供播放地址或登录信息。
+   * zh-TW: 允許讀取目前歌曲、進度和播放狀態，不會提供播放位址或登入資訊。
+   * en-US: Allows the current track, progress, and playback state without exposing URLs or sign-in data.
+   */
+  (key: "settings.mcp.read.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 允许控制播放
+   * zh-TW: 允許控制播放
+   * en-US: Allow playback control
+   */
+  (key: "settings.mcp.control.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 允许播放、暂停、切歌、跳转和调节音量。
+   * zh-TW: 允許播放、暫停、切歌、跳轉和調整音量。
+   * en-US: Allows play, pause, track changes, seeking, and volume changes.
+   */
+  (key: "settings.mcp.control.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 服务状态
+   * zh-TW: 服務狀態
+   * en-US: Service status
+   */
+  (key: "settings.mcp.status.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 服务状态来自桌面端主进程。保存配置后会自动应用新的策略。
+   * zh-TW: 服務狀態來自桌面版主程序。儲存設定後會自動套用新的策略。
+   * en-US: Status comes from the Desktop Main process. Saving applies the updated policy automatically.
+   */
+  (key: "settings.mcp.status.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前环境不可用
+   * zh-TW: 目前環境不可用
+   * en-US: Unavailable in this environment
+   */
+  (key: "settings.mcp.status.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已停止
+   * zh-TW: 已停止
+   * en-US: Stopped
+   */
+  (key: "settings.mcp.status.stopped", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动中
+   * zh-TW: 啟動中
+   * en-US: Starting
+   */
+  (key: "settings.mcp.status.starting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在监听
+   * zh-TW: 正在監聽
+   * en-US: Listening
+   */
+  (key: "settings.mcp.status.listening", params?: TranslationParams): string;
+  /**
+   * zh-CN: 启动失败
+   * zh-TW: 啟動失敗
+   * en-US: Failed to start
+   */
+  (key: "settings.mcp.status.error", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地连接地址
+   * zh-TW: 本機連線位址
+   * en-US: Local endpoint
+   */
+  (key: "settings.mcp.endpoint.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅限本机 MCP 客户端使用。
+   * zh-TW: 僅限本機 MCP 用戶端使用。
+   * en-US: For local MCP clients only.
+   */
+  (key: "settings.mcp.endpoint.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启服务
+   * zh-TW: 重新啟動服務
+   * en-US: Restart service
+   */
+  (key: "settings.mcp.restart.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用已保存的 MCP 配置重新启动本地服务。
+   * zh-TW: 使用已儲存的 MCP 設定重新啟動本機服務。
+   * en-US: Restarts the local service using the saved MCP configuration.
+   */
+  (key: "settings.mcp.restart.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启 MCP
+   * zh-TW: 重新啟動 MCP
+   * en-US: Restart MCP
+   */
+  (key: "settings.mcp.restart.button", params?: TranslationParams): string;
+  /**
+   * zh-CN: MCP 服务已重启
+   * zh-TW: MCP 服務已重新啟動
+   * en-US: MCP service restarted
+   */
+  (key: "settings.mcp.restart.success", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法重启 MCP：{{message}}
+   * zh-TW: 無法重新啟動 MCP：{{message}}
+   * en-US: Could not restart MCP: {{message}}
+   */
+  (key: "settings.mcp.restart.failed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 客户端凭据
+   * zh-TW: 用戶端憑據
+   * en-US: Client credential
+   */
+  (key: "settings.mcp.credential.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 凭据由桌面端安全存储。轮换后，旧凭据会立即失效。
+   * zh-TW: 憑據由桌面版安全儲存。輪換後，舊憑據會立即失效。
+   * en-US: The Desktop app stores credentials securely. Rotating invalidates the previous credential immediately.
+   */
+  (key: "settings.mcp.credential.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 生成并轮换凭据
+   * zh-TW: 產生並輪換憑據
+   * en-US: Generate and rotate credential
+   */
+  (key: "settings.mcp.credential.rotate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已生成新的 MCP 客户端配置
+   * zh-TW: 已產生新的 MCP 用戶端設定
+   * en-US: New MCP client configuration generated
+   */
+  (key: "settings.mcp.credential.rotated", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法生成 MCP 客户端配置
+   * zh-TW: 無法產生 MCP 用戶端設定
+   * en-US: Could not generate MCP client configuration
+   */
+  (key: "settings.mcp.credential.failed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 此配置含有访问凭据。请复制到可信客户端，关闭此页面后不会再次显示。
+   * zh-TW: 此設定含有存取憑據。請複製到可信任的用戶端，關閉此頁面後不會再次顯示。
+   * en-US: This configuration contains an access credential. Copy it to a trusted client; it is not shown again after leaving this page.
+   */
+  (key: "settings.mcp.credential.revealedWarning", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制客户端配置
+   * zh-TW: 複製用戶端設定
+   * en-US: Copy client configuration
+   */
+  (key: "settings.mcp.credential.copy", params?: TranslationParams): string;
+  /**
+   * zh-CN: MCP 客户端配置已复制
+   * zh-TW: MCP 用戶端設定已複製
+   * en-US: MCP client configuration copied
+   */
+  (key: "settings.mcp.credential.copied", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法复制 MCP 客户端配置
+   * zh-TW: 無法複製 MCP 用戶端設定
+   * en-US: Could not copy MCP client configuration
+   */
+  (key: "settings.mcp.credential.copyFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知错误
+   * zh-TW: 未知錯誤
+   * en-US: Unknown error
+   */
+  (key: "settings.mcp.error.unknown", params?: TranslationParams): string;
+  /**
    * zh-CN: Discord 播放状态
    * zh-TW: Discord 播放狀態
    * en-US: Discord Playback Status
