@@ -14,7 +14,10 @@ import {
   setCachedPlayUrl,
   setCachedReplayGain,
 } from "@/lib/cache/playbackCache";
-import type { MusicQualityLevel } from "@/types/api/music";
+import type {
+  NeteasePlayableSourceAdapterDependencies,
+  WebNeteasePlayableSourceResolver,
+} from "@/types/playbackAdapters";
 import type { MusicQuality } from "@/types/player";
 
 /**
@@ -37,20 +40,6 @@ const PLAYBACK_QUALITY_TO_MUSIC_QUALITY: Record<PlaybackQuality, MusicQuality> =
 // cache is deliberately much shorter so it only coalesces nearby resolves and
 // never becomes a second long-lived signed-URL cache in this compatibility phase.
 const CORE_MEMORY_SOURCE_TTL_MS = 60_000;
-
-export interface NeteasePlayableSourceAdapterDependencies {
-  clearCachedPlayUrl(songId: number, quality: MusicQuality): Promise<void>;
-  getCachedPlayUrl(songId: number, quality: MusicQuality): Promise<string | null>;
-  getSongUrlWithQuality(
-    songId: number,
-    level: MusicQualityLevel,
-  ): Promise<{
-    data: string | null | undefined;
-    replayGainTrackGain?: number;
-  }>;
-  setCachedPlayUrl(songId: number, quality: MusicQuality, url: string): Promise<void>;
-  setCachedReplayGain(songId: number, gainDb: number): Promise<void>;
-}
 
 const defaultDependencies: NeteasePlayableSourceAdapterDependencies = {
   clearCachedPlayUrl,
@@ -160,12 +149,6 @@ export class NeteasePlayableSourceAdapter implements PlayableSourceAdapter {
       return unavailable("netease-source-request-failed", true);
     }
   }
-}
-
-export interface WebNeteasePlayableSourceResolver {
-  /** Clears both core's in-memory source and the renderer's persistent URL. */
-  invalidate(songId: number, quality: MusicQuality): Promise<void>;
-  resolve(songId: number, quality: MusicQuality, signal?: AbortSignal): Promise<SourceResolution>;
 }
 
 function toPlaybackQuality(quality: MusicQuality): PlaybackQuality {

@@ -4,8 +4,8 @@ import type { SourceResolveRequest } from "@scopify/playback-core";
 import {
   createWebNeteasePlayableSourceResolver,
   NeteasePlayableSourceAdapter,
-  type NeteasePlayableSourceAdapterDependencies,
 } from "@/lib/player/adapters/neteasePlayableSourceAdapter";
+import type { NeteasePlayableSourceAdapterDependencies } from "@/types/playbackAdapters";
 
 function createRequest(overrides: Partial<SourceResolveRequest> = {}): SourceResolveRequest {
   return {

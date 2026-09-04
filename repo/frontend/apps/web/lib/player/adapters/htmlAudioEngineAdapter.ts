@@ -1,5 +1,4 @@
 import type {
-  AudioEngineAdapter,
   AudioEngineEvent,
   AudioEngineLoadOptions,
   AudioEngineLoadResult,
@@ -14,7 +13,12 @@ import type {
   PlaybackAuthorityMediaEvent,
   PlaybackMediaPort,
   PlaybackMediaSample,
-} from "@/types/playbackAuthority";
+} from "@/types/playbackMediaPort";
+import type {
+  HtmlAudioEngineAdapter,
+  HtmlAudioMediaEvent,
+  HtmlAudioMediaEventType,
+} from "@/types/playbackAdapters";
 
 const MEDIA_EVENTS: ReadonlyArray<
   readonly [keyof HTMLMediaElementEventMap, HtmlAudioMediaEventType]
@@ -33,38 +37,6 @@ const MEDIA_EVENTS: ReadonlyArray<
   ["progress", "progress"],
   ["timeupdate", "time-update"],
 ];
-
-export type HtmlAudioMediaEventType = PlaybackAuthorityMediaEvent | "progress" | "time-update";
-
-export interface HtmlAudioMediaEvent {
-  bufferedPositionMs: number;
-  errorCode: number | null;
-  errorMessage: string | null;
-  networkState: number;
-  readyState: number;
-  revision: number;
-  sample: PlaybackMediaSample;
-  type: HtmlAudioMediaEventType;
-}
-
-/**
- * The only Browser adapter that may touch an HTMLAudioElement.
- *
- * `setRemoteSource`/`clearSource` are temporary compatibility entry points for
- * the Zustand-owned player. Once PlaybackSession owns the queue, it will use
- * the standard `load(PlayableSource, options)` method exclusively.
- */
-export interface HtmlAudioEngineAdapter extends AudioEngineAdapter {
-  clearSource(revision?: number): void;
-  getMediaSample(): PlaybackMediaSample;
-  getSourceHost(): string | null;
-  hasSource(): boolean;
-  isCurrentSource(sourceUrl: string): boolean;
-  isSourceLoading(): boolean;
-  setRemoteSource(sourceUrl: string, revision: number): void;
-  subscribeMedia(listener: (event: HtmlAudioMediaEvent) => void): () => void;
-  waitForSource(sourceUrl: string, isCurrent: () => boolean): Promise<boolean>;
-}
 
 function finiteNonNegative(value: number): number {
   return Number.isFinite(value) && value >= 0 ? value : 0;

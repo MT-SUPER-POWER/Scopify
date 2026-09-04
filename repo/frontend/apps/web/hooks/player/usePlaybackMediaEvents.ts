@@ -2,10 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import type {
-  HtmlAudioEngineAdapter,
-  HtmlAudioMediaEvent,
-} from "@/lib/player/adapters/htmlAudioEngineAdapter";
+import type { HtmlAudioEngineAdapter, HtmlAudioMediaEvent } from "@/types/playbackAdapters";
 import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
 import type { PlaybackMediaEventHandlers, PlaybackMediaSourceState } from "@/types/playbackMedia";

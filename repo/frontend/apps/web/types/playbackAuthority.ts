@@ -8,37 +8,14 @@ import type {
 import type { ReactNode, RefObject } from "react";
 
 import type { PlaybackClock, PlaybackProjectionSource } from "@/types/playbackProjection";
-import type { HtmlAudioEngineAdapter } from "@/lib/player/adapters/htmlAudioEngineAdapter";
+import type { HtmlAudioEngineAdapter } from "@/types/playbackAdapters";
+import type { PlaybackAuthorityMediaEvent, PlaybackMediaPort } from "@/types/playbackMediaPort";
 
-export type PlaybackAuthorityMediaEvent =
-  | "can-play"
-  | "duration-change"
-  | "ended"
-  | "error"
-  | "load-start"
-  | "pause"
-  | "playing"
-  | "rate-change"
-  | "waiting";
-
-export interface PlaybackMediaSample {
-  durationMs: number;
-  ended: boolean;
-  errorMessage: string | null;
-  paused: boolean;
-  playbackRate: number;
-  positionMs: number;
-  volume: number;
-}
-
-export interface PlaybackMediaPort {
-  getSample(): PlaybackMediaSample;
-  pause(): void;
-  play(): Promise<void>;
-  seek(positionMs: number): void;
-  setVolume(volume: number): void;
-  subscribe(listener: (event: PlaybackAuthorityMediaEvent) => void): () => void;
-}
+export type {
+  PlaybackAuthorityMediaEvent,
+  PlaybackMediaPort,
+  PlaybackMediaSample,
+} from "@/types/playbackMediaPort";
 
 export interface PlaybackAuthorityScheduler {
   clearInterval(handle: unknown): void;
