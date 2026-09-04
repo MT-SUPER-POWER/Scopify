@@ -1,0 +1,18 @@
+{
+  "name": "@scopify/audio-engine",
+  "private": true,
+  "version": "0.1.0",
+  "main": "scopify-audio-engine.win32-x64-msvc.node",
+  "types": "index.d.ts",
+  "napi": {
+    "binaryName": "scopify-audio-engine",
+    "targets": [
+      "x86_64-pc-windows-msvc",
+      "aarch64-pc-windows-msvc"
+    ]
+  },
+  "scripts": {
+    "build": "napi build --platform --release",
+    "build:debug": "napi build --platform"
+  }
+}

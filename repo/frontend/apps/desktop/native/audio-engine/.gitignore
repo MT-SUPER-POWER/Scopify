@@ -1,0 +1,9 @@
+# Cargo and NAPI build products are reproducible and platform-specific.
+/target/
+/.cargo-target-test/
+/*.node
+/index.js
+
+# NAPI-RS generates this ABI declaration from Rust annotations during build.
+# It is deliberately not hand-maintained in source control.
+/index.d.ts

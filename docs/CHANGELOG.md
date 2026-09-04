@@ -2,6 +2,10 @@
 
 ## v1.5.1
 
+### Added
+
+- **Windows Native Audio Host**：新增 Rust/NAPI 原生音频 Host，基于 Rodio/CPAL 支持本地与 HTTPS 音源的加载、播放、暂停、停止、Seek、音量、状态和错误事件；补齐双 token/请求 revision 淘汰、NAPI 构建与 Windows 打包资源路径，正式切换 Adapter 前继续安全使用 HTML Audio。
+
 ### Fixed
 
 - **歌曲喜欢/取消喜欢 Mutation 与多端缓存失效**：新增统一的 `useSongLikeMutation`，彻底替代各处散落的 `likeSong` 直接调用；在触发喜欢或取消喜欢后，自动乐观更新本地状态并在成功后自动触发红心歌单元数据（`liked-playlist`）、侧边栏歌单列表（`playlists`，触发 `LibItem` 重新请求并刷新红心歌单封面图与歌曲数）以及当前打开歌单详情与歌曲列表（`playlist.content`）的缓存失效，解决喜欢/取消喜欢后侧边栏封面与歌单内容未及时更新的问题。

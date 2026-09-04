@@ -49,6 +49,17 @@ test("Windows packaging builds and ships the native WorkerW helper", () => {
   });
 });
 
+test("Windows packaging builds and ships the optional native audio module", () => {
+  expect(desktopPackage.scripts["package:win"]).toContain("audio:build");
+  expect(desktopPackage.scripts["build:win"]).toContain("audio:build");
+  expect(desktopPackage.scripts["release:win"]).toContain("audio:build");
+  expect(desktopPackage.build.win.extraResources).toContainEqual({
+    filter: ["*.node", "index.d.ts"],
+    from: "native/audio-engine",
+    to: "native/audio-engine",
+  });
+});
+
 test("desktop packaging includes the prepared backend resource", () => {
   expect(desktopPackage.build.extraResources).toContainEqual({
     filter: ["**/*"],
