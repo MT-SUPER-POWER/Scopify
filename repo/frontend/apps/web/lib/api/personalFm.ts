@@ -22,6 +22,10 @@ export function getPersonalFmByMode(params: PersonalFmModeParams) {
 export function trashPersonalFmSong(id: number | string) {
   return request.get<PersonalFmTrashResponse>(
     "/fm_trash",
-    requestConfig({ params: { id }, requiresMusicSession: true }),
+    requestConfig({
+      expectedBusinessCodes: [200],
+      params: { id },
+      requiresMusicSession: true,
+    }),
   );
 }

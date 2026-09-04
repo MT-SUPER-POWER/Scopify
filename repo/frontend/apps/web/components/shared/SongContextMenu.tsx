@@ -37,24 +37,8 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
 import type { NeteasePlaylist } from "@/types/api/playlist";
-
-interface SongContextMenuProps {
-  song: SongDetail;
-  isActive: boolean;
-  isPlaying: boolean;
-  onPlay: () => void;
-  onRemoveFromQueue?: () => void;
-  onRemoveFromPlaylist?: () => void;
-  onDislikeDailyRecommend?: () => void;
-  onRequestDelete?: () => void;
-  onViewTranscript?: () => void;
-  playlistID?: number | string | null;
-  isDailyRecommend?: boolean;
-  readonly?: boolean;
-  children: React.ReactNode;
-}
+import type { SongContextMenuProps } from "@/types/components/songContextMenu";
 
 export function SongContextMenu({
   children,
@@ -62,6 +46,7 @@ export function SongContextMenu({
   isDailyRecommend = false,
   isPlaying,
   onDislikeDailyRecommend,
+  onDislikePersonalFm,
   onPlay,
   onRemoveFromPlaylist,
   onRemoveFromQueue,
@@ -292,6 +277,19 @@ export function SongContextMenu({
             <ContextMenuSeparator />
             <ContextMenuGroup>
               <ContextMenuItem onClick={onDislikeDailyRecommend} variant="destructive">
+                <Ban className="mr-2 size-4" />
+                {t("contextMenu.recommendLess")}
+              </ContextMenuItem>
+            </ContextMenuGroup>
+          </>
+        )}
+
+        {/* Personal FM dislike */}
+        {isLogin && onDislikePersonalFm && (
+          <>
+            <ContextMenuSeparator />
+            <ContextMenuGroup>
+              <ContextMenuItem onClick={onDislikePersonalFm} variant="destructive">
                 <Ban className="mr-2 size-4" />
                 {t("contextMenu.recommendLess")}
               </ContextMenuItem>

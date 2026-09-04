@@ -7,7 +7,7 @@
  */
 
 export type PlaybackQueueRepeatMode = "off" | "all" | "one";
-export type PlaybackQueueNextSource = "manual" | "ended";
+export type PlaybackQueueNextSource = "manual" | "ended" | "personal-fm-dislike";
 export type PlaybackQueuePlaylistId = number | string | null;
 
 export interface PlaybackQueueItem {

@@ -6,9 +6,11 @@
 
 - **本地 MCP 播放控制与设置**：桌面端新增仅监听 loopback 的 Streamable HTTP MCP 服务，通过 Main Playback Gateway 等待 Renderer 真实回执；配置新增开关、端口和播放读取/控制权限，设置页可查看状态、重启服务、轮换安全凭据并复制一次性客户端配置，Web 环境安全地保持不可用。
 - **Windows Native Audio Host**：新增 Rust/NAPI 原生音频 Host，基于 Rodio/CPAL 支持本地与 HTTPS 音源的加载、播放、暂停、停止、Seek、音量、状态和错误事件；补齐双 token/请求 revision 淘汰、NAPI 构建与 Windows 打包资源路径，正式切换 Adapter 前继续安全使用 HTML Audio。
+- **私人 FM 右键减少推荐**：私人 FM 虚拟歌单中的歌曲右键菜单现可执行“不喜欢 / 减少推荐”；操作通过歌单组件契约透传至既有的私人 FM 负反馈流程，不影响普通歌单与日推菜单。
 
 ### Fixed
 
+- **歌单曲目删除权限收敛**：歌单行右键的“从歌单移除”现在只会在已登录用户查看自己创建的真实歌单时出现并创建删除回调；匿名访问、他人歌单、日推/历史日推及其他虚拟歌单均会安全地隐藏该操作。
 - **歌曲喜欢/取消喜欢 Mutation 与多端缓存失效**：新增统一的 `useSongLikeMutation`，彻底替代各处散落的 `likeSong` 直接调用；在触发喜欢或取消喜欢后，自动乐观更新本地状态并在成功后自动触发红心歌单元数据（`liked-playlist`）、侧边栏歌单列表（`playlists`，触发 `LibItem` 重新请求并刷新红心歌单封面图与歌曲数）以及当前打开歌单详情与歌曲列表（`playlist.content`）的缓存失效，解决喜欢/取消喜欢后侧边栏封面与歌单内容未及时更新的问题。
 
 ### Visual

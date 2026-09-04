@@ -40,6 +40,8 @@ export interface PlaylistContentProps {
   hideAlbumColumn?: boolean;
   isDailyRecommend: boolean;
   isLoading: boolean;
+  /** Optional negative-feedback action for tracks shown by the Personal FM virtual playlist. */
+  onDislikePersonalFm?: (track: SongDetail) => void;
   onPlayToggle?: () => void;
   onTrackPlay?: (track: SongDetail) => void;
   playlistId: null | string;
@@ -64,6 +66,12 @@ export interface PlaylistHeaderSkeletonProps {
 export type DailyRecommendationMode = "current" | "history";
 
 export interface TracklistTableProps {
+  /**
+   * Whether this playlist context grants the current user permission to remove tracks.
+   * The table does not infer ownership from the URL; PlaylistContent resolves it once
+   * from the loaded playlist creator and signed-in user.
+   */
+  canRemoveFromPlaylist?: boolean;
   dailyRecommendationMode?: DailyRecommendationMode;
   disableVirtualization?: boolean;
   hideAlbumColumn?: boolean;
@@ -72,6 +80,8 @@ export interface TracklistTableProps {
   hideLikeColumn?: boolean;
   inputRef?: RefObject<HTMLInputElement | null>;
   onEmptyAction?: () => void;
+  /** Optional negative-feedback action for tracks shown by the Personal FM virtual playlist. */
+  onDislikePersonalFm?: (track: SongDetail) => void;
   onPlayTrack?: (track: SongDetail) => void;
   onTracksChange?: (tracks: SongDetail[]) => void;
   onSearchChange?: (v: string) => void;

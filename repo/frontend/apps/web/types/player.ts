@@ -3,7 +3,8 @@ import type { NeteaseLyric, SongDetail } from "@/types/api/music";
 export type MusicQuality =
   "sky" | "jymaster" | "dolby" | "spatial" | "hires" | "lossless" | "high" | "standard";
 export type PlaybackFailureSource = "url" | "audio";
-export type PlaybackNextSource = "manual" | "ended";
+/** Identifies why queue progression occurred so source-specific policies can react correctly. */
+export type PlaybackNextSource = "manual" | "ended" | "personal-fm-dislike";
 export type RepeatMode = "off" | "all" | "one";
 export type ReplayGainMode = "off" | "track" | "album";
 export type SourceChangeMode = "new-track" | "preserve-position";

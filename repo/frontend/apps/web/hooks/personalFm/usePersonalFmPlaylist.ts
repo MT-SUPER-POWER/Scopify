@@ -9,6 +9,7 @@ import {
   isPersonalFmPlaybackSource,
 } from "@/constants/personalFm";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
 import { useI18n } from "@/store/module/i18n";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
@@ -23,6 +24,7 @@ export function usePersonalFmPlaylist() {
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const playlistId = usePlayerStore((state) => state.playlistId);
   const queue = usePlayerStore((state) => state.queue);
+  const { dislike: onDislikeTrack } = usePersonalFmDislike();
 
   const isCurrentSource = isPersonalFmPlaybackSource(playlistId);
   const tracks = useMemo(() => (isCurrentSource ? queue : []), [isCurrentSource, queue]);
@@ -81,6 +83,7 @@ export function usePersonalFmPlaylist() {
 
   return {
     isLoading: status === "loading",
+    onDislikeTrack,
     onPlayToggle: handlePlayToggle,
     onTrackPlay: handleTrackPlay,
     playlistInfo,

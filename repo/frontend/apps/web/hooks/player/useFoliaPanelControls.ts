@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import { toast } from "sonner";
+import { useCallback, useRef } from "react";
 
 import { DEFAULT_VISUALIZER_BACKGROUND_MODE } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/registry";
 import {
@@ -12,15 +11,13 @@ import {
 } from "@/components/lyrics/folia/src/types";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
-import { trashPersonalFmSong } from "@/lib/api/personalFm";
+import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
-import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { usePlayerStore } from "@/store/module/player";
 import type { LyricVisualizerMode } from "@/types/lyrics";
 
 export function useFoliaPanelControls() {
-  const { t } = useI18n();
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
   const animationIntensity = useLyricStageStore((state) => state.animationIntensity);
@@ -28,7 +25,8 @@ export function useFoliaPanelControls() {
   const isShuffle = usePlayerStore((state) => state.isShuffle);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
   const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));
-  const [isDislikingPersonalFm, setIsDislikingPersonalFm] = useState(false);
+  const { dislike: dislikePersonalFmTrack, isDisliking: isDislikingPersonalFm } =
+    usePersonalFmDislike();
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
   const visualizerMode = useLyricStageStore((state) => state.mode);
   const visualizerBackgroundMode = useLyricStageStore(
@@ -57,19 +55,10 @@ export function useFoliaPanelControls() {
     void commands.setVolume(previousVolumeRef.current);
   }, [commands, playback.volume]);
 
-  const dislikePersonalFm = useCallback(async () => {
-    if (!currentSong || !isPersonalFm || isDislikingPersonalFm) return;
-    setIsDislikingPersonalFm(true);
-    try {
-      await trashPersonalFmSong(currentSong.id);
-      await commands.next();
-    } catch (error) {
-      console.error("[personal-fm] failed to dislike current song", error);
-      toast.error(t("personalFm.action.dislikeFailed"));
-    } finally {
-      setIsDislikingPersonalFm(false);
-    }
-  }, [commands, currentSong, isDislikingPersonalFm, isPersonalFm, t]);
+  const dislikePersonalFm = useCallback(() => {
+    if (!currentSong || !isPersonalFm) return;
+    void dislikePersonalFmTrack(currentSong);
+  }, [currentSong, dislikePersonalFmTrack, isPersonalFm]);
 
   return {
     animationIntensity,

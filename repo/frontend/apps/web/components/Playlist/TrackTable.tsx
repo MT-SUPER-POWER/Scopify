@@ -63,11 +63,13 @@ function getRequiredTracklistColumn(table: TanstackTable<SongDetail>, columnId: 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function TracklistTable({
+  canRemoveFromPlaylist = false,
   disableVirtualization = false,
   emptyActionLabel,
   hideAlbumColumn = false,
   hideDateColumn = false,
   hideLikeColumn = false,
+  onDislikePersonalFm,
   onEmptyAction,
   onPlayTrack,
   onTracksChange,
@@ -610,14 +612,21 @@ export default function TracklistTable({
                       onPlay={() => handlePlay(track)}
                       playlistID={playlistID}
                       isDailyRecommend={canDislikeDailyRecommendation}
-                      readonly={readonly || isHistoricalDailyRecommendation}
-                      onRemoveFromPlaylist={() =>
-                        handleRequestDelete(playlistID ?? undefined, track.id)
+                      readonly={
+                        readonly || isHistoricalDailyRecommendation || !canRemoveFromPlaylist
+                      }
+                      onRemoveFromPlaylist={
+                        canRemoveFromPlaylist
+                          ? () => handleRequestDelete(playlistID ?? undefined, track.id)
+                          : undefined
                       }
                       onDislikeDailyRecommend={
                         canDislikeDailyRecommendation
                           ? () => void handleDislikeDailyRecommend(track.id)
                           : undefined
+                      }
+                      onDislikePersonalFm={
+                        onDislikePersonalFm ? () => onDislikePersonalFm(track) : undefined
                       }
                     >
                       <TrackRow
@@ -683,14 +692,21 @@ export default function TracklistTable({
                         onPlay={() => handlePlay(track)}
                         playlistID={playlistID}
                         isDailyRecommend={canDislikeDailyRecommendation}
-                        readonly={readonly || isHistoricalDailyRecommendation}
-                        onRemoveFromPlaylist={() =>
-                          handleRequestDelete(playlistID ?? undefined, track.id)
+                        readonly={
+                          readonly || isHistoricalDailyRecommendation || !canRemoveFromPlaylist
+                        }
+                        onRemoveFromPlaylist={
+                          canRemoveFromPlaylist
+                            ? () => handleRequestDelete(playlistID ?? undefined, track.id)
+                            : undefined
                         }
                         onDislikeDailyRecommend={
                           canDislikeDailyRecommendation
                             ? () => void handleDislikeDailyRecommend(track.id)
                             : undefined
+                        }
+                        onDislikePersonalFm={
+                          onDislikePersonalFm ? () => onDislikePersonalFm(track) : undefined
                         }
                       >
                         {row}

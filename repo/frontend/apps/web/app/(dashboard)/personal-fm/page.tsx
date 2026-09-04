@@ -27,6 +27,7 @@ export default function PersonalFmPage() {
       dailyDate={null}
       isDailyRecommend={false}
       playlistId={null}
+      onDislikePersonalFm={personalFm.onDislikeTrack}
       readonly
       showShuffle={false}
     />

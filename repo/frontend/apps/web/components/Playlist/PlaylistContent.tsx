@@ -9,6 +9,8 @@ import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
 import { DASHBOARD_HEADER_HEIGHT } from "@/constants/layout";
+import { canRemoveTracksFromPlaylist } from "@/lib/playlist/playlistTrackRemovalPermission";
+import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistContentProps } from "@/types/components/playlist";
 
@@ -21,6 +23,7 @@ export function PlaylistContent({
   hideAlbumColumn,
   isDailyRecommend,
   isLoading,
+  onDislikePersonalFm,
   onPlayToggle,
   onTrackPlay,
   playlistId,
@@ -35,6 +38,7 @@ export function PlaylistContent({
 }: PlaylistContentProps) {
   useRouteRestorationPlaceholder(PlaylistPageSkeleton);
   const { t } = useI18n();
+  const currentUserId = useUserStore((state) => state.user?.userId ?? null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,6 +46,18 @@ export function PlaylistContent({
     if (!playlistInfo) return null;
     return { ...playlistInfo, cover: playlistInfo.cover, totalSongs: tracks.length };
   }, [playlistInfo, tracks.length]);
+  const canRemoveFromPlaylist = canRemoveTracksFromPlaylist({
+    creatorId: playlistInfo?.creatorID,
+    currentUserId,
+    // A selected daily date is history; both current and historical daily pages are
+    // virtual recommendation surfaces and cannot call the playlist mutation endpoint.
+    isDailyRecommendation: isDailyRecommend,
+    isHistoricalDailyRecommendation: isDailyRecommend && Boolean(dailyDate),
+    // Missing metadata is treated as virtual until the concrete playlist detail loads.
+    isVirtualPlaylist: playlistInfo?.isSpecial ?? true,
+    playlistId,
+    readonly,
+  });
 
   const handleSearchOpen = useCallback(() => {
     setSearchOpen(true);
@@ -102,6 +118,7 @@ export function PlaylistContent({
             contentSlot({ searchQuery })
           ) : (
             <TracklistTable
+              canRemoveFromPlaylist={canRemoveFromPlaylist}
               searchOpen={searchOpen}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
@@ -111,6 +128,7 @@ export function PlaylistContent({
               hideAlbumColumn={hideAlbumColumn}
               emptyActionLabel={t("common.action.reload")}
               onEmptyAction={handleRefreshTracks}
+              onDislikePersonalFm={onDislikePersonalFm}
               onPlayTrack={onTrackPlay}
               onTracksChange={setTracks}
               playSourceId={playSourceId}
