@@ -99,6 +99,9 @@ export function validateDesktopResources() {
 export const __preloadScript = join(__dirname, "../main/preload.js");
 export const __rendererDir = join(__dirname, "../../renderer");
 
+/** 渲染器使用的自定义协议 scheme，同步决定 electron-serve 注册的协议名及后端 CORS 白名单 */
+export const RENDERER_SCHEME = "scopify";
+
 const __picDir = app.isPackaged
   ? join(process.resourcesPath, "resources/pic")
   : join(__dirname, "../../resources/pic");

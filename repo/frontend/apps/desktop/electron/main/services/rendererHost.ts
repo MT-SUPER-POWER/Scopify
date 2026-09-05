@@ -5,17 +5,19 @@ import serve from "electron-serve";
 
 import { verifyRendererArtifact } from "@/lib/rendererArtifact";
 import type { DesktopRendererHost } from "@/types/electronWindow";
-import { __rendererDir, desktopConfig } from "@main/constants";
+import { __rendererDir, desktopConfig, RENDERER_SCHEME } from "@main/constants";
 import { rendererLog } from "@main/utils/logger";
 
 /** Owns the difference between the development server and the verified packaged Renderer. */
 export function createDesktopRendererHost(): DesktopRendererHost {
   const useStaticRenderer = app.isPackaged || process.env.ELECTRON_RENDERER_MODE === "static";
   const developmentUrl = `http://${desktopConfig.frontend.host}:${desktopConfig.frontend.devPort}`;
-  const serveStaticRenderer = useStaticRenderer ? serve({ directory: __rendererDir }) : null;
+  const serveStaticRenderer = useStaticRenderer
+    ? serve({ directory: __rendererDir, scheme: RENDERER_SCHEME })
+    : null;
 
   return {
-    baseUrl: useStaticRenderer ? "app://-/" : developmentUrl,
+    baseUrl: useStaticRenderer ? `${RENDERER_SCHEME}://-/` : developmentUrl,
     async load(window) {
       if (!serveStaticRenderer) {
         window.webContents.on("did-fail-load", (_event, code, description) => {

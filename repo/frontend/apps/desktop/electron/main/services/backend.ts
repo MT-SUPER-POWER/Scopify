@@ -9,6 +9,7 @@ import type {
   DesktopBackendState,
   DesktopHostConfig,
 } from "@scopify/desktop-contract";
+import { RENDERER_SCHEME } from "@main/constants";
 import { formatBackendChildOutput, formatBackendLogEntry } from "./backendOutput";
 
 const BACKEND_HOST = "127.0.0.1";
@@ -219,6 +220,7 @@ export function createDesktopBackendController(
           ELECTRON_RUN_AS_NODE: "1",
           HOST: BACKEND_HOST,
           PORT: String(port),
+          CORS_ALLOW_ORIGIN: `${RENDERER_SCHEME}://-`,
         },
         stdio: ["ignore", "pipe", "pipe"],
         windowsHide: true,
