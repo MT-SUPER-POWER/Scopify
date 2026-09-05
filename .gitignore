@@ -72,6 +72,7 @@ CONTEXT.md
 .agents/
 .gemini/
 .opencode/
+.mcp.json
 
 # DOCS
 docs/plan/**
