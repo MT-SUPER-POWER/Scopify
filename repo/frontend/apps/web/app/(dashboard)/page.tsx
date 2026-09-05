@@ -34,8 +34,19 @@ export default function HomePage() {
     fetchHomeData,
   } = useHomeData();
 
-  const greetingText =
-    isLogin && userName ? `${t(timeTheme.greetingKey)}, ${userName}` : t(timeTheme.greetingKey);
+  const isUnknown =
+    !userName ||
+    userName === "未知用户" ||
+    userName === "未知使用者" ||
+    userName === "Unknown User" ||
+    userName === t("common.meta.unknownUser") ||
+    userName.trim() === "";
+
+  const hasValidUser = isLogin && !isUnknown;
+
+  const greetingText = hasValidUser
+    ? `${t(timeTheme.greetingKey)}, ${userName}`
+    : t(timeTheme.greetingKey);
 
   return (
     <div className="relative min-h-screen bg-surface-raised pb-24 font-sans">
@@ -75,7 +86,7 @@ export default function HomePage() {
 
           <PersonalizedPlaylists
             playlists={playlists}
-            userName={userName}
+            userName={hasValidUser ? userName : undefined}
             loadingPlayId={loadingPlayId}
             onPlayPlaylist={handlePlayPlaylist}
           />

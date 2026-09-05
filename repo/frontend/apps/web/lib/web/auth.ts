@@ -1,5 +1,5 @@
 import request from "@/lib/web/request";
-import { clearLegacyMusicSessionCredential } from "@/lib/web/musicSessionCredential";
+import { clearMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import type { NeteaseUser } from "@/types/api/user";
 
 export interface LoginInfo {
@@ -37,6 +37,6 @@ export function verifyCaptcha(
  * 清除登录状态
  */
 export function clearLoginStatus(): void {
-  clearLegacyMusicSessionCredential();
+  clearMusicSessionCredential();
   localStorage.removeItem("user_id");
 }

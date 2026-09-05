@@ -9,7 +9,6 @@ import {
   Coffee,
   Download,
   Footprints,
-  LogIn,
   LogOut,
   Settings,
   User,
@@ -130,7 +129,7 @@ export function ProfileMenu({ children }: ProfileMenuProps) {
         >
           <DropdownMenuGroup className="space-y-1">
             {/* 个人资料：融入菜单本身，而非再叠一层卡片。 */}
-            {isLoggedIn && user ? (
+            {isLoggedIn && user && user.userId > 0 ? (
               <DropdownMenuItem
                 asChild
                 className="group cursor-pointer rounded-xl p-2.5 transition-colors hover:bg-accent focus:bg-accent"
@@ -168,17 +167,24 @@ export function ProfileMenu({ children }: ProfileMenuProps) {
                 </Link>
               </DropdownMenuItem>
             ) : (
-              isLoggedIn && (
-                <DropdownMenuItem
-                  asChild
-                  className="cursor-pointer rounded-lg px-3 py-2 text-sm font-medium text-content-muted hover:bg-accent hover:text-content focus:bg-accent focus:text-content"
-                >
-                  <Link href={`/profile?userId=${userId}`}>
-                    <User className="mr-3 size-4 shrink-0 text-content-muted" />
-                    <span className="flex-1">{t("profile.menu.profile")}</span>
-                  </Link>
-                </DropdownMenuItem>
-              )
+              <DropdownMenuItem
+                onSelect={handleLoginClick}
+                className="group cursor-pointer rounded-xl p-2.5 transition-colors hover:bg-accent focus:bg-accent"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+                    <User className="size-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-semibold text-content transition-colors group-hover:text-brand">
+                      {t("common.action.login")}
+                    </div>
+                    <p className="truncate text-xs text-content-muted">
+                      {t("sidebar.card.loginSubtitle")}
+                    </p>
+                  </div>
+                </div>
+              </DropdownMenuItem>
             )}
 
             {/* 小屏才显示的 Bell / Friends */}
@@ -248,25 +254,18 @@ export function ProfileMenu({ children }: ProfileMenuProps) {
               <span>{t("profile.menu.aboutMe")}</span>
             </DropdownMenuItem>
 
-            <DropdownMenuSeparator className="my-1.5 bg-border" />
-
-            {/* 登录/登出 放在最后 */}
-            {isLoggedIn ? (
-              <DropdownMenuItem
-                onSelect={handleLogoutClick}
-                className="cursor-pointer rounded-lg px-2.5 py-2.25 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
-              >
-                <LogOut className="mr-3 size-4 shrink-0 text-destructive" />
-                <span>{t("common.action.logout")}</span>
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                onSelect={handleLoginClick}
-                className="cursor-pointer rounded-lg px-2.5 py-2.25 text-sm font-medium text-brand transition-colors hover:bg-brand/10 hover:text-brand-hover focus:bg-brand/10 focus:text-brand-hover"
-              >
-                <LogIn className="mr-3 size-4 shrink-0 text-brand" />
-                <span>{t("common.action.login")}</span>
-              </DropdownMenuItem>
+            {/* 登出放在最后 */}
+            {isLoggedIn && (
+              <>
+                <DropdownMenuSeparator className="my-1.5 bg-border" />
+                <DropdownMenuItem
+                  onSelect={handleLogoutClick}
+                  className="cursor-pointer rounded-lg px-2.5 py-2.25 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
+                >
+                  <LogOut className="mr-3 size-4 shrink-0 text-destructive" />
+                  <span>{t("common.action.logout")}</span>
+                </DropdownMenuItem>
+              </>
             )}
           </DropdownMenuGroup>
         </DropdownMenuContent>

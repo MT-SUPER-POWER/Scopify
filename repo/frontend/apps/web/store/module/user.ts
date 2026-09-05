@@ -7,7 +7,7 @@ import { getBackendBaseUrl } from "@/lib/web/request";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
 import { type NeteasePlaylist, type RawNeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
 import type { NeteaseUserAlbum } from "@/types/api/release";
-import { type NeteaseUser, pruneUser } from "@/types/api/user";
+import { type NeteaseUser, type NeteaseUserSource, pruneUser } from "@/types/api/user";
 import type { FollowedArtist } from "@/types/artist";
 
 type UserStore = {
@@ -24,7 +24,7 @@ type UserStore = {
 
   handleLogout: () => Promise<void>;
   clearSession: () => void;
-  setUser: (userData: NeteaseUser) => void;
+  setUser: (userData: NeteaseUser | NeteaseUserSource | null | undefined) => void;
   setLoginType: (loginType: "token" | "cookie" | "qr" | "uid" | null) => void;
   setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => void;
   mergeSongStats: (songId: number, stats: { likedCount?: number; commentCount?: number }) => void;
@@ -69,11 +69,26 @@ export const useUserStore = create<UserStore>()(
         }),
       clearCollectedAlbum: () => set({ collectedAlbum: [], collectedAlbumIds: new Set() }),
 
-      setUser: (userData: NeteaseUser) => set({ user: pruneUser(userData) }),
+      setUser: (userData: NeteaseUser | NeteaseUserSource | null | undefined) => {
+        if (!userData) {
+          set({ user: null });
+          return;
+        }
+        const pruned = pruneUser(userData);
+        if (!pruned.userId || pruned.userId <= 0) {
+          set({ user: null });
+          return;
+        }
+        set({ user: pruned });
+      },
       setUserId: (userId: number | string) => {
         const numericUserId = Number(userId);
-        if (!Number.isFinite(numericUserId)) return;
-        set((state) => (state.user ? { user: { ...state.user, userId: numericUserId } } : state));
+        if (!Number.isFinite(numericUserId) || numericUserId <= 0) return;
+        set((state) =>
+          state.user && state.user.userId > 0
+            ? { user: { ...state.user, userId: numericUserId } }
+            : state,
+        );
       },
       setLoginType: (loginType: "token" | "cookie" | "qr" | "uid" | null) => set({ loginType }),
       setAlbumList: (albumList: RawSongDetail[] | SongDetail[]) => {
@@ -127,6 +142,20 @@ export const useUserStore = create<UserStore>()(
         loginType: state.loginType,
         likeListIDs: state.likeListIDs,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state?.user) {
+          const userId = Number(state.user.userId);
+          const isUnknown =
+            !state.user.nickname ||
+            state.user.nickname === "未知用户" ||
+            state.user.nickname === "未知使用者" ||
+            state.user.nickname === "Unknown User";
+          if (!Number.isFinite(userId) || userId <= 0 || isUnknown) {
+            state.user = null;
+            state.loginType = null;
+          }
+        }
+      },
     },
   ),
 );

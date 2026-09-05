@@ -3,16 +3,26 @@
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store";
 
+const PLACEHOLDER_NICKNAMES = new Set(["未知用户", "未知使用者", "Unknown User"]);
+
+export function isRealUser(
+  user: { userId?: number; nickname?: string } | null | undefined,
+): boolean {
+  if (!user || typeof user.userId !== "number" || user.userId <= 0) return false;
+  if (!user.nickname || typeof user.nickname !== "string") return false;
+  const trimmed = user.nickname.trim();
+  if (!trimmed || PLACEHOLDER_NICKNAMES.has(trimmed)) return false;
+  return true;
+}
+
 export function useLoginStatus(): boolean {
-  const isStoreLogin = useUserStore((state) => !!state.user?.userId);
+  const user = useUserStore((state) => state.user);
   const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
-    // useEffect 只会在客户端浏览器执行
-    const storageUserId = localStorage.getItem("user_id");
-    // CookieJar 凭据可能是 HttpOnly，登录展示只依赖已验证并缓存的账号身份。
-    setIsLogin(Boolean(isStoreLogin || storageUserId));
-  }, [isStoreLogin]);
+    // 仅当拥有合法 userId 与非占位符真实昵称时，才判定为有效登录态
+    setIsLogin(isRealUser(user));
+  }, [user]);
 
   return isLogin;
 }

@@ -11,9 +11,11 @@ import { checkQR, createQR, getQRKey } from "@/lib/api/login";
 import { getUserAccount, getUserDetail } from "@/lib/api/user";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
+import { saveMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { getBackendBaseUrl } from "@/lib/web/request";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import type { NeteaseUserSource } from "@/types/api/user";
 import type { QrLoginProps, QrStatus } from "@/types/login";
 
 // 封装一个 Promise 版的 delay 函数
@@ -81,13 +83,16 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
             setQrStatusText(t("login.qr.success"));
 
             const rawCookie = statusRes.data.cookie ?? "";
+            if (rawCookie) {
+              saveMusicSessionCredential(rawCookie);
+            }
             // Browser 由二维码响应的 Set-Cookie 建立会话；Desktop 同步导入完整 Cookie 集合，
             // 以规避自定义 app:// Origin 下的第三方 Cookie 限制。
             if (runtime.isDesktop && rawCookie) {
               await runtime.auth.importMusicSession(rawCookie, getBackendBaseUrl());
             }
 
-            // 使用刚建立的 CookieJar 会话确认账号身份。
+            // 使用刚建立的会话确认账号身份。
             const loginRes = await getUserAccount();
 
             if (loginRes.data.code !== 200) {
@@ -105,11 +110,24 @@ export function QrLogin({ onSuccess }: QrLoginProps) {
               toast.error(t("login.qr.toast.statusError"));
               break;
             }
-            useUserStore.getState().setUserId(userId); // 兜底的
-            localStorage.setItem("user_id", String(userId)); // 存储 userId 到 localStorage 保底
 
-            const detailRes = await getUserDetail(userId);
-            useUserStore.getState().setUser(detailRes.data.profile);
+            const accountProfile = loginRes.data.profile;
+            let userProfile: NeteaseUserSource | undefined = accountProfile;
+
+            try {
+              const detailRes = await getUserDetail(userId);
+              if (detailRes.data?.profile) {
+                userProfile = detailRes.data.profile;
+              }
+            } catch (err) {
+              console.warn("获取用户详情失败，使用账号基础资料兜底", err);
+            }
+
+            if (userProfile) {
+              useUserStore.getState().setUser(userProfile);
+            }
+            useUserStore.getState().setUserId(userId);
+            localStorage.setItem("user_id", String(userId)); // 存储 userId 到 localStorage 保底
 
             useUserStore.getState().setLoginType("qr");
             toast.success(t("login.qr.toast.success"));
