@@ -15,6 +15,8 @@
 
 ### Fixed
 
+- **收敛未登录状态下的功能与占位昵称渲染**：修复未登录或本地持久化残留无效账号（如 `userId: 0` 或占位符 `"未知用户"`）时误判登录态的问题。`useLoginStatus` 严格依据合法 `userId > 0` 与非占位符真实昵称校验登录状态；首页时间问候语在未登录或昵称为未知用户时统一纯净展示“晚上好/傍晚好”，不再拼接“，未知用户”；侧边栏未登录时彻底隐藏“私人 FM”导航项；顶部个人资料菜单（ProfileMenu）未登录时隐藏“网易乐签”、“音乐足迹”及“退出登录”，并收敛顶部为清晰的“点击登录”引导卡片，头像组件未登录时使用纯净用户占位图标。
+- **恢复音乐会话凭据本地持久化与请求拦截器自动注入**：解决打包后 Electron 生产环境（`app://` 协议）与跨域 Web 环境下，因 Chromium 第三方跨站 Cookie 隔离导致扫码登录后 Cookie 无法持久化、请求缺少凭据返回 301 并被误判登出的缺陷。在 QrLogin 登录成功后即时保存 `music_cookie` 至 localStorage，并在请求拦截器中自动为非 noLogin 请求附加 cookie 参数，与网易云后端参数解析契约保持对齐。
 - **修复系统托盘单击唤出与伴随窗口控制权限**：解决 Windows 系统托盘图标仅监听右键导致左键单击无法唤出托盘窗口的问题，现支持单击与右键双向呼出；补齐托盘对桌面歌词的 IPC 调用授权与最小化还原逻辑，双击托盘图标在还原主视窗时自动同步销毁托盘临时窗口。
 - **修复桌面音乐控制器最小化后无法主动唤出问题**：在 `controllerWindow.show()` 中增加窗口最小化检测与 `window.restore()` 还原，重新应用 `setAlwaysOnTop(true, "floating")`、`show()` 与 `focus()`，并对加载失败的悬挂实例进行即时销毁清理，确保从托盘或界面中能可靠地唤出悬浮遥控器小窗口。
 - **统一当前歌曲喜欢 Mutation 链路**：PlayBar、命令工作区、快捷键、桌面歌词与 Folia 的 `toggle-like` 命令不再绕过 TanStack Mutation 直接调用喜欢接口；喜欢和取消喜欢都会先清理页面缓存，再精确刷新当前用户的 liked-playlist 与 playlists Query，使侧边栏 LibItem 的封面和歌曲数重新获取，声音收藏继续走独立的 Voice Mutation。
@@ -30,6 +32,8 @@
 
 ### Quality
 
+- **纳入后端工作区并清理历史测试用例**：将 `repo/backend/api-enhanced` 纳入根目录 Bun Workspaces 体系（`repo/backend/*`），桌面端改以标准 `workspace:*` 引入依赖；删除原有的碎片搬运构建脚本 `prepare-backend-resource.ts` 与打包额外资源配置，全范围清理 `desktop/tests` 与 `web/tests` 下依赖源码字符匹配的历史虚假测试，保留工程架构守卫 `check-architecture.test.ts`。
+- **健壮用户状态存储与持久化水合防御**：在 `useUserStore` 的 `setUser` 中过滤无效或 `userId <= 0` 的占位对象，并在持久化重水合（`onRehydrateStorage`）中自动清除历史上受损的未知用户残留；在 `QrLogin` 中补充账号基础资料与用户详情的兜底级联逻辑，防止接口异常时将空属性覆盖为无效对象。
 - **收敛 Electron 全链路日志**：Main 的托盘/登录窗口不再直接调用 `console.*`，Renderer 控制台日志在保留 DevTools 输出的同时转发至 `electron-log`，preload Bridge 暴露失败增加最早期 IPC 兜底，并保留事件、来源、追踪 ID 等结构化字段；同时延后原生资源校验到日志初始化之后，避免启动早期日志落入错误目录。
 - **完成 Electron Main Scoped Logger 迁移**：将残留在 Core、IPC、Window、Renderer、Updater、桌面壁纸、桌面图标与代理模块中的默认 `logger.*` 调用全部替换为职责明确的 scoped logger，并移除兼容旧代码的无 scope 别名，防止新增日志继续退回默认通道。
 - **记录 Electron 各进程内存工作集**：主窗口 Renderer 就绪后立即采样，并按一分钟周期将 Main、Renderer、GPU、Utility 与各命名窗口的工作集写入 Core 日志；应用退出时同步释放采样定时器，为版本间内存表现量化和防劣化对比提供稳定基线。

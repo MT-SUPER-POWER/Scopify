@@ -20,22 +20,22 @@
     "dev": "electron-vite dev",
     "wallpaper:build": "bun scripts/build-wallpaper-helper.ts",
     "sync:renderer": "bun scripts/sync-renderer.ts",
-    "backend:prepare": "bun scripts/prepare-backend-resource.ts",
     "audio:build": "bun scripts/build-audio-engine.ts",
     "build": "bun run wallpaper:build && electron-vite build && bun scripts/prepare-packaged-app.ts && bun run check:runtime-bundle",
     "build:host": "bun run wallpaper:build && electron-vite build && bun scripts/prepare-packaged-app.ts && bun run check:runtime-bundle",
     "check:runtime-bundle": "bun scripts/check-runtime-bundle.ts",
     "typecheck": "tsc --noEmit",
-    "test": "bun test tests",
-    "package:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && bun run backend:prepare && electron-builder --win --publish never",
-    "package:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish never",
-    "release:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && bun run backend:prepare && electron-builder --win --publish always",
-    "release:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish always",
-    "build:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && bun run backend:prepare && electron-builder --win --publish never",
-    "build:mac": "bun run electron:ensure && bun run backend:prepare && electron-builder --mac --publish never"
+    "test": "bun test",
+    "package:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --win --publish never",
+    "package:mac": "bun run electron:ensure && electron-builder --mac --publish never",
+    "release:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --win --publish always",
+    "release:mac": "bun run electron:ensure && electron-builder --mac --publish always",
+    "build:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --win --publish never",
+    "build:mac": "bun run electron:ensure && electron-builder --mac --publish never"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
+    "@neteasecloudmusicapienhanced/api": "workspace:*",
     "@scopify/desktop-contract": "workspace:*",
     "@xhayper/discord-rpc": "^1.3.4",
     "electron-log": "^5.4.4",
@@ -87,13 +87,6 @@
         "to": "desktop-wallpaper-host-spike",
         "filter": [
           "system-wallpaper.ps1"
-        ]
-      },
-      {
-        "from": "build/backend",
-        "to": "backend",
-        "filter": [
-          "**/*"
         ]
       }
     ],

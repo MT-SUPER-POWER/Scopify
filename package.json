@@ -5,7 +5,8 @@
   "packageManager": "bun@1.3.11",
   "workspaces": [
     "repo/frontend/apps/*",
-    "repo/frontend/packages/*"
+    "repo/frontend/packages/*",
+    "repo/backend/*"
   ],
   "scripts": {
     "prepare": "husky install",
@@ -29,7 +30,7 @@
     "build:mac": "turbo run build:mac --filter=@scopify/desktop",
     "typecheck": "turbo run typecheck",
     "test:architecture": "bun test scripts/check-architecture.test.ts",
-    "test": "bun run test:architecture && turbo run test -- --isolate",
+    "test": "bun run test:architecture",
     "lint:architecture": "bun scripts/check-architecture.ts",
     "lint": "bun run lint:architecture && turbo run lint",
     "format": "prettier --write .",
