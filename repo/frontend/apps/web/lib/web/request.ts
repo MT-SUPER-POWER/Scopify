@@ -14,7 +14,7 @@ import { ApiError, toApiError } from "./apiError";
 import { buildBackendBaseUrl, normalizeBackendConfig } from "./backendUrl";
 import { webConfig } from "./env";
 import { reportFailure } from "./errorTracking";
-import { migrateLegacyMusicSession } from "./musicSessionCredential";
+import { attachMusicSessionCredential, getMusicSessionCredential } from "./musicSessionCredential";
 
 function loadInitialBackendConfig(): WebConfig["backend"] {
   if (typeof window === "undefined") return webConfig.backend;
@@ -54,6 +54,9 @@ let runtimeNetworkConfig: WebConfig["network"] = { ...webConfig.network };
 let runtimeBackendConfig: WebConfig["backend"] = { ...INITIAL_BACKEND_CONFIG };
 
 export function getBackendBaseUrl() {
+  if (runtime.isDesktop && baseURL) {
+    return baseURL;
+  }
   return buildBackendBaseUrl(runtimeBackendConfig);
 }
 
@@ -135,30 +138,48 @@ if (typeof window !== "undefined") {
     const nextConfig = (event as CustomEvent<WebConfig>).detail;
     if (nextConfig) applyRuntimeConfig(nextConfig);
   });
+
+  if (runtime.isDesktop) {
+    void Promise.resolve(runtime.backend.getStatus()).then((status) => {
+      if (status?.origin && status.state === "running") {
+        baseURL = status.origin;
+        request.defaults.baseURL = baseURL;
+      }
+    });
+
+    runtime.backend.onStatusChanged((status) => {
+      if (status?.origin && status.state === "running") {
+        baseURL = status.origin;
+        request.defaults.baseURL = baseURL;
+      }
+    });
+  }
 }
 
-request.interceptors.request.use(
-  async (config: InternalAxiosRequestConfig & ScopifyRequestConfig) => {
-    if (!baseURL) throw new Error("BACKEND_URL is not configured.");
+request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRequestConfig) => {
+  if (!baseURL) throw new Error("BACKEND_URL is not configured.");
 
-    const networkConfig = getNetworkConfig();
-    config.baseURL = baseURL;
-    config.timeout = networkConfig.timeout;
-    config.traceId ??= createRequestTraceId();
-    if (config.requiresMusicSession) {
-      await migrateLegacyMusicSession(baseURL, networkConfig.timeout);
-    }
-    const requestParams = isRecord(config.params) ? config.params : {};
-    config.params = {
-      ...requestParams,
-      timestamp: Date.now(),
-      ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
-      randomCNIP: networkConfig.randomCNIP,
-    };
+  const networkConfig = getNetworkConfig();
+  config.baseURL = baseURL;
+  config.timeout = networkConfig.timeout;
+  config.traceId ??= createRequestTraceId();
 
-    return config;
-  },
-);
+  const credential = getMusicSessionCredential();
+  const requestParams = isRecord(config.params) ? config.params : {};
+  const sessionParams =
+    credential && !isNoLoginRequest(config)
+      ? attachMusicSessionCredential(requestParams, credential)
+      : requestParams;
+
+  config.params = {
+    ...sessionParams,
+    timestamp: Date.now(),
+    ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
+    randomCNIP: networkConfig.randomCNIP,
+  };
+
+  return config;
+});
 
 request.interceptors.response.use((response) => {
   const responseData = response.data as null | { code?: unknown; message?: unknown; msg?: unknown };

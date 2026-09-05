@@ -36,6 +36,13 @@ let stopProcessMemoryMonitor: (() => void) | null = null;
 const renderer = createDesktopRendererHost();
 const splash = createSplashWindowController();
 const backend = createDesktopBackendController({ log: backendLog }, desktopConfig.backend);
+backend.onStatusChanged((status) => {
+  if (status.state === "running" && status.origin) {
+    void restoreMusicSessionCookies(status.origin).catch((error) =>
+      sessionLog.warn("[session] failed to restore music session cookies", error),
+    );
+  }
+});
 const discord = createDiscordPresenceController({
   getApplicationId: () => loadDesktopHostConfig().discord.applicationId,
   isEnabled: () => loadDesktopHostConfig().discord.enabled,
@@ -131,9 +138,6 @@ async function prepareApplication() {
   await applyElectronProxy(desktopConfig).catch((error) => {
     proxyLog.error("[proxy] failed to apply startup proxy config", error);
   });
-  await restoreMusicSessionCookies(`http://127.0.0.1:${desktopConfig.backend.port}`).catch(
-    (error) => sessionLog.warn("[session] failed to restore the legacy music session", error),
-  );
   await createApplicationWindow().catch((error) => {
     windowLog.error("[window] failed to create the main window", error);
   });

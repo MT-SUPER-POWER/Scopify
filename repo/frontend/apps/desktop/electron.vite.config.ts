@@ -23,7 +23,12 @@ export default defineConfig(({ command }) => {
           input: {
             main: resolve(root, "electron/main/index.ts"),
           },
-          external: ["bufferutil", "utf-8-validate"],
+          external: [
+            "bufferutil",
+            "utf-8-validate",
+            "@neteasecloudmusicapienhanced/api",
+            /^@neteasecloudmusicapienhanced\/api(\/.*)?$/,
+          ],
           output: {
             entryFileNames: "[name].js",
             format: "es",

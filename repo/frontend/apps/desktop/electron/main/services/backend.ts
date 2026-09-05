@@ -1,23 +1,18 @@
-import { spawn, type ChildProcessByStdio } from "node:child_process";
-import { existsSync } from "node:fs";
+import { createServer } from "node:net";
 import { request as httpRequest } from "node:http";
-import { join, resolve } from "node:path";
-import type { Readable } from "node:stream";
-import { app } from "electron";
+import { createRequire } from "node:module";
+import type { Server } from "node:http";
 import type {
   DesktopBackendStatus,
   DesktopBackendState,
   DesktopHostConfig,
 } from "@scopify/desktop-contract";
-import { RENDERER_SCHEME } from "@main/constants";
-import { formatBackendChildOutput, formatBackendLogEntry } from "./backendOutput";
+const RENDERER_SCHEME = "scopify";
 
 const BACKEND_HOST = "127.0.0.1";
-const BACKEND_START_TIMEOUT_MS = 20_000;
 const BACKEND_PROBE_TIMEOUT_MS = 750;
-const BACKEND_PROBE_INTERVAL_MS = 250;
 
-type BackendChild = ChildProcessByStdio<null, Readable, Readable>;
+const nodeRequire = createRequire(import.meta.url);
 
 interface BackendProbeResult {
   occupied: boolean;
@@ -119,60 +114,98 @@ function probeBackend(port: number): Promise<BackendProbeResult> {
   });
 }
 
-function waitForBackendReady(port: number, child: BackendChild) {
-  return new Promise<boolean>((resolveReady) => {
-    const startedAt = Date.now();
-    let settled = false;
-    const finish = (ready: boolean) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timeout);
-      clearInterval(interval);
-      resolveReady(ready);
-    };
-
-    const timeout = setTimeout(() => finish(false), BACKEND_START_TIMEOUT_MS);
-    const interval = setInterval(() => {
-      if (child.exitCode !== null || Date.now() - startedAt >= BACKEND_START_TIMEOUT_MS) {
-        finish(false);
+function getFreePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const srv = createServer();
+    srv.listen(0, BACKEND_HOST, () => {
+      const address = srv.address();
+      if (!address || typeof address === "string") {
+        srv.close(() => reject(new Error("Failed to allocate dynamic port")));
         return;
       }
-      void probeBackend(port).then((probe) => {
-        if (probe.reachable) finish(true);
+      const port = address.port;
+      srv.close((err) => {
+        if (err) reject(err);
+        else resolve(port);
       });
-    }, BACKEND_PROBE_INTERVAL_MS);
-
-    void probeBackend(port).then((probe) => {
-      if (probe.reachable) finish(true);
     });
+    srv.on("error", reject);
   });
 }
 
-async function stopChild(child: BackendChild) {
-  if (child.exitCode !== null) return;
+async function stopServer(server: Server): Promise<void> {
+  return new Promise((resolve) => {
+    try {
+      if (typeof server.closeAllConnections === "function") {
+        server.closeAllConnections();
+      }
+    } catch {
+      // Ignore
+    }
+    server.close(() => resolve());
+  });
+}
 
-  await new Promise<void>((resolveStopped) => {
-    let settled = false;
-    const finish = () => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timeout);
-      resolveStopped();
+async function startEmbeddedBackend(
+  port: number,
+  options: BackendControllerOptions,
+): Promise<{ server: Server; port: number }> {
+  const fs = nodeRequire("node:fs");
+  const path = nodeRequire("node:path");
+  const os = nodeRequire("node:os");
+
+  const tmpPath = os.tmpdir();
+  const tokenFile = path.resolve(tmpPath, "anonymous_token");
+  if (!fs.existsSync(tokenFile)) {
+    try {
+      fs.writeFileSync(tokenFile, "", "utf-8");
+    } catch {
+      // Ignore
+    }
+  }
+
+  try {
+    const generateConfig = nodeRequire("@neteasecloudmusicapienhanced/api/generateConfig");
+    if (typeof generateConfig === "function") {
+      await generateConfig();
+    }
+  } catch (error) {
+    options.log.warn("[backend] generateConfig failed (continuing anyway):", error);
+  }
+
+  process.env.CORS_ALLOW_ORIGIN = `${RENDERER_SCHEME}://-`;
+
+  const { serveNcmApi } = nodeRequire("@neteasecloudmusicapienhanced/api/server");
+  const appExt = await serveNcmApi({
+    checkVersion: false,
+    host: BACKEND_HOST,
+    port,
+  });
+
+  if (!appExt?.server) {
+    throw new Error("Failed to initialize backend HTTP server instance");
+  }
+
+  const server = appExt.server as Server;
+
+  return new Promise<{ server: Server; port: number }>((resolve, reject) => {
+    if (server.listening) {
+      resolve({ server, port });
+      return;
+    }
+
+    const onError = (err: Error) => {
+      server.removeListener("listening", onListening);
+      reject(err);
     };
-    const timeout = setTimeout(finish, 3_000);
-    child.once("close", finish);
-    child.kill();
+    const onListening = () => {
+      server.removeListener("error", onError);
+      resolve({ server, port });
+    };
+
+    server.once("error", onError);
+    server.once("listening", onListening);
   });
-}
-
-function resolveBackendRoot() {
-  if (app.isPackaged) return join(process.resourcesPath, "backend");
-  return resolve(app.getAppPath(), "../../../backend/api-enhanced");
-}
-
-function resolveBackendEntry(backendRoot: string) {
-  if (app.isPackaged) return join(backendRoot, "entry.cjs");
-  return resolve(app.getAppPath(), "resources/backend-entry.cjs");
 }
 
 export function createDesktopBackendController(
@@ -180,7 +213,7 @@ export function createDesktopBackendController(
   initialConfig: DesktopHostConfig["backend"],
 ): DesktopBackendController {
   let status = createStatus(initialConfig.autoStart ? "stopped" : "disabled", initialConfig.port);
-  let child: BackendChild | null = null;
+  let activeServer: Server | null = null;
   let activePort: number | null = null;
   let generation = 0;
   let disposed = false;
@@ -191,85 +224,64 @@ export function createDesktopBackendController(
     listeners.forEach((listener) => listener(status));
   };
 
-  const stopManagedChild = async () => {
-    const currentChild = child;
-    child = null;
+  const stopManagedServer = async () => {
+    const currentServer = activeServer;
+    activeServer = null;
     activePort = null;
-    if (!currentChild) return;
+    if (!currentServer) return;
     setStatus(createStatus("stopped", status.port));
-    await stopChild(currentChild);
+    await stopServer(currentServer);
   };
 
-  const startManagedChild = async (port: number, currentGeneration: number) => {
-    const backendRoot = resolveBackendRoot();
-    const backendEntry = resolveBackendEntry(backendRoot);
-    if (!existsSync(backendEntry)) {
-      const error = `本地后端资源不存在：${backendEntry}`;
-      options.log.error("[backend] %s", error);
-      setStatus(createStatus("error", port, { error }));
-      return status;
-    }
-
-    setStatus(createStatus("starting", port, { managed: true, source: "managed" }));
+  const startManaged = async (preferredPort: number, currentGeneration: number) => {
+    setStatus(createStatus("starting", preferredPort, { managed: true, source: "managed" }));
 
     try {
-      const nextChild = spawn(process.execPath, [backendEntry], {
-        cwd: backendRoot,
-        env: {
-          ...process.env,
-          ELECTRON_RUN_AS_NODE: "1",
-          HOST: BACKEND_HOST,
-          PORT: String(port),
-          CORS_ALLOW_ORIGIN: `${RENDERER_SCHEME}://-`,
-        },
-        stdio: ["ignore", "pipe", "pipe"],
-        windowsHide: true,
-      });
-      child = nextChild;
-      activePort = port;
-      nextChild.stdout.on("data", (data: Buffer) => {
-        const message = formatBackendChildOutput(data);
-        if (message) options.log.info("%s", formatBackendLogEntry(message));
-      });
-      nextChild.stderr.on("data", (data: Buffer) => {
-        const message = formatBackendChildOutput(data);
-        if (message) options.log.error("%s", formatBackendLogEntry(message));
-      });
-      nextChild.once("error", (error) => {
-        if (child !== nextChild) return;
-        child = null;
-        activePort = null;
-        setStatus(createStatus("error", port, { error: error.message }));
-      });
-      nextChild.once("exit", (code, signal) => {
-        if (child !== nextChild || disposed) return;
-        child = null;
-        activePort = null;
-        const error = `本地后端已退出${code === null ? `（${signal ?? "未知信号"}）` : `（代码 ${code}）`}`;
-        setStatus(createStatus("error", port, { error }));
-      });
+      let targetPort = preferredPort;
+      if (!targetPort || targetPort <= 0) {
+        targetPort = await getFreePort();
+      }
+      const probe = await probeBackend(targetPort);
+      if (probe.occupied) {
+        options.log.warn(`[backend] 目标端口 ${targetPort} 已被占用，正在分配空闲端口...`);
+        targetPort = await getFreePort();
+      }
 
-      const ready = await waitForBackendReady(port, nextChild);
       if (currentGeneration !== generation || disposed) return status;
-      if (ready) {
-        setStatus(
-          createStatus("running", port, {
-            managed: true,
-            pid: nextChild.pid ?? null,
-            source: "managed",
-          }),
-        );
-        options.log.info("[backend] local backend is ready at %s", backendOrigin(port));
+
+      let started: { server: Server; port: number };
+      try {
+        started = await startEmbeddedBackend(targetPort, options);
+      } catch (err) {
+        options.log.warn(`[backend] 端口 ${targetPort} 启动失败，尝试动态分配空闲端口...`, err);
+        targetPort = await getFreePort();
+        started = await startEmbeddedBackend(targetPort, options);
+      }
+
+      if (currentGeneration !== generation || disposed) {
+        await stopServer(started.server);
         return status;
       }
 
-      if (child === nextChild) await stopManagedChild();
-      const error = `本地后端在 ${BACKEND_START_TIMEOUT_MS}ms 内未就绪，请检查端口或日志。`;
-      setStatus(createStatus("error", port, { error }));
+      activeServer = started.server;
+      activePort = started.port;
+
+      setStatus(
+        createStatus("running", started.port, {
+          managed: true,
+          pid: process.pid,
+          source: "managed",
+        }),
+      );
+      options.log.info(
+        "[backend] local embedded backend is ready at %s",
+        backendOrigin(started.port),
+      );
       return status;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      setStatus(createStatus("error", port, { error: message }));
+      options.log.error("[backend] failed to start embedded backend:", error);
+      setStatus(createStatus("error", preferredPort, { error: message }));
       return status;
     }
   };
@@ -278,7 +290,7 @@ export function createDesktopBackendController(
     async dispose() {
       disposed = true;
       generation += 1;
-      await stopManagedChild();
+      await stopManagedServer();
     },
     getStatus: () => status,
     onStatusChanged(callback) {
@@ -290,16 +302,19 @@ export function createDesktopBackendController(
       if (disposed) return status;
 
       if (!config.autoStart) {
-        await stopManagedChild();
+        await stopManagedServer();
         setStatus(createStatus("disabled", config.port));
         return status;
       }
 
-      if (child && activePort === config.port) return status;
-      await stopManagedChild();
+      if (activeServer && activePort !== null) {
+        return status;
+      }
+      await stopManagedServer();
 
       const probe = await probeBackend(config.port);
       if (currentGeneration !== generation || disposed) return status;
+
       if (probe.reachable) {
         setStatus(
           createStatus("running", config.port, {
@@ -310,25 +325,19 @@ export function createDesktopBackendController(
         options.log.info("[backend] using an existing backend at %s", backendOrigin(config.port));
         return status;
       }
-      if (probe.occupied) {
-        const error = `端口 ${config.port} 已被其他服务占用，无法启动本地后端。`;
-        setStatus(createStatus("error", config.port, { error }));
-        options.log.warn("[backend] %s", error);
-        return status;
-      }
 
-      return startManagedChild(config.port, currentGeneration);
+      return startManaged(config.port, currentGeneration);
     },
     async restart(config) {
       const currentGeneration = ++generation;
       if (disposed) return status;
       if (!config.autoStart) {
-        await stopManagedChild();
+        await stopManagedServer();
         setStatus(createStatus("disabled", config.port));
         return status;
       }
 
-      await stopManagedChild();
+      await stopManagedServer();
       const probe = await probeBackend(config.port);
       if (currentGeneration !== generation || disposed) return status;
       if (probe.reachable) {
@@ -340,12 +349,7 @@ export function createDesktopBackendController(
         );
         return status;
       }
-      if (probe.occupied) {
-        const error = `端口 ${config.port} 已被其他服务占用，无法重启内置后端。`;
-        setStatus(createStatus("error", config.port, { error }));
-        return status;
-      }
-      return startManagedChild(config.port, currentGeneration);
+      return startManaged(config.port, currentGeneration);
     },
   };
 }

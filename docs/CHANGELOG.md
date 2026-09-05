@@ -32,6 +32,7 @@
 
 ### Quality
 
+- **主进程内嵌后端与动态可用端口自适应**：重构桌面端后端控制器（`backend.ts`），直接在 Electron 主进程内调用 `@neteasecloudmusicapienhanced/api` 的 `serveNcmApi` 启动内置服务，彻底废除多进程 `spawn` 与外部 node 执行链路；引入动态可用端口自适应探测（`getFreePort`）与冲突重试机制，消除静态端口（4040/3838）占用的启动失败；Web 渲染端（`request.ts`）与主进程会话存储自动监听并对齐动态后端 origin，确保开发与生产环境下零残留退出与平滑网络请求。
 - **纳入后端工作区并清理历史测试用例**：将 `repo/backend/api-enhanced` 纳入根目录 Bun Workspaces 体系（`repo/backend/*`），桌面端改以标准 `workspace:*` 引入依赖；删除原有的碎片搬运构建脚本 `prepare-backend-resource.ts` 与打包额外资源配置，全范围清理 `desktop/tests` 与 `web/tests` 下依赖源码字符匹配的历史虚假测试，保留工程架构守卫 `check-architecture.test.ts`。
 - **健壮用户状态存储与持久化水合防御**：在 `useUserStore` 的 `setUser` 中过滤无效或 `userId <= 0` 的占位对象，并在持久化重水合（`onRehydrateStorage`）中自动清除历史上受损的未知用户残留；在 `QrLogin` 中补充账号基础资料与用户详情的兜底级联逻辑，防止接口异常时将空属性覆盖为无效对象。
 - **收敛 Electron 全链路日志**：Main 的托盘/登录窗口不再直接调用 `console.*`，Renderer 控制台日志在保留 DevTools 输出的同时转发至 `electron-log`，preload Bridge 暴露失败增加最早期 IPC 兜底，并保留事件、来源、追踪 ID 等结构化字段；同时延后原生资源校验到日志初始化之后，避免启动早期日志落入错误目录。
