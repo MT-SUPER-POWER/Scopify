@@ -18,35 +18,29 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+/**
+ * 解析打包/开发环境下的静态资源路径。
+ * 打包后资源位于 process.resourcesPath/resources/，开发时位于项目根 resources/。
+ */
+function resource(...segments: string[]): string {
+  return app.isPackaged
+    ? join(process.resourcesPath, "resources", ...segments)
+    : join(__dirname, "../../resources", ...segments);
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPLASH ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// 启动页 HTML 路径和内容统一管理
-export const __splashHtmlPath = app.isPackaged
-  ? join(process.resourcesPath, "resources/splash.html")
-  : join(__dirname, "../../resources/splash.html");
-
+export const __splashHtmlPath = resource("splash.html");
 export const __splashHtmlDesc = `[SPLASH] Electron 启动页: ${__splashHtmlPath}`;
 
 const desktopConfig = loadDesktopHostConfig();
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ICON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // ─── 文件路径（按格式区分底层资源）───
-export const __iconIcoPath = app.isPackaged
-  ? join(process.resourcesPath, "resources/icon.ico")
-  : join(__dirname, "../../resources/icon.ico");
-
-export const __iconIcnsPath = app.isPackaged
-  ? join(process.resourcesPath, "resources/icon.icns")
-  : join(__dirname, "../../resources/icon.icns");
-
-const __iconsetDir = app.isPackaged
-  ? join(process.resourcesPath, "resources/icon.iconset")
-  : join(__dirname, "../../resources/icon.iconset");
+export const __iconIcoPath = resource("icon.ico");
+export const __iconIcnsPath = resource("icon.icns");
+const __iconsetDir = resource("icon.iconset");
 
 // ─── 底层 NativeImage（内部使用，不直接导出）───
 const _nativeIco = nativeImage.createFromPath(__iconIcoPath);
@@ -102,9 +96,9 @@ export const __rendererDir = join(__dirname, "../../renderer");
 /** 渲染器使用的自定义协议 scheme，同步决定 electron-serve 注册的协议名及后端 CORS 白名单 */
 export const RENDERER_SCHEME = "scopify";
 
-const __picDir = app.isPackaged
-  ? join(process.resourcesPath, "resources/pic")
-  : join(__dirname, "../../resources/pic");
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ THUMBAR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const __picDir = resource("pic");
 
 export const next = nativeImage.createFromPath(join(__picDir, "tray/next.png"));
 export const pause = nativeImage.createFromPath(join(__picDir, "tray/pause.png"));
