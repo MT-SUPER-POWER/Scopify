@@ -7,7 +7,6 @@ import type {
   DesktopBackendState,
   DesktopHostConfig,
 } from "@scopify/desktop-contract";
-const RENDERER_SCHEME = "scopify";
 
 const BACKEND_HOST = "127.0.0.1";
 const BACKEND_PROBE_TIMEOUT_MS = 750;
@@ -172,8 +171,6 @@ async function startEmbeddedBackend(
   } catch (error) {
     options.log.warn("[backend] generateConfig failed (continuing anyway):", error);
   }
-
-  process.env.CORS_ALLOW_ORIGIN = `${RENDERER_SCHEME}://-`;
 
   const { serveNcmApi } = nodeRequire("@neteasecloudmusicapienhanced/api/server");
   const appExt = await serveNcmApi({
