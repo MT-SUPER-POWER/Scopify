@@ -16,7 +16,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import type { TracklistTableProps } from "@/types/components/playlist";
+import type { PlaylistTrackDeleteRequest, TracklistTableProps } from "@/types/components/playlist";
 
 import {
   useNavigationScrollRestorationAdapter,
@@ -46,7 +46,7 @@ import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import type { NavigationScrollRestorationAdapter } from "@/types/navigation-scroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
-import { TrackRow } from "./TrackRow";
+import { SortableTrackRow as TrackRow } from "./SortableTrackRow";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -118,10 +118,7 @@ export default function TracklistTable({
     if (currentPageId === null) return true;
     return storePlaylistId === currentPageId;
   }, [currentPageId, storePlaylistId]);
-  const [pendingDelete, setPendingDelete] = useState<null | {
-    playlistId: number | string | undefined;
-    trackId: number;
-  }>(null);
+  const [pendingDelete, setPendingDelete] = useState<PlaylistTrackDeleteRequest | null>(null);
 
   const storeTracks = useUserStore((state) => state.albumList);
   const tracks = externalTracks ?? storeTracks;
@@ -605,7 +602,7 @@ export default function TracklistTable({
                   const isLiked = likeSet.has(track.id);
                   return (
                     <SongContextMenu
-                      key={`${track.id}-${index}`}
+                      key={track.id}
                       song={track}
                       isActive={isActive}
                       isPlaying={isPlaying}
@@ -630,6 +627,7 @@ export default function TracklistTable({
                       }
                     >
                       <TrackRow
+                        allowReorder={!hasSearchQuery && sorting.length === 0}
                         track={track}
                         index={index}
                         isActive={isActive}
@@ -659,7 +657,8 @@ export default function TracklistTable({
                     const isLiked = likeSet.has(track.id);
                     const row = (
                       <TrackRow
-                        key={`${track.id}-${virtualRow.index}`}
+                        allowReorder={!hasSearchQuery && sorting.length === 0}
+                        key={track.id}
                         ref={(element) => {
                           if (element) virtualRowElementsRef.current.set(virtualRow.index, element);
                           else virtualRowElementsRef.current.delete(virtualRow.index);
@@ -685,7 +684,7 @@ export default function TracklistTable({
 
                     return (
                       <SongContextMenu
-                        key={`${track.id}-${virtualRow.index}`}
+                        key={track.id}
                         song={track}
                         isActive={isActive}
                         isPlaying={isPlaying}

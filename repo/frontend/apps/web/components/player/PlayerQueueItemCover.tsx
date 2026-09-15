@@ -17,10 +17,10 @@ export function PlayerQueueItemCover({
   const { t } = useI18n();
 
   return (
-    <div className="flex shrink-0 items-center gap-3 pr-1">
+    <div className="flex shrink-0 items-center gap-2">
       <span
         className={cn(
-          "w-4 text-center text-[10px] tabular-nums",
+          "relative flex h-6 w-4 shrink-0 items-center justify-center text-[10px] tabular-nums",
           isActive ? "text-brand" : "text-content-muted",
         )}
       >
@@ -28,6 +28,7 @@ export function PlayerQueueItemCover({
       </span>
       <div className="group/cover relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded">
         <Image
+          draggable={false}
           src={song.al.picUrl}
           alt={song.name}
           className={cn(

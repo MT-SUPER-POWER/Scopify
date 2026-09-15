@@ -59,6 +59,11 @@ export interface PlaylistContentSlotProps {
   searchQuery: string;
 }
 
+export type PlaylistHeroProps = Pick<
+  PlaylistContentProps,
+  "isLoading" | "themeColor" | "playlistInfo" | "isDailyRecommend"
+>;
+
 export interface PlaylistHeaderSkeletonProps {
   showActions?: boolean;
 }
@@ -112,4 +117,19 @@ export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>,
   playlistID: null | string;
   setIsPlaying: (v: boolean) => void;
   track: SongDetail;
+}
+
+export interface SortableTrackRowProps extends TrackRowProps {
+  allowReorder: boolean;
+}
+
+export type TrackTitleCellProps = Pick<TrackRowProps, "track" | "isActive">;
+
+export interface PlaylistTrackDeleteRequest {
+  playlistId: number | string | undefined;
+  trackId: number;
+}
+
+export interface PlaylistTrackListProps extends TracklistTableProps {
+  playlistId: string | null;
 }

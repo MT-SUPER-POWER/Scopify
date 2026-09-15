@@ -2,12 +2,13 @@
 
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ListMusic } from "lucide-react";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { toast } from "sonner";
 
-import { PlayerQueueItem } from "@/components/player/PlayerQueueItem";
+import { SortableList } from "@/components/shared/SortableList";
+import { DragThumbnail } from "@/components/shared/DragThumbnail";
+import { SortablePlayerQueueItem } from "@/components/player/SortablePlayerQueueItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { usePlayerQueueDrag } from "@/hooks/player/usePlayerQueueDrag";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { PlayerQueueListHandle, PlayerQueueListProps } from "@/types/components/player";
@@ -24,7 +25,14 @@ export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueList
     const togglePlaying = usePlayerStore((state) => state.togglePlaying);
     const parentRef = useRef<HTMLDivElement>(null);
     const hasScrolledOnOpen = useRef(false);
-    const drag = usePlayerQueueDrag(queue.length, moveQueueItem);
+    const ids = useMemo(() => {
+      const occurrences = new Map<number, number>();
+      return queue.map((song) => {
+        const occurrence = occurrences.get(song.id) ?? 0;
+        occurrences.set(song.id, occurrence + 1);
+        return `queue-item-${song.id}-${occurrence}`;
+      });
+    }, [queue]);
     const virtualizer = useVirtualizer({
       count: queue.length,
       getScrollElement: () => parentRef.current,
@@ -58,57 +66,58 @@ export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueList
     };
 
     return (
-      <ScrollArea viewportRef={parentRef} className="h-125 w-full">
-        <div className="p-2">
-          {queue.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-content-muted">
-              <ListMusic className="size-10 opacity-60" />
-            </div>
-          ) : (
-            <div
-              style={{
-                height: `${virtualizer.getTotalSize()}px`,
-                width: "100%",
-                position: "relative",
-              }}
-            >
-              {virtualizer.getVirtualItems().map((virtualRow) => {
-                const index = virtualRow.index;
-                const song = queue[index];
-                const isActive = index === queueIndex;
-                return (
-                  <PlayerQueueItem
-                    key={virtualRow.key}
-                    song={song}
-                    index={index}
-                    isActive={isActive}
-                    isPlaying={isPlaying}
-                    isDragging={drag.draggedIndex === index}
-                    isDropTargetAfter={
-                      drag.dropTarget?.index === index &&
-                      drag.dropTarget.placement === "after" &&
-                      drag.draggedIndex !== index
-                    }
-                    isDropTargetBefore={
-                      drag.dropTarget?.index === index &&
-                      drag.dropTarget.placement === "before" &&
-                      drag.draggedIndex !== index
-                    }
-                    virtualStart={virtualRow.start}
-                    virtualSize={virtualRow.size}
-                    onDragEnd={drag.clear}
-                    onDragOver={drag.onDragOver}
-                    onDragStart={drag.onDragStart}
-                    onDrop={drag.onDrop}
-                    onPlay={handlePlay}
-                    onRemove={handleRemove}
-                  />
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </ScrollArea>
+      <SortableList
+        ids={ids}
+        onMove={moveQueueItem}
+        renderOverlay={(id) => {
+          const song = queue[ids.indexOf(String(id))];
+          return song ? (
+            <DragThumbnail
+              cover={song.al.picUrl}
+              title={song.name}
+              subtitle={song.ar.map((artist) => artist.name).join(" / ")}
+            />
+          ) : null;
+        }}
+      >
+        <ScrollArea viewportRef={parentRef} className="h-125 w-full">
+          <div className="p-2">
+            {queue.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-content-muted">
+                <ListMusic className="size-10 opacity-60" />
+              </div>
+            ) : (
+              <div
+                style={{
+                  height: `${virtualizer.getTotalSize()}px`,
+                  width: "100%",
+                  position: "relative",
+                }}
+              >
+                {virtualizer.getVirtualItems().map((virtualRow) => {
+                  const index = virtualRow.index;
+                  const song = queue[index];
+                  const isActive = index === queueIndex;
+                  return (
+                    <SortablePlayerQueueItem
+                      key={ids[index]}
+                      id={ids[index]}
+                      song={song}
+                      index={index}
+                      isActive={isActive}
+                      isPlaying={isPlaying}
+                      virtualStart={virtualRow.start}
+                      virtualSize={virtualRow.size}
+                      onPlay={handlePlay}
+                      onRemove={handleRemove}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </SortableList>
     );
   },
 );

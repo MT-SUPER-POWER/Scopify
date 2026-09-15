@@ -1,4 +1,4 @@
-import type { CSSProperties, DragEvent, MouseEventHandler, ReactNode } from "react";
+import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import type { SongDetail } from "@/types/api/music";
 import type { ProgressRangeMarker } from "@/types/components/slider";
 import type { SongStatsEnrichmentStatus } from "@/types/songStats";
@@ -19,22 +19,14 @@ export interface QueueItemProps {
   index: number;
   isActive: boolean;
   isPlaying: boolean;
-  isDragging?: boolean;
-  isDropTargetAfter?: boolean;
-  isDropTargetBefore?: boolean;
-  virtualStart: number;
-  virtualSize: number;
-  onDragEnd?(): void;
-  onDragOver?(event: DragEvent<HTMLDivElement>, index: number): void;
-  onDragStart?(event: DragEvent<HTMLDivElement>, index: number): void;
-  onDrop?(event: DragEvent<HTMLDivElement>, index: number): void;
   onPlay: (index: number) => void;
   onRemove: (index: number) => void;
 }
 
-export interface PlayerQueueDropTarget {
-  index: number;
-  placement: "before" | "after";
+export interface SortablePlayerQueueItemProps extends QueueItemProps {
+  id: string;
+  virtualStart: number;
+  virtualSize: number;
 }
 
 export interface PlayerQueueListHandle {

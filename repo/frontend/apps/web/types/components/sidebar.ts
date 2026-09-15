@@ -8,6 +8,10 @@ export interface SidebarConfirmDialogProps {
   cancelText?: string;
 }
 
+export interface SidebarPlaylistLibraryProps {
+  isCollapsed: boolean;
+}
+
 export interface SidebarLibraryItemProps {
   coverImg: string;
   hasContextMenu?: boolean;
@@ -17,3 +21,14 @@ export interface SidebarLibraryItemProps {
   subtitle: string;
   title: string;
 }
+
+export interface SidebarSortablePlaylistsProps {
+  playlists: NeteasePlaylist[];
+  isCollapsed: boolean;
+}
+
+export interface SortableLibraryItemProps extends SidebarLibraryItemProps {
+  id: number;
+  locked: boolean;
+}
+import type { NeteasePlaylist } from "@/types/api/playlist";

@@ -8,9 +8,7 @@ import { forwardRef, memo, useCallback } from "react";
 import type { TrackRowProps } from "@/types/components/playlist";
 
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
-import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
-import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackTitleCell } from "@/components/Playlist/TrackTitleCell";
 import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -77,52 +75,7 @@ export const TrackRow = memo(
           />
         </TableCell>
 
-        <TableCell className="max-w-0 min-w-0">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="size-10 shrink-0 rounded bg-surface-elevated">
-              <img
-                width={40}
-                height={40}
-                src={track.al.picUrl}
-                alt={track.al.name}
-                decoding="async"
-                loading="lazy"
-                className="size-full rounded object-cover"
-              />
-            </div>
-            <div className="flex min-w-0 flex-1 flex-col truncate">
-              <SongTitleWithAlia
-                name={track.name}
-                alia={track.alia}
-                className={cn(
-                  "w-full cursor-pointer text-base font-normal group-hover:underline",
-                  isActive ? "text-brand" : "text-content",
-                )}
-              />
-              <div className="mt-0.5 flex min-w-0 items-center gap-0.5">
-                <SongQualityBadge qualityLevel={track.privilege?.maxBrLevel} />
-                <SongVipBadge fee={track.fee} />
-                <span className="min-w-0 cursor-pointer truncate text-sm font-normal text-content-muted">
-                  {track.ar.slice(0, 2).map((a, idx, arr) => (
-                    <span
-                      key={`${a.id}-${idx}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        smartRouter.push(`/artist?id=${a.id}`);
-                      }}
-                      title={`/artist?id=${a.id}`}
-                      className="hover:text-content hover:underline"
-                      style={{ display: "inline" }}
-                    >
-                      {a.name}
-                      {idx < arr.length - 1 ? ", " : ""}
-                    </span>
-                  ))}
-                </span>
-              </div>
-            </div>
-          </div>
-        </TableCell>
+        <TrackTitleCell track={track} isActive={isActive} />
 
         {!hideAlbumColumn && (
           <TableCell className="max-w-0">
@@ -173,17 +126,4 @@ export const TrackRow = memo(
       </TableRow>
     );
   }),
-  (prev: TrackRowProps, next: TrackRowProps) =>
-    prev.track.id === next.track.id &&
-    prev.isActive === next.isActive &&
-    prev.isPlaying === next.isPlaying &&
-    prev.isLiked === next.isLiked &&
-    prev.index === next.index &&
-    prev.hideAlbumColumn === next.hideAlbumColumn &&
-    prev.hideDateColumn === next.hideDateColumn &&
-    prev.hideLikeColumn === next.hideLikeColumn &&
-    prev.isScrolling === next.isScrolling &&
-    prev.track.fee === next.track.fee &&
-    prev.track.privilege?.maxBrLevel === next.track.privilege?.maxBrLevel &&
-    prev.track.alia?.join() === next.track.alia?.join(),
 );

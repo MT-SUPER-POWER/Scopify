@@ -51,14 +51,25 @@ async function fetchPlaylistContent({
 
   const [detailResponse, trackResponse] = await Promise.all([
     getPlaylsitDetail({ id: playlistId, requiresMusicSession: isRecommend }),
-    getPlaylistAllTracks({ id: playlistId, requiresMusicSession: isRecommend }),
+    getPlaylistAllTracks({ id: playlistId, limit: 1000, requiresMusicSession: isRecommend }),
   ]);
   const rawDetail = detailResponse.data.playlist;
   if (!rawDetail) throw new Error("Playlist detail is missing.");
+  const tracks = prunePlaylistTracks(trackResponse.data);
+  const trackCount = rawDetail.trackIds?.length ?? rawDetail.trackCount ?? 0;
+  if (trackCount > 1000) {
+    const remainder = await getPlaylistAllTracks({
+      id: playlistId,
+      offset: 1000,
+      limit: trackCount - 1000,
+      requiresMusicSession: isRecommend,
+    });
+    tracks.push(...prunePlaylistTracks(remainder.data));
+  }
 
   return {
     rawDetail,
-    tracks: prunePlaylistTracks(trackResponse.data),
+    tracks,
   };
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { fetchUserPlaylists } from "@/hooks/library/fetchUserPlaylists";
 import { getUserAlbumSublist } from "@/lib/api/album";
 import { getFollowedArtists } from "@/lib/api/artist";
 import {
@@ -314,12 +315,11 @@ export function useUserPlaylistsQuery() {
     queryFn: async (): Promise<NeteasePlaylist[]> => {
       if (!userId) return [];
 
-      const [playlistResponse, likeListResponse] = await Promise.all([
-        getUserPlaylist(userId, 100),
+      const [rawPlaylists, likeListResponse] = await Promise.all([
+        fetchUserPlaylists(userId),
         getUserLikeLists(userId),
       ]);
 
-      const rawPlaylists = playlistResponse.data.playlist ?? [];
       const cleanPlaylists = rawPlaylists.map(prunePlaylist);
 
       const store = useUserStore.getState();

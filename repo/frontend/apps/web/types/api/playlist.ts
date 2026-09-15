@@ -6,6 +6,7 @@ import {
 } from "@/types/api/music";
 
 export interface NeteasePlaylist {
+  specialType?: number;
   id: number;
   name: string;
   createTime: number;
@@ -18,6 +19,7 @@ export interface NeteasePlaylist {
   subscribedCount: number;
   tags: string[];
   creator: {
+    userId?: number;
     nickname: string;
     avatarUrl: string;
   };
@@ -80,6 +82,7 @@ export const prunePlaylist = (raw: null | RawNeteasePlaylist | undefined): Netea
 
   return {
     id: raw.id ?? 0,
+    specialType: raw.specialType,
     name: raw.name ?? "",
     createTime: raw.createTime ?? 0,
     coverImgUrl: raw.coverImgUrl ?? raw.picUrl ?? "",
@@ -91,6 +94,7 @@ export const prunePlaylist = (raw: null | RawNeteasePlaylist | undefined): Netea
     subscribedCount: raw.subscribedCount ?? 0,
     tags: raw.tags ?? [],
     creator: {
+      userId: raw.creator?.userId,
       nickname: raw.creator?.nickname ?? "未知用户",
       avatarUrl: raw.creator?.avatarUrl ?? "",
     },
@@ -200,6 +204,14 @@ export type PlaylistTrackOperation = "add" | "del";
 /** Successful payload from `GET /playlist/tracks`. */
 export interface PlaylistTrackUpdateResponse {
   code: 200;
+}
+
+export interface PlaylistOrderUpdateParams {
+  ids: number[];
+}
+
+export interface SongOrderUpdateParams extends PlaylistOrderUpdateParams {
+  pid: number | string;
 }
 
 export interface PlaylistTrackMutationVariables {

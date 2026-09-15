@@ -14,8 +14,27 @@ import type {
   PlaylistTracksResponse,
   RecommendedPlaylistsResponse,
   UserPlaylistResponse,
+  PlaylistOrderUpdateParams,
+  SongOrderUpdateParams,
+  PlaylistTrackUpdateResponse,
 } from "@/types/api/playlist";
 import request, { requestConfig } from "../web/request";
+
+export function updatePlaylistOrder({ ids }: PlaylistOrderUpdateParams) {
+  return request.post<PlaylistTrackUpdateResponse>(
+    "/playlist/order/update",
+    { ids: JSON.stringify(ids) },
+    requestConfig({ requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+}
+
+export function updateSongOrder({ pid, ids }: SongOrderUpdateParams) {
+  return request.post<PlaylistTrackUpdateResponse>(
+    "/song/order/update",
+    { pid, ids: JSON.stringify(ids) },
+    requestConfig({ requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+}
 
 /**
  * 登录后调用此接口 , 传入用户 id, 可以获取用户歌单

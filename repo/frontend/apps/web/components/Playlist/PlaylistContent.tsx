@@ -2,11 +2,10 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import PlaylistActions from "@/components/Playlist/ActionStation";
-import PlaylistHeader from "@/components/Playlist/Header";
-import PlaylistHeaderSkeleton from "@/components/Playlist/HeaderSkeleton";
+import { PlaylistHero } from "@/components/Playlist/PlaylistHero";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
-import TracklistTable from "@/components/Playlist/TrackTable";
+import { PlaylistTrackList } from "@/components/Playlist/PlaylistTrackList";
 import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
 import { DASHBOARD_HEADER_HEIGHT } from "@/constants/layout";
 import { canRemoveTracksFromPlaylist } from "@/lib/playlist/playlistTrackRemovalPermission";
@@ -76,40 +75,33 @@ export function PlaylistContent({
       key={playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily")}
       className="relative flex min-h-screen w-full flex-col bg-surface-raised font-sans"
     >
-      {!isLoading && themeColor ? (
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 md:h-125"
-          style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
-        />
-      ) : null}
-      {dynamicPlaylistInfo ? (
-        <PlaylistHeader info={dynamicPlaylistInfo} isDaily={isDailyRecommend} />
-      ) : (
-        <PlaylistHeaderSkeleton showActions={isLoading} />
-      )}
+      <PlaylistHero
+        isLoading={isLoading}
+        themeColor={themeColor}
+        playlistInfo={dynamicPlaylistInfo}
+        isDailyRecommend={isDailyRecommend}
+      />
       <div className="hero-content-transition relative z-10 flex flex-1 flex-col">
         {!isLoading && (
-          <>
-            <PlaylistActions
-              actionSlot={actionSlot}
-              commentResourceId={commentResourceId}
-              commentResourceKind={commentResourceKind}
-              playlistId={playlistId}
-              playlistInfo={dynamicPlaylistInfo}
-              playSourceId={playSourceId}
-              isDaily={isDailyRecommend}
-              dailyDate={dailyDate}
-              onPlayToggle={onPlayToggle}
-              searchOpen={searchOpen}
-              searchQuery={searchQuery}
-              showShuffle={showShuffle}
-              onSearchChange={setSearchQuery}
-              onSearchOpen={handleSearchOpen}
-              onSearchClose={handleSearchClose}
-              inputRef={inputRef}
-              tracks={tracks}
-            />
-          </>
+          <PlaylistActions
+            actionSlot={actionSlot}
+            commentResourceId={commentResourceId}
+            commentResourceKind={commentResourceKind}
+            playlistId={playlistId}
+            playlistInfo={dynamicPlaylistInfo}
+            playSourceId={playSourceId}
+            isDaily={isDailyRecommend}
+            dailyDate={dailyDate}
+            onPlayToggle={onPlayToggle}
+            searchOpen={searchOpen}
+            searchQuery={searchQuery}
+            showShuffle={showShuffle}
+            onSearchChange={setSearchQuery}
+            onSearchOpen={handleSearchOpen}
+            onSearchClose={handleSearchClose}
+            inputRef={inputRef}
+            tracks={tracks}
+          />
         )}
         <div className="min-w-0 flex-1 pb-10">
           {isLoading ? (
@@ -117,7 +109,9 @@ export function PlaylistContent({
           ) : contentSlot ? (
             contentSlot({ searchQuery })
           ) : (
-            <TracklistTable
+            <PlaylistTrackList
+              key={playlistId ?? playSourceId ?? "virtual"}
+              playlistId={playlistId}
               canRemoveFromPlaylist={canRemoveFromPlaylist}
               searchOpen={searchOpen}
               searchQuery={searchQuery}
