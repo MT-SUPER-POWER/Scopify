@@ -23,6 +23,7 @@
   },
   "include": [
     "electron.vite.config.ts",
+    "electron-builder.config.ts",
     "lib/**/*.ts",
     "electron/**/*.ts",
     "scripts/**/*.ts",

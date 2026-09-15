@@ -2,9 +2,11 @@ import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { resolvePackagedAppDirectory } from "../lib/runtimePaths";
+
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const desktopRoot = resolve(scriptDir, "..");
-const packagedAppRoot = resolve(desktopRoot, "build/desktop/app");
+const packagedAppRoot = resolvePackagedAppDirectory(desktopRoot);
 const packagedNodeModules = resolve(packagedAppRoot, "node_modules");
 
 function copyRuntimeDirectory(name: "config" | "resources") {
@@ -20,7 +22,6 @@ const desktopPackage = JSON.parse(
 ) as Record<string, unknown>;
 
 const packagedAppPackage = { ...desktopPackage };
-delete packagedAppPackage.build;
 delete packagedAppPackage.dependencies;
 delete packagedAppPackage.devDependencies;
 delete packagedAppPackage.scripts;

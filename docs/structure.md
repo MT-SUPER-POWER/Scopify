@@ -35,14 +35,23 @@ repo/
         store/module/     Zustand 全局状态
         constants/        静态配置与枚举（>10 条数组放这里）
       desktop/
-        main/             Electron 主进程与 preload
-        renderer/         Web 静态构建生成的制品插槽，不提交
+        electron/main/    Electron 主进程
+        electron/preload/ 安全桥接
+        electron.vite.config.ts     宿主构建配置
+        electron-builder.config.ts  平台打包与发布配置
+        lib/runtimePaths.ts         构建产物目录定义
+        scripts/          原生构建、Renderer 同步、打包准备
+        out/main/         开发宿主产物，不提交
+        build/desktop/app/          待打包应用，不提交
+          out/main/       生产宿主产物
+          renderer/       Web 静态构建生成的制品插槽
+        build/release/    安装包输出，不提交
       mobile/             Flutter 预留入口
     packages/
       desktop-contract/   Web/Desktop 共享的版本化 IPC 契约
 ```
 
-Web Path alias：`@/` → `repo/frontend/apps/web/`，例如 `@/types/…`、`@/lib/…`、`@/components/…`。Desktop 不得反向 import Web 源码，只能消费 `@scopify/desktop-contract` 和生成的 `renderer/` 制品。
+Web Path alias：`@/` → `repo/frontend/apps/web/`，例如 `@/types/…`、`@/lib/…`、`@/components/…`。Desktop 不得反向 import Web 源码，只能消费 `@scopify/desktop-contract` 和生成的 `build/desktop/app/renderer/` 制品；安装后的应用内部对应 `renderer/`。
 
 ---
 

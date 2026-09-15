@@ -55,7 +55,14 @@ Scopify/
 │   │   │   ├── docs/                # Fumadocs UI 组件文档与交互预览
 │   │   │   ├── desktop/             # Electron host，不反向 import Web 源码
 │   │   │   │   ├── electron/        # Electron 宿主源码（main/ 与 preload/）
-│   │   │   │   ├── renderer/        # 构建生成的静态制品插槽（不提交）
+│   │   │   │   ├── electron.vite.config.ts     # Main / Preload 构建配置
+│   │   │   │   ├── electron-builder.config.ts  # 平台打包与发布配置
+│   │   │   │   ├── lib/runtimePaths.ts         # 构建产物目录定义
+│   │   │   │   ├── out/main/        # 开发宿主产物（不提交）
+│   │   │   │   ├── build/desktop/app/          # 待打包应用（不提交）
+│   │   │   │   │   ├── out/main/    # 生产宿主产物
+│   │   │   │   │   └── renderer/    # Web 静态制品插槽
+│   │   │   │   ├── build/release/   # 安装包输出（不提交）
 │   │   │   │   ├── config/          # 桌面配置
 │   │   │   │   ├── resources/       # 打包资源
 │   │   │   │   └── tests/           # Electron 测试

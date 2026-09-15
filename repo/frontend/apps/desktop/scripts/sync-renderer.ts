@@ -3,12 +3,13 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createRendererArtifactManifest } from "../lib/rendererArtifact";
+import { resolvePackagedRendererDirectory } from "../lib/runtimePaths";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const desktopRoot = resolve(scriptDir, "..");
 const webRoot = resolve(desktopRoot, "..", "web");
 const sourceDir = resolve(webRoot, "out");
-const targetDir = resolve(desktopRoot, "build/desktop/app/renderer");
+const targetDir = resolvePackagedRendererDirectory(desktopRoot);
 
 if (!existsSync(resolve(sourceDir, "index.html"))) {
   throw new Error(

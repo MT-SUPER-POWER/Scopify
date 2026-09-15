@@ -40,6 +40,7 @@ export default defineConfig(({ command }) => {
       build: {
         externalizeDeps: false,
         outDir: runtimeOutDir,
+        // 与 Main 共用目录，保留先生成的主进程产物。
         emptyOutDir: false,
         rollupOptions: {
           input: {

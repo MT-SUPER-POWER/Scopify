@@ -4,15 +4,17 @@ import { fileURLToPath } from "node:url";
 
 import { verifyRendererArtifact } from "../lib/rendererArtifact";
 import { verifySandboxedPreloadBundleSource } from "../lib/runtimeBundle";
+import {
+  resolveElectronOutputDirectory,
+  resolvePackagedRendererDirectory,
+} from "../lib/runtimePaths";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
-const packagedAppRoot = resolve(scriptDir, "../build/desktop/app");
-const runtimeBundles = [
-  resolve(packagedAppRoot, "out/main/main.js"),
-  resolve(packagedAppRoot, "out/main/preload.js"),
-];
+const desktopRoot = resolve(scriptDir, "..");
+const runtimeOutDir = resolveElectronOutputDirectory(desktopRoot, "build");
+const runtimeBundles = [resolve(runtimeOutDir, "main.js"), resolve(runtimeOutDir, "preload.js")];
 const sandboxedPreloadBundles = runtimeBundles.slice(1);
-const rendererRoot = resolve(packagedAppRoot, "renderer");
+const rendererRoot = resolvePackagedRendererDirectory(desktopRoot);
 const forbiddenWorkspaceImports = ["@scopify/desktop-contract"];
 
 const missingRuntimeBundles = runtimeBundles.filter(

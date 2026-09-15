@@ -26,12 +26,12 @@
     "check:runtime-bundle": "bun scripts/check-runtime-bundle.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "package:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --win --publish never",
-    "package:mac": "bun run electron:ensure && electron-builder --mac --publish never",
-    "release:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --win --publish always",
-    "release:mac": "bun run electron:ensure && electron-builder --mac --publish always",
-    "build:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --win --publish never",
-    "build:mac": "bun run electron:ensure && electron-builder --mac --publish never"
+    "package:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --config electron-builder.config.ts --win --publish never",
+    "package:mac": "bun run electron:ensure && electron-builder --config electron-builder.config.ts --mac --publish never",
+    "release:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --config electron-builder.config.ts --win --publish always",
+    "release:mac": "bun run electron:ensure && electron-builder --config electron-builder.config.ts --mac --publish always",
+    "build:win": "bun run electron:ensure && bun run wallpaper:build && bun run audio:build && electron-builder --config electron-builder.config.ts --win --publish never",
+    "build:mac": "bun run electron:ensure && electron-builder --config electron-builder.config.ts --mac --publish never"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
@@ -54,97 +54,5 @@
     "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",
     "typescript": "^5.9.3"
-  },
-  "build": {
-    "appId": "com.momo.scopify",
-    "productName": "Scopify",
-    "publish": [
-      "github"
-    ],
-    "artifactName": "${productName}.Setup.v${version}.${platform}.${arch}.${ext}",
-    "directories": {
-      "app": "build/desktop/app",
-      "output": "build/release"
-    },
-    "electronDist": "node_modules/electron/dist",
-    "compression": "maximum",
-    "extraResources": [
-      {
-        "from": "config",
-        "to": "config",
-        "filter": [
-          "**/*.yml"
-        ]
-      },
-      {
-        "from": "resources",
-        "to": "resources",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": "prototypes/desktop-wallpaper-host-spike",
-        "to": "desktop-wallpaper-host-spike",
-        "filter": [
-          "system-wallpaper.ps1"
-        ]
-      }
-    ],
-    "files": [
-      "out/main/**/*.js",
-      "renderer/**/*",
-      "package.json",
-      "!**/node_modules",
-      "!**/*.map"
-    ],
-    "win": {
-      "extraResources": [
-        {
-          "from": "native/audio-engine",
-          "to": "native/audio-engine",
-          "filter": [
-            "*.node",
-            "index.d.ts"
-          ]
-        },
-        {
-          "from": "native/wallpaper-helper/target/release/scopify-wallpaper-helper.exe",
-          "to": "scopify-wallpaper-helper.exe"
-        }
-      ],
-      "target": [
-        "nsis"
-      ],
-      "icon": "resources/icon.ico",
-      "requestedExecutionLevel": "asInvoker"
-    },
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "arm64",
-            "x64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "arm64",
-            "x64"
-          ]
-        }
-      ],
-      "icon": "resources/icon.icns",
-      "category": "public.app-category.music",
-      "hardenedRuntime": false,
-      "gatekeeperAssess": false
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "deleteAppDataOnUninstall": true
-    }
   }
 }

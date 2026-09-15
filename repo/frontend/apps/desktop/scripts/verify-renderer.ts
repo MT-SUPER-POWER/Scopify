@@ -2,9 +2,10 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { verifyRendererArtifact } from "../lib/rendererArtifact";
+import { resolvePackagedRendererDirectory } from "../lib/runtimePaths";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
-const rendererRoot = resolve(scriptDir, "../build/desktop/app/renderer");
+const rendererRoot = resolvePackagedRendererDirectory(resolve(scriptDir, ".."));
 const expectedSourceRevision = process.argv
   .find((argument) => argument.startsWith("--source-revision="))
   ?.slice("--source-revision=".length);
