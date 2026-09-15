@@ -89,6 +89,10 @@ export function useFoliaStageSettingsPanel(
         onResetTuning: () => settings.resetBackgroundTuning("sora"),
         onTuningChange: settings.patchSoraBackground,
       },
+      rhine: {
+        onResetTuning: () => settings.resetBackgroundTuning("rhine"),
+        onTuningChange: settings.patchRhineBackground,
+      },
       monet: {
         onResetTuning: () => settings.resetBackgroundTuning("monet"),
         onTuningChange: settings.patchMonetBackground,

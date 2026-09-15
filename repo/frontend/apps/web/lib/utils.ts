@@ -1,43 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
-import { getColorSync } from "colorthief";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-/**
- * 提取图片主色调 (使用最新版 colorthief 库)
- * @param imageUrl 图片地址
- * @returns Promise<string> rgb格式的颜色字符串
- */
-export function getMainColorFromImage(imageUrl: string): Promise<string> {
-  return new Promise((resolve) => {
-    if (typeof window === "undefined") {
-      console.error("主色调提取逻辑仅支持浏览器环境 (Canvas API/Image)");
-      return resolve("");
-    }
-
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-
-    img.onload = () => {
-      try {
-        const color = getColorSync(img);
-        resolve(color?.hex() ?? "");
-      } catch (e) {
-        console.error(e);
-        resolve("");
-      }
-    };
-
-    img.onerror = () => {
-      console.error(`图片加载失败: ${imageUrl}`);
-      resolve("");
-    };
-
-    img.src = imageUrl;
-  });
 }
 
 /**

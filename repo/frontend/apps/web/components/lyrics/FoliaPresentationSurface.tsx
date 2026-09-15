@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 
 import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/presentation/buildAppStyle";
+import VisualizerBackgroundRenderer from "@/components/lyrics/folia/src/components/visualizer/backgrounds/VisualizerBackgroundRenderer";
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
 import VisualizerShell from "@/components/lyrics/folia/src/components/visualizer/VisualizerShell";
 import { VISUALIZER_REGISTRY } from "@/components/lyrics/folia/src/components/visualizer/registry";
@@ -44,6 +45,7 @@ export function FoliaPresentationSurface({
   }, [appearance.settings.mode, appearance.settings.randomVisualizerMode, track?.id]);
   const { assets, isDaylight, settings, subtitleTheme, theme } = appearance;
   const transparentBackground = !layers.background;
+  const hostRhineBackground = layers.background && settings.background.mode === "rhine";
   const appStyle = useMemo(
     () =>
       buildAppStyle({
@@ -65,12 +67,17 @@ export function FoliaPresentationSurface({
       disableGeometricBackground: settings.background.common?.disableGeometricBackground,
     },
   };
+  // Song-keyed lyric directors (and random mode changes) can remount their entire shell.
+  // Rhine's canvas and scene belong to the stage so track changes reach the existing animation.
+  const lyricBackground = hostRhineBackground
+    ? { ...background, renderedByHost: true }
+    : background;
 
   if (!layers.background && !layers.lyrics) return null;
 
   const sharedProps = {
     alwaysShowBackButton: false,
-    background,
+    background: lyricBackground,
     backgroundStaticMode: staticMode,
     coverUrl: track?.artworkUrl ?? null,
     isDaylight,
@@ -89,6 +96,24 @@ export function FoliaPresentationSurface({
         backgroundColor: transparentBackground ? "transparent" : theme.backgroundColor,
       }}
     >
+      {hostRhineBackground ? (
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ opacity: settings.visualizerOpacity }}
+        >
+          <VisualizerBackgroundRenderer
+            config={background}
+            theme={theme}
+            isDaylight={isDaylight}
+            coverUrl={track?.artworkUrl ?? null}
+            audioPower={bridge.audioPower}
+            audioBands={bridge.audioBands}
+            seed={track?.id}
+            staticMode={staticMode}
+            paused={!bridge.isPlaying}
+          />
+        </div>
+      ) : null}
       {layers.lyrics ? (
         <VisualizerRenderer
           mode={settings.mode}
@@ -111,7 +136,7 @@ export function FoliaPresentationSurface({
           staticMode={staticMode}
           backgroundStaticMode={staticMode}
           visualizerOpacity={settings.visualizerOpacity}
-          background={background}
+          background={lyricBackground}
           lyricsFontScale={settings.fontScale}
           subtitleFontScale={settings.subtitleFontScale}
           subtitleOverlayOpacity={settings.subtitleOverlayOpacity}

@@ -1,4 +1,5 @@
 import React from "react";
+import type { RhineBackgroundTuning } from "@/types/rhineBackground";
 import type { MotionValue } from "framer-motion";
 import type { TranslationKey } from "@/lib/i18n";
 import type { TranslateFn } from "@/types/i18n.generated";
@@ -20,6 +21,8 @@ import type {
 export interface VisualizerBackgroundConfig {
   mode?: VisualizerBackgroundMode | null;
   transparent?: boolean;
+  /** The presentation host owns this layer; lyric shells must not mount a second instance. */
+  renderedByHost?: boolean;
   common?: {
     useCoverColorBg?: boolean;
     opacity?: number;
@@ -38,6 +41,9 @@ export interface VisualizerBackgroundConfig {
   };
   sora?: {
     tuning?: SoraBackgroundTuning;
+  };
+  rhine?: {
+    tuning?: RhineBackgroundTuning;
   };
   url?: {
     items?: UrlBackgroundItem[];
@@ -72,6 +78,10 @@ export interface VisualizerBackgroundActions {
   };
   sora?: {
     onTuningChange?: (patch: Partial<SoraBackgroundTuning>) => void;
+    onResetTuning?: () => void;
+  };
+  rhine?: {
+    onTuningChange?: (patch: Partial<RhineBackgroundTuning>) => void;
     onResetTuning?: () => void;
   };
   url?: {

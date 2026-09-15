@@ -9,7 +9,7 @@ import type { VisualizerBackgroundRenderProps } from "./definition";
 // Selects the active shell background through the discoverable background registry.
 
 const VisualizerBackgroundRenderer: React.FC<VisualizerBackgroundRenderProps> = (props) => {
-  if (props.config?.transparent) {
+  if (props.config?.transparent || props.config?.renderedByHost) {
     return null;
   }
 

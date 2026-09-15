@@ -749,7 +749,7 @@ export type LatentBackgroundColorSource = "cover-theme" | "cover-only";
 export type MonetAudioStyle = "bar" | "line";
 export type MonetPortraitSource = "cover" | "custom";
 export type BuiltinVisualizerBackgroundMode =
-  "common" | "monet" | "nomand" | "latent" | "url" | "sora";
+  "common" | "monet" | "nomand" | "latent" | "url" | "sora" | "rhine";
 export type VisualizerBackgroundMode = BuiltinVisualizerBackgroundMode | (string & {});
 
 export interface UrlBackgroundItem {

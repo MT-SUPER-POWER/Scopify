@@ -9005,6 +9005,144 @@ export interface TranslateFn {
    */
   (key: "folia.options.visualizerBackgroundModeSora", params?: TranslationParams): string;
   /**
+   * zh-CN: 莱茵
+   * zh-TW: 萊茵
+   * en-US: Rhine
+   */
+  (key: "folia.options.visualizerBackgroundModeRhine", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莱茵档案
+   * zh-TW: 萊茵檔案
+   * en-US: Rhine archive
+   */
+  (key: "folia.rhine.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 档案盒随音乐起伏，切歌时交接当前档案。
+   * zh-TW: 檔案盒隨音樂起伏，切歌時交接目前檔案。
+   * en-US: Archive cassettes breathe with the music and exchange places when the track changes.
+   */
+  (key: "folia.rhine.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景配色
+   * zh-TW: 場景配色
+   * en-US: Scene palette
+   */
+  (key: "folia.rhine.colorMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跟随主题
+   * zh-TW: 跟隨主題
+   * en-US: Follow theme
+   */
+  (key: "folia.rhine.colorAuto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暖白
+   * zh-TW: 暖白
+   * en-US: Warm ivory
+   */
+  (key: "folia.rhine.colorLight", params?: TranslationParams): string;
+  /**
+   * zh-CN: 深灰
+   * zh-TW: 深灰
+   * en-US: Dark graphite
+   */
+  (key: "folia.rhine.colorDark", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐律动
+   * zh-TW: 音樂律動
+   * en-US: React to music
+   */
+  (key: "folia.rhine.musicEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 呼吸起伏
+   * zh-TW: 呼吸起伏
+   * en-US: Breathing motion
+   */
+  (key: "folia.rhine.breathingEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 律动方式
+   * zh-TW: 律動方式
+   * en-US: Rhythm style
+   */
+  (key: "folia.rhine.rhythmStyle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 原版律动
+   * zh-TW: 原版律動
+   * en-US: Original
+   */
+  (key: "folia.rhine.rhythmLegacy", params?: TranslationParams): string;
+  /**
+   * zh-CN: 频谱波浪
+   * zh-TW: 頻譜波浪
+   * en-US: Spectrum waves
+   */
+  (key: "folia.rhine.rhythmWave", params?: TranslationParams): string;
+  /**
+   * zh-CN: 层叠涌动
+   * zh-TW: 層疊湧動
+   * en-US: Layered currents
+   */
+  (key: "folia.rhine.rhythmLift", params?: TranslationParams): string;
+  /**
+   * zh-CN: 律动强度
+   * zh-TW: 律動強度
+   * en-US: Motion strength
+   */
+  (key: "folia.rhine.strength", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景遮罩
+   * zh-TW: 背景遮罩
+   * en-US: Background overlay
+   */
+  (key: "folia.rhine.overlayOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画质
+   * zh-TW: 畫質
+   * en-US: Quality
+   */
+  (key: "folia.rhine.quality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 节能
+   * zh-TW: 節能
+   * en-US: Performance
+   */
+  (key: "folia.rhine.qualityPerformance", params?: TranslationParams): string;
+  /**
+   * zh-CN: 原版
+   * zh-TW: 原版
+   * en-US: Original
+   */
+  (key: "folia.rhine.qualityOriginal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 精细
+   * zh-TW: 精細
+   * en-US: High
+   */
+  (key: "folia.rhine.qualityHigh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 帧率
+   * zh-TW: 影格率
+   * en-US: Frame rate
+   */
+  (key: "folia.rhine.frameRate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停会停留在当前起伏，继续播放后接着呼吸。
+   * zh-TW: 暫停會停留在目前起伏，繼續播放後接著呼吸。
+   * en-US: Pausing holds the current pose. Motion continues from that point when playback resumes.
+   */
+  (key: "folia.rhine.pauseHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莱茵背景暂时无法加载
+   * zh-TW: 萊茵背景暫時無法載入
+   * en-US: Rhine background could not be loaded
+   */
+  (key: "folia.rhine.loadError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Retry
+   */
+  (key: "folia.rhine.retry", params?: TranslationParams): string;
+  /**
    * zh-CN: 嵌入背景
    * zh-TW: 嵌入背景
    * en-US: Embedded Background

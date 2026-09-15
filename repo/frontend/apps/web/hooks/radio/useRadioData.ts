@@ -6,7 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getRadioDetail, getRadioPrograms } from "@/lib/api/radio";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { formatDate, getMainColorFromImage } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
+import { getMainColorFromImage } from "@/lib/web/imageColor";
 import {
   isSubscribedRadio,
   useRadioSubscriptionsQuery,
