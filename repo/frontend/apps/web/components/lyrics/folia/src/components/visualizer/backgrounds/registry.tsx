@@ -8,6 +8,7 @@ import latentEntry from "./latent/entry";
 import monetEntry from "./monet/entry";
 import nomandEntry from "./nomand/entry";
 import soraEntry from "./sora/entry";
+import rhineEntry from "./rhine/entry";
 import urlEntry from "./url/entry";
 
 // src/components/visualizer/backgrounds/registry.tsx
@@ -20,6 +21,7 @@ const backgroundEntryModules: Record<string, VisualizerBackgroundEntryModule> = 
   "./monet/entry.tsx": { default: monetEntry },
   "./nomand/entry.tsx": { default: nomandEntry },
   "./sora/entry.tsx": { default: soraEntry },
+  "./rhine/entry.tsx": { default: rhineEntry },
   "./url/entry.tsx": { default: urlEntry },
 };
 

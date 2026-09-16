@@ -3,6 +3,11 @@ import { defineMessages } from "./define";
 export const vipSignMessages = defineMessages(
   {
     "vipSign.title": "签到",
+    "vipSign.ticketTitle": "每日乐签",
+    "vipSign.memberCenter": "云音乐会员中心",
+    "vipSign.tearHint": "按住票根 · 上下卷撕",
+    "vipSign.tearAction": "撕下票根并关闭乐签",
+    "vipSign.playFailed": "歌曲暂时无法播放，请稍后重试",
     "vipSign.alreadySigned": "今天已签到",
     "vipSign.notMember": "非黑胶会员无法签到",
     "vipSign.consecutiveDays": "连续签到 {{days}} 天",
@@ -20,6 +25,11 @@ export const vipSignMessages = defineMessages(
   },
   {
     "vipSign.title": "簽到",
+    "vipSign.ticketTitle": "每日樂簽",
+    "vipSign.memberCenter": "雲音樂會員中心",
+    "vipSign.tearHint": "按住票根 · 上下捲撕",
+    "vipSign.tearAction": "撕下票根並關閉樂簽",
+    "vipSign.playFailed": "歌曲暫時無法播放，請稍後重試",
     "vipSign.alreadySigned": "今天已簽到",
     "vipSign.notMember": "非黑膠會員無法簽到",
     "vipSign.consecutiveDays": "連續簽到 {{days}} 天",
@@ -37,6 +47,11 @@ export const vipSignMessages = defineMessages(
   },
   {
     "vipSign.title": "Check-in",
+    "vipSign.ticketTitle": "Daily Music Ticket",
+    "vipSign.memberCenter": "Cloud Music VIP Center",
+    "vipSign.tearHint": "Hold and peel up or down",
+    "vipSign.tearAction": "Tear off the stub and close the ticket",
+    "vipSign.playFailed": "Unable to play this song. Please try again.",
     "vipSign.alreadySigned": "Already checked in today",
     "vipSign.notMember": "VIP membership required",
     "vipSign.consecutiveDays": "{{days}} consecutive days",

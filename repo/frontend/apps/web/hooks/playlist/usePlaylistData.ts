@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { usePlaylistContentQuery } from "@/hooks/playlist/usePlaylistContentQuery";
 import { resolveDailyRecommendationRequest } from "@/lib/playlist/dailyRecommendationRequest";
-import { getMainColorFromImage } from "@/lib/utils";
+import { getMainColorFromImage } from "@/lib/web/imageColor";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistInfo } from "@/types/playlist";
 
@@ -72,6 +72,8 @@ export function usePlaylist(playlistIdOverride?: null | string) {
 
     return {
       isSpecial: false,
+      specialType: rawDetail.specialType,
+      description: rawDetail.description ?? "",
       privacy:
         rawDetail.privacy === 0
           ? t("playlist.meta.public")

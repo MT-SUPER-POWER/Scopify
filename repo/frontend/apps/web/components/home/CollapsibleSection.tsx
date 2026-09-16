@@ -2,20 +2,13 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 
-interface CollapsibleSectionProps {
-  title: React.ReactNode;
-  children: React.ReactNode;
-  action?: React.ReactNode;
-  defaultOpen?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  collapsedHeight?: string;
-}
+import { useSectionCollapse } from "@/hooks/home/useSectionCollapse";
+import type { CollapsibleSectionProps } from "@/types/components/home";
 
 export function CollapsibleSection({
   title,
@@ -25,6 +18,7 @@ export function CollapsibleSection({
   open,
   onOpenChange,
   collapsedHeight = "180px",
+  collapsedRows,
 }: CollapsibleSectionProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const isControlled = open !== undefined;
@@ -35,39 +29,26 @@ export function CollapsibleSection({
     }
     onOpenChange?.(nextOpen);
   };
-  const [hasCollapsedOverflow, setHasCollapsedOverflow] = useState(true);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const { contentRef, hasCollapsedOverflow, height } = useSectionCollapse(
+    collapsedHeight,
+    collapsedRows,
+    isOpen,
+  );
   const { t } = useI18n();
 
-  useLayoutEffect(() => {
-    const content = contentRef.current;
-    const match = collapsedHeight.trim().match(/^(\d+(?:\.\d+)?)px$/);
-    if (!content || !match) return;
-
-    const collapsedHeightPx = Number(match[1]);
-    const updateOverflow = () => {
-      setHasCollapsedOverflow(content.getBoundingClientRect().height > collapsedHeightPx + 0.5);
-    };
-
-    updateOverflow();
-    const observer = new ResizeObserver(updateOverflow);
-    observer.observe(content);
-    return () => observer.disconnect();
-  }, [collapsedHeight]);
-
   return (
-    <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="space-y-6">
-      <div className="group/section flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="cursor-pointer">{title}</div>
+    <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="space-y-4">
+      <div className="group/section flex items-center justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="min-w-0">{title}</div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex shrink-0 items-center gap-4">
           {action}
-          {hasCollapsedOverflow ? (
+          {isOpen || hasCollapsedOverflow ? (
             <CollapsibleTrigger asChild>
               <button
                 type="button"
-                className="flex cursor-pointer items-center gap-1 text-sm font-bold text-content-muted transition-colors outline-none hover:text-content hover:underline"
+                className="flex cursor-pointer items-center gap-1 text-xs font-medium text-content-muted transition-colors outline-none hover:text-content hover:underline"
               >
                 {isOpen ? t("common.action.showLess") : t("common.action.showAll")}
                 <ChevronRight
@@ -84,13 +65,13 @@ export function CollapsibleSection({
       <div className="relative overflow-hidden">
         <motion.div
           initial={false}
-          animate={{ height: isOpen || !hasCollapsedOverflow ? "auto" : collapsedHeight }}
+          animate={{ height: isOpen || !hasCollapsedOverflow ? "auto" : height }}
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
           className="relative"
         >
           <div ref={contentRef}>{children}</div>
           <AnimatePresence>
-            {!isOpen && hasCollapsedOverflow && (
+            {!isOpen && hasCollapsedOverflow && !collapsedRows && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

@@ -16,11 +16,13 @@ export function PlaylistHero({
           style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
         />
       ) : null}
-      {playlistInfo ? (
-        <PlaylistHeader info={playlistInfo} isDaily={isDailyRecommend} />
-      ) : (
-        <PlaylistHeaderSkeleton showActions={isLoading} />
-      )}
+      <div data-track-drag-chrome>
+        {playlistInfo ? (
+          <PlaylistHeader info={playlistInfo} isDaily={isDailyRecommend} />
+        ) : (
+          <PlaylistHeaderSkeleton showActions={isLoading} />
+        )}
+      </div>
     </>
   );
 }

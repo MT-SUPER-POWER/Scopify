@@ -18,7 +18,6 @@ export function PersonalizedPlaylists({
   onPlayPlaylist,
   pageSize = DEFAULT_PAGE_SIZE,
   playlists,
-  userName,
 }: PersonalizedPlaylistsProps) {
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
@@ -50,8 +49,8 @@ export function PersonalizedPlaylists({
         open={isOpen}
         onOpenChange={setIsOpen}
         title={
-          <h2 className="text-2xl font-bold tracking-tight text-content hover:underline">
-            {t("home.madeFor", { name: userName ?? t("home.you") })}
+          <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
+            {t("home.madeFor", { name: t("home.you") })}
           </h2>
         }
         action={
@@ -63,6 +62,7 @@ export function PersonalizedPlaylists({
             />
           ) : null
         }
+        collapsedRows={1}
         collapsedHeight="280px"
       >
         <div className="relative overflow-hidden">
@@ -73,11 +73,12 @@ export function PersonalizedPlaylists({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -direction * 16 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-6"
+              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] gap-x-2 gap-y-4"
             >
               {visiblePlaylists.map((playlist) => (
                 <GridCard
                   key={playlist.id}
+                  appearance="home"
                   id={playlist.id}
                   name={playlist.name}
                   coverUrl={`${playlist.picUrl}?param=300y300`}

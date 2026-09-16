@@ -2,6 +2,7 @@
 
 import { RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { getPlaylistHighQualityTags } from "@/lib/api/playlist";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -85,29 +86,35 @@ export function PlaylistTagSelector({ value, maxSelected, onChange }: PlaylistTa
           {value.length}/{maxSelected}
         </span>
       </div>
-      <div className="flex max-h-24 flex-wrap gap-2 overflow-y-auto pr-1">
-        {tags.map((tag) => {
-          const selected = value.includes(tag.name);
-          const disabled = !selected && value.length >= maxSelected;
-          return (
-            <button
-              key={tag.id}
-              type="button"
-              disabled={disabled}
-              onClick={() => toggleTag(tag.name)}
-              className={cn(
-                "rounded-full border px-3 py-1 text-xs transition",
-                selected
-                  ? "border-brand bg-brand/20 text-brand"
-                  : "border-content/10 bg-content/5 text-content-muted hover:border-content/30 hover:text-content",
-                disabled && "cursor-not-allowed opacity-40",
-              )}
-            >
-              {tag.name}
-            </button>
-          );
-        })}
-      </div>
+      <ScrollArea
+        className="h-24 w-full pr-3"
+        viewportClassName="overscroll-contain"
+        onWheel={(e) => e.stopPropagation()}
+      >
+        <div className="flex flex-wrap gap-2 pb-1">
+          {tags.map((tag) => {
+            const selected = value.includes(tag.name);
+            const disabled = !selected && value.length >= maxSelected;
+            return (
+              <button
+                key={tag.id}
+                type="button"
+                disabled={disabled}
+                onClick={() => toggleTag(tag.name)}
+                className={cn(
+                  "rounded-full border px-3 py-1 text-xs transition",
+                  selected
+                    ? "border-brand bg-brand/20 text-brand"
+                    : "border-content/10 bg-content/5 text-content-muted hover:border-content/30 hover:text-content",
+                  disabled && "cursor-not-allowed opacity-40",
+                )}
+              >
+                {tag.name}
+              </button>
+            );
+          })}
+        </div>
+      </ScrollArea>
     </div>
   );
 }

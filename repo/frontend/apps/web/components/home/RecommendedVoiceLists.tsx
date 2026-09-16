@@ -58,7 +58,7 @@ export function RecommendedVoiceLists({
         onOpenChange={setIsOpen}
         title={
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold tracking-tight text-content hover:underline">
+            <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
               {t("home.recommendedVoiceLists")}
             </h2>
             {onRefresh ? (

@@ -18,6 +18,7 @@ import type { PersonalFmSelection, PersonalFmStore } from "@/types/personalFm";
 
 const PERSONAL_FM_STORAGE_KEY = "scopify-personal-fm";
 let refillPromise: Promise<boolean> | null = null;
+let streamRevision = 0;
 
 function selectionsMatch(left: PersonalFmSelection, right: PersonalFmSelection) {
   return left.mode === right.mode && left.scene === right.scene;
@@ -54,13 +55,15 @@ async function refillPersonalFmQueue(): Promise<boolean> {
   const player = usePlayerStore.getState();
   if (!isPersonalFmPlaybackSource(player.playlistId)) return false;
   const requestedSelection = usePersonalFmStore.getState().selection;
+  const requestedRevision = streamRevision;
 
-  refillPromise = (async () => {
+  const request = (async () => {
     try {
       const songs = await fetchPersonalFmSongs(requestedSelection);
       const currentPlayer = usePlayerStore.getState();
       const currentSelection = usePersonalFmStore.getState().selection;
       if (
+        requestedRevision !== streamRevision ||
         !isPersonalFmPlaybackSource(currentPlayer.playlistId) ||
         !selectionsMatch(currentSelection, requestedSelection)
       ) {
@@ -74,36 +77,57 @@ async function refillPersonalFmQueue(): Promise<boolean> {
     } catch (error) {
       console.error("[personal-fm] failed to refill queue", error);
       return false;
-    } finally {
-      refillPromise = null;
     }
   })();
-
-  return refillPromise;
+  refillPromise = request;
+  void request.finally(() => {
+    if (refillPromise === request) refillPromise = null;
+  });
+  return request;
 }
 
-async function replacePersonalFmStream(selection: PersonalFmSelection): Promise<boolean> {
+function replacePersonalFmStream(selection: PersonalFmSelection): Promise<boolean> {
+  const requestedRevision = ++streamRevision;
+  const playbackRevision = usePlayerStore.getState().playbackSessionRevision;
+  refillPromise = null;
   usePersonalFmStore.setState({ error: null, status: "loading" });
-  try {
-    const songs = await fetchPersonalFmSongs(selection);
-    if (songs.length === 0) {
-      throw new Error(translate(useI18nStore.getState().locale, "personalFm.error.empty"));
-    }
+  const request = (async () => {
+    try {
+      const songs = await fetchPersonalFmSongs(selection);
+      if (requestedRevision !== streamRevision) return true;
+      const player = usePlayerStore.getState();
+      // A different playback action during the request takes precedence over this response.
+      if (player.playbackSessionRevision !== playbackRevision) {
+        usePersonalFmStore.setState({ status: "idle" });
+        return true;
+      }
+      if (songs.length === 0) {
+        throw new Error(translate(useI18nStore.getState().locale, "personalFm.error.empty"));
+      }
 
-    const player = usePlayerStore.getState();
-    player.setShuffle(false);
-    player.setRepeatMode("off");
-    await player.playFromSong(songs[0], songs, PERSONAL_FM_PLAYBACK_SOURCE_ID);
-    usePersonalFmStore.setState({ error: null, status: "active" });
-    return true;
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : translate(useI18nStore.getState().locale, "personalFm.error.loadFailed");
-    usePersonalFmStore.setState({ error: message, status: "error" });
-    return false;
-  }
+      player.setShuffle(false);
+      player.setRepeatMode("off");
+      await player.playFromSong(songs[0], songs, PERSONAL_FM_PLAYBACK_SOURCE_ID);
+      if (requestedRevision === streamRevision) {
+        usePersonalFmStore.setState({
+          error: null,
+          status: isPersonalFmPlaybackSource(usePlayerStore.getState().playlistId)
+            ? "active"
+            : "idle",
+        });
+      }
+      return true;
+    } catch (error) {
+      if (requestedRevision !== streamRevision) return true;
+      const message =
+        error instanceof Error
+          ? error.message
+          : translate(useI18nStore.getState().locale, "personalFm.error.loadFailed");
+      usePersonalFmStore.setState({ error: message, status: "error" });
+      return false;
+    }
+  })();
+  return request;
 }
 
 export const usePersonalFmStore = create<PersonalFmStore>()(
@@ -116,10 +140,29 @@ export const usePersonalFmStore = create<PersonalFmStore>()(
           return;
         }
 
+        if (get().status === "loading") return;
+        const requestedRevision = streamRevision;
+        const playbackRevision = player.playbackSessionRevision;
+        const hasForwardHistory = player.historyIndex < player.historyStack.length - 1;
         const remaining = getPersonalFmRemainingCount(player.queue.length, player.queueIndex);
-        if (remaining <= 0) {
-          await refillPersonalFmQueue();
-        } else if (remaining <= PERSONAL_FM_REFILL_THRESHOLD) {
+        if (!hasForwardHistory && remaining <= 0) {
+          const refilled = await refillPersonalFmQueue();
+          const currentPlayer = usePlayerStore.getState();
+          if (
+            requestedRevision !== streamRevision ||
+            currentPlayer.playbackSessionRevision !== playbackRevision ||
+            !isPersonalFmPlaybackSource(currentPlayer.playlistId)
+          )
+            return;
+          if (!refilled) {
+            if (source === "ended") currentPlayer.setIsPlaying(false);
+            set({
+              error: translate(useI18nStore.getState().locale, "personalFm.error.loadFailed"),
+              status: "error",
+            });
+            return;
+          }
+        } else if (!hasForwardHistory && remaining <= PERSONAL_FM_REFILL_THRESHOLD) {
           void refillPersonalFmQueue();
         }
         await usePlayerStore.getState().playNext(source);
@@ -130,18 +173,12 @@ export const usePersonalFmStore = create<PersonalFmStore>()(
         const normalized = normalizePersonalFmSelection(selection);
         if (selectionsMatch(get().selection, normalized)) return true;
         set({ selection: normalized });
-        return isPersonalFmPlaybackSource(usePlayerStore.getState().playlistId)
+        return get().status === "loading" ||
+          isPersonalFmPlaybackSource(usePlayerStore.getState().playlistId)
           ? replacePersonalFmStream(normalized)
           : true;
       },
-      start: async () => {
-        const player = usePlayerStore.getState();
-        if (isPersonalFmPlaybackSource(player.playlistId) && player.currentSongDetail) {
-          set({ error: null, status: "active" });
-          return true;
-        }
-        return replacePersonalFmStream(get().selection);
-      },
+      start: () => replacePersonalFmStream(get().selection),
       status: "idle",
     }),
     {

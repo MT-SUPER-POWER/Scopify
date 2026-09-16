@@ -10,6 +10,7 @@ import { DragThumbnail } from "@/components/shared/DragThumbnail";
 import { SortablePlayerQueueItem } from "@/components/player/SortablePlayerQueueItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePlayerStore } from "@/store";
+import { useAppDragStore } from "@/store/module/appDrag";
 import { useI18n } from "@/store/module/i18n";
 import type { PlayerQueueListHandle, PlayerQueueListProps } from "@/types/components/player";
 
@@ -69,6 +70,12 @@ export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueList
       <SortableList
         ids={ids}
         onMove={moveQueueItem}
+        onDragStart={(activeId) => {
+          const song = queue[ids.indexOf(String(activeId))];
+          if (song) {
+            useAppDragStore.getState().startDrag([song]);
+          }
+        }}
         renderOverlay={(id) => {
           const song = queue[ids.indexOf(String(id))];
           return song ? (

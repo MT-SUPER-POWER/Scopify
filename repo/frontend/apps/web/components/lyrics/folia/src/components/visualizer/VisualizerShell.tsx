@@ -13,6 +13,7 @@ import VisualizerBackgroundRenderer from "./backgrounds/VisualizerBackgroundRend
 type VisualizerShellSharedProps = Pick<
   VisualizerSharedProps,
   | "coverUrl"
+  | "songTitle"
   | "isDaylight"
   | "seed"
   | "visualizerOpacity"
@@ -122,6 +123,7 @@ const VisualizerShell = forwardRef<HTMLDivElement, VisualizerShellProps>(
             theme={theme}
             isDaylight={resolvedIsDaylight}
             coverUrl={resolvedCoverUrl}
+            songTitle={sharedProps?.songTitle}
             audioPower={audioPower}
             audioBands={audioBands}
             seed={sharedProps?.seed}

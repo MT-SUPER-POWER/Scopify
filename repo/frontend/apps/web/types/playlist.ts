@@ -2,6 +2,7 @@ import type { RefObject } from "react";
 
 export interface PlaylistInfo {
   description?: string;
+  specialType?: number;
   isSpecial: boolean;
   dailyDate?: string;
   privacy: string;
@@ -47,4 +48,11 @@ export interface SongLikeMutationMessages {
 export interface SongLikeMutationDependencies {
   clearPageCache(): Promise<unknown>;
   mutateSong(songId: number | string, like: boolean): Promise<unknown>;
+}
+
+export interface PlaylistUpdateInput {
+  name: string;
+  desc?: string;
+  tags?: string[];
+  coverFile?: File | null;
 }

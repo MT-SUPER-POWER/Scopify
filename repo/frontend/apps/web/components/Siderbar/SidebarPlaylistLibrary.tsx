@@ -5,7 +5,7 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
-import { PersonalFmPlaylistItem } from "./PersonalFmPlaylistItem";
+import { SidebarSpecialPlaylists } from "./SidebarSpecialPlaylists";
 import { SidebarPlaylistLibraryContent } from "./SidebarPlaylistLibraryContent";
 
 export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryProps) {
@@ -26,7 +26,7 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
         viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
       >
         <div className={cn("w-full min-w-0 space-y-1", isCollapsed ? "pb-2" : "pb-4")}>
-          {isLoggedIn && <PersonalFmPlaylistItem isCollapsed={isCollapsed} />}
+          {isLoggedIn && <SidebarSpecialPlaylists isCollapsed={isCollapsed} />}
           <SidebarPlaylistLibraryContent isCollapsed={isCollapsed} />
         </div>
       </ScrollArea>

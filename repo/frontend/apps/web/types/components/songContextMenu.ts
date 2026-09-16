@@ -18,4 +18,21 @@ export interface SongContextMenuProps {
   playlistID?: number | string | null;
   readonly?: boolean;
   song: SongDetail;
+  selectedSongs?: SongDetail[];
+  onOpenContextMenu?: () => void;
+}
+
+export interface SongContextMenuActionsProps extends Omit<
+  SongContextMenuProps,
+  "children" | "onOpenContextMenu"
+> {
+  isContextMenuOpen: boolean;
+  isCreateDialogOpen: boolean;
+  setIsCreateDialogOpen: (open: boolean) => void;
+}
+
+export interface CreatePlaylistFromTracksDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  tracks: SongDetail[];
 }

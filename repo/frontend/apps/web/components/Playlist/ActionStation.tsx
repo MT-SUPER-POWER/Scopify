@@ -7,7 +7,6 @@ import {
   CalendarDays,
   List,
   MessageCircle,
-  MoreHorizontal,
   Pause,
   Play,
   Search,
@@ -27,6 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
+import { PlaylistMoreMenu } from "@/components/Playlist/PlaylistMoreMenu";
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
@@ -320,17 +320,18 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               "cursor-pointer text-content-muted transition-colors hover:text-content",
             )}
           />
-          {/* TODO: 实现更多选项
-            1. 根据是歌单还是每日推荐 / 专辑 做区分
-            2. 歌单：更新歌单封面、编辑歌单信息、分享歌单
-            3. 专辑：分享专辑、收藏/取消收藏专辑
-         */}
-          <MoreHorizontal
-            className={cn(
-              isSticky ? "size-7" : "size-8",
-              "cursor-pointer text-content-muted transition-colors hover:text-content",
+          {commentResourceKind === "playlist" &&
+            !isDaily &&
+            playlistId &&
+            playlistInfo &&
+            !playlistInfo.isSpecial && (
+              <PlaylistMoreMenu
+                key={playlistId}
+                playlistId={playlistId}
+                playlistInfo={playlistInfo}
+                isSticky={isSticky}
+              />
             )}
-          />
         </div>
 
         <div className={cn("flex shrink-0 items-center gap-3", isSticky && "gap-2")}>

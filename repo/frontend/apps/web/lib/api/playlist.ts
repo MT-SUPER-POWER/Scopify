@@ -19,6 +19,7 @@ import type {
   PlaylistTrackUpdateResponse,
 } from "@/types/api/playlist";
 import request, { requestConfig } from "../web/request";
+import { measureImageDimensions } from "@/lib/image/measureImage";
 
 export function updatePlaylistOrder({ ids }: PlaylistOrderUpdateParams) {
   return request.post<PlaylistTrackUpdateResponse>(
@@ -97,7 +98,14 @@ export function getUserLikeLists(uid: number | string) {
  * 喜欢和取消喜欢
  */
 export function likeSong(id: number | string, like: boolean) {
-  return request.get("/like", { params: { id, like } });
+  return request.get(
+    "/like",
+    requestConfig({
+      params: { id, like },
+      requiresMusicSession: true,
+      expectedBusinessCodes: [200],
+    }),
+  );
 }
 
 /**
@@ -165,18 +173,40 @@ export function updatePlaylistTags(id: number | string, tags: string[]) {
 
 /**
  * 更新歌单封面
+ * 参考后端案例 public/playlist_cover_update.html 自动计算天然尺寸与坐标
  * @param id 歌单 id
  * @param imgFile 图片文件对象
- * @param imgSize 图片尺寸, 默认为 300
+ * @param options 可选尺寸配置
  */
-export function updatePlaylistCover(id: number | string, imgFile: File, imgSize = 300) {
+export async function updatePlaylistCover(
+  id: number | string,
+  imgFile: File,
+  options?: { imgSize?: number; imgX?: number; imgY?: number } | number,
+) {
+  let size = typeof options === "number" ? options : options?.imgSize;
+  const x = typeof options === "object" ? (options?.imgX ?? 0) : 0;
+  const y = typeof options === "object" ? (options?.imgY ?? 0) : 0;
+
+  if (!size) {
+    try {
+      const dimensions = await measureImageDimensions(imgFile);
+      size = dimensions.width;
+    } catch {
+      size = 300;
+    }
+  }
+
   const formData = new FormData();
   formData.append("imgFile", imgFile);
-  return request.post(`/playlist/cover/update?id=${id}&imgSize=${imgSize}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
+  return request.post(
+    `/playlist/cover/update?id=${id}&imgSize=${size}&imgX=${x}&imgY=${y}&timestamp=${Date.now()}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     },
-  });
+  );
 }
 
 export function getPersonalizePlaylists(limit = 100) {

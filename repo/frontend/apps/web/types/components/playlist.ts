@@ -99,6 +99,15 @@ export interface TracklistTableProps {
   stickyHeaderTop?: number;
   playSourceId?: null | string;
   tracks?: SongDetail[];
+  selection?: {
+    selectedIds: Set<number>;
+    selectedTracks: SongDetail[];
+    isSelected: (id: number) => boolean;
+    handleRowClick: (trackId: number, event: React.MouseEvent) => void;
+    handleRowContextMenu: (trackId: number) => void;
+    clearSelection: () => void;
+    selectAll: () => void;
+  };
 }
 
 export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>, "onPlay"> {
@@ -111,8 +120,10 @@ export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>,
   isLiked: boolean;
   isPlaying: boolean;
   isScrolling?: boolean;
+  isSelected?: boolean;
   onLikeToggle?: (trackID: number | string) => void;
   onPlay: (track: SongDetail) => void;
+  onRowClick?: (event: React.MouseEvent) => void;
   onRequestDelete: (playlistId: number | string | undefined, trackId: number) => void;
   playlistID: null | string;
   setIsPlaying: (v: boolean) => void;
@@ -121,6 +132,7 @@ export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>,
 
 export interface SortableTrackRowProps extends TrackRowProps {
   allowReorder: boolean;
+  onRowElementChange?: (index: number, element: HTMLTableRowElement | null) => void;
 }
 
 export type TrackTitleCellProps = Pick<TrackRowProps, "track" | "isActive">;
@@ -132,4 +144,36 @@ export interface PlaylistTrackDeleteRequest {
 
 export interface PlaylistTrackListProps extends TracklistTableProps {
   playlistId: string | null;
+}
+
+export interface PlaylistTableSongRowProps extends SortableTrackRowProps {
+  selectedSongs: SongDetail[];
+  onSelectTrack: (id: number, event: React.MouseEvent) => void;
+  onContextTrack: (id: number) => void;
+  canRemoveFromPlaylist: boolean;
+  isDailyRecommend: boolean;
+  readonly: boolean;
+  onDislikeDailyRecommend: (id: number | string) => Promise<void>;
+  onDislikePersonalFm?: (track: SongDetail) => void;
+}
+
+export type TrackRowCellsProps = Pick<
+  TrackRowProps,
+  | "track"
+  | "index"
+  | "isActive"
+  | "isPlaying"
+  | "isLiked"
+  | "isScrolling"
+  | "hideAlbumColumn"
+  | "hideDateColumn"
+  | "hideLikeColumn"
+  | "onPlay"
+  | "setIsPlaying"
+>;
+
+export interface PlaylistMoreMenuProps {
+  playlistId: string;
+  playlistInfo: PlaylistInfo;
+  isSticky?: boolean;
 }

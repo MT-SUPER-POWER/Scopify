@@ -1,0 +1,26 @@
+.field {
+  --rhine-paper: 233, 232, 223;
+}
+
+.field[data-dark="true"] {
+  --rhine-paper: 17, 24, 27;
+}
+
+.readingSpace {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(var(--rhine-paper), .98), rgba(var(--rhine-paper), .92) 24%, rgba(var(--rhine-paper), .64) 42%, rgba(var(--rhine-paper), 0) 65%),
+    linear-gradient(180deg, rgba(var(--rhine-paper), .8), rgba(var(--rhine-paper), 0) 24%, rgba(var(--rhine-paper), 0) 78%, rgba(var(--rhine-paper), .45));
+}
+
+.light {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(116deg, transparent 42%, rgba(255, 248, 222, .12) 55%, transparent 70%);
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .readingSpace {
+    background: linear-gradient(180deg, rgba(var(--rhine-paper), .97), rgba(var(--rhine-paper), .92) 25%, rgba(var(--rhine-paper), .55) 52%, rgba(var(--rhine-paper), .08) 80%);
+  }
+}

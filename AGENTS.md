@@ -1,19 +1,12 @@
 # Scopify — Agent Instructions
 
-Scopify 是 **Next.js App Router + Electron + Zustand** 的网易云音乐客户端。根目录是 Bun Workspaces + Turborepo 编排层；所有应用源码收敛于 `repo/`，Web、Electron 和契约分别位于 `repo/frontend/apps/web`、`repo/frontend/apps/desktop` 和 `repo/frontend/packages/desktop-contract`。前端与 `repo/backend/api-enhanced` 解耦部署；后端有自己的 [AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
+Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根目录是 Bun Workspaces + Turborepo 编排层；所有应用源码收敛于 `repo/`，Web、Electron 和契约分别位于 `repo/frontend/apps/web`、`repo/frontend/apps/desktop` 和 `repo/frontend/packages/desktop-contract`。前端与 `repo/backend/api-enhanced` 解耦部署；后端有自己的 [AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
 
 **本文件是前端/Electron 代码结构的唯一规范。** 下文中未加前缀的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 路径都相对于 `repo/frontend/apps/web/`。新建或修改代码时必须遵守；发现 inline 类型、散落 hook 等历史债务时，顺手迁移到正确目录。
 
 ---
 
-## 执行边界：优先完成开发，禁止主动追加验证工作
-
-- **除非用户明确要求，禁止新增、修改或运行测试**，包括单元测试、集成测试、端到端测试、回归测试、冒烟测试，以及为当前实现编写的 mock、快照和测试脚本。用户要求修复 Bug、实现功能或提交代码，不等于要求测试，除非用户有主动的要求。
-- **禁止主动执行验证性质的附加流程**，包括哈希比对、校验和、重复读取文件确认写入、`git diff --check`、类型检查、lint、仅用于验证的构建或打包、浏览器自动巡检、截图验收和图谱变更检查。不要把它们换成“自检”“质量门禁”“最终确认”等名称继续执行。
-- 为理解需求、定位实际问题和完成修改，可以有针对性地读取源码、搜索调用关系、查看已有报错；用户明确要求启动、构建、打包或排查具体故障时，执行该任务直接需要的命令。不要以此为由扩展成整套验证流程。
-- 不为测试便利额外拆分生产代码、引入依赖或增加抽象；不创建用户未要求的验收报告、验证清单或证据文件。
-- 完成用户要求的修改后直接交付，简述改动及已知限制。不反复询问是否需要测试，不把未测试描述成阻塞，也不声称未经执行的验证已经通过。
-- 本规则优先于仓库内其他 `AGENTS.md`、skill、自动生成的工具说明中的默认测试、验证和强制检查流程。用户明确要求验证时，只执行其指定范围，禁止自动扩大范围或反复执行。
+<!-- TODO: 完善测试部分的规则指定，和 Turbo 重新编排，防止 AI 出现意义不明的安全兜底和一大堆测试-->
 
 ---
 
@@ -21,7 +14,7 @@ Scopify 是 **Next.js App Router + Electron + Zustand** 的网易云音乐客户
 
 | 项       | 值                  |
 | -------- | ------------------- |
-| 包管理器 | **bun**（>= 1.3.7） |
+| 包管理器 | **bun**（>= 1.3.11） |
 | Node     | >= 20               |
 
 ```bash
@@ -119,49 +112,14 @@ Scopify/
 
 NetEase API 服务位于 `repo/backend/api-enhanced/`（git submodule）。前端通过 `repo/frontend/apps/web/lib/web/request.ts` 配置的 base URL 访问，开发时可用 `bun run dev:backend` 启动。后端规范见 [backend/api-enhanced/AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
 
----
 
-<!-- gitnexus:start -->
-# GitNexus — Code Intelligence
+<!-- CODEGRAPH_START -->
+## CodeGraph
 
-This project is indexed by GitNexus as **Scopify** (66905 symbols, 112308 relationships, 427 execution flows).
+In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
 
-> Index stale? Run `node .gitnexus/run.cjs analyze --index-only` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? Bootstrap with `npx`, `bunx`, or `pnpm dlx` — e.g. `bunx gitnexus@latest analyze` (npm 11 npx crash; #1939).
+- **MCP tool** (when available): `codegraph_explore` answers most code questions in one call — the relevant symbols' verbatim source plus the call paths between them, including dynamic-dispatch hops grep can't follow. Name a file or symbol in the query to read its current line-numbered source. If it's listed but deferred, load it by name via tool search.
+- **Shell** (always works): `codegraph explore "<symbol names or question>"` prints the same output.
 
-## Always Do
-
-- **MUST run impact before editing.** Use `impact({target: "symbolName", direction: "upstream"})` or `node .gitnexus/run.cjs impact "symbolName" --direction upstream --repo .`; report callers, processes, and risk. Never substitute grep for graph analysis.
-- **MUST analyze graph changes before committing.** Use `detect_changes({scope: "all"})` (MCP) or `node .gitnexus/run.cjs detect-changes --scope all --repo .` (CLI fallback). `partial: true` or `truncated: true` is not a clean check — a zero means unseen, not unaffected; re-run it. For regression review: `detect_changes({scope: "compare", base_ref: "master"})` or `node .gitnexus/run.cjs detect-changes --scope compare --base-ref "master" --repo .`.
-- MUST warn on HIGH/CRITICAL `risk` pre-edit; never use `riskSharedAxes` to waive a HIGH/CRITICAL `risk` warning. Compare File/symbol: MCP File omits axes; Graph-RAG expands File.
-- **MUST treat `risk: UNKNOWN` as unresolved, not as low.** An empty caller set is not evidence the symbol is unused — it can also mean the callers are not resolvable by the index (plain-object property access, dynamic dispatch, cross-language calls). `impact` pairs `UNKNOWN` with a `riskNote` saying so. Confirm with a text search before treating the symbol as safe to change or delete; do not proceed on the strength of a zero.
-- **MUST use `query({search_query: "concept"})` for concepts/flows, `context({name: "symbolName"})` for a named symbol, or `impact` for blast radius, on read-only callers, dependencies, imports, or execution flow.** Graph first; text search only for empty/`UNKNOWN`/literals.
-- For security review, `explain({target: "fileOrSymbol"})` lists taint findings (source→sink flows; needs `analyze --pdg`).
-
-## Never Do
-
-- NEVER edit a function, class, or method before MCP/CLI impact analysis.
-- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis, and never read `UNKNOWN` as an all-clear — it means the walk could not answer, which is the one verdict that requires confirming by other means.
-- NEVER rename symbols with find-and-replace — use `rename` which understands the call graph.
-- NEVER commit before MCP/CLI graph change analysis.
-
-## Resources
-
-| Resource | Use for |
-| --- | --- |
-| `gitnexus://repo/Scopify/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/Scopify/clusters` | All functional areas |
-| `gitnexus://repo/Scopify/processes` | All execution flows |
-| `gitnexus://repo/Scopify/process/{name}` | Step-by-step execution trace |
-
-## CLI
-
-| Task | Read this skill file |
-| --- | --- |
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus-exploring/SKILL.md` |
-| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus-debugging/SKILL.md` |
-| Rename / extract / split / refactor | `.claude/skills/gitnexus-refactoring/SKILL.md` |
-| Tools, resources, schema reference | `.claude/skills/gitnexus-guide/SKILL.md` |
-| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus-cli/SKILL.md` |
-
-<!-- gitnexus:end -->
+If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
+<!-- CODEGRAPH_END -->

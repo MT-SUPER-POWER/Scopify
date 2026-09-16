@@ -25,8 +25,12 @@ export function SidebarSortablePlaylists({
     [playlists, userId],
   );
   const order = useInlinePlaylistOrder(grouped);
-  const created = order.items.filter((item) => item.creator.userId === userId);
-  const subscribed = order.items.filter((item) => item.creator.userId !== userId);
+  const created = order.items.filter(
+    (item) => item.specialType !== 5 && item.creator.userId === userId,
+  );
+  const subscribed = order.items.filter(
+    (item) => item.specialType !== 5 && item.creator.userId !== userId,
+  );
   const itemProps = (playlist: NeteasePlaylist) => ({
     id: playlist.id,
     title: playlist.name,
@@ -42,6 +46,7 @@ export function SidebarSortablePlaylists({
         key={playlist.id}
         {...itemProps(playlist)}
         locked={playlist.specialType === 5}
+        playlist={playlist}
       />
     ));
   return (

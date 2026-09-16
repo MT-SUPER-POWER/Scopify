@@ -7,6 +7,7 @@ import { thumbnailModifiers, useSortableListDrag } from "@/hooks/playlist/useSor
 import { SortableListContext } from "@/lib/playlist/sortableListContext";
 import { useI18n } from "@/store/module/i18n";
 import type { SortableListProps } from "@/types/sortableList";
+import "./trackDrag.css";
 
 export function SortableList(props: SortableListProps) {
   const { t } = useI18n();
@@ -28,6 +29,7 @@ export function SortableList(props: SortableListProps) {
       <SortableContext items={props.ids} strategy={() => null}>
         <SortableListContext.Provider
           value={{
+            reorderDisabled: Boolean(props.reorderDisabled),
             available: !props.disabled,
             disabled: Boolean(props.disabled || props.busy),
             activeId: drag.activeId,
@@ -50,11 +52,7 @@ export function SortableList(props: SortableListProps) {
             style={{ pointerEvents: "none", width: 200, height: 44 }}
           >
             {drag.activeId !== null && (
-              <div
-                inert
-                aria-hidden="true"
-                className="overflow-hidden rounded-md bg-surface-elevated text-content shadow-xl ring-1 ring-brand/60"
-              >
+              <div inert aria-hidden="true" className="relative text-content">
                 {props.renderOverlay(drag.activeId)}
               </div>
             )}

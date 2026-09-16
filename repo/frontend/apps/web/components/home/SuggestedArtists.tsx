@@ -43,7 +43,7 @@ export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: Sugg
         open={isOpen}
         onOpenChange={setIsOpen}
         title={
-          <h2 className="text-2xl font-bold tracking-tight text-content hover:underline">
+          <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
             {t("home.suggestedArtists")}
           </h2>
         }
@@ -56,6 +56,7 @@ export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: Sugg
             />
           ) : null
         }
+        collapsedRows={1}
         collapsedHeight="260px"
       >
         <div className="relative overflow-hidden">
@@ -66,11 +67,12 @@ export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: Sugg
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -direction * 16 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-6"
+              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] gap-x-2 gap-y-4"
             >
               {visibleArtists.map((artist) => (
                 <GridCard
                   key={artist.id}
+                  appearance="home"
                   id={artist.id}
                   name={artist.name}
                   coverUrl={`${artist.picUrl}?param=200y200`}

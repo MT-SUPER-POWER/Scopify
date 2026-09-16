@@ -48,7 +48,7 @@ export const QueuePopover = () => {
         align="end"
         className="w-96 border border-content/10 bg-surface-elevated p-0 text-content shadow-2xl"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-content/10 bg-surface-elevated/90 p-4 backdrop-blur-sm">
+        <div data-track-drag-chrome className="sticky top-0 z-10 flex items-center justify-between border-b border-content/10 bg-surface-elevated/90 p-4 backdrop-blur-sm">
           <div>
             <h3 className="text-lg font-bold">{t("queue.title")}</h3>
             <p className="text-xs text-content-muted">

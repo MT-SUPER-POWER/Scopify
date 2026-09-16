@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
+import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 
 import {
   PERSONAL_FM_PLAYBACK_SOURCE_ID,
@@ -10,7 +12,8 @@ import {
 } from "@/constants/personalFm";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
-import { useI18n } from "@/store/module/i18n";
+import { useI18n, useI18nStore } from "@/store/module/i18n";
+import { translate } from "@/lib/i18n";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/api/music";
@@ -19,6 +22,8 @@ import type { PlaylistInfo } from "@/types/playlist";
 export function usePersonalFmPlaylist() {
   const { t } = useI18n();
   const requireLogin = useRequireLoginAction();
+  const isLoggedIn = useLoginStatus();
+  const pathname = usePathname();
   const selection = usePersonalFmStore((state) => state.selection);
   const status = usePersonalFmStore((state) => state.status);
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
@@ -37,6 +42,29 @@ export function usePersonalFmPlaylist() {
       }
     });
   }, [requireLogin, t]);
+
+  useEffect(() => {
+    if (!isLoggedIn || pathname !== "/personal-fm") return;
+    // Defer until effect setup settles so Strict Mode does not request twice.
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      void usePersonalFmStore
+        .getState()
+        .start()
+        .then((started) => {
+          if (!started && !cancelled) {
+            toast.error(
+              usePersonalFmStore.getState().error ??
+                translate(useI18nStore.getState().locale, "personalFm.error.loadFailed"),
+            );
+          }
+        });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn, pathname]);
 
   const handlePlayToggle = useCallback(() => {
     const player = usePlayerStore.getState();
@@ -67,7 +95,9 @@ export function usePersonalFmPlaylist() {
 
   const playlistInfo = useMemo<PlaylistInfo>(
     () => ({
-      cover: currentSong?.al.picUrl ?? "/personal-fm-cover.svg",
+      cover: isCurrentSource
+        ? (currentSong?.al.picUrl ?? "/personal-fm-cover.svg")
+        : "/personal-fm-cover.svg",
       createTime: "",
       creator: "",
       creatorAvatar: "",
@@ -78,7 +108,7 @@ export function usePersonalFmPlaylist() {
       title: t("personalFm.title"),
       totalSongs: tracks.length,
     }),
-    [currentSong?.al.picUrl, selection, t, tracks.length],
+    [currentSong?.al.picUrl, isCurrentSource, selection, t, tracks.length],
   );
 
   return {

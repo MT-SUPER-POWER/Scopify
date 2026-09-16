@@ -12,6 +12,7 @@ export const DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH =
   "/?desktopPlaybackController=open-folia-visual-settings";
 
 export const DESKTOP_FOLIA_VISUALIZER_OPTIONS = [
+  { labelKey: "folia.ui.visualizerArchive", value: "archive" },
   { labelKey: "folia.ui.visualizerClassic", value: "classic" },
   { labelKey: "folia.ui.visualizerCadenze", value: "cadenza" },
   { labelKey: "folia.ui.visualizerPartita", value: "partita" },
@@ -34,6 +35,7 @@ export const DESKTOP_FOLIA_BACKGROUND_OPTIONS = [
   { labelKey: "folia.options.visualizerBackgroundModeLatent", value: "latent" },
   { labelKey: "folia.options.visualizerBackgroundModeUrl", value: "url" },
   { labelKey: "folia.options.visualizerBackgroundModeSora", value: "sora" },
+  { labelKey: "folia.options.visualizerBackgroundModeRhine", value: "rhine" },
 ] as const satisfies readonly { labelKey: string; value: VisualizerBackgroundMode }[];
 
 export const DESKTOP_FOLIA_ANIMATION_OPTIONS = [

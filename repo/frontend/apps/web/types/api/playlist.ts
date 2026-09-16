@@ -206,6 +206,14 @@ export interface PlaylistTrackUpdateResponse {
   code: 200;
 }
 
+/** Some backend versions wrap the upstream response in `body`. */
+export interface PlaylistTrackResponsePayload {
+  code?: number;
+  message?: string;
+  msg?: string;
+  body?: PlaylistTrackResponsePayload;
+}
+
 export interface PlaylistOrderUpdateParams {
   ids: number[];
 }

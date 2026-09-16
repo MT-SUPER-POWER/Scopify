@@ -18,6 +18,9 @@ import type {
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { getEventCoordinates } from "@dnd-kit/utilities";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAppDragStore } from "@/store/module/appDrag";
+import { findTrackDropTarget } from "@/lib/playlist/trackDropTargets";
+import type { TrackDragPoint } from "@/types/trackDrag";
 import type { ListInsertionTarget, SortableListProps } from "@/types/sortableList";
 
 // The compact preview follows the pointer instead of the source row's left edge.
@@ -35,7 +38,15 @@ const followPointer: Modifier = ({ activatorEvent, activeNodeRect, transform }) 
 };
 export const thumbnailModifiers = [followPointer];
 
-export function useSortableListDrag({ ids, disabled = false, canMove, onMove }: SortableListProps) {
+export function useSortableListDrag({
+  ids,
+  disabled = false,
+  reorderDisabled = false,
+  canMove,
+  onMove,
+  onDragStart: onDragStartProp,
+  onDragEnd: onDragEndProp,
+}: SortableListProps) {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [landingId, setLandingId] = useState<UniqueIdentifier | null>(null);
   const [landingVersion, setLandingVersion] = useState(0);
@@ -52,6 +63,18 @@ export function useSortableListDrag({ ids, disabled = false, canMove, onMove }: 
   const snapshot = useRef<UniqueIdentifier[]>([]);
   const suppressClick = useRef(false);
   const activeRef = useRef<UniqueIdentifier | null>(null);
+  const pointerRef = useRef<TrackDragPoint | null>(null);
+  const tracksDragging = useAppDragStore((state) => state.isDragging);
+  useEffect(() => {
+    if (activeId === null || !tracksDragging) return;
+    document.body.dataset.trackDragging = "true";
+    const cancel = () => clear();
+    window.addEventListener("blur", cancel);
+    return () => {
+      delete document.body.dataset.trackDragging;
+      window.removeEventListener("blur", cancel);
+    };
+  }, [activeId, tracksDragging]);
   const sensors = useSensors(
     // Moving while holding the mouse must not permanently cancel the pending drag.
     // Touch keeps a movement tolerance so swiping can still scroll the list.
@@ -78,13 +101,16 @@ export function useSortableListDrag({ ids, disabled = false, canMove, onMove }: 
       document.removeEventListener("click", stopClick, true);
       document.removeEventListener("mousedown", reset, true);
       document.removeEventListener("touchstart", reset, true);
+      if (activeRef.current !== null) useAppDragStore.getState().endDrag();
     };
   }, []);
   const clear = () => {
     activeRef.current = null;
     targetRef.current = null;
+    pointerRef.current = null;
     setActiveId(null);
     setInsertion(null);
+    useAppDragStore.getState().endDrag();
   };
   const onDragStart = ({ active, activatorEvent }: DragStartEvent) => {
     if (disabled) return;
@@ -94,8 +120,12 @@ export function useSortableListDrag({ ids, disabled = false, canMove, onMove }: 
     setKeyboardDrag(activatorEvent.type === "keydown");
     setLandingId(null);
     setActiveId(active.id);
+    onDragStartProp?.(active.id);
   };
-  const syncInsertion = () =>
+  const syncInsertion = () => {
+    if (useAppDragStore.getState().isDragging) {
+      useAppDragStore.getState().setOverTarget(findTrackDropTarget(pointerRef.current)?.id ?? null);
+    }
     setInsertion((current) => {
       const next = targetRef.current;
       return current?.id === next?.id &&
@@ -104,7 +134,18 @@ export function useSortableListDrag({ ids, disabled = false, canMove, onMove }: 
         ? current
         : next;
     });
+  };
   const onDragEnd = ({ active }: DragEndEvent) => {
+    if (activeRef.current === null) return;
+    const { isDragging, draggedTracks } = useAppDragStore.getState();
+    const dropTarget = isDragging ? findTrackDropTarget(pointerRef.current) : undefined;
+    if (dropTarget) {
+      // Capture the payload before clearing; a drop is committed only here.
+      clear();
+      onDragEndProp?.(active.id);
+      void dropTarget.onDrop(draggedTracks);
+      return;
+    }
     const from = ids.indexOf(active.id);
     const to = targetRef.current?.index ?? from;
     const unchanged =
@@ -112,6 +153,10 @@ export function useSortableListDrag({ ids, disabled = false, canMove, onMove }: 
       snapshot.current.every((id, index) => id === ids[index]);
     if (
       !disabled &&
+      !reorderDisabled &&
+      active.data.current?.allowReorder !== false &&
+      (!isDragging || draggedTracks.length === 1) &&
+      targetRef.current !== null &&
       unchanged &&
       from >= 0 &&
       to >= 0 &&
@@ -122,9 +167,18 @@ export function useSortableListDrag({ ids, disabled = false, canMove, onMove }: 
       setLandingVersion((version) => version + 1);
     }
     clear();
+    onDragEndProp?.(active.id);
   };
   const collisionDetection: CollisionDetection = (args) => {
     const point = args.pointerCoordinates;
+    pointerRef.current = point;
+    targetRef.current = null;
+    const dragState = useAppDragStore.getState();
+    if (
+      (dragState.isDragging && findTrackDropTarget(point)) ||
+      reorderDisabled || args.active.data.current?.allowReorder === false ||
+      (dragState.isDragging && dragState.draggedTracks.length > 1)
+    ) return [];
     const collisions = closestCenter(
       point
         ? {
@@ -148,6 +202,12 @@ export function useSortableListDrag({ ids, disabled = false, canMove, onMove }: 
     targetRef.current = null;
     if (!over || !rect || from < 0 || overIndex < 0) return [];
     if (point && (point.x < rect.left || point.x > rect.right)) return [];
+    if (point) {
+      const element = document.elementFromPoint(point.x, point.y);
+      const overNode = args.droppableContainers.find((container) => container.id === over.id)?.node.current;
+      // Reject headers, other panels, clipped rows, and space outside the list.
+      if (!element || !overNode?.contains(element)) return [];
+    }
     const after = point ? point.y >= rect.top + rect.height / 2 : overIndex > from;
     const to = Math.max(
       0,

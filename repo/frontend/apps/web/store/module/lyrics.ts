@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 import {
@@ -129,6 +130,19 @@ export const useLyricStageStore = create<FoliaStageStore>()(
           },
         })),
       patchSettings: (patch) => set(patch),
+      patchRhineBackground: (patch) =>
+        set((state) => ({
+          background: {
+            ...state.background,
+            rhine: {
+              tuning: {
+                ...DEFAULT_RHINE_BACKGROUND_TUNING,
+                ...state.background.rhine?.tuning,
+                ...patch,
+              },
+            },
+          },
+        })),
       patchTuning: (mode, patch) =>
         set((state) => ({
           tunings: {
@@ -168,6 +182,7 @@ export const useLyricStageStore = create<FoliaStageStore>()(
         if (mode === "nomand") get().patchNomandBackground(DEFAULT_NOMAND_BACKGROUND_TUNING);
         if (mode === "latent") get().patchLatentBackground(DEFAULT_LATENT_BACKGROUND_TUNING);
         if (mode === "sora") get().patchSoraBackground(DEFAULT_SORA_BACKGROUND_TUNING);
+        if (mode === "rhine") get().patchRhineBackground(DEFAULT_RHINE_BACKGROUND_TUNING);
       },
       resetTuning: (mode) =>
         set((state) => ({

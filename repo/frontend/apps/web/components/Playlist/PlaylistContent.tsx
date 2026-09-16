@@ -83,6 +83,7 @@ export function PlaylistContent({
       />
       <div className="hero-content-transition relative z-10 flex flex-1 flex-col">
         {!isLoading && (
+          <div data-track-drag-chrome>
           <PlaylistActions
             actionSlot={actionSlot}
             commentResourceId={commentResourceId}
@@ -102,6 +103,7 @@ export function PlaylistContent({
             inputRef={inputRef}
             tracks={tracks}
           />
+          </div>
         )}
         <div className="min-w-0 flex-1 pb-10">
           {isLoading ? (

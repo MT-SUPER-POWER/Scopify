@@ -2816,6 +2816,12 @@ export interface TranslateFn {
    */
   (key: "sidebar.card.noPlaylistsSubtitle", params?: TranslationParams): string;
   /**
+   * zh-CN: 专属音乐
+   * zh-TW: 專屬音樂
+   * en-US: Made for You
+   */
+  (key: "sidebar.group.personal", params?: TranslationParams): string;
+  /**
    * zh-CN: 创建的歌单
    * zh-TW: 建立的歌單
    * en-US: Created Playlists
@@ -2954,6 +2960,18 @@ export interface TranslateFn {
    */
   (key: "sidebar.menu.deleteFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 确定取消收藏歌单“{{name}}”吗？原歌单不会被删除。
+   * zh-TW: 確定取消收藏歌單「{{name}}」嗎？原歌單不會被刪除。
+   * en-US: Unsubscribe from {{name}}? The original playlist will not be deleted.
+   */
+  (key: "sidebar.lib.unsubscribeConfirmContent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏失败
+   * zh-TW: 取消收藏失敗
+   * en-US: Failed to unsubscribe
+   */
+  (key: "sidebar.lib.unsubscribeFailed", params?: TranslationParams): string;
+  /**
    * zh-CN: 未命名歌单
    * zh-TW: 未命名歌單
    * en-US: Untitled Playlist
@@ -3013,6 +3031,198 @@ export interface TranslateFn {
    * en-US: Edit Playlist Information
    */
   (key: "playlist.form.editTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在添加到歌单…
+   * zh-TW: 正在加入歌單…
+   * en-US: Adding to playlist…
+   */
+  (key: "playlist.drop.adding", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法读取目标歌单，请重试
+   * zh-TW: 無法讀取目標歌單，請重試
+   * en-US: Could not load the target playlist. Please try again.
+   */
+  (key: "playlist.drop.loadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选歌曲已在目标歌单中，请刷新歌单查看
+   * zh-TW: 所選歌曲已在目標歌單中，請重新整理歌單查看
+   * en-US: These songs are already in the playlist. Refresh to see them.
+   */
+  (key: "playlist.drop.duplicate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 目标歌单已有部分歌曲，请刷新后重试；重复歌曲会自动跳过
+   * zh-TW: 目標歌單已有部分歌曲，請重新整理後重試；重複歌曲會自動略過
+   * en-US: Some songs are already in the playlist. Refresh and retry; duplicates will be skipped.
+   */
+  (key: "playlist.drop.concurrentDuplicate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加 {{count}} 首歌曲到歌单
+   * zh-TW: 已加入 {{count}} 首歌曲到歌單
+   * en-US: Added {{count}} songs to the playlist
+   */
+  (key: "playlist.drop.success", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加 {{count}} 首歌曲，跳过 {{skipped}} 首重复歌曲
+   * zh-TW: 已加入 {{count}} 首歌曲，略過 {{skipped}} 首重複歌曲
+   * en-US: Added {{count}} songs; skipped {{skipped}} duplicates
+   */
+  (key: "playlist.drop.partial", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选歌曲已在我喜欢的音乐中
+   * zh-TW: 所選歌曲已在我喜歡的音樂中
+   * en-US: These songs are already in Liked Songs
+   */
+  (key: "playlist.drop.alreadyLiked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选歌曲均未在我喜欢的音乐中
+   * zh-TW: 所選歌曲均未在我喜歡的音樂中
+   * en-US: None of these songs are in Liked Songs
+   */
+  (key: "playlist.drop.notLiked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在更新喜欢的音乐…
+   * zh-TW: 正在更新喜歡的音樂…
+   * en-US: Updating Liked Songs…
+   */
+  (key: "playlist.drop.processing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已完成 {{count}} 首，失败 {{failed}} 首，跳过 {{skipped}} 首未变化的歌曲
+   * zh-TW: 已完成 {{count}} 首，失敗 {{failed}} 首，略過 {{skipped}} 首未變更的歌曲
+   * en-US: Updated {{count}} songs; {{failed}} failed; {{skipped}} unchanged
+   */
+  (key: "playlist.drop.likePartial", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已喜欢 {{count}} 首歌曲，跳过 {{skipped}} 首已喜欢的歌曲
+   * zh-TW: 已喜歡 {{count}} 首歌曲，略過 {{skipped}} 首已喜歡的歌曲
+   * en-US: Liked {{count}} songs; skipped {{skipped}} already liked songs
+   */
+  (key: "playlist.drop.liked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消喜欢 {{count}} 首歌曲，跳过 {{skipped}} 首未喜欢的歌曲
+   * zh-TW: 已取消喜歡 {{count}} 首歌曲，略過 {{skipped}} 首未喜歡的歌曲
+   * en-US: Unliked {{count}} songs; skipped {{skipped}} songs not liked
+   */
+  (key: "playlist.drop.unliked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整歌单顺序
+   * zh-TW: 調整歌單順序
+   * en-US: Reorder playlists
+   */
+  (key: "playlist.order.playlists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整歌曲顺序
+   * zh-TW: 調整歌曲順序
+   * en-US: Reorder songs
+   */
+  (key: "playlist.order.tracks", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖动手柄或使用上下按钮调整顺序，保存后同步到网易云。
+   * zh-TW: 拖動手柄或使用上下按鈕調整順序，儲存後同步到網易雲。
+   * en-US: Drag the handles or use the arrow buttons, then save to sync with NetEase Cloud Music.
+   */
+  (key: "playlist.order.hint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在创建、收藏分组内拖动或使用上下按钮调整顺序；喜欢的音乐保持原位。保存后同步到网易云。
+   * zh-TW: 在建立、收藏分組內拖動或使用上下按鈕調整順序；喜歡的音樂保持原位。儲存後同步到網易雲。
+   * en-US: Reorder within your created or subscribed playlists using drag handles or arrows. Liked Music stays in place. Save to sync with NetEase Cloud Music.
+   */
+  (key: "playlist.order.libraryHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 排序列表
+   * zh-TW: 排序列表
+   * en-US: Order list
+   */
+  (key: "playlist.order.list", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖动调整顺序
+   * zh-TW: 拖動調整順序
+   * en-US: Drag to reorder
+   */
+  (key: "playlist.order.drag", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢的音乐保持原位
+   * zh-TW: 喜歡的音樂保持原位
+   * en-US: Liked Music stays in place
+   */
+  (key: "playlist.order.locked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上移 {{name}}
+   * zh-TW: 上移 {{name}}
+   * en-US: Move {{name}} up
+   */
+  (key: "playlist.order.up", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下移 {{name}}
+   * zh-TW: 下移 {{name}}
+   * en-US: Move {{name}} down
+   */
+  (key: "playlist.order.down", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载完整列表…
+   * zh-TW: 載入完整列表…
+   * en-US: Loading the complete list…
+   */
+  (key: "playlist.order.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存顺序
+   * zh-TW: 儲存順序
+   * en-US: Save order
+   */
+  (key: "playlist.order.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在保存…
+   * zh-TW: 正在儲存…
+   * en-US: Saving…
+   */
+  (key: "playlist.order.saving", params?: TranslationParams): string;
+  /**
+   * zh-CN: 顺序已保存
+   * zh-TW: 順序已儲存
+   * en-US: Order saved
+   */
+  (key: "playlist.order.saved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 顺序保存失败，已恢复原顺序
+   * zh-TW: 順序儲存失敗，已恢復原順序
+   * en-US: Could not save the order. The previous order has been restored.
+   */
+  (key: "playlist.order.reverted", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载排序列表失败。
+   * zh-TW: 載入排序列表失敗。
+   * en-US: Unable to load the order list.
+   */
+  (key: "playlist.order.loadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存失败，调整已保留，请重试。
+   * zh-TW: 儲存失敗，調整已保留，請重試。
+   * en-US: Save failed. Your changes are preserved; please retry.
+   */
+  (key: "playlist.order.saveFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 只能调整自己创建的歌单中的歌曲顺序。
+   * zh-TW: 只能調整自己建立的歌單中的歌曲順序。
+   * en-US: You can only reorder songs in playlists you own.
+   */
+  (key: "playlist.order.notOwner", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲 ID 列表不完整，请重新加载。
+   * zh-TW: 歌曲 ID 列表不完整，請重新載入。
+   * en-US: The song ID list is incomplete. Please reload.
+   */
+  (key: "playlist.order.incomplete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 列表已发生变化，请关闭后重新打开排序面板。
+   * zh-TW: 列表已發生變化，請關閉後重新開啟排序面板。
+   * en-US: The list has changed. Close and reopen the order dialog.
+   */
+  (key: "playlist.order.changed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲 {{id}}（暂无详情）
+   * zh-TW: 歌曲 {{id}}（暫無詳情）
+   * en-US: Song {{id}} (details unavailable)
+   */
+  (key: "playlist.order.unknownTrack", params?: TranslationParams): string;
   /**
    * zh-CN: 为你的歌单添加名称
    * zh-TW: 為你的歌單新增名稱
@@ -3331,6 +3541,12 @@ export interface TranslateFn {
    * en-US: Subscribe to playlist
    */
   (key: "playlist.actions.subscribe", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多操作
+   * zh-TW: 更多操作
+   * en-US: More actions
+   */
+  (key: "playlist.actions.more", params?: TranslationParams): string;
   /**
    * zh-CN: 取消收藏
    * zh-TW: 取消收藏
@@ -3872,6 +4088,18 @@ export interface TranslateFn {
    */
   (key: "queue.empty", params?: TranslationParams): string;
   /**
+   * zh-CN: 按空格拾起歌曲，使用上下方向键移动，再按空格放下，Esc 取消。
+   * zh-TW: 按空格拾起歌曲，使用上下方向鍵移動，再按空格放下，Esc 取消。
+   * en-US: Press Space to pick up a song, arrow keys to move, Space to drop, or Escape to cancel.
+   */
+  (key: "queue.keyboardHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖动调整播放队列顺序，不影响歌单
+   * zh-TW: 拖動調整播放佇列順序，不影響歌單
+   * en-US: Drag to reorder the play queue without changing the playlist
+   */
+  (key: "queue.dragToReorder", params?: TranslationParams): string;
+  /**
    * zh-CN: 通知
    * zh-TW: 通知
    * en-US: Notifications
@@ -3890,11 +4118,17 @@ export interface TranslateFn {
    */
   (key: "profile.menu.profile", params?: TranslationParams): string;
   /**
-   * zh-CN: 网易乐签
-   * zh-TW: 網易樂簽
-   * en-US: VIP Sign In
+   * zh-CN: 网易云签到
+   * zh-TW: 網易雲簽到
+   * en-US: NetEase Check-in
    */
   (key: "profile.menu.vipSign", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今日
+   * zh-TW: 今日
+   * en-US: Today
+   */
+  (key: "profile.menu.signToday", params?: TranslationParams): string;
   /**
    * zh-CN: 签到
    * zh-TW: 簽到
@@ -4117,6 +4351,36 @@ export interface TranslateFn {
    * en-US: Check-in
    */
   (key: "vipSign.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每日乐签
+   * zh-TW: 每日樂簽
+   * en-US: Daily Music Ticket
+   */
+  (key: "vipSign.ticketTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云音乐会员中心
+   * zh-TW: 雲音樂會員中心
+   * en-US: Cloud Music VIP Center
+   */
+  (key: "vipSign.memberCenter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按住票根 · 上下卷撕
+   * zh-TW: 按住票根 · 上下捲撕
+   * en-US: Hold and peel up or down
+   */
+  (key: "vipSign.tearHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 撕下票根并关闭乐签
+   * zh-TW: 撕下票根並關閉樂簽
+   * en-US: Tear off the stub and close the ticket
+   */
+  (key: "vipSign.tearAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲暂时无法播放，请稍后重试
+   * zh-TW: 歌曲暫時無法播放，請稍後重試
+   * en-US: Unable to play this song. Please try again.
+   */
+  (key: "vipSign.playFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 今天已签到
    * zh-TW: 今天已簽到
@@ -7250,6 +7514,60 @@ export interface TranslateFn {
    */
   (key: "folia.ui.visualizerStill", params?: TranslationParams): string;
   /**
+   * zh-CN: 档案
+   * zh-TW: 檔案
+   * en-US: Archive
+   */
+  (key: "folia.ui.visualizerArchive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在读取
+   * zh-TW: 正在讀取
+   * en-US: READING
+   */
+  (key: "folia.archive.reading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 读取暂停
+   * zh-TW: 讀取暫停
+   * en-US: SUSPENDED
+   */
+  (key: "folia.archive.suspended", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音档案
+   * zh-TW: 聲音檔案
+   * en-US: SOUND RECORD
+   */
+  (key: "folia.archive.record", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词记录
+   * zh-TW: 歌詞記錄
+   * en-US: TRANSCRIPT
+   */
+  (key: "folia.archive.transcript", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未命名档案
+   * zh-TW: 未命名檔案
+   * en-US: Untitled record
+   */
+  (key: "folia.archive.untitled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 间奏
+   * zh-TW: 間奏
+   * en-US: Interlude
+   */
+  (key: "folia.archive.interlude", params?: TranslationParams): string;
+  /**
+   * zh-CN: 聆听音乐
+   * zh-TW: 聆聽音樂
+   * en-US: Listening
+   */
+  (key: "folia.archive.instrumental", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放这一句
+   * zh-TW: 播放這一句
+   * en-US: Play this line
+   */
+  (key: "folia.archive.seekLine", params?: TranslationParams): string;
+  /**
    * zh-CN: 凝彩
    * zh-TW: 凝彩
    * en-US: Tempera
@@ -9004,6 +9322,144 @@ export interface TranslateFn {
    * en-US: Sora
    */
   (key: "folia.options.visualizerBackgroundModeSora", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莱茵
+   * zh-TW: 萊茵
+   * en-US: Rhine
+   */
+  (key: "folia.options.visualizerBackgroundModeRhine", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莱茵档案
+   * zh-TW: 萊茵檔案
+   * en-US: Rhine archive
+   */
+  (key: "folia.rhine.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 档案盒随音乐起伏，切歌时交接当前档案。
+   * zh-TW: 檔案盒隨音樂起伏，切歌時交接目前檔案。
+   * en-US: Archive cassettes breathe with the music and exchange places when the track changes.
+   */
+  (key: "folia.rhine.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景配色
+   * zh-TW: 場景配色
+   * en-US: Scene palette
+   */
+  (key: "folia.rhine.colorMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跟随主题
+   * zh-TW: 跟隨主題
+   * en-US: Follow theme
+   */
+  (key: "folia.rhine.colorAuto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暖白
+   * zh-TW: 暖白
+   * en-US: Warm ivory
+   */
+  (key: "folia.rhine.colorLight", params?: TranslationParams): string;
+  /**
+   * zh-CN: 深灰
+   * zh-TW: 深灰
+   * en-US: Dark graphite
+   */
+  (key: "folia.rhine.colorDark", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音乐律动
+   * zh-TW: 音樂律動
+   * en-US: React to music
+   */
+  (key: "folia.rhine.musicEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 呼吸起伏
+   * zh-TW: 呼吸起伏
+   * en-US: Breathing motion
+   */
+  (key: "folia.rhine.breathingEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 律动方式
+   * zh-TW: 律動方式
+   * en-US: Rhythm style
+   */
+  (key: "folia.rhine.rhythmStyle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 原版律动
+   * zh-TW: 原版律動
+   * en-US: Original
+   */
+  (key: "folia.rhine.rhythmLegacy", params?: TranslationParams): string;
+  /**
+   * zh-CN: 频谱波浪
+   * zh-TW: 頻譜波浪
+   * en-US: Spectrum waves
+   */
+  (key: "folia.rhine.rhythmWave", params?: TranslationParams): string;
+  /**
+   * zh-CN: 层叠涌动
+   * zh-TW: 層疊湧動
+   * en-US: Layered currents
+   */
+  (key: "folia.rhine.rhythmLift", params?: TranslationParams): string;
+  /**
+   * zh-CN: 律动强度
+   * zh-TW: 律動強度
+   * en-US: Motion strength
+   */
+  (key: "folia.rhine.strength", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景遮罩
+   * zh-TW: 背景遮罩
+   * en-US: Background overlay
+   */
+  (key: "folia.rhine.overlayOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画质
+   * zh-TW: 畫質
+   * en-US: Quality
+   */
+  (key: "folia.rhine.quality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 节能
+   * zh-TW: 節能
+   * en-US: Performance
+   */
+  (key: "folia.rhine.qualityPerformance", params?: TranslationParams): string;
+  /**
+   * zh-CN: 原版
+   * zh-TW: 原版
+   * en-US: Original
+   */
+  (key: "folia.rhine.qualityOriginal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 精细
+   * zh-TW: 精細
+   * en-US: High
+   */
+  (key: "folia.rhine.qualityHigh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 帧率
+   * zh-TW: 影格率
+   * en-US: Frame rate
+   */
+  (key: "folia.rhine.frameRate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停会停留在当前起伏，继续播放后接着呼吸。
+   * zh-TW: 暫停會停留在目前起伏，繼續播放後接著呼吸。
+   * en-US: Pausing holds the current pose. Motion continues from that point when playback resumes.
+   */
+  (key: "folia.rhine.pauseHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 莱茵背景暂时无法加载
+   * zh-TW: 萊茵背景暫時無法載入
+   * en-US: Rhine background could not be loaded
+   */
+  (key: "folia.rhine.loadError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Retry
+   */
+  (key: "folia.rhine.retry", params?: TranslationParams): string;
   /**
    * zh-CN: 嵌入背景
    * zh-TW: 嵌入背景

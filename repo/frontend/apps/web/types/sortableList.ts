@@ -5,8 +5,11 @@ export interface SortableListProps {
   ids: UniqueIdentifier[];
   disabled?: boolean;
   busy?: boolean;
+  reorderDisabled?: boolean;
   canMove?: (from: number, to: number) => boolean;
   onMove: (from: number, to: number) => void;
+  onDragStart?: (id: UniqueIdentifier) => void;
+  onDragEnd?: (id: UniqueIdentifier) => void;
   renderOverlay: (id: UniqueIdentifier) => ReactNode;
   children: ReactNode;
 }
@@ -18,6 +21,7 @@ export interface ListInsertionTarget {
 }
 
 export interface SortableListState {
+  reorderDisabled: boolean;
   available: boolean;
   disabled: boolean;
   activeId: UniqueIdentifier | null;
@@ -32,4 +36,8 @@ export interface DragThumbnailProps {
   cover: string;
   title: string;
   subtitle?: string;
+}
+
+export interface StackedDragThumbnailProps extends DragThumbnailProps {
+  count?: number;
 }

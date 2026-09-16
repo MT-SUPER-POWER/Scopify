@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 export interface SidebarConfirmDialogProps {
   open: boolean;
   title: string;
@@ -30,5 +31,26 @@ export interface SidebarSortablePlaylistsProps {
 export interface SortableLibraryItemProps extends SidebarLibraryItemProps {
   id: number;
   locked: boolean;
+  playlist: NeteasePlaylist;
 }
 import type { NeteasePlaylist } from "@/types/api/playlist";
+
+export interface CollapsibleLibraryGroupProps {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}
+
+export type SidebarLikedPlaylistItemProps = Pick<
+  SortableLibraryItemProps,
+  "playlist" | "isCollapsed"
+>;
+
+export interface SidebarPlaylistManagementProps {
+  children: (actions: ReactNode) => ReactNode;
+  playlistId: number | string;
+}
+
+export interface SidebarPlaylistConfirmDialogProps extends SidebarConfirmDialogProps {
+  busy?: boolean;
+}

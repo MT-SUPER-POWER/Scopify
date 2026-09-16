@@ -12,6 +12,7 @@ import type {
   VisualizerBackgroundMode,
 } from "@/components/lyrics/folia/src/types";
 import type { MotionValue } from "framer-motion";
+import type { RhineBackgroundTuning } from "@/types/rhineBackground";
 import type { VisualizerBackgroundConfig } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import type {
   VisualizerTuningBundle,
@@ -75,6 +76,7 @@ export interface FoliaStageStore extends FoliaStageSettings {
   patchMonetBackground: (patch: Partial<MonetBackgroundTuning>) => void;
   patchNomandBackground: (patch: Partial<NomandBackgroundTuning>) => void;
   patchSoraBackground: (patch: Partial<SoraBackgroundTuning>) => void;
+  patchRhineBackground: (patch: Partial<RhineBackgroundTuning>) => void;
   patchSettings: (patch: Partial<FoliaStageSettings>) => void;
   patchTuning: <Mode extends VisualizerTuningMode>(
     mode: Mode,

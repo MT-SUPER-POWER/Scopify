@@ -92,7 +92,7 @@ export function useAlbumData() {
       return;
     }
 
-    void import("@/lib/utils")
+    void import("@/lib/web/imageColor")
       .then(({ getMainColorFromImage }) => getMainColorFromImage(ALBUM_INFO.cover))
       .then((color) => {
         if (!color) return;
