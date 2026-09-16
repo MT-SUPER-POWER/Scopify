@@ -22,7 +22,8 @@ import {
   useNavigationScrollRestorationAdapter,
   usePrimaryScrollSurface,
 } from "@/components/shared/NavigationScrollProvider";
-import { SongContextMenu } from "@/components/shared/SongContextMenu";
+import { PLAYLIST_VIRTUALIZATION_THRESHOLD } from "@/constants/playlistTable";
+import { PlaylistTableSongRow } from "@/components/Playlist/PlaylistTableSongRow";
 import { TracklistResizeHandle } from "@/components/shared/TracklistResizeHandle";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import {
@@ -47,7 +48,6 @@ import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import type { NavigationScrollRestorationAdapter } from "@/types/navigation-scroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
-import { SortableTrackRow as TrackRow } from "./SortableTrackRow";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -128,7 +128,9 @@ export default function TracklistTable({
 
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const playFromSong = usePlayerStore((s) => s.playFromSong);
-  const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+  const currentSongId = usePlayerStore((s) => s.currentSongDetail?.id);
+  const onPlayTrackRef = useRef(onPlayTrack);
+  onPlayTrackRef.current = onPlayTrack;
   const isPlaying = usePlayerStore((s) => s.isPlaying);
 
   const likeSet = useMemo(() => {
@@ -185,7 +187,9 @@ export default function TracklistTable({
     },
   });
   const sortedRows = table.getRowModel().rows;
-  const sortedTracks = sortedRows.map((row) => row.original);
+  const sortedTracks = useMemo(() => sortedRows.map((row) => row.original), [sortedRows]);
+  const virtualizationDisabled =
+    disableVirtualization || sortedTracks.length <= PLAYLIST_VIRTUALIZATION_THRESHOLD;
   const internalSelection = useTrackSelection(sortedTracks);
   const selection = selectionProp ?? internalSelection;
   const titleColumn = getRequiredTracklistColumn(table, "title");
@@ -200,6 +204,14 @@ export default function TracklistTable({
   const [isTableHeaderSticky, setIsTableHeaderSticky] = useState(false);
   const [tracklistScrollMargin, setTracklistScrollMargin] = useState(0);
   const virtualRowElementsRef = useRef(new Map<number, HTMLTableRowElement>());
+  const registerVirtualRow = useCallback((index: number, element: HTMLTableRowElement | null) => {
+    if (element) virtualRowElementsRef.current.set(index, element);
+    else virtualRowElementsRef.current.delete(index);
+  }, []);
+  const getTrackKey = useCallback(
+    (index: number) => sortedTracks[index]?.id ?? index,
+    [sortedTracks],
+  );
 
   useEffect(() => {
     const sentinel = stickyHeaderSentinelRef.current;
@@ -221,7 +233,7 @@ export default function TracklistTable({
 
   useLayoutEffect(() => {
     const tableBody = tableBodyRef.current;
-    if (disableVirtualization || !primaryScrollSurface || !tableBody) {
+    if (virtualizationDisabled || !primaryScrollSurface || !tableBody) {
       setTracklistScrollMargin(0);
       return;
     }
@@ -247,7 +259,7 @@ export default function TracklistTable({
       window.removeEventListener("resize", measureScrollMargin);
     };
   }, [
-    disableVirtualization,
+    virtualizationDisabled,
     primaryScrollSurface,
     showAlbumColumn,
     showDateColumn,
@@ -256,9 +268,11 @@ export default function TracklistTable({
 
   const virtualizer = useVirtualizer({
     count: sortedTracks.length,
-    enabled: !disableVirtualization,
-    estimateSize: () => 56,
-    getItemKey: (index) => sortedTracks[index]?.id ?? index,
+    enabled: !virtualizationDisabled,
+    // Keep the scroll handler free of forced synchronous React commits.
+    useFlushSync: false,
+    estimateSize: () => 62,
+    getItemKey: getTrackKey,
     getScrollElement: () => primaryScrollSurface,
     isScrollingResetDelay: 160,
     overscan: 7,
@@ -272,7 +286,7 @@ export default function TracklistTable({
   virtualizerRef.current = virtualizer;
 
   const restorationAdapter = useMemo<NavigationScrollRestorationAdapter | null>(() => {
-    if (disableVirtualization) return null;
+    if (virtualizationDisabled) return null;
 
     return {
       capture(surface) {
@@ -332,11 +346,10 @@ export default function TracklistTable({
         });
       },
     };
-  }, [disableVirtualization]);
+  }, [virtualizationDisabled]);
   useNavigationScrollRestorationAdapter(restorationAdapter);
 
   const virtualItems = virtualizer.getVirtualItems();
-  const isVirtualScrolling = virtualizer.isScrolling;
   const virtualPaddingTop =
     virtualItems.length > 0 ? Math.max(0, virtualItems[0].start - tracklistScrollMargin) : 0;
   const lastVirtualItem = virtualItems[virtualItems.length - 1];
@@ -346,12 +359,12 @@ export default function TracklistTable({
 
   const handlePlay = useCallback(
     (track: SongDetail) => {
-      if (onPlayTrack) {
-        onPlayTrack(track);
+      if (onPlayTrackRef.current) {
+        onPlayTrackRef.current(track);
         return;
       }
 
-      const isCurrent = currentSongDetail?.id === track.id && isCurrentQueue;
+      const isCurrent = currentSongId === track.id && isCurrentQueue;
       if (isCurrent) setIsPlaying(!isPlaying);
       else {
         const sourceId =
@@ -361,7 +374,7 @@ export default function TracklistTable({
     },
     [
       tracks,
-      currentSongDetail,
+      currentSongId,
       isPlaying,
       setIsPlaying,
       playFromSong,
@@ -370,7 +383,6 @@ export default function TracklistTable({
       isDailyRecommendationPage,
       dailyQueueId,
       isCurrentQueue,
-      onPlayTrack,
     ],
   );
 
@@ -600,86 +612,33 @@ export default function TracklistTable({
                     )}
                   </TableCell>
                 </TableRow>
-              ) : disableVirtualization ? (
-                sortedTracks.map((track, index) => {
-                  const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
-                  const isLiked = likeSet.has(track.id);
-                  return (
-                    <SongContextMenu
-                      key={track.id}
-                      song={track}
-                      selectedSongs={selection.selectedTracks}
-                      onOpenContextMenu={() => selection.handleRowContextMenu(track.id)}
-                      isActive={isActive}
-                      isPlaying={isPlaying}
-                      onPlay={() => handlePlay(track)}
-                      playlistID={playlistID}
-                      isDailyRecommend={canDislikeDailyRecommendation}
-                      readonly={
-                        readonly || isHistoricalDailyRecommendation || !canRemoveFromPlaylist
-                      }
-                      onRemoveFromPlaylist={
-                        canRemoveFromPlaylist
-                          ? () => handleRequestDelete(playlistID ?? undefined, track.id)
-                          : undefined
-                      }
-                      onDislikeDailyRecommend={
-                        canDislikeDailyRecommendation
-                          ? () => void handleDislikeDailyRecommend(track.id)
-                          : undefined
-                      }
-                      onDislikePersonalFm={
-                        onDislikePersonalFm ? () => onDislikePersonalFm(track) : undefined
-                      }
-                    >
-                      <TrackRow
-                        allowReorder={!hasSearchQuery && sorting.length === 0}
-                        track={track}
-                        index={index}
-                        isActive={isActive}
-                        isPlaying={isPlaying}
-                        isLiked={isLiked}
-                        isSelected={selection.isSelected(track.id)}
-                        onRowClick={(e) => selection.handleRowClick(track.id, e)}
-                        playlistID={playlistID}
-                        onPlay={handlePlay}
-                        onRequestDelete={handleRequestDelete}
-                        setIsPlaying={setIsPlaying}
-                        hideAlbumColumn={!showAlbumColumn}
-                        hideDateColumn={!showDateColumn}
-                        hideLikeColumn={!showLikeColumn}
-                      />
-                    </SongContextMenu>
-                  );
-                })
               ) : (
                 <>
-                  {virtualPaddingTop > 0 && (
-                    <tr style={{ height: `${virtualPaddingTop}px` }}>
+                  {!virtualizationDisabled && virtualPaddingTop > 0 && (
+                    <tr style={{ height: virtualPaddingTop }}>
                       <td colSpan={visibleColumnCount} aria-hidden />
                     </tr>
                   )}
-                  {virtualItems.map((virtualRow) => {
-                    const track = sortedTracks[virtualRow.index];
-                    const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
-                    const isLiked = likeSet.has(track.id);
-                    const isSelected = selection.isSelected(track.id);
-                    const row = (
-                      <TrackRow
-                        allowReorder={!hasSearchQuery && sorting.length === 0}
-                        key={track.id}
-                        ref={(element) => {
-                          if (element) virtualRowElementsRef.current.set(virtualRow.index, element);
-                          else virtualRowElementsRef.current.delete(virtualRow.index);
-                        }}
-                        data-index={virtualRow.index}
+                  {(virtualizationDisabled
+                    ? sortedTracks.map((track, index) => ({ key: track.id, index }))
+                    : virtualItems
+                  ).map(({ key, index }) => {
+                    const track = sortedTracks[index];
+                    return (
+                      <PlaylistTableSongRow
+                        key={key}
+                        data-index={index}
+                        onRowElementChange={virtualizationDisabled ? undefined : registerVirtualRow}
                         track={track}
-                        index={virtualRow.index}
-                        isActive={isActive}
+                        index={index}
+                        allowReorder={!hasSearchQuery && sorting.length === 0}
+                        isActive={currentSongId === track.id && isCurrentQueue}
                         isPlaying={isPlaying}
-                        isLiked={isLiked}
-                        isSelected={isSelected}
-                        onRowClick={(e) => selection.handleRowClick(track.id, e)}
+                        isLiked={likeSet.has(track.id)}
+                        isSelected={selection.isSelected(track.id)}
+                        selectedSongs={selection.selectedTracks}
+                        onSelectTrack={selection.handleRowClick}
+                        onContextTrack={selection.handleRowContextMenu}
                         playlistID={playlistID}
                         onPlay={handlePlay}
                         onRequestDelete={handleRequestDelete}
@@ -687,46 +646,18 @@ export default function TracklistTable({
                         hideAlbumColumn={!showAlbumColumn}
                         hideDateColumn={!showDateColumn}
                         hideLikeColumn={!showLikeColumn}
-                        isScrolling={isVirtualScrolling}
-                      />
-                    );
-
-                    if (isVirtualScrolling) return row;
-
-                    return (
-                      <SongContextMenu
-                        key={track.id}
-                        song={track}
-                        selectedSongs={selection.selectedTracks}
-                        onOpenContextMenu={() => selection.handleRowContextMenu(track.id)}
-                        isActive={isActive}
-                        isPlaying={isPlaying}
-                        onPlay={() => handlePlay(track)}
-                        playlistID={playlistID}
                         isDailyRecommend={canDislikeDailyRecommendation}
                         readonly={
                           readonly || isHistoricalDailyRecommendation || !canRemoveFromPlaylist
                         }
-                        onRemoveFromPlaylist={
-                          canRemoveFromPlaylist
-                            ? () => handleRequestDelete(playlistID ?? undefined, track.id)
-                            : undefined
-                        }
-                        onDislikeDailyRecommend={
-                          canDislikeDailyRecommendation
-                            ? () => void handleDislikeDailyRecommend(track.id)
-                            : undefined
-                        }
-                        onDislikePersonalFm={
-                          onDislikePersonalFm ? () => onDislikePersonalFm(track) : undefined
-                        }
-                      >
-                        {row}
-                      </SongContextMenu>
+                        canRemoveFromPlaylist={canRemoveFromPlaylist}
+                        onDislikeDailyRecommend={handleDislikeDailyRecommend}
+                        onDislikePersonalFm={onDislikePersonalFm}
+                      />
                     );
                   })}
-                  {virtualPaddingBottom > 0 && (
-                    <tr style={{ height: `${virtualPaddingBottom}px` }}>
+                  {!virtualizationDisabled && virtualPaddingBottom > 0 && (
+                    <tr style={{ height: virtualPaddingBottom }}>
                       <td colSpan={visibleColumnCount} aria-hidden />
                     </tr>
                   )}

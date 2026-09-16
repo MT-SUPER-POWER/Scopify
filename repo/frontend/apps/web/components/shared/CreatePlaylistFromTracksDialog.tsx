@@ -8,7 +8,6 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@scopify/ui/shadcn/components/button";
@@ -18,13 +17,7 @@ import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
-
-export interface CreatePlaylistFromTracksDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  tracks: SongDetail[];
-}
+import type { CreatePlaylistFromTracksDialogProps } from "@/types/components/songContextMenu";
 
 export function CreatePlaylistFromTracksDialog({
   open,
@@ -70,10 +63,9 @@ export function CreatePlaylistFromTracksDialog({
           }),
         ]);
 
-        toast.success(
-          `已创建歌单「${finalName}」并添加了 ${tracks.length} 首歌曲`,
-          { id: toastId },
-        );
+        toast.success(`已创建歌单「${finalName}」并添加了 ${tracks.length} 首歌曲`, {
+          id: toastId,
+        });
         onOpenChange(false);
         setPlaylistName("");
       } else {
@@ -90,7 +82,6 @@ export function CreatePlaylistFromTracksDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogOverlay />
       <AlertDialogContent className="max-w-md">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-base font-semibold">
@@ -118,18 +109,10 @@ export function CreatePlaylistFromTracksDialog({
         </div>
 
         <AlertDialogFooter>
-          <Button
-            variant="ghost"
-            onClick={() => onOpenChange(false)}
-            disabled={isSubmitting}
-          >
+          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
             {t("common.action.cancel")}
           </Button>
-          <Button
-            variant="default"
-            onClick={() => void handleConfirm()}
-            disabled={isSubmitting}
-          >
+          <Button variant="default" onClick={() => void handleConfirm()} disabled={isSubmitting}>
             {isSubmitting ? t("common.status.loading") : t("common.action.confirm")}
           </Button>
         </AlertDialogFooter>
