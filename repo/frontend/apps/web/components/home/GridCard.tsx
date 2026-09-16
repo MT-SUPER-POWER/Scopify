@@ -2,20 +2,9 @@
 
 import { Play } from "lucide-react";
 import Image from "next/image";
-import type React from "react";
 import { cn, formatPlayCount } from "@/lib/utils";
 
-interface GridCardProps {
-  id: string | number;
-  name: string;
-  coverUrl?: string;
-  subtitle?: string;
-  playCount?: number;
-  isLoading?: boolean;
-  isArtist?: boolean;
-  onPlay?: (e: React.MouseEvent) => void;
-  onClick?: () => void;
-}
+import type { GridCardProps } from "@/types/components/home";
 
 export function GridCard({
   id,
@@ -25,16 +14,21 @@ export function GridCard({
   playCount,
   isLoading,
   isArtist,
+  appearance = "default",
   onPlay,
   onClick,
 }: GridCardProps) {
   return (
     <div
       key={id}
+      data-section-item
       onClick={onClick}
-      className="group cursor-pointer overflow-hidden rounded-md bg-surface-elevated p-4 transition-colors hover:bg-surface-overlay"
+      className={cn(
+        "group min-w-0 cursor-pointer overflow-hidden rounded-md transition-colors hover:bg-surface-overlay",
+        appearance === "home" ? "bg-transparent p-2" : "bg-surface-elevated p-4",
+      )}
     >
-      <div className="relative mb-4">
+      <div className={cn("relative", appearance === "home" ? "mb-3" : "mb-4")}>
         <div
           className={cn(
             "aspect-square w-full overflow-hidden rounded-md bg-surface-sunken shadow-panel",
@@ -65,7 +59,14 @@ export function GridCard({
           </div>
         )}
       </div>
-      <h3 className="truncate text-sm font-bold text-content">{name}</h3>
+      <h3
+        className={cn(
+          "truncate text-sm text-content",
+          appearance === "home" ? "font-medium" : "font-bold",
+        )}
+      >
+        {name}
+      </h3>
       {subtitle && <p className="mt-1 line-clamp-2 text-xs text-content-muted">{subtitle}</p>}
     </div>
   );

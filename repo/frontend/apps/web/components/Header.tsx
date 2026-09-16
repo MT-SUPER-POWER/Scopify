@@ -17,7 +17,7 @@ export default function Header() {
   return (
     <div
       className={cn(
-        "absolute flex h-16 w-full shrink-0 items-center justify-between gap-3 px-4 lg:px-6",
+        "absolute flex h-16 w-full shrink-0 items-center justify-between gap-3 px-3 lg:px-6",
         "top-0 z-20",
       )}
     >

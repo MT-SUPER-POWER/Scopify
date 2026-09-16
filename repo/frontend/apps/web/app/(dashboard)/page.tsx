@@ -52,14 +52,14 @@ export default function HomePage() {
     <div className="relative min-h-screen bg-surface-raised pb-24 font-sans">
       <div
         className={cn(
-          "pointer-events-none absolute inset-x-0 top-0 z-0 h-full bg-linear-to-b",
+          "pointer-events-none absolute inset-x-0 top-0 z-0 h-full bg-linear-to-b opacity-55",
           timeTheme.gradient,
         )}
       />
 
       {isUnavailable ? (
         <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-400 flex-col p-6 pt-20">
-          <h1 className="text-3xl leading-none font-bold tracking-tight text-content">
+          <h1 className="text-2xl leading-tight font-bold tracking-tight text-content">
             {greetingText}
           </h1>
           <main className="flex flex-1 items-center justify-center pb-28">
@@ -75,7 +75,7 @@ export default function HomePage() {
       ) : isLoading && playlists.length === 0 ? (
         <HomePageSkeleton />
       ) : (
-        <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-10 p-6 pt-20 duration-500 fade-in">
+        <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-7 px-4 pt-20 pb-6 duration-500 fade-in sm:px-6">
           <HomeGreetingSection
             dateInfo={dateInfo}
             greeting={greetingText}
@@ -86,7 +86,6 @@ export default function HomePage() {
 
           <PersonalizedPlaylists
             playlists={playlists}
-            userName={hasValidUser ? userName : undefined}
             loadingPlayId={loadingPlayId}
             onPlayPlaylist={handlePlayPlaylist}
           />
