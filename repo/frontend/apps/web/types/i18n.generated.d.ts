@@ -4322,6 +4322,36 @@ export interface TranslateFn {
    */
   (key: "vipSign.title", params?: TranslationParams): string;
   /**
+   * zh-CN: 每日乐签
+   * zh-TW: 每日樂簽
+   * en-US: Daily Music Ticket
+   */
+  (key: "vipSign.ticketTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云音乐会员中心
+   * zh-TW: 雲音樂會員中心
+   * en-US: Cloud Music VIP Center
+   */
+  (key: "vipSign.memberCenter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按住票根 · 上下卷撕
+   * zh-TW: 按住票根 · 上下捲撕
+   * en-US: Hold and peel up or down
+   */
+  (key: "vipSign.tearHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 撕下票根并关闭乐签
+   * zh-TW: 撕下票根並關閉樂簽
+   * en-US: Tear off the stub and close the ticket
+   */
+  (key: "vipSign.tearAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲暂时无法播放，请稍后重试
+   * zh-TW: 歌曲暫時無法播放，請稍後重試
+   * en-US: Unable to play this song. Please try again.
+   */
+  (key: "vipSign.playFailed", params?: TranslationParams): string;
+  /**
    * zh-CN: 今天已签到
    * zh-TW: 今天已簽到
    * en-US: Already checked in today
