@@ -2816,6 +2816,12 @@ export interface TranslateFn {
    */
   (key: "sidebar.card.noPlaylistsSubtitle", params?: TranslationParams): string;
   /**
+   * zh-CN: 专属音乐
+   * zh-TW: 專屬音樂
+   * en-US: Made for You
+   */
+  (key: "sidebar.group.personal", params?: TranslationParams): string;
+  /**
    * zh-CN: 创建的歌单
    * zh-TW: 建立的歌單
    * en-US: Created Playlists
@@ -2953,6 +2959,18 @@ export interface TranslateFn {
    * en-US: Failed to delete playlist
    */
   (key: "sidebar.menu.deleteFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确定取消收藏歌单“{{name}}”吗？原歌单不会被删除。
+   * zh-TW: 確定取消收藏歌單「{{name}}」嗎？原歌單不會被刪除。
+   * en-US: Unsubscribe from {{name}}? The original playlist will not be deleted.
+   */
+  (key: "sidebar.lib.unsubscribeConfirmContent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消收藏失败
+   * zh-TW: 取消收藏失敗
+   * en-US: Failed to unsubscribe
+   */
+  (key: "sidebar.lib.unsubscribeFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 未命名歌单
    * zh-TW: 未命名歌單
@@ -3524,6 +3542,12 @@ export interface TranslateFn {
    */
   (key: "playlist.actions.subscribe", params?: TranslationParams): string;
   /**
+   * zh-CN: 更多操作
+   * zh-TW: 更多操作
+   * en-US: More actions
+   */
+  (key: "playlist.actions.more", params?: TranslationParams): string;
+  /**
    * zh-CN: 取消收藏
    * zh-TW: 取消收藏
    * en-US: Unsubscribe
@@ -4094,11 +4118,17 @@ export interface TranslateFn {
    */
   (key: "profile.menu.profile", params?: TranslationParams): string;
   /**
-   * zh-CN: 网易乐签
-   * zh-TW: 網易樂簽
-   * en-US: VIP Sign In
+   * zh-CN: 网易云签到
+   * zh-TW: 網易雲簽到
+   * en-US: NetEase Check-in
    */
   (key: "profile.menu.vipSign", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今日
+   * zh-TW: 今日
+   * en-US: Today
+   */
+  (key: "profile.menu.signToday", params?: TranslationParams): string;
   /**
    * zh-CN: 签到
    * zh-TW: 簽到

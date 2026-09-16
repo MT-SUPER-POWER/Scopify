@@ -171,3 +171,9 @@ export type TrackRowCellsProps = Pick<
   | "onPlay"
   | "setIsPlaying"
 >;
+
+export interface PlaylistMoreMenuProps {
+  playlistId: string;
+  playlistInfo: PlaylistInfo;
+  isSticky?: boolean;
+}

@@ -2,12 +2,12 @@ import { Image as ImageIcon } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { PlaylistTagSelector } from "@/components/Playlist/PlaylistTagSelector";
+import { usePrimaryScrollSurface } from "@/components/shared/NavigationScrollProvider";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useI18n } from "@/store/module/i18n";
@@ -20,9 +20,19 @@ export interface PlaylistFormData {
   coverFile?: File | null; // 实际上传的文件对象
 }
 
+export interface UpdatePlaylistInitialData {
+  name?: string;
+  desc?: string;
+  description?: string | null;
+  tags?: string[];
+  coverUrl?: string;
+  coverImgUrl?: string;
+  cover?: string;
+}
+
 interface UpdatePlaylistDialogProps {
   open: boolean;
-  initialData?: Partial<PlaylistFormData> & { coverUrl?: string };
+  initialData?: UpdatePlaylistInitialData;
   onConfirm: (data: PlaylistFormData) => void;
   onCancel: () => void;
 }
@@ -42,14 +52,27 @@ export function UpdatePlaylistDialog({
   const [loading, setLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const primaryScrollSurface = usePrimaryScrollSurface();
 
-  // 初始化数据
+  // 当弹窗打开时，锁定主页面滚动，彻底杜绝滚轮或拖拽穿透到底层列表
+  useEffect(() => {
+    if (!open || !primaryScrollSurface) return;
+    const prevOverflow = primaryScrollSurface.style.overflow;
+    primaryScrollSurface.style.overflow = "hidden";
+    return () => {
+      primaryScrollSurface.style.overflow = prevOverflow;
+    };
+  }, [open, primaryScrollSurface]);
+
+  // 初始化数据：优先读取现有封面与简介
   useEffect(() => {
     if (open) {
       setName(initialData?.name || "");
-      setDescription(initialData?.desc || "");
+      setDescription(initialData?.desc || initialData?.description || "");
       setTags(initialData?.tags || []);
-      setCoverUrl(initialData?.coverUrl || "");
+      const resolvedCover =
+        initialData?.coverUrl || initialData?.coverImgUrl || initialData?.cover || "";
+      setCoverUrl(resolvedCover);
       setCoverFile(null);
       setLoading(false);
     }
@@ -72,9 +95,18 @@ export function UpdatePlaylistDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={(v) => !v && onCancel()}>
-      {/* 使用模糊背景还原截图质感 */}
-      <AlertDialogOverlay className="backdrop-blur-md" />
-      <AlertDialogContent className="pointer-events-auto flex w-150 max-w-[90vw] flex-col rounded-xl border bg-surface-overlay p-6 shadow-floating">
+      <AlertDialogContent
+        overlayClassName="backdrop-blur-md overscroll-contain"
+        overlayProps={{
+          onWheel: (e) => e.stopPropagation(),
+          onMouseDown: (e) => e.stopPropagation(),
+          onPointerDown: (e) => e.stopPropagation(),
+        }}
+        onWheel={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        className="pointer-events-auto flex w-150 max-w-[90vw] flex-col overscroll-contain rounded-xl border bg-surface-overlay p-6 shadow-floating"
+      >
         <AlertDialogHeader className="mb-4">
           <AlertDialogTitle className="text-left text-xl font-bold tracking-tight text-content">
             {t("playlist.form.editTitle")}
@@ -119,23 +151,25 @@ export function UpdatePlaylistDialog({
           {/* 右侧封面区 */}
           <div className="w-45 shrink-0">
             <div
-              className="group relative flex aspect-square w-full cursor-pointer items-center justify-center overflow-hidden rounded-md border border-content/10 bg-content/10"
+              className="group relative flex aspect-square w-full cursor-pointer items-center justify-center overflow-hidden rounded-md border border-content/10 bg-content/5"
               onClick={() => fileInputRef.current?.click()}
             >
               {coverUrl ? (
                 <img
                   src={coverUrl}
                   alt={t("playlist.form.coverAlt")}
-                  className="size-full object-cover"
+                  className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
-                <ImageIcon className="size-12 text-content-muted" />
+                <div className="flex flex-col items-center justify-center text-content-muted">
+                  <ImageIcon className="size-12 opacity-60" />
+                </div>
               )}
 
-              {/* 悬浮遮罩 */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-overlay opacity-0 transition-opacity group-hover:opacity-100">
-                <ImageIcon className="mb-2 size-8 text-overlay-foreground" />
-                <span className="text-sm font-medium text-overlay-foreground">
+              {/* 悬浮遮罩：浮动上去时展示替换封面 */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100">
+                <ImageIcon className="mb-2 size-8 text-white" />
+                <span className="text-xs font-semibold text-white">
                   {t("playlist.form.replaceImage")}
                 </span>
               </div>

@@ -72,6 +72,8 @@ export function usePlaylist(playlistIdOverride?: null | string) {
 
     return {
       isSpecial: false,
+      specialType: rawDetail.specialType,
+      description: rawDetail.description ?? "",
       privacy:
         rawDetail.privacy === 0
           ? t("playlist.meta.public")
