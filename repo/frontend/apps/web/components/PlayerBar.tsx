@@ -578,7 +578,7 @@ export const PlayerBar = ({
             </AnimatePresence>
           </div>
 
-          {/* TODO: 蓝牙 */}
+          {/* TODO: 音频设置里面的输入设备的管理放到这里 */}
           <div className="hidden lg:block">
             <TooltipProvider>
               <Tooltip>
