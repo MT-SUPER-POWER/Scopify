@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { PLAYER_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
 import { getLyric } from "@/lib/api/music";
 import {
@@ -521,7 +522,9 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       playPrev: async () => {
-        const snapshot = createPlayerQueueSnapshot(get());
+        const state = get();
+        if (isPersonalFmPlaybackSource(state.playlistId) && state.historyIndex <= 0) return;
+        const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.playPrev(snapshot);
         if (transition.effect.type !== "play") return;
         set(selectPlayerQueueState(transition.snapshot));

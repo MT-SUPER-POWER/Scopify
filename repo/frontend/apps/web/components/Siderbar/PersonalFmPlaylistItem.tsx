@@ -10,11 +10,9 @@ import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import { LibraryItem } from "./LibraryItem";
 
-interface PersonalFmPlaylistItemProps {
-  isCollapsed: boolean;
-}
+import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
 
-export function PersonalFmPlaylistItem({ isCollapsed }: PersonalFmPlaylistItemProps) {
+export function PersonalFmPlaylistItem({ isCollapsed }: SidebarPlaylistLibraryProps) {
   const { t } = useI18n();
   const playlistId = usePlayerStore((state) => state.playlistId);
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
