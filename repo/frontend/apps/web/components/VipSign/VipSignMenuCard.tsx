@@ -1,4 +1,4 @@
-import { CalendarDays, CheckCircle2, Circle, Flame } from "lucide-react";
+import { CalendarDays, Circle } from "lucide-react";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -14,29 +14,28 @@ export function VipSignMenuCard({
   signHistory,
 }: VipSignMenuCardProps) {
   const { t } = useI18n();
-  const recentRecords = useMemo(() => signHistory?.signInfoList.slice(-4) ?? [], [signHistory]);
+  const recentRecords = useMemo(() => signHistory?.signInfoList.slice(-3) ?? [], [signHistory]);
 
   return (
-    <section className="my-1.5 rounded-xl bg-surface-elevated/60 p-2.5">
+    <section className="px-6 py-5">
       <div className="flex items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-1.5">
-          <CalendarDays className="size-3.5 shrink-0 text-content-muted" />
-          <span className="truncate text-xs font-semibold text-content">
-            {t("profile.menu.vipSign")}
-          </span>
-          {signHistory?.subText && (
-            <span className="flex min-w-0 items-center gap-1 truncate text-[11px] text-content-muted">
-              <Flame className="size-3 shrink-0 text-warning" />
-              {signHistory.subText}
-            </span>
-          )}
+        <div className="flex min-w-0 items-start gap-3">
+          <CalendarDays className="mt-0.5 size-5 shrink-0 text-content-muted" />
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-content">{t("profile.menu.vipSign")}</p>
+            {signHistory?.subText && (
+              <p className="mt-1 text-xs leading-relaxed text-content-muted">
+                {signHistory.subText}
+              </p>
+            )}
+          </div>
         </div>
         <button
           type="button"
           onClick={onAction}
           disabled={isLoading || isSigning}
           className={cn(
-            "h-7 shrink-0 rounded-md px-2.5 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-hidden disabled:cursor-wait disabled:opacity-60",
+            "h-9 shrink-0 rounded-xl px-4 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-hidden disabled:cursor-wait disabled:opacity-60",
             hasSignedToday
               ? "bg-surface-sunken text-content-muted hover:bg-accent hover:text-content"
               : "bg-brand text-brand-foreground hover:bg-brand-hover",
@@ -47,62 +46,86 @@ export function VipSignMenuCard({
       </div>
 
       {recentRecords.length > 0 && (
-        <div className="mt-2.5 flex items-center justify-around rounded-lg bg-content/5 px-2.5 py-1.5">
-          {recentRecords.map((record) => {
+        <div className="mt-5 flex items-start">
+          {recentRecords.map((record, index) => {
             const status = (
               <>
                 {record.sign ? (
-                  <CheckCircle2 className="size-3.5 text-brand" aria-hidden="true" />
+                  <Circle className="size-3.5 fill-brand text-brand" aria-hidden="true" />
                 ) : (
                   <Circle className="size-3.5 text-content-subtle" aria-hidden="true" />
                 )}
                 <span
                   className={cn(
-                    "text-[11px]",
+                    "text-xs",
                     record.sign ? "text-content" : "text-content-muted",
                     record.today && "font-semibold",
                   )}
                 >
-                  {record.today ? "今日" : record.dayText}
+                  {record.today ? t("profile.menu.signToday") : record.dayText}
                 </span>
               </>
             );
 
+            const connector =
+              index < recentRecords.length - 1 ? (
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "pointer-events-none absolute top-[7px] left-[calc(50%_+_7px)] h-px w-[calc(100%_-_14px)]",
+                    record.sign && recentRecords[index + 1].sign ? "bg-brand" : "bg-content/20",
+                  )}
+                />
+              ) : null;
+            const dayClassName =
+              "relative z-10 flex w-full min-w-0 flex-col items-center gap-2 rounded-sm px-1 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-hidden";
+
             if (record.sign) {
               return (
-                <button
+                <div
                   key={`${record.dayText}-${record.signTime}`}
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onSelectSignDay?.(record.signTime);
-                  }}
-                  className="flex min-w-0 cursor-pointer items-center gap-1 rounded-sm px-1 py-0.5 transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-hidden"
-                  title={`${record.dayText} 签到详情`}
+                  className="relative min-w-0 flex-1"
                 >
-                  {status}
-                </button>
+                  {connector}
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onSelectSignDay?.(record.signTime);
+                    }}
+                    className={cn(dayClassName, "cursor-pointer hover:text-brand")}
+                    title={`${record.dayText} · ${actionLabel}`}
+                  >
+                    {status}
+                  </button>
+                </div>
               );
             }
 
             if (record.today) {
               return (
-                <button
-                  key={record.dayText}
-                  type="button"
-                  onClick={onAction}
-                  disabled={isLoading || isSigning}
-                  className="flex min-w-0 cursor-pointer items-center gap-1 rounded-sm px-1 py-0.5 transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-hidden disabled:cursor-wait disabled:opacity-60"
-                  title={actionLabel}
-                >
-                  {status}
-                </button>
+                <div key={record.dayText} className="relative min-w-0 flex-1">
+                  {connector}
+                  <button
+                    type="button"
+                    onClick={onAction}
+                    disabled={isLoading || isSigning}
+                    className={cn(
+                      dayClassName,
+                      "cursor-pointer hover:text-brand disabled:cursor-wait disabled:opacity-60",
+                    )}
+                    title={actionLabel}
+                  >
+                    {status}
+                  </button>
+                </div>
               );
             }
 
             return (
-              <div key={record.dayText} className="flex min-w-0 items-center gap-1 px-1 py-0.5">
-                {status}
+              <div key={record.dayText} className="relative min-w-0 flex-1">
+                {connector}
+                <div className={dayClassName}>{status}</div>
               </div>
             );
           })}
