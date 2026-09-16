@@ -80,6 +80,7 @@ export function FoliaPresentationSurface({
     background: lyricBackground,
     backgroundStaticMode: staticMode,
     coverUrl: track?.artworkUrl ?? null,
+    songTitle: track?.title ?? null,
     isDaylight,
     onBack,
     paused: !bridge.isPlaying,
@@ -106,6 +107,7 @@ export function FoliaPresentationSurface({
             theme={theme}
             isDaylight={isDaylight}
             coverUrl={track?.artworkUrl ?? null}
+            songTitle={track?.title ?? null}
             audioPower={bridge.audioPower}
             audioBands={bridge.audioBands}
             seed={track?.id}

@@ -133,6 +133,7 @@ const STRING_ENUMS = {
   "background.nomand.tuning.imageSource": ["cover-derived", "uploaded-global"],
   fontStyle: ["sans", "serif", "mono"],
   mode: [
+    "archive",
     "cadenza",
     "cappella",
     "claddagh",

@@ -97,6 +97,7 @@ export interface VisualizerBackgroundRenderProps {
   theme: Theme;
   isDaylight: boolean;
   coverUrl?: string | null;
+  songTitle?: string | null;
   audioPower: MotionValue<number>;
   audioBands: AudioBands;
   seed?: string | number;

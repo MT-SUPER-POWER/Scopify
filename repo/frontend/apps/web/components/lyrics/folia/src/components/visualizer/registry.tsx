@@ -13,6 +13,7 @@ import sonnetEntry from "./sonnet/entry";
 import stillEntry from "./still/entry";
 import temperaEntry from "./tempera/entry";
 import tiltEntry from "./tilt/entry";
+import archiveEntry from "./archive/entry";
 
 export type {
   VisualizerRegistryEntry,
@@ -22,8 +23,9 @@ export type {
   VisualizerTuningKind,
 } from "./definition";
 
-// Next.js host adapter: this is the exact entry set discovered by Folia's Vite glob at the pinned SHA.
+// Next.js host adapter: pinned Folia modes plus Scopify's archive visualizer.
 const visualizerEntryModules: Record<string, VisualizerEntryModule> = {
+  "./archive/entry.tsx": { default: archiveEntry },
   "./cadenza/entry.tsx": { default: cadenzaEntry },
   "./cappella/entry.tsx": { default: cappellaEntry },
   "./claddagh/entry.tsx": { default: claddaghEntry },

@@ -7250,6 +7250,60 @@ export interface TranslateFn {
    */
   (key: "folia.ui.visualizerStill", params?: TranslationParams): string;
   /**
+   * zh-CN: 档案
+   * zh-TW: 檔案
+   * en-US: Archive
+   */
+  (key: "folia.ui.visualizerArchive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在读取
+   * zh-TW: 正在讀取
+   * en-US: READING
+   */
+  (key: "folia.archive.reading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 读取暂停
+   * zh-TW: 讀取暫停
+   * en-US: SUSPENDED
+   */
+  (key: "folia.archive.suspended", params?: TranslationParams): string;
+  /**
+   * zh-CN: 声音档案
+   * zh-TW: 聲音檔案
+   * en-US: SOUND RECORD
+   */
+  (key: "folia.archive.record", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词记录
+   * zh-TW: 歌詞記錄
+   * en-US: TRANSCRIPT
+   */
+  (key: "folia.archive.transcript", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未命名档案
+   * zh-TW: 未命名檔案
+   * en-US: Untitled record
+   */
+  (key: "folia.archive.untitled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 间奏
+   * zh-TW: 間奏
+   * en-US: Interlude
+   */
+  (key: "folia.archive.interlude", params?: TranslationParams): string;
+  /**
+   * zh-CN: 聆听音乐
+   * zh-TW: 聆聽音樂
+   * en-US: Listening
+   */
+  (key: "folia.archive.instrumental", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放这一句
+   * zh-TW: 播放這一句
+   * en-US: Play this line
+   */
+  (key: "folia.archive.seekLine", params?: TranslationParams): string;
+  /**
    * zh-CN: 凝彩
    * zh-TW: 凝彩
    * en-US: Tempera

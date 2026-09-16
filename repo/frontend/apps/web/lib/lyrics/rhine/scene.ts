@@ -47,6 +47,12 @@ export class RhineScene {
     const previous = this.input;
     this.input = input;
     let dirty = this.view.setQuality(input.tuning.quality);
+    const card = this.cards.get(this.active.key);
+    if (card && input.seed === this.seed &&
+      (input.track.title !== previous.track.title || input.track.coverUrl !== previous.track.coverUrl)) {
+      this.model.setCardTrack(card.group, input.track);
+      dirty = true;
+    }
     // Theme changes can repaint a frozen pose; the animation and envelope stay untouched.
     if (input.frozen && input.dark !== previous.dark) {
       this.themeAmount = Number(input.dark); dirty = true;
@@ -59,7 +65,9 @@ export class RhineScene {
     for (let index = 0; index < seed.length; index++) hash = Math.imul(hash ^ seed.charCodeAt(index), 16777619);
     // Keep the current archive near the composition's centre; no camera jump on track changes.
     const row = 21 + ((hash >>> 0) % 6);
-    return this.cells.find((cell) => cell.lane === 4 && cell.row === row)!;
+    const cell = this.cells.find((cell) => cell.lane === 4 && cell.row === row);
+    if (!cell) throw new Error("Rhine archive centre cell is missing");
+    return cell;
   }
 
   private showcase(cell: RhineCell) {
@@ -68,12 +76,7 @@ export class RhineScene {
       if (card.phase === "returning") continue;
       card.phase = "returning"; card.elapsed = 0; card.startLift = card.lift;
     }
-    const existing = this.cards.get(cell.key);
-    if (existing) {
-      existing.phase = "rising"; existing.elapsed = 0; existing.startLift = existing.lift;
-      return;
-    }
-    const group = this.model.createCard(cell.row + cell.lane * RHINE_ROWS + 1);
+    const group = this.model.createCard(this.input.track);
     this.cards.set(cell.key, { cell, group, lift: 0, startLift: 0, phase: "rising", elapsed: 0 });
     this.view.scene.add(group);
   }
@@ -124,13 +127,16 @@ export class RhineScene {
     // This is the only clock. Pause/hidden time never enters showcases, rhythm or smoothing.
     this.time += dt;
     if (this.seed !== this.input.seed) {
-      const next = this.cellForSeed(this.input.seed);
-      // A hash collision must still give a newly playing track its own lift transition.
-      this.active = next.key === this.active.key
-        ? this.cells.find((cell) => cell.lane === 4 && cell.row === (next.row === 26 ? 21 : next.row + 1))!
-        : next;
-      this.seed = this.input.seed;
-      this.showcase(this.active);
+      const preferred = this.cellForSeed(this.input.seed);
+      const next = !this.cards.has(preferred.key) ? preferred : this.cells.find((cell) =>
+        cell.lane === 4 && cell.row >= 21 && cell.row <= 26 && !this.cards.has(cell.key));
+      // Returning files retain their own song. If every slot is occupied, the
+      // latest requested song waits for a slot while music and returns continue.
+      if (next) {
+        this.active = next;
+        this.seed = this.input.seed;
+        this.showcase(this.active);
+      }
     }
     this.envelope.update(audio, this.input.tuning.musicEnabled, dt);
     this.themeAmount += (Number(this.input.dark) - this.themeAmount) * (1 - Math.exp(-dt * 5));
@@ -164,6 +170,8 @@ export class RhineScene {
     for (const card of this.cards.values()) {
       card.group.position.set(card.cell.x, -4.6 + (this.heights.get(card.cell.key) ?? 0) + card.lift, card.cell.z);
       const progress = smooth(card.lift / RHINE_LIFT);
+      // Turn toward the reader only while a file is extracted. The resting array stays aligned.
+      card.group.rotation.y = -0.28 * progress;
       this.model.appearance.apply(card.group, progress);
       this.model.appearance.setClarity(card.group, smooth((progress - 0.3) / 0.7));
       this.model.appearance.setTheme(card.group, this.themeAmount);

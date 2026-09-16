@@ -7,7 +7,7 @@ export const DEFAULT_RHINE_BACKGROUND_TUNING: RhineBackgroundTuning = {
   musicEnabled: true,
   breathingEnabled: true,
   strength: 1,
-  overlayOpacity: 0.2,
+  overlayOpacity: 0.12,
   frameRate: "30",
 };
 

@@ -4,6 +4,8 @@ import { RHINE_MODEL_URL } from "@/constants/rhineBackground";
 import { CardAppearance } from "./appearance";
 import { configureInternalOptics } from "./internalOptics";
 import { themeMaterial } from "./themeMaterial";
+import { RhineSongPlate } from "./songPlate";
+import type { RhineArchiveTrack } from "@/types/rhineBackground";
 
 const arraySurfaces = new Set([
   "Frosted_Polymer", "Ivory_Edges", "Titanium_Fasteners", "Index_Inlay", "Optical_Diffuser",
@@ -25,7 +27,7 @@ function prepareSurface(material: THREE.MeshPhysicalMaterial, name: string) {
     case "Internal_Ceramic": material.color.set("#c7beb6"); material.roughness = 0.6; break;
     case "Printed_Label": material.color.set("#eae5dc"); break;
     case "Ivory_Edges":
-      material.color.set("#f0e7df"); material.roughness = 0.31;
+      material.color.set("#eae8dc"); material.roughness = 0.27;
       material.transmission = 0.65; material.thickness = 0.04;
       break;
     case "Optical_Diffuser":
@@ -47,8 +49,8 @@ function arraySurface(source: THREE.MeshPhysicalMaterial, name: string) {
   if (name === "Frosted_Polymer") {
     material.transmission = 0.78;
     material.transparent = false;
-    material.color.set("#fff7ed");
-    material.roughness = 0.28;
+    material.color.set("#f3f1e7");
+    material.roughness = 0.22;
     material.clearcoat = 0.3;
     material.clearcoatRoughness = 0.25;
     material.onBeforeCompile = (shader) => {
@@ -62,7 +64,7 @@ function arraySurface(source: THREE.MeshPhysicalMaterial, name: string) {
   }
   if (name === "Optical_Diffuser") material.color.set("#806447");
   if (name === "Ivory_Edges") {
-    material.transmission = 0; material.color.set("#fff5e9"); material.roughness = 0.38;
+    material.transmission = 0; material.color.set("#eeede2"); material.roughness = 0.3;
   }
   if (name === "Index_Inlay") { material.color.set("#e4d6c5"); material.metalness = 0.05; }
   return material;
@@ -75,6 +77,8 @@ export class RhineModel {
   readonly matrix: THREE.InstancedBufferAttribute;
   readonly themes: THREE.InstancedBufferAttribute;
   private readonly template = new THREE.Group();
+  private readonly songPlates = new Map<THREE.Group, RhineSongPlate>();
+  onArtworkReady?: () => void;
 
   constructor(source: THREE.Group, capacity: number) {
     this.matrix = new THREE.InstancedBufferAttribute(new Float32Array(capacity * 16), 16)
@@ -119,34 +123,28 @@ export class RhineModel {
     });
   }
 
-  createCard(number: number) {
+  createCard(track: RhineArchiveTrack) {
     const card = this.template.clone(true);
-    const canvas = document.createElement("canvas");
-    canvas.width = 1024; canvas.height = 440;
-    const context = canvas.getContext("2d");
-    if (context) {
-      context.fillStyle = "#eae5dc"; context.fillRect(0, 0, 1024, 440);
-      context.fillStyle = "#262723";
-      context.font = "500 58px Arial, sans-serif";
-      context.fillText("RHINE LAB, L.L.C.", 40, 80);
-      context.font = "32px Arial, sans-serif";
-      context.fillText("INTERNAL DATABASE", 40, 140);
-      context.fillRect(40, 185, 944, 3);
-      context.font = "500 150px Arial, sans-serif";
-      context.fillText(`NO.${String(number).padStart(3, "0")}`, 40, 355);
+    // Keep the cassette shell and fittings; the song replaces the original
+    // internal optics and printed database label.
+    for (const child of [...card.children]) {
+      if (!arraySurfaces.has(child.userData.surface)) card.remove(child);
     }
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    const label = new THREE.Mesh(new THREE.PlaneGeometry(0.99, 0.46),
-      new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, toneMapped: false }));
-    label.position.set(-1.36, 3.04, 0.255);
-    label.renderOrder = 30;
-    card.add(label);
     this.appearance.prepare(card);
+    // Add after theme preparation so artwork keeps its original colours in both themes.
+    const plate = new RhineSongPlate(track, () => this.onArtworkReady?.());
+    this.songPlates.set(card, plate);
+    card.add(plate.mesh);
     return card;
   }
 
+  setCardTrack(card: THREE.Group, track: RhineArchiveTrack) {
+    this.songPlates.get(card)?.setTrack(track);
+  }
+
   releaseCard(card: THREE.Group) {
+    this.songPlates.get(card)?.dispose();
+    this.songPlates.delete(card);
     this.appearance.dispose(card);
     for (const child of card.children) {
       if (child instanceof THREE.Mesh && !child.userData.surface) child.geometry.dispose();
@@ -155,6 +153,8 @@ export class RhineModel {
   }
 
   dispose() {
+    this.onArtworkReady = undefined;
+    for (const card of [...this.songPlates.keys()]) this.releaseCard(card);
     for (const mesh of this.instances) { mesh.dispose(); mesh.geometry.dispose(); }
     for (const mesh of this.template.children) {
       if (mesh instanceof THREE.Mesh) mesh.geometry.dispose();

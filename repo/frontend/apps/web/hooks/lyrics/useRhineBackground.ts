@@ -12,6 +12,7 @@ function sceneInput(props: RhineBackgroundProps): RhineSceneInput {
   return {
     tuning,
     seed: String(props.seed ?? "rhine"),
+    track: { title: props.songTitle ?? "", coverUrl: props.coverUrl ?? null },
     frozen: props.paused || props.staticMode,
     dark: tuning.colorMode === "auto" ? !props.isDaylight : tuning.colorMode === "dark",
   };
@@ -116,7 +117,7 @@ export function useRhineBackground(props: RhineBackgroundProps) {
         view = new RhineRenderer(canvas);
         view.initialize(input.tuning.quality);
         scene = new RhineScene(view, model, input);
-        view.onAssetsReady = () => {
+        view.onAssetsReady = model.onArtworkReady = () => {
           if (failed || controller.signal.aborted) return;
           try { scene?.paint(); } catch (error) { fail(error); }
         };
