@@ -1,0 +1,38 @@
+/* Only song drags activate these rules; sidebar playlist sorting is unchanged. */
+body[data-track-dragging="true"] :is(
+  [data-track-drop-blocked="true"],
+  [data-track-drop-enabled="false"],
+  aside header,
+  aside a:not([data-track-drop-target]):not([data-track-drop-target] a),
+  [data-track-drag-chrome],
+  thead
+) {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+body[data-track-dragging="true"],
+body[data-track-dragging="true"] * {
+  cursor: not-allowed !important;
+}
+
+body[data-track-dragging="true"] [data-track-drop-enabled="true"] {
+  outline: 1px dashed var(--color-brand);
+  outline-offset: -1px;
+}
+
+body[data-track-dragging="true"] [data-track-drop-enabled="true"],
+body[data-track-dragging="true"] [data-track-drop-enabled="true"] * {
+  cursor: copy !important;
+}
+
+body[data-track-dragging="true"] [data-track-drop-hovered="true"] {
+  outline: 2px solid var(--color-brand);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--color-brand) 15%, transparent);
+}
+
+body[data-track-dragging="true"] [data-track-reorder="true"],
+body[data-track-dragging="true"] [data-track-reorder="true"] * {
+  cursor: grabbing !important;
+}

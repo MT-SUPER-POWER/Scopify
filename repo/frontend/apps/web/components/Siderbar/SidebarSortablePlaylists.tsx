@@ -42,6 +42,7 @@ export function SidebarSortablePlaylists({
         key={playlist.id}
         {...itemProps(playlist)}
         locked={playlist.specialType === 5}
+        playlist={playlist}
       />
     ));
   return (

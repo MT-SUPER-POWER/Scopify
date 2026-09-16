@@ -18,4 +18,6 @@ export interface SongContextMenuProps {
   playlistID?: number | string | null;
   readonly?: boolean;
   song: SongDetail;
+  selectedSongs?: SongDetail[];
+  onOpenContextMenu?: () => void;
 }

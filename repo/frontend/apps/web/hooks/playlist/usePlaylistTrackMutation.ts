@@ -12,6 +12,7 @@ export function usePlaylistTrackMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
+    retry: false,
     meta: { operation: "playlist.track.update" },
     mutationFn: (variables: PlaylistTrackMutationVariables) => updatePlaylistTrack(variables),
     mutationKey: ["playlist", "track"],
@@ -22,6 +23,12 @@ export function usePlaylistTrackMutation() {
       });
     },
     onSuccess: async (_data, variables) => {
+      // Invalidate the lower cache before queries can fetch their new contents.
+      try {
+        await clearPageCache();
+      } catch (error) {
+        reportActionFailure("playlist.track.cache-clear", error);
+      }
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: ["playlist", "content", "playlist", String(variables.playlistId)],
@@ -33,7 +40,6 @@ export function usePlaylistTrackMutation() {
           queryKey: ["library", "liked-playlist"],
         }),
       ]);
-      void clearPageCache();
     },
   });
 }

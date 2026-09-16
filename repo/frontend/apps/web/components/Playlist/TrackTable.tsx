@@ -36,6 +36,7 @@ import {
 import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { useTracklistColumnLayout } from "@/hooks/playlist/useTracklistColumnLayout";
+import { useTrackSelection } from "@/hooks/playlist/useTrackSelection";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,7 @@ export default function TracklistTable({
   playSourceId,
   readonly = false,
   searchQuery,
+  selection: selectionProp,
   stickyHeaderClassName,
   stickyHeaderTop,
   tracks: externalTracks,
@@ -184,6 +186,8 @@ export default function TracklistTable({
   });
   const sortedRows = table.getRowModel().rows;
   const sortedTracks = sortedRows.map((row) => row.original);
+  const internalSelection = useTrackSelection(sortedTracks);
+  const selection = selectionProp ?? internalSelection;
   const titleColumn = getRequiredTracklistColumn(table, "title");
   const albumColumn = getRequiredTracklistColumn(table, "album");
   const dateColumn = getRequiredTracklistColumn(table, "date");
@@ -604,6 +608,8 @@ export default function TracklistTable({
                     <SongContextMenu
                       key={track.id}
                       song={track}
+                      selectedSongs={selection.selectedTracks}
+                      onOpenContextMenu={() => selection.handleRowContextMenu(track.id)}
                       isActive={isActive}
                       isPlaying={isPlaying}
                       onPlay={() => handlePlay(track)}
@@ -633,6 +639,8 @@ export default function TracklistTable({
                         isActive={isActive}
                         isPlaying={isPlaying}
                         isLiked={isLiked}
+                        isSelected={selection.isSelected(track.id)}
+                        onRowClick={(e) => selection.handleRowClick(track.id, e)}
                         playlistID={playlistID}
                         onPlay={handlePlay}
                         onRequestDelete={handleRequestDelete}
@@ -655,6 +663,7 @@ export default function TracklistTable({
                     const track = sortedTracks[virtualRow.index];
                     const isActive = currentSongDetail?.id === track.id && isCurrentQueue;
                     const isLiked = likeSet.has(track.id);
+                    const isSelected = selection.isSelected(track.id);
                     const row = (
                       <TrackRow
                         allowReorder={!hasSearchQuery && sorting.length === 0}
@@ -669,6 +678,8 @@ export default function TracklistTable({
                         isActive={isActive}
                         isPlaying={isPlaying}
                         isLiked={isLiked}
+                        isSelected={isSelected}
+                        onRowClick={(e) => selection.handleRowClick(track.id, e)}
                         playlistID={playlistID}
                         onPlay={handlePlay}
                         onRequestDelete={handleRequestDelete}
@@ -686,6 +697,8 @@ export default function TracklistTable({
                       <SongContextMenu
                         key={track.id}
                         song={track}
+                        selectedSongs={selection.selectedTracks}
+                        onOpenContextMenu={() => selection.handleRowContextMenu(track.id)}
                         isActive={isActive}
                         isPlaying={isPlaying}
                         onPlay={() => handlePlay(track)}

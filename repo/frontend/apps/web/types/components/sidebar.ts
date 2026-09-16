@@ -30,5 +30,6 @@ export interface SidebarSortablePlaylistsProps {
 export interface SortableLibraryItemProps extends SidebarLibraryItemProps {
   id: number;
   locked: boolean;
+  playlist: NeteasePlaylist;
 }
 import type { NeteasePlaylist } from "@/types/api/playlist";

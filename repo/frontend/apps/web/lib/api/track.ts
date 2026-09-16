@@ -3,9 +3,11 @@ import type { SongRedCountResponse } from "@/types/api/music";
 import type {
   PlaylistTrackMutationVariables,
   PlaylistTrackUpdateResponse,
+  PlaylistTrackResponsePayload,
 } from "@/types/api/playlist";
 
 import request, { requestConfig, requestData } from "../web/request";
+import { ApiError } from "../web/apiError";
 
 export async function getSongDetail(ids: number | string) {
   return request.get("/song/detail", {
@@ -28,12 +30,12 @@ export function getSongRedCount(id: number | string) {
  * @param pid: 歌单 id
  * @param track 歌曲 id,可多个,用逗号隔开
  */
-export function updatePlaylistTrack({
+export async function updatePlaylistTrack({
   operation,
   playlistId,
   trackId,
 }: PlaylistTrackMutationVariables): Promise<PlaylistTrackUpdateResponse> {
-  return requestData<PlaylistTrackUpdateResponse>(
+  const response = await requestData<PlaylistTrackResponsePayload>(
     requestConfig({
       errorContext: {
         action: `playlist.track.${operation}`,
@@ -41,11 +43,21 @@ export function updatePlaylistTrack({
         trackId,
       },
       expectedBusinessCodes: [200],
+      requiresMusicSession: true,
       method: "get",
       params: { op: operation, pid: playlistId, tracks: trackId },
       url: "/playlist/tracks",
     }),
   );
+  const payload = response.body ?? response;
+  if (payload.code !== 200) {
+    throw new ApiError({
+      kind: "business",
+      data: payload,
+      message: payload.message || payload.msg || "Playlist update failed",
+    });
+  }
+  return { code: 200 };
 }
 
 /**

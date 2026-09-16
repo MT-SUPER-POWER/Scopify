@@ -205,7 +205,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             <ResizablePanel>
               <div className="group/main relative size-full overflow-hidden rounded-lg bg-surface-raised">
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-                  <div className="pointer-events-auto">
+                  <div data-track-drag-chrome className="pointer-events-auto">
                     <Header />
                   </div>
                 </div>
@@ -221,7 +221,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             </div>
             <div className="group/main relative flex-1 overflow-hidden rounded-lg bg-surface-raised">
               <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-                <div className="pointer-events-auto">
+                <div data-track-drag-chrome className="pointer-events-auto">
                   <Header />
                 </div>
               </div>
@@ -231,7 +231,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
         )}
       </main>
 
-      <footer>
+      <footer data-track-drag-chrome>
         <PlayerBar />
       </footer>
     </div>

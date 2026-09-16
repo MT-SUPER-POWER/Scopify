@@ -6,9 +6,11 @@ import { useReducedMotion } from "framer-motion";
 import { useContext, useEffect, useRef } from "react";
 import type { MouseEvent, TouchEvent, KeyboardEvent, DragEvent } from "react";
 import { SortableListContext } from "@/lib/playlist/sortableListContext";
+import { useAppDragStore } from "@/store/module/appDrag";
 
-export function useSortableListItem(id: UniqueIdentifier, disabled = false) {
+export function useSortableListItem(id: UniqueIdentifier, disabled = false, allowReorder = true) {
   const scope = useContext(SortableListContext);
+  const multipleTracks = useAppDragStore((state) => state.draggedTracks.length > 1);
   const reducedMotion = useReducedMotion();
   const nodeRef = useRef<HTMLElement | null>(null);
   const enabled = Boolean(scope?.available && !disabled);
@@ -16,7 +18,11 @@ export function useSortableListItem(id: UniqueIdentifier, disabled = false) {
   const consumeLanding = scope?.consumeLanding;
   const sortable = useSortable({
     id,
-    disabled: disabled || !scope || scope.disabled,
+    data: { allowReorder },
+    disabled: {
+      draggable: disabled || !scope || scope.disabled,
+      droppable: disabled || !scope || scope.disabled || !allowReorder,
+    },
     animateLayoutChanges: () => false,
     transition: null,
   });
@@ -50,6 +56,7 @@ export function useSortableListItem(id: UniqueIdentifier, disabled = false) {
     rowProps: enabled
       ? {
           ...sortable.attributes,
+          "data-track-reorder": allowReorder && !scope?.reorderDisabled && !multipleTracks && scope?.activeId != null,
           role: undefined,
           onMouseDown: (event: MouseEvent<HTMLElement>) => {
             if (!isControl(event.target)) sortable.listeners?.onMouseDown?.(event);

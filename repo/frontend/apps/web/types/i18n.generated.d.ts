@@ -3014,6 +3014,198 @@ export interface TranslateFn {
    */
   (key: "playlist.form.editTitle", params?: TranslationParams): string;
   /**
+   * zh-CN: 正在添加到歌单…
+   * zh-TW: 正在加入歌單…
+   * en-US: Adding to playlist…
+   */
+  (key: "playlist.drop.adding", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法读取目标歌单，请重试
+   * zh-TW: 無法讀取目標歌單，請重試
+   * en-US: Could not load the target playlist. Please try again.
+   */
+  (key: "playlist.drop.loadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选歌曲已在目标歌单中，请刷新歌单查看
+   * zh-TW: 所選歌曲已在目標歌單中，請重新整理歌單查看
+   * en-US: These songs are already in the playlist. Refresh to see them.
+   */
+  (key: "playlist.drop.duplicate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 目标歌单已有部分歌曲，请刷新后重试；重复歌曲会自动跳过
+   * zh-TW: 目標歌單已有部分歌曲，請重新整理後重試；重複歌曲會自動略過
+   * en-US: Some songs are already in the playlist. Refresh and retry; duplicates will be skipped.
+   */
+  (key: "playlist.drop.concurrentDuplicate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加 {{count}} 首歌曲到歌单
+   * zh-TW: 已加入 {{count}} 首歌曲到歌單
+   * en-US: Added {{count}} songs to the playlist
+   */
+  (key: "playlist.drop.success", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加 {{count}} 首歌曲，跳过 {{skipped}} 首重复歌曲
+   * zh-TW: 已加入 {{count}} 首歌曲，略過 {{skipped}} 首重複歌曲
+   * en-US: Added {{count}} songs; skipped {{skipped}} duplicates
+   */
+  (key: "playlist.drop.partial", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选歌曲已在我喜欢的音乐中
+   * zh-TW: 所選歌曲已在我喜歡的音樂中
+   * en-US: These songs are already in Liked Songs
+   */
+  (key: "playlist.drop.alreadyLiked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所选歌曲均未在我喜欢的音乐中
+   * zh-TW: 所選歌曲均未在我喜歡的音樂中
+   * en-US: None of these songs are in Liked Songs
+   */
+  (key: "playlist.drop.notLiked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在更新喜欢的音乐…
+   * zh-TW: 正在更新喜歡的音樂…
+   * en-US: Updating Liked Songs…
+   */
+  (key: "playlist.drop.processing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已完成 {{count}} 首，失败 {{failed}} 首，跳过 {{skipped}} 首未变化的歌曲
+   * zh-TW: 已完成 {{count}} 首，失敗 {{failed}} 首，略過 {{skipped}} 首未變更的歌曲
+   * en-US: Updated {{count}} songs; {{failed}} failed; {{skipped}} unchanged
+   */
+  (key: "playlist.drop.likePartial", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已喜欢 {{count}} 首歌曲，跳过 {{skipped}} 首已喜欢的歌曲
+   * zh-TW: 已喜歡 {{count}} 首歌曲，略過 {{skipped}} 首已喜歡的歌曲
+   * en-US: Liked {{count}} songs; skipped {{skipped}} already liked songs
+   */
+  (key: "playlist.drop.liked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消喜欢 {{count}} 首歌曲，跳过 {{skipped}} 首未喜欢的歌曲
+   * zh-TW: 已取消喜歡 {{count}} 首歌曲，略過 {{skipped}} 首未喜歡的歌曲
+   * en-US: Unliked {{count}} songs; skipped {{skipped}} songs not liked
+   */
+  (key: "playlist.drop.unliked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整歌单顺序
+   * zh-TW: 調整歌單順序
+   * en-US: Reorder playlists
+   */
+  (key: "playlist.order.playlists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整歌曲顺序
+   * zh-TW: 調整歌曲順序
+   * en-US: Reorder songs
+   */
+  (key: "playlist.order.tracks", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖动手柄或使用上下按钮调整顺序，保存后同步到网易云。
+   * zh-TW: 拖動手柄或使用上下按鈕調整順序，儲存後同步到網易雲。
+   * en-US: Drag the handles or use the arrow buttons, then save to sync with NetEase Cloud Music.
+   */
+  (key: "playlist.order.hint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在创建、收藏分组内拖动或使用上下按钮调整顺序；喜欢的音乐保持原位。保存后同步到网易云。
+   * zh-TW: 在建立、收藏分組內拖動或使用上下按鈕調整順序；喜歡的音樂保持原位。儲存後同步到網易雲。
+   * en-US: Reorder within your created or subscribed playlists using drag handles or arrows. Liked Music stays in place. Save to sync with NetEase Cloud Music.
+   */
+  (key: "playlist.order.libraryHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 排序列表
+   * zh-TW: 排序列表
+   * en-US: Order list
+   */
+  (key: "playlist.order.list", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖动调整顺序
+   * zh-TW: 拖動調整順序
+   * en-US: Drag to reorder
+   */
+  (key: "playlist.order.drag", params?: TranslationParams): string;
+  /**
+   * zh-CN: 喜欢的音乐保持原位
+   * zh-TW: 喜歡的音樂保持原位
+   * en-US: Liked Music stays in place
+   */
+  (key: "playlist.order.locked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上移 {{name}}
+   * zh-TW: 上移 {{name}}
+   * en-US: Move {{name}} up
+   */
+  (key: "playlist.order.up", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下移 {{name}}
+   * zh-TW: 下移 {{name}}
+   * en-US: Move {{name}} down
+   */
+  (key: "playlist.order.down", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载完整列表…
+   * zh-TW: 載入完整列表…
+   * en-US: Loading the complete list…
+   */
+  (key: "playlist.order.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存顺序
+   * zh-TW: 儲存順序
+   * en-US: Save order
+   */
+  (key: "playlist.order.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在保存…
+   * zh-TW: 正在儲存…
+   * en-US: Saving…
+   */
+  (key: "playlist.order.saving", params?: TranslationParams): string;
+  /**
+   * zh-CN: 顺序已保存
+   * zh-TW: 順序已儲存
+   * en-US: Order saved
+   */
+  (key: "playlist.order.saved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 顺序保存失败，已恢复原顺序
+   * zh-TW: 順序儲存失敗，已恢復原順序
+   * en-US: Could not save the order. The previous order has been restored.
+   */
+  (key: "playlist.order.reverted", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载排序列表失败。
+   * zh-TW: 載入排序列表失敗。
+   * en-US: Unable to load the order list.
+   */
+  (key: "playlist.order.loadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存失败，调整已保留，请重试。
+   * zh-TW: 儲存失敗，調整已保留，請重試。
+   * en-US: Save failed. Your changes are preserved; please retry.
+   */
+  (key: "playlist.order.saveFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 只能调整自己创建的歌单中的歌曲顺序。
+   * zh-TW: 只能調整自己建立的歌單中的歌曲順序。
+   * en-US: You can only reorder songs in playlists you own.
+   */
+  (key: "playlist.order.notOwner", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲 ID 列表不完整，请重新加载。
+   * zh-TW: 歌曲 ID 列表不完整，請重新載入。
+   * en-US: The song ID list is incomplete. Please reload.
+   */
+  (key: "playlist.order.incomplete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 列表已发生变化，请关闭后重新打开排序面板。
+   * zh-TW: 列表已發生變化，請關閉後重新開啟排序面板。
+   * en-US: The list has changed. Close and reopen the order dialog.
+   */
+  (key: "playlist.order.changed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲 {{id}}（暂无详情）
+   * zh-TW: 歌曲 {{id}}（暫無詳情）
+   * en-US: Song {{id}} (details unavailable)
+   */
+  (key: "playlist.order.unknownTrack", params?: TranslationParams): string;
+  /**
    * zh-CN: 为你的歌单添加名称
    * zh-TW: 為你的歌單新增名稱
    * en-US: Add a name for your playlist
@@ -3871,6 +4063,18 @@ export interface TranslateFn {
    * en-US: Queue is empty
    */
   (key: "queue.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按空格拾起歌曲，使用上下方向键移动，再按空格放下，Esc 取消。
+   * zh-TW: 按空格拾起歌曲，使用上下方向鍵移動，再按空格放下，Esc 取消。
+   * en-US: Press Space to pick up a song, arrow keys to move, Space to drop, or Escape to cancel.
+   */
+  (key: "queue.keyboardHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖动调整播放队列顺序，不影响歌单
+   * zh-TW: 拖動調整播放佇列順序，不影響歌單
+   * en-US: Drag to reorder the play queue without changing the playlist
+   */
+  (key: "queue.dragToReorder", params?: TranslationParams): string;
   /**
    * zh-CN: 通知
    * zh-TW: 通知

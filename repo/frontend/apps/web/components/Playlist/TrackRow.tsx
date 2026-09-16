@@ -30,9 +30,11 @@ export const TrackRow = memo(
       isLiked,
       isPlaying,
       isScrolling = false,
+      isSelected = false,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onLikeToggle,
       onPlay,
+      onRowClick,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onRequestDelete,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,8 +62,10 @@ export const TrackRow = memo(
           "group cursor-default border-none hover:bg-content/10",
           isScrolling ? "**:transition-none" : "transition-colors",
           isActive && "text-brand",
+          isSelected && "bg-content/10",
           className,
         )}
+        onClick={onRowClick}
         onDoubleClick={() => onPlay(track)}
         {...props}
       >

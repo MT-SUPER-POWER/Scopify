@@ -97,7 +97,9 @@ export function getUserLikeLists(uid: number | string) {
  * 喜欢和取消喜欢
  */
 export function likeSong(id: number | string, like: boolean) {
-  return request.get("/like", { params: { id, like } });
+  return request.get("/like", requestConfig({
+    params: { id, like }, requiresMusicSession: true, expectedBusinessCodes: [200],
+  }));
 }
 
 /**
