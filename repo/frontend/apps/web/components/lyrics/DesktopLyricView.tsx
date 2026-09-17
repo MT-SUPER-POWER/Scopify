@@ -28,7 +28,7 @@ export function DesktopLyricView() {
             payload={{
               source,
               target: view.line?.translation ?? "",
-              isChinese: /[\u3400-\u9fff]/.test(source) && !/[a-zA-Z]/.test(source),
+              isChinese: view.isChinese,
             }}
             replayId={view.index}
             playback={view.playback}
