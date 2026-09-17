@@ -1,32 +1,38 @@
 "use client";
 
-import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
-import { useAppearanceStore } from "@/store/module/appearance";
+import { SubtitleCapsule } from "@/components/lyrics/subtitle/SubtitleCapsule";
 import { useI18n } from "@/store/module/i18n";
+import type { LyricsStylePreviewProps } from "@/types/subtitle-preview";
 
-export function LyricsStylePreview() {
+export function LyricsStylePreview({
+  settings,
+  payload,
+  replayId,
+  visible,
+  playback,
+  loop,
+}: LyricsStylePreviewProps) {
   const { t } = useI18n();
-  const settings = useAppearanceStore((state) => state.lyricsPreview);
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div
-        className="flex h-32 items-center justify-center overflow-hidden rounded-lg border border-border bg-cover bg-center px-5"
-        style={{
-          backgroundImage: 'url("/images/appearance/misty-mountains.png")',
-          containerType: "inline-size",
-        }}
+        className="overflow-auto rounded-lg border border-border bg-cover bg-center"
+        style={{ backgroundImage: 'url("/images/appearance/misty-mountains.png")' }}
       >
-        <div
-          className="max-w-full rounded-md px-4 py-2.5 text-center leading-snug whitespace-nowrap"
-          style={{
-            backgroundColor: `rgb(0 0 0 / ${settings.backdropOpacity}%)`,
-            color: settings.color,
-            fontFamily: LYRICS_PREVIEW_FONTS[settings.font],
-            fontSize: `clamp(12px, ${settings.fontSize / 5.6}cqw, ${settings.fontSize}px)`,
-            textShadow: "0 1px 4px rgb(0 0 0 / 35%)",
-          }}
-        >
-          {t("appearance.lyrics.text")}
+        <div className="flex min-h-48 items-center justify-center p-6">
+          {visible && payload.source ? (
+            <SubtitleCapsule
+              settings={settings}
+              payload={payload}
+              replayId={replayId}
+              playback={playback}
+              loop={loop}
+            />
+          ) : (
+            <span className="text-sm text-white">
+              {t(visible ? "subtitlePreview.empty" : "subtitlePreview.hidden")}
+            </span>
+          )}
         </div>
       </div>
       <p className="text-xs leading-relaxed text-muted-foreground">{t("appearance.lyrics.note")}</p>

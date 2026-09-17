@@ -1,3 +1,7 @@
+import { subtitlePaletteMessages } from "./subtitlePalette";
+import { subtitleControlMessages } from "./subtitleControl";
+import { subtitleSystemMessages } from "./subtitleSystem";
+import { subtitlePreviewMessages } from "./subtitlePreview";
 import { appearanceBulkMessages } from "./appearanceBulk";
 import { appearanceLibraryMessages } from "./appearanceLibrary";
 import { appearanceMessages } from "./appearance";
@@ -42,6 +46,10 @@ export const messages = {
     ...appearanceMessages["zh-CN"],
     ...appearanceLibraryMessages["zh-CN"],
     ...appearanceBulkMessages["zh-CN"],
+    ...subtitlePreviewMessages["zh-CN"],
+    ...subtitleSystemMessages["zh-CN"],
+    ...subtitleControlMessages["zh-CN"],
+    ...subtitlePaletteMessages["zh-CN"],
     ...appCloseMessages["zh-CN"],
     ...layoutMessages["zh-CN"],
     ...contextMenuMessages["zh-CN"],
@@ -79,6 +87,10 @@ export const messages = {
     ...appearanceMessages["zh-TW"],
     ...appearanceLibraryMessages["zh-TW"],
     ...appearanceBulkMessages["zh-TW"],
+    ...subtitlePreviewMessages["zh-TW"],
+    ...subtitleSystemMessages["zh-TW"],
+    ...subtitleControlMessages["zh-TW"],
+    ...subtitlePaletteMessages["zh-TW"],
     ...appCloseMessages["zh-TW"],
     ...layoutMessages["zh-TW"],
     ...contextMenuMessages["zh-TW"],
@@ -116,6 +128,10 @@ export const messages = {
     ...appearanceMessages["en-US"],
     ...appearanceLibraryMessages["en-US"],
     ...appearanceBulkMessages["en-US"],
+    ...subtitlePreviewMessages["en-US"],
+    ...subtitleSystemMessages["en-US"],
+    ...subtitleControlMessages["en-US"],
+    ...subtitlePaletteMessages["en-US"],
     ...appCloseMessages["en-US"],
     ...layoutMessages["en-US"],
     ...contextMenuMessages["en-US"],

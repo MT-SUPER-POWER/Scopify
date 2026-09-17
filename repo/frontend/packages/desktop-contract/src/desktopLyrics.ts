@@ -1,4 +1,5 @@
 export type DesktopLyricCommand =
+  | { type: "resize-desktop-lyric-window"; width: number; height: number }
   | { enabled: boolean; type: "set-main-window-always-on-top" }
   | { enabled: boolean; type: "set-main-window-click-through" }
   | { enabled: boolean; type: "set-stage-transparent" }

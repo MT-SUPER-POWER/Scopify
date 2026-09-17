@@ -1,0 +1,66 @@
+.capsule {
+  box-sizing: border-box;
+  width: fit-content;
+  flex-shrink: 1;
+  min-width: 0;
+
+  border: 1px solid rgb(255 255 255 / 10%);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 30%);
+  transition:
+    background-color 200ms ease-out,
+    border-radius 200ms ease-out;
+}
+.source {
+  line-height: 1.5;
+  letter-spacing: 0.025em;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.translation {
+  margin-top: 4px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  margin-left: 6px;
+  vertical-align: middle;
+  border-radius: 2px;
+  animation: blink 900ms ease-in-out infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .capsule {
+    transition: none;
+  }
+  .cursor {
+    animation: none;
+  }
+}
+
+.glyph {
+  position: relative;
+  display: inline-block;
+  white-space: pre;
+}
+.sung {
+  position: absolute;
+  inset: 0;
+  mask-image: linear-gradient(
+    to right,
+    #000 calc(var(--fill) * (100% + var(--feather)) - var(--feather)),
+    transparent calc(var(--fill) * (100% + var(--feather)))
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 calc(var(--fill) * (100% + var(--feather)) - var(--feather)),
+    transparent calc(var(--fill) * (100% + var(--feather)))
+  );
+}
