@@ -4,13 +4,24 @@ import { useEffect, useState } from "react";
 import { SUBTITLE_PREVIEW_SCENES } from "@/constants/subtitle-preview";
 import { subtitlePlaybackPosition } from "@/lib/settings/subtitlePlayback";
 import type { LyricsPreviewSettings } from "@/types/appearance";
-import type { SubtitlePlayback } from "@/types/subtitle-preview";
+import type { SubtitlePlayback, SubtitlePreviewScene } from "@/types/subtitle-preview";
 
 export function useSubtitlePreview(
   settings: LyricsPreviewSettings,
   updateSettings: (patch: Partial<LyricsPreviewSettings>) => void,
 ) {
   const [payload, setPayload] = useState(SUBTITLE_PREVIEW_SCENES.chinese);
+  const activeScene =
+    (Object.keys(SUBTITLE_PREVIEW_SCENES) as SubtitlePreviewScene[]).find((scene) => {
+      const candidate = SUBTITLE_PREVIEW_SCENES[scene];
+      return (
+        candidate.source === payload.source &&
+        candidate.target === payload.target &&
+        candidate.isChinese === payload.isChinese &&
+        settings.showTranslation === (scene === "bilingual" || scene === "chinese") &&
+        (scene !== "chinese" || settings.autoCollapseChinese)
+      );
+    }) ?? null;
   const duration = settings.fillEnabled
     ? settings.fillDuration
     : settings.entrance === "typewriter"
@@ -49,6 +60,7 @@ export function useSubtitlePreview(
     replay();
   };
   return {
+    activeScene,
     duration,
     selectScene,
     payload,

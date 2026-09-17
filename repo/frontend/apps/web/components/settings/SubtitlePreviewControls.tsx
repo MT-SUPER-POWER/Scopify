@@ -15,12 +15,18 @@ export function SubtitlePreviewControls(props: SubtitlePreviewControlsProps) {
       <div className="flex flex-wrap gap-2" role="group" aria-label={t("subtitlePreview.scene")}>
         {(Object.keys(SUBTITLE_PREVIEW_SCENES) as (keyof typeof SUBTITLE_PREVIEW_SCENES)[]).map(
           (id) => (
-            <Button key={id} size="sm" variant="outline" onClick={() => props.onSceneChange(id)}>
+            <Button
+              key={id}
+              size="sm"
+              variant={props.activeScene === id ? "default" : "outline"}
+              aria-pressed={props.activeScene === id}
+              onClick={() => props.onSceneChange(id)}
+            >
               {t(`subtitlePreview.${id}`)}
             </Button>
           ),
         )}
-        <Button size="sm" onClick={props.onReplay}>
+        <Button size="sm" variant="outline" onClick={props.onReplay}>
           {t("subtitlePreview.replay")}
         </Button>
       </div>

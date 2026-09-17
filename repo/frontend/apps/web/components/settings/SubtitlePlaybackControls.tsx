@@ -18,7 +18,11 @@ export function SubtitlePlaybackControls({
   const playing = playback.startedAt !== null && (loop || position < duration);
   return (
     <div className="space-y-4">
-      <Button variant="outline" onClick={onTogglePlayback}>
+      <Button
+        variant={playing ? "default" : "outline"}
+        aria-pressed={playing}
+        onClick={onTogglePlayback}
+      >
         {t(playing ? "subtitleSystem.pause" : "subtitleSystem.play")}
       </Button>
       <AppearanceRange

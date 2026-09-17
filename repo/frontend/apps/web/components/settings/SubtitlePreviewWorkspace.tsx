@@ -22,6 +22,7 @@ export function SubtitlePreviewWorkspace() {
         <LyricsStyleSettingsSection />
         <SettingSection title={t("subtitlePreview.scene")}>
           <SubtitlePreviewControls
+            activeScene={preview.activeScene}
             payload={preview.payload}
             onPayloadChange={preview.setPayload}
             onSceneChange={preview.selectScene}

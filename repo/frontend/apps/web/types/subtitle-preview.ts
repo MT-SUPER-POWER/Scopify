@@ -18,8 +18,11 @@ export interface SubtitleColorControlProps {
   value: string;
   onChange: (color: string) => void;
 }
+export type SubtitlePreviewScene = "short" | "long" | "bilingual" | "chinese";
+
 export interface SubtitlePreviewControlsProps {
-  onSceneChange: (scene: "short" | "long" | "bilingual" | "chinese") => void;
+  activeScene: SubtitlePreviewScene | null;
+  onSceneChange: (scene: SubtitlePreviewScene) => void;
   payload: SubtitlePayload;
   onPayloadChange: (payload: SubtitlePayload) => void;
   onReplay: () => void;
