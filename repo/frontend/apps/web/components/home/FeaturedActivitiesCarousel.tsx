@@ -135,7 +135,7 @@ export function FeaturedActivitiesCarousel() {
                 let cardStyle = "scale-[0.84] opacity-40 brightness-65 z-0";
                 if (isCenter) {
                   cardStyle =
-                    "scale-100 sm:scale-[1.03] lg:scale-[1.05] opacity-100 brightness-100 z-10 shadow-2xl ring-1 ring-white/10";
+                    "scale-100 sm:scale-[1.03] lg:scale-[1.05] opacity-100 brightness-100 z-10 shadow-2xl ring-1 ring-overlay-foreground/10";
                 } else if (isLeft || isRight) {
                   cardStyle =
                     "scale-[0.88] opacity-60 brightness-75 hover:opacity-85 hover:brightness-90 z-0";
@@ -173,7 +173,7 @@ export function FeaturedActivitiesCarousel() {
               title={t("home.banner.previous")}
               onClick={goToPrevious}
               onPointerDown={(event) => event.stopPropagation()}
-              className="pointer-events-none absolute top-1/2 left-3 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white opacity-0 backdrop-blur-md transition-all group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 hover:scale-110 hover:bg-black/85 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              className="pointer-events-none absolute top-1/2 left-3 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-overlay-foreground/15 bg-overlay/60 text-overlay-foreground opacity-0 backdrop-blur-md transition-all group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 hover:scale-110 hover:bg-overlay/85 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
               <ChevronLeft className="size-5" />
             </button>
@@ -183,7 +183,7 @@ export function FeaturedActivitiesCarousel() {
               title={t("home.banner.next")}
               onClick={goToNext}
               onPointerDown={(event) => event.stopPropagation()}
-              className="pointer-events-none absolute top-1/2 right-3 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white opacity-0 backdrop-blur-md transition-all group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 hover:scale-110 hover:bg-black/85 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              className="pointer-events-none absolute top-1/2 right-3 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-overlay-foreground/15 bg-overlay/60 text-overlay-foreground opacity-0 backdrop-blur-md transition-all group-hover/activity-carousel:pointer-events-auto group-hover/activity-carousel:opacity-100 hover:scale-110 hover:bg-overlay/85 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
               <ChevronRight className="size-5" />
             </button>

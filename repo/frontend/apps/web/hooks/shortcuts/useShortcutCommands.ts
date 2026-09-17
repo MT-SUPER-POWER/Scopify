@@ -21,6 +21,7 @@ import { usePlayerStore } from "@/store/module/player";
 import { useUiStore } from "@/store/module/ui";
 import { useSearchStore } from "@/store/module/search";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
+import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
 import { runtime } from "@/lib/runtime";
 import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts";
 
@@ -72,6 +73,15 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
       };
 
       switch (commandId) {
+        case "toggle-desktop-subtitle":
+          if (runtime.isDesktop) void useDesktopSubtitleControl.getState().toggle();
+          return;
+        case "toggle-subtitle-controls":
+          if (runtime.isDesktop) {
+            const control = useDesktopSubtitleControl.getState();
+            control.setOpen(!control.open);
+          }
+          return;
         case "toggle-playback":
           void commands.toggle();
           return;

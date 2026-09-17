@@ -25,6 +25,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
+import { DesktopSubtitleControl } from "@/components/player/DesktopSubtitleControl";
 import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
 import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
 import { PersonalFmControlPanel } from "@/components/player/PersonalFmControlPanel";
@@ -519,6 +520,7 @@ export const PlayerBar = ({
             isLyricStageBar ? "min-w-0" : "flex-1 md:flex-none md:justify-self-end",
           )}
         >
+          <DesktopSubtitleControl />
           <DesktopPlaybackControllerLauncher />
 
           {/* Lyric Stage */}

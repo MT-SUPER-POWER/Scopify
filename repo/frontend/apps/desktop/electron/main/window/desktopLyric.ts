@@ -1,4 +1,11 @@
-import { app, BrowserWindow, ipcMain, powerSaveBlocker, type IpcMainInvokeEvent } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  powerSaveBlocker,
+  screen,
+  type IpcMainInvokeEvent,
+} from "electron";
 import fs from "node:fs";
 import { join } from "node:path";
 
@@ -122,6 +129,7 @@ function isDesktopLyricCommand(value: unknown): value is DesktopLyricCommand {
   if (!isRecord(value) || typeof value.type !== "string") return false;
 
   switch (value.type) {
+    case "resize-desktop-lyric-window":
     case "resize-main-window":
       return (
         isFiniteNonNegativeNumber(value.width) &&
@@ -285,6 +293,29 @@ function registerIpcHandlers() {
       windowLog.warn("[desktop-lyric] rejected invalid command");
       return;
     }
+    if (command.type === "resize-desktop-lyric-window") {
+      if (!isWindowAlive(desktopLyricWindow)) return;
+      const current = desktopLyricWindow.getBounds();
+      const area = screen.getDisplayMatching(current).workArea;
+      const width = Math.min(area.width, Math.max(240, Math.round(command.width)));
+      const height = Math.min(area.height, Math.max(70, Math.round(command.height)));
+      if (width !== current.width || height !== current.height)
+        desktopLyricWindow.setBounds({
+          width,
+          height,
+          x: Math.round(
+            Math.max(
+              area.x,
+              Math.min(current.x + (current.width - width) / 2, area.x + area.width - width),
+            ),
+          ),
+          y: Math.max(
+            area.y,
+            Math.min(current.y + current.height - height, area.y + area.height - height),
+          ),
+        });
+      return;
+    }
     if (applyMainWindowCommand(command)) return;
     if (isWindowAlive(mainWindow)) {
       mainWindow.webContents.send("desktop-lyric:command", command);
@@ -321,12 +352,10 @@ function showDesktopLyricWindow() {
     backgroundColor: "#00000000",
     frame: false,
     hasShadow: false,
-    height: 230,
+    height: 150,
     icon: __iconWindow,
-    maxHeight: 230,
-    maxWidth: 450,
-    minHeight: 230,
-    minWidth: 450,
+    minHeight: 70,
+    minWidth: 240,
     resizable: false,
     show: false,
     transparent: true,
@@ -336,9 +365,14 @@ function showDesktopLyricWindow() {
       preload: __preloadScript,
       sandbox: true,
     },
-    width: 450,
+    width: 892,
   });
 
+  const area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
+  desktopLyricWindow.setPosition(
+    Math.round(area.x + (area.width - 892) / 2),
+    Math.round(area.y + area.height - 180),
+  );
   applyPreferences(desktopLyricWindow);
 
   desktopLyricWindow.once("ready-to-show", () => {
@@ -379,6 +413,11 @@ function updatePreferences(update: DesktopLyricPreferencesUpdate) {
   savePreferences(nextPreferences);
 
   if (isWindowAlive(desktopLyricWindow)) {
+    const area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
+    desktopLyricWindow.setPosition(
+      Math.round(area.x + (area.width - 892) / 2),
+      Math.round(area.y + area.height - 180),
+    );
     applyPreferences(desktopLyricWindow);
     desktopLyricWindow.webContents.send("desktop-lyric:preferences", nextPreferences);
   }

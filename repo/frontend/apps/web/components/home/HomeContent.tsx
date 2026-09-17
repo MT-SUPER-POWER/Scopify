@@ -1,11 +1,17 @@
 "use client";
 
+import { ArtistTopSongsSection } from "@/components/home/ArtistTopSongsSection";
 import { FeaturedActivitiesCarousel } from "@/components/home/FeaturedActivitiesCarousel";
+import { FollowedAlbumsSection } from "@/components/home/FollowedAlbumsSection";
 import { HomeGreetingSection } from "@/components/home/HomeGreetingSection";
 import { HomePageSkeleton } from "@/components/home/HomePageSkeleton";
+import { NewAlbumsSection } from "@/components/home/NewAlbumsSection";
+import { NewSongsSection } from "@/components/home/NewSongsSection";
 import { PersonalizedPlaylists } from "@/components/home/PersonalizedPlaylists";
+import { RecentlyPlayedPlaylists } from "@/components/home/RecentlyPlayedPlaylists";
 import { RecommendedVoiceLists } from "@/components/home/RecommendedVoiceLists";
 import { SuggestedArtists } from "@/components/home/SuggestedArtists";
+import { ToplistSection } from "@/components/home/ToplistSection";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useHomeData } from "@/hooks/home/useHomeData";
 import { getHomeGreetingKey } from "@/lib/home/greeting";
@@ -21,6 +27,12 @@ export function HomeContent() {
     isRefreshingVoiceLists,
     bannerPlaylist,
     suggestedArtists,
+    newSongs,
+    toplists,
+    newAlbums,
+    recentPlaylists,
+    artistTopList,
+    followedAlbums,
     isLoading,
     isUnavailable,
     loadingPlayId,
@@ -29,6 +41,10 @@ export function HomeContent() {
     userName,
     isLogin,
     handlePlayPlaylist,
+    handlePlaySong,
+    handlePlayAllNewSongs,
+    handlePlayAlbum,
+    handlePlayArtistTopSongs,
     refreshRecommendedVoiceLists,
     fetchHomeData,
   } = useHomeData();
@@ -68,6 +84,7 @@ export function HomeContent() {
         <HomePageSkeleton />
       ) : (
         <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-7 px-4 pt-20 pb-6 duration-500 fade-in sm:px-6">
+          {/* 1. 欢迎语与快速访问 */}
           <HomeGreetingSection
             dateInfo={dateInfo}
             greeting={greetingText}
@@ -76,18 +93,66 @@ export function HomeContent() {
             playlists={bannerPlaylist}
           />
 
+          {/* 2. 为你推荐 */}
           <PersonalizedPlaylists
             playlists={playlists}
             loadingPlayId={loadingPlayId}
             onPlayPlaylist={handlePlayPlaylist}
           />
 
-          <FeaturedActivitiesCarousel />
+          {/* 3. 最近播放歌单 */}
+          <RecentlyPlayedPlaylists
+            playlists={recentPlaylists}
+            loadingPlayId={loadingPlayId}
+            onPlayPlaylist={handlePlayPlaylist}
+          />
 
+          {/* 4. 艺人热门歌曲 (THIS IS 风格) */}
+          <ArtistTopSongsSection
+            artists={artistTopList}
+            loadingPlayId={loadingPlayId}
+            onPlayArtist={handlePlayArtistTopSongs}
+          />
+
+          {/* 5. 推荐歌手 */}
+          <SuggestedArtists artists={suggestedArtists} />
+
+          {/* 6. 关注歌手专辑 */}
+          <FollowedAlbumsSection
+            albums={followedAlbums}
+            loadingPlayId={loadingPlayId}
+            onPlayAlbum={handlePlayAlbum}
+          />
+
+          {/* 7. 新碟上架 */}
+          <NewAlbumsSection
+            albums={newAlbums}
+            loadingPlayId={loadingPlayId}
+            onPlayAlbum={handlePlayAlbum}
+          />
+
+          {/* 8. 新歌速递 */}
+          <NewSongsSection
+            songs={newSongs}
+            onPlaySong={handlePlaySong}
+            onPlayAll={handlePlayAllNewSongs}
+          />
+
+          {/* 9. 推荐播客声音 */}
           <RecommendedVoiceLists
             voices={recommendedVoiceLists}
             isRefreshing={isRefreshingVoiceLists}
             onRefresh={refreshRecommendedVoiceLists}
+          />
+
+          {/* 10. 精选活动 3D 轮播 */}
+          <FeaturedActivitiesCarousel />
+
+          {/* 11. 官方排行榜 Hero 轮播压轴大卡 */}
+          <ToplistSection
+            toplists={toplists}
+            loadingPlayId={loadingPlayId}
+            onPlayToplist={handlePlayPlaylist}
           />
 
           {hasError && (
@@ -100,8 +165,6 @@ export function HomeContent() {
               onRetry={() => void fetchHomeData()}
             />
           )}
-
-          <SuggestedArtists artists={suggestedArtists} />
         </div>
       )}
     </div>

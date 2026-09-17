@@ -167,9 +167,9 @@ export function UpdatePlaylistDialog({
               )}
 
               {/* 悬浮遮罩：浮动上去时展示替换封面 */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100">
-                <ImageIcon className="mb-2 size-8 text-white" />
-                <span className="text-xs font-semibold text-white">
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-overlay/60 opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100">
+                <ImageIcon className="mb-2 size-8 text-overlay-foreground" />
+                <span className="text-xs font-semibold text-overlay-foreground">
                   {t("playlist.form.replaceImage")}
                 </span>
               </div>

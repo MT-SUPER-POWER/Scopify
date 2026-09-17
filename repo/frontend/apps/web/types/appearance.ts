@@ -76,6 +76,29 @@ export interface LyricsPreviewSettings {
   fontSize: number;
   color: string;
   backdropOpacity: number;
+  secondarySize: number;
+  secondaryColor: string;
+  showTranslation: boolean;
+  autoCollapseChinese: boolean;
+  maxWidth: number;
+  textAlign: "left" | "center" | "right";
+  backgroundColor: string;
+  gradientColor: string;
+  colorMode: "solid" | "gradient";
+  gradientAngle: number;
+  radius: number;
+  blur: number;
+  paddingX: number;
+  paddingY: number;
+  fontWeight: number;
+  textShadow: boolean;
+  entrance: "none" | "fade" | "slide" | "scale" | "typewriter";
+  animationDuration: number;
+  characterInterval: number;
+  fillEnabled: boolean;
+  unsungColor: string;
+  fillDuration: number;
+  fillSoftness: number;
 }
 
 export interface AppearanceStore {

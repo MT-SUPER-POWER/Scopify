@@ -5,8 +5,7 @@ import { useI18n } from "@/store/module/i18n";
 import { AppearancePreview } from "./AppearancePreview";
 import { AppearancePreviewStatus } from "./AppearancePreviewStatus";
 import { BackgroundSettingsSection } from "./BackgroundSettingsSection";
-import { LyricsStylePreview } from "./LyricsStylePreview";
-import { LyricsStyleSettingsSection } from "./LyricsStyleSettingsSection";
+import { SubtitlePreviewWorkspace } from "./SubtitlePreviewWorkspace";
 import { SettingSection } from "./SettingsUI";
 
 export function AppearanceSettingsTab() {
@@ -24,14 +23,7 @@ export function AppearanceSettingsTab() {
           <AppearancePreviewStatus />
         </SettingSection>
       </div>
-      <div className="min-w-0">
-        <LyricsStyleSettingsSection />
-      </div>
-      <div className="min-w-0">
-        <SettingSection title={t("appearance.lyrics.preview")}>
-          <LyricsStylePreview />
-        </SettingSection>
-      </div>
+      <SubtitlePreviewWorkspace />
     </div>
   );
 }

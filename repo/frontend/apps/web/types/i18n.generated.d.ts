@@ -2384,9 +2384,9 @@ export interface TranslateFn {
    */
   (key: "appearance.lyrics.preview", params?: TranslationParams): string;
   /**
-   * zh-CN: 此处保存预览样式，独立桌面歌词窗口将在后续接入。
-   * zh-TW: 此處儲存預覽樣式，獨立桌面歌詞視窗將在後續接入。
-   * en-US: Preview styles are saved here. A separate desktop lyrics window will be added later.
+   * zh-CN: 样式同步至桌面小歌词，预览使用模拟时间。
+   * zh-TW: 樣式同步至桌面小歌詞，預覽使用模擬時間。
+   * en-US: Styles sync to desktop subtitles; this preview uses simulated timing.
    */
   (key: "appearance.lyrics.note", params?: TranslationParams): string;
   /**
@@ -2683,6 +2683,504 @@ export interface TranslateFn {
    * en-US: {{count}} time periods reference these themes. They will use Silver; their times are preserved.
    */
   (key: "appearance.bulk.slots", params?: TranslationParams): string;
+  /**
+   * zh-CN: 排版与胶囊
+   * zh-TW: 排版與膠囊
+   * en-US: Layout and capsule
+   */
+  (key: "subtitlePreview.layout", params?: TranslationParams): string;
+  /**
+   * zh-CN: 颜色与质感
+   * zh-TW: 顏色與質感
+   * en-US: Color and surface
+   */
+  (key: "subtitlePreview.colors", params?: TranslationParams): string;
+  /**
+   * zh-CN: 出现动画
+   * zh-TW: 出現動畫
+   * en-US: Entrance animation
+   */
+  (key: "subtitlePreview.motion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 译文字号
+   * zh-TW: 譯文字號
+   * en-US: Translation size
+   */
+  (key: "subtitlePreview.secondarySize", params?: TranslationParams): string;
+  /**
+   * zh-CN: 译文颜色
+   * zh-TW: 譯文顏色
+   * en-US: Translation color
+   */
+  (key: "subtitlePreview.secondaryColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示译文
+   * zh-TW: 顯示譯文
+   * en-US: Show translation
+   */
+  (key: "subtitlePreview.translation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 中文自动收起译文
+   * zh-TW: 中文自動收起譯文
+   * en-US: Collapse translation for Chinese
+   */
+  (key: "subtitlePreview.collapse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最大宽度
+   * zh-TW: 最大寬度
+   * en-US: Maximum width
+   */
+  (key: "subtitlePreview.width", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文本对齐
+   * zh-TW: 文字對齊
+   * en-US: Text alignment
+   */
+  (key: "subtitlePreview.align", params?: TranslationParams): string;
+  /**
+   * zh-CN: 居左
+   * zh-TW: 靠左
+   * en-US: Left
+   */
+  (key: "subtitlePreview.left", params?: TranslationParams): string;
+  /**
+   * zh-CN: 居中
+   * zh-TW: 置中
+   * en-US: Center
+   */
+  (key: "subtitlePreview.center", params?: TranslationParams): string;
+  /**
+   * zh-CN: 居右
+   * zh-TW: 靠右
+   * en-US: Right
+   */
+  (key: "subtitlePreview.right", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字重
+   * zh-TW: 字重
+   * en-US: Font weight
+   */
+  (key: "subtitlePreview.weight", params?: TranslationParams): string;
+  /**
+   * zh-CN: 胶囊圆角
+   * zh-TW: 膠囊圓角
+   * en-US: Corner radius
+   */
+  (key: "subtitlePreview.radius", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景模糊
+   * zh-TW: 背景模糊
+   * en-US: Backdrop blur
+   */
+  (key: "subtitlePreview.blur", params?: TranslationParams): string;
+  /**
+   * zh-CN: 水平内边距
+   * zh-TW: 水平內距
+   * en-US: Horizontal padding
+   */
+  (key: "subtitlePreview.paddingX", params?: TranslationParams): string;
+  /**
+   * zh-CN: 垂直内边距
+   * zh-TW: 垂直內距
+   * en-US: Vertical padding
+   */
+  (key: "subtitlePreview.paddingY", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字阴影
+   * zh-TW: 文字陰影
+   * en-US: Text shadow
+   */
+  (key: "subtitlePreview.shadow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字填色
+   * zh-TW: 文字填色
+   * en-US: Text fill
+   */
+  (key: "subtitlePreview.mode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 纯色
+   * zh-TW: 純色
+   * en-US: Solid
+   */
+  (key: "subtitlePreview.solid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 渐变
+   * zh-TW: 漸層
+   * en-US: Gradient
+   */
+  (key: "subtitlePreview.gradient", params?: TranslationParams): string;
+  /**
+   * zh-CN: 渐变结束色
+   * zh-TW: 漸層結束色
+   * en-US: Gradient end color
+   */
+  (key: "subtitlePreview.gradientColor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 渐变角度
+   * zh-TW: 漸層角度
+   * en-US: Gradient angle
+   */
+  (key: "subtitlePreview.angle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 胶囊底色
+   * zh-TW: 膠囊底色
+   * en-US: Capsule color
+   */
+  (key: "subtitlePreview.background", params?: TranslationParams): string;
+  /**
+   * zh-CN: 直接显示
+   * zh-TW: 直接顯示
+   * en-US: Instant
+   */
+  (key: "subtitlePreview.none", params?: TranslationParams): string;
+  /**
+   * zh-CN: 淡入
+   * zh-TW: 淡入
+   * en-US: Fade in
+   */
+  (key: "subtitlePreview.fade", params?: TranslationParams): string;
+  /**
+   * zh-CN: 向上浮入
+   * zh-TW: 向上浮入
+   * en-US: Slide up
+   */
+  (key: "subtitlePreview.slide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 轻盈展开
+   * zh-TW: 輕盈展開
+   * en-US: Scale in
+   */
+  (key: "subtitlePreview.scale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 流式吐字
+   * zh-TW: 串流逐字
+   * en-US: Typewriter
+   */
+  (key: "subtitlePreview.typewriter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 入场时长
+   * zh-TW: 入場時長
+   * en-US: Entrance duration
+   */
+  (key: "subtitlePreview.duration", params?: TranslationParams): string;
+  /**
+   * zh-CN: 吐字间隔
+   * zh-TW: 逐字間隔
+   * en-US: Character interval
+   */
+  (key: "subtitlePreview.interval", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配色方案
+   * zh-TW: 配色方案
+   * en-US: Color palette
+   */
+  (key: "subtitlePreview.preset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 经典白
+   * zh-TW: 經典白
+   * en-US: Classic white
+   */
+  (key: "subtitlePreview.white", params?: TranslationParams): string;
+  /**
+   * zh-CN: 薄荷
+   * zh-TW: 薄荷
+   * en-US: Mint
+   */
+  (key: "subtitlePreview.mint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 落日
+   * zh-TW: 落日
+   * en-US: Sunset
+   */
+  (key: "subtitlePreview.sunset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 冰蓝
+   * zh-TW: 冰藍
+   * en-US: Ice blue
+   */
+  (key: "subtitlePreview.ice", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览场景
+   * zh-TW: 預覽場景
+   * en-US: Preview scene
+   */
+  (key: "subtitlePreview.scene", params?: TranslationParams): string;
+  /**
+   * zh-CN: 短句
+   * zh-TW: 短句
+   * en-US: Short
+   */
+  (key: "subtitlePreview.short", params?: TranslationParams): string;
+  /**
+   * zh-CN: 长句折行
+   * zh-TW: 長句換行
+   * en-US: Long wrapping line
+   */
+  (key: "subtitlePreview.long", params?: TranslationParams): string;
+  /**
+   * zh-CN: 双语
+   * zh-TW: 雙語
+   * en-US: Bilingual
+   */
+  (key: "subtitlePreview.bilingual", params?: TranslationParams): string;
+  /**
+   * zh-CN: 中文
+   * zh-TW: 中文
+   * en-US: Chinese
+   */
+  (key: "subtitlePreview.chinese", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主行文字
+   * zh-TW: 主行文字
+   * en-US: Main text
+   */
+  (key: "subtitlePreview.source", params?: TranslationParams): string;
+  /**
+   * zh-CN: 译文内容
+   * zh-TW: 譯文內容
+   * en-US: Translation text
+   */
+  (key: "subtitlePreview.target", params?: TranslationParams): string;
+  /**
+   * zh-CN: 原文为中文
+   * zh-TW: 原文為中文
+   * en-US: Chinese source
+   */
+  (key: "subtitlePreview.isChinese", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重播动画
+   * zh-TW: 重播動畫
+   * en-US: Replay animation
+   */
+  (key: "subtitlePreview.replay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示预览
+   * zh-TW: 顯示預覽
+   * en-US: Show preview
+   */
+  (key: "subtitlePreview.visible", params?: TranslationParams): string;
+  /**
+   * zh-CN: 循环播放
+   * zh-TW: 循環播放
+   * en-US: Loop preview
+   */
+  (key: "subtitlePreview.loop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 参数自动保存在本机，并同步至桌面小歌词。
+   * zh-TW: 參數自動儲存於本機，並同步至桌面小歌詞。
+   * en-US: Settings are saved locally and sync to desktop subtitles.
+   */
+  (key: "subtitlePreview.saved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 输入文字以查看效果
+   * zh-TW: 輸入文字以查看效果
+   * en-US: Enter text to preview
+   */
+  (key: "subtitlePreview.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览已隐藏
+   * zh-TW: 預覽已隱藏
+   * en-US: Preview hidden
+   */
+  (key: "subtitlePreview.hidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放填色
+   * zh-TW: 播放填色
+   * en-US: Playback fill
+   */
+  (key: "subtitleSystem.fill", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未唱文字颜色
+   * zh-TW: 未唱文字顏色
+   * en-US: Unsung text color
+   */
+  (key: "subtitleSystem.unsung", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整句播放时长
+   * zh-TW: 整句播放時長
+   * en-US: Line duration
+   */
+  (key: "subtitleSystem.fillDuration", params?: TranslationParams): string;
+  /**
+   * zh-CN: 填色边缘柔和度
+   * zh-TW: 填色邊緣柔和度
+   * en-US: Fill edge softness
+   */
+  (key: "subtitleSystem.softness", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放预览
+   * zh-TW: 播放預覽
+   * en-US: Play preview
+   */
+  (key: "subtitleSystem.play", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停预览
+   * zh-TW: 暫停預覽
+   * en-US: Pause preview
+   */
+  (key: "subtitleSystem.pause", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放进度
+   * zh-TW: 播放進度
+   * en-US: Playback progress
+   */
+  (key: "subtitleSystem.progress", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的歌词方案
+   * zh-TW: 我的歌詞方案
+   * en-US: My lyric themes
+   */
+  (key: "subtitleSystem.library", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存当前方案
+   * zh-TW: 儲存目前方案
+   * en-US: Save current theme
+   */
+  (key: "subtitleSystem.saveTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存字体、配色、胶囊与动画参数，可随时快捷应用。
+   * zh-TW: 儲存字體、配色、膠囊與動畫參數，可隨時快速套用。
+   * en-US: Save typography, colors, capsule and animation settings for quick reuse.
+   */
+  (key: "subtitleSystem.saveHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 方案名称
+   * zh-TW: 方案名稱
+   * en-US: Theme name
+   */
+  (key: "subtitleSystem.name", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存
+   * zh-TW: 儲存
+   * en-US: Save
+   */
+  (key: "subtitleSystem.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 批量管理
+   * zh-TW: 批次管理
+   * en-US: Manage
+   */
+  (key: "subtitleSystem.manage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完成
+   * zh-TW: 完成
+   * en-US: Done
+   */
+  (key: "subtitleSystem.done", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全选 / 取消全选
+   * zh-TW: 全選 / 取消全選
+   * en-US: Select / deselect all
+   */
+  (key: "subtitleSystem.selectAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除
+   * zh-TW: 刪除
+   * en-US: Delete
+   */
+  (key: "subtitleSystem.delete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重命名
+   * zh-TW: 重新命名
+   * en-US: Rename
+   */
+  (key: "subtitleSystem.rename", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新为当前样式
+   * zh-TW: 更新為目前樣式
+   * en-US: Update from current style
+   */
+  (key: "subtitleSystem.update", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除已保存的方案，当前预览样式保持不变。
+   * zh-TW: 刪除已儲存的方案，目前預覽樣式保持不變。
+   * en-US: Delete saved themes. The current preview style stays unchanged.
+   */
+  (key: "subtitleSystem.deleteHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调好喜欢的效果后，保存为自己的方案。
+   * zh-TW: 調好喜歡的效果後，儲存為自己的方案。
+   * en-US: Save your preferred style as a reusable theme.
+   */
+  (key: "subtitleSystem.emptyLibrary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已唱文字颜色
+   * zh-TW: 已唱文字顏色
+   * en-US: Sung text color
+   */
+  (key: "subtitleSystem.sung", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已唱色按整句进度从左向右覆盖未唱色；逐字吐字与播放填色分别使用。
+   * zh-TW: 已唱色按整句進度從左向右覆蓋未唱色；逐字顯示與播放填色分別使用。
+   * en-US: Sung color fills from left to right over the unsung text. Typewriter and playback fill are separate modes.
+   */
+  (key: "subtitleSystem.fillHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面小歌词控制
+   * zh-TW: 桌面小歌詞控制
+   * en-US: Desktop subtitle controls
+   */
+  (key: "subtitleControl.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换桌面小歌词
+   * zh-TW: 切換桌面小歌詞
+   * en-US: Toggle desktop subtitles
+   */
+  (key: "subtitleControl.toggle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示桌面小歌词
+   * zh-TW: 顯示桌面小歌詞
+   * en-US: Show desktop subtitles
+   */
+  (key: "subtitleControl.enabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词样式
+   * zh-TW: 歌詞樣式
+   * en-US: Lyric style
+   */
+  (key: "subtitleControl.style", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快捷键
+   * zh-TW: 快捷鍵
+   * en-US: Shortcuts
+   */
+  (key: "subtitleControl.shortcuts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面歌词操作失败，请重试。
+   * zh-TW: 桌面歌詞操作失敗，請重試。
+   * en-US: Desktop subtitle operation failed. Please retry.
+   */
+  (key: "subtitleControl.failed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Retry
+   */
+  (key: "subtitleControl.retry", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义配色方案
+   * zh-TW: 自訂配色方案
+   * en-US: Custom color palettes
+   */
+  (key: "subtitlePalette.library", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存 / 编辑配色
+   * zh-TW: 儲存 / 編輯配色
+   * en-US: Save / edit palette
+   */
+  (key: "subtitlePalette.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅保存颜色、渐变与底色透明度；应用时保留字体、尺寸和动画。
+   * zh-TW: 僅儲存顏色、漸層與底色透明度；套用時保留字體、尺寸和動畫。
+   * en-US: Save colors, gradient and background opacity. Applying preserves typography, size and animation.
+   */
+  (key: "subtitlePalette.hint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等待播放音乐
+   * zh-TW: 等待播放音樂
+   * en-US: Waiting for music
+   */
+  (key: "subtitlePalette.waiting", params?: TranslationParams): string;
   /**
    * zh-CN: 关闭 Scopify
    * zh-TW: 關閉 Scopify
@@ -5389,6 +5887,78 @@ export interface TranslateFn {
    * en-US: Next page
    */
   (key: "home.pagination.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新歌速递
+   * zh-TW: 新歌速遞
+   * en-US: New Releases
+   */
+  (key: "home.newSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放全部
+   * zh-TW: 播放全部
+   * en-US: Play All
+   */
+  (key: "home.playAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 官方排行榜
+   * zh-TW: 官方排行榜
+   * en-US: Top Charts
+   */
+  (key: "home.toplists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新碟上架
+   * zh-TW: 新碟上架
+   * en-US: New Albums
+   */
+  (key: "home.newAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{artist}} · {{year}}
+   * zh-TW: {{artist}} · {{year}}
+   * en-US: {{artist}} · {{year}}
+   */
+  (key: "home.albumSummary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近播放歌单
+   * zh-TW: 最近播放歌單
+   * en-US: Recently Played
+   */
+  (key: "home.recentlyPlayedPlaylists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 艺人热门歌曲
+   * zh-TW: 藝人熱門歌曲
+   * en-US: Popular Songs by Artists
+   */
+  (key: "home.artistTopSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收录艺人的最热歌曲。
+   * zh-TW: 收錄藝人的最熱歌曲。
+   * en-US: The most popular songs from artists.
+   */
+  (key: "home.artistTopSongsSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关注歌手的专辑
+   * zh-TW: 關注歌手的專輯
+   * en-US: Albums by Followed Artists
+   */
+  (key: "home.followedArtistsAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 试听
+   * zh-TW: 試聽
+   * en-US: Preview
+   */
+  (key: "home.listenPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{artist}} 热门精选
+   * zh-TW: {{artist}} 熱門精選
+   * en-US: Best of {{artist}}
+   */
+  (key: "home.artistSummary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 精选最热单曲
+   * zh-TW: 精選最熱單曲
+   * en-US: Top Tracks Selection
+   */
+  (key: "home.artistTopSongsCardSubtitle", params?: TranslationParams): string;
   /**
    * zh-CN: 当前网络异常
    * zh-TW: 目前網路異常

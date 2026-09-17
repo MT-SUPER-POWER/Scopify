@@ -20,7 +20,7 @@ export function ShortcutHelpSection({ commands, title }: ShortcutHelpSectionProp
         {commands.map((command) => (
           <div
             key={command.id}
-            className="grid min-h-9 grid-cols-[minmax(0,1fr)_auto] items-center gap-6 px-1 py-1"
+            className="grid min-h-9 grid-cols-[minmax(0,1fr)_auto] items-center gap-6 p-1"
           >
             <span className="flex min-w-0 items-center gap-2.5">
               <ShortcutCommandIcon

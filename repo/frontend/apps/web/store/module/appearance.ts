@@ -69,7 +69,7 @@ export const useAppearanceStore = create<AppearanceStore>()(
     }),
     {
       name: "scopify-appearance",
-      version: 2,
+      version: 4,
       storage: createJSONStorage(() => localStorage),
       partialize: ({ background, lyricsPreview, themes, dailyThemeIds, schedule }) => ({
         background,
@@ -78,7 +78,7 @@ export const useAppearanceStore = create<AppearanceStore>()(
         dailyThemeIds,
         schedule,
       }),
-      migrate: (persisted) => {
+      migrate: (persisted, version) => {
         const previous = persisted as Partial<AppearanceStore>;
         const background = { ...DEFAULT_BACKGROUND, ...previous.background };
         const theme = {
@@ -93,9 +93,9 @@ export const useAppearanceStore = create<AppearanceStore>()(
           background:
             background.preset === "custom" ? { ...background, preset: theme.id } : background,
           lyricsPreview: { ...DEFAULT_LYRICS_PREVIEW, ...previous.lyricsPreview },
-          themes: [theme],
-          dailyThemeIds: BACKGROUND_PRESETS.map(({ id }) => id),
-          schedule: DEFAULT_THEME_SCHEDULE,
+          themes: version < 2 ? [theme] : (previous.themes ?? []),
+          dailyThemeIds: previous.dailyThemeIds ?? BACKGROUND_PRESETS.map(({ id }) => id),
+          schedule: previous.schedule ?? DEFAULT_THEME_SCHEDULE,
         };
       },
     },

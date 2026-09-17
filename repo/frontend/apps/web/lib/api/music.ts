@@ -7,8 +7,9 @@ import type {
   CheckMusicResponse,
   NeteaseLyric,
   SongChorusResponse,
+  PersonalizedNewSongResponse,
 } from "@/types/api/music";
-import request from "../web/request";
+import request, { requestConfig } from "../web/request";
 
 export async function greySongUrlMatch(
   id: number | string,
@@ -110,4 +111,18 @@ export async function getSongUrlWithQuality(
       source: "url-match" as const,
     };
   }
+}
+
+/**
+ * 获取推荐新音乐
+ * GET /personalized/newsong?limit={limit}
+ */
+export async function getPersonalizedNewSongs(limit = 12) {
+  return request<PersonalizedNewSongResponse>(
+    requestConfig({
+      method: "get",
+      params: { limit },
+      url: "/personalized/newsong",
+    }),
+  );
 }

@@ -122,6 +122,12 @@ export interface RecommendPlaylist {
   playCount: number;
   trackCount: number;
   copywriter: string; //  推荐理由文案
+  lastSong?: {
+    artists?: string;
+    id?: number;
+    name?: string;
+  };
+  creatorName?: string;
 }
 
 export interface RawRecommendPlaylist {
@@ -129,8 +135,25 @@ export interface RawRecommendPlaylist {
   id?: number;
   name?: string;
   picUrl?: string;
+  coverImgUrl?: string;
   playCount?: number;
+  /** 网易云 /recommend/resource 接口下发的全小写播放量字段 */
+  playcount?: number;
   trackCount?: number;
+  songCount?: number;
+  trackNumber?: number;
+  trackIds?: unknown[];
+  lastSong?: {
+    al?: { id?: number; name?: string; picUrl?: string };
+    ar?: Array<{ id?: number; name?: string }>;
+    id?: number;
+    name?: string;
+  };
+  creator?: {
+    avatarUrl?: string;
+    nickname?: string;
+    userId?: number;
+  };
 }
 
 /** `/personalized` 的实际响应。 */
@@ -275,18 +298,34 @@ export interface HistoricalDailyRecommendationDetailResponse {
 }
 
 export const pruneRecommendPlaylist = (
-  raw: null | RawRecommendPlaylist | undefined,
+  raw: null | (RawRecommendPlaylist & RawNeteasePlaylist) | undefined,
 ): RecommendPlaylist => {
   if (!raw) {
     return { copywriter: "", id: 0, name: "", picUrl: "", playCount: 0, trackCount: 0 };
   }
 
+  const playCount = raw.playCount ?? raw.playcount ?? 0;
+  const picUrl = raw.picUrl || raw.coverImgUrl || "";
+  const trackCount = getPlaylistTrackCount(raw);
+  const lastSongArtists = raw.lastSong?.ar
+    ?.map((a) => a.name)
+    .filter(Boolean)
+    .join(" / ");
+
   return {
     id: raw.id ?? 0,
     name: raw.name ?? "",
-    picUrl: raw.picUrl ?? "",
-    playCount: raw.playCount ?? 0,
-    trackCount: raw.trackCount ?? 0,
+    picUrl,
+    playCount,
+    trackCount,
     copywriter: raw.copywriter ?? "",
+    creatorName: raw.creator?.nickname,
+    lastSong: raw.lastSong?.name
+      ? {
+          artists: lastSongArtists,
+          id: raw.lastSong.id,
+          name: raw.lastSong.name,
+        }
+      : undefined,
   };
 };
