@@ -25,9 +25,9 @@ export function ActivityBannerCard({
         className="group-hover:scale-1.03 object-cover transition-transform duration-500"
         priority={isCenter}
       />
-      <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-overlay/60 via-transparent to-transparent" />
       {banner.typeTitle && (
-        <span className="pointer-events-none absolute right-3 bottom-3 max-w-[calc(100%-1.5rem)] truncate rounded-full border border-white/10 bg-overlay/80 px-2.5 py-0.5 text-xs font-medium text-overlay-foreground shadow-panel backdrop-blur-md select-none">
+        <span className="pointer-events-none absolute right-3 bottom-3 max-w-[calc(100%-1.5rem)] truncate rounded-full border border-overlay-foreground/10 bg-overlay/80 px-2.5 py-0.5 text-xs font-medium text-overlay-foreground shadow-panel backdrop-blur-md select-none">
           {banner.typeTitle}
         </span>
       )}

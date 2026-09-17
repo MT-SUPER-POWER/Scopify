@@ -2,14 +2,20 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getHotArtists } from "@/lib/api/artist";
-import { getNewestAlbums } from "@/lib/api/album";
+import { getArtistAlbums, getFollowedArtists, getHotArtists } from "@/lib/api/artist";
+import { getNewestAlbums, getUserAlbumSublist } from "@/lib/api/album";
 import { getPersonalizedNewSongs } from "@/lib/api/music";
-import { getPersonalizePlaylists, getRecommendedPlaylists } from "@/lib/api/playlist";
+import {
+  getPersonalizePlaylists,
+  getPlaylistAllTracks,
+  getRecommendedPlaylists,
+} from "@/lib/api/playlist";
 import { getToplistDetail } from "@/lib/api/toplist";
-import { getUserDetail } from "@/lib/api/user";
+import { getRecentPlaylists, getUserDetail } from "@/lib/api/user";
 import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
+import type { NeteaseAlbum } from "@/types/api/album";
+import { prunePlaylistTracks } from "@/types/api/playlist";
 
 export function usePersonalizedPlaylistsQuery(limit = 100) {
   return useQuery({
@@ -77,5 +83,85 @@ export function useNewAlbumsQuery() {
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getNewestAlbums()).data,
     queryKey: musicQueryKeys.home.newAlbums(),
+  });
+}
+
+export function useToplistTracksQuery(id: number) {
+  return useQuery({
+    enabled: Boolean(id),
+    meta: { persist: true, scope: "public" },
+    queryFn: async () => {
+      const res = await getPlaylistAllTracks({ id, limit: 3, offset: 0 });
+      return prunePlaylistTracks(res.data);
+    },
+    queryKey: musicQueryKeys.home.toplistTracks(id),
+    staleTime: 1000 * 60 * 30,
+  });
+}
+
+export function useRecentPlaylistsQuery(enabled: boolean, limit = 20) {
+  return useQuery({
+    enabled,
+    meta: { scope: "account" },
+    queryFn: async () => (await getRecentPlaylists(limit)).data,
+    queryKey: musicQueryKeys.home.recentPlaylists(limit),
+  });
+}
+
+export function useFollowedArtistsQuery(enabled: boolean, limit = 30) {
+  return useQuery({
+    enabled,
+    meta: { scope: "account" },
+    queryFn: async () => (await getFollowedArtists(limit)).data,
+    queryKey: musicQueryKeys.home.followedArtists(limit),
+  });
+}
+
+export function useFollowedArtistsAlbumsQuery(enabled: boolean) {
+  return useQuery({
+    enabled,
+    meta: { scope: "account" },
+    queryFn: async () => {
+      const followedRes = await getFollowedArtists(10);
+      const artists = followedRes.data?.data ?? [];
+      if (artists.length === 0) {
+        const subRes = await getUserAlbumSublist({ limit: 20 });
+        return (subRes.data?.data ?? []).map((album) => ({
+          id: album.id,
+          name: album.name,
+          picUrl: album.picUrl,
+          publishTime: album.subTime,
+          artist: { name: "" },
+        }));
+      }
+
+      const albumPromises = artists.slice(0, 4).map(async (artist) => {
+        try {
+          const res = await getArtistAlbums(artist.id, 5);
+          return (res.data.hotAlbums ?? []).map((al) => ({
+            id: al.id,
+            name: al.name,
+            picUrl: al.picUrl,
+            publishTime: al.publishTime,
+            artist: { id: artist.id, name: artist.name },
+          }));
+        } catch {
+          return [];
+        }
+      });
+
+      const nested = await Promise.all(albumPromises);
+      const combined = nested.flat();
+      const seen = new Set<number>();
+      const uniqueAlbums: NeteaseAlbum[] = [];
+      for (const al of combined) {
+        if (!seen.has(al.id)) {
+          seen.add(al.id);
+          uniqueAlbums.push(al);
+        }
+      }
+      return uniqueAlbums;
+    },
+    queryKey: musicQueryKeys.home.followedArtistAlbums(20),
   });
 }

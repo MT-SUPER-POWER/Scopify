@@ -5918,6 +5918,48 @@ export interface TranslateFn {
    */
   (key: "home.albumSummary", params?: TranslationParams): string;
   /**
+   * zh-CN: 最近播放歌单
+   * zh-TW: 最近播放歌單
+   * en-US: Recently Played
+   */
+  (key: "home.recentlyPlayedPlaylists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 艺人热门歌曲
+   * zh-TW: 藝人熱門歌曲
+   * en-US: Popular Songs by Artists
+   */
+  (key: "home.artistTopSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收录艺人的最热歌曲。
+   * zh-TW: 收錄藝人的最熱歌曲。
+   * en-US: The most popular songs from artists.
+   */
+  (key: "home.artistTopSongsSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关注歌手的专辑
+   * zh-TW: 關注歌手的專輯
+   * en-US: Albums by Followed Artists
+   */
+  (key: "home.followedArtistsAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 试听
+   * zh-TW: 試聽
+   * en-US: Preview
+   */
+  (key: "home.listenPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{artist}} 热门精选
+   * zh-TW: {{artist}} 熱門精選
+   * en-US: Best of {{artist}}
+   */
+  (key: "home.artistSummary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 精选最热单曲
+   * zh-TW: 精選最熱單曲
+   * en-US: Top Tracks Selection
+   */
+  (key: "home.artistTopSongsCardSubtitle", params?: TranslationParams): string;
+  /**
    * zh-CN: 当前网络异常
    * zh-TW: 目前網路異常
    * en-US: Network unavailable

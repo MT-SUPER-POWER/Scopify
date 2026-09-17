@@ -57,7 +57,7 @@ export function KeyboardShortcutHelp() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="relative h-[min(78dvh,720px)] max-h-[calc(100dvh-2rem)] w-full max-w-[806px] [scrollbar-color:#4a4a4a_transparent] [scrollbar-gutter:stable] overflow-y-auto rounded-2xl border border-white/8 bg-[#111] px-5 pt-[18px] pb-10 text-[#d2d2d2] shadow-[0_28px_80px_rgba(0,0,0,0.52)] sm:px-[72px] [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-[5px] [&::-webkit-scrollbar-thumb]:border-[#111] [&::-webkit-scrollbar-thumb]:bg-[#4a4a4a]"
+            className="relative h-[min(78dvh,720px)] max-h-[calc(100dvh-2rem)] w-full max-w-[806px] [scrollbar-color:#4a4a4a_transparent] [scrollbar-gutter:stable] overflow-y-auto rounded-2xl border border-white/8 bg-[#111] px-5 pt-[18px] pb-10 text-[#d2d2d2] shadow-[0_28px_80px_rgba(0,0,0,0.52)] sm:px-18 [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-[5px] [&::-webkit-scrollbar-thumb]:border-[#111] [&::-webkit-scrollbar-thumb]:bg-[#4a4a4a]"
             onMouseDown={(event) => event.stopPropagation()}
           >
             <header>
@@ -76,10 +76,10 @@ export function KeyboardShortcutHelp() {
                 onClick={() => setIsOpen(false)}
                 className="absolute top-4 right-6 flex size-8 items-center justify-center rounded text-[#bababa] transition-colors hover:bg-white/8 hover:text-white"
               >
-                <X className="size-[18px] stroke-[1.5]" />
+                <X className="stroke-1.5 size-[18px]" />
               </button>
             </header>
-            <div className="mt-6 max-w-[620px] space-y-4">
+            <div className="mt-6 max-w-155 space-y-4">
               {recommendedCommands.length > 0 ? (
                 <ShortcutHelpSection
                   commands={recommendedCommands}

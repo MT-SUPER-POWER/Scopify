@@ -1,0 +1,90 @@
+[
+  {
+    "id": 19723756,
+    "name": "飙升榜",
+    "coverImgUrl": "https://p4.music.126.net/rIi7Qzy2i2Y_1QD7cd0MYA==/109951170048506929.jpg",
+    "updateFrequency": "刚刚更新",
+    "playCount": 6499674112,
+    "description": "云音乐中每天热度上升最快的100首单曲，每日更新。",
+    "tracks": [
+      {
+        "first": "皇家蓝(ft. Rapeter)",
+        "second": "程思源/Rapeter"
+      },
+      {
+        "first": "茶汤",
+        "second": "郁可唯"
+      },
+      {
+        "first": "†TAKEDISKRUSH!†",
+        "second": "N2UtheHartlocker"
+      }
+    ]
+  },
+  {
+    "id": 3779629,
+    "name": "新歌榜",
+    "coverImgUrl": "https://p3.music.126.net/5guhqPBTcIrrhLBotgaT6w==/109951170048511751.jpg",
+    "updateFrequency": "刚刚更新",
+    "playCount": 3216961024,
+    "description": "云音乐新歌榜：云音乐用户一周内收听所有新歌（一月内最新发行） 官方TOP排行榜，每天更新。",
+    "tracks": [
+      {
+        "first": "互删 (我走以后)",
+        "second": "江辰"
+      },
+      {
+        "first": "Dear my crazy soulmate",
+        "second": "IU"
+      },
+      {
+        "first": "两 难",
+        "second": "加木"
+      }
+    ]
+  },
+  {
+    "id": 2884035,
+    "name": "原创榜",
+    "coverImgUrl": "https://p4.music.126.net/BaP9nrocNTL3gGThysv4eQ==/109951170091896587.jpg",
+    "updateFrequency": "更新83首",
+    "playCount": 622622784,
+    "description": "云音乐独立原创音乐人作品官方榜单，以推荐优秀原创作品为目的。每周四网易云音乐首发。申请网易音乐人：http://music.163.com/nmusician/",
+    "tracks": [
+      {
+        "first": "HE",
+        "second": "何浩楠"
+      },
+      {
+        "first": "爱的意义",
+        "second": "余佳运"
+      },
+      {
+        "first": "我的背包 (Live)",
+        "second": "Rapeter"
+      }
+    ]
+  },
+  {
+    "id": 3778678,
+    "name": "热歌榜",
+    "coverImgUrl": "https://p4.music.126.net/0SUEG8yDACfx0Bw2MYFv4Q==/109951170048519512.jpg",
+    "updateFrequency": "更新15首",
+    "playCount": 14134637568,
+    "description": "云音乐热歌榜：云音乐用户一周内收听所有线上歌曲官方TOP排行榜，每日更新。",
+    "tracks": [
+      {
+        "first": "海屿你",
+        "second": "马也_Crabbit"
+      },
+      {
+        "first": "甲乙丙丁 (你我怎么两清)",
+        "second": "李佳薇"
+      },
+      {
+        "first": "如果呢",
+        "second": "郑润泽"
+      }
+    ]
+  }
+]

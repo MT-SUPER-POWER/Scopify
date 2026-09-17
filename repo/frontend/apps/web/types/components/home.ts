@@ -76,6 +76,21 @@ export interface NewAlbumsSectionProps {
   pageSize?: number;
 }
 
+export type RecentlyPlayedPlaylistsProps = PersonalizedPlaylistsProps;
+export type FollowedAlbumsSectionProps = NewAlbumsSectionProps;
+
+export interface ArtistTopSongsSectionProps {
+  artists: Array<{
+    id: number;
+    name: string;
+    picUrl: string;
+    musicSize?: number;
+  }>;
+  loadingPlayId?: string | null;
+  onPlayArtist: (artistId: number | string, event: React.MouseEvent) => void;
+  pageSize?: number;
+}
+
 export interface SectionPaginationProps {
   className?: string;
   currentPage: number;

@@ -20,6 +20,10 @@ export const musicQueryKeys = {
     recommendedPlaylists: () => ["home", "recommended-playlists"] as const,
     recommendedVoiceLists: (limit = 24) => ["home", "recommended-voice-lists", limit] as const,
     toplists: () => ["home", "toplists"] as const,
+    toplistTracks: (id: number | string) => ["home", "toplist-tracks", id] as const,
+    recentPlaylists: (limit = 20) => ["home", "recent-playlists", limit] as const,
+    followedArtists: (limit = 30) => ["home", "followed-artists", limit] as const,
+    followedArtistAlbums: (limit = 20) => ["home", "followed-artist-albums", limit] as const,
     userProfile: (userId: string) => ["home", "user-profile", userId] as const,
   },
   library: {

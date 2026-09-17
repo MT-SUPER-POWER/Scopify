@@ -60,14 +60,14 @@ export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: Ne
           )}
           <div
             className={cn(
-              "absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity",
+              "absolute inset-0 flex items-center justify-center bg-overlay/40 transition-opacity",
               isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100",
             )}
           >
             {isActive && isPlaying ? (
-              <Pause className="size-5 fill-white text-white" />
+              <Pause className="size-5 fill-overlay-foreground text-overlay-foreground" />
             ) : (
-              <Play className="ml-0.5 size-5 fill-white text-white" />
+              <Play className="ml-0.5 size-5 fill-overlay-foreground text-overlay-foreground" />
             )}
           </div>
         </div>

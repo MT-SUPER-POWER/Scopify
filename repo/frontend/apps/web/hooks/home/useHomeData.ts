@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { getAlbumDetailData } from "@/lib/api/album";
+import { getArtistTopSongs } from "@/lib/api/artist";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
@@ -15,18 +16,28 @@ import type {
   RecommendedVoiceListsResponse,
 } from "@/types/api/voicelist";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
-import { pruneRecommendPlaylist } from "@/types/api/playlist";
+import { pruneRecommendPlaylist, type RawRecommendPlaylist } from "@/types/api/playlist";
 import type { Artist, Song, Voice } from "@/types/search";
 import {
+  useFollowedArtistsAlbumsQuery,
+  useFollowedArtistsQuery,
   useHomeUserProfileQuery,
   useHotArtistsQuery,
   useNewAlbumsQuery,
   useNewSongsQuery,
   usePersonalizedPlaylistsQuery,
+  useRecentPlaylistsQuery,
   useRecommendedPlaylistsQuery,
   useRecommendedVoiceListsQuery,
   useToplistDetailQuery,
 } from "./useHomeQueries";
+
+export interface ArtistTopListItem {
+  id: number;
+  name: string;
+  picUrl: string;
+  musicSize?: number;
+}
 
 function getRecommendedVoices(response: RecommendedVoiceListsResponse | undefined) {
   return response?.data?.recommendVoiceVOS ?? [];
@@ -115,6 +126,9 @@ export function useHomeData() {
   const newSongsQuery = useNewSongsQuery();
   const toplistsQuery = useToplistDetailQuery();
   const newAlbumsQuery = useNewAlbumsQuery();
+  const recentPlaylistsQuery = useRecentPlaylistsQuery(isLogin);
+  const followedArtistsQuery = useFollowedArtistsQuery(isLogin);
+  const followedArtistsAlbumsQuery = useFollowedArtistsAlbumsQuery(isLogin);
   const userProfileQuery = useHomeUserProfileQuery(storedUserId);
 
   const bannerPlaylist = useMemo(() => {
@@ -172,6 +186,39 @@ export function useHomeData() {
     );
   }, [newAlbumsQuery.data?.albums]);
 
+  const recentPlaylists = useMemo(() => {
+    if (!isLogin) return [];
+    const list = recentPlaylistsQuery.data?.data?.list ?? [];
+    return list
+      .map((entry) => entry.data)
+      .filter((item): item is RawRecommendPlaylist => Boolean(item?.id && item?.name))
+      .map(pruneRecommendPlaylist);
+  }, [isLogin, recentPlaylistsQuery.data?.data?.list]);
+
+  const artistTopList = useMemo(() => {
+    const followed = followedArtistsQuery.data?.data ?? [];
+    if (isLogin && followed.length > 0) {
+      return followed.map((artist) => ({
+        id: artist.id,
+        name: artist.name,
+        picUrl: artist.picUrl || artist.avatarUrl || artist.img1v1Url || "",
+        musicSize: (artist as { musicSize?: number }).musicSize,
+      }));
+    }
+    return (hotArtistsQuery.data?.artists ?? []).map((artist) => ({
+      id: artist.id,
+      name: artist.name,
+      picUrl: artist.picUrl || artist.img1v1Url || "",
+      musicSize: artist.musicSize,
+    }));
+  }, [followedArtistsQuery.data?.data, hotArtistsQuery.data?.artists, isLogin]);
+
+  const followedAlbums = useMemo(() => {
+    return (followedArtistsAlbumsQuery.data ?? []).filter((album): album is NeteaseAlbum =>
+      Boolean(album?.id && album?.name),
+    );
+  }, [followedArtistsAlbumsQuery.data]);
+
   const isLoading =
     personalizedQuery.isFetching ||
     recommendedQuery.isFetching ||
@@ -195,7 +242,10 @@ export function useHomeData() {
     suggestedArtists.length > 0 ||
     newSongs.length > 0 ||
     toplists.length > 0 ||
-    newAlbums.length > 0;
+    newAlbums.length > 0 ||
+    recentPlaylists.length > 0 ||
+    artistTopList.length > 0 ||
+    followedAlbums.length > 0;
   const isUnavailable =
     !isLoading &&
     !hasHomeContent &&
@@ -282,6 +332,30 @@ export function useHomeData() {
     [loadingPlayId, setQueue, playQueueIndex, t],
   );
 
+  const handlePlayArtistTopSongs = useCallback(
+    async (artistId: number | string, e: React.MouseEvent) => {
+      e.stopPropagation();
+      const key = `artist-${artistId}`;
+      if (loadingPlayId === key) return;
+      setLoadingPlayId(key);
+      try {
+        const res = await getArtistTopSongs(artistId, 50);
+        const tracks: SongDetail[] = (res.data.songs ?? []).map(pruneSongDetail);
+        if (!tracks.length) {
+          toast.error(t("home.toast.playlistEmpty"));
+          return;
+        }
+        setQueue(tracks, 0);
+        await playQueueIndex(0);
+      } catch {
+        toast.error(t("home.toast.loadPlaylistFailed"));
+      } finally {
+        setLoadingPlayId(null);
+      }
+    },
+    [loadingPlayId, setQueue, playQueueIndex, t],
+  );
+
   const refreshRecommendedVoiceLists = useCallback(async () => {
     await recommendedVoiceListsQuery.refetch();
   }, [recommendedVoiceListsQuery]);
@@ -294,15 +368,25 @@ export function useHomeData() {
       newSongsQuery.refetch(),
       toplistsQuery.refetch(),
       newAlbumsQuery.refetch(),
-      ...(isLogin ? [recommendedQuery.refetch()] : []),
+      ...(isLogin
+        ? [
+            recommendedQuery.refetch(),
+            recentPlaylistsQuery.refetch(),
+            followedArtistsQuery.refetch(),
+            followedArtistsAlbumsQuery.refetch(),
+          ]
+        : []),
       ...(storedUserId ? [userProfileQuery.refetch()] : []),
     ]);
   }, [
+    followedArtistsAlbumsQuery,
+    followedArtistsQuery,
     hotArtistsQuery,
     isLogin,
     newAlbumsQuery,
     newSongsQuery,
     personalizedQuery,
+    recentPlaylistsQuery,
     recommendedQuery,
     recommendedVoiceListsQuery,
     storedUserId,
@@ -318,6 +402,9 @@ export function useHomeData() {
     newSongs,
     toplists,
     newAlbums,
+    recentPlaylists,
+    artistTopList,
+    followedAlbums,
     isRefreshingVoiceLists: recommendedVoiceListsQuery.isFetching,
     isLoading,
     isUnavailable,
@@ -332,6 +419,7 @@ export function useHomeData() {
     handlePlaySong,
     handlePlayAllNewSongs,
     handlePlayAlbum,
+    handlePlayArtistTopSongs,
     refreshRecommendedVoiceLists,
     fetchHomeData,
     t,

@@ -1,6 +1,6 @@
 "use client";
 
-import { Play } from "lucide-react";
+import { Music2, Play } from "lucide-react";
 import Image from "next/image";
 import { cn, formatPlayCount } from "@/lib/utils";
 
@@ -35,13 +35,19 @@ export function GridCard({
             isArtist && "rounded-full",
           )}
         >
-          <Image
-            width={200}
-            height={200}
-            src={coverUrl || ""}
-            alt={name}
-            className="size-full object-cover"
-          />
+          {coverUrl ? (
+            <Image
+              width={200}
+              height={200}
+              src={coverUrl}
+              alt={name}
+              className="size-full object-cover"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center bg-surface-sunken text-content-subtle">
+              <Music2 className="size-8 opacity-40" />
+            </div>
+          )}
         </div>
         {onPlay && (
           <button
@@ -52,7 +58,7 @@ export function GridCard({
             <Play className={cn("ml-0.5 size-6 fill-current", isLoading && "animate-pulse")} />
           </button>
         )}
-        {playCount !== undefined && (
+        {playCount !== undefined && playCount > 0 && (
           <div className="pointer-events-none absolute top-2 right-2 flex items-center gap-1 rounded-full bg-overlay/75 px-2 py-0.5 text-[11px] text-overlay-foreground opacity-0 shadow-panel backdrop-blur-sm transition-opacity duration-300 select-none group-hover:opacity-100">
             <Play className="size-2.5 fill-current" />
             <span>{formatPlayCount(playCount)}次播放</span>

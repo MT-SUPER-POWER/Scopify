@@ -59,18 +59,21 @@ export function SongItemSkeleton() {
 // ==========================================
 export function ToplistCardSkeleton() {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-content/5 bg-surface-elevated/70 p-3.5">
+    <div className="flex h-95 flex-col justify-between rounded-2xl border border-content/10 bg-surface-elevated p-4 shadow-lg sm:h-100">
       <div className="flex items-center gap-3">
-        <Skeleton className="size-16 shrink-0 rounded-lg bg-skeleton" />
-        <div className="flex flex-1 flex-col gap-1.5">
-          <Skeleton className="h-4 w-24 bg-skeleton" />
-          <Skeleton className="h-3 w-16 bg-skeleton-subtle" />
+        <Skeleton className="size-12 shrink-0 rounded-lg bg-skeleton" />
+        <div className="flex flex-1 flex-col gap-2">
+          <Skeleton className="h-5 w-28 bg-skeleton" />
+          <Skeleton className="h-3.5 w-20 bg-skeleton-subtle" />
         </div>
       </div>
-      <div className="flex flex-col gap-2 border-t border-content/5 pt-2">
-        <Skeleton className="h-3 w-full bg-skeleton-subtle" />
-        <Skeleton className="h-3 w-4/5 bg-skeleton-subtle" />
-        <Skeleton className="h-3 w-3/4 bg-skeleton-subtle" />
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex flex-1 flex-col gap-2">
+          <Skeleton className="h-4 w-14 rounded bg-skeleton" />
+          <Skeleton className="h-5 w-36 bg-skeleton" />
+          <Skeleton className="h-3.5 w-24 bg-skeleton-subtle" />
+        </div>
+        <Skeleton className="size-11 shrink-0 rounded-full bg-skeleton sm:size-12" />
       </div>
     </div>
   );
@@ -104,27 +107,27 @@ export function HomePageSkeleton() {
         </div>
       </section>
 
-      {/* 3. 新歌速递 */}
+      {/* 3. 艺人热门歌曲 */}
       <section className="space-y-4">
         <Skeleton className="h-8 w-44 bg-skeleton" />
-        <div className="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-2">
-          {[1, 2, 3, 4, 5, 6].map((id) => (
-            <SongItemSkeleton key={id} />
+        <div className="grid w-full min-w-0 auto-rows-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] grid-rows-[auto] gap-x-2 overflow-hidden">
+          {[1, 2, 3, 4, 5].map((id) => (
+            <GridCardSkeleton key={id} />
           ))}
         </div>
       </section>
 
-      {/* 4. 官方排行榜 */}
+      {/* 4. 推荐歌手 */}
       <section className="space-y-4">
-        <Skeleton className="h-8 w-44 bg-skeleton" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map((id) => (
-            <ToplistCardSkeleton key={id} />
+        <Skeleton className="h-8 w-32 bg-skeleton" />
+        <div className="grid w-full min-w-0 auto-rows-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] grid-rows-[auto] gap-x-2 overflow-hidden">
+          {[1, 2, 3, 4, 5].map((id) => (
+            <GridCardSkeleton key={id} isArtist />
           ))}
         </div>
       </section>
 
-      {/* 5. 新碟上架 */}
+      {/* 5. 专辑 */}
       <section className="space-y-4">
         <Skeleton className="h-8 w-44 bg-skeleton" />
         <div className="grid w-full min-w-0 auto-rows-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] grid-rows-[auto] gap-x-2 overflow-hidden">
@@ -134,12 +137,22 @@ export function HomePageSkeleton() {
         </div>
       </section>
 
-      {/* 6. 推荐歌手 */}
+      {/* 6. 新歌速递 */}
       <section className="space-y-4">
-        <Skeleton className="h-8 w-32 bg-skeleton" />
-        <div className="grid w-full min-w-0 auto-rows-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] grid-rows-[auto] gap-x-2 overflow-hidden">
-          {[1, 2, 3, 4, 5].map((id) => (
-            <GridCardSkeleton key={id} isArtist />
+        <Skeleton className="h-8 w-44 bg-skeleton" />
+        <div className="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-2">
+          {[1, 2, 3, 4, 5, 6].map((id) => (
+            <SongItemSkeleton key={id} />
+          ))}
+        </div>
+      </section>
+
+      {/* 7. 官方排行榜 Hero 大卡片 (压轴) */}
+      <section className="space-y-4">
+        <Skeleton className="h-8 w-44 bg-skeleton" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((id) => (
+            <ToplistCardSkeleton key={id} />
           ))}
         </div>
       </section>
