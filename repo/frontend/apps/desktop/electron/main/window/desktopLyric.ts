@@ -413,11 +413,6 @@ function updatePreferences(update: DesktopLyricPreferencesUpdate) {
   savePreferences(nextPreferences);
 
   if (isWindowAlive(desktopLyricWindow)) {
-    const area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
-    desktopLyricWindow.setPosition(
-      Math.round(area.x + (area.width - 892) / 2),
-      Math.round(area.y + area.height - 180),
-    );
     applyPreferences(desktopLyricWindow);
     desktopLyricWindow.webContents.send("desktop-lyric:preferences", nextPreferences);
   }
