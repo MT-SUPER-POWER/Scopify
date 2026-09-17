@@ -11,5 +11,6 @@ export interface DesktopSubtitleControlStore {
   setOpen: (open: boolean) => void;
   refresh: () => Promise<void>;
   toggle: () => Promise<void>;
+  close: () => Promise<void>;
   configure: (patch: DesktopLyricPreferencesUpdate) => Promise<void>;
 }

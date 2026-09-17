@@ -100,6 +100,9 @@ export interface RuntimeDesktopLyrics {
   close(): Promise<boolean>;
   getPreferences(): Promise<DesktopLyricPreferences | null>;
   onCommand(callback: (command: DesktopLyricCommand) => void): RuntimeUnsubscribe;
+  onPreferencesChanged(
+    callback: (preferences: DesktopLyricPreferences) => void,
+  ): RuntimeUnsubscribe;
   open(): Promise<boolean>;
   sendCommand(command: DesktopLyricCommand): void;
   toggle(): Promise<boolean>;

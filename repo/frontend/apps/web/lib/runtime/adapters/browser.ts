@@ -399,6 +399,7 @@ export function createBrowserRuntime(
       close: async () => false,
       getPreferences: async () => null,
       onCommand: () => NOOP,
+      onPreferencesChanged: () => NOOP,
       open: async () => false,
       sendCommand: NOOP,
       toggle: async () => false,

@@ -45,13 +45,10 @@ export function useDesktopSubtitle() {
     document.documentElement.classList.add("desktop-lyrics-html");
     document.body.classList.add("desktop-lyrics-body");
     const sync = () => {
-      void useAppearanceStore.persist.rehydrate();
       void useLyricStageStore.persist.rehydrate();
     };
     const storage = (event: StorageEvent) => {
       if (event.key === null) sync();
-      else if (event.key === useAppearanceStore.persist.getOptions().name)
-        void useAppearanceStore.persist.rehydrate();
       else if (event.key === useLyricStageStore.persist.getOptions().name)
         void useLyricStageStore.persist.rehydrate();
     };

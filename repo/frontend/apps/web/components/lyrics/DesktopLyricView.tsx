@@ -11,7 +11,10 @@ export function DesktopLyricView() {
   const view = useDesktopSubtitle();
   const source = view.line?.text || view.projection.track?.title || t("subtitlePalette.waiting");
   return (
-    <div data-desktop-lyrics-root className="flex w-full justify-center bg-transparent p-2">
+    <div
+      data-desktop-lyrics-root
+      className="flex w-full items-start justify-center bg-transparent p-2"
+    >
       <div
         ref={view.contentRef}
         className="group/subtitle relative w-fit max-w-full pt-8"
