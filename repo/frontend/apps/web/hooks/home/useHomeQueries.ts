@@ -3,9 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getHotArtists } from "@/lib/api/artist";
-import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
+import { getNewestAlbums } from "@/lib/api/album";
+import { getPersonalizedNewSongs } from "@/lib/api/music";
 import { getPersonalizePlaylists, getRecommendedPlaylists } from "@/lib/api/playlist";
+import { getToplistDetail } from "@/lib/api/toplist";
 import { getUserDetail } from "@/lib/api/user";
+import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 export function usePersonalizedPlaylistsQuery(limit = 100) {
@@ -50,5 +53,29 @@ export function useHomeUserProfileQuery(userId: null | string) {
       return (await getUserDetail(userId)).data;
     },
     queryKey: musicQueryKeys.home.userProfile(userId ?? ""),
+  });
+}
+
+export function useNewSongsQuery(limit = 12) {
+  return useQuery({
+    meta: { persist: true, scope: "public" },
+    queryFn: async () => (await getPersonalizedNewSongs(limit)).data,
+    queryKey: musicQueryKeys.home.newSongs(limit),
+  });
+}
+
+export function useToplistDetailQuery() {
+  return useQuery({
+    meta: { persist: true, scope: "public" },
+    queryFn: async () => (await getToplistDetail()).data,
+    queryKey: musicQueryKeys.home.toplists(),
+  });
+}
+
+export function useNewAlbumsQuery() {
+  return useQuery({
+    meta: { persist: true, scope: "public" },
+    queryFn: async () => (await getNewestAlbums()).data,
+    queryKey: musicQueryKeys.home.newAlbums(),
   });
 }

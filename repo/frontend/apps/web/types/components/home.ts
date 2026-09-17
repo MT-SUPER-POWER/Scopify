@@ -1,6 +1,9 @@
 import type { MouseEvent, ReactNode } from "react";
+import type { NeteaseAlbum } from "@/types/api/album";
 import type { NeteaseBanner } from "@/types/api/banner";
+import type { SongDetail } from "@/types/api/music";
 import type { RecommendPlaylist } from "@/types/api/playlist";
+import type { ToplistDetailItem } from "@/types/api/toplist";
 import type { CarouselDirection } from "@/types/home";
 import type { Artist, Voice } from "@/types/search";
 
@@ -53,6 +56,26 @@ export interface RecommendedVoiceListsProps {
   voices: Voice[];
 }
 
+export interface NewSongsSectionProps {
+  songs: SongDetail[];
+  onPlaySong: (song: SongDetail, index: number) => void;
+  onPlayAll: () => void;
+  pageSize?: number;
+}
+
+export interface ToplistSectionProps {
+  toplists: ToplistDetailItem[];
+  loadingPlayId?: string | null;
+  onPlayToplist: (id: number | string, event: React.MouseEvent) => void;
+}
+
+export interface NewAlbumsSectionProps {
+  albums: NeteaseAlbum[];
+  loadingPlayId?: string | null;
+  onPlayAlbum: (id: number | string, event: React.MouseEvent) => void;
+  pageSize?: number;
+}
+
 export interface SectionPaginationProps {
   className?: string;
   currentPage: number;
@@ -86,6 +109,8 @@ export interface CollapsibleSectionProps {
   onOpenChange?: (open: boolean) => void;
   collapsedHeight?: string;
   collapsedRows?: number;
+  disableHeightCollapse?: boolean;
+  showTrigger?: boolean;
 }
 
 export type HomeDailyRecommendationProps = Pick<HomeGreetingSectionProps, "dateInfo">;

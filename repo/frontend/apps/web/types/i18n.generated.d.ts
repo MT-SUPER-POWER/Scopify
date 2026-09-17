@@ -5888,6 +5888,36 @@ export interface TranslateFn {
    */
   (key: "home.pagination.next", params?: TranslationParams): string;
   /**
+   * zh-CN: 新歌速递
+   * zh-TW: 新歌速遞
+   * en-US: New Releases
+   */
+  (key: "home.newSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放全部
+   * zh-TW: 播放全部
+   * en-US: Play All
+   */
+  (key: "home.playAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 官方排行榜
+   * zh-TW: 官方排行榜
+   * en-US: Top Charts
+   */
+  (key: "home.toplists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新碟上架
+   * zh-TW: 新碟上架
+   * en-US: New Albums
+   */
+  (key: "home.newAlbums", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{artist}} · {{year}}
+   * zh-TW: {{artist}} · {{year}}
+   * en-US: {{artist}} · {{year}}
+   */
+  (key: "home.albumSummary", params?: TranslationParams): string;
+  /**
    * zh-CN: 当前网络异常
    * zh-TW: 目前網路異常
    * en-US: Network unavailable

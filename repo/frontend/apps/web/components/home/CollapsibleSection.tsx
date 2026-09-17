@@ -19,6 +19,8 @@ export function CollapsibleSection({
   onOpenChange,
   collapsedHeight = "180px",
   collapsedRows,
+  disableHeightCollapse = false,
+  showTrigger,
 }: CollapsibleSectionProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const isControlled = open !== undefined;
@@ -33,8 +35,10 @@ export function CollapsibleSection({
     collapsedHeight,
     collapsedRows,
     isOpen,
+    disableHeightCollapse,
   );
   const { t } = useI18n();
+  const isTriggerVisible = showTrigger ?? (isOpen || hasCollapsedOverflow);
 
   return (
     <Collapsible open={isOpen} onOpenChange={handleOpenChange} className="space-y-4">
@@ -44,7 +48,7 @@ export function CollapsibleSection({
         </div>
         <div className="flex shrink-0 items-center gap-4">
           {action}
-          {isOpen || hasCollapsedOverflow ? (
+          {isTriggerVisible ? (
             <CollapsibleTrigger asChild>
               <button
                 type="button"
@@ -62,26 +66,30 @@ export function CollapsibleSection({
           ) : null}
         </div>
       </div>
-      <div className="relative overflow-hidden">
-        <motion.div
-          initial={false}
-          animate={{ height: isOpen || !hasCollapsedOverflow ? "auto" : height }}
-          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-          className="relative"
-        >
-          <div ref={contentRef}>{children}</div>
-          <AnimatePresence>
-            {!isOpen && hasCollapsedOverflow && !collapsedRows && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-surface-raised via-surface-raised/80 to-transparent"
-              />
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
+      {disableHeightCollapse ? (
+        <div>{children}</div>
+      ) : (
+        <div className="relative overflow-hidden">
+          <motion.div
+            initial={false}
+            animate={{ height: isOpen || !hasCollapsedOverflow ? "auto" : height }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="relative"
+          >
+            <div ref={contentRef}>{children}</div>
+            <AnimatePresence>
+              {!isOpen && hasCollapsedOverflow && !collapsedRows && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-surface-raised via-surface-raised/80 to-transparent"
+                />
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+      )}
     </Collapsible>
   );
 }

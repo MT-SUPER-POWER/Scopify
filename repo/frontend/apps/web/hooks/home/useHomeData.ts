@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { getAlbumDetailData } from "@/lib/api/album";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import type { NeteaseAlbum } from "@/types/api/album";
+import type { ToplistDetailItem } from "@/types/api/toplist";
 import type {
   RecommendedVoice,
   RecommendedVoiceArtist,
@@ -17,9 +20,12 @@ import type { Artist, Song, Voice } from "@/types/search";
 import {
   useHomeUserProfileQuery,
   useHotArtistsQuery,
+  useNewAlbumsQuery,
+  useNewSongsQuery,
   usePersonalizedPlaylistsQuery,
   useRecommendedPlaylistsQuery,
   useRecommendedVoiceListsQuery,
+  useToplistDetailQuery,
 } from "./useHomeQueries";
 
 function getRecommendedVoices(response: RecommendedVoiceListsResponse | undefined) {
@@ -93,6 +99,7 @@ export function useHomeData() {
   const setUserId = useUserStore((s) => s.setUserId);
   const setQueue = usePlayerStore((state) => state.setQueue);
   const playQueueIndex = usePlayerStore((state) => state.playQueueIndex);
+  const playTrack = usePlayerStore((state) => state.playTrack);
 
   const [loadingPlayId, setLoadingPlayId] = useState<string | null>(null);
   const [dateInfo, setDateInfo] = useState({ dayOfWeek: "星期三", dateNum: 18 });
@@ -105,6 +112,9 @@ export function useHomeData() {
   const recommendedQuery = useRecommendedPlaylistsQuery(isLogin);
   const recommendedVoiceListsQuery = useRecommendedVoiceListsQuery();
   const hotArtistsQuery = useHotArtistsQuery();
+  const newSongsQuery = useNewSongsQuery();
+  const toplistsQuery = useToplistDetailQuery();
+  const newAlbumsQuery = useNewAlbumsQuery();
   const userProfileQuery = useHomeUserProfileQuery(storedUserId);
 
   const bannerPlaylist = useMemo(() => {
@@ -133,27 +143,66 @@ export function useHomeData() {
         .filter((voice): voice is Voice => voice !== null),
     [recommendedVoiceListsQuery.data, t],
   );
+
+  const newSongs = useMemo(() => {
+    return (newSongsQuery.data?.result ?? [])
+      .map((item) => pruneSongDetail(item.song))
+      .filter((song): song is SongDetail => Boolean(song?.id));
+  }, [newSongsQuery.data?.result]);
+
+  const OFFICIAL_TOPLIST_IDS = useMemo(() => [19723756, 3779629, 3778678, 2884035], []);
+
+  const toplists = useMemo(() => {
+    const list = toplistsQuery.data?.list ?? [];
+    if (!list.length) return [];
+    const chartMap = new Map(list.map((item) => [item.id, item]));
+    const matched = OFFICIAL_TOPLIST_IDS.map((id) => chartMap.get(id)).filter(
+      (item): item is ToplistDetailItem => Boolean(item && item.tracks && item.tracks.length > 0),
+    );
+    if (matched.length >= 4) return matched.slice(0, 4);
+    const remaining = list.filter(
+      (item) => !OFFICIAL_TOPLIST_IDS.includes(item.id) && item.tracks && item.tracks.length > 0,
+    );
+    return [...matched, ...remaining].slice(0, 4);
+  }, [OFFICIAL_TOPLIST_IDS, toplistsQuery.data?.list]);
+
+  const newAlbums = useMemo(() => {
+    return (newAlbumsQuery.data?.albums ?? []).filter((album): album is NeteaseAlbum =>
+      Boolean(album?.id && album?.name),
+    );
+  }, [newAlbumsQuery.data?.albums]);
+
   const isLoading =
     personalizedQuery.isFetching ||
     recommendedQuery.isFetching ||
     recommendedVoiceListsQuery.isFetching ||
-    hotArtistsQuery.isFetching;
+    hotArtistsQuery.isFetching ||
+    newSongsQuery.isFetching ||
+    toplistsQuery.isFetching ||
+    newAlbumsQuery.isFetching;
   const hasError =
     personalizedQuery.isError ||
     recommendedQuery.isError ||
     recommendedVoiceListsQuery.isError ||
-    hotArtistsQuery.isError;
+    hotArtistsQuery.isError ||
+    newSongsQuery.isError ||
+    toplistsQuery.isError ||
+    newAlbumsQuery.isError;
   const hasHomeContent =
     playlists.length > 0 ||
     bannerPlaylist.length > 0 ||
     recommendedVoiceLists.length > 0 ||
-    suggestedArtists.length > 0;
+    suggestedArtists.length > 0 ||
+    newSongs.length > 0 ||
+    toplists.length > 0 ||
+    newAlbums.length > 0;
   const isUnavailable =
     !isLoading &&
     !hasHomeContent &&
     personalizedQuery.isError &&
     recommendedVoiceListsQuery.isError &&
-    hotArtistsQuery.isError;
+    hotArtistsQuery.isError &&
+    newSongsQuery.isError;
 
   useEffect(() => {
     const today = new Date();
@@ -195,6 +244,44 @@ export function useHomeData() {
     [loadingPlayId, setQueue, playQueueIndex, t],
   );
 
+  const handlePlaySong = useCallback(
+    async (song: SongDetail, index: number) => {
+      setQueue(newSongs, index);
+      await playTrack(song);
+    },
+    [newSongs, setQueue, playTrack],
+  );
+
+  const handlePlayAllNewSongs = useCallback(async () => {
+    if (!newSongs.length) return;
+    setQueue(newSongs, 0);
+    await playTrack(newSongs[0]);
+  }, [newSongs, setQueue, playTrack]);
+
+  const handlePlayAlbum = useCallback(
+    async (id: number | string, e: React.MouseEvent) => {
+      e.stopPropagation();
+      const key = `album-${id}`;
+      if (loadingPlayId === key) return;
+      setLoadingPlayId(key);
+      try {
+        const res = await getAlbumDetailData(id);
+        const tracks: SongDetail[] = (res.songs ?? []).map(pruneSongDetail);
+        if (!tracks.length) {
+          toast.error(t("home.toast.playlistEmpty"));
+          return;
+        }
+        setQueue(tracks, 0);
+        await playQueueIndex(0);
+      } catch {
+        toast.error(t("home.toast.loadPlaylistFailed"));
+      } finally {
+        setLoadingPlayId(null);
+      }
+    },
+    [loadingPlayId, setQueue, playQueueIndex, t],
+  );
+
   const refreshRecommendedVoiceLists = useCallback(async () => {
     await recommendedVoiceListsQuery.refetch();
   }, [recommendedVoiceListsQuery]);
@@ -204,16 +291,22 @@ export function useHomeData() {
       personalizedQuery.refetch(),
       hotArtistsQuery.refetch(),
       recommendedVoiceListsQuery.refetch(),
+      newSongsQuery.refetch(),
+      toplistsQuery.refetch(),
+      newAlbumsQuery.refetch(),
       ...(isLogin ? [recommendedQuery.refetch()] : []),
       ...(storedUserId ? [userProfileQuery.refetch()] : []),
     ]);
   }, [
     hotArtistsQuery,
     isLogin,
+    newAlbumsQuery,
+    newSongsQuery,
     personalizedQuery,
     recommendedQuery,
     recommendedVoiceListsQuery,
     storedUserId,
+    toplistsQuery,
     userProfileQuery,
   ]);
 
@@ -222,6 +315,9 @@ export function useHomeData() {
     bannerPlaylist,
     suggestedArtists,
     recommendedVoiceLists,
+    newSongs,
+    toplists,
+    newAlbums,
     isRefreshingVoiceLists: recommendedVoiceListsQuery.isFetching,
     isLoading,
     isUnavailable,
@@ -233,6 +329,9 @@ export function useHomeData() {
     isLogin,
     setLoadingPlayId,
     handlePlayPlaylist,
+    handlePlaySong,
+    handlePlayAllNewSongs,
+    handlePlayAlbum,
     refreshRecommendedVoiceLists,
     fetchHomeData,
     t,

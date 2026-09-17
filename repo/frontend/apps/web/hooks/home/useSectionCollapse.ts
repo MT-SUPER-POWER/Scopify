@@ -5,12 +5,14 @@ export function useSectionCollapse(
   collapsedHeight: string,
   collapsedRows: number | undefined,
   isOpen: boolean,
+  disabled = false,
 ) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(collapsedHeight);
   const [hasCollapsedOverflow, setHasCollapsedOverflow] = useState(true);
 
   useLayoutEffect(() => {
+    if (disabled) return;
     const content = contentRef.current;
     if (!content) return;
 
@@ -49,7 +51,7 @@ export function useSectionCollapse(
         item.inert = false;
       });
     };
-  }, [collapsedHeight, collapsedRows, isOpen]);
+  }, [collapsedHeight, collapsedRows, isOpen, disabled]);
 
   return { contentRef, hasCollapsedOverflow, height };
 }

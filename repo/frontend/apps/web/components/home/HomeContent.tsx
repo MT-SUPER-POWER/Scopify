@@ -3,9 +3,12 @@
 import { FeaturedActivitiesCarousel } from "@/components/home/FeaturedActivitiesCarousel";
 import { HomeGreetingSection } from "@/components/home/HomeGreetingSection";
 import { HomePageSkeleton } from "@/components/home/HomePageSkeleton";
+import { NewAlbumsSection } from "@/components/home/NewAlbumsSection";
+import { NewSongsSection } from "@/components/home/NewSongsSection";
 import { PersonalizedPlaylists } from "@/components/home/PersonalizedPlaylists";
 import { RecommendedVoiceLists } from "@/components/home/RecommendedVoiceLists";
 import { SuggestedArtists } from "@/components/home/SuggestedArtists";
+import { ToplistSection } from "@/components/home/ToplistSection";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useHomeData } from "@/hooks/home/useHomeData";
 import { getHomeGreetingKey } from "@/lib/home/greeting";
@@ -21,6 +24,9 @@ export function HomeContent() {
     isRefreshingVoiceLists,
     bannerPlaylist,
     suggestedArtists,
+    newSongs,
+    toplists,
+    newAlbums,
     isLoading,
     isUnavailable,
     loadingPlayId,
@@ -29,6 +35,9 @@ export function HomeContent() {
     userName,
     isLogin,
     handlePlayPlaylist,
+    handlePlaySong,
+    handlePlayAllNewSongs,
+    handlePlayAlbum,
     refreshRecommendedVoiceLists,
     fetchHomeData,
   } = useHomeData();
@@ -82,7 +91,25 @@ export function HomeContent() {
             onPlayPlaylist={handlePlayPlaylist}
           />
 
+          <NewSongsSection
+            songs={newSongs}
+            onPlaySong={handlePlaySong}
+            onPlayAll={handlePlayAllNewSongs}
+          />
+
           <FeaturedActivitiesCarousel />
+
+          <ToplistSection
+            toplists={toplists}
+            loadingPlayId={loadingPlayId}
+            onPlayToplist={handlePlayPlaylist}
+          />
+
+          <NewAlbumsSection
+            albums={newAlbums}
+            loadingPlayId={loadingPlayId}
+            onPlayAlbum={handlePlayAlbum}
+          />
 
           <RecommendedVoiceLists
             voices={recommendedVoiceLists}

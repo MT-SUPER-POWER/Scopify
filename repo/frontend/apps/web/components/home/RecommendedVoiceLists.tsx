@@ -84,7 +84,8 @@ export function RecommendedVoiceLists({
             />
           ) : null
         }
-        collapsedHeight="244px"
+        disableHeightCollapse
+        showTrigger={pageCount > 1}
       >
         <div className="relative overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>

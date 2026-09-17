@@ -3,6 +3,7 @@ import type {
   AlbumSublistParams,
   AlbumSublistResponse,
   AlbumSubscribeResponse,
+  NewestAlbumsResponse,
 } from "@/types/api/album";
 
 import request, { requestConfig, requestData } from "@/lib/web/request";
@@ -51,3 +52,16 @@ export function subscribeAlbum(id: number | string, subscribe: boolean) {
     url: "/album/sub",
   });
 }
+
+/**
+ * 获取最新专辑
+ * GET /album/newest
+ */
+export const getNewestAlbums = () => {
+  return request<NewestAlbumsResponse>(
+    requestConfig({
+      method: "get",
+      url: "/album/newest",
+    }),
+  );
+};
