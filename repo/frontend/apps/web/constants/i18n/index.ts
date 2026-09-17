@@ -1,3 +1,4 @@
+import { appearanceMessages } from "./appearance";
 import { commonMessages } from "./common";
 import { errorPageMessages } from "./errorPage";
 import { settingsMessages } from "./settings";
@@ -36,6 +37,7 @@ export const messages = {
     ...commonMessages["zh-CN"],
     ...errorPageMessages["zh-CN"],
     ...settingsMessages["zh-CN"],
+    ...appearanceMessages["zh-CN"],
     ...appCloseMessages["zh-CN"],
     ...layoutMessages["zh-CN"],
     ...contextMenuMessages["zh-CN"],
@@ -70,6 +72,7 @@ export const messages = {
     ...commonMessages["zh-TW"],
     ...errorPageMessages["zh-TW"],
     ...settingsMessages["zh-TW"],
+    ...appearanceMessages["zh-TW"],
     ...appCloseMessages["zh-TW"],
     ...layoutMessages["zh-TW"],
     ...contextMenuMessages["zh-TW"],
@@ -104,6 +107,7 @@ export const messages = {
     ...commonMessages["en-US"],
     ...errorPageMessages["en-US"],
     ...settingsMessages["en-US"],
+    ...appearanceMessages["en-US"],
     ...appCloseMessages["en-US"],
     ...layoutMessages["en-US"],
     ...contextMenuMessages["en-US"],

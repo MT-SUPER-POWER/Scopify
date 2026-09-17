@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ShortcutSettings } from "@/components/shortcuts/ShortcutSettings";
 import { SETTINGS_TABS } from "@/constants/settings";
@@ -15,6 +16,10 @@ import { GeneralSettingsTab } from "./GeneralSettingsTab";
 import { NetworkSettingsTab } from "./NetworkSettingsTab";
 import { SaveChangesButton, SaveConfirmModal, SettingsLoadingState } from "./SettingsUI";
 import { StorageSettingsTab } from "./StorageSettingsTab";
+
+const AppearanceSettingsTab = dynamic(() =>
+  import("./AppearanceSettingsTab").then((module) => module.AppearanceSettingsTab),
+);
 
 const SettingsPage = () => {
   const { t } = useI18n();
@@ -57,6 +62,9 @@ const SettingsPage = () => {
               onWebChange={settings.handleWebChange}
               onDesktopChange={settings.handleDesktopChange}
             />
+          </TabsContent>
+          <TabsContent value="appearance">
+            <AppearanceSettingsTab />
           </TabsContent>
           <TabsContent value="network">
             <NetworkSettingsTab

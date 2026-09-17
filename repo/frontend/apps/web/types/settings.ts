@@ -1,7 +1,8 @@
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
 import type { WebConfig } from "@/types/config";
 
-export type SettingsTabId = "general" | "network" | "storage" | "desktop" | "shortcuts";
+export type SettingsTabId =
+  "general" | "appearance" | "network" | "storage" | "desktop" | "shortcuts";
 
 export interface SettingsPageRouteProps {
   searchParams: Promise<{ tab?: string | string[] }>;

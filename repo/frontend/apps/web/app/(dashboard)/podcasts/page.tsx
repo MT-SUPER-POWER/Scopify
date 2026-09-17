@@ -10,7 +10,7 @@ import { PodcastRecommendations } from "@/components/library/PodcastRecommendati
 import { PodcastViewToggle } from "@/components/library/PodcastViewToggle";
 import { SubscribedPodcastGrid } from "@/components/library/SubscribedPodcastGrid";
 import { SubscribedPodcastTable } from "@/components/library/SubscribedPodcastTable";
-import { TimeBasedBackground } from "@/components/shared/TimeBasedBackground";
+import { AppBackground } from "@/components/shared/AppBackground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useCreatedPodcastsQuery,
@@ -50,7 +50,7 @@ export default function PodcastsPage() {
 
   return (
     <main className="relative min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
-      <TimeBasedBackground />
+      <AppBackground />
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <Tabs value={activeTab} onValueChange={handleTabChange}>
           <header className="flex flex-wrap items-center justify-between gap-4 pb-5">

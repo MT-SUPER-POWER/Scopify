@@ -4,7 +4,6 @@ import { languageLabelKeys } from "@/lib/i18n";
 import { useI18n } from "@/store/module/i18n";
 import { APP_LOCALES, type AppLocale } from "@/types/config";
 import type { GeneralSettingsTabProps } from "@/types/components/settings";
-import { AppearanceModeControl } from "./AppearanceModeControl";
 import { AudioDeviceSettingsSection } from "./AudioDeviceSettingsSection";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
 
@@ -35,7 +34,6 @@ export function GeneralSettingsTab({
               </SettingSelect>
             }
           />
-          <AppearanceModeControl />
           {config.desktop ? (
             <>
               <SettingRow

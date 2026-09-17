@@ -22,69 +22,6 @@ import {
   useRecommendedVoiceListsQuery,
 } from "./useHomeQueries";
 
-export interface TimeTheme {
-  start: number;
-  end: number;
-  greetingKey:
-    | "home.greeting.night"
-    | "home.greeting.morning"
-    | "home.greeting.afternoon"
-    | "home.greeting.evening";
-  gradient: string;
-}
-
-export const TIME_THEMES: TimeTheme[] = [
-  {
-    start: 0,
-    end: 5,
-    greetingKey: "home.greeting.night",
-    gradient: "from-home-atmosphere-night/90 via-surface-raised/80 to-surface-raised h-80",
-  },
-  {
-    start: 5,
-    end: 7,
-    greetingKey: "home.greeting.morning",
-    gradient: "from-home-atmosphere-dawn/45 via-home-atmosphere-sunset/30 to-surface-raised h-30",
-  },
-  {
-    start: 7,
-    end: 10,
-    greetingKey: "home.greeting.morning",
-    gradient: "from-home-atmosphere-morning/60 via-surface-raised/80 to-surface-raised h-80",
-  },
-  {
-    start: 10,
-    end: 14,
-    greetingKey: "home.greeting.afternoon",
-    gradient: "from-home-atmosphere-afternoon/65 via-surface-raised/80 to-surface-raised h-80",
-  },
-  {
-    start: 14,
-    end: 17,
-    greetingKey: "home.greeting.afternoon",
-    gradient: "from-home-atmosphere-daylight/60 via-surface-raised/80 to-surface-raised h-80",
-  },
-  {
-    start: 17,
-    end: 19,
-    greetingKey: "home.greeting.evening",
-    gradient:
-      "from-home-atmosphere-sunset/45 via-home-atmosphere-evening/30 to-surface-raised h-40",
-  },
-  {
-    start: 19,
-    end: 22,
-    greetingKey: "home.greeting.evening",
-    gradient: "from-home-atmosphere-evening/80 via-surface-raised/85 to-surface-raised h-80",
-  },
-  {
-    start: 22,
-    end: 24,
-    greetingKey: "home.greeting.night",
-    gradient: "from-home-atmosphere-late-night/90 via-surface-raised/85 to-surface-raised h-80",
-  },
-];
-
 function getRecommendedVoices(response: RecommendedVoiceListsResponse | undefined) {
   return response?.data?.recommendVoiceVOS ?? [];
 }
@@ -146,11 +83,6 @@ function toRecommendedVoice(
   };
 }
 
-export function getTimeTheme() {
-  const hour = new Date().getHours();
-  return TIME_THEMES.find((t) => hour >= t.start && hour < t.end) ?? TIME_THEMES[0];
-}
-
 export function useHomeData() {
   const { t, locale } = useI18n();
   const isLogin = useLoginStatus();
@@ -159,7 +91,8 @@ export function useHomeData() {
   const userId = user?.userId;
   const setUser = useUserStore((s) => s.setUser);
   const setUserId = useUserStore((s) => s.setUserId);
-  const { setQueue, playQueueIndex } = usePlayerStore();
+  const setQueue = usePlayerStore((state) => state.setQueue);
+  const playQueueIndex = usePlayerStore((state) => state.playQueueIndex);
 
   const [loadingPlayId, setLoadingPlayId] = useState<string | null>(null);
   const [dateInfo, setDateInfo] = useState({ dayOfWeek: "星期三", dateNum: 18 });

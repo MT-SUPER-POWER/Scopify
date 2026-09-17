@@ -2234,6 +2234,198 @@ export interface TranslateFn {
    */
   (key: "settings.desktopLyrics.skipTaskbar.sublabel", params?: TranslationParams): string;
   /**
+   * zh-CN: 外观与样式
+   * zh-TW: 外觀與樣式
+   * en-US: Appearance
+   */
+  (key: "settings.tab.appearance", params?: TranslationParams): string;
+  /**
+   * zh-CN: 应用背景
+   * zh-TW: 應用背景
+   * en-US: App background
+   */
+  (key: "appearance.background", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景主题
+   * zh-TW: 背景主題
+   * en-US: Background theme
+   */
+  (key: "appearance.presets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雾银
+   * zh-TW: 霧銀
+   * en-US: Silver
+   */
+  (key: "appearance.preset.silver", params?: TranslationParams): string;
+  /**
+   * zh-CN: 晨雾
+   * zh-TW: 晨霧
+   * en-US: Morning mist
+   */
+  (key: "appearance.preset.mist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浅苔
+   * zh-TW: 淺苔
+   * en-US: Sage
+   */
+  (key: "appearance.preset.sage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暖砂
+   * zh-TW: 暖砂
+   * en-US: Warm sand
+   */
+  (key: "appearance.preset.sand", params?: TranslationParams): string;
+  /**
+   * zh-CN: 淡紫
+   * zh-TW: 淡紫
+   * en-US: Lavender
+   */
+  (key: "appearance.preset.lavender", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自訂
+   * en-US: Custom
+   */
+  (key: "appearance.preset.custom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 起始颜色
+   * zh-TW: 起始顏色
+   * en-US: Starting color
+   */
+  (key: "appearance.customTop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 过渡颜色
+   * zh-TW: 過渡顏色
+   * en-US: Transition color
+   */
+  (key: "appearance.customBottom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景强度
+   * zh-TW: 背景強度
+   * en-US: Intensity
+   */
+  (key: "appearance.intensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 渐变范围
+   * zh-TW: 漸層範圍
+   * en-US: Gradient height
+   */
+  (key: "appearance.height", params?: TranslationParams): string;
+  /**
+   * zh-CN: 切换方式
+   * zh-TW: 切換方式
+   * en-US: Switching
+   */
+  (key: "appearance.rotation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 固定主题
+   * zh-TW: 固定主題
+   * en-US: Fixed theme
+   */
+  (key: "appearance.rotation.fixed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每日轮换预设
+   * zh-TW: 每日輪替預設
+   * en-US: Rotate presets daily
+   */
+  (key: "appearance.rotation.daily", params?: TranslationParams): string;
+  /**
+   * zh-CN: 恢复默认
+   * zh-TW: 恢復預設
+   * en-US: Reset
+   */
+  (key: "appearance.reset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 实时生效，自动保存
+   * zh-TW: 即時生效，自動儲存
+   * en-US: Applied live and saved automatically
+   */
+  (key: "appearance.saved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 实时预览
+   * zh-TW: 即時預覽
+   * en-US: Live preview
+   */
+  (key: "appearance.preview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首页外观预览
+   * zh-TW: 首頁外觀預覽
+   * en-US: Home appearance preview
+   */
+  (key: "appearance.preview.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前主题：{name}
+   * zh-TW: 目前主題：{name}
+   * en-US: Current theme: {name}
+   */
+  (key: "appearance.preview.current", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕歌词
+   * zh-TW: 字幕歌詞
+   * en-US: Subtitle lyrics
+   */
+  (key: "appearance.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词预览
+   * zh-TW: 歌詞預覽
+   * en-US: Lyrics preview
+   */
+  (key: "appearance.lyrics.preview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 此处保存预览样式，独立桌面歌词窗口将在后续接入。
+   * zh-TW: 此處儲存預覽樣式，獨立桌面歌詞視窗將在後續接入。
+   * en-US: Preview styles are saved here. A separate desktop lyrics window will be added later.
+   */
+  (key: "appearance.lyrics.note", params?: TranslationParams): string;
+  /**
+   * zh-CN: 让音乐，留在生活里
+   * zh-TW: 讓音樂，留在生活裡
+   * en-US: Let the music stay with you
+   */
+  (key: "appearance.lyrics.text", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字体
+   * zh-TW: 字型
+   * en-US: Font
+   */
+  (key: "appearance.lyrics.font", params?: TranslationParams): string;
+  /**
+   * zh-CN: 现代黑体
+   * zh-TW: 現代黑體
+   * en-US: Sans serif
+   */
+  (key: "appearance.lyrics.font.sans", params?: TranslationParams): string;
+  /**
+   * zh-CN: 典雅宋体
+   * zh-TW: 典雅宋體
+   * en-US: Serif
+   */
+  (key: "appearance.lyrics.font.serif", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等宽字体
+   * zh-TW: 等寬字型
+   * en-US: Monospace
+   */
+  (key: "appearance.lyrics.font.mono", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字号
+   * zh-TW: 字級
+   * en-US: Font size
+   */
+  (key: "appearance.lyrics.size", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字颜色
+   * zh-TW: 文字顏色
+   * en-US: Text color
+   */
+  (key: "appearance.lyrics.color", params?: TranslationParams): string;
+  /**
+   * zh-CN: 底色不透明度
+   * zh-TW: 底色不透明度
+   * en-US: Backdrop opacity
+   */
+  (key: "appearance.lyrics.backdrop", params?: TranslationParams): string;
+  /**
    * zh-CN: 关闭 Scopify
    * zh-TW: 關閉 Scopify
    * en-US: Close Scopify
