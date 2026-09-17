@@ -2324,8 +2324,8 @@ export interface TranslateFn {
    */
   (key: "appearance.rotation.fixed", params?: TranslationParams): string;
   /**
-   * zh-CN: 每日轮换预设
-   * zh-TW: 每日輪替預設
+   * zh-CN: 每日轮换
+   * zh-TW: 每日輪替
    * en-US: Rotate presets daily
    */
   (key: "appearance.rotation.daily", params?: TranslationParams): string;
@@ -2335,6 +2335,18 @@ export interface TranslateFn {
    * en-US: Reset
    */
   (key: "appearance.reset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置背景样式
+   * zh-TW: 重設背景樣式
+   * en-US: Reset background style
+   */
+  (key: "appearance.reset.background", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重置歌词样式
+   * zh-TW: 重設歌詞樣式
+   * en-US: Reset lyrics style
+   */
+  (key: "appearance.reset.lyrics", params?: TranslationParams): string;
   /**
    * zh-CN: 实时生效，自动保存
    * zh-TW: 即時生效，自動儲存
@@ -2354,9 +2366,9 @@ export interface TranslateFn {
    */
   (key: "appearance.preview.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 当前主题：{name}
-   * zh-TW: 目前主題：{name}
-   * en-US: Current theme: {name}
+   * zh-CN: 当前主题：{{name}}
+   * zh-TW: 目前主題：{{name}}
+   * en-US: Current theme: {{name}}
    */
   (key: "appearance.preview.current", params?: TranslationParams): string;
   /**
@@ -2425,6 +2437,252 @@ export interface TranslateFn {
    * en-US: Backdrop opacity
    */
   (key: "appearance.lyrics.backdrop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 精选主题
+   * zh-TW: 精選主題
+   * en-US: Curated themes
+   */
+  (key: "appearance.library.builtin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的主题
+   * zh-TW: 我的主題
+   * en-US: My themes
+   */
+  (key: "appearance.library.mine", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新建主题
+   * zh-TW: 新增主題
+   * en-US: New theme
+   */
+  (key: "appearance.library.new", params?: TranslationParams): string;
+  /**
+   * zh-CN: 把喜欢的配色，留成自己的主题。
+   * zh-TW: 把喜歡的配色，留成自己的主題。
+   * en-US: Keep your favorite colors as your own themes.
+   */
+  (key: "appearance.library.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑主题
+   * zh-TW: 編輯主題
+   * en-US: Edit theme
+   */
+  (key: "appearance.theme.edit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题名称
+   * zh-TW: 主題名稱
+   * en-US: Theme name
+   */
+  (key: "appearance.theme.name", params?: TranslationParams): string;
+  /**
+   * zh-CN: 例如：雨后的城市
+   * zh-TW: 例如：雨後的城市
+   * en-US: e.g. City after rain
+   */
+  (key: "appearance.theme.placeholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的主题 {{number}}
+   * zh-TW: 我的主題 {{number}}
+   * en-US: My theme {{number}}
+   */
+  (key: "appearance.theme.untitled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存并应用
+   * zh-TW: 儲存並套用
+   * en-US: Save and apply
+   */
+  (key: "appearance.theme.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 另存为新主题
+   * zh-TW: 另存為新主題
+   * en-US: Save as new theme
+   */
+  (key: "appearance.theme.saveAs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存当前配色
+   * zh-TW: 儲存目前配色
+   * en-US: Save current style
+   */
+  (key: "appearance.theme.saveCurrent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "appearance.theme.cancel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除主题
+   * zh-TW: 刪除主題
+   * en-US: Delete theme
+   */
+  (key: "appearance.theme.delete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 再次点击删除 · 轮换引用将改为雾银
+   * zh-TW: 再次點擊刪除 · 輪替引用將改為霧銀
+   * en-US: Click again to delete · Rotation entries will use Silver
+   */
+  (key: "appearance.theme.confirmDelete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请输入名称，且不要与已有主题重名。
+   * zh-TW: 請輸入名稱，且不要與已有主題重名。
+   * en-US: Enter a unique theme name.
+   */
+  (key: "appearance.theme.nameError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存在此设备
+   * zh-TW: 儲存在此裝置
+   * en-US: Saved on this device
+   */
+  (key: "appearance.theme.local", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按时段切换
+   * zh-TW: 按時段切換
+   * en-US: By time of day
+   */
+  (key: "appearance.rotation.schedule", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配置轮换
+   * zh-TW: 設定輪替
+   * en-US: Configure rotation
+   */
+  (key: "appearance.rotation.configure", params?: TranslationParams): string;
+  /**
+   * zh-CN: 安排一天的色彩
+   * zh-TW: 安排一天的色彩
+   * en-US: Colors through your day
+   */
+  (key: "appearance.rotation.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择每日轮换主题
+   * zh-TW: 選擇每日輪替主題
+   * en-US: Choose your daily rotation
+   */
+  (key: "appearance.rotation.dailyTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按本地时间切换，直到下一个时段开始。
+   * zh-TW: 依本地時間切換，直到下一個時段開始。
+   * en-US: Each theme stays active until the next period, in local time.
+   */
+  (key: "appearance.rotation.hint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择参与轮换的主题，每天依次更换。
+   * zh-TW: 選擇參與輪替的主題，每天依序更換。
+   * en-US: Choose themes to cycle through, one per day.
+   */
+  (key: "appearance.rotation.dailyHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加时段
+   * zh-TW: 新增時段
+   * en-US: Add period
+   */
+  (key: "appearance.rotation.add", params?: TranslationParams): string;
+  /**
+   * zh-CN: 移除此时段
+   * zh-TW: 移除此時段
+   * en-US: Remove period
+   */
+  (key: "appearance.rotation.remove", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开始时间
+   * zh-TW: 開始時間
+   * en-US: Start time
+   */
+  (key: "appearance.rotation.start", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对应主题
+   * zh-TW: 對應主題
+   * en-US: Theme
+   */
+  (key: "appearance.rotation.theme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 至 {{time}}
+   * zh-TW: 至 {{time}}
+   * en-US: Until {{time}}
+   */
+  (key: "appearance.rotation.end", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存轮换
+   * zh-TW: 儲存輪替
+   * en-US: Save rotation
+   */
+  (key: "appearance.rotation.apply", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时段须按时间递增，且每日从 00:00 开始。
+   * zh-TW: 時段須依時間遞增，且每日從 00:00 開始。
+   * en-US: Periods must start at 00:00 and increase without duplicates.
+   */
+  (key: "appearance.rotation.error", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在按计划切换；选择主题可回到固定模式。
+   * zh-TW: 正在依計畫切換；選擇主題可回到固定模式。
+   * en-US: Following your rotation. Select a theme to use a fixed style.
+   */
+  (key: "appearance.rotation.active", params?: TranslationParams): string;
+  /**
+   * zh-CN: 管理
+   * zh-TW: 管理
+   * en-US: Manage
+   */
+  (key: "appearance.bulk.manage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完成
+   * zh-TW: 完成
+   * en-US: Done
+   */
+  (key: "appearance.bulk.done", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全选
+   * zh-TW: 全選
+   * en-US: Select all
+   */
+  (key: "appearance.bulk.all", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已选 {{count}} 项
+   * zh-TW: 已選 {{count}} 項
+   * en-US: {{count}} selected
+   */
+  (key: "appearance.bulk.selected", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除 {{count}} 个主题
+   * zh-TW: 刪除 {{count}} 個主題
+   * en-US: Delete {{count}} themes
+   */
+  (key: "appearance.bulk.delete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除选中的 {{count}} 个主题？
+   * zh-TW: 刪除選取的 {{count}} 個主題？
+   * en-US: Delete {{count}} selected themes?
+   */
+  (key: "appearance.bulk.confirmTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除后无法恢复。内置主题不受影响。
+   * zh-TW: 刪除後無法復原。內建主題不受影響。
+   * en-US: This cannot be undone. Built-in themes are unaffected.
+   */
+  (key: "appearance.bulk.confirmHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前正在使用的主题也在其中，删除后将应用雾银。
+   * zh-TW: 目前使用的主題也在其中，刪除後將套用霧銀。
+   * en-US: Your active theme is selected. Silver will be applied after deletion.
+   */
+  (key: "appearance.bulk.activeFixed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前轮换中的主题也在其中，删除后会按更新后的计划切换。
+   * zh-TW: 目前輪替中的主題也在其中，刪除後會依更新後的計畫切換。
+   * en-US: The active rotation theme is selected. The updated rotation will take effect.
+   */
+  (key: "appearance.bulk.activeRotation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 其中 {{count}} 个主题将移出每日轮换；若列表清空，将使用雾银。
+   * zh-TW: 其中 {{count}} 個主題將移出每日輪替；若清單清空，將使用霧銀。
+   * en-US: {{count}} themes will be removed from daily rotation. If none remain, Silver will be used.
+   */
+  (key: "appearance.bulk.daily", params?: TranslationParams): string;
+  /**
+   * zh-CN: 有 {{count}} 个时段引用了这些主题，将替换为雾银，保留原有时间安排。
+   * zh-TW: 有 {{count}} 個時段引用了這些主題，將替換為霧銀，保留原有時間安排。
+   * en-US: {{count}} time periods reference these themes. They will use Silver; their times are preserved.
+   */
+  (key: "appearance.bulk.slots", params?: TranslationParams): string;
   /**
    * zh-CN: 关闭 Scopify
    * zh-TW: 關閉 Scopify

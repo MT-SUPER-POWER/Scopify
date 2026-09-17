@@ -1,4 +1,11 @@
-import type { BackgroundSettings, LyricsPreviewSettings } from "@/types/appearance";
+import type { BackgroundSettings, LyricsPreviewSettings, ThemeTimeSlot } from "@/types/appearance";
+
+export const DEFAULT_THEME_SCHEDULE: ThemeTimeSlot[] = [
+  { start: 0, themeId: "lavender" },
+  { start: 420, themeId: "mist" },
+  { start: 720, themeId: "silver" },
+  { start: 1080, themeId: "sand" },
+];
 
 export const BACKGROUND_PRESETS = [
   { id: "silver", top: "#92999D", bottom: "#454B50" },

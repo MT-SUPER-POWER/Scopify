@@ -1,83 +1,75 @@
 "use client";
 
-import { Check, Plus } from "lucide-react";
-import { BACKGROUND_PRESETS } from "@/constants/appearance";
+import { useState } from "react";
+import { Plus } from "lucide-react";
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
-import { cn } from "@/lib/utils";
+import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
+import type { SavedBackgroundTheme } from "@/types/appearance";
+import { SavedThemeLibrary } from "./SavedThemeLibrary";
+import { ThemeCard } from "./ThemeCard";
+import { ThemeEditorDialog } from "./ThemeEditorDialog";
 
 export function BackgroundThemePicker() {
   const { t } = useI18n();
   const { settings, palette } = useAppearanceBackground();
-  const update = useAppearanceStore((state) => state.updateBackground);
-  const options = [
-    ...BACKGROUND_PRESETS,
-    { id: "custom" as const, top: settings.customTop, bottom: settings.customBottom },
-  ];
+  const options = useThemeOptions();
+  const themes = useAppearanceStore((state) => state.themes);
+  const apply = useAppearanceStore((state) => state.applyTheme);
+  const [editor, setEditor] = useState<SavedBackgroundTheme | null>(null);
+  const createTheme = () => {
+    let number = themes.length + 1;
+    let name = t("appearance.theme.untitled", { number });
+    while (themes.some((theme) => theme.name === name))
+      name = t("appearance.theme.untitled", { number: ++number });
+    setEditor({
+      id: `user:${crypto.randomUUID()}`,
+      name,
+      top: palette.top,
+      bottom: palette.bottom,
+      intensity: settings.intensity,
+      height: settings.height,
+    });
+  };
   return (
-    <fieldset className="mb-8">
-      <legend className="mb-4 text-base font-medium text-foreground">
-        {t("appearance.presets")}
-      </legend>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-5">
-        {options.map((option) => {
-          const selected = palette.id === option.id;
-          return (
-            <button
-              key={option.id}
-              type="button"
-              aria-pressed={selected}
-              onClick={() => update({ preset: option.id, rotation: "fixed" })}
-              className="group min-w-0 cursor-pointer rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background"
-            >
-              <span
-                className={cn(
-                  "relative mb-2 flex aspect-[1.85] items-center justify-center rounded-md border transition-shadow group-hover:ring-1 group-hover:ring-content/40",
-                  selected ? "border-brand ring-1 ring-brand" : "border-border",
-                )}
-                style={{ background: `linear-gradient(125deg, ${option.top}, ${option.bottom})` }}
-              >
-                {option.id === "custom" && (
-                  <Plus
-                    aria-hidden
-                    className="size-7 rounded-full border border-white/70 p-1 text-white"
-                  />
-                )}
-                {selected && (
-                  <Check
-                    aria-hidden
-                    className="absolute top-2 right-2 size-5 rounded-full bg-brand p-1 text-black"
-                  />
-                )}
-              </span>
-              <span className="text-sm text-foreground">{t(`appearance.preset.${option.id}`)}</span>
-            </button>
-          );
-        })}
-      </div>
-      {settings.preset === "custom" && settings.rotation === "fixed" && (
-        <div className="mt-5 flex flex-wrap gap-6">
-          <label className="flex cursor-pointer items-center gap-3 text-sm text-foreground">
-            <input
-              type="color"
-              value={settings.customTop}
-              onChange={(event) => update({ customTop: event.target.value })}
-              className="size-8 cursor-pointer rounded border border-input bg-transparent"
-            />
-            {t("appearance.customTop")}
-          </label>
-          <label className="flex cursor-pointer items-center gap-3 text-sm text-foreground">
-            <input
-              type="color"
-              value={settings.customBottom}
-              onChange={(event) => update({ customBottom: event.target.value })}
-              className="size-8 cursor-pointer rounded border border-input bg-transparent"
-            />
-            {t("appearance.customBottom")}
-          </label>
+    <div className="mb-8 space-y-7">
+      <fieldset>
+        <legend className="mb-4 text-base font-medium text-foreground">
+          {t("appearance.library.builtin")}
+        </legend>
+        <div className="grid grid-cols-3 gap-x-4 gap-y-5">
+          {options
+            .filter((theme) => !theme.id.startsWith("user:"))
+            .map((theme) => (
+              <ThemeCard
+                key={theme.id}
+                theme={theme}
+                selected={palette.id === theme.id}
+                onSelect={() => apply(theme.id)}
+              />
+            ))}
+          <button
+            type="button"
+            onClick={createTheme}
+            className="group flex cursor-pointer flex-col items-start text-sm text-muted-foreground hover:text-foreground"
+          >
+            <span className="mb-2 flex aspect-[2.1] w-full items-center justify-center rounded-md border border-dashed border-input group-hover:border-content-muted">
+              <Plus aria-hidden className="size-5" />
+            </span>
+            {t("appearance.library.new")}
+          </button>
         </div>
+      </fieldset>
+      <SavedThemeLibrary activeId={palette.id} onCreate={createTheme} onEdit={setEditor} />
+      {editor && (
+        <ThemeEditorDialog
+          key={editor.id}
+          theme={editor}
+          isNew={!themes.some((theme) => theme.id === editor.id)}
+          onClose={() => setEditor(null)}
+        />
       )}
-    </fieldset>
+    </div>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@scopify/ui/shadcn/components/button";
+
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
@@ -57,15 +59,14 @@ export function LyricsStyleSettingsSection() {
         unit="%"
         onChange={(backdropOpacity) => update({ backdropOpacity })}
       />
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={reset}
-          className="cursor-pointer rounded px-2 py-1 text-xs text-foreground hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {t("appearance.reset")}
-        </button>
-      </div>
+      <SettingRow
+        label={t("appearance.reset.lyrics")}
+        control={
+          <Button variant="outline" onClick={reset}>
+            {t("appearance.reset")}
+          </Button>
+        }
+      />
     </SettingSection>
   );
 }

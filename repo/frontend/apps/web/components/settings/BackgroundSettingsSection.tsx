@@ -1,16 +1,19 @@
 "use client";
 
+import { Button } from "@scopify/ui/shadcn/components/button";
+
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { BackgroundRotation } from "@/types/appearance";
+import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
+import { BackgroundRotationControl } from "./BackgroundRotationControl";
 import { AppearanceModeControl } from "./AppearanceModeControl";
 import { AppearanceRange } from "./AppearanceRange";
 import { BackgroundThemePicker } from "./BackgroundThemePicker";
-import { SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
+import { SettingRow, SettingSection } from "./SettingsUI";
 
 export function BackgroundSettingsSection() {
   const { t } = useI18n();
-  const background = useAppearanceStore((state) => state.background);
+  const { settings: background } = useAppearanceBackground();
   const update = useAppearanceStore((state) => state.updateBackground);
   const reset = useAppearanceStore((state) => state.resetBackground);
   return (
@@ -23,7 +26,7 @@ export function BackgroundSettingsSection() {
         min={0}
         max={100}
         unit="%"
-        onChange={(intensity) => update({ intensity })}
+        onChange={(intensity) => update({ ...background, intensity, rotation: "fixed" })}
       />
       <AppearanceRange
         label={t("appearance.height")}
@@ -32,34 +35,17 @@ export function BackgroundSettingsSection() {
         max={720}
         step={10}
         unit=" px"
-        onChange={(height) => update({ height })}
+        onChange={(height) => update({ ...background, height, rotation: "fixed" })}
       />
+      <BackgroundRotationControl />
       <SettingRow
-        label={t("appearance.rotation")}
+        label={t("appearance.reset.background")}
         control={
-          <SettingSelect
-            value={background.rotation}
-            onChange={(rotation) => update({ rotation: rotation as BackgroundRotation })}
-          >
-            <option className="bg-popover" value="fixed">
-              {t("appearance.rotation.fixed")}
-            </option>
-            <option className="bg-popover" value="daily">
-              {t("appearance.rotation.daily")}
-            </option>
-          </SettingSelect>
+          <Button variant="outline" onClick={reset}>
+            {t("appearance.reset")}
+          </Button>
         }
       />
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-        <span>{t("appearance.saved")}</span>
-        <button
-          type="button"
-          onClick={reset}
-          className="cursor-pointer rounded px-2 py-1 text-foreground hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {t("appearance.reset")}
-        </button>
-      </div>
     </SettingSection>
   );
 }

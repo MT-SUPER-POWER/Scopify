@@ -1,3 +1,5 @@
+import { appearanceBulkMessages } from "./appearanceBulk";
+import { appearanceLibraryMessages } from "./appearanceLibrary";
 import { appearanceMessages } from "./appearance";
 import { commonMessages } from "./common";
 import { errorPageMessages } from "./errorPage";
@@ -38,6 +40,8 @@ export const messages = {
     ...errorPageMessages["zh-CN"],
     ...settingsMessages["zh-CN"],
     ...appearanceMessages["zh-CN"],
+    ...appearanceLibraryMessages["zh-CN"],
+    ...appearanceBulkMessages["zh-CN"],
     ...appCloseMessages["zh-CN"],
     ...layoutMessages["zh-CN"],
     ...contextMenuMessages["zh-CN"],
@@ -73,6 +77,8 @@ export const messages = {
     ...errorPageMessages["zh-TW"],
     ...settingsMessages["zh-TW"],
     ...appearanceMessages["zh-TW"],
+    ...appearanceLibraryMessages["zh-TW"],
+    ...appearanceBulkMessages["zh-TW"],
     ...appCloseMessages["zh-TW"],
     ...layoutMessages["zh-TW"],
     ...contextMenuMessages["zh-TW"],
@@ -108,6 +114,8 @@ export const messages = {
     ...errorPageMessages["en-US"],
     ...settingsMessages["en-US"],
     ...appearanceMessages["en-US"],
+    ...appearanceLibraryMessages["en-US"],
+    ...appearanceBulkMessages["en-US"],
     ...appCloseMessages["en-US"],
     ...layoutMessages["en-US"],
     ...contextMenuMessages["en-US"],
