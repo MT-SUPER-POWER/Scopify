@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ShortcutSettings } from "@/components/shortcuts/ShortcutSettings";
 import { SETTINGS_TABS } from "@/constants/settings";
@@ -16,10 +15,7 @@ import { GeneralSettingsTab } from "./GeneralSettingsTab";
 import { NetworkSettingsTab } from "./NetworkSettingsTab";
 import { SaveChangesButton, SaveConfirmModal, SettingsLoadingState } from "./SettingsUI";
 import { StorageSettingsTab } from "./StorageSettingsTab";
-
-const AppearanceSettingsTab = dynamic(() =>
-  import("./AppearanceSettingsTab").then((module) => module.AppearanceSettingsTab),
-);
+import { AppearanceSettingsTab } from "./AppearanceSettingsTab";
 
 const SettingsPage = () => {
   const { t } = useI18n();
@@ -56,6 +52,7 @@ const SettingsPage = () => {
           ))}
         </TabsList>
         <div className="py-8 pb-12">
+          {/*常规*/}
           <TabsContent value="general">
             <GeneralSettingsTab
               config={settings.config}
@@ -63,9 +60,11 @@ const SettingsPage = () => {
               onDesktopChange={settings.handleDesktopChange}
             />
           </TabsContent>
+          {/*外观和样式*/}
           <TabsContent value="appearance">
             <AppearanceSettingsTab />
           </TabsContent>
+          {/*网络*/}
           <TabsContent value="network">
             <NetworkSettingsTab
               backendPingResult={settings.backendPingResult}
@@ -77,6 +76,7 @@ const SettingsPage = () => {
               onBackendHostBlur={settings.handleBackendHostBlur}
             />
           </TabsContent>
+          {/*存储*/}
           <TabsContent value="storage">
             <StorageSettingsTab
               config={settings.config.desktop}
@@ -86,6 +86,7 @@ const SettingsPage = () => {
               onCachePreferencesChange={settings.handleCachePreferencesChange}
             />
           </TabsContent>
+          {/*桌面端*/}
           {settings.config.desktop ? (
             <TabsContent value="desktop">
               <DesktopSettingsTab
@@ -99,6 +100,7 @@ const SettingsPage = () => {
               />
             </TabsContent>
           ) : null}
+          {/*快捷键*/}
           <TabsContent value="shortcuts">
             <ShortcutSettings />
           </TabsContent>

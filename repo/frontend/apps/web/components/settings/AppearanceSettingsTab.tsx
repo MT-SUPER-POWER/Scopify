@@ -15,9 +15,11 @@ export function AppearanceSettingsTab() {
   const subtitleSettings = useAppearanceStore((state) => state.lyricsPreview);
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
+      {/*主页渲染色背景的控制部分*/}
       <div className="min-w-0">
         <BackgroundSettingsSection />
       </div>
+      {/*歌词方案字幕样式 + preview */}
       <div className="min-w-0">
         <SettingSection title={t("appearance.preview")}>
           <AppearancePreview>
@@ -26,6 +28,7 @@ export function AppearanceSettingsTab() {
           <AppearancePreviewStatus />
         </SettingSection>
       </div>
+      {/*歌词预览区域*/}
       <SubtitlePreviewWorkspace settings={subtitleSettings}>
         <LyricsStyleSettingsSection />
       </SubtitlePreviewWorkspace>
