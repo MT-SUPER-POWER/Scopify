@@ -1,6 +1,6 @@
 import MainLayout from "@/components/MainLayout";
 import { NavigationScrollProvider } from "@/components/shared/NavigationScrollProvider";
-import { PlayerCommandHandler } from "@/components/PlayerCommandHandler";
+import { PlayerCommandHandler } from "@/components/player/PlayerCommandHandler";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

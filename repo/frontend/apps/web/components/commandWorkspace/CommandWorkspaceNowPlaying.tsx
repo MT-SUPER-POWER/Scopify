@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SmoothSlider } from "@/components/SmoothSlider";
+import { SmoothSlider } from "@/components/shared/SmoothSlider";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackPosition, usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { cn, formatDuration } from "@/lib/utils";

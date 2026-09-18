@@ -66,3 +66,5 @@ export function SongTitle({ title }: { title: string }) {
     </div>
   );
 }
+
+export default SongTitle;

@@ -22,13 +22,13 @@ import { cn } from "@/lib/utils";
 import { useSearchStore } from "@/store/module/search";
 // status store
 import { useUiStore } from "@/store/module/ui";
-import Header from "../components/Header";
-import { LyricStageMount } from "../components/lyrics/LyricStageMount";
-import { PlayerBar } from "../components/PlayerBar";
+import Header from "@/components/Header";
+import { LyricStageMount } from "@/components/lyrics/LyricStageMount";
+import { PlayerBar } from "@/components/PlayBar";
 import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
 // self components
-import MainLayoutSkeleton from "./MainLayout/Skeleton";
-import { Sidebar } from "./Sidebar";
+import MainLayoutSkeleton from "./Skeleton";
+import { Sidebar } from "@/components/Siderbar";
 
 // The wallpaper renderer brings the entire Folia visualizer graph into the
 // bundle. It is only used by the dedicated desktop-wallpaper window, so keep
@@ -242,7 +242,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
 /**
  * MainLayout: 播放器的子组件 - 支持懒加载 + 骨架屏
  */
-export default function MainLayout({ children }: { children?: ReactNode }) {
+export function MainLayout({ children }: { children?: ReactNode }) {
   const isHydrated = useStoreHydration();
   const pathname = usePathname();
   const HydrationPlaceholder = getDashboardLoadingPlaceholder(pathname);
@@ -256,3 +256,5 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
 
   return <MainLayoutInner>{children}</MainLayoutInner>;
 }
+
+export default MainLayout;

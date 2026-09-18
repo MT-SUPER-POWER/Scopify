@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 
-import { SmoothSlider } from "@/components/SmoothSlider";
+import { SmoothSlider } from "@/components/shared/SmoothSlider";
 import { formatDuration } from "@/lib/utils";
 import type { PlaybackProgressBarProps } from "@/types/components/player";
 

@@ -2,15 +2,15 @@
 
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 import Link from "next/link";
+import RightActions from "./RightActions";
+import HeaderSearch from "@/components/SearchContents/HeaderSearch";
 import { useNavigationScroll } from "@/components/shared/NavigationScrollProvider";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
-import RightActions from "./Header/RightActions";
-import HeaderSearch from "./SearchContents/HeaderSearch";
 
 const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
 
-export default function Header() {
+export function Header() {
   const { isAtTop } = useNavigationScroll();
   const smartRouter = useSmartRouter();
 
@@ -77,3 +77,5 @@ export default function Header() {
     </div>
   );
 }
+
+export default Header;

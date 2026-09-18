@@ -38,3 +38,5 @@ export function PlayerCommandHandler() {
 
   return null;
 }
+
+export default PlayerCommandHandler;

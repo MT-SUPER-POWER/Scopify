@@ -1,6 +1,6 @@
 "use client";
 
-import { VolumeControl } from "@/components/VolumeControl";
+import { VolumeControl } from "./VolumeControl";
 import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
 import { DesktopSubtitleControl } from "@/components/player/DesktopSubtitleControl";
 import { PersonalFmControlPanel } from "@/components/player/PersonalFmControlPanel";

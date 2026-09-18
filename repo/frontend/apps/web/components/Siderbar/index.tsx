@@ -5,9 +5,9 @@ import Link from "next/link";
 import { FaCompactDisc } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { useSidebarNarrow } from "@/lib/hooks/useSidebarNarrow";
-import { LibraryNavigation } from "./Siderbar/LibraryNavigation";
-import { SiderBarMenuMemo } from "./Siderbar/SiderbarMenu";
-import { SidebarPlaylistLibrary } from "./Siderbar/SidebarPlaylistLibrary";
+import { LibraryNavigation } from "./LibraryNavigation";
+import { SiderBarMenuMemo } from "./SiderbarMenu";
+import { SidebarPlaylistLibrary } from "./SidebarPlaylistLibrary";
 
 function SidebarImpl() {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -49,3 +49,4 @@ function SidebarImpl() {
 }
 
 export const Sidebar = React.memo(SidebarImpl);
+export default Sidebar;
