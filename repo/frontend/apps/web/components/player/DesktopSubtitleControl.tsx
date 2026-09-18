@@ -36,7 +36,7 @@ export function DesktopSubtitleControl() {
                 aria-label={t("subtitleControl.title")}
                 className={`flex items-center justify-center transition-colors ${control.preferences?.enabled || control.open ? "text-brand" : "text-content-muted hover:text-content"}`}
               >
-                <Captions className="size-5 lg:size-6" />
+                <Captions className="size-5 stroke-[1.65px] lg:size-6" />
               </button>
             </TooltipTrigger>
           </PopoverTrigger>
@@ -83,18 +83,13 @@ export function DesktopSubtitleControl() {
             </Button>
           </div>
         )}
-        <div className="flex gap-2 border-t border-border pt-3">
-          <Button variant="outline" size="sm" asChild>
+        <div className="border-t border-border pt-3">
+          <Button variant="outline" size="sm" className="w-full" asChild>
             <Link
               href="/setting?tab=appearance#subtitle-style"
               onClick={() => control.setOpen(false)}
             >
               {t("subtitleControl.style")}
-            </Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/setting?tab=shortcuts" onClick={() => control.setOpen(false)}>
-              {t("subtitleControl.shortcuts")}
             </Link>
           </Button>
         </div>

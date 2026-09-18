@@ -3,17 +3,13 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { PlayerProgressBar } from "@components/PlayBar/ProgressBar";
+import { PlayerBarRightControls } from "@components/PlayBar/PlayerBarRightControls";
 import {
   ChevronDown,
   ChevronUp,
-  Expand,
   LoaderCircle,
-  Mic2,
-  MinimizeIcon,
-  MonitorSpeaker,
   Pause,
   Play,
-  Radio,
   Repeat,
   Repeat1,
   RotateCw,
@@ -21,28 +17,18 @@ import {
   SkipBack,
   SkipForward,
 } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi"; // 引入更圆润的 Phosphor Icons 图标
-import { DesktopSubtitleControl } from "@/components/player/DesktopSubtitleControl";
-import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
-import { AudioSettingsDialog } from "@/components/player/AudioSettingsDialog";
-import { PersonalFmControlPanel } from "@/components/player/PersonalFmControlPanel";
-import { QueuePopover } from "@/components/player/QueuePopover";
 import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 
-import { VolumeControl } from "@/components/VolumeControl";
-import { QUALITY_OPTIONS } from "@/constants/playerBar";
-import { useMusicQuality } from "@/hooks/player/useMusicQuality";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
-import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
@@ -179,8 +165,6 @@ export const PlayerBar = ({
 }) => {
   const { t } = useI18n();
   const isLyricsOpen = useUiStore((s) => s.isLyricsOpen);
-  const toggleLyrics = useUiStore((s) => s.toggleLyrics);
-  const isFullscreen = useUiStore((s) => s.isFullscreen);
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
   const smartRouter = useSmartRouter();
@@ -196,15 +180,9 @@ export const PlayerBar = ({
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const isLiked = playback.liked;
   const isPlaying = playback.isPlaying;
-  const volume = playback.volume;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const isLyricStageBar = variant === "lyric-stage";
-  const { musicQuality } = useMusicQuality();
   const songStats = useSongStatsEnrichment(currentSong);
-
-  // 查找当前选中的音质选项，如果找不到就提供一个兜底
-  const currentOption = QUALITY_OPTIONS.find((opt) => opt.value === musicQuality);
-  const CurrentIcon = currentOption?.icon ?? Radio;
 
   // 切换播放模式
   const cycleRepeat = () => {
@@ -218,7 +196,6 @@ export const PlayerBar = ({
   );
   const playbackActionLabel = t(isPlaying ? "ui.pause" : "ui.play");
   const lyricsActionLabel = t(isLyricsOpen ? "ui.hideLyrics" : "ui.showLyrics");
-  const fullscreenActionLabel = t(isFullscreen ? "ui.exitFullscreen" : "ui.fullscreen");
 
   return (
     <div
@@ -514,121 +491,7 @@ export const PlayerBar = ({
         </div>
 
         {/* ================= Right: Extra Controls ================= */}
-        <div
-          className={cn(
-            "flex items-center justify-end gap-2 text-content-muted lg:gap-3",
-            isLyricStageBar ? "min-w-0" : "flex-1 md:flex-none md:justify-self-end",
-          )}
-        >
-          <DesktopSubtitleControl />
-          <DesktopPlaybackControllerLauncher />
-
-          {/* Lyric Stage */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={() => toggleLyrics()}
-                  aria-label={lyricsActionLabel}
-                  className={`transition-colors hover:text-content ${isLyricsOpen ? "text-brand" : ""}`}
-                >
-                  <Mic2 className="size-4 lg:size-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" sideOffset={8}>
-                <ShortcutHint commandId="toggle-lyric-stage" label={lyricsActionLabel} />
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          {/* 音频设置 */}
-          <TooltipProvider>
-            <Tooltip>
-              <AudioSettingsDialog>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    aria-label={t("audioSettings.open")}
-                    className="flex cursor-pointer items-center justify-center transition-colors hover:text-content"
-                  >
-                    <CurrentIcon className="size-4 lg:size-5" />
-                  </button>
-                </TooltipTrigger>
-              </AudioSettingsDialog>
-              <TooltipContent side="top" sideOffset={8}>
-                <ShortcutHint commandId="toggle-audio-settings" label={t("audioSettings.title")} />
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          {!isLyricStageBar && <PersonalFmControlPanel />}
-
-          {/* 播放列表浮层 */}
-          <div className="hidden md:block">
-            <AnimatePresence>
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="z-2000"
-                style={{ position: "relative" }}
-              >
-                <QueuePopover />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* TODO: 音频设置里面的输入设备的管理放到这里 */}
-          <div className="hidden lg:block">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    aria-label={t("ui.bluetooth")}
-                    className="flex items-center justify-center transition-colors hover:text-content"
-                  >
-                    <MonitorSpeaker className="size-4 lg:size-5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" sideOffset={8}>
-                  {t("ui.bluetooth")}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-
-          {/* 音量控制 */}
-          <VolumeControl
-            initialVolume={volume}
-            onChange={(nextVolume) => void commands.setVolume(nextVolume)}
-          />
-
-          {/* 最大化/最小化按钮 */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  aria-label={fullscreenActionLabel}
-                  onClick={() => void toggleApplicationFullscreen()}
-                  className="hidden transition-colors hover:text-content sm:block"
-                >
-                  {isFullscreen ? (
-                    <MinimizeIcon className="size-4 lg:size-5" />
-                  ) : (
-                    <Expand className="size-4 lg:size-5" />
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" sideOffset={8}>
-                <ShortcutHint commandId="toggle-fullscreen" label={fullscreenActionLabel} />
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <PlayerBarRightControls isLyricStageBar={isLyricStageBar} />
       </div>
     </div>
   );
