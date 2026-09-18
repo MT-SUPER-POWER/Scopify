@@ -7,10 +7,10 @@ import { subtitlePlaybackPosition } from "@/lib/settings/subtitlePlayback";
 import type { LyricsPreviewSettings } from "@/types/appearance";
 import type { SubtitlePlayback, SubtitlePreviewScene } from "@/types/subtitle-preview";
 
-export function useSubtitlePreview(
-  settings: LyricsPreviewSettings,
-  updateSettings: (patch: Partial<LyricsPreviewSettings>) => void,
-) {
+export function useSubtitlePreview(settings: LyricsPreviewSettings) {
+  const [sceneLayout, setSceneLayout] = useState<Partial<LyricsPreviewSettings>>({});
+  useEffect(() => setSceneLayout({}), [settings.showTranslation, settings.autoCollapseChinese]);
+  const previewSettings = { ...settings, ...sceneLayout };
   const [content, setPayload] = useState(SUBTITLE_PREVIEW_SCENES.chinese);
   const payload = {
     ...content,
@@ -23,8 +23,8 @@ export function useSubtitlePreview(
         candidate.source === payload.source &&
         candidate.target === payload.target &&
         candidate.isChinese === payload.isChinese &&
-        settings.showTranslation === (scene === "bilingual" || scene === "chinese") &&
-        (scene !== "chinese" || settings.autoCollapseChinese)
+        previewSettings.showTranslation === (scene === "bilingual" || scene === "chinese") &&
+        (scene !== "chinese" || previewSettings.autoCollapseChinese)
       );
     }) ?? null;
   const duration = settings.fillEnabled
@@ -56,13 +56,14 @@ export function useSubtitlePreview(
     });
   const selectScene = (scene: keyof typeof SUBTITLE_PREVIEW_SCENES) => {
     setPayload(SUBTITLE_PREVIEW_SCENES[scene]);
-    updateSettings({
+    setSceneLayout({
       showTranslation: scene === "bilingual" || scene === "chinese",
       ...(scene === "chinese" ? { autoCollapseChinese: true } : {}),
     });
     replay();
   };
   return {
+    previewSettings,
     activeScene,
     duration,
     selectScene,

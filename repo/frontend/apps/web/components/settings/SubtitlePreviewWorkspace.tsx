@@ -1,26 +1,27 @@
 "use client";
 
 import { useSubtitlePreview } from "@/hooks/settings/useSubtitlePreview";
-import { useAppearanceStore } from "@/store/module/appearance";
+import type { SubtitlePreviewWorkspaceProps } from "@/types/subtitle-preview";
 import { useI18n } from "@/store/module/i18n";
 import { LyricsStylePreview } from "./LyricsStylePreview";
-import { LyricsStyleSettingsSection } from "./LyricsStyleSettingsSection";
 import { SettingSection } from "./SettingsUI";
 import { SubtitlePreviewControls } from "./SubtitlePreviewControls";
 import { SubtitlePlaybackControls } from "./SubtitlePlaybackControls";
 
-export function SubtitlePreviewWorkspace() {
+export function SubtitlePreviewWorkspace({
+  settings,
+  children,
+  note,
+}: SubtitlePreviewWorkspaceProps) {
   const { t } = useI18n();
-  const settings = useAppearanceStore((state) => state.lyricsPreview);
-  const updateSettings = useAppearanceStore((state) => state.updateLyricsPreview);
-  const preview = useSubtitlePreview(settings, updateSettings);
+  const preview = useSubtitlePreview(settings);
   return (
     <div
       id="subtitle-style"
       className="grid scroll-mt-24 grid-cols-1 items-start gap-x-16 gap-y-10 lg:col-span-2 lg:grid-cols-2"
     >
       <div className="min-w-0 space-y-8">
-        <LyricsStyleSettingsSection />
+        {children}
         <SettingSection title={t("subtitlePreview.scene")}>
           <SubtitlePreviewControls
             activeScene={preview.activeScene}
@@ -47,7 +48,8 @@ export function SubtitlePreviewWorkspace() {
           }
         >
           <LyricsStylePreview
-            settings={settings}
+            settings={preview.previewSettings}
+            note={note}
             payload={preview.payload}
             replayId={preview.replayId}
             visible={preview.visible}

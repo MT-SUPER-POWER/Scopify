@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { LyricsPreviewSettings } from "./appearance";
 
 export interface SubtitleSettingsEditorProps {
@@ -28,6 +29,7 @@ export interface SubtitlePreviewControlsProps {
 }
 
 export interface LyricsStylePreviewProps extends SubtitleCapsuleProps {
+  note?: string;
   visible: boolean;
 }
 
@@ -45,8 +47,10 @@ export interface SubtitlePlaybackControlsProps {
   onVisibleChange: (visible: boolean) => void;
   onLoopChange: (loop: boolean) => void;
 }
+export type SubtitleThemeKind = "style" | "palette";
+
 export interface SavedSubtitleTheme {
-  kind?: "style" | "palette";
+  kind?: SubtitleThemeKind;
   id: string;
   name: string;
   settings: LyricsPreviewSettings;
@@ -55,10 +59,6 @@ export interface SubtitleThemeStore {
   themes: SavedSubtitleTheme[];
   save: (theme: SavedSubtitleTheme) => void;
   remove: (ids: string[]) => void;
-}
-export interface SubtitleThemeDialogProps {
-  theme: SavedSubtitleTheme;
-  onClose: () => void;
 }
 export interface SubtitleThemeDeleteProps {
   themes: SavedSubtitleTheme[];
@@ -76,7 +76,7 @@ export interface SubtitleThemeCardProps {
   selected: boolean;
   managing: boolean;
   onSelect: () => void;
-  onRename: () => void;
+  onEdit: () => void;
   onUpdate: () => void;
   onDelete: () => void;
 }
@@ -84,7 +84,14 @@ export interface SubtitleThemeCardProps {
 export interface SubtitleThemeLibraryProps {
   paletteOnly?: boolean;
 }
-export interface SubtitlePaletteEditorProps {
+export interface SubtitlePreviewWorkspaceProps {
   settings: LyricsPreviewSettings;
-  onChange: (settings: LyricsPreviewSettings) => void;
+  children: ReactNode;
+  note?: string;
+}
+
+export interface SubtitleThemeEditorProps {
+  themeId: string | null;
+  kind: SubtitleThemeKind;
+  useCurrent: boolean;
 }

@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { isThemeNameValid } from "@/lib/settings/themeNames";
 import type { SubtitleThemeStore } from "@/types/subtitle-preview";
 
 export const useSubtitleThemeStore = create<SubtitleThemeStore>()(
@@ -11,15 +12,7 @@ export const useSubtitleThemeStore = create<SubtitleThemeStore>()(
       save: (theme) =>
         set((state) => {
           const name = theme.name.trim();
-          if (
-            !name ||
-            name.length > 40 ||
-            state.themes.some(
-              (item) =>
-                item.id !== theme.id && item.name.toLocaleLowerCase() === name.toLocaleLowerCase(),
-            )
-          )
-            return {};
+          if (!isThemeNameValid(theme, state.themes)) return {};
           const saved = { ...theme, name, settings: { ...theme.settings } };
           return {
             themes: state.themes.some((item) => item.id === saved.id)

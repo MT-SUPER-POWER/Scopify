@@ -1,15 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@scopify/ui/shadcn/components/button";
-import { DEFAULT_LYRICS_PREVIEW } from "@/constants/appearance";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useSubtitleThemeStore } from "@/store/module/subtitleThemes";
 import { useI18n } from "@/store/module/i18n";
-import { subtitlePalette } from "@/lib/settings/subtitlePalette";
-import type { SubtitleThemeLibraryProps, SavedSubtitleTheme } from "@/types/subtitle-preview";
+import {
+  isSubtitleThemeActive,
+  subtitleThemePatch,
+  subtitleThemeEditorHref,
+} from "@/lib/settings/subtitleTheme";
+import type { SubtitleThemeLibraryProps } from "@/types/subtitle-preview";
 import { SettingSection } from "./SettingsUI";
-import { SubtitleThemeDialog } from "./SubtitleThemeDialog";
+import { SubtitleColorPresets } from "./SubtitleColorPresets";
 import { SubtitleThemeDeleteDialog } from "./SubtitleThemeDeleteDialog";
 import { SubtitleThemeCard } from "./SubtitleThemeCard";
 
@@ -20,22 +24,21 @@ export function SubtitleThemeLibrary({ paletteOnly = false }: SubtitleThemeLibra
   const remove = useSubtitleThemeStore((state) => state.remove);
   const settings = useAppearanceStore((state) => state.lyricsPreview);
   const update = useAppearanceStore((state) => state.updateLyricsPreview);
-  const [editor, setEditor] = useState<SavedSubtitleTheme | null>(null);
+  const router = useRouter();
+  const kind = paletteOnly ? "palette" : "style";
   const [managing, setManaging] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [deleting, setDeleting] = useState<string[] | null>(null);
-  const create = () =>
-    setEditor({
-      id: crypto.randomUUID(),
-      name: "",
-      kind: paletteOnly ? "palette" : "style",
-      settings: { ...settings },
-    });
+  const create = () => {
+    const active = themes.find((theme) => isSubtitleThemeActive(theme, settings));
+    router.push(subtitleThemeEditorHref(kind, active?.id));
+  };
   return (
     <SettingSection title={t(paletteOnly ? "subtitlePalette.library" : "subtitleSystem.library")}>
+      {paletteOnly && <SubtitleColorPresets settings={settings} onChange={update} />}
       <div className="mb-4 flex flex-wrap gap-2">
         <Button variant="outline" size="sm" onClick={create}>
-          {t(paletteOnly ? "subtitlePalette.save" : "subtitleSystem.saveTheme")}
+          {t(paletteOnly ? "themeEditor.editPalette" : "themeEditor.editSubtitle")}
         </Button>
         {themes.length > 0 && (
           <Button
@@ -80,14 +83,7 @@ export function SubtitleThemeLibrary({ paletteOnly = false }: SubtitleThemeLibra
               key={theme.id}
               theme={theme}
               selected={
-                managing
-                  ? selected.includes(theme.id)
-                  : JSON.stringify(paletteOnly ? subtitlePalette(settings) : settings) ===
-                    JSON.stringify(
-                      paletteOnly
-                        ? subtitlePalette(theme.settings)
-                        : { ...DEFAULT_LYRICS_PREVIEW, ...theme.settings },
-                    )
+                managing ? selected.includes(theme.id) : isSubtitleThemeActive(theme, settings)
               }
               managing={managing}
               onSelect={() =>
@@ -97,14 +93,10 @@ export function SubtitleThemeLibrary({ paletteOnly = false }: SubtitleThemeLibra
                         ? ids.filter((id) => id !== theme.id)
                         : [...ids, theme.id],
                     )
-                  : update(
-                      paletteOnly
-                        ? subtitlePalette(theme.settings)
-                        : { ...DEFAULT_LYRICS_PREVIEW, ...theme.settings },
-                    )
+                  : update(subtitleThemePatch(theme))
               }
-              onRename={() => setEditor(theme)}
-              onUpdate={() => setEditor({ ...theme, settings: { ...settings } })}
+              onEdit={() => router.push(subtitleThemeEditorHref(kind, theme.id))}
+              onUpdate={() => router.push(subtitleThemeEditorHref(kind, theme.id, true))}
               onDelete={() => setDeleting([theme.id])}
             />
           ))}
@@ -112,7 +104,6 @@ export function SubtitleThemeLibrary({ paletteOnly = false }: SubtitleThemeLibra
       ) : (
         <p className="text-sm text-muted-foreground">{t("subtitleSystem.emptyLibrary")}</p>
       )}
-      {editor && <SubtitleThemeDialog theme={editor} onClose={() => setEditor(null)} />}
       {deleting && (
         <SubtitleThemeDeleteDialog
           themes={themes.filter((theme) => deleting.includes(theme.id))}

@@ -1,5 +1,12 @@
 "use client";
 
+import { MoreHorizontal, Pencil, Trash2, RefreshCw } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@scopify/ui/shadcn/components/dropdown-menu";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useI18n } from "@/store/module/i18n";
 import type { SubtitleThemeCardProps } from "@/types/subtitle-preview";
@@ -9,7 +16,7 @@ export function SubtitleThemeCard({
   selected,
   managing,
   onSelect,
-  onRename,
+  onEdit,
   onUpdate,
   onDelete,
 }: SubtitleThemeCardProps) {
@@ -46,16 +53,33 @@ export function SubtitleThemeCard({
         </span>
       </button>
       {!managing && (
-        <div className="flex flex-wrap gap-1 border-t border-border p-1">
-          <Button size="sm" variant="ghost" onClick={onRename}>
-            {t("subtitleSystem.rename")}
+        <div className="flex justify-end gap-1 border-t border-border p-1">
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            onClick={onEdit}
+            aria-label={t("appearance.theme.edit")}
+            title={t("appearance.theme.edit")}
+          >
+            <Pencil />
           </Button>
-          <Button size="sm" variant="ghost" onClick={onUpdate}>
-            {t("subtitleSystem.update")}
-          </Button>
-          <Button size="sm" variant="ghost" className="text-danger" onClick={onDelete}>
-            {t("subtitleSystem.delete")}
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon-sm" variant="ghost" aria-label={t("themeEditor.themeActions")}>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onSelect={onUpdate}>
+                <RefreshCw />
+                {t("subtitleSystem.update")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={onDelete} className="text-danger">
+                <Trash2 />
+                {t("subtitleSystem.delete")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
     </div>

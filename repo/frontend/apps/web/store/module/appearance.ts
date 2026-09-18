@@ -9,6 +9,7 @@ import {
   DEFAULT_THEME_SCHEDULE,
 } from "@/constants/appearance";
 import { applyBackgroundTheme, isValidThemeSchedule } from "@/lib/settings/appearance";
+import { isThemeNameValid } from "@/lib/settings/themeNames";
 import { updateSubtitleSettings } from "@/lib/settings/updateSubtitleSettings";
 import type { AppearanceStore } from "@/types/appearance";
 
@@ -24,6 +25,7 @@ export const useAppearanceStore = create<AppearanceStore>()(
         set((state) => ({ background: applyBackgroundTheme(state.background, id, state.themes) })),
       saveTheme: (theme) =>
         set((state) => {
+          if (!isThemeNameValid(theme, state.themes)) return {};
           const saved = { ...theme, name: theme.name.trim() };
           const themes = state.themes.some(({ id }) => id === theme.id)
             ? state.themes.map((item) => (item.id === theme.id ? saved : item))

@@ -2444,6 +2444,36 @@ export interface TranslateFn {
    */
   (key: "themeEditor.background", params?: TranslationParams): string;
   /**
+   * zh-CN: 字幕样式编辑
+   * zh-TW: 字幕樣式編輯
+   * en-US: Subtitle style editor
+   */
+  (key: "themeEditor.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字幕配色编辑
+   * zh-TW: 字幕配色編輯
+   * en-US: Subtitle palette editor
+   */
+  (key: "themeEditor.palette", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑字幕样式
+   * zh-TW: 編輯字幕樣式
+   * en-US: Edit subtitle style
+   */
+  (key: "themeEditor.editSubtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑字幕配色
+   * zh-TW: 編輯字幕配色
+   * en-US: Edit subtitle palette
+   */
+  (key: "themeEditor.editPalette", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题操作
+   * zh-TW: 主題操作
+   * en-US: Theme actions
+   */
+  (key: "themeEditor.themeActions", params?: TranslationParams): string;
+  /**
    * zh-CN: 返回外观设置
    * zh-TW: 返回外觀設定
    * en-US: Back to appearance

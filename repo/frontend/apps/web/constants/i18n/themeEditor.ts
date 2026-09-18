@@ -3,6 +3,11 @@ import { defineMessages } from "./define";
 export const themeEditorMessages = defineMessages(
   {
     "themeEditor.background": "背景主题编辑",
+    "themeEditor.subtitle": "字幕样式编辑",
+    "themeEditor.palette": "字幕配色编辑",
+    "themeEditor.editSubtitle": "编辑字幕样式",
+    "themeEditor.editPalette": "编辑字幕配色",
+    "themeEditor.themeActions": "主题操作",
     "themeEditor.back": "返回外观设置",
     "themeEditor.unsaved": "有未保存的修改",
     "themeEditor.draftHint": "修改仅在此预览，保存后应用。",
@@ -15,6 +20,11 @@ export const themeEditorMessages = defineMessages(
   },
   {
     "themeEditor.background": "背景主題編輯",
+    "themeEditor.subtitle": "字幕樣式編輯",
+    "themeEditor.palette": "字幕配色編輯",
+    "themeEditor.editSubtitle": "編輯字幕樣式",
+    "themeEditor.editPalette": "編輯字幕配色",
+    "themeEditor.themeActions": "主題操作",
     "themeEditor.back": "返回外觀設定",
     "themeEditor.unsaved": "有未儲存的修改",
     "themeEditor.draftHint": "修改僅在此預覽，儲存後套用。",
@@ -27,6 +37,11 @@ export const themeEditorMessages = defineMessages(
   },
   {
     "themeEditor.background": "Background theme editor",
+    "themeEditor.subtitle": "Subtitle style editor",
+    "themeEditor.palette": "Subtitle palette editor",
+    "themeEditor.editSubtitle": "Edit subtitle style",
+    "themeEditor.editPalette": "Edit subtitle palette",
+    "themeEditor.themeActions": "Theme actions",
     "themeEditor.back": "Back to appearance",
     "themeEditor.unsaved": "Unsaved changes",
     "themeEditor.draftHint": "Changes stay in this preview until you save.",
