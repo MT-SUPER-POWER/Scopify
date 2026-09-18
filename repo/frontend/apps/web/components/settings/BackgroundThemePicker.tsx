@@ -22,7 +22,7 @@ export function BackgroundThemePicker() {
         <legend className="mb-4 text-base font-medium text-foreground">
           {t("appearance.library.builtin")}
         </legend>
-        <div className="grid grid-cols-3 gap-x-4 gap-y-5">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3">
           {options
             .filter((theme) => !theme.id.startsWith("user:"))
             .map((theme) => (

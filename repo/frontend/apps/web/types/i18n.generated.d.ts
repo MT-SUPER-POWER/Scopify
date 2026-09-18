@@ -2456,9 +2456,9 @@ export interface TranslateFn {
    */
   (key: "themeEditor.copyName", params?: TranslationParams): string;
   /**
-   * zh-CN: 内置主题 · 只读
-   * zh-TW: 內建主題 · 唯讀
-   * en-US: Built-in theme · Read only
+   * zh-CN: 内置 · 只读
+   * zh-TW: 內建 · 唯讀
+   * en-US: Built-in · Read only
    */
   (key: "themeEditor.builtinHint", params?: TranslationParams): string;
   /**
@@ -3284,15 +3284,27 @@ export interface TranslateFn {
    */
   (key: "subtitlePalette.new", params?: TranslationParams): string;
   /**
+   * zh-CN: 配色名称
+   * zh-TW: 配色名稱
+   * en-US: Palette name
+   */
+  (key: "subtitlePalette.name", params?: TranslationParams): string;
+  /**
+   * zh-CN: 另存为新配色
+   * zh-TW: 另存為新配色
+   * en-US: Save as new palette
+   */
+  (key: "subtitlePalette.saveAs", params?: TranslationParams): string;
+  /**
    * zh-CN: 当前配色
    * zh-TW: 目前配色
    * en-US: Current palette
    */
   (key: "subtitlePalette.current", params?: TranslationParams): string;
   /**
-   * zh-CN: 还没有自定义配色，可以基于当前配色新建。
-   * zh-TW: 尚無自訂配色，可依目前配色新增。
-   * en-US: No custom palettes yet. Create one from your current colors.
+   * zh-CN: 暂无自定义配色
+   * zh-TW: 尚無自訂配色
+   * en-US: No custom palettes yet.
    */
   (key: "subtitlePalette.empty", params?: TranslationParams): string;
   /**
@@ -3308,15 +3320,15 @@ export interface TranslateFn {
    */
   (key: "subtitlePalette.effects", params?: TranslationParams): string;
   /**
-   * zh-CN: 即时生效并自动保存，不属于配色资产。
-   * zh-TW: 即時生效並自動儲存，不屬於配色資產。
-   * en-US: Changes apply and save immediately, independently of palettes.
+   * zh-CN: 填色与动画
+   * zh-TW: 填色與動畫
+   * en-US: Fill and animation
    */
-  (key: "subtitlePalette.liveHint", params?: TranslationParams): string;
+  (key: "subtitlePalette.playback", params?: TranslationParams): string;
   /**
-   * zh-CN: 使用当前字号和布局；填色、场景与文字仅用于预览，不会改变实际设置。
-   * zh-TW: 使用目前字級與版面；填色、情境與文字僅供預覽，不會變更實際設定。
-   * en-US: Uses your current typography and layout. Fill, scenes and text are preview only.
+   * zh-CN: 场景、文字和播放仅用于预览。
+   * zh-TW: 情境、文字與播放僅供預覽。
+   * en-US: Scenes, text and playback are for preview only.
    */
   (key: "subtitlePalette.previewHint", params?: TranslationParams): string;
   /**

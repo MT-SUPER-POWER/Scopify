@@ -10,10 +10,10 @@ export function SubtitleStyleEditor(props: SubtitleSettingsEditorProps) {
   const { t } = useI18n();
   return (
     <Tabs defaultValue="layout">
-      <TabsList className="mb-6 h-auto max-w-full flex-wrap">
+      <TabsList className="mb-6 h-auto w-fit max-w-full flex-wrap justify-start">
         <TabsTrigger value="layout">{t("subtitlePreview.layout")}</TabsTrigger>
         <TabsTrigger value="effects">{t("subtitlePalette.effects")}</TabsTrigger>
-        <TabsTrigger value="motion">{t("subtitlePreview.motion")}</TabsTrigger>
+        <TabsTrigger value="motion">{t("subtitlePalette.playback")}</TabsTrigger>
       </TabsList>
       <TabsContent value="layout">
         <SubtitleLayoutSettings {...props} />

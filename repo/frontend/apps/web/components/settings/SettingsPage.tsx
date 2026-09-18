@@ -104,10 +104,12 @@ const SettingsPage = () => {
           </TabsContent>
         </div>
       </Tabs>
-      <SaveChangesButton
-        visible={settings.hasChanges}
-        onClick={() => settings.setIsModalOpen(true)}
-      />
+      {activeTab !== "appearance" && (
+        <SaveChangesButton
+          visible={settings.hasChanges}
+          onClick={() => settings.setIsModalOpen(true)}
+        />
+      )}
       <SaveConfirmModal
         open={settings.isModalOpen}
         isSaving={settings.isSaving}

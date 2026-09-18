@@ -14,7 +14,6 @@ export function LyricsStyleSettingsSection() {
     <div className="space-y-8">
       <SubtitleThemeLibrary />
       <SettingSection title={t("themeEditor.styleLabel")}>
-        <p className="mb-5 text-sm text-muted-foreground">{t("subtitlePalette.liveHint")}</p>
         <SubtitleStyleEditor settings={settings} onChange={update} />
       </SettingSection>
     </div>

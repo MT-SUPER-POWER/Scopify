@@ -67,7 +67,7 @@ function SubtitleThemeEditor(props: SubtitleThemeEditorProps) {
               disabled={!editor.valid}
               onClick={() => finish(editor.duplicate())}
             >
-              {t("appearance.theme.saveAs")}
+              {t("subtitlePalette.saveAs")}
             </button>
           )
         )
@@ -82,6 +82,7 @@ function SubtitleThemeEditor(props: SubtitleThemeEditorProps) {
           <SettingSection title={t("themeEditor.paletteLabel")}>
             {!editor.readOnly && (
               <ThemeNameField
+                label={t("subtitlePalette.name")}
                 value={editor.draft.name}
                 valid={editor.valid}
                 onChange={editor.setName}

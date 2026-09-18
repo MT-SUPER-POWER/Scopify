@@ -34,7 +34,7 @@ export function useSubtitleThemeEditor({
     return {
       id: copyFrom || !sourceId ? crypto.randomUUID() : sourceId,
       name: copyFrom
-        ? uniqueThemeName(name ?? "", themes)
+        ? uniqueThemeName(t("themeEditor.copyName", { name: name ?? "" }), themes)
         : (name ??
           uniqueThemeName(t("subtitlePalette.untitled", { number: themes.length + 1 }), themes)),
       settings: subtitlePalette(

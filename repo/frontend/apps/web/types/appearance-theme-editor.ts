@@ -23,6 +23,7 @@ export interface ThemeEditorBoundaryProps {
 }
 
 export interface ThemeNameFieldProps {
+  label?: string;
   value: string;
   valid: boolean;
   onChange: (name: string) => void;
@@ -38,4 +39,14 @@ export interface ThemeColorControlProps {
   value: string;
   readOnly?: boolean;
   onChange: (color: string) => void;
+}
+
+export interface ThemeAssetCardProps {
+  name: string;
+  selected: boolean;
+  selectionMode?: boolean;
+  readOnly?: boolean;
+  onSelect: () => void;
+  onOpen?: () => void;
+  preview: ReactNode;
 }

@@ -39,8 +39,9 @@ export function useSubtitlePreview(settings: LyricsPreviewSettings, palettePrevi
         candidate.source === payload.source &&
         candidate.target === payload.target &&
         candidate.isChinese === payload.isChinese &&
-        previewSettings.showTranslation === (scene === "bilingual" || scene === "chinese") &&
-        (scene !== "chinese" || previewSettings.autoCollapseChinese)
+        (scene === "chinese"
+          ? !previewSettings.showTranslation || previewSettings.autoCollapseChinese
+          : previewSettings.showTranslation === (scene === "bilingual"))
       );
     }) ?? null;
   const duration = previewSettings.fillEnabled

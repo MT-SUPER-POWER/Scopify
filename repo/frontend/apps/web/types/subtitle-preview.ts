@@ -97,11 +97,10 @@ export interface SubtitleFillTextProps {
 export interface SubtitleThemeCardProps {
   theme: SavedSubtitleTheme;
   selected: boolean;
-  managing: boolean;
+  managing?: boolean;
+  readOnly?: boolean;
   onSelect: () => void;
   onEdit: () => void;
-  onUpdate: () => void;
-  onDelete: () => void;
 }
 
 export interface SubtitlePreviewWorkspaceProps {
