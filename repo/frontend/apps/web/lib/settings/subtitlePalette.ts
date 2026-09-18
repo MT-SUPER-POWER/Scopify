@@ -1,5 +1,5 @@
-import type { LyricsPreviewSettings } from "@/types/appearance";
-export function subtitlePalette(settings: LyricsPreviewSettings) {
+import type { SubtitlePalette } from "@/types/subtitle-preview";
+export function subtitlePalette(settings: SubtitlePalette): SubtitlePalette {
   const {
     color,
     gradientColor,

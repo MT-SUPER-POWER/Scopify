@@ -12,9 +12,10 @@ export function SubtitlePreviewWorkspace({
   settings,
   children,
   note,
+  palettePreview = false,
 }: SubtitlePreviewWorkspaceProps) {
   const { t } = useI18n();
-  const preview = useSubtitlePreview(settings);
+  const preview = useSubtitlePreview(settings, palettePreview);
   return (
     <div
       id="subtitle-style"

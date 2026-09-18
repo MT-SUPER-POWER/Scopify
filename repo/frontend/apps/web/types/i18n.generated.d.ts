@@ -2438,6 +2438,42 @@ export interface TranslateFn {
    */
   (key: "appearance.lyrics.backdrop", params?: TranslationParams): string;
   /**
+   * zh-CN: 查看
+   * zh-TW: 檢視
+   * en-US: View
+   */
+  (key: "themeEditor.view", params?: TranslationParams): string;
+  /**
+   * zh-CN: 创建副本
+   * zh-TW: 建立副本
+   * en-US: Create copy
+   */
+  (key: "themeEditor.copy", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内置主题 · 只读。可以查看参数和预览，创建副本后可编辑。
+   * zh-TW: 內建主題 · 唯讀。可檢視參數和預覽，建立副本後可編輯。
+   * en-US: Built-in theme · Read only. View its settings and preview, or create an editable copy.
+   */
+  (key: "themeEditor.builtinHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已保存并应用
+   * zh-TW: 已儲存並套用
+   * en-US: Saved and applied
+   */
+  (key: "themeEditor.saved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 找不到这个主题，可能已被删除。请通过顶部导航返回设置。
+   * zh-TW: 找不到此主題，可能已被刪除。請透過頂部導覽返回設定。
+   * en-US: This theme may have been deleted. Use the header navigation to return to settings.
+   */
+  (key: "themeEditor.missing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前主题
+   * zh-TW: 目前主題
+   * en-US: Current theme
+   */
+  (key: "themeEditor.current", params?: TranslationParams): string;
+  /**
    * zh-CN: 背景主题编辑
    * zh-TW: 背景主題編輯
    * en-US: Background theme editor
@@ -2480,9 +2516,9 @@ export interface TranslateFn {
    */
   (key: "themeEditor.themeActions", params?: TranslationParams): string;
   /**
-   * zh-CN: 有未保存的修改
-   * zh-TW: 有未儲存的修改
-   * en-US: Unsaved changes
+   * zh-CN: 有未保存的修改，离开页面后不会保留。
+   * zh-TW: 有未儲存的修改，離開頁面後不會保留。
+   * en-US: Unsaved changes will be lost when you leave this page.
    */
   (key: "themeEditor.unsaved", params?: TranslationParams): string;
   /**
@@ -3230,9 +3266,57 @@ export interface TranslateFn {
    */
   (key: "subtitleControl.retry", params?: TranslationParams): string;
   /**
-   * zh-CN: 自定义配色方案
-   * zh-TW: 自訂配色方案
-   * en-US: Custom color palettes
+   * zh-CN: 内置配色
+   * zh-TW: 內建配色
+   * en-US: Built-in palettes
+   */
+  (key: "subtitlePalette.builtin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新建配色
+   * zh-TW: 新增配色
+   * en-US: New palette
+   */
+  (key: "subtitlePalette.new", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前配色
+   * zh-TW: 目前配色
+   * en-US: Current palette
+   */
+  (key: "subtitlePalette.current", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有自定义配色，可以基于当前配色新建。
+   * zh-TW: 尚無自訂配色，可依目前配色新增。
+   * en-US: No custom palettes yet. Create one from your current colors.
+   */
+  (key: "subtitlePalette.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的配色 {{number}}
+   * zh-TW: 我的配色 {{number}}
+   * en-US: My palette {{number}}
+   */
+  (key: "subtitlePalette.untitled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 背景与阴影
+   * zh-TW: 背景與陰影
+   * en-US: Backdrop and shadow
+   */
+  (key: "subtitlePalette.effects", params?: TranslationParams): string;
+  /**
+   * zh-CN: 即时生效并自动保存，不属于配色资产。
+   * zh-TW: 即時生效並自動儲存，不屬於配色資產。
+   * en-US: Changes apply and save immediately, independently of palettes.
+   */
+  (key: "subtitlePalette.liveHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 使用当前字号和布局；填色、场景与文字仅用于预览，不会改变实际设置。
+   * zh-TW: 使用目前字級與版面；填色、情境與文字僅供預覽，不會變更實際設定。
+   * en-US: Uses your current typography and layout. Fill, scenes and text are preview only.
+   */
+  (key: "subtitlePalette.previewHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的配色
+   * zh-TW: 我的配色
+   * en-US: My palettes
    */
   (key: "subtitlePalette.library", params?: TranslationParams): string;
   /**

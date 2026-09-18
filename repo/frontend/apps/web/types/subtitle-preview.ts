@@ -47,16 +47,39 @@ export interface SubtitlePlaybackControlsProps {
   onVisibleChange: (visible: boolean) => void;
   onLoopChange: (loop: boolean) => void;
 }
-export type SubtitleThemeKind = "style" | "palette";
+export type SubtitlePalette = Pick<
+  LyricsPreviewSettings,
+  | "color"
+  | "gradientColor"
+  | "colorMode"
+  | "gradientAngle"
+  | "unsungColor"
+  | "secondaryColor"
+  | "backgroundColor"
+  | "backdropOpacity"
+>;
+
+export interface BuiltinSubtitlePalette {
+  id: `builtin:${string}`;
+  label: "white" | "mint" | "sunset" | "ice";
+  settings: SubtitlePalette;
+}
+
+export interface SubtitlePaletteFieldsProps {
+  settings: SubtitlePalette;
+  onChange: (patch: Partial<SubtitlePalette>) => void;
+  readOnly?: boolean;
+}
 
 export interface SavedSubtitleTheme {
-  kind?: SubtitleThemeKind;
   id: string;
   name: string;
-  settings: LyricsPreviewSettings;
+  settings: SubtitlePalette;
 }
 export interface SubtitleThemeStore {
   themes: SavedSubtitleTheme[];
+  activeId: string | null;
+  setActiveId: (id: string | null) => void;
   save: (theme: SavedSubtitleTheme) => void;
   remove: (ids: string[]) => void;
 }
@@ -81,10 +104,8 @@ export interface SubtitleThemeCardProps {
   onDelete: () => void;
 }
 
-export interface SubtitleThemeLibraryProps {
-  paletteOnly?: boolean;
-}
 export interface SubtitlePreviewWorkspaceProps {
+  palettePreview?: boolean;
   settings: LyricsPreviewSettings;
   children: ReactNode;
   note?: string;
@@ -92,6 +113,6 @@ export interface SubtitlePreviewWorkspaceProps {
 
 export interface SubtitleThemeEditorProps {
   themeId: string | null;
-  kind: SubtitleThemeKind;
+  copyFrom: string | null;
   useCurrent: boolean;
 }

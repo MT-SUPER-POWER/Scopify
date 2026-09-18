@@ -7,11 +7,27 @@ import { subtitlePlaybackPosition } from "@/lib/settings/subtitlePlayback";
 import type { LyricsPreviewSettings } from "@/types/appearance";
 import type { SubtitlePlayback, SubtitlePreviewScene } from "@/types/subtitle-preview";
 
-export function useSubtitlePreview(settings: LyricsPreviewSettings) {
-  const [sceneLayout, setSceneLayout] = useState<Partial<LyricsPreviewSettings>>({});
-  useEffect(() => setSceneLayout({}), [settings.showTranslation, settings.autoCollapseChinese]);
-  const previewSettings = { ...settings, ...sceneLayout };
-  const [content, setPayload] = useState(SUBTITLE_PREVIEW_SCENES.chinese);
+export function useSubtitlePreview(settings: LyricsPreviewSettings, palettePreview = false) {
+  const [sceneLayout, setSceneLayout] = useState<Partial<LyricsPreviewSettings>>(
+    palettePreview ? { showTranslation: true } : {},
+  );
+  useEffect(
+    () => setSceneLayout(palettePreview ? { showTranslation: true } : {}),
+    [settings.showTranslation, settings.autoCollapseChinese, palettePreview],
+  );
+  const previewSettings = {
+    ...settings,
+    ...sceneLayout,
+    ...(palettePreview
+      ? {
+          fillEnabled: true,
+          entrance: settings.entrance === "typewriter" ? ("fade" as const) : settings.entrance,
+        }
+      : {}),
+  };
+  const [content, setPayload] = useState(
+    palettePreview ? SUBTITLE_PREVIEW_SCENES.bilingual : SUBTITLE_PREVIEW_SCENES.chinese,
+  );
   const payload = {
     ...content,
     isChinese: isChineseSubtitleText(content.source, content.target),
@@ -27,7 +43,7 @@ export function useSubtitlePreview(settings: LyricsPreviewSettings) {
         (scene !== "chinese" || previewSettings.autoCollapseChinese)
       );
     }) ?? null;
-  const duration = settings.fillEnabled
+  const duration = previewSettings.fillEnabled
     ? settings.fillDuration
     : settings.entrance === "typewriter"
       ? Math.max(1, Array.from(payload.source).length) * settings.characterInterval

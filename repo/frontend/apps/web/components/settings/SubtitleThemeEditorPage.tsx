@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@scopify/ui/shadcn/components/button";
-import { APPEARANCE_SETTINGS_PATH } from "@/constants/appearanceRoutes";
+import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
+import { subtitleThemeEditorHref } from "@/lib/settings/subtitleTheme";
 import { useSubtitleThemeEditor } from "@/hooks/settings/useSubtitleThemeEditor";
 import { useI18n } from "@/store/module/i18n";
 import type { SubtitleThemeEditorProps } from "@/types/subtitle-preview";
@@ -10,21 +10,20 @@ import { ThemeEditorBoundary } from "./ThemeEditorBoundary";
 import { ThemeEditorFrame } from "./ThemeEditorFrame";
 import { ThemeNameField } from "./ThemeNameField";
 import { SubtitlePreviewWorkspace } from "./SubtitlePreviewWorkspace";
-import { SubtitleStyleEditor } from "./SubtitleStyleEditor";
 import { SubtitlePaletteFields } from "./SubtitlePaletteFields";
-import { SubtitleColorPresets } from "./SubtitleColorPresets";
+import { SettingSection } from "./SettingsUI";
 
 export function SubtitleThemeEditorPage() {
   const params = useSearchParams();
-  const kind = params.get("kind") === "palette" ? "palette" : "style";
   const themeId = params.get("id");
+  const copyFrom = params.get("copy");
   const useCurrent = params.get("source") === "current";
   return (
     <ThemeEditorBoundary>
       <SubtitleThemeEditor
-        key={`${kind}:${themeId}:${useCurrent}`}
-        kind={kind}
+        key={`${themeId}:${copyFrom}:${useCurrent}`}
         themeId={themeId}
+        copyFrom={copyFrom}
         useCurrent={useCurrent}
       />
     </ThemeEditorBoundary>
@@ -34,47 +33,68 @@ export function SubtitleThemeEditorPage() {
 function SubtitleThemeEditor(props: SubtitleThemeEditorProps) {
   const { t } = useI18n();
   const router = useRouter();
+  const params = useSearchParams();
   const editor = useSubtitleThemeEditor(props);
-  const returnHref = `${APPEARANCE_SETTINGS_PATH}#subtitle-style`;
+  const finish = (id: string | null) => {
+    if (id) router.replace(`${subtitleThemeEditorHref(id)}&saved=1`, { scroll: false });
+  };
   return (
     <ThemeEditorFrame
-      title={t(props.kind === "palette" ? "themeEditor.palette" : "themeEditor.subtitle")}
+      title={editor.missing ? t("themeEditor.paletteLabel") : editor.draft.name}
+      readOnly={editor.readOnly}
+      missing={editor.missing}
+      saved={params.get("saved") === "1"}
       dirty={editor.dirty}
       valid={editor.valid}
       onReset={editor.reset}
-      onSave={() => {
-        editor.save();
-        router.push(returnHref);
-      }}
+      onSave={() => finish(editor.save())}
       actions={
-        !editor.isNew && (
-          <Button
-            variant="outline"
-            disabled={!editor.draft.name.trim()}
-            onClick={() => {
-              editor.duplicate();
-              router.push(returnHref);
-            }}
+        editor.readOnly ? (
+          <button
+            type="button"
+            className={SETTINGS_ACTION_BUTTON_CLASS_NAME}
+            onClick={() =>
+              router.push(subtitleThemeEditorHref(undefined, false, props.themeId ?? undefined))
+            }
           >
-            {t("appearance.theme.saveAs")}
-          </Button>
+            {t("themeEditor.copy")}
+          </button>
+        ) : (
+          !editor.isNew && (
+            <button
+              type="button"
+              className={SETTINGS_ACTION_BUTTON_CLASS_NAME}
+              disabled={!editor.valid}
+              onClick={() => finish(editor.duplicate())}
+            >
+              {t("appearance.theme.saveAs")}
+            </button>
+          )
         )
       }
     >
-      <SubtitlePreviewWorkspace settings={editor.draft.settings} note={t("themeEditor.draftHint")}>
-        <ThemeNameField value={editor.draft.name} valid={editor.valid} onChange={editor.setName} />
-        {props.kind === "palette" ? (
-          <div>
-            <SubtitleColorPresets settings={editor.draft.settings} onChange={editor.update} />
-            <SubtitlePaletteFields settings={editor.draft.settings} onChange={editor.update} />
-          </div>
-        ) : (
-          <SubtitleStyleEditor settings={editor.draft.settings} onChange={editor.update} />
-        )}
-        <Button variant="ghost" onClick={editor.resetDefaults}>
-          {t("appearance.reset")}
-        </Button>
-      </SubtitlePreviewWorkspace>
+      {!editor.missing && (
+        <SubtitlePreviewWorkspace
+          settings={editor.previewSettings}
+          note={t("subtitlePalette.previewHint")}
+          palettePreview
+        >
+          <SettingSection title={t("themeEditor.paletteLabel")}>
+            {!editor.readOnly && (
+              <ThemeNameField
+                value={editor.draft.name}
+                valid={editor.valid}
+                onChange={editor.setName}
+              />
+            )}
+            <SubtitlePaletteFields
+              settings={editor.draft.settings}
+              onChange={editor.update}
+              readOnly={editor.readOnly}
+            />
+          </SettingSection>
+        </SubtitlePreviewWorkspace>
+      )}
     </ThemeEditorFrame>
   );
 }

@@ -7,6 +7,9 @@ export interface NamedTheme {
 
 export interface ThemeEditorFrameProps {
   title: string;
+  readOnly?: boolean;
+  saved?: boolean;
+  missing?: boolean;
   dirty: boolean;
   valid: boolean;
   onReset: () => void;
@@ -32,5 +35,6 @@ export interface BackgroundThemeEditorProps {
 export interface ThemeColorControlProps {
   label: string;
   value: string;
+  readOnly?: boolean;
   onChange: (color: string) => void;
 }

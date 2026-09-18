@@ -1,59 +1,83 @@
 "use client";
 
 import { useState } from "react";
-import { DEFAULT_LYRICS_PREVIEW } from "@/constants/appearance";
+import { SUBTITLE_COLOR_PRESETS } from "@/constants/subtitle-preview";
 import { subtitlePalette } from "@/lib/settings/subtitlePalette";
-import { subtitleThemePatch } from "@/lib/settings/subtitleTheme";
 import { isThemeNameValid, uniqueThemeName } from "@/lib/settings/themeNames";
-import { updateSubtitleSettings } from "@/lib/settings/updateSubtitleSettings";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useSubtitleThemeStore } from "@/store/module/subtitleThemes";
 import { useI18n } from "@/store/module/i18n";
-import type { LyricsPreviewSettings } from "@/types/appearance";
-import type { SavedSubtitleTheme, SubtitleThemeEditorProps } from "@/types/subtitle-preview";
+import type {
+  SavedSubtitleTheme,
+  SubtitlePalette,
+  SubtitleThemeEditorProps,
+} from "@/types/subtitle-preview";
 
-export function useSubtitleThemeEditor({ themeId, kind, useCurrent }: SubtitleThemeEditorProps) {
+export function useSubtitleThemeEditor({
+  themeId,
+  copyFrom,
+  useCurrent,
+}: SubtitleThemeEditorProps) {
   const { t } = useI18n();
   const themes = useSubtitleThemeStore((state) => state.themes);
   const save = useSubtitleThemeStore((state) => state.save);
+  const setActiveId = useSubtitleThemeStore((state) => state.setActiveId);
+  const current = useAppearanceStore((state) => state.lyricsPreview);
   const apply = useAppearanceStore((state) => state.updateLyricsPreview);
-  const [initial] = useState<SavedSubtitleTheme>(() => {
-    const theme = themes.find((item) => item.id === themeId && (item.kind ?? "style") === kind);
-    const current = useAppearanceStore.getState().lyricsPreview;
+  const sourceId = copyFrom ?? themeId;
+  const builtin = SUBTITLE_COLOR_PRESETS.find((item) => item.id === sourceId);
+  const existing = themes.find((item) => item.id === sourceId);
+  const readOnly = !!builtin && !copyFrom;
+  const missing = !!sourceId && !builtin && !existing;
+  const [initial, setInitial] = useState<SavedSubtitleTheme>(() => {
+    const name = builtin ? t(`subtitlePreview.${builtin.label}`) : existing?.name;
     return {
-      id: theme?.id ?? crypto.randomUUID(),
-      kind,
-      name:
-        theme?.name ??
-        uniqueThemeName(t("appearance.theme.untitled", { number: themes.length + 1 }), themes),
-      settings:
-        theme && !useCurrent
-          ? updateSubtitleSettings(current, subtitleThemePatch(theme))
-          : { ...current },
+      id: copyFrom || !sourceId ? crypto.randomUUID() : sourceId,
+      name: copyFrom
+        ? uniqueThemeName(name ?? "", themes)
+        : (name ??
+          uniqueThemeName(t("subtitlePalette.untitled", { number: themes.length + 1 }), themes)),
+      settings: subtitlePalette(
+        builtin?.settings ?? (existing && !useCurrent ? existing.settings : current),
+      ),
     };
   });
   const [draft, setDraft] = useState(initial);
-  const update = (patch: Partial<LyricsPreviewSettings>) =>
+  const update = (patch: Partial<SubtitlePalette>) => {
+    if (readOnly) return;
     setDraft((previous) => ({
       ...previous,
-      settings: updateSubtitleSettings(previous.settings, patch),
+      settings: subtitlePalette({ ...previous.settings, ...patch }),
     }));
-  const saveDraft = (theme: SavedSubtitleTheme) => {
-    save(theme);
-    apply(subtitleThemePatch(theme));
+  };
+  const saveDraft = (asNew = false) => {
+    if (readOnly || missing || !isThemeNameValid(draft, themes)) return null;
+    const saved = {
+      ...draft,
+      name: draft.name.trim(),
+      ...(asNew ? { id: crypto.randomUUID(), name: uniqueThemeName(draft.name, themes) } : {}),
+    };
+    save(saved);
+    apply(saved.settings);
+    setActiveId(saved.id);
+    setDraft(saved);
+    setInitial(saved);
+    return saved.id;
   };
   return {
     draft,
+    readOnly,
+    missing,
+    previewSettings: { ...current, ...draft.settings },
     isNew: !themes.some((theme) => theme.id === draft.id),
     dirty: JSON.stringify(draft) !== JSON.stringify(initial),
-    valid: isThemeNameValid(draft, themes),
-    setName: (name: string) => setDraft((previous) => ({ ...previous, name })),
+    valid: !missing && isThemeNameValid(draft, themes),
+    setName: (name: string) => {
+      if (!readOnly) setDraft((previous) => ({ ...previous, name }));
+    },
     update,
     reset: () => setDraft(initial),
-    resetDefaults: () =>
-      update(kind === "palette" ? subtitlePalette(DEFAULT_LYRICS_PREVIEW) : DEFAULT_LYRICS_PREVIEW),
-    save: () => saveDraft(draft),
-    duplicate: () =>
-      saveDraft({ ...draft, id: crypto.randomUUID(), name: uniqueThemeName(draft.name, themes) }),
+    save: () => saveDraft(),
+    duplicate: () => saveDraft(true),
   };
 }

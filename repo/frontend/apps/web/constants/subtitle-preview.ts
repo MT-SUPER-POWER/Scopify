@@ -1,15 +1,49 @@
-import type { LyricsPreviewSettings } from "@/types/appearance";
+import { DEFAULT_LYRICS_PREVIEW } from "./appearance";
+import { subtitlePalette } from "@/lib/settings/subtitlePalette";
+import type { BuiltinSubtitlePalette } from "@/types/subtitle-preview";
 import type { SubtitlePayload } from "@/types/subtitle-preview";
 
+const basePalette = subtitlePalette(DEFAULT_LYRICS_PREVIEW);
+
 export const SUBTITLE_COLOR_PRESETS = [
-  { id: "white", color: "#FFFFFF", gradientColor: "#FFFFFF", colorMode: "solid" },
-  { id: "mint", color: "#E5FFE9", gradientColor: "#6DE8C1", colorMode: "gradient" },
-  { id: "sunset", color: "#FFE8B5", gradientColor: "#FFA6BA", colorMode: "gradient" },
-  { id: "ice", color: "#E8F7FF", gradientColor: "#A5B5FF", colorMode: "gradient" },
-] as const satisfies readonly (Pick<
-  LyricsPreviewSettings,
-  "color" | "gradientColor" | "colorMode"
-> & { id: string })[];
+  { id: "builtin:white", label: "white", settings: { ...basePalette } },
+  {
+    id: "builtin:mint",
+    label: "mint",
+    settings: {
+      ...basePalette,
+      color: "#E5FFE9",
+      gradientColor: "#6DE8C1",
+      colorMode: "gradient",
+      secondaryColor: "#CFEBDD",
+      unsungColor: "#8EA69B",
+    },
+  },
+  {
+    id: "builtin:sunset",
+    label: "sunset",
+    settings: {
+      ...basePalette,
+      color: "#FFE8B5",
+      gradientColor: "#FFA6BA",
+      colorMode: "gradient",
+      secondaryColor: "#F2D5CD",
+      unsungColor: "#AA949B",
+    },
+  },
+  {
+    id: "builtin:ice",
+    label: "ice",
+    settings: {
+      ...basePalette,
+      color: "#E8F7FF",
+      gradientColor: "#A5B5FF",
+      colorMode: "gradient",
+      secondaryColor: "#D4DFF5",
+      unsungColor: "#929DB5",
+    },
+  },
+] as const satisfies readonly BuiltinSubtitlePalette[];
 
 export const SUBTITLE_PREVIEW_SCENES: Record<
   "short" | "long" | "bilingual" | "chinese",
