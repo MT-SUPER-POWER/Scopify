@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { BACKGROUND_THEME_EDITOR_PATH } from "@/constants/appearanceRoutes";
-import { Plus } from "lucide-react";
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
 import { useAppearanceStore } from "@/store/module/appearance";
@@ -32,29 +31,16 @@ export function BackgroundThemePicker() {
                 theme={theme}
                 selected={palette.id === theme.id}
                 onSelect={() => apply(theme.id)}
+                onView={() =>
+                  router.push(`${BACKGROUND_THEME_EDITOR_PATH}?id=${encodeURIComponent(theme.id)}`)
+                }
               />
             ))}
-          <button
-            type="button"
-            onClick={createTheme}
-            className="group flex cursor-pointer flex-col items-start text-sm text-muted-foreground hover:text-foreground"
-          >
-            <span className="mb-2 flex aspect-[2.1] w-full items-center justify-center rounded-md border border-dashed border-input group-hover:border-content-muted">
-              <Plus aria-hidden className="size-5" />
-            </span>
-            {t("appearance.library.new")}
-          </button>
         </div>
       </fieldset>
       <SavedThemeLibrary
         activeId={palette.id}
-        onCreate={() =>
-          router.push(
-            palette.id.startsWith("user:")
-              ? `${BACKGROUND_THEME_EDITOR_PATH}?id=${encodeURIComponent(palette.id)}`
-              : BACKGROUND_THEME_EDITOR_PATH,
-          )
-        }
+        onCreate={createTheme}
         onEdit={(theme) =>
           router.push(`${BACKGROUND_THEME_EDITOR_PATH}?id=${encodeURIComponent(theme.id)}`)
         }

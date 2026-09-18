@@ -4,7 +4,8 @@ export const themeEditorMessages = defineMessages(
   {
     "themeEditor.view": "查看",
     "themeEditor.copy": "创建副本",
-    "themeEditor.builtinHint": "内置主题 · 只读。可以查看参数和预览，创建副本后可编辑。",
+    "themeEditor.copyName": "{{name}} 副本",
+    "themeEditor.builtinHint": "内置主题 · 只读",
     "themeEditor.saved": "已保存并应用",
     "themeEditor.missing": "找不到这个主题，可能已被删除。请通过顶部导航返回设置。",
     "themeEditor.current": "当前主题",
@@ -23,7 +24,8 @@ export const themeEditorMessages = defineMessages(
   {
     "themeEditor.view": "檢視",
     "themeEditor.copy": "建立副本",
-    "themeEditor.builtinHint": "內建主題 · 唯讀。可檢視參數和預覽，建立副本後可編輯。",
+    "themeEditor.copyName": "{{name}} 副本",
+    "themeEditor.builtinHint": "內建主題 · 唯讀",
     "themeEditor.saved": "已儲存並套用",
     "themeEditor.missing": "找不到此主題，可能已被刪除。請透過頂部導覽返回設定。",
     "themeEditor.current": "目前主題",
@@ -42,8 +44,8 @@ export const themeEditorMessages = defineMessages(
   {
     "themeEditor.view": "View",
     "themeEditor.copy": "Create copy",
-    "themeEditor.builtinHint":
-      "Built-in theme · Read only. View its settings and preview, or create an editable copy.",
+    "themeEditor.copyName": "{{name}} copy",
+    "themeEditor.builtinHint": "Built-in theme · Read only",
     "themeEditor.saved": "Saved and applied",
     "themeEditor.missing":
       "This theme may have been deleted. Use the header navigation to return to settings.",

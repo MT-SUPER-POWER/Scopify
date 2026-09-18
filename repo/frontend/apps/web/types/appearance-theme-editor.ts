@@ -30,6 +30,7 @@ export interface ThemeNameFieldProps {
 
 export interface BackgroundThemeEditorProps {
   themeId: string | null;
+  copyFrom: string | null;
 }
 
 export interface ThemeColorControlProps {

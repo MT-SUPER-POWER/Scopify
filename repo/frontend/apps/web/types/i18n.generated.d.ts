@@ -2450,9 +2450,15 @@ export interface TranslateFn {
    */
   (key: "themeEditor.copy", params?: TranslationParams): string;
   /**
-   * zh-CN: 内置主题 · 只读。可以查看参数和预览，创建副本后可编辑。
-   * zh-TW: 內建主題 · 唯讀。可檢視參數和預覽，建立副本後可編輯。
-   * en-US: Built-in theme · Read only. View its settings and preview, or create an editable copy.
+   * zh-CN: {{name}} 副本
+   * zh-TW: {{name}} 副本
+   * en-US: {{name}} copy
+   */
+  (key: "themeEditor.copyName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内置主题 · 只读
+   * zh-TW: 內建主題 · 唯讀
+   * en-US: Built-in theme · Read only
    */
   (key: "themeEditor.builtinHint", params?: TranslationParams): string;
   /**
