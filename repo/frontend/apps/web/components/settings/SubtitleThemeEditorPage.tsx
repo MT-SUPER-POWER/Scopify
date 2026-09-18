@@ -39,7 +39,6 @@ function SubtitleThemeEditor(props: SubtitleThemeEditorProps) {
   return (
     <ThemeEditorFrame
       title={t(props.kind === "palette" ? "themeEditor.palette" : "themeEditor.subtitle")}
-      returnHref={returnHref}
       dirty={editor.dirty}
       valid={editor.valid}
       onReset={editor.reset}

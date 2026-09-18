@@ -2444,6 +2444,12 @@ export interface TranslateFn {
    */
   (key: "themeEditor.background", params?: TranslationParams): string;
   /**
+   * zh-CN: 编辑
+   * zh-TW: 編輯
+   * en-US: Edit
+   */
+  (key: "themeEditor.edit", params?: TranslationParams): string;
+  /**
    * zh-CN: 字幕样式编辑
    * zh-TW: 字幕樣式編輯
    * en-US: Subtitle style editor
@@ -2456,29 +2462,23 @@ export interface TranslateFn {
    */
   (key: "themeEditor.palette", params?: TranslationParams): string;
   /**
-   * zh-CN: 编辑字幕样式
-   * zh-TW: 編輯字幕樣式
-   * en-US: Edit subtitle style
+   * zh-CN: 字幕样式
+   * zh-TW: 字幕樣式
+   * en-US: Subtitle style
    */
-  (key: "themeEditor.editSubtitle", params?: TranslationParams): string;
+  (key: "themeEditor.styleLabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 编辑字幕配色
-   * zh-TW: 編輯字幕配色
-   * en-US: Edit subtitle palette
+   * zh-CN: 字幕配色
+   * zh-TW: 字幕配色
+   * en-US: Subtitle palette
    */
-  (key: "themeEditor.editPalette", params?: TranslationParams): string;
+  (key: "themeEditor.paletteLabel", params?: TranslationParams): string;
   /**
    * zh-CN: 主题操作
    * zh-TW: 主題操作
    * en-US: Theme actions
    */
   (key: "themeEditor.themeActions", params?: TranslationParams): string;
-  /**
-   * zh-CN: 返回外观设置
-   * zh-TW: 返回外觀設定
-   * en-US: Back to appearance
-   */
-  (key: "themeEditor.back", params?: TranslationParams): string;
   /**
    * zh-CN: 有未保存的修改
    * zh-TW: 有未儲存的修改
@@ -2497,30 +2497,6 @@ export interface TranslateFn {
    * en-US: Revert changes
    */
   (key: "themeEditor.reset", params?: TranslationParams): string;
-  /**
-   * zh-CN: 放弃本次修改？
-   * zh-TW: 捨棄本次修改？
-   * en-US: Discard these changes?
-   */
-  (key: "themeEditor.leaveTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 当前主题保持不变，未保存的编辑将被放弃。
-   * zh-TW: 目前主題保持不變，未儲存的編輯將被捨棄。
-   * en-US: Your applied theme stays unchanged. Unsaved edits will be discarded.
-   */
-  (key: "themeEditor.leaveHint", params?: TranslationParams): string;
-  /**
-   * zh-CN: 继续编辑
-   * zh-TW: 繼續編輯
-   * en-US: Keep editing
-   */
-  (key: "themeEditor.keepEditing", params?: TranslationParams): string;
-  /**
-   * zh-CN: 放弃并返回
-   * zh-TW: 捨棄並返回
-   * en-US: Discard and return
-   */
-  (key: "themeEditor.discard", params?: TranslationParams): string;
   /**
    * zh-CN: 编辑当前主题
    * zh-TW: 編輯目前主題

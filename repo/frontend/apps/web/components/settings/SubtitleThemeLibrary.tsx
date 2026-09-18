@@ -12,7 +12,7 @@ import {
   subtitleThemeEditorHref,
 } from "@/lib/settings/subtitleTheme";
 import type { SubtitleThemeLibraryProps } from "@/types/subtitle-preview";
-import { SettingSection } from "./SettingsUI";
+import { SettingRow, SettingSection } from "./SettingsUI";
 import { SubtitleColorPresets } from "./SubtitleColorPresets";
 import { SubtitleThemeDeleteDialog } from "./SubtitleThemeDeleteDialog";
 import { SubtitleThemeCard } from "./SubtitleThemeCard";
@@ -34,13 +34,10 @@ export function SubtitleThemeLibrary({ paletteOnly = false }: SubtitleThemeLibra
     router.push(subtitleThemeEditorHref(kind, active?.id));
   };
   return (
-    <SettingSection title={t(paletteOnly ? "subtitlePalette.library" : "subtitleSystem.library")}>
-      {paletteOnly && <SubtitleColorPresets settings={settings} onChange={update} />}
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" onClick={create}>
-          {t(paletteOnly ? "themeEditor.editPalette" : "themeEditor.editSubtitle")}
-        </Button>
-        {themes.length > 0 && (
+    <SettingSection
+      title={t(paletteOnly ? "subtitlePalette.library" : "subtitleSystem.library")}
+      actions={
+        themes.length > 0 ? (
           <Button
             variant="ghost"
             size="sm"
@@ -51,31 +48,39 @@ export function SubtitleThemeLibrary({ paletteOnly = false }: SubtitleThemeLibra
           >
             {t(managing ? "subtitleSystem.done" : "subtitleSystem.manage")}
           </Button>
-        )}
-        {managing && (
-          <>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                setSelected(
-                  selected.length === themes.length ? [] : themes.map((theme) => theme.id),
-                )
-              }
-            >
-              {t("subtitleSystem.selectAll")}
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              disabled={!selected.length}
-              onClick={() => setDeleting(selected)}
-            >
-              {t("subtitleSystem.delete")} ({selected.length})
-            </Button>
-          </>
-        )}
-      </div>
+        ) : undefined
+      }
+    >
+      {paletteOnly && <SubtitleColorPresets settings={settings} onChange={update} />}
+      <SettingRow
+        label={t(paletteOnly ? "themeEditor.paletteLabel" : "themeEditor.styleLabel")}
+        control={
+          <Button variant="outline" onClick={create}>
+            {t("themeEditor.edit")}
+          </Button>
+        }
+      />
+      {managing && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              setSelected(selected.length === themes.length ? [] : themes.map((theme) => theme.id))
+            }
+          >
+            {t("subtitleSystem.selectAll")}
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            disabled={!selected.length}
+            onClick={() => setDeleting(selected)}
+          >
+            {t("subtitleSystem.delete")} ({selected.length})
+          </Button>
+        </div>
+      )}
       {themes.length ? (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {themes.map((theme) => (

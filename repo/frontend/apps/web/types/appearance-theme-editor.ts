@@ -7,7 +7,6 @@ export interface NamedTheme {
 
 export interface ThemeEditorFrameProps {
   title: string;
-  returnHref: string;
   dirty: boolean;
   valid: boolean;
   onReset: () => void;

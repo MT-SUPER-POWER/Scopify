@@ -32,7 +32,6 @@ function BackgroundThemeEditor({ themeId }: BackgroundThemeEditorProps) {
   return (
     <ThemeEditorFrame
       title={t("themeEditor.background")}
-      returnHref={APPEARANCE_SETTINGS_PATH}
       dirty={editor.dirty}
       valid={editor.valid}
       onReset={editor.reset}
