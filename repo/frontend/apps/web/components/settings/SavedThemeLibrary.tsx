@@ -46,7 +46,7 @@ export function SavedThemeLibrary({ activeId, onCreate, onEdit }: SavedThemeLibr
             <>
               <Button size="sm" variant="ghost" onClick={onCreate}>
                 <BookmarkPlus className="size-3.5" />
-                {t("appearance.theme.saveCurrent")}
+                {t("themeEditor.editCurrent")}
               </Button>
               <Button
                 size="sm"

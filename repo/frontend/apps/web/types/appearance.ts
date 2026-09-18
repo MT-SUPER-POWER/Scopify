@@ -21,11 +21,6 @@ export interface ThemeOption {
   top: string;
   bottom: string;
 }
-export interface ThemeEditorProps {
-  theme: SavedBackgroundTheme;
-  isNew: boolean;
-  onClose: () => void;
-}
 export interface ThemeEditorFieldsProps {
   draft: SavedBackgroundTheme;
   onChange: (draft: SavedBackgroundTheme) => void;
@@ -120,6 +115,7 @@ export interface AppearanceStore {
 }
 
 export interface AppearancePreviewProps {
+  background?: SavedBackgroundTheme;
   children: ReactNode;
 }
 

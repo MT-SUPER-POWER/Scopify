@@ -1,37 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { BACKGROUND_THEME_EDITOR_PATH } from "@/constants/appearanceRoutes";
 import { Plus } from "lucide-react";
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { SavedBackgroundTheme } from "@/types/appearance";
 import { SavedThemeLibrary } from "./SavedThemeLibrary";
 import { ThemeCard } from "./ThemeCard";
-import { ThemeEditorDialog } from "./ThemeEditorDialog";
 
 export function BackgroundThemePicker() {
   const { t } = useI18n();
-  const { settings, palette } = useAppearanceBackground();
+  const { palette } = useAppearanceBackground();
   const options = useThemeOptions();
-  const themes = useAppearanceStore((state) => state.themes);
   const apply = useAppearanceStore((state) => state.applyTheme);
-  const [editor, setEditor] = useState<SavedBackgroundTheme | null>(null);
-  const createTheme = () => {
-    let number = themes.length + 1;
-    let name = t("appearance.theme.untitled", { number });
-    while (themes.some((theme) => theme.name === name))
-      name = t("appearance.theme.untitled", { number: ++number });
-    setEditor({
-      id: `user:${crypto.randomUUID()}`,
-      name,
-      top: palette.top,
-      bottom: palette.bottom,
-      intensity: settings.intensity,
-      height: settings.height,
-    });
-  };
+  const router = useRouter();
+  const createTheme = () => router.push(BACKGROUND_THEME_EDITOR_PATH);
   return (
     <div className="mb-8 space-y-7">
       <fieldset>
@@ -61,15 +46,19 @@ export function BackgroundThemePicker() {
           </button>
         </div>
       </fieldset>
-      <SavedThemeLibrary activeId={palette.id} onCreate={createTheme} onEdit={setEditor} />
-      {editor && (
-        <ThemeEditorDialog
-          key={editor.id}
-          theme={editor}
-          isNew={!themes.some((theme) => theme.id === editor.id)}
-          onClose={() => setEditor(null)}
-        />
-      )}
+      <SavedThemeLibrary
+        activeId={palette.id}
+        onCreate={() =>
+          router.push(
+            palette.id.startsWith("user:")
+              ? `${BACKGROUND_THEME_EDITOR_PATH}?id=${encodeURIComponent(palette.id)}`
+              : BACKGROUND_THEME_EDITOR_PATH,
+          )
+        }
+        onEdit={(theme) =>
+          router.push(`${BACKGROUND_THEME_EDITOR_PATH}?id=${encodeURIComponent(theme.id)}`)
+        }
+      />
     </div>
   );
 }

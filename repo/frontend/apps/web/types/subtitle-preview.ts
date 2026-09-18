@@ -18,11 +18,6 @@ export interface SubtitleCapsuleProps {
   playback: SubtitlePlayback;
   loop: boolean;
 }
-export interface SubtitleColorControlProps {
-  label: string;
-  value: string;
-  onChange: (color: string) => void;
-}
 export type SubtitlePreviewScene = "short" | "long" | "bilingual" | "chinese";
 
 export interface SubtitlePreviewControlsProps {

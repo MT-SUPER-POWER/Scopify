@@ -2438,6 +2438,66 @@ export interface TranslateFn {
    */
   (key: "appearance.lyrics.backdrop", params?: TranslationParams): string;
   /**
+   * zh-CN: 背景主题编辑
+   * zh-TW: 背景主題編輯
+   * en-US: Background theme editor
+   */
+  (key: "themeEditor.background", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回外观设置
+   * zh-TW: 返回外觀設定
+   * en-US: Back to appearance
+   */
+  (key: "themeEditor.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: 有未保存的修改
+   * zh-TW: 有未儲存的修改
+   * en-US: Unsaved changes
+   */
+  (key: "themeEditor.unsaved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 修改仅在此预览，保存后应用。
+   * zh-TW: 修改僅在此預覽，儲存後套用。
+   * en-US: Changes stay in this preview until you save.
+   */
+  (key: "themeEditor.draftHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 撤销修改
+   * zh-TW: 復原修改
+   * en-US: Revert changes
+   */
+  (key: "themeEditor.reset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 放弃本次修改？
+   * zh-TW: 捨棄本次修改？
+   * en-US: Discard these changes?
+   */
+  (key: "themeEditor.leaveTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前主题保持不变，未保存的编辑将被放弃。
+   * zh-TW: 目前主題保持不變，未儲存的編輯將被捨棄。
+   * en-US: Your applied theme stays unchanged. Unsaved edits will be discarded.
+   */
+  (key: "themeEditor.leaveHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 继续编辑
+   * zh-TW: 繼續編輯
+   * en-US: Keep editing
+   */
+  (key: "themeEditor.keepEditing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 放弃并返回
+   * zh-TW: 捨棄並返回
+   * en-US: Discard and return
+   */
+  (key: "themeEditor.discard", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑当前主题
+   * zh-TW: 編輯目前主題
+   * en-US: Edit current theme
+   */
+  (key: "themeEditor.editCurrent", params?: TranslationParams): string;
+  /**
    * zh-CN: 精选主题
    * zh-TW: 精選主題
    * en-US: Curated themes

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { BackgroundPreviewContext } from "@/lib/settings/backgroundPreviewContext";
 import { DEFAULT_BACKGROUND } from "@/constants/appearance";
 import {
   applyBackgroundTheme,
@@ -10,6 +11,7 @@ import {
 import { useAppearanceStore } from "@/store/module/appearance";
 
 export function useAppearanceBackground() {
+  const preview = useContext(BackgroundPreviewContext);
   const saved = useAppearanceStore((state) => state.background);
   const themes = useAppearanceStore((state) => state.themes);
   const daily = useAppearanceStore((state) => state.dailyThemeIds);
@@ -41,5 +43,10 @@ export function useAppearanceBackground() {
     base.rotation === "fixed"
       ? base
       : { ...applyBackgroundTheme(base, id, themes), rotation: base.rotation };
+  if (preview)
+    return {
+      settings: { ...settings, intensity: preview.intensity, height: preview.height },
+      palette: preview,
+    };
   return { settings, palette: resolveBackgroundPalette(settings, themes) };
 }

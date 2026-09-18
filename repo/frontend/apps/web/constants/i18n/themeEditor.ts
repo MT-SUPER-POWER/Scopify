@@ -1,0 +1,40 @@
+import { defineMessages } from "./define";
+
+export const themeEditorMessages = defineMessages(
+  {
+    "themeEditor.background": "背景主题编辑",
+    "themeEditor.back": "返回外观设置",
+    "themeEditor.unsaved": "有未保存的修改",
+    "themeEditor.draftHint": "修改仅在此预览，保存后应用。",
+    "themeEditor.reset": "撤销修改",
+    "themeEditor.leaveTitle": "放弃本次修改？",
+    "themeEditor.leaveHint": "当前主题保持不变，未保存的编辑将被放弃。",
+    "themeEditor.keepEditing": "继续编辑",
+    "themeEditor.discard": "放弃并返回",
+    "themeEditor.editCurrent": "编辑当前主题",
+  },
+  {
+    "themeEditor.background": "背景主題編輯",
+    "themeEditor.back": "返回外觀設定",
+    "themeEditor.unsaved": "有未儲存的修改",
+    "themeEditor.draftHint": "修改僅在此預覽，儲存後套用。",
+    "themeEditor.reset": "復原修改",
+    "themeEditor.leaveTitle": "捨棄本次修改？",
+    "themeEditor.leaveHint": "目前主題保持不變，未儲存的編輯將被捨棄。",
+    "themeEditor.keepEditing": "繼續編輯",
+    "themeEditor.discard": "捨棄並返回",
+    "themeEditor.editCurrent": "編輯目前主題",
+  },
+  {
+    "themeEditor.background": "Background theme editor",
+    "themeEditor.back": "Back to appearance",
+    "themeEditor.unsaved": "Unsaved changes",
+    "themeEditor.draftHint": "Changes stay in this preview until you save.",
+    "themeEditor.reset": "Revert changes",
+    "themeEditor.leaveTitle": "Discard these changes?",
+    "themeEditor.leaveHint": "Your applied theme stays unchanged. Unsaved edits will be discarded.",
+    "themeEditor.keepEditing": "Keep editing",
+    "themeEditor.discard": "Discard and return",
+    "themeEditor.editCurrent": "Edit current theme",
+  },
+);

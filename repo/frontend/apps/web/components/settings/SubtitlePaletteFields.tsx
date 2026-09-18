@@ -2,7 +2,7 @@ import { useI18n } from "@/store/module/i18n";
 import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
 import { AppearanceRange } from "./AppearanceRange";
 import { SettingRow, SettingSelect } from "./SettingsUI";
-import { SubtitleColorControl } from "./SubtitleColorControl";
+import { ThemeColorControl } from "./ThemeColorControl";
 
 export function SubtitlePaletteFields({ settings, onChange: update }: SubtitleSettingsEditorProps) {
   const { t } = useI18n();
@@ -24,13 +24,13 @@ export function SubtitlePaletteFields({ settings, onChange: update }: SubtitleSe
           </SettingSelect>
         }
       />
-      <SubtitleColorControl
+      <ThemeColorControl
         label={t(settings.fillEnabled ? "subtitleSystem.sung" : "appearance.lyrics.color")}
         value={settings.color}
         onChange={(color) => update({ color })}
       />
       {settings.fillEnabled && (
-        <SubtitleColorControl
+        <ThemeColorControl
           label={t("subtitleSystem.unsung")}
           value={settings.unsungColor}
           onChange={(unsungColor) => update({ unsungColor })}
@@ -38,7 +38,7 @@ export function SubtitlePaletteFields({ settings, onChange: update }: SubtitleSe
       )}
       {settings.colorMode === "gradient" && (
         <>
-          <SubtitleColorControl
+          <ThemeColorControl
             label={t("subtitlePreview.gradientColor")}
             value={settings.gradientColor}
             onChange={(gradientColor) => update({ gradientColor })}
@@ -54,13 +54,13 @@ export function SubtitlePaletteFields({ settings, onChange: update }: SubtitleSe
         </>
       )}
       {settings.showTranslation && (
-        <SubtitleColorControl
+        <ThemeColorControl
           label={t("subtitlePreview.secondaryColor")}
           value={settings.secondaryColor}
           onChange={(secondaryColor) => update({ secondaryColor })}
         />
       )}
-      <SubtitleColorControl
+      <ThemeColorControl
         label={t("subtitlePreview.background")}
         value={settings.backgroundColor}
         onChange={(backgroundColor) => update({ backgroundColor })}
