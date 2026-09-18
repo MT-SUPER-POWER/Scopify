@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Pencil } from "lucide-react";
+import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { useRouter } from "next/navigation";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useAppearanceStore } from "@/store/module/appearance";
@@ -55,9 +57,10 @@ export function SubtitleThemeLibrary({ paletteOnly = false }: SubtitleThemeLibra
       <SettingRow
         label={t(paletteOnly ? "themeEditor.paletteLabel" : "themeEditor.styleLabel")}
         control={
-          <Button variant="outline" onClick={create}>
+          <button type="button" className={SETTINGS_ACTION_BUTTON_CLASS_NAME} onClick={create}>
+            <Pencil aria-hidden="true" className="size-4" />
             {t("themeEditor.edit")}
-          </Button>
+          </button>
         }
       />
       {managing && (
