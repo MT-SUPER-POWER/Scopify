@@ -65,6 +65,8 @@
 
 ### Quality
 
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
+
 - **PlayBar 右侧控制组件解耦拆分**：将 `PlayerBar` 右侧控制图标（Lyric Stage 开关、音频设置、音频输出设备、播放队列浮层、全屏切换等）作为组件单位解耦拆分至 `@components/PlayBar/` 目录中，提升代码可读性与复用性。
 
 - **精简桌面小歌词快捷键跳转**：移除桌面小歌词控制面板（`DesktopSubtitleControl`）中冗余的快捷键设置跳转按钮，保留样式设置入口。
@@ -103,6 +105,8 @@
 - **调整歌单与歌曲顺序**：侧栏歌单标题旁和自建歌单操作栏新增排序入口，支持拖动、上移/下移、取消与保存，分别接入 `/playlist/order/update` 和 `/song/order/update`。歌单完整分页加载，在创建/收藏分组内排序并固定喜欢的音乐；歌曲以完整 `trackIds` 保存，保留无详情歌曲，失败保留编辑结果供重试，成功同步缓存。补齐简中、繁中与英文文案。
 
 ### Quality
+
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - **歌单封面上传自适应天然尺寸**：参考后端案例 `public/playlist_cover_update.html`，封装图片天然尺寸检测工具并在请求 `/playlist/cover/update` 时附带 `imgSize=${width}&imgX=0&imgY=0`，解决非正方形与高分辨率图片裁切失真问题。
 - **整理桌面构建工程结构**：将 Electron Builder 配置从 Desktop 包清单迁至独立 TypeScript 文件，保留全部平台及发布参数；统一宿主、Renderer 同步与打包准备脚本的产物目录定义，对齐工程目录文档。Renderer 页面与运行机制留待后续讨论。
@@ -172,6 +176,8 @@
 
 ### Quality
 
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
+
 - **主进程内嵌后端与动态可用端口自适应**：重构桌面端后端控制器（`backend.ts`），直接在 Electron 主进程内调用 `@neteasecloudmusicapienhanced/api` 的 `serveNcmApi` 启动内置服务，彻底废除多进程 `spawn` 与外部 node 执行链路；引入动态可用端口自适应探测（`getFreePort`）与冲突重试机制，消除静态端口（4040/3838）占用的启动失败；Web 渲染端（`request.ts`）与主进程会话存储自动监听并对齐动态后端 origin，确保开发与生产环境下零残留退出与平滑网络请求。
 - **纳入后端工作区并清理历史测试用例**：将 `repo/backend/api-enhanced` 纳入根目录 Bun Workspaces 体系（`repo/backend/*`），桌面端改以标准 `workspace:*` 引入依赖；删除原有的碎片搬运构建脚本 `prepare-backend-resource.ts` 与打包额外资源配置，全范围清理 `desktop/tests` 与 `web/tests` 下依赖源码字符匹配的历史虚假测试，保留工程架构守卫 `check-architecture.test.ts`。
 - **健壮用户状态存储与持久化水合防御**：在 `useUserStore` 的 `setUser` 中过滤无效或 `userId <= 0` 的占位对象，并在持久化重水合（`onRehydrateStorage`）中自动清除历史上受损的未知用户残留；在 `QrLogin` 中补充账号基础资料与用户详情的兜底级联逻辑，防止接口异常时将空属性覆盖为无效对象。
@@ -214,6 +220,8 @@
 - **桌面音乐壁纸快捷键**：新增独立的“开启/关闭桌面音乐壁纸”命令（默认 `Ctrl+Alt+P`），直接复用现有壁纸开关；原有 `Ctrl+Alt+D` 的普通桌面控制器开关保持不变。
 
 ### Quality
+
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - **对齐 `nextjs-project-structure` 架构规范全面模块化拆分**：
   1. 将超过 150 行的大组件进行领域子组件提取：`ListeningReportActivityChart.tsx` 拆分为 `ListeningReportIsometricHeatmap.tsx` 与 `ListeningReportTimeOfDayRadar.tsx`；`ListeningReportStoryHero.tsx` 拆分为 `ListeningReportHeroPosterMural.tsx`；
@@ -272,6 +280,8 @@
 - **协调命令工作区设置列表层级**：设置页保留工作区的排版与紧凑节奏，同时使用轻微内缩的圆角选择框作为悬停反馈，避免全宽高亮在低密度二级页中过于突兀。
 
 ### Quality
+
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - **原生 TanStack Query 调试球四角吸附**：开发期 Query 调试器保留官方球体与官方表格面板；球体拖动后只会吸附到四个角落并记住位置，点击后面板会依据上/下边缘向视口内部展开，避免不同角落下的内容溢出屏幕，并为官方收起控制补足明确标签与更大的点击区域。
 - **开发期 Next 缓存隔离与按需视觉模块加载**：开发启动脚本现在与 Next 配置一致地在 `.next-dev` 中检查和清理陈旧锁文件，避免误判 `.next` 中的生产构建锁并降低开发服务重复启动的风险；桌面壁纸专用的 Folia 渲染器改为仅在壁纸窗口激活时动态加载，避免普通 Dashboard 路由在开发期编译完整视觉引擎依赖图。
@@ -375,6 +385,8 @@
 
 ### Quality
 
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
+
 - **收紧主窗口 Folia 运行时生命周期**：主歌词舞台、各歌词模式与背景实现改为按需加载，未打开歌词时不再解析完整可视化代码；本地音频特征仅在歌词消费者存在时采样，视觉设置预览接管画面时释放被遮挡的主舞台，窗口隐藏后暂停视觉表面，并为 Diorama 生成几何缓存增加容量上限与退出清理。
 - **规范 Tailwind CSS 类名顺序与收紧 CI / Husky Lint 拦截规则**：为 Prettier 与 ESLint 补充 `tailwindStylesheet` 和 `tailwindFunctions` 配置，统一修复全仓类名顺序和无意义任意值警告；将 ESLint 警告阈值设为 `--max-warnings 0`，并在 `lint-staged` 与 CI/CD 中开启严格拦截，确保代码提交和持续集成中存在任何 Warning 或 Error 时自动中断。
 - **撤回未成熟的 Scopify 公共组件抽取**：恢复播放、徽标、收藏、重试与标题等组件在 Web 应用内的原有归属，移除 `@scopify/ui/scopify/components/*` 的不稳定公开入口与预览；保留 Shadcn 原生组件、共享主题层和文档站，待组件边界重新设计后再逐项评审。
@@ -424,6 +436,8 @@
 
 ### Quality
 
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
+
 - **收敛前端内联标签并消除硬编码样式**：重构 `MediaInfoBadge` 消除散落在各处的独立内联 `<span>` 硬编码，统一复用 `@scopify/ui` 导出的 `Badge` 原生组件与设计 Token，保证跨平台与暗黑模式下的边框、圆角与字号规范统一。
 - **解耦主页各业务板块组件与修正数据流向**：将主页内联的问候横条与推荐歌手板块分别抽离为独立的 `HomeGreetingSection` 与 `SuggestedArtists` 组件；完善各板块 Props 类型至 `types/components/home.ts`；「为 {{name}} 推荐」板块准确绑定至登录用户个性化推荐接口（`/recommend/resource`，未登录自动回退至 `/personalized`），顶部问候横条绑定至公共推荐池（`/personalized`）。
 - **补充日志轮转边界测试**：覆盖启动归档、异常退出标记、同毫秒重名规避和归档清理不影响 `main.log` 等场景。
@@ -461,6 +475,8 @@
 
 ### Quality
 
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
+
 - **修复播放器状态单测的隔离污染与 Action 丢失**：重构 `playerExpiredUrl.test.ts` 与 `playerRepeat.test.ts` 的状态清理机制，废弃全量 `replace` 重置模式，确保测试前后安全隔离并保留 `usePlayerStore` actions。
 - **重构桌面配置自愈与出厂模板测试体系**：将桌面 YAML 单测严格对齐至不可变的出厂底本 `app.config.default.yml`，消除针对本地动态工作配置 `app.config.yml` 的脆弱硬编码断言；完善主进程 `ensureConfigFile` 的回退自愈与落户机制，补充本地配置自定义与默认底本隔离的单测覆盖。
 - **清理 GitHub Packages 发布工作流与配置**：移除 `.github/workflows/publish-package.yml`，将 `@scopify/desktop-contract` 标记为 `private: true` 并移除 `publishConfig`，收敛桌面契约包仅作为内部 Monorepo workspace 模块维护。
@@ -479,6 +495,8 @@
 - **优化评论 Action 数量展示**：评论数量改用共享 shadcn Badge，以深色半透明描边气泡轻叠在评论图标右上角，避免高对比气泡与图标脱节，同时不占用操作栏横向空间。
 
 ### Quality
+
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - **移除 triggerLibraryUpdate 状态肿瘤并全面接入 TanStack Query**：彻底废弃并移除 Zustand `useUserStore` 中的 `libraryUpdateTrigger` 与 `triggerLibraryUpdate` 遗留补丁，将用户歌单列表生命周期收敛为 `musicQueryKeys.library.playlists(userId)` 与 `useUserPlaylistsQuery`。
 - **契约包规范化为内部组织包名**：将桌面契约包统一收敛为本地 Workspace 组织包名 `@scopify/desktop-contract`，各子应用统一使用 `workspace:*` 声明依赖。
@@ -506,6 +524,8 @@
 - **阶段化解耦与原子命令提供**：Desktop 内部解耦并提供了清晰的原子阶段命令（`sync:renderer` 同步、`build` 编译、`package:win/mac` 本地打包、`release:win/mac` 发布打包），支持灵活单步调试与 CI 分布式流水线调度。
 
 ### Quality
+
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - **自闭环主进程内联打包**：桌面端生产构建（`electron-vite`）将纯 JS 运行时依赖（`@xhayper/discord-rpc`、`electron-log`、`electron-updater`、`js-yaml`、`zod` 等）全量 Tree-Shaking 编译并内联至 `out/main/main.js`；打包运行时声明 0 外部依赖，彻底免除了跨平台/CI 环境中对 `node_modules` 软链接的依赖与查找异常，并提升桌面端启动 I/O 效率。
 - **收敛桌面播放 Authority**：彻底移除未启用的隐藏播放 Renderer、专用 preload、会话控制协议、恢复检查点、路由与构建门禁；桌面主 Renderer 继续独占媒体元素、队列与播放 Authority，伴随窗口仅通过可靠 Playback Broker 消费投影。通用媒体类型、持久化 key 与音频特征采样器已迁回对应全局模块，`desktop-contract` 同步升级至 2.0.0。
@@ -539,6 +559,8 @@
 
 ### Quality
 
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
+
 - 优化 Electron 主进程打包策略：桌面端生产构建（`electron-vite`）现直接将纯 JS 运行时依赖（如 `@xhayper/discord-rpc`、`electron-log`、`electron-updater`、`js-yaml`、`zod` 等）完整打包内联至 `out/main/main.js`；移除了打包制品对跨目录 `node_modules` 软链接的脆弱依赖，彻底杜绝跨平台/CI 下由于符号链接权限导致的依赖丢失问题，并提升桌面端冷启动加载速度。
 
 ### Fixed
@@ -565,6 +587,8 @@
 - 修复高分辨率与高 DPI 桌面上 Dithering 流光被过度放大、只能看到局部闪烁的问题；Shader 像素尺度现在会补偿实际渲染降采样比例。
 
 ### Quality
+
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - 新增 PR 质量门禁工作流 `.github/workflows/ci.yml`，在 PR 与主干提交时自动执行 `typecheck`、`format:check`、`lint` 与 `test` 检验；明确收敛 Prettier 校验范围，自动忽略 `repo/backend/` 和 `repo/frontend/apps/mobile/` 子模块与各项构建/工具缓存，配置 Bun 与 Turbo 缓存并支持自动取消同一 PR 的旧构建任务。
 - 增强发布工作流 `.github/workflows/release.yml` 的 Changelog 校验逻辑：当提取到的版本发版说明为空时显式 `exit 1` 终止发版，防止漏写 CHANGELOG。
@@ -602,6 +626,8 @@
 - VisualSetting 界面内容重新分布
 
 ### Quality
+
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - 修复 CodeGraph skill 的 YAML frontmatter 解析歧义，确保 Codex 能正常加载该 skill。
 - Desktop 构建中间产物与 Windows/macOS 发布物统一写入仓库根目录的 `build/` 目录
@@ -641,6 +667,8 @@
 
 ### Quality
 
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
+
 - Folia 沉浸式歌词优化 Sonnet/v2
 - Folia Subtitle 优化副歌词显示内容
 - playbar 副歌部分采用柔光区域表示
@@ -671,6 +699,8 @@
 - 含预发布后缀的标签会自动发布为 GitHub Prerelease，且不会覆盖最新稳定版
 
 ### Quality
+
+- **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - 清零 Web/Folia ESLint error，根目录 `lint`、`typecheck`、`test` 与 `build` 均可作为 Monorepo 统一门禁运行
 - 补充 Runtime 适配器、架构边界、配置映射和 Renderer 制品完整性测试

@@ -9,6 +9,7 @@ import {
   DEFAULT_THEME_SCHEDULE,
 } from "@/constants/appearance";
 import { applyBackgroundTheme, isValidThemeSchedule } from "@/lib/settings/appearance";
+import { updateSubtitleSettings } from "@/lib/settings/updateSubtitleSettings";
 import type { AppearanceStore } from "@/types/appearance";
 
 export const useAppearanceStore = create<AppearanceStore>()(
@@ -63,7 +64,7 @@ export const useAppearanceStore = create<AppearanceStore>()(
       updateBackground: (patch) =>
         set((state) => ({ background: { ...state.background, ...patch } })),
       updateLyricsPreview: (patch) =>
-        set((state) => ({ lyricsPreview: { ...state.lyricsPreview, ...patch } })),
+        set((state) => ({ lyricsPreview: updateSubtitleSettings(state.lyricsPreview, patch) })),
       resetBackground: () => set({ background: { ...DEFAULT_BACKGROUND } }),
       resetLyricsPreview: () => set({ lyricsPreview: { ...DEFAULT_LYRICS_PREVIEW } }),
     }),

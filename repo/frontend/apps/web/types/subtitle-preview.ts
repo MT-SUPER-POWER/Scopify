@@ -1,5 +1,10 @@
 import type { LyricsPreviewSettings } from "./appearance";
 
+export interface SubtitleSettingsEditorProps {
+  settings: LyricsPreviewSettings;
+  onChange: (patch: Partial<LyricsPreviewSettings>) => void;
+}
+
 export interface SubtitlePayload {
   source: string;
   target: string;

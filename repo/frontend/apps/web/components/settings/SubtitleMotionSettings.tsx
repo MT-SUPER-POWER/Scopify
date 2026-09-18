@@ -1,15 +1,16 @@
 "use client";
 
-import { useAppearanceStore } from "@/store/module/appearance";
+import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
 import { useI18n } from "@/store/module/i18n";
 import type { LyricsPreviewSettings } from "@/types/appearance";
 import { AppearanceRange } from "./AppearanceRange";
 import { SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
 
-export function SubtitleMotionSettings() {
+export function SubtitleMotionSettings({
+  settings,
+  onChange: update,
+}: SubtitleSettingsEditorProps) {
   const { t } = useI18n();
-  const settings = useAppearanceStore((state) => state.lyricsPreview);
-  const update = useAppearanceStore((state) => state.updateLyricsPreview);
   return (
     <SettingSection title={t("subtitlePreview.motion")}>
       <SettingRow
@@ -20,7 +21,6 @@ export function SubtitleMotionSettings() {
             onChange={(entrance) =>
               update({
                 entrance: entrance as LyricsPreviewSettings["entrance"],
-                ...(entrance === "typewriter" ? { fillEnabled: false } : {}),
               })
             }
           >

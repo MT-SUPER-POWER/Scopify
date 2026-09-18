@@ -13,13 +13,15 @@ import { SubtitleMotionSettings } from "./SubtitleMotionSettings";
 export function LyricsStyleSettingsSection() {
   const { t } = useI18n();
   const reset = useAppearanceStore((state) => state.resetLyricsPreview);
+  const settings = useAppearanceStore((state) => state.lyricsPreview);
+  const onChange = useAppearanceStore((state) => state.updateLyricsPreview);
   return (
     <div className="space-y-8">
-      <SubtitleLayoutSettings />
+      <SubtitleLayoutSettings settings={settings} onChange={onChange} />
       <SubtitleThemeLibrary />
       <SubtitleColorSettings />
-      <SubtitleFillSettings />
-      <SubtitleMotionSettings />
+      <SubtitleFillSettings settings={settings} onChange={onChange} />
+      <SubtitleMotionSettings settings={settings} onChange={onChange} />
       <SettingRow
         label={t("appearance.reset.lyrics")}
         control={
