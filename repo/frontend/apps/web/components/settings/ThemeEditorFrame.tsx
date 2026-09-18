@@ -32,7 +32,7 @@ export function ThemeEditorFrame({
   const [leaving, setLeaving] = useState(false);
   const leave = () => router.push(returnHref);
   return (
-    <div className="w-full p-6 text-foreground md:p-10">
+    <div className="w-full px-6 pt-24 pb-6 text-foreground md:px-10 md:pb-10">
       <header className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5">
         <div className="flex min-w-0 items-center gap-3">
           <Button
