@@ -16,13 +16,13 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { SongTitle } from "@/components/Marquee";
+import { SongTitle } from "@/components/shared/Marquee";
 // 引入 UI 组件
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { VolumeControl } from "@/components/VolumeControl";
+import { VolumeControl } from "@/components/PlayBar/VolumeControl";
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";

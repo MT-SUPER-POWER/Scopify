@@ -2,18 +2,19 @@
 
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
-import { useAppearanceStore } from "@/store/module/appearance";
+import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
 import { useI18n } from "@/store/module/i18n";
 import type { LyricsPreviewFont, LyricsPreviewSettings } from "@/types/appearance";
 import { AppearanceRange } from "./AppearanceRange";
-import { SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
+import { SettingRow, SettingSelect } from "./SettingsUI";
 
-export function SubtitleLayoutSettings() {
+export function SubtitleLayoutSettings({
+  settings,
+  onChange: update,
+}: SubtitleSettingsEditorProps) {
   const { t } = useI18n();
-  const settings = useAppearanceStore((state) => state.lyricsPreview);
-  const update = useAppearanceStore((state) => state.updateLyricsPreview);
   return (
-    <SettingSection title={t("subtitlePreview.layout")}>
+    <div>
       <SettingRow
         label={t("appearance.lyrics.font")}
         control={
@@ -127,6 +128,6 @@ export function SubtitleLayoutSettings() {
         unit=" px"
         onChange={(radius) => update({ radius })}
       />
-    </SettingSection>
+    </div>
   );
 }

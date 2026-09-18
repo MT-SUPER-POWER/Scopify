@@ -1,4 +1,10 @@
+import type { ReactNode } from "react";
 import type { LyricsPreviewSettings } from "./appearance";
+
+export interface SubtitleSettingsEditorProps {
+  settings: LyricsPreviewSettings;
+  onChange: (patch: Partial<LyricsPreviewSettings>) => void;
+}
 
 export interface SubtitlePayload {
   source: string;
@@ -13,27 +19,17 @@ export interface SubtitleCapsuleProps {
   playback: SubtitlePlayback;
   loop: boolean;
 }
-export interface SubtitleColorControlProps {
-  label: string;
-  value: string;
-  onChange: (color: string) => void;
-}
+export type SubtitlePreviewScene = "short" | "long" | "bilingual" | "chinese";
+
 export interface SubtitlePreviewControlsProps {
-  onSceneChange: (scene: "short" | "long" | "bilingual" | "chinese") => void;
+  activeScene: SubtitlePreviewScene | null;
+  onSceneChange: (scene: SubtitlePreviewScene) => void;
   payload: SubtitlePayload;
   onPayloadChange: (payload: SubtitlePayload) => void;
-  onReplay: () => void;
-  visible: boolean;
-  onVisibleChange: (visible: boolean) => void;
-  loop: boolean;
-  onLoopChange: (loop: boolean) => void;
-  playback: SubtitlePlayback;
-  duration: number;
-  onTogglePlayback: () => void;
-  onSeek: (progress: number) => void;
 }
 
 export interface LyricsStylePreviewProps extends SubtitleCapsuleProps {
+  note?: string;
   visible: boolean;
 }
 
@@ -46,22 +42,46 @@ export interface SubtitlePlaybackControlsProps {
   duration: number;
   loop: boolean;
   onTogglePlayback: () => void;
-  onSeek: (progress: number) => void;
+  onReplay: () => void;
+  visible: boolean;
+  onVisibleChange: (visible: boolean) => void;
+  onLoopChange: (loop: boolean) => void;
 }
+export type SubtitlePalette = Pick<
+  LyricsPreviewSettings,
+  | "color"
+  | "gradientColor"
+  | "colorMode"
+  | "gradientAngle"
+  | "unsungColor"
+  | "secondaryColor"
+  | "backgroundColor"
+  | "backdropOpacity"
+>;
+
+export interface BuiltinSubtitlePalette {
+  id: `builtin:${string}`;
+  label: "white" | "mint" | "sunset" | "ice";
+  settings: SubtitlePalette;
+}
+
+export interface SubtitlePaletteFieldsProps {
+  settings: SubtitlePalette;
+  onChange: (patch: Partial<SubtitlePalette>) => void;
+  readOnly?: boolean;
+}
+
 export interface SavedSubtitleTheme {
-  kind?: "style" | "palette";
   id: string;
   name: string;
-  settings: LyricsPreviewSettings;
+  settings: SubtitlePalette;
 }
 export interface SubtitleThemeStore {
   themes: SavedSubtitleTheme[];
+  activeId: string | null;
+  setActiveId: (id: string | null) => void;
   save: (theme: SavedSubtitleTheme) => void;
   remove: (ids: string[]) => void;
-}
-export interface SubtitleThemeDialogProps {
-  theme: SavedSubtitleTheme;
-  onClose: () => void;
 }
 export interface SubtitleThemeDeleteProps {
   themes: SavedSubtitleTheme[];
@@ -77,17 +97,21 @@ export interface SubtitleFillTextProps {
 export interface SubtitleThemeCardProps {
   theme: SavedSubtitleTheme;
   selected: boolean;
-  managing: boolean;
+  managing?: boolean;
+  readOnly?: boolean;
   onSelect: () => void;
-  onRename: () => void;
-  onUpdate: () => void;
-  onDelete: () => void;
+  onEdit: () => void;
 }
 
-export interface SubtitleThemeLibraryProps {
-  paletteOnly?: boolean;
-}
-export interface SubtitlePaletteEditorProps {
+export interface SubtitlePreviewWorkspaceProps {
+  palettePreview?: boolean;
   settings: LyricsPreviewSettings;
-  onChange: (settings: LyricsPreviewSettings) => void;
+  children: ReactNode;
+  note?: string;
+}
+
+export interface SubtitleThemeEditorProps {
+  themeId: string | null;
+  copyFrom: string | null;
+  useCurrent: boolean;
 }

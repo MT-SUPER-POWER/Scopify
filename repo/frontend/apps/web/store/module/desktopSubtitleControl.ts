@@ -15,11 +15,13 @@ export const useDesktopSubtitleControl = create<DesktopSubtitleControlStore>((se
   },
   refresh: async () => {
     if (!runtime.isDesktop || get().busy) return;
+    const previousPreferences = get().preferences;
     try {
       const preferences = await runtime.desktopLyrics.getPreferences();
-      if (!get().busy) set({ preferences, failed: !preferences });
+      if (!get().busy && get().preferences === previousPreferences)
+        set({ preferences, failed: !preferences });
     } catch {
-      set({ failed: true });
+      if (!get().busy && get().preferences === previousPreferences) set({ failed: true });
     }
   },
   toggle: async () => {
@@ -33,6 +35,17 @@ export const useDesktopSubtitleControl = create<DesktopSubtitleControlStore>((se
       set({ preferences });
     } catch {
       set({ failed: true, open: true });
+    } finally {
+      set({ busy: false });
+    }
+  },
+  close: async () => {
+    if (!runtime.isDesktop || get().busy) return;
+    set({ busy: true, failed: false });
+    try {
+      if (!(await runtime.desktopLyrics.close())) throw new Error("Desktop lyric close failed");
+    } catch {
+      set({ failed: true });
     } finally {
       set({ busy: false });
     }

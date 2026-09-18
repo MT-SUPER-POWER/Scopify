@@ -1,34 +1,21 @@
 "use client";
 
-import { Button } from "@scopify/ui/shadcn/components/button";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import { SettingRow } from "./SettingsUI";
-import { SubtitleLayoutSettings } from "./SubtitleLayoutSettings";
-import { SubtitleColorSettings } from "./SubtitleColorSettings";
-import { SubtitleFillSettings } from "./SubtitleFillSettings";
 import { SubtitleThemeLibrary } from "./SubtitleThemeLibrary";
-import { SubtitleMotionSettings } from "./SubtitleMotionSettings";
+import { SubtitleStyleEditor } from "./SubtitleStyleEditor";
+import { SettingSection } from "./SettingsUI";
 
 export function LyricsStyleSettingsSection() {
   const { t } = useI18n();
-  const reset = useAppearanceStore((state) => state.resetLyricsPreview);
+  const settings = useAppearanceStore((state) => state.lyricsPreview);
+  const update = useAppearanceStore((state) => state.updateLyricsPreview);
   return (
     <div className="space-y-8">
-      <SubtitleLayoutSettings />
       <SubtitleThemeLibrary />
-      <SubtitleColorSettings />
-      <SubtitleFillSettings />
-      <SubtitleMotionSettings />
-      <SettingRow
-        label={t("appearance.reset.lyrics")}
-        control={
-          <Button variant="outline" onClick={reset}>
-            {t("appearance.reset")}
-          </Button>
-        }
-      />
-      <p className="text-xs text-muted-foreground">{t("subtitlePreview.saved")}</p>
+      <SettingSection title={t("themeEditor.styleLabel")}>
+        <SubtitleStyleEditor settings={settings} onChange={update} />
+      </SettingSection>
     </div>
   );
 }

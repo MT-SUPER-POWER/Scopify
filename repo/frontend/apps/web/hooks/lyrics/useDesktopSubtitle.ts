@@ -8,6 +8,7 @@ import {
 } from "@/hooks/player/usePlaybackProjection";
 import { applyLyricOffsetMs, findActiveLyricLineIndex } from "@/lib/lyrics/timeline";
 import { subtitleLineProgress } from "@/lib/lyrics/subtitleProgress";
+import { hasJapaneseLyrics, isChineseSubtitleLine } from "@/lib/lyrics/subtitleLanguage";
 import { runtime } from "@/lib/runtime";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useLyricStageStore } from "@/store/module/lyrics";
@@ -24,6 +25,10 @@ export function useDesktopSubtitle() {
   const lines = projection.lyrics?.lines ?? [];
   const index = findActiveLyricLineIndex(lines, time);
   const line = index >= 0 ? lines[index] : null;
+  const japaneseLyrics = useMemo(
+    () => hasJapaneseLyrics(projection.lyrics?.lines ?? []),
+    [projection.lyrics],
+  );
   const playback = useMemo(
     () => ({
       position: line
@@ -40,13 +45,10 @@ export function useDesktopSubtitle() {
     document.documentElement.classList.add("desktop-lyrics-html");
     document.body.classList.add("desktop-lyrics-body");
     const sync = () => {
-      void useAppearanceStore.persist.rehydrate();
       void useLyricStageStore.persist.rehydrate();
     };
     const storage = (event: StorageEvent) => {
       if (event.key === null) sync();
-      else if (event.key === useAppearanceStore.persist.getOptions().name)
-        void useAppearanceStore.persist.rehydrate();
       else if (event.key === useLyricStageStore.persist.getOptions().name)
         void useLyricStageStore.persist.rehydrate();
     };
@@ -85,6 +87,7 @@ export function useDesktopSubtitle() {
     settings,
     contentRef,
     line,
+    isChinese: line ? isChineseSubtitleLine(line, japaneseLyrics) : false,
     index,
     playback,
     fillProgress: line ? subtitleLineProgress(line, time) : undefined,

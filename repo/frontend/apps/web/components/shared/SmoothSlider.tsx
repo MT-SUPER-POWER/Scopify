@@ -265,3 +265,5 @@ export const SmoothSlider = ({
     </div>
   );
 };
+
+export default SmoothSlider;

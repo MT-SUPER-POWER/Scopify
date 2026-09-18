@@ -5,6 +5,7 @@ import { useI18n } from "@/store/module/i18n";
 import type { LyricsStylePreviewProps } from "@/types/subtitle-preview";
 
 export function LyricsStylePreview({
+  note,
   settings,
   payload,
   replayId,
@@ -35,7 +36,9 @@ export function LyricsStylePreview({
           )}
         </div>
       </div>
-      <p className="text-xs leading-relaxed text-muted-foreground">{t("appearance.lyrics.note")}</p>
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        {note ?? t("appearance.lyrics.note")}
+      </p>
     </div>
   );
 }

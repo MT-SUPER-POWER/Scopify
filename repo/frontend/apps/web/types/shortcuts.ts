@@ -23,6 +23,7 @@ export type ShortcutCommandId =
   | "open-shortcut-settings"
   | "toggle-queue"
   | "toggle-audio-settings"
+  | "toggle-audio-output-device"
   | "toggle-subtitle-controls"
   | "toggle-desktop-subtitle"
   | "toggle-desktop-controller"

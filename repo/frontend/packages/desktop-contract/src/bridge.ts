@@ -127,6 +127,9 @@ export interface DesktopBridge<TLyrics = unknown> {
   navigateTo(path: string): void;
   onControlAudio(callback: (action: "next" | "prev" | "toggle-play") => void): Unsubscribe;
   onDesktopLyricCommand(callback: (command: DesktopLyricCommand) => void): Unsubscribe;
+  onDesktopLyricPreferencesChanged(
+    callback: (preferences: DesktopLyricPreferences) => void,
+  ): Unsubscribe;
   onDesktopPlaybackWallpaperModelChanged(
     callback: (model: DesktopPlaybackWallpaperModel) => void,
   ): Unsubscribe;

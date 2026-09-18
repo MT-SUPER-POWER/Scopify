@@ -21,6 +21,7 @@ import { usePlayerStore } from "@/store/module/player";
 import { useUiStore } from "@/store/module/ui";
 import { useSearchStore } from "@/store/module/search";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
+import { useAudioOutputStore } from "@/store/module/audioOutput";
 import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
 import { runtime } from "@/lib/runtime";
 import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts";
@@ -147,6 +148,9 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           }
           return;
         }
+        case "toggle-audio-output-device":
+          useAudioOutputStore.getState().togglePopover();
+          return;
         case "toggle-desktop-controller":
           if (runtime.isDesktop) {
             void runtime.desktopPlaybackWallpaper.showController();

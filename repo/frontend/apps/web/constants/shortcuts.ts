@@ -127,6 +127,12 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyA", primary: true, alt: true },
   },
   {
+    id: "toggle-audio-output-device",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleAudioOutputDevice",
+    defaultBinding: { key: "KeyO", primary: true, alt: true },
+  },
+  {
     id: "toggle-desktop-controller",
     group: "interface",
     labelKey: "shortcuts.command.toggleDesktopController",

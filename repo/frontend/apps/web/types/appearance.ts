@@ -3,13 +3,16 @@ import type { ReactNode } from "react";
 export type BuiltinThemeId = "silver" | "mist" | "sage" | "sand" | "lavender";
 export type BackgroundPresetId = BuiltinThemeId | "custom" | `user:${string}`;
 export type BackgroundRotation = "fixed" | "daily" | "schedule";
-export interface SavedBackgroundTheme {
-  id: `user:${string}`;
+export interface BackgroundTheme {
+  id: BackgroundPresetId;
   name: string;
   top: string;
   bottom: string;
   intensity: number;
   height: number;
+}
+export interface SavedBackgroundTheme extends BackgroundTheme {
+  id: `user:${string}`;
 }
 export interface ThemeTimeSlot {
   start: number;
@@ -21,14 +24,10 @@ export interface ThemeOption {
   top: string;
   bottom: string;
 }
-export interface ThemeEditorProps {
-  theme: SavedBackgroundTheme;
-  isNew: boolean;
-  onClose: () => void;
-}
 export interface ThemeEditorFieldsProps {
-  draft: SavedBackgroundTheme;
-  onChange: (draft: SavedBackgroundTheme) => void;
+  readOnly?: boolean;
+  draft: BackgroundTheme;
+  onChange: (draft: BackgroundTheme) => void;
 }
 export interface ThemeRotationDialogProps {
   mode: "daily" | "schedule";
@@ -48,6 +47,7 @@ export interface ThemeCardProps {
   selected: boolean;
   onSelect: () => void;
   onEdit?: () => void;
+  onView?: () => void;
   selectionMode?: boolean;
 }
 export interface SavedThemeLibraryProps {
@@ -120,6 +120,7 @@ export interface AppearanceStore {
 }
 
 export interface AppearancePreviewProps {
+  background?: BackgroundTheme;
   children: ReactNode;
 }
 

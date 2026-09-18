@@ -1,6 +1,7 @@
 "use client";
 
 import { CircleCheck, CircleX, LoaderCircle, Radio } from "lucide-react";
+import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import type { DesktopProxyMode } from "@scopify/desktop-contract";
 import type { NetworkSettingsTabProps } from "@/types/components/settings";
 import { isBackendHostInputValid } from "@/lib/web/backendUrl";
@@ -125,7 +126,7 @@ export function NetworkSettingsTab({
               type="button"
               onClick={() => void onPingBackend()}
               disabled={isPingingBackend}
-              className="inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content disabled:cursor-wait disabled:opacity-50"
+              className={`${SETTINGS_ACTION_BUTTON_CLASS_NAME} disabled:cursor-wait`}
             >
               {isPingingBackend ? (
                 <LoaderCircle className="size-4 animate-spin" />

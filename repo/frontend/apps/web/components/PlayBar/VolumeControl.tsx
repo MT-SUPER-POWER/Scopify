@@ -2,8 +2,8 @@
 
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { SmoothSlider } from "@/components/shared/SmoothSlider";
 import { useI18n } from "@/store/module/i18n";
-import { SmoothSlider } from "./SmoothSlider";
 
 interface VolumeControlProps {
   initialVolume?: number;
@@ -110,90 +110,105 @@ export const VolumeControl = ({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleKeyDown);
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [variant]);
+  }, [isOpen, variant]);
 
+  // 同步外部 initialVolume 变化
   useEffect(() => {
-    setVolume(initialVolume);
-  }, [initialVolume]);
+    setVolume(Math.round(initialVolume));
+    if (initialVolume > 0 && isMuted) {
+      setMuted(false);
+    }
+  }, [initialVolume, isMuted]);
 
-  // 🟢 形态 1：常驻内联模式 (推荐在 Tray 中使用)
+  // 1. 内联渲染模式 (Inline)
   if (variant === "inline") {
     return (
       <div
-        data-shortcut-scope="volume"
+        className={`flex items-center gap-3 ${className}`}
         onWheel={handleWheel}
-        className="flex w-full min-w-0 items-center gap-3 rounded-md px-4 py-2 transition-colors select-none hover:bg-accent"
+        title={t("shortcuts.scope.volume")}
       >
         <button
-          type="button"
-          aria-label={volumeLabel}
           onClick={handleMuteToggle}
-          className="shrink-0 text-content-muted transition-colors hover:text-content"
+          className="text-muted-foreground transition-colors hover:text-foreground"
+          aria-label={volumeLabel}
         >
           {getVolumeIcon()}
         </button>
-        <div className="flex min-w-12.5 flex-1 items-center">
+
+        <div className={orientation === "horizontal" ? "w-24" : "h-24"}>
           <SmoothSlider
             value={isMuted ? 0 : volume}
             onChange={handleVolumeChange}
             orientation={orientation}
-            trackThickness={4}
-            thumbSize={12}
-            thumbOnHover={true}
+            size="sm"
+            ariaLabel={t("ui.volume")}
           />
         </div>
-        <span className="w-8 shrink-0 text-right text-xs font-medium text-content-muted tabular-nums">
-          {isMuted ? 0 : Math.round(volume)}%
-        </span>
       </div>
     );
   }
 
-  // 🟢 形态 2：悬浮弹窗模式 (推荐在 PlayerBar 中使用)
+  // 2. 弹窗渲染模式 (Popup)
   return (
     <div
       ref={containerRef}
-      data-shortcut-scope="volume"
+      className={`relative flex items-center justify-center ${className}`}
       onWheel={handleWheel}
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-      className={`relative flex items-center justify-center select-none ${className}`}
+      title={t("shortcuts.scope.volume")}
     >
+      {/* 图标触发按钮 */}
       <button
-        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="cursor-pointer text-content-muted transition-colors hover:text-content"
         aria-label={volumeLabel}
-        onClick={handleMuteToggle}
-        className="text-content-muted transition-colors hover:text-content"
       >
         {getVolumeIcon()}
       </button>
 
+      {/* 弹出的音量条气泡 (Pop-over) */}
       {isOpen && (
-        <div className="absolute bottom-full left-1/2 z-50 -translate-x-1/2 pb-2">
-          <div className="rounded-lg border border-border bg-surface-overlay p-3 shadow-floating">
-            <div className="mt-2 flex flex-col items-center gap-2">
-              <SmoothSlider
-                value={isMuted ? 0 : volume}
-                onChange={handleVolumeChange}
-                orientation={orientation}
-                size={120}
-                trackThickness={5}
-                thumbSize={10}
-                thumbOnHover={false}
-              />
-              <span className="inline-block w-[4ch] text-center text-xs font-medium text-content tabular-nums">
-                {isMuted ? 0 : Math.round(volume)}%
-              </span>
-            </div>
+        <div
+          className={`absolute bottom-full mb-3 flex animate-in flex-col items-center rounded-xl border border-border bg-surface p-3 shadow-panel backdrop-blur-md transition-all fade-in-0 zoom-in-95 ${
+            orientation === "vertical" ? "h-40 w-11" : "h-11 w-40"
+          }`}
+          style={{ zIndex: 60 }}
+        >
+          {/* 静音快速切换按键 */}
+          <button
+            onClick={handleMuteToggle}
+            className="mb-2 text-content-muted transition-colors hover:text-content"
+            aria-label={volumeLabel}
+          >
+            {getVolumeIcon()}
+          </button>
+
+          {/* 音量滑块 */}
+          <div className="flex flex-1 items-center justify-center">
+            <SmoothSlider
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+              orientation={orientation}
+              size="sm"
+              ariaLabel={t("ui.volume")}
+            />
           </div>
+
+          {/* 底部三角形小气泡指示箭头 */}
+          <div className="absolute top-full left-1/2 size-0 -translate-x-1/2 border-x-4 border-t-4 border-x-transparent border-t-surface" />
         </div>
       )}
     </div>
   );
 };
+
+export default VolumeControl;

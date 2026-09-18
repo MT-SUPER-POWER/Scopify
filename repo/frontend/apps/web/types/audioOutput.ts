@@ -12,6 +12,9 @@ export type AudioOutputDevicesErrorKey =
 export interface AudioOutputStore {
   selectedInputDeviceId: string;
   selectedDeviceId: string;
+  isPopoverOpen: boolean;
   setSelectedInputDeviceId: (deviceId: string) => void;
   setSelectedDeviceId: (deviceId: string) => void;
+  setPopoverOpen: (open: boolean) => void;
+  togglePopover: () => void;
 }

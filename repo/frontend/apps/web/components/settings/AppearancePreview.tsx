@@ -1,5 +1,6 @@
 "use client";
 
+import { BackgroundPreviewContext } from "@/lib/settings/backgroundPreviewContext";
 import { usePreviewScale } from "@/hooks/settings/usePreviewScale";
 import { useI18n } from "@/store/module/i18n";
 import type { AppearancePreviewProps } from "@/types/appearance";
@@ -8,7 +9,7 @@ const PREVIEW_WIDTH = 1100;
 const PREVIEW_HEIGHT = 800;
 
 /** The caller supplies the same content component used by the actual route. */
-export function AppearancePreview({ children }: AppearancePreviewProps) {
+export function AppearancePreview({ children, background }: AppearancePreviewProps) {
   const { t } = useI18n();
   const { containerRef, scale } = usePreviewScale(PREVIEW_WIDTH);
   return (
@@ -25,7 +26,7 @@ export function AppearancePreview({ children }: AppearancePreviewProps) {
         className="pointer-events-none absolute top-0 left-0 origin-top-left overflow-hidden select-none"
         style={{ width: PREVIEW_WIDTH, height: PREVIEW_HEIGHT, transform: `scale(${scale})` }}
       >
-        {children}
+        <BackgroundPreviewContext value={background ?? null}>{children}</BackgroundPreviewContext>
       </div>
     </div>
   );

@@ -264,6 +264,13 @@ const electronAPI: DesktopBridge = {
   getDesktopLyricPreferences: () => ipcRenderer.invoke("desktop-lyric:get-preferences"),
   updateDesktopLyricPreferences: (update: DesktopLyricPreferencesUpdate) =>
     ipcRenderer.invoke("desktop-lyric:update-preferences", update),
+  onDesktopLyricPreferencesChanged: (callback) => {
+    const listener = (_event: Electron.IpcRendererEvent, preferences: DesktopLyricPreferences) => {
+      callback(preferences);
+    };
+    ipcRenderer.on("desktop-lyric:preferences", listener);
+    return () => ipcRenderer.removeListener("desktop-lyric:preferences", listener);
+  },
   sendDesktopLyricCommand: (command: DesktopLyricCommand) =>
     ipcRenderer.send("desktop-lyric:command", command),
   onDesktopLyricCommand: (callback: (command: DesktopLyricCommand) => void) => {

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type {
   DesktopBackendStatus,
   DesktopHostConfig,
@@ -20,6 +21,22 @@ export interface GeneralSettingsTabProps {
   config: SettingsConfig;
   onDesktopChange: DesktopSettingsChangeHandler;
   onWebChange: WebSettingsChangeHandler;
+}
+
+export interface SettingSectionProps {
+  title: string;
+  actions?: ReactNode;
+  children: ReactNode;
+}
+
+export interface SettingButtonProps {
+  children: ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  className?: string;
+  type?: "button" | "submit" | "reset";
+  title?: string;
+  "aria-label"?: string;
 }
 
 export interface NetworkSettingsTabProps {

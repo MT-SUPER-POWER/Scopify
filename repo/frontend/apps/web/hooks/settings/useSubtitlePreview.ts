@@ -2,16 +2,49 @@
 
 import { useEffect, useState } from "react";
 import { SUBTITLE_PREVIEW_SCENES } from "@/constants/subtitle-preview";
+import { isChineseSubtitleText } from "@/lib/lyrics/subtitleLanguage";
 import { subtitlePlaybackPosition } from "@/lib/settings/subtitlePlayback";
 import type { LyricsPreviewSettings } from "@/types/appearance";
-import type { SubtitlePlayback } from "@/types/subtitle-preview";
+import type { SubtitlePlayback, SubtitlePreviewScene } from "@/types/subtitle-preview";
 
-export function useSubtitlePreview(
-  settings: LyricsPreviewSettings,
-  updateSettings: (patch: Partial<LyricsPreviewSettings>) => void,
-) {
-  const [payload, setPayload] = useState(SUBTITLE_PREVIEW_SCENES.chinese);
-  const duration = settings.fillEnabled
+export function useSubtitlePreview(settings: LyricsPreviewSettings, palettePreview = false) {
+  const [sceneLayout, setSceneLayout] = useState<Partial<LyricsPreviewSettings>>(
+    palettePreview ? { showTranslation: true } : {},
+  );
+  useEffect(
+    () => setSceneLayout(palettePreview ? { showTranslation: true } : {}),
+    [settings.showTranslation, settings.autoCollapseChinese, palettePreview],
+  );
+  const previewSettings = {
+    ...settings,
+    ...sceneLayout,
+    ...(palettePreview
+      ? {
+          fillEnabled: true,
+          entrance: settings.entrance === "typewriter" ? ("fade" as const) : settings.entrance,
+        }
+      : {}),
+  };
+  const [content, setPayload] = useState(
+    palettePreview ? SUBTITLE_PREVIEW_SCENES.bilingual : SUBTITLE_PREVIEW_SCENES.chinese,
+  );
+  const payload = {
+    ...content,
+    isChinese: isChineseSubtitleText(content.source, content.target),
+  };
+  const activeScene =
+    (Object.keys(SUBTITLE_PREVIEW_SCENES) as SubtitlePreviewScene[]).find((scene) => {
+      const candidate = SUBTITLE_PREVIEW_SCENES[scene];
+      return (
+        candidate.source === payload.source &&
+        candidate.target === payload.target &&
+        candidate.isChinese === payload.isChinese &&
+        (scene === "chinese"
+          ? !previewSettings.showTranslation || previewSettings.autoCollapseChinese
+          : previewSettings.showTranslation === (scene === "bilingual"))
+      );
+    }) ?? null;
+  const duration = previewSettings.fillEnabled
     ? settings.fillDuration
     : settings.entrance === "typewriter"
       ? Math.max(1, Array.from(payload.source).length) * settings.characterInterval
@@ -38,17 +71,17 @@ export function useSubtitlePreview(
           }
         : { position, startedAt: null };
     });
-  const seek = (progress: number) =>
-    setPlayback({ position: (progress * duration) / 100, startedAt: null });
   const selectScene = (scene: keyof typeof SUBTITLE_PREVIEW_SCENES) => {
     setPayload(SUBTITLE_PREVIEW_SCENES[scene]);
-    updateSettings({
+    setSceneLayout({
       showTranslation: scene === "bilingual" || scene === "chinese",
       ...(scene === "chinese" ? { autoCollapseChinese: true } : {}),
     });
     replay();
   };
   return {
+    previewSettings,
+    activeScene,
     duration,
     selectScene,
     payload,
@@ -61,6 +94,5 @@ export function useSubtitlePreview(
     setLoop,
     playback,
     togglePlayback,
-    seek,
   };
 }

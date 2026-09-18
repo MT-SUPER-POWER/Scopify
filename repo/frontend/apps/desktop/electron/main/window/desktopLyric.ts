@@ -125,6 +125,15 @@ function getPreferences(): DesktopLyricPreferences {
   };
 }
 
+function notifyPreferencesChanged() {
+  const currentPreferences = getPreferences();
+  for (const window of [mainWindow, desktopLyricWindow, getTrayWindow()]) {
+    if (isWindowAlive(window)) {
+      window.webContents.send("desktop-lyric:preferences", currentPreferences);
+    }
+  }
+}
+
 function isDesktopLyricCommand(value: unknown): value is DesktopLyricCommand {
   if (!isRecord(value) || typeof value.type !== "string") return false;
 
@@ -377,7 +386,7 @@ function showDesktopLyricWindow() {
 
   desktopLyricWindow.once("ready-to-show", () => {
     desktopLyricWindow?.show();
-    desktopLyricWindow?.webContents.send("desktop-lyric:preferences", getPreferences());
+    notifyPreferencesChanged();
     updatePowerSaveBlocker();
   });
 
@@ -387,6 +396,7 @@ function showDesktopLyricWindow() {
 
   desktopLyricWindow.on("closed", () => {
     desktopLyricWindow = null;
+    notifyPreferencesChanged();
     updatePowerSaveBlocker();
   });
 
@@ -413,14 +423,9 @@ function updatePreferences(update: DesktopLyricPreferencesUpdate) {
   savePreferences(nextPreferences);
 
   if (isWindowAlive(desktopLyricWindow)) {
-    const area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
-    desktopLyricWindow.setPosition(
-      Math.round(area.x + (area.width - 892) / 2),
-      Math.round(area.y + area.height - 180),
-    );
     applyPreferences(desktopLyricWindow);
-    desktopLyricWindow.webContents.send("desktop-lyric:preferences", nextPreferences);
   }
+  notifyPreferencesChanged();
   updatePowerSaveBlocker();
 
   return nextPreferences;

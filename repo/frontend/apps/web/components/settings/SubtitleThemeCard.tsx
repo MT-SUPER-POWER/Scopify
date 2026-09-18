@@ -1,63 +1,46 @@
-"use client";
-
-import { Button } from "@scopify/ui/shadcn/components/button";
-import { useI18n } from "@/store/module/i18n";
 import type { SubtitleThemeCardProps } from "@/types/subtitle-preview";
+import { ThemeAssetCard } from "./ThemeAssetCard";
 
 export function SubtitleThemeCard({
   theme,
   selected,
-  managing,
+  managing = false,
+  readOnly = false,
   onSelect,
-  onRename,
-  onUpdate,
-  onDelete,
+  onEdit,
 }: SubtitleThemeCardProps) {
-  const { t } = useI18n();
+  const { settings } = theme;
   return (
-    <div className={`min-w-0 rounded-lg border ${selected ? "border-brand" : "border-border"}`}>
-      <button
-        type="button"
-        aria-pressed={selected}
-        onClick={onSelect}
-        className="w-full cursor-pointer p-3 text-left"
-      >
+    <ThemeAssetCard
+      name={theme.name}
+      selected={selected}
+      selectionMode={managing}
+      readOnly={readOnly}
+      onSelect={onSelect}
+      onOpen={onEdit}
+      preview={
         <span
-          className="mb-2 block rounded p-3 text-lg font-semibold"
-          style={{ backgroundColor: theme.settings.backgroundColor, color: theme.settings.color }}
+          aria-hidden
+          className="absolute inset-0 flex items-center justify-center text-xl font-semibold"
+          style={{
+            background: `color-mix(in srgb, ${settings.backgroundColor} ${settings.backdropOpacity}%, transparent)`,
+          }}
         >
           <span
             style={
-              theme.settings.colorMode === "gradient"
+              settings.colorMode === "gradient"
                 ? {
-                    backgroundImage: `linear-gradient(90deg, ${theme.settings.color}, ${theme.settings.gradientColor})`,
+                    backgroundImage: `linear-gradient(${settings.gradientAngle}deg, ${settings.color}, ${settings.gradientColor})`,
                     backgroundClip: "text",
                     color: "transparent",
                   }
-                : undefined
+                : { color: settings.color }
             }
           >
             Aa 字
           </span>
-          {selected && <span className="float-right text-brand">✓</span>}
         </span>
-        <span className="block truncate text-sm text-foreground" title={theme.name}>
-          {theme.name}
-        </span>
-      </button>
-      {!managing && (
-        <div className="flex flex-wrap gap-1 border-t border-border p-1">
-          <Button size="sm" variant="ghost" onClick={onRename}>
-            {t("subtitleSystem.rename")}
-          </Button>
-          <Button size="sm" variant="ghost" onClick={onUpdate}>
-            {t("subtitleSystem.update")}
-          </Button>
-          <Button size="sm" variant="ghost" className="text-danger" onClick={onDelete}>
-            {t("subtitleSystem.delete")}
-          </Button>
-        </div>
-      )}
-    </div>
+      }
+    />
   );
 }

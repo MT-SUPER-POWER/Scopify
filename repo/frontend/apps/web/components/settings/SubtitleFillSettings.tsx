@@ -1,16 +1,13 @@
 "use client";
 
 import { Switch } from "@scopify/ui/shadcn/components/switch";
-import { useAppearanceStore } from "@/store/module/appearance";
+import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
 import { useI18n } from "@/store/module/i18n";
 import { SettingRow, SettingSection } from "./SettingsUI";
 import { AppearanceRange } from "./AppearanceRange";
-import { SubtitleColorControl } from "./SubtitleColorControl";
 
-export function SubtitleFillSettings() {
+export function SubtitleFillSettings({ settings, onChange: update }: SubtitleSettingsEditorProps) {
   const { t } = useI18n();
-  const settings = useAppearanceStore((state) => state.lyricsPreview);
-  const update = useAppearanceStore((state) => state.updateLyricsPreview);
   return (
     <SettingSection title={t("subtitleSystem.fill")}>
       <SettingRow
@@ -20,24 +17,12 @@ export function SubtitleFillSettings() {
           <Switch
             aria-label={t("subtitleSystem.fill")}
             checked={settings.fillEnabled}
-            onCheckedChange={(fillEnabled) =>
-              update({
-                fillEnabled,
-                ...(fillEnabled && settings.entrance === "typewriter"
-                  ? { entrance: "fade" as const }
-                  : {}),
-              })
-            }
+            onCheckedChange={(fillEnabled) => update({ fillEnabled })}
           />
         }
       />
       {settings.fillEnabled && (
         <>
-          <SubtitleColorControl
-            label={t("subtitleSystem.unsung")}
-            value={settings.unsungColor}
-            onChange={(unsungColor) => update({ unsungColor })}
-          />
           <AppearanceRange
             label={t("subtitleSystem.fillDuration")}
             value={settings.fillDuration / 1000}

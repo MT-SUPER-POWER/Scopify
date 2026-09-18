@@ -1,7 +1,8 @@
 "use client";
 
+import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { useState } from "react";
-import { BookmarkPlus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
@@ -31,12 +32,7 @@ export function SavedThemeLibrary({ activeId, onCreate, onEdit }: SavedThemeLibr
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h4 className="text-base font-medium text-foreground">
-          {t("appearance.library.mine")}{" "}
-          <span className="ml-1 text-xs text-muted-foreground">
-            {themes.length.toString().padStart(2, "0")}
-          </span>
-        </h4>
+        <h4 className="text-base font-medium text-foreground">{t("appearance.library.mine")}</h4>
         <div className="flex items-center gap-1">
           {managing ? (
             <Button size="sm" variant="ghost" onClick={finish}>
@@ -44,18 +40,19 @@ export function SavedThemeLibrary({ activeId, onCreate, onEdit }: SavedThemeLibr
             </Button>
           ) : (
             <>
-              <Button size="sm" variant="ghost" onClick={onCreate}>
-                <BookmarkPlus className="size-3.5" />
-                {t("appearance.theme.saveCurrent")}
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                disabled={!themes.length}
-                onClick={() => setManaging(true)}
+              <button
+                type="button"
+                className={SETTINGS_ACTION_BUTTON_CLASS_NAME}
+                onClick={onCreate}
               >
-                {t("appearance.bulk.manage")}
-              </Button>
+                <Plus className="size-3.5" />
+                {t("appearance.library.new")}
+              </button>
+              {themes.length > 0 && (
+                <Button size="sm" variant="ghost" onClick={() => setManaging(true)}>
+                  {t("appearance.bulk.manage")}
+                </Button>
+              )}
             </>
           )}
         </div>
@@ -87,7 +84,7 @@ export function SavedThemeLibrary({ activeId, onCreate, onEdit }: SavedThemeLibr
         </div>
       )}
       {themes.length ? (
-        <div className="grid grid-cols-3 gap-x-4 gap-y-5">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3">
           {themes.map((theme) => (
             <ThemeCard
               key={theme.id}

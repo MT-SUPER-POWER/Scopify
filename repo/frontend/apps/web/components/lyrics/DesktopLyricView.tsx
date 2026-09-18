@@ -11,31 +11,32 @@ export function DesktopLyricView() {
   const view = useDesktopSubtitle();
   const source = view.line?.text || view.projection.track?.title || t("subtitlePalette.waiting");
   return (
-    <div data-desktop-lyrics-root className="group w-full overflow-hidden bg-transparent p-2">
+    <div
+      data-desktop-lyrics-root
+      className="flex w-full items-start justify-center bg-transparent p-2"
+    >
       <div
         ref={view.contentRef}
-        className="w-full"
+        className="group/subtitle relative w-fit max-w-full pt-8"
         style={{ WebkitAppRegion: "drag" } as CSSProperties}
       >
         <DesktopSubtitleToolbar />
-        <div className="flex justify-center px-2 pb-2">
-          <SubtitleCapsule
-            settings={{
-              ...view.settings,
-              entrance: view.line ? view.settings.entrance : "none",
-              fillEnabled: view.settings.fillEnabled && Boolean(view.line),
-            }}
-            payload={{
-              source,
-              target: view.line?.translation ?? "",
-              isChinese: /[\u3400-\u9fff]/.test(source) && !/[a-zA-Z]/.test(source),
-            }}
-            replayId={view.index}
-            playback={view.playback}
-            loop={false}
-            fillProgress={view.fillProgress}
-          />
-        </div>
+        <SubtitleCapsule
+          settings={{
+            ...view.settings,
+            entrance: view.line ? view.settings.entrance : "none",
+            fillEnabled: view.settings.fillEnabled && Boolean(view.line),
+          }}
+          payload={{
+            source,
+            target: view.line?.translation ?? "",
+            isChinese: view.isChinese,
+          }}
+          replayId={view.index}
+          playback={view.playback}
+          loop={false}
+          fillProgress={view.fillProgress}
+        />
       </div>
     </div>
   );

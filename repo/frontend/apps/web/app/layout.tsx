@@ -1,9 +1,9 @@
-﻿// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import "./globals.css";
 import type { Metadata } from "next";
 
-import { I18nProvider } from "@/components/i18n-provider";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 import { BackendStatusNotifier } from "@/components/backend/BackendStatusNotifier";
 import { DesktopPlaybackControllerCommandHandler } from "@/components/desktopWallpaper/DesktopPlaybackControllerCommandHandler";
 import { FoliaStageStoreSync } from "@/components/lyrics/FoliaStageStoreSync";
@@ -12,7 +12,7 @@ import { CompanionPlaybackProjectionProvider } from "@/components/player/Compani
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 
-import { ThemeProvider } from "../components/theme-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ RESOURCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

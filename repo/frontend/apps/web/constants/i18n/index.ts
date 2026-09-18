@@ -1,3 +1,4 @@
+import { themeEditorMessages } from "./themeEditor";
 import { subtitlePaletteMessages } from "./subtitlePalette";
 import { subtitleControlMessages } from "./subtitleControl";
 import { subtitleSystemMessages } from "./subtitleSystem";
@@ -44,6 +45,7 @@ export const messages = {
     ...errorPageMessages["zh-CN"],
     ...settingsMessages["zh-CN"],
     ...appearanceMessages["zh-CN"],
+    ...themeEditorMessages["zh-CN"],
     ...appearanceLibraryMessages["zh-CN"],
     ...appearanceBulkMessages["zh-CN"],
     ...subtitlePreviewMessages["zh-CN"],
@@ -85,6 +87,7 @@ export const messages = {
     ...errorPageMessages["zh-TW"],
     ...settingsMessages["zh-TW"],
     ...appearanceMessages["zh-TW"],
+    ...themeEditorMessages["zh-TW"],
     ...appearanceLibraryMessages["zh-TW"],
     ...appearanceBulkMessages["zh-TW"],
     ...subtitlePreviewMessages["zh-TW"],
@@ -126,6 +129,7 @@ export const messages = {
     ...errorPageMessages["en-US"],
     ...settingsMessages["en-US"],
     ...appearanceMessages["en-US"],
+    ...themeEditorMessages["en-US"],
     ...appearanceLibraryMessages["en-US"],
     ...appearanceBulkMessages["en-US"],
     ...subtitlePreviewMessages["en-US"],

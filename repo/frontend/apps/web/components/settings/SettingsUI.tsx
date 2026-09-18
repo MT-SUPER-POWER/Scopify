@@ -13,7 +13,11 @@ import {
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { SaveConfirmModalProps } from "@/types/components/settings";
+import type {
+  SaveConfirmModalProps,
+  SettingButtonProps,
+  SettingSectionProps,
+} from "@/types/components/settings";
 
 const selectClass =
   "w-full border-input text-foreground hover:border-content focus:ring-ring cursor-pointer appearance-none rounded border bg-transparent py-2 pr-10 pl-4 text-sm font-medium transition-colors outline-none focus:ring-1";
@@ -127,12 +131,13 @@ export function SettingRow({
   );
 }
 
-export function SettingSection({ title, children }: { title: string; children: React.ReactNode }) {
+export function SettingSection({ title, actions, children }: SettingSectionProps) {
   return (
     <section>
-      <h3 className="mb-6 border-b border-border pb-2 text-xs font-bold tracking-widest text-foreground uppercase">
-        {title}
-      </h3>
+      <div className="mb-6 flex items-center justify-between gap-3 border-b border-border pb-2">
+        <h3 className="text-xs font-bold tracking-widest text-foreground uppercase">{title}</h3>
+        {actions}
+      </div>
       {children}
     </section>
   );
@@ -169,6 +174,32 @@ export function SettingSelect({
       </select>
       <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-content" />
     </div>
+  );
+}
+
+export function SettingButton({
+  children,
+  onClick,
+  disabled = false,
+  className,
+  type = "button",
+  title,
+  "aria-label": ariaLabel,
+}: SettingButtonProps) {
+  return (
+    <button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+      title={title}
+      aria-label={ariaLabel}
+      className={cn(
+        "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded border border-input bg-transparent px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50",
+        className,
+      )}
+    >
+      {children}
+    </button>
   );
 }
 

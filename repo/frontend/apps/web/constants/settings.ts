@@ -9,3 +9,6 @@ export const SETTINGS_TABS: readonly { id: SettingsTabId; labelKey: TranslationK
   { id: "desktop", labelKey: "settings.tab.desktop" },
   { id: "shortcuts", labelKey: "settings.tab.shortcuts" },
 ];
+
+export const SETTINGS_ACTION_BUTTON_CLASS_NAME =
+  "inline-flex items-center gap-2 rounded border border-input px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-content focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50";
