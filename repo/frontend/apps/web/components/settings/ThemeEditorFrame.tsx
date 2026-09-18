@@ -23,7 +23,9 @@ export function ThemeEditorFrame({
     <div className="w-full px-6 pt-24 pb-6 text-foreground md:px-10 md:pb-10">
       <header className="mb-8">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+          <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+            {title}
+          </h1>
           {readOnly && !missing && (
             <Badge variant="secondary">{t("themeEditor.builtinHint")}</Badge>
           )}
