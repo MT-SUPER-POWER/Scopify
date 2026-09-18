@@ -46,7 +46,11 @@ export function SubtitlePlaybackControls({
               disabled={!visible}
               onClick={onTogglePlayback}
             >
-              {playing ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
+              {playing ? (
+                <Pause aria-hidden="true" fill="currentColor" strokeWidth={0} />
+              ) : (
+                <Play aria-hidden="true" fill="currentColor" strokeWidth={0} />
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent>{playbackLabel}</TooltipContent>
