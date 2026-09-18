@@ -9,13 +9,17 @@ export function hasJapaneseLyrics(lines: LyricDisplayLine[]) {
 }
 
 export function isChineseSubtitleLine(line: LyricDisplayLine, japaneseLyrics: boolean) {
-  if (japaneseLyrics || JAPANESE.test(line.text) || OTHER_SCRIPT.test(line.text)) return false;
-  if (!HAN.test(line.text)) return false;
+  return isChineseSubtitleText(line.text, line.translation, japaneseLyrics);
+}
+
+export function isChineseSubtitleText(source: string, target = "", japaneseLyrics = false) {
+  if (japaneseLyrics || JAPANESE.test(source) || OTHER_SCRIPT.test(source)) return false;
+  if (!HAN.test(source)) return false;
 
   // Kanji-only lyrics cannot establish the language. Keep a distinct Chinese
   // translation even when the rest of the song contains no kana either.
-  const translation = line.translation?.trim();
-  if (translation && HAN.test(translation) && translation !== line.text.trim()) return false;
+  const translation = target.trim();
+  if (translation && HAN.test(translation) && translation !== source.trim()) return false;
 
   return true;
 }

@@ -58,10 +58,9 @@ export function useSubtitleEntrance(
         setCount(next);
       }
       if (animation)
-        animation.currentTime =
-          preference.matches || playback.startedAt === null
-            ? settings.animationDuration
-            : Math.min(position, settings.animationDuration);
+        animation.currentTime = preference.matches
+          ? settings.animationDuration
+          : Math.min(position, settings.animationDuration);
       if (!preference.matches && playback.startedAt !== null && (loop || position < duration))
         frame = requestAnimationFrame(draw);
     };

@@ -7,6 +7,7 @@ import { LyricsStylePreview } from "./LyricsStylePreview";
 import { LyricsStyleSettingsSection } from "./LyricsStyleSettingsSection";
 import { SettingSection } from "./SettingsUI";
 import { SubtitlePreviewControls } from "./SubtitlePreviewControls";
+import { SubtitlePlaybackControls } from "./SubtitlePlaybackControls";
 
 export function SubtitlePreviewWorkspace() {
   const { t } = useI18n();
@@ -26,20 +27,25 @@ export function SubtitlePreviewWorkspace() {
             payload={preview.payload}
             onPayloadChange={preview.setPayload}
             onSceneChange={preview.selectScene}
-            onReplay={preview.replay}
-            visible={preview.visible}
-            onVisibleChange={preview.setVisible}
-            loop={preview.loop}
-            onLoopChange={preview.setLoop}
-            playback={preview.playback}
-            duration={preview.duration}
-            onTogglePlayback={preview.togglePlayback}
-            onSeek={preview.seek}
           />
         </SettingSection>
       </div>
       <div className="min-w-0 lg:sticky lg:top-24">
-        <SettingSection title={t("appearance.lyrics.preview")}>
+        <SettingSection
+          title={t("appearance.lyrics.preview")}
+          actions={
+            <SubtitlePlaybackControls
+              playback={preview.playback}
+              duration={preview.duration}
+              onTogglePlayback={preview.togglePlayback}
+              onReplay={preview.replay}
+              visible={preview.visible}
+              onVisibleChange={preview.setVisible}
+              loop={preview.loop}
+              onLoopChange={preview.setLoop}
+            />
+          }
+        >
           <LyricsStylePreview
             settings={settings}
             payload={preview.payload}

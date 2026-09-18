@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type {
   DesktopBackendStatus,
   DesktopHostConfig,
@@ -20,6 +21,12 @@ export interface GeneralSettingsTabProps {
   config: SettingsConfig;
   onDesktopChange: DesktopSettingsChangeHandler;
   onWebChange: WebSettingsChangeHandler;
+}
+
+export interface SettingSectionProps {
+  title: string;
+  actions?: ReactNode;
+  children: ReactNode;
 }
 
 export interface NetworkSettingsTabProps {

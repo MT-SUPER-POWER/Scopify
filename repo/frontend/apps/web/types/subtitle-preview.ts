@@ -25,15 +25,6 @@ export interface SubtitlePreviewControlsProps {
   onSceneChange: (scene: SubtitlePreviewScene) => void;
   payload: SubtitlePayload;
   onPayloadChange: (payload: SubtitlePayload) => void;
-  onReplay: () => void;
-  visible: boolean;
-  onVisibleChange: (visible: boolean) => void;
-  loop: boolean;
-  onLoopChange: (loop: boolean) => void;
-  playback: SubtitlePlayback;
-  duration: number;
-  onTogglePlayback: () => void;
-  onSeek: (progress: number) => void;
 }
 
 export interface LyricsStylePreviewProps extends SubtitleCapsuleProps {
@@ -49,7 +40,10 @@ export interface SubtitlePlaybackControlsProps {
   duration: number;
   loop: boolean;
   onTogglePlayback: () => void;
-  onSeek: (progress: number) => void;
+  onReplay: () => void;
+  visible: boolean;
+  onVisibleChange: (visible: boolean) => void;
+  onLoopChange: (loop: boolean) => void;
 }
 export interface SavedSubtitleTheme {
   kind?: "style" | "palette";

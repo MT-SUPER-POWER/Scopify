@@ -2948,6 +2948,12 @@ export interface TranslateFn {
    */
   (key: "subtitlePreview.isChinese", params?: TranslationParams): string;
   /**
+   * zh-CN: 预览选项
+   * zh-TW: 預覽選項
+   * en-US: Preview options
+   */
+  (key: "subtitlePreview.options", params?: TranslationParams): string;
+  /**
    * zh-CN: 重播动画
    * zh-TW: 重播動畫
    * en-US: Replay animation
