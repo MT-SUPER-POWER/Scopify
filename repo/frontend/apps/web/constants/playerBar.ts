@@ -1,4 +1,14 @@
-import { CircleDot, Disc, Disc3, Gem, Radio, RadioReceiver, Sliders, Sparkles } from "lucide-react";
+import {
+  AudioLines,
+  CircleDot,
+  Disc,
+  Disc3,
+  Gem,
+  Radio,
+  RadioReceiver,
+  Sliders,
+  Sparkles,
+} from "lucide-react";
 import type { QualityOption } from "@/types/playerBar";
 
 // ── Quality Options ───────────────────────────────────────────────────────────
@@ -34,7 +44,7 @@ export const QUALITY_OPTIONS: QualityOption[] = [
   },
   {
     value: "dolby",
-    icon: Gem,
+    icon: AudioLines,
     badgeType: "svip",
     labelKey: "playbar.quality.dolby.label",
     techSpec: "playbar.quality.dolby.description",

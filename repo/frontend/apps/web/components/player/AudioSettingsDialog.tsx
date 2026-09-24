@@ -1,16 +1,18 @@
 "use client";
 
-import { SlidersHorizontal, Speaker, Waves, X } from "lucide-react";
+import { SlidersHorizontal, Waves, X } from "lucide-react";
 
 import { AudioEqualizerPanel } from "@/components/player/AudioEqualizerPanel";
 import { AudioQualityDialog } from "@/components/player/AudioQualityDialog";
-import { AudioOutputDevicePanel } from "@/components/player/AudioOutputDevicePanel";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useI18n } from "@/store/module/i18n";
-import type { AudioSettingsDialogProps } from "@/types/components/audioSettingsDialog";
+import type {
+  AudioSettingsDialogProps,
+  AudioSettingsTabButtonProps,
+} from "@/types/components/audioSettingsDialog";
 
 export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
   const { t } = useI18n();
@@ -33,11 +35,12 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
         align="end"
         side="top"
         sideOffset={10}
+        collisionPadding={16}
         className="w-md max-w-[calc(100vw-2rem)] overflow-hidden border bg-popover p-0 text-popover-foreground shadow-floating"
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
         <div className="flex items-center gap-2 px-4 pt-3">
-          <div className="grid flex-1 grid-cols-3 rounded-lg bg-muted/60 p-0.5" role="tablist">
+          <div className="grid flex-1 grid-cols-2 rounded-lg bg-muted/60 p-0.5" role="tablist">
             <AudioSettingsTabButton
               active={activeTab === "quality"}
               icon={<Waves className="size-3.5" />}
@@ -50,12 +53,6 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
               label={t("audioSettings.equalizerTab")}
               onClick={() => setActiveTab("equalizer")}
             />
-            <AudioSettingsTabButton
-              active={activeTab === "output"}
-              icon={<Speaker className="size-3.5" />}
-              label={t("audioSettings.outputTab")}
-              onClick={() => setActiveTab("output")}
-            />
           </div>
           <button
             aria-label={t("audioSettings.close")}
@@ -67,11 +64,13 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
           </button>
         </div>
 
-        <ScrollArea className="max-h-[min(80vh,34rem)] px-4 py-3" viewportClassName="pr-1">
-          <div className="min-w-0" role="tabpanel">
+        <ScrollArea
+          className="min-h-0 overflow-hidden"
+          viewportClassName="h-auto max-h-[min(34rem,calc(80dvh-3rem),calc(var(--radix-popover-content-available-height)-3rem))] overscroll-contain"
+        >
+          <div className="min-w-0 px-4 py-3" role="tabpanel">
             {activeTab === "quality" ? <AudioQualityDialog /> : null}
             {activeTab === "equalizer" ? <AudioEqualizerPanel /> : null}
-            {activeTab === "output" ? <AudioOutputDevicePanel /> : null}
           </div>
         </ScrollArea>
       </PopoverContent>
@@ -79,17 +78,7 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
   );
 }
 
-function AudioSettingsTabButton({
-  active,
-  icon,
-  label,
-  onClick,
-}: {
-  active: boolean;
-  icon: React.ReactNode;
-  label: string;
-  onClick(): void;
-}) {
+function AudioSettingsTabButton({ active, icon, label, onClick }: AudioSettingsTabButtonProps) {
   return (
     <button
       type="button"
