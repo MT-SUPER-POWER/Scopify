@@ -37,7 +37,7 @@ export function useAlbumData() {
   } = useAlbumQuery(albumId);
 
   const [themeColor, setThemeColor] = useState("from-[#88b325]");
-  const isPlaying = usePlayerStore((s) => s.isPlaying);
+  const isPlaying = usePlayerStore((s) => s.isPlaying && s.playlistId === albumId);
   const isShuffle = usePlayerStore((s) => s.isShuffle);
   const albumCollectionQuery = useAlbumCollectionQuery();
   const albumCollectionQueryKey = musicQueryKeys.album.subscriptions(userId ?? 0);
@@ -106,14 +106,13 @@ export function useAlbumData() {
     if (!tracks.length) return;
 
     const player = usePlayerStore.getState();
-    const isCurrentQueue =
-      player.queue.length === tracks.length && player.queue[0]?.id === tracks[0]?.id;
+    const isCurrentQueue = player.playlistId === albumId;
     if (isCurrentQueue) player.setIsPlaying(!player.isPlaying);
     else {
-      player.setQueue(tracks, 0);
+      player.setQueue(tracks, 0, albumId);
       void player.playQueueIndex(0);
     }
-  }, [tracks]);
+  }, [albumId, tracks]);
 
   const subscribeMutation = useMutation({
     mutationFn: ({ id, subscribe }: AlbumSubscriptionMutation) => subscribeAlbum(id, subscribe),

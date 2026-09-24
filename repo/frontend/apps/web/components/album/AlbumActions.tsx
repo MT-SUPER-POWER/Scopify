@@ -3,6 +3,7 @@
 import { Badge } from "@scopify/ui/shadcn/components/badge";
 import { ArrowDownCircle, MessageCircle, MoreHorizontal, Pause, Play, Shuffle } from "lucide-react";
 
+import { PlaylistViewButton } from "@/components/Playlist/lattice/PlaylistViewButton";
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { getCommentHref } from "@/lib/comment/commentResource";
@@ -23,6 +24,7 @@ export function AlbumActions({
   isAlbumCollected,
   isTogglingAlbumSubscribe,
   onPlay,
+  onOpenLattice,
   onToggleSubscribe,
 }: AlbumActionsProps) {
   const { t } = useI18n();
@@ -133,6 +135,9 @@ export function AlbumActions({
             {t("album.action.more")}
           </TooltipContent>
         </Tooltip>
+        <div className="ml-auto">
+          <PlaylistViewButton onOpen={onOpenLattice} />
+        </div>
       </div>
     </TooltipProvider>
   );

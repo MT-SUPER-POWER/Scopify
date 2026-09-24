@@ -29,6 +29,7 @@ export interface AlbumActionsProps {
   isAlbumCollected: boolean;
   isPlaying: boolean;
   isTogglingAlbumSubscribe: boolean;
+  onOpenLattice: () => void;
   onPlay: () => void;
   onToggleSubscribe: () => void;
 }
