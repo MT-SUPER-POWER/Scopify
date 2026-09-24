@@ -11,3 +11,11 @@ export interface VideoExportCropGeometry {
   sourceHeight: number;
   mode: "pure-crop" | "cover";
 }
+
+export type ExportStatus = "idle" | "preparing" | "recording" | "finalizing" | "done" | "error";
+
+export interface VideoExportPlaybackRestore {
+  audio: HTMLAudioElement;
+  paused: boolean;
+  time: number;
+}

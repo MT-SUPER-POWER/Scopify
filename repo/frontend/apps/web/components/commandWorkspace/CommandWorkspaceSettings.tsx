@@ -1,10 +1,9 @@
 "use client";
 
-import { MonitorCog, Palette, Settings2, Sparkles } from "lucide-react";
+import { MonitorCog, Settings2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { runtime } from "@/lib/runtime";
@@ -14,11 +13,10 @@ import type {
   CommandWorkspaceSettingsProps,
 } from "@/types/commandWorkspace";
 
-export function CommandWorkspaceSettings({ onClose }: CommandWorkspaceSettingsProps) {
+export function CommandWorkspaceSettings({ onClose, onOpenFolia }: CommandWorkspaceSettingsProps) {
   const router = useRouter();
   const [isDesktop, setIsDesktop] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const executeShortcut = useShortcutCommands();
   const commands = useShortcutRegistry().commands;
   const navigate = useCallback(
     (path: string) => {
@@ -44,26 +42,18 @@ export function CommandWorkspaceSettings({ onClose }: CommandWorkspaceSettingsPr
         summary: "账户、播放、快捷键与网络",
       },
       {
-        action: () => {
-          executeShortcut("open-folia-settings");
-          onClose();
-        },
-        icon: Sparkles,
+        action: () => onOpenFolia("folia-settings"),
+        icon: Settings2,
         id: "folia-settings",
-        label: "Folia 视觉设置",
-        shortcutId: "open-folia-settings",
-        summary: "歌词、外观和舞台效果",
+        label: "Folia 设置",
+        summary: "视觉设置与主题工作台",
       },
       {
-        action: () => {
-          executeShortcut("open-folia-theme-library");
-          onClose();
-        },
-        icon: Palette,
-        id: "folia-theme-library",
-        label: "Folia 主题库",
-        shortcutId: "open-folia-theme-library",
-        summary: "浏览、应用和管理视觉主题",
+        action: () => onOpenFolia("folia-visualizers"),
+        icon: Sparkles,
+        id: "folia-visualizers",
+        label: "选择可视化",
+        summary: "切换 Folia 歌词演出效果",
       },
     ];
 
@@ -81,7 +71,7 @@ export function CommandWorkspaceSettings({ onClose }: CommandWorkspaceSettingsPr
     }
 
     return list;
-  }, [executeShortcut, isDesktop, navigate, onClose]);
+  }, [isDesktop, navigate, onClose, onOpenFolia]);
 
   return (
     <ScrollArea className="h-[min(52vh,32rem)]">

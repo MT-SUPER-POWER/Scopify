@@ -1,5 +1,7 @@
 "use client";
 
+import { CommandWorkspacePersonalFm } from "@/components/commandWorkspace/CommandWorkspacePersonalFm";
+import { CommandWorkspaceFolia } from "@/components/commandWorkspace/CommandWorkspaceFolia";
 import { ChevronLeft } from "lucide-react";
 import { useCallback, useState } from "react";
 import { CommandWorkspaceHelp } from "@/components/commandWorkspace/CommandWorkspaceHelp";
@@ -54,6 +56,25 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
     if (nextTrackList) setPage("track-list");
   };
 
+  if (page === "personal-fm")
+    return <CommandWorkspacePersonalFm onBack={returnToRoot} onClose={onClose} />;
+
+  if (
+    page === "folia-settings" ||
+    page === "folia-visual-settings" ||
+    page === "folia-visualizers"
+  ) {
+    return (
+      <CommandWorkspaceFolia
+        key={page}
+        group={page}
+        onNavigate={setPage}
+        onBack={returnToRoot}
+        onClose={onClose}
+      />
+    );
+  }
+
   return (
     <>
       {page !== "root" ? (
@@ -84,7 +105,9 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
       {page === "search" ? <CommandWorkspaceSearch onOpenTrackList={handleOpenTrackList} /> : null}
       {page === "queue" ? <CommandWorkspaceQueue onClose={onClose} /> : null}
       {page === "now-playing" ? <CommandWorkspaceNowPlaying onClose={onClose} /> : null}
-      {page === "settings" ? <CommandWorkspaceSettings onClose={onClose} /> : null}
+      {page === "settings" ? (
+        <CommandWorkspaceSettings onClose={onClose} onOpenFolia={setPage} />
+      ) : null}
       {page === "track-list" && trackList ? (
         <CommandWorkspaceTrackList
           trackList={trackList}

@@ -4,15 +4,11 @@ import { useEffect } from "react";
 import { SHORTCUT_COMMANDS } from "@/constants/shortcuts";
 import { getEffectiveShortcutBinding, isShortcutBindingMatch } from "@/lib/shortcuts/bindings";
 import { useShortcutStore } from "@/store/module/shortcuts";
+import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
+import { useLyricStageStore } from "@/store/module/lyrics";
 import { useUiStore } from "@/store/module/ui";
-import type { ShortcutCommandId, ShortcutScope } from "@/types/shortcuts";
+import type { InWindowShortcutsOptions, ShortcutCommandId } from "@/types/shortcuts";
 import { useShortcutCommands } from "./useShortcutCommands";
-
-interface InWindowShortcutsOptions {
-  commandIds?: readonly ShortcutCommandId[];
-  executeCommand?: (commandId: ShortcutCommandId) => void;
-  scope?: ShortcutScope;
-}
 
 const VOLUME_COMMAND_IDS = new Set<ShortcutCommandId>(["increase-volume", "decrease-volume"]);
 
@@ -35,7 +31,10 @@ export function useInWindowShortcuts({
         event.code === "Escape" &&
         ui.isLyricsOpen &&
         !ui.isSearchOpen &&
-        !ui.isShortcutHelpOpen
+        !ui.isShortcutHelpOpen &&
+        useFoliaSettingsStore.getState().visualSection === null &&
+        !useFoliaSettingsStore.getState().themeLibraryOpen &&
+        !useLyricStageStore.getState().sonnetPerformanceWarningOpen
       ) {
         event.preventDefault();
         ui.setIsLyricsOpen(false);

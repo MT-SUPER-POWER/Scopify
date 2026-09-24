@@ -1,5 +1,9 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
+import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
+import { useLyricStageStore } from "@/store/module/lyrics";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { FoliaThemeUnsavedDialog } from "@/components/lyrics/FoliaThemeUnsavedDialog";
@@ -18,6 +22,18 @@ export function FoliaThemeLibraryDialog({
 }: FoliaThemeLibraryDialogProps) {
   const { t } = useI18n();
   const model = useFoliaThemeWorkbench(isOpen, onClose);
+  const closeRequest = useFoliaSettingsStore((state) => state.themeCloseRequest);
+  const seenCloseRequest = useRef(0);
+  const warningOpen = useLyricStageStore((state) => state.sonnetPerformanceWarningOpen);
+  const dialogRef = useFoliaModalFocus(
+    isOpen && !model.pendingAction && !warningOpen,
+    model.requestClose,
+  );
+  useEffect(() => {
+    if (seenCloseRequest.current === closeRequest) return;
+    seenCloseRequest.current = closeRequest;
+    if (isOpen && closeRequest > 0) model.requestClose();
+  }, [closeRequest, isOpen, model.requestClose]);
   const draftColors = getFoliaThemeColors(model.draftTheme, model.themeVariant);
   const workbenchTheme = { ...theme, ...draftColors };
   const isDaylight = theme.name === "snow";
@@ -37,6 +53,9 @@ export function FoliaThemeLibraryDialog({
             style={{ backgroundColor: overlayBackground }}
           >
             <motion.section
+              ref={dialogRef}
+              data-folia-modal-layer="150"
+              tabIndex={-1}
               animate={{ opacity: 1, y: 0 }}
               aria-label={String(t("folia.options.themeLibrary"))}
               aria-modal="true"

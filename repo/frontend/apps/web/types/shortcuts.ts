@@ -74,3 +74,9 @@ export interface ShortcutStoreState {
 
 export type ShortcutAssignmentResult =
   { ok: true } | { ok: false; conflictCommandId: ShortcutCommandId };
+
+export interface InWindowShortcutsOptions {
+  commandIds?: readonly ShortcutCommandId[];
+  executeCommand?: (commandId: ShortcutCommandId) => void;
+  scope?: ShortcutScope;
+}

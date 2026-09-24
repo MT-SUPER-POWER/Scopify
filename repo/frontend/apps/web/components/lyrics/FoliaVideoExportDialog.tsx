@@ -3,21 +3,24 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleStop, Download, Film, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { createPortal } from "react-dom";
 
 import { useI18n } from "@/store/module/i18n";
 import { createCroppedVideoStream } from "@/lib/lyrics/videoExportCapture";
 import { runtime } from "@/lib/runtime";
 import type { FoliaVideoExportDialogProps } from "@/types/components/lyrics";
-import type { VideoExportPreset } from "@/types/videoExport";
+import type {
+  ExportStatus,
+  VideoExportPlaybackRestore,
+  VideoExportPreset,
+} from "@/types/videoExport";
 
 const PRESETS = [
   { id: "720p", width: 1280, height: 720 },
   { id: "1080p", width: 1920, height: 1080 },
   { id: "portrait", width: 1080, height: 1920 },
 ] as const satisfies readonly VideoExportPreset[];
-
-type ExportStatus = "idle" | "preparing" | "recording" | "finalizing" | "done" | "error";
 
 const getFormat = () => {
   const formats = [
@@ -44,11 +47,7 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
   const croppedStreamCleanupRef = useRef<(() => void) | null>(null);
   const timerRef = useRef<number | null>(null);
   const cancelledRef = useRef(false);
-  const playbackRestoreRef = useRef<{
-    audio: HTMLAudioElement;
-    paused: boolean;
-    time: number;
-  } | null>(null);
+  const playbackRestoreRef = useRef<VideoExportPlaybackRestore | null>(null);
   const endedListenerRef = useRef<(() => void) | null>(null);
   const isDaylight = theme.name === "snow";
 
@@ -182,6 +181,10 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
     }
   };
 
+  const dialogRef = useFoliaModalFocus(isOpen, () => {
+    if (status !== "recording") onClose();
+  });
+
   if (typeof document === "undefined") return null;
   return createPortal(
     <AnimatePresence>
@@ -195,6 +198,12 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
           style={{ backgroundColor: isDaylight ? "rgba(255,255,255,.76)" : "rgba(0,0,0,.76)" }}
         >
           <motion.section
+            ref={dialogRef}
+            data-folia-modal-layer="210"
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("folia.videoExport.title")}
             className={`w-full max-w-lg rounded-[28px] border p-5 shadow-2xl ${isDaylight ? "border-black/8 bg-white text-zinc-900" : "border-white/10 bg-zinc-950 text-white"}`}
             initial={{ scale: 0.97, y: 16 }}
             animate={{ scale: 1, y: 0 }}

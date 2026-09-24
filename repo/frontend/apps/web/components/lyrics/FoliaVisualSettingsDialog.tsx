@@ -2,7 +2,9 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { useEffect } from "react";
+import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
+import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
+import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
 
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
@@ -14,9 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
 import type { FoliaVisualSettingsDialogProps } from "@/types/components/lyrics";
 
-/**
- * @brief 右下角沉浸式歌词的设置小面板
- */
+/** Global Folia visual settings with an independent preview. */
 export function FoliaVisualSettingsDialog({
   assets,
   isOpen,
@@ -39,19 +39,9 @@ export function FoliaVisualSettingsDialog({
   const overlayBackground = isDaylight ? "rgba(255,255,255,0.72)" : "rgba(0,0,0,0.65)";
   const surfaceClass = isDaylight ? "border-black/5 bg-white/70" : "border-white/10 bg-zinc-950/88";
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      event.stopPropagation();
-      onClose();
-    };
-
-    window.addEventListener("keydown", closeOnEscape, true);
-    return () => window.removeEventListener("keydown", closeOnEscape, true);
-  }, [isOpen, onClose]);
+  const fontPickerTarget = useFoliaSettingsStore((state) => state.fontPickerTarget);
+  const warningOpen = useLyricStageStore((state) => state.sonnetPerformanceWarningOpen);
+  const dialogRef = useFoliaModalFocus(isOpen && !fontPickerTarget && !warningOpen, onClose);
 
   return (
     <AnimatePresence>
@@ -61,10 +51,13 @@ export function FoliaVisualSettingsDialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onPointerDown={onClose}
-          className="fixed inset-0 z-80 p-3 backdrop-blur-xl sm:p-5"
+          className="fixed inset-0 z-140 p-3 backdrop-blur-xl sm:p-5"
           style={{ backgroundColor: overlayBackground }}
         >
           <motion.section
+            ref={dialogRef}
+            data-folia-modal-layer="140"
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-label={String(t("folia.options.visualSettings"))}

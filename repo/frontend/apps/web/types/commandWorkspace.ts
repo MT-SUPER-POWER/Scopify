@@ -1,3 +1,4 @@
+import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/foliaCommands";
 import type { SongDetail } from "@/types/api/music";
 import type { Album, Artist, Category, Playlist, Podcast, Song, Voice } from "@/types/search";
 import type { DragEvent, KeyboardEvent, RefObject } from "react";
@@ -6,12 +7,13 @@ import type { ShortcutBinding, ShortcutCommandId } from "@/types/shortcuts";
 import type { SearchRecentEntry } from "@/types/search";
 
 export type CommandWorkspacePage =
-  "root" | "search" | "queue" | "now-playing" | "settings" | "track-list";
+  "root" | "search" | "queue" | "now-playing" | "settings" | "track-list" | FoliaCommandGroup;
 export type CommandWorkspaceRootPage = Exclude<CommandWorkspacePage, "root" | "track-list">;
 export type CommandWorkspaceUsageCounts = Partial<Record<CommandWorkspaceRootPage, number>>;
 
 export interface CommandWorkspaceSettingsProps {
   onClose(): void;
+  onOpenFolia(group: FoliaCommandGroup): void;
 }
 
 export interface CommandWorkspaceSettingsItem {
@@ -41,7 +43,8 @@ export interface CommandWorkspaceRootItem {
   label: string;
   page?: CommandWorkspaceRootPage;
   summary: string;
-  type: "shortcut" | "workspace";
+  type: "shortcut" | "workspace" | "folia";
+  foliaEntry?: FoliaCommandEntry;
   usageCount: number;
 }
 
@@ -63,6 +66,8 @@ export interface CommandWorkspaceDirectSearchProps {
 }
 
 export interface CommandWorkspaceDirectSearchResultsProps {
+  foliaEntries: FoliaCommandEntry[];
+  onFoliaSelect(entry: FoliaCommandEntry): void;
   isLoading: boolean;
   onClearRecent(): void;
   onRemoveRecent(item: SearchRecentEntry): void;

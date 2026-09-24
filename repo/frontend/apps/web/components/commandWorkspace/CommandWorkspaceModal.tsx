@@ -49,7 +49,7 @@ export function CommandWorkspaceModal({ isOpen, onClose }: CommandWorkspaceModal
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md"
+            className="fixed inset-0 z-240 bg-black/60 backdrop-blur-md"
             onMouseDown={dismiss}
           />
           <motion.section
@@ -57,7 +57,7 @@ export function CommandWorkspaceModal({ isOpen, onClose }: CommandWorkspaceModal
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: -12 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-[14vh] left-1/2 z-50 w-full max-w-2xl -translate-x-1/2 px-4"
+            className="fixed top-[14vh] left-1/2 z-240 w-full max-w-2xl -translate-x-1/2 px-4"
             onMouseDown={(event) => event.stopPropagation()}
             aria-label="命令工作区"
             role="dialog"
