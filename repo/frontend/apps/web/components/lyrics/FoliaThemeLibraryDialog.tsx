@@ -56,12 +56,12 @@ export function FoliaThemeLibraryDialog({
               ref={dialogRef}
               data-folia-modal-layer="150"
               tabIndex={-1}
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1 }}
               aria-label={String(t("folia.options.themeLibrary"))}
               aria-modal="true"
               className={`mx-auto flex h-full max-w-360 flex-col overflow-hidden rounded-[32px] border shadow-[0_24px_80px_rgba(0,0,0,0.28)] ${surfaceClass}`}
-              exit={{ opacity: 0, y: 40 }}
-              initial={{ opacity: 0, y: 40 }}
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
               onPointerDown={(event) => event.stopPropagation()}
               role="dialog"
               transition={{ duration: 0.24, ease: "easeOut" }}
