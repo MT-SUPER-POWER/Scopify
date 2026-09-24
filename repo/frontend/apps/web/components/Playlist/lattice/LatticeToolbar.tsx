@@ -1,6 +1,6 @@
 "use client";
 
-import { Crosshair, List, PanelsTopLeft } from "lucide-react";
+import { Crosshair, List } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 import type { LatticeToolbarProps } from "@/types/components/playlistLattice";
 import styles from "./PlaylistLattice.module.css";
@@ -15,12 +15,9 @@ export function LatticeToolbar({
   const { t } = useI18n();
   return (
     <header className={styles.toolbar}>
-      <div className={styles.identity}>
-        <span className={styles.wordmark}>
-          <PanelsTopLeft size={14} /> LATTICE <span> / {String(count).padStart(2, "0")}</span>
-        </span>
-        <h1 title={title}>{title}</h1>
-      </div>
+      <h1 className="sr-only">
+        {title} · {count}
+      </h1>
       <div className={styles.tools}>
         {canLocate && (
           <button
@@ -32,10 +29,13 @@ export function LatticeToolbar({
             <Crosshair size={17} />
           </button>
         )}
-        <button type="button" onClick={onClose} className={styles.returnButton}>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={t("playlist.lattice.back")}
+          title={`${t("playlist.lattice.back")} · Esc`}
+        >
           <List size={17} />
-          <span>{t("playlist.lattice.back")}</span>
-          <kbd>Esc</kbd>
         </button>
       </div>
     </header>

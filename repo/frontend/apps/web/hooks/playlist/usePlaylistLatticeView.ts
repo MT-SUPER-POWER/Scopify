@@ -1,11 +1,18 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 export function usePlaylistLatticeView() {
   const contentRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const [container, setContainer] = useState<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    if (!container) return;
+    container.dataset.latticeActive = "true";
+    return () => {
+      delete container.dataset.latticeActive;
+    };
+  }, [container]);
   const open = useCallback(() => {
     const host = contentRef.current?.closest<HTMLElement>("[data-dashboard-main]");
     if (!host) return;

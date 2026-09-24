@@ -24,7 +24,7 @@ export function Header() {
       {/* 滚动时的背景遮罩 */}
       <div
         className={cn(
-          "absolute inset-0 -z-10 rounded-lg bg-surface-overlay/80 backdrop-blur-lg transition-opacity duration-300",
+          "absolute inset-0 -z-10 rounded-lg bg-surface-overlay/80 backdrop-blur-lg transition-opacity duration-300 group-data-[lattice-active=true]/main:opacity-0",
           isAtTop ? "opacity-0" : "border-b border-border opacity-100",
         )}
       />
