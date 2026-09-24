@@ -61,9 +61,9 @@ export function FoliaVisualSettingsDialog({
             role="dialog"
             aria-modal="true"
             aria-label={String(t("folia.options.visualSettings"))}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.24, ease: "easeOut" }}
             onPointerDown={(event) => event.stopPropagation()}
             className={`mx-auto flex h-full max-w-7xl flex-col overflow-hidden rounded-[32px] border shadow-[0_24px_80px_rgba(0,0,0,0.28)] ${surfaceClass}`}

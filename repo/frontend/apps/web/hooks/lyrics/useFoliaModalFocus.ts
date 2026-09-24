@@ -20,7 +20,9 @@ export function useFoliaModalFocus<T extends HTMLElement = HTMLElement>(
       Array.from(ref.current?.querySelectorAll<HTMLElement>(selector) ?? []).filter(
         (element) => element.getClientRects().length > 0,
       );
-    const frame = requestAnimationFrame(() => (focusable()[0] ?? ref.current)?.focus());
+    const frame = requestAnimationFrame(() =>
+      (focusable()[0] ?? ref.current)?.focus({ preventScroll: true }),
+    );
     const handleKey = (event: KeyboardEvent) => {
       if (useUiStore.getState().isSearchOpen) return;
       const layer = Number(ref.current?.dataset.foliaModalLayer ?? 0);
@@ -47,26 +49,27 @@ export function useFoliaModalFocus<T extends HTMLElement = HTMLElement>(
       const last = items.at(-1);
       if (!first) {
         event.preventDefault();
-        ref.current?.focus();
+        ref.current?.focus({ preventScroll: true });
       } else if (
         event.shiftKey &&
         (document.activeElement === first || !ref.current?.contains(document.activeElement))
       ) {
         event.preventDefault();
-        last?.focus();
+        last?.focus({ preventScroll: true });
       } else if (
         !event.shiftKey &&
         (document.activeElement === last || !ref.current?.contains(document.activeElement))
       ) {
         event.preventDefault();
-        first.focus();
+        first.focus({ preventScroll: true });
       }
     };
     document.addEventListener("keydown", handleKey);
     return () => {
       cancelAnimationFrame(frame);
       document.removeEventListener("keydown", handleKey);
-      if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
+      if (previous instanceof HTMLElement && previous.isConnected)
+        previous.focus({ preventScroll: true });
     };
   }, [active]);
   return ref;

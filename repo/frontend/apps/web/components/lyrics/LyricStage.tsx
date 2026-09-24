@@ -1,38 +1,36 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/presentation/buildAppStyle";
 import FloatingPlayerControls from "@/components/lyrics/folia/src/components/FloatingPlayerControls";
 import { PlayerState } from "@/components/lyrics/folia/src/types";
-import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
-import { useLyricStageStore } from "@/store/module/lyrics";
-import { useUiStore } from "@/store/module/ui";
 import type { LyricStageProps } from "@/types/components/lyrics";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
+import { useFoliaStageControls } from "@/hooks/lyrics/useFoliaStageControls";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePlaybackWakeLock } from "@/hooks/player/usePlaybackWakeLock";
 import { useRuntimeWindowVisibility } from "@/hooks/useRuntimeWindowVisibility";
 import { usePlayerStore } from "@/store/module/player";
-import type { DesktopLyricCommand } from "@/types/desktopLyric";
 
 import { FoliaPresentationSurface } from "./FoliaPresentationSurface";
 import { FoliaStageSettings } from "./FoliaStageSettings";
 
-const keepAutoHideEnabled = () => undefined;
-
 /** Scopify host for Folia's pinned playback-stage presentation runtime. */
 export function LyricStage({ onClose }: LyricStageProps) {
-  const [isBorderVisible, setIsBorderVisible] = useState(false);
-  const [isPlayerChromeHidden, setIsPlayerChromeHidden] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const {
+    isBorderVisible,
+    isPlayerChromeHidden,
+    isSettingsOpen,
+    isTransparent,
+    setIsSettingsOpen,
+  } = useFoliaStageControls({ onClose });
   const isSettingsModalOpen = useFoliaSettingsStore(
     (state) => state.visualSection !== null || state.themeLibraryOpen,
   );
-  const [isTransparent, setIsTransparent] = useState(false);
   const isWindowVisible = useRuntimeWindowVisibility();
   const isMainSurfaceActive = !isSettingsModalOpen && isWindowVisible;
   const appearance = useFoliaPresentationAppearance();
@@ -56,56 +54,6 @@ export function LyricStage({ onClose }: LyricStageProps) {
       }),
     [isDaylight, isTransparent, theme],
   );
-
-  const { cyclePlayerChromeVisibilityMode, setPlayerChromeVisibilityMode } =
-    usePlayerChromeAutoHide({
-      autoHidePlayerChrome: true,
-      initialPlayerChromeHidden: false,
-      setAutoHidePlayerChromePreference: keepAutoHideEnabled,
-      setIsPlayerChromeHidden,
-    });
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const modals = useFoliaSettingsStore.getState();
-      if (
-        modals.visualSection !== null ||
-        modals.themeLibraryOpen ||
-        useLyricStageStore.getState().sonnetPerformanceWarningOpen ||
-        useUiStore.getState().isSearchOpen
-      )
-        return;
-      if (event.key === "Escape" || event.code === "Escape") {
-        event.preventDefault();
-        event.stopPropagation();
-        onClose();
-        return;
-      }
-      if (event.key.toLowerCase() === "h") {
-        event.preventDefault();
-        cyclePlayerChromeVisibilityMode();
-      }
-      if (event.key.toLowerCase() === "p") {
-        event.preventDefault();
-        setIsSettingsOpen((open) => !open);
-      }
-    };
-    const onDesktopCommand = (event: Event) => {
-      const command = (event as CustomEvent<DesktopLyricCommand>).detail;
-      if (!command) return;
-      if (command.type === "set-stage-transparent") setIsTransparent(command.enabled);
-      if (command.type === "set-stage-border-visible") setIsBorderVisible(command.visible);
-      if (command.type === "set-stage-controls-visible") {
-        setPlayerChromeVisibilityMode(command.visible ? "always-visible" : "always-hidden");
-      }
-    };
-    window.addEventListener("desktop-lyric:stage-command", onDesktopCommand);
-    window.addEventListener("keydown", onKeyDown, true);
-    return () => {
-      window.removeEventListener("desktop-lyric:stage-command", onDesktopCommand);
-      window.removeEventListener("keydown", onKeyDown, true);
-    };
-  }, [cyclePlayerChromeVisibilityMode, onClose, setPlayerChromeVisibilityMode]);
 
   const playerState = bridge.isPlaying ? PlayerState.PLAYING : PlayerState.PAUSED;
   const seekToSeconds = useCallback(
