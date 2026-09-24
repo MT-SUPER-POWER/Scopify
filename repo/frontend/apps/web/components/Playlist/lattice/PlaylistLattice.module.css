@@ -62,7 +62,7 @@
 }
 .field {
   position: absolute;
-  inset: 64px 0 0;
+  inset: 0;
   overflow: clip;
   touch-action: none;
   overscroll-behavior: none;

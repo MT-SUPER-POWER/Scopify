@@ -5,6 +5,9 @@ import { animate, useReducedMotion } from "framer-motion";
 import { useLatticePointer } from "@/hooks/playlist/useLatticePointer";
 import type { Bounds, LatticeCamera, LatticeViewport, ReflowTile } from "@/types/playlistLattice";
 
+// The wall fills the pane; keep focused posters below the overlaid h-16 Header.
+const HEADER_INSET = 64;
+
 const getBounds = (camera: LatticeCamera, viewport: LatticeViewport): Bounds => ({
   left: -camera.x / camera.scale,
   top: -camera.y / camera.scale,
@@ -76,17 +79,18 @@ export function useLatticeCamera() {
     (rect: Omit<ReflowTile, "instanceId">, fit = true) => {
       stop();
       const viewport = viewportRef.current;
+      const contentHeight = Math.max(0, viewport.height - HEADER_INSET);
       const start = cameraRef.current;
       const scale = fit
         ? Math.min(
             0.72,
             Math.max(0.2, (viewport.width - 48) / rect.width),
-            Math.max(0.2, (viewport.height - 48) / rect.height),
+            Math.max(0.2, (contentHeight - 48) / rect.height),
           )
         : start.scale;
       const next = {
         x: (viewport.width - rect.width * scale) / 2 - rect.x * scale,
-        y: (viewport.height - rect.height * scale) / 2 - rect.y * scale,
+        y: HEADER_INSET + (contentHeight - rect.height * scale) / 2 - rect.y * scale,
         scale,
       };
       if (reducedMotion) {
