@@ -15,7 +15,10 @@ export default defineVisualizer({
   previewSeed: "tempera",
   previewStartOffset: 0,
   tuningKind: "tempera",
-  render: (props) => <VisualizerTempera key={props.seed} {...props} />,
+  // Deliberately unkeyed on the seed: the runtime hands a track change over in place
+  // (see songHandover.ts / pixiRuntimeHost.ts). Remounting here would throw the WebGL
+  // context away mid-transition and leave the frame empty for the whole rebuild.
+  render: (props) => <VisualizerTempera {...props} />,
   renderSettingsPanel: (props) => <TemperaSettingsPanel {...props} />,
   resetSettings: ({ resetTemperaTuning, setDraftTemperaTuning }) => {
     setDraftTemperaTuning?.(DEFAULT_TEMPERA_TUNING);

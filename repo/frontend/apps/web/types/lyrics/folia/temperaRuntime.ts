@@ -1,3 +1,4 @@
+import type { TemperaSceneView, TemperaCreditsView } from "./temperaScene";
 import type { MotionValue } from "framer-motion";
 import type { TemperaTuning, Theme } from "../../../components/lyrics/folia/src/types";
 import type { TemperaProgram } from "../../../components/lyrics/folia/src/components/visualizer/tempera/types";
@@ -19,6 +20,7 @@ export interface TemperaSongMetadata {
 
 export interface TemperaRuntimeOptions {
   host: HTMLDivElement;
+  songSeed?: string | number;
   program: TemperaProgram;
   theme: Theme;
   tuning: TemperaTuning;
@@ -33,4 +35,33 @@ export interface TemperaRuntimeOptions {
   songArtist?: string | null;
   songAlbum?: string | null;
   signal?: AbortSignal;
+}
+
+export interface TemperaSongContext {
+  /**
+   * Track identity. Only a change here is a real song change; the rest of this object also
+   * moves when the cover palette resolves, the theme is edited, or lyrics are hidden, and
+   * those must swap silently rather than play a cut.
+   */
+  seed: string | number | undefined;
+  program: TemperaProgram;
+  theme: Theme;
+  coverColors: string[];
+}
+
+export interface TemperaSongSwap {
+  pending: TemperaSongContext | null;
+  /** The incoming scene and poster, built a frame before the cut needs them. */
+  staged: TemperaStagedScene | null;
+  /** Set once the build has been attempted, even when it produced nothing. */
+  prepared: boolean;
+  settle: () => void;
+  /** Drops the abort listener, so a long skip session cannot pile them up on one signal. */
+  detachAbort: () => void;
+}
+
+export interface TemperaStagedScene {
+  scene: TemperaSceneView;
+  index: number;
+  credits: TemperaCreditsView | null;
 }

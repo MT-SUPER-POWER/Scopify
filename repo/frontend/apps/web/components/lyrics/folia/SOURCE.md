@@ -76,6 +76,13 @@ the original full-copy baseline:
   dissolves settle, and compare complete lyric content rather than only the
   first line and line count.
 
+- `a69dd947b9e0679685f0a243434060ec15c96781` and
+  `b2fd832316783a7e58d07679c8fd31088f73a630` (Tempera handover portion) —
+  retain the Pixi application and image textures across songs, stage the next
+  scene before a direct cut, and release retired scenes over later frames.
+  Local adaptations settle a pending cut when paused and continue retiring
+  scenes when the new program has no paragraphs.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
