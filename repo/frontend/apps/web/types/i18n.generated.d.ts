@@ -5,144 +5,6 @@ import type { TranslationKey, TranslationParams } from "@/lib/i18n";
 
 export interface TranslateFn {
   /**
-   * zh-CN: 私信
-   * zh-TW: 私訊
-   * en-US: Messages
-   */
-  (key: "privateMessages.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{count}} 个未读会话
-   * zh-TW: {{count}} 個未讀對話
-   * en-US: {{count}} unread conversations
-   */
-  (key: "privateMessages.unread", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂无私信
-   * zh-TW: 暫無私訊
-   * en-US: No messages yet
-   */
-  (key: "privateMessages.empty", params?: TranslationParams): string;
-  /**
-   * zh-CN: 登录后查看私信
-   * zh-TW: 登入後查看私訊
-   * en-US: Sign in to view messages
-   */
-  (key: "privateMessages.login", params?: TranslationParams): string;
-  /**
-   * zh-CN: 加载中…
-   * zh-TW: 載入中…
-   * en-US: Loading…
-   */
-  (key: "privateMessages.loading", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂时无法加载消息，请重试。
-   * zh-TW: 暫時無法載入訊息，請重試。
-   * en-US: Messages could not be loaded. Try again.
-   */
-  (key: "privateMessages.loadError", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更多会话
-   * zh-TW: 更多對話
-   * en-US: More conversations
-   */
-  (key: "privateMessages.more", params?: TranslationParams): string;
-  /**
-   * zh-CN: 查看更早消息
-   * zh-TW: 查看更早訊息
-   * en-US: Load older messages
-   */
-  (key: "privateMessages.older", params?: TranslationParams): string;
-  /**
-   * zh-CN: 刷新私信
-   * zh-TW: 重新整理私訊
-   * en-US: Refresh messages
-   */
-  (key: "privateMessages.refresh", params?: TranslationParams): string;
-  /**
-   * zh-CN: 返回会话列表
-   * zh-TW: 返回對話列表
-   * en-US: Back to conversations
-   */
-  (key: "privateMessages.back", params?: TranslationParams): string;
-  /**
-   * zh-CN: 用户
-   * zh-TW: 使用者
-   * en-US: User
-   */
-  (key: "privateMessages.unknownUser", params?: TranslationParams): string;
-  /**
-   * zh-CN: 分享内容
-   * zh-TW: 分享內容
-   * en-US: Shared content
-   */
-  (key: "privateMessages.sharedContent", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂不支持展示此消息
-   * zh-TW: 暫不支援顯示此訊息
-   * en-US: This message cannot be displayed yet
-   */
-  (key: "privateMessages.unsupported", params?: TranslationParams): string;
-  /**
-   * zh-CN: 图片消息
-   * zh-TW: 圖片訊息
-   * en-US: Image message
-   */
-  (key: "privateMessages.image", params?: TranslationParams): string;
-  /**
-   * zh-CN: 专辑
-   * zh-TW: 專輯
-   * en-US: Album
-   */
-  (key: "privateMessages.album", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌曲
-   * zh-TW: 歌曲
-   * en-US: Song
-   */
-  (key: "privateMessages.song", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌单
-   * zh-TW: 歌單
-   * en-US: Playlist
-   */
-  (key: "privateMessages.playlist", params?: TranslationParams): string;
-  /**
-   * zh-CN: 说点什么，开始对话吧
-   * zh-TW: 說點什麼，開始對話吧
-   * en-US: Say something to start a conversation
-   */
-  (key: "privateMessages.startConversation", params?: TranslationParams): string;
-  /**
-   * zh-CN: 说点什么吧…
-   * zh-TW: 說點什麼吧…
-   * en-US: Write a message…
-   */
-  (key: "privateMessages.compose", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发送
-   * zh-TW: 傳送
-   * en-US: Send
-   */
-  (key: "privateMessages.send", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发送中
-   * zh-TW: 傳送中
-   * en-US: Sending
-   */
-  (key: "privateMessages.sending", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发送失败，内容已保留，请重试。
-   * zh-TW: 傳送失敗，內容已保留，請重試。
-   * en-US: Message not sent. Your text is still here. Try again.
-   */
-  (key: "privateMessages.sendError", params?: TranslationParams): string;
-  /**
-   * zh-CN: 插入表情
-   * zh-TW: 插入表情
-   * en-US: Insert emoji
-   */
-  (key: "privateMessages.emoji", params?: TranslationParams): string;
-  /**
    * zh-CN: 设备列表响应不完整，请稍后重试。
    * zh-TW: 裝置清單回應不完整，請稍後重試。
    * en-US: The device response is incomplete. Try again.
@@ -1061,95 +923,143 @@ export interface TranslateFn {
    */
   (key: "notifications.subscriptionHint", params?: TranslationParams): string;
   /**
-   * zh-CN: 通知
-   * zh-TW: 通知
-   * en-US: Notifications
+   * zh-CN: 私信
+   * zh-TW: 私訊
+   * en-US: Messages
    */
-  (key: "notifications.title", params?: TranslationParams): string;
+  (key: "privateMessages.title", params?: TranslationParams): string;
   /**
-   * zh-CN: 暂无新通知
-   * zh-TW: 目前沒有新通知
-   * en-US: No new notifications
+   * zh-CN: {{count}} 个未读会话
+   * zh-TW: {{count}} 個未讀對話
+   * en-US: {{count}} unread conversations
    */
-  (key: "notifications.empty.title", params?: TranslationParams): string;
+  (key: "privateMessages.unread", params?: TranslationParams): string;
   /**
-   * zh-CN: 有新的桌面端版本时，会在这里提醒你。
-   * zh-TW: 有新的桌面版時，會在這裡提醒你。
-   * en-US: New desktop releases will appear here.
+   * zh-CN: 暂无私信
+   * zh-TW: 暫無私訊
+   * en-US: No messages yet
    */
-  (key: "notifications.empty.description", params?: TranslationParams): string;
+  (key: "privateMessages.empty", params?: TranslationParams): string;
   /**
-   * zh-CN: 发现新版本
-   * zh-TW: 發現新版本
-   * en-US: Update available
+   * zh-CN: 登录后查看私信
+   * zh-TW: 登入後查看私訊
+   * en-US: Sign in to view messages
    */
-  (key: "notifications.updater.available.title", params?: TranslationParams): string;
+  (key: "privateMessages.login", params?: TranslationParams): string;
   /**
-   * zh-CN: Scopify {{version}} 已准备好下载。
-   * zh-TW: Scopify {{version}} 已準備好下載。
-   * en-US: Scopify {{version}} is ready to download.
+   * zh-CN: 加载中…
+   * zh-TW: 載入中…
+   * en-US: Loading…
    */
-  (key: "notifications.updater.available.description", params?: TranslationParams): string;
+  (key: "privateMessages.loading", params?: TranslationParams): string;
   /**
-   * zh-CN: 正在下载更新
-   * zh-TW: 正在下載更新
-   * en-US: Downloading update
+   * zh-CN: 暂时无法加载消息，请重试。
+   * zh-TW: 暫時無法載入訊息，請重試。
+   * en-US: Messages could not be loaded. Try again.
    */
-  (key: "notifications.updater.downloading.title", params?: TranslationParams): string;
+  (key: "privateMessages.loadError", params?: TranslationParams): string;
   /**
-   * zh-CN: 新版本正在下载：{{percent}}%。
-   * zh-TW: 新版本正在下載：{{percent}}%。
-   * en-US: The new version is downloading: {{percent}}%.
+   * zh-CN: 更多会话
+   * zh-TW: 更多對話
+   * en-US: More conversations
    */
-  (key: "notifications.updater.downloading.description", params?: TranslationParams): string;
+  (key: "privateMessages.more", params?: TranslationParams): string;
   /**
-   * zh-CN: 更新已下载
-   * zh-TW: 更新已下載
-   * en-US: Update downloaded
+   * zh-CN: 查看更早消息
+   * zh-TW: 查看更早訊息
+   * en-US: Load older messages
    */
-  (key: "notifications.updater.downloaded.title", params?: TranslationParams): string;
+  (key: "privateMessages.older", params?: TranslationParams): string;
   /**
-   * zh-CN: Scopify {{version}} 已下载完成，重启即可安装。
-   * zh-TW: Scopify {{version}} 已下載完成，重啟即可安裝。
-   * en-US: Scopify {{version}} is ready to install after a restart.
+   * zh-CN: 刷新私信
+   * zh-TW: 重新整理私訊
+   * en-US: Refresh messages
    */
-  (key: "notifications.updater.downloaded.description", params?: TranslationParams): string;
+  (key: "privateMessages.refresh", params?: TranslationParams): string;
   /**
-   * zh-CN: 正在检查更新
-   * zh-TW: 正在檢查更新
-   * en-US: Checking for updates
+   * zh-CN: 返回会话列表
+   * zh-TW: 返回對話列表
+   * en-US: Back to conversations
    */
-  (key: "notifications.updater.checking.title", params?: TranslationParams): string;
+  (key: "privateMessages.back", params?: TranslationParams): string;
   /**
-   * zh-CN: 正在检查 GitHub Release 中的最新版本。
-   * zh-TW: 正在檢查 GitHub Release 中的最新版本。
-   * en-US: Checking GitHub Releases for the latest version.
+   * zh-CN: 用户
+   * zh-TW: 使用者
+   * en-US: User
    */
-  (key: "notifications.updater.checking.description", params?: TranslationParams): string;
+  (key: "privateMessages.unknownUser", params?: TranslationParams): string;
   /**
-   * zh-CN: 更新检查失败
-   * zh-TW: 更新檢查失敗
-   * en-US: Update check failed
+   * zh-CN: 分享内容
+   * zh-TW: 分享內容
+   * en-US: Shared content
    */
-  (key: "notifications.updater.error.title", params?: TranslationParams): string;
+  (key: "privateMessages.sharedContent", params?: TranslationParams): string;
   /**
-   * zh-CN: 请稍后重试，或前往设置手动检查。
-   * zh-TW: 請稍後再試，或前往設定手動檢查。
-   * en-US: Try again later, or open Settings to check manually.
+   * zh-CN: 暂不支持展示此消息
+   * zh-TW: 暫不支援顯示此訊息
+   * en-US: This message cannot be displayed yet
    */
-  (key: "notifications.updater.error.description", params?: TranslationParams): string;
+  (key: "privateMessages.unsupported", params?: TranslationParams): string;
   /**
-   * zh-CN: 打开更新设置
-   * zh-TW: 開啟更新設定
-   * en-US: Open update settings
+   * zh-CN: 图片消息
+   * zh-TW: 圖片訊息
+   * en-US: Image message
    */
-  (key: "notifications.updater.openSettings", params?: TranslationParams): string;
+  (key: "privateMessages.image", params?: TranslationParams): string;
   /**
-   * zh-CN: 重启并安装
-   * zh-TW: 重啟並安裝
-   * en-US: Restart and install
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Album
    */
-  (key: "notifications.updater.install", params?: TranslationParams): string;
+  (key: "privateMessages.album", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲
+   * zh-TW: 歌曲
+   * en-US: Song
+   */
+  (key: "privateMessages.song", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlist
+   */
+  (key: "privateMessages.playlist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 说点什么，开始对话吧
+   * zh-TW: 說點什麼，開始對話吧
+   * en-US: Say something to start a conversation
+   */
+  (key: "privateMessages.startConversation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 说点什么吧…
+   * zh-TW: 說點什麼吧…
+   * en-US: Write a message…
+   */
+  (key: "privateMessages.compose", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送
+   * zh-TW: 傳送
+   * en-US: Send
+   */
+  (key: "privateMessages.send", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送中
+   * zh-TW: 傳送中
+   * en-US: Sending
+   */
+  (key: "privateMessages.sending", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送失败，内容已保留，请重试。
+   * zh-TW: 傳送失敗，內容已保留，請重試。
+   * en-US: Message not sent. Your text is still here. Try again.
+   */
+  (key: "privateMessages.sendError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 插入表情
+   * zh-TW: 插入表情
+   * en-US: Insert emoji
+   */
+  (key: "privateMessages.emoji", params?: TranslationParams): string;
   /**
    * zh-CN: 简体中文
    * zh-TW: 简体中文
@@ -7484,15 +7394,15 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.jymaster.description", params?: TranslationParams): string;
   /**
-   * zh-CN: 臻音全景声 (Audio Vivid)
-   * zh-TW: 臻音全景聲 (Audio Vivid)
-   * en-US: Audio Vivid
+   * zh-CN: 杜比全景声 (Dolby Atmos)
+   * zh-TW: 杜比全景聲 (Dolby Atmos)
+   * en-US: Dolby Atmos
    */
   (key: "playbar.quality.dolby.label", params?: TranslationParams): string;
   /**
-   * zh-CN: Audio Vivid
-   * zh-TW: Audio Vivid
-   * en-US: Audio Vivid
+   * zh-CN: Dolby Atmos
+   * zh-TW: Dolby Atmos
+   * en-US: Dolby Atmos
    */
   (key: "playbar.quality.dolby.sublabel", params?: TranslationParams): string;
   /**
@@ -7610,8 +7520,8 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.badge.sky", params?: TranslationParams): string;
   /**
-   * zh-CN: 高清环绕声
-   * zh-TW: 高清環繞聲
+   * zh-CN: 高清臻音
+   * zh-TW: 高清臻音
    * en-US: HD Surround
    */
   (key: "playbar.quality.badge.jyeffect", params?: TranslationParams): string;
@@ -7627,6 +7537,132 @@ export interface TranslateFn {
    * en-US: Lossless
    */
   (key: "playbar.quality.badge.lossless", params?: TranslationParams): string;
+  /**
+   * zh-CN: 臻音全景声 (Audio Vivid)
+   * zh-TW: 臻音全景聲 (Audio Vivid)
+   * en-US: Audio Vivid
+   */
+  (key: "playbar.quality.vivid.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: Audio Vivid 空间音频
+   * zh-TW: Audio Vivid 空間音訊
+   * en-US: Audio Vivid spatial audio
+   */
+  (key: "playbar.quality.vivid.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 臻音全景声
+   * zh-TW: 臻音全景聲
+   * en-US: Audio Vivid
+   */
+  (key: "playbar.quality.badge.vivid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首选音质
+   * zh-TW: 首選音質
+   * en-US: Preferred quality
+   */
+  (key: "playbar.quality.preference", params?: TranslationParams): string;
+  /**
+   * zh-CN: 实际音质以歌曲资源与账号权限为准。
+   * zh-TW: 實際音質以歌曲資源與帳號權限為準。
+   * en-US: Available quality depends on the track and your account.
+   */
+  (key: "playbar.quality.availability", params?: TranslationParams): string;
+  /**
+   * zh-CN: 沉浸声格式
+   * zh-TW: 沉浸聲格式
+   * en-US: Surround format
+   */
+  (key: "playbar.quality.immerse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新版 C51
+   * zh-TW: 新版 C51
+   * en-US: C51 · New
+   */
+  (key: "playbar.quality.immerse.c512", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新版环绕立体声
+   * zh-TW: 新版環繞立體聲
+   * en-US: Surround stereo · New
+   */
+  (key: "playbar.quality.immerse.ste2", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新版 AAC
+   * zh-TW: 新版 AAC
+   * en-US: AAC · New
+   */
+  (key: "playbar.quality.immerse.aac2", params?: TranslationParams): string;
+  /**
+   * zh-CN: C51（默认）
+   * zh-TW: C51（預設）
+   * en-US: C51 · Default
+   */
+  (key: "playbar.quality.immerse.c51", params?: TranslationParams): string;
+  /**
+   * zh-CN: 环绕立体声
+   * zh-TW: 環繞立體聲
+   * en-US: Surround stereo
+   */
+  (key: "playbar.quality.immerse.ste", params?: TranslationParams): string;
+  /**
+   * zh-CN: AAC
+   * zh-TW: AAC
+   * en-US: AAC
+   */
+  (key: "playbar.quality.immerse.aac", params?: TranslationParams): string;
+  /**
+   * zh-CN: 接着听相似歌曲
+   * zh-TW: 接著聽相似歌曲
+   * en-US: Explore similar songs
+   */
+  (key: "song.similar.action", params?: TranslationParams): string;
+  /**
+   * zh-CN: 与「{{name}}」相似的歌曲。右键可加入歌单或播放队列。
+   * zh-TW: 與「{{name}}」相似的歌曲。按右鍵可加入歌單或播放佇列。
+   * en-US: Songs similar to “{{name}}”. Right-click to add to a playlist or queue.
+   */
+  (key: "song.similar.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在寻找相似歌曲…
+   * zh-TW: 正在尋找相似歌曲…
+   * en-US: Finding similar songs…
+   */
+  (key: "song.similar.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时没有相似歌曲推荐
+   * zh-TW: 暫時沒有相似歌曲推薦
+   * en-US: No similar songs available yet
+   */
+  (key: "song.similar.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时无法获取推荐，请稍后重试。
+   * zh-TW: 暫時無法取得推薦，請稍後重試。
+   * en-US: Could not load recommendations. Please try again.
+   */
+  (key: "song.similar.error", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新加载
+   * zh-TW: 重新載入
+   * en-US: Retry
+   */
+  (key: "song.similar.retry", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 首推荐
+   * zh-TW: {{count}} 首推薦
+   * en-US: {{count}} recommendations
+   */
+  (key: "song.similar.count", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无可添加的歌单
+   * zh-TW: 暫無可加入的歌單
+   * en-US: No editable playlists
+   */
+  (key: "song.similar.noPlaylists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Close
+   */
+  (key: "song.similar.close", params?: TranslationParams): string;
   /**
    * zh-CN: 匹配歌词
    * zh-TW: 比對歌詞
@@ -19889,6 +19925,12 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.toggleAudioSettings", params?: TranslationParams): string;
   /**
+   * zh-CN: 打开/关闭音频输出设备
+   * zh-TW: 開啟/關閉音訊輸出裝置
+   * en-US: Open/Close Audio Output Device
+   */
+  (key: "shortcuts.command.toggleAudioOutputDevice", params?: TranslationParams): string;
+  /**
    * zh-CN: 打开/关闭桌面音乐控制器
    * zh-TW: 開啟/關閉桌面音樂控制器
    * en-US: Open/Close Desktop Controller
@@ -20710,6 +20752,96 @@ export interface TranslateFn {
    * en-US: Couldn't update the voice like
    */
   (key: "library.voice.likeFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通知
+   * zh-TW: 通知
+   * en-US: Notifications
+   */
+  (key: "notifications.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无新通知
+   * zh-TW: 目前沒有新通知
+   * en-US: No new notifications
+   */
+  (key: "notifications.empty.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 有新的桌面端版本时，会在这里提醒你。
+   * zh-TW: 有新的桌面版時，會在這裡提醒你。
+   * en-US: New desktop releases will appear here.
+   */
+  (key: "notifications.empty.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现新版本
+   * zh-TW: 發現新版本
+   * en-US: Update available
+   */
+  (key: "notifications.updater.available.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: Scopify {{version}} 已准备好下载。
+   * zh-TW: Scopify {{version}} 已準備好下載。
+   * en-US: Scopify {{version}} is ready to download.
+   */
+  (key: "notifications.updater.available.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在下载更新
+   * zh-TW: 正在下載更新
+   * en-US: Downloading update
+   */
+  (key: "notifications.updater.downloading.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新版本正在下载：{{percent}}%。
+   * zh-TW: 新版本正在下載：{{percent}}%。
+   * en-US: The new version is downloading: {{percent}}%.
+   */
+  (key: "notifications.updater.downloading.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新已下载
+   * zh-TW: 更新已下載
+   * en-US: Update downloaded
+   */
+  (key: "notifications.updater.downloaded.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: Scopify {{version}} 已下载完成，重启即可安装。
+   * zh-TW: Scopify {{version}} 已下載完成，重啟即可安裝。
+   * en-US: Scopify {{version}} is ready to install after a restart.
+   */
+  (key: "notifications.updater.downloaded.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在检查更新
+   * zh-TW: 正在檢查更新
+   * en-US: Checking for updates
+   */
+  (key: "notifications.updater.checking.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在检查 GitHub Release 中的最新版本。
+   * zh-TW: 正在檢查 GitHub Release 中的最新版本。
+   * en-US: Checking GitHub Releases for the latest version.
+   */
+  (key: "notifications.updater.checking.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新检查失败
+   * zh-TW: 更新檢查失敗
+   * en-US: Update check failed
+   */
+  (key: "notifications.updater.error.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请稍后重试，或前往设置手动检查。
+   * zh-TW: 請稍後再試，或前往設定手動檢查。
+   * en-US: Try again later, or open Settings to check manually.
+   */
+  (key: "notifications.updater.error.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开更新设置
+   * zh-TW: 開啟更新設定
+   * en-US: Open update settings
+   */
+  (key: "notifications.updater.openSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启并安装
+   * zh-TW: 重啟並安裝
+   * en-US: Restart and install
+   */
+  (key: "notifications.updater.install", params?: TranslationParams): string;
   /**
    * zh-CN: 私人电台
    * zh-TW: 私人電台
