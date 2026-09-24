@@ -39,9 +39,11 @@ import { shortcutsMessages } from "./shortcuts";
 import { libraryMessages } from "./library";
 import { updaterMessages } from "./updater";
 import { personalFmMessages } from "./personalFm";
+import { notificationMessages } from "./notifications";
 
 export const messages = {
   "zh-CN": {
+    ...notificationMessages["zh-CN"],
     ...commonMessages["zh-CN"],
     ...errorPageMessages["zh-CN"],
     ...settingsMessages["zh-CN"],
@@ -85,6 +87,7 @@ export const messages = {
     ...personalFmMessages["zh-CN"],
   },
   "zh-TW": {
+    ...notificationMessages["zh-TW"],
     ...commonMessages["zh-TW"],
     ...errorPageMessages["zh-TW"],
     ...settingsMessages["zh-TW"],
@@ -128,6 +131,7 @@ export const messages = {
     ...personalFmMessages["zh-TW"],
   },
   "en-US": {
+    ...notificationMessages["en-US"],
     ...commonMessages["en-US"],
     ...errorPageMessages["en-US"],
     ...settingsMessages["en-US"],

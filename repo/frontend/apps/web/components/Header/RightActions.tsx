@@ -3,7 +3,7 @@ import { FaGithub } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import MockAvatar from "./Avatar";
 import { ProfileMenu } from "./ProfileMenu";
-import { UpdateNotificationCenter } from "./UpdateNotificationCenter";
+import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 
 const NAV_BTN =
   "bg-surface-sunken/80 hover:bg-surface-elevated text-content-muted hover:text-content transition-all";
@@ -24,7 +24,7 @@ const RightActions = () => (
       <span>Github</span>
     </button>
 
-    <UpdateNotificationCenter />
+    <NotificationCenter />
 
     <button
       type="button"

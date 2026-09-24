@@ -5,6 +5,354 @@ import type { TranslationKey, TranslationParams } from "@/lib/i18n";
 
 export interface TranslateFn {
   /**
+   * zh-CN: 消息、互动与听歌时光
+   * zh-TW: 訊息、互動與聽歌時光
+   * en-US: Messages, moments and music
+   */
+  (key: "notifications.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部
+   * zh-TW: 全部
+   * en-US: All
+   */
+  (key: "notifications.all", params?: TranslationParams): string;
+  /**
+   * zh-CN: 消息
+   * zh-TW: 訊息
+   * en-US: Messages
+   */
+  (key: "notifications.messages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 互动
+   * zh-TW: 互動
+   * en-US: Activity
+   */
+  (key: "notifications.interactions", params?: TranslationParams): string;
+  /**
+   * zh-CN: 报告
+   * zh-TW: 報告
+   * en-US: Reports
+   */
+  (key: "notifications.reports", params?: TranslationParams): string;
+  /**
+   * zh-CN: 系统
+   * zh-TW: 系統
+   * en-US: System
+   */
+  (key: "notifications.system", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未读
+   * zh-TW: 未讀
+   * en-US: Unread
+   */
+  (key: "notifications.unread", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 条未读
+   * zh-TW: {{count}} 則未讀
+   * en-US: {{count}} unread
+   */
+  (key: "notifications.unreadCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部已读
+   * zh-TW: 全部已讀
+   * en-US: Mark all read
+   */
+  (key: "notifications.readAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 标为已读
+   * zh-TW: 標為已讀
+   * en-US: Mark as read
+   */
+  (key: "notifications.markRead", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新通知
+   * zh-TW: 重新整理通知
+   * en-US: Refresh notifications
+   */
+  (key: "notifications.refresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通知设置
+   * zh-TW: 通知設定
+   * en-US: Notification settings
+   */
+  (key: "notifications.settings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今天
+   * zh-TW: 今天
+   * en-US: Today
+   */
+  (key: "notifications.today", params?: TranslationParams): string;
+  /**
+   * zh-CN: 昨天
+   * zh-TW: 昨天
+   * en-US: Yesterday
+   */
+  (key: "notifications.yesterday", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更早
+   * zh-TW: 更早
+   * en-US: Earlier
+   */
+  (key: "notifications.earlier", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这里暂时很安静
+   * zh-TW: 這裡暫時很安靜
+   * en-US: All quiet for now
+   */
+  (key: "notifications.noItems", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新的消息和听歌报告会出现在这里。
+   * zh-TW: 新的訊息和聽歌報告會出現在這裡。
+   * en-US: New messages and listening reports will appear here.
+   */
+  (key: "notifications.noItemsHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未读通知已处理完
+   * zh-TW: 未讀通知已處理完
+   * en-US: You're all caught up
+   */
+  (key: "notifications.noUnread", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后接收消息和听歌报告。
+   * zh-TW: 登入後接收訊息與聽歌報告。
+   * en-US: Sign in to receive messages and listening reports.
+   */
+  (key: "notifications.loginHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 部分通知暂时无法同步，已有内容已保留。
+   * zh-TW: 部分通知暫時無法同步，已有內容已保留。
+   * en-US: Some notifications could not sync. Your saved items are still available.
+   */
+  (key: "notifications.error", params?: TranslationParams): string;
+  /**
+   * zh-CN: 操作未保存，请重试。
+   * zh-TW: 操作未儲存，請重試。
+   * en-US: Your changes could not be saved. Try again.
+   */
+  (key: "notifications.localError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 内容摘要
+   * zh-TW: 內容摘要
+   * en-US: Summary
+   */
+  (key: "notifications.summary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭通知
+   * zh-TW: 關閉通知
+   * en-US: Close notifications
+   */
+  (key: "notifications.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 展开摘要
+   * zh-TW: 展開摘要
+   * en-US: Expand summary
+   */
+  (key: "notifications.expand", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收起摘要
+   * zh-TW: 收起摘要
+   * en-US: Collapse summary
+   */
+  (key: "notifications.collapse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上次检查 {{time}}
+   * zh-TW: 上次檢查 {{time}}
+   * en-US: Last checked {{time}}
+   */
+  (key: "notifications.lastChecked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在检查新通知…
+   * zh-TW: 正在檢查新通知…
+   * en-US: Checking for notifications…
+   */
+  (key: "notifications.checking", params?: TranslationParams): string;
+  /**
+   * zh-CN: 免打扰中
+   * zh-TW: 勿擾中
+   * en-US: Do not disturb
+   */
+  (key: "notifications.quiet", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设置自动保存。免打扰期间仍保留收件箱内容。
+   * zh-TW: 設定自動儲存。勿擾期間仍保留收件匣內容。
+   * en-US: Changes save automatically. Do not disturb keeps items in your inbox.
+   */
+  (key: "notifications.preferencesHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 接收哪些内容
+   * zh-TW: 接收哪些內容
+   * en-US: What you receive
+   */
+  (key: "notifications.subscriptions", params?: TranslationParams): string;
+  /**
+   * zh-CN: 私信摘要
+   * zh-TW: 私訊摘要
+   * en-US: Private messages
+   */
+  (key: "notifications.private", params?: TranslationParams): string;
+  /**
+   * zh-CN: 评论与回复
+   * zh-TW: 評論與回覆
+   * en-US: Comments and replies
+   */
+  (key: "notifications.comments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 提到我
+   * zh-TW: 提到我
+   * en-US: Mentions
+   */
+  (key: "notifications.mentions", params?: TranslationParams): string;
+  /**
+   * zh-CN: 平台通知
+   * zh-TW: 平台通知
+   * en-US: Service notices
+   */
+  (key: "notifications.notices", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今日听歌回顾
+   * zh-TW: 今日聽歌回顧
+   * en-US: Daily listening recap
+   */
+  (key: "notifications.daily", params?: TranslationParams): string;
+  /**
+   * zh-CN: 听歌周报
+   * zh-TW: 聽歌週報
+   * en-US: Weekly listening report
+   */
+  (key: "notifications.weekly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 年度听歌报告
+   * zh-TW: 年度聽歌報告
+   * en-US: Yearly listening report
+   */
+  (key: "notifications.yearly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 应用更新
+   * zh-TW: 應用程式更新
+   * en-US: App updates
+   */
+  (key: "notifications.updates", params?: TranslationParams): string;
+  /**
+   * zh-CN: 提醒方式
+   * zh-TW: 提醒方式
+   * en-US: How you're notified
+   */
+  (key: "notifications.interruption", params?: TranslationParams): string;
+  /**
+   * zh-CN: 桌面通知
+   * zh-TW: 桌面通知
+   * en-US: Desktop notifications
+   */
+  (key: "notifications.desktop", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后台收到新内容时提醒；前台使用应用时不重复弹窗。
+   * zh-TW: 背景收到新內容時提醒；前景使用應用程式時不重複彈窗。
+   * en-US: Alert for new content in the background. Stay quiet while the app is focused.
+   */
+  (key: "notifications.desktopHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网页端在页面运行期间同步；系统提醒需要桌面端。
+   * zh-TW: 網頁版在頁面執行期間同步；系統提醒需要桌面版。
+   * en-US: Web sync runs while the page is open. System notifications require the desktop app.
+   */
+  (key: "notifications.webHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通知声音
+   * zh-TW: 通知音效
+   * en-US: Notification sound
+   */
+  (key: "notifications.sound", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在系统通知中显示正文
+   * zh-TW: 在系統通知中顯示內文
+   * en-US: Show message previews
+   */
+  (key: "notifications.preview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭后，私信和互动只显示通用提醒。
+   * zh-TW: 關閉後，私訊和互動只顯示一般提醒。
+   * en-US: When off, messages and interactions use a generic preview.
+   */
+  (key: "notifications.previewHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 立即开启免打扰
+   * zh-TW: 立即開啟勿擾
+   * en-US: Do not disturb now
+   */
+  (key: "notifications.dnd", params?: TranslationParams): string;
+  /**
+   * zh-CN: 定时免打扰
+   * zh-TW: 排程勿擾
+   * en-US: Quiet hours
+   */
+  (key: "notifications.quietHours", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按设备本地时间执行，可跨午夜；起止相同表示全天。
+   * zh-TW: 依裝置本地時間執行，可跨午夜；起止相同表示全天。
+   * en-US: Uses this device's time. Matching start and end means all day.
+   */
+  (key: "notifications.quietHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开始时间
+   * zh-TW: 開始時間
+   * en-US: Start
+   */
+  (key: "notifications.start", params?: TranslationParams): string;
+  /**
+   * zh-CN: 结束时间
+   * zh-TW: 結束時間
+   * en-US: End
+   */
+  (key: "notifications.end", params?: TranslationParams): string;
+  /**
+   * zh-CN: 报告检查
+   * zh-TW: 報告檢查
+   * en-US: Report schedule
+   */
+  (key: "notifications.schedule", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今日回顾检查时间
+   * zh-TW: 今日回顧檢查時間
+   * en-US: Daily recap check time
+   */
+  (key: "notifications.dailyTime", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时间按当前设备设置；收听日期按北京时间。到点只检查，有有效数据才提醒；今日回顾不代表全天结算。周报与年报在 10:00 后检查。
+   * zh-TW: 時間依目前裝置設定；收聽日期依北京時間。到點只檢查，有有效資料才提醒；今日回顧不代表全天結算。週報與年報於 10:00 後檢查。
+   * en-US: Times use this device's clock; listening dates use Beijing time. Alerts require valid data. Daily recaps are partial. Weekly and yearly checks start after 10:00.
+   */
+  (key: "notifications.scheduleHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送测试通知
+   * zh-TW: 傳送測試通知
+   * en-US: Send test notification
+   */
+  (key: "notifications.test", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已提交给系统，请查看桌面通知。
+   * zh-TW: 已提交給系統，請查看桌面通知。
+   * en-US: Submitted to the system. Check your desktop notifications.
+   */
+  (key: "notifications.testSent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未发送：请检查桌面通知开关和免打扰设置。
+   * zh-TW: 未傳送：請檢查桌面通知開關與勿擾設定。
+   * en-US: Not sent. Check desktop notifications and quiet hours.
+   */
+  (key: "notifications.testBlocked", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这些设置和通知记录保存在当前设备，登录账号之间分别保存。
+   * zh-TW: 這些設定與通知記錄儲存在目前裝置，登入帳號之間分別儲存。
+   * en-US: Settings and history are saved on this device, separately for each account.
+   */
+  (key: "notifications.scopeHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭分类只停止新提醒，仍可在相应页面正常使用功能。
+   * zh-TW: 關閉分類只停止新提醒，仍可在相應頁面正常使用功能。
+   * en-US: Turning off a category stops new alerts; the feature remains available in its own page.
+   */
+  (key: "notifications.subscriptionHint", params?: TranslationParams): string;
+  /**
    * zh-CN: 简体中文
    * zh-TW: 简体中文
    * en-US: Simplified Chinese

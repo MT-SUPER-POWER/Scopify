@@ -16,6 +16,7 @@ import { NetworkSettingsTab } from "./NetworkSettingsTab";
 import { SaveChangesButton, SaveConfirmModal, SettingsLoadingState } from "./SettingsUI";
 import { StorageSettingsTab } from "./StorageSettingsTab";
 import { AppearanceSettingsTab } from "./AppearanceSettingsTab";
+import { NotificationSettingsTab } from "./NotificationSettingsTab";
 
 const SettingsPage = () => {
   const { t } = useI18n();
@@ -104,9 +105,12 @@ const SettingsPage = () => {
           <TabsContent value="shortcuts">
             <ShortcutSettings />
           </TabsContent>
+          <TabsContent value="notifications">
+            <NotificationSettingsTab />
+          </TabsContent>
         </div>
       </Tabs>
-      {activeTab !== "appearance" && (
+      {activeTab !== "appearance" && activeTab !== "notifications" && (
         <SaveChangesButton
           visible={settings.hasChanges}
           onClick={() => settings.setIsModalOpen(true)}

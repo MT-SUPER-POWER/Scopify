@@ -8,6 +8,7 @@ export const SETTINGS_TABS: readonly { id: SettingsTabId; labelKey: TranslationK
   { id: "storage", labelKey: "settings.tab.storage" },
   { id: "desktop", labelKey: "settings.tab.desktop" },
   { id: "shortcuts", labelKey: "settings.tab.shortcuts" },
+  { id: "notifications", labelKey: "notifications.title" },
 ];
 
 export const SETTINGS_ACTION_BUTTON_CLASS_NAME =
