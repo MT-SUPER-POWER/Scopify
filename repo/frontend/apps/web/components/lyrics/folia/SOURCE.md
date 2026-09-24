@@ -64,6 +64,10 @@ the original full-copy baseline:
   align Tempera filter-pass resolutions and keep shared helpers/types in
   Scopify's lyrics-domain directories.
 
+- `a69dd947b9e0679685f0a243434060ec15c96781` (measurement portion) —
+  share bounded text-width caches across Sonnet and Tempera layout calls;
+  preserve local typography and keep measurement types in the lyrics domain.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

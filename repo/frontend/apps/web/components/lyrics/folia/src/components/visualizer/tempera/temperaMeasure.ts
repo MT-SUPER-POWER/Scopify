@@ -1,25 +1,47 @@
+import type {
+  TemperaMeasureContext,
+  TemperaWordUnit,
+} from "../../../../../../../types/lyrics/folia/temperaMeasure";
+export type {
+  TemperaMeasureContext,
+  TemperaWordGlyph,
+  TemperaWordUnit,
+} from "../../../../../../../types/lyrics/folia/temperaMeasure";
 import { layoutWithLines, prepareWithSegments } from "@chenglou/pretext";
 import type { TemperaSegment } from "./types";
 
-// src/components/visualizer/tempera/temperaMeasure.ts
-// pretext-backed text metrics for the Tempera collage. Words come from the Intl.Segmenter
-// split done at compile time; measuring the whole word and then normalising the per-grapheme
-// advances to that width keeps shaping/kerning intact while still allowing per-char placement.
-export interface TemperaMeasureContext {
-  cache: Map<string, number>;
-  fontFamily: string;
-  fontWeight: number;
-}
+/**
+ * Measurement is shared across every layout call, not scoped to one. A cache key names the
+ * whole spec (`weight size family|text`), so nothing about a scene, a shot or a song can make
+ * two entries with the same key disagree - and the same graphemes recur constantly: the fit
+ * loop re-measures a shot up to four times, a paragraph has several shots, and consecutive
+ * songs share most of their character set. A per-call cache threw all of that away and made a
+ * song change re-measure everything from scratch on the frame it landed.
+ */
+const MEASURE_CACHE_LIMIT = 20000;
+const measureCache = new Map<string, number>();
+
+const readMeasureCache = (key: string) => measureCache.get(key);
+
+const writeMeasureCache = (key: string, width: number) => {
+  // Plain FIFO eviction: entries are equally cheap to recompute, so the eviction policy only
+  // has to bound memory, not predict reuse.
+  if (measureCache.size >= MEASURE_CACHE_LIMIT) {
+    const oldest = measureCache.keys().next();
+    if (!oldest.done) measureCache.delete(oldest.value);
+  }
+  measureCache.set(key, width);
+};
 
 export const createTemperaMeasureContext = (
   fontFamily: string,
   fontWeight: number,
-): TemperaMeasureContext => ({ cache: new Map(), fontFamily, fontWeight });
+): TemperaMeasureContext => ({ cache: measureCache, fontFamily, fontWeight });
 
 const measureText = (ctx: TemperaMeasureContext, text: string, fontSize: number) => {
   const fontSpec = `${ctx.fontWeight} ${fontSize}px ${ctx.fontFamily}`;
   const key = `${fontSpec}|${text}`;
-  const cached = ctx.cache.get(key);
+  const cached = readMeasureCache(key);
   if (cached !== undefined) return cached;
   let measured: number;
   try {
@@ -29,7 +51,7 @@ const measureText = (ctx: TemperaMeasureContext, text: string, fontSize: number)
     measured = text.length * fontSize * 0.6;
   }
   const width = Math.max(fontSize * 0.08, measured);
-  ctx.cache.set(key, width);
+  writeMeasureCache(key, width);
   return width;
 };
 
@@ -38,32 +60,6 @@ export const measureTemperaGrapheme = (
   char: string,
   fontSize: number,
 ) => (char.trim().length === 0 ? fontSize * 0.3 : measureText(ctx, char, fontSize));
-
-export interface TemperaWordGlyph {
-  char: string;
-  startTime: number;
-  endTime: number;
-  /** Advance from the word's left edge to this glyph's left edge. */
-  offset: number;
-  width: number;
-}
-
-export interface TemperaWordUnit {
-  lineIndex: number;
-  segmentIndex: number;
-  text: string;
-  /** Source offsets, used to tell a real space from a mere segmentation boundary. */
-  startOffset: number;
-  endOffset: number;
-  /** Horizontal space to insert before this word, in pixels. */
-  leadingGap: number;
-  /** Multiplier on the shot's base font size; the hierarchy accent lives here. */
-  scale: number;
-  width: number;
-  glyphs: TemperaWordGlyph[];
-  startTime: number;
-  endTime: number;
-}
 
 // Measures one word and lays its graphemes out inside the shaped width, so the sum of the
 // per-glyph advances always equals what pretext reports for the whole word.

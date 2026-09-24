@@ -1,8 +1,12 @@
+import type {
+  SonnetTypographyPlacement,
+  SonnetTypographyLayoutOptions,
+} from "../../../../../../../types/lyrics/folia/sonnetTypographyLayout";
+export type { SonnetTypographyPlacement } from "../../../../../../../types/lyrics/folia/sonnetTypographyLayout";
 import { layoutWithLines, prepareWithSegments } from "@chenglou/pretext";
-import type { SonnetParagraphKind, SonnetSemanticSegment, SonnetShotKind } from "./types";
+import type { SonnetSemanticSegment } from "./types";
 import {
   findSonnetHeroSegmentIndex,
-  findSonnetSemiHeroSegmentIndex,
   findSonnetSemiHeroSegmentIndices,
   getSonnetVisibleSegmentLength,
   resolveSonnetRoleFontWeight,
@@ -32,36 +36,6 @@ export {
 } from "./sonnetTypographyRoles";
 export type { SonnetSegmentRole } from "./sonnetTypographyRoles";
 
-// src/components/visualizer/sonnet/sonnetTypographyLayout.ts
-// PV-style kinetic typography layouts based on exact box measurements
-export interface SonnetTypographyPlacement {
-  segmentIndex: number;
-  displayText: string;
-  role: SonnetSegmentRole;
-  fontScale: number;
-  measuredWidth: number;
-  measuredHeight: number;
-  x: number;
-  y: number;
-  rotation: number;
-  enterX: number;
-  enterY: number;
-  vertical: boolean;
-  layoutDirection: "horizontal" | "vertical";
-  timingPhase: number;
-}
-
-interface SonnetTypographyLayoutOptions {
-  lines: SonnetSemanticSegment[][];
-  shotKind: SonnetShotKind;
-  paragraphKind: SonnetParagraphKind;
-  width: number;
-  height: number;
-  baseFontSize: number;
-  fontFamily: string;
-  fontWeight?: number | null;
-}
-
 export const isSonnetLayoutSegment = (segment: SonnetSemanticSegment) =>
   segment.text.trim().length > 0;
 
@@ -78,17 +52,38 @@ const verticalText = (segment: SonnetSemanticSegment) =>
     : Array.from(segment.text)
   ).join("\n");
 
+/**
+ * Measurement is memoised across every caller. `fontSpec` names the weight, size and family, so
+ * a key is fully self-describing and two entries with the same key can never disagree. Without
+ * it every scene re-measured the same graphemes from scratch through pretext - per character,
+ * per shot, per paragraph - which is the bulk of what a scene build costs.
+ */
+const MEASURE_CACHE_LIMIT = 20000;
+const measureCache = new Map<string, number>();
+
 export const measureText = (text: string, fontSpec: string, fontSize: number) => {
+  const key = `${fontSpec}|${fontSize}|${text}`;
+  const cached = measureCache.get(key);
+  if (cached !== undefined) return cached;
+  let width: number;
   try {
     const layout = layoutWithLines(
       prepareWithSegments(text || " ", fontSpec),
       99999,
       fontSize * 1.2,
     );
-    return layout.lines[0]?.width ?? text.length * fontSize * 0.6;
+    width = layout.lines[0]?.width ?? text.length * fontSize * 0.6;
   } catch {
-    return text.length * fontSize * 0.6;
+    width = text.length * fontSize * 0.6;
   }
+  // Plain FIFO eviction: entries are equally cheap to recompute, so the policy only has to
+  // bound memory, not predict reuse.
+  if (measureCache.size >= MEASURE_CACHE_LIMIT) {
+    const oldest = measureCache.keys().next();
+    if (!oldest.done) measureCache.delete(oldest.value);
+  }
+  measureCache.set(key, width);
+  return width;
 };
 
 export const resolveSonnetTypographyLayout = ({
