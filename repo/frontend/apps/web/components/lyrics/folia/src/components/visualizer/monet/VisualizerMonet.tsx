@@ -28,9 +28,8 @@ import {
 
 export { buildMonetDisplayTokens, resolveMonetLyricContext } from "./monetLyricsModel";
 
-type VisualizerMonetProps = VisualizerSharedProps;
 
-const VisualizerMonet: React.FC<VisualizerMonetProps> = (props) => {
+const VisualizerMonet: React.FC<VisualizerSharedProps> = (props) => {
   const {
     currentTime,
     currentLineIndex,
@@ -280,7 +279,12 @@ const VisualizerMonet: React.FC<VisualizerMonetProps> = (props) => {
 
           {showText ? (
             <motion.div
-              key={`portrait-${introKey}`}
+              // Deliberately not keyed on `introKey` like the rest of the poster: a
+              // remount throws the cover away and slides an empty frame back in,
+              // which is the flash at a track change. The frame stays put and
+              // MonetPortraitImage hands the cover over inside it instead, so the
+              // handover is continuous whether the change came from a skip or from
+              // the settle of an AutoMix/Crossfade blend.
               initial={{ opacity: 0, x: 50, scale: 0.95, rotate: 1 }}
               animate={{ opacity: 1, x: 0, scale: 1, rotate: 0 }}
               transition={{ duration: 1.6, ease: [0.25, 1, 0.5, 1], delay: 0.25 }}

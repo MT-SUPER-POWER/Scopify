@@ -48,6 +48,10 @@ the original full-copy baseline:
   screen/normal blend modes for each glyph. Touched runtime/view types live in
   Scopify's `types/lyrics/folia`, with compatibility type exports at vendor paths.
 
+- `8653101223a785cc05b90d772817615e5d51c323` — retain Monet's portrait frame and
+  decode new covers before bounded layered crossfades. Host hook, helper and types
+  live under Scopify's lyrics domain directories.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
