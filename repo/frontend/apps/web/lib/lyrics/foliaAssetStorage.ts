@@ -1,3 +1,4 @@
+import { FOLIA_ASSETS_CHANGED_EVENT } from "@/constants/foliaAssets";
 import { createStore, del, get, set } from "idb-keyval";
 
 import type {
@@ -80,17 +81,19 @@ export function buildStoredFoliaImage<
 }
 
 export const saveCappellaAvatarPack = (images: StoredCappellaAvatarImage[]) =>
-  set(ASSET_KEYS.avatar, images, assetStore);
+  notifyAssetChange(set(ASSET_KEYS.avatar, images, assetStore));
 export const saveCappellaEmojiPack = (images: StoredCappellaEmojiImage[]) =>
-  set(ASSET_KEYS.emoji, images, assetStore);
+  notifyAssetChange(set(ASSET_KEYS.emoji, images, assetStore));
 export const saveMonetBackgroundImage = (image: StoredMonetBackgroundImage) =>
-  set(ASSET_KEYS.background, image, assetStore);
+  notifyAssetChange(set(ASSET_KEYS.background, image, assetStore));
 export const saveMonetPortraitImage = (image: StoredMonetPortraitImage) =>
-  set(ASSET_KEYS.portrait, image, assetStore);
-export const clearCappellaAvatarPack = () => del(ASSET_KEYS.avatar, assetStore);
-export const clearCappellaEmojiPack = () => del(ASSET_KEYS.emoji, assetStore);
-export const clearMonetBackgroundImage = () => del(ASSET_KEYS.background, assetStore);
-export const clearMonetPortraitImage = () => del(ASSET_KEYS.portrait, assetStore);
+  notifyAssetChange(set(ASSET_KEYS.portrait, image, assetStore));
+export const clearCappellaAvatarPack = () => notifyAssetChange(del(ASSET_KEYS.avatar, assetStore));
+export const clearCappellaEmojiPack = () => notifyAssetChange(del(ASSET_KEYS.emoji, assetStore));
+export const clearMonetBackgroundImage = () =>
+  notifyAssetChange(del(ASSET_KEYS.background, assetStore));
+export const clearMonetPortraitImage = () =>
+  notifyAssetChange(del(ASSET_KEYS.portrait, assetStore));
 
 const temperaAssetKey = (id: string) => `tempera-layer-image:${id}`;
 
@@ -143,7 +146,7 @@ export async function uploadAndRegisterFoliaFont(file: File): Promise<StoredCust
     name: file.name,
   };
   const metadata = await registerFoliaFont(storedFont);
-  await set(ASSET_KEYS.font, storedFont, assetStore);
+  await notifyAssetChange(set(ASSET_KEYS.font, storedFont, assetStore));
   return metadata;
 }
 
@@ -202,4 +205,9 @@ function isStoredFont(value: unknown): value is StoredUploadedFoliaFont {
   if (!isStoredImage(value)) return false;
   const font = value as unknown as Partial<StoredUploadedFoliaFont>;
   return typeof font.family === "string" && typeof font.label === "string";
+}
+
+async function notifyAssetChange(operation: Promise<void>) {
+  await operation;
+  window.dispatchEvent(new Event(FOLIA_ASSETS_CHANGED_EVENT));
 }

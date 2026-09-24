@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronRight } from "lucide-react";
 import { CommandWorkspaceIcon } from "@/components/commandWorkspace/CommandWorkspaceIcon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
@@ -31,6 +32,9 @@ export function CommandWorkspaceRootList({
               <span className="block truncate text-sm font-medium text-white">{item.label}</span>
               <span className="block truncate text-xs text-zinc-500">{item.summary}</span>
             </span>
+            {item.foliaEntry?.action.kind === "group" ? (
+              <ChevronRight className="size-4 text-zinc-500" />
+            ) : null}
             {item.binding ? (
               <kbd className="rounded-md border border-white/15 bg-white/8 px-2 py-1 font-mono text-xs leading-none text-zinc-200 shadow-sm">
                 {getShortcutBindingLabel(item.binding)}

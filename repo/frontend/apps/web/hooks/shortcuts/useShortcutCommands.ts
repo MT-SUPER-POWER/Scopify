@@ -3,12 +3,7 @@
 import { useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
-import {
-  FOLIA_THEME_LIBRARY_PENDING_KEY,
-  FOLIA_THEME_LIBRARY_TOGGLE_EVENT,
-  FOLIA_VISUAL_SETTINGS_OPEN_EVENT,
-  FOLIA_VISUAL_SETTINGS_PENDING_KEY,
-} from "@/constants/desktopPlaybackController";
+import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import {
   usePlaybackPosition as usePlaybackPositionMs,
   usePlaybackProjection,
@@ -61,18 +56,6 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           durationMs > 0 ? Math.min(durationMs, unclampedPositionMs) : unclampedPositionMs;
         void commands.seek(targetPositionMs);
       };
-      const toggleFoliaSurface = (pendingKey: string, eventName: string) => {
-        try {
-          window.sessionStorage.setItem(pendingKey, "1");
-        } catch {
-          // The event below still handles an already-mounted stage when storage is unavailable.
-        }
-        ui.setIsLyricsOpen(true);
-        window.requestAnimationFrame(() => {
-          window.dispatchEvent(new Event(eventName));
-        });
-      };
-
       switch (commandId) {
         case "toggle-desktop-subtitle":
           if (runtime.isDesktop) void useDesktopSubtitleControl.getState().toggle();
@@ -128,10 +111,10 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           ui.toggleLyrics();
           return;
         case "open-folia-settings":
-          toggleFoliaSurface(FOLIA_VISUAL_SETTINGS_PENDING_KEY, FOLIA_VISUAL_SETTINGS_OPEN_EVENT);
+          useFoliaSettingsStore.getState().toggleVisualSettings();
           return;
         case "open-folia-theme-library":
-          toggleFoliaSurface(FOLIA_THEME_LIBRARY_PENDING_KEY, FOLIA_THEME_LIBRARY_TOGGLE_EVENT);
+          useFoliaSettingsStore.getState().toggleThemeLibrary();
           return;
         case "toggle-sidebar":
           ui.toggleSidebar();

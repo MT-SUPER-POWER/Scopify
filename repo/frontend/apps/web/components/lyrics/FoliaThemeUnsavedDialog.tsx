@@ -23,7 +23,7 @@ export function FoliaThemeUnsavedDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={(nextOpen) => !nextOpen && onCancel()}>
-      <AlertDialogContent>
+      <AlertDialogContent className="z-190" overlayClassName="z-190">
         <AlertDialogHeader>
           <AlertDialogTitle>{t("folia.options.themeUnsavedTitle")}</AlertDialogTitle>
           <AlertDialogDescription>

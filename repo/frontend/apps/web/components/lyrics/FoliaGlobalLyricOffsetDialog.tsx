@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { createPortal } from "react-dom";
 
 import { FoliaGlobalLyricOffsetRuler } from "@/components/lyrics/FoliaGlobalLyricOffsetRuler";
@@ -45,6 +46,8 @@ export function FoliaGlobalLyricOffsetDialog({
     return bridge.lyricCurrentTime.on("change", update);
   }, [applied, bridge.lines, bridge.lyricCurrentTime, draft, isOpen]);
 
+  const dialogRef = useFoliaModalFocus(isOpen, onClose);
+
   if (typeof document === "undefined") return null;
   const current = bridge.lines[previewIndex];
   const next = bridge.lines[previewIndex + 1];
@@ -62,6 +65,12 @@ export function FoliaGlobalLyricOffsetDialog({
           }}
         >
           <motion.section
+            ref={dialogRef}
+            data-folia-modal-layer="220"
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("folia.offset.title")}
             className="w-full max-w-2xl overflow-hidden rounded-[32px] border shadow-2xl"
             initial={{ y: 24, opacity: 0, scale: 0.985 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}

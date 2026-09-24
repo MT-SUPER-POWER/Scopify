@@ -6,25 +6,29 @@ import { useI18n } from "@/store/module/i18n";
 
 import { useFoliaFontPicker } from "@/hooks/player/useFoliaFontPicker";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { FoliaStageAssets } from "@/types/foliaAssets";
-
-interface FoliaFontPickerProps {
-  assets: FoliaStageAssets;
-  onClose: () => void;
-  target: "lyrics" | "subtitle";
-}
+import type { FoliaFontPickerProps } from "@/types/components/lyrics";
+import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
+import { useLyricStageStore } from "@/store/module/lyrics";
 
 export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProps) {
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
+  const warningOpen = useLyricStageStore((state) => state.sonnetPerformanceWarningOpen);
+  const dialogRef = useFoliaModalFocus(!warningOpen, onClose);
   const model = useFoliaFontPicker(target, assets, onClose);
 
   return (
     <div
-      className="fixed inset-0 z-90 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-170 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <section
+        ref={dialogRef}
+        data-folia-modal-layer="170"
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-label={String(t("folia.options.customFont"))}
         className="flex max-h-[min(620px,calc(100dvh-2rem))] w-[min(520px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/95 p-5 shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >

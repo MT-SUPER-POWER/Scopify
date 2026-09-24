@@ -6,10 +6,10 @@ import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/pres
 import FloatingPlayerControls from "@/components/lyrics/folia/src/components/FloatingPlayerControls";
 import { PlayerState } from "@/components/lyrics/folia/src/types";
 import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
-import {
-  FOLIA_THEME_LIBRARY_OPEN_EVENT,
-  FOLIA_THEME_LIBRARY_PENDING_KEY,
-} from "@/constants/desktopPlaybackController";
+import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
+import { useLyricStageStore } from "@/store/module/lyrics";
+import { useUiStore } from "@/store/module/ui";
+import type { LyricStageProps } from "@/types/components/lyrics";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
@@ -25,15 +25,16 @@ import { FoliaStageSettings } from "./FoliaStageSettings";
 const keepAutoHideEnabled = () => undefined;
 
 /** Scopify host for Folia's pinned playback-stage presentation runtime. */
-export function LyricStage({ onClose }: { onClose: () => void }) {
+export function LyricStage({ onClose }: LyricStageProps) {
   const [isBorderVisible, setIsBorderVisible] = useState(false);
   const [isPlayerChromeHidden, setIsPlayerChromeHidden] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
-  const [themeLibraryRequestId, setThemeLibraryRequestId] = useState(0);
+  const isSettingsModalOpen = useFoliaSettingsStore(
+    (state) => state.visualSection !== null || state.themeLibraryOpen,
+  );
   const [isTransparent, setIsTransparent] = useState(false);
   const isWindowVisible = useRuntimeWindowVisibility();
-  const isMainSurfaceActive = !isVisualSettingsOpen && isWindowVisible;
+  const isMainSurfaceActive = !isSettingsModalOpen && isWindowVisible;
   const appearance = useFoliaPresentationAppearance();
   const bridge = useFoliaPlaybackBridge(isMainSurfaceActive);
   const playback = usePlaybackProjection();
@@ -42,7 +43,7 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
   usePlaybackWakeLock(bridge.isPlaying && isWindowVisible);
-  const { assets, isDaylight, settings, theme } = appearance;
+  const { isDaylight, settings, theme } = appearance;
   const stageStyle = useMemo(
     () =>
       buildAppStyle({
@@ -65,30 +66,15 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
     });
 
   useEffect(() => {
-    const openThemeLibrary = () => {
-      try {
-        window.sessionStorage.removeItem(FOLIA_THEME_LIBRARY_PENDING_KEY);
-      } catch {
-        // Opening the theme library does not depend on session storage cleanup.
-      }
-      setIsSettingsOpen(true);
-      setThemeLibraryRequestId((requestId) => requestId + 1);
-    };
-
-    try {
-      if (window.sessionStorage.getItem(FOLIA_THEME_LIBRARY_PENDING_KEY) === "1") {
-        openThemeLibrary();
-      }
-    } catch {
-      // The live event below remains available when session storage is blocked.
-    }
-
-    window.addEventListener(FOLIA_THEME_LIBRARY_OPEN_EVENT, openThemeLibrary);
-    return () => window.removeEventListener(FOLIA_THEME_LIBRARY_OPEN_EVENT, openThemeLibrary);
-  }, []);
-
-  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      const modals = useFoliaSettingsStore.getState();
+      if (
+        modals.visualSection !== null ||
+        modals.themeLibraryOpen ||
+        useLyricStageStore.getState().sonnetPerformanceWarningOpen ||
+        useUiStore.getState().isSearchOpen
+      )
+        return;
       if (event.key === "Escape" || event.code === "Escape") {
         event.preventDefault();
         event.stopPropagation();
@@ -194,13 +180,10 @@ export function LyricStage({ onClose }: { onClose: () => void }) {
 
       {isWindowVisible ? (
         <FoliaStageSettings
-          assets={assets}
           isChromeHidden={isPlayerChromeHidden}
           isOpen={isSettingsOpen}
           onOpenChange={setIsSettingsOpen}
-          onVisualSettingsOpenChange={setIsVisualSettingsOpen}
           theme={theme}
-          themeLibraryRequestId={themeLibraryRequestId}
         />
       ) : null}
     </section>

@@ -1,20 +1,10 @@
+import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
+import type { FoliaThemedDialogProps } from "@/types/components/lyrics";
 import React, { useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 
-interface ThemedDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  isDaylight?: boolean;
-  title: string;
-  description?: string;
-  headerActions?: React.ReactNode;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
-  maxWidthClass?: string;
-}
-
-const ThemedDialog: React.FC<ThemedDialogProps> = ({
+const ThemedDialog: React.FC<FoliaThemedDialogProps> = ({
   isOpen,
   onClose,
   isDaylight = false,
@@ -25,6 +15,7 @@ const ThemedDialog: React.FC<ThemedDialogProps> = ({
   footer,
   maxWidthClass = "max-w-md",
 }) => {
+  const dialogRef = useFoliaModalFocus<HTMLDivElement>(isOpen, onClose);
   const bgClass = isDaylight ? "bg-white/90 border-white/30" : "bg-zinc-900/95 border-white/10";
   const textPrimary = isDaylight ? "text-zinc-900" : "text-white";
   const textSecondary = isDaylight ? "text-zinc-500" : "text-zinc-400";
@@ -54,6 +45,12 @@ const ThemedDialog: React.FC<ThemedDialogProps> = ({
           onClick={handleBackdropClick}
         >
           <motion.div
+            ref={dialogRef}
+            data-folia-modal-layer="200"
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
             initial={{ scale: 0.94, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.94, opacity: 0 }}

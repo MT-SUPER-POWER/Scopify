@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
 
+import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { useI18n } from "@/store/module/i18n";
 import type { FoliaSonnetPerformanceWarningDialogProps } from "@/types/components/lyrics";
 
@@ -15,12 +16,13 @@ export function FoliaSonnetPerformanceWarningDialog({
   onDontShowAgainChange,
 }: FoliaSonnetPerformanceWarningDialogProps) {
   const { t } = useI18n();
+  const dialogRef = useFoliaModalFocus(isOpen, onClose);
 
   return (
     <AnimatePresence>
       {isOpen ? (
         <motion.div
-          className="fixed inset-0 z-100 flex items-center justify-center p-4"
+          className="fixed inset-0 z-180 flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -32,6 +34,9 @@ export function FoliaSonnetPerformanceWarningDialog({
             onClick={onClose}
           />
           <motion.section
+            ref={dialogRef}
+            data-folia-modal-layer="180"
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby="folia-sonnet-warning-title"

@@ -23,6 +23,7 @@ import { useSearchStore } from "@/store/module/search";
 // status store
 import { useUiStore } from "@/store/module/ui";
 import Header from "@/components/Header";
+import { FoliaSettingsMount } from "@/components/lyrics/FoliaSettingsMount";
 import { LyricStageMount } from "@/components/lyrics/LyricStageMount";
 import { PlayerBar } from "@/components/PlayBar";
 import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
@@ -159,7 +160,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const content = (
     <div
       className={cn(
-        "flex-1 flex-col bg-surface font-sans text-content",
+        "bg-surface text-content flex-1 flex-col font-sans",
         "gap-2 overflow-hidden p-2",
         "flex h-screen",
       )}
@@ -168,6 +169,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       <CommandWorkspaceModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <KeyboardShortcutHelp />
       <LyricStageMount />
+      <FoliaSettingsMount />
 
       {/* 左右结构 */}
       <main className="relative min-h-0 w-full flex-1">
@@ -187,7 +189,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               collapsible
               collapsedSize={80}
               onResize={() => setIsCollapsed(sidebarPanelRef.current?.isCollapsed() ?? false)}
-              className={cn("overflow-hidden rounded-lg bg-surface-sunken")}
+              className={cn("bg-surface-sunken overflow-hidden rounded-lg")}
             >
               <Sidebar />
             </ResizablePanel>
@@ -203,7 +205,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             />
 
             <ResizablePanel>
-              <div className="group/main relative size-full overflow-hidden rounded-lg bg-surface-raised">
+              <div className="group/main bg-surface-raised relative size-full overflow-hidden rounded-lg">
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                   <div data-track-drag-chrome className="pointer-events-auto">
                     <Header />
@@ -216,10 +218,10 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           </ResizablePanelGroup>
         ) : (
           <div className="flex size-full gap-2">
-            <div className="w-[20%] overflow-hidden rounded-lg bg-surface-sunken">
+            <div className="bg-surface-sunken w-[20%] overflow-hidden rounded-lg">
               <Sidebar />
             </div>
-            <div className="group/main relative flex-1 overflow-hidden rounded-lg bg-surface-raised">
+            <div className="group/main bg-surface-raised relative flex-1 overflow-hidden rounded-lg">
               <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                 <div data-track-drag-chrome className="pointer-events-auto">
                   <Header />

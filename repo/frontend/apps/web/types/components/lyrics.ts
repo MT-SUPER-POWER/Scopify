@@ -1,11 +1,12 @@
 import type { Theme } from "@/components/lyrics/folia/src/types";
-import type { ChangeEvent, DragEvent, RefObject } from "react";
+import type { ChangeEvent, DragEvent, ReactNode, RefObject } from "react";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
 import type { LyricDisplayLine, LyricMatchCandidate } from "@/types/lyrics";
 import type { SongDetail } from "@/types/api/music";
 import type {
   FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,
+  FoliaPanelTab,
   FoliaStageTheme,
   FoliaThemeColors,
   FoliaThemeVariant,
@@ -121,14 +122,21 @@ export interface FoliaLyricMatchPreviewProps {
   theme: Theme;
 }
 
-export interface FoliaStageSettingsProps {
+export interface LyricStageProps {
+  onClose: () => void;
+}
+
+export interface FoliaFontPickerProps {
   assets: FoliaStageAssets;
+  onClose: () => void;
+  target: "lyrics" | "subtitle";
+}
+
+export interface FoliaStageSettingsProps {
   isChromeHidden: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onVisualSettingsOpenChange: (open: boolean) => void;
   theme: Theme;
-  themeLibraryRequestId: number;
 }
 
 export interface FoliaSonnetPerformanceWarningDialogProps {
@@ -339,4 +347,24 @@ export interface FoliaQuickEffectPickerMenuProps<
   menuPosition: FoliaQuickEffectPickerPosition;
   menuRef: RefObject<HTMLDivElement | null>;
   onClose: () => void;
+}
+
+export interface FoliaThemedDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  isDaylight?: boolean;
+  title: string;
+  description?: string;
+  headerActions?: ReactNode;
+  children: ReactNode;
+  footer?: ReactNode;
+  maxWidthClass?: string;
+}
+
+export interface FoliaStagePanelHeaderProps {
+  activeTab: FoliaPanelTab;
+  isPersonalFm: boolean;
+  onClose(): void;
+  onTabChange(tab: FoliaPanelTab): void;
+  theme: Theme;
 }

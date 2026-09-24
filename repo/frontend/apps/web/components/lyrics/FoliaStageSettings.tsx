@@ -1,190 +1,41 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Disc, ListMusic, RadioTower, Settings2, SlidersHorizontal, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Settings2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 
+import { FoliaStagePanelHeader } from "@/components/lyrics/FoliaStagePanelHeader";
 import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
 import { FoliaAudioEqualizerDialog } from "@/components/lyrics/FoliaAudioEqualizerDialog";
 import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
 import { FoliaPanelSettings } from "@/components/lyrics/FoliaPanelSettings";
 import { FoliaPersonalFmControlsTab } from "@/components/lyrics/FoliaPersonalFmControlsTab";
-import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
 import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
-import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
-import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/FoliaSonnetPerformanceWarningDialog";
-import { FoliaVisualSettingsDialog } from "@/components/lyrics/FoliaVisualSettingsDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  FOLIA_THEME_LIBRARY_PENDING_KEY,
-  FOLIA_THEME_LIBRARY_TOGGLE_EVENT,
-  FOLIA_VISUAL_SETTINGS_OPEN_EVENT,
-  FOLIA_VISUAL_SETTINGS_PENDING_KEY,
-} from "@/constants/desktopPlaybackController";
+import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { usePlayerStore } from "@/store/module/player";
-import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaStageSettingsProps } from "@/types/components/lyrics";
-import type { FoliaPanelTab, FoliaStageEditSection } from "@/types/foliaStage";
+import type { FoliaPanelTab } from "@/types/foliaStage";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 
 export function FoliaStageSettings({
-  assets,
   isChromeHidden,
   isOpen,
   onOpenChange,
-  onVisualSettingsOpenChange,
   theme,
-  themeLibraryRequestId,
 }: FoliaStageSettingsProps) {
   const { t } = useI18n();
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));
-  const sonnetPerformanceWarningOpen = useLyricStageStore(
-    (state) => state.sonnetPerformanceWarningOpen,
-  );
-  const sonnetPerformanceWarningDontShowAgain = useLyricStageStore(
-    (state) => state.sonnetPerformanceWarningDontShowAgain,
-  );
-  const cancelSonnetPerformanceWarning = useLyricStageStore(
-    (state) => state.cancelSonnetPerformanceWarning,
-  );
-  const confirmSonnetPerformanceWarning = useLyricStageStore(
-    (state) => state.confirmSonnetPerformanceWarning,
-  );
-  const setSonnetPerformanceWarningDontShowAgain = useLyricStageStore(
-    (state) => state.setSonnetPerformanceWarningDontShowAgain,
-  );
+  const openVisualSettings = useFoliaSettingsStore((state) => state.openVisualSettings);
+  const openThemeLibrary = useFoliaSettingsStore((state) => state.openThemeLibrary);
   const isDaylight = theme.name === "snow";
-  const [activeSection, setActiveSection] = useState<FoliaStageEditSection>("common");
   const [activeTab, setActiveTab] = useState<FoliaPanelTab>("controls");
-  const [fontPickerTarget, setFontPickerTarget] = useState<"lyrics" | "subtitle" | null>(null);
   const [isLyricMatchOpen, setIsLyricMatchOpen] = useState(false);
   const [isEqualizerOpen, setIsEqualizerOpen] = useState(false);
-  const [isVisualSettingsOpen, setIsVisualSettingsOpen] = useState(false);
-  const [isThemeLibraryOpen, setIsThemeLibraryOpen] = useState(false);
-  const isVisualSettingsOpenRef = useRef(false);
-  const isThemeLibraryOpenRef = useRef(false);
-
-  const setVisualSettingsOpen = useCallback(
-    (open: boolean) => {
-      isVisualSettingsOpenRef.current = open;
-      setIsVisualSettingsOpen(open);
-      onVisualSettingsOpenChange(open);
-    },
-    [onVisualSettingsOpenChange],
-  );
-
-  const setThemeLibraryOpen = useCallback((open: boolean) => {
-    isThemeLibraryOpenRef.current = open;
-    setIsThemeLibraryOpen(open);
-  }, []);
-
-  const openVisualSettings = (section: FoliaStageEditSection) => {
-    setActiveSection(section);
-    setVisualSettingsOpen(true);
-  };
-
-  useEffect(() => {
-    if (themeLibraryRequestId <= 0) return;
-    setActiveTab("settings");
-    setThemeLibraryOpen(true);
-  }, [setThemeLibraryOpen, themeLibraryRequestId]);
-
-  useEffect(() => {
-    const clearThemeLibraryShortcutPendingState = () => {
-      try {
-        window.sessionStorage.removeItem(FOLIA_THEME_LIBRARY_PENDING_KEY);
-      } catch {
-        // Opening the theme library does not depend on session storage cleanup.
-      }
-    };
-
-    const openThemeLibraryFromShortcut = () => {
-      clearThemeLibraryShortcutPendingState();
-      setActiveTab("settings");
-      setThemeLibraryOpen(true);
-    };
-
-    const toggleThemeLibraryFromShortcut = () => {
-      clearThemeLibraryShortcutPendingState();
-      if (isThemeLibraryOpenRef.current) {
-        setThemeLibraryOpen(false);
-        return;
-      }
-      openThemeLibraryFromShortcut();
-    };
-
-    try {
-      if (window.sessionStorage.getItem(FOLIA_THEME_LIBRARY_PENDING_KEY) === "1") {
-        openThemeLibraryFromShortcut();
-      }
-    } catch {
-      // The live event below remains available when session storage is blocked.
-    }
-
-    window.addEventListener(FOLIA_THEME_LIBRARY_TOGGLE_EVENT, toggleThemeLibraryFromShortcut);
-    return () =>
-      window.removeEventListener(FOLIA_THEME_LIBRARY_TOGGLE_EVENT, toggleThemeLibraryFromShortcut);
-  }, [setThemeLibraryOpen]);
-
-  useEffect(() => {
-    const clearVisualSettingsShortcutPendingState = () => {
-      try {
-        window.sessionStorage.removeItem(FOLIA_VISUAL_SETTINGS_PENDING_KEY);
-      } catch {
-        // Opening the visual settings does not depend on session storage cleanup.
-      }
-    };
-
-    const openVisualSettingsFromShortcut = () => {
-      clearVisualSettingsShortcutPendingState();
-      setActiveSection("common");
-      setVisualSettingsOpen(true);
-    };
-
-    const toggleVisualSettingsFromShortcut = () => {
-      clearVisualSettingsShortcutPendingState();
-      if (isVisualSettingsOpenRef.current) {
-        setVisualSettingsOpen(false);
-        return;
-      }
-      openVisualSettingsFromShortcut();
-    };
-
-    try {
-      if (window.sessionStorage.getItem(FOLIA_VISUAL_SETTINGS_PENDING_KEY) === "1") {
-        openVisualSettingsFromShortcut();
-      }
-    } catch {
-      // The live event below remains available when session storage is blocked.
-    }
-
-    window.addEventListener(FOLIA_VISUAL_SETTINGS_OPEN_EVENT, toggleVisualSettingsFromShortcut);
-    return () =>
-      window.removeEventListener(
-        FOLIA_VISUAL_SETTINGS_OPEN_EVENT,
-        toggleVisualSettingsFromShortcut,
-      );
-  }, [setVisualSettingsOpen]);
-
   useEffect(() => {
     if (!isPersonalFm && activeTab === "fm") setActiveTab("queue");
   }, [activeTab, isPersonalFm]);
-
-  useEffect(
-    () => () => {
-      onVisualSettingsOpenChange(false);
-    },
-    [onVisualSettingsOpenChange],
-  );
-
-  const panelTabs = [
-    ["controls", SlidersHorizontal, "folia.panel.controls"],
-    ["queue", ListMusic, "folia.queue.title"],
-    ...(isPersonalFm ? ([["fm", RadioTower, "personalFm.title"]] as const) : []),
-    ["settings", Settings2, "folia.options.visualSettings"],
-  ] as const;
 
   return (
     <>
@@ -208,56 +59,13 @@ export function FoliaStageSettings({
                 isDaylight ? "bg-white/60 text-zinc-900" : "bg-black/55 text-white"
               }`}
             >
-              {/* 封面 — 固定，不滚动 */}
-              <div className="shrink-0 p-5 pb-3">
-                <div
-                  className={`relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl shadow-lg ${
-                    isDaylight ? "bg-black/3" : "bg-white/5"
-                  }`}
-                >
-                  {currentSong?.al.picUrl ? (
-                    <img src={currentSong.al.picUrl} alt="" className="size-full object-cover" />
-                  ) : (
-                    <Disc size={40} className={isDaylight ? "text-black/20" : "text-white/20"} />
-                  )}
-                  <button
-                    type="button"
-                    title={String(t("folia.ui.close"))}
-                    onClick={() => onOpenChange(false)}
-                    className={`absolute top-3 right-3 flex size-11 items-center justify-center rounded-full border backdrop-blur-md ${
-                      isDaylight
-                        ? "border-black/10 bg-white/70 text-zinc-700 hover:bg-white"
-                        : "border-white/15 bg-black/25 text-white/90 hover:bg-black/40"
-                    }`}
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Tab 切换栏 — 固定，不滚动 */}
-              <div className="shrink-0 px-5 pb-3">
-                <div className={`flex rounded-xl p-1 ${isDaylight ? "bg-black/5" : "bg-black/20"}`}>
-                  {panelTabs.map(([tab, Icon, label]) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      title={String(t(label))}
-                      onClick={() => setActiveTab(tab)}
-                      className={`flex flex-1 items-center justify-center rounded-lg py-2 transition-all ${
-                        activeTab === tab
-                          ? isDaylight
-                            ? "bg-black/10 shadow-sm"
-                            : "bg-white/20 shadow-sm"
-                          : "opacity-40 hover:opacity-100"
-                      }`}
-                      style={{ color: theme.primaryColor }}
-                    >
-                      <Icon size={16} />
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <FoliaStagePanelHeader
+                activeTab={activeTab}
+                isPersonalFm={isPersonalFm}
+                onClose={() => onOpenChange(false)}
+                onTabChange={setActiveTab}
+                theme={theme}
+              />
 
               {/* Tab 内容区 — 可滚动 */}
               <div className="min-h-0 flex-1">
@@ -278,7 +86,7 @@ export function FoliaStageSettings({
                     {activeTab === "settings" ? (
                       <FoliaPanelSettings
                         onOpenSettings={openVisualSettings}
-                        onOpenThemeLibrary={() => setThemeLibraryOpen(true)}
+                        onOpenThemeLibrary={openThemeLibrary}
                         theme={theme}
                       />
                     ) : null}
@@ -290,25 +98,6 @@ export function FoliaStageSettings({
         ) : null}
       </AnimatePresence>
 
-      {fontPickerTarget ? (
-        <FoliaFontPicker
-          assets={assets}
-          onClose={() => setFontPickerTarget(null)}
-          target={fontPickerTarget}
-        />
-      ) : null}
-
-      <FoliaVisualSettingsDialog
-        assets={assets}
-        isOpen={isVisualSettingsOpen}
-        onClose={() => setVisualSettingsOpen(false)}
-        onOpenFontPicker={setFontPickerTarget}
-        onOpenThemeLibrary={() => setThemeLibraryOpen(true)}
-        onSectionChange={setActiveSection}
-        section={activeSection}
-        theme={theme}
-      />
-
       <FoliaAudioEqualizerDialog
         isOpen={isEqualizerOpen}
         onClose={() => setIsEqualizerOpen(false)}
@@ -319,22 +108,6 @@ export function FoliaStageSettings({
         isOpen={isLyricMatchOpen}
         onClose={() => setIsLyricMatchOpen(false)}
         theme={theme}
-      />
-
-      <FoliaThemeLibraryDialog
-        assets={assets}
-        isOpen={isThemeLibraryOpen}
-        onClose={() => setThemeLibraryOpen(false)}
-        theme={theme}
-      />
-
-      <FoliaSonnetPerformanceWarningDialog
-        dontShowAgain={sonnetPerformanceWarningDontShowAgain}
-        isDaylight={isDaylight}
-        isOpen={sonnetPerformanceWarningOpen}
-        onClose={cancelSonnetPerformanceWarning}
-        onConfirm={confirmSonnetPerformanceWarning}
-        onDontShowAgainChange={setSonnetPerformanceWarningDontShowAgain}
       />
 
       {!isOpen && !isChromeHidden ? (

@@ -1,5 +1,6 @@
 "use client";
 
+import { FOLIA_ASSETS_CHANGED_EVENT } from "@/constants/foliaAssets";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type {
@@ -97,22 +98,29 @@ export function useFoliaStageAssets(): FoliaStageAssets {
 
   useEffect(() => {
     let cancelled = false;
-    void loadFoliaStoredAssets()
-      .then(async (assets) => {
-        if (cancelled) return;
-        replaceAvatarPack(assets.avatarPack);
-        replaceEmojiPack(assets.emojiPack);
-        replaceBackgroundImage(assets.backgroundImage);
-        replacePortraitImage(assets.portraitImage);
-        const font = await restoreFoliaFont(assets.uploadedFont);
-        if (!cancelled) setLyricsCustomFont(font);
-      })
-      .catch((error) => console.warn("[folia-stage] failed to load local assets", error))
-      .finally(() => {
-        if (!cancelled) setIsLoading(false);
-      });
+    let revision = 0;
+    const reload = () => {
+      const request = ++revision;
+      void loadFoliaStoredAssets()
+        .then(async (assets) => {
+          const font = await restoreFoliaFont(assets.uploadedFont);
+          if (cancelled || request !== revision) return;
+          replaceAvatarPack(assets.avatarPack);
+          replaceEmojiPack(assets.emojiPack);
+          replaceBackgroundImage(assets.backgroundImage);
+          replacePortraitImage(assets.portraitImage);
+          setLyricsCustomFont(font);
+        })
+        .catch((error) => console.warn("[folia-stage] failed to load local assets", error))
+        .finally(() => {
+          if (!cancelled && request === revision) setIsLoading(false);
+        });
+    };
+    window.addEventListener(FOLIA_ASSETS_CHANGED_EVENT, reload);
+    reload();
     return () => {
       cancelled = true;
+      window.removeEventListener(FOLIA_ASSETS_CHANGED_EVENT, reload);
       revokeUrls(avatarUrlsRef.current);
       revokeUrls(emojiUrlsRef.current);
       if (backgroundUrlRef.current) URL.revokeObjectURL(backgroundUrlRef.current);
