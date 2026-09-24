@@ -55,6 +55,10 @@ the original full-copy baseline:
 - `a36efc1d` and `57d3f806` — reserve Monet header width for portrait bleed
   and drag offset; clamp long titles without clipping accents or descenders.
 
+- `8764ab2781ce50de24d8af608967fab2a82e1b4e` — bound Pendolo's clockwork
+  canvas to its visible content rather than the whole viewport; keep canvas props
+  in Scopify's lyrics-domain types.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

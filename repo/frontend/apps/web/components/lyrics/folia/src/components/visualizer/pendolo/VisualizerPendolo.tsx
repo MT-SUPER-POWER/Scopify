@@ -452,6 +452,8 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
         <PendoloClockworkCanvas
           centerX={centerX}
           centerY={centerY}
+          viewportWidth={viewportSize.width}
+          viewportHeight={viewportSize.height}
           baseRadius={baseRadius}
           lyricRingRadius={lyricRingRadius}
           escapementAngleMotionValue={gearRotationAngleRad}
