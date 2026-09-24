@@ -1,3 +1,13 @@
+import type {
+  SonnetSongSwap,
+  SonnetStagedScene,
+} from "../../../../../../../types/lyrics/folia/sonnetRuntime";
+import type { Theme } from "../../../types";
+import type {
+  SonnetSongContext,
+  SonnetIconTextures,
+} from "../../../../../../../types/lyrics/folia/sonnetRuntime";
+export type { SonnetSongContext } from "../../../../../../../types/lyrics/folia/sonnetRuntime";
 import { snapResolutionToTexturePool } from "../../../../../../../lib/lyrics/folia/pixiTextureBudget";
 import type {
   PixiModule,
@@ -49,12 +59,28 @@ import {
 import { sonnetDebugState } from "./sonnetDebug";
 import { resolveSonnetSegmentCameraFocus } from "./sonnetCameraTracking";
 
+/** Length of the full dissolve: cover in, swap, cover out. */
+export const SONNET_SONG_SWAP_MS = 560;
+
+/**
+ * How far into the dissolve the incoming scene is built. Late enough that the cover is already
+ * most of the way opaque, early enough to leave headroom before the swap at the halfway point.
+ */
+const SONNET_SWAP_STAGE_PROGRESS = 0.35;
+
 export class SonnetPixiRuntime {
   private readonly sceneCache = new Map<number, SceneView>();
   private readonly iconTextures = new Map<string, import("pixi.js").Texture>();
   private readonly iconUrls = new Set<string>();
   private activeParagraphIndex = -1;
   private destroyed = false;
+  /**
+   * An in-flight song handover. Driven by the wall clock, unlike every other transition here:
+   * those derive their progress from absolute playback time so a seek stays stable, but that
+   * clock belongs to the outgoing track and says nothing about when this swap started.
+   */
+  private songSwap: SonnetSongSwap | null = null;
+  private swapCover: import("pixi.js").Graphics | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private lastWidth = 0;
   private lastHeight = 0;
@@ -133,6 +159,11 @@ export class SonnetPixiRuntime {
       height,
       snapResolutionToTexturePool(width, height, this.options.tuning.textureResolution),
     );
+    // Staged against the old viewport, so its layout no longer fits.
+    if (this.songSwap?.staged) {
+      this.destroyScene(this.songSwap.staged.scene);
+      this.songSwap.staged = null;
+    }
     this.clearScenes();
     this.drawCredits(width, height);
     this.drawOverlay(width, height);
@@ -276,31 +307,49 @@ export class SonnetPixiRuntime {
     this.overlayContainer.addChild(g, starText);
   }
 
-  private async preloadIcons() {
-    if (this.options.tuning.showOnlyText || !this.options.tuning.showBackgroundDecor) return;
-    const names = resolveSonnetIconNames(this.options.theme.lyricsIcons);
+  /**
+   * Acquires the decor icon textures a theme asks for. Kept separate from the live maps so a
+   * song handover can warm the incoming theme's icons while the outgoing one is still on
+   * screen, and only adopt them once the cover hides the swap.
+   */
+  private async loadIconTextures(theme: Theme): Promise<SonnetIconTextures> {
+    const loaded: SonnetIconTextures = { textures: new Map(), urls: new Set() };
+    if (this.options.tuning.showOnlyText || !this.options.tuning.showBackgroundDecor) return loaded;
+    const names = resolveSonnetIconNames(theme.lyricsIcons);
     const resolution = this.options.tuning.textureResolution;
     const texturePool = getSonnetTexturePool(this.pixi);
     await Promise.all(
       names.map(async (name, index) => {
         const size = 192 + (index % 4) * 32;
-        const colors = [
-          this.options.theme.accentColor,
-          this.options.theme.secondaryColor,
-          this.options.theme.primaryColor,
-        ];
+        const colors = [theme.accentColor, theme.secondaryColor, theme.primaryColor];
         const color = colors[index % colors.length];
         const key = buildSonnetIconTextureKey(name, color, 3.5, size, resolution);
         const url = buildSonnetIconDataUrl(name, color, 3.5, size);
         if (!url) return;
         try {
-          this.iconTextures.set(key, await texturePool.acquire(url));
-          this.iconUrls.add(url);
+          loaded.textures.set(key, await texturePool.acquire(url));
+          loaded.urls.add(url);
         } catch {
           // Invalid theme icons are optional; geometric MG remains available.
         }
       }),
     );
+    return loaded;
+  }
+
+  /** Hands the pool back the urls this runtime is holding. Refcounted, so order does not matter. */
+  private releaseIconUrls(urls: Set<string>) {
+    const texturePool = getSonnetTexturePool(this.pixi);
+    urls.forEach((url) => {
+      texturePool.release(url);
+    });
+    urls.clear();
+  }
+
+  private async preloadIcons() {
+    const loaded = await this.loadIconTextures(this.options.theme);
+    loaded.textures.forEach((texture, key) => this.iconTextures.set(key, texture));
+    loaded.urls.forEach((url) => this.iconUrls.add(url));
   }
 
   private clearScenes() {
@@ -323,24 +372,46 @@ export class SonnetPixiRuntime {
     scene.container.destroy({ children: true });
   }
 
-  private ensureScene(index: number) {
-    if (index < 0 || index >= this.options.program.paragraphs.length) return null;
-    const cached = this.sceneCache.get(index);
-    if (cached) return cached;
-    const scene = buildSonnetScene(
+  /**
+   * Builds one paragraph scene. This is the expensive call in the whole runtime: it runs the
+   * typography layout over every grapheme and then creates a `pixi.Text` per glyph. Nothing
+   * here should ever run more than once per frame.
+   */
+  private buildScene(
+    song: SonnetSongContext,
+    iconTextures: Map<string, import("pixi.js").Texture>,
+    index: number,
+  ) {
+    return buildSonnetScene(
       this.pixi,
       {
-        programSeed: this.options.program.seed,
+        programSeed: song.program.seed,
         host: this.options.host,
-        theme: this.options.theme,
+        theme: song.theme,
         tuning: this.options.tuning,
         lyricsFontScale: this.options.lyricsFontScale,
         staticMode: this.options.staticMode,
         transparentBackground: this.options.transparentBackground,
       },
-      this.iconTextures,
-      this.options.program.paragraphs[index],
+      iconTextures,
+      song.program.paragraphs[index],
     );
+  }
+
+  /** The live song as a context, for building scenes against what is currently on screen. */
+  private get liveSong(): SonnetSongContext {
+    return {
+      seed: this.options.songSeed,
+      program: this.options.program,
+      theme: this.options.theme,
+    };
+  }
+
+  private ensureScene(index: number) {
+    if (index < 0 || index >= this.options.program.paragraphs.length) return null;
+    const cached = this.sceneCache.get(index);
+    if (cached) return cached;
+    const scene = this.buildScene(this.liveSong, this.iconTextures, index);
     this.sceneCache.set(index, scene);
     this.sceneContainer.addChild(scene.container);
     return scene;
@@ -611,7 +682,11 @@ export class SonnetPixiRuntime {
   }
 
   private renderFrame = () => {
-    if (this.destroyed || this.options.program.paragraphs.length === 0) {
+    if (this.destroyed) return;
+    // Advanced before the paragraph lookup so a commit lands on this frame's scene selection
+    // instead of leaving one frame of the outgoing program on the incoming one.
+    this.advanceSongSwap();
+    if (this.options.program.paragraphs.length === 0) {
       sonnetDebugState.activeShot = null;
       sonnetDebugState.paragraphIndex = -1;
       return;
@@ -620,10 +695,20 @@ export class SonnetPixiRuntime {
     const paragraphIndex = findSonnetParagraphIndexAtTime(this.options.program, time);
     if (paragraphIndex !== this.activeParagraphIndex) {
       this.activeParagraphIndex = paragraphIndex;
-      this.ensureScene(paragraphIndex - 1);
       this.ensureScene(paragraphIndex);
-      this.ensureScene(paragraphIndex + 1);
       this.pruneScenes(paragraphIndex);
+    } else if (!this.songSwap) {
+      // Neighbours are pre-rolls for a boundary that is still ahead, so at most one is built
+      // per frame rather than piling three onto the frame that just changed paragraph.
+      // A scene build runs the layout over every grapheme and creates a pixi.Text per glyph;
+      // three at once is a dropped frame.
+      const next = paragraphIndex + 1;
+      const previous = paragraphIndex - 1;
+      if (next < this.options.program.paragraphs.length && !this.sceneCache.has(next)) {
+        this.ensureScene(next);
+      } else if (previous >= 0 && !this.sceneCache.has(previous)) {
+        this.ensureScene(previous);
+      }
     }
     const width = Math.max(this.options.host.clientWidth, 320);
     const height = Math.max(this.options.host.clientHeight, 240);
@@ -747,10 +832,171 @@ export class SonnetPixiRuntime {
     this.app.renderer.render(this.app.stage);
   }
 
+  /**
+   * Hands the renderer a new track without rebuilding it. A rebuild re-initialises WebGL and the
+   * icon texture pool with the canvas out of the DOM, so the frame goes empty for the whole
+   * async build. Here the incoming theme's icons are warmed while the outgoing song is still
+   * rendering, and only the scene layer changes - under a cover, so the cut is never a hole.
+   *
+   * Resolves when the cover has faded back out.
+   */
+  async swapSong(next: SonnetSongContext, signal?: AbortSignal): Promise<void> {
+    if (this.destroyed) return;
+    // Nothing is on screen to protect: no scene has been sized yet, or the outgoing program
+    // had no paragraphs at all. Covering an empty frame would only add a flash. And a swap
+    // that is not a track change gets no dissolve at all - see SonnetSongContext.seed.
+    const isCoverWorthwhile =
+      next.seed !== this.options.songSeed &&
+      !this.songSwap &&
+      this.lastWidth > 0 &&
+      this.options.program.paragraphs.length > 0 &&
+      !signal?.aborted;
+
+    // Warmed before the cover starts, so the dissolve is never waiting on a decode.
+    const pendingIcons = await this.loadIconTextures(next.theme);
+    if (this.destroyed || signal?.aborted) {
+      this.releaseIconUrls(pendingIcons.urls);
+      return;
+    }
+    if (!isCoverWorthwhile) {
+      this.commitSongContext(next, pendingIcons);
+      if (this.options.paused) this.renderOnce();
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      const onAbort = () => this.settleSongSwap();
+      this.songSwap = {
+        pending: next,
+        pendingIcons,
+        staged: null,
+        startedAt: performance.now(),
+        settle: resolve,
+        detachAbort: () => signal?.removeEventListener("abort", onAbort),
+      };
+      signal?.addEventListener("abort", onAbort, { once: true });
+      // The ticker is stopped while paused, so the cover would freeze halfway. Run it for
+      // the length of the dissolve and hand the pause back at the end.
+      if (this.options.paused) this.app.start();
+    });
+  }
+
+  /** The swap itself, at the instant the cover is opaque. */
+  private commitSongContext(
+    next: SonnetSongContext,
+    icons: SonnetIconTextures,
+    staged?: SonnetStagedScene | null,
+  ) {
+    this.options.songSeed = next.seed;
+    this.options.program = next.program;
+    this.options.theme = next.theme;
+    // Acquire-then-release: a url both themes want keeps a live refcount throughout.
+    this.releaseIconUrls(this.iconUrls);
+    this.iconTextures.clear();
+    icons.textures.forEach((texture, key) => this.iconTextures.set(key, texture));
+    icons.urls.forEach((url) => this.iconUrls.add(url));
+    // clearScenes only walks the cache, and a staged scene is deliberately not in it yet, so
+    // it survives the teardown of the song it is replacing.
+    this.clearScenes();
+    if (staged) {
+      staged.scene.container.visible = true;
+      this.sceneCache.set(staged.index, staged.scene);
+      // Adopted as the active paragraph so the frame that commits builds nothing at all.
+      this.activeParagraphIndex = staged.index;
+    }
+    if (this.lastWidth > 0 && this.lastHeight > 0) {
+      this.drawCredits(this.lastWidth, this.lastHeight);
+      this.drawOverlay(this.lastWidth, this.lastHeight);
+    }
+  }
+
+  /** Finishes an in-flight handover immediately, committing whatever it was still holding. */
+  private settleSongSwap() {
+    const swap = this.songSwap;
+    if (!swap) return;
+    this.songSwap = null;
+    swap.detachAbort();
+    if (this.destroyed) {
+      if (swap.pendingIcons) this.releaseIconUrls(swap.pendingIcons.urls);
+      // Never adopted, so nothing else will ever free it.
+      if (swap.staged) this.destroyScene(swap.staged.scene);
+    } else {
+      if (swap.pending && swap.pendingIcons) {
+        this.commitSongContext(swap.pending, swap.pendingIcons, swap.staged);
+      } else if (swap.staged) {
+        this.destroyScene(swap.staged.scene);
+      }
+      if (this.options.paused) this.app.stop();
+    }
+    this.disposeSwapCover();
+    swap.settle();
+  }
+
+  private disposeSwapCover() {
+    if (!this.swapCover) return;
+    this.app.stage.removeChild(this.swapCover);
+    this.swapCover.destroy();
+    this.swapCover = null;
+  }
+
+  /**
+   * Advances the wall-clock dissolve by one frame. The cover is a plain full-bleed rect added
+   * above every container - not a filter - so it cannot interact with the per-scene blur and
+   * glitch filters, and the frame is never transparent at any point of the swap.
+   */
+  private advanceSongSwap() {
+    const swap = this.songSwap;
+    if (!swap) return;
+    const progress = (performance.now() - swap.startedAt) / SONNET_SONG_SWAP_MS;
+    if (
+      swap.pending &&
+      swap.pendingIcons &&
+      !swap.staged &&
+      progress >= SONNET_SWAP_STAGE_PROGRESS
+    ) {
+      // Built here, not at the commit: this is one scene's worth of layout and glyph
+      // rasterisation, and the frame it costs is spent with the cover most of the way in
+      // rather than on the frame the listener is looking at the new song on.
+      const index = findSonnetParagraphIndexAtTime(
+        swap.pending.program,
+        this.options.currentTime.get(),
+      );
+      if (index >= 0 && index < swap.pending.program.paragraphs.length) {
+        const scene = this.buildScene(swap.pending, swap.pendingIcons.textures, index);
+        scene.container.visible = false;
+        this.sceneContainer.addChild(scene.container);
+        swap.staged = { scene, index };
+      }
+    }
+    if (swap.pending && swap.pendingIcons && progress >= 0.5) {
+      this.commitSongContext(swap.pending, swap.pendingIcons, swap.staged);
+      swap.pending = null;
+      swap.pendingIcons = null;
+      swap.staged = null;
+    }
+    if (progress >= 1) {
+      this.settleSongSwap();
+      return;
+    }
+
+    if (!this.swapCover) {
+      this.swapCover = new this.pixi.Graphics();
+      // Added last, so it sits above the scene, credits and overlay containers.
+      this.app.stage.addChild(this.swapCover);
+    }
+    const cover = this.swapCover;
+    // 0 -> 1 -> 0 across the dissolve, opaque exactly where the commit lands.
+    cover.alpha = 1 - Math.abs(progress * 2 - 1);
+    cover.clear();
+    cover.rect(0, 0, this.lastWidth, this.lastHeight).fill({
+      color: this.pixi.Color.shared.setValue(this.options.theme.backgroundColor).toNumber(),
+    });
+  }
+
   setPaused(paused: boolean) {
     if (this.destroyed) return;
     this.options.paused = paused;
-    if (paused) {
+    if (paused && !this.songSwap) {
       this.app.stop();
       this.renderOnce();
     } else {
@@ -763,6 +1009,9 @@ export class SonnetPixiRuntime {
     this.destroyed = true;
     sonnetDebugState.activeShot = null;
     sonnetDebugState.paragraphIndex = -1;
+    // Release whoever is awaiting the handover before tearing the app down, otherwise that
+    // promise never settles and the caller's drain loop stays parked on it.
+    this.settleSongSwap();
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
     this.app.stop();
@@ -770,11 +1019,7 @@ export class SonnetPixiRuntime {
     this.clearScenes();
     destroySonnetContainerChildren(this.creditsContainer);
     this.iconTextures.clear();
-    const texturePool = getSonnetTexturePool(this.pixi);
-    this.iconUrls.forEach((url) => {
-      texturePool.release(url);
-    });
-    this.iconUrls.clear();
+    this.releaseIconUrls(this.iconUrls);
     this.app.destroy({ removeView: true }, { children: true, texture: true });
   }
 }

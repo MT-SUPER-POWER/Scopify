@@ -68,6 +68,14 @@ the original full-copy baseline:
   share bounded text-width caches across Sonnet and Tempera layout calls;
   preserve local typography and keep measurement types in the lyrics domain.
 
+- `a69dd947b9e0679685f0a243434060ec15c96781` (Sonnet handover portion) —
+  retain the Pixi application across songs, stage the next scene and pre-roll
+  neighbours over separate frames. Shared host/song hooks live in Scopify's
+  lyrics hooks; pure decisions and types live in their domain directories.
+  Local adaptations isolate asynchronous drains by runtime lifetime, let paused
+  dissolves settle, and compare complete lyric content rather than only the
+  first line and line count.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
