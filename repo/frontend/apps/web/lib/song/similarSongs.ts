@@ -11,8 +11,15 @@ export function getSimilarSongIds(data: unknown, sourceSongId: number): number[]
     if (depth > 12 || value == null) return;
     if (Array.isArray(value)) {
       if (
-        value.length === 0 &&
-        ["resources", "resourceList", "songs", "songList", "songIds", "data"].includes(key)
+        [
+          "resources",
+          "resourceList",
+          "commonResourceList",
+          "songs",
+          "songList",
+          "songIds",
+          "data",
+        ].includes(key)
       )
         hasCollection = true;
       for (const item of value) {
@@ -26,11 +33,12 @@ export function getSimilarSongIds(data: unknown, sourceSongId: number): number[]
     const type =
       typeof record.resourceType === "string" ? record.resourceType.toLowerCase() : undefined;
     // Do not mistake album / artist identities for tracks.
-    if (type && type !== "song") return;
+    if (type && type !== "song" && type !== "similar_rcmd_song") return;
     if (record.resourceId != null) add(record.resourceId);
     else if (record.songId != null) add(record.songId);
     else if (
       type === "song" ||
+      type === "similar_rcmd_song" ||
       key === "songData" ||
       key === "song" ||
       (typeof record.name === "string" &&
@@ -43,6 +51,16 @@ export function getSimilarSongIds(data: unknown, sourceSongId: number): number[]
     }
   };
   visit(data, "data");
+  // The position endpoint can return only exposure metadata when no recommendation is available.
+  if (data && typeof data === "object" && !Array.isArray(data)) {
+    const record = data as Record<string, unknown>;
+    if (
+      Array.isArray(record.libraLogList) &&
+      typeof record.exposureRecords === "string" &&
+      Object.keys(record).every((key) => ["libraLogList", "exposureRecords"].includes(key))
+    )
+      hasCollection = true;
+  }
   if (ids.size === 0 && data != null && !hasCollection) {
     throw new Error("Unsupported similar-song resource response");
   }

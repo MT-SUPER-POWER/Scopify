@@ -1,9 +1,24 @@
 import request, { requestConfig } from "@/lib/web/request";
-import type { SimilarSongDetailsResponse, SimilarSongsResponse } from "@/types/api/similarSongs";
+import type {
+  SimilarSongDetailsResponse,
+  SimilarSongListResponse,
+  SimilarSongsResponse,
+} from "@/types/api/similarSongs";
 
 export function getSimilarSongs(id: number, signal?: AbortSignal) {
   return request.get<SimilarSongsResponse>(
     "/song/simi/get",
+    requestConfig({
+      params: { id },
+      signal,
+      expectedBusinessCodes: [200],
+    }),
+  );
+}
+
+export function getSimilarSongList(id: number, signal?: AbortSignal) {
+  return request.get<SimilarSongListResponse>(
+    "/simi/song",
     requestConfig({
       params: { id },
       signal,
