@@ -30,6 +30,7 @@
         "../../packages/desktop-contract/src/index.ts"
       ],
       "@scopify/playback-core": ["../../packages/playback-core/src/index.ts"],
+      "@scopify/notification-core": ["../../packages/notification-core/src/index.ts"],
       "@scopify/ui": [
         "../../packages/ui/src/index.ts"
       ],

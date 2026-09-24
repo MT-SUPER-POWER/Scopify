@@ -81,7 +81,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(import.meta.dirname ?? process.cwd(), "../../../.."),
   },
-  transpilePackages: ["@scopify/desktop-contract", "@scopify/ui"],
+  transpilePackages: ["@scopify/desktop-contract", "@scopify/notification-core", "@scopify/ui"],
   images: {
     remotePatterns: WEB_IMAGE_REMOTE_PATTERNS,
     unoptimized: shouldUseUnoptimizedImages(),

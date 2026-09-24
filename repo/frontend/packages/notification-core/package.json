@@ -1,0 +1,8 @@
+{
+  "name": "@scopify/notification-core",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@scopify/desktop-contract": "workspace:*" }
+}

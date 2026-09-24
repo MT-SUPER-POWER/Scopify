@@ -12,3 +12,4 @@ export * from "./mcp";
 export * from "./playback";
 export * from "./rendererArtifact";
 export * from "./updater";
+export * from "./notifications";

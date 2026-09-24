@@ -68,6 +68,7 @@
         "@modelcontextprotocol/sdk": "^1.30.0",
         "@neteasecloudmusicapienhanced/api": "workspace:*",
         "@scopify/desktop-contract": "workspace:*",
+        "@scopify/notification-core": "workspace:*",
         "@xhayper/discord-rpc": "^1.3.4",
         "electron-log": "^5.4.4",
         "electron-positioner": "^4.1.0",
@@ -145,6 +146,7 @@
         "@react-three/fiber": "^9.6.1",
         "@react-three/postprocessing": "^3.0.4",
         "@scopify/desktop-contract": "workspace:*",
+        "@scopify/notification-core": "workspace:*",
         "@scopify/playback-core": "workspace:*",
         "@scopify/ui": "workspace:*",
         "@tanstack/react-query": "^5.101.4",
@@ -227,6 +229,13 @@
       "version": "2.0.0",
       "devDependencies": {
         "typescript": "^5.9.3",
+      },
+    },
+    "repo/frontend/packages/notification-core": {
+      "name": "@scopify/notification-core",
+      "version": "1.0.0",
+      "dependencies": {
+        "@scopify/desktop-contract": "workspace:*",
       },
     },
     "repo/frontend/packages/playback-core": {
@@ -1038,6 +1047,8 @@
     "@scopify/desktop-contract": ["@scopify/desktop-contract@workspace:repo/frontend/packages/desktop-contract"],
 
     "@scopify/docs": ["@scopify/docs@workspace:repo/frontend/apps/docs"],
+
+    "@scopify/notification-core": ["@scopify/notification-core@workspace:repo/frontend/packages/notification-core"],
 
     "@scopify/playback-core": ["@scopify/playback-core@workspace:repo/frontend/packages/playback-core"],
 
