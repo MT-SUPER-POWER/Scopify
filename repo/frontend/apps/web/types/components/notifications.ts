@@ -19,6 +19,9 @@ export interface NotificationRowProps {
   onAction?(): void;
 }
 
+export type NotificationAvatarProps = Pick<NotificationRowProps, "item">;
+export type NotificationPreviewProps = Pick<NotificationRowProps, "item">;
+
 export interface NotificationPanelProps {
   items: NotificationListItem[];
   filter: NotificationFilter;
@@ -32,4 +35,22 @@ export interface NotificationPanelProps {
   onReadAll(): void;
   onSettings(): void;
   onUpdateAction(): void;
+}
+
+export type NotificationToolbarProps = Pick<
+  NotificationPanelProps,
+  "filter" | "unreadOnly" | "unreadCount" | "onFilter" | "onUnreadOnly" | "onReadAll" | "onSettings"
+>;
+
+export type NotificationSummaryProps = Pick<NotificationRowProps, "item" | "onAction"> & {
+  expanded: boolean;
+  detailId: string;
+};
+
+export interface NotificationTestButtonProps {
+  disabled: boolean;
+  hasChanges: boolean;
+  testing: boolean;
+  result: "sent" | "blocked" | null;
+  onTest(): void;
 }

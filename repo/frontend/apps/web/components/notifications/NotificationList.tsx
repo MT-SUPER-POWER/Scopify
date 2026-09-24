@@ -16,7 +16,7 @@ export function NotificationList({
   NotificationPanelProps,
   "items" | "unreadOnly" | "expandedId" | "onExpand" | "onRead" | "onUpdateAction"
 >) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const yesterday = new Date(today);
@@ -24,16 +24,19 @@ export function NotificationList({
   const groups = [
     {
       label: t("notifications.today"),
+      date: today,
       items: items.filter((item) => item.occurredAt >= today.getTime()),
     },
     {
       label: t("notifications.yesterday"),
+      date: yesterday,
       items: items.filter(
         (item) => item.occurredAt < today.getTime() && item.occurredAt >= yesterday.getTime(),
       ),
     },
     {
       label: t("notifications.earlier"),
+      date: null,
       items: items.filter((item) => item.occurredAt < yesterday.getTime()),
     },
   ];
@@ -52,15 +55,24 @@ export function NotificationList({
       </div>
     );
   return (
-    <div className="space-y-5 p-3">
+    <div className="space-y-5 px-3 pt-1 pb-4">
       {groups
         .filter((group) => group.items.length)
         .map((group) => (
           <section key={group.label}>
-            <h3 className="mb-2 px-2 text-[11px] font-semibold tracking-wide text-content-subtle">
-              {group.label}
+            <h3 className="mb-2 flex items-center gap-3 px-2 text-xs font-medium text-content-muted">
+              <span>{group.label}</span>
+              {group.date && (
+                <span className="font-normal text-content-subtle">
+                  {group.date.toLocaleDateString(locale, {
+                    month: "short",
+                    day: "numeric",
+                    weekday: "short",
+                  })}
+                </span>
+              )}
             </h3>
-            <div className="space-y-1.5">
+            <div className="space-y-0.5">
               {group.items.map((item) => (
                 <NotificationRow
                   key={item.id}

@@ -3,12 +3,22 @@ export type NotificationSource =
   "private" | "comments" | "mentions" | "notices" | "daily" | "weekly" | "yearly";
 export type NotificationLocale = "zh-CN" | "zh-TW" | "en-US";
 
+export interface NotificationSocialContext {
+  actor: string;
+  action: string;
+  quote?: string;
+  quoteAuthor?: string;
+  resource?: string;
+}
+
 export interface InboxNotification {
   id: string;
   source: NotificationSource;
   category: NotificationCategory;
   title: string;
   body: string;
+  avatarUrl?: string;
+  social?: NotificationSocialContext;
   occurredAt: number;
   readAt: number | null;
   /** A summary can be inspected without navigating to unfinished social pages. */

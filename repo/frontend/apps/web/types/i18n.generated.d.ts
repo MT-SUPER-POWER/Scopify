@@ -497,6 +497,54 @@ export interface TranslateFn {
    */
   (key: "notifications.all", params?: TranslationParams): string;
   /**
+   * zh-CN: 全部
+   * zh-TW: 全部
+   * en-US: All
+   */
+  (key: "notifications.tab.all", params?: TranslationParams): string;
+  /**
+   * zh-CN: 私信
+   * zh-TW: 私訊
+   * en-US: DMs
+   */
+  (key: "notifications.tab.private", params?: TranslationParams): string;
+  /**
+   * zh-CN: 评论
+   * zh-TW: 評論
+   * en-US: Replies
+   */
+  (key: "notifications.tab.comments", params?: TranslationParams): string;
+  /**
+   * zh-CN: @我
+   * zh-TW: @我
+   * en-US: Mentions
+   */
+  (key: "notifications.tab.mentions", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通知
+   * zh-TW: 通知
+   * en-US: Notices
+   */
+  (key: "notifications.tab.notices", params?: TranslationParams): string;
+  /**
+   * zh-CN: 报告
+   * zh-TW: 報告
+   * en-US: Reports
+   */
+  (key: "notifications.tab.reports", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新
+   * zh-TW: 更新
+   * en-US: Updates
+   */
+  (key: "notifications.tab.updates", params?: TranslationParams): string;
+  /**
+   * zh-CN: 将当前分类全部标为已读
+   * zh-TW: 將目前分類全部標為已讀
+   * en-US: Mark this category as read
+   */
+  (key: "notifications.readCategory", params?: TranslationParams): string;
+  /**
    * zh-CN: 消息
    * zh-TW: 訊息
    * en-US: Messages
@@ -526,6 +574,18 @@ export interface TranslateFn {
    * en-US: Unread
    */
   (key: "notifications.unread", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅未读
+   * zh-TW: 僅未讀
+   * en-US: Unread only
+   */
+  (key: "notifications.unreadOnly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新
+   * zh-TW: 重新整理
+   * en-US: Refresh
+   */
+  (key: "notifications.refreshShort", params?: TranslationParams): string;
   /**
    * zh-CN: {{count}} 条未读
    * zh-TW: {{count}} 則未讀
@@ -611,11 +671,23 @@ export interface TranslateFn {
    */
   (key: "notifications.localError", params?: TranslationParams): string;
   /**
-   * zh-CN: 内容摘要
-   * zh-TW: 內容摘要
-   * en-US: Summary
+   * zh-CN: 完整内容
+   * zh-TW: 完整內容
+   * en-US: Full content
    */
   (key: "notifications.summary", params?: TranslationParams): string;
+  /**
+   * zh-CN: 原文
+   * zh-TW: 原文
+   * en-US: Original
+   */
+  (key: "notifications.original", params?: TranslationParams): string;
+  /**
+   * zh-CN: 来自 {{resource}}
+   * zh-TW: 來自 {{resource}}
+   * en-US: From {{resource}}
+   */
+  (key: "notifications.fromResource", params?: TranslationParams): string;
   /**
    * zh-CN: 关闭通知
    * zh-TW: 關閉通知
@@ -653,14 +725,32 @@ export interface TranslateFn {
    */
   (key: "notifications.quiet", params?: TranslationParams): string;
   /**
-   * zh-CN: 设置自动保存。免打扰期间仍保留收件箱内容。
-   * zh-TW: 設定自動儲存。勿擾期間仍保留收件匣內容。
-   * en-US: Changes save automatically. Do not disturb keeps items in your inbox.
+   * zh-CN: 点击保存更改后生效。
+   * zh-TW: 點擊儲存變更後生效。
+   * en-US: Changes take effect after saving.
    */
   (key: "notifications.preferencesHint", params?: TranslationParams): string;
   /**
-   * zh-CN: 接收哪些内容
-   * zh-TW: 接收哪些內容
+   * zh-CN: 有未保存的更改
+   * zh-TW: 有未儲存的變更
+   * en-US: Unsaved changes
+   */
+  (key: "notifications.unsaved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 撤销更改
+   * zh-TW: 復原變更
+   * en-US: Discard changes
+   */
+  (key: "notifications.discard", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请先保存更改，再发送测试通知。
+   * zh-TW: 請先儲存變更，再傳送測試通知。
+   * en-US: Save changes before sending a test notification.
+   */
+  (key: "notifications.testSaveFirst", params?: TranslationParams): string;
+  /**
+   * zh-CN: 接收内容
+   * zh-TW: 接收內容
    * en-US: What you receive
    */
   (key: "notifications.subscriptions", params?: TranslationParams): string;
@@ -731,9 +821,9 @@ export interface TranslateFn {
    */
   (key: "notifications.desktopHint", params?: TranslationParams): string;
   /**
-   * zh-CN: 网页端在页面运行期间同步；系统提醒需要桌面端。
-   * zh-TW: 網頁版在頁面執行期間同步；系統提醒需要桌面版。
-   * en-US: Web sync runs while the page is open. System notifications require the desktop app.
+   * zh-CN: 桌面通知仅支持桌面端。
+   * zh-TW: 桌面通知僅支援桌面版。
+   * en-US: Available in the desktop app.
    */
   (key: "notifications.webHint", params?: TranslationParams): string;
   /**
@@ -743,8 +833,8 @@ export interface TranslateFn {
    */
   (key: "notifications.sound", params?: TranslationParams): string;
   /**
-   * zh-CN: 在系统通知中显示正文
-   * zh-TW: 在系統通知中顯示內文
+   * zh-CN: 显示消息正文
+   * zh-TW: 顯示訊息內文
    * en-US: Show message previews
    */
   (key: "notifications.preview", params?: TranslationParams): string;
@@ -755,9 +845,9 @@ export interface TranslateFn {
    */
   (key: "notifications.previewHint", params?: TranslationParams): string;
   /**
-   * zh-CN: 立即开启免打扰
-   * zh-TW: 立即開啟勿擾
-   * en-US: Do not disturb now
+   * zh-CN: 免打扰
+   * zh-TW: 勿擾
+   * en-US: Do not disturb
    */
   (key: "notifications.dnd", params?: TranslationParams): string;
   /**
@@ -767,8 +857,8 @@ export interface TranslateFn {
    */
   (key: "notifications.quietHours", params?: TranslationParams): string;
   /**
-   * zh-CN: 按设备本地时间执行，可跨午夜；起止相同表示全天。
-   * zh-TW: 依裝置本地時間執行，可跨午夜；起止相同表示全天。
+   * zh-CN: 按本地时间，起止相同表示全天。
+   * zh-TW: 依本地時間，起止相同表示全天。
    * en-US: Uses this device's time. Matching start and end means all day.
    */
   (key: "notifications.quietHint", params?: TranslationParams): string;
@@ -791,15 +881,15 @@ export interface TranslateFn {
    */
   (key: "notifications.schedule", params?: TranslationParams): string;
   /**
-   * zh-CN: 今日回顾检查时间
-   * zh-TW: 今日回顧檢查時間
-   * en-US: Daily recap check time
+   * zh-CN: 今日回顾时间
+   * zh-TW: 今日回顧時間
+   * en-US: Daily recap time
    */
   (key: "notifications.dailyTime", params?: TranslationParams): string;
   /**
-   * zh-CN: 时间按当前设备设置；收听日期按北京时间。到点只检查，有有效数据才提醒；今日回顾不代表全天结算。周报与年报在 10:00 后检查。
-   * zh-TW: 時間依目前裝置設定；收聽日期依北京時間。到點只檢查，有有效資料才提醒；今日回顧不代表全天結算。週報與年報於 10:00 後檢查。
-   * en-US: Times use this device's clock; listening dates use Beijing time. Alerts require valid data. Daily recaps are partial. Weekly and yearly checks start after 10:00.
+   * zh-CN: 按本地时间检查，有数据才推送。周报、年报在 10:00 后检查。
+   * zh-TW: 依本地時間檢查，有資料才推送。週報、年報於 10:00 後檢查。
+   * en-US: Checks use local time and notify only when data is ready. Weekly and yearly checks start after 10:00.
    */
   (key: "notifications.scheduleHint", params?: TranslationParams): string;
   /**
@@ -832,6 +922,96 @@ export interface TranslateFn {
    * en-US: Turning off a category stops new alerts; the feature remains available in its own page.
    */
   (key: "notifications.subscriptionHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 通知
+   * zh-TW: 通知
+   * en-US: Notifications
+   */
+  (key: "notifications.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无新通知
+   * zh-TW: 目前沒有新通知
+   * en-US: No new notifications
+   */
+  (key: "notifications.empty.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 有新的桌面端版本时，会在这里提醒你。
+   * zh-TW: 有新的桌面版時，會在這裡提醒你。
+   * en-US: New desktop releases will appear here.
+   */
+  (key: "notifications.empty.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现新版本
+   * zh-TW: 發現新版本
+   * en-US: Update available
+   */
+  (key: "notifications.updater.available.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: Scopify {{version}} 已准备好下载。
+   * zh-TW: Scopify {{version}} 已準備好下載。
+   * en-US: Scopify {{version}} is ready to download.
+   */
+  (key: "notifications.updater.available.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在下载更新
+   * zh-TW: 正在下載更新
+   * en-US: Downloading update
+   */
+  (key: "notifications.updater.downloading.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新版本正在下载：{{percent}}%。
+   * zh-TW: 新版本正在下載：{{percent}}%。
+   * en-US: The new version is downloading: {{percent}}%.
+   */
+  (key: "notifications.updater.downloading.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新已下载
+   * zh-TW: 更新已下載
+   * en-US: Update downloaded
+   */
+  (key: "notifications.updater.downloaded.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: Scopify {{version}} 已下载完成，重启即可安装。
+   * zh-TW: Scopify {{version}} 已下載完成，重啟即可安裝。
+   * en-US: Scopify {{version}} is ready to install after a restart.
+   */
+  (key: "notifications.updater.downloaded.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在检查更新
+   * zh-TW: 正在檢查更新
+   * en-US: Checking for updates
+   */
+  (key: "notifications.updater.checking.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在检查 GitHub Release 中的最新版本。
+   * zh-TW: 正在檢查 GitHub Release 中的最新版本。
+   * en-US: Checking GitHub Releases for the latest version.
+   */
+  (key: "notifications.updater.checking.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更新检查失败
+   * zh-TW: 更新檢查失敗
+   * en-US: Update check failed
+   */
+  (key: "notifications.updater.error.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请稍后重试，或前往设置手动检查。
+   * zh-TW: 請稍後再試，或前往設定手動檢查。
+   * en-US: Try again later, or open Settings to check manually.
+   */
+  (key: "notifications.updater.error.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开更新设置
+   * zh-TW: 開啟更新設定
+   * en-US: Open update settings
+   */
+  (key: "notifications.updater.openSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重启并安装
+   * zh-TW: 重啟並安裝
+   * en-US: Restart and install
+   */
+  (key: "notifications.updater.install", params?: TranslationParams): string;
   /**
    * zh-CN: 简体中文
    * zh-TW: 简体中文
@@ -20392,96 +20572,6 @@ export interface TranslateFn {
    * en-US: Couldn't update the voice like
    */
   (key: "library.voice.likeFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 通知
-   * zh-TW: 通知
-   * en-US: Notifications
-   */
-  (key: "notifications.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂无新通知
-   * zh-TW: 目前沒有新通知
-   * en-US: No new notifications
-   */
-  (key: "notifications.empty.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 有新的桌面端版本时，会在这里提醒你。
-   * zh-TW: 有新的桌面版時，會在這裡提醒你。
-   * en-US: New desktop releases will appear here.
-   */
-  (key: "notifications.empty.description", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发现新版本
-   * zh-TW: 發現新版本
-   * en-US: Update available
-   */
-  (key: "notifications.updater.available.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: Scopify {{version}} 已准备好下载。
-   * zh-TW: Scopify {{version}} 已準備好下載。
-   * en-US: Scopify {{version}} is ready to download.
-   */
-  (key: "notifications.updater.available.description", params?: TranslationParams): string;
-  /**
-   * zh-CN: 正在下载更新
-   * zh-TW: 正在下載更新
-   * en-US: Downloading update
-   */
-  (key: "notifications.updater.downloading.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 新版本正在下载：{{percent}}%。
-   * zh-TW: 新版本正在下載：{{percent}}%。
-   * en-US: The new version is downloading: {{percent}}%.
-   */
-  (key: "notifications.updater.downloading.description", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更新已下载
-   * zh-TW: 更新已下載
-   * en-US: Update downloaded
-   */
-  (key: "notifications.updater.downloaded.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: Scopify {{version}} 已下载完成，重启即可安装。
-   * zh-TW: Scopify {{version}} 已下載完成，重啟即可安裝。
-   * en-US: Scopify {{version}} is ready to install after a restart.
-   */
-  (key: "notifications.updater.downloaded.description", params?: TranslationParams): string;
-  /**
-   * zh-CN: 正在检查更新
-   * zh-TW: 正在檢查更新
-   * en-US: Checking for updates
-   */
-  (key: "notifications.updater.checking.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 正在检查 GitHub Release 中的最新版本。
-   * zh-TW: 正在檢查 GitHub Release 中的最新版本。
-   * en-US: Checking GitHub Releases for the latest version.
-   */
-  (key: "notifications.updater.checking.description", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更新检查失败
-   * zh-TW: 更新檢查失敗
-   * en-US: Update check failed
-   */
-  (key: "notifications.updater.error.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 请稍后重试，或前往设置手动检查。
-   * zh-TW: 請稍後再試，或前往設定手動檢查。
-   * en-US: Try again later, or open Settings to check manually.
-   */
-  (key: "notifications.updater.error.description", params?: TranslationParams): string;
-  /**
-   * zh-CN: 打开更新设置
-   * zh-TW: 開啟更新設定
-   * en-US: Open update settings
-   */
-  (key: "notifications.updater.openSettings", params?: TranslationParams): string;
-  /**
-   * zh-CN: 重启并安装
-   * zh-TW: 重啟並安裝
-   * en-US: Restart and install
-   */
-  (key: "notifications.updater.install", params?: TranslationParams): string;
   /**
    * zh-CN: 私人电台
    * zh-TW: 私人電台

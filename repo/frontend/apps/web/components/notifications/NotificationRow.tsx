@@ -1,10 +1,13 @@
 "use client";
 
 import { useId } from "react";
-import { BarChart3, Bell, Check, ChevronDown, Download, MessageCircle, AtSign } from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { NotificationRowProps } from "@/types/components/notifications";
+import { NotificationAvatar } from "./NotificationAvatar";
+import { NotificationSummary } from "./NotificationSummary";
+import { NotificationPreview } from "./NotificationPreview";
 
 export function NotificationRow({
   item,
@@ -15,72 +18,80 @@ export function NotificationRow({
 }: NotificationRowProps) {
   const { t, locale } = useI18n();
   const detailId = useId();
-  const Icon =
-    item.source === "updates"
-      ? Download
-      : item.category === "reports"
-        ? BarChart3
-        : item.category === "messages"
-          ? MessageCircle
-          : item.category === "interactions"
-            ? AtSign
-            : Bell;
   const unread = item.readAt === null;
+  const report = item.category === "reports";
+  const titleDivider = report ? -1 : item.title.lastIndexOf(" · ");
+  const title =
+    item.social?.actor || (titleDivider < 0 ? item.title : item.title.slice(0, titleDivider));
+  const sourceLabel =
+    item.social?.action || (titleDivider < 0 ? null : item.title.slice(titleDivider + 3));
+  const date = new Date(item.occurredAt);
+  const yesterday = new Date();
+  yesterday.setHours(0, 0, 0, 0);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const time =
+    date >= yesterday
+      ? date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })
+      : date.toLocaleDateString(locale, {
+          month: "2-digit",
+          day: "2-digit",
+          ...(date.getFullYear() !== yesterday.getFullYear() ? { year: "numeric" as const } : {}),
+        });
   return (
     <article
+      data-unread={unread}
       className={cn(
-        "group rounded-2xl border transition-colors",
-        unread ? "border-brand/15 bg-brand/5" : "border-transparent hover:bg-surface-elevated/70",
+        "group rounded-xl transition-colors hover:bg-foreground/7",
+        unread && "bg-foreground/7",
       )}
     >
-      <div className="flex items-start gap-1 p-2">
+      <div className="relative">
         <button
           type="button"
           onClick={onExpand}
           aria-expanded={expanded}
           aria-controls={detailId}
-          className="flex min-w-0 flex-1 gap-3 rounded-xl p-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex w-full items-start gap-3.5 rounded-xl px-3 py-4 pr-9 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span
-            className={cn(
-              "flex size-10 shrink-0 items-center justify-center rounded-2xl",
-              unread ? "bg-brand/10 text-brand" : "bg-surface-sunken text-content-muted",
-            )}
-          >
-            <Icon className="size-4.5" aria-hidden="true" />
-          </span>
+          <NotificationAvatar item={item} />
           <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-2">
-              <span className="truncate text-sm font-semibold text-foreground">{item.title}</span>
-              {unread && (
-                <span className="size-1.5 shrink-0 rounded-full bg-brand">
-                  <span className="sr-only">{t("notifications.unread")}</span>
+            <span className="flex items-center justify-between gap-3">
+              <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                <span
+                  className="max-w-full truncate text-[15px] leading-6 font-semibold text-foreground"
+                  title={title}
+                >
+                  {title}
                 </span>
-              )}
-            </span>
-            <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-muted-foreground">
-              {item.body}
-            </span>
-            <span className="mt-2 flex items-center gap-2 text-[11px] text-content-subtle">
-              <time
-                dateTime={new Date(item.occurredAt).toISOString()}
-                title={new Date(item.occurredAt).toLocaleString(locale)}
-              >
-                {new Date(item.occurredAt).toLocaleString(locale, {
-                  month: "short",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </time>
-              <ChevronDown
-                className={cn("size-3 transition-transform", expanded && "rotate-180")}
-                aria-hidden="true"
-              />
-              <span className="sr-only">
-                {t(expanded ? "notifications.collapse" : "notifications.expand")}
+                {unread && (
+                  <span className="size-1.5 shrink-0 rounded-full bg-success">
+                    <span className="sr-only">{t("notifications.unread")}</span>
+                  </span>
+                )}
+                {sourceLabel && (
+                  <span className="text-[13px] leading-5 text-content-muted">{sourceLabel}</span>
+                )}
               </span>
+              <time
+                dateTime={date.toISOString()}
+                title={date.toLocaleString(locale)}
+                className="shrink-0 self-start pt-1 text-xs text-content-muted"
+              >
+                {time}
+              </time>
             </span>
+            <NotificationPreview item={item} />
+          </span>
+          <ChevronRight
+            className={cn(
+              "absolute top-5 right-3 size-3.5 text-content-muted transition-transform",
+              expanded && "rotate-90",
+              unread && "group-focus-within:opacity-0 group-hover:opacity-0",
+            )}
+            aria-hidden="true"
+          />
+          <span className="sr-only">
+            {t(expanded ? "notifications.collapse" : "notifications.expand")}
           </span>
         </button>
         {unread && (
@@ -89,48 +100,18 @@ export function NotificationRow({
             onClick={onRead}
             title={t("notifications.markRead")}
             aria-label={t("notifications.markRead")}
-            className="mt-1 rounded-lg p-2 text-content-subtle hover:bg-surface-elevated hover:text-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="absolute top-3 right-1.5 rounded-lg p-1.5 text-content-muted opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-foreground/7 hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none [@media(hover:none)]:opacity-100"
           >
             <Check className="size-4" aria-hidden="true" />
           </button>
         )}
       </div>
-      {item.progress !== undefined && (
-        <div
-          role="progressbar"
-          aria-label={item.title}
-          aria-valuenow={Math.round(item.progress)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          className="mx-4 mb-3 h-1 overflow-hidden rounded-full bg-surface-sunken"
-        >
-          <div className="h-full bg-brand transition-all" style={{ width: `${item.progress}%` }} />
-        </div>
-      )}
-      {expanded && (
-        <div id={detailId} className="mx-4 mb-4 border-t border-border/70 pt-3">
-          <p className="mb-2 text-xs font-medium text-content-subtle">
-            {t("notifications.summary")}
-            {item.periodKey ? ` · ${item.periodKey}` : ""}
-          </p>
-          <ul className="space-y-2 text-sm leading-relaxed break-words text-content-muted">
-            {item.details.map((line, index) => (
-              <li key={`${item.id}:${index}`} className="whitespace-pre-wrap">
-                {line}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {item.actionLabel && onAction && (
-        <button
-          type="button"
-          onClick={onAction}
-          className="mx-4 mb-4 rounded-lg border border-brand/20 bg-brand/10 px-3 py-2 text-xs font-semibold text-brand transition-colors hover:bg-brand/15 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-        >
-          {item.actionLabel}
-        </button>
-      )}
+      <NotificationSummary
+        item={item}
+        expanded={expanded}
+        detailId={detailId}
+        onAction={onAction}
+      />
     </article>
   );
 }

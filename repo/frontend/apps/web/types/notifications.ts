@@ -1,10 +1,12 @@
 import type {
   InboxNotification,
+  NotificationPreferences,
   NotificationSnapshot,
   NotificationSource,
 } from "@scopify/desktop-contract";
 
-export type NotificationFilter = "all" | InboxNotification["category"];
+export type NotificationFilter =
+  "all" | "private" | "comments" | "mentions" | "notices" | "reports" | "updates";
 export interface NotificationListItem extends Omit<InboxNotification, "source"> {
   source: NotificationSource | "updates";
   progress?: number;
@@ -17,4 +19,9 @@ export interface NotificationUiState {
   pending: boolean;
   selectAccount(accountId: string | null): void;
   accept(snapshot: NotificationSnapshot): void;
+}
+
+export interface NotificationPreferencesDraft {
+  accountId: string | null;
+  preferences: NotificationPreferences;
 }

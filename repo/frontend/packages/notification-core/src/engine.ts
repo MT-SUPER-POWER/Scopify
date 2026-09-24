@@ -161,9 +161,17 @@ export function createNotificationEngine(options: NotificationEngineOptions) {
         const known = new Map(current.items.map((item) => [item.id, item]));
         const newIds = new Set<string>();
         for (const item of incoming) {
-          if (!known.has(item.id)) {
+          const saved = known.get(item.id);
+          if (!saved) {
             known.set(item.id, item);
             newIds.add(item.id);
+          } else {
+            known.set(item.id, {
+              ...saved,
+              ...item,
+              avatarUrl: item.avatarUrl ?? saved.avatarUrl,
+              readAt: saved.readAt,
+            });
           }
         }
         const conversations = new Set<string>();

@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell, X } from "lucide-react";
+import { Popover as PopoverPrimitive } from "radix-ui";
 import { Popover, PopoverContent, PopoverTrigger } from "@scopify/ui/shadcn/components/popover";
 import {
   Sheet,
@@ -13,7 +14,6 @@ import {
 import { useNotificationCenter } from "@/hooks/notifications/useNotificationCenter";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import { cn } from "@/lib/utils";
 import { NotificationPanel } from "./NotificationPanel";
 
 export function NotificationCenter() {
@@ -24,17 +24,14 @@ export function NotificationCenter() {
     <button
       type="button"
       aria-label={`${t("notifications.title")} · ${t("notifications.unreadCount", { count: center.unreadCount })}`}
-      className={cn(
-        "relative flex size-10 items-center justify-center rounded-full bg-surface-sunken/80 text-content-muted transition-colors hover:bg-surface-elevated hover:text-content focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
-        center.unreadCount > 0 && "text-brand",
-      )}
+      className="flex size-10 items-center justify-center rounded-full bg-surface-sunken/80 text-content-muted transition-colors hover:bg-surface-elevated hover:text-content focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     >
-      <Bell className="size-4.5" aria-hidden="true" />
-      {center.unreadCount > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 flex min-w-4.5 items-center justify-center rounded-full bg-brand px-1 text-[10px] leading-4.5 font-semibold text-brand-foreground ring-2 ring-surface">
-          {center.unreadCount > 99 ? "99+" : center.unreadCount}
-        </span>
-      )}
+      <span className="relative inline-flex size-4.5" aria-hidden="true">
+        <Bell className="size-4.5" />
+        {center.unreadCount > 0 && (
+          <span className="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-success ring-2 ring-surface" />
+        )}
+      </span>
     </button>
   );
   const content = (
@@ -42,7 +39,7 @@ export function NotificationCenter() {
       items={center.items}
       filter={center.filter}
       unreadOnly={center.unreadOnly}
-      unreadCount={center.unreadCount}
+      unreadCount={center.filterUnreadCount}
       expandedId={center.expandedId}
       onFilter={center.setFilter}
       onUnreadOnly={center.setUnreadOnly}
@@ -70,7 +67,7 @@ export function NotificationCenter() {
         <SheetContent
           side="bottom"
           showCloseButton={false}
-          className="gap-0 rounded-t-3xl border-border bg-surface-overlay p-0 pb-[env(safe-area-inset-bottom)]"
+          className="gap-0 rounded-t-2xl border-border bg-popover p-0 pb-[env(safe-area-inset-bottom)]"
         >
           <SheetTitle className="sr-only">{t("notifications.title")}</SheetTitle>
           <SheetDescription className="sr-only">{t("notifications.subtitle")}</SheetDescription>
@@ -93,12 +90,25 @@ export function NotificationCenter() {
     <Popover open={center.open} onOpenChange={center.setOpen}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent
+        side="bottom"
         align="end"
-        sideOffset={12}
+        alignOffset={-80}
+        sideOffset={8}
+        arrowPadding={20}
         collisionPadding={12}
-        className="w-[min(440px,calc(100vw-24px))] overflow-hidden rounded-3xl border-border bg-surface-overlay p-0 shadow-floating"
+        className="w-[min(440px,calc(100vw-24px))] rounded-2xl border-border bg-popover p-0 shadow-floating"
       >
-        {content}
+        <div className="overflow-hidden rounded-[inherit]">{content}</div>
+        <PopoverPrimitive.Arrow asChild width={20} height={10}>
+          <svg viewBox="0 0 20 10" className="overflow-visible" aria-hidden="true">
+            <path
+              d="M0 0 10 10 20 0"
+              className="fill-popover stroke-border"
+              strokeLinejoin="round"
+            />
+            <path d="M0 0H20" className="stroke-popover" strokeWidth={2} />
+          </svg>
+        </PopoverPrimitive.Arrow>
       </PopoverContent>
     </Popover>
   );

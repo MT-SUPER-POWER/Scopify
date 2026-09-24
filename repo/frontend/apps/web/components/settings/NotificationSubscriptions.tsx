@@ -23,9 +23,6 @@ export function NotificationSubscriptions({
   const { t } = useI18n();
   return (
     <SettingSection title={t("notifications.subscriptions")}>
-      <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
-        {t("notifications.subscriptionHint")}
-      </p>
       {SOURCES.map((source) => (
         <SettingRow
           key={source}

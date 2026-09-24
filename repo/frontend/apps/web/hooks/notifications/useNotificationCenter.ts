@@ -37,15 +37,23 @@ export function useNotificationCenter() {
   if (update.item && snapshot?.preferences.updates !== false) items.push(update.item);
   items.sort((a, b) => b.occurredAt - a.occurredAt);
   const unreadCount = items.filter((item) => item.readAt === null).length;
+  const filteredItems = items.filter((item) =>
+    filter === "all"
+      ? true
+      : filter === "reports"
+        ? item.category === "reports"
+        : item.source === filter,
+  );
+  const filterUnreadCount = filteredItems.filter((item) => item.readAt === null).length;
   function markRead(item: NotificationListItem) {
     if (item.source === "updates") update.markRead();
     else void performNotificationAction(() => runtime.notifications.markRead([item.id]));
   }
   function readAll() {
-    update.markRead();
+    if (filteredItems.some((item) => item.source === "updates")) update.markRead();
     void performNotificationAction(() =>
       runtime.notifications.markRead(
-        items
+        filteredItems
           .filter((item) => item.source !== "updates" && item.readAt === null)
           .map((item) => item.id),
       ),
@@ -60,12 +68,11 @@ export function useNotificationCenter() {
     unreadOnly,
     setUnreadOnly,
     expandedId,
-    items: items.filter(
-      (item) =>
-        (filter === "all" || item.category === filter) &&
-        (!unreadOnly || item.readAt === null || item.id === expandedId),
+    items: filteredItems.filter(
+      (item) => !unreadOnly || item.readAt === null || item.id === expandedId,
     ),
     unreadCount,
+    filterUnreadCount,
     markRead,
     readAll,
     update,

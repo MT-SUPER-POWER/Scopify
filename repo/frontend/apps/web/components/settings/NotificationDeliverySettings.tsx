@@ -16,7 +16,7 @@ export function NotificationDeliverySettings({
     <SettingSection title={t("notifications.interruption")}>
       <SettingRow
         label={t("notifications.desktop")}
-        sublabel={t(desktopSupported ? "notifications.desktopHint" : "notifications.webHint")}
+        sublabel={desktopSupported ? undefined : t("notifications.webHint")}
         control={
           <Switch
             aria-label={t("notifications.desktop")}
@@ -39,7 +39,6 @@ export function NotificationDeliverySettings({
       />
       <SettingRow
         label={t("notifications.preview")}
-        sublabel={t("notifications.previewHint")}
         control={
           <Switch
             aria-label={t("notifications.preview")}
@@ -62,7 +61,6 @@ export function NotificationDeliverySettings({
       />
       <SettingRow
         label={t("notifications.quietHours")}
-        sublabel={t("notifications.quietHint")}
         control={
           <Switch
             aria-label={t("notifications.quietHours")}
@@ -73,11 +71,12 @@ export function NotificationDeliverySettings({
         }
       />
       {preferences.quietHours && (
-        <div className="mb-6 flex flex-wrap gap-6 rounded-xl bg-surface-sunken p-4">
+        <div className="mb-6 flex flex-wrap gap-4 rounded-xl bg-surface-sunken p-4">
           <label className="flex items-center gap-3 text-sm text-foreground">
             {t("notifications.start")}
             <SettingInput
               type="time"
+              className="w-36 min-w-36"
               value={preferences.quietStart}
               disabled={disabled}
               onChange={(quietStart) => {
@@ -89,6 +88,7 @@ export function NotificationDeliverySettings({
             {t("notifications.end")}
             <SettingInput
               type="time"
+              className="w-36 min-w-36"
               value={preferences.quietEnd}
               disabled={disabled}
               onChange={(quietEnd) => {
@@ -96,6 +96,7 @@ export function NotificationDeliverySettings({
               }}
             />
           </label>
+          <p className="w-full text-xs text-muted-foreground">{t("notifications.quietHint")}</p>
         </div>
       )}
     </SettingSection>
