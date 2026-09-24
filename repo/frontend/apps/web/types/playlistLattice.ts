@@ -1,3 +1,5 @@
+import type { RefObject } from "react";
+
 export type BlockSlot = { x: number; y: number; cols: number; rows: number };
 
 export interface LatticeCamera {
@@ -14,6 +16,11 @@ export interface LatticeDrag {
   x: number;
   y: number;
   camera: LatticeCamera;
+  lastX: number;
+  lastY: number;
+  time: number;
+  vx: number;
+  vy: number;
 }
 
 export type TileSpan = { cols: number; rows: number };
@@ -61,4 +68,24 @@ export type LatticeGeometry = {
   cellHeight: number;
   blockWidth: number;
   blockHeight: number;
+};
+
+export interface LatticePointerOptions {
+  fieldRef: RefObject<HTMLDivElement | null>;
+  cameraRef: RefObject<LatticeCamera>;
+  viewportRef: RefObject<LatticeViewport>;
+  animationRef: RefObject<{ stop: () => void } | null>;
+  apply: (camera: LatticeCamera, force?: boolean) => void;
+  stop: () => void;
+  reducedMotion: boolean | null;
+}
+
+export type WallDirection = "up" | "down" | "left" | "right";
+
+export type Axis = {
+  along: "x" | "y";
+  cross: "y" | "x";
+  alongSize: "width" | "height";
+  crossSize: "height" | "width";
+  sign: 1 | -1;
 };

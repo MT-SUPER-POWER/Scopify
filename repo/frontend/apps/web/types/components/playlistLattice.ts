@@ -26,6 +26,8 @@ export interface LatticePosterProps {
   expanded: boolean;
   current: boolean;
   playing: boolean;
+  focused: boolean;
+  onFocus: (instance: QueueInstance) => void;
   onSelect: (instance: QueueInstance) => void;
   onPlay: (track: SongDetail) => void;
 }
