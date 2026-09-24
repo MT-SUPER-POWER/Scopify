@@ -5,7 +5,6 @@ import { Badge } from "@scopify/ui/shadcn/components/badge";
 import {
   ArrowDownCircle,
   CalendarDays,
-  List,
   MessageCircle,
   Pause,
   Play,
@@ -26,6 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
+import { PlaylistViewButton } from "@/components/Playlist/lattice/PlaylistViewButton";
 import { PlaylistMoreMenu } from "@/components/Playlist/PlaylistMoreMenu";
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
@@ -70,6 +70,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     isDaily,
     isSticky = false,
     onPlayToggle,
+    onOpenLattice,
     dailyDate,
     searchOpen,
     searchQuery,
@@ -435,7 +436,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             )}
           </AnimatePresence>
 
-          <List className="size-5 text-content-muted" />
+          {onOpenLattice && <PlaylistViewButton onOpen={onOpenLattice} disabled={!tracks.length} />}
         </div>
       </div>
     </TooltipProvider>

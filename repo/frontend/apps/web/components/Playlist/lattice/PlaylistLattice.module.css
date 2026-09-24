@@ -1,0 +1,330 @@
+.root {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--color-content);
+  background: var(--color-surface-raised, #111);
+  outline: none;
+  container-type: inline-size;
+}
+.root::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    var(--color-surface-raised, #111) 0,
+    transparent 210px,
+    transparent 88%,
+    var(--color-surface-raised, #111)
+  );
+}
+.toolbar {
+  position: absolute;
+  inset: 72px 32px auto;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.identity {
+  min-width: 0;
+}
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--color-content-muted);
+}
+.wordmark span {
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+.identity h1 {
+  margin: 7px 0 0;
+  font-size: clamp(18px, 2.3cqw, 28px);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.tools button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 11px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  background: var(--color-surface-overlay, #232323);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.tools button:hover {
+  background: var(--color-surface-elevated, #333);
+}
+.tools button:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+.tools kbd {
+  opacity: 0.4;
+  font-size: 10px;
+  margin-left: 3px;
+}
+.field {
+  position: absolute;
+  inset: 152px 0 0;
+  overflow: clip;
+  touch-action: none;
+  overscroll-behavior: none;
+  cursor: grab;
+  user-select: none;
+}
+.field:active {
+  cursor: grabbing;
+}
+.world {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  background: var(--color-surface-elevated, #262626);
+  color: #fff;
+  contain: layout paint;
+}
+.poster[data-expanded="true"] {
+  z-index: 1;
+  box-shadow: 0 30px 80px #0008;
+}
+.poster[data-current="true"]::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--color-brand, #1ed760);
+  z-index: 2;
+}
+.select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.select:focus-visible {
+  outline: 4px solid white;
+  outline-offset: -6px;
+}
+.select img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.3s;
+}
+.poster:hover .select img {
+  filter: saturate(1.1) brightness(1.08);
+}
+.fallback {
+  position: absolute;
+  top: 24%;
+  left: 24%;
+  width: 52%;
+  height: 52%;
+  opacity: 0.12;
+}
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #0002 0%, transparent 30%, #0003 50%, #000c 100%);
+}
+.number {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+  background: #0007;
+}
+.currentDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  box-shadow: 0 0 12px var(--color-brand);
+}
+.expandIcon {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.poster:hover .expandIcon,
+.select:focus-visible .expandIcon {
+  opacity: 1;
+}
+.copy {
+  position: absolute;
+  bottom: 23px;
+  left: 23px;
+  right: 23px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.copy strong {
+  font-size: 38px;
+  line-height: 1.06;
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+.copy small {
+  font-size: 17px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.75;
+}
+.poster[data-expanded="true"] .copy {
+  bottom: 132px;
+  left: 40px;
+  right: 40px;
+}
+.poster[data-expanded="true"] .copy strong {
+  font-size: 70px;
+  line-height: 1.02;
+}
+.poster[data-expanded="true"] .copy small {
+  font-size: 24px;
+}
+.posterControls {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  bottom: 38px;
+  left: 40px;
+  right: 40px;
+}
+.album {
+  min-width: 0;
+  max-width: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.6;
+  font-size: 18px;
+}
+.posterControls button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 14px 24px;
+  font-size: 20px;
+  font-weight: 650;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+}
+.posterControls button:hover {
+  background: var(--color-brand, #1ed760);
+}
+.posterControls button:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 5px;
+}
+.hint {
+  pointer-events: none;
+  position: absolute;
+  z-index: 3;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  color: var(--color-content-muted);
+  background: var(--color-surface-raised, #111);
+  border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 10px;
+}
+.empty {
+  position: absolute;
+  inset: 150px 0 0;
+  display: grid;
+  place-content: center;
+  color: var(--color-content-muted);
+}
+@container (max-width: 620px) {
+  .toolbar {
+    inset: 76px 18px auto;
+    gap: 12px;
+  }
+  .tools kbd {
+    display: none;
+  }
+  .tools button {
+    min-width: 34px;
+    height: 34px;
+  }
+  .field {
+    top: 142px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .root * {
+    transition: none;
+  }
+}

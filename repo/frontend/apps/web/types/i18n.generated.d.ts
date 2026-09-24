@@ -4880,6 +4880,36 @@ export interface TranslateFn {
    */
   (key: "playlist.actions.listLabel", params?: TranslationParams): string;
   /**
+   * zh-CN: Lattice 歌单拼贴
+   * zh-TW: Lattice 歌單拼貼
+   * en-US: Lattice playlist collage
+   */
+  (key: "playlist.lattice.open", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回列表
+   * zh-TW: 返回列表
+   * en-US: Back to list
+   */
+  (key: "playlist.lattice.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: 定位当前歌曲
+   * zh-TW: 定位目前歌曲
+   * en-US: Locate current track
+   */
+  (key: "playlist.lattice.locate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 展开 {{name}}
+   * zh-TW: 展開 {{name}}
+   * en-US: Expand {{name}}
+   */
+  (key: "playlist.lattice.select", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖动浏览 · 点击封面展开 · Esc 返回列表
+   * zh-TW: 拖動瀏覽 · 點擊封面展開 · Esc 返回列表
+   * en-US: Drag to explore · Click a cover to expand · Esc to return
+   */
+  (key: "playlist.lattice.hint", params?: TranslationParams): string;
+  /**
    * zh-CN: 历史日推
    * zh-TW: 歷史日推
    * en-US: Daily history

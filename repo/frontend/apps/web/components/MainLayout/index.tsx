@@ -205,7 +205,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             />
 
             <ResizablePanel>
-              <div className="group/main bg-surface-raised relative size-full overflow-hidden rounded-lg">
+              <div data-dashboard-main className="group/main bg-surface-raised relative size-full overflow-hidden rounded-lg">
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                   <div data-track-drag-chrome className="pointer-events-auto">
                     <Header />
@@ -221,7 +221,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             <div className="bg-surface-sunken w-[20%] overflow-hidden rounded-lg">
               <Sidebar />
             </div>
-            <div className="group/main bg-surface-raised relative flex-1 overflow-hidden rounded-lg">
+            <div data-dashboard-main className="group/main bg-surface-raised relative flex-1 overflow-hidden rounded-lg">
               <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                 <div data-track-drag-chrome className="pointer-events-auto">
                   <Header />

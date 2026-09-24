@@ -18,6 +18,7 @@ export interface PlaylistActionsProps {
   inputRef: RefObject<HTMLInputElement | null>;
   isDaily: boolean;
   isSticky?: boolean;
+  onOpenLattice?: () => void;
   onPlayToggle?: () => void;
   onSearchChange: (query: string) => void;
   onSearchClose: () => void;
@@ -177,3 +178,14 @@ export interface PlaylistMoreMenuProps {
   playlistInfo: PlaylistInfo;
   isSticky?: boolean;
 }
+
+export type PlaylistContentPresentationOptions = Pick<
+  PlaylistContentProps,
+  | "playlistInfo"
+  | "tracks"
+  | "playlistId"
+  | "isDailyRecommend"
+  | "dailyDate"
+  | "readonly"
+  | "refetchTracks"
+>;
