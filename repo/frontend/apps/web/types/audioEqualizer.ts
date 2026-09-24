@@ -8,6 +8,12 @@ export type AudioEffectId =
   "highpass" | "lowpass" | "drive" | "crush" | "wow" | "noise" | "width" | "space" | "punch";
 export type AudioEffectSettings = Record<AudioEffectId, number>;
 
+export interface AudioPostEffectsGraph {
+  apply: (effects: AudioEffectSettings) => void;
+  dispose: () => void;
+  input: GainNode;
+}
+
 export interface AudioEffectControl {
   id: AudioEffectId;
   max: number;
