@@ -62,7 +62,8 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
   if (
     page === "folia-settings" ||
     page === "folia-visual-settings" ||
-    page === "folia-visualizers"
+    page === "folia-visualizers" ||
+    page === "folia-lyric-controls"
   ) {
     return (
       <CommandWorkspaceFolia

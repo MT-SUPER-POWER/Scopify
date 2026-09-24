@@ -21,7 +21,7 @@ export function CommandWorkspaceFmPlayback({
         onClick={() => void commands.previous()}
         className={footerButton}
       >
-        <SkipBack className="text-brand size-4 shrink-0" />
+        <SkipBack className="size-4 shrink-0 text-white" />
         上一首
       </button>
       <button
@@ -30,11 +30,11 @@ export function CommandWorkspaceFmPlayback({
         onClick={() => void commands.next()}
         className={footerButton}
       >
-        <SkipForward className="text-brand size-4 shrink-0" />
+        <SkipForward className="size-4 shrink-0 text-white" />
         下一首
       </button>
       <button type="button" onClick={onOpenQueue} className={footerButton}>
-        <ListMusic className="text-brand size-4 shrink-0" />
+        <ListMusic className="size-4 shrink-0 text-white" />
         面板：队列
       </button>
     </footer>

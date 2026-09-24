@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronLeft, RadioTower, X } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
+import { PiBroadcast } from "react-icons/pi";
 import { CommandWorkspaceFmPlayback } from "@/components/commandWorkspace/CommandWorkspaceFmPlayback";
 import { CommandWorkspaceFmHeader } from "@/components/commandWorkspace/CommandWorkspaceFmHeader";
 import { CommandWorkspaceFmMatrix } from "@/components/commandWorkspace/CommandWorkspaceFmMatrix";
@@ -54,8 +55,8 @@ export function CommandWorkspacePersonalFm({ onBack, onClose }: CommandWorkspace
           <ScrollArea className="h-[min(64vh,28rem)]">
             <div className="space-y-6 px-5 py-7 sm:px-12 sm:py-9">
               <header className="flex items-center gap-3">
-                <RadioTower
-                  className={`text-brand size-5 shrink-0 ${model.isLoading ? "animate-pulse" : ""}`}
+                <PiBroadcast
+                  className={`size-5 shrink-0 text-white ${model.isLoading ? "animate-pulse" : ""}`}
                 />
                 <div className="min-w-0 flex-1">
                   <h2 className="text-sm font-semibold text-zinc-200">
