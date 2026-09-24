@@ -1,11 +1,15 @@
 "use client";
 
-import { memo } from "react";
+import { lazy, memo, Suspense, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Disc3, Pause, Play } from "lucide-react";
+import { useLatticeExpansionSettled } from "@/hooks/playlist/useLatticeExpansionSettled";
 import { useI18n } from "@/store/module/i18n";
 import type { LatticePosterProps } from "@/types/components/playlistLattice";
+import { LatticePosterArtwork } from "./LatticePosterArtwork";
+import { LatticePlaybackControls } from "./LatticePlaybackControls";
 import styles from "./PlaylistLattice.module.css";
+
+const LatticeLyrics = lazy(() => import("./LatticeLyrics"));
 
 export const LatticePoster = memo(
   function LatticePoster({
@@ -14,7 +18,6 @@ export const LatticePoster = memo(
     track,
     expanded,
     current,
-    playing,
     focused,
     onFocus,
     onSelect,
@@ -22,9 +25,20 @@ export const LatticePoster = memo(
   }: LatticePosterProps) {
     const { t } = useI18n();
     const reducedMotion = useReducedMotion();
+    const [settled, onExpansionComplete] = useLatticeExpansionSettled(expanded, reducedMotion);
+    const [revealed, setRevealed] = useState(false);
+    const [focusWithin, setFocusWithin] = useState(false);
+    const [hovered, setHovered] = useState(false);
+    useEffect(() => {
+      setRevealed(false);
+    }, [expanded]);
     const artist = track.ar.map((item) => item.name).join(" / ");
-    const cover = track.al.picUrl || track.al.coverUrl;
-    const playLabel = current && playing ? t("ui.pause") : t("ui.play");
+    const copy = (
+      <span className={styles.copy}>
+        <strong>{track.name}</strong>
+        <small>{artist || track.al.name}</small>
+      </span>
+    );
     return (
       <motion.article
         className={styles.poster}
@@ -33,12 +47,22 @@ export const LatticePoster = memo(
         tabIndex={focused ? 0 : -1}
         aria-label={t("playlist.lattice.select", { name: track.name })}
         aria-expanded={expanded}
+        onFocusCapture={() => setFocusWithin(true)}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) setFocusWithin(false);
+        }}
+        onPointerDownCapture={() => setFocusWithin(false)}
         onFocus={(event) => {
           if (event.target === event.currentTarget) onFocus(instance);
         }}
+        onPointerEnter={(event) => {
+          if (event.pointerType === "mouse") setHovered(true);
+        }}
+        onPointerLeave={() => setHovered(false)}
         onClick={(event) => {
           if (event.target instanceof Element && event.target.closest("button, input")) return;
           if (!expanded) onSelect(instance);
+          else setRevealed((value) => !value);
         }}
         onKeyDown={(event) => {
           if (event.target !== event.currentTarget) return;
@@ -46,63 +70,43 @@ export const LatticePoster = memo(
             event.preventDefault();
             if (!expanded) onSelect(instance);
             else if (event.key === "Enter") onPlay(track);
+            else setRevealed((value) => !value);
           }
         }}
+        onAnimationComplete={onExpansionComplete}
         data-expanded={expanded}
         data-current={current}
         initial={false}
-        animate={{ x: rect.x, y: rect.y, width: rect.width, height: rect.height }}
-        transition={{ duration: reducedMotion ? 0 : 0.45, ease: [0.22, 1, 0.36, 1] }}
+        animate={{
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height,
+          scaleX: !expanded && (hovered || focused) ? (rect.width + 8) / rect.width : 1,
+          scaleY: !expanded && (hovered || focused) ? (rect.height + 8) / rect.height : 1,
+        }}
+        transition={{ duration: reducedMotion ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className={styles.select}>
-          <Disc3 className={styles.fallback} aria-hidden="true" />
-          {cover && (
-            <img
-              src={
-                cover.includes("music.126.net/")
-                  ? `${cover}${cover.includes("?") ? "&" : "?"}param=${expanded ? 800 : 500}y${expanded ? 800 : 500}`
-                  : cover
-              }
-              alt=""
-              draggable={false}
-              decoding="async"
-              onLoad={(event) => {
-                event.currentTarget.style.visibility = "";
-              }}
-              onError={(event) => {
-                event.currentTarget.style.visibility = "hidden";
-              }}
-            />
-          )}
-          <span className={styles.shade} />
-          <span className={styles.number}>
-            {String(instance.queueIndex + 1).padStart(2, "0")}
-            {current && <span className={styles.currentDot} />}
-          </span>
-          <span className={styles.expandIcon}>
-            <ArrowUpRight size={22} />
-          </span>
-          <span className={styles.copy}>
-            <strong>{track.name}</strong>
-            <small>{artist || track.al.name}</small>
-          </span>
-        </div>
+        <LatticePosterArtwork
+          track={track}
+          instance={instance}
+          current={current}
+          expanded={expanded}
+        />
+        {expanded && current && settled ? (
+          <Suspense fallback={copy}>
+            <LatticeLyrics track={track} />
+          </Suspense>
+        ) : (
+          copy
+        )}
         {expanded && (
-          <div className={styles.posterControls}>
-            <span className={styles.album}>{track.al.name}</span>
-            <button
-              type="button"
-              onClick={() => onPlay(track)}
-              aria-label={`${playLabel} ${track.name}`}
-            >
-              {current && playing ? (
-                <Pause size={20} fill="currentColor" />
-              ) : (
-                <Play size={20} fill="currentColor" />
-              )}
-              {playLabel}
-            </button>
-          </div>
+          <LatticePlaybackControls
+            track={track}
+            current={current}
+            revealed={revealed || hovered || focusWithin}
+            onPlay={onPlay}
+          />
         )}
       </motion.article>
     );
@@ -116,7 +120,6 @@ export const LatticePoster = memo(
     a.rect.height === b.rect.height &&
     a.expanded === b.expanded &&
     a.current === b.current &&
-    a.playing === b.playing &&
     a.focused === b.focused &&
     a.onFocus === b.onFocus &&
     a.onSelect === b.onSelect &&

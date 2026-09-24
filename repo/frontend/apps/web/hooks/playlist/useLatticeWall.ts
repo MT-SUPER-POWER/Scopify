@@ -5,6 +5,8 @@ import type { KeyboardEvent } from "react";
 import { useLatticeCamera } from "@/hooks/playlist/useLatticeCamera";
 import {
   getLatticeGeometry,
+  getInstanceBlock,
+  locateInstanceAt,
   layoutExpandedBlock,
   layoutLattice,
   locateNearestInstance,
@@ -34,6 +36,16 @@ export function useLatticeWall(trackCount: number) {
   const instances = useMemo(() => {
     if (!viewport.width || !viewport.height) return [];
     const visible = layoutLattice(geometry, trackCount, bounds, 500, metrics);
+    // Expansion redistributes every tile in its block; retain those tiles even when
+    // their original positions lie outside the cull region.
+    if (selected) {
+      const block = getInstanceBlock(geometry, selected);
+      for (let slot = 0; slot < 12; slot++) {
+        const item = locateInstanceAt(geometry, trackCount, block.column, block.row, slot, metrics);
+        if (item && !visible.some((tile) => tile.instanceId === item.instanceId))
+          visible.push(item);
+      }
+    }
     for (const keep of [selected, focused])
       if (keep && !visible.some((item) => item.instanceId === keep.instanceId)) visible.push(keep);
     return visible;

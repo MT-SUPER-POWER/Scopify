@@ -226,7 +226,7 @@
   opacity: 1;
 }
 .poster[data-expanded="true"] .copy {
-  bottom: 128px;
+  bottom: 180px;
   left: 40px;
   right: 40px;
 }
@@ -237,45 +237,6 @@
 }
 .poster[data-expanded="true"] .copy small {
   font-size: 23px;
-}
-.posterControls {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  bottom: 36px;
-  left: 40px;
-  right: 40px;
-}
-.album {
-  min-width: 0;
-  max-width: 65%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  opacity: 0.6;
-  font-size: 18px;
-}
-.posterControls button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-  border-radius: 999px;
-  padding: 17px 25px;
-  font-size: 20px;
-  font-weight: 650;
-  background: #fff;
-  color: #111;
-  cursor: pointer;
-}
-.posterControls button:hover {
-  background: var(--primary);
-}
-.posterControls button:focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: 5px;
 }
 .empty {
   position: absolute;
@@ -293,4 +254,71 @@
   .root * {
     transition: none;
   }
+}
+
+.poster:hover,
+.poster:focus-within {
+  z-index: 2;
+}
+.root[data-lights-off="true"] .poster:not([data-current="true"]):not([data-expanded="true"]) {
+  filter: brightness(0.28);
+}
+.root[data-lights-off="true"] .poster:hover {
+  filter: none;
+}
+.poster {
+  transition: filter 0.3s;
+}
+.toolbar:has(button[data-state="open"]) {
+  opacity: 1;
+}
+
+.lyrics {
+  position: absolute;
+  inset: 140px 32px 184px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+}
+.lyrics[data-ready="true"] {
+  opacity: 1;
+}
+.lyricCanvas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.lyricCanvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.lyricMetadata {
+  position: absolute;
+  top: 64px;
+  left: 40px;
+  right: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  pointer-events: none;
+}
+.lyricMetadata strong {
+  font-size: 25px;
+  line-height: 1.25;
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.lyricMetadata small {
+  font-size: 17px;
+  opacity: 0.65;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.poster[data-expanded="true"][data-current="true"] .shade {
+  background: linear-gradient(180deg, #0004, #0008 42%, #000b);
 }

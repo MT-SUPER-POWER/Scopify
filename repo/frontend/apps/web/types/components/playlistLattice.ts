@@ -25,7 +25,6 @@ export interface LatticePosterProps {
   track: SongDetail;
   expanded: boolean;
   current: boolean;
-  playing: boolean;
   focused: boolean;
   onFocus: (instance: QueueInstance) => void;
   onSelect: (instance: QueueInstance) => void;
@@ -38,4 +37,24 @@ export interface LatticeToolbarProps {
   canLocate: boolean;
   onLocate: () => void;
   onClose: () => void;
+}
+export interface LatticeProgressProps {
+  current: boolean;
+  durationMs: number;
+  trackId: number;
+}
+
+export interface LatticePlaybackControlsProps {
+  track: SongDetail;
+  current: boolean;
+  revealed: boolean;
+  onPlay: (track: SongDetail) => void;
+}
+
+export type LatticePosterArtworkProps = Pick<
+  LatticePosterProps,
+  "track" | "instance" | "current" | "expanded"
+>;
+export interface LatticeLyricsProps {
+  track: SongDetail;
 }

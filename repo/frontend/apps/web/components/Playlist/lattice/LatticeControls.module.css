@@ -1,0 +1,127 @@
+.chrome {
+  position: absolute;
+  z-index: 2;
+  bottom: 32px;
+  left: 40px;
+  right: 40px;
+  color: #fff;
+  cursor: auto;
+}
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.transport button {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  opacity: 0.72;
+  transition:
+    opacity 0.2s,
+    background 0.2s;
+}
+.transport button:hover,
+.transport button:focus-visible {
+  opacity: 1;
+  background: #ffffff18;
+}
+.transport button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+.transport button:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.transport button[aria-pressed="true"] {
+  color: var(--primary);
+  opacity: 1;
+}
+.transport svg {
+  width: 25px;
+  height: 25px;
+}
+.transport .play {
+  opacity: 1;
+  width: 56px;
+  height: 56px;
+}
+.transport .play svg {
+  width: 34px;
+  height: 34px;
+}
+.details {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+.chrome[data-revealed="true"] .details {
+  opacity: 1;
+  transform: none;
+}
+.transport .open {
+  margin-left: auto;
+}
+.progress {
+  margin-top: 16px;
+}
+.progress input {
+  display: block;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  cursor: pointer;
+  margin: 0;
+  outline-offset: 6px;
+  background: transparent;
+  touch-action: none;
+}
+.progress input::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(to right, #fff var(--progress), #ffffff38 var(--progress));
+}
+.progress input::-moz-range-track {
+  height: 4px;
+  background: linear-gradient(to right, #fff var(--progress), #ffffff38 var(--progress));
+}
+.progress input::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: #fff;
+}
+.progress input::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+}
+.progress input:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+.time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.58;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chrome * {
+    transition: none;
+  }
+}

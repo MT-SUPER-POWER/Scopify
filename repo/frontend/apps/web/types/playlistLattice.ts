@@ -89,3 +89,9 @@ export type Axis = {
   crossSize: "height" | "width";
   sign: 1 | -1;
 };
+export interface LatticePreferences {
+  followCurrent: boolean;
+  lightsOff: boolean;
+  setFollowCurrent: (value: boolean) => void;
+  setLightsOff: (value: boolean) => void;
+}

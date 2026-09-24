@@ -5168,9 +5168,27 @@ export interface TranslateFn {
    */
   (key: "playlist.lattice.select", params?: TranslationParams): string;
   /**
-   * zh-CN: 拖动浏览 · 点击封面展开 · Esc 返回列表
-   * zh-TW: 拖動瀏覽 · 點擊封面展開 · Esc 返回列表
-   * en-US: Drag to explore · Click a cover to expand · Esc to return
+   * zh-CN: 浏览选项
+   * zh-TW: 瀏覽選項
+   * en-US: Browse options
+   */
+  (key: "playlist.lattice.options", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动跟随当前歌曲
+   * zh-TW: 自動跟隨目前歌曲
+   * en-US: Follow current track
+   */
+  (key: "playlist.lattice.follow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暗场
+   * zh-TW: 暗場
+   * en-US: Dim other covers
+   */
+  (key: "playlist.lattice.lightsOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 拖动或滚轮浏览 · Shift 横向滚动 · 方向键选图 · Enter 展开 / 播放 · Esc 收起，再按返回
+   * zh-TW: 拖動或滾輪瀏覽 · Shift 橫向捲動 · 方向鍵選圖 · Enter 展開 / 播放 · Esc 收起，再按返回
+   * en-US: Drag or scroll to explore · Shift scrolls sideways · Arrows select · Enter expands / plays · Esc collapses, then returns
    */
   (key: "playlist.lattice.hint", params?: TranslationParams): string;
   /**

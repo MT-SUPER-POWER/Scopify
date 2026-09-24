@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useRef } from "react";
 import { useLatticeWall } from "@/hooks/playlist/useLatticeWall";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import { useLatticePreferences } from "@/store/module/lattice";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
@@ -23,6 +24,8 @@ export default function PlaylistLattice({
   const rootRef = useRef<HTMLElement>(null);
   const hintId = useId();
   const wall = useLatticeWall(tracks.length);
+  const followCurrent = useLatticePreferences((state) => state.followCurrent);
+  const lightsOff = useLatticePreferences((state) => state.lightsOff);
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
   const queueSource = usePlayerStore((state) => state.playlistId);
@@ -31,8 +34,8 @@ export default function PlaylistLattice({
     queueSource === sourceId ? tracks.findIndex((track) => track.id === playback.track?.id) : -1;
   const play = useCallback(
     (track: SongDetail) => {
-      if (onTrackPlay) onTrackPlay(track);
-      else if (queueSource === sourceId && track.id === playback.track?.id) void commands.toggle();
+      if (queueSource === sourceId && track.id === playback.track?.id) void commands.toggle();
+      else if (onTrackPlay) onTrackPlay(track);
       else void playFromSong(track, tracks, sourceId);
     },
     [commands, onTrackPlay, playback.track?.id, playFromSong, queueSource, sourceId, tracks],
@@ -40,11 +43,15 @@ export default function PlaylistLattice({
   useEffect(() => {
     wall.fieldRef.current?.focus({ preventScroll: true });
   }, []);
+  useEffect(() => {
+    if (followCurrent && currentIndex >= 0) wall.locate(currentIndex);
+  }, [followCurrent, currentIndex, wall.locate]);
   return (
     <section
       ref={rootRef}
       tabIndex={-1}
       className={styles.root}
+      data-lights-off={lightsOff && currentIndex >= 0}
       aria-label={t("playlist.lattice.open")}
       aria-describedby={hintId}
       onKeyDown={(event) => wall.onKeyDown(event, onClose)}
@@ -56,7 +63,7 @@ export default function PlaylistLattice({
         onLocate={() => wall.locate(currentIndex)}
         onClose={onClose}
       />
-      <div ref={wall.fieldRef} className={styles.field} tabIndex={0} {...wall.pointerHandlers}>
+      <div ref={wall.fieldRef} className={styles.field} aria-label={title} tabIndex={0} {...wall.pointerHandlers}>
         <div ref={wall.worldRef} className={styles.world}>
           {wall.instances.map((instance) => {
             const track = tracks[instance.queueIndex];
@@ -72,7 +79,6 @@ export default function PlaylistLattice({
                 onFocus={wall.focus}
                 expanded={wall.selected?.instanceId === instance.instanceId}
                 current={instance.queueIndex === currentIndex}
-                playing={instance.queueIndex === currentIndex && playback.isPlaying}
                 onSelect={wall.select}
                 onPlay={play}
               />
