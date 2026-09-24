@@ -5,6 +5,270 @@ import type { TranslationKey, TranslationParams } from "@/lib/i18n";
 
 export interface TranslateFn {
   /**
+   * zh-CN: 登录设备
+   * zh-TW: 登入裝置
+   * en-US: Signed-in devices
+   */
+  (key: "devices.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 账号与设备
+   * zh-TW: 帳號與裝置
+   * en-US: Account & devices
+   */
+  (key: "devices.account", params?: TranslationParams): string;
+  /**
+   * zh-CN: 管理已登录账号的设备，查看最近活动，让每一次登录都有迹可循。
+   * zh-TW: 管理已登入帳號的裝置，查看最近活動，讓每一次登入都有跡可循。
+   * en-US: Manage your signed-in devices and explore their recent activity.
+   */
+  (key: "devices.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设计预览
+   * zh-TW: 設計預覽
+   * en-US: Design preview
+   */
+  (key: "devices.preview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 以下为示例设备，仅用于预览页面。
+   * zh-TW: 以下為範例裝置，僅用於預覽頁面。
+   * en-US: Sample devices for a preview of this page.
+   */
+  (key: "devices.previewNote", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前设备
+   * zh-TW: 目前裝置
+   * en-US: This device
+   */
+  (key: "devices.current", params?: TranslationParams): string;
+  /**
+   * zh-CN: 给这台设备一个熟悉的名字，下次一眼就能认出。
+   * zh-TW: 給這台裝置一個熟悉的名字，下次一眼就能認出。
+   * en-US: Give this device a familiar name so it is easy to recognize next time.
+   */
+  (key: "devices.currentNote", params?: TranslationParams): string;
+  /**
+   * zh-CN: 修改设备名称
+   * zh-TW: 修改裝置名稱
+   * en-US: Rename device
+   */
+  (key: "devices.rename", params?: TranslationParams): string;
+  /**
+   * zh-CN: 功能接入后可用
+   * zh-TW: 功能接入後可用
+   * en-US: Available after integration
+   */
+  (key: "devices.soon", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设备额度
+   * zh-TW: 裝置額度
+   * en-US: Device allowance
+   */
+  (key: "devices.allowance", params?: TranslationParams): string;
+  /**
+   * zh-CN: 示例额度 · 以账号实际信息为准
+   * zh-TW: 範例額度 · 以帳號實際資訊為準
+   * en-US: Sample allowance · actual account limits may vary
+   */
+  (key: "devices.allowanceNote", params?: TranslationParams): string;
+  /**
+   * zh-CN: 其他登录设备
+   * zh-TW: 其他登入裝置
+   * en-US: Other devices
+   */
+  (key: "devices.others", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看登录过的设备与最近活动。
+   * zh-TW: 查看登入過的裝置與最近活動。
+   * en-US: Explore your devices and their recent activity.
+   */
+  (key: "devices.othersNote", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所有设备
+   * zh-TW: 所有裝置
+   * en-US: All devices
+   */
+  (key: "devices.all", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手机
+   * zh-TW: 手機
+   * en-US: Phones
+   */
+  (key: "devices.mobile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 电脑
+   * zh-TW: 電腦
+   * en-US: Computers
+   */
+  (key: "devices.computer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设备详情
+   * zh-TW: 裝置詳情
+   * en-US: Device details
+   */
+  (key: "devices.details", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看详情
+   * zh-TW: 查看詳情
+   * en-US: View details
+   */
+  (key: "devices.viewDetails", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近活动
+   * zh-TW: 最近活動
+   * en-US: Last active
+   */
+  (key: "devices.lastActive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录地区
+   * zh-TW: 登入地區
+   * en-US: Sign-in region
+   */
+  (key: "devices.region", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录方式
+   * zh-TW: 登入方式
+   * en-US: Sign-in method
+   */
+  (key: "devices.loginMethod", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设备平台
+   * zh-TW: 裝置平台
+   * en-US: Platform
+   */
+  (key: "devices.platform", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下线此设备
+   * zh-TW: 登出此裝置
+   * en-US: Sign out this device
+   */
+  (key: "devices.signOut", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览内容为示例信息，不代表实际登录状态。
+   * zh-TW: 預覽內容為範例資訊，不代表實際登入狀態。
+   * en-US: Sample information; this does not reflect a live session.
+   */
+  (key: "devices.detailsNote", params?: TranslationParams): string;
+  /**
+   * zh-CN: 名称修改与设备下线将在功能接入后开放。
+   * zh-TW: 名稱修改與裝置登出將在功能接入後開放。
+   * en-US: Renaming and signing out devices will be available after integration.
+   */
+  (key: "devices.noActions", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看较早的记录
+   * zh-TW: 查看較早的紀錄
+   * en-US: View older records
+   */
+  (key: "devices.more", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收起较早的记录
+   * zh-TW: 收起較早的紀錄
+   * en-US: Hide older records
+   */
+  (key: "devices.less", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设备名称与最近活动，帮你辨认每一次登录。
+   * zh-TW: 裝置名稱與最近活動，幫你辨認每一次登入。
+   * en-US: Device names and recent activity help you recognize every sign-in.
+   */
+  (key: "devices.footer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有这类示例设备
+   * zh-TW: 沒有這類範例裝置
+   * en-US: No sample devices in this category
+   */
+  (key: "devices.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭设备详情
+   * zh-TW: 關閉裝置詳情
+   * en-US: Close device details
+   */
+  (key: "devices.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 你的设备，一目了然
+   * zh-TW: 你的裝置，一目了然
+   * en-US: Your devices, at a glance
+   */
+  (key: "devices.entryTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看登录设备、最近活动与设备名称。
+   * zh-TW: 查看登入裝置、最近活動與裝置名稱。
+   * en-US: Explore signed-in devices, recent activity and device names.
+   */
+  (key: "devices.entryNote", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看登录设备
+   * zh-TW: 查看登入裝置
+   * en-US: View devices
+   */
+  (key: "devices.entryAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回账号与设备
+   * zh-TW: 返回帳號與裝置
+   * en-US: Back to account & devices
+   */
+  (key: "devices.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刚刚
+   * zh-TW: 剛剛
+   * en-US: Just now
+   */
+  (key: "devices.time.now", params?: TranslationParams): string;
+  /**
+   * zh-CN: 今天 18:32
+   * zh-TW: 今天 18:32
+   * en-US: Today, 18:32
+   */
+  (key: "devices.time.recent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 昨天 21:08
+   * zh-TW: 昨天 21:08
+   * en-US: Yesterday, 21:08
+   */
+  (key: "devices.time.yesterday", params?: TranslationParams): string;
+  /**
+   * zh-CN: 3 天前
+   * zh-TW: 3 天前
+   * en-US: 3 days ago
+   */
+  (key: "devices.time.days", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更早
+   * zh-TW: 更早
+   * en-US: Earlier
+   */
+  (key: "devices.time.earlier", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知地区
+   * zh-TW: 未知地區
+   * en-US: Unknown region
+   */
+  (key: "devices.region.unknown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浙江
+   * zh-TW: 浙江
+   * en-US: Zhejiang
+   */
+  (key: "devices.region.example", params?: TranslationParams): string;
+  /**
+   * zh-CN: 扫码登录
+   * zh-TW: 掃碼登入
+   * en-US: QR code
+   */
+  (key: "devices.login.qr", params?: TranslationParams): string;
+  /**
+   * zh-CN: 快速登录
+   * zh-TW: 快速登入
+   * en-US: Quick sign-in
+   */
+  (key: "devices.login.quick", params?: TranslationParams): string;
+  /**
+   * zh-CN: 验证码登录
+   * zh-TW: 驗證碼登入
+   * en-US: Verification code
+   */
+  (key: "devices.login.sms", params?: TranslationParams): string;
+  /**
    * zh-CN: 消息、互动与听歌时光
    * zh-TW: 訊息、互動與聽歌時光
    * en-US: Messages, moments and music

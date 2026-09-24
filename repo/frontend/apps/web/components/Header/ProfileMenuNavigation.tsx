@@ -5,6 +5,7 @@ import {
   Footprints,
   Info,
   LogOut,
+  MonitorSmartphone,
   Settings,
   Users,
 } from "lucide-react";
@@ -61,6 +62,14 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
             <ChevronRight className={arrowClassName} />
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem
+          onSelect={() => smartRouter.push("/setting/devices")}
+          className={itemClassName}
+        >
+          <MonitorSmartphone className={iconClassName} />
+          <span>{t("devices.title")}</span>
+          <ChevronRight className={arrowClassName} />
+        </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => smartRouter.push("/setting")} className={itemClassName}>
           <Settings className={iconClassName} />
           <span>{t("profile.menu.settings")}</span>

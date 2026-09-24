@@ -1,7 +1,6 @@
-import type { TranslationKey } from "@/lib/i18n";
-import type { SettingsTabId } from "@/types/settings";
+import type { SettingsTabDefinition } from "@/types/settings";
 
-export const SETTINGS_TABS: readonly { id: SettingsTabId; labelKey: TranslationKey }[] = [
+export const SETTINGS_TABS: readonly SettingsTabDefinition[] = [
   { id: "general", labelKey: "settings.tab.general" },
   { id: "appearance", labelKey: "settings.tab.appearance" },
   { id: "network", labelKey: "settings.tab.network" },

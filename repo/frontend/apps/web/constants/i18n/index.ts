@@ -1,4 +1,5 @@
 import { musicDiscoveryMessages } from "./musicDiscovery";
+import { deviceMessages } from "./devices";
 import { themeEditorMessages } from "./themeEditor";
 import { subtitlePaletteMessages } from "./subtitlePalette";
 import { subtitleControlMessages } from "./subtitleControl";
@@ -43,6 +44,7 @@ import { notificationMessages } from "./notifications";
 
 export const messages = {
   "zh-CN": {
+    ...deviceMessages["zh-CN"],
     ...notificationMessages["zh-CN"],
     ...commonMessages["zh-CN"],
     ...errorPageMessages["zh-CN"],
@@ -87,6 +89,7 @@ export const messages = {
     ...personalFmMessages["zh-CN"],
   },
   "zh-TW": {
+    ...deviceMessages["zh-TW"],
     ...notificationMessages["zh-TW"],
     ...commonMessages["zh-TW"],
     ...errorPageMessages["zh-TW"],
@@ -131,6 +134,7 @@ export const messages = {
     ...personalFmMessages["zh-TW"],
   },
   "en-US": {
+    ...deviceMessages["en-US"],
     ...notificationMessages["en-US"],
     ...commonMessages["en-US"],
     ...errorPageMessages["en-US"],
