@@ -87,6 +87,8 @@
 
 ### Quality
 
+- **Sonnet 色差绘制批次优化**：同步 Folia `c3d68918`，将逐字红青色差副本收拢至共享图层，保持位置、旋转、缩放和透明度同步，减少混合模式切换；相关视图与运行时类型归入歌词领域类型目录。
+
 - **字幕设置共用控件**：设置页和配色编辑共用同一套颜色字段与显示条件，未唱颜色归入配色，预览复用实际字幕组件；字体、填色和动效控件改为受控组件，填色与打字机互斥规则统一到设置更新函数。
 
 - **PlayBar 全架构解耦拆分**：全面解耦拆分 `PlayerBar` 的左侧歌曲信息（`PlayerBarLeftControls`、`PlayerBarStatAction`）、中央播放控制（`PlayerBarCenterControls`）及右侧扩展图标（`PlayerBarRightControls`、`AudioOutputDeviceControl`、`AudioSettingsButton`、`FullscreenButton`、`LyricStageButton`、`QueuePopoverLauncher`、`VolumeControl`），统一收归 `@components/PlayBar/` 模块并通过 `index.tsx` 总入口进行装配与导出。

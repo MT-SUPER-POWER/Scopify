@@ -1,97 +1,29 @@
+import type {
+  PixiModule,
+  GlyphGhostView,
+  GlyphView,
+  SegmentView,
+  SonnetTextViewOptions,
+} from "../../../../../../../types/lyrics/folia/sonnetTextView";
+export type {
+  GlyphGhostView,
+  GlyphView,
+  SegmentView,
+} from "../../../../../../../types/lyrics/folia/sonnetTextView";
 import { layoutWithLines, prepareWithSegments } from "@chenglou/pretext";
 import "pixi.js/advanced-blend-modes";
-import type { Theme } from "../../../types";
+
 import { buildSonnetGlyphLayout } from "./sonnetGlyphLayout";
 import { resolveSonnetSegmentDepth, resolveSonnetSegmentNormalOffset } from "./sonnetMotion";
 import { hashSonnetSeed } from "./sonnetRandom";
 import { buildSonnetStaffView } from "./sonnetStaffView";
 import { buildSonnetTextFixedGeo } from "./sonnetTextFixedGeo";
 import { resolveSonnetCameraTrackingGlyphs } from "./sonnetCameraTracking";
-import { createSonnetGuide, type SonnetGuideView } from "./sonnetGuides";
-import {
-  buildSonnetFrameDecor,
-  resolveSonnetFrameDecorSpec,
-  type SonnetFrameDecorView,
-} from "./sonnetFrameDecor";
-import type { SonnetSemanticSegment } from "./types";
-import {
-  isSonnetEmphasisRole,
-  type SonnetSegmentRole,
-  type SonnetTypographyPlacement,
-} from "./sonnetTypographyLayout";
+import { createSonnetGuide } from "./sonnetGuides";
+import { buildSonnetFrameDecor, resolveSonnetFrameDecorSpec } from "./sonnetFrameDecor";
+
+import { isSonnetEmphasisRole } from "./sonnetTypographyLayout";
 import { resolveSonnetRoleFontWeight } from "./sonnetTypographyRoles";
-
-// src/components/visualizer/sonnet/sonnetTextViewBuilder.ts
-// Creates parser-timed core/halo glyph pairs and their semantic guide view.
-type PixiModule = typeof import("pixi.js");
-
-export interface GlyphGhostView {
-  node: import("pixi.js").Text;
-  // Full-spread offset in wrapper-local px and the layer's peak alpha, both
-  // precomputed so the runtime only scales by the envelope.
-  dirX: number;
-  dirY: number;
-  alphaBase: number;
-}
-
-export interface GlyphView {
-  display: import("pixi.js").Container;
-  halo: import("pixi.js").Text | null;
-  caCyan?: import("pixi.js").Text;
-  caRed?: import("pixi.js").Text;
-  caOffset?: number;
-  ghosts?: GlyphGhostView[];
-  ghostDuration?: number;
-  baseX: number;
-  baseY: number;
-  enterX: number;
-  enterY: number;
-  entryRotation: number;
-  finalRotation: number;
-  startTime: number;
-  settleTime: number;
-  zDepth: number;
-  isBackgroundShape?: boolean;
-  isTextGlyph?: boolean;
-  updateAnimation?: (time: number) => void;
-}
-
-export interface SegmentView {
-  segmentIndex: number;
-  displayText: string;
-  role: SonnetSegmentRole;
-  fontScale: number;
-  x: number;
-  y: number;
-  rotation: number;
-  enterX: number;
-  enterY: number;
-  vertical: boolean;
-  timingPhase: number;
-  guide: SonnetGuideView;
-  frameDecor?: SonnetFrameDecorView | null;
-  glyphs: GlyphView[];
-  trackingGlyphs: GlyphView[];
-}
-
-interface SonnetTextViewOptions {
-  segment: SonnetSemanticSegment;
-  placement: SonnetTypographyPlacement;
-  segmentIndex: number;
-  baseFontSize: number;
-  shotStartTime: number;
-  shotEndTime: number;
-  paragraphKind: string;
-  width: number;
-  fontFamily: string;
-  fontWeight?: number | null;
-  theme: Theme;
-  glowEnabled: boolean;
-  showFixedGeo: boolean;
-  guideLayer: import("pixi.js").Container;
-  haloLayer: import("pixi.js").Container;
-  textLayer: import("pixi.js").Container;
-}
 
 export const measureText = (text: string, fontSpec: string, fontSize: number) => {
   try {
@@ -270,6 +202,7 @@ export const buildSonnetTextView = (
     wrapper.alpha = 0;
 
     // Chromatic Aberration (Dispersion) Effect
+    let caWrapperNode: import("pixi.js").Container | undefined;
     let caCyanNode: import("pixi.js").Text | undefined;
     let caRedNode: import("pixi.js").Text | undefined;
     let caOffsetValue: number | undefined;
@@ -291,7 +224,13 @@ export const buildSonnetTextView = (
       caRed.anchor.set(0.5);
       caRed.alpha = isHero ? 0.8 : 0.5;
 
-      wrapper.addChild(caCyan, caRed);
+      const caWrapper = new pixi.Container();
+      caWrapper.rotation = wrapper.rotation;
+      caWrapper.position.copyFrom(wrapper.position);
+      caWrapper.alpha = 0;
+      caWrapper.addChild(caCyan, caRed);
+      options.caLayer.addChild(caWrapper);
+      caWrapperNode = caWrapper;
       caCyanNode = caCyan;
       caRedNode = caRed;
     }
@@ -326,6 +265,7 @@ export const buildSonnetTextView = (
     return {
       display: wrapper,
       halo: null,
+      caWrapper: caWrapperNode,
       caCyan: caCyanNode,
       caRed: caRedNode,
       caOffset: caOffsetValue,

@@ -43,6 +43,11 @@ the original full-copy baseline:
   complete Tempera / 凝彩 Pixi visualizer, user image pool, Still mode, and the
   shared Pixi resource-lifecycle helper required by the new renderer set.
 
+- `c3d689186682e91fba42167dd511518867c73981` — group Sonnet chromatic-aberration
+  copies in one shared layer, synchronizing glyph transforms without alternating
+  screen/normal blend modes for each glyph. Touched runtime/view types live in
+  Scopify's `types/lyrics/folia`, with compatibility type exports at vendor paths.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

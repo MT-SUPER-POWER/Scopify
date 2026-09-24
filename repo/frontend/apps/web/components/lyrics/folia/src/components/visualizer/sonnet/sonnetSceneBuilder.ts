@@ -1,6 +1,16 @@
-import type { SonnetTuning, Theme } from "../../../types";
+import type {
+  PixiModule,
+  SceneView,
+  SonnetSceneBuildOptions,
+} from "../../../../../../../types/lyrics/folia/sonnetScene";
+export type {
+  ShotView,
+  SceneView,
+  SonnetSceneBuildOptions,
+} from "../../../../../../../types/lyrics/folia/sonnetScene";
+
 import { normalizeFontWeight, resolveThemeFontStack } from "../../../utils/fontStacks";
-import type { SonnetParagraph, SonnetShot } from "./types";
+import type { SonnetParagraph } from "./types";
 import { hashSonnetSeed } from "./sonnetRandom";
 import { buildSonnetShotMg } from "./sonnetShotMg";
 import {
@@ -10,58 +20,12 @@ import {
 } from "./sonnetPostProcess";
 import { isSonnetLayoutSegment, resolveSonnetTypographyLayout } from "./sonnetTypographyLayout";
 import { buildSonnetTextView, type SegmentView } from "./sonnetTextViewBuilder";
-import { createSonnetGlitchEffect, type SonnetGlitchEffect } from "./sonnetGlitchFilter";
-import {
-  buildSonnetMeasuredBoundsDebug,
-  createSonnetShotDebugInfo,
-  type SonnetDebugShotInfo,
-} from "./sonnetDebug";
+import { createSonnetGlitchEffect } from "./sonnetGlitchFilter";
+import { buildSonnetMeasuredBoundsDebug, createSonnetShotDebugInfo } from "./sonnetDebug";
 import { resolveSonnetGeoVariant } from "./sonnetSpatialMgGeometry";
 import { resolveSonnetBackgroundMgVariant } from "./sonnetBackgroundMgVariants";
 import { resolveSonnetBackgroundDecorVariant } from "./sonnetBackgroundDecor";
 import { resolveSonnetFixedGeoVariant } from "./sonnetFixedGeoVariants";
-
-// src/components/visualizer/sonnet/sonnetSceneBuilder.ts
-// Builds one bounded paragraph scene; playback-time mutation remains in the runtime controller.
-type PixiModule = typeof import("pixi.js");
-
-export interface ShotView {
-  shot: SonnetShot;
-  container: import("pixi.js").Container;
-  segments: SegmentView[];
-  debugInfo: SonnetDebugShotInfo;
-  baseX: number;
-  baseY: number;
-  basePivotX: number;
-  basePivotY: number;
-  haloLayer: import("pixi.js").Container;
-  mgLayer: import("pixi.js").Container;
-  mgBackgroundLayer?: import("pixi.js").Container;
-  mgGeoLayer?: import("pixi.js").Container;
-  mgParticleLayer?: import("pixi.js").Container;
-  mgFixedGeoLayer?: import("pixi.js").Container;
-}
-
-export interface SceneView {
-  paragraph: SonnetParagraph;
-  container: import("pixi.js").Container;
-  shots: ShotView[];
-  shotTimeline: SonnetShot[];
-  postProcessFilters: import("pixi.js").Filter[];
-  transitionBlurFilter: import("pixi.js").BlurFilter | null;
-  transitionGlitchEffect: SonnetGlitchEffect | null;
-  activeShotIndex: number;
-}
-
-export interface SonnetSceneBuildOptions {
-  programSeed: string;
-  host: HTMLDivElement;
-  theme: Theme;
-  tuning: SonnetTuning;
-  lyricsFontScale: number;
-  staticMode: boolean;
-  transparentBackground: boolean;
-}
 
 const colorNumber = (pixi: PixiModule, color: string) =>
   pixi.Color.shared.setValue(color).toNumber();
@@ -226,6 +190,13 @@ export const buildSonnetScene = (
     );
     const guideLayer = new Container();
     const textLayer = new Container();
+    // Every glyph's screen-blended aberration copies share this one layer instead of sitting in
+    // the glyph wrapper. Interleaved screen/normal children break Pixi's batch on each switch,
+    // turning a shot into ~2 draws per glyph; an Intel iGPU has hung on exactly that stream and
+    // the failed engine reset took the compositor down with it. Added first, so the bg shapes
+    // and frame decor later inserted at index 0 still sit below the aberration.
+    const caLayer = new Container();
+    textLayer.addChild(caLayer);
     guideLayer.visible = showGuide;
     haloLayer.visible = !showOnlyText;
     shotContainer.addChild(guideLayer, haloLayer, textLayer);
@@ -256,6 +227,7 @@ export const buildSonnetScene = (
           guideLayer,
           haloLayer,
           textLayer,
+          caLayer,
         }),
       );
     });

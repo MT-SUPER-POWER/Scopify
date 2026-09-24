@@ -1,7 +1,15 @@
-import type { MotionValue } from "framer-motion";
-import type { AudioBands, SonnetTuning, Theme } from "../../../types";
+import type {
+  PixiModule,
+  SonnetSongMetadata,
+  SonnetRuntimeOptions,
+} from "../../../../../../../types/lyrics/folia/sonnetRuntime";
+export type {
+  SonnetSongMetadata,
+  SonnetRuntimeOptions,
+} from "../../../../../../../types/lyrics/folia/sonnetRuntime";
+
 import { setPixiDisplayTreeVisibility } from "../pixiDisplayResources";
-import type { SonnetProgram } from "./types";
+
 import { findSonnetParagraphIndexAtTime } from "./sonnetProgram";
 import {
   buildSonnetIconDataUrl,
@@ -39,34 +47,6 @@ import {
 } from "./sonnetCredits";
 import { sonnetDebugState } from "./sonnetDebug";
 import { resolveSonnetSegmentCameraFocus } from "./sonnetCameraTracking";
-
-// src/components/visualizer/sonnet/createSonnetPixiRuntime.ts
-// Owns Pixi lifecycle and mutates bounded scene views directly from absolute playback time.
-type PixiModule = typeof import("pixi.js");
-
-export interface SonnetSongMetadata {
-  title?: string | null;
-  artist?: string | null;
-  album?: string | null;
-}
-
-export interface SonnetRuntimeOptions {
-  host: HTMLDivElement;
-  program: SonnetProgram;
-  theme: Theme;
-  tuning: SonnetTuning;
-  currentTime: MotionValue<number>;
-  audioPower?: MotionValue<number>;
-  audioBands?: AudioBands;
-  lyricsFontScale: number;
-  staticMode: boolean;
-  transparentBackground: boolean;
-  paused: boolean;
-  songTitle?: string | null;
-  songArtist?: string | null;
-  songAlbum?: string | null;
-  signal?: AbortSignal;
-}
 
 export class SonnetPixiRuntime {
   private readonly sceneCache = new Map<number, SceneView>();
@@ -586,9 +566,13 @@ export class SonnetPixiRuntime {
         }
 
         // Animate Chromatic Aberration separation and merging
-        if (glyph.caCyan && glyph.caRed && glyph.caOffset) {
-          glyph.caCyan.visible = glyphVisible && !this.options.tuning.showOnlyText;
-          glyph.caRed.visible = glyphVisible && !this.options.tuning.showOnlyText;
+        if (glyph.caWrapper && glyph.caCyan && glyph.caRed && glyph.caOffset) {
+          const ca = glyph.caWrapper;
+          ca.visible = glyphVisible && !this.options.tuning.showOnlyText;
+          ca.alpha = coreAlpha;
+          ca.scale.copyFrom(glyph.display.scale);
+          ca.position.copyFrom(glyph.display.position);
+          ca.rotation = rotation;
           // Starts separated (impact), and gently merges to a very subtle base offset
           const mergeEased = easeSonnetInOut(glyphProgress);
           const currentOffset = glyph.caOffset * (1 - mergeEased * 0.8); // 1.0 -> 0.2
