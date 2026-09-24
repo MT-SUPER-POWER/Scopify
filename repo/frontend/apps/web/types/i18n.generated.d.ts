@@ -20944,5 +20944,635 @@ export interface TranslateFn {
    * en-US: Global
    */
   (key: "personalFm.scene.global", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态
+   * zh-TW: 動態
+   * en-US: Activity
+   */
+  (key: "social.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 让好音乐，遇见懂它的人。
+   * zh-TW: 讓好音樂，遇見懂它的人。
+   * en-US: Good music brings us together.
+   */
+  (key: "social.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 朋友动态
+   * zh-TW: 朋友動態
+   * en-US: Your feed
+   */
+  (key: "social.feed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关注的人
+   * zh-TW: 關注的人
+   * en-US: Following
+   */
+  (key: "social.following", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的主页
+   * zh-TW: 我的主頁
+   * en-US: My profile
+   */
+  (key: "social.myProfile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 粉丝
+   * zh-TW: 粉絲
+   * en-US: Followers
+   */
+  (key: "social.followers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关注
+   * zh-TW: 關注
+   * en-US: Follow
+   */
+  (key: "social.follow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已关注
+   * zh-TW: 已關注
+   * en-US: Following
+   */
+  (key: "social.followed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 互相关注
+   * zh-TW: 互相關注
+   * en-US: Mutual
+   */
+  (key: "social.mutual", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消关注
+   * zh-TW: 取消關注
+   * en-US: Unfollow
+   */
+  (key: "social.unfollow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 私信
+   * zh-TW: 私訊
+   * en-US: Message
+   */
+  (key: "social.message", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态
+   * zh-TW: 動態
+   * en-US: Posts
+   */
+  (key: "social.activity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlists
+   */
+  (key: "social.playlists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关于
+   * zh-TW: 關於
+   * en-US: About
+   */
+  (key: "social.about", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回动态
+   * zh-TW: 返回動態
+   * en-US: Back to activity
+   */
+  (key: "social.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看用户主页
+   * zh-TW: 查看使用者主頁
+   * en-US: View profile
+   */
+  (key: "social.backProfile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 编辑资料
+   * zh-TW: 編輯資料
+   * en-US: Edit profile
+   */
+  (key: "social.edit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 此刻，想分享什么？
+   * zh-TW: 此刻，想分享什麼？
+   * en-US: What are you listening to?
+   */
+  (key: "social.compose", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发布
+   * zh-TW: 發佈
+   * en-US: Post
+   */
+  (key: "social.publish", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发布中…
+   * zh-TW: 發佈中…
+   * en-US: Posting…
+   */
+  (key: "social.publishing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态已发布
+   * zh-TW: 動態已發佈
+   * en-US: Posted
+   */
+  (key: "social.published", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加音乐
+   * zh-TW: 新增音樂
+   * en-US: Add music
+   */
+  (key: "social.attach", params?: TranslationParams): string;
+  /**
+   * zh-CN: 分享正在播放
+   * zh-TW: 分享正在播放
+   * en-US: Share current track
+   */
+  (key: "social.currentSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 移除附件
+   * zh-TW: 移除附件
+   * en-US: Remove attachment
+   */
+  (key: "social.removeAttachment", params?: TranslationParams): string;
+  /**
+   * zh-CN: 公开动态
+   * zh-TW: 公開動態
+   * en-US: Public post
+   */
+  (key: "social.public", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最多 140 字
+   * zh-TW: 最多 140 字
+   * en-US: Up to 140 characters
+   */
+  (key: "social.limit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 分享文字、歌曲或歌单
+   * zh-TW: 分享文字、歌曲或歌單
+   * en-US: Share a thought, song or playlist
+   */
+  (key: "social.shareHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索用户
+   * zh-TW: 搜尋使用者
+   * en-US: Search people
+   */
+  (key: "social.searchPeople", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌曲或歌单
+   * zh-TW: 搜尋歌曲或歌單
+   * en-US: Search songs or playlists
+   */
+  (key: "social.searchMusic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索
+   * zh-TW: 搜尋
+   * en-US: Search
+   */
+  (key: "social.search", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看全部
+   * zh-TW: 查看全部
+   * en-US: View all
+   */
+  (key: "social.all", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新
+   * zh-TW: 重新整理
+   * en-US: Refresh
+   */
+  (key: "social.refresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在加载…
+   * zh-TW: 正在載入…
+   * en-US: Loading…
+   */
+  (key: "social.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载更多
+   * zh-TW: 載入更多
+   * en-US: Load more
+   */
+  (key: "social.loadMore", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已经到底了
+   * zh-TW: 已經到底了
+   * en-US: You're all caught up
+   */
+  (key: "social.end", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Try again
+   */
+  (key: "social.retry", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载失败，请重试
+   * zh-TW: 載入失敗，請重試
+   * en-US: Couldn't load this. Try again.
+   */
+  (key: "social.failed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 操作失败，请重试
+   * zh-TW: 操作失敗，請重試
+   * en-US: Couldn't complete that. Try again.
+   */
+  (key: "social.actionFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后，加入音乐里的对话
+   * zh-TW: 登入後，加入音樂裡的對話
+   * en-US: Sign in to join the conversation
+   */
+  (key: "social.login", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录
+   * zh-TW: 登入
+   * en-US: Sign in
+   */
+  (key: "social.loginAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有动态，分享一首此刻想听的歌吧。
+   * zh-TW: 還沒有動態，分享一首此刻想聽的歌吧。
+   * en-US: No posts yet. Share a song to start the conversation.
+   */
+  (key: "social.emptyFeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有可见的动态
+   * zh-TW: 還沒有可見的動態
+   * en-US: No visible posts yet
+   */
+  (key: "social.emptyUserFeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这里还没有用户
+   * zh-TW: 這裡還沒有使用者
+   * en-US: No people here yet
+   */
+  (key: "social.emptyPeople", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有找到相关结果
+   * zh-TW: 沒有找到相關結果
+   * en-US: No results found
+   */
+  (key: "social.emptySearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有可见的歌单
+   * zh-TW: 還沒有可見的歌單
+   * en-US: No visible playlists yet
+   */
+  (key: "social.emptyPlaylists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有评论，说说你的感受吧。
+   * zh-TW: 還沒有評論，說說你的感受吧。
+   * en-US: No comments yet. Start the conversation.
+   */
+  (key: "social.emptyComments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从一句问候开始吧。
+   * zh-TW: 從一句問候開始吧。
+   * en-US: Start with a hello.
+   */
+  (key: "social.emptyMessages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有填写个人介绍
+   * zh-TW: 還沒有填寫個人介紹
+   * en-US: No bio yet
+   */
+  (key: "social.noSignature", params?: TranslationParams): string;
+  /**
+   * zh-CN: 赞
+   * zh-TW: 讚
+   * en-US: Like
+   */
+  (key: "social.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消赞
+   * zh-TW: 取消讚
+   * en-US: Unlike
+   */
+  (key: "social.unlike", params?: TranslationParams): string;
+  /**
+   * zh-CN: 评论
+   * zh-TW: 評論
+   * en-US: Comments
+   */
+  (key: "social.comments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回复
+   * zh-TW: 回覆
+   * en-US: Reply
+   */
+  (key: "social.reply", params?: TranslationParams): string;
+  /**
+   * zh-CN: 转发
+   * zh-TW: 轉發
+   * en-US: Repost
+   */
+  (key: "social.forward", params?: TranslationParams): string;
+  /**
+   * zh-CN: 转发成功
+   * zh-TW: 轉發成功
+   * en-US: Reposted
+   */
+  (key: "social.forwarded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 说说为什么想分享…
+   * zh-TW: 說說為什麼想分享…
+   * en-US: Add your thoughts…
+   */
+  (key: "social.forwardPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制链接
+   * zh-TW: 複製連結
+   * en-US: Copy link
+   */
+  (key: "social.share", params?: TranslationParams): string;
+  /**
+   * zh-CN: 链接已复制
+   * zh-TW: 連結已複製
+   * en-US: Link copied
+   */
+  (key: "social.copied", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除
+   * zh-TW: 刪除
+   * en-US: Delete
+   */
+  (key: "social.delete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除这条动态？
+   * zh-TW: 刪除這則動態？
+   * en-US: Delete this post?
+   */
+  (key: "social.deleteTitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除后，这条动态将不再出现在你的主页和朋友动态中。
+   * zh-TW: 刪除後，這則動態將不再出現在你的主頁和朋友動態中。
+   * en-US: This removes the post from your profile and friends' feeds.
+   */
+  (key: "social.deleteHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态已删除
+   * zh-TW: 動態已刪除
+   * en-US: Post deleted
+   */
+  (key: "social.deleted", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "social.cancel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "social.play", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加入队列
+   * zh-TW: 加入佇列
+   * en-US: Add to queue
+   */
+  (key: "social.queue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已加入播放队列
+   * zh-TW: 已加入播放佇列
+   * en-US: Added to queue
+   */
+  (key: "social.queued", params?: TranslationParams): string;
+  /**
+   * zh-CN: 单曲
+   * zh-TW: 單曲
+   * en-US: Song
+   */
+  (key: "social.song", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlist
+   */
+  (key: "social.playlist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Album
+   */
+  (key: "social.album", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播客
+   * zh-TW: Podcast
+   * en-US: Podcast
+   */
+  (key: "social.program", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视频
+   * zh-TW: 影片
+   * en-US: Video
+   */
+  (key: "social.video", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这条动态暂时无法查看，可能已删除或仅对部分人可见。
+   * zh-TW: 這則動態暫時無法查看，可能已刪除或僅對部分人可見。
+   * en-US: This post is unavailable. It may be deleted or restricted.
+   */
+  (key: "social.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 分享了一条动态
+   * zh-TW: 分享了一則動態
+   * en-US: Shared a post
+   */
+  (key: "social.unknownPost", params?: TranslationParams): string;
+  /**
+   * zh-CN: 用户
+   * zh-TW: 使用者
+   * en-US: User
+   */
+  (key: "social.unknownUser", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态详情
+   * zh-TW: 動態詳情
+   * en-US: Post
+   */
+  (key: "social.detail", params?: TranslationParams): string;
+  /**
+   * zh-CN: 写下你的评论…
+   * zh-TW: 寫下你的評論…
+   * en-US: Write a comment…
+   */
+  (key: "social.commentPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送
+   * zh-TW: 傳送
+   * en-US: Send
+   */
+  (key: "social.send", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送中…
+   * zh-TW: 傳送中…
+   * en-US: Sending…
+   */
+  (key: "social.sending", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送成功
+   * zh-TW: 傳送成功
+   * en-US: Sent
+   */
+  (key: "social.sent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回复 {{name}}
+   * zh-TW: 回覆 {{name}}
+   * en-US: Reply to {{name}}
+   */
+  (key: "social.replyTo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这条动态暂不支持评论
+   * zh-TW: 這則動態暫不支援評論
+   * en-US: Comments are unavailable for this post
+   */
+  (key: "social.commentUnavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送一条私信…
+   * zh-TW: 傳送一則私訊…
+   * en-US: Write a message…
+   */
+  (key: "social.messagePlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 此消息类型暂不支持展示
+   * zh-TW: 此訊息類型暫不支援顯示
+   * en-US: This message type can't be displayed yet
+   */
+  (key: "social.unknownMessage", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{year}} 年加入
+   * zh-TW: {{year}} 年加入
+   * en-US: Joined in {{year}}
+   */
+  (key: "social.joined", params?: TranslationParams): string;
+  /**
+   * zh-CN: 等级
+   * zh-TW: 等級
+   * en-US: Level
+   */
+  (key: "social.level", params?: TranslationParams): string;
+  /**
+   * zh-CN: 累计听过
+   * zh-TW: 累計聽過
+   * en-US: Songs heard
+   */
+  (key: "social.listened", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 首歌曲
+   * zh-TW: {{count}} 首歌曲
+   * en-US: {{count}} tracks
+   */
+  (key: "social.tracks", params?: TranslationParams): string;
+  /**
+   * zh-CN: 创建的歌单
+   * zh-TW: 建立的歌單
+   * en-US: Created playlists
+   */
+  (key: "social.created", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏的歌单
+   * zh-TW: 收藏的歌單
+   * en-US: Saved playlists
+   */
+  (key: "social.saved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最近播放
+   * zh-TW: 最近播放
+   * en-US: Recently played
+   */
+  (key: "social.recent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法找到该用户
+   * zh-TW: 找不到該使用者
+   * en-US: This profile is unavailable
+   */
+  (key: "social.noProfile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态互动暂不可用
+   * zh-TW: 動態互動暫不可用
+   * en-US: Interactions are unavailable
+   */
+  (key: "social.threadMissing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 受限可见
+   * zh-TW: 限制可見
+   * en-US: Limited audience
+   */
+  (key: "social.restricted", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅自己可见
+   * zh-TW: 僅自己可見
+   * en-US: Only you
+   */
+  (key: "social.selfOnly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看原动态
+   * zh-TW: 查看原動態
+   * en-US: View original
+   */
+  (key: "social.viewOriginal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 动态图片 {{index}}
+   * zh-TW: 動態圖片 {{index}}
+   * en-US: Post image {{index}}
+   */
+  (key: "social.picture", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Close
+   */
+  (key: "social.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 听见你关注的人
+   * zh-TW: 聽見你關注的人
+   * en-US: Hear from the people you follow
+   */
+  (key: "social.peopleHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择要分享的音乐
+   * zh-TW: 選擇要分享的音樂
+   * en-US: Choose music to share
+   */
+  (key: "social.chooseMusic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看互动
+   * zh-TW: 查看互動
+   * en-US: View interaction
+   */
+  (key: "social.notificationOpen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除这条评论？
+   * zh-TW: 刪除這則評論？
+   * en-US: Delete this comment?
+   */
+  (key: "social.deleteComment", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除后无法恢复。
+   * zh-TW: 刪除後無法復原。
+   * en-US: This can't be undone.
+   */
+  (key: "social.deleteCommentHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新对话
+   * zh-TW: 重新整理對話
+   * en-US: Refresh conversation
+   */
+  (key: "social.refreshMessages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关注喜欢的用户，他们的音乐故事会在这里相遇。
+   * zh-TW: 關注喜歡的使用者，在這裡遇見他們的音樂故事。
+   * en-US: Follow people to discover their music stories.
+   */
+  (key: "social.followingEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 来自网易云的朋友动态
+   * zh-TW: 來自網易雲的朋友動態
+   * en-US: Your NetEase friends' activity
+   */
+  (key: "social.feedDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多操作
+   * zh-TW: 更多操作
+   * en-US: More actions
+   */
+  (key: "social.more", params?: TranslationParams): string;
   (key: TranslationKey, params?: TranslationParams): string;
 }

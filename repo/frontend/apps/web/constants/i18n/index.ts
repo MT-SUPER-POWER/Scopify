@@ -41,11 +41,13 @@ import { libraryMessages } from "./library";
 import { updaterMessages } from "./updater";
 import { personalFmMessages } from "./personalFm";
 import { notificationMessages } from "./notifications";
+import { socialMessages } from "./social";
 
 export const messages = {
   "zh-CN": {
     ...deviceMessages["zh-CN"],
     ...notificationMessages["zh-CN"],
+    ...socialMessages["zh-CN"],
     ...commonMessages["zh-CN"],
     ...errorPageMessages["zh-CN"],
     ...settingsMessages["zh-CN"],
@@ -91,6 +93,7 @@ export const messages = {
   "zh-TW": {
     ...deviceMessages["zh-TW"],
     ...notificationMessages["zh-TW"],
+    ...socialMessages["zh-TW"],
     ...commonMessages["zh-TW"],
     ...errorPageMessages["zh-TW"],
     ...settingsMessages["zh-TW"],
@@ -136,6 +139,7 @@ export const messages = {
   "en-US": {
     ...deviceMessages["en-US"],
     ...notificationMessages["en-US"],
+    ...socialMessages["en-US"],
     ...commonMessages["en-US"],
     ...errorPageMessages["en-US"],
     ...settingsMessages["en-US"],
