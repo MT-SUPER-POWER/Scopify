@@ -4,6 +4,7 @@ import { BellRing } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 import type { NotificationPanelProps } from "@/types/components/notifications";
 import { NotificationRow } from "./NotificationRow";
+import { socialNotificationHref } from "@/lib/social/notificationTarget";
 
 export function NotificationList({
   items,
@@ -12,9 +13,16 @@ export function NotificationList({
   onExpand,
   onRead,
   onUpdateAction,
+  onSocialAction,
 }: Pick<
   NotificationPanelProps,
-  "items" | "unreadOnly" | "expandedId" | "onExpand" | "onRead" | "onUpdateAction"
+  | "items"
+  | "unreadOnly"
+  | "expandedId"
+  | "onExpand"
+  | "onRead"
+  | "onUpdateAction"
+  | "onSocialAction"
 >) {
   const { t, locale } = useI18n();
   const today = new Date();
@@ -76,11 +84,21 @@ export function NotificationList({
               {group.items.map((item) => (
                 <NotificationRow
                   key={item.id}
-                  item={item}
+                  item={
+                    socialNotificationHref(item.target)
+                      ? { ...item, actionLabel: t("social.notificationOpen") }
+                      : item
+                  }
                   expanded={expandedId === item.id}
                   onExpand={() => onExpand(item)}
                   onRead={() => onRead(item)}
-                  onAction={item.source === "updates" ? onUpdateAction : undefined}
+                  onAction={
+                    item.source === "updates"
+                      ? onUpdateAction
+                      : socialNotificationHref(item.target)
+                        ? () => onSocialAction(item)
+                        : undefined
+                  }
                 />
               ))}
             </div>

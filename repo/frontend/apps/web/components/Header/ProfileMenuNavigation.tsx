@@ -47,9 +47,12 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
           <span>{t("profile.menu.notifications")}</span>
           <ChevronRight className={arrowClassName} />
         </DropdownMenuItem>
-        <DropdownMenuItem className={`${itemClassName} md:hidden`}>
+        <DropdownMenuItem
+          onSelect={() => smartRouter.push("/social")}
+          className={`${itemClassName} md:hidden`}
+        >
           <Users className={iconClassName} />
-          <span>{t("profile.menu.friends")}</span>
+          <span>{t("social.title")}</span>
           <ChevronRight className={arrowClassName} />
         </DropdownMenuItem>
         {isLoggedIn && (

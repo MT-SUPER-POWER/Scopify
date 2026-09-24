@@ -35,6 +35,7 @@ export interface NotificationPanelProps {
   onReadAll(): void;
   onSettings(): void;
   onUpdateAction(): void;
+  onSocialAction(item: NotificationListItem): void;
 }
 
 export type NotificationToolbarProps = Pick<
