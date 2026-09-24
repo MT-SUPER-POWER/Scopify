@@ -1,22 +1,27 @@
 "use client";
 
-import { CURRENT_DEVICE_PREVIEW, OTHER_DEVICE_PREVIEWS } from "@/constants/loginDevices";
 import { useI18n } from "@/store/module/i18n";
 import type { LoginDeviceStageProps } from "@/types/components/loginDevices";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 
-export function LoginDeviceStage({ selectedDevice, onSelect }: LoginDeviceStageProps) {
+export function LoginDeviceStage({ devices, selectedDevice, onSelect }: LoginDeviceStageProps) {
   const { t } = useI18n();
   return (
     <div className={styles.stageScroller}>
-      <div className={styles.stage} role="group" aria-label={t("devices.all")}>
-        {[CURRENT_DEVICE_PREVIEW, ...OTHER_DEVICE_PREVIEWS.slice(0, 3)].map((device) => (
+      <div
+        className={styles.stage}
+        data-count={Math.min(devices.length, 4)}
+        role="group"
+        aria-label={t("devices.all")}
+      >
+        {devices.slice(0, 4).map((device) => (
           <button
             key={device.id}
             type="button"
             className={styles.stageDevice}
             data-kind={device.kind}
+            title={device.name}
             aria-pressed={selectedDevice.id === device.id}
             onClick={() => onSelect(device)}
           >
@@ -24,11 +29,9 @@ export function LoginDeviceStage({ selectedDevice, onSelect }: LoginDeviceStageP
               <DeviceIllustration kind={device.kind} tone={device.tone} hero />
             </div>
             <span className={styles.stageLabel}>
-              <strong>{device.current ? "Windows" : device.name}</strong>
+              <strong>{device.name}</strong>
               <span data-current={device.current || undefined}>
-                {device.current
-                  ? t("devices.current")
-                  : `${t(device.activityKey)} · ${t(device.regionKey)}`}
+                {device.current ? t("devices.current") : `${device.activity} · ${device.region}`}
               </span>
             </span>
           </button>

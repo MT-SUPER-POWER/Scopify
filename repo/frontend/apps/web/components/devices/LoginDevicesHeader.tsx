@@ -1,24 +1,38 @@
 "use client";
-
-import { Info } from "lucide-react";
+import { RefreshCw } from "lucide-react";
+import { Button } from "@scopify/ui/shadcn/components/button";
 import { useI18n } from "@/store/module/i18n";
+import type { LoginDevicesHeaderProps } from "@/types/components/loginDevices";
 import styles from "./LoginDevices.module.css";
-
-export function LoginDevicesHeader() {
+export function LoginDevicesHeader({
+  allowance,
+  refreshing,
+  onRefresh,
+  authenticated,
+}: LoginDevicesHeaderProps) {
   const { t } = useI18n();
   return (
     <header className={styles.header}>
       <div className={styles.titleRow}>
         <h1>{t("devices.title")}</h1>
         <div className={styles.headerMeta}>
-          <span className={styles.previewBadge} title={t("devices.previewNote")}>
-            <Info />
-            {t("devices.preview")}
-          </span>
-          <span className={styles.allowance} title={t("devices.allowanceNote")}>
-            {t("devices.allowance")} <strong>5</strong>
-            <span>/ 8</span>
-          </span>
+          {allowance && (
+            <span className={styles.allowance}>
+              {t("devices.allowance")} <strong>{allowance.used}</strong>
+              <span>/ {allowance.limit}</span>
+            </span>
+          )}
+          {authenticated && (
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={refreshing}
+              onClick={onRefresh}
+              aria-label={t("devices.refresh")}
+            >
+              <RefreshCw className={refreshing ? "size-4 animate-spin" : "size-4"} />
+            </Button>
+          )}
         </div>
       </div>
       <p>{t("devices.subtitle")}</p>

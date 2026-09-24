@@ -5,6 +5,222 @@ import type { TranslationKey, TranslationParams } from "@/lib/i18n";
 
 export interface TranslateFn {
   /**
+   * zh-CN: 设备列表响应不完整，请稍后重试。
+   * zh-TW: 裝置清單回應不完整，請稍後重試。
+   * en-US: The device response is incomplete. Try again.
+   */
+  (key: "devices.invalidResponse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未知
+   * zh-TW: 未知
+   * en-US: Unknown
+   */
+  (key: "devices.unknown", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未命名设备
+   * zh-TW: 未命名裝置
+   * en-US: Unnamed device
+   */
+  (key: "devices.unnamed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录账号或服务已变化，请重新打开页面。
+   * zh-TW: 登入帳號或服務已變更，請重新開啟頁面。
+   * en-US: Your session changed. Reopen this page.
+   */
+  (key: "devices.sessionChanged", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请输入 1–80 个字符的设备名称。
+   * zh-TW: 請輸入 1–80 個字元的裝置名稱。
+   * en-US: Enter a device name of 1–80 characters.
+   */
+  (key: "devices.nameValidation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录成功，但设备名称同步失败；可在登录设备页重新修改名称。
+   * zh-TW: 登入成功，但裝置名稱同步失敗；可在登入裝置頁重新修改名稱。
+   * en-US: Signed in, but the device name could not sync. Rename it on the devices page to retry.
+   */
+  (key: "devices.syncFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这台设备的名称
+   * zh-TW: 這台裝置的名稱
+   * en-US: This device's name
+   */
+  (key: "devices.loginName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后同步到账号，方便你在设备列表中辨认。
+   * zh-TW: 登入後同步到帳號，方便你在裝置清單中辨認。
+   * en-US: Saved to your account after sign-in so you can recognize this device.
+   */
+  (key: "devices.loginNameHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新设备列表
+   * zh-TW: 重新整理裝置清單
+   * en-US: Refresh devices
+   */
+  (key: "devices.refresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 共 {{count}} 条设备记录
+   * zh-TW: 共 {{count}} 筆裝置紀錄
+   * en-US: {{count}} device records
+   */
+  (key: "devices.recordCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有其他设备记录
+   * zh-TW: 沒有其他裝置紀錄
+   * en-US: No other devices
+   */
+  (key: "devices.noOthers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后查看你的设备
+   * zh-TW: 登入後查看你的裝置
+   * en-US: Sign in to see your devices
+   */
+  (key: "devices.loginRequired", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录
+   * zh-TW: 登入
+   * en-US: Sign in
+   */
+  (key: "devices.loginAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在读取登录设备…
+   * zh-TW: 正在讀取登入裝置…
+   * en-US: Loading your devices…
+   */
+  (key: "devices.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时无法读取设备列表
+   * zh-TW: 暫時無法讀取裝置清單
+   * en-US: Couldn't load devices
+   */
+  (key: "devices.loadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Retry
+   */
+  (key: "devices.retry", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新登录
+   * zh-TW: 重新登入
+   * en-US: Sign in again
+   */
+  (key: "devices.relogin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新失败，当前保留上次读取的设备记录。
+   * zh-TW: 重新整理失敗，目前保留上次讀取的裝置紀錄。
+   * en-US: Refresh failed. Showing the previous device records.
+   */
+  (key: "devices.refreshFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无设备记录
+   * zh-TW: 暫無裝置紀錄
+   * en-US: No device records
+   */
+  (key: "devices.emptyList", params?: TranslationParams): string;
+  /**
+   * zh-CN: 服务器暂未返回登录设备，可以稍后刷新。
+   * zh-TW: 伺服器暫未回傳登入裝置，可以稍後重新整理。
+   * en-US: The server returned no devices. You can refresh later.
+   */
+  (key: "devices.emptyListHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设备名称已更新
+   * zh-TW: 裝置名稱已更新
+   * en-US: Device renamed
+   */
+  (key: "devices.renamed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 设备已下线
+   * zh-TW: 裝置已登出
+   * en-US: Device signed out
+   */
+  (key: "devices.signedOut", params?: TranslationParams): string;
+  /**
+   * zh-CN: 操作失败，请稍后重试。
+   * zh-TW: 操作失敗，請稍後重試。
+   * en-US: The action failed. Try again.
+   */
+  (key: "devices.actionFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 安全验证码已发送至账号绑定的手机
+   * zh-TW: 安全驗證碼已傳送至帳號綁定的手機
+   * en-US: Security code sent to your account's linked phone
+   */
+  (key: "devices.captchaSent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅修改当前登录设备的名称，下次登录会沿用这个名称。
+   * zh-TW: 僅修改目前登入裝置的名稱，下次登入會沿用此名稱。
+   * en-US: Rename this signed-in device. This name will also be used for your next sign-in.
+   */
+  (key: "devices.renameHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确定下线「{{name}}」吗？该设备可能需要重新登录。
+   * zh-TW: 確定登出「{{name}}」嗎？該裝置可能需要重新登入。
+   * en-US: Sign out “{{name}}”? That device may need to sign in again.
+   */
+  (key: "devices.kickoffHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这是当前使用的设备。下线后，Scopify 会退出当前账号。
+   * zh-TW: 這是目前使用的裝置。登出後，Scopify 會退出目前帳號。
+   * en-US: This is your current device. This will sign you out of Scopify.
+   */
+  (key: "devices.kickoffCurrentHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 需要安全验证码？
+   * zh-TW: 需要安全驗證碼？
+   * en-US: Need a security code?
+   */
+  (key: "devices.needCaptcha", params?: TranslationParams): string;
+  /**
+   * zh-CN: 安全验证码
+   * zh-TW: 安全驗證碼
+   * en-US: Security code
+   */
+  (key: "devices.captcha", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送验证码
+   * zh-TW: 傳送驗證碼
+   * en-US: Send code
+   */
+  (key: "devices.sendCaptcha", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅在服务端要求安全验证时填写；点击发送后会发送到账号绑定的手机。
+   * zh-TW: 僅在伺服器要求安全驗證時填寫；點擊傳送後會傳送至帳號綁定的手機。
+   * en-US: Only needed if the server requests verification. Send a code to the phone linked to your account.
+   */
+  (key: "devices.captchaHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消
+   * zh-TW: 取消
+   * en-US: Cancel
+   */
+  (key: "devices.cancel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在处理…
+   * zh-TW: 正在處理…
+   * en-US: Working…
+   */
+  (key: "devices.saving", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保存名称
+   * zh-TW: 儲存名稱
+   * en-US: Save name
+   */
+  (key: "devices.save", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确认下线
+   * zh-TW: 確認登出
+   * en-US: Sign out
+   */
+  (key: "devices.confirmSignOut", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看设备平台、登录方式与最近活动。
+   * zh-TW: 查看裝置平台、登入方式與最近活動。
+   * en-US: View this device's platform, sign-in method and recent activity.
+   */
+  (key: "devices.detailsHint", params?: TranslationParams): string;
+  /**
    * zh-CN: 登录设备
    * zh-TW: 登入裝置
    * en-US: Signed-in devices

@@ -17,9 +17,9 @@ export function LoginDeviceCard({ device, onSelect }: LoginDeviceCardProps) {
       <div className={styles.rowCopy}>
         <h3>{device.name}</h3>
         <p>
-          {t(device.activityKey)}
+          {device.activity}
           <span>·</span>
-          {t(device.regionKey)}
+          {device.region}
           <span className={styles.rowPlatform}>{device.platform}</span>
         </p>
       </div>

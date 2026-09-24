@@ -1,4 +1,5 @@
 export const MUSIC_SESSION_STORAGE_KEY = "music_cookie";
+export const MUSIC_SESSION_CHANGED_EVENT = "scopify:music-session-changed";
 
 function getStorage(): Storage | null {
   if (typeof window !== "undefined" && window.localStorage) {
@@ -15,6 +16,7 @@ export function saveMusicSessionCredential(cookie: string) {
   const storage = getStorage();
   if (!storage) return;
   storage.setItem(MUSIC_SESSION_STORAGE_KEY, cookie.trim());
+  if (typeof window !== "undefined") window.dispatchEvent(new Event(MUSIC_SESSION_CHANGED_EVENT));
 }
 
 /** 读取 localStorage 中保存的音乐会话凭据 */
@@ -29,6 +31,7 @@ export function clearMusicSessionCredential() {
   const storage = getStorage();
   if (!storage) return;
   storage.removeItem(MUSIC_SESSION_STORAGE_KEY);
+  if (typeof window !== "undefined") window.dispatchEvent(new Event(MUSIC_SESSION_CHANGED_EVENT));
 }
 
 /** 兼容旧命名 */

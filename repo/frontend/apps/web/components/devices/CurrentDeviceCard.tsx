@@ -7,7 +7,7 @@ import type { LoginDeviceCardProps } from "@/types/components/loginDevices";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 
-export function CurrentDeviceCard({ device, onSelect }: LoginDeviceCardProps) {
+export function CurrentDeviceCard({ device, onSelect, onRename }: LoginDeviceCardProps) {
   const { t } = useI18n();
   return (
     <section className={styles.currentCard} aria-label={device.name} aria-live="polite">
@@ -22,7 +22,7 @@ export function CurrentDeviceCard({ device, onSelect }: LoginDeviceCardProps) {
         <p>
           {t("devices.lastActive")}
           <span>
-            {t(device.activityKey)} · {t(device.regionKey)}
+            {device.activity} · {device.region}
           </span>
         </p>
         <p>
@@ -35,10 +35,9 @@ export function CurrentDeviceCard({ device, onSelect }: LoginDeviceCardProps) {
       </div>
       <div className={styles.currentDescription}>
         <p>{t(device.current ? "devices.currentNote" : "devices.othersNote")}</p>
-        <span>{t("devices.soon")}</span>
       </div>
       {device.current ? (
-        <Button variant="outline" disabled title={t("devices.soon")} className="rounded-full">
+        <Button variant="outline" onClick={() => onRename?.(device)} className="rounded-full">
           <Pencil className="size-3.5" />
           {t("devices.rename")}
         </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, X } from "lucide-react";
+import { LogOut, Pencil, X } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import {
   Sheet,
@@ -15,8 +15,8 @@ import type { LoginDeviceDetailsProps } from "@/types/components/loginDevices";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 
-export function LoginDeviceDetails({ device, onClose }: LoginDeviceDetailsProps) {
-  const { t } = useI18n();
+export function LoginDeviceDetails({ device, onClose, onAction }: LoginDeviceDetailsProps) {
+  const { t, locale } = useI18n();
   return (
     <Sheet
       open={device !== null}
@@ -27,7 +27,7 @@ export function LoginDeviceDetails({ device, onClose }: LoginDeviceDetailsProps)
       <SheetContent className="w-full overflow-y-auto sm:max-w-md" showCloseButton={false}>
         <SheetHeader className="px-7 pt-8 pr-16">
           <SheetTitle>{t("devices.details")}</SheetTitle>
-          <SheetDescription>{t("devices.detailsNote")}</SheetDescription>
+          <SheetDescription>{t("devices.detailsHint")}</SheetDescription>
         </SheetHeader>
         <SheetClose asChild>
           <Button
@@ -53,22 +53,38 @@ export function LoginDeviceDetails({ device, onClose }: LoginDeviceDetailsProps)
               </div>
               <div>
                 <dt>{t("devices.lastActive")}</dt>
-                <dd>{t(device.activityKey)}</dd>
+                <dd>
+                  {device.lastActiveTime
+                    ? new Date(device.lastActiveTime).toLocaleString(locale)
+                    : t("devices.unknown")}
+                </dd>
               </div>
               <div>
                 <dt>{t("devices.region")}</dt>
-                <dd>{t(device.regionKey)}</dd>
+                <dd>{device.region}</dd>
               </div>
               <div>
                 <dt>{t("devices.loginMethod")}</dt>
-                <dd>{t(device.loginKey)}</dd>
+                <dd>{device.loginMethod}</dd>
               </div>
             </dl>
             <div className="mt-auto pt-10">
-              <p className="mb-4 text-xs leading-relaxed text-muted-foreground">
-                {t("devices.noActions")}
-              </p>
-              <Button variant="outline" disabled className="w-full rounded-xl text-destructive">
+              {device.current && (
+                <Button
+                  variant="outline"
+                  className="mb-3 w-full rounded-xl"
+                  onClick={() => onAction({ type: "rename", device })}
+                >
+                  <Pencil className="size-4" />
+                  {t("devices.rename")}
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                disabled={!device.deviceKey}
+                onClick={() => onAction({ type: "kickoff", device })}
+                className="w-full rounded-xl text-destructive"
+              >
                 <LogOut className="size-4" />
                 {t("devices.signOut")}
               </Button>

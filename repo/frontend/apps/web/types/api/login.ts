@@ -4,6 +4,8 @@ export interface ApiCodeResponse {
 }
 
 export interface CellphoneLoginParams {
+  cookie?: string;
+  noLogin?: boolean;
   captcha?: string;
   countrycode?: number | string;
   md5_password?: string;

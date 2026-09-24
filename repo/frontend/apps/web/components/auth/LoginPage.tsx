@@ -6,7 +6,6 @@ import { Lock, QrCode, Smartphone, TriangleAlert, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import type React from "react";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import LoginSkeletonLoading from "@/components/auth/LoginSkeletonLoading";
@@ -14,6 +13,9 @@ import { PasswordLoginForm } from "@/components/Login/PasswordLoginForm";
 import { QrLogin } from "@/components/Login/QrLogin";
 import { SmsLoginForm } from "@/components/Login/SmsLoginForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LoginDeviceNameField } from "@/components/devices/LoginDeviceNameField";
+import { createFreshLoginDevice, getLocalDeviceName } from "@/lib/devices/clientIdentity";
+import { completeFreshLogin } from "@/lib/devices/completeLogin";
 import { loginByCellphone } from "@/lib/api/login";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -22,12 +24,12 @@ import { cn } from "@/lib/utils";
 import { sendCaptcha } from "@/lib/web/auth";
 import logo from "@/resources/icon_source.png";
 import { useI18n } from "@/store/module/i18n";
-import type { LoginMode } from "@/types/login";
+import type { LoginHydrationGateProps, LoginMode } from "@/types/login";
 
 let hydrationReady = false;
 let hydrationPromise: Promise<void> | null = null;
 
-function HydrationGate({ children }: { children: React.ReactNode }) {
+function HydrationGate({ children }: LoginHydrationGateProps) {
   if (!hydrationReady && typeof window !== "undefined") {
     if (!hydrationPromise) {
       hydrationPromise = new Promise((resolve) => {
@@ -51,6 +53,8 @@ function LoginPageContent() {
   const { t } = useI18n();
   const [mode, setMode] = useState<LoginMode>("qr");
   const [isLoading, setIsLoading] = useState(false);
+  const [deviceName, setDeviceName] = useState("");
+  useEffect(() => setDeviceName(getLocalDeviceName()), []);
 
   const isLoggedIn = useLoginStatus();
   const [isMounted, setIsMounted] = useState(false);
@@ -63,16 +67,20 @@ function LoginPageContent() {
   const handleSubmit = async (phone: string, extra: string) => {
     setIsLoading(true);
     try {
-      if (mode === "password") {
-        const response = await loginByCellphone({ phone, password: extra });
-        console.log("登录响应", response);
-      } else if (mode === "sms") {
-        const response = await loginByCellphone({ phone, captcha: extra });
-        console.log("登录响应", response);
-      }
+      const device = createFreshLoginDevice(deviceName);
+      const response = await loginByCellphone({
+        phone,
+        ...(mode === "password" ? { password: extra } : { captcha: extra }),
+        cookie: device.cookie,
+        noLogin: true,
+      });
+      if (response.data.code !== 200)
+        throw new Error(response.data.message || t("login.page.loginFailed"));
+      const result = await completeFreshLogin(response.data.cookie ?? "", "token", device);
+      if (!result.nameSynced) toast.warning(t("devices.syncFailed"));
+      if (!runtime.auth.completeLogin()) finishLogin();
     } catch (error) {
-      console.error(error);
-      toast.error(t("login.page.loginFailed"));
+      toast.error(error instanceof Error ? error.message : t("login.page.loginFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -136,6 +144,7 @@ function LoginPageContent() {
 
       {/* 2. 主体宽度 */}
       <div className="w-full max-w-80">
+        <LoginDeviceNameField value={deviceName} onChange={setDeviceName} disabled={isLoading} />
         <Tabs value={mode} onValueChange={(v) => setMode(v as LoginMode)} className="w-full">
           {/* 3. Tab 切换器 */}
           <TabsList className="mb-4 grid h-10 grid-cols-3 rounded-xl border border-content/5 bg-content/5 p-1">
@@ -189,7 +198,7 @@ function LoginPageContent() {
             </TabsContent>
 
             <TabsContent value="qr" className="mt-0 outline-none">
-              <QrLogin onSuccess={finishLogin} />
+              <QrLogin onSuccess={finishLogin} deviceName={deviceName} />
             </TabsContent>
           </div>
         </Tabs>
