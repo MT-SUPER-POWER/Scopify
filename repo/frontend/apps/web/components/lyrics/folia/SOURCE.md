@@ -52,6 +52,9 @@ the original full-copy baseline:
   decode new covers before bounded layered crossfades. Host hook, helper and types
   live under Scopify's lyrics domain directories.
 
+- `a36efc1d` and `57d3f806` — reserve Monet header width for portrait bleed
+  and drag offset; clamp long titles without clipping accents or descenders.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
