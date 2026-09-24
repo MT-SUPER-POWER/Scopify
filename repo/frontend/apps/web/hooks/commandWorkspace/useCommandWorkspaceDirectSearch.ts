@@ -1,8 +1,6 @@
 "use client";
 
 import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
-import { useFoliaCommands } from "@/hooks/commandWorkspace/useFoliaCommands";
-import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/foliaCommands";
 import { useCommandWorkspaceSuggestions } from "@/hooks/commandWorkspace/useCommandWorkspaceSuggestions";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
@@ -27,23 +25,15 @@ export function useCommandWorkspaceDirectSearch({
   const removeRecent = useSearchStore((state) => state.removeRecent);
   const setGlobalQuery = useSearchStore((state) => state.setQuery);
   const [filter, setFilter] = useState<CommandWorkspaceSearchFilter | null>(null);
-  const [foliaGroup, setFoliaGroup] = useState<FoliaCommandGroup | null>(null);
   const [query, setQuery] = useState(initialQuery);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { isLoading, suggestions } = useCommandWorkspaceSuggestions(foliaGroup ? "" : query);
-  const folia = useFoliaCommands(null, query);
-  const foliaEntries = filter ? [] : folia.entries;
+  const { isLoading, suggestions } = useCommandWorkspaceSuggestions(query);
   const candidates = query.trim()
     ? suggestions.length
       ? suggestions.map((item) => item.keyword)
       : [query]
     : recent.slice(0, 8);
-  const candidateCount = foliaEntries.length + candidates.length;
-  const openFolia = (group: FoliaCommandGroup) => {
-    setQuery("");
-    setSelectedIndex(0);
-    setFoliaGroup(group);
-  };
+  const candidateCount = candidates.length;
 
   useEffect(() => {
     const focusTimeout = window.setTimeout(() => inputRef.current?.focus(), 50);
@@ -83,9 +73,7 @@ export function useCommandWorkspaceDirectSearch({
     if (event.nativeEvent.isComposing) return;
     if (event.key === "Enter") {
       event.preventDefault();
-      const entry = foliaEntries[selectedIndex];
-      if (entry) folia.execute(entry, openFolia, onClose);
-      else submit(candidates[selectedIndex - foliaEntries.length] ?? query);
+      submit(candidates[selectedIndex] ?? query);
     }
     if (event.key === "ArrowDown") {
       event.preventDefault();
@@ -104,8 +92,6 @@ export function useCommandWorkspaceDirectSearch({
   };
   return {
     filter,
-    foliaEntries,
-    foliaGroup,
     inputRef,
     isLoading,
     placeholder,
@@ -116,14 +102,11 @@ export function useCommandWorkspaceDirectSearch({
     submit,
     clearRecent,
     removeRecent,
-    openFolia,
     handleKeyDown,
     handleQueryChange,
-    returnFromFolia: () => setFoliaGroup(null),
     onFilterChange: (next: CommandWorkspaceSearchFilter | null) => {
       setFilter(next);
       setSelectedIndex(0);
     },
-    onFoliaSelect: (entry: FoliaCommandEntry) => folia.execute(entry, openFolia, onClose),
   };
 }

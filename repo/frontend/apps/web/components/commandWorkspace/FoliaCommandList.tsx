@@ -1,11 +1,12 @@
 "use client";
 
-import { Check, ChevronRight, Palette, RadioTower, Settings2, Sparkles } from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
+import { getFoliaCommandIcon } from "@/constants/foliaCommandIcons";
+import { useFoliaCommandSelection } from "@/hooks/commandWorkspace/useFoliaCommandSelection";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { isPersonalFmCommandSelected } from "@/lib/commandWorkspace/personalFmCommands";
 import { usePersonalFmStore } from "@/store/module/personalFm";
-import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaCommandListProps } from "@/types/foliaCommands";
 
 export function FoliaCommandList({
@@ -16,7 +17,7 @@ export function FoliaCommandList({
   showPath = false,
 }: FoliaCommandListProps) {
   const fmSelection = usePersonalFmStore((state) => state.selection);
-  const mode = useLyricStageStore((state) => state.mode);
+  const selection = useFoliaCommandSelection(entries);
   const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     listRef.current?.querySelector('[data-selected="true"]')?.scrollIntoView({ block: "nearest" });
@@ -28,20 +29,16 @@ export function FoliaCommandList({
         const active =
           entry.action.kind === "personal-fm"
             ? isPersonalFmCommandSelected(entry.action, fmSelection)
-            : entry.action.kind === "visualizer" && entry.action.mode === mode;
-        const Icon = entry.id.startsWith("personal-fm")
-          ? RadioTower
-          : entry.action.kind === "visualizer" || entry.id === "folia-visualizers"
-            ? Sparkles
-            : entry.action.kind === "theme"
-              ? Palette
-              : Settings2;
+            : selection[index];
+        const isToggle = entry.action.kind === "lyric-toggle";
+        const Icon = getFoliaCommandIcon(entry.id);
         return (
           <button
             key={entry.id}
             type="button"
             data-selected={selectedIndex === index}
-            aria-current={active ? "true" : undefined}
+            aria-current={!isToggle && active ? "true" : undefined}
+            aria-pressed={isToggle ? active : undefined}
             onMouseEnter={() => onHighlight?.(index)}
             onClick={() => onSelect(entry)}
             className={cn(
@@ -49,7 +46,7 @@ export function FoliaCommandList({
               selectedIndex === index ? "bg-white/10" : "hover:bg-white/6",
             )}
           >
-            <Icon className="text-primary size-4 shrink-0" />
+            <Icon className="size-4 shrink-0 text-white" />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-medium text-white">{entry.label}</span>
               <span className="block truncate text-xs text-zinc-400">
@@ -57,8 +54,26 @@ export function FoliaCommandList({
                 {entry.summary}
               </span>
             </span>
-            {active ? (
-              <Check aria-label="当前选择" className="text-primary size-4" />
+            {isToggle ? (
+              <span className="flex shrink-0 items-center gap-2 text-xs text-zinc-400">
+                {active ? "已开启" : "已关闭"}
+                <span
+                  aria-hidden
+                  className={cn(
+                    "flex h-5 w-9 items-center rounded-full p-0.5 transition-colors",
+                    active ? "bg-white/80" : "bg-white/15",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "size-4 rounded-full transition-transform",
+                      active ? "translate-x-4 bg-zinc-950" : "bg-white/60",
+                    )}
+                  />
+                </span>
+              </span>
+            ) : active ? (
+              <Check aria-label="当前选择" className="size-4 text-white" />
             ) : isGroup ? (
               <ChevronRight aria-hidden className="size-4 text-zinc-500" />
             ) : null}

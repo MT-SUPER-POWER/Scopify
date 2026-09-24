@@ -66,8 +66,6 @@ export interface CommandWorkspaceDirectSearchProps {
 }
 
 export interface CommandWorkspaceDirectSearchResultsProps {
-  foliaEntries: FoliaCommandEntry[];
-  onFoliaSelect(entry: FoliaCommandEntry): void;
   isLoading: boolean;
   onClearRecent(): void;
   onRemoveRecent(item: SearchRecentEntry): void;

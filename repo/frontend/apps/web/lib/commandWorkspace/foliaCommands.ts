@@ -1,3 +1,4 @@
+import { FOLIA_LYRIC_COMMANDS } from "@/constants/foliaLyricCommands";
 import { buildPersonalFmCommands } from "@/lib/commandWorkspace/personalFmCommands";
 import { DESKTOP_FOLIA_VISUALIZER_OPTIONS } from "@/constants/desktopPlaybackController";
 import { FOLIA_VISUALIZER_DESCRIPTIONS } from "@/constants/foliaCommandDescriptions";
@@ -7,17 +8,18 @@ import type { TranslateFn } from "@/types/i18n.generated";
 export function buildFoliaCommands(t: TranslateFn): FoliaCommandEntry[] {
   const entries: Omit<FoliaCommandEntry, "path">[] = [
     ...buildPersonalFmCommands(t),
+    ...FOLIA_LYRIC_COMMANDS,
     {
       id: "folia-settings",
       parentId: null,
       label: "Folia 设置",
-      summary: "视觉设置与主题工作台",
+      summary: "可视化、歌词、视觉设置与主题工作台",
       keywords: "folia settings 配色 外观",
       action: { kind: "group", group: "folia-settings" },
     },
     {
       id: "folia-visualizers",
-      parentId: null,
+      parentId: "folia-settings",
       label: "选择可视化",
       summary: "切换 Folia 歌词演出效果",
       keywords: "folia visualizer 渲染器",

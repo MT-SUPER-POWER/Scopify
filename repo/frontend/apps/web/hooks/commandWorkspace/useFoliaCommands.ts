@@ -33,6 +33,19 @@ export function useFoliaCommands(group: FoliaCommandGroup | null, query: string)
         void fm.setSelection(getPersonalFmCommandSelection(action, fm.selection));
       return;
     }
+    if (action.kind === "lyric-toggle") {
+      const lyrics = useLyricStageStore.getState();
+      lyrics.patchSettings({ [action.setting]: !lyrics[action.setting] });
+      return;
+    }
+    if (action.kind === "lyric-content") {
+      useLyricStageStore.getState().patchSettings({
+        subtitleContentMode: action.mode,
+        showSubtitleTranslation: action.mode !== "none",
+        hideTranslationSubtitle: false,
+      });
+      return;
+    }
     close();
     const settings = useFoliaSettingsStore.getState();
     if (action.kind === "settings") settings.openVisualSettings(action.section);

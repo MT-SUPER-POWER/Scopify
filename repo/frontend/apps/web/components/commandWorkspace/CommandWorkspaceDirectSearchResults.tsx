@@ -1,6 +1,5 @@
 "use client";
 
-import { FoliaCommandList } from "@/components/commandWorkspace/FoliaCommandList";
 import { CornerDownLeft, Search } from "lucide-react";
 import { CommandWorkspaceRecentSearchRow } from "@/components/commandWorkspace/CommandWorkspaceRecentSearchRow";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,8 +7,6 @@ import { cn } from "@/lib/utils";
 import type { CommandWorkspaceDirectSearchResultsProps } from "@/types/commandWorkspace";
 
 export function CommandWorkspaceDirectSearchResults({
-  foliaEntries,
-  onFoliaSelect,
   isLoading,
   onClearRecent,
   onRemoveRecent,
@@ -22,17 +19,6 @@ export function CommandWorkspaceDirectSearchResults({
   return (
     <ScrollArea className="h-[min(52vh,32rem)]">
       <div className="space-y-2 px-2.5 py-2">
-        {foliaEntries.length ? (
-          <section>
-            <p className="px-3.5 py-1.5 text-xs font-semibold text-zinc-400">Folia</p>
-            <FoliaCommandList
-              entries={foliaEntries}
-              selectedIndex={selectedIndex}
-              onSelect={onFoliaSelect}
-              showPath={Boolean(query.trim())}
-            />
-          </section>
-        ) : null}
         {!query && recent.length > 0 ? (
           <section className="space-y-0.5">
             <div className="flex items-center justify-between px-3.5 py-1.5 text-xs font-semibold tracking-wider text-zinc-400 uppercase">
@@ -51,7 +37,7 @@ export function CommandWorkspaceDirectSearchResults({
                 item={item}
                 onRemove={onRemoveRecent}
                 onSubmit={onSubmit}
-                selected={selectedIndex - foliaEntries.length === index}
+                selected={selectedIndex === index}
               />
             ))}
           </section>
@@ -71,9 +57,7 @@ export function CommandWorkspaceDirectSearchResults({
                 onClick={() => onSubmit(item.keyword)}
                 className={cn(
                   "flex w-full items-center gap-3 rounded-lg px-3.5 py-2 text-left text-sm text-zinc-200 transition-colors",
-                  selectedIndex - foliaEntries.length === index
-                    ? "bg-white/10"
-                    : "hover:bg-white/6",
+                  selectedIndex === index ? "bg-white/10" : "hover:bg-white/6",
                 )}
               >
                 <Search className="size-4 shrink-0 text-zinc-500" />

@@ -1,13 +1,9 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { type KeyboardEvent, useMemo, useState } from "react";
 import { CommandWorkspaceFilterPicker } from "@/components/commandWorkspace/CommandWorkspaceFilterPicker";
-import { COMMAND_WORKSPACE_SEARCH_FILTERS } from "@/constants/commandWorkspace";
-import type {
-  CommandWorkspaceQueryInputProps,
-  CommandWorkspaceSearchFilter,
-} from "@/types/commandWorkspace";
+import { useCommandWorkspaceQueryInput } from "@/hooks/commandWorkspace/useCommandWorkspaceQueryInput";
+import type { CommandWorkspaceQueryInputProps } from "@/types/commandWorkspace";
 
 export function CommandWorkspaceQueryInput({
   autoFocus = false,
@@ -19,81 +15,33 @@ export function CommandWorkspaceQueryInput({
   placeholder,
   query,
 }: CommandWorkspaceQueryInputProps) {
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [pickerIndex, setPickerIndex] = useState(0);
-  const [pickerQuery, setPickerQuery] = useState("");
-  const filters = useMemo(
-    () =>
-      COMMAND_WORKSPACE_SEARCH_FILTERS.filter((candidate) =>
-        `${candidate.token} ${candidate.label}`.includes(pickerQuery.toLowerCase()),
-      ),
-    [pickerQuery],
-  );
-
-  const closePicker = () => {
-    setIsPickerOpen(false);
-    setPickerQuery("");
-    setPickerIndex(0);
-  };
-
-  const chooseFilter = (nextFilter: CommandWorkspaceSearchFilter) => {
-    onFilterChange(nextFilter);
-    closePicker();
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (isPickerOpen) {
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        setPickerIndex((index) => (filters.length ? (index + 1) % filters.length : 0));
-        return;
-      }
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-        setPickerIndex((index) =>
-          filters.length ? (index - 1 + filters.length) % filters.length : 0,
-        );
-        return;
-      }
-      if (event.key === "Enter" || event.key === "Tab") {
-        const selected = filters[pickerIndex];
-        if (!selected) return;
-        event.preventDefault();
-        chooseFilter(selected);
-        return;
-      }
-      if (event.key === "Escape") {
-        event.preventDefault();
-        closePicker();
-        return;
-      }
-      if (event.key === "Backspace") {
-        event.preventDefault();
-        setPickerQuery((value) => value.slice(0, -1));
-        return;
-      }
-      if (event.key.length === 1) {
-        event.preventDefault();
-        setPickerQuery((value) => value + event.key);
-        return;
-      }
-    }
-
-    if (event.key === "@" && !filter) {
-      event.preventDefault();
-      setIsPickerOpen(true);
-      return;
-    }
-    if (event.key === "Backspace" && !query && filter) {
-      event.preventDefault();
-      onFilterChange(null);
-      return;
-    }
-    onKeyDown?.(event);
-  };
+  const {
+    resolvedInputRef,
+    isPickerOpen,
+    pickerIndex,
+    filters,
+    closePicker,
+    chooseFilter,
+    handleEscape,
+    handleKeyDown,
+  } = useCommandWorkspaceQueryInput({
+    filter,
+    inputRef,
+    onFilterChange,
+    onKeyDown,
+    onQueryChange,
+    placeholder,
+    query,
+  });
 
   return (
-    <div className="relative flex items-center gap-3 px-5 py-4">
+    <div
+      className="relative flex items-center gap-3 px-5 py-4"
+      onKeyDownCapture={handleEscape}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) closePicker();
+      }}
+    >
       <Search className="size-5 shrink-0 text-zinc-400" />
       {filter ? (
         <button
@@ -106,7 +54,7 @@ export function CommandWorkspaceQueryInput({
         </button>
       ) : null}
       <input
-        ref={inputRef}
+        ref={resolvedInputRef}
         autoFocus={autoFocus}
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}

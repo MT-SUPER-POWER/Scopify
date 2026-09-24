@@ -26,7 +26,7 @@ export function CommandWorkspaceFolia({
   return (
     <div
       onKeyDown={(event) => {
-        if (!event.defaultPrevented && event.key === "Escape") {
+        if (!event.defaultPrevented && !event.nativeEvent.isComposing && event.key === "Escape") {
           event.preventDefault();
           event.stopPropagation();
           back();
@@ -110,7 +110,9 @@ export function CommandWorkspaceFolia({
             showPath={Boolean(query.trim())}
           />
           {!entries.length ? (
-            <p className="py-10 text-center text-sm text-zinc-500">没有匹配的设置或可视化。</p>
+            <p className="py-10 text-center text-sm text-zinc-500">
+              没有匹配的设置、歌词选项或可视化。
+            </p>
           ) : null}
         </div>
       </ScrollArea>
