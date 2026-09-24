@@ -11,29 +11,27 @@ export function useNotificationCenter() {
   const snapshot = useNotificationStore((state) => state.snapshot);
   const update = useUpdateNotification();
   const [open, setOpen] = useState(false);
-  const [mobile, setMobile] = useState(false);
   const [filter, setFilter] = useState<NotificationFilter>("all");
   const [unreadOnly, setUnreadOnly] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  useEffect(() => {
-    const query = window.matchMedia("(max-width: 767px)");
-    const sync = () => setMobile(query.matches);
-    sync();
-    query.addEventListener("change", sync);
-    return () => query.removeEventListener("change", sync);
-  }, []);
   useEffect(() => {
     setExpandedId(null);
   }, [snapshot?.accountId]);
   useEffect(() => {
     if (!snapshot?.focusId) return;
+    if (snapshot.items.find((item) => item.id === snapshot.focusId)?.source === "private") {
+      setOpen(false);
+      return;
+    }
     setOpen(true);
     setFilter("all");
     setUnreadOnly(false);
     setExpandedId(snapshot.focusId);
     void performNotificationAction(() => runtime.notifications.markRead([snapshot.focusId!]));
   }, [snapshot?.focusId]);
-  const items: NotificationListItem[] = [...(snapshot?.items ?? [])];
+  const items: NotificationListItem[] = (snapshot?.items ?? []).filter(
+    (item) => item.source !== "private",
+  );
   if (update.item && snapshot?.preferences.updates !== false) items.push(update.item);
   items.sort((a, b) => b.occurredAt - a.occurredAt);
   const unreadCount = items.filter((item) => item.readAt === null).length;
@@ -62,7 +60,6 @@ export function useNotificationCenter() {
   return {
     open,
     setOpen,
-    mobile,
     filter,
     setFilter,
     unreadOnly,

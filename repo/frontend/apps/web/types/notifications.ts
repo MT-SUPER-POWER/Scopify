@@ -6,7 +6,7 @@ import type {
 } from "@scopify/desktop-contract";
 
 export type NotificationFilter =
-  "all" | "private" | "comments" | "mentions" | "notices" | "reports" | "updates";
+  "all" | "comments" | "mentions" | "notices" | "reports" | "updates";
 export interface NotificationListItem extends Omit<InboxNotification, "source"> {
   source: NotificationSource | "updates";
   progress?: number;

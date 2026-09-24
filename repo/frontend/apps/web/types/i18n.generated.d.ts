@@ -5,6 +5,144 @@ import type { TranslationKey, TranslationParams } from "@/lib/i18n";
 
 export interface TranslateFn {
   /**
+   * zh-CN: 私信
+   * zh-TW: 私訊
+   * en-US: Messages
+   */
+  (key: "privateMessages.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 个未读会话
+   * zh-TW: {{count}} 個未讀對話
+   * en-US: {{count}} unread conversations
+   */
+  (key: "privateMessages.unread", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无私信
+   * zh-TW: 暫無私訊
+   * en-US: No messages yet
+   */
+  (key: "privateMessages.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后查看私信
+   * zh-TW: 登入後查看私訊
+   * en-US: Sign in to view messages
+   */
+  (key: "privateMessages.login", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加载中…
+   * zh-TW: 載入中…
+   * en-US: Loading…
+   */
+  (key: "privateMessages.loading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时无法加载消息，请重试。
+   * zh-TW: 暫時無法載入訊息，請重試。
+   * en-US: Messages could not be loaded. Try again.
+   */
+  (key: "privateMessages.loadError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多会话
+   * zh-TW: 更多對話
+   * en-US: More conversations
+   */
+  (key: "privateMessages.more", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看更早消息
+   * zh-TW: 查看更早訊息
+   * en-US: Load older messages
+   */
+  (key: "privateMessages.older", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新私信
+   * zh-TW: 重新整理私訊
+   * en-US: Refresh messages
+   */
+  (key: "privateMessages.refresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回会话列表
+   * zh-TW: 返回對話列表
+   * en-US: Back to conversations
+   */
+  (key: "privateMessages.back", params?: TranslationParams): string;
+  /**
+   * zh-CN: 用户
+   * zh-TW: 使用者
+   * en-US: User
+   */
+  (key: "privateMessages.unknownUser", params?: TranslationParams): string;
+  /**
+   * zh-CN: 分享内容
+   * zh-TW: 分享內容
+   * en-US: Shared content
+   */
+  (key: "privateMessages.sharedContent", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂不支持展示此消息
+   * zh-TW: 暫不支援顯示此訊息
+   * en-US: This message cannot be displayed yet
+   */
+  (key: "privateMessages.unsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 图片消息
+   * zh-TW: 圖片訊息
+   * en-US: Image message
+   */
+  (key: "privateMessages.image", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Album
+   */
+  (key: "privateMessages.album", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲
+   * zh-TW: 歌曲
+   * en-US: Song
+   */
+  (key: "privateMessages.song", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单
+   * zh-TW: 歌單
+   * en-US: Playlist
+   */
+  (key: "privateMessages.playlist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 说点什么，开始对话吧
+   * zh-TW: 說點什麼，開始對話吧
+   * en-US: Say something to start a conversation
+   */
+  (key: "privateMessages.startConversation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 说点什么吧…
+   * zh-TW: 說點什麼吧…
+   * en-US: Write a message…
+   */
+  (key: "privateMessages.compose", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送
+   * zh-TW: 傳送
+   * en-US: Send
+   */
+  (key: "privateMessages.send", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送中
+   * zh-TW: 傳送中
+   * en-US: Sending
+   */
+  (key: "privateMessages.sending", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发送失败，内容已保留，请重试。
+   * zh-TW: 傳送失敗，內容已保留，請重試。
+   * en-US: Message not sent. Your text is still here. Try again.
+   */
+  (key: "privateMessages.sendError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 插入表情
+   * zh-TW: 插入表情
+   * en-US: Insert emoji
+   */
+  (key: "privateMessages.emoji", params?: TranslationParams): string;
+  /**
    * zh-CN: 设备列表响应不完整，请稍后重试。
    * zh-TW: 裝置清單回應不完整，請稍後重試。
    * en-US: The device response is incomplete. Try again.

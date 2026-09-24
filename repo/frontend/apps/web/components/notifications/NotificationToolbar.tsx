@@ -7,15 +7,7 @@ import { useI18n } from "@/store/module/i18n";
 import { useNotificationStore } from "@/store/module/notifications";
 import type { NotificationToolbarProps } from "@/types/components/notifications";
 
-const filters = [
-  "all",
-  "private",
-  "comments",
-  "mentions",
-  "notices",
-  "reports",
-  "updates",
-] as const;
+const filters = ["all", "comments", "mentions", "notices", "reports", "updates"] as const;
 const actionClass =
   "flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-content-muted transition-colors hover:bg-foreground/7 hover:text-foreground disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 

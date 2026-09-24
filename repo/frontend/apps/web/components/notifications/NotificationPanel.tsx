@@ -2,6 +2,7 @@
 
 import { LoaderCircle, Moon, RefreshCw } from "lucide-react";
 import { isNotificationQuiet } from "@scopify/notification-core";
+import { INBOX_SCROLL_CLASS } from "@/constants/inbox";
 import { ScrollArea } from "@scopify/ui/shadcn/components/scroll-area";
 import { useNotificationStore } from "@/store/module/notifications";
 import { useI18n } from "@/store/module/i18n";
@@ -33,10 +34,7 @@ export function NotificationPanel(props: NotificationPanelProps) {
           {t(localError ? "notifications.localError" : "notifications.error")}
         </p>
       )}
-      <ScrollArea
-        type="hover"
-        className="flex min-h-0 flex-1 flex-col [&_[data-slot=scroll-area-thumb]]:bg-foreground/15 [&_[data-slot=scroll-area-thumb]:hover]:bg-foreground/25 [&>[data-slot=scroll-area-scrollbar]]:w-1.5 [&>[data-slot=scroll-area-viewport]]:h-auto [&>[data-slot=scroll-area-viewport]]:min-h-0 [&>[data-slot=scroll-area-viewport]]:flex-1 [&>[data-slot=scroll-area-viewport]]:overscroll-contain"
-      >
+      <ScrollArea type="hover" className={INBOX_SCROLL_CLASS}>
         <div className="[contain:inline-size]">
           <NotificationList {...props} />
         </div>

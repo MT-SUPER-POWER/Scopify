@@ -17,6 +17,7 @@ import {
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
+import { useFriendsStore } from "@/store/module/friends";
 import { useI18n } from "@/store/module/i18n";
 import type { ProfileMenuNavigationProps } from "@/types/components/profileMenu";
 
@@ -47,7 +48,10 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
           <span>{t("profile.menu.notifications")}</span>
           <ChevronRight className={arrowClassName} />
         </DropdownMenuItem>
-        <DropdownMenuItem className={`${itemClassName} md:hidden`}>
+        <DropdownMenuItem
+          className={`${itemClassName} md:hidden`}
+          onSelect={() => requestAnimationFrame(() => useFriendsStore.getState().setOpen(true))}
+        >
           <Users className={iconClassName} />
           <span>{t("profile.menu.friends")}</span>
           <ChevronRight className={arrowClassName} />
