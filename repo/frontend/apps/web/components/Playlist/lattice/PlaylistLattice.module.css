@@ -147,7 +147,7 @@
 .number {
   position: absolute;
   top: 18px;
-  left: 18px;
+  left: 20px;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -175,36 +175,42 @@
 }
 .copy {
   position: absolute;
-  bottom: 22px;
-  left: 22px;
-  right: 22px;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   opacity: 1;
   transition:
     opacity 0.25s,
     transform 0.25s;
 }
 .copy strong {
-  font-size: 36px;
-  line-height: 1.08;
+  font-size: 32px;
+  line-height: 1.12;
   font-weight: 700;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.025em;
   text-wrap: balance;
+  overflow-wrap: anywhere;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   padding-block: 0.12em;
   margin-block: -0.12em;
 }
+.poster[data-compact="true"] .copy strong {
+  font-size: 28px;
+}
 .copy small {
-  font-size: 17px;
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  opacity: 0.75;
+  opacity: 0.72;
 }
 .poster:hover .copy,
 .poster:focus-within .copy,
@@ -231,12 +237,12 @@
   right: 40px;
 }
 .poster[data-expanded="true"] .copy strong {
-  font-size: 54px;
-  line-height: 1.05;
-  -webkit-line-clamp: 3;
+  max-width: 88%;
+  font-size: 48px;
+  line-height: 1.1;
 }
 .poster[data-expanded="true"] .copy small {
-  font-size: 23px;
+  font-size: 18px;
 }
 .empty {
   position: absolute;
@@ -295,16 +301,15 @@
 }
 .lyricMetadata {
   position: absolute;
-  top: 64px;
+  top: 72px;
   left: 40px;
   right: 72px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  pointer-events: none;
+  gap: 6px;
 }
 .lyricMetadata strong {
-  font-size: 25px;
+  font-size: 22px;
   line-height: 1.25;
   font-weight: 600;
   overflow: hidden;
@@ -312,7 +317,9 @@
   text-overflow: ellipsis;
 }
 .lyricMetadata small {
-  font-size: 17px;
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 500;
   opacity: 0.65;
   overflow: hidden;
   white-space: nowrap;

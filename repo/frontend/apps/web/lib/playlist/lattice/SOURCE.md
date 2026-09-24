@@ -17,4 +17,8 @@ at v0.7.8, commit 9cf822015328e47ee5e22061213010a70b4ec5c9.
 - Scopify supplies page tracks, the unified playback transport, lyric projection,
   saved theme/font settings and navigation. Header, sidebar and Playbar remain owned
   by the host layout. Expanded controls use Scopify's playback actions.
+- Poster typography follows the title/artist hierarchy in `Lattice.css` and
+  `lyrics/LatticeLyrics.css`, adapted to the narrower pane with two-line previews
+  and smaller type on narrow tiles. Full titles remain available to assistive
+  technology and on hover; fitting uses CSS without per-poster DOM measurement.
 - Licensed under AGPL-3.0, as is Scopify; see the repository LICENSE.

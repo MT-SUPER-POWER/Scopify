@@ -35,8 +35,8 @@ export const LatticePoster = memo(
     const artist = track.ar.map((item) => item.name).join(" / ");
     const copy = (
       <span className={styles.copy}>
-        <strong>{track.name}</strong>
-        <small>{artist || track.al.name}</small>
+        <strong title={track.name}>{track.name}</strong>
+        <small title={artist || track.al.name}>{artist || track.al.name}</small>
       </span>
     );
     return (
@@ -76,6 +76,7 @@ export const LatticePoster = memo(
         onAnimationComplete={onExpansionComplete}
         data-expanded={expanded}
         data-current={current}
+        data-compact={!expanded && rect.width < 300}
         initial={false}
         animate={{
           x: rect.x,

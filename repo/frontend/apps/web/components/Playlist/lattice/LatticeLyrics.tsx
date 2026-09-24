@@ -55,11 +55,12 @@ export default function LatticeLyrics({ track }: LatticeLyricsProps) {
     ],
   );
   const ready = useLatticeLyricCanvas(host, input);
+  const artist = track.ar.map((item) => item.name).join(" / ");
   return (
     <>
       <span className={ready ? styles.lyricMetadata : styles.copy}>
-        <strong>{track.name}</strong>
-        <small>{track.ar.map((artist) => artist.name).join(" / ")}</small>
+        <strong title={track.name}>{track.name}</strong>
+        <small title={artist}>{artist}</small>
       </span>
       <div className={styles.lyrics} data-ready={ready}>
         <div ref={host} className={styles.lyricCanvas} aria-hidden="true" />
