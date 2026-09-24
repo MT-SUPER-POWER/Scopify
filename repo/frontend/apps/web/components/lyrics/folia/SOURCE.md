@@ -59,6 +59,11 @@ the original full-copy baseline:
   canvas to its visible content rather than the whole viewport; keep canvas props
   in Scopify's lyrics-domain types.
 
+- `1220c0eb` — snap Sonnet and Tempera renderer resolution to a smaller
+  Pixi texture-pool bucket when the resolution reduction stays within 25%;
+  align Tempera filter-pass resolutions and keep shared helpers/types in
+  Scopify's lyrics-domain directories.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

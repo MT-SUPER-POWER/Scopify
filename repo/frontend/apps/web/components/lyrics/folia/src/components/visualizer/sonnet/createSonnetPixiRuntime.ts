@@ -1,3 +1,4 @@
+import { snapResolutionToTexturePool } from "../../../../../../../lib/lyrics/folia/pixiTextureBudget";
 import type {
   PixiModule,
   SonnetSongMetadata,
@@ -81,7 +82,7 @@ export class SonnetPixiRuntime {
       backgroundAlpha: 0,
       antialias: true,
       autoDensity: true,
-      resolution: options.tuning.textureResolution,
+      resolution: snapResolutionToTexturePool(width, height, options.tuning.textureResolution),
       autoStart: false,
       sharedTicker: false,
       preference: "webgl",
@@ -127,7 +128,11 @@ export class SonnetPixiRuntime {
     if (width === this.lastWidth && height === this.lastHeight) return false;
     this.lastWidth = width;
     this.lastHeight = height;
-    this.app.renderer.resize(width, height);
+    this.app.renderer.resize(
+      width,
+      height,
+      snapResolutionToTexturePool(width, height, this.options.tuning.textureResolution),
+    );
     this.clearScenes();
     this.drawCredits(width, height);
     this.drawOverlay(width, height);
