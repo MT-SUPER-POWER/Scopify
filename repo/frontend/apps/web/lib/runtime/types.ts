@@ -203,6 +203,7 @@ export interface RuntimeVideoExport {
  * Callers depend on these intent-level modules, never on the preload bridge.
  */
 export interface WebRuntime {
+  readonly notifications: import("@scopify/desktop-contract").NotificationClient;
   readonly app: RuntimeAppLifecycle;
   readonly audioFeature: RuntimeAudioFeature;
   readonly auth: RuntimeAuthentication;

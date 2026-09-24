@@ -1,5 +1,6 @@
 import { ipcMain } from "electron";
 import { ipcLog } from "@main/utils/logger";
+import { clearNotificationSession } from "@main/services/notifications";
 import {
   clearInstalledMusicSessionCookies,
   installMusicSessionCookies,
@@ -12,6 +13,7 @@ export function registerAuthenticationIpc() {
   ipcMain.handle("set-music-cookie", async (_event, cookieStr: string, backendOrigin: string) => {
     try {
       const value = cookieStr.trim();
+      await clearNotificationSession();
       if (!value) {
         await clearInstalledMusicSessionCookies(backendOrigin);
         return true;

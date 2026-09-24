@@ -10,6 +10,15 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
   let cachedHostConfig: DesktopHostConfig | null = null;
 
   return {
+    notifications: {
+      configure: (session) => bridge.configureNotifications(session),
+      getSnapshot: () => bridge.getNotifications(),
+      refresh: () => bridge.refreshNotifications(),
+      markRead: (ids) => bridge.markNotificationsRead(ids),
+      updatePreferences: (preferences) => bridge.updateNotificationPreferences(preferences),
+      testDesktop: () => bridge.testDesktopNotification(),
+      onChanged: (callback) => bridge.onNotificationsChanged(callback),
+    },
     app: {
       exit: () => bridge.exitApp(),
       relaunch: () => bridge.relaunchApp(),

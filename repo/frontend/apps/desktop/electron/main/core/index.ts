@@ -26,21 +26,26 @@ import { createSplashWindowController } from "@main/window/splash";
 import { scheduleStartupUpdateCheck } from "@main/services/updater";
 import { createWindowCapabilityHost } from "./capabilityHost";
 import { createApplicationShutdown } from "./shutdown";
+import { createDesktopNotifications } from "@main/services/notifications";
+import { registerNotificationsIpc } from "@main/ipc/notifications";
 
 let mainWindow: BrowserWindow | null = null;
 let creatingWindow = false;
 let quitting = false;
 let initialized = false;
 let stopProcessMemoryMonitor: (() => void) | null = null;
+let notifications: ReturnType<typeof createDesktopNotifications> | null = null;
 
 const renderer = createDesktopRendererHost();
 const splash = createSplashWindowController();
 const backend = createDesktopBackendController({ log: backendLog }, desktopConfig.backend);
 backend.onStatusChanged((status) => {
   if (status.state === "running" && status.origin) {
-    void restoreMusicSessionCookies(status.origin).catch((error) =>
-      sessionLog.warn("[session] failed to restore music session cookies", error),
-    );
+    void restoreMusicSessionCookies(status.origin)
+      .then(() => notifications?.refresh())
+      .catch((error) =>
+        sessionLog.warn("[session] failed to restore music session cookies", error),
+      );
   }
 });
 const discord = createDiscordPresenceController({
@@ -63,6 +68,7 @@ const shutdown = createApplicationShutdown({
     sessionLog.info("[session] shutdown");
     stopProcessMemoryMonitor?.();
     stopProcessMemoryMonitor = null;
+    notifications?.dispose();
     splash.dismiss();
     disposeAppCloseWindow();
     await Promise.allSettled([capabilities.dispose(), discord.destroy(), backend.dispose()]);
@@ -119,6 +125,18 @@ async function releaseMainWindow(window: BrowserWindow) {
 }
 
 async function prepareApplication() {
+  const notificationOptions = {
+    getMainWindow: () => mainWindow,
+    getBackendOrigin: () => backend.getStatus().origin,
+    showMainWindow: async () => {
+      if (!mainWindow) await createApplicationWindow();
+      if (mainWindow?.isMinimized()) mainWindow.restore();
+      mainWindow?.show();
+      mainWindow?.focus();
+    },
+  };
+  notifications = createDesktopNotifications(notificationOptions);
+  registerNotificationsIpc(notifications, notificationOptions);
   coreLog.info("[app] renderer base URL", { url: renderer.baseUrl });
   if (process.platform === "win32") {
     app.setAppUserModelId("com.momo.scopify");

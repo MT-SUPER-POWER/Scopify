@@ -49,6 +49,21 @@ function closeAudioFeatureTransportPort() {
 }
 
 const electronAPI: DesktopBridge = {
+  configureNotifications: (session) => ipcRenderer.invoke("notifications:configure", session),
+  getNotifications: () => ipcRenderer.invoke("notifications:get"),
+  refreshNotifications: () => ipcRenderer.invoke("notifications:refresh"),
+  markNotificationsRead: (ids) => ipcRenderer.invoke("notifications:read", ids),
+  updateNotificationPreferences: (preferences) =>
+    ipcRenderer.invoke("notifications:preferences", preferences),
+  testDesktopNotification: () => ipcRenderer.invoke("notifications:test"),
+  onNotificationsChanged: (callback) => {
+    const listener = (
+      _event: Electron.IpcRendererEvent,
+      snapshot: Parameters<typeof callback>[0],
+    ) => callback(snapshot);
+    ipcRenderer.on("notifications:changed", listener);
+    return () => ipcRenderer.removeListener("notifications:changed", listener);
+  },
   getBackendStatus: () => ipcRenderer.invoke("backend:get-status"),
   connectAudioFeatureTransport: (
     role: AudioFeatureTransportRole,

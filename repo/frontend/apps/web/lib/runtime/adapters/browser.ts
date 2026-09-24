@@ -20,6 +20,7 @@ import type { CachePreferences } from "@/types/cache";
 import type { AppUpdateState } from "@/types/updater";
 
 import type { WebRuntime } from "../types";
+import { createBrowserNotifications } from "@/lib/notifications/browser";
 
 const WEB_CACHE_KEY = "scopify-page-cache-store";
 const OLD_WEB_CACHE_PREFIX = "scopify-page-cache:";
@@ -335,6 +336,7 @@ export function createBrowserRuntime(
       relaunch: NOOP,
       submitCloseAction: NOOP,
     },
+    notifications: createBrowserNotifications(),
     backend: {
       getStatus: async () => unsupportedBackendStatus(),
       onStatusChanged: () => NOOP,

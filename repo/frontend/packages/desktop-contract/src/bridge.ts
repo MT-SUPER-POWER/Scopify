@@ -13,6 +13,11 @@ import type {
 } from "./desktopPlaybackWallpaper";
 import type { RendererLogEvent } from "./logging";
 import type { AppUpdateState } from "./updater";
+import type {
+  NotificationPreferences,
+  NotificationSession,
+  NotificationSnapshot,
+} from "./notifications";
 import type { DesktopHostConfig } from "./config";
 import type { DesktopBackendStatus } from "./backend";
 import type { DiscordPresenceSnapshot, DiscordPresenceStatus } from "./discord";
@@ -25,7 +30,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 24;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 25;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -54,6 +59,7 @@ export type DesktopBridgeCapability =
   | "media-controls"
   | "mcp"
   | "navigation"
+  | "notifications"
   | "playback-transport"
   | "renderer-logging"
   | "updates"
@@ -76,6 +82,15 @@ export interface PageCacheStats {
 export type Unsubscribe = () => void;
 
 export interface DesktopBridge<TLyrics = unknown> {
+  configureNotifications(session: NotificationSession): Promise<NotificationSnapshot>;
+  getNotifications(): Promise<NotificationSnapshot>;
+  refreshNotifications(): Promise<NotificationSnapshot>;
+  markNotificationsRead(ids: string[]): Promise<NotificationSnapshot>;
+  updateNotificationPreferences(
+    preferences: NotificationPreferences,
+  ): Promise<NotificationSnapshot>;
+  testDesktopNotification(): Promise<boolean>;
+  onNotificationsChanged(callback: (snapshot: NotificationSnapshot) => void): Unsubscribe;
   getBackendStatus(): Promise<DesktopBackendStatus>;
   checkForUpdates(): Promise<AppUpdateState>;
   clearCache(request: ClearDesktopCacheRequest): Promise<DesktopCacheStats>;

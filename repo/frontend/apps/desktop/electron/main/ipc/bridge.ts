@@ -20,6 +20,7 @@ const CAPABILITIES = [
   "media-controls",
   "mcp",
   "navigation",
+  "notifications",
   "playback-transport",
   "renderer-logging",
   "updates",
