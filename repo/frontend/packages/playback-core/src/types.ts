@@ -7,7 +7,7 @@
  */
 
 export type PlaybackQuality =
-  "standard" | "high" | "lossless" | "hires" | "dolby" | "spatial" | "sky" | "master";
+  "standard" | "high" | "lossless" | "hires" | "dolby" | "vivid" | "spatial" | "sky" | "master";
 
 export type TrackLocator =
   | {
@@ -107,6 +107,8 @@ export type PlayableSource =
 export type SourceResolveReason = "initial" | "quality-change" | "retry" | "source-expired";
 
 export interface SourceResolveRequest {
+  /** Provider-specific encoding variant; participates in source cache identity. */
+  variant?: string;
   excludedCandidateIds: readonly string[];
   quality: PlaybackQuality;
   reason: SourceResolveReason;
@@ -139,6 +141,7 @@ export interface PlayableSourceCache {
     locator: TrackLocator,
     quality: PlaybackQuality,
     sessionRevision: number,
+    variant?: string,
   ): PlayableSource | null;
   invalidate(locator: TrackLocator): void;
   set(
@@ -146,6 +149,7 @@ export interface PlayableSourceCache {
     quality: PlaybackQuality,
     sessionRevision: number,
     source: PlayableSource,
+    variant?: string,
   ): void;
 }
 

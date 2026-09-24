@@ -12,7 +12,7 @@ import type {
   LyricSourceSelection,
 } from "@/types/lyrics";
 import type { MusicQuality } from "@/types/player";
-import type { NeteaseLyric } from "@/types/api/music";
+import type { ImmerseType, NeteaseLyric } from "@/types/api/music";
 
 const URL_TTL_MS = 30 * 60 * 1000; // 30 分钟
 const LYRIC_TTL_MS = 24 * 60 * 60 * 1000; // 24 小时
@@ -54,19 +54,26 @@ async function storageDelete(key: string): Promise<void> {
 
 // ── Public API: Play URL ───────────────────────────────────────────────────────
 
+function playUrlKey(songId: number, quality: MusicQuality, immerseType: ImmerseType = "c51") {
+  const variant = quality === "sky" ? `:${immerseType}` : "";
+  return `${KEY_PREFIX_PLAY_URL}:${songId}:${quality}${variant}`;
+}
+
 export async function getCachedPlayUrl(
   songId: number,
   quality: MusicQuality,
+  immerseType?: ImmerseType,
 ): Promise<string | null> {
-  return storageGet<string>(`${KEY_PREFIX_PLAY_URL}:${songId}:${quality}`);
+  return storageGet<string>(playUrlKey(songId, quality, immerseType));
 }
 
 export async function setCachedPlayUrl(
   songId: number,
   quality: MusicQuality,
   url: string,
+  immerseType?: ImmerseType,
 ): Promise<void> {
-  await storageSet(`${KEY_PREFIX_PLAY_URL}:${songId}:${quality}`, url, URL_TTL_MS, "play-url");
+  await storageSet(playUrlKey(songId, quality, immerseType), url, URL_TTL_MS, "play-url");
 }
 
 export async function getCachedReplayGain(songId: number): Promise<number | null> {
@@ -77,8 +84,12 @@ export async function setCachedReplayGain(songId: number, gainDb: number): Promi
   await storageSet(`${KEY_PREFIX_REPLAY_GAIN}:${songId}`, gainDb, URL_TTL_MS, "play-url");
 }
 
-export async function clearCachedPlayUrl(songId: number, quality: MusicQuality): Promise<void> {
-  await storageDelete(`${KEY_PREFIX_PLAY_URL}:${songId}:${quality}`);
+export async function clearCachedPlayUrl(
+  songId: number,
+  quality: MusicQuality,
+  immerseType?: ImmerseType,
+): Promise<void> {
+  await storageDelete(playUrlKey(songId, quality, immerseType));
 }
 
 // ── Public API: Lyric ──────────────────────────────────────────────────────────

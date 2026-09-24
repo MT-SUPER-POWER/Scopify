@@ -37,8 +37,9 @@ function cacheKey(
   locator: TrackLocator,
   quality: PlaybackQuality,
   sessionRevision: number,
+  variant = "",
 ): string {
-  return `${sessionRevision}:${quality}:${locatorKey(locator)}`;
+  return JSON.stringify([sessionRevision, quality, variant, locatorKey(locator)]);
 }
 
 function isRemoteSourceStillUsable(
@@ -65,8 +66,9 @@ class MemoryPlayableSourceCache implements PlayableSourceCache {
     locator: TrackLocator,
     quality: PlaybackQuality,
     sessionRevision: number,
+    variant?: string,
   ): PlayableSource | null {
-    const entry = this.entries.get(cacheKey(locator, quality, sessionRevision));
+    const entry = this.entries.get(cacheKey(locator, quality, sessionRevision, variant));
     return entry ? cloneSource(entry.source) : null;
   }
 
@@ -82,8 +84,9 @@ class MemoryPlayableSourceCache implements PlayableSourceCache {
     quality: PlaybackQuality,
     sessionRevision: number,
     source: PlayableSource,
+    variant?: string,
   ): void {
-    this.entries.set(cacheKey(locator, quality, sessionRevision), {
+    this.entries.set(cacheKey(locator, quality, sessionRevision, variant), {
       locatorKey: locatorKey(locator),
       source: cloneSource(source),
     });
@@ -109,7 +112,12 @@ class DefaultPlayableSourceResolver implements PlayableSourceResolver {
     if (request.signal.aborted)
       return { reason: "resolution-aborted", retryable: false, status: "unavailable" };
 
-    const cached = this.cache.get(item.locator, request.quality, request.sessionRevision);
+    const cached = this.cache.get(
+      item.locator,
+      request.quality,
+      request.sessionRevision,
+      request.variant,
+    );
     if (cached) {
       if (request.excludedCandidateIds.includes(cached.candidateId)) {
         this.cache.invalidate(item.locator);
@@ -147,7 +155,13 @@ class DefaultPlayableSourceResolver implements PlayableSourceResolver {
       return { reason: "source-expired", retryable: true, status: "unavailable" };
     }
 
-    this.cache.set(item.locator, request.quality, request.sessionRevision, resolution.source);
+    this.cache.set(
+      item.locator,
+      request.quality,
+      request.sessionRevision,
+      resolution.source,
+      request.variant,
+    );
     return { source: cloneSource(resolution.source), status: "resolved" };
   }
 }

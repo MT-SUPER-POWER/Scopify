@@ -1,7 +1,7 @@
-import type { NeteaseLyric, SongDetail } from "@/types/api/music";
+import type { ImmerseType, NeteaseLyric, SongDetail } from "@/types/api/music";
 
 export type MusicQuality =
-  "sky" | "jymaster" | "dolby" | "spatial" | "hires" | "lossless" | "high" | "standard";
+  "sky" | "jymaster" | "dolby" | "vivid" | "spatial" | "hires" | "lossless" | "high" | "standard";
 export type PlaybackFailureSource = "url" | "audio";
 /** Identifies why queue progression occurred so source-specific policies can react correctly. */
 export type PlaybackNextSource = "manual" | "ended" | "personal-fm-dislike";
@@ -30,7 +30,8 @@ export interface PlayerStore {
   appendQueueItems: (songs: SongDetail[]) => void;
   currentSongDetail: SongDetail | null;
   currentSongUrl: string | null;
-  changeMusicQuality: (quality: MusicQuality) => Promise<void>;
+  changeMusicQuality: (quality: MusicQuality, immerseType?: ImmerseType) => Promise<void>;
+  immerseType: ImmerseType;
   fetchCurrentLyric: () => Promise<void>;
   handlePlaybackFailure: (
     source: PlaybackFailureSource,

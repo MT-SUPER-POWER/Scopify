@@ -1,15 +1,13 @@
-export type SongQualityBadgeLevel =
-  "jymaster" | "dolby" | "sky" | "jyeffect" | "hires" | "lossless";
-
-export type SongQualityBadgeTone = "gold" | "red";
-
-export interface SongQualityBadgeDefinition {
-  level: SongQualityBadgeLevel;
-  tone: SongQualityBadgeTone;
-}
+import type { SongQualityBadgeLevel, SongQualityBadgeDefinition } from "@/types/songQuality";
+export type {
+  SongQualityBadgeLevel,
+  SongQualityBadgeTone,
+  SongQualityBadgeDefinition,
+} from "@/types/songQuality";
 
 const qualityBadges: Record<SongQualityBadgeLevel, SongQualityBadgeDefinition> = {
   jymaster: { level: "jymaster", tone: "gold" },
+  vivid: { level: "vivid", tone: "gold" },
   dolby: { level: "dolby", tone: "gold" },
   sky: { level: "sky", tone: "gold" },
   jyeffect: { level: "jyeffect", tone: "gold" },

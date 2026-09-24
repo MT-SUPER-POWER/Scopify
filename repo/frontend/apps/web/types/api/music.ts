@@ -274,10 +274,18 @@ export type MusicQualityLevel =
   | "exhigh" // 极高 320kbps
   | "lossless" // 无损
   | "hires" // Hi-Res
-  | "jyeffect" // 高清环绕声
+  | "jyeffect" // 高清臻音
+  | "vivid" // 臻音全景声
   | "sky" // 沉浸环绕声
   | "dolby" // 杜比全景声
   | "jymaster"; // 超清母带
+
+export type ImmerseType = "c51" | "ste" | "aac" | "c512" | "ste2" | "aac2";
+
+export interface SongUrlOptions {
+  immerseType?: ImmerseType;
+  signal?: AbortSignal;
+}
 
 /** 歌曲各音质文件信息 */
 export interface SongMusicDetailItem {

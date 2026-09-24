@@ -4,25 +4,28 @@ import { useCallback, useState } from "react";
 
 import { usePlayerStore } from "@/store/module/player";
 import type { MusicQuality } from "@/types/player";
+import type { ImmerseType } from "@/types/api/music";
 
 export function useMusicQuality() {
   const [isChanging, setIsChanging] = useState(false);
   const changeStoredMusicQuality = usePlayerStore((state) => state.changeMusicQuality);
   const musicQuality = usePlayerStore((state) => state.musicQuality);
+  const immerseType = usePlayerStore((state) => state.immerseType);
 
   const changeMusicQuality = useCallback(
-    async (quality: MusicQuality) => {
-      if (musicQuality === quality || isChanging) return;
+    async (quality: MusicQuality, variant = immerseType) => {
+      if ((musicQuality === quality && immerseType === variant) || isChanging) return;
 
       setIsChanging(true);
       try {
-        await changeStoredMusicQuality(quality);
+        await changeStoredMusicQuality(quality, variant);
       } finally {
         setIsChanging(false);
       }
     },
-    [changeStoredMusicQuality, isChanging, musicQuality],
+    [changeStoredMusicQuality, isChanging, musicQuality, immerseType],
   );
 
-  return { changeMusicQuality, isChanging, musicQuality };
+  const changeImmerseType = (variant: ImmerseType) => changeMusicQuality("sky", variant);
+  return { changeMusicQuality, changeImmerseType, immerseType, isChanging, musicQuality };
 }

@@ -8,18 +8,21 @@ import type {
   NeteaseLyric,
   SongChorusResponse,
   PersonalizedNewSongResponse,
+  SongUrlOptions,
 } from "@/types/api/music";
 import request, { requestConfig } from "../web/request";
 
 export async function greySongUrlMatch(
   id: number | string,
   source?: string,
+  signal?: AbortSignal,
 ): Promise<SongUrlMatchResponse> {
   const params: SongUrlMatchParams = { id };
   if (source) params.source = source;
 
   const response = await request.get<SongUrlMatchResponse>("/song/url/match", {
     params,
+    signal,
   });
   return response.data;
 }
@@ -41,6 +44,7 @@ export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
   sky: "sky",
   jymaster: "jymaster",
   dolby: "dolby",
+  vivid: "vivid",
   spatial: "jyeffect",
   hires: "hires",
   lossless: "lossless",
@@ -65,9 +69,18 @@ export async function getSongMusicDetail(id: number | string) {
  * @param id   音乐 id（可多个，用逗号隔开）
  * @param level 播放音质等级
  */
-export async function getSongUrlV1(id: number | string, level: MusicQualityLevel = "exhigh") {
+export async function getSongUrlV1(
+  id: number | string,
+  level: MusicQualityLevel = "exhigh",
+  options: SongUrlOptions = {},
+) {
   return request.get<SongUrlV1Response>("/song/url/v1", {
-    params: { id, level },
+    params: {
+      id,
+      level,
+      ...(level === "sky" ? { immerseType: options.immerseType ?? "c51" } : {}),
+    },
+    signal: options.signal,
   });
 }
 
@@ -88,25 +101,27 @@ export async function checkMusicAvailable(id: number | string, br?: number) {
 export async function getSongUrlWithQuality(
   id: number | string,
   level: MusicQualityLevel = "exhigh",
+  options: SongUrlOptions = {},
 ) {
   try {
-    const res = await getSongUrlV1(id, level);
+    const res = await getSongUrlV1(id, level, options);
     const item = res.data?.data?.[0];
     if (item?.url) {
       return {
         data: item.url,
-        level,
+        level: item.level,
         replayGainTrackGain: Number.isFinite(item.gain) ? item.gain : undefined,
         source: "url-v1" as const,
       };
     }
     throw new Error("No URL returned from v1");
-  } catch {
+  } catch (error) {
+    if (options.signal?.aborted) throw error;
     // 降级到灰色歌曲链接
-    const fallback = await greySongUrlMatch(id);
+    const fallback = await greySongUrlMatch(id, undefined, options.signal);
     return {
       data: fallback.data ?? fallback.proxyUrl,
-      level,
+      level: undefined,
       replayGainTrackGain: undefined,
       source: "url-match" as const,
     };

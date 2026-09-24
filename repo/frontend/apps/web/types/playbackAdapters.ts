@@ -1,6 +1,6 @@
 import type { AudioEngineAdapter, SourceResolution } from "@scopify/playback-core";
 
-import type { MusicQualityLevel } from "@/types/api/music";
+import type { ImmerseType, MusicQualityLevel, SongUrlOptions } from "@/types/api/music";
 import type { PlaybackAuthorityMediaEvent, PlaybackMediaSample } from "@/types/playbackMediaPort";
 import type { MusicQuality } from "@/types/player";
 
@@ -31,21 +31,40 @@ export interface HtmlAudioEngineAdapter extends AudioEngineAdapter {
 }
 
 export interface NeteasePlayableSourceAdapterDependencies {
-  clearCachedPlayUrl(songId: number, quality: MusicQuality): Promise<void>;
-  getCachedPlayUrl(songId: number, quality: MusicQuality): Promise<string | null>;
+  clearCachedPlayUrl(
+    songId: number,
+    quality: MusicQuality,
+    immerseType?: ImmerseType,
+  ): Promise<void>;
+  getCachedPlayUrl(
+    songId: number,
+    quality: MusicQuality,
+    immerseType?: ImmerseType,
+  ): Promise<string | null>;
   getSongUrlWithQuality(
     songId: number,
     level: MusicQualityLevel,
+    options?: SongUrlOptions,
   ): Promise<{
     data: string | null | undefined;
     replayGainTrackGain?: number;
   }>;
-  setCachedPlayUrl(songId: number, quality: MusicQuality, url: string): Promise<void>;
+  setCachedPlayUrl(
+    songId: number,
+    quality: MusicQuality,
+    url: string,
+    immerseType?: ImmerseType,
+  ): Promise<void>;
   setCachedReplayGain(songId: number, gainDb: number): Promise<void>;
 }
 
 export interface WebNeteasePlayableSourceResolver {
   /** Clears both core's in-memory source and the renderer's persistent URL. */
-  invalidate(songId: number, quality: MusicQuality): Promise<void>;
-  resolve(songId: number, quality: MusicQuality, signal?: AbortSignal): Promise<SourceResolution>;
+  invalidate(songId: number, quality: MusicQuality, immerseType?: ImmerseType): Promise<void>;
+  resolve(
+    songId: number,
+    quality: MusicQuality,
+    signal?: AbortSignal,
+    immerseType?: ImmerseType,
+  ): Promise<SourceResolution>;
 }

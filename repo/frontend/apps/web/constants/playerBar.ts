@@ -26,6 +26,13 @@ export const QUALITY_OPTIONS: QualityOption[] = [
 
   // ── 列表音质 (SVIP / VIP / 普通) ──
   {
+    value: "vivid",
+    icon: Gem,
+    badgeType: "svip",
+    labelKey: "playbar.quality.vivid.label",
+    techSpec: "playbar.quality.vivid.description",
+  },
+  {
     value: "dolby",
     icon: Gem,
     badgeType: "svip",

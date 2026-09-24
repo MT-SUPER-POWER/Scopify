@@ -15,6 +15,7 @@ export interface SongContextMenuProps {
   onRemoveFromQueue?: () => void;
   onRequestDelete?: () => void;
   onViewTranscript?: () => void;
+  onSimilarSongs?: () => void;
   playlistID?: number | string | null;
   readonly?: boolean;
   song: SongDetail;
@@ -35,4 +36,11 @@ export interface CreatePlaylistFromTracksDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   tracks: SongDetail[];
+}
+
+export interface SongContextMenuSectionProps {
+  actions: SongContextMenuActionsProps;
+  model: ReturnType<
+    typeof import("@/hooks/song/useSongContextMenuActions").useSongContextMenuActions
+  >;
 }

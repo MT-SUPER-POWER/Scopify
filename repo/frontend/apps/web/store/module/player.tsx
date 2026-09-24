@@ -117,6 +117,7 @@ export function selectPersistedPlayerState(state: PlayerStore) {
     lyric: state.lyric,
     playlistId: state.playlistId,
     musicQuality: state.musicQuality,
+    immerseType: state.immerseType,
   };
 }
 
@@ -162,13 +163,14 @@ export const usePlayerStore = create<PlayerStore>()(
       playbackLoadRevision: 0,
       playbackSessionRevision: 0,
       musicQuality: "high",
+      immerseType: "c51",
       sourceChangeMode: "new-track",
       setMusicQuality: (quality) => set({ musicQuality: quality }),
-      changeMusicQuality: async (quality) => {
-        const { currentSongDetail, musicQuality } = get();
-        if (musicQuality === quality) return;
+      changeMusicQuality: async (quality, nextImmerseType = get().immerseType) => {
+        const { currentSongDetail, musicQuality, immerseType } = get();
+        if (musicQuality === quality && immerseType === nextImmerseType) return;
 
-        set({ musicQuality: quality });
+        set({ musicQuality: quality, immerseType: nextImmerseType });
         if (!currentSongDetail) return;
 
         const didSwitch = await get().playTrack(currentSongDetail, {
@@ -177,9 +179,10 @@ export const usePlayerStore = create<PlayerStore>()(
         if (
           !didSwitch &&
           get().musicQuality === quality &&
+          get().immerseType === nextImmerseType &&
           get().currentSongDetail?.id === currentSongDetail.id
         ) {
-          set({ musicQuality });
+          set({ musicQuality, immerseType });
         }
       },
       setVolume: (v) => {
@@ -350,7 +353,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       refreshCurrentTrackUrl: async () => {
-        const { currentSongDetail, musicQuality } = get();
+        const { currentSongDetail, musicQuality, immerseType } = get();
         if (!currentSongDetail) return { status: "superseded" };
         const songId = currentSongDetail.id;
 
@@ -366,13 +369,17 @@ export const usePlayerStore = create<PlayerStore>()(
         const refreshRevision = get().playbackLoadRevision;
         const refreshIdentity = { revision: refreshRevision, trackId: songId };
         try {
-          await webNeteasePlayableSourceResolver.invalidate(songId, musicQuality);
+          await webNeteasePlayableSourceResolver.invalidate(songId, musicQuality, immerseType);
         } catch (error) {
           if (!isPlaybackLoadCurrent(get(), refreshIdentity)) return { status: "superseded" };
           console.error("清理过期播放地址失败", error);
           return { identity: refreshIdentity, status: "failed" };
         }
-        if (!isPlaybackLoadCurrent(get(), refreshIdentity) || get().musicQuality !== musicQuality) {
+        if (
+          !isPlaybackLoadCurrent(get(), refreshIdentity) ||
+          get().musicQuality !== musicQuality ||
+          get().immerseType !== immerseType
+        ) {
           return { status: "superseded" };
         }
 
@@ -385,7 +392,11 @@ export const usePlayerStore = create<PlayerStore>()(
           trackId: songId,
         };
         const refreshed = await refreshPromise;
-        if (!isPlaybackLoadCurrent(get(), loadIdentity) || get().musicQuality !== musicQuality) {
+        if (
+          !isPlaybackLoadCurrent(get(), loadIdentity) ||
+          get().musicQuality !== musicQuality ||
+          get().immerseType !== immerseType
+        ) {
           return { status: "superseded" };
         }
         return refreshed ? { status: "refreshed" } : { identity: loadIdentity, status: "failed" };
@@ -426,7 +437,7 @@ export const usePlayerStore = create<PlayerStore>()(
         );
 
         try {
-          const { musicQuality } = get();
+          const { musicQuality, immerseType } = get();
           const lyricResult = (async () => {
             if (song.voiceId !== undefined) {
               return {
@@ -449,7 +460,7 @@ export const usePlayerStore = create<PlayerStore>()(
             };
           })();
           const [sourceResolution, resolvedLyric] = await Promise.all([
-            webNeteasePlayableSourceResolver.resolve(song.id, musicQuality),
+            webNeteasePlayableSourceResolver.resolve(song.id, musicQuality, undefined, immerseType),
             lyricResult,
           ]);
           if (!isCurrentPlaybackLoad()) return false;

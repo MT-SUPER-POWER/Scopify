@@ -1,3 +1,4 @@
+import { musicDiscoveryMessages } from "./musicDiscovery";
 import { themeEditorMessages } from "./themeEditor";
 import { subtitlePaletteMessages } from "./subtitlePalette";
 import { subtitleControlMessages } from "./subtitleControl";
@@ -69,6 +70,7 @@ export const messages = {
     ...networkMessages["zh-CN"],
     ...trayMessages["zh-CN"],
     ...playbarMessages["zh-CN"],
+    ...musicDiscoveryMessages["zh-CN"],
     ...lyricsMessages["zh-CN"],
     ...uiMessages["zh-CN"],
     ...playerBarMessages["zh-CN"],
@@ -111,6 +113,7 @@ export const messages = {
     ...networkMessages["zh-TW"],
     ...trayMessages["zh-TW"],
     ...playbarMessages["zh-TW"],
+    ...musicDiscoveryMessages["zh-TW"],
     ...lyricsMessages["zh-TW"],
     ...uiMessages["zh-TW"],
     ...playerBarMessages["zh-TW"],
@@ -153,6 +156,7 @@ export const messages = {
     ...networkMessages["en-US"],
     ...trayMessages["en-US"],
     ...playbarMessages["en-US"],
+    ...musicDiscoveryMessages["en-US"],
     ...lyricsMessages["en-US"],
     ...uiMessages["en-US"],
     ...playerBarMessages["en-US"],

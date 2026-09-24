@@ -72,6 +72,7 @@ export const musicQueryKeys = {
       ["search", "voice-lists", keyword, limit] as const,
   },
   song: {
+    similar: (songId: number, userId: number) => ["song", "similar", userId, songId] as const,
     chorus: (songId: number | string) => ["song", "chorus", songId] as const,
   },
   voice: {

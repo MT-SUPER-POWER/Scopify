@@ -4,14 +4,12 @@ import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { getSongQualityBadge } from "@/lib/song/qualityBadge";
 import { useI18n } from "@/store/module/i18n";
 
-interface SongQualityBadgeProps {
-  className?: string;
-  qualityLevel: string | null | undefined;
-}
+import type { SongQualityBadgeProps } from "@/types/songQuality";
 
 const qualityLabelKeys = {
   jymaster: "playbar.quality.badge.jymaster",
   dolby: "playbar.quality.badge.dolby",
+  vivid: "playbar.quality.badge.vivid",
   sky: "playbar.quality.badge.sky",
   jyeffect: "playbar.quality.badge.jyeffect",
   hires: "playbar.quality.badge.hires",

@@ -6,6 +6,13 @@ import type { MusicQuality } from "@/types/player";
 
 export type QualityOptionKey = MusicQuality;
 
+export interface QualityOptionButtonProps {
+  option: QualityOption;
+  selected: boolean;
+  disabled: boolean;
+  onSelect: (quality: MusicQuality) => void;
+}
+
 export interface QualityOption {
   value: QualityOptionKey;
   icon?: ComponentType<{ className?: string }>;

@@ -19,6 +19,7 @@ import type {
   WebNeteasePlayableSourceResolver,
 } from "@/types/playbackAdapters";
 import type { MusicQuality } from "@/types/player";
+import type { ImmerseType } from "@/types/api/music";
 
 /**
  * The playback core deliberately uses runtime-neutral quality names. Keep the
@@ -27,6 +28,7 @@ import type { MusicQuality } from "@/types/player";
  */
 const PLAYBACK_QUALITY_TO_MUSIC_QUALITY: Record<PlaybackQuality, MusicQuality> = {
   dolby: "dolby",
+  vivid: "vivid",
   high: "high",
   hires: "hires",
   lossless: "lossless",
@@ -74,10 +76,18 @@ function unavailable(reason: string, retryable: boolean): SourceResolution {
 export class NeteasePlayableSourceAdapter implements PlayableSourceAdapter {
   constructor(private readonly dependencies: NeteasePlayableSourceAdapterDependencies) {}
 
-  async invalidate(locator: TrackLocator, quality: PlaybackQuality): Promise<void> {
+  async invalidate(
+    locator: TrackLocator,
+    quality: PlaybackQuality,
+    immerseType?: ImmerseType,
+  ): Promise<void> {
     const songId = toSongId(locator);
     if (songId === null) return;
-    await this.dependencies.clearCachedPlayUrl(songId, PLAYBACK_QUALITY_TO_MUSIC_QUALITY[quality]);
+    await this.dependencies.clearCachedPlayUrl(
+      songId,
+      PLAYBACK_QUALITY_TO_MUSIC_QUALITY[quality],
+      immerseType,
+    );
   }
 
   async resolve(
@@ -93,9 +103,11 @@ export class NeteasePlayableSourceAdapter implements PlayableSourceAdapter {
     if (request.signal.aborted) return unavailable("resolution-aborted", false);
 
     const quality = PLAYBACK_QUALITY_TO_MUSIC_QUALITY[request.quality];
-    const id = candidateId(songId, request.quality);
+    const immerseType =
+      request.quality === "sky" ? ((request.variant ?? "c51") as ImmerseType) : undefined;
+    const id = `${candidateId(songId, request.quality)}${immerseType ? `:${immerseType}` : ""}`;
     try {
-      const cachedUrl = await this.dependencies.getCachedPlayUrl(songId, quality);
+      const cachedUrl = await this.dependencies.getCachedPlayUrl(songId, quality, immerseType);
       if (request.signal.aborted) return unavailable("resolution-aborted", false);
       if (cachedUrl && !request.excludedCandidateIds.includes(id)) {
         return {
@@ -113,6 +125,7 @@ export class NeteasePlayableSourceAdapter implements PlayableSourceAdapter {
       const result = await this.dependencies.getSongUrlWithQuality(
         songId,
         UI_QUALITY_TO_LEVEL[quality],
+        { immerseType, signal: request.signal },
       );
       if (request.signal.aborted) return unavailable("resolution-aborted", false);
       if (!result.data || request.excludedCandidateIds.includes(id)) {
@@ -126,7 +139,7 @@ export class NeteasePlayableSourceAdapter implements PlayableSourceAdapter {
       // may read ReplayGain immediately after source resolution without a
       // second request or a metadata side-channel in PlayableSource.
       await Promise.all([
-        this.dependencies.setCachedPlayUrl(songId, quality, result.data),
+        this.dependencies.setCachedPlayUrl(songId, quality, result.data, immerseType),
         result.replayGainTrackGain === undefined
           ? Promise.resolve()
           : this.dependencies.setCachedReplayGain(songId, result.replayGainTrackGain),
@@ -177,12 +190,12 @@ export function createWebNeteasePlayableSourceResolver(
   });
 
   return {
-    async invalidate(songId, quality) {
+    async invalidate(songId, quality, immerseType) {
       const locator: TrackLocator = { kind: "netease", songId: String(songId) };
       resolver.invalidate(locator);
-      await adapter.invalidate(locator, toPlaybackQuality(quality));
+      await adapter.invalidate(locator, toPlaybackQuality(quality), immerseType);
     },
-    resolve(songId, quality, signal = createAbortSignal()) {
+    resolve(songId, quality, signal = createAbortSignal(), immerseType = "c51") {
       const playbackQuality = toPlaybackQuality(quality);
       return resolver.resolve(
         {
@@ -195,6 +208,7 @@ export function createWebNeteasePlayableSourceResolver(
         {
           excludedCandidateIds: [],
           quality: playbackQuality,
+          variant: quality === "sky" ? immerseType : undefined,
           reason: "initial",
           sessionRevision: 0,
           signal,
