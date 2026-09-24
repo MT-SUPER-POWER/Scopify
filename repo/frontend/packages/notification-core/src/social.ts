@@ -1,6 +1,7 @@
 import type { NotificationLocale, NotificationSource } from "@scopify/desktop-contract";
 import { decodeSocial, socialPresentation } from "./socialPresentation";
 import { object } from "./preferences";
+import { socialTarget } from "./socialTarget";
 import { timestamp } from "./reports";
 import type {
   NotificationAccountState,
@@ -68,6 +69,7 @@ export async function pollSocial(
       source: source as NotificationSource,
       category: source === "private" ? "messages" : "interactions",
       ...socialPresentation(source, row, payload, user, locale),
+      target: socialTarget(source, row, payload, user),
       occurredAt: at,
       readAt:
         source === "private"

@@ -1,4 +1,5 @@
 import {
+  Activity,
   Bell,
   ChevronRight,
   Download,
@@ -54,6 +55,14 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
         >
           <Users className={iconClassName} />
           <span>{t("profile.menu.friends")}</span>
+          <ChevronRight className={arrowClassName} />
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className={`${itemClassName} md:hidden`}
+          onSelect={() => smartRouter.push("/social")}
+        >
+          <Activity className={iconClassName} />
+          <span>{t("social.title")}</span>
           <ChevronRight className={arrowClassName} />
         </DropdownMenuItem>
         {isLoggedIn && (

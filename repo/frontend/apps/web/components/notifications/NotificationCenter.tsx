@@ -6,6 +6,7 @@ import { useNotificationCenter } from "@/hooks/notifications/useNotificationCent
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import { NotificationPanel } from "./NotificationPanel";
+import { socialNotificationHref } from "@/lib/social/notificationTarget";
 
 export function NotificationCenter() {
   const center = useNotificationCenter();
@@ -46,6 +47,13 @@ export function NotificationCenter() {
         onSettings={() => {
           center.setOpen(false);
           router.push("/setting?tab=notifications");
+        }}
+        onSocialAction={(item) => {
+          const href = socialNotificationHref(item.target);
+          if (!href) return;
+          center.markRead(item);
+          center.setOpen(false);
+          router.push(href);
         }}
         onUpdateAction={() => {
           center.update.markRead();

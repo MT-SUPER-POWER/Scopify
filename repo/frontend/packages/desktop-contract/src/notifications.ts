@@ -11,6 +11,10 @@ export interface NotificationSocialContext {
   resource?: string;
 }
 
+export type NotificationSocialTarget =
+  | { kind: "profile" | "message"; userId: string }
+  | { kind: "event"; eventId: string; userId: string; threadId?: string };
+
 export interface InboxNotification {
   id: string;
   source: NotificationSource;
@@ -19,9 +23,10 @@ export interface InboxNotification {
   body: string;
   avatarUrl?: string;
   social?: NotificationSocialContext;
+  target?: NotificationSocialTarget;
   occurredAt: number;
   readAt: number | null;
-  /** A summary can be inspected without navigating to unfinished social pages. */
+  /** Keep summaries readable even when the referenced resource is unavailable. */
   details: string[];
   periodKey?: string;
 }
