@@ -1,10 +1,6 @@
-import type { AudioEffectSettings } from "@/types/audioEqualizer";
+import type { AudioEffectSettings, AudioPostEffectsGraph } from "@/types/audioEqualizer";
 
-export interface AudioPostEffectsGraph {
-  apply: (effects: AudioEffectSettings) => void;
-  dispose: () => void;
-  input: GainNode;
-}
+export type { AudioPostEffectsGraph } from "@/types/audioEqualizer";
 
 const createDriveCurve = (amount: number) => {
   const curve = new Float32Array(1024);
@@ -102,38 +98,41 @@ export function connectAudioPostEffectsGraph(
   merger.connect(dry).connect(mixBus);
   merger.connect(convolver).connect(wet).connect(mixBus);
   noise.connect(noiseGain).connect(mixBus);
-  mixBus.connect(limiter).connect(output);
   wowLfo.connect(wowDepth).connect(wowDelay.delayTime);
-  noise.start();
-  wowLfo.start();
 
-  const apply = (effects: AudioEffectSettings) => {
+  const apply = (effects: AudioEffectSettings, initialise = false) => {
     const now = context.currentTime;
-    highpass.frequency.setTargetAtTime(effects.highpass, now, 0.02);
-    lowpass.frequency.setTargetAtTime(
-      Math.min(effects.lowpass, context.sampleRate * 0.475),
-      now,
-      0.02,
-    );
+    const setParameter = (parameter: AudioParam, value: number, timeConstant: number) => {
+      if (initialise) parameter.setValueAtTime(value, now);
+      else parameter.setTargetAtTime(value, now, timeConstant);
+    };
+    setParameter(highpass.frequency, effects.highpass, 0.02);
+    setParameter(lowpass.frequency, Math.min(effects.lowpass, context.sampleRate * 0.475), 0.02);
     drive.curve = effects.drive > 0.001 ? createDriveCurve(effects.drive) : null;
     crush.curve = effects.crush > 0.001 ? createCrushCurve(effects.crush) : null;
-    wowDelay.delayTime.setTargetAtTime(effects.wow * 0.006, now, 0.04);
-    wowDepth.gain.setTargetAtTime(effects.wow * 0.0045, now, 0.04);
-    punch.gain.setTargetAtTime(effects.punch * 9, now, 0.03);
+    setParameter(wowDelay.delayTime, effects.wow * 0.006, 0.04);
+    setParameter(wowDepth.gain, effects.wow * 0.0045, 0.04);
+    setParameter(punch.gain, effects.punch * 9, 0.03);
     const cross = (1 - effects.width) * 0.5;
     const direct = 1 - cross;
-    directLeft.gain.setTargetAtTime(direct, now, 0.03);
-    directRight.gain.setTargetAtTime(direct, now, 0.03);
-    crossLeft.gain.setTargetAtTime(cross, now, 0.03);
-    crossRight.gain.setTargetAtTime(cross, now, 0.03);
-    dry.gain.setTargetAtTime(Math.cos(effects.space * Math.PI * 0.5), now, 0.04);
-    wet.gain.setTargetAtTime(Math.sin(effects.space * Math.PI * 0.5) * 0.42, now, 0.04);
-    noiseGain.gain.setTargetAtTime(effects.noise ** 1.4 * 0.12, now, 0.06);
+    setParameter(directLeft.gain, direct, 0.03);
+    setParameter(directRight.gain, direct, 0.03);
+    setParameter(crossLeft.gain, cross, 0.03);
+    setParameter(crossRight.gain, cross, 0.03);
+    setParameter(dry.gain, Math.cos(effects.space * Math.PI * 0.5), 0.04);
+    setParameter(wet.gain, Math.sin(effects.space * Math.PI * 0.5) * 0.42, 0.04);
+    setParameter(noiseGain.gain, effects.noise ** 1.4 * 0.12, 0.06);
   };
 
-  apply(initial);
+  // GainNode starts at 1: ramping the wow depth down from that default bends
+  // pitch even when wow is disabled. Initialise every parameter before any
+  // generated source can reach the output; only later user edits should ramp.
+  apply(initial, true);
+  mixBus.connect(limiter).connect(output);
+  noise.start();
+  wowLfo.start();
   return {
-    apply,
+    apply: (effects) => apply(effects),
     input,
     dispose: () => {
       noise.stop();
