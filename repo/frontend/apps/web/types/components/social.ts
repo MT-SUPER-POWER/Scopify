@@ -9,6 +9,8 @@ import type {
   SocialPeopleMode,
   SocialEventTarget,
   SocialProfileTab,
+  SocialTopic,
+  SocialProfile,
 } from "@/types/social";
 
 export interface SocialUserProps {
@@ -27,6 +29,15 @@ export interface SocialEventProps {
   event: SocialEvent;
   quoted?: boolean;
   detail?: boolean;
+  showFollow?: boolean;
+}
+export interface SocialEventActionsProps extends SocialEventProps {
+  liking: boolean;
+  onLike: () => void;
+}
+export interface SocialEventMenuProps extends SocialEventProps {
+  pending: boolean;
+  onDelete: (onSuccess: () => void) => void;
 }
 export interface SocialCommentRowProps {
   event: SocialEvent;
@@ -36,6 +47,27 @@ export interface SocialCommentRowProps {
 export interface SocialFeedProps {
   uid?: string;
   enabled?: boolean;
+}
+export interface SocialHotFeedProps {
+  topic: SocialTopic;
+}
+export interface SocialTopicsProps {
+  selectedId?: string;
+}
+export interface SocialHeaderProps {
+  view: "friends" | "hot" | "people";
+  topicId?: string;
+  groupId: string;
+}
+export interface SocialNotesFeedProps {
+  groupId: string;
+}
+export interface SocialSearchFormProps {
+  query?: string;
+}
+export interface SocialPostTextProps {
+  text: string;
+  expanded?: boolean;
 }
 export interface SocialPeopleProps {
   uid?: string;
@@ -81,6 +113,18 @@ export interface SocialProfileContentProps {
   tab: SocialProfileTab;
   isSelf: boolean;
 }
+export interface SocialProfileHeroProps {
+  user: SocialProfile;
+  isSelf: boolean;
+  onEdit: () => void;
+  onMessage: () => void;
+}
+export interface SocialProfileBodyProps {
+  user: SocialProfile;
+  tab: string;
+  isSelf: boolean;
+}
+export type SocialProfileAsideProps = Pick<SocialProfileBodyProps, "user" | "isSelf">;
 export interface EditUserProfileDialogProps {
   open: boolean;
   user: NeteaseUser;

@@ -21221,6 +21221,156 @@ export interface TranslateFn {
    */
   (key: "social.title", params?: TranslationParams): string;
   /**
+   * zh-CN: 热门
+   * zh-TW: 熱門
+   * en-US: Popular
+   */
+  (key: "social.hot", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现音乐，也发现同频的人。
+   * zh-TW: 發現音樂，也發現同頻的人。
+   * en-US: Discover music. Find your people.
+   */
+  (key: "social.hotDescription", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浏览
+   * zh-TW: 瀏覽
+   * en-US: Browse
+   */
+  (key: "social.browse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 首页
+   * zh-TW: 首頁
+   * en-US: Home
+   */
+  (key: "social.home", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关注
+   * zh-TW: 關注
+   * en-US: Following
+   */
+  (key: "social.followingTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发布动态
+   * zh-TW: 發佈動態
+   * en-US: New post
+   */
+  (key: "social.publishPost", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回动态
+   * zh-TW: 返回動態
+   * en-US: Back to activity
+   */
+  (key: "social.backToFeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看全部关注
+   * zh-TW: 查看全部關注
+   * en-US: See everyone you follow
+   */
+  (key: "social.allFollowing", params?: TranslationParams): string;
+  /**
+   * zh-CN: 来自 {{name}}
+   * zh-TW: 來自 {{name}}
+   * en-US: From {{name}}
+   */
+  (key: "social.communitySource", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时没有新的笔记，稍后再来看看。
+   * zh-TW: 暫時沒有新的筆記，稍後再來看看。
+   * en-US: No new notes right now. Check back later.
+   */
+  (key: "social.emptyNotes", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一张图片
+   * zh-TW: 上一張圖片
+   * en-US: Previous image
+   */
+  (key: "social.previousImage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一张图片
+   * zh-TW: 下一張圖片
+   * en-US: Next image
+   */
+  (key: "social.nextImage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 找朋友
+   * zh-TW: 找朋友
+   * en-US: People
+   */
+  (key: "social.people", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索结果
+   * zh-TW: 搜尋結果
+   * en-US: Search results
+   */
+  (key: "social.searchResults", params?: TranslationParams): string;
+  /**
+   * zh-CN: 热门话题
+   * zh-TW: 熱門話題
+   * en-US: Popular topics
+   */
+  (key: "social.hotTopics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时没有热门话题，稍后再来看看。
+   * zh-TW: 暫時沒有熱門話題，稍後再來看看。
+   * en-US: No popular topics right now. Check back later.
+   */
+  (key: "social.emptyTopics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择热门话题
+   * zh-TW: 選擇熱門話題
+   * en-US: Choose a popular topic
+   */
+  (key: "social.chooseTopic", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多话题
+   * zh-TW: 更多話題
+   * en-US: More topics
+   */
+  (key: "social.moreTopics", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 人参与
+   * zh-TW: {{count}} 人參與
+   * en-US: {{count}} participants
+   */
+  (key: "social.topicParticipants", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这个话题暂时没有热门动态，换个话题看看吧。
+   * zh-TW: 這個話題暫時沒有熱門動態，換個話題看看吧。
+   * en-US: No popular posts here yet. Try another topic.
+   */
+  (key: "social.emptyTopicFeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刷新失败，仍显示上次加载的动态。
+   * zh-TW: 重新整理失敗，仍顯示上次載入的動態。
+   * en-US: Couldn't refresh. Your previously loaded posts are still here.
+   */
+  (key: "social.refreshFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已看完这个话题的热门动态，换个话题继续发现。
+   * zh-TW: 已看完這個話題的熱門動態，換個話題繼續探索。
+   * en-US: You're caught up on this topic. Choose another to keep exploring.
+   */
+  (key: "social.topicEnd", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发现与个人信息
+   * zh-TW: 探索與個人資訊
+   * en-US: Discovery and profile
+   */
+  (key: "social.discover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 展开全文
+   * zh-TW: 展開全文
+   * en-US: Show more
+   */
+  (key: "social.readMore", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收起
+   * zh-TW: 收起
+   * en-US: Show less
+   */
+  (key: "social.showLess", params?: TranslationParams): string;
+  /**
    * zh-CN: 让好音乐，遇见懂它的人。
    * zh-TW: 讓好音樂，遇見懂它的人。
    * en-US: Good music brings us together.
