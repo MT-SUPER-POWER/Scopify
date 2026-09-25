@@ -126,6 +126,7 @@ export interface AppearancePreviewProps {
 
 export interface AppBackgroundProps {
   className?: string;
+  fit?: "page" | "container";
 }
 
 export interface AppearanceRangeProps {
