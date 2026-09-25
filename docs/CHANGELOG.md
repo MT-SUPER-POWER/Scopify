@@ -38,6 +38,8 @@
 
 ### Added
 
+- **社交笔记数据层**：接入乐迷团详情、笔记游标分页及热门话题查询，保留笔记标题和权限字段，复用账号隔离的动态缓存与互动状态更新。
+
 - **歌曲动态封面、用户徽章与社交状态 API/Query/Hooks**：新增歌曲动态封面（`/song/dynamic/cover`）、用户徽章（`/user/medal`）及用户社交状态系列接口（当前状态 `/user/social/status`、支持状态 `/user/social/status/support`、同状态推荐用户 `/user/social/status/rcmd`、状态编辑 `/user/social/status/edit`）的 TypeScript 类型定义、API 请求函数、`musicQueryKeys` 缓存键与 React Query Hooks（`useSongDynamicCoverQuery`、`useUserMedalQuery`、`useUserSocialStatusQuery`、`useUserSocialStatusSupportQuery`、`useUserSocialStatusRcmdQuery`、`useEditUserSocialStatusMutation`）。
 
 - **乐迷团笔记后端接口**：拉取并核对后端 origin/upstream，确认当前已包含上游且上游暂无对应封装；新增乐迷团详情和推荐笔记分页两个只读接口，保留原始图文与互动字段，补齐字符串游标、长 ID 参数约定、类型声明和接口文档。

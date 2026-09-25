@@ -10,6 +10,7 @@ import type {
   SocialProfile,
   SocialResource,
   SocialUser,
+  SocialTopic,
 } from "@/types/social";
 
 export function object(value: unknown): SocialRawObject {
@@ -133,6 +134,7 @@ export function event(value: unknown, depth = 0): SocialEvent | undefined {
     user: user(raw.user),
     threadId: text(info.threadId ?? raw.threadId ?? object(info.commentThread).id),
     text: text(content.msg ?? content.content ?? raw.msg),
+    title: text(content.title ?? raw.title) || undefined,
     time: number(raw.eventTime ?? raw.showTime),
     type: number(raw.type),
     liked: info.liked === true,
@@ -145,7 +147,25 @@ export function event(value: unknown, depth = 0): SocialEvent | undefined {
     resource: resource(content),
     forward: isForward && depth < 2 ? event(nested, depth + 1) : undefined,
     unavailableForward: isForward && (!id(nested.id) || nested.deleted === true || depth >= 2),
-    privacy: typeof raw.privacy === "number" ? raw.privacy : undefined,
+    privacy:
+      typeof (raw.privacySetting ?? raw.privacy) === "number"
+        ? number(raw.privacySetting ?? raw.privacy)
+        : undefined,
+  };
+}
+export function topic(value: unknown): SocialTopic | undefined {
+  const raw = object(value);
+  const topicId = id(raw.actId);
+  const title = text(raw.title);
+  if (!/^\d+$/.test(topicId) || !title) return;
+  return {
+    id: topicId,
+    title,
+    description: Array.isArray(raw.text)
+      ? raw.text.map(text).filter(Boolean).join("\n")
+      : text(raw.text),
+    cover: imageUrl(raw.sharePicUrl),
+    participants: number(raw.participateCount),
   };
 }
 export function playlist(value: unknown): SocialPlaylist {

@@ -12,6 +12,8 @@ import type {
   SocialCommentPage,
   SocialMessagePage,
   SocialResource,
+  SocialTopicPage,
+  SocialGroup,
 } from "@/types/social";
 import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
 
@@ -84,6 +86,73 @@ export async function fetchEvents(
 }
 export async function fetchProfile(uid: string, signal?: AbortSignal) {
   return n.profile(await read("/user/detail", { uid }, signal, false));
+}
+export async function fetchGroup(groupId: string, signal?: AbortSignal): Promise<SocialGroup> {
+  const response = await read("/fans/group/detail", { groupId }, signal);
+  const group = n.object(n.object(response.data).fansGroupInfo);
+  if (!n.id(group.fansGroupId)) throw new Error("Unrecognized community response");
+  return {
+    id: n.id(group.fansGroupId),
+    name: n.text(group.fansGroupName),
+    cover: n.imageUrl(group.headAvatarUrl),
+  };
+}
+export async function fetchGroupNotes(
+  groupId: string,
+  cursor: string,
+  signal?: AbortSignal,
+): Promise<SocialEventPage<string>> {
+  const response = await read(
+    "/fans/group/feed/recommend",
+    { fansGroupId: groupId, cursor, size: 20 },
+    signal,
+  );
+  const data = n.object(response.data),
+    page = n.object(data.page);
+  const rows = array(data.records);
+  const next = n.text(page.cursor);
+  return {
+    items: n.uniqueById(
+      rows.flatMap((row) => {
+        const event = n.event(row);
+        return event ? [event] : [];
+      }),
+    ),
+    next: page.more === true && rows.length > 0 && next && next !== cursor ? next : undefined,
+  };
+}
+export async function fetchHotTopics(
+  offset: number,
+  signal?: AbortSignal,
+): Promise<SocialTopicPage> {
+  const response = await read("/hot/topic", { limit: 20, offset }, signal);
+  const rows = array(response.hot);
+  return {
+    items: n.uniqueById(
+      rows.flatMap((row) => {
+        const topic = n.topic(row);
+        return topic ? [topic] : [];
+      }),
+    ),
+    next:
+      rows.length && (response.more === true || (response.more === undefined && rows.length === 20))
+        ? offset + rows.length
+        : undefined,
+  };
+}
+export async function fetchTopicEvents(
+  actid: string,
+  signal?: AbortSignal,
+): Promise<SocialEventPage> {
+  const response = await read("/topic/detail/event/hot", { actid }, signal);
+  return {
+    items: n.uniqueById(
+      array(response.events).flatMap((row) => {
+        const event = n.event(row);
+        return event ? [event] : [];
+      }),
+    ),
+  };
 }
 export async function fetchPeople(
   uid: string,

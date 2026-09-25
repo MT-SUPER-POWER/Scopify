@@ -37,6 +37,33 @@ export function useSocialProfile(uid: string) {
     retry: 1,
   });
 }
+export function useSocialHotTopics() {
+  const { account, uid } = useSocialAccount();
+  return useInfiniteQuery({
+    queryKey: socialKey(account, "topics"),
+    initialPageParam: 0,
+    queryFn: ({ pageParam, signal }) => api.fetchHotTopics(pageParam, signal),
+    getNextPageParam: (page) => page.next,
+    enabled: !!uid,
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
+}
+export function useSocialTopicEvents(topicId: string) {
+  const { account, uid } = useSocialAccount();
+  return useInfiniteQuery({
+    // Keep the existing event cache shape so likes, follows and detail navigation stay in sync.
+    queryKey: socialKey(account, "events", "topic", topicId),
+    initialPageParam: 0,
+    queryFn: ({ signal }) => api.fetchTopicEvents(topicId, signal),
+    // The topic endpoint returns one collection and exposes no pagination contract.
+    getNextPageParam: () => undefined,
+    enabled: !!uid && /^\d+$/.test(topicId),
+    staleTime: 60_000,
+    gcTime: 30 * 60_000,
+    retry: 1,
+  });
+}
 export function useSocialPeople(uid: string, mode: SocialPeopleMode, query = "", enabled = true) {
   const { account, uid: self } = useSocialAccount();
   return useInfiniteQuery({

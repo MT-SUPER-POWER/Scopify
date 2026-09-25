@@ -26,7 +26,7 @@ function updateEvent(event: SocialEvent, update: SocialEventPatch): SocialEvent 
     : next;
 }
 export function patchEvent(client: QueryClient, account: string, update: SocialEventPatch) {
-  client.setQueriesData<InfiniteData<SocialEventPage>>(
+  client.setQueriesData<InfiniteData<SocialEventPage<unknown>>>(
     { queryKey: socialKey(account, "events") },
     (data) =>
       data
@@ -53,7 +53,7 @@ export function patchFollow(client: QueryClient, account: string, uid: string, f
     user: update(value.user),
     forward: value.forward ? event(value.forward) : undefined,
   });
-  client.setQueriesData<InfiniteData<SocialEventPage>>(
+  client.setQueriesData<InfiniteData<SocialEventPage<unknown>>>(
     { queryKey: socialKey(account, "events") },
     (data) =>
       data
@@ -97,7 +97,7 @@ export function findEvent(
       }
     }
   };
-  for (const [, data] of client.getQueriesData<InfiniteData<SocialEventPage>>({
+  for (const [, data] of client.getQueriesData<InfiniteData<SocialEventPage<unknown>>>({
     queryKey: socialKey(account, "events"),
   })) {
     const found = search(data?.pages.flatMap((page) => page.items) ?? []);
