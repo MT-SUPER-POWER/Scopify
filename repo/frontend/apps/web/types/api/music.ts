@@ -29,6 +29,23 @@ export interface SongCommentTotalResponse {
   total?: number;
 }
 
+export interface SongDynamicCoverData {
+  dynamicCoverUrl?: string;
+  dynamicCoverVideoUrl?: string;
+  coverUrl?: string;
+  playUrl?: string;
+  videoId?: string | number;
+  songId?: number | string;
+  [key: string]: unknown;
+}
+
+export interface SongDynamicCoverResponse {
+  code: number;
+  data?: SongDynamicCoverData | null;
+  message?: string;
+  msg?: string;
+}
+
 export interface SongDetail {
   id: number;
   name: string;

@@ -322,3 +322,6 @@ export const pruneUser = (raw: NeteaseUserSource | null | undefined): NeteaseUse
     vipType: raw.vipType ?? 0,
   };
 };
+
+export * from "./userMedal";
+export * from "./userSocialStatus";

@@ -1,5 +1,5 @@
 // 歌曲评论接口
-import type { SongRedCountResponse } from "@/types/api/music";
+import type { SongDynamicCoverResponse, SongRedCountResponse } from "@/types/api/music";
 import type {
   PlaylistTrackMutationVariables,
   PlaylistTrackUpdateResponse,
@@ -65,4 +65,21 @@ export async function updatePlaylistTrack({
  */
 export function getRecommendedSongs() {
   return request.get("/recommend/songs", requestConfig({ requiresMusicSession: true }));
+}
+
+/**
+ * 歌曲动态封面
+ * 登录后调用此接口, 传入歌曲 id, 获取歌曲动态封面
+ * @param id - 歌曲 id
+ * @param signal - AbortSignal
+ */
+export function getSongDynamicCover(id: number | string, signal?: AbortSignal) {
+  return request.get<SongDynamicCoverResponse>(
+    "/song/dynamic/cover",
+    requestConfig({
+      params: { id },
+      requiresMusicSession: true,
+      signal,
+    }),
+  );
 }

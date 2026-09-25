@@ -170,3 +170,92 @@ export function vipSignHistory() {
     requestConfig({ params: { type: 1 }, requiresMusicSession: true }),
   );
 }
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 用户徽章与社交状态
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+import type { UserMedalResponse } from "@/types/api/userMedal";
+import type {
+  UserSocialStatusEditParams,
+  UserSocialStatusEditResponse,
+  UserSocialStatusRcmdResponse,
+  UserSocialStatusResponse,
+  UserSocialStatusSupportResponse,
+} from "@/types/api/userSocialStatus";
+
+/**
+ * 用户徽章
+ * 传入用户 id, 获取用户徽章
+ * @param uid - 用户 ID
+ * @param signal - AbortSignal
+ */
+export function getUserMedals(uid: number | string, signal?: AbortSignal) {
+  return request.get<UserMedalResponse>("/user/medal", {
+    params: { uid },
+    signal,
+  });
+}
+
+/**
+ * 用户状态
+ * 登录后调用此接口, 传入用户 id, 获取用户状态
+ * @param uid - 用户 ID
+ * @param signal - AbortSignal
+ */
+export function getUserSocialStatus(uid: number | string, signal?: AbortSignal) {
+  return request.get<UserSocialStatusResponse>(
+    "/user/social/status",
+    requestConfig({
+      params: { uid },
+      requiresMusicSession: true,
+      signal,
+    }),
+  );
+}
+
+/**
+ * 用户状态 - 支持设置的状态
+ * 登录后调用此接口, 获取支持设置的状态
+ * @param signal - AbortSignal
+ */
+export function getSupportSocialStatuses(signal?: AbortSignal) {
+  return request.get<UserSocialStatusSupportResponse>(
+    "/user/social/status/support",
+    requestConfig({
+      requiresMusicSession: true,
+      signal,
+    }),
+  );
+}
+
+/**
+ * 用户状态 - 相同状态的用户
+ * 登录后调用此接口, 获取相同状态的用户
+ * @param signal - AbortSignal
+ */
+export function getRcmdSocialStatusUsers(signal?: AbortSignal) {
+  return request.get<UserSocialStatusRcmdResponse>(
+    "/user/social/status/rcmd",
+    requestConfig({
+      requiresMusicSession: true,
+      signal,
+    }),
+  );
+}
+
+/**
+ * 用户状态 - 编辑
+ * 登录后调用此接口, 编辑当前用户状态，所需参数可在接口/user/social/status/support获取
+ * @param params - 状态参数
+ */
+export function editUserSocialStatus(params: UserSocialStatusEditParams) {
+  return request.post<UserSocialStatusEditResponse>(
+    "/user/social/status/edit",
+    {},
+    requestConfig({
+      params,
+      requiresMusicSession: true,
+    }),
+  );
+}

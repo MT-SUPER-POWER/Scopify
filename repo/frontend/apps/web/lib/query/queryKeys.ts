@@ -74,6 +74,13 @@ export const musicQueryKeys = {
   song: {
     similar: (songId: number, userId: number) => ["song", "similar", userId, songId] as const,
     chorus: (songId: number | string) => ["song", "chorus", songId] as const,
+    dynamicCover: (songId: number | string) => ["song", "dynamic-cover", songId] as const,
+  },
+  user: {
+    medal: (userId: number | string) => ["user", "medal", String(userId)] as const,
+    socialStatus: (userId: number | string) => ["user", "social-status", String(userId)] as const,
+    socialStatusSupport: () => ["user", "social-status", "support"] as const,
+    socialStatusRcmd: () => ["user", "social-status", "rcmd"] as const,
   },
   voice: {
     transcript: (voiceId: number) => ["voice", "transcript", voiceId] as const,
