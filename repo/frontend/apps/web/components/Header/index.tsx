@@ -1,12 +1,12 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Home } from "lucide-react";
-import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import RightActions from "./RightActions";
 import HeaderSearch from "@/components/SearchContents/HeaderSearch";
 import { useNavigationScroll } from "@/components/shared/NavigationScrollProvider";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
+import { headerStyles } from "@/styles";
 
 const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
 
@@ -17,6 +17,7 @@ export function Header() {
   return (
     <div
       className={cn(
+        headerStyles.root,
         "absolute flex h-16 w-full shrink-0 items-center justify-between gap-3 px-3 lg:px-6",
         "top-0 z-20",
       )}
@@ -30,7 +31,7 @@ export function Header() {
       />
 
       {/* 左侧导航箭头 */}
-      <div className="flex shrink-0 items-center gap-2">
+      <div className={cn(headerStyles.history, "flex shrink-0 items-center gap-2")}>
         <button
           onClick={() => smartRouter.back()}
           className={cn(
@@ -44,6 +45,7 @@ export function Header() {
         <button
           onClick={() => smartRouter.forward()}
           className={cn(
+            headerStyles.forward,
             "flex size-10 items-center justify-center rounded-full",
             "text-content-muted transition-all hover:text-content",
             NAV_BTN,
@@ -54,19 +56,12 @@ export function Header() {
       </div>
 
       {/* 中间搜索区域 */}
-      <div className="mx-2 flex max-w-100 flex-1 flex-row items-center justify-center gap-2 md:mx-4">
-        <Link
-          href="/"
-          className={cn(
-            "flex size-10 shrink-0 items-center justify-center rounded-full",
-            "text-content-muted transition-all hover:text-content active:scale-95",
-            NAV_BTN,
-            "hidden md:flex",
-          )}
-        >
-          <Home className="size-4.5" />
-        </Link>
-
+      <div
+        className={cn(
+          headerStyles.search,
+          "mx-2 flex max-w-100 min-w-0 flex-1 flex-row items-center justify-center gap-2 md:mx-4",
+        )}
+      >
         <HeaderSearch />
       </div>
 

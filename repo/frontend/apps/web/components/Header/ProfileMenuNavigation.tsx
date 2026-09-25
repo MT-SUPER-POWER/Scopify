@@ -8,7 +8,7 @@ import {
   LogOut,
   MonitorSmartphone,
   Settings,
-  Users,
+  MessagesSquare,
 } from "lucide-react";
 import {
   DropdownMenuGroup,
@@ -53,7 +53,7 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
           className={`${itemClassName} md:hidden`}
           onSelect={() => requestAnimationFrame(() => useFriendsStore.getState().setOpen(true))}
         >
-          <Users className={iconClassName} />
+          <MessagesSquare className={iconClassName} />
           <span>{t("profile.menu.friends")}</span>
           <ChevronRight className={arrowClassName} />
         </DropdownMenuItem>
