@@ -11,16 +11,32 @@ const ArchiveWord = memo(function ArchiveWord({ word, currentTime }: ArchiveWord
     const position = archiveWordProgress(word, time) * 100;
     return `linear-gradient(90deg, var(--archive-ink) ${position}%, var(--archive-unsung) ${position}%)`;
   });
-  return <motion.span className={styles.word} style={{ backgroundImage }}>{word.text}</motion.span>;
+  return (
+    <motion.span className={styles.word} style={{ backgroundImage }}>
+      {word.text}
+    </motion.span>
+  );
 });
 
-export const ArchiveLyricLine = memo(function ArchiveLyricLine({ line, currentTime, onSeek, seekLabel }: ArchiveLyricLineProps) {
+export const ArchiveLyricLine = memo(function ArchiveLyricLine({
+  line,
+  currentTime,
+  onSeek,
+  seekLabel,
+}: ArchiveLyricLineProps) {
   const words = useMemo(() => archiveDisplayWords(line), [line]);
   return (
-    <button type="button" className={styles.lyricButton} disabled={!onSeek}
-      aria-label={`${seekLabel}: ${line.fullText}`} onClick={() => onSeek?.(line.startTime)}>
+    <button
+      type="button"
+      className={styles.lyricButton}
+      disabled={!onSeek}
+      aria-label={`${seekLabel}: ${line.fullText}`}
+      onClick={() => onSeek?.(line.startTime)}
+    >
       <span aria-hidden="true">
-        {words.map((word, index) => <ArchiveWord key={`${index}:${word.startTime}`} word={word} currentTime={currentTime} />)}
+        {words.map((word, index) => (
+          <ArchiveWord key={`${index}:${word.startTime}`} word={word} currentTime={currentTime} />
+        ))}
       </span>
     </button>
   );

@@ -1,5 +1,10 @@
 import * as THREE from "three";
-import { RHINE_LANES, RHINE_LIFT, RHINE_ROWS, RHINE_SHOWCASE_TIMING } from "@/constants/rhineBackground";
+import {
+  RHINE_LANES,
+  RHINE_LIFT,
+  RHINE_ROWS,
+  RHINE_SHOWCASE_TIMING,
+} from "@/constants/rhineBackground";
 import type { RhineAudioSample, RhineSceneInput } from "@/types/rhineBackground";
 import type { RhineCell, RhineShowcaseCard } from "@/types/rhineRuntime";
 import { InstanceUpdates } from "./instanceUpdates";
@@ -27,14 +32,26 @@ export class RhineScene {
   private themeAmount: number;
   private input: RhineSceneInput;
 
-  constructor(readonly view: RhineRenderer, private readonly model: RhineModel, input: RhineSceneInput) {
-    this.input = input; this.seed = input.seed; this.themeAmount = Number(input.dark);
+  constructor(
+    readonly view: RhineRenderer,
+    private readonly model: RhineModel,
+    input: RhineSceneInput,
+  ) {
+    this.input = input;
+    this.seed = input.seed;
+    this.themeAmount = Number(input.dark);
     this.matrixUpdates = new InstanceUpdates(model.matrix);
     this.themeUpdates = new InstanceUpdates(model.themes);
     for (let lane = 0; lane < RHINE_LANES; lane++) {
       for (let row = 0; row < RHINE_ROWS; row++) {
-        this.cells.push({ lane, row, key: `${lane}:${row}`,
-          x: (lane - 4) * 5.2, z: (row - 23.5) * 0.62, screenX: 0.5 });
+        this.cells.push({
+          lane,
+          row,
+          key: `${lane}:${row}`,
+          x: (lane - 4) * 5.2,
+          z: (row - 23.5) * 0.62,
+          screenX: 0.5,
+        });
       }
     }
     this.active = this.cellForSeed(this.seed);
@@ -48,21 +65,27 @@ export class RhineScene {
     this.input = input;
     let dirty = this.view.setQuality(input.tuning.quality);
     const card = this.cards.get(this.active.key);
-    if (card && input.seed === this.seed &&
-      (input.track.title !== previous.track.title || input.track.coverUrl !== previous.track.coverUrl)) {
+    if (
+      card &&
+      input.seed === this.seed &&
+      (input.track.title !== previous.track.title ||
+        input.track.coverUrl !== previous.track.coverUrl)
+    ) {
       this.model.setCardTrack(card.group, input.track);
       dirty = true;
     }
     // Theme changes can repaint a frozen pose; the animation and envelope stay untouched.
     if (input.frozen && input.dark !== previous.dark) {
-      this.themeAmount = Number(input.dark); dirty = true;
+      this.themeAmount = Number(input.dark);
+      dirty = true;
     }
     return dirty;
   }
 
   private cellForSeed(seed: string) {
     let hash = 2166136261;
-    for (let index = 0; index < seed.length; index++) hash = Math.imul(hash ^ seed.charCodeAt(index), 16777619);
+    for (let index = 0; index < seed.length; index++)
+      hash = Math.imul(hash ^ seed.charCodeAt(index), 16777619);
     // Keep the current archive near the composition's centre; no camera jump on track changes.
     const row = 21 + ((hash >>> 0) % 6);
     const cell = this.cells.find((cell) => cell.lane === 4 && cell.row === row);
@@ -74,7 +97,9 @@ export class RhineScene {
     // Rapid skips return earlier showcases from their current height.
     for (const card of this.cards.values()) {
       if (card.phase === "returning") continue;
-      card.phase = "returning"; card.elapsed = 0; card.startLift = card.lift;
+      card.phase = "returning";
+      card.elapsed = 0;
+      card.startLift = card.lift;
     }
     const group = this.model.createCard(this.input.track);
     this.cards.set(cell.key, { cell, group, lift: 0, startLift: 0, phase: "rising", elapsed: 0 });
@@ -86,26 +111,34 @@ export class RhineScene {
     for (const [key, card] of this.cards) {
       card.elapsed += dt;
       if (card.phase === "rising") {
-        card.lift = card.startLift + (RHINE_LIFT - card.startLift) * smooth(card.elapsed / timing.rising);
+        card.lift =
+          card.startLift + (RHINE_LIFT - card.startLift) * smooth(card.elapsed / timing.rising);
         if (card.elapsed >= timing.rising) {
-          card.phase = "holding"; card.elapsed -= timing.rising;
+          card.phase = "holding";
+          card.elapsed -= timing.rising;
         }
       }
       if (card.phase === "holding" && card.elapsed >= timing.holding) {
-        card.phase = "returning"; card.elapsed -= timing.holding; card.startLift = card.lift;
+        card.phase = "returning";
+        card.elapsed -= timing.holding;
+        card.startLift = card.lift;
       }
       if (card.phase === "returning") {
         card.lift = card.startLift * (1 - smooth(card.elapsed / timing.returning));
         if (card.elapsed >= timing.returning) {
           // Swap back to the instanced cassette at exactly the same breathing height.
-          this.model.releaseCard(card.group); this.cards.delete(key);
+          this.model.releaseCard(card.group);
+          this.cards.delete(key);
         }
       }
     }
   }
 
   private updateVisibility() {
-    this.projection.multiplyMatrices(this.view.camera.projectionMatrix, this.view.camera.matrixWorldInverse);
+    this.projection.multiplyMatrices(
+      this.view.camera.projectionMatrix,
+      this.view.camera.matrixWorldInverse,
+    );
     this.frustum.setFromProjectionMatrix(this.projection);
     this.visible = this.cells.filter((cell) => {
       this.bounds.min.set(cell.x - 2.8, -4.9, cell.z - 1.2);
@@ -128,8 +161,12 @@ export class RhineScene {
     this.time += dt;
     if (this.seed !== this.input.seed) {
       const preferred = this.cellForSeed(this.input.seed);
-      const next = !this.cards.has(preferred.key) ? preferred : this.cells.find((cell) =>
-        cell.lane === 4 && cell.row >= 21 && cell.row <= 26 && !this.cards.has(cell.key));
+      const next = !this.cards.has(preferred.key)
+        ? preferred
+        : this.cells.find(
+            (cell) =>
+              cell.lane === 4 && cell.row >= 21 && cell.row <= 26 && !this.cards.has(cell.key),
+          );
       // Returning files retain their own song. If every slot is occupied, the
       // latest requested song waits for a slot while music and returns continue.
       if (next) {
@@ -151,8 +188,19 @@ export class RhineScene {
     // Cache heights even for culled cells, so resizing a paused scene retains its last pose.
     for (const cell of this.cells) {
       const breathing = tuning.breathingEnabled ? idleWave(cell.row, cell.lane, this.time) : 0;
-      this.heights.set(cell.key, breathing + rhythmDisplacement(cell.row, cell.lane, this.time,
-        this.envelope.bands, tuning.strength, frame, cell.screenX));
+      this.heights.set(
+        cell.key,
+        breathing +
+          rhythmDisplacement(
+            cell.row,
+            cell.lane,
+            this.time,
+            this.envelope.bands,
+            tuning.strength,
+            frame,
+            cell.screenX,
+          ),
+      );
     }
   }
 
@@ -165,10 +213,15 @@ export class RhineScene {
       this.themeUpdates.scalar(count, this.themeAmount);
       count++;
     }
-    this.matrixUpdates.commit(); this.themeUpdates.commit();
+    this.matrixUpdates.commit();
+    this.themeUpdates.commit();
     for (const instance of this.model.instances) instance.count = count;
     for (const card of this.cards.values()) {
-      card.group.position.set(card.cell.x, -4.6 + (this.heights.get(card.cell.key) ?? 0) + card.lift, card.cell.z);
+      card.group.position.set(
+        card.cell.x,
+        -4.6 + (this.heights.get(card.cell.key) ?? 0) + card.lift,
+        card.cell.z,
+      );
       const progress = smooth(card.lift / RHINE_LIFT);
       // Turn toward the reader only while a file is extracted. The resting array stays aligned.
       card.group.rotation.y = -0.28 * progress;
@@ -182,6 +235,8 @@ export class RhineScene {
 
   dispose() {
     for (const card of this.cards.values()) this.model.releaseCard(card.group);
-    this.cards.clear(); this.model.dispose(); this.view.dispose();
+    this.cards.clear();
+    this.model.dispose();
+    this.view.dispose();
   }
 }

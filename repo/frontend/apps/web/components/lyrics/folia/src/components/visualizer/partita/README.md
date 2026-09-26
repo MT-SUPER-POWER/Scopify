@@ -41,9 +41,9 @@ Partita 随后会从 `getLineRenderHints(line)` 生成当前行的 render profil
 
 ```ts
 buildPostLyricLayoutUnits(line, {
-    semantic: tuning.useSemanticLayout,
-    sticky: true,
-})
+  semantic: tuning.useSemanticLayout,
+  sticky: true,
+});
 ```
 
 这个函数是 parser 之后、Partita layout 之前的后处理层。它不改 `Line` 本体，也不改 `line.words`，只派生出 Partita 用来分行和显示的 `layoutUnit[]`。

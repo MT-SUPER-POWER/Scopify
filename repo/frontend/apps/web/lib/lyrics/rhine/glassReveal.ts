@@ -19,7 +19,9 @@ export function frostedTransmissionLod(
   const strength = clamp((roughness - CLEAR_ROUGHNESS) / (FROSTED_ROUGHNESS - CLEAR_ROUGHNESS));
   const native = Math.log2(textureWidth) * roughness * clamp(ior * 2 - 2);
   const clearLod = Math.log2(textureWidth) * CLEAR_ROUGHNESS * clamp(ior * 2 - 2);
-  const bounded = Math.log2(Math.max(2 ** clearLod, panelPixels * FROST_SPAN * Math.pow(strength, 1.15)));
+  const bounded = Math.log2(
+    Math.max(2 ** clearLod, panelPixels * FROST_SPAN * Math.pow(strength, 1.15)),
+  );
   return native + (Math.min(native, bounded) - native) * quality;
 }
 export const frostedTransmissionGLSL = `
@@ -33,10 +35,7 @@ float archiveTransmissionLod(float roughness, float ior, vec2 samplerSize) {
 }`;
 export function glassRevealAtHeight(progress: number, height: number) {
   const edge = 1 - (1 + 2 * FEATHER) * Math.max(0, Math.min(1, progress));
-  const x = Math.max(
-    0,
-    Math.min(1, (Math.max(0, Math.min(1, height)) - edge) / (2 * FEATHER)),
-  );
+  const x = Math.max(0, Math.min(1, (Math.max(0, Math.min(1, height)) - edge) / (2 * FEATHER)));
   return x * x * (3 - 2 * x);
 }
 export const glassRevealGLSL = `

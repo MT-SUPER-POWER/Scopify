@@ -25,7 +25,7 @@ export function CommandWorkspaceFmMatrix({
           className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-2 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-3"
         >
           <h3 className="pt-1.5 text-[11px] text-zinc-500">{group.label}</h3>
-          <div className="grid grid-cols-3 gap-x-1 gap-y-1 min-[440px]:grid-cols-5 sm:grid-cols-7">
+          <div className="grid grid-cols-3 gap-1 min-[440px]:grid-cols-5 sm:grid-cols-7">
             {group.entries.map((entry) => {
               const active = isPersonalFmCommandSelected(entry.action, selection);
               return (
@@ -37,11 +37,11 @@ export function CommandWorkspaceFmMatrix({
                   data-highlighted={entry.id === highlightedId}
                   onClick={() => onSelect(entry)}
                   className={cn(
-                    "focus-visible:ring-brand min-w-0 rounded-full px-1 py-1 text-xs transition-colors outline-none focus-visible:ring-2 disabled:cursor-wait disabled:opacity-45",
+                    "min-w-0 rounded-full p-1 text-xs transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-wait disabled:opacity-45",
                     active
-                      ? "bg-brand text-brand-foreground font-medium"
+                      ? "bg-brand font-medium text-brand-foreground"
                       : "text-zinc-300 hover:bg-white/8 hover:text-white",
-                    entry.id === highlightedId && "ring-brand/70 ring-1",
+                    entry.id === highlightedId && "ring-1 ring-brand/70",
                   )}
                 >
                   {entry.label}

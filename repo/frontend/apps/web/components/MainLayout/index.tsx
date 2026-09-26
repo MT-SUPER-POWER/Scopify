@@ -160,7 +160,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const content = (
     <div
       className={cn(
-        "bg-surface text-content flex-1 flex-col font-sans",
+        "flex-1 flex-col bg-surface font-sans text-content",
         "gap-2 overflow-hidden p-2",
         "flex h-screen",
       )}
@@ -189,7 +189,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               collapsible
               collapsedSize={80}
               onResize={() => setIsCollapsed(sidebarPanelRef.current?.isCollapsed() ?? false)}
-              className={cn("bg-surface-sunken overflow-hidden rounded-lg")}
+              className={cn("overflow-hidden rounded-lg bg-surface-sunken")}
             >
               <Sidebar />
             </ResizablePanel>
@@ -205,7 +205,10 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             />
 
             <ResizablePanel>
-              <div data-dashboard-main className="group/main bg-surface-raised relative size-full overflow-hidden rounded-lg">
+              <div
+                data-dashboard-main
+                className="group/main relative size-full overflow-hidden rounded-lg bg-surface-raised"
+              >
                 <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                   <div data-track-drag-chrome className="pointer-events-auto">
                     <Header />
@@ -218,10 +221,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           </ResizablePanelGroup>
         ) : (
           <div className="flex size-full gap-2">
-            <div className="bg-surface-sunken w-[20%] overflow-hidden rounded-lg">
+            <div className="w-[20%] overflow-hidden rounded-lg bg-surface-sunken">
               <Sidebar />
             </div>
-            <div data-dashboard-main className="group/main bg-surface-raised relative flex-1 overflow-hidden rounded-lg">
+            <div
+              data-dashboard-main
+              className="group/main relative flex-1 overflow-hidden rounded-lg bg-surface-raised"
+            >
               <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
                 <div data-track-drag-chrome className="pointer-events-auto">
                   <Header />

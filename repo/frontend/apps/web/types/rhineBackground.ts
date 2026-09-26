@@ -14,7 +14,12 @@ export interface RhineBackgroundTuning {
 }
 export type RhineBackgroundProps = VisualizerBackgroundRenderProps;
 export type RhineLoadState = "loading" | "ready" | "error";
-export interface RhineAudioSample { low: number; mid: number; high: number; activity: number }
+export interface RhineAudioSample {
+  low: number;
+  mid: number;
+  high: number;
+  activity: number;
+}
 export interface RhineArchiveTrack {
   title: string;
   coverUrl: string | null;

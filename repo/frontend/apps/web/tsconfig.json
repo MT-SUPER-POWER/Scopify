@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -23,29 +19,15 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@scopify/desktop-contract": [
-        "../../packages/desktop-contract/src/index.ts"
-      ],
+      "@/*": ["./*"],
+      "@scopify/desktop-contract": ["../../packages/desktop-contract/src/index.ts"],
       "@scopify/playback-core": ["../../packages/playback-core/src/index.ts"],
       "@scopify/notification-core": ["../../packages/notification-core/src/index.ts"],
-      "@scopify/ui": [
-        "../../packages/ui/src/index.ts"
-      ],
-      "@scopify/ui/*": [
-        "../../packages/ui/src/*"
-      ],
-      "@components/*": [
-        "./components/*"
-      ],
-      "@store/*": [
-        "./store/*"
-      ],
-      "@app-types/*": [
-        "./types/*"
-      ]
+      "@scopify/ui": ["../../packages/ui/src/index.ts"],
+      "@scopify/ui/*": ["../../packages/ui/src/*"],
+      "@components/*": ["./components/*"],
+      "@store/*": ["./store/*"],
+      "@app-types/*": ["./types/*"]
     }
   },
   "include": [
@@ -57,9 +39,5 @@
     ".next-dev/types/**/*.ts",
     ".next-dev/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    ".next",
-    "out"
-  ]
+  "exclude": ["node_modules", ".next", "out"]
 }

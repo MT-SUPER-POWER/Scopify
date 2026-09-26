@@ -103,7 +103,7 @@
 
 ## tuning 的下发与重建
 
-tuning 变化通过 `runtime.setTuning()` **就地下发**，不重建 runtime：滑块拖动时每次 pointermove 都会产出新 tuning，而重建意味着重新初始化 WebGL、重新解码所有图片、重新测量所有行。只有真正改变 scene *内容* 的字段（色彩模式、显示开关、后处理、图片增删或层次变化）才清空 scene 缓存；cameraIntensity/glyphMotion 每帧现读，图片的位置/大小/旋转/透明度直接重设到已有 sprite 上。图片 blob 的加载按 **id 集合**（字符串 key）而不是数组引用触发，否则拖一次滑块就会把 IndexedDB 全读一遍。
+tuning 变化通过 `runtime.setTuning()` **就地下发**，不重建 runtime：滑块拖动时每次 pointermove 都会产出新 tuning，而重建意味着重新初始化 WebGL、重新解码所有图片、重新测量所有行。只有真正改变 scene _内容_ 的字段（色彩模式、显示开关、后处理、图片增删或层次变化）才清空 scene 缓存；cameraIntensity/glyphMotion 每帧现读，图片的位置/大小/旋转/透明度直接重设到已有 sprite 上。图片 blob 的加载按 **id 集合**（字符串 key）而不是数组引用触发，否则拖一次滑块就会把 IndexedDB 全读一遍。
 
 ## 音频
 

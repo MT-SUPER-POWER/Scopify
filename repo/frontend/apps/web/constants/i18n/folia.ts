@@ -4337,7 +4337,8 @@ export const foliaMessages = defineMessages(
     "folia.options.visualizerBackgroundModeSora": "Sora",
     "folia.options.visualizerBackgroundModeRhine": "Rhine",
     "folia.rhine.title": "Rhine archive",
-    "folia.rhine.description": "Archive cassettes breathe with the music and exchange places when the track changes.",
+    "folia.rhine.description":
+      "Archive cassettes breathe with the music and exchange places when the track changes.",
     "folia.rhine.colorMode": "Scene palette",
     "folia.rhine.colorAuto": "Follow theme",
     "folia.rhine.colorLight": "Warm ivory",
@@ -4355,7 +4356,8 @@ export const foliaMessages = defineMessages(
     "folia.rhine.qualityOriginal": "Original",
     "folia.rhine.qualityHigh": "High",
     "folia.rhine.frameRate": "Frame rate",
-    "folia.rhine.pauseHint": "Pausing holds the current pose. Motion continues from that point when playback resumes.",
+    "folia.rhine.pauseHint":
+      "Pausing holds the current pose. Motion continues from that point when playback resumes.",
     "folia.rhine.loadError": "Rhine background could not be loaded",
     "folia.rhine.retry": "Retry",
     "folia.options.urlBackgroundSettings": "Embedded Background",

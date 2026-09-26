@@ -1,11 +1,19 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { DEFAULT_RHINE_BACKGROUND_TUNING, RHINE_LANES, RHINE_ROWS } from "@/constants/rhineBackground";
+import {
+  DEFAULT_RHINE_BACKGROUND_TUNING,
+  RHINE_LANES,
+  RHINE_ROWS,
+} from "@/constants/rhineBackground";
 import { loadRhineModel, RhineModel } from "@/lib/lyrics/rhine/model";
 import { RhineRenderer } from "@/lib/lyrics/rhine/renderer";
 import { RhineScene } from "@/lib/lyrics/rhine/scene";
-import type { RhineBackgroundProps, RhineLoadState, RhineSceneInput } from "@/types/rhineBackground";
+import type {
+  RhineBackgroundProps,
+  RhineLoadState,
+  RhineSceneInput,
+} from "@/types/rhineBackground";
 
 function sceneInput(props: RhineBackgroundProps): RhineSceneInput {
   const tuning = { ...DEFAULT_RHINE_BACKGROUND_TUNING, ...props.config?.rhine?.tuning };
@@ -47,20 +55,32 @@ export function useRhineBackground(props: RhineBackgroundProps) {
     setStatus("loading");
 
     const stop = () => {
-      cancelAnimationFrame(request); request = 0;
+      cancelAnimationFrame(request);
+      request = 0;
       previousTime = null;
     };
-    const running = () => !controller.signal.aborted && !failed && visible && !document.hidden
-      && width > 0 && height > 0 && !latest.current.paused && !latest.current.staticMode;
+    const running = () =>
+      !controller.signal.aborted &&
+      !failed &&
+      visible &&
+      !document.hidden &&
+      width > 0 &&
+      height > 0 &&
+      !latest.current.paused &&
+      !latest.current.staticMode;
     const fail = (error: unknown) => {
       if (controller.signal.aborted || failed) return;
-      failed = true; stop();
+      failed = true;
+      stop();
       console.warn("[RhineBackground] Scene unavailable", error);
       setStatus("error");
     };
     const tick = (now: number) => {
       request = 0;
-      if (!scene || !running()) { previousTime = null; return; }
+      if (!scene || !running()) {
+        previousTime = null;
+        return;
+      }
       const interval = 1000 / Number(sceneInput(latest.current).tuning.frameRate);
       if (previousTime === null) previousTime = now;
       const elapsed = now - previousTime;
@@ -74,7 +94,10 @@ export function useRhineBackground(props: RhineBackgroundProps) {
             high: audioBands.treble.get(),
             activity: audioPower.get(),
           });
-        } catch (error) { fail(error); return; }
+        } catch (error) {
+          fail(error);
+          return;
+        }
       }
       request = requestAnimationFrame(tick);
     };
@@ -82,7 +105,10 @@ export function useRhineBackground(props: RhineBackgroundProps) {
       if (!scene || failed || controller.signal.aborted) return;
       try {
         if (scene.setInput(sceneInput(latest.current))) scene.paint();
-      } catch (error) { fail(error); return; }
+      } catch (error) {
+        fail(error);
+        return;
+      }
       if (!running()) stop();
       else if (!request) request = requestAnimationFrame(tick);
     };
@@ -90,10 +116,14 @@ export function useRhineBackground(props: RhineBackgroundProps) {
     const resize = new ResizeObserver((entries) => {
       const size = entries[0]?.contentRect;
       if (!size) return;
-      width = size.width; height = size.height;
+      width = size.width;
+      height = size.height;
       if (scene && !failed && width > 0 && height > 0) {
-        try { scene.resize(width, height); }
-        catch (error) { fail(error); }
+        try {
+          scene.resize(width, height);
+        } catch (error) {
+          fail(error);
+        }
       }
       sync();
     });
@@ -105,38 +135,51 @@ export function useRhineBackground(props: RhineBackgroundProps) {
     intersection.observe(container);
     document.addEventListener("visibilitychange", sync);
     const contextLost = (event: Event) => {
-      event.preventDefault(); fail(new Error("WebGL context lost"));
+      event.preventDefault();
+      fail(new Error("WebGL context lost"));
     };
     canvas.addEventListener("webglcontextlost", contextLost);
 
     void (async () => {
       try {
         model = await loadRhineModel(RHINE_ROWS * RHINE_LANES, controller.signal);
-        if (controller.signal.aborted) { model.dispose(); return; }
+        if (controller.signal.aborted) {
+          model.dispose();
+          return;
+        }
         const input = sceneInput(latest.current);
         view = new RhineRenderer(canvas);
         view.initialize(input.tuning.quality);
         scene = new RhineScene(view, model, input);
         view.onAssetsReady = model.onArtworkReady = () => {
           if (failed || controller.signal.aborted) return;
-          try { scene?.paint(); } catch (error) { fail(error); }
+          try {
+            scene?.paint();
+          } catch (error) {
+            fail(error);
+          }
         };
         scene.resize(width, height);
         setStatus("ready");
         sync();
       } catch (error) {
         // Construction can fail before the scene owns these resources.
-        if (!scene) { model?.dispose(); view?.dispose(); }
+        if (!scene) {
+          model?.dispose();
+          view?.dispose();
+        }
         fail(error);
       }
     })();
 
     return () => {
-      controller.abort(); stop();
+      controller.abort();
+      stop();
       synchronize.current = null;
       document.removeEventListener("visibilitychange", sync);
       canvas.removeEventListener("webglcontextlost", contextLost);
-      resize.disconnect(); intersection.disconnect();
+      resize.disconnect();
+      intersection.disconnect();
       scene?.dispose();
     };
   }, [attempt]);

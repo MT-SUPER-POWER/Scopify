@@ -1,12 +1,13 @@
 /* Only song drags activate these rules; sidebar playlist sorting is unchanged. */
-body[data-track-dragging="true"] :is(
-  [data-track-drop-blocked="true"],
-  [data-track-drop-enabled="false"],
-  aside header,
-  aside a:not([data-track-drop-target]):not([data-track-drop-target] a),
-  [data-track-drag-chrome],
-  thead
-) {
+body[data-track-dragging="true"]
+  :is(
+    [data-track-drop-blocked="true"],
+    [data-track-drop-enabled="false"],
+    aside header,
+    aside a:not([data-track-drop-target]):not([data-track-drop-target] a),
+    [data-track-drag-chrome],
+    thead
+  ) {
   opacity: 0.4;
   filter: grayscale(1);
 }

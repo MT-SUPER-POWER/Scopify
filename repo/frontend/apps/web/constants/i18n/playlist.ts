@@ -75,7 +75,8 @@ export const playlistMessages = defineMessages(
     "playlist.lattice.options": "浏览选项",
     "playlist.lattice.follow": "自动跟随当前歌曲",
     "playlist.lattice.lightsOff": "暗场",
-    "playlist.lattice.hint": "拖动或滚轮浏览 · Shift 横向滚动 · 方向键选图 · Enter 展开 / 播放 · Esc 收起，再按返回",
+    "playlist.lattice.hint":
+      "拖动或滚轮浏览 · Shift 横向滚动 · 方向键选图 · Enter 展开 / 播放 · Esc 收起，再按返回",
     "playlist.actions.historyDate": "历史日推",
     "playlist.actions.currentDaily": "今日推荐",
     "playlist.actions.historyLoading": "加载历史日推...",
@@ -178,7 +179,8 @@ export const playlistMessages = defineMessages(
     "playlist.lattice.options": "瀏覽選項",
     "playlist.lattice.follow": "自動跟隨目前歌曲",
     "playlist.lattice.lightsOff": "暗場",
-    "playlist.lattice.hint": "拖動或滾輪瀏覽 · Shift 橫向捲動 · 方向鍵選圖 · Enter 展開 / 播放 · Esc 收起，再按返回",
+    "playlist.lattice.hint":
+      "拖動或滾輪瀏覽 · Shift 橫向捲動 · 方向鍵選圖 · Enter 展開 / 播放 · Esc 收起，再按返回",
     "playlist.actions.historyDate": "歷史日推",
     "playlist.actions.currentDaily": "今日推薦",
     "playlist.actions.historyLoading": "正在載入歷史日推...",
@@ -283,7 +285,8 @@ export const playlistMessages = defineMessages(
     "playlist.lattice.options": "Browse options",
     "playlist.lattice.follow": "Follow current track",
     "playlist.lattice.lightsOff": "Dim other covers",
-    "playlist.lattice.hint": "Drag or scroll to explore · Shift scrolls sideways · Arrows select · Enter expands / plays · Esc collapses, then returns",
+    "playlist.lattice.hint":
+      "Drag or scroll to explore · Shift scrolls sideways · Arrows select · Enter expands / plays · Esc collapses, then returns",
     "playlist.actions.historyDate": "Daily history",
     "playlist.actions.currentDaily": "Today's recommendations",
     "playlist.actions.historyLoading": "Loading daily history...",

@@ -25,7 +25,9 @@ export function PlaylistTrackList({ playlistId, tracks = [], ...props }: Playlis
         const dragged =
           isSelected && selection.selectedTracks.length > 1
             ? selection.selectedTracks
-            : track ? [track] : [];
+            : track
+              ? [track]
+              : [];
         useAppDragStore.getState().startDrag(dragged, playlistId);
       }}
       renderOverlay={(id) => {

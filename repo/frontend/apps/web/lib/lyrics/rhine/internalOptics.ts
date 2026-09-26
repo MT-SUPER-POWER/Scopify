@@ -29,10 +29,7 @@ const surfaces: Record<string, OpticalSurface> = {
   },
 };
 
-export function configureInternalOptics(
-  name: string,
-  mat: THREE.MeshPhysicalMaterial,
-) {
+export function configureInternalOptics(name: string, mat: THREE.MeshPhysicalMaterial) {
   const surface = surfaces[name];
   if (!surface) return;
   mat.color.set(surface.color);

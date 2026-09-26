@@ -74,20 +74,17 @@ export function useTrackSelection(tracks: SongDetail[]) {
     [tracks],
   );
 
-  const handleRowContextMenu = useCallback(
-    (trackId: number) => {
-      setSelectedIds((prev) => {
-        // 如果右键点击的歌曲已经处于多选集合中，保留多选状态以便右键批量操作
-        if (prev.has(trackId)) {
-          return prev;
-        }
-        // 否则清空多选集合（单首操作，不进入多选高亮）
-        lastFocusedIdRef.current = trackId;
-        return new Set();
-      });
-    },
-    [],
-  );
+  const handleRowContextMenu = useCallback((trackId: number) => {
+    setSelectedIds((prev) => {
+      // 如果右键点击的歌曲已经处于多选集合中，保留多选状态以便右键批量操作
+      if (prev.has(trackId)) {
+        return prev;
+      }
+      // 否则清空多选集合（单首操作，不进入多选高亮）
+      lastFocusedIdRef.current = trackId;
+      return new Set();
+    });
+  }, []);
 
   // 监听键盘按键：Esc 清空，Ctrl/Cmd+A 全选
   useEffect(() => {

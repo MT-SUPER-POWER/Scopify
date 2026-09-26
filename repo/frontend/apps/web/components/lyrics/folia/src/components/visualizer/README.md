@@ -51,45 +51,45 @@ TTML 歌词可以选择性支持更高级的表现。当前统一数据中可能
 
 ```tsx
 interface VisualizerSharedProps {
-    currentTime: MotionValue<number>;
-    currentLineIndex: number;
-    lines: Line[];
-    theme: Theme;
-    subtitleTheme?: Theme;
-    isDaylight?: boolean;
-    audioPower: MotionValue<number>;
-    audioBands: AudioBands;
-    showText?: boolean;
-    songTitle?: string | null;
-    songArtist?: string | null;
-    songAlbum?: string | null;
-    coverUrl?: string | null;
-    seed?: string | number;
-    staticMode?: boolean;
-    visualizerOpacity?: number;
-    background?: VisualizerBackgroundConfig;
-    lyricsFontScale?: number;
-    subtitleOverlayOpacity?: number;
-    isPlayerChromeHidden?: boolean;
-    hideTranslationSubtitle?: boolean;
-    showSubtitleTranslation?: boolean;
-    paused?: boolean;
-    isPreviewMode?: boolean;
-    onBack?: () => void;
-    onLyricLineSeek?: (lyricTimeSec: number) => void;
-    classicTuning?: ClassicTuning;
-    cadenzaTuning?: CadenzaTuning;
-    partitaTuning?: PartitaTuning;
-    fumeTuning?: FumeTuning;
-    claddaghTuning?: CladdaghTuning;
-    onCladdaghTuningChange?: (patch: Partial<CladdaghTuning>) => void;
-    cappellaTuning?: CappellaTuning;
-    cappellaCustomEmojiImages?: CappellaEmojiImage[];
-    cappellaCustomAvatarImages?: CappellaAvatarImage[];
-    tiltTuning?: TiltTuning;
-    monetTuning?: MonetTuning;
-    monetPortraitImage?: MonetPortraitImage | null;
-    onMonetTuningChange?: (patch: Partial<MonetTuning>) => void;
+  currentTime: MotionValue<number>;
+  currentLineIndex: number;
+  lines: Line[];
+  theme: Theme;
+  subtitleTheme?: Theme;
+  isDaylight?: boolean;
+  audioPower: MotionValue<number>;
+  audioBands: AudioBands;
+  showText?: boolean;
+  songTitle?: string | null;
+  songArtist?: string | null;
+  songAlbum?: string | null;
+  coverUrl?: string | null;
+  seed?: string | number;
+  staticMode?: boolean;
+  visualizerOpacity?: number;
+  background?: VisualizerBackgroundConfig;
+  lyricsFontScale?: number;
+  subtitleOverlayOpacity?: number;
+  isPlayerChromeHidden?: boolean;
+  hideTranslationSubtitle?: boolean;
+  showSubtitleTranslation?: boolean;
+  paused?: boolean;
+  isPreviewMode?: boolean;
+  onBack?: () => void;
+  onLyricLineSeek?: (lyricTimeSec: number) => void;
+  classicTuning?: ClassicTuning;
+  cadenzaTuning?: CadenzaTuning;
+  partitaTuning?: PartitaTuning;
+  fumeTuning?: FumeTuning;
+  claddaghTuning?: CladdaghTuning;
+  onCladdaghTuningChange?: (patch: Partial<CladdaghTuning>) => void;
+  cappellaTuning?: CappellaTuning;
+  cappellaCustomEmojiImages?: CappellaEmojiImage[];
+  cappellaCustomAvatarImages?: CappellaAvatarImage[];
+  tiltTuning?: TiltTuning;
+  monetTuning?: MonetTuning;
+  monetPortraitImage?: MonetPortraitImage | null;
+  onMonetTuningChange?: (patch: Partial<MonetTuning>) => void;
 }
 ```
 
@@ -97,7 +97,7 @@ interface VisualizerSharedProps {
 
 ```tsx
 const VisualizerFoo: React.FC<VisualizerSharedProps> = (props) => {
-    // ...
+  // ...
 };
 
 export default VisualizerFoo;
@@ -505,67 +505,67 @@ visualizer 在这种情况下应当直接补完成当前句剩余的 pass / trai
 - 通用外层行为优先通过 `VisualizerShell` 的 `sharedProps={props}` 透传，只有模式真的需要覆写时才单独传字段
 
 ```tsx
-import React from 'react';
-import { useI18n } from '@/store/module/i18n';
-import { getLineRenderEndTime } from '../../../utils/lyrics/renderHints';
-import { type VisualizerSharedProps } from '../definition';
-import { useVisualizerRuntime } from '../runtime';
-import VisualizerShell from '../VisualizerShell';
-import VisualizerSubtitleOverlay from '../VisualizerSubtitleOverlay';
+import React from "react";
+import { useI18n } from "@/store/module/i18n";
+import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
+import { type VisualizerSharedProps } from "../definition";
+import { useVisualizerRuntime } from "../runtime";
+import VisualizerShell from "../VisualizerShell";
+import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
 
 type VisualizerFooProps = VisualizerSharedProps;
 
 const VisualizerFoo: React.FC<VisualizerFooProps> = (props) => {
-    const {
-        currentTime,
-        currentLineIndex,
-        lines,
-        theme,
-        audioPower,
-        audioBands,
-        showText = true,
-        lyricsFontScale = 1,
-        isPlayerChromeHidden = false,
-        hideTranslationSubtitle = false,
-        showSubtitleTranslation = true,
-    } = props;
-    const { t } = useI18n();
-    const { activeLine, recentCompletedLine, nextLines } = useVisualizerRuntime({
-        currentTime,
-        currentLineIndex,
-        lines,
-        getLineEndTime: getLineRenderEndTime,
-    });
+  const {
+    currentTime,
+    currentLineIndex,
+    lines,
+    theme,
+    audioPower,
+    audioBands,
+    showText = true,
+    lyricsFontScale = 1,
+    isPlayerChromeHidden = false,
+    hideTranslationSubtitle = false,
+    showSubtitleTranslation = true,
+  } = props;
+  const { t } = useI18n();
+  const { activeLine, recentCompletedLine, nextLines } = useVisualizerRuntime({
+    currentTime,
+    currentLineIndex,
+    lines,
+    getLineEndTime: getLineRenderEndTime,
+  });
 
-    return (
-        <VisualizerShell
-            theme={theme}
-            audioPower={audioPower}
-            audioBands={audioBands}
-            sharedProps={props}
-        >
-            <div className="relative z-10 w-full h-[70vh] flex items-center justify-center p-8 pointer-events-none">
-                {showText && activeLine ? (
-                    <div style={{ fontSize: `${3 * lyricsFontScale}rem` }}>{activeLine.fullText}</div>
-                ) : (
-                    <div>{t('ui.waitingForMusic')}</div>
-                )}
-            </div>
+  return (
+    <VisualizerShell
+      theme={theme}
+      audioPower={audioPower}
+      audioBands={audioBands}
+      sharedProps={props}
+    >
+      <div className="pointer-events-none relative z-10 flex h-[70vh] w-full items-center justify-center p-8">
+        {showText && activeLine ? (
+          <div style={{ fontSize: `${3 * lyricsFontScale}rem` }}>{activeLine.fullText}</div>
+        ) : (
+          <div>{t("ui.waitingForMusic")}</div>
+        )}
+      </div>
 
-            <VisualizerSubtitleOverlay
-                showText={showText}
-                activeLine={activeLine}
-                recentCompletedLine={recentCompletedLine}
-                nextLines={nextLines}
-                theme={theme}
-                translationFontSize="1rem"
-                upcomingFontSize="0.875rem"
-                isPlayerChromeHidden={isPlayerChromeHidden}
-                hideTranslationSubtitle={hideTranslationSubtitle}
-                showSubtitleTranslation={showSubtitleTranslation}
-            />
-        </VisualizerShell>
-    );
+      <VisualizerSubtitleOverlay
+        showText={showText}
+        activeLine={activeLine}
+        recentCompletedLine={recentCompletedLine}
+        nextLines={nextLines}
+        theme={theme}
+        translationFontSize="1rem"
+        upcomingFontSize="0.875rem"
+        isPlayerChromeHidden={isPlayerChromeHidden}
+        hideTranslationSubtitle={hideTranslationSubtitle}
+        showSubtitleTranslation={showSubtitleTranslation}
+      />
+    </VisualizerShell>
+  );
 };
 
 export default VisualizerFoo;
@@ -585,21 +585,21 @@ visualizer/
 `entry.tsx` 使用 `defineVisualizer(...)` 默认导出注册对象：
 
 ```tsx
-import React from 'react';
-import { defineVisualizer } from '../definition';
-import VisualizerFoo from './VisualizerFoo';
+import React from "react";
+import { defineVisualizer } from "../definition";
+import VisualizerFoo from "./VisualizerFoo";
 
 // src/components/visualizer/foo/entry.tsx
 // Registers the Foo visualizer mode.
 export default defineVisualizer({
-    mode: 'foo',
-    order: 50,
-    labelKey: 'ui.visualizerFoo',
-    labelFallback: 'Foo',
-    previewSeed: 'foo',
-    previewStartOffset: 0,
-    tuningKind: 'none',
-    render: props => <VisualizerFoo {...props} />,
+  mode: "foo",
+  order: 50,
+  labelKey: "ui.visualizerFoo",
+  labelFallback: "Foo",
+  previewSeed: "foo",
+  previewStartOffset: 0,
+  tuningKind: "none",
+  render: (props) => <VisualizerFoo {...props} />,
 });
 ```
 
@@ -628,15 +628,15 @@ backgrounds/
 如果新模式需要预览面板专属设置，可以在 entry 上提供：
 
 ```tsx
-renderSettingsPanel: props => <FooSettingsPanel {...props} />
+renderSettingsPanel: (props) => <FooSettingsPanel {...props} />;
 ```
 
 如果还需要提供“恢复默认参数”能力，也沿用当前 entry 接口：
 
 ```tsx
-resetSettings: props => {
-    props.resetFooTuning?.();
-}
+resetSettings: (props) => {
+  props.resetFooTuning?.();
+};
 ```
 
 ### 仍然可能需要同步的文件

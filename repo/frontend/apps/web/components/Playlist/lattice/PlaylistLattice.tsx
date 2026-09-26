@@ -42,10 +42,11 @@ export default function PlaylistLattice({
   );
   useEffect(() => {
     wall.fieldRef.current?.focus({ preventScroll: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     if (followCurrent && currentIndex >= 0) wall.locate(currentIndex);
-  }, [followCurrent, currentIndex, wall.locate]);
+  }, [followCurrent, currentIndex, wall]);
   return (
     <section
       ref={rootRef}
@@ -63,7 +64,13 @@ export default function PlaylistLattice({
         onLocate={() => wall.locate(currentIndex)}
         onClose={onClose}
       />
-      <div ref={wall.fieldRef} className={styles.field} aria-label={title} tabIndex={0} {...wall.pointerHandlers}>
+      <div
+        ref={wall.fieldRef}
+        className={styles.field}
+        aria-label={title}
+        tabIndex={0}
+        {...wall.pointerHandlers}
+      >
         <div ref={wall.worldRef} className={styles.world}>
           {wall.instances.map((instance) => {
             const track = tracks[instance.queueIndex];

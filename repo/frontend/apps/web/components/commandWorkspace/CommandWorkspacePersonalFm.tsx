@@ -24,7 +24,7 @@ export function CommandWorkspacePersonalFm({ onBack, onClose }: CommandWorkspace
     >
       {model.showQueue ? (
         <>
-          <header className="flex items-center gap-3 border-b border-white/8 px-4 py-4 text-sm text-zinc-200">
+          <header className="flex items-center gap-3 border-b border-white/8 p-4 text-sm text-zinc-200">
             <button
               autoFocus
               type="button"
@@ -108,7 +108,7 @@ export function CommandWorkspacePersonalFm({ onBack, onClose }: CommandWorkspace
                     type="button"
                     disabled={model.isLoading}
                     onClick={model.start}
-                    className="bg-brand text-brand-foreground rounded-full px-4 py-2 text-xs font-medium disabled:opacity-45"
+                    className="rounded-full bg-brand px-4 py-2 text-xs font-medium text-brand-foreground disabled:opacity-45"
                   >
                     开始私人 FM
                   </button>

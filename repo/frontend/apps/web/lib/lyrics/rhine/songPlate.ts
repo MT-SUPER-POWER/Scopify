@@ -38,14 +38,25 @@ export class RhineSongPlate {
   private imageReady = false;
   private disposed = false;
 
-  constructor(track: RhineArchiveTrack, private readonly onReady: () => void) {
+  constructor(
+    track: RhineArchiveTrack,
+    private readonly onReady: () => void,
+  ) {
     this.canvas.width = WIDTH;
     this.canvas.height = HEIGHT;
     this.texture = new THREE.CanvasTexture(this.canvas);
     this.texture.colorSpace = THREE.SRGBColorSpace;
     this.texture.anisotropy = 4;
-    this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(4.55, 4.55 * HEIGHT / WIDTH),
-      new THREE.MeshBasicMaterial({ map: this.texture, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
+    this.mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(4.55, (4.55 * HEIGHT) / WIDTH),
+      new THREE.MeshBasicMaterial({
+        map: this.texture,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        toneMapped: false,
+      }),
+    );
     this.mesh.name = "song-insert";
     this.mesh.position.set(0, 1.86, 0.275);
     this.mesh.renderOrder = 30;
@@ -89,12 +100,21 @@ export class RhineSongPlate {
     context.fillRect(64, 80, COVER_SIZE, COVER_SIZE);
 
     if (this.imageReady && this.image) {
-      const scale = Math.min(COVER_SIZE / this.image.naturalWidth, COVER_SIZE / this.image.naturalHeight);
+      const scale = Math.min(
+        COVER_SIZE / this.image.naturalWidth,
+        COVER_SIZE / this.image.naturalHeight,
+      );
       const width = this.image.naturalWidth * scale;
       const height = this.image.naturalHeight * scale;
       context.imageSmoothingEnabled = true;
       context.imageSmoothingQuality = "high";
-      context.drawImage(this.image, 64 + (COVER_SIZE - width) / 2, 80 + (COVER_SIZE - height) / 2, width, height);
+      context.drawImage(
+        this.image,
+        64 + (COVER_SIZE - width) / 2,
+        80 + (COVER_SIZE - height) / 2,
+        width,
+        height,
+      );
     } else {
       context.strokeStyle = "#aeb4a7";
       context.lineWidth = 3;
@@ -121,7 +141,8 @@ export class RhineSongPlate {
     if (lines.length > maxLines) {
       lines = lines.slice(0, maxLines);
       let last = lines[maxLines - 1];
-      while (last && context.measureText(`${last}…`).width > TITLE_WIDTH) last = Array.from(last).slice(0, -1).join("");
+      while (last && context.measureText(`${last}…`).width > TITLE_WIDTH)
+        last = Array.from(last).slice(0, -1).join("");
       lines[maxLines - 1] = `${last}…`;
     }
     const top = (HEIGHT - lines.length * lineHeight) / 2;

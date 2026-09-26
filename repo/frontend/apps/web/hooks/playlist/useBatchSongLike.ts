@@ -22,7 +22,7 @@ export function useBatchSongLike() {
     }
     const likeSet = new Set(useUserStore.getState().likeListIDs ?? []);
     const ids = [...new Set(songs.map((song) => song.id))];
-    const toChange = ids.filter((id) => targetLike ? !likeSet.has(id) : likeSet.has(id));
+    const toChange = ids.filter((id) => (targetLike ? !likeSet.has(id) : likeSet.has(id)));
     if (!toChange.length) {
       toast.info(t(targetLike ? "playlist.drop.alreadyLiked" : "playlist.drop.notLiked"));
       return;
@@ -47,8 +47,18 @@ export function useBatchSongLike() {
         }
       }
       const skipped = ids.length - toChange.length;
-      if (failed) toast.error(t("playlist.drop.likePartial", { count: succeeded, failed, skipped }), { id: toastId });
-      else toast.success(t(targetLike ? "playlist.drop.liked" : "playlist.drop.unliked", { count: succeeded, skipped }), { id: toastId });
+      if (failed)
+        toast.error(t("playlist.drop.likePartial", { count: succeeded, failed, skipped }), {
+          id: toastId,
+        });
+      else
+        toast.success(
+          t(targetLike ? "playlist.drop.liked" : "playlist.drop.unliked", {
+            count: succeeded,
+            skipped,
+          }),
+          { id: toastId },
+        );
     } finally {
       useAppDragStore.getState().setTargetPending("liked", false);
     }

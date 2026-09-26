@@ -176,9 +176,11 @@ export function useSortableListDrag({
     const dragState = useAppDragStore.getState();
     if (
       (dragState.isDragging && findTrackDropTarget(point)) ||
-      reorderDisabled || args.active.data.current?.allowReorder === false ||
+      reorderDisabled ||
+      args.active.data.current?.allowReorder === false ||
       (dragState.isDragging && dragState.draggedTracks.length > 1)
-    ) return [];
+    )
+      return [];
     const collisions = closestCenter(
       point
         ? {
@@ -204,7 +206,8 @@ export function useSortableListDrag({
     if (point && (point.x < rect.left || point.x > rect.right)) return [];
     if (point) {
       const element = document.elementFromPoint(point.x, point.y);
-      const overNode = args.droppableContainers.find((container) => container.id === over.id)?.node.current;
+      const overNode = args.droppableContainers.find((container) => container.id === over.id)?.node
+        .current;
       // Reject headers, other panels, clipped rows, and space outside the list.
       if (!element || !overNode?.contains(element)) return [];
     }

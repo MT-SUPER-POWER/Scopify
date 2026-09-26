@@ -15,8 +15,10 @@ export class RhineRenderer {
   readonly renderer: THREE.WebGLRenderer;
   private readonly aim = new THREE.Vector3(-2.4, 0.8, -3.8);
   private readonly key = new THREE.DirectionalLight("#fff9ec", 1.65);
-  private readonly ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200),
-    new THREE.MeshStandardMaterial({ color: "#c9c5b9", roughness: 0.88 }));
+  private readonly ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(200, 200),
+    new THREE.MeshStandardMaterial({ color: "#c9c5b9", roughness: 0.88 }),
+  );
   private environment?: THREE.WebGLRenderTarget;
   private composer?: EffectComposer;
   private ao?: RhineAOPass;
@@ -29,7 +31,11 @@ export class RhineRenderer {
   private readonly imageReady = () => this.onAssetsReady?.();
 
   constructor(canvas: HTMLCanvasElement) {
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      powerPreference: "high-performance",
+    });
   }
 
   initialize(quality: RhineQuality) {
@@ -44,13 +50,24 @@ export class RhineRenderer {
     this.scene.environmentIntensity = 0.48;
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     const room = new RoomEnvironment();
-    try { this.environment = pmrem.fromScene(room, 0.04); }
-    finally { room.dispose(); pmrem.dispose(); }
+    try {
+      this.environment = pmrem.fromScene(room, 0.04);
+    } finally {
+      room.dispose();
+      pmrem.dispose();
+    }
     this.scene.environment = this.environment.texture;
     this.scene.add(new THREE.HemisphereLight("#f2f4ee", "#878b80", 0.52));
     this.key.position.set(-9, 14, 5);
     this.key.castShadow = true;
-    Object.assign(this.key.shadow.camera, { left: -16, right: 16, top: 15, bottom: -15, near: 0.1, far: 45 });
+    Object.assign(this.key.shadow.camera, {
+      left: -16,
+      right: 16,
+      top: 15,
+      bottom: -15,
+      near: 0.1,
+      far: 45,
+    });
     this.key.shadow.camera.updateProjectionMatrix();
     this.key.shadow.normalBias = 0.035;
     this.key.shadow.bias = -0.0003;
@@ -63,15 +80,26 @@ export class RhineRenderer {
     this.ground.position.y = -4.63;
     this.ground.receiveShadow = true;
     this.scene.add(this.ground);
-    const yaw = THREE.MathUtils.degToRad(59), elevation = THREE.MathUtils.degToRad(23);
-    this.camera.position.copy(this.aim).addScaledVector(new THREE.Vector3(
-      -Math.sin(yaw) * Math.cos(elevation), Math.sin(elevation), Math.cos(yaw) * Math.cos(elevation)), 140);
+    const yaw = THREE.MathUtils.degToRad(59),
+      elevation = THREE.MathUtils.degToRad(23);
+    this.camera.position
+      .copy(this.aim)
+      .addScaledVector(
+        new THREE.Vector3(
+          -Math.sin(yaw) * Math.cos(elevation),
+          Math.sin(elevation),
+          Math.cos(yaw) * Math.cos(elevation),
+        ),
+        140,
+      );
     this.camera.lookAt(this.aim);
     this.camera.updateMatrixWorld();
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     this.ao = new RhineAOPass(this.scene, this.camera, 1, 1, 32);
-    this.ao.kernelRadius = 0.38; this.ao.minDistance = 0.001; this.ao.maxDistance = 0.09;
+    this.ao.kernelRadius = 0.38;
+    this.ao.minDistance = 0.001;
+    this.ao.maxDistance = 0.09;
     this.composer.addPass(this.ao);
     this.smaa = new SMAAPass();
     this.composer.addPass(this.smaa);
@@ -102,7 +130,8 @@ export class RhineRenderer {
     const quality = RHINE_QUALITY[this.quality];
     this.renderer.transmissionResolutionScale = quality.transmissionScale;
     if (this.key.shadow.mapSize.x !== quality.shadows) {
-      this.key.shadow.map?.dispose(); this.key.shadow.map = null;
+      this.key.shadow.map?.dispose();
+      this.key.shadow.map = null;
       this.key.shadow.mapSize.setScalar(quality.shadows);
     }
     if (this.ao) this.ao.enabled = quality.ao > 0;
@@ -111,10 +140,14 @@ export class RhineRenderer {
   }
 
   resize(width: number, height: number) {
-    this.width = Math.max(1, width); this.height = Math.max(1, height);
+    this.width = Math.max(1, width);
+    this.height = Math.max(1, height);
     const quality = RHINE_QUALITY[this.quality];
     const ratio = Math.min(window.devicePixelRatio || 1, quality.pixelRatio);
-    const budgetScale = Math.min(1, Math.sqrt(8_294_400 / (this.width * this.height * ratio * ratio * quality.scale ** 2)));
+    const budgetScale = Math.min(
+      1,
+      Math.sqrt(8_294_400 / (this.width * this.height * ratio * ratio * quality.scale ** 2)),
+    );
     const renderWidth = Math.max(1, Math.round(this.width * quality.scale * budgetScale));
     const renderHeight = Math.max(1, Math.round(this.height * quality.scale * budgetScale));
     this.renderer.setPixelRatio(ratio);
@@ -122,7 +155,7 @@ export class RhineRenderer {
     this.composer?.setPixelRatio(ratio);
     this.composer?.setSize(renderWidth, renderHeight);
     this.camera.aspect = this.width / this.height;
-    const span = Math.max(11.6, 11.6 * (16 / 9) / this.camera.aspect);
+    const span = Math.max(11.6, (11.6 * (16 / 9)) / this.camera.aspect);
     this.camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(span / (2 * 140)));
     this.camera.updateProjectionMatrix();
     this.renderer.shadowMap.needsUpdate = true;
@@ -148,7 +181,8 @@ export class RhineRenderer {
     this.composer?.dispose();
     this.environment?.dispose();
     this.key.shadow.dispose();
-    this.ground.geometry.dispose(); this.ground.material.dispose();
+    this.ground.geometry.dispose();
+    this.ground.material.dispose();
     this.scene.clear();
     this.renderer.dispose();
   }

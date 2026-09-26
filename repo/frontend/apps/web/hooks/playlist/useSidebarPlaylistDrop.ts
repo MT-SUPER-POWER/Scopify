@@ -16,7 +16,11 @@ export function useSidebarPlaylistDrop(playlist: NeteasePlaylist) {
   const liked = playlist.specialType === 5;
   return useTrackDropTarget({
     id: liked ? "liked" : `playlist:${playlist.id}`,
-    enabled: isRealUser(user) && playlist.creator.userId === user?.userId && String(playlist.id) !== sourceId,
-    onDrop: (tracks) => liked ? batchLike(tracks, true) : addTracks({ playlistId: playlist.id, tracks }),
+    enabled:
+      isRealUser(user) &&
+      playlist.creator.userId === user?.userId &&
+      String(playlist.id) !== sourceId,
+    onDrop: (tracks) =>
+      liked ? batchLike(tracks, true) : addTracks({ playlistId: playlist.id, tracks }),
   });
 }

@@ -44,7 +44,9 @@ export function usePlaylistTrackDrop() {
       const skipped = ids.length - added.length;
       if (!added.length) {
         toast.info(t("playlist.drop.duplicate"), { id: toastId });
-        void queryClient.invalidateQueries({ queryKey: ["playlist", "content", "playlist", String(playlistId)] });
+        void queryClient.invalidateQueries({
+          queryKey: ["playlist", "content", "playlist", String(playlistId)],
+        });
         return;
       }
       if (useUserStore.getState().user?.userId !== user?.userId) {
@@ -59,15 +61,19 @@ export function usePlaylistTrackDrop() {
       );
     } catch (error) {
       const payload = isApiError(error) ? error.data : undefined;
-      const duplicate = payload && typeof payload === "object" && "code" in payload && payload.code === 502;
+      const duplicate =
+        payload && typeof payload === "object" && "code" in payload && payload.code === 502;
       if (duplicate) toast.info(t("playlist.drop.concurrentDuplicate"), { id: toastId });
-      else toast.error(t("playlist.table.addToPlaylistFailed"), {
-        id: toastId,
-        description: error instanceof Error ? error.message : undefined,
-      });
+      else
+        toast.error(t("playlist.table.addToPlaylistFailed"), {
+          id: toastId,
+          description: error instanceof Error ? error.message : undefined,
+        });
       // A timeout or a concurrent edit can leave the remote result uncertain.
       await clearPageCache().catch(() => undefined);
-      void queryClient.invalidateQueries({ queryKey: ["playlist", "content", "playlist", String(playlistId)] });
+      void queryClient.invalidateQueries({
+        queryKey: ["playlist", "content", "playlist", String(playlistId)],
+      });
       void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
     } finally {
       useAppDragStore.getState().setTargetPending(targetId, false);

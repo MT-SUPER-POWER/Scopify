@@ -28,7 +28,6 @@ import {
 
 export { buildMonetDisplayTokens, resolveMonetLyricContext } from "./monetLyricsModel";
 
-
 const VisualizerMonet: React.FC<VisualizerSharedProps> = (props) => {
   const {
     currentTime,
@@ -211,7 +210,7 @@ const VisualizerMonet: React.FC<VisualizerSharedProps> = (props) => {
                 {/* Keep tight poster leading without clipping accents or descenders. */}
                 <div className="mb-6 flex flex-col space-y-1">
                   <div
-                    className="line-clamp-2 leading-1.06 font-semibold"
+                    className="leading-1.06 line-clamp-2 font-semibold"
                     style={{
                       color: theme.primaryColor,
                       fontSize: `clamp(1.45rem, 3.3vw, ${titleMaxRem}rem)`,

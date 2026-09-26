@@ -1,7 +1,4 @@
-import type {
-  InboxNotification,
-  NotificationLocale,
-} from "@scopify/desktop-contract";
+import type { InboxNotification, NotificationLocale } from "@scopify/desktop-contract";
 import { notificationCopy, notificationTitle } from "./copy";
 import { object } from "./preferences";
 import { readForwardContent } from "./socialForward";

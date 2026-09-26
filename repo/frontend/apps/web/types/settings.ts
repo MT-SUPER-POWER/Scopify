@@ -3,13 +3,7 @@ import type { WebConfig } from "@/types/config";
 import type { TranslationKey } from "@/lib/i18n";
 
 export type SettingsTabId =
-  | "general"
-  | "appearance"
-  | "network"
-  | "storage"
-  | "desktop"
-  | "shortcuts"
-  | "notifications";
+  "general" | "appearance" | "network" | "storage" | "desktop" | "shortcuts" | "notifications";
 
 export interface SettingsTabDefinition {
   id: SettingsTabId;
