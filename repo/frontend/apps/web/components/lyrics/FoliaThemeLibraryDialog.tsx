@@ -29,11 +29,14 @@ export function FoliaThemeLibraryDialog({
     isOpen && !model.pendingAction && !warningOpen,
     model.requestClose,
   );
+  const requestClose = model.requestClose;
+  const requestCloseRef = useRef(requestClose);
+  requestCloseRef.current = requestClose;
   useEffect(() => {
     if (seenCloseRequest.current === closeRequest) return;
     seenCloseRequest.current = closeRequest;
-    if (isOpen && closeRequest > 0) model.requestClose();
-  }, [closeRequest, isOpen, model.requestClose]);
+    if (isOpen && closeRequest > 0) requestCloseRef.current();
+  }, [closeRequest, isOpen]);
   const draftColors = getFoliaThemeColors(model.draftTheme, model.themeVariant);
   const workbenchTheme = { ...theme, ...draftColors };
   const isDaylight = theme.name === "snow";

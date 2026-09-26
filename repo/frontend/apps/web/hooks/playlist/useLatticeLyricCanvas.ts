@@ -152,16 +152,18 @@ export function useLatticeLyricCanvas(
   useEffect(() => {
     runtimeRef.current?.resize(box.current.width, box.current.height, devicePixelRatio);
   }, [devicePixelRatio]);
+  const lyricTheme = input?.theme;
+  const lyricSubtitleTheme = input?.subtitleTheme;
   useEffect(() => {
-    if (!input || !document.fonts) return;
-    const primary = `${resolveThemeFontWeight(input.theme, 600)} 36px ${resolveThemeFontStack(input.theme)}`;
-    const subtitle = input.subtitleTheme ?? input.theme;
+    if (!lyricTheme || !document.fonts) return;
+    const primary = `${resolveThemeFontWeight(lyricTheme, 600)} 36px ${resolveThemeFontStack(lyricTheme)}`;
+    const subtitle = lyricSubtitleTheme ?? lyricTheme;
     const translation = `${resolveThemeFontWeight(subtitle, 500)} 18px ${resolveThemeTranslationFontStack(subtitle)}`;
     // Trigger custom-face loading even when the full visualizer is not mounted.
     void Promise.all([
       document.fonts.load(primary, "国Agyp"),
       document.fonts.load(translation, "国Agyp"),
     ]).catch(() => undefined);
-  }, [input?.theme, input?.subtitleTheme]);
+  }, [lyricTheme, lyricSubtitleTheme]);
   return ready && enabled;
 }

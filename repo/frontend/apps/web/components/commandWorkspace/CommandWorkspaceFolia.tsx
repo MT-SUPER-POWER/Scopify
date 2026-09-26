@@ -33,7 +33,7 @@ export function CommandWorkspaceFolia({
         }
       }}
     >
-      <div className="flex items-center gap-2 border-b border-white/8 px-4 py-4">
+      <div className="flex items-center gap-2 border-b border-white/8 p-4">
         <button
           type="button"
           onClick={back}

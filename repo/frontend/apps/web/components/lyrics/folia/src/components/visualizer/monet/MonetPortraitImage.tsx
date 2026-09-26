@@ -10,7 +10,7 @@ const MonetPortraitImage: React.FC<MonetPortraitImageProps> = ({
 }) => {
   const { layers, targetOpacity } = useMonetPortraitCrossfade(src, fadeMs);
   return (
-    <div className="relative h-full w-full">
+    <div className="relative size-full">
       {layers.map((layer) => (
         <motion.img
           key={layer.key}
@@ -20,7 +20,7 @@ const MonetPortraitImage: React.FC<MonetPortraitImageProps> = ({
           transition={{ duration: fadeMs / 1000, ease: "easeInOut" }}
           decoding="async"
           alt=""
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 size-full object-cover"
           draggable={false}
           data-monet-portrait-image
         />

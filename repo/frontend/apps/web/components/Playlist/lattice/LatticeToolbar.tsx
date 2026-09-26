@@ -90,7 +90,7 @@ export function LatticeToolbar({
               <ListMusic />
               {t("queue.title")}
             </DropdownMenuItem>
-            <p className="px-2 py-2 text-xs leading-relaxed text-muted-foreground">
+            <p className="p-2 text-xs leading-relaxed text-muted-foreground">
               {t("playlist.lattice.hint")}
             </p>
           </DropdownMenuContent>

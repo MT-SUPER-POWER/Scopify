@@ -20,7 +20,7 @@ export function PrivateConversationView({ accountId, peer, onBack }: PrivateConv
       className="flex h-[min(40rem,calc(100dvh-10rem))] min-h-0 flex-col text-foreground"
       aria-label={peer.name}
     >
-      <header className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-3">
+      <header className="flex shrink-0 items-center gap-2 border-b border-border p-3">
         <Button
           variant="ghost"
           size="icon-sm"

@@ -16,7 +16,7 @@ export function useFriendsCenter() {
     const item = snapshot?.items.find((item) => item.id === snapshot.focusId);
     const peer = item && privateNotificationPeer(item);
     if (peer) useFriendsStore.getState().openConversation(peer);
-  }, [snapshot?.focusId]);
+  }, [snapshot?.focusId, snapshot?.items]);
   const unread = new Set(
     (snapshot?.items ?? [])
       .filter((item) => item.source === "private" && item.readAt === null)

@@ -15,7 +15,7 @@ export function CommandWorkspaceFmHeader({
 }: CommandWorkspaceFmHeaderProps) {
   const { t } = useI18n();
   return (
-    <div className="flex items-center gap-2 border-b border-white/8 px-4 py-4 sm:gap-3">
+    <div className="flex items-center gap-2 border-b border-white/8 p-4 sm:gap-3">
       <Search className="size-4 shrink-0 text-zinc-400" />
       <button
         type="button"

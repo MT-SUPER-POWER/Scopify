@@ -18,17 +18,19 @@ export function useNotificationCenter() {
     setExpandedId(null);
   }, [snapshot?.accountId]);
   useEffect(() => {
-    if (!snapshot?.focusId) return;
-    if (snapshot.items.find((item) => item.id === snapshot.focusId)?.source === "private") {
+    const focusId = snapshot?.focusId;
+    const items = snapshot?.items;
+    if (!focusId || !items) return;
+    if (items.find((item) => item.id === focusId)?.source === "private") {
       setOpen(false);
       return;
     }
     setOpen(true);
     setFilter("all");
     setUnreadOnly(false);
-    setExpandedId(snapshot.focusId);
-    void performNotificationAction(() => runtime.notifications.markRead([snapshot.focusId!]));
-  }, [snapshot?.focusId]);
+    setExpandedId(focusId);
+    void performNotificationAction(() => runtime.notifications.markRead([focusId]));
+  }, [snapshot?.focusId, snapshot?.items]);
   const items: NotificationListItem[] = (snapshot?.items ?? []).filter(
     (item) => item.source !== "private",
   );

@@ -7,7 +7,7 @@ import type {
   LyricPiece,
   LatticeRaster,
 } from "@/types/playlistLatticeLyrics";
-import type { Container, Mesh, Sprite } from "pixi.js";
+import type { Container } from "pixi.js";
 import type { MonetVisibleLineEntry } from "@/components/lyrics/folia/src/components/visualizer/monet/monetLyricsModel";
 import { resolveMonetSweepEdgeSoftness, resolveMonetSweepEnd } from "./monetLyricMotion";
 import { resolveMonetFillWidth, resolveMonetGlow, clampMonetProgress } from "./monetLyricMotion";

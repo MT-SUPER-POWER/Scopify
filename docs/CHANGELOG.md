@@ -18,6 +18,8 @@
 
 ### Fixed
 
+- **CI Lint 与 Turbo 任务隔离**：移除 `turbo.json` 中 `lint` 任务对上游依赖的 `^lint` 级联，并在根级 `package.json` 的 `lint` 脚本中过滤 `@scopify/*` 作用域，避免后端解耦子模块的代码风格问题阻塞前端质量门禁；修复 Web 包中多处 React hook 依赖与非空断言告警，确保 ESLint 零告警通过。
+
 - **CI 工作流与 Release 子模块依赖修复**：在 `ci.yml` 和 `release.yml`（`renderer` 任务）中增加 `git submodule update --init --depth 1 repo/backend/api-enhanced` 步骤，解决禁用子模块递归后缺失 `@neteasecloudmusicapienhanced/api` workspace 依赖导致 `bun install --frozen-lockfile` 失败的问题。
 
 - **Web 构建与类型检查修复**：将 `CommandWorkspaceRootItem` 的 `binding` 属性类型放宽为 `ShortcutBinding | null`，修复 Vercel 部署和本地生产构建（`next build`）中因快捷键绑定含 `null` 导致的 TypeScript 编译错误；同时修正歌单权限参数与通知锁的 Promise 返回类型，并为 `docs/tsconfig.json` 补齐路径回退。
