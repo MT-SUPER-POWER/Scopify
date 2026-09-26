@@ -18,6 +18,10 @@
 
 ### Fixed
 
+- **CI 工作流与 Release 子模块依赖修复**：在 `ci.yml` 和 `release.yml`（`renderer` 任务）中增加 `git submodule update --init --depth 1 repo/backend/api-enhanced` 步骤，解决禁用子模块递归后缺失 `@neteasecloudmusicapienhanced/api` workspace 依赖导致 `bun install --frozen-lockfile` 失败的问题。
+
+- **Web 构建与类型检查修复**：将 `CommandWorkspaceRootItem` 的 `binding` 属性类型放宽为 `ShortcutBinding | null`，修复 Vercel 部署和本地生产构建（`next build`）中因快捷键绑定含 `null` 导致的 TypeScript 编译错误；同时修正歌单权限参数与通知锁的 Promise 返回类型，并为 `docs/tsconfig.json` 补齐路径回退。
+
 - **动态页窄屏适配**：全局搜索区按实际容器宽度收缩，窄容器精简前进/后退按钮，避免挤出通知和个人入口；发布按钮仅显示图标时保留可访问名称。已撤销设计对照时的临时浏览器视口覆盖。
 
 - **相似歌曲推荐解析**：识别新接口的 `similar_rcmd_song` 资源及空推荐响应，修复有效推荐被过滤后误报加载失败的问题；无推荐时补用 `/simi/song`，统一获取歌曲详情并保留去重与源歌曲排除。修正三种语言的歌曲名和推荐数量插值。

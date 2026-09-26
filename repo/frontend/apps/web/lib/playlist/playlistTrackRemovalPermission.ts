@@ -12,7 +12,7 @@ export interface PlaylistTrackRemovalPermissionInput {
   isHistoricalDailyRecommendation: boolean;
   isVirtualPlaylist: boolean;
   playlistId: number | string | null | undefined;
-  readonly: boolean;
+  readonly?: boolean;
 }
 
 function hasStableId(value: number | string | null | undefined): value is number | string {

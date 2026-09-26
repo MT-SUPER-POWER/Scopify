@@ -38,7 +38,7 @@ export interface CommandWorkspaceRootProps {
 }
 
 export interface CommandWorkspaceRootItem {
-  binding?: ShortcutBinding;
+  binding?: ShortcutBinding | null;
   id: string;
   label: string;
   page?: CommandWorkspaceRootPage;

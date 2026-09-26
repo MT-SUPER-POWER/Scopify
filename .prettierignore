@@ -12,6 +12,7 @@ coverage/
 # isolated submodules & external apps
 repo/backend/
 repo/frontend/apps/mobile/
+**/docs/references/**
 
 # auto-generated & lock files
 bun.lock
@@ -32,6 +33,8 @@ skills/
 
 # markdown files
 *.md
+*.mdx
+*.mmd
 
 # static docs / licenses
 LICENSE

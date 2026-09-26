@@ -22,8 +22,10 @@ export function createBrowserNotifications(): NotificationClient {
         });
       },
       deliver: async () => false,
-      exclusive: (operation) =>
-        navigator.locks ? navigator.locks.request("scopify-notifications", operation) : operation(),
+      exclusive: async (operation) =>
+        navigator.locks
+          ? await navigator.locks.request("scopify-notifications", operation)
+          : await operation(),
     });
     const tick = () => {
       if (navigator.onLine) void engine?.refresh(false);
