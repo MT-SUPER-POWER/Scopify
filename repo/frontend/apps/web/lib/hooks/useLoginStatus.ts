@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useUserStore } from "@/store";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const PLACEHOLDER_NICKNAMES = new Set(["未知用户", "未知使用者", "Unknown User"]);
 
@@ -15,14 +14,12 @@ export function isRealUser(
   return true;
 }
 
+/**
+ * 兼容旧签名的 Hook
+ * 底层直接代理至以 Cookie 凭据为核心的标准 useAuth().isAuthenticated
+ */
 export function useLoginStatus(): boolean {
-  const user = useUserStore((state) => state.user);
-  const [isLogin, setIsLogin] = useState(false);
-
-  useEffect(() => {
-    // 仅当拥有合法 userId 与非占位符真实昵称时，才判定为有效登录态
-    setIsLogin(isRealUser(user));
-  }, [user]);
-
-  return isLogin;
+  return useAuth().isAuthenticated;
 }
+
+export { useAuth };

@@ -18,6 +18,8 @@ import { MUSIC_SESSION_EXPIRED_EVENT } from "@/lib/query/session";
 import { runtime } from "@/lib/runtime";
 import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import { reportFailure } from "@/lib/web/errorTracking";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
+import { getBackendBaseUrl } from "@/lib/web/request";
 import { usePlayerStore, useUserStore } from "@/store";
 
 const QUERY_CACHE_BUSTER = "scopify-query-v1";
@@ -27,6 +29,17 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [queryClient] = useState(createQueryClient);
   useRendererErrorReporting();
+
+  useEffect(() => {
+    if (runtime.isDesktop) {
+      const credential = getMusicSessionCredential();
+      if (credential) {
+        void runtime.auth
+          .importMusicSession(credential, getBackendBaseUrl())
+          .catch(() => undefined);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const handleExpiredSession = () => {
