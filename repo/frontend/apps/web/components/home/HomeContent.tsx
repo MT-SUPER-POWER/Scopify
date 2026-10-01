@@ -50,12 +50,7 @@ export function HomeContent() {
   } = useHomeData();
 
   const isUnknown =
-    !userName ||
-    userName === "未知用户" ||
-    userName === "未知使用者" ||
-    userName === "Unknown User" ||
-    userName === t("common.meta.unknownUser") ||
-    userName.trim() === "";
+    !userName || userName === t("common.meta.unknownUser") || userName.trim() === "";
 
   const hasValidUser = isLogin && !isUnknown;
 

@@ -183,7 +183,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             <ResizablePanel
               panelRef={sidebarPanelRef}
               elementRef={sidebarPanelElementRef}
-              defaultSize="20%"
+              defaultSize="18%"
               minSize="15%"
               maxSize="40%"
               collapsible

@@ -1,5 +1,4 @@
 import { app, BrowserWindow } from "electron";
-
 import type { MainWindowOptions } from "@/types/electronWindow";
 import { __iconWindow, __preloadScript } from "@main/constants";
 import { loadDesktopHostConfig } from "@main/store";
@@ -10,10 +9,11 @@ import { showAppCloseWindow } from "@main/window/appCloseWindow";
 export function createMainWindow(options: MainWindowOptions) {
   const window = new BrowserWindow({
     autoHideMenuBar: true,
-    height: 900,
-    icon: __iconWindow,
-    minHeight: 720,
+    height: 860,
+    width: 1500,
+    minHeight: 780,
     minWidth: 840,
+    icon: __iconWindow,
     show: false,
     title: "Scopify",
     titleBarOverlay: {
@@ -29,7 +29,6 @@ export function createMainWindow(options: MainWindowOptions) {
       preload: __preloadScript,
       webgl: true,
     },
-    width: 1400,
   });
 
   // Playback transports must be registered before loading the Renderer Authority.
