@@ -1,17 +1,24 @@
 "use client";
 
-import { LoaderCircle, Save } from "lucide-react";
-import { Button } from "@scopify/ui/shadcn/components/button";
+import { useState } from "react";
 import { useNotificationPreferences } from "@/hooks/notifications/useNotificationPreferences";
+import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import { NotificationSubscriptions } from "./NotificationSubscriptions";
 import { NotificationDeliverySettings } from "./NotificationDeliverySettings";
 import { NotificationTestButton } from "./NotificationTestButton";
-import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
+import {
+  SaveChangesButton,
+  SaveConfirmModal,
+  SettingInput,
+  SettingRow,
+  SettingSection,
+} from "./SettingsUI";
 
 export function NotificationSettingsTab() {
   const { t } = useI18n();
   const settings = useNotificationPreferences();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { snapshot, preferences, pending, localError, hasChanges, saving, testing } = settings;
   const disabled = pending || testing;
   if (!snapshot || !preferences)
@@ -20,8 +27,14 @@ export function NotificationSettingsTab() {
         {t(localError ? "notifications.localError" : "notifications.checking")}
       </p>
     );
+
+  const handleConfirmSave = async () => {
+    await settings.save();
+    setIsModalOpen(false);
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-16">
       <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
         <NotificationSubscriptions
           preferences={preferences}
@@ -68,39 +81,15 @@ export function NotificationSettingsTab() {
           )}
         </div>
       </div>
-      {(hasChanges || saving) && (
-        <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border pt-5">
-          {localError ? (
-            <p role="alert" className="text-sm text-danger">
-              {t("notifications.localError")}
-            </p>
-          ) : hasChanges ? (
-            <p role="status" className="text-sm text-muted-foreground">
-              {t("notifications.unsaved")}
-            </p>
-          ) : null}
-          <Button
-            type="button"
-            variant="ghost"
-            disabled={disabled || !hasChanges}
-            onClick={settings.reset}
-          >
-            {t("notifications.discard")}
-          </Button>
-          <Button
-            type="button"
-            disabled={disabled || !hasChanges}
-            onClick={() => void settings.save()}
-          >
-            {saving ? (
-              <LoaderCircle className="size-4 animate-spin" />
-            ) : (
-              <Save className="size-4" />
-            )}
-            {t(saving ? "common.action.saving" : "settings.save")}
-          </Button>
-        </div>
-      )}
+      <SaveChangesButton visible={hasChanges} onClick={() => setIsModalOpen(true)} />
+      <SaveConfirmModal
+        open={isModalOpen}
+        isSaving={saving}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={() => void handleConfirmSave()}
+        requiresRestart={false}
+        isWeb={!runtime.isDesktop}
+      />
     </div>
   );
 }

@@ -67,8 +67,10 @@ export function useNotificationPreferences() {
       !saved ||
       saved.accountId !== current.accountId ||
       useNotificationStore.getState().accountId !== current.accountId
-    )
+    ) {
+      toast.error(t("settings.saveFailed"));
       return;
+    }
     setDraft(null);
     toast.success(t("settings.saveSuccess"));
   }
