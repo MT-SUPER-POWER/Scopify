@@ -41,6 +41,7 @@ const desktopConfig = loadDesktopHostConfig();
 export const __iconIcoPath = resource("icon.ico");
 export const __iconIcnsPath = resource("icon.icns");
 const __iconsetDir = resource("icon.iconset");
+export const __iconNotificationPath = resource("icon.iconset", "icon_256x256.png");
 
 // ─── 底层 NativeImage（内部使用，不直接导出）───
 const _nativeIco = nativeImage.createFromPath(__iconIcoPath);
