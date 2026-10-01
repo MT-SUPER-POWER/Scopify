@@ -103,11 +103,10 @@ export function NotificationDeliverySettings({
           <p className="w-full text-xs text-muted-foreground">{t("notifications.quietHint")}</p>
         </div>
       )}
-      {process.env.NODE_ENV !== "production" && desktopSupported && onTest && (
+      {desktopSupported && onTest && (
         <div className="mt-4 border-t border-border/40 pt-4">
           <SettingRow
             label={t("notifications.testDesktopLabel")}
-            isDebug
             sublabel={t("notifications.testDesktopSublabel")}
             control={
               <NotificationTestButton
