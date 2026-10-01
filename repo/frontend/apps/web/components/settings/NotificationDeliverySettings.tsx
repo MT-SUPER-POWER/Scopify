@@ -13,7 +13,6 @@ export function NotificationDeliverySettings({
   desktopSupported,
   hasChanges,
   testing,
-  testResult,
   onTest,
 }: NotificationDeliverySettingsProps) {
   const { t } = useI18n();
@@ -119,9 +118,7 @@ export function NotificationDeliverySettings({
             control={
               <NotificationTestButton
                 disabled={disabled || Boolean(hasChanges) || !preferences.desktop}
-                hasChanges={Boolean(hasChanges)}
                 testing={Boolean(testing)}
-                result={testResult ?? null}
                 onTest={onTest}
               />
             }

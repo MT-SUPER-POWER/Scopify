@@ -79,9 +79,12 @@ export function useNotificationPreferences() {
     if (hasChanges || store.pending || testing || !store.snapshot?.preferences.desktop) return;
     setTesting(true);
     try {
-      setTestResult((await runtime.notifications.testDesktop()) ? "sent" : "blocked");
+      const ok = await runtime.notifications.testDesktop();
+      setTestResult(ok ? "sent" : "blocked");
+      if (!ok) toast.warning(t("notifications.testBlocked"));
     } catch {
       setTestResult("blocked");
+      toast.warning(t("notifications.testBlocked"));
     } finally {
       setTesting(false);
     }

@@ -11,7 +11,6 @@ export interface NotificationDeliverySettingsProps extends NotificationPreferenc
   desktopSupported: boolean;
   hasChanges?: boolean;
   testing?: boolean;
-  testResult?: "sent" | "blocked" | null;
   onTest?: () => void;
 }
 
@@ -54,8 +53,6 @@ export type NotificationSummaryProps = Pick<NotificationRowProps, "item" | "onAc
 
 export interface NotificationTestButtonProps {
   disabled: boolean;
-  hasChanges: boolean;
   testing: boolean;
-  result: "sent" | "blocked" | null;
   onTest(): void;
 }

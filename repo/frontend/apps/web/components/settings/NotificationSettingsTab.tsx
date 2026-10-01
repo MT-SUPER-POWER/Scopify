@@ -42,7 +42,6 @@ export function NotificationSettingsTab() {
             desktopSupported={snapshot.desktopSupported}
             hasChanges={hasChanges}
             testing={testing}
-            testResult={settings.testResult}
             onTest={() => void settings.test()}
           />
         </div>
