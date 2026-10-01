@@ -28,6 +28,9 @@ import { createApplicationShutdown } from "./shutdown";
 import { createDesktopNotifications } from "@main/services/notifications";
 import { registerNotificationsIpc } from "@main/ipc/notifications";
 
+/** Dev runs use their own AUMID so electron.exe never claims the installed app's taskbar identity. */
+const APP_USER_MODEL_ID = app.isPackaged ? "com.momo.scopify" : "com.momo.scopify.dev";
+
 let mainWindow: BrowserWindow | null = null;
 let creatingWindow = false;
 let quitting = false;
@@ -138,7 +141,6 @@ async function prepareApplication() {
   registerNotificationsIpc(notifications, notificationOptions);
   coreLog.info("[app] renderer base URL", { url: renderer.baseUrl });
   if (process.platform === "win32") {
-    app.setAppUserModelId("com.momo.scopify");
     // autoHideMenuBar still reveals Electron's native menu when Alt is pressed.
     Menu.setApplicationMenu(null);
   }
@@ -215,9 +217,7 @@ export function initializeApplication() {
   if (initialized) return;
   initialized = true;
   app.name = "Scopify";
-  if (process.platform === "win32") {
-    app.setAppUserModelId("com.momo.scopify");
-  }
+  if (process.platform === "win32") app.setAppUserModelId(APP_USER_MODEL_ID);
   initLogger();
   validateDesktopResources();
   // Preload scripts can run before the main BrowserWindow is attached. Keep the
