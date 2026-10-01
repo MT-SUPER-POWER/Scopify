@@ -1,5 +1,6 @@
 import { ipcMain, type IpcMainInvokeEvent } from "electron";
 import { normalizeNotificationPreferences, object } from "@scopify/notification-core";
+import { coreLog } from "@main/utils/logger";
 import type { createDesktopNotifications } from "@main/services/notifications";
 import type { DesktopNotificationOptions } from "@/types/notifications";
 import { isMainRenderer } from "./sender";
@@ -50,8 +51,11 @@ export function registerNotificationsIpc(
     authorize(event);
     return service.updatePreferences(normalizeNotificationPreferences(preferences));
   });
-  ipcMain.handle("notifications:test", (event) => {
+  ipcMain.handle("notifications:test", async (event) => {
     authorize(event);
-    return service.testDesktop();
+    coreLog.info("[notifications:ipc] notifications:test invoked");
+    const result = await service.testDesktop();
+    coreLog.info("[notifications:ipc] notifications:test result", { result });
+    return result;
   });
 }

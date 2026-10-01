@@ -905,9 +905,9 @@ export interface TranslateFn {
    */
   (key: "notifications.testDesktopLabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 向系统发送一条弹窗测试，声音与正文预览将按当前配置生效（仅开发模式）
-   * zh-TW: 向系統傳送一則彈窗測試，聲音與正文預覽將按目前設定生效（僅開發模式）
-   * en-US: Triggers an OS notification preview applying your current sound and preview settings (dev only)
+   * zh-CN: 向系统发送一条测试弹窗，验证当前提醒效果与配置。
+   * zh-TW: 向系統傳送一則測試彈窗，驗證目前提醒效果與設定。
+   * en-US: Send a test popup to verify notification delivery and settings.
    */
   (key: "notifications.testDesktopSublabel", params?: TranslationParams): string;
   /**

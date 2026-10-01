@@ -2,6 +2,7 @@ import { app, Notification, powerMonitor, session } from "electron";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { __iconNotificationPath } from "@main/constants";
+import { coreLog } from "@main/utils/logger";
 import { createNotificationEngine, notificationCopy } from "@scopify/notification-core";
 import type { DesktopNotificationOptions } from "@/types/notifications";
 import type { NotificationSession } from "@scopify/desktop-contract";
@@ -46,7 +47,20 @@ export function createDesktopNotifications(options: DesktopNotificationOptions) 
     },
     async deliver(item, active, preferences) {
       const window = options.getMainWindow();
-      if (!Notification.isSupported() || (item.id !== "test" && window?.isFocused())) return false;
+      coreLog.info("[notifications] deliver called", {
+        id: item.id,
+        title: item.title,
+        isSupported: Notification.isSupported(),
+        windowFocused: window?.isFocused(),
+      });
+      if (!Notification.isSupported() || (item.id !== "test" && window?.isFocused())) {
+        coreLog.warn("[notifications] delivery skipped", {
+          supported: Notification.isSupported(),
+          focused: window?.isFocused(),
+          isTest: item.id === "test",
+        });
+        return false;
+      }
       const body =
         preferences.preview || item.category === "reports"
           ? item.body
@@ -60,6 +74,7 @@ export function createDesktopNotifications(options: DesktopNotificationOptions) 
       });
       live.add(notification);
       notification.once("click", () => {
+        coreLog.info("[notifications] notification clicked", { id: item.id });
         if (activeAccount !== active.accountId) return;
         void options
           .showMainWindow()
@@ -67,8 +82,20 @@ export function createDesktopNotifications(options: DesktopNotificationOptions) 
           .catch(() => undefined);
         live.delete(notification);
       });
-      notification.once("close", () => live.delete(notification));
-      notification.once("failed", () => live.delete(notification));
+      notification.once("close", () => {
+        coreLog.info("[notifications] notification closed", { id: item.id });
+        live.delete(notification);
+      });
+      notification.once("failed", (_event, error) => {
+        coreLog.error("[notifications] notification failed to show", { id: item.id, error });
+        live.delete(notification);
+      });
+      coreLog.info("[notifications] calling notification.show()", {
+        title: item.title,
+        body,
+        icon: __iconNotificationPath,
+        silent: !preferences.sound,
+      });
       notification.show();
       return true;
     },

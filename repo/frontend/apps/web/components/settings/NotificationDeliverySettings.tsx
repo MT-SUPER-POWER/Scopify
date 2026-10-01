@@ -107,7 +107,14 @@ export function NotificationDeliverySettings({
       {process.env.NODE_ENV !== "production" && desktopSupported && onTest && (
         <div className="mt-4 border-t border-border/40 pt-4">
           <SettingRow
-            label={t("notifications.testDesktopLabel")}
+            label={
+              <div className="flex items-center gap-2">
+                <span>{t("notifications.testDesktopLabel")}</span>
+                <span className="inline-flex items-center rounded border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wider text-warning">
+                  DEBUG
+                </span>
+              </div>
+            }
             sublabel={t("notifications.testDesktopSublabel")}
             control={
               <NotificationTestButton

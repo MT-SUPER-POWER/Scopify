@@ -70,8 +70,7 @@ export const notificationMessages = {
     "notifications.scheduleHint": "按本地时间检查，有数据才推送。周报、年报在 10:00 后检查。",
     "notifications.test": "发送测试通知",
     "notifications.testDesktopLabel": "测试桌面弹窗",
-    "notifications.testDesktopSublabel":
-      "向系统发送一条弹窗测试，声音与正文预览将按当前配置生效（仅开发模式）",
+    "notifications.testDesktopSublabel": "向系统发送一条测试弹窗，验证当前提醒效果与配置。",
     "notifications.testSent": "已提交给系统，请查看桌面通知。",
     "notifications.testBlocked": "未发送：请检查桌面通知开关和免打扰设置。",
     "notifications.scopeHint": "这些设置和通知记录保存在当前设备，登录账号之间分别保存。",
@@ -148,8 +147,7 @@ export const notificationMessages = {
     "notifications.scheduleHint": "依本地時間檢查，有資料才推送。週報、年報於 10:00 後檢查。",
     "notifications.test": "傳送測試通知",
     "notifications.testDesktopLabel": "測試桌面彈窗",
-    "notifications.testDesktopSublabel":
-      "向系統傳送一則彈窗測試，聲音與正文預覽將按目前設定生效（僅開發模式）",
+    "notifications.testDesktopSublabel": "向系統傳送一則測試彈窗，驗證目前提醒效果與設定。",
     "notifications.testSent": "已提交給系統，請查看桌面通知。",
     "notifications.testBlocked": "未傳送：請檢查桌面通知開關與勿擾設定。",
     "notifications.scopeHint": "這些設定與通知記錄儲存在目前裝置，登入帳號之間分別儲存。",
@@ -230,7 +228,7 @@ export const notificationMessages = {
     "notifications.test": "Send test notification",
     "notifications.testDesktopLabel": "Test desktop popup",
     "notifications.testDesktopSublabel":
-      "Triggers an OS notification preview applying your current sound and preview settings (dev only)",
+      "Send a test popup to verify notification delivery and settings.",
     "notifications.testSent": "Submitted to the system. Check your desktop notifications.",
     "notifications.testBlocked": "Not sent. Check desktop notifications and quiet hours.",
     "notifications.scopeHint":
