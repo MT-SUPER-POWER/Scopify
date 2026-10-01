@@ -91,6 +91,8 @@ export function SettingRow({
   control,
   isColumn = false,
   requiresRestart = false,
+  isDebug = false,
+  badge,
   className,
 }: {
   label: React.ReactNode;
@@ -98,6 +100,8 @@ export function SettingRow({
   control: React.ReactNode;
   isColumn?: boolean;
   requiresRestart?: boolean;
+  isDebug?: boolean;
+  badge?: React.ReactNode;
   className?: string;
 }) {
   const { t } = useI18n();
@@ -113,12 +117,18 @@ export function SettingRow({
       <div className={cn("flex flex-col gap-1", isColumn ? "w-full" : "min-w-0 flex-1")}>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-base font-medium text-foreground">{label}</span>
+          {isDebug ? (
+            <span className="inline-flex items-center rounded border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wider text-warning uppercase">
+              DEBUG
+            </span>
+          ) : null}
           {requiresRestart ? (
             <span className="inline-flex items-center gap-1 rounded border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-xs font-medium text-warning">
               <RotateCcw className="size-2.5" />
               {t("settings.restartRequired")}
             </span>
           ) : null}
+          {badge}
         </div>
         {sublabel ? (
           <span className="text-sm leading-relaxed break-words text-muted-foreground">

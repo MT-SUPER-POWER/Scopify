@@ -56,6 +56,7 @@ export function GeneralSettingsTab({
               <SettingRow
                 label={t("settings.devTools.label")}
                 sublabel={t("settings.devTools.sublabel")}
+                isDebug
                 control={
                   <Toggle
                     enabled={config.desktop.app.devTools}
@@ -98,6 +99,7 @@ export function GeneralSettingsTab({
             <SettingRow
               label={t("settings.frontendHost.label")}
               sublabel={t("settings.frontendHost.sublabel")}
+              isDebug
               requiresRestart
               control={
                 <SettingInput
@@ -111,6 +113,7 @@ export function GeneralSettingsTab({
             <SettingRow
               label={t("settings.frontendPort.label")}
               sublabel={t("settings.frontendPort.sublabel")}
+              isDebug
               requiresRestart
               control={
                 <SettingInput

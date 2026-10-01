@@ -61,31 +61,30 @@ export function McpRuntimeControls({
   return (
     <>
       <SettingRow
-        label={
-          <span className="inline-flex flex-wrap items-center gap-2">
-            <span>{t("settings.mcp.test.label")}</span>
-            {testResult ? (
-              <span
-                aria-live="polite"
-                className={
-                  testResult.state === "success"
-                    ? "inline-flex items-center gap-1 text-xs font-semibold text-success"
-                    : testResult.state === "failed"
-                      ? "inline-flex items-center gap-1 text-xs font-semibold text-danger"
-                      : "inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground"
-                }
-              >
-                {testResult.state === "testing" ? (
-                  <LoaderCircle className="size-3.5 animate-spin" />
-                ) : testResult.state === "success" ? (
-                  <CircleCheck className="size-3.5" />
-                ) : (
-                  <CircleAlert className="size-3.5" />
-                )}
-                {testResult.label}
-              </span>
-            ) : null}
-          </span>
+        label={t("settings.mcp.test.label")}
+        isDebug
+        badge={
+          testResult ? (
+            <span
+              aria-live="polite"
+              className={
+                testResult.state === "success"
+                  ? "inline-flex items-center gap-1 text-xs font-semibold text-success"
+                  : testResult.state === "failed"
+                    ? "inline-flex items-center gap-1 text-xs font-semibold text-danger"
+                    : "inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground"
+              }
+            >
+              {testResult.state === "testing" ? (
+                <LoaderCircle className="size-3.5 animate-spin" />
+              ) : testResult.state === "success" ? (
+                <CircleCheck className="size-3.5" />
+              ) : (
+                <CircleAlert className="size-3.5" />
+              )}
+              {testResult.label}
+            </span>
+          ) : null
         }
         sublabel={testSublabel}
         control={

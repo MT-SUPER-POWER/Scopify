@@ -148,25 +148,24 @@ export function DesktopSettingsTab({
           }
         />
         <SettingRow
-          label={
-            <div className="flex items-center gap-2">
-              <span>{t("settings.discord.test.label")}</span>
-              <span
-                aria-live="polite"
-                className={
-                  hasDiscordConnection
-                    ? "flex items-center gap-1 text-xs font-medium text-success"
-                    : "flex items-center gap-1 text-xs font-medium text-muted-foreground"
-                }
-              >
-                {hasDiscordConnection ? (
-                  <CircleCheck className="size-3.5" />
-                ) : (
-                  <CircleX className="size-3.5" />
-                )}
-                {discordStatusLabel}
-              </span>
-            </div>
+          label={t("settings.discord.test.label")}
+          isDebug
+          badge={
+            <span
+              aria-live="polite"
+              className={
+                hasDiscordConnection
+                  ? "flex items-center gap-1 text-xs font-medium text-success"
+                  : "flex items-center gap-1 text-xs font-medium text-muted-foreground"
+              }
+            >
+              {hasDiscordConnection ? (
+                <CircleCheck className="size-3.5" />
+              ) : (
+                <CircleX className="size-3.5" />
+              )}
+              {discordStatusLabel}
+            </span>
           }
           sublabel={t("settings.discord.test.sublabel")}
           control={

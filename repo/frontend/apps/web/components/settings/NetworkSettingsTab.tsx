@@ -114,12 +114,9 @@ export function NetworkSettingsTab({
           }
         />
         <SettingRow
-          label={
-            <div className="flex items-center gap-2">
-              <span>{t("settings.backendPing.label")}</span>
-              {pingBadge}
-            </div>
-          }
+          label={t("settings.backendPing.label")}
+          isDebug
+          badge={pingBadge}
           sublabel={t("settings.backendPing.sublabel")}
           control={
             <button
