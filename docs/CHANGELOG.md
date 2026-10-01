@@ -8,7 +8,13 @@
 
 ### Quality
 
+- **以 Cookie 凭据为核心的用户认证 Hook 规范**：新增全站统一的标准 `useAuth` Hook，彻底以网易云会话 Cookie 凭据（`music_cookie`）作为唯一真实鉴权源，解耦对 `loginType` 辅助标签的依赖；使用 React `useSyncExternalStore` 订阅凭据变化，消除旧版 `useState + useEffect` 带来的 1 帧水合闪烁，平滑兼容既有 `useLoginStatus` 签名。
+
 - **登录设备名称自动读取主机名**：移除登录界面手动输入设备名称的字段，统一通过 Desktop IPC 读取当前操作系统的 hostname 作为设备标识，保持登录界面简洁并自动同步真实设备名称。
+
+### Fixed
+
+- **老用户覆盖升级后通知与私信误显未登录修复**：修复消息中心强依赖 `loginType` 导致老用户升级后因本地缓存缺少该字段被误判为未登录的问题；并在应用启动挂载时为桌面端自动补齐 Electron CookieJar 的静默同步。
 
 ## v1.5.4
 

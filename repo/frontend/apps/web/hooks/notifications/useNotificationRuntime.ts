@@ -2,15 +2,13 @@
 
 import { useEffect } from "react";
 import { runtime } from "@/lib/runtime";
-import { useUserStore } from "@/store/module/user";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useI18n } from "@/store/module/i18n";
 import { useNotificationStore } from "@/store/module/notifications";
 
 /** Mounted once in the dashboard; the popover itself never owns a scheduler. */
 export function useNotificationRuntime() {
-  const userId = useUserStore((state) => state.user?.userId);
-  const loginType = useUserStore((state) => state.loginType);
-  const accountId = userId && loginType && loginType !== "uid" ? String(userId) : null;
+  const { accountId } = useAuth();
   const { locale } = useI18n();
   useEffect(() => {
     let disposed = false;
