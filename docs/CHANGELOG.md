@@ -20,6 +20,8 @@
 
 - **老用户覆盖升级后通知与私信误显未登录修复**：修复消息中心强依赖 `loginType` 导致老用户升级后因本地缓存缺少该字段被误判为未登录的问题；并在应用启动挂载时为桌面端自动补齐 Electron CookieJar 的静默同步。
 
+- **Cookie 凭据与用户画像自动水合自愈**：修复持有本地有效 `music_cookie` 但因时序或存储断层缺少 `user` 画像导致全站被误判为未登录的死锁问题。新增 `syncUserSessionFromCookie` 并在 `useAuth`、`QueryProvider` 和 Cookie 变更事件中自动触发静默同步，调取 `/user/account` 回填用户画像；加固 `completeFreshLogin` 流程，避免设备名同步等非关键步骤阻断登录态落盘。
+
 ## v1.5.4
 
 ### Quality

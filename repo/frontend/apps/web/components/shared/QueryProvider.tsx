@@ -19,6 +19,7 @@ import { runtime } from "@/lib/runtime";
 import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import { reportFailure } from "@/lib/web/errorTracking";
 import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
+import { syncUserSessionFromCookie } from "@/lib/web/sessionHydration";
 import { getBackendBaseUrl } from "@/lib/web/request";
 import { usePlayerStore, useUserStore } from "@/store";
 
@@ -31,13 +32,14 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
   useRendererErrorReporting();
 
   useEffect(() => {
-    if (runtime.isDesktop) {
-      const credential = getMusicSessionCredential();
-      if (credential) {
+    const credential = getMusicSessionCredential();
+    if (credential) {
+      if (runtime.isDesktop) {
         void runtime.auth
           .importMusicSession(credential, getBackendBaseUrl())
           .catch(() => undefined);
       }
+      void syncUserSessionFromCookie();
     }
   }, []);
 

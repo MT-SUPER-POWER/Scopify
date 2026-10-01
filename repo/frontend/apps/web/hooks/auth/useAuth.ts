@@ -1,12 +1,13 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useUserStore } from "@/store/module/user";
 import { isRealUser } from "@/lib/hooks/useLoginStatus";
 import {
   getMusicSessionCredential,
   MUSIC_SESSION_CHANGED_EVENT,
 } from "@/lib/web/musicSessionCredential";
+import { syncUserSessionFromCookie } from "@/lib/web/sessionHydration";
 import type { AuthStatus, LoginType } from "@/types/auth";
 import type { NeteaseUser } from "@/types/api/user";
 
@@ -77,6 +78,12 @@ export function useAuth(): AuthStatus {
     getCredentialSnapshot,
     getServerCredentialSnapshot,
   );
+
+  useEffect(() => {
+    if (hasCredential && !isRealUser(user)) {
+      void syncUserSessionFromCookie();
+    }
+  }, [hasCredential, user]);
 
   return getAuthStatus(user, hasCredential, loginType);
 }

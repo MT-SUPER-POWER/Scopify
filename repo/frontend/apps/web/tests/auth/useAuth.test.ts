@@ -61,4 +61,12 @@ describe("getAuthStatus (以 Cookie 凭据为核心的用户认证标准)", () =
     expect(status.hasUser).toBe(false);
     expect(status.accountId).toBe(null);
   });
+
+  it("有 Cookie 但无用户画像场景：判定 hasCredential 为 true 但尚未认证 (isAuthenticated: false)，等待自愈水合", () => {
+    const status = getAuthStatus(null, true, null);
+    expect(status.isAuthenticated).toBe(false);
+    expect(status.hasCredential).toBe(true);
+    expect(status.hasUser).toBe(false);
+    expect(status.isAnonymous).toBe(false);
+  });
 });
