@@ -1,5 +1,4 @@
 import { app, dialog, Menu, type BrowserWindow } from "electron";
-
 import { __iconDock, desktopConfig, validateDesktopResources } from "@main/constants";
 import {
   backendLog,
@@ -139,7 +138,7 @@ async function prepareApplication() {
   registerNotificationsIpc(notifications, notificationOptions);
   coreLog.info("[app] renderer base URL", { url: renderer.baseUrl });
   if (process.platform === "win32") {
-    app.setAppUserModelId(app.isPackaged ? "com.momo.scopify" : process.execPath);
+    app.setAppUserModelId("com.momo.scopify");
     // autoHideMenuBar still reveals Electron's native menu when Alt is pressed.
     Menu.setApplicationMenu(null);
   }
@@ -215,6 +214,10 @@ function registerFatalErrorHandlers() {
 export function initializeApplication() {
   if (initialized) return;
   initialized = true;
+  app.name = "Scopify";
+  if (process.platform === "win32") {
+    app.setAppUserModelId("com.momo.scopify");
+  }
   initLogger();
   validateDesktopResources();
   // Preload scripts can run before the main BrowserWindow is attached. Keep the

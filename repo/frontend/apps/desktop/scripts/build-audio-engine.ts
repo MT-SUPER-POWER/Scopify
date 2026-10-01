@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, rmSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 
@@ -14,17 +14,39 @@ const arch = process.arch === "arm64" ? "arm64" : "x64";
 const binaryPath = join(engineRoot, `scopify-audio-engine.win32-${arch}-msvc.node`);
 const declarationPath = join(engineRoot, "index.d.ts");
 
+function cleanStaleTransactions() {
+  try {
+    for (const file of readdirSync(engineRoot)) {
+      if (file.startsWith(".napi-rs-filesystem-transaction")) {
+        rmSync(join(engineRoot, file), { recursive: true, force: true });
+      }
+    }
+  } catch {}
+}
+
+cleanStaleTransactions();
+
 /**
  * `napi build` both builds the Node-API binary and generates index.d.ts from
  * the Rust annotations. Do not replace this with a handwritten declaration:
  * the generated declaration is what keeps the Main host and Rust ABI honest.
  */
-const result = spawnSync("bunx", ["--no-install", "napi", "build", "--platform", "--release"], {
-  cwd: engineRoot,
-  encoding: "utf8",
-  stdio: "inherit",
-  windowsHide: true,
-});
+function runNapiBuild() {
+  return spawnSync("bunx", ["--no-install", "napi", "build", "--platform", "--release"], {
+    cwd: engineRoot,
+    encoding: "utf8",
+    stdio: "inherit",
+    windowsHide: true,
+  });
+}
+
+let result = runNapiBuild();
+if (result.status !== 0) {
+  // Windows 下杀毒软件/索引服务可能对 .swp 暂存区产生瞬时句柄占用，清理后重试一次
+  cleanStaleTransactions();
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 600);
+  result = runNapiBuild();
+}
 
 if (result.error) {
   throw new Error(

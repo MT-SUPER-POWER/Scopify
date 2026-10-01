@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { app } from "electron";
@@ -94,7 +95,17 @@ async function runWindowsDesktopIconAction(
 }
 
 function getDesktopIconsScriptPath() {
-  return app.isPackaged
-    ? join(process.resourcesPath, "resources", "windows", "desktop-icons.ps1")
-    : join(app.getAppPath(), "resources", "windows", "desktop-icons.ps1");
+  if (app.isPackaged) {
+    const unpacked = join(
+      process.resourcesPath,
+      "app.asar.unpacked",
+      "public",
+      "windows",
+      "desktop-icons.ps1",
+    );
+    if (existsSync(unpacked)) return unpacked;
+    const legacy = join(process.resourcesPath, "resources", "windows", "desktop-icons.ps1");
+    if (existsSync(legacy)) return legacy;
+  }
+  return join(app.getAppPath(), "public", "windows", "desktop-icons.ps1");
 }

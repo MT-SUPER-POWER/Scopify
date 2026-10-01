@@ -9,6 +9,7 @@ export default defineConfig(({ command }) => {
 
   return {
     main: {
+      publicDir: resolve(root, "public"),
       resolve: {
         alias: {
           "@": root,

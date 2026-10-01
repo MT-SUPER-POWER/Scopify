@@ -57,7 +57,7 @@ Scopify/
 │   │   │   │   │   └── renderer/    # Web 静态制品插槽
 │   │   │   │   ├── build/release/   # 安装包输出（不提交）
 │   │   │   │   ├── config/          # 桌面配置
-│   │   │   │   ├── resources/       # 打包资源
+│   │   │   │   ├── public/          # 静态资源管理（图标、Splash、系统脚本等，对齐 SPlayer 结构）
 │   │   │   │   └── tests/           # Electron 测试
 │   │   │   └── mobile/              # Flutter 预留入口（submodule）
 │   │   └── packages/

@@ -7,21 +7,19 @@ import { resolvePackagedAppDirectory } from "../lib/runtimePaths";
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const desktopRoot = resolve(scriptDir, "..");
 const packagedAppRoot = resolvePackagedAppDirectory(desktopRoot);
-const packagedNodeModules = resolve(packagedAppRoot, "node_modules");
-
-function copyRuntimeDirectory(name: "config" | "resources") {
-  const source = resolve(desktopRoot, name);
-  const destination = resolve(packagedAppRoot, name);
-  rmSync(destination, { force: true, recursive: true });
-  cpSync(source, destination, { recursive: true });
-}
 
 mkdirSync(packagedAppRoot, { recursive: true });
+
+// 1. 生成精简的生产运行时 package.json（剔除 monorepo 开发/构建依赖）
 const desktopPackage = JSON.parse(
   readFileSync(resolve(desktopRoot, "package.json"), "utf8"),
 ) as Record<string, unknown>;
 
-const packagedAppPackage = { ...desktopPackage };
+const packagedAppPackage: Record<string, unknown> = {
+  ...desktopPackage,
+  name: "scopify",
+  productName: "Scopify",
+};
 delete packagedAppPackage.dependencies;
 delete packagedAppPackage.devDependencies;
 delete packagedAppPackage.scripts;
@@ -32,10 +30,10 @@ writeFileSync(
   "utf8",
 );
 
-copyRuntimeDirectory("config");
-copyRuntimeDirectory("resources");
-
-// Clean up any legacy node_modules link/folder in packagedAppRoot
-rmSync(packagedNodeModules, { force: true, recursive: true });
+// 2. 同步 public 静态资源供 asar 打包与解包
+const publicSource = resolve(desktopRoot, "public");
+const publicDestination = resolve(packagedAppRoot, "public");
+rmSync(publicDestination, { force: true, recursive: true });
+cpSync(publicSource, publicDestination, { recursive: true });
 
 console.log(`Prepared Desktop package app directory: ${packagedAppRoot}`);

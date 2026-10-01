@@ -10,17 +10,22 @@
 
 ### Quality
 
-- **桌面弹窗测试通知联动机制定制**：桌面弹窗测试仅在开发环境（`NODE_ENV !== "production"`）可见，测试弹窗严格联动并忠实反映当前「通知声音」与「显示消息正文」配置，移除测试项对正文预览的强制覆盖。
+- **桌面弹窗测试开放全环境支持**：移除桌面弹窗测试的开发环境限制与 DEBUG 标识，在所有桌面客户端环境中完整开放，便于用户直接在设置中测试系统权限并验证当前的「通知声音」与「显示消息正文」提醒效果。
 
 - **以 Cookie 凭据为核心的用户认证 Hook 规范**：新增全站统一的标准 `useAuth` Hook，彻底以网易云会话 Cookie 凭据（`music_cookie`）作为唯一真实鉴权源，解耦对 `loginType` 辅助标签的依赖；使用 React `useSyncExternalStore` 订阅凭据变化，消除旧版 `useState + useEffect` 带来的 1 帧水合闪烁，平滑兼容既有 `useLoginStatus` 签名。
 
-- **登录设备名称自动读取主机名**：移除登录界面手动输入设备名称的字段，统一通过 Desktop IPC 读取当前操作系统的 hostname 作为设备标识，保持登录界面简洁并自动同步真实设备名称。
+- **静态资源架构与打包结构对齐 SPlayer**：将原散落在 `resources/` 的静态文件全面迁移至应用层标准的 `public/` 目录，建立清晰的分类子目录（`public/icons/` 托管应用图标包、托盘图标、NSIS 安装/卸载图标及 `thumbar/` 任务栏控制图标；`public/splash.html` 托管启动页；`public/windows/` 托管系统脚本）；在 `electron-builder.config.ts` 中声明 `buildResources: "public"`，`files` 与 `asarUnpack` 统一收敛至 `public/**/*`；移除侵入式的 `electronDist` 配置，解决构建产物中残留冗余 `default_app.asar` 的问题；主进程引入 `publicAsset` 统一定位逻辑，支持开发环境相对寻址与生产打包环境 `app.asar.unpacked/public` 自动回退，消除原 `resources/` 命名与 Electron `process.resourcesPath` 概念混淆，彻底清理历史遗留未使用的 `backend-entry.cjs`。
+
 
 ### Fixed
 
 - **老用户覆盖升级后通知与私信误显未登录修复**：修复消息中心强依赖 `loginType` 导致老用户升级后因本地缓存缺少该字段被误判为未登录的问题；并在应用启动挂载时为桌面端自动补齐 Electron CookieJar 的静默同步。
 
 - **Cookie 凭据与用户画像自动水合自愈**：修复持有本地有效 `music_cookie` 但因时序或存储断层缺少 `user` 画像导致全站被误判为未登录的死锁问题。新增 `syncUserSessionFromCookie` 并在 `useAuth`、`QueryProvider` 和 Cookie 变更事件中自动触发静默同步，调取 `/user/account` 回填用户画像；加固 `completeFreshLogin` 流程，避免设备名同步等非关键步骤阻断登录态落盘。
+
+- **Windows 任务栏应用图标与身份规范修复**：统一运行时 `AppUserModelId` 为规范的 `com.momo.scopify`，移除运行时污染开始菜单快捷方式的逻辑，确保任务栏精准继承 NSIS 安装包创建的规范应用图标与分组；并将 `icon.ico` 重构升级为符合 Windows Shell 规范的完整多分辨率图标包（包含 16x16、24x24、32x32、48x48、64x64、128x128、256x256），确保各 DPI 缩放级别下任务栏图标清晰无瑕。
+
+- **Windows 打包路径与品牌标识规范**：重构 `electron-builder.config.ts` 中的图标与 NSIS 资源路径解析，增强运行时静态资源探测自愈能力，确保打包、安装及任务栏图标完整呈现 Scopify 品牌标识。
 
 ## v1.5.4
 

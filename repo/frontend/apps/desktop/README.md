@@ -19,6 +19,7 @@ static Web build into this directory before packaging.
 | `build/desktop/app/` | 待打包应用根目录 |
 | `build/desktop/app/out/main/` | 生产 Main / Preload 产物 |
 | `build/desktop/app/renderer/` | 从 Web 静态构建同步的页面产物 |
+| `public/` | 静态资源管理（图标、Splash、系统脚本等，对齐 SPlayer 结构） |
 | `build/release/` | 安装包输出 |
 
 Next.js 在 Web 应用中构建页面，Electron Vite 构建桌面宿主。同步与准备脚本将两者放入
