@@ -39,7 +39,7 @@ export function useQrLogin({ onSuccess, deviceName }: QrLoginProps) {
         setQrStatus("loading");
         setQrStatusText(t("login.qr.loading"));
 
-        const device = createFreshLoginDevice(deviceNameRef.current ?? "");
+        const device = await createFreshLoginDevice(deviceNameRef.current ?? "");
         const loginParams = { cookie: device.cookie, noLogin: true };
         // Keep the same identity throughout this QR attempt.
         const keyRes = await getQRKey(loginParams);

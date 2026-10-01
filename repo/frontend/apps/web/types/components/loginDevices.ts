@@ -40,8 +40,3 @@ export interface DeviceActionDialogProps {
   scope: string;
   onClose: () => void;
 }
-export interface LoginDeviceNameFieldProps {
-  value: string;
-  onChange: (name: string) => void;
-  disabled?: boolean;
-}

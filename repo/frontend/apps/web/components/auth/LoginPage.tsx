@@ -13,8 +13,7 @@ import { PasswordLoginForm } from "@/components/Login/PasswordLoginForm";
 import { QrLogin } from "@/components/Login/QrLogin";
 import { SmsLoginForm } from "@/components/Login/SmsLoginForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LoginDeviceNameField } from "@/components/devices/LoginDeviceNameField";
-import { createFreshLoginDevice, getLocalDeviceName } from "@/lib/devices/clientIdentity";
+import { createFreshLoginDevice, resolveLocalDeviceName } from "@/lib/devices/clientIdentity";
 import { completeFreshLogin } from "@/lib/devices/completeLogin";
 import { loginByCellphone } from "@/lib/api/login";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
@@ -54,7 +53,15 @@ function LoginPageContent() {
   const [mode, setMode] = useState<LoginMode>("qr");
   const [isLoading, setIsLoading] = useState(false);
   const [deviceName, setDeviceName] = useState("");
-  useEffect(() => setDeviceName(getLocalDeviceName()), []);
+  useEffect(() => {
+    let active = true;
+    void resolveLocalDeviceName().then((name) => {
+      if (active) setDeviceName(name);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const isLoggedIn = useLoginStatus();
   const [isMounted, setIsMounted] = useState(false);
@@ -67,7 +74,7 @@ function LoginPageContent() {
   const handleSubmit = async (phone: string, extra: string) => {
     setIsLoading(true);
     try {
-      const device = createFreshLoginDevice(deviceName);
+      const device = await createFreshLoginDevice(deviceName);
       const response = await loginByCellphone({
         phone,
         ...(mode === "password" ? { password: extra } : { captcha: extra }),
@@ -144,7 +151,6 @@ function LoginPageContent() {
 
       {/* 2. 主体宽度 */}
       <div className="w-full max-w-80">
-        <LoginDeviceNameField value={deviceName} onChange={setDeviceName} disabled={isLoading} />
         <Tabs value={mode} onValueChange={(v) => setMode(v as LoginMode)} className="w-full">
           {/* 3. Tab 切换器 */}
           <TabsList className="mb-4 grid h-10 grid-cols-3 rounded-xl border border-content/5 bg-content/5 p-1">

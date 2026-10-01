@@ -121,6 +121,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   exitFullScreen(): void;
   getDiscordPresenceStatus(): Promise<DiscordPresenceStatus>;
   getHostConfig(): Promise<DesktopHostConfig>;
+  getHostname(): Promise<string>;
   getBridgeInfo(): Promise<DesktopBridgeInfo>;
   getLogDirectory(): Promise<string>;
   getMcpClientConfiguration(): Promise<McpClientConfiguration>;

@@ -43,6 +43,7 @@ export interface RuntimeAppLifecycle {
   exit(): void;
   relaunch(): void;
   submitCloseAction(action: AppCloseAction, remember: boolean): void;
+  getHostname(): Promise<string>;
 }
 
 export interface RuntimeAuthentication {

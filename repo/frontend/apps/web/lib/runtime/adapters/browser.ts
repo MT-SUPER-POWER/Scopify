@@ -335,6 +335,7 @@ export function createBrowserRuntime(
       exit: NOOP,
       relaunch: NOOP,
       submitCloseAction: NOOP,
+      getHostname: async () => (typeof window !== "undefined" && window.location.hostname) || "",
     },
     notifications: createBrowserNotifications(),
     backend: {

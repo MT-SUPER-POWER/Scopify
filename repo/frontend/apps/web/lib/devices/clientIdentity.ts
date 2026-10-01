@@ -15,7 +15,38 @@ function getClientPlatform() {
   return { os: "pc", name: "PC" };
 }
 
+let cachedDeviceName: string | null = null;
+
+export async function resolveLocalDeviceName(): Promise<string> {
+  if (cachedDeviceName) return cachedDeviceName;
+  if (runtime.isDesktop) {
+    try {
+      const hostname = await runtime.app.getHostname();
+      if (hostname?.trim()) {
+        cachedDeviceName = hostname.trim();
+        return cachedDeviceName;
+      }
+    } catch {
+      /* Storage can be unavailable. */
+    }
+  }
+  if (typeof window !== "undefined") {
+    try {
+      const name = localStorage.getItem(NAME_KEY + getBackendBaseUrl());
+      if (name) return name;
+    } catch {
+      /* Storage can be unavailable. */
+    }
+  }
+  return `${runtime.isDesktop ? "Scopify" : "Scopify Web"} · ${getClientPlatform().name}`;
+}
+
+if (typeof window !== "undefined") {
+  void resolveLocalDeviceName();
+}
+
 export function getLocalDeviceName() {
+  if (cachedDeviceName) return cachedDeviceName;
   if (typeof window !== "undefined") {
     try {
       const name = localStorage.getItem(NAME_KEY + getBackendBaseUrl());
@@ -35,7 +66,7 @@ export function rememberDeviceName(name: string, backend = getBackendBaseUrl()) 
   }
 }
 
-export function createFreshLoginDevice(name: string): FreshLoginDevice {
+export async function createFreshLoginDevice(name?: string): Promise<FreshLoginDevice> {
   let id: string | null = null;
   try {
     id = localStorage.getItem(ID_KEY);
@@ -50,8 +81,9 @@ export function createFreshLoginDevice(name: string): FreshLoginDevice {
       /* The caller retains this attempt's identity. */
     }
   }
+  const resolvedName = name?.trim() || (await resolveLocalDeviceName());
   return {
-    name: name.trim() || getLocalDeviceName(),
+    name: resolvedName,
     cookie: `deviceId=${id}; os=${getClientPlatform().os}`,
     backend: getBackendBaseUrl(),
   };

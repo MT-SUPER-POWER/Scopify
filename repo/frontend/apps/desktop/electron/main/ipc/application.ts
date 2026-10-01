@@ -1,3 +1,4 @@
+import os from "node:os";
 import { app, BrowserWindow, ipcMain } from "electron";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "@main/store";
 import { ipcLog } from "@main/utils/logger";
@@ -5,8 +6,9 @@ import { getRememberedAppCloseAction, isAppCloseAction } from "@main/window/appC
 import { isAppCloseWindowSender } from "@main/window/appCloseWindow";
 import { getTrayWindow, trayWindow } from "@main/window/tray";
 
-/** 注册应用重启、退出以及“关闭窗口”决策的命令接口。 */
+/** 注册应用重启、退出、主机信息以及“关闭窗口”决策的命令接口。 */
 export function registerApplicationIpc(mainWindow: BrowserWindow | null) {
+  ipcMain.handle("app:get-hostname", () => os.hostname());
   ipcMain.on("relaunch-app", () => {
     ipcLog.info("[IPC] relaunch requested");
     app.relaunch();
