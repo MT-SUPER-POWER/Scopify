@@ -63,7 +63,7 @@
     },
     "repo/frontend/apps/desktop": {
       "name": "@scopify/desktop",
-      "version": "1.5.4",
+      "version": "1.5.5",
       "dependencies": {
         "@modelcontextprotocol/sdk": "^1.30.0",
         "@neteasecloudmusicapienhanced/api": "workspace:*",
@@ -90,7 +90,7 @@
     },
     "repo/frontend/apps/docs": {
       "name": "@scopify/docs",
-      "version": "1.5.4",
+      "version": "1.5.5",
       "dependencies": {
         "@chenglou/pretext": "^0.0.8",
         "@paper-design/shaders": "^0.0.80",
@@ -133,7 +133,7 @@
     },
     "repo/frontend/apps/web": {
       "name": "@scopify/web",
-      "version": "1.5.4",
+      "version": "1.5.5",
       "dependencies": {
         "@chenglou/pretext": "^0.0.8",
         "@dnd-kit/core": "^6.3.1",
