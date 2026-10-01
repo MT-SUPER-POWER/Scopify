@@ -1,6 +1,7 @@
 import { app, Notification, powerMonitor, session } from "electron";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import notifier from "node-notifier";
 import { createNotificationEngine, notificationCopy } from "@scopify/notification-core";
 import type { DesktopNotificationOptions } from "@/types/notifications";
 import type { NotificationSession } from "@scopify/desktop-contract";
@@ -16,7 +17,7 @@ export function createDesktopNotifications(options: DesktopNotificationOptions) 
   const live = new Set<Notification>();
   let activeAccount: string | null = null;
   const engine = createNotificationEngine({
-    desktopSupported: Notification.isSupported(),
+    desktopSupported: true,
     async load(account) {
       try {
         return JSON.parse(await readFile(join(directory, `${account}.json`), "utf8"));
@@ -45,28 +46,59 @@ export function createDesktopNotifications(options: DesktopNotificationOptions) 
     },
     async deliver(item, active, preferences) {
       const window = options.getMainWindow();
-      if (!Notification.isSupported() || (item.id !== "test" && window?.isFocused())) return false;
-      const notification = new Notification({
-        title: item.title,
-        body:
-          preferences.preview || item.category === "reports" || item.id === "test"
-            ? item.body
-            : notificationCopy(active.locale).message,
-        silent: !preferences.sound,
-      });
-      live.add(notification);
-      notification.once("click", () => {
-        if (activeAccount !== active.accountId) return;
-        void options
-          .showMainWindow()
-          .then(() => engine.focus(active.accountId, item.id))
-          .catch(() => undefined);
-        live.delete(notification);
-      });
-      notification.once("close", () => live.delete(notification));
-      notification.once("failed", () => live.delete(notification));
-      notification.show();
-      return true;
+      if (item.id !== "test" && window?.isFocused()) return false;
+      const body =
+        preferences.preview || item.category === "reports"
+          ? item.body
+          : notificationCopy(active.locale).message;
+
+      const icon = join(app.getAppPath(), "resources", "icon.png");
+
+      try {
+        notifier.notify(
+          {
+            title: item.title,
+            message: body,
+            icon,
+            sound: preferences.sound,
+            wait: true,
+            appID: app.isPackaged ? "com.momo.scopify" : process.execPath,
+          },
+          (error, response) => {
+            if (!error && (response === "activate" || response === "click")) {
+              if (activeAccount !== active.accountId) return;
+              void options
+                .showMainWindow()
+                .then(() => engine.focus(active.accountId, item.id))
+                .catch(() => undefined);
+            }
+          },
+        );
+        return true;
+      } catch {
+        if (Notification.isSupported()) {
+          const notification = new Notification({
+            title: item.title,
+            body,
+            icon,
+            silent: !preferences.sound,
+          });
+          live.add(notification);
+          notification.once("click", () => {
+            if (activeAccount !== active.accountId) return;
+            void options
+              .showMainWindow()
+              .then(() => engine.focus(active.accountId, item.id))
+              .catch(() => undefined);
+            live.delete(notification);
+          });
+          notification.once("close", () => live.delete(notification));
+          notification.once("failed", () => live.delete(notification));
+          notification.show();
+          return true;
+        }
+        return false;
+      }
     },
   });
   const changed = engine.onChanged((snapshot) => {

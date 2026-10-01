@@ -3,6 +3,7 @@
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { useI18n } from "@/store/module/i18n";
 import type { NotificationDeliverySettingsProps } from "@/types/components/notifications";
+import { NotificationTestButton } from "./NotificationTestButton";
 import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
 
 export function NotificationDeliverySettings({
@@ -10,6 +11,10 @@ export function NotificationDeliverySettings({
   disabled,
   onChange,
   desktopSupported,
+  hasChanges,
+  testing,
+  testResult,
+  onTest,
 }: NotificationDeliverySettingsProps) {
   const { t } = useI18n();
   return (
@@ -97,6 +102,23 @@ export function NotificationDeliverySettings({
             />
           </label>
           <p className="w-full text-xs text-muted-foreground">{t("notifications.quietHint")}</p>
+        </div>
+      )}
+      {process.env.NODE_ENV !== "production" && desktopSupported && onTest && (
+        <div className="mt-4 border-t border-border/40 pt-4">
+          <SettingRow
+            label={t("notifications.testDesktopLabel")}
+            sublabel={t("notifications.testDesktopSublabel")}
+            control={
+              <NotificationTestButton
+                disabled={disabled || Boolean(hasChanges) || !preferences.desktop}
+                hasChanges={Boolean(hasChanges)}
+                testing={Boolean(testing)}
+                result={testResult ?? null}
+                onTest={onTest}
+              />
+            }
+          />
         </div>
       )}
     </SettingSection>

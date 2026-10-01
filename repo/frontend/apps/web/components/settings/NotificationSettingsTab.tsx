@@ -6,14 +6,7 @@ import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import { NotificationSubscriptions } from "./NotificationSubscriptions";
 import { NotificationDeliverySettings } from "./NotificationDeliverySettings";
-import { NotificationTestButton } from "./NotificationTestButton";
-import {
-  SaveChangesButton,
-  SaveConfirmModal,
-  SettingInput,
-  SettingRow,
-  SettingSection,
-} from "./SettingsUI";
+import { SaveChangesButton, SaveConfirmModal } from "./SettingsUI";
 
 export function NotificationSettingsTab() {
   const { t } = useI18n();
@@ -47,38 +40,11 @@ export function NotificationSettingsTab() {
             disabled={disabled}
             onChange={settings.change}
             desktopSupported={snapshot.desktopSupported}
+            hasChanges={hasChanges}
+            testing={testing}
+            testResult={settings.testResult}
+            onTest={() => void settings.test()}
           />
-          <SettingSection title={t("notifications.schedule")}>
-            <SettingRow
-              label={t("notifications.dailyTime")}
-              control={
-                <label>
-                  <span className="sr-only">{t("notifications.dailyTime")}</span>
-                  <SettingInput
-                    type="time"
-                    className="w-36 min-w-36"
-                    value={preferences.dailyTime}
-                    disabled={disabled || !preferences.subscriptions.daily}
-                    onChange={(dailyTime) => {
-                      if (dailyTime) settings.change({ dailyTime });
-                    }}
-                  />
-                </label>
-              }
-            />
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              {t("notifications.scheduleHint")}
-            </p>
-          </SettingSection>
-          {snapshot.desktopSupported && (
-            <NotificationTestButton
-              disabled={disabled || hasChanges || !snapshot.preferences.desktop}
-              hasChanges={hasChanges}
-              testing={testing}
-              result={settings.testResult}
-              onTest={() => void settings.test()}
-            />
-          )}
         </div>
       </div>
       <SaveChangesButton visible={hasChanges} onClick={() => setIsModalOpen(true)} />

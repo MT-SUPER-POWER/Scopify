@@ -139,7 +139,7 @@ async function prepareApplication() {
   registerNotificationsIpc(notifications, notificationOptions);
   coreLog.info("[app] renderer base URL", { url: renderer.baseUrl });
   if (process.platform === "win32") {
-    app.setAppUserModelId("com.momo.scopify");
+    app.setAppUserModelId(app.isPackaged ? "com.momo.scopify" : process.execPath);
     // autoHideMenuBar still reveals Electron's native menu when Alt is pressed.
     Menu.setApplicationMenu(null);
   }

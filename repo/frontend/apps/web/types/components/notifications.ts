@@ -9,6 +9,10 @@ export interface NotificationPreferenceSectionProps {
 
 export interface NotificationDeliverySettingsProps extends NotificationPreferenceSectionProps {
   desktopSupported: boolean;
+  hasChanges?: boolean;
+  testing?: boolean;
+  testResult?: "sent" | "blocked" | null;
+  onTest?: () => void;
 }
 
 export interface NotificationRowProps {
