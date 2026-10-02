@@ -161,7 +161,16 @@ export function createNotificationEngine(options: NotificationEngineOptions) {
         const known = new Map(current.items.map((item) => [item.id, item]));
         const newIds = new Set<string>();
         for (const item of incoming) {
-          const saved = known.get(item.id);
+          let saved = known.get(item.id);
+          if (!saved && item.source === "private") {
+            const prefix = item.id.split(":").slice(0, 2).join(":");
+            const prev = current.items.find(
+              (x) => x.source === "private" && x.id.split(":").slice(0, 2).join(":") === prefix,
+            );
+            if (prev && prev.readAt !== null && prev.occurredAt >= item.occurredAt) {
+              saved = prev;
+            }
+          }
           if (!saved) {
             known.set(item.id, item);
             newIds.add(item.id);

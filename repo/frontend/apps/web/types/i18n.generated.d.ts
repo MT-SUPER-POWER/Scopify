@@ -1073,6 +1073,12 @@ export interface TranslateFn {
    */
   (key: "privateMessages.emoji", params?: TranslationParams): string;
   /**
+   * zh-CN: 全部已读
+   * zh-TW: 全部已讀
+   * en-US: Mark all as read
+   */
+  (key: "privateMessages.readAll", params?: TranslationParams): string;
+  /**
    * zh-CN: 动态
    * zh-TW: 動態
    * en-US: Activity

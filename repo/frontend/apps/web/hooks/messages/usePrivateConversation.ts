@@ -8,6 +8,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { getPrivateHistory, sendPrivateText } from "@/lib/api/privateMessages";
+import { clearConversationsUnreadInCache } from "@/lib/messages/cache";
 import { normalizeMessage, privateNotificationPeer } from "@/lib/messages/normalize";
 import { performNotificationAction } from "@/lib/notifications/actions";
 import { getBackendBaseUrl } from "@/lib/web/request";
@@ -58,22 +59,22 @@ export function usePrivateConversation(accountId: string, peer: MessagePeer) {
     }
     return [...unique.values()].sort((a, b) => a.time - b.time);
   }, [history.data, accountId, peer]);
-  const newestTime = messages.at(-1)?.time ?? 0;
   useEffect(() => {
-    if (!history.isSuccess || pending || snapshot?.accountId !== accountId) return;
-    const ids = snapshot.items
+    if (pending || snapshot?.accountId !== accountId) return;
+    const ids = (snapshot?.items ?? [])
       .filter(
         (item) =>
           (item.readAt === null || item.id === snapshot.focusId) &&
-          item.occurredAt <= newestTime &&
           privateNotificationPeer(item)?.id === peer.id,
       )
       .map((item) => item.id);
-    const attempt = history.dataUpdatedAt + ":" + ids.join(",");
-    if (!ids.length || readAttempt.current === attempt) return;
-    readAttempt.current = attempt;
-    void performNotificationAction(() => runtime.notifications.markRead(ids));
-  }, [history.isSuccess, history.dataUpdatedAt, pending, snapshot, accountId, newestTime, peer.id]);
+    const attempt = `${history.dataUpdatedAt}:${ids.join(",")}`;
+    if (ids.length && readAttempt.current !== attempt) {
+      readAttempt.current = attempt;
+      void performNotificationAction(() => runtime.notifications.markRead(ids));
+    }
+    clearConversationsUnreadInCache(queryClient, accountId, peer.id);
+  }, [history.dataUpdatedAt, pending, snapshot, accountId, peer.id, queryClient]);
   const send = useMutation({
     mutationKey,
     meta: { scope: "account" },
