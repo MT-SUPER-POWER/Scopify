@@ -10,13 +10,13 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     id: "toggle-desktop-subtitle",
     group: "interface",
     labelKey: "subtitleControl.toggle",
-    defaultBinding: { key: "KeyL", primary: true, alt: true },
+    defaultBinding: { key: "KeyD", primary: true, alt: true },
   },
   {
     id: "toggle-subtitle-controls",
     group: "interface",
     labelKey: "subtitleControl.title",
-    defaultBinding: { key: "KeyL", primary: true, shift: true },
+    defaultBinding: { key: "KeyD", primary: true, shift: true },
   },
   {
     id: "toggle-playback",

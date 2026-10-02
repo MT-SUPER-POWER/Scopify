@@ -258,7 +258,7 @@ function registerIpcHandlers() {
   });
 
   ipcMain.handle("desktop-lyric:toggle", (event) => {
-    if (!isAuthorizedCompanionSender(event)) {
+    if (!isAuthorizedCompanionSender(event) && !isDesktopLyricWindowSender(event)) {
       rejectUnexpectedSender("desktop-lyric:toggle");
       return false;
     }
@@ -347,8 +347,7 @@ function savePreferences(nextPreferences: DesktopLyricPreferences) {
 
 function showDesktopLyricWindow() {
   if (isWindowAlive(desktopLyricWindow)) {
-    desktopLyricWindow.show();
-    desktopLyricWindow.focus();
+    desktopLyricWindow.showInactive();
     return desktopLyricWindow;
   }
 
@@ -385,7 +384,7 @@ function showDesktopLyricWindow() {
   applyPreferences(desktopLyricWindow);
 
   desktopLyricWindow.once("ready-to-show", () => {
-    desktopLyricWindow?.show();
+    desktopLyricWindow?.showInactive();
     notifyPreferencesChanged();
     updatePowerSaveBlocker();
   });

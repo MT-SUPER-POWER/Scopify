@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.5.6
+
+### Fixed
+
+- **桌面歌词算法与 Folia 歌词时钟对齐修复**：桌面小歌词全面接入 Folia 歌词架构。歌词模型接入 `adaptLyricDataToFolia`，自动引入间奏占位行（`......`）与前奏制作人员行，并基于文本长度智能计算行显示结束时间（`resolveDisplayEndTime`），消除桌面端与主界面的行索引错位；活跃行定位使用 `findLatestActiveFoliaLineIndex` 替代原先只看 `startTime` 的粗暴查找，行唱完后自动退出高亮进入间歇等待；逐字染色接入 Folia 的字元级时间轴算法 `buildLineGraphemeTimeline`，精确绑定每个字符、标点与空格的时钟区间，在音频播放推进时提供平滑的 0~1 字级渐变染色，彻底解决桌面歌词与 Folia 速度脱节及旧版退化导致的 5 秒固定假动画问题。
+
+- **桌面歌词快捷键解绑与双向 Toggle 交互修复**：将桌面歌词切换命令（`toggle-desktop-subtitle`）默认快捷键由 `Ctrl + Alt + L` 调整为 `Ctrl + Alt + D`，面板快捷键调整为 `Ctrl + Shift + D`，解除与「喜欢歌曲」（`toggle-like`，`Ctrl + Alt + L`）的键位竞争，两项功能均可独立触发；主进程创建与恢复桌面歌词悬浮窗口时改用 `showInactive()`，展示桌面小歌词时不再强夺主窗口焦点；在独立桌面歌词页面（`/desktop-lyrics`）注入快捷键监听，支持即便焦点落在桌面歌词窗口上按下快捷键也能顺利关闭，并支持在歌词悬浮窗上直接快捷切歌与调音量。
+
 ## v1.5.5
 
 ### Visual
