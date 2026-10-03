@@ -14,6 +14,7 @@ import { getToplistDetail } from "@/lib/api/toplist";
 import { getRecentPlaylists, getUserDetail } from "@/lib/api/user";
 import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
+import { useUserStore } from "@/store";
 import type { NeteaseAlbum } from "@/types/api/album";
 import { prunePlaylistTracks } from "@/types/api/playlist";
 
@@ -112,7 +113,13 @@ export function useFollowedArtistsQuery(enabled: boolean, limit = 30) {
   return useQuery({
     enabled,
     meta: { scope: "account" },
-    queryFn: async () => (await getFollowedArtists(limit)).data,
+    queryFn: async () => {
+      const response = await getFollowedArtists(limit);
+      if (response.data?.data) {
+        useUserStore.getState().setFollowedArtists(response.data.data);
+      }
+      return response.data;
+    },
     queryKey: musicQueryKeys.home.followedArtists(limit),
   });
 }

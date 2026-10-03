@@ -15,6 +15,8 @@
 
 ### Fixed
 
+- **歌手页关注状态未同步与已关注展示异常修复**：修复已收藏/关注的歌手在歌手详情页操作栏（`ActionBar`）中误显为「关注」而非「已关注」的问题。原因在于原本仅依赖未初始化且未持久化的本地 `userStore.followedArtists`，导致新打开页面时始终判定为未关注；现改为直接在 `ActionBar` 接入已调用的 `useArtistFollowCountQuery` 读取服务端实时 `isFollow` 关注状态，并配合加载态消除渲染闪烁；在音乐库收藏（`useCollectionQuery`）与首页关注歌手（`useFollowedArtistsQuery`）获取数据时自动向 `userStore` 同步已关注列表；将 `useArtistFollowCountQuery` 缓存元数据由公开持久化修正为账号作用域（`account`），关注/取消操作接入 React Query 缓存乐观更新与关联查询联动失效。
+
 - **私信阅读后绿色通知消除与状态同步修复**：修复阅读私信后顶栏图标与会话列表中绿色未读提示（`bg-success` 小圆点及未读计数）未能消除的问题。移除了进入聊天详情时要求通知时间必须小于等于历史消息最新时间的过严拦截条件（`item.occurredAt <= newestTime`），避免因服务端返回微小时钟偏差导致未读标记（`runtime.notifications.markRead`）被跳过；进入私信或执行一键全读时，通过 `clearConversationsUnreadInCache` 同步将 React Query 会话缓存中的未读计数置零，消除了退出会话后列表行依然误显未读的现象；同时优化了通知引擎对私信会话的已读状态合并保护，避免后续后台轮询覆盖已读标记。
 
 - **桌面歌词算法与 Folia 歌词时钟对齐修复**：桌面小歌词全面接入 Folia 歌词架构。歌词模型接入 `adaptLyricDataToFolia`，自动引入间奏占位行（`......`）与前奏制作人员行，并基于文本长度智能计算行显示结束时间（`resolveDisplayEndTime`），消除桌面端与主界面的行索引错位；活跃行定位使用 `findLatestActiveFoliaLineIndex` 替代原先只看 `startTime` 的粗暴查找，行唱完后自动退出高亮进入间歇等待；逐字染色接入 Folia 的字元级时间轴算法 `buildLineGraphemeTimeline`，精确绑定每个字符、标点与空格的时钟区间，在音频播放推进时提供平滑的 0~1 字级渐变染色，彻底解决桌面歌词与 Folia 速度脱节及旧版退化导致的 5 秒固定假动画问题。
