@@ -1859,6 +1859,36 @@ export interface TranslateFn {
    */
   (key: "social.more", params?: TranslationParams): string;
   /**
+   * zh-CN: 乐迷团
+   * zh-TW: 樂迷團
+   * en-US: Fans Group
+   */
+  (key: "social.fansGroup", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部
+   * zh-TW: 全部
+   * en-US: All
+   */
+  (key: "social.fansGroupAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的乐迷团
+   * zh-TW: 我的樂迷團
+   * en-US: My Fans Groups
+   */
+  (key: "social.myFansGroups", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂未加入任何乐迷团
+   * zh-TW: 暫未加入任何樂迷團
+   * en-US: No joined fans groups yet
+   */
+  (key: "social.noFansGroups", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 成员
+   * zh-TW: {{count}} 成員
+   * en-US: {{count}} members
+   */
+  (key: "social.fansGroupMembers", params?: TranslationParams): string;
+  /**
    * zh-CN: 简体中文
    * zh-TW: 简体中文
    * en-US: Simplified Chinese
@@ -7801,6 +7831,18 @@ export interface TranslateFn {
    * en-US: Failed to copy link
    */
   (key: "artist.track.copyFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐迷团 · Lv.{{level}}
+   * zh-TW: 樂迷團 · Lv.{{level}}
+   * en-US: Fans · Lv.{{level}}
+   */
+  (key: "artist.fansGroup.joined", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐迷团
+   * zh-TW: 樂迷團
+   * en-US: Fans Group
+   */
+  (key: "artist.fansGroup.join", params?: TranslationParams): string;
   /**
    * zh-CN: 晚上好
    * zh-TW: 晚上好

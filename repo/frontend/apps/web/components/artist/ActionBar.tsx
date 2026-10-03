@@ -1,9 +1,11 @@
-import { MoreHorizontal, Pause, Play } from "lucide-react";
+import { Crown, MoreHorizontal, Pause, Play } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { subscribeArtist } from "@/lib/api/artist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useArtistFansGroupStatus } from "@/hooks/fansGroup/useFansGroupQueries";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 
@@ -25,6 +27,8 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
     () => followedArtists.some((a) => String(a.id) === String(artistId)),
     [followedArtists, artistId],
   );
+
+  const fansGroupStatus = useArtistFansGroupStatus(artistId);
 
   const handleToggleFollow = useCallback(async () => {
     if (!isLoggedIn) {
@@ -100,6 +104,17 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
               : t("artist.action.follow")}
         </span>
       </button>
+
+      {fansGroupStatus.isJoined && fansGroupStatus.fansGroupId && (
+        <Link
+          href={`/social?group=${fansGroupStatus.fansGroupId}`}
+          className="flex items-center gap-1.5 rounded-full border border-brand/40 bg-brand/10 px-4 py-1.5 text-sm font-bold text-brand shadow-sm transition-all hover:scale-105 hover:border-brand/70 hover:bg-brand/20"
+          title={t("artist.fansGroup.joined", { level: fansGroupStatus.level ?? "1" })}
+        >
+          <Crown className="size-4 fill-brand/20" />
+          <span>{t("artist.fansGroup.joined", { level: fansGroupStatus.level ?? "1" })}</span>
+        </Link>
+      )}
 
       <button type="button" className="text-content-muted transition-colors hover:text-content">
         <MoreHorizontal className="size-8" />
