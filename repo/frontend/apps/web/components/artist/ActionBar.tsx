@@ -1,11 +1,23 @@
-import { MoreHorizontal, Pause, Play } from "lucide-react";
+import { Copy, MoreHorizontal, Pause, Play, Users } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { subscribeArtist } from "@/lib/api/artist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useArtistFollowCountQuery } from "@/hooks/artist/useArtistQueries";
+import { useArtistFansGroupStatus } from "@/hooks/fansGroup/useFansGroupQueries";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
+import type { ArtistFollowCountResponse } from "@/types/api/artist";
 
 interface Props {
   artistId: number | string;
@@ -20,11 +32,28 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
   const queryClient = useQueryClient();
   const isLoggedIn = useLoginStatus();
 
+  const followCountQuery = useArtistFollowCountQuery(String(artistId));
   const followedArtists = useUserStore((s) => s.followedArtists);
-  const isFollowing = useMemo(
+
+  const serverIsFollowing = Boolean(
+    followCountQuery.data?.data?.isFollow ?? followCountQuery.data?.data?.follow,
+  );
+  const localIsFollowing = useMemo(
     () => followedArtists.some((a) => String(a.id) === String(artistId)),
     [followedArtists, artistId],
   );
+
+  const isFollowing = useMemo(() => {
+    if (!isLoggedIn) return false;
+    if (followCountQuery.isSuccess) {
+      return serverIsFollowing;
+    }
+    return localIsFollowing;
+  }, [isLoggedIn, followCountQuery.isSuccess, serverIsFollowing, localIsFollowing]);
+
+  const isFollowStatusLoading = loading || (isLoggedIn && followCountQuery.isLoading);
+
+  const fansGroupStatus = useArtistFansGroupStatus(artistId);
 
   const handleToggleFollow = useCallback(async () => {
     if (!isLoggedIn) {
@@ -35,6 +64,25 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
     try {
       const next = !isFollowing;
       await subscribeArtist(artistId, next);
+
+      queryClient.setQueryData<ArtistFollowCountResponse>(
+        musicQueryKeys.artist.followCount(String(artistId)),
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              isFollow: next,
+              follow: next,
+              fansCnt: next
+                ? (old.data.fansCnt ?? 0) + 1
+                : Math.max(0, (old.data.fansCnt ?? 0) - 1),
+            },
+          };
+        },
+      );
+
       // 更新本地 store
       const store = useUserStore.getState();
       if (next) {
@@ -52,6 +100,7 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["library", "collection"] }),
         queryClient.invalidateQueries({ queryKey: ["artist", "follow-count", String(artistId)] }),
+        queryClient.invalidateQueries({ queryKey: ["home", "followed-artists"] }),
       ]);
     } catch {
       toast.error(t("common.message.requestFailed", { message: "" }));
@@ -59,6 +108,15 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
       setLoading(false);
     }
   }, [artistId, isFollowing, isLoggedIn, queryClient, t]);
+
+  const handleCopyLink = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/artist?id=${artistId}`);
+      toast.success(t("artist.track.copySuccess"));
+    } catch {
+      toast.error(t("artist.track.copyFailed"));
+    }
+  }, [artistId, t]);
 
   return (
     <div className="flex items-center gap-6 p-6 md:p-8">
@@ -77,7 +135,7 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
 
       <button
         type="button"
-        disabled={loading}
+        disabled={isFollowStatusLoading}
         onClick={handleToggleFollow}
         className={`group w-24 rounded-full border px-4 py-1.5 text-sm font-bold tracking-widest uppercase transition-all hover:scale-105 disabled:opacity-50 ${
           isFollowing
@@ -86,14 +144,14 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         } `}
       >
         <span className="group-hover:hidden">
-          {loading
+          {isFollowStatusLoading
             ? t("common.status.loading")
             : isFollowing
               ? t("artist.action.following")
               : t("artist.action.follow")}
         </span>
         <span className="hidden group-hover:inline">
-          {loading
+          {isFollowStatusLoading
             ? t("common.status.loading")
             : isFollowing
               ? t("artist.action.unfollow")
@@ -101,9 +159,44 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         </span>
       </button>
 
-      <button type="button" className="text-content-muted transition-colors hover:text-content">
-        <MoreHorizontal className="size-8" />
-      </button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            className="text-content-muted transition-colors hover:text-content focus:outline-none"
+            aria-label={t("social.more")}
+          >
+            <MoreHorizontal className="size-8" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          {fansGroupStatus.isJoined && fansGroupStatus.fansGroupId && (
+            <>
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/social?group=${fansGroupStatus.fansGroupId}`}
+                  className="flex cursor-pointer items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <Users className="size-4" />
+                    <span>{t("artist.action.fansGroup")}</span>
+                  </div>
+                  {fansGroupStatus.level && (
+                    <span className="rounded bg-surface-elevated px-1.5 py-0.5 text-[10px] font-semibold text-content-muted">
+                      Lv.{fansGroupStatus.level}
+                    </span>
+                  )}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
+          <DropdownMenuItem className="cursor-pointer" onSelect={() => void handleCopyLink()}>
+            <Copy className="size-4" />
+            <span>{t("artist.action.copyLink")}</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

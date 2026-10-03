@@ -10,6 +10,12 @@ export const musicQueryKeys = {
     detail: (artistId: string) => ["artist", "detail", artistId] as const,
     followCount: (artistId: string) => ["artist", "follow-count", artistId] as const,
     topSongs: (artistId: string) => ["artist", "top-songs", artistId] as const,
+    fansGroup: (artistId: string | number) => ["fans-group", "artist", String(artistId)] as const,
+  },
+  fansGroup: {
+    userGroups: (userId?: number | string) =>
+      ["fans-group", "user-groups", String(userId ?? "")] as const,
+    detail: (groupId: number | string) => ["fans-group", "detail", String(groupId)] as const,
   },
   home: {
     banners: () => ["home", "banners"] as const,

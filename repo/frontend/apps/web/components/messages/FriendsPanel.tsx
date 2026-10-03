@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderCircle, MessageCircle, RefreshCw } from "lucide-react";
+import { CheckCheck, LoaderCircle, MessageCircle, RefreshCw } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { ScrollArea } from "@scopify/ui/shadcn/components/scroll-area";
 import { INBOX_SCROLL_CLASS } from "@/constants/inbox";
@@ -34,17 +34,29 @@ export function FriendsPanel(props: FriendsPanelProps) {
             {t("privateMessages.unread", { count: props.unreadCount })}
           </span>
         )}
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="ml-auto"
-          disabled={!props.accountId || query.isFetching}
-          aria-label={t("privateMessages.refresh")}
-          onClick={() => void query.refetch()}
-        >
-          <RefreshCw className={query.isFetching ? "size-4 animate-spin" : "size-4"} />
-        </Button>
+        <div className="ml-auto flex items-center gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            disabled={!props.accountId || props.unreadCount === 0}
+            className="flex items-center gap-1.5 text-xs text-content-muted hover:text-foreground"
+            onClick={props.onReadAll}
+          >
+            <CheckCheck className="size-3.5" aria-hidden="true" />
+            {t("privateMessages.readAll")}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            disabled={!props.accountId || query.isFetching}
+            aria-label={t("privateMessages.refresh")}
+            onClick={() => void query.refetch()}
+          >
+            <RefreshCw className={query.isFetching ? "size-4 animate-spin" : "size-4"} />
+          </Button>
+        </div>
       </header>
       {!props.accountId ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-sm text-content-muted">

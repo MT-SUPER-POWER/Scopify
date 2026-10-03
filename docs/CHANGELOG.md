@@ -1,5 +1,38 @@
 # Changelog
 
+## v1.5.6
+
+### Added
+
+- **乐迷团社交生态与多端界面集成**：
+  - **动态页圈子导轨与聚合笔记流**：在动态页顶部新增横向头像导轨（`SocialFansGroupRail`），支持在「全部」综合圈子与已加入艺人乐迷团之间无缝切换；默认聚合呈现用户已加入圈子的全部最新图文笔记（`useSocialAggregatedNotes`），支持各圈子游标分页及独立圈子穿透。
+  - **歌手页乐迷团更多菜单收敛**：移除歌手主页操作栏显眼的绿色外露胶囊按钮，将乐迷团入口收敛至「更多」（`MoreHorizontal`）下拉菜单（`DropdownMenu`），展示乐迷团项及对应粉丝等级，并补齐「复制歌手链接」操作，保持页面干净克制。
+  - **个人主页乐迷团网格展示**：在个人主页「关于」标签下新增「我加入的乐迷团」网格卡片（`ProfileFansGroupGrid`），复用标准网格规范展示用户加入的全部歌手乐迷团头像、头衔等级与成员人数，优化徽章层级外挂避免裁剪，点击快速跳转动态。
+
+- **乐迷团纯协议转发接口与文档规范**：在后端服务（`api-enhanced`）中遵循轻量透传原则，接入并简化了 `/fans/group/user/groups`、`/fans/group/detail`、`/fans/group/feed/recommend` 及 `/fans/group/user/group/detail` 乐迷团系列接口，移除人为多余参数校验与错误拦截，统一交由网易实际后端返回业务状态；并在 `public/docs/home.md` 中补齐了标准风格的接口文档。前端同步完成 `types/api/fansGroup.ts`、`lib/api/fansGroup.ts` 及 `hooks/fansGroup/useFansGroupQueries.ts` 对齐。
+
+- **私信一键全读支持**：在好友私信面板（`FriendsPanel`）顶部操作栏新增「全部已读」快捷按钮，提供即时将全量未读私信批量标为已读的能力；未读数为 0 时自动禁用，点击后同步重置通知系统已读状态并清空会话缓存未读数。
+
+### Visual
+
+- **动态页头部减负与语义对齐**：吸顶区域只保留「动态 / 标签 / 操作」一行，高度固定为 56px。磨砂底板改为常驻的伪元素：滚动时只过渡 `opacity`（交给合成层处理），不再切换 `backdrop-filter`，也不再过渡高度和字号，消除了开始滚动那一瞬间的整页重排卡顿。底板的材质和过渡时长与全局顶栏一致，左、右、下三边用 mask 淡出，不再是一块硬边灰板。来源说明行（`feedToolbar`）不再吸顶，随内容一起滚走。第二个标签按实际内容改名：用户加入了乐迷团时叫「乐迷团」，没有加入时回退为「广场」，不再叫「热门」。口号式描述换成当前内容的来源说明，分为四种：聚合（「来自你加入的 N 个乐迷团」）、单个团（团名 + 等级 + 歌手主页入口）、广场社区、话题（返回入口）。「发布动态」降级为描边按钮，不再与标签抢视线；「找朋友」入口改为吸顶的图标按钮。
+- **乐迷团导轨重设计**：「全部」不再使用绿色渐变 + ✨ 图标，改为和团头像同一种圆形形态，内容是已加入团头像的 2×2 拼贴。所有选中态统一为品牌色描边加主文字色名称。头像缩小到 44px，等级徽章改为中性色。同时移除了未定义的 `ring-offset-surface-base` 等 token，并补上了键盘焦点样式。
+- **发布去向一致**：「关注」流顶部新增行内输入框，发出的动态会直接出现在下方列表中。发布弹窗里明确提示内容的去向（个人主页及「关注」流）；在其他视图发布成功后，自动跳转到「关注」。
+
+### Fixed
+
+- **滚动越过顶部瞬间整页重渲染卡顿修复**：`NavigationScrollProvider` 原先把 `isAtTop` 和 `scrollElement` 等放在同一个 Context 里。页面滚动离开顶部或回到顶部时，所有只为拿到 `scrollElement` 而订阅这个 Context 的组件都会跟着重渲染，包括通过 `useSocialViewport` 订阅的整个动态页（全部动态卡片、导轨、侧栏），以及歌单 `TrackTable` 和吸顶 hooks，于是顶栏变色的那一刻会掉帧。现在把 `isAtTop` 拆成独立的 `NavigationScrollTopContext`，并新增 `useIsScrollAtTop()`，只有全局 `Header` 和 `SocialHeader` 这两个真正需要它的组件会在翻转时重渲染。
+
+- **动态页「全部」乐迷团刷新无效修复**：头部刷新按钮使用的查询键是 `community/all`，而聚合笔记流实际缓存在 `community/aggregated/...` 下，导致在「全部」视图下点击刷新没有任何效果。现已改为按前缀失效聚合缓存。
+
+- **歌手页关注状态未同步与已关注展示异常修复**：修复已收藏/关注的歌手在歌手详情页操作栏（`ActionBar`）中误显为「关注」而非「已关注」的问题。原因在于原本仅依赖未初始化且未持久化的本地 `userStore.followedArtists`，导致新打开页面时始终判定为未关注；现改为直接在 `ActionBar` 接入已调用的 `useArtistFollowCountQuery` 读取服务端实时 `isFollow` 关注状态，并配合加载态消除渲染闪烁；在音乐库收藏（`useCollectionQuery`）与首页关注歌手（`useFollowedArtistsQuery`）获取数据时自动向 `userStore` 同步已关注列表；将 `useArtistFollowCountQuery` 缓存元数据由公开持久化修正为账号作用域（`account`），关注/取消操作接入 React Query 缓存乐观更新与关联查询联动失效。
+
+- **私信阅读后绿色通知消除与状态同步修复**：修复阅读私信后顶栏图标与会话列表中绿色未读提示（`bg-success` 小圆点及未读计数）未能消除的问题。移除了进入聊天详情时要求通知时间必须小于等于历史消息最新时间的过严拦截条件（`item.occurredAt <= newestTime`），避免因服务端返回微小时钟偏差导致未读标记（`runtime.notifications.markRead`）被跳过；进入私信或执行一键全读时，通过 `clearConversationsUnreadInCache` 同步将 React Query 会话缓存中的未读计数置零，消除了退出会话后列表行依然误显未读的现象；同时优化了通知引擎对私信会话的已读状态合并保护，避免后续后台轮询覆盖已读标记。
+
+- **桌面歌词算法与 Folia 歌词时钟对齐修复**：桌面小歌词全面接入 Folia 歌词架构。歌词模型接入 `adaptLyricDataToFolia`，自动引入间奏占位行（`......`）与前奏制作人员行，并基于文本长度智能计算行显示结束时间（`resolveDisplayEndTime`），消除桌面端与主界面的行索引错位；活跃行定位使用 `findLatestActiveFoliaLineIndex` 替代原先只看 `startTime` 的粗暴查找，行唱完后自动退出高亮进入间歇等待；逐字染色接入 Folia 的字元级时间轴算法 `buildLineGraphemeTimeline`，精确绑定每个字符、标点与空格的时钟区间，在音频播放推进时提供平滑的 0~1 字级渐变染色，彻底解决桌面歌词与 Folia 速度脱节及旧版退化导致的 5 秒固定假动画问题。
+
+- **桌面歌词快捷键解绑与双向 Toggle 交互修复**：将桌面歌词切换命令（`toggle-desktop-subtitle`）默认快捷键由 `Ctrl + Alt + L` 调整为 `Ctrl + Alt + D`，面板快捷键调整为 `Ctrl + Shift + D`，解除与「喜欢歌曲」（`toggle-like`，`Ctrl + Alt + L`）的键位竞争，两项功能均可独立触发；主进程创建与恢复桌面歌词悬浮窗口时改用 `showInactive()`，展示桌面小歌词时不再强夺主窗口焦点；在独立桌面歌词页面（`/desktop-lyrics`）注入快捷键监听，支持即便焦点落在桌面歌词窗口上按下快捷键也能顺利关闭，并支持在歌词悬浮窗上直接快捷切歌与调音量。
+
 ## v1.5.5
 
 ### Visual

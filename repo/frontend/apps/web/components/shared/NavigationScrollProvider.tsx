@@ -20,6 +20,8 @@ import {
 } from "react";
 
 const NavigationScrollContext = createContext<NavigationScrollContextValue | null>(null);
+// isAtTop 会在滚动越过顶部时翻转，单独拆出，避免所有只需要 scrollElement 的消费者（整页内容）随之重渲染
+const NavigationScrollTopContext = createContext(true);
 
 export function NavigationScrollProvider({ children }: PropsWithChildren) {
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
@@ -68,7 +70,6 @@ export function NavigationScrollProvider({ children }: PropsWithChildren) {
 
   const value = useMemo<NavigationScrollContextValue>(
     () => ({
-      isAtTop: scrollState.isAtTop,
       isRestoring: scrollState.isRestoring,
       registerRestorationAdapter,
       registerRestorationPlaceholder,
@@ -82,13 +83,16 @@ export function NavigationScrollProvider({ children }: PropsWithChildren) {
       registerSurface,
       restorationPlaceholder,
       scrollElement,
-      scrollState.isAtTop,
       scrollState.isRestoring,
     ],
   );
 
   return (
-    <NavigationScrollContext.Provider value={value}>{children}</NavigationScrollContext.Provider>
+    <NavigationScrollContext.Provider value={value}>
+      <NavigationScrollTopContext.Provider value={scrollState.isAtTop}>
+        {children}
+      </NavigationScrollTopContext.Provider>
+    </NavigationScrollContext.Provider>
   );
 }
 
@@ -99,6 +103,11 @@ export function useNavigationScroll() {
   }
 
   return context;
+}
+
+/** 主滚动面是否位于顶部；只有依赖它的组件会在翻转时重渲染。 */
+export function useIsScrollAtTop() {
+  return useContext(NavigationScrollTopContext);
 }
 
 export function usePrimaryScrollSurface() {

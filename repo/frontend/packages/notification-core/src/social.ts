@@ -48,7 +48,10 @@ export async function pollSocial(
     const payload = decodeSocial(
       source === "private" ? row.lastMsg : source === "notices" ? row.notice : row.json,
     );
-    const user = object(row.fromUser ?? row.user ?? payload.user);
+    const user =
+      source === "private" && String(object(row.fromUser).userId ?? "") === accountId
+        ? object(row.toUser)
+        : object(row.fromUser ?? row.user ?? payload.user);
     const at = timestamp(row.lastMsgTime ?? row.time ?? payload.time);
     if (!at) continue;
     head = Math.max(head, at);

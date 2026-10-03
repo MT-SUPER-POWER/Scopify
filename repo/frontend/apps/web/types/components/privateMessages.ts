@@ -14,6 +14,7 @@ export interface FriendsPanelProps {
   openConversation(peer: MessagePeer): void;
   back(): void;
   setOpen(open: boolean): void;
+  onReadAll(): void;
 }
 
 export interface ConversationRowProps {

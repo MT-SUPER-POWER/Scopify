@@ -227,6 +227,10 @@ export function useCollectionQuery() {
         getFollowedArtists(100),
       ]);
 
+      if (artistsResponse.data.data) {
+        useUserStore.getState().setFollowedArtists(artistsResponse.data.data);
+      }
+
       const albums: LibraryMediaItem[] = (albumsResponse.data.data ?? []).map((album) => ({
         coverUrl: album.picUrl,
         date: album.subTime,

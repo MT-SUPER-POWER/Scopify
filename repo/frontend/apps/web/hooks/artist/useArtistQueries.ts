@@ -25,7 +25,7 @@ export function useArtistDetailQuery(artistId: null | string) {
 export function useArtistFollowCountQuery(artistId: null | string) {
   return useQuery({
     enabled: isEnabled(artistId),
-    meta: { persist: true, scope: "public" },
+    meta: { persist: false, scope: "account" },
     queryFn: async () => {
       if (!artistId) throw new Error("Artist ID is required.");
       const response = await getFansCnt(artistId);
@@ -60,3 +60,8 @@ export function useArtistAlbumsQuery(artistId: null | string) {
     queryKey: musicQueryKeys.artist.albums(artistId ?? ""),
   });
 }
+
+export {
+  useFansGroupDetailQuery,
+  useArtistFansGroupStatus,
+} from "@/hooks/fansGroup/useFansGroupQueries";

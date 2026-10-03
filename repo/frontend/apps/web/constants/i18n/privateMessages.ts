@@ -23,6 +23,7 @@ export const privateMessageMessages = {
     "privateMessages.sending": "发送中",
     "privateMessages.sendError": "发送失败，内容已保留，请重试。",
     "privateMessages.emoji": "插入表情",
+    "privateMessages.readAll": "全部已读",
   },
   "zh-TW": {
     "privateMessages.title": "私訊",
@@ -48,6 +49,7 @@ export const privateMessageMessages = {
     "privateMessages.sending": "傳送中",
     "privateMessages.sendError": "傳送失敗，內容已保留，請重試。",
     "privateMessages.emoji": "插入表情",
+    "privateMessages.readAll": "全部已讀",
   },
   "en-US": {
     "privateMessages.title": "Messages",
@@ -73,5 +75,6 @@ export const privateMessageMessages = {
     "privateMessages.sending": "Sending",
     "privateMessages.sendError": "Message not sent. Your text is still here. Try again.",
     "privateMessages.emoji": "Insert emoji",
+    "privateMessages.readAll": "Mark all as read",
   },
-} as const;
+};

@@ -1,18 +1,22 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AppBackground } from "@/components/shared/AppBackground";
 import { useSocialAccount, useSocialHotTopics } from "@/hooks/social/useSocialQueries";
 import { useSocialViewport } from "@/hooks/social/useSocialViewport";
+import { useUserFansGroupsQuery } from "@/hooks/fansGroup/useFansGroupQueries";
 import { SOCIAL_DISCOVERY_GROUP } from "@/constants/social";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import { SocialLogin } from "./SocialPrimitives";
+import { SocialComposer } from "./SocialComposer";
 import { SocialFeed } from "./SocialFeed";
 import { SocialPeople } from "./SocialPeople";
 import { SocialSearchForm } from "./SocialSearchForm";
 import { SocialHotFeed } from "./SocialHotFeed";
 import { SocialNotesFeed } from "./SocialNotesFeed";
+import { SocialFansGroupRail } from "./SocialFansGroupRail";
+import { SocialAggregatedNotesFeed } from "./SocialAggregatedNotesFeed";
 import { SocialSidebar } from "./SocialSidebar";
 import { SocialHeader } from "./SocialHeader";
 import s from "./Social.module.css";
@@ -24,8 +28,14 @@ export function SocialPage() {
 function SocialPageContent() {
   const { t } = useI18n();
   const { uid } = useSocialAccount();
+  const router = useRouter();
   const params = useSearchParams();
   const pageRef = useSocialViewport();
+
+  const userGroupsQuery = useUserFansGroupsQuery();
+  const userGroups = userGroupsQuery.data ?? [];
+  const hasUserGroups = userGroups.length > 0;
+
   const view = params.get("view");
   const people = view === "people",
     following = view === "following";
@@ -34,7 +44,19 @@ function SocialPageContent() {
   const items = uniqueById(topics.data?.pages.flatMap((page) => page.items) ?? []);
   const requestedTopic = params.get("topic") ?? "";
   const requestedGroup = params.get("group") ?? "";
-  const groupId = /^\d+$/.test(requestedGroup) ? requestedGroup : SOCIAL_DISCOVERY_GROUP;
+
+  const isAggregated = hasUserGroups && (!requestedGroup || requestedGroup === "all");
+  const selectedGroupId = /^\d+$/.test(requestedGroup)
+    ? requestedGroup
+    : isAggregated
+      ? "all"
+      : null;
+  const groupId = /^\d+$/.test(requestedGroup)
+    ? requestedGroup
+    : isAggregated
+      ? "all"
+      : SOCIAL_DISCOVERY_GROUP;
+
   const topic = /^\d+$/.test(requestedTopic)
     ? (items.find((item) => item.id === requestedTopic) ?? {
         id: requestedTopic,
@@ -44,6 +66,15 @@ function SocialPageContent() {
         participants: 0,
       })
     : undefined;
+
+  const handleSelectGroup = (gid: string | null) => {
+    if (!gid || gid === "all") {
+      router.push("/social", { scroll: false });
+    } else {
+      router.push(`/social?group=${gid}`, { scroll: false });
+    }
+  };
+
   return (
     <div ref={pageRef} className={s.page + " " + s.streamPage}>
       <AppBackground />
@@ -51,8 +82,9 @@ function SocialPageContent() {
         <main className={s.main}>
           <SocialHeader
             view={people ? "people" : following ? "friends" : "hot"}
-            topicId={topic?.id}
+            topic={topic}
             groupId={groupId}
+            groups={userGroups}
           />
           {!uid ? (
             <SocialLogin />
@@ -70,11 +102,30 @@ function SocialPageContent() {
               />
             </section>
           ) : following ? (
-            <SocialFeed />
+            <>
+              <SocialComposer />
+              <SocialFeed />
+            </>
           ) : topic ? (
             <SocialHotFeed key={topic.id} topic={topic} />
           ) : (
-            <SocialNotesFeed key={groupId} groupId={groupId} />
+            <>
+              {hasUserGroups && (
+                <SocialFansGroupRail
+                  groups={userGroups}
+                  selectedGroupId={selectedGroupId}
+                  onSelectGroup={handleSelectGroup}
+                />
+              )}
+              {isAggregated ? (
+                <SocialAggregatedNotesFeed
+                  key="aggregated"
+                  groupIds={userGroups.map((g) => g.fansGroupId)}
+                />
+              ) : (
+                <SocialNotesFeed key={groupId} groupId={groupId} />
+              )}
+            </>
           )}
         </main>
         {uid && <SocialSidebar selectedId={topic?.id} />}

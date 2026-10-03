@@ -27,6 +27,10 @@ export const artistMessages = defineMessages(
     "artist.track.addToPlaylistFailed": "添加到歌单失败",
     "artist.track.copySuccess": "链接已复制到剪贴板",
     "artist.track.copyFailed": "复制链接失败",
+    "artist.action.fansGroup": "乐迷团",
+    "artist.action.copyLink": "复制歌手链接",
+    "artist.fansGroup.joined": "乐迷团 · Lv.{{level}}",
+    "artist.fansGroup.join": "乐迷团",
   },
   {
     "artist.page.invalidId": "無效的歌手 ID",
@@ -54,6 +58,10 @@ export const artistMessages = defineMessages(
     "artist.track.addToPlaylistFailed": "加入歌單失敗",
     "artist.track.copySuccess": "連結已複製到剪貼簿",
     "artist.track.copyFailed": "複製連結失敗",
+    "artist.action.fansGroup": "樂迷團",
+    "artist.action.copyLink": "複製歌手連結",
+    "artist.fansGroup.joined": "樂迷團 · Lv.{{level}}",
+    "artist.fansGroup.join": "樂迷團",
   },
   {
     "artist.page.invalidId": "Invalid Artist ID",
@@ -81,5 +89,9 @@ export const artistMessages = defineMessages(
     "artist.track.addToPlaylistFailed": "Failed to add to playlist",
     "artist.track.copySuccess": "Link copied to clipboard",
     "artist.track.copyFailed": "Failed to copy link",
+    "artist.action.fansGroup": "Fans Group",
+    "artist.action.copyLink": "Copy Artist Link",
+    "artist.fansGroup.joined": "Fans · Lv.{{level}}",
+    "artist.fansGroup.join": "Fans Group",
   },
 );

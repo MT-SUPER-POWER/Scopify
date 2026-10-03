@@ -1073,23 +1073,17 @@ export interface TranslateFn {
    */
   (key: "privateMessages.emoji", params?: TranslationParams): string;
   /**
+   * zh-CN: 全部已读
+   * zh-TW: 全部已讀
+   * en-US: Mark all as read
+   */
+  (key: "privateMessages.readAll", params?: TranslationParams): string;
+  /**
    * zh-CN: 动态
    * zh-TW: 動態
    * en-US: Activity
    */
   (key: "social.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 热门
-   * zh-TW: 熱門
-   * en-US: Popular
-   */
-  (key: "social.hot", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发现音乐，也发现同频的人。
-   * zh-TW: 發現音樂，也發現同頻的人。
-   * en-US: Discover music. Find your people.
-   */
-  (key: "social.hotDescription", params?: TranslationParams): string;
   /**
    * zh-CN: 浏览
    * zh-TW: 瀏覽
@@ -1799,12 +1793,6 @@ export interface TranslateFn {
    */
   (key: "social.close", params?: TranslationParams): string;
   /**
-   * zh-CN: 听见你关注的人
-   * zh-TW: 聽見你關注的人
-   * en-US: Hear from the people you follow
-   */
-  (key: "social.peopleHint", params?: TranslationParams): string;
-  /**
    * zh-CN: 选择要分享的音乐
    * zh-TW: 選擇要分享的音樂
    * en-US: Choose music to share
@@ -1852,6 +1840,90 @@ export interface TranslateFn {
    * en-US: More actions
    */
   (key: "social.more", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐迷团
+   * zh-TW: 樂迷團
+   * en-US: Fans Group
+   */
+  (key: "social.fansGroup", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部
+   * zh-TW: 全部
+   * en-US: All
+   */
+  (key: "social.fansGroupAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我加入的乐迷团
+   * zh-TW: 我加入的樂迷團
+   * en-US: Joined Fans Groups
+   */
+  (key: "social.myFansGroups", params?: TranslationParams): string;
+  /**
+   * zh-CN: 共 {{count}} 个
+   * zh-TW: 共 {{count}} 個
+   * en-US: {{count}} groups
+   */
+  (key: "social.joinedFansGroupsCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 尚未加入任何乐迷团
+   * zh-TW: 尚未加入任何樂迷團
+   * en-US: No joined fans groups yet
+   */
+  (key: "social.noFansGroups", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 成员
+   * zh-TW: {{count}} 成員
+   * en-US: {{count}} members
+   */
+  (key: "social.fansGroupMembers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐迷团
+   * zh-TW: 樂迷團
+   * en-US: Fan clubs
+   */
+  (key: "social.fansGroupTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 广场
+   * zh-TW: 廣場
+   * en-US: Explore
+   */
+  (key: "social.squareTab", params?: TranslationParams): string;
+  /**
+   * zh-CN: 你和关注的人的最新动态
+   * zh-TW: 你和關注的人的最新動態
+   * en-US: Latest from you and people you follow
+   */
+  (key: "social.followingContext", params?: TranslationParams): string;
+  /**
+   * zh-CN: 来自你加入的 {{count}} 个乐迷团
+   * zh-TW: 來自你加入的 {{count}} 個樂迷團
+   * en-US: From the {{count}} fan clubs you joined
+   */
+  (key: "social.aggregatedContext", params?: TranslationParams): string;
+  /**
+   * zh-CN: 大家正在分享的音乐笔记
+   * zh-TW: 大家正在分享的音樂筆記
+   * en-US: Music notes people are sharing
+   */
+  (key: "social.squareContext", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌手主页
+   * zh-TW: 歌手主頁
+   * en-US: Artist page
+   */
+  (key: "social.viewArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回{{name}}
+   * zh-TW: 返回{{name}}
+   * en-US: Back to {{name}}
+   */
+  (key: "social.backTo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发布后会出现在你的主页，关注你的人可在「关注」中看到。
+   * zh-TW: 發佈後會出現在你的主頁，關注你的人可在「關注」中看到。
+   * en-US: Posts go to your profile and show up in Following for people who follow you.
+   */
+  (key: "social.publishTarget", params?: TranslationParams): string;
   /**
    * zh-CN: 简体中文
    * zh-TW: 简体中文
@@ -7795,6 +7867,30 @@ export interface TranslateFn {
    * en-US: Failed to copy link
    */
   (key: "artist.track.copyFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐迷团
+   * zh-TW: 樂迷團
+   * en-US: Fans Group
+   */
+  (key: "artist.action.fansGroup", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制歌手链接
+   * zh-TW: 複製歌手連結
+   * en-US: Copy Artist Link
+   */
+  (key: "artist.action.copyLink", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐迷团 · Lv.{{level}}
+   * zh-TW: 樂迷團 · Lv.{{level}}
+   * en-US: Fans · Lv.{{level}}
+   */
+  (key: "artist.fansGroup.joined", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐迷团
+   * zh-TW: 樂迷團
+   * en-US: Fans Group
+   */
+  (key: "artist.fansGroup.join", params?: TranslationParams): string;
   /**
    * zh-CN: 晚上好
    * zh-TW: 晚上好

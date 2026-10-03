@@ -745,12 +745,34 @@
   position: sticky;
   top: 64px;
   z-index: 10;
-  background: color-mix(in srgb, var(--card) 96%, transparent);
-  backdrop-filter: blur(18px);
 }
-.streamHeader[data-top="true"] {
-  background: transparent;
-  backdrop-filter: none;
+/*
+ * 磨砂底板常驻，滚动时只过渡 opacity（合成层动画，不触发布局/重建 backdrop 层），
+ * 材质与时长对齐全局顶栏；左右与底部用 mask 淡出，不再是一块硬边灰板。
+ */
+.streamHeader::before {
+  position: absolute;
+  content: "";
+  z-index: -1;
+  inset: 0 -24px -28px;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--color-surface-overlay) 80%, transparent);
+  backdrop-filter: blur(16px);
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent,
+      var(--foreground) 24px,
+      var(--foreground) calc(100% - 24px),
+      transparent
+    ),
+    linear-gradient(var(--foreground) calc(100% - 28px), transparent);
+  mask-composite: intersect;
+  transition: opacity 0.3s ease;
+  will-change: opacity;
+}
+.streamHeader[data-top="true"]::before {
+  opacity: 0;
 }
 .detailHeading {
   font-size: 24px;
@@ -947,38 +969,106 @@
 }
 .streamToolbar {
   display: flex;
-  align-items: center;
-  gap: 30px;
-  min-height: 66px;
+  align-items: stretch;
+  gap: 28px;
+  min-height: 56px;
   border-bottom: 1px solid var(--line);
+  transition: border-color 0.3s ease;
+}
+.streamHeader[data-top="false"] .streamToolbar {
+  border-bottom-color: transparent;
 }
 .streamToolbar h1 {
-  font-size: 25px;
+  align-self: center;
+  font-size: 24px;
   font-weight: 750;
   letter-spacing: -0.04em;
 }
 .streamToolbar .tabs {
-  gap: 28px;
+  gap: 24px;
   border: 0;
-  min-height: 66px;
+  min-height: 0;
 }
 .streamToolbar .tab {
-  padding: 22px 4px 18px;
+  padding: 0 4px;
   font-size: 15px;
 }
-.publishButton {
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-left: auto;
-  min-height: 38px;
-  padding: 8px 18px;
+}
+.headerActions .iconButton[data-active="true"] {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+.publishButton {
+  min-height: 34px;
+  padding: 6px 14px 6px 11px;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 13px;
+}
+.publishButton svg {
+  color: var(--primary);
+}
+.publishButton:hover {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--line));
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
 }
 .feedToolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 56px;
+  min-height: 52px;
   color: var(--social-muted);
   font-size: 13px;
+}
+.feedContext {
+  min-width: 0;
+  flex: 1;
+}
+.contextGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.contextGroup strong {
+  overflow: hidden;
+  color: var(--foreground);
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.contextLevel {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--secondary);
+  color: var(--social-muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+.contextLink {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 1px;
+  margin-left: 4px;
+  font-size: 12px;
+}
+.contextLink:hover,
+.contextBack:hover {
+  color: var(--foreground);
+}
+.contextBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
 }
 .refreshButton {
   display: inline-flex;
@@ -998,13 +1088,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-.feedDescription {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 3px 14px;
-  min-width: 0;
 }
 .streamPage .timeline > .event {
   padding: 24px 0 20px;
@@ -1396,9 +1479,8 @@
   .postTitle {
     font-size: 17px;
   }
-  .feedToolbar p {
+  .feedContext {
     font-size: 12px;
-    max-width: 60%;
   }
   .streamPage .eventHeader time {
     font-size: 11px;
