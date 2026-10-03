@@ -87,29 +87,29 @@ export function SocialFansGroupRail({
               className="group flex shrink-0 flex-col items-center gap-1.5 focus:outline-none"
               title={`${displayName}${level ? ` (Lv.${level})` : ""}`}
             >
-              <div
-                className={cn(
-                  "relative size-14 overflow-hidden rounded-full transition-all duration-200",
-                  "border-surface-border border bg-surface-elevated shadow-sm",
-                  "group-hover:scale-105",
-                  isActive && "ring-offset-surface-base ring-2 ring-brand ring-offset-2",
-                )}
-              >
-                {group.headAvatarUrl ? (
-                  <Image
-                    src={`${group.headAvatarUrl}?param=120y120`}
-                    alt={displayName}
-                    width={56}
-                    height={56}
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <div className="flex size-full items-center justify-center bg-surface-sunken text-content-muted">
-                    <Users className="size-6" />
-                  </div>
-                )}
+              <div className="relative size-14 transition-all duration-200 group-hover:scale-105">
+                <div
+                  className={cn(
+                    "border-surface-border size-full overflow-hidden rounded-full border bg-surface-elevated shadow-sm",
+                    isActive && "ring-offset-surface-base ring-2 ring-brand ring-offset-2",
+                  )}
+                >
+                  {group.headAvatarUrl ? (
+                    <Image
+                      src={`${group.headAvatarUrl}?param=120y120`}
+                      alt={displayName}
+                      width={56}
+                      height={56}
+                      className="size-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex size-full items-center justify-center bg-surface-sunken text-content-muted">
+                      <Users className="size-6" />
+                    </div>
+                  )}
+                </div>
                 {level && (
-                  <span className="absolute inset-x-0 bottom-0 bg-black/60 text-center text-[9px] font-bold text-white/90 backdrop-blur-[2px]">
+                  <span className="border-surface-base absolute -right-0.5 -bottom-0.5 z-10 flex items-center justify-center rounded-full border bg-brand px-1 py-0.5 text-[9px] leading-none font-bold text-brand-foreground shadow-sm">
                     Lv.{level}
                   </span>
                 )}

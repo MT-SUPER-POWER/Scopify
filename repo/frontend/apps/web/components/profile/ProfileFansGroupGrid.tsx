@@ -3,6 +3,7 @@
 import { Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { formatNumber } from "@/lib/utils";
 import { useUserFansGroupsQuery } from "@/hooks/fansGroup/useFansGroupQueries";
 import { useI18n } from "@/store/module/i18n";
 
@@ -53,7 +54,7 @@ export function ProfileFansGroupGrid() {
       <div className="flex items-center justify-between">
         <h2 className="text-base font-bold text-content">{t("social.myFansGroups")}</h2>
         <span className="text-xs text-content-muted">
-          {t("social.fansGroupMembers", { count: groups.length })}
+          {t("social.joinedFansGroupsCount", { count: groups.length })}
         </span>
       </div>
 
@@ -68,24 +69,26 @@ export function ProfileFansGroupGrid() {
               href={`/social?group=${group.fansGroupId}`}
               className="group flex cursor-pointer flex-col items-center rounded-xl bg-surface-elevated p-4 text-center transition-all duration-300 hover:bg-surface-overlay hover:shadow-card"
             >
-              <div className="border-surface-border relative mb-3 size-24 overflow-hidden rounded-full border-2 shadow-panel transition-transform duration-300 group-hover:scale-105">
-                {group.headAvatarUrl ? (
-                  <Image
-                    src={`${group.headAvatarUrl}?param=200y200`}
-                    alt={displayName}
-                    width={96}
-                    height={96}
-                    className="size-full object-cover"
-                  />
-                ) : (
-                  <div className="flex size-full items-center justify-center bg-surface-sunken text-content-subtle">
-                    <Users className="size-8 opacity-40" />
-                  </div>
-                )}
+              <div className="relative mb-3 size-24 transition-transform duration-300 group-hover:scale-105">
+                <div className="border-surface-border size-full overflow-hidden rounded-full border-2 shadow-panel">
+                  {group.headAvatarUrl ? (
+                    <Image
+                      src={`${group.headAvatarUrl}?param=200y200`}
+                      alt={displayName}
+                      width={96}
+                      height={96}
+                      className="size-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex size-full items-center justify-center bg-surface-sunken text-content-subtle">
+                      <Users className="size-8 opacity-40" />
+                    </div>
+                  )}
+                </div>
                 {level && (
-                  <div className="absolute right-1 bottom-1 rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold text-brand-foreground shadow-sm">
+                  <span className="absolute -right-1 -bottom-1 z-10 flex items-center justify-center rounded-full border-2 border-surface-elevated bg-brand px-2 py-0.5 text-[10px] leading-none font-bold text-brand-foreground shadow-md">
                     Lv.{level}
-                  </div>
+                  </span>
                 )}
               </div>
 
@@ -97,7 +100,7 @@ export function ProfileFansGroupGrid() {
               </h3>
               {group.totalMembersCount ? (
                 <p className="w-full truncate text-xs text-content-muted">
-                  {t("social.fansGroupMembers", { count: group.totalMembersCount })}
+                  {t("social.fansGroupMembers", { count: formatNumber(group.totalMembersCount) })}
                 </p>
               ) : group.fansGroupName ? (
                 <p className="w-full truncate text-xs text-content-muted">{group.fansGroupName}</p>

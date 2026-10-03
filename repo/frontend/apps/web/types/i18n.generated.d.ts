@@ -1871,14 +1871,20 @@ export interface TranslateFn {
    */
   (key: "social.fansGroupAll", params?: TranslationParams): string;
   /**
-   * zh-CN: 我的乐迷团
-   * zh-TW: 我的樂迷團
-   * en-US: My Fans Groups
+   * zh-CN: 我加入的乐迷团
+   * zh-TW: 我加入的樂迷團
+   * en-US: Joined Fans Groups
    */
   (key: "social.myFansGroups", params?: TranslationParams): string;
   /**
-   * zh-CN: 暂未加入任何乐迷团
-   * zh-TW: 暫未加入任何樂迷團
+   * zh-CN: 共 {{count}} 个
+   * zh-TW: 共 {{count}} 個
+   * en-US: {{count}} groups
+   */
+  (key: "social.joinedFansGroupsCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 尚未加入任何乐迷团
+   * zh-TW: 尚未加入任何樂迷團
    * en-US: No joined fans groups yet
    */
   (key: "social.noFansGroups", params?: TranslationParams): string;
