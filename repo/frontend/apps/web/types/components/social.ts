@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { UserFansGroupItem } from "@/types/api/fansGroup";
 import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
 import type { NeteaseUser } from "@/types/api/user";
 import type {
@@ -56,8 +57,23 @@ export interface SocialTopicsProps {
 }
 export interface SocialHeaderProps {
   view: "friends" | "hot" | "people";
-  topicId?: string;
+  topic?: SocialTopic;
   groupId: string;
+  /** 当前用户加入的乐迷团；为空时第二个标签回退为「广场」。 */
+  groups: UserFansGroupItem[];
+}
+export interface SocialFansGroupRailProps {
+  groups: UserFansGroupItem[];
+  selectedGroupId: string | null;
+  onSelectGroup: (groupId: string | null) => void;
+}
+export interface SocialFansGroupRailItemProps {
+  active: boolean;
+  label: string;
+  title?: string;
+  badge?: string;
+  onSelect: () => void;
+  children: ReactNode;
 }
 export interface SocialNotesFeedProps {
   groupId: string;

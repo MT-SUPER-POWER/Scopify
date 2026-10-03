@@ -1,25 +1,18 @@
 "use client";
 
-import { Sparkles, Users } from "lucide-react";
+import { LayoutGrid, Users } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { UserFansGroupItem } from "@/types/api/fansGroup";
+import type {
+  SocialFansGroupRailItemProps,
+  SocialFansGroupRailProps,
+} from "@/types/components/social";
 
 /**
- * 动态页顶部乐迷团导航圈 Rail 组件
- * 提供类似社交圈子的横向头像导轨，支持“全部”聚合与单个艺人乐迷团切换
- */
-
-export interface SocialFansGroupRailProps {
-  groups: UserFansGroupItem[];
-  selectedGroupId: string | null;
-  onSelectGroup: (groupId: string | null) => void;
-}
-
-/**
- * 渲染乐迷团横向头像导轨
- * @param props - 包含乐迷团列表、选中团ID及切换回调
+ * 动态页乐迷团筛选导轨
+ * 「全部」与各乐迷团使用同一种圆形形态，「全部」以已加入团头像拼贴表达“合集”，
+ * 选中态统一为品牌色描边 + 主文字色名称，避免多重强调。
  */
 export function SocialFansGroupRail({
   groups,
@@ -33,101 +26,116 @@ export function SocialFansGroupRail({
   }
 
   const isAllActive = !selectedGroupId || selectedGroupId === "all";
+  const mosaic = groups.slice(0, 4);
 
   return (
-    <div className="mb-4 w-full">
-      <div
-        className="flex scrollbar-none items-center gap-4 overflow-x-auto px-1 py-2"
-        role="tablist"
-        aria-label={t("social.myFansGroups")}
+    <div
+      className="-mx-1 mb-2 flex scrollbar-none items-start gap-2 overflow-x-auto px-1 pb-3"
+      role="tablist"
+      aria-label={t("social.myFansGroups")}
+    >
+      <RailItem
+        active={isAllActive}
+        label={t("social.fansGroupAll")}
+        onSelect={() => onSelectGroup(null)}
       >
-        {/* 全部 / 综合圈子 */}
-        <button
-          type="button"
-          role="tab"
-          aria-selected={isAllActive}
-          onClick={() => onSelectGroup(null)}
-          className="group flex shrink-0 flex-col items-center gap-1.5 focus:outline-none"
-        >
-          <div
-            className={cn(
-              "relative flex size-14 items-center justify-center rounded-full transition-all duration-200",
-              "border border-brand/30 bg-gradient-to-br from-brand/20 to-brand/5 text-brand shadow-sm",
-              "group-hover:scale-105 group-hover:border-brand/60",
-              isAllActive && "ring-offset-surface-base ring-2 ring-brand ring-offset-2",
-            )}
-          >
-            <Sparkles className="size-6 text-brand" />
-          </div>
-          <span
-            className={cn(
-              "max-w-16 truncate text-xs font-medium transition-colors",
-              isAllActive
-                ? "font-semibold text-brand"
-                : "text-content-muted group-hover:text-content",
-            )}
-          >
-            {t("social.fansGroupAll")}
+        {mosaic.length >= 2 ? (
+          <span className="grid size-full grid-cols-2 grid-rows-2 gap-px bg-surface-sunken">
+            {Array.from({ length: 4 }, (_, index) => {
+              const group = mosaic[index];
+              return group?.headAvatarUrl ? (
+                <Image
+                  key={group.fansGroupId}
+                  src={`${group.headAvatarUrl}?param=48y48`}
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="size-full object-cover"
+                />
+              ) : (
+                <span key={index} className="size-full bg-surface-elevated" />
+              );
+            })}
           </span>
-        </button>
+        ) : (
+          <span className="flex size-full items-center justify-center bg-surface-sunken text-content-muted">
+            <LayoutGrid className="size-5" />
+          </span>
+        )}
+      </RailItem>
 
-        {/* 用户已加入的艺人乐迷团 */}
-        {groups.map((group) => {
-          const isActive = selectedGroupId === group.fansGroupId;
-          const displayName = group.artistName || group.fansGroupName;
-          const level = group.userLevel?.level;
-
-          return (
-            <button
-              key={group.fansGroupId}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
-              onClick={() => onSelectGroup(group.fansGroupId)}
-              className="group flex shrink-0 flex-col items-center gap-1.5 focus:outline-none"
-              title={`${displayName}${level ? ` (Lv.${level})` : ""}`}
-            >
-              <div className="relative size-14 transition-all duration-200 group-hover:scale-105">
-                <div
-                  className={cn(
-                    "border-surface-border size-full overflow-hidden rounded-full border bg-surface-elevated shadow-sm",
-                    isActive && "ring-offset-surface-base ring-2 ring-brand ring-offset-2",
-                  )}
-                >
-                  {group.headAvatarUrl ? (
-                    <Image
-                      src={`${group.headAvatarUrl}?param=120y120`}
-                      alt={displayName}
-                      width={56}
-                      height={56}
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex size-full items-center justify-center bg-surface-sunken text-content-muted">
-                      <Users className="size-6" />
-                    </div>
-                  )}
-                </div>
-                {level && (
-                  <span className="border-surface-base absolute -right-0.5 -bottom-0.5 z-10 flex items-center justify-center rounded-full border bg-brand px-1 py-0.5 text-[9px] leading-none font-bold text-brand-foreground shadow-sm">
-                    Lv.{level}
-                  </span>
-                )}
-              </div>
-              <span
-                className={cn(
-                  "max-w-16 truncate text-xs font-medium transition-colors",
-                  isActive
-                    ? "font-semibold text-brand"
-                    : "text-content-muted group-hover:text-content",
-                )}
-              >
-                {displayName}
+      {groups.map((group) => {
+        const displayName = group.artistName || group.fansGroupName;
+        const level = group.userLevel?.level;
+        return (
+          <RailItem
+            key={group.fansGroupId}
+            active={selectedGroupId === group.fansGroupId}
+            label={displayName}
+            title={`${displayName}${level ? ` · Lv.${level}` : ""}`}
+            badge={level ? `Lv.${level}` : undefined}
+            onSelect={() => onSelectGroup(group.fansGroupId)}
+          >
+            {group.headAvatarUrl ? (
+              <Image
+                src={`${group.headAvatarUrl}?param=96y96`}
+                alt=""
+                width={44}
+                height={44}
+                className="size-full object-cover"
+              />
+            ) : (
+              <span className="flex size-full items-center justify-center bg-surface-sunken text-content-muted">
+                <Users className="size-5" />
               </span>
-            </button>
-          );
-        })}
-      </div>
+            )}
+          </RailItem>
+        );
+      })}
     </div>
+  );
+}
+
+function RailItem({
+  active,
+  label,
+  title,
+  badge,
+  onSelect,
+  children,
+}: SocialFansGroupRailItemProps) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      onClick={onSelect}
+      title={title ?? label}
+      className="group flex w-16 shrink-0 flex-col items-center gap-1.5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+    >
+      <span
+        className={cn(
+          "relative rounded-full border-2 p-0.5 transition-colors duration-200",
+          active ? "border-brand" : "border-transparent group-hover:border-content-subtle/40",
+        )}
+      >
+        <span className="block size-11 overflow-hidden rounded-full bg-surface-elevated">
+          {children}
+        </span>
+        {badge && (
+          <span className="absolute -right-1 -bottom-0.5 rounded-full bg-surface-elevated px-1 py-px text-[9px] leading-tight font-semibold text-content-muted shadow-sm">
+            {badge}
+          </span>
+        )}
+      </span>
+      <span
+        className={cn(
+          "max-w-full truncate text-xs transition-colors",
+          active ? "font-semibold text-content" : "text-content-muted group-hover:text-content",
+        )}
+      >
+        {label}
+      </span>
+    </button>
   );
 }

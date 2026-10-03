@@ -9,6 +9,7 @@ import { SOCIAL_DISCOVERY_GROUP } from "@/constants/social";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import { SocialLogin } from "./SocialPrimitives";
+import { SocialComposer } from "./SocialComposer";
 import { SocialFeed } from "./SocialFeed";
 import { SocialPeople } from "./SocialPeople";
 import { SocialSearchForm } from "./SocialSearchForm";
@@ -81,8 +82,9 @@ function SocialPageContent() {
         <main className={s.main}>
           <SocialHeader
             view={people ? "people" : following ? "friends" : "hot"}
-            topicId={topic?.id}
+            topic={topic}
             groupId={groupId}
+            groups={userGroups}
           />
           {!uid ? (
             <SocialLogin />
@@ -100,7 +102,10 @@ function SocialPageContent() {
               />
             </section>
           ) : following ? (
-            <SocialFeed />
+            <>
+              <SocialComposer />
+              <SocialFeed />
+            </>
           ) : topic ? (
             <SocialHotFeed key={topic.id} topic={topic} />
           ) : (

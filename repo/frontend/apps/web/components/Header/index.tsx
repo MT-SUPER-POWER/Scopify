@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import RightActions from "./RightActions";
 import HeaderSearch from "@/components/SearchContents/HeaderSearch";
-import { useNavigationScroll } from "@/components/shared/NavigationScrollProvider";
+import { useIsScrollAtTop } from "@/components/shared/NavigationScrollProvider";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { headerStyles } from "@/styles";
@@ -11,7 +11,7 @@ import { headerStyles } from "@/styles";
 const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
 
 export function Header() {
-  const { isAtTop } = useNavigationScroll();
+  const isAtTop = useIsScrollAtTop();
   const smartRouter = useSmartRouter();
 
   return (
