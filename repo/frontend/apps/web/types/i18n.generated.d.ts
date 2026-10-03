@@ -7838,6 +7838,18 @@ export interface TranslateFn {
    */
   (key: "artist.track.copyFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 乐迷团
+   * zh-TW: 樂迷團
+   * en-US: Fans Group
+   */
+  (key: "artist.action.fansGroup", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制歌手链接
+   * zh-TW: 複製歌手連結
+   * en-US: Copy Artist Link
+   */
+  (key: "artist.action.copyLink", params?: TranslationParams): string;
+  /**
    * zh-CN: 乐迷团 · Lv.{{level}}
    * zh-TW: 樂迷團 · Lv.{{level}}
    * en-US: Fans · Lv.{{level}}

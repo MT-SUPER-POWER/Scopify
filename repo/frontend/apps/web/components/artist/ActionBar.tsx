@@ -1,8 +1,15 @@
-import { Crown, MoreHorizontal, Pause, Play } from "lucide-react";
+import { Copy, MoreHorizontal, Pause, Play, Users } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { subscribeArtist } from "@/lib/api/artist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useArtistFansGroupStatus } from "@/hooks/fansGroup/useFansGroupQueries";
@@ -64,6 +71,15 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
     }
   }, [artistId, isFollowing, isLoggedIn, queryClient, t]);
 
+  const handleCopyLink = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/artist?id=${artistId}`);
+      toast.success(t("artist.track.copySuccess"));
+    } catch {
+      toast.error(t("artist.track.copyFailed"));
+    }
+  }, [artistId, t]);
+
   return (
     <div className="flex items-center gap-6 p-6 md:p-8">
       <button
@@ -105,20 +121,44 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         </span>
       </button>
 
-      {fansGroupStatus.isJoined && fansGroupStatus.fansGroupId && (
-        <Link
-          href={`/social?group=${fansGroupStatus.fansGroupId}`}
-          className="flex items-center gap-1.5 rounded-full border border-brand/40 bg-brand/10 px-4 py-1.5 text-sm font-bold text-brand shadow-sm transition-all hover:scale-105 hover:border-brand/70 hover:bg-brand/20"
-          title={t("artist.fansGroup.joined", { level: fansGroupStatus.level ?? "1" })}
-        >
-          <Crown className="size-4 fill-brand/20" />
-          <span>{t("artist.fansGroup.joined", { level: fansGroupStatus.level ?? "1" })}</span>
-        </Link>
-      )}
-
-      <button type="button" className="text-content-muted transition-colors hover:text-content">
-        <MoreHorizontal className="size-8" />
-      </button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            className="text-content-muted transition-colors hover:text-content focus:outline-none"
+            aria-label={t("social.more")}
+          >
+            <MoreHorizontal className="size-8" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          {fansGroupStatus.isJoined && fansGroupStatus.fansGroupId && (
+            <>
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/social?group=${fansGroupStatus.fansGroupId}`}
+                  className="flex cursor-pointer items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <Users className="size-4" />
+                    <span>{t("artist.action.fansGroup")}</span>
+                  </div>
+                  {fansGroupStatus.level && (
+                    <span className="rounded bg-surface-elevated px-1.5 py-0.5 text-[10px] font-semibold text-content-muted">
+                      Lv.{fansGroupStatus.level}
+                    </span>
+                  )}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
+          <DropdownMenuItem className="cursor-pointer" onSelect={() => void handleCopyLink()}>
+            <Copy className="size-4" />
+            <span>{t("artist.action.copyLink")}</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

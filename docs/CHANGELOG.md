@@ -6,7 +6,7 @@
 
 - **乐迷团社交生态与多端界面集成**：
   - **动态页圈子导轨与聚合笔记流**：在动态页顶部新增横向头像导轨（`SocialFansGroupRail`），支持在「全部」综合圈子与已加入艺人乐迷团之间无缝切换；默认聚合呈现用户已加入圈子的全部最新图文笔记（`useSocialAggregatedNotes`），支持各圈子游标分页及独立圈子穿透。
-  - **歌手页乐迷团身份入口**：在歌手主页操作栏（`ActionBar`）新增乐迷团身份胶囊按钮，已入团歌手自动展示等级标牌（`👑 乐迷团 · Lv.X`），点击直达该艺人乐迷团动态流。
+  - **歌手页乐迷团更多菜单收敛**：移除歌手主页操作栏显眼的绿色外露胶囊按钮，将乐迷团入口收敛至「更多」（`MoreHorizontal`）下拉菜单（`DropdownMenu`），展示乐迷团项及对应粉丝等级，并补齐「复制歌手链接」操作，保持页面干净克制。
   - **个人主页乐迷团网格展示**：在个人主页「关于」标签下新增「我加入的乐迷团」网格卡片（`ProfileFansGroupGrid`），复用标准网格规范展示用户加入的全部歌手乐迷团头像、头衔等级与成员人数，优化徽章层级外挂避免裁剪，点击快速跳转动态。
 
 - **乐迷团纯协议转发接口与文档规范**：在后端服务（`api-enhanced`）中遵循轻量透传原则，接入并简化了 `/fans/group/user/groups`、`/fans/group/detail`、`/fans/group/feed/recommend` 及 `/fans/group/user/group/detail` 乐迷团系列接口，移除人为多余参数校验与错误拦截，统一交由网易实际后端返回业务状态；并在 `public/docs/home.md` 中补齐了标准风格的接口文档。前端同步完成 `types/api/fansGroup.ts`、`lib/api/fansGroup.ts` 及 `hooks/fansGroup/useFansGroupQueries.ts` 对齐。
