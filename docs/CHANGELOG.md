@@ -4,6 +4,8 @@
 
 ### Added
 
+- **乐迷团纯协议转发接口与文档规范**：在后端服务（`api-enhanced`）中遵循轻量透传原则，接入并简化了 `/fans/group/user/groups`、`/fans/group/detail`、`/fans/group/feed/recommend` 及 `/fans/group/user/group/detail` 乐迷团系列接口，移除人为多余参数校验与错误拦截，统一交由网易实际后端返回业务状态；并在 `public/docs/home.md` 中补齐了标准风格的接口文档。前端同步完成 `types/api/fansGroup.ts`、`lib/api/fansGroup.ts` 及 `hooks/fansGroup/useFansGroupQueries.ts` 对齐。
+
 - **私信一键全读支持**：在好友私信面板（`FriendsPanel`）顶部操作栏新增「全部已读」快捷按钮，提供即时将全量未读私信批量标为已读的能力；未读数为 0 时自动禁用，点击后同步重置通知系统已读状态并清空会话缓存未读数。
 
 ### Fixed

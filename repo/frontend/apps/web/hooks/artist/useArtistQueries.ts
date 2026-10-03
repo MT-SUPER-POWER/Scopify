@@ -60,3 +60,8 @@ export function useArtistAlbumsQuery(artistId: null | string) {
     queryKey: musicQueryKeys.artist.albums(artistId ?? ""),
   });
 }
+
+export {
+  useFansGroupDetailQuery,
+  useArtistFansGroupStatus,
+} from "@/hooks/fansGroup/useFansGroupQueries";
