@@ -87,6 +87,7 @@ export function FoliaPresentationSurface({
     seed: track?.id ?? `geometry-${settings.mode}`,
     staticMode,
     visualizerOpacity: settings.visualizerOpacity,
+    currentTime: bridge.lyricCurrentTime,
   };
 
   return (

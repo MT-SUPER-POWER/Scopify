@@ -45,6 +45,7 @@ import {
   getVisualizerBackgroundRegistryEntry,
   VISUALIZER_BACKGROUND_REGISTRY,
 } from "./backgrounds/registry";
+import VideoLayerSettingsSection from "../modal/settings/VideoLayerSettingsSection";
 
 // src/components/visualizer/VisPlaygroundSettingsPanel.tsx
 // Right-side settings panel for the click-to-edit visualizer playground.
@@ -694,6 +695,13 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
               onSliderPointerDown,
               onSliderCommit,
             })}
+            <VideoLayerSettingsSection
+              t={t}
+              isDaylight={isDaylight}
+              theme={theme}
+              controlCardBg={controlCardBg}
+              rangeInputClass={rangeInputClass}
+            />
           </>
         )}
 

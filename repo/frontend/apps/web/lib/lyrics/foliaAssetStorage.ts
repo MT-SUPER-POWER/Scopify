@@ -105,6 +105,8 @@ export const saveTemperaLayerImage = (image: StoredTemperaLayerImage) =>
 
 export const clearTemperaLayerImage = (id: string) => del(temperaAssetKey(id), assetStore);
 
+export * from "./foliaVideoStorage";
+
 export async function loadTemperaLayerImageBlobs(
   placements: Pick<TemperaLayerImage, "id">[],
   thumbnail = false,

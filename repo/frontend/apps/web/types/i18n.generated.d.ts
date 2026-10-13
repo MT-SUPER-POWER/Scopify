@@ -12647,6 +12647,126 @@ export interface TranslateFn {
    */
   (key: "folia.options.visualizerBackgroundModeSora", params?: TranslationParams): string;
   /**
+   * zh-CN: 空背景设置
+   * zh-TW: 空背景設定
+   * en-US: Sora Background
+   */
+  (key: "folia.options.soraBackgroundSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完全空白
+   * zh-TW: 完全空白
+   * en-US: Fully blank
+   */
+  (key: "folia.options.soraBlank", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不再渲染 WebGL 星空，只显示静态纯色画面：夜间纯黑，日间纯白。适合搭配视频层使用。
+   * zh-TW: 不再渲染 WebGL 星空，只顯示靜態純色畫面：夜間純黑，日間純白。適合搭配影片層使用。
+   * en-US: Skip the WebGL starfield and show a static solid frame: black at night, white in daylight. Pairs well with the video layer.
+   */
+  (key: "folia.options.soraBlankDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视频层
+   * zh-TW: 影片層
+   * en-US: Video layer
+   */
+  (key: "folia.options.videoLayerSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在歌词后方显示视频
+   * zh-TW: 在歌詞後方顯示影片
+   * en-US: Show video behind lyrics
+   */
+  (key: "folia.options.videoLayerEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在背景和歌词之间铺一层静音视频，跟随音乐播放、暂停和跳转。
+   * zh-TW: 在背景和歌詞之間鋪一層靜音影片，跟隨音樂播放、暫停和跳轉。
+   * en-US: A muted video between the background and the lyrics. It plays, pauses and seeks with the music.
+   */
+  (key: "folia.options.videoLayerDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地视频
+   * zh-TW: 本機影片
+   * en-US: Local video
+   */
+  (key: "folia.options.videoLayerLocalFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先于 URL 使用。重启后自动恢复所选视频。
+   * zh-TW: 優先於 URL 使用。重啟後自動恢復所選影片。
+   * en-US: Takes priority over the URL. The pick is remembered after a restart.
+   */
+  (key: "folia.options.videoLayerLocalFileDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先于 URL 使用。当前浏览器无法记住所选文件，重启后需要重新选择。
+   * zh-TW: 優先於 URL 使用。當前瀏覽器無法記住所選檔案，重啟後需要重新選擇。
+   * en-US: Takes priority over the URL. This browser cannot remember the pick, so choose it again after a restart.
+   */
+  (key: "folia.options.videoLayerLocalFileSessionDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择视频
+   * zh-TW: 選擇影片
+   * en-US: Choose video
+   */
+  (key: "folia.options.videoLayerPickFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新授权访问
+   * zh-TW: 重新授權存取
+   * en-US: Allow access again
+   */
+  (key: "folia.options.videoLayerRegrant", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除本地视频
+   * zh-TW: 清除本機影片
+   * en-US: Clear local video
+   */
+  (key: "folia.options.videoLayerClearFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法打开该视频
+   * zh-TW: 無法開啟該影片
+   * en-US: Could not open the video
+   */
+  (key: "folia.options.videoLayerPickFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视频 URL
+   * zh-TW: 影片 URL
+   * en-US: Video URL
+   */
+  (key: "folia.options.videoLayerUrl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未选择本地视频时使用。
+   * zh-TW: 未選擇本機影片時使用。
+   * en-US: Used when no local video is chosen.
+   */
+  (key: "folia.options.videoLayerUrlDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不透明度
+   * zh-TW: 不透明度
+   * en-US: Opacity
+   */
+  (key: "folia.options.videoLayerOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 填充方式
+   * zh-TW: 填充方式
+   * en-US: Fit
+   */
+  (key: "folia.options.videoLayerFit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 铺满（裁切）
+   * zh-TW: 鋪滿（裁切）
+   * en-US: Cover (crop)
+   */
+  (key: "folia.options.videoLayerFitCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完整显示
+   * zh-TW: 完整顯示
+   * en-US: Contain
+   */
+  (key: "folia.options.videoLayerFitContain", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不参与视觉配置导入导出，也不在 OBS 源中显示：OBS 使用独立浏览器，无法读取这里选择的本地视频。
+   * zh-TW: 不參與視覺配置匯入匯出，也不在 OBS 來源中顯示：OBS 使用獨立瀏覽器，無法讀取這裡選擇的本機影片。
+   * en-US: Not included in visual config import/export, and not shown in OBS sources: OBS runs its own browser and cannot open the local video picked here.
+   */
+  (key: "folia.options.videoLayerNotInExport", params?: TranslationParams): string;
+  /**
    * zh-CN: 莱茵
    * zh-TW: 萊茵
    * en-US: Rhine

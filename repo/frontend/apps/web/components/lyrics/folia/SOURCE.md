@@ -181,6 +181,16 @@ the original full-copy baseline:
   the mode and row texts. Local adaptation: Scopify's Monet keeps its fixed 500 / 400 weights and
   fixed line-height ratios, as it has no theme font-weight inputs.
 
+- `4eee4ba8` — video layer behind lyrics + Sora blank background:
+  - Adds `<VideoLayer />` rendered between the visualizer background and lyric overlays,
+    driven by audio playback time with drift correction and seek resync.
+  - Adds Sora blank mode (`blank` in `SoraBackgroundTuning`) that bypasses WebGL canvas mounting
+    and renders a flat solid background, with quick-control and settings toggle rows.
+  - Local adaptations: Video file handles and fallback blobs are stored in Scopify's
+    `scopify-folia-stage` IndexedDB (`foliaVideoStorage.ts` / `foliaAssetStorage.ts`). Video layer
+    settings (`useVideoLayerSettingsStore`) are excluded from visualizer appearance payload
+    import/export and OBS surfaces.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

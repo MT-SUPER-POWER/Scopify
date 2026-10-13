@@ -807,6 +807,8 @@ export interface NomandBackgroundTuning {
 }
 
 export interface SoraBackgroundTuning {
+  /** Skips the WebGL starfield and shows a static solid black (night) / white (daylight) frame. */
+  blank?: boolean;
   starDensity: number;
   starSize: number;
   starSpeed: number;
@@ -888,6 +890,7 @@ export const DEFAULT_NOMAND_BACKGROUND_TUNING: NomandBackgroundTuning = {
 };
 
 export const DEFAULT_SORA_BACKGROUND_TUNING: SoraBackgroundTuning = {
+  blank: false,
   starDensity: 1,
   starSize: 1,
   starSpeed: 1,
