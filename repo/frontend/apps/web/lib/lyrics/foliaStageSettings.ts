@@ -148,7 +148,7 @@ const STRING_ENUMS = {
     "tempera",
     "tilt",
   ],
-  subtitleContentMode: ["translation", "romanization", "none"],
+  subtitleContentMode: ["translation", "romanization", "both", "none"],
   subtitleFontStyle: ["sans", "serif", "mono"],
   themeVariant: ["dark", "light"],
   "tunings.cappella.avatarSource": ["cover", "builtin", "color", "custom"],

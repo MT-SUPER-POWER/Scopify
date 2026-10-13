@@ -12923,6 +12923,12 @@ export interface TranslateFn {
    */
   (key: "folia.options.subtitleContentNone", params?: TranslationParams): string;
   /**
+   * zh-CN: 罗马音 + 翻译
+   * zh-TW: 羅馬音 + 翻譯
+   * en-US: Romanization + Translation
+   */
+  (key: "folia.options.subtitleContentBoth", params?: TranslationParams): string;
+  /**
    * zh-CN: 流光参数
    * zh-TW: 流光參數
    * en-US: Classic Tuning

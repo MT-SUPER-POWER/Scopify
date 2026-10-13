@@ -165,6 +165,12 @@ the original full-copy baseline:
 - `f79a40ca` — Tempera's corner marks get their own `showCornerMarks` tuning (default on),
   decoupled from `showDecor`; toggling it redraws only the overlay.
 
+- `871a7ba6` and `f68461ac` — `SubtitleContentMode` gains `both`; the shared bottom
+  overlay stacks romanization above translation with the shared secondary-row style, and
+  single-track consumers (Lattice, harmony, Scopify's Archive) fold `both` to translation.
+  Track types live in `types/lyrics/folia/subtitleTrack.ts`; the command-palette cycle helper
+  was not needed because Scopify lists each mode as its own command.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

@@ -828,6 +828,7 @@ const VisPlaygroundSettingsPanel: React.FC<VisPlaygroundSettingsPanelProps> = (p
                     label: t("folia.options.subtitleContentRomanization"),
                     value: "romanization",
                   },
+                  { label: t("folia.options.subtitleContentBoth"), value: "both" },
                   { label: t("folia.options.subtitleContentNone"), value: "none" },
                 ]}
                 onChange={

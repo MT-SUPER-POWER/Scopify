@@ -1,6 +1,7 @@
 import type { Track, LatticeLyricInput, LatticeLyricRuntime } from "@/types/playlistLatticeLyrics";
 import { cubicBezier } from "framer-motion";
 import { loadPixi } from "@/lib/lyrics/folia/loadPixi";
+import { resolveSingleTrackSubtitleMode } from "@/components/lyrics/folia/src/utils/lyrics/alternateText";
 import {
   clearMonetMeasurementCaches,
   type MonetVisibleLineEntry,
@@ -145,7 +146,9 @@ function attachRuntime(
           typography,
           Math.max(1, width - typography.padding * 2),
           raster.measure,
-          input.subtitleContentMode === "romanization",
+          // Lattice draws its subtitle inside the lyric scene, so the dual mode keeps translation only.
+          resolveSingleTrackSubtitleMode(input.subtitleContentMode ?? "translation") ===
+            "romanization",
         );
         const view = createLatticeLineView(
           pixi,

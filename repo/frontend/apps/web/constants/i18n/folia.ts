@@ -587,6 +587,7 @@ export const foliaMessages = defineMessages(
     "folia.options.subtitleContentTranslation": "翻译",
     "folia.options.subtitleContentRomanization": "罗马音",
     "folia.options.subtitleContentNone": "不显示",
+    "folia.options.subtitleContentBoth": "罗马音 + 翻译",
     "folia.options.classicSettings": "流光参数",
     "folia.options.classicSettingsDesc": "控制逐字旋转和整行呼吸浮动范围。",
     "folia.options.classicWordRotation": "逐字旋转",
@@ -2502,6 +2503,7 @@ export const foliaMessages = defineMessages(
     "folia.options.subtitleContentTranslation": "翻譯",
     "folia.options.subtitleContentRomanization": "羅馬音",
     "folia.options.subtitleContentNone": "不顯示",
+    "folia.options.subtitleContentBoth": "羅馬音 + 翻譯",
     "folia.options.classicSettings": "流光參數",
     "folia.options.classicSettingsDesc": "控制逐字旋轉和整行呼吸浮動範圍。",
     "folia.options.classicWordRotation": "逐字旋轉",
@@ -4462,6 +4464,7 @@ export const foliaMessages = defineMessages(
     "folia.options.subtitleContentTranslation": "Translation",
     "folia.options.subtitleContentRomanization": "Romanization",
     "folia.options.subtitleContentNone": "None",
+    "folia.options.subtitleContentBoth": "Romanization + Translation",
     "folia.options.classicSettings": "Classic Tuning",
     "folia.options.classicSettingsDesc":
       "Control per-word rotation and whole-line breathing float range.",
