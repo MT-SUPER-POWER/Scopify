@@ -5,6 +5,7 @@ import type {
 import type { LyricChorusRange, LyricData } from "@/types/lyrics";
 
 import { detectRepeatedChorusTexts } from "./chorusRanges";
+import { isPureMusicLyricLines } from "./pureMusic";
 
 const MILLISECONDS_PER_SECOND = 1_000;
 const MINIMUM_TIMED_UNIT_SECONDS = 0.04;
@@ -19,6 +20,15 @@ export function adaptLyricDataToFolia(
   lyrics: LyricData,
   chorusRanges: LyricChorusRange[] = [],
 ): FoliaLyricData {
+  if (lyrics.isPureMusic || isPureMusicLyricLines(lyrics.lines)) {
+    return {
+      artist: lyrics.metadata.artist,
+      isWordByWord: lyrics.isWordByWord,
+      lines: [],
+      title: lyrics.metadata.title,
+    };
+  }
+
   const lyricLines = lyrics.lines.map((line, index, lines) =>
     adaptLine(line, lines[index + 1]?.startTimeMs, lyrics.isWordByWord),
   );

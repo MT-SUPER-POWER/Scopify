@@ -191,6 +191,11 @@ the original full-copy baseline:
     settings (`useVideoLayerSettingsStore`) are excluded from visualizer appearance payload
     import/export and OBS surfaces.
 
+- `2b824ea5` — loosen pure music detection and handle empty lyrics handover:
+  - Adds pure music notice recognition in `src/utils/lyrics/pureMusic.ts` and companion staff detection in `staffCredits.ts`: matches text patterns like 「纯音乐，请欣赏」, 「此歌曲为没有填词的纯音乐，请您欣赏」 with punctuation/whitespace/traditional variants and KRC/YRC timing tags stripped. Companion lines (staff credits, metadata, title headers, filler lines) are tolerated; any genuine lyric line invalidates pure music status.
+  - Updates `decideSongCommit` in `songHandover.ts`: when a song's lyrics become empty (`lyricsSignature === ""` while `isCommittedInstrumental === false`), switches to `watch` rather than `idle`, settling into instrumental mode without leaving cleared lyric lines frozen on screen.
+  - Local adaptations: Integrated into `neteaseLyricAdapter.ts` to zero out lines and mark `isPureMusic: true` for unflagged pure music tracks; guarded `adaptLyricDataToFolia` to return `lines: []` when pure music is detected.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

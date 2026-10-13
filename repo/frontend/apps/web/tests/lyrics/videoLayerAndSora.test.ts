@@ -117,7 +117,13 @@ describe("Sora blank background", () => {
       theme: mockTheme,
       paused: false,
       audioPower: motionValue(0),
-      audioBands: { bass: 0, mid: 0, treble: 0 },
+      audioBands: {
+        bass: motionValue(0),
+        lowMid: motionValue(0),
+        mid: motionValue(0),
+        vocal: motionValue(0),
+        treble: motionValue(0),
+      },
       staticMode: false,
     };
 
