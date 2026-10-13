@@ -171,6 +171,11 @@ the original full-copy baseline:
   Track types live in `types/lyrics/folia/subtitleTrack.ts`; the command-palette cycle helper
   was not needed because Scopify lists each mode as its own command.
 
+- `5809e8e8` and `5b2bbb6d` — Pendolo resolves its subtitle rows through
+  `pendoloSubtitleTracks.ts` for both measuring and drawing, honouring the subtitle mode
+  (it previously always showed translation). Local adaptations: rows keep Scopify's fixed weights
+  and scale with `lyricsFontScale` as before rather than the separate subtitle scale.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

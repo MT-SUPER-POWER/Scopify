@@ -15,6 +15,11 @@ import { calculatePendoloWheelLayout } from "@/components/lyrics/folia/src/compo
 import PendoloActiveLyricSweep from "@/components/lyrics/folia/src/components/visualizer/pendolo/PendoloActiveLyricSweep";
 import { buildPendoloTextLayout } from "@/components/lyrics/folia/src/components/visualizer/pendolo/pendoloTextLayout";
 import {
+  resolvePendoloSubtitleTracks,
+  sumPendoloSubtitleTrackHeights,
+} from "@/components/lyrics/folia/src/components/visualizer/pendolo/pendoloSubtitleTracks";
+import { resolveSubtitleContentMode } from "@/components/lyrics/folia/src/utils/lyrics/alternateText";
+import {
   resolvePendoloChorusPresentation,
   resolvePendoloMotionProfile,
 } from "@/components/lyrics/folia/src/components/visualizer/pendolo/pendoloMotionProfile";
@@ -36,18 +41,6 @@ const getScrollDirection = (delta: number) => {
 const clampScrollSteps = (steps: number) => {
   if (Math.abs(steps) > 5) return steps > 0 ? 5 : -5;
   return steps;
-};
-
-const resolveLineSecondaryText = (line: Line, showTranslation: boolean): string | null => {
-  if (!showTranslation) {
-    return null;
-  }
-
-  return (
-    line.translation ??
-    line.alternateTexts?.find((item) => item.role === "translation")?.text ??
-    null
-  );
 };
 
 // src/components/visualizer/pendolo/VisualizerPendolo.tsx
@@ -72,7 +65,16 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
     lyricsFontScale = 1,
     subtitleTheme,
     hideTranslationSubtitle = false,
+    subtitleContentMode,
   } = props;
+  // Pendolo lays its subtitles out inside the clockwork layout, not the shared bottom overlay;
+  // 'both' stacks romanization above translation under each lyric (Folia 5809e8e8). The rows come
+  // from resolvePendoloSubtitleTracks, which the height pre-measurement and the rendering both
+  // read, so the reserved space always matches the drawn rows.
+  const resolvedSubtitleMode = resolveSubtitleContentMode(
+    subtitleContentMode,
+    showSubtitleTranslation,
+  );
 
   const [viewportSize, setViewportSize] = useState({
     width: typeof window !== "undefined" ? window.innerWidth : 1920,
@@ -379,21 +381,24 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
         Math.round(fontPx * 1.2),
       ).height;
 
-      const translation = hideTranslationSubtitle
-        ? null
-        : resolveLineSecondaryText(line, showSubtitleTranslation);
-      const hasReadableText = !!translation && /[\p{L}\p{N}]/u.test(translation);
-      const translationPx = Math.round(16 * lyricsFontScale);
-
-      const translationHeight = hasReadableText
-        ? buildPendoloTextLayout(
-            translation,
-            `500 ${translationPx}px ${resolveThemeTranslationFontStack(subtitleTheme ?? theme)}`,
+      // Focal-state rows, same as the main lyric above: reserve the largest size the line takes.
+      const subtitleTracks = resolvePendoloSubtitleTracks(line, {
+        mode: resolvedSubtitleMode,
+        hidden: hideTranslationSubtitle,
+        focal: true,
+        fontScale: lyricsFontScale,
+      });
+      const subtitleFontFamily = resolveThemeTranslationFontStack(subtitleTheme ?? theme);
+      const translationHeight = sumPendoloSubtitleTrackHeights(
+        subtitleTracks,
+        (track) =>
+          buildPendoloTextLayout(
+            track.text,
+            `${track.fontWeight} ${track.fontPx}px ${subtitleFontFamily}`,
             measureWidth,
-            Math.round(translationPx * 1.2),
-          ).height +
-          translationPx * 0.25 // Equivalent to marginTop: 0.25em
-        : 0;
+            track.lineHeightPx,
+          ).height,
+      );
 
       return (mainHeight + translationHeight) * pendoloTuning.activeScale;
     });
@@ -404,7 +409,7 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
     lines,
     lyricsFontScale,
     pendoloTuning.activeScale,
-    showSubtitleTranslation,
+    resolvedSubtitleMode,
     subtitleTheme,
     targetLineIndex,
     theme,
@@ -509,11 +514,12 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
               );
               const maxTextWidth = availableTextWidth / item.scale;
               const fontPx = Math.round((isFocal ? 28 : 22) * lyricsFontScale);
-              const translation = hideTranslationSubtitle
-                ? null
-                : resolveLineSecondaryText(item.line, showSubtitleTranslation);
-              const hasReadableText = !!translation && /[\p{L}\p{N}]/u.test(translation);
-              const translationPx = Math.round((isFocal ? 16 : 12) * lyricsFontScale);
+              const subtitleTracks = resolvePendoloSubtitleTracks(item.line, {
+                mode: resolvedSubtitleMode,
+                hidden: hideTranslationSubtitle,
+                focal: isFocal,
+                fontScale: lyricsFontScale,
+              });
 
               return (
                 <div
@@ -607,28 +613,31 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
                             </div>
                           )}
                         </div>
-                        {/* Secondary Translation / Romanization Line */}
-                        {hasReadableText && (
+                        {/* Romanization / translation rows (a second row steps down in size and opacity) */}
+                        {subtitleTracks.map((track) => (
                           <div
+                            key={track.role}
+                            data-pendolo-subtitle-track={track.role}
                             className="whitespace-pre-wrap transition-opacity duration-200"
                             style={{
                               fontFamily: resolveThemeTranslationFontStack(subtitleTheme ?? theme),
-                              fontWeight: 500,
-                              fontSize: `${translationPx}px`,
+                              fontWeight: track.fontWeight,
+                              fontSize: `${track.fontPx}px`,
                               maxWidth: `${maxTextWidth}px`,
                               color: isFocal
                                 ? secondaryTextColor
                                 : colorWithAlpha(secondaryTextColor, 0.6),
+                              opacity: track.opacityFactor === 1 ? undefined : track.opacityFactor,
                               letterSpacing: "0.01em",
                               whiteSpace: "pre-wrap",
                               overflowWrap: "anywhere",
                               wordBreak: "break-word",
-                              marginTop: "0.25em",
+                              marginTop: `${track.gapEm}em`,
                             }}
                           >
-                            {translation}
+                            {track.text}
                           </div>
-                        )}
+                        ))}
                       </div>
                     </motion.div>
                   </motion.div>
