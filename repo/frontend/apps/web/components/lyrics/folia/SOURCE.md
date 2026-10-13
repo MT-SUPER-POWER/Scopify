@@ -130,6 +130,11 @@ the original full-copy baseline:
   their stagger window unless an arc-led neighbour depends on the shared path; transition
   filters are pinned to the viewport so they no longer follow the drawn-in bounds.
 
+- `cbc97c30` and `fcb95450` (uniform guard) — Latent writes audio-driven uniforms through
+  the mount's `setUniformValues` while the shader animates instead of drawing on the spot, and
+  writes layer styles only when they change. The helper is `lib/lyrics/folia/paperShaderUniforms.ts`;
+  Scopify's stall watchdog still remounts a shader whose own loop stops.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
