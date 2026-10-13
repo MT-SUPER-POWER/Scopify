@@ -156,6 +156,12 @@ the original full-copy baseline:
   filter only when the string changes. Scopify has no glow quantization (that belongs to the
   Linux-only fix), so the filter is the blur alone.
 
+- `04b16c6e` and `fcb95450` (Cadenza part) — Cadenza writes overlay word styles and glyph
+  shadows only when they change, splits graphemes and measures ascent once per placement
+  (re-measured after a web font loads), buckets placements by status instead of sorting, and
+  tracks live overlay nodes by frame number. The loop body became a `drawPlacement` closure
+  instead of upstream's re-indented nested loop; Scopify has no Linux `will-change` toggle.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
