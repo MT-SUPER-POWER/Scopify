@@ -1,4 +1,5 @@
 import type { Line } from "../../../types";
+import type { TemperaProgramOptions } from "../../../../../../../types/lyrics/folia/temperaProgram";
 import {
   buildLineGraphemeTimeline,
   splitLyricGraphemes,
@@ -231,14 +232,14 @@ const isRenderableSegment = (segment: TemperaSegment) =>
   segment.text.trim().length > 0 && segment.graphemes.length > 0;
 
 /**
- * Slices every lyric line into half-phrase chunks on word boundaries. A chunk closes once it
- * holds a seeded 2..4 words or has run for ~2.2s, so one line usually becomes several shots
- * and the composition keeps moving while the line is still being sung.
+ * Builds the lyric chunks that become shots. The default closes a chunk once it holds a seeded
+ * 2..4 words or has run for ~2.2s; whole-line mode keeps every renderable segment in one chunk.
  */
 const buildShotChunks = (
   lines: TemperaCompiledLine[],
   seed: string,
   paragraphIndex: number,
+  wholeLineLyrics: boolean,
 ): ShotChunk[] => {
   const chunks: ShotChunk[] = [];
   lines.forEach((line) => {
@@ -246,6 +247,21 @@ const buildShotChunks = (
       .map((segment, index) => ({ segment, index }))
       .filter((entry) => isRenderableSegment(entry.segment));
     if (usable.length === 0) return;
+
+    if (wholeLineLyrics) {
+      const first = usable[0];
+      const last = usable.at(-1)!;
+      const endTime = Math.max(last.segment.endTime, first.segment.startTime + 0.2);
+      chunks.push({
+        lineIndex: line.sourceIndex,
+        segmentStart: first.index,
+        segmentEnd: last.index + 1,
+        startTime: first.segment.startTime,
+        endTime,
+        lyricEndTime: endTime,
+      });
+      return;
+    }
 
     let segmentStart = usable[0].index;
     let startTime = usable[0].segment.startTime;
@@ -316,8 +332,9 @@ const buildCameraKeys = (
   };
 };
 
-// Picks the stray glyphs that drift in the margins of sparse compositions; they are drawn
-// from the paragraph's other lines so the fragments always belong to the song.
+// Picks the stray glyphs that drift in the margins of sparse compositions; they are drawn from
+// lyrics this shot is not setting, so the fragments always belong to the song without doubling
+// what is already on screen. An empty pool simply yields no fragments.
 const buildDecorFragments = (pool: string, count: number, seed: number): TemperaDecorFragment[] => {
   const chars = Array.from(pool).filter(
     (char) => char.trim().length > 0 && !PUNCTUATION_ONLY.test(char),
@@ -407,18 +424,20 @@ const resolveFlowAngle = (previous: number | null, seed: number) => {
 
 const buildShots = (
   lines: TemperaCompiledLine[],
+  songLines: TemperaCompiledLine[],
   kind: TemperaParagraphKind,
   paragraphIndex: number,
   seed: string,
   previousKind: TemperaShotKind | null,
   previousMotif: TemperaDecorMotif | null,
   previousFlow: number | null,
+  wholeLineLyrics: boolean,
 ): TemperaShot[] => {
   let lastKind = previousKind;
   let lastMotif = previousMotif;
   let lastFlow = previousFlow;
   const paragraphEnd = lines.at(-1)?.renderEndTime ?? 0;
-  const chunks = buildShotChunks(lines, seed, paragraphIndex);
+  const chunks = buildShotChunks(lines, seed, paragraphIndex, wholeLineLyrics);
   const byIndex = new Map(lines.map((line) => [line.sourceIndex, line]));
 
   return chunks.map((chunk, shotIndex) => {
@@ -445,8 +464,11 @@ const buildShots = (
     lastFlow = flowAngle;
     const { start, end } = buildCameraKeys(shotKind, cameraSeed, flowAngle);
 
-    // Margin fragments come from the rest of the paragraph, never from the words this
-    // shot is already showing.
+    // Margin fragments and the watermark come from the rest of the paragraph, never from the
+    // words this shot is already showing. A one-line paragraph whose shot covers the entire
+    // line - the normal case in whole-line mode - leaves nothing over, so it borrows from the
+    // rest of the song instead of echoing the glyphs on screen. If even that is empty the
+    // pools stay empty and the decor simply drops its fragments and watermark.
     const outsideSlice = lines.flatMap((item) =>
       item.sourceIndex === chunk.lineIndex
         ? item.segments.filter(
@@ -454,8 +476,12 @@ const buildShots = (
           )
         : item.segments,
     );
-    const fragmentPool = outsideSlice.map((segment) => segment.text).join("") || sliceText;
-    const watermarkPool = outsideSlice
+    const decorPool =
+      outsideSlice.length > 0
+        ? outsideSlice
+        : songLines.flatMap((item) => (item.sourceIndex === chunk.lineIndex ? [] : item.segments));
+    const fragmentPool = decorPool.map((segment) => segment.text).join("");
+    const watermarkPool = decorPool
       .filter((segment) => segment.isWordLike)
       .map((segment) => segment.text);
     const decor = buildDecorSpec(
@@ -562,6 +588,7 @@ const buildBridgeShots = (
 export const compileTemperaProgram = (
   lines: Line[],
   seed: string | number = "tempera",
+  options: TemperaProgramOptions = {},
 ): TemperaProgram => {
   const compiled = lines.map((line, sourceIndex) => ({
     sourceIndex,
@@ -606,12 +633,14 @@ export const compileTemperaProgram = (
     const kind = classifyParagraph(draft.lines, index, drafts.length);
     const lyricShots = buildShots(
       draft.lines,
+      compiled,
       kind,
       index,
       resolvedSeed,
       previousShot,
       previousMotif,
       previousFlow,
+      options.wholeLineLyrics === true,
     );
     previousShot = lyricShots.at(-1)?.kind ?? previousShot;
     previousMotif = lyricShots.at(-1)?.decor.motif ?? previousMotif;

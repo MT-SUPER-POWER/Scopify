@@ -23,6 +23,7 @@ import { FoliaStageSettings } from "./FoliaStageSettings";
 export function LyricStage({ onClose }: LyricStageProps) {
   const {
     isBorderVisible,
+    isCursorHidden,
     isPlayerChromeHidden,
     isSettingsOpen,
     isTransparent,
@@ -79,26 +80,29 @@ export function LyricStage({ onClose }: LyricStageProps) {
       style={stageStyle}
     >
       {isWindowVisible ? (
-        <FoliaPresentationSurface
-          appearance={appearance}
-          bridge={bridge}
-          isPlayerChromeHidden={isPlayerChromeHidden}
-          layers={{ background: !isTransparent, lyrics: true }}
-          onBack={onClose}
-          onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
-          track={
-            currentSong
-              ? {
-                  albumTitle: currentSong.al.name,
-                  artistNames: currentSong.ar.map((artist) => artist.name),
-                  artworkUrl: currentSong.al.picUrl,
-                  durationMs: playback.durationMs,
-                  id: currentSong.id,
-                  title: currentSong.name,
-                }
-              : null
-          }
-        />
+        // Only the visual layer hides the pointer; controls and settings stay outside this scope.
+        <div className={`absolute inset-0${isCursorHidden ? "folia-cursor-auto-hidden" : ""}`}>
+          <FoliaPresentationSurface
+            appearance={appearance}
+            bridge={bridge}
+            isPlayerChromeHidden={isPlayerChromeHidden}
+            layers={{ background: !isTransparent, lyrics: true }}
+            onBack={onClose}
+            onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
+            track={
+              currentSong
+                ? {
+                    albumTitle: currentSong.al.name,
+                    artistNames: currentSong.ar.map((artist) => artist.name),
+                    artworkUrl: currentSong.al.picUrl,
+                    durationMs: playback.durationMs,
+                    id: currentSong.id,
+                    title: currentSong.name,
+                  }
+                : null
+            }
+          />
+        </div>
       ) : null}
 
       {isWindowVisible ? (

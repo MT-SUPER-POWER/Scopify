@@ -83,6 +83,31 @@ the original full-copy baseline:
   Local adaptations settle a pending cut when paused and continue retiring
   scenes when the new program has no paragraphs.
 
+- `d9e3efaa` — Tempera whole-line lyrics: one shot per source line, decor drawn from
+  the rest of the song instead of echoing the line on screen. The program options type
+  lives in Scopify's `types/lyrics/folia/temperaProgram.ts`.
+
+- `3e081df8`, `2bd16cbc` and `acf7ffc9` (as of v0.7.18) — Tempera canvas-image pool zip
+  backup with append / replace import, all-or-nothing rollback, the 512 MB declared-size
+  guard and the dialog close lock. The archive services keep Folia's `services/` paths over
+  Scopify's asset store; the draft and file actions live in `hooks/lyrics/useTemperaImagePool.ts`,
+  shared types in `types/lyrics/folia/temperaImagePool.ts`, and the download helpers in
+  `lib/web/download.ts`. Local adaptations: results are reported through Scopify's toasts,
+  replacing a non-empty pool is confirmed inside the import menu instead of `window.confirm`,
+  and the dialog keeps Scopify's existing styling rather than Folia's daylight tokens.
+
+- `90a30fba` — Monet audio-visualization toggle. A tuning without the field still shows the
+  spectrum, so older themes and other hosts are unaffected.
+
+- `f1e4f577` and `a2874584` — the stage pointer hides with the auto-hidden player chrome and
+  every interaction (move, press, wheel) reveals both; a held pointer keeps the chrome up. The
+  opt-out is the stage setting `autoHideCursorWithChrome`, and the cursor scope is the visual
+  layer in `LyricStage`, so controls and dialogs keep their pointer.
+
+- `2bd643a8` — raise Pixi's default fragment precision to highp before any program compiles.
+  The loader is Scopify's shared `lib/lyrics/folia/loadPixi.ts`, used by Sonnet, Tempera and
+  Lattice; Pixi 8.19 already supports the option, so no dependency bump was needed.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

@@ -104,9 +104,10 @@ const VisualizerTempera: React.FC<VisualizerSharedProps> = (props) => {
       ? committedLines
       : virtualLines
     : EMPTY_TEMPERA_LINES;
+  const wholeLineLyrics = temperaTuning.wholeLineLyrics;
   const program = useMemo(
-    () => compileTemperaProgram(programLines, committedSeed),
-    [programLines, committedSeed],
+    () => compileTemperaProgram(programLines, committedSeed, { wholeLineLyrics }),
+    [programLines, committedSeed, wholeLineLyrics],
   );
   const { activeLine, recentCompletedLine, nextLines } = useVisualizerRuntime({
     currentTime,

@@ -14,6 +14,8 @@ const ThemedDialog: React.FC<FoliaThemedDialogProps> = ({
   children,
   footer,
   maxWidthClass = "max-w-md",
+  closeDisabled = false,
+  closeDisabledTitle,
 }) => {
   const dialogRef = useFoliaModalFocus<HTMLDivElement>(isOpen, onClose);
   const bgClass = isDaylight ? "bg-white/90 border-white/30" : "bg-zinc-900/95 border-white/10";
@@ -27,6 +29,7 @@ const ThemedDialog: React.FC<FoliaThemedDialogProps> = ({
   };
 
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (closeDisabled) return;
     if (event.target === event.currentTarget && isMouseDownOnOverlayRef.current) {
       onClose();
     }
@@ -61,7 +64,9 @@ const ThemedDialog: React.FC<FoliaThemedDialogProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className={`absolute top-4 right-4 rounded-full p-2 opacity-50 transition-colors hover:opacity-100 ${closeBtnHover} ${textPrimary}`}
+              disabled={closeDisabled}
+              title={closeDisabled ? closeDisabledTitle : undefined}
+              className={`absolute top-4 right-4 rounded-full p-2 transition-colors ${closeDisabled ? "opacity-20" : `opacity-50 hover:opacity-100 ${closeBtnHover}`} ${textPrimary}`}
             >
               <X size={18} />
             </button>

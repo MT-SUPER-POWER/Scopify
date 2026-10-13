@@ -40,6 +40,7 @@ export interface FoliaQuickEffectPickerPosition {
 
 export interface FoliaStageSettings {
   animationIntensity: Theme["animationIntensity"];
+  autoHideCursorWithChrome: boolean;
   harmonySubtitleBackground: boolean;
   showHarmonySubtitle: boolean;
   background: VisualizerBackgroundConfig;

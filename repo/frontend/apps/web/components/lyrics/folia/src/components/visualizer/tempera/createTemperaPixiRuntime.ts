@@ -13,6 +13,7 @@ export type {
   TemperaSongMetadata,
   TemperaRuntimeOptions,
 } from "../../../../../../../types/lyrics/folia/temperaRuntime";
+import { loadPixi } from "../../../../../../../lib/lyrics/folia/loadPixi";
 import { snapResolutionToTexturePool } from "../../../../../../../lib/lyrics/folia/pixiTextureBudget";
 
 import type { TemperaTuning, Theme } from "../../../types";
@@ -163,7 +164,7 @@ export class TemperaPixiRuntime {
   ) {}
 
   static async create(options: TemperaRuntimeOptions) {
-    const pixi = await import("pixi.js");
+    const pixi = await loadPixi();
     const app = new pixi.Application();
     const width = Math.max(options.host.clientWidth, 320);
     const height = Math.max(options.host.clientHeight, 240);

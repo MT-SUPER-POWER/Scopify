@@ -77,6 +77,13 @@ export interface FoliaGlobalSettingsCardProps {
   theme: Theme;
 }
 
+export interface FoliaSettingsSwitchProps {
+  checked: boolean;
+  label: string;
+  onChange: (checked: boolean) => void;
+  theme: Theme;
+}
+
 export interface FoliaHarmonySettingsCardProps {
   className?: string;
   controlCardBg: string;
@@ -359,6 +366,13 @@ export interface FoliaThemedDialogProps {
   children: ReactNode;
   footer?: ReactNode;
   maxWidthClass?: string;
+  /**
+   * Blocks the close paths this dialog owns - the X and the backdrop - while the caller is
+   * mid-way through work a close would leave half-applied, and dims the X so the wait shows.
+   */
+  closeDisabled?: boolean;
+  /** Native `title` for the dimmed X, naming the run that has to finish before closing. */
+  closeDisabledTitle?: string;
 }
 
 export interface FoliaStagePanelHeaderProps {

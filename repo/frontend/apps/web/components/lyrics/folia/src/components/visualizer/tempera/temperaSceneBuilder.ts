@@ -387,8 +387,8 @@ export const buildTemperaScene = (
   let lastImageId: string | null = null;
   const shots = paragraph.shots.map((shot, shotIndex) => {
     const shotContainer = new Container();
-    // A shot shows one half-phrase slice, so the type can be set much larger than it
-    // could when a whole line had to fit.
+    // A shot normally shows one half-phrase slice; whole-line mode deliberately trades
+    // some of that type scale for keeping the source lyric line together.
     const sliceSegments = shot.slices
       .map((slice) => ({
         slice,

@@ -578,6 +578,8 @@ export const DEFAULT_TEMPERA_LAYER_IMAGE: Omit<TemperaLayerImage, "id" | "name">
 export interface TemperaTuning {
   cameraIntensity: number;
   glyphMotion: number;
+  /** Keep each source lyric line in one shot instead of slicing it into half-phrases. */
+  wholeLineLyrics: boolean;
   glyphSettleStretch: number;
   colorMode: TemperaColorMode;
   showBlocks: boolean;
@@ -600,6 +602,7 @@ export interface TemperaTuning {
 export const DEFAULT_TEMPERA_TUNING: TemperaTuning = {
   cameraIntensity: 1,
   glyphMotion: 1,
+  wholeLineLyrics: false,
   glyphSettleStretch: 0.5,
   colorMode: "duo",
   showBlocks: true,
@@ -830,6 +833,7 @@ export interface LatentBackgroundTuning {
 export interface MonetTuning {
   keywordColoringEnabled: boolean;
   showDescription: boolean;
+  showAudioVisualization: boolean;
   audioStyle: MonetAudioStyle;
   fontScale: number;
   portraitSource: MonetPortraitSource;
@@ -910,6 +914,7 @@ export const DEFAULT_LATENT_BACKGROUND_TUNING: LatentBackgroundTuning = {
 export const DEFAULT_MONET_TUNING: MonetTuning = {
   keywordColoringEnabled: true,
   showDescription: true,
+  showAudioVisualization: true,
   audioStyle: "bar",
   fontScale: 1.2,
   portraitSource: "cover",

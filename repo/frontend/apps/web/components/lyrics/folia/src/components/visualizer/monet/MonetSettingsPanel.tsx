@@ -159,6 +159,8 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     keywordColoringEnabled:
       monetTuning.keywordColoringEnabled ?? DEFAULT_MONET_TUNING.keywordColoringEnabled,
     showDescription: monetTuning.showDescription ?? DEFAULT_MONET_TUNING.showDescription,
+    showAudioVisualization:
+      monetTuning.showAudioVisualization ?? DEFAULT_MONET_TUNING.showAudioVisualization,
     audioStyle: monetTuning.audioStyle ?? DEFAULT_MONET_TUNING.audioStyle,
     fontScale: clampValue(
       monetTuning.fontScale ?? DEFAULT_MONET_TUNING.fontScale,
@@ -201,6 +203,13 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     () => [
       { value: "bar", label: t("folia.options.monetAudioStyleBar") },
       { value: "line", label: t("folia.options.monetAudioStyleLine") },
+    ],
+    [t],
+  );
+  const showAudioVisualizationOptions = useMemo<PresetOption<boolean>[]>(
+    () => [
+      { value: true, label: t("folia.options.monetAudioVisualizationShow") },
+      { value: false, label: t("folia.options.monetAudioVisualizationHide") },
     ],
     [t],
   );
@@ -380,6 +389,15 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         >
           {t("folia.options.monetAudioStyle")}
         </div>
+
+        <PresetGroup
+          label={t("folia.options.monetShowAudioVisualization")}
+          value={resolvedTuning.showAudioVisualization}
+          options={showAudioVisualizationOptions}
+          onChange={(value) => onMonetTuningChange?.({ showAudioVisualization: value })}
+          isDaylight={isDaylight}
+          theme={theme}
+        />
 
         <PresetGroup
           label={t("folia.options.monetAudioStyle")}

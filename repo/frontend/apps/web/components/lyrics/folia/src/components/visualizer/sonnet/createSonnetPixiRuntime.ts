@@ -8,6 +8,7 @@ import type {
   SonnetIconTextures,
 } from "../../../../../../../types/lyrics/folia/sonnetRuntime";
 export type { SonnetSongContext } from "../../../../../../../types/lyrics/folia/sonnetRuntime";
+import { loadPixi } from "../../../../../../../lib/lyrics/folia/loadPixi";
 import { snapResolutionToTexturePool } from "../../../../../../../lib/lyrics/folia/pixiTextureBudget";
 import type {
   PixiModule,
@@ -98,7 +99,7 @@ export class SonnetPixiRuntime {
   ) {}
 
   static async create(options: SonnetRuntimeOptions) {
-    const pixi = await import("pixi.js");
+    const pixi = await loadPixi();
     const app = new pixi.Application();
     const width = Math.max(options.host.clientWidth, 320);
     const height = Math.max(options.host.clientHeight, 240);

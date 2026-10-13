@@ -111,6 +111,7 @@ export const usePlayerChromeAutoHide = ({
 
   useEffect(() => {
     let isThrottled = false;
+    let isPointerHeld = false;
 
     const clearAutoHideTimer = () => {
       window.clearTimeout(timeoutIdRef.current);
@@ -119,6 +120,7 @@ export const usePlayerChromeAutoHide = ({
 
     const scheduleAutoHide = (delay: number) => {
       clearAutoHideTimer();
+      if (isPointerHeld) return;
       timeoutIdRef.current = window.setTimeout(() => {
         timeoutIdRef.current = undefined;
         setIsPlayerChromeHidden(true);
@@ -142,13 +144,31 @@ export const usePlayerChromeAutoHide = ({
       }
     };
 
-    const handleMouseMove = () => {
+    const handleMouseMove = (event: MouseEvent) => {
+      // A pointer released outside the window does not reliably deliver pointerup here.
+      // Repair the held state as soon as the mouse comes back without a pressed button.
+      if (isPointerHeld && event.buttons === 0) {
+        isPointerHeld = false;
+      }
       if (isThrottled) return;
       isThrottled = true;
       rafIdRef.current = requestAnimationFrame(() => {
         showAndResetTimer();
         isThrottled = false;
       });
+    };
+    const handlePointerDown = () => {
+      isPointerHeld = true;
+      clearAutoHideTimer();
+      setIsPlayerChromeHidden(false);
+    };
+    const handlePointerUp = () => {
+      isPointerHeld = false;
+      showAndResetTimer();
+    };
+    const handleWindowBlur = () => {
+      isPointerHeld = false;
+      scheduleAutoHide(300);
     };
 
     if (playerChromeVisibilityMode === "always-hidden") {
@@ -164,6 +184,11 @@ export const usePlayerChromeAutoHide = ({
     showAndResetTimer();
     window.addEventListener("mouseout", handleMouseOut);
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+    window.addEventListener("wheel", showAndResetTimer, { passive: true });
+    window.addEventListener("blur", handleWindowBlur);
 
     return () => {
       clearAutoHideTimer();
@@ -173,6 +198,11 @@ export const usePlayerChromeAutoHide = ({
       }
       window.removeEventListener("mouseout", handleMouseOut);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+      window.removeEventListener("wheel", showAndResetTimer);
+      window.removeEventListener("blur", handleWindowBlur);
     };
   }, [playerChromeVisibilityMode, setIsPlayerChromeHidden]);
 

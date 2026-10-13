@@ -239,6 +239,23 @@ const TemperaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         )}
       </TemperaSettingsSection>
 
+      <TemperaSettingsSection title={t("folia.options.temperaLyricSection") || "歌词分镜"}>
+        <VisualizerPresetGroup
+          label={t("folia.options.temperaWholeLineLyrics") || "整句显示歌词"}
+          value={temperaTuning.wholeLineLyrics}
+          options={booleanOptions}
+          onChange={(wholeLineLyrics) => onTemperaTuningChange?.({ wholeLineLyrics })}
+          isDaylight={isDaylight}
+          theme={theme}
+        />
+        <p
+          className="text-xs leading-relaxed opacity-55"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          {t("folia.options.temperaWholeLineLyricsHint")}
+        </p>
+      </TemperaSettingsSection>
+
       <TemperaSettingsSection title={t("folia.options.temperaDisplaySection")}>
         <div className="grid gap-4 sm:grid-cols-2">
           {visibilityControls.map((control) => (

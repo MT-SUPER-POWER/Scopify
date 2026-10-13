@@ -167,6 +167,7 @@ const STRING_ENUMS = {
 export function createDefaultFoliaStageSettings(): FoliaStageSettings {
   return {
     animationIntensity: "normal",
+    autoHideCursorWithChrome: true,
     harmonySubtitleBackground: true,
     showHarmonySubtitle: true,
     background: {

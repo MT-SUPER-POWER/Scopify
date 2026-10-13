@@ -1,6 +1,6 @@
 import type { Track, LatticeLyricInput, LatticeLyricRuntime } from "@/types/playlistLatticeLyrics";
 import { cubicBezier } from "framer-motion";
-import { loadPixi } from "./loadPixi";
+import { loadPixi } from "@/lib/lyrics/folia/loadPixi";
 import {
   clearMonetMeasurementCaches,
   type MonetVisibleLineEntry,
