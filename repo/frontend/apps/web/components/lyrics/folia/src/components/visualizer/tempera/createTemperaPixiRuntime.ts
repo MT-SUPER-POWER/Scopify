@@ -357,7 +357,7 @@ export class TemperaPixiRuntime {
     this.wipeKey = "";
     this.overlayContainer.addChild(this.wipeGraphics);
 
-    if (!this.options.tuning.showDecor) return;
+    if (!this.options.tuning.showCornerMarks) return;
     const g = new this.pixi.Graphics();
     const primary = this.pixi.Color.shared.setValue(this.options.theme.primaryColor).toNumber();
     const paddingX = Math.max(28, width * 0.045);
@@ -973,6 +973,15 @@ export class TemperaPixiRuntime {
       this.sceneCache.forEach((scene) => {
         scene.shots.forEach((shot) => shot.images.applyPool(tuning.layerImages));
       });
+      // The corner marks live only in the overlay, so toggling them needs no scene rebuild
+      // (Folia f79a40ca).
+      if (
+        previous.showCornerMarks !== tuning.showCornerMarks &&
+        this.lastWidth > 0 &&
+        this.lastHeight > 0
+      ) {
+        this.drawOverlay(this.lastWidth, this.lastHeight);
+      }
     }
     if (this.options.paused) this.renderOnce();
   }

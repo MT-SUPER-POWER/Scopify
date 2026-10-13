@@ -13787,6 +13787,12 @@ export interface TranslateFn {
    */
   (key: "folia.options.temperaShowDecor", params?: TranslationParams): string;
   /**
+   * zh-CN: 边角线框
+   * zh-TW: 邊角線框
+   * en-US: Corner marks
+   */
+  (key: "folia.options.temperaShowCornerMarks", params?: TranslationParams): string;
+  /**
    * zh-CN: 文字动态反色
    * zh-TW: 文字動態反色
    * en-US: Dynamic text inversion

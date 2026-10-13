@@ -584,6 +584,8 @@ export interface TemperaTuning {
   colorMode: TemperaColorMode;
   showBlocks: boolean;
   showDecor: boolean;
+  /** 边角线框: the two registration marks in the top-left and bottom-right corners. */
+  showCornerMarks: boolean;
   textInversion: boolean;
   layerImages: TemperaLayerImage[];
   layerImageDepth: "back" | "front";
@@ -607,6 +609,7 @@ export const DEFAULT_TEMPERA_TUNING: TemperaTuning = {
   colorMode: "duo",
   showBlocks: true,
   showDecor: true,
+  showCornerMarks: true,
   textInversion: true,
   layerImages: [],
   layerImageDepth: "back",

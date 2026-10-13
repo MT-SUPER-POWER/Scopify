@@ -162,6 +162,9 @@ the original full-copy baseline:
   tracks live overlay nodes by frame number. The loop body became a `drawPlacement` closure
   instead of upstream's re-indented nested loop; Scopify has no Linux `will-change` toggle.
 
+- `f79a40ca` — Tempera's corner marks get their own `showCornerMarks` tuning (default on),
+  decoupled from `showDecor`; toggling it redraws only the overlay.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
