@@ -126,6 +126,10 @@ the original full-copy baseline:
   while their clamped progress is unchanged, caches each shot's tracking data in a WeakMap, and
   reads the fitted renderer size instead of the host's layout each frame.
 
+- `68e3360c` and `21957740` — Sonnet's AnimatedGraphics skips commands still waiting for
+  their stagger window unless an arc-led neighbour depends on the shared path; transition
+  filters are pinned to the viewport so they no longer follow the drawn-in bounds.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
