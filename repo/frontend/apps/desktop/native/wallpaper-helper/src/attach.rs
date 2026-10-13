@@ -13,7 +13,8 @@ use windows::core::s;
 use windows::core::BOOL;
 use windows::Win32::Foundation::{HWND, LPARAM, POINT, RECT, WPARAM};
 use windows::Win32::Graphics::Gdi::{
-    GetMonitorInfoW, MonitorFromWindow, ScreenToClient, MONITORINFO, MONITOR_DEFAULTTONEAREST,
+    GetMonitorInfoW, MonitorFromWindow, ScreenToClient, HMONITOR, MONITORINFO,
+    MONITOR_DEFAULTTONEAREST,
 };
 
 use windows::Win32::UI::WindowsAndMessaging::{
@@ -135,6 +136,114 @@ pub unsafe fn detect_worker_w() -> Option<(HWND, AttachMode)> {
     None
 }
 
+/// A WorkerW window that can host the wallpaper, with the architecture it belongs to.
+type WorkerCandidate = (HWND, AttachMode);
+
+// Enumeration payload: the candidates found so far plus the architecture the current pass is
+// scanning (top-level = classic, Progman children = raised).
+struct WorkerScan {
+    collected: Vec<WorkerCandidate>,
+    mode: AttachMode,
+}
+
+/// True when `window` is a WorkerW and not the icon layer. The icon layer (a WorkerW hosting
+/// `SHELLDLL_DefView`) must stay *above* the wallpaper, so it is never a host candidate.
+unsafe fn is_wallpaper_worker(window: HWND) -> bool {
+    use windows::Win32::UI::WindowsAndMessaging::GetClassNameW;
+
+    let mut class = [0u16; 32];
+    let length = GetClassNameW(window, &mut class);
+    if length == 0 || String::from_utf16_lossy(&class[..length as usize]) != "WorkerW" {
+        return false;
+    }
+    FindWindowExA(Some(window), None, s!("SHELLDLL_DefView"), None).is_err()
+}
+
+unsafe extern "system" fn collect_worker(window: HWND, data: LPARAM) -> BOOL {
+    unsafe {
+        if is_wallpaper_worker(window) {
+            let scan = &mut *(data.0 as *mut WorkerScan);
+            scan.collected.push((window, scan.mode));
+        }
+    }
+    BOOL(1) // keep enumerating
+}
+
+/// Every WorkerW the wallpaper could be parented into: top-level ones (classic: the sibling
+/// layer behind the icons) and Progman's children (raised desktop, Windows 11 24H2+).
+unsafe fn collect_wallpaper_workers() -> Vec<WorkerCandidate> {
+    use windows::Win32::UI::WindowsAndMessaging::EnumChildWindows;
+
+    let mut scan = WorkerScan {
+        collected: Vec::new(),
+        mode: AttachMode::Classic,
+    };
+    let data = LPARAM(&mut scan as *mut WorkerScan as isize);
+    let _ = EnumWindows(Some(collect_worker), data);
+    if let Some(progman) = find_progman() {
+        scan.mode = AttachMode::Raised;
+        let _ = EnumChildWindows(Some(progman), Some(collect_worker), data);
+    }
+    scan.collected
+}
+
+/// Overlapping area of two rects in pixels, zero when they only touch or are disjoint.
+fn overlap_area(a: RECT, b: RECT) -> i64 {
+    let width = (a.right.min(b.right) - a.left.max(b.left)) as i64;
+    let height = (a.bottom.min(b.bottom) - a.top.max(b.top)) as i64;
+    if width <= 0 || height <= 0 {
+        0
+    } else {
+        width * height
+    }
+}
+
+/// Whether a host rect essentially covers a monitor (at least 80% of the monitor's area).
+fn covers_monitor(host: RECT, monitor: RECT) -> bool {
+    let monitor_area =
+        (monitor.right - monitor.left) as i64 * (monitor.bottom - monitor.top) as i64;
+    monitor_area > 0 && overlap_area(host, monitor) * 10 >= monitor_area * 8
+}
+
+/// The WorkerW that hosts the wallpaper of `monitor`, if the shell keeps one per monitor
+/// (Folia 7452afd2).
+///
+/// On Windows 11 24H2+ the desktop is "raised": Progman holds one WorkerW per display.
+/// Parenting the window into the wrong one puts the wallpaper on *that* display - SetParent
+/// keeps the child's parent-client coordinates, so the window visually jumps to its host's
+/// monitor, and any geometry pass that afterwards asks where the window is follows the host.
+unsafe fn worker_for_monitor(monitor: HMONITOR) -> Option<WorkerCandidate> {
+    if monitor.is_invalid() {
+        return None;
+    }
+    let mut info = MONITORINFO::default();
+    info.cbSize = std::mem::size_of::<MONITORINFO>() as u32;
+    if !GetMonitorInfoW(monitor, &mut info).as_bool() {
+        return None;
+    }
+
+    let monitor_rect = info.rcMonitor;
+    let mut best: Option<(WorkerCandidate, i64)> = None;
+    for candidate in collect_wallpaper_workers() {
+        let mut rect = RECT::default();
+        if GetWindowRect(candidate.0, &mut rect).is_err() || !covers_monitor(rect, monitor_rect) {
+            continue;
+        }
+        let overlap = overlap_area(rect, monitor_rect);
+        if best.map_or(true, |(_, best_overlap)| overlap > best_overlap) {
+            best = Some((candidate, overlap));
+        }
+    }
+    best.map(|(candidate, _)| candidate)
+}
+
+/// The WorkerW to parent into for a window sitting on `monitor`: its per-monitor host when the
+/// shell has one, otherwise the legacy single-WorkerW detection (the classic WorkerW spans the
+/// whole virtual screen, so one host serves every monitor).
+unsafe fn detect_worker_for_monitor(monitor: HMONITOR) -> Option<WorkerCandidate> {
+    worker_for_monitor(monitor).or_else(|| detect_worker_w())
+}
+
 /// Applies the child-friendly style set Seelen uses: mark as child window (required by
 /// SetParent semantics) and drop styles that interfere with a wallpaper window.
 unsafe fn normalize_styles(hwnd: HWND) {
@@ -200,7 +309,9 @@ unsafe fn restore_styles(hwnd: HWND) {
     SetWindowLongPtrW(hwnd, GWL_EXSTYLE, ex_style.0 as isize);
 }
 
-/// Attaches `hwnd` below the desktop icons, returning the WorkerW it was parented into.
+/// Attaches `hwnd` below the desktop icons, returning the WorkerW it was parented into. The
+/// window decides which monitor is filled: the main process places it on the target display
+/// first (see wallpaperTargetDisplay.ts).
 /// 0x052C is sent **only when no WorkerW exists**: re-sending while a raised WorkerW is alive
 /// makes Explorer tear down and rebuild the whole hierarchy, destroying our attached window
 /// and looping forever (Seelen UI trap fix).
@@ -209,7 +320,12 @@ pub unsafe fn attach_window(hwnd: HWND) -> Result<(HWND, AttachMode), String> {
         return Err("Scopify main window no longer exists".to_string());
     }
 
-    let mut worker_w = detect_worker_w();
+    // The monitor the window is on *before* the re-parent is the target: SetParent preserves
+    // the child's parent-client coordinates, so the window visually jumps to the host's monitor
+    // and asking afterwards would only report where the host lives.
+    let target_monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+
+    let mut worker_w = detect_worker_for_monitor(target_monitor);
     if worker_w.is_none() {
         let progman = find_progman().ok_or_else(|| "Progman not found".to_string())?;
         // Returns LRESULT (no Result) in windows-rs 0.62; a failed spawn is caught by the
@@ -228,7 +344,7 @@ pub unsafe fn attach_window(hwnd: HWND) -> Result<(HWND, AttachMode), String> {
         // instead of a single immediate re-probe that races the creation.
         let mut attempts = 0;
         loop {
-            worker_w = detect_worker_w();
+            worker_w = detect_worker_for_monitor(target_monitor);
             if worker_w.is_some() || attempts >= PROBE_RETRY_COUNT {
                 break;
             }
@@ -273,7 +389,7 @@ pub unsafe fn attach_window(hwnd: HWND) -> Result<(HWND, AttachMode), String> {
             .lock()
             .map_err(|_| "original window state lock poisoned".to_string())? = Some(*state);
     }
-    reassert_geometry(hwnd);
+    reassert_geometry_on_monitor(hwnd, target_monitor);
     reassert_z_order_top(hwnd);
     Ok((worker_w, mode))
 }
@@ -327,10 +443,10 @@ pub unsafe fn invalidate_window(hwnd: HWND) {
 }
 
 /// Runs `f` with the calling thread switched to per-monitor-DPI-aware context and restores
-/// the previous context afterwards. The helper is DPI-unaware overall (GetCursorPos must stay
-/// in the 96-DPI space matching Electron DIPs, see mouse_forward.rs), but window geometry
-/// needs physical pixels — from the unaware context a scaled display leaves the wallpaper
-/// inset by a few pixels (measured ~9 px at 150% scaling).
+/// the previous context afterwards. The process already runs PMv2 (see main.rs); this is the
+/// belt-and-braces re-assertion for the geometry work, which must express the window rect in
+/// physical pixels - from a virtualized context a scaled display leaves the wallpaper inset by
+/// a few pixels (measured ~9 px at 150% scaling).
 fn with_physical_dpi<T>(f: impl FnOnce() -> T) -> T {
     use windows::Win32::UI::HiDpi::{
         SetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2,
@@ -349,14 +465,21 @@ fn with_physical_dpi<T>(f: impl FnOnce() -> T) -> T {
 /// coordinates (the classic WorkerW spans the whole virtual screen, so the client origin can
 /// be offset — Seelen handlers.rs does the same conversion from the virtual screen rect).
 pub unsafe fn reassert_geometry(hwnd: HWND) {
-    with_physical_dpi(|| reassert_geometry_physical(hwnd));
+    let monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    reassert_geometry_on_monitor(hwnd, monitor);
 }
 
-unsafe fn reassert_geometry_physical(hwnd: HWND) {
-    let monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+/// Fills `monitor` with the window, converting the monitor rect into the parent's client space.
+/// Callers that have just re-parented the window must pass the monitor the window was on
+/// *before* the re-parent (see attach_window): the window's own position is already its host's.
+unsafe fn reassert_geometry_on_monitor(hwnd: HWND, monitor: HMONITOR) {
     if monitor.is_invalid() {
         return;
     }
+    with_physical_dpi(|| fill_monitor(hwnd, monitor));
+}
+
+unsafe fn fill_monitor(hwnd: HWND, monitor: HMONITOR) {
     let mut info = MONITORINFO::default();
     info.cbSize = std::mem::size_of::<MONITORINFO>() as u32;
     if !GetMonitorInfoW(monitor, &mut info).as_bool() {
@@ -414,4 +537,40 @@ pub unsafe fn is_topmost_child_of_worker_w(hwnd: HWND, worker_w: HWND) -> bool {
 /// True when `hwnd` is still parented into `worker_w`.
 pub unsafe fn is_parented_into(hwnd: HWND, worker_w: HWND) -> bool {
     GetAncestor(hwnd, GA_PARENT) == worker_w
+}
+
+#[cfg(test)]
+mod monitor_coverage_tests {
+    use super::*;
+
+    fn rect(left: i32, top: i32, right: i32, bottom: i32) -> RECT {
+        RECT {
+            left,
+            top,
+            right,
+            bottom,
+        }
+    }
+
+    #[test]
+    fn overlap_is_zero_for_touching_or_disjoint_rects() {
+        assert_eq!(overlap_area(rect(0, 0, 10, 10), rect(10, 0, 20, 10)), 0);
+        assert_eq!(overlap_area(rect(0, 0, 10, 10), rect(20, 20, 30, 30)), 0);
+        assert_eq!(overlap_area(rect(0, 0, 10, 10), rect(5, 5, 15, 15)), 25);
+    }
+
+    #[test]
+    fn per_monitor_host_must_cover_most_of_its_monitor() {
+        let primary = rect(0, 0, 1920, 1080);
+        let secondary = rect(1920, 0, 4480, 1440);
+        // A raised-desktop WorkerW per display covers exactly its own monitor.
+        assert!(covers_monitor(primary, primary));
+        assert!(!covers_monitor(primary, secondary));
+        // The classic WorkerW spans the virtual screen and therefore covers every monitor.
+        let virtual_screen = rect(0, 0, 4480, 1440);
+        assert!(covers_monitor(virtual_screen, primary));
+        assert!(covers_monitor(virtual_screen, secondary));
+        // A sliver along the edge is not a host.
+        assert!(!covers_monitor(rect(1900, 0, 2000, 1440), secondary));
+    }
 }

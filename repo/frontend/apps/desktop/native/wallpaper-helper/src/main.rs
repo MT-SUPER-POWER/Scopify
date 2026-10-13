@@ -55,9 +55,22 @@ use windows::Win32::Foundation::HWND;
 pub(crate) static DETACH_REQUESTED: std::sync::atomic::AtomicBool =
     std::sync::atomic::AtomicBool::new(false);
 
+/// Window geometry and monitor/WorkerW rects are compared in physical pixels (Folia 7452afd2):
+/// a DPI-unaware process sees each scaled monitor through its own virtualization, which breaks
+/// the per-monitor host match on mixed-DPI setups. Scopify forwards no mouse input through the
+/// helper, so nothing here depends on the 96-DPI virtualized space.
+#[cfg(windows)]
+unsafe fn set_process_dpi_awareness() {
+    use windows::Win32::UI::HiDpi::{
+        SetProcessDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2,
+    };
+    let _ = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+}
+
 #[cfg(windows)]
 fn run_windows(command: Command) {
     unsafe {
+        set_process_dpi_awareness();
         match command {
             Command::Move { hwnd } => {
                 attach::reassert_geometry(HWND(hwnd as _));
