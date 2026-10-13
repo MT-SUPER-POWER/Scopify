@@ -196,6 +196,12 @@ the original full-copy baseline:
   - Updates `decideSongCommit` in `songHandover.ts`: when a song's lyrics become empty (`lyricsSignature === ""` while `isCommittedInstrumental === false`), switches to `watch` rather than `idle`, settling into instrumental mode without leaving cleared lyric lines frozen on screen.
   - Local adaptations: Integrated into `neteaseLyricAdapter.ts` to zero out lines and mark `isPureMusic: true` for unflagged pure music tracks; guarded `adaptLyricDataToFolia` to return `lines: []` when pure music is detected.
 
+- `e8817f8a` and `3ca71d57` — Pendolo clockwork gear decor drawn with WebGL2:
+  - Caches gear geometry into a local-space mesh with per-vertex partId (`pendoloClockworkMeshes.ts`), passing part origins and rotation angles via uniform tables to draw in a single draw call.
+  - Automatically falls back to Canvas2D (`pendoloClockworkDraw2d.ts`) when WebGL2 context or shaders fail, during context loss, or when a cover image lacks CORS headers; restores WebGL2 once supported.
+  - Releases WebGL context upon unmount via `WEBGL_lose_context` (`pendoloClockworkWebGL.ts`).
+  - Preserves Scopify's content-bounding box calculation (`pendoloClockworkScene.ts`) so canvases cover only the mechanical area.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
