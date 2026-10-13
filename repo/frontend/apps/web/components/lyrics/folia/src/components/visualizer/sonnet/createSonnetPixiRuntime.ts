@@ -73,6 +73,41 @@ export const SONNET_SONG_SWAP_MS = 560;
  */
 const SONNET_SWAP_STAGE_PROGRESS = 0.35;
 
+// The camera-tracked segments and their focus windows are fixed once a shot is built, so they
+// are worked out on the shot's first frame and reused for the rest of its life (Folia 75804bfa).
+const computeShotTracking = (view: ShotView) => {
+  let trackSegments = view.segments.filter(
+    (s) => s.role !== "decoration" && s.trackingGlyphs.length > 0,
+  );
+  if (trackSegments.length === 0) {
+    trackSegments = view.segments.filter((s) => s.trackingGlyphs.length > 0);
+  }
+  const revealDoneTime =
+    trackSegments.length > 0
+      ? Math.max(
+          ...trackSegments.map(
+            (segment) => segment.trackingGlyphs.at(-1)?.startTime ?? view.shot.endTime,
+          ),
+        )
+      : view.shot.endTime;
+  const focusRanges = trackSegments.map((segment) => ({
+    startTime: segment.trackingGlyphs[0]?.startTime ?? view.shot.startTime,
+    endTime: segment.trackingGlyphs.at(-1)?.startTime ?? view.shot.endTime,
+  }));
+  return { trackSegments, revealDoneTime, focusRanges };
+};
+
+const shotTrackingCache = new WeakMap<ShotView, ReturnType<typeof computeShotTracking>>();
+
+const resolveShotTracking = (view: ShotView) => {
+  let tracking = shotTrackingCache.get(view);
+  if (!tracking) {
+    tracking = computeShotTracking(view);
+    shotTrackingCache.set(view, tracking);
+  }
+  return tracking;
+};
+
 export class SonnetPixiRuntime {
   private readonly sceneCache = new Map<number, SceneView>();
   private readonly iconTextures = new Map<string, import("pixi.js").Texture>();
@@ -492,23 +527,10 @@ export class SonnetPixiRuntime {
 
     const shake = resolveTimelineShake(time, shakeIntensity);
 
-    let trackSegments = view.segments.filter(
-      (s) => s.role !== "decoration" && s.trackingGlyphs.length > 0,
-    );
-    if (trackSegments.length === 0) {
-      trackSegments = view.segments.filter((s) => s.trackingGlyphs.length > 0);
-    }
+    const { trackSegments, revealDoneTime, focusRanges } = resolveShotTracking(view);
 
     // Layer a deterministic breathing float once the lyric reveal completes, so the
     // frame never goes fully static while the shot holds or drifts through a gap.
-    const revealDoneTime =
-      trackSegments.length > 0
-        ? Math.max(
-            ...trackSegments.map(
-              (segment) => segment.trackingGlyphs.at(-1)?.startTime ?? view.shot.endTime,
-            ),
-          )
-        : view.shot.endTime;
     const breathWeight = resolveSonnetBreathWeight(time, revealDoneTime);
     if (breathWeight > 0) {
       const breathPhase = ((hashSonnetSeed(view.shot.id) % 1024) / 1024) * Math.PI * 2;
@@ -523,10 +545,6 @@ export class SonnetPixiRuntime {
     let currentFocusY = view.basePivotY;
 
     if (trackSegments.length > 0) {
-      const focusRanges = trackSegments.map((segment) => ({
-        startTime: segment.trackingGlyphs[0]?.startTime ?? view.shot.startTime,
-        endTime: segment.trackingGlyphs.at(-1)?.startTime ?? view.shot.endTime,
-      }));
       const resolveFocusAtTime = (focusTime: number) => {
         let focusX = 0;
         let focusY = 0;
@@ -740,8 +758,10 @@ export class SonnetPixiRuntime {
         this.ensureScene(previous);
       }
     }
-    const width = Math.max(this.options.host.clientWidth, 320);
-    const height = Math.max(this.options.host.clientHeight, 240);
+    // The size the renderer was last fitted to. Reading the host here would force a synchronous
+    // layout every frame, and the ResizeObserver refits both together anyway (Folia 75804bfa).
+    const width = this.lastWidth || Math.max(this.options.host.clientWidth, 320);
+    const height = this.lastHeight || Math.max(this.options.host.clientHeight, 240);
     const finalParagraph = this.options.program.paragraphs.at(-1);
     const creditsFrame = resolveSonnetCreditsFrame(
       time,

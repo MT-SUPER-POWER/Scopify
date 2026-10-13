@@ -12,6 +12,9 @@ export class AnimatedGraphics {
   private lastX = 0;
   private lastY = 0;
   private staggerScheduled = false;
+  // What the Graphics currently shows: the clamped progress and how many commands it drew.
+  private drawnProgress = Number.NaN;
+  private drawnCommandCount = -1;
 
   constructor(pixi: PixiModule) {
     this.display = new pixi.Graphics();
@@ -188,6 +191,13 @@ export class AnimatedGraphics {
   }
 
   update(rawProgress: number) {
+    // Every command's local window sits inside 0..1, so any progress outside it draws the same
+    // thing as the nearest end. Once a shot has fully drawn in, re-tessellating the identical
+    // geometry every frame is pure waste (Folia 75804bfa).
+    const key = Math.min(1, Math.max(0, rawProgress));
+    if (key === this.drawnProgress && this.commands.length === this.drawnCommandCount) return;
+    this.drawnProgress = key;
+    this.drawnCommandCount = this.commands.length;
     this.display.clear();
     if (!this.staggerScheduled) this.scheduleStagger();
     for (const cmd of this.commands) {

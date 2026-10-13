@@ -122,6 +122,10 @@ the original full-copy baseline:
 - `62dceafd` — Sonnet applies settings through `setTuning` on the live runtime; only
   `textureResolution`, `showOnlyText` and `showBackgroundDecor` stay in the host's rebuild key.
 
+- `75804bfa` — Sonnet skips redrawing AnimatedGraphics, the open frame and empty guide layers
+  while their clamped progress is unchanged, caches each shot's tracking data in a WeakMap, and
+  reads the fitted renderer size instead of the host's layout each frame.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
