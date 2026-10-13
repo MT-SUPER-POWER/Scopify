@@ -149,6 +149,9 @@ the original full-copy baseline:
   2,048 entries. The rest of `f9b331dc` only swaps six existing hand-written caches for the
   helper without changing behaviour, so those call sites were left as they are.
 
+- `5dfc0105` — `colorMix` caches each parsed colour string (512 entries) with unchanged
+  outputs; Fume's background caches line-shape gradients per context.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
