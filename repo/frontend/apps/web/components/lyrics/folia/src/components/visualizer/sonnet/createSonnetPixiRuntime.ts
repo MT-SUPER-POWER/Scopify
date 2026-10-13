@@ -216,6 +216,30 @@ export class SonnetPixiRuntime {
     }
   }
 
+  /**
+   * Applies a settings change to the live runtime (Folia 62dceafd). Every scene is rebuilt
+   * against the new tuning, but the WebGL context, the canvas and the icon textures stay; the
+   * settings that shape those (`textureResolution`, `showOnlyText`, `showBackgroundDecor`) are
+   * part of the host's rebuild key instead.
+   */
+  setTuning(tuning: SonnetRuntimeOptions["tuning"]) {
+    if (this.destroyed || this.options.tuning === tuning) return;
+    this.options.tuning = tuning;
+    // Staged against the old tuning, so it can no longer be adopted.
+    if (this.songSwap?.staged) {
+      this.destroyScene(this.songSwap.staged.scene);
+      this.songSwap.staged = null;
+    }
+    this.clearScenes();
+    // Before the first resize pass there is nothing sized to redraw; the install pass draws
+    // both against real dimensions.
+    if (this.lastWidth > 0 && this.lastHeight > 0) {
+      this.drawCredits(this.lastWidth, this.lastHeight);
+      this.drawOverlay(this.lastWidth, this.lastHeight);
+    }
+    if (this.options.paused) this.renderOnce();
+  }
+
   private clearOutroBlur() {
     if (this.outroBlurFilter && this.outroBlurScene) {
       this.outroBlurScene.container.filters = (this.outroBlurScene.container.filters ?? []).filter(

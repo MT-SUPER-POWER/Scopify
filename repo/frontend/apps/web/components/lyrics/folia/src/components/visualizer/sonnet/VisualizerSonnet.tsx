@@ -54,6 +54,8 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
   const hostRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
+  const sonnetTuningRef = useRef(sonnetTuning);
+  sonnetTuningRef.current = sonnetTuning;
   const latestSongMetadataRef = useRef<SonnetSongMetadata>({
     title: songTitle,
     artist: songArtist,
@@ -121,7 +123,17 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
     label: "Sonnet",
     // Only inputs that genuinely need a new WebGL context. The song is handed to the live
     // runtime instead - see SonnetPixiRuntime.swapSong.
-    rebuildKey: [currentTime, lyricsFontScale, sonnetTuning, staticMode, transparentBackground],
+    // Of the tuning, only what shapes the canvas or the icon textures; the rest goes through
+    // setTuning, which rebuilds the scenes on the live context (Folia 62dceafd).
+    rebuildKey: [
+      currentTime,
+      lyricsFontScale,
+      sonnetTuning.textureResolution,
+      sonnetTuning.showOnlyText,
+      sonnetTuning.showBackgroundDecor,
+      staticMode,
+      transparentBackground,
+    ],
     song: songContext,
     create: async (host, song, signal) => {
       const { SonnetPixiRuntime } = await import("./createSonnetPixiRuntime");
@@ -131,7 +143,7 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
         songSeed: song.seed,
         program: song.program,
         theme: song.theme,
-        tuning: sonnetTuning,
+        tuning: sonnetTuningRef.current,
         currentTime,
         audioPower,
         audioBands,
@@ -145,6 +157,8 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
         signal,
       });
       runtime.setSongMetadata(latestSongMetadataRef.current);
+      // The tuning may have moved on while Pixi was importing or initializing.
+      runtime.setTuning(sonnetTuningRef.current);
       // The pause state may have changed while Pixi was importing or initializing.
       runtime.setPaused(pausedRef.current);
       return runtime;
@@ -161,6 +175,10 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
   useEffect(() => {
     runtimeRef.current?.setPaused(paused);
   }, [paused]);
+
+  useEffect(() => {
+    runtimeRef.current?.setTuning(sonnetTuning);
+  }, [sonnetTuning, runtimeRef]);
 
   useEffect(
     () =>

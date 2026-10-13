@@ -119,6 +119,9 @@ the original full-copy baseline:
   their WebGL context once the canvas leaves the document. The helper lives in Scopify's
   `lib/lyrics/folia/paperShaderContext.ts`.
 
+- `62dceafd` — Sonnet applies settings through `setTuning` on the live runtime; only
+  `textureResolution`, `showOnlyText` and `showBackgroundDecor` stay in the host's rebuild key.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
