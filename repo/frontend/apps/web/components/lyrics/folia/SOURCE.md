@@ -135,6 +135,10 @@ the original full-copy baseline:
   writes layer styles only when they change. The helper is `lib/lyrics/folia/paperShaderUniforms.ts`;
   Scopify's stall watchdog still remounts a shader whose own loop stops.
 
+- `656025bf` — Monet word sweeps read the live clock only on the active line (glow on active
+  and passed lines) and a still clock elsewhere; the audio overlay rebuilds its gradients only
+  when the canvas size changes. Scopify's rail is still the single `MonetLyricsRail.tsx`.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
