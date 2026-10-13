@@ -22,4 +22,8 @@ at v0.7.8, commit 9cf822015328e47ee5e22061213010a70b4ec5c9.
   `lyrics/LatticeLyrics.css`, adapted to the narrower pane with two-line previews
   and smaller type on narrow tiles. Full titles remain available to assistive
   technology and on hover; fitting uses CSS without per-poster DOM measurement.
+- Later fixes from Folia: `8aa7b132` (whole-number lyric resolution, so 125-175% scaling no
+  longer softens glyphs), `2cb9e56e` and `194d0c4a` (glyph textures are built at resolution 1
+  before the real one is set, so fractional ratios no longer wipe whole lyric lines), and the
+  Lattice part of `66119721` (the quad deletes its buffers on destroy).
 - Licensed under AGPL-3.0, as is Scopify; see the repository LICENSE.

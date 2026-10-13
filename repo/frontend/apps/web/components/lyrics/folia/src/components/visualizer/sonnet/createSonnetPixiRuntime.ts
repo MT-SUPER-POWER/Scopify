@@ -51,7 +51,11 @@ import {
 import { buildSonnetScene, type SceneView, type ShotView } from "./sonnetSceneBuilder";
 import { isSonnetEmphasisRole } from "./sonnetTypographyLayout";
 import { getSonnetTexturePool } from "./sonnetTexturePool";
-import { destroySonnetContainerChildren, unloadSonnetDisplayTree } from "./sonnetPixiResources";
+import {
+  destroySonnetContainerChildren,
+  destroySonnetDisplayTree,
+  unloadSonnetDisplayTree,
+} from "./sonnetPixiResources";
 import {
   buildSonnetCreditsPoster,
   hasSonnetCreditsMetadata,
@@ -370,7 +374,8 @@ export class SonnetPixiRuntime {
       shot.haloLayer.filters = null;
     });
     scene.postProcessFilters.forEach((filter) => filter.destroy());
-    scene.container.destroy({ children: true });
+    // Node by node: destroy({ children: true }) leaves each Graphics' own context and buffers.
+    destroySonnetDisplayTree(scene.container);
   }
 
   /**

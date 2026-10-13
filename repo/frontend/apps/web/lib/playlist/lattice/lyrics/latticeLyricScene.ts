@@ -199,7 +199,8 @@ export function createLatticeLineView(
       blur.destroy();
       glowFilters.forEach((f) => f.destroy());
       container.destroy({ children: true });
-      quad.destroy();
+      // destroy(true) also deletes the vertex/index buffers instead of leaving them to Pixi's GC.
+      quad.destroy(true);
     },
   };
 }

@@ -71,10 +71,15 @@ export function createLatticeRaster(pixi: typeof import("pixi.js")) {
     paint.font = font;
     paint.fillStyle = "#ffffff";
     paint.fillText(text, pad, pad + ascent);
+    // Construct at resolution 1 and set the real one afterwards (Folia 2cb9e56e, 194d0c4a).
+    // Given `resolution` up front, CanvasSource derives width = canvas.width / resolution and
+    // resizeCanvas() compares that float with the integer canvas size using `!==`: for any
+    // resolution whose round trip is inexact it reassigns canvas.width, wiping the glyph just
+    // painted. The setter only rescales width/height.
+    const source = new pixi.CanvasSource({ resource: surface, resolution: 1 });
+    source.resolution = resolution;
     return {
-      texture: new pixi.Texture({
-        source: new pixi.CanvasSource({ resource: surface, resolution }),
-      }),
+      texture: new pixi.Texture({ source }),
       width,
       height,
       pad,

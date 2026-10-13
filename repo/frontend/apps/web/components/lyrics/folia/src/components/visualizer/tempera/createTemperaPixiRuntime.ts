@@ -17,7 +17,12 @@ import { loadPixi } from "../../../../../../../lib/lyrics/folia/loadPixi";
 import { snapResolutionToTexturePool } from "../../../../../../../lib/lyrics/folia/pixiTextureBudget";
 
 import type { TemperaTuning, Theme } from "../../../types";
-import { setPixiDisplayTreeVisibility, unloadPixiDisplayTree } from "../pixiDisplayResources";
+import {
+  destroyPixiContainerChildren,
+  destroyPixiDisplayTree,
+  setPixiDisplayTreeVisibility,
+  unloadPixiDisplayTree,
+} from "../pixiDisplayResources";
 
 import { findTemperaParagraphIndexAtTime } from "./temperaProgram";
 import { hashTemperaSeed } from "./temperaRandom";
@@ -341,7 +346,8 @@ export class TemperaPixiRuntime {
   }
 
   private drawOverlay(width: number, height: number) {
-    this.overlayContainer.removeChildren().forEach((child) => child.destroy({ children: true }));
+    // The frame and wipe block are Graphics with their own contexts; destroy them node by node.
+    destroyPixiContainerChildren(this.overlayContainer);
     // The wipe block lives in the overlay so it sweeps above the scene during cuts.
     this.wipeGraphics = new this.pixi.Graphics();
     this.wipeGraphics.visible = false;
@@ -394,7 +400,7 @@ export class TemperaPixiRuntime {
     });
     this.credits?.filters.forEach((filter) => filter.destroy());
     this.credits = null;
-    this.creditsContainer.removeChildren().forEach((child) => child.destroy({ children: true }));
+    destroyPixiContainerChildren(this.creditsContainer);
   }
 
   private clearScenes() {
@@ -435,7 +441,8 @@ export class TemperaPixiRuntime {
       shot.textLayer.filters = null;
     });
     scene.postProcessFilters.forEach((filter) => filter.destroy());
-    scene.container.destroy({ children: true });
+    // Node by node: destroy({ children: true }) leaves each Graphics' own context and buffers.
+    destroyPixiDisplayTree(scene.container);
   }
 
   /**
@@ -861,7 +868,7 @@ export class TemperaPixiRuntime {
       child.filters = null;
     });
     view.filters.forEach((filter) => filter.destroy());
-    view.container.destroy({ children: true });
+    destroyPixiDisplayTree(view.container);
   }
 
   /** Frees a staged scene and poster that will never be adopted. */

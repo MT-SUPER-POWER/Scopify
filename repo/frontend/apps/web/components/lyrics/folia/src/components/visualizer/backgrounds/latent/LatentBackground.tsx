@@ -7,6 +7,10 @@ import {
   shouldRestartLatentShader,
 } from "@/lib/lyrics/folia/latentShaderHealth";
 import {
+  createPaperShaderReleaseRef,
+  PAPER_SHADER_CONTEXT_ATTRIBUTES,
+} from "@/lib/lyrics/folia/paperShaderContext";
+import {
   DEFAULT_LATENT_BACKGROUND_TUNING,
   type AudioBands,
   type LatentBackgroundColorSource,
@@ -115,6 +119,9 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
 }) => {
   const ditheringRef = useRef<PaperShaderElement | null>(null);
   const meshRef = useRef<PaperShaderElement | null>(null);
+  // Stable callback refs: they also lose each shader's WebGL context when it unmounts.
+  const ditheringShaderRef = useMemo(() => createPaperShaderReleaseRef(ditheringRef), []);
+  const meshShaderRef = useMemo(() => createPaperShaderReleaseRef(meshRef), []);
   const ditheringLayerRef = useRef<HTMLDivElement | null>(null);
   const meshLayerRef = useRef<HTMLDivElement | null>(null);
   const pausedRef = useRef(paused);
@@ -309,7 +316,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
         >
           <MeshGradient
             key={`latent-mesh-${shaderRecoveryEpoch}`}
-            ref={meshRef}
+            ref={meshShaderRef}
             width="100%"
             height="100%"
             colors={shaderColors.mesh}
@@ -324,6 +331,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
             }
             minPixelRatio={1}
             maxPixelCount={MAX_SHADER_PIXELS}
+            webGlContextAttributes={PAPER_SHADER_CONTEXT_ATTRIBUTES}
             style={{ width: "100%", height: "100%" }}
           />
         </div>
@@ -341,7 +349,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
         >
           <Dithering
             key={`latent-dithering-${shaderRecoveryEpoch}`}
-            ref={ditheringRef}
+            ref={ditheringShaderRef}
             width="100%"
             height="100%"
             colorBack={shaderColors.ditheringBack}
@@ -361,6 +369,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
             }
             minPixelRatio={1}
             maxPixelCount={MAX_SHADER_PIXELS}
+            webGlContextAttributes={PAPER_SHADER_CONTEXT_ATTRIBUTES}
             style={{ width: "100%", height: "100%" }}
           />
         </div>

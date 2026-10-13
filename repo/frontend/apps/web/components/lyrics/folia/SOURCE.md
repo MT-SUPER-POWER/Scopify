@@ -108,6 +108,17 @@ the original full-copy baseline:
   The loader is Scopify's shared `lib/lyrics/folia/loadPixi.ts`, used by Sonnet, Tempera and
   Lattice; Pixi 8.19 already supports the option, so no dependency bump was needed.
 
+- `66119721` — destroy Pixi display trees node by node so each Graphics releases its own
+  GraphicsContext and GPU buffers, and unload those contexts with the views. Sonnet and Tempera
+  scenes, overlays and credits use it; Lattice's quad deletes its buffers on destroy.
+
+- `2a7cd5e0` — Sonnet's arc gauge moves to each arc's start point before drawing, removing the
+  stray extra ring and connector.
+
+- `65f8a59f` and `161756cb` — Latent's paper shaders run without MSAA or a depth buffer and lose
+  their WebGL context once the canvas leaves the document. The helper lives in Scopify's
+  `lib/lyrics/folia/paperShaderContext.ts`.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
