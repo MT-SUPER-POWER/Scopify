@@ -27,6 +27,7 @@ import {
   getLineTransitionTiming,
 } from "../../../utils/lyrics/renderHints";
 import { colorWithAlpha, mixColors } from "../colorMix";
+import { measurePrefixOffsets, rememberBounded } from "../textMeasureCache";
 import { type VisualizerSharedProps } from "../definition";
 import {
   buildFumeBackgroundScene,
@@ -646,6 +647,9 @@ const buildFontSpec = (fontPx: number, variant: "body" | "hero", fontFamily: str
 };
 
 let segmentMeasureCanvas: HTMLCanvasElement | null = null;
+// Bounded so a long session across many songs cannot grow it forever; far above one song's
+// working set (Folia d1d94640).
+const SEGMENT_MEASURE_CACHE_LIMIT = 2048;
 const segmentMeasureCache = new Map<string, number[]>();
 
 const measureSegmentGlyphOffsets = (text: string, fontSpec: string) => {
@@ -671,12 +675,8 @@ const measureSegmentGlyphOffsets = (text: string, fontSpec: string) => {
   }
 
   context.font = fontSpec;
-  for (let index = 1; index <= graphemes.length; index += 1) {
-    offsets[index] = context.measureText(graphemes.slice(0, index).join("")).width;
-  }
-
-  segmentMeasureCache.set(cacheKey, offsets);
-  return offsets;
+  const measured = measurePrefixOffsets(graphemes, (prefix) => context.measureText(prefix).width);
+  return rememberBounded(segmentMeasureCache, cacheKey, measured, SEGMENT_MEASURE_CACHE_LIMIT);
 };
 
 const buildWordRangeIndexByOffset = (

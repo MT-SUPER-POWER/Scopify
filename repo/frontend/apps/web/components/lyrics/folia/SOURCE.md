@@ -144,6 +144,11 @@ the original full-copy baseline:
   is resolved once per pace; renderFrame reads the fitted size. Upstream's overlay and credits
   modules are still inside Scopify's runtime, so the changes land there.
 
+- `d1d94640` and the helper part of `f9b331dc` — adds the shared `textMeasureCache.ts`
+  (`rememberBounded`, `measurePrefixOffsets`) and bounds Fume's segment measurement cache at
+  2,048 entries. The rest of `f9b331dc` only swaps six existing hand-written caches for the
+  helper without changing behaviour, so those call sites were left as they are.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
