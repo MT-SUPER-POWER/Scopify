@@ -4,7 +4,18 @@ import {
   prepareRichInline,
   type RichInlineItem,
 } from "@chenglou/pretext/rich-inline";
-import type { Line } from "../../../types";
+import type { Line, SubtitleContentMode } from "../../../types";
+import type { MonetSubtitleTrackLayout } from "@/types/lyrics/folia/monetSubtitle";
+import type { SubtitleTrack } from "@/types/lyrics/folia/subtitleTrack";
+import {
+  resolveLyricSubtitleTracks,
+  resolveSubtitleContentMode,
+} from "../../../utils/lyrics/alternateText";
+import {
+  SECONDARY_TRACK_FONT_WEIGHT_FALLBACK,
+  SECONDARY_TRACK_GAP_EM,
+  SECONDARY_TRACK_SIZE_FACTOR,
+} from "../../../utils/lyrics/subtitleTrackStyle";
 import {
   buildLineGraphemeTimeline,
   buildWordGraphemeTimings,
@@ -49,6 +60,10 @@ export interface MonetMeasuredLineLayout {
   textContentHeightPx: number;
   textPaddingTopPx: number;
   textPaddingBottomPx: number;
+  /** Per-row subtitle boxes in display order; empty unless the line is active and has readable rows. */
+  subtitleTracks: MonetSubtitleTrackLayout[];
+  // The `translation*` fields aggregate every subtitle track. With a single track they equal that
+  // track's own values, exactly as before dual rows existed.
   translationLineCount: number;
   translationHeightPx: number;
   translationContentHeightPx: number;
@@ -81,7 +96,9 @@ interface MeasureMonetLineLayoutOptions {
   fontStack: string;
   translationFontStack?: string;
   maxWidthPx: number;
+  /** Legacy switch, only consulted when `subtitleContentMode` is not given. */
   showSubtitleTranslation?: boolean;
+  subtitleContentMode?: SubtitleContentMode;
 }
 
 const ROOT_FONT_PX = 16;
@@ -426,6 +443,56 @@ export const buildMonetVisibleLineEntries = ({
 };
 
 /** Measures the text box Monet will reserve before animating the rail, keeping layout off the hot path. */
+// Pure marker/separator strings ("//", "●●●", dashes) are timing placeholders, never display
+// text; a row is only shown if it holds a letter or digit in any script.
+const isReadableSubtitleText = (text: string): boolean => /[\p{L}\p{N}]/u.test(text);
+
+/** Ordered rows Monet shows under the active lyric: romanization first, translation second. */
+export const resolveMonetSubtitleTracks = (
+  line: Line,
+  mode: SubtitleContentMode,
+): SubtitleTrack[] => resolveLyricSubtitleTracks(line, mode, isReadableSubtitleText);
+
+const MONET_LEAD_TRACK_FONT_WEIGHT = 500;
+
+/**
+ * Measures one subtitle row (Folia 43f27c36). The first row keeps the single-subtitle look and
+ * spacing; the second steps down in size and starts GAP_EM (of its own font size) below the first.
+ * Each row is capped at MONET_TRANSLATION_LINE_LIMIT rows and reports whether the cap cut it.
+ */
+const measureMonetSubtitleTrack = (
+  track: SubtitleTrack,
+  isSecondary: boolean,
+  translationFontPx: number,
+  translationFontStack: string,
+  maxWidthPx: number,
+): MonetSubtitleTrackLayout => {
+  const fontPx = isSecondary ? translationFontPx * SECONDARY_TRACK_SIZE_FACTOR : translationFontPx;
+  const fontWeight = isSecondary
+    ? SECONDARY_TRACK_FONT_WEIGHT_FALLBACK
+    : MONET_LEAD_TRACK_FONT_WEIGHT;
+  const fontSpec = `${fontWeight} ${fontPx}px ${translationFontStack}`;
+  const lineHeightPx = fontPx * 1.28;
+  const paddingTopPx = isSecondary ? fontPx * SECONDARY_TRACK_GAP_EM : Math.max(fontPx * 0.45, 7);
+  const paddingBottomPx = Math.max(fontPx * 0.18, 5);
+  const rawLineCount = measureTextLineCount(track.text, fontSpec, maxWidthPx, lineHeightPx);
+  const lineCount = Math.min(rawLineCount, MONET_TRANSLATION_LINE_LIMIT);
+  const contentHeightPx = lineCount * lineHeightPx;
+  return {
+    role: track.role,
+    text: track.text,
+    fontPx,
+    fontWeight,
+    lineCount,
+    lineHeightPx,
+    contentHeightPx,
+    paddingTopPx,
+    paddingBottomPx,
+    heightPx: contentHeightPx + paddingTopPx + paddingBottomPx,
+    isClipped: rawLineCount > lineCount,
+  };
+};
+
 export const measureMonetLineLayout = ({
   line,
   status,
@@ -435,15 +502,12 @@ export const measureMonetLineLayout = ({
   translationFontStack,
   maxWidthPx,
   showSubtitleTranslation = true,
+  subtitleContentMode,
 }: MeasureMonetLineLayoutOptions): MonetMeasuredLineLayout => {
   const lineHeightPx = fontPx * 1.18;
-  const translationLineHeightPx = translationFontPx * 1.28;
   const textPaddingTopPx = Math.max(fontPx * 0.16, 8);
   const textPaddingBottomPx = Math.max(fontPx * 0.34, 14);
-  const translationPaddingTopPx = Math.max(translationFontPx * 0.45, 7);
-  const translationPaddingBottomPx = Math.max(translationFontPx * 0.18, 5);
   const fontSpec = `600 ${fontPx}px ${fontStack}`;
-  const translationFontSpec = `500 ${translationFontPx}px ${translationFontStack ?? fontStack}`;
   const { lineCount: textLineCount, maxLineWidthPx } = measureLyricLineStats(
     line,
     fontSpec,
@@ -452,24 +516,24 @@ export const measureMonetLineLayout = ({
   const textLimit =
     status === "active" ? MONET_ACTIVE_TEXT_LINE_LIMIT : MONET_INACTIVE_TEXT_LINE_LIMIT;
   const visibleTextLineCount = Math.min(textLineCount, textLimit);
-  const hasActiveTranslation =
-    showSubtitleTranslation && status === "active" && Boolean(line.translation?.trim());
-  const rawTranslationLineCount = hasActiveTranslation
-    ? measureTextLineCount(
-        line.translation ?? "",
-        translationFontSpec,
-        maxWidthPx,
-        translationLineHeightPx,
-      )
-    : 0;
-  const translationLineCount = Math.min(rawTranslationLineCount, MONET_TRANSLATION_LINE_LIMIT);
   const textContentHeightPx = visibleTextLineCount * lineHeightPx;
   const textHeightPx = textContentHeightPx + textPaddingTopPx + textPaddingBottomPx;
-  const translationContentHeightPx = translationLineCount * translationLineHeightPx;
-  const translationHeightPx =
-    translationLineCount > 0
-      ? translationContentHeightPx + translationPaddingTopPx + translationPaddingBottomPx
-      : 0;
+  const mode = resolveSubtitleContentMode(subtitleContentMode, showSubtitleTranslation);
+  const subtitleTracks =
+    status === "active"
+      ? resolveMonetSubtitleTracks(line, mode).map((track, index) =>
+          measureMonetSubtitleTrack(
+            track,
+            index > 0,
+            translationFontPx,
+            translationFontStack ?? fontStack,
+            maxWidthPx,
+          ),
+        )
+      : [];
+  const firstTrack = subtitleTracks[0];
+  const lastTrack = subtitleTracks.at(-1);
+  const translationHeightPx = subtitleTracks.reduce((total, track) => total + track.heightPx, 0);
 
   return {
     textLineCount,
@@ -478,16 +542,20 @@ export const measureMonetLineLayout = ({
     textContentHeightPx,
     textPaddingTopPx,
     textPaddingBottomPx,
-    translationLineCount,
+    subtitleTracks,
+    translationLineCount: subtitleTracks.reduce((total, track) => total + track.lineCount, 0),
     translationHeightPx,
-    translationContentHeightPx,
-    translationPaddingTopPx,
-    translationPaddingBottomPx,
+    translationContentHeightPx: subtitleTracks.reduce(
+      (total, track) => total + track.contentHeightPx,
+      0,
+    ),
+    translationPaddingTopPx: firstTrack?.paddingTopPx ?? Math.max(translationFontPx * 0.45, 7),
+    translationPaddingBottomPx: lastTrack?.paddingBottomPx ?? Math.max(translationFontPx * 0.18, 5),
     visualHeightPx: textHeightPx + translationHeightPx,
     lineHeightPx,
-    translationLineHeightPx,
+    translationLineHeightPx: firstTrack?.lineHeightPx ?? translationFontPx * 1.28,
     isTextClipped: textLineCount > visibleTextLineCount,
     isTextOverflowingWidth: maxLineWidthPx > maxWidthPx,
-    isTranslationClipped: rawTranslationLineCount > translationLineCount,
+    isTranslationClipped: subtitleTracks.some((track) => track.isClipped),
   };
 };

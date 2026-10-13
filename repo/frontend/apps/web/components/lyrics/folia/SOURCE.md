@@ -176,6 +176,11 @@ the original full-copy baseline:
   (it previously always showed translation). Local adaptations: rows keep Scopify's fixed weights
   and scale with `lyricsFontScale` as before rather than the separate subtitle scale.
 
+- `43f27c36` — Monet measures and renders per-track subtitle rows under the active lyric from
+  the subtitle mode (it previously only showed `line.translation`); the layout cache key carries
+  the mode and row texts. Local adaptation: Scopify's Monet keeps its fixed 500 / 400 weights and
+  fixed line-height ratios, as it has no theme font-weight inputs.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

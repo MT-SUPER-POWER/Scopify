@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, motionValue, useTransform, MotionValue } from "framer-motion";
-import type { Theme, AudioBands, Line } from "../../../types";
+import type { Theme, AudioBands, Line, SubtitleContentMode } from "../../../types";
+import { SECONDARY_TRACK_OPACITY } from "../../../utils/lyrics/subtitleTrackStyle";
 import type { GraphemeTiming } from "../../../utils/lyrics/graphemeTiming";
 import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
 import { useFontsEpoch } from "../../../hooks/useFontsEpoch";
@@ -19,6 +20,7 @@ import {
   clearMonetMeasurementCaches,
   measureMonetGraphemeOffsets,
   measureMonetLineLayout,
+  resolveMonetSubtitleTracks,
   resolveMonetWordStatus,
   type MonetLineStatus,
   type MonetMeasuredLineLayout,
@@ -41,7 +43,8 @@ interface MonetLyricsRailProps {
   translationFontStack?: string;
   keywordColoringEnabled: boolean;
   emptyText: string;
-  showSubtitleTranslation?: boolean;
+  /** Which subtitle rows sit under the active lyric; 'both' stacks romanization over translation. */
+  subtitleContentMode?: SubtitleContentMode;
   audioPower?: MotionValue<number>;
   audioBands?: AudioBands;
   onLyricLineSeek?: (lyricTimeSec: number) => void;
@@ -74,6 +77,8 @@ type MonetLayoutCache = Map<string, MonetMeasuredLineLayout>;
 
 /** A clock that never moves, for words whose look does not depend on the time. */
 const MONET_STILL_TIME = motionValue(0);
+// Stagger between subtitle rows when they fade in, so the second row reads as following the first.
+const MONET_SUBTITLE_TRACK_STAGGER_S = 0.04;
 const MONET_RAIL_WIDTH_FALLBACK_PX = 680;
 const MONET_RAIL_HEIGHT_FALLBACK_PX = 340;
 const MONET_ACTIVE_GAP_PX = 18;
@@ -214,21 +219,26 @@ const buildMonetLayoutCacheKey = (
   fontStack: string,
   translationFontStack: string,
   maxWidthPx: number,
-  showSubtitleTranslation: boolean,
+  subtitleContentMode: SubtitleContentMode,
 ) =>
   [
     entry.index,
     entry.line.startTime,
     entry.line.endTime,
     entry.line.fullText,
-    entry.line.translation ?? "",
+    subtitleContentMode,
+    // Only an active line measures subtitle rows, so other lines don't churn when they change.
+    entry.status === "active"
+      ? resolveMonetSubtitleTracks(entry.line, subtitleContentMode)
+          .map((track) => `${track.role}:${track.text}`)
+          .join("\u0002")
+      : "",
     entry.status,
     fontPx,
     translationFontPx,
     fontStack,
     translationFontStack,
     maxWidthPx,
-    showSubtitleTranslation ? 1 : 0,
   ].join("\u0001");
 
 const getOrMeasureMonetLineLayout = (
@@ -239,7 +249,7 @@ const getOrMeasureMonetLineLayout = (
   fontStack: string,
   translationFontStack: string,
   maxWidthPx: number,
-  showSubtitleTranslation: boolean,
+  subtitleContentMode: SubtitleContentMode,
 ) => {
   const cacheKey = buildMonetLayoutCacheKey(
     entry,
@@ -248,7 +258,7 @@ const getOrMeasureMonetLineLayout = (
     fontStack,
     translationFontStack,
     maxWidthPx,
-    showSubtitleTranslation,
+    subtitleContentMode,
   );
   const cached = cache.get(cacheKey);
   if (cached) {
@@ -263,7 +273,7 @@ const getOrMeasureMonetLineLayout = (
     fontStack,
     translationFontStack,
     maxWidthPx,
-    showSubtitleTranslation,
+    subtitleContentMode,
   });
   trimOldestCacheEntry(cache, MONET_LAYOUT_CACHE_LIMIT);
   cache.set(cacheKey, layout);
@@ -313,7 +323,7 @@ const buildPositionedEntries = (
   fontStack: string,
   translationFontStack: string,
   glowBufferPx: number,
-  showSubtitleTranslation: boolean,
+  subtitleContentMode: SubtitleContentMode,
   layoutCache: MonetLayoutCache,
 ): PositionedMonetLineEntry[] => {
   const railWidth = railSize.width || MONET_RAIL_WIDTH_FALLBACK_PX;
@@ -331,7 +341,7 @@ const buildPositionedEntries = (
       fontStack,
       translationFontStack,
       contentWidthPx - 8,
-      showSubtitleTranslation,
+      subtitleContentMode,
     );
 
     return {
@@ -678,14 +688,12 @@ const MonetRailLine: React.FC<{
   currentTime: MotionValue<number>;
   theme: Theme;
   lyricFontPx: number;
-  translationFontPx: number;
   fontStack: string;
   translationFontStack: string;
   glowBufferPx: number;
   vGlowBufferPx: number;
   fontsEpoch: number;
   wordColorMatchers: WordColorMatcher[];
-  showSubtitleTranslation: boolean;
   audioPower?: MotionValue<number>;
   onLineSeek?: (line: Line) => void;
   canSeek?: boolean;
@@ -696,14 +704,12 @@ const MonetRailLine: React.FC<{
   currentTime,
   theme,
   lyricFontPx,
-  translationFontPx,
   fontStack,
   translationFontStack,
   glowBufferPx,
   vGlowBufferPx,
   fontsEpoch,
   wordColorMatchers,
-  showSubtitleTranslation,
   audioPower,
   onLineSeek,
   canSeek = false,
@@ -725,10 +731,6 @@ const MonetRailLine: React.FC<{
     Math.max(lyricFontPx * 0.9, 24),
   );
   const textMaskStyle = composeLineMasks(textMask, textEdgeMask);
-  const translationMask = getLineMask(
-    entry.layout.isTranslationClipped,
-    Math.max(translationFontPx * 0.65, 10),
-  );
   const handleSeek = (event: React.MouseEvent | React.KeyboardEvent) => {
     if (!canSeek) {
       return;
@@ -848,38 +850,52 @@ const MonetRailLine: React.FC<{
           renderStaticPassed={renderStaticPassed}
         />
       </div>
-      {showSubtitleTranslation && entry.status === "active" && entry.line.translation ? (
-        <motion.div
-          className="min-w-0 overflow-hidden wrap-break-word whitespace-pre-wrap"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-          style={{
-            marginLeft: `-${glowBufferPx}px`,
-            marginRight: `-${glowBufferPx}px`,
-            paddingLeft: `${glowBufferPx}px`,
-            paddingRight: `${glowBufferPx}px`,
-            height: entry.layout.translationHeightPx,
-            paddingTop: entry.layout.translationPaddingTopPx,
-            paddingBottom: entry.layout.translationPaddingBottomPx,
-            boxSizing: "border-box",
-            color: colorWithAlpha(theme.primaryColor, 0.68),
-            fontFamily: translationFontStack,
-            fontSize: translationFontPx,
-            fontWeight: 500,
-            lineHeight: `${entry.layout.translationLineHeightPx}px`,
-            letterSpacing: 0,
-            WebkitMaskImage: translationMask,
-            maskImage: translationMask,
-            WebkitMaskRepeat: "no-repeat",
-            maskRepeat: "no-repeat",
-            WebkitMaskSize: "100% 100%",
-            maskSize: "100% 100%",
-          }}
-        >
-          {entry.line.translation}
-        </motion.div>
-      ) : null}
+      {entry.layout.subtitleTracks.map((track, trackIndex) => {
+        // Each row is cut at its own row cap, so the fade is per track (Folia 43f27c36). The second
+        // row steps down in colour alpha too; size and weight were set at measure time.
+        const trackMask = getLineMask(track.isClipped, Math.max(track.fontPx * 0.65, 10));
+        return (
+          <motion.div
+            key={track.role}
+            data-subtitle-track={track.role}
+            className="min-w-0 overflow-hidden wrap-break-word whitespace-pre-wrap"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.28,
+              ease: [0.32, 0.72, 0, 1],
+              delay: trackIndex * MONET_SUBTITLE_TRACK_STAGGER_S,
+            }}
+            style={{
+              marginLeft: `-${glowBufferPx}px`,
+              marginRight: `-${glowBufferPx}px`,
+              paddingLeft: `${glowBufferPx}px`,
+              paddingRight: `${glowBufferPx}px`,
+              height: track.heightPx,
+              paddingTop: track.paddingTopPx,
+              paddingBottom: track.paddingBottomPx,
+              boxSizing: "border-box",
+              color: colorWithAlpha(
+                theme.primaryColor,
+                trackIndex > 0 ? 0.68 * SECONDARY_TRACK_OPACITY : 0.68,
+              ),
+              fontFamily: translationFontStack,
+              fontSize: track.fontPx,
+              fontWeight: track.fontWeight,
+              lineHeight: `${track.lineHeightPx}px`,
+              letterSpacing: 0,
+              WebkitMaskImage: trackMask,
+              maskImage: trackMask,
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskSize: "100% 100%",
+              maskSize: "100% 100%",
+            }}
+          >
+            {track.text}
+          </motion.div>
+        );
+      })}
     </motion.div>
   );
 };
@@ -897,7 +913,7 @@ const MonetLyricsRail: React.FC<MonetLyricsRailProps> = ({
   translationFontStack = fontStack,
   keywordColoringEnabled,
   emptyText,
-  showSubtitleTranslation = true,
+  subtitleContentMode = "translation",
   audioPower,
   audioBands,
   onLyricLineSeek,
@@ -950,7 +966,7 @@ const MonetLyricsRail: React.FC<MonetLyricsRailProps> = ({
       fontStack,
       translationFontStack,
       glowBufferPx,
-      showSubtitleTranslation,
+      subtitleContentMode,
       layoutCacheRef.current,
     );
   }, [
@@ -963,7 +979,7 @@ const MonetLyricsRail: React.FC<MonetLyricsRailProps> = ({
     fontStack,
     translationFontStack,
     glowBufferPx,
-    showSubtitleTranslation,
+    subtitleContentMode,
     fontsEpoch,
   ]);
   const wordColorMatchers = useMemo(
@@ -1170,14 +1186,12 @@ const MonetLyricsRail: React.FC<MonetLyricsRailProps> = ({
               currentTime={currentTime}
               theme={theme}
               lyricFontPx={lyricFontPx}
-              translationFontPx={translationFontPx}
               fontStack={fontStack}
               translationFontStack={translationFontStack}
               glowBufferPx={glowBufferPx}
               vGlowBufferPx={vGlowBufferPx}
               fontsEpoch={fontsEpoch}
               wordColorMatchers={wordColorMatchers}
-              showSubtitleTranslation={showSubtitleTranslation}
               audioPower={audioPower}
               onLineSeek={handleLineSeek}
               canSeek={canSeek}
