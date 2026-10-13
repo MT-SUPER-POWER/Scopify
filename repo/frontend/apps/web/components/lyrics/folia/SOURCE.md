@@ -152,6 +152,10 @@ the original full-copy baseline:
 - `5dfc0105` — `colorMix` caches each parsed colour string (512 entries) with unchanged
   outputs; Fume's background caches line-shape gradients per context.
 
+- `d88b3834` — Claddagh writes each glyph span's transform, opacity, colour, text shadow and
+  filter only when the string changes. Scopify has no glow quantization (that belongs to the
+  Linux-only fix), so the filter is the blur alone.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
