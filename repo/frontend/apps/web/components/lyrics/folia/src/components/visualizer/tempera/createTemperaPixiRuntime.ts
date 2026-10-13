@@ -44,6 +44,7 @@ import {
   type TemperaShotView,
 } from "./temperaSceneBuilder";
 import { setTemperaTransitionBlur } from "./temperaSceneFilters";
+import { destroyTemperaGradientFills } from "./temperaShapes";
 import { resolveTemperaPalette } from "./temperaPalette";
 import {
   clamp01,
@@ -154,6 +155,8 @@ export class TemperaPixiRuntime {
   private readonly imageTextures = new Map<string, import("pixi.js").Texture>();
   private overlayContainer!: import("pixi.js").Container;
   private wipeGraphics: import("pixi.js").Graphics | null = null;
+  /** The size and colour the wipe geometry was last built for. */
+  private wipeKey = "";
   /**
    * An in-flight song handover, spread over exactly two frames. A track change is a plain cut
    * here - no wipe, no dissolve - but a cut must not also be a stall, so the incoming scene is
@@ -351,6 +354,7 @@ export class TemperaPixiRuntime {
     // The wipe block lives in the overlay so it sweeps above the scene during cuts.
     this.wipeGraphics = new this.pixi.Graphics();
     this.wipeGraphics.visible = false;
+    this.wipeKey = "";
     this.overlayContainer.addChild(this.wipeGraphics);
 
     if (!this.options.tuning.showDecor) return;
@@ -400,6 +404,7 @@ export class TemperaPixiRuntime {
     });
     this.credits?.filters.forEach((filter) => filter.destroy());
     this.credits = null;
+    destroyTemperaGradientFills(this.pixi, this.creditsContainer);
     destroyPixiContainerChildren(this.creditsContainer);
   }
 
@@ -441,6 +446,7 @@ export class TemperaPixiRuntime {
       shot.textLayer.filters = null;
     });
     scene.postProcessFilters.forEach((filter) => filter.destroy());
+    destroyTemperaGradientFills(this.pixi, scene.container);
     // Node by node: destroy({ children: true }) leaves each Graphics' own context and buffers.
     destroyPixiDisplayTree(scene.container);
   }
@@ -590,27 +596,31 @@ export class TemperaPixiRuntime {
     const wipe = this.wipeGraphics;
     if (!wipe) return;
     if (travel <= 0.001 || travel >= 1.999) {
-      if (wipe.visible) {
-        wipe.clear();
-        wipe.visible = false;
-      }
+      wipe.visible = false;
       return;
     }
     // Drawn in a rotated local frame sized to the screen diagonal so it stays full-bleed at
     // any angle. Both edges carry the same chevron, which keeps it in the diamond language
-    // of the compositions; geometry is rebuilt per frame because it depends on travel.
+    // of the compositions. The shape depends only on the frame size and colour; travel just
+    // slides it along its own axis, so that is a transform rather than new geometry
+    // (Folia ef523089).
     const span = Math.hypot(width, height);
     const notch = span * 0.08;
     const length = span + notch * 2;
-    const start = -span / 2 - notch + (travel - 1) * length;
-    const end = start + length;
-    const half = span / 2;
-    wipe.clear();
-    wipe
-      .poly([start, -half, end, -half, end + notch, 0, end, half, start, half, start + notch, 0])
-      .fill({ color: this.pixi.Color.shared.setValue(color).toNumber() });
+    const key = `${width}x${height}|${color}`;
+    if (key !== this.wipeKey) {
+      this.wipeKey = key;
+      const start = -span / 2 - notch;
+      const end = start + length;
+      const half = span / 2;
+      wipe.clear();
+      wipe
+        .poly([start, -half, end, -half, end + notch, 0, end, half, start, half, start + notch, 0])
+        .fill({ color: this.pixi.Color.shared.setValue(color).toNumber() });
+    }
+    const offset = (travel - 1) * length;
     wipe.pivot.set(0, 0);
-    wipe.position.set(width / 2, height / 2);
+    wipe.position.set(width / 2 + Math.cos(angle) * offset, height / 2 + Math.sin(angle) * offset);
     wipe.rotation = angle;
     wipe.scale.set(1, 1);
     wipe.visible = true;
@@ -647,8 +657,10 @@ export class TemperaPixiRuntime {
         this.ensureScene(previous);
       }
     }
-    const width = Math.max(this.options.host.clientWidth, 320);
-    const height = Math.max(this.options.host.clientHeight, 240);
+    // The size the renderer was last fitted to. Reading the host here would force a synchronous
+    // layout every frame, and the ResizeObserver refits both together anyway (Folia ef523089).
+    const width = this.lastWidth || Math.max(this.options.host.clientWidth, 320);
+    const height = this.lastHeight || Math.max(this.options.host.clientHeight, 240);
     const finalParagraph = this.options.program.paragraphs.at(-1);
     const creditsFrame = resolveCreditsFrame(
       time,
@@ -868,6 +880,7 @@ export class TemperaPixiRuntime {
       child.filters = null;
     });
     view.filters.forEach((filter) => filter.destroy());
+    destroyTemperaGradientFills(this.pixi, view.container);
     destroyPixiDisplayTree(view.container);
   }
 

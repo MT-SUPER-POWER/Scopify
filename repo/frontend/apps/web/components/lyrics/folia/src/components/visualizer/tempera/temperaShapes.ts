@@ -41,7 +41,29 @@ export interface TemperaGradientFill {
  * Each stop is pulled halfway toward the tone the composition asked for, so the ramp carries
  * the cover's hues while the shape keeps the brightness its place in the composition needs.
  */
+// One gradient per ramp and tone (Folia ef523089). The ramp is in the shape's local space, so
+// every shape of a shot that asks for the same tone can share it, rather than each baking its own
+// texture.
+const gradientFills = new WeakMap<
+  TemperaGradientFill,
+  Map<string, import("pixi.js").FillGradient>
+>();
+
 const buildGradientFill = (pixi: PixiModule, gradient: TemperaGradientFill, color: string) => {
+  let byColor = gradientFills.get(gradient);
+  if (!byColor) {
+    byColor = new Map();
+    gradientFills.set(gradient, byColor);
+  }
+  let fill = byColor.get(color);
+  if (!fill) {
+    fill = createGradientFill(pixi, gradient, color);
+    byColor.set(color, fill);
+  }
+  return fill;
+};
+
+const createGradientFill = (pixi: PixiModule, gradient: TemperaGradientFill, color: string) => {
   const half = 0.5;
   const dx = Math.cos(gradient.angle) * half;
   const dy = Math.sin(gradient.angle) * half;
@@ -56,6 +78,32 @@ const buildGradientFill = (pixi: PixiModule, gradient: TemperaGradientFill, colo
     colorStops: stops,
     textureSpace: "local",
   });
+};
+
+/**
+ * Destroys the gradient fills a display tree draws with. Graphics never destroy the textures of
+ * their fills, so without this every gradient-mode shape left its ramp texture behind until
+ * Pixi's idle collector found it. Call it before the tree itself is destroyed: destroying a
+ * Graphics drops its instruction list, the only place the fills can be found. Only for trees
+ * that are going away for good - the fills are shared within a shot.
+ */
+export const destroyTemperaGradientFills = (
+  pixi: PixiModule,
+  root: import("pixi.js").Container,
+) => {
+  const fills = new Set<import("pixi.js").FillGradient>();
+  const stack: import("pixi.js").Container[] = [root];
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    if (node.children.length > 0) stack.push(...node.children);
+    if (!(node instanceof pixi.Graphics)) continue;
+    for (const instruction of node.context.instructions) {
+      if (instruction.action !== "fill" && instruction.action !== "stroke") continue;
+      const fill = instruction.data.style.fill;
+      if (fill instanceof pixi.FillGradient) fills.add(fill);
+    }
+  }
+  fills.forEach((fill) => fill.destroy());
 };
 
 export const drawPolygonFill = (

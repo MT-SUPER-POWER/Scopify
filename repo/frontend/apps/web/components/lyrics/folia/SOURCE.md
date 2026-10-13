@@ -139,6 +139,11 @@ the original full-copy baseline:
   and passed lines) and a still clock elsewhere; the audio overlay rebuilds its gradients only
   when the canvas size changes. Scopify's rail is still the single `MonetLyricsRail.tsx`.
 
+- `ef523089` — Tempera shares gradient fills per shot and tone and destroys them with scenes
+  and credits posters; the wipe block keeps its geometry and slides by transform; block stagger
+  is resolved once per pace; renderFrame reads the fitted size. Upstream's overlay and credits
+  modules are still inside Scopify's runtime, so the changes land there.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 
