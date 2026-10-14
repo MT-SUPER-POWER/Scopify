@@ -23,6 +23,10 @@ fn parse_isize(value: &str) -> Result<isize, String> {
         .map_err(|_| format!("invalid integer value: {value}"))
 }
 
+/// Every option any command accepts; anything else is a caller bug and fails loudly instead of
+/// being silently ignored (Folia 7452afd2).
+const KNOWN_OPTIONS: &[&str] = &["--hwnd", "--zguard"];
+
 /// Parses `args` (already stripped of argv[0] and the command name is expected first).
 pub fn parse(args: &[String]) -> Result<Command, String> {
     let Some(command) = args.first() else {
@@ -39,6 +43,9 @@ pub fn parse(args: &[String]) -> Result<Command, String> {
         };
         if !name.starts_with("--") {
             return Err(format!("unexpected argument: {arg}"));
+        }
+        if !KNOWN_OPTIONS.contains(&name.as_str()) {
+            return Err(format!("unknown option: {name}"));
         }
         if inline_value.is_none() && name == "--hwnd" {
             // Value-taking options also accept the space-separated form.
@@ -127,6 +134,12 @@ mod tests {
             parse(&args(&["detach", "--hwnd=9"])).unwrap(),
             Command::Detach { hwnd: 9 }
         );
+    }
+
+    #[test]
+    fn rejects_unknown_options() {
+        assert!(parse(&args(&["attach", "--hwnd", "1", "--frobnicate"])).is_err());
+        assert!(parse(&args(&["move", "--hwnd", "1", "--monitor-rect"])).is_err());
     }
 
     #[test]

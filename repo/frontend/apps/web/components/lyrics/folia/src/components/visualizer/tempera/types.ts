@@ -7,9 +7,9 @@ export type TemperaParagraphKind = "breath" | "verse" | "lift" | "chorus" | "bre
 export type TemperaParagraphBoundary =
   "song-start" | "time-gap" | "metadata" | "duration-cap" | "line-cap";
 /**
- * Every composition Tempera can cut to. Shots are half-phrase sized, so the list has to be
- * long enough that a paragraph rarely repeats one; `temperaShotProfiles.ts` carries the
- * layout region / camera / mood for each, and `temperaCompositions.ts` the drawing.
+ * Every composition Tempera can cut to. Shots are half-phrase sized by default, so the list
+ * has to be long enough that a paragraph rarely repeats one; `temperaShotProfiles.ts` carries
+ * the layout region / camera / mood for each, and `temperaCompositions.ts` the drawing.
  */
 export const TEMPERA_SHOT_KINDS = [
   // Splits and grids
@@ -226,9 +226,8 @@ export interface TemperaDecorSpec {
 }
 
 /**
- * A shot shows part of one lyric line: a half-phrase, sliced on word boundaries. Keeping the
- * unit smaller than a line is what lets a single line run across several shots and read as
- * one continuous camera move instead of one static card per line.
+ * A shot shows a half-phrase sliced on word boundaries by default, or one complete source line
+ * when `wholeLineLyrics` is on. In both modes the slice is a half-open segment range.
  */
 export interface TemperaShotSlice {
   /** `sourceIndex` of the compiled line this slice belongs to. */

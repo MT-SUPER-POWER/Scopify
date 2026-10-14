@@ -7,6 +7,11 @@ import {
   shouldRestartLatentShader,
 } from "@/lib/lyrics/folia/latentShaderHealth";
 import {
+  createPaperShaderReleaseRef,
+  PAPER_SHADER_CONTEXT_ATTRIBUTES,
+} from "@/lib/lyrics/folia/paperShaderContext";
+import { updatePaperShaderUniforms } from "@/lib/lyrics/folia/paperShaderUniforms";
+import {
   DEFAULT_LATENT_BACKGROUND_TUNING,
   type AudioBands,
   type LatentBackgroundColorSource,
@@ -115,6 +120,9 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
 }) => {
   const ditheringRef = useRef<PaperShaderElement | null>(null);
   const meshRef = useRef<PaperShaderElement | null>(null);
+  // Stable callback refs: they also lose each shader's WebGL context when it unmounts.
+  const ditheringShaderRef = useMemo(() => createPaperShaderReleaseRef(ditheringRef), []);
+  const meshShaderRef = useMemo(() => createPaperShaderReleaseRef(meshRef), []);
   const ditheringLayerRef = useRef<HTMLDivElement | null>(null);
   const meshLayerRef = useRef<HTMLDivElement | null>(null);
   const pausedRef = useRef(paused);
@@ -162,6 +170,27 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
     }
 
     let animationFrame = 0;
+    // The full-screen layers' last written styles: once the smoothed audio settles (paused,
+    // silence) the strings stop changing, and the layers are left alone instead of being handed
+    // the same filter every frame (Folia cbc97c30).
+    const writtenStyles = new WeakMap<
+      HTMLElement,
+      Partial<Record<"opacity" | "transform" | "filter", string>>
+    >();
+    const writeLayerStyle = (
+      element: HTMLElement,
+      property: "opacity" | "transform" | "filter",
+      value: string,
+    ) => {
+      let written = writtenStyles.get(element);
+      if (!written) {
+        written = {};
+        writtenStyles.set(element, written);
+      }
+      if (written[property] === value) return;
+      written[property] = value;
+      element.style[property] = value;
+    };
     let smoothedPower = 0;
     let smoothedBass = 0;
     let smoothedMid = 0;
@@ -210,28 +239,42 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
       const currentDitheringMount = ditheringRef.current?.paperShaderMount;
       const currentMeshMount = meshRef.current?.paperShaderMount;
 
-      currentDitheringMount?.setSpeed(
-        resolveLatentShaderSpeed(
+      if (currentDitheringMount) {
+        const ditheringSpeed = resolveLatentShaderSpeed(
           tuning.ditheringSpeed,
           tuning.ditheringAudioSpeed,
           smoothedBeatSpeed,
           isPaused,
-        ),
-      );
-      currentDitheringMount?.setUniforms({
-        u_pxSize: Math.max(0.5, tuning.ditheringSize - smoothedBass * tuning.ditheringSize * 0.34),
-      });
+        );
+        currentDitheringMount.setSpeed(ditheringSpeed);
+        updatePaperShaderUniforms(
+          currentDitheringMount,
+          {
+            u_pxSize: Math.max(
+              0.5,
+              tuning.ditheringSize - smoothedBass * tuning.ditheringSize * 0.34,
+            ),
+          },
+          ditheringSpeed !== 0,
+        );
+      }
       const currentMeshSpeed = resolveLatentShaderSpeed(
         tuning.meshSpeed,
         tuning.meshAudioSpeed,
         smoothedBeatSpeed,
         isPaused,
       );
-      currentMeshMount?.setSpeed(currentMeshSpeed);
-      currentMeshMount?.setUniforms({
-        u_distortion: tuning.meshDistortion + smoothedPower * 0.62,
-        u_swirl: tuning.meshSwirl + smoothedMid * 0.38,
-      });
+      if (currentMeshMount) {
+        currentMeshMount.setSpeed(currentMeshSpeed);
+        updatePaperShaderUniforms(
+          currentMeshMount,
+          {
+            u_distortion: tuning.meshDistortion + smoothedPower * 0.62,
+            u_swirl: tuning.meshSwirl + smoothedMid * 0.38,
+          },
+          currentMeshSpeed !== 0,
+        );
+      }
 
       const meshLayer = meshLayerRef.current;
       const currentMeshFrame = currentMeshMount?.getCurrentFrame();
@@ -279,14 +322,28 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
       }
 
       if (ditheringLayerRef.current) {
-        ditheringLayerRef.current.style.opacity = showMesh
-          ? `${Math.min(1, tuning.ditheringOpacity + smoothedBass * 0.25)}`
-          : "1";
-        ditheringLayerRef.current.style.transform = `scale(${1.015 + smoothedBass * 0.025})`;
+        writeLayerStyle(
+          ditheringLayerRef.current,
+          "opacity",
+          showMesh ? `${Math.min(1, tuning.ditheringOpacity + smoothedBass * 0.25)}` : "1",
+        );
+        writeLayerStyle(
+          ditheringLayerRef.current,
+          "transform",
+          `scale(${1.015 + smoothedBass * 0.025})`,
+        );
       }
       if (meshLayerRef.current) {
-        meshLayerRef.current.style.filter = `saturate(${1.04 + smoothedMid * 0.34}) brightness(${0.94 + smoothedPower * 0.16})`;
-        meshLayerRef.current.style.transform = `scale(${1.025 + smoothedPower * 0.018})`;
+        writeLayerStyle(
+          meshLayerRef.current,
+          "filter",
+          `saturate(${1.04 + smoothedMid * 0.34}) brightness(${0.94 + smoothedPower * 0.16})`,
+        );
+        writeLayerStyle(
+          meshLayerRef.current,
+          "transform",
+          `scale(${1.025 + smoothedPower * 0.018})`,
+        );
       }
 
       animationFrame = requestAnimationFrame(updateAudioResponse);
@@ -309,7 +366,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
         >
           <MeshGradient
             key={`latent-mesh-${shaderRecoveryEpoch}`}
-            ref={meshRef}
+            ref={meshShaderRef}
             width="100%"
             height="100%"
             colors={shaderColors.mesh}
@@ -324,6 +381,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
             }
             minPixelRatio={1}
             maxPixelCount={MAX_SHADER_PIXELS}
+            webGlContextAttributes={PAPER_SHADER_CONTEXT_ATTRIBUTES}
             style={{ width: "100%", height: "100%" }}
           />
         </div>
@@ -341,7 +399,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
         >
           <Dithering
             key={`latent-dithering-${shaderRecoveryEpoch}`}
-            ref={ditheringRef}
+            ref={ditheringShaderRef}
             width="100%"
             height="100%"
             colorBack={shaderColors.ditheringBack}
@@ -361,6 +419,7 @@ const LatentBackground: React.FC<LatentBackgroundProps> = ({
             }
             minPixelRatio={1}
             maxPixelCount={MAX_SHADER_PIXELS}
+            webGlContextAttributes={PAPER_SHADER_CONTEXT_ATTRIBUTES}
             style={{ width: "100%", height: "100%" }}
           />
         </div>

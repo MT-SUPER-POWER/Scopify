@@ -7,7 +7,15 @@ Windows 桌面壁纸模式的原生辅助进程。由 Scopify Electron 主进程
 协议（详见 `src/cli.rs` 与 `src/events.rs`）：
 
 - 命令行：`attach --hwnd <n> [--zguard]`（常驻）、`move --hwnd <n>`、
-  `detach --hwnd <n>`（一次性）。
+  `detach --hwnd <n>`（一次性）。未知选项直接报错退出，避免主进程拼错参数被静默忽略。
+- **选屏**（同步自 Folia `7452afd2`）：helper 不接受选屏参数。主进程先按
+  `wallpaperTargetDisplay.ts` 选出目标显示器（会话已覆盖的屏 → 主窗口所在屏 → 主屏），必要时把
+  隐藏的主窗口移到该屏；helper 在 `SetParent` **之前**取窗口所在显示器，优先挑选**覆盖该显示器的
+  WorkerW**（24H2+ raised 桌面每块屏一个 WorkerW），并按该屏 `rcMonitor` 摆好窗口。`SetParent`
+  保留子窗口的父客户区坐标，选错宿主会把壁纸铺到宿主那块屏上。找不到匹配宿主（classic 桌面只有
+  一个跨虚拟屏的 WorkerW）时回退原有的 classic → raised 探测。
+- DPI：进程启动即切到 per-monitor v2，显示器与 WorkerW 的矩形都按物理像素比较；Scopify 不经
+  helper 转发鼠标，因此不再需要 96-DPI 虚拟化坐标。
 - stdin：`detach`（常驻进程退出前先还原窗口）。stdin EOF 同样触发还原。
 - stdout：JSONL 事件
   `{"event": "attached"|"heartbeat"|"workerw-destroyed"|"explorer-restarted"|"reasserted"|"moved"|"detached"|"error", ...}`。

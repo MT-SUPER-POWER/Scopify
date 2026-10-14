@@ -32,6 +32,11 @@ import { type VisualizerSharedProps } from "../definition";
 import VisualizerShell from "../VisualizerShell";
 import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
 import { resolveWordColor } from "../wordColoring";
+import type {
+  CadenzaOverlayWordFrame,
+  CadenzaPlacementGlyphs,
+  CadenzaWordStatus,
+} from "@/types/lyrics/folia/cadenza";
 
 // This is the heavy layout mode.
 // The line does not just show up and animate; we first prebuild the active/upcoming lines,
@@ -120,6 +125,12 @@ interface OverlayWordNodes {
   glow: HTMLSpanElement;
   glyphSpans: HTMLSpanElement[];
   glyphSignature: string;
+  /** What the nodes currently show, so a frame only touches what changed; null before the first write. */
+  written: CadenzaOverlayWordFrame | null;
+  /** The text-shadow each glyph span currently has, index-aligned with `glyphSpans`. */
+  glyphShadows: string[];
+  /** The draw-loop frame that last used these nodes; older ones are removed at the end of a frame. */
+  frame: number;
 }
 
 interface PreparedState {
@@ -155,6 +166,7 @@ const createOverlayWordNodes = (): OverlayWordNodes => {
   const outer = document.createElement("div");
   outer.className = "absolute left-0 top-0";
   outer.setAttribute("aria-hidden", "true");
+  outer.style.transformOrigin = "0 0";
 
   const inner = document.createElement("div");
   inner.className = "whitespace-nowrap";
@@ -190,7 +202,36 @@ const createOverlayWordNodes = (): OverlayWordNodes => {
     glow,
     glyphSpans: [],
     glyphSignature: "",
+    written: null,
+    glyphShadows: [],
+    frame: -1,
   };
+};
+
+/**
+ * Writes one frame of a word, skipping every value that is already on the node (Folia 04b16c6e).
+ * Re-assigning `textContent` swaps the text node even when the string is the same, and the font
+ * and text are what make the browser lay the word out again - most words keep both for a line.
+ */
+const writeOverlayWord = (nodes: OverlayWordNodes, next: CadenzaOverlayWordFrame) => {
+  const written = nodes.written;
+  if (written?.outerTransform !== next.outerTransform)
+    nodes.outer.style.transform = next.outerTransform;
+  if (written?.font !== next.font) nodes.inner.style.font = next.font;
+  if (written?.innerTransform !== next.innerTransform)
+    nodes.inner.style.transform = next.innerTransform;
+  if (written?.text !== next.text) nodes.body.textContent = next.text;
+  if (written?.color !== next.color) nodes.body.style.color = next.color;
+  if (written?.opacity !== next.opacity) nodes.body.style.opacity = next.opacity;
+  if (written?.filter !== next.filter) nodes.body.style.filter = next.filter;
+  nodes.written = next;
+};
+
+/** Sets a glyph span's text-shadow only when it differs from what the span already has. */
+const writeOverlayGlyphShadow = (nodes: OverlayWordNodes, index: number, shadow: string) => {
+  if (nodes.glyphShadows[index] === shadow) return;
+  nodes.glyphShadows[index] = shadow;
+  nodes.glyphSpans[index]!.style.textShadow = shadow;
 };
 
 const syncOverlayGlyphSpans = (nodes: OverlayWordNodes, texts: string[]) => {
@@ -208,6 +249,7 @@ const syncOverlayGlyphSpans = (nodes: OverlayWordNodes, texts: string[]) => {
     nodes.glow.appendChild(span);
     return span;
   });
+  nodes.glyphShadows = [];
   nodes.glyphSignature = glyphSignature;
 };
 
@@ -239,6 +281,9 @@ const easeInOutQuad = (value: number) => {
 const ACTIVE_PULSE_FREQUENCY = 10;
 
 const isCJK = (text: string) => /[\u4e00-\u9fa5\u3040-\u30ff\uac00-\ud7af]/.test(text);
+
+/** Words are drawn waiting first and active last, so the word being sung sits on top. */
+const CADENZA_STATUS_DRAW_ORDER: readonly CadenzaWordStatus[] = ["waiting", "passed", "active"];
 
 const getWordStatus = (time: number, lineTiming: ResolvedLineRenderTiming, word: WordType) => {
   const lookahead =
@@ -1491,6 +1536,41 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
     const textContext = textCanvas.getContext("2d");
     if (!textContext) return;
 
+    // Everything below is fixed for this prepared line, so it is worked out once per effect run
+    // rather than every frame (Folia 04b16c6e): the placement ids, and per placement its graphemes
+    // and the ascent of its text in the line's font.
+    const placementIds = new Set(preparedState?.placements.map((placement) => placement.id));
+    animatedPlacementRef.current.forEach((_value, key) => {
+      if (!placementIds.has(key)) {
+        animatedPlacementRef.current.delete(key);
+      }
+    });
+    const placementGlyphs = new Map<WordPlacement, CadenzaPlacementGlyphs>();
+    const glyphsOf = (placement: WordPlacement) => {
+      let entry = placementGlyphs.get(placement);
+      if (!entry) {
+        entry = { glyphs: splitGraphemes(placement.text), cjk: isCJK(placement.text) };
+        placementGlyphs.set(placement, entry);
+      }
+      return entry;
+    };
+    // A web font that finishes loading mid-line changes the ascent; measure again next frame
+    // (Folia fcb95450).
+    const fontSet = typeof document !== "undefined" ? document.fonts : undefined;
+    const forgetAscents = () =>
+      placementGlyphs.forEach((entry) => {
+        entry.ascent = undefined;
+      });
+    fontSet?.addEventListener("loadingdone", forgetAscents);
+    // Placements bucketed by status, each bucket in line order - what a stable sort on the status
+    // gives, without the comparator re-deriving every status on every comparison.
+    const byStatus: Record<CadenzaWordStatus, WordPlacement[]> = {
+      waiting: [],
+      passed: [],
+      active: [],
+    };
+    let frameNumber = 0;
+
     const draw = () => {
       const now = performance.now();
       const dt =
@@ -1549,19 +1629,20 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
       textContext.lineJoin = "round";
       textContext.lineCap = "round";
 
-      const placements = [...preparedState.placements].sort((a, b) => {
-        const order = { waiting: 0, passed: 1, active: 2 } as const;
-        return (
-          order[getWordStatus(time, lineTiming, a.word)] -
-          order[getWordStatus(time, lineTiming, b.word)]
-        );
-      });
-      const placementIds = new Set(placements.map((placement) => placement.id));
+      byStatus.waiting.length = 0;
+      byStatus.passed.length = 0;
+      byStatus.active.length = 0;
+      for (const placement of preparedState.placements) {
+        byStatus[getWordStatus(time, lineTiming, placement.word)].push(placement);
+      }
       const overlayNodes = overlayNodesRef.current;
-      const usedOverlayIds = new Set<string>();
+      frameNumber += 1;
 
-      placements.forEach((placement, placementIndex) => {
-        const status = getWordStatus(time, lineTiming, placement.word);
+      const drawPlacement = (
+        placement: WordPlacement,
+        status: CadenzaWordStatus,
+        placementIndex: number,
+      ) => {
         const progress = getWordProgress(time, wordRevealMode, placement.word);
         const passedAlpha = isInstantWordReveal
           ? 0
@@ -1697,36 +1778,38 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
         const overlayAnchorX = drawX + placement.width / 2;
         const overlayAnchorY = drawBaselineY - placement.height * 0.42;
         const overlayOffsetX = textX;
-        const textMetrics = textContext.measureText(placement.text);
-        const measuredAscent = textMetrics.actualBoundingBoxAscent || preparedState.fontPx * 0.78;
+        const placementText = glyphsOf(placement);
+        // Measured once per placement: the canvas font is the prepared line's font on every frame.
+        placementText.ascent ??= textContext.measureText(placement.text).actualBoundingBoxAscent;
+        const measuredAscent = placementText.ascent || preparedState.fontPx * 0.78;
         const overlayOffsetY = textY - measuredAscent;
-        const glyphs = splitGraphemes(placement.text);
+        const glyphs = placementText.glyphs;
         const shouldSplitGlow =
-          wordRevealMode === "normal" && !isCJK(placement.text) && glyphs.length > 1;
+          wordRevealMode === "normal" && !placementText.cjk && glyphs.length > 1;
         const blurScale = 1 + energy * 0.22;
-        usedOverlayIds.add(placement.id);
         let overlayWord = overlayNodes.get(placement.id);
         if (!overlayWord) {
           overlayWord = createOverlayWordNodes();
           overlayNodes.set(placement.id, overlayWord);
           overlay.appendChild(overlayWord.outer);
         }
+        overlayWord.frame = frameNumber;
 
-        overlayWord.outer.style.transform = `translate3d(${overlayAnchorX}px, ${overlayAnchorY}px, 0) rotate(${animatedState.rotation}deg) scale(${animatedState.scale})`;
-        overlayWord.outer.style.transformOrigin = "0 0";
-        overlayWord.inner.style.font = preparedState.font;
-        overlayWord.inner.style.transform = `translate3d(${overlayOffsetX}px, ${overlayOffsetY}px, 0)`;
-        overlayWord.body.textContent = placement.text;
-        overlayWord.body.style.color = textColor;
-        overlayWord.body.style.opacity = animatedState.bodyAlpha.toString();
-        overlayWord.body.style.filter =
-          animatedState.blur > 0.05 ? `blur(${animatedState.blur.toFixed(2)}px)` : "none";
+        writeOverlayWord(overlayWord, {
+          outerTransform: `translate3d(${overlayAnchorX}px, ${overlayAnchorY}px, 0) rotate(${animatedState.rotation}deg) scale(${animatedState.scale})`,
+          font: preparedState.font,
+          innerTransform: `translate3d(${overlayOffsetX}px, ${overlayOffsetY}px, 0)`,
+          text: placement.text,
+          color: textColor,
+          opacity: animatedState.bodyAlpha.toString(),
+          filter: animatedState.blur > 0.05 ? `blur(${animatedState.blur.toFixed(2)}px)` : "none",
+        });
 
         const glowTexts = shouldSplitGlow ? glyphs : [placement.text];
         syncOverlayGlyphSpans(overlayWord, glowTexts);
 
         if (shouldSplitGlow) {
-          overlayWord.glyphSpans.forEach((glyphSpan, glyphIndex) => {
+          for (let glyphIndex = 0; glyphIndex < overlayWord.glyphSpans.length; glyphIndex += 1) {
             const absoluteIndex = placement.fragmentStartInWord + glyphIndex;
             const intensity =
               getClassicCharGlow(
@@ -1739,29 +1822,36 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
               clamp(animatedState.glowAlpha, 0, 1) *
               Math.max(tuning.glowIntensity, 0);
 
-            glyphSpan.style.textShadow = buildDomTextShadow(placement.color, intensity, blurScale);
-          });
+            writeOverlayGlyphShadow(
+              overlayWord,
+              glyphIndex,
+              buildDomTextShadow(placement.color, intensity, blurScale),
+            );
+          }
         } else if (overlayWord.glyphSpans[0]) {
           const intensity =
             getClassicGlowEnvelope(time, lineTiming, placement.word) *
             clamp(animatedState.glowAlpha, 0, 1) *
             Math.max(tuning.glowIntensity, 0);
-          overlayWord.glyphSpans[0].style.textShadow = buildDomTextShadow(
-            placement.color,
-            intensity,
-            blurScale,
+          writeOverlayGlyphShadow(
+            overlayWord,
+            0,
+            buildDomTextShadow(placement.color, intensity, blurScale),
           );
         }
-      });
+      };
 
-      animatedPlacementRef.current.forEach((_value, key) => {
-        if (!placementIds.has(key)) {
-          animatedPlacementRef.current.delete(key);
+      // Words are drawn waiting first and active last, so the word being sung sits on top.
+      let placementIndex = -1;
+      for (const status of CADENZA_STATUS_DRAW_ORDER) {
+        for (const placement of byStatus[status]) {
+          placementIndex += 1;
+          drawPlacement(placement, status, placementIndex);
         }
-      });
+      }
 
       overlayNodes.forEach((nodes, key) => {
-        if (!usedOverlayIds.has(key)) {
+        if (nodes.frame !== frameNumber) {
           nodes.outer.remove();
           overlayNodes.delete(key);
         }
@@ -1773,6 +1863,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
     draw();
     return () => {
       window.cancelAnimationFrame(frameId);
+      fontSet?.removeEventListener("loadingdone", forgetAscents);
       lastFrameTimeRef.current = null;
       clearOverlayWordNodes(overlayNodesRef.current);
     };

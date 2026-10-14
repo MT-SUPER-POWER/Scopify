@@ -128,6 +128,25 @@ export const buildTemperaBlocks = (
   // Drives block motion from absolute time so seeks render the same frame. There is no exit
   // ramp here: the shot container owns the hand-off slide, so the outgoing composition
   // leaves as one piece with its own type still attached to it.
+  // Each item's stagger in seconds depends only on the lyric's length, which is fixed for the
+  // shot, so it is resolved once and reused until a different length comes in (Folia ef523089).
+  let schedulePace = Number.NaN;
+  const delays = new Float64Array(items.length);
+  const spans = new Float64Array(items.length);
+  const resolveSchedule = (paceDuration: number) => {
+    if (paceDuration === schedulePace) return;
+    schedulePace = paceDuration;
+    const budget = Math.max(0.5, paceDuration);
+    items.forEach((item, index) => {
+      const rawDelay = resolveShotPacedDuration(paceDuration, item.delayFraction, 0, 1.4);
+      const rawSpan = resolveShotPacedDuration(paceDuration, item.spanFraction, 0.7, 2.6);
+      // Short shots compress the whole stagger instead of dropping the late items.
+      const compress = Math.min(1, budget / (rawDelay + rawSpan));
+      delays[index] = rawDelay * compress;
+      spans[index] = rawSpan * compress;
+    });
+  };
+
   const updateTime = (time: number, shotStart: number, shotEnd: number, lyricEnd?: number) => {
     const duration = Math.max(shotEnd - shotStart, 0.2);
     const paceDuration = Math.max((lyricEnd ?? shotEnd) - shotStart, 0.2);
@@ -135,16 +154,11 @@ export const buildTemperaBlocks = (
     // A steady creep along the flow vector for the whole shot; the camera rides the same
     // axis, so the frame is always already moving when the next composition arrives.
     const creep = easeTemperaInOut(progress) * carry * 0.35;
-    const budget = Math.max(0.5, paceDuration);
+    resolveSchedule(paceDuration);
 
-    for (const item of items) {
-      const rawDelay = resolveShotPacedDuration(paceDuration, item.delayFraction, 0, 1.4);
-      const rawSpan = resolveShotPacedDuration(paceDuration, item.spanFraction, 0.7, 2.6);
-      // Short shots compress the whole stagger instead of dropping the late items.
-      const compress = Math.min(1, budget / (rawDelay + rawSpan));
-      const enter = easeTemperaEnter(
-        (time - shotStart - rawDelay * compress) / (rawSpan * compress),
-      );
+    for (let index = 0; index < items.length; index += 1) {
+      const item = items[index]!;
+      const enter = easeTemperaEnter((time - shotStart - delays[index]!) / spans[index]!);
       item.node.alpha = item.baseAlpha * enter;
       item.node.visible = enter > 0.001;
       const behind = (1 - enter) * carry - creep;

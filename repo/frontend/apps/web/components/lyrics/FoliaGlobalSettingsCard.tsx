@@ -4,8 +4,10 @@ import { Clock3, Film } from "lucide-react";
 import { useState } from "react";
 
 import { FoliaGlobalLyricOffsetDialog } from "@/components/lyrics/FoliaGlobalLyricOffsetDialog";
+import { FoliaSettingsSwitch } from "@/components/lyrics/FoliaSettingsSwitch";
 import { FoliaVideoExportDialog } from "@/components/lyrics/FoliaVideoExportDialog";
 import { useI18n } from "@/store/module/i18n";
+import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaGlobalSettingsCardProps } from "@/types/components/lyrics";
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 
@@ -13,6 +15,8 @@ export function FoliaGlobalSettingsCard({ controlCardBg, theme }: FoliaGlobalSet
   const { t } = useI18n();
   const [isVideoExportOpen, setIsVideoExportOpen] = useState(false);
   const [isOffsetDialogOpen, setIsOffsetDialogOpen] = useState(false);
+  const autoHideCursorWithChrome = useLyricStageStore((state) => state.autoHideCursorWithChrome);
+  const patchSettings = useLyricStageStore((state) => state.patchSettings);
   const isDaylight = theme.name === "snow";
   const borderColor = isDaylight ? "border-black/8" : "border-white/10";
 
@@ -75,6 +79,22 @@ export function FoliaGlobalSettingsCard({ controlCardBg, theme }: FoliaGlobalSet
         >
           <Film size={15} />
         </button>
+      </div>
+      <div className={`flex items-center justify-between gap-3 border-t pt-3 ${borderColor}`}>
+        <div className="min-w-0">
+          <div className="text-xs font-medium" style={{ color: theme.primaryColor }}>
+            {t("folia.options.autoHideCursorWithChrome")}
+          </div>
+          <div className="mt-0.5 text-[10px] opacity-50" style={{ color: theme.secondaryColor }}>
+            {t("folia.options.autoHideCursorWithChromeDesc")}
+          </div>
+        </div>
+        <FoliaSettingsSwitch
+          checked={autoHideCursorWithChrome}
+          label={t("folia.options.autoHideCursorWithChrome")}
+          onChange={(enabled) => patchSettings({ autoHideCursorWithChrome: enabled })}
+          theme={theme}
+        />
       </div>
       <FoliaVideoExportDialog
         isOpen={isVideoExportOpen}

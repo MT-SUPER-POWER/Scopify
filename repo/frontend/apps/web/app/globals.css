@@ -75,6 +75,12 @@
     height: 0;
   }
 
+  /* Folia 舞台：控制栏自动收起时指针随视觉层一起隐藏；需压过后代的 cursor-* 工具类。 */
+  .folia-cursor-auto-hidden,
+  .folia-cursor-auto-hidden * {
+    cursor: none !important;
+  }
+
   /* 自定义的滑动条 */
   .scrollbar-custom {
     /* 让滚动条悬浮，不占用布局宽度 */

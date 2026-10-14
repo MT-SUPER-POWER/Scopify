@@ -12413,6 +12413,18 @@ export interface TranslateFn {
    */
   (key: "folia.options.lyricsGlobalSettingsDesc", params?: TranslationParams): string;
   /**
+   * zh-CN: 控制栏收起时隐藏鼠标指针
+   * zh-TW: 控制列收起時隱藏滑鼠指標
+   * en-US: Hide cursor with player controls
+   */
+  (key: "folia.options.autoHideCursorWithChrome", params?: TranslationParams): string;
+  /**
+   * zh-CN: 控制栏自动收起后指针一起消失，移动鼠标即可唤回；关闭后只收起控制栏。
+   * zh-TW: 控制列自動收起後指標一起消失，移動滑鼠即可喚回；關閉後只收起控制列。
+   * en-US: Once the controls auto-hide, the pointer goes with them and returns on the next mouse move. Turn off to keep the pointer.
+   */
+  (key: "folia.options.autoHideCursorWithChromeDesc", params?: TranslationParams): string;
+  /**
    * zh-CN: 和声歌词
    * zh-TW: 和聲歌詞
    * en-US: Harmony Lyrics
@@ -12634,6 +12646,126 @@ export interface TranslateFn {
    * en-US: Sora
    */
   (key: "folia.options.visualizerBackgroundModeSora", params?: TranslationParams): string;
+  /**
+   * zh-CN: 空背景设置
+   * zh-TW: 空背景設定
+   * en-US: Sora Background
+   */
+  (key: "folia.options.soraBackgroundSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完全空白
+   * zh-TW: 完全空白
+   * en-US: Fully blank
+   */
+  (key: "folia.options.soraBlank", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不再渲染 WebGL 星空，只显示静态纯色画面：夜间纯黑，日间纯白。适合搭配视频层使用。
+   * zh-TW: 不再渲染 WebGL 星空，只顯示靜態純色畫面：夜間純黑，日間純白。適合搭配影片層使用。
+   * en-US: Skip the WebGL starfield and show a static solid frame: black at night, white in daylight. Pairs well with the video layer.
+   */
+  (key: "folia.options.soraBlankDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视频层
+   * zh-TW: 影片層
+   * en-US: Video layer
+   */
+  (key: "folia.options.videoLayerSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在歌词后方显示视频
+   * zh-TW: 在歌詞後方顯示影片
+   * en-US: Show video behind lyrics
+   */
+  (key: "folia.options.videoLayerEnabled", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在背景和歌词之间铺一层静音视频，跟随音乐播放、暂停和跳转。
+   * zh-TW: 在背景和歌詞之間鋪一層靜音影片，跟隨音樂播放、暫停和跳轉。
+   * en-US: A muted video between the background and the lyrics. It plays, pauses and seeks with the music.
+   */
+  (key: "folia.options.videoLayerDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本地视频
+   * zh-TW: 本機影片
+   * en-US: Local video
+   */
+  (key: "folia.options.videoLayerLocalFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先于 URL 使用。重启后自动恢复所选视频。
+   * zh-TW: 優先於 URL 使用。重啟後自動恢復所選影片。
+   * en-US: Takes priority over the URL. The pick is remembered after a restart.
+   */
+  (key: "folia.options.videoLayerLocalFileDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先于 URL 使用。当前浏览器无法记住所选文件，重启后需要重新选择。
+   * zh-TW: 優先於 URL 使用。當前瀏覽器無法記住所選檔案，重啟後需要重新選擇。
+   * en-US: Takes priority over the URL. This browser cannot remember the pick, so choose it again after a restart.
+   */
+  (key: "folia.options.videoLayerLocalFileSessionDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择视频
+   * zh-TW: 選擇影片
+   * en-US: Choose video
+   */
+  (key: "folia.options.videoLayerPickFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新授权访问
+   * zh-TW: 重新授權存取
+   * en-US: Allow access again
+   */
+  (key: "folia.options.videoLayerRegrant", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清除本地视频
+   * zh-TW: 清除本機影片
+   * en-US: Clear local video
+   */
+  (key: "folia.options.videoLayerClearFile", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无法打开该视频
+   * zh-TW: 無法開啟該影片
+   * en-US: Could not open the video
+   */
+  (key: "folia.options.videoLayerPickFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视频 URL
+   * zh-TW: 影片 URL
+   * en-US: Video URL
+   */
+  (key: "folia.options.videoLayerUrl", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未选择本地视频时使用。
+   * zh-TW: 未選擇本機影片時使用。
+   * en-US: Used when no local video is chosen.
+   */
+  (key: "folia.options.videoLayerUrlDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不透明度
+   * zh-TW: 不透明度
+   * en-US: Opacity
+   */
+  (key: "folia.options.videoLayerOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 填充方式
+   * zh-TW: 填充方式
+   * en-US: Fit
+   */
+  (key: "folia.options.videoLayerFit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 铺满（裁切）
+   * zh-TW: 鋪滿（裁切）
+   * en-US: Cover (crop)
+   */
+  (key: "folia.options.videoLayerFitCover", params?: TranslationParams): string;
+  /**
+   * zh-CN: 完整显示
+   * zh-TW: 完整顯示
+   * en-US: Contain
+   */
+  (key: "folia.options.videoLayerFitContain", params?: TranslationParams): string;
+  /**
+   * zh-CN: 不参与视觉配置导入导出，也不在 OBS 源中显示：OBS 使用独立浏览器，无法读取这里选择的本地视频。
+   * zh-TW: 不參與視覺配置匯入匯出，也不在 OBS 來源中顯示：OBS 使用獨立瀏覽器，無法讀取這裡選擇的本機影片。
+   * en-US: Not included in visual config import/export, and not shown in OBS sources: OBS runs its own browser and cannot open the local video picked here.
+   */
+  (key: "folia.options.videoLayerNotInExport", params?: TranslationParams): string;
   /**
    * zh-CN: 莱茵
    * zh-TW: 萊茵
@@ -12910,6 +13042,12 @@ export interface TranslateFn {
    * en-US: None
    */
   (key: "folia.options.subtitleContentNone", params?: TranslationParams): string;
+  /**
+   * zh-CN: 罗马音 + 翻译
+   * zh-TW: 羅馬音 + 翻譯
+   * en-US: Romanization + Translation
+   */
+  (key: "folia.options.subtitleContentBoth", params?: TranslationParams): string;
   /**
    * zh-CN: 流光参数
    * zh-TW: 流光參數
@@ -13679,6 +13817,24 @@ export interface TranslateFn {
    */
   (key: "folia.options.temperaDisplaySection", params?: TranslationParams): string;
   /**
+   * zh-CN: 歌词分镜
+   * zh-TW: 歌詞分鏡
+   * en-US: Lyric Shots
+   */
+  (key: "folia.options.temperaLyricSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整句显示歌词
+   * zh-TW: 整句顯示歌詞
+   * en-US: Show the whole lyric line
+   */
+  (key: "folia.options.temperaWholeLineLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭时一句歌词按 2~4 词切成多个分镜，字号可以放得很大；开启后整句留在同一个分镜里，长句会自动缩小字号。
+   * zh-TW: 關閉時一句歌詞按 2~4 詞切成多個分鏡，字號可以放得很大；開啟後整句留在同一個分鏡裡，長句會自動縮小字號。
+   * en-US: Off: a line is cut into 2-4 word phrases, each getting its own shot with much larger type. On: the whole line stays in one shot, so a long line is set smaller.
+   */
+  (key: "folia.options.temperaWholeLineLyricsHint", params?: TranslationParams): string;
+  /**
    * zh-CN: 渲染质量
    * zh-TW: 渲染品質
    * en-US: Rendering quality
@@ -13756,6 +13912,12 @@ export interface TranslateFn {
    * en-US: Decorations
    */
   (key: "folia.options.temperaShowDecor", params?: TranslationParams): string;
+  /**
+   * zh-CN: 边角线框
+   * zh-TW: 邊角線框
+   * en-US: Corner marks
+   */
+  (key: "folia.options.temperaShowCornerMarks", params?: TranslationParams): string;
   /**
    * zh-CN: 文字动态反色
    * zh-TW: 文字動態反色
@@ -13900,6 +14062,138 @@ export interface TranslateFn {
    * en-US: Or drop files here
    */
   (key: "folia.options.temperaLayerImageDropHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} / {{max}}
+   * zh-TW: {{count}} / {{max}}
+   * en-US: {{count}} / {{max}}
+   */
+  (key: "folia.options.temperaImagePoolCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入备份
+   * zh-TW: 匯入備份
+   * en-US: Import backup
+   */
+  (key: "folia.options.temperaImportImages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导出备份
+   * zh-TW: 匯出備份
+   * en-US: Export backup
+   */
+  (key: "folia.options.temperaExportImages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 替换当前图片池
+   * zh-TW: 替換目前圖片池
+   * en-US: Replace current pool
+   */
+  (key: "folia.options.temperaImportReplaceImages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 追加到当前图片池
+   * zh-TW: 追加到目前圖片池
+   * en-US: Append to current pool
+   */
+  (key: "folia.options.temperaImportAppendImages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 替换导入会先清空当前 {{count}} 张图片，确定继续？
+   * zh-TW: 替換匯入會先清空目前 {{count}} 張圖片，確定繼續？
+   * en-US: Replacing clears the {{count}} image(s) already in the pool. Continue?
+   */
+  (key: "folia.options.temperaImportConfirmReplace", params?: TranslationParams): string;
+  /**
+   * zh-CN: 确认替换
+   * zh-TW: 確認替換
+   * en-US: Replace
+   */
+  (key: "folia.options.temperaImportConfirmReplaceAction", params?: TranslationParams): string;
+  /**
+   * zh-CN: 凝彩参数-画布图片备份
+   * zh-TW: 凝彩參數-畫布圖片備份
+   * en-US: Tempera tuning-canvas images
+   */
+  (key: "folia.options.temperaExportBaseName", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还有图片在处理，完成后才能保存
+   * zh-TW: 還有圖片在處理，完成後才能儲存
+   * en-US: Images are still being processed; the pool saves once that finishes
+   */
+  (key: "folia.options.temperaPoolWaitToSave", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在添加…
+   * zh-TW: 正在新增…
+   * en-US: Adding…
+   */
+  (key: "folia.options.temperaPoolBusyAdd", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在导出…
+   * zh-TW: 正在匯出…
+   * en-US: Exporting…
+   */
+  (key: "folia.options.temperaPoolBusyExport", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在导入…
+   * zh-TW: 正在匯入…
+   * en-US: Importing…
+   */
+  (key: "folia.options.temperaPoolBusyImport", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加 {{count}} 张图片
+   * zh-TW: 已新增 {{count}} 張圖片
+   * en-US: Added {{count}} image(s)
+   */
+  (key: "folia.options.temperaLayerImagesAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未添加 {{count}} 张图片
+   * zh-TW: 未新增 {{count}} 張圖片
+   * en-US: {{count}} image(s) not added
+   */
+  (key: "folia.options.temperaLayerImagesNotAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已导入 {{count}} 张图片
+   * zh-TW: 已匯入 {{count}} 張圖片
+   * en-US: Imported {{count}} image(s)
+   */
+  (key: "folia.options.temperaPoolImported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 未导入 {{count}} 张图片
+   * zh-TW: 未匯入 {{count}} 張圖片
+   * en-US: {{count}} image(s) not imported
+   */
+  (key: "folia.options.temperaPoolImportNotAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这份备份里没有可用的图片
+   * zh-TW: 這份備份裡沒有可用的圖片
+   * en-US: This backup holds no usable image
+   */
+  (key: "folia.options.temperaPoolImportEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导入失败，请确认是本功能导出的 zip
+   * zh-TW: 匯入失敗，請確認是本功能匯出的 zip
+   * en-US: Import failed; use a zip exported by this dialog
+   */
+  (key: "folia.options.temperaPoolImportFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消导入：备份解压后预计超过 512 MB，疑似损坏或压缩炸弹
+   * zh-TW: 已取消匯入：備份解壓後預計超過 512 MB，疑似損壞或壓縮炸彈
+   * en-US: Import cancelled: the backup would expand to over 512 MB and was rejected as a possible corrupted or zip-bomb archive
+   */
+  (key: "folia.options.temperaPoolImportTooLarge", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已导出 {{count}} 张图片
+   * zh-TW: 已匯出 {{count}} 張圖片
+   * en-US: Exported {{count}} image(s)
+   */
+  (key: "folia.options.temperaPoolExported", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 张的原文件已丢失，未写入备份
+   * zh-TW: {{count}} 張的原始檔案已遺失，未寫入備份
+   * en-US: {{count}} image(s) left out: the file was missing
+   */
+  (key: "folia.options.temperaPoolExportSkipped", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导出失败
+   * zh-TW: 匯出失敗
+   * en-US: Export failed
+   */
+  (key: "folia.options.temperaPoolExportFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 还没有图片。加入立绘、Logo 或纹理后，每个分镜会随机取用。
    * zh-TW: 還沒有圖片。加入立繪、Logo 或紋理後，每個分鏡會隨機取用。
@@ -15739,6 +16033,24 @@ export interface TranslateFn {
    * en-US: Line
    */
   (key: "folia.options.monetAudioStyleLine", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频图案
+   * zh-TW: 音訊圖案
+   * en-US: Audio visualization
+   */
+  (key: "folia.options.monetShowAudioVisualization", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示
+   * zh-TW: 顯示
+   * en-US: Show
+   */
+  (key: "folia.options.monetAudioVisualizationShow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏
+   * zh-TW: 隱藏
+   * en-US: Hide
+   */
+  (key: "folia.options.monetAudioVisualizationHide", params?: TranslationParams): string;
   /**
    * zh-CN: 字体缩放
    * zh-TW: 字體縮放

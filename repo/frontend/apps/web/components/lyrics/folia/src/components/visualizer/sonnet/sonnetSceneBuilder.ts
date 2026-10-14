@@ -330,6 +330,13 @@ export const buildSonnetScene = (
     container.filters = [...(container.filters ?? []), transitionGlitchEffect.filter];
     postProcessFilters.push(transitionGlitchEffect.filter);
   }
+  if (transitionBlurFilter || transitionGlitchEffect) {
+    // Without a filterArea the transition filters run over the scene's content bounds, and those
+    // follow what has drawn in so far: AnimatedGraphics skips commands that have not started
+    // yet, so the glitch's slice offsets would depend on stagger progress. Pin the frame to the
+    // viewport, as the post-process above does (Folia 21957740).
+    container.filterArea = new pixi.Rectangle(0, 0, width, height);
+  }
   container.visible = false;
   return {
     paragraph,

@@ -1,4 +1,12 @@
+export interface DesktopLyricInteractiveRect {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+}
+
 export type DesktopLyricCommand =
+  | { rects: DesktopLyricInteractiveRect[]; type: "set-desktop-lyric-interactive-region" }
   | { type: "resize-desktop-lyric-window"; width: number; height: number }
   | { enabled: boolean; type: "set-main-window-always-on-top" }
   | { enabled: boolean; type: "set-main-window-click-through" }

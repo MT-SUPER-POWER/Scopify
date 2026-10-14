@@ -3,6 +3,15 @@
 // schedule during playback instead of appearing fully drawn at scene build.
 type PixiModule = typeof import("pixi.js");
 
+// Whether replaying `cmd` starts a fresh polygon: fills always lead with moveTo(0, 0), strokes
+// only when their recorded path does. Anything else continues from the previous end point.
+const opensOwnPath = (cmd: any) => {
+  if (cmd.type === "fill") return true;
+  if (cmd.length <= 0) return false;
+  const first = cmd.path.find((p: any) => p.type !== "rect_hint");
+  return first?.type === "moveTo";
+};
+
 export class AnimatedGraphics {
   public display: import("pixi.js").Graphics;
 
@@ -12,6 +21,9 @@ export class AnimatedGraphics {
   private lastX = 0;
   private lastY = 0;
   private staggerScheduled = false;
+  // What the Graphics currently shows: the clamped progress and how many commands it drew.
+  private drawnProgress = Number.NaN;
+  private drawnCommandCount = -1;
 
   constructor(pixi: PixiModule) {
     this.display = new pixi.Graphics();
@@ -188,9 +200,28 @@ export class AnimatedGraphics {
   }
 
   update(rawProgress: number) {
+    // Every command's local window sits inside 0..1, so any progress outside it draws the same
+    // thing as the nearest end. Once a shot has fully drawn in, re-tessellating the identical
+    // geometry every frame is pure waste (Folia 75804bfa).
+    const key = Math.min(1, Math.max(0, rawProgress));
+    if (key === this.drawnProgress && this.commands.length === this.drawnCommandCount) return;
+    this.drawnProgress = key;
+    this.drawnCommandCount = this.commands.length;
     this.display.clear();
     if (!this.staggerScheduled) this.scheduleStagger();
-    for (const cmd of this.commands) {
+    for (let index = 0; index < this.commands.length; index++) {
+      const cmd = this.commands[index];
+      // A command still waiting for its stagger window draws nothing visible (an alpha-0 fill or
+      // a stroke of bare moveTos), but Pixi would still convert its style and tessellate it
+      // (Folia 68e3360c). Skip it only when neither it nor the next command leans on the shared
+      // path state: an arc-led stroke links to the previous end point, or re-strokes the
+      // previous fill's path when it emits nothing itself.
+      if (
+        rawProgress <= cmd.staggerDelay &&
+        opensOwnPath(cmd) &&
+        (index + 1 >= this.commands.length || opensOwnPath(this.commands[index + 1]))
+      )
+        continue;
       if (cmd.type === "fill") {
         this.display.moveTo(0, 0);
         const localRaw = Math.min(

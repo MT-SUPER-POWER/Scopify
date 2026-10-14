@@ -34,6 +34,14 @@ export const FOLIA_LYRIC_COMMANDS: Omit<FoliaCommandEntry, "path">[] = [
     action: { kind: "lyric-content", mode: "romanization" },
   },
   {
+    id: "folia-lyric-content-both",
+    parentId: "folia-lyric-controls",
+    label: "罗马音 + 翻译",
+    summary: "副字幕同时显示罗马音和翻译，罗马音在上",
+    keywords: "romanization translation both 罗马音 翻译 双行",
+    action: { kind: "lyric-content", mode: "both" },
+  },
+  {
     id: "folia-lyric-content-none",
     parentId: "folia-lyric-controls",
     label: "仅原文歌词",

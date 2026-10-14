@@ -42,7 +42,7 @@ export interface LyricBackgroundVocal {
   alternateTexts?: LyricAlternateText[];
 }
 
-export type SubtitleContentMode = "translation" | "romanization" | "none";
+export type SubtitleContentMode = "translation" | "romanization" | "both" | "none";
 
 export interface LyricAgent {
   id: string;
@@ -578,10 +578,14 @@ export const DEFAULT_TEMPERA_LAYER_IMAGE: Omit<TemperaLayerImage, "id" | "name">
 export interface TemperaTuning {
   cameraIntensity: number;
   glyphMotion: number;
+  /** Keep each source lyric line in one shot instead of slicing it into half-phrases. */
+  wholeLineLyrics: boolean;
   glyphSettleStretch: number;
   colorMode: TemperaColorMode;
   showBlocks: boolean;
   showDecor: boolean;
+  /** 边角线框: the two registration marks in the top-left and bottom-right corners. */
+  showCornerMarks: boolean;
   textInversion: boolean;
   layerImages: TemperaLayerImage[];
   layerImageDepth: "back" | "front";
@@ -600,10 +604,12 @@ export interface TemperaTuning {
 export const DEFAULT_TEMPERA_TUNING: TemperaTuning = {
   cameraIntensity: 1,
   glyphMotion: 1,
+  wholeLineLyrics: false,
   glyphSettleStretch: 0.5,
   colorMode: "duo",
   showBlocks: true,
   showDecor: true,
+  showCornerMarks: true,
   textInversion: true,
   layerImages: [],
   layerImageDepth: "back",
@@ -801,6 +807,8 @@ export interface NomandBackgroundTuning {
 }
 
 export interface SoraBackgroundTuning {
+  /** Skips the WebGL starfield and shows a static solid black (night) / white (daylight) frame. */
+  blank?: boolean;
   starDensity: number;
   starSize: number;
   starSpeed: number;
@@ -830,6 +838,7 @@ export interface LatentBackgroundTuning {
 export interface MonetTuning {
   keywordColoringEnabled: boolean;
   showDescription: boolean;
+  showAudioVisualization: boolean;
   audioStyle: MonetAudioStyle;
   fontScale: number;
   portraitSource: MonetPortraitSource;
@@ -881,6 +890,7 @@ export const DEFAULT_NOMAND_BACKGROUND_TUNING: NomandBackgroundTuning = {
 };
 
 export const DEFAULT_SORA_BACKGROUND_TUNING: SoraBackgroundTuning = {
+  blank: false,
   starDensity: 1,
   starSize: 1,
   starSpeed: 1,
@@ -910,6 +920,7 @@ export const DEFAULT_LATENT_BACKGROUND_TUNING: LatentBackgroundTuning = {
 export const DEFAULT_MONET_TUNING: MonetTuning = {
   keywordColoringEnabled: true,
   showDescription: true,
+  showAudioVisualization: true,
   audioStyle: "bar",
   fontScale: 1.2,
   portraitSource: "cover",

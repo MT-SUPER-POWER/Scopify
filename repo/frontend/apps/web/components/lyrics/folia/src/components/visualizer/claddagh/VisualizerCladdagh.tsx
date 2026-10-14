@@ -12,6 +12,7 @@ import { colorWithAlpha, mixColors } from "../colorMix";
 import VisualizerShell from "../VisualizerShell";
 import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
 import { buildWordColorRanges } from "../wordColoring";
+import type { CladdaghGlyphStyle } from "@/types/lyrics/folia/claddagh";
 
 // src/components/visualizer/claddagh/VisualizerCladdagh.tsx
 
@@ -434,6 +435,22 @@ const RingLine: React.FC<RingLineProps> = ({
   const holdResetFrameRef = useRef(false);
 
   useLayoutEffect(() => {
+    // What each glyph span currently shows (Folia d88b3834). Most of these strings repeat frame to
+    // frame (a sung glyph keeps its colour and glow; the ring often holds still), and comparing
+    // them is far cheaper than handing the same declaration back to the style engine to parse.
+    // Fresh on every effect run: React only rewrites these properties when a dependency of this
+    // effect changes, which re-runs it.
+    const written = new WeakMap<HTMLSpanElement, CladdaghGlyphStyle>();
+    const writeGlyph = (el: HTMLSpanElement, next: CladdaghGlyphStyle) => {
+      const previous = written.get(el);
+      if (previous?.transform !== next.transform) el.style.transform = next.transform;
+      if (previous?.opacity !== next.opacity) el.style.opacity = next.opacity;
+      if (previous?.color !== next.color) el.style.color = next.color;
+      if (previous?.textShadow !== next.textShadow) el.style.textShadow = next.textShadow;
+      if (previous?.filter !== next.filter) el.style.filter = next.filter;
+      written.set(el, next);
+    };
+
     const handler = (latestTime: number) => {
       if (
         shouldHoldCladdaghFrameForPlaybackReset(
@@ -657,9 +674,8 @@ const RingLine: React.FC<RingLineProps> = ({
         const blur = 8.0 * (1 - D) * (1 - 0.5 * F);
         const tiltAngle = clamp(tangentAngle * (0.4 + 0.6 * D), -38, 38);
 
-        el.style.transform = `translate3d(calc(-50% + ${x.toFixed(1)}px), calc(-50% + ${y.toFixed(1)}px), 0px) rotate(${tiltAngle.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
-        el.style.opacity = finalOpacity.toFixed(3);
-        el.style.filter = blur < 0.2 ? "none" : `blur(${blur.toFixed(2)}px)`;
+        const transform = `translate3d(calc(-50% + ${x.toFixed(1)}px), calc(-50% + ${y.toFixed(1)}px), 0px) rotate(${tiltAngle.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+        const filter = blur < 0.2 ? "none" : `blur(${blur.toFixed(2)}px)`;
 
         // Update text color and text shadow (glow) progressively based on character playback status
         let charProgress = 0;
@@ -700,7 +716,7 @@ const RingLine: React.FC<RingLineProps> = ({
 
         const currentGlowRadius = baseGlow * (1.0 + flashPop);
 
-        el.style.color = targetColor;
+        let textShadow = "none";
 
         // Calculate a smooth fade-out factor so the shadow doesn't abruptly pop when it hits the 0.5px threshold.
         // At radius 2.5+, it's 1.0 (full original intensity). At 0.5, it's 0.0 (completely transparent).
@@ -727,14 +743,20 @@ const RingLine: React.FC<RingLineProps> = ({
             );
 
             // Restored exact multiplier ratios from Image 1 (0.35, 1.0, 1.6)
-            el.style.textShadow = `0 0 ${(currentGlowRadius * 0.35).toFixed(1)}px ${innerGlowColor}, 0 0 ${currentGlowRadius.toFixed(1)}px ${fadedTargetColor}, 0 0 ${(currentGlowRadius * 1.6).toFixed(1)}px ${fadedTargetColor}`;
+            textShadow = `0 0 ${(currentGlowRadius * 0.35).toFixed(1)}px ${innerGlowColor}, 0 0 ${currentGlowRadius.toFixed(1)}px ${fadedTargetColor}, 0 0 ${(currentGlowRadius * 1.6).toFixed(1)}px ${fadedTargetColor}`;
           } else {
             // Restored exact multiplier ratio from Image 1
-            el.style.textShadow = `0 0 ${currentGlowRadius.toFixed(1)}px ${fadedTargetColor}`;
+            textShadow = `0 0 ${currentGlowRadius.toFixed(1)}px ${fadedTargetColor}`;
           }
-        } else {
-          el.style.textShadow = "none";
         }
+
+        writeGlyph(el, {
+          transform,
+          opacity: finalOpacity.toFixed(3),
+          color: targetColor,
+          textShadow,
+          filter,
+        });
       }
     };
 

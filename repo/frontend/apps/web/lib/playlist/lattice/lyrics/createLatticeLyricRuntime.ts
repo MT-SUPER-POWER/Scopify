@@ -1,6 +1,7 @@
 import type { Track, LatticeLyricInput, LatticeLyricRuntime } from "@/types/playlistLatticeLyrics";
 import { cubicBezier } from "framer-motion";
-import { loadPixi } from "./loadPixi";
+import { loadPixi } from "@/lib/lyrics/folia/loadPixi";
+import { resolveSingleTrackSubtitleMode } from "@/components/lyrics/folia/src/utils/lyrics/alternateText";
 import {
   clearMonetMeasurementCaches,
   type MonetVisibleLineEntry,
@@ -25,14 +26,19 @@ let initialization: Promise<unknown> = Promise.resolve();
 /**
  * Device pixels per CSS pixel the canvas, its filter passes and its glyph textures are rendered at.
  *
- * Tied to the screen rather than fixed at 2: every visible piece is a render-to-texture pass, so
- * on a 1x display a fixed 2 pushed four times the pixels the screen could show through each of
- * those passes per frame. Capped at 2 so a denser screen never costs more than before.
+ * Tied to the screen rather than fixed at 2: on a 1x display a fixed 2 pushed four times the
+ * pixels the screen could show through every blur and edge pass per frame. Always a whole number
+ * (Folia 8aa7b132): the card is composited at camera scale, so a fractional ratio (125-175%
+ * scaling) leaves too little supersampling for that downscale and visibly softens glyph edges.
+ * Capped at 2 so a denser screen never costs more than before.
  */
 export const latticeLyricResolution = (devicePixelRatio: number) =>
   Math.min(
     2,
-    Math.max(1, Number.isFinite(devicePixelRatio) && devicePixelRatio > 0 ? devicePixelRatio : 1),
+    Math.max(
+      1,
+      Number.isFinite(devicePixelRatio) && devicePixelRatio > 0 ? Math.ceil(devicePixelRatio) : 1,
+    ),
   );
 
 // Passing boolean `true` makes Pixi release module-global pools shared with the Player renderer.
@@ -140,7 +146,9 @@ function attachRuntime(
           typography,
           Math.max(1, width - typography.padding * 2),
           raster.measure,
-          input.subtitleContentMode === "romanization",
+          // Lattice draws its subtitle inside the lyric scene, so the dual mode keeps translation only.
+          resolveSingleTrackSubtitleMode(input.subtitleContentMode ?? "translation") ===
+            "romanization",
         );
         const view = createLatticeLineView(
           pixi,

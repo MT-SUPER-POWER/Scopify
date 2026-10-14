@@ -9,6 +9,7 @@ import type { DesktopPlaybackWallpaperDriver } from "./capability";
 import { shouldUseDesktopPlaybackWallpaperSystemFallback } from "./fallbackPolicy";
 import { createNativeWallpaperHost } from "./nativeWallpaperHost";
 import { createWindowsSystemWallpaperFallback } from "./systemWallpaperFallback";
+import { resolveWallpaperTargetDisplay } from "./wallpaperTargetDisplay";
 
 const WALLPAPER_PRESENTATION_READY_SELECTOR =
   '[data-desktop-playback-wallpaper-content-ready="true"]';
@@ -149,7 +150,16 @@ export function createElectronDesktopPlaybackWallpaperDriver(
         };
       }
 
-      const display = screen.getPrimaryDisplay();
+      // Folia 7452afd2: the wallpaper covers the display the main window is on, not always the
+      // primary one. While attached, the window *is* the display, so the session's display and
+      // the bounds captured before attach stand in for it.
+      const attached = nativeHost.isAttached();
+      const display =
+        resolveWallpaperTargetDisplay({
+          screen,
+          sessionDisplayId: attached ? activeProfile?.displayId : null,
+          windowBounds: attached ? normalWindowState?.bounds : readOrdinaryWindowBounds(window),
+        }) ?? screen.getPrimaryDisplay();
       const nextProfile: ActiveWallpaperProfile = {
         bounds: { ...display.bounds },
         displayId: String(display.id),
@@ -184,6 +194,11 @@ export function createElectronDesktopPlaybackWallpaperDriver(
 
       normalWindowState = captureMainWindowState(window);
       window.hide();
+      // The helper fills the monitor the window sits on when it is re-parented. The window is
+      // normally already there; it only moves when the session's display differs from it.
+      if (screen.getDisplayMatching(readOrdinaryWindowBounds(window)).id !== display.id) {
+        window.setBounds(display.workArea);
+      }
 
       try {
         await waitForWallpaperPresentation(window, signal);
@@ -237,6 +252,11 @@ export function createElectronDesktopPlaybackWallpaperDriver(
       }
     },
   };
+}
+
+/** A minimized window reports a parked off-screen rect; its restore rect is where it lives. */
+function readOrdinaryWindowBounds(window: BrowserWindow): Rectangle {
+  return window.isMinimized() ? window.getNormalBounds() : window.getBounds();
 }
 
 function captureMainWindowState(window: BrowserWindow): MainWindowState {

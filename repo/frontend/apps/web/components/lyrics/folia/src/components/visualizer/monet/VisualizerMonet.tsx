@@ -13,6 +13,7 @@ import { resolveThemeFontStack, resolveThemeTranslationFontStack } from "../../.
 import AudioOverlay from "./AudioOverlay";
 import MonetFloatingDecor from "./MonetFloatingDecor";
 import MonetLyricsRail from "./MonetLyricsRail";
+import { resolveSubtitleContentMode } from "../../../utils/lyrics/alternateText";
 import MonetPortraitImage from "./MonetPortraitImage";
 import {
   MONET_PORTRAIT_BASE_MAX_PX,
@@ -39,6 +40,7 @@ const VisualizerMonet: React.FC<VisualizerSharedProps> = (props) => {
     audioBands,
     showText = true,
     showSubtitleTranslation = true,
+    subtitleContentMode,
     songTitle,
     songArtist,
     songAlbum,
@@ -252,7 +254,10 @@ const VisualizerMonet: React.FC<VisualizerSharedProps> = (props) => {
                   translationFontStack={translationFontStack}
                   keywordColoringEnabled={monetTuning.keywordColoringEnabled}
                   emptyText=""
-                  showSubtitleTranslation={showSubtitleTranslation}
+                  subtitleContentMode={resolveSubtitleContentMode(
+                    subtitleContentMode,
+                    showSubtitleTranslation,
+                  )}
                   audioPower={audioPower}
                   audioBands={audioBands}
                   onLyricLineSeek={onLyricLineSeek}
@@ -494,7 +499,7 @@ const VisualizerMonet: React.FC<VisualizerSharedProps> = (props) => {
         </div>
       </div>
 
-      {showText && (
+      {showText && monetTuning.showAudioVisualization !== false && (
         <motion.div
           key={`audio-${introKey}`}
           initial={{ opacity: 0, y: 15 }}

@@ -10,6 +10,7 @@ import type {
 
 import { buildSyntheticTimedWords } from "./syntheticWordTiming";
 import { extractAwlrcContainer, parseAwlrcText } from "./awlrc";
+import { hasNeteasePureMusicFlag, isPureMusicLyricLines, isPureMusicLyricText } from "./pureMusic";
 
 const LRC_TIME_TAG = /\[(\d{1,3}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g;
 const LRC_METADATA_TAG = /^\[([a-zA-Z]+):\s*(.*?)\]\s*$/;
@@ -61,8 +62,23 @@ export function adaptNeteaseLyric(lyric: NeteaseLyric): LyricData {
         ? firstLyricText(lyric.yromalrc?.lyric, lyric.romalrc?.lyric)
         : firstLyricText(lyric.romalrc?.lyric, lyric.yromalrc?.lyric);
 
+  const pureMusicDetected =
+    isPureMusic(lyric, lrc, yrc) ||
+    (primaryLines.length > 0 && isPureMusicLyricLines(primaryLines));
+
+  if (pureMusicDetected) {
+    return {
+      isPureMusic: true,
+      isWordByWord: source === "awlrc" || source === "yrc",
+      lines: [],
+      metadata,
+      raw: lyric,
+      source,
+    };
+  }
+
   return {
-    isPureMusic: isPureMusic(lyric),
+    isPureMusic: false,
     isWordByWord: source === "awlrc" || source === "yrc",
     lines:
       source === "awlrc"
@@ -126,14 +142,8 @@ function firstLyricText(...values: (null | string | undefined)[]): string {
   return values.map(lyricText).find((value) => value.length > 0) ?? "";
 }
 
-function isPureMusic(lyric: NeteaseLyric): boolean {
-  return [
-    lyric.pureMusic,
-    lyric.lrc?.pureMusic,
-    lyric.yrc?.pureMusic,
-    lyric.tlyric?.pureMusic,
-    lyric.ytlrc?.pureMusic,
-  ].some((value) => value === true);
+function isPureMusic(lyric: NeteaseLyric, lrc = "", yrc = ""): boolean {
+  return hasNeteasePureMusicFlag(lyric) || isPureMusicLyricText(lrc) || isPureMusicLyricText(yrc);
 }
 
 function lyricText(value: null | string | undefined): string {

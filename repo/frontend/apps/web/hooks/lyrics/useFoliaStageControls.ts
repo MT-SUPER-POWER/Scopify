@@ -15,13 +15,21 @@ export function useFoliaStageControls({ onClose }: LyricStageProps) {
   const [isPlayerChromeHidden, setIsPlayerChromeHidden] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isTransparent, setIsTransparent] = useState(false);
-  const { cyclePlayerChromeVisibilityMode, setPlayerChromeVisibilityMode } =
-    usePlayerChromeAutoHide({
-      autoHidePlayerChrome: true,
-      initialPlayerChromeHidden: false,
-      setAutoHidePlayerChromePreference: keepAutoHideEnabled,
-      setIsPlayerChromeHidden,
-    });
+  const autoHideCursorWithChrome = useLyricStageStore((state) => state.autoHideCursorWithChrome);
+  const {
+    cyclePlayerChromeVisibilityMode,
+    playerChromeVisibilityMode,
+    setPlayerChromeVisibilityMode,
+  } = usePlayerChromeAutoHide({
+    autoHidePlayerChrome: true,
+    initialPlayerChromeHidden: false,
+    setAutoHidePlayerChromePreference: keepAutoHideEnabled,
+    setIsPlayerChromeHidden,
+  });
+  // Folia f1e4f577: the pointer rides the chrome's idle clock instead of owning a timer. Only the
+  // auto-hide mode has a reveal path; the pinned hidden mode would otherwise lose the pointer.
+  const isCursorHidden =
+    autoHideCursorWithChrome && playerChromeVisibilityMode === "auto-hide" && isPlayerChromeHidden;
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -86,6 +94,7 @@ export function useFoliaStageControls({ onClose }: LyricStageProps) {
 
   return {
     isBorderVisible,
+    isCursorHidden,
     isPlayerChromeHidden,
     isSettingsOpen,
     isTransparent,

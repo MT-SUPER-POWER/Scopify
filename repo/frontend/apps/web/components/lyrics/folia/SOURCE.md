@@ -83,6 +83,125 @@ the original full-copy baseline:
   Local adaptations settle a pending cut when paused and continue retiring
   scenes when the new program has no paragraphs.
 
+- `d9e3efaa` — Tempera whole-line lyrics: one shot per source line, decor drawn from
+  the rest of the song instead of echoing the line on screen. The program options type
+  lives in Scopify's `types/lyrics/folia/temperaProgram.ts`.
+
+- `3e081df8`, `2bd16cbc` and `acf7ffc9` (as of v0.7.18) — Tempera canvas-image pool zip
+  backup with append / replace import, all-or-nothing rollback, the 512 MB declared-size
+  guard and the dialog close lock. The archive services keep Folia's `services/` paths over
+  Scopify's asset store; the draft and file actions live in `hooks/lyrics/useTemperaImagePool.ts`,
+  shared types in `types/lyrics/folia/temperaImagePool.ts`, and the download helpers in
+  `lib/web/download.ts`. Local adaptations: results are reported through Scopify's toasts,
+  replacing a non-empty pool is confirmed inside the import menu instead of `window.confirm`,
+  and the dialog keeps Scopify's existing styling rather than Folia's daylight tokens.
+
+- `90a30fba` — Monet audio-visualization toggle. A tuning without the field still shows the
+  spectrum, so older themes and other hosts are unaffected.
+
+- `f1e4f577` and `a2874584` — the stage pointer hides with the auto-hidden player chrome and
+  every interaction (move, press, wheel) reveals both; a held pointer keeps the chrome up. The
+  opt-out is the stage setting `autoHideCursorWithChrome`, and the cursor scope is the visual
+  layer in `LyricStage`, so controls and dialogs keep their pointer.
+
+- `2bd643a8` — raise Pixi's default fragment precision to highp before any program compiles.
+  The loader is Scopify's shared `lib/lyrics/folia/loadPixi.ts`, used by Sonnet, Tempera and
+  Lattice; Pixi 8.19 already supports the option, so no dependency bump was needed.
+
+- `66119721` — destroy Pixi display trees node by node so each Graphics releases its own
+  GraphicsContext and GPU buffers, and unload those contexts with the views. Sonnet and Tempera
+  scenes, overlays and credits use it; Lattice's quad deletes its buffers on destroy.
+
+- `2a7cd5e0` — Sonnet's arc gauge moves to each arc's start point before drawing, removing the
+  stray extra ring and connector.
+
+- `65f8a59f` and `161756cb` — Latent's paper shaders run without MSAA or a depth buffer and lose
+  their WebGL context once the canvas leaves the document. The helper lives in Scopify's
+  `lib/lyrics/folia/paperShaderContext.ts`.
+
+- `62dceafd` — Sonnet applies settings through `setTuning` on the live runtime; only
+  `textureResolution`, `showOnlyText` and `showBackgroundDecor` stay in the host's rebuild key.
+
+- `75804bfa` — Sonnet skips redrawing AnimatedGraphics, the open frame and empty guide layers
+  while their clamped progress is unchanged, caches each shot's tracking data in a WeakMap, and
+  reads the fitted renderer size instead of the host's layout each frame.
+
+- `68e3360c` and `21957740` — Sonnet's AnimatedGraphics skips commands still waiting for
+  their stagger window unless an arc-led neighbour depends on the shared path; transition
+  filters are pinned to the viewport so they no longer follow the drawn-in bounds.
+
+- `cbc97c30` and `fcb95450` (uniform guard) — Latent writes audio-driven uniforms through
+  the mount's `setUniformValues` while the shader animates instead of drawing on the spot, and
+  writes layer styles only when they change. The helper is `lib/lyrics/folia/paperShaderUniforms.ts`;
+  Scopify's stall watchdog still remounts a shader whose own loop stops.
+
+- `656025bf` — Monet word sweeps read the live clock only on the active line (glow on active
+  and passed lines) and a still clock elsewhere; the audio overlay rebuilds its gradients only
+  when the canvas size changes. Scopify's rail is still the single `MonetLyricsRail.tsx`.
+
+- `ef523089` — Tempera shares gradient fills per shot and tone and destroys them with scenes
+  and credits posters; the wipe block keeps its geometry and slides by transform; block stagger
+  is resolved once per pace; renderFrame reads the fitted size. Upstream's overlay and credits
+  modules are still inside Scopify's runtime, so the changes land there.
+
+- `d1d94640` and the helper part of `f9b331dc` — adds the shared `textMeasureCache.ts`
+  (`rememberBounded`, `measurePrefixOffsets`) and bounds Fume's segment measurement cache at
+  2,048 entries. The rest of `f9b331dc` only swaps six existing hand-written caches for the
+  helper without changing behaviour, so those call sites were left as they are.
+
+- `5dfc0105` — `colorMix` caches each parsed colour string (512 entries) with unchanged
+  outputs; Fume's background caches line-shape gradients per context.
+
+- `d88b3834` — Claddagh writes each glyph span's transform, opacity, colour, text shadow and
+  filter only when the string changes. Scopify has no glow quantization (that belongs to the
+  Linux-only fix), so the filter is the blur alone.
+
+- `04b16c6e` and `fcb95450` (Cadenza part) — Cadenza writes overlay word styles and glyph
+  shadows only when they change, splits graphemes and measures ascent once per placement
+  (re-measured after a web font loads), buckets placements by status instead of sorting, and
+  tracks live overlay nodes by frame number. The loop body became a `drawPlacement` closure
+  instead of upstream's re-indented nested loop; Scopify has no Linux `will-change` toggle.
+
+- `f79a40ca` — Tempera's corner marks get their own `showCornerMarks` tuning (default on),
+  decoupled from `showDecor`; toggling it redraws only the overlay.
+
+- `871a7ba6` and `f68461ac` — `SubtitleContentMode` gains `both`; the shared bottom
+  overlay stacks romanization above translation with the shared secondary-row style, and
+  single-track consumers (Lattice, harmony, Scopify's Archive) fold `both` to translation.
+  Track types live in `types/lyrics/folia/subtitleTrack.ts`; the command-palette cycle helper
+  was not needed because Scopify lists each mode as its own command.
+
+- `5809e8e8` and `5b2bbb6d` — Pendolo resolves its subtitle rows through
+  `pendoloSubtitleTracks.ts` for both measuring and drawing, honouring the subtitle mode
+  (it previously always showed translation). Local adaptations: rows keep Scopify's fixed weights
+  and scale with `lyricsFontScale` as before rather than the separate subtitle scale.
+
+- `43f27c36` — Monet measures and renders per-track subtitle rows under the active lyric from
+  the subtitle mode (it previously only showed `line.translation`); the layout cache key carries
+  the mode and row texts. Local adaptation: Scopify's Monet keeps its fixed 500 / 400 weights and
+  fixed line-height ratios, as it has no theme font-weight inputs.
+
+- `4eee4ba8` — video layer behind lyrics + Sora blank background:
+  - Adds `<VideoLayer />` rendered between the visualizer background and lyric overlays,
+    driven by audio playback time with drift correction and seek resync.
+  - Adds Sora blank mode (`blank` in `SoraBackgroundTuning`) that bypasses WebGL canvas mounting
+    and renders a flat solid background, with quick-control and settings toggle rows.
+  - Local adaptations: Video file handles and fallback blobs are stored in Scopify's
+    `scopify-folia-stage` IndexedDB (`foliaVideoStorage.ts` / `foliaAssetStorage.ts`). Video layer
+    settings (`useVideoLayerSettingsStore`) are excluded from visualizer appearance payload
+    import/export and OBS surfaces.
+
+- `2b824ea5` — loosen pure music detection and handle empty lyrics handover:
+  - Adds pure music notice recognition in `src/utils/lyrics/pureMusic.ts` and companion staff detection in `staffCredits.ts`: matches text patterns like 「纯音乐，请欣赏」, 「此歌曲为没有填词的纯音乐，请您欣赏」 with punctuation/whitespace/traditional variants and KRC/YRC timing tags stripped. Companion lines (staff credits, metadata, title headers, filler lines) are tolerated; any genuine lyric line invalidates pure music status.
+  - Updates `decideSongCommit` in `songHandover.ts`: when a song's lyrics become empty (`lyricsSignature === ""` while `isCommittedInstrumental === false`), switches to `watch` rather than `idle`, settling into instrumental mode without leaving cleared lyric lines frozen on screen.
+  - Local adaptations: Integrated into `neteaseLyricAdapter.ts` to zero out lines and mark `isPureMusic: true` for unflagged pure music tracks; guarded `adaptLyricDataToFolia` to return `lines: []` when pure music is detected.
+
+- `e8817f8a` and `3ca71d57` — Pendolo clockwork gear decor drawn with WebGL2:
+  - Caches gear geometry into a local-space mesh with per-vertex partId (`pendoloClockworkMeshes.ts`), passing part origins and rotation angles via uniform tables to draw in a single draw call.
+  - Automatically falls back to Canvas2D (`pendoloClockworkDraw2d.ts`) when WebGL2 context or shaders fail, during context loss, or when a cover image lacks CORS headers; restores WebGL2 once supported.
+  - Releases WebGL context upon unmount via `WEBGL_lose_context` (`pendoloClockworkWebGL.ts`).
+  - Preserves Scopify's content-bounding box calculation (`pendoloClockworkScene.ts`) so canvases cover only the mechanical area.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE).
 Scopify is also distributed under AGPL-3.0.
 

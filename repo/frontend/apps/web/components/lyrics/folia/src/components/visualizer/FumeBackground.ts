@@ -1,5 +1,6 @@
 import { Theme } from "../../types";
 import { colorWithAlpha, mixColors } from "./colorMix";
+import { rememberBounded } from "./textMeasureCache";
 
 interface ViewportSize {
   width: number;
@@ -389,6 +390,12 @@ export const buildFumeBackgroundScene = ({
   };
 };
 
+// A line shape's gradient depends only on its size, its opacity and the two theme colours, none
+// of which move between frames (rotation and position are applied to the context, not baked in).
+// Built per frame it was two gradients and a dozen colour conversions per shape (Folia 5dfc0105).
+const lineGradients = new WeakMap<CanvasRenderingContext2D, Map<string, CanvasGradient>>();
+const LINE_GRADIENT_LIMIT = 256;
+
 export const drawFumeBackground = ({
   context,
   scene,
@@ -407,7 +414,15 @@ export const drawFumeBackground = ({
   objectOpacityMultiplier?: number;
 }) => {
   const resolvedObjectOpacityMultiplier = clamp(objectOpacityMultiplier, 0, 2);
+  let gradients = lineGradients.get(context);
+  if (!gradients) {
+    gradients = new Map();
+    lineGradients.set(context, gradients);
+  }
   const createLineGradient = (shape: FumeBackgroundShape, opacity: number) => {
+    const key = `${shape.width}|${shape.height}|${opacity}|${theme.secondaryColor}|${theme.accentColor}`;
+    const cached = gradients.get(key);
+    if (cached) return cached;
     const gradient = context.createLinearGradient(
       -shape.width * 0.55,
       -shape.height * 0.28,
@@ -424,7 +439,7 @@ export const drawFumeBackground = ({
       colorWithAlpha(mixColors(theme.secondaryColor, theme.accentColor, 0.62), opacity * 0.92),
     );
     gradient.addColorStop(1, colorWithAlpha(theme.accentColor, opacity * 0.7));
-    return gradient;
+    return rememberBounded(gradients, key, gradient, LINE_GRADIENT_LIMIT);
   };
 
   const drawGradientGeometry = (shape: FumeBackgroundShape, opacity: number) => {

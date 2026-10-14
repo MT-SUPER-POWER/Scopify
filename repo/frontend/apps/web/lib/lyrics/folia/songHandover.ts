@@ -39,7 +39,7 @@ export const decideSongCommit = ({
       // two tracks, and `seed` reaches the visualizer a render before the new lyrics do.
       // Committing the empty set here is what used to flash the "waiting for music"
       // placeholder over a song whose lyrics were already cached.
-      if (isCommittedInstrumental || committedSignature !== "") {
+      if (isCommittedInstrumental) {
         return { action: "idle" };
       }
       return { action: "watch" };

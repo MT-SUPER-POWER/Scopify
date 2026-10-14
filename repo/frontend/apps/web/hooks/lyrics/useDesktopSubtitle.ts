@@ -17,6 +17,7 @@ import { useLyricStageStore } from "@/store/module/lyrics";
 import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
 import type { LyricChorusRange, LyricData } from "@/types/lyrics";
 
+export const INTERLUDE_FULL_TEXT = "......";
 const EMPTY_CHORUS_RANGES: LyricChorusRange[] = [];
 const JAPANESE_CHAR_REGEX = /[\p{Script=Hiragana}\p{Script=Katakana}]/u;
 
@@ -30,6 +31,22 @@ function computeFoliaLineProgress(line: FoliaLine, timeSeconds: number): number[
     const duration = timing.endTime - timing.startTime;
     return duration > 0 ? clamp((timeSeconds - timing.startTime) / duration) : 1;
   });
+}
+
+function buildInterludeLine(startTime: number, endTime: number): FoliaLine {
+  const dotCount = 6;
+  const duration = Math.max(0.1, endTime - startTime);
+  const wordDuration = duration / dotCount;
+  return {
+    startTime,
+    endTime,
+    fullText: INTERLUDE_FULL_TEXT,
+    words: Array.from({ length: dotCount }, (_, i) => ({
+      text: ".",
+      startTime: startTime + i * wordDuration,
+      endTime: startTime + (i + 1) * wordDuration,
+    })),
+  };
 }
 
 export function useDesktopSubtitle() {
@@ -56,6 +73,41 @@ export function useDesktopSubtitle() {
   const index = foliaLyrics ? findLatestActiveFoliaLineIndex(lines, timeSeconds) : -1;
   const line = index >= 0 ? lines[index] : null;
 
+  const isInterludeLine = line?.fullText === INTERLUDE_FULL_TEXT;
+  const isBetweenLinesInterlude =
+    lines.length > 0 && line === null && timeSeconds >= lines[0].startTime;
+  const isInterlude = isInterludeLine || isBetweenLinesInterlude;
+
+  const activeLine = useMemo(() => {
+    if (line) return line;
+    if (!isBetweenLinesInterlude || lines.length === 0) return null;
+
+    let prevEndTime = lines[0].startTime;
+    let nextStartTime: number | null = null;
+
+    for (let i = 0; i < lines.length; i += 1) {
+      const cur = lines[i];
+      if (cur.startTime <= timeSeconds) {
+        prevEndTime = Math.max(prevEndTime, cur.endTime);
+      } else {
+        nextStartTime = cur.startTime;
+        break;
+      }
+    }
+
+    const interludeStartTime = prevEndTime;
+    const interludeEndTime =
+      nextStartTime ?? (projection.durationMs ? projection.durationMs / 1_000 : prevEndTime + 10);
+
+    return buildInterludeLine(
+      interludeStartTime,
+      Math.max(interludeStartTime + 0.1, interludeEndTime),
+    );
+  }, [line, isBetweenLinesInterlude, lines, timeSeconds, projection.durationMs]);
+
+  const displaySource =
+    activeLine?.fullText || (isInterlude ? INTERLUDE_FULL_TEXT : (projection.track?.title ?? ""));
+
   const japaneseLyrics = useMemo(
     () => lines.some((l) => JAPANESE_CHAR_REGEX.test(l.fullText)),
     [lines],
@@ -63,15 +115,16 @@ export function useDesktopSubtitle() {
 
   const playback = useMemo(
     () => ({
-      position: line
+      position: activeLine
         ? Math.max(
             0,
-            applyLyricOffsetMs(playbackStore.samplePositionMs(), offset) - line.startTime * 1_000,
+            applyLyricOffsetMs(playbackStore.samplePositionMs(), offset) -
+              activeLine.startTime * 1_000,
           )
         : 0,
       startedAt: projection.isPlaying ? performance.now() : null,
     }),
-    [line, projection.isPlaying, playbackStore, offset],
+    [activeLine, projection.isPlaying, playbackStore, offset],
   );
 
   useEffect(() => {
@@ -102,13 +155,16 @@ export function useDesktopSubtitle() {
     let frame = 0;
     const observer = new ResizeObserver(() => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() =>
+      frame = requestAnimationFrame(() => {
+        const rect = node.getBoundingClientRect();
+        const contentWidth = Math.ceil(rect.width);
+        const contentHeight = Math.ceil(rect.height);
         runtime.desktopLyrics.sendCommand({
           type: "resize-desktop-lyric-window",
-          width: settings.maxWidth + 32,
-          height: Math.ceil(node.getBoundingClientRect().height) + 16,
-        }),
-      );
+          width: Math.min(settings.maxWidth + 32, Math.max(240, contentWidth + 24)),
+          height: Math.max(70, contentHeight + 16),
+        });
+      });
     });
     observer.observe(node);
     return () => {
@@ -122,11 +178,14 @@ export function useDesktopSubtitle() {
     settings,
     contentRef,
     line,
-    isChinese: line
-      ? isChineseSubtitleText(line.fullText, line.translation, japaneseLyrics)
+    activeLine,
+    isInterlude,
+    displaySource,
+    isChinese: activeLine
+      ? isChineseSubtitleText(activeLine.fullText, activeLine.translation, japaneseLyrics)
       : false,
     index,
     playback,
-    fillProgress: line ? computeFoliaLineProgress(line, timeSeconds) : undefined,
+    fillProgress: activeLine ? computeFoliaLineProgress(activeLine, timeSeconds) : undefined,
   };
 }

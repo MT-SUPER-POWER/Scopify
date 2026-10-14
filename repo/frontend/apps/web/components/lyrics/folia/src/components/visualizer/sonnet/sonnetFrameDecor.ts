@@ -277,8 +277,14 @@ export const buildSonnetFrameDecor = (
   };
 
   // Redraws the frame for an animation progress; pure function, seek-safe.
+  // The frame holds still for the rest of the segment once grown, so an unchanged progress
+  // keeps the geometry already tessellated.
+  let drawnProgress = Number.NaN;
   const update = (progress: number) => {
-    const eased = easeSonnetExpoOut(clamp01(progress));
+    const clamped = clamp01(progress);
+    if (clamped === drawnProgress) return;
+    drawnProgress = clamped;
+    const eased = easeSonnetExpoOut(clamped);
     graphics.clear();
     container.alpha = eased <= 0 ? 0 : 1;
     if (eased <= 0) return;
