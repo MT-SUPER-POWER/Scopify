@@ -81,7 +81,11 @@ export function LyricStage({ onClose }: LyricStageProps) {
     >
       {isWindowVisible ? (
         // Only the visual layer hides the pointer; controls and settings stay outside this scope.
-        <div className={`absolute inset-0${isCursorHidden ? "folia-cursor-auto-hidden" : ""}`}>
+        <div
+          className={
+            isCursorHidden ? "folia-cursor-auto-hidden absolute inset-0" : "absolute inset-0"
+          }
+        >
           <FoliaPresentationSurface
             appearance={appearance}
             bridge={bridge}

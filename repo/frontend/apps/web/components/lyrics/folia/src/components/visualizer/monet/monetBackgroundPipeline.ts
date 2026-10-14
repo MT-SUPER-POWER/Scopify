@@ -297,7 +297,7 @@ export const checkCanvasFilterSupport = (): boolean => {
     const ctx = canvas.getContext("2d");
     if (!ctx || typeof ctx.filter !== "string") {
       isCanvasFilterSupportedCached = false;
-      if (import.meta.env.DEV) {
+      if (process.env.NODE_ENV !== "production") {
         console.log(
           "[MonetBackground] Canvas filter support detection: Unsupported (ctx.filter is missing)",
         );
@@ -311,7 +311,7 @@ export const checkCanvasFilterSupport = (): boolean => {
     ctx.fillRect(0, 0, 1, 1);
     const imgData = ctx.getImageData(1, 1, 1, 1);
     isCanvasFilterSupportedCached = imgData.data[0] > 0;
-    if (import.meta.env.DEV) {
+    if (process.env.NODE_ENV !== "production") {
       console.log(
         `[MonetBackground] Canvas filter support detection: ${isCanvasFilterSupportedCached ? "Supported (native)" : "Unsupported (CSS blur fallback will be used)"}`,
       );
@@ -319,7 +319,7 @@ export const checkCanvasFilterSupport = (): boolean => {
     return isCanvasFilterSupportedCached;
   } catch (e) {
     isCanvasFilterSupportedCached = false;
-    if (import.meta.env.DEV) {
+    if (process.env.NODE_ENV !== "production") {
       console.log("[MonetBackground] Canvas filter support detection failed:", e);
     }
     return false;
