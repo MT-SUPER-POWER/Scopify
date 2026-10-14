@@ -11,6 +11,7 @@ import { join } from "node:path";
 
 import type {
   DesktopLyricCommand,
+  DesktopLyricInteractiveRect,
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
 } from "@scopify/desktop-contract";
@@ -38,6 +39,12 @@ let preferences: DesktopLyricPreferences | null = null;
 let ipcRegistered = false;
 let powerSaveBlockerId: number | null = null;
 let isPlaybackPlaying = false;
+// 鼠标穿透开启时，光标停在渲染进程上报的可交互区域（工具栏）内会临时把窗口切回可交互，让用户能点到解锁按钮。
+let interactiveRects: DesktopLyricInteractiveRect[] = [];
+let isMouseCaptured = false;
+let hitTestTimer: ReturnType<typeof setInterval> | null = null;
+const HIT_TEST_INTERVAL_MS = 50;
+const MAX_INTERACTIVE_RECTS = 8;
 
 export interface DesktopLyricCompanionOptions {
   rendererBaseUrl: string;
@@ -74,13 +81,47 @@ function applyMainWindowCommand(command: DesktopLyricCommand) {
   }
 }
 
+function applyMouseEventPolicy(window: BrowserWindow) {
+  const ignore = getPreferences().clickThrough && !isMouseCaptured;
+  window.setIgnoreMouseEvents(ignore, { forward: ignore });
+}
+
+function isCursorOverInteractiveRegion(window: BrowserWindow) {
+  const cursor = screen.getCursorScreenPoint();
+  const bounds = window.getContentBounds();
+  const x = cursor.x - bounds.x;
+  const y = cursor.y - bounds.y;
+  return interactiveRects.some(
+    (rect) => x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height,
+  );
+}
+
+function syncMouseCapture() {
+  if (!isWindowAlive(desktopLyricWindow)) return;
+  const next = getPreferences().clickThrough && isCursorOverInteractiveRegion(desktopLyricWindow);
+  if (next === isMouseCaptured) return;
+  isMouseCaptured = next;
+  applyMouseEventPolicy(desktopLyricWindow);
+}
+
+function updateHitTestTimer() {
+  const needed = isWindowAlive(desktopLyricWindow) && getPreferences().clickThrough;
+  if (needed && hitTestTimer === null) {
+    hitTestTimer = setInterval(syncMouseCapture, HIT_TEST_INTERVAL_MS);
+  } else if (!needed && hitTestTimer !== null) {
+    clearInterval(hitTestTimer);
+    hitTestTimer = null;
+    isMouseCaptured = false;
+  }
+}
+
 function applyPreferences(window: BrowserWindow) {
   const currentPreferences = getPreferences();
   window.setAlwaysOnTop(currentPreferences.alwaysOnTop, "floating");
   window.setSkipTaskbar(currentPreferences.skipTaskbar);
-  window.setIgnoreMouseEvents(currentPreferences.clickThrough, {
-    forward: currentPreferences.clickThrough,
-  });
+  updateHitTestTimer();
+  syncMouseCapture();
+  applyMouseEventPolicy(window);
 }
 
 function updatePowerSaveBlocker() {
@@ -113,6 +154,7 @@ function closeDesktopLyricWindow() {
   if (!isWindowAlive(desktopLyricWindow)) return false;
   desktopLyricWindow.destroy();
   desktopLyricWindow = null;
+  updateHitTestTimer();
   updatePowerSaveBlocker();
   return true;
 }
@@ -146,6 +188,12 @@ function isDesktopLyricCommand(value: unknown): value is DesktopLyricCommand {
         isFiniteNonNegativeNumber(value.height) &&
         value.height > 0
       );
+    case "set-desktop-lyric-interactive-region":
+      return (
+        Array.isArray(value.rects) &&
+        value.rects.length <= MAX_INTERACTIVE_RECTS &&
+        value.rects.every(isInteractiveRect)
+      );
     case "set-main-window-always-on-top":
     case "set-main-window-click-through":
     case "set-stage-transparent":
@@ -156,6 +204,16 @@ function isDesktopLyricCommand(value: unknown): value is DesktopLyricCommand {
     default:
       return false;
   }
+}
+
+function isInteractiveRect(value: unknown): value is DesktopLyricInteractiveRect {
+  return (
+    isRecord(value) &&
+    Number.isFinite(value.x) &&
+    Number.isFinite(value.y) &&
+    isFiniteNonNegativeNumber(value.width) &&
+    isFiniteNonNegativeNumber(value.height)
+  );
 }
 
 function isDesktopLyricPreferencesUpdate(value: unknown): value is DesktopLyricPreferencesUpdate {
@@ -325,6 +383,11 @@ function registerIpcHandlers() {
         });
       return;
     }
+    if (command.type === "set-desktop-lyric-interactive-region") {
+      interactiveRects = command.rects;
+      syncMouseCapture();
+      return;
+    }
     if (applyMainWindowCommand(command)) return;
     if (isWindowAlive(mainWindow)) {
       mainWindow.webContents.send("desktop-lyric:command", command);
@@ -376,6 +439,8 @@ function showDesktopLyricWindow() {
     width: 892,
   });
 
+  isMouseCaptured = false;
+  interactiveRects = [];
   const area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
   desktopLyricWindow.setPosition(
     Math.round(area.x + (area.width - 892) / 2),
@@ -395,6 +460,7 @@ function showDesktopLyricWindow() {
 
   desktopLyricWindow.on("closed", () => {
     desktopLyricWindow = null;
+    updateHitTestTimer();
     notifyPreferencesChanged();
     updatePowerSaveBlocker();
   });
