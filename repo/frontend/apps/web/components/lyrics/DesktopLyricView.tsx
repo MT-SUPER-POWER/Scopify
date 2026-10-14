@@ -31,8 +31,7 @@ export function DesktopLyricView() {
     executeCommand,
   });
 
-  const source =
-    view.line?.fullText || view.projection.track?.title || t("subtitlePalette.waiting");
+  const source = view.displaySource || t("subtitlePalette.waiting");
 
   return (
     <div
@@ -41,19 +40,19 @@ export function DesktopLyricView() {
     >
       <div
         ref={view.contentRef}
-        className="group/subtitle relative w-fit max-w-full pt-8"
+        className="group/subtitle relative w-fit max-w-full cursor-grab pt-8 active:cursor-grabbing"
         style={{ WebkitAppRegion: "drag" } as CSSProperties}
       >
         <DesktopSubtitleToolbar />
         <SubtitleCapsule
           settings={{
             ...view.settings,
-            entrance: view.line ? view.settings.entrance : "none",
-            fillEnabled: view.settings.fillEnabled && Boolean(view.line),
+            entrance: view.activeLine && !view.isInterlude ? view.settings.entrance : "none",
+            fillEnabled: view.settings.fillEnabled && Boolean(view.activeLine),
           }}
           payload={{
             source,
-            target: view.line?.translation ?? "",
+            target: view.activeLine?.translation ?? "",
             isChinese: view.isChinese,
           }}
           replayId={view.index}
