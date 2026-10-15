@@ -177,7 +177,7 @@ export const VolumeControl = ({
       {/* 弹出的音量条气泡 (Pop-over) */}
       {isOpen && (
         <div
-          className={`absolute bottom-full mb-3 flex animate-in flex-col items-center rounded-xl border border-border bg-surface shadow-panel backdrop-blur-md transition-all fade-in-0 zoom-in-95 ${
+          className={`absolute bottom-full mb-3 flex animate-in flex-col items-center rounded-xl border border-border bg-popover text-popover-foreground shadow-floating transition-all fade-in-0 zoom-in-95 ${
             orientation === "vertical" ? "h-40 w-12 px-1 py-3" : "h-11 w-40 p-3"
           }`}
           style={{ zIndex: 60 }}
@@ -207,7 +207,7 @@ export const VolumeControl = ({
           </div>
 
           {/* 底部三角形小气泡指示箭头 */}
-          <div className="absolute top-full left-1/2 size-0 -translate-x-1/2 border-x-4 border-t-4 border-x-transparent border-t-surface" />
+          <div className="absolute top-full left-1/2 size-0 -translate-x-1/2 border-x-4 border-t-4 border-x-transparent border-t-popover" />
         </div>
       )}
     </div>
