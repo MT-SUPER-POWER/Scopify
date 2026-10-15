@@ -28,6 +28,8 @@
 
 ### Fixed
 
+- **修复文档应用（docs）类型检查失败**：解耦 Folia `VideoLayer` 组件对应用全局播放器状态（`@/store/module/player`、`@/store/module/time`）的直接依赖，改为通过 `VisualizerShell` 现有的 `paused`、`currentTime` 和 `trackKey` 属性透传，避免文档在引入 Folia 营销展示组件时错误触发主应用播放器及网络请求层的跨模块全量类型编译。
+
 - **Folia 舞台播放中途整屏黑屏**：自动隐藏指针的类名拼接漏了空格，控制栏自动收起时舞台容器的类名变成 `inset-0folia-cursor-auto-hidden`，`inset-0` 失效、容器塌成 0×0，背景和歌词一起消失，移动鼠标后才恢复；指针也从未真正隐藏。补上空格。
 
 - **Monet 背景首次挂载抛错**：`monetBackgroundPipeline.ts` 的画布滤镜检测沿用了 Vite 的 `import.meta.env.DEV`，在 Next.js 下 `import.meta.env` 为 `undefined`，首次检测时在渲染阶段抛出 `TypeError`，且检测结果被错误缓存为“不支持”，Monet 背景始终退回 CSS blur。改为 `process.env.NODE_ENV` 判断。

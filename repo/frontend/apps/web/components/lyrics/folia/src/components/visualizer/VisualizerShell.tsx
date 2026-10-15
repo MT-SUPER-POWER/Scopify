@@ -139,7 +139,11 @@ const VisualizerShell = forwardRef<HTMLDivElement, VisualizerShellProps>(
 
         {/* The built-in video layer follows the same rule as stage layers and stays out of OBS sources */}
         {showStageLayers && isMainAppSurface && (
-          <VideoLayer paused={resolvedPaused} currentTime={sharedProps?.currentTime} />
+          <VideoLayer
+            paused={resolvedPaused}
+            currentTime={sharedProps?.currentTime}
+            trackKey={sharedProps?.seed ?? sharedProps?.songTitle}
+          />
         )}
 
         {children}

@@ -5,8 +5,6 @@ import {
   ensureVideoLayerFileRestored,
   useVideoLayerSettingsStore,
 } from "../../../stores/useVideoLayerSettingsStore";
-import { useTimeStore } from "@/store/module/time";
-import { usePlayerStore } from "@/store/module/player";
 
 // src/components/visualizer/videoLayer/VideoLayer.tsx
 // Built-in muted video behind the lyrics (above the background, under the lyrics). The video follows
@@ -24,9 +22,15 @@ interface VideoLayerProps {
   paused: boolean;
   /** Current playback time in seconds from the visualizer shell. */
   currentTime?: MotionValue<number>;
+  /** Optional track identifier to re-align the video on song change. */
+  trackKey?: string | number | null;
 }
 
-const VideoLayer: React.FC<VideoLayerProps> = ({ paused, currentTime: currentTimeProp }) => {
+const VideoLayer: React.FC<VideoLayerProps> = ({
+  paused,
+  currentTime: currentTimeProp,
+  trackKey,
+}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
@@ -52,8 +56,7 @@ const VideoLayer: React.FC<VideoLayerProps> = ({ paused, currentTime: currentTim
     const video = videoRef.current;
     if (!active || !video) return;
 
-    const getCurrentSeconds = (): number =>
-      currentTimeProp ? currentTimeProp.get() : useTimeStore.getState().currentTime / 1000;
+    const getCurrentSeconds = (): number => (currentTimeProp ? currentTimeProp.get() : 0);
 
     const align = () => {
       if (!Number.isFinite(video.duration) || video.duration <= 0 || video.seeking) return;
@@ -66,8 +69,7 @@ const VideoLayer: React.FC<VideoLayerProps> = ({ paused, currentTime: currentTim
     };
 
     const followState = () => {
-      const isPlaying = usePlayerStore.getState().isPlaying;
-      if (isPlaying && !pausedRef.current) void video.play().catch(() => {});
+      if (!pausedRef.current) void video.play().catch(() => {});
       else video.pause();
     };
 
@@ -78,11 +80,6 @@ const VideoLayer: React.FC<VideoLayerProps> = ({ paused, currentTime: currentTim
 
     video.addEventListener("loadedmetadata", onMetadata);
     if (video.readyState >= HTMLMediaElement.HAVE_METADATA) onMetadata();
-
-    const unsubscribeStore = usePlayerStore.subscribe((state, previous) => {
-      if (state.isPlaying !== previous.isPlaying) followState();
-      if (state.currentSongDetail?.id !== previous.currentSongDetail?.id) align();
-    });
 
     let lastClock = getCurrentSeconds();
     let unsubscribeClock: (() => void) | undefined;
@@ -98,11 +95,20 @@ const VideoLayer: React.FC<VideoLayerProps> = ({ paused, currentTime: currentTim
     return () => {
       window.clearInterval(drift);
       unsubscribeClock?.();
-      unsubscribeStore();
       video.removeEventListener("loadedmetadata", onMetadata);
       video.pause();
     };
   }, [active, currentTimeProp, source]);
+
+  // Re-align when trackKey changes (e.g. song switch)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!active || !video) return;
+    if (!Number.isFinite(video.duration) || video.duration <= 0 || video.seeking) return;
+    const seconds = currentTimeProp ? currentTimeProp.get() : 0;
+    const nonNegativeSeconds = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
+    video.currentTime = nonNegativeSeconds % video.duration;
+  }, [active, currentTimeProp, trackKey]);
 
   // The shell's pause flag changes without touching the source; only play/pause needs to follow.
   useEffect(() => {
@@ -110,7 +116,7 @@ const VideoLayer: React.FC<VideoLayerProps> = ({ paused, currentTime: currentTim
     if (!active || !video) return;
     if (paused) {
       video.pause();
-    } else if (usePlayerStore.getState().isPlaying) {
+    } else {
       void video.play().catch(() => {});
     }
   }, [active, paused]);
