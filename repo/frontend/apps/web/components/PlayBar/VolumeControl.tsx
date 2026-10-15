@@ -150,7 +150,6 @@ export const VolumeControl = ({
             value={isMuted ? 0 : volume}
             onChange={handleVolumeChange}
             orientation={orientation}
-            size="sm"
             ariaLabel={t("ui.volume")}
           />
         </div>
@@ -198,7 +197,7 @@ export const VolumeControl = ({
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
               orientation={orientation}
-              size="sm"
+              size={orientation === "vertical" ? 80 : 96}
               ariaLabel={t("ui.volume")}
             />
           </div>
