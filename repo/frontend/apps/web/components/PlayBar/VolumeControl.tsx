@@ -177,18 +177,22 @@ export const VolumeControl = ({
       {/* 弹出的音量条气泡 (Pop-over) */}
       {isOpen && (
         <div
-          className={`absolute bottom-full mb-3 flex animate-in flex-col items-center rounded-xl border border-border bg-surface p-3 shadow-panel backdrop-blur-md transition-all fade-in-0 zoom-in-95 ${
-            orientation === "vertical" ? "h-40 w-11" : "h-11 w-40"
+          className={`absolute bottom-full mb-3 flex animate-in flex-col items-center rounded-xl border border-border bg-surface shadow-panel backdrop-blur-md transition-all fade-in-0 zoom-in-95 ${
+            orientation === "vertical" ? "h-40 w-12 px-1 py-3" : "h-11 w-40 p-3"
           }`}
           style={{ zIndex: 60 }}
         >
-          {/* 静音快速切换按键 */}
+          {/* 音量百分比，同时是静音/恢复开关 */}
           <button
             onClick={handleMuteToggle}
-            className="mb-2 text-content-muted transition-colors hover:text-content"
+            className={`mb-2 rounded px-1 text-xs leading-4 font-semibold tabular-nums transition-colors ${
+              isMuted || volume === 0
+                ? "text-content-muted line-through hover:text-content"
+                : "text-content hover:text-primary"
+            }`}
             aria-label={volumeLabel}
           >
-            {getVolumeIcon()}
+            {isMuted ? 0 : Math.round(volume)}%
           </button>
 
           {/* 音量滑块 */}
@@ -197,7 +201,7 @@ export const VolumeControl = ({
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
               orientation={orientation}
-              size={orientation === "vertical" ? 80 : 96}
+              size={orientation === "vertical" ? 88 : 96}
               ariaLabel={t("ui.volume")}
             />
           </div>
