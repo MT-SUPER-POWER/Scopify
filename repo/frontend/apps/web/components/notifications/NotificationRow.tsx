@@ -49,8 +49,8 @@ export function NotificationRow({
         <button
           type="button"
           onClick={onExpand}
-          aria-expanded={expanded}
-          aria-controls={detailId}
+          aria-expanded={report ? undefined : expanded}
+          aria-controls={report ? undefined : detailId}
           className="flex w-full items-start gap-3.5 rounded-xl px-3 py-4 pr-9 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <NotificationAvatar item={item} />
@@ -91,7 +91,13 @@ export function NotificationRow({
             aria-hidden="true"
           />
           <span className="sr-only">
-            {t(expanded ? "notifications.collapse" : "notifications.expand")}
+            {t(
+              report
+                ? "notifications.openReport"
+                : expanded
+                  ? "notifications.collapse"
+                  : "notifications.expand",
+            )}
           </span>
         </button>
         {unread && (

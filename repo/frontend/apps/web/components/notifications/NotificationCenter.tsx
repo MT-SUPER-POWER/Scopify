@@ -6,6 +6,7 @@ import { useNotificationCenter } from "@/hooks/notifications/useNotificationCent
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import { NotificationPanel } from "./NotificationPanel";
+import { reportNotificationHref } from "@/lib/notifications/reportTarget";
 import { socialNotificationHref } from "@/lib/social/notificationTarget";
 
 export function NotificationCenter() {
@@ -54,6 +55,11 @@ export function NotificationCenter() {
           center.markRead(item);
           center.setOpen(false);
           router.push(href);
+        }}
+        onReportOpen={(item) => {
+          center.markRead(item);
+          center.setOpen(false);
+          router.push(reportNotificationHref(item));
         }}
         onUpdateAction={() => {
           center.update.markRead();

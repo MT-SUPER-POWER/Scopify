@@ -14,6 +14,7 @@ export function NotificationList({
   onRead,
   onUpdateAction,
   onSocialAction,
+  onReportOpen,
 }: Pick<
   NotificationPanelProps,
   | "items"
@@ -23,6 +24,7 @@ export function NotificationList({
   | "onRead"
   | "onUpdateAction"
   | "onSocialAction"
+  | "onReportOpen"
 >) {
   const { t, locale } = useI18n();
   const today = new Date();
@@ -90,7 +92,9 @@ export function NotificationList({
                       : item
                   }
                   expanded={expandedId === item.id}
-                  onExpand={() => onExpand(item)}
+                  onExpand={() =>
+                    item.category === "reports" ? onReportOpen(item) : onExpand(item)
+                  }
                   onRead={() => onRead(item)}
                   onAction={
                     item.source === "updates"

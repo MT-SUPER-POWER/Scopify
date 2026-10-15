@@ -1,5 +1,10 @@
+import { Suspense } from "react";
 import { ListeningReportView } from "@/components/listeningReport/ListeningReportView";
 
 export default function RecentListeningReportPage() {
-  return <ListeningReportView />;
+  return (
+    <Suspense>
+      <ListeningReportView />
+    </Suspense>
+  );
 }

@@ -2,6 +2,7 @@
 
 import { IconCalendarMonth } from "@tabler/icons-react";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
@@ -39,9 +40,14 @@ const ListeningReportActivityChart = dynamic(
   },
 );
 
+const REPORT_PERIODS: readonly ListeningReportPeriod[] = ["week", "month", "year"];
+
 export function ListeningReportView() {
   const { t } = useI18n();
-  const [period, setPeriod] = useState<ListeningReportPeriod>("month");
+  const requestedPeriod = useSearchParams().get("period");
+  const [period, setPeriod] = useState<ListeningReportPeriod>(
+    () => REPORT_PERIODS.find((value) => value === requestedPeriod) ?? "month",
+  );
   const availableMonths = useMemo(() => getAvailableMonths(12), []);
 
   const [selectedMonth, setSelectedMonth] = useState<MonthOption>(() => {
