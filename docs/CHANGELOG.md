@@ -4,6 +4,8 @@
 
 ### Fixed
 
+- **修复文档站含粗体的 MDX 页面构建栈溢出**：`mdast-util-to-markdown@2.1.3` 的 `strong` 处理器改为依赖处理器上的 `attention` 属性，而 fumadocs-core 16.14 生成 LLM Markdown（`includeProcessedMarkdown`）时会把处理器包一层新函数、丢掉该属性，导致任何 `**粗体**` 都在 `strong → containerPhrasing` 间无限递归（首先在快捷键文档上暴露）。文档应用将 `fumadocs-core` / `fumadocs-ui` 升级到 16.17.5、`fumadocs-mdx` 升级到 15.4.7，新版改为直接截取原文生成 Markdown，不再经过该序列化器；同时把 `lucide-react` 对齐到 `^1.58.0`，避免 fumadocs-ui 与文档应用各装一份 fumadocs-core。
+
 - **通知中心周报点击改为跳转听歌报告**：周报 / 年报通知不再就地展开摘要，点击后标记已读、关闭面板并跳转到对应周期的听歌足迹页面（`/recent/report?period=week|year`）；听歌报告页支持通过 `period` 查询参数指定初始周期。
 
 - **播放栏音量条弹窗不显示滑块**：`VolumeControl` 误将 `size="sm"` 传给 `SmoothSlider`（该属性是 CSS 长度，不是尺寸档位），导致竖向滑块高度塌缩为 0，弹窗里只剩一个图标。改为显式长度，并移除内联模式下的无效值。弹窗顶部与触发按钮重复的音量图标改为音量百分比，仍可点击切换静音 / 恢复，静音时显示 0% 并划线。弹窗背景改用与其他播放栏弹层一致的 popover 主题色，不再是纯黑。
