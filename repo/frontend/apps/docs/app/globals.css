@@ -55,3 +55,47 @@ body {
   mix-blend-mode: soft-light;
   opacity: 0.055;
 }
+
+@keyframes landing-marquee-x {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes landing-marquee-y {
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+.landing-marquee-x,
+.landing-marquee-y {
+  animation-duration: var(--landing-marquee-duration, 48s);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  will-change: transform;
+}
+
+.landing-marquee-x {
+  animation-name: landing-marquee-x;
+  width: max-content;
+}
+
+.landing-marquee-y {
+  animation-name: landing-marquee-y;
+}
+
+.landing-marquee-reverse {
+  animation-direction: reverse;
+}
+
+.landing-marquee-x:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-marquee-x,
+  .landing-marquee-y {
+    animation: none;
+  }
+}

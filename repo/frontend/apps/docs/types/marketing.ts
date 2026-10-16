@@ -1,5 +1,5 @@
 import type { MotionValue } from "framer-motion";
-import type { RefObject } from "react";
+import type { StaticImageData } from "next/image";
 
 import type { AudioBands, Line } from "@folia/types";
 
@@ -30,8 +30,6 @@ export interface FoliaLatentTuning {
   overlayOpacity: number;
 }
 
-export type LandingScene = "intro" | "performance" | "fragments" | "interface" | "epilogue";
-
 export interface LandingFoliaTimeline {
   audioBands: AudioBands;
   audioPower: MotionValue<number>;
@@ -40,11 +38,31 @@ export interface LandingFoliaTimeline {
   lines: Line[];
 }
 
-export interface LandingPartitaTimeline extends LandingFoliaTimeline {
-  isSettled: boolean;
+/** 落地页中一张真实界面截图。 */
+export interface LandingScreenshot {
+  alt: string;
+  src: StaticImageData;
 }
 
-export interface LandingEpilogueProps {
-  active: boolean;
-  sectionRef: RefObject<HTMLElement | null>;
+/** “反复回到的地方”中的单个功能条目，对应听歌报告的 Top 歌曲行。 */
+export interface LandingFavoriteFeature {
+  detail: string;
+  href: string;
+  meta: string;
+  screenshot: LandingScreenshot;
+  title: string;
+}
+
+/** “一天里的六个时刻”中的单个时段。 */
+export interface LandingDayMoment {
+  clock: string;
+  feature: string;
+  label: string;
+  screenshot: LandingScreenshot;
+  sentence: string;
+}
+
+export interface LandingVisualizerMode {
+  label: string;
+  value: string;
 }

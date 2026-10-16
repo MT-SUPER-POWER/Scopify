@@ -13,6 +13,7 @@ const FoliaSonnet = dynamic(
 
 interface FoliaSonnetRendererProps {
   coverUrl: string;
+  lyricsFontScale?: number;
   reducedMotion: boolean;
   showText: boolean;
   timeline: LandingFoliaTimeline;
@@ -20,6 +21,7 @@ interface FoliaSonnetRendererProps {
 
 export function FoliaSonnetRenderer({
   coverUrl,
+  lyricsFontScale = 0.84,
   reducedMotion,
   showText,
   timeline,
@@ -44,7 +46,7 @@ export function FoliaSonnetRenderer({
         hideTranslationSubtitle
         showSubtitleTranslation={false}
         subtitleContentMode="none"
-        lyricsFontScale={0.84}
+        lyricsFontScale={lyricsFontScale}
         songTitle="Scopify"
         songArtist="Folia"
       />

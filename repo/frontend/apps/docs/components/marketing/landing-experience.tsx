@@ -1,26 +1,21 @@
-"use client";
+import { LandingDay } from "@/components/marketing/landing-day";
+import { LandingFavorites } from "@/components/marketing/landing-favorites";
+import { LandingFilmWall } from "@/components/marketing/landing-film-wall";
+import { LandingFinale } from "@/components/marketing/landing-finale";
+import { LandingHero } from "@/components/marketing/landing-hero";
+import { LandingVisualizers } from "@/components/marketing/landing-visualizers";
 
-import { LandingIntro } from "@/components/marketing/landing-intro";
-import { LandingEpilogue } from "@/components/marketing/landing-epilogue";
-import { LandingFragments } from "@/components/marketing/landing-fragments";
-import { LandingInterface } from "@/components/marketing/landing-interface";
-import { LandingPerformance } from "@/components/marketing/landing-performance";
-import { LandingSonnetStage } from "@/components/marketing/landing-sonnet-stage";
-import { useLandingScene } from "@/hooks/use-landing-scene";
-
+/** 落地页沿用听歌报告的叙事结构：首屏故事 → 常用功能 → 一天的时刻 → 歌词动画 → 底片墙 → 收尾。 */
 export function LandingExperience() {
-  const { introRef, performanceRef, fragmentsRef, interfaceRef, epilogueRef, scene } =
-    useLandingScene();
-
   return (
-    <div className="relative isolate bg-[#070912] text-white" data-landing-scene={scene}>
-      <LandingSonnetStage scene={scene} />
-      <div className="relative z-10">
-        <LandingIntro sectionRef={introRef} />
-        <LandingPerformance sectionRef={performanceRef} active={scene === "performance"} />
-        <LandingFragments sectionRef={fragmentsRef} active={scene === "fragments"} />
-        <LandingInterface sectionRef={interfaceRef} />
-        <LandingEpilogue sectionRef={epilogueRef} active={scene === "epilogue"} />
+    <div className="relative isolate bg-[#070912] text-white">
+      <LandingHero />
+      <div className="flex flex-col gap-20 pt-8 sm:gap-28">
+        <LandingFavorites />
+        <LandingDay />
+        <LandingVisualizers />
+        <LandingFilmWall />
+        <LandingFinale />
       </div>
     </div>
   );
