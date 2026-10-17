@@ -110,6 +110,13 @@ export function isPersonalFmPlaybackSource(sourceId: number | string | null | un
   return sourceId === PERSONAL_FM_PLAYBACK_SOURCE_ID;
 }
 
+export const PERSONAL_FM_ROUTE = "/personal-fm";
+
+/** Desktop static export uses `trailingSlash`, so the route resolves as `/personal-fm/` there. */
+export function isPersonalFmRoute(pathname: string | null | undefined) {
+  return pathname === PERSONAL_FM_ROUTE || pathname === `${PERSONAL_FM_ROUTE}/`;
+}
+
 export function getPersonalFmSelectionLabel(
   selection: PersonalFmSelection,
   t: (key: TranslationKey) => string,

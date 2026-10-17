@@ -12,6 +12,7 @@ export const LibraryItem = ({
   id,
   href = `/playlist?id=${id}`,
   isCollapsed,
+  onClick,
   subtitle,
   title,
 }: SidebarLibraryItemProps) => {
@@ -27,6 +28,7 @@ export const LibraryItem = ({
     return wrapWithContextMenu(
       <Link
         href={href}
+        onClick={onClick}
         title={title}
         className="group flex h-14 w-full cursor-pointer items-center justify-center rounded-md transition-colors hover:bg-content/10 active:scale-95"
       >
@@ -51,6 +53,7 @@ export const LibraryItem = ({
   return wrapWithContextMenu(
     <Link
       href={href}
+      onClick={onClick}
       title={title}
       className="group flex w-full min-w-0 cursor-pointer items-center gap-3 overflow-hidden rounded-md p-2 transition-colors hover:bg-content/10"
     >

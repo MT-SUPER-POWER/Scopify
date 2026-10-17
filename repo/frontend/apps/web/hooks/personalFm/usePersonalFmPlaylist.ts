@@ -9,6 +9,7 @@ import {
   PERSONAL_FM_PLAYBACK_SOURCE_ID,
   getPersonalFmSelectionLabel,
   isPersonalFmPlaybackSource,
+  isPersonalFmRoute,
 } from "@/constants/personalFm";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
@@ -18,6 +19,33 @@ import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/api/music";
 import type { PlaylistInfo } from "@/types/playlist";
+
+const ENTRY_STREAM_WINDOW_MS = 30_000;
+let entryStreamStartedAt: number | null = null;
+
+/** Starts the stream while navigation to the page is still in flight; the page then skips its own start once. */
+export function startPersonalFmStreamOnEntry() {
+  entryStreamStartedAt = Date.now();
+  return startPersonalFmStream();
+}
+
+function consumeEntryStream() {
+  const startedAt = entryStreamStartedAt;
+  entryStreamStartedAt = null;
+  return startedAt !== null && Date.now() - startedAt < ENTRY_STREAM_WINDOW_MS;
+}
+
+/** Starts a fresh personal FM stream and reports a failed start with a toast. */
+export async function startPersonalFmStream(shouldReportError: () => boolean = () => true) {
+  const started = await usePersonalFmStore.getState().start();
+  if (!started && shouldReportError()) {
+    toast.error(
+      usePersonalFmStore.getState().error ??
+        translate(useI18nStore.getState().locale, "personalFm.error.loadFailed"),
+    );
+  }
+  return started;
+}
 
 export function usePersonalFmPlaylist() {
   const { t } = useI18n();
@@ -44,22 +72,12 @@ export function usePersonalFmPlaylist() {
   }, [requireLogin, t]);
 
   useEffect(() => {
-    if (!isLoggedIn || pathname !== "/personal-fm") return;
+    if (!isLoggedIn || !isPersonalFmRoute(pathname)) return;
     // Defer until effect setup settles so Strict Mode does not request twice.
     let cancelled = false;
     queueMicrotask(() => {
-      if (cancelled) return;
-      void usePersonalFmStore
-        .getState()
-        .start()
-        .then((started) => {
-          if (!started && !cancelled) {
-            toast.error(
-              usePersonalFmStore.getState().error ??
-                translate(useI18nStore.getState().locale, "personalFm.error.loadFailed"),
-            );
-          }
-        });
+      if (cancelled || consumeEntryStream()) return;
+      void startPersonalFmStream(() => !cancelled);
     });
     return () => {
       cancelled = true;

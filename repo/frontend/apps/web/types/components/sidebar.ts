@@ -19,6 +19,7 @@ export interface SidebarLibraryItemProps {
   href?: string;
   id: string | number;
   isCollapsed?: boolean;
+  onClick?: () => void;
   subtitle: string;
   title: string;
 }
