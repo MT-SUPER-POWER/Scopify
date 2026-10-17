@@ -2,9 +2,15 @@ repo/backend/api-enhanced
 repo/frontend/apps/mobile
 repo/frontend/apps/desktop
 node_modules
+**/node_modules
 .next
+**/.next
+.next-dev
+**/.next-dev
 .turbo
+**/.turbo
 .vercel
+**/.vercel
 logs
 *.tsbuildinfo
 coverage

@@ -5,9 +5,9 @@ description: 使用 Vercel、Docker Compose 或桌面本地后端运行 Scopify�
 
 Scopify 将 Web、桌面客户端和后端分开管理。前端构建不依赖后端源码，只需要在运行时能够访问 NetEase API 服务。
 
-## Vercel：Web 与 API 分开部署
+## Vercel：Web、Docs 与 API 分开部署
 
-建议创建两个 Vercel 项目，先部署 API，再把它的 HTTPS 地址配置给 Web。
+建议在 Vercel 中为不同应用独立建项：API 后端（如需部署云端服务）、Web 前端主应用以及 Docs 文档站。
 
 ### API 项目
 
@@ -31,8 +31,8 @@ CORS_ALLOW_ORIGIN=https://scopify-web.vercel.app
 | --- | --- |
 | Root Directory | `repo/frontend/apps/web` |
 | Framework Preset | `Next.js` |
-| Install Command | `cd ../../../.. && bun install --frozen-lockfile` |
-| Build Command | 使用 Web 目录 `vercel.json` 中的配置 |
+| Install Command | `cd ../../../.. && bun install --frozen-lockfile && cd repo/frontend/apps/web` |
+| Build Command | 使用 Web 目录 `vercel.json` 中的配置（`cd ../../../.. && bun run build:web && cd repo/frontend/apps/web`） |
 
 在 Web 项目中设置完整 API 根地址：
 
@@ -41,6 +41,29 @@ BACKEND_PUBLIC_URL=https://scopify-api.vercel.app
 ```
 
 地址不能包含路径、查询参数或哈希。该变量会在构建时写入浏览器配置，修改后需要重新部署。
+
+### Docs 项目
+
+| Vercel 设置 | 值 |
+| --- | --- |
+| Root Directory | `repo/frontend/apps/docs` |
+| Framework Preset | `Next.js` |
+| Install Command | `cd ../../../.. && bun install && cd repo/frontend/apps/docs` |
+| Build Command | `cd ../../../.. && bun run build:docs && cd repo/frontend/apps/docs` |
+
+### CLI 快捷部署命令
+
+根目录配置了针对各前端应用的快捷部署脚本（需先安装 Vercel CLI 并执行 `vercel login`）：
+
+```bash
+# 部署至生产环境
+bun run deploy:web
+bun run deploy:docs
+
+# 部署预览分支（Preview）
+bun run deploy:web:preview
+bun run deploy:docs:preview
+```
 
 ## Docker Compose
 

@@ -23,6 +23,8 @@
     "dev": "bun scripts/dev-web.ts",
     "build": "next build",
     "build:desktop": "cross-env SCOPIFY_BUILD_TARGET=desktop next build",
+    "deploy": "vercel deploy --prod --project scopify-web",
+    "deploy:preview": "vercel deploy --project scopify-web",
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "bun test --isolate",
