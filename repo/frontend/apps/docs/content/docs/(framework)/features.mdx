@@ -21,7 +21,7 @@ import searchScreenshot from "../../../assets/features/SearchResult.png";
 import settingsGeneralScreenshot from "../../../assets/features/settings-general.png";
 import settingsShortcutsScreenshot from "../../../assets/features/settings-shortcuts.png";
 import themeEditorScreenshot from "../../../assets/features/visualThemEditor.png";
-import vipSignScreenshot from "../../../assets/features/VipSign.png";
+import vipSignVideo from "../../../assets/features/VipSign.mp4";
 import latticeScreenshot from "../../../assets/features/playlist-lattice.png";
 import listeningReportScreenshot from "../../../assets/features/listening-report.png";
 import notificationsScreenshot from "../../../assets/features/notifications.png";
@@ -235,7 +235,14 @@ ReplayGain 支持按曲目或专辑统一响度，适合在跨专辑播放和连
 </figure>
 
 <figure>
-  <img className="rounded-xl border" src={vipSignScreenshot.src} alt="Scopify 网易乐签页面" />
+  <video
+    className="rounded-xl border w-full"
+    src={typeof vipSignVideo === "string" ? vipSignVideo : (vipSignVideo?.src ?? vipSignVideo?.default)}
+    controls
+    muted
+    playsInline
+    preload="metadata"
+  />
   <figcaption>网易乐签保留为账户相关的特色能力。</figcaption>
 </figure>
 
