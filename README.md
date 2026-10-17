@@ -79,7 +79,7 @@ Scopify 现在把桌面客户端、Web 前端和后端分开管理。Web 和桌�
 ### 后端的运行
 
 > 请确保你后端的实际运行
-> 当然你也可以看这个文档[部署文档](repo/frontend/apps/docs/content/docs/(framework)/deployment.mdx)来部署你的专有后端作为项目后端运行。
+> 当然你也可以看这个文档[部署文档](https://scopify-docs.vercel.app/docs/deployment)来部署你的专有后端作为项目后端运行。
 
 ```bash
 git submodule update --init --recursive   # 初次克隆时需要
@@ -101,82 +101,13 @@ bun run dev:docs         # 仅 docs（文档网站），确保你的 dev:web 已
 
 ## 功能
 
-Scopify 的能力围绕八类使用场景展开。完整说明和更多截图见 [产品能力文档](repo/frontend/apps/docs/content/docs/(framework)/features.mdx)。
+功能与界面会随版本持续更新，这里不再放置截图和能力清单，以免与实际产品脱节。请直接查看最新文档：
 
-| 分类 | 主要能力 |
-| --- | --- |
-| 内容发现 | 每日与个性化推荐、歌单、专辑、歌手、播客声音和评论 |
-| 搜索与导航 | 快捷搜索、常驻搜索栏、分类结果页和命令面板 |
-| 播放与队列 | 播放控制、进度与音量、播放模式、输出设备和待播队列 |
-| 歌词与 Folia | 动态歌词舞台、歌词来源与匹配、时间轴校准、样式和视觉主题 |
-| 音频体验 | 多档音质、十段均衡器、ReplayGain 和声音效果 |
-| 账户与音乐库 | 喜欢、收藏、最近播放、自建歌单、用户资料和网易乐签 |
-| 个性化与效率 | 语言、主题、快捷键、命令面板和应用运行设置 |
-| 桌面端集成 | 桌面歌词、Discord 状态、客户端更新、本地后端和日志诊断 |
+- **[产品能力](https://scopify-docs.vercel.app/docs/features)**：按使用场景整理的完整功能说明与最新界面截图
+- **[快捷键](https://scopify-docs.vercel.app/docs/shortcuts)**：全部快捷键与命令
+- **[版本日志](docs/CHANGELOG.md)**：每个版本新增、改进与修复的内容
 
-```mermaid
-mindmap
-  root((Scopify 功能图谱))
-    内容发现
-      推荐与播客声音
-      歌单专辑与歌手
-    搜索与导航
-      快捷搜索与分类结果
-      命令面板
-    播放与队列
-      播放控制与模式
-      待播队列与输出设备
-    歌词与 Folia
-      动态歌词舞台
-      样式与视觉主题
-    音频体验
-      音质与均衡器
-      ReplayGain 与声音效果
-    账户与音乐库
-      喜欢收藏与最近播放
-      用户与网易乐签
-    个性化与效率
-      语言主题与快捷键
-    桌面端集成
-      桌面歌词与 Discord 状态
-      更新后端与日志诊断
-```
-
-<details>
-<summary>内容发现</summary>
-
-![Scopify 首页](repo/frontend/apps/docs/assets/features/discovery-home.png)
-
-</details>
-
-<details>
-<summary>歌词与 Folia</summary>
-
-![Scopify Folia 动态歌词舞台](repo/frontend/apps/docs/assets/features/lyrics-folia-stage.png)
-
-</details>
-
-<details>
-<summary>音频体验</summary>
-
-![Scopify 十段均衡器与声音效果](repo/frontend/apps/docs/assets/features/audio-equalizer.png)
-
-</details>
-
-<details>
-<summary>账户与音乐库</summary>
-
-![Scopify 喜欢的音乐列表](repo/frontend/apps/docs/assets/features/library-liked.png)
-
-</details>
-
-<details>
-<summary>个性化与效率</summary>
-
-![Scopify 快捷键设置](repo/frontend/apps/docs/assets/features/settings-shortcuts.png)
-
-</details>
-
+本地预览文档站：`bun run dev:docs`（需先运行 `bun run dev:web`）。
 
 ## 版本号规则
 
