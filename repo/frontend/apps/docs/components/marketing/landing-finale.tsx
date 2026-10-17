@@ -6,16 +6,18 @@ import {
   LANDING_FOLIA_STAGE_SCREENSHOT,
   LANDING_GITHUB_URL,
   LANDING_RELEASES_URL,
+  LANDING_WEB_APP_URL,
 } from "@/constants/marketing";
 
 const FINALE_LINKS = [
+  { eyebrow: "Try it online", href: LANDING_WEB_APP_URL, label: "在线体验", external: true },
   { eyebrow: "Documentation", href: "/docs", label: "阅读文档", external: false },
   { eyebrow: "Download", href: LANDING_RELEASES_URL, label: "下载桌面端", external: true },
   { eyebrow: "Source code", href: LANDING_GITHUB_URL, label: "查看源码", external: true },
 ] as const;
 
 const linkClass =
-  "group flex items-end justify-between border-b border-white/12 py-5 text-white/72 sm:border-b-0 sm:border-l sm:px-8 sm:first:border-l-0 sm:first:pl-0";
+  "group flex items-end justify-between border-b border-white/12 py-5 text-white/72 sm:odd:pr-6 sm:even:pl-6 lg:border-b-0 lg:border-l lg:px-6 lg:first:border-l-0 lg:first:pl-0";
 
 function FinaleLinkBody({ eyebrow, external, label }: (typeof FINALE_LINKS)[number]) {
   return (
@@ -72,7 +74,10 @@ export function LandingFinale() {
         </div>
       </div>
 
-      <nav aria-label="项目入口" className="mt-10 grid border-t border-white/12 sm:grid-cols-3">
+      <nav
+        aria-label="项目入口"
+        className="mt-10 grid border-t border-white/12 sm:grid-cols-2 lg:grid-cols-4"
+      >
         {FINALE_LINKS.map((link) =>
           link.external ? (
             <a

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
-import { Clock } from "lucide-react";
+import { Layers } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -42,22 +42,22 @@ export function LandingDay() {
       <div className="border-t border-white/12 pt-12 sm:pt-16">
         <LandingSectionHeading
           id="landing-day-title"
-          title="一天里，它陪你的六个时刻"
-          subtitle="清晨要一首歌开场，深夜要一点安静。不同的时刻，你需要的是不同的 Scopify。"
-          icon={<Clock className="size-4 text-[#1ed760]" strokeWidth={1.8} />}
-          meta="从 07:30 到 01:00"
+          title="六个场景，六种打开方式"
+          subtitle="有时要一首歌开场，有时只想要一点安静。不同的场景，你需要的是不同的 Scopify。"
+          icon={<Layers className="size-4 text-[#1ed760]" strokeWidth={1.8} />}
+          meta="点击切换场景"
         />
 
         <div
           role="tablist"
-          aria-label="一天中的时刻"
+          aria-label="使用场景"
           className="mt-10 grid grid-cols-3 border-t border-white/10 sm:grid-cols-6"
         >
           {LANDING_DAY_MOMENTS.map((item, index) => {
             const isActive = index === activeIndex;
             return (
               <button
-                key={item.clock}
+                key={item.scene}
                 type="button"
                 role="tab"
                 id={`landing-day-tab-${index}`}
@@ -85,14 +85,14 @@ export function LandingDay() {
                     isActive ? "text-[#1ed760]" : "text-white/30 group-hover:text-white/55"
                   }`}
                 >
-                  {item.clock}
+                  {String(index + 1).padStart(2, "0")}
                 </span>
                 <span
                   className={`mt-1 block text-base font-bold transition-colors sm:text-lg ${
                     isActive ? "text-white" : "text-white/40 group-hover:text-white/70"
                   }`}
                 >
-                  {item.label}
+                  {item.scene}
                 </span>
               </button>
             );
@@ -107,7 +107,7 @@ export function LandingDay() {
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
-              key={moment.clock}
+              key={moment.scene}
               initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={prefersReducedMotion ? undefined : { opacity: 0, y: -12 }}
@@ -126,7 +126,7 @@ export function LandingDay() {
           <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-white/4 shadow-[0_30px_100px_rgba(0,0,0,0.45)]">
             <AnimatePresence initial={false}>
               <motion.div
-                key={moment.clock}
+                key={moment.scene}
                 className="absolute inset-0"
                 initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.02 }}
                 animate={{ opacity: 1, scale: 1 }}

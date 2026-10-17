@@ -25,9 +25,11 @@ import type {
   LandingDayMoment,
   LandingFavoriteFeature,
   LandingScreenshot,
+  LandingThemePreset,
   LandingVisualizerMode,
 } from "@/types/marketing";
 
+export const LANDING_WEB_APP_URL = "https://scopify-web.vercel.app";
 export const LANDING_GITHUB_URL = "https://github.com/MT-SUPER-POWER/Scopify";
 export const LANDING_RELEASES_URL = `${LANDING_GITHUB_URL}/releases`;
 export const LANDING_FEATURES_DOC_URL = "/docs/features";
@@ -98,7 +100,7 @@ export const LANDING_VISUALIZER_MODES: readonly LandingVisualizerMode[] = [
   { label: "凝彩", value: "tempera" },
 ];
 
-export const LANDING_LIVE_VISUALIZER = "sonnet";
+export const LANDING_DEFAULT_VISUALIZER = "sonnet";
 
 /** 播放栏音质选择器中的档位数量（标准 → 超清母带）。 */
 export const LANDING_AUDIO_QUALITY_COUNT = 9;
@@ -143,48 +145,53 @@ export const LANDING_FAVORITE_FEATURES: readonly LandingFavoriteFeature[] = [
 
 export const LANDING_DAY_MOMENTS: readonly LandingDayMoment[] = [
   {
-    clock: "07:30",
-    label: "清晨",
+    scene: "开场",
     feature: "每日推荐",
     sentence: "清晨，每日推荐已经替你挑好了今天的第一首。",
     screenshot: { alt: "Scopify 首页每日推荐", src: discoveryScreenshot },
   },
   {
-    clock: "10:00",
-    label: "上午",
+    scene: "找歌",
     feature: "快捷搜索",
     sentence: "上午手头正忙，忽然想起一首歌：搜索框就在眼前，不必离开正在看的页面。",
     screenshot: { alt: "Scopify 快捷搜索弹窗", src: searchModalScreenshot },
   },
   {
-    clock: "12:30",
-    label: "中午",
+    scene: "闲翻",
     feature: "评论",
     sentence: "午休的片刻，翻翻评论区，看看别人在这首歌里留下了什么。",
     screenshot: { alt: "Scopify 歌曲评论", src: commentScreenshot },
   },
   {
-    clock: "15:00",
-    label: "午后",
+    scene: "专注",
     feature: "桌面歌词",
     sentence: "午后开着文档写东西，桌面歌词安静地浮在角落，鼠标可以直接穿过它。",
     screenshot: { alt: "Scopify 桌面歌词", src: desktopMusicScreenshot },
   },
   {
-    clock: "21:00",
-    label: "夜晚",
+    scene: "沉浸",
     feature: "Folia 全屏歌词",
     sentence: "夜晚是 Folia 的主场：全屏、关灯，让每一句歌词换一种样子出场。",
     screenshot: { alt: "Scopify Folia 动态歌词", src: lyricDynamicScreenshot },
   },
   {
-    clock: "01:00",
-    label: "深夜",
+    scene: "夜听",
     feature: "ReplayGain",
     sentence: "深夜把音量调低一点，ReplayGain 帮你把每首歌的响度放平，不会被下一首吓到。",
     screenshot: { alt: "Scopify 音质与响度设置", src: audioQualityScreenshot },
   },
 ];
+
+/** 与客户端 `BACKGROUND_PRESETS` 及其中文名保持一致。 */
+export const LANDING_THEME_PRESETS: readonly LandingThemePreset[] = [
+  { id: "silver", name: "雾银", top: "#92999D", bottom: "#454B50" },
+  { id: "mist", name: "晨雾", top: "#A3C9E6", bottom: "#485D70" },
+  { id: "sage", name: "浅苔", top: "#BCCCB0", bottom: "#526A59" },
+  { id: "sand", name: "暖砂", top: "#E0CCAC", bottom: "#78685C" },
+  { id: "lavender", name: "淡紫", top: "#CDB8E4", bottom: "#625976" },
+];
+
+export const LANDING_THEME_DEFAULT_INTENSITY = 70;
 
 /** 底片墙与首屏海报墙共用的真实界面截图。 */
 export const LANDING_FILM_SCREENSHOTS: readonly LandingScreenshot[] = [

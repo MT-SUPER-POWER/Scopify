@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, BookOpen, Download } from "lucide-react";
+import { ArrowUpRight, BookOpen, Download, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
@@ -16,6 +16,7 @@ import {
   LANDING_GITHUB_URL,
   LANDING_RELEASES_URL,
   LANDING_VISUALIZER_MODES,
+  LANDING_WEB_APP_URL,
 } from "@/constants/marketing";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -60,6 +61,14 @@ export function LandingHero() {
           <span className="text-sm font-medium tracking-[0.04em] text-white/80">Scopify</span>
         </Link>
         <nav aria-label="站点导航" className="flex items-center gap-5 text-sm text-white/60">
+          <a
+            href={LANDING_WEB_APP_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="transition-colors hover:text-white"
+          >
+            在线体验
+          </a>
           <Link href="/docs" className="transition-colors hover:text-white">
             文档
           </Link>
@@ -146,6 +155,15 @@ export function LandingHero() {
             >
               <Download className="size-4" strokeWidth={2.4} />
               下载桌面端
+            </a>
+            <a
+              href={LANDING_WEB_APP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-11 items-center gap-2 rounded-full border border-white/16 bg-white/6 px-6 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:border-white/30 hover:bg-white/10"
+            >
+              <Globe className="size-4" />
+              在线体验
             </a>
             <Link
               href="/docs"

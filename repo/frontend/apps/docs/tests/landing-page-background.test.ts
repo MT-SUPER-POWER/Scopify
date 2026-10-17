@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 import {
   LANDING_DAY_MOMENTS,
-  LANDING_LIVE_VISUALIZER,
+  LANDING_DEFAULT_VISUALIZER,
   LANDING_VISUALIZER_MODES,
 } from "@/constants/marketing";
 
@@ -21,7 +21,7 @@ describe("landing page", () => {
 
     expect(pageSource).toContain("LandingExperience");
     expect(heroSource).toContain("FoliaLatentBackground");
-    expect(visualizersSource).toContain("FoliaSonnetRenderer");
+    expect(visualizersSource).toContain("FoliaVisualizerRenderer");
     expect(rendererSource).toContain("MeshGradient");
     expect(rendererSource).toContain("Dithering");
     expect(rendererSource).toContain('shape="warp"');
@@ -32,7 +32,7 @@ describe("landing page", () => {
     expect(new Set(LANDING_VISUALIZER_MODES.map((mode) => mode.value)).size).toBe(
       LANDING_VISUALIZER_MODES.length,
     );
-    expect(LANDING_VISUALIZER_MODES.some((mode) => mode.value === LANDING_LIVE_VISUALIZER)).toBe(
+    expect(LANDING_VISUALIZER_MODES.some((mode) => mode.value === LANDING_DEFAULT_VISUALIZER)).toBe(
       true,
     );
   });

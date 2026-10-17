@@ -53,13 +53,20 @@ export interface LandingFavoriteFeature {
   title: string;
 }
 
-/** “一天里的六个时刻”中的单个时段。 */
+/** “六个场景”中的单个使用场景。 */
 export interface LandingDayMoment {
-  clock: string;
   feature: string;
-  label: string;
+  scene: string;
   screenshot: LandingScreenshot;
   sentence: string;
+}
+
+/** 与客户端「外观 → 精选主题」一致的背景渐变预设。 */
+export interface LandingThemePreset {
+  bottom: string;
+  id: string;
+  name: string;
+  top: string;
 }
 
 export interface LandingVisualizerMode {
