@@ -21,7 +21,7 @@ import searchScreenshot from "../../../assets/features/SearchResult.png";
 import settingsGeneralScreenshot from "../../../assets/features/settings-general.png";
 import settingsShortcutsScreenshot from "../../../assets/features/settings-shortcuts.png";
 import themeEditorScreenshot from "../../../assets/features/visualThemEditor.png";
-import vipSignScreenshot from "../../../assets/features/VipSign.png";
+import vipSignVideo from "../../../assets/features/VipSign.mp4";
 import latticeScreenshot from "../../../assets/features/playlist-lattice.png";
 import listeningReportScreenshot from "../../../assets/features/listening-report.png";
 import notificationsScreenshot from "../../../assets/features/notifications.png";
@@ -42,6 +42,7 @@ Scopify 不只是一组音乐页面。它把找音乐、播放、歌词、收藏
   <Card title="歌词与 Folia" href="#歌词与-folia">进入动态歌词舞台并调整歌词来源与呈现。</Card>
   <Card title="音频体验" href="#音频体验">选择音质，使用均衡器、ReplayGain 与声音效果。</Card>
   <Card title="账户与音乐库" href="#账户与音乐库">管理喜欢、收藏、最近播放与个人内容。</Card>
+  <Card title="社交与通知" href="#社交与通知">浏览动态与乐迷团，收发私信，在通知中心处理互动与报告。</Card>
   <Card title="个性化与效率" href="#个性化与效率">调整主题、语言、快捷键与常用设置。</Card>
   <Card title="桌面端集成" href="#桌面端集成">使用桌面歌词、Discord 状态与客户端能力。</Card>
 </Cards>
@@ -120,15 +121,15 @@ Scopify 不只是一组音乐页面。它把找音乐、播放、歌词、收藏
 </figure>
 
 <figure>
-  <img className="rounded-xl border" src={searchBarScreenshot.src} alt="Scopify 搜索页面的常驻搜索栏" />
-  <figcaption>常驻搜索栏用于继续调整关键词。</figcaption>
+  <img className="rounded-xl border" src={searchBarScreenshot.src} alt="Scopify 搜索结果的全部视图" />
+  <figcaption>顶部常驻搜索栏可随时修改关键词；「全部」视图同时展示最佳匹配、歌曲和歌手，并可切换到歌曲、歌手、歌单、专辑、播客与声音。</figcaption>
 </figure>
 
 ### 分类结果
 
 <figure>
-  <img className="rounded-xl border" src={searchScreenshot.src} alt="Scopify 分类搜索结果页面" />
-  <figcaption>结果页把歌曲、歌单、专辑和用户等内容统一组织起来。</figcaption>
+  <img className="rounded-xl border" src={searchScreenshot.src} alt="Scopify 歌曲分类搜索结果" />
+  <figcaption>切换到分类后，结果页以完整列表展示，并保留喜欢、时长和歌曲音质标识。</figcaption>
 </figure>
 
 ## 播放与队列
@@ -234,7 +235,14 @@ ReplayGain 支持按曲目或专辑统一响度，适合在跨专辑播放和连
 </figure>
 
 <figure>
-  <img className="rounded-xl border" src={vipSignScreenshot.src} alt="Scopify 网易乐签页面" />
+  <video
+    className="rounded-xl border w-full"
+    src={typeof vipSignVideo === "string" ? vipSignVideo : (vipSignVideo?.src ?? vipSignVideo?.default)}
+    controls
+    muted
+    playsInline
+    preload="metadata"
+  />
   <figcaption>网易乐签保留为账户相关的特色能力。</figcaption>
 </figure>
 
@@ -326,7 +334,7 @@ PlayBar 可直接切换音频输出设备（`Ctrl/Cmd+Alt+O` 打开面板）。�
 
 ### MCP 播放控制
 
-桌面端提供仅监听本机回环地址的 Streamable HTTP MCP 服务，让支持 MCP 的客户端读取播放状态并控制播放。设置页可复制标准 `mcpServers` 配置、测试连接并重新生成凭据，旧令牌立即失效；读取与控制共 9 项能力可分别开启。
+桌面端提供仅监听本机回环地址的 Streamable HTTP MCP 服务，让支持 MCP 的客户端读取播放状态并控制播放。设置页可复制标准 `mcpServers` 配置、测试连接并重新生成凭据，旧令牌立即失效；读取与控制共 9 项能力可分别开启。完整说明见 [MCP 播放控制](/docs/mcp)。
 
 ### Discord 状态与客户端能力
 

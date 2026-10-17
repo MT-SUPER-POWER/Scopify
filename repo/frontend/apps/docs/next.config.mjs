@@ -8,6 +8,14 @@ const config = {
       test: /\.(mmd|mermaid)$/,
       type: "asset/source",
     });
+    webpackConfig.module.rules.push({
+      test: /\.(mp4|webm)$/,
+      type: "asset/resource",
+      generator: {
+        filename: "static/media/[name].[hash][ext]",
+        publicPath: "/_next/",
+      },
+    });
     return webpackConfig;
   },
   async rewrites() {
