@@ -22,6 +22,15 @@ import settingsGeneralScreenshot from "../../../assets/features/settings-general
 import settingsShortcutsScreenshot from "../../../assets/features/settings-shortcuts.png";
 import themeEditorScreenshot from "../../../assets/features/visualThemEditor.png";
 import vipSignScreenshot from "../../../assets/features/VipSign.png";
+import latticeScreenshot from "../../../assets/features/playlist-lattice.png";
+import listeningReportScreenshot from "../../../assets/features/listening-report.png";
+import notificationsScreenshot from "../../../assets/features/notifications.png";
+import personalFmScreenshot from "../../../assets/features/personal-fm.png";
+import podcastsScreenshot from "../../../assets/features/podcasts.png";
+import settingsAppearanceScreenshot from "../../../assets/features/settings-appearance.png";
+import settingsCacheScreenshot from "../../../assets/features/settings-cache.png";
+import settingsDevicesScreenshot from "../../../assets/features/settings-devices.png";
+import socialFeedScreenshot from "../../../assets/features/social-feed.png";
 import featuresMindmap from "./features-mindmap.mmd";
 
 Scopify 不只是一组音乐页面。它把找音乐、播放、歌词、收藏管理和桌面能力放进同一套交互中。本页按用户要完成的事情整理现有功能，方便快速了解产品，也为后续能力扩展提供固定的归类方式。
@@ -48,6 +57,25 @@ Scopify 不只是一组音乐页面。它把找音乐、播放、歌词、收藏
   <figcaption>首页同时承担内容推荐、快速播放和继续浏览的入口。</figcaption>
 </figure>
 
+### 歌单管理与 Lattice 视图
+
+歌单与专辑的操作区可以把当前页面的歌曲切换为 Lattice 拼贴视图：一面 Folia 风格的海报墙，支持拖动浏览、封面展开、直接播放和定位当前歌曲，返回列表时保留搜索与滚动位置。
+
+<figure>
+  <img className="rounded-xl border" src={latticeScreenshot.src} alt="Scopify 歌单 Lattice 拼贴视图" />
+  <figcaption>Lattice 把歌单变成可以拖动浏览的海报墙。</figcaption>
+</figure>
+
+列表本身支持完整的整理操作：
+
+| 操作 | 说明 |
+| --- | --- |
+| 多选 | `Shift` 区间连选，`Ctrl` / `Cmd` 自由多选，`Esc` 清空选择 |
+| 拖拽排序 | 自建歌单曲目与侧栏歌单可直接拖动调整顺序 |
+| 拖拽点赞 | 将歌曲拖到侧栏「我喜欢的音乐」即可一键喜欢 |
+| 右键菜单 | 多选后可批量播放、加入歌单；单曲菜单提供「接着听相似歌曲」 |
+| 收藏他人歌单 | 在歌单操作区直接收藏 |
+
 ### 歌单与评论
 
 <figure>
@@ -58,6 +86,26 @@ Scopify 不只是一组音乐页面。它把找音乐、播放、歌词、收藏
 <figure>
   <img className="rounded-xl border" src={commentScreenshot.src} alt="Scopify 音乐评论页面" />
   <figcaption>评论让歌曲和歌单的浏览过程延伸到社区内容。</figcaption>
+</figure>
+
+### 私人 FM 与电台
+
+私人 FM 作为动态歌单进入通用歌单详情页，沿用普通歌单的曲目计数与操作区。登录后也可以从侧边栏的「私人电台」直接进入沉浸播放，队列接近末尾时会自动补充歌曲。
+
+场景与模式（默认、熟悉、探索、拼图，以及情绪、场景、曲风、语种）收纳在 PlayBar 的控制面板中，只在 FM 播放时出现。私人 FM 歌单里的歌曲可通过右键菜单选择「不喜欢 / 减少推荐」，反馈会进入既有的负反馈流程，不影响普通歌单。
+
+<figure>
+  <img className="rounded-xl border" src={personalFmScreenshot.src} alt="Scopify 私人 FM 歌单与模式控制面板" />
+  <figcaption>私人 FM 把推荐流变成可浏览、可调整风格的歌单。</figcaption>
+</figure>
+
+### 播客与电台
+
+播客声音在首页中支持独立刷新，电台与播客节目表格支持按多个维度排序，单集页面提供独立的详情与播放入口。
+
+<figure>
+  <img className="rounded-xl border" src={podcastsScreenshot.src} alt="Scopify 播客与电台页面" />
+  <figcaption>播客资料库集中管理订阅的节目和单集。</figcaption>
 </figure>
 
 ## 搜索与导航
@@ -128,6 +176,12 @@ Scopify 不只是一组音乐页面。它把找音乐、播放、歌词、收藏
   <figcaption>视觉主题编辑器用于统一背景、色彩和舞台效果。</figcaption>
 </figure>
 
+### 歌词模式与副字幕
+
+Folia 提供 14 种歌词动画。除商籁、凝彩、莫奈、时计等模式外，「档案」模式把歌曲信息、歌词序号、逐词读取和时间码排成科研档案版式，并配有莱茵档案背景。
+
+副字幕支持「罗马音 + 翻译」双行显示，商籁、时计和莫奈都已适配。歌词背景还可以叠加本地视频层，Sora 背景提供纯色空白选项。
+
 完整播放舞台与桌面歌词的部分能力来自 [Folia](https://github.com/chthollyphile/folia-major/tree/main) 源码快照，并在 Scopify 中继续适配。
 
 ## 音频体验
@@ -163,6 +217,15 @@ ReplayGain 支持按曲目或专辑统一响度，适合在跨专辑播放和连
   <figcaption>音乐库将个人内容和常用管理操作放在一起。</figcaption>
 </figure>
 
+### 听歌足迹
+
+最近播放页提供「听歌足迹」入口。足迹页可以切换周、月、年报告，展示听歌时长、歌曲数、活跃天数、高频歌曲、钟爱歌手与偏爱风格；周报支持回看过去 16 周。个人主页也会显示累计听歌时长，通知中心的周报、年报通知会直接跳转到对应周期。
+
+<figure>
+  <img className="rounded-xl border" src={listeningReportScreenshot.src} alt="Scopify 听歌足迹报告页面" />
+  <figcaption>听歌足迹按周期汇总你的收听习惯。</figcaption>
+</figure>
+
 ### 用户资料与网易乐签
 
 <figure>
@@ -175,7 +238,54 @@ ReplayGain 支持按曲目或专辑统一响度，适合在跨专辑播放和连
   <figcaption>网易乐签保留为账户相关的特色能力。</figcaption>
 </figure>
 
+## 社交与通知
+
+### 动态与乐迷团
+
+社交页把朋友动态、热门话题与乐迷团笔记放进同一条浏览路径。动态支持文字与音乐分享、转发、点赞、评论回复和删除自己的内容；音乐附件复用播放器与队列，可以直接播放。同时提供关注 / 粉丝列表和用户搜索。
+
+<figure>
+  <img className="rounded-xl border" src={socialFeedScreenshot.src} alt="Scopify 社交动态页面" />
+  <figcaption>动态流把朋友分享与音乐播放连在一起。</figcaption>
+</figure>
+
+### 私信
+
+私信位于好友图标下，独立显示未读会话，支持历史消息、文字与表情，以及歌曲、专辑、歌单分享卡片，并提供一键全部已读。
+
+### 通知中心
+
+铃铛汇总互动、报告与更新通知，按日期分组，支持未读筛选和显式已读。桌面端可通过通知设置配置免打扰与隐私预览，系统提醒点击后直接回到对应内容。
+
+<figure>
+  <img className="rounded-xl border" src={notificationsScreenshot.src} alt="Scopify 通知中心" />
+  <figcaption>通知中心统一承载互动、报告与更新提醒。</figcaption>
+</figure>
+
 ## 个性化与效率
+
+### 外观与主题
+
+外观设置分为「精选主题」和「我的主题」。主题保存颜色、强度和渐变范围，可以创建、命名、另存、批量管理；每日轮换允许按 24 小时时间带为不同时段指定主题。背景与字幕歌词也在这里调整，字幕歌词提供胶囊排版、主副行、淡入 / 浮入 / 逐字等效果的预览工作台，并支持命名样式方案库。
+
+<figure>
+  <img className="rounded-xl border" src={settingsAppearanceScreenshot.src} alt="Scopify 外观设置页面" />
+  <figcaption>外观设置集中管理主题、背景和歌词样式。</figcaption>
+</figure>
+
+### 缓存与登录设备
+
+缓存页面展示并管理本地缓存；设备页面列出账号的真实登录设备并标记当前设备。
+
+<figure>
+  <img className="rounded-xl border" src={settingsCacheScreenshot.src} alt="Scopify 缓存设置页面" />
+  <figcaption>缓存设置用于查看和清理本地数据。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={settingsDevicesScreenshot.src} alt="Scopify 登录设备页面" />
+  <figcaption>设备页面标记当前设备并列出其他登录记录。</figcaption>
+</figure>
 
 ### 通用设置
 
@@ -205,6 +315,18 @@ Electron 桌面端在共享 Web 界面之外提供系统级能力，包括桌面
   <img className="rounded-xl border" src={desktopLyricScreenshot.src} alt="Scopify 桌面歌词和全屏音乐效果" />
   <figcaption>桌面歌词把当前播放内容延伸到主窗口之外。</figcaption>
 </figure>
+
+### 桌面壁纸与托盘
+
+「桌面音乐壁纸」把歌词舞台铺满桌面，在多显示器环境下覆盖主窗口所在的显示器。系统托盘菜单提供「桌面动态壁纸」与「悬浮控制器」两个独立开关，状态与主窗口双向同步，壁纸也有独立快捷键（默认 `Ctrl+Alt+P`）。
+
+### 音频输出与系统媒体控制
+
+PlayBar 可直接切换音频输出设备（`Ctrl/Cmd+Alt+O` 打开面板）。播放信息同步到系统媒体控制（SMTC / MediaSession），Windows 版本可使用原生音频 Host。
+
+### MCP 播放控制
+
+桌面端提供仅监听本机回环地址的 Streamable HTTP MCP 服务，让支持 MCP 的客户端读取播放状态并控制播放。设置页可复制标准 `mcpServers` 配置、测试连接并重新生成凭据，旧令牌立即失效；读取与控制共 9 项能力可分别开启。
 
 ### Discord 状态与客户端能力
 
