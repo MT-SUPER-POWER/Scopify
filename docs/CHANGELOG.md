@@ -32,6 +32,8 @@
 
 ### Fixed
 
+- **修复迁移 pnpm 后桌面端打包失败与 CI Lint 失败**：`electron:ensure` 改用 `pnpm exec install-electron --no`（`install-electron` 是 `electron` 包的可执行文件而非脚本，`pnpm run` 无法调用，导致 Release 的 `package:win` / `package:mac` 报 `ERR_PNPM_NO_SCRIPT`）；并把 `eslint-plugin-tailwindcss` 固定为 4.2.0（pnpm 重新解析到 4.4.0 后新增 34 条 canonical-class 警告，使 `--max-warnings 0` 失败）。
+
 - **侧边栏改为整体滚动**：此前「浏览 / 资料库」导航固定在上方，只有歌单列表在局部 `ScrollArea` 内滚动，滑块位置与列表位置出现错位。现改为 `Sidebar` 内仅保留一个 `ScrollArea`，导航与歌单一起滚动，仅顶部 Logo 栏固定；`SidebarPlaylistLibrary` 不再自带滚动容器。
 
 - **修复桌面端首次进入私人电台为空**：桌面端静态导出启用了 `trailingSlash`，路由实际为 `/personal-fm/`，而进入页面自动请求歌曲的判断只匹配 `/personal-fm`，导致首次进入不发请求、页面为空，只能手动点「重新加载」。新增 `isPersonalFmRoute` 同时识别两种路径，并补充对应单测；侧边栏「私人电台」入口在点击时即发起请求，页面挂载后不再重复请求，进入页面时歌曲已就绪。

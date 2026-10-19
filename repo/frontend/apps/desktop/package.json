@@ -15,7 +15,7 @@
   "type": "module",
   "main": "out/main/main.js",
   "scripts": {
-    "electron:ensure": "pnpm run install-electron --no",
+    "electron:ensure": "pnpm exec install-electron --no",
     "predev": "pnpm run electron:ensure && pnpm run wallpaper:build",
     "dev": "electron-vite dev",
     "wallpaper:build": "bun scripts/build-wallpaper-helper.ts",
