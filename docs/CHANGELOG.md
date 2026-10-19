@@ -1,10 +1,10 @@
 # Changelog
 
-## v1.5.9
+## v2.0.0
 
 ### Added
 
-- **包管理器由 Bun 迁移至 pnpm**：本地开发需改用 pnpm（`corepack enable` 后自动匹配 `packageManager`）；根 `package.json` 的 `packageManager` 改为 `pnpm@12.8.1`，新增 `pnpm-workspace.yaml`（工作区范围、`allowBuilds` 构建脚本白名单，并吸收后端子模块的同类设置），以 `pnpm-lock.yaml` 取代 `bun.lock`；同步把 `package.json` 脚本、husky / lint-staged 钩子、`dev-web.ts` 与 `build-audio-engine.ts` 中的 `bun run` / `bunx` 改为 `pnpm run` / `pnpm exec`，CI、Release、Vercel、Docker Compose 以及相关文档一并切换。Bun 仍作为 TypeScript 脚本与 `bun test` 的运行时保留。
+- **包管理器由 Bun 迁移至 pnpm（破坏性更新，版本升至 2.0.0）**：本地开发需改用 pnpm（`corepack enable` 后自动匹配 `packageManager`）；根 `package.json` 的 `packageManager` 改为 `pnpm@12.8.1`，新增 `pnpm-workspace.yaml`（工作区范围、`allowBuilds` 构建脚本白名单，并吸收后端子模块的同类设置），以 `pnpm-lock.yaml` 取代 `bun.lock`；同步把 `package.json` 脚本、husky / lint-staged 钩子、`dev-web.ts` 与 `build-audio-engine.ts` 中的 `bun run` / `bunx` 改为 `pnpm run` / `pnpm exec`，CI、Release、Vercel、Docker Compose 以及相关文档一并切换。Bun 仍作为 TypeScript 脚本与 `bun test` 的运行时保留。
 
 - **新增《MCP 播放控制》专题文档**：新增 `mcp.mdx`，详细介绍桌面端内置的 Streamable HTTP MCP 服务的启用方法、标准客户端连接配置、安全令牌机制及 9 项可分别授权的控制工具。
 

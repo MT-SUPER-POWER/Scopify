@@ -1,6 +1,6 @@
 {
   "name": "@scopify/docs",
-  "version": "1.5.9",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
