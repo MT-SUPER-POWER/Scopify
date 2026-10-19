@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { FaCompactDisc } from "react-icons/fa6";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useSidebarNarrow } from "@/lib/hooks/useSidebarNarrow";
 import { LibraryNavigation } from "./LibraryNavigation";
@@ -41,8 +42,13 @@ function SidebarImpl() {
           </div>
         )}
 
-        <LibraryNavigation isCollapsed={isCollapsed} />
-        <SidebarPlaylistLibrary isCollapsed={isCollapsed} />
+        <ScrollArea
+          className="min-h-0 flex-1"
+          viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+        >
+          <LibraryNavigation isCollapsed={isCollapsed} />
+          <SidebarPlaylistLibrary isCollapsed={isCollapsed} />
+        </ScrollArea>
       </div>
     </aside>
   );
