@@ -1,7 +1,7 @@
 services:
   frontend:
     container_name: ${FRONTEND_CONTAINER_NAME:-scopify-web}
-    image: oven/bun:1.3.11
+    image: node:24
     working_dir: /app
     environment:
       FRONTEND_HOST: 0.0.0.0
@@ -14,8 +14,8 @@ services:
     volumes:
       - .:/app
       - scopify-node-modules:/app/node_modules
-      - scopify-bun-cache:/root/.bun/install/cache
-    command: sh -lc "bun install --frozen-lockfile && bun run build:web && bun run --cwd repo/frontend/apps/web start --hostname 0.0.0.0 --port ${FRONTEND_PORT:-3000}"
+      - scopify-pnpm-store:/root/.local/share/pnpm/store
+    command: sh -lc "corepack enable && pnpm install --frozen-lockfile && pnpm run build:web && pnpm --dir repo/frontend/apps/web run start --hostname 0.0.0.0 --port ${FRONTEND_PORT:-3000}"
     restart: unless-stopped
     depends_on:
       - backend
@@ -40,7 +40,7 @@ services:
 
 volumes:
   scopify-node-modules:
-  scopify-bun-cache:
+  scopify-pnpm-store:
 
 networks:
   scopify-network:

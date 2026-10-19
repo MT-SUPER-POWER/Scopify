@@ -32,8 +32,9 @@ cleanStaleTransactions();
  * the generated declaration is what keeps the Main host and Rust ABI honest.
  */
 function runNapiBuild() {
-  return spawnSync("bunx", ["--no-install", "napi", "build", "--platform", "--release"], {
+  return spawnSync("pnpm", ["exec", "napi", "build", "--platform", "--release"], {
     cwd: engineRoot,
+    shell: process.platform === "win32",
     encoding: "utf8",
     stdio: "inherit",
     windowsHide: true,

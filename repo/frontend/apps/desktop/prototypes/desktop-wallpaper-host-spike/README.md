@@ -13,19 +13,19 @@ This spike deliberately stops before Folia, playback IPC, persistence, multi-mon
 From the repository root:
 
 ```powershell
-bun run prototype:desktop-wallpaper
+pnpm run prototype:desktop-wallpaper
 ```
 
 To exercise transparent composition:
 
 ```powershell
-bun run prototype:desktop-wallpaper -- --transparent
+pnpm run prototype:desktop-wallpaper --transparent
 ```
 
 To opt into the temporary static Windows-wallpaper fallback used by taskbar and Mica surfaces:
 
 ```powershell
-bun run prototype:desktop-wallpaper -- --system-fallback
+pnpm run prototype:desktop-wallpaper --system-fallback
 ```
 
 The fallback command journals the current single-monitor static wallpaper, makes an ASCII-path recovery copy, applies a captured PNG only while the spike is running, and conditionally restores the original path on exit. It refuses slideshow and multi-monitor configurations. Do not combine `--system-fallback` with `--transparent`.
@@ -33,7 +33,7 @@ The fallback command journals the current single-monitor static wallpaper, makes
 When the Web development server is unavailable, use the last verified desktop renderer artifact:
 
 ```powershell
-bun run prototype:desktop-wallpaper -- --system-fallback --static
+pnpm run prototype:desktop-wallpaper --system-fallback --static
 ```
 
 The command starts the normal Web and Electron development processes, then creates one non-focusable test window on the primary display. Stop it with `Ctrl+C` in the terminal.

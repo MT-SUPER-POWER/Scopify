@@ -1,0 +1,19 @@
+packages:
+  - "repo/frontend/apps/*"
+  - "repo/frontend/packages/*"
+  - "repo/backend/*"
+
+# Dependencies allowed to run install scripts (replaces bun's trustedDependencies).
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
+  # api-enhanced is a workspace member, so its own pnpm-workspace.yaml settings are ignored.
+  core-js: true
+  es5-ext: true
+  # Not trusted under bun either; electron is installed by desktop's electron:ensure.
+  electron-winstaller: false
+  esbuild: false
+  msw: false
+
+minimumReleaseAgeExclude:
+  - "@neteasecloudmusicapienhanced/unblockmusic-utils@0.4.2"

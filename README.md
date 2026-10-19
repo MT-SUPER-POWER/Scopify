@@ -19,7 +19,7 @@
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
 
 - 本项目主要技术链为 [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [ShadCN UI](https://ui.shadcn.com/) + [Electron](https://www.electronjs.org/zh/docs/latest/) + [Nodejs](https://nodejs.org/zh-cn/) + [Turborepo](https://turbo.build/)
-- Node.js 版本要求：>= 24，包管理器：bun >= 1.3.11，pnpm >= 10.0.0
+- Node.js 版本要求：>= 24，包管理器：pnpm 12.x（见 `packageManager`），脚本与测试运行时：bun >= 1.3.11
 - 支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配，App 开发中
 
 ## 技术栈总览
@@ -38,7 +38,7 @@
 
 ### 代码结构
 
-仓库使用 Bun Workspaces + Turborepo 管理 Web、Electron 和共享契约：
+仓库使用 pnpm Workspaces + Turborepo 管理 Web、Electron 和共享契约：
 
 ```text
 repo/
@@ -83,20 +83,20 @@ Scopify 现在把桌面客户端、Web 前端和后端分开管理。Web 和桌�
 
 ```bash
 git submodule update --init --recursive   # 初次克隆时需要
-bun run dev:backend                       # 运行后端
+pnpm run dev:backend                       # 运行后端
 ```
 
 ### 前端与桌面客户端的运行
 
 ```bash
-bun install
-bun run dev:web          # 仅 Next.js Web
-bun run dev:desktop      # 仅 Electron（开发时使用 Web dev server），确保你的 dev:web 已运行
-bun run dev              # Web + Electron
-bun run dev:full         # Web + Electron + backend
+pnpm install
+pnpm run dev:web          # 仅 Next.js Web
+pnpm run dev:desktop      # 仅 Electron（开发时使用 Web dev server），确保你的 dev:web 已运行
+pnpm run dev              # Web + Electron
+pnpm run dev:full         # Web + Electron + backend
 
 # 其他网页
-bun run dev:docs         # 仅 docs（文档网站），确保你的 dev:web 已运行
+pnpm run dev:docs         # 仅 docs（文档网站），确保你的 dev:web 已运行
 ```
 
 ## 功能
@@ -163,7 +163,7 @@ mindmap
 - **[快捷键](https://scopify-docs.vercel.app/docs/shortcuts)**：全部快捷键与命令
 - **[版本日志](docs/CHANGELOG.md)**：每个版本新增、改进与修复的内容
 
-本地预览文档站：`bun run dev:docs`（需先运行 `bun run dev:web`）。
+本地预览文档站：`pnpm run dev:docs`（需先运行 `pnpm run dev:web`）。
 
 ## 版本号规则
 

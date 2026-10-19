@@ -101,7 +101,7 @@ try {
     console.log("[desktop-wallpaper-spike] using the built static renderer");
   } else if (!(await isRendererReady())) {
     console.log(`[desktop-wallpaper-spike] starting renderer at ${rendererUrl}`);
-    webProcess = Bun.spawn(["bun", "run", "dev"], {
+    webProcess = Bun.spawn(["pnpm", "run", "dev"], {
       cwd: join(root, "frontend", "apps", "web"),
       stderr: "inherit",
       stdin: "inherit",
@@ -117,7 +117,7 @@ try {
     console.log("[desktop-wallpaper-spike] renderer ready; starting Electron host");
   }
 
-  const desktopProcess = Bun.spawn(["bun", "run", "dev"], {
+  const desktopProcess = Bun.spawn(["pnpm", "run", "dev"], {
     cwd: join(root, "frontend", "apps", "desktop"),
     env: {
       ...process.env,

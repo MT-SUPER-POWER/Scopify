@@ -49,7 +49,7 @@ export function ensureElectronInstalled(projectRoot = process.cwd()) {
   const installScript = join(electronDir, "install.js");
 
   if (!existsSync(packageJsonPath) || !existsSync(installScript)) {
-    throw new Error("Electron package is missing. Run `bun install` first.");
+    throw new Error("Electron package is missing. Run `pnpm install` first.");
   }
 
   const { version } = JSON.parse(readFileSync(packageJsonPath, "utf-8")) as { version: string };

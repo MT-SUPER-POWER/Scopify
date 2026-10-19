@@ -38,7 +38,7 @@
 
 ## 验证
 
-- Web `bun run typecheck` 通过。
+- Web `pnpm run typecheck` 通过。
 - 对本轮修改的 TS/TSX 文件运行定向 ESLint；修复迁移代码中的非空断言警告。
 - 实际浏览器验证右键菜单、Ctrl 两首多选后的批量菜单、显示 2 首歌曲的建单弹窗、取消及 Esc 清空选择。
 - 弹窗打开时：遮罩数量 1，`tbody > div` 数量 0。

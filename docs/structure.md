@@ -2,7 +2,7 @@
 
 > **AI Agent 请读根目录 [AGENTS.md](../AGENTS.md)**
 
-Scopify 使用 Bun Workspaces + Turborepo 管理多端。所有应用源码位于 `repo/`；本文中的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 都相对于 `repo/frontend/apps/web/`；Electron 位于 `repo/frontend/apps/desktop/`。目标是：类型、逻辑、UI 各归其位；**路由层可以组装页面，但不要做无意义的单组件转发**。
+Scopify 使用 pnpm Workspaces + Turborepo 管理多端。所有应用源码位于 `repo/`；本文中的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 都相对于 `repo/frontend/apps/web/`；Electron 位于 `repo/frontend/apps/desktop/`。目标是：类型、逻辑、UI 各归其位；**路由层可以组装页面，但不要做无意义的单组件转发**。
 
 ---
 
@@ -87,14 +87,14 @@ Web Path alias：`@/` → `repo/frontend/apps/web/`，例如 `@/types/…`、`@/
 ## 开发命令
 
 ```bash
-bun install
-bun run dev            # Web + Electron
-bun run dev:web        # 仅 Web
-bun run dev:desktop    # 仅 Electron（需要 Web dev server）
-bun run dev:full       # Web + Electron + 后端
-bun run build:web      # 普通 Next.js Web 构建
-bun run build:desktop  # 静态 Renderer + Electron 构建
-bun run i18n:types     # 更新 i18n 类型
+pnpm install
+pnpm run dev            # Web + Electron
+pnpm run dev:web        # 仅 Web
+pnpm run dev:desktop    # 仅 Electron（需要 Web dev server）
+pnpm run dev:full       # Web + Electron + 后端
+pnpm run build:web      # 普通 Next.js Web 构建
+pnpm run build:desktop  # 静态 Renderer + Electron 构建
+pnpm run i18n:types     # 更新 i18n 类型
 ```
 
 ## 相关文档

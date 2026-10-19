@@ -60,7 +60,7 @@ async function main() {
 
   console.log(`Starting Next.js on ${host}:${port}...`);
 
-  const nextDev = spawn("bunx", ["next", "dev", "-H", host, "-p", port.toString()], {
+  const nextDev = spawn("pnpm", ["exec", "next", "dev", "-H", host, "-p", port.toString()], {
     stdio: "inherit",
     shell: true,
   });

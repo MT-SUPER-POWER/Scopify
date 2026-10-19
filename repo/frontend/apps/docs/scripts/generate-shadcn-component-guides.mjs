@@ -277,7 +277,7 @@ ${description}上方示例直接渲染 \`@scopify/ui\` 中的真实组件，可�
 
 \`\`\`bash
 cd repo/frontend/packages/ui
-bunx shadcn@latest add ${slug}
+pnpm dlx shadcn@latest add ${slug}
 \`\`\`
 
 CLI 文件属于 \`shadcn/\` vendor 层；产品特有扩展应放在 \`scopify/\`，不要直接改写原生实现。

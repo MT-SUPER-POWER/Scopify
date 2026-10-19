@@ -31,8 +31,8 @@ CORS_ALLOW_ORIGIN=https://scopify-web.vercel.app
 | --- | --- |
 | Root Directory | `repo/frontend/apps/web` |
 | Framework Preset | `Next.js` |
-| Install Command | `cd ../../../.. && bun install --frozen-lockfile && cd repo/frontend/apps/web` |
-| Build Command | 使用 Web 目录 `vercel.json` 中的配置（`cd ../../../.. && bun run build:web && cd repo/frontend/apps/web`） |
+| Install Command | `cd ../../../.. && pnpm install --frozen-lockfile && cd repo/frontend/apps/web` |
+| Build Command | 使用 Web 目录 `vercel.json` 中的配置（`cd ../../../.. && pnpm run build:web && cd repo/frontend/apps/web`） |
 
 在 Web 项目中设置完整 API 根地址：
 
@@ -48,8 +48,8 @@ BACKEND_PUBLIC_URL=https://scopify-api.vercel.app
 | --- | --- |
 | Root Directory | `repo/frontend/apps/docs` |
 | Framework Preset | `Next.js` |
-| Install Command | `cd ../../../.. && bun install && cd repo/frontend/apps/docs` |
-| Build Command | `cd ../../../.. && bun run build:docs && cd repo/frontend/apps/docs` |
+| Install Command | `cd ../../../.. && pnpm install && cd repo/frontend/apps/docs` |
+| Build Command | `cd ../../../.. && pnpm run build:docs && cd repo/frontend/apps/docs` |
 
 ### CLI 快捷部署命令
 
@@ -57,12 +57,12 @@ BACKEND_PUBLIC_URL=https://scopify-api.vercel.app
 
 ```bash
 # 部署至生产环境
-bun run deploy:web
-bun run deploy:docs
+pnpm run deploy:web
+pnpm run deploy:docs
 
 # 部署预览分支（Preview）
-bun run deploy:web:preview
-bun run deploy:docs:preview
+pnpm run deploy:web:preview
+pnpm run deploy:docs:preview
 ```
 
 ## Docker Compose

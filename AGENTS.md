@@ -1,6 +1,6 @@
 # Scopify — Agent Instructions
 
-Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根目录是 Bun Workspaces + Turborepo 编排层；所有应用源码收敛于 `repo/`，Web、Electron 和契约分别位于 `repo/frontend/apps/web`、`repo/frontend/apps/desktop` 和 `repo/frontend/packages/desktop-contract`。前端与 `repo/backend/api-enhanced` 解耦部署；后端有自己的 [AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
+Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根目录是 pnpm Workspaces + Turborepo 编排层；所有应用源码收敛于 `repo/`，Web、Electron 和契约分别位于 `repo/frontend/apps/web`、`repo/frontend/apps/desktop` 和 `repo/frontend/packages/desktop-contract`。前端与 `repo/backend/api-enhanced` 解耦部署；后端有自己的 [AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
 
 **本文件是前端/Electron 代码结构的唯一规范。** 下文中未加前缀的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 路径都相对于 `repo/frontend/apps/web/`。新建或修改代码时必须遵守；发现 inline 类型、散落 hook 等历史债务时，顺手迁移到正确目录。
 
@@ -22,16 +22,17 @@ Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根�
 
 | 项       | 值                  |
 | -------- | ------------------- |
-| 包管理器 | **bun**（>= 1.3.11） |
+| 包管理器 | **pnpm**（12.x，见 `packageManager`） |
+| 脚本 / 测试运行时 | **bun**（>= 1.3.11，运行 `*.ts` 脚本与 `bun test`） |
 | Node     | >= 20               |
 
 ```bash
-bun install
-bun run dev               # Web + Electron
-bun run dev:web           # 仅 Web
-bun run dev:desktop       # 仅 Electron
-bun run dev:full          # Web + Electron + 后端联调
-bun run i18n:types        # 生成 i18n 类型
+pnpm install
+pnpm run dev               # Web + Electron
+pnpm run dev:web           # 仅 Web
+pnpm run dev:desktop       # 仅 Electron
+pnpm run dev:full          # Web + Electron + 后端联调
+pnpm run i18n:types        # 生成 i18n 类型
 ```
 
 ---
@@ -118,7 +119,7 @@ Scopify/
 
 ### Backend
 
-NetEase API 服务位于 `repo/backend/api-enhanced/`（git submodule）。前端通过 `repo/frontend/apps/web/lib/web/request.ts` 配置的 base URL 访问，开发时可用 `bun run dev:backend` 启动。后端规范见 [backend/api-enhanced/AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
+NetEase API 服务位于 `repo/backend/api-enhanced/`（git submodule）。前端通过 `repo/frontend/apps/web/lib/web/request.ts` 配置的 base URL 访问，开发时可用 `pnpm run dev:backend` 启动。后端规范见 [backend/api-enhanced/AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
 
 
 <!-- CODEGRAPH_START -->

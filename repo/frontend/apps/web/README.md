@@ -37,13 +37,13 @@ Scopify Web is a Next.js application that provides a modern music listening expe
 1. Install dependencies:
 
    ```bash
-   bun install
+   pnpm install
    ```
 
 2. Start the development server:
 
    ```bash
-   bun run dev
+   pnpm run dev
    ```
 
 3. Open [http://localhost:3000](http://localhost:3000) in your browser.

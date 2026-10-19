@@ -50,7 +50,7 @@ native/audio-engine/
 
 ```bash
 cd repo/frontend/apps/desktop
-bun run audio:build
+pnpm run audio:build
 ```
 
 Windows 的 `package:win`、`build:win`、`release:win` 会先构建该模块，再把 `.node` 和 NAPI 自动生成
@@ -64,7 +64,7 @@ cargo fmt --check
 
 cd ../..
 bun test tests/nativeAudioHost.test.ts --isolate
-bun run typecheck
+pnpm run typecheck
 ```
 
 测试使用固定 WAV 验证真实 decoder，不会自动播放声卡。修改输出层后仍需在 Windows x64/arm64

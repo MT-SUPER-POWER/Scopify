@@ -25,7 +25,7 @@ export default {
         .map((f) => `"${f.replaceAll("\\", "/")}"`)
         .join(" ");
       commands.push(
-        `bun run --cwd repo/frontend/apps/web eslint --fix --max-warnings 0 --no-warn-ignored ${relFiles}`,
+        `pnpm --dir repo/frontend/apps/web exec eslint --fix --max-warnings 0 --no-warn-ignored ${relFiles}`,
       );
     }
 
