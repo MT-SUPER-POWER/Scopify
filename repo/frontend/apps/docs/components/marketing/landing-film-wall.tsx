@@ -1,70 +1,75 @@
-import { Film } from "lucide-react";
+"use client";
+
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { useRef } from "react";
 
-import { LandingSectionHeading } from "@/components/marketing/landing-section-heading";
+import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
+import { LandingReveal } from "@/components/marketing/landing-reveal";
 import { LANDING_FILM_SCREENSHOTS } from "@/constants/marketing";
-import type { LandingScreenshot } from "@/types/marketing";
 
-const FILM_ROWS: readonly {
-  duration: string;
-  reverse: boolean;
-  screenshots: LandingScreenshot[];
-}[] = [
-  {
-    duration: "70s",
-    reverse: false,
-    screenshots: LANDING_FILM_SCREENSHOTS.filter((_, index) => index % 2 === 0),
-  },
-  {
-    duration: "78s",
-    reverse: true,
-    screenshots: LANDING_FILM_SCREENSHOTS.filter((_, index) => index % 2 === 1),
-  },
-];
+const ROW_COUNT = 3;
+const FILM_ROWS = Array.from({ length: ROW_COUNT }, (_, row) =>
+  LANDING_FILM_SCREENSHOTS.filter((_, index) => index % ROW_COUNT === row),
+);
 
+/** 回声：三排真实截图斜铺成一面底片墙，随滚动相向滑动并慢慢放平。 */
 export function LandingFilmWall() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion() ?? false;
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const forward = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
+  const backward = useTransform(scrollYProgress, [0, 1], ["-30%", "0%"]);
+  const tilt = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [28, 4]);
+
   return (
-    <section aria-labelledby="landing-film-title" className="w-full">
-      <div className="mx-auto w-full max-w-360 px-5 sm:px-8 lg:px-12">
-        <div className="border-t border-white/12 pt-12 sm:pt-16">
-          <LandingSectionHeading
-            id="landing-film-title"
-            title={`${LANDING_FILM_SCREENSHOTS.length} 张截图，拼成 Scopify 的底片`}
-            subtitle="没有效果图。每一张都来自正在运行的客户端，留下它最直观的颜色与面孔。"
-            icon={<Film className="size-4 text-[#1ed760]" strokeWidth={1.8} />}
-            meta="悬停可暂停"
-          />
-        </div>
-      </div>
+    <section
+      ref={sectionRef}
+      data-landing-chapter="echo"
+      aria-labelledby="landing-film-title"
+      className="relative overflow-hidden py-32"
+    >
+      <LandingReveal className="mx-auto flex max-w-360 flex-col items-center px-5 text-center">
+        <LandingChapterLabel chapter="echo" />
+        <h2
+          id="landing-film-title"
+          className="landing-display mt-6 text-[clamp(2.2rem,5vw,4.4rem)] leading-[1.1] font-semibold tracking-[-0.04em] text-white"
+        >
+          没有效果图。
+        </h2>
+        <p className="mt-4 text-sm text-white/55 sm:text-base">
+          这里的 {LANDING_FILM_SCREENSHOTS.length} 张，都截自正在运行的客户端。
+        </p>
+      </LandingReveal>
 
-      <div className="relative mt-10 overflow-hidden py-2">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-linear-to-r from-[#070912] to-transparent sm:w-32" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-linear-to-l from-[#070912] to-transparent sm:w-32" />
-
-        <div className="flex flex-col gap-3 sm:gap-4">
-          {FILM_ROWS.map((row) => (
-            <div
-              key={row.duration}
-              className={`landing-marquee-x flex ${row.reverse ? "landing-marquee-reverse" : ""}`}
-              style={{ "--landing-marquee-duration": row.duration } as CSSProperties}
+      <div className="relative mt-24 mask-[linear-gradient(90deg,transparent,black_14%,black_86%,transparent)] perspective-[1600px]">
+        <motion.div
+          className="-ml-[14vw] flex origin-center flex-col gap-4"
+          style={{ rotateX: tilt, rotateZ: -6 }}
+        >
+          {FILM_ROWS.map((row, rowIndex) => (
+            <motion.div
+              key={rowIndex}
+              className="flex w-max gap-4"
+              style={{ x: rowIndex % 2 === 0 ? forward : backward }}
             >
-              {[...row.screenshots, ...row.screenshots].map((screenshot, index) => (
-                <div key={`${row.duration}-${index}`} className="shrink-0 pr-3 sm:pr-4">
-                  <div className="group relative aspect-video h-32 overflow-hidden rounded-lg border border-white/10 bg-white/4 sm:h-44 lg:h-52">
-                    <Image
-                      src={screenshot.src}
-                      alt={index < row.screenshots.length ? screenshot.alt : ""}
-                      fill
-                      sizes="(min-width: 1024px) 370px, (min-width: 640px) 312px, 228px"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
+              {row.map((screenshot) => (
+                <div
+                  key={screenshot.alt}
+                  className="group relative aspect-16/10 w-[clamp(15rem,27vw,27rem)] shrink-0 overflow-hidden rounded-xl border border-white/10 bg-white/4"
+                >
+                  <Image
+                    src={screenshot.src}
+                    alt={screenshot.alt}
+                    fill
+                    sizes="27vw"
+                    className="object-cover object-top-left transition-transform duration-700 group-hover:scale-105"
+                  />
                 </div>
               ))}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
