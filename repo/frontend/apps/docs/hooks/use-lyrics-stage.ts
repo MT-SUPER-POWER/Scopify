@@ -70,7 +70,7 @@ const SPOTLIGHT_LEVELS = [0, 0.25, 1, 1, 0];
 const SCENE_DIP_LEVEL = 0.3;
 const SCENE_DIP_SECONDS = 0.9;
 
-/** 对焦环跟手的阻尼：比滚动略慢半拍，像有分量的金属环。 */
+/** 滚轮跟手的阻尼：比滚动略慢半拍，像有分量的金属齿轮。 */
 const RING_SPRING = { stiffness: 240, damping: 32, mass: 0.6 } as const;
 
 const stickyAt = (vh: number) => vh / STICKY_VH;
@@ -82,7 +82,7 @@ const toModePosition = (progress: number) =>
 /**
  * 歌词舞台的滚动编排：镜头从远处推近舞台（远处只是一片虚着的光，推近时对焦、铺满整屏）、
  * 驱动声场里的追光，按 14 种动画的顺序逐一切换；每一场换上自己的灯光颜色，换场时追光暗一下再亮起。
- * 同时给出对焦环的转动位置，并提供点选某种动画时滚动到它所在位置的跳转。
+ * 同时给出滚轮的转动位置，并提供跳到某种动画、以及拖动滚轮时按连续位置滚动页面的方法。
  */
 export function useLyricsStage(sectionRef: RefObject<HTMLElement | null>) {
   const { setSpotlight, setStagePalette } = useLandingAtmosphere();
@@ -181,16 +181,28 @@ export function useLyricsStage(sectionRef: RefObject<HTMLElement | null>) {
     value > ringStops[0]! && value < ringStops[2]! ? "auto" : "none",
   );
 
-  const jumpToMode = useCallback(
-    (index: number) => {
+  /** 把页面滚到节目单上的某个连续位置：整数即某种动画正中，滚轮正好对准那一档。 */
+  const scrollToPosition = useCallback(
+    (position: number, smooth: boolean) => {
       const section = sectionRef.current;
       if (!section) return;
+      const clamped = Math.min(MODE_COUNT - 1, Math.max(0, position));
       const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-      // 落在这一档正中，对焦环正好对准、名字完全清晰。
-      const intoSection = APPROACH_VH + index * MODE_VH + MODE_VH * 0.5;
-      scrollPageTo(sectionTop + (intoSection / 100) * window.innerHeight, prefersReducedMotion);
+      const intoSection = APPROACH_VH + (clamped + 0.5) * MODE_VH;
+      scrollPageTo(
+        sectionTop + (intoSection / 100) * window.innerHeight,
+        prefersReducedMotion || !smooth,
+      );
     },
     [prefersReducedMotion, sectionRef],
+  );
+  const jumpToMode = useCallback(
+    (index: number) => scrollToPosition(index, true),
+    [scrollToPosition],
+  );
+  const scrubToPosition = useCallback(
+    (position: number) => scrollToPosition(position, false),
+    [scrollToPosition],
   );
 
   return {
@@ -200,10 +212,12 @@ export function useLyricsStage(sectionRef: RefObject<HTMLElement | null>) {
     headingY,
     jumpToMode,
     modeIndex,
+    modePosition,
     ringOpacity,
     ringPointerEvents,
     ringPosition,
     poolOpacity,
+    scrubToPosition,
     stageFilter,
     stageMask,
     stageOpacity,

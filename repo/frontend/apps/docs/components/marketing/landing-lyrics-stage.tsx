@@ -4,8 +4,8 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 
 import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
-import { LandingFocusRing } from "@/components/marketing/landing-focus-ring";
 import { LandingLiveStage } from "@/components/marketing/landing-live-stage";
+import { LandingModeDial } from "@/components/marketing/landing-mode-dial";
 import { LANDING_VISUALIZER_MODES } from "@/constants/marketing";
 import {
   LYRICS_STAGE_ANCHOR_VH,
@@ -88,14 +88,17 @@ export function LandingLyricsStage() {
           </p>
         </motion.div>
 
-        {/* 竖在最右侧的对焦环就是节目单：舞台推到跟前才出现，熄灯时一起退场。 */}
+        {/* 立在最右侧边缘的齿轮就是节目单：舞台推到跟前才出现，熄灯时一起退场。 */}
         <motion.div
-          className="absolute top-1/2 right-3 z-30 -translate-y-1/2 sm:right-5 lg:right-6"
+          className="absolute top-1/2 right-0 z-30 -translate-y-1/2"
           style={{ opacity: stage.ringOpacity, pointerEvents: stage.ringPointerEvents }}
         >
-          <LandingFocusRing
+          <LandingModeDial
             modeIndex={stage.modeIndex}
+            modePosition={stage.modePosition}
             onPick={stage.jumpToMode}
+            onScrub={stage.scrubToPosition}
+            onSettle={() => stage.jumpToMode(Math.round(stage.modePosition.get()))}
             position={stage.ringPosition}
           />
         </motion.div>
