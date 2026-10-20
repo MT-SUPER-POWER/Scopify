@@ -46,6 +46,10 @@ body {
   }
 }
 
+/* 落地页里「钉住一屏」的章节：宽度放得下两栏、高度放得下整屏内容时才吸顶；
+   与 constants/marketing.ts 里的 LANDING_PIN_MEDIA_QUERY 保持一致。 */
+@custom-variant landing-pin (@media (min-width: 64rem) and (min-height: 48rem));
+
 .landing-display {
   font-family:
     var(--font-landing-serif), "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;

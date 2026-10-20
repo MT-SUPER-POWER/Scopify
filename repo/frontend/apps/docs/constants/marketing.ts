@@ -36,6 +36,12 @@ export const LANDING_WEB_APP_URL = "https://scopify-web.vercel.app";
 export const LANDING_GITHUB_URL = "https://github.com/MT-SUPER-POWER/Scopify";
 export const LANDING_RELEASES_URL = `${LANDING_GITHUB_URL}/releases`;
 
+/**
+ * 落地页里「钉住一屏」的章节在什么尺寸下吸顶：宽度放得下两栏、高度放得下整屏内容。
+ * 与 app/globals.css 里的 `landing-pin` 变体保持一致。
+ */
+export const LANDING_PIN_MEDIA_QUERY = "(min-width: 64rem) and (min-height: 48rem)";
+
 export const LANDING_FOLIA_THEME: Theme = {
   accentColor: "#b8c7ef",
   animationIntensity: "normal",
