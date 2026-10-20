@@ -35,7 +35,6 @@ import type {
 export const LANDING_WEB_APP_URL = "https://scopify-web.vercel.app";
 export const LANDING_GITHUB_URL = "https://github.com/MT-SUPER-POWER/Scopify";
 export const LANDING_RELEASES_URL = `${LANDING_GITHUB_URL}/releases`;
-export const LANDING_FEATURES_DOC_URL = "/docs/features";
 
 export const LANDING_FOLIA_THEME: Theme = {
   accentColor: "#b8c7ef",

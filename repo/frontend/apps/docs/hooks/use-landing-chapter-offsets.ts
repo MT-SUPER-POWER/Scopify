@@ -14,7 +14,12 @@ export function useLandingChapterOffsets() {
       const elements = document.querySelectorAll<HTMLElement>("[data-landing-chapter]");
       setOffsets(
         Array.from(elements, (element) => {
-          const top = element.getBoundingClientRect().top + window.scrollY;
+          // 与上一章叠在一起的章节可以声明锚点（vh），跳转时落在它真正亮起的位置。
+          const anchorVh = Number(element.dataset.landingChapterAnchor ?? 0);
+          const top =
+            element.getBoundingClientRect().top +
+            window.scrollY +
+            (anchorVh / 100) * window.innerHeight;
           return {
             id: element.dataset.landingChapter as LandingChapterId,
             top,

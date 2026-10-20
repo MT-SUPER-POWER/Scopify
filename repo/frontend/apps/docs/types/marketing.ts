@@ -73,10 +73,10 @@ export interface LandingCurvedTrackLayout {
 
 /** 章节在整页中的真实位置，供迷你播放器绘制刻度与跳转。 */
 export interface LandingChapterOffset {
-  /** 章节顶部在整页可滚动距离中的比例，0–1。 */
+  /** 章节起点在整页可滚动距离中的比例，0–1。 */
   fraction: number;
   id: LandingChapterId;
-  /** 章节顶部的页面滚动位置（px）。 */
+  /** 章节起点的页面滚动位置（px）：章节顶部，或章节用 `data-landing-chapter-anchor` 声明的锚点。 */
   top: number;
 }
 
