@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useInsertionEffect } from "react";
+import React, { useMemo, useState, useRef, useInsertionEffect, useLayoutEffect } from "react";
 import { motion, AnimatePresence, MotionValue, motionValue } from "framer-motion";
 import { useI18n } from "@/store/module/i18n";
 import { prepareWithSegments, layoutWithLines } from "@chenglou/pretext";
@@ -683,7 +683,9 @@ const VisualizerTilt: React.FC<VisualizerTiltProps & { staticMode?: boolean }> =
     });
   }, [activeLine, layout]);
 
-  useInsertionEffect(() => {
+  // The handler sets React state, which insertion effects must not do; a layout effect
+  // still subscribes before paint, so the first visible segment is right on the first frame.
+  useLayoutEffect(() => {
     const handler = (latest: number) => {
       if (!segmentTimings || !activeLine) {
         setVisibleSegmentIndex(-1);
