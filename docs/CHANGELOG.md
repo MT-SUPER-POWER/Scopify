@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.0.1
+
+### Fixed
+
+- **修复文档「网易乐签」演示视频资源提供方式**：将视频移至 docs 的 `public/videos/`，由 `<video>` 使用固定公开 URL 加载，避免服务端 MDX 导入依赖自定义 Webpack 视频资源输出；移除不再使用的视频 loader 规则、模块声明与 `src/default` 兜底逻辑。
+
 ## v2.0.0
 
 ### Added
@@ -31,6 +37,7 @@
 - **README 补充最新功能图谱**：在「功能」章节重新引入与《产品能力》文档同步的 Mermaid 功能图谱，方便从首页快速全局概览能力分类，并保留至在线文档的直达链接。
 
 ### Fixed
+
 
 - **修复迁移 pnpm 后桌面端打包失败与 CI Lint 失败**：`electron:ensure` 改用 `pnpm exec install-electron --no`（`install-electron` 是 `electron` 包的可执行文件而非脚本，`pnpm run` 无法调用，导致 Release 的 `package:win` / `package:mac` 报 `ERR_PNPM_NO_SCRIPT`）；并把 `eslint-plugin-tailwindcss` 固定为 4.2.0（pnpm 重新解析到 4.4.0 后新增 34 条 canonical-class 警告，使 `--max-warnings 0` 失败）。
 
