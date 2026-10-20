@@ -3,33 +3,6 @@ import type { StaticImageData } from "next/image";
 
 import type { AudioBands, Line } from "@folia/types";
 
-export interface FoliaFluidTheme {
-  accentColor: string;
-  backgroundColor: string;
-  primaryColor: string;
-  secondaryColor: string;
-}
-
-export type FoliaLatentDisplayMode = "dithering" | "mesh" | "both";
-export type FoliaLatentColorSource = "cover-theme" | "cover-only";
-
-export interface FoliaLatentTuning {
-  colorSource: FoliaLatentColorSource;
-  displayMode: FoliaLatentDisplayMode;
-  ditheringAudioSpeed: number;
-  ditheringOpacity: number;
-  ditheringSize: number;
-  ditheringSpeed: number;
-  dynamicOnlyInPlayer: boolean;
-  enhancedBeatResponse: boolean;
-  meshAudioSpeed: number;
-  meshDistortion: number;
-  meshSpeed: number;
-  meshSwirl: number;
-  overlayEnabled: boolean;
-  overlayOpacity: number;
-}
-
 export interface LandingFoliaTimeline {
   audioBands: AudioBands;
   audioPower: MotionValue<number>;
@@ -42,15 +15,6 @@ export interface LandingFoliaTimeline {
 export interface LandingScreenshot {
   alt: string;
   src: StaticImageData;
-}
-
-/** “反复回到的地方”中的单个功能条目，对应听歌报告的 Top 歌曲行。 */
-export interface LandingFavoriteFeature {
-  detail: string;
-  href: string;
-  meta: string;
-  screenshot: LandingScreenshot;
-  title: string;
 }
 
 /** “六个场景”中的单个使用场景。 */
@@ -72,4 +36,97 @@ export interface LandingThemePreset {
 export interface LandingVisualizerMode {
   label: string;
   value: string;
+}
+
+/** 声场着色器的四色调色板：底色、暗部、中间调与高光。 */
+export type LandingPalette = readonly [base: string, deep: string, mid: string, glow: string];
+
+export type LandingChapterId =
+  "intro" | "verse" | "chorus" | "bridge" | "variation" | "echo" | "outro";
+
+/** 落地页把整页当作一首歌：每个章节对应歌曲里的一段，并带着自己的声场配色。 */
+export interface LandingChapter {
+  id: LandingChapterId;
+  /** 声场着色器在该章节的整体亮度，0–1。 */
+  intensity: number;
+  /** 英文乐段名，如 Verse。 */
+  movement: string;
+  palette: LandingPalette;
+  title: string;
+}
+
+/** 「六个场景」内凹曲面轨道的几何；长度单位为 px，弧长坐标以初始视口中心为 0。 */
+export interface LandingCurvedTrackLayout {
+  cardCenters: readonly number[];
+  cardHeight: number;
+  cardWidth: number;
+  introCenter: number;
+  introWidth: number;
+  perspective: number;
+  radius: number;
+  /** 每张卡片切成多少条竖向窄条，用来近似贴合曲面。 */
+  stripCount: number;
+  /** 纵向滚动的总行程，等于最后一张卡片居中时的弧长偏移。 */
+  travel: number;
+  viewportHeight: number;
+}
+
+/** 章节在整页中的真实位置，供迷你播放器绘制刻度与跳转。 */
+export interface LandingChapterOffset {
+  /** 章节顶部在整页可滚动距离中的比例，0–1。 */
+  fraction: number;
+  id: LandingChapterId;
+  /** 章节顶部的页面滚动位置（px）。 */
+  top: number;
+}
+
+/** 声场着色器每帧要追赶的目标状态，由落地页氛围上下文维护。 */
+export interface LandingAtmosphereTarget {
+  intensity: number;
+  palette: LandingPalette;
+  /** 歌词舞台的追光亮度，0 为关灯、1 为全亮。 */
+  spotlight: number;
+}
+
+export interface LandingAtmosphereValue {
+  activeChapter: LandingChapterId;
+  setSpotlight: (spotlight: number) => void;
+  setThemePalette: (palette: LandingPalette | null) => void;
+  targetRef: { readonly current: LandingAtmosphereTarget };
+}
+
+/** 声场渲染器单帧需要的全部 uniform 输入，颜色为线性 0–1 RGB。 */
+export interface SoundFieldFrame {
+  drift: number;
+  intensity: number;
+  palette: Float32Array;
+  pointer: readonly [number, number];
+  spotlight: number;
+  time: number;
+}
+
+export interface SoundFieldRenderer {
+  dispose: () => void;
+  render: (frame: SoundFieldFrame) => void;
+  resize: (width: number, height: number) => void;
+}
+
+/** 播放栏音质选择器中的一档。 */
+export interface LandingQualityTier {
+  label: string;
+  spec: string;
+}
+
+/** 十段均衡器的一个预设，`gains` 与 `LANDING_EQ_BANDS` 一一对应，单位 dB。 */
+export interface LandingEqPreset {
+  gains: readonly number[];
+  id: string;
+  name: string;
+}
+
+/** 从真实截图里裁出的一张专辑封面（像素坐标基于原图）。 */
+export interface LandingCoverCrop {
+  size: number;
+  x: number;
+  y: number;
 }

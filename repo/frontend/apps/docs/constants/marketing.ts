@@ -21,9 +21,12 @@ import settingsGeneralScreenshot from "@/assets/features/settings-general.png";
 import settingsShortcutsScreenshot from "@/assets/features/settings-shortcuts.png";
 import visualThemeEditorScreenshot from "@/assets/features/visualThemEditor.png";
 import type {
-  FoliaLatentTuning,
+  LandingChapter,
+  LandingCoverCrop,
   LandingDayMoment,
-  LandingFavoriteFeature,
+  LandingEqPreset,
+  LandingPalette,
+  LandingQualityTier,
   LandingScreenshot,
   LandingThemePreset,
   LandingVisualizerMode,
@@ -60,23 +63,6 @@ export const LANDING_SONNET_COPY = [
   { text: "下一句出现。", start: 12, end: 16 },
 ] as const;
 
-export const LANDING_LATENT_TUNING: FoliaLatentTuning = {
-  displayMode: "both",
-  colorSource: "cover-theme",
-  dynamicOnlyInPlayer: true,
-  enhancedBeatResponse: true,
-  ditheringSpeed: 0.1,
-  ditheringAudioSpeed: 1.2,
-  ditheringSize: 2.5,
-  ditheringOpacity: 0.55,
-  meshSpeed: 0.3,
-  meshAudioSpeed: 2,
-  meshDistortion: 0.8,
-  meshSwirl: 0.1,
-  overlayEnabled: true,
-  overlayOpacity: 0.35,
-};
-
 export const LANDING_FOLIA_STAGE_SCREENSHOT: LandingScreenshot = {
   alt: "Scopify Folia 动态歌词舞台",
   src: foliaStageScreenshot,
@@ -102,46 +88,56 @@ export const LANDING_VISUALIZER_MODES: readonly LandingVisualizerMode[] = [
 
 export const LANDING_DEFAULT_VISUALIZER = "sonnet";
 
-/** 播放栏音质选择器中的档位数量（标准 → 超清母带）。 */
-export const LANDING_AUDIO_QUALITY_COUNT = 9;
-
-export const LANDING_FAVORITE_FEATURES: readonly LandingFavoriteFeature[] = [
-  {
-    title: "首页与每日推荐",
-    detail: "推荐歌单、播客声音与歌手，沿着一条路一直往下听。",
-    meta: "每日更新",
-    href: `${LANDING_FEATURES_DOC_URL}#首页与推荐`,
-    screenshot: { alt: "Scopify 首页推荐", src: discoveryScreenshot },
-  },
-  {
-    title: "快捷搜索",
-    detail: "不离开当前页面，结果按歌曲、歌单、专辑与用户分好类。",
-    meta: "3 种入口",
-    href: `${LANDING_FEATURES_DOC_URL}#搜索入口`,
-    screenshot: { alt: "Scopify 快捷搜索", src: searchModalScreenshot },
-  },
-  {
-    title: "音质与均衡器",
-    detail: "从标准到超清母带；10 段均衡、混响、磁带抖晃与黑胶噪声。",
-    meta: "10 段 EQ",
-    href: `${LANDING_FEATURES_DOC_URL}#均衡器与响度`,
-    screenshot: { alt: "Scopify 十段均衡器", src: audioEqualizerScreenshot },
-  },
-  {
-    title: "桌面歌词",
-    detail: "独立于主窗口浮在桌面上，可以置顶，也可以让鼠标直接穿过。",
-    meta: "桌面端",
-    href: `${LANDING_FEATURES_DOC_URL}#桌面歌词`,
-    screenshot: { alt: "Scopify 桌面歌词", src: desktopMusicScreenshot },
-  },
-  {
-    title: "我喜欢的音乐",
-    detail: "喜欢、收藏、自建歌单与最近播放都在音乐库，列表内也能搜。",
-    meta: "音乐库",
-    href: `${LANDING_FEATURES_DOC_URL}#个人音乐库`,
-    screenshot: { alt: "Scopify 喜欢的音乐列表", src: libraryScreenshot },
-  },
+/** 与播放栏音质选择器一致，从低到高排列。 */
+export const LANDING_QUALITY_TIERS: readonly LandingQualityTier[] = [
+  { label: "标准", spec: "128kbps" },
+  { label: "极高", spec: "320kbps" },
+  { label: "无损", spec: "48kHz / 16bit" },
+  { label: "Hi-Res", spec: "192kHz / 24bit" },
+  { label: "高清臻音", spec: "Spatial Audio" },
+  { label: "杜比全景声", spec: "Dolby Atmos" },
+  { label: "臻音全景声", spec: "Audio Vivid" },
+  { label: "沉浸环绕声", spec: "5.1 Surround" },
+  { label: "超清母带", spec: "192kHz / 24bit Master" },
 ];
+
+/** 与客户端十段均衡器相同的中心频率。 */
+export const LANDING_EQ_BANDS = [
+  "31",
+  "62",
+  "125",
+  "250",
+  "500",
+  "1k",
+  "2k",
+  "4k",
+  "8k",
+  "16k",
+] as const;
+
+export const LANDING_EQ_MAX_GAIN = 12;
+
+export const LANDING_EQ_PRESETS: readonly LandingEqPreset[] = [
+  { id: "flat", name: "水平", gains: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+  { id: "v", name: "V 形", gains: [7, 5.5, 3, 0.5, -2.5, -3, -1, 2.5, 5, 7] },
+  { id: "bass", name: "低音", gains: [9, 8, 6, 3, 0.5, -1, -1, 0, 0.5, 1] },
+  { id: "vocal", name: "人声", gains: [-3, -2, -1, 2, 5, 6, 4.5, 2, 0, -1.5] },
+  { id: "bright", name: "明亮", gains: [-1.5, -1, 0, 0, 1, 2.5, 4, 6, 7.5, 8] },
+];
+
+export const LANDING_EQ_DEFAULT_PRESET = "v";
+
+/** 音色效果面板中的其余处理，客户端里都能拖动即时生效。 */
+export const LANDING_SOUND_EFFECTS = [
+  "低切 / 高切",
+  "驱动",
+  "颗粒",
+  "磁带抖晃",
+  "黑胶噪声",
+  "立体声宽度",
+  "空间混响",
+  "低频冲击",
+] as const;
 
 export const LANDING_DAY_MOMENTS: readonly LandingDayMoment[] = [
   {
@@ -192,6 +188,81 @@ export const LANDING_THEME_PRESETS: readonly LandingThemePreset[] = [
 ];
 
 export const LANDING_THEME_DEFAULT_INTENSITY = 70;
+
+/** 整页当作一首歌的总时长（秒），与首屏截图里正在播放的《Touch》一致。 */
+export const LANDING_SONG_DURATION = 205;
+
+/** 声场的底色，同时也是落地页的页面底色。 */
+export const LANDING_BASE_COLOR = "#05060b";
+
+const palette = (deep: string, mid: string, glow: string): LandingPalette => [
+  LANDING_BASE_COLOR,
+  deep,
+  mid,
+  glow,
+];
+
+export const LANDING_CHAPTERS: readonly LandingChapter[] = [
+  {
+    id: "intro",
+    movement: "Intro",
+    title: "前奏 · 原样都在",
+    intensity: 1,
+    palette: palette("#0c1733", "#1c3f72", "#63e3a6"),
+  },
+  {
+    id: "verse",
+    movement: "Verse",
+    title: "主歌 · 歌词舞台",
+    intensity: 0.8,
+    palette: palette("#10162a", "#38487a", "#b8c7ef"),
+  },
+  {
+    id: "chorus",
+    movement: "Chorus",
+    title: "副歌 · 声音",
+    intensity: 0.55,
+    palette: palette("#04180f", "#0d4c33", "#1ed760"),
+  },
+  {
+    id: "bridge",
+    movement: "Bridge",
+    title: "桥段 · 六个场景",
+    intensity: 0.5,
+    palette: palette("#1a110b", "#5a3a22", "#f0b878"),
+  },
+  {
+    id: "variation",
+    movement: "Variation",
+    title: "变奏 · 你的颜色",
+    intensity: 0.8,
+    palette: palette("#16121f", "#4a3f63", "#cdb8e4"),
+  },
+  {
+    id: "echo",
+    movement: "Echo",
+    title: "回声 · 底片",
+    intensity: 0.5,
+    palette: palette("#110d1e", "#352858", "#a48cff"),
+  },
+  {
+    id: "outro",
+    movement: "Outro",
+    title: "尾声 · 每一句",
+    intensity: 1,
+    palette: palette("#0c1733", "#1c3f72", "#63e3a6"),
+  },
+];
+
+export const LANDING_MAIN_SCREENSHOT: LandingScreenshot = {
+  alt: "Scopify 首页：每日推荐、为你推荐与底部播放栏",
+  src: mainScreenshot,
+};
+
+/** `main.png`「为你推荐」一行里的六张真实专辑封面。 */
+export const LANDING_COVER_CROPS: readonly LandingCoverCrop[] = [
+  311, 504, 697, 889, 1082, 1275,
+].map((x) => ({ x, y: 358, size: 169 }));
 
 /** 底片墙与首屏海报墙共用的真实界面截图。 */
 export const LANDING_FILM_SCREENSHOTS: readonly LandingScreenshot[] = [
