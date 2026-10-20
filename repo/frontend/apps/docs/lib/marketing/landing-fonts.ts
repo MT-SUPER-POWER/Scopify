@@ -1,9 +1,13 @@
-import { Noto_Serif_SC } from "next/font/google";
+import localFont from "next/font/local";
 
-/** 落地页标题用的中文衬线体；按 Google Fonts 的 unicode-range 分片按需加载。 */
-export const landingSerifFont = Noto_Serif_SC({
+/**
+ * 落地页标题用的中文衬线体：只含落地页文案字符的 Noto Serif SC 可变字重子集，
+ * 由 `pnpm --filter @scopify/docs generate:landing-font` 生成并随仓库提交，
+ * 构建时不再依赖 Google Fonts。
+ */
+export const landingSerifFont = localFont({
   display: "swap",
-  preload: false,
+  src: "../../assets/fonts/noto-serif-sc-landing.woff2",
   variable: "--font-landing-serif",
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
 });
