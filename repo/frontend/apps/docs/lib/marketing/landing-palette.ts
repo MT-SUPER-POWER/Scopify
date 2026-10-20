@@ -23,7 +23,7 @@ const toHex = (channels: readonly number[]) =>
     )
     .join("")}`;
 
-const mixHex = (from: string, to: string, amount: number) => {
+export const mixHex = (from: string, to: string, amount: number) => {
   const a = parseHex(from);
   const b = parseHex(to);
   return toHex(a.map((channel, index) => channel + (b[index]! - channel) * amount));
@@ -44,6 +44,14 @@ export const paletteFromTheme = (top: string, bottom: string): LandingPalette =>
   mixHex(LANDING_BASE_COLOR, bottom, 0.42),
   mixHex(LANDING_BASE_COLOR, bottom, 0.85),
   top,
+];
+
+/** 用一个主色推出一套声场配色：从底色往主色走，暗部只带一点颜色，高光就是主色。 */
+export const paletteFromAccent = (accent: string): LandingPalette => [
+  LANDING_BASE_COLOR,
+  mixHex(LANDING_BASE_COLOR, accent, 0.16),
+  mixHex(LANDING_BASE_COLOR, accent, 0.4),
+  accent,
 ];
 
 /** 与客户端 `backgroundGradient()` 相同的首页顶部渐变。 */

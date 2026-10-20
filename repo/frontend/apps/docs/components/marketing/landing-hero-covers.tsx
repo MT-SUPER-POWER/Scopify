@@ -5,15 +5,18 @@ import { type MotionValue, motion } from "framer-motion";
 import { LandingAlbumCover } from "@/components/marketing/landing-album-cover";
 import { LANDING_COVER_CROPS, LANDING_MAIN_SCREENSHOT } from "@/constants/marketing";
 import { useScrollTransform } from "@/hooks/use-scroll-transform";
+import { heroAt } from "@/lib/marketing/landing-hero-timeline";
 import type { LandingCoverCrop } from "@/types/marketing";
 
 const { height: SCREENSHOT_HEIGHT, width: SCREENSHOT_WIDTH } = LANDING_MAIN_SCREENSHOT.src;
 /** 每张封面浮出屏幕的高度（px）：中间高、两侧低，连成一道弧。 */
 const COVER_LIFT = [48, 76, 96, 96, 76, 48] as const;
-/** 窗口放平后封面开始浮起的滚动进度，相邻封面依次错开。 */
-const LIFT_START = 0.44;
-const LIFT_STAGGER = 0.025;
-const LIFT_DURATION = 0.16;
+/** 窗口放平后封面开始浮起的位置（前奏吸顶段里的 vh），相邻封面依次错开。 */
+const LIFT_START_VH = 84;
+const LIFT_STAGGER_VH = 5;
+const LIFT_DURATION_VH = 30;
+/** 封面淡入只占浮起开始前后这一点距离（vh）。 */
+const FADE_VH = 4;
 
 interface LiftedCoverProps {
   crop: LandingCoverCrop;
@@ -22,10 +25,15 @@ interface LiftedCoverProps {
 }
 
 function LiftedCover({ crop, index, progress }: LiftedCoverProps) {
-  const start = LIFT_START + index * LIFT_STAGGER;
-  const end = start + LIFT_DURATION;
+  const startVh = LIFT_START_VH + index * LIFT_STAGGER_VH;
+  const start = heroAt(startVh);
+  const end = heroAt(startVh + LIFT_DURATION_VH);
   const z = useScrollTransform(progress, [start, end], [0, COVER_LIFT[index] ?? 100]);
-  const opacity = useScrollTransform(progress, [start - 0.02, start + 0.02], [0, 1]);
+  const opacity = useScrollTransform(
+    progress,
+    [heroAt(startVh - FADE_VH), heroAt(startVh + FADE_VH)],
+    [0, 1],
+  );
   const boxShadow = useScrollTransform(
     progress,
     [start, end],

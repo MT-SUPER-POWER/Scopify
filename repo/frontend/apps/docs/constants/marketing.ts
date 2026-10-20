@@ -35,7 +35,12 @@ import type {
 export const LANDING_WEB_APP_URL = "https://scopify-web.vercel.app";
 export const LANDING_GITHUB_URL = "https://github.com/MT-SUPER-POWER/Scopify";
 export const LANDING_RELEASES_URL = `${LANDING_GITHUB_URL}/releases`;
-export const LANDING_FEATURES_DOC_URL = "/docs/features";
+
+/**
+ * 落地页里「钉住一屏」的章节在什么尺寸下吸顶：宽度放得下两栏、高度放得下整屏内容。
+ * 与 app/globals.css 里的 `landing-pin` 变体保持一致。
+ */
+export const LANDING_PIN_MEDIA_QUERY = "(min-width: 64rem) and (min-height: 48rem)";
 
 export const LANDING_FOLIA_THEME: Theme = {
   accentColor: "#b8c7ef",
@@ -52,16 +57,6 @@ export const LANDING_FOLIA_THEME: Theme = {
     { word: "Scopify", color: "#d9deea" },
   ],
 };
-
-export const LANDING_SONNET_LOOP_DURATION = 16;
-
-export const LANDING_SONNET_COPY = [
-  { text: "声音经过这里。", start: 0, end: 3.2 },
-  { text: "字开始移动。", start: 3.2, end: 6.4 },
-  { text: "停顿。", start: 6.4, end: 9.2 },
-  { text: "转弯。", start: 9.2, end: 12 },
-  { text: "下一句出现。", start: 12, end: 16 },
-] as const;
 
 export const LANDING_FOLIA_STAGE_SCREENSHOT: LandingScreenshot = {
   alt: "Scopify Folia 动态歌词舞台",

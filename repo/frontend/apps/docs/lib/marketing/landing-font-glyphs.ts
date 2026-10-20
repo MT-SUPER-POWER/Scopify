@@ -1,3 +1,5 @@
+import ts from "typescript";
+
 /** 需要由标题字体覆盖的字符：中日韩标点、统一表意文字与全角符号。 */
 const CJK_PATTERN = /[　-〿一-鿿＀-￯]/u;
 
@@ -12,12 +14,23 @@ export const LANDING_GLYPH_SOURCES = {
 export const LANDING_FONT_FILE = "assets/fonts/noto-serif-sc-landing.woff2";
 export const LANDING_GLYPHS_FILE = "assets/fonts/noto-serif-sc-landing.txt";
 
-/** 从源码文本里收集字体需要的字符，并补上全部可打印 ASCII；结果排序去重，便于比对。 */
+/** 去掉注释：注释里的字不会出现在页面上，不该让子集字体为它们变大，也不该逼着重新生成。 */
+const stripComments = (source: string) =>
+  ts.transpileModule(source, {
+    compilerOptions: {
+      jsx: ts.JsxEmit.Preserve,
+      removeComments: true,
+      target: ts.ScriptTarget.ESNext,
+    },
+    fileName: "landing.tsx",
+  }).outputText;
+
+/** 从源码文本（不含注释）里收集字体需要的字符，并补上全部可打印 ASCII；结果排序去重，便于比对。 */
 export function collectLandingGlyphs(sources: readonly string[]) {
   const glyphs = new Set<string>();
   for (let code = 0x20; code < 0x7f; code += 1) glyphs.add(String.fromCharCode(code));
   for (const source of sources) {
-    for (const char of source) {
+    for (const char of stripComments(source)) {
       if (CJK_PATTERN.test(char)) glyphs.add(char);
     }
   }
