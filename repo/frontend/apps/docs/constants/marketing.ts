@@ -58,16 +58,6 @@ export const LANDING_FOLIA_THEME: Theme = {
   ],
 };
 
-export const LANDING_SONNET_LOOP_DURATION = 16;
-
-export const LANDING_SONNET_COPY = [
-  { text: "声音经过这里。", start: 0, end: 3.2 },
-  { text: "字开始移动。", start: 3.2, end: 6.4 },
-  { text: "停顿。", start: 6.4, end: 9.2 },
-  { text: "转弯。", start: 9.2, end: 12 },
-  { text: "下一句出现。", start: 12, end: 16 },
-] as const;
-
 export const LANDING_FOLIA_STAGE_SCREENSHOT: LandingScreenshot = {
   alt: "Scopify Folia 动态歌词舞台",
   src: foliaStageScreenshot,

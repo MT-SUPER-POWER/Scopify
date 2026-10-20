@@ -1,8 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useMemo } from "react";
 
-import { LANDING_FOLIA_THEME } from "@/constants/marketing";
+import { LANDING_BASE_COLOR, LANDING_FOLIA_THEME } from "@/constants/marketing";
+import { mixHex } from "@/lib/marketing/landing-palette";
 import type { LandingFoliaTimeline } from "@/types/marketing";
 
 const FoliaVisualizer = dynamic(
@@ -11,6 +13,8 @@ const FoliaVisualizer = dynamic(
 );
 
 interface FoliaVisualizerRendererProps {
+  /** 这一场的主色，染给歌词的高光与次要色；不传则用落地页默认主题。 */
+  accentColor?: string;
   coverUrl: string;
   lyricsFontScale?: number;
   mode: string;
@@ -28,6 +32,7 @@ interface FoliaVisualizerRendererProps {
  * 滚轮和触摸于是直接落到页面上。
  */
 export function FoliaVisualizerRenderer({
+  accentColor,
   coverUrl,
   lyricsFontScale = 0.84,
   mode,
@@ -35,6 +40,18 @@ export function FoliaVisualizerRenderer({
   showText,
   timeline,
 }: FoliaVisualizerRendererProps) {
+  const theme = useMemo(
+    () =>
+      accentColor
+        ? {
+            ...LANDING_FOLIA_THEME,
+            accentColor,
+            secondaryColor: mixHex(LANDING_BASE_COLOR, accentColor, 0.6),
+          }
+        : LANDING_FOLIA_THEME,
+    [accentColor],
+  );
+
   return (
     <div inert className="absolute inset-0 overflow-hidden" data-folia-landing-mode={mode}>
       <FoliaVisualizer
@@ -42,7 +59,7 @@ export function FoliaVisualizerRenderer({
         currentTime={timeline.currentTime}
         currentLineIndex={timeline.currentLineIndex}
         lines={timeline.lines}
-        theme={LANDING_FOLIA_THEME}
+        theme={theme}
         audioPower={timeline.audioPower}
         audioBands={timeline.audioBands}
         background={{ transparent: true }}

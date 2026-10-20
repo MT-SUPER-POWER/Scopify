@@ -38,6 +38,13 @@ export interface LandingVisualizerMode {
   value: string;
 }
 
+/** 歌词舞台上某种动画的「这一场」：唱的两句词和这一场的灯光颜色。 */
+export interface LandingStageScene {
+  /** 这一场的主色：声场配色与 Folia 歌词的高光都由它推出。 */
+  accent: string;
+  verse: readonly string[];
+}
+
 /** 声场着色器的四色调色板：底色、暗部、中间调与高光。 */
 export type LandingPalette = readonly [base: string, deep: string, mid: string, glow: string];
 
@@ -91,6 +98,8 @@ export interface LandingAtmosphereTarget {
 export interface LandingAtmosphereValue {
   activeChapter: LandingChapterId;
   setSpotlight: (spotlight: number) => void;
+  /** 歌词舞台当前这一场的配色；只在「主歌」章节生效，传 null 恢复章节配色。 */
+  setStagePalette: (palette: LandingPalette | null) => void;
   setThemePalette: (palette: LandingPalette | null) => void;
   targetRef: { readonly current: LandingAtmosphereTarget };
 }

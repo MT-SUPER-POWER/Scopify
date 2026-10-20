@@ -1,18 +1,22 @@
 "use client";
 
 import {
+  animate,
+  useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
 } from "framer-motion";
-import { type RefObject, useCallback, useEffect, useState } from "react";
+import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 
+import { LANDING_STAGE_SCENES } from "@/constants/landing-stage";
 import { LANDING_VISUALIZER_MODES } from "@/constants/marketing";
 import { useLandingAtmosphere } from "@/hooks/use-landing-atmosphere";
 import { useScrollTransform } from "@/hooks/use-scroll-transform";
 import { HERO_STAGE_OVERLAP_VH } from "@/lib/marketing/landing-hero-timeline";
+import { paletteFromAccent } from "@/lib/marketing/landing-palette";
 import {
   approachScale,
   clamp01,
@@ -62,6 +66,10 @@ const SPOTLIGHT_STOPS = [
 /** 镜头推近时追光慢慢亮起，推到跟前全亮，最后一种动画结束后熄灯。 */
 const SPOTLIGHT_LEVELS = [0, 0.25, 1, 1, 0];
 
+/** 换场时追光先压到多暗，再在多长时间里（秒）亮回来：像两场之间的灯光切换。 */
+const SCENE_DIP_LEVEL = 0.3;
+const SCENE_DIP_SECONDS = 0.9;
+
 /** 对焦环跟手的阻尼：比滚动略慢半拍，像有分量的金属环。 */
 const RING_SPRING = { stiffness: 240, damping: 32, mass: 0.6 } as const;
 
@@ -72,11 +80,12 @@ const toModePosition = (progress: number) =>
   Math.min(MODE_COUNT - 1, Math.max(0, (progress * STICKY_VH - APPROACH_VH) / MODE_VH - 0.5));
 
 /**
- * 歌词舞台的滚动编排：镜头从远处推近舞台（远处只是一片虚着的光，推近时对焦、铺满整屏）、驱动声场里的追光，按 14 种动画的顺序逐一切换，
+ * 歌词舞台的滚动编排：镜头从远处推近舞台（远处只是一片虚着的光，推近时对焦、铺满整屏）、
+ * 驱动声场里的追光，按 14 种动画的顺序逐一切换；每一场换上自己的灯光颜色，换场时追光暗一下再亮起。
  * 同时给出对焦环的转动位置，并提供点选某种动画时滚动到它所在位置的跳转。
  */
 export function useLyricsStage(sectionRef: RefObject<HTMLElement | null>) {
-  const { setSpotlight } = useLandingAtmosphere();
+  const { setSpotlight, setStagePalette } = useLandingAtmosphere();
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [modeIndex, setModeIndex] = useState(0);
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
@@ -86,14 +95,34 @@ export function useLyricsStage(sectionRef: RefObject<HTMLElement | null>) {
   });
 
   const spotlight = useTransform(passage, SPOTLIGHT_STOPS, SPOTLIGHT_LEVELS);
-  useMotionValueEvent(spotlight, "change", setSpotlight);
+  const sceneDip = useMotionValue(1);
+  const litSpotlight = useTransform(
+    [spotlight, sceneDip],
+    ([level, dip]: number[]) => level! * dip!,
+  );
+  useMotionValueEvent(litSpotlight, "change", setSpotlight);
   useEffect(() => {
-    setSpotlight(spotlight.get());
+    setSpotlight(litSpotlight.get());
     return () => setSpotlight(0);
-  }, [setSpotlight, spotlight]);
+  }, [litSpotlight, setSpotlight]);
 
   const modePosition = useTransform(scrollYProgress, toModePosition);
   useMotionValueEvent(modePosition, "change", (value) => setModeIndex(Math.round(value)));
+
+  // 每一场换上自己的灯光颜色；换场时追光先暗下去再亮起，第一场进来时不切。
+  const shownModeRef = useRef(modeIndex);
+  useEffect(() => {
+    const scene = LANDING_STAGE_SCENES[LANDING_VISUALIZER_MODES[modeIndex]!.value];
+    setStagePalette(scene ? paletteFromAccent(scene.accent) : null);
+    if (shownModeRef.current === modeIndex || prefersReducedMotion) return;
+    shownModeRef.current = modeIndex;
+    const controls = animate(sceneDip, [SCENE_DIP_LEVEL, 1], {
+      duration: SCENE_DIP_SECONDS,
+      ease: "easeOut",
+    });
+    return () => controls.stop();
+  }, [modeIndex, prefersReducedMotion, sceneDip, setStagePalette]);
+  useEffect(() => () => setStagePalette(null), [setStagePalette]);
   const ringPosition = useSpring(useTransform(modePosition, focusRingDetent), RING_SPRING);
 
   // 吸顶之前章节正从屏幕底部升上来，与前奏叠在一起，这段时间整座舞台都不可见。

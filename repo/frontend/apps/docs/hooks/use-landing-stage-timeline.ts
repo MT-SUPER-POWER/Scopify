@@ -1,16 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { Line } from "@folia/types";
 import { useMotionValue } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
-  LANDING_SONNET_LINES,
+  STAGE_LINE_SECONDS,
   resolveCurrentLineIndex,
+  resolveLoopDuration,
   resolveLoopTime,
   resolveVisualBeat,
-} from "@/lib/marketing/folia-sonnet-timeline";
+} from "@/lib/marketing/landing-stage-timeline";
 
-export function useLandingSonnetTimeline(paused: boolean) {
+/** 减少动态效果时定格在第一句唱到一半。 */
+const PAUSED_TIME = STAGE_LINE_SECONDS * 0.5;
+
+/** 给 Folia 歌词动画喂时间、当前句与模拟的频段能量；换一场词就从第一句重新唱。 */
+export function useLandingStageTimeline(lines: Line[], paused: boolean) {
   const currentTime = useMotionValue(0);
   const audioPower = useMotionValue(0);
   const bass = useMotionValue(0);
@@ -28,11 +34,12 @@ export function useLandingSonnetTimeline(paused: boolean) {
   useEffect(() => {
     let animationFrame = 0;
     const startedAt = performance.now();
+    const loopDuration = resolveLoopDuration(lines);
 
     const update = (now: number) => {
-      const time = paused ? 4.8 : resolveLoopTime((now - startedAt) / 1000);
+      const time = paused ? PAUSED_TIME : resolveLoopTime((now - startedAt) / 1000, loopDuration);
       const beat = resolveVisualBeat(time);
-      const nextLineIndex = resolveCurrentLineIndex(time);
+      const nextLineIndex = resolveCurrentLineIndex(lines, time);
 
       currentTime.set(time);
       audioPower.set(beat.power);
@@ -50,13 +57,7 @@ export function useLandingSonnetTimeline(paused: boolean) {
 
     animationFrame = requestAnimationFrame(update);
     return () => cancelAnimationFrame(animationFrame);
-  }, [audioPower, bass, currentTime, lowMid, mid, paused, treble, vocal]);
+  }, [audioPower, bass, currentTime, lines, lowMid, mid, paused, treble, vocal]);
 
-  return {
-    audioBands,
-    audioPower,
-    currentLineIndex,
-    currentTime,
-    lines: LANDING_SONNET_LINES,
-  };
+  return { audioBands, audioPower, currentLineIndex, currentTime, lines };
 }
