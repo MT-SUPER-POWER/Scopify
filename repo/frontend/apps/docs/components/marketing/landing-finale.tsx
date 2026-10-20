@@ -1,105 +1,108 @@
+import { ArrowUpRight, Download, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import scopifyLogo from "@/assets/logo.png";
+import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
+import { LandingReveal } from "@/components/marketing/landing-reveal";
 import {
-  LANDING_FOLIA_STAGE_SCREENSHOT,
   LANDING_GITHUB_URL,
   LANDING_RELEASES_URL,
   LANDING_WEB_APP_URL,
 } from "@/constants/marketing";
 
-const FINALE_LINKS = [
-  { eyebrow: "Try it online", href: LANDING_WEB_APP_URL, label: "在线体验", external: true },
-  { eyebrow: "Documentation", href: "/docs", label: "阅读文档", external: false },
-  { eyebrow: "Download", href: LANDING_RELEASES_URL, label: "下载桌面端", external: true },
-  { eyebrow: "Source code", href: LANDING_GITHUB_URL, label: "查看源码", external: true },
+/** 页脚只放上方两个按钮之外的次要入口。 */
+const FOOTER_LINKS = [
+  { href: "/docs", label: "文档", external: false },
+  { href: LANDING_RELEASES_URL, label: "版本发布", external: true },
+  { href: `${LANDING_GITHUB_URL}/issues`, label: "问题反馈", external: true },
+  { href: LANDING_GITHUB_URL, label: "GitHub", external: true },
 ] as const;
 
-const linkClass =
-  "group flex items-end justify-between border-b border-white/12 py-5 text-white/72 sm:odd:pr-6 sm:even:pl-6 lg:border-b-0 lg:border-l lg:px-6 lg:first:border-l-0 lg:first:pl-0";
+const footerLinkClass =
+  "group inline-flex items-center gap-1 text-white/55 transition-colors hover:text-white";
 
-function FinaleLinkBody({ eyebrow, external, label }: (typeof FINALE_LINKS)[number]) {
-  return (
-    <>
-      <span>
-        <span className="block text-[0.65rem] tracking-[0.16em] text-white/35 uppercase">
-          {eyebrow}
-        </span>
-        <span className="mt-1 block text-xl tracking-[-0.03em] transition-colors group-hover:text-white">
-          {label}
-        </span>
-      </span>
-      <span
-        className={`text-xl transition-transform duration-300 group-hover:translate-x-1 ${
-          external ? "group-hover:-translate-y-1" : ""
-        }`}
-      >
-        {external ? "↗" : "→"}
-      </span>
-    </>
-  );
-}
-
-/** 听歌报告 Grand Finale 式的收尾：封面消融 + 一句总结 + 项目入口。 */
+/**
+ * 尾声：和首屏一样恰好占满一屏，滚到页底时标题、按钮与页脚完整地同框；
+ * 迷你播放器在这一章退场，不再遮挡页底。
+ */
 export function LandingFinale() {
   return (
     <section
+      data-landing-chapter="outro"
       aria-labelledby="landing-finale-title"
-      className="mx-auto w-full max-w-360 px-5 sm:px-8 lg:px-12"
+      className="relative flex min-h-svh flex-col pt-16"
     >
-      <div className="group relative flex min-h-64 items-center overflow-hidden rounded-xl border border-white/10 bg-white/3 p-6 sm:min-h-80 sm:p-12">
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[46%] overflow-hidden select-none sm:w-[40%] lg:w-[34%]">
+      <div className="relative mx-auto flex w-full max-w-360 flex-1 flex-col items-center justify-center px-5 py-[5svh] text-center">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(42%_46%_at_50%_52%,rgba(5,6,11,0.62),transparent_78%)]"
+        />
+        <LandingReveal className="flex flex-col items-center">
+          <LandingChapterLabel chapter="outro" />
           <Image
-            src={LANDING_FOLIA_STAGE_SCREENSHOT.src}
+            src={scopifyLogo}
             alt=""
-            fill
-            sizes="40vw"
-            className="object-cover transition-transform duration-1000 group-hover:scale-105"
+            className="mt-[5svh] size-12 rounded-2xl shadow-[0_0_80px_rgba(99,227,166,0.35)] sm:size-14"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-[#0b0d16]/80 to-[#0b0d16]" />
-        </div>
-
-        <div className="relative z-10 pl-[44%] sm:pl-[40%] lg:pl-[36%]">
           <h2
             id="landing-finale-title"
-            className="landing-display text-[clamp(1.6rem,3.4vw,3rem)] leading-[1.25] font-medium tracking-[-0.03em] text-white"
+            className="landing-display mt-[4svh] text-[clamp(2.4rem,min(7vw,11svh),6.4rem)] leading-[1.08] font-semibold tracking-[-0.045em] text-white"
           >
-            每一句，都有自己的样子。
+            每一句，
+            <br />
+            <span className="landing-shimmer">都有自己的样子。</span>
           </h2>
-          <div className="mt-5 flex items-center gap-2.5 text-xs text-white/50 sm:text-sm">
-            <Image src={scopifyLogo} alt="" className="size-5 rounded" />
-            <span>Scopify · 网易云音乐 × Folia 的开源桌面播放器</span>
-          </div>
-        </div>
-      </div>
-
-      <nav
-        aria-label="项目入口"
-        className="mt-10 grid border-t border-white/12 sm:grid-cols-2 lg:grid-cols-4"
-      >
-        {FINALE_LINKS.map((link) =>
-          link.external ? (
+          <p className="mt-[3svh] text-sm text-white/55 sm:text-base">
+            Scopify · 网易云音乐的开源桌面客户端
+          </p>
+          <div className="mt-[5svh] flex flex-wrap justify-center gap-3">
             <a
-              key={link.label}
-              href={link.href}
+              href={LANDING_RELEASES_URL}
               target="_blank"
               rel="noreferrer"
-              className={linkClass}
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-[#1ed760] px-7 text-sm font-bold text-black shadow-[0_12px_48px_rgba(30,215,96,0.32)] transition-transform hover:scale-[1.03] active:scale-[0.98]"
             >
-              <FinaleLinkBody {...link} />
+              <Download className="size-4" strokeWidth={2.4} />
+              下载桌面端
             </a>
-          ) : (
-            <Link key={link.label} href={link.href} className={linkClass}>
-              <FinaleLinkBody {...link} />
-            </Link>
-          ),
-        )}
-      </nav>
+            <a
+              href={LANDING_WEB_APP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-12 items-center gap-2 rounded-full border border-white/15 bg-white/6 px-7 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:border-white/30 hover:bg-white/12"
+            >
+              <Globe className="size-4" />
+              在线体验
+            </a>
+          </div>
+        </LandingReveal>
+      </div>
 
-      <footer className="mt-16 flex flex-col gap-2 border-t border-white/8 pt-6 pb-10 text-xs text-white/32 sm:flex-row sm:justify-between">
-        <span>以 AGPL-3.0 协议开源 · 网页端与 Windows 桌面端</span>
-        <span>Scopify 是第三方客户端，与网易云音乐官方无关。</span>
+      <footer className="mx-auto w-full max-w-360 px-5 sm:px-8 lg:px-12">
+        <div className="flex flex-col-reverse gap-3 border-t border-white/8 py-6 text-xs text-white/35 md:flex-row md:items-center md:justify-between">
+          <p>以 AGPL-3.0 协议开源 · 第三方客户端，与网易云音乐官方无关</p>
+          <nav aria-label="更多入口" className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            {FOOTER_LINKS.map((link) =>
+              link.external ? (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={footerLinkClass}
+                >
+                  {link.label}
+                  <ArrowUpRight className="size-3 opacity-50 transition-[opacity,translate] group-hover:translate-x-px group-hover:-translate-y-px group-hover:opacity-100" />
+                </a>
+              ) : (
+                <Link key={link.label} href={link.href} className={footerLinkClass}>
+                  {link.label}
+                </Link>
+              ),
+            )}
+          </nav>
+        </div>
       </footer>
     </section>
   );

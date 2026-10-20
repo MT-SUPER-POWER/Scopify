@@ -8,6 +8,7 @@
     "build": "next build --webpack",
     "deploy": "vercel deploy --prod --project scopify-docs",
     "deploy:preview": "vercel deploy --project scopify-docs",
+    "generate:landing-font": "bun scripts/generate-landing-font.ts",
     "generate:shadcn-guides": "bun scripts/generate-shadcn-component-guides.mjs",
     "sync:shadcn-docs": "bun scripts/sync-shadcn-component-docs.mjs",
     "sync:shadcn-reference": "bun scripts/sync-shadcn-reference-data.mjs",

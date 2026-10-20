@@ -1,149 +1,63 @@
 "use client";
 
-import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
-import { Layers } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { motion, useInView, useScroll } from "framer-motion";
+import { useRef } from "react";
 
-import { LandingSectionHeading } from "@/components/marketing/landing-section-heading";
+import { LandingDayCard } from "@/components/marketing/landing-day-card";
+import { LandingDayIntro } from "@/components/marketing/landing-day-intro";
 import { LANDING_DAY_MOMENTS } from "@/constants/marketing";
+import { useCurvedTrack } from "@/hooks/use-curved-track";
 
-const AUTOPLAY_INTERVAL_MS = 6000;
-const EASE = [0.22, 1, 0.36, 1] as const;
-
+/**
+ * 桥段：整块画面是一面内凹的「带鱼屏」。纵向滚动换算成沿弧面的横移，
+ * 六个场景从右侧弯进视野、在正中放平，再从左侧弯出去。
+ */
 export function LandingDay() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { amount: 0.4 });
-  const prefersReducedMotion = useReducedMotion() ?? false;
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isAutoplay, setIsAutoplay] = useState(true);
-  const shouldAutoplay = isAutoplay && isInView && !prefersReducedMotion;
-  const moment = LANDING_DAY_MOMENTS[activeIndex]!;
-
-  useEffect(() => {
-    if (!shouldAutoplay) return;
-    const timer = window.setTimeout(() => {
-      setActiveIndex((index) => (index + 1) % LANDING_DAY_MOMENTS.length);
-    }, AUTOPLAY_INTERVAL_MS);
-    return () => window.clearTimeout(timer);
-  }, [activeIndex, shouldAutoplay]);
-
-  const selectMoment = (index: number) => {
-    setIsAutoplay(false);
-    setActiveIndex(index);
-  };
+  const stageRef = useRef<HTMLDivElement>(null);
+  const isNear = useInView(sectionRef, { once: true, margin: "100% 0px" });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+  const layout = useCurvedTrack(stageRef, scrollYProgress, LANDING_DAY_MOMENTS.length);
 
   return (
     <section
       ref={sectionRef}
+      data-landing-chapter="bridge"
       aria-labelledby="landing-day-title"
-      className="mx-auto w-full max-w-360 px-5 sm:px-8 lg:px-12"
+      className="relative"
+      style={{ height: layout.travel + layout.viewportHeight }}
     >
-      <div className="border-t border-white/12 pt-12 sm:pt-16">
-        <LandingSectionHeading
-          id="landing-day-title"
-          title="六个场景，六种打开方式"
-          subtitle="有时要一首歌开场，有时只想要一点安静。不同的场景，你需要的是不同的 Scopify。"
-          icon={<Layers className="size-4 text-[#1ed760]" strokeWidth={1.8} />}
-          meta="点击切换场景"
+      <div
+        ref={stageRef}
+        className="sticky top-0 h-svh overflow-hidden"
+        style={{ perspective: `${layout.perspective}px` }}
+      >
+        <div className="absolute inset-x-[8vw] top-24 h-px bg-white/10">
+          <motion.span
+            className="absolute inset-0 origin-left bg-linear-to-r from-white/40 to-[#f0b878]"
+            style={{ scaleX: scrollYProgress }}
+          />
+        </div>
+
+        <LandingDayIntro layout={layout} />
+        {LANDING_DAY_MOMENTS.map((moment, index) => (
+          <LandingDayCard
+            key={moment.scene}
+            center={layout.cardCenters[index]!}
+            index={index}
+            layout={layout}
+            moment={moment}
+            showImage={isNear}
+          />
+        ))}
+
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(5,6,11,0.7),transparent_16%,transparent_84%,rgba(5,6,11,0.7))]"
         />
-
-        <div
-          role="tablist"
-          aria-label="使用场景"
-          className="mt-10 grid grid-cols-3 border-t border-white/10 sm:grid-cols-6"
-        >
-          {LANDING_DAY_MOMENTS.map((item, index) => {
-            const isActive = index === activeIndex;
-            return (
-              <button
-                key={item.scene}
-                type="button"
-                role="tab"
-                id={`landing-day-tab-${index}`}
-                aria-controls="landing-day-panel"
-                aria-selected={isActive}
-                onClick={() => selectMoment(index)}
-                className="group relative py-4 text-left"
-              >
-                <span className="absolute inset-x-0 top-0 h-px overflow-hidden">
-                  {isActive ? (
-                    <motion.span
-                      key={`${activeIndex}-${shouldAutoplay}`}
-                      className="block h-full bg-[#1ed760]"
-                      initial={{ width: shouldAutoplay ? "0%" : "100%" }}
-                      animate={{ width: "100%" }}
-                      transition={{
-                        duration: shouldAutoplay ? AUTOPLAY_INTERVAL_MS / 1000 : 0,
-                        ease: "linear",
-                      }}
-                    />
-                  ) : null}
-                </span>
-                <span
-                  className={`block font-mono text-[0.68rem] tracking-[0.14em] transition-colors ${
-                    isActive ? "text-[#1ed760]" : "text-white/30 group-hover:text-white/55"
-                  }`}
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span
-                  className={`mt-1 block text-base font-bold transition-colors sm:text-lg ${
-                    isActive ? "text-white" : "text-white/40 group-hover:text-white/70"
-                  }`}
-                >
-                  {item.scene}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div
-          id="landing-day-panel"
-          role="tabpanel"
-          aria-labelledby={`landing-day-tab-${activeIndex}`}
-          className="mt-8 grid items-center gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14"
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={moment.scene}
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={prefersReducedMotion ? undefined : { opacity: 0, y: -12 }}
-              transition={{ duration: 0.45, ease: EASE }}
-            >
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/12 px-3 py-1 text-xs font-medium text-white/60">
-                <span className="size-1.5 rounded-full bg-[#1ed760]" />
-                {moment.feature}
-              </span>
-              <p className="landing-display mt-5 text-[clamp(1.5rem,2.6vw,2.4rem)] leading-[1.4] font-medium tracking-[-0.02em] text-balance text-white">
-                {moment.sentence}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-white/4 shadow-[0_30px_100px_rgba(0,0,0,0.45)]">
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={moment.scene}
-                className="absolute inset-0"
-                initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.02 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6, ease: EASE }}
-              >
-                <Image
-                  src={moment.screenshot.src}
-                  alt={moment.screenshot.alt}
-                  fill
-                  sizes="(min-width: 1024px) 52vw, 92vw"
-                  className="object-cover"
-                />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
       </div>
     </section>
   );
