@@ -10,6 +10,7 @@ const WINDOW_ROUTE_NAMES = new Map([
   ["/desktop-playback-controller", "desktop-playback-controller"],
   ["/dynamic-island", "dynamic-island"],
   ["/login", "login"],
+  ["/taskbar-lyric", "taskbar-lyric"],
   ["/tray", "tray"],
 ]);
 

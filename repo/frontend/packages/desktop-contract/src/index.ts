@@ -12,5 +12,6 @@ export * from "./logging";
 export * from "./mcp";
 export * from "./playback";
 export * from "./rendererArtifact";
+export * from "./taskbarLyric";
 export * from "./updater";
 export * from "./notifications";

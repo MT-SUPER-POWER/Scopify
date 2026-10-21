@@ -5,6 +5,7 @@ const DESKTOP_AUXILIARY_PATHS = new Set([
   "/desktop-wallpaper-spike",
   "/dynamic-island",
   "/login",
+  "/taskbar-lyric",
   "/tray",
 ]);
 

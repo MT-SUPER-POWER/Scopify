@@ -421,6 +421,17 @@ export function createBrowserRuntime(
       toggle: async () => false,
       updatePreferences: async () => null,
     },
+    taskbarLyric: {
+      close: async () => false,
+      getLayout: async () => null,
+      getPreferences: async () => null,
+      onLayoutChanged: () => NOOP,
+      onPreferencesChanged: () => NOOP,
+      open: async () => false,
+      sendCommand: NOOP,
+      toggle: async () => false,
+      updatePreferences: async () => null,
+    },
     desktopPlaybackWallpaper: {
       closeController: async () => false,
       configure: async () => unsupportedDesktopPlaybackWallpaperModel(),

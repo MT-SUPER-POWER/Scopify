@@ -46,6 +46,11 @@ const config = {
         filter: ["*.node", "index.d.ts"],
       },
       {
+        from: "native/taskbar-lyric",
+        to: "native/taskbar-lyric",
+        filter: ["*.node"],
+      },
+      {
         from: "native/wallpaper-helper/target/release/scopify-wallpaper-helper.exe",
         to: "scopify-wallpaper-helper.exe",
       },

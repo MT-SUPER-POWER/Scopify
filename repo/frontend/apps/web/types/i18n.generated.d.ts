@@ -9062,6 +9062,156 @@ export interface TranslateFn {
    */
   (key: "dynamicIsland.alwaysOnTop.label", params?: TranslationParams): string;
   /**
+   * zh-CN: 任务栏歌词
+   * zh-TW: 工作列歌詞
+   * en-US: Taskbar Lyrics
+   */
+  (key: "taskbarLyric.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启任务栏歌词
+   * zh-TW: 開啟工作列歌詞
+   * en-US: Show taskbar lyrics
+   */
+  (key: "taskbarLyric.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 把歌词嵌入 Windows 任务栏的空白处，悬停时显示歌曲信息与播放控制。
+   * zh-TW: 把歌詞嵌入 Windows 工作列的空白處，懸停時顯示歌曲資訊與播放控制。
+   * en-US: Embed lyrics in the empty space of the Windows taskbar. Hover to show track info and playback controls.
+   */
+  (key: "taskbarLyric.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 任务栏歌词当前不可用：仅支持 Windows，并需要随应用打包的原生组件。
+   * zh-TW: 工作列歌詞目前無法使用：僅支援 Windows，並需要隨應用程式打包的原生元件。
+   * en-US: Taskbar lyrics are unavailable. They require Windows and the native component bundled with the app.
+   */
+  (key: "taskbarLyric.unsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示位置
+   * zh-TW: 顯示位置
+   * en-US: Position
+   */
+  (key: "taskbarLyric.position.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动
+   * zh-TW: 自動
+   * en-US: Auto
+   */
+  (key: "taskbarLyric.position.auto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 左侧
+   * zh-TW: 左側
+   * en-US: Left
+   */
+  (key: "taskbarLyric.position.left", params?: TranslationParams): string;
+  /**
+   * zh-CN: 右侧
+   * zh-TW: 右側
+   * en-US: Right
+   */
+  (key: "taskbarLyric.position.right", params?: TranslationParams): string;
+  /**
+   * zh-CN: 双行显示
+   * zh-TW: 雙行顯示
+   * en-US: Two lines
+   */
+  (key: "taskbarLyric.doubleLine.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 第二行显示翻译，没有翻译时显示下一句。
+   * zh-TW: 第二行顯示翻譯，沒有翻譯時顯示下一句。
+   * en-US: The second line shows the translation, or the next line when there is none.
+   */
+  (key: "taskbarLyric.doubleLine.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先显示翻译
+   * zh-TW: 優先顯示翻譯
+   * en-US: Prefer translation
+   */
+  (key: "taskbarLyric.showTranslation.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示封面
+   * zh-TW: 顯示封面
+   * en-US: Show artwork
+   */
+  (key: "taskbarLyric.showCover.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字颜色
+   * zh-TW: 文字顏色
+   * en-US: Text color
+   */
+  (key: "taskbarLyric.colorMode.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跟随任务栏
+   * zh-TW: 跟隨工作列
+   * en-US: Match taskbar
+   */
+  (key: "taskbarLyric.colorMode.taskbar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 与任务栏相反
+   * zh-TW: 與工作列相反
+   * en-US: Inverse of taskbar
+   */
+  (key: "taskbarLyric.colorMode.taskbarInverse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 深色文字
+   * zh-TW: 深色文字
+   * en-US: Dark text
+   */
+  (key: "taskbarLyric.colorMode.light", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浅色文字
+   * zh-TW: 淺色文字
+   * en-US: Light text
+   */
+  (key: "taskbarLyric.colorMode.dark", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字号
+   * zh-TW: 字號
+   * en-US: Font size
+   */
+  (key: "taskbarLyric.fontSize.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 占满可用空间
+   * zh-TW: 佔滿可用空間
+   * en-US: Fill available space
+   */
+  (key: "taskbarLyric.autoMaxWidth.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最大宽度
+   * zh-TW: 最大寬度
+   * en-US: Max width
+   */
+  (key: "taskbarLyric.maxWidth.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按歌词长度收缩
+   * zh-TW: 依歌詞長度收縮
+   * en-US: Shrink to lyric length
+   */
+  (key: "taskbarLyric.autoAdjustOccupiedSpace.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 只让歌词实际占用的区域响应鼠标，空白处的点击仍交给任务栏。
+   * zh-TW: 只讓歌詞實際佔用的區域回應滑鼠，空白處的點擊仍交給工作列。
+   * en-US: Only the area the lyric occupies reacts to the mouse; clicks elsewhere still reach the taskbar.
+   */
+  (key: "taskbarLyric.autoAdjustOccupiedSpace.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 悬停背景
+   * zh-TW: 懸停背景
+   * en-US: Hover background
+   */
+  (key: "taskbarLyric.showBackground.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 左边距
+   * zh-TW: 左邊距
+   * en-US: Left margin
+   */
+  (key: "taskbarLyric.leftMargin.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 右边距
+   * zh-TW: 右邊距
+   * en-US: Right margin
+   */
+  (key: "taskbarLyric.rightMargin.label", params?: TranslationParams): string;
+  /**
    * zh-CN: 桌面音乐
    * zh-TW: 桌面音樂
    * en-US: Desktop Music

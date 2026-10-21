@@ -36,6 +36,12 @@ import type {
   DynamicIslandPreferences,
   DynamicIslandPreferencesUpdate,
 } from "@/types/dynamicIsland";
+import type {
+  TaskbarLyricCommand,
+  TaskbarLyricLayout,
+  TaskbarLyricPreferences,
+  TaskbarLyricPreferencesUpdate,
+} from "@/types/taskbarLyric";
 import type { AppUpdateState } from "@/types/updater";
 import type { LyricData } from "@/types/lyrics";
 import type { CachePreferences } from "@/types/cache";
@@ -132,6 +138,20 @@ export interface RuntimeDynamicIsland {
   updatePreferences(
     update: DynamicIslandPreferencesUpdate,
   ): Promise<DynamicIslandPreferences | null>;
+}
+
+export interface RuntimeTaskbarLyric {
+  close(): Promise<boolean>;
+  getLayout(): Promise<TaskbarLyricLayout | null>;
+  getPreferences(): Promise<TaskbarLyricPreferences | null>;
+  onLayoutChanged(callback: (layout: TaskbarLyricLayout) => void): RuntimeUnsubscribe;
+  onPreferencesChanged(
+    callback: (preferences: TaskbarLyricPreferences) => void,
+  ): RuntimeUnsubscribe;
+  open(): Promise<boolean>;
+  sendCommand(command: TaskbarLyricCommand): void;
+  toggle(): Promise<boolean>;
+  updatePreferences(update: TaskbarLyricPreferencesUpdate): Promise<TaskbarLyricPreferences | null>;
 }
 
 export interface RuntimeDesktopIcons {
@@ -247,6 +267,7 @@ export interface WebRuntime {
   readonly media: RuntimeMediaControls;
   readonly navigation: RuntimeNavigation;
   readonly playback: RuntimePlaybackTransport;
+  readonly taskbarLyric: RuntimeTaskbarLyric;
   readonly updates: RuntimeUpdates;
   readonly videoExport: RuntimeVideoExport;
   readonly window: RuntimeWindowControls;

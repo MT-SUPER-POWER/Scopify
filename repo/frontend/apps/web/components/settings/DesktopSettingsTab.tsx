@@ -12,6 +12,7 @@ import { DynamicIslandSection } from "./DynamicIslandSection";
 import { LocalBackendSettingsSection } from "./LocalBackendSettingsSection";
 import { McpSettingsSection } from "./McpSettingsSection";
 import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
+import { TaskbarLyricSection } from "./TaskbarLyricSection";
 
 export function DesktopSettingsTab({
   backendStatus,
@@ -190,6 +191,7 @@ export function DesktopSettingsTab({
       </SettingSection>
       <DesktopLyricSection />
       <DynamicIslandSection />
+      <TaskbarLyricSection />
       <McpSettingsSection
         config={config.mcp}
         onChange={onChange}

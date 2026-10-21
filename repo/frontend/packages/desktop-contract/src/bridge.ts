@@ -12,6 +12,12 @@ import type {
   DynamicIslandPreferencesUpdate,
 } from "./dynamicIsland";
 import type {
+  TaskbarLyricCommand,
+  TaskbarLyricLayout,
+  TaskbarLyricPreferences,
+  TaskbarLyricPreferencesUpdate,
+} from "./taskbarLyric";
+import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
   DesktopPlaybackWallpaperModel,
@@ -69,6 +75,7 @@ export type DesktopBridgeCapability =
   | "notifications"
   | "playback-transport"
   | "renderer-logging"
+  | "taskbar-lyric"
   | "updates"
   | "video-export"
   | "window-controls";
@@ -109,6 +116,9 @@ export interface DesktopBridge<TLyrics = unknown> {
   closeDynamicIsland(): Promise<boolean>;
   openDynamicIsland(): Promise<boolean>;
   toggleDynamicIsland(): Promise<boolean>;
+  closeTaskbarLyric(): Promise<boolean>;
+  openTaskbarLyric(): Promise<boolean>;
+  toggleTaskbarLyric(): Promise<boolean>;
   isDesktopPlaybackControllerOpen(): Promise<boolean>;
   toggleDesktopPlaybackController(): Promise<boolean>;
   connectAudioFeatureTransport(
@@ -143,6 +153,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   getDesktopPlaybackWallpaperModel(): Promise<DesktopPlaybackWallpaperModel>;
   getDynamicIslandMode(): Promise<DynamicIslandMode>;
   getDynamicIslandPreferences(): Promise<DynamicIslandPreferences | null>;
+  getTaskbarLyricLayout(): Promise<TaskbarLyricLayout | null>;
+  getTaskbarLyricPreferences(): Promise<TaskbarLyricPreferences | null>;
   getPageCache<T = unknown>(key: string): Promise<T | null>;
   getPageCacheStats(): Promise<PageCacheStats>;
   getCache<T = unknown>(scope: CacheScope, key: string): Promise<T | null>;
@@ -169,6 +181,10 @@ export interface DesktopBridge<TLyrics = unknown> {
   onDynamicIslandPreferencesChanged(
     callback: (preferences: DynamicIslandPreferences) => void,
   ): Unsubscribe;
+  onTaskbarLyricLayoutChanged(callback: (layout: TaskbarLyricLayout) => void): Unsubscribe;
+  onTaskbarLyricPreferencesChanged(
+    callback: (preferences: TaskbarLyricPreferences) => void,
+  ): Unsubscribe;
   onFullScreenChanged(callback: (isFullScreen: boolean) => void): Unsubscribe;
   onWindowVisibilityChanged(callback: (isVisible: boolean) => void): Unsubscribe;
   onNavigate(callback: (path: string) => void): Unsubscribe;
@@ -189,6 +205,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   sendAppCloseAction(action: "exit" | "minimize" | "cancel", remember: boolean): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;
   sendDynamicIslandCommand(command: DynamicIslandCommand): void;
+  sendTaskbarLyricCommand(command: TaskbarLyricCommand): void;
   setDesktopPlaybackControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showDesktopPlaybackController(): Promise<DesktopPlaybackControllerOpenResult>;
   setCookie(cookie: string, backendOrigin: string): Promise<boolean>;
@@ -218,5 +235,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   updateDynamicIslandPreferences(
     update: DynamicIslandPreferencesUpdate,
   ): Promise<DynamicIslandPreferences | null>;
+  updateTaskbarLyricPreferences(
+    update: TaskbarLyricPreferencesUpdate,
+  ): Promise<TaskbarLyricPreferences | null>;
   writeLog(event: RendererLogEvent): Promise<boolean>;
 }

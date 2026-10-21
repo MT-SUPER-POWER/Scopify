@@ -1,13 +1,13 @@
 "use client";
 
-import { Captions, Lock, PanelTop } from "lucide-react";
+import { Captions, Lock, PanelTop, PanelBottom } from "lucide-react";
 import { useCompanionPreferences } from "@/hooks/desktopCompanion/useCompanionPreferences";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import { TraySwitchRow } from "./TraySwitchRow";
 
 /**
- * 托盘里的歌词外显开关：桌面歌词、灵动岛。
+ * 托盘里的歌词外显开关：桌面歌词、灵动岛、任务栏歌词。
  * 桌面歌词锁定后若找不到解锁按钮，可以在这里直接解锁。
  */
 export function TrayLyricSurfaces() {
@@ -19,6 +19,10 @@ export function TrayLyricSurfaces() {
   const [island] = useCompanionPreferences(
     runtime.dynamicIsland.getPreferences,
     runtime.dynamicIsland.onPreferencesChanged,
+  );
+  const [taskbar] = useCompanionPreferences(
+    runtime.taskbarLyric.getPreferences,
+    runtime.taskbarLyric.onPreferencesChanged,
   );
 
   return (
@@ -47,6 +51,14 @@ export function TrayLyricSurfaces() {
         checked={Boolean(island?.enabled)}
         onToggle={() => void runtime.dynamicIsland.toggle()}
       />
+      {taskbar?.supported && (
+        <TraySwitchRow
+          icon={PanelBottom}
+          label={t("taskbarLyric.title")}
+          checked={Boolean(taskbar.enabled)}
+          onToggle={() => void runtime.taskbarLyric.toggle()}
+        />
+      )}
     </>
   );
 }

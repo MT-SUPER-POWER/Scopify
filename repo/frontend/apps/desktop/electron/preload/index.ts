@@ -12,6 +12,8 @@ import type {
   DesktopPlaybackWallpaperPreferencesUpdate,
   DynamicIslandCommand,
   DynamicIslandPreferencesUpdate,
+  TaskbarLyricCommand,
+  TaskbarLyricPreferencesUpdate,
   AudioFeatureAck,
   AudioFeatureFrameV1,
   AudioFeatureTransportRole,
@@ -325,6 +327,18 @@ const electronAPI: DesktopBridge = {
     subscribeChannel("dynamic-island:cursor-inside", callback),
   sendDynamicIslandCommand: (command: DynamicIslandCommand) =>
     ipcRenderer.send("dynamic-island:command", command),
+  closeTaskbarLyric: () => ipcRenderer.invoke("taskbar-lyric:close"),
+  openTaskbarLyric: () => ipcRenderer.invoke("taskbar-lyric:open"),
+  toggleTaskbarLyric: () => ipcRenderer.invoke("taskbar-lyric:toggle"),
+  getTaskbarLyricLayout: () => ipcRenderer.invoke("taskbar-lyric:get-layout"),
+  getTaskbarLyricPreferences: () => ipcRenderer.invoke("taskbar-lyric:get-preferences"),
+  updateTaskbarLyricPreferences: (update: TaskbarLyricPreferencesUpdate) =>
+    ipcRenderer.invoke("taskbar-lyric:update-preferences", update),
+  onTaskbarLyricPreferencesChanged: (callback) =>
+    subscribeChannel("taskbar-lyric:preferences", callback),
+  onTaskbarLyricLayoutChanged: (callback) => subscribeChannel("taskbar-lyric:layout", callback),
+  sendTaskbarLyricCommand: (command: TaskbarLyricCommand) =>
+    ipcRenderer.send("taskbar-lyric:command", command),
   onDiscordPresenceStatusChanged: (callback) => {
     const listener = (
       _event: Electron.IpcRendererEvent,
