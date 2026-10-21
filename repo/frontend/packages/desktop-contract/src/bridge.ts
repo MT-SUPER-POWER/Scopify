@@ -30,7 +30,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 25;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 26;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -143,6 +143,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   navigateTo(path: string): void;
   onControlAudio(callback: (action: "next" | "prev" | "toggle-play") => void): Unsubscribe;
   onDesktopLyricCommand(callback: (command: DesktopLyricCommand) => void): Unsubscribe;
+  /** 主进程按系统光标位置判定悬停，穿透状态下 DOM hover 不可靠。 */
+  onDesktopLyricCursorInsideChanged(callback: (inside: boolean) => void): Unsubscribe;
   onDesktopLyricPreferencesChanged(
     callback: (preferences: DesktopLyricPreferences) => void,
   ): Unsubscribe;

@@ -331,9 +331,9 @@ export const settingsMessages = defineMessages(
     "settings.desktopLyrics.test.button": "开/关桌面歌词",
     "settings.desktopLyrics.alwaysOnTop.label": "保持窗口置顶",
     "settings.desktopLyrics.alwaysOnTop.sublabel": "使桌面歌词窗口始终悬浮在其他应用程序窗口上方。",
-    "settings.desktopLyrics.clickThrough.label": "鼠标穿透",
-    "settings.desktopLyrics.clickThrough.sublabel":
-      "开启后鼠标点击可直接穿透歌词窗口，不影响下方界面操作。",
+    "settings.desktopLyrics.locked.label": "锁定桌面歌词",
+    "settings.desktopLyrics.locked.sublabel":
+      "锁定后歌词窗口不可拖动和缩放，鼠标点击直接穿透；悬停时右上角会出现解锁按钮。",
     "settings.desktopLyrics.skipTaskbar.label": "隐藏任务栏图标",
     "settings.desktopLyrics.skipTaskbar.sublabel": "不在操作系统任务栏中单独显示桌面歌词窗口图标。",
   },
@@ -668,9 +668,9 @@ export const settingsMessages = defineMessages(
     "settings.desktopLyrics.test.button": "開/關桌面歌詞",
     "settings.desktopLyrics.alwaysOnTop.label": "保持視窗置頂",
     "settings.desktopLyrics.alwaysOnTop.sublabel": "使桌面歌詞視窗始終懸浮於其他應用程式視窗上方。",
-    "settings.desktopLyrics.clickThrough.label": "滑鼠穿透",
-    "settings.desktopLyrics.clickThrough.sublabel":
-      "開啟後滑鼠點擊可直接穿透歌詞視窗，不影響下方介面操作。",
+    "settings.desktopLyrics.locked.label": "鎖定桌面歌詞",
+    "settings.desktopLyrics.locked.sublabel":
+      "鎖定後歌詞視窗不可拖動和縮放，滑鼠點擊直接穿透；懸停時右上角會出現解鎖按鈕。",
     "settings.desktopLyrics.skipTaskbar.label": "隱藏工作列圖示",
     "settings.desktopLyrics.skipTaskbar.sublabel": "不在作業系統工作列中單獨顯示桌面歌詞視窗圖示。",
   },
@@ -1044,9 +1044,9 @@ export const settingsMessages = defineMessages(
     "settings.desktopLyrics.alwaysOnTop.label": "Always on Top",
     "settings.desktopLyrics.alwaysOnTop.sublabel":
       "Keep the desktop lyrics window above all other application windows.",
-    "settings.desktopLyrics.clickThrough.label": "Mouse Click-through",
-    "settings.desktopLyrics.clickThrough.sublabel":
-      "Allow mouse clicks to pass through the desktop lyrics window to applications below.",
+    "settings.desktopLyrics.locked.label": "Lock desktop lyrics",
+    "settings.desktopLyrics.locked.sublabel":
+      "Locked lyrics can't be moved or resized and let clicks pass through. Hover to reveal the unlock button in the top-right corner.",
     "settings.desktopLyrics.skipTaskbar.label": "Skip Taskbar",
     "settings.desktopLyrics.skipTaskbar.sublabel":
       "Do not show a separate icon for the lyrics window on the OS taskbar.",

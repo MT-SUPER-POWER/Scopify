@@ -25,6 +25,17 @@ type ElectronRendererMessagePort = MessagePort & {
   onclose: ((event: Event) => void) | null;
 };
 
+/** 订阅主进程单向推送的频道，返回取消订阅函数。 */
+function subscribeChannel<T>(channel: string, callback: (value: T) => void) {
+  const listener = (_event: Electron.IpcRendererEvent, value: T) => {
+    callback(value);
+  };
+  ipcRenderer.on(channel, listener);
+  return () => {
+    ipcRenderer.removeListener(channel, listener);
+  };
+}
+
 let playbackTransportPort: ElectronRendererMessagePort | null = null;
 let audioFeatureTransportPort: ElectronRendererMessagePort | null = null;
 
@@ -296,6 +307,8 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.on("desktop-lyric:command", listener);
     return () => ipcRenderer.removeListener("desktop-lyric:command", listener);
   },
+  onDesktopLyricCursorInsideChanged: (callback) =>
+    subscribeChannel("desktop-lyric:cursor-inside", callback),
   onDiscordPresenceStatusChanged: (callback) => {
     const listener = (
       _event: Electron.IpcRendererEvent,

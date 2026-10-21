@@ -101,6 +101,7 @@ export interface RuntimeDesktopLyrics {
   close(): Promise<boolean>;
   getPreferences(): Promise<DesktopLyricPreferences | null>;
   onCommand(callback: (command: DesktopLyricCommand) => void): RuntimeUnsubscribe;
+  onCursorInsideChanged(callback: (inside: boolean) => void): RuntimeUnsubscribe;
   onPreferencesChanged(
     callback: (preferences: DesktopLyricPreferences) => void,
   ): RuntimeUnsubscribe;

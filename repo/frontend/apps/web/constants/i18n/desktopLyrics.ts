@@ -3,7 +3,8 @@ import { defineMessages } from "./define";
 export const desktopLyricsMessages = defineMessages(
   {
     "desktopLyrics.keepOnTop": "置顶显示",
-    "desktopLyrics.clickThrough": "鼠标穿透",
+    "desktopLyrics.lock": "锁定桌面歌词",
+    "desktopLyrics.unlock": "解锁桌面歌词",
     "desktopLyrics.close": "关闭桌面歌词",
     "desktopLyrics.previous": "上一首",
     "desktopLyrics.playPause": "播放或暂停",
@@ -12,7 +13,8 @@ export const desktopLyricsMessages = defineMessages(
   },
   {
     "desktopLyrics.keepOnTop": "置頂顯示",
-    "desktopLyrics.clickThrough": "滑鼠穿透",
+    "desktopLyrics.lock": "鎖定桌面歌詞",
+    "desktopLyrics.unlock": "解鎖桌面歌詞",
     "desktopLyrics.close": "關閉桌面歌詞",
     "desktopLyrics.previous": "上一首",
     "desktopLyrics.playPause": "播放或暫停",
@@ -21,7 +23,8 @@ export const desktopLyricsMessages = defineMessages(
   },
   {
     "desktopLyrics.keepOnTop": "Keep on top",
-    "desktopLyrics.clickThrough": "Click through",
+    "desktopLyrics.lock": "Lock desktop lyrics",
+    "desktopLyrics.unlock": "Unlock desktop lyrics",
     "desktopLyrics.close": "Close desktop lyrics",
     "desktopLyrics.previous": "Previous",
     "desktopLyrics.playPause": "Play or pause",

@@ -1,6 +1,9 @@
 "use client";
 
+import { useCallback } from "react";
+import { useSubtitleMarquee } from "@/hooks/lyrics/useSubtitleMarquee";
 import { useSubtitleFill } from "@/hooks/settings/useSubtitleFill";
+import { cn } from "@/lib/utils";
 import { SubtitleFillText } from "./SubtitleFillText";
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
 import { useSubtitleEntrance } from "@/hooks/settings/useSubtitleEntrance";
@@ -26,6 +29,8 @@ function SubtitleCapsuleLine({
   playback,
   loop,
   fillProgress,
+  singleLine = false,
+  lineDurationMs = 0,
 }: SubtitleCapsuleProps) {
   const fillRef = useSubtitleFill(
     playback,
@@ -34,10 +39,48 @@ function SubtitleCapsuleLine({
     settings.fillEnabled && !fillProgress,
   );
   const entrance = useSubtitleEntrance(settings, payload.source, playback, loop);
+  const marquee = useSubtitleMarquee(playback, lineDurationMs, singleLine);
+  const { viewportRef } = marquee;
+  const sourceRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      fillRef.current = node;
+      viewportRef.current = node;
+    },
+    [fillRef, viewportRef],
+  );
   const translation =
     settings.showTranslation &&
     !(settings.autoCollapseChinese && payload.isChinese) &&
     payload.target;
+  const sourceContent = (
+    <>
+      {settings.fillEnabled ? (
+        <SubtitleFillText text={payload.source} settings={settings} progress={fillProgress} />
+      ) : (
+        <span
+          style={
+            settings.colorMode === "gradient"
+              ? {
+                  backgroundImage: `linear-gradient(${settings.gradientAngle}deg, ${settings.color}, ${settings.gradientColor})`,
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  color: "transparent",
+                }
+              : { color: settings.color }
+          }
+        >
+          {entrance.text || "\u200b"}
+        </span>
+      )}
+      {!settings.fillEnabled && entrance.streaming && (
+        <span
+          aria-hidden="true"
+          className={styles.cursor}
+          style={{ backgroundColor: settings.color }}
+        />
+      )}
+    </>
+  );
   const alpha = Math.round((settings.backdropOpacity / 100) * 255)
     .toString(16)
     .padStart(2, "0");
@@ -46,7 +89,7 @@ function SubtitleCapsuleLine({
       ref={entrance.ref}
       className={styles.capsule}
       style={{
-        maxWidth: settings.maxWidth,
+        maxWidth: singleLine ? "100%" : settings.maxWidth,
         padding: `${settings.paddingY}px ${settings.paddingX}px`,
         borderRadius: settings.radius,
         backgroundColor: `${settings.backgroundColor}${alpha}`,
@@ -56,43 +99,26 @@ function SubtitleCapsuleLine({
       }}
     >
       <div
-        ref={fillRef}
-        className={styles.source}
+        ref={sourceRef}
+        className={cn(styles.source, singleLine && styles.singleLine)}
+        data-align={settings.textAlign}
         style={{
           fontSize: settings.fontSize,
           fontWeight: settings.fontWeight,
           filter: settings.textShadow ? "drop-shadow(0 1px 2px rgb(0 0 0 / 90%))" : undefined,
         }}
       >
-        {settings.fillEnabled ? (
-          <SubtitleFillText text={payload.source} settings={settings} progress={fillProgress} />
-        ) : (
-          <span
-            style={
-              settings.colorMode === "gradient"
-                ? {
-                    backgroundImage: `linear-gradient(${settings.gradientAngle}deg, ${settings.color}, ${settings.gradientColor})`,
-                    backgroundClip: "text",
-                    WebkitBackgroundClip: "text",
-                    color: "transparent",
-                  }
-                : { color: settings.color }
-            }
-          >
-            {entrance.text || "\u200b"}
+        {singleLine ? (
+          <span ref={marquee.contentRef} className={styles.marquee}>
+            {sourceContent}
           </span>
-        )}
-        {!settings.fillEnabled && entrance.streaming && (
-          <span
-            aria-hidden="true"
-            className={styles.cursor}
-            style={{ backgroundColor: settings.color }}
-          />
+        ) : (
+          sourceContent
         )}
       </div>
       {translation && (
         <div
-          className={styles.translation}
+          className={cn(styles.translation, singleLine && styles.singleLineTranslation)}
           style={{
             fontSize: settings.secondarySize,
             color: settings.secondaryColor,

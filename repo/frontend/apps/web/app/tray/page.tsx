@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SongTitle } from "@/components/shared/Marquee";
+import { TrayLyricSurfaces } from "@/components/tray/TrayLyricSurfaces";
 // 引入 UI 组件
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -163,6 +164,11 @@ export default function TrayPage() {
             orientation="horizontal"
             variant="inline"
           />
+
+          <Separator className="my-1.5 bg-border" />
+
+          {/* 桌面歌词、灵动岛与任务栏歌词 */}
+          <TrayLyricSurfaces />
 
           <Separator className="my-1.5 bg-border" />
 

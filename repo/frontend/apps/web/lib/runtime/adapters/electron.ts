@@ -109,6 +109,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       close: () => bridge.closeDesktopLyric(),
       getPreferences: () => bridge.getDesktopLyricPreferences(),
       onCommand: (callback) => bridge.onDesktopLyricCommand(callback),
+      onCursorInsideChanged: (callback) => bridge.onDesktopLyricCursorInsideChanged(callback),
       onPreferencesChanged: (callback) => bridge.onDesktopLyricPreferencesChanged(callback),
       open: () => bridge.openDesktopLyric(),
       sendCommand: (command) => bridge.sendDesktopLyricCommand(command),

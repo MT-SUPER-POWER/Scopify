@@ -701,6 +701,12 @@ export interface TranslateFn {
    */
   (key: "notifications.expand", params?: TranslationParams): string;
   /**
+   * zh-CN: 查看报告
+   * zh-TW: 查看報告
+   * en-US: Open report
+   */
+  (key: "notifications.openReport", params?: TranslationParams): string;
+  /**
    * zh-CN: 收起摘要
    * zh-TW: 收起摘要
    * en-US: Collapse summary
@@ -4130,17 +4136,17 @@ export interface TranslateFn {
    */
   (key: "settings.desktopLyrics.alwaysOnTop.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 鼠标穿透
-   * zh-TW: 滑鼠穿透
-   * en-US: Mouse Click-through
+   * zh-CN: 锁定桌面歌词
+   * zh-TW: 鎖定桌面歌詞
+   * en-US: Lock desktop lyrics
    */
-  (key: "settings.desktopLyrics.clickThrough.label", params?: TranslationParams): string;
+  (key: "settings.desktopLyrics.locked.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 开启后鼠标点击可直接穿透歌词窗口，不影响下方界面操作。
-   * zh-TW: 開啟後滑鼠點擊可直接穿透歌詞視窗，不影響下方介面操作。
-   * en-US: Allow mouse clicks to pass through the desktop lyrics window to applications below.
+   * zh-CN: 锁定后歌词窗口不可拖动和缩放，鼠标点击直接穿透；悬停时右上角会出现解锁按钮。
+   * zh-TW: 鎖定後歌詞視窗不可拖動和縮放，滑鼠點擊直接穿透；懸停時右上角會出現解鎖按鈕。
+   * en-US: Locked lyrics can't be moved or resized and let clicks pass through. Hover to reveal the unlock button in the top-right corner.
    */
-  (key: "settings.desktopLyrics.clickThrough.sublabel", params?: TranslationParams): string;
+  (key: "settings.desktopLyrics.locked.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 隐藏任务栏图标
    * zh-TW: 隱藏工作列圖示
@@ -8936,11 +8942,17 @@ export interface TranslateFn {
    */
   (key: "desktopLyrics.keepOnTop", params?: TranslationParams): string;
   /**
-   * zh-CN: 鼠标穿透
-   * zh-TW: 滑鼠穿透
-   * en-US: Click through
+   * zh-CN: 锁定桌面歌词
+   * zh-TW: 鎖定桌面歌詞
+   * en-US: Lock desktop lyrics
    */
-  (key: "desktopLyrics.clickThrough", params?: TranslationParams): string;
+  (key: "desktopLyrics.lock", params?: TranslationParams): string;
+  /**
+   * zh-CN: 解锁桌面歌词
+   * zh-TW: 解鎖桌面歌詞
+   * en-US: Unlock desktop lyrics
+   */
+  (key: "desktopLyrics.unlock", params?: TranslationParams): string;
   /**
    * zh-CN: 关闭桌面歌词
    * zh-TW: 關閉桌面歌詞

@@ -402,6 +402,7 @@ export function createBrowserRuntime(
       close: async () => false,
       getPreferences: async () => null,
       onCommand: () => NOOP,
+      onCursorInsideChanged: () => NOOP,
       onPreferencesChanged: () => NOOP,
       open: async () => false,
       sendCommand: NOOP,
