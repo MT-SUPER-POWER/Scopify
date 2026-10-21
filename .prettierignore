@@ -31,9 +31,8 @@ repo/frontend/packages/ui/shadcn/**
 .superpowers/
 skills/
 
-# markdown files
-*.md
-*.mdx
+# Mermaid sources (Markdown and MDX are formatted; tables stay compact via
+# prettier-plugin-markdown-compact-tables)
 *.mmd
 
 # static docs / licenses

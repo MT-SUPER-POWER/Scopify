@@ -22,6 +22,8 @@
 
 ### Quality
 
+- **Markdown / MDX 交给 Prettier 统一格式化，表格改为紧凑写法**：接入 `prettier-plugin-markdown-compact-tables`，`.md` 与 `.mdx` 不再被 `.prettierignore` 整体排除；表格单元格两侧固定一个空格、不再按列宽补齐，改一个单元格不会再让整张表重新对齐。文档统一使用 `proseWrap: "never"`、超大 `printWidth`（段落与 JSX 不被折行）和 `embeddedLanguageFormatting: "off"`（代码块内容原样保留，shadcn 示例不被补分号）；根目录、`apps/docs` 与 `apps/web` 三份 Prettier 配置同步，lint-staged 对暂存的 Markdown / MDX 执行 Prettier。首次全量格式化后逐个比对 MDX 3 + GFM 语法树：所有 MDX 结构不变且均可编译，仅 12 个 Markdown 文档合并了中文段落内的硬换行。
+
 - **落地页标题字体的字符收集忽略注释**：生成子集字体与检查覆盖率时，先用 TypeScript 去掉源码注释再收集中文字符，组件里的中文注释不再让字体变大，也不再要求重新生成子集。
 
 ### Fixed
@@ -164,8 +166,6 @@
 
 - **华彩逐词 DOM 只在变化时写入**：同步 Folia `04b16c6e`、`fcb95450`，每个词的变换、字体、文本、颜色、透明度、滤镜与逐字光晕只在数值变化时写入（同值的文本不再替换文本节点、触发重排）；字素切分与字高测量每个落点只做一次，网页字体加载完成后重新测量；排序改为按状态分桶，不再在比较函数里反复计算词状态。
 
-
-
 ## v1.5.6
 
 ### Added
@@ -214,7 +214,6 @@
 - **以 Cookie 凭据为核心的用户认证 Hook 规范**：新增全站统一的标准 `useAuth` Hook，彻底以网易云会话 Cookie 凭据（`music_cookie`）作为唯一真实鉴权源，解耦对 `loginType` 辅助标签的依赖；使用 React `useSyncExternalStore` 订阅凭据变化，消除旧版 `useState + useEffect` 带来的 1 帧水合闪烁，平滑兼容既有 `useLoginStatus` 签名。
 
 - **静态资源架构与打包结构对齐 SPlayer**：将原散落在 `resources/` 的静态文件全面迁移至应用层标准的 `public/` 目录，建立清晰的分类子目录（`public/icons/` 托管应用图标包、托盘图标、NSIS 安装/卸载图标及 `thumbar/` 任务栏控制图标；`public/splash.html` 托管启动页；`public/windows/` 托管系统脚本）；在 `electron-builder.config.ts` 中声明 `buildResources: "public"`，`files` 与 `asarUnpack` 统一收敛至 `public/**/*`；移除侵入式的 `electronDist` 配置，解决构建产物中残留冗余 `default_app.asar` 的问题；主进程引入 `publicAsset` 统一定位逻辑，支持开发环境相对寻址与生产打包环境 `app.asar.unpacked/public` 自动回退，消除原 `resources/` 命名与 Electron `process.resourcesPath` 概念混淆，彻底清理历史遗留未使用的 `backend-entry.cjs`。
-
 
 ### Fixed
 

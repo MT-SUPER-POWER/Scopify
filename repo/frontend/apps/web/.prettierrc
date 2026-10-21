@@ -4,7 +4,17 @@
   "semi": true,
   "singleQuote": false,
   "trailingComma": "all",
-  "plugins": ["prettier-plugin-tailwindcss"],
+  "plugins": ["prettier-plugin-markdown-compact-tables", "prettier-plugin-tailwindcss"],
   "tailwindStylesheet": "./app/globals.css",
-  "tailwindFunctions": ["cn", "cva", "clsx"]
+  "tailwindFunctions": ["cn", "cva", "clsx"],
+  "overrides": [
+    {
+      "files": ["*.md", "*.mdx"],
+      "options": {
+        "printWidth": 99999,
+        "proseWrap": "never",
+        "embeddedLanguageFormatting": "off"
+      }
+    }
+  ]
 }
