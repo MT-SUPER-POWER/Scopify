@@ -1,18 +1,27 @@
 <div align="center">
 
-<img alt="logo" height="100" width="100" src="docs/img/icon.ico" />
-<h2> Scopify </h2>
-<p> 一个仿 Spotify UI 的音乐播放器 </p>
+<img src="docs/img/icon.ico" alt="Scopify" width="100" height="100" />
 
-[后端 API](https://vdoonnridu.apifox.cn/) | [发行版](https://github.com/MT-SUPER-POWER/Scopify/releases) | [版本日志](https://github.com/MT-SUPER-POWER/Scopify/blob/master/docs/CHANGELOG.md) | [开发文档]()
+<h1>Scopify</h1>
+
+<p>一个仿 Spotify UI 的跨平台音乐播放器</p>
+
+<p>
+  <a href="https://scopify-web.vercel.app">在线体验</a> ·
+  <a href="https://scopify-docs.vercel.app">开发文档</a> ·
+  <a href="https://github.com/MT-SUPER-POWER/Scopify/releases">下载客户端</a> ·
+  <a href="https://vdoonnridu.apifox.cn/">后端 API</a>
+</p>
 
 [![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers)
 [![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D24-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![License](https://img.shields.io/github/license/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/blob/master/license)
 [![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-blue)](https://deepwiki.com/MT-SUPER-POWER/Scopify)
-[![license](https://img.shields.io/github/license/mt-super-power/scopify)](https://github.com/mt-super-power/scopify/blob/master/license)
+[![CI](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml)
+[![Release](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml/badge.svg)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml)
 
 </div>
+
 
 ## 简介
 
