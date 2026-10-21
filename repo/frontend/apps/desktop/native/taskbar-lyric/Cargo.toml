@@ -1,0 +1,49 @@
+[package]
+name = "scopify-taskbar-lyric"
+version = "0.1.0"
+edition = "2024"
+description = "Embeds Scopify's taskbar lyric window into the Windows taskbar (ported from SPlayer-Next)"
+license = "AGPL-3.0"
+build = "build.rs"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi = { version = "3.12.1", features = ["napi9", "serde-json"] }
+napi-derive = "3.6.3"
+anyhow = "1.0"
+winreg = "0.55"
+windows-core = "0.62.2"
+
+[dependencies.windows]
+version = "0.62"
+features = [
+  "Win32_Foundation",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_System_Registry",
+  "Win32_System_Threading",
+  "Win32_Security",
+  "Win32_System_Com",
+  "Win32_UI_Accessibility",
+  "Win32_System_Variant",
+  "Win32_System_Ole",
+  "Win32_System_LibraryLoader",
+  "Win32_Graphics_Gdi",
+]
+
+[build-dependencies]
+napi-build = "2.4.1"
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+redundant_clone = "deny"
+needless_collect = "warn"
+large_enum_variant = "warn"
+collapsible_if = "allow"
+redundant_pattern_matching = "allow"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1

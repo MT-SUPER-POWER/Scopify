@@ -20,6 +20,7 @@ final result: passed
 以下保留第一轮记录，尺寸和设计目标以本轮说明为准。
 
 ---
+
 # 通知面板设计检查
 
 final result: passed

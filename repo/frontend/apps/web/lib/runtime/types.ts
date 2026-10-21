@@ -30,6 +30,18 @@ import type {
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
 } from "@/types/desktopLyric";
+import type {
+  DynamicIslandCommand,
+  DynamicIslandMode,
+  DynamicIslandPreferences,
+  DynamicIslandPreferencesUpdate,
+} from "@/types/dynamicIsland";
+import type {
+  TaskbarLyricCommand,
+  TaskbarLyricLayout,
+  TaskbarLyricPreferences,
+  TaskbarLyricPreferencesUpdate,
+} from "@/types/taskbarLyric";
 import type { AppUpdateState } from "@/types/updater";
 import type { LyricData } from "@/types/lyrics";
 import type { CachePreferences } from "@/types/cache";
@@ -101,6 +113,7 @@ export interface RuntimeDesktopLyrics {
   close(): Promise<boolean>;
   getPreferences(): Promise<DesktopLyricPreferences | null>;
   onCommand(callback: (command: DesktopLyricCommand) => void): RuntimeUnsubscribe;
+  onCursorInsideChanged(callback: (inside: boolean) => void): RuntimeUnsubscribe;
   onPreferencesChanged(
     callback: (preferences: DesktopLyricPreferences) => void,
   ): RuntimeUnsubscribe;
@@ -108,6 +121,37 @@ export interface RuntimeDesktopLyrics {
   sendCommand(command: DesktopLyricCommand): void;
   toggle(): Promise<boolean>;
   updatePreferences(update: DesktopLyricPreferencesUpdate): Promise<DesktopLyricPreferences | null>;
+}
+
+export interface RuntimeDynamicIsland {
+  close(): Promise<boolean>;
+  getMode(): Promise<DynamicIslandMode>;
+  getPreferences(): Promise<DynamicIslandPreferences | null>;
+  onCursorInsideChanged(callback: (inside: boolean) => void): RuntimeUnsubscribe;
+  onModeChanged(callback: (mode: DynamicIslandMode) => void): RuntimeUnsubscribe;
+  onPreferencesChanged(
+    callback: (preferences: DynamicIslandPreferences) => void,
+  ): RuntimeUnsubscribe;
+  open(): Promise<boolean>;
+  sendCommand(command: DynamicIslandCommand): void;
+  toggle(): Promise<boolean>;
+  updatePreferences(
+    update: DynamicIslandPreferencesUpdate,
+  ): Promise<DynamicIslandPreferences | null>;
+}
+
+export interface RuntimeTaskbarLyric {
+  close(): Promise<boolean>;
+  getLayout(): Promise<TaskbarLyricLayout | null>;
+  getPreferences(): Promise<TaskbarLyricPreferences | null>;
+  onLayoutChanged(callback: (layout: TaskbarLyricLayout) => void): RuntimeUnsubscribe;
+  onPreferencesChanged(
+    callback: (preferences: TaskbarLyricPreferences) => void,
+  ): RuntimeUnsubscribe;
+  open(): Promise<boolean>;
+  sendCommand(command: TaskbarLyricCommand): void;
+  toggle(): Promise<boolean>;
+  updatePreferences(update: TaskbarLyricPreferencesUpdate): Promise<TaskbarLyricPreferences | null>;
 }
 
 export interface RuntimeDesktopIcons {
@@ -215,6 +259,7 @@ export interface WebRuntime {
   readonly discord: RuntimeDiscordPresence;
   readonly desktopLyrics: RuntimeDesktopLyrics;
   readonly desktopPlaybackWallpaper: RuntimeDesktopPlaybackWallpaper;
+  readonly dynamicIsland: RuntimeDynamicIsland;
   readonly isDesktop: boolean;
   readonly kind: RuntimeKind;
   readonly logging: RuntimeLogging;
@@ -222,6 +267,7 @@ export interface WebRuntime {
   readonly media: RuntimeMediaControls;
   readonly navigation: RuntimeNavigation;
   readonly playback: RuntimePlaybackTransport;
+  readonly taskbarLyric: RuntimeTaskbarLyric;
   readonly updates: RuntimeUpdates;
   readonly videoExport: RuntimeVideoExport;
   readonly window: RuntimeWindowControls;

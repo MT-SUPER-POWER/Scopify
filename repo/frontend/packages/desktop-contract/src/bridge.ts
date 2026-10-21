@@ -6,6 +6,18 @@ import type {
 } from "./desktopLyrics";
 import type { DesktopIconVisibilityState } from "./desktopIcons";
 import type {
+  DynamicIslandCommand,
+  DynamicIslandMode,
+  DynamicIslandPreferences,
+  DynamicIslandPreferencesUpdate,
+} from "./dynamicIsland";
+import type {
+  TaskbarLyricCommand,
+  TaskbarLyricLayout,
+  TaskbarLyricPreferences,
+  TaskbarLyricPreferencesUpdate,
+} from "./taskbarLyric";
+import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
   DesktopPlaybackWallpaperModel,
@@ -30,7 +42,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 25;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 26;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -54,6 +66,7 @@ export type DesktopBridgeCapability =
   | "desktop-lyrics"
   | "desktop-playback-wallpaper"
   | "discord-presence"
+  | "dynamic-island"
   | "login"
   | "logs"
   | "media-controls"
@@ -62,6 +75,7 @@ export type DesktopBridgeCapability =
   | "notifications"
   | "playback-transport"
   | "renderer-logging"
+  | "taskbar-lyric"
   | "updates"
   | "video-export"
   | "window-controls";
@@ -99,6 +113,12 @@ export interface DesktopBridge<TLyrics = unknown> {
   openDesktopLyric(): Promise<boolean>;
   toggleDesktopLyric(): Promise<boolean>;
   closeDesktopPlaybackController(): Promise<boolean>;
+  closeDynamicIsland(): Promise<boolean>;
+  openDynamicIsland(): Promise<boolean>;
+  toggleDynamicIsland(): Promise<boolean>;
+  closeTaskbarLyric(): Promise<boolean>;
+  openTaskbarLyric(): Promise<boolean>;
+  toggleTaskbarLyric(): Promise<boolean>;
   isDesktopPlaybackControllerOpen(): Promise<boolean>;
   toggleDesktopPlaybackController(): Promise<boolean>;
   connectAudioFeatureTransport(
@@ -131,6 +151,10 @@ export interface DesktopBridge<TLyrics = unknown> {
   getDesktopIconVisibility(): Promise<DesktopIconVisibilityState>;
   getDesktopLyricPreferences(): Promise<DesktopLyricPreferences | null>;
   getDesktopPlaybackWallpaperModel(): Promise<DesktopPlaybackWallpaperModel>;
+  getDynamicIslandMode(): Promise<DynamicIslandMode>;
+  getDynamicIslandPreferences(): Promise<DynamicIslandPreferences | null>;
+  getTaskbarLyricLayout(): Promise<TaskbarLyricLayout | null>;
+  getTaskbarLyricPreferences(): Promise<TaskbarLyricPreferences | null>;
   getPageCache<T = unknown>(key: string): Promise<T | null>;
   getPageCacheStats(): Promise<PageCacheStats>;
   getCache<T = unknown>(scope: CacheScope, key: string): Promise<T | null>;
@@ -143,6 +167,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   navigateTo(path: string): void;
   onControlAudio(callback: (action: "next" | "prev" | "toggle-play") => void): Unsubscribe;
   onDesktopLyricCommand(callback: (command: DesktopLyricCommand) => void): Unsubscribe;
+  /** 主进程按系统光标位置判定悬停，穿透状态下 DOM hover 不可靠。 */
+  onDesktopLyricCursorInsideChanged(callback: (inside: boolean) => void): Unsubscribe;
   onDesktopLyricPreferencesChanged(
     callback: (preferences: DesktopLyricPreferences) => void,
   ): Unsubscribe;
@@ -150,6 +176,15 @@ export interface DesktopBridge<TLyrics = unknown> {
     callback: (model: DesktopPlaybackWallpaperModel) => void,
   ): Unsubscribe;
   onDiscordPresenceStatusChanged(callback: (status: DiscordPresenceStatus) => void): Unsubscribe;
+  onDynamicIslandCursorInsideChanged(callback: (inside: boolean) => void): Unsubscribe;
+  onDynamicIslandModeChanged(callback: (mode: DynamicIslandMode) => void): Unsubscribe;
+  onDynamicIslandPreferencesChanged(
+    callback: (preferences: DynamicIslandPreferences) => void,
+  ): Unsubscribe;
+  onTaskbarLyricLayoutChanged(callback: (layout: TaskbarLyricLayout) => void): Unsubscribe;
+  onTaskbarLyricPreferencesChanged(
+    callback: (preferences: TaskbarLyricPreferences) => void,
+  ): Unsubscribe;
   onFullScreenChanged(callback: (isFullScreen: boolean) => void): Unsubscribe;
   onWindowVisibilityChanged(callback: (isVisible: boolean) => void): Unsubscribe;
   onNavigate(callback: (path: string) => void): Unsubscribe;
@@ -169,6 +204,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
   sendAppCloseAction(action: "exit" | "minimize" | "cancel", remember: boolean): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;
+  sendDynamicIslandCommand(command: DynamicIslandCommand): void;
+  sendTaskbarLyricCommand(command: TaskbarLyricCommand): void;
   setDesktopPlaybackControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showDesktopPlaybackController(): Promise<DesktopPlaybackControllerOpenResult>;
   setCookie(cookie: string, backendOrigin: string): Promise<boolean>;
@@ -195,5 +232,11 @@ export interface DesktopBridge<TLyrics = unknown> {
   updateDesktopPlaybackWallpaperPreferences(
     update: DesktopPlaybackWallpaperPreferencesUpdate,
   ): Promise<DesktopPlaybackWallpaperModel>;
+  updateDynamicIslandPreferences(
+    update: DynamicIslandPreferencesUpdate,
+  ): Promise<DynamicIslandPreferences | null>;
+  updateTaskbarLyricPreferences(
+    update: TaskbarLyricPreferencesUpdate,
+  ): Promise<TaskbarLyricPreferences | null>;
   writeLog(event: RendererLogEvent): Promise<boolean>;
 }

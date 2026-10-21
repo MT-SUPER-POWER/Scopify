@@ -212,24 +212,17 @@ import { Button } from "@scopify/ui/shadcn/components/button";
 export function SaveButton() {
   const [isSaving, setIsSaving] = useState(false);
 
-  function handleSave() {
-    setIsSaving(true);
-    window.setTimeout(() => setIsSaving(false), 800);
-  }
+function handleSave() { setIsSaving(true); window.setTimeout(() => setIsSaving(false), 800); }
 
-  return (
-    <Button
+return ( <Button
       className="min-w-28"
       disabled={isSaving}
       aria-busy={isSaving}
       onClick={handleSave}
-    >
-      {isSaving ? <LoaderCircle className="animate-spin" /> : null}
-      {isSaving ? "保存中" : "保存歌单"}
-    </Button>
-  );
-}`}
+    > {isSaving ? <LoaderCircle className="animate-spin" /> : null} {isSaving ? "保存中" : "保存歌单"} </Button> ); }`}
+
 >
+
   <ShadcnButtonExample example="controlled" />
 </ShadcnExample>
 

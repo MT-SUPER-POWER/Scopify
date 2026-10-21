@@ -32,6 +32,11 @@ import { brokerLog, wallpaperLog } from "@main/utils/logger";
 import { registerIpcHandlers } from "@main/ipc";
 import { initializeUpdater } from "@main/services/updater";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "@main/window/desktopLyric";
+import {
+  getDynamicIslandWindow,
+  initializeDynamicIslandCompanion,
+} from "@main/window/dynamicIsland";
+import { getTaskbarLyricWindow, initializeTaskbarLyricCompanion } from "@main/window/taskbarLyric";
 import { initializeLoginWindow } from "@main/window/login";
 import { getTrayWindow, initTray, trayWindow } from "@main/window/tray";
 
@@ -75,6 +80,8 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
       getControllerWindow: controllerWindow.getWindow,
     });
     initializeDesktopLyricCompanion(window, { rendererBaseUrl: options.rendererBaseUrl });
+    initializeDynamicIslandCompanion(window, { rendererBaseUrl: options.rendererBaseUrl });
+    initializeTaskbarLyricCompanion(window, { rendererBaseUrl: options.rendererBaseUrl });
     wallpaperCapability = initializeDesktopPlaybackWallpaperCapability(window, {
       controller: controllerWindow,
       driver: wallpaperDriver,
@@ -85,6 +92,8 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
       getReplicaWindows: () => [
         options.getMainWindow(),
         getDesktopLyricWindow(),
+        getDynamicIslandWindow(),
+        getTaskbarLyricWindow(),
         controllerWindow?.getWindow() ?? null,
         getTrayWindow(),
       ],

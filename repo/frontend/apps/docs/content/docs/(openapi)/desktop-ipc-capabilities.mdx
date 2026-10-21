@@ -8,7 +8,7 @@ Desktop Host 通过 `bridge:get-info` 返回 `DesktopBridgeInfo`。Renderer 可�
 当前协议常量为：
 
 ```ts
-DESKTOP_BRIDGE_PROTOCOL_VERSION = 20
+DESKTOP_BRIDGE_PROTOCOL_VERSION = 26
 ```
 
 ## 当前能力
@@ -25,11 +25,13 @@ DESKTOP_BRIDGE_PROTOCOL_VERSION = 20
 | `desktop-lyrics` | 桌面歌词窗口与命令 |
 | `desktop-playback-wallpaper` | 播放背景与控制器 |
 | `discord-presence` | Discord Presence |
+| `dynamic-island` | 灵动岛窗口、偏好与吸附形态 |
 | `login` | 登录窗口与 Cookie |
 | `logs` / `renderer-logging` | 日志目录与 Renderer 日志 |
 | `media-controls` | 系统媒体控制 |
 | `navigation` | 主窗口导航 |
 | `playback-transport` | 播放传输 MessagePort |
+| `taskbar-lyric` | 任务栏歌词（仅 Windows 声明，依赖原生模块） |
 | `updates` | 检查、下载与安装更新 |
 | `video-export` | 捕获窗口和写出视频文件 |
 | `window-controls` | 最小化与全屏 |

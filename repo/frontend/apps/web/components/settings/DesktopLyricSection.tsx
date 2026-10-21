@@ -20,8 +20,11 @@ export function DesktopLyricSection() {
         void runtime.desktopLyrics.getPreferences().then(setPreferences);
       };
       window.addEventListener("focus", onFocus);
+      // 锁定状态也可能在歌词窗口或托盘里被切换。
+      const unsubscribe = runtime.desktopLyrics.onPreferencesChanged(setPreferences);
       return () => {
         window.removeEventListener("focus", onFocus);
+        unsubscribe();
       };
     }
   }, []);
@@ -63,6 +66,28 @@ export function DesktopLyricSection() {
           <Toggle
             enabled={Boolean(preferences?.enabled)}
             onChange={() => void handleToggleOpen()}
+          />
+        }
+      />
+      <SettingRow
+        label={t("settings.desktopLyrics.locked.label")}
+        sublabel={t("settings.desktopLyrics.locked.sublabel")}
+        control={
+          <Toggle
+            enabled={Boolean(preferences?.locked)}
+            onChange={() => handlePreferenceChange("locked", !preferences?.locked)}
+          />
+        }
+      />
+      <SettingRow
+        label={t("settings.desktopLyrics.alwaysOnTop.label")}
+        sublabel={t("settings.desktopLyrics.alwaysOnTop.sublabel")}
+        control={
+          <Toggle
+            enabled={preferences?.alwaysOnTop ?? true}
+            onChange={() =>
+              handlePreferenceChange("alwaysOnTop", !(preferences?.alwaysOnTop ?? true))
+            }
           />
         }
       />

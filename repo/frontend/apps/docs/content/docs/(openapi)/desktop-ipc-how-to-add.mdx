@@ -27,12 +27,12 @@ export interface DesktopNotificationRequest {
 
 先决定方法语义：
 
-| 需求         | 选择                                    |
-| ------------ | --------------------------------------- |
+| 需求 | 选择 |
+| --- | --- |
 | 请求一个结果 | `ipcRenderer.invoke` + `ipcMain.handle` |
-| 发送一次命令 | `ipcRenderer.send` + `ipcMain.on`       |
-| 订阅状态     | Main `webContents.send` + Preload `on`  |
-| 高频连续数据 | `MessageChannel` / `MessagePort`        |
+| 发送一次命令 | `ipcRenderer.send` + `ipcMain.on` |
+| 订阅状态 | Main `webContents.send` + Preload `on` |
+| 高频连续数据 | `MessageChannel` / `MessagePort` |
 
 channel 使用 `<domain>:<action>`，例如 `desktop-notification:show`。查询和变更要区分动作，事件使用 `status-changed`、`model-changed` 等明确后缀。
 

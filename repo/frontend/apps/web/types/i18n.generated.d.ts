@@ -701,6 +701,12 @@ export interface TranslateFn {
    */
   (key: "notifications.expand", params?: TranslationParams): string;
   /**
+   * zh-CN: 查看报告
+   * zh-TW: 查看報告
+   * en-US: Open report
+   */
+  (key: "notifications.openReport", params?: TranslationParams): string;
+  /**
    * zh-CN: 收起摘要
    * zh-TW: 收起摘要
    * en-US: Collapse summary
@@ -4130,17 +4136,17 @@ export interface TranslateFn {
    */
   (key: "settings.desktopLyrics.alwaysOnTop.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 鼠标穿透
-   * zh-TW: 滑鼠穿透
-   * en-US: Mouse Click-through
+   * zh-CN: 锁定桌面歌词
+   * zh-TW: 鎖定桌面歌詞
+   * en-US: Lock desktop lyrics
    */
-  (key: "settings.desktopLyrics.clickThrough.label", params?: TranslationParams): string;
+  (key: "settings.desktopLyrics.locked.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 开启后鼠标点击可直接穿透歌词窗口，不影响下方界面操作。
-   * zh-TW: 開啟後滑鼠點擊可直接穿透歌詞視窗，不影響下方介面操作。
-   * en-US: Allow mouse clicks to pass through the desktop lyrics window to applications below.
+   * zh-CN: 锁定后歌词窗口不可拖动和缩放，鼠标点击直接穿透；悬停时右上角会出现解锁按钮。
+   * zh-TW: 鎖定後歌詞視窗不可拖動和縮放，滑鼠點擊直接穿透；懸停時右上角會出現解鎖按鈕。
+   * en-US: Locked lyrics can't be moved or resized and let clicks pass through. Hover to reveal the unlock button in the top-right corner.
    */
-  (key: "settings.desktopLyrics.clickThrough.sublabel", params?: TranslationParams): string;
+  (key: "settings.desktopLyrics.locked.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 隐藏任务栏图标
    * zh-TW: 隱藏工作列圖示
@@ -8936,11 +8942,17 @@ export interface TranslateFn {
    */
   (key: "desktopLyrics.keepOnTop", params?: TranslationParams): string;
   /**
-   * zh-CN: 鼠标穿透
-   * zh-TW: 滑鼠穿透
-   * en-US: Click through
+   * zh-CN: 锁定桌面歌词
+   * zh-TW: 鎖定桌面歌詞
+   * en-US: Lock desktop lyrics
    */
-  (key: "desktopLyrics.clickThrough", params?: TranslationParams): string;
+  (key: "desktopLyrics.lock", params?: TranslationParams): string;
+  /**
+   * zh-CN: 解锁桌面歌词
+   * zh-TW: 解鎖桌面歌詞
+   * en-US: Unlock desktop lyrics
+   */
+  (key: "desktopLyrics.unlock", params?: TranslationParams): string;
   /**
    * zh-CN: 关闭桌面歌词
    * zh-TW: 關閉桌面歌詞
@@ -8971,6 +8983,234 @@ export interface TranslateFn {
    * en-US: Like
    */
   (key: "desktopLyrics.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 灵动岛
+   * zh-TW: 靈動島
+   * en-US: Dynamic Island
+   */
+  (key: "dynamicIsland.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启灵动岛
+   * zh-TW: 開啟靈動島
+   * en-US: Show Dynamic Island
+   */
+  (key: "dynamicIsland.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在屏幕顶部显示带封面的歌词胶囊，可随意拖动，靠近顶边松手会自动吸附。
+   * zh-TW: 在螢幕頂部顯示帶封面的歌詞膠囊，可隨意拖動，靠近頂邊放開會自動吸附。
+   * en-US: A lyric capsule with artwork at the top of the screen. Drag it anywhere and release near the top edge to snap back.
+   */
+  (key: "dynamicIsland.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 换行动画
+   * zh-TW: 換行動畫
+   * en-US: Line transition
+   */
+  (key: "dynamicIsland.transition.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回弹
+   * zh-TW: 回彈
+   * en-US: Bounce
+   */
+  (key: "dynamicIsland.transition.bounce", params?: TranslationParams): string;
+  /**
+   * zh-CN: 平滑
+   * zh-TW: 平滑
+   * en-US: Smooth
+   */
+  (key: "dynamicIsland.transition.smooth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 大小
+   * zh-TW: 大小
+   * en-US: Size
+   */
+  (key: "dynamicIsland.scale.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示翻译
+   * zh-TW: 顯示翻譯
+   * en-US: Show translation
+   */
+  (key: "dynamicIsland.showTranslation.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 吸附时居中
+   * zh-TW: 吸附時置中
+   * en-US: Center when snapped
+   */
+  (key: "dynamicIsland.snapCentered.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭后吸附到顶边时保留拖动到的水平位置。
+   * zh-TW: 關閉後吸附到頂邊時保留拖動到的水平位置。
+   * en-US: When off, the island keeps the horizontal position you dragged it to.
+   */
+  (key: "dynamicIsland.snapCentered.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 非遮挡模式
+   * zh-TW: 非遮擋模式
+   * en-US: Non-occlusive mode
+   */
+  (key: "dynamicIsland.nonOcclusive.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 鼠标点击直接穿透灵动岛，悬停时自动淡出；此模式下无法拖动。
+   * zh-TW: 滑鼠點擊直接穿透靈動島，懸停時自動淡出；此模式下無法拖動。
+   * en-US: Clicks pass through and the island fades out on hover. It can't be dragged in this mode.
+   */
+  (key: "dynamicIsland.nonOcclusive.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保持置顶
+   * zh-TW: 保持置頂
+   * en-US: Keep on top
+   */
+  (key: "dynamicIsland.alwaysOnTop.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 任务栏歌词
+   * zh-TW: 工作列歌詞
+   * en-US: Taskbar Lyrics
+   */
+  (key: "taskbarLyric.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启任务栏歌词
+   * zh-TW: 開啟工作列歌詞
+   * en-US: Show taskbar lyrics
+   */
+  (key: "taskbarLyric.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 把歌词嵌入 Windows 任务栏的空白处，悬停时显示歌曲信息与播放控制。
+   * zh-TW: 把歌詞嵌入 Windows 工作列的空白處，懸停時顯示歌曲資訊與播放控制。
+   * en-US: Embed lyrics in the empty space of the Windows taskbar. Hover to show track info and playback controls.
+   */
+  (key: "taskbarLyric.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 任务栏歌词当前不可用：仅支持 Windows，并需要随应用打包的原生组件。
+   * zh-TW: 工作列歌詞目前無法使用：僅支援 Windows，並需要隨應用程式打包的原生元件。
+   * en-US: Taskbar lyrics are unavailable. They require Windows and the native component bundled with the app.
+   */
+  (key: "taskbarLyric.unsupported", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示位置
+   * zh-TW: 顯示位置
+   * en-US: Position
+   */
+  (key: "taskbarLyric.position.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动
+   * zh-TW: 自動
+   * en-US: Auto
+   */
+  (key: "taskbarLyric.position.auto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 左侧
+   * zh-TW: 左側
+   * en-US: Left
+   */
+  (key: "taskbarLyric.position.left", params?: TranslationParams): string;
+  /**
+   * zh-CN: 右侧
+   * zh-TW: 右側
+   * en-US: Right
+   */
+  (key: "taskbarLyric.position.right", params?: TranslationParams): string;
+  /**
+   * zh-CN: 双行显示
+   * zh-TW: 雙行顯示
+   * en-US: Two lines
+   */
+  (key: "taskbarLyric.doubleLine.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 第二行显示翻译，没有翻译时显示下一句。
+   * zh-TW: 第二行顯示翻譯，沒有翻譯時顯示下一句。
+   * en-US: The second line shows the translation, or the next line when there is none.
+   */
+  (key: "taskbarLyric.doubleLine.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 优先显示翻译
+   * zh-TW: 優先顯示翻譯
+   * en-US: Prefer translation
+   */
+  (key: "taskbarLyric.showTranslation.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示封面
+   * zh-TW: 顯示封面
+   * en-US: Show artwork
+   */
+  (key: "taskbarLyric.showCover.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字颜色
+   * zh-TW: 文字顏色
+   * en-US: Text color
+   */
+  (key: "taskbarLyric.colorMode.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跟随任务栏
+   * zh-TW: 跟隨工作列
+   * en-US: Match taskbar
+   */
+  (key: "taskbarLyric.colorMode.taskbar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 与任务栏相反
+   * zh-TW: 與工作列相反
+   * en-US: Inverse of taskbar
+   */
+  (key: "taskbarLyric.colorMode.taskbarInverse", params?: TranslationParams): string;
+  /**
+   * zh-CN: 深色文字
+   * zh-TW: 深色文字
+   * en-US: Dark text
+   */
+  (key: "taskbarLyric.colorMode.light", params?: TranslationParams): string;
+  /**
+   * zh-CN: 浅色文字
+   * zh-TW: 淺色文字
+   * en-US: Light text
+   */
+  (key: "taskbarLyric.colorMode.dark", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字号
+   * zh-TW: 字號
+   * en-US: Font size
+   */
+  (key: "taskbarLyric.fontSize.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 占满可用空间
+   * zh-TW: 佔滿可用空間
+   * en-US: Fill available space
+   */
+  (key: "taskbarLyric.autoMaxWidth.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最大宽度
+   * zh-TW: 最大寬度
+   * en-US: Max width
+   */
+  (key: "taskbarLyric.maxWidth.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按歌词长度收缩
+   * zh-TW: 依歌詞長度收縮
+   * en-US: Shrink to lyric length
+   */
+  (key: "taskbarLyric.autoAdjustOccupiedSpace.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 只让歌词实际占用的区域响应鼠标，空白处的点击仍交给任务栏。
+   * zh-TW: 只讓歌詞實際佔用的區域回應滑鼠，空白處的點擊仍交給工作列。
+   * en-US: Only the area the lyric occupies reacts to the mouse; clicks elsewhere still reach the taskbar.
+   */
+  (key: "taskbarLyric.autoAdjustOccupiedSpace.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 悬停背景
+   * zh-TW: 懸停背景
+   * en-US: Hover background
+   */
+  (key: "taskbarLyric.showBackground.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 左边距
+   * zh-TW: 左邊距
+   * en-US: Left margin
+   */
+  (key: "taskbarLyric.leftMargin.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 右边距
+   * zh-TW: 右邊距
+   * en-US: Right margin
+   */
+  (key: "taskbarLyric.rightMargin.label", params?: TranslationParams): string;
   /**
    * zh-CN: 桌面音乐
    * zh-TW: 桌面音樂

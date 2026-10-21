@@ -63,3 +63,29 @@
     transparent calc(var(--fill) * (100% + var(--feather)))
   );
 }
+
+/* 单行模式：原文不换行，溢出部分交给 useSubtitleMarquee 横向滚动。 */
+.singleLine {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.singleLine[data-align="left"] {
+  justify-content: flex-start;
+}
+.singleLine[data-align="center"] {
+  justify-content: safe center;
+}
+.singleLine[data-align="right"] {
+  justify-content: safe flex-end;
+}
+.marquee {
+  display: inline-block;
+  flex-shrink: 0;
+  will-change: transform;
+}
+.singleLineTranslation {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

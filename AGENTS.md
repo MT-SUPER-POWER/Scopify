@@ -15,16 +15,15 @@ Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根�
 - prettier
 - test: 这个不做要求，因为之前做了很多没必要的测试，现在内容尾大不掉，不用全量测试，写针对自己业务的时候的测试就行，当然没必要的情况，不要写比较大的测试
 
-
 ---
 
 ## Quick Start
 
-| 项       | 值                  |
-| -------- | ------------------- |
+| 项 | 值 |
+| --- | --- |
 | 包管理器 | **pnpm**（12.x，见 `packageManager`） |
 | 脚本 / 测试运行时 | **bun**（>= 1.3.11，运行 `*.ts` 脚本与 `bun test`） |
-| Node     | >= 20               |
+| Node | >= 20 |
 
 ```bash
 pnpm install
@@ -79,12 +78,12 @@ Scopify/
 
 ### Web Path Aliases（`repo/frontend/apps/web/tsconfig.json`）
 
-| Alias           | 路径                       |
-| --------------- | -------------------------- |
-| `@/*`           | `repo/frontend/apps/web/*` |
-| `@components/*` | `./components/*`           |
-| `@store/*`      | `./store/*`                |
-| `@app-types/*`  | `./types/*`                |
+| Alias | 路径 |
+| --- | --- |
+| `@/*` | `repo/frontend/apps/web/*` |
+| `@components/*` | `./components/*` |
+| `@store/*` | `./store/*` |
+| `@app-types/*` | `./types/*` |
 
 优先使用 `@/types/...`、`@/lib/...`、`@/components/...`。
 
@@ -103,13 +102,11 @@ Scopify/
 
 ## 代码规范与架构约定
 
-前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：
-👉 **[.agents/skills/nextjs-project-structure/](.agents/skills/nextjs-project-structure/SKILL.md)**
+前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：👉 **[.agents/skills/nextjs-project-structure/](.agents/skills/nextjs-project-structure/SKILL.md)**
 
 ### Shared UI package boundary
 
-任何新增、迁移、修改或消费 `repo/frontend/packages/ui` 中的基础组件、shadcn CLI 组件、Scopify 扩展组件或共享 UI token 时，**必须**遵循：
-👉 **[.agents/skills/ui-package-boundaries/](.agents/skills/ui-package-boundaries/SKILL.md)**
+任何新增、迁移、修改或消费 `repo/frontend/packages/ui` 中的基础组件、shadcn CLI 组件、Scopify 扩展组件或共享 UI token 时，**必须**遵循：👉 **[.agents/skills/ui-package-boundaries/](.agents/skills/ui-package-boundaries/SKILL.md)**
 
 该规范强制区分原生 `shadcn/` vendor 层与 `scopify/` 扩展层：标准 props 与 token 能满足的需求直接使用原生组件；只有原生 API 与主题 token 都不足时，才从对应原生组件复制到 `scopify/` 并扩展；带路由、状态、API 或 i18n 耦合的组件留在应用业务层。
 
@@ -121,8 +118,8 @@ Scopify/
 
 NetEase API 服务位于 `repo/backend/api-enhanced/`（git submodule）。前端通过 `repo/frontend/apps/web/lib/web/request.ts` 配置的 base URL 访问，开发时可用 `pnpm run dev:backend` 启动。后端规范见 [backend/api-enhanced/AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
 
-
 <!-- CODEGRAPH_START -->
+
 ## CodeGraph
 
 In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:

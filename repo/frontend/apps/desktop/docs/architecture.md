@@ -1,7 +1,6 @@
 # Scopify Desktop 架构全景与子系统设计规范
 
-> 本文档是 Scopify 桌面端（Electron Host）及跨端播放平台的**核心架构全景指南**。
-> 摒弃冗余叙述，直接以 **UML 类图、组件拓扑图、时序图与状态机** 为主线，深度拆解系统分层、核心接口契约、跨进程通信以及数据流转机制。
+> 本文档是 Scopify 桌面端（Electron Host）及跨端播放平台的**核心架构全景指南**。摒弃冗余叙述，直接以 **UML 类图、组件拓扑图、时序图与状态机** 为主线，深度拆解系统分层、核心接口契约、跨进程通信以及数据流转机制。
 
 ---
 
@@ -397,7 +396,7 @@ graph LR
 ### 5.2 MCP 9 项工具与权限矩阵
 
 | 工具名 | 权限门禁 | 幂等性 | 说明 |
-| :--- | :--- | :--- | :--- |
+| :-- | :-- | :-- | :-- |
 | `get_playback_status` | `playback.read` | 是 (只读) | 获取当前播放阶段（playing/paused）、进度毫秒、总时长、音量 |
 | `get_now_playing` | `playback.read` | 是 (只读) | 获取当前曲目精简快照（仅保留 id、title、artistNames 与安全封面） |
 | `play` | `playback.control` | 否 (写操作) | 恢复播放，穿透至前端并等待音频就绪回执 |
@@ -420,7 +419,7 @@ graph LR
 stateDiagram-v2
     [*] --> Running : 应用正常运行
     Running --> BeforeQuitReceived : 用户关闭窗口 / Cmd+Q / app.quit()
-    
+
     state BeforeQuitReceived {
         [*] --> GuardDoubleCall : event.preventDefault() 拦截单次退出
         GuardDoubleCall --> Step1_StopExternal : 1. 停止 MCP HttpServer 与 Endpoint (拒绝外部新请求)
@@ -429,7 +428,7 @@ stateDiagram-v2
         Step3_ReleaseBroker --> Step4_StopServices : 4. 销毁 Discord RPC、停止内存采样器、清理托盘与浮窗
         Step4_StopServices --> Step5_DisposeBackend : 5. 关闭托管的本地后端子进程 (api-enhanced)
     }
-    
+
     BeforeQuitReceived --> SafeToExit : 全部异步资源释放完成 (Promise.allSettled)
     SafeToExit --> [*] : 调用最终底层 app.quit()
 ```
@@ -437,6 +436,7 @@ stateDiagram-v2
 ### 6.2 内存防劣化治理机制 (`processMemory.ts`)
 
 为了严格遵守 SPlayer-Next 倡导的内存纪律（Memory Discipline），桌面端引入常态化进程工作集监控：
+
 - **启动与就绪基线**：主窗口渲染完成时立即触发首个采样快照。
 - **低频定期采样**：通过 `app.getAppMetrics()` 提取每个子进程（Main、Renderer、GPU、Utility、各浮窗）的物理工作集（Working Set Size MB）。
 - **进程名关联**：根据 OS ProcessId 将子进程与业务窗体（`desktop-lyric`、`desktop-playback-controller` 等）精确关联，记录到 Core 日志中，为长期防内存泄漏对比提供科学数据支撑。

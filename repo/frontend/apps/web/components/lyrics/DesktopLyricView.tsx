@@ -1,8 +1,9 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { DesktopLyricHeader } from "@/components/lyrics/subtitle/DesktopLyricHeader";
 import { SubtitleCapsule } from "@/components/lyrics/subtitle/SubtitleCapsule";
-import { DesktopSubtitleToolbar } from "@/components/lyrics/subtitle/DesktopSubtitleToolbar";
+import { useCompanionCursorInside } from "@/hooks/desktopCompanion/useCompanionCursorInside";
+import { useCompanionWindowDrag } from "@/hooks/desktopCompanion/useCompanionWindowDrag";
 import { useDesktopLyricInteractiveRegion } from "@/hooks/lyrics/useDesktopLyricInteractiveRegion";
 import { useDesktopSubtitle } from "@/hooks/lyrics/useDesktopSubtitle";
 import { useInWindowShortcuts } from "@/hooks/shortcuts/useInWindowShortcuts";
@@ -12,13 +13,24 @@ import { cn } from "@/lib/utils";
 import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
 import { useI18n } from "@/store/module/i18n";
 
+const STAGE_JUSTIFY = {
+  left: "justify-start",
+  center: "justify-center",
+  right: "justify-end",
+} as const;
+
 export function DesktopLyricView() {
   const { t } = useI18n();
   const view = useDesktopSubtitle();
-  const clickThrough = useDesktopSubtitleControl((state) =>
-    Boolean(state.preferences?.clickThrough),
-  );
+  const locked = useDesktopSubtitleControl((state) => Boolean(state.preferences?.locked));
+  const hovered = useCompanionCursorInside(runtime.desktopLyrics.onCursorInsideChanged);
   useDesktopLyricInteractiveRegion();
+  const onPointerDown = useCompanionWindowDrag({
+    disabled: locked,
+    onMove: (x, y) =>
+      runtime.desktopLyrics.sendCommand({ type: "move-desktop-lyric-window", x, y }),
+    onEnd: () => runtime.desktopLyrics.sendCommand({ type: "save-desktop-lyric-window" }),
+  });
 
   const executeCommand = useShortcutCommands({
     navigateTo: runtime.navigation.navigateMainWindow,
@@ -43,18 +55,20 @@ export function DesktopLyricView() {
   return (
     <div
       data-desktop-lyrics-root
-      className="flex w-full items-start justify-center bg-transparent p-2"
+      onPointerDown={onPointerDown}
+      className={cn(
+        "group/lyric flex h-screen w-full flex-col overflow-hidden rounded-xl bg-transparent transition-colors duration-200 select-none",
+        hovered && !locked && "bg-black/50",
+        !locked && "cursor-move",
+      )}
     >
+      <DesktopLyricHeader hovered={hovered} locked={locked} />
       <div
-        ref={view.contentRef}
         className={cn(
-          "group/subtitle relative w-fit max-w-full pt-8",
-          !clickThrough && "cursor-grab active:cursor-grabbing",
+          "flex min-h-0 flex-1 items-start px-4 py-2",
+          STAGE_JUSTIFY[view.settings.textAlign],
         )}
-        // 锁定后不再作为拖拽区，否则系统拖拽区域会吞掉转发给渲染进程的鼠标事件。
-        style={{ WebkitAppRegion: clickThrough ? "no-drag" : "drag" } as CSSProperties}
       >
-        <DesktopSubtitleToolbar />
         <SubtitleCapsule
           settings={{
             ...view.settings,
@@ -70,6 +84,8 @@ export function DesktopLyricView() {
           playback={view.playback}
           loop={false}
           fillProgress={view.fillProgress}
+          singleLine
+          lineDurationMs={view.lineDurationMs}
         />
       </div>
     </div>

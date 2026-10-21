@@ -31,4 +31,11 @@ export default {
 
     return commands;
   },
+  // Markdown/MDX: tables are printed compactly by prettier-plugin-markdown-compact-tables,
+  // so editing one cell never re-pads the whole table.
+  "**/*.{md,mdx}": (filenames) => {
+    if (!filenames.length) return [];
+    const quotedAll = filenames.map((f) => `"${f.replaceAll("\\", "/")}"`).join(" ");
+    return [`prettier --write ${quotedAll}`];
+  },
 };

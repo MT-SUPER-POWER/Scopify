@@ -7,7 +7,9 @@ export interface DesktopLyricInteractiveRect {
 
 export type DesktopLyricCommand =
   | { rects: DesktopLyricInteractiveRect[]; type: "set-desktop-lyric-interactive-region" }
-  | { type: "resize-desktop-lyric-window"; width: number; height: number }
+  | { height: number; type: "set-desktop-lyric-height" }
+  | { type: "move-desktop-lyric-window"; x: number; y: number }
+  | { type: "save-desktop-lyric-window" }
   | { enabled: boolean; type: "set-main-window-always-on-top" }
   | { enabled: boolean; type: "set-main-window-click-through" }
   | { enabled: boolean; type: "set-stage-transparent" }
@@ -17,8 +19,9 @@ export type DesktopLyricCommand =
 
 export interface DesktopLyricPreferences {
   alwaysOnTop: boolean;
-  clickThrough: boolean;
   enabled?: boolean;
+  /** 锁定后窗口不可拖拽/缩放且鼠标穿透，仅保留解锁按钮可点。 */
+  locked: boolean;
   preventSleepOnPlayback?: boolean;
   showSecondaryLyric?: boolean;
   skipTaskbar: boolean;

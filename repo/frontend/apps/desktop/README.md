@@ -1,11 +1,8 @@
 # Scopify Desktop
 
-Electron host for Scopify. The application owns the main process, preload,
-native resources, updater, and packaging configuration.
+Electron host for Scopify. The application owns the main process, preload, native resources, updater, and packaging configuration.
 
-The `build/desktop/app/renderer/` directory is a generated artifact slot. Desktop code must not
-import implementation files from `apps/web`; local and CI builds copy a verified
-static Web build into this directory before packaging.
+The `build/desktop/app/renderer/` directory is a generated artifact slot. Desktop code must not import implementation files from `apps/web`; local and CI builds copy a verified static Web build into this directory before packaging.
 
 ## 构建目录与配置
 
@@ -22,15 +19,11 @@ static Web build into this directory before packaging.
 | `public/` | 静态资源管理（图标、Splash、系统脚本等，对齐 SPlayer 结构） |
 | `build/release/` | 安装包输出 |
 
-Next.js 在 Web 应用中构建页面，Electron Vite 构建桌面宿主。同步与准备脚本将两者放入
-`build/desktop/app/`，Electron Builder 再从该目录生成安装包。打包应用内部的页面路径是
-`renderer/`，它不是 Desktop 应用根目录下的源码目录。
+Next.js 在 Web 应用中构建页面，Electron Vite 构建桌面宿主。同步与准备脚本将两者放入 `build/desktop/app/`，Electron Builder 再从该目录生成安装包。打包应用内部的页面路径是 `renderer/`，它不是 Desktop 应用根目录下的源码目录。
 
-工作区入口继续由根 `package.json` 和 `turbo.json` 编排；打包和发布命令在 Desktop 内
-显式使用 `electron-builder.config.ts`。
+工作区入口继续由根 `package.json` 和 `turbo.json` 编排；打包和发布命令在 Desktop 内显式使用 `electron-builder.config.ts`。
 
-Main-process architecture, lifecycle, and contribution rules are documented in
-[`electron/main/README.md`](./electron/main/README.md).
+Main-process architecture, lifecycle, and contribution rules are documented in [`electron/main/README.md`](./electron/main/README.md).
 
 Playback-related maintenance notes:
 

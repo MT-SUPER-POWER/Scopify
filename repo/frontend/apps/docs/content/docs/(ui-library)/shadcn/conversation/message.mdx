@@ -75,10 +75,7 @@ import { Message, MessageAvatar, MessageContent } from "@scopify/ui/shadcn/compo
 </Message>
 ```
 
-**Note:** `Message` owns the row layout—avatar, alignment, header, and footer.
-Render the visible message surface inside it with
-[`Bubble`](/docs/components/bubble). For the scroll container around a
-conversation, use [`MessageScroller`](/docs/components/message-scroller).
+**Note:** `Message` owns the row layout—avatar, alignment, header, and footer. Render the visible message surface inside it with [`Bubble`](/docs/components/bubble). For the scroll container around a conversation, use [`MessageScroller`](/docs/components/message-scroller).
 
 ## Composition
 
@@ -120,10 +117,10 @@ Use `MessageAvatar` to render an avatar next to the message. Set `align="end"` o
   previewClassName="h-auto theme-blue"
  />
 
-| align   | Description                                         |
-| ------- | --------------------------------------------------- |
+| align | Description |
+| --- | --- |
 | `start` | Align the message to the start of the conversation. |
-| `end`   | Align the message to the end of the conversation.   |
+| `end` | Align the message to the end of the conversation. |
 
 ## Group
 
@@ -200,47 +197,47 @@ For in-progress messages, use a [`Marker`](/docs/components/marker) with `role="
 
 The message row wrapper.
 
-| Prop        | Type               | Default   | Description                                       |
-| ----------- | ------------------ | --------- | ------------------------------------------------- |
-| `align`     | `"start" \| "end"` | `"start"` | The alignment of the message in the conversation. |
-| `className` | `string`           | -         | Additional classes to apply to the row.           |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `align` | `"start" \| "end"` | `"start"` | The alignment of the message in the conversation. |
+| `className` | `string` | - | Additional classes to apply to the row. |
 
 ### MessageGroup
 
 Groups consecutive messages from the same sender.
 
-| Prop        | Type     | Default | Description                                    |
-| ----------- | -------- | ------- | ---------------------------------------------- |
-| `className` | `string` | -       | Additional classes to apply to the group root. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional classes to apply to the group root. |
 
 ### MessageAvatar
 
 The avatar slot, aligned to the bottom of the message. When the message has a `MessageFooter`, the avatar shifts up to stay aligned with the message surface instead of the footer.
 
-| Prop        | Type     | Default | Description                                     |
-| ----------- | -------- | ------- | ----------------------------------------------- |
-| `className` | `string` | -       | Additional classes to apply to the avatar slot. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional classes to apply to the avatar slot. |
 
 ### MessageContent
 
 Wraps the header, message surface, and footer.
 
-| Prop        | Type     | Default | Description                                      |
-| ----------- | -------- | ------- | ------------------------------------------------ |
-| `className` | `string` | -       | Additional classes to apply to the content slot. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional classes to apply to the content slot. |
 
 ### MessageHeader
 
 Displays content above the message, such as a sender name. Stays aligned to the start regardless of `align`.
 
-| Prop        | Type     | Default | Description                                |
-| ----------- | -------- | ------- | ------------------------------------------ |
-| `className` | `string` | -       | Additional classes to apply to the header. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional classes to apply to the header. |
 
 ### MessageFooter
 
 Displays content below the message, such as status or actions. Aligns to the message side.
 
-| Prop        | Type     | Default | Description                                |
-| ----------- | -------- | ------- | ------------------------------------------ |
-| `className` | `string` | -       | Additional classes to apply to the footer. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional classes to apply to the footer. |

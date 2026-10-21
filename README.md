@@ -18,25 +18,15 @@
   <a href="https://vdoonnridu.apifox.cn/">后端 API</a>
 </p>
 
-[![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers)
-[![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases)
-[![License](https://img.shields.io/github/license/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/blob/master/license)
-[![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-blue)](https://deepwiki.com/MT-SUPER-POWER/Scopify)
-[![CI](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml)
-[![Latest completed release build](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMT-SUPER-POWER%2FScopify%2Factions%2Fworkflows%2Frelease.yml%2Fruns%3Fstatus%3Dcompleted%26per_page%3D1&query=%24.workflow_runs%5B0%5D.conclusion&label=Build%20and%20Release&logo=github&cacheSeconds=300)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml)
+[![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers) [![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases) [![License](https://img.shields.io/github/license/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/blob/master/license) [![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-blue)](https://deepwiki.com/MT-SUPER-POWER/Scopify) [![CI](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml) [![Latest completed release build](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMT-SUPER-POWER%2FScopify%2Factions%2Fworkflows%2Frelease.yml%2Fruns%3Fstatus%3Dcompleted%26per_page%3D1&query=%24.workflow_runs%5B0%5D.conclusion&label=Build%20and%20Release&logo=github&cacheSeconds=300)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml)
 
 </div>
-
 
 ## 简介
 
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
 
-`技术栈`: [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?logo=shadcnui&logoColor=white)](https://ui.shadcn.com/)
-[![Electron](https://img.shields.io/badge/Electron-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/zh/docs/latest/)
-[![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?logo=turborepo&logoColor=white)](https://turbo.build/)
+`技术栈`: [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?logo=shadcnui&logoColor=white)](https://ui.shadcn.com/) [![Electron](https://img.shields.io/badge/Electron-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/zh/docs/latest/) [![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?logo=turborepo&logoColor=white)](https://turbo.build/)
 
 `包管理工具`: [![pnpm 12.x](https://img.shields.io/badge/pnpm-12.x-F69220?logo=pnpm&logoColor=white)](./package.json) 用于包管理（版本见 `packageManager`），[![Bun >= 1.3.11](https://img.shields.io/badge/Bun-%3E%3D%201.3.11-000000?logo=bun&logoColor=white)](https://bun.sh/)用于运行脚本与测试。
 
@@ -98,8 +88,7 @@ Scopify 现在把桌面客户端、Web 前端和后端分开管理。Web 和桌�
 
 ### 后端的运行
 
-> 请确保你后端的实际运行
-> 当然你也可以看这个文档[部署文档](https://scopify-docs.vercel.app/docs/deployment)来部署你的专有后端作为项目后端运行。
+> 请确保你后端的实际运行当然你也可以看这个文档[部署文档](https://scopify-docs.vercel.app/docs/deployment)来部署你的专有后端作为项目后端运行。
 
 ```bash
 git submodule update --init --recursive   # 初次克隆时需要

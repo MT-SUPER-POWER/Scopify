@@ -119,15 +119,13 @@ export default VisualizerFoo;
 
 ### 核心时间与歌词数据
 
-- `currentTime`: 当前播放时间的 `MotionValue<number>`，单位秒。推荐通过 `currentTime.get()` 读取当前值，或通过 `useMotionValueEvent` 监听变化。
-  禁止把它的连续变化写入 `useState`、store 或 reducer 来追踪当前精确时间；播放器中的逐帧动画应继续使用 MotionValue、`useTransform`、CSS / Framer Motion、canvas draw loop 或 `useRef` 保存瞬时值。React state 只用于当前行、可见段落、waiting / active / passed 等离散变化。
+- `currentTime`: 当前播放时间的 `MotionValue<number>`，单位秒。推荐通过 `currentTime.get()` 读取当前值，或通过 `useMotionValueEvent` 监听变化。禁止把它的连续变化写入 `useState`、store 或 reducer 来追踪当前精确时间；播放器中的逐帧动画应继续使用 MotionValue、`useTransform`、CSS / Framer Motion、canvas draw loop 或 `useRef` 保存瞬时值。React state 只用于当前行、可见段落、waiting / active / passed 等离散变化。
 - `currentLineIndex`: 当前激活歌词行索引。可能为 `-1`，表示当前没有激活行。
 - `lines`: 已处理好的歌词行数组。新 visualizer 应假定这里的数据已经可直接渲染，不再负责拉取或解析歌词。
 
 ### 主题与音频输入
 
-- `theme`: 当前歌词主题。包含颜色、字体风格、动画强度等。
-  新增颜色必须从当前 `Theme` / `DualTheme` 的 light / dark 结果动态派生，优先使用 `backgroundColor`、`primaryColor`、`accentColor`、`secondaryColor` 及 `colorMix.ts` 工具；不要长期写死只适配暗色或亮色的固定 hex / rgba。
+- `theme`: 当前歌词主题。包含颜色、字体风格、动画强度等。新增颜色必须从当前 `Theme` / `DualTheme` 的 light / dark 结果动态派生，优先使用 `backgroundColor`、`primaryColor`、`accentColor`、`secondaryColor` 及 `colorMix.ts` 工具；不要长期写死只适配暗色或亮色的固定 hex / rgba。
 - `isDaylight`: 当前是否是浅色主题，适合细调边框、阴影和控制面板对比度。
 - `audioPower`: 音频整体能量。
 - `audioBands`: 分频能量，用于驱动背景或局部动画。
@@ -192,12 +190,9 @@ export default VisualizerFoo;
 
 特别建议先看 Lyrics 面板里的这些信息：
 
-- `Current Line` / `Next Line`
-  用来确认当前 visualizer 实际拿到的是哪一句，以及下一句何时开始
-- `start` / `end` / `renderEnd`
-  用来区分“逐字 reveal 什么时候应该完成”和“当前句最多还能占用时间轴多久”
-- 胶囊状态
-  用来快速判断当前句是否已经到 `endTime`、是否仍处于 render hold、以及 `renderEndTime` 会不会被下一句 `startTime` 截断
+- `Current Line` / `Next Line` 用来确认当前 visualizer 实际拿到的是哪一句，以及下一句何时开始
+- `start` / `end` / `renderEnd` 用来区分“逐字 reveal 什么时候应该完成”和“当前句最多还能占用时间轴多久”
+- 胶囊状态用来快速判断当前句是否已经到 `endTime`、是否仍处于 render hold、以及 `renderEndTime` 会不会被下一句 `startTime` 截断
 
 这一步对排查下面几类问题尤其有用：
 
@@ -260,8 +255,7 @@ visualizer/
 
 ### 1. 共享壳层
 
-- `VisualizerShell.tsx`
-  负责：
+- `VisualizerShell.tsx` 负责：
   - 根容器
   - 返回按钮显隐与点击
   - 调用 `VisualizerBackgroundRenderer`
@@ -270,10 +264,8 @@ visualizer/
 
 ### 2. 共享 runtime
 
-- `runtime.ts`
-  当前提供的共享能力包括：
-  - `useVisualizerRuntime(...)`
-    统一计算：
+- `runtime.ts` 当前提供的共享能力包括：
+  - `useVisualizerRuntime(...)` 统一计算：
     - `activeLine`
     - `recentCompletedLine`
     - `upcomingLine`
@@ -288,8 +280,7 @@ visualizer/
 
 ### 3. 共享字幕层
 
-- `VisualizerSubtitleOverlay.tsx`
-  负责：
+- `VisualizerSubtitleOverlay.tsx` 负责：
   - 当前句翻译显示
   - 空窗期最近完成句翻译显示
   - 下一句 / 下两句提示显示
@@ -298,22 +289,14 @@ visualizer/
 
 每个 visualizer 仍然保留自己的主歌词渲染引擎：
 
-- `classic/Visualizer.tsx`
-  DOM + Framer Motion 的自由散点词布局
-- `partita/VisualizerPartita.tsx`
-  DOM + Framer Motion 的分列 / 分块布局
-- `cadenza/VisualizerCadenza.tsx`
-  canvas + DOM overlay 的重型排版 / 动画引擎
-- `fume/VisualizerFume.tsx`
-  文章式整页排版 + 摄影机追焦 + glyph 级 reveal
-- `claddagh/VisualizerCladdagh.tsx`
-  以 grapheme timing 驱动的椭圆轨道排版；用预文本测量字符间距，并通过 MotionValue / DOM style 更新环形文字
-- `cappella/VisualizerCappella.tsx`
-  聊天气泡 / 表情包叙事布局，靠离线测量稳定气泡尺寸
-- `tilt/VisualizerTilt.tsx`
-  倾斜排版与强调片段，用较少状态表达文字重心变化
-- `monet/VisualizerMonet.tsx`
-  海报式布局、右侧肖像、关键词着色和底部音频条
+- `classic/Visualizer.tsx` DOM + Framer Motion 的自由散点词布局
+- `partita/VisualizerPartita.tsx` DOM + Framer Motion 的分列 / 分块布局
+- `cadenza/VisualizerCadenza.tsx` canvas + DOM overlay 的重型排版 / 动画引擎
+- `fume/VisualizerFume.tsx` 文章式整页排版 + 摄影机追焦 + glyph 级 reveal
+- `claddagh/VisualizerCladdagh.tsx` 以 grapheme timing 驱动的椭圆轨道排版；用预文本测量字符间距，并通过 MotionValue / DOM style 更新环形文字
+- `cappella/VisualizerCappella.tsx` 聊天气泡 / 表情包叙事布局，靠离线测量稳定气泡尺寸
+- `tilt/VisualizerTilt.tsx` 倾斜排版与强调片段，用较少状态表达文字重心变化
+- `monet/VisualizerMonet.tsx` 海报式布局、右侧肖像、关键词着色和底部音频条
 
 不要把这些 renderer 强行揉成一个统一组件。共享的是壳层、runtime、字幕层、预热入口，以及模式注册 / 设置面板挂载方式，不是具体渲染算法。
 
@@ -418,27 +401,18 @@ visualizer/
 
 常用工具：
 
-- `getLineRenderEndTime`
-  作用：获取一行歌词实际应渲染到何时结束
-- `getLineRenderHints`
-  作用：读取当前行的渲染提示，例如过渡模式、逐词 reveal 模式
-- `getLineTransitionTiming`
-  作用：给更复杂的入场/退场计算提供统一时序
-- `resolveThemeFontStack`
-  作用：根据主题和自定义字体解析实际 `font-family`
+- `getLineRenderEndTime` 作用：获取一行歌词实际应渲染到何时结束
+- `getLineRenderHints` 作用：读取当前行的渲染提示，例如过渡模式、逐词 reveal 模式
+- `getLineTransitionTiming` 作用：给更复杂的入场/退场计算提供统一时序
+- `resolveThemeFontStack` 作用：根据主题和自定义字体解析实际 `font-family`
 
 常用共享模块：
 
-- `VisualizerShell`
-  作用：复用背景、返回按钮、外层容器
-- `VisualizerSubtitleOverlay`
-  作用：复用底部翻译 / 下一句提示
-- `useVisualizerRuntime`
-  作用：统一当前句、最近完成句、下一句和预热上下文
-- `shouldPreheatLine`
-  作用：统一“是否进入预热窗口”的判断
-- `prepareActiveAndUpcoming`
-  作用：在 renderer 内部统一“当前句 + 下一句”的预备流程
+- `VisualizerShell` 作用：复用背景、返回按钮、外层容器
+- `VisualizerSubtitleOverlay` 作用：复用底部翻译 / 下一句提示
+- `useVisualizerRuntime` 作用：统一当前句、最近完成句、下一句和预热上下文
+- `shouldPreheatLine` 作用：统一“是否进入预热窗口”的判断
+- `prepareActiveAndUpcoming` 作用：在 renderer 内部统一“当前句 + 下一句”的预备流程
 
 如果新模式也有“逐词激活 / 已播放 / 未播放”状态，建议保持和现有模式一致的三态语义：
 
@@ -450,19 +424,15 @@ visualizer/
 
 ### `endTime` 与 `renderEndTime` 的职责区别
 
-- `line.words[*].endTime` 与整句 `line.endTime`
-  语义：逐词 / 逐字 reveal 的真实完成时间。到这里时，最后一个字本身应该已经完成渲染。
-- `renderEndTime`
-  语义：visualizer 最长允许继续占用时间轴的结束点，用于 active -> passed、尾迹、退场等视觉过渡。
+- `line.words[*].endTime` 与整句 `line.endTime` 语义：逐词 / 逐字 reveal 的真实完成时间。到这里时，最后一个字本身应该已经完成渲染。
+- `renderEndTime` 语义：visualizer 最长允许继续占用时间轴的结束点，用于 active -> passed、尾迹、退场等视觉过渡。
 
 这两个时间点不要混为一谈：
 
 - `endTime` 负责“字什么时候应该出现完”
 - `renderEndTime` 负责“当前句最多还能留在屏幕上多久”
 
-另外，`renderEndTime` 不是独立于下一句存在的硬时间轴。
-如果下一句 `startTime` 更早到来，当前句的额外过渡窗口会被截断。
-visualizer 在这种情况下应当直接补完成当前句剩余的 pass / trail 状态，而不是继续拖着半截 active 动画跨到下一句之后。
+另外，`renderEndTime` 不是独立于下一句存在的硬时间轴。如果下一句 `startTime` 更早到来，当前句的额外过渡窗口会被截断。visualizer 在这种情况下应当直接补完成当前句剩余的 pass / trail 状态，而不是继续拖着半截 active 动画跨到下一句之后。
 
 ## 预热与缓存
 
@@ -470,14 +440,10 @@ visualizer 在这种情况下应当直接补完成当前句剩余的 pass / trai
 
 ### 已有模式
 
-- `partita/VisualizerPartita.tsx`
-  使用布局缓存，并在进入时间窗口时预热下一句布局
-- `cadenza/VisualizerCadenza.tsx`
-  使用更重的 prepared-state 缓存，并在计算当前句时顺手准备 upcoming line
-- `classic/Visualizer.tsx`
-  当前没有专门的重型预热层，保持即时布局计算
-- `claddagh/VisualizerCladdagh.tsx`
-  不建立整句 layout cache；使用有界的 grapheme 间距 cache，并只渲染当前行前后一小段轨道内容
+- `partita/VisualizerPartita.tsx` 使用布局缓存，并在进入时间窗口时预热下一句布局
+- `cadenza/VisualizerCadenza.tsx` 使用更重的 prepared-state 缓存，并在计算当前句时顺手准备 upcoming line
+- `classic/Visualizer.tsx` 当前没有专门的重型预热层，保持即时布局计算
+- `claddagh/VisualizerCladdagh.tsx` 不建立整句 layout cache；使用有界的 grapheme 间距 cache，并只渲染当前行前后一小段轨道内容
 
 ### 设计原则
 
@@ -694,10 +660,7 @@ resetSettings: (props) => {
 
 #### 文案文件
 
-所有 Folia 文案使用项目的 `useI18n`，键必须以 `folia.` 开头，并同步写入
-`constants/i18n/folia.ts` 的 `zh-CN`、`zh-TW` 和 `en-US` 三套平铺字典。包括模式名、
-设置项、tooltip、按钮、空态和 toast。`labelFallback` 只能作为 registry 兜底，不能替代
-正式字典项。
+所有 Folia 文案使用项目的 `useI18n`，键必须以 `folia.` 开头，并同步写入 `constants/i18n/folia.ts` 的 `zh-CN`、`zh-TW` 和 `en-US` 三套平铺字典。包括模式名、设置项、tooltip、按钮、空态和 toast。`labelFallback` 只能作为 registry 兜底，不能替代正式字典项。
 
 常见文案包括：
 

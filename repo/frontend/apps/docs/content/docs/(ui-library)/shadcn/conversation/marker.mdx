@@ -92,11 +92,11 @@ Use `variant` to switch between an inline marker, bordered row, and labeled sepa
   previewClassName="h-auto theme-blue"
  />
 
-| Variant     | Description                                          |
-| ----------- | ---------------------------------------------------- |
-| `default`   | An inline marker for status, notes, and actions.     |
-| `border`    | A default marker with a bottom border under the row. |
-| `separator` | A centered label with divider lines on each side.    |
+| Variant | Description |
+| --- | --- |
+| `default` | An inline marker for status, notes, and actions. |
+| `border` | A default marker with a bottom border under the row. |
+| `separator` | A centered label with divider lines on each side. |
 
 ## Status
 
@@ -252,24 +252,24 @@ When a marker links or triggers an action, render it as a real `<button>` or `<a
 
 The root marker element. The file also exports `markerVariants` for composing the marker styles into custom components.
 
-| Prop        | Type                                   | Default     | Description                                      |
-| ----------- | -------------------------------------- | ----------- | ------------------------------------------------ |
-| `variant`   | `"default" \| "border" \| "separator"` | `"default"` | The marker layout.                               |
-| `asChild`   | `boolean`                              | `false`     | Render as the child element, such as a link.     |
-| `className` | `string`                               | -           | Additional classes to apply to the root element. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `"default" \| "border" \| "separator"` | `"default"` | The marker layout. |
+| `asChild` | `boolean` | `false` | Render as the child element, such as a link. |
+| `className` | `string` | - | Additional classes to apply to the root element. |
 
 ### MarkerIcon
 
 A decorative icon slot. Hidden from assistive tech with `aria-hidden`.
 
-| Prop        | Type     | Default | Description                                   |
-| ----------- | -------- | ------- | --------------------------------------------- |
-| `className` | `string` | -       | Additional classes to apply to the icon slot. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional classes to apply to the icon slot. |
 
 ### MarkerContent
 
 The marker text content.
 
-| Prop        | Type     | Default | Description                                      |
-| ----------- | -------- | ------- | ------------------------------------------------ |
-| `className` | `string` | -       | Additional classes to apply to the content slot. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional classes to apply to the content slot. |

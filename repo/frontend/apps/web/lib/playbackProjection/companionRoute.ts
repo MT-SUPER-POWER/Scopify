@@ -1,6 +1,8 @@
 const COMPANION_PLAYBACK_PATHS = new Set([
   "/desktop-lyrics",
   "/desktop-playback-controller",
+  "/dynamic-island",
+  "/taskbar-lyric",
   "/tray",
 ]);
 

@@ -18,6 +18,10 @@ export interface SubtitleCapsuleProps {
   replayId: number;
   playback: SubtitlePlayback;
   loop: boolean;
+  /** 单行显示并撑满父容器宽度，超长原文按本句时长横向滚动；桌面歌词靠它固定窗口高度。 */
+  singleLine?: boolean;
+  /** 单行滚动所依据的本句时长（毫秒）。 */
+  lineDurationMs?: number;
 }
 export type SubtitlePreviewScene = "short" | "long" | "bilingual" | "chinese";
 

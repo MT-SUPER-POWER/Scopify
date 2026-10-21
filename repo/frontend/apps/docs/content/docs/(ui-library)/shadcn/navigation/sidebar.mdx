@@ -17,11 +17,9 @@ import { ExternalLinkIcon } from "lucide-react"
   </figcaption>
 </figure>
 
-Sidebars are one of the most complex components to build. They are central
-to any application and often contain a lot of moving parts.
+Sidebars are one of the most complex components to build. They are central to any application and often contain a lot of moving parts.
 
-We now have a solid foundation to build on top of. Composable. Themeable.
-Customizable.
+We now have a solid foundation to build on top of. Composable. Themeable. Customizable.
 
 [Browse the Blocks Library](/blocks).
 
@@ -164,10 +162,10 @@ The `SidebarProvider` component is used to provide the sidebar context to the `S
 
 ### Props
 
-| Name           | Type                      | Description                                  |
-| -------------- | ------------------------- | -------------------------------------------- |
-| `defaultOpen`  | `boolean`                 | Default open state of the sidebar.           |
-| `open`         | `boolean`                 | Open state of the sidebar (controlled).      |
+| Name | Type | Description |
+| --- | --- | --- |
+| `defaultOpen` | `boolean` | Default open state of the sidebar. |
+| `open` | `boolean` | Open state of the sidebar (controlled). |
 | `onOpenChange` | `(open: boolean) => void` | Sets open state of the sidebar (controlled). |
 
 ### Width
@@ -208,17 +206,17 @@ The main `Sidebar` component used to render a collapsible sidebar.
 
 ### Props
 
-| Property      | Type                              | Description                       |
-| ------------- | --------------------------------- | --------------------------------- |
-| `side`        | `left` or `right`                 | The side of the sidebar.          |
-| `variant`     | `sidebar`, `floating`, or `inset` | The variant of the sidebar.       |
-| `collapsible` | `offcanvas`, `icon`, or `none`    | Collapsible state of the sidebar. |
+| Property | Type | Description |
+| --- | --- | --- |
+| `side` | `left` or `right` | The side of the sidebar. |
+| `variant` | `sidebar`, `floating`, or `inset` | The variant of the sidebar. |
+| `collapsible` | `offcanvas`, `icon`, or `none` | Collapsible state of the sidebar. |
 
-| Prop        | Description                                                  |
-| ----------- | ------------------------------------------------------------ |
+| Prop | Description |
+| --- | --- |
 | `offcanvas` | A collapsible sidebar that slides in from the left or right. |
-| `icon`      | A sidebar that collapses to icons.                           |
-| `none`      | A non-collapsible sidebar.                                   |
+| `icon` | A sidebar that collapses to icons. |
+| `none` | A non-collapsible sidebar. |
 
 <Callout>
   **Note:** If you use the `inset` variant, remember to wrap your main content
@@ -254,15 +252,15 @@ export function AppSidebar() {
 }
 ```
 
-| Property        | Type                      | Description                                   |
-| --------------- | ------------------------- | --------------------------------------------- |
-| `state`         | `expanded` or `collapsed` | The current state of the sidebar.             |
-| `open`          | `boolean`                 | Whether the sidebar is open.                  |
-| `setOpen`       | `(open: boolean) => void` | Sets the open state of the sidebar.           |
-| `openMobile`    | `boolean`                 | Whether the sidebar is open on mobile.        |
+| Property | Type | Description |
+| --- | --- | --- |
+| `state` | `expanded` or `collapsed` | The current state of the sidebar. |
+| `open` | `boolean` | Whether the sidebar is open. |
+| `setOpen` | `(open: boolean) => void` | Sets the open state of the sidebar. |
+| `openMobile` | `boolean` | Whether the sidebar is open on mobile. |
 | `setOpenMobile` | `(open: boolean) => void` | Sets the open state of the sidebar on mobile. |
-| `isMobile`      | `boolean`                 | Whether the sidebar is on mobile.             |
-| `toggleSidebar` | `() => void`              | Toggles the sidebar. Desktop and mobile.      |
+| `isMobile` | `boolean` | Whether the sidebar is on mobile. |
+| `toggleSidebar` | `() => void` | Toggles the sidebar. Desktop and mobile. |
 
 ## SidebarHeader
 

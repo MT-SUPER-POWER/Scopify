@@ -63,10 +63,10 @@ export function DesktopSubtitleControl() {
             onCheckedChange={(value) => updateLyricsPreview({ showTranslation: value })}
           />
         </label>
-        {(["alwaysOnTop", "clickThrough"] as const).map((key) => (
+        {(["alwaysOnTop", "locked"] as const).map((key) => (
           <label key={key} className="flex items-center justify-between gap-3 text-sm">
             <span>
-              {t(key === "alwaysOnTop" ? "desktopLyrics.keepOnTop" : "desktopLyrics.clickThrough")}
+              {t(key === "alwaysOnTop" ? "desktopLyrics.keepOnTop" : "desktopLyrics.lock")}
             </span>
             <Switch
               checked={Boolean(control.preferences?.[key])}

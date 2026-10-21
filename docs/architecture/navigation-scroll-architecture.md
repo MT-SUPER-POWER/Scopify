@@ -100,13 +100,9 @@ app/(dashboard)/template.tsx
 
 `MainLayout` 不再把所有页面包在一个永久存在的主 `ScrollArea` 中。dashboard route template 为当前导航页面创建 `RouteScrollSurface`，页面离开时该 surface 与其监听器一起卸载。
 
-Primary Scroll Surface 使用项目现有的 Radix/shadcn `ScrollArea`，但它的 viewport
-必须由当前 route template 独占。协调器只读写该 viewport；ScrollArea 只负责原生
-滚动与滚动条外观，不拥有导航恢复状态。这样既保留一致的交互，也不会让两个路由
-共享一个长期存在的滚动 DOM。
+Primary Scroll Surface 使用项目现有的 Radix/shadcn `ScrollArea`，但它的 viewport 必须由当前 route template 独占。协调器只读写该 viewport；ScrollArea 只负责原生滚动与滚动条外观，不拥有导航恢复状态。这样既保留一致的交互，也不会让两个路由共享一个长期存在的滚动 DOM。
 
-Sidebar、Queue、弹窗和歌词等 Nested Scroll Surface 继续使用各自独立的
-`ScrollArea`，不参与路由恢复。
+Sidebar、Queue、弹窗和歌词等 Nested Scroll Surface 继续使用各自独立的 `ScrollArea`，不参与路由恢复。
 
 ### 2. Navigation Scroll Coordinator 是唯一所有者
 
