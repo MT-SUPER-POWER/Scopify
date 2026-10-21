@@ -4,8 +4,8 @@
 
 <h1>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/img/wordmark.png" />
-    <img src="docs/img/wordmark-light.png" alt="Scopify" width="320" />
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/wordmark-light.png" />
+    <img src="docs/img/wordmark.png" alt="Scopify" width="320" />
   </picture>
 </h1>
 
