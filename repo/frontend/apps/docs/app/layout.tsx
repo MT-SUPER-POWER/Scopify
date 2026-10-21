@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { RootProvider } from "fumadocs-ui/provider/next";
 
 import scopifyLogo from "@/assets/logo.png";
+import appleTouchIcon from "@/assets/apple-touch-icon.png";
 import { ThemePrototypeProvider } from "@/components/theme-prototype/theme-prototype-provider";
 import { DOCS_UI_TRANSLATIONS } from "@/constants/docs-translations";
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   description: "Scopify 的产品、开发、架构与共享资产文档。",
   icons: {
     icon: scopifyLogo.src,
+    apple: appleTouchIcon.src,
   },
 };
 

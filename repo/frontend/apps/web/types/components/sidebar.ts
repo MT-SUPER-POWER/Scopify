@@ -13,6 +13,15 @@ export interface SidebarPlaylistLibraryProps {
   isCollapsed: boolean;
 }
 
+export interface SiderBarMenuProps {
+  isCollapsed?: boolean;
+}
+
+export interface SidebarPendingPlaylist {
+  id: number | string;
+  name: string;
+}
+
 export interface SidebarLibraryItemProps {
   coverImg: string;
   hasContextMenu?: boolean;

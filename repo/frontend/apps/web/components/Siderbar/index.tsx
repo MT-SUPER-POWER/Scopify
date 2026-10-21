@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { FaCompactDisc } from "react-icons/fa6";
+import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useSidebarNarrow } from "@/lib/hooks/useSidebarNarrow";
@@ -15,32 +15,32 @@ function SidebarImpl() {
   const isCollapsed = useSidebarNarrow(containerRef);
 
   return (
-    <aside ref={containerRef} className="flex size-full min-h-0 flex-col bg-surface">
+    <aside ref={containerRef} className="@container/sidebar flex size-full min-h-0 flex-col bg-surface">
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-md bg-sidebar">
         <header
           className={cn(
-            "flex shrink-0 items-center px-3 py-4 text-muted-foreground",
-            isCollapsed ? "justify-center px-2 py-3" : "justify-between",
+            "flex h-16 shrink-0 items-center gap-2 px-2 text-muted-foreground @min-[208px]/sidebar:px-3 @min-[240px]/sidebar:px-4",
+            isCollapsed ? "justify-center" : "justify-between",
           )}
         >
           <Link
             href="/"
+            aria-label="Scopify"
+            title="Scopify"
             className={cn(
-              "flex cursor-pointer items-center gap-3 overflow-hidden font-semibold text-foreground transition-colors hover:text-primary",
-              isCollapsed && "gap-0",
+              "flex min-w-0 items-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none",
+              isCollapsed && "justify-center",
             )}
           >
-            <FaCompactDisc className={cn("size-6 shrink-0", isCollapsed && "size-8")} />
-            {!isCollapsed && <span className="min-w-0 truncate text-[15px]">Scopify</span>}
+            <ScopifyBrand
+              priority
+              className="min-w-0"
+              iconClassName={isCollapsed ? "size-9" : "size-8"}
+              wordmarkClassName="hidden @min-[208px]/sidebar:block"
+            />
           </Link>
           {!isCollapsed && <SiderBarMenuMemo />}
         </header>
-
-        {isCollapsed && (
-          <div className="flex shrink-0 justify-center px-2 pb-2">
-            <SiderBarMenuMemo isCollapsed />
-          </div>
-        )}
 
         <ScrollArea
           className="min-h-0 flex-1"
@@ -49,6 +49,11 @@ function SidebarImpl() {
           <LibraryNavigation isCollapsed={isCollapsed} />
           <SidebarPlaylistLibrary isCollapsed={isCollapsed} />
         </ScrollArea>
+        {isCollapsed && (
+          <footer className="flex h-14 shrink-0 items-center justify-center border-t border-content/5 px-2">
+            <SiderBarMenuMemo isCollapsed />
+          </footer>
+        )}
       </div>
     </aside>
   );

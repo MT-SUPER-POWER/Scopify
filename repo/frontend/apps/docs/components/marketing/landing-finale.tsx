@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import scopifyLogo from "@/assets/logo.png";
+import { ScopifyWordmark } from "@/components/layout/scopify-wordmark";
 import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
 import { LandingReveal } from "@/components/marketing/landing-reveal";
 import {
@@ -40,11 +41,10 @@ export function LandingFinale() {
         />
         <LandingReveal className="flex flex-col items-center">
           <LandingChapterLabel chapter="outro" />
-          <Image
-            src={scopifyLogo}
-            alt=""
-            className="mt-[5svh] size-12 rounded-2xl shadow-[0_0_80px_rgba(99,227,166,0.35)] sm:size-14"
-          />
+          <div role="img" aria-label="Scopify" className="mt-[5svh] flex items-center gap-3">
+            <Image src={scopifyLogo} alt="" className="size-12 object-contain sm:size-14" />
+            <ScopifyWordmark tone="on-dark" className="w-36 sm:w-40" />
+          </div>
           <h2
             id="landing-finale-title"
             className="landing-display mt-[4svh] text-[clamp(2.4rem,min(7vw,11svh),6.4rem)] leading-[1.08] font-semibold tracking-[-0.045em] text-white"

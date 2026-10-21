@@ -1,24 +1,13 @@
 "use client";
 
 import { motion } from "motion/react";
+import { LoginBrand } from "@/components/auth/LoginBrand";
 
 // 提取骨架屏组件，保持代码整洁
 const LoginSkeletonLoading = () => {
   return (
     <div className="flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-surface p-4">
-      {/* Logo 骨架 */}
-      <div className="mb-6 flex flex-col items-center">
-        <motion.div
-          className="mb-3 size-14 rounded-2xl bg-skeleton"
-          animate={{ opacity: [0.3, 0.7, 0.3] }}
-          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="h-3 w-24 rounded-full bg-skeleton"
-          animate={{ opacity: [0.3, 0.7, 0.3] }}
-          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.1 }}
-        />
-      </div>
+      <LoginBrand />
 
       <div className="w-full max-w-80">
         {/* Tabs 切换器骨架 */}

@@ -3,12 +3,12 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { Lock, QrCode, Smartphone, TriangleAlert, X } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import LoginSkeletonLoading from "@/components/auth/LoginSkeletonLoading";
+import { LoginBrand } from "@/components/auth/LoginBrand";
 import { PasswordLoginForm } from "@/components/Login/PasswordLoginForm";
 import { QrLogin } from "@/components/Login/QrLogin";
 import { SmsLoginForm } from "@/components/Login/SmsLoginForm";
@@ -21,7 +21,6 @@ import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { sendCaptcha } from "@/lib/web/auth";
-import logo from "@/resources/icon_source.png";
 import { useI18n } from "@/store/module/i18n";
 import type { LoginHydrationGateProps, LoginMode } from "@/types/login";
 
@@ -141,13 +140,7 @@ function LoginPageContent() {
         </button>
       )}
 
-      {/* 1. Logo 区域优化 */}
-      <div className="mb-6 flex flex-col items-center">
-        <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-transparent text-3xl font-black shadow-floating">
-          <Image src={logo.src} width={50} height={50} alt={t("login.logoAlt")} />
-        </div>
-        <p className="text-xs font-medium text-content-subtle">{t("login.page.tagline")}</p>
-      </div>
+      <LoginBrand />
 
       {/* 2. 主体宽度 */}
       <div className="w-full max-w-80">

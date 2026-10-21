@@ -24,7 +24,11 @@ import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useUiStore, useUserStore } from "@/store";
 import { useI18n, useI18nStore } from "@/store/module/i18n";
-import type { SidebarConfirmDialogProps } from "@/types/components/sidebar";
+import type {
+  SidebarConfirmDialogProps,
+  SidebarPendingPlaylist,
+  SiderBarMenuProps,
+} from "@/types/components/sidebar";
 import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import {
   AlertDialog,
@@ -143,20 +147,13 @@ function ConfirmDialogShandCN({
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-interface SiderBarMenuProps {
-  isCollapsed?: boolean;
-}
-
 function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
   const { t } = useI18n();
   const queryClient = useQueryClient();
   const isLoggedIn = useLoginStatus();
   const userPlaylists = useUserStore((s) => s.playlist);
   const [confirmOpen, setConfirmOpen] = React.useState(false);
-  const [pendingDelete, setPendingDelete] = React.useState<{
-    id: number | string;
-    name: string;
-  } | null>(null);
+  const [pendingDelete, setPendingDelete] = React.useState<SidebarPendingPlaylist | null>(null);
 
   const handleDeleteClick = (id: number | string, name: string) => {
     setPendingDelete({ id, name });
@@ -186,8 +183,9 @@ function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            size={isCollapsed ? "icon-sm" : "default"}
+            size="icon-sm"
             title={t("sidebar.menu.sidebarTitle")}
+            aria-label={t("sidebar.menu.sidebarTitle")}
           >
             <Menu className="size-5" />
           </Button>

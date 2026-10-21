@@ -1,4 +1,5 @@
 import type { ListeningReportGrandFinaleBannerProps } from "@/types/components/listeningReport";
+import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 
 export function ListeningReportGrandFinaleBanner({
   footerSummary,
@@ -25,11 +26,7 @@ export function ListeningReportGrandFinaleBanner({
             {footerSummary.quote}
           </h3>
           <div className="mt-4 flex items-center gap-2.5 text-xs font-semibold text-content-muted sm:text-sm">
-            <img
-              alt="Logo"
-              className="flex size-4.5 items-center justify-center rounded-full bg-brand shadow-xs"
-              src="/icon.ico"
-            />
+            <ScopifyBrand withWordmark={false} iconClassName="size-5" />
             <span>{footerSummary.brandingText}</span>
           </div>
         </div>

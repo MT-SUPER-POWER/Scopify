@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import scopifyLogo from "@/assets/logo.png";
+import { ScopifyWordmark } from "@/components/layout/scopify-wordmark";
 import {
   LANDING_GITHUB_URL,
   LANDING_RELEASES_URL,
@@ -27,9 +28,9 @@ export function LandingHeader() {
       }`}
     >
       <div className="mx-auto flex h-16 w-full max-w-360 items-center justify-between px-5 sm:px-8 lg:px-12">
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image src={scopifyLogo} alt="" className="size-7 rounded-lg" priority />
-          <span className="text-sm font-medium tracking-[0.04em] text-white/85">Scopify</span>
+        <Link href="/" aria-label="Scopify" className="flex items-center gap-2.5">
+          <Image src={scopifyLogo} alt="" className="size-7 object-contain" priority />
+          <ScopifyWordmark tone="on-dark" className="w-28" />
         </Link>
         <nav
           aria-label="站点导航"

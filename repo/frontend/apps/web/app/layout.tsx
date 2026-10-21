@@ -20,6 +20,10 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 export const metadata: Metadata = {
   description: "Music Player React Project",
   title: "Scopify",
+  icons: {
+    icon: "/icon.ico",
+    apple: "/brand-kits/smoky-jade/apple-touch-icon.png",
+  },
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
