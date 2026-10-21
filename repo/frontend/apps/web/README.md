@@ -83,8 +83,7 @@ repo/frontend/apps/web/
 
 ## Configuration
 
-The web frontend uses environment variables for configuration. Copy this directory's `.env.example`
-to `.env.local` when local overrides are required.
+The web frontend uses environment variables for configuration. Copy this directory's `.env.example` to `.env.local` when local overrides are required.
 
 Key configuration files:
 
@@ -94,9 +93,7 @@ Key configuration files:
 
 ## Integration with Electron
 
-This app has two build profiles. The default `build` keeps the normal Next.js server features for
-Web deployment. `build:desktop` enables static export and writes the renderer artifact to `out/` for
-the Electron app under `repo/frontend/apps/desktop`.
+This app has two build profiles. The default `build` keeps the normal Next.js server features for Web deployment. `build:desktop` enables static export and writes the renderer artifact to `out/` for the Electron app under `repo/frontend/apps/desktop`.
 
 For Electron integration, see the main Scopify repository.
 

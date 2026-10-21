@@ -259,9 +259,9 @@ To enable RTL support in shadcn/ui, see the [RTL configuration guide](/docs/rtl)
 
 Container that renders a semantic `fieldset` with spacing presets.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` |         |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `className` | `string` |  |
 
 ```tsx
 <FieldSet>
@@ -274,10 +274,10 @@ Container that renders a semantic `fieldset` with spacing presets.
 
 Legend element for a `FieldSet`. Switch to the `label` variant to align with label sizing.
 
-| Prop        | Type                  | Default    |
-| ----------- | --------------------- | ---------- |
-| `variant`   | `"legend" \| "label"` | `"legend"` |
-| `className` | `string`              |            |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `variant` | `"legend" \| "label"` | `"legend"` |
+| `className` | `string` |  |
 
 ```tsx
 <FieldLegend variant="label">Notification Preferences</FieldLegend>
@@ -289,9 +289,9 @@ The `FieldLegend` has two variants: `legend` and `label`. The `label` variant ap
 
 Layout wrapper that stacks `Field` components and enables container queries for responsive orientations.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` |         |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `className` | `string` |  |
 
 ```tsx
 <FieldGroup className="@container/field-group flex flex-col gap-6">
@@ -304,11 +304,11 @@ Layout wrapper that stacks `Field` components and enables container queries for 
 
 The core wrapper for a single field. Provides orientation control, invalid state styling, and spacing.
 
-| Prop           | Type                                         | Default      |
-| -------------- | -------------------------------------------- | ------------ |
-| `orientation`  | `"vertical" \| "horizontal" \| "responsive"` | `"vertical"` |
-| `className`    | `string`                                     |              |
-| `data-invalid` | `boolean`                                    |              |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `orientation` | `"vertical" \| "horizontal" \| "responsive"` | `"vertical"` |
+| `className` | `string` |  |
+| `data-invalid` | `boolean` |  |
 
 ```tsx
 <Field orientation="horizontal">
@@ -321,9 +321,9 @@ The core wrapper for a single field. Provides orientation control, invalid state
 
 Flex column that groups control and descriptions when the label sits beside the control. Not required if you have no description.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` |         |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `className` | `string` |  |
 
 ```tsx
 <Field>
@@ -339,10 +339,10 @@ Flex column that groups control and descriptions when the label sits beside the 
 
 Label styled for both direct inputs and nested `Field` children.
 
-| Prop        | Type      | Default |
-| ----------- | --------- | ------- |
-| `className` | `string`  |         |
-| `asChild`   | `boolean` | `false` |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `className` | `string` |  |
+| `asChild` | `boolean` | `false` |
 
 ```tsx
 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -352,9 +352,9 @@ Label styled for both direct inputs and nested `Field` children.
 
 Renders a title with label styling inside `FieldContent`.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` |         |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `className` | `string` |  |
 
 ```tsx
 <FieldContent>
@@ -367,9 +367,9 @@ Renders a title with label styling inside `FieldContent`.
 
 Helper text slot that automatically balances long lines in horizontal layouts.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` |         |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `className` | `string` |  |
 
 ```tsx
 <FieldDescription>We never share your email with anyone.</FieldDescription>
@@ -379,9 +379,9 @@ Helper text slot that automatically balances long lines in horizontal layouts.
 
 Visual divider to separate sections inside a `FieldGroup`. Accepts optional inline content.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` |         |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `className` | `string` |  |
 
 ```tsx
 <FieldSeparator>Or continue with</FieldSeparator>
@@ -391,10 +391,10 @@ Visual divider to separate sections inside a `FieldGroup`. Accepts optional inli
 
 Accessible error container that accepts children or an `errors` array (e.g., from `react-hook-form`).
 
-| Prop        | Type                                       | Default |
-| ----------- | ------------------------------------------ | ------- |
-| `errors`    | `Array<{ message?: string } \| undefined>` |         |
-| `className` | `string`                                   |         |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `errors` | `Array<{ message?: string } \| undefined>` |  |
+| `className` | `string` |  |
 
 ```tsx
 <FieldError errors={errors.username} />

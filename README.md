@@ -13,15 +13,9 @@
   <a href="https://vdoonnridu.apifox.cn/">后端 API</a>
 </p>
 
-[![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers)
-[![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases)
-[![License](https://img.shields.io/github/license/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/blob/master/license)
-[![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-blue)](https://deepwiki.com/MT-SUPER-POWER/Scopify)
-[![CI](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml)
-[![Latest completed release build](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMT-SUPER-POWER%2FScopify%2Factions%2Fworkflows%2Frelease.yml%2Fruns%3Fstatus%3Dcompleted%26per_page%3D1&query=%24.workflow_runs%5B0%5D.conclusion&label=Build%20and%20Release&logo=github&cacheSeconds=300)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml)
+[![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers) [![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases) [![License](https://img.shields.io/github/license/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/blob/master/license) [![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-blue)](https://deepwiki.com/MT-SUPER-POWER/Scopify) [![CI](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml) [![Latest completed release build](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMT-SUPER-POWER%2FScopify%2Factions%2Fworkflows%2Frelease.yml%2Fruns%3Fstatus%3Dcompleted%26per_page%3D1&query=%24.workflow_runs%5B0%5D.conclusion&label=Build%20and%20Release&logo=github&cacheSeconds=300)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml)
 
 </div>
-
 
 ## 简介
 
@@ -87,8 +81,7 @@ Scopify 现在把桌面客户端、Web 前端和后端分开管理。Web 和桌�
 
 ### 后端的运行
 
-> 请确保你后端的实际运行
-> 当然你也可以看这个文档[部署文档](https://scopify-docs.vercel.app/docs/deployment)来部署你的专有后端作为项目后端运行。
+> 请确保你后端的实际运行当然你也可以看这个文档[部署文档](https://scopify-docs.vercel.app/docs/deployment)来部署你的专有后端作为项目后端运行。
 
 ```bash
 git submodule update --init --recursive   # 初次克隆时需要

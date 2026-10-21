@@ -47,6 +47,7 @@ graph TD
 ## 二、 领域一：平台环境宿主适配器 (`WebRuntime`)
 
 ### 1. 解决的问题
+
 前端组件需要调用存储（Cache）、全屏切换、窗口最小化、Discord 状态发布、自动更新检测等功能。但在纯 Web 浏览器里，很多桌面功能（如系统托盘、动态壁纸）是无法运行的；而存储在 Web 里是 `IndexedDB`，在 Electron 桌面里则是主进程的本地文件和 IPC。
 
 ### 2. 类图与接口结构
@@ -91,6 +92,7 @@ classDiagram
 ### 3. 运行时的组装点（Composition Root）
 
 在 [`repo/frontend/apps/web/lib/runtime/index.ts`](file:///d:/Github/Scopify/repo/frontend/apps/web/lib/runtime/index.ts) 中：
+
 ```ts
 export function createRuntimeForWindow(rendererWindow: Pick<Window, "electronAPI"> | undefined) {
   // 如果窗口注入了 preload 的 electronAPI，则使用 ElectronRuntime
@@ -101,6 +103,7 @@ export function createRuntimeForWindow(rendererWindow: Pick<Window, "electronAPI
 
 export const runtime = createRuntimeForWindow(typeof window === "undefined" ? undefined : window);
 ```
+
 **设计收益**：业务组件只需 `import { runtime } from "@/lib/runtime"`，完全不需要写 `if (isElectron) { ... } else { ... }`，所有差异都在 Adapter 层被抹平或安全降级。
 
 ---
@@ -108,6 +111,7 @@ export const runtime = createRuntimeForWindow(typeof window === "undefined" ? un
 ## 三、 领域二：播放核心与音频引擎适配器 (`@scopify/playback-core`)
 
 这是系统中设计最精妙的深模块（Deep Module）。它把播放领域的职责彻底拆开为两层 Adapter：
+
 1. **源解析适配器 (`PlayableSourceAdapter`)**：负责把抽象的歌曲定位器（`TrackLocator`）解析成可播放的 URL 或本地路径。
 2. **音频发声引擎适配器 (`AudioEngineAdapter`)**：负责控制底层的真实发声硬件，完全不知道网易云、Cookie 或队列逻辑。
 
@@ -203,6 +207,7 @@ sequenceDiagram
 ```
 
 ### 3. 为什么要有 `revision`（版本纪元标记）？
+
 在快速连击“下一首”时，网络请求可能后发先至。`HtmlAudioEngineAdapter` 每次 `load()` 都会带上递增的 `revision`。如果 DOM 慢悠悠触发了上一首歌的 `canplay` 或 `error`，Adapter 会比较 `event.revision === this.currentRevision`，凡是过期的事件全部静默丢弃，彻底杜绝了切歌串音或状态倒退的问题。
 
 ---
@@ -212,8 +217,9 @@ sequenceDiagram
 在桌面模式下，播放器的主窗口是真实的 **Authority（音频主控）**，而系统托盘（Tray）、桌面歌词（Desktop Lyric）、控制浮窗等辅助窗口都是只读的 **Replica（副本）**。
 
 ### 1. 为什么需要端口适配器？
-Electron 原生的 `MessagePortMain` 是一个典型的 Node EventEmitter 结构（包含 `.on('message', ...)`, `.postMessage(...)`）。
-如果让 `PlaybackBroker` 直接操作 Electron 的 `MessagePortMain`，会导致：
+
+Electron 原生的 `MessagePortMain` 是一个典型的 Node EventEmitter 结构（包含 `.on('message', ...)`, `.postMessage(...)`）。如果让 `PlaybackBroker` 直接操作 Electron 的 `MessagePortMain`，会导致：
+
 1. 无法进行干净的自动化单元测试（跑测试必须启动真实的 Electron 主进程）。
 2. 通信协议与 Electron 强耦合。
 
@@ -297,7 +303,7 @@ graph TD
 通过梳理这四组核心适配器链路，可以看出 Scopify 现有非 MCP 架构的核心原则：
 
 | 适配器分类 | 隔离的边界（Seam） | 核心价值 |
-| :--- | :--- | :--- |
+| :-- | :-- | :-- |
 | **`WebRuntime`** | UI 业务层 ↔ 运行环境宿主 | 一套前端代码，在 Chrome 标签页与 Electron 桌面内自动自适应，无条件分支侵入。 |
 | **`PlayableSourceAdapter`** | 播放队列 ↔ 音频源协议 | 隔离网易云特有的 URL 签名与 ReplayGain，未来扩展本地歌曲或第三方音源无需改动播放核心。 |
 | **`AudioEngineAdapter`** | 播放逻辑 ↔ 物理发声硬件 | 将复杂的 HTML5 Audio 事件和异步时序收敛在单一模块，上层只处理干净的 `loaded`、`playing` 状态。 |

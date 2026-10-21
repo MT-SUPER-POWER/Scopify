@@ -1,12 +1,10 @@
 # MCP 播放控制
 
-Scopify Desktop 提供一个默认关闭的本地 MCP 服务，让 AI 客户端读取播放状态并发送基础播放命令。
-MCP 只依赖稳定的 `PlaybackGateway`，不知道 Zustand、HTML Audio 或未来 Native Engine 的实现。
+Scopify Desktop 提供一个默认关闭的本地 MCP 服务，让 AI 客户端读取播放状态并发送基础播放命令。MCP 只依赖稳定的 `PlaybackGateway`，不知道 Zustand、HTML Audio 或未来 Native Engine 的实现。
 
 ## 启用与连接
 
-在 **设置 → 桌面端 → MCP** 中启用服务并保存。点击“测试连接”会在 Main 进程内完成真实的
-`initialize` 与 `tools/list` 请求；通过后再生成或查看客户端配置。
+在 **设置 → 桌面端 → MCP** 中启用服务并保存。点击“测试连接”会在 Main 进程内完成真实的 `initialize` 与 `tools/list` 请求；通过后再生成或查看客户端配置。
 
 ```json
 {
@@ -30,14 +28,12 @@ MCP 只依赖稳定的 `PlaybackGateway`，不知道 Zustand、HTML Audio 或未
 
 ## 工具与权限
 
-| 权限               | 工具                                                                 |
-| ------------------ | -------------------------------------------------------------------- |
-| `playback.read`    | `get_playback_status`、`get_now_playing`                              |
+| 权限 | 工具 |
+| --- | --- |
+| `playback.read` | `get_playback_status`、`get_now_playing` |
 | `playback.control` | `play`、`pause`、`toggle_playback`、`next_track`、`previous_track`、`seek`、`set_volume` |
 
-`seek.positionMs` 使用毫秒；`set_volume.volume` 范围为 `0` 到 `100`。控制命令会等待 Renderer
-Authority 的真实回执，不会在请求刚发出时就报告成功。返回快照不包含 Cookie、播放 URL、本地路径、
-歌词正文或其他登录信息。
+`seek.positionMs` 使用毫秒；`set_volume.volume` 范围为 `0` 到 `100`。控制命令会等待 Renderer Authority 的真实回执，不会在请求刚发出时就报告成功。返回快照不包含 Cookie、播放 URL、本地路径、歌词正文或其他登录信息。
 
 ## 代码结构
 
@@ -55,11 +51,8 @@ MCP HTTP / SDK
 - `packages/desktop-contract/src/mcp.ts`：Renderer/Main 共享的非敏感配置与状态契约。
 - `components/settings/McpSettingsSection.tsx`：桌面设置入口。
 
-新增工具时先扩展 Gateway 或独立 Facade，并为权限拒绝、输入 Schema、回执映射和隐私投影补测试。
-不要在 MCP handler 中直接访问 Electron Window、Zustand、音频元素或网络 Cookie。
+新增工具时先扩展 Gateway 或独立 Facade，并为权限拒绝、输入 Schema、回执映射和隐私投影补测试。不要在 MCP handler 中直接访问 Electron Window、Zustand、音频元素或网络 Cookie。
 
 ## 调试
 
-可运行 `npx @modelcontextprotocol/inspector`，选择 Streamable HTTP，填入设置页显示的 URL 和
-`Authorization` Header。也可以先使用设置页的“测试连接”；失败时依次检查：设置是否已保存、
-端口是否被占用、服务是否启动，以及客户端是否仍在使用已经轮换失效的旧密钥。
+可运行 `npx @modelcontextprotocol/inspector`，选择 Streamable HTTP，填入设置页显示的 URL 和 `Authorization` Header。也可以先使用设置页的“测试连接”；失败时依次检查：设置是否已保存、端口是否被占用、服务是否启动，以及客户端是否仍在使用已经轮换失效的旧密钥。
