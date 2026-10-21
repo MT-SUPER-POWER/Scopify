@@ -18,7 +18,7 @@
 [![License](https://img.shields.io/github/license/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/blob/master/license)
 [![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-blue)](https://deepwiki.com/MT-SUPER-POWER/Scopify)
 [![CI](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml)
-[![Release](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml/badge.svg)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml)
+[![Latest completed release build](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMT-SUPER-POWER%2FScopify%2Factions%2Fworkflows%2Frelease.yml%2Fruns%3Fstatus%3Dcompleted%26per_page%3D1&query=%24.workflow_runs%5B0%5D.conclusion&label=Build%20and%20Release&logo=github&cacheSeconds=300)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml)
 
 </div>
 

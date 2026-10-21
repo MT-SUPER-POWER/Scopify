@@ -56,6 +56,7 @@
 
 ### Fixed
 
+- **修复 README 发布构建徽章显示历史失败状态**：改为通过 Shields 动态 JSON 徽章读取 `release.yml` 最近一次已完成运行的结果，跨版本标签自动更新，不再取默认分支的历史状态；设置 300 秒缓存参数，刷新此前缓存的 `invalid` 响应。
 
 - **修复迁移 pnpm 后桌面端打包失败与 CI Lint 失败**：`electron:ensure` 改用 `pnpm exec install-electron --no`（`install-electron` 是 `electron` 包的可执行文件而非脚本，`pnpm run` 无法调用，导致 Release 的 `package:win` / `package:mac` 报 `ERR_PNPM_NO_SCRIPT`）；并把 `eslint-plugin-tailwindcss` 固定为 4.2.0（pnpm 重新解析到 4.4.0 后新增 34 条 canonical-class 警告，使 `--max-warnings 0` 失败）。
 
