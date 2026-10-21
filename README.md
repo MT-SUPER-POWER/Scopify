@@ -2,7 +2,12 @@
 
 <img src="docs/img/icon.ico" alt="Scopify" width="100" height="100" />
 
-<h1>Scopify</h1>
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/wordmark.png" />
+    <img src="docs/img/wordmark-light.png" alt="Scopify" width="320" />
+  </picture>
+</h1>
 
 <p>一个仿 Spotify UI 的跨平台音乐播放器</p>
 
