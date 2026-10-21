@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/img/icon.ico" alt="Scopify" width="100" height="100" />
+<img src="docs/img/logo.png" alt="Scopify" width="100" height="100" />
 
 <h1>
   <picture>
@@ -32,17 +32,13 @@
 
 这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
 
-[![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+`技术栈`: [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?logo=shadcnui&logoColor=white)](https://ui.shadcn.com/)
 [![Electron](https://img.shields.io/badge/Electron-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/zh/docs/latest/)
 [![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?logo=turborepo&logoColor=white)](https://turbo.build/)
 
-[![Node.js >= 24](https://img.shields.io/badge/Node.js-%3E%3D%2024-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/zh-cn/)
-[![pnpm 12.x](https://img.shields.io/badge/pnpm-12.x-F69220?logo=pnpm&logoColor=white)](./package.json)
-[![Bun >= 1.3.11](https://img.shields.io/badge/Bun-%3E%3D%201.3.11-000000?logo=bun&logoColor=white)](https://bun.sh/)
-
-pnpm 用于包管理（版本见 `packageManager`），Bun 用于运行脚本与测试。
+`包管理工具`: [![pnpm 12.x](https://img.shields.io/badge/pnpm-12.x-F69220?logo=pnpm&logoColor=white)](./package.json) 用于包管理（版本见 `packageManager`），[![Bun >= 1.3.11](https://img.shields.io/badge/Bun-%3E%3D%201.3.11-000000?logo=bun&logoColor=white)](https://bun.sh/)用于运行脚本与测试。
 
 支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配，App 开发中。
 
