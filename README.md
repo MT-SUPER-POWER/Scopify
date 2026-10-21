@@ -9,8 +9,6 @@
   </picture>
 </h1>
 
-<p>一个仿 Spotify UI 的跨平台音乐播放器</p>
-
 <p>
   <a href="https://scopify-web.vercel.app">在线体验</a> ·
   <a href="https://scopify-docs.vercel.app">开发文档</a> ·
@@ -24,7 +22,7 @@
 
 ## 简介
 
-这是一个基于 Next.js + Electron 配合网易云 node.js API 的一个客户端音乐播放器，是我初学 Electron 的第一个作品。
+这是一个基于 Next.js + Electron 配合网易云 node.js API 的仿 Spotify UI 的跨平台音乐播放器客户端，是我初学 Electron 的第一个作品。
 
 `技术栈`: [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?logo=shadcnui&logoColor=white)](https://ui.shadcn.com/) [![Electron](https://img.shields.io/badge/Electron-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/zh/docs/latest/) [![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?logo=turborepo&logoColor=white)](https://turbo.build/)
 
@@ -92,7 +90,7 @@ Scopify 现在把桌面客户端、Web 前端和后端分开管理。Web 和桌�
 
 ```bash
 git submodule update --init --recursive   # 初次克隆时需要
-pnpm run dev:backend                       # 运行后端
+pnpm run dev:backend                      # 运行后端
 ```
 
 ### 前端与桌面客户端的运行
