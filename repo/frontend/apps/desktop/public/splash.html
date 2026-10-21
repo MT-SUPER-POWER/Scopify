@@ -73,7 +73,7 @@
         /* 留出一点外边缘 */
         border-radius: 50%;
         /* 使用密集的 1~2px 颜色交替，模拟物理刻录沟槽 */
-        background: repeating-radial-gradient(#141715 0px, #141715 1px, #2b342f 2px, #141715 3px);
+        background: repeating-radial-gradient(#191714 0px, #141715 1px, #3b332b 2px, #141715 3px);
       }
 
       /* 模拟黑胶经典的“领结”状物理反光 */
@@ -84,10 +84,10 @@
         border-radius: 50%;
         background: conic-gradient(
           transparent 10deg,
-          rgba(209, 222, 215, 0.12) 45deg,
+          rgba(236, 223, 201, 0.12) 45deg,
           transparent 80deg,
           transparent 190deg,
-          rgba(209, 222, 215, 0.12) 225deg,
+          rgba(236, 223, 201, 0.12) 225deg,
           transparent 260deg
         );
       }
@@ -102,8 +102,8 @@
         /* 按比例放大贴纸 */
         height: 100px;
         border-radius: 50%;
-        background: #78968a;
-        /* 灰青绿品牌色，保留原有黑胶唱片动画 */
+        background: #e8dfc9;
+        /* 奶油白品牌色，保留原有黑胶唱片动画 */
         border: 3px solid #171614;
         /* 内阴影模拟纸张内圈留白，调整宽度适配大尺寸 */
         box-shadow:
@@ -119,7 +119,7 @@
       /* 加载文字底色 */
       .loading-text {
         position: relative;
-        color: #4e5e55;
+        color: #665d50;
         /* 底色变暗，增加视觉层次感 */
         font-size: 18px;
         letter-spacing: 6px;
@@ -136,14 +136,14 @@
         position: absolute;
         left: 0;
         top: 0;
-        color: #e9e6dc;
+        color: #eee8dc;
         overflow: hidden;
         white-space: nowrap;
         width: 0%;
         animation: sweep 2s ease-in-out infinite;
         /* 给顶层文字增加发光感 */
         text-shadow:
-          0 0 8px rgba(120, 150, 138, 0.25),
+          0 0 8px rgba(224, 204, 172, 0.25),
           0 2px 4px rgba(0, 0, 0, 0.8);
       }
 
@@ -166,8 +166,12 @@
       }
       @media (prefers-reduced-motion: reduce) {
         .cd-container,
-        .loading-text::after { animation: none; }
-        .loading-text::after { width: 100%; }
+        .loading-text::after {
+          animation: none;
+        }
+        .loading-text::after {
+          width: 100%;
+        }
       }
     </style>
   </head>

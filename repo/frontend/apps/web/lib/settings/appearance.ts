@@ -15,7 +15,11 @@ export function resolveBackgroundPalette(
   if (settings.preset === "custom") {
     return { id: "custom" as const, top: settings.customTop, bottom: settings.customBottom };
   }
-  return BACKGROUND_PRESETS.find(({ id }) => id === settings.preset) ?? BACKGROUND_PRESETS[0];
+  return (
+    BACKGROUND_PRESETS.find(({ id }) => id === settings.preset) ??
+    BACKGROUND_PRESETS.find(({ id }) => id === DEFAULT_BACKGROUND.preset) ??
+    BACKGROUND_PRESETS[0]
+  );
 }
 
 export function applyBackgroundTheme(
@@ -43,11 +47,13 @@ export function resolveScheduledTheme(
     const day = Math.floor(
       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86_400_000,
     );
-    return daily[day % daily.length] ?? "silver";
+    return daily[day % daily.length] ?? DEFAULT_BACKGROUND.preset;
   }
   if (background.rotation === "schedule") {
     const minute = date.getHours() * 60 + date.getMinutes();
-    return slots.filter((slot) => slot.start <= minute).at(-1)?.themeId ?? "silver";
+    return (
+      slots.filter((slot) => slot.start <= minute).at(-1)?.themeId ?? DEFAULT_BACKGROUND.preset
+    );
   }
   return background.preset;
 }

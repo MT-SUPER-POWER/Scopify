@@ -16,12 +16,12 @@ export const BACKGROUND_PRESETS = [
 ] as const;
 
 export const DEFAULT_BACKGROUND: BackgroundSettings = {
-  preset: "silver",
+  preset: "sand",
   intensity: 70,
   height: 360,
   rotation: "fixed",
-  customTop: "#A3C9E6",
-  customBottom: "#625976",
+  customTop: "#E0CCAC",
+  customBottom: "#78685C",
 };
 
 export const DEFAULT_LYRICS_PREVIEW: LyricsPreviewSettings = {

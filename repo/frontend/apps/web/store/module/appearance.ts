@@ -45,9 +45,9 @@ export const useAppearanceStore = create<AppearanceStore>()(
             background: isRemoved(state.background.preset)
               ? { ...DEFAULT_BACKGROUND, rotation: state.background.rotation }
               : state.background,
-            dailyThemeIds: dailyThemeIds.length ? dailyThemeIds : ["silver"],
+            dailyThemeIds: dailyThemeIds.length ? dailyThemeIds : [DEFAULT_BACKGROUND.preset],
             schedule: state.schedule.map((slot) =>
-              isRemoved(slot.themeId) ? { ...slot, themeId: "silver" } : slot,
+              isRemoved(slot.themeId) ? { ...slot, themeId: DEFAULT_BACKGROUND.preset } : slot,
             ),
           };
         }),
@@ -72,7 +72,7 @@ export const useAppearanceStore = create<AppearanceStore>()(
     }),
     {
       name: "scopify-appearance",
-      version: 4,
+      version: 5,
       storage: createJSONStorage(() => localStorage),
       partialize: ({ background, lyricsPreview, themes, dailyThemeIds, schedule }) => ({
         background,
@@ -84,6 +84,14 @@ export const useAppearanceStore = create<AppearanceStore>()(
       migrate: (persisted, version) => {
         const previous = persisted as Partial<AppearanceStore>;
         const background = { ...DEFAULT_BACKGROUND, ...previous.background };
+        const usesPreviousDefault =
+          version < 5 &&
+          background.preset === "silver" &&
+          background.rotation === "fixed" &&
+          background.intensity === DEFAULT_BACKGROUND.intensity &&
+          background.height === DEFAULT_BACKGROUND.height &&
+          background.customTop === "#A3C9E6" &&
+          background.customBottom === "#625976";
         const theme = {
           id: "user:migrated" as const,
           name: "Custom 01",
@@ -94,7 +102,11 @@ export const useAppearanceStore = create<AppearanceStore>()(
         };
         return {
           background:
-            background.preset === "custom" ? { ...background, preset: theme.id } : background,
+            background.preset === "custom"
+              ? { ...background, preset: theme.id }
+              : usesPreviousDefault
+                ? { ...DEFAULT_BACKGROUND }
+                : background,
           lyricsPreview: { ...DEFAULT_LYRICS_PREVIEW, ...previous.lyricsPreview },
           themes: version < 2 ? [theme] : (previous.themes ?? []),
           dailyThemeIds: previous.dailyThemeIds ?? BACKGROUND_PRESETS.map(({ id }) => id),

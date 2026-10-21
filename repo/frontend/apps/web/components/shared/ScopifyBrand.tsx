@@ -10,9 +10,13 @@ export function ScopifyBrand({
   priority = false,
 }: ScopifyBrandProps) {
   return (
-    <span role="img" aria-label="Scopify" className={cn("inline-flex items-center gap-2", className)}>
+    <span
+      role="img"
+      aria-label="Scopify"
+      className={cn("inline-flex items-center gap-2", className)}
+    >
       <Image
-        src="/brand-kits/smoky-jade/icon-128.png"
+        src="/brand-kits/ivory/icon-128.png"
         alt=""
         width={128}
         height={128}
@@ -26,7 +30,7 @@ export function ScopifyBrand({
           className={cn("relative block aspect-11/2 w-28 min-w-0", wordmarkClassName)}
         >
           <Image
-            src="/brand-kits/smoky-jade/wordmark-on-light.png"
+            src="/brand-kits/ivory/wordmark-on-light.png"
             alt=""
             fill
             sizes="160px"
@@ -34,7 +38,7 @@ export function ScopifyBrand({
             className="object-contain dark:hidden"
           />
           <Image
-            src="/brand-kits/smoky-jade/wordmark-on-dark.png"
+            src="/brand-kits/ivory/wordmark-on-dark.png"
             alt=""
             fill
             sizes="160px"
