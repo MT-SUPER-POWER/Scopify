@@ -8,6 +8,7 @@ const WINDOW_ROUTE_NAMES = new Map([
   ["/app-close", "app-close"],
   ["/desktop-lyrics", "desktop-lyric"],
   ["/desktop-playback-controller", "desktop-playback-controller"],
+  ["/dynamic-island", "dynamic-island"],
   ["/login", "login"],
   ["/tray", "tray"],
 ]);

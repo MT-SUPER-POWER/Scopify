@@ -116,6 +116,18 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       toggle: () => bridge.toggleDesktopLyric(),
       updatePreferences: (update) => bridge.updateDesktopLyricPreferences(update),
     },
+    dynamicIsland: {
+      close: () => bridge.closeDynamicIsland(),
+      getMode: () => bridge.getDynamicIslandMode(),
+      getPreferences: () => bridge.getDynamicIslandPreferences(),
+      onCursorInsideChanged: (callback) => bridge.onDynamicIslandCursorInsideChanged(callback),
+      onModeChanged: (callback) => bridge.onDynamicIslandModeChanged(callback),
+      onPreferencesChanged: (callback) => bridge.onDynamicIslandPreferencesChanged(callback),
+      open: () => bridge.openDynamicIsland(),
+      sendCommand: (command) => bridge.sendDynamicIslandCommand(command),
+      toggle: () => bridge.toggleDynamicIsland(),
+      updatePreferences: (update) => bridge.updateDynamicIslandPreferences(update),
+    },
     desktopPlaybackWallpaper: {
       closeController: () => bridge.closeDesktopPlaybackController(),
       configure: (update) => bridge.updateDesktopPlaybackWallpaperPreferences(update),

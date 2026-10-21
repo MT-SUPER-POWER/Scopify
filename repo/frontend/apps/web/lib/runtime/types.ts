@@ -30,6 +30,12 @@ import type {
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
 } from "@/types/desktopLyric";
+import type {
+  DynamicIslandCommand,
+  DynamicIslandMode,
+  DynamicIslandPreferences,
+  DynamicIslandPreferencesUpdate,
+} from "@/types/dynamicIsland";
 import type { AppUpdateState } from "@/types/updater";
 import type { LyricData } from "@/types/lyrics";
 import type { CachePreferences } from "@/types/cache";
@@ -109,6 +115,23 @@ export interface RuntimeDesktopLyrics {
   sendCommand(command: DesktopLyricCommand): void;
   toggle(): Promise<boolean>;
   updatePreferences(update: DesktopLyricPreferencesUpdate): Promise<DesktopLyricPreferences | null>;
+}
+
+export interface RuntimeDynamicIsland {
+  close(): Promise<boolean>;
+  getMode(): Promise<DynamicIslandMode>;
+  getPreferences(): Promise<DynamicIslandPreferences | null>;
+  onCursorInsideChanged(callback: (inside: boolean) => void): RuntimeUnsubscribe;
+  onModeChanged(callback: (mode: DynamicIslandMode) => void): RuntimeUnsubscribe;
+  onPreferencesChanged(
+    callback: (preferences: DynamicIslandPreferences) => void,
+  ): RuntimeUnsubscribe;
+  open(): Promise<boolean>;
+  sendCommand(command: DynamicIslandCommand): void;
+  toggle(): Promise<boolean>;
+  updatePreferences(
+    update: DynamicIslandPreferencesUpdate,
+  ): Promise<DynamicIslandPreferences | null>;
 }
 
 export interface RuntimeDesktopIcons {
@@ -216,6 +239,7 @@ export interface WebRuntime {
   readonly discord: RuntimeDiscordPresence;
   readonly desktopLyrics: RuntimeDesktopLyrics;
   readonly desktopPlaybackWallpaper: RuntimeDesktopPlaybackWallpaper;
+  readonly dynamicIsland: RuntimeDynamicIsland;
   readonly isDesktop: boolean;
   readonly kind: RuntimeKind;
   readonly logging: RuntimeLogging;

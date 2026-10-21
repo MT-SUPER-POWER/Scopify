@@ -409,6 +409,18 @@ export function createBrowserRuntime(
       toggle: async () => false,
       updatePreferences: async () => null,
     },
+    dynamicIsland: {
+      close: async () => false,
+      getMode: async () => "snapped",
+      getPreferences: async () => null,
+      onCursorInsideChanged: () => NOOP,
+      onModeChanged: () => NOOP,
+      onPreferencesChanged: () => NOOP,
+      open: async () => false,
+      sendCommand: NOOP,
+      toggle: async () => false,
+      updatePreferences: async () => null,
+    },
     desktopPlaybackWallpaper: {
       closeController: async () => false,
       configure: async () => unsupportedDesktopPlaybackWallpaperModel(),

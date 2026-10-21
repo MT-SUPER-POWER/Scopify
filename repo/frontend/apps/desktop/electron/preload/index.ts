@@ -10,6 +10,8 @@ import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackWallpaperModel,
   DesktopPlaybackWallpaperPreferencesUpdate,
+  DynamicIslandCommand,
+  DynamicIslandPreferencesUpdate,
   AudioFeatureAck,
   AudioFeatureFrameV1,
   AudioFeatureTransportRole,
@@ -309,6 +311,20 @@ const electronAPI: DesktopBridge = {
   },
   onDesktopLyricCursorInsideChanged: (callback) =>
     subscribeChannel("desktop-lyric:cursor-inside", callback),
+  closeDynamicIsland: () => ipcRenderer.invoke("dynamic-island:close"),
+  openDynamicIsland: () => ipcRenderer.invoke("dynamic-island:open"),
+  toggleDynamicIsland: () => ipcRenderer.invoke("dynamic-island:toggle"),
+  getDynamicIslandMode: () => ipcRenderer.invoke("dynamic-island:get-mode"),
+  getDynamicIslandPreferences: () => ipcRenderer.invoke("dynamic-island:get-preferences"),
+  updateDynamicIslandPreferences: (update: DynamicIslandPreferencesUpdate) =>
+    ipcRenderer.invoke("dynamic-island:update-preferences", update),
+  onDynamicIslandPreferencesChanged: (callback) =>
+    subscribeChannel("dynamic-island:preferences", callback),
+  onDynamicIslandModeChanged: (callback) => subscribeChannel("dynamic-island:mode", callback),
+  onDynamicIslandCursorInsideChanged: (callback) =>
+    subscribeChannel("dynamic-island:cursor-inside", callback),
+  sendDynamicIslandCommand: (command: DynamicIslandCommand) =>
+    ipcRenderer.send("dynamic-island:command", command),
   onDiscordPresenceStatusChanged: (callback) => {
     const listener = (
       _event: Electron.IpcRendererEvent,

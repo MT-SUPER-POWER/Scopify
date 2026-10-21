@@ -15,6 +15,7 @@ const CAPABILITIES = [
   "desktop-lyrics",
   "desktop-playback-wallpaper",
   "discord-presence",
+  "dynamic-island",
   "login",
   "logs",
   "media-controls",

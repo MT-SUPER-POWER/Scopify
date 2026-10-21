@@ -6,6 +6,12 @@ import type {
 } from "./desktopLyrics";
 import type { DesktopIconVisibilityState } from "./desktopIcons";
 import type {
+  DynamicIslandCommand,
+  DynamicIslandMode,
+  DynamicIslandPreferences,
+  DynamicIslandPreferencesUpdate,
+} from "./dynamicIsland";
+import type {
   DesktopPlaybackControllerLayout,
   DesktopPlaybackControllerOpenResult,
   DesktopPlaybackWallpaperModel,
@@ -54,6 +60,7 @@ export type DesktopBridgeCapability =
   | "desktop-lyrics"
   | "desktop-playback-wallpaper"
   | "discord-presence"
+  | "dynamic-island"
   | "login"
   | "logs"
   | "media-controls"
@@ -99,6 +106,9 @@ export interface DesktopBridge<TLyrics = unknown> {
   openDesktopLyric(): Promise<boolean>;
   toggleDesktopLyric(): Promise<boolean>;
   closeDesktopPlaybackController(): Promise<boolean>;
+  closeDynamicIsland(): Promise<boolean>;
+  openDynamicIsland(): Promise<boolean>;
+  toggleDynamicIsland(): Promise<boolean>;
   isDesktopPlaybackControllerOpen(): Promise<boolean>;
   toggleDesktopPlaybackController(): Promise<boolean>;
   connectAudioFeatureTransport(
@@ -131,6 +141,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   getDesktopIconVisibility(): Promise<DesktopIconVisibilityState>;
   getDesktopLyricPreferences(): Promise<DesktopLyricPreferences | null>;
   getDesktopPlaybackWallpaperModel(): Promise<DesktopPlaybackWallpaperModel>;
+  getDynamicIslandMode(): Promise<DynamicIslandMode>;
+  getDynamicIslandPreferences(): Promise<DynamicIslandPreferences | null>;
   getPageCache<T = unknown>(key: string): Promise<T | null>;
   getPageCacheStats(): Promise<PageCacheStats>;
   getCache<T = unknown>(scope: CacheScope, key: string): Promise<T | null>;
@@ -152,6 +164,11 @@ export interface DesktopBridge<TLyrics = unknown> {
     callback: (model: DesktopPlaybackWallpaperModel) => void,
   ): Unsubscribe;
   onDiscordPresenceStatusChanged(callback: (status: DiscordPresenceStatus) => void): Unsubscribe;
+  onDynamicIslandCursorInsideChanged(callback: (inside: boolean) => void): Unsubscribe;
+  onDynamicIslandModeChanged(callback: (mode: DynamicIslandMode) => void): Unsubscribe;
+  onDynamicIslandPreferencesChanged(
+    callback: (preferences: DynamicIslandPreferences) => void,
+  ): Unsubscribe;
   onFullScreenChanged(callback: (isFullScreen: boolean) => void): Unsubscribe;
   onWindowVisibilityChanged(callback: (isVisible: boolean) => void): Unsubscribe;
   onNavigate(callback: (path: string) => void): Unsubscribe;
@@ -171,6 +188,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
   sendAppCloseAction(action: "exit" | "minimize" | "cancel", remember: boolean): void;
   sendDesktopLyricCommand(command: DesktopLyricCommand): void;
+  sendDynamicIslandCommand(command: DynamicIslandCommand): void;
   setDesktopPlaybackControllerLayout(layout: DesktopPlaybackControllerLayout): Promise<boolean>;
   showDesktopPlaybackController(): Promise<DesktopPlaybackControllerOpenResult>;
   setCookie(cookie: string, backendOrigin: string): Promise<boolean>;
@@ -197,5 +215,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   updateDesktopPlaybackWallpaperPreferences(
     update: DesktopPlaybackWallpaperPreferencesUpdate,
   ): Promise<DesktopPlaybackWallpaperModel>;
+  updateDynamicIslandPreferences(
+    update: DynamicIslandPreferencesUpdate,
+  ): Promise<DynamicIslandPreferences | null>;
   writeLog(event: RendererLogEvent): Promise<boolean>;
 }

@@ -7,6 +7,7 @@ export * from "./desktopIcons";
 export * from "./desktopLyrics";
 export * from "./desktopPlaybackWallpaper";
 export * from "./discord";
+export * from "./dynamicIsland";
 export * from "./logging";
 export * from "./mcp";
 export * from "./playback";

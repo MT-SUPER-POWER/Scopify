@@ -10,6 +10,21 @@ export const desktopLyricsMessages = defineMessages(
     "desktopLyrics.playPause": "播放或暂停",
     "desktopLyrics.next": "下一首",
     "desktopLyrics.like": "喜欢",
+    "dynamicIsland.title": "灵动岛",
+    "dynamicIsland.enabled.label": "开启灵动岛",
+    "dynamicIsland.enabled.sublabel":
+      "在屏幕顶部显示带封面的歌词胶囊，可随意拖动，靠近顶边松手会自动吸附。",
+    "dynamicIsland.transition.label": "换行动画",
+    "dynamicIsland.transition.bounce": "回弹",
+    "dynamicIsland.transition.smooth": "平滑",
+    "dynamicIsland.scale.label": "大小",
+    "dynamicIsland.showTranslation.label": "显示翻译",
+    "dynamicIsland.snapCentered.label": "吸附时居中",
+    "dynamicIsland.snapCentered.sublabel": "关闭后吸附到顶边时保留拖动到的水平位置。",
+    "dynamicIsland.nonOcclusive.label": "非遮挡模式",
+    "dynamicIsland.nonOcclusive.sublabel":
+      "鼠标点击直接穿透灵动岛，悬停时自动淡出；此模式下无法拖动。",
+    "dynamicIsland.alwaysOnTop.label": "保持置顶",
   },
   {
     "desktopLyrics.keepOnTop": "置頂顯示",
@@ -20,6 +35,21 @@ export const desktopLyricsMessages = defineMessages(
     "desktopLyrics.playPause": "播放或暫停",
     "desktopLyrics.next": "下一首",
     "desktopLyrics.like": "喜歡",
+    "dynamicIsland.title": "靈動島",
+    "dynamicIsland.enabled.label": "開啟靈動島",
+    "dynamicIsland.enabled.sublabel":
+      "在螢幕頂部顯示帶封面的歌詞膠囊，可隨意拖動，靠近頂邊放開會自動吸附。",
+    "dynamicIsland.transition.label": "換行動畫",
+    "dynamicIsland.transition.bounce": "回彈",
+    "dynamicIsland.transition.smooth": "平滑",
+    "dynamicIsland.scale.label": "大小",
+    "dynamicIsland.showTranslation.label": "顯示翻譯",
+    "dynamicIsland.snapCentered.label": "吸附時置中",
+    "dynamicIsland.snapCentered.sublabel": "關閉後吸附到頂邊時保留拖動到的水平位置。",
+    "dynamicIsland.nonOcclusive.label": "非遮擋模式",
+    "dynamicIsland.nonOcclusive.sublabel":
+      "滑鼠點擊直接穿透靈動島，懸停時自動淡出；此模式下無法拖動。",
+    "dynamicIsland.alwaysOnTop.label": "保持置頂",
   },
   {
     "desktopLyrics.keepOnTop": "Keep on top",
@@ -30,5 +60,21 @@ export const desktopLyricsMessages = defineMessages(
     "desktopLyrics.playPause": "Play or pause",
     "desktopLyrics.next": "Next",
     "desktopLyrics.like": "Like",
+    "dynamicIsland.title": "Dynamic Island",
+    "dynamicIsland.enabled.label": "Show Dynamic Island",
+    "dynamicIsland.enabled.sublabel":
+      "A lyric capsule with artwork at the top of the screen. Drag it anywhere and release near the top edge to snap back.",
+    "dynamicIsland.transition.label": "Line transition",
+    "dynamicIsland.transition.bounce": "Bounce",
+    "dynamicIsland.transition.smooth": "Smooth",
+    "dynamicIsland.scale.label": "Size",
+    "dynamicIsland.showTranslation.label": "Show translation",
+    "dynamicIsland.snapCentered.label": "Center when snapped",
+    "dynamicIsland.snapCentered.sublabel":
+      "When off, the island keeps the horizontal position you dragged it to.",
+    "dynamicIsland.nonOcclusive.label": "Non-occlusive mode",
+    "dynamicIsland.nonOcclusive.sublabel":
+      "Clicks pass through and the island fades out on hover. It can't be dragged in this mode.",
+    "dynamicIsland.alwaysOnTop.label": "Keep on top",
   },
 );

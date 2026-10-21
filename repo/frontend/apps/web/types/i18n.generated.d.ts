@@ -8984,6 +8984,84 @@ export interface TranslateFn {
    */
   (key: "desktopLyrics.like", params?: TranslationParams): string;
   /**
+   * zh-CN: 灵动岛
+   * zh-TW: 靈動島
+   * en-US: Dynamic Island
+   */
+  (key: "dynamicIsland.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 开启灵动岛
+   * zh-TW: 開啟靈動島
+   * en-US: Show Dynamic Island
+   */
+  (key: "dynamicIsland.enabled.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在屏幕顶部显示带封面的歌词胶囊，可随意拖动，靠近顶边松手会自动吸附。
+   * zh-TW: 在螢幕頂部顯示帶封面的歌詞膠囊，可隨意拖動，靠近頂邊放開會自動吸附。
+   * en-US: A lyric capsule with artwork at the top of the screen. Drag it anywhere and release near the top edge to snap back.
+   */
+  (key: "dynamicIsland.enabled.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 换行动画
+   * zh-TW: 換行動畫
+   * en-US: Line transition
+   */
+  (key: "dynamicIsland.transition.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回弹
+   * zh-TW: 回彈
+   * en-US: Bounce
+   */
+  (key: "dynamicIsland.transition.bounce", params?: TranslationParams): string;
+  /**
+   * zh-CN: 平滑
+   * zh-TW: 平滑
+   * en-US: Smooth
+   */
+  (key: "dynamicIsland.transition.smooth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 大小
+   * zh-TW: 大小
+   * en-US: Size
+   */
+  (key: "dynamicIsland.scale.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示翻译
+   * zh-TW: 顯示翻譯
+   * en-US: Show translation
+   */
+  (key: "dynamicIsland.showTranslation.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 吸附时居中
+   * zh-TW: 吸附時置中
+   * en-US: Center when snapped
+   */
+  (key: "dynamicIsland.snapCentered.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭后吸附到顶边时保留拖动到的水平位置。
+   * zh-TW: 關閉後吸附到頂邊時保留拖動到的水平位置。
+   * en-US: When off, the island keeps the horizontal position you dragged it to.
+   */
+  (key: "dynamicIsland.snapCentered.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 非遮挡模式
+   * zh-TW: 非遮擋模式
+   * en-US: Non-occlusive mode
+   */
+  (key: "dynamicIsland.nonOcclusive.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 鼠标点击直接穿透灵动岛，悬停时自动淡出；此模式下无法拖动。
+   * zh-TW: 滑鼠點擊直接穿透靈動島，懸停時自動淡出；此模式下無法拖動。
+   * en-US: Clicks pass through and the island fades out on hover. It can't be dragged in this mode.
+   */
+  (key: "dynamicIsland.nonOcclusive.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 保持置顶
+   * zh-TW: 保持置頂
+   * en-US: Keep on top
+   */
+  (key: "dynamicIsland.alwaysOnTop.label", params?: TranslationParams): string;
+  /**
    * zh-CN: 桌面音乐
    * zh-TW: 桌面音樂
    * en-US: Desktop Music
