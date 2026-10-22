@@ -2,9 +2,6 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { ScopifyBrandProps } from "@/types/components/brand";
 
-// tailwind-merge 会把任意值 font-[...] 当成 font-black 的冲突项吞掉，字体族改走 style
-const WORDMARK_FONT = { fontFamily: '"Arial Black", Arial, sans-serif' };
-
 export function ScopifyBrand({
   className,
   iconClassName,
@@ -33,10 +30,9 @@ export function ScopifyBrand({
         <span
           aria-hidden="true"
           className={cn(
-            "min-w-0 truncate pr-0.5 text-lg leading-none font-black tracking-[0.01em] text-content italic",
+            "min-w-0 truncate pr-0.5 font-brand text-lg leading-none font-black tracking-[0.01em] text-content italic",
             wordmarkClassName,
           )}
-          style={WORDMARK_FONT}
         >
           SCOPIFY
         </span>

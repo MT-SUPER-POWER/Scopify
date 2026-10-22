@@ -8,6 +8,7 @@
 
 @theme inline {
   --font-status-code: "Black Ops One", var(--scopify-font-ui);
+  --font-brand: "Arial Black", Arial, var(--scopify-font-ui);
 }
 
 @layer components {
