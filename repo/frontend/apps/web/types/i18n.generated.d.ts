@@ -2981,9 +2981,9 @@ export interface TranslateFn {
    */
   (key: "settings.devTools.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 允许通过快捷键或命令面板打开 Electron 开发者工具。
+   * zh-CN: 允许通过 F12 或命令面板打开 Electron 开发者工具。
    * zh-TW: 允許透過快速鍵或命令面板開啟 Electron 開發者工具。
-   * en-US: Allow Electron Developer Tools to open from shortcuts or the command palette.
+   * en-US: Allow Electron Developer Tools to open with F12 or the command palette.
    */
   (key: "settings.devTools.sublabel", params?: TranslationParams): string;
   /**

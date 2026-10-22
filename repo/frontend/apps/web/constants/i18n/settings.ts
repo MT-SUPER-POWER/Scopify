@@ -130,7 +130,7 @@ export const settingsMessages = defineMessages(
     "settings.gpu.label": "硬件加速",
     "settings.gpu.sublabel": "当应用卡顿或 GPU 兼容性较差时，可以关闭。",
     "settings.devTools.label": "开发者工具",
-    "settings.devTools.sublabel": "允许通过快捷键或命令面板打开 Electron 开发者工具。",
+    "settings.devTools.sublabel": "允许通过 F12 或命令面板打开 Electron 开发者工具。",
     "settings.windowClose.label": "关闭窗口行为",
     "settings.windowClose.sublabel": "设置点击应用窗口关闭按钮时的响应动作。",
     "settings.windowClose.minimize": "最小化到托盘",
@@ -815,7 +815,7 @@ export const settingsMessages = defineMessages(
     "settings.gpu.sublabel": "Turn this off if the app is slow or the GPU is unstable.",
     "settings.devTools.label": "Developer Tools",
     "settings.devTools.sublabel":
-      "Allow Electron Developer Tools to open from shortcuts or the command palette.",
+      "Allow Electron Developer Tools to open with F12 or the command palette.",
     "settings.windowClose.label": "Window Close Action",
     "settings.windowClose.sublabel": "Choose the action when clicking the window close button.",
     "settings.windowClose.minimize": "Minimize to Tray",
