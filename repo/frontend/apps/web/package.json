@@ -1,6 +1,6 @@
 {
   "name": "@scopify/web",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": true,
   "description": "Scopify Web Frontend - A music player web application",
   "author": {
