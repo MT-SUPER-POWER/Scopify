@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: "Scopify",
   icons: {
     icon: "/icon.ico",
-    apple: "/brand-kits/ivory/apple-touch-icon.png",
+    apple: "/brand-kits/green-vinyl/apple-touch-icon.png",
   },
 };
 

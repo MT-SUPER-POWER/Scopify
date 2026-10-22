@@ -16,10 +16,10 @@ export function ScopifyBrand({
       className={cn("inline-flex items-center gap-2", className)}
     >
       <Image
-        src="/brand-kits/ivory/icon-128.png"
+        src="/brand-kits/green-vinyl/icon-64.png"
         alt=""
-        width={128}
-        height={128}
+        width={64}
+        height={64}
         sizes="48px"
         priority={priority}
         className={cn("size-8 shrink-0 object-contain", iconClassName)}
@@ -30,7 +30,7 @@ export function ScopifyBrand({
           className={cn("relative block aspect-11/2 w-28 min-w-0", wordmarkClassName)}
         >
           <Image
-            src="/brand-kits/ivory/wordmark-on-light.png"
+            src="/brand-kits/green-vinyl/wordmark-on-light.png"
             alt=""
             fill
             sizes="160px"
@@ -38,7 +38,7 @@ export function ScopifyBrand({
             className="object-contain dark:hidden"
           />
           <Image
-            src="/brand-kits/ivory/wordmark-on-dark.png"
+            src="/brand-kits/green-vinyl/wordmark-on-dark.png"
             alt=""
             fill
             sizes="160px"
