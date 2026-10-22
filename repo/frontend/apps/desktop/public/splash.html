@@ -26,95 +26,22 @@
         user-select: none;
       }
 
-      /* 光盘外层容器 */
+      /* 保留原有黑胶旋转，图形直接使用正式品牌资源。 */
       .cd-container {
         position: relative;
         width: 260px;
-        /* 放大光盘尺寸 */
         height: 260px;
         margin-bottom: 40px;
-        /* 拉开与文字的间距 */
-        /* 关键：CSS 旋转动画 */
         animation: spin 3s linear infinite;
-        /* 核心技术：用径向渐变遮罩把光盘中心“真正掏空”，露出后面的桌面壁纸 */
-        /* 新增：外圈（130px外）也设为透明，彻底切断边缘，解决 Chromium 阴影渲染产生的丑陋正方形黑块 */
-        -webkit-mask-image: radial-gradient(
-          circle at center,
-          transparent 14px,
-          black 15px,
-          black 129px,
-          transparent 130px
-        );
-        mask-image: radial-gradient(
-          circle at center,
-          transparent 14px,
-          black 15px,
-          black 129px,
-          transparent 130px
-        );
-        /* 用 filter 替代 box-shadow，这样连镂空的孔洞边缘也能产生正确的物理投影 */
         filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
       }
 
-      /* 光盘主体（黑胶底色） */
-      .cd-disc {
-        position: absolute;
-        inset: 0;
-        border-radius: 50%;
-        background: #171614;
-        box-shadow: inset 0 0 0 2px #222;
-        /* 移除了外阴影，交给外层的 filter 处理 */
+      .cd-artwork {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
-
-      /* 黑胶表面的沟槽纹理 */
-      .cd-tracks {
-        position: absolute;
-        inset: 4px;
-        /* 留出一点外边缘 */
-        border-radius: 50%;
-        /* 使用密集的 1~2px 颜色交替，模拟物理刻录沟槽 */
-        background: repeating-radial-gradient(#191714 0px, #141715 1px, #3b332b 2px, #141715 3px);
-      }
-
-      /* 模拟黑胶经典的“领结”状物理反光 */
-      .cd-tracks::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: 50%;
-        background: conic-gradient(
-          transparent 10deg,
-          rgba(236, 223, 201, 0.12) 45deg,
-          transparent 80deg,
-          transparent 190deg,
-          rgba(236, 223, 201, 0.12) 225deg,
-          transparent 260deg
-        );
-      }
-
-      /* 唱片中心的贴纸 (Label) - 黑胶通常比较大 */
-      .cd-label {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100px;
-        /* 按比例放大贴纸 */
-        height: 100px;
-        border-radius: 50%;
-        background: #1ed760;
-        /* 亮绿色品牌标签，保留原有黑胶唱片动画 */
-        border: 3px solid #171614;
-        /* 内阴影模拟纸张内圈留白，调整宽度适配大尺寸 */
-        box-shadow:
-          inset 0 0 0 3px rgba(255, 255, 255, 0.3),
-          0 0 10px rgba(0, 0, 0, 0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      /* 移除了原本的 .cd-hole 样式，因为外层的 mask-image 已经把所有图层的中心切空了 */
 
       /* 加载文字底色 */
       .loading-text {
@@ -178,11 +105,13 @@
 
   <body>
     <div class="cd-container">
-      <div class="cd-disc"></div>
-      <div class="cd-tracks"></div>
-      <div class="cd-label">
-        <!-- 删除了原来的透明孔洞 div，因为已经用遮罩实现了物理镂空 -->
-      </div>
+      <img
+        class="cd-artwork"
+        src="icons/icon.iconset/icon_512x512.png"
+        width="260"
+        height="260"
+        alt="Scopify 亮绿 S 黑胶标志"
+      />
     </div>
 
     <!-- 增加 data-text 属性供 CSS 伪元素读取 -->
