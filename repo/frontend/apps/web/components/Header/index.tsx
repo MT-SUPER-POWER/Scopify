@@ -65,13 +65,12 @@ export function Header() {
             aria-label={t("playlist.lattice.back")}
             title={`${t("playlist.lattice.back")} · Esc`}
             className={cn(
-              "flex h-10 items-center gap-2 rounded-full px-3 text-sm font-medium",
+              "flex size-10 items-center justify-center rounded-full",
               "text-content-muted transition-all hover:text-content",
               NAV_BTN,
             )}
           >
-            <List className="size-4" />
-            <span className="hidden sm:inline">{t("playlist.lattice.back")}</span>
+            <List className="size-5" />
           </button>
         )}
       </div>
@@ -87,7 +86,9 @@ export function Header() {
       </div>
 
       {/* 右侧操作区 */}
-      <div className="shrink-0">
+      <div className="flex shrink-0 items-center gap-2">
+        {/* 与左侧 Lattice 退出按钮等宽的占位，保持搜索框居中 */}
+        {latticeActive && latticeController && <div aria-hidden className="size-10" />}
         <RightActions />
       </div>
     </div>
