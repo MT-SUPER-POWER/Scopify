@@ -15,6 +15,8 @@
     "build": "turbo run build",
     "build:web": "turbo run build --filter=@scopify/web",
     "build:docs": "turbo run build --filter=@scopify/docs",
+    "start:web": "pnpm --filter @scopify/web start",
+    "start:docs": "pnpm --filter @scopify/docs start",
     "deploy:web": "vercel deploy --prod --project scopify-web",
     "deploy:web:preview": "vercel deploy --project scopify-web",
     "deploy:docs": "vercel deploy --prod --project scopify-docs",
