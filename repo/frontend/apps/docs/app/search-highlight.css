@@ -1,0 +1,10 @@
+/*
+ * Fumadocs 搜索结果的命中高亮（CSS Custom Highlight API，高亮名 `fd-search`）。
+ * 原本由 fumadocs-ui 的 `[&_::highlight(fd-search)]:*` 工具类生成，但 Tailwind 的 Lightning CSS
+ * 优化无法解析 `::highlight()` 并在构建时报警告，因此在 globals.css 中排除这两个类，改由本文件提供。
+ * 本文件不含 Tailwind 指令，@tailwindcss/postcss 会直接跳过，不要在这里使用 @import / @apply / @theme。
+ */
+::highlight(fd-search) {
+  color: var(--color-fd-primary);
+  text-decoration-line: underline;
+}

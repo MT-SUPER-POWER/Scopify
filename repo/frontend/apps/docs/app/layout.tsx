@@ -9,6 +9,7 @@ import { ThemePrototypeProvider } from "@/components/theme-prototype/theme-proto
 import { DOCS_UI_TRANSLATIONS } from "@/constants/docs-translations";
 
 import "./globals.css";
+import "./search-highlight.css";
 
 const docsMonoFont = Geist_Mono({
   display: "swap",

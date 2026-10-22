@@ -5,6 +5,9 @@
 
 @source "../../../packages/ui/**/*.{ts,tsx}";
 @source "../../web/components/lyrics/folia/src/**/*.{ts,tsx}";
+/* Lightning CSS 不认识 `::highlight()`，生成这两个类会在构建时报警告；等价样式见 search-highlight.css。 */
+@source not inline("[&_::highlight(fd-search)]:text-fd-primary");
+@source not inline("[&_::highlight(fd-search)]:underline");
 
 /* 覆写 Fumadocs 主题色为 Scopify 绿色系 */
 @theme {
