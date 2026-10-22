@@ -1,0 +1,31 @@
+---
+title: 搜索与导航
+description: 从快捷搜索进入分类结果，并用命令快速到达功能。
+---
+
+import searchBarScreenshot from "../../../../assets/features/SearchWithBar.png";
+import searchModalScreenshot from "../../../../assets/features/SearchModal.png";
+import searchScreenshot from "../../../../assets/features/SearchResult.png";
+
+[← 产品能力总览](/docs/features)
+
+## 搜索入口
+
+搜索有三种形态：快捷模态框适合在当前页面直接发起搜索，常驻搜索栏适合连续修改关键词，结果页负责按内容类型承载完整结果。桌面端还提供命令面板，常用页面和操作无需逐层寻找。
+
+<figure>
+  <img className="rounded-xl border" src={searchModalScreenshot.src} alt="Scopify 快捷搜索模态框" />
+  <figcaption>快捷搜索不会打断当前浏览上下文。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={searchBarScreenshot.src} alt="Scopify 搜索结果的全部视图" />
+  <figcaption>顶部常驻搜索栏可随时修改关键词；「全部」视图同时展示最佳匹配、歌曲和歌手，并可切换到歌曲、歌手、歌单、专辑、播客与声音。</figcaption>
+</figure>
+
+## 分类结果
+
+<figure>
+  <img className="rounded-xl border" src={searchScreenshot.src} alt="Scopify 歌曲分类搜索结果" />
+  <figcaption>切换到分类后，结果页以完整列表展示，并保留喜欢、时长和歌曲音质标识。</figcaption>
+</figure>

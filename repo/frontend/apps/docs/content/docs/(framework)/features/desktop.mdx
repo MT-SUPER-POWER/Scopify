@@ -1,0 +1,91 @@
+---
+title: 桌面端集成
+description: 使用桌面歌词、系统托盘、音频输出与客户端能力。
+---
+
+import desktopWallpaperScreenshot from "../../../../assets/features/desktopMusic.png";
+import desktopLyricScreenshot from "../../../../assets/features/desktop-lyrics.png";
+import desktopLyricControlsScreenshot from "../../../../assets/features/desktop-lyrics-controls.png";
+import discordScreenshot from "../../../../assets/features/DiscordPresnet.png";
+import mcpScreenshot from "../../../../assets/features/MCP.png";
+import audioOutputScreenshot from "../../../../assets/features/audio-output.png";
+import desktopControllerScreenshot from "../../../../assets/features/desktop-controller.png";
+import desktopIntegrationsScreenshot from "../../../../assets/features/desktop-lyric-integrations.png";
+import systemTrayScreenshot from "../../../../assets/features/system-tray-menu.png";
+import dynamicIslandScreenshot from "../../../../assets/features/dynamic-island.png";
+
+[← 产品能力总览](/docs/features)
+
+## 桌面歌词
+
+Electron 桌面端在共享 Web 界面之外提供系统级能力，包括桌面歌词、窗口置顶与穿透、Discord Rich Presence、客户端更新、本地后端配置以及日志诊断。桌面歌词可独立于主窗口显示，Discord 状态则用于同步当前播放信息。
+
+<figure>
+  <img className="rounded-xl border" src={desktopLyricScreenshot.src} alt="Scopify 独立桌面小歌词窗口，显示当前歌词与播放控制" />
+  <figcaption>桌面小歌词独立显示当前歌词，并提供播放控制。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={desktopLyricControlsScreenshot.src} alt="Scopify 桌面小歌词的完整控制栏，显示歌曲信息、播放控制、翻译、设置、锁定和关闭入口" />
+  <figcaption>展开控制栏后，可查看歌曲信息，控制播放，并调整翻译、设置与窗口锁定。</figcaption>
+</figure>
+
+## 桌面壁纸与托盘
+
+「桌面音乐壁纸」把歌词舞台铺满桌面，在多显示器环境下覆盖主窗口所在的显示器。系统托盘菜单提供「桌面动态壁纸」与「悬浮控制器」两个独立开关，状态与主窗口双向同步，壁纸也有独立快捷键（默认 `Ctrl+Alt+P`）。
+
+<figure>
+  <img className="rounded-xl border" src={desktopWallpaperScreenshot.src} alt="Scopify 桌面动态壁纸铺满 Windows 桌面，右侧为悬浮控制器与 Folia 外观设置，底部保留系统任务栏" />
+  <figcaption>桌面动态壁纸铺满桌面，悬浮控制器独立显示；图中可见 Windows 任务栏与 Folia 外观设置。</figcaption>
+</figure>
+
+<figure className="mx-auto w-fit">
+  <img className="rounded-xl border" src={systemTrayScreenshot.src} alt="Scopify 系统托盘右键面板，包含播放、音量、桌面小歌词、灵动岛、任务栏歌词、桌面动态壁纸和悬浮控制器开关" />
+  <figcaption className="text-center">托盘右键面板集中提供播放控制与桌面功能开关。</figcaption>
+</figure>
+
+<figure className="mx-auto w-fit">
+  <img className="rounded-xl border" src={desktopControllerScreenshot.src} alt="Scopify 悬浮桌面音乐控制器，显示封面、歌词与播放进度" />
+  <figcaption>悬浮控制器独立显示封面、歌词和播放进度。</figcaption>
+</figure>
+
+## 灵动岛与任务栏歌词
+
+灵动岛将封面与歌词放在可拖动的胶囊中，靠近屏幕顶边时自动吸附，可以调整换行动画、大小、翻译与置顶。Windows 任务栏歌词把当前歌词嵌入任务栏空白区域，支持显示位置、双行歌词、封面与文字样式设置。
+
+右键系统托盘中的 Scopify 图标，即可在快捷面板中分别切换「桌面歌词」「灵动岛」和「任务栏歌词」。桌面歌词开启后还会出现锁定开关；任务栏歌词入口仅在 Windows 原生模块可用时显示。动画、字号与显示位置等细项位于 **设置 → 桌面端**。
+
+<figure className="mx-auto w-fit">
+  <img className="h-10 w-60 max-w-full rounded-xl border object-cover object-center" src={dynamicIslandScreenshot.src} alt="灵动岛实际显示的歌曲封面与歌词胶囊" />
+  <figcaption className="text-center">灵动岛在主窗口之外显示封面与当前歌词。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={desktopIntegrationsScreenshot.src} alt="Scopify 桌面端设置中的灵动岛与 Windows 任务栏歌词选项" />
+  <figcaption>桌面设置分别配置灵动岛与任务栏歌词；图中两项均未开启。</figcaption>
+</figure>
+
+## 音频输出与系统媒体控制
+
+PlayBar 可直接切换音频输出设备（`Ctrl/Cmd+Alt+O` 打开面板）。播放信息同步到系统媒体控制（SMTC / MediaSession），Windows 版本可使用原生音频 Host。
+
+<figure>
+  <img className="rounded-xl border" src={audioOutputScreenshot.src} alt="Scopify 播放栏的音频输出设备选择面板" />
+  <figcaption>在播放栏选择输出设备，也可以刷新设备列表。</figcaption>
+</figure>
+
+## MCP 播放控制
+
+桌面端提供仅监听本机回环地址的 Streamable HTTP MCP 服务，让支持 MCP 的客户端读取播放状态并控制播放。设置页可复制标准 `mcpServers` 配置、测试连接并重新生成凭据，旧令牌立即失效；读取与控制共 9 项能力可分别开启。完整说明见 [MCP 播放控制](/docs/mcp)。
+
+<figure>
+  <img className="rounded-xl border" src={mcpScreenshot.src} alt="MCP 客户端查询 Scopify 当前播放歌曲的实际结果" />
+  <figcaption>MCP 客户端读取当前歌曲、歌手、专辑和播放进度。</figcaption>
+</figure>
+
+## Discord 状态与客户端能力
+
+<figure className="mx-auto w-fit">
+  <img className="rounded-xl border" src={discordScreenshot.src} alt="Scopify Discord Rich Presence 状态" />
+  <figcaption className="text-center">Discord Rich Presence 展示当前播放状态。</figcaption>
+</figure>

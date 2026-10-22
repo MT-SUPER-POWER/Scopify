@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import type { ComponentProps } from "react";
-import type { MDXContent } from "mdx/types";
 import { notFound } from "next/navigation";
 import {
   DocsBody,
@@ -13,16 +11,7 @@ import {
 
 import { getMDXComponents } from "@/components/mdx";
 import { source } from "@/lib/source";
-
-interface DocsRouteProps {
-  params: Promise<{ slug?: string[] }>;
-}
-
-interface CompiledDocsData {
-  body: MDXContent;
-  full?: boolean;
-  toc: NonNullable<ComponentProps<typeof DocsPage>["toc"]>;
-}
+import type { CompiledDocsData, DocsRouteProps } from "@/types/docs-page";
 
 export default async function DocsRoute({ params }: DocsRouteProps) {
   const { slug } = await params;

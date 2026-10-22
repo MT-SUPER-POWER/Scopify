@@ -5,6 +5,12 @@ description: 从 CSS 变量到 Tailwind 类名，理解 Scopify UI Library 的�
 
 这套主题机制其实只做两件事：先规定组件能读取哪些变量，再决定当前主题给这些变量什么值。最容易绕进去的地方，是把 CSS 加载、主题切换和 Tailwind 类名注册当成了同一件事。
 
+<Cards>
+  <Card title="进入 Theme Lab 主题实验室" href="/theme-editor">
+    调整标准 Shadcn Token，实时预览组件，保存并应用主题，或导出主题 CSS。
+  </Card>
+</Cards>
+
 <Callout title="先记住这句话">
   Shadcn 组件只认一套约定好的 CSS 变量；`data-theme` 决定当前使用哪组变量值；`@theme inline`
   再把这些变量变成可以写进 `className` 的 Tailwind 类名。

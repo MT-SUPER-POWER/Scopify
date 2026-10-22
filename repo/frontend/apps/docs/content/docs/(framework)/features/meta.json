@@ -1,0 +1,15 @@
+{
+  "title": "产品能力",
+  "pages": [
+    "index",
+    "discovery",
+    "search",
+    "playback",
+    "lyrics",
+    "audio",
+    "library",
+    "social",
+    "settings",
+    "desktop"
+  ]
+}

@@ -1,0 +1,47 @@
+---
+title: 歌词与 Folia
+description: 进入动态歌词舞台并调整歌词来源与呈现。
+---
+
+import foliaStageScreenshot from "../../../../assets/features/lyrics-folia-stage.png";
+import lyricControllerScreenshot from "../../../../assets/features/lyrics-controller.png";
+import lyricEditorScreenshot from "../../../../assets/features/lyricStyleEditor.png";
+import themeEditorScreenshot from "../../../../assets/features/visualThemEditor.png";
+
+[← 产品能力总览](/docs/features)
+
+## Folia 歌词舞台
+
+歌词体验由动态舞台和控制面板组成。舞台负责呈现当前歌曲、歌词动画和背景视觉；控制面板负责音量、音质、均衡器、ReplayGain、歌词来源、歌词匹配和时间轴偏移。需要更细的调整时，可以继续进入 Folia 设置。
+
+<figure>
+  <img className="rounded-xl border" src={foliaStageScreenshot.src} alt="Scopify Folia 动态歌词舞台" />
+  <figcaption>Folia 舞台把封面、背景、播放控制和逐行歌词放在同一画面中。</figcaption>
+</figure>
+
+## 歌词控制
+
+<figure>
+  <img className="rounded-xl border" src={lyricControllerScreenshot.src} alt="Scopify 歌词与播放控制面板" />
+  <figcaption>控制面板集中处理歌词来源、时间轴和播放相关设置。</figcaption>
+</figure>
+
+## 样式与主题
+
+<figure>
+  <img className="rounded-xl border" src={lyricEditorScreenshot.src} alt="Scopify 歌词样式编辑器" />
+  <figcaption>样式编辑器用于调整歌词的排版与呈现。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={themeEditorScreenshot.src} alt="Scopify 歌词视觉主题编辑器" />
+  <figcaption>视觉主题编辑器用于统一背景、色彩和舞台效果。</figcaption>
+</figure>
+
+## 歌词模式与副字幕
+
+Folia 提供 14 种歌词动画。除商籁、凝彩、莫奈、时计等模式外，「档案」模式把歌曲信息、歌词序号、逐词读取和时间码排成科研档案版式，并配有莱茵档案背景。
+
+副字幕支持「罗马音 + 翻译」双行显示，商籁、时计和莫奈都已适配。歌词背景还可以叠加本地视频层，Sora 背景提供纯色空白选项。
+
+完整播放舞台与桌面歌词的部分能力来自 [Folia](https://github.com/chthollyphile/folia-major/tree/main) 源码快照，并在 Scopify 中继续适配。

@@ -1,0 +1,73 @@
+---
+title: 内容发现
+description: 浏览推荐、歌单、歌手与播客声音。
+---
+
+import commentScreenshot from "../../../../assets/features/comment.png";
+import discoveryScreenshot from "../../../../assets/features/discovery-home.png";
+import playlistScreenshot from "../../../../assets/features/Playlist.png";
+import latticeScreenshot from "../../../../assets/features/playlist-lattice.png";
+import personalFmScreenshot from "../../../../assets/features/personal-fm.png";
+import podcastsScreenshot from "../../../../assets/features/podcasts.png";
+
+[← 产品能力总览](/docs/features)
+
+## 首页与推荐
+
+首页把每日推荐、个性化歌单、活动内容、播客声音和推荐歌手放在一条连续的浏览路径中。用户可以先试听或查看内容，再进入歌单、专辑和歌手页面继续探索。
+
+<figure>
+  <img className="rounded-xl border" src={discoveryScreenshot.src} alt="Scopify 首页的推荐内容、播客声音和播放栏" />
+  <figcaption>首页同时承担内容推荐、快速播放和继续浏览的入口。</figcaption>
+</figure>
+
+## 歌单管理与 Lattice 视图
+
+歌单与专辑的操作区可以把当前页面的歌曲切换为 Lattice 拼贴视图：一面 Folia 风格的海报墙，支持拖动浏览、封面展开、直接播放和定位当前歌曲，返回列表时保留搜索与滚动位置。
+
+<figure>
+  <img className="rounded-xl border" src={latticeScreenshot.src} alt="Scopify 歌单 Lattice 拼贴视图" />
+  <figcaption>Lattice 把歌单变成可以拖动浏览的海报墙。</figcaption>
+</figure>
+
+列表本身支持完整的整理操作：
+
+| 操作 | 说明 |
+| --- | --- |
+| 多选 | `Shift` 区间连选，`Ctrl` / `Cmd` 自由多选，`Esc` 清空选择 |
+| 拖拽排序 | 自建歌单曲目与侧栏歌单可直接拖动调整顺序 |
+| 拖拽点赞 | 将歌曲拖到侧栏「我喜欢的音乐」即可一键喜欢 |
+| 右键菜单 | 多选后可批量播放、加入歌单；单曲菜单提供「接着听相似歌曲」 |
+| 收藏他人歌单 | 在歌单操作区直接收藏 |
+
+## 歌单与评论
+
+<figure>
+  <img className="rounded-xl border" src={playlistScreenshot.src} alt="Scopify 歌单详情页面" />
+  <figcaption>歌单详情集中展示资料、曲目和播放入口。</figcaption>
+</figure>
+
+<figure>
+  <img className="rounded-xl border" src={commentScreenshot.src} alt="Scopify 音乐评论页面" />
+  <figcaption>评论让歌曲和歌单的浏览过程延伸到社区内容。</figcaption>
+</figure>
+
+## 私人 FM 与电台
+
+私人 FM 作为动态歌单进入通用歌单详情页，沿用普通歌单的曲目计数与操作区。登录后也可以从侧边栏的「私人电台」直接进入沉浸播放，队列接近末尾时会自动补充歌曲。
+
+场景与模式（默认、熟悉、探索、拼图，以及情绪、场景、曲风、语种）收纳在 PlayBar 的控制面板中，只在 FM 播放时出现。私人 FM 歌单里的歌曲可通过右键菜单选择「不喜欢 / 减少推荐」，反馈会进入既有的负反馈流程，不影响普通歌单。
+
+<figure>
+  <img className="rounded-xl border" src={personalFmScreenshot.src} alt="Scopify 私人 FM 歌单与模式控制面板" />
+  <figcaption>私人 FM 把推荐流变成可浏览、可调整风格的歌单。</figcaption>
+</figure>
+
+## 播客与电台
+
+播客声音在首页中支持独立刷新，电台与播客节目表格支持按多个维度排序，单集页面提供独立的详情与播放入口。
+
+<figure>
+  <img className="rounded-xl border" src={podcastsScreenshot.src} alt="Scopify 播客与电台页面" />
+  <figcaption>播客资料库集中管理订阅的节目和单集。</figcaption>
+</figure>

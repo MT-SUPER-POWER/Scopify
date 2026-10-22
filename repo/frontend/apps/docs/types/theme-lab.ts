@@ -58,17 +58,6 @@ export interface ThemePrototypeContextValue {
 
 export type ThemePreviewStyle = CSSProperties & Partial<Record<ThemeTokenName, string>>;
 
-export interface ThemeControlPanelProps {
-  definitions: readonly ThemeTokenDefinition[];
-  layer: ThemeTokenLayer;
-  mode: ThemeMode;
-  onLayerChange: (layer: ThemeTokenLayer) => void;
-  onModeChange: (mode: ThemeMode) => void;
-  onTokenChange: (definition: ThemeTokenDefinition, value: string) => void;
-  scope: ThemeLabScope;
-  values: ThemeTokenValues;
-}
-
 export interface ThemePrototypeActionBarProps {
   mode: ThemeMode;
   onExport: () => void;

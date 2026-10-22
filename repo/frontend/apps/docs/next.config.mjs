@@ -22,6 +22,15 @@ const buildDependencyFilteredConsole = Object.assign(Object.create(console), {
 const config = {
   reactStrictMode: true,
   transpilePackages: ["@scopify/ui"],
+  async redirects() {
+    return [
+      {
+        source: "/docs/scopify/theme",
+        destination: "/theme-editor",
+        permanent: true,
+      },
+    ];
+  },
   webpack(webpackConfig) {
     webpackConfig.infrastructureLogging = {
       ...webpackConfig.infrastructureLogging,
