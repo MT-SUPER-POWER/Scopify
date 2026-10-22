@@ -2,6 +2,10 @@
 
 ## v2.0.1
 
+### Added
+
+- **命令面板可切换歌单展示模式**：快捷命令新增「歌单展示：列表」「歌单展示：Lattice 拼贴」与「Lattice 暗场：开启/关闭」三条命令，可在命令面板（`Ctrl/Cmd + Shift + P`）里直接切换当前歌单或专辑的展示模式；命令面板只列出当前页面可用的命令：普通列表下只出现 Lattice，进入 Lattice 后改为列表与暗场，非歌单页面不出现。三条命令默认不占用快捷键，可在「设置 → 快捷键」中自行分配；`ShortcutCommandDefinition.defaultBinding` 因此允许为 `null`。
+
 ### Visual
 
 - **Lattice 拼贴视图可从全局顶栏直接退出**：歌单或专辑进入 Lattice 视图后，顶栏前进 / 后退按钮旁会出现「返回列表」按钮，点击即回到普通列表视图，焦点回到原来的 Lattice 入口；退出后按钮随即隐藏。Lattice 视图的开关状态改由 `useLatticeView` store 共享，顶栏与后续的快捷命令都通过它控制当前页面的展示模式。

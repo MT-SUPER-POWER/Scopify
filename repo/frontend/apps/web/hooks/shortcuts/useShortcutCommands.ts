@@ -18,6 +18,7 @@ import { useSearchStore } from "@/store/module/search";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useAudioOutputStore } from "@/store/module/audioOutput";
 import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
+import { useLatticePreferences, useLatticeView } from "@/store/module/lattice";
 import { runtime } from "@/lib/runtime";
 import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts";
 
@@ -170,6 +171,21 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
               ),
             );
           }
+          return;
+        }
+        case "playlist-view-list": {
+          const latticeView = useLatticeView.getState();
+          if (latticeView.active) latticeView.controller?.close();
+          return;
+        }
+        case "playlist-view-lattice": {
+          const latticeView = useLatticeView.getState();
+          if (!latticeView.active) latticeView.controller?.open();
+          return;
+        }
+        case "toggle-lattice-lights-off": {
+          const preferences = useLatticePreferences.getState();
+          preferences.setLightsOff(!preferences.lightsOff);
           return;
         }
         case "show-shortcut-help":

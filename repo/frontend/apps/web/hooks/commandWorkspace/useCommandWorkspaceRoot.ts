@@ -4,10 +4,12 @@ import { type KeyboardEvent, useMemo, useRef, useState } from "react";
 import { useFoliaCommands } from "@/hooks/commandWorkspace/useFoliaCommands";
 import { COMMAND_WORKSPACE_ROOT_PAGES } from "@/constants/commandWorkspaceRoot";
 import { rankCommandWorkspaceEntries } from "@/lib/commandWorkspace/shortcutRanking";
+import { isShortcutCommandAvailable } from "@/lib/shortcuts/availability";
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { useShortcutStore } from "@/store/module/shortcuts";
 import { useI18n } from "@/store/module/i18n";
+import { useLatticeView } from "@/store/module/lattice";
 import type {
   CommandWorkspaceRootItem,
   CommandWorkspaceRootPage,
@@ -35,6 +37,8 @@ export function useCommandWorkspaceRoot({
   );
   const incrementUsage = useShortcutStore((state) => state.incrementUsage);
   const usageCounts = useShortcutStore((state) => state.usageCounts);
+  const latticeActive = useLatticeView((state) => state.active);
+  const latticeAvailable = useLatticeView((state) => state.controller !== null);
   const standardItems = useMemo(
     () =>
       rankCommandWorkspaceEntries(
@@ -53,6 +57,9 @@ export function useCommandWorkspaceRoot({
                 command.id !== "open-folia-settings" &&
                 command.id !== "open-folia-theme-library",
             )
+            .filter((command) =>
+              isShortcutCommandAvailable(command.id, { latticeActive, latticeAvailable }),
+            )
             .map((command) => ({
               binding: command.binding,
               id: command.id,
@@ -66,7 +73,7 @@ export function useCommandWorkspaceRoot({
       ).filter((command) =>
         command.label.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
       ),
-    [commandWorkspaceUsageCounts, commands, query, t, usageCounts],
+    [commandWorkspaceUsageCounts, commands, latticeActive, latticeAvailable, query, t, usageCounts],
   );
 
   const items: CommandWorkspaceRootItem[] = [
