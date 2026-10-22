@@ -56,6 +56,8 @@
 
 ### Quality
 
+- **修复 CI 格式检查**：按 Prettier 规则折行文档站 `scopify-wordmark.tsx` 中超长的 `className` 表达式，`pnpm run format:check` 恢复通过。
+
 - **根目录新增 `start:web` / `start:docs`**：在 `build:web` / `build:docs` 之后可直接用根脚本启动对应的生产构建（文档站端口 9191），无需进入子包目录。
 
 - **精简 Windows 打包流程与安装包**：桌面主进程已由 electron-vite 打包进 `main.js`，`@scopify/desktop` 的运行时 `dependencies` 只保留需要在运行时 `require` 的 `@neteasecloudmusicapienhanced/api`，其余移入 `devDependencies`，electron-builder 不再把 zod、MCP SDK、Discord RPC、electron-updater 等已打包依赖重复塞进 `app.asar`；移除未使用的 `electron-positioner`。`build:win` / `release:win` 不再重复执行已由 `build` 完成的 `wallpaper:build`；electron-vite 构建加 `--ignoreConfigWarning` 消除无 renderer 配置的提示，并静默 zod 4 注释位置引起的 Rollup `INVALID_ANNOTATION` 警告；静态导出阶段不再由每个 worker 重复打印后端地址。

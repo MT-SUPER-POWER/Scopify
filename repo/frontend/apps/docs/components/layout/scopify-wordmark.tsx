@@ -10,14 +10,18 @@ export function ScopifyWordmark({ className = "w-28", tone = "auto" }: ScopifyWo
         <Image
           src={wordmarkOnLight}
           alt=""
-          className={"col-start-1 row-start-1 h-auto w-full" + (tone === "auto" ? " dark:hidden" : "")}
+          className={
+            "col-start-1 row-start-1 h-auto w-full" + (tone === "auto" ? " dark:hidden" : "")
+          }
         />
       )}
       {tone !== "on-light" && (
         <Image
           src={wordmarkOnDark}
           alt=""
-          className={"col-start-1 row-start-1 h-auto w-full" + (tone === "auto" ? " hidden dark:block" : "")}
+          className={
+            "col-start-1 row-start-1 h-auto w-full" + (tone === "auto" ? " hidden dark:block" : "")
+          }
         />
       )}
     </span>
