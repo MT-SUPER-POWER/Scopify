@@ -1,10 +1,14 @@
+import type { CSSProperties } from "react";
+
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
+import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import type { VisualizerBackgroundSettingsProps } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 
 export default function RhineBackgroundSettingsCard({
   config,
   actions,
   t,
+  isDaylight,
   theme,
   controlCardBg,
   rangeInputClass,
@@ -13,13 +17,27 @@ export default function RhineBackgroundSettingsCard({
 }: VisualizerBackgroundSettingsProps) {
   const tuning = { ...DEFAULT_RHINE_BACKGROUND_TUNING, ...config?.rhine?.tuning };
   const change = actions?.rhine?.onTuningChange;
-  const selectClass =
-    "min-w-32 rounded-lg border border-current/15 bg-transparent px-3 py-2 text-sm";
+  const selectClass = "min-w-32 rounded-lg border px-3 py-2 text-sm outline-none";
+  // Native popups ignore the card's inherited color, so pin the field and options to the Folia theme.
+  const selectStyle: CSSProperties = {
+    color: theme.primaryColor,
+    backgroundColor: colorWithAlpha(theme.backgroundColor, isDaylight ? 0.6 : 0.72),
+    borderColor: colorWithAlpha(theme.secondaryColor, isDaylight ? 0.24 : 0.2),
+  };
+  const optionStyle: CSSProperties = {
+    color: theme.primaryColor,
+    backgroundColor: theme.backgroundColor,
+  };
 
   return (
     <div
       className="space-y-5 rounded-3xl border border-current/15 p-4"
-      style={{ backgroundColor: controlCardBg, color: theme.primaryColor }}
+      style={{
+        backgroundColor: controlCardBg,
+        color: theme.primaryColor,
+        colorScheme: isDaylight ? "light" : "dark",
+        accentColor: theme.accentColor,
+      }}
     >
       <div className="space-y-1">
         <h3 className="text-sm font-medium">{t("folia.rhine.title")}</h3>
@@ -29,6 +47,7 @@ export default function RhineBackgroundSettingsCard({
         <span>{t("folia.rhine.colorMode")}</span>
         <select
           className={selectClass}
+          style={selectStyle}
           value={tuning.colorMode}
           onChange={(event) => {
             const colorMode = event.target.value;
@@ -36,9 +55,15 @@ export default function RhineBackgroundSettingsCard({
               change?.({ colorMode });
           }}
         >
-          <option value="auto">{t("folia.rhine.colorAuto")}</option>
-          <option value="light">{t("folia.rhine.colorLight")}</option>
-          <option value="dark">{t("folia.rhine.colorDark")}</option>
+          <option style={optionStyle} value="auto">
+            {t("folia.rhine.colorAuto")}
+          </option>
+          <option style={optionStyle} value="light">
+            {t("folia.rhine.colorLight")}
+          </option>
+          <option style={optionStyle} value="dark">
+            {t("folia.rhine.colorDark")}
+          </option>
         </select>
       </label>
       <label className="flex items-center justify-between gap-3 text-sm">
@@ -61,6 +86,7 @@ export default function RhineBackgroundSettingsCard({
         <span>{t("folia.rhine.rhythmStyle")}</span>
         <select
           className={selectClass}
+          style={selectStyle}
           value={tuning.rhythmStyle}
           onChange={(event) => {
             const rhythmStyle = event.target.value;
@@ -68,9 +94,15 @@ export default function RhineBackgroundSettingsCard({
               change?.({ rhythmStyle });
           }}
         >
-          <option value="legacy">{t("folia.rhine.rhythmLegacy")}</option>
-          <option value="wave">{t("folia.rhine.rhythmWave")}</option>
-          <option value="lift">{t("folia.rhine.rhythmLift")}</option>
+          <option style={optionStyle} value="legacy">
+            {t("folia.rhine.rhythmLegacy")}
+          </option>
+          <option style={optionStyle} value="wave">
+            {t("folia.rhine.rhythmWave")}
+          </option>
+          <option style={optionStyle} value="lift">
+            {t("folia.rhine.rhythmLift")}
+          </option>
         </select>
       </label>
       <label className="block space-y-2 text-sm">
@@ -117,6 +149,7 @@ export default function RhineBackgroundSettingsCard({
         <span>{t("folia.rhine.quality")}</span>
         <select
           className={selectClass}
+          style={selectStyle}
           value={tuning.quality}
           onChange={(event) => {
             const quality = event.target.value;
@@ -124,23 +157,34 @@ export default function RhineBackgroundSettingsCard({
               change?.({ quality });
           }}
         >
-          <option value="performance">{t("folia.rhine.qualityPerformance")}</option>
-          <option value="original">{t("folia.rhine.qualityOriginal")}</option>
-          <option value="high">{t("folia.rhine.qualityHigh")}</option>
+          <option style={optionStyle} value="performance">
+            {t("folia.rhine.qualityPerformance")}
+          </option>
+          <option style={optionStyle} value="original">
+            {t("folia.rhine.qualityOriginal")}
+          </option>
+          <option style={optionStyle} value="high">
+            {t("folia.rhine.qualityHigh")}
+          </option>
         </select>
       </label>
       <label className="flex items-center justify-between gap-3 text-sm">
         <span>{t("folia.rhine.frameRate")}</span>
         <select
           className={selectClass}
+          style={selectStyle}
           value={tuning.frameRate}
           onChange={(event) => {
             const frameRate = event.target.value;
             if (frameRate === "30" || frameRate === "60") change?.({ frameRate });
           }}
         >
-          <option value="30">30 FPS</option>
-          <option value="60">60 FPS</option>
+          <option style={optionStyle} value="30">
+            30 FPS
+          </option>
+          <option style={optionStyle} value="60">
+            60 FPS
+          </option>
         </select>
       </label>
       <p className="text-xs opacity-60">{t("folia.rhine.pauseHint")}</p>
