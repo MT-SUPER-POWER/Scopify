@@ -15,9 +15,9 @@ export function ScopifyBrand({
       aria-label="Scopify"
       className={cn("inline-flex items-center gap-2.5", className)}
     >
-      {/* 小尺寸只用黑胶中心的扁平 S 圆标，完整黑胶外圈缩小后会融进深色背景 */}
+      {/* 使用定稿的 Ivory S 圆标与原有粗斜体字标。 */}
       <Image
-        src="/brand-kits/green-vinyl/mark-128.png"
+        src="/brand-kits/ivory/icon-128.png"
         alt=""
         width={128}
         height={128}
@@ -25,16 +25,29 @@ export function ScopifyBrand({
         priority={priority}
         className={cn("size-8 shrink-0 object-contain", iconClassName)}
       />
-      {/* 延续旧字标的大写粗斜体，呼应 S 标的斜向笔势，但去掉做旧纹理 */}
       {withWordmark && (
         <span
           aria-hidden="true"
-          className={cn(
-            "min-w-0 truncate pr-0.5 font-brand text-lg leading-none font-black tracking-[0.01em] text-content italic",
-            wordmarkClassName,
-          )}
+          className={cn("inline-grid min-w-0 shrink text-lg leading-none", wordmarkClassName)}
         >
-          SCOPIFY
+          <Image
+            src="/brand-kits/ivory/wordmark-on-light.png"
+            alt=""
+            width={990}
+            height={180}
+            sizes="160px"
+            priority={priority}
+            className="col-start-1 row-start-1 h-[1.1em] w-auto max-w-full object-contain dark:hidden"
+          />
+          <Image
+            src="/brand-kits/ivory/wordmark-on-dark.png"
+            alt=""
+            width={990}
+            height={180}
+            sizes="160px"
+            priority={priority}
+            className="col-start-1 row-start-1 hidden h-[1.1em] w-auto max-w-full object-contain dark:block"
+          />
         </span>
       )}
     </span>

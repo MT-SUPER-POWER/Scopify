@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="repo/frontend/apps/web/public/brand-kits/green-vinyl/icon-256.png" alt="Scopify 亮绿 S 黑胶标志" width="100" height="100" />
+<img src="repo/frontend/apps/web/public/brand-kits/ivory/icon-256.png" alt="Scopify Ivory S 标志" width="100" height="100" />
 
 <h1>
   <picture>
