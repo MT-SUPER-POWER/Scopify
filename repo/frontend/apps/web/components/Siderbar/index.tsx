@@ -15,7 +15,10 @@ function SidebarImpl() {
   const isCollapsed = useSidebarNarrow(containerRef);
 
   return (
-    <aside ref={containerRef} className="@container/sidebar flex size-full min-h-0 flex-col bg-surface">
+    <aside
+      ref={containerRef}
+      className="@container/sidebar flex size-full min-h-0 flex-col bg-surface"
+    >
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-md bg-sidebar">
         <header
           className={cn(
@@ -28,7 +31,7 @@ function SidebarImpl() {
             aria-label="Scopify"
             title="Scopify"
             className={cn(
-              "flex min-w-0 items-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none",
+              "flex min-w-0 items-center rounded-md transition-opacity outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none",
               isCollapsed && "justify-center",
             )}
           >
