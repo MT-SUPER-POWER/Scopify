@@ -95,3 +95,16 @@ export interface LatticePreferences {
   setFollowCurrent: (value: boolean) => void;
   setLightsOff: (value: boolean) => void;
 }
+
+/** Opens or closes the lattice view of the playlist page that is currently mounted. */
+export interface LatticeViewController {
+  open: () => void;
+  close: () => void;
+}
+
+export interface LatticeViewState {
+  active: boolean;
+  controller: LatticeViewController | null;
+  setActive: (active: boolean) => void;
+  register: (controller: LatticeViewController) => () => void;
+}

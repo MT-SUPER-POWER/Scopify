@@ -170,6 +170,24 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     scope: "playlist",
   },
   {
+    id: "playlist-view-list",
+    group: "interface",
+    labelKey: "shortcuts.command.playlistViewList",
+    defaultBinding: null,
+  },
+  {
+    id: "playlist-view-lattice",
+    group: "interface",
+    labelKey: "shortcuts.command.playlistViewLattice",
+    defaultBinding: null,
+  },
+  {
+    id: "toggle-lattice-lights-off",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleLatticeLightsOff",
+    defaultBinding: null,
+  },
+  {
     id: "open-shortcut-settings",
     group: "shortcuts",
     labelKey: "shortcuts.command.openSettings",

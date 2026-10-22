@@ -21407,6 +21407,24 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.focusPlaylistSearch", params?: TranslationParams): string;
   /**
+   * zh-CN: 歌单展示：列表
+   * zh-TW: 歌單展示：清單
+   * en-US: Playlist View: List
+   */
+  (key: "shortcuts.command.playlistViewList", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌单展示：Lattice 拼贴
+   * zh-TW: 歌單展示：Lattice 拼貼
+   * en-US: Playlist View: Lattice Collage
+   */
+  (key: "shortcuts.command.playlistViewLattice", params?: TranslationParams): string;
+  /**
+   * zh-CN: Lattice 暗场：开启/关闭
+   * zh-TW: Lattice 暗場：開啟/關閉
+   * en-US: Lattice: Dim Other Covers On/Off
+   */
+  (key: "shortcuts.command.toggleLatticeLightsOff", params?: TranslationParams): string;
+  /**
    * zh-CN: 聚焦音量控件后可用
    * zh-TW: 聚焦音量控制項後可用
    * en-US: Available when the volume control is focused

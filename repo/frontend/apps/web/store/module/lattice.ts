@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { LatticePreferences } from "@/types/playlistLattice";
+import type { LatticePreferences, LatticeViewState } from "@/types/playlistLattice";
 
 export const useLatticePreferences = create<LatticePreferences>()(
   persist(
@@ -16,3 +16,16 @@ export const useLatticePreferences = create<LatticePreferences>()(
     },
   ),
 );
+
+/** Runtime state of the lattice view, shared with the global header and shortcut commands. */
+export const useLatticeView = create<LatticeViewState>()((set, get) => ({
+  active: false,
+  controller: null,
+  setActive: (active) => set({ active }),
+  register: (controller) => {
+    set({ controller });
+    return () => {
+      if (get().controller === controller) set({ controller: null, active: false });
+    };
+  },
+}));

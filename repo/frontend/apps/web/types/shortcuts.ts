@@ -34,7 +34,10 @@ export type ShortcutCommandId =
   | "toggle-fullscreen"
   | "toggle-developer-tools"
   | "open-current-track-comments"
-  | "focus-playlist-search";
+  | "focus-playlist-search"
+  | "playlist-view-list"
+  | "playlist-view-lattice"
+  | "toggle-lattice-lights-off";
 
 export type ShortcutGroup = "playback" | "interface" | "shortcuts";
 export type ShortcutScope = "global" | "playlist";
@@ -50,8 +53,15 @@ export interface ShortcutCommandDefinition {
   id: ShortcutCommandId;
   group: ShortcutGroup;
   labelKey: TranslationKey;
-  defaultBinding: ShortcutBinding;
+  /** `null` leaves the command unassigned until the user records a binding. */
+  defaultBinding: ShortcutBinding | null;
   scope?: ShortcutScope;
+}
+
+/** Page state that decides whether a command is offered in the command palette. */
+export interface ShortcutAvailabilityContext {
+  latticeActive: boolean;
+  latticeAvailable: boolean;
 }
 
 export interface ShortcutCommandExecutorOptions {
