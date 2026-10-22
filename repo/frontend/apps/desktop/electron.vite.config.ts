@@ -24,6 +24,12 @@ export default defineConfig(({ command }) => {
           input: {
             main: resolve(root, "electron/main/index.ts"),
           },
+          onwarn(warning, defaultHandler) {
+            // zod 4 的 `@__PURE__` 注释位置 Rollup 无法识别，只会被丢弃、不影响产物，静默这类第三方噪音。
+            if (warning.code === "INVALID_ANNOTATION" && warning.id?.includes("node_modules"))
+              return;
+            defaultHandler(warning);
+          },
           external: [
             "bufferutil",
             "utf-8-validate",

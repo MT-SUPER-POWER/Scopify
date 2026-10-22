@@ -129,9 +129,12 @@ const request = axios.create({
   withCredentials: true,
 });
 
-console.info("--------------------------------------------------");
-console.info("Next.js Request Backend URL is", baseURL);
-console.info("--------------------------------------------------");
+// 静态导出时每个 worker 都会加载本模块，构建阶段不重复打印。
+if (process.env.NEXT_PHASE !== "phase-production-build") {
+  console.info("--------------------------------------------------");
+  console.info("Next.js Request Backend URL is", baseURL);
+  console.info("--------------------------------------------------");
+}
 
 if (typeof window !== "undefined") {
   window.addEventListener("app-config-updated", (event) => {

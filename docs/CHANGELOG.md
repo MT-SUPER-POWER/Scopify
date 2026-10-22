@@ -34,6 +34,8 @@
 
 ### Quality
 
+- **精简 Windows 打包流程与安装包**：桌面主进程已由 electron-vite 打包进 `main.js`，`@scopify/desktop` 的运行时 `dependencies` 只保留需要在运行时 `require` 的 `@neteasecloudmusicapienhanced/api`，其余移入 `devDependencies`，electron-builder 不再把 zod、MCP SDK、Discord RPC、electron-updater 等已打包依赖重复塞进 `app.asar`；移除未使用的 `electron-positioner`。`build:win` / `release:win` 不再重复执行已由 `build` 完成的 `wallpaper:build`；electron-vite 构建加 `--ignoreConfigWarning` 消除无 renderer 配置的提示，并静默 zod 4 注释位置引起的 Rollup `INVALID_ANNOTATION` 警告；静态导出阶段不再由每个 worker 重复打印后端地址。
+
 - **Markdown / MDX 交给 Prettier 统一格式化，表格改为紧凑写法**：接入 `prettier-plugin-markdown-compact-tables`，`.md` 与 `.mdx` 不再被 `.prettierignore` 整体排除；表格单元格两侧固定一个空格、不再按列宽补齐，改一个单元格不会再让整张表重新对齐。文档统一使用 `proseWrap: "never"`、超大 `printWidth`（段落与 JSX 不被折行）和 `embeddedLanguageFormatting: "off"`（代码块内容原样保留，shadcn 示例不被补分号）；根目录、`apps/docs` 与 `apps/web` 三份 Prettier 配置同步，lint-staged 对暂存的 Markdown / MDX 执行 Prettier。首次全量格式化后逐个比对 MDX 3 + GFM 语法树：所有 MDX 结构不变且均可编译，仅 12 个 Markdown 文档合并了中文段落内的硬换行。
 
 - **落地页标题字体的字符收集忽略注释**：生成子集字体与检查覆盖率时，先用 TypeScript 去掉源码注释再收集中文字符，组件里的中文注释不再让字体变大，也不再要求重新生成子集。
