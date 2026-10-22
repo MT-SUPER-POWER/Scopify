@@ -1,7 +1,8 @@
-import { spawnSync } from "node:child_process";
-import { existsSync, readdirSync, rmSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
+
+import { runNapiBuild } from "../lib/napiBuild";
 
 // The desktop package intentionally invokes this only from Windows build
 // scripts. Keeping the guard here also makes `bun run build` on a non-Windows
@@ -14,47 +15,17 @@ const arch = process.arch === "arm64" ? "arm64" : "x64";
 const binaryPath = join(engineRoot, `scopify-audio-engine.win32-${arch}-msvc.node`);
 const declarationPath = join(engineRoot, "index.d.ts");
 
-function cleanStaleTransactions() {
-  try {
-    for (const file of readdirSync(engineRoot)) {
-      if (file.startsWith(".napi-rs-filesystem-transaction")) {
-        rmSync(join(engineRoot, file), { recursive: true, force: true });
-      }
-    }
-  } catch {}
-}
-
-cleanStaleTransactions();
-
 /**
  * `napi build` both builds the Node-API binary and generates index.d.ts from
  * the Rust annotations. Do not replace this with a handwritten declaration:
  * the generated declaration is what keeps the Main host and Rust ABI honest.
  */
-function runNapiBuild() {
-  return spawnSync("pnpm", ["exec", "napi", "build", "--platform", "--release"], {
-    cwd: engineRoot,
-    shell: process.platform === "win32",
-    encoding: "utf8",
-    stdio: "inherit",
-    windowsHide: true,
-  });
-}
-
-let result = runNapiBuild();
-if (result.status !== 0) {
-  // Windows 下杀毒软件/索引服务可能对 .swp 暂存区产生瞬时句柄占用，清理后重试一次
-  cleanStaleTransactions();
-  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 600);
-  result = runNapiBuild();
-}
-
-if (result.error) {
-  throw new Error(
-    `Unable to start @napi-rs/cli (${result.error.message}). Add it to the desktop development dependencies before enabling the native audio build.`,
-  );
-}
-if (result.status !== 0) process.exit(result.status ?? 1);
+const status = runNapiBuild({
+  crateRoot: engineRoot,
+  cwd: engineRoot,
+  args: ["--platform", "--release"],
+});
+if (status !== 0) process.exit(status);
 
 if (!existsSync(binaryPath)) {
   throw new Error(`NAPI completed without producing ${binaryPath}`);

@@ -44,6 +44,8 @@
 
 ### Fixed
 
+- **Windows 原生模块构建不再把已重试成功的 EPERM 堆栈打进日志**：`napi build` 提交产物时会整体 rename 暂存目录，杀毒软件或索引服务扫描新 `.node` 时的瞬时占用会让它报 EPERM。`audio:build` 与 `taskbar:build` 改用共享的 `lib/napiBuild.ts`：每次尝试的输出先缓存，仅对 napi 事务目录上的 EPERM / EBUSY / EACCES 清理残留后最多重试两次，成功或遇到真实错误时才原样输出。
+
 - **修复 Folia「倾诉」动画每次挂载都报 `useInsertionEffect must not schedule updates`**：倾诉在 `useInsertionEffect` 里订阅播放时间并立即调用一次回调，回调会更新当前可见的歌词分段（React state），而插入阶段的 effect 不允许触发更新；客户端与落地页每次切到倾诉都会在控制台报错。改为 `useLayoutEffect`，仍在绘制前完成订阅，首帧分段不受影响。
 
 - **修复落地页歌词舞台在莫奈、时计等动画上吞掉页面滚动**：这些动画会接管歌词列上的滚轮与触摸（`preventDefault` 加 `touch-action: none`）用于手动翻歌词，放在落地页里时滚到它们就再也滚不下去、看不到后面的动画。落地页的 Folia 舞台现在整体设为 `inert`，滚轮与触摸直接落到页面上。
