@@ -50,6 +50,8 @@
 
 - **文档站构建不再报 `::highlight` CSS 警告**：fumadocs-ui 搜索框的 `[&_::highlight(fd-search)]:text-fd-primary` / `:underline` 工具类经 Tailwind 的 Lightning CSS 优化时，因不认识 `::highlight()` 伪元素而每次构建报两条警告。`globals.css` 用 `@source not inline()` 排除这两个类，改由不含 Tailwind 指令（因而被 `@tailwindcss/postcss` 跳过）的 `app/search-highlight.css` 提供等价的 `::highlight(fd-search)` 样式，搜索命中仍以主题绿色加下划线高亮。
 
+- **文档站构建不再报 fumadocs-mdx 构建依赖警告**：docs 的 `next.config.mjs` 自定义了 webpack，Next 会把它登记为持久缓存的构建依赖，webpack 随之解析其 ESM 依赖图，并在 fumadocs-mdx 通过运行时 `import()` 加载 `source.config.ts` 处报 `failed at 'import(url.href)'` 等四条 `<w>` 警告（pnpm 下 managedPaths 也无法跳过该解析）。配置中为 webpack 基础设施日志提供过滤后的 console，仅丢弃来自 fumadocs-mdx 的这一类良性警告，其余缓存警告照常输出；`source.config.ts` 的变更仍由 fumadocs 自身跟踪。
+
 - **Windows 原生模块构建不再把已重试成功的 EPERM 堆栈打进日志**：`napi build` 提交产物时会整体 rename 暂存目录，杀毒软件或索引服务扫描新 `.node` 时的瞬时占用会让它报 EPERM。`audio:build` 与 `taskbar:build` 改用共享的 `lib/napiBuild.ts`：每次尝试的输出先缓存，仅对 napi 事务目录上的 EPERM / EBUSY / EACCES 清理残留后最多重试两次，成功或遇到真实错误时才原样输出。
 
 - **修复 Folia「倾诉」动画每次挂载都报 `useInsertionEffect must not schedule updates`**：倾诉在 `useInsertionEffect` 里订阅播放时间并立即调用一次回调，回调会更新当前可见的歌词分段（React state），而插入阶段的 effect 不允许触发更新；客户端与落地页每次切到倾诉都会在控制台报错。改为 `useLayoutEffect`，仍在绘制前完成订阅，首帧分段不受影响。
