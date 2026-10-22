@@ -1,18 +1,23 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, List } from "lucide-react";
 import RightActions from "./RightActions";
 import HeaderSearch from "@/components/SearchContents/HeaderSearch";
 import { useIsScrollAtTop } from "@/components/shared/NavigationScrollProvider";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/store/module/i18n";
+import { useLatticeView } from "@/store/module/lattice";
 import { headerStyles } from "@/styles";
 
 const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
 
 export function Header() {
+  const { t } = useI18n();
   const isAtTop = useIsScrollAtTop();
   const smartRouter = useSmartRouter();
+  const latticeActive = useLatticeView((state) => state.active);
+  const latticeController = useLatticeView((state) => state.controller);
 
   return (
     <div
@@ -53,6 +58,22 @@ export function Header() {
         >
           <ChevronRight className="size-5" />
         </button>
+        {latticeActive && latticeController && (
+          <button
+            type="button"
+            onClick={latticeController.close}
+            aria-label={t("playlist.lattice.back")}
+            title={`${t("playlist.lattice.back")} · Esc`}
+            className={cn(
+              "flex h-10 items-center gap-2 rounded-full px-3 text-sm font-medium",
+              "text-content-muted transition-all hover:text-content",
+              NAV_BTN,
+            )}
+          >
+            <List className="size-4" />
+            <span className="hidden sm:inline">{t("playlist.lattice.back")}</span>
+          </button>
+        )}
       </div>
 
       {/* 中间搜索区域 */}

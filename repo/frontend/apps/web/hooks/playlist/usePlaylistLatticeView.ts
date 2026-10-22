@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLatticeView } from "@/store/module/lattice";
 
 export function usePlaylistLatticeView() {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -9,8 +10,11 @@ export function usePlaylistLatticeView() {
   useLayoutEffect(() => {
     if (!container) return;
     container.dataset.latticeActive = "true";
+    const { setActive } = useLatticeView.getState();
+    setActive(true);
     return () => {
       delete container.dataset.latticeActive;
+      setActive(false);
     };
   }, [container]);
   const open = useCallback(() => {
@@ -26,5 +30,7 @@ export function usePlaylistLatticeView() {
       if (triggerRef.current?.isConnected) triggerRef.current.focus({ preventScroll: true });
     });
   }, []);
+  // Lets the global header and shortcut commands switch this page's view mode.
+  useEffect(() => useLatticeView.getState().register({ open, close }), [open, close]);
   return { contentRef, container, open, close };
 }
