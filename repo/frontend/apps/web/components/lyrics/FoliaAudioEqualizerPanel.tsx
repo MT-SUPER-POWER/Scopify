@@ -16,9 +16,9 @@ import {
 import {
   AUDIO_EQUALIZER_BANDS,
   AUDIO_EQUALIZER_MAX_GAIN_DB,
-  AUDIO_EQUALIZER_MIN_GAIN_DB,
   AUDIO_EFFECT_CONTROLS,
 } from "@/constants/audioEqualizer";
+import { EqualizerCurve } from "@scopify/ui/scopify/components/equalizer-curve";
 import { cn } from "@/lib/utils";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useI18n } from "@/store/module/i18n";
@@ -79,7 +79,6 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
   const isDaylight = theme.name === "snow";
   const primaryColor = theme.primaryColor;
   const mutedTextColor = `color-mix(in srgb, ${primaryColor} ${isDaylight ? "62%" : "68%"}, transparent)`;
-  const subtleTextColor = `color-mix(in srgb, ${primaryColor} ${isDaylight ? "48%" : "54%"}, transparent)`;
   const sliderTrackColor = `color-mix(in srgb, ${primaryColor} ${isDaylight ? "16%" : "22%"}, transparent)`;
   const activeCustomPreset = isUserPresetId(draft.preset)
     ? (draft.customPresets.find((preset) => preset.id === draft.preset) ?? null)
@@ -282,55 +281,16 @@ export function FoliaAudioEqualizerPanel({ theme }: { theme: Theme }) {
             {t("folia.audioEqualizer.autoHeadroom")} −{headroomDb} dB · +12 / −12 dB
           </span>
         </div>
-        <div className="flex justify-between">
-          {AUDIO_EQUALIZER_BANDS.map((band, index) => {
-            const gain = draft.gains[index] ?? 0;
-            return (
-              <label key={band.frequency} className="flex flex-col items-center gap-1.5">
-                <span
-                  className="text-[10px] font-semibold tabular-nums"
-                  style={{ color: gain !== 0 ? accentColor : mutedTextColor }}
-                >
-                  {gain > 0 ? "+" : ""}
-                  {gain}
-                </span>
-                <input
-                  type="range"
-                  min={AUDIO_EQUALIZER_MIN_GAIN_DB}
-                  max={AUDIO_EQUALIZER_MAX_GAIN_DB}
-                  step={1}
-                  value={gain}
-                  aria-label={`${band.label} Hz`}
-                  onChange={(event) => updateBandDraft(index, Number(event.currentTarget.value))}
-                  onInput={(event) => updateBandDraft(index, Number(event.currentTarget.value))}
-                  onPointerUp={commitDraft}
-                  onPointerCancel={commitDraft}
-                  onKeyUp={commitDraft}
-                  onBlur={commitDraft}
-                  className="h-24 w-1.5 cursor-pointer appearance-none rounded-full"
-                  style={{
-                    accentColor,
-                    backgroundColor: sliderTrackColor,
-                    direction: "rtl",
-                    writingMode: "vertical-lr",
-                  }}
-                />
-                <span
-                  className="text-[10px] font-semibold tabular-nums"
-                  style={{ color: mutedTextColor }}
-                >
-                  {band.label}
-                </span>
-              </label>
-            );
-          })}
-        </div>
-        <div
-          className="mt-2 text-center text-[9px] tracking-widest uppercase"
-          style={{ color: subtleTextColor }}
-        >
-          Hz
-        </div>
+        <EqualizerCurve
+          bands={AUDIO_EQUALIZER_BANDS}
+          gains={draft.gains}
+          maxGain={AUDIO_EQUALIZER_MAX_GAIN_DB}
+          onChange={updateBandDraft}
+          onCommit={commitDraft}
+          showValues
+          accentColor={accentColor}
+          plotClassName="h-40"
+        />
       </div>
 
       <div className="rounded-2xl border p-4" style={surfaceStyle}>
