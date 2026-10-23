@@ -5,6 +5,8 @@
   "packageManager": "pnpm@12.8.1",
   "scripts": {
     "prepare": "husky",
+    "bump": "bun scripts/bump-version.ts",
+    "version:bump": "bun scripts/bump-version.ts",
     "changelog:preview": "git-cliff --unreleased --strip all",
     "dev": "turbo run dev --filter=@scopify/web --filter=@scopify/desktop",
     "dev:web": "turbo run dev --filter=@scopify/web",
