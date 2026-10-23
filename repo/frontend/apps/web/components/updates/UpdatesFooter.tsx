@@ -1,7 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { FaGithub } from "react-icons/fa6";
+import { ArrowUpRight } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -9,33 +8,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
-import { UPDATES } from "@/constants/updates";
+import { UPDATES, UPDATES_CHANGELOG_URL, UPDATES_UNRELEASED_KEY } from "@/constants/updates";
 import { useI18n } from "@/store/module/i18n";
 import type { UpdatesFooterProps } from "@/types/updates";
 import styles from "./WhatsNewModal.module.css";
 
-export function UpdatesFooter({
-  version,
-  page,
-  total,
-  onVersionChange,
-  onPageChange,
-}: UpdatesFooterProps) {
+export function UpdatesFooter({ releaseKey, onReleaseChange, onClose }: UpdatesFooterProps) {
   const { t } = useI18n();
   return (
     <footer className={styles.footer}>
       <div className={styles.footerGroup}>
-        <a
-          className={styles.projectLink}
-          href="https://github.com/MT-SUPER-POWER/Scopify"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Scopify · GitHub"
-        >
-          <FaGithub size={16} aria-hidden />
-          <span className={styles.projectName}>Scopify</span>
-        </a>
-        <Select value={version} onValueChange={onVersionChange}>
+        <Select value={releaseKey} onValueChange={onReleaseChange}>
           <SelectTrigger
             size="sm"
             className={styles.versionTrigger}
@@ -48,37 +31,29 @@ export function UpdatesFooter({
               <SelectItem value={UPDATES.currentVersion}>v{UPDATES.currentVersion}</SelectItem>
             ) : null}
             {UPDATES.releases.map((item) => (
-              <SelectItem key={item.version} value={item.version}>
-                v{item.version}
+              <SelectItem
+                key={item.version ?? UPDATES_UNRELEASED_KEY}
+                value={item.version ?? UPDATES_UNRELEASED_KEY}
+              >
+                {item.version ? `v${item.version}` : t("updates.unreleased")}
                 {item.version === UPDATES.currentVersion ? ` · ${t("updates.current")}` : ""}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
+        <a
+          className={styles.historyLink}
+          href={UPDATES_CHANGELOG_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t("updates.fullHistory")}
+          <ArrowUpRight size={14} aria-hidden />
+        </a>
       </div>
-      <nav className={styles.footerGroup} aria-label={t("updates.page", { page: page + 1, total })}>
-        <button
-          type="button"
-          className={styles.footerButton}
-          disabled={page === 0}
-          onClick={() => onPageChange(page - 1)}
-          aria-label={t("updates.previous")}
-        >
-          <ChevronLeft size={16} aria-hidden />
-        </button>
-        <span className={styles.pageLabel} aria-live="polite">
-          {page + 1} / {total}
-        </span>
-        <button
-          type="button"
-          className={styles.footerButton}
-          disabled={page + 1 >= total}
-          onClick={() => onPageChange(page + 1)}
-          aria-label={t("updates.next")}
-        >
-          <ChevronRight size={16} aria-hidden />
-        </button>
-      </nav>
+      <button type="button" className={styles.done} onClick={onClose}>
+        {t("updates.close")}
+      </button>
     </footer>
   );
 }

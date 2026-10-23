@@ -2,84 +2,38 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { parseChangelog } from "../../scripts/parse-changelog";
 
-const document = (entry: string) => `## v2.0.3\n\n### Visual\n\n${entry}\n`;
+const hash = "5320175086981746d4c9bd04bb9dea84ef21208c";
+const line = (text: string) =>
+  `- ${text} ([53201750](https://github.com/MT-SUPER-POWER/Scopify/commit/${hash}))`;
 
-describe("CHANGELOG contract", () => {
-  test("keeps editorial categories independent of conventional commit types", () => {
+describe("git-cliff changelog", () => {
+  test("reads versions, groups and commit links", () => {
     const [release] = parseChangelog(
-      document(
-        "- **F12 shortcut**：Clearer controls. ([fix · 1234567](https://github.com/MT-SUPER-POWER/Scopify/commit/1234567890123456789012345678901234567890))\n  <!-- update:f12 -->",
-      ),
+      `# Changelog\n\n> note\n\n## v2.0.4 — 2026-10-23\n\n### 新增\n\n${line("歌词支持双语对照")}\n\n### 修复\n\n${line("切歌后音量不再被重置")}\n`,
     );
-    expect(release.entries[0].category).toBe("Visual");
-    expect(release.entries[0].description).toBe("Clearer controls.");
-    expect(release.entries[0].commits).toEqual(["1234567890123456789012345678901234567890"]);
+    expect(release).toMatchObject({ version: "2.0.4", date: "2026-10-23" });
+    expect(release.entries).toEqual([
+      { commit: hash, group: "added", text: "歌词支持双语对照" },
+      { commit: hash, group: "fixed", text: "切歌后音量不再被重置" },
+    ]);
   });
 
-  test("keeps an empty prerelease in version history", () => {
-    expect(parseChangelog("## v1.0.2-alpha\n\n> No separate notes.\n")[0]).toMatchObject({
-      version: "1.0.2-alpha",
-      entries: [],
+  test("marks the unreleased preview with a null version", () => {
+    expect(parseChangelog(`## 未发布\n\n### 优化\n\n${line("滚动更流畅")}`)[0]).toMatchObject({
+      version: null,
+      entries: [{ group: "improved" }],
     });
   });
 
-  test("does not relabel an unresolved historical entry as new implementation", () => {
-    const [release] = parseChangelog(
-      document("- **Old update**\n  <!-- update:old-entry historical -->"),
+  test("rejects groups and entries cliff.toml never writes", () => {
+    expect(() => parseChangelog("## v2.0.4 — 2026-10-23\n\n### Visual\n")).toThrow("group");
+    expect(() => parseChangelog("## v2.0.4 — 2026-10-23\n\n### 修复\n\n- no link\n")).toThrow(
+      "entry",
     );
-    expect(release.entries[0]).toMatchObject({ historical: true, commits: [] });
   });
 
-  test("rejects mismatched hashes, duplicate ids and invalid categories", () => {
-    expect(() =>
-      parseChangelog(
-        document(
-          "- **Wrong** ([abcdef0](https://github.com/MT-SUPER-POWER/Scopify/commit/1234567890))\n  <!-- update:wrong -->",
-        ),
-      ),
-    ).toThrow("disagrees");
-    expect(() =>
-      parseChangelog(
-        document(
-          "- **First**\n  <!-- update:duplicate -->\n- **Second**\n  <!-- update:duplicate -->",
-        ),
-      ),
-    ).toThrow("Duplicate update id");
-    expect(() => parseChangelog("## v2.0.3\n### Architecture\n")).toThrow("Invalid category");
-  });
-
-  test("preserves optional translations in the same Markdown entry", () => {
-    const [release] = parseChangelog(
-      document(
-        '- **中文标题**：中文说明。\n  <!-- update:localized -->\n  <!-- translation:en-US {"title":"English title","description":"English description."} -->',
-      ),
-    );
-    expect(release.entries[0].translations?.["en-US"]?.title).toBe("English title");
-  });
-
-  test("all historical versions and canonical categories remain parseable", () => {
-    const source = readFileSync(
-      new URL("../../../../../../docs/CHANGELOG.md", import.meta.url),
-      "utf8",
-    );
-    const releases = parseChangelog(source);
-    expect(releases.length).toBeGreaterThanOrEqual(35);
-    expect(releases.some((release) => release.version === "1.0.0")).toBe(true);
-    expect(releases.some((release) => release.version === "1.2.0-beta.2")).toBe(true);
-    expect(releases.flatMap((release) => release.entries).length).toBeGreaterThan(500);
-    const audit = readFileSync(
-      new URL("../../../../../../docs/updates/PROVENANCE.md", import.meta.url),
-      "utf8",
-    );
-    for (const entry of releases.flatMap((release) => release.entries)) {
-      if (entry.id.startsWith("legacy-")) expect(audit.includes(entry.id)).toBe(true);
-    }
-    expect(
-      new Set(
-        releases
-          .find((release) => release.version === "2.0.3")
-          ?.entries.map((entry) => entry.category),
-      ),
-    ).toEqual(new Set(["Added", "Visual", "Quality", "Fixed"]));
+  test("the committed changelog parses", () => {
+    const source = readFileSync(new URL("../../../../../../docs/CHANGELOG.md", import.meta.url));
+    expect(() => parseChangelog(source.toString())).not.toThrow();
   });
 });

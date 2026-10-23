@@ -11,12 +11,6 @@ export interface TranslateFn {
    */
   (key: "updates.title", params?: TranslationParams): string;
   /**
-   * zh-CN: 看看 Scopify 最近为你带来了什么。
-   * zh-TW: 看看 Scopify 最近為你帶來了什麼。
-   * en-US: See what's new in Scopify for you.
-   */
-  (key: "updates.subtitle", params?: TranslationParams): string;
-  /**
    * zh-CN: 选择版本
    * zh-TW: 選擇版本
    * en-US: Choose a version
@@ -29,29 +23,11 @@ export interface TranslateFn {
    */
   (key: "updates.current", params?: TranslationParams): string;
   /**
-   * zh-CN: 这个版本没有单独的用户更新说明。
-   * zh-TW: 這個版本沒有單獨的使用者更新說明。
-   * en-US: No separate release notes were recorded for this version.
+   * zh-CN: 这个版本没有面向用户的改动。
+   * zh-TW: 這個版本沒有面向使用者的改動。
+   * en-US: No user-facing changes in this version.
    */
   (key: "updates.empty", params?: TranslationParams): string;
-  /**
-   * zh-CN: 上一页
-   * zh-TW: 上一頁
-   * en-US: Previous page
-   */
-  (key: "updates.previous", params?: TranslationParams): string;
-  /**
-   * zh-CN: 下一页
-   * zh-TW: 下一頁
-   * en-US: Next page
-   */
-  (key: "updates.next", params?: TranslationParams): string;
-  /**
-   * zh-CN: 第 {{page}} / {{total}} 页
-   * zh-TW: 第 {{page}} / {{total}} 頁
-   * en-US: Page {{page}} of {{total}}
-   */
-  (key: "updates.page", params?: TranslationParams): string;
   /**
    * zh-CN: 知道了
    * zh-TW: 知道了
@@ -59,51 +35,57 @@ export interface TranslateFn {
    */
   (key: "updates.close", params?: TranslationParams): string;
   /**
-   * zh-CN: 查看相关提交
-   * zh-TW: 查看相關提交
-   * en-US: Related commits
+   * zh-CN: 关闭
+   * zh-TW: 關閉
+   * en-US: Close
    */
-  (key: "updates.sources", params?: TranslationParams): string;
+  (key: "updates.closeLabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 提交后生成 hash
-   * zh-TW: 提交後產生 hash
-   * en-US: Hash available after commit
+   * zh-CN: 发布日期未记录
+   * zh-TW: 發布日期未記錄
+   * en-US: Release date not recorded
    */
-  (key: "updates.pending", params?: TranslationParams): string;
+  (key: "updates.noDate", params?: TranslationParams): string;
   /**
-   * zh-CN: 历史功能提交尚待核对
-   * zh-TW: 歷史功能提交尚待核對
-   * en-US: The historical implementation commit has not been confirmed
+   * zh-CN: 即将发布
+   * zh-TW: 即將發布
+   * en-US: Coming next
    */
-  (key: "updates.unresolved", params?: TranslationParams): string;
+  (key: "updates.unreleased", params?: TranslationParams): string;
   /**
-   * zh-CN: 待核对
-   * zh-TW: 待核對
-   * en-US: Unverified
+   * zh-CN: 开发预览：上个版本之后的提交
+   * zh-TW: 開發預覽：上個版本之後的提交
+   * en-US: Dev preview: commits since the last release
    */
-  (key: "updates.unresolvedShort", params?: TranslationParams): string;
+  (key: "updates.unreleasedHint", params?: TranslationParams): string;
   /**
-   * zh-CN: 查看此分类 · 第 {{page}} 页
-   * zh-TW: 查看此分類 · 第 {{page}} 頁
-   * en-US: View category · page {{page}}
+   * zh-CN: 完整更新记录
+   * zh-TW: 完整更新記錄
+   * en-US: Full changelog
    */
-  (key: "updates.viewCategoryPage", params?: TranslationParams): string;
+  (key: "updates.fullHistory", params?: TranslationParams): string;
   /**
-   * zh-CN: 新功能
-   * zh-TW: 新功能
-   * en-US: New features
+   * zh-CN: 在 GitHub 查看提交 {{hash}}
+   * zh-TW: 在 GitHub 查看提交 {{hash}}
+   * en-US: View commit {{hash}} on GitHub
+   */
+  (key: "updates.viewCommit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新增
+   * zh-TW: 新增
+   * en-US: New
    */
   (key: "updates.added", params?: TranslationParams): string;
   /**
-   * zh-CN: 问题修复
-   * zh-TW: 問題修復
-   * en-US: Bug fixes
+   * zh-CN: 修复
+   * zh-TW: 修復
+   * en-US: Fixed
    */
   (key: "updates.fixed", params?: TranslationParams): string;
   /**
-   * zh-CN: 体验改进
-   * zh-TW: 體驗改進
-   * en-US: Improvements
+   * zh-CN: 优化
+   * zh-TW: 優化
+   * en-US: Improved
    */
   (key: "updates.improved", params?: TranslationParams): string;
   /**

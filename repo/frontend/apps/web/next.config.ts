@@ -78,8 +78,11 @@ export const WEB_IMAGE_REMOTE_PATTERNS = [
   { protocol: "https", hostname: "upload.wikimedia.org" },
 ] satisfies NonNullable<NextConfig["images"]>["remotePatterns"];
 
-// All versions, categories and optional translations come from one Markdown document.
-const releaseNotes = buildReleaseNotes(process.env.SCOPIFY_RELEASE_NOTES_STRICT === "1");
+// docs/CHANGELOG.md is generated from commits by git-cliff; dev also previews unreleased commits.
+const releaseNotes = buildReleaseNotes({
+  strict: process.env.SCOPIFY_RELEASE_NOTES_STRICT === "1",
+  preview: process.env.NODE_ENV === "development",
+});
 
 const nextConfig: NextConfig = {
   turbopack: {

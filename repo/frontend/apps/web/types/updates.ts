@@ -1,29 +1,24 @@
-import type { AppLocale } from "@/types/config";
+/** Changelog groups produced by cliff.toml: feat → added, fix → fixed, perf → improved. */
+export type UpdateGroup = "added" | "fixed" | "improved";
 
-export type UpdateCommitType =
-  "feat" | "fix" | "perf" | "style" | "docs" | "refactor" | "chore" | "build" | "test" | "ci";
-export type UpdateText = Record<AppLocale, string>;
-export type UpdateCategory = "Added" | "Fixed" | "Visual" | "Quality";
-
-export interface UpdateCategoryDefinition {
-  title: UpdateCategory;
+export interface UpdateGroupDefinition {
+  id: UpdateGroup;
+  /** `### heading` written by git-cliff. */
+  heading: string;
 }
 
 export interface UpdateEntry {
-  id: string;
-  type: UpdateCommitType;
-  category: UpdateCategory;
-  title: UpdateText;
-  description: UpdateText;
-  commit: string | null;
-  sourceType: UpdateCommitType | null;
-  commitStatus: "linked" | "pending" | "unresolved";
+  /** Full commit hash; also the stable React key. */
+  commit: string;
+  group: UpdateGroup;
+  /** Commit subject, written for users (see the git-conventions skill). */
+  text: string;
 }
 
 export interface UpdateRelease {
-  version: string;
+  /** `null` for the dev-only preview of commits after the latest tag. */
+  version: string | null;
   date: string | null;
-  title: UpdateText;
   entries: UpdateEntry[];
 }
 
@@ -40,20 +35,15 @@ export interface UpdatesStore {
 
 export interface UpdateReleaseContentProps {
   release: UpdateRelease;
-  page: number;
-  onPageChange: (page: number) => void;
 }
 
 export interface UpdatesHeaderProps {
-  version: string;
   release: UpdateRelease | undefined;
   onClose: () => void;
 }
 
 export interface UpdatesFooterProps {
-  version: string;
-  page: number;
-  total: number;
-  onVersionChange: (version: string) => void;
-  onPageChange: (page: number) => void;
+  releaseKey: string;
+  onReleaseChange: (releaseKey: string) => void;
+  onClose: () => void;
 }

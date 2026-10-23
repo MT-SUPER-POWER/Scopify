@@ -1,94 +1,43 @@
 "use client";
 
-import { UPDATES_PAGE_SIZE, UPDATE_COMMIT_URL } from "@/constants/updates";
-import { UPDATE_CATEGORIES } from "@/constants/updateCategories";
+import { UPDATE_COMMIT_URL } from "@/constants/updates";
+import { UPDATE_GROUPS } from "@/constants/updateCategories";
 import { useI18n } from "@/store/module/i18n";
 import type { UpdateReleaseContentProps } from "@/types/updates";
 import styles from "./WhatsNewModal.module.css";
 
-export function UpdateReleaseContent({ release, page, onPageChange }: UpdateReleaseContentProps) {
-  const { locale, t } = useI18n();
-  const sortedEntries = UPDATE_CATEGORIES.flatMap((category) =>
-    release.entries.filter((entry) => entry.category === category.title),
-  );
-  const entries = sortedEntries.slice(page * UPDATES_PAGE_SIZE, (page + 1) * UPDATES_PAGE_SIZE);
-
+export function UpdateReleaseContent({ release }: UpdateReleaseContentProps) {
+  const { t } = useI18n();
   return (
-    <div className={styles.content}>
-      {!entries.length ? <p>{t("updates.empty")}</p> : null}
-      {UPDATE_CATEGORIES.map((category) => {
-        const items = entries.filter((entry) => entry.category === category.title);
-        const categoryTotal = release.entries.filter(
-          (entry) => entry.category === category.title,
-        ).length;
-        if (!categoryTotal) return null;
-        const categoryPage = Math.floor(
-          sortedEntries.findIndex((entry) => entry.category === category.title) / UPDATES_PAGE_SIZE,
-        );
+    <article className={styles.content}>
+      {UPDATE_GROUPS.map((group) => {
+        const entries = release.entries.filter((entry) => entry.group === group.id);
+        if (!entries.length) return null;
         return (
-          <details key={category.title} className={styles.article} open>
-            <summary className={styles.sectionTitle}>
-              {category.title}
-              <span className={styles.categoryCount}>
-                {!items.length || items.length === categoryTotal
-                  ? categoryTotal
-                  : `${items.length} / ${categoryTotal}`}
-              </span>
-            </summary>
-            {!items.length ? (
-              <button
-                type="button"
-                className={styles.categoryJump}
-                onClick={() => onPageChange(categoryPage)}
-              >
-                {t("updates.viewCategoryPage", { page: categoryPage + 1 })}
-              </button>
-            ) : null}
+          <section key={group.id} className={styles.group}>
+            <h3 className={styles.groupTitle}>
+              {t(`updates.${group.id}`)}
+              <span className={styles.groupCount}>{entries.length}</span>
+            </h3>
             <ul className={styles.entries}>
-              {items.map((entry) => (
-                <li key={entry.id} className={styles.entry}>
-                  <details className={styles.entryDetails}>
-                    <summary className={styles.entrySummary}>
-                      {entry.title[locale]}{" "}
-                      {entry.commit ? (
-                        <a
-                          className={styles.commit}
-                          href={`${UPDATE_COMMIT_URL}${entry.commit}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          ({entry.commit.slice(0, 8)})
-                        </a>
-                      ) : (
-                        <span
-                          className={styles.pending}
-                          title={
-                            entry.commitStatus === "unresolved"
-                              ? t("updates.unresolved")
-                              : undefined
-                          }
-                        >
-                          (
-                          {t(
-                            entry.commitStatus === "unresolved"
-                              ? "updates.unresolvedShort"
-                              : "updates.pending",
-                          )}
-                          )
-                        </span>
-                      )}
-                    </summary>
-                    <p className={styles.entryDescription}>{entry.description[locale]}</p>
-                    {entry.commitStatus === "unresolved" ? (
-                      <p className={styles.entryDescription}>{t("updates.unresolved")}</p>
-                    ) : null}
-                  </details>
+              {entries.map((entry) => (
+                <li key={entry.commit} className={styles.entry}>
+                  {entry.text}{" "}
+                  <a
+                    className={styles.commit}
+                    href={`${UPDATE_COMMIT_URL}${entry.commit}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t("updates.viewCommit", { hash: entry.commit.slice(0, 8) })}
+                  >
+                    {entry.commit.slice(0, 7)}
+                  </a>
                 </li>
               ))}
             </ul>
-          </details>
+          </section>
         );
       })}
-    </div>
+    </article>
   );
 }
