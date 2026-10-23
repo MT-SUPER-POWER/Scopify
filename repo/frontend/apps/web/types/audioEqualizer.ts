@@ -7,6 +7,12 @@ export type AudioSettingsTab = "equalizer" | "quality";
 export type AudioEffectId =
   "highpass" | "lowpass" | "drive" | "crush" | "wow" | "noise" | "width" | "space" | "punch";
 export type AudioEffectSettings = Record<AudioEffectId, number>;
+export type AudioEffectGroupId = "filter" | "texture" | "space";
+
+export interface AudioEffectGroup {
+  effects: readonly AudioEffectId[];
+  id: AudioEffectGroupId;
+}
 
 export interface AudioPostEffectsGraph {
   apply: (effects: AudioEffectSettings) => void;

@@ -70,7 +70,9 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
         >
           <div className="min-w-0 px-4 py-3" role="tabpanel">
             {activeTab === "quality" ? <AudioQualityDialog /> : null}
-            {activeTab === "equalizer" ? <AudioEqualizerPanel /> : null}
+            {activeTab === "equalizer" ? (
+              <AudioEqualizerPanel selectContentStyle={{ zIndex: 2100 }} />
+            ) : null}
           </div>
         </ScrollArea>
       </PopoverContent>

@@ -9770,6 +9770,48 @@ export interface TranslateFn {
    */
   (key: "audioEqualizer.reset", params?: TranslationParams): string;
   /**
+   * zh-CN: 频段归零
+   * zh-TW: 頻段歸零
+   * en-US: Flatten bands
+   */
+  (key: "audioEqualizer.resetBands", params?: TranslationParams): string;
+  /**
+   * zh-CN: 效果复位
+   * zh-TW: 效果復位
+   * en-US: Reset effects
+   */
+  (key: "audioEqualizer.resetEffects", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点击恢复默认值
+   * zh-TW: 點擊恢復預設值
+   * en-US: Click to restore default
+   */
+  (key: "audioEqualizer.resetEffect", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动余量 −{{db}} dB
+   * zh-TW: 自動餘量 −{{db}} dB
+   * en-US: Auto headroom −{{db}} dB
+   */
+  (key: "audioEqualizer.headroom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 滤波
+   * zh-TW: 濾波
+   * en-US: Filter
+   */
+  (key: "audioEqualizer.group.filter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 质感
+   * zh-TW: 質感
+   * en-US: Texture
+   */
+  (key: "audioEqualizer.group.texture", params?: TranslationParams): string;
+  /**
+   * zh-CN: 空间
+   * zh-TW: 空間
+   * en-US: Space
+   */
+  (key: "audioEqualizer.group.space", params?: TranslationParams): string;
+  /**
    * zh-CN: 打开音频设置
    * zh-TW: 開啟音訊設定
    * en-US: Open audio settings
@@ -11071,12 +11113,6 @@ export interface TranslateFn {
    * en-US: More settings
    */
   (key: "folia.ui.moreSettings", params?: TranslationParams): string;
-  /**
-   * zh-CN: 自动余量
-   * zh-TW: 自動餘量
-   * en-US: Auto headroom
-   */
-  (key: "folia.audioEqualizer.autoHeadroom", params?: TranslationParams): string;
   /**
    * zh-CN: 歌词样式
    * zh-TW: 歌詞樣式
