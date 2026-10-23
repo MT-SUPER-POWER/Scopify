@@ -1,0 +1,15 @@
+{
+  "type": "fix",
+  "category": "Fixed",
+  "audience": "user",
+  "title": {
+    "zh-CN": "外部链接使用默认浏览器打开",
+    "zh-TW": "外部連結使用預設瀏覽器開啟",
+    "en-US": "Open external links in your default browser"
+  },
+  "description": {
+    "zh-CN": "桌面端的提交链接、活动链接等外部网页会交给系统默认浏览器，不再打开应用内网页窗口。",
+    "zh-TW": "桌面端的提交連結、活動連結等外部網頁會交給系統預設瀏覽器，不再開啟應用程式內網頁視窗。",
+    "en-US": "External pages, including commit and activity links, now open in your system's default browser instead of an extra in-app window."
+  }
+}

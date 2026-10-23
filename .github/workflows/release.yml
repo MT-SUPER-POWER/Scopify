@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: false
+          fetch-depth: 0
 
       - name: Checkout backend API submodule only
         run: git submodule update --init --depth 1 repo/backend/api-enhanced
@@ -47,9 +48,20 @@ jobs:
       - name: Verify release tag and workspace versions
         run: bun .github/scripts/verify-release-version.ts ${{ github.ref_name }}
 
+      - name: Generate user-facing release notes with commit provenance
+        run: bun repo/frontend/apps/web/scripts/check-release-notes.ts --release
+
+      - name: Upload release notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-${{ github.sha }}
+          path: release_notes.md
+          if-no-files-found: error
+
       - name: Build and sync Desktop Renderer once
         env:
           GITHUB_SHA: ${{ github.sha }}
+          SCOPIFY_RELEASE_NOTES_STRICT: "1"
         run: pnpm run sync:renderer
 
       - name: Verify Renderer manifest and content
@@ -224,19 +236,11 @@ jobs:
         with:
           subject-path: release/*
 
-      - name: Extract changelog
-        shell: bash
-        run: |
-          VERSION="${GITHUB_REF_NAME}"
-          awk -v heading="## ${VERSION}" '
-            $0 == heading { found = 1; next }
-            found && /^## / { exit }
-            found { print }
-          ' docs/CHANGELOG.md > release_notes.md
-          if [ ! -s release_notes.md ]; then
-            echo "Error: Release notes heading '## ${VERSION}' not found in docs/CHANGELOG.md" >&2
-            exit 1
-          fi
+      - name: Download user-facing release notes
+        uses: actions/download-artifact@v5
+        with:
+          name: release-notes-${{ github.sha }}
+          path: .
 
       - name: Create release
         env:

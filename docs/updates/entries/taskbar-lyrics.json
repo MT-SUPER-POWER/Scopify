@@ -1,0 +1,16 @@
+{
+  "type": "feat",
+  "audience": "user",
+  "commit": "914507ee",
+  "title": {
+    "zh-CN": "Windows 任务栏也能显示歌词",
+    "zh-TW": "Windows 工作列也能顯示歌詞",
+    "en-US": "Lyrics on your Windows taskbar"
+  },
+  "description": {
+    "zh-CN": "在任务栏空白区域查看歌词和翻译，悬停还能切歌与暂停。前往设置中的桌面选项开启，并按喜好调整位置、字号和颜色。",
+    "zh-TW": "在工作列空白區域查看歌詞和翻譯，懸停還能切歌與暫停。前往設定中的桌面選項開啟，並按喜好調整位置、字級和顏色。",
+    "en-US": "Show lyrics and translations in free taskbar space, with playback controls on hover. Enable taskbar lyrics in desktop settings and customize their position, size and colors."
+  },
+  "category": "Added"
+}

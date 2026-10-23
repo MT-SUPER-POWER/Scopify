@@ -5,6 +5,8 @@
   "packageManager": "pnpm@12.8.1",
   "scripts": {
     "prepare": "husky",
+    "updates:check": "bun repo/frontend/apps/web/scripts/check-release-notes.ts",
+    "updates:release": "bun repo/frontend/apps/web/scripts/check-release-notes.ts --release",
     "dev": "turbo run dev --filter=@scopify/web --filter=@scopify/desktop",
     "dev:web": "turbo run dev --filter=@scopify/web",
     "dev:docs": "turbo run dev --filter=@scopify/docs",

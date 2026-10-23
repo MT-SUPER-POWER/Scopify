@@ -67,7 +67,6 @@ export function createDesktopPlaybackControllerWindow(
 
     controllerWindow = window;
     window.setAlwaysOnTop(true, "floating");
-    window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
     window.webContents.on("did-fail-load", (_event, code, description, validatedURL) => {
       wallpaperLog.error("[desktop-playback-controller] failed to load", {
         code,

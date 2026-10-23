@@ -1,0 +1,15 @@
+{
+  "type": "ci",
+  "category": "Quality",
+  "audience": "internal",
+  "title": {
+    "zh-CN": "更新说明与提交追踪流程",
+    "zh-TW": "更新說明與提交追蹤流程",
+    "en-US": "Release note and commit provenance workflow"
+  },
+  "description": {
+    "zh-CN": "维护三语言更新条目、版本清单和真实提交来源，发布流程复用用户说明。此项为开发维护，不进入用户弹窗。",
+    "zh-TW": "維護三語言更新條目、版本清單和真實提交來源，發布流程複用使用者說明。此項為開發維護，不進入使用者彈窗。",
+    "en-US": "Maintain localized entries, release manifests and real commit provenance. This development workflow is excluded from the user-facing modal."
+  }
+}

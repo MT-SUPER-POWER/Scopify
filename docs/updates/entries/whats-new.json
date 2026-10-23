@@ -1,0 +1,15 @@
+{
+  "type": "feat",
+  "audience": "user",
+  "title": {
+    "zh-CN": "更新后，一眼知道有什么变化",
+    "zh-TW": "更新後，一眼知道有什麼變化",
+    "en-US": "See what changed after an update"
+  },
+  "description": {
+    "zh-CN": "更新后会出现简短的新鲜事说明，介绍新增功能和修复。你也可以随时从侧栏菜单或命令面板打开，按版本和页码查看历史更新。",
+    "zh-TW": "更新後會出現簡短的新鮮事說明，介紹新增功能和修復。你也可以隨時從側欄選單或命令面板開啟，按版本和頁碼查看歷史更新。",
+    "en-US": "A short What's New window introduces features and fixes after an update. Reopen it from the sidebar menu or command palette and browse previous releases by version and page."
+  },
+  "category": "Added"
+}

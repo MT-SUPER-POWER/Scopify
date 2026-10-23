@@ -13,6 +13,7 @@ import {
 import { createDesktopBackendController } from "@main/services/backend";
 import { createDiscordPresenceController } from "@main/services/discordPresence";
 import { createDesktopRendererHost } from "@main/services/rendererHost";
+import { registerExternalLinkHandling } from "@main/services/externalLinks";
 import { loadDesktopHostConfig } from "@main/store";
 import { restoreMusicSessionCookies } from "@main/utils/musicCookieStore";
 import { applyElectronProxy } from "@main/utils/proxy";
@@ -231,6 +232,7 @@ export function initializeApplication() {
     return;
   }
 
+  registerExternalLinkHandling(renderer.baseUrl);
   registerLifecycle();
   registerFatalErrorHandlers();
   void app.whenReady().then(prepareApplication);

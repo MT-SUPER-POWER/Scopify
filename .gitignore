@@ -76,6 +76,7 @@ CONTEXT.md
 CLAUDE.md
 
 # DOCS
+release_notes.md
 docs/plan/**
 docs/spec/**
 docs/research/**

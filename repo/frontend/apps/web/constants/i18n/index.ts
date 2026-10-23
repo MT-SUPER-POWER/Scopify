@@ -1,4 +1,5 @@
 import { privateMessageMessages } from "./privateMessages";
+import { updatesMessages } from "./updates";
 import { musicDiscoveryMessages } from "./musicDiscovery";
 import { deviceMessages } from "./devices";
 import { themeEditorMessages } from "./themeEditor";
@@ -46,6 +47,7 @@ import { socialMessages } from "./social";
 
 export const messages = {
   "zh-CN": {
+    ...updatesMessages["zh-CN"],
     ...deviceMessages["zh-CN"],
     ...notificationMessages["zh-CN"],
     ...privateMessageMessages["zh-CN"],
@@ -93,6 +95,7 @@ export const messages = {
     ...personalFmMessages["zh-CN"],
   },
   "zh-TW": {
+    ...updatesMessages["zh-TW"],
     ...deviceMessages["zh-TW"],
     ...notificationMessages["zh-TW"],
     ...privateMessageMessages["zh-TW"],
@@ -140,6 +143,7 @@ export const messages = {
     ...personalFmMessages["zh-TW"],
   },
   "en-US": {
+    ...updatesMessages["en-US"],
     ...deviceMessages["en-US"],
     ...notificationMessages["en-US"],
     ...privateMessageMessages["en-US"],

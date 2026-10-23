@@ -2,6 +2,7 @@ import path from "node:path";
 import type { NextConfig } from "next";
 
 import { DEFAULT_WEB_CONFIG } from "./types/config";
+import { buildReleaseNotes } from "./scripts/release-notes";
 
 function envNumber(value: string | undefined, fallback: number) {
   const parsed = Number(value);
@@ -77,6 +78,8 @@ export const WEB_IMAGE_REMOTE_PATTERNS = [
   { protocol: "https", hostname: "upload.wikimedia.org" },
 ] satisfies NonNullable<NextConfig["images"]>["remotePatterns"];
 
+const releaseNotes = buildReleaseNotes(process.env.SCOPIFY_RELEASE_NOTES_STRICT === "1");
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(import.meta.dirname ?? process.cwd(), "../../../.."),
@@ -95,6 +98,7 @@ const nextConfig: NextConfig = {
     : { distDir: nextDistDir }),
   serverExternalPackages: [],
   env: {
+    NEXT_PUBLIC_UPDATES: JSON.stringify(releaseNotes),
     APP_CFG_APP_LOCALE: process.env.APP_CFG_APP_LOCALE || DEFAULT_WEB_CONFIG.app.locale,
     APP_CFG_BACKEND_HOST: backendHost,
     APP_CFG_BACKEND_PORT: String(backendPort),

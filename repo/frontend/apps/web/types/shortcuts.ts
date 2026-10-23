@@ -30,6 +30,7 @@ export type ShortcutCommandId =
   | "toggle-desktop-music-mode"
   | "show-shortcut-help"
   | "open-command-palette"
+  | "open-whats-new"
   | "toggle-mute"
   | "toggle-fullscreen"
   | "toggle-developer-tools"

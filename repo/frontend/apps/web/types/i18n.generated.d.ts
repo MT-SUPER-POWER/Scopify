@@ -5,6 +5,90 @@ import type { TranslationKey, TranslationParams } from "@/lib/i18n";
 
 export interface TranslateFn {
   /**
+   * zh-CN: What's New
+   * zh-TW: What's New
+   * en-US: What's New
+   */
+  (key: "updates.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 看看 Scopify 最近为你带来了什么。
+   * zh-TW: 看看 Scopify 最近為你帶來了什麼。
+   * en-US: See what's new in Scopify for you.
+   */
+  (key: "updates.subtitle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择版本
+   * zh-TW: 選擇版本
+   * en-US: Choose a version
+   */
+  (key: "updates.version", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前版本
+   * zh-TW: 目前版本
+   * en-US: Current version
+   */
+  (key: "updates.current", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这个版本的更新说明正在整理中。
+   * zh-TW: 這個版本的更新說明正在整理中。
+   * en-US: Release notes for this version are being prepared.
+   */
+  (key: "updates.empty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一页
+   * zh-TW: 上一頁
+   * en-US: Previous page
+   */
+  (key: "updates.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一页
+   * zh-TW: 下一頁
+   * en-US: Next page
+   */
+  (key: "updates.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 第 {{page}} / {{total}} 页
+   * zh-TW: 第 {{page}} / {{total}} 頁
+   * en-US: Page {{page}} of {{total}}
+   */
+  (key: "updates.page", params?: TranslationParams): string;
+  /**
+   * zh-CN: 知道了
+   * zh-TW: 知道了
+   * en-US: Got it
+   */
+  (key: "updates.close", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看相关提交
+   * zh-TW: 查看相關提交
+   * en-US: Related commits
+   */
+  (key: "updates.sources", params?: TranslationParams): string;
+  /**
+   * zh-CN: 提交后生成 hash
+   * zh-TW: 提交後產生 hash
+   * en-US: Hash available after commit
+   */
+  (key: "updates.pending", params?: TranslationParams): string;
+  /**
+   * zh-CN: 新功能
+   * zh-TW: 新功能
+   * en-US: New features
+   */
+  (key: "updates.added", params?: TranslationParams): string;
+  /**
+   * zh-CN: 问题修复
+   * zh-TW: 問題修復
+   * en-US: Bug fixes
+   */
+  (key: "updates.fixed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 体验改进
+   * zh-TW: 體驗改進
+   * en-US: Improvements
+   */
+  (key: "updates.improved", params?: TranslationParams): string;
+  /**
    * zh-CN: 设备列表响应不完整，请稍后重试。
    * zh-TW: 裝置清單回應不完整，請稍後重試。
    * en-US: The device response is incomplete. Try again.

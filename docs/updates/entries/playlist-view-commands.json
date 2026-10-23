@@ -1,0 +1,16 @@
+{
+  "type": "feat",
+  "audience": "user",
+  "commit": "9bf13f37",
+  "title": {
+    "zh-CN": "用命令切换歌单视图",
+    "zh-TW": "用命令切換歌單檢視",
+    "en-US": "Switch playlist views with a command"
+  },
+  "description": {
+    "zh-CN": "在歌单或专辑页打开命令面板，即可切换列表与 Lattice 拼贴视图，也能开关暗场。需要时可在快捷键设置里分配自己的按键。",
+    "zh-TW": "在歌單或專輯頁開啟命令面板，即可切換列表與 Lattice 拼貼檢視，也能開關暗場。需要時可在快捷鍵設定裡分配自己的按鍵。",
+    "en-US": "Open the command palette on a playlist or album to switch between list and Lattice views or toggle lights-off mode. You can assign your own shortcuts in settings."
+  },
+  "category": "Added"
+}

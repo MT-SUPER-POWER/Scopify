@@ -1,6 +1,10 @@
 {
   "$schema": "https://v2-10-12.turborepo.dev/schema.json",
+  "globalDependencies": ["docs/updates/**"],
   "globalEnv": [
+    "GITHUB_SHA",
+    "VERCEL_GIT_COMMIT_SHA",
+    "SCOPIFY_RELEASE_NOTES_STRICT",
     "APP_CFG_*",
     "BACKEND_*",
     "FRONTEND_*",

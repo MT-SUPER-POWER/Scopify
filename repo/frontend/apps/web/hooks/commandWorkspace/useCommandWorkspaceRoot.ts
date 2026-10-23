@@ -71,7 +71,12 @@ export function useCommandWorkspaceRoot({
         ],
         (command) => command.usageCount,
       ).filter((command) =>
-        command.label.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
+        (command.id === "open-whats-new"
+          ? `${command.label} what's new whats new changelog 更新日志 新鲜事`
+          : command.label
+        )
+          .toLocaleLowerCase()
+          .includes(query.trim().toLocaleLowerCase()),
       ),
     [commandWorkspaceUsageCounts, commands, latticeActive, latticeAvailable, query, t, usageCounts],
   );

@@ -50,7 +50,6 @@ export function showAppCloseWindow(parent: BrowserWindow, rendererBaseUrl: strin
   });
 
   appCloseWindow = window;
-  window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   window.webContents.on("did-fail-load", (_event, code, description, validatedURL) => {
     windowLog.error("[app-close] failed to load", { code, description, validatedURL });
   });

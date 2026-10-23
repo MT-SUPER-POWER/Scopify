@@ -7,6 +7,12 @@ import type {
 
 export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
   {
+    id: "open-whats-new",
+    group: "interface",
+    labelKey: "updates.title",
+    defaultBinding: null,
+  },
+  {
     id: "toggle-desktop-subtitle",
     group: "interface",
     labelKey: "subtitleControl.toggle",

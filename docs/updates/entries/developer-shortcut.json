@@ -1,0 +1,16 @@
+{
+  "type": "fix",
+  "category": "Visual",
+  "audience": "user",
+  "commit": "7fde6ce0",
+  "title": {
+    "zh-CN": "开发者工具快捷键更明确",
+    "zh-TW": "開發者工具快捷鍵更明確",
+    "en-US": "A clearer developer tools shortcut"
+  },
+  "description": {
+    "zh-CN": "设置页现在明确提示按 F12 打开开发者工具，方便排查问题时找到入口。",
+    "zh-TW": "設定頁現在明確提示按 F12 開啟開發者工具，方便排查問題時找到入口。",
+    "en-US": "Settings now explicitly show F12 as the developer tools shortcut, making troubleshooting easier."
+  }
+}

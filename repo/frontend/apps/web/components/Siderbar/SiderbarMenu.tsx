@@ -1,6 +1,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import { Menu, PanelLeftClose, PanelLeftOpen, Plus, Trash2 } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeftOpen, Plus, Sparkles, Trash2 } from "lucide-react";
+import { useUpdatesStore } from "@/store/module/updates";
 import Image from "next/image";
 import React from "react";
 import { toast } from "sonner";
@@ -211,6 +212,11 @@ function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
           </DropdownMenuGroup>
 
           {/* Group -- Playlist Function */}
+          <DropdownMenuItem onSelect={() => useUpdatesStore.getState().open()}>
+            <Sparkles className="mr-2 size-5" />
+            <span>{t("updates.title")}</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           {isLoggedIn && (
             <DropdownMenuGroup className="">
               <DropdownMenuLabel className="dropdown-menu-label-momo mt-1">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
+import { useUpdatesStore } from "@/store/module/updates";
 import { useRouter } from "next/navigation";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
@@ -58,6 +59,9 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
         void commands.seek(targetPositionMs);
       };
       switch (commandId) {
+        case "open-whats-new":
+          useUpdatesStore.getState().open();
+          return;
         case "toggle-desktop-subtitle":
           if (runtime.isDesktop) void useDesktopSubtitleControl.getState().toggle();
           return;

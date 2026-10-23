@@ -27,6 +27,7 @@ import { FoliaSettingsMount } from "@/components/lyrics/FoliaSettingsMount";
 import { LyricStageMount } from "@/components/lyrics/LyricStageMount";
 import { PlayerBar } from "@/components/PlayBar";
 import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
+import { WhatsNewModal } from "@/components/updates/WhatsNewModal";
 // self components
 import MainLayoutSkeleton from "./Skeleton";
 import { Sidebar } from "@/components/Siderbar";
@@ -168,6 +169,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       {/* 全局工具注册 */}
       <CommandWorkspaceModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <KeyboardShortcutHelp />
+      <WhatsNewModal />
       <LyricStageMount />
       <FoliaSettingsMount />
 

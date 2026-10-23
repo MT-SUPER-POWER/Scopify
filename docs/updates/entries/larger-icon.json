@@ -1,0 +1,16 @@
+{
+  "type": "fix",
+  "category": "Visual",
+  "audience": "user",
+  "commit": "859a6bdb",
+  "title": {
+    "zh-CN": "桌面上的 Scopify 更好找了",
+    "zh-TW": "桌面上的 Scopify 更好找了",
+    "en-US": "Find Scopify more easily"
+  },
+  "description": {
+    "zh-CN": "应用图标减少了周围的透明留白，在桌面、任务栏和开始菜单中显示得更大、更清楚。",
+    "zh-TW": "應用程式圖示減少了周圍的透明留白，在桌面、工作列和開始選單中顯示得更大、更清楚。",
+    "en-US": "Reduced empty space around the icon so Scopify looks larger and clearer on your desktop, taskbar and Start menu."
+  }
+}

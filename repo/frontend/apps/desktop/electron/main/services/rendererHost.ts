@@ -21,6 +21,8 @@ export function createDesktopRendererHost(): DesktopRendererHost {
     async load(window) {
       if (!serveStaticRenderer) {
         window.webContents.on("did-fail-load", (_event, code, description) => {
+          // External navigation handed to the OS is a cancelled load, not a server failure.
+          if (code === -3) return;
           rendererLog.error("[renderer] development page failed to load", { code, description });
           if (!window.isDestroyed()) window.webContents.reloadIgnoringCache();
         });
