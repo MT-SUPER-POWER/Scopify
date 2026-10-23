@@ -2,6 +2,7 @@
 
 import { HexColorPicker } from "react-colorful";
 import { useState } from "react";
+import { onAccentColor } from "@scopify/ui/scopify/components/folia-panel/tokens";
 import { useI18n } from "@/store/module/i18n";
 
 import type { FoliaThemeColorEditorProps } from "@/types/components/lyrics";
@@ -44,10 +45,10 @@ export function FoliaThemeColorEditor({
               key={key}
               type="button"
               onClick={() => setActiveKey(key)}
-              className="flex items-center gap-2 rounded-2xl border p-2.5 text-left transition"
+              className="flex items-center gap-2 rounded-xl border p-3 text-left transition"
               style={{
-                backgroundColor: isActive ? `${colors.accentColor}12` : "rgba(255,255,255,0.035)",
-                borderColor: isActive ? colors.accentColor : "rgba(255,255,255,0.1)",
+                backgroundColor: isActive ? "var(--st-fill)" : "var(--st-card)",
+                borderColor: isActive ? "var(--st-line2)" : "var(--st-line)",
               }}
             >
               <span
@@ -56,7 +57,7 @@ export function FoliaThemeColorEditor({
               />
               <span className="min-w-0">
                 <span className="block truncate text-xs font-medium">{t(label)}</span>
-                <span className="block truncate font-mono text-[10px] opacity-55">
+                <span className="block truncate font-mono text-xs text-[color:var(--st-t2)]">
                   {colors[key].toUpperCase()}
                 </span>
               </span>
@@ -65,12 +66,12 @@ export function FoliaThemeColorEditor({
         })}
       </div>
 
-      <div className="space-y-3 rounded-[22px] border border-white/10 bg-black/10 p-3">
+      <div className="space-y-3 rounded-xl border border-[var(--st-line)] bg-[var(--st-card)] p-4">
         <div className="flex items-center justify-between gap-3">
           <span className="text-sm font-medium">{activeLabel ? t(activeLabel) : null}</span>
           <span
             className="rounded-full px-2.5 py-1 font-mono text-[11px]"
-            style={{ backgroundColor: colors[activeKey], color: colors.backgroundColor }}
+            style={{ backgroundColor: colors[activeKey], color: onAccentColor(colors[activeKey]) }}
           >
             {colors[activeKey].toUpperCase()}
           </span>
@@ -81,14 +82,12 @@ export function FoliaThemeColorEditor({
           style={{ height: 210, width: "100%" }}
         />
         <label className="block space-y-1.5">
-          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase opacity-50">
-            HEX
-          </span>
+          <span className="text-xs font-medium text-[color:var(--st-t2)]">HEX</span>
           <input
             type="text"
             value={colors[activeKey]}
             onChange={(event) => updateColor(activeKey, event.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 font-mono text-sm transition outline-none focus:border-white/30"
+            className="w-full rounded-lg border border-[var(--st-line2)] bg-transparent px-3 py-2 font-mono text-sm transition outline-none focus:border-[var(--st-accent)]"
             spellCheck={false}
           />
         </label>

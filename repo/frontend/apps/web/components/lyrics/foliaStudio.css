@@ -1,0 +1,13 @@
+/* Adapt the existing mode-owned panels to the studio surface without changing their tuning APIs. */
+.folia-studio-tuning > :is(div, section) {
+  border-radius: 12px;
+  border-color: var(--st-line) !important;
+  background-color: var(--st-card) !important;
+}
+.folia-studio-tuning [class*="tracking-"] {
+  letter-spacing: normal;
+  text-transform: none;
+}
+.folia-studio-tuning input[type="range"] {
+  accent-color: var(--st-accent);
+}

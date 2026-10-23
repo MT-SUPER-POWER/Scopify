@@ -1,25 +1,14 @@
 import React from "react";
-import { type Theme } from "../../types";
 import { colorWithAlpha } from "./colorMix";
 
 // src/components/visualizer/VisPlaygroundPreviewHotspots.tsx
 // Transparent click targets that map preview regions to the right-side settings panel.
-export type VisPlaygroundEditSection = "common" | "background" | "visualizer" | "subtitle";
-type VisPlaygroundHotspotSection = Exclude<VisPlaygroundEditSection, "common">;
-
-interface HotspotConfig {
-  section: VisPlaygroundHotspotSection;
-  label: string;
-  className: string;
-  labelClassName: string;
-}
-
-interface VisPlaygroundPreviewHotspotsProps {
-  activeSection: VisPlaygroundEditSection;
-  onSectionChange: (section: VisPlaygroundEditSection) => void;
-  theme: Theme;
-  labels: Record<VisPlaygroundHotspotSection, string>;
-}
+import type {
+  FoliaPreviewHotspot as HotspotConfig,
+  FoliaPreviewHotspotsProps as VisPlaygroundPreviewHotspotsProps,
+} from "@/types/foliaVisualSettings";
+import type { FoliaStageEditSection as VisPlaygroundEditSection } from "@/types/foliaStage";
+export type { FoliaStageEditSection as VisPlaygroundEditSection } from "@/types/foliaStage";
 
 const VisPlaygroundPreviewHotspots: React.FC<VisPlaygroundPreviewHotspotsProps> = ({
   activeSection,

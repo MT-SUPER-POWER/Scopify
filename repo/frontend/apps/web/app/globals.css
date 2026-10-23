@@ -3,6 +3,8 @@
 @import "@fontsource/black-ops-one/400.css";
 @import "@scopify/ui/theme.css";
 @import "@scopify/ui/scopify/components/folia-panel/folia-panel.css";
+@import "@scopify/ui/scopify/components/folia-studio/studio.css";
+@import "../components/lyrics/foliaStudio.css";
 
 @source "../../../packages/ui/shadcn/components";
 @source "../../../packages/ui/scopify/components";

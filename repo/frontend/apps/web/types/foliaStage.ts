@@ -27,7 +27,7 @@ import type { FoliaStageTheme, FoliaThemeVariant } from "@scopify/ui/folia";
 
 export type { FoliaStageTheme, FoliaThemeColors, FoliaThemeVariant } from "@scopify/ui/folia";
 
-export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
+export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer" | "global";
 export type FoliaPanelTab = "controls" | "cover" | "fm" | "lyrics" | "quality" | "queue";
 
 export interface FoliaQuickEffectPickerPosition {

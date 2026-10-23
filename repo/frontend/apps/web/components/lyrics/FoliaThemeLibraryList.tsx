@@ -43,7 +43,7 @@ export function FoliaThemeLibraryList({
 
   return (
     <aside
-      className={`flex h-full min-h-0 flex-col border border-white/10 bg-white/[0.045] ${collapsed ? "items-center rounded-[20px] p-1.5" : "rounded-[24px] p-3"}`}
+      className={`flex h-full min-h-0 flex-col border border-[var(--st-line)] bg-[var(--st-card)] ${collapsed ? "items-center rounded-xl p-1.5" : "rounded-xl p-3"}`}
     >
       <div
         className={`flex items-center gap-1 ${collapsed ? "mb-2 justify-center" : "mb-3 w-full justify-between"}`}
@@ -55,7 +55,7 @@ export function FoliaThemeLibraryList({
           {collapsed ? (
             <button
               aria-label={String(t("folia.options.expandThemeLibrary"))}
-              className="flex size-8 items-center justify-center rounded-lg opacity-70 transition hover:bg-white/10 hover:opacity-100"
+              className="flex size-8 items-center justify-center rounded-lg opacity-70 transition hover:bg-[var(--st-fill)] hover:opacity-100"
               onClick={onToggleCollapsed}
               title={String(t("folia.options.expandThemeLibrary"))}
               type="button"
@@ -65,7 +65,7 @@ export function FoliaThemeLibraryList({
           ) : (
             <>
               <button
-                className="flex size-8 items-center justify-center rounded-lg opacity-60 transition hover:bg-white/10 hover:opacity-100 disabled:opacity-30"
+                className="flex size-8 items-center justify-center rounded-lg opacity-60 transition hover:bg-[var(--st-fill)] hover:opacity-100 disabled:opacity-30"
                 disabled={isDirty}
                 onClick={restoreThemes}
                 title={String(t("folia.options.restoreBuiltinThemes"))}
@@ -84,7 +84,7 @@ export function FoliaThemeLibraryList({
               </button>
               <button
                 aria-label={String(t("folia.options.collapseThemeLibrary"))}
-                className="flex size-8 items-center justify-center rounded-lg opacity-60 transition hover:bg-white/10 hover:opacity-100"
+                className="flex size-8 items-center justify-center rounded-lg opacity-60 transition hover:bg-[var(--st-fill)] hover:opacity-100"
                 onClick={onToggleCollapsed}
                 title={String(t("folia.options.collapseThemeLibrary"))}
                 type="button"

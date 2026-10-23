@@ -121,6 +121,7 @@ export interface LyricStageProps {
 }
 
 export interface FoliaFontPickerProps {
+  theme: Theme;
   assets: FoliaStageAssets;
   onClose: () => void;
   target: "lyrics" | "subtitle";
@@ -143,6 +144,7 @@ export interface FoliaSonnetPerformanceWarningDialogProps {
 }
 
 export interface FoliaSettingsPreviewProps {
+  className?: string;
   activeSection: FoliaStageEditSection;
   assets: FoliaStageAssets;
   onSectionChange: (section: FoliaStageEditSection) => void;
@@ -227,7 +229,6 @@ export interface FoliaThemeWorkbenchHeaderProps {
   onSaveAndApply: () => void;
   saveState: FoliaThemeSaveState;
   selectedThemeId: string;
-  theme: Theme;
 }
 
 export interface FoliaThemeWorkbenchLayoutProps {
@@ -244,6 +245,7 @@ export interface FoliaThemeWorkbenchLayoutProps {
 }
 
 export interface FoliaThemeUnsavedDialogProps {
+  isDaylight: boolean;
   onCancel: () => void;
   onDiscard: () => void;
   onSave: () => void;

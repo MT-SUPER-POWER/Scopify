@@ -1,6 +1,6 @@
 "use client";
 
-import { Pause, Play, Sparkles } from "lucide-react";
+import { Pause, Play } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 import { FoliaThemePreviewToolbar } from "@/components/lyrics/FoliaThemePreviewToolbar";
@@ -11,8 +11,10 @@ import { getVisualizerModeLabel } from "@/components/lyrics/folia/src/components
 import { useFoliaSettingsPreview } from "@/hooks/lyrics/useFoliaSettingsPreview";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaSettingsPreviewProps } from "@/types/components/lyrics";
+import { cn } from "@/lib/utils";
 
 export function FoliaSettingsPreview({
+  className,
   activeSection,
   assets,
   onSectionChange,
@@ -29,7 +31,10 @@ export function FoliaSettingsPreview({
 
   return (
     <div
-      className="relative h-full min-h-80 overflow-hidden rounded-[28px] border border-white/10 bg-black/20"
+      className={cn(
+        "relative h-full min-h-80 overflow-hidden rounded-xl border border-current/8",
+        className,
+      )}
       style={{ backgroundColor: theme.backgroundColor }}
     >
       {themeEditorContext ? (
@@ -42,30 +47,15 @@ export function FoliaSettingsPreview({
           theme={theme}
         />
       ) : (
-        <>
-          <div
-            className="absolute top-4 left-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs tracking-[0.22em] uppercase backdrop-blur-md"
-            style={{ color: "rgba(255,255,255,0.78)" }}
-          >
-            <Sparkles size={13} />
-            <span>{t("folia.ui.livePreview")}</span>
-            <button
-              aria-label={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
-              className="ml-1 rounded-full p-1 transition-colors hover:bg-white/15"
-              onClick={() => setIsPreviewPaused((paused) => !paused)}
-              title={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
-              type="button"
-            >
-              {isPreviewPaused ? <Play size={12} fill="currentColor" /> : <Pause size={12} />}
-            </button>
-          </div>
-          <div
-            className="absolute top-4 right-4 z-40 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs backdrop-blur-md"
-            style={{ color: "rgba(255,255,255,0.78)" }}
-          >
-            {modeLabel}
-          </div>
-        </>
+        <button
+          aria-label={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
+          className="absolute top-3 right-3 z-40 grid size-8 place-items-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/55"
+          onClick={() => setIsPreviewPaused((paused) => !paused)}
+          title={t(isPreviewPaused ? "folia.ui.play" : "folia.ui.pause")}
+          type="button"
+        >
+          {isPreviewPaused ? <Play size={14} fill="currentColor" /> : <Pause size={14} />}
+        </button>
       )}
 
       <div className="absolute inset-0">
