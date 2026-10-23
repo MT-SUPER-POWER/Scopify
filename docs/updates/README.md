@@ -1,70 +1,66 @@
-# 用户更新说明
+# CHANGELOG → What's New
 
-应用「What's New」与 GitHub Release 共用这套数据。`docs/CHANGELOG.md` 保留开发记录，不再直接作为用户弹窗内容。
+`docs/CHANGELOG.md` 是唯一内容来源。应用弹窗、历史版本选择器和 GitHub Release 都使用同一个 Markdown 解析器，不再维护条目 JSON 或版本清单。
 
-## 每次提交
+## 写一条更新
 
-1. 使用 Conventional Commit，例如 `feat(lyrics): add desktop capsule`。
-2. 新增 `entries/<唯一标识>.json`，概括用户得到的变化。一个提交可有多个条目，但不要每改一个文件就写一条。
-3. 纯维护使用 `audience: internal`，保留追踪记录，但不出现在用户更新中。
-4. 不填写 `commit`。构建从首次引入文件的提交解析真实 hash 和关键词；界面以 Added、Fixed、Visual、Quality 为绿色分类标题，下面逐条展示变化，行尾直接显示 `(01234567)` 并链接到完整提交。
+在对应版本的 Added / Visual / Quality / Fixed 分类下写：
 
-```json
-{
-  "type": "fix",
-  "category": "Fixed",
-  "audience": "user",
-  "title": {
-    "zh-CN": "切歌后，歌词不再停留在上一首",
-    "zh-TW": "切歌後，歌詞不再停留在上一首",
-    "en-US": "Lyrics follow the new track"
-  },
-  "description": {
-    "zh-CN": "修复快速切歌时偶尔显示上一首歌词的问题。",
-    "zh-TW": "修復快速切歌時偶爾顯示上一首歌詞的問題。",
-    "en-US": "Fixed lyrics occasionally staying on the previous song when skipping tracks quickly."
-  }
-}
+```markdown
+- **音量滑块恢复正常**：修复音量面板只显示图标、无法拖动滑块的问题。
+  <!-- update:volume-slider -->
 ```
 
-`category` 必填，必须对应 CHANGELOG 中的 Added、Visual、Quality、Fixed 章节；`type` 独立记录 Conventional Commit 类型。比如 F12 提示的提交虽然是 `fix`，但原文归在 Visual，就应展示在 Visual。只显示有用户条目的分类，先按分类排列再分页。分类标题可收起，条目摘要显示标题和 hash，点击展开完整说明。Squash 后各条目可能共享同一个 hash，来源关键词仍记录 squash 提交的真实类型。
+标题是用户能理解的结果，正文用一两句话描述变化或入口。每条使用唯一且稳定的 `update:` ID；以后改标题或补充说明时保留 ID。分类来自 Markdown 章节，与提交的 feat / fix / perf 等关键词独立。
 
-已合并的条目保持不变；后续修正用新文件记录。历史迁移条目允许显式填写已存在的 commit；CI 仅在首次引入本机制时允许这个例外。未提交的本地新增条目没有 hash，不会伪造来源。
+新条目不用填写自己的 hash。构建通过 Git blame 查找 ID 首次被引入的真实提交，再读取该提交的 Conventional Commit 类型。未提交时显示待生成，提交后会自动关联；不会让未来的文档整理提交冒充旧功能。
 
-## 发布版本
+已确认的历史关联可以显式保留为：
 
-编辑 `releases.json`，添加版本、真实发布日期（`YYYY-MM-DD`）、三语言标题与对应条目 ID。没有归入版本的条目是待发布内容，不会进入弹窗。条目只归属一个版本，内部条目无需放进版本清单。
+```markdown
+- **说明文字在浅色背景上更清楚**：修复命令窗口说明文字难以辨认的问题。 ([fix · 53201750](https://github.com/MT-SUPER-POWER/Scopify/commit/5320175086981746d4c9bd04bb9dea84ef21208c))
+  <!-- update:command-contrast -->
+```
 
-发布者应按最终体验选取条目：多次品牌尝试只保留定稿说明，纯实现细节不面向用户。同一功能的多条修复可在发版前选择最能概括最终结果的一条，其余原始条目继续保留在 Git。自动化不代替这一步编辑判断。
+历史记录确实找不到对应功能提交时，使用迁移标记：
 
-根目录与 Web、Desktop、Docs 的 package 版本照现有发布流程同步。不要在已经发布的版本里追加新变化：已读状态按安装版本保存，同版本内容不会重新弹出。
+```markdown
+- **修复旧版播放问题**
+  <!-- update:legacy-playback historical -->
+```
 
-- `pnpm updates:check`：校验 JSON 结构和版本分配；CI 额外检查 PR 中每个非 merge 提交的 Conventional Commit 格式与新增条目，禁止修改已合并条目。
-- `pnpm updates:release`：严格解析已归档条目的 Git 来源，确认它们属于当前提交历史，生成当前版本 `release_notes.md`；缺少当前版用户说明会阻止发布。
+`historical` 仅用于本次旧日志迁移。界面明确标记待核对，CI 禁止把新改动伪装成历史条目。
 
-CI 与发布构建拉取完整 Git 历史。Release workflow 将生成的说明作为 artifact 传给发布任务，并在 renderer 构建时启用严格来源校验。Web 与桌面导出构建通过 `next.config.ts` 嵌入说明，离线也能阅读。Git 不可用的普通本地构建仍可展示文字，来源标为待生成；正式发布不允许缺失来源。
+可在同一条 Markdown 记录下附真实译文，不再写第二套内容文件：
 
-## 弹窗行为
+```markdown
+  <!-- translation:en-US {"title":"A clearer volume control","description":"The volume slider is visible again."} -->
+  <!-- translation:zh-TW {"title":"音量滑塊恢復正常","description":"修復音量滑塊無法顯示的問題。"} -->
+```
 
-- 第一版默认首次安装展示当前版，后续升级展示一次；关闭后才记录已读。开发模式仅手动打开，避免反复调试被打断。
-- 只在主界面挂载，等待命令面板和歌词舞台关闭；弹窗可按 Escape、点击遮罩或右上角关闭退出。
-- 弹窗采用固定深灰、浅灰正文与绿色分节标题；版本选择和分页位于底栏。正文使用 Radix 自定义滚动区域，隐藏原生滚动条，短版本随内容收紧高度。
-- 手动入口：侧栏菜单「What's New」；命令面板搜索「新鲜事」「更新日志」「changelog」「what's new」。命令默认不占用快捷键，可自行分配。
-- 每个版本独立浏览，每页最多八条；切换版本会回到第一页。只展示不高于当前安装版本的说明，正式版隐藏预发布版本。
-- 降级不会覆盖较新版本的已读状态。存储不可用时保留手动入口，不自动反复弹窗。
+已有 Demo 的译文已保留。没有人工译文的旧条目使用来源原文，界面按钮仍按用户语言显示；不会凭空伪造历史译文。
 
-当前只精简迁移 v2.0.1–v2.0.3，不等于完整历史。历史实际发布日期尚未核实，暂不展示日期。按本轮要求，What's New 的新增与界面迭代已归入当前 CHANGELOG 对应的 v2.0.3；尚未提交的变更显示待生成 hash，不借用别的提交。
+## 版本、日期和分类
 
-### v2.0.3 内容对应
+- 标题统一为 `## v2.0.3`；确认真实发布日期后可写 `## v2.0.3 — 2026-10-23`，不猜历史日期。
+- 分类只允许 Added、Visual、Quality、Fixed，正文只记录用户可感知的变化。性能与可靠性提升可放 Quality，CI、依赖、类型和模块拆分保留在开发记录或提交正文。
+- 纯内部维护的 Conventional Commit 正文加入独立一行 `Changelog: internal`，无需为了过 CI 在用户弹窗编造一条功能。
+- 每个非 merge 提交应新增一个用户更新 ID，或明确标记内部维护。首次将旧日志迁入新格式时有迁移例外。
+- 版本选择器覆盖这份文件中的所有已安装版本及更早版本，包括旧的预发布版本；没有独立说明的版本也保留入口。
+- 分类顺序与 Markdown 约定一致，每页最多八条。跨页分类显示本页条数 / 分类总数；不在本页的分类也保留标题、总数和跳页入口，避免将分页误认为内容缺失。分类和条目详情均可折叠。
 
-| CHANGELOG 内容 | 条目 | 展示分类 |
-| --- | --- | --- |
-| 新增用户更新说明弹窗 | whats-new | Added |
-| 更新说明与提交追踪流程 | update-notes-pipeline | Quality，内部维护，不展示 |
-| 新鲜事弹窗按参考图重做 | whats-new-reference-style | Visual |
-| What's New 按分类列出更新 | whats-new-category-list | Visual |
-| 恢复 What's New 折叠并补齐版本内容 | whats-new-completeness | Visual |
-| 开发者工具设置写明快捷键 | developer-shortcut | Visual |
-| 命令面板在亮色页面上看不清说明文字 | command-contrast | Fixed |
-| Folia 莱茵档案下拉菜单配色与主题一致 | rhine-dropdowns | Fixed |
-| 外部链接统一交给默认浏览器 | external-browser-navigation | Fixed |
+## 检查与发布
+
+- `pnpm updates:check`：解析整份 Markdown，检查版本、分类、ID 和 hash 链接，并输出每个版本的分类数量、已关联和待核对数量。
+- `pnpm updates:release`：使用同一数据生成当前版 `release_notes.md`。正式发布要求当前版各条目有真实来源，缺 Git 历史或新条目尚未提交会明确失败。
+- 发布工作流拉取完整历史，renderer 内嵌解析结果以支持桌面离线阅读；Turbo 将 `docs/CHANGELOG.md` 纳入输入。开发中修改日志后应重新载入 Next 配置或重启 Web 开发服务。
+- 定向解析器测试：在 Web 目录运行 `bun test tests/updates/changelog.test.ts`。
+
+## 本次历史整理
+
+保留 35 个版本，按用户变化整理原文，合并同版本中的旧品牌中间方案，工程细节移出用户正文。
+
+- [原始开发日志](../archive/CHANGELOG.developer.md)：完整保留整理前的内容，方便追溯；不作为运行时输入。
+- [来源核对表](PROVENANCE.md)：逐条记录原版本、原记录提交、对应功能提交、整理结果和归档行号。
+
+同一次提交同时引入原日志和业务源码时，可以建立关联；只有文档、版本号或批量搬运记录时不作功能提交推断。尚未确认的历史 hash 继续公开标记待核对，后续可依据证据逐项补齐。

@@ -51,7 +51,7 @@ export function WhatsNewModal() {
             aria-label={t("updates.title")}
           >
             {release ? (
-              <UpdateReleaseContent release={release} page={page} />
+              <UpdateReleaseContent release={release} page={page} onPageChange={setPage} />
             ) : (
               <p className={styles.content}>{t("updates.empty")}</p>
             )}

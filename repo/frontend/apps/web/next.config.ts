@@ -78,6 +78,7 @@ export const WEB_IMAGE_REMOTE_PATTERNS = [
   { protocol: "https", hostname: "upload.wikimedia.org" },
 ] satisfies NonNullable<NextConfig["images"]>["remotePatterns"];
 
+// All versions, categories and optional translations come from one Markdown document.
 const releaseNotes = buildReleaseNotes(process.env.SCOPIFY_RELEASE_NOTES_STRICT === "1");
 
 const nextConfig: NextConfig = {

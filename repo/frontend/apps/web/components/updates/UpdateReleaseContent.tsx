@@ -6,24 +6,44 @@ import { useI18n } from "@/store/module/i18n";
 import type { UpdateReleaseContentProps } from "@/types/updates";
 import styles from "./WhatsNewModal.module.css";
 
-export function UpdateReleaseContent({ release, page }: UpdateReleaseContentProps) {
+export function UpdateReleaseContent({ release, page, onPageChange }: UpdateReleaseContentProps) {
   const { locale, t } = useI18n();
-  const entries = UPDATE_CATEGORIES.flatMap((category) =>
+  const sortedEntries = UPDATE_CATEGORIES.flatMap((category) =>
     release.entries.filter((entry) => entry.category === category.title),
-  ).slice(page * UPDATES_PAGE_SIZE, (page + 1) * UPDATES_PAGE_SIZE);
+  );
+  const entries = sortedEntries.slice(page * UPDATES_PAGE_SIZE, (page + 1) * UPDATES_PAGE_SIZE);
 
   return (
     <div className={styles.content}>
       {!entries.length ? <p>{t("updates.empty")}</p> : null}
       {UPDATE_CATEGORIES.map((category) => {
         const items = entries.filter((entry) => entry.category === category.title);
-        if (!items.length) return null;
+        const categoryTotal = release.entries.filter(
+          (entry) => entry.category === category.title,
+        ).length;
+        if (!categoryTotal) return null;
+        const categoryPage = Math.floor(
+          sortedEntries.findIndex((entry) => entry.category === category.title) / UPDATES_PAGE_SIZE,
+        );
         return (
           <details key={category.title} className={styles.article} open>
             <summary className={styles.sectionTitle}>
               {category.title}
-              <span className={styles.categoryCount}>{items.length}</span>
+              <span className={styles.categoryCount}>
+                {!items.length || items.length === categoryTotal
+                  ? categoryTotal
+                  : `${items.length} / ${categoryTotal}`}
+              </span>
             </summary>
+            {!items.length ? (
+              <button
+                type="button"
+                className={styles.categoryJump}
+                onClick={() => onPageChange(categoryPage)}
+              >
+                {t("updates.viewCategoryPage", { page: categoryPage + 1 })}
+              </button>
+            ) : null}
             <ul className={styles.entries}>
               {items.map((entry) => (
                 <li key={entry.id} className={styles.entry}>
@@ -40,10 +60,28 @@ export function UpdateReleaseContent({ release, page }: UpdateReleaseContentProp
                           ({entry.commit.slice(0, 8)})
                         </a>
                       ) : (
-                        <span className={styles.pending}>({t("updates.pending")})</span>
+                        <span
+                          className={styles.pending}
+                          title={
+                            entry.commitStatus === "unresolved"
+                              ? t("updates.unresolved")
+                              : undefined
+                          }
+                        >
+                          (
+                          {t(
+                            entry.commitStatus === "unresolved"
+                              ? "updates.unresolvedShort"
+                              : "updates.pending",
+                          )}
+                          )
+                        </span>
                       )}
                     </summary>
                     <p className={styles.entryDescription}>{entry.description[locale]}</p>
+                    {entry.commitStatus === "unresolved" ? (
+                      <p className={styles.entryDescription}>{t("updates.unresolved")}</p>
+                    ) : null}
                   </details>
                 </li>
               ))}

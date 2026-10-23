@@ -17,6 +17,7 @@ export interface UpdateEntry {
   description: UpdateText;
   commit: string | null;
   sourceType: UpdateCommitType | null;
+  commitStatus: "linked" | "pending" | "unresolved";
 }
 
 export interface UpdateRelease {
@@ -40,6 +41,7 @@ export interface UpdatesStore {
 export interface UpdateReleaseContentProps {
   release: UpdateRelease;
   page: number;
+  onPageChange: (page: number) => void;
 }
 
 export interface UpdatesHeaderProps {

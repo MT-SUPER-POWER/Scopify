@@ -71,9 +71,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check user-facing update fragments
+      - name: Check CHANGELOG and commit provenance
         env:
-          UPDATES_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          UPDATES_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: bun repo/frontend/apps/web/scripts/check-release-notes.ts
 
       - name: Run Typecheck

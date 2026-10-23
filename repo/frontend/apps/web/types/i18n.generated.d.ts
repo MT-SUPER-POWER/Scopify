@@ -29,9 +29,9 @@ export interface TranslateFn {
    */
   (key: "updates.current", params?: TranslationParams): string;
   /**
-   * zh-CN: 这个版本的更新说明正在整理中。
-   * zh-TW: 這個版本的更新說明正在整理中。
-   * en-US: Release notes for this version are being prepared.
+   * zh-CN: 这个版本没有单独的用户更新说明。
+   * zh-TW: 這個版本沒有單獨的使用者更新說明。
+   * en-US: No separate release notes were recorded for this version.
    */
   (key: "updates.empty", params?: TranslationParams): string;
   /**
@@ -70,6 +70,24 @@ export interface TranslateFn {
    * en-US: Hash available after commit
    */
   (key: "updates.pending", params?: TranslationParams): string;
+  /**
+   * zh-CN: 历史功能提交尚待核对
+   * zh-TW: 歷史功能提交尚待核對
+   * en-US: The historical implementation commit has not been confirmed
+   */
+  (key: "updates.unresolved", params?: TranslationParams): string;
+  /**
+   * zh-CN: 待核对
+   * zh-TW: 待核對
+   * en-US: Unverified
+   */
+  (key: "updates.unresolvedShort", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看此分类 · 第 {{page}} 页
+   * zh-TW: 查看此分類 · 第 {{page}} 頁
+   * en-US: View category · page {{page}}
+   */
+  (key: "updates.viewCategoryPage", params?: TranslationParams): string;
   /**
    * zh-CN: 新功能
    * zh-TW: 新功能

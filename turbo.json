@@ -1,6 +1,6 @@
 {
   "$schema": "https://v2-10-12.turborepo.dev/schema.json",
-  "globalDependencies": ["docs/updates/**"],
+  "globalDependencies": ["docs/CHANGELOG.md"],
   "globalEnv": [
     "GITHUB_SHA",
     "VERCEL_GIT_COMMIT_SHA",
