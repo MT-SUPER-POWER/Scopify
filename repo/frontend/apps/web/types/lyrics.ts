@@ -142,6 +142,9 @@ export interface LyricVisualizerFrame {
 /** The Folia visualizer mode persisted by the lyric stage. */
 export type LyricVisualizerMode = VisualizerMode;
 
+/** Raw NetEase lyric branches the stage can save back to a file. */
+export type LyricExportFormat = "lrc" | "yrc";
+
 export interface LyricVisualizerRendererProps {
   frame: LyricVisualizerFrame;
   mode: LyricVisualizerMode;
