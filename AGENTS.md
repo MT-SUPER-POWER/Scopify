@@ -32,6 +32,8 @@ pnpm run dev:web           # 仅 Web
 pnpm run dev:desktop       # 仅 Electron
 pnpm run dev:full          # Web + Electron + 后端联调
 pnpm run i18n:types        # 生成 i18n 类型
+pnpm run changelog:preview # 预览下个版本的更新说明
+pnpm run release           # 发版：输入版本号 → 预览 → 确认后提交、打 tag、推送
 ```
 
 ---
@@ -89,31 +91,26 @@ Scopify/
 
 ---
 
-## 新增功能的文档规定
+## 更新说明：从 commit 自动生成
 
-每当你新增功能、修复 Bug 或调整用户能感知的体验时，都需要在 **[changelog](docs/CHANGELOG.md)** 中记录，并标明分类。纯内部维护使用下文的 `Changelog: internal` 提交标记，不将工程细节放入用户更新。当前分类如下：
+不手写 changelog。`docs/CHANGELOG.md`、应用内 What's New 和 GitHub Release 都由 [git-cliff](https://git-cliff.org)（`cliff.toml`）从 commit 生成：
 
-- **Added**: 新增功能
-- **Visual**: 界面改进
-- **Quality**: 代码质量改进
-- **Fixed**: Bug 修复
+| commit 类型 | 展示分组 |
+| --- | --- |
+| `feat` | 新增 |
+| `fix` | 修复 |
+| `perf` | 优化 |
+| 其他类型，或 scope 为 `ci` / `deps` / `release` | 不展示 |
+
+- `feat` / `fix` / `perf` 的 subject 会原样给用户看：用中文写用户能感知的结果，工程细节放 body。只有用户能感知的变化才用这三个类型。
+- commitlint（`commitlint.config.mjs`，husky `commit-msg` hook 与 PR CI）会拒绝不合规的提交。完整规则见 git-conventions skill。
+- 开发时 What's New 会显示「即将发布」，即上个 tag 之后的提交，用来检查措辞。
+- 发版只需 `pnpm run release`：自己输入版本号，确认预览后脚本会更新 4 个 `package.json` 和 CHANGELOG，然后提交、打 tag 并推送，Release workflow 负责其余步骤。
+- v2.0.3 及更早的手写记录冻结在 `docs/archive/CHANGELOG-legacy.md`，不再维护。
 
 ---
 
 ## 代码规范与架构约定
-
-### 用户更新说明与提交提示词
-
-- `docs/CHANGELOG.md` 是 What's New 与 GitHub Release 的唯一内容来源，不新增或维护 `docs/updates/entries/*.json` 或独立版本清单。
-- 使用 `## v版本` 和 Added / Visual / Quality / Fixed 分类；每条以 `- **用户结果**：一两句话说明变化和入口。` 编写，下方加唯一且稳定的 `<!-- update:可读的唯一ID -->`。分类由章节决定，不从 Conventional Commit 关键词推断。
-- 每个用户可感知的提交使用 Conventional Commit 并新增条目。纯 CI、依赖、类型或内部重构在提交正文独立写 `Changelog: internal`，不向用户编造功能。
-- 新条目不要填写自己的 hash：构建从 ID 行的真实 Git 历史解析首次引入提交。保留已核对的历史提交链接；不确定的历史关联使用 `historical` 迁移标记，禁止套用整理文档的提交冒充功能提交。不要改动既有 ID。
-- 发版前按最终体验合并重复说明，清除过时中间方案，并确认版本归属。历史用户记录不应因为没有 hash 而丢失；历史日期未经确认不填写。原始工程日志和来源核对表保存在 docs/archive 与 docs/updates/PROVENANCE.md。
-- 可在同一条 Markdown 后添加 en-US / zh-TW 的 translation 注释；无人工译文时使用来源原文。格式、迁移边界和发布检查见 [docs/updates/README.md](docs/updates/README.md)。
-
-编写更新条目时使用这段提示词：
-
-> 请以 docs/CHANGELOG.md 为唯一内容来源，根据最终修改写普通听歌用户能理解的更新条目。先判断能否感知变化，纯维护只在提交正文标记 Changelog: internal。用户变化以结果作标题，一两句话写清新增能力、修复问题或体验提升，必要时指出操作入口。删除代码路径、模块拆分、内部类型、调试过程和已被替代的中间方案，不夸大效果或验证结论。放入正确版本和 Added / Visual / Quality / Fixed 分类，添加稳定且唯一的 update ID。提交使用 Conventional Commit；新条目的 hash 由 Git 自动解析，不要伪造，也不要把提交关键词当成展示分类。
 
 前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：👉 **[skills/nextjs-project-structure/](skills/nextjs-project-structure/SKILL.md)**
 

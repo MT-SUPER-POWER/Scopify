@@ -5,8 +5,8 @@
   "packageManager": "pnpm@12.8.1",
   "scripts": {
     "prepare": "husky",
-    "updates:check": "bun repo/frontend/apps/web/scripts/check-release-notes.ts",
-    "updates:release": "bun repo/frontend/apps/web/scripts/check-release-notes.ts --release",
+    "release": "bun scripts/release.ts",
+    "changelog:preview": "git-cliff --unreleased --strip all",
     "dev": "turbo run dev --filter=@scopify/web --filter=@scopify/desktop",
     "dev:web": "turbo run dev --filter=@scopify/web",
     "dev:docs": "turbo run dev --filter=@scopify/docs",
@@ -42,7 +42,10 @@
     "i18n:audit": "pnpm --dir repo/frontend/apps/web run i18n:audit"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "concurrently": "^9.2.4",
+    "git-cliff": "^2.14.2",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "prettier": "^3.9.9",

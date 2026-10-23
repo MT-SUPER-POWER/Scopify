@@ -1,0 +1,44 @@
+# git-cliff: commit -> docs/CHANGELOG.md, What's New and GitHub Release notes.
+# Only user-facing types are listed; see the git-conventions skill for commit rules.
+
+[changelog]
+header = """
+# Changelog
+
+> 根据 commit 自动生成，请勿手动编辑；发版时由 `pnpm release` 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
+
+"""
+body = """
+{% if version %}\
+## {{ version }} — {{ timestamp | date(format="%Y-%m-%d") }}
+{% elif commits | length > 0 %}\
+## 未发布
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | striptags | trim }}
+{% for commit in commits %}
+- {{ commit.message | split(pat="\n") | first | trim }} \
+([{{ commit.id | truncate(length=8, end="") }}](https://github.com/MT-SUPER-POWER/Scopify/commit/{{ commit.id }}))\
+{% endfor %}
+{% endfor %}\n
+"""
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+filter_commits = true
+tag_pattern = "v[0-9].*"
+sort_commits = "newest"
+commit_preprocessors = [
+  # One-off bridge from the hand-written changelog: the only part of this demo commit
+  # users still need to hear about is its external-link fix.
+  { pattern = '^feat\(updates\): add paginated release notes demo', replace = "fix(desktop): 外部链接改用系统默认浏览器打开，不再弹出应用内窗口" },
+]
+commit_parsers = [
+  { message = "^[a-z]+\\((ci|deps|release)\\)", skip = true },
+  { message = "^feat", group = "<!-- 0 -->新增" },
+  { message = "^fix", group = "<!-- 1 -->修复" },
+  { message = "^perf", group = "<!-- 2 -->优化" },
+  { message = ".*", skip = true },
+]
