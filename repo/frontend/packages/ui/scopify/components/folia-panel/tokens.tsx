@@ -36,6 +36,15 @@ const luminance = (color: string): number | null => {
 const contrast = (left: number, right: number) =>
   (Math.max(left, right) + 0.05) / (Math.min(left, right) + 0.05);
 
+/** Keep custom theme accents visible on neutral interface surfaces. Theme data stays untouched. */
+export const readableAccentColor = (accent: string, surface: string, fallback: string): string => {
+  const foreground = luminance(accent);
+  const background = luminance(surface);
+  return foreground !== null && background !== null && contrast(foreground, background) >= 3
+    ? accent
+    : fallback;
+};
+
 /** The colour of text and marks drawn on the accent: whichever of dark and white reads better. */
 export const onAccentColor = (accent: string): string => {
   const accentLuminance = luminance(accent);

@@ -19,6 +19,7 @@
     "./scopify/theme.css": "./scopify/theme.css",
     "./shadcn/theme.css": "./shadcn/theme.css",
     "./scopify/components/folia-panel/folia-panel.css": "./scopify/components/folia-panel/folia-panel.css",
+    "./scopify/components/folia-studio/studio.css": "./scopify/components/folia-studio/studio.css",
     "./scopify/components/*": "./scopify/components/*.tsx",
     "./shadcn/components/*": "./shadcn/components/*.tsx",
     "./shadcn/hooks/*": "./shadcn/hooks/*.ts",

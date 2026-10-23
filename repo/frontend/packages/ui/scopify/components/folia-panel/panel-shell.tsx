@@ -35,8 +35,9 @@ import {
 // gets the height its content needs: the content is measured and the surface follows with the
 // kit's unfold motion, upward from the tab row.
 
-/** The handle's height and the gap above it. */
-const HANDLE_ROOM_PX = 60;
+/** The handle participates in layout already; only the gap belongs in the surface's margin. */
+const HANDLE_GAP_PX = 12;
+const HANDLE_HEIGHT_PX = 48;
 /** Under the surface when no handle is drawn below it. */
 const BARE_GAP_PX = 8;
 /** Kept free between the surface and the top of the window. */
@@ -110,7 +111,8 @@ function FoliaPanelSurface({
   children,
 }: Omit<FoliaPanelShellProps, "isOpen" | "handle"> & { bottomPx: number }) {
   const reduced = useKitReducedMotion();
-  const underPx = hasHandle ? HANDLE_ROOM_PX : BARE_GAP_PX;
+  const underPx = hasHandle ? HANDLE_GAP_PX : BARE_GAP_PX;
+  const reservedPx = underPx + (hasHandle ? HANDLE_HEIGHT_PX : 0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const content = useFoliaMeasuredSize(contentRef, tabKey);
@@ -140,7 +142,7 @@ function FoliaPanelSurface({
       style={
         {
           ...panelTokens(isDaylight, colors, reduced),
-          "--pn-under": `${underPx}px`,
+          "--pn-under": `${reservedPx}px`,
           "--pn-room": `calc(100dvh - var(--pn-under) - ${bottomPx + TOP_MARGIN_PX + 2 * PADDING_PX + DOCK_GAP_PX + DOCK_HEIGHT_PX}px)`,
           // What is left under the folded song line and the hairline: a tab with a list of its own
           // ends the list there, so the list scrolls and the tab does not.
@@ -149,7 +151,7 @@ function FoliaPanelSurface({
           padding: PADDING_PX,
           marginBottom: underPx,
           // The centre of the handle, at the surface's right end.
-          transformOrigin: `calc(100% - 24px) calc(100% + ${underPx - 24}px)`,
+          transformOrigin: `calc(100% - 24px) calc(100% + ${underPx + (hasHandle ? HANDLE_HEIGHT_PX / 2 : 0)}px)`,
         } as CSSProperties
       }
     >
