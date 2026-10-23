@@ -1,5 +1,6 @@
 import type {
   AudioEffectControl,
+  AudioEffectGroup,
   AudioEffectId,
   AudioEffectSettings,
   AudioEqualizerPresetId,
@@ -103,3 +104,9 @@ export const DEFAULT_AUDIO_EQUALIZER_SETTINGS: AudioEqualizerSettings = {
   preset: "flat",
   customGains: [...AUDIO_EQUALIZER_PRESETS.flat],
 };
+
+export const AUDIO_EFFECT_GROUPS: readonly AudioEffectGroup[] = [
+  { id: "filter", effects: ["highpass", "lowpass"] },
+  { id: "texture", effects: ["drive", "crush", "wow", "noise"] },
+  { id: "space", effects: ["width", "space", "punch"] },
+];

@@ -14,5 +14,5 @@
       "@scopify/ui/*": ["./*"]
     }
   },
-  "include": ["folia/**/*.ts", "shadcn/**/*.ts", "shadcn/**/*.tsx", "tests/**/*.ts"]
+  "include": ["folia/**/*.ts", "scopify/**/*.tsx", "shadcn/**/*.ts", "shadcn/**/*.tsx", "tests/**/*.ts"]
 }

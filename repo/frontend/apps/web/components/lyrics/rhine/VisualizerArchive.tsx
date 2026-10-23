@@ -129,14 +129,17 @@ export default function VisualizerArchive(props: VisualizerSharedProps) {
               <div className={styles.lyricColumn}>
                 <div className={styles.previous} key={`previous:${identity}`}>
                   {previous ? (
-                    <button
-                      type="button"
-                      disabled={!onLyricLineSeek}
-                      onClick={() => onLyricLineSeek?.(previous.startTime)}
-                      aria-label={`${t("folia.archive.seekLine")}: ${previous.fullText}`}
-                    >
-                      {previous.fullText}
-                    </button>
+                    onLyricLineSeek ? (
+                      <button
+                        type="button"
+                        onClick={() => onLyricLineSeek(previous.startTime)}
+                        aria-label={`${t("folia.archive.seekLine")}: ${previous.fullText}`}
+                      >
+                        {previous.fullText}
+                      </button>
+                    ) : (
+                      <span>{previous.fullText}</span>
+                    )
                   ) : (
                     <span aria-hidden="true">—</span>
                   )}
@@ -174,15 +177,21 @@ export default function VisualizerArchive(props: VisualizerSharedProps) {
                 </div>
                 <div className={styles.next}>
                   {next ? (
-                    <button
-                      type="button"
-                      disabled={!onLyricLineSeek}
-                      onClick={() => onLyricLineSeek?.(next.startTime)}
-                      aria-label={`${t("folia.archive.seekLine")}: ${next.fullText}`}
-                    >
-                      <span aria-hidden="true">↳</span>
-                      {next.fullText}
-                    </button>
+                    onLyricLineSeek ? (
+                      <button
+                        type="button"
+                        onClick={() => onLyricLineSeek(next.startTime)}
+                        aria-label={`${t("folia.archive.seekLine")}: ${next.fullText}`}
+                      >
+                        <span aria-hidden="true">↳</span>
+                        {next.fullText}
+                      </button>
+                    ) : (
+                      <span>
+                        <span aria-hidden="true">↳</span>
+                        {next.fullText}
+                      </span>
+                    )
                   ) : null}
                 </div>
               </div>

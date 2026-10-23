@@ -1,9 +1,9 @@
+import { FoliaQuickToggle } from "@scopify/ui/scopify/components/folia-panel/controls";
 import React, { lazy } from "react";
 import { Square } from "lucide-react";
 import { DEFAULT_SORA_BACKGROUND_TUNING } from "../../../../types";
 import SoraBackgroundSettingsCard from "./SoraBackgroundSettingsCard";
 import { defineVisualizerBackground } from "../definition";
-import { QuickControlToggle } from "../../../shared/QuickControlChip";
 
 const SoraBackground = lazy(() => import("./SoraBackground"));
 
@@ -40,17 +40,16 @@ export default defineVisualizerBackground({
       onTuningChange={actions?.sora?.onTuningChange}
     />
   ),
-  renderQuickControls: ({ config, actions, t, theme }) => {
+  renderQuickControls: ({ config, actions, t }) => {
     const tuning = config?.sora?.tuning ?? DEFAULT_SORA_BACKGROUND_TUNING;
     return (
-      <QuickControlToggle
+      <FoliaQuickToggle
         active={Boolean(tuning.blank)}
-        theme={theme}
         label={t("options.soraBlank")}
         onToggle={() => actions?.sora?.onTuningChange?.({ blank: !tuning.blank })}
       >
         <Square size={14} />
-      </QuickControlToggle>
+      </FoliaQuickToggle>
     );
   },
   resetSettings: (actions) => actions?.sora?.onResetTuning?.(),

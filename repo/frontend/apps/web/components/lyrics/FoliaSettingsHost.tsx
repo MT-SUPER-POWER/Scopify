@@ -45,6 +45,7 @@ export function FoliaSettingsHost() {
           assets={assets}
           onClose={() => surfaces.setFontPickerTarget(null)}
           target={surfaces.fontPickerTarget}
+          theme={theme}
         />
       ) : null}
       <FoliaSonnetPerformanceWarningDialog

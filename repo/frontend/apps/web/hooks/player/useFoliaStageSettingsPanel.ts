@@ -16,7 +16,6 @@ import {
   DEFAULT_TILT_TUNING,
   type Theme,
 } from "@/components/lyrics/folia/src/types";
-import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import { getFoliaStageTheme, THEME_PRESETS } from "@scopify/ui/folia";
 import {
   getVisualizerRegistryEntry,
@@ -159,7 +158,7 @@ export function useFoliaStageSettingsPanel(
     cappellaTuning: settings.tunings.cappella ?? DEFAULT_CAPPELLA_TUNING,
     classicTuning: settings.tunings.classic ?? DEFAULT_CLASSIC_TUNING,
     claddaghTuning: settings.tunings.claddagh ?? DEFAULT_CLADDAGH_TUNING,
-    controlCardBg: colorWithAlpha(theme.backgroundColor, isDaylight ? 0.42 : 0.52),
+    controlCardBg: "var(--st-card)",
     dioramaTuning: settings.tunings.diorama ?? DEFAULT_DIORAMA_TUNING,
     fontScale: settings.fontScale,
     fontScaleOptions: FONT_SCALE_OPTIONS,
@@ -211,7 +210,12 @@ export function useFoliaStageSettingsPanel(
     onTemperaTuningChange: (patch: Partial<typeof DEFAULT_TEMPERA_TUNING>) =>
       settings.patchTuning("tempera", patch),
     onResetCommonSettings: () =>
-      settings.patchSettings({ fontScale: 1, fontStyle: "sans", visualizerOpacity: 1 }),
+      settings.patchSettings({
+        fontFamily: null,
+        fontScale: 1,
+        fontStyle: "sans",
+        visualizerOpacity: 1,
+      }),
     onResetMonetTuning: () => settings.resetTuning("monet"),
     onResetSubtitleSettings: () =>
       settings.patchSettings({

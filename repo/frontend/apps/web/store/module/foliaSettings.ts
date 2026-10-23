@@ -7,7 +7,7 @@ export const useFoliaSettingsStore = create<FoliaSettingsStore>((set, get) => ({
   themeLibraryOpen: false,
   themeCloseRequest: 0,
   fontPickerTarget: null,
-  openVisualSettings: (section = "common") =>
+  openVisualSettings: (section = "visualizer") =>
     set((state) => ({
       visualSection: section,
       themeCloseRequest: state.themeCloseRequest + (state.themeLibraryOpen ? 1 : 0),

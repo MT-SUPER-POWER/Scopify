@@ -1,7 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { CircleStop, Download, Film, X } from "lucide-react";
+import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/window";
+import { AnimatePresence } from "framer-motion";
+import { CircleStop, Download, Film, ChevronLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { createPortal } from "react-dom";
@@ -189,28 +190,19 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
   return createPortal(
     <AnimatePresence>
       {isOpen ? (
-        <motion.div
-          className="fixed inset-0 z-210 flex items-center justify-center p-4 backdrop-blur-xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onPointerDown={status === "recording" ? undefined : onClose}
-          style={{ backgroundColor: isDaylight ? "rgba(255,255,255,.76)" : "rgba(0,0,0,.76)" }}
-        >
-          <motion.section
-            ref={dialogRef}
-            data-folia-modal-layer="210"
-            tabIndex={-1}
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("folia.videoExport.title")}
-            className={`w-full max-w-lg rounded-[28px] border p-5 shadow-2xl ${isDaylight ? "border-black/8 bg-white text-zinc-900" : "border-white/10 bg-zinc-950 text-white"}`}
-            initial={{ scale: 0.97, y: 16 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.97, y: 16 }}
-            onPointerDown={(event) => event.stopPropagation()}
-          >
-            <header className="mb-5 flex items-start justify-between gap-4">
+        <FoliaStudioWindow
+          compact
+          panelRef={dialogRef}
+          layer={210}
+          title={t("folia.videoExport.title")}
+          backLabel={t("folia.ui.close")}
+          onClose={() => {
+            if (status !== "recording") onClose();
+          }}
+          isDaylight={isDaylight}
+          colors={theme}
+          header={
+            <header className="flex items-start justify-between gap-4 px-5 pt-5 pb-4">
               <div className="flex gap-3">
                 <Film size={18} style={{ color: theme.accentColor }} />
                 <div>
@@ -224,9 +216,12 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
                 onClick={onClose}
                 type="button"
               >
-                <X size={16} />
+                <ChevronLeft size={16} />
               </button>
             </header>
+          }
+        >
+          <div className="st-scroll min-h-0 overflow-y-auto px-5 pb-5">
             <div className="grid grid-cols-3 gap-2">
               {PRESETS.map((preset) => (
                 <button
@@ -302,8 +297,8 @@ export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExp
                 </button>
               )}
             </div>
-          </motion.section>
-        </motion.div>
+          </div>
+        </FoliaStudioWindow>
       ) : null}
     </AnimatePresence>,
     document.body,

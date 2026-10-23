@@ -2,8 +2,6 @@
 
 import { Moon, Sun, Trash2 } from "lucide-react";
 
-import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
-import { getFoliaThemeColors } from "@scopify/ui/folia";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
 import type { FoliaThemeIdentityControlsProps } from "@/types/components/lyrics";
@@ -16,17 +14,16 @@ export function FoliaThemeIdentityControls({
   const { t } = useI18n();
   const themeVariant = useLyricStageStore((state) => state.themeVariant);
   const setThemeVariant = useLyricStageStore((state) => state.setThemeVariant);
-  const activeColors = getFoliaThemeColors(draftTheme, themeVariant);
 
   return (
-    <div className="rounded-[22px] border border-white/10 bg-white/4.5 p-3">
+    <div className="rounded-xl border border-[var(--st-line)] bg-[var(--st-card)] p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <label className="min-w-0 flex-1 space-y-1">
-          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase opacity-50">
+          <span className="text-xs font-medium text-[color:var(--st-t2)]">
             {t("folia.options.themeName")}
           </span>
           <input
-            className="w-full border-b border-white/15 bg-transparent pb-1 text-base font-semibold transition outline-none focus:border-white/50"
+            className="w-full border-b border-[var(--st-line2)] bg-transparent py-1 text-sm font-medium text-[color:var(--st-t1)] transition outline-none focus:border-[var(--st-accent)]"
             onChange={(event) => onDraftChange({ ...draftTheme, name: event.target.value })}
             value={draftTheme.name}
           />
@@ -42,10 +39,7 @@ export function FoliaThemeIdentityControls({
         </button>
       </div>
 
-      <div
-        className="flex rounded-xl p-1"
-        style={{ backgroundColor: colorWithAlpha(activeColors.backgroundColor, 0.5) }}
-      >
+      <div className="flex rounded-lg bg-[var(--st-fill)] p-1">
         {(
           [
             ["light", Sun, "folia.options.lightTheme"],
@@ -58,12 +52,12 @@ export function FoliaThemeIdentityControls({
               className="flex flex-1 items-center justify-center gap-2 rounded-lg border py-2 text-xs transition-all"
               key={variant}
               onClick={() => setThemeVariant(variant)}
+              aria-pressed={active}
               style={{
-                backgroundColor: active
-                  ? colorWithAlpha(activeColors.accentColor, 0.15)
-                  : "transparent",
-                borderColor: active ? colorWithAlpha(activeColors.accentColor, 0.5) : "transparent",
-                color: active ? activeColors.primaryColor : `${activeColors.secondaryColor}99`,
+                backgroundColor: active ? "var(--st-card)" : "transparent",
+                borderColor: "transparent",
+                color: active ? "var(--st-t1)" : "var(--st-t2)",
+                boxShadow: active ? "0 1px 3px #0001" : "none",
               }}
               type="button"
             >

@@ -1,6 +1,7 @@
 "use client";
 
-import { Search, Upload, X } from "lucide-react";
+import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/window";
+import { Search, Upload } from "lucide-react";
 import { useRef } from "react";
 import { useI18n } from "@/store/module/i18n";
 
@@ -10,7 +11,7 @@ import type { FoliaFontPickerProps } from "@/types/components/lyrics";
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
-export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProps) {
+export function FoliaFontPicker({ assets, onClose, target, theme }: FoliaFontPickerProps) {
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const warningOpen = useLyricStageStore((state) => state.sonnetPerformanceWarningOpen);
@@ -18,40 +19,25 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
   const model = useFoliaFontPicker(target, assets, onClose);
 
   return (
-    <div
-      className="fixed inset-0 z-170 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm"
-      onClick={onClose}
+    <FoliaStudioWindow
+      compact
+      panelRef={dialogRef}
+      layer={170}
+      title={t("folia.options.customFont")}
+      backLabel={t("folia.ui.close")}
+      onClose={onClose}
+      isDaylight={theme.name === "snow"}
+      colors={theme}
     >
-      <section
-        ref={dialogRef}
-        data-folia-modal-layer="170"
-        tabIndex={-1}
-        role="dialog"
-        aria-modal="true"
-        aria-label={String(t("folia.options.customFont"))}
-        className="flex max-h-[min(620px,calc(100dvh-2rem))] w-[min(520px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/95 p-5 shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <header className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-semibold">{t("folia.options.customFont")}</h2>
-          <button
-            type="button"
-            title={String(t("folia.ui.close"))}
-            onClick={onClose}
-            className="rounded-full p-2 opacity-60 hover:bg-white/10 hover:opacity-100"
-          >
-            <X size={18} />
-          </button>
-        </header>
-
-        <div className="mb-3 flex items-center gap-2 rounded-xl bg-white/5 px-3">
+      <div className="flex min-h-0 flex-col px-5 pb-5">
+        <div className="mb-3 flex items-center gap-2 rounded-xl bg-[var(--st-fill)] px-3">
           <Search size={15} className="opacity-45" />
           <input
             type="search"
             value={model.query}
             onChange={(event) => model.setQuery(event.currentTarget.value)}
             placeholder={String(t("folia.options.searchFonts"))}
-            className="h-10 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-white/35"
+            className="h-10 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[color:var(--st-t3)]"
           />
         </div>
 
@@ -73,7 +59,7 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
                   key={font.postscriptName || font.family}
                   type="button"
                   onClick={() => model.applyFontFamily(font.family)}
-                  className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left hover:bg-white/10"
+                  className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left hover:bg-[var(--st-fill)]"
                 >
                   <span className="truncate text-sm" style={{ fontFamily: font.family }}>
                     {font.family}
@@ -85,7 +71,7 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
           </div>
         </ScrollArea>
 
-        {model.error ? <p className="mt-3 text-xs text-red-300">{model.error}</p> : null}
+        {model.error ? <p className="mt-3 text-xs text-red-500">{model.error}</p> : null}
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
@@ -105,7 +91,7 @@ export function FoliaFontPicker({ assets, onClose, target }: FoliaFontPickerProp
             if (file) void model.uploadFont(file);
           }}
         />
-      </section>
-    </div>
+      </div>
+    </FoliaStudioWindow>
   );
 }

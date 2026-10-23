@@ -1,25 +1,18 @@
 "use client";
 
-import { type Transition, motion, useInView } from "framer-motion";
+import { EqualizerCurve } from "@scopify/ui/scopify/components/equalizer-curve";
+import { useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-import { LandingEqBand } from "@/components/marketing/landing-eq-band";
 import {
   LANDING_EQ_BANDS,
   LANDING_EQ_DEFAULT_PRESET,
   LANDING_EQ_MAX_GAIN,
   LANDING_EQ_PRESETS,
 } from "@/constants/marketing";
-import {
-  EQ_CURVE_HEIGHT,
-  EQ_CURVE_WIDTH,
-  buildEqArea,
-  buildEqCurve,
-} from "@/lib/marketing/eq-curve";
 
 const FLAT_PRESET = LANDING_EQ_PRESETS[0]!;
-const SPRING: Transition = { type: "spring", stiffness: 120, damping: 17, mass: 0.9 };
-const INSTANT: Transition = { duration: 0 };
+const BANDS = LANDING_EQ_BANDS.map((label) => ({ label }));
 
 /** 十段均衡器：进入视口后从「水平」推成 V 形；预设可切换，推子可以直接拖。 */
 export function LandingEqualizer() {
@@ -27,8 +20,6 @@ export function LandingEqualizer() {
   const isInView = useInView(panelRef, { once: true, amount: 0.5 });
   const [presetId, setPresetId] = useState(FLAT_PRESET.id);
   const [gains, setGains] = useState<readonly number[]>(FLAT_PRESET.gains);
-  const [isDragging, setIsDragging] = useState(false);
-  const transition = isDragging ? INSTANT : SPRING;
 
   const applyPreset = (id: string) => {
     const preset = LANDING_EQ_PRESETS.find((item) => item.id === id);
@@ -84,66 +75,17 @@ export function LandingEqualizer() {
         </div>
       </div>
 
-      <div className="relative mt-6 h-56 sm:h-64">
-        <span className="absolute inset-x-0 top-1/2 h-px bg-white/12" />
-        <span className="absolute inset-x-0 top-1/4 h-px bg-white/5" />
-        <span className="absolute inset-x-0 top-3/4 h-px bg-white/5" />
-        <svg
-          aria-hidden="true"
-          viewBox={`0 0 ${EQ_CURVE_WIDTH} ${EQ_CURVE_HEIGHT}`}
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-0 size-full overflow-visible"
-        >
-          <defs>
-            <linearGradient
-              id="landing-eq-fill"
-              gradientUnits="userSpaceOnUse"
-              x1="0"
-              x2="0"
-              y1="0"
-              y2={EQ_CURVE_HEIGHT}
-            >
-              <stop offset="0%" stopColor="#1ed760" stopOpacity="0.4" />
-              <stop offset="50%" stopColor="#1ed760" stopOpacity="0.04" />
-              <stop offset="100%" stopColor="#1ed760" stopOpacity="0.4" />
-            </linearGradient>
-          </defs>
-          <motion.path
-            initial={false}
-            animate={{ d: buildEqArea(gains, LANDING_EQ_MAX_GAIN) }}
-            transition={transition}
-            fill="url(#landing-eq-fill)"
-          />
-          <motion.path
-            initial={false}
-            animate={{ d: buildEqCurve(gains, LANDING_EQ_MAX_GAIN) }}
-            transition={transition}
-            fill="none"
-            stroke="#1ed760"
-            strokeWidth={2}
-            vectorEffect="non-scaling-stroke"
-            className="drop-shadow-[0_0_10px_rgba(30,215,96,0.8)]"
-          />
-        </svg>
-        <div className="absolute inset-0 grid grid-cols-10">
-          {LANDING_EQ_BANDS.map((frequency, index) => (
-            <LandingEqBand
-              key={frequency}
-              frequency={frequency}
-              gain={gains[index] ?? 0}
-              onChange={(gain) => updateBand(index, gain)}
-              onDragChange={setIsDragging}
-              transition={transition}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-3 grid grid-cols-10 text-center font-mono text-[0.62rem] text-white/40 sm:text-[0.68rem]">
-        {LANDING_EQ_BANDS.map((frequency) => (
-          <span key={frequency}>{frequency}</span>
-        ))}
-      </div>
+      <EqualizerCurve
+        bands={BANDS}
+        gains={gains}
+        maxGain={LANDING_EQ_MAX_GAIN}
+        step={0.5}
+        onChange={updateBand}
+        accentColor="#1ed760"
+        bandLabel={(label) => `${label} Hz 增益`}
+        className="mt-6 text-white"
+        plotClassName="h-56 sm:h-64"
+      />
     </div>
   );
 }

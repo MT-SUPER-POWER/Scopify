@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/window";
+import { AnimatePresence } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
 
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
@@ -21,35 +22,18 @@ export function FoliaSonnetPerformanceWarningDialog({
   return (
     <AnimatePresence>
       {isOpen ? (
-        <motion.div
-          className="fixed inset-0 z-180 flex items-center justify-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+        <FoliaStudioWindow
+          compact
+          panelRef={dialogRef}
+          layer={180}
+          title={t("folia.options.sonnetPerformanceWarningTitle")}
+          backLabel={t("folia.ui.cancel")}
+          onClose={onClose}
+          isDaylight={isDaylight}
+          colors={{ primaryColor: isDaylight ? "#171b27" : "#f0f0f3" }}
+          header={<div />}
         >
-          <button
-            type="button"
-            aria-label={String(t("folia.ui.cancel"))}
-            className="absolute inset-0 bg-black/55 backdrop-blur-md"
-            onClick={onClose}
-          />
-          <motion.section
-            ref={dialogRef}
-            data-folia-modal-layer="180"
-            tabIndex={-1}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="folia-sonnet-warning-title"
-            initial={{ opacity: 0, scale: 0.96, y: 18 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 12 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`relative w-full max-w-lg rounded-3xl border p-6 shadow-2xl ${
-              isDaylight
-                ? "border-black/10 bg-white/95 text-zinc-900"
-                : "border-white/12 bg-zinc-950/95 text-white"
-            }`}
-          >
+          <div className="st-scroll min-h-0 overflow-y-auto p-6">
             <div className="flex items-start gap-4">
               <div
                 className={`flex size-11 shrink-0 items-center justify-center rounded-full ${
@@ -108,8 +92,8 @@ export function FoliaSonnetPerformanceWarningDialog({
                 {t("folia.ui.apply")}
               </button>
             </div>
-          </motion.section>
-        </motion.div>
+          </div>
+        </FoliaStudioWindow>
       ) : null}
     </AnimatePresence>
   );

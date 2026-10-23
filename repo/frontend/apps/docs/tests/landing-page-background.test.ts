@@ -10,7 +10,7 @@ import {
   LANDING_EQ_PRESETS,
   LANDING_VISUALIZER_MODES,
 } from "@/constants/marketing";
-import { buildEqArea, buildEqCurve } from "@/lib/marketing/eq-curve";
+import { buildEqArea, buildEqCurve } from "@scopify/ui/scopify/components/equalizer-curve";
 import { paletteFromTheme, writePaletteRgb } from "@/lib/marketing/landing-palette";
 
 const readSource = (relativePath: string) =>

@@ -168,7 +168,8 @@
   opacity: 0.63;
   animation: archivePrevious 650ms ease-out both;
 }
-.previous button {
+.previous button,
+.previous span {
   max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
@@ -240,7 +241,8 @@
   font-size: clamp(11px, 1cqw, 15px);
   opacity: 0.8;
 }
-.next button {
+.next button,
+.next span {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -249,7 +251,8 @@
   max-height: 3.2em;
   overflow: hidden;
 }
-.next button > span {
+.next button > span,
+.next span > span {
   color: var(--archive-accent);
 }
 .stage button {

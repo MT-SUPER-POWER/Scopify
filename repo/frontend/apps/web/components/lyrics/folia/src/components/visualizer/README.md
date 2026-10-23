@@ -22,7 +22,7 @@
 - `backgrounds/registry.tsx`: 自动发现 `backgrounds/*/entry.tsx`
 - `backgrounds/definition.ts`: 背景统一配置、动作和注册入口契约
 - `VisPlayground.tsx`: 可视化预览和样式设置面板
-- `VisPlaygroundSettingsPanel.tsx`: 预览页的共享设置控制面板
+- `@/components/lyrics/FoliaVisualSettingsPanel.tsx`: 预览页的共享设置控制面板
 
 ## 歌词，配色，Visualizer
 
@@ -217,7 +217,7 @@ visualizer/
 ├─ runtime.ts
 ├─ settingsPanels.tsx
 ├─ VisPlayground.tsx
-├─ VisPlaygroundSettingsPanel.tsx
+├─ @/components/lyrics/FoliaVisualSettingsPanel.tsx
 ├─ VisualizerRenderer.tsx
 ├─ VisualizerShell.tsx
 ├─ VisualizerSubtitleOverlay.tsx
@@ -632,7 +632,7 @@ resetSettings: (props) => {
 - 确认是否需要针对新模式补额外控制项
 - 复用 registry 提供的模式标签和 preview seed / offset
 
-优先把共享设置放在 `VisPlaygroundSettingsPanel.tsx`，把专属控制拆到模式相邻文件，再由 entry 的 `renderSettingsPanel` 挂回预览面板，避免继续在 `VisPlayground.tsx` 里堆模式分支。
+优先把共享设置放在 `@/components/lyrics/FoliaVisualSettingsPanel.tsx`，把专属控制拆到模式相邻文件，再由 entry 的 `renderSettingsPanel` 挂回预览面板，避免继续在 `VisPlayground.tsx` 里堆模式分支。
 
 #### `src/components/modal/SettingsModal.tsx`
 

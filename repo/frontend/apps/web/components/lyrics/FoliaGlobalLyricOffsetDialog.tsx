@@ -1,5 +1,6 @@
 "use client";
 
+import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/window";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -7,7 +8,6 @@ import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { createPortal } from "react-dom";
 
 import { FoliaGlobalLyricOffsetRuler } from "@/components/lyrics/FoliaGlobalLyricOffsetRuler";
-import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
@@ -54,38 +54,20 @@ export function FoliaGlobalLyricOffsetDialog({
   return createPortal(
     <AnimatePresence>
       {isOpen ? (
-        <motion.div
-          className="fixed inset-0 z-220 flex items-center justify-center p-4 backdrop-blur-xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onPointerDown={onClose}
-          style={{
-            backgroundColor: colorWithAlpha(theme.backgroundColor, isDaylight ? 0.78 : 0.84),
-          }}
-        >
-          <motion.section
-            ref={dialogRef}
-            data-folia-modal-layer="220"
-            tabIndex={-1}
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("folia.offset.title")}
-            className="w-full max-w-2xl overflow-hidden rounded-[32px] border shadow-2xl"
-            initial={{ y: 24, opacity: 0, scale: 0.985 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 24, opacity: 0, scale: 0.985 }}
-            onPointerDown={(event) => event.stopPropagation()}
-            style={{
-              backgroundColor: colorWithAlpha(theme.backgroundColor, isDaylight ? 0.96 : 0.9),
-              borderColor: colorWithAlpha(theme.secondaryColor, 0.18),
-              color: theme.primaryColor,
-            }}
-          >
-            <header className="flex items-center justify-between border-b border-current/10 px-5 py-4">
+        <FoliaStudioWindow
+          compact
+          panelRef={dialogRef}
+          layer={220}
+          title={t("folia.offset.title")}
+          backLabel={t("folia.ui.close")}
+          onClose={onClose}
+          isDaylight={isDaylight}
+          colors={theme}
+          header={
+            <header className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3">
                 <button
-                  className="flex size-10 items-center justify-center rounded-full border border-current/10"
+                  className="flex size-8 items-center justify-center rounded-lg hover:bg-[var(--st-fill)]"
                   onClick={onClose}
                   type="button"
                 >
@@ -108,6 +90,9 @@ export function FoliaGlobalLyricOffsetDialog({
                 {t("folia.offset.apply")}
               </button>
             </header>
+          }
+        >
+          <div className="st-scroll min-h-0 overflow-y-auto">
             <div className="space-y-5 p-6">
               <div className="flex min-h-32 flex-col items-center justify-center rounded-2xl border border-current/10 bg-current/[.025] px-5 text-center">
                 <AnimatePresence mode="wait">
@@ -181,8 +166,8 @@ export function FoliaGlobalLyricOffsetDialog({
                 </p>
               </div>
             </div>
-          </motion.section>
-        </motion.div>
+          </div>
+        </FoliaStudioWindow>
       ) : null}
     </AnimatePresence>,
     document.body,

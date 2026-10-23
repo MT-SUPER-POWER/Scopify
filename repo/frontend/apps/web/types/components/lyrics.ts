@@ -6,7 +6,6 @@ import type { SongDetail } from "@/types/api/music";
 import type {
   FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,
-  FoliaPanelTab,
   FoliaStageTheme,
   FoliaThemeColors,
   FoliaThemeVariant,
@@ -32,26 +31,15 @@ export interface FoliaQuickEffectPickerOption<Value extends string> {
 }
 
 export interface FoliaLyricsControlsProps {
-  onOpenFoliaSettings: () => void;
   onOpenLyricMatch: () => void;
-  theme: Theme;
 }
 
-export interface FoliaAudioSettingsControlProps {
+export interface FoliaPanelControlsProps {
+  assets: FoliaStageAssets;
   onOpenEqualizer: () => void;
+  onOpenSettings: (section: FoliaStageEditSection) => void;
+  onOpenThemeLibrary: () => void;
   theme: Theme;
-}
-
-export interface FoliaPanelControlsProps extends FoliaAudioSettingsControlProps {
-  onOpenFoliaSettings: () => void;
-  onOpenLyricMatch: () => void;
-}
-
-export interface FoliaLyricTimelineOffsetControlProps {
-  isDaylight: boolean;
-  offsetMs: number;
-  onOffsetChange: (offsetMs: number) => void;
-  onOpenSettings?: () => void;
 }
 
 export interface FoliaAudioEqualizerDialogProps {
@@ -134,12 +122,14 @@ export interface LyricStageProps {
 }
 
 export interface FoliaFontPickerProps {
+  theme: Theme;
   assets: FoliaStageAssets;
   onClose: () => void;
   target: "lyrics" | "subtitle";
 }
 
 export interface FoliaStageSettingsProps {
+  assets: FoliaStageAssets;
   isChromeHidden: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -156,6 +146,7 @@ export interface FoliaSonnetPerformanceWarningDialogProps {
 }
 
 export interface FoliaSettingsPreviewProps {
+  className?: string;
   activeSection: FoliaStageEditSection;
   assets: FoliaStageAssets;
   onSectionChange: (section: FoliaStageEditSection) => void;
@@ -240,7 +231,6 @@ export interface FoliaThemeWorkbenchHeaderProps {
   onSaveAndApply: () => void;
   saveState: FoliaThemeSaveState;
   selectedThemeId: string;
-  theme: Theme;
 }
 
 export interface FoliaThemeWorkbenchLayoutProps {
@@ -257,6 +247,7 @@ export interface FoliaThemeWorkbenchLayoutProps {
 }
 
 export interface FoliaThemeUnsavedDialogProps {
+  isDaylight: boolean;
   onCancel: () => void;
   onDiscard: () => void;
   onSave: () => void;
@@ -375,10 +366,31 @@ export interface FoliaThemedDialogProps {
   closeDisabledTitle?: string;
 }
 
-export interface FoliaStagePanelHeaderProps {
-  activeTab: FoliaPanelTab;
-  isPersonalFm: boolean;
-  onClose(): void;
-  onTabChange(tab: FoliaPanelTab): void;
+export interface FoliaPanelThemeProps {
+  onOpenThemeLibrary: () => void;
+}
+
+export interface FoliaPanelAppearanceProps {
+  assets: FoliaStageAssets;
+  onOpenSettings: (section: FoliaStageEditSection) => void;
   theme: Theme;
+}
+
+export interface FoliaBackgroundQuickControlProps {
+  assets: FoliaStageAssets;
+  isDaylight: boolean;
+  theme: Theme;
+}
+
+export interface FoliaVisualizerQuickControlProps {
+  assets: FoliaStageAssets;
+  theme: Theme;
+}
+
+export interface FoliaRandomPoolPopoverProps {
+  anchorRef: RefObject<HTMLButtonElement | null>;
+  open: boolean;
+  onClose: () => void;
+  onOpenMore: () => void;
+  pool: ReturnType<typeof import("@/hooks/lyrics/useFoliaRandomPool").useFoliaRandomPool>;
 }

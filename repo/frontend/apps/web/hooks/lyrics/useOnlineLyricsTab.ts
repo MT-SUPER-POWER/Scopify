@@ -16,15 +16,21 @@ import {
   setLyricSourceSelection,
 } from "@/lib/cache/playbackCache";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
+import { downloadBlob, sanitizeDownloadFileName } from "@/lib/web/download";
 import { useI18n } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { ImportedLyricOverride, LyricSourceSelection } from "@/types/lyrics";
+import type {
+  ImportedLyricOverride,
+  LyricExportFormat,
+  LyricSourceSelection,
+} from "@/types/lyrics";
 import type { NeteaseLyric } from "@/types/api/music";
 
 export function useOnlineLyricsTab() {
   const { t } = useI18n();
   const song = usePlayerStore((state) => state.currentSongDetail);
+  const lyric = usePlayerStore((state) => state.lyric);
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
   const [importedLyric, setImportedLyric] = useState<ImportedLyricOverride | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -142,8 +148,38 @@ export function useOnlineLyricsTab() {
     }
   }, [isUpdating, song, t]);
 
+  // Exports the raw branch now on stage, so the file re-imports through `importLyricFile` as-is.
+  const exportableFormats: LyricExportFormat[] = [
+    ...(lyric?.lrc?.lyric?.trim() ? (["lrc"] as const) : []),
+    ...(lyric?.yrc?.lyric?.trim() ? (["yrc"] as const) : []),
+  ];
+
+  const exportLyric = useCallback(
+    (format: LyricExportFormat) => {
+      const content = lyric?.[format]?.lyric?.trim();
+      if (!song || !content) {
+        toast.error(t("lyrics.tab.exportEmpty"));
+        return;
+      }
+
+      const artists = song.ar?.map((artist) => artist.name).join(", ");
+      const baseName = sanitizeDownloadFileName(
+        artists ? `${song.name} - ${artists}` : song.name,
+        "lyrics",
+      );
+      downloadBlob(
+        new Blob([content], { type: "text/plain;charset=utf-8" }),
+        `${baseName}.${format}`,
+      );
+      toast.success(t("lyrics.tab.exported"));
+    },
+    [lyric, song, t],
+  );
+
   return {
     clearLyricsState,
+    exportableFormats,
+    exportLyric,
     importedLyric,
     importLyricFile,
     isUpdating,

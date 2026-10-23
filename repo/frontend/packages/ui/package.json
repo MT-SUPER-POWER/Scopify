@@ -18,6 +18,9 @@
     "./folia": "./folia/index.ts",
     "./scopify/theme.css": "./scopify/theme.css",
     "./shadcn/theme.css": "./shadcn/theme.css",
+    "./scopify/components/folia-panel/folia-panel.css": "./scopify/components/folia-panel/folia-panel.css",
+    "./scopify/components/folia-studio/studio.css": "./scopify/components/folia-studio/studio.css",
+    "./scopify/components/*": "./scopify/components/*.tsx",
     "./shadcn/components/*": "./shadcn/components/*.tsx",
     "./shadcn/hooks/*": "./shadcn/hooks/*.ts",
     "./shadcn/lib/*": "./shadcn/lib/*.ts",
@@ -40,6 +43,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.4.0",
     "embla-carousel-react": "^8.6.0",
+    "framer-motion": "^12.42.2",
     "input-otp": "^1.5.0",
     "lucide-react": "^1.33.0",
     "next-themes": "^0.4.6",
@@ -58,9 +62,11 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "react": "^19.2.3"
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   }
 }

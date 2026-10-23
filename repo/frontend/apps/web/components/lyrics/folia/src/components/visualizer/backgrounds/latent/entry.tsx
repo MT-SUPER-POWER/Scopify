@@ -1,3 +1,9 @@
+import {
+  FoliaQuickChip,
+  FoliaQuickToggle,
+} from "@scopify/ui/scopify/components/folia-panel/controls";
+import { getSteppedMode } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
+import type { LatentBackgroundColorSource } from "../../../../types";
 import React, { lazy } from "react";
 import { Layers } from "lucide-react";
 import {
@@ -6,7 +12,6 @@ import {
 } from "../../../../types";
 import LatentBackgroundSettingsCard from "./LatentBackgroundSettingsCard";
 import { defineVisualizerBackground } from "../definition";
-import { QuickControlChip, QuickControlToggle } from "../../../shared/QuickControlChip";
 
 const LatentBackground = lazy(() => import("./LatentBackground"));
 
@@ -14,11 +19,15 @@ const LatentBackground = lazy(() => import("./LatentBackground"));
 // Registers the cover-colored, audio-reactive Latent shell background.
 
 const LATENT_DISPLAY_MODES: LatentBackgroundDisplayMode[] = ["dithering", "mesh", "both"];
-
 const LATENT_DISPLAY_LABEL_KEYS: Record<LatentBackgroundDisplayMode, string> = {
   dithering: "options.latentDisplayDithering",
   mesh: "options.latentDisplayMesh",
   both: "options.latentDisplayBoth",
+};
+const LATENT_COLOR_SOURCES: LatentBackgroundColorSource[] = ["cover-theme", "cover-only"];
+const LATENT_COLOR_SOURCE_LABEL_KEYS: Record<LatentBackgroundColorSource, string> = {
+  "cover-theme": "options.latentColorSourceCoverTheme",
+  "cover-only": "options.latentColorSourceCoverOnly",
 };
 
 export default defineVisualizerBackground({
@@ -44,34 +53,40 @@ export default defineVisualizerBackground({
       onTuningChange={actions?.latent?.onTuningChange}
     />
   ),
-  renderQuickControls: ({ config, actions, t, isDaylight, theme }) => {
+  renderQuickControls: ({ config, actions, t }) => {
     const tuning = config?.latent?.tuning ?? DEFAULT_LATENT_BACKGROUND_TUNING;
     const displayLabel = t(LATENT_DISPLAY_LABEL_KEYS[tuning.displayMode]);
-    const cycleDisplayMode = () => {
-      const currentIndex = LATENT_DISPLAY_MODES.indexOf(tuning.displayMode);
-      actions?.latent?.onTuningChange?.({
-        displayMode: LATENT_DISPLAY_MODES[(currentIndex + 1) % LATENT_DISPLAY_MODES.length],
-      });
-    };
+    const colorLabel = t(LATENT_COLOR_SOURCE_LABEL_KEYS[tuning.colorSource]);
 
     return (
       <>
-        <QuickControlChip
-          isDaylight={isDaylight}
+        <FoliaQuickChip
           label={displayLabel}
-          title={`${t("folia.options.latentDisplayMode")}: ${displayLabel}`}
-          onClick={cycleDisplayMode}
+          title={`${t("options.latentDisplayMode")}: ${displayLabel}`}
+          onClick={() =>
+            actions?.latent?.onTuningChange?.({
+              displayMode: getSteppedMode(LATENT_DISPLAY_MODES, tuning.displayMode, 1),
+            })
+          }
         />
-        <QuickControlToggle
+        <FoliaQuickChip
+          label={colorLabel}
+          title={`${t("options.latentColorSource")}: ${colorLabel}`}
+          onClick={() =>
+            actions?.latent?.onTuningChange?.({
+              colorSource: getSteppedMode(LATENT_COLOR_SOURCES, tuning.colorSource, 1),
+            })
+          }
+        />
+        <FoliaQuickToggle
           active={tuning.overlayEnabled}
-          theme={theme}
-          label={t("folia.options.nomandBackgroundOverlay")}
+          label={t("options.nomandBackgroundOverlay")}
           onToggle={() =>
             actions?.latent?.onTuningChange?.({ overlayEnabled: !tuning.overlayEnabled })
           }
         >
           <Layers size={14} />
-        </QuickControlToggle>
+        </FoliaQuickToggle>
       </>
     );
   },

@@ -1,8 +1,8 @@
+import { FoliaQuickToggle } from "@scopify/ui/scopify/components/folia-panel/controls";
 import React, { lazy } from "react";
 import { motion } from "framer-motion";
-import { Cone } from "lucide-react";
+import { Aperture, Cone } from "lucide-react";
 import { defineVisualizerBackground } from "../definition";
-import { QuickControlToggle } from "../../../shared/QuickControlChip";
 import CommonBackgroundSettingsCard from "./CommonBackgroundSettingsCard";
 
 const FluidBackground = lazy(() => import("./FluidBackground"));
@@ -58,18 +58,28 @@ export default defineVisualizerBackground({
     );
   },
   renderSettingsPanel: (props) => <CommonBackgroundSettingsCard {...props} />,
-  renderQuickControls: ({ config, actions, t, theme }) => {
+  renderQuickControls: ({ config, actions, t }) => {
     const useCoverColorBg = config?.common?.useCoverColorBg ?? false;
+    // The vignette is stored as its opposite (disableVignette): the switch is lit while it is drawn.
+    const vignette = !(config?.common?.disableVignette ?? false);
 
     return (
-      <QuickControlToggle
-        active={useCoverColorBg}
-        theme={theme}
-        label={t(useCoverColorBg ? "theme.addCoverColor" : "theme.useDefaultColor")}
-        onToggle={() => actions?.common?.onCoverColorChange?.(!useCoverColorBg)}
-      >
-        <Cone size={14} />
-      </QuickControlToggle>
+      <>
+        <FoliaQuickToggle
+          active={useCoverColorBg}
+          label={t(useCoverColorBg ? "theme.addCoverColor" : "theme.useDefaultColor")}
+          onToggle={() => actions?.common?.onCoverColorChange?.(!useCoverColorBg)}
+        >
+          <Cone size={14} />
+        </FoliaQuickToggle>
+        <FoliaQuickToggle
+          active={vignette}
+          label={t("options.sonnetPostProcessVignette")}
+          onToggle={() => actions?.common?.onDisableVignetteChange?.(vignette)}
+        >
+          <Aperture size={14} />
+        </FoliaQuickToggle>
+      </>
     );
   },
   resetSettings: (actions) => {

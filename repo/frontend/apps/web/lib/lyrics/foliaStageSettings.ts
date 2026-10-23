@@ -188,6 +188,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     fontFamily: null,
     fontScale: 1,
     randomVisualizerMode: false,
+    randomVisualizerModes: [],
     fontStyle: "sans",
     hideTranslationSubtitle: false,
     lyricOffsetMs: 0,
@@ -279,6 +280,14 @@ function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string):
   }
 
   if (path === "subtitleFontFallbackFamilies") {
+    return (
+      Array.isArray(candidate)
+        ? candidate.filter((value): value is string => typeof value === "string")
+        : schema
+    ) as T;
+  }
+
+  if (path === "randomVisualizerModes") {
     return (
       Array.isArray(candidate)
         ? candidate.filter((value): value is string => typeof value === "string")

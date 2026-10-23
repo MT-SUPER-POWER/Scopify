@@ -1,145 +1,203 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { RotateCcw, Search, Upload } from "lucide-react";
-import { useRef } from "react";
+import { ArrowDownUp, Download, RotateCcw, Search, Upload } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  FoliaGroupLine,
+  FoliaIconButton,
+  FoliaPanelButton,
+  FoliaPanelRow,
+  FoliaSegments,
+  FoliaStepper,
+} from "@scopify/ui/scopify/components/folia-panel/controls";
+import { FoliaPopover } from "@scopify/ui/scopify/components/folia-panel/popover";
 
-import { FoliaLyricTimelineOffsetControl } from "@/components/lyrics/FoliaLyricTimelineOffsetControl";
 import { useOnlineLyricsTab } from "@/hooks/lyrics/useOnlineLyricsTab";
 import { useI18n } from "@/store/module/i18n";
+import { usePlayerStore } from "@/store/module/player";
 import type { FoliaLyricsControlsProps } from "@/types/components/lyrics";
+import type { ReplayGainMode } from "@/types/player";
 
-export function FoliaLyricsControls({
-  onOpenFoliaSettings,
-  onOpenLyricMatch,
-  theme,
-}: FoliaLyricsControlsProps) {
+// The lyrics tab (Folia panelTab/SourceTab.tsx, LyricTimelineOffsetControl.tsx, LyricFileButton.tsx,
+// ReplayGainControl.tsx): where the lyrics come from, the timeline offset in 250 ms steps, online
+// matching and the lyric file menu (import, or export the lyric on stage), then replay gain.
+
+const OFFSET_STEP_MS = 250;
+const MENU_ROW_CLASS =
+  "st-t-fast flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-[13px] transition-colors enabled:hover:bg-[var(--st-fill)] disabled:cursor-not-allowed disabled:opacity-40";
+
+const formatGain = (gain: number) => `${gain > 0 ? "+" : ""}${gain.toFixed(1)} dB`;
+
+export function FoliaLyricsControls({ onOpenLyricMatch }: FoliaLyricsControlsProps) {
   const { t } = useI18n();
-  const inputRef = useRef<HTMLInputElement>(null);
   const model = useOnlineLyricsTab();
-  const isDaylight = theme.name === "snow";
-  const tabContainerBg = isDaylight ? "bg-black/5" : "bg-white/5";
-  const activePillBg = isDaylight
-    ? "bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
-    : "bg-zinc-800/80 shadow-[0_2px_8px_rgba(0,0,0,0.2)]";
-  const activeTextColor = isDaylight
-    ? "text-blue-600 font-semibold"
-    : "text-blue-300 font-semibold";
-  const inactiveTextColor = isDaylight
-    ? "text-zinc-500 hover:text-zinc-800"
-    : "text-zinc-400 hover:text-zinc-200";
+  const inputRef = useRef<HTMLInputElement>(null);
+  const fileButtonRef = useRef<HTMLButtonElement>(null);
+  const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
+  const song = usePlayerStore((state) => state.currentSongDetail);
+  const replayGainMode = usePlayerStore((state) => state.replayGainMode);
+  const setReplayGainMode = usePlayerStore((state) => state.setReplayGainMode);
+  const trackGain = song?.replayGainTrackGain ?? song?.replayGain;
+  const albumGain = song?.replayGainAlbumGain;
+  const measuredGain = [
+    trackGain == null ? null : `${t("folia.localMusic.replayGainTrack")} ${formatGain(trackGain)}`,
+    albumGain == null ? null : `${t("folia.localMusic.replayGainAlbum")} ${formatGain(albumGain)}`,
+  ].filter(Boolean);
   const sources = [
-    { key: "online" as const, label: t("lyrics.match.sourceNetease") },
+    { label: t("lyrics.match.sourceNetease"), value: "online" as const },
     ...(model.importedLyric
-      ? [{ key: "imported" as const, label: model.importedLyric.fileName }]
+      ? [{ label: model.importedLyric.fileName, value: "imported" as const }]
       : []),
   ];
+  const hasOffset = model.lyricOffsetMs !== 0;
+  const closeFileMenu = () => setIsFileMenuOpen(false);
 
   return (
-    <motion.div animate={{ opacity: 1 }} className="flex flex-col" initial={{ opacity: 0 }}>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <span className="flex items-center gap-1.5 text-[11px] font-semibold tracking-wider uppercase opacity-55">
-              {t("lyrics.tab.title")}
-            </span>
-            {model.importedLyric ? (
-              <button
-                className={`rounded-md p-1 opacity-40 transition-all hover:opacity-100 ${isDaylight ? "hover:bg-black/5" : "hover:bg-white/5"}`}
-                disabled={model.isUpdating}
-                onClick={() => void model.clearLyricsState()}
-                title={t("lyrics.tab.clear")}
-                type="button"
-              >
-                <RotateCcw size={13} />
-              </button>
-            ) : null}
-          </div>
-          <div className="flex items-center gap-1">
-            <button
-              className={`rounded-md p-1 opacity-40 transition-all hover:opacity-100 ${isDaylight ? "hover:bg-black/5" : "hover:bg-white/5"}`}
-              onClick={() => inputRef.current?.click()}
-              title={t("lyrics.tab.import")}
-              type="button"
-            >
-              <Upload size={14} />
-            </button>
-            <input
-              accept=".awlrc,.lrc,.yrc,.txt"
-              className="hidden"
-              onChange={(event) => {
-                const file = event.currentTarget.files?.[0];
-                if (file) void model.importLyricFile(file);
-                event.currentTarget.value = "";
-              }}
-              ref={inputRef}
-              type="file"
-            />
-            <button
-              className={`rounded-md p-1 opacity-40 transition-all hover:opacity-100 ${isDaylight ? "hover:bg-black/5" : "hover:bg-white/5"}`}
-              onClick={onOpenLyricMatch}
-              title={t("lyrics.match.open")}
-              type="button"
-            >
-              <Search size={14} />
-            </button>
-          </div>
-        </div>
-
-        {sources.length === 1 ? (
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold tracking-wider uppercase opacity-55">
-              {t("lyrics.tab.source")}
-            </span>
-            <span
-              className={`inline-flex h-5 max-w-28 items-center rounded-md px-2 text-[9px] leading-none font-bold tracking-normal normal-case transition-colors ${
-                isDaylight ? "hover:bg-white" : "hover:bg-white/14"
-              }`}
-              style={{
-                backgroundColor: isDaylight ? "rgba(255,255,255,0.78)" : "rgba(255,255,255,0.08)",
-                color: theme.accentColor,
-              }}
-            >
-              <span className="truncate">{sources[0].label}</span>
-            </span>
-          </div>
+    <div>
+      <FoliaPanelRow label={t("lyrics.tab.title")}>
+        {model.importedLyric ? (
+          <FoliaIconButton
+            size="s"
+            label={t("lyrics.tab.clear")}
+            disabled={model.isUpdating}
+            onClick={() => void model.clearLyricsState()}
+          >
+            <RotateCcw size={15} />
+          </FoliaIconButton>
+        ) : null}
+        {sources.length > 1 ? (
+          <FoliaSegments
+            fill
+            value={model.source}
+            onChange={(source) => void model.selectSource(source)}
+            options={sources}
+          />
         ) : (
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold tracking-wider uppercase opacity-55">
-              {t("lyrics.tab.source")}
-            </span>
-            <div className={`relative flex rounded-lg p-0.5 ${tabContainerBg}`}>
-              {sources.map((source) => {
-                const isActive = model.source === source.key;
-                return (
-                  <button
-                    className={`relative flex-1 rounded-md px-1.5 py-1 text-[10px] font-medium transition-colors duration-200 focus:outline-none ${isActive ? activeTextColor : inactiveTextColor}`}
-                    key={source.key}
-                    onClick={() => void model.selectSource(source.key)}
-                    type="button"
-                  >
-                    {isActive ? (
-                      <motion.span
-                        className={`absolute inset-0 rounded-md ${activePillBg}`}
-                        layoutId="online-lyrics-active-pill"
-                        transition={{ damping: 30, stiffness: 380, type: "spring" }}
-                      />
-                    ) : null}
-                    <span className="relative z-10 truncate">{source.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <span className="truncate text-[13px] text-[color:var(--st-t2)]">{sources[0].label}</span>
         )}
+      </FoliaPanelRow>
 
-        <FoliaLyricTimelineOffsetControl
-          isDaylight={isDaylight}
-          offsetMs={model.lyricOffsetMs}
-          onOffsetChange={model.setLyricOffsetMs}
-          onOpenSettings={onOpenFoliaSettings}
+      <FoliaPanelRow label={t("lyrics.tab.offset")}>
+        {/* Keeps its place at 0, so the number beside it does not move. */}
+        <span
+          inert={!hasOffset}
+          className={`st-t-move inline-flex transition-[opacity,scale,visibility] ${hasOffset ? "" : "invisible scale-80 opacity-0"}`}
+        >
+          <FoliaIconButton
+            size="s"
+            label={t("lyrics.tab.resetOffset")}
+            onClick={() => model.setLyricOffsetMs(0)}
+          >
+            <RotateCcw size={15} />
+          </FoliaIconButton>
+        </span>
+        <FoliaStepper
+          value={model.lyricOffsetMs}
+          onChange={(next) => model.setLyricOffsetMs(Math.round(next))}
+          step={OFFSET_STEP_MS}
+          unit="ms"
+          signed
+          label={t("lyrics.tab.offset")}
         />
+      </FoliaPanelRow>
+
+      <div className="flex flex-wrap gap-2 px-1 py-2">
+        <FoliaPanelButton grow icon={Search} onClick={onOpenLyricMatch}>
+          {t("lyrics.match.open")}
+        </FoliaPanelButton>
+        <FoliaPanelButton
+          grow
+          icon={ArrowDownUp}
+          buttonRef={fileButtonRef}
+          disabled={model.isUpdating}
+          aria-haspopup="true"
+          aria-expanded={isFileMenuOpen}
+          onClick={() => setIsFileMenuOpen((open) => !open)}
+        >
+          {t("lyrics.tab.importExport")}
+        </FoliaPanelButton>
       </div>
-    </motion.div>
+
+      <FoliaPopover
+        anchorRef={fileButtonRef}
+        open={isFileMenuOpen}
+        onClose={closeFileMenu}
+        align="end"
+        role="menu"
+        aria-label={t("lyrics.tab.importExport")}
+        className="min-w-48 p-1.5"
+      >
+        <button
+          type="button"
+          role="menuitem"
+          className={MENU_ROW_CLASS}
+          onClick={() => {
+            closeFileMenu();
+            inputRef.current?.click();
+          }}
+        >
+          <Upload size={15} className="text-[color:var(--st-t3)]" />
+          {t("lyrics.tab.import")}
+        </button>
+        <div className="mx-2.5 my-1 h-px bg-[var(--st-line)]" />
+        {(["lrc", "yrc"] as const).map((format) => (
+          <button
+            key={format}
+            type="button"
+            role="menuitem"
+            disabled={!model.exportableFormats.includes(format)}
+            className={MENU_ROW_CLASS}
+            onClick={() => {
+              closeFileMenu();
+              model.exportLyric(format);
+            }}
+          >
+            <Download size={15} className="text-[color:var(--st-t3)]" />
+            {t(format === "lrc" ? "lyrics.tab.exportLrc" : "lyrics.tab.exportYrc")}
+          </button>
+        ))}
+      </FoliaPopover>
+      <input
+        accept=".awlrc,.lrc,.yrc,.txt"
+        className="hidden"
+        onChange={(event) => {
+          const file = event.currentTarget.files?.[0];
+          if (file) void model.importLyricFile(file);
+          event.currentTarget.value = "";
+        }}
+        ref={inputRef}
+        type="file"
+      />
+
+      <FoliaGroupLine />
+
+      <FoliaPanelRow
+        label={t("audioSettings.replayGain")}
+        hint={
+          measuredGain.length > 0
+            ? measuredGain.join(" · ")
+            : t("folia.localMusic.replayGainUnavailable")
+        }
+      >
+        <FoliaSegments<ReplayGainMode>
+          fill
+          value={replayGainMode}
+          onChange={setReplayGainMode}
+          options={[
+            { label: t("folia.localMusic.replayGainOff"), value: "off" },
+            {
+              disabled: trackGain == null,
+              label: t("folia.localMusic.replayGainTrack"),
+              value: "track",
+            },
+            {
+              disabled: albumGain == null,
+              label: t("folia.localMusic.replayGainAlbum"),
+              value: "album",
+            },
+          ]}
+        />
+      </FoliaPanelRow>
+    </div>
   );
 }

@@ -25,19 +25,26 @@ export const ArchiveLyricLine = memo(function ArchiveLyricLine({
   seekLabel,
 }: ArchiveLyricLineProps) {
   const words = useMemo(() => archiveDisplayWords(line), [line]);
-  return (
-    <button
-      type="button"
-      className={styles.lyricButton}
-      disabled={!onSeek}
-      aria-label={`${seekLabel}: ${line.fullText}`}
-      onClick={() => onSeek?.(line.startTime)}
-    >
-      <span aria-hidden="true">
-        {words.map((word, index) => (
-          <ArchiveWord key={`${index}:${word.startTime}`} word={word} currentTime={currentTime} />
-        ))}
-      </span>
-    </button>
+  const content = (
+    <span aria-hidden="true">
+      {words.map((word, index) => (
+        <ArchiveWord key={`${index}:${word.startTime}`} word={word} currentTime={currentTime} />
+      ))}
+    </span>
   );
+
+  if (onSeek) {
+    return (
+      <button
+        type="button"
+        className={styles.lyricButton}
+        aria-label={`${seekLabel}: ${line.fullText}`}
+        onClick={() => onSeek(line.startTime)}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return <span className={styles.lyricButton}>{content}</span>;
 });

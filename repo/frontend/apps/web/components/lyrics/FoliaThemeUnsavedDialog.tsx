@@ -18,12 +18,16 @@ export function FoliaThemeUnsavedDialog({
   onDiscard,
   onSave,
   open,
+  isDaylight,
 }: FoliaThemeUnsavedDialogProps) {
   const { t } = useI18n();
 
   return (
     <AlertDialog open={open} onOpenChange={(nextOpen) => !nextOpen && onCancel()}>
-      <AlertDialogContent className="z-190" overlayClassName="z-190">
+      <AlertDialogContent
+        className={`z-190 rounded-2xl ${isDaylight ? "border-black/8 bg-[#f3f3f5] text-[#171b27]" : "border-white/10 bg-[#1c1c1f] text-[#f0f0f3]"}`}
+        overlayClassName="z-190"
+      >
         <AlertDialogHeader>
           <AlertDialogTitle>{t("folia.options.themeUnsavedTitle")}</AlertDialogTitle>
           <AlertDialogDescription>

@@ -1,0 +1,86 @@
+/* Folia studio input styling is scoped to its window; native range semantics remain intact. */
+.folia-studio-window {
+  font-family: var(--scopify-font-ui, var(--font-sans, system-ui, sans-serif));
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+
+/* Native Tabs remain responsible for focus and keyboard navigation. The studio owns their
+   geometry and colours, independently of the application's light/dark shadcn theme. */
+.folia-studio-window .folia-studio-tab-list {
+  display: flex;
+  height: 44px;
+  min-height: 44px;
+  width: auto;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 16px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.folia-studio-window .folia-studio-tab-list::-webkit-scrollbar {
+  display: none;
+}
+.folia-studio-window .folia-studio-tab {
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--st-t2);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  box-shadow: none;
+}
+.folia-studio-window .folia-studio-tab:is(:hover, [data-state="active"]) {
+  background: transparent;
+  color: var(--st-t1);
+}
+.folia-studio-window .folia-studio-tab::after {
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--st-accent);
+  opacity: 0;
+}
+.folia-studio-window .folia-studio-tab[data-state="active"]::after {
+  opacity: 1;
+}
+
+.st-window .folia-studio-range {
+  height: 4px;
+  appearance: none;
+  border-radius: 999px;
+  margin-block: 8px;
+}
+.st-window .folia-studio-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--st-knob);
+  box-shadow:
+    0 1px 3px #0004,
+    0 0 0 1px #0001;
+}
+.st-window .folia-studio-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--st-knob);
+  box-shadow: 0 1px 3px #0004;
+}
+.st-window .folia-studio-range:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 5px;
+}

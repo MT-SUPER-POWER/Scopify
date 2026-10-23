@@ -136,6 +136,7 @@ export function LyricStage({ onClose }: LyricStageProps) {
 
       {isWindowVisible ? (
         <FoliaStageSettings
+          assets={appearance.assets}
           isChromeHidden={isPlayerChromeHidden}
           isOpen={isSettingsOpen}
           onOpenChange={setIsSettingsOpen}

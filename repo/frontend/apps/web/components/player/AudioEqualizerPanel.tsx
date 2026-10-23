@@ -1,8 +1,9 @@
 ﻿"use client";
 
-import { Copy, Plus, Power, Trash2, Waves } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Copy, PencilLine, Plus, RotateCcw, Trash2 } from "lucide-react";
+import { useEffect, useState, type CSSProperties } from "react";
 
+import { AudioEffectSlider } from "@/components/player/AudioEffectSlider";
 import {
   Select,
   SelectContent,
@@ -13,63 +14,44 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import {
+  AUDIO_EFFECT_CONTROL_MAP,
+  AUDIO_EFFECT_CONTROLS,
+  AUDIO_EFFECT_GROUPS,
   AUDIO_EQUALIZER_BANDS,
   AUDIO_EQUALIZER_MAX_GAIN_DB,
-  AUDIO_EQUALIZER_MIN_GAIN_DB,
-  AUDIO_EFFECT_CONTROLS,
 } from "@/constants/audioEqualizer";
+import { EqualizerCurve } from "@scopify/ui/scopify/components/equalizer-curve";
+import { isUserPresetId, useAudioEqualizerDraft } from "@/hooks/player/useAudioEqualizerDraft";
 import { cn } from "@/lib/utils";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useI18n } from "@/store/module/i18n";
+import type { AudioEqualizerModeId, AudioEqualizerPresetId } from "@/types/audioEqualizer";
 import type {
-  AudioEffectControl,
-  AudioEffectId,
-  AudioEqualizerModeId,
-  AudioEqualizerPresetId,
-  AudioEqualizerSettings,
-  AudioEqualizerUserPresetId,
-} from "@/types/audioEqualizer";
-
-const toSliderPosition = (control: AudioEffectControl, value: number) => {
-  if (control.scale === "log") {
-    const min = Math.log(control.min);
-    return Math.round(((Math.log(value) - min) / (Math.log(control.max) - min)) * 1000);
-  }
-  return Math.round(((value - control.min) / (control.max - control.min)) * 1000);
-};
-
-const fromSliderPosition = (control: AudioEffectControl, position: number) => {
-  const ratio = Math.min(1, Math.max(0, position / 1000));
-  if (control.scale === "log") {
-    return Math.round(
-      Math.exp(Math.log(control.min) + ratio * (Math.log(control.max) - Math.log(control.min))),
-    );
-  }
-  const value = control.min + ratio * (control.max - control.min);
-  return Number((Math.round(value / control.step) * control.step).toFixed(4));
-};
-
-const formatEffectValue = (control: AudioEffectControl, value: number) =>
-  control.unit === "hz"
-    ? value >= 1000
-      ? `${(value / 1000).toFixed(1)} kHz`
-      : `${Math.round(value)} Hz`
-    : `${Math.round(value * 100)}%`;
+  AudioEqualizerPanelProps,
+  AudioEqualizerPanelSectionProps,
+} from "@/types/components/audioEqualizerPanel";
 
 const PRESET_IDS: AudioEqualizerPresetId[] = ["flat", "lofi", "radio", "vinyl", "vocal", "bass"];
-const isUserPresetId = (value: AudioEqualizerModeId): value is AudioEqualizerUserPresetId =>
-  value.startsWith("user:");
 
-export function AudioEqualizerPanel() {
+const iconButtonClass =
+  "flex size-8 shrink-0 items-center justify-center rounded-lg opacity-70 transition-[opacity,background-color] hover:bg-current/[0.07] hover:opacity-100 disabled:pointer-events-none disabled:opacity-30";
+
+/** Shared by the player's audio popover and Folia's studio window; colours follow currentColor. */
+export function AudioEqualizerPanel({
+  accentColor,
+  className,
+  selectContentClassName,
+  selectContentStyle,
+  style,
+}: AudioEqualizerPanelProps) {
   const { t } = useI18n();
-  const settings = useAudioEqualizerStore((state) => state.settings);
-  const [draft, setDraft] = useState<AudioEqualizerSettings>(settings);
+  const { commit, draft, resetBands, resetEffects, updateBand, updateEffect } =
+    useAudioEqualizerDraft();
   const [nameDraft, setNameDraft] = useState("");
-  const draftRef = useRef(draft);
   const applyPreset = useAudioEqualizerStore((state) => state.applyPreset);
   const setEnabled = useAudioEqualizerStore((state) => state.setEnabled);
-  const commitSettings = useAudioEqualizerStore((state) => state.commitSettings);
   const createCustomPreset = useAudioEqualizerStore((state) => state.createCustomPreset);
   const deleteCustomPreset = useAudioEqualizerStore((state) => state.deleteCustomPreset);
   const duplicateCustomPreset = useAudioEqualizerStore((state) => state.duplicateCustomPreset);
@@ -78,86 +60,38 @@ export function AudioEqualizerPanel() {
     ? (draft.customPresets.find((preset) => preset.id === draft.preset) ?? null)
     : null;
   const headroomDb = draft.enabled ? Math.max(0, ...draft.gains) : 0;
-
-  useEffect(() => {
-    draftRef.current = settings;
-    setDraft(settings);
-  }, [settings]);
+  const hasBandGain = draft.gains.some((gain) => gain !== 0);
+  const hasEffect = AUDIO_EFFECT_CONTROLS.some(
+    (control) => draft.effects[control.id] !== control.neutral,
+  );
 
   useEffect(() => {
     setNameDraft(activeCustomPreset?.name ?? "");
   }, [activeCustomPreset?.id, activeCustomPreset?.name]);
 
-  const updateDraft = (next: AudioEqualizerSettings) => {
-    draftRef.current = next;
-    setDraft(next);
-    commitSettings(next);
-  };
-  const writeCustomDraft = (gains: number[], effects: AudioEqualizerSettings["effects"]) => {
-    if (!isUserPresetId(draftRef.current.preset)) {
-      const sourceName = t(
-        `audioEqualizer.preset.${draftRef.current.preset as AudioEqualizerPresetId}`,
-      );
-      createCustomPreset(t("audioEqualizer.copyName", { name: sourceName }));
-      const created = useAudioEqualizerStore.getState().settings;
-      draftRef.current = created;
-      setDraft(created);
-    }
-    const userPresetId = draftRef.current.preset as AudioEqualizerUserPresetId;
-    updateDraft({
-      ...draftRef.current,
-      customGains: [...gains],
-      customPresets: draftRef.current.customPresets.map((preset) =>
-        preset.id === userPresetId
-          ? { ...preset, gains: [...gains], effects: { ...effects }, updatedAt: Date.now() }
-          : preset,
-      ),
-      effects,
-      enabled: true,
-      gains,
-      preset: userPresetId,
-    });
-  };
-  const updateBandDraft = (index: number, gain: number) => {
-    const gains = [...draftRef.current.gains];
-    gains[index] = gain;
-    writeCustomDraft(gains, { ...draftRef.current.effects });
-  };
-  const updateEffectDraft = (id: AudioEffectId, value: number) =>
-    writeCustomDraft([...draftRef.current.gains], {
-      ...draftRef.current.effects,
-      [id]: value,
-    });
-  const commitDraft = () => commitSettings(draftRef.current);
-
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-muted/20 p-3">
-        <button
-          type="button"
-          aria-pressed={draft.enabled}
-          onClick={() => setEnabled(!draft.enabled)}
-          className={cn(
-            "flex h-9 shrink-0 items-center gap-2 rounded-xl border border-current/10 bg-current/[0.035] px-3 text-xs font-semibold whitespace-nowrap transition-all hover:bg-current/[0.07]",
-            draft.enabled && "border-primary/40 text-primary shadow-sm",
-          )}
-        >
-          <Power className="size-3" />
-          {t(draft.enabled ? "audioEqualizer.enabled" : "audioEqualizer.disabled")}
-        </button>
-
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-          <span className="shrink-0 text-xs font-medium whitespace-nowrap text-muted-foreground">
-            {t("audioEqualizer.presetLabel")}
-          </span>
+    <div
+      className={cn("space-y-5", className)}
+      style={{ "--eq-accent": accentColor ?? "var(--primary)", ...style } as CSSProperties}
+    >
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
           <Select
             value={draft.preset}
             onValueChange={(val) => applyPreset(val as AudioEqualizerModeId)}
           >
-            <SelectTrigger className="h-9 w-36 max-w-full min-w-0 flex-1 rounded-xl border-current/10 bg-current/[0.035] text-xs font-semibold">
+            <SelectTrigger
+              aria-label={t("audioEqualizer.presetLabel")}
+              className="h-9 min-w-0 flex-1 rounded-lg border-current/10 bg-current/[0.04] text-sm font-medium shadow-none"
+            >
               <SelectValue placeholder={t("audioEqualizer.presetLabel")} />
             </SelectTrigger>
-            <SelectContent position="popper" sideOffset={6} style={{ zIndex: 2100 }}>
+            <SelectContent
+              className={selectContentClassName}
+              position="popper"
+              sideOffset={6}
+              style={selectContentStyle}
+            >
               <SelectGroup>
                 <SelectLabel>{t("audioEqualizer.builtinPresets")}</SelectLabel>
                 {PRESET_IDS.map((preset) => (
@@ -183,7 +117,7 @@ export function AudioEqualizerPanel() {
           </Select>
           <button
             aria-label={t("audioEqualizer.createPreset")}
-            className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-current/10 bg-current/[0.035] transition-colors hover:bg-current/[0.08]"
+            className={cn(iconButtonClass, "size-9 border border-current/10 bg-current/[0.04]")}
             onClick={() =>
               createCustomPreset(
                 t("audioEqualizer.newPresetName", { index: draft.customPresets.length + 1 }),
@@ -192,155 +126,142 @@ export function AudioEqualizerPanel() {
             title={t("audioEqualizer.createPreset")}
             type="button"
           >
-            <Plus className="size-3.5" />
+            <Plus className="size-4" />
           </button>
+          <label className="ml-1 flex shrink-0 cursor-pointer items-center gap-2 text-xs font-medium">
+            <span className={cn("transition-opacity", !draft.enabled && "opacity-55")}>
+              {t(draft.enabled ? "audioEqualizer.enabled" : "audioEqualizer.disabled")}
+            </span>
+            <Switch
+              checked={draft.enabled}
+              onCheckedChange={setEnabled}
+              className="data-[state=checked]:bg-(--eq-accent) data-[state=unchecked]:bg-current/20 [&_[data-slot=switch-thumb]]:bg-primary-foreground!"
+            />
+          </label>
         </div>
-      </div>
 
-      {activeCustomPreset ? (
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-muted/20 px-3 py-2.5 sm:flex-row sm:items-center">
-          <div className="min-w-0 flex-1">
-            <div className="mb-1 text-[9px] font-semibold tracking-[0.16em] uppercase opacity-40">
-              {t("audioEqualizer.presetName")}
-            </div>
+        {activeCustomPreset ? (
+          <div className="flex items-center gap-1 rounded-lg px-2.5 focus-within:bg-current/[0.04] hover:bg-current/[0.03]">
+            <PencilLine className="size-3.5 shrink-0 opacity-45" />
             <input
-              className="w-full bg-transparent text-sm font-semibold outline-none"
+              aria-label={t("audioEqualizer.presetName")}
+              className="h-8 min-w-0 flex-1 bg-transparent px-1.5 text-xs font-medium outline-none"
               maxLength={40}
               onBlur={() => renameCustomPreset(activeCustomPreset.id, nameDraft)}
               onChange={(event) => setNameDraft(event.currentTarget.value)}
               onKeyDown={(event) => {
                 if (event.key === "Enter") event.currentTarget.blur();
               }}
+              placeholder={t("audioEqualizer.presetName")}
               value={nameDraft}
             />
-          </div>
-          <div className="flex shrink-0 gap-1.5">
             <button
-              className="flex size-9 items-center justify-center rounded-xl border border-current/10 transition-colors hover:bg-current/[0.07]"
+              aria-label={t("audioEqualizer.duplicatePreset")}
+              className={cn(iconButtonClass, "size-7")}
               onClick={() => duplicateCustomPreset(activeCustomPreset.id)}
               title={t("audioEqualizer.duplicatePreset")}
               type="button"
             >
-              <Copy size={14} />
+              <Copy className="size-3.5" />
             </button>
             <button
-              className="flex size-9 items-center justify-center rounded-xl border border-destructive/40 text-destructive transition-colors hover:bg-destructive/10"
+              aria-label={t("audioEqualizer.deletePreset")}
+              className={cn(iconButtonClass, "size-7 text-destructive hover:bg-destructive/10")}
               onClick={() => deleteCustomPreset(activeCustomPreset.id)}
               title={t("audioEqualizer.deletePreset")}
               type="button"
             >
-              <Trash2 size={14} />
+              <Trash2 className="size-3.5" />
             </button>
           </div>
-        </div>
-      ) : null}
-
-      {/* EQ bands */}
-      <div className="rounded-2xl border border-border bg-muted/20 p-4">
-        <div className="mb-3 flex items-center justify-between text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
-          <span>{t("audioEqualizer.bandGain")}</span>
-          <span>
-            {t("folia.audioEqualizer.autoHeadroom")} −{headroomDb} dB · +12 / −12 dB
-          </span>
-        </div>
-        <div className="flex justify-between">
-          {AUDIO_EQUALIZER_BANDS.map((band, index) => {
-            const gain = draft.gains[index] ?? 0;
-            return (
-              <label key={band.frequency} className="flex flex-col items-center gap-1.5">
-                <span
-                  className={cn(
-                    "text-[10px] font-semibold text-muted-foreground tabular-nums",
-                    gain !== 0 && "text-primary",
-                  )}
-                >
-                  {gain > 0 ? "+" : ""}
-                  {gain}
-                </span>
-                <input
-                  type="range"
-                  min={AUDIO_EQUALIZER_MIN_GAIN_DB}
-                  max={AUDIO_EQUALIZER_MAX_GAIN_DB}
-                  step={1}
-                  value={gain}
-                  aria-label={`${band.label} Hz`}
-                  onChange={(event) => updateBandDraft(index, Number(event.currentTarget.value))}
-                  onInput={(event) => updateBandDraft(index, Number(event.currentTarget.value))}
-                  onPointerUp={commitDraft}
-                  onPointerCancel={commitDraft}
-                  onKeyUp={commitDraft}
-                  onBlur={commitDraft}
-                  className="h-24 w-1.5 cursor-pointer appearance-none rounded-full bg-border accent-primary"
-                  style={{ direction: "rtl", writingMode: "vertical-lr" }}
-                />
-                <span className="text-[10px] font-semibold text-muted-foreground tabular-nums">
-                  {band.label}
-                </span>
-              </label>
-            );
-          })}
-        </div>
-        <div className="mt-2 text-center text-[9px] tracking-widest text-muted-foreground uppercase">
-          Hz
-        </div>
+        ) : null}
       </div>
 
-      <div className="rounded-2xl border border-border bg-muted/20 p-4">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-          <span className="flex items-center gap-1.5">
-            <Waves size={13} />
-            {t("audioEqualizer.effects")}
-          </span>
-          <span className="tracking-normal normal-case">{t("audioEqualizer.effectsHint")}</span>
-        </div>
-        <div className="grid gap-x-5 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-          {AUDIO_EFFECT_CONTROLS.map((control) => {
-            const value = draft.effects[control.id];
-            return (
-              <label key={control.id} className="flex flex-col gap-1">
-                <span className="flex items-baseline justify-between gap-2">
-                  <span className="text-[11px] font-semibold text-muted-foreground">
-                    {t(`audioEqualizer.effect.${control.id}`)}
-                  </span>
-                  <span
-                    className={cn(
-                      "text-[10px] font-semibold text-muted-foreground tabular-nums",
-                      value !== control.neutral && "text-primary",
-                    )}
-                  >
-                    {formatEffectValue(control, value)}
-                  </span>
-                </span>
-                <input
-                  aria-label={t(`audioEqualizer.effect.${control.id}`)}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-border accent-primary"
-                  max={1000}
-                  min={0}
-                  onChange={(event) =>
-                    updateEffectDraft(
-                      control.id,
-                      fromSliderPosition(control, Number(event.currentTarget.value)),
-                    )
-                  }
-                  onInput={(event) =>
-                    updateEffectDraft(
-                      control.id,
-                      fromSliderPosition(control, Number(event.currentTarget.value)),
-                    )
-                  }
-                  onPointerUp={commitDraft}
-                  onPointerCancel={commitDraft}
-                  onKeyUp={commitDraft}
-                  onBlur={commitDraft}
-                  step={1}
-                  type="range"
-                  value={toSliderPosition(control, value)}
-                />
-              </label>
-            );
-          })}
-        </div>
+      <div className={cn("space-y-5 transition-opacity", !draft.enabled && "opacity-50")}>
+        <PanelSection
+          title={t("audioEqualizer.bandGain")}
+          meta={headroomDb > 0 ? t("audioEqualizer.headroom", { db: headroomDb }) : null}
+          action={
+            <button
+              className={cn(iconButtonClass, "size-7")}
+              disabled={!hasBandGain}
+              onClick={resetBands}
+              title={t("audioEqualizer.resetBands")}
+              aria-label={t("audioEqualizer.resetBands")}
+              type="button"
+            >
+              <RotateCcw className="size-3.5" />
+            </button>
+          }
+        >
+          <div className="rounded-xl bg-current/[0.035] px-3 pt-5 pb-3">
+            <EqualizerCurve
+              bands={AUDIO_EQUALIZER_BANDS}
+              gains={draft.gains}
+              maxGain={AUDIO_EQUALIZER_MAX_GAIN_DB}
+              onChange={updateBand}
+              onCommit={commit}
+              accentColor={accentColor}
+              variant="flat"
+              showActiveValue
+              showScale
+              plotClassName="h-36"
+            />
+          </div>
+        </PanelSection>
+
+        <PanelSection
+          title={t("audioEqualizer.effects")}
+          action={
+            <button
+              className={cn(iconButtonClass, "size-7")}
+              disabled={!hasEffect}
+              onClick={resetEffects}
+              title={t("audioEqualizer.resetEffects")}
+              aria-label={t("audioEqualizer.resetEffects")}
+              type="button"
+            >
+              <RotateCcw className="size-3.5" />
+            </button>
+          }
+        >
+          <div className="space-y-4">
+            {AUDIO_EFFECT_GROUPS.map((group) => (
+              <div key={group.id} className="space-y-2.5">
+                <div className="text-[10px] font-semibold tracking-wider uppercase opacity-45">
+                  {t(`audioEqualizer.group.${group.id}`)}
+                </div>
+                <div className="grid grid-cols-2 gap-x-5 gap-y-3.5">
+                  {group.effects.map((id) => (
+                    <AudioEffectSlider
+                      key={id}
+                      control={AUDIO_EFFECT_CONTROL_MAP[id]}
+                      label={t(`audioEqualizer.effect.${id}`)}
+                      resetLabel={t("audioEqualizer.resetEffect")}
+                      value={draft.effects[id]}
+                      onChange={(value) => updateEffect(id, value)}
+                      onCommit={commit}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </PanelSection>
       </div>
     </div>
+  );
+}
+
+function PanelSection({ title, meta, action, children }: AudioEqualizerPanelSectionProps) {
+  return (
+    <section className="space-y-2">
+      <div className="flex h-7 items-center gap-2">
+        <h3 className="flex-1 text-xs font-semibold">{title}</h3>
+        {meta ? <span className="text-[11px] tabular-nums opacity-55">{meta}</span> : null}
+        {action}
+      </div>
+      {children}
+    </section>
   );
 }
