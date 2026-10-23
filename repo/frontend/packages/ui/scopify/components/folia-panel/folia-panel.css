@@ -1,0 +1,84 @@
+/* Folia settings kit CSS (src/components/modal/settings/kit/kit.css), the part the player panel
+   uses: the focus ring, the transition vocabulary, the page / popover entrances and the thin
+   scrollbar. Every duration and easing is a --st-* variable the panel surface sets (motion.tsx). */
+
+.st-window :focus-visible:not(input, textarea, select) {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 2px;
+}
+
+/* A part that fills its row to the edge draws the ring inside itself. */
+.st-window .st-focus-inside:focus-visible {
+  outline-offset: -2px;
+}
+
+.st-t-fast {
+  transition-duration: var(--st-dur-fast);
+  transition-timing-function: var(--st-ease-standard);
+}
+
+.st-t-move {
+  transition-duration: var(--st-dur-move);
+  transition-timing-function: var(--st-ease-out);
+}
+
+.st-t-unfold {
+  transition-duration: var(--st-dur-unfold);
+  transition-timing-function: var(--st-ease-out);
+}
+
+.st-scroll::-webkit-scrollbar {
+  width: 12px;
+}
+
+.st-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.st-scroll::-webkit-scrollbar-thumb {
+  border: 4px solid transparent;
+  border-radius: 6px;
+  background: var(--st-fill2);
+  background-clip: content-box;
+}
+
+.st-window.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.st-window.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes st-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--st-pop-shift)) scale(0.98);
+  }
+}
+
+@keyframes st-pop-out {
+  to {
+    opacity: 0;
+    transform: translateY(var(--st-pop-shift)) scale(0.98);
+  }
+}
+
+.st-pop {
+  animation: st-pop-in var(--st-dur-move, 0s) var(--st-ease-out, ease) backwards;
+}
+
+.st-pop[data-leaving] {
+  animation: st-pop-out var(--st-dur-fast, 0s) var(--st-ease-standard, ease) forwards;
+}
+
+@keyframes st-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.st-page-in {
+  animation: st-page-in var(--st-dur-move) var(--st-ease-out) backwards;
+}
