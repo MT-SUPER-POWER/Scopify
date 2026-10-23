@@ -45,8 +45,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Verify release tag and workspace versions
-        run: bun .github/scripts/verify-release-version.ts ${{ github.ref_name }}
+      - name: Apply tag version and generate CHANGELOG
+        run: bun .github/scripts/apply-release.ts ${{ github.ref_name }} --changelog
 
       - name: Generate release notes from commits
         run: pnpm exec git-cliff --latest --strip all --output release_notes.md
@@ -149,6 +149,9 @@ jobs:
       - name: Install local backend dependencies
         working-directory: repo/backend/api-enhanced
         run: pnpm install --frozen-lockfile
+
+      - name: Apply tag version
+        run: bun .github/scripts/apply-release.ts ${{ github.ref_name }}
 
       - name: Prepare Electron distribution
         shell: bash
@@ -257,3 +260,66 @@ jobs:
             --title "${GITHUB_REF_NAME}" \
             --notes-file release_notes.md \
             "${release_flags[@]}"
+
+  writeback:
+    name: Write CHANGELOG and versions back to master
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      HUSKY: "0"
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+          submodules: false
+
+      - name: Skip tags that are not on master
+        id: on-master
+        shell: bash
+        run: |
+          if git merge-base --is-ancestor "${GITHUB_SHA}" HEAD; then
+            echo "apply=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "::notice::${GITHUB_REF_NAME} is not on master; skipping write-back."
+          fi
+
+      - name: Setup Node.js
+        if: steps.on-master.outputs.apply == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        if: steps.on-master.outputs.apply == 'true'
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Bun (script and test runtime)
+        if: steps.on-master.outputs.apply == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+
+      - name: Install dependencies
+        if: steps.on-master.outputs.apply == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Commit CHANGELOG and versions
+        if: steps.on-master.outputs.apply == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bun .github/scripts/apply-release.ts "${GITHUB_REF_NAME}" --changelog
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/CHANGELOG.md package.json repo/frontend/apps/*/package.json
+          if git diff --cached --quiet; then
+            echo "Nothing to write back."
+            exit 0
+          fi
+          git commit -m "chore(release): ${GITHUB_REF_NAME} [skip ci]"
+          git push origin HEAD:master

@@ -33,7 +33,6 @@ pnpm run dev:desktop       # 仅 Electron
 pnpm run dev:full          # Web + Electron + 后端联调
 pnpm run i18n:types        # 生成 i18n 类型
 pnpm run changelog:preview # 预览下个版本的更新说明
-pnpm run release           # 发版：输入版本号 → 预览 → 确认后提交、打 tag、推送
 ```
 
 ---
@@ -102,10 +101,10 @@ Scopify/
 | `perf` | 优化 |
 | 其他类型，或 scope 为 `ci` / `deps` / `release` | 不展示 |
 
-- `feat` / `fix` / `perf` 的 subject 会原样给用户看：用中文写用户能感知的结果，工程细节放 body。只有用户能感知的变化才用这三个类型。
-- commitlint（`commitlint.config.mjs`，husky `commit-msg` hook 与 PR CI）会拒绝不合规的提交。完整规则见 git-conventions skill。
+- `feat` / `fix` / `perf` 的 subject 会原样给用户看，建议用中文写用户能感知的结果，工程细节放 body。
+- commitlint（husky `commit-msg` hook 与 PR CI）只检查 `type(scope): subject` 格式。
 - 开发时 What's New 会显示「即将发布」，即上个 tag 之后的提交，用来检查措辞。
-- 发版只需 `pnpm run release`：自己输入版本号，确认预览后脚本会更新 4 个 `package.json` 和 CHANGELOG，然后提交、打 tag 并推送，Release workflow 负责其余步骤。
+- 发版只需推一个 tag：`git tag v2.0.4 && git push origin v2.0.4`。CI 以 tag 为版本号打包、生成 Release Notes，再把 CHANGELOG 和 4 个 `package.json` 的版本号回写到 master（发版后 `git pull` 即可）。
 - v2.0.3 及更早的手写记录冻结在 `docs/archive/CHANGELOG-legacy.md`，不再维护。
 
 ---
