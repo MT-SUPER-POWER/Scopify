@@ -16,9 +16,9 @@ import {
 import {
   AUDIO_EQUALIZER_BANDS,
   AUDIO_EQUALIZER_MAX_GAIN_DB,
-  AUDIO_EQUALIZER_MIN_GAIN_DB,
   AUDIO_EFFECT_CONTROLS,
 } from "@/constants/audioEqualizer";
+import { EqualizerCurve } from "@scopify/ui/scopify/components/equalizer-curve";
 import { cn } from "@/lib/utils";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useI18n } from "@/store/module/i18n";
@@ -243,46 +243,16 @@ export function AudioEqualizerPanel() {
             {t("folia.audioEqualizer.autoHeadroom")} −{headroomDb} dB · +12 / −12 dB
           </span>
         </div>
-        <div className="flex justify-between">
-          {AUDIO_EQUALIZER_BANDS.map((band, index) => {
-            const gain = draft.gains[index] ?? 0;
-            return (
-              <label key={band.frequency} className="flex flex-col items-center gap-1.5">
-                <span
-                  className={cn(
-                    "text-[10px] font-semibold text-muted-foreground tabular-nums",
-                    gain !== 0 && "text-primary",
-                  )}
-                >
-                  {gain > 0 ? "+" : ""}
-                  {gain}
-                </span>
-                <input
-                  type="range"
-                  min={AUDIO_EQUALIZER_MIN_GAIN_DB}
-                  max={AUDIO_EQUALIZER_MAX_GAIN_DB}
-                  step={1}
-                  value={gain}
-                  aria-label={`${band.label} Hz`}
-                  onChange={(event) => updateBandDraft(index, Number(event.currentTarget.value))}
-                  onInput={(event) => updateBandDraft(index, Number(event.currentTarget.value))}
-                  onPointerUp={commitDraft}
-                  onPointerCancel={commitDraft}
-                  onKeyUp={commitDraft}
-                  onBlur={commitDraft}
-                  className="h-24 w-1.5 cursor-pointer appearance-none rounded-full bg-border accent-primary"
-                  style={{ direction: "rtl", writingMode: "vertical-lr" }}
-                />
-                <span className="text-[10px] font-semibold text-muted-foreground tabular-nums">
-                  {band.label}
-                </span>
-              </label>
-            );
-          })}
-        </div>
-        <div className="mt-2 text-center text-[9px] tracking-widest text-muted-foreground uppercase">
-          Hz
-        </div>
+        <EqualizerCurve
+          bands={AUDIO_EQUALIZER_BANDS}
+          gains={draft.gains}
+          maxGain={AUDIO_EQUALIZER_MAX_GAIN_DB}
+          onChange={updateBandDraft}
+          onCommit={commitDraft}
+          showValues
+          plotClassName="h-40"
+          className="text-muted-foreground"
+        />
       </div>
 
       <div className="rounded-2xl border border-border bg-muted/20 p-4">
