@@ -97,13 +97,12 @@ const Tile = memo(
     reduced,
     ...state
   }: TileProps<T>) => (
-    <button
-      type="button"
+    <div
       role="radio"
       aria-checked={state.chosen}
       data-value={value}
       tabIndex={tabStop ? 0 : -1}
-      className="group flex min-w-0 flex-col rounded-lg text-xs leading-4.5"
+      className="group flex min-w-0 cursor-pointer flex-col rounded-lg text-xs leading-4.5 select-none focus:outline-none"
     >
       <span className="relative block aspect-16/10 w-full">
         <span
@@ -127,7 +126,7 @@ const Tile = memo(
       >
         {label}
       </span>
-    </button>
+    </div>
   ),
 ) as <T extends string>(props: TileProps<T>) => ReactElement;
 
@@ -181,7 +180,10 @@ export function FoliaPictureGrid<T extends string>({
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const { key } = event;
     if (key === "Enter" || key === " ") {
+      event.preventDefault();
       event.stopPropagation();
+      const next = valueAt<T>(event.target);
+      if (next !== undefined && next !== value) onChange(next);
       return;
     }
     const last = options.length - 1;
@@ -334,14 +336,20 @@ export function FoliaPictureChecks<T extends string>({
       {options.map((option) => {
         const isOn = on.has(option.value);
         return (
-          <button
+          <div
             key={option.value}
-            type="button"
             role="checkbox"
             aria-checked={isOn}
             data-value={option.value}
+            tabIndex={0}
             onClick={() => toggle(option.value)}
-            className="group flex min-w-0 flex-col rounded-lg text-xs leading-4.5"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggle(option.value);
+              }
+            }}
+            className="group flex min-w-0 cursor-pointer flex-col rounded-lg text-xs leading-4.5 select-none focus:outline-none"
           >
             <span className={`relative block w-full ${compact ? "h-14" : "aspect-16/10"}`}>
               <span
@@ -377,7 +385,7 @@ export function FoliaPictureChecks<T extends string>({
             >
               {option.label}
             </span>
-          </button>
+          </div>
         );
       })}
     </div>
