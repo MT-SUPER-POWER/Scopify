@@ -71,6 +71,13 @@ const VISUALIZER_GLYPHS: Record<string, ReactNode> = {
       <path d="M9 16.5h9" opacity="0.3" />
     </>
   ),
+  // 花火：一道升空尾迹，顶上开一朵花（Folia hanabi/entry.tsx 的 glyph）
+  hanabi: (
+    <>
+      <path d="M12 21v-8" opacity="0.5" />
+      <path d="M12 9V4M12 9l3.5-3.5M12 9l-3.5-3.5M12 9h5M12 9H7M12 9l3.5 3.5M12 9l-3.5 3.5" />
+    </>
+  ),
   monet: (
     <>
       <path d="M3 9.5h7" />

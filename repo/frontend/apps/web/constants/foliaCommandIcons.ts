@@ -21,6 +21,7 @@ import {
   PiTranslate,
   PiEye,
   PiTextAa,
+  PiShootingStar,
 } from "react-icons/pi";
 import type { IconType } from "react-icons";
 import type { LyricVisualizerMode } from "@/types/lyrics";
@@ -40,6 +41,7 @@ export const FOLIA_VISUALIZER_ICONS: Record<LyricVisualizerMode, IconType> = {
   sonnet: PiFlower,
   still: PiTextT,
   tempera: PiSquaresFour,
+  hanabi: PiShootingStar,
 };
 
 const visualizerIconsByCommand = new Map(

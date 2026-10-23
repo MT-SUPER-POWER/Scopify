@@ -5,6 +5,7 @@ import type {
   CladdaghTuning,
   DioramaTuning,
   FumeTuning,
+  HanabiTuning,
   MonetTuning,
   PartitaTuning,
   PendoloTuning,
@@ -20,6 +21,7 @@ import claddaghTuning from "./claddagh/tuning";
 import classicTuning from "./classic/tuning";
 import dioramaTuning from "./diorama/tuning";
 import fumeTuning from "./fume/tuning";
+import hanabiTuning from "./hanabi/tuning";
 import monetTuning from "./monet/tuning";
 import partitaTuning from "./partita/tuning";
 import pendoloTuning from "./pendolo/tuning";
@@ -42,6 +44,7 @@ export interface VisualizerTuningMap {
   pendolo: PendoloTuning;
   sonnet: SonnetTuning;
   tempera: TemperaTuning;
+  hanabi: HanabiTuning;
 }
 
 export type VisualizerTuningMode = keyof VisualizerTuningMap;
@@ -58,6 +61,12 @@ interface VisualizerTuningModule {
   default: VisualizerTuningAdapter;
 }
 
+/** A stored number clamped into [min, max]; anything that is not a finite number falls back. */
+export const numberWithin = (value: unknown, fallback: number, min: number, max: number) =>
+  typeof value === "number" && Number.isFinite(value)
+    ? Math.min(max, Math.max(min, value))
+    : fallback;
+
 export function defineVisualizerTuning<M extends VisualizerTuningMode>(
   adapter: VisualizerTuningAdapter<M>,
 ) {
@@ -72,6 +81,7 @@ const tuningModules: Record<string, VisualizerTuningModule> = {
   "./classic/tuning.ts": { default: classicTuning as VisualizerTuningAdapter },
   "./diorama/tuning.ts": { default: dioramaTuning as VisualizerTuningAdapter },
   "./fume/tuning.ts": { default: fumeTuning as VisualizerTuningAdapter },
+  "./hanabi/tuning.ts": { default: hanabiTuning as VisualizerTuningAdapter },
   "./monet/tuning.ts": { default: monetTuning as VisualizerTuningAdapter },
   "./partita/tuning.ts": { default: partitaTuning as VisualizerTuningAdapter },
   "./pendolo/tuning.ts": { default: pendoloTuning as VisualizerTuningAdapter },

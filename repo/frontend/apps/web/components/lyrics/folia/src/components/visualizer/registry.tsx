@@ -6,6 +6,7 @@ import claddaghEntry from "./claddagh/entry";
 import classicEntry from "./classic/entry";
 import dioramaEntry from "./diorama/entry";
 import fumeEntry from "./fume/entry";
+import hanabiEntry from "./hanabi/entry";
 import monetEntry from "./monet/entry";
 import partitaEntry from "./partita/entry";
 import pendoloEntry from "./pendolo/entry";
@@ -32,6 +33,7 @@ const visualizerEntryModules: Record<string, VisualizerEntryModule> = {
   "./classic/entry.tsx": { default: classicEntry },
   "./diorama/entry.tsx": { default: dioramaEntry },
   "./fume/entry.tsx": { default: fumeEntry },
+  "./hanabi/entry.tsx": { default: hanabiEntry },
   "./monet/entry.tsx": { default: monetEntry },
   "./partita/entry.tsx": { default: partitaEntry },
   "./pendolo/entry.tsx": { default: pendoloEntry },
