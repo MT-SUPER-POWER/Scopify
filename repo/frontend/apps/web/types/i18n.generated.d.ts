@@ -8792,6 +8792,36 @@ export interface TranslateFn {
    */
   (key: "lyrics.tab.offset", params?: TranslationParams): string;
   /**
+   * zh-CN: 导入 / 导出歌词
+   * zh-TW: 匯入 / 匯出歌詞
+   * en-US: Import / export lyrics
+   */
+  (key: "lyrics.tab.importExport", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导出 LRC 歌词
+   * zh-TW: 匯出 LRC 歌詞
+   * en-US: Export LRC lyrics
+   */
+  (key: "lyrics.tab.exportLrc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 导出逐字 YRC 歌词
+   * zh-TW: 匯出逐字 YRC 歌詞
+   * en-US: Export word-timed YRC lyrics
+   */
+  (key: "lyrics.tab.exportYrc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 当前歌曲没有可导出的歌词
+   * zh-TW: 目前歌曲沒有可匯出的歌詞
+   * en-US: This song has no lyrics to export
+   */
+  (key: "lyrics.tab.exportEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词已导出
+   * zh-TW: 歌詞已匯出
+   * en-US: Lyrics exported
+   */
+  (key: "lyrics.tab.exported", params?: TranslationParams): string;
+  /**
    * zh-CN: 重置歌词时间轴偏移
    * zh-TW: 重設歌詞時間軸偏移
    * en-US: Reset lyric timeline offset
@@ -18466,6 +18496,108 @@ export interface TranslateFn {
    * en-US: Controls
    */
   (key: "folia.panel.controls", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "folia.panel.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音质
+   * zh-TW: 音質
+   * en-US: Quality
+   */
+  (key: "folia.panel.quality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随机播放
+   * zh-TW: 隨機播放
+   * en-US: Shuffle
+   */
+  (key: "folia.panel.shuffle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音频效果器
+   * zh-TW: 音訊效果器
+   * en-US: Audio effects
+   */
+  (key: "folia.panel.equalizer", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关闭循环
+   * zh-TW: 關閉循環
+   * en-US: Loop off
+   */
+  (key: "folia.panel.loopOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 列表循环
+   * zh-TW: 列表循環
+   * en-US: Loop all
+   */
+  (key: "folia.panel.loopAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 单曲循环
+   * zh-TW: 單曲循環
+   * en-US: Loop one
+   */
+  (key: "folia.panel.loopOne", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消喜欢
+   * zh-TW: 取消喜歡
+   * en-US: Unlike
+   */
+  (key: "folia.ui.unlike", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随机
+   * zh-TW: 隨機
+   * en-US: Random
+   */
+  (key: "folia.ui.visualizerRandom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随机池
+   * zh-TW: 隨機池
+   * en-US: Random pool
+   */
+  (key: "folia.options.randomPool", params?: TranslationParams): string;
+  /**
+   * zh-CN: 选择随机池
+   * zh-TW: 選擇隨機池
+   * en-US: Choose pool
+   */
+  (key: "folia.options.randomPoolChoose", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已选 {{selected}}/{{total}}
+   * zh-TW: 已選 {{selected}}/{{total}}
+   * en-US: {{selected}} of {{total}}
+   */
+  (key: "folia.options.randomPoolCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 换一种
+   * zh-TW: 換一種
+   * en-US: Draw another
+   */
+  (key: "folia.options.randomVisualizerReroll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全选
+   * zh-TW: 全選
+   * en-US: Select all
+   */
+  (key: "folia.options.randomVisualizerSelectAll", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随机池至少要保留一种样式
+   * zh-TW: 隨機池至少要保留一種樣式
+   * en-US: Keep at least one style in the random pool
+   */
+  (key: "folia.options.randomVisualizerAtLeastOne", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一个
+   * zh-TW: 上一個
+   * en-US: Previous
+   */
+  (key: "folia.ui.previousMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一个
+   * zh-TW: 下一個
+   * en-US: Next
+   */
+  (key: "folia.ui.nextMode", params?: TranslationParams): string;
   /**
    * zh-CN: 歌词动画
    * zh-TW: 歌詞動畫

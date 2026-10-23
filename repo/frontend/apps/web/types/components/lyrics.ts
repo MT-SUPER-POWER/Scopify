@@ -6,7 +6,6 @@ import type { SongDetail } from "@/types/api/music";
 import type {
   FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,
-  FoliaPanelTab,
   FoliaStageTheme,
   FoliaThemeColors,
   FoliaThemeVariant,
@@ -32,26 +31,14 @@ export interface FoliaQuickEffectPickerOption<Value extends string> {
 }
 
 export interface FoliaLyricsControlsProps {
-  onOpenFoliaSettings: () => void;
   onOpenLyricMatch: () => void;
-  theme: Theme;
 }
 
-export interface FoliaAudioSettingsControlProps {
+export interface FoliaPanelControlsProps {
   onOpenEqualizer: () => void;
+  onOpenSettings: (section: FoliaStageEditSection) => void;
+  onOpenThemeLibrary: () => void;
   theme: Theme;
-}
-
-export interface FoliaPanelControlsProps extends FoliaAudioSettingsControlProps {
-  onOpenFoliaSettings: () => void;
-  onOpenLyricMatch: () => void;
-}
-
-export interface FoliaLyricTimelineOffsetControlProps {
-  isDaylight: boolean;
-  offsetMs: number;
-  onOffsetChange: (offsetMs: number) => void;
-  onOpenSettings?: () => void;
 }
 
 export interface FoliaAudioEqualizerDialogProps {
@@ -373,12 +360,4 @@ export interface FoliaThemedDialogProps {
   closeDisabled?: boolean;
   /** Native `title` for the dimmed X, naming the run that has to finish before closing. */
   closeDisabledTitle?: string;
-}
-
-export interface FoliaStagePanelHeaderProps {
-  activeTab: FoliaPanelTab;
-  isPersonalFm: boolean;
-  onClose(): void;
-  onTabChange(tab: FoliaPanelTab): void;
-  theme: Theme;
 }

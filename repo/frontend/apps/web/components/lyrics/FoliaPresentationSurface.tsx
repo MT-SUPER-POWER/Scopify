@@ -7,6 +7,10 @@ import VisualizerBackgroundRenderer from "@/components/lyrics/folia/src/componen
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
 import VisualizerShell from "@/components/lyrics/folia/src/components/visualizer/VisualizerShell";
 import { VISUALIZER_REGISTRY } from "@/components/lyrics/folia/src/components/visualizer/registry";
+import {
+  pickRandomVisualizerMode,
+  resolveRandomVisualizerPool,
+} from "@/lib/lyrics/randomVisualizerPool";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaPresentationSurfaceProps } from "@/types/foliaStage";
 
@@ -37,12 +41,20 @@ export function FoliaPresentationSurface({
     }
     if (observedTrackIdRef.current === trackId) return;
     observedTrackIdRef.current = trackId;
-    const candidates = VISUALIZER_REGISTRY.map((entry) => entry.mode).filter(
-      (mode) => mode !== appearance.settings.mode,
+    const pool = resolveRandomVisualizerPool(
+      appearance.settings.randomVisualizerModes,
+      VISUALIZER_REGISTRY.map((entry) => entry.mode),
     );
-    const nextMode = candidates[Math.floor(Math.random() * candidates.length)];
-    if (nextMode) useLyricStageStore.getState().requestVisualizerMode(nextMode);
-  }, [appearance.settings.mode, appearance.settings.randomVisualizerMode, track?.id]);
+    const nextMode = pickRandomVisualizerMode(pool, appearance.settings.mode);
+    if (nextMode !== appearance.settings.mode) {
+      useLyricStageStore.getState().requestVisualizerMode(nextMode);
+    }
+  }, [
+    appearance.settings.mode,
+    appearance.settings.randomVisualizerMode,
+    appearance.settings.randomVisualizerModes,
+    track?.id,
+  ]);
   const { assets, isDaylight, settings, subtitleTheme, theme } = appearance;
   const transparentBackground = !layers.background;
   const hostRhineBackground = layers.background && settings.background.mode === "rhine";

@@ -28,7 +28,7 @@ import type { FoliaStageTheme, FoliaThemeVariant } from "@scopify/ui/folia";
 export type { FoliaStageTheme, FoliaThemeColors, FoliaThemeVariant } from "@scopify/ui/folia";
 
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer";
-export type FoliaPanelTab = "controls" | "fm" | "queue" | "settings";
+export type FoliaPanelTab = "controls" | "cover" | "fm" | "lyrics" | "quality" | "queue";
 
 export interface FoliaQuickEffectPickerPosition {
   left: number;
@@ -47,6 +47,8 @@ export interface FoliaStageSettings {
   fontFamily: string | null;
   fontScale: number;
   randomVisualizerMode: boolean;
+  /** Styles random mode draws from; empty means every registered style. */
+  randomVisualizerModes: LyricVisualizerMode[];
   fontStyle: Theme["fontStyle"];
   hideTranslationSubtitle: boolean;
   lyricOffsetMs: number;
