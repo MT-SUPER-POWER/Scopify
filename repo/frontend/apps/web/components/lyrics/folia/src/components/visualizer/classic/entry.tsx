@@ -1,3 +1,7 @@
+import { RotateCw } from "lucide-react";
+import { FoliaQuickToggle } from "@scopify/ui/scopify/components/folia-panel/controls";
+import type { ClassicTuning } from "../../../types";
+import { DEFAULT_CLASSIC_TUNING } from "../../../types";
 import React, { lazy } from "react";
 import { defineVisualizer } from "../definition";
 import { ClassicSettingsPanel } from "../settingsPanels";
@@ -16,6 +20,20 @@ export default defineVisualizer({
   tuningKind: "classic",
   render: (props) => <Visualizer {...props} />,
   renderSettingsPanel: (props) => <ClassicSettingsPanel {...props} />,
+  renderQuickControls: (props) => {
+    const { t } = props;
+    const tuning = props.classicTuning ?? DEFAULT_CLASSIC_TUNING;
+    const onTuningChange = (patch: Partial<ClassicTuning>) => props.onClassicTuningChange?.(patch);
+    return (
+      <FoliaQuickToggle
+        active={tuning.enableWordRotation}
+        label={t("folia.options.classicWordRotation")}
+        onToggle={() => onTuningChange({ enableWordRotation: !tuning.enableWordRotation })}
+      >
+        <RotateCw size={14} />
+      </FoliaQuickToggle>
+    );
+  },
   resetSettings: ({ resetClassicTuning }) => {
     resetClassicTuning?.();
   },

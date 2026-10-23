@@ -1,62 +1,32 @@
 "use client";
 
-import { Moon, Palette, Sun } from "lucide-react";
-import { useMemo } from "react";
+import { ChevronLeft, ChevronRight, Moon, Palette, Sun } from "lucide-react";
 import {
   FoliaIconButton,
   FoliaSegments,
 } from "@scopify/ui/scopify/components/folia-panel/controls";
 
+import { useFoliaThemeCarousel } from "@/hooks/lyrics/useFoliaThemeCarousel";
+import type { FoliaPanelThemeProps } from "@/types/components/lyrics";
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
-// The controls tab's theme group, laid out as Folia's (panelTab/controls/ThemeSourceRow.tsx +
-// ThemeNameRow.tsx): the themes to switch between, then the theme in use with light or dark and
-// the way into the theme library. Scopify's themes are a library rather than default / AI / custom
-// sources, so the first line holds the recent themes as swatches.
+// Theme name and appearance first, then the complete library as a horizontally scrollable row.
+// Library order stays stable while the selected swatch is brought into view.
 
-export function FoliaPanelTheme({ onOpenThemeLibrary }: { onOpenThemeLibrary: () => void }) {
+export function FoliaPanelTheme({ onOpenThemeLibrary }: FoliaPanelThemeProps) {
   const { t } = useI18n();
   const themeId = useLyricStageStore((state) => state.themeId);
-  const themeRecentIds = useLyricStageStore((state) => state.themeRecentIds);
   const themes = useLyricStageStore((state) => state.themes);
   const themeVariant = useLyricStageStore((state) => state.themeVariant);
   const setThemeId = useLyricStageStore((state) => state.setThemeId);
   const setThemeVariant = useLyricStageStore((state) => state.setThemeVariant);
   const selectedTheme = themes.find((item) => item.id === themeId);
-  const quickThemes = useMemo(() => {
-    const recentThemes = themeRecentIds
-      .map((id) => themes.find((item) => item.id === id))
-      .filter((item): item is (typeof themes)[number] => Boolean(item));
-    return [selectedTheme, ...recentThemes, ...themes]
-      .filter((item): item is (typeof themes)[number] => Boolean(item))
-      .filter((item, index, items) => items.findIndex(({ id }) => id === item.id) === index)
-      .slice(0, 6);
-  }, [selectedTheme, themeRecentIds, themes]);
+  const carousel = useFoliaThemeCarousel(themeId, themes.length);
 
   return (
     <div>
-      <div className="flex min-h-11 items-center gap-1.5 px-1 py-1.5">
-        <div className="grid min-w-0 flex-1 grid-cols-6 justify-items-center gap-1">
-          {quickThemes.map((item) => {
-            const isActive = item.id === themeId;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                title={item.name}
-                aria-label={item.name}
-                aria-pressed={isActive}
-                onClick={() => setThemeId(item.id)}
-                className={`st-t-fast grid size-8 place-items-center rounded-full transition-[box-shadow,scale] active:scale-94 ${isActive ? "shadow-[0_0_0_2px_var(--st-accent)]" : "hover:shadow-[0_0_0_2px_var(--st-line2)]"}`}
-              >
-                <FoliaThemeRecord theme={item} />
-              </button>
-            );
-          })}
-        </div>
-      </div>
       <div className="flex min-h-11 flex-wrap items-center gap-x-3 px-1 py-1.5">
         <span className="min-w-0 flex-[1_1_72px] truncate text-[13px] text-[color:var(--st-t2)]">
           {selectedTheme?.name ?? t("folia.options.themePresets")}
@@ -90,6 +60,47 @@ export function FoliaPanelTheme({ onOpenThemeLibrary }: { onOpenThemeLibrary: ()
             <Palette size={15} />
           </FoliaIconButton>
         </span>
+      </div>
+      <div className="flex min-h-11 items-center gap-1 py-1.5">
+        {carousel.overflowing ? (
+          <FoliaIconButton
+            size="s"
+            label={t("folia.ui.previousMode")}
+            disabled={!carousel.canPrevious}
+            onClick={() => carousel.scroll(-1)}
+          >
+            <ChevronLeft size={14} />
+          </FoliaIconButton>
+        ) : null}
+        <div
+          ref={carousel.ref}
+          className="hide-scrollbar flex min-w-0 flex-1 gap-3 overflow-x-auto overscroll-x-contain p-1"
+        >
+          {themes.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              title={item.name}
+              aria-label={item.name}
+              data-selected={item.id === themeId || undefined}
+              aria-pressed={item.id === themeId}
+              onClick={() => setThemeId(item.id)}
+              className={`st-t-fast grid size-8 shrink-0 place-items-center rounded-full transition-[box-shadow,scale] active:scale-94 ${item.id === themeId ? "shadow-[0_0_0_2px_var(--st-accent)]" : "hover:shadow-[0_0_0_2px_var(--st-line2)]"}`}
+            >
+              <FoliaThemeRecord theme={item} />
+            </button>
+          ))}
+        </div>
+        {carousel.overflowing ? (
+          <FoliaIconButton
+            size="s"
+            label={t("folia.ui.nextMode")}
+            disabled={!carousel.canNext}
+            onClick={() => carousel.scroll(1)}
+          >
+            <ChevronRight size={14} />
+          </FoliaIconButton>
+        ) : null}
       </div>
     </div>
   );

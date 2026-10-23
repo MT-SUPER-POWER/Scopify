@@ -1,3 +1,7 @@
+import { Ghost, Highlighter } from "lucide-react";
+import { FoliaQuickToggle } from "@scopify/ui/scopify/components/folia-panel/controls";
+import type { DioramaTuning } from "../../../types";
+import { DEFAULT_DIORAMA_TUNING } from "../../../types";
 import React, { lazy } from "react";
 import { defineVisualizer } from "../definition";
 import { DioramaSettingsPanel } from "../settingsPanels";
@@ -17,6 +21,31 @@ export default defineVisualizer({
   tuningKind: "diorama",
   render: (props) => <VisualizerDiorama {...props} />,
   renderSettingsPanel: (props) => <DioramaSettingsPanel {...props} />,
+  renderQuickControls: (props) => {
+    const { t } = props;
+    const tuning = props.dioramaTuning ?? DEFAULT_DIORAMA_TUNING;
+    const onTuningChange = (patch: Partial<DioramaTuning>) => props.onDioramaTuningChange?.(patch);
+    return (
+      <>
+        <FoliaQuickToggle
+          active={tuning.keywordColoringEnabled}
+          label={t("folia.options.dioramaKeywordColoring")}
+          onToggle={() =>
+            onTuningChange({ keywordColoringEnabled: !tuning.keywordColoringEnabled })
+          }
+        >
+          <Highlighter size={14} />
+        </FoliaQuickToggle>
+        <FoliaQuickToggle
+          active={tuning.soulEnabled}
+          label={t("folia.options.dioramaSoulEffect")}
+          onToggle={() => onTuningChange({ soulEnabled: !tuning.soulEnabled })}
+        >
+          <Ghost size={14} />
+        </FoliaQuickToggle>
+      </>
+    );
+  },
   resetSettings: ({ resetDioramaTuning }) => {
     resetDioramaTuning?.();
   },

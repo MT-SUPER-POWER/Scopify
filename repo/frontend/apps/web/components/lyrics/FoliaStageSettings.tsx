@@ -41,6 +41,7 @@ import type { FoliaPanelTab } from "@/types/foliaStage";
 // (@scopify/ui/scopify/components/folia-panel) and in the tabs themselves.
 
 export function FoliaStageSettings({
+  assets,
   isChromeHidden,
   isOpen,
   onOpenChange,
@@ -160,6 +161,7 @@ export function FoliaStageSettings({
         ) : null}
         {activeTab === "controls" ? (
           <FoliaPanelControls
+            assets={assets}
             onOpenEqualizer={() => setIsEqualizerOpen(true)}
             onOpenSettings={openSettings}
             onOpenThemeLibrary={() => {

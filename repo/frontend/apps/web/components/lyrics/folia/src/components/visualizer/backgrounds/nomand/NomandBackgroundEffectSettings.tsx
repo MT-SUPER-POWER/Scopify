@@ -14,7 +14,7 @@ import {
 // src/components/visualizer/backgrounds/nomand/NomandBackgroundEffectSettings.tsx
 // Selects the active Paper shader and mounts only its small, effect-specific tuning panel.
 
-const EFFECTS: NomandBackgroundEffect[] = [
+export const EFFECTS: NomandBackgroundEffect[] = [
   "dithering",
   "fluted-glass",
   "paper-texture",
@@ -22,7 +22,7 @@ const EFFECTS: NomandBackgroundEffect[] = [
   "lens-distortion",
 ];
 
-const EFFECT_LABEL_KEYS: Record<NomandBackgroundEffect, TranslationKey> = {
+export const EFFECT_LABEL_KEYS: Record<NomandBackgroundEffect, TranslationKey> = {
   dithering: "folia.options.nomandBackgroundEffectDithering",
   "fluted-glass": "folia.options.nomandBackgroundEffectFlutedGlass",
   "paper-texture": "folia.options.nomandBackgroundEffectPaperTexture",

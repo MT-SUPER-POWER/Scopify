@@ -1,3 +1,7 @@
+import { Spline } from "lucide-react";
+import { FoliaQuickToggle } from "@scopify/ui/scopify/components/folia-panel/controls";
+import type { PartitaTuning } from "../../../types";
+import { DEFAULT_PARTITA_TUNING } from "../../../types";
 import React, { lazy } from "react";
 import { defineVisualizer } from "../definition";
 import { PartitaSettingsPanel } from "../settingsPanels";
@@ -16,6 +20,20 @@ export default defineVisualizer({
   tuningKind: "partita",
   render: (props) => <VisualizerPartita {...props} />,
   renderSettingsPanel: (props) => <PartitaSettingsPanel {...props} />,
+  renderQuickControls: (props) => {
+    const { t } = props;
+    const tuning = props.partitaTuning ?? DEFAULT_PARTITA_TUNING;
+    const onTuningChange = (patch: Partial<PartitaTuning>) => props.onPartitaTuningChange?.(patch);
+    return (
+      <FoliaQuickToggle
+        active={tuning.showGuideLines}
+        label={t("folia.options.partitaGuideLines")}
+        onToggle={() => onTuningChange({ showGuideLines: !tuning.showGuideLines })}
+      >
+        <Spline size={14} />
+      </FoliaQuickToggle>
+    );
+  },
   resetSettings: ({ resetPartitaTuning }) => {
     resetPartitaTuning?.();
   },

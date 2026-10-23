@@ -31,6 +31,7 @@ import type { FoliaPanelControlsProps } from "@/types/components/lyrics";
 // Scopify's player does not have; it holds shuffle here (or the personal FM's dislike).
 
 export function FoliaPanelControls({
+  assets,
   onOpenEqualizer,
   onOpenSettings,
   onOpenThemeLibrary,
@@ -118,9 +119,9 @@ export function FoliaPanelControls({
       </div>
 
       <FoliaGroupLine />
-      <FoliaPanelAppearance onOpenSettings={onOpenSettings} theme={theme} />
-      <FoliaGroupLine />
       <FoliaPanelTheme onOpenThemeLibrary={onOpenThemeLibrary} />
+      <FoliaGroupLine />
+      <FoliaPanelAppearance assets={assets} onOpenSettings={onOpenSettings} theme={theme} />
     </div>
   );
 }

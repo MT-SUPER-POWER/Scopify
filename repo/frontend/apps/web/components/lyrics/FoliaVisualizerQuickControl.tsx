@@ -1,0 +1,43 @@
+"use client";
+
+import { useI18n } from "@/store/module/i18n";
+import { useLyricStageStore } from "@/store/module/lyrics";
+import { getVisualizerRegistryEntry } from "@/components/lyrics/folia/src/components/visualizer/registry";
+import type { VisualizerSettingsPanelProps } from "@/components/lyrics/folia/src/components/visualizer/definition";
+import type { FoliaVisualizerQuickControlProps } from "@/types/components/lyrics";
+
+export function FoliaVisualizerQuickControl({ assets, theme }: FoliaVisualizerQuickControlProps) {
+  const { t } = useI18n();
+  const settings = useLyricStageStore();
+  const props: VisualizerSettingsPanelProps = {
+    t,
+    cappellaCustomAvatarImages: assets.cappellaCustomAvatarImages,
+    theme,
+    isDaylight: theme.name === "snow",
+    controlCardBg: "",
+    rangeInputClass: "",
+    classicTuning: settings.tunings.classic,
+    onClassicTuningChange: (patch) => settings.patchTuning("classic", patch),
+    partitaTuning: settings.tunings.partita,
+    onPartitaTuningChange: (patch) => settings.patchTuning("partita", patch),
+    fumeTuning: settings.tunings.fume,
+    onFumeTuningChange: (patch) => settings.patchTuning("fume", patch),
+    claddaghTuning: settings.tunings.claddagh,
+    onCladdaghTuningChange: (patch) => settings.patchTuning("claddagh", patch),
+    cappellaTuning: settings.tunings.cappella,
+    onCappellaTuningChange: (patch) => settings.patchTuning("cappella", patch),
+    tiltTuning: settings.tunings.tilt,
+    onTiltTuningChange: (patch) => settings.patchTuning("tilt", patch),
+    monetTuning: settings.tunings.monet,
+    onMonetTuningChange: (patch) => settings.patchTuning("monet", patch),
+    dioramaTuning: settings.tunings.diorama,
+    onDioramaTuningChange: (patch) => settings.patchTuning("diorama", patch),
+    pendoloTuning: settings.tunings.pendolo,
+    onPendoloTuningChange: (patch) => settings.patchTuning("pendolo", patch),
+    sonnetTuning: settings.tunings.sonnet,
+    onSonnetTuningChange: (patch) => settings.patchTuning("sonnet", patch),
+    temperaTuning: settings.tunings.tempera,
+    onTemperaTuningChange: (patch) => settings.patchTuning("tempera", patch),
+  };
+  return getVisualizerRegistryEntry(settings.mode).renderQuickControls?.(props);
+}

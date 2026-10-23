@@ -8,15 +8,12 @@ import {
   getVisualizerBackgroundRegistryEntry,
 } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/registry";
 import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
-import type { Theme } from "@/components/lyrics/folia/src/types";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
-interface FoliaBackgroundQuickControlProps {
-  isDaylight: boolean;
-  theme: Theme;
-}
+import type { FoliaBackgroundQuickControlProps } from "@/types/components/lyrics";
 
 export function FoliaBackgroundQuickControl({
+  assets,
   isDaylight,
   theme,
 }: FoliaBackgroundQuickControlProps) {
@@ -27,18 +24,21 @@ export function FoliaBackgroundQuickControl({
   const actions: VisualizerBackgroundActions = {
     common: {
       onCoverColorChange: (useCoverColorBg) => settings.patchBackgroundCommon({ useCoverColorBg }),
+      onDisableVignetteChange: (disableVignette) =>
+        settings.patchBackgroundCommon({ disableVignette }),
     },
     latent: { onTuningChange: settings.patchLatentBackground },
     monet: { onTuningChange: settings.patchMonetBackground },
     nomand: { onTuningChange: settings.patchNomandBackground },
     sora: { onTuningChange: settings.patchSoraBackground },
+    rhine: { onTuningChange: settings.patchRhineBackground },
   };
 
   return entry.renderQuickControls?.({
     actions,
-    config: settings.background,
+    config: { ...settings.background, customImage: assets.monetBackgroundImage },
     isDaylight,
-    t: (key) => String(t(`folia.${key}` as TranslationKey)),
+    t: (key) => String(t((key.startsWith("folia.") ? key : `folia.${key}`) as TranslationKey)),
     theme,
   });
 }

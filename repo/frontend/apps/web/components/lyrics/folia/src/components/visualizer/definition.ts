@@ -180,6 +180,7 @@ export interface VisualizerRegistryEntry {
   tuningKind: VisualizerTuningKind;
   render: (props: VisualizerSharedProps) => React.ReactElement;
   renderSettingsPanel?: (props: VisualizerSettingsPanelProps) => React.ReactNode;
+  renderQuickControls?: (props: VisualizerSettingsPanelProps) => React.ReactNode;
   resetSettings?: (props: VisualizerSettingsResetProps) => void;
 }
 

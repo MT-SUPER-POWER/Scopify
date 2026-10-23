@@ -35,6 +35,7 @@ export interface FoliaLyricsControlsProps {
 }
 
 export interface FoliaPanelControlsProps {
+  assets: FoliaStageAssets;
   onOpenEqualizer: () => void;
   onOpenSettings: (section: FoliaStageEditSection) => void;
   onOpenThemeLibrary: () => void;
@@ -128,6 +129,7 @@ export interface FoliaFontPickerProps {
 }
 
 export interface FoliaStageSettingsProps {
+  assets: FoliaStageAssets;
   isChromeHidden: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -362,4 +364,33 @@ export interface FoliaThemedDialogProps {
   closeDisabled?: boolean;
   /** Native `title` for the dimmed X, naming the run that has to finish before closing. */
   closeDisabledTitle?: string;
+}
+
+export interface FoliaPanelThemeProps {
+  onOpenThemeLibrary: () => void;
+}
+
+export interface FoliaPanelAppearanceProps {
+  assets: FoliaStageAssets;
+  onOpenSettings: (section: FoliaStageEditSection) => void;
+  theme: Theme;
+}
+
+export interface FoliaBackgroundQuickControlProps {
+  assets: FoliaStageAssets;
+  isDaylight: boolean;
+  theme: Theme;
+}
+
+export interface FoliaVisualizerQuickControlProps {
+  assets: FoliaStageAssets;
+  theme: Theme;
+}
+
+export interface FoliaRandomPoolPopoverProps {
+  anchorRef: RefObject<HTMLButtonElement | null>;
+  open: boolean;
+  onClose: () => void;
+  onOpenMore: () => void;
+  pool: ReturnType<typeof import("@/hooks/lyrics/useFoliaRandomPool").useFoliaRandomPool>;
 }
