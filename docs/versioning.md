@@ -47,3 +47,30 @@ _内部共享包（如 `@scopify/desktop-contract`、`@scopify/ui` 等）在应�
 - **与 CI 发布解耦与协同**：
   - **本地日常开发**：通过 `pnpm bump` 随心升级版本。
   - **正式发版（Release CI）**：直接推送 Git Tag（如 `git tag v2.0.4 && git push origin v2.0.4`），CI 工作流会自动打包并把版本回写到仓库。
+
+---
+
+## 更新说明与发布预览 (Changelog Preview)
+
+项目的更新日志（[docs/CHANGELOG.md](CHANGELOG.md)）由 `git-cliff` 基于提交历史自动生成，无需手写。
+
+### 提交类型与展示规则
+
+| 提交前缀 | 展示分组 | 说明 |
+| :-- | :-- | :-- |
+| `feat:` / `feat(...):` | **新增** | 面向用户的新功能（如 `feat(player): 支持歌词双语对照`） |
+| `fix:` / `fix(...):` | **修复** | 面向用户的缺陷修复（如 `fix(desktop): 修复外链弹出窗口问题`） |
+| `perf:` / `perf(...):` | **优化** | 性能提升与体验优化 |
+| `chore:`, `docs:`, `ci:` 等 | *不展示* | 仅用于工程内部维护，自动过滤 |
+
+> **提示**：建议将用户能感知的改动用简洁明了的话写在 commit 第一行（subject），工程实现细节放在 commit body。
+
+### 发版前随时预览
+
+在本地完成若干个 `feat` 或 `fix` 提交后，发版前可随时在终端运行：
+
+```bash
+pnpm run changelog:preview
+```
+
+即可直接查看下个版本即将生成的更新说明。
