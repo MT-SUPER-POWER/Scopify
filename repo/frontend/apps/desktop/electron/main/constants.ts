@@ -51,6 +51,8 @@ export const __iconIcoPath = publicAsset("icons", "icon.ico");
 export const __iconIcnsPath = publicAsset("icons", "icon.icns");
 const __iconsetDir = publicAsset("icons", "icon.iconset");
 export const __iconNotificationPath = publicAsset("icons", "icon.iconset", "icon_256x256.png");
+/** macOS 菜单栏模板图标的取样源（64px，运行时转成单色 Template Image）*/
+export const __iconMenuBarSourcePath = publicAsset("icons", "icon.iconset", "icon_32x32@2x.png");
 
 // ─── 底层 NativeImage（内部使用，不直接导出）───
 const _nativeIco = nativeImage.createFromPath(__iconIcoPath);

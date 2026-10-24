@@ -81,6 +81,28 @@ export function waitForDesktopPlaybackWallpaperInitialization() {
   return Promise.resolve(service?.getModel() ?? null);
 }
 
+export function isDesktopPlaybackControllerOpen() {
+  const controllerWindow = getControllerWindow();
+  return Boolean(controllerWindow && !controllerWindow.isDestroyed());
+}
+
+/** 已打开且最小化时恢复，已打开时关闭，否则打开。返回切换后是否可见。 */
+export async function toggleDesktopPlaybackController() {
+  const controllerWindow = getControllerWindow();
+  if (controllerWindow && !controllerWindow.isDestroyed()) {
+    if (controllerWindow.isMinimized()) {
+      controllerWindow.restore();
+      controllerWindow.show();
+      controllerWindow.focus();
+      return true;
+    }
+    controllerWindow.close();
+    return false;
+  }
+  const result = await requireService().showController();
+  return result.opened;
+}
+
 function createFoundationDriver(platform: NodeJS.Platform): DesktopPlaybackWallpaperDriver {
   // The service ships before the real renderer driver on purpose: launchers can depend on a
   // stable model now, while an enabled intent can never be misreported as running.
@@ -142,25 +164,12 @@ function registerIpcHandlers() {
 
   ipcMain.handle("desktop-playback-controller:is-open", (event) => {
     requireModelReader(event, "desktop-playback-controller:is-open");
-    const controllerWindow = getControllerWindow();
-    return Boolean(controllerWindow && !controllerWindow.isDestroyed());
+    return isDesktopPlaybackControllerOpen();
   });
 
-  ipcMain.handle("desktop-playback-controller:toggle", async (event) => {
+  ipcMain.handle("desktop-playback-controller:toggle", (event) => {
     requireControlSender(event, "desktop-playback-controller:toggle");
-    const controllerWindow = getControllerWindow();
-    if (controllerWindow && !controllerWindow.isDestroyed()) {
-      if (controllerWindow.isMinimized()) {
-        controllerWindow.restore();
-        controllerWindow.show();
-        controllerWindow.focus();
-        return true;
-      }
-      controllerWindow.close();
-      return false;
-    }
-    const result = await requireService().showController();
-    return result.opened;
+    return toggleDesktopPlaybackController();
   });
 
   ipcMain.handle("desktop-playback-controller:set-layout", (event, input: unknown) => {

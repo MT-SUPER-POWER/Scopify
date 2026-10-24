@@ -37,6 +37,7 @@ import {
 import { getTaskbarLyricWindow, initializeTaskbarLyricCompanion } from "@main/window/taskbarLyric";
 import { initializeLoginWindow } from "@main/window/login";
 import { getTrayWindow, initTray, trayWindow } from "@main/window/tray";
+import { initMacTray } from "@main/window/macTray";
 
 /** Owns every capability whose lifetime is attached to the main BrowserWindow. */
 export function createWindowServiceHost(options: WindowServiceHostOptions) {
@@ -108,18 +109,26 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
     });
     initializeUpdater(window, desktopConfig.updater);
 
-    if (process.platform !== "darwin") {
-      initTray(window, {
-        onMainWindowRequested: async () => {
-          if (wallpaperDriver?.isWallpaperActive()) {
-            await wallpaperService?.configure({ enabled: false });
-            return;
-          }
-          if (window.isMinimized()) window.restore();
-          window.show();
-          window.focus();
+    const revealMainWindow = async () => {
+      if (wallpaperDriver?.isWallpaperActive()) {
+        await wallpaperService?.configure({ enabled: false });
+        return;
+      }
+      if (window.isMinimized()) window.restore();
+      window.show();
+      window.focus();
+    };
+    if (process.platform === "darwin") {
+      initMacTray({
+        playback: playbackGateway,
+        getWallpaperService: () => wallpaperService,
+        showMainWindow: async (path) => {
+          await revealMainWindow();
+          if (path && !window.isDestroyed()) window.webContents.send("navigate-to", path);
         },
       });
+    } else {
+      initTray(window, { onMainWindowRequested: revealMainWindow });
     }
     initializeLoginWindow(window);
   }

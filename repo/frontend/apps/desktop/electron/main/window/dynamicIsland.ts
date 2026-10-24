@@ -381,7 +381,7 @@ function closeDynamicIslandWindow() {
   return true;
 }
 
-function toggleDynamicIslandWindow() {
+export function toggleDynamicIslandWindow() {
   if (isWindowAlive(islandWindow)) {
     closeDynamicIslandWindow();
     return false;
