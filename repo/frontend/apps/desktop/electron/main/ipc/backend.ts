@@ -1,5 +1,5 @@
 import { ipcMain, type BrowserWindow } from "electron";
-import type { DesktopBackendController } from "@main/services/backend";
+import type { DesktopBackendController } from "@/types/service/backend";
 import { loadDesktopHostConfig } from "@main/store";
 import { isMainRenderer } from "./sender";
 

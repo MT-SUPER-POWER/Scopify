@@ -7,7 +7,7 @@ import type {
   DesktopHostConfig,
 } from "@scopify/desktop-contract";
 import { loadDesktopHostConfig } from "@main/store";
-import { createPageCacheStore } from "@main/services/pageCache";
+import { createPageCacheStore } from "@main/service/cache/pageCache";
 import { isMainRenderer } from "./sender";
 
 function createConfiguredPageCacheStore() {

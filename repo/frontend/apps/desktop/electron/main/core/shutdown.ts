@@ -12,7 +12,7 @@ export interface ApplicationShutdownOptions {
 /**
  * Turns Electron's synchronous before-quit event into one bounded cleanup
  * transaction. The second app.quit() is allowed through only after async Main
- * capabilities (notably the MCP listener) have released their resources.
+ * services (notably the MCP listener) have released their resources.
  */
 export function createApplicationShutdown(options: ApplicationShutdownOptions) {
   let completed = false;

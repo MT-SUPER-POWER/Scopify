@@ -1,9 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { Rectangle } from "electron";
-import {
-  resolveWallpaperTargetDisplay,
-  type WallpaperTargetDisplay,
-} from "../electron/main/capabilities/desktopPlaybackWallpaper/wallpaperTargetDisplay";
+import { resolveWallpaperTargetDisplay } from "../electron/main/service/desktop/wallpaper/wallpaperTargetDisplay";
+import type { WallpaperTargetDisplay } from "@/types/service/desktop/wallpaper/wallpaperTargetDisplay";
 
 // 壁纸目标显示器解析：跟随主窗口所在屏，会话中保持原屏，异常时回退主屏
 const primary: WallpaperTargetDisplay = {

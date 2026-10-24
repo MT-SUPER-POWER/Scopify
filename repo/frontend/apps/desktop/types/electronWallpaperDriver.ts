@@ -1,6 +1,6 @@
 import type { BrowserWindow, Rectangle } from "electron";
 import type { DesktopPlaybackWallpaperSystemFallback } from "./systemWallpaperFallback";
-import type { DesktopPlaybackWallpaperDriver } from "../electron/main/capabilities/desktopPlaybackWallpaper/capability";
+import type { DesktopPlaybackWallpaperDriver } from "@/types/service/desktop/wallpaper/service";
 
 export interface ActiveWallpaperProfile {
   bounds: Rectangle;

@@ -1,6 +1,6 @@
 import { ipcMain, type BrowserWindow } from "electron";
 
-import type { McpRuntime } from "@main/capabilities/mcp";
+import type { McpRuntime } from "@main/service/mcp";
 
 import { isMainRenderer } from "./sender";
 

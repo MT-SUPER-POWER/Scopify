@@ -1,17 +1,17 @@
 import { join } from "node:path";
 import { app, ipcMain, type BrowserWindow } from "electron";
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
-import type { McpRuntime } from "@main/capabilities/mcp";
+import type { McpRuntime } from "@main/service/mcp";
 import { loadDesktopHostConfig, saveDesktopHostConfig } from "@main/store";
 import { cleanOldLogs, configureLogging } from "@main/constants";
-import type { DesktopBackendController } from "@main/services/backend";
-import type { createDiscordPresenceController } from "@main/services/discordPresence";
+import type { DesktopBackendController } from "@/types/service/backend";
+import type { createDiscordPresenceController } from "@main/service/discordPresence";
 import {
   assertSafeCacheRoot,
   createPageCacheStore,
   migrateCacheRoot,
-} from "@main/services/pageCache";
-import { configureUpdater } from "@main/services/updater";
+} from "@main/service/cache/pageCache";
+import { configureUpdater } from "@main/service/updates";
 import { applyElectronProxy } from "@main/utils/proxy";
 import { ipcLog } from "@main/utils/logger";
 import { configuredCacheRoot } from "./cache";

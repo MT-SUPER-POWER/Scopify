@@ -14,7 +14,7 @@ preload.ts
 ipc/
     │  验证发送者和参数，并调用对应模块
     ▼
-window/ | services/ | capabilities/ | store/ | utils/
+window/ | service/ | store/ | utils/
     │
     ▼
 Electron、操作系统、本地后端和原生程序
@@ -31,8 +31,7 @@ electron/
 │  ├─ core/            应用生命周期与窗口能力的 composition root
 │  ├─ ipc/             按业务能力拆分的 IPC adapter
 │  ├─ window/          BrowserWindow、Tray 的创建和生命周期
-│  ├─ services/        本地后端、缓存、Discord、更新等外部能力实现
-│  ├─ capabilities/    具有独立 Interface 和状态的深模块
+│  ├─ service/         按功能分类的主进程服务与原生集成
 │  ├─ store/           Main 进程配置的读取、规范化和持久化
 │  ├─ utils/           无业务状态的底层工具与 Electron adapter
 │  └─ constants.ts     资源句柄与进程级常量
@@ -42,7 +41,7 @@ electron/
 
 ### `core/`
 
-`core/index.ts` 是进程级 composition root，只记录固定启动顺序。窗口策略由 `window/mainWindow.ts` 和 `window/splash.ts` 管理，Renderer 制品由 `services/rendererHost.ts` 管理，依赖主窗口的能力集中在 `core/capabilityHost.ts` 组装。
+`core/index.ts` 是进程级 composition root，只记录固定启动顺序。窗口策略由 `window/mainWindow.ts` 和 `window/splash.ts` 管理，Renderer 制品由 `service/renderer/index.ts` 管理，依赖主窗口的服务集中在 `core/serviceHost.ts` 组装。
 
 ```text
 Chromium 参数与单实例锁
@@ -66,23 +65,19 @@ Chromium 参数与单实例锁
 
 窗口模块拥有具体窗口的创建、显示、隐藏和销毁。窗口只承载 Renderer，不实现跨窗口业务。新增窗口时应明确：窗口是否允许重复创建、谁持有强引用、何时释放、哪些 Renderer 可以发送 IPC，以及外部导航和开发者工具策略。
 
-### `services/`
+### `service/`
 
-这里放与外部系统交互、但不直接构成 Renderer Interface 的实现，例如本地后端子进程、Discord Rich Presence、页面缓存和自动更新。调用者通过这些模块公开的少量方法使用能力，不应了解内部的进程、文件或第三方库细节。
+主进程服务按功能归类，服务内部的状态、策略和 adapter 放在对应目录中：
 
-### `capabilities/`
+- `audio/`：原生音频 Host、音频特征 Broker。
+- `playback/`：播放 Broker 与可信 Gateway。
+- `desktop/`：桌面图标、播放壁纸、共享 Rust 模块入口。
+- `mcp/`：本机 HTTP、凭据、协议 Session 与播放工具。
+- `backend/`、`renderer/`、`cache/`、`updates/`：本地后端、渲染宿主、缓存与更新。
+- `externalLinks/`、`notifications/`、`discordPresence/`：外链、通知与 Discord 集成。
+- `nativeModules/`：原生音频、任务栏歌词等通用模块加载。
 
-这里保存具有自己 Interface、状态和测试面的深模块：
-
-- `playbackBroker/`：在 Authority 与 Replica 窗口间路由可靠播放消息；
-- `playbackGateway/`：供 Main 与 MCP 使用的可信播放入口，等待 Authority 真实回执；
-- `mcp/`：本机 MCP HTTP、安全凭据、协议 Session 和播放 Tool Facade；
-- `nativeAudio/`：可选 Windows NAPI 音频模块的 Host 与安全状态投影；
-- `audioFeatureBroker/`：传输有背压约束的高频音频特征；
-- `desktopIcons/`：隐藏和恢复 Windows 桌面图标；
-- `desktopPlaybackWallpaper/`：桌面播放壁纸状态机、Electron driver 与原生 host。
-
-不要为了目录对称拆散这些模块。其内部 adapter 可以继续与状态机放在同一业务目录中。
+服务类型统一放在 `apps/desktop/types/`，其中 `types/service/` 与服务功能目录对应。服务可以公开自己的类型，但定义应从全局类型目录引用；不再创建 `capabilities/`、`services/` 或局部类型目录。
 
 ## 一次桌面能力调用
 
@@ -93,7 +88,7 @@ WebRuntime.cache.get
 → DesktopBridge.getCache
 → preload ipcRenderer.invoke("cache:get-scoped")
 → ipc/cache.ts
-→ services/pageCache.ts
+→ service/cache/pageCache.ts
 → 文件系统
 ```
 

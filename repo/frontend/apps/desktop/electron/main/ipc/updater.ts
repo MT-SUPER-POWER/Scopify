@@ -4,7 +4,7 @@ import {
   downloadUpdate,
   getUpdateState,
   quitAndInstallUpdate,
-} from "@main/services/updater";
+} from "@main/service/updates";
 
 /** 注册更新状态查询与显式更新命令。自动检查仍由应用生命周期负责调度。 */
 export function registerUpdaterIpc() {
