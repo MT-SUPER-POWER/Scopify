@@ -278,6 +278,9 @@ jobs:
           fetch-depth: 0
           submodules: false
 
+      - name: Checkout backend API submodule only
+        run: git submodule update --init --depth 1 repo/backend/api-enhanced
+
       - name: Skip tags that are not on master
         id: on-master
         shell: bash
