@@ -38,9 +38,9 @@ const MAX_LYRIC_TEXT_LENGTH = 30;
 const MIN_LYRIC_TICK_MS = 50;
 /** 菜单头部封面 32pt，按 @2x 取 64px。 */
 const COVER_SIZE = 32;
-/** 控制按钮单个 16pt，按钮之间 6pt，比系统给独立菜单栏项留的间距更紧凑。 */
+/** 控制按钮单个 16pt，按钮之间 10pt，比系统给独立菜单栏项留的间距更紧凑。 */
 const CONTROL_ICON_SIZE = 16;
-const CONTROL_GAP = 6;
+const CONTROL_GAP = 10;
 const PREFERENCES_FILE = "mac-menu-bar.json";
 const DEFAULT_PREFERENCES: MacMenuBarPreferences = { showLyrics: true, showControls: true };
 
