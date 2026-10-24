@@ -12,6 +12,7 @@ import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHel
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
 import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
+import { useNowPlayingDocumentTitle } from "@/hooks/player/useNowPlayingDocumentTitle";
 import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
 import { DASHBOARD_LAYOUT_GROUP_ID, SIDEBAR_DEFAULT_SIZE_PERCENT } from "@/constants/layout";
 import { runtime } from "@/lib/runtime";
@@ -57,6 +58,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const hasInitializedSidebarPanelRef = useRef(false);
   const [isMounted, setIsMounted] = useState(false);
   const sidebarLoadingLayout = useSidebarLoadingLayout();
+  useNowPlayingDocumentTitle();
 
   useEffect(() => {
     setIsMounted(true);
