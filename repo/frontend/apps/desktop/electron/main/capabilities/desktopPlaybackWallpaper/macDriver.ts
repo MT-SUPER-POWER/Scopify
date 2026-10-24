@@ -1,4 +1,4 @@
-import { screen } from "electron";
+import { screen, type Display } from "electron";
 
 import type { MacWallpaperWindowState } from "@/types/nativeWallpaper";
 import { wallpaperLog } from "@main/utils/logger";
@@ -24,6 +24,7 @@ export function createMacDesktopPlaybackWallpaperDriver(
   const host = createNativeWallpaperHost({ onLost: options.onHostLost });
   let state: MacWallpaperWindowState | null = null;
   let displayId: string | null = null;
+  let attachedDisplay: Display | null = null;
   let pending: Promise<unknown> = Promise.resolve();
   let disposed = false;
 
@@ -32,6 +33,7 @@ export function createMacDesktopPlaybackWallpaperDriver(
       throw new Error("The native wallpaper session did not acknowledge detach.");
     const previous = state;
     displayId = null;
+    attachedDisplay = null;
     state = null;
     if (!previous || window.isDestroyed()) return;
     window.setMinimumSize(...previous.minimumSize);
@@ -107,6 +109,7 @@ export function createMacDesktopPlaybackWallpaperDriver(
       await waitForExactWallpaperContentBounds(window, display.bounds, signal);
       throwIfAborted(signal);
       displayId = String(display.id);
+      attachedDisplay = { ...display, bounds: { ...display.bounds } };
       window.showInactive();
       if (!host.isAttached()) throw new Error("macOS did not preserve the desktop window level.");
       wallpaperLog.info("[desktop-playback-wallpaper] native macOS desktop attached", {
@@ -120,11 +123,29 @@ export function createMacDesktopPlaybackWallpaperDriver(
     }
   };
 
-  const onDisplayChanged = () => {
-    if (host.isAttached()) options.onHostLost?.("The wallpaper display configuration changed.");
+  const onDisplayRemoved = (_event: Electron.Event, display: Display) => {
+    if (host.isAttached() && display.id === attachedDisplay?.id) {
+      options.onHostLost?.("The wallpaper display was removed.");
+    }
   };
-  screen.on("display-removed", onDisplayChanged);
-  screen.on("display-metrics-changed", onDisplayChanged);
+  const onDisplayMetricsChanged = (_event: Electron.Event, display: Display) => {
+    if (!host.isAttached() || !attachedDisplay || display.id !== attachedDisplay.id) return;
+    const previous = attachedDisplay;
+    // Dock / menu bar visibility changes workArea, while wallpaper covers full display bounds.
+    // Compare actual geometry instead of treating every metrics event as a lost native host.
+    if (
+      display.bounds.x !== previous.bounds.x ||
+      display.bounds.y !== previous.bounds.y ||
+      display.bounds.width !== previous.bounds.width ||
+      display.bounds.height !== previous.bounds.height ||
+      display.scaleFactor !== previous.scaleFactor ||
+      display.rotation !== previous.rotation
+    ) {
+      options.onHostLost?.("The wallpaper display configuration changed.");
+    }
+  };
+  screen.on("display-removed", onDisplayRemoved);
+  screen.on("display-metrics-changed", onDisplayMetricsChanged);
 
   return {
     reconcile(preferences, context) {
@@ -136,8 +157,8 @@ export function createMacDesktopPlaybackWallpaperDriver(
     isWallpaperActive: host.isAttached,
     async dispose() {
       disposed = true;
-      screen.removeListener("display-removed", onDisplayChanged);
-      screen.removeListener("display-metrics-changed", onDisplayChanged);
+      screen.removeListener("display-removed", onDisplayRemoved);
+      screen.removeListener("display-metrics-changed", onDisplayMetricsChanged);
       await pending;
       await restore(false);
       await host.dispose();

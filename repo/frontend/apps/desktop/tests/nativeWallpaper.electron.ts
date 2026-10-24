@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { join } from "node:path";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, screen } from "electron";
 import type { DesktopPlaybackWallpaperModel } from "@scopify/desktop-contract";
 import type { NativeWallpaperModule } from "../types/nativeWallpaper";
 import { parseDesktopPlaybackWallpaperPreferencesUpdate } from "../types/desktopPlaybackWallpaper";
@@ -31,7 +31,11 @@ async function run() {
   });
   const original = window.getBounds();
   const minimumSize = window.getMinimumSize();
-  const driver = createElectronDesktopPlaybackWallpaperDriver({ mainWindow: window });
+  const hostLosses: string[] = [];
+  const driver = createElectronDesktopPlaybackWallpaperDriver({
+    mainWindow: window,
+    onHostLost: (diagnostic) => hostLosses.push(diagnostic),
+  });
   const capability = createDesktopPlaybackWallpaperCapability({
     driver,
     preferences: createDesktopPlaybackWallpaperPreferencesRepository({
@@ -72,6 +76,54 @@ async function run() {
         true,
         "Window must remain at the native desktop layer after showInactive",
       );
+      if (process.platform === "darwin") {
+        const display = screen.getDisplayMatching(window.getBounds());
+        const before = window.getContentBounds();
+        hostLosses.length = 0;
+        // Reproduce Dock hide/show notifications without changing the user's Dock settings.
+        for (const height of [display.bounds.height, Math.max(1, display.bounds.height - 64)]) {
+          screen.emit(
+            "display-metrics-changed",
+            {},
+            {
+              ...display,
+              workArea: { ...display.bounds, height },
+            },
+            ["workArea"],
+          );
+          // A broad notification with unchanged physical geometry must be harmless too.
+          screen.emit("display-metrics-changed", {}, display, ["bounds", "workArea"]);
+        }
+        const otherDisplay = { ...display, id: display.id + 100_000 };
+        screen.emit("display-metrics-changed", {}, otherDisplay, ["bounds"]);
+        screen.emit("display-removed", {}, otherDisplay);
+        assert.deepEqual(
+          hostLosses,
+          [],
+          "Dock visibility and other displays must not disable wallpaper",
+        );
+        assert.equal(capability.getModel().status.state, "running");
+        assert.equal(native.isAttached(), true);
+        assert.deepEqual(window.getContentBounds(), before);
+        // Keep protection for an actual change to the wallpaper display.
+        screen.emit(
+          "display-metrics-changed",
+          {},
+          {
+            ...display,
+            scaleFactor: display.scaleFactor + 1,
+          },
+          ["scaleFactor"],
+        );
+        assert.equal(hostLosses.length, 1);
+        hostLosses.length = 0;
+        screen.emit("display-removed", {}, display);
+        assert.equal(hostLosses.length, 1);
+        hostLosses.length = 0;
+        console.log(
+          "[wallpaper-smoke] Dock work-area changes preserve wallpaper; real display changes remain guarded",
+        );
+      }
       const inactive = (await window.webContents.executeJavaScript(
         "window.wallpaperSmoke.configure({enabled:false})",
       )) as DesktopPlaybackWallpaperModel;
