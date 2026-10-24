@@ -202,6 +202,8 @@ function registerLifecycle() {
     );
   });
   app.on("activate", () => {
+    // 壁纸模式下主窗口就是壁纸本体，点 Dock 不能顺手拆掉壁纸；退出壁纸走菜单栏或 Dock 右键菜单。
+    if (services.isWallpaperActive()) return;
     void activateMainWindow().catch((error) =>
       windowLog.error("[window] activation failed", error),
     );
