@@ -60,13 +60,13 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
           sublabel={
             state.version
               ? t("settings.updater.availableVersion", { version: state.version })
-              : state.currentVersion
-                ? t("settings.updater.currentVersion", { version: state.currentVersion })
-                : t("settings.updater.statusHint")
+              : t("settings.updater.statusHint")
           }
           control={
             <span aria-live="polite" className="text-sm font-semibold text-foreground">
-              {statusLabel}
+              {state.currentVersion
+                ? t("settings.updater.currentVersion", { version: state.currentVersion })
+                : statusLabel}
             </span>
           }
         />
