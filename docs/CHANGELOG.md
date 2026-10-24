@@ -2,6 +2,26 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v2.1.0 — 2026-10-24
+
+### 新增
+
+- macOS 菜单栏歌词与播放控制可分别开关 ([2216d003](https://github.com/MT-SUPER-POWER/Scopify/commit/2216d00396485def46f4c68554227241e2bb840e))
+- macOS 菜单栏显示实时歌词，播放按钮更紧凑醒目 ([bb8b8af7](https://github.com/MT-SUPER-POWER/Scopify/commit/bb8b8af7e0f232539e8060c2e2ff89d2db92668d))
+- 桌面歌词操作栏添加单色品牌标识 ([d670547e](https://github.com/MT-SUPER-POWER/Scopify/commit/d670547e41691c06f4eebc3821184c975f6701d2))
+- macOS 菜单栏新增歌名与播放控制，点 Dock 不再退出桌面壁纸 ([7ca2301e](https://github.com/MT-SUPER-POWER/Scopify/commit/7ca2301eda150deadd9c1e6763694b33b818acdc))
+- 新增 macOS 菜单栏图标与 Dock 右键菜单 ([70cc78e2](https://github.com/MT-SUPER-POWER/Scopify/commit/70cc78e2c13d6a160158cfb007baaafe3822c2dc))
+- 使用统一 Rust 模块支持双端桌面壁纸 ([a2d36427](https://github.com/MT-SUPER-POWER/Scopify/commit/a2d36427ae0cf762ef28b91086a0efd3999a2a01))
+
+### 修复
+
+- 修复桌面端 renderer 模块被 gitignore 导致 CI 缺失的问题 ([6346e949](https://github.com/MT-SUPER-POWER/Scopify/commit/6346e94912f4a4c5029ffbb81cecc321939c1d8b))
+- 调整 macOS 菜单栏播放按钮的间距与粗细 ([3568e286](https://github.com/MT-SUPER-POWER/Scopify/commit/3568e28615546273b73bc886d51cdba55a684de4))
+- 修复 macOS 壁纸类型与托盘防抖 ([d5bb9573](https://github.com/MT-SUPER-POWER/Scopify/commit/d5bb9573dc861a5c341e7888efc7ea57fa9b0ae0))
+- 修复隐藏 Dock 时桌面壁纸意外退出 ([0e48e192](https://github.com/MT-SUPER-POWER/Scopify/commit/0e48e1925ea48b7352bce28385c6ab78898cfe7e))
+- 修复更新说明文字穿透底部按钮栏 ([b1fcc70e](https://github.com/MT-SUPER-POWER/Scopify/commit/b1fcc70e4f66530b38a2638351c6e7497790837d))
+- 修复 macOS 安装包缺少完整临时签名 ([a3cfcdcc](https://github.com/MT-SUPER-POWER/Scopify/commit/a3cfcdccd430badb9ed8b70bbc8024227104472a))
+
 ## v2.0.4 — 2026-10-24
 
 ### 新增
