@@ -39,12 +39,8 @@ export interface MacTrayOptions {
 
 export type MacTrayLocale = "zh-CN" | "zh-TW" | "en-US";
 
-/**
- * 菜单栏展示档位：
- * - lyrics：当前歌词（无歌词时回退为歌名 - 歌手）+ 播放控制
- * - full：歌名 - 歌手 + 播放控制
- * - compact：仅歌名 + 播放控制
- * - controls：仅播放控制
- * - icon：仅应用图标
- */
-export type MacMenuBarDisplayMode = "lyrics" | "full" | "compact" | "controls" | "icon";
+/** 菜单栏展示开关：歌词与播放控制各自独立，都关掉时只剩应用图标。 */
+export interface MacMenuBarPreferences {
+  showLyrics: boolean;
+  showControls: boolean;
+}

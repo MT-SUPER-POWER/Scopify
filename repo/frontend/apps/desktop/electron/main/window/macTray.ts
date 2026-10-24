@@ -12,7 +12,7 @@ import {
   type Rectangle,
 } from "electron";
 import type { PlaybackProjection } from "@scopify/desktop-contract";
-import type { MacMenuBarDisplayMode, MacTrayLocale, MacTrayOptions } from "@/types/tray";
+import type { MacMenuBarPreferences, MacTrayLocale, MacTrayOptions } from "@/types/tray";
 import { trayLog } from "@main/utils/logger";
 import { isRecord, readUserDataJson, writeUserDataJson } from "@main/utils/userDataJson";
 import {
@@ -32,12 +32,8 @@ import {
 const MENU_BAR_ICON_SIZE = 18;
 /** 菜单里歌名过长会把整列撑宽，超出部分省略。 */
 const MAX_MENU_TEXT_LENGTH = 48;
-/** 菜单栏文字占的是所有应用共享的空间，按档位收得更紧。 */
-const MAX_STATUS_TEXT_LENGTH: Record<"lyrics" | "full" | "compact", number> = {
-  lyrics: 30,
-  full: 28,
-  compact: 18,
-};
+/** 菜单栏文字占的是所有应用共享的空间，歌词过长时省略。 */
+const MAX_LYRIC_TEXT_LENGTH = 30;
 /** 歌词切行定时器的最短间隔，避免密集短句时空转。 */
 const MIN_LYRIC_TICK_MS = 50;
 /** 菜单头部封面 32pt，按 @2x 取 64px。 */
@@ -46,8 +42,7 @@ const COVER_SIZE = 32;
 const CONTROL_ICON_SIZE = 16;
 const CONTROL_GAP = 6;
 const PREFERENCES_FILE = "mac-menu-bar.json";
-const DISPLAY_MODES: MacMenuBarDisplayMode[] = ["lyrics", "full", "compact", "controls", "icon"];
-const DEFAULT_DISPLAY_MODE: MacMenuBarDisplayMode = "lyrics";
+const DEFAULT_PREFERENCES: MacMenuBarPreferences = { showLyrics: true, showControls: true };
 
 const COPY = {
   "zh-CN": {
@@ -65,11 +60,8 @@ const COPY = {
     desktopWallpaper: "桌面动态壁纸",
     desktopController: "桌面音乐控制器",
     menuBarDisplay: "菜单栏显示",
-    displayLyrics: "当前歌词",
-    displayFull: "歌名与歌手",
-    displayCompact: "仅歌名",
-    displayControls: "仅播放控制",
-    displayIcon: "仅图标",
+    menuBarLyrics: "歌词",
+    menuBarControls: "播放控制",
     showMainWindow: "显示主窗口",
     settings: "设置…",
     quit: "退出 Scopify",
@@ -89,11 +81,8 @@ const COPY = {
     desktopWallpaper: "桌面動態桌布",
     desktopController: "桌面音樂控制器",
     menuBarDisplay: "選單列顯示",
-    displayLyrics: "目前歌詞",
-    displayFull: "歌名與歌手",
-    displayCompact: "僅歌名",
-    displayControls: "僅播放控制",
-    displayIcon: "僅圖示",
+    menuBarLyrics: "歌詞",
+    menuBarControls: "播放控制",
     showMainWindow: "顯示主視窗",
     settings: "設定…",
     quit: "結束 Scopify",
@@ -113,11 +102,8 @@ const COPY = {
     desktopWallpaper: "Desktop Wallpaper",
     desktopController: "Desktop Controller",
     menuBarDisplay: "Menu Bar Display",
-    displayLyrics: "Current Lyrics",
-    displayFull: "Title and Artist",
-    displayCompact: "Title Only",
-    displayControls: "Controls Only",
-    displayIcon: "Icon Only",
+    menuBarLyrics: "Lyrics",
+    menuBarControls: "Playback Controls",
     showMainWindow: "Show Main Window",
     settings: "Settings…",
     quit: "Quit Scopify",
@@ -125,14 +111,6 @@ const COPY = {
 } satisfies Record<MacTrayLocale, Record<string, string>>;
 
 type MacTrayCopy = (typeof COPY)[MacTrayLocale];
-
-const DISPLAY_MODE_LABEL: Record<MacMenuBarDisplayMode, keyof MacTrayCopy> = {
-  lyrics: "displayLyrics",
-  full: "displayFull",
-  compact: "displayCompact",
-  controls: "displayControls",
-  icon: "displayIcon",
-};
 
 /**
  * 菜单栏由三个 NSStatusItem 组成。系统把后创建的放在左侧，所以按 logo → 控制 → 歌名
@@ -169,7 +147,7 @@ interface CoverCache {
 let items: StatusItems | null = null;
 let layoutKey: string | null = null;
 let statusSignature: string | null = null;
-let displayMode: MacMenuBarDisplayMode | null = null;
+let menuBarPreferences: MacMenuBarPreferences | null = null;
 let cover: CoverCache | null = null;
 let lyricCache: LyricCache | null = null;
 let lyricTimer: ReturnType<typeof setTimeout> | undefined;
@@ -192,19 +170,20 @@ function truncate(text: string, max = MAX_MENU_TEXT_LENGTH) {
   return text.length > max ? `${text.slice(0, max - 1)}…` : text;
 }
 
-function getDisplayMode() {
-  if (displayMode) return displayMode;
+function getMenuBarPreferences(): MacMenuBarPreferences {
+  if (menuBarPreferences) return menuBarPreferences;
   const parsed = readUserDataJson(PREFERENCES_FILE, trayLog);
-  const stored = isRecord(parsed) ? parsed.displayMode : null;
-  displayMode = DISPLAY_MODES.includes(stored as MacMenuBarDisplayMode)
-    ? (stored as MacMenuBarDisplayMode)
-    : DEFAULT_DISPLAY_MODE;
-  return displayMode;
+  const read = (key: keyof MacMenuBarPreferences) =>
+    isRecord(parsed) && typeof parsed[key] === "boolean"
+      ? (parsed[key] as boolean)
+      : DEFAULT_PREFERENCES[key];
+  menuBarPreferences = { showLyrics: read("showLyrics"), showControls: read("showControls") };
+  return menuBarPreferences;
 }
 
-function setDisplayMode(mode: MacMenuBarDisplayMode) {
-  displayMode = mode;
-  writeUserDataJson(PREFERENCES_FILE, { displayMode: mode }, trayLog);
+function updateMenuBarPreferences(update: Partial<MacMenuBarPreferences>) {
+  menuBarPreferences = { ...getMenuBarPreferences(), ...update };
+  writeUserDataJson(PREFERENCES_FILE, menuBarPreferences, trayLog);
 }
 
 /** 菜单项副标题需要 macOS 14.4+，更早的系统把歌手并进主标题。 */
@@ -462,7 +441,7 @@ function buildWallpaperItem(options: MacTrayOptions, copy: MacTrayCopy) {
 function buildStatusMenu(options: MacTrayOptions, rerender: () => void) {
   const copy = getCopy();
   const lyric = getDesktopLyricPreferences();
-  const mode = getDisplayMode();
+  const display = getMenuBarPreferences();
 
   const template: MenuItemConstructorOptions[] = [
     ...buildPlaybackItems(options, copy),
@@ -496,16 +475,26 @@ function buildStatusMenu(options: MacTrayOptions, rerender: () => void) {
     { type: "separator" },
     {
       label: copy.menuBarDisplay,
-      submenu: DISPLAY_MODES.map((value) => ({
-        label: copy[DISPLAY_MODE_LABEL[value]],
-        type: "radio",
-        checked: value === mode,
-        click: () => {
-          if (value === getDisplayMode()) return;
-          setDisplayMode(value);
-          rerender();
+      submenu: [
+        {
+          label: copy.menuBarLyrics,
+          type: "checkbox",
+          checked: display.showLyrics,
+          click: () => {
+            updateMenuBarPreferences({ showLyrics: !display.showLyrics });
+            rerender();
+          },
         },
-      })),
+        {
+          label: copy.menuBarControls,
+          type: "checkbox",
+          checked: display.showControls,
+          click: () => {
+            updateMenuBarPreferences({ showControls: !display.showControls });
+            rerender();
+          },
+        },
+      ],
     },
     {
       label: copy.showMainWindow,
@@ -569,7 +558,7 @@ function stopLyricTicker() {
 }
 
 /**
- * 「当前歌词」档位下把歌名项的文字换成当前歌词，并定时到下一行起点再刷新。
+ * 开启菜单栏歌词时把文字项写成当前歌词，并定时到下一行起点再刷新。
  * 前奏、间奏的空行与无歌词时回退为「歌名 - 歌手」。
  */
 function updateLyricTitle(options: MacTrayOptions) {
@@ -578,7 +567,7 @@ function updateLyricTitle(options: MacTrayOptions) {
   const title = items?.title;
   const snapshot = options.playback.getSnapshot();
   const track = describeTrack(snapshot, getCopy());
-  if (getDisplayMode() !== "lyrics" || !title || title.isDestroyed() || !snapshot || !track) {
+  if (!getMenuBarPreferences().showLyrics || !title || title.isDestroyed() || !snapshot || !track) {
     lyricText = null;
     return;
   }
@@ -590,7 +579,7 @@ function updateLyricTitle(options: MacTrayOptions) {
 
   const text = truncate(
     lines[index]?.text || `${track.title} - ${track.artists}`,
-    MAX_STATUS_TEXT_LENGTH.lyrics,
+    MAX_LYRIC_TEXT_LENGTH,
   );
   if (text !== lyricText) {
     lyricText = text;
@@ -652,11 +641,11 @@ function renderStatusItems(
   popUp: (tray: Tray) => void,
 ) {
   const copy = getCopy();
-  const mode = getDisplayMode();
+  const display = getMenuBarPreferences();
   const track = describeTrack(snapshot, copy);
   const layout = {
-    controls: Boolean(track) && mode !== "icon",
-    title: Boolean(track) && (mode === "lyrics" || mode === "full" || mode === "compact"),
+    controls: Boolean(track) && display.showControls,
+    title: Boolean(track) && display.showLyrics,
   };
   const nextLayoutKey = `${layout.controls}|${layout.title}`;
   if (nextLayoutKey !== layoutKey) {
@@ -668,7 +657,6 @@ function renderStatusItems(
 
   // 播放进度等高频推送不影响菜单栏，只在展示内容变化时才写入原生对象。
   const signature = JSON.stringify([
-    mode,
     track?.title ?? null,
     track?.artists ?? null,
     snapshot?.isPlaying ?? false,
@@ -679,14 +667,8 @@ function renderStatusItems(
 
   items.logo.setToolTip(track ? `${track.title} - ${track.artists}` : "Scopify");
   items.controls?.setImage(getControlStrip(Boolean(snapshot?.isPlaying), Boolean(snapshot?.liked)));
-  if (items.title && track && mode !== "lyrics") {
-    const text =
-      mode === "full"
-        ? truncate(`${track.title} - ${track.artists}`, MAX_STATUS_TEXT_LENGTH.full)
-        : truncate(track.title, MAX_STATUS_TEXT_LENGTH.compact);
-    items.title.setTitle(text);
-    items.title.setToolTip(`${track.title} - ${track.artists}`);
-  }
+  // 歌词文字由 updateLyricTitle 按进度写入，这里只更新悬停提示。
+  if (items.title && track) items.title.setToolTip(`${track.title} - ${track.artists}`);
 }
 
 function getDockSignature(options: MacTrayOptions, snapshot: PlaybackProjection | null) {
@@ -704,8 +686,8 @@ function getDockSignature(options: MacTrayOptions, snapshot: PlaybackProjection 
 }
 
 /**
- * 初始化 macOS 菜单栏（网易云式「歌名 + 播放控制 + 图标」）与 Dock 右键菜单。重复调用保持幂等。
- * 点击图标或歌名弹出原生菜单；展示档位可在菜单的「菜单栏显示」里切换并持久化。
+ * 初始化 macOS 菜单栏（网易云式「歌词 + 播放控制 + 图标」）与 Dock 右键菜单。重复调用保持幂等。
+ * 点击图标或歌词弹出原生菜单；歌词与播放控制可在「菜单栏显示」里分别开关并持久化。
  */
 export function initMacTray(options: MacTrayOptions) {
   if (process.platform !== "darwin" || items) return;
