@@ -88,6 +88,17 @@ export function SocialHeader({ view, topic, groupId, groups }: SocialHeaderProps
     );
   }
 
+  // 未登录时标签、发布、找人与刷新都不可用，只保留标题
+  if (!uid) {
+    return (
+      <header className={s.streamHeader} data-top={isAtTop}>
+        <div className={s.streamToolbar}>
+          <h1>{t("social.title")}</h1>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <>
       <header className={s.streamHeader} data-top={isAtTop}>

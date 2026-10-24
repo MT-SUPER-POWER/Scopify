@@ -741,6 +741,11 @@
   max-width: 1220px;
   min-height: calc(var(--social-viewport-height, 100dvh) - 64px);
 }
+/* 未登录时没有右侧栏，主栏居中 */
+.streamPage .feedLayout[data-solo="true"] {
+  display: block;
+  max-width: 700px;
+}
 .streamHeader {
   position: sticky;
   top: 64px;

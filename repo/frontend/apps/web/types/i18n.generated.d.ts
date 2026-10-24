@@ -1541,12 +1541,6 @@ export interface TranslateFn {
    */
   (key: "social.login", params?: TranslationParams): string;
   /**
-   * zh-CN: 登录
-   * zh-TW: 登入
-   * en-US: Sign in
-   */
-  (key: "social.loginAction", params?: TranslationParams): string;
-  /**
    * zh-CN: 还没有动态，分享一首此刻想听的歌吧。
    * zh-TW: 還沒有動態，分享一首此刻想聽的歌吧。
    * en-US: No posts yet. Share a song to start the conversation.
@@ -6368,15 +6362,15 @@ export interface TranslateFn {
    */
   (key: "playlist.table.searchNoResults", params?: TranslationParams): string;
   /**
-   * zh-CN: 暂时没有请求到歌曲数据，可以再试一次。
-   * zh-TW: 暫時沒有取得歌曲資料，可以再試一次。
-   * en-US: No song data has been fetched yet. You can try again.
+   * zh-CN: 没有加载到歌曲
+   * zh-TW: 沒有載入到歌曲
+   * en-US: Couldn't load the songs
    */
   (key: "playlist.table.noFetchedData", params?: TranslationParams): string;
   /**
-   * zh-CN: 暂无歌曲数据
-   * zh-TW: 暫無歌曲資料
-   * en-US: No song data available
+   * zh-CN: 这里还没有歌曲
+   * zh-TW: 這裡還沒有歌曲
+   * en-US: No songs here yet
    */
   (key: "playlist.table.noSongs", params?: TranslationParams): string;
   /**

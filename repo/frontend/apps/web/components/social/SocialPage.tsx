@@ -1,14 +1,15 @@
 "use client";
 
+import { MessagesSquare } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AppBackground } from "@/components/shared/AppBackground";
+import { QuietState } from "@/components/shared/QuietState";
 import { useSocialAccount, useSocialHotTopics } from "@/hooks/social/useSocialQueries";
 import { useSocialViewport } from "@/hooks/social/useSocialViewport";
 import { useUserFansGroupsQuery } from "@/hooks/fansGroup/useFansGroupQueries";
 import { SOCIAL_DISCOVERY_GROUP } from "@/constants/social";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import { SocialLogin } from "./SocialPrimitives";
 import { SocialComposer } from "./SocialComposer";
 import { SocialFeed } from "./SocialFeed";
 import { SocialPeople } from "./SocialPeople";
@@ -77,8 +78,8 @@ function SocialPageContent() {
 
   return (
     <div ref={pageRef} className={s.page + " " + s.streamPage}>
-      <AppBackground />
-      <div className={s.feedLayout}>
+      {uid ? <AppBackground /> : null}
+      <div className={s.feedLayout} data-solo={!uid}>
         <main className={s.main}>
           <SocialHeader
             view={people ? "people" : following ? "friends" : "hot"}
@@ -87,7 +88,7 @@ function SocialPageContent() {
             groups={userGroups}
           />
           {!uid ? (
-            <SocialLogin />
+            <QuietState icon={MessagesSquare} title={t("social.login")} />
           ) : people ? (
             <section className={s.peopleBrowser}>
               <SocialSearchForm key={search} query={search} />

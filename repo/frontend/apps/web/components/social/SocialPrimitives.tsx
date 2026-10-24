@@ -1,7 +1,8 @@
 "use client";
 
-import { LoaderCircle, UserRound } from "lucide-react";
+import { LoaderCircle, MessagesSquare, UserRound } from "lucide-react";
 import Link from "next/link";
+import { QuietState } from "@/components/shared/QuietState";
 import { useI18n } from "@/store/module/i18n";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { profileHref } from "@/lib/social/normalize";
@@ -103,18 +104,6 @@ export function SocialLoadMore({ more, pending, error, onLoad }: SocialLoadMoreP
   );
 }
 export function SocialLogin() {
-  const { t } = useI18n(),
-    requireLogin = useRequireLoginAction();
-  return (
-    <div className={s.state}>
-      <p>{t("social.login")}</p>
-      <button
-        type="button"
-        className={s.button + " " + s.primary}
-        onClick={() => void requireLogin(() => {})}
-      >
-        {t("social.loginAction")}
-      </button>
-    </div>
-  );
+  const { t } = useI18n();
+  return <QuietState compact icon={MessagesSquare} title={t("social.login")} />;
 }
