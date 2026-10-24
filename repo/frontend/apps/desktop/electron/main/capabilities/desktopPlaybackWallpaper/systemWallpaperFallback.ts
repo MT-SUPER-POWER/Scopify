@@ -1,4 +1,3 @@
-import { spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -8,11 +7,9 @@ import type {
   DesktopPlaybackWallpaperSystemFallback,
   SystemWallpaperFallbackOperationResult,
   WindowsSystemWallpaperFallbackOptions,
-  SystemWallpaperAction,
 } from "@/types/systemWallpaperFallback";
 import { wallpaperLog } from "@main/utils/logger";
-import { parseSystemWallpaperResult } from "./fallbackPolicy";
-import { resolveWindowsScriptPath } from "@main/services/windowsScripts";
+import { loadNativeWallpaperModule } from "@main/services/nativeWallpaperModule";
 
 const BACKGROUND_CAPTURE_EVENT = "desktop-playback-wallpaper:capture-background";
 const CAPTURE_READY_SELECTOR = '[data-desktop-playback-wallpaper-content-ready="true"]';
@@ -27,32 +24,26 @@ export function createWindowsSystemWallpaperFallback(
     options.stateDirectory ?? join(app.getPath("userData"), "desktop-playback-wallpaper");
   const fallbackImagePath = join(stateDirectory, FALLBACK_IMAGE_FILE);
   const journalPath = join(stateDirectory, JOURNAL_FILE);
-  const scriptPath = options.scriptPath ?? resolveWindowsScriptPath("system-wallpaper.ps1");
   let applied = false;
-
+  let recoveryPending = false;
   mkdirSync(stateDirectory, { recursive: true });
 
-  const getArguments = (action: SystemWallpaperAction, extraArguments: string[]) => [
-    "-NoLogo",
-    "-NoProfile",
-    "-NonInteractive",
-    "-ExecutionPolicy",
-    "Bypass",
-    "-File",
-    scriptPath,
-    "-Action",
-    action,
-    ...extraArguments,
-  ];
-
   const restoreSync = (reason: string): SystemWallpaperFallbackOperationResult => {
-    const child = spawnSync(
-      "powershell.exe",
-      getArguments("Restore", ["-JournalPath", journalPath]),
-      { encoding: "utf8", timeout: 15_000, windowsHide: true },
-    );
-    const result = parseSystemWallpaperResult(child.stdout ?? "", child.stderr ?? "", child.status);
-    applied = false;
+    if (!existsSync(journalPath)) {
+      applied = false;
+      recoveryPending = false;
+      return { changed: false, success: true };
+    }
+    let result: SystemWallpaperFallbackOperationResult;
+    try {
+      result = loadNativeWallpaperModule().restoreSystemWallpaperSync(journalPath);
+    } catch (error) {
+      result = nativeFailure(error);
+    }
+    if (result.success) {
+      applied = false;
+      recoveryPending = false;
+    } else recoveryPending = true;
     logOperation("restore", reason, result);
     return result;
   };
@@ -63,6 +54,8 @@ export function createWindowsSystemWallpaperFallback(
 
   return {
     async apply(window, signal) {
+      if (recoveryPending)
+        return { error: "The previous system wallpaper has not been recovered.", success: false };
       if (applied) return { changed: false, success: true };
       throwIfAborted(signal);
 
@@ -70,10 +63,11 @@ export function createWindowsSystemWallpaperFallback(
         const png = await captureBackgroundFrame(window, signal);
         throwIfAborted(signal);
         writeFileSync(fallbackImagePath, png);
-        const result = await runSystemWallpaperScript(
-          getArguments("Apply", ["-ImagePath", fallbackImagePath, "-JournalPath", journalPath]),
-          signal,
+        const result = await loadNativeWallpaperModule().applySystemWallpaper(
+          fallbackImagePath,
+          journalPath,
         );
+        throwIfAborted(signal);
         if (!result.success) {
           restoreSync("apply-failure");
           return result;
@@ -96,16 +90,23 @@ export function createWindowsSystemWallpaperFallback(
     },
 
     isApplied() {
-      return applied;
+      return applied || recoveryPending;
     },
 
     async restore(reason, signal) {
-      if (!applied) return { changed: false, success: true };
-      const result = await runSystemWallpaperScript(
-        getArguments("Restore", ["-JournalPath", journalPath]),
-        signal,
-      );
-      if (result.success) applied = false;
+      if (!applied && !recoveryPending) return { changed: false, success: true };
+      throwIfAborted(signal);
+      let result: SystemWallpaperFallbackOperationResult;
+      try {
+        result = await loadNativeWallpaperModule().restoreSystemWallpaper(journalPath);
+      } catch (error) {
+        result = nativeFailure(error);
+      }
+      if (result.success) {
+        applied = false;
+        recoveryPending = false;
+      } else recoveryPending = true;
+      throwIfAborted(signal);
       logOperation("restore", reason, result);
       return result;
     },
@@ -188,42 +189,8 @@ async function captureBackgroundFrame(window: BrowserWindow, signal: AbortSignal
   }
 }
 
-async function runSystemWallpaperScript(
-  arguments_: string[],
-  signal: AbortSignal,
-): Promise<SystemWallpaperFallbackOperationResult> {
-  throwIfAborted(signal);
-  const child = spawn("powershell.exe", arguments_, { windowsHide: true });
-  let stdout = "";
-  let stderr = "";
-  let launchError: unknown;
-  child.stdout.setEncoding("utf8");
-  child.stderr.setEncoding("utf8");
-  child.stdout.on("data", (chunk) => {
-    stdout += chunk;
-  });
-  child.stderr.on("data", (chunk) => {
-    stderr += chunk;
-  });
-
-  const onAbort = () => child.kill();
-  signal.addEventListener("abort", onAbort, { once: true });
-  const exitCode = await new Promise<number | null>((resolve) => {
-    child.once("error", (error) => {
-      launchError = error;
-      resolve(null);
-    });
-    child.once("close", resolve);
-  });
-  signal.removeEventListener("abort", onAbort);
-  throwIfAborted(signal);
-  if (launchError) {
-    return {
-      error: `Failed to launch the Windows system-wallpaper host: ${String(launchError)}`,
-      success: false,
-    };
-  }
-  return parseSystemWallpaperResult(stdout, stderr, exitCode);
+function nativeFailure(error: unknown): SystemWallpaperFallbackOperationResult {
+  return { success: false, error: error instanceof Error ? error.message : String(error) };
 }
 
 function logOperation(

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import type {
-  NativeWallpaperModule,
+  NativeWallpaperSessionModule,
   NativeWallpaperSession,
   NativeWallpaperSessionOptions,
   PendingNativeWallpaperAttach,
@@ -16,7 +16,7 @@ const attachmentSchema = z.object({
 
 /** Owns cancellation and acknowledgements for the same ABI on both operating systems. */
 export function createNativeWallpaperSession(
-  native: NativeWallpaperModule,
+  native: NativeWallpaperSessionModule,
   options: NativeWallpaperSessionOptions = {},
 ): NativeWallpaperSession {
   let requested = false;

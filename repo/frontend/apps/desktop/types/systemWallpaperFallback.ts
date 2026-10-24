@@ -1,7 +1,5 @@
 import type { BrowserWindow } from "electron";
 
-export type SystemWallpaperAction = "Apply" | "Restore";
-
 export type SystemWallpaperFallbackOperationResult =
   | { changed: boolean; detail?: unknown; success: true }
   | { error: string; detail?: unknown; success: false };
@@ -18,6 +16,5 @@ export interface DesktopPlaybackWallpaperSystemFallback {
 }
 
 export interface WindowsSystemWallpaperFallbackOptions {
-  scriptPath?: string;
   stateDirectory?: string;
 }

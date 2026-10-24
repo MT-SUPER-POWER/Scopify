@@ -1,4 +1,6 @@
 import type { BrowserWindow, Rectangle } from "electron";
+import type { NativeDesktopIconState } from "./desktopIconVisibility";
+import type { SystemWallpaperFallbackOperationResult } from "./systemWallpaperFallback";
 
 /** Main-only Node-API ABI shared by the Rust platform backends. Never exposed to Preload. */
 export interface NativeWallpaperModule {
@@ -13,7 +15,20 @@ export interface NativeWallpaperModule {
   detach(): void;
   pollEvents(): string[];
   isAttached(): boolean;
+  getDesktopIconVisibility(): Promise<NativeDesktopIconState>;
+  setDesktopIconVisibility(visible: boolean): Promise<NativeDesktopIconState>;
+  applySystemWallpaper(
+    imagePath: string,
+    journalPath: string,
+  ): Promise<SystemWallpaperFallbackOperationResult>;
+  restoreSystemWallpaper(journalPath: string): Promise<SystemWallpaperFallbackOperationResult>;
+  restoreSystemWallpaperSync(journalPath: string): SystemWallpaperFallbackOperationResult;
 }
+
+export type NativeWallpaperSessionModule = Pick<
+  NativeWallpaperModule,
+  "attach" | "detach" | "pollEvents" | "isAttached"
+>;
 
 export interface NativeWallpaperAttachment {
   hwnd: number;

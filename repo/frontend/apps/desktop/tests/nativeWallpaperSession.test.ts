@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createNativeWallpaperSession } from "../electron/main/capabilities/desktopPlaybackWallpaper/nativeWallpaperSession";
-import type { NativeWallpaperModule } from "../types/nativeWallpaper";
+import type { NativeWallpaperSessionModule } from "../types/nativeWallpaper";
 
 const bounds = { x: -1280, y: -100, width: 1280, height: 720 };
 const attachedEvent = (mode: string) =>
@@ -10,7 +10,7 @@ function backend(mode: "classic" | "macos-desktop") {
   const events: string[] = [];
   let attached = false;
   let detachRequested = false;
-  const native: NativeWallpaperModule = {
+  const native: NativeWallpaperSessionModule = {
     attach() {
       attached = true;
       events.push(attachedEvent(mode));

@@ -3,6 +3,7 @@
 
 #[cfg(windows)]
 mod attach;
+mod desktop_services;
 mod events;
 #[cfg(target_os = "macos")]
 mod macos;
@@ -10,6 +11,10 @@ mod macos;
 mod message_window;
 #[cfg(windows)]
 mod monitor;
+#[cfg(any(windows, test))]
+mod system_wallpaper;
+#[cfg(windows)]
+mod windows_desktop;
 #[cfg(windows)]
 mod windows_session;
 

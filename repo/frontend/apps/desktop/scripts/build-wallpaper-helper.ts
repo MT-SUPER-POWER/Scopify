@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import { join } from "node:path";
 
 import { runNapiBuild } from "../lib/napiBuild";
+import { WALLPAPER_NATIVE_EXPORTS } from "../lib/wallpaperNativeAbi";
 
 if (process.platform !== "win32" && process.platform !== "darwin") process.exit(0);
 
@@ -30,7 +31,7 @@ for (const arch of architectures) {
   // Only load the host architecture; cross-built artifacts cannot be loaded into this process.
   if (arch === process.arch) {
     const native = createRequire(import.meta.url)(binaryPath) as Record<string, unknown>;
-    for (const name of ["attach", "detach", "pollEvents", "isAttached"]) {
+    for (const name of WALLPAPER_NATIVE_EXPORTS) {
       if (typeof native[name] !== "function")
         throw new Error(`Native wallpaper module is missing ${name}`);
     }

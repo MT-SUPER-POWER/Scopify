@@ -50,6 +50,18 @@ async function run() {
     await window.loadURL(
       'data:text/html,<html><body style="margin:0;background:%232b2824"><div data-desktop-playback-wallpaper-content-ready="true">Scopify native wallpaper verification</div></body></html>',
     );
+    if (process.platform !== "win32") {
+      assert.equal((await native.getDesktopIconVisibility()).supported, false);
+      assert.equal((await native.setDesktopIconVisibility(false)).supported, false);
+      const journal = join(outputRoot, "unsupported-system-wallpaper.json");
+      assert.equal(
+        (await native.applySystemWallpaper(join(outputRoot, "missing.png"), journal)).success,
+        false,
+      );
+      assert.equal((await native.restoreSystemWallpaper(journal)).success, false);
+      assert.equal(native.restoreSystemWallpaperSync(journal).success, false);
+      console.log("[wallpaper-smoke] desktop service async/sync ABI and platform gates passed");
+    }
     for (let cycle = 1; cycle <= 3; cycle++) {
       const active = (await window.webContents.executeJavaScript(
         "window.wallpaperSmoke.configure({enabled:true})",

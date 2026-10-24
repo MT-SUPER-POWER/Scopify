@@ -1,5 +1,5 @@
-export type DesktopIconAction = "Get" | "Hide" | "Show";
-
-export interface WindowsDesktopIconVisibilityOptions {
-  scriptPath?: string;
+export interface NativeDesktopIconState {
+  supported: boolean;
+  visible?: boolean;
+  diagnostic?: string;
 }

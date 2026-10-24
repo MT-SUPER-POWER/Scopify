@@ -1,94 +1,38 @@
-import { spawn } from "node:child_process";
-
-import { resolveWindowsScriptPath } from "@main/services/windowsScripts";
-
 import type { DesktopIconVisibilityState } from "@scopify/desktop-contract";
+import { loadNativeWallpaperModule } from "@main/services/nativeWallpaperModule";
 
-import { parseWindowsDesktopIconVisibilityResult } from "./result";
-
-import type {
-  DesktopIconAction,
-  WindowsDesktopIconVisibilityOptions,
-} from "@/types/desktopIconVisibility";
-export type { WindowsDesktopIconVisibilityOptions } from "@/types/desktopIconVisibility";
-
-export function getWindowsDesktopIconVisibility(
-  options: WindowsDesktopIconVisibilityOptions = {},
-): Promise<DesktopIconVisibilityState> {
-  return runWindowsDesktopIconAction("Get", options);
+export function getWindowsDesktopIconVisibility(): Promise<DesktopIconVisibilityState> {
+  return nativeVisibility();
 }
 
 export function setWindowsDesktopIconVisibility(
   visible: boolean,
-  options: WindowsDesktopIconVisibilityOptions = {},
 ): Promise<DesktopIconVisibilityState> {
-  return runWindowsDesktopIconAction(visible ? "Show" : "Hide", options);
+  return nativeVisibility(visible);
 }
 
-async function runWindowsDesktopIconAction(
-  action: DesktopIconAction,
-  options: WindowsDesktopIconVisibilityOptions,
-): Promise<DesktopIconVisibilityState> {
-  if (process.platform !== "win32") {
+async function nativeVisibility(visible?: boolean): Promise<DesktopIconVisibilityState> {
+  if (process.platform !== "win32")
     return {
       diagnostic: "Desktop icon visibility control requires Windows Explorer.",
       supported: false,
       visible: null,
     };
-  }
-
-  const scriptPath = options.scriptPath ?? resolveWindowsScriptPath("desktop-icons.ps1");
-  const child = spawn(
-    "powershell.exe",
-    [
-      "-NoLogo",
-      "-NoProfile",
-      "-NonInteractive",
-      "-ExecutionPolicy",
-      "Bypass",
-      "-File",
-      scriptPath,
-      "-Action",
-      action,
-    ],
-    { windowsHide: true },
-  );
-
-  let stdout = "";
-  let stderr = "";
-  let launchError: unknown;
-  let timedOut = false;
-  child.stdout.setEncoding("utf8");
-  child.stderr.setEncoding("utf8");
-  child.stdout.on("data", (chunk) => {
-    stdout += chunk;
-  });
-  child.stderr.on("data", (chunk) => {
-    stderr += chunk;
-  });
-
-  const timeout = setTimeout(() => {
-    timedOut = true;
-    child.kill();
-  }, 10_000);
-  const exitCode = await new Promise<number | null>((resolve) => {
-    child.once("error", (error) => {
-      launchError = error;
-      resolve(null);
-    });
-    child.once("close", resolve);
-  });
-  clearTimeout(timeout);
-
-  if (launchError || timedOut) {
+  try {
+    const native = loadNativeWallpaperModule();
+    const result = await (visible === undefined
+      ? native.getDesktopIconVisibility()
+      : native.setDesktopIconVisibility(visible));
     return {
-      diagnostic: timedOut
-        ? "Windows desktop icon control timed out."
-        : `Failed to launch Windows desktop icon control: ${String(launchError)}`,
+      supported: result.supported,
+      visible: result.visible ?? null,
+      ...(result.diagnostic ? { diagnostic: result.diagnostic } : {}),
+    };
+  } catch (error) {
+    return {
+      diagnostic: error instanceof Error ? error.message : String(error),
       supported: false,
       visible: null,
     };
   }
-
-  return parseWindowsDesktopIconVisibilityResult(stdout, stderr, exitCode);
 }
