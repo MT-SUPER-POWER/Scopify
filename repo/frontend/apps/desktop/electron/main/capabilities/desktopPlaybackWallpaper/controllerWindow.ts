@@ -122,7 +122,7 @@ export function createDesktopPlaybackControllerWindow(
     },
 
     async show() {
-      if (process.platform !== "win32") {
+      if (process.platform !== "win32" && process.platform !== "darwin") {
         return { opened: false, reason: "unsupported" };
       }
 

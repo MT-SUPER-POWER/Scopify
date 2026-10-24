@@ -51,8 +51,9 @@ const config = {
         filter: ["*.node"],
       },
       {
-        from: "native/wallpaper-helper/target/release/scopify-wallpaper-helper.exe",
-        to: "scopify-wallpaper-helper.exe",
+        from: "native/wallpaper-helper",
+        to: "native/wallpaper-helper",
+        filter: ["scopify-wallpaper-helper.win32-${arch}-msvc.node"],
       },
     ],
     target: ["nsis"],
@@ -60,6 +61,13 @@ const config = {
     requestedExecutionLevel: "asInvoker",
   },
   mac: {
+    extraResources: [
+      {
+        from: "native/wallpaper-helper",
+        to: "native/wallpaper-helper",
+        filter: ["scopify-wallpaper-helper.darwin-${arch}.node"],
+      },
+    ],
     target: [
       {
         target: "dmg",

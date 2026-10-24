@@ -1,0 +1,14 @@
+{
+  "name": "@scopify/wallpaper-helper",
+  "private": true,
+  "version": "0.1.0",
+  "napi": {
+    "binaryName": "scopify-wallpaper-helper",
+    "targets": [
+      "aarch64-apple-darwin",
+      "x86_64-apple-darwin",
+      "x86_64-pc-windows-msvc",
+      "aarch64-pc-windows-msvc"
+    ]
+  }
+}

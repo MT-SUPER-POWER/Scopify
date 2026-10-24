@@ -97,9 +97,9 @@ function createFoundationDriver(platform: NodeJS.Platform): DesktopPlaybackWallp
         return null;
       }
 
-      if (platform !== "win32") {
+      if (platform !== "win32" && platform !== "darwin") {
         return {
-          diagnostic: "Desktop playback wallpaper requires Windows.",
+          diagnostic: "Desktop playback wallpaper requires Windows or macOS.",
           state: "unsupported",
         };
       }

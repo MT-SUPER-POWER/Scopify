@@ -2,11 +2,26 @@
 name = "scopify-wallpaper-helper"
 version = "0.1.0"
 edition = "2021"
-description = "Windows desktop-wallpaper attach helper for Scopify"
+description = "Cross-platform native desktop wallpaper bridge for Scopify"
 license = "AGPL-3.0"
+autobins = false
+build = "build.rs"
 
-# The windows crate is target-gated so `cargo test` (pure-logic modules: cli.rs / events.rs)
-# still builds and runs on non-Windows hosts, e.g. a Linux dev machine or CI lint job.
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi = { version = "3.12.1", features = ["napi9"] }
+napi-derive = "3.6.3"
+
+[build-dependencies]
+napi-build = "2.4.1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6.4"
+objc2-foundation = { version = "0.3.2", default-features = false, features = ["std", "NSGeometry", "objc2-core-foundation"] }
+
+# Both platforms share the Node-API ABI; only the operating-system backend differs.
 [target.'cfg(windows)'.dependencies]
 windows = { version = "0.62", features = [
     "Win32_Foundation",

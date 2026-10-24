@@ -1,4 +1,14 @@
 import { screen, type BrowserWindow, type Rectangle } from "electron";
+import type {
+  ActiveWallpaperProfile,
+  MainWindowState,
+  ElectronDesktopPlaybackWallpaperDriver,
+  ElectronDesktopPlaybackWallpaperDriverOptions,
+} from "@/types/electronWallpaperDriver";
+export type {
+  ElectronDesktopPlaybackWallpaperDriver,
+  ElectronDesktopPlaybackWallpaperDriverOptions,
+} from "@/types/electronWallpaperDriver";
 
 import type {
   DesktopPlaybackWallpaperSystemFallback,
@@ -8,40 +18,38 @@ import { wallpaperLog } from "@main/utils/logger";
 import type { DesktopPlaybackWallpaperDriver } from "./capability";
 import { shouldUseDesktopPlaybackWallpaperSystemFallback } from "./fallbackPolicy";
 import { createNativeWallpaperHost } from "./nativeWallpaperHost";
+import { createMacDesktopPlaybackWallpaperDriver } from "./macDriver";
+import {
+  createAbortError,
+  waitForExactWallpaperContentBounds,
+  waitForWallpaperPresentation,
+} from "./presentation";
 import { createWindowsSystemWallpaperFallback } from "./systemWallpaperFallback";
 import { resolveWallpaperTargetDisplay } from "./wallpaperTargetDisplay";
 
-const WALLPAPER_PRESENTATION_READY_SELECTOR =
-  '[data-desktop-playback-wallpaper-content-ready="true"]';
-
-interface ActiveWallpaperProfile {
-  bounds: Rectangle;
-  displayId: string;
-}
-
-interface MainWindowState {
-  alwaysOnTop: boolean;
-  bounds: Rectangle;
-  fullScreen: boolean;
-  maximized: boolean;
-  minimized: boolean;
-  movable: boolean;
-  resizable: boolean;
-  visible: boolean;
-}
-
-export interface ElectronDesktopPlaybackWallpaperDriver extends DesktopPlaybackWallpaperDriver {
-  isWallpaperActive(): boolean;
-}
-
-export interface ElectronDesktopPlaybackWallpaperDriverOptions {
-  mainWindow: BrowserWindow;
-  onHostLost?(diagnostic: string): void;
-  systemWallpaperFallback?: DesktopPlaybackWallpaperSystemFallback | null;
-}
-
-/** Owns the main window's transition between normal application and WorkerW Stage presentation. */
+/** Selects the platform posture; both backends share the native Rust host and IPC capability. */
 export function createElectronDesktopPlaybackWallpaperDriver(
+  options: ElectronDesktopPlaybackWallpaperDriverOptions,
+): ElectronDesktopPlaybackWallpaperDriver {
+  if (process.platform === "darwin") return createMacDesktopPlaybackWallpaperDriver(options);
+
+  const driver = createWindowsDriver(options);
+  let pending: Promise<unknown> = Promise.resolve();
+  return {
+    isWallpaperActive: driver.isWallpaperActive,
+    reconcile(preferences, context) {
+      const operation = pending.then(() => driver.reconcile(preferences, context));
+      pending = operation.catch(() => undefined);
+      return operation;
+    },
+    async dispose() {
+      await pending;
+      await driver.dispose?.();
+    },
+  };
+}
+
+function createWindowsDriver(
   options: ElectronDesktopPlaybackWallpaperDriverOptions,
 ): ElectronDesktopPlaybackWallpaperDriver {
   const systemWallpaperFallback =
@@ -63,15 +71,15 @@ export function createElectronDesktopPlaybackWallpaperDriver(
     const window = getWindow();
     const wasAttached = nativeHost.isAttached();
     const state = normalWindowState;
-    activeProfile = null;
-    normalWindowState = null;
-    if (!window) return { changed: false, success: true } as const;
-
-    if (wasAttached && !(await nativeHost.detach(signal))) {
+    if (!(await nativeHost.detach(signal))) {
       const error = "The native wallpaper helper could not detach the main window.";
       wallpaperLog.error(`[desktop-playback-wallpaper] ${error}`);
       return { error, success: false } as const;
     }
+
+    activeProfile = null;
+    normalWindowState = null;
+    if (!window) return { changed: false, success: true } as const;
 
     window.setSkipTaskbar(false);
     if (state) {
@@ -242,8 +250,8 @@ export function createElectronDesktopPlaybackWallpaperDriver(
         return { displayId: nextProfile.displayId, state: "running" };
       } catch (error) {
         systemWallpaperFallback?.restoreSync("start-failure");
+        await restoreMainWindow({ focus: !signal.aborted });
         if (signal.aborted || revision !== operationRevision) throw error;
-        await restoreMainWindow({ focus: true });
         return {
           diagnostic: error instanceof Error ? error.message : String(error),
           retryable: true,
@@ -270,88 +278,6 @@ function captureMainWindowState(window: BrowserWindow): MainWindowState {
     resizable: window.isResizable(),
     visible: window.isVisible(),
   };
-}
-
-async function waitForWallpaperPresentation(window: BrowserWindow, signal: AbortSignal) {
-  throwIfAborted(signal);
-  if (!window.webContents.getURL() || window.webContents.isLoadingMainFrame()) {
-    await waitForMainFrame(window, signal);
-  }
-  const ready = await window.webContents.executeJavaScript(`
-    new Promise((resolve) => {
-      const deadline = performance.now() + 5000;
-      const check = () => {
-        if (document.querySelector(${JSON.stringify(WALLPAPER_PRESENTATION_READY_SELECTOR)})) {
-          resolve(true);
-          return;
-        }
-        if (performance.now() >= deadline) {
-          resolve(false);
-          return;
-        }
-        requestAnimationFrame(check);
-      };
-      check();
-    })
-  `);
-  throwIfAborted(signal);
-  if (ready !== true) {
-    throw new Error("The main Renderer did not enter its Stage-only wallpaper presentation.");
-  }
-}
-
-function waitForMainFrame(window: BrowserWindow, signal: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    const cleanup = () => {
-      signal.removeEventListener("abort", onAbort);
-      window.webContents.removeListener("did-fail-load", onFail);
-      window.webContents.removeListener("did-finish-load", onReady);
-    };
-    const onAbort = () => {
-      cleanup();
-      reject(createAbortError());
-    };
-    const onFail = (_event: Electron.Event, code: number, description: string) => {
-      cleanup();
-      reject(new Error(`The main Renderer failed to load (${code}): ${description}`));
-    };
-    const onReady = () => {
-      cleanup();
-      resolve();
-    };
-    signal.addEventListener("abort", onAbort, { once: true });
-    window.webContents.once("did-fail-load", onFail);
-    window.webContents.once("did-finish-load", onReady);
-  });
-}
-
-async function waitForExactWallpaperContentBounds(
-  window: BrowserWindow,
-  targetBounds: Rectangle,
-  signal: AbortSignal,
-) {
-  const deadline = Date.now() + 2_000;
-  let contentBounds = window.getContentBounds();
-  while (!rectanglesMatch(contentBounds, targetBounds) && Date.now() < deadline) {
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    throwIfAborted(signal);
-    contentBounds = window.getContentBounds();
-  }
-  if (!rectanglesMatch(contentBounds, targetBounds)) {
-    throw new Error(
-      `WorkerW content bounds ${JSON.stringify(contentBounds)} do not cover display ${JSON.stringify(targetBounds)}.`,
-    );
-  }
-  return contentBounds;
-}
-
-function rectanglesMatch(left: Rectangle, right: Rectangle) {
-  return (
-    left.x === right.x &&
-    left.y === right.y &&
-    left.width === right.width &&
-    left.height === right.height
-  );
 }
 
 async function reconcileSystemWallpaperFallback(
@@ -404,14 +330,4 @@ function profilesMatch(left: ActiveWallpaperProfile, right: ActiveWallpaperProfi
 function throwIfSuperseded(signal: AbortSignal, revision: number, activeRevision: number) {
   if (!signal.aborted && revision === activeRevision) return;
   throw createAbortError();
-}
-
-function throwIfAborted(signal: AbortSignal) {
-  if (signal.aborted) throw createAbortError();
-}
-
-function createAbortError() {
-  const error = new Error("Desktop playback wallpaper operation was cancelled.");
-  error.name = "AbortError";
-  return error;
 }

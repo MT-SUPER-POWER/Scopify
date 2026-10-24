@@ -1,22 +1,38 @@
-import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
+import { createRequire } from "node:module";
 import { join } from "node:path";
 
-if (process.platform !== "win32") process.exit(0);
+import { runNapiBuild } from "../lib/napiBuild";
+
+if (process.platform !== "win32" && process.platform !== "darwin") process.exit(0);
 
 const helperRoot = join(import.meta.dir, "..", "native", "wallpaper-helper");
-const manifestPath = join(helperRoot, "Cargo.toml");
-const result = spawnSync("cargo", ["build", "--release", "--manifest-path", manifestPath], {
-  cwd: helperRoot,
-  encoding: "utf8",
-  stdio: "inherit",
-  windowsHide: true,
-});
+const architectures =
+  process.argv.includes("--all-arch") && process.platform === "darwin"
+    ? (["arm64", "x64"] as const)
+    : [process.arch];
 
-if (result.error) throw result.error;
-if (result.status !== 0) process.exit(result.status ?? 1);
-
-const executablePath = join(helperRoot, "target", "release", "scopify-wallpaper-helper.exe");
-if (!existsSync(executablePath)) {
-  throw new Error(`Cargo completed without producing ${executablePath}`);
+for (const arch of architectures) {
+  if (arch !== "arm64" && arch !== "x64")
+    throw new Error(`Unsupported wallpaper architecture: ${arch}`);
+  const target = `${arch === "arm64" ? "aarch64" : "x86_64"}-${process.platform === "darwin" ? "apple-darwin" : "pc-windows-msvc"}`;
+  const status = runNapiBuild({
+    crateRoot: helperRoot,
+    cwd: join(import.meta.dir, ".."),
+    args: ["--platform", "--release", "--target", target, "--cwd", helperRoot],
+  });
+  if (status !== 0) process.exit(status);
+  const binaryPath = join(
+    helperRoot,
+    `scopify-wallpaper-helper.${process.platform}-${arch}${process.platform === "win32" ? "-msvc" : ""}.node`,
+  );
+  if (!existsSync(binaryPath)) throw new Error(`NAPI completed without producing ${binaryPath}`);
+  // Only load the host architecture; cross-built artifacts cannot be loaded into this process.
+  if (arch === process.arch) {
+    const native = createRequire(import.meta.url)(binaryPath) as Record<string, unknown>;
+    for (const name of ["attach", "detach", "pollEvents", "isAttached"]) {
+      if (typeof native[name] !== "function")
+        throw new Error(`Native wallpaper module is missing ${name}`);
+    }
+  }
 }

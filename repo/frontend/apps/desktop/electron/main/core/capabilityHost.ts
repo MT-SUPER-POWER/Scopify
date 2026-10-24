@@ -129,6 +129,8 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
   return {
     attach,
     async dispose() {
+      await wallpaperCapability?.dispose();
+      wallpaperDriver = null;
       playbackBrokerIpc?.dispose();
       playbackBrokerIpc = null;
       const activeMcpRuntime = mcpRuntime;
@@ -145,6 +147,10 @@ export function createWindowCapabilityHost(options: WindowCapabilityHostOptions)
       controllerWindow?.dispose();
       controllerWindow = null;
       wallpaperCapability = null;
+    },
+    async restoreWallpaper() {
+      if (!wallpaperCapability?.getModel().preferences.enabled) return;
+      await wallpaperCapability.configure({ enabled: false });
     },
     isWallpaperActive: () => wallpaperDriver?.isWallpaperActive() ?? false,
     waitUntilReady: waitForDesktopPlaybackWallpaperInitialization,

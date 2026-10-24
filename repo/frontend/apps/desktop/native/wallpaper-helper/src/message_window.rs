@@ -73,7 +73,7 @@ pub unsafe fn create() -> Result<(), String> {
 /// Blocks pumping messages until PostQuitMessage (WM_CLOSE / detach).
 pub unsafe fn run_message_loop() {
     let mut msg = MSG::default();
-    while GetMessageW(&mut msg, None, 0, 0).as_bool() {
+    while GetMessageW(&mut msg, None, 0, 0).0 > 0 {
         let _ = TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
@@ -94,12 +94,13 @@ unsafe extern "system" fn window_proc(
             crate::monitor::on_taskbar_created();
         }
         WM_CLOSE => {
-            // Detach request from the stdin reader: restore the window before quitting.
+            // Detach request from Node-API: restore the window before quitting.
             crate::handle_detach_request();
             let _ = DestroyWindow(hwnd);
             return LRESULT(0);
         }
         WM_DESTROY => {
+            MESSAGE_HWND.store(0, Ordering::Relaxed);
             PostQuitMessage(0);
         }
         _ => {}

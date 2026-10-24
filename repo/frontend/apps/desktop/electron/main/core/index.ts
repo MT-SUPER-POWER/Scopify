@@ -133,6 +133,7 @@ async function prepareApplication() {
     getBackendOrigin: () => backend.getStatus().origin,
     showMainWindow: async () => {
       if (!mainWindow) await createApplicationWindow();
+      await capabilities.restoreWallpaper();
       if (mainWindow?.isMinimized()) mainWindow.restore();
       mainWindow?.show();
       mainWindow?.focus();
@@ -185,14 +186,25 @@ function configureChromium() {
 }
 
 function registerLifecycle() {
-  app.on("second-instance", () => {
-    if (!mainWindow) return;
+  const activateMainWindow = async () => {
+    if (!mainWindow) {
+      await createApplicationWindow();
+      return;
+    }
+    await capabilities.restoreWallpaper();
     if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.show();
     mainWindow.focus();
+  };
+  app.on("second-instance", () => {
+    void activateMainWindow().catch((error) =>
+      windowLog.error("[window] activation failed", error),
+    );
   });
   app.on("activate", () => {
-    if (!mainWindow) void createApplicationWindow();
+    void activateMainWindow().catch((error) =>
+      windowLog.error("[window] activation failed", error),
+    );
   });
   app.on("window-all-closed", () => {
     if (process.platform !== "darwin") app.quit();
