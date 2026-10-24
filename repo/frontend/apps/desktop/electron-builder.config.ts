@@ -80,7 +80,8 @@ const config = {
     ],
     icon: resolve(root, "public/icons/icon.icns"),
     category: "public.app-category.music",
-    // Sign the complete bundle even when no Developer ID certificate is available.
+    // Ad-hoc signing supports local launch, but not Squirrel.Mac cross-version updates.
+    // macOS updates use manual installation until Developer ID signing is available.
     identity: "-",
     hardenedRuntime: false,
     gatekeeperAssess: false,

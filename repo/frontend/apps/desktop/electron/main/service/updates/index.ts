@@ -5,6 +5,7 @@ import type {
   AppUpdateStatePatch,
   DesktopHostConfig,
 } from "@scopify/desktop-contract";
+import { openExternalLink } from "@main/service/externalLinks";
 import { updaterLog } from "@main/utils/logger";
 
 const { autoUpdater } = electronUpdater;
@@ -31,6 +32,7 @@ function setState(patch: AppUpdateStatePatch) {
     ...patch,
     supported: isUpdaterSupported(),
     currentVersion: app.getVersion(),
+    manualInstall: process.platform === "darwin",
   };
   mainWindow?.webContents.send("updater:status-changed", state);
 }
@@ -40,13 +42,14 @@ export function getUpdateState(): AppUpdateState {
     ...state,
     supported: isUpdaterSupported(),
     currentVersion: app.getVersion(),
+    manualInstall: process.platform === "darwin",
   };
 }
 
 export function configureUpdater(config: DesktopHostConfig["updater"]) {
   updaterConfig = { ...config };
 
-  if (updaterConfig.autoDownload && state.status === "available") {
+  if (process.platform !== "darwin" && updaterConfig.autoDownload && state.status === "available") {
     void downloadUpdate().catch((error) => {
       updaterLog.warn("[updater] automatic download failed:", error);
     });
@@ -79,7 +82,7 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
       lastCheckedAt: Date.now(),
     });
 
-    if (updaterConfig.autoDownload) {
+    if (process.platform !== "darwin" && updaterConfig.autoDownload) {
       void downloadUpdate().catch((error) => {
         updaterLog.warn("[updater] automatic download failed:", error);
       });
@@ -168,6 +171,14 @@ export async function downloadUpdate(): Promise<AppUpdateState> {
   }
 
   try {
+    if (process.platform === "darwin") {
+      if (!state.version) return getUpdateState();
+      await openExternalLink(
+        `https://github.com/MT-SUPER-POWER/Scopify/releases/tag/${encodeURIComponent(`v${state.version}`)}`,
+      );
+      return getUpdateState();
+    }
+
     setState({ status: "downloading", percent: 0, message: undefined });
     await autoUpdater.downloadUpdate();
   } catch (error) {
@@ -180,7 +191,8 @@ export async function downloadUpdate(): Promise<AppUpdateState> {
 }
 
 export function quitAndInstallUpdate() {
-  if (!isUpdaterSupported() || state.status !== "downloaded") return;
+  if (process.platform === "darwin" || !isUpdaterSupported() || state.status !== "downloaded")
+    return;
   autoUpdater.quitAndInstall(false, true);
 }
 

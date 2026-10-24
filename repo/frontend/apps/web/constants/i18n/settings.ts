@@ -239,8 +239,12 @@ export const settingsMessages = defineMessages(
     "settings.updater.check": "检查更新",
     "settings.updater.checking": "检查中...",
     "settings.updater.download": "下载更新",
+    "settings.updater.openRelease": "前往下载",
+    "settings.updater.manualInstallHint":
+      "有新版本时，前往发布页下载适合 Mac 芯片的 DMG 安装包。退出 Scopify 后替换“应用程序”中的旧版。",
     "settings.updater.install": "重启安装",
     "settings.updater.checkOnStartup.label": "启动时检查更新",
+    "settings.updater.checkOnStartup.manualHint": "应用启动后检查新版本，有更新时提醒你前往下载。",
     "settings.updater.checkOnStartup.sublabel": "应用启动后自动检查 GitHub Release 中的最新版本。",
     "settings.updater.autoDownload.label": "自动下载更新",
     "settings.updater.autoDownload.sublabel": "发现新版本后自动开始下载，安装仍需你确认重启。",
@@ -575,8 +579,13 @@ export const settingsMessages = defineMessages(
     "settings.updater.check": "檢查更新",
     "settings.updater.checking": "檢查中...",
     "settings.updater.download": "下載更新",
+    "settings.updater.openRelease": "前往下載",
+    "settings.updater.manualInstallHint":
+      "有新版本時，前往發佈頁下載適合 Mac 晶片的 DMG 安裝包。結束 Scopify 後取代「應用程式」中的舊版。",
     "settings.updater.install": "重啟安裝",
     "settings.updater.checkOnStartup.label": "啟動時檢查更新",
+    "settings.updater.checkOnStartup.manualHint":
+      "應用程式啟動後檢查新版本，有更新時提醒你前往下載。",
     "settings.updater.checkOnStartup.sublabel":
       "應用程式啟動後自動檢查 GitHub Release 中的最新版本。",
     "settings.updater.autoDownload.label": "自動下載更新",
@@ -934,8 +943,13 @@ export const settingsMessages = defineMessages(
     "settings.updater.check": "Check for Updates",
     "settings.updater.checking": "Checking...",
     "settings.updater.download": "Download Update",
+    "settings.updater.openRelease": "Open download page",
+    "settings.updater.manualInstallHint":
+      "When an update is available, download the DMG for your Mac’s chip from the release page. Quit Scopify, then replace the old version in Applications.",
     "settings.updater.install": "Restart and Install",
     "settings.updater.checkOnStartup.label": "Check for Updates on Startup",
+    "settings.updater.checkOnStartup.manualHint":
+      "Check for new versions on startup and notify you when a download is available.",
     "settings.updater.checkOnStartup.sublabel":
       "Check GitHub Releases for a newer version after the app starts.",
     "settings.updater.autoDownload.label": "Download Updates Automatically",

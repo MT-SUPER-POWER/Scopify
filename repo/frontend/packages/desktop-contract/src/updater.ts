@@ -10,6 +10,7 @@ export type AppUpdateStatus =
 
 export interface AppUpdateState {
   currentVersion: string;
+  manualInstall?: boolean;
   lastCheckedAt?: number;
   message?: string;
   percent?: number;

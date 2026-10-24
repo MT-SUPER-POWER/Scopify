@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, RefreshCw, Rocket } from "lucide-react";
+import { Download, ExternalLink, RefreshCw, Rocket } from "lucide-react";
 import { UPDATE_STATUS_LABEL_KEYS } from "@/constants/updater";
 import { useAppUpdater } from "@/hooks/settings/useAppUpdater";
 import { useI18n } from "@/store/module/i18n";
@@ -14,6 +14,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
   const isDownloading = state.status === "downloading";
   const hasUpdate = state.status === "available";
   const downloaded = state.status === "downloaded";
+  const DownloadIcon = state.manualInstall ? ExternalLink : Download;
   const lastCheckedAt =
     typeof state.lastCheckedAt === "number" && Number.isFinite(state.lastCheckedAt)
       ? new Date(state.lastCheckedAt)
@@ -31,13 +32,23 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
           percent: Math.round(state.percent),
         })
       : t(UPDATE_STATUS_LABEL_KEYS[state.status]);
+  const statusHint =
+    isChecking || state.status === "error" || !state.version
+      ? state.status === "idle"
+        ? t("settings.updater.statusHint")
+        : statusLabel
+      : t("settings.updater.availableVersion", { version: state.version });
 
   return (
     <div id="app-updater" className="scroll-mt-24">
       <SettingSection title={t("settings.section.updater")}>
         <SettingRow
           label={t("settings.updater.checkOnStartup.label")}
-          sublabel={t("settings.updater.checkOnStartup.sublabel")}
+          sublabel={
+            state.manualInstall
+              ? t("settings.updater.checkOnStartup.manualHint")
+              : t("settings.updater.checkOnStartup.sublabel")
+          }
           control={
             <Toggle
               enabled={config.updater.checkOnStartup}
@@ -45,23 +56,21 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
             />
           }
         />
-        <SettingRow
-          label={t("settings.updater.autoDownload.label")}
-          sublabel={t("settings.updater.autoDownload.sublabel")}
-          control={
-            <Toggle
-              enabled={config.updater.autoDownload}
-              onChange={() => onChange("updater", "autoDownload", !config.updater.autoDownload)}
-            />
-          }
-        />
+        {state.supported && !state.manualInstall ? (
+          <SettingRow
+            label={t("settings.updater.autoDownload.label")}
+            sublabel={t("settings.updater.autoDownload.sublabel")}
+            control={
+              <Toggle
+                enabled={config.updater.autoDownload}
+                onChange={() => onChange("updater", "autoDownload", !config.updater.autoDownload)}
+              />
+            }
+          />
+        ) : null}
         <SettingRow
           label={t("settings.updater.status")}
-          sublabel={
-            state.version
-              ? t("settings.updater.availableVersion", { version: state.version })
-              : t("settings.updater.statusHint")
-          }
+          sublabel={statusHint}
           control={
             <span aria-live="polite" className="text-sm font-semibold text-foreground">
               {state.currentVersion
@@ -109,11 +118,13 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
                   disabled={isDownloading}
                   className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-xs font-bold text-brand-foreground transition hover:bg-brand-hover disabled:opacity-50"
                 >
-                  <Download className="size-3.5" />
-                  {t("settings.updater.download")}
+                  <DownloadIcon className="size-3.5" />
+                  {state.manualInstall
+                    ? t("settings.updater.openRelease")
+                    : t("settings.updater.download")}
                 </button>
               ) : null}
-              {downloaded ? (
+              {downloaded && !state.manualInstall ? (
                 <button
                   type="button"
                   onClick={install}
@@ -126,6 +137,11 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
             </div>
           }
         />
+        {state.manualInstall && state.supported && hasUpdate ? (
+          <p className="-mt-2 mb-6 text-sm leading-relaxed text-muted-foreground">
+            {t("settings.updater.manualInstallHint")}
+          </p>
+        ) : null}
       </SettingSection>
     </div>
   );

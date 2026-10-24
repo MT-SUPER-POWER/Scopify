@@ -3689,6 +3689,18 @@ export interface TranslateFn {
    */
   (key: "settings.updater.download", params?: TranslationParams): string;
   /**
+   * zh-CN: 前往下载
+   * zh-TW: 前往下載
+   * en-US: Open download page
+   */
+  (key: "settings.updater.openRelease", params?: TranslationParams): string;
+  /**
+   * zh-CN: 有新版本时，前往发布页下载适合 Mac 芯片的 DMG 安装包。退出 Scopify 后替换“应用程序”中的旧版。
+   * zh-TW: 有新版本時，前往發佈頁下載適合 Mac 晶片的 DMG 安裝包。結束 Scopify 後取代「應用程式」中的舊版。
+   * en-US: When an update is available, download the DMG for your Mac’s chip from the release page. Quit Scopify, then replace the old version in Applications.
+   */
+  (key: "settings.updater.manualInstallHint", params?: TranslationParams): string;
+  /**
    * zh-CN: 重启安装
    * zh-TW: 重啟安裝
    * en-US: Restart and Install
@@ -3700,6 +3712,12 @@ export interface TranslateFn {
    * en-US: Check for Updates on Startup
    */
   (key: "settings.updater.checkOnStartup.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 应用启动后检查新版本，有更新时提醒你前往下载。
+   * zh-TW: 應用程式啟動後檢查新版本，有更新時提醒你前往下載。
+   * en-US: Check for new versions on startup and notify you when a download is available.
+   */
+  (key: "settings.updater.checkOnStartup.manualHint", params?: TranslationParams): string;
   /**
    * zh-CN: 应用启动后自动检查 GitHub Release 中的最新版本。
    * zh-TW: 應用程式啟動後自動檢查 GitHub Release 中的最新版本。

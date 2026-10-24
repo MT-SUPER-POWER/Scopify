@@ -12,6 +12,7 @@ export interface AppUpdateState {
   status: AppUpdateStatus;
   supported: boolean;
   currentVersion: string;
+  manualInstall?: boolean;
   version?: string;
   percent?: number;
   message?: string;

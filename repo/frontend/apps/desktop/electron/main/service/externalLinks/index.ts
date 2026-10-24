@@ -4,6 +4,13 @@ import { app, shell } from "electron";
 import { __rendererDir } from "@main/constants";
 import { windowLog } from "@main/utils/logger";
 
+/** Open external web links through the system browser. */
+export async function openExternalLink(value: string): Promise<void> {
+  const url = new URL(value);
+  if (url.protocol !== "https:" && url.protocol !== "http:") return;
+  await shell.openExternal(url.href);
+}
+
 /** Hand website navigation to the OS before Electron can create or replace an app window. */
 export function registerExternalLinkHandling(rendererBaseUrl: string) {
   const rendererUrl = new URL(rendererBaseUrl);
@@ -28,9 +35,7 @@ export function registerExternalLinkHandling(rendererBaseUrl: string) {
 
   const openInDefaultBrowser = (value: string) => {
     try {
-      const url = new URL(value);
-      if (url.protocol !== "https:" && url.protocol !== "http:") return;
-      void shell.openExternal(url.href).catch((error: unknown) => {
+      void openExternalLink(value).catch((error: unknown) => {
         windowLog.warn("[external-links] failed to open the default browser", error);
       });
     } catch {
