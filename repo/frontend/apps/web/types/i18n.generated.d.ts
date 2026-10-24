@@ -22847,6 +22847,12 @@ export interface TranslateFn {
    */
   (key: "personalFm.title", params?: TranslationParams): string;
   /**
+   * zh-CN: 登录后收听私人电台
+   * zh-TW: 登入後收聽私人電台
+   * en-US: Log in to listen to Personal Radio
+   */
+  (key: "personalFm.loggedOut", params?: TranslationParams): string;
+  /**
    * zh-CN: 私人 FM 模式
    * zh-TW: 私人 FM 模式
    * en-US: Personal FM mode

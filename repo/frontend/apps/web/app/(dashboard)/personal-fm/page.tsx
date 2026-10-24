@@ -1,21 +1,22 @@
 "use client";
 
+import { Radio } from "lucide-react";
 import { PersonalFmControlPanel } from "@/components/player/PersonalFmControlPanel";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
-import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
+import { QuietState } from "@/components/shared/QuietState";
 import { usePersonalFmPlaylist } from "@/hooks/personalFm/usePersonalFmPlaylist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useI18n } from "@/store/module/i18n";
 
 export default function PersonalFmPage() {
   const isLoggedIn = useLoginStatus();
-  const router = useSmartRouter();
+  const { t } = useI18n();
   const personalFm = usePersonalFmPlaylist();
 
   if (!isLoggedIn) {
     return (
       <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
-        <LoginRequiredPrompt reason="library" onLogin={() => router.push("/login")} />
+        <QuietState icon={Radio} title={t("personalFm.loggedOut")} />
       </main>
     );
   }

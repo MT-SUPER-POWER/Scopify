@@ -3,6 +3,7 @@ import { defineMessages } from "./define";
 export const personalFmMessages = defineMessages(
   {
     "personalFm.title": "私人电台",
+    "personalFm.loggedOut": "登录后收听私人电台",
     "personalFm.settings.title": "私人 FM 模式",
     "personalFm.settings.description": "点击场景即可直接切到场景模式",
     "personalFm.settings.modeLabel": "模式",
@@ -67,6 +68,7 @@ export const personalFmMessages = defineMessages(
   },
   {
     "personalFm.title": "私人電台",
+    "personalFm.loggedOut": "登入後收聽私人電台",
     "personalFm.settings.title": "私人 FM 模式",
     "personalFm.settings.description": "點擊場景即可直接切到場景模式",
     "personalFm.settings.modeLabel": "模式",
@@ -131,6 +133,7 @@ export const personalFmMessages = defineMessages(
   },
   {
     "personalFm.title": "Personal Radio",
+    "personalFm.loggedOut": "Log in to listen to Personal Radio",
     "personalFm.settings.title": "Personal FM mode",
     "personalFm.settings.description": "Choose a scene to switch the radio mode immediately.",
     "personalFm.settings.modeLabel": "Mode",
