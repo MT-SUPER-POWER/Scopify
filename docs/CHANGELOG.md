@@ -6,6 +6,7 @@
 
 ### 新增
 
+- 补充更新说明自动生成与发版前预览指南 ([233a3f60](https://github.com/MT-SUPER-POWER/Scopify/commit/233a3f605adecf3b5c53d6ff597a1bdce16ac9ba))
 - 点击大标题查看完整更新记录 ([c21ab624](https://github.com/MT-SUPER-POWER/Scopify/commit/c21ab6241dabead927aa968b447eab4d82c87aac))
 - 新增「花火」烟花歌词样式 ([a09a41e7](https://github.com/MT-SUPER-POWER/Scopify/commit/a09a41e74eeb68405073eb0c5795a3c218798257))
 - 均衡器界面焕新，效果分组并支持一键复位 ([712f28ba](https://github.com/MT-SUPER-POWER/Scopify/commit/712f28ba5d8ba983d09849bc0f9da968a55dee08))
