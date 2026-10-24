@@ -24,7 +24,7 @@ export function SidebarLibraryStateCard({
         variant="secondary"
         size="sm"
         onClick={onAction}
-        className="hover:scale-104h-8 rounded-full px-4 text-xs font-semibold transition-transform"
+        className="h-8 rounded-full px-4 text-xs font-semibold transition-transform hover:scale-104"
       >
         {actionLabel}
       </Button>
