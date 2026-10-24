@@ -34,9 +34,7 @@
     "lint:architecture": "bun scripts/check-architecture.ts",
     "lint": "pnpm run lint:architecture && turbo run lint --filter=\"@scopify/*\"",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "i18n:types": "pnpm --dir repo/frontend/apps/web run i18n:types",
-    "i18n:audit": "pnpm --dir repo/frontend/apps/web run i18n:audit"
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",

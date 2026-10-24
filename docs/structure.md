@@ -94,8 +94,9 @@ pnpm run dev:desktop    # 仅 Electron（需要 Web dev server）
 pnpm run dev:full       # Web + Electron + 后端
 pnpm run build:web      # 普通 Next.js Web 构建
 pnpm run build:desktop  # 静态 Renderer + Electron 构建
-pnpm run i18n:types     # 更新 i18n 类型
 ```
+
+i18n 工具在 Web 工作区运行，见 [Web README](../repo/frontend/apps/web/README.md#internationalization)。
 
 ## 相关文档
 

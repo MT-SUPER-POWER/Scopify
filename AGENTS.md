@@ -33,10 +33,11 @@ pnpm run dev               # Web + Electron
 pnpm run dev:web           # 仅 Web
 pnpm run dev:desktop       # 仅 Electron
 pnpm run dev:full          # Web + Electron + 后端联调
-pnpm run i18n:types        # 生成 i18n 类型
 pnpm run bump              # 统一升级版本（4 个 package.json）
 pnpm run changelog:preview # 预览下个版本的更新说明
 ```
+
+i18n 类型生成与文案审计由 Web 工作区维护，命令见 [Web README](repo/frontend/apps/web/README.md#internationalization)。
 
 ---
 
