@@ -1,23 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import type { MotionValue } from "framer-motion";
+import type { SoraBackgroundProps } from "@/types/lyrics/folia/soraBackground";
 import * as twgl from "twgl.js";
-import {
-  Theme,
-  DEFAULT_SORA_BACKGROUND_TUNING,
-  type SoraBackgroundTuning,
-} from "../../../../types";
+import { DEFAULT_SORA_BACKGROUND_TUNING, type SoraBackgroundTuning } from "../../../../types";
 import { parseColorChannels } from "../../colorMix";
 
 // src/components/visualizer/backgrounds/sora/SoraBackground.tsx
 // SoraBackground component is a shader-based starfield background.
-
-interface SoraBackgroundProps {
-  theme: Theme;
-  isDaylight: boolean;
-  paused?: boolean;
-  tuning?: SoraBackgroundTuning;
-  audioPower?: MotionValue<number>;
-}
 
 const PARTICLE_COUNT = 180;
 
@@ -25,15 +13,14 @@ const VERTEX_SHADER = `
 attribute float a_index;
 uniform vec2 u_resolution;
 uniform float u_time;
-uniform float u_star_density;
+uniform mediump float u_star_density;
 uniform float u_star_size;
 uniform float u_star_speed;
 uniform float u_twinkle_intensity;
-uniform float u_accent_ratio;
 uniform float u_audio_sync;
 uniform float u_audio_sync_strength;
-varying float v_color_type;
-varying float v_intensity_base;
+varying mediump float v_color_type;
+varying mediump float v_intensity_base;
 
 float hash2(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -82,10 +69,10 @@ precision mediump float;
 uniform vec3 u_particle_color;
 uniform vec3 u_particle_accent_color;
 uniform float u_accent_ratio;
-uniform float u_star_density;
+uniform mediump float u_star_density;
 
-varying float v_color_type;
-varying float v_intensity_base;
+varying mediump float v_color_type;
+varying mediump float v_intensity_base;
 
 void main() {
   vec2 pc = gl_PointCoord - 0.5;
