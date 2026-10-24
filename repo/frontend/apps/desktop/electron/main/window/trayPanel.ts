@@ -51,12 +51,8 @@ export function createTrayPanelController({ window, getWorkArea }: TrayPanelOpti
     requestOpen(point: Point) {
       if (window.isDestroyed()) return;
       cancelBlur();
-      // 如果已经打开，再次点击托盘则直接关闭 (Toggle)
-      if (window.isVisible()) {
-        hide();
-        return;
-      }
-      pendingPoint = { ...point };
+      if (window.isVisible()) return;
+      pendingPoint ??= { ...point };
       reveal();
     },
     markReady() {

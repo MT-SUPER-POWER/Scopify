@@ -80,9 +80,10 @@ export function createMacDesktopPlaybackWallpaperDriver(
       }
     }
     if (state) await restore(false);
+    const minimumSize = window.getMinimumSize();
     state = {
       bounds: window.getNormalBounds(),
-      minimumSize: window.getMinimumSize(),
+      minimumSize: [minimumSize[0] ?? 0, minimumSize[1] ?? 0],
       movable: window.isMovable(),
       resizable: window.isResizable(),
       visible: window.isVisible(),
