@@ -2,6 +2,13 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v2.1.1 — 2026-10-24
+
+### 修复
+
+- macOS 更新改为引导下载并手动安装 ([1cf30d06](https://github.com/MT-SUPER-POWER/Scopify/commit/1cf30d0621d70b6e21a866b0fada11d7701ffdad))
+- 更新设置中持续显示当前客户端版本 ([d4b539cf](https://github.com/MT-SUPER-POWER/Scopify/commit/d4b539cfedb0ae1a3974b20f035d0e38d1b2a793))
+
 ## v2.1.0 — 2026-10-24
 
 ### 新增
