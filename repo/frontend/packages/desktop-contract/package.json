@@ -16,6 +16,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "lint": "eslint . --max-warnings 0 --no-warn-ignored",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

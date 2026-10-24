@@ -11,6 +11,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "lint": "eslint . --max-warnings 0 --no-warn-ignored",
     "test": "bun test tests --isolate",
     "typecheck": "tsc --noEmit"
   },

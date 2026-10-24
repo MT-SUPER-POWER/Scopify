@@ -172,9 +172,18 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^21.2.4
         version: 21.2.4
+      '@eslint/js':
+        specifier: ^9.39.5
+        version: 9.39.5
       concurrently:
         specifier: ^9.2.4
         version: 9.2.5
+      eslint:
+        specifier: ^9.39.5
+        version: 9.39.5(jiti@2.7.0)(supports-color@8.1.1)
+      eslint-plugin-react-hooks:
+        specifier: ^7.1.1
+        version: 7.1.1(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)
       git-cliff:
         specifier: ^2.14.2
         version: 2.14.2
@@ -199,6 +208,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      typescript-eslint:
+        specifier: ^8.65.0
+        version: 8.71.2(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
 
   repo/backend/api-enhanced:
     dependencies:
@@ -761,6 +773,10 @@ importers:
       '@scopify/desktop-contract':
         specifier: workspace:*
         version: link:../desktop-contract
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   repo/frontend/packages/playback-core:
     devDependencies:

@@ -31,6 +31,7 @@
     "./theme.css": "./theme.css"
   },
   "scripts": {
+    "lint": "eslint . --max-warnings 0 --no-warn-ignored",
     "test": "bun test tests",
     "typecheck": "tsc --noEmit"
   },

@@ -29,17 +29,22 @@
     "build:win": "pnpm run build:desktop && pnpm run package:win",
     "build:mac": "pnpm run build:desktop && pnpm run package:mac",
     "typecheck": "turbo run typecheck",
+    "check:packages": "bun scripts/check-package-quality.ts",
+    "test:packages": "turbo run test --filter=\"./repo/frontend/packages/*\"",
     "test:architecture": "bun test scripts/check-architecture.test.ts",
-    "test": "pnpm run test:architecture",
+    "test": "bun test scripts",
     "lint:architecture": "bun scripts/check-architecture.ts",
-    "lint": "pnpm run lint:architecture && turbo run lint --filter=\"@scopify/*\"",
+    "lint": "pnpm run lint:architecture && pnpm run check:packages && turbo run lint --filter=\"@scopify/*\"",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
+    "@eslint/js": "^9.39.5",
     "concurrently": "^9.2.4",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "git-cliff": "^2.14.2",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
@@ -47,6 +52,7 @@
     "prettier-plugin-markdown-compact-tables": "^1.0.0",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "turbo": "^2.11.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.65.0"
   }
 }

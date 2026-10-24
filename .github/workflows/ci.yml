@@ -71,6 +71,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify shared package quality coverage
+        run: pnpm run check:packages
+
       - name: Lint commit messages
         if: github.event_name == 'pull_request'
         run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
@@ -84,5 +87,8 @@ jobs:
       - name: Run Lint
         run: pnpm run lint
 
-      - name: Run Tests
+      - name: Run Workspace Governance Tests
         run: pnpm run test
+
+      - name: Run Shared Package Tests
+        run: pnpm run test:packages
