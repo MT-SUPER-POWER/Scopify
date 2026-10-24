@@ -22,11 +22,6 @@ const config = {
       to: "config",
       filter: ["**/*.yml"],
     },
-    {
-      from: "prototypes/desktop-wallpaper-host-spike",
-      to: "desktop-wallpaper-host-spike",
-      filter: ["system-wallpaper.ps1"],
-    },
   ],
   files: [
     "out/main/**/*.js",
@@ -51,8 +46,9 @@ const config = {
         filter: ["*.node"],
       },
       {
-        from: "native/wallpaper-helper/target/release/scopify-wallpaper-helper.exe",
-        to: "scopify-wallpaper-helper.exe",
+        from: "native/wallpaper-helper",
+        to: "native/wallpaper-helper",
+        filter: ["scopify-wallpaper-helper.win32-${arch}-msvc.node"],
       },
     ],
     target: ["nsis"],
@@ -60,6 +56,13 @@ const config = {
     requestedExecutionLevel: "asInvoker",
   },
   mac: {
+    extraResources: [
+      {
+        from: "native/wallpaper-helper",
+        to: "native/wallpaper-helper",
+        filter: ["scopify-wallpaper-helper.darwin-${arch}.node"],
+      },
+    ],
     target: [
       {
         target: "dmg",

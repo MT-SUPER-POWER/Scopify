@@ -20,9 +20,9 @@ Scopify 正在把“播放业务语义”和“实际音频输出”分开。目
 
 - `packages/playback-core`：纯 TypeScript 领域包。Queue 计算不可变 Transition；Resolver 把稳定 Locator 解析为短期音源；Session 处理 revision、Abort、ended 去重和失败恢复。
 - `apps/web/lib/player/adapters`：Web 端实际 Adapter。网易云 Adapter 管理播放 URL 与 ReplayGain 缓存，HTML Adapter 是唯一可以直接操作 `HTMLAudioElement` 的普通播放路径。
-- `apps/desktop/electron/main/capabilities/playbackBroker`：跨窗口 Authority/Replica 协议。
-- `apps/desktop/electron/main/capabilities/playbackGateway`：Main/MCP 使用的可信入口，等待真实回执。
-- `apps/desktop/electron/main/capabilities/nativeAudio`：可选 NAPI Host；缺少模块或不可用时必须安全返回 `unavailable`，不能影响应用启动。
+- `apps/desktop/electron/main/service/playback/broker`：跨窗口 Authority/Replica 协议。
+- `apps/desktop/electron/main/service/playback/gateway`：Main/MCP 使用的可信入口，等待真实回执。
+- `apps/desktop/electron/main/service/audio/native`：可选 NAPI Host；缺少模块或不可用时必须安全返回 `unavailable`，不能影响应用启动。
 
 ## 当前兼容边界
 

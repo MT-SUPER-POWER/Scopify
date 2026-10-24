@@ -37,8 +37,8 @@ graph TD
 
     subgraph Layer4["4. 操作系统硬件/桌面驱动适配 (OS Drivers)"]
         ElectronRuntime -.->|"动态壁纸"| WallpaperDriver["DesktopPlaybackWallpaperDriver"]
-        WallpaperDriver -.->|"Win32 WorkerW"| NativeWallpaperHost["NativeWallpaperHost"]
-        WallpaperDriver -.->|"PowerShell"| SystemWallpaperFallback["SystemWallpaperFallback"]
+        WallpaperDriver -.->|"Rust Node-API / Win32 / AppKit"| NativeWallpaperHost["NativeWallpaperHost"]
+        WallpaperDriver -.->|"Rust / IDesktopWallpaper"| SystemWallpaperFallback["SystemWallpaperFallback"]
     end
 ```
 
@@ -223,7 +223,7 @@ Electron 原生的 `MessagePortMain` 是一个典型的 Node EventEmitter 结构
 1. 无法进行干净的自动化单元测试（跑测试必须启动真实的 Electron 主进程）。
 2. 通信协议与 Electron 强耦合。
 
-因此，代码在 [`electron/main/capabilities/playbackBroker/port.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/capabilities/playbackBroker/port.ts) 定义了一个仅有 4 个方法的纯接口：
+因此，代码在 [`electron/main/service/playback/broker/port.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/service/playback/broker/port.ts) 定义了一个仅有 4 个方法的纯接口：
 
 ```ts
 export interface PlaybackBrokerPort {
@@ -234,7 +234,7 @@ export interface PlaybackBrokerPort {
 }
 ```
 
-并在 [`electronPort.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/capabilities/playbackBroker/electronPort.ts) 中实现适配器：
+并在 [`electronPort.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/service/playback/broker/electronPort.ts) 中实现适配器：
 
 ```mermaid
 classDiagram
@@ -276,25 +276,22 @@ classDiagram
 
 ## 五、 领域四：桌面系统级驱动适配器 (`DesktopPlaybackWallpaperDriver`)
 
-桌面端支持将当前播放的歌曲动画投射为 Windows 桌面壁纸。因为不同 Windows 版本的底层机制差异很大，这里采用的是典型的 **驱动/策略模式（Driver Pattern）适配器**。
+桌面端通过同一个 Rust crate 的 Node-API 模块，将当前播放画面呈现为 Windows 或 macOS 桌面壁纸。前端只经过既有 IPC 调用主进程 capability，平台差异留在驱动与 Rust 后端。
 
 ```mermaid
 graph TD
-    Capability["DesktopPlaybackWallpaperCapability<br/>(状态机管理)"]
-    Driver["DesktopPlaybackWallpaperDriver Interface"]
-
-    Capability -->|"调用驱动"| Driver
-
-    subgraph Drivers["具体的平台实现与降级适配"]
-        Driver -.->|"首选方案 (Win32 Native)"| NativeHost["NativeWallpaperHost<br/>(查找 Progman / WorkerW 句柄，将 Electron 窗口挂入底层)"]
-        Driver -.->|"降级方案 (PowerShell 兜底)"| PSHost["SystemWallpaperFallback<br/>(调用 PowerShell 脚本定期捕获渲染帧并应用为静态壁纸)"]
-    end
-
-    Policy["FallbackPolicy (策略判断: 是否支持 WorkerW / 用户系统版本)"]
-    Driver --> Policy
+    Capability["DesktopPlaybackWallpaperService"] --> Driver["平台驱动"]
+    Driver --> Native["统一 Rust Node-API 模块"]
+    Native --> Windows["Windows WorkerW"]
+    Native --> Mac["macOS NSWindow 桌面层"]
+    Driver -->|"用户启用静态兜底"| Capture["Electron 捕获背景 PNG"]
+    Capture --> Native
+    Native --> COM["Windows IDesktopWallpaper + 恢复日志"]
+    Icons["桌面图标 IPC"] --> Native
+    Native --> DefView["Windows Explorer 图标控制"]
 ```
 
-在 [`electronDriver.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/capabilities/desktopPlaybackWallpaper/electronDriver.ts) 中，适配器会根据 `fallbackPolicy` 自动判断：如果原生 WorkerW 注入失败或系统不支持，无缝降级到 PowerShell 静态壁纸兜底实现，对上层状态机完全透明。
+Windows 静态兜底是用户显式开启的辅助功能，按当前 Folia 背景捕获图片供任务栏等系统表面使用；它不会在 WorkerW 挂载失败时自动代替动态壁纸。Rust 使用 Win32 / COM 完成操作和日志恢复，没有 PowerShell 或 C# 编译链路。旧恢复日志仍可读取；用户手动换壁纸后不会被恢复流程覆盖。
 
 ---
 

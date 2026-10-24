@@ -9,11 +9,7 @@
     "BACKEND_*",
     "FRONTEND_*",
     "NEXT_DIST_DIR",
-    "NEXT_TELEMETRY_DISABLED",
-    "SCOPIFY_DESKTOP_WALLPAPER_SPIKE",
-    "SCOPIFY_DESKTOP_WALLPAPER_SPIKE_STATE_DIR",
-    "SCOPIFY_DESKTOP_WALLPAPER_SPIKE_SYSTEM_FALLBACK",
-    "SCOPIFY_DESKTOP_WALLPAPER_SPIKE_TRANSPARENT"
+    "NEXT_TELEMETRY_DISABLED"
   ],
   "tasks": {
     "build": {
@@ -36,26 +32,10 @@
       "dependsOn": ["sync:renderer", "^build"],
       "outputs": ["build/desktop/app/out/**"]
     },
-    "build:win": {
-      "dependsOn": ["build"],
-      "cache": false
-    },
-    "build:mac": {
-      "dependsOn": ["build"],
-      "cache": false
-    },
     "package:win": {
       "cache": false
     },
     "package:mac": {
-      "cache": false
-    },
-    "release:win": {
-      "dependsOn": ["build"],
-      "cache": false
-    },
-    "release:mac": {
-      "dependsOn": ["build"],
       "cache": false
     },
     "dev": {

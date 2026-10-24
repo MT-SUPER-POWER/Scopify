@@ -39,7 +39,7 @@ Scopify Desktop 提供一个默认关闭的本地 MCP 服务，让 AI 客户端�
 
 ```text
 MCP HTTP / SDK
-  → capabilities/mcp/tools/playback.ts
+  → service/mcp/tools/playback.ts
   → capabilities/playbackGateway/
   → capabilities/playbackBroker/
   → Renderer Playback Authority

@@ -1,7 +1,7 @@
 import type { BrowserWindow } from "electron";
-import type { McpRuntime } from "@main/capabilities/mcp";
-import type { DesktopBackendController } from "@main/services/backend";
-import type { createDiscordPresenceController } from "@main/services/discordPresence";
+import type { McpRuntime } from "@main/service/mcp";
+import type { DesktopBackendController } from "@/types/service/backend";
+import type { createDiscordPresenceController } from "@main/service/discordPresence";
 import { registerApplicationIpc } from "./application";
 import { registerAuthenticationIpc } from "./authentication";
 import { registerBackendIpc } from "./backend";

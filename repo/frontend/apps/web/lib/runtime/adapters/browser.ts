@@ -96,7 +96,7 @@ function unsupportedDesktopPlaybackWallpaperModel(): DesktopPlaybackWallpaperMod
       layers: { ...DEFAULT_DESKTOP_PLAYBACK_WALLPAPER_PREFERENCES.layers },
     },
     status: {
-      diagnostic: "Desktop playback wallpaper requires the Windows desktop runtime.",
+      diagnostic: "Desktop playback wallpaper requires the desktop runtime.",
       state: "unsupported",
     },
   };

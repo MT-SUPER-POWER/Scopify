@@ -15,9 +15,9 @@ use windows::core::s;
 use windows::Win32::Foundation::HWND;
 // windows-rs 0.62: SetWinEventHook lives in Accessibility, but the EVENT_OBJECT_* / WINEVENT_*
 // constants stay in WindowsAndMessaging.
-use windows::Win32::UI::Accessibility::{SetWinEventHook, HWINEVENTHOOK};
+use windows::Win32::UI::Accessibility::{SetWinEventHook, UnhookWinEvent, HWINEVENTHOOK};
 use windows::Win32::UI::WindowsAndMessaging::{
-    FindWindowA, GetWindowThreadProcessId, IsWindow, SetTimer, EVENT_OBJECT_DESTROY,
+    FindWindowA, GetWindowThreadProcessId, IsWindow, KillTimer, SetTimer, EVENT_OBJECT_DESTROY,
     EVENT_OBJECT_REORDER, OBJID_WINDOW, WINEVENT_OUTOFCONTEXT, WINEVENT_SKIPOWNPROCESS,
 };
 
@@ -45,6 +45,27 @@ pub struct AppState {
 
 static APP_STATE: Mutex<Option<AppState>> = Mutex::new(None);
 static REATTACHING: AtomicBool = AtomicBool::new(false);
+static HOOKS: Mutex<Vec<isize>> = Mutex::new(Vec::new());
+static REATTACH_THREAD: Mutex<Option<std::thread::JoinHandle<()>>> = Mutex::new(None);
+
+pub unsafe fn stop() {
+    crate::DETACH_REQUESTED.store(true, Ordering::SeqCst);
+    if let Some(thread) = REATTACH_THREAD
+        .lock()
+        .ok()
+        .and_then(|mut value| value.take())
+    {
+        let _ = thread.join();
+    }
+    if let Some(window) = crate::message_window::hwnd() {
+        let _ = KillTimer(Some(window), HEARTBEAT_TIMER_ID);
+    }
+    if let Ok(mut hooks) = HOOKS.lock() {
+        for hook in hooks.drain(..) {
+            let _ = UnhookWinEvent(HWINEVENTHOOK(hook as _));
+        }
+    }
+}
 
 fn with_state<T>(f: impl FnOnce(&mut AppState) -> T) -> Option<T> {
     APP_STATE
@@ -109,6 +130,10 @@ unsafe fn install_win_event_hooks() -> Result<(), String> {
     if destroy_hook.is_invalid() {
         return Err("SetWinEventHook(EVENT_OBJECT_DESTROY) failed".to_string());
     }
+    HOOKS
+        .lock()
+        .map_err(|_| "hook state poisoned".to_string())?
+        .push(destroy_hook.0 as isize);
     let reorder_hook = SetWinEventHook(
         EVENT_OBJECT_REORDER,
         EVENT_OBJECT_REORDER,
@@ -121,6 +146,10 @@ unsafe fn install_win_event_hooks() -> Result<(), String> {
     if reorder_hook.is_invalid() {
         return Err("SetWinEventHook(EVENT_OBJECT_REORDER) failed".to_string());
     }
+    HOOKS
+        .lock()
+        .map_err(|_| "hook state poisoned".to_string())?
+        .push(reorder_hook.0 as isize);
     Ok(())
 }
 
@@ -244,10 +273,10 @@ fn on_workerw_lost(folia_hwnd: isize) {
 /// message loop (WinEvent callbacks and WM_TIMER share it). The REATTACHING flag dedupes the
 /// near-simultaneous WorkerW-destroyed and explorer-restarted triggers.
 fn spawn_reattach() {
-    if REATTACHING.swap(true, Ordering::SeqCst) {
+    if crate::DETACH_REQUESTED.load(Ordering::SeqCst) || REATTACHING.swap(true, Ordering::SeqCst) {
         return;
     }
-    std::thread::spawn(|| unsafe {
+    let thread = std::thread::spawn(|| unsafe {
         for attempt in 0..REATTACH_MAX_ATTEMPTS {
             if crate::DETACH_REQUESTED.load(Ordering::SeqCst) {
                 break;
@@ -301,4 +330,9 @@ fn spawn_reattach() {
         }
         REATTACHING.store(false, Ordering::SeqCst);
     });
+    if let Ok(mut slot) = REATTACH_THREAD.lock() {
+        if let Some(previous) = slot.replace(thread) {
+            let _ = previous.join();
+        }
+    }
 }

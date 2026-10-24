@@ -90,6 +90,15 @@ export function getDesktopLyricWindow() {
   return isWindowAlive(desktopLyricWindow) ? desktopLyricWindow : null;
 }
 
+/** 供主进程原生菜单（macOS 菜单栏 / Dock）读取与切换锁定状态。 */
+export function getDesktopLyricPreferences() {
+  return getPreferences();
+}
+
+export function setDesktopLyricLocked(locked: boolean) {
+  return updatePreferences({ locked });
+}
+
 function applyMainWindowCommand(command: DesktopLyricCommand) {
   if (!isWindowAlive(mainWindow)) return false;
 
@@ -661,7 +670,7 @@ function showDesktopLyricWindow() {
   return window;
 }
 
-function toggleDesktopLyricWindow() {
+export function toggleDesktopLyricWindow() {
   if (isWindowAlive(desktopLyricWindow) && desktopLyricWindow.isVisible()) {
     closeDesktopLyricWindow();
     return false;

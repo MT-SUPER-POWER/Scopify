@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import { ipcLog } from "@main/utils/logger";
-import { clearNotificationSession } from "@main/services/notifications";
+import { clearNotificationSession } from "@main/service/notifications";
 import {
   clearInstalledMusicSessionCookies,
   installMusicSessionCookies,

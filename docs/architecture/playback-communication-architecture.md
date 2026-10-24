@@ -459,7 +459,7 @@ repo/frontend/apps/web/hooks/player/
 repo/frontend/apps/web/types/playbackProjection.ts
     # Web 内部依赖与 React Adapter 类型；共享契约不重复定义
 
-repo/frontend/apps/desktop/main/capabilities/playbackBroker/
+repo/frontend/apps/desktop/electron/main/service/playback/broker/
     index.ts
     authorization.ts
     ipcValidation.ts

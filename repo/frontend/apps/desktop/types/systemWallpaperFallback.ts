@@ -16,6 +16,5 @@ export interface DesktopPlaybackWallpaperSystemFallback {
 }
 
 export interface WindowsSystemWallpaperFallbackOptions {
-  scriptPath?: string;
   stateDirectory?: string;
 }

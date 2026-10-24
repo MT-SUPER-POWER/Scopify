@@ -1,8 +1,8 @@
 // packaging/windows/wallpaper-helper/src/events.rs
-// JSONL event protocol spoken on stdout between the helper and the Electron main process
-// (parsed by electron/windowsWallpaperController.cjs). Pure string building — no Win32 —
-// so the snapshot-style unit tests below run on any host OS.
+// JSON event protocol shared by both backends and drained by Electron Main through Node-API.
+// Pure string building — no Win32 — so protocol unit tests run on any host OS.
 
+#[cfg_attr(not(windows), allow(dead_code))] // Windows recovery events remain part of the shared protocol.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Event {
     /// Window is now parented into a WorkerW. `mode` is "classic" (sibling WorkerW) or
@@ -20,8 +20,6 @@ pub enum Event {
     ExplorerRestarted,
     /// The z-order guard re-inserted the Folia window at the top of the WorkerW children.
     Reasserted { hwnd: isize },
-    /// Geometry was re-applied (`move` subcommand or after re-attach).
-    Moved { hwnd: isize },
     /// Detach completed: window un-parented from WorkerW, styles restored.
     Detached { hwnd: isize },
     /// Anything fatal or noteworthy that the main process should log or act on. `kind` is an
@@ -35,6 +33,7 @@ pub enum Event {
 
 // Error kind: the Folia window was destroyed together with its WorkerW (e.g. after an explorer
 // restart). The main process must rebuild the window instead of re-attaching the stale hwnd.
+#[cfg_attr(not(windows), allow(dead_code))]
 pub const ERR_KIND_WINDOW_DESTROYED: &str = "window-destroyed";
 
 // Minimal JSON string escaping (subset of chars that can appear in our messages).
@@ -65,7 +64,6 @@ impl Event {
             Event::WorkerwDestroyed { .. } => "workerw-destroyed",
             Event::ExplorerRestarted => "explorer-restarted",
             Event::Reasserted { .. } => "reasserted",
-            Event::Moved { .. } => "moved",
             Event::Detached { .. } => "detached",
             Event::Error { .. } => "error",
         }
@@ -88,7 +86,6 @@ impl Event {
             }
             Event::ExplorerRestarted => "{\"event\":\"explorer-restarted\"}".to_string(),
             Event::Reasserted { hwnd } => format!("{{\"event\":\"reasserted\",\"hwnd\":{}}}", hwnd),
-            Event::Moved { hwnd } => format!("{{\"event\":\"moved\",\"hwnd\":{}}}", hwnd),
             Event::Detached { hwnd } => format!("{{\"event\":\"detached\",\"hwnd\":{}}}", hwnd),
             Event::Error { message, kind } => match kind {
                 Some(kind) => format!(
@@ -105,14 +102,33 @@ impl Event {
     }
 }
 
-/// Writes one event line to stdout (JSONL protocol) and flushes immediately — the main
-/// process parses these incrementally, so buffering would stall its watchdog.
+// One bounded event queue shared by both backends; Main drains it through Node-API.
+static QUEUE: std::sync::Mutex<std::collections::VecDeque<String>> =
+    std::sync::Mutex::new(std::collections::VecDeque::new());
+
 pub fn emit(event: &Event) {
-    use std::io::Write;
-    let stdout = std::io::stdout();
-    let mut lock = stdout.lock();
-    let _ = writeln!(lock, "{}", event.to_json());
-    let _ = lock.flush();
+    if matches!(event, Event::Attached { .. }) {
+        crate::ATTACHED.store(true, std::sync::atomic::Ordering::SeqCst);
+    }
+    if let Ok(mut queue) = QUEUE.lock() {
+        if queue.len() >= 256 {
+            queue.pop_front();
+        }
+        queue.push_back(event.to_json());
+    }
+}
+
+pub fn drain() -> Vec<String> {
+    QUEUE
+        .lock()
+        .map(|mut queue| queue.drain(..).collect())
+        .unwrap_or_default()
+}
+
+pub fn clear() {
+    if let Ok(mut queue) = QUEUE.lock() {
+        queue.clear();
+    }
 }
 
 #[cfg(test)]
@@ -147,10 +163,6 @@ mod tests {
         assert_eq!(
             Event::Reasserted { hwnd: 5 }.to_json(),
             "{\"event\":\"reasserted\",\"hwnd\":5}"
-        );
-        assert_eq!(
-            Event::Moved { hwnd: 5 }.to_json(),
-            "{\"event\":\"moved\",\"hwnd\":5}"
         );
         assert_eq!(
             Event::Detached { hwnd: 5 }.to_json(),

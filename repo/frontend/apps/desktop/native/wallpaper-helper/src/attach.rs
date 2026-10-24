@@ -397,6 +397,10 @@ pub unsafe fn attach_window(hwnd: HWND) -> Result<(HWND, AttachMode), String> {
 /// Un-parents the window from WorkerW and restores normal styles.
 pub unsafe fn detach_window(hwnd: HWND) -> Result<(), String> {
     if !IsWindow(Some(hwnd)).as_bool() {
+        // The owning process survives a closed renderer window; do not reuse its snapshot.
+        if let Ok(mut state) = ORIGINAL_WINDOW_STATE.lock() {
+            state.take();
+        }
         return Err("Scopify main window no longer exists".to_string());
     }
     let original = ORIGINAL_WINDOW_STATE
@@ -443,7 +447,7 @@ pub unsafe fn invalidate_window(hwnd: HWND) {
 }
 
 /// Runs `f` with the calling thread switched to per-monitor-DPI-aware context and restores
-/// the previous context afterwards. The process already runs PMv2 (see main.rs); this is the
+/// the previous context afterwards. Electron owns the process DPI context; this is the
 /// belt-and-braces re-assertion for the geometry work, which must express the window rect in
 /// physical pixels - from a virtualized context a scaled display leaves the wallpaper inset by
 /// a few pixels (measured ~9 px at 150% scaling).
@@ -459,14 +463,6 @@ fn with_physical_dpi<T>(f: impl FnOnce() -> T) -> T {
         }
         result
     }
-}
-
-/// Sizes the window to fill the monitor it currently sits on, expressed in WorkerW client
-/// coordinates (the classic WorkerW spans the whole virtual screen, so the client origin can
-/// be offset — Seelen handlers.rs does the same conversion from the virtual screen rect).
-pub unsafe fn reassert_geometry(hwnd: HWND) {
-    let monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-    reassert_geometry_on_monitor(hwnd, monitor);
 }
 
 /// Fills `monitor` with the window, converting the monitor rect into the parent's client space.

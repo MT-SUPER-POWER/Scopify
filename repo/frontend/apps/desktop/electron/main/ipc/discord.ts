@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import type { DiscordPresenceSnapshot } from "@scopify/desktop-contract";
-import type { createDiscordPresenceController } from "@main/services/discordPresence";
+import type { createDiscordPresenceController } from "@main/service/discordPresence";
 
 /** 注册 Discord Rich Presence 的命令接口；连接生命周期由 controller 自己管理。 */
 export function registerDiscordIpc(
