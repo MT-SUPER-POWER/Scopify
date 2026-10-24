@@ -1,28 +1,52 @@
 {
-  "$schema": "https://v2-10-12.turborepo.dev/schema.json",
-  "globalDependencies": ["docs/CHANGELOG.md"],
-  "globalEnv": [
+  "$schema": "https://turborepo.dev/schema.json",
+  "cacheMaxSize": "2GB",
+  "cacheMaxAge": "7d",
+  "globalPassThroughEnv": [
     "GITHUB_SHA",
     "VERCEL_GIT_COMMIT_SHA",
     "SCOPIFY_RELEASE_NOTES_STRICT",
     "APP_CFG_*",
     "BACKEND_*",
     "FRONTEND_*",
-    "NEXT_DIST_DIR",
     "NEXT_TELEMETRY_DISABLED"
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "out/**", "build/**"]
+      "dependsOn": ["^build"]
     },
-    "build:desktop": {
+    "@scopify/web#build": {
       "dependsOn": ["^build"],
-      "outputs": ["out/**"]
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "$TURBO_ROOT$/docs/CHANGELOG.md"],
+      "env": [
+        "SCOPIFY_BUILD_TARGET",
+        "SCOPIFY_RELEASE_NOTES_STRICT",
+        "APP_CFG_*",
+        "BACKEND_*",
+        "FRONTEND_*"
+      ],
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+    },
+    "@scopify/docs#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", ".source/**"]
+    },
+    "@scopify/web#build:desktop": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "$TURBO_ROOT$/docs/CHANGELOG.md"],
+      "env": [
+        "SCOPIFY_BUILD_TARGET",
+        "SCOPIFY_RELEASE_NOTES_STRICT",
+        "APP_CFG_*",
+        "BACKEND_*",
+        "FRONTEND_*"
+      ],
+      "outputs": ["out/**", "!out/cache/**", "!out/dev/**"]
     },
     "build:host": {
       "dependsOn": ["^build"],
-      "outputs": ["build/desktop/app/out/**"]
+      "cache": false
     },
     "sync:renderer": {
       "dependsOn": ["@scopify/web#build:desktop"],
@@ -30,7 +54,7 @@
     },
     "@scopify/desktop#build": {
       "dependsOn": ["sync:renderer", "^build"],
-      "outputs": ["build/desktop/app/out/**"]
+      "cache": false
     },
     "package:win": {
       "cache": false
@@ -42,7 +66,9 @@
       "cache": false,
       "persistent": true
     },
-    "lint": {},
+    "lint": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
+    },
     "test": {
       "dependsOn": ["^build"]
     },
