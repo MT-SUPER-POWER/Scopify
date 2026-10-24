@@ -1,11 +1,12 @@
 "use client";
 
+import { Bookmark } from "lucide-react";
 import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
 import { LibraryContentState } from "@/components/library/LibraryContentState";
-import { LibraryEmptyState } from "@/components/library/LibraryEmptyState";
 import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
 import { LibraryPageHeader } from "@/components/library/LibraryPageHeader";
 import { AppBackground } from "@/components/shared/AppBackground";
+import { QuietState } from "@/components/shared/QuietState";
 import { useCollectionQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -33,7 +34,8 @@ export default function CollectionPage() {
             isLoading={collectionQuery.isLoading}
             isRetrying={collectionQuery.isRefetching}
             emptyState={
-              <LibraryEmptyState
+              <QuietState
+                icon={Bookmark}
                 title={t("library.empty.collection.title")}
                 description={t("library.empty.collection.description")}
               />

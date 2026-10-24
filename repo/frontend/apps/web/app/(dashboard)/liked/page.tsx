@@ -1,10 +1,11 @@
 "use client";
 
+import { Heart } from "lucide-react";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
 import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
-import { LibraryEmptyState } from "@/components/library/LibraryEmptyState";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { QuietState } from "@/components/shared/QuietState";
 import { useLikedPlaylistQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
@@ -46,7 +47,8 @@ export default function LikedSongsPage() {
   if (!likedPlaylistId) {
     return (
       <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
-        <LibraryEmptyState
+        <QuietState
+          icon={Heart}
           title={t("library.empty.liked.title")}
           description={t("library.empty.liked.description")}
         />

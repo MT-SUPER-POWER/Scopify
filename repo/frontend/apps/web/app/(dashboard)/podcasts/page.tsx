@@ -1,9 +1,9 @@
 "use client";
 
+import { Podcast } from "lucide-react";
 import { useState } from "react";
 import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
 import { LibraryContentState } from "@/components/library/LibraryContentState";
-import { LibraryEmptyState } from "@/components/library/LibraryEmptyState";
 import { LikedVoiceList } from "@/components/library/LikedVoiceList";
 import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
 import { PodcastRecommendations } from "@/components/library/PodcastRecommendations";
@@ -11,6 +11,7 @@ import { PodcastViewToggle } from "@/components/library/PodcastViewToggle";
 import { SubscribedPodcastGrid } from "@/components/library/SubscribedPodcastGrid";
 import { SubscribedPodcastTable } from "@/components/library/SubscribedPodcastTable";
 import { AppBackground } from "@/components/shared/AppBackground";
+import { QuietState } from "@/components/shared/QuietState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useCreatedPodcastsQuery,
@@ -38,7 +39,8 @@ export default function PodcastsPage() {
   const likedVoicesQuery = useLikedVoicesQuery();
   const recommendedPodcastsQuery = useRecommendedPodcastsQuery();
   const unavailableState = (
-    <LibraryEmptyState
+    <QuietState
+      icon={Podcast}
       title={t("library.empty.podcasts.title")}
       description={t("library.empty.podcasts.description")}
     />
