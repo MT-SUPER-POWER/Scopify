@@ -1,6 +1,5 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -8,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
-import { UPDATES, UPDATES_CHANGELOG_URL, UPDATES_UNRELEASED_KEY } from "@/constants/updates";
+import { UPDATES, UPDATES_UNRELEASED_KEY } from "@/constants/updates";
 import { useI18n } from "@/store/module/i18n";
 import type { UpdatesFooterProps } from "@/types/updates";
 import styles from "./WhatsNewModal.module.css";
@@ -41,15 +40,6 @@ export function UpdatesFooter({ releaseKey, onReleaseChange, onClose }: UpdatesF
             ))}
           </SelectContent>
         </Select>
-        <a
-          className={styles.historyLink}
-          href={UPDATES_CHANGELOG_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t("updates.fullHistory")}
-          <ArrowUpRight size={14} aria-hidden />
-        </a>
       </div>
       <button type="button" className={styles.done} onClick={onClose}>
         {t("updates.close")}

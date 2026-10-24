@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@scopify/ui/shadcn/components/dialog";
-import { UPDATES } from "@/constants/updates";
+import { UPDATES, UPDATES_CHANGELOG_URL } from "@/constants/updates";
 import { useI18n } from "@/store/module/i18n";
 import type { UpdatesHeaderProps } from "@/types/updates";
 import styles from "./WhatsNewModal.module.css";
@@ -14,7 +14,15 @@ export function UpdatesHeader({ release, onClose }: UpdatesHeaderProps) {
     <header className={styles.header}>
       <p className={styles.eyebrow}>{t("updates.title")}</p>
       <DialogTitle className={styles.title}>
-        {version ? `Scopify v${version}` : t("updates.unreleased")}
+        <a
+          className={styles.titleLink}
+          href={UPDATES_CHANGELOG_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={t("updates.fullHistory")}
+        >
+          {version ? `Scopify v${version}` : t("updates.unreleased")}
+        </a>
       </DialogTitle>
       <DialogDescription className={styles.date}>
         {release?.date ? (
