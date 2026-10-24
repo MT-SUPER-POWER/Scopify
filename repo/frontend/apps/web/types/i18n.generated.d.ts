@@ -8234,21 +8234,21 @@ export interface TranslateFn {
    */
   (key: "home.artistTopSongsCardSubtitle", params?: TranslationParams): string;
   /**
-   * zh-CN: 当前网络异常
-   * zh-TW: 目前網路異常
-   * en-US: Network unavailable
+   * zh-CN: 加载失败
+   * zh-TW: 載入失敗
+   * en-US: Couldn't load
    */
   (key: "network.offline.title", params?: TranslationParams): string;
   /**
-   * zh-CN: 请检查网络连接后刷新页面。
-   * zh-TW: 請檢查網路連線後重新整理頁面。
-   * en-US: Check your connection and refresh the page.
+   * zh-CN: 网络或服务暂时不可用
+   * zh-TW: 網路或服務暫時無法使用
+   * en-US: The network or service is unavailable right now
    */
   (key: "network.offline.subtitle", params?: TranslationParams): string;
   /**
-   * zh-CN: 刷新
-   * zh-TW: 重新整理
-   * en-US: Refresh
+   * zh-CN: 重试
+   * zh-TW: 重試
+   * en-US: Retry
    */
   (key: "network.action.refresh", params?: TranslationParams): string;
   /**
@@ -22450,6 +22450,12 @@ export interface TranslateFn {
    * en-US: Podcasts you save or create will appear here.
    */
   (key: "library.empty.podcasts.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后查看喜欢的音乐
+   * zh-TW: 登入後查看喜歡的音樂
+   * en-US: Log in to see your liked songs
+   */
+  (key: "library.loggedOut.liked", params?: TranslationParams): string;
   /**
    * zh-CN: 收藏的专辑
    * zh-TW: 收藏的專輯

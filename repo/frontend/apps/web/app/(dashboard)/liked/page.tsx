@@ -3,19 +3,16 @@
 import { Heart } from "lucide-react";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
-import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { QuietState } from "@/components/shared/QuietState";
 import { useLikedPlaylistQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 
 export default function LikedSongsPage() {
   const { t } = useI18n();
   const isLoggedIn = useLoginStatus();
-  const router = useSmartRouter();
   const likedPlaylistQuery = useLikedPlaylistQuery();
   const likedPlaylistId = likedPlaylistQuery.data?.id;
   const playlist = usePlaylist(likedPlaylistId ? String(likedPlaylistId) : null);
@@ -23,7 +20,7 @@ export default function LikedSongsPage() {
   if (!isLoggedIn) {
     return (
       <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
-        <LoginRequiredPrompt reason="library" onLogin={() => router.push("/login")} />
+        <QuietState icon={Heart} title={t("library.loggedOut.liked")} />
       </main>
     );
   }
