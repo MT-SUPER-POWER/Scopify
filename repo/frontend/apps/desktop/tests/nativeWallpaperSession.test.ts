@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { createNativeWallpaperSession } from "../electron/main/capabilities/desktopPlaybackWallpaper/nativeWallpaperSession";
+import { createNativeWallpaperSession } from "../electron/main/service/desktop/wallpaper/nativeWallpaperSession";
 import type { NativeWallpaperSessionModule } from "../types/nativeWallpaper";
 
 const bounds = { x: -1280, y: -100, width: 1280, height: 720 };

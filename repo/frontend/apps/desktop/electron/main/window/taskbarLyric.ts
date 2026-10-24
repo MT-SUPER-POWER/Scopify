@@ -17,7 +17,7 @@ import type {
 } from "@/types/taskbarLyricNative";
 
 import { __preloadScript } from "@main/constants";
-import { createNativeModuleLoader } from "@main/services/nativeModuleLoader";
+import { createNativeModuleLoader } from "@main/service/nativeModules/loader";
 import { windowLog } from "@main/utils/logger";
 import { isRecord, readUserDataJson, writeUserDataJson } from "@main/utils/userDataJson";
 import { getTrayWindow } from "@main/window/tray";

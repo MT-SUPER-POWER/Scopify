@@ -6,7 +6,7 @@
 
 ```text
 Renderer → Preload → 已校验发送方的 Electron IPC
-         → 壁纸 capability / platform driver
+         → 壁纸 service / platform driver
          → scopify-wallpaper-helper.<platform>-<arch>.node
          → Windows WorkerW / macOS NSWindow
 ```

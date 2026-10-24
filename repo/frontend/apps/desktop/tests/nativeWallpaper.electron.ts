@@ -5,11 +5,11 @@ import { app, BrowserWindow, ipcMain, screen } from "electron";
 import type { DesktopPlaybackWallpaperModel } from "@scopify/desktop-contract";
 import type { NativeWallpaperModule } from "../types/nativeWallpaper";
 import { parseDesktopPlaybackWallpaperPreferencesUpdate } from "../types/desktopPlaybackWallpaper";
-import { createElectronDesktopPlaybackWallpaperDriver } from "../electron/main/capabilities/desktopPlaybackWallpaper/electronDriver";
-import { createDesktopPlaybackWallpaperCapability } from "../electron/main/capabilities/desktopPlaybackWallpaper/capability";
-import { createDesktopPlaybackWallpaperPreferencesRepository } from "../electron/main/capabilities/desktopPlaybackWallpaper/preferences";
+import { createElectronDesktopPlaybackWallpaperDriver } from "../electron/main/service/desktop/wallpaper/electronDriver";
+import { createDesktopPlaybackWallpaperService } from "../electron/main/service/desktop/wallpaper/service";
+import { createDesktopPlaybackWallpaperPreferencesRepository } from "../electron/main/service/desktop/wallpaper/preferences";
 
-// An isolated real Electron window exercises Renderer IPC -> capability -> Rust -> AppKit/WorkerW.
+// An isolated real Electron window exercises Renderer IPC -> service -> Rust -> AppKit/WorkerW.
 async function run() {
   const outputRoot = process.env.SCOPIFY_WALLPAPER_SMOKE_ROOT;
   if (!outputRoot) throw new Error("Run this test through scripts/verify-wallpaper-native.ts");
@@ -36,7 +36,7 @@ async function run() {
     mainWindow: window,
     onHostLost: (diagnostic) => hostLosses.push(diagnostic),
   });
-  const capability = createDesktopPlaybackWallpaperCapability({
+  const service = createDesktopPlaybackWallpaperService({
     driver,
     preferences: createDesktopPlaybackWallpaperPreferencesRepository({
       filePath: join(outputRoot, "preferences.json"),
@@ -47,7 +47,7 @@ async function run() {
   ) as NativeWallpaperModule;
   ipcMain.handle("desktop-playback-wallpaper:configure", (event, update: unknown) => {
     assert.equal(event.sender.id, window.webContents.id);
-    return capability.configure(parseDesktopPlaybackWallpaperPreferencesUpdate(update));
+    return service.configure(parseDesktopPlaybackWallpaperPreferencesUpdate(update));
   });
 
   try {
@@ -102,7 +102,7 @@ async function run() {
           [],
           "Dock visibility and other displays must not disable wallpaper",
         );
-        assert.equal(capability.getModel().status.state, "running");
+        assert.equal(service.getModel().status.state, "running");
         assert.equal(native.isAttached(), true);
         assert.deepEqual(window.getContentBounds(), before);
         // Keep protection for an actual change to the wallpaper display.
@@ -137,7 +137,7 @@ async function run() {
     }
     // An enabled session must also be restored by shutdown, without a Renderer toggle.
     await window.webContents.executeJavaScript("window.wallpaperSmoke.configure({enabled:true})");
-    await capability.dispose();
+    await service.dispose();
     assert.equal(native.isAttached(), false);
     assert.deepEqual(window.getBounds(), original);
     console.log("[wallpaper-smoke] shutdown restoration passed");
@@ -145,7 +145,7 @@ async function run() {
     app.exit(0);
   } catch (error) {
     console.error("[wallpaper-smoke]", error);
-    await capability
+    await service
       .dispose()
       .catch((cleanupError) => console.error("[wallpaper-smoke] cleanup failed", cleanupError));
     window.destroy();

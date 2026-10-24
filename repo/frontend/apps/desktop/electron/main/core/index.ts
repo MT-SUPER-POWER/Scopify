@@ -10,10 +10,10 @@ import {
   wallpaperLog,
   windowLog,
 } from "@main/utils/logger";
-import { createDesktopBackendController } from "@main/services/backend";
-import { createDiscordPresenceController } from "@main/services/discordPresence";
-import { createDesktopRendererHost } from "@main/services/rendererHost";
-import { registerExternalLinkHandling } from "@main/services/externalLinks";
+import { createDesktopBackendController } from "@main/service/backend";
+import { createDiscordPresenceController } from "@main/service/discordPresence";
+import { createDesktopRendererHost } from "@main/service/renderer";
+import { registerExternalLinkHandling } from "@main/service/externalLinks";
 import { loadDesktopHostConfig } from "@main/store";
 import { restoreMusicSessionCookies } from "@main/utils/musicCookieStore";
 import { applyElectronProxy } from "@main/utils/proxy";
@@ -23,10 +23,10 @@ import { registerLoggingIpc } from "@main/ipc/logging";
 import { disposeAppCloseWindow } from "@main/window/appCloseWindow";
 import { createMainWindow, notifyMainWindowVisibility } from "@main/window/mainWindow";
 import { createSplashWindowController } from "@main/window/splash";
-import { scheduleStartupUpdateCheck } from "@main/services/updater";
-import { createWindowCapabilityHost } from "./capabilityHost";
+import { scheduleStartupUpdateCheck } from "@main/service/updates";
+import { createWindowServiceHost } from "./serviceHost";
 import { createApplicationShutdown } from "./shutdown";
-import { createDesktopNotifications } from "@main/services/notifications";
+import { createDesktopNotifications } from "@main/service/notifications";
 import { registerNotificationsIpc } from "@main/ipc/notifications";
 
 /** Dev runs use their own AUMID so electron.exe never claims the installed app's taskbar identity. */
@@ -60,7 +60,7 @@ const discord = createDiscordPresenceController({
     }
   },
 });
-const capabilities = createWindowCapabilityHost({
+const services = createWindowServiceHost({
   backendController: backend,
   discordPresence: discord,
   getMainWindow: () => mainWindow,
@@ -74,7 +74,7 @@ const shutdown = createApplicationShutdown({
     notifications?.dispose();
     splash.dismiss();
     disposeAppCloseWindow();
-    await Promise.allSettled([capabilities.dispose(), discord.destroy(), backend.dispose()]);
+    await Promise.allSettled([services.dispose(), discord.destroy(), backend.dispose()]);
   },
   onError: (error) => coreLog.error("[app] shutdown cleanup failed", error),
   onStarted: () => {
@@ -101,7 +101,7 @@ async function createApplicationWindow() {
   try {
     mainWindow = createMainWindow({
       isQuitting: () => quitting,
-      onBeforeLoad: capabilities.attach,
+      onBeforeLoad: services.attach,
       onClosed: () => {
         mainWindow = null;
       },
@@ -117,11 +117,11 @@ async function createApplicationWindow() {
 }
 
 async function releaseMainWindow(window: BrowserWindow) {
-  await capabilities.waitUntilReady().catch((error) => {
+  await services.waitUntilReady().catch((error) => {
     wallpaperLog.error("[desktop-playback-wallpaper] initialization failed", error);
   });
   notifyMainWindowVisibility(window);
-  if (capabilities.isWallpaperActive()) splash.dismiss();
+  if (services.isWallpaperActive()) splash.dismiss();
   else await splash.reveal(window);
   if (process.platform === "win32" && !window.isDestroyed()) initThumbarButtons(window);
   stopProcessMemoryMonitor ??= startProcessMemoryMonitor(() => mainWindow);
@@ -133,7 +133,7 @@ async function prepareApplication() {
     getBackendOrigin: () => backend.getStatus().origin,
     showMainWindow: async () => {
       if (!mainWindow) await createApplicationWindow();
-      await capabilities.restoreWallpaper();
+      await services.restoreWallpaper();
       if (mainWindow?.isMinimized()) mainWindow.restore();
       mainWindow?.show();
       mainWindow?.focus();
@@ -191,7 +191,7 @@ function registerLifecycle() {
       await createApplicationWindow();
       return;
     }
-    await capabilities.restoreWallpaper();
+    await services.restoreWallpaper();
     if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.show();
     mainWindow.focus();

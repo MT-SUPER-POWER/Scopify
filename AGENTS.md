@@ -116,9 +116,23 @@ Scopify/
 
 前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：👉 **[skills/nextjs-project-structure/](skills/nextjs-project-structure/SKILL.md)**
 
+### Electron 主进程服务目录
+
+主进程服务统一放在 `repo/frontend/apps/desktop/electron/main/service/`，按功能分目录，不再使用并列的 `capabilities/` 与 `services/`：
+
+- `audio/`：原生音频与音频特征传输。
+- `playback/`：播放 Broker 与 Gateway。
+- `desktop/`：桌面图标、壁纸与共享桌面原生模块。
+- `mcp/`：MCP 服务与播放工具。
+- `backend/`、`renderer/`、`cache/`、`updates/`：后端托管、渲染宿主、页面缓存与更新。
+- `externalLinks/`、`notifications/`、`discordPresence/`：外链、通知与 Discord 状态。
+- `nativeModules/`：通用原生模块加载。
+
+生命周期组装放在 `core/serviceHost.ts`；服务相关类型放在桌面端全局 `types/`，不通过旧目录建立兼容转发。
+
 ### Desktop external links
 
-桌面端外部网页统一由 Electron 主进程 `services/externalLinks.ts` 交给系统默认浏览器打开；不要为外链新建 BrowserWindow，不要在单个窗口中覆盖全局的新窗口处理规则。
+桌面端外部网页统一由 Electron 主进程 `service/externalLinks/index.ts` 交给系统默认浏览器打开；不要为外链新建 BrowserWindow，不要在单个窗口中覆盖全局的新窗口处理规则。
 
 ### Shared UI package boundary
 

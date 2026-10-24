@@ -28,7 +28,7 @@ HTTPS 与本地文件在 V1 都先缓冲进可 Seek 的内存 Cursor，最大 51
 ```text
 electron/main/
 ├─ capabilities/nativeAudio/   # Host Interface、运行时校验、事件过滤
-└─ services/nativeModuleLoader.ts
+└─ service/nativeModules/loader.ts
 native/audio-engine/
 ├─ src/bindings.rs             # NAPI ABI 与监控事件
 ├─ src/player.rs               # 播放状态、Sink 与 token

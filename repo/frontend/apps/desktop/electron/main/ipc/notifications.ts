@@ -1,7 +1,7 @@
 import { ipcMain, type IpcMainInvokeEvent } from "electron";
 import { normalizeNotificationPreferences, object } from "@scopify/notification-core";
 import { coreLog } from "@main/utils/logger";
-import type { createDesktopNotifications } from "@main/services/notifications";
+import type { createDesktopNotifications } from "@main/service/notifications";
 import type { DesktopNotificationOptions } from "@/types/notifications";
 import { isMainRenderer } from "./sender";
 

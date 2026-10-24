@@ -223,7 +223,7 @@ Electron 原生的 `MessagePortMain` 是一个典型的 Node EventEmitter 结构
 1. 无法进行干净的自动化单元测试（跑测试必须启动真实的 Electron 主进程）。
 2. 通信协议与 Electron 强耦合。
 
-因此，代码在 [`electron/main/capabilities/playbackBroker/port.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/capabilities/playbackBroker/port.ts) 定义了一个仅有 4 个方法的纯接口：
+因此，代码在 [`electron/main/service/playback/broker/port.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/service/playback/broker/port.ts) 定义了一个仅有 4 个方法的纯接口：
 
 ```ts
 export interface PlaybackBrokerPort {
@@ -234,7 +234,7 @@ export interface PlaybackBrokerPort {
 }
 ```
 
-并在 [`electronPort.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/capabilities/playbackBroker/electronPort.ts) 中实现适配器：
+并在 [`electronPort.ts`](file:///d:/Github/Scopify/repo/frontend/apps/desktop/electron/main/service/playback/broker/electronPort.ts) 中实现适配器：
 
 ```mermaid
 classDiagram
@@ -280,7 +280,7 @@ classDiagram
 
 ```mermaid
 graph TD
-    Capability["DesktopPlaybackWallpaperCapability"] --> Driver["平台驱动"]
+    Capability["DesktopPlaybackWallpaperService"] --> Driver["平台驱动"]
     Driver --> Native["统一 Rust Node-API 模块"]
     Native --> Windows["Windows WorkerW"]
     Native --> Mac["macOS NSWindow 桌面层"]
