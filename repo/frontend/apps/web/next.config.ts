@@ -53,8 +53,6 @@ const frontendDevPort = envNumber(
   3000,
 );
 const isDesktopBuild = process.env.SCOPIFY_BUILD_TARGET === "desktop";
-const nextDistDir =
-  process.env.NEXT_DIST_DIR || (process.env.NODE_ENV === "development" ? ".next-dev" : ".next");
 
 export function shouldUseUnoptimizedImages(
   buildTarget = process.env.SCOPIFY_BUILD_TARGET,
@@ -96,11 +94,10 @@ const nextConfig: NextConfig = {
   ...(isDesktopBuild
     ? {
         output: "export",
-        distDir: process.env.NEXT_DIST_DIR || "out",
+        distDir: "out",
         trailingSlash: true,
       }
-    : { distDir: nextDistDir }),
-  serverExternalPackages: [],
+    : {}),
   env: {
     NEXT_PUBLIC_UPDATES: JSON.stringify(releaseNotes),
     APP_CFG_APP_LOCALE: process.env.APP_CFG_APP_LOCALE || DEFAULT_WEB_CONFIG.app.locale,
@@ -113,7 +110,6 @@ const nextConfig: NextConfig = {
     APP_CFG_NET_RANDOM_CNIP:
       process.env.APP_CFG_NET_RANDOM_CNIP || String(DEFAULT_WEB_CONFIG.network.randomCNIP),
   },
-  allowedDevOrigins: ["192.168.3.8", "localhost", "127.0.0.1", "_next"],
 };
 
 export default nextConfig;

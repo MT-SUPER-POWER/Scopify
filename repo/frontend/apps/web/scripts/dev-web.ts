@@ -32,10 +32,7 @@ function isPortOpen(host: string, port: number, timeoutMs = 300) {
 }
 
 async function clearStaleNextDevLock(host: string, port: number) {
-  // Keep this in sync with next.config.ts: development builds use an isolated
-  // cache so they never compete with production build artifacts.
-  const distDir = process.env.NEXT_DIST_DIR || ".next-dev";
-  const lockPath = join(process.cwd(), distDir, "dev", "lock");
+  const lockPath = join(process.cwd(), ".next", "dev", "lock");
   if (!existsSync(lockPath)) {
     return;
   }
