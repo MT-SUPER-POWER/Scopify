@@ -2,6 +2,5 @@ node_modules/
 build/
 out/
 dist/
-renderer/
 logs/
 *.tsbuildinfo
