@@ -11,7 +11,7 @@ import {
   type Table as TanstackTable,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ChevronDown, ChevronUp, Clock, RefreshCw } from "lucide-react";
+import { ChevronDown, ChevronUp, Clock, ListMusic, RefreshCw, Search } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ import {
 } from "@/components/shared/NavigationScrollProvider";
 import { PLAYLIST_VIRTUALIZATION_THRESHOLD } from "@/constants/playlistTable";
 import { PlaylistTableSongRow } from "@/components/Playlist/PlaylistTableSongRow";
+import { QuietState } from "@/components/shared/QuietState";
 import { TracklistResizeHandle } from "@/components/shared/TracklistResizeHandle";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import {
@@ -586,29 +587,33 @@ export default function TracklistTable({
             <TableBody ref={tableBodyRef}>
               {sortedTracks.length === 0 ? (
                 <TableRow className="border-none hover:bg-transparent">
-                  <TableCell
-                    colSpan={visibleColumnCount}
-                    className="py-10 text-center text-content-subtle"
-                  >
+                  <TableCell colSpan={visibleColumnCount} className="p-0">
                     {hasSearchQuery ? (
-                      t("playlist.table.searchNoResults", {
-                        query: searchQuery ?? "",
-                      })
+                      <QuietState
+                        compact
+                        icon={Search}
+                        title={t("playlist.table.searchNoResults", { query: searchQuery ?? "" })}
+                      />
                     ) : onEmptyAction && emptyActionLabel ? (
-                      <div className="flex flex-col items-center gap-3">
-                        <span>{t("playlist.table.noFetchedData")}</span>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          onClick={onEmptyAction}
-                          className="bg-brand text-brand-foreground hover:bg-brand-hover"
-                        >
-                          <RefreshCw className="size-4" />
-                          {emptyActionLabel}
-                        </Button>
-                      </div>
+                      <QuietState
+                        compact
+                        icon={ListMusic}
+                        title={t("playlist.table.noFetchedData")}
+                        action={
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={onEmptyAction}
+                            className="rounded-full bg-content/5 text-content hover:bg-content/10"
+                          >
+                            <RefreshCw />
+                            {emptyActionLabel}
+                          </Button>
+                        }
+                      />
                     ) : (
-                      <span>{t("playlist.table.noSongs")}</span>
+                      <QuietState compact icon={ListMusic} title={t("playlist.table.noSongs")} />
                     )}
                   </TableCell>
                 </TableRow>
