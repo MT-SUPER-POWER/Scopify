@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Languages,
   Lock,
@@ -27,7 +28,7 @@ const BUTTON_CLASS =
   "flex size-8 shrink-0 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-white active:bg-white/30 disabled:opacity-50 aria-pressed:bg-white/25";
 
 /**
- * 桌面歌词顶栏：左侧歌曲信息、中间播放控制、右侧设置与锁定。
+ * 桌面歌词顶栏：左侧品牌标识与歌曲信息、中间播放控制、右侧设置与锁定。
  * 窗口尺寸固定，锁定按钮始终停在右上角；锁定后只有它在悬停时出现并可点击。
  */
 export function DesktopLyricHeader({ hovered, locked }: DesktopLyricHeaderProps) {
@@ -40,7 +41,8 @@ export function DesktopLyricHeader({ hovered, locked }: DesktopLyricHeaderProps)
   useDesktopSubtitleControlSync();
 
   const section = cn(
-    "flex min-w-0 items-center gap-1 transition-opacity duration-200 group-focus-within/lyric:opacity-100",
+    "flex min-w-0 items-center gap-1 transition-opacity duration-200",
+    !locked && "group-focus-within/lyric:opacity-100",
     hovered && !locked ? "opacity-100" : "pointer-events-none opacity-0",
   );
   const artists = playback.track?.artistNames.join(" / ");
@@ -51,7 +53,17 @@ export function DesktopLyricHeader({ hovered, locked }: DesktopLyricHeaderProps)
       className="relative grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 px-3 text-white"
       style={{ height: DESKTOP_LYRIC_HEADER_HEIGHT }}
     >
-      <div className={cn(section, "leading-tight [text-shadow:0_0_4px_rgb(0_0_0/80%)]")}>
+      <div className={cn(section, "gap-2 leading-tight [text-shadow:0_0_4px_rgb(0_0_0/80%)]")}>
+        <Image
+          src="/scopify-monochrome.svg"
+          alt="Scopify"
+          width={28}
+          height={28}
+          loading="eager"
+          unoptimized
+          draggable={false}
+          className="size-7 shrink-0 drop-shadow-[0_1px_2px_rgb(0_0_0/60%)]"
+        />
         <div className="min-w-0">
           <p className="truncate text-[13px] font-medium">
             {playback.track?.title ?? t("subtitlePalette.waiting")}
