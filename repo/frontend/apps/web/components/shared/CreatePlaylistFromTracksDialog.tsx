@@ -63,9 +63,12 @@ export function CreatePlaylistFromTracksDialog({
           }),
         ]);
 
-        toast.success(`已创建歌单「${finalName}」并添加了 ${tracks.length} 首歌曲`, {
-          id: toastId,
-        });
+        toast.success(
+          tracks.length > 0
+            ? `已创建歌单「${finalName}」并添加了 ${tracks.length} 首歌曲`
+            : t("sidebar.menu.createSuccess", { name: finalName }),
+          { id: toastId },
+        );
         onOpenChange(false);
         setPlaylistName("");
       } else {
@@ -90,9 +93,11 @@ export function CreatePlaylistFromTracksDialog({
         </AlertDialogHeader>
 
         <div className="space-y-3 py-2">
-          <p className="text-xs text-content-muted">
-            将选中的 {tracks.length} 首歌曲收纳至新歌单：
-          </p>
+          {tracks.length > 0 && (
+            <p className="text-xs text-content-muted">
+              将选中的 {tracks.length} 首歌曲收纳至新歌单：
+            </p>
+          )}
           <Input
             value={playlistName}
             onChange={(e) => setPlaylistName(e.target.value)}
