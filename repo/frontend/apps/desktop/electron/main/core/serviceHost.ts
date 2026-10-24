@@ -25,6 +25,8 @@ import { bindPlaybackBrokerIpc } from "@main/service/playback/broker/ipc";
 import type { PlaybackBrokerIpcBinding } from "@/types/service/playback/broker/ipc";
 import { createPlaybackGateway } from "@main/service/playback/gateway";
 import type { PlaybackGateway } from "@/types/service/playback/gateway";
+import { initializeTaskbarProgressService } from "@main/service/playback/taskbarProgress";
+import type { TaskbarProgressService } from "@/types/service/playback/taskbarProgress";
 import { desktopConfig } from "@main/constants";
 import { brokerLog, wallpaperLog } from "@main/utils/logger";
 import { registerIpcHandlers } from "@main/ipc";
@@ -47,6 +49,7 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
   let playbackBroker: PlaybackBroker | null = null;
   let playbackBrokerIpc: PlaybackBrokerIpcBinding | null = null;
   let playbackGateway: PlaybackGateway | null = null;
+  let taskbarProgress: TaskbarProgressService | null = null;
   let mcpRuntime: McpRuntime | null = null;
   let audioFeatureBroker: ReturnType<typeof initializeAudioFeatureBrokerIpc> | null = null;
 
@@ -72,6 +75,13 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
       credentials: createElectronMcpCredentialStore(),
       playback: playbackGateway,
       version: app.getVersion(),
+    });
+
+    taskbarProgress?.dispose();
+    taskbarProgress = initializeTaskbarProgressService({
+      getPlaybackAnchor: () => playbackBroker?.getBootstrap()?.anchor ?? null,
+      playback: playbackGateway,
+      window,
     });
 
     registerIpcHandlers(window, options.discordPresence, options.backendController, mcpRuntime);
@@ -146,6 +156,8 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
       // Stop accepting MCP work before releasing the Gateway/Broker that its
       // handlers depend on. The application shutdown coordinator awaits this.
       await activeMcpRuntime?.dispose();
+      taskbarProgress?.dispose();
+      taskbarProgress = null;
       playbackGateway?.dispose();
       playbackGateway = null;
       playbackBroker?.dispose();
