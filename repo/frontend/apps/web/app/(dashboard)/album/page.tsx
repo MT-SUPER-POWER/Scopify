@@ -39,14 +39,14 @@ export default function AlbumPage() {
 
   if (isLoading && !ALBUM_INFO)
     return (
-      <div className="min-h-screen w-full bg-surface-raised px-6 py-24">
+      <div className="min-h-screen w-full bg-surface-raised py-24">
         <PlaylistLoading />
       </div>
     );
 
   if ((isError && !ALBUM_INFO) || (!isLoading && !ALBUM_INFO))
     return (
-      <div className="min-h-screen w-full bg-surface-raised px-6 py-24">
+      <div className="min-h-screen w-full bg-surface-raised py-24">
         <div className="mb-6 opacity-70">
           <PlaylistLoading />
         </div>
