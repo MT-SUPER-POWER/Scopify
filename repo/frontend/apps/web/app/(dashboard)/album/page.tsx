@@ -47,9 +47,6 @@ export default function AlbumPage() {
   if ((isError && !ALBUM_INFO) || (!isLoading && !ALBUM_INFO))
     return (
       <div className="min-h-screen w-full bg-surface-raised py-24">
-        <div className="mb-6 opacity-70">
-          <PlaylistLoading />
-        </div>
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("album.empty.unavailable")}
