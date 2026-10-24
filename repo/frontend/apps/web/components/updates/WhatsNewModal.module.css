@@ -150,14 +150,19 @@
 /* Body: Typora-like prose */
 
 .scrollArea {
+  display: flex;
   min-height: 0;
   flex: 0 1 auto;
+  flex-direction: column;
+  overflow: hidden;
   border-top: 1px solid var(--doc-border);
 }
 
 .scrollArea [data-slot="scroll-area-viewport"] {
   height: auto;
   max-height: min(500px, calc(100dvh - 250px));
+  min-height: 0;
+  flex: 0 1 auto;
   overscroll-behavior: contain;
 }
 
