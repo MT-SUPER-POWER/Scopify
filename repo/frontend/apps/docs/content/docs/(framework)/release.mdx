@@ -118,7 +118,7 @@ docker compose up -d --build
 - 本地 master 已推送，tag 会打在远端也有的提交上；
 - 桌面端 Renderer、Electron Host 和本地后端资源是否能一起构建。
 
-本地脚本 `build:win` / `build:mac` 用于生成不发布的安装包；`release:win` / `release:mac` 是带 Electron Builder publish 行为的独立路径，不应代替 CI 的集中式 Release workflow。
+根目录 `build:win` / `build:mac` 按构建、打包顺序生成本地安装包；`package:win` / `package:mac` 供已有构建产物的分阶段打包使用。发布统一推送版本 tag，由 CI 的集中式 Release workflow 完成。
 
 ## 失败排查
 

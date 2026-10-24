@@ -1,17 +1,16 @@
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 
-import { app } from "electron";
+import { resolveWindowsScriptPath } from "@main/services/windowsScripts";
+
 import type { DesktopIconVisibilityState } from "@scopify/desktop-contract";
 
 import { parseWindowsDesktopIconVisibilityResult } from "./result";
 
-type DesktopIconAction = "Get" | "Hide" | "Show";
-
-export interface WindowsDesktopIconVisibilityOptions {
-  scriptPath?: string;
-}
+import type {
+  DesktopIconAction,
+  WindowsDesktopIconVisibilityOptions,
+} from "@/types/desktopIconVisibility";
+export type { WindowsDesktopIconVisibilityOptions } from "@/types/desktopIconVisibility";
 
 export function getWindowsDesktopIconVisibility(
   options: WindowsDesktopIconVisibilityOptions = {},
@@ -38,7 +37,7 @@ async function runWindowsDesktopIconAction(
     };
   }
 
-  const scriptPath = options.scriptPath ?? getDesktopIconsScriptPath();
+  const scriptPath = options.scriptPath ?? resolveWindowsScriptPath("desktop-icons.ps1");
   const child = spawn(
     "powershell.exe",
     [
@@ -92,20 +91,4 @@ async function runWindowsDesktopIconAction(
   }
 
   return parseWindowsDesktopIconVisibilityResult(stdout, stderr, exitCode);
-}
-
-function getDesktopIconsScriptPath() {
-  if (app.isPackaged) {
-    const unpacked = join(
-      process.resourcesPath,
-      "app.asar.unpacked",
-      "public",
-      "windows",
-      "desktop-icons.ps1",
-    );
-    if (existsSync(unpacked)) return unpacked;
-    const legacy = join(process.resourcesPath, "resources", "windows", "desktop-icons.ps1");
-    if (existsSync(legacy)) return legacy;
-  }
-  return join(app.getAppPath(), "public", "windows", "desktop-icons.ps1");
 }

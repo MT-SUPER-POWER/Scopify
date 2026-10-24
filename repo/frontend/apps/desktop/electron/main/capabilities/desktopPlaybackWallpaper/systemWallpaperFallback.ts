@@ -8,17 +8,17 @@ import type {
   DesktopPlaybackWallpaperSystemFallback,
   SystemWallpaperFallbackOperationResult,
   WindowsSystemWallpaperFallbackOptions,
+  SystemWallpaperAction,
 } from "@/types/systemWallpaperFallback";
 import { wallpaperLog } from "@main/utils/logger";
 import { parseSystemWallpaperResult } from "./fallbackPolicy";
-import { resolveDesktopPlaybackWallpaperScriptPath } from "./scriptPaths";
+import { resolveWindowsScriptPath } from "@main/services/windowsScripts";
 
 const BACKGROUND_CAPTURE_EVENT = "desktop-playback-wallpaper:capture-background";
 const CAPTURE_READY_SELECTOR = '[data-desktop-playback-wallpaper-content-ready="true"]';
 const CAPTURE_MODE_SELECTOR = '[data-desktop-playback-wallpaper-capture-background="true"]';
 const FALLBACK_IMAGE_FILE = "system-wallpaper-fallback.png";
 const JOURNAL_FILE = "system-wallpaper-journal.json";
-type SystemWallpaperAction = "Apply" | "Restore";
 
 export function createWindowsSystemWallpaperFallback(
   options: WindowsSystemWallpaperFallbackOptions = {},
@@ -27,13 +27,7 @@ export function createWindowsSystemWallpaperFallback(
     options.stateDirectory ?? join(app.getPath("userData"), "desktop-playback-wallpaper");
   const fallbackImagePath = join(stateDirectory, FALLBACK_IMAGE_FILE);
   const journalPath = join(stateDirectory, JOURNAL_FILE);
-  const scriptPath =
-    options.scriptPath ??
-    resolveDesktopPlaybackWallpaperScriptPath("system-wallpaper.ps1", {
-      appPath: app.getAppPath(),
-      isPackaged: app.isPackaged,
-      resourcesPath: process.resourcesPath,
-    });
+  const scriptPath = options.scriptPath ?? resolveWindowsScriptPath("system-wallpaper.ps1");
   let applied = false;
 
   mkdirSync(stateDirectory, { recursive: true });

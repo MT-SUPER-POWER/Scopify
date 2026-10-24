@@ -22,11 +22,6 @@ const config = {
       to: "config",
       filter: ["**/*.yml"],
     },
-    {
-      from: "prototypes/desktop-wallpaper-host-spike",
-      to: "desktop-wallpaper-host-spike",
-      filter: ["system-wallpaper.ps1"],
-    },
   ],
   files: [
     "out/main/**/*.js",

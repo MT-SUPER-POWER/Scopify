@@ -48,7 +48,7 @@ cd repo/frontend/apps/desktop
 pnpm run audio:build
 ```
 
-Windows 的 `package:win`、`build:win`、`release:win` 会先构建该模块，再把 `.node` 和 NAPI 自动生成的 `index.d.ts` 复制到 `resources/native/audio-engine/`。构建脚本还会实际加载 release `.node` 并验证 ready/player/snapshot/dispose ABI；生成物按平台构建且不提交，不要手改声明。
+Windows 的 `package:win`（包括根目录 `build:win` 的打包阶段）会先构建该模块，再把 `.node` 和 NAPI 自动生成的 `index.d.ts` 复制到 `resources/native/audio-engine/`。构建脚本还会实际加载 release `.node` 并验证 ready/player/snapshot/dispose ABI；生成物按平台构建且不提交，不要手改声明。
 
 ```bash
 cd native/audio-engine

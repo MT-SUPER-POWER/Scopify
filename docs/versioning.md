@@ -23,8 +23,6 @@ pnpm bump v2.0.5
 pnpm bump 2.1.0-beta.1
 ```
 
-> **别名命令**：`pnpm version:bump` 与 `pnpm bump` 等价。
-
 ---
 
 ## 统一同步的目标文件

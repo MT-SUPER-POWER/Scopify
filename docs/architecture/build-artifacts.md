@@ -12,11 +12,13 @@ repo/frontend/apps/desktop/build/
 └── release/                 # 可分发文件与 win-unpacked 验证目录
 ```
 
-常用命令（由 Turborepo Task DAG 自动处理前后依赖）：
+常用命令（构建阶段由 Turborepo 处理依赖，完整安装包命令按构建 → 打包顺序执行）：
 
 - `pnpm run sync:renderer`：自动先执行 Web 桌面静态导出，并将产物同步至 `repo/frontend/apps/desktop/build/desktop/app/renderer`。
 - `pnpm run build:desktop`：同步 Renderer 并编译 Desktop 主进程至 `build/desktop/app/out/main`。
 - `pnpm run build:win`：全链路生成 Windows 安装包至 `repo/frontend/apps/desktop/build/release`。
 - `pnpm run build:mac`：全链路生成 macOS 制品至 `repo/frontend/apps/desktop/build/release`。
+
+`package:win` / `package:mac` 只对已经准备好的 Renderer 和宿主产物打包，供 CI 分阶段调用；`build:win` / `build:mac` 是仓库根目录的完整链路入口，先执行 `build:desktop`，再执行对应的 `package`。Desktop 包内部只保留一套 `build:host` 和平台 `package` 实现，`build` 复用 `build:host`。发布统一推送版本 tag 触发 workflow，不再提供本地直接发布的 `release:win` / `release:mac` 命令。
 
 Desktop renderer 的 Next 静态导出会短暂生成在 `repo/frontend/apps/web/out`，同步至 `repo/frontend/apps/desktop/build/desktop/app/renderer` 并写入 manifest 后立即清除。主进程所有纯 JS 运行时依赖均通过 Rollup/Vite Tree-Shaking 内联编译，打包态无外部 `node_modules` 依赖。

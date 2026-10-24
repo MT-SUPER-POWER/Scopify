@@ -23,17 +23,13 @@
     "sync:renderer": "bun scripts/sync-renderer.ts",
     "audio:build": "bun scripts/build-audio-engine.ts",
     "taskbar:build": "bun scripts/build-taskbar-lyric.ts",
-    "build": "pnpm run wallpaper:build && electron-vite build --ignoreConfigWarning && bun scripts/prepare-packaged-app.ts && pnpm run check:runtime-bundle",
+    "build": "pnpm run build:host",
     "build:host": "pnpm run wallpaper:build && electron-vite build --ignoreConfigWarning && bun scripts/prepare-packaged-app.ts && pnpm run check:runtime-bundle",
     "check:runtime-bundle": "bun scripts/check-runtime-bundle.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "package:win": "pnpm run electron:ensure && pnpm run wallpaper:build && pnpm run audio:build && pnpm run taskbar:build && electron-builder --config electron-builder.config.ts --win --publish never",
-    "package:mac": "pnpm run electron:ensure && pnpm run wallpaper:build --all-arch && electron-builder --config electron-builder.config.ts --mac --publish never",
-    "release:win": "pnpm run electron:ensure && pnpm run wallpaper:build && pnpm run audio:build && pnpm run taskbar:build && electron-builder --config electron-builder.config.ts --win --publish always",
-    "release:mac": "pnpm run electron:ensure && pnpm run wallpaper:build --all-arch && electron-builder --config electron-builder.config.ts --mac --publish always",
-    "build:win": "pnpm run electron:ensure && pnpm run wallpaper:build && pnpm run audio:build && pnpm run taskbar:build && electron-builder --config electron-builder.config.ts --win --publish never",
-    "build:mac": "pnpm run electron:ensure && pnpm run wallpaper:build --all-arch && electron-builder --config electron-builder.config.ts --mac --publish never"
+    "package:mac": "pnpm run electron:ensure && pnpm run wallpaper:build --all-arch && electron-builder --config electron-builder.config.ts --mac --publish never"
   },
   "dependencies": {
     "@neteasecloudmusicapienhanced/api": "workspace:*"
