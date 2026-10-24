@@ -1,7 +1,6 @@
 "use client";
 
 import { Bookmark } from "lucide-react";
-import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
 import { LibraryContentState } from "@/components/library/LibraryContentState";
 import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
 import { LibraryPageHeader } from "@/components/library/LibraryPageHeader";
@@ -9,13 +8,11 @@ import { AppBackground } from "@/components/shared/AppBackground";
 import { QuietState } from "@/components/shared/QuietState";
 import { useCollectionQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 
 export default function CollectionPage() {
   const { t } = useI18n();
   const isLoggedIn = useLoginStatus();
-  const router = useSmartRouter();
   const collectionQuery = useCollectionQuery();
   const albums = collectionQuery.data?.albums ?? [];
   const artists = collectionQuery.data?.artists ?? [];
@@ -26,7 +23,7 @@ export default function CollectionPage() {
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <LibraryPageHeader title={t("library.title.collection")} />
         {!isLoggedIn ? (
-          <LoginRequiredPrompt reason="library" onLogin={() => router.push("/login")} />
+          <QuietState icon={Bookmark} title={t("library.loggedOut.collection")} />
         ) : (
           <LibraryContentState
             hasItems={albums.length > 0 || artists.length > 0}
