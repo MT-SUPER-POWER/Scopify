@@ -22457,6 +22457,12 @@ export interface TranslateFn {
    */
   (key: "library.loggedOut.liked", params?: TranslationParams): string;
   /**
+   * zh-CN: 登录后查看最近播放
+   * zh-TW: 登入後查看最近播放
+   * en-US: Log in to see your listening history
+   */
+  (key: "library.loggedOut.recent", params?: TranslationParams): string;
+  /**
    * zh-CN: 收藏的专辑
    * zh-TW: 收藏的專輯
    * en-US: Saved Albums
