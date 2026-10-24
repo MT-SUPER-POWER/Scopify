@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ShortcutSettings } from "@/components/shortcuts/ShortcutSettings";
 import { SETTINGS_TABS } from "@/constants/settings";
 import { useSettingsState } from "@/hooks/settings/useSettingsState";
+import { useSettingsSectionNavigation } from "@/hooks/settings/useSettingsSectionNavigation";
 import { runtime } from "@/lib/runtime";
 import { parseSettingsTab } from "@/lib/settings/tabs";
 import { useI18n } from "@/store/module/i18n";
@@ -28,6 +29,7 @@ const SettingsPage = () => {
   const settings = useSettingsState();
 
   useEffect(() => setActiveTab(queryTab), [queryTab]);
+  useSettingsSectionNavigation(activeTab, Boolean(settings.config));
 
   if (!settings.config) return <SettingsLoadingState />;
 

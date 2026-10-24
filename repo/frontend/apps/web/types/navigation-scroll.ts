@@ -43,6 +43,7 @@ export interface NavigationScrollCoordinatorState {
 }
 
 export interface NavigationScrollContextValue {
+  entryId: NavigationScrollEntryId | null;
   isRestoring: boolean;
   registerRestorationAdapter: (adapter: NavigationScrollRestorationAdapter) => () => void;
   registerRestorationPlaceholder: (placeholder: RouteRestorationPlaceholder) => () => void;

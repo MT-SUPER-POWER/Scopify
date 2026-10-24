@@ -70,6 +70,7 @@ export function NavigationScrollProvider({ children }: PropsWithChildren) {
 
   const value = useMemo<NavigationScrollContextValue>(
     () => ({
+      entryId: scrollState.entryId,
       isRestoring: scrollState.isRestoring,
       registerRestorationAdapter,
       registerRestorationPlaceholder,
@@ -83,6 +84,7 @@ export function NavigationScrollProvider({ children }: PropsWithChildren) {
       registerSurface,
       restorationPlaceholder,
       scrollElement,
+      scrollState.entryId,
       scrollState.isRestoring,
     ],
   );
