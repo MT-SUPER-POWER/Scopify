@@ -4,9 +4,9 @@ import { ListMusic, RefreshCw } from "lucide-react";
 import type { ReactNode } from "react";
 import { useSidebarPlaylists } from "@/hooks/sidebar/useSidebarPlaylists";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
+import { SidebarPlaylistSkeleton } from "./SidebarPlaylistSkeleton";
 import { SidebarSortablePlaylists } from "./SidebarSortablePlaylists";
 import { SidebarLibraryStateCard } from "./SidebarLibraryStateCard";
 
@@ -27,20 +27,7 @@ export function SidebarPlaylistLibraryContent({ isCollapsed }: SidebarPlaylistLi
   );
   // Logged out: show nothing rather than nagging; login lives in the header profile menu.
   if (!isLoggedIn) return null;
-  if (isLoading)
-    return (
-      <div className={cn("flex flex-col gap-2", isCollapsed ? "items-center" : "px-1")}>
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div
-            key={item}
-            className={cn(
-              "animate-pulse rounded-md bg-skeleton",
-              isCollapsed ? "size-10" : "h-14 w-full",
-            )}
-          />
-        ))}
-      </div>
-    );
+  if (isLoading) return <SidebarPlaylistSkeleton isCollapsed={isCollapsed} />;
   if (error)
     return isCollapsed ? (
       collapsedAction(

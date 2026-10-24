@@ -1,4 +1,9 @@
+"use client";
+
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
+import { SidebarPlaylistSkeleton } from "@/components/Siderbar/SidebarPlaylistSkeleton";
+import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
+import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
 
 export function LoadingHeaderSkeleton() {
   return (
@@ -19,45 +24,79 @@ export function LoadingHeaderSkeleton() {
   );
 }
 
+const NAV_SECTIONS = [
+  ["w-12", "w-10"],
+  ["w-16", "w-14", "w-16"],
+];
+
+/**
+ * Mirrors components/Siderbar: same width source, header, nav rows and playlist rows.
+ * `@max-[91px]/sidebar` matches useSidebarNarrow (<= 90px) on the same container.
+ */
 export function LoadingSidebarSkeleton() {
+  const { hasSession, sizePercent } = useSidebarLoadingLayout();
   return (
-    <aside className="flex min-h-0 w-20 shrink-0 flex-col overflow-hidden rounded-lg bg-surface-raised p-3 lg:w-1/5 lg:p-4">
-      <div className="mb-7 flex h-9 items-center justify-center gap-3 lg:justify-start">
-        <div className="flex size-9 items-center justify-center rounded-full border border-border bg-surface text-xs font-semibold text-content">
-          S
+    <div
+      className="shrink-0 overflow-hidden rounded-lg bg-surface-sunken"
+      style={{ width: `${sizePercent}%` }}
+      aria-hidden
+    >
+      <aside className="@container/sidebar flex size-full min-h-0 flex-col bg-surface">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-md bg-sidebar">
+          <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-2 @max-[91px]/sidebar:justify-center @min-[208px]/sidebar:px-3 @min-[240px]/sidebar:px-4">
+            <ScopifyBrand
+              priority
+              className="min-w-0"
+              iconClassName="size-8 @max-[91px]/sidebar:size-9"
+              wordmarkClassName="hidden @min-[208px]/sidebar:block"
+            />
+            <Skeleton className="size-8 shrink-0 rounded-md bg-skeleton @max-[91px]/sidebar:hidden" />
+          </header>
+
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <nav className="flex flex-col gap-5 px-3 pt-3 pb-5 @max-[91px]/sidebar:gap-2 @max-[91px]/sidebar:px-2 @max-[91px]/sidebar:py-3">
+              {NAV_SECTIONS.map((labels, sectionIndex) => (
+                <div
+                  key={sectionIndex}
+                  className="flex flex-col gap-1 @max-[91px]/sidebar:items-center"
+                >
+                  <div className="flex h-6 items-start px-2 pt-0.5 @max-[91px]/sidebar:hidden">
+                    <Skeleton className="h-3 w-10 bg-skeleton-subtle" />
+                  </div>
+                  {labels.map((width, index) => (
+                    <div
+                      key={index}
+                      className="flex h-10 items-center gap-3 px-3 @max-[91px]/sidebar:size-12 @max-[91px]/sidebar:justify-center @max-[91px]/sidebar:px-0"
+                    >
+                      <Skeleton className="size-5 shrink-0 rounded-md bg-skeleton" />
+                      <Skeleton
+                        className={`h-3.5 bg-skeleton ${width} @max-[91px]/sidebar:hidden`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </nav>
+
+            <section className="flex flex-col border-t border-content/10 @max-[91px]/sidebar:border-t-0">
+              <div className="flex items-center justify-between pt-4 pr-3 pb-2 pl-5 @max-[91px]/sidebar:hidden">
+                <Skeleton className="h-3 w-8 bg-skeleton-subtle" />
+                <Skeleton className="-my-0.5 size-5 rounded-full bg-skeleton-subtle" />
+              </div>
+              {hasSession && (
+                <div className="px-2 pb-4 @max-[91px]/sidebar:pb-2">
+                  <SidebarPlaylistSkeleton />
+                </div>
+              )}
+            </section>
+          </div>
+
+          <footer className="hidden h-14 shrink-0 items-center justify-center border-t border-content/5 px-2 @max-[91px]/sidebar:flex">
+            <Skeleton className="size-8 rounded-md bg-skeleton" />
+          </footer>
         </div>
-        <Skeleton className="hidden h-4 w-24 bg-skeleton lg:block" />
-      </div>
-
-      <div className="space-y-2">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={index}
-            className="flex h-9 items-center justify-center gap-3 rounded-md lg:justify-start lg:px-1"
-          >
-            <Skeleton className="size-5 shrink-0 rounded-md bg-skeleton" />
-            <Skeleton className="hidden h-3 bg-skeleton lg:block lg:w-20" />
-          </div>
-        ))}
-      </div>
-
-      <div className="my-6 h-px bg-skeleton-subtle" />
-      <Skeleton className="mb-3 hidden h-3 w-20 bg-skeleton lg:block" />
-      <div className="space-y-3">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-center gap-3 lg:justify-start lg:px-1"
-          >
-            <Skeleton className="size-8 shrink-0 rounded-md bg-skeleton" />
-            <div className="hidden min-w-0 flex-1 space-y-1.5 lg:block">
-              <Skeleton className="h-3 w-4/5 bg-skeleton" />
-              <Skeleton className="h-2 w-1/2 bg-skeleton-subtle" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </aside>
+      </aside>
+    </div>
   );
 }
 

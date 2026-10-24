@@ -12,6 +12,8 @@ import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHel
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
 import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
+import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
+import { DASHBOARD_LAYOUT_GROUP_ID, SIDEBAR_DEFAULT_SIZE_PERCENT } from "@/constants/layout";
 import { runtime } from "@/lib/runtime";
 import {
   DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH,
@@ -54,6 +56,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const sidebarPanelElementRef = useRef<HTMLDivElement>(null);
   const hasInitializedSidebarPanelRef = useRef(false);
   const [isMounted, setIsMounted] = useState(false);
+  const sidebarLoadingLayout = useSidebarLoadingLayout();
 
   useEffect(() => {
     setIsMounted(true);
@@ -91,7 +94,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   }, []);
 
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-    groupId: "music-player-layout",
+    groupId: DASHBOARD_LAYOUT_GROUP_ID,
     storage:
       typeof window !== "undefined"
         ? window.localStorage
@@ -185,7 +188,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             <ResizablePanel
               panelRef={sidebarPanelRef}
               elementRef={sidebarPanelElementRef}
-              defaultSize="18%"
+              defaultSize={`${SIDEBAR_DEFAULT_SIZE_PERCENT}%`}
               minSize="15%"
               maxSize="40%"
               collapsible
@@ -223,7 +226,10 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
           </ResizablePanelGroup>
         ) : (
           <div className="flex size-full gap-2">
-            <div className="w-[20%] overflow-hidden rounded-lg bg-surface-sunken">
+            <div
+              className="shrink-0 overflow-hidden rounded-lg bg-surface-sunken"
+              style={{ width: `${sidebarLoadingLayout.sizePercent}%` }}
+            >
               <Sidebar />
             </div>
             <div
