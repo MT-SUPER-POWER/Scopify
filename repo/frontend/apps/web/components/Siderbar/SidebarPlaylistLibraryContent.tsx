@@ -1,11 +1,9 @@
 "use client";
 
-import { ListMusic, RefreshCw, User } from "lucide-react";
+import { ListMusic, RefreshCw } from "lucide-react";
 import type { ReactNode } from "react";
 import { useSidebarPlaylists } from "@/hooks/sidebar/useSidebarPlaylists";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
@@ -15,11 +13,7 @@ import { SidebarLibraryStateCard } from "./SidebarLibraryStateCard";
 export function SidebarPlaylistLibraryContent({ isCollapsed }: SidebarPlaylistLibraryProps) {
   const { t } = useI18n();
   const isLoggedIn = useLoginStatus();
-  const smartRouter = useSmartRouter();
   const { error, isLoading, playlists, reload } = useSidebarPlaylists();
-  const handleLogin = () => {
-    if (!runtime.auth.openLoginWindow()) smartRouter.replace("/login");
-  };
   const collapsedAction = (label: string, onClick: () => void, icon: ReactNode) => (
     <button
       type="button"
@@ -31,6 +25,8 @@ export function SidebarPlaylistLibraryContent({ isCollapsed }: SidebarPlaylistLi
       {icon}
     </button>
   );
+  // Logged out: show nothing rather than nagging; login lives in the header profile menu.
+  if (!isLoggedIn) return null;
   if (isLoading)
     return (
       <div className={cn("flex flex-col gap-2", isCollapsed ? "items-center" : "px-1")}>
@@ -58,17 +54,6 @@ export function SidebarPlaylistLibraryContent({ isCollapsed }: SidebarPlaylistLi
         subtitle={error}
         actionLabel={t("common.action.retry")}
         onAction={() => void reload()}
-      />
-    );
-  if (!isLoggedIn)
-    return isCollapsed ? (
-      collapsedAction(t("common.action.login"), handleLogin, <User className="size-5" />)
-    ) : (
-      <SidebarLibraryStateCard
-        title={t("sidebar.card.loginTitle")}
-        subtitle={t("sidebar.card.loginSubtitle")}
-        actionLabel={t("common.action.login")}
-        onAction={handleLogin}
       />
     );
   if (playlists.length === 0)
