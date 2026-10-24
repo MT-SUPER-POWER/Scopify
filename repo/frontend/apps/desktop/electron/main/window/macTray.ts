@@ -8,6 +8,8 @@ import {
   Tray,
   type MenuItemConstructorOptions,
   type NativeImage,
+  type Point,
+  type Rectangle,
 } from "electron";
 import type { PlaybackProjection } from "@scopify/desktop-contract";
 import type { MacMenuBarDisplayMode, MacTrayLocale, MacTrayOptions } from "@/types/tray";
@@ -31,12 +33,21 @@ const MENU_BAR_ICON_SIZE = 18;
 /** 菜单里歌名过长会把整列撑宽，超出部分省略。 */
 const MAX_MENU_TEXT_LENGTH = 48;
 /** 菜单栏文字占的是所有应用共享的空间，按档位收得更紧。 */
-const MAX_STATUS_TEXT_LENGTH: Record<"full" | "compact", number> = { full: 28, compact: 18 };
+const MAX_STATUS_TEXT_LENGTH: Record<"lyrics" | "full" | "compact", number> = {
+  lyrics: 30,
+  full: 28,
+  compact: 18,
+};
+/** 歌词切行定时器的最短间隔，避免密集短句时空转。 */
+const MIN_LYRIC_TICK_MS = 50;
 /** 菜单头部封面 32pt，按 @2x 取 64px。 */
 const COVER_SIZE = 32;
+/** 控制按钮单个 16pt，按钮之间 6pt，比系统给独立菜单栏项留的间距更紧凑。 */
+const CONTROL_ICON_SIZE = 16;
+const CONTROL_GAP = 6;
 const PREFERENCES_FILE = "mac-menu-bar.json";
-const DISPLAY_MODES: MacMenuBarDisplayMode[] = ["full", "compact", "controls", "icon"];
-const DEFAULT_DISPLAY_MODE: MacMenuBarDisplayMode = "full";
+const DISPLAY_MODES: MacMenuBarDisplayMode[] = ["lyrics", "full", "compact", "controls", "icon"];
+const DEFAULT_DISPLAY_MODE: MacMenuBarDisplayMode = "lyrics";
 
 const COPY = {
   "zh-CN": {
@@ -54,6 +65,7 @@ const COPY = {
     desktopWallpaper: "桌面动态壁纸",
     desktopController: "桌面音乐控制器",
     menuBarDisplay: "菜单栏显示",
+    displayLyrics: "当前歌词",
     displayFull: "歌名与歌手",
     displayCompact: "仅歌名",
     displayControls: "仅播放控制",
@@ -77,6 +89,7 @@ const COPY = {
     desktopWallpaper: "桌面動態桌布",
     desktopController: "桌面音樂控制器",
     menuBarDisplay: "選單列顯示",
+    displayLyrics: "目前歌詞",
     displayFull: "歌名與歌手",
     displayCompact: "僅歌名",
     displayControls: "僅播放控制",
@@ -100,6 +113,7 @@ const COPY = {
     desktopWallpaper: "Desktop Wallpaper",
     desktopController: "Desktop Controller",
     menuBarDisplay: "Menu Bar Display",
+    displayLyrics: "Current Lyrics",
     displayFull: "Title and Artist",
     displayCompact: "Title Only",
     displayControls: "Controls Only",
@@ -113,6 +127,7 @@ const COPY = {
 type MacTrayCopy = (typeof COPY)[MacTrayLocale];
 
 const DISPLAY_MODE_LABEL: Record<MacMenuBarDisplayMode, keyof MacTrayCopy> = {
+  lyrics: "displayLyrics",
   full: "displayFull",
   compact: "displayCompact",
   controls: "displayControls",
@@ -120,17 +135,29 @@ const DISPLAY_MODE_LABEL: Record<MacMenuBarDisplayMode, keyof MacTrayCopy> = {
 };
 
 /**
- * 菜单栏里每个按钮都是独立的 NSStatusItem。系统把后创建的放在左侧，
- * 所以按 logo → 喜欢 → 下一首 → 播放 → 上一首 → 歌名 的顺序创建，
- * 得到与网易云一致的「歌名 ⏮ ⏯ ⏭ ♡ logo」排列。
+ * 菜单栏由三个 NSStatusItem 组成。系统把后创建的放在左侧，所以按 logo → 控制 → 歌名
+ * 的顺序创建，得到与网易云一致的「歌名 ⏮ ⏯ ⏭ ♡ logo」排列。
+ * 四个控制按钮画在同一张图里、按点击位置分发：独立 StatusItem 之间的系统间距过宽且不可调。
  */
 interface StatusItems {
   logo: Tray;
-  like: Tray | null;
-  next: Tray | null;
-  toggle: Tray | null;
-  previous: Tray | null;
+  controls: Tray | null;
   title: Tray | null;
+}
+
+type ControlIconName = "heart" | "heartFilled" | "next" | "pause" | "play" | "prev";
+type ControlAction = "previous" | "toggle" | "next" | "like";
+
+const CONTROL_ACTIONS: ControlAction[] = ["previous", "toggle", "next", "like"];
+
+interface LyricLine {
+  startTimeMs: number;
+  text: string;
+}
+
+interface LyricCache {
+  key: string;
+  lines: LyricLine[];
 }
 
 interface CoverCache {
@@ -144,6 +171,9 @@ let layoutKey: string | null = null;
 let statusSignature: string | null = null;
 let displayMode: MacMenuBarDisplayMode | null = null;
 let cover: CoverCache | null = null;
+let lyricCache: LyricCache | null = null;
+let lyricTimer: ReturnType<typeof setTimeout> | undefined;
+let lyricText: string | null = null;
 let cleanups: (() => void)[] = [];
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -220,7 +250,7 @@ function createLogoIcon() {
 const controlIcons = new Map<string, NativeImage>();
 
 /** 文件名以 Template 结尾，macOS 自动按模板图处理并加载同目录 @2x。 */
-function getControlIcon(name: "heart" | "heartFilled" | "next" | "pause" | "play" | "prev") {
+function getControlIcon(name: ControlIconName) {
   let icon = controlIcons.get(name);
   if (!icon) {
     icon = nativeImage.createFromPath(join(__menuBarIconDir, `${name}Template.png`));
@@ -229,6 +259,65 @@ function getControlIcon(name: "heart" | "heartFilled" | "next" | "pause" | "play
     controlIcons.set(name, icon);
   }
   return icon;
+}
+
+const controlStrips = new Map<string, NativeImage>();
+
+/** 把四个 @2x 控制图标横向拼成一张模板图，间距由 CONTROL_GAP 决定。 */
+function getControlStrip(isPlaying: boolean, liked: boolean) {
+  const key = `${isPlaying}|${liked}`;
+  const cached = controlStrips.get(key);
+  if (cached) return cached;
+
+  const names: ControlIconName[] = [
+    "prev",
+    isPlaying ? "pause" : "play",
+    "next",
+    liked ? "heartFilled" : "heart",
+  ];
+  const icon = CONTROL_ICON_SIZE * 2;
+  const gap = CONTROL_GAP * 2;
+  const width = icon * names.length + gap * (names.length - 1);
+  const strip = Buffer.alloc(width * icon * 4);
+  names.forEach((name, index) => {
+    // 直接取 @2x 表示（32px）；resize 按 DIP 计算，会把 @2x 放大成 64px。
+    const source = getControlIcon(name).toBitmap({ scaleFactor: 2 });
+    if (source.length !== icon * icon * 4) {
+      trayLog.error("[mac-tray] unexpected control icon size", name, source.length);
+      return;
+    }
+    const left = index * (icon + gap);
+    for (let row = 0; row < icon; row += 1) {
+      source.copy(strip, (row * width + left) * 4, row * icon * 4, (row + 1) * icon * 4);
+    }
+  });
+
+  const image = nativeImage.createFromBitmap(strip, { width, height: icon, scaleFactor: 2 });
+  image.setTemplateImage(true);
+  controlStrips.set(key, image);
+  return image;
+}
+
+/** 以图片在菜单栏项中居中为前提，把点击横坐标换算成第几个按钮；落在间隙里归给最近的按钮。 */
+function resolveControlAction(bounds: Rectangle, position: Point): ControlAction {
+  const slot = CONTROL_ICON_SIZE + CONTROL_GAP;
+  const stripWidth = slot * CONTROL_ACTIONS.length - CONTROL_GAP;
+  const left = bounds.x + (bounds.width - stripWidth) / 2;
+  const index = Math.floor((position.x - left + CONTROL_GAP / 2) / slot);
+  return CONTROL_ACTIONS[Math.min(CONTROL_ACTIONS.length - 1, Math.max(0, index))];
+}
+
+function runControlAction(options: MacTrayOptions, action: ControlAction) {
+  switch (action) {
+    case "previous":
+      return run("previous", options.playback.previous);
+    case "toggle":
+      return run("toggle", options.playback.toggle);
+    case "next":
+      return run("next", options.playback.next);
+    case "like":
+      return run("toggle-like", () => toggleLike(options));
+  }
 }
 
 function describeTrack(snapshot: PlaybackProjection | null, copy: MacTrayCopy) {
@@ -443,6 +532,78 @@ function buildDockMenu(options: MacTrayOptions) {
   ]);
 }
 
+// ─── 菜单栏歌词 ───
+
+/** 歌词在主进程里是不透明载荷，只按 LyricData 的最小形状读取逐行起始时间与文本。 */
+function readLyricLines(snapshot: PlaybackProjection | null): LyricLine[] {
+  const lyrics = snapshot?.lyrics;
+  const key = `${snapshot?.track?.id ?? ""}|${snapshot?.lyricsVersion ?? ""}`;
+  if (lyricCache?.key === key) return lyricCache.lines;
+
+  const lines: LyricLine[] = [];
+  if (isRecord(lyrics) && lyrics.isPureMusic !== true && Array.isArray(lyrics.lines)) {
+    for (const line of lyrics.lines as unknown[]) {
+      if (!isRecord(line) || typeof line.text !== "string") continue;
+      if (typeof line.startTimeMs !== "number" || !Number.isFinite(line.startTimeMs)) continue;
+      lines.push({ startTimeMs: line.startTimeMs, text: line.text.trim() });
+    }
+    lines.sort((a, b) => a.startTimeMs - b.startTimeMs);
+  }
+  lyricCache = { key, lines };
+  return lines;
+}
+
+/** 按时钟锚点外推当前进度；暂停时锚点不再走动。 */
+function getPositionMs(options: MacTrayOptions, snapshot: PlaybackProjection) {
+  const anchor = options.getPlaybackAnchor();
+  if (!anchor) return snapshot.positionMs;
+  if (!snapshot.isPlaying) return anchor.positionMs;
+  const elapsed = Math.max(0, Date.now() - anchor.sampledAtMs);
+  return anchor.positionMs + elapsed * (anchor.rate || 1);
+}
+
+function stopLyricTicker() {
+  clearTimeout(lyricTimer);
+  lyricTimer = undefined;
+  lyricText = null;
+}
+
+/**
+ * 「当前歌词」档位下把歌名项的文字换成当前歌词，并定时到下一行起点再刷新。
+ * 前奏、间奏的空行与无歌词时回退为「歌名 - 歌手」。
+ */
+function updateLyricTitle(options: MacTrayOptions) {
+  clearTimeout(lyricTimer);
+  lyricTimer = undefined;
+  const title = items?.title;
+  const snapshot = options.playback.getSnapshot();
+  const track = describeTrack(snapshot, getCopy());
+  if (getDisplayMode() !== "lyrics" || !title || title.isDestroyed() || !snapshot || !track) {
+    lyricText = null;
+    return;
+  }
+
+  const lines = readLyricLines(snapshot);
+  const positionMs = getPositionMs(options, snapshot);
+  let index = -1;
+  for (let i = 0; i < lines.length && lines[i].startTimeMs <= positionMs; i += 1) index = i;
+
+  const text = truncate(
+    lines[index]?.text || `${track.title} - ${track.artists}`,
+    MAX_STATUS_TEXT_LENGTH.lyrics,
+  );
+  if (text !== lyricText) {
+    lyricText = text;
+    title.setTitle(text);
+  }
+
+  const nextLine = lines[index + 1];
+  if (!snapshot.isPlaying || !nextLine) return;
+  const rate = options.getPlaybackAnchor()?.rate || 1;
+  const delay = Math.max(MIN_LYRIC_TICK_MS, (nextLine.startTimeMs - positionMs) / rate);
+  lyricTimer = setTimeout(() => updateLyricTitle(options), delay);
+}
+
 // ─── 菜单栏按钮 ───
 
 function destroyStatusItems() {
@@ -453,14 +614,7 @@ function destroyStatusItems() {
   items = null;
   layoutKey = null;
   statusSignature = null;
-}
-
-function createControlItem(icon: NativeImage, onClick: () => void) {
-  const tray = new Tray(icon);
-  // 连点下一首时每次点击都要生效，不能被合并成双击。
-  tray.setIgnoreDoubleClickEvents(true);
-  tray.on("click", onClick);
-  return tray;
+  stopLyricTicker();
 }
 
 function createStatusItems(
@@ -472,27 +626,15 @@ function createStatusItems(
   logo.on("click", () => popUp(logo));
   logo.on("right-click", () => popUp(logo));
 
-  const created: StatusItems = {
-    logo,
-    like: null,
-    next: null,
-    toggle: null,
-    previous: null,
-    title: null,
-  };
+  const created: StatusItems = { logo, controls: null, title: null };
   if (layout.controls) {
-    created.like = createControlItem(getControlIcon("heart"), () =>
-      run("toggle-like", () => toggleLike(options)),
+    const controls = new Tray(getControlStrip(false, false));
+    // 连点下一首时每次点击都要生效，不能被合并成双击。
+    controls.setIgnoreDoubleClickEvents(true);
+    controls.on("click", (_event, bounds, position) =>
+      runControlAction(options, resolveControlAction(bounds, position)),
     );
-    created.next = createControlItem(getControlIcon("next"), () =>
-      run("next", options.playback.next),
-    );
-    created.toggle = createControlItem(getControlIcon("play"), () =>
-      run("toggle", options.playback.toggle),
-    );
-    created.previous = createControlItem(getControlIcon("prev"), () =>
-      run("previous", options.playback.previous),
-    );
+    created.controls = controls;
   }
   if (layout.title) {
     const title = new Tray(nativeImage.createEmpty());
@@ -514,7 +656,7 @@ function renderStatusItems(
   const track = describeTrack(snapshot, copy);
   const layout = {
     controls: Boolean(track) && mode !== "icon",
-    title: Boolean(track) && (mode === "full" || mode === "compact"),
+    title: Boolean(track) && (mode === "lyrics" || mode === "full" || mode === "compact"),
   };
   const nextLayoutKey = `${layout.controls}|${layout.title}`;
   if (nextLayoutKey !== layoutKey) {
@@ -536,13 +678,8 @@ function renderStatusItems(
   statusSignature = signature;
 
   items.logo.setToolTip(track ? `${track.title} - ${track.artists}` : "Scopify");
-  items.toggle?.setImage(getControlIcon(snapshot?.isPlaying ? "pause" : "play"));
-  items.toggle?.setToolTip(snapshot?.isPlaying ? copy.pause : copy.play);
-  items.previous?.setToolTip(copy.previous);
-  items.next?.setToolTip(copy.next);
-  items.like?.setImage(getControlIcon(snapshot?.liked ? "heartFilled" : "heart"));
-  items.like?.setToolTip(snapshot?.liked ? copy.unlike : copy.like);
-  if (items.title && track) {
+  items.controls?.setImage(getControlStrip(Boolean(snapshot?.isPlaying), Boolean(snapshot?.liked)));
+  if (items.title && track && mode !== "lyrics") {
     const text =
       mode === "full"
         ? truncate(`${track.title} - ${track.artists}`, MAX_STATUS_TEXT_LENGTH.full)
@@ -591,6 +728,8 @@ export function initMacTray(options: MacTrayOptions) {
     const snapshot = options.playback.getSnapshot();
     syncCover(describeTrack(snapshot, getCopy())?.artworkUrl ?? null, refreshDock);
     renderStatusItems(options, snapshot, popUp);
+    // 播放、暂停、拖动进度都会推送新状态，借此重新对齐歌词定时器。
+    updateLyricTitle(options);
     refreshDock();
   }
 
@@ -607,4 +746,5 @@ export function disposeMacTray() {
   cleanups = [];
   destroyStatusItems();
   cover = null;
+  lyricCache = null;
 }

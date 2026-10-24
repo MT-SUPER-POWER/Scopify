@@ -122,6 +122,7 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
       initMacTray({
         playback: playbackGateway,
         getWallpaperService: () => wallpaperService,
+        getPlaybackAnchor: () => playbackBroker?.getBootstrap()?.anchor ?? null,
         showMainWindow: async (path) => {
           await revealMainWindow();
           if (path && !window.isDestroyed()) window.webContents.send("navigate-to", path);
