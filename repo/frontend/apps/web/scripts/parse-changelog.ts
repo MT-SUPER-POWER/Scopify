@@ -1,7 +1,8 @@
 import { UPDATE_GROUPS } from "../constants/updateCategories";
 import type { UpdateRelease } from "../types/updates";
 
-const RELEASE = /^## (?:v(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?) — (\d{4}-\d{2}-\d{2})|未发布)$/;
+const RELEASE =
+  /^## (?:v(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)|未发布|unreleased)(?: — (\d{4}-\d{2}-\d{2}))?$/i;
 const ENTRY =
   /^- (.+) \(\[[a-f0-9]{7,40}\]\(https:\/\/github\.com\/MT-SUPER-POWER\/Scopify\/commit\/([a-f0-9]{40})\)\)$/;
 

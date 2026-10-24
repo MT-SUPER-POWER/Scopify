@@ -23,6 +23,13 @@ describe("git-cliff changelog", () => {
       version: null,
       entries: [{ group: "improved" }],
     });
+    expect(
+      parseChangelog(`## unreleased — 2026-10-24\n\n### 新增\n\n${line("支持花火歌词")}`)[0],
+    ).toMatchObject({
+      version: null,
+      date: "2026-10-24",
+      entries: [{ group: "added" }],
+    });
   });
 
   test("rejects groups and entries cliff.toml never writes", () => {

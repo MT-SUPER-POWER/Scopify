@@ -12,7 +12,11 @@ body = """
 {% if version %}\
 ## {{ version }} — {{ timestamp | date(format="%Y-%m-%d") }}
 {% elif commits | length > 0 %}\
-## 未发布
+## unreleased — {{ now() | date(format="%Y-%m-%d") }}
+{% else %}\
+## unreleased — {{ now() | date(format="%Y-%m-%d") }}
+
+暂无未发布的提交变更。
 {% endif %}\
 {% for group, commits in commits | group_by(attribute="group") %}
 ### {{ group | striptags | trim }}
