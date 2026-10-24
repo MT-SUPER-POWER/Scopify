@@ -22469,6 +22469,12 @@ export interface TranslateFn {
    */
   (key: "library.loggedOut.collection", params?: TranslationParams): string;
   /**
+   * zh-CN: 登录后查看收藏的播客
+   * zh-TW: 登入後查看收藏的播客
+   * en-US: Log in to see your podcasts
+   */
+  (key: "library.loggedOut.podcasts", params?: TranslationParams): string;
+  /**
    * zh-CN: 收藏的专辑
    * zh-TW: 收藏的專輯
    * en-US: Saved Albums

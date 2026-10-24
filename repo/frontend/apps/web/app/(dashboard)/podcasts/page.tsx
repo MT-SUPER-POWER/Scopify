@@ -2,7 +2,6 @@
 
 import { Podcast } from "lucide-react";
 import { useState } from "react";
-import { LoginRequiredPrompt } from "@/components/auth/LoginRequiredPrompt";
 import { LibraryContentState } from "@/components/library/LibraryContentState";
 import { LikedVoiceList } from "@/components/library/LikedVoiceList";
 import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
@@ -20,7 +19,6 @@ import {
   useSubscribedPodcastsQuery,
 } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import type { PodcastLibraryTab, PodcastViewMode } from "@/types/library";
 
@@ -31,7 +29,6 @@ function isPodcastLibraryTab(value: string): value is PodcastLibraryTab {
 export default function PodcastsPage() {
   const { t } = useI18n();
   const isLoggedIn = useLoginStatus();
-  const router = useSmartRouter();
   const [activeTab, setActiveTab] = useState<PodcastLibraryTab>("subscribed");
   const [subscribedView, setSubscribedView] = useState<PodcastViewMode>("list");
   const subscribedPodcastsQuery = useSubscribedPodcastsQuery();
@@ -85,7 +82,7 @@ export default function PodcastsPage() {
           ) : null}
 
           {!isLoggedIn ? (
-            <LoginRequiredPrompt reason="library" onLogin={() => router.push("/login")} />
+            <QuietState icon={Podcast} title={t("library.loggedOut.podcasts")} />
           ) : (
             <>
               <TabsContent value="subscribed" className="mt-8">
