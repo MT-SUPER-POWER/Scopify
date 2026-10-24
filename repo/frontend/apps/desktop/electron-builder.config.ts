@@ -38,12 +38,12 @@ const config = {
       {
         from: "native/audio-engine",
         to: "native/audio-engine",
-        filter: ["*.node", "index.d.ts"],
+        filter: ["scopify-audio-engine.win32-${arch}-msvc.node", "index.d.ts"],
       },
       {
         from: "native/taskbar-lyric",
         to: "native/taskbar-lyric",
-        filter: ["*.node"],
+        filter: ["scopify-taskbar-lyric.win32-${arch}-msvc.node"],
       },
       {
         from: "native/wallpaper-helper",
@@ -51,7 +51,12 @@ const config = {
         filter: ["scopify-wallpaper-helper.win32-${arch}-msvc.node"],
       },
     ],
-    target: ["nsis"],
+    target: [
+      {
+        target: "nsis",
+        arch: ["x64", "arm64"],
+      },
+    ],
     icon: resolve(root, "public/icons/icon.ico"),
     requestedExecutionLevel: "asInvoker",
   },

@@ -8,10 +8,9 @@ import { WALLPAPER_NATIVE_EXPORTS } from "../lib/wallpaperNativeAbi";
 if (process.platform !== "win32" && process.platform !== "darwin") process.exit(0);
 
 const helperRoot = join(import.meta.dir, "..", "native", "wallpaper-helper");
-const architectures =
-  process.argv.includes("--all-arch") && process.platform === "darwin"
-    ? (["arm64", "x64"] as const)
-    : [process.arch];
+const architectures = process.argv.includes("--all-arch")
+  ? (["arm64", "x64"] as const)
+  : [process.arch];
 
 for (const arch of architectures) {
   if (arch !== "arm64" && arch !== "x64")

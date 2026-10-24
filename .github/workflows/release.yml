@@ -100,7 +100,8 @@ jobs:
               repo/frontend/apps/desktop/build/release/*.blockmap
               repo/frontend/apps/desktop/build/release/latest*.yml
             required-artifacts: |
-              repo/frontend/apps/desktop/build/release/*.exe
+              repo/frontend/apps/desktop/build/release/*x64*.exe
+              repo/frontend/apps/desktop/build/release/*arm64*.exe
               repo/frontend/apps/desktop/build/release/*.blockmap
               repo/frontend/apps/desktop/build/release/latest.yml
           - platform: macos
@@ -185,6 +186,10 @@ jobs:
       - name: Install macOS Rust targets
         if: matrix.platform == 'macos'
         run: rustup target add aarch64-apple-darwin x86_64-apple-darwin
+
+      - name: Install Windows Rust targets
+        if: matrix.platform == 'windows'
+        run: rustup target add x86_64-pc-windows-msvc aarch64-pc-windows-msvc
 
       - name: Package Electron without publishing
         run: pnpm exec turbo run ${{ matrix.package-script }} --filter=@scopify/desktop
