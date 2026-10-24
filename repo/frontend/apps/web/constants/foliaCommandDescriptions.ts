@@ -15,4 +15,5 @@ export const FOLIA_VISUALIZER_DESCRIPTIONS: Record<LyricVisualizerMode, string> 
   sonnet: "多层色彩与歌词视觉效果",
   still: "静态歌词排版",
   tempera: "色块与细密网点叠组，歌词压过颜色时翻出反色",
+  hanabi: "歌词跳上色块，烟花随字绽放，整个画面一镜接一镜向上升",
 };

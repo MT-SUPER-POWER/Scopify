@@ -12,6 +12,7 @@ import {
   type CladdaghTuning,
   type DioramaTuning,
   type FumeTuning,
+  type HanabiTuning,
   type Line,
   type MonetPortraitImage,
   type MonetTuning,
@@ -42,7 +43,8 @@ export type VisualizerTuningKind =
   | "diorama"
   | "pendolo"
   | "sonnet"
-  | "tempera";
+  | "tempera"
+  | "hanabi";
 
 export interface VisualizerSharedProps {
   currentTime: MotionValue<number>;
@@ -100,6 +102,8 @@ export interface VisualizerSharedProps {
   onSonnetTuningChange?: (patch: Partial<SonnetTuning>) => void;
   temperaTuning?: TemperaTuning;
   onTemperaTuningChange?: (patch: Partial<TemperaTuning>) => void;
+  hanabiTuning?: HanabiTuning;
+  onHanabiTuningChange?: (patch: Partial<HanabiTuning>) => void;
 }
 
 export interface VisualizerSettingsPanelProps {
@@ -145,6 +149,8 @@ export interface VisualizerSettingsPanelProps {
   onSonnetTuningChange?: (patch: Partial<SonnetTuning>) => void;
   temperaTuning?: TemperaTuning;
   onTemperaTuningChange?: (patch: Partial<TemperaTuning>) => void;
+  hanabiTuning?: HanabiTuning;
+  onHanabiTuningChange?: (patch: Partial<HanabiTuning>) => void;
   /** Mark slider drag start so onChange only updates draft. */
   onSliderPointerDown?: () => void;
   /** Commit draft values to persistent store on slider release. */
@@ -163,11 +169,13 @@ export interface VisualizerSettingsResetProps {
   resetPendoloTuning?: () => void;
   resetSonnetTuning?: () => void;
   resetTemperaTuning?: () => void;
+  resetHanabiTuning?: () => void;
   setDraftFumeTuning?: (tuning: FumeTuning) => void;
   setDraftCladdaghTuning?: (tuning: CladdaghTuning) => void;
   setDraftPendoloTuning?: (tuning: PendoloTuning) => void;
   setDraftSonnetTuning?: (tuning: SonnetTuning) => void;
   setDraftTemperaTuning?: (tuning: TemperaTuning) => void;
+  setDraftHanabiTuning?: (tuning: HanabiTuning) => void;
 }
 
 export interface VisualizerRegistryEntry {

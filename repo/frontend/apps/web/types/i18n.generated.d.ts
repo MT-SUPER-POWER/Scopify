@@ -11276,6 +11276,12 @@ export interface TranslateFn {
    */
   (key: "folia.ui.visualizerTempera", params?: TranslationParams): string;
   /**
+   * zh-CN: 花火
+   * zh-TW: 花火
+   * en-US: Hanabi
+   */
+  (key: "folia.ui.visualizerHanabi", params?: TranslationParams): string;
+  /**
    * zh-CN: 心象参数
    * zh-TW: 心象參數
    * en-US: Mindscape Tuning
@@ -14677,6 +14683,258 @@ export interface TranslateFn {
    * en-US: Off
    */
   (key: "folia.options.temperaToggleOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 花火参数
+   * zh-TW: 花火參數
+   * en-US: Hanabi settings
+   */
+  (key: "folia.options.hanabiSettings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整花火的烟花、镜头上升与旋转、文字与 PV 拼贴装饰。
+   * zh-TW: 調整花火的煙火、鏡頭上升與旋轉、文字與 PV 拼貼裝飾。
+   * en-US: Tune Hanabi's fireworks, the camera's rise and spin, the lyrics and the PV collage.
+   */
+  (key: "folia.options.hanabiSettingsDesc", params?: TranslationParams): string;
+  /**
+   * zh-CN: 烟花
+   * zh-TW: 煙火
+   * en-US: Fireworks
+   */
+  (key: "folia.options.hanabiFireworksSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画面
+   * zh-TW: 畫面
+   * en-US: Stage
+   */
+  (key: "folia.options.hanabiStageSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字
+   * zh-TW: 文字
+   * en-US: Text
+   */
+  (key: "folia.options.hanabiTextSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 装饰
+   * zh-TW: 裝飾
+   * en-US: Decorations
+   */
+  (key: "folia.options.hanabiDecorSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配色
+   * zh-TW: 配色
+   * en-US: Colors
+   */
+  (key: "folia.options.hanabiColorSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 性能
+   * zh-TW: 效能
+   * en-US: Performance
+   */
+  (key: "folia.options.hanabiPerformanceSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 火花数量
+   * zh-TW: 火花數量
+   * en-US: Sparks
+   */
+  (key: "folia.options.hanabiSparkAmount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 烟花辉光
+   * zh-TW: 煙火光暈
+   * en-US: Firework glow
+   */
+  (key: "folia.options.hanabiGlow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 副歌辉光
+   * zh-TW: 副歌光暈
+   * en-US: Chorus glow
+   */
+  (key: "folia.options.hanabiChorusBloom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 副歌时整个画面亮起一层辉光，副歌开始时慢慢亮起、结束时收回。副歌按歌词判断：歌词自带的标记，或按重复的歌词识别。
+   * zh-TW: 副歌時整個畫面亮起一層光暈，副歌開始時慢慢亮起、結束時收回。副歌依歌詞判斷：歌詞自帶的標記，或依重複的歌詞辨識。
+   * en-US: The whole picture glows during the chorus, swelling in as it starts and settling as it ends. Choruses come from the lyrics: marked by the source or found from repeated lines.
+   */
+  (key: "folia.options.hanabiChorusBloomHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整体辉光
+   * zh-TW: 整體光暈
+   * en-US: Overall glow
+   */
+  (key: "folia.options.hanabiBloom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 整首歌常驻的全屏辉光，叠在副歌辉光下面。0 时只有副歌亮。
+   * zh-TW: 整首歌常駐的全螢幕光暈，疊在副歌光暈下面。0 時只有副歌亮。
+   * en-US: A full-screen glow over the whole song, under the chorus glow. 0 leaves only the chorus glow.
+   */
+  (key: "folia.options.hanabiBloomHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 升空尾迹
+   * zh-TW: 升空尾跡
+   * en-US: Launch trails
+   */
+  (key: "folia.options.hanabiLaunches", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每发烟花先从画面底边升空再开花，把一个镜头接到下一个镜头。
+   * zh-TW: 每發煙火先從畫面底邊升空再開花，把一個鏡頭接到下一個鏡頭。
+   * en-US: Each shell climbs from the bottom edge before it bursts, linking one shot to the next.
+   */
+  (key: "folia.options.hanabiLaunchesHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 夜空
+   * zh-TW: 夜空
+   * en-US: Night sky
+   */
+  (key: "folia.options.hanabiSky", params?: TranslationParams): string;
+  /**
+   * zh-CN: 烟花底下的一层夜空渐变。调低会透出共享背景；低于一半时配色按主题背景色取。
+   * zh-TW: 煙火底下的一層夜空漸層。調低會透出共用背景；低於一半時配色依主題背景色取。
+   * en-US: A night gradient under the fireworks. Lower it to let the shared background show through; below half, colors follow your theme background.
+   */
+  (key: "folia.options.hanabiSkyHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上升
+   * zh-TW: 上升
+   * en-US: Rise
+   */
+  (key: "folia.options.hanabiRiseSpeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜头之间摄影机往上走多远。0 时每个镜头原地切换。
+   * zh-TW: 鏡頭之間攝影機往上走多遠。0 時每個鏡頭原地切換。
+   * en-US: How far the camera climbs between shots. 0 keeps every shot in place.
+   */
+  (key: "folia.options.hanabiRiseSpeedHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 旋转
+   * zh-TW: 旋轉
+   * en-US: Spin
+   */
+  (key: "folia.options.hanabiSpin", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜头之间整个画面随上升一起大角度转过去，段落转场也带着转。0 时不转。
+   * zh-TW: 鏡頭之間整個畫面隨上升一起大角度轉過去，段落轉場也帶著轉。0 時不轉。
+   * en-US: Between shots the whole scene swings round by a large angle as it rises, and section changes turn too. 0 turns it off.
+   */
+  (key: "folia.options.hanabiSpinHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 环境火星
+   * zh-TW: 環境火星
+   * en-US: Ambient sparks
+   */
+  (key: "folia.options.hanabiAmbient", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画框
+   * zh-TW: 畫框
+   * en-US: Frame
+   */
+  (key: "folia.options.hanabiOverlayFrame", params?: TranslationParams): string;
+  /**
+   * zh-CN: 仅显示歌词文字
+   * zh-TW: 僅顯示歌詞文字
+   * en-US: Lyrics only
+   */
+  (key: "folia.options.hanabiTextOnly", params?: TranslationParams): string;
+  /**
+   * zh-CN: 只画歌词和它的字底色块、逐字动画；烟花、贴纸、夜空和画框都不画。
+   * zh-TW: 只畫歌詞和它的字底色塊、逐字動畫；煙火、貼紙、夜空和畫框都不畫。
+   * en-US: Draws just the lyrics with their color blocks and letter motion. Fireworks, stickers, the night sky and the frame are hidden.
+   */
+  (key: "folia.options.hanabiTextOnlyHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 文字动作
+   * zh-TW: 文字動作
+   * en-US: Letter motion
+   */
+  (key: "folia.options.hanabiTextMotion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 字底色块
+   * zh-TW: 字底色塊
+   * en-US: Color blocks
+   */
+  (key: "folia.options.hanabiBlockOpacity", params?: TranslationParams): string;
+  /**
+   * zh-CN: PV 拼贴
+   * zh-TW: PV 拼貼
+   * en-US: PV collage
+   */
+  (key: "folia.options.hanabiCollage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词周围的电影胶片、剪切线、蕾丝花边、重复字、贴纸、胶带和主题图标。
+   * zh-TW: 歌詞周圍的電影膠片、剪切線、蕾絲花邊、重複字、貼紙、膠帶和主題圖示。
+   * en-US: Film strips, cut lines, lace trims, repeated words, stickers, tape and theme icons around the lyrics.
+   */
+  (key: "folia.options.hanabiCollageHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: MG 装饰件
+   * zh-TW: MG 裝飾件
+   * en-US: MG ornaments
+   */
+  (key: "folia.options.hanabiOrnamentAmount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 配色
+   * zh-TW: 配色
+   * en-US: Palette
+   */
+  (key: "folia.options.hanabiColorMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 混合会把每个镜头的鲜艳配色往主题强调色偏。
+   * zh-TW: 混合會把每個鏡頭的鮮豔配色往主題強調色偏。
+   * en-US: Mixed leans each shot's vivid palette toward your theme accent.
+   */
+  (key: "folia.options.hanabiColorModeHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 混合
+   * zh-TW: 混合
+   * en-US: Mixed
+   */
+  (key: "folia.options.hanabiColorModeMixed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 鲜艳
+   * zh-TW: 鮮豔
+   * en-US: Vivid
+   */
+  (key: "folia.options.hanabiColorModeVivid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主题
+   * zh-TW: 主題
+   * en-US: Theme
+   */
+  (key: "folia.options.hanabiColorModeTheme", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画质
+   * zh-TW: 畫質
+   * en-US: Render quality
+   */
+  (key: "folia.options.hanabiRenderQuality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 均衡 / 省电会降低烟花辉光的分辨率，省电还会少画一些环境火星；歌词和全屏辉光仍是全分辨率。集成显卡上卡顿时可以试试。
+   * zh-TW: 均衡 / 省電會降低煙火光暈的解析度，省電還會少畫一些環境火星；歌詞和全螢幕光暈仍是全解析度。內建顯示卡上卡頓時可以試試。
+   * en-US: Balanced and Low render the firework glow at reduced resolution, and Low also draws fewer ambient sparks; lyrics and the full-screen glow stay at full resolution. Worth trying if an integrated GPU stutters.
+   */
+  (key: "folia.options.hanabiRenderQualityHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全分辨率
+   * zh-TW: 全解析度
+   * en-US: Full
+   */
+  (key: "folia.options.hanabiRenderQualityFull", params?: TranslationParams): string;
+  /**
+   * zh-CN: 均衡
+   * zh-TW: 均衡
+   * en-US: Balanced
+   */
+  (key: "folia.options.hanabiRenderQualityBalanced", params?: TranslationParams): string;
+  /**
+   * zh-CN: 省电
+   * zh-TW: 省電
+   * en-US: Low
+   */
+  (key: "folia.options.hanabiRenderQualityLow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 花火会根据画面尺寸和每个镜头的文字区自动计算歌词字号；字号设置在此模式下只影响底部字幕。
+   * zh-TW: 花火會依畫面尺寸和每個鏡頭的文字區自動計算歌詞字級；字級設定在此模式下只影響底部字幕。
+   * en-US: Hanabi sizes lyrics from the viewport and each shot's text region; the font size setting only affects the subtitles in this mode.
+   */
+  (key: "folia.options.hanabiFontSizeAutoNotice", params?: TranslationParams): string;
   /**
    * zh-CN: 商籁性能警告
    * zh-TW: 商籟效能警告

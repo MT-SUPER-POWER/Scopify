@@ -38,6 +38,8 @@ export function FoliaVisualizerQuickControl({ assets, theme }: FoliaVisualizerQu
     onSonnetTuningChange: (patch) => settings.patchTuning("sonnet", patch),
     temperaTuning: settings.tunings.tempera,
     onTemperaTuningChange: (patch) => settings.patchTuning("tempera", patch),
+    hanabiTuning: settings.tunings.hanabi,
+    onHanabiTuningChange: (patch) => settings.patchTuning("hanabi", patch),
   };
   return getVisualizerRegistryEntry(settings.mode).renderQuickControls?.(props);
 }

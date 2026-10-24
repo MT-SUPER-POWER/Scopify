@@ -8,6 +8,7 @@ import {
   DEFAULT_CLADDAGH_TUNING,
   DEFAULT_DIORAMA_TUNING,
   DEFAULT_FUME_TUNING,
+  DEFAULT_HANABI_TUNING,
   DEFAULT_MONET_TUNING,
   DEFAULT_PENDOLO_TUNING,
   DEFAULT_PARTITA_TUNING,
@@ -165,6 +166,7 @@ export function useFoliaStageSettingsPanel(
     fontStyleOptions,
     fontStyleValue: settings.fontFamily ? ("custom" as const) : settings.fontStyle,
     fumeTuning: settings.tunings.fume ?? DEFAULT_FUME_TUNING,
+    hanabiTuning: settings.tunings.hanabi ?? DEFAULT_HANABI_TUNING,
     hideTranslationSubtitle: settings.hideTranslationSubtitle,
     isDaylight,
     isLoadingCappellaCustomAvatarPack: assets.isLoadingCappellaCustomAvatarPack,
@@ -197,6 +199,8 @@ export function useFoliaStageSettingsPanel(
     },
     onFumeTuningChange: (patch: Partial<typeof DEFAULT_FUME_TUNING>) =>
       settings.patchTuning("fume", patch),
+    onHanabiTuningChange: (patch: Partial<typeof DEFAULT_HANABI_TUNING>) =>
+      settings.patchTuning("hanabi", patch),
     onImportCappellaCustomAvatar: assets.importCappellaCustomAvatar,
     onImportCappellaCustomEmojiPack: assets.importCappellaCustomEmojiPack,
     onMonetTuningChange: (patch: Partial<typeof DEFAULT_MONET_TUNING>) =>
