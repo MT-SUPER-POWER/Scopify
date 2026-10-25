@@ -95,6 +95,42 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.title", params?: TranslationParams): string;
   /**
+   * zh-CN: 正在播放
+   * zh-TW: 正在播放
+   * en-US: Now Playing
+   */
+  (key: "nowPlaying.tab.overview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 队列
+   * zh-TW: 佇列
+   * en-US: Queue
+   */
+  (key: "nowPlaying.tab.queue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "nowPlaying.tab.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词预览
+   * zh-TW: 歌詞預覽
+   * en-US: Lyrics preview
+   */
+  (key: "nowPlaying.lyricsPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无歌词
+   * zh-TW: 暫無歌詞
+   * en-US: No lyrics for this song
+   */
+  (key: "nowPlaying.lyricsEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全屏歌词
+   * zh-TW: 全螢幕歌詞
+   * en-US: Full-screen lyrics
+   */
+  (key: "nowPlaying.lyricsFullscreen", params?: TranslationParams): string;
+  /**
    * zh-CN: 显示正在播放面板
    * zh-TW: 顯示正在播放面板
    * en-US: Show Now Playing view
@@ -137,23 +173,35 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.queueEnd", params?: TranslationParams): string;
   /**
-   * zh-CN: 歌曲信息
-   * zh-TW: 歌曲資訊
-   * en-US: Song info
-   */
-  (key: "nowPlaying.songInfo", params?: TranslationParams): string;
-  /**
    * zh-CN: 专辑
    * zh-TW: 專輯
    * en-US: Album
    */
   (key: "nowPlaying.album", params?: TranslationParams): string;
   /**
-   * zh-CN: 艺人
-   * zh-TW: 藝人
-   * en-US: Artists
+   * zh-CN: 全部 {{count}} 条
+   * zh-TW: 全部 {{count}} 則
+   * en-US: All {{count}}
    */
-  (key: "nowPlaying.artists", params?: TranslationParams): string;
+  (key: "nowPlaying.allComments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 演职人员
+   * zh-TW: 演職人員
+   * en-US: Credits
+   */
+  (key: "nowPlaying.credits", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主要艺人
+   * zh-TW: 主要藝人
+   * en-US: Main artist
+   */
+  (key: "nowPlaying.mainArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 合作艺人
+   * zh-TW: 合作藝人
+   * en-US: Featured artist
+   */
+  (key: "nowPlaying.featuredArtist", params?: TranslationParams): string;
   /**
    * zh-CN: 发行时间
    * zh-TW: 發行時間

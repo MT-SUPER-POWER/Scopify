@@ -2,16 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { NowPlayingCard } from "./NowPlayingCard";
+import { NowPlayingFollowButton } from "./NowPlayingFollowButton";
 import { useArtistFollow } from "@/hooks/artist/useArtistFollow";
 import { useArtistDetailQuery } from "@/hooks/artist/useArtistQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 
-/** 「关于艺人」：主艺人的封面、粉丝数、简介摘要与关注按钮。 */
+/** 「关于艺人」：以主艺人大图开头、标题叠在图上，下方是粉丝数、关注按钮与简介摘要。 */
 export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
   const { t } = useI18n();
   const artistId = song.ar?.[0]?.id;
@@ -26,11 +25,11 @@ export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
   const href = `/artist?id=${artistId}`;
 
   return (
-    <NowPlayingCard title={t("nowPlaying.aboutArtist")} className="pb-4">
+    <section className="overflow-hidden rounded-lg bg-surface-raised pb-4">
       <Link
         href={href}
         scroll={false}
-        className="relative mx-4 mt-3 block aspect-[4/3] overflow-hidden rounded-md bg-surface-elevated"
+        className="group relative block aspect-[4/3] overflow-hidden bg-surface-elevated"
       >
         {imageUrl ? (
           <Image
@@ -38,11 +37,18 @@ export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
             sizes="480px"
             src={getSizedImageUrl(imageUrl, 640)}
             alt={artist?.name ?? ""}
-            className="object-cover transition-transform duration-300 hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           detailQuery.isLoading && <Skeleton className="size-full bg-skeleton" />
         )}
+        <span
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-16 bg-linear-to-b from-black/55 to-transparent"
+        />
+        <h3 className="absolute top-4 left-4 text-sm font-bold text-white">
+          {t("nowPlaying.aboutArtist")}
+        </h3>
       </Link>
 
       <div className="mt-4 flex items-start justify-between gap-3 px-4">
@@ -55,31 +61,19 @@ export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
             {artist?.name ?? song.ar[0].name}
           </Link>
           {follow.fansCount !== undefined && (
-            <p className="mt-0.5 text-xs text-content-muted">
+            <p className="mt-0.5 text-sm text-content-muted">
               {t("nowPlaying.fans", { count: follow.fansCount.toLocaleString() })}
             </p>
           )}
         </div>
-        <button
-          type="button"
-          disabled={follow.isFollowStatusLoading}
-          onClick={() => void follow.toggleFollow()}
-          className={cn(
-            "shrink-0 rounded-full border px-3.5 py-1 text-xs font-bold transition-all hover:scale-105 disabled:opacity-50",
-            follow.isFollowing
-              ? "border-content/30 text-content hover:border-content"
-              : "border-content-muted text-content hover:border-content",
-          )}
-        >
-          {follow.isFollowing ? t("artist.action.following") : t("artist.action.follow")}
-        </button>
+        <NowPlayingFollowButton follow={follow} />
       </div>
 
       {artist?.briefDesc && (
-        <p className="mt-3 line-clamp-4 px-4 text-sm leading-6 text-content-muted">
+        <p className="mt-3 line-clamp-3 px-4 text-sm leading-6 text-content-muted">
           {artist.briefDesc}
         </p>
       )}
-    </NowPlayingCard>
+    </section>
   );
 }

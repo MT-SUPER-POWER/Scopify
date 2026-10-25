@@ -35,6 +35,8 @@ export interface PlayerQueueListHandle {
 
 export interface PlayerQueueListProps {
   isOpen: boolean;
+  /** 覆盖列表滚动区尺寸；默认是浮层中的固定高度。 */
+  className?: string;
 }
 
 export interface PlayerQueueItemCoverProps {

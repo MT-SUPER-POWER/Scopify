@@ -18,6 +18,11 @@ export const INTERLUDE_FULL_TEXT = "......";
 const EMPTY_CHORUS_RANGES: LyricChorusRange[] = [];
 const JAPANESE_CHAR_REGEX = /[\p{Script=Hiragana}\p{Script=Katakana}]/u;
 
+/** 面板等静态列表中展示的歌词文本：间奏与空行显示为音符。 */
+export function getLyricDisplayText(line: FoliaLine) {
+  return !line.fullText || line.fullText === INTERLUDE_FULL_TEXT ? "♪" : line.fullText;
+}
+
 function buildInterludeLine(startTime: number, endTime: number): FoliaLine {
   const dotCount = 6;
   const duration = Math.max(0.1, endTime - startTime);
@@ -164,6 +169,9 @@ export function useCompanionLyricLine() {
       ? isChineseSubtitleText(activeLine.fullText, activeLine.translation, japaneseLyrics)
       : false,
     index,
+    /** 全部歌词行与最近一句已开始的行（间奏中仍指向上一句），供主窗口右侧面板滚动歌词使用。 */
+    lines,
+    lastStartedIndex: index >= 0 ? index : isBetweenLinesInterlude ? -cursor - 2 : -1,
     /** 下一句原文：任务栏双行模式在没有翻译时用它填副行。 */
     nextLine: index >= 0 ? (lines[index + 1] ?? null) : null,
     playback,
