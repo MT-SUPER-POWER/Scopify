@@ -11,7 +11,7 @@ export default function RhineBackground(props: RhineBackgroundProps) {
   const { t } = useI18n();
   const tuning = { ...DEFAULT_RHINE_BACKGROUND_TUNING, ...props.config?.rhine?.tuning };
   const dark = tuning.colorMode === "auto" ? !props.isDaylight : tuning.colorMode === "dark";
-  const background = dark ? "#11181b" : "#e9e8df";
+  const background = dark ? "#11181b" : "#eae5e1";
 
   return (
     <div

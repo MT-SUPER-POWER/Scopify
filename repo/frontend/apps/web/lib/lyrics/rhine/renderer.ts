@@ -3,10 +3,12 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import type { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { SMAAPass } from "three/addons/postprocessing/SMAAPass.js";
 import { RHINE_QUALITY } from "@/constants/rhineBackground";
 import type { RhineQuality } from "@/types/rhineBackground";
 import { RhineAOPass } from "./ambientOcclusion";
+import { createAtmospherePass } from "./atmosphere";
 import { themeEnvironment } from "./themeMaterial";
 
 export class RhineRenderer {
@@ -14,15 +16,18 @@ export class RhineRenderer {
   readonly camera = new THREE.PerspectiveCamera(34, 16 / 9, 5, 300);
   readonly renderer: THREE.WebGLRenderer;
   private readonly aim = new THREE.Vector3(-2.4, 0.8, -3.8);
-  private readonly key = new THREE.DirectionalLight("#fff9ec", 1.65);
+  // RhineLabUI's baseline studio, as kept by Rhine Music Database: a warm key
+  // from behind the array, a white fill and a brown ground bounce.
+  private readonly key = new THREE.DirectionalLight("#fff7ed", 1.4);
   private readonly ground = new THREE.Mesh(
     new THREE.PlaneGeometry(200, 200),
-    new THREE.MeshStandardMaterial({ color: "#c9c5b9", roughness: 0.88 }),
+    new THREE.MeshStandardMaterial({ color: "#d8c9b9", roughness: 0.95 }),
   );
   private environment?: THREE.WebGLRenderTarget;
   private composer?: EffectComposer;
   private ao?: RhineAOPass;
   private smaa?: SMAAPass;
+  private atmosphere?: ShaderPass;
   private quality: RhineQuality = "original";
   private width = 1;
   private height = 1;
@@ -41,12 +46,12 @@ export class RhineRenderer {
   initialize(quality: RhineQuality) {
     this.quality = quality;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 0.98;
+    this.renderer.toneMappingExposure = 1.05;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
-    this.scene.background = new THREE.Color("#e9e8df");
-    this.scene.fog = new THREE.Fog("#e9e8df", 151, 179);
+    this.scene.background = new THREE.Color("#eae5e1");
+    this.scene.fog = new THREE.Fog("#eae5e1", 151, 179);
     this.scene.environmentIntensity = 0.48;
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     const room = new RoomEnvironment();
@@ -57,8 +62,8 @@ export class RhineRenderer {
       pmrem.dispose();
     }
     this.scene.environment = this.environment.texture;
-    this.scene.add(new THREE.HemisphereLight("#f2f4ee", "#878b80", 0.52));
-    this.key.position.set(-9, 14, 5);
+    this.scene.add(new THREE.HemisphereLight("#fffaf5", "#b4a18c", 0.65));
+    this.key.position.set(-6, 14, -5);
     this.key.castShadow = true;
     Object.assign(this.key.shadow.camera, {
       left: -16,
@@ -72,7 +77,7 @@ export class RhineRenderer {
     this.key.shadow.normalBias = 0.035;
     this.key.shadow.bias = -0.0003;
     this.key.shadow.radius = 4;
-    const fill = new THREE.DirectionalLight("#dbe9e5", 0.45);
+    const fill = new THREE.DirectionalLight("#ffffff", 0.6);
     fill.position.set(7, 8, -10);
     this.scene.add(this.key, fill);
     this.ground.name = "archive-floor";
@@ -115,6 +120,8 @@ export class RhineRenderer {
       }
     }
     this.composer.addPass(new OutputPass());
+    this.atmosphere = createAtmospherePass();
+    this.composer.addPass(this.atmosphere);
     this.applyQuality();
   }
 
@@ -163,6 +170,7 @@ export class RhineRenderer {
 
   setTheme(amount: number) {
     themeEnvironment(this.scene, this.renderer, amount);
+    if (this.atmosphere) this.atmosphere.uniforms.theme.value = amount;
     if (this.scene.fog instanceof THREE.Fog) {
       this.scene.fog.near = 151 - 4 * amount;
       this.scene.fog.far = 179 - 9 * amount;
