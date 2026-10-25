@@ -74,6 +74,7 @@ CONTEXT.md
 .opencode/
 .mcp.json
 CLAUDE.md
+design-qa.md
 
 # DOCS
 release_notes.md
