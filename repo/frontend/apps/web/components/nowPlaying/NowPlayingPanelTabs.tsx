@@ -1,0 +1,47 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import { useI18n } from "@/store/module/i18n";
+import { useUiStore } from "@/store/module/ui";
+import type { NowPlayingPanelView } from "@/types/components/nowPlaying";
+
+const TABS = [
+  { view: "overview", labelKey: "nowPlaying.tab.overview" },
+  { view: "queue", labelKey: "nowPlaying.tab.queue" },
+] as const satisfies readonly { view: NowPlayingPanelView; labelKey: string }[];
+
+/** 面板顶部的视图切换胶囊。 */
+export function NowPlayingPanelTabs({ view }: { view: NowPlayingPanelView }) {
+  const { t } = useI18n();
+
+  const select = (next: NowPlayingPanelView) => {
+    const ui = useUiStore.getState();
+    if (next === "queue") ui.setIsQueueOpen(true);
+    else ui.setNowPlayingPanelTab(next);
+  };
+
+  return (
+    <div role="tablist" className="flex min-w-0 items-center gap-1">
+      {TABS.map(({ view: tabView, labelKey }) => {
+        const isActive = tabView === view;
+        return (
+          <button
+            key={tabView}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => select(tabView)}
+            className={cn(
+              "shrink-0 rounded-full px-3 py-1 text-sm font-bold transition-colors",
+              isActive
+                ? "bg-content text-surface"
+                : "bg-content/8 text-content hover:bg-content/15",
+            )}
+          >
+            {t(labelKey)}
+          </button>
+        );
+      })}
+    </div>
+  );
+}

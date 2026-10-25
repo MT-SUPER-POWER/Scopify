@@ -6,6 +6,8 @@ import { useRef } from "react";
 import { PlayerQueueList } from "@/components/player/PlayerQueueList";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
+import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -23,6 +25,35 @@ export const QueuePopover = () => {
   const open = useUiStore((state) => state.isQueueOpen);
   const setOpen = useUiStore((state) => state.setIsQueueOpen);
   const queueListRef = useRef<PlayerQueueListHandle>(null);
+  // 右侧面板放得下时，队列停靠在面板里（与 Spotify 一致），不再弹出浮层
+  const isDocked = useNowPlayingPanelVisibility().canShow;
+  const label = t("queue.triggerTitle");
+
+  if (isDocked) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={() => setOpen(!open)}
+              aria-label={label}
+              aria-pressed={open}
+              className={cn(
+                "flex items-center justify-center transition-colors hover:text-content",
+                open ? "text-brand" : "text-content-muted",
+              )}
+            >
+              <ListMusic className="size-5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            <ShortcutHint commandId="toggle-queue" label={label} />
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

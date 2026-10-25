@@ -95,6 +95,18 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.title", params?: TranslationParams): string;
   /**
+   * zh-CN: 正在播放
+   * zh-TW: 正在播放
+   * en-US: Now Playing
+   */
+  (key: "nowPlaying.tab.overview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 队列
+   * zh-TW: 佇列
+   * en-US: Queue
+   */
+  (key: "nowPlaying.tab.queue", params?: TranslationParams): string;
+  /**
    * zh-CN: 显示正在播放面板
    * zh-TW: 顯示正在播放面板
    * en-US: Show Now Playing view

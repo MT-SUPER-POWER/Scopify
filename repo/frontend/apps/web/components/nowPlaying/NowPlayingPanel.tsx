@@ -1,20 +1,22 @@
 "use client";
 
 import { PanelRightClose } from "lucide-react";
-import { NowPlayingArtistCard } from "./NowPlayingArtistCard";
-import { NowPlayingHero } from "./NowPlayingHero";
-import { NowPlayingNextUp } from "./NowPlayingNextUp";
-import { NowPlayingSongInfo } from "./NowPlayingSongInfo";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { NowPlayingOverview } from "./NowPlayingOverview";
+import { NowPlayingPanelTabs } from "./NowPlayingPanelTabs";
+import { NowPlayingQueueView } from "./NowPlayingQueueView";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
+import type { NowPlayingPanelView } from "@/types/components/nowPlaying";
 
-/** 主布局右栏：当前歌曲的大封面、艺人与队列信息。 */
+/** 主布局右栏：在正在播放信息与播放队列之间切换。 */
 export function NowPlayingPanel() {
   const { t } = useI18n();
   const song = usePlayerStore((s) => s.currentSongDetail);
+  const isQueueOpen = useUiStore((s) => s.isQueueOpen);
+  const tab = useUiStore((s) => s.nowPlayingPanelTab);
   const setIsOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
+  const view: NowPlayingPanelView = isQueueOpen ? "queue" : tab;
 
   return (
     <aside
@@ -22,7 +24,7 @@ export function NowPlayingPanel() {
       className="flex size-full min-h-0 min-w-70 flex-col overflow-hidden rounded-lg bg-surface-sunken"
     >
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 px-4">
-        <h2 className="truncate text-base font-bold text-content">{t("nowPlaying.title")}</h2>
+        <NowPlayingPanelTabs view={view} />
         <button
           type="button"
           onClick={() => setIsOpen(false)}
@@ -34,19 +36,7 @@ export function NowPlayingPanel() {
         </button>
       </header>
 
-      <ScrollArea
-        className="min-h-0 flex-1"
-        viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
-      >
-        {song && (
-          <div className="flex flex-col gap-4 px-4 pb-4">
-            <NowPlayingHero song={song} />
-            <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
-            <NowPlayingNextUp />
-            <NowPlayingSongInfo song={song} />
-          </div>
-        )}
-      </ScrollArea>
+      {view === "queue" ? <NowPlayingQueueView /> : song && <NowPlayingOverview song={song} />}
     </aside>
   );
 }

@@ -3,6 +3,8 @@ import { defineMessages } from "./define";
 export const nowPlayingMessages = defineMessages(
   {
     "nowPlaying.title": "正在播放",
+    "nowPlaying.tab.overview": "正在播放",
+    "nowPlaying.tab.queue": "队列",
     "nowPlaying.show": "显示正在播放面板",
     "nowPlaying.hide": "隐藏正在播放面板",
     "nowPlaying.aboutArtist": "关于艺人",
@@ -17,6 +19,8 @@ export const nowPlayingMessages = defineMessages(
   },
   {
     "nowPlaying.title": "正在播放",
+    "nowPlaying.tab.overview": "正在播放",
+    "nowPlaying.tab.queue": "佇列",
     "nowPlaying.show": "顯示正在播放面板",
     "nowPlaying.hide": "隱藏正在播放面板",
     "nowPlaying.aboutArtist": "關於藝人",
@@ -31,6 +35,8 @@ export const nowPlayingMessages = defineMessages(
   },
   {
     "nowPlaying.title": "Now Playing",
+    "nowPlaying.tab.overview": "Now Playing",
+    "nowPlaying.tab.queue": "Queue",
     "nowPlaying.show": "Show Now Playing view",
     "nowPlaying.hide": "Hide Now Playing view",
     "nowPlaying.aboutArtist": "About the artist",

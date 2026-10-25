@@ -9,13 +9,14 @@ import { SortableList } from "@/components/shared/SortableList";
 import { DragThumbnail } from "@/components/shared/DragThumbnail";
 import { SortablePlayerQueueItem } from "@/components/player/SortablePlayerQueueItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
 import { useI18n } from "@/store/module/i18n";
 import type { PlayerQueueListHandle, PlayerQueueListProps } from "@/types/components/player";
 
 export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueListProps>(
-  function PlayerQueueList({ isOpen }, ref) {
+  function PlayerQueueList({ isOpen, className }, ref) {
     const { t } = useI18n();
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
@@ -87,7 +88,7 @@ export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueList
           ) : null;
         }}
       >
-        <ScrollArea viewportRef={parentRef} className="h-125 w-full">
+        <ScrollArea viewportRef={parentRef} className={cn("h-125 w-full", className)}>
           <div className="p-2">
             {queue.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-content-muted">
