@@ -194,6 +194,7 @@ const electronAPI: DesktopBridge = {
   },
   enterFullScreen: () => ipcRenderer.send("window-enter-full-screen"),
   exitFullScreen: () => ipcRenderer.send("window-exit-full-screen"),
+  setTitleBarSymbolColor: (color) => ipcRenderer.send("update-titlebar-color", color),
   onFullScreenChanged: (callback) => {
     const listener = (_event: Electron.IpcRendererEvent, data: { isFullScreen: boolean }) =>
       callback(data.isFullScreen);

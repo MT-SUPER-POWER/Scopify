@@ -5,8 +5,19 @@ import { cn } from "@/lib/utils";
  * 采用 Tailwind 语法，集中收敛在 styles/ 模块下统一维护
  */
 export const headerStyles = {
-  /** 根容器：声明容器查询上下文 (container-type: inline-size) */
-  root: "@container",
+  /**
+   * 根容器：声明容器查询上下文，并为桌面端叠加在顶栏上的系统窗口按钮让位。
+   * titlebar-area-* 由 Electron 的 Window Controls Overlay 提供（macOS 红绿灯在左、Windows 按钮在右）；
+   * Web 端没有这些变量，回落为普通内边距。
+   */
+  root: cn(
+    "@container",
+    "pl-[max(0.5rem,calc(env(titlebar-area-x,0px)_-_0.5rem))]",
+    "pr-[max(0.5rem,calc(100vw_-_env(titlebar-area-x,0px)_-_env(titlebar-area-width,100vw)))]",
+  ),
+
+  /** 顶栏整体是窗口拖拽区，可交互的分组需显式取消拖拽 */
+  noDrag: "[-webkit-app-region:no-drag]",
 
   /** 全局返回始终保留，二级页面不再重复提供返回按钮。 */
   history: "shrink-0",

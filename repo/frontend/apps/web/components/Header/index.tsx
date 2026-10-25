@@ -27,23 +27,23 @@ export function Header() {
     <header
       className={cn(
         headerStyles.root,
-        "grid h-12 w-full shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 px-2",
+        "grid h-12 w-full shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3",
       )}
     >
       {/* 左侧品牌与导航箭头 */}
       <div className={cn(headerStyles.history, "flex min-w-0 items-center gap-2")}>
-        <ScopifyBrand
-          priority
-          className="mx-2 min-w-0"
-          wordmarkClassName={headerStyles.wordmark}
-        />
-        <button type="button" onClick={() => smartRouter.back()} className={NAV_BTN}>
+        <ScopifyBrand priority className="mx-2 min-w-0" wordmarkClassName={headerStyles.wordmark} />
+        <button
+          type="button"
+          onClick={() => smartRouter.back()}
+          className={cn(headerStyles.noDrag, NAV_BTN)}
+        >
           <ChevronLeft className="size-5" />
         </button>
         <button
           type="button"
           onClick={() => smartRouter.forward()}
-          className={cn(headerStyles.forward, NAV_BTN)}
+          className={cn(headerStyles.noDrag, headerStyles.forward, NAV_BTN)}
         >
           <ChevronRight className="size-5" />
         </button>
@@ -53,7 +53,7 @@ export function Header() {
             onClick={latticeController.close}
             aria-label={t("playlist.lattice.back")}
             title={`${t("playlist.lattice.back")} · Esc`}
-            className={NAV_BTN}
+            className={cn(headerStyles.noDrag, NAV_BTN)}
           >
             <List className="size-4" />
           </button>
@@ -64,6 +64,7 @@ export function Header() {
       <div
         className={cn(
           headerStyles.search,
+          headerStyles.noDrag,
           "flex w-[min(36rem,44cqw)] min-w-0 items-center justify-center gap-2",
         )}
       >
@@ -73,7 +74,9 @@ export function Header() {
 
       {/* 右侧操作区 */}
       <div className="flex min-w-0 items-center justify-end">
-        <RightActions />
+        <div className={headerStyles.noDrag}>
+          <RightActions />
+        </div>
       </div>
     </header>
   );

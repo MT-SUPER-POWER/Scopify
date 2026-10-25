@@ -10,6 +10,8 @@ import { createMainWindowRenderingPolicy } from "@main/window/mainWindowRenderin
 const TITLE_SYNC_DELAY_MS = 120;
 /** 首次打开的窗口尺寸（16:9），小屏幕上收敛到可用工作区内。 */
 const DEFAULT_WINDOW_SIZE = { height: 900, width: 1600 } as const;
+/** 隐藏系统标题栏后，窗口按钮叠加在渲染层顶栏上；高度与顶栏行（外边距 8px + 顶栏 48px）对齐。 */
+export const MAIN_WINDOW_TITLE_BAR_HEIGHT = 56;
 const renderingPolicies = new WeakMap<BrowserWindow, MainWindowRenderingPolicy>();
 
 /** Create the main window and keep all BrowserWindow-specific policy local to this module. */
@@ -24,11 +26,14 @@ export function createMainWindow(options: MainWindowOptions) {
     icon: __iconWindow,
     show: false,
     title: "Scopify",
+    titleBarStyle: "hidden",
     titleBarOverlay: {
       color: "rgba(0,0,0,0)",
-      height: 35,
+      height: MAIN_WINDOW_TITLE_BAR_HEIGHT,
       symbolColor: "white",
     },
+    // macOS 红绿灯与顶栏内容垂直居中
+    trafficLightPosition: { x: 16, y: 20 },
     webPreferences: {
       backgroundThrottling: false,
       contextIsolation: true,

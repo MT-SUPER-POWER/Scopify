@@ -162,6 +162,19 @@ body,
   user-select: text;
 }
 
+/*
+ * Electron 的窗口拖拽区不感知层级：顶栏是拖拽区，覆盖在它上方的弹层必须显式取消拖拽，
+ * 否则弹层落在顶栏区域的部分无法点击。
+ */
+[role="dialog"],
+[role="alertdialog"],
+[role="menu"],
+[role="listbox"],
+[data-radix-popper-content-wrapper],
+[data-no-window-drag] {
+  -webkit-app-region: no-drag;
+}
+
 /* Prevent images from being selected or dragged (helps avoid selection/drag artifacts) */
 img,
 .no-select-img {

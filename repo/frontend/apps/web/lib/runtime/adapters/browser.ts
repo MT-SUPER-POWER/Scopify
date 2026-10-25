@@ -509,6 +509,7 @@ export function createBrowserRuntime(
         if (fullscreen) await doc.documentElement.requestFullscreen?.();
         else if (doc.fullscreenElement) await doc.exitFullscreen?.();
       },
+      setTitleBarSymbolColor: NOOP,
       toggleDeveloperTools: async () => false,
     },
   };
