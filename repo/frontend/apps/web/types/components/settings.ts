@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { AppUpdateState } from "@/types/updater";
 import type {
   DesktopBackendStatus,
   DesktopHostConfig,
@@ -94,6 +95,13 @@ export interface DesktopSettingsTabProps {
 export interface AppUpdaterSectionProps {
   config: DesktopHostConfig;
   onChange: DesktopSettingsChangeHandler;
+}
+
+export interface AppUpdaterStatusProps {
+  state: AppUpdateState;
+  onCheck: () => Promise<void>;
+  onDownload: () => Promise<void>;
+  onInstall: () => void;
 }
 
 /** Props for the Electron-only local MCP management section. */

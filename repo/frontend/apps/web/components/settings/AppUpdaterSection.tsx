@@ -1,43 +1,14 @@
 "use client";
 
-import { Download, ExternalLink, RefreshCw, Rocket } from "lucide-react";
-import { UPDATE_STATUS_LABEL_KEYS } from "@/constants/updater";
 import { useAppUpdater } from "@/hooks/settings/useAppUpdater";
 import { useI18n } from "@/store/module/i18n";
 import type { AppUpdaterSectionProps } from "@/types/components/settings";
+import { AppUpdaterStatus } from "./AppUpdaterStatus";
 import { SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) {
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const { state, check, download, install } = useAppUpdater();
-  const isChecking = state.status === "checking";
-  const isDownloading = state.status === "downloading";
-  const hasUpdate = state.status === "available";
-  const downloaded = state.status === "downloaded";
-  const DownloadIcon = state.manualInstall ? ExternalLink : Download;
-  const lastCheckedAt =
-    typeof state.lastCheckedAt === "number" && Number.isFinite(state.lastCheckedAt)
-      ? new Date(state.lastCheckedAt)
-      : null;
-  const formattedLastCheckedAt =
-    lastCheckedAt && !Number.isNaN(lastCheckedAt.valueOf())
-      ? new Intl.DateTimeFormat(locale, {
-          dateStyle: "medium",
-          timeStyle: "short",
-        }).format(lastCheckedAt)
-      : null;
-  const statusLabel =
-    state.status === "downloading" && state.percent !== undefined
-      ? t("settings.updater.state.downloadingProgress", {
-          percent: Math.round(state.percent),
-        })
-      : t(UPDATE_STATUS_LABEL_KEYS[state.status]);
-  const statusHint =
-    isChecking || state.status === "error" || !state.version
-      ? state.status === "idle"
-        ? t("settings.updater.statusHint")
-        : statusLabel
-      : t("settings.updater.availableVersion", { version: state.version });
 
   return (
     <div id="app-updater" className="scroll-mt-24">
@@ -68,80 +39,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
             }
           />
         ) : null}
-        <SettingRow
-          label={t("settings.updater.status")}
-          sublabel={statusHint}
-          control={
-            <span aria-live="polite" className="text-sm font-semibold text-foreground">
-              {state.currentVersion
-                ? t("settings.updater.currentVersion", { version: state.currentVersion })
-                : statusLabel}
-            </span>
-          }
-        />
-        {formattedLastCheckedAt && lastCheckedAt ? (
-          <SettingRow
-            label={t("settings.updater.lastChecked")}
-            control={
-              <time
-                dateTime={lastCheckedAt.toISOString()}
-                className="text-sm font-medium text-muted-foreground"
-              >
-                {formattedLastCheckedAt}
-              </time>
-            }
-          />
-        ) : null}
-        {state.message ? (
-          <p role="alert" className="-mt-2 mb-6 text-sm leading-relaxed text-danger">
-            {t("settings.updater.message")}：{state.message}
-          </p>
-        ) : null}
-        <SettingRow
-          label={t("settings.updater.action")}
-          sublabel={!state.supported ? t("settings.updater.packagedOnly") : undefined}
-          control={
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => void check()}
-                disabled={!state.supported || isChecking || isDownloading}
-                className="inline-flex items-center gap-2 rounded-full border border-input bg-surface-raised px-4 py-2 text-xs font-bold text-foreground transition hover:bg-accent disabled:opacity-50"
-              >
-                <RefreshCw className={isChecking ? "size-3.5 animate-spin" : "size-3.5"} />
-                {isChecking ? t("settings.updater.checking") : t("settings.updater.check")}
-              </button>
-              {hasUpdate ? (
-                <button
-                  type="button"
-                  onClick={() => void download()}
-                  disabled={isDownloading}
-                  className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-xs font-bold text-brand-foreground transition hover:bg-brand-hover disabled:opacity-50"
-                >
-                  <DownloadIcon className="size-3.5" />
-                  {state.manualInstall
-                    ? t("settings.updater.openRelease")
-                    : t("settings.updater.download")}
-                </button>
-              ) : null}
-              {downloaded && !state.manualInstall ? (
-                <button
-                  type="button"
-                  onClick={install}
-                  className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-xs font-bold text-brand-foreground transition hover:bg-brand-hover"
-                >
-                  <Rocket className="size-3.5" />
-                  {t("settings.updater.install")}
-                </button>
-              ) : null}
-            </div>
-          }
-        />
-        {state.manualInstall && state.supported && hasUpdate ? (
-          <p className="-mt-2 mb-6 text-sm leading-relaxed text-muted-foreground">
-            {t("settings.updater.manualInstallHint")}
-          </p>
-        ) : null}
+        <AppUpdaterStatus state={state} onCheck={check} onDownload={download} onInstall={install} />
       </SettingSection>
     </div>
   );
