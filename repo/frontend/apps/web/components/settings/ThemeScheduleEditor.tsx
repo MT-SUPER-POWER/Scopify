@@ -1,5 +1,12 @@
 import { Plus, X } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
 import { formatThemeTime } from "@/lib/settings/appearance";
 import { useI18n } from "@/store/module/i18n";
 import type { ThemeScheduleEditorProps } from "@/types/appearance";
@@ -58,31 +65,35 @@ export function ThemeScheduleEditor({ slots, options, onChange }: ThemeScheduleE
                 })}
               </div>
             </div>
-            <select
-              aria-label={t("appearance.rotation.theme")}
+            <Select
               value={slot.themeId}
-              onChange={(event) =>
+              onValueChange={(themeId) =>
                 onChange(
                   slots.map((item, position) =>
                     position === index
                       ? {
                           ...item,
-                          themeId:
-                            options.find((option) => option.id === event.target.value)?.id ??
-                            "silver",
+                          themeId: options.find((option) => option.id === themeId)?.id ?? "silver",
                         }
                       : item,
                   ),
                 )
               }
-              className="min-w-28 flex-1 rounded border border-input bg-transparent px-3 py-2 text-sm text-foreground"
             >
-              {options.map((option) => (
-                <option key={option.id} value={option.id} className="bg-popover">
-                  {option.name}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger
+                aria-label={t("appearance.rotation.theme")}
+                className="min-w-28 flex-1"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {options.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button
               variant="ghost"
               size="icon"

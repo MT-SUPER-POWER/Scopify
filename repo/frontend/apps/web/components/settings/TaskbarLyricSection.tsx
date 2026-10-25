@@ -1,6 +1,14 @@
 "use client";
 
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
+import {
   DEFAULT_TASKBAR_LYRIC_PREFERENCES,
   TASKBAR_LYRIC_FONT_SIZE_OPTIONS,
 } from "@/constants/desktopCompanion";
@@ -13,7 +21,7 @@ import type {
   TaskbarLyricPosition,
   TaskbarLyricPreferencesUpdate,
 } from "@/types/taskbarLyric";
-import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
+import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 const POSITIONS: TaskbarLyricPosition[] = ["auto", "left", "right"];
 const COLOR_MODES: TaskbarLyricColorMode[] = ["taskbar", "taskbarInverse", "light", "dark"];
@@ -78,16 +86,21 @@ export function TaskbarLyricSection() {
       <SettingRow
         label={t("taskbarLyric.position.label")}
         control={
-          <SettingSelect
-            value={preferences.position}
-            onChange={(value) => update({ position: value as TaskbarLyricPosition })}
+          <Select
+            value={String(preferences.position)}
+            onValueChange={(value) => update({ position: value as TaskbarLyricPosition })}
           >
-            {POSITIONS.map((position) => (
-              <option key={position} value={position}>
-                {t(`taskbarLyric.position.${position}`)}
-              </option>
-            ))}
-          </SettingSelect>
+            <SelectTrigger aria-label={t("taskbarLyric.position.label")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {POSITIONS.map((position) => (
+                <SelectItem key={position} value={String(position)}>
+                  {t(`taskbarLyric.position.${position}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         }
       />
       {toggleRow(
@@ -100,31 +113,41 @@ export function TaskbarLyricSection() {
       <SettingRow
         label={t("taskbarLyric.colorMode.label")}
         control={
-          <SettingSelect
-            value={preferences.colorMode}
-            onChange={(value) => update({ colorMode: value as TaskbarLyricColorMode })}
+          <Select
+            value={String(preferences.colorMode)}
+            onValueChange={(value) => update({ colorMode: value as TaskbarLyricColorMode })}
           >
-            {COLOR_MODES.map((mode) => (
-              <option key={mode} value={mode}>
-                {t(`taskbarLyric.colorMode.${mode}`)}
-              </option>
-            ))}
-          </SettingSelect>
+            <SelectTrigger aria-label={t("taskbarLyric.colorMode.label")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {COLOR_MODES.map((mode) => (
+                <SelectItem key={mode} value={String(mode)}>
+                  {t(`taskbarLyric.colorMode.${mode}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         }
       />
       <SettingRow
         label={t("taskbarLyric.fontSize.label")}
         control={
-          <SettingSelect
-            value={preferences.fontSize}
-            onChange={(value) => update({ fontSize: Number(value) })}
+          <Select
+            value={String(preferences.fontSize)}
+            onValueChange={(value) => update({ fontSize: Number(value) })}
           >
-            {TASKBAR_LYRIC_FONT_SIZE_OPTIONS.map((size) => (
-              <option key={size} value={size}>
-                {size}px
-              </option>
-            ))}
-          </SettingSelect>
+            <SelectTrigger aria-label={t("taskbarLyric.fontSize.label")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {TASKBAR_LYRIC_FONT_SIZE_OPTIONS.map((size) => (
+                <SelectItem key={size} value={String(size)}>
+                  {size}px
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         }
       />
       {toggleRow("autoMaxWidth", t("taskbarLyric.autoMaxWidth.label"))}

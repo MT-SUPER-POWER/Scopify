@@ -1,9 +1,17 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/store/module/i18n";
-import { SettingRow, SettingSelect } from "./SettingsUI";
+import { SettingRow } from "./SettingsUI";
 
 const appearanceModes = ["light", "dark", "system"] as const;
 
@@ -26,17 +34,16 @@ export function AppearanceModeControl() {
       sublabel={t("settings.appearance.sublabel")}
       control={
         isMounted ? (
-          <SettingSelect value={appearanceMode} onChange={setTheme}>
-            <option value="light" className="bg-popover">
-              {t("settings.appearance.light")}
-            </option>
-            <option value="dark" className="bg-popover">
-              {t("settings.appearance.dark")}
-            </option>
-            <option value="system" className="bg-popover">
-              {t("settings.appearance.system")}
-            </option>
-          </SettingSelect>
+          <Select value={String(appearanceMode)} onValueChange={setTheme}>
+            <SelectTrigger aria-label={t("settings.appearance.label")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem value="light">{t("settings.appearance.light")}</SelectItem>
+              <SelectItem value="dark">{t("settings.appearance.dark")}</SelectItem>
+              <SelectItem value="system">{t("settings.appearance.system")}</SelectItem>
+            </SelectContent>
+          </Select>
         ) : (
           <span aria-hidden className="h-9 w-28 rounded bg-skeleton" />
         )

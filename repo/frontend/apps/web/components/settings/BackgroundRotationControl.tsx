@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
 import { useState } from "react";
 import { Clock3, SlidersHorizontal } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
@@ -8,7 +16,7 @@ import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
 import type { ThemeRotationDialogProps } from "@/types/appearance";
-import { SettingRow, SettingSelect } from "./SettingsUI";
+import { SettingRow } from "./SettingsUI";
 import { ThemeRotationDialog } from "./ThemeRotationDialog";
 import { ThemeTimeline } from "./ThemeTimeline";
 
@@ -24,23 +32,22 @@ export function BackgroundRotationControl() {
       <SettingRow
         label={t("appearance.rotation")}
         control={
-          <SettingSelect
-            value={settings.rotation}
-            onChange={(value) => {
+          <Select
+            value={String(settings.rotation)}
+            onValueChange={(value) => {
               if (value === "fixed") update({ ...settings, rotation: "fixed" });
               else if (value === "daily" || value === "schedule") setMode(value);
             }}
           >
-            <option className="bg-popover" value="fixed">
-              {t("appearance.rotation.fixed")}
-            </option>
-            <option className="bg-popover" value="daily">
-              {t("appearance.rotation.daily")}
-            </option>
-            <option className="bg-popover" value="schedule">
-              {t("appearance.rotation.schedule")}
-            </option>
-          </SettingSelect>
+            <SelectTrigger aria-label={t("appearance.rotation")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem value="fixed">{t("appearance.rotation.fixed")}</SelectItem>
+              <SelectItem value="daily">{t("appearance.rotation.daily")}</SelectItem>
+              <SelectItem value="schedule">{t("appearance.rotation.schedule")}</SelectItem>
+            </SelectContent>
+          </Select>
         }
       />
       {settings.rotation !== "fixed" && (

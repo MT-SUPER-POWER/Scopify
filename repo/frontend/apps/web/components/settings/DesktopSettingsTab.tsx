@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
 import { CircleCheck, CircleX, FileText, FolderOpen, LoaderCircle, Radio } from "lucide-react";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
@@ -11,7 +19,7 @@ import { DesktopLyricSection } from "./DesktopLyricSection";
 import { DynamicIslandSection } from "./DynamicIslandSection";
 import { LocalBackendSettingsSection } from "./LocalBackendSettingsSection";
 import { McpSettingsSection } from "./McpSettingsSection";
-import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
+import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 import { TaskbarLyricSection } from "./TaskbarLyricSection";
 
 export function DesktopSettingsTab({
@@ -48,23 +56,20 @@ export function DesktopSettingsTab({
           label={t("settings.logLevel.label")}
           sublabel={t("settings.logLevel.sublabel")}
           control={
-            <SettingSelect
-              value={config.logging.level}
-              onChange={(value) => onChange("logging", "level", value as DesktopLogLevel)}
+            <Select
+              value={String(config.logging.level)}
+              onValueChange={(value) => onChange("logging", "level", value as DesktopLogLevel)}
             >
-              <option value="debug" className="bg-popover">
-                {t("settings.logLevel.debug")}
-              </option>
-              <option value="info" className="bg-popover">
-                {t("settings.logLevel.info")}
-              </option>
-              <option value="warn" className="bg-popover">
-                {t("settings.logLevel.warn")}
-              </option>
-              <option value="error" className="bg-popover">
-                {t("settings.logLevel.error")}
-              </option>
-            </SettingSelect>
+              <SelectTrigger aria-label={t("settings.logLevel.label")} className="min-w-30">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="debug">{t("settings.logLevel.debug")}</SelectItem>
+                <SelectItem value="info">{t("settings.logLevel.info")}</SelectItem>
+                <SelectItem value="warn">{t("settings.logLevel.warn")}</SelectItem>
+                <SelectItem value="error">{t("settings.logLevel.error")}</SelectItem>
+              </SelectContent>
+            </Select>
           }
         />
         <SettingRow

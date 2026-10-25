@@ -1,12 +1,20 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
 import { CircleCheck, CircleX, LoaderCircle, Radio } from "lucide-react";
 import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import type { DesktopProxyMode } from "@scopify/desktop-contract";
 import type { NetworkSettingsTabProps } from "@/types/components/settings";
 import { isBackendHostInputValid } from "@/lib/web/backendUrl";
 import { useI18n } from "@/store/module/i18n";
-import { SettingInput, SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
+import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
 
 export function NetworkSettingsTab({
   backendPingResult,
@@ -65,18 +73,20 @@ export function NetworkSettingsTab({
           label={t("settings.backendProtocol.label")}
           sublabel={t("settings.backendProtocol.sublabel")}
           control={
-            <SettingSelect
-              value={config.web.backend.protocol}
-              onChange={(value) => onWebChange("backend", "protocol", value as "http" | "https")}
-              className="w-28"
+            <Select
+              value={String(config.web.backend.protocol)}
+              onValueChange={(value) =>
+                onWebChange("backend", "protocol", value as "http" | "https")
+              }
             >
-              <option value="http" className="bg-popover">
-                HTTP
-              </option>
-              <option value="https" className="bg-popover">
-                HTTPS
-              </option>
-            </SettingSelect>
+              <SelectTrigger aria-label={t("settings.backendProtocol.label")} className="w-28">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="http">HTTP</SelectItem>
+                <SelectItem value="https">HTTPS</SelectItem>
+              </SelectContent>
+            </Select>
           }
         />
         <SettingRow
@@ -153,19 +163,20 @@ export function NetworkSettingsTab({
           label={t("settings.randomCNIP.label")}
           sublabel={t("settings.randomCNIP.sublabel")}
           control={
-            <SettingSelect
-              value={config.web.network.randomCNIP}
-              onChange={(value) =>
+            <Select
+              value={String(config.web.network.randomCNIP)}
+              onValueChange={(value) =>
                 onWebChange("network", "randomCNIP", value === "true" ? "true" : "false")
               }
             >
-              <option value="false" className="bg-popover">
-                {t("settings.randomCNIP.disabled")}
-              </option>
-              <option value="true" className="bg-popover">
-                {t("settings.randomCNIP.enabled")}
-              </option>
-            </SettingSelect>
+              <SelectTrigger aria-label={t("settings.randomCNIP.label")} className="min-w-30">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="false">{t("settings.randomCNIP.disabled")}</SelectItem>
+                <SelectItem value="true">{t("settings.randomCNIP.enabled")}</SelectItem>
+              </SelectContent>
+            </Select>
           }
         />
         {config.desktop ? (
@@ -174,22 +185,21 @@ export function NetworkSettingsTab({
               label={t("settings.proxyMode.label")}
               sublabel={t("settings.proxyMode.sublabel")}
               control={
-                <SettingSelect
-                  value={config.desktop.network.proxyMode}
-                  onChange={(value) =>
+                <Select
+                  value={String(config.desktop.network.proxyMode)}
+                  onValueChange={(value) =>
                     onDesktopChange("network", "proxyMode", value as DesktopProxyMode)
                   }
                 >
-                  <option value="system" className="bg-popover">
-                    {t("settings.proxyMode.system")}
-                  </option>
-                  <option value="direct" className="bg-popover">
-                    {t("settings.proxyMode.direct")}
-                  </option>
-                  <option value="custom" className="bg-popover">
-                    {t("settings.proxyMode.custom")}
-                  </option>
-                </SettingSelect>
+                  <SelectTrigger aria-label={t("settings.proxyMode.label")} className="min-w-30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <SelectItem value="system">{t("settings.proxyMode.system")}</SelectItem>
+                    <SelectItem value="direct">{t("settings.proxyMode.direct")}</SelectItem>
+                    <SelectItem value="custom">{t("settings.proxyMode.custom")}</SelectItem>
+                  </SelectContent>
+                </Select>
               }
             />
             <SettingRow

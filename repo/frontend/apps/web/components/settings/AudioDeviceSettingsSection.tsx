@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
 import { RefreshCw, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -8,7 +16,7 @@ import { getPlaybackAudioElement, setAudioElementOutputDevice } from "@/lib/play
 import { useAudioOutputStore } from "@/store/module/audioOutput";
 import { useI18n } from "@/store/module/i18n";
 
-import { SettingRow, SettingSection, SettingSelect } from "./SettingsUI";
+import { SettingRow, SettingSection } from "./SettingsUI";
 
 export function AudioDeviceSettingsSection() {
   const { t } = useI18n();
@@ -58,23 +66,25 @@ export function AudioDeviceSettingsSection() {
         label={t("audioSettings.outputTitle")}
         sublabel={t("audioSettings.outputDescription")}
         control={
-          <SettingSelect
-            className="w-full"
+          <Select
             disabled={!isSupported || isLoading}
-            onChange={(value) => void selectOutput(value)}
-            value={selectedOutputDeviceId || "default"}
+            onValueChange={(value) => void selectOutput(value)}
+            value={String(selectedOutputDeviceId || "default")}
           >
-            <option value="default" className="bg-popover">
-              {t("audioSettings.outputDefault")}
-            </option>
-            {outputDevices
-              .filter((device) => device.deviceId !== "default")
-              .map((device, index) => (
-                <option key={device.deviceId} value={device.deviceId} className="bg-popover">
-                  {device.label || t("audioSettings.outputUnnamed", { index: index + 1 })}
-                </option>
-              ))}
-          </SettingSelect>
+            <SelectTrigger aria-label={t("audioSettings.outputTitle")} className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem value="default">{t("audioSettings.outputDefault")}</SelectItem>
+              {outputDevices
+                .filter((device) => device.deviceId !== "default")
+                .map((device, index) => (
+                  <SelectItem key={device.deviceId} value={String(device.deviceId)}>
+                    {device.label || t("audioSettings.outputUnnamed", { index: index + 1 })}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
         }
       />
       <SettingRow
@@ -82,26 +92,28 @@ export function AudioDeviceSettingsSection() {
         label={t("audioSettings.inputTitle")}
         sublabel={t("audioSettings.inputDescription")}
         control={
-          <SettingSelect
-            className="w-full"
+          <Select
             disabled={isLoading}
-            onChange={(value) => {
+            onValueChange={(value) => {
               setSelectedInputDeviceId(value);
               setInputVerified(false);
             }}
-            value={selectedInputDeviceId || "default"}
+            value={String(selectedInputDeviceId || "default")}
           >
-            <option value="default" className="bg-popover">
-              {t("audioSettings.inputDefault")}
-            </option>
-            {inputDevices
-              .filter((device) => device.deviceId !== "default")
-              .map((device, index) => (
-                <option key={device.deviceId} value={device.deviceId} className="bg-popover">
-                  {device.label || t("audioSettings.inputUnnamed", { index: index + 1 })}
-                </option>
-              ))}
-          </SettingSelect>
+            <SelectTrigger aria-label={t("audioSettings.inputTitle")} className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem value="default">{t("audioSettings.inputDefault")}</SelectItem>
+              {inputDevices
+                .filter((device) => device.deviceId !== "default")
+                .map((device, index) => (
+                  <SelectItem key={device.deviceId} value={String(device.deviceId)}>
+                    {device.label || t("audioSettings.inputUnnamed", { index: index + 1 })}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
         }
       />
       <SettingRow

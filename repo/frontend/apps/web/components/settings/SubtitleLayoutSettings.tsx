@@ -1,12 +1,20 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
 import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
 import { useI18n } from "@/store/module/i18n";
 import type { LyricsPreviewFont, LyricsPreviewSettings } from "@/types/appearance";
 import { AppearanceRange } from "./AppearanceRange";
-import { SettingRow, SettingSelect } from "./SettingsUI";
+import { SettingRow } from "./SettingsUI";
 
 export function SubtitleLayoutSettings({
   settings,
@@ -18,16 +26,21 @@ export function SubtitleLayoutSettings({
       <SettingRow
         label={t("appearance.lyrics.font")}
         control={
-          <SettingSelect
-            value={settings.font}
-            onChange={(font) => update({ font: font as LyricsPreviewFont })}
+          <Select
+            value={String(settings.font)}
+            onValueChange={(font) => update({ font: font as LyricsPreviewFont })}
           >
-            {(Object.keys(LYRICS_PREVIEW_FONTS) as LyricsPreviewFont[]).map((font) => (
-              <option key={font} value={font} className="bg-popover">
-                {t(`appearance.lyrics.font.${font}`)}
-              </option>
-            ))}
-          </SettingSelect>
+            <SelectTrigger aria-label={t("appearance.lyrics.font")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {(Object.keys(LYRICS_PREVIEW_FONTS) as LyricsPreviewFont[]).map((font) => (
+                <SelectItem key={font} value={String(font)}>
+                  {t(`appearance.lyrics.font.${font}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         }
       />
       <AppearanceRange
@@ -81,18 +94,23 @@ export function SubtitleLayoutSettings({
       <SettingRow
         label={t("subtitlePreview.align")}
         control={
-          <SettingSelect
-            value={settings.textAlign}
-            onChange={(textAlign) =>
+          <Select
+            value={String(settings.textAlign)}
+            onValueChange={(textAlign) =>
               update({ textAlign: textAlign as LyricsPreviewSettings["textAlign"] })
             }
           >
-            {(["left", "center", "right"] as const).map((align) => (
-              <option key={align} value={align} className="bg-popover">
-                {t(`subtitlePreview.${align}`)}
-              </option>
-            ))}
-          </SettingSelect>
+            <SelectTrigger aria-label={t("subtitlePreview.align")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {(["left", "center", "right"] as const).map((align) => (
+                <SelectItem key={align} value={String(align)}>
+                  {t(`subtitlePreview.${align}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         }
       />
       <AppearanceRange

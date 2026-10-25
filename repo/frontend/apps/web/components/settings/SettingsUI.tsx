@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import type React from "react";
 import {
   AlertDialog,
@@ -18,9 +18,6 @@ import type {
   SettingButtonProps,
   SettingSectionProps,
 } from "@/types/components/settings";
-
-const selectClass =
-  "w-full border-input text-foreground hover:border-content focus:ring-ring cursor-pointer appearance-none rounded border bg-transparent py-2 pr-10 pl-4 text-sm font-medium transition-colors outline-none focus:ring-1";
 
 export function Toggle({ enabled, onChange }: { enabled: boolean; onChange: () => void }) {
   return (
@@ -150,40 +147,6 @@ export function SettingSection({ title, actions, children }: SettingSectionProps
       </div>
       {children}
     </section>
-  );
-}
-
-export function SettingSelect({
-  value,
-  onChange,
-  children,
-  className,
-  disabled = false,
-}: {
-  value: string | number;
-  onChange: (value: string) => void;
-  children: React.ReactNode;
-  className?: string;
-  disabled?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "relative",
-        className ?? "w-fit min-w-30",
-        disabled && "cursor-not-allowed opacity-40",
-      )}
-    >
-      <select
-        className={cn(selectClass, disabled && "pointer-events-none")}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        disabled={disabled}
-      >
-        {children}
-      </select>
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-content" />
-    </div>
   );
 }
 

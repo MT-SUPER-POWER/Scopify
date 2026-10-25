@@ -1,11 +1,19 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
 import { languageLabelKeys } from "@/lib/i18n";
 import { useI18n } from "@/store/module/i18n";
 import { APP_LOCALES, type AppLocale } from "@/types/config";
 import type { GeneralSettingsTabProps } from "@/types/components/settings";
 import { AudioDeviceSettingsSection } from "./AudioDeviceSettingsSection";
-import { SettingInput, SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
+import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 export function GeneralSettingsTab({
   config,
@@ -22,16 +30,21 @@ export function GeneralSettingsTab({
             label={t("settings.language.label")}
             sublabel={t("settings.language.sublabel")}
             control={
-              <SettingSelect
-                value={config.web.app.locale}
-                onChange={(value) => onWebChange("app", "locale", value as AppLocale)}
+              <Select
+                value={String(config.web.app.locale)}
+                onValueChange={(value) => onWebChange("app", "locale", value as AppLocale)}
               >
-                {APP_LOCALES.map((locale) => (
-                  <option key={locale} value={locale} className="bg-popover">
-                    {t(languageLabelKeys[locale])}
-                  </option>
-                ))}
-              </SettingSelect>
+                <SelectTrigger aria-label={t("settings.language.label")} className="min-w-30">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {APP_LOCALES.map((locale) => (
+                    <SelectItem key={locale} value={String(locale)}>
+                      {t(languageLabelKeys[locale])}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             }
           />
           {config.desktop ? (
@@ -70,22 +83,26 @@ export function GeneralSettingsTab({
                 label={t("settings.windowClose.label")}
                 sublabel={t("settings.windowClose.sublabel")}
                 control={
-                  <SettingSelect
-                    value={config.desktop.app.closeAction}
-                    onChange={(value) =>
+                  <Select
+                    value={String(config.desktop.app.closeAction)}
+                    onValueChange={(value) =>
                       onDesktopChange("app", "closeAction", Number(value) as 0 | 1 | 2)
                     }
                   >
-                    <option value={0} className="bg-popover">
-                      {t("settings.windowClose.minimize")}
-                    </option>
-                    <option value={1} className="bg-popover">
-                      {t("settings.windowClose.exit")}
-                    </option>
-                    <option value={2} className="bg-popover">
-                      {t("settings.windowClose.ask")}
-                    </option>
-                  </SettingSelect>
+                    <SelectTrigger
+                      aria-label={t("settings.windowClose.label")}
+                      className="min-w-30"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value={String(0)}>
+                        {t("settings.windowClose.minimize")}
+                      </SelectItem>
+                      <SelectItem value={String(1)}>{t("settings.windowClose.exit")}</SelectItem>
+                      <SelectItem value={String(2)}>{t("settings.windowClose.ask")}</SelectItem>
+                    </SelectContent>
+                  </Select>
                 }
               />
             </>

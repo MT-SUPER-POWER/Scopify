@@ -1,7 +1,14 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
 import { useI18n } from "@/store/module/i18n";
 import type { SubtitlePaletteFieldsProps } from "@/types/subtitle-preview";
 import { AppearanceRange } from "./AppearanceRange";
-import { SettingRow, SettingSelect } from "./SettingsUI";
+import { SettingRow } from "./SettingsUI";
 import { ThemeColorControl } from "./ThemeColorControl";
 
 export function SubtitlePaletteFields({
@@ -18,17 +25,20 @@ export function SubtitlePaletteFields({
           readOnly ? (
             t(settings.colorMode === "solid" ? "subtitlePreview.solid" : "subtitlePreview.gradient")
           ) : (
-            <SettingSelect
-              value={settings.colorMode}
-              onChange={(colorMode) => update({ colorMode: colorMode as "solid" | "gradient" })}
+            <Select
+              value={String(settings.colorMode)}
+              onValueChange={(colorMode) =>
+                update({ colorMode: colorMode as "solid" | "gradient" })
+              }
             >
-              <option value="solid" className="bg-popover">
-                {t("subtitlePreview.solid")}
-              </option>
-              <option value="gradient" className="bg-popover">
-                {t("subtitlePreview.gradient")}
-              </option>
-            </SettingSelect>
+              <SelectTrigger aria-label={t("subtitlePreview.mode")} className="min-w-30">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="solid">{t("subtitlePreview.solid")}</SelectItem>
+                <SelectItem value="gradient">{t("subtitlePreview.gradient")}</SelectItem>
+              </SelectContent>
+            </Select>
           )
         }
       />

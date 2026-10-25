@@ -1,6 +1,14 @@
 "use client";
 
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@scopify/ui/shadcn/components/select";
+
+import {
   DEFAULT_DYNAMIC_ISLAND_PREFERENCES,
   DYNAMIC_ISLAND_SCALE_OPTIONS,
 } from "@/constants/desktopCompanion";
@@ -13,7 +21,7 @@ import type {
   DynamicIslandPreferencesUpdate,
   DynamicIslandTransition,
 } from "@/types/dynamicIsland";
-import { SettingRow, SettingSection, SettingSelect, Toggle } from "./SettingsUI";
+import { SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 export function DynamicIslandSection() {
   const { t } = useI18n();
@@ -52,28 +60,38 @@ export function DynamicIslandSection() {
       <SettingRow
         label={t("dynamicIsland.transition.label")}
         control={
-          <SettingSelect
-            value={preferences.transition}
-            onChange={(value) => update({ transition: value as DynamicIslandTransition })}
+          <Select
+            value={String(preferences.transition)}
+            onValueChange={(value) => update({ transition: value as DynamicIslandTransition })}
           >
-            <option value="bounce">{t("dynamicIsland.transition.bounce")}</option>
-            <option value="smooth">{t("dynamicIsland.transition.smooth")}</option>
-          </SettingSelect>
+            <SelectTrigger aria-label={t("dynamicIsland.transition.label")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectItem value="bounce">{t("dynamicIsland.transition.bounce")}</SelectItem>
+              <SelectItem value="smooth">{t("dynamicIsland.transition.smooth")}</SelectItem>
+            </SelectContent>
+          </Select>
         }
       />
       <SettingRow
         label={t("dynamicIsland.scale.label")}
         control={
-          <SettingSelect
-            value={preferences.scale}
-            onChange={(value) => update({ scale: Number(value) })}
+          <Select
+            value={String(preferences.scale)}
+            onValueChange={(value) => update({ scale: Number(value) })}
           >
-            {DYNAMIC_ISLAND_SCALE_OPTIONS.map((scale) => (
-              <option key={scale} value={scale}>
-                {Math.round(scale * 100)}%
-              </option>
-            ))}
-          </SettingSelect>
+            <SelectTrigger aria-label={t("dynamicIsland.scale.label")} className="min-w-30">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {DYNAMIC_ISLAND_SCALE_OPTIONS.map((scale) => (
+                <SelectItem key={scale} value={String(scale)}>
+                  {Math.round(scale * 100)}%
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         }
       />
       {toggleRow("showTranslation", t("dynamicIsland.showTranslation.label"))}
