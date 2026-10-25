@@ -23,9 +23,11 @@ export interface Baseline {
 export interface RhythmFrame {
   style: Record<RhineRhythmStyle, number>;
 }
-export interface RhineCell {
+export interface RhineThemeCell {
   row: number;
   lane: number;
+}
+export interface RhineCell extends RhineThemeCell {
   key: string;
   x: number;
   z: number;

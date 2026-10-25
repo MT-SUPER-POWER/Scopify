@@ -22,6 +22,7 @@ import {
 } from "./motion";
 import { RhineRenderer } from "./renderer";
 import { RhythmMotion, rhythmDisplacement } from "./rhythm";
+import { ThemeWave } from "./themeWave";
 
 export class RhineScene {
   private readonly cells: RhineCell[] = [];
@@ -38,13 +39,13 @@ export class RhineScene {
   private readonly heights = new Map<string, number>();
   private readonly tilts = new Map<string, number>();
   private readonly pulses: RhineFieldPulse[] = [];
+  private readonly themeWave: ThemeWave;
   private readonly ridgeRow: Spring;
   private ridgeAmount = 0;
   private ridgeAge = 0;
   private active: RhineCell;
   private seed: string;
   private time = 0;
-  private themeAmount: number;
   private input: RhineSceneInput;
 
   constructor(
@@ -54,7 +55,7 @@ export class RhineScene {
   ) {
     this.input = input;
     this.seed = input.seed;
-    this.themeAmount = Number(input.dark);
+    this.themeWave = new ThemeWave(input.dark);
     this.matrixUpdates = new InstanceUpdates(model.matrix);
     this.themeUpdates = new InstanceUpdates(model.themes);
     for (let lane = 0; lane < RHINE_LANES; lane++) {
@@ -90,9 +91,9 @@ export class RhineScene {
       this.model.setCardTrack(card.group, input.track);
       dirty = true;
     }
-    // Theme changes can repaint a frozen pose; the animation and envelope stay untouched.
-    if (input.frozen && input.dark !== previous.dark) {
-      this.themeAmount = Number(input.dark);
+    // A frozen pose repaints theme changes at once; the sweep only plays on the scene clock.
+    if (input.frozen && Number(input.dark) !== this.themeWave.target) {
+      this.themeWave.set(input.dark, this.time, this.active, true);
       dirty = true;
     }
     return dirty;
@@ -209,8 +210,9 @@ export class RhineScene {
         this.showcase(this.active);
       }
     }
+    if (Number(this.input.dark) !== this.themeWave.target)
+      this.themeWave.set(this.input.dark, this.time, this.active);
     this.envelope.update(audio, this.input.tuning.musicEnabled, dt);
-    this.themeAmount += (Number(this.input.dark) - this.themeAmount) * (1 - Math.exp(-dt * 5));
     this.updateShowcases(dt);
     this.updateRidge(dt);
     this.updateField(dt);
@@ -255,6 +257,7 @@ export class RhineScene {
   }
 
   paint() {
+    this.themeWave.beginFrame();
     let count = 0;
     for (const cell of this.visible) {
       if (this.cards.has(cell.key)) continue;
@@ -262,12 +265,13 @@ export class RhineScene {
         .makeRotationX(this.tilts.get(cell.key) ?? 0)
         .setPosition(cell.x, -4.6 + (this.heights.get(cell.key) ?? 0), cell.z);
       this.matrixUpdates.set(count * 16, this.transform.elements);
-      this.themeUpdates.scalar(count, this.themeAmount);
+      this.themeUpdates.scalar(count, this.themeWave.sample(cell, this.time));
       count++;
     }
     this.matrixUpdates.commit();
     this.themeUpdates.commit();
     for (const instance of this.model.instances) instance.count = count;
+    const theme = this.themeWave.background(this.time);
     for (const card of this.cards.values()) {
       card.group.position.set(
         card.cell.x,
@@ -283,9 +287,9 @@ export class RhineScene {
       );
       this.model.appearance.apply(card.group, progress);
       this.model.appearance.setClarity(card.group, smooth((progress - 0.3) / 0.7));
-      this.model.appearance.setTheme(card.group, this.themeAmount);
+      this.model.appearance.setTheme(card.group, this.themeWave.sample(card.cell, this.time));
     }
-    this.view.setTheme(this.themeAmount);
+    this.view.setTheme(theme);
     this.view.draw();
   }
 
