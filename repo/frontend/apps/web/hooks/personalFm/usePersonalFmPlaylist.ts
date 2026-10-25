@@ -13,39 +13,13 @@ import {
 } from "@/constants/personalFm";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
-import { useI18n, useI18nStore } from "@/store/module/i18n";
-import { translate } from "@/lib/i18n";
+import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
+import { useI18n } from "@/store/module/i18n";
+import { ensurePersonalFmOnEntry } from "@/lib/personalFm/entry";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/api/music";
 import type { PlaylistInfo } from "@/types/playlist";
-
-const ENTRY_STREAM_WINDOW_MS = 30_000;
-let entryStreamStartedAt: number | null = null;
-
-/** Starts the stream while navigation to the page is still in flight; the page then skips its own start once. */
-export function startPersonalFmStreamOnEntry() {
-  entryStreamStartedAt = Date.now();
-  return startPersonalFmStream();
-}
-
-function consumeEntryStream() {
-  const startedAt = entryStreamStartedAt;
-  entryStreamStartedAt = null;
-  return startedAt !== null && Date.now() - startedAt < ENTRY_STREAM_WINDOW_MS;
-}
-
-/** Starts a fresh personal FM stream and reports a failed start with a toast. */
-export async function startPersonalFmStream(shouldReportError: () => boolean = () => true) {
-  const started = await usePersonalFmStore.getState().start();
-  if (!started && shouldReportError()) {
-    toast.error(
-      usePersonalFmStore.getState().error ??
-        translate(useI18nStore.getState().locale, "personalFm.error.loadFailed"),
-    );
-  }
-  return started;
-}
 
 export function usePersonalFmPlaylist() {
   const { t } = useI18n();
@@ -57,10 +31,11 @@ export function usePersonalFmPlaylist() {
   const currentSong = usePlayerStore((state) => state.currentSongDetail);
   const playlistId = usePlayerStore((state) => state.playlistId);
   const queue = usePlayerStore((state) => state.queue);
+  const savedTracks = usePersonalFmStore((state) => state.tracks);
   const { dislike: onDislikeTrack } = usePersonalFmDislike();
 
   const isCurrentSource = isPersonalFmPlaybackSource(playlistId);
-  const tracks = useMemo(() => (isCurrentSource ? queue : []), [isCurrentSource, queue]);
+  const tracks = isCurrentSource ? queue : savedTracks;
 
   const start = useCallback(() => {
     void requireLogin(async () => {
@@ -76,8 +51,8 @@ export function usePersonalFmPlaylist() {
     // Defer until effect setup settles so Strict Mode does not request twice.
     let cancelled = false;
     queueMicrotask(() => {
-      if (cancelled || consumeEntryStream()) return;
-      void startPersonalFmStream(() => !cancelled);
+      if (cancelled) return;
+      void ensurePersonalFmOnEntry(() => !cancelled);
     });
     return () => {
       cancelled = true;
@@ -91,8 +66,14 @@ export function usePersonalFmPlaylist() {
       return;
     }
 
-    start();
-  }, [start]);
+    if (tracks.length > 0) {
+      void requireLogin(async () => {
+        player.setShuffle(false);
+        player.setRepeatMode("off");
+        await player.playFromSong(tracks[0], tracks, PERSONAL_FM_PLAYBACK_SOURCE_ID);
+      });
+    } else start();
+  }, [requireLogin, start, tracks]);
 
   const handleTrackPlay = useCallback(
     (track: SongDetail) => {
@@ -111,11 +92,14 @@ export function usePersonalFmPlaylist() {
     [tracks],
   );
 
+  const cover =
+    (isCurrentSource ? currentSong?.al.picUrl : undefined) ||
+    tracks[0]?.al.picUrl ||
+    "/personal-fm-cover.svg";
+  const themeColor = useCoverThemeColor(cover);
   const playlistInfo = useMemo<PlaylistInfo>(
     () => ({
-      cover: isCurrentSource
-        ? (currentSong?.al.picUrl ?? "/personal-fm-cover.svg")
-        : "/personal-fm-cover.svg",
+      cover,
       createTime: "",
       creator: "",
       creatorAvatar: "",
@@ -126,18 +110,19 @@ export function usePersonalFmPlaylist() {
       title: t("personalFm.title"),
       totalSongs: tracks.length,
     }),
-    [currentSong?.al.picUrl, isCurrentSource, selection, t, tracks.length],
+    [cover, selection, t, tracks.length],
   );
 
   return {
-    isLoading: status === "loading",
+    isLoading: status === "loading" && tracks.length === 0,
+    isRefreshing: status === "loading",
     onDislikeTrack,
     onPlayToggle: handlePlayToggle,
     onTrackPlay: handleTrackPlay,
     playlistInfo,
     playSourceId: PERSONAL_FM_PLAYBACK_SOURCE_ID,
     refetchTracks: start,
-    themeColor: null,
+    themeColor,
     tracks,
   };
 }

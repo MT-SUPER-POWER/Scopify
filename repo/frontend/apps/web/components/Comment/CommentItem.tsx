@@ -12,6 +12,7 @@ import { resolveCommentIpLocation } from "@/lib/comment/commentResource";
 import { useI18n } from "@/store/module/i18n";
 import type { CommentItemProps } from "@/types/components/comment";
 import { renderEmojiContent } from "./renderEmojiContent";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 function ReplyArrowIcon({ className }: { className?: string }) {
   return (
@@ -48,7 +49,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
       <Image
         width={40}
         height={40}
-        src={comment.user.avatarUrl}
+        src={getSizedImageUrl(comment.user.avatarUrl, 120)}
         alt={comment.user.nickname}
         className="mt-1 size-10 shrink-0 cursor-pointer rounded-full bg-surface-elevated object-cover"
       />

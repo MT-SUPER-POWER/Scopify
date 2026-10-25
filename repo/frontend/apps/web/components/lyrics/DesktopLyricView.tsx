@@ -83,7 +83,7 @@ export function DesktopLyricView() {
           replayId={view.index}
           playback={view.playback}
           loop={false}
-          fillProgress={view.fillProgress}
+          fillLine={view.activeLine ?? undefined}
           singleLine
           lineDurationMs={view.lineDurationMs}
         />

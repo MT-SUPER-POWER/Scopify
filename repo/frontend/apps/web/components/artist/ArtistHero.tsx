@@ -2,6 +2,7 @@ import { BadgeCheck } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { ArtistInfo } from "@/types/artist";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 interface Props {
   artist: ArtistInfo;
@@ -14,7 +15,7 @@ export function ArtistHero({ artist }: Props) {
     <div className="relative flex h-[40vh] min-h-85 w-full items-end md:h-[50vh]">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${artist.headerImageUrl})` }}
+        style={{ backgroundImage: `url(${getSizedImageUrl(artist.headerImageUrl, 1600)})` }}
       />
       <div className="absolute inset-0 bg-linear-to-t from-surface-raised via-surface-raised/70 to-transparent" />
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-2 p-6 md:p-8">

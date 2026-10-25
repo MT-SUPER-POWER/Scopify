@@ -10,6 +10,7 @@ import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { useShortcutStore } from "@/store/module/shortcuts";
 import { useI18n } from "@/store/module/i18n";
 import { useLatticeView } from "@/store/module/lattice";
+import { runtime } from "@/lib/runtime";
 import type {
   CommandWorkspaceRootItem,
   CommandWorkspaceRootPage,
@@ -43,10 +44,15 @@ export function useCommandWorkspaceRoot({
     () =>
       rankCommandWorkspaceEntries(
         [
-          ...COMMAND_WORKSPACE_ROOT_PAGES.map((command) => ({
+          ...COMMAND_WORKSPACE_ROOT_PAGES.filter(
+            (command) => command.page !== "dynamic-island" || runtime.isDesktop,
+          ).map((command) => ({
             ...command,
             type: "workspace" as const,
-            keywords: "",
+            keywords:
+              command.page === "dynamic-island"
+                ? "灵动岛 靈動島 dynamic island 开关 动画 回弹 平滑 大小 缩放 翻译 吸附 居中 非遮挡 穿透 置顶"
+                : "",
             usageCount: commandWorkspaceUsageCounts[command.page] ?? 0,
           })),
           ...commands
@@ -64,7 +70,10 @@ export function useCommandWorkspaceRoot({
             .map((command) => ({
               binding: command.binding,
               id: command.id,
-              label: t(command.labelKey),
+              label:
+                command.id === "toggle-dynamic-island"
+                  ? `${t(command.labelKey)} · 开关`
+                  : t(command.labelKey),
               keywords: command.keywords ?? "",
               summary: "快捷操作",
               type: "shortcut" as const,
@@ -72,14 +81,17 @@ export function useCommandWorkspaceRoot({
             })),
         ],
         (command) => command.usageCount,
-      ).filter((command) =>
-        (command.id === "open-whats-new"
-          ? `${command.label} what's new whats new changelog 更新日志 新鲜事`
-          : `${command.label} ${command.keywords}`
-        )
-          .toLocaleLowerCase()
-          .includes(query.trim().toLocaleLowerCase()),
-      ),
+      ).filter((command) => {
+        const text = (
+          command.id === "open-whats-new"
+            ? `${command.label} what's new whats new changelog 更新日志 新鲜事`
+            : `${command.label} ${command.keywords}`
+        ).toLocaleLowerCase();
+        const search = query.trim().toLocaleLowerCase();
+        return command.id === "dynamic-island"
+          ? search.split(/\s+/).every((term) => text.includes(term))
+          : text.includes(search);
+      }),
     [commandWorkspaceUsageCounts, commands, latticeActive, latticeAvailable, query, t, usageCounts],
   );
 

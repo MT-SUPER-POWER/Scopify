@@ -31,6 +31,7 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
 import type { Song } from "@/types/search";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -339,7 +340,7 @@ export const SongItem = memo(
                       <Image
                         width={28}
                         height={28}
-                        src={playlist.coverImgUrl}
+                        src={getSizedImageUrl(playlist.coverImgUrl, 80)}
                         alt={t("playlist.form.coverAlt")}
                         className="mr-2 size-7 rounded-sm"
                       />

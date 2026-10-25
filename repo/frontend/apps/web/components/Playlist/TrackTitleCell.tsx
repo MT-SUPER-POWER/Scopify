@@ -8,6 +8,7 @@ import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import type { TrackTitleCellProps } from "@/types/components/playlist";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {
   const smartRouter = useSmartRouter();
@@ -19,7 +20,7 @@ export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {
             draggable={false}
             width={40}
             height={40}
-            src={track.al.picUrl || CLOUD_SONG_FALLBACK_COVER}
+            src={getSizedImageUrl(track.al.picUrl, 120) || CLOUD_SONG_FALLBACK_COVER}
             alt={track.al.name}
             decoding="async"
             loading="lazy"

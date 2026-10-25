@@ -27,7 +27,7 @@ export function buildDynamicIslandContent(
       key: `line-${snapshot.index}-${line.startTime}`,
       main: line.fullText,
       sub: showTranslation ? (line.translation ?? "") : "",
-      progress: snapshot.fillProgress,
+      progressLine: line,
     };
   }
   const { title, artists } = formatTrack(snapshot);
@@ -50,7 +50,7 @@ export function buildTaskbarLyricItems(
         key: `line-${snapshot.index}-${line.startTime}`,
         role: "primary",
         text: line.fullText,
-        progress: snapshot.fillProgress,
+        progressLine: line,
       },
     ];
     if (!options.doubleLine) return items;

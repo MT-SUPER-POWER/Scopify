@@ -32,7 +32,7 @@ export function CommandWorkspaceRootList({
               <span className="block truncate text-sm font-medium text-white">{item.label}</span>
               <span className="block truncate text-xs text-zinc-500">{item.summary}</span>
             </span>
-            {item.foliaEntry?.action.kind === "group" ? (
+            {item.type === "workspace" || item.foliaEntry?.action.kind === "group" ? (
               <ChevronRight className="size-4 text-zinc-500" />
             ) : null}
             {item.binding ? (

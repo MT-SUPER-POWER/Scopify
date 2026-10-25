@@ -9,6 +9,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { getRadioProgramPlaybackProgress } from "@/lib/radio/programPlaybackProgress";
 import { cn, formatDate, formatDuration, formatPlayCount } from "@/lib/utils";
 import type { RadioProgramRowProps } from "@/types/components/radio";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function RadioProgramRow({
   currentTime,
@@ -59,7 +60,7 @@ export function RadioProgramRow({
               <img
                 width={40}
                 height={40}
-                src={track.al.picUrl}
+                src={getSizedImageUrl(track.al.picUrl, 120)}
                 alt={track.al.name}
                 decoding="async"
                 loading="lazy"

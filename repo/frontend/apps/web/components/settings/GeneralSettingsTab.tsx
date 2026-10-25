@@ -8,10 +8,16 @@ import {
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
 
+import {
+  PLAYBACK_PROGRESS_REFRESH_RATE_LABEL_KEYS,
+  PLAYBACK_PROGRESS_REFRESH_RATES,
+} from "@/constants/performance";
 import { languageLabelKeys } from "@/lib/i18n";
 import { useI18n } from "@/store/module/i18n";
+import { usePerformanceStore } from "@/store/module/performance";
 import { APP_LOCALES, type AppLocale } from "@/types/config";
 import type { GeneralSettingsTabProps } from "@/types/components/settings";
+import type { PlaybackProgressRefreshRate } from "@/types/performance";
 import { AudioDeviceSettingsSection } from "./AudioDeviceSettingsSection";
 import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
@@ -21,6 +27,8 @@ export function GeneralSettingsTab({
   onWebChange,
 }: GeneralSettingsTabProps) {
   const { t } = useI18n();
+  const progressRefreshRate = usePerformanceStore((state) => state.progressRefreshRate);
+  const setProgressRefreshRate = usePerformanceStore((state) => state.setProgressRefreshRate);
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
@@ -41,6 +49,32 @@ export function GeneralSettingsTab({
                   {APP_LOCALES.map((locale) => (
                     <SelectItem key={locale} value={String(locale)}>
                       {t(languageLabelKeys[locale])}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            }
+          />
+          <SettingRow
+            label={t("settings.progressRefreshRate.label")}
+            sublabel={t("settings.progressRefreshRate.sublabel")}
+            control={
+              <Select
+                value={progressRefreshRate}
+                onValueChange={(value) =>
+                  setProgressRefreshRate(value as PlaybackProgressRefreshRate)
+                }
+              >
+                <SelectTrigger
+                  aria-label={t("settings.progressRefreshRate.label")}
+                  className="min-w-30"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {PLAYBACK_PROGRESS_REFRESH_RATES.map((rate) => (
+                    <SelectItem key={rate} value={rate}>
+                      {t(PLAYBACK_PROGRESS_REFRESH_RATE_LABEL_KEYS[rate])}
                     </SelectItem>
                   ))}
                 </SelectContent>

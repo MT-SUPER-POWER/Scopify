@@ -7,13 +7,21 @@ import type { ShortcutBinding, ShortcutCommandId } from "@/types/shortcuts";
 import type { SearchRecentEntry } from "@/types/search";
 
 export type CommandWorkspacePage =
-  "root" | "search" | "queue" | "now-playing" | "settings" | "track-list" | FoliaCommandGroup;
+  | "root"
+  | "search"
+  | "queue"
+  | "now-playing"
+  | "settings"
+  | "dynamic-island"
+  | "track-list"
+  | FoliaCommandGroup;
 export type CommandWorkspaceRootPage = Exclude<CommandWorkspacePage, "root" | "track-list">;
 export type CommandWorkspaceUsageCounts = Partial<Record<CommandWorkspaceRootPage, number>>;
 
 export interface CommandWorkspaceSettingsProps {
   onClose(): void;
   onOpenFolia(group: FoliaCommandGroup): void;
+  onOpenDynamicIsland(): void;
 }
 
 export interface CommandWorkspaceSettingsItem {

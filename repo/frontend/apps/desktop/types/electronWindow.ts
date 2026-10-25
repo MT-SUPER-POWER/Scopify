@@ -8,6 +8,16 @@ export interface DesktopRendererHost {
   verify(): RendererArtifactVerification | null;
 }
 
+export interface MainWindowRenderingTarget {
+  setBackgroundThrottling(allowed: boolean): void;
+}
+
+export interface MainWindowRenderingPolicy {
+  hidden(): void;
+  setKeepAlive(keepAlive: boolean): void;
+  shown(): void;
+}
+
 export interface MainWindowOptions {
   isQuitting(): boolean;
   onBeforeLoad(window: BrowserWindow): void;

@@ -1,15 +1,14 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useSyncExternalStore } from "react";
 import {
-  usePlaybackPositionMs,
   usePlaybackProjection,
   usePlaybackProjectionStore,
 } from "@/hooks/player/usePlaybackProjection";
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
-import { applyLyricOffsetMs, findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
-import { buildLineGraphemeTimeline } from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
+import { applyLyricOffsetMs } from "@/lib/lyrics/timeline";
+import { createCompanionLyricClock } from "@/lib/lyrics/companionLyricClock";
 import { isChineseSubtitleText } from "@/lib/lyrics/subtitleLanguage";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
@@ -18,18 +17,6 @@ import type { LyricChorusRange, LyricData } from "@/types/lyrics";
 export const INTERLUDE_FULL_TEXT = "......";
 const EMPTY_CHORUS_RANGES: LyricChorusRange[] = [];
 const JAPANESE_CHAR_REGEX = /[\p{Script=Hiragana}\p{Script=Katakana}]/u;
-
-const clamp = (value: number) => Math.max(0, Math.min(1, value));
-
-function computeFoliaLineProgress(line: FoliaLine, timeSeconds: number): number[] {
-  const timeline = buildLineGraphemeTimeline(line);
-  return timeline.map((timing) => {
-    if (timeSeconds < timing.startTime) return 0;
-    if (timeSeconds >= timing.endTime) return 1;
-    const duration = timing.endTime - timing.startTime;
-    return duration > 0 ? clamp((timeSeconds - timing.startTime) / duration) : 1;
-  });
-}
 
 function buildInterludeLine(startTime: number, endTime: number): FoliaLine {
   const dotCount = 6;
@@ -47,14 +34,33 @@ function buildInterludeLine(startTime: number, endTime: number): FoliaLine {
   };
 }
 
+function findInterludeBounds(lines: FoliaLine[], timeSeconds: number, durationMs: number) {
+  if (lines.length === 0) return null;
+
+  let prevEndTime = lines[0].startTime;
+  let nextStartTime: number | null = null;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const cur = lines[i];
+    if (cur.startTime <= timeSeconds) {
+      prevEndTime = Math.max(prevEndTime, cur.endTime);
+    } else {
+      nextStartTime = cur.startTime;
+      break;
+    }
+  }
+
+  const endTime = nextStartTime ?? (durationMs ? durationMs / 1_000 : prevEndTime + 10);
+  return { endTime: Math.max(prevEndTime + 0.1, endTime), startTime: prevEndTime };
+}
+
 /**
  * 伴随窗口（桌面歌词、灵动岛、任务栏歌词）共用的当前歌词行：
- * 按播放位置与全局偏移定位 Folia 行，间奏时补一条点点点，并给出逐字填充进度。
+ * 仅在歌词行或间奏区间变化时更新；逐字进度由文本子组件独立订阅。
  */
 export function useCompanionLyricLine() {
   const projection = usePlaybackProjection<LyricData>();
   const playbackStore = usePlaybackProjectionStore();
-  const position = usePlaybackPositionMs();
   const offset = useLyricStageStore((state) => state.lyricOffsetMs);
 
   const rawLyric = projection.lyrics;
@@ -67,43 +73,34 @@ export function useCompanionLyricLine() {
     [chorusRanges, rawLyric],
   );
 
-  const timeMs = applyLyricOffsetMs(position, offset);
-  const timeSeconds = timeMs / 1_000;
   const lines = useMemo(() => foliaLyrics?.lines ?? [], [foliaLyrics]);
-  const index = foliaLyrics ? findLatestActiveFoliaLineIndex(lines, timeSeconds) : -1;
+  const clock = useMemo(
+    () => createCompanionLyricClock(playbackStore, lines, offset),
+    [playbackStore, lines, offset],
+  );
+  const cursor = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
+  const index = cursor >= 0 ? cursor : -1;
   const line = index >= 0 ? lines[index] : null;
 
   const isInterludeLine = line?.fullText === INTERLUDE_FULL_TEXT;
-  const isBetweenLinesInterlude =
-    lines.length > 0 && line === null && timeSeconds >= lines[0].startTime;
+  const isBetweenLinesInterlude = cursor < -1;
   const isInterlude = isInterludeLine || isBetweenLinesInterlude;
 
-  const activeLine = useMemo(() => {
-    if (line) return line;
-    if (!isBetweenLinesInterlude || lines.length === 0) return null;
-
-    let prevEndTime = lines[0].startTime;
-    let nextStartTime: number | null = null;
-
-    for (let i = 0; i < lines.length; i += 1) {
-      const cur = lines[i];
-      if (cur.startTime <= timeSeconds) {
-        prevEndTime = Math.max(prevEndTime, cur.endTime);
-      } else {
-        nextStartTime = cur.startTime;
-        break;
-      }
-    }
-
-    const interludeStartTime = prevEndTime;
-    const interludeEndTime =
-      nextStartTime ?? (projection.durationMs ? projection.durationMs / 1_000 : prevEndTime + 10);
-
-    return buildInterludeLine(
-      interludeStartTime,
-      Math.max(interludeStartTime + 0.1, interludeEndTime),
-    );
-  }, [line, isBetweenLinesInterlude, lines, timeSeconds, projection.durationMs]);
+  const interludeBounds =
+    !line && isBetweenLinesInterlude
+      ? findInterludeBounds(lines, lines[-cursor - 2].startTime, projection.durationMs)
+      : null;
+  const interludeStartTime = interludeBounds?.startTime ?? null;
+  const interludeEndTime = interludeBounds?.endTime ?? null;
+  // Keyed on the bounds rather than the clock so the interlude line keeps its identity per frame.
+  const interludeLine = useMemo(
+    () =>
+      interludeStartTime === null || interludeEndTime === null
+        ? null
+        : buildInterludeLine(interludeStartTime, interludeEndTime),
+    [interludeEndTime, interludeStartTime],
+  );
+  const activeLine = line ?? interludeLine;
 
   const displaySource =
     activeLine?.fullText || (isInterlude ? INTERLUDE_FULL_TEXT : (projection.track?.title ?? ""));
@@ -118,13 +115,25 @@ export function useCompanionLyricLine() {
       position: activeLine
         ? Math.max(
             0,
-            applyLyricOffsetMs(playbackStore.samplePositionMs(), offset) -
+            applyLyricOffsetMs(
+              projection.connection === "connected"
+                ? playbackStore.samplePositionMs()
+                : projection.positionMs,
+              offset,
+            ) -
               activeLine.startTime * 1_000,
           )
         : 0,
       startedAt: projection.isPlaying ? performance.now() : null,
     }),
-    [activeLine, projection.isPlaying, playbackStore, offset],
+    [
+      activeLine,
+      projection.connection,
+      projection.isPlaying,
+      projection.positionMs,
+      playbackStore,
+      offset,
+    ],
   );
 
   useEffect(() => {
@@ -161,6 +170,5 @@ export function useCompanionLyricLine() {
     lineDurationMs: activeLine
       ? Math.max(0, (activeLine.endTime - activeLine.startTime) * 1_000)
       : 0,
-    fillProgress: activeLine ? computeFoliaLineProgress(activeLine, timeSeconds) : undefined,
   };
 }

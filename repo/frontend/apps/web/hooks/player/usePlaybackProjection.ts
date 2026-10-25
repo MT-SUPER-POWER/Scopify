@@ -3,6 +3,8 @@
 import { useContext, useEffect, useState, useSyncExternalStore } from "react";
 
 import { PlaybackProjectionContext } from "@/components/player/PlaybackProjectionProvider";
+import { PLAYBACK_PROGRESS_SAMPLE_INTERVAL_MS } from "@/constants/performance";
+import { usePerformanceStore } from "@/store/module/performance";
 import type { PlaybackProjectionExternalStore } from "@/types/playbackTransport";
 
 export function usePlaybackProjection<TLyrics = unknown>() {
@@ -11,27 +13,41 @@ export function usePlaybackProjection<TLyrics = unknown>() {
 }
 
 /** Samples the Replica clock locally; callers never supply wall time or protocol metadata. */
-export function usePlaybackPosition(): number {
+export function usePlaybackPosition(enabled = true): number {
   const store = usePlaybackProjectionStore();
   const projection = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   const [positionMs, setPositionMs] = useState(projection.positionMs);
+  const sampleIntervalMs = usePerformanceStore(
+    (state) => PLAYBACK_PROGRESS_SAMPLE_INTERVAL_MS[state.progressRefreshRate],
+  );
 
   useEffect(() => {
     setPositionMs(store.samplePositionMs());
-    if (projection.connection !== "connected" || !projection.isPlaying) return;
+    if (!enabled || projection.connection !== "connected" || !projection.isPlaying) return;
 
+    let lastSampledAt = Number.NEGATIVE_INFINITY;
     let animationFrame = requestAnimationFrame(samplePosition);
 
-    function samplePosition() {
-      const nextPositionMs = store.samplePositionMs();
-      setPositionMs((currentPositionMs) =>
-        currentPositionMs === nextPositionMs ? currentPositionMs : nextPositionMs,
-      );
+    function samplePosition(frameTime: number) {
+      if (frameTime - lastSampledAt >= sampleIntervalMs) {
+        lastSampledAt = frameTime;
+        const nextPositionMs = store.samplePositionMs();
+        setPositionMs((currentPositionMs) =>
+          currentPositionMs === nextPositionMs ? currentPositionMs : nextPositionMs,
+        );
+      }
       animationFrame = requestAnimationFrame(samplePosition);
     }
 
     return () => cancelAnimationFrame(animationFrame);
-  }, [projection.connection, projection.isPlaying, projection.positionMs, store]);
+  }, [
+    enabled,
+    projection.connection,
+    projection.isPlaying,
+    projection.positionMs,
+    sampleIntervalMs,
+    store,
+  ]);
 
   return positionMs;
 }

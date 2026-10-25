@@ -38,6 +38,7 @@ import {
 } from "@main/window/dynamicIsland";
 import { getTaskbarLyricWindow, initializeTaskbarLyricCompanion } from "@main/window/taskbarLyric";
 import { initializeLoginWindow } from "@main/window/login";
+import { keepMainWindowRendering } from "@main/window/mainWindow";
 import { getTrayWindow, initTray, trayWindow } from "@main/window/tray";
 import { initMacTray } from "@main/window/macTray";
 
@@ -52,6 +53,7 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
   let taskbarProgress: TaskbarProgressService | null = null;
   let mcpRuntime: McpRuntime | null = null;
   let audioFeatureBroker: ReturnType<typeof initializeAudioFeatureBrokerIpc> | null = null;
+  let stopWallpaperRenderingSync: (() => void) | null = null;
 
   function attach(window: BrowserWindow) {
     wallpaperDriver ??= createElectronDesktopPlaybackWallpaperDriver({
@@ -96,6 +98,12 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
       driver: wallpaperDriver,
       getControllerWindow: controllerWindow.getWindow,
     });
+    // The wallpaper driver hides the main window and waits on its rAF before attaching it,
+    // so an enabled wallpaper must keep the hidden window drawing frames.
+    stopWallpaperRenderingSync?.();
+    stopWallpaperRenderingSync = wallpaperService.subscribe((model) =>
+      keepMainWindowRendering(window, model.preferences.enabled),
+    );
     playbackBrokerIpc ??= bindPlaybackBrokerIpc(playbackBroker, {
       getAuthorityWindow: options.getMainWindow,
       getReplicaWindows: () => [
@@ -147,6 +155,8 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
   return {
     attach,
     async dispose() {
+      stopWallpaperRenderingSync?.();
+      stopWallpaperRenderingSync = null;
       await wallpaperService?.dispose();
       wallpaperDriver = null;
       playbackBrokerIpc?.dispose();

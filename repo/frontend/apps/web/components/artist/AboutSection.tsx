@@ -6,6 +6,7 @@ import { BadgeCheck, X } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { ArtistInfo } from "@/types/artist";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 interface Props {
   artist: ArtistInfo;
@@ -36,7 +37,9 @@ export function AboutSection({ artist }: Props) {
         {/* Hero Cover Header */}
         <div
           className="relative h-48 w-full shrink-0 bg-cover bg-center sm:h-56"
-          style={{ backgroundImage: `url(${artist.headerImageUrl || artist.avatar})` }}
+          style={{
+            backgroundImage: `url(${getSizedImageUrl(artist.headerImageUrl || artist.avatar, 1000)})`,
+          }}
         >
           <div className="absolute inset-0 bg-linear-to-t from-surface-elevated via-surface-elevated/60 to-transparent" />
 
@@ -44,7 +47,7 @@ export function AboutSection({ artist }: Props) {
           <div className="absolute inset-x-0 bottom-0 flex items-end gap-4 p-6">
             <div
               className="size-20 shrink-0 rounded-full border-2 border-surface-elevated bg-cover bg-center shadow-xl sm:size-24"
-              style={{ backgroundImage: `url(${artist.avatar})` }}
+              style={{ backgroundImage: `url(${getSizedImageUrl(artist.avatar, 300)})` }}
             />
             <div className="flex flex-col gap-1 pb-1">
               {artist.isVerified && (
@@ -87,7 +90,7 @@ export function AboutSection({ artist }: Props) {
         >
           <div
             className="h-64 w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-            style={{ backgroundImage: `url(${artist.avatar})` }}
+            style={{ backgroundImage: `url(${getSizedImageUrl(artist.avatar, 800)})` }}
           />
           <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-overlay via-overlay/50 to-transparent p-5">
             <p className="mb-2 font-bold text-overlay-foreground">

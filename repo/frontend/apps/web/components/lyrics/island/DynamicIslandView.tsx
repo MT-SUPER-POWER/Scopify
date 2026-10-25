@@ -107,7 +107,7 @@ function DynamicIsland() {
               className="overflow-hidden leading-tight font-medium"
               style={{ fontSize: metrics.fontSize }}
             >
-              <CompanionLyricText text={shown.main} progress={shown.progress} />
+              <CompanionLyricText text={shown.main} progressLine={shown.progressLine} />
             </p>
             {shown.sub && (
               <p

@@ -1,9 +1,12 @@
 import { app, BrowserWindow } from "electron";
-import type { MainWindowOptions } from "@/types/electronWindow";
+import type { MainWindowOptions, MainWindowRenderingPolicy } from "@/types/electronWindow";
 import { __iconWindow, __preloadScript } from "@main/constants";
 import { loadDesktopHostConfig } from "@main/store";
 import { rendererLog } from "@main/utils/logger";
 import { showAppCloseWindow } from "@main/window/appCloseWindow";
+import { createMainWindowRenderingPolicy } from "@main/window/mainWindowRendering";
+
+const renderingPolicies = new WeakMap<BrowserWindow, MainWindowRenderingPolicy>();
 
 /** Create the main window and keep all BrowserWindow-specific policy local to this module. */
 export function createMainWindow(options: MainWindowOptions) {
@@ -30,6 +33,12 @@ export function createMainWindow(options: MainWindowOptions) {
       webgl: true,
     },
   });
+  const rendering = createMainWindowRenderingPolicy({
+    setBackgroundThrottling: (allowed) => {
+      if (!window.webContents.isDestroyed()) window.webContents.setBackgroundThrottling(allowed);
+    },
+  });
+  renderingPolicies.set(window, rendering);
 
   // Playback transports must be registered before loading the Renderer Authority.
   options.onBeforeLoad(window);
@@ -52,8 +61,14 @@ export function createMainWindow(options: MainWindowOptions) {
   });
 
   const publishVisibility = () => notifyMainWindowVisibility(window);
-  window.on("show", publishVisibility);
-  window.on("hide", publishVisibility);
+  window.on("show", () => {
+    rendering.shown();
+    publishVisibility();
+  });
+  window.on("hide", () => {
+    rendering.hidden();
+    publishVisibility();
+  });
   window.on("minimize", publishVisibility);
   window.on("restore", publishVisibility);
   window.on("close", (event) => {
@@ -77,6 +92,11 @@ export function createMainWindow(options: MainWindowOptions) {
     .load(window)
     .catch((error) => rendererLog.error("[renderer] failed to load main window", error));
   return window;
+}
+
+/** Keeps a hidden main window drawing frames while it hosts, or is becoming, the desktop wallpaper. */
+export function keepMainWindowRendering(window: BrowserWindow, keepAlive: boolean) {
+  renderingPolicies.get(window)?.setKeepAlive(keepAlive);
 }
 
 export function notifyMainWindowVisibility(window: BrowserWindow) {

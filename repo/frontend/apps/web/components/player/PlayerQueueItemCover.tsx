@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { useI18n } from "@/store/module/i18n";
 import type { PlayerQueueItemCoverProps } from "@/types/components/player";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function PlayerQueueItemCover({
   index,
@@ -29,7 +30,7 @@ export function PlayerQueueItemCover({
       <div className="group/cover relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded">
         <Image
           draggable={false}
-          src={song.al.picUrl}
+          src={getSizedImageUrl(song.al.picUrl, 120)}
           alt={song.name}
           className={cn(
             "size-full object-cover transition-opacity",

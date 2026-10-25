@@ -1,3 +1,5 @@
+import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
+
 export type {
   DynamicIslandCommand,
   DynamicIslandMode,
@@ -24,6 +26,6 @@ export interface DynamicIslandContent {
   key: string;
   main: string;
   sub: string;
-  /** 逐字填充进度，仅歌词行有。 */
-  progress?: number[];
+  /** 保留展示行身份，收缩期间仍由文本组件采样旧行进度。 */
+  progressLine?: FoliaLine;
 }

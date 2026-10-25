@@ -7,6 +7,7 @@ import { useSimilarSongPlayback } from "@/hooks/song/useSimilarSongPlayback";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { SimilarSongRowProps } from "@/types/components/similarSongs";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function SimilarSongRow({ song, songs }: SimilarSongRowProps) {
   const { t } = useI18n();
@@ -30,7 +31,11 @@ export function SimilarSongRow({ song, songs }: SimilarSongRowProps) {
           className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted"
         >
           {song.al.picUrl ? (
-            <img src={song.al.picUrl} alt="" className="size-full object-cover" />
+            <img
+              src={getSizedImageUrl(song.al.picUrl, 120)}
+              alt=""
+              className="size-full object-cover"
+            />
           ) : (
             <Music2 className="size-5" />
           )}
