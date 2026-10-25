@@ -25,6 +25,7 @@ export type ShortcutCommandId =
   | "open-folia-settings"
   | "open-folia-theme-library"
   | "toggle-sidebar"
+  | "toggle-now-playing-panel"
   | "open-shortcut-settings"
   | "toggle-queue"
   | "toggle-audio-settings"

@@ -42,6 +42,7 @@ import { WhatsNewModal } from "@/components/updates/WhatsNewModal";
 // self components
 import MainLayoutSkeleton from "./Skeleton";
 import { Sidebar } from "@/components/Siderbar";
+import { NowPlayingCollapsedRail } from "@/components/nowPlaying/NowPlayingCollapsedRail";
 import { NowPlayingPanel } from "@/components/nowPlaying/NowPlayingPanel";
 
 // The wallpaper renderer brings the entire Folia visualizer graph into the
@@ -206,13 +207,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       </div>
 
       {/* 三栏结构 */}
-      <main className="relative min-h-0 w-full flex-1">
+      <main className="relative flex min-h-0 w-full flex-1">
         {isMounted ? (
           <ResizablePanelGroup
             orientation="horizontal"
             defaultLayout={defaultLayout}
             onLayoutChanged={onLayoutChanged}
-            className="size-full"
+            className="h-full min-w-0 flex-1"
           >
             <ResizablePanel
               id={DASHBOARD_PANEL_IDS.sidebar}
@@ -269,6 +270,11 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               <div className="size-full overflow-hidden">{children}</div>
             </div>
           </div>
+        )}
+
+        {/* 面板关闭后保留窄条，点击即可展开 */}
+        {isMounted && nowPlayingPanel.canShow && !nowPlayingPanel.isOpen && (
+          <NowPlayingCollapsedRail />
         )}
       </main>
 

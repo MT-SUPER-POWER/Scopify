@@ -21905,6 +21905,12 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.toggleSidebar", params?: TranslationParams): string;
   /**
+   * zh-CN: 显示/隐藏正在播放面板
+   * zh-TW: 顯示/隱藏正在播放面板
+   * en-US: Show/Hide Now Playing View
+   */
+  (key: "shortcuts.command.toggleNowPlayingPanel", params?: TranslationParams): string;
+  /**
    * zh-CN: 打开/关闭播放队列
    * zh-TW: 開啟/關閉播放佇列
    * en-US: Open/Close Queue

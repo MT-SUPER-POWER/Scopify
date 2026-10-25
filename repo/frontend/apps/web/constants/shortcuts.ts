@@ -135,6 +135,13 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyB", primary: true },
   },
   {
+    id: "toggle-now-playing-panel",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleNowPlayingPanel",
+    keywords: "正在播放 右栏 右側 now playing panel 显示 隐藏",
+    defaultBinding: { key: "KeyB", primary: true, alt: true },
+  },
+  {
     id: "toggle-queue",
     group: "interface",
     labelKey: "shortcuts.command.toggleQueue",

@@ -1,6 +1,7 @@
 "use client";
 
 import { PanelRight } from "lucide-react";
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
@@ -36,7 +37,7 @@ export function NowPlayingPanelButton() {
           </button>
         </TooltipTrigger>
         <TooltipContent side="top" sideOffset={8}>
-          {label}
+          <ShortcutHint commandId="toggle-now-playing-panel" label={label} />
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

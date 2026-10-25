@@ -123,6 +123,9 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
         case "toggle-sidebar":
           ui.toggleSidebar();
           return;
+        case "toggle-now-playing-panel":
+          ui.toggleNowPlayingPanel();
+          return;
         case "toggle-queue":
           ui.toggleQueue();
           return;
