@@ -12,7 +12,7 @@ export function LoadingHeaderSkeleton() {
     <div
       className={cn(
         headerStyles.root,
-        "relative flex h-14 shrink-0 items-center justify-between gap-3 [-webkit-app-region:drag]",
+        "relative flex h-12 shrink-0 items-center justify-between gap-3 [-webkit-app-region:drag]",
       )}
     >
       <div className="flex items-center gap-2">
@@ -22,13 +22,13 @@ export function LoadingHeaderSkeleton() {
         <Skeleton className="hidden size-8 rounded-full bg-skeleton @max-[560px]:hidden! [html[data-boot-desktop=true]_&]:block" />
       </div>
       <div className={headerStyles.center}>
-        <Skeleton className="size-12 shrink-0 rounded-full bg-skeleton" />
-        <Skeleton className="h-12 flex-1 rounded-full bg-skeleton" />
+        <Skeleton className="size-11 shrink-0 rounded-full bg-skeleton" />
+        <Skeleton className="h-11 flex-1 rounded-full bg-skeleton" />
       </div>
       <div className="flex items-center justify-end gap-2">
-        <Skeleton className="size-10 rounded-full bg-skeleton" />
-        <Skeleton className="size-10 rounded-full bg-skeleton" />
-        <Skeleton className="size-12 rounded-full bg-skeleton" />
+        <Skeleton className="size-9 rounded-full bg-skeleton" />
+        <Skeleton className="size-9 rounded-full bg-skeleton" />
+        <Skeleton className="size-9 rounded-full bg-skeleton" />
       </div>
     </div>
   );

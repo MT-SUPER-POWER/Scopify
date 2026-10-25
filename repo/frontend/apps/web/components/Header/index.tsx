@@ -26,7 +26,7 @@ export function Header() {
     <header
       className={cn(
         headerStyles.root,
-        "relative flex h-14 w-full shrink-0 items-center justify-between gap-3",
+        "relative flex h-12 w-full shrink-0 items-center justify-between gap-3",
       )}
     >
       {/* 左侧品牌与导航箭头 */}

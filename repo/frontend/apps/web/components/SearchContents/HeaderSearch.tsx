@@ -195,7 +195,7 @@ export default function HeaderSearch() {
       {/* ── 搜索输入框 ── */}
       <div
         className={cn(
-          "group relative flex h-12 items-center gap-3 px-5 transition-all duration-200",
+          "group relative flex h-11 items-center gap-3 px-5 transition-all duration-200",
           !focused && !dropdownVisible && `${NAV_BTN} rounded-full border border-transparent`,
           (focused || dropdownVisible) && GLASS,
           dropdownVisible
