@@ -16,6 +16,13 @@ export const headerStyles = {
     "pr-[max(0.5rem,calc(100vw_-_env(titlebar-area-x,0px)_-_env(titlebar-area-width,100vw)))]",
   ),
 
+  /**
+   * 中间区域：绝对定位到顶栏边框盒中线（顶栏在窗口内左右对称），因而始终位于窗口正中；
+   * 宽度上限留出两侧品牌与操作区的空间，最窄窗口下也不重叠。
+   */
+  center:
+    "absolute top-1/2 left-1/2 flex w-[min(36rem,38cqw)] min-w-0 -translate-1/2 items-center justify-center gap-2",
+
   /** 顶栏整体是窗口拖拽区，可交互的分组需显式取消拖拽 */
   noDrag: "[-webkit-app-region:no-drag]",
 

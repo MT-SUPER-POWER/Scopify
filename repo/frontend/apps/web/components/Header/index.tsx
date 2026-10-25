@@ -27,7 +27,7 @@ export function Header() {
     <header
       className={cn(
         headerStyles.root,
-        "grid h-12 w-full shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3",
+        "relative flex h-12 w-full shrink-0 items-center justify-between gap-3",
       )}
     >
       {/* 左侧品牌与导航箭头 */}
@@ -60,14 +60,8 @@ export function Header() {
         )}
       </div>
 
-      {/* 中间首页按钮与搜索 */}
-      <div
-        className={cn(
-          headerStyles.search,
-          headerStyles.noDrag,
-          "flex w-[min(36rem,44cqw)] min-w-0 items-center justify-center gap-2",
-        )}
-      >
+      {/* 中间首页按钮与搜索：相对整个窗口居中，不受两侧为窗口按钮让出的不对称内边距影响 */}
+      <div className={cn(headerStyles.search, headerStyles.noDrag, headerStyles.center)}>
         <HeaderHomeButton />
         <HeaderSearch />
       </div>

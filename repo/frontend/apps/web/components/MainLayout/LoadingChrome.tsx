@@ -8,13 +8,13 @@ import { cn } from "@/lib/utils";
 import { headerStyles } from "@/styles";
 import { NOW_PLAYING_PANEL_MAX_WIDTH, NOW_PLAYING_PANEL_MIN_WIDTH } from "@/constants/layout";
 
-/** Mirrors components/Header: brand + history on the left, home + search centered, actions right. */
+/** Mirrors components/Header: brand + history on the left, home + search centered on the window, actions right. */
 export function LoadingHeaderSkeleton() {
   return (
     <div
       className={cn(
         headerStyles.root,
-        "grid h-12 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 [-webkit-app-region:drag]",
+        "relative flex h-12 shrink-0 items-center justify-between gap-3 [-webkit-app-region:drag]",
       )}
     >
       <div className="flex items-center gap-2">
@@ -22,7 +22,7 @@ export function LoadingHeaderSkeleton() {
         <Skeleton className="size-8 rounded-full bg-skeleton" />
         <Skeleton className="size-8 rounded-full bg-skeleton @max-[560px]:hidden" />
       </div>
-      <div className="flex w-[min(36rem,44cqw)] items-center gap-2">
+      <div className={headerStyles.center}>
         <Skeleton className="size-11 shrink-0 rounded-full bg-skeleton" />
         <Skeleton className="h-11 flex-1 rounded-full bg-skeleton" />
       </div>
