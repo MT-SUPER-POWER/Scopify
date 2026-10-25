@@ -1,11 +1,11 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, List } from "lucide-react";
+import { List } from "lucide-react";
 import RightActions from "./RightActions";
+import { HeaderHistoryNav } from "./HeaderHistoryNav";
 import { HeaderHomeButton } from "./HeaderHomeButton";
 import HeaderSearch from "@/components/SearchContents/HeaderSearch";
 import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useLatticeView } from "@/store/module/lattice";
@@ -16,10 +16,9 @@ const NAV_BTN = cn(
   "bg-surface-sunken/80 text-content-muted transition-all hover:bg-surface-elevated hover:text-content",
 );
 
-/** 横跨整个窗口的顶栏：左侧品牌与历史导航，中间首页与搜索，右侧通知/私信/头像。 */
+/** 横跨整个窗口的顶栏：左侧品牌与历史导航（仅桌面端），中间首页与搜索，右侧通知/私信/头像。 */
 export function Header() {
   const { t } = useI18n();
-  const smartRouter = useSmartRouter();
   const latticeActive = useLatticeView((state) => state.active);
   const latticeController = useLatticeView((state) => state.controller);
 
@@ -33,20 +32,7 @@ export function Header() {
       {/* 左侧品牌与导航箭头 */}
       <div className={cn(headerStyles.history, "flex min-w-0 items-center gap-2")}>
         <ScopifyBrand priority className="mx-2 min-w-0" wordmarkClassName={headerStyles.wordmark} />
-        <button
-          type="button"
-          onClick={() => smartRouter.back()}
-          className={cn(headerStyles.noDrag, NAV_BTN)}
-        >
-          <ChevronLeft className="size-5" />
-        </button>
-        <button
-          type="button"
-          onClick={() => smartRouter.forward()}
-          className={cn(headerStyles.noDrag, headerStyles.forward, NAV_BTN)}
-        >
-          <ChevronRight className="size-5" />
-        </button>
+        <HeaderHistoryNav />
         {latticeActive && latticeController && (
           <button
             type="button"

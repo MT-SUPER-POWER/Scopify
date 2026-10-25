@@ -135,6 +135,20 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyB", primary: true },
   },
   {
+    id: "navigate-back",
+    group: "interface",
+    labelKey: "shortcuts.command.navigateBack",
+    keywords: "后退 後退 返回 back history",
+    defaultBinding: { key: "KeyH", alt: true, shift: true },
+  },
+  {
+    id: "navigate-forward",
+    group: "interface",
+    labelKey: "shortcuts.command.navigateForward",
+    keywords: "前进 前進 forward history",
+    defaultBinding: { key: "KeyL", alt: true, shift: true },
+  },
+  {
     id: "toggle-now-playing-panel",
     group: "interface",
     labelKey: "shortcuts.command.toggleNowPlayingPanel",

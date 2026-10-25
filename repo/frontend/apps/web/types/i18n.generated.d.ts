@@ -21911,6 +21911,18 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.toggleNowPlayingPanel", params?: TranslationParams): string;
   /**
+   * zh-CN: 后退
+   * zh-TW: 後退
+   * en-US: Go Back
+   */
+  (key: "shortcuts.command.navigateBack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 前进
+   * zh-TW: 前進
+   * en-US: Go Forward
+   */
+  (key: "shortcuts.command.navigateForward", params?: TranslationParams): string;
+  /**
    * zh-CN: 打开/关闭播放队列
    * zh-TW: 開啟/關閉播放佇列
    * en-US: Open/Close Queue

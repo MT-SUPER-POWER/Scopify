@@ -5,6 +5,7 @@ import {
   SIDEBAR_COLLAPSED_WIDTH,
 } from "@/constants/layout";
 import { PLAYER_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
+import { DESKTOP_RUNTIME_PROBE_EXPRESSION } from "@/lib/runtime";
 import { MUSIC_SESSION_STORAGE_KEY } from "@/lib/web/musicSessionCredential";
 
 const UI_STORAGE_KEY = "ui-storage";
@@ -17,6 +18,7 @@ const UI_STORAGE_KEY = "ui-storage";
  * - `data-boot-now-playing`：右栏形态 panel / rail / none
  * - `--boot-now-playing-width`：右栏展开时的宽度
  * - `data-boot-session`：是否已登录（决定是否显示歌单骨架）
+ * - `data-boot-desktop`：是否运行在桌面端（preload 早于页面脚本注入桥接对象）
  */
 export function createLayoutBootScript() {
   const config = JSON.stringify({
@@ -40,6 +42,7 @@ var sidebar=ui.isCollapsed?c.collapsedWidth+"px":layout[c.ids.sidebar]>0?layout[
 if(sidebar)d.style.setProperty("--boot-sidebar-width",sidebar);
 if(np==="panel"&&layout[c.ids.nowPlaying]>0)d.style.setProperty("--boot-now-playing-width",layout[c.ids.nowPlaying]+"%");
 d.setAttribute("data-boot-now-playing",np);
+if(${DESKTOP_RUNTIME_PROBE_EXPRESSION})d.setAttribute("data-boot-desktop","true");
 if((s.getItem(c.sessionKey)||"").trim())d.setAttribute("data-boot-session","true");
 }catch(e){}})(${config});`;
 }

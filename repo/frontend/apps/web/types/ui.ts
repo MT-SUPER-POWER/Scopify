@@ -1,3 +1,9 @@
+/** Whether the window history can move back / forward from the current entry. */
+export interface HistoryNavigationState {
+  canGoBack: boolean;
+  canGoForward: boolean;
+}
+
 export interface UiStore {
   isSearchOpen: boolean;
   setIsSearchOpen: (open: boolean) => void;

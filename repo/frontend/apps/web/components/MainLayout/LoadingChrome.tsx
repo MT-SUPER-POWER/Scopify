@@ -17,8 +17,9 @@ export function LoadingHeaderSkeleton() {
     >
       <div className="flex items-center gap-2">
         <ScopifyBrand priority className="mx-2 min-w-0" wordmarkClassName={headerStyles.wordmark} />
-        <Skeleton className="size-8 rounded-full bg-skeleton" />
-        <Skeleton className="size-8 rounded-full bg-skeleton @max-[560px]:hidden" />
+        {/* 前进/后退仅桌面端提供 */}
+        <Skeleton className="hidden size-8 rounded-full bg-skeleton [html[data-boot-desktop=true]_&]:block" />
+        <Skeleton className="hidden size-8 rounded-full bg-skeleton @max-[560px]:hidden! [html[data-boot-desktop=true]_&]:block" />
       </div>
       <div className={headerStyles.center}>
         <Skeleton className="size-11 shrink-0 rounded-full bg-skeleton" />
