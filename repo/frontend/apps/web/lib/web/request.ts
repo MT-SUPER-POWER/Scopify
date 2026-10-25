@@ -164,7 +164,7 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRe
 
   const networkConfig = getNetworkConfig();
   config.baseURL = baseURL;
-  config.timeout = networkConfig.timeout;
+  config.timeout = config.transferTimeout ?? networkConfig.timeout;
   config.traceId ??= createRequestTraceId();
 
   const credential = getMusicSessionCredential();

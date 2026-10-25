@@ -46,4 +46,6 @@ export interface ScopifyRequestConfig<D = unknown> extends AxiosRequestConfig<D>
   requiresMusicSession?: boolean;
   /** Correlates retries, transport failures, Query failures and action failures. */
   traceId?: string;
+  /** Replaces the user network timeout for long transfers such as file uploads. */
+  transferTimeout?: number;
 }
