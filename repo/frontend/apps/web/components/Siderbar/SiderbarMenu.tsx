@@ -210,16 +210,16 @@ function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
                 <span>{t("sidebar.menu.collapse")}</span>
               </DropdownMenuItem>
             )}
+            <DropdownMenuItem onSelect={() => useUpdatesStore.getState().open()}>
+              <Sparkles className="mr-2 size-5" />
+              <span>{t("updates.title")}</span>
+            </DropdownMenuItem>
           </DropdownMenuGroup>
 
-          {/* Group -- Playlist Function */}
-          <DropdownMenuItem onSelect={() => useUpdatesStore.getState().open()}>
-            <Sparkles className="mr-2 size-5" />
-            <span>{t("updates.title")}</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          {/* Group -- Playlist Function；未登录时整组不渲染，分隔线随组一起隐藏 */}
           {isLoggedIn && (
             <DropdownMenuGroup className="">
+              <DropdownMenuSeparator />
               <DropdownMenuLabel className="dropdown-menu-label-momo mt-1">
                 {t("sidebar.menu.playlistTitle")}
               </DropdownMenuLabel>
