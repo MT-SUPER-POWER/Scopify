@@ -46,6 +46,7 @@ export function useCommandWorkspaceRoot({
           ...COMMAND_WORKSPACE_ROOT_PAGES.map((command) => ({
             ...command,
             type: "workspace" as const,
+            keywords: "",
             usageCount: commandWorkspaceUsageCounts[command.page] ?? 0,
           })),
           ...commands
@@ -64,6 +65,7 @@ export function useCommandWorkspaceRoot({
               binding: command.binding,
               id: command.id,
               label: t(command.labelKey),
+              keywords: command.keywords ?? "",
               summary: "快捷操作",
               type: "shortcut" as const,
               usageCount: usageCounts[command.id] ?? 0,
@@ -73,7 +75,7 @@ export function useCommandWorkspaceRoot({
       ).filter((command) =>
         (command.id === "open-whats-new"
           ? `${command.label} what's new whats new changelog 更新日志 新鲜事`
-          : command.label
+          : `${command.label} ${command.keywords}`
         )
           .toLocaleLowerCase()
           .includes(query.trim().toLocaleLowerCase()),

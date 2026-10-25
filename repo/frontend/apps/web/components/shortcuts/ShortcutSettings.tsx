@@ -34,7 +34,10 @@ export function ShortcutSettings() {
         commands: commands.filter((command) => {
           if (command.group !== group) return false;
           return (
-            !normalizedQuery || t(command.labelKey).toLocaleLowerCase().includes(normalizedQuery)
+            !normalizedQuery ||
+            `${t(command.labelKey)} ${command.keywords ?? ""}`
+              .toLocaleLowerCase()
+              .includes(normalizedQuery)
           );
         }),
       })).filter(({ commands: groupedCommands }) => groupedCommands.length > 0),

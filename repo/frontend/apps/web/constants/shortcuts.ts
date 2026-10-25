@@ -7,6 +7,20 @@ import type {
 
 export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
   {
+    id: "toggle-dynamic-island",
+    group: "interface",
+    labelKey: "dynamicIsland.title",
+    keywords: "灵动岛 靈動島 dynamic island 显示 隐藏 开启 关闭",
+    defaultBinding: null,
+  },
+  {
+    id: "toggle-taskbar-lyric",
+    group: "interface",
+    labelKey: "taskbarLyric.title",
+    keywords: "任务栏歌词 任務欄歌詞 taskbar dock 歌词 显示 隐藏 开启 关闭",
+    defaultBinding: null,
+  },
+  {
     id: "open-whats-new",
     group: "interface",
     labelKey: "updates.title",

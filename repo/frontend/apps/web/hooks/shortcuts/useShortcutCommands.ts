@@ -59,6 +59,12 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
         void commands.seek(targetPositionMs);
       };
       switch (commandId) {
+        case "toggle-dynamic-island":
+          if (runtime.isDesktop) void runtime.dynamicIsland.toggle();
+          return;
+        case "toggle-taskbar-lyric":
+          if (runtime.isDesktop) void runtime.taskbarLyric.toggle();
+          return;
         case "open-whats-new":
           useUpdatesStore.getState().open();
           return;

@@ -26,6 +26,8 @@ export type ShortcutCommandId =
   | "toggle-audio-output-device"
   | "toggle-subtitle-controls"
   | "toggle-desktop-subtitle"
+  | "toggle-dynamic-island"
+  | "toggle-taskbar-lyric"
   | "toggle-desktop-controller"
   | "toggle-desktop-music-mode"
   | "show-shortcut-help"
@@ -54,6 +56,7 @@ export interface ShortcutCommandDefinition {
   id: ShortcutCommandId;
   group: ShortcutGroup;
   labelKey: TranslationKey;
+  keywords?: string;
   /** `null` leaves the command unassigned until the user records a binding. */
   defaultBinding: ShortcutBinding | null;
   scope?: ShortcutScope;
