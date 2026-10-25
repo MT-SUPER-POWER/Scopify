@@ -32,7 +32,7 @@ function render(
     const spectrum = new Uint8Array(BINS);
     for (let bin = 0; bin < BINS; bin++) spectrum[bin] = floor + Math.round((next() - 0.5) * 12);
     const age = Math.min(...hits.map((hit) => (time >= hit ? time - hit : Infinity)));
-    const energy = hold && age !== Infinity ? 1 : age < 0.1 ? 0.6 ** (age / DT) : 0;
+    const energy = hold && age !== Infinity ? 1 : age < 0.1 ? 0.6 ** (age * 60) : 0;
     for (let bin = bins[0]; bin < bins[1]; bin++)
       spectrum[bin] = Math.round(spectrum[bin] + (peak - floor) * energy);
     frames.push(spectrum);
@@ -58,6 +58,16 @@ describe("RhineBeatDetector", () => {
     expect(onsets.map((onset) => onset.band)).toEqual(hits.map(() => 0));
     onsets.forEach((onset, index) => expect(Math.abs(onset.time - hits[index])).toBeLessThan(0.05));
     for (const onset of onsets) expect(onset.strength).toBeGreaterThanOrEqual(0.4);
+  });
+
+  it("hears soft kicks between accented ones", () => {
+    // The same noise seed renders both, so merging keeps one noise floor.
+    const strong = render(8, { hits: [1, 2, 3, 4, 5, 6, 7], peak: 200 });
+    const soft = render(8, { hits: [1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5], peak: 140 });
+    const merged = strong.map((frame, index) =>
+      frame.map((value, bin) => Math.max(value, soft[index][bin])),
+    );
+    expect(detect(merged).filter((onset) => onset.band === 0)).toHaveLength(14);
   });
 
   it("stays silent on steady noise", () => {

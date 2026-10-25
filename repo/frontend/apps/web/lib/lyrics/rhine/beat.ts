@@ -77,7 +77,8 @@ export class RhineBeatDetector {
         this.since[band] = 0;
         onsets[band] = clamp(0.4 + 0.6 * (flux / threshold - 1), 0.4, 1);
       }
-      const delta = flux - this.mean[band];
+      // Clip the history at the threshold, or a steady kick drum raises its own bar.
+      const delta = Math.min(flux, threshold) - this.mean[band];
       this.mean[band] += alpha * delta;
       this.variance[band] = (1 - alpha) * (this.variance[band] + alpha * delta * delta);
     }
