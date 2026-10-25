@@ -2,6 +2,7 @@
 
 import { CommandWorkspacePersonalFm } from "@/components/commandWorkspace/CommandWorkspacePersonalFm";
 import { CommandWorkspaceFolia } from "@/components/commandWorkspace/CommandWorkspaceFolia";
+import { CommandWorkspaceDynamicIsland } from "@/components/commandWorkspace/CommandWorkspaceDynamicIsland";
 import { ChevronLeft } from "lucide-react";
 import { useCallback, useState } from "react";
 import { CommandWorkspaceHelp } from "@/components/commandWorkspace/CommandWorkspaceHelp";
@@ -82,6 +83,7 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
         <header className="flex items-center gap-3 border-b border-white/8 px-5 py-3">
           <button
             type="button"
+            autoFocus={page === "dynamic-island"}
             onClick={goBack}
             className="rounded p-1 text-zinc-400 hover:bg-white/10 hover:text-white"
             aria-label="返回"
@@ -106,8 +108,13 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
       {page === "search" ? <CommandWorkspaceSearch onOpenTrackList={handleOpenTrackList} /> : null}
       {page === "queue" ? <CommandWorkspaceQueue onClose={onClose} /> : null}
       {page === "now-playing" ? <CommandWorkspaceNowPlaying onClose={onClose} /> : null}
+      {page === "dynamic-island" ? <CommandWorkspaceDynamicIsland /> : null}
       {page === "settings" ? (
-        <CommandWorkspaceSettings onClose={onClose} onOpenFolia={setPage} />
+        <CommandWorkspaceSettings
+          onClose={onClose}
+          onOpenFolia={setPage}
+          onOpenDynamicIsland={() => setPage("dynamic-island")}
+        />
       ) : null}
       {page === "track-list" && trackList ? (
         <CommandWorkspaceTrackList
@@ -127,6 +134,7 @@ function getPageLabel(page: CommandWorkspacePage, trackListTitle?: string) {
   if (page === "queue") return "播放队列";
   if (page === "now-playing") return "正在播放";
   if (page === "settings") return "设置";
+  if (page === "dynamic-island") return "灵动岛设置";
   if (page === "track-list") return trackListTitle ?? "曲目";
   return "命令";
 }

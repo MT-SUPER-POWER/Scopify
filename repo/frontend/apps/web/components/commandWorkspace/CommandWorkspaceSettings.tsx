@@ -1,6 +1,6 @@
 "use client";
 
-import { MonitorCog, Settings2, Sparkles } from "lucide-react";
+import { MonitorCog, RectangleEllipsis, Settings2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,7 +13,11 @@ import type {
   CommandWorkspaceSettingsProps,
 } from "@/types/commandWorkspace";
 
-export function CommandWorkspaceSettings({ onClose, onOpenFolia }: CommandWorkspaceSettingsProps) {
+export function CommandWorkspaceSettings({
+  onClose,
+  onOpenFolia,
+  onOpenDynamicIsland,
+}: CommandWorkspaceSettingsProps) {
   const router = useRouter();
   const [isDesktop, setIsDesktop] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -59,6 +63,13 @@ export function CommandWorkspaceSettings({ onClose, onOpenFolia }: CommandWorksp
 
     if (isDesktop) {
       list.push({
+        action: onOpenDynamicIsland,
+        icon: RectangleEllipsis,
+        id: "dynamic-island",
+        label: "灵动岛设置",
+        summary: "开关、换行动画、大小、翻译、吸附居中、非遮挡与置顶",
+      });
+      list.push({
         action: () => {
           navigate("/setting?tab=desktop");
           onClose();
@@ -71,7 +82,7 @@ export function CommandWorkspaceSettings({ onClose, onOpenFolia }: CommandWorksp
     }
 
     return list;
-  }, [isDesktop, navigate, onClose, onOpenFolia]);
+  }, [isDesktop, navigate, onClose, onOpenFolia, onOpenDynamicIsland]);
 
   return (
     <ScrollArea className="h-[min(52vh,32rem)]">

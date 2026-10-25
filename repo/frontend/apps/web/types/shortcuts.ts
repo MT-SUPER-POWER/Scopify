@@ -4,6 +4,11 @@ import type {
   CommandWorkspaceUsageCounts,
 } from "@/types/commandWorkspace";
 
+export interface ShortcutCommandIconProps {
+  className?: string;
+  commandId: string;
+}
+
 export type ShortcutCommandId =
   | "toggle-playback"
   | "toggle-like"

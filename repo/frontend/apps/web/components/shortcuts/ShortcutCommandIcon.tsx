@@ -12,6 +12,7 @@ import {
   Monitor,
   PanelLeft,
   PlayCircle,
+  RectangleEllipsis,
   Rewind,
   Search,
   Settings2,
@@ -21,11 +22,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-
-interface ShortcutCommandIconProps {
-  className?: string;
-  commandId: string;
-}
+import type { ShortcutCommandIconProps } from "@/types/shortcuts";
 
 export function ShortcutCommandIcon({ className = "size-4", commandId }: ShortcutCommandIconProps) {
   if (commandId === "toggle-playback") return <PlayCircle className={className} />;
@@ -46,7 +43,7 @@ export function ShortcutCommandIcon({ className = "size-4", commandId }: Shortcu
     return <Search className={className} />;
   }
   if (commandId === "toggle-lyric-stage") return <AudioLines className={className} />;
-  if (commandId === "toggle-dynamic-island") return <Monitor className={className} />;
+  if (commandId === "toggle-dynamic-island") return <RectangleEllipsis className={className} />;
   if (commandId === "toggle-taskbar-lyric") return <AudioLines className={className} />;
   if (commandId === "toggle-sidebar") return <PanelLeft className={className} />;
   if (commandId === "open-shortcut-settings") return <Settings2 className={className} />;
