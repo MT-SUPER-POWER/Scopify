@@ -20,7 +20,8 @@ const config = {
     {
       from: "config",
       to: "config",
-      filter: ["**/*.yml"],
+      // 只分发默认配置；开发机本地的 app.config.yml 不能打进安装包。
+      filter: ["app.config.default.yml"],
     },
   ],
   files: [

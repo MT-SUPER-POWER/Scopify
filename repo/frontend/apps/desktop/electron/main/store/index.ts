@@ -10,7 +10,11 @@ const resourceConfigDir = app?.isPackaged
   ? join(process.resourcesPath, "config")
   : join(process.cwd(), "config");
 
-const appConfigPathValue = join(resourceConfigDir, "app.config.yml");
+// 安装目录会在每次更新时被覆盖，用户配置必须放在 userData 里才能跨版本保留；
+// 安装目录只保留随包分发的默认配置。
+const userConfigDir = app?.isPackaged ? join(app.getPath("userData"), "config") : resourceConfigDir;
+
+const appConfigPathValue = join(userConfigDir, "app.config.yml");
 const appConfigDefaultPathValue = join(resourceConfigDir, "app.config.default.yml");
 
 export const appConfigPath = appConfigPathValue;
@@ -18,7 +22,7 @@ export const appConfigDefaultPath = appConfigDefaultPathValue;
 
 export function ensureConfigFile() {
   if (fs.existsSync(appConfigPathValue)) return;
-  fs.mkdirSync(resourceConfigDir, { recursive: true });
+  fs.mkdirSync(userConfigDir, { recursive: true });
   if (fs.existsSync(appConfigDefaultPathValue)) {
     fs.copyFileSync(appConfigDefaultPathValue, appConfigPathValue);
   } else {
