@@ -5846,6 +5846,12 @@ export interface TranslateFn {
    */
   (key: "sidebar.library.collection", params?: TranslationParams): string;
   /**
+   * zh-CN: 我的云盘
+   * zh-TW: 我的雲盤
+   * en-US: Cloud Drive
+   */
+  (key: "sidebar.library.cloud", params?: TranslationParams): string;
+  /**
    * zh-CN: 加载歌单失败
    * zh-TW: 載入歌單失敗
    * en-US: Failed to load playlists
@@ -22384,6 +22390,198 @@ export interface TranslateFn {
    * en-US: Log in to see your podcasts
    */
   (key: "library.loggedOut.podcasts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 我的云盘
+   * zh-TW: 我的雲盤
+   * en-US: Cloud Drive
+   */
+  (key: "library.title.cloud", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后查看云盘里的歌曲
+   * zh-TW: 登入後查看雲盤裡的歌曲
+   * en-US: Log in to see your cloud drive
+   */
+  (key: "library.loggedOut.cloud", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云盘还是空的
+   * zh-TW: 雲盤還是空的
+   * en-US: Your cloud drive is empty
+   */
+  (key: "library.empty.cloud.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传本地歌曲后，它们会显示在这里。
+   * zh-TW: 上傳本機歌曲後，它們會顯示在這裡。
+   * en-US: Songs you upload will appear here.
+   */
+  (key: "library.empty.cloud.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: 云盘
+   * zh-TW: 雲盤
+   * en-US: Cloud Drive
+   */
+  (key: "library.cloud.meta", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传时间
+   * zh-TW: 上傳時間
+   * en-US: Uploaded
+   */
+  (key: "library.cloud.columnUploaded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已用 {{percent}}% 云盘空间
+   * zh-TW: 已用 {{percent}}% 雲盤空間
+   * en-US: {{percent}}% of cloud storage used
+   */
+  (key: "library.cloud.storage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已用 {{used}} / 共 {{total}}
+   * zh-TW: 已用 {{used}} / 共 {{total}}
+   * en-US: {{used}} of {{total}}
+   */
+  (key: "library.cloud.storageDetail", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 首歌曲 · 剩余 {{free}}
+   * zh-TW: {{count}} 首歌曲 · 剩餘 {{free}}
+   * en-US: {{count}} songs · {{free}} free
+   */
+  (key: "library.cloud.storageSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上传歌曲到云盘
+   * zh-TW: 上傳歌曲到雲盤
+   * en-US: Upload songs to cloud drive
+   */
+  (key: "library.cloud.upload", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在上传 {{current}}/{{total}} · {{percent}}%
+   * zh-TW: 正在上傳 {{current}}/{{total}} · {{percent}}%
+   * en-US: Uploading {{current}}/{{total}} · {{percent}}%
+   */
+  (key: "library.cloud.uploading", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已上传 {{count}} 首歌曲
+   * zh-TW: 已上傳 {{count}} 首歌曲
+   * en-US: Uploaded {{count}} songs
+   */
+  (key: "library.cloud.uploadSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{name}} 上传失败
+   * zh-TW: {{name}} 上傳失敗
+   * en-US: Couldn't upload {{name}}
+   */
+  (key: "library.cloud.uploadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从云盘删除
+   * zh-TW: 從雲盤刪除
+   * en-US: Delete from cloud drive
+   */
+  (key: "library.cloud.remove", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配歌曲信息
+   * zh-TW: 匹配歌曲資訊
+   * en-US: Match song info
+   */
+  (key: "library.cloud.match", params?: TranslationParams): string;
+  /**
+   * zh-CN: 修改匹配
+   * zh-TW: 修改匹配
+   * en-US: Change match
+   */
+  (key: "library.cloud.rematch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消匹配
+   * zh-TW: 取消匹配
+   * en-US: Remove match
+   */
+  (key: "library.cloud.unmatch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下载原文件
+   * zh-TW: 下載原檔案
+   * en-US: Download original file
+   */
+  (key: "library.cloud.download", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂时无法获取下载链接
+   * zh-TW: 暫時無法取得下載連結
+   * en-US: Couldn't get a download link
+   */
+  (key: "library.cloud.downloadFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 为「{{name}}」选择对应的网易云曲目，匹配后会显示正式的封面和信息。
+   * zh-TW: 為「{{name}}」選擇對應的網易雲曲目，匹配後會顯示正式的封面和資訊。
+   * en-US: Pick the NetEase track that matches "{{name}}" to show its official cover and details.
+   */
+  (key: "library.cloud.matchHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌名或歌手
+   * zh-TW: 搜尋歌名或歌手
+   * en-US: Search by title or artist
+   */
+  (key: "library.cloud.matchPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索
+   * zh-TW: 搜尋
+   * en-US: Search
+   */
+  (key: "library.cloud.matchSearch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有找到可匹配的歌曲
+   * zh-TW: 沒有找到可匹配的歌曲
+   * en-US: No matching songs found
+   */
+  (key: "library.cloud.matchEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索失败，请稍后重试
+   * zh-TW: 搜尋失敗，請稍後重試
+   * en-US: Search failed. Try again later.
+   */
+  (key: "library.cloud.matchSearchFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配
+   * zh-TW: 匹配
+   * en-US: Match
+   */
+  (key: "library.cloud.matchConfirm", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已更新歌曲信息
+   * zh-TW: 已更新歌曲資訊
+   * en-US: Song info updated
+   */
+  (key: "library.cloud.matchSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已取消匹配
+   * zh-TW: 已取消匹配
+   * en-US: Match removed
+   */
+  (key: "library.cloud.unmatchSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配失败，请稍后重试
+   * zh-TW: 匹配失敗，請稍後重試
+   * en-US: Couldn't match. Try again later.
+   */
+  (key: "library.cloud.matchFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已从云盘删除
+   * zh-TW: 已從雲盤刪除
+   * en-US: Deleted from cloud drive
+   */
+  (key: "library.cloud.removeSuccess", params?: TranslationParams): string;
+  /**
+   * zh-CN: 删除失败，请稍后重试
+   * zh-TW: 刪除失敗，請稍後重試
+   * en-US: Couldn't delete. Try again later.
+   */
+  (key: "library.cloud.removeFailed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 从云盘删除？
+   * zh-TW: 從雲盤刪除？
+   * en-US: Delete from cloud drive?
+   */
+  (key: "library.cloud.removeConfirm.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 「{{name}}」会从云盘中永久删除，无法恢复。
+   * zh-TW: 「{{name}}」會從雲盤中永久刪除，無法復原。
+   * en-US: "{{name}}" will be permanently deleted from your cloud drive.
+   */
+  (key: "library.cloud.removeConfirm.content", params?: TranslationParams): string;
   /**
    * zh-CN: 收藏的专辑
    * zh-TW: 收藏的專輯

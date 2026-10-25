@@ -14,14 +14,17 @@ import type { PlaylistContentProps } from "@/types/components/playlist";
 
 export function PlaylistContent({
   actionSlot,
+  trailingActionSlot,
   commentResourceId,
   commentResourceKind,
   contentSlot,
   dailyDate,
+  dateColumnLabel,
   hideAlbumColumn,
   isDailyRecommend,
   isLoading,
   onDislikePersonalFm,
+  cloudActions,
   onPlayToggle,
   onTrackPlay,
   playlistId,
@@ -77,6 +80,7 @@ export function PlaylistContent({
               <div data-track-drag-chrome>
                 <PlaylistActions
                   actionSlot={actionSlot}
+                  trailingActionSlot={trailingActionSlot}
                   commentResourceId={commentResourceId}
                   commentResourceKind={commentResourceKind}
                   playlistId={playlistId}
@@ -114,9 +118,11 @@ export function PlaylistContent({
                   onSearchClose={handleSearchClose}
                   inputRef={inputRef}
                   hideAlbumColumn={hideAlbumColumn}
+                  dateColumnLabel={dateColumnLabel}
                   emptyActionLabel={t("common.action.reload")}
                   onEmptyAction={handleRefreshTracks}
                   onDislikePersonalFm={onDislikePersonalFm}
+                  cloudActions={cloudActions}
                   onPlayTrack={onTrackPlay}
                   onTracksChange={setTracks}
                   playSourceId={playSourceId}

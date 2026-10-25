@@ -62,6 +62,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const requireLogin = useRequireLoginAction();
   const {
     actionSlot,
+    trailingActionSlot,
     commentResourceId,
     commentResourceKind,
     playlistId,
@@ -336,6 +337,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
         </div>
 
         <div className="flex shrink-0 items-center gap-1">
+          {trailingActionSlot}
           {isDaily && (
             <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
               <TooltipProvider>

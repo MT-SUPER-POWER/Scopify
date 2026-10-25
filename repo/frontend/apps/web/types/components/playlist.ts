@@ -3,6 +3,7 @@ import type { HTMLAttributes, ReactNode, RefObject } from "react";
 import type { SongDetail } from "@/types/api/music";
 import type { CommentResourceKind } from "@/types/api/comment";
 import type { PlaylistInfo } from "@/types/playlist";
+import type { CloudTrackActions } from "@/types/components/library";
 
 export interface PlaylistTagSelectorProps {
   maxSelected: number;
@@ -12,6 +13,8 @@ export interface PlaylistTagSelectorProps {
 
 export interface PlaylistActionsProps {
   actionSlot?: ReactNode;
+  /** Rendered at the start of the right-hand action group, before search. */
+  trailingActionSlot?: ReactNode;
   commentResourceId?: null | string;
   commentResourceKind?: CommentResourceKind;
   dailyDate?: null | string;
@@ -34,15 +37,21 @@ export interface PlaylistActionsProps {
 
 export interface PlaylistContentProps {
   actionSlot?: ReactNode;
+  /** Rendered at the start of the right-hand action group, before search. */
+  trailingActionSlot?: ReactNode;
   commentResourceId?: null | string;
   commentResourceKind?: CommentResourceKind;
   contentSlot?: (props: PlaylistContentSlotProps) => ReactNode;
   dailyDate: null | string;
+  /** Replaces the date column header when it shows something other than release dates. */
+  dateColumnLabel?: string;
   hideAlbumColumn?: boolean;
   isDailyRecommend: boolean;
   isLoading: boolean;
   /** Optional negative-feedback action for tracks shown by the Personal FM virtual playlist. */
   onDislikePersonalFm?: (track: SongDetail) => void;
+  /** Present only on the cloud drive page; swaps the song menu for cloud file actions. */
+  cloudActions?: CloudTrackActions;
   onPlayToggle?: () => void;
   onTrackPlay?: (track: SongDetail) => void;
   playlistId: null | string;
@@ -79,6 +88,7 @@ export interface TracklistTableProps {
    */
   canRemoveFromPlaylist?: boolean;
   dailyRecommendationMode?: DailyRecommendationMode;
+  dateColumnLabel?: string;
   disableVirtualization?: boolean;
   hideAlbumColumn?: boolean;
   emptyActionLabel?: string;
@@ -88,6 +98,8 @@ export interface TracklistTableProps {
   onEmptyAction?: () => void;
   /** Optional negative-feedback action for tracks shown by the Personal FM virtual playlist. */
   onDislikePersonalFm?: (track: SongDetail) => void;
+  /** Present only on the cloud drive page; swaps the song menu for cloud file actions. */
+  cloudActions?: CloudTrackActions;
   onPlayTrack?: (track: SongDetail) => void;
   onTracksChange?: (tracks: SongDetail[]) => void;
   onSearchChange?: (v: string) => void;
@@ -156,6 +168,8 @@ export interface PlaylistTableSongRowProps extends SortableTrackRowProps {
   readonly: boolean;
   onDislikeDailyRecommend: (id: number | string) => Promise<void>;
   onDislikePersonalFm?: (track: SongDetail) => void;
+  /** Present only on the cloud drive page; swaps the song menu for cloud file actions. */
+  cloudActions?: CloudTrackActions;
 }
 
 export type TrackRowCellsProps = Pick<

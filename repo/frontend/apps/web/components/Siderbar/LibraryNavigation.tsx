@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, History, Home, Podcast, Users } from "lucide-react";
+import { Bookmark, Cloud, History, Home, Podcast, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,7 @@ const sections = [
       { href: "/recent", icon: History, labelKey: "sidebar.library.recentPlayback" },
       { href: "/podcasts", icon: Podcast, labelKey: "sidebar.library.podcasts" },
       { href: "/collection", icon: Bookmark, labelKey: "sidebar.library.collection" },
+      { href: "/cloud", icon: Cloud, labelKey: "sidebar.library.cloud" },
     ],
   },
 ] as const;

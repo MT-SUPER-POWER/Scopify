@@ -33,6 +33,7 @@ export const musicQueryKeys = {
     userProfile: (userId: string) => ["home", "user-profile", userId] as const,
   },
   library: {
+    cloud: (userId: number) => ["library", "cloud", userId] as const,
     collection: (userId: number) => ["library", "collection", userId] as const,
     createdPodcasts: (userId: number) => ["library", "podcasts", "created", userId] as const,
     likedVoices: (userId: number) => ["library", "podcasts", "liked-voices", userId] as const,

@@ -2,6 +2,7 @@
 
 import { memo, useCallback, useState } from "react";
 import dynamic from "next/dynamic";
+import { CloudSongContextMenu } from "@/components/library/CloudSongContextMenu";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SortableTrackRow } from "@/components/Playlist/SortableTrackRow";
 import type { PlaylistTableSongRowProps } from "@/types/components/playlist";
@@ -20,6 +21,7 @@ export const PlaylistTableSongRow = memo(function PlaylistTableSongRow({
   readonly,
   onDislikeDailyRecommend,
   onDislikePersonalFm,
+  cloudActions,
   ...row
 }: PlaylistTableSongRowProps) {
   const { track, onPlay, onRequestDelete, playlistID } = row;
@@ -28,6 +30,22 @@ export const PlaylistTableSongRow = memo(function PlaylistTableSongRow({
     (event) => onSelectTrack(track.id, event),
     [onSelectTrack, track.id],
   );
+  const rowContent = <SortableTrackRow {...row} onRowClick={select} />;
+  if (cloudActions) {
+    return (
+      <CloudSongContextMenu
+        song={track}
+        selectedSongs={selectedSongs}
+        cloudActions={cloudActions}
+        onOpenContextMenu={() => onContextTrack(track.id)}
+        isActive={row.isActive}
+        isPlaying={row.isPlaying}
+        onPlay={() => onPlay(track)}
+      >
+        {rowContent}
+      </CloudSongContextMenu>
+    );
+  }
   return (
     <>
       <SongContextMenu
@@ -51,7 +69,7 @@ export const PlaylistTableSongRow = memo(function PlaylistTableSongRow({
         }
         onDislikePersonalFm={onDislikePersonalFm ? () => onDislikePersonalFm(track) : undefined}
       >
-        <SortableTrackRow {...row} onRowClick={select} />
+        {rowContent}
       </SongContextMenu>
       {similarOpen && (
         <SimilarSongsDialog song={track} open={similarOpen} onOpenChange={setSimilarOpen} />

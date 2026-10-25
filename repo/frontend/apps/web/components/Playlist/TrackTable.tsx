@@ -66,12 +66,14 @@ function getRequiredTracklistColumn(table: TanstackTable<SongDetail>, columnId: 
 
 export default function TracklistTable({
   canRemoveFromPlaylist = false,
+  dateColumnLabel,
   disableVirtualization = false,
   emptyActionLabel,
   hideAlbumColumn = false,
   hideDateColumn = false,
   hideLikeColumn = false,
   onDislikePersonalFm,
+  cloudActions,
   onEmptyAction,
   onPlayTrack,
   onTracksChange,
@@ -540,7 +542,7 @@ export default function TracklistTable({
                     onClick={dateColumn.getToggleSortingHandler()}
                   >
                     <div className="flex items-center gap-1">
-                      {t("playlist.table.columnPublished")}
+                      {dateColumnLabel ?? t("playlist.table.columnPublished")}
                       {dateColumn.getIsSorted() &&
                         (dateColumn.getIsSorted() === "asc" ? (
                           <ChevronUp className="size-4" />
@@ -658,6 +660,7 @@ export default function TracklistTable({
                         canRemoveFromPlaylist={canRemoveFromPlaylist}
                         onDislikeDailyRecommend={handleDislikeDailyRecommend}
                         onDislikePersonalFm={onDislikePersonalFm}
+                        cloudActions={cloudActions}
                       />
                     );
                   })}
