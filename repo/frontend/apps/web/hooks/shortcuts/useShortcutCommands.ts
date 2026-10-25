@@ -1,14 +1,11 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { useUpdatesStore } from "@/store/module/updates";
 import { useRouter } from "next/navigation";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
-import {
-  usePlaybackPosition as usePlaybackPositionMs,
-  usePlaybackProjection,
-} from "@/hooks/player/usePlaybackProjection";
+import { usePlaybackProjectionStore } from "@/hooks/player/usePlaybackProjection";
 import { toggleApplicationDeveloperTools } from "@/lib/shortcuts/developerTools";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { getCommentHref } from "@/lib/comment/commentResource";
@@ -28,14 +25,10 @@ let muteRestoreLevel: number | null = null;
 
 export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
   const router = useRouter();
-  const playback = usePlaybackProjection();
-  const positionMs = usePlaybackPositionMs();
+  // Read playback on demand: subscribing here would re-render the host every frame.
+  const playbackStore = usePlaybackProjectionStore();
   const commands = usePlaybackCommands();
-  const playbackRef = useRef(playback);
-  const positionMsRef = useRef(positionMs);
   const navigateToOverride = options?.navigateTo;
-  playbackRef.current = playback;
-  positionMsRef.current = positionMs;
 
   const navigateTo = useCallback(
     (path: string) => {
@@ -51,9 +44,9 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
   return useCallback(
     (commandId: ShortcutCommandId) => {
       const ui = useUiStore.getState();
-      const { durationMs, volume } = playbackRef.current;
+      const { durationMs, volume } = playbackStore.getSnapshot();
       const seekBy = (deltaMs: number) => {
-        const unclampedPositionMs = Math.max(0, positionMsRef.current + deltaMs);
+        const unclampedPositionMs = Math.max(0, playbackStore.samplePositionMs() + deltaMs);
         const targetPositionMs =
           durationMs > 0 ? Math.min(durationMs, unclampedPositionMs) : unclampedPositionMs;
         void commands.seek(targetPositionMs);
@@ -211,6 +204,6 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           ui.setIsSearchOpen(true);
       }
     },
-    [commands, navigateTo],
+    [commands, navigateTo, playbackStore],
   );
 }
