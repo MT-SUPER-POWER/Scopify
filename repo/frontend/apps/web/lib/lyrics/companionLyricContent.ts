@@ -10,13 +10,19 @@ function formatTrack(snapshot: CompanionLyricSnapshot) {
   return { title: track.title, artists: track.artistNames.join(" / ") };
 }
 
-/** 有歌词时显示当前句（可带翻译副行）；间奏或无歌词时显示“歌名 - 歌手”。 */
+/** 间奏保持空白；正常歌词可带翻译副行，无歌词资源时才回退到歌曲信息。 */
 export function buildDynamicIslandContent(
   snapshot: CompanionLyricSnapshot,
   showTranslation: boolean,
 ): DynamicIslandContent {
   const line = snapshot.activeLine;
-  if (line && !snapshot.isInterlude) {
+  if (
+    snapshot.isInterlude ||
+    (line && (!line.fullText.trim() || /^(?:\.{3,}|[…⋯]+)$/u.test(line.fullText.trim())))
+  ) {
+    return { key: "interlude", main: "", sub: "" };
+  }
+  if (line) {
     return {
       key: `line-${snapshot.index}-${line.startTime}`,
       main: line.fullText,

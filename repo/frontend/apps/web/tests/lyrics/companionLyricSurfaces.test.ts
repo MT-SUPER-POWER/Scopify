@@ -67,12 +67,42 @@ describe("companion lyric content", () => {
     expect(content).toMatchObject({ main: "こんにちは", sub: "你好", progress: [1, 0.5] });
   });
 
-  it("falls back to title and artists during interludes", () => {
+  it("keeps the island empty during interludes without progress or translation", () => {
     const content = buildDynamicIslandContent(
-      snapshot({ activeLine: line("......", 4), isInterlude: true }),
+      snapshot({
+        activeLine: line("......", 4, "translation"),
+        isInterlude: true,
+        fillProgress: [1, 0.5],
+      }),
       true,
     );
-    expect(content).toMatchObject({ main: "Song - Aimer / Uru", sub: "" });
+    expect(content).toEqual({ key: "interlude", main: "", sub: "" });
+    expect(buildDynamicIslandContent(snapshot({ isInterlude: true }), true)).toEqual(content);
+  });
+
+  it("does not treat empty or ellipsis placeholder lines as lyrics", () => {
+    for (const text of ["", "  ", "...", "......", "…", "……", "⋯", " ... "]) {
+      expect(
+        buildDynamicIslandContent(snapshot({ activeLine: line(text, 4, "translation") }), true),
+      ).toEqual({ key: "interlude", main: "", sub: "" });
+    }
+  });
+
+  it("shows the next real lyric after an interlude and preserves punctuation in lyrics", () => {
+    const content = buildDynamicIslandContent(
+      snapshot({ activeLine: line("等你...回来", 8, "come back"), index: 2, fillProgress: [0] }),
+      true,
+    );
+    expect(content).toEqual({
+      key: "line-2-8",
+      main: "等你...回来",
+      sub: "come back",
+      progress: [0],
+    });
+    expect(buildDynamicIslandContent(snapshot(), true)).toMatchObject({
+      main: "Song - Aimer / Uru",
+      sub: "",
+    });
   });
 
   it("prefers the translation for the taskbar's second line, then the next line", () => {

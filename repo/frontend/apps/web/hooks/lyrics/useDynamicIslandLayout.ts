@@ -29,7 +29,10 @@ export function useDynamicIslandLayout(shown: DynamicIslandContent, metrics: Dyn
       ),
     [family, metrics.fontSize, metrics.subFontSize, shown.main, shown.sub],
   );
-  const slotWidth = Math.max(1, Math.min(textWidth + TEXT_GUARD, window.innerWidth - chromeWidth));
+  const slotWidth =
+    shown.main || shown.sub
+      ? Math.max(1, Math.min(textWidth + TEXT_GUARD, window.innerWidth - chromeWidth))
+      : 0;
   const pillWidth = chromeWidth + slotWidth;
   const height = metrics.rowHeight + (shown.sub ? metrics.subRowHeight : 0);
   const reportedShapeRef = useRef(0);

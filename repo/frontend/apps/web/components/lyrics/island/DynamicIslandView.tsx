@@ -104,14 +104,14 @@ function DynamicIsland() {
             )}
           >
             <p
-              className="truncate leading-tight font-medium"
+              className="overflow-hidden leading-tight font-medium"
               style={{ fontSize: metrics.fontSize }}
             >
               <CompanionLyricText text={shown.main} progress={shown.progress} />
             </p>
             {shown.sub && (
               <p
-                className="truncate text-white/65"
+                className="overflow-hidden text-white/65"
                 style={{ fontSize: metrics.subFontSize, lineHeight: 1.2 }}
               >
                 {shown.sub}
