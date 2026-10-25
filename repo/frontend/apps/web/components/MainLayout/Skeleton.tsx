@@ -35,17 +35,17 @@ export default function MainLayoutSkeleton({
         "gap-2 overflow-hidden p-2 select-none",
       )}
     >
+      <LoadingHeaderSkeleton />
       <div className="flex min-h-0 flex-1 gap-2">
         <LoadingSidebarSkeleton />
         <section className="relative min-w-0 flex-1 overflow-hidden rounded-lg bg-surface-raised">
-          <LoadingHeaderSkeleton />
           {content ? (
             // Some desktop scroll enhancers annotate this scrollable shell before React hydrates.
             <div suppressHydrationWarning className="size-full overflow-hidden">
               {content}
             </div>
           ) : (
-            <div className="space-y-6 p-6 pt-24">
+            <div className="space-y-6 p-6 pt-8">
               <Skeleton className="h-8 w-48 bg-skeleton" />
               <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, index) => (

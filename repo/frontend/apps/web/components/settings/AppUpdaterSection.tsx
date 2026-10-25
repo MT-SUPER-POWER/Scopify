@@ -11,7 +11,7 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
   const { state, check, download, install } = useAppUpdater();
 
   return (
-    <div id="app-updater" className="scroll-mt-24">
+    <div id="app-updater" className="scroll-mt-8">
       <SettingSection title={t("settings.section.updater")}>
         <SettingRow
           label={t("settings.updater.checkOnStartup.label")}

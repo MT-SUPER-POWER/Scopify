@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
+import type { LibraryNavigationProps } from "@/types/components/sidebar";
 
 const sections = [
   {
@@ -26,7 +26,7 @@ const sections = [
   },
 ] as const;
 
-export function LibraryNavigation({ isCollapsed }: SidebarPlaylistLibraryProps) {
+export function LibraryNavigation({ isCollapsed, headerAction }: LibraryNavigationProps) {
   const pathname = usePathname();
   const { t } = useI18n();
   return (
@@ -37,13 +37,18 @@ export function LibraryNavigation({ isCollapsed }: SidebarPlaylistLibraryProps) 
       )}
       aria-label={t("social.browse")}
     >
-      {sections.map((section) => (
+      {sections.map((section, sectionIndex) => (
         <div
           key={section.title}
           className={cn("flex flex-col gap-1", isCollapsed && "items-center")}
         >
           {!isCollapsed && (
-            <p className="px-2 pb-2 text-xs font-medium text-content-subtle">{t(section.title)}</p>
+            <div className="flex h-6 items-center justify-between gap-2 pb-2 pl-2">
+              <p className="text-xs font-medium text-content-subtle">{t(section.title)}</p>
+              {sectionIndex === 0 && headerAction && (
+                <div className="-my-2 text-muted-foreground">{headerAction}</div>
+              )}
+            </div>
           )}
           {section.items.map((item) => {
             const active =

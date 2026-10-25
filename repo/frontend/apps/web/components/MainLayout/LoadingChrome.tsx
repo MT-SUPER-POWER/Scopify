@@ -5,18 +5,25 @@ import { SidebarPlaylistSkeleton } from "@/components/Siderbar/SidebarPlaylistSk
 import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
 
+/** Mirrors components/Header: brand + history on the left, home + search centered, actions right. */
 export function LoadingHeaderSkeleton() {
   return (
-    <div className="absolute inset-x-0 top-0 z-10 flex h-16 items-center justify-between gap-3 px-4 lg:px-6">
+    <div className="@container grid h-12 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 px-2">
       <div className="flex items-center gap-2">
-        <Skeleton className="size-10 rounded-full bg-skeleton" />
-        <Skeleton className="size-10 rounded-full bg-skeleton" />
+        <ScopifyBrand
+          priority
+          className="mx-2 min-w-0"
+          wordmarkClassName="@max-[1080px]:hidden"
+        />
+        <Skeleton className="size-8 rounded-full bg-skeleton" />
+        <Skeleton className="size-8 rounded-full bg-skeleton @max-[560px]:hidden" />
       </div>
-      <div className="flex flex-1 justify-center">
-        <Skeleton className="h-10 w-full max-w-100 rounded-full bg-skeleton" />
+      <div className="flex w-[min(36rem,44cqw)] items-center gap-2">
+        <Skeleton className="size-11 shrink-0 rounded-full bg-skeleton" />
+        <Skeleton className="h-11 flex-1 rounded-full bg-skeleton" />
       </div>
-      <div className="flex items-center gap-2">
-        <Skeleton className="hidden size-9 rounded-full bg-skeleton lg:block" />
+      <div className="flex items-center justify-end gap-2">
+        <Skeleton className="size-9 rounded-full bg-skeleton" />
         <Skeleton className="size-9 rounded-full bg-skeleton" />
         <Skeleton className="size-9 rounded-full bg-skeleton" />
       </div>
@@ -30,7 +37,7 @@ const NAV_SECTIONS = [
 ];
 
 /**
- * Mirrors components/Siderbar: same width source, header, nav rows and playlist rows.
+ * Mirrors components/Siderbar: same width source, nav rows (menu beside the first heading) and playlist rows.
  * `@max-[91px]/sidebar` matches useSidebarNarrow (<= 90px) on the same container.
  */
 export function LoadingSidebarSkeleton() {
@@ -43,16 +50,6 @@ export function LoadingSidebarSkeleton() {
     >
       <aside className="@container/sidebar flex size-full min-h-0 flex-col bg-surface">
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-md bg-sidebar">
-          <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-2 @max-[91px]/sidebar:justify-center @min-[208px]/sidebar:px-3 @min-[240px]/sidebar:px-4">
-            <ScopifyBrand
-              priority
-              className="min-w-0"
-              iconClassName="size-8 @max-[91px]/sidebar:size-9"
-              wordmarkClassName="hidden @min-[208px]/sidebar:block"
-            />
-            <Skeleton className="size-8 shrink-0 rounded-md bg-skeleton @max-[91px]/sidebar:hidden" />
-          </header>
-
           <div className="min-h-0 flex-1 overflow-hidden">
             <nav className="flex flex-col gap-5 px-3 pt-3 pb-5 @max-[91px]/sidebar:gap-2 @max-[91px]/sidebar:px-2 @max-[91px]/sidebar:py-3">
               {NAV_SECTIONS.map((labels, sectionIndex) => (
@@ -60,8 +57,11 @@ export function LoadingSidebarSkeleton() {
                   key={sectionIndex}
                   className="flex flex-col gap-1 @max-[91px]/sidebar:items-center"
                 >
-                  <div className="flex h-6 items-start px-2 pt-0.5 @max-[91px]/sidebar:hidden">
+                  <div className="flex h-6 items-center justify-between pb-2 pl-2 @max-[91px]/sidebar:hidden">
                     <Skeleton className="h-3 w-10 bg-skeleton-subtle" />
+                    {sectionIndex === 0 && (
+                      <Skeleton className="-my-2 size-8 shrink-0 rounded-md bg-skeleton" />
+                    )}
                   </div>
                   {labels.map((width, index) => (
                     <div

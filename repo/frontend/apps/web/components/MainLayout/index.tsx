@@ -178,7 +178,11 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       <LyricStageMount />
       <FoliaSettingsMount />
 
-      {/* 左右结构 */}
+      <div data-track-drag-chrome className="relative z-30">
+        <Header />
+      </div>
+
+      {/* 三栏结构 */}
       <main className="relative min-h-0 w-full flex-1">
         {isMounted ? (
           <ResizablePanelGroup
@@ -216,12 +220,6 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
                 data-dashboard-main
                 className="group/main relative size-full overflow-hidden rounded-lg bg-surface-raised"
               >
-                <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-                  <div data-track-drag-chrome className="pointer-events-auto">
-                    <Header />
-                  </div>
-                </div>
-
                 <div className="size-full overflow-hidden">{children}</div>
               </div>
             </ResizablePanel>
@@ -238,11 +236,6 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               data-dashboard-main
               className="group/main relative flex-1 overflow-hidden rounded-lg bg-surface-raised"
             >
-              <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-                <div data-track-drag-chrome className="pointer-events-auto">
-                  <Header />
-                </div>
-              </div>
               <div className="size-full overflow-hidden">{children}</div>
             </div>
           </div>

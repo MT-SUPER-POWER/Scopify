@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DASHBOARD_HEADER_HEIGHT } from "@/constants/layout";
+import { DASHBOARD_MAIN_STICKY_TOP } from "@/constants/layout";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import {
   usePlaybackPosition as usePlaybackPositionMs,
@@ -53,7 +53,7 @@ export function RadioTracklistTable({
     showUpdatedAtColumn: showMetadataColumns,
   });
   const { isSticky: isTableHeaderSticky, sentinelRef: stickyHeaderSentinelRef } =
-    useRadioTracklistStickyHeader(DASHBOARD_HEADER_HEIGHT);
+    useRadioTracklistStickyHeader(DASHBOARD_MAIN_STICKY_TOP);
   const playSourceId = `radio:${radioId}`;
   const rows = useMemo(() => {
     const query = searchQuery?.trim().toLocaleLowerCase();
@@ -176,7 +176,7 @@ export function RadioTracklistTable({
             ))}
           </colgroup>
           <TableHeader
-            style={{ top: DASHBOARD_HEADER_HEIGHT }}
+            style={{ top: DASHBOARD_MAIN_STICKY_TOP }}
             className={cn(
               "sticky z-10 transition-[background-color,filter,backdrop-filter] duration-150 **:data-[slot=table-head]:h-9",
               isTableHeaderSticky

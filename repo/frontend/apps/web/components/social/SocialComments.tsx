@@ -141,7 +141,7 @@ export function SocialComments({ event }: SocialEventProps) {
     }
   }
   return (
-    <section id="social-comments" className="scroll-mt-24">
+    <section id="social-comments" className="scroll-mt-8">
       <h2 className={s.sectionTitle + " mt-6"}>
         {t("social.comments")}{" "}
         <span className={s.muted}>{query.data?.pages[0]?.total ?? event.comments}</span>

@@ -11,6 +11,9 @@ export const headerStyles = {
   /** 全局返回始终保留，二级页面不再重复提供返回按钮。 */
   history: "shrink-0",
 
+  /** 品牌字标：顶栏较窄时只保留圆标，把空间让给搜索框 */
+  wordmark: "@max-[1080px]:hidden",
+
   /** 前进按钮：较小容器宽度下隐藏 */
   forward: "@max-[560px]:hidden",
 

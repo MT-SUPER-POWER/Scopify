@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
  */
 export const socialStyles = {
   /** 动态流/个人页面主容器 */
-  page: cn("[container-type:inline-size] min-h-full", "px-7 pt-22 pb-12 text-foreground"),
+  page: cn("[container-type:inline-size] min-h-full", "px-7 pt-6 pb-12 text-foreground"),
 
   /** 双栏信息流网格布局 */
   feedLayout: "mx-auto grid max-w-[1240px] grid-cols-[minmax(0,1fr)_250px] gap-7",

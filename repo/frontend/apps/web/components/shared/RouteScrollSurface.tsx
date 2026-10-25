@@ -62,7 +62,7 @@ function RouteScrollSkeleton({ Placeholder }: { Placeholder: null | RouteRestora
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-0 z-10 animate-pulse bg-surface-raised px-6 pt-24"
+      className="absolute inset-0 z-10 animate-pulse bg-surface-raised px-6 pt-8"
     >
       <div className="h-8 w-48 rounded bg-skeleton-subtle" />
       <div className="mt-4 h-4 w-80 max-w-full rounded bg-skeleton-subtle" />

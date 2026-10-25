@@ -7,7 +7,7 @@ import type { UserHeroProps } from "@/types/components/profile";
 
 export function UserHero({ userInfo, playlistCount }: UserHeroProps) {
   return (
-    <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-24 pb-6 md:flex-row">
+    <div className="relative z-10 flex flex-col items-start gap-6 px-6 pt-8 pb-6 md:flex-row">
       <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-full bg-surface-elevated shadow-floating transition-transform duration-300 lg:size-56">
         <Image
           width={224}

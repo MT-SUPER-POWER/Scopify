@@ -19,10 +19,10 @@ export function SubtitlePreviewWorkspace({
   return (
     <div
       id="subtitle-style"
-      className="grid scroll-mt-24 grid-cols-1 items-start gap-x-16 gap-y-10 lg:col-span-2 lg:grid-cols-2"
+      className="grid scroll-mt-8 grid-cols-1 items-start gap-x-16 gap-y-10 lg:col-span-2 lg:grid-cols-2"
     >
       <div className="min-w-0 space-y-8">{children}</div>
-      <div className="min-w-0 lg:sticky lg:top-24">
+      <div className="min-w-0 lg:sticky lg:top-8">
         <SettingSection
           title={t("appearance.lyrics.preview")}
           actions={

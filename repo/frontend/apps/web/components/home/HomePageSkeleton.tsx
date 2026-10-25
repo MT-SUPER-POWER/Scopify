@@ -84,7 +84,7 @@ export function ToplistCardSkeleton() {
 // ==========================================
 export function HomePageSkeleton() {
   return (
-    <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-7 px-4 pt-20 pb-6 duration-500 fade-in sm:px-6">
+    <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-7 px-4 py-6 duration-500 fade-in sm:px-6">
       {/* 1. 欢迎语 + 快速访问 */}
       <section className="space-y-4">
         <div className="flex h-8 items-center">

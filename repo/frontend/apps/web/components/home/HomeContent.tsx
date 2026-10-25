@@ -61,7 +61,7 @@ export function HomeContent() {
       <AppBackground />
 
       {isUnavailable ? (
-        <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-400 flex-col p-6 pt-20">
+        <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-400 flex-col p-6 pt-6">
           <h1 className="text-2xl leading-tight font-bold tracking-tight text-content">
             {greetingText}
           </h1>
@@ -78,7 +78,7 @@ export function HomeContent() {
       ) : isLoading && playlists.length === 0 ? (
         <HomePageSkeleton />
       ) : (
-        <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-7 px-4 pt-20 pb-6 duration-500 fade-in sm:px-6">
+        <div className="relative z-10 mx-auto w-full max-w-400 animate-in space-y-7 px-4 py-6 duration-500 fade-in sm:px-6">
           {/* 1. 欢迎语与快速访问 */}
           <HomeGreetingSection
             dateInfo={dateInfo}
