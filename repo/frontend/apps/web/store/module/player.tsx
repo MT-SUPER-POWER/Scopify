@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { PLAYER_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
-import { getLyric } from "@/lib/api/music";
+import { getSongLyric } from "@/lib/lyrics/cloudLyric";
 import {
   getCachedLyric,
   getCachedReplayGain,
@@ -305,7 +305,7 @@ export const usePlayerStore = create<PlayerStore>()(
             currentSongDetail.voiceId === undefined
               ? storedLyric
                 ? storedLyric
-                : (await getLyric(songId)).data
+                : await getSongLyric(currentSongDetail)
               : await getVoiceLyricForPlayback(currentSongDetail);
           if (!isPlaybackLoadCurrent(get(), loadIdentity)) return;
           set({ lyric: lyricData });
@@ -455,7 +455,7 @@ export const usePlayerStore = create<PlayerStore>()(
             }
 
             return {
-              lyric: (await getLyric(song.id)).data,
+              lyric: await getSongLyric(song),
               shouldCache: true,
             };
           })();
