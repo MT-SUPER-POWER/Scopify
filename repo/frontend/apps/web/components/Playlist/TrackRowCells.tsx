@@ -48,21 +48,28 @@ export const TrackRowCells = memo(function TrackRowCells({
 
       {!hideAlbumColumn && (
         <TableCell className="max-w-0">
-          <button
-            type="button"
-            title={track.al.name}
-            onClick={(e) => {
-              e.stopPropagation();
-              smartRouter.push(`/album?id=${track.al.id}`);
-            }}
-            className="group/album flex max-w-full min-w-0 items-center gap-1.5 text-left text-content-muted transition-colors hover:text-content hover:underline"
-          >
-            <Disc3
-              className="size-3.5 shrink-0 text-content-subtle transition-colors group-hover/album:text-content"
-              aria-hidden="true"
-            />
-            <span className="truncate">{track.al.name}</span>
-          </button>
+          {/* 云盘未匹配文件等没有专辑实体（id 为 0），只展示名称。 */}
+          {track.al.id === 0 ? (
+            <span title={track.al.name} className="block truncate text-content-muted">
+              {track.al.name || "-"}
+            </span>
+          ) : (
+            <button
+              type="button"
+              title={track.al.name}
+              onClick={(e) => {
+                e.stopPropagation();
+                smartRouter.push(`/album?id=${track.al.id}`);
+              }}
+              className="group/album flex max-w-full min-w-0 items-center gap-1.5 text-left text-content-muted transition-colors hover:text-content hover:underline"
+            >
+              <Disc3
+                className="size-3.5 shrink-0 text-content-subtle transition-colors group-hover/album:text-content"
+                aria-hidden="true"
+              />
+              <span className="truncate">{track.al.name}</span>
+            </button>
+          )}
         </TableCell>
       )}
 

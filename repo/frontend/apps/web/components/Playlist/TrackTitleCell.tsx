@@ -4,6 +4,7 @@ import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { TableCell } from "@/components/ui/table";
+import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import type { TrackTitleCellProps } from "@/types/components/playlist";
@@ -18,10 +19,15 @@ export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {
             draggable={false}
             width={40}
             height={40}
-            src={track.al.picUrl}
+            src={track.al.picUrl || CLOUD_SONG_FALLBACK_COVER}
             alt={track.al.name}
             decoding="async"
             loading="lazy"
+            onError={(event) => {
+              const image = event.currentTarget;
+              if (!image.src.endsWith(CLOUD_SONG_FALLBACK_COVER))
+                image.src = CLOUD_SONG_FALLBACK_COVER;
+            }}
             className="size-full rounded object-cover"
           />
         </div>
