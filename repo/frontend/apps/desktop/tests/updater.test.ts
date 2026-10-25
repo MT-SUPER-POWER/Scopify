@@ -20,10 +20,18 @@ mock.module("../electron/main/service/externalLinks", () => ({ openExternalLink 
 mock.module("../electron/main/utils/logger", () => ({ updaterLog: { info() {}, warn() {} } }));
 
 const updater = await import("../electron/main/service/updates");
-updater.initializeUpdater({ webContents: { send() {} } } as unknown as BrowserWindow, {
-  checkOnStartup: true,
-  autoDownload: true,
-});
+const setProgressBar = mock((_progress: number) => {});
+updater.initializeUpdater(
+  {
+    webContents: { send() {} },
+    isDestroyed: () => false,
+    setProgressBar,
+  } as unknown as BrowserWindow,
+  {
+    checkOnStartup: true,
+    autoDownload: true,
+  },
+);
 
 beforeEach(() => {
   Object.defineProperty(process, "platform", { value: "darwin" });
@@ -89,7 +97,11 @@ test("Windows retains automatic download and explicit installation", async () =>
   expect(nativeUpdater.downloadUpdate).toHaveBeenCalledTimes(1);
   expect(updater.getUpdateState().manualInstall).toBe(false);
   expect(openExternalLink).not.toHaveBeenCalled();
+  nativeUpdater.emit("download-progress", { percent: 42 });
+  expect(setProgressBar).toHaveBeenLastCalledWith(0.42);
   nativeUpdater.emit("update-downloaded", { version: "2.1.0" });
+  expect(setProgressBar).toHaveBeenLastCalledWith(-1);
+  expect(nativeUpdater.autoInstallOnAppQuit).toBe(true);
   updater.quitAndInstallUpdate();
   expect(nativeUpdater.quitAndInstall).toHaveBeenCalledWith(false, true);
 });

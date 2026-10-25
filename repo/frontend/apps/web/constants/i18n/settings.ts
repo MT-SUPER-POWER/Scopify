@@ -253,7 +253,8 @@ export const settingsMessages = defineMessages(
     "settings.updater.checkOnStartup.manualHint": "应用启动后检查新版本，有更新时提醒你前往下载。",
     "settings.updater.checkOnStartup.sublabel": "应用启动后自动检查 GitHub Release 中的最新版本。",
     "settings.updater.autoDownload.label": "自动下载更新",
-    "settings.updater.autoDownload.sublabel": "发现新版本后自动开始下载，安装仍需你确认重启。",
+    "settings.updater.autoDownload.sublabel":
+      "发现新版本后自动开始下载，下载完成后在下次退出时自动安装。",
     "settings.updater.currentVersion": "当前版本 {{version}}",
     "settings.updater.availableVersion": "发现新版本 {{version}}",
     "settings.updater.lastChecked": "最近检查",
@@ -601,7 +602,8 @@ export const settingsMessages = defineMessages(
     "settings.updater.checkOnStartup.sublabel":
       "應用程式啟動後自動檢查 GitHub Release 中的最新版本。",
     "settings.updater.autoDownload.label": "自動下載更新",
-    "settings.updater.autoDownload.sublabel": "發現新版本後自動開始下載，安裝仍需你確認重啟。",
+    "settings.updater.autoDownload.sublabel":
+      "發現新版本後自動開始下載，下載完成後在下次結束時自動安裝。",
     "settings.updater.currentVersion": "目前版本 {{version}}",
     "settings.updater.availableVersion": "發現新版本 {{version}}",
     "settings.updater.lastChecked": "最近檢查",
@@ -972,7 +974,7 @@ export const settingsMessages = defineMessages(
       "Check GitHub Releases for a newer version after the app starts.",
     "settings.updater.autoDownload.label": "Download Updates Automatically",
     "settings.updater.autoDownload.sublabel":
-      "Start downloading when a new version is found; restarting to install remains manual.",
+      "Start downloading when a new version is found; it installs the next time you quit.",
     "settings.updater.currentVersion": "Current version {{version}}",
     "settings.updater.availableVersion": "New version {{version}} available",
     "settings.updater.lastChecked": "Last checked",

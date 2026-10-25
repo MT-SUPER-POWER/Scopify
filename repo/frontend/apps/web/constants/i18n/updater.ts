@@ -10,7 +10,7 @@ export const updaterMessages = {
     "notifications.updater.downloading.description": "新版本正在下载：{{percent}}%。",
     "notifications.updater.downloaded.title": "更新已下载",
     "notifications.updater.downloaded.description":
-      "Scopify {{version}} 已下载完成，重启即可安装。",
+      "Scopify {{version}} 已下载完成，下次退出时自动安装，也可以立即重启安装。",
     "notifications.updater.checking.title": "正在检查更新",
     "notifications.updater.checking.description": "正在检查 GitHub Release 中的最新版本。",
     "notifications.updater.error.title": "更新检查失败",
@@ -28,7 +28,7 @@ export const updaterMessages = {
     "notifications.updater.downloading.description": "新版本正在下載：{{percent}}%。",
     "notifications.updater.downloaded.title": "更新已下載",
     "notifications.updater.downloaded.description":
-      "Scopify {{version}} 已下載完成，重啟即可安裝。",
+      "Scopify {{version}} 已下載完成，下次結束時自動安裝，也可以立即重啟安裝。",
     "notifications.updater.checking.title": "正在檢查更新",
     "notifications.updater.checking.description": "正在檢查 GitHub Release 中的最新版本。",
     "notifications.updater.error.title": "更新檢查失敗",
@@ -47,7 +47,7 @@ export const updaterMessages = {
       "The new version is downloading: {{percent}}%.",
     "notifications.updater.downloaded.title": "Update downloaded",
     "notifications.updater.downloaded.description":
-      "Scopify {{version}} is ready to install after a restart.",
+      "Scopify {{version}} will install when you quit, or restart now to install it.",
     "notifications.updater.checking.title": "Checking for updates",
     "notifications.updater.checking.description":
       "Checking GitHub Releases for the latest version.",

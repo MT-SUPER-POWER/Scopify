@@ -35,6 +35,18 @@ function setState(patch: AppUpdateStatePatch) {
     manualInstall: process.platform === "darwin",
   };
   mainWindow?.webContents.send("updater:status-changed", state);
+  syncTaskbarProgress();
+}
+
+/** 下载期间在任务栏图标上同步进度，其余状态清除。 */
+function syncTaskbarProgress() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  if (state.status === "downloading") {
+    const percent = typeof state.percent === "number" ? state.percent : 0;
+    mainWindow.setProgressBar(Math.min(1, Math.max(0, percent / 100)));
+  } else {
+    mainWindow.setProgressBar(-1);
+  }
 }
 
 export function getUpdateState(): AppUpdateState {
@@ -104,14 +116,16 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
       message: undefined,
     }),
   );
-  autoUpdater.on("update-downloaded", (info) =>
+  autoUpdater.on("update-downloaded", (info) => {
+    // 下载完成后，用户正常退出应用时静默安装，不必非得回到设置页点「重启并安装」。
+    autoUpdater.autoInstallOnAppQuit = process.platform !== "darwin";
     setState({
       status: "downloaded",
       version: info.version,
       percent: 100,
       message: undefined,
-    }),
-  );
+    });
+  });
   autoUpdater.on("error", (error) => {
     const message = error instanceof Error ? error.message : String(error);
     updaterLog.warn("[updater] update error:", message);
