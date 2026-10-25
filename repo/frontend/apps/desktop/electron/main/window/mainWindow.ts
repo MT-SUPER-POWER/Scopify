@@ -6,6 +6,8 @@ import { rendererLog } from "@main/utils/logger";
 import { showAppCloseWindow } from "@main/window/appCloseWindow";
 import { createMainWindowRenderingPolicy } from "@main/window/mainWindowRendering";
 
+/** 合并页面标题连续变更的等待时间，足以覆盖路由标题被渲染层改回的间隔。 */
+const TITLE_SYNC_DELAY_MS = 120;
 const renderingPolicies = new WeakMap<BrowserWindow, MainWindowRenderingPolicy>();
 
 /** Create the main window and keep all BrowserWindow-specific policy local to this module. */
@@ -52,6 +54,23 @@ export function createMainWindow(options: MainWindowOptions) {
     const isZoomShortcut =
       (input.control || input.meta) && ["0", "=", "+", "-"].includes(input.key);
     if (isZoomShortcut) event.preventDefault();
+  });
+  // 切换路由时 Next.js 先写入页面标题，渲染层随即改回「歌名 - 歌手」；
+  // Electron 默认会把每次中间值都同步到原生标题栏，造成闪烁。这里合并短时间内的连续变更，
+  // 只把最终标题写到窗口上。
+  let titleSyncTimer: ReturnType<typeof setTimeout> | null = null;
+  window.on("page-title-updated", (event) => {
+    event.preventDefault();
+    if (titleSyncTimer) clearTimeout(titleSyncTimer);
+    titleSyncTimer = setTimeout(() => {
+      titleSyncTimer = null;
+      if (window.isDestroyed() || window.webContents.isDestroyed()) return;
+      const title = window.webContents.getTitle();
+      if (title && title !== window.getTitle()) window.setTitle(title);
+    }, TITLE_SYNC_DELAY_MS);
+  });
+  window.on("closed", () => {
+    if (titleSyncTimer) clearTimeout(titleSyncTimer);
   });
   window.on("enter-full-screen", () => {
     window.webContents.send("window-full-screen-changed", { isFullScreen: true });
