@@ -3,6 +3,8 @@
 import { PanelRightClose } from "lucide-react";
 import { NowPlayingArtistCard } from "./NowPlayingArtistCard";
 import { NowPlayingHero } from "./NowPlayingHero";
+import { NowPlayingNextUp } from "./NowPlayingNextUp";
+import { NowPlayingSongInfo } from "./NowPlayingSongInfo";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
@@ -40,6 +42,8 @@ export function NowPlayingPanel() {
           <div className="flex flex-col gap-4 px-4 pb-4">
             <NowPlayingHero song={song} />
             <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
+            <NowPlayingNextUp />
+            <NowPlayingSongInfo song={song} />
           </div>
         )}
       </ScrollArea>
