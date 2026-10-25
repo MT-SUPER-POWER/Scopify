@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RHINE_MODEL_URL } from "@/constants/rhineBackground";
+import { createGlowUniforms, glowMaterial } from "./archiveGlow";
 import { CardAppearance } from "./appearance";
 import { configureInternalOptics } from "./internalOptics";
 import { themeMaterial } from "./themeMaterial";
@@ -98,6 +99,7 @@ function arraySurface(source: THREE.MeshPhysicalMaterial, name: string) {
 
 export class RhineModel {
   readonly appearance = new CardAppearance();
+  readonly glow = createGlowUniforms();
   readonly array = new THREE.Group();
   readonly instances: THREE.InstancedMesh[] = [];
   readonly matrix: THREE.InstancedBufferAttribute;
@@ -143,6 +145,7 @@ export class RhineModel {
       const instanceGeometry = geometry.clone();
       instanceGeometry.setAttribute("archiveTheme", this.themes);
       themeMaterial(low, name, true);
+      glowMaterial(low, this.glow);
       const instance = new THREE.InstancedMesh(instanceGeometry, low, capacity);
       instance.instanceMatrix = this.matrix;
       instance.castShadow = mesh.castShadow;

@@ -42,6 +42,11 @@ export interface RhineShowcaseCard {
   phase: RhineShowcasePhase;
   elapsed: number;
 }
+export interface RhineGlowUniforms {
+  rhineGlowPosition: { value: THREE.Vector3 };
+  rhineGlowStrength: { value: number };
+  rhineGlowColor: { value: THREE.Color };
+}
 export interface RhineFieldPulse {
   row: number;
   lane: number;

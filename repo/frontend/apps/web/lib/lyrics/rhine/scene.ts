@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {
+  RHINE_GLOW,
   RHINE_LANES,
   RHINE_LIFT,
   RHINE_RIDGE_GAIN,
@@ -272,6 +273,9 @@ export class RhineScene {
     this.themeUpdates.commit();
     for (const instance of this.model.instances) instance.count = count;
     const theme = this.themeWave.background(this.time);
+    const emission = THREE.MathUtils.lerp(RHINE_GLOW.emission[0], RHINE_GLOW.emission[1], theme);
+    let glow = 0;
+    let source: RhineShowcaseCard | undefined;
     for (const card of this.cards.values()) {
       card.group.position.set(
         card.cell.x,
@@ -288,7 +292,19 @@ export class RhineScene {
       this.model.appearance.apply(card.group, progress);
       this.model.appearance.setClarity(card.group, smooth((progress - 0.3) / 0.7));
       this.model.appearance.setTheme(card.group, this.themeWave.sample(card.cell, this.time));
+      this.model.appearance.setGlow(card.group, progress * emission);
+      if (progress > glow) {
+        glow = progress;
+        source = card;
+      }
     }
+    // The highest extracted file is the lamp; returning copies hand it over as they sink.
+    if (source) {
+      const { x, y, z } = source.group.position;
+      this.model.glow.rhineGlowPosition.value.set(x, y + 1.85, z);
+    }
+    this.model.glow.rhineGlowStrength.value =
+      glow * THREE.MathUtils.lerp(RHINE_GLOW.spill[0], RHINE_GLOW.spill[1], theme);
     this.view.setTheme(theme);
     this.view.draw();
   }
