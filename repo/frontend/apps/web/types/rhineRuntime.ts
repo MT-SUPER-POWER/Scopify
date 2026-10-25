@@ -52,3 +52,9 @@ export interface RhineFieldPulse {
   lane: number;
   time: number;
 }
+export interface RhineBeatFrame {
+  /** Kick, snare and hat onset strengths this frame; 0 means no onset. */
+  onsets: [number, number, number];
+  /** Smoothed log-spaced spectrum columns, bass to treble, 0-1. */
+  levels: Float32Array;
+}
