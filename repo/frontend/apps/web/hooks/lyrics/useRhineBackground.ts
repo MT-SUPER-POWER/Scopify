@@ -88,11 +88,12 @@ export function useRhineBackground(props: RhineBackgroundProps) {
         previousTime = now;
         const { audioBands, audioPower } = latest.current;
         try {
+          // Folia's bands use the analyser's 0-255 scale; the scene's envelope expects 0-1.
           scene.advance(Math.min(elapsed / 1000, 0.1), {
-            low: audioBands.bass.get(),
-            mid: (audioBands.mid.get() + audioBands.vocal.get()) / 2,
-            high: audioBands.treble.get(),
-            activity: audioPower.get(),
+            low: audioBands.bass.get() / 255,
+            mid: (audioBands.mid.get() + audioBands.vocal.get()) / 510,
+            high: audioBands.treble.get() / 255,
+            activity: audioPower.get() / 255,
             spectrum: audioBands.spectrum?.get(),
           });
         } catch (error) {
