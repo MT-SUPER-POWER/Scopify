@@ -2,6 +2,23 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v2.2.2 — 2026-10-25
+
+### 新增
+
+- 取出的档案发出琥珀暖光照亮同列 ([982581e8](https://github.com/MT-SUPER-POWER/Scopify/commit/982581e8d78be1fe3cd0e13333f60a1b5df70f91))
+- 莱茵背景明暗切换从当前档案向外扩散 ([4d1f8523](https://github.com/MT-SUPER-POWER/Scopify/commit/4d1f85232bb4dff9d4642e0a48a2234f9747b186))
+- 切歌时档案带起同列山脊与涟漪 ([2e7265a5](https://github.com/MT-SUPER-POWER/Scopify/commit/2e7265a57df440e0bb117e61223d2f0b02e0717e))
+- 莱茵背景换用暖色光照与纸面晕染 ([b82a5680](https://github.com/MT-SUPER-POWER/Scopify/commit/b82a5680ad7f35161dfa08685e85ba09319f9d84))
+
+### 修复
+
+- 取出档案的螺钉与内衬不再跟着玻璃变透明 ([8d5c1e34](https://github.com/MT-SUPER-POWER/Scopify/commit/8d5c1e341f911556865a7e429be53c3a796f4e3f))
+
+### 优化
+
+- 莱茵背景切歌时不再卡顿 ([db55d653](https://github.com/MT-SUPER-POWER/Scopify/commit/db55d65337bdea3d394a416391e3a8370ba52198))
+
 ## v2.2.1 — 2026-10-25
 
 ### 新增
