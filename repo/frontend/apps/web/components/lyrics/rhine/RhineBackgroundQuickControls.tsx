@@ -11,7 +11,7 @@ import type { VisualizerBackgroundQuickControlsProps } from "@/components/lyrics
 import type { RhineBackgroundTuning } from "@/types/rhineBackground";
 
 const COLOR_MODES = ["auto", "light", "dark"] as const;
-const RHYTHM_STYLES = ["legacy", "wave", "lift"] as const;
+const RHYTHM_STYLES = ["legacy", "wave", "lift", "beat"] as const;
 const COLOR_LABELS = {
   auto: "folia.rhine.colorAuto",
   light: "folia.rhine.colorLight",
@@ -21,6 +21,7 @@ const RHYTHM_LABELS = {
   legacy: "folia.rhine.rhythmLegacy",
   wave: "folia.rhine.rhythmWave",
   lift: "folia.rhine.rhythmLift",
+  beat: "folia.rhine.rhythmBeat",
 } as const;
 
 /** The same persisted tuning as the full Rhine editor, exposed through the background toolbar. */

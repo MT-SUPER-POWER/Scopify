@@ -90,7 +90,12 @@ export default function RhineBackgroundSettingsCard({
           value={tuning.rhythmStyle}
           onChange={(event) => {
             const rhythmStyle = event.target.value;
-            if (rhythmStyle === "legacy" || rhythmStyle === "wave" || rhythmStyle === "lift")
+            if (
+              rhythmStyle === "legacy" ||
+              rhythmStyle === "wave" ||
+              rhythmStyle === "lift" ||
+              rhythmStyle === "beat"
+            )
               change?.({ rhythmStyle });
           }}
         >
@@ -102,6 +107,9 @@ export default function RhineBackgroundSettingsCard({
           </option>
           <option style={optionStyle} value="lift">
             {t("folia.rhine.rhythmLift")}
+          </option>
+          <option style={optionStyle} value="beat">
+            {t("folia.rhine.rhythmBeat")}
           </option>
         </select>
       </label>

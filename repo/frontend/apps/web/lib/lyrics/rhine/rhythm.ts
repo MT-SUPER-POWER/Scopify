@@ -20,9 +20,9 @@ export function musicDisplacement(
 }
 /** Crossfade styles without a beat gate: sustained notes remain visible. */
 export class RhythmMotion {
-  private weights = { legacy: 1, wave: 0, lift: 0 };
+  private weights = { legacy: 1, wave: 0, lift: 0, beat: 0 };
   update(_bands: MusicBands, _time: number, dt: number, style: RhythmStyle): RhythmFrame {
-    for (const key of ["legacy", "wave", "lift"] as const)
+    for (const key of ["legacy", "wave", "lift", "beat"] as const)
       this.weights[key] +=
         ((style === key ? 1 : 0) - this.weights[key]) * (1 - Math.exp(-clamp(dt, 0, 0.1) * 5));
     return { style: { ...this.weights } };

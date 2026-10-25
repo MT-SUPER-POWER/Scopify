@@ -137,7 +137,7 @@ const STRING_ENUMS = {
   "background.mode": ["common", "monet", "nomand", "latent", "url", "sora", "rhine"],
   "background.rhine.tuning.colorMode": ["auto", "light", "dark"],
   "background.rhine.tuning.quality": ["performance", "original", "high"],
-  "background.rhine.tuning.rhythmStyle": ["legacy", "wave", "lift"],
+  "background.rhine.tuning.rhythmStyle": ["legacy", "wave", "lift", "beat"],
   "background.rhine.tuning.frameRate": ["30", "60"],
   "background.monet.tuning.backgroundLayout": ["full-overlay", "half-pane-gradient"],
   "background.monet.tuning.backgroundSource": ["cover-derived", "uploaded-global"],

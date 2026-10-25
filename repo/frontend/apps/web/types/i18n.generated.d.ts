@@ -13205,6 +13205,12 @@ export interface TranslateFn {
    */
   (key: "folia.rhine.rhythmLift", params?: TranslationParams): string;
   /**
+   * zh-CN: 节拍跃动
+   * zh-TW: 節拍躍動
+   * en-US: Beat pulse
+   */
+  (key: "folia.rhine.rhythmBeat", params?: TranslationParams): string;
+  /**
    * zh-CN: 律动强度
    * zh-TW: 律動強度
    * en-US: Motion strength
