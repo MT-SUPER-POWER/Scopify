@@ -23,9 +23,11 @@ export interface Baseline {
 export interface RhythmFrame {
   style: Record<RhineRhythmStyle, number>;
 }
-export interface RhineCell {
+export interface RhineThemeCell {
   row: number;
   lane: number;
+}
+export interface RhineCell extends RhineThemeCell {
   key: string;
   x: number;
   z: number;
@@ -39,4 +41,14 @@ export interface RhineShowcaseCard {
   startLift: number;
   phase: RhineShowcasePhase;
   elapsed: number;
+}
+export interface RhineGlowUniforms {
+  rhineGlowPosition: { value: THREE.Vector3 };
+  rhineGlowStrength: { value: number };
+  rhineGlowColor: { value: THREE.Color };
+}
+export interface RhineFieldPulse {
+  row: number;
+  lane: number;
+  time: number;
 }

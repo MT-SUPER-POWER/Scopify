@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RHINE_MODEL_URL } from "@/constants/rhineBackground";
+import { createGlowUniforms, glowMaterial } from "./archiveGlow";
 import { CardAppearance } from "./appearance";
 import { configureInternalOptics } from "./internalOptics";
 import { themeMaterial } from "./themeMaterial";
@@ -98,12 +99,14 @@ function arraySurface(source: THREE.MeshPhysicalMaterial, name: string) {
 
 export class RhineModel {
   readonly appearance = new CardAppearance();
+  readonly glow = createGlowUniforms();
   readonly array = new THREE.Group();
   readonly instances: THREE.InstancedMesh[] = [];
   readonly matrix: THREE.InstancedBufferAttribute;
   readonly themes: THREE.InstancedBufferAttribute;
   private readonly template = new THREE.Group();
   private readonly songPlates = new Map<THREE.Group, RhineSongPlate>();
+  private readonly pool: THREE.Group[] = [];
   onArtworkReady?: () => void;
 
   constructor(source: THREE.Group, capacity: number) {
@@ -143,6 +146,7 @@ export class RhineModel {
       const instanceGeometry = geometry.clone();
       instanceGeometry.setAttribute("archiveTheme", this.themes);
       themeMaterial(low, name, true);
+      glowMaterial(low, this.glow);
       const instance = new THREE.InstancedMesh(instanceGeometry, low, capacity);
       instance.instanceMatrix = this.matrix;
       instance.castShadow = mesh.castShadow;
@@ -154,6 +158,11 @@ export class RhineModel {
   }
 
   createCard(track: RhineArchiveTrack) {
+    const pooled = this.pool.pop();
+    if (pooled) {
+      this.songPlates.get(pooled)?.setTrack(track);
+      return pooled;
+    }
     const card = this.template.clone(true);
     // Keep the cassette shell and fittings; the song replaces the original
     // internal optics and printed database label.
@@ -172,7 +181,17 @@ export class RhineModel {
     this.songPlates.get(card)?.setTrack(track);
   }
 
+  /**
+   * Returned files keep their materials: disposing them makes three.js delete
+   * the shader programs, and ANGLE takes about half a second to rebuild them
+   * on the next song change. At most one file per showcase slot is ever built.
+   */
   releaseCard(card: THREE.Group) {
+    card.removeFromParent();
+    if (!this.pool.includes(card)) this.pool.push(card);
+  }
+
+  private disposeCard(card: THREE.Group) {
     this.songPlates.get(card)?.dispose();
     this.songPlates.delete(card);
     this.appearance.dispose(card);
@@ -184,7 +203,8 @@ export class RhineModel {
 
   dispose() {
     this.onArtworkReady = undefined;
-    for (const card of [...this.songPlates.keys()]) this.releaseCard(card);
+    for (const card of [...this.songPlates.keys()]) this.disposeCard(card);
+    this.pool.length = 0;
     for (const mesh of this.instances) {
       mesh.dispose();
       mesh.geometry.dispose();

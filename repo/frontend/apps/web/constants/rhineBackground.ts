@@ -20,6 +20,15 @@ export const RHINE_ROWS = 48;
 export const RHINE_LANES = 9;
 export const RHINE_LIFT = 4.05;
 export const RHINE_SHOWCASE_TIMING = { rising: 0.9, holding: 1.2, returning: 1.1 } as const;
+// The showcase lane rises with the archive; scaled so the lifted file stays inside the frame.
+export const RHINE_RIDGE_GAIN = 0.65;
+// The extracted file lights its neighbours in Rhine Music Database's amber (1, 0.72, 0.38).
+// Neighbour spill and the lamp shell's own emission, light theme → dark theme.
+export const RHINE_GLOW = {
+  color: "#ffb861",
+  spill: [0.2, 4.5],
+  emission: [0.06, 0.25],
+} as const;
 export const RHINE_QUALITY: Record<RhineQuality, RhineQualitySettings> = {
   performance: {
     scale: 0.8,

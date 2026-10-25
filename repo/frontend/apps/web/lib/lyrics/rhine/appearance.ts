@@ -1,10 +1,14 @@
 // Adapted from RhineLabUI (d9ecb6c); see SOURCE.md and LICENSE.RhineLabUI.
 import * as THREE from "three";
+import { RHINE_GLOW } from "@/constants/rhineBackground";
 import { glassRevealGLSL, frostedTransmissionGLSL, FROSTED_ROUGHNESS } from "./glassReveal";
 import { internalOpticsFragment } from "./internalOptics";
 import { themeMaterial } from "./themeMaterial";
 
 import type { Surface, Palette } from "@/types/rhineRuntime";
+
+// Rhine Music Database lights the extracted file's shell, not its fittings or artwork.
+const glowSurfaces = new Set(["Frosted_Polymer", "Ivory_Edges", "Optical_Diffuser"]);
 
 // The array and selected file share geometry. Morph their surface properties
 // on one mesh so transparent shells never overlap during a quality change.
@@ -39,6 +43,10 @@ export class CardAppearance {
       const amount = { value: 0 };
       const clarity = { value: 0 };
       mesh.material = mat;
+      if (glowSurfaces.has(name)) {
+        mat.emissive.set(RHINE_GLOW.color);
+        mat.emissiveIntensity = 0;
+      }
       if (mat.userData.opticalOrder) mesh.renderOrder = mat.userData.opticalOrder;
       mesh.userData.appearance = amount;
       mesh.userData.glassClarity = clarity;
@@ -103,6 +111,8 @@ export class CardAppearance {
     group.traverse((child) => {
       if (!(child instanceof THREE.Mesh) || !child.userData.glassClarity) return;
       child.userData.glassClarity.value = clarity;
+      // Only the shell clears; fittings keep their own opaque surfaces.
+      if (child.userData.surface !== "Frosted_Polymer") return;
       const mat = child.material as Surface;
       const palette = this.palettes.get("Frosted_Polymer");
       if (!palette) return;
@@ -120,6 +130,13 @@ export class CardAppearance {
       if (child.userData.themeAmount) child.userData.themeAmount.value = value;
       if (child.userData.subduedIndex)
         child.userData.subduedIndex.value = THREE.MathUtils.clamp(Number(subduedIndex), 0, 1);
+    });
+  }
+
+  setGlow(group: THREE.Group, value: number) {
+    group.traverse((child) => {
+      if (child instanceof THREE.Mesh && glowSurfaces.has(child.userData.surface))
+        (child.material as Surface).emissiveIntensity = Math.max(0, value);
     });
   }
 
