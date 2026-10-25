@@ -15,3 +15,8 @@ export interface NowPlayingCardProps {
   children: ReactNode;
   className?: string;
 }
+
+export interface NowPlayingDynamicCoverProps {
+  songId: number;
+  isPlaying: boolean;
+}

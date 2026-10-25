@@ -30,6 +30,7 @@ export interface SongCommentTotalResponse {
 }
 
 export interface SongDynamicCoverData {
+  videoPlayUrl?: string;
   dynamicCoverUrl?: string;
   dynamicCoverVideoUrl?: string;
   coverUrl?: string;
