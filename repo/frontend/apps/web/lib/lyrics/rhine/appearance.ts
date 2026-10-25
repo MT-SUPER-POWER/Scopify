@@ -111,6 +111,8 @@ export class CardAppearance {
     group.traverse((child) => {
       if (!(child instanceof THREE.Mesh) || !child.userData.glassClarity) return;
       child.userData.glassClarity.value = clarity;
+      // Only the shell clears; fittings keep their own opaque surfaces.
+      if (child.userData.surface !== "Frosted_Polymer") return;
       const mat = child.material as Surface;
       const palette = this.palettes.get("Frosted_Polymer");
       if (!palette) return;
