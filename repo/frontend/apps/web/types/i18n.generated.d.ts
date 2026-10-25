@@ -179,6 +179,12 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.album", params?: TranslationParams): string;
   /**
+   * zh-CN: 全部 {{count}} 条
+   * zh-TW: 全部 {{count}} 則
+   * en-US: All {{count}}
+   */
+  (key: "nowPlaying.allComments", params?: TranslationParams): string;
+  /**
    * zh-CN: 演职人员
    * zh-TW: 演職人員
    * en-US: Credits

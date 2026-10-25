@@ -58,6 +58,8 @@ export const musicQueryKeys = {
   comment: {
     count: (kind: CommentResourceKind | "unknown", resourceId: string) =>
       ["comment", "count", kind, resourceId] as const,
+    hotPreview: (songId: number, limit: number) =>
+      ["comment", "hot-preview", songId, limit] as const,
   },
   playlist: {
     content: (playlistId: string, isRecommend: boolean) =>
