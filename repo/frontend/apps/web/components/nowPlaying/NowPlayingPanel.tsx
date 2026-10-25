@@ -1,6 +1,7 @@
 "use client";
 
 import { PanelRightClose } from "lucide-react";
+import { NowPlayingLyricsView } from "./NowPlayingLyricsView";
 import { NowPlayingOverview } from "./NowPlayingOverview";
 import { NowPlayingPanelTabs } from "./NowPlayingPanelTabs";
 import { NowPlayingQueueView } from "./NowPlayingQueueView";
@@ -9,7 +10,7 @@ import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
 import type { NowPlayingPanelView } from "@/types/components/nowPlaying";
 
-/** 主布局右栏：在正在播放信息与播放队列之间切换。 */
+/** 主布局右栏：在正在播放信息、滚动歌词与播放队列之间切换。 */
 export function NowPlayingPanel() {
   const { t } = useI18n();
   const song = usePlayerStore((s) => s.currentSongDetail);
@@ -36,7 +37,16 @@ export function NowPlayingPanel() {
         </button>
       </header>
 
-      {view === "queue" ? <NowPlayingQueueView /> : song && <NowPlayingOverview song={song} />}
+      {view === "queue" ? (
+        <NowPlayingQueueView />
+      ) : (
+        song &&
+        (view === "lyrics" ? (
+          <NowPlayingLyricsView song={song} />
+        ) : (
+          <NowPlayingOverview song={song} />
+        ))
+      )}
     </aside>
   );
 }

@@ -107,6 +107,30 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.tab.queue", params?: TranslationParams): string;
   /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "nowPlaying.tab.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词预览
+   * zh-TW: 歌詞預覽
+   * en-US: Lyrics preview
+   */
+  (key: "nowPlaying.lyricsPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无歌词
+   * zh-TW: 暫無歌詞
+   * en-US: No lyrics for this song
+   */
+  (key: "nowPlaying.lyricsEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全屏歌词
+   * zh-TW: 全螢幕歌詞
+   * en-US: Full-screen lyrics
+   */
+  (key: "nowPlaying.lyricsFullscreen", params?: TranslationParams): string;
+  /**
    * zh-CN: 显示正在播放面板
    * zh-TW: 顯示正在播放面板
    * en-US: Show Now Playing view

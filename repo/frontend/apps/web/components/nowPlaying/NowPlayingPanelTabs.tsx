@@ -7,6 +7,7 @@ import type { NowPlayingPanelView } from "@/types/components/nowPlaying";
 
 const TABS = [
   { view: "overview", labelKey: "nowPlaying.tab.overview" },
+  { view: "lyrics", labelKey: "nowPlaying.tab.lyrics" },
   { view: "queue", labelKey: "nowPlaying.tab.queue" },
 ] as const satisfies readonly { view: NowPlayingPanelView; labelKey: string }[];
 

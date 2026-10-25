@@ -2,6 +2,7 @@
 
 import { NowPlayingArtistCard } from "./NowPlayingArtistCard";
 import { NowPlayingHero } from "./NowPlayingHero";
+import { NowPlayingLyricsPreview } from "./NowPlayingLyricsPreview";
 import { NowPlayingNextUp } from "./NowPlayingNextUp";
 import { NowPlayingSongInfo } from "./NowPlayingSongInfo";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,6 +17,7 @@ export function NowPlayingOverview({ song }: NowPlayingSectionProps) {
     >
       <div className="flex flex-col gap-4 px-4 pb-4">
         <NowPlayingHero song={song} />
+        <NowPlayingLyricsPreview song={song} />
         <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
         <NowPlayingNextUp />
         <NowPlayingSongInfo song={song} />
