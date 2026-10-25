@@ -4,17 +4,14 @@ import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { SidebarPlaylistSkeleton } from "@/components/Siderbar/SidebarPlaylistSkeleton";
 import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
+import { NOW_PLAYING_PANEL_MAX_WIDTH, NOW_PLAYING_PANEL_MIN_WIDTH } from "@/constants/layout";
 
 /** Mirrors components/Header: brand + history on the left, home + search centered, actions right. */
 export function LoadingHeaderSkeleton() {
   return (
     <div className="@container grid h-12 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 px-2">
       <div className="flex items-center gap-2">
-        <ScopifyBrand
-          priority
-          className="mx-2 min-w-0"
-          wordmarkClassName="@max-[1080px]:hidden"
-        />
+        <ScopifyBrand priority className="mx-2 min-w-0" wordmarkClassName="@max-[1080px]:hidden" />
         <Skeleton className="size-8 rounded-full bg-skeleton" />
         <Skeleton className="size-8 rounded-full bg-skeleton @max-[560px]:hidden" />
       </div>
@@ -96,6 +93,41 @@ export function LoadingSidebarSkeleton() {
           </footer>
         </div>
       </aside>
+    </div>
+  );
+}
+
+/**
+ * Mirrors components/nowPlaying: the full panel (cover, title, artist card) or the collapsed rail,
+ * matching what the hydrated layout will render.
+ */
+export function LoadingNowPlayingSkeleton() {
+  const { nowPlaying, nowPlayingSizePercent } = useSidebarLoadingLayout();
+  if (nowPlaying === "rail") {
+    return <div className="w-9 shrink-0 rounded-lg bg-surface-sunken" aria-hidden />;
+  }
+  if (nowPlaying !== "panel") return null;
+
+  return (
+    <div
+      className="flex shrink-0 flex-col gap-4 overflow-hidden rounded-lg bg-surface-sunken px-4"
+      style={{
+        width: `${nowPlayingSizePercent}%`,
+        minWidth: NOW_PLAYING_PANEL_MIN_WIDTH,
+        maxWidth: NOW_PLAYING_PANEL_MAX_WIDTH,
+      }}
+      aria-hidden
+    >
+      <div className="flex h-14 shrink-0 items-center justify-between">
+        <Skeleton className="h-4 w-20 bg-skeleton" />
+        <Skeleton className="size-8 rounded-full bg-skeleton-subtle" />
+      </div>
+      <Skeleton className="aspect-square w-full shrink-0 rounded-lg bg-skeleton" />
+      <div className="space-y-2">
+        <Skeleton className="h-6 w-3/5 bg-skeleton" />
+        <Skeleton className="h-3.5 w-2/5 bg-skeleton-subtle" />
+      </div>
+      <Skeleton className="h-64 w-full shrink-0 rounded-lg bg-skeleton-subtle" />
     </div>
   );
 }

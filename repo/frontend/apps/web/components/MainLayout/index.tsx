@@ -41,6 +41,7 @@ import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWork
 import { WhatsNewModal } from "@/components/updates/WhatsNewModal";
 // self components
 import MainLayoutSkeleton from "./Skeleton";
+import { LoadingNowPlayingSkeleton } from "./LoadingChrome";
 import { Sidebar } from "@/components/Siderbar";
 import { NowPlayingCollapsedRail } from "@/components/nowPlaying/NowPlayingCollapsedRail";
 import { NowPlayingPanel } from "@/components/nowPlaying/NowPlayingPanel";
@@ -269,6 +270,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             >
               <div className="size-full overflow-hidden">{children}</div>
             </div>
+            <LoadingNowPlayingSkeleton />
           </div>
         )}
 

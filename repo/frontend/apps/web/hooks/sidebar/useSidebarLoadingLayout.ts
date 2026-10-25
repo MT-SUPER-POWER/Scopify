@@ -4,43 +4,50 @@ import { useSyncExternalStore } from "react";
 import {
   DASHBOARD_LAYOUT_GROUP_ID,
   DASHBOARD_PANEL_IDS,
-  NOW_PLAYING_PANEL_MEDIA_QUERY,
+  NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT,
   SIDEBAR_DEFAULT_SIZE_PERCENT,
 } from "@/constants/layout";
+import { readNowPlayingLoadingState } from "@/lib/layout/nowPlayingLoadingState";
 import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 
 // react-resizable-panels keys each rendered panel set separately: `<prefix>:<group>:<id>:<id>...`.
 const LAYOUT_STORAGE_PREFIX = `react-resizable-panels:${DASHBOARD_LAYOUT_GROUP_ID}`;
-const UI_STORAGE_KEY = "ui-storage";
 
 function subscribe() {
   return () => undefined;
 }
 
-function readNowPlayingPanelPreference() {
-  try {
-    const raw = window.localStorage.getItem(UI_STORAGE_KEY);
-    const state = raw ? (JSON.parse(raw) as { state?: { isNowPlayingPanelOpen?: boolean } }) : null;
-    return state?.state?.isNowPlayingPanelOpen ?? true;
-  } catch {
-    return true;
-  }
+function readLayoutSize(key: string, panelId: string = DASHBOARD_PANEL_IDS.sidebar) {
+  const raw = window.localStorage.getItem(key);
+  if (!raw) return undefined;
+  const layout = JSON.parse(raw) as Record<string, number>;
+  // Legacy layouts were saved without panel ids; the sidebar was their first entry.
+  const size =
+    layout[panelId] ??
+    (panelId === DASHBOARD_PANEL_IDS.sidebar ? Object.values(layout)[0] : undefined);
+  return typeof size === "number" && size > 0 ? size : undefined;
 }
 
-function readLayoutSize(key: string) {
-  const raw = window.localStorage.getItem(key);
-  // The sidebar is the first panel in the persisted { [panelId]: percent } layout.
-  const size = raw ? Object.values(JSON.parse(raw) as Record<string, number>)[0] : undefined;
-  return typeof size === "number" && size > 0 ? size : undefined;
+function readSavedNowPlayingSize() {
+  try {
+    const key = [
+      LAYOUT_STORAGE_PREFIX,
+      DASHBOARD_PANEL_IDS.sidebar,
+      DASHBOARD_PANEL_IDS.main,
+      DASHBOARD_PANEL_IDS.nowPlaying,
+    ].join(":");
+    return (
+      readLayoutSize(key, DASHBOARD_PANEL_IDS.nowPlaying) ?? NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT
+    );
+  } catch {
+    return NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT;
+  }
 }
 
 function readSavedSidebarSize() {
   try {
     const panelIds: string[] = [DASHBOARD_PANEL_IDS.sidebar, DASHBOARD_PANEL_IDS.main];
-    if (
-      readNowPlayingPanelPreference() &&
-      window.matchMedia(NOW_PLAYING_PANEL_MEDIA_QUERY).matches
-    ) {
+    if (readNowPlayingLoadingState() === "panel") {
       panelIds.push(DASHBOARD_PANEL_IDS.nowPlaying);
     }
     return (
@@ -53,7 +60,7 @@ function readSavedSidebarSize() {
   }
 }
 
-/** Sidebar geometry for placeholders rendered before the resizable layout and stores mount. */
+/** Sidebar and Now Playing geometry for placeholders rendered before the resizable layout and stores mount. */
 export function useSidebarLoadingLayout() {
   const sizePercent = useSyncExternalStore(
     subscribe,
@@ -65,5 +72,11 @@ export function useSidebarLoadingLayout() {
     () => Boolean(getMusicSessionCredential()),
     () => false,
   );
-  return { hasSession, sizePercent };
+  const nowPlaying = useSyncExternalStore(subscribe, readNowPlayingLoadingState, () => null);
+  const nowPlayingSizePercent = useSyncExternalStore(
+    subscribe,
+    readSavedNowPlayingSize,
+    () => NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT,
+  );
+  return { hasSession, nowPlaying, nowPlayingSizePercent, sizePercent };
 }

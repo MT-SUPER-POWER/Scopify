@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import {
   LoadingHeaderSkeleton,
+  LoadingNowPlayingSkeleton,
   LoadingPlayerBarSkeleton,
   LoadingSidebarSkeleton,
 } from "@/components/MainLayout/LoadingChrome";
@@ -65,6 +66,7 @@ export default function MainLayoutSkeleton({
             </div>
           )}
         </section>
+        <LoadingNowPlayingSkeleton />
       </div>
       <LoadingPlayerBarSkeleton />
       {title ? (

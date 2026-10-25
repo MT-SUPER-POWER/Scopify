@@ -1,3 +1,6 @@
+/** Now Playing panel shape predicted for loading placeholders before hydration. */
+export type NowPlayingLoadingState = "panel" | "rail" | null;
+
 export interface UiStore {
   isSearchOpen: boolean;
   setIsSearchOpen: (open: boolean) => void;
