@@ -2,14 +2,24 @@ import * as THREE from "three";
 import {
   RHINE_LANES,
   RHINE_LIFT,
+  RHINE_RIDGE_GAIN,
   RHINE_ROWS,
   RHINE_SHOWCASE_TIMING,
 } from "@/constants/rhineBackground";
 import type { RhineAudioSample, RhineSceneInput } from "@/types/rhineBackground";
-import type { RhineCell, RhineShowcaseCard } from "@/types/rhineRuntime";
+import type { RhineCell, RhineFieldPulse, RhineShowcaseCard } from "@/types/rhineRuntime";
 import { InstanceUpdates } from "./instanceUpdates";
 import { RhineModel } from "./model";
-import { idleWave, RhineEnvelope, smooth } from "./motion";
+import {
+  idleWave,
+  laneFocus,
+  RhineEnvelope,
+  RIPPLE_LIFE,
+  selectionRipple,
+  settlingRidge,
+  smooth,
+  Spring,
+} from "./motion";
 import { RhineRenderer } from "./renderer";
 import { RhythmMotion, rhythmDisplacement } from "./rhythm";
 
@@ -26,6 +36,11 @@ export class RhineScene {
   private readonly projection = new THREE.Matrix4();
   private visible: RhineCell[] = [];
   private readonly heights = new Map<string, number>();
+  private readonly tilts = new Map<string, number>();
+  private readonly pulses: RhineFieldPulse[] = [];
+  private readonly ridgeRow: Spring;
+  private ridgeAmount = 0;
+  private ridgeAge = 0;
   private active: RhineCell;
   private seed: string;
   private time = 0;
@@ -55,6 +70,7 @@ export class RhineScene {
       }
     }
     this.active = this.cellForSeed(this.seed);
+    this.ridgeRow = new Spring(this.active.row);
     this.view.scene.add(model.array);
     this.updateVisibility();
     this.updateField(0);
@@ -103,6 +119,7 @@ export class RhineScene {
     }
     const group = this.model.createCard(this.input.track);
     this.cards.set(cell.key, { cell, group, lift: 0, startLift: 0, phase: "rising", elapsed: 0 });
+    this.pulses.push({ row: cell.row, lane: cell.lane, time: this.time });
     this.view.scene.add(group);
   }
 
@@ -132,6 +149,23 @@ export class RhineScene {
         }
       }
     }
+  }
+
+  private updateRidge(dt: number) {
+    const raised = [...this.cards.values()].some((card) => card.phase !== "returning");
+    if (raised && this.ridgeAmount === 0) {
+      // A ridge rising from rest starts its own wavefront under the new archive.
+      this.ridgeAge = 0;
+      this.ridgeRow.value = this.active.row;
+      this.ridgeRow.velocity = 0;
+    }
+    this.ridgeAge += dt;
+    // Later skips glide the standing ridge along the lane instead of rebuilding it.
+    this.ridgeRow.damp(this.active.row, 5, dt);
+    this.ridgeAmount +=
+      ((raised ? 1 : 0) - this.ridgeAmount) * (1 - Math.exp(-dt * (raised ? 6 : 2.6)));
+    if (!raised && this.ridgeAmount < 0.001) this.ridgeAmount = 0;
+    while (this.pulses.length && this.time - this.pulses[0].time > RIPPLE_LIFE) this.pulses.shift();
   }
 
   private updateVisibility() {
@@ -178,6 +212,7 @@ export class RhineScene {
     this.envelope.update(audio, this.input.tuning.musicEnabled, dt);
     this.themeAmount += (Number(this.input.dark) - this.themeAmount) * (1 - Math.exp(-dt * 5));
     this.updateShowcases(dt);
+    this.updateRidge(dt);
     this.updateField(dt);
     this.paint();
   }
@@ -185,21 +220,36 @@ export class RhineScene {
   private updateField(dt: number) {
     const tuning = this.input.tuning;
     const frame = this.rhythm.update(this.envelope.bands, this.time, dt, tuning.rhythmStyle);
+    const height = (cell: RhineCell, row: number) => {
+      let value =
+        (tuning.breathingEnabled ? idleWave(row, cell.lane, this.time) : 0) +
+        rhythmDisplacement(
+          row,
+          cell.lane,
+          this.time,
+          this.envelope.bands,
+          tuning.strength,
+          frame,
+          cell.screenX,
+        );
+      if (this.ridgeAmount > 0)
+        value +=
+          this.ridgeAmount *
+          RHINE_RIDGE_GAIN *
+          settlingRidge(row - this.ridgeRow.value, this.ridgeAge) *
+          laneFocus(cell.lane - this.active.lane);
+      let ripple = 0;
+      for (const pulse of this.pulses)
+        ripple += selectionRipple(row - pulse.row, cell.lane - pulse.lane, this.time - pulse.time);
+      return value + THREE.MathUtils.clamp(ripple, -0.6, 0.6);
+    };
     // Cache heights even for culled cells, so resizing a paused scene retains its last pose.
     for (const cell of this.cells) {
-      const breathing = tuning.breathingEnabled ? idleWave(cell.row, cell.lane, this.time) : 0;
-      this.heights.set(
+      this.heights.set(cell.key, height(cell, cell.row));
+      // Lean each file along the local slope so the field reads as one continuous surface.
+      this.tilts.set(
         cell.key,
-        breathing +
-          rhythmDisplacement(
-            cell.row,
-            cell.lane,
-            this.time,
-            this.envelope.bands,
-            tuning.strength,
-            frame,
-            cell.screenX,
-          ),
+        (height(cell, cell.row + 0.5) - height(cell, cell.row - 0.5)) * 0.024,
       );
     }
   }
@@ -208,7 +258,9 @@ export class RhineScene {
     let count = 0;
     for (const cell of this.visible) {
       if (this.cards.has(cell.key)) continue;
-      this.transform.makeTranslation(cell.x, -4.6 + (this.heights.get(cell.key) ?? 0), cell.z);
+      this.transform
+        .makeRotationX(this.tilts.get(cell.key) ?? 0)
+        .setPosition(cell.x, -4.6 + (this.heights.get(cell.key) ?? 0), cell.z);
       this.matrixUpdates.set(count * 16, this.transform.elements);
       this.themeUpdates.scalar(count, this.themeAmount);
       count++;
@@ -224,7 +276,11 @@ export class RhineScene {
       );
       const progress = smooth(card.lift / RHINE_LIFT);
       // Turn toward the reader only while a file is extracted. The resting array stays aligned.
-      card.group.rotation.y = -0.28 * progress;
+      card.group.rotation.set(
+        (this.tilts.get(card.cell.key) ?? 0) * (1 - smooth(card.lift / 0.4)),
+        -0.28 * progress,
+        0,
+      );
       this.model.appearance.apply(card.group, progress);
       this.model.appearance.setClarity(card.group, smooth((progress - 0.3) / 0.7));
       this.model.appearance.setTheme(card.group, this.themeAmount);

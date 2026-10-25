@@ -40,3 +40,8 @@ export interface RhineShowcaseCard {
   phase: RhineShowcasePhase;
   elapsed: number;
 }
+export interface RhineFieldPulse {
+  row: number;
+  lane: number;
+  time: number;
+}
