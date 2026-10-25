@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, screen } from "electron";
 import type { MainWindowOptions, MainWindowRenderingPolicy } from "@/types/electronWindow";
 import { __iconWindow, __preloadScript } from "@main/constants";
 import { loadDesktopHostConfig } from "@main/store";
@@ -8,14 +8,17 @@ import { createMainWindowRenderingPolicy } from "@main/window/mainWindowRenderin
 
 /** 合并页面标题连续变更的等待时间，足以覆盖路由标题被渲染层改回的间隔。 */
 const TITLE_SYNC_DELAY_MS = 120;
+/** 首次打开的窗口尺寸（16:9），小屏幕上收敛到可用工作区内。 */
+const DEFAULT_WINDOW_SIZE = { height: 900, width: 1600 } as const;
 const renderingPolicies = new WeakMap<BrowserWindow, MainWindowRenderingPolicy>();
 
 /** Create the main window and keep all BrowserWindow-specific policy local to this module. */
 export function createMainWindow(options: MainWindowOptions) {
+  const { workAreaSize } = screen.getPrimaryDisplay();
   const window = new BrowserWindow({
     autoHideMenuBar: true,
-    height: 860,
-    width: 1500,
+    height: Math.min(DEFAULT_WINDOW_SIZE.height, workAreaSize.height),
+    width: Math.min(DEFAULT_WINDOW_SIZE.width, workAreaSize.width),
     minHeight: 780,
     minWidth: 840,
     icon: __iconWindow,
