@@ -36,7 +36,7 @@ export const PlayerBar = ({
   return (
     <div
       className={cn(
-        "z-20 flex h-17 w-full items-center justify-between transition-all duration-300 ease-linear lg:h-20",
+        "z-20 flex h-17 w-full items-center justify-between transition-all duration-300 ease-linear lg:h-18",
         bgClass ?? "bg-surface",
         className,
       )}
@@ -44,7 +44,7 @@ export const PlayerBar = ({
     >
       <div
         className={cn(
-          "z-20 h-17 w-full items-center px-4 transition-all duration-300 ease-linear lg:h-20",
+          "z-20 h-17 w-full items-center px-4 transition-all duration-300 ease-linear lg:h-18",
           isLyricStageBar
             ? "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4"
             : "flex justify-between md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-4",

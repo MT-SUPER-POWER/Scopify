@@ -102,7 +102,7 @@ export function LoadingSidebarSkeleton() {
 
 export function LoadingPlayerBarSkeleton() {
   return (
-    <footer className="flex h-17 items-center gap-4 rounded-lg bg-surface px-4 lg:h-20 lg:px-6">
+    <footer className="flex h-17 items-center gap-4 rounded-lg bg-surface px-4 lg:h-18 lg:px-6">
       <div className="flex min-w-0 flex-1 items-center gap-3 lg:gap-4">
         <Skeleton className="size-12 shrink-0 rounded-md bg-skeleton lg:size-14" />
         <div className="min-w-0 space-y-2">
