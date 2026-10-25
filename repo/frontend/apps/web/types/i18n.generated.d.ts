@@ -3095,6 +3095,36 @@ export interface TranslateFn {
    */
   (key: "settings.windowClose.ask", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放进度刷新率
+   * zh-TW: 播放進度更新率
+   * en-US: Playback Progress Refresh Rate
+   */
+  (key: "settings.progressRefreshRate.label", params?: TranslationParams): string;
+  /**
+   * zh-CN: 进度条与灵动岛、任务栏歌词的刷新频率。跟随屏幕刷新率最流畅，但在高刷新率屏幕上 CPU 占用更高。
+   * zh-TW: 進度條與靈動島、工作列歌詞的更新頻率。跟隨螢幕更新率最流暢，但在高更新率螢幕上 CPU 占用更高。
+   * en-US: How often the progress bar, Dynamic Island and taskbar lyrics update. Matching the display is smoothest but uses more CPU on high-refresh screens.
+   */
+  (key: "settings.progressRefreshRate.sublabel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 跟随屏幕刷新率
+   * zh-TW: 跟隨螢幕更新率
+   * en-US: Match Display
+   */
+  (key: "settings.progressRefreshRate.display", params?: TranslationParams): string;
+  /**
+   * zh-CN: 60 帧
+   * zh-TW: 60 幀
+   * en-US: 60 FPS
+   */
+  (key: "settings.progressRefreshRate.60", params?: TranslationParams): string;
+  /**
+   * zh-CN: 30 帧（省电）
+   * zh-TW: 30 幀（省電）
+   * en-US: 30 FPS (Power Saving)
+   */
+  (key: "settings.progressRefreshRate.30", params?: TranslationParams): string;
+  /**
    * zh-CN: 日志级别
    * zh-TW: 日誌等級
    * en-US: Log Level
