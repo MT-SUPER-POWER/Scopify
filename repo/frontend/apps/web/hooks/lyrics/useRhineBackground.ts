@@ -93,6 +93,7 @@ export function useRhineBackground(props: RhineBackgroundProps) {
             mid: (audioBands.mid.get() + audioBands.vocal.get()) / 2,
             high: audioBands.treble.get(),
             activity: audioPower.get(),
+            spectrum: audioBands.spectrum?.get(),
           });
         } catch (error) {
           fail(error);

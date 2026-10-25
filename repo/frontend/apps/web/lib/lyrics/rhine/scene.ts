@@ -9,6 +9,7 @@ import {
 } from "@/constants/rhineBackground";
 import type { RhineAudioSample, RhineSceneInput } from "@/types/rhineBackground";
 import type { RhineCell, RhineFieldPulse, RhineShowcaseCard } from "@/types/rhineRuntime";
+import { RhineBeatField } from "./beatField";
 import { InstanceUpdates } from "./instanceUpdates";
 import { RhineModel } from "./model";
 import {
@@ -30,6 +31,8 @@ export class RhineScene {
   private readonly cards = new Map<string, RhineShowcaseCard>();
   private readonly envelope = new RhineEnvelope();
   private readonly rhythm = new RhythmMotion();
+  private readonly beat = new RhineBeatField();
+  private beatWeight = 0;
   private readonly matrixUpdates: InstanceUpdates;
   private readonly themeUpdates: InstanceUpdates;
   private readonly transform = new THREE.Matrix4();
@@ -240,6 +243,12 @@ export class RhineScene {
     if (Number(this.input.dark) !== this.themeWave.target)
       this.themeWave.set(this.input.dark, this.time, this.active);
     this.envelope.update(audio, this.input.tuning.musicEnabled, dt);
+    this.beat.update(
+      this.input.tuning.musicEnabled ? audio.spectrum : undefined,
+      this.time,
+      dt,
+      this.active,
+    );
     this.updateShowcases(dt);
     this.updateRidge(dt);
     this.updateField(dt);
@@ -249,6 +258,8 @@ export class RhineScene {
   private updateField(dt: number) {
     const tuning = this.input.tuning;
     const frame = this.rhythm.update(this.envelope.bands, this.time, dt, tuning.rhythmStyle);
+    this.beatWeight = frame.style.beat;
+    const beat = frame.style.beat * Math.min(2, Math.max(0, tuning.strength));
     const height = (cell: RhineCell, row: number) => {
       let value =
         (tuning.breathingEnabled ? idleWave(row, cell.lane, this.time) : 0) +
@@ -261,6 +272,7 @@ export class RhineScene {
           frame,
           cell.screenX,
         );
+      if (beat > 0.001) value += beat * this.beat.height(row, cell.lane, cell.screenX, this.time);
       if (this.ridgeAmount > 0)
         value +=
           this.ridgeAmount *
@@ -325,12 +337,22 @@ export class RhineScene {
       }
     }
     // The highest extracted file is the lamp; returning copies hand it over as they sink.
+    // Kicks flash it, and light the resting archive when nothing is extracted.
+    const flash =
+      this.beat.flash *
+      this.beatWeight *
+      THREE.MathUtils.lerp(RHINE_GLOW.flash[0], RHINE_GLOW.flash[1], theme);
     if (source) {
       const { x, y, z } = source.group.position;
       this.model.glow.rhineGlowPosition.value.set(x, y + 1.85, z);
+    } else if (flash > 0.001) {
+      const { x, z, key } = this.active;
+      this.model.glow.rhineGlowPosition.value.set(x, -3.4 + (this.heights.get(key) ?? 0), z);
     }
-    this.model.glow.rhineGlowStrength.value =
-      glow * THREE.MathUtils.lerp(RHINE_GLOW.spill[0], RHINE_GLOW.spill[1], theme);
+    this.model.glow.rhineGlowStrength.value = Math.max(
+      glow * THREE.MathUtils.lerp(RHINE_GLOW.spill[0], RHINE_GLOW.spill[1], theme),
+      flash,
+    );
     this.view.setTheme(theme);
     this.view.draw();
   }

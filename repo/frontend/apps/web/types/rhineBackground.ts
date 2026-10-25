@@ -19,6 +19,8 @@ export interface RhineAudioSample {
   mid: number;
   high: number;
   activity: number;
+  /** Raw analyser bins for the beat style; absent when no source is connected. */
+  spectrum?: ArrayLike<number>;
 }
 export interface RhineArchiveTrack {
   title: string;
