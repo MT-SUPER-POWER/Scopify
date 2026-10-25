@@ -9,7 +9,10 @@ import {
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { applyLyricOffsetMs, findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
-import { buildLineGraphemeTimeline } from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
+import {
+  buildLineGraphemeTimeline,
+  type GraphemeTiming,
+} from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
 import { isChineseSubtitleText } from "@/lib/lyrics/subtitleLanguage";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
@@ -21,8 +24,15 @@ const JAPANESE_CHAR_REGEX = /[\p{Script=Hiragana}\p{Script=Katakana}]/u;
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
+// Lines are immutable per lyric payload; segmenting graphemes every frame is the costly part.
+const graphemeTimelineCache = new WeakMap<FoliaLine, GraphemeTiming[]>();
+
 function computeFoliaLineProgress(line: FoliaLine, timeSeconds: number): number[] {
-  const timeline = buildLineGraphemeTimeline(line);
+  let timeline = graphemeTimelineCache.get(line);
+  if (!timeline) {
+    timeline = buildLineGraphemeTimeline(line);
+    graphemeTimelineCache.set(line, timeline);
+  }
   return timeline.map((timing) => {
     if (timeSeconds < timing.startTime) return 0;
     if (timeSeconds >= timing.endTime) return 1;
@@ -45,6 +55,26 @@ function buildInterludeLine(startTime: number, endTime: number): FoliaLine {
       endTime: startTime + (i + 1) * wordDuration,
     })),
   };
+}
+
+function findInterludeBounds(lines: FoliaLine[], timeSeconds: number, durationMs: number) {
+  if (lines.length === 0) return null;
+
+  let prevEndTime = lines[0].startTime;
+  let nextStartTime: number | null = null;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const cur = lines[i];
+    if (cur.startTime <= timeSeconds) {
+      prevEndTime = Math.max(prevEndTime, cur.endTime);
+    } else {
+      nextStartTime = cur.startTime;
+      break;
+    }
+  }
+
+  const endTime = nextStartTime ?? (durationMs ? durationMs / 1_000 : prevEndTime + 10);
+  return { endTime: Math.max(prevEndTime + 0.1, endTime), startTime: prevEndTime };
 }
 
 /**
@@ -78,32 +108,21 @@ export function useCompanionLyricLine() {
     lines.length > 0 && line === null && timeSeconds >= lines[0].startTime;
   const isInterlude = isInterludeLine || isBetweenLinesInterlude;
 
-  const activeLine = useMemo(() => {
-    if (line) return line;
-    if (!isBetweenLinesInterlude || lines.length === 0) return null;
-
-    let prevEndTime = lines[0].startTime;
-    let nextStartTime: number | null = null;
-
-    for (let i = 0; i < lines.length; i += 1) {
-      const cur = lines[i];
-      if (cur.startTime <= timeSeconds) {
-        prevEndTime = Math.max(prevEndTime, cur.endTime);
-      } else {
-        nextStartTime = cur.startTime;
-        break;
-      }
-    }
-
-    const interludeStartTime = prevEndTime;
-    const interludeEndTime =
-      nextStartTime ?? (projection.durationMs ? projection.durationMs / 1_000 : prevEndTime + 10);
-
-    return buildInterludeLine(
-      interludeStartTime,
-      Math.max(interludeStartTime + 0.1, interludeEndTime),
-    );
-  }, [line, isBetweenLinesInterlude, lines, timeSeconds, projection.durationMs]);
+  const interludeBounds =
+    !line && isBetweenLinesInterlude
+      ? findInterludeBounds(lines, timeSeconds, projection.durationMs)
+      : null;
+  const interludeStartTime = interludeBounds?.startTime ?? null;
+  const interludeEndTime = interludeBounds?.endTime ?? null;
+  // Keyed on the bounds rather than the clock so the interlude line keeps its identity per frame.
+  const interludeLine = useMemo(
+    () =>
+      interludeStartTime === null || interludeEndTime === null
+        ? null
+        : buildInterludeLine(interludeStartTime, interludeEndTime),
+    [interludeEndTime, interludeStartTime],
+  );
+  const activeLine = line ?? interludeLine;
 
   const displaySource =
     activeLine?.fullText || (isInterlude ? INTERLUDE_FULL_TEXT : (projection.track?.title ?? ""));
