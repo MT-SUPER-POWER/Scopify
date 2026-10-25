@@ -15,7 +15,6 @@ export interface CompanionWindowDragOptions {
 /** 伴随窗口共用的歌词快照，由 useCompanionLyricLine 产出。 */
 export interface CompanionLyricSnapshot {
   activeLine: FoliaLine | null;
-  fillProgress?: number[];
   index: number;
   isInterlude: boolean;
   nextLine: FoliaLine | null;
@@ -24,8 +23,8 @@ export interface CompanionLyricSnapshot {
 
 export interface CompanionLyricTextProps {
   text: string;
-  /** 每个字素的填充进度（0~1）；缺省时整行按已唱颜色显示。 */
-  progress?: number[];
+  /** 仅文本组件订阅本行的逐字进度；缺省时整行按已唱颜色显示。 */
+  progressLine?: FoliaLine;
 }
 
 /** 偏好对象里取值为布尔的键，用于生成开关行。 */

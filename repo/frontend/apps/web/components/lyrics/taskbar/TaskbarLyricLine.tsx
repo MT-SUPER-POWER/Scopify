@@ -30,7 +30,7 @@ export function TaskbarLyricLine({
       style={{ fontSize: primary ? fontSize : fontSize * SECONDARY_SCALE, lineHeight: 1.25 }}
     >
       <span ref={marquee.contentRef} className={cn("shrink-0", !primary && "truncate")}>
-        <CompanionLyricText text={item.text} progress={item.progress} />
+        <CompanionLyricText text={item.text} progressLine={item.progressLine} />
       </span>
     </div>
   );

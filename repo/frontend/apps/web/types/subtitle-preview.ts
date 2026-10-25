@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
 import type { LyricsPreviewSettings } from "./appearance";
 
 export interface SubtitleSettingsEditorProps {
@@ -13,6 +14,7 @@ export interface SubtitlePayload {
 }
 export interface SubtitleCapsuleProps {
   fillProgress?: number[];
+  fillLine?: FoliaLine;
   settings: LyricsPreviewSettings;
   payload: SubtitlePayload;
   replayId: number;
@@ -96,6 +98,10 @@ export interface SubtitleFillTextProps {
   progress?: number[];
   text: string;
   settings: LyricsPreviewSettings;
+}
+
+export interface CompanionSubtitleFillTextProps extends Omit<SubtitleFillTextProps, "progress"> {
+  line: FoliaLine;
 }
 
 export interface SubtitleThemeCardProps {

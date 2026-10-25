@@ -1,4 +1,5 @@
 import type { SubtitlePlayback } from "./subtitle-preview";
+import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
 
 export type {
   TaskbarLyricColorMode,
@@ -14,7 +15,7 @@ export interface TaskbarLyricItem {
   key: string;
   role: "primary" | "secondary";
   text: string;
-  progress?: number[];
+  progressLine?: FoliaLine;
 }
 
 export interface TaskbarLyricLineProps {

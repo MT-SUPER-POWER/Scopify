@@ -10,7 +10,7 @@ const SHRINK_FALLBACK_MS = 400;
 /**
  * 灵动岛换行动画。bounce：歌词槽先收到 0 并淡出，换上新内容后带回弹地展开到新宽度；
  * smooth：直接朝新宽度过渡，新内容由视图层做向上翻入。
- * 同一行内（key 不变）的逐字进度始终取最新值，不触发动画。
+ * 逐字进度由文本组件采样，不参与换行动画。
  */
 export function useIslandLyricTransition(
   content: DynamicIslandContent,
@@ -49,7 +49,7 @@ export function useIslandLyricTransition(
   );
 
   return {
-    /** 当前展示的内容；同一行时带最新逐字进度。 */
+    /** 当前展示的内容；同一行时可更新翻译等偏好。 */
     shown: content.key === shown.key ? content : shown,
     shrinking,
     onTransitionEnd,

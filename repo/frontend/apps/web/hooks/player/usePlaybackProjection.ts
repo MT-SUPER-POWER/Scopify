@@ -13,7 +13,7 @@ export function usePlaybackProjection<TLyrics = unknown>() {
 }
 
 /** Samples the Replica clock locally; callers never supply wall time or protocol metadata. */
-export function usePlaybackPosition(): number {
+export function usePlaybackPosition(enabled = true): number {
   const store = usePlaybackProjectionStore();
   const projection = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   const [positionMs, setPositionMs] = useState(projection.positionMs);
@@ -23,7 +23,7 @@ export function usePlaybackPosition(): number {
 
   useEffect(() => {
     setPositionMs(store.samplePositionMs());
-    if (projection.connection !== "connected" || !projection.isPlaying) return;
+    if (!enabled || projection.connection !== "connected" || !projection.isPlaying) return;
 
     let lastSampledAt = Number.NEGATIVE_INFINITY;
     let animationFrame = requestAnimationFrame(samplePosition);
@@ -40,7 +40,14 @@ export function usePlaybackPosition(): number {
     }
 
     return () => cancelAnimationFrame(animationFrame);
-  }, [projection.connection, projection.isPlaying, projection.positionMs, sampleIntervalMs, store]);
+  }, [
+    enabled,
+    projection.connection,
+    projection.isPlaying,
+    projection.positionMs,
+    sampleIntervalMs,
+    store,
+  ]);
 
   return positionMs;
 }

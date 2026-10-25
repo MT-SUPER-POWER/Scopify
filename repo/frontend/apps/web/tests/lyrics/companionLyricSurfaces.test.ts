@@ -60,11 +60,9 @@ describe("desktop lyric layout", () => {
 
 describe("companion lyric content", () => {
   it("shows the current line with its translation on the island", () => {
-    const content = buildDynamicIslandContent(
-      snapshot({ activeLine: line("こんにちは", 1, "你好"), index: 0, fillProgress: [1, 0.5] }),
-      true,
-    );
-    expect(content).toMatchObject({ main: "こんにちは", sub: "你好", progress: [1, 0.5] });
+    const current = line("こんにちは", 1, "你好");
+    const content = buildDynamicIslandContent(snapshot({ activeLine: current, index: 0 }), true);
+    expect(content).toMatchObject({ main: "こんにちは", sub: "你好", progressLine: current });
   });
 
   it("keeps the island empty during interludes without progress or translation", () => {
@@ -72,7 +70,6 @@ describe("companion lyric content", () => {
       snapshot({
         activeLine: line("......", 4, "translation"),
         isInterlude: true,
-        fillProgress: [1, 0.5],
       }),
       true,
     );
@@ -89,15 +86,13 @@ describe("companion lyric content", () => {
   });
 
   it("shows the next real lyric after an interlude and preserves punctuation in lyrics", () => {
-    const content = buildDynamicIslandContent(
-      snapshot({ activeLine: line("等你...回来", 8, "come back"), index: 2, fillProgress: [0] }),
-      true,
-    );
+    const current = line("等你...回来", 8, "come back");
+    const content = buildDynamicIslandContent(snapshot({ activeLine: current, index: 2 }), true);
     expect(content).toEqual({
       key: "line-2-8",
       main: "等你...回来",
       sub: "come back",
-      progress: [0],
+      progressLine: current,
     });
     expect(buildDynamicIslandContent(snapshot(), true)).toMatchObject({
       main: "Song - Aimer / Uru",

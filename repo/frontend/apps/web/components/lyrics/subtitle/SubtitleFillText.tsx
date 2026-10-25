@@ -1,12 +1,12 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useMemo, type CSSProperties } from "react";
+import { splitLyricGraphemes } from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
 import type { SubtitleFillTextProps } from "@/types/subtitle-preview";
 import styles from "./subtitle-capsule.module.css";
 
 export function SubtitleFillText({ text, settings, progress }: SubtitleFillTextProps) {
-  const characters = Array.from(
-    new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text),
-    (part) => part.segment,
-  );
+  const characters = useMemo(() => splitLyricGraphemes(text), [text]);
   return (
     <span aria-label={text}>
       {characters.map((character, index) => (

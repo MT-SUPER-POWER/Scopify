@@ -5,6 +5,7 @@ import { useSubtitleMarquee } from "@/hooks/lyrics/useSubtitleMarquee";
 import { useSubtitleFill } from "@/hooks/settings/useSubtitleFill";
 import { cn } from "@/lib/utils";
 import { SubtitleFillText } from "./SubtitleFillText";
+import { CompanionSubtitleFillText } from "@/components/lyrics/companion/CompanionSubtitleFillText";
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
 import { useSubtitleEntrance } from "@/hooks/settings/useSubtitleEntrance";
 import type { SubtitleCapsuleProps } from "@/types/subtitle-preview";
@@ -29,6 +30,7 @@ function SubtitleCapsuleLine({
   playback,
   loop,
   fillProgress,
+  fillLine,
   singleLine = false,
   lineDurationMs = 0,
 }: SubtitleCapsuleProps) {
@@ -36,7 +38,7 @@ function SubtitleCapsuleLine({
     playback,
     settings.fillDuration,
     loop,
-    settings.fillEnabled && !fillProgress,
+    settings.fillEnabled && !fillProgress && !fillLine,
   );
   const entrance = useSubtitleEntrance(settings, payload.source, playback, loop);
   const marquee = useSubtitleMarquee(playback, lineDurationMs, singleLine);
@@ -55,7 +57,11 @@ function SubtitleCapsuleLine({
   const sourceContent = (
     <>
       {settings.fillEnabled ? (
-        <SubtitleFillText text={payload.source} settings={settings} progress={fillProgress} />
+        fillLine ? (
+          <CompanionSubtitleFillText line={fillLine} text={payload.source} settings={settings} />
+        ) : (
+          <SubtitleFillText text={payload.source} settings={settings} progress={fillProgress} />
+        )
       ) : (
         <span
           style={
