@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { useArtistFollow } from "@/hooks/artist/useArtistFollow";
 import type { SongDetail } from "@/types/api/music";
 import type { NowPlayingPanelTab } from "@/types/ui";
 
@@ -19,4 +20,14 @@ export interface NowPlayingCardProps {
 export interface NowPlayingDynamicCoverProps {
   songId: number;
   isPlaying: boolean;
+}
+
+export interface NowPlayingFollowButtonProps {
+  follow: ReturnType<typeof useArtistFollow>;
+  className?: string;
+}
+
+export interface NowPlayingCreditRowProps {
+  artist: SongDetail["ar"][number];
+  role: string;
 }

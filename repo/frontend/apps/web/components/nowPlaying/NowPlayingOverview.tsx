@@ -1,10 +1,10 @@
 "use client";
 
 import { NowPlayingArtistCard } from "./NowPlayingArtistCard";
+import { NowPlayingCredits } from "./NowPlayingCredits";
 import { NowPlayingHero } from "./NowPlayingHero";
 import { NowPlayingLyricsPreview } from "./NowPlayingLyricsPreview";
 import { NowPlayingNextUp } from "./NowPlayingNextUp";
-import { NowPlayingSongInfo } from "./NowPlayingSongInfo";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
 
@@ -19,8 +19,8 @@ export function NowPlayingOverview({ song }: NowPlayingSectionProps) {
         <NowPlayingHero song={song} />
         <NowPlayingLyricsPreview song={song} />
         <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
+        <NowPlayingCredits song={song} />
         <NowPlayingNextUp />
-        <NowPlayingSongInfo song={song} />
       </div>
     </ScrollArea>
   );

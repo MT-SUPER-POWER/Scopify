@@ -173,23 +173,29 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.queueEnd", params?: TranslationParams): string;
   /**
-   * zh-CN: 歌曲信息
-   * zh-TW: 歌曲資訊
-   * en-US: Song info
-   */
-  (key: "nowPlaying.songInfo", params?: TranslationParams): string;
-  /**
    * zh-CN: 专辑
    * zh-TW: 專輯
    * en-US: Album
    */
   (key: "nowPlaying.album", params?: TranslationParams): string;
   /**
-   * zh-CN: 艺人
-   * zh-TW: 藝人
-   * en-US: Artists
+   * zh-CN: 演职人员
+   * zh-TW: 演職人員
+   * en-US: Credits
    */
-  (key: "nowPlaying.artists", params?: TranslationParams): string;
+  (key: "nowPlaying.credits", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主要艺人
+   * zh-TW: 主要藝人
+   * en-US: Main artist
+   */
+  (key: "nowPlaying.mainArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 合作艺人
+   * zh-TW: 合作藝人
+   * en-US: Featured artist
+   */
+  (key: "nowPlaying.featuredArtist", params?: TranslationParams): string;
   /**
    * zh-CN: 发行时间
    * zh-TW: 發行時間
