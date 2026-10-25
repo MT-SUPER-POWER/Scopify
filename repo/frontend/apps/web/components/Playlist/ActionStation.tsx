@@ -128,7 +128,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const searchParams = useSearchParams();
   const smartRouter = useSmartRouter();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  usePlaylistSearchShortcut({ inputRef, onSearchOpen });
+  usePlaylistSearchShortcut({ inputRef, onSearchOpen, onSearchClose, searchOpen });
   const history = useHistoricalDailyRecommendations(isCalendarOpen);
   const reportedHistoryDataAt = useRef(0);
   const reportedHistoryErrorAt = useRef(0);

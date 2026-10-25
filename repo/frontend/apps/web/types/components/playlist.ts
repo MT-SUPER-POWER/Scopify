@@ -35,6 +35,11 @@ export interface PlaylistActionsProps {
   tracks: SongDetail[];
 }
 
+export type PlaylistSearchShortcutOptions = Pick<
+  PlaylistActionsProps,
+  "inputRef" | "onSearchOpen" | "onSearchClose" | "searchOpen"
+>;
+
 export interface PlaylistContentProps {
   actionSlot?: ReactNode;
   /** Rendered at the start of the right-hand action group, before search. */
