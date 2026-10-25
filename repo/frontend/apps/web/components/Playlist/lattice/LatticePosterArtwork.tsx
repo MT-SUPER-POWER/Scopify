@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpRight, Disc3 } from "lucide-react";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import type { LatticePosterArtworkProps } from "@/types/components/playlistLattice";
 import styles from "./PlaylistLattice.module.css";
 
@@ -17,11 +18,7 @@ export function LatticePosterArtwork({
       <Disc3 className={styles.fallback} aria-hidden="true" />
       {cover && (
         <img
-          src={
-            cover.includes("music.126.net/")
-              ? `${cover}${cover.includes("?") ? "&" : "?"}param=${size}y${size}`
-              : cover
-          }
+          src={getSizedImageUrl(cover, size)}
           alt=""
           draggable={false}
           decoding="async"

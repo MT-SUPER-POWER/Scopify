@@ -24,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export interface PlayerBarLeftControlsProps {
   onCloseLyricStage?: () => void;
@@ -64,7 +65,7 @@ export function PlayerBarLeftControls({
           <Image
             width={56}
             height={56}
-            src={artworkUrl}
+            src={getSizedImageUrl(artworkUrl, 160)}
             alt={currentSong.al.name}
             className="size-full object-cover"
             onError={(e) => {

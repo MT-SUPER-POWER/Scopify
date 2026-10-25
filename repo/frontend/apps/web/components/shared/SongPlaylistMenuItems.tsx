@@ -7,6 +7,7 @@ import {
   ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import type { SongContextMenuSectionProps } from "@/types/components/songContextMenu";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function SongPlaylistMenuItems({ actions, model }: SongContextMenuSectionProps) {
   const { t, isMulti, targetSongs, filteredPlaylists, handleAddToPlaylist, isPlaylistPending } =
@@ -36,7 +37,7 @@ export function SongPlaylistMenuItems({ actions, model }: SongContextMenuSection
                 <img
                   width={28}
                   height={28}
-                  src={playlist.coverImgUrl}
+                  src={getSizedImageUrl(playlist.coverImgUrl, 80)}
                   alt=""
                   className="mr-2 size-7 rounded-sm object-cover"
                 />

@@ -6,6 +6,7 @@ import { UserVipBadge } from "@/components/shared/UserVipBadge";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { ProfileMenuIdentityProps } from "@/types/components/profileMenu";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function ProfileMenuIdentity({ isLoggedIn, onLogin }: ProfileMenuIdentityProps) {
   const { t } = useI18n();
@@ -36,7 +37,7 @@ export function ProfileMenuIdentity({ isLoggedIn, onLogin }: ProfileMenuIdentity
         <div className="relative size-18 shrink-0 overflow-hidden rounded-full ring-1 ring-content/10">
           {user.avatarUrl ? (
             <Image
-              src={user.avatarUrl}
+              src={getSizedImageUrl(user.avatarUrl, 200)}
               alt={user.nickname || ""}
               fill
               sizes="72px"

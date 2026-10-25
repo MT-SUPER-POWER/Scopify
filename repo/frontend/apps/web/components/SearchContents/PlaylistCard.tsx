@@ -5,6 +5,7 @@ import type React from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { Playlist } from "@/types/search";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 /** 格式化播放量 (例如 123456 -> 123.5K) */
 function formatCount(count: number): string {
@@ -36,7 +37,11 @@ export function PlaylistCard({
       onClick={onClick}
     >
       <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md bg-surface-sunken shadow-panel">
-        <img src={playlist.coverImgUrl} alt={playlist.name} className="size-full object-cover" />
+        <img
+          src={getSizedImageUrl(playlist.coverImgUrl, 400)}
+          alt={playlist.name}
+          className="size-full object-cover"
+        />
         {playlist.playCount > 0 && (
           <div className="absolute top-1 right-2 rounded bg-overlay/75 px-2 py-0.5 text-[11px] font-bold text-overlay-foreground">
             ▷ {formatCount(playlist.playCount)}

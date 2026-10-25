@@ -40,6 +40,7 @@ import {
   AlertDialogOverlay,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -250,7 +251,7 @@ function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
                       <Image
                         width={24}
                         height={24}
-                        src={playlist.coverImgUrl}
+                        src={getSizedImageUrl(playlist.coverImgUrl, 80)}
                         alt={t("playlist.form.coverAlt")}
                         className="mr-2 size-6 rounded-sm"
                       />

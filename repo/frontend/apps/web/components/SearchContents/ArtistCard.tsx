@@ -3,6 +3,7 @@
 import { User } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 import type { Artist } from "@/types/search";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () => void }) {
   const { t } = useI18n();
@@ -15,7 +16,7 @@ export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () =
       <div className="mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-full bg-surface-sunken shadow-panel">
         {artist.picUrl || artist.img1v1Url ? (
           <img
-            src={artist.picUrl || artist.img1v1Url}
+            src={getSizedImageUrl(artist.picUrl || artist.img1v1Url, 400)}
             alt={artist.name}
             className="size-full object-cover"
           />

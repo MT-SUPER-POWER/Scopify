@@ -31,6 +31,7 @@ import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INDEX CELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -185,7 +186,7 @@ export const PopularTrackItem = memo(
               <Image
                 width={40}
                 height={40}
-                src={(track.al.picUrl || track.al.coverUrl) ?? ""}
+                src={getSizedImageUrl(track.al.picUrl || track.al.coverUrl, 120)}
                 alt={track.name}
                 className="size-10 shrink-0 rounded object-cover"
               />
@@ -279,7 +280,7 @@ export const PopularTrackItem = memo(
                       <Image
                         width={28}
                         height={28}
-                        src={p.coverImgUrl}
+                        src={getSizedImageUrl(p.coverImgUrl, 80)}
                         alt={t("playlist.form.coverAlt")}
                         className="mr-2 size-7 rounded-sm"
                       />
