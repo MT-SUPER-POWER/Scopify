@@ -6,6 +6,7 @@ import { useNotificationCenter } from "@/hooks/notifications/useNotificationCent
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import { NotificationPanel } from "./NotificationPanel";
+import { UpdateProgressRing } from "./UpdateProgressRing";
 import { reportNotificationHref } from "@/lib/notifications/reportTarget";
 import { socialNotificationHref } from "@/lib/social/notificationTarget";
 
@@ -13,6 +14,15 @@ export function NotificationCenter() {
   const center = useNotificationCenter();
   const { t } = useI18n();
   const router = useSmartRouter();
+  const updateState = center.update.updater.state;
+  const updateHint =
+    updateState.status === "downloading"
+      ? t("notifications.updater.downloading.description", {
+          percent: Math.round(updateState.percent ?? 0),
+        })
+      : updateState.status === "downloaded"
+        ? t("notifications.updater.downloaded.description", { version: updateState.version ?? "" })
+        : undefined;
   return (
     <InboxPopover
       open={center.open}
@@ -22,9 +32,11 @@ export function NotificationCenter() {
       trigger={
         <button
           type="button"
-          aria-label={`${t("notifications.title")} · ${t("notifications.unreadCount", { count: center.unreadCount })}`}
-          className="flex size-10 items-center justify-center rounded-full bg-surface-sunken/80 text-content-muted transition-colors hover:bg-surface-elevated hover:text-content focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          aria-label={`${t("notifications.title")} · ${t("notifications.unreadCount", { count: center.unreadCount })}${updateHint ? ` · ${updateHint}` : ""}`}
+          title={updateHint}
+          className="relative flex size-10 items-center justify-center rounded-full bg-surface-sunken/80 text-content-muted transition-colors hover:bg-surface-elevated hover:text-content focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         >
+          <UpdateProgressRing state={updateState} />
           <span className="relative inline-flex size-4.5" aria-hidden="true">
             <Bell className="size-4.5" />
             {center.unreadCount > 0 && (

@@ -1,5 +1,6 @@
 import type { NotificationFilter, NotificationListItem } from "@/types/notifications";
 import type { NotificationPreferences } from "@scopify/desktop-contract";
+import type { AppUpdateState } from "@/types/updater";
 
 export interface NotificationPreferenceSectionProps {
   preferences: NotificationPreferences;
@@ -56,4 +57,8 @@ export interface NotificationTestButtonProps {
   disabled: boolean;
   testing: boolean;
   onTest(): void;
+}
+
+export interface UpdateProgressRingProps {
+  state: AppUpdateState;
 }
