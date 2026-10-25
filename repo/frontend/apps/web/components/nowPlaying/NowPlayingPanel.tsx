@@ -19,7 +19,7 @@ export function NowPlayingPanel() {
   return (
     <aside
       aria-label={t("nowPlaying.title")}
-      className="flex size-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-sunken"
+      className="flex size-full min-h-0 min-w-70 flex-col overflow-hidden rounded-lg bg-surface-sunken"
     >
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 px-4">
         <h2 className="truncate text-base font-bold text-content">{t("nowPlaying.title")}</h2>

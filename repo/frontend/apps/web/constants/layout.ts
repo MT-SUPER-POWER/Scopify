@@ -17,5 +17,7 @@ export const NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT = 22;
 /** Now Playing panel pixel bounds; keeps the cover and artist card legible. */
 export const NOW_PLAYING_PANEL_MIN_WIDTH = 280;
 export const NOW_PLAYING_PANEL_MAX_WIDTH = 480;
+/** Collapsed Now Playing panel keeps a clickable rail of this width. */
+export const NOW_PLAYING_PANEL_RAIL_WIDTH = 36;
 /** Below this viewport width the Now Playing panel steps aside without changing the user's choice. */
 export const NOW_PLAYING_PANEL_MEDIA_QUERY = "(min-width: 1100px)";

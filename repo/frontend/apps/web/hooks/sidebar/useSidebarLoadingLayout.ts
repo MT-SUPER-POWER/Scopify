@@ -47,7 +47,8 @@ function readSavedNowPlayingSize() {
 function readSavedSidebarSize() {
   try {
     const panelIds: string[] = [DASHBOARD_PANEL_IDS.sidebar, DASHBOARD_PANEL_IDS.main];
-    if (readNowPlayingLoadingState() === "panel") {
+    // 折叠成窄条时右栏仍在面板组中，与展开时共用同一份布局
+    if (readNowPlayingLoadingState() !== null) {
       panelIds.push(DASHBOARD_PANEL_IDS.nowPlaying);
     }
     return (
