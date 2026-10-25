@@ -3755,9 +3755,9 @@ export interface TranslateFn {
    */
   (key: "settings.updater.autoDownload.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 发现新版本后自动开始下载，安装仍需你确认重启。
-   * zh-TW: 發現新版本後自動開始下載，安裝仍需你確認重啟。
-   * en-US: Start downloading when a new version is found; restarting to install remains manual.
+   * zh-CN: 发现新版本后自动开始下载，下载完成后在下次退出时自动安装。
+   * zh-TW: 發現新版本後自動開始下載，下載完成後在下次結束時自動安裝。
+   * en-US: Start downloading when a new version is found; it installs the next time you quit.
    */
   (key: "settings.updater.autoDownload.sublabel", params?: TranslationParams): string;
   /**
@@ -22955,9 +22955,9 @@ export interface TranslateFn {
    */
   (key: "notifications.updater.downloaded.title", params?: TranslationParams): string;
   /**
-   * zh-CN: Scopify {{version}} 已下载完成，重启即可安装。
-   * zh-TW: Scopify {{version}} 已下載完成，重啟即可安裝。
-   * en-US: Scopify {{version}} is ready to install after a restart.
+   * zh-CN: Scopify {{version}} 已下载完成，下次退出时自动安装，也可以立即重启安装。
+   * zh-TW: Scopify {{version}} 已下載完成，下次結束時自動安裝，也可以立即重啟安裝。
+   * en-US: Scopify {{version}} will install when you quit, or restart now to install it.
    */
   (key: "notifications.updater.downloaded.description", params?: TranslationParams): string;
   /**
