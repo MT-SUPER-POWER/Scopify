@@ -335,7 +335,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             )}
         </div>
 
-        <div className={cn("flex shrink-0 items-center gap-3", isSticky && "gap-2")}>
+        <div className="flex shrink-0 items-center gap-1">
           {isDaily && (
             <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
               <TooltipProvider>
@@ -422,8 +422,9 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.05, ease: "linear" }}
                     onClick={onSearchOpen}
+                    className="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content"
                   >
-                    <Search className="size-4 cursor-pointer text-content-muted transition-colors hover:text-content" />
+                    <Search className="size-5" />
                   </motion.button>
                 </TooltipTrigger>
                 <TooltipContent side="top" sideOffset={8}>
