@@ -14,7 +14,6 @@ import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaR
 import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
 import { useNowPlayingDocumentTitle } from "@/hooks/player/useNowPlayingDocumentTitle";
 import { useTitleBarSymbolColor } from "@/hooks/ui/useTitleBarSymbolColor";
-import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
 import { useAnimatedPanelCollapse } from "@/hooks/ui/useAnimatedPanelCollapse";
 import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
 import {
@@ -24,6 +23,7 @@ import {
   NOW_PLAYING_PANEL_MAX_WIDTH,
   NOW_PLAYING_PANEL_MIN_WIDTH,
   NOW_PLAYING_PANEL_RAIL_WIDTH,
+  SIDEBAR_COLLAPSED_WIDTH,
   SIDEBAR_DEFAULT_SIZE_PERCENT,
 } from "@/constants/layout";
 import { runtime } from "@/lib/runtime";
@@ -44,7 +44,7 @@ import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWork
 import { WhatsNewModal } from "@/components/updates/WhatsNewModal";
 // self components
 import MainLayoutSkeleton from "./Skeleton";
-import { LoadingNowPlayingSkeleton } from "./LoadingChrome";
+import { LoadingNowPlayingSkeleton, SIDEBAR_BOOT_WIDTH } from "./LoadingChrome";
 import { Sidebar } from "@/components/Siderbar";
 import { NowPlayingCollapsedRail } from "@/components/nowPlaying/NowPlayingCollapsedRail";
 import { NowPlayingPanel } from "@/components/nowPlaying/NowPlayingPanel";
@@ -80,7 +80,6 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const nowPlayingPanelRef = usePanelRef();
   const nowPlayingPanelElementRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const sidebarLoadingLayout = useSidebarLoadingLayout();
   useNowPlayingDocumentTitle();
   useTitleBarSymbolColor();
 
@@ -213,7 +212,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               minSize="15%"
               maxSize="40%"
               collapsible
-              collapsedSize={80}
+              collapsedSize={SIDEBAR_COLLAPSED_WIDTH}
               onResize={() => setIsCollapsed(sidebarPanelRef.current?.isCollapsed() ?? false)}
               className={cn("overflow-hidden rounded-lg bg-surface-sunken")}
             >
@@ -256,8 +255,10 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
         ) : (
           <div className="flex size-full gap-2">
             <div
-              className="shrink-0 overflow-hidden rounded-lg bg-surface-sunken"
-              style={{ width: `${sidebarLoadingLayout.sizePercent}%` }}
+              className={cn(
+                SIDEBAR_BOOT_WIDTH,
+                "shrink-0 overflow-hidden rounded-lg bg-surface-sunken",
+              )}
             >
               <Sidebar />
             </div>

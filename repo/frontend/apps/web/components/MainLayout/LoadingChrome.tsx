@@ -3,10 +3,8 @@
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { SidebarPlaylistSkeleton } from "@/components/Siderbar/SidebarPlaylistSkeleton";
 import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
-import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
 import { cn } from "@/lib/utils";
 import { headerStyles } from "@/styles";
-import { NOW_PLAYING_PANEL_MAX_WIDTH, NOW_PLAYING_PANEL_MIN_WIDTH } from "@/constants/layout";
 
 /** Mirrors components/Header: brand + history on the left, home + search centered on the window, actions right. */
 export function LoadingHeaderSkeleton() {
@@ -35,6 +33,9 @@ export function LoadingHeaderSkeleton() {
   );
 }
 
+/** Saved sidebar width from the boot script; the fallback mirrors SIDEBAR_DEFAULT_SIZE_PERCENT. */
+export const SIDEBAR_BOOT_WIDTH = "w-[var(--boot-sidebar-width,18%)]";
+
 const NAV_SECTIONS = [
   ["w-12", "w-10"],
   ["w-16", "w-14", "w-16"],
@@ -43,13 +44,13 @@ const NAV_SECTIONS = [
 /**
  * Mirrors components/Siderbar: same width source, nav rows (menu beside the first heading) and playlist rows.
  * `@max-[91px]/sidebar` matches useSidebarNarrow (<= 90px) on the same container.
+ * Width and session come from the boot script (lib/layout/layoutBootScript.ts) so the very first
+ * paint already matches the saved layout, including a collapsed icon-only sidebar.
  */
 export function LoadingSidebarSkeleton() {
-  const { hasSession, sizePercent } = useSidebarLoadingLayout();
   return (
     <div
-      className="shrink-0 overflow-hidden rounded-lg bg-surface-sunken"
-      style={{ width: `${sizePercent}%` }}
+      className={cn(SIDEBAR_BOOT_WIDTH, "shrink-0 overflow-hidden rounded-lg bg-surface-sunken")}
       aria-hidden
     >
       <aside className="@container/sidebar flex size-full min-h-0 flex-col bg-surface">
@@ -87,11 +88,9 @@ export function LoadingSidebarSkeleton() {
                 <Skeleton className="h-3 w-8 bg-skeleton-subtle" />
                 <Skeleton className="-my-0.5 size-5 rounded-full bg-skeleton-subtle" />
               </div>
-              {hasSession && (
-                <div className="px-2 pb-4 @max-[91px]/sidebar:pb-2">
-                  <SidebarPlaylistSkeleton />
-                </div>
-              )}
+              <div className="hidden px-2 pb-4 @max-[91px]/sidebar:pb-2 [html[data-boot-session=true]_&]:block">
+                <SidebarPlaylistSkeleton />
+              </div>
             </section>
           </div>
 
@@ -105,37 +104,34 @@ export function LoadingSidebarSkeleton() {
 }
 
 /**
- * Mirrors components/nowPlaying: the full panel (cover, title, artist card) or the collapsed rail,
- * matching what the hydrated layout will render.
+ * Mirrors components/nowPlaying: the full panel (cover, title, artist card) or the collapsed rail.
+ * Both are rendered and the boot script's `data-boot-now-playing` picks one, so the first paint
+ * already matches the saved state. Bounds mirror NOW_PLAYING_PANEL_MIN/MAX_WIDTH and the rail
+ * NOW_PLAYING_PANEL_RAIL_WIDTH (classes must stay literal for Tailwind).
  */
 export function LoadingNowPlayingSkeleton() {
-  const { nowPlaying, nowPlayingSizePercent } = useSidebarLoadingLayout();
-  if (nowPlaying === "rail") {
-    return <div className="w-9 shrink-0 rounded-lg bg-surface-sunken" aria-hidden />;
-  }
-  if (nowPlaying !== "panel") return null;
-
   return (
-    <div
-      className="flex shrink-0 flex-col gap-4 overflow-hidden rounded-lg bg-surface-sunken px-4"
-      style={{
-        width: `${nowPlayingSizePercent}%`,
-        minWidth: NOW_PLAYING_PANEL_MIN_WIDTH,
-        maxWidth: NOW_PLAYING_PANEL_MAX_WIDTH,
-      }}
-      aria-hidden
-    >
-      <div className="flex h-14 shrink-0 items-center justify-between">
-        <Skeleton className="h-4 w-20 bg-skeleton" />
-        <Skeleton className="size-8 rounded-full bg-skeleton-subtle" />
+    <>
+      <div
+        className="hidden w-9 shrink-0 rounded-lg bg-surface-sunken [html[data-boot-now-playing=rail]_&]:block"
+        aria-hidden
+      />
+      <div
+        className="hidden w-[var(--boot-now-playing-width,22%)] max-w-120 min-w-70 shrink-0 flex-col gap-4 overflow-hidden rounded-lg bg-surface-sunken px-4 [html[data-boot-now-playing=panel]_&]:flex"
+        aria-hidden
+      >
+        <div className="flex h-14 shrink-0 items-center justify-between">
+          <Skeleton className="h-4 w-20 bg-skeleton" />
+          <Skeleton className="size-8 rounded-full bg-skeleton-subtle" />
+        </div>
+        <Skeleton className="aspect-square w-full shrink-0 rounded-lg bg-skeleton" />
+        <div className="space-y-2">
+          <Skeleton className="h-6 w-3/5 bg-skeleton" />
+          <Skeleton className="h-3.5 w-2/5 bg-skeleton-subtle" />
+        </div>
+        <Skeleton className="h-64 w-full shrink-0 rounded-lg bg-skeleton-subtle" />
       </div>
-      <Skeleton className="aspect-square w-full shrink-0 rounded-lg bg-skeleton" />
-      <div className="space-y-2">
-        <Skeleton className="h-6 w-3/5 bg-skeleton" />
-        <Skeleton className="h-3.5 w-2/5 bg-skeleton-subtle" />
-      </div>
-      <Skeleton className="h-64 w-full shrink-0 rounded-lg bg-skeleton-subtle" />
-    </div>
+    </>
   );
 }
 

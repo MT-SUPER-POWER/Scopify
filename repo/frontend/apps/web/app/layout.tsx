@@ -10,6 +10,7 @@ import { FoliaStageStoreSync } from "@/components/lyrics/FoliaStageStoreSync";
 import { QueryProvider } from "@/components/shared/QueryProvider";
 import { CompanionPlaybackProjectionProvider } from "@/components/player/CompanionPlaybackProjectionProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { createLayoutBootScript } from "@/lib/layout/layoutBootScript";
 import { cn } from "@/lib/utils";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -35,6 +36,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" data-theme="scopify-default" suppressHydrationWarning>
+      <head>
+        {/* 首帧前写入保存的布局状态，加载骨架据此还原左右栏 */}
+        <script dangerouslySetInnerHTML={{ __html: createLayoutBootScript() }} />
+      </head>
       <body
         className={cn(
           "fixed inset-0 flex overflow-hidden antialiased",
