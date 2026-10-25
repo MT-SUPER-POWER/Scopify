@@ -13,6 +13,7 @@ import {
 } from "@/constants/personalFm";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
+import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
 import { useI18n } from "@/store/module/i18n";
 import { ensurePersonalFmOnEntry } from "@/lib/personalFm/entry";
 import { usePersonalFmStore } from "@/store/module/personalFm";
@@ -91,11 +92,14 @@ export function usePersonalFmPlaylist() {
     [tracks],
   );
 
+  const cover =
+    (isCurrentSource ? currentSong?.al.picUrl : undefined) ||
+    tracks[0]?.al.picUrl ||
+    "/personal-fm-cover.svg";
+  const themeColor = useCoverThemeColor(cover);
   const playlistInfo = useMemo<PlaylistInfo>(
     () => ({
-      cover: isCurrentSource
-        ? (currentSong?.al.picUrl ?? "/personal-fm-cover.svg")
-        : "/personal-fm-cover.svg",
+      cover,
       createTime: "",
       creator: "",
       creatorAvatar: "",
@@ -106,7 +110,7 @@ export function usePersonalFmPlaylist() {
       title: t("personalFm.title"),
       totalSongs: tracks.length,
     }),
-    [currentSong?.al.picUrl, isCurrentSource, selection, t, tracks.length],
+    [cover, selection, t, tracks.length],
   );
 
   return {
@@ -118,7 +122,7 @@ export function usePersonalFmPlaylist() {
     playlistInfo,
     playSourceId: PERSONAL_FM_PLAYBACK_SOURCE_ID,
     refetchTracks: start,
-    themeColor: null,
+    themeColor,
     tracks,
   };
 }
