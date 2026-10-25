@@ -14,7 +14,15 @@ import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaR
 import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
 import { useNowPlayingDocumentTitle } from "@/hooks/player/useNowPlayingDocumentTitle";
 import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
-import { DASHBOARD_LAYOUT_GROUP_ID, SIDEBAR_DEFAULT_SIZE_PERCENT } from "@/constants/layout";
+import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
+import {
+  DASHBOARD_LAYOUT_GROUP_ID,
+  DASHBOARD_PANEL_IDS,
+  NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT,
+  NOW_PLAYING_PANEL_MAX_WIDTH,
+  NOW_PLAYING_PANEL_MIN_WIDTH,
+  SIDEBAR_DEFAULT_SIZE_PERCENT,
+} from "@/constants/layout";
 import { runtime } from "@/lib/runtime";
 import {
   DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH,
@@ -34,6 +42,7 @@ import { WhatsNewModal } from "@/components/updates/WhatsNewModal";
 // self components
 import MainLayoutSkeleton from "./Skeleton";
 import { Sidebar } from "@/components/Siderbar";
+import { NowPlayingPanel } from "@/components/nowPlaying/NowPlayingPanel";
 
 // The wallpaper renderer brings the entire Folia visualizer graph into the
 // bundle. It is only used by the dedicated desktop-wallpaper window, so keep
@@ -44,6 +53,14 @@ const DesktopPlaybackWallpaperRenderer = dynamic(
       default: module.DesktopPlaybackWallpaperRenderer,
     })),
   { ssr: false },
+);
+
+const RESIZE_HANDLE_CLASS = cn(
+  "relative flex w-2 items-center justify-center bg-transparent transition-colors",
+  "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
+  "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
+  "hover:after:bg-border",
+  "data-[resize-handle-state=drag]:after:bg-content-muted/50",
 );
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -95,8 +112,14 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     });
   }, []);
 
+  const nowPlayingPanel = useNowPlayingPanelVisibility();
+  const panelIds = nowPlayingPanel.visible
+    ? [DASHBOARD_PANEL_IDS.sidebar, DASHBOARD_PANEL_IDS.main, DASHBOARD_PANEL_IDS.nowPlaying]
+    : [DASHBOARD_PANEL_IDS.sidebar, DASHBOARD_PANEL_IDS.main];
+
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-    groupId: DASHBOARD_LAYOUT_GROUP_ID,
+    id: DASHBOARD_LAYOUT_GROUP_ID,
+    panelIds,
     storage:
       typeof window !== "undefined"
         ? window.localStorage
@@ -192,6 +215,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             className="size-full"
           >
             <ResizablePanel
+              id={DASHBOARD_PANEL_IDS.sidebar}
               panelRef={sidebarPanelRef}
               elementRef={sidebarPanelElementRef}
               defaultSize={`${SIDEBAR_DEFAULT_SIZE_PERCENT}%`}
@@ -205,17 +229,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               <Sidebar />
             </ResizablePanel>
 
-            <ResizableHandle
-              className={cn(
-                "relative flex w-2 items-center justify-center bg-transparent transition-colors",
-                "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
-                "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
-                "hover:after:bg-border",
-                "data-[resize-handle-state=drag]:after:bg-content-muted/50",
-              )}
-            />
+            <ResizableHandle className={RESIZE_HANDLE_CLASS} />
 
-            <ResizablePanel>
+            <ResizablePanel id={DASHBOARD_PANEL_IDS.main}>
               <div
                 data-dashboard-main
                 className="group/main relative size-full overflow-hidden rounded-lg bg-surface-raised"
@@ -223,6 +239,20 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
                 <div className="size-full overflow-hidden">{children}</div>
               </div>
             </ResizablePanel>
+
+            {nowPlayingPanel.visible && (
+              <>
+                <ResizableHandle className={RESIZE_HANDLE_CLASS} />
+                <ResizablePanel
+                  id={DASHBOARD_PANEL_IDS.nowPlaying}
+                  defaultSize={`${NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT}%`}
+                  minSize={NOW_PLAYING_PANEL_MIN_WIDTH}
+                  maxSize={NOW_PLAYING_PANEL_MAX_WIDTH}
+                >
+                  <NowPlayingPanel />
+                </ResizablePanel>
+              </>
+            )}
           </ResizablePanelGroup>
         ) : (
           <div className="flex size-full gap-2">

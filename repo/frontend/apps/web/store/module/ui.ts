@@ -8,6 +8,7 @@ export const useUiStore = create<UiStore>()(
       isSearchOpen: false,
       isCollapsed: false,
       isLyricsOpen: false,
+      isNowPlayingPanelOpen: true,
       isQueueOpen: false,
       isShortcutHelpOpen: false,
       isFullscreen: false,
@@ -19,6 +20,9 @@ export const useUiStore = create<UiStore>()(
       toggleLyrics: () => set((state) => ({ isLyricsOpen: !state.isLyricsOpen })),
       setIsCollapsed: (collapsed) => set({ isCollapsed: collapsed }),
       toggleSidebar: () => set((state) => ({ isCollapsed: !state.isCollapsed })),
+      setIsNowPlayingPanelOpen: (open) => set({ isNowPlayingPanelOpen: open }),
+      toggleNowPlayingPanel: () =>
+        set((state) => ({ isNowPlayingPanelOpen: !state.isNowPlayingPanelOpen })),
       setIsQueueOpen: (open) => set({ isQueueOpen: open }),
       toggleQueue: () => set((state) => ({ isQueueOpen: !state.isQueueOpen })),
       setIsShortcutHelpOpen: (open) => set({ isShortcutHelpOpen: open }),
@@ -29,6 +33,7 @@ export const useUiStore = create<UiStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         isCollapsed: state.isCollapsed,
+        isNowPlayingPanelOpen: state.isNowPlayingPanelOpen,
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,

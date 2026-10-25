@@ -89,6 +89,78 @@ export interface TranslateFn {
    */
   (key: "updates.improved", params?: TranslationParams): string;
   /**
+   * zh-CN: 正在播放
+   * zh-TW: 正在播放
+   * en-US: Now Playing
+   */
+  (key: "nowPlaying.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示正在播放面板
+   * zh-TW: 顯示正在播放面板
+   * en-US: Show Now Playing view
+   */
+  (key: "nowPlaying.show", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏正在播放面板
+   * zh-TW: 隱藏正在播放面板
+   * en-US: Hide Now Playing view
+   */
+  (key: "nowPlaying.hide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关于艺人
+   * zh-TW: 關於藝人
+   * en-US: About the artist
+   */
+  (key: "nowPlaying.aboutArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 位粉丝
+   * zh-TW: {{count}} 位粉絲
+   * en-US: {{count}} followers
+   */
+  (key: "nowPlaying.fans", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next in queue
+   */
+  (key: "nowPlaying.nextUp", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开播放队列
+   * zh-TW: 開啟播放佇列
+   * en-US: Open queue
+   */
+  (key: "nowPlaying.openQueue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 队列中没有下一首了
+   * zh-TW: 佇列中沒有下一首了
+   * en-US: Nothing else queued
+   */
+  (key: "nowPlaying.queueEnd", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌曲信息
+   * zh-TW: 歌曲資訊
+   * en-US: Song info
+   */
+  (key: "nowPlaying.songInfo", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Album
+   */
+  (key: "nowPlaying.album", params?: TranslationParams): string;
+  /**
+   * zh-CN: 艺人
+   * zh-TW: 藝人
+   * en-US: Artists
+   */
+  (key: "nowPlaying.artists", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发行时间
+   * zh-TW: 發行時間
+   * en-US: Released
+   */
+  (key: "nowPlaying.releaseDate", params?: TranslationParams): string;
+  /**
    * zh-CN: 设备列表响应不完整，请稍后重试。
    * zh-TW: 裝置清單回應不完整，請稍後重試。
    * en-US: The device response is incomplete. Try again.
