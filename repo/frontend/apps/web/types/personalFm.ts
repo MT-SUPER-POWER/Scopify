@@ -1,4 +1,5 @@
 import type { PlaybackNextSource } from "@/types/player";
+import type { SongDetail } from "@/types/api/music";
 
 export type PersonalFmModeId =
   "DEFAULT" | "FAMILIAR" | "EXPLORE" | "SCENE_RCMD" | "PUZZLE_MODE_RCMD";
@@ -12,11 +13,18 @@ export interface PersonalFmSelection {
 
 export type PersonalFmStatus = "idle" | "loading" | "active" | "error";
 
+export interface PersonalFmRefreshButtonProps {
+  isRefreshing: boolean;
+  onRefresh(): void;
+}
+
 export interface PersonalFmStore {
   advance: (source?: PlaybackNextSource) => Promise<void>;
+  ensureReady: () => Promise<boolean>;
   error: string | null;
   selection: PersonalFmSelection;
   setSelection: (selection: PersonalFmSelection) => Promise<boolean>;
   start: () => Promise<boolean>;
   status: PersonalFmStatus;
+  tracks: SongDetail[];
 }

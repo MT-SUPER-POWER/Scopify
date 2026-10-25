@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 export interface SidebarConfirmDialogProps {
   open: boolean;
   title: string;
@@ -28,7 +28,7 @@ export interface SidebarLibraryItemProps {
   href?: string;
   id: string | number;
   isCollapsed?: boolean;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
   subtitle: string;
   title: string;
 }

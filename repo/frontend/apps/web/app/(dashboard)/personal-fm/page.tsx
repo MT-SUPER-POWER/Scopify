@@ -2,6 +2,7 @@
 
 import { Radio } from "lucide-react";
 import { PersonalFmControlPanel } from "@/components/player/PersonalFmControlPanel";
+import { PersonalFmRefreshButton } from "@/components/player/PersonalFmRefreshButton";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { QuietState } from "@/components/shared/QuietState";
 import { usePersonalFmPlaylist } from "@/hooks/personalFm/usePersonalFmPlaylist";
@@ -25,6 +26,12 @@ export default function PersonalFmPage() {
     <PlaylistContent
       {...personalFm}
       actionSlot={<PersonalFmControlPanel placement="playlist" />}
+      trailingActionSlot={
+        <PersonalFmRefreshButton
+          isRefreshing={personalFm.isRefreshing}
+          onRefresh={personalFm.refetchTracks}
+        />
+      }
       dailyDate={null}
       isDailyRecommend={false}
       playlistId={null}

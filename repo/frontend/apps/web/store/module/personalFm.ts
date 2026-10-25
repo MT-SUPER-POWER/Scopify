@@ -18,6 +18,7 @@ import type { PersonalFmSelection, PersonalFmStore } from "@/types/personalFm";
 
 const PERSONAL_FM_STORAGE_KEY = "scopify-personal-fm";
 let refillPromise: Promise<boolean> | null = null;
+let streamPromise: Promise<boolean> | null = null;
 let streamRevision = 0;
 
 function selectionsMatch(left: PersonalFmSelection, right: PersonalFmSelection) {
@@ -127,6 +128,10 @@ function replacePersonalFmStream(selection: PersonalFmSelection): Promise<boolea
       return false;
     }
   })();
+  streamPromise = request;
+  void request.finally(() => {
+    if (streamPromise === request) streamPromise = null;
+  });
   return request;
 }
 
@@ -168,6 +173,16 @@ export const usePersonalFmStore = create<PersonalFmStore>()(
         await usePlayerStore.getState().playNext(source);
       },
       error: null,
+      ensureReady: async () => {
+        const player = usePlayerStore.getState();
+        if (isPersonalFmPlaybackSource(player.playlistId) && player.queue.length > 0) {
+          if (get().tracks !== player.queue) set({ tracks: player.queue });
+          return true;
+        }
+        if (get().tracks.length > 0) return true;
+        const started = await (streamPromise ?? replacePersonalFmStream(get().selection));
+        return started && get().tracks.length > 0;
+      },
       selection: DEFAULT_PERSONAL_FM_SELECTION,
       setSelection: async (selection) => {
         const normalized = normalizePersonalFmSelection(selection);
@@ -178,8 +193,9 @@ export const usePersonalFmStore = create<PersonalFmStore>()(
           ? replacePersonalFmStream(normalized)
           : true;
       },
-      start: () => replacePersonalFmStream(get().selection),
+      start: () => streamPromise ?? replacePersonalFmStream(get().selection),
       status: "idle",
+      tracks: [],
     }),
     {
       name: PERSONAL_FM_STORAGE_KEY,
@@ -195,3 +211,16 @@ export const usePersonalFmStore = create<PersonalFmStore>()(
     },
   ),
 );
+
+// Remember the FM playlist independently of the current playback source. Navigating or
+// starting a different playlist must not discard the songs the user was browsing.
+usePlayerStore.subscribe((player, previous) => {
+  const tracks = isPersonalFmPlaybackSource(player.playlistId)
+    ? player.queue
+    : isPersonalFmPlaybackSource(previous.playlistId)
+      ? previous.queue
+      : null;
+  if (tracks && usePersonalFmStore.getState().tracks !== tracks) {
+    usePersonalFmStore.setState({ tracks });
+  }
+});

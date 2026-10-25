@@ -23063,6 +23063,18 @@ export interface TranslateFn {
    */
   (key: "personalFm.action.dislikeFailed", params?: TranslationParams): string;
   /**
+   * zh-CN: 换一批
+   * zh-TW: 換一批
+   * en-US: New recommendations
+   */
+  (key: "personalFm.action.refresh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新推荐并替换全部电台歌曲
+   * zh-TW: 重新推薦並替換全部電台歌曲
+   * en-US: Replace all radio songs with new recommendations
+   */
+  (key: "personalFm.action.refreshDescription", params?: TranslationParams): string;
+  /**
    * zh-CN: 默认
    * zh-TW: 預設
    * en-US: Default
