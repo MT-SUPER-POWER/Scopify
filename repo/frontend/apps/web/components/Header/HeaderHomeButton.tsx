@@ -21,12 +21,12 @@ export function HeaderHomeButton() {
       title={label}
       aria-current={isHome ? "page" : undefined}
       className={cn(
-        "flex size-11 shrink-0 items-center justify-center rounded-full transition-all",
+        "flex size-12 shrink-0 items-center justify-center rounded-full transition-all",
         "bg-surface-sunken/80 hover:scale-105 hover:bg-surface-elevated",
         isHome ? "text-content" : "text-content-muted hover:text-content",
       )}
     >
-      {isHome ? <PiHouseFill className="size-5.5" /> : <PiHouseBold className="size-5.5" />}
+      {isHome ? <PiHouseFill className="size-6" /> : <PiHouseBold className="size-6" />}
     </Link>
   );
 }
