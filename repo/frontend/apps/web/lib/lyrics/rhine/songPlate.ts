@@ -37,6 +37,7 @@ export class RhineSongPlate {
   private image: HTMLImageElement | null = null;
   private imageReady = false;
   private disposed = false;
+  private fallback = 0;
 
   constructor(
     track: RhineArchiveTrack,
@@ -66,33 +67,49 @@ export class RhineSongPlate {
   setTrack(track: RhineArchiveTrack) {
     if (this.disposed) return;
     const coverChanged = this.track.coverUrl !== track.coverUrl;
+    if (!coverChanged && track.title === this.track.title) return;
     this.track = { ...track };
-    if (coverChanged) {
-      this.cancelImage();
-      if (track.coverUrl) {
-        const image = new Image();
-        this.image = image;
-        image.crossOrigin = "anonymous";
-        image.decoding = "async";
-        image.onload = () => {
-          if (this.disposed || this.image !== image) return;
-          this.imageReady = image.naturalWidth > 0 && image.naturalHeight > 0;
-          this.draw();
-          this.onReady();
-        };
-        image.onerror = () => {
-          if (this.disposed || this.image !== image) return;
-          // Missing artwork leaves the song title usable and never fails the scene.
-          this.cancelImage();
-        };
-        image.src = track.coverUrl;
-      }
+    if (!coverChanged) {
+      this.draw();
+      return;
     }
-    this.draw();
+    this.cancelImage();
+    if (!track.coverUrl) {
+      this.draw();
+      return;
+    }
+    // Uploading this canvas costs a frame, so draw it once, with its artwork.
+    // The insert stays hidden meanwhile; a slow cover falls back to the placeholder.
+    this.mesh.visible = false;
+    this.fallback = window.setTimeout(() => {
+      this.draw();
+      this.onReady();
+    }, 400);
+    const image = new Image();
+    this.image = image;
+    image.crossOrigin = "anonymous";
+    image.decoding = "async";
+    image.onload = () => {
+      if (this.disposed || this.image !== image) return;
+      this.imageReady = image.naturalWidth > 0 && image.naturalHeight > 0;
+      this.draw();
+      this.onReady();
+    };
+    image.onerror = () => {
+      if (this.disposed || this.image !== image) return;
+      // Missing artwork leaves the song title usable and never fails the scene.
+      this.cancelImage();
+      this.draw();
+      this.onReady();
+    };
+    image.src = track.coverUrl;
   }
 
   private draw() {
-    const context = this.canvas.getContext("2d");
+    window.clearTimeout(this.fallback);
+    this.mesh.visible = true;
+    // A CPU-backed canvas uploads to WebGL without a GPU readback: about 20 ms instead of 50.
+    const context = this.canvas.getContext("2d", { willReadFrequently: true });
     if (!context) return;
     context.fillStyle = "#eeede4";
     context.fillRect(0, 0, WIDTH, HEIGHT);
@@ -166,6 +183,7 @@ export class RhineSongPlate {
 
   dispose() {
     this.disposed = true;
+    window.clearTimeout(this.fallback);
     this.cancelImage();
     this.mesh.removeFromParent();
     this.mesh.geometry.dispose();

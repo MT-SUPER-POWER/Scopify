@@ -76,6 +76,32 @@ export class RhineScene {
     this.view.scene.add(model.array);
     this.updateVisibility();
     this.updateField(0);
+    this.warmUp();
+  }
+
+  /**
+   * Draw one archive while the background is still loading and hidden, so every
+   * shader variant it needs, including the transmission back face that
+   * `renderer.compile()` skips, is built here rather than on the first song change.
+   */
+  private warmUp() {
+    const card = this.model.createCard(this.input.track);
+    const hidden: THREE.Object3D[] = [];
+    card.traverse((child) => {
+      if (child.visible) return;
+      hidden.push(child);
+      child.visible = true;
+    });
+    card.position.set(this.active.x, -4.6, this.active.z);
+    this.view.scene.add(card);
+    // Rising and fully lifted files interpolate clearcoat to and from zero,
+    // which selects a different program; draw both ends.
+    for (const progress of [0, 1]) {
+      this.model.appearance.apply(card, progress);
+      this.paint();
+    }
+    for (const child of hidden) child.visible = false;
+    this.model.releaseCard(card);
   }
 
   setInput(input: RhineSceneInput) {
