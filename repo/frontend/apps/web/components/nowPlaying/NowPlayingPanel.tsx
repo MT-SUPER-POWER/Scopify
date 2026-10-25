@@ -1,6 +1,7 @@
 "use client";
 
 import { PanelRightClose } from "lucide-react";
+import { NowPlayingArtistCard } from "./NowPlayingArtistCard";
 import { NowPlayingHero } from "./NowPlayingHero";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePlayerStore } from "@/store";
@@ -38,6 +39,7 @@ export function NowPlayingPanel() {
         {song && (
           <div className="flex flex-col gap-4 px-4 pb-4">
             <NowPlayingHero song={song} />
+            <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
           </div>
         )}
       </ScrollArea>
