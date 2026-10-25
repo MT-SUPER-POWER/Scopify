@@ -63,7 +63,8 @@ export class RhineBeatDetector {
     this.warmth += dt;
     const alpha = 1 - Math.exp(-dt / MEMORY);
     for (let band = 0; band < RHINE_BEAT_BANDS.length; band++) {
-      const [start, end] = binRange(...RHINE_BEAT_BANDS[band], length);
+      const [low, high] = RHINE_BEAT_BANDS[band];
+      const [start, end] = binRange(low, high, length);
       let rise = 0;
       for (let bin = start; bin < end; bin++)
         rise += Math.max(0, spectrum[bin] - this.previous[bin]);

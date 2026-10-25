@@ -31,7 +31,7 @@ export class RhineBeatField {
   private readonly lifts: Hit[] = [];
   private hat = { time: -Infinity, strength: 0, phase: 0 };
   private snares = 0;
-  private levels = new Float32Array(RHINE_SPECTRUM_COLUMNS);
+  private levels: Float32Array = new Float32Array(RHINE_SPECTRUM_COLUMNS);
   /** The latest kick's lamp flash, 0-1. */
   flash = 0;
 

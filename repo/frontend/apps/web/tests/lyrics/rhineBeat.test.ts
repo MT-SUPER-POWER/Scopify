@@ -106,7 +106,7 @@ describe("RhineBeatDetector", () => {
   it("levels the spectrum from bass to treble", () => {
     const detector = new RhineBeatDetector();
     const spectrum = new Uint8Array(BINS).map((_, bin) => (bin < 20 ? 230 : 60));
-    let levels = new Float32Array(0);
+    let levels: Float32Array = new Float32Array(0);
     for (let frame = 0; frame < 30; frame++) levels = detector.update(spectrum, DT).levels;
     expect(levels[0]).toBeGreaterThan(0.8);
     expect(levels[levels.length - 1]).toBe(0);
