@@ -24,7 +24,7 @@ const DEFAULT_PREFERENCES: DynamicIslandPreferences = {
   scale: 1,
   showTranslation: false,
   snapCentered: true,
-  transition: "bounce",
+  transition: "smooth",
 };
 
 const MIN_SCALE = 0.8;

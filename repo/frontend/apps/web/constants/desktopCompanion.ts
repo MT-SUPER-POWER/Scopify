@@ -8,7 +8,7 @@ export const DEFAULT_DYNAMIC_ISLAND_PREFERENCES: DynamicIslandPreferences = {
   scale: 1,
   showTranslation: false,
   snapCentered: true,
-  transition: "bounce",
+  transition: "smooth",
 };
 
 export const DEFAULT_TASKBAR_LYRIC_PREFERENCES: TaskbarLyricPreferences = {
