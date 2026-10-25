@@ -61,4 +61,6 @@ export interface NotificationTestButtonProps {
 
 export interface UpdateProgressRingProps {
   state: AppUpdateState;
+  /** 以 40×40 viewBox 为基准的描边宽度，小尺寸使用时适当加粗。 */
+  strokeWidth?: number;
 }
