@@ -2,6 +2,22 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v2.2.3 — 2026-10-25
+
+### 新增
+
+- 节拍跃动模式下，莱茵档案跟着鼓点起伏 ([ddebdd6f](https://github.com/MT-SUPER-POWER/Scopify/commit/ddebdd6f24e17afe96de8307dad260873fcbdb35))
+- 莱茵律动方式新增「节拍跃动」选项 ([ec38dd46](https://github.com/MT-SUPER-POWER/Scopify/commit/ec38dd46979283f4ffcccd415ad2a67c4a0ce0fb))
+- 新增莱茵背景的鼓点检测 ([1b54adba](https://github.com/MT-SUPER-POWER/Scopify/commit/1b54adbae71461498c1ef814ccb47341b8310083))
+- 通知铃铛显示更新下载的环形进度 ([184a82fc](https://github.com/MT-SUPER-POWER/Scopify/commit/184a82fc0584f731401ab1778555508a8a8167b6))
+- 更新下载完成后退出应用即自动安装 ([a6ed235c](https://github.com/MT-SUPER-POWER/Scopify/commit/a6ed235c7e15ff9206d911bf362ac0ec1b3f6aba))
+
+### 修复
+
+- 莱茵原有三种律动重新跟随音乐强弱起伏 ([c1dca55a](https://github.com/MT-SUPER-POWER/Scopify/commit/c1dca55ab40aec4be641d1a7cced0638494a09da))
+- 更新版本后不再丢失关闭行为等桌面设置 ([1e36cce8](https://github.com/MT-SUPER-POWER/Scopify/commit/1e36cce8b8d5bef6e27b72535538defbcf3aca63))
+- 鼓点检测不再漏掉重拍之间的轻拍 ([e26d67a2](https://github.com/MT-SUPER-POWER/Scopify/commit/e26d67a246e4459a30d52de84f432c9a83ae9dfc))
+
 ## v2.2.2 — 2026-10-25
 
 ### 新增
