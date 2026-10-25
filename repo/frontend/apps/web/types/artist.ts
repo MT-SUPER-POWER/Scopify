@@ -1,5 +1,10 @@
 import type { RawSongDetail, SongDetail } from "@/types/api/music";
 
+export interface ArtistCoverTheme {
+  cover: string;
+  color: string;
+}
+
 export interface Track {
   id: string | number;
   title: string;

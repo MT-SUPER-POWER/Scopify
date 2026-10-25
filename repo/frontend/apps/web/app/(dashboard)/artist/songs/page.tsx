@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
+import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistInfo } from "@/types/playlist";
 
@@ -37,6 +38,7 @@ export default function ArtistPopularSongsPage() {
       totalSongs: popularTracks.length,
     };
   }, [artist, popularTracks.length, t]);
+  const themeColor = useArtistPopularSongsTheme(playlistInfo?.cover);
 
   if (!artistId) return <div className="p-8 text-content">{t("artist.page.invalidId")}</div>;
 
@@ -83,7 +85,7 @@ export default function ArtistPopularSongsPage() {
         playSourceId={`artist:${artist.id}:popular`}
         readonly
         refetchTracks={refetch}
-        themeColor={null}
+        themeColor={themeColor}
         tracks={popularTracks}
       />
     </>
