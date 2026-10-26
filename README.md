@@ -72,10 +72,11 @@ repo/
 
 1. [Folia](https://github.com/chthollyphile/folia-major/tree/main)
 2. [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)
+3. [SPlayer-Next](https://github.com/SPlayer-Dev/SPlayer-Next)
 
 ### 参考文档
 
-1. [Folia Source Snapshot](https://github.com/chthollyphile/folia-major/tree/main)
+1. [Folia Doc](https://folia-site.cielaniska.top/guide/)
 2. [Electron Doc](https://www.electronjs.org/zh/docs/latest/api/app)
 3. [Netease Cloud Music API Doc](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
 4. [Electron Builder Help Doc - Not Official](https://github.com/QDMarkMan/CodeBlog/blob/master/Electron/electron-builder%E6%89%93%E5%8C%85%E8%AF%A6%E8%A7%A3.md)
