@@ -1,8 +1,10 @@
+import type { SongDetail } from "@/types/api/music";
 import type { MvSummary } from "@/types/api/mv";
 import type {
   Album,
   Artist,
   Category,
+  LyricSearchItem,
   Playlist,
   Podcast,
   SearchBestMatch,
@@ -51,6 +53,11 @@ export interface SearchPaginationProps {
 
 export interface SongsViewProps extends SearchPaginationProps {
   songs: Song[];
+}
+
+export interface LyricsViewProps extends SearchPaginationProps {
+  items: LyricSearchItem[];
+  keyword?: string;
 }
 
 export interface MvsViewProps extends SearchPaginationProps {
@@ -102,4 +109,35 @@ export interface VoicesViewProps extends SearchPaginationProps {
 export interface InfiniteScrollTriggerOptions {
   enabled: boolean;
   onIntersect: () => void;
+}
+
+export interface LyricCardProps {
+  currentSongId?: number;
+  highlightKeyword?: string;
+  isPlaying: boolean;
+  item: LyricSearchItem;
+  onPlay: (song: SongDetail) => void;
+}
+
+export interface HighlightedLyricTextProps {
+  highlight?: string;
+  text: string;
+}
+
+export interface SearchLyricSnippetProps {
+  full?: boolean;
+  item: LyricSearchItem;
+  highlightKeyword?: string;
+}
+
+export interface SearchLyricActionsProps {
+  song: SongDetail;
+}
+
+export interface SearchLyricDialogProps extends Pick<
+  LyricCardProps,
+  "item" | "highlightKeyword" | "onPlay"
+> {
+  song: SongDetail;
+  isPlaying: boolean;
 }
