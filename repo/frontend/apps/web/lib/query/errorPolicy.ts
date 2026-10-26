@@ -1,7 +1,7 @@
 import { isApiError } from "@/lib/web/apiError";
 import type { QueryErrorPolicyState, QueryFailureKind } from "@/types/queryBoundary";
 
-export function throwQueryErrorWithoutData(_error: unknown, query: QueryErrorPolicyState) {
+export function throwQueryErrorWithoutData(_error: Error, query: QueryErrorPolicyState) {
   return query.state.data === undefined;
 }
 
