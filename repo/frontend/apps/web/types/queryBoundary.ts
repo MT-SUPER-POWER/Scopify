@@ -6,7 +6,7 @@ export type QueryFailureKind = "network" | "business" | "unauthenticated" | "une
 
 export interface QueryFallbackSource<T> {
   data: T | undefined;
-  error: Error | null;
+  error: unknown;
   isPending: boolean;
   isFetching: boolean;
   fetchStatus: "fetching" | "paused" | "idle";
