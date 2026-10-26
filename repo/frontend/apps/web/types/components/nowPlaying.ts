@@ -31,3 +31,9 @@ export interface NowPlayingCreditRowProps {
   artist: SongDetail["ar"][number];
   role: string;
 }
+
+export interface NowPlayingSimilarRowProps {
+  song: SongDetail;
+  /** 同一张卡片里的全部相似歌曲，点击后作为新的播放队列。 */
+  songs: SongDetail[];
+}

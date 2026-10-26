@@ -179,6 +179,12 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.album", params?: TranslationParams): string;
   /**
+   * zh-CN: 相似歌曲
+   * zh-TW: 相似歌曲
+   * en-US: Similar songs
+   */
+  (key: "nowPlaying.similarSongs", params?: TranslationParams): string;
+  /**
    * zh-CN: 全部 {{count}} 条
    * zh-TW: 全部 {{count}} 則
    * en-US: All {{count}}
