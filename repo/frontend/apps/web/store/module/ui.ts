@@ -10,6 +10,7 @@ export const useUiStore = create<UiStore>()(
       isLyricsOpen: false,
       isNowPlayingPanelOpen: true,
       nowPlayingPanelTab: "overview",
+      nowPlayingMv: null,
       isQueueOpen: false,
       isShortcutHelpOpen: false,
       isFullscreen: false,
@@ -34,6 +35,7 @@ export const useUiStore = create<UiStore>()(
             ? { isNowPlayingPanelOpen: false, isQueueOpen: false }
             : { isNowPlayingPanelOpen: true },
         ),
+      setNowPlayingMv: (selection) => set({ nowPlayingMv: selection }),
       setNowPlayingPanelTab: (tab) => set({ nowPlayingPanelTab: tab, isQueueOpen: false }),
       setIsQueueOpen: (open) => set({ isQueueOpen: open }),
       toggleQueue: () => set((state) => ({ isQueueOpen: !state.isQueueOpen })),

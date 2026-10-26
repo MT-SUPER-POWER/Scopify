@@ -65,6 +65,8 @@ export interface SongDetail {
   }; // 专辑
   publishTime: number;
   alia?: string[];
+  /** 关联 MV 的 id；没有 MV 或旧缓存数据时缺省。 */
+  mv?: number;
   likedCount?: number;
   commentCount?: number;
   replayGain?: number;
@@ -135,6 +137,9 @@ export interface RawSongDetail {
     likedCount?: number;
   };
   likedCount?: number;
+  /** `/song/detail` 等使用 mv，部分搜索结果使用 mvid。 */
+  mv?: number;
+  mvid?: number;
   name: string;
   pc?: {
     privateCloud?: NeteasePrivateCloud;
@@ -155,6 +160,7 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
 
   const likedCount = raw.likedCount ?? raw.info?.likedCount ?? raw.redCount;
   const commentCount = raw.commentCount ?? raw.info?.commentThread?.commentCount;
+  const mv = raw.mv || raw.mvid;
 
   return {
     id: raw.id,
@@ -181,6 +187,7 @@ export const pruneSongDetail = (raw: RawSongDetail): SongDetail => {
     },
     publishTime: raw.publishTime ?? albumData?.publishTime ?? 0,
     alia: Array.isArray(raw.alia) ? raw.alia.filter(Boolean) : [],
+    ...(mv ? { mv } : {}),
     ...(typeof likedCount === "number" && likedCount >= 0 ? { likedCount } : {}),
     ...(typeof commentCount === "number" && commentCount >= 0 ? { commentCount } : {}),
     pc: raw.pc ?? {},

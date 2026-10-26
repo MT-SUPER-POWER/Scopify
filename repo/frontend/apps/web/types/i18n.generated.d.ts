@@ -179,6 +179,30 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.album", params?: TranslationParams): string;
   /**
+   * zh-CN: 观看 MV
+   * zh-TW: 觀看 MV
+   * en-US: Watch music video
+   */
+  (key: "nowPlaying.watchMv", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回封面
+   * zh-TW: 返回封面
+   * en-US: Back to cover
+   */
+  (key: "nowPlaying.closeMv", params?: TranslationParams): string;
+  /**
+   * zh-CN: MV
+   * zh-TW: MV
+   * en-US: Music videos
+   */
+  (key: "nowPlaying.mvs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本曲 MV
+   * zh-TW: 本曲 MV
+   * en-US: This song
+   */
+  (key: "nowPlaying.songMv", params?: TranslationParams): string;
+  /**
    * zh-CN: 相似歌曲
    * zh-TW: 相似歌曲
    * en-US: Similar songs

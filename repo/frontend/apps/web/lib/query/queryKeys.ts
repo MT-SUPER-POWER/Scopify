@@ -86,6 +86,7 @@ export const musicQueryKeys = {
     similar: (songId: number, userId: number) => ["song", "similar", userId, songId] as const,
     chorus: (songId: number | string) => ["song", "chorus", songId] as const,
     dynamicCover: (songId: number | string) => ["song", "dynamic-cover", songId] as const,
+    mvId: (songId: number) => ["song", "mv-id", songId] as const,
   },
   user: {
     medal: (userId: number | string) => ["user", "medal", String(userId)] as const,

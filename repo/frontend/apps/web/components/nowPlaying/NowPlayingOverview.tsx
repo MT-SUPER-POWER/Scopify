@@ -5,6 +5,7 @@ import { NowPlayingCredits } from "./NowPlayingCredits";
 import { NowPlayingHero } from "./NowPlayingHero";
 import { NowPlayingHotComments } from "./NowPlayingHotComments";
 import { NowPlayingLyricsPreview } from "./NowPlayingLyricsPreview";
+import { NowPlayingMvs } from "./NowPlayingMvs";
 import { NowPlayingNextUp } from "./NowPlayingNextUp";
 import { NowPlayingSimilarSongs } from "./NowPlayingSimilarSongs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,6 +22,7 @@ export function NowPlayingOverview({ song }: NowPlayingSectionProps) {
         <NowPlayingHero song={song} />
         <NowPlayingLyricsPreview song={song} />
         <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
+        <NowPlayingMvs song={song} />
         <NowPlayingCredits song={song} />
         <NowPlayingHotComments key={song.id} song={song} />
         <NowPlayingNextUp />

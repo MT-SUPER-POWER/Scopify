@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { useArtistFollow } from "@/hooks/artist/useArtistFollow";
 import type { SongDetail } from "@/types/api/music";
+import type { MvSummary } from "@/types/api/mv";
 import type { NowPlayingPanelTab } from "@/types/ui";
 
 /** 面板当前展示的视图：两个常规视图之外，队列打开时临时覆盖。 */
@@ -36,4 +37,17 @@ export interface NowPlayingSimilarRowProps {
   song: SongDetail;
   /** 同一张卡片里的全部相似歌曲，点击后作为新的播放队列。 */
   songs: SongDetail[];
+}
+
+export interface NowPlayingMvPlayerProps {
+  mvId: number;
+  /** resume 为 false 时只收起 MV，不恢复歌曲播放。 */
+  onClose: (resume?: boolean) => void;
+}
+
+export interface NowPlayingMvRowProps {
+  mv: MvSummary;
+  isActive: boolean;
+  isSongMv: boolean;
+  onSelect: (mvId: number) => void;
 }
